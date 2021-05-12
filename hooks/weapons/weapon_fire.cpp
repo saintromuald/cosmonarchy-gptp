@@ -631,6 +631,7 @@ namespace hooks
 							bullet->sourceUnit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
 						if (newBullet)
 						{
+							helper::playSoundFromSource(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
 							newBullet->position = bullet->position;
 							globals.add_multihit_empty_bullet(newBullet, count);
 						}

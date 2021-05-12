@@ -4221,12 +4221,12 @@ namespace helper
 
 	void AnimCloak(Unit* a1, s32 a2)
 	{
-		const u32 Func_playSoundFromDirection = 0x0049B5B0;
+		const u32 Func_AnimCloak = 0x0049B5B0;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
 			MOV ECX, a2
-			CALL Func_playSoundFromDirection
+			CALL Func_AnimCloak
 			POPAD
 		}
 	}
