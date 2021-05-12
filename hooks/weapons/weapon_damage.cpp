@@ -478,6 +478,10 @@ namespace hooks
 					{
 						return;
 					}
+					if (scbw::isAlliedTo(data.attacker->playerId, target->playerId))
+					{
+						return; 
+					}
 					helper::ApplySpores(target);
 					Thingy* thingy = helper::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
 					if (thingy != nullptr)
@@ -1120,7 +1124,7 @@ namespace hooks
 			if (!targetFinal)
 				targetFinal = target;
 			spriteFinal = targetFinal->sprite;
-			spriteFinal->createOverlay(v6, spriteFinal->position.x, spriteFinal->position.y, 0);
+			spriteFinal->createOverlay(v6, 0, 0, 0);
 		}
 
 		result_sub_1 = 0;
