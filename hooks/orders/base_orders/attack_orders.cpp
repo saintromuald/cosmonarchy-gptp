@@ -189,7 +189,9 @@ namespace hooks
 			|| target->status & UnitStatus::Invincible
 			|| target->sprite->flags & CSprite_Flags::Hidden
 			|| helper::unitCantSeeCloakedTarget(unit, target))
+		{
 			jump_to_77A45 = true;
+		}
 		else
 		{
 			// 00477A04
@@ -207,26 +209,23 @@ namespace hooks
 			{
 				jump_to_77AFE = true;
 			}
+			// identical to check performed by unitIsReaver @ 0x00401490, using if(!unitIsReaver())
+			else if (!(unit->id == UnitId::ProtossAccantor))
+			{
+				jump_to_77A9D = true;
+			}
+			else if (target->status & UnitStatus::InAir)
+			{
+				jump_to_77A45 = true;
+			}
+			else if (unit->hasPathToUnit(target))
+			{
+				jump_to_77AFE = true;
+			}
 			else
-				// identical to check performed by unitIsReaver @ 0x00401490, using if(!unitIsReaver())
-				if (!(unit->id == UnitId::ProtossAccantor))
-				{
-					jump_to_77A9D = true;
-				}
-				else
-					if (target->status & UnitStatus::InAir)
-					{
-						jump_to_77A45 = true;
-					}
-					else
-						if (unit->hasPathToUnit(target))
-						{
-							jump_to_77AFE = true;
-						}
-						else
-						{
-							jump_to_77A45 = true;
-						}
+			{
+				jump_to_77A45 = true;
+			}
 		}
 
 		do
@@ -908,15 +907,9 @@ namespace hooks
 	void orders_AttackUnit(Unit* unit)
 	{
 
-		if (
-			playerTable[unit->playerId].type != PlayerType::Computer
-			||
-			(
-				unit->orderTarget.unit != nullptr &&
-				units_dat::BaseProperty[(unit->orderTarget.unit)->id] & UnitProperty::Building
-				)
-			||
-			!helper::function_00462EA0(unit, 0)	//if unit controlled by AI, do lots of things and
+		if ( playerTable[unit->playerId].type != PlayerType::Computer
+			|| (unit->orderTarget.unit != nullptr && units_dat::BaseProperty[(unit->orderTarget.unit)->id] & UnitProperty::Building)
+			|| !helper::function_00462EA0(unit, 0)	//if unit controlled by AI, do lots of things and
 										//return true after/if validating a final order
 			)
 		{ //79C05
