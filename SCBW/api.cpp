@@ -324,12 +324,12 @@ namespace scbw
 		return product;
 	}
 
-
 	f64 bw_angle_to_normal(s32 bw_angle)
 	{
 		f64 angle = (f64)bw_angle * 1.40625;
 		return angle;
 	}
+
 	s32 getPolarX(s32 distance, u8 angle)
 	{
 		return distance * angleDistance[angle].x >> 8;

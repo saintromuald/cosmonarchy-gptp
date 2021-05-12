@@ -112,7 +112,11 @@ namespace hooks
 		// Hierophant Signify: Cowardice
 		if (unitExt->values[ValueSignifyStacks])
 		{
-			auto match = hydraFinderMatch(unit, Flags::Enemy, {});
+			auto match = hydraFinderMatch(unit, 0, {});
+
+			// Direction Vector
+			f32 unitVecX = sin(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f);
+			f32 unitVecY = -cos(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f);
 
 			const u32 radius = 11 * 32;
 			Unit* enemyUnit = scbw::UnitFinder::getNearestTarget(
@@ -121,23 +125,27 @@ namespace hooks
 				unit->getX() + radius,
 				unit->getY() + radius,
 				unit,
-				[&](Unit* target)
+				[&](Unit* enemy)
 			{
-				s32 angle = scbw::getAngle(target->getX(), target->getY(), unit->getX(), unit->getY());
-				u32 diff = abs(angle - unit->currentDirection1);
-
-				if (!match(target) && diff > 45)
+				UnitExt* targetExt = globals.GetUnitExt(enemy);
+				if (!match(enemy) || !scbw::isAlliedTo(targetExt->values[ValueSignifySourcePlayer], enemy->playerId))
 				{
 					return false;
 				}
+				// Relative Position Vector
+				f32 targetVecX = (f32)unit->getX() - enemy->getX();
+				f32 targetVecY = (f32)unit->getY() - enemy->getY();
+				f32 dist = sqrtf(powf(targetVecX, 2) + powf(targetVecY, 2));
+				targetVecX /= dist;
+				targetVecY /= dist;
+				f32 dot = unitVecX * targetVecX + unitVecY * targetVecY;
 
+				if (dot < 0)
+				{
+					return false;
+				}
 				return true;
 			});
-
-			if (enemyUnit)
-			{
-				speed *= 0.5;
-			}
 		}
 
 		switch (unit->id)

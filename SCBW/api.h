@@ -91,22 +91,22 @@ namespace scbw
 	/// (xStart, yStart) and ends at (xEnd, yEnd).
 	s32 getAngle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd);
 
-	f64 bw_angle_to_normal(s32 bw_angle);
+	inline f64 bw_angle_to_normal(s32 bw_angle);
 	/// StarCraft's internal function used to quickly calculate distances between
 	/// two points (x1, y1) and (x2, y2).
 	/// Warning: This function is inaccurate for long distances.
 	u32 getDistanceFast(s32 x1, s32 y1, s32 x2, s32 y2);
 
 	/// Distance, but in a square instead of circle (max of x dist and y dist)
-	u32 getDistanceSquare(s32 x1, s32 y1, s32 x2, s32 y2);
+	inline u32 getDistanceSquare(s32 x1, s32 y1, s32 x2, s32 y2);
 
 	/// Calculates the X Cartesian coordinate from the given polar coordinates
 	/// (distance, angle), using StarCraft's internal data.
-	s32 getPolarX(s32 distance, u8 angle);
+	inline s32 getPolarX(s32 distance, u8 angle);
 
 	/// Calculates the Y Cartesian coordinate from the given polar coordinates
 	/// (distance, angle), using StarCraft's internal data.
-	s32 getPolarY(s32 distance, u8 angle);
+	inline s32 getPolarY(s32 distance, u8 angle);
 
 	//////////////////////////////////////////////////////////////// @}
 
