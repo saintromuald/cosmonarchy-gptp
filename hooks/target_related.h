@@ -7,13 +7,14 @@ namespace hooks
 	//	s32 setUnderDisruptionWeb(Unit* a1);
 	//	s32 updateDisruptionWebStatus();
 
-	s32 genericRightClickUnitProc2(Unit* unit, s32 a2, s16 a3, Unit* target, s16 unitID);		// 00455E00
-	Unit* CMDRECV_HoldPosition(s32 a1);																// 004C20C0
+	s32 genericRightClickUnitProc2(Unit* unit, s32 a2, s16 a3, Unit* target, s16 unitID);				// 00455E00
+	Unit* CMDRECV_HoldPosition(s32 a1);																	// 004C20C0
 	u32 unitCanSeeCloakedTargetHook(Unit* target, Unit* unit);											// 00401D60
-	u32 isTargetVisibleHook(Unit* target, Unit* unit);												// 004E5E30
-	u32 isUnitVisibleHook(Unit* unit);																// 004E5DB0
-	void checkUnitVisibilityHook(Unit* unit);																// 00443390
+	u32 isTargetVisibleHook(Unit* target, Unit* unit);													// 004E5E30
+	u32 isUnitVisibleHook(Unit* unit);																	// 004E5DB0
+	void checkUnitVisibilityHook(Unit* unit);															// 00443390
 	s32 isUnitCloakingHook(Unit* unit);																	// 004916E0
 	void updateUnitVisibility(Unit* unit);																// Extracted part of checkUnitVisibility
-	extern void injectTargetRelatedHooks();
+	void injectTargetRelatedHooks();
+	bool unitCanAttackTarget(Unit* target, Unit* unit, int a3);
 }

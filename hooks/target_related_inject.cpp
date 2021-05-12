@@ -4,8 +4,8 @@
 
 namespace
 {
-	void __declspec(naked) genericRightClickUnitProc2_Wrapper()
-	{ // 00455E00
+	void __declspec(naked) genericRightClickUnitProc2_Wrapper() // 00455E00
+	{
 		static s32 result;
 		static Unit* unit;
 		static s32 a2;
@@ -37,8 +37,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) CMDRECV_HoldPosition_Wrapper()
-	{ // 004C20C0
+	void __declspec(naked) CMDRECV_HoldPosition_Wrapper() // 004C20C0
+	{
 		static Unit* result;
 		static s32 a1;
 		__asm {
@@ -53,8 +53,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unitCanSeeCloakedTarget_Wrapper()
-	{ // 00401D60
+	void __declspec(naked) unitCanSeeCloakedTarget_Wrapper() // 00401D60
+	{
 		static Unit* target;
 		static Unit* unit;
 		static u32 result;
@@ -78,8 +78,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) isTargetVisible_Wrapper()
-	{ // 004E5E30
+	void __declspec(naked) isTargetVisible_Wrapper() // 004E5E30
+	{
 		static u32 result;
 		static Unit* target;
 		static Unit* unit;
@@ -96,8 +96,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) isUnitVisible_Wrapper()
-	{ // 004E5DB0
+	void __declspec(naked) isUnitVisible_Wrapper() // 004E5DB0
+	{
 		static u32 result;
 		static Unit* unit;
 		__asm {
@@ -112,8 +112,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) checkUnitVisibility_Wrapper()
-	{ // 00443390
+	void __declspec(naked) checkUnitVisibility_Wrapper() // 00443390
+	{
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
@@ -126,8 +126,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) isUnitCloaking_Wrapper()
-	{ // 004916E0
+	void __declspec(naked) isUnitCloaking_Wrapper() // 004916E0
+	{
 		static s32 result;
 		static Unit* unit;
 		__asm {
@@ -139,6 +139,32 @@ namespace
 			POPAD
 			MOV EAX, result
 			RETN
+		}
+	}
+
+	void __declspec(naked) unitCanAttackTarget_Wrapper() // 00476730
+	{
+		static bool result;
+		static Unit* target;
+		static Unit* unit;
+		static u32 a3;
+		__asm {
+			PUSH EBP
+			PUSH EAX
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV a3, EAX
+			POP EAX
+			POP EBP
+			MOV target, EBX
+			MOV unit, ESI
+			PUSHAD
+		}
+		result = hooks::unitCanAttackTarget(target, unit, a3);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN 4
 		}
 	}
 }
@@ -159,6 +185,7 @@ namespace hooks
 		//		jmpPatch(isUnitVisible_Wrapper,					0x004E5DB0, 1);
 		jmpPatch(checkUnitVisibility_Wrapper, 0x00443390, 3);
 		//		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
+		jmpPatch(unitCanAttackTarget_Wrapper, 0x00476730, 5);
 	}
 	void injectTargetRelatedHooks()
 	{

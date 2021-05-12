@@ -609,4 +609,69 @@ LABEL_42:
 		}
 		return 1;
 	}
+
+	bool unitCanAttackTarget(Unit* target, Unit* unit, int a3)
+	{
+		if (unit->status & 0x400 // disabled
+			|| unit->lockdownTimer
+			|| unit->stasisTimer
+			|| unit->maelstromTimer
+			|| !target
+			|| target->status & UnitStatus::Invincible
+			|| target->sprite->flags & 0x20
+			|| a3
+			&& helper::unitCanSeeCloakedTarget(target, unit))
+		{
+			return 0;
+		}
+
+		Unit* unitWithWeapon = unit->subunit;
+		if (!helper::unitIsSubunit(unit->subunit))
+		{
+			unitWithWeapon = unit;
+		}
+
+		if (helper::unitIsCarrier(unit))
+		{
+			return 1;
+		}
+
+		if (helper::unitIsReaver(unit))
+		{
+			if (!(unit->status & UnitStatus::InAir))
+			{
+				if (helper::unitHasPathToUnit(unit, target))
+				{
+					return 1;
+				}
+			}
+			return 0;
+		}
+
+		if (helper::unitCanInfest(unit))
+		{
+			return helper::canBeInfested(nullptr, target) != 0;
+		}
+
+		if (unit->id == UnitId::ProtossDidact && unit->pAI)
+		{
+			return 0;
+		}
+
+		if (target->status & UnitStatus::InAir)
+		{
+
+			if (units_dat::SizeType[target->id] == UnitSize::Titanic)
+			{
+				return units_dat::AirWeapon[unitWithWeapon->id] != -126
+					|| units_dat::GroundWeapon[unitWithWeapon->id] != -126;
+			}
+			else 
+			{
+				return units_dat::AirWeapon[unitWithWeapon->id] != -126;
+			}
+		}
+
+		return units_dat::GroundWeapon[unitWithWeapon->id] != -126;
+	}
 }
