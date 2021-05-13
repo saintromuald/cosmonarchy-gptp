@@ -1340,7 +1340,26 @@ namespace hooks
 						// Attack overrides
 						if (current_button->actFunc == (ACT_FUNC*)ButtonActions::Attack)
 						{
-//							if ((*activePortraitUnit)->id == UnitId::TerranBunker)
+							if ((*activePortraitUnit)->id == UnitId::TerranBunker)
+							{
+								int loaded = 0;
+								for (int i = 0; i < 8; ++i)
+								{								
+									Unit* bunkerUnit = (*activePortraitUnit)->getLoadedUnit(i);
+									if (bunkerUnit && scbw::unitIsRangedAttacker(bunkerUnit))
+									{
+										loaded++;
+									}
+								}
+								if (loaded)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+							}
 						}
 
 						// Form switch/mode change?
