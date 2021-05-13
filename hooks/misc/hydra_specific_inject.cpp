@@ -599,10 +599,11 @@ namespace hooks
 		jmpPatch(dropDebugging03, Hook_DropDebugging03);
 	}
 
-	void __declspec(naked) createDamageOverlay_Wrapper()
+	void __declspec(naked) createDamageOverlay_Wrapper() // 004993C0
 	{
 		static Sprite* sprite;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -612,13 +613,16 @@ namespace hooks
 			PUSHAD
 		}
 		hooks::createDamageOverlay(sprite);
-		__asm {
+		__asm
+		{
 			POPAD
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
 		}
 	}
+
 	void damageOverlayDebug()
 	{
 //		jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);

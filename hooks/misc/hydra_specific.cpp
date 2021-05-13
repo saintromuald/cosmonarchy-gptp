@@ -60,10 +60,10 @@ void parseUnitDatReqs()
 	__asm {
 		PUSHAD
 		CALL parseUnitFunc
-		//		MOV result,EAX
+//		MOV result,EAX
 		POPAD
 	}
-	//	return result;
+//	return result;
 }
 
 bool isAttemptingProtossBuild(const Unit* probe)
@@ -72,97 +72,6 @@ bool isAttemptingProtossBuild(const Unit* probe)
 		&& probe->status & UnitStatus::GroundedBuilding
 		&& probe->orderTarget.unit != nullptr
 		&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
-}
-
-// For createUnit
-const u32 Func_unitConstructor = 0x004A06C0;
-Unit* unitConstructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused)
-{
-	static Unit* result;
-	__asm {
-		PUSHAD
-		PUSH unused
-		PUSH playerId
-		MOV DI, unitType
-		MOV EDX, y
-		MOV ESI, x
-		CALL Func_unitConstructor
-		MOV result, EAX
-		POPAD
-	}
-	return result;
-}
-
-const u32 Func_CListPushBackUsedUnitEntry = 0x0049DCA0;
-Unit* CListPushBackUsedUnitEntry(Unit* unit)
-{
-	static Unit* result;
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_CListPushBackUsedUnitEntry
-		MOV result, EAX
-		POPAD
-	}
-	return result;
-}
-
-const u32 Func_CListPushBackHiddenUnitEntry = 0x0049DCE0;
-Unit* CListPushBackHiddenUnitEntry(Unit* unit)
-{
-	static Unit* result;
-	__asm {
-		PUSHAD
-		MOV EAX, result
-		CALL Func_CListPushBackHiddenUnitEntry
-		MOV result, EAX
-		POPAD
-	}
-	return result;
-}
-
-const u32 Func_unitDestructor = 0x004A0990;
-Sprite* unitDestructor(Unit* unit)
-{
-	static Sprite* result;
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		CALL Func_unitDestructor
-		MOV result, EAX
-		POPAD
-	}
-	return result;
-}
-
-const u32 Func_getImageAttackFrame = 0x00401DF0;
-void* getImageAttackFrame(void* resultArg, Sprite* sprite, s32 index, u8 playerId)
-{
-	static void* result;
-	__asm {
-		PUSHAD
-		PUSH playerId
-		MOV EDI, index
-		MOV ECX, sprite
-		MOV EAX, resultArg
-		CALL Func_getImageAttackFrame
-		MOV result, EAX
-		POPAD
-	}
-	return result;
-}
-
-const u32 Func_setSpriteMainImageOffset = 0x00401E40;
-void setSpriteMainImageOffset(Sprite* sprite, char x, char y)
-{
-	__asm {
-		PUSHAD
-		PUSH y
-		PUSH x
-		MOV EAX, sprite
-		CALL Func_setSpriteMainImageOffset
-		POPAD
-	}
 }
 
 #include <array>
@@ -861,7 +770,7 @@ LABEL_18:
 		{
 			randomSeed = 0;
 		}
-		Unit* unitConstructorResult = unitConstructor(x, y, unitType, playerId, randomSeed);
+		Unit* unitConstructorResult = helper::unitConstructor(x, y, unitType, playerId, randomSeed);
 		Unit* unitConstructorResult2 = unitConstructorResult;
 		if (!unitConstructorResult)
 		{
@@ -869,11 +778,11 @@ LABEL_18:
 		}
 		if (unitConstructorResult->status & UnitStatus::GroundedBuilding)
 		{
-			CListPushBackUsedUnitEntry(unitConstructorResult);
+			helper::CListPushBackUsedUnitEntry(unitConstructorResult);
 		}
 		else
 		{
-			CListPushBackHiddenUnitEntry(unitConstructorResult);
+			helper::CListPushBackHiddenUnitEntry(unitConstructorResult);
 		}
 		if (unitType > UnitId::Spell_DisruptionWeb
 			|| units_dat::SubUnit[unitType] == UnitId::None)
@@ -883,17 +792,17 @@ LABEL_18:
 		}
 		else
 		{
-			Unit* unitConstructorResult3 = unitConstructor(x, y, units_dat::SubUnit[unitType], playerId, randomSeed);
+			Unit* unitConstructorResult3 = helper::unitConstructor(x, y, units_dat::SubUnit[unitType], playerId, randomSeed);
 			Unit* unitConstructorResult4 = unitConstructorResult3;
 			if (!unitConstructorResult3)
 			{
-				unitDestructor(unitConstructorResult2);
+				helper::unitDestructor(unitConstructorResult2);
 				return 0;
 			}
 			unitConstructorResult2->subunit = unitConstructorResult3;
 			unitConstructorResult3->subunit = unitConstructorResult2;
-			getImageAttackFrame(pointer, unitConstructorResult2->sprite, 0, 2u);
-			setSpriteMainImageOffset(unitConstructorResult4->sprite, *pointer, randomSeed);
+			helper::getImageAttackFrame(pointer, unitConstructorResult2->sprite, 0, 2u);
+			helper::setSpriteMainImageOffset(unitConstructorResult4->sprite, *pointer, randomSeed);
 			result = unitConstructorResult2;
 		}
 		return result;

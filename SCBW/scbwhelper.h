@@ -315,7 +315,8 @@ namespace helper
 	// For updatePlacementStateForPlacementBox
 	s32 canBuildOnTileLocation(Unit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
 		s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision);				// 00473FB0
-		// For refreshScreen
+	
+	// For refreshScreen
 	s32 updatePlacementStateForPlacementBox_Func();															// 0048DCE0
 	s32 unk_buildingPlacementRelated(s32 a1, Point16* a2);													// 0048D7F0
 	s32 initPlacementBoxPos(Point16* in_out);																// 0048D660
@@ -820,6 +821,14 @@ namespace helper
 	s32 imageDrawingBulletDrawing();
 	void updateImages();
 	void updateThingys();
+
+	// createUnit
+	Unit* unitConstructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused);						// 004A06C0
+	Unit* CListPushBackUsedUnitEntry(Unit* unit);														// 0049DCA0
+	Unit* CListPushBackHiddenUnitEntry(Unit* unit);														// 0049DCE0
+	Sprite* unitDestructor(Unit* unit);																	// 004A0990
+	void* getImageAttackFrame(void* resultArg, Sprite* sprite, s32 index, u8 playerId);					// 00401DF0
+	void setSpriteMainImageOffset(Sprite* sprite, char x, char y);										// 00401E40
 
 	//// psi_field_util
 	bool addPsiFieldSprite(Unit* unit);

@@ -647,8 +647,11 @@ namespace hooks
 			bEnd = true;
 		}
 
-		// Empyrean missile interception
-		else if (bullet->weaponId == WeaponId::EmpyreanPlasmaBarrage)
+		// Missile interception
+		// Empyrean Heavenly Passage
+		// Valkyrie Charon Afterburners
+		else if (bullet->weaponId == WeaponId::EmpyreanPlasmaBarrage
+			|| bullet->weaponId == WeaponId::HaloRockets)
 		{
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(

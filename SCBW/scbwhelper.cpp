@@ -8348,4 +8348,101 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For createUnit
+	Unit* unitConstructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused)
+	{
+		const u32 Func_unitConstructor = 0x004A06C0;
+		static Unit* result;
+		__asm
+		{
+			PUSHAD
+			PUSH unused
+			PUSH playerId
+			MOV DI, unitType
+			MOV EDX, y
+			MOV ESI, x
+			CALL Func_unitConstructor
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CListPushBackUsedUnitEntry(Unit* unit)
+	{
+		const u32 Func_CListPushBackUsedUnitEntry = 0x0049DCA0;
+		static Unit* result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_CListPushBackUsedUnitEntry
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CListPushBackHiddenUnitEntry(Unit* unit)
+	{
+		const u32 Func_CListPushBackHiddenUnitEntry = 0x0049DCE0;
+		static Unit* result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, result
+			CALL Func_CListPushBackHiddenUnitEntry
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Sprite* unitDestructor(Unit* unit)
+	{
+		const u32 Func_unitDestructor = 0x004A0990;
+		static Sprite* result;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_unitDestructor
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void* getImageAttackFrame(void* resultArg, Sprite* sprite, s32 index, u8 playerId)
+	{
+		const u32 Func_getImageAttackFrame = 0x00401DF0;
+		static void* result;
+		__asm
+		{
+			PUSHAD
+			PUSH playerId
+			MOV EDI, index
+			MOV ECX, sprite
+			MOV EAX, resultArg
+			CALL Func_getImageAttackFrame
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void setSpriteMainImageOffset(Sprite* sprite, char x, char y)
+	{
+		const u32 Func_setSpriteMainImageOffset = 0x00401E40;
+		__asm
+		{
+			PUSHAD
+			PUSH y
+			PUSH x
+			MOV EAX, sprite
+			CALL Func_setSpriteMainImageOffset
+			POPAD
+		}
+	}
 }
