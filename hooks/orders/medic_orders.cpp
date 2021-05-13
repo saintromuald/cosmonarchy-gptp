@@ -66,31 +66,30 @@ namespace hooks
 				{
 					unit->orderToIdle();
 				}
-				else
-					if (unit->mainOrderTimer == 0)
+				else if (unit->mainOrderTimer == 0)
+				{
+					Unit* newTarget;
+					Point16 oldPos;
+					unit->mainOrderTimer = 15;
+					newTarget = helper::MedicHeal_TargetAcquire(unit);
+					if (newTarget != nullptr)
 					{
-						Unit* newTarget;
-						Point16 oldPos;
-						unit->mainOrderTimer = 15;
-						newTarget = helper::MedicHeal_TargetAcquire(unit);
-						if (newTarget != nullptr)
-						{
-							oldPos.x = unit->orderTarget.pt.x;
-							oldPos.y = unit->orderTarget.pt.y;
-							helper::orderInterrupt(unit, unit->orderTarget.unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, OrderId::MedicHeal1);
+						oldPos.x = unit->orderTarget.pt.x;
+						oldPos.y = unit->orderTarget.pt.y;
+						helper::orderInterrupt(unit, unit->orderTarget.unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, OrderId::MedicHeal1);
 
-							helper::moveToTarget(newTarget, unit);
-							helper::unitOrderMoveToTargetUnit(unit, newTarget);
-							if (oldTarget != nullptr)
-							{
-								helper::function_474940(unit, oldTarget, OrderId::HealMove);
-							}
-							else
-							{
-								helper::function_4748E0(unit, oldPos.x, oldPos.y, OrderId::HealMove);
-							}
+						helper::moveToTarget(newTarget, unit);
+						helper::unitOrderMoveToTargetUnit(unit, newTarget);
+						if (oldTarget != nullptr)
+						{
+							helper::function_474940(unit, oldTarget, OrderId::HealMove);
+						}
+						else
+						{
+							helper::function_4748E0(unit, oldPos.x, oldPos.y, OrderId::HealMove);
 						}
 					}
+				}
 			}
 		}
 	}
