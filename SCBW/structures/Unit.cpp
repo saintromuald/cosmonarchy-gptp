@@ -159,6 +159,12 @@ extern const u32 Func_GetMaxWeaponRange = 0x00475870;
 u32 Unit::getMaxWeaponRange(u8 weaponId) const
 {
 	assert(this);
+
+	if (weaponId == WeaponId::None)
+	{
+		return 0;
+	}
+
 	assert(weaponId < WEAPON_TYPE_COUNT);
 
 	static u32 maxWeaponRange;

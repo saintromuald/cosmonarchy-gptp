@@ -3,6 +3,8 @@
 #include <SCBW\api.h>
 #include "../SCBW/enumerations.h"
 #include "../SCBW/structures.h"
+#include "globals.h"
+#include "scbw/UnitFinder.h"
 
 namespace hooks
 {
@@ -32,8 +34,40 @@ namespace hooks
 				if (unit->mainOrderTimer == 0)
 				{
 					unit->mainOrderTimer = 15;
-					// TODO: Remove RNG
-					unit->orderTarget.unit = helper::findRandomAttackTarget(unit);
+					
+					if (!unit->orderTarget.unit || !unit->canAttackTarget(unit->orderTarget.unit))
+					{
+						if (unit->connectedUnit)
+						{
+							UnitExt* bunkerExt = globals.GetUnitExt(unit->connectedUnit);
+							Unit* target = bunkerExt->units[UnitBunkerLockOn];
+							if (target && unit->canAttackTarget(target))
+							{
+								unit->orderTarget.unit = bunkerExt->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
+							}
+						}
+
+						if (!unit->orderTarget.unit || !unit->canAttackTarget(unit->orderTarget.unit))
+						{
+							const u32 radius = std::max(unit->getMaxWeaponRange(unit->getGroundWeapon()), unit->getMaxWeaponRange(unit->getAirWeapon()));
+							unit->orderTarget.unit = scbw::UnitFinder::getNearestTarget(
+								unit->getX() - radius,
+								unit->getY() - radius,
+								unit->getX() + radius,
+								unit->getY() + radius,
+								unit,
+								[&](Unit* target)
+							{
+								if (scbw::isAlliedTo(unit->playerId, target->playerId)
+									|| !unit->canAttackTarget(target))
+								{
+									return false;
+								}
+								return true;
+							});
+						}
+					}
+
 					if (unit->orderTarget.unit != nullptr)
 					{
 						unit->orderQueueTimer = 0;

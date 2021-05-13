@@ -316,6 +316,7 @@ enum ExtUnitId
 	UnitWyvernTargetLock,
 	UnitDirgeSource,
 	UnitReviveParent,
+	UnitBunkerLockOn,
 
 	UnitCount,
 };
