@@ -206,8 +206,10 @@ namespace hooks
 		}
 		else
 		{
-			if (regionType != 0) //region has assigned state, state 0 is nothing
+			if (regionType != 0) // region has assigned state, state 0 is nothing
+			{
 				helper::AI_AssignMilitary(1, region);
+			}
 			helper::AI_AddMilitary(region, result, 1);
 		}
 	}
