@@ -1337,6 +1337,12 @@ namespace hooks
 							}
 						}
 
+						// Attack overrides
+						if (current_button->actFunc == (ACT_FUNC*)ButtonActions::Attack)
+						{
+//							if ((*activePortraitUnit)->id == UnitId::TerranBunker)
+						}
+
 						// Form switch/mode change?
 						if (current_button->actFunc == (ACT_FUNC*)ButtonActions::Use_Technology)
 						{

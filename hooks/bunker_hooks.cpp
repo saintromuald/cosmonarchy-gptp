@@ -32,6 +32,7 @@ namespace hooks
 				if (unit->mainOrderTimer == 0)
 				{
 					unit->mainOrderTimer = 15;
+					// TODO: Remove RNG
 					unit->orderTarget.unit = helper::findRandomAttackTarget(unit);
 					if (unit->orderTarget.unit != nullptr)
 					{
@@ -47,7 +48,6 @@ namespace hooks
 	{
 		Image* bunkerImage = unit->connectedUnit->sprite->mainGraphic;
 		u8 frameDirection = (unit->currentDirection1 + 16) / 32 % 8;
-//		const LO_Header *loFile = lo_files->attackOverlays[bunkerImage->id];
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
 		Point8 offset = loFile->getOffset(bunkerImage->frameIndex, frameDirection);
 
