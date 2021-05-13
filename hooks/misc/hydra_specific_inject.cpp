@@ -616,7 +616,7 @@ namespace hooks
 		__asm
 		{
 			POPAD
-			MOV EAX, result
+//			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
