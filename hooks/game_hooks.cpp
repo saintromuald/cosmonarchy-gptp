@@ -837,7 +837,8 @@ namespace hooks
 			case UnitId::ProtossDemiurge:
 			{
 				// Demiurge - Gods Made Flesh - initial cast
-				if (scbw::get_generic_rust_value(unit, RustId::CastGodsMadeFlesh))
+				if (scbw::get_generic_rust_value(unit, RustId::CastGodsMadeFlesh)
+					&& !unitExt->values[ValueGodsMadeFleshActive])
 				{
 					scbw::decloakProc(unit);
 					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 0);
@@ -1284,15 +1285,19 @@ namespace hooks
 			{
 				unitExt->timers[TimerGodsMadeFlesh] = 3;
 			}
+		}
 
-			// Demiurge - Gods Made Flesh - return units to original owner
-			if (unitExt->values[ValueWorshipStack]
-				&& demiurgeExt == nullptr)
-			{
-				unitExt->values[ValueWorshipStack] = 0;
-				unitExt->timers[TimerGodsMadeFlesh] = 0;
-				unit->giveTo(unitExt->values[ValueWorshipOriginalPlayer]);
-			}
+		// Demiurge - Gods Made Flesh - return units to original owner
+		if (unitExt->values[ValueWorshipStack]
+			&& unitExt->units[UnitWorshipDemiurge] == nullptr)
+		{
+			helper::playSoundFromSource(SoundId::DemiurgeWorship01, unit, 1, 0);
+			u32 overlayId = ImageId::MindControlHit_Small + scbw::getOverlayOffset(unit->id);
+			unit->sprite->createTopOverlay(overlayId, 0, 0, 0);
+
+			unitExt->values[ValueWorshipStack] = 0;
+			unitExt->timers[TimerGodsMadeFlesh] = 0;
+			unit->giveTo(unitExt->values[ValueWorshipOriginalPlayer]);
 		}
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends

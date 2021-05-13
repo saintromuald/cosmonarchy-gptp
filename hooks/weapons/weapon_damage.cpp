@@ -568,7 +568,10 @@ namespace hooks
 						targetExt->units[UnitWorshipDemiurge] = data.attacker;
 						targetExt->values[ValueWorshipOriginalPlayer] = data.target->playerId;
 						data.target->giveTo(data.attacker->playerId);
+
 						helper::playSoundFromSource(SoundId::DemiurgeWorship01, data.target, 1, 0);
+						u32 overlayId = ImageId::MindControlHit_Small + scbw::getOverlayOffset(data.target->id);
+						data.target->sprite->createTopOverlay(overlayId, 0, 0, 0);
 					}
 				} break;
 				case WeaponId::KonviliskSowingSpines:
@@ -1123,7 +1126,9 @@ namespace hooks
 			v6 = helper::getCorrosiveSporesImage(target);
 			targetFinal = target->subunit;
 			if (!targetFinal)
+			{
 				targetFinal = target;
+			}
 			spriteFinal = targetFinal->sprite;
 			spriteFinal->createOverlay(v6, 0, 0, 0);
 		}
