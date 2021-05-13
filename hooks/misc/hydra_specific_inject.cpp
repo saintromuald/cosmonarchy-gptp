@@ -2,7 +2,6 @@
 #include "globals.h"
 namespace hooks
 {
-
 	void __declspec(naked) getFlingyHaltDistanceHookWrapper()
 	{
 		static Flingy* flingy;
@@ -46,6 +45,7 @@ namespace hooks
 			JMP jmp_00496390
 		}
 	}
+
 	const u32 jmp_8BEDE = 0x0048BEDE;
 	void __declspec(naked) initializeBullet_8BED7_JmpWrapper()
 	{
@@ -65,8 +65,8 @@ namespace hooks
 		}
 	}
 
-	void flingySpeedPatches()
-	{//for madrigals
+	void flingySpeedPatches() // for madrigals
+	{
 		jmpPatch(getFlingyHaltDistanceHookWrapper, 0x00494F90);
 		jmpPatch(initializeFlingy_96377_JmpWrapper, 0x00496377, 2);
 		jmpPatch(initializeBullet_8BED7_JmpWrapper, 0x0048BED7, 2);
@@ -99,6 +99,7 @@ namespace hooks
 		}
 
 	}
+
 	const u32 func_getTargetSomething = 0x0043FF90;
 	const u32 progressOrderSwitch_e71b = 0x004EC71B;
 	const u32 spellOrderCases = 0x004ECADB;
@@ -129,6 +130,7 @@ namespace hooks
 			}
 		}
 	}
+
 	const u32 jmp_004A0682 = 0x004A0682;
 	void __declspec(naked) lobotomyMineJmpWrapper()
 	{
@@ -181,14 +183,14 @@ namespace hooks
 
 	void unusedOrderPatches()
 	{
-		jmpPatch(unusedOrderPatchWrapper, 0x004EC70B, 7);//turns unused orders to spell orders
-		//later add jump patches to make CTFCop2 and WarpIn useless
-	}
-	void archonHardcodePatches()
-	{//for augurs
-		jmpPatch(wrapper_295EB, 0x004295EB, 1);
+		jmpPatch(unusedOrderPatchWrapper, 0x004EC70B, 7); // turns unused orders to spell orders
+		// later add jump patches to make CTFCop2 and WarpIn useless
 	}
 
+	void archonHardcodePatches() // for augurs
+	{
+		jmpPatch(wrapper_295EB, 0x004295EB, 1);
+	}
 
 	void lobotomyMinePatches()
 	{
@@ -196,8 +198,9 @@ namespace hooks
 		jmpPatch(lobotomyMineJmpWrapper, 0x004A066B, 3);  /*
 		jmpPatch(orders_PlaceMine_JmpWrapper, 0x00465126, 0);
 		jmpPatch(orders_PlaceMine_JmpWrapper2, 0x00465145, 0);
-		nops(0x00465088, 8);//remove tech requirement for any mines */
+		nops(0x00465088, 8); // remove tech requirement for any mines */
 	}
+
 	const u32 func_techTargetSpellCheck = 0x00491E80;
 	const u32 jmp_004920E3 = 0x004920E3;
 	void __declspec(naked) getOrderTargetErrorString_JmpWrapper()
@@ -210,8 +213,8 @@ namespace hooks
 		static u32 extended_result;
 		__asm {
 			MOV caster, EAX
-			MOV BL, [EAX + 0x4c]   //
-			MOV EAX, EDI //
+			MOV BL, [EAX + 0x4c]
+			MOV EAX, EDI
 			MOV target, EAX
 			MOV playerId, BL
 			CALL func_techTargetSpellCheck
@@ -225,6 +228,7 @@ namespace hooks
 			JMP jmp_004920E3
 		}
 	}
+
 	const u32 jmp_004922E1 = 0x004922E1;
 	void __declspec(naked) ShouldStopOrderedSpell_JmpWrapper()
 	{
@@ -253,18 +257,20 @@ namespace hooks
 			JMP jmp_004922E1
 		}
 	}
+
 	void lobotomyMineTargetingPatches()
 	{
 		jmpPatch(getOrderTargetErrorString_JmpWrapper, 0x004920D9);
 		jmpPatch(ShouldStopOrderedSpell_JmpWrapper, 0x004922DC);
 	}
+
 	void trapJumpWrappers()
 	{
-		memoryPatch(0x00401438, (u8)0xEB);//change to jump
+		memoryPatch(0x00401438, (u8)0xEB); // change to jump
 		u8 patchb030[] = {0x33, 0xc0, 0x90, 0x90};
-		memoryPatch(0x0047B030, patchb030);//xor eax, eax; nop; nop
-		memoryPatch(0x0047B070, patchb030);//xor eax, eax; nop; nop
-		//
+		memoryPatch(0x0047B030, patchb030); // xor eax, eax; nop; nop
+		memoryPatch(0x0047B070, patchb030); // xor eax, eax; nop; nop
+		
 		memoryPatch(0x004EBE99, (u8)0xEB);
 		memoryPatch(0x004A4B4D, (u8)0xEB);
 		memoryPatch(0x004A491B, (u8)0xEB);
@@ -272,39 +278,31 @@ namespace hooks
 		memoryPatch(0x004A46CA, (u8)0xEB);
 		memoryPatch(0x004A0307, (u8)0xEB);
 		memoryPatch(0x004A3E04, (u8)0xEB);
-		//
+		
 		u8 jmpp[] = {0xEB, 0x3d};
 		memoryPatch(0x0049FAEF, jmpp);
 
-		//        memoryPatch(0x0049FAEF, (u8)0x75);//JNZ
-				//
-		memoryPatch(0x0047C05D + 2, (u8)0xe4);//floor gun trap
-		memoryPatch(0x0047C069 + 2, (u8)0xe4);//floor missile trap
+//		memoryPatch(0x0049FAEF, (u8)0x75);//JNZ
+		
+		memoryPatch(0x0047C05D + 2, (u8)0xe4); // floor gun trap
+		memoryPatch(0x0047C069 + 2, (u8)0xe4); // floor missile trap
 
 
 		u8 jmpp2[] = {0xeb,0x2c};
-		memoryPatch(0x0047BEE7, jmpp2);//JNZ
+		memoryPatch(0x0047BEE7, jmpp2); // JNZ
 
 		memoryPatch(0x0047B516, patchb030);
-		u8 jmpToEnd[] = {0xC3,0x90,0x90,0x90};//RETN, NOP (3)
+		u8 jmpToEnd[] = {0xC3,0x90,0x90,0x90}; // RETN, NOP (3)
 		memoryPatch(0x0047B556, jmpToEnd);
-		//
+		
 		memoryPatch(0x0047B7B1 + 2, (u8)0xE4);
 		nops(0x0047B7B7, 6);
-		//
-		//0047BDCB
+		
+		// 0047BDCB
 		u8 jmpp3[] = {0xeb,0x25};
-		memoryPatch(0x0047BDCB, jmpp3);//JNZ
-
-
-		//
-
-
-		/*
-
-	Line 184719: 0047BDC7   .  66:3D CB00    CMP AX,0CB
-		*/
+		memoryPatch(0x0047BDCB, jmpp3); // JNZ
 	}
+
 	const u32 progressOrder_jmp = 0x004EC6F1;
 	void __declspec(naked) PhaseLinkOrder_Wrapper()
 	{
@@ -319,10 +317,12 @@ namespace hooks
 			JMP progressOrder_jmp
 		}
 	}
+
 	void phaseLinkPatches()
 	{
 		jmpPatch(PhaseLinkOrder_Wrapper, 0x004EC629, 2);
 	}
+
 	void __declspec(naked) canAttackTarget_Tail_Wrapper()
 	{
 		static u32 target_flags;
@@ -346,6 +346,7 @@ namespace hooks
 			RETN 4
 		}
 	}
+
 	void __declspec(naked) getGroundWeaponHookWrapper()
 	{
 		static Unit* unit;
@@ -361,13 +362,15 @@ namespace hooks
 			RETN
 		}
 	}
+
 	void clarionWrappers()
 	{
-		//canAttackTarget - end
-		//jmpPatch(canAttackTarget_Tail_Wrapper, 0x0047682C, 1);
-		//tail wrapper disabled, without air weapon it don't have sense anywhere, will be reworked w/ air target functionality
+		// canAttackTarget - end
+		// jmpPatch(canAttackTarget_Tail_Wrapper, 0x0047682C, 1);
+		// tail wrapper disabled, without air weapon it don't have sense anywhere, will be reworked w/ air target functionality
 		jmpPatch(getGroundWeaponHookWrapper, 0x00475AD0);
 	}
+
 	const u32 jmp_skip = 0x00404541;
 	const u32 jmp_continue = 0x00404539;
 	void __declspec(naked) createBuildingAiWorkaround_Wrapper()
@@ -419,16 +422,13 @@ namespace hooks
 			POP EBP
 			RETN 4
 		}
-		//        0046E1C0 = CheckUnitDatRequirements(), arg 1 player_id, eax unit_id, esi Unit* parent
-
+//		0046E1C0 = CheckUnitDatRequirements(), arg 1 player_id, eax unit_id, esi Unit* parent
 	}
+
 	void createBuildingAiWorkaround()
 	{
 		jmpPatch(createBuildingAiWorkaround_Wrapper, 0x00404533, 1);
 	}
-
-
-	//
 
 	static bool warningOnce00 = false;
 	const u32 Hook_DropDebugging00 = 0x0047CDDB;
@@ -437,7 +437,6 @@ namespace hooks
 	{
 		static char buffer[256];
 		static u8 hashStructIndex;
-
 		__asm {
 			JNB short _Jmp
 			JMP Hook_DropDebugging00Back
@@ -446,21 +445,18 @@ namespace hooks
 				MOV EBP, ESP
 				MOV hashStructIndex, AL
 		}
-
 		if (!warningOnce00)
 		{
 			sprintf_s(buffer, "Invalid hashStructIndex!!\nhashStructIndex: %u", hashStructIndex);
 			scbw::print(buffer, GameTextColor::Red);
 			warningOnce00 = true;
 		}
-
 		__asm {
 			POPAD
 			XOR EAX, EAX
 			POP EBX
 			RETN
 		}
-
 	}
 
 	static bool warningOnce01 = false;
@@ -497,7 +493,7 @@ namespace hooks
 	const u32 Hook_DropDebugging02 = 0x0047CD63;
 	void __declspec(naked) dropDebugging02()
 	{
-		//        static char buffer[256];
+//		static char buffer[256];
 		static bool isSucceeded;
 		static u8 visibilityHash;
 		static u8 nationHash;
@@ -508,21 +504,17 @@ namespace hooks
 			MOV visibilityHash, CL
 			MOV nationHash, DL
 		}
-
 		if (!isSucceeded && !warningOnce02)
 		{
-			//            sprintf_s(buffer, "Invalid SpriteVisibility!!\nactiveNationID: %u", *ACTIVE_NATION_ID);
-			 //           scbw::print(buffer, GameTextColor::Red);
+//			sprintf_s(buffer, "Invalid SpriteVisibility!!\nactiveNationID: %u", *ACTIVE_NATION_ID);
+//			scbw::print(buffer, GameTextColor::Red);
 			scbw::printf("Invalid SpriteVisibility!!\nactiveNationID: % u", *ACTIVE_NATION_ID);
 			scbw::printf("SpriteVisHash (from VisionSync) %d =/= visionHash (from CMD) %d", nationHash, visibilityHash);
 			warningOnce02 = true;
 		}
-
 		__asm {
 			POPAD
-			//
-//            MOV AL, 1 //disable desync status
-			//
+//			MOV AL, 1 // disable desync status
 			POP EBX
 			POP EBP
 			RETN 4
@@ -535,9 +527,10 @@ namespace hooks
 		u8 hashType;
 		u8 byte[0x109];
 	};
+
 	static_assert(sizeof(hashStruct) == 0x10C, "Invalid hashStruct Size");
 	hashStruct* hashList = (hashStruct*)0x0065EB30;
-	//
+	
 	static bool warningOnce03_00 = false;
 	static bool warningOnce03_01 = false;
 	const u32 Hook_DropDebugging03 = 0x0047CDF1;
@@ -548,7 +541,6 @@ namespace hooks
 		static u32 hashStructIndex;
 		static u8 hashType;
 		static bool isSucceeded;
-
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
@@ -556,9 +548,7 @@ namespace hooks
 			MOV hashStructIndex, ESI
 			MOV hashType, BL
 		}
-
 		isSucceeded = true;
-
 		if (hashList[hashStructIndex].hash != *(u16*)(data + 2) && !warningOnce03_00)
 		{
 			isSucceeded = false;
@@ -571,7 +561,6 @@ namespace hooks
 			scbw::print(buffer, GameTextColor::Red);
 			warningOnce03_00 = true;
 		}
-
 		if (hashList[hashStructIndex].hashType != (hashType & 0x0F) && warningOnce03_01)
 		{
 			isSucceeded = false;
@@ -579,7 +568,6 @@ namespace hooks
 			scbw::print(buffer, GameTextColor::Red);
 			warningOnce03_01 = true;
 		}
-
 		if (isSucceeded)
 		{
 			__asm {
@@ -604,7 +592,7 @@ namespace hooks
 
 	void desyncTesting()
 	{
-		//code from BG
+		// code from BG
 		jmpPatch(dropDebugging00, Hook_DropDebugging00);
 		jmpPatch(dropDebugging01, Hook_DropDebugging01);
 		jmpPatch(dropDebugging02, Hook_DropDebugging02);
@@ -633,17 +621,19 @@ namespace hooks
 	}
 	void damageOverlayDebug()
 	{
-		jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
+//		jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
 	}
 
 	void __declspec(naked) gameLoop_Wrapper()
 	{
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 		}
 		result = hooks::gameLoop();
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
@@ -659,7 +649,8 @@ namespace hooks
 		static s32 tile_y;
 		static s8 dontIgnoreReacting;
 		static s8 alsoInvisible;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -678,7 +669,8 @@ namespace hooks
 			PUSHAD
 		}
 		result = hooks::isTileBlockedBy(unitArray, builder, tile_x, tile_y, dontIgnoreReacting, alsoInvisible);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -694,7 +686,8 @@ namespace hooks
 		static s32 x;
 		static s32 y;
 		static s32 playerId;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -708,7 +701,8 @@ namespace hooks
 			PUSHAD
 		}
 		hooks::createUnit(unitType, x, y, playerId);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP

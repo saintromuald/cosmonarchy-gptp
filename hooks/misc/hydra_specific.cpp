@@ -168,18 +168,21 @@ void setSpriteMainImageOffset(Sprite* sprite, char x, char y)
 #include <array>
 namespace hooks
 {
-
 	void createDamageOverlay(Sprite* sprite)
 	{
 		if (sprite->mainGraphic == nullptr)
+		{
 			return;
+		}
 		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
 		if (overlay == nullptr)
-			return;//return if there's no overlay defined
+		{
+			return; // return if there's no overlay defined
+		}
 		for (Image* image = sprite->images.head; image; image = image->link.next)
 		{
-			if (image->id >= ImageId::FirstMinorDamageOverlay &&
-				image->id <= ImageId::LastMinorDamageOverlay)
+			if (image->id >= ImageId::FirstMinorDamageOverlay
+				&& image->id <= ImageId::LastMinorDamageOverlay)
 			{
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
 				image->free();
@@ -187,9 +190,11 @@ namespace hooks
 				{
 					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
 						sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
-					return;
+					{
+						return; 
+					}
 				}
-				Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);//not sure about first arg
+				Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation); // not sure about first arg
 				sprite->createTopOverlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
 			}
 		}
@@ -205,7 +210,9 @@ namespace hooks
 		{
 			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, i);
 			if (offset.x == 127 && offset.y == 127)
+			{
 				continue;
+			}
 			u32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
 			bool found = false;
 			for (Image* image = sprite->images.head; image; image = image->link.next)
