@@ -951,6 +951,11 @@ namespace hooks
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranValkyrie &&  // Valkyrie Charon Afterburners passive
+									current_button->iconID == IconId::GraviticBoosters)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranAzazel &&  // Azazel Innervating Matrices passive
 									current_button->iconID == IconId::Restoration_Research)
 								{
