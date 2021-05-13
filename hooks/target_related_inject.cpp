@@ -184,7 +184,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) OrderAttackBehaviour_Wrapper() // 00478540
+	void __declspec(naked) orderAttackBehavior_Wrapper() // 00478540
 	{
 		static bool result;
 		static Unit* unit;
@@ -193,7 +193,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::OrderAttackBehaviour(unit);
+		result = hooks::orderAttackBehavior(unit);
 		__asm
 		{
 			POPAD
@@ -217,11 +217,12 @@ namespace hooks
 //		jmpPatch(unitCanSeeCloakedTarget_Wrapper,		0x00401D60, 4);
 //		jmpPatch(isTargetVisible_Wrapper,				0x004E5E30, 4);
 //		jmpPatch(isUnitVisible_Wrapper,					0x004E5DB0, 1);
-		jmpPatch(checkUnitVisibility_Wrapper, 0x00443390, 3);
+		jmpPatch(checkUnitVisibility_Wrapper,			0x00443390, 3);
 //		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
-		jmpPatch(unitCanAttackTarget_Wrapper, 0x00476730, 5);
-		//jmpPatch(OrderAttackBehaviour_Wrapper, 0x00478540, 0);
+//		jmpPatch(unitCanAttackTarget_Wrapper,			0x00476730, 5);
+//		jmpPatch(orderAttackBehavior_Wrapper,			0x00478540, 0);
 	}
+
 	void injectTargetRelatedHooks()
 	{
 		injectTargetHooks();
