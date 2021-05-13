@@ -1062,6 +1062,7 @@ enum Enum {
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,
 	FirstMajorDamageOverlay				= 472,
+	LastMajorDamageOverlay				= 493,
 
 };
 }
