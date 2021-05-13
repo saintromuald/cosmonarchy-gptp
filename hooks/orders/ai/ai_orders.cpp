@@ -51,7 +51,9 @@ namespace hooks
 				&& result->id == UnitId::TerranCleric)
 			{
 				if (!(AIScriptController[result->playerId].mainMedic))
+				{
 					AIScriptController[result->playerId].mainMedic = result;
+				}
 			}
 			helper::AI_TrainingNormal(result, parent);
 		}
