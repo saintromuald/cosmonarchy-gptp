@@ -679,7 +679,7 @@ LABEL_42:
 		return units_dat::GroundWeapon[unitWithWeapon->id] != -126;
 	}
 
-	s32 OrderAttackBehaviour(Unit* unit) // 00478540
+	s32 orderAttackBehavior(Unit* unit) // 00478540
 	{
 		s32 result;
 		Unit *v1;
