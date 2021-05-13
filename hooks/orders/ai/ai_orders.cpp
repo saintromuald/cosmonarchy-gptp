@@ -99,9 +99,11 @@ namespace hooks
 
 			}
 		}
-	}*/
+	}
+	*/
 
-	/*	void AI_AddMilitary(AiCaptain* region, Unit* unit, s32 alwaysThisRegion) {		// 0043DA20
+	/*
+	void AI_AddMilitary(AiCaptain* region, Unit* unit, s32 alwaysThisRegion) {		// 0043DA20
 		// alwaysThisRegion acts as a bool, not sure why IDA thinks it's s32
 		// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
 		// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
@@ -147,7 +149,8 @@ namespace hooks
 						assignCaptainToSlowestUnit(v3);
 				}
 			}
-		}*/
+		}
+		*/
 
 		// Hooked to rule out AI crashes - Pr0nogo
 	void AI_CreateNuke(Unit* silo, Unit* result)	// 0045B7A0
@@ -215,18 +218,19 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-/*	void AI_TrainingNormal(Unit* a1, Unit* a2) {									// 00435DB0
-		s16 v2; // dx
-		Unit* v3; // esi
-		s16 regionId; // ax
-		UnitAi* v5; // ebx
-		UnitAi* v6; // eax
-		s32 v7; // edi
-		AiTown* v8; // ebx
-		AiCaptain* v9; // eax
-		s16 v10; // dx
-		s16 v11; // cx
-		UnitAi* v12; // [esp+4h] [ebp-4h]
+	/*	
+	void AI_TrainingNormal(Unit* a1, Unit* a2) {									// 00435DB0
+		s16 v2;
+		Unit* v3;
+		s16 regionId;
+		UnitAi* v5;
+		UnitAi* v6;
+		s32 v7;
+		AiTown* v8;
+		AiCaptain* v9;
+		s16 v10;
+		s16 v11;
+		UnitAi* v12;
 
 		v3 = a1;
 		v2 = a1->id;
@@ -294,11 +298,12 @@ namespace hooks
 				}
 			}
 		}
-	}*/
+	}
+	*/
 
 	// Hooked because iquare told me to - Pr0nogo
-	char AI_AddUnitAi(Unit* unit, AiTown* town)
-	{ // 00433DD0
+	char AI_AddUnitAi(Unit* unit, AiTown* town) // 00433DD0
+	{
 		UnitAi* unitAI;
 		WorkerAi* unitAIWorker;
 		BuildingAi* unitAIBuilding;
@@ -370,8 +375,7 @@ namespace hooks
 				if (unit->id == UnitId::ZergHatchery
 					|| unit->id == UnitId::ZergLair
 					|| unit->id == UnitId::ZergHive
-					|| unit->id == UnitId::ZergSire
-					)
+					|| unit->id == UnitId::ZergSire)
 				{
 					if (unit->status & UnitStatus::Completed)
 					{
@@ -457,22 +461,22 @@ namespace hooks
 		return (char)unit->id;
 	}
 
-	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 amount, s32 id, s32 priority, s32 need)
-	{ // 00431F90
-		s32 itr = 0; // eax
-		constexpr s32 BuildCountFlag = 0xF8; //0xf8 are upper flags of 0xff, 0x1/0x2/0x4 are used by other flags
-		TownReq* townUnits; // edx
+	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 amount, s32 id, s32 priority, s32 need) // 00431F90
+	{
+		s32 itr = 0;
+		constexpr s32 BuildCountFlag = 0xF8;
+		TownReq* townUnits;
 		if (playerTable[(u8)town->player].type == PlayerType::Computer)
 		{
 			townUnits = town->town_units;
 			bool setNeed = false;
-			if (town->town_units[0].flags_and_count & BuildCountFlag) //if build
+			if (town->town_units[0].flags_and_count & BuildCountFlag) // if build
 			{
 				for (s32 i = 0; i < 100; i++)
 				{
 					++townUnits;
-					if (!(townUnits->flags_and_count & BuildCountFlag))
-					{ //if not build
+					if (!(townUnits->flags_and_count & BuildCountFlag)) // if not build
+					{
 						setNeed = true;
 						itr = i;
 						break;
@@ -494,41 +498,41 @@ namespace hooks
 	}
 
 	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
-	void AI_UnitWasHit(Unit* self, Unit* attacker, s32 mainTargetReactions, s32 dontCallHelp)
-	{ // 0043F320
-		BuildingAi* selfBuildingAi; // eax
-		s32 quartTotalHP; // edi
-		Unit* target; // eax
-		s32 v11; // eax
-		UnitAi* v12; // esi
-		s32 v13; // eax
-		AiCaptain* v14; // esi
-		s32 v15; // edx
-		s32 v16; // eax
-		AiCaptain* selfRegion; // edi
-		char v18; // al
-		s16 v19; // ax
-		s16 v20; // di
-		s32 v21; // esi
-		s32 v22; // eax
-		s32 v23; // edi
-		s32 v24; // eax
-		s32 v25; // esi
-		s32 v26; // esi
-		Unit* v27; // esi
-		u16 v29; // ax
-		__int64 v33; // rax
-		Unit* v34; // esi
-		s32 v35; // eax
-		Unit* v36; // esi
-		Unit* v37; // eax
-		s32 v38; // eax
-		s32 v39; // [esp+Ch] [ebp-14h]
-		s32 v40; // [esp+Ch] [ebp-14h]
-		s32 v41; // [esp+14h] [ebp-Ch]
-		s32 v42; // [esp+14h] [ebp-Ch]
-		Unit* realTarget; // [esp+1Ch] [ebp-4h]
-		s32 v44; // [esp+2Ch] [ebp+Ch]
+	void AI_UnitWasHit(Unit* self, Unit* attacker, s32 mainTargetReactions, s32 dontCallHelp) // 0043F320
+	{
+		BuildingAi* selfBuildingAi;
+		s32 quartTotalHP;
+		Unit* target;
+		s32 v11;
+		UnitAi* v12;
+		s32 v13;
+		AiCaptain* v14;
+		s32 v15;
+		s32 v16;
+		AiCaptain* selfRegion;
+		char v18;
+		s16 v19;
+		s16 v20;
+		s32 v21;
+		s32 v22;
+		s32 v23;
+		s32 v24;
+		s32 v25;
+		s32 v26;
+		Unit* v27;
+		u16 v29;
+		__int64 v33;
+		Unit* v34;
+		s32 v35;
+		Unit* v36;
+		Unit* v37;
+		s32 v38;
+		s32 v39;
+		s32 v40;
+		s32 v41;
+		s32 v42;
+		Unit* realTarget;
+		s32 v44;
 		MilitaryAi* militaryAi;
 
 		if (playerTable[self->playerId].type != PlayerType::Computer || self->playerId >= 8u)
@@ -542,7 +546,9 @@ namespace hooks
 				AIScriptController[self->playerId].lastIndividualUpdateTime = *elapsedTimeSeconds;
 				selfBuildingAi = (BuildingAi*)self->pAI;
 				if (selfBuildingAi)
+				{
 					selfBuildingAi->town->in_battle = 1;
+				}
 				if (mainTargetReactions)
 				{
 					if (attacker)
@@ -568,7 +574,9 @@ namespace hooks
 		{
 			realTarget = target->connectedUnit;
 			if (!realTarget)
+			{
 				return;
+			}
 		}
 		if (realTarget->status & UnitStatus::CloakingForFree)
 		{
@@ -590,14 +598,18 @@ namespace hooks
 		v39 = 0;
 		v41 = 0;
 		if (!v12)
+		{
 			goto LABEL_37;
+		}
 		if (v12->type == 4)
 		{
 			militaryAi = (MilitaryAi*)v12;
 			if (militaryAi->region->captainType == 1)
 			{
 				if (self->isUnitAINonBuilding())
+				{
 					helper::AI_AssignMilitary(2, militaryAi->region);
+				}
 			}
 			v41 = helper::AI_IsUnderAttack(self, 0);
 		}
@@ -606,13 +618,17 @@ namespace hooks
 		if (helper::isUnitLoaded(self))
 		{
 			if (self->mainOrderId != 111)
+			{
 				helper::orderComputerClear(self, 0x6Fu);
+			}
 			return;
 		}
 		if (helper::AI_TryReturnHome(self, 0) || !helper::AI_TransportAction(self))
 		{
 			if (AIScriptController[(u8)self->playerId].AI_Flags.isUseMapSettings)
+			{
 				v39 = 1;
+			}
 LABEL_37:
 			v14 = &AiRegionCaptains[(u8)self->playerId][helper::SAI_GetRegionIdFromPxEx(
 				self->sprite->position.x,
@@ -620,7 +636,9 @@ LABEL_37:
 			if (!v39)
 			{
 				if (!dontCallHelp)
+				{
 					helper::AI_AskForHelp(self, realTarget, v41);
+				}
 				if (!v41)
 				{
 					if (!self->pAI
@@ -635,7 +653,9 @@ LABEL_37:
 					{
 						v18 = v14->captainType;
 						if (v18 == 5 || v18 == 4)
+						{
 							helper::AI_AssignMilitary(6, v14);
+						}
 						if (v14->captainType)
 						{
 							if (!selfRegion->captainType && *elapsedTimeSeconds > 60)
@@ -648,10 +668,14 @@ LABEL_37:
 						selfRegion->enemyGroundStrength = helper::getEnemyStrengthInRegion(selfRegion->region, (u8)self->playerId, 0);
 						v19 = selfRegion->neededAirStrength;
 						if (v19 > v14->neededAirStrength)
+						{
 							v14->neededAirStrength = v19;
+						}
 						v20 = selfRegion->neededGroundStrength;
 						if (v20 > v14->neededGroundStrength)
+						{
 							v14->neededGroundStrength = v20;
+						}
 					}
 				}
 			}
@@ -673,9 +697,11 @@ LABEL_37:
 								if (v21 != OrderId::RechargeShields1 && v21 != OrderId::Move)
 								{
 									if (!mainTargetReactions)
+									{
 										goto LABEL_126;
+									}
 									if (v23 != UnitId::ProtossSolarion
-										//										|| (u8)(LOBYTE(self->field_C8) + BYTE1(self->carrier.inHangarCount)) > 2u
+//										|| (u8)(LOBYTE(self->field_C8) + BYTE1(self->carrier.inHangarCount)) > 2u
 										|| !helper::AI_TransportAction(self))
 									{
 										if (realTarget && realTarget->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
@@ -709,8 +735,8 @@ LABEL_126:
 												if (self->orderTarget.unit != realTarget)
 												{ // Responding with workers
 													if (!(units_dat::BaseProperty[(u16)self->id] & UnitProperty::Worker)
-														|| (v29 = realTarget->id, units_dat::BaseProperty[v29] & UnitProperty::Worker)
-														|| v29 == UnitId::ZergZergling
+//														|| (v29 = realTarget->id, units_dat::BaseProperty[v29] & UnitProperty::Worker)
+														|| !scbw::unitIsRangedAttacker(realTarget) // previously only checked for Zergling id
 														|| helper::AI_HasNoDefenseBuild((u8)self->id))
 													{
 														if (mainTargetReactions)
@@ -718,7 +744,9 @@ LABEL_126:
 															if (self->pAI)
 															{
 																if (helper::unitCanSeeCloakedTarget(realTarget, self))
+																{
 																	helper::AI_RespondToCloakedThreat(self, realTarget);
+																}
 															}
 														}
 														if (!v44)
@@ -729,13 +757,15 @@ LABEL_126:
 																v37 = self->subunit;
 																self->autoTargetUnit = realTarget;
 																if (v37->isSubunit())
+																{
 																	v36->autoTargetUnit = realTarget;
+																}
 																helper::AI_UpdateAttackTarget(self, 0, 1, 0);
 															}
 															else if (self->pAI)
 															{
 																if (v40 != 159
-																	//																	|| (v33 = AI_PrepareToFlee(realTarget, self), (s32)v33 == *(s32*)&self->sprite->position)
+//																	|| (v33 = AI_PrepareToFlee(realTarget, self), (s32)v33 == *(s32*)&self->sprite->position)
 																	)
 																{
 																	if (mainTargetReactions)
@@ -744,13 +774,15 @@ LABEL_126:
 																		{
 																			v34 = self->orderTarget.unit;
 																			if (!v34 || !helper::unitCanAttackTarget(v34, v34, 1))
+																			{
 																				helper::AI_Flee(self, realTarget);
+																			}
 																		}
 																	}
 																}
 																else
 																{
-																	//																	orderInterrupt(self, 6u, (Point32*)v33, (Unit*)HIDWORD(v33)); // point32 was dwPosition, I think that's the same thing
+//																	orderInterrupt(self, 6u, (Point32*)v33, (Unit*)HIDWORD(v33)); // point32 was dwPosition, I think that's the same thing
 																}
 															}
 														}
@@ -774,19 +806,19 @@ LABEL_126:
 
 	// Hooked to change guard assignments for structures based on AI personality -- Pr0nogo
 	// TODO: Cleanup and make changes
-	void AI_IterateBuildingAI(Unit* result, Unit* parent)
-	{ // 00435770
-		UnitAi* parentAI; // eax
-		AiTown* parentTown; // esi
-		BuildingAi* removeBuilding; // eax
-		AiTown* removeBuildingTown; // edi
-		Unit* workerUnit; // esi
-		Unit* workerTarget; // ecx
-		s32 queueCount; // eax
+	void AI_IterateBuildingAI(Unit* result, Unit* parent) // 00435770
+	{
+		UnitAi* parentAI;
+		AiTown* parentTown;
+		BuildingAi* removeBuilding;
+		AiTown* removeBuildingTown;
+		Unit* workerUnit;
+		Unit* workerTarget;
+		s32 queueCount;
 		s32 queueCount2;
-		BuildingAi* j; // esi
-		Unit* builderUnit; // ecx
-		u32 i; // [esp+8h] [ebp-4h]
+		BuildingAi* j;
+		Unit* builderUnit;
+		u32 i;
 		WorkerAi* worker;
 		BuildingAi* building;
 
@@ -844,7 +876,7 @@ LABEL_126:
 							{
 								queueCount = helper::AI_GetQueuedCount(workerTarget, UnitId::TerranWatchdog);
 							}
-							//workerUnit = *(u32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
+//							workerUnit = *(u32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
 						}
 						for (j = parentTown->buildings; j; i += queueCount2)
 						{
@@ -876,20 +908,20 @@ LABEL_126:
 
 	// hooked for attack extender
 //	0x0043E670 => train_attack_force(@eax *mut AiRegion)->u32;
-	u32 AI_TrainAttackForce(AiCaptain* region)
-	{					// 0043E670
-		u32 result; // eax
-		u32 v2; // edi
-		AiCaptain* v3; // esi
-		u16 v4; // bx
-		u32 v5; // edi
-		u32 v6; // ebx
-		u32 v7; // edi
-		u32 v8; // ebx
-		u32 v9[63]; // [esp+Ch] [ebp-108h]
-		u32 v10; // [esp+108h] [ebp-Ch]
-		u32 v11; // [esp+10Ch] [ebp-8h]
-		u32 v12; // [esp+110h] [ebp-4h]
+	u32 AI_TrainAttackForce(AiCaptain* region) // 0043E670
+	{
+		u32 result;
+		u32 v2;
+		AiCaptain* v3;
+		u16 v4;
+		u32 v5;
+		u32 v6;
+		u32 v7;
+		u32 v8;
+		u32 v9[63];
+		u32 v10;
+		u32 v11;
+		u32 v12;
 
 		v3 = region;
 		v2 = (u8)region->playerId;
@@ -930,20 +962,20 @@ LABEL_126:
 	}
 
 	//	0x0043EEC0 => grouping_for_attack(*mut AiRegion);
-	void AI_GroupingForAttack(AiCaptain* region)
-	{ // 0043EEC0
-		AiCaptain* regionVar; // esi
-		Unit* attackTarget; // eax
-		AiCaptain* targetRegion; // esi
-		u32 missingUnits; // eax
-		u32 attackUnit; // ecx
-		u16 regionId; // ax
-		AiCaptain* targetRegion2; // esi
-		AiCaptain* targetRegion3; // edi
-		u32 attackWave[63]; // [esp+8h] [ebp-108h]
-		s32 a3; // [esp+104h] [ebp-Ch]
-		s32 a4; // [esp+108h] [ebp-8h]
-		s32 a2; // [esp+10Ch] [ebp-4h]
+	void AI_GroupingForAttack(AiCaptain* region) // 0043EEC0
+	{
+		AiCaptain* regionVar;
+		Unit* attackTarget;
+		AiCaptain* targetRegion;
+		u32 missingUnits;
+		u32 attackUnit;
+		u16 regionId;
+		AiCaptain* targetRegion2;
+		AiCaptain* targetRegion3;
+		u32 attackWave[63];
+		s32 a3;
+		s32 a4;
+		s32 a2;
 
 		helper::AI_RecalculateRegionStrength(region);
 		helper::AI_TargetEnemyInRegion(region);
@@ -992,34 +1024,38 @@ LABEL_15:
 		{
 LABEL_14:
 			if (helper::AI_HasForcesMovingToAttack((u8)region->playerId))
+			{
 				return;
+			}
 			goto LABEL_15;
 		}
 		while ((u32)attackWave[attackUnit] >= 0xE4)
 		{
 			if (++attackUnit >= missingUnits)
+			{
 				goto LABEL_14;
+			}
 		}
 	}
 
 	//	0x00438050 => get_missing_attack_force_units_hook(*mut AiRegion,*mut u32,bool)->u32;
-	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign)
-	{ // 00438050
-		s16 v3; // dx
-		u16* v4; // ecx
-		u32 i; // edi
-		u32 v6; // eax
-		Unit* v7; // esi
-		s8 v8; // bl
-		u32 v9; // ecx
-		u32 v10; // edx // was unitIDs, not sure what it should be here
-		s32 v11; // eax
-		u32 v12; // esi
-		s32 v13; // ecx
-		UnitAi* v14; // ecx
-		u32 v15; // esi
-		u32 v16; // ecx
-		Unit* v18; // [esp+8h] [ebp-4h]
+	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign) // 00438050
+	{
+		s16 v3;
+		u16* v4;
+		u32 i;
+		u32 v6;
+		Unit* v7;
+		s8 v8;
+		u32 v9;
+		u32 v10; // was unitIDs, not sure what it should be here
+		s32 v11;
+		u32 v12;
+		s32 v13;
+		UnitAi* v14;
+		u32 v15;
+		u32 v16;
+		Unit* v18;
 		MilitaryAi* military;
 
 		v4 = AIScriptController[(u8)region->playerId].attackers;
@@ -1094,7 +1130,9 @@ LABEL_36:
 								while (v10 != unitIds[v16])
 								{
 									if (++v16 >= i)
+									{
 										goto LABEL_35;
+									}
 								}
 								unitIds[v16] = UnitId::None;
 								if (v16 == v15)
@@ -1116,13 +1154,13 @@ LABEL_35:
 	}
 
 	//	0x00447230 => ai_add_to_attackforce(@edi u32,@eax u32,@ecx u32);
-	void AI_AddToAttack(u32 result, u32 player, u32 unitId)
-	{ // 00447230
-		u32 counter; // esi
-		u32 index; // eax
-		u32 plOffset; // edx
-		u16* atkGroups; // ecx
-		u16* atkFinal; // ecx
+	void AI_AddToAttack(u32 result, u32 player, u32 unitId) // 00447230
+	{
+		u32 counter;
+		u32 index;
+		u32 plOffset;
+		u16* atkGroups;
+		u16* atkFinal;
 
 		counter = result;
 		if (player < 8 && result < 63 && unitId < UnitId::None)
@@ -1137,7 +1175,9 @@ LABEL_35:
 					++atkGroups;
 					++index;
 					if (!*atkGroups)
+					{
 						goto LABEL_8;
+					}
 				}
 			}
 			else
@@ -1150,7 +1190,9 @@ LABEL_8:
 					{
 						--counter;
 						if (index >= 63)
+						{
 							break;
+						}
 						*atkFinal = unitId + 1;
 						++index;
 						++atkFinal;
@@ -1162,12 +1204,12 @@ LABEL_8:
 	}
 
 	//	0x0043ABB0 => ai_attack_to_hook(u32,i32,i32,bool,bool)->u32;
-	bool AI_AttackManager(u32 player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack, u32 allowFallbackAirOnly)
-	{ // 0043ABB0
-		u16 attackWave; // ax
-		u16* attackWave2; // ecx
-		char regionsList[2500]; // [esp+4h] [ebp-9C8h]
-		u32 waveBool; // [esp+9C8h] [ebp-4h]
+	bool AI_AttackManager(u32 player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack, u32 allowFallbackAirOnly) // 0043ABB0
+	{
+		u16 attackWave;
+		u16* attackWave2;
+		char regionsList[2500];
+		u32 waveBool;
 
 		if (AIScriptController[player].supplyCollection)
 		{
@@ -1194,7 +1236,9 @@ LABEL_8:
 				attackWave = attackWave2[1];
 				++attackWave2;
 				if (!attackWave)
+				{
 					goto LABEL_12;
+				}
 			}
 			waveBool = 0;
 		}
@@ -1218,19 +1262,19 @@ LABEL_12:
 	}
 
 	//	0x00437F20 => has_units_for_attack_force_hook(@edx u32)->u32;
-	s32 AI_HasUnitsForAttackForce(u32 player)
-	{ // 00437F20
-		u16* v2; // eax
-		u16 v3; // cx
-		u32 i; // edi
-		Unit* v5; // edx
-		u32 v6; // eax
-		u8 v7; // bl
-		u32 v8; // ecx
-		s32 v9; // esi
-		u32 v10; // ecx
-		u32 v11; // ecx
-		u32 v13[63]; // [esp+4h] [ebp-FCh]
+	s32 AI_HasUnitsForAttackForce(u32 player) // 00437F20
+	{
+		u16* v2;
+		u16 v3;
+		u32 i;
+		Unit* v5;
+		u32 v6;
+		u8 v7;
+		u32 v8;
+		s32 v9;
+		u32 v10;
+		u32 v11;
+		u32 v13[63];
 
 		v2 = AIScriptController[player].attackers;
 		v3 = *v2;
@@ -1256,7 +1300,9 @@ LABEL_12:
 						{
 							v9 = (u16)v5->id;
 							if (v8 == 30)
+							{
 								v9 = 5;
+							}
 							if (!(units_dat::ComputerAIInternal[v9] & 1))
 							{
 								if (v5->status & 1)
@@ -1271,7 +1317,9 @@ LABEL_12:
 												while (v9 != v13[v10])
 												{
 													if (++v10 >= i)
+													{
 														goto LABEL_22;
+													}
 												}
 												v13[v10] = 228;
 												if (v10 == v6)
@@ -1294,11 +1342,15 @@ LABEL_22:
 		}
 		v11 = 0;
 		if (!i)
+		{
 			return 1;
+		}
 		while (v13[v11] == 228)
 		{
 			if (++v11 >= i)
+			{
 				return 1;
+			}
 		}
 		return 0;
 	}
