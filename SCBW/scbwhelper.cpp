@@ -2940,16 +2940,16 @@ namespace helper
 		}
 	}
 
-	void function_0047DE40(Sprite* sprite, u32 unitId, s32 x, s32 y)
+	void updateCreepDisappearance(Sprite* sprite, u32 unitId, s32 x, s32 y)
 	{
-		const u32 Func_Sub47DE40 = 0x0047DE40;
+		const u32 Func_updateCreepDisappearance = 0x0047DE40;
 		__asm {
 			PUSHAD
 			MOV ECX, y
 			MOV EDX, x
 			MOV ESI, sprite
 			PUSH unitId
-			CALL Func_Sub47DE40
+			CALL Func_updateCreepDisappearance
 			POPAD
 		}
 	}

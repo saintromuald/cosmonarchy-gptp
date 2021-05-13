@@ -237,6 +237,7 @@ enum ExtValueId
 	ValueDirgeStacks,
 	ValueSignifyStacks,
 	ValueReviveStarted,
+	ValuePreMorphHP,
 
 	ValueCount,
 };

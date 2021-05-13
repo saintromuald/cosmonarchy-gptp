@@ -281,7 +281,7 @@ namespace helper
 	void updateNewUnitVision(u32 id, s32 x, s32 y);															// 005CE90
 	void zergPlaceBuildingCntd(Unit* unit);																	// 005D410
 	void stopCreepDisappearingAtBuilding(Unit* unit);												        // 007D770
-	void function_0047DE40(Sprite* sprite, u32 unitId, s32 x, s32 y);										// 007DE40
+	void updateCreepDisappearance(Sprite* sprite, u32 unitId, s32 x, s32 y);								// 007DE40
 	void incrementUnitScoresEx(Unit* building, s32 unk1, s32 unk2);											// 0088D50
 	void playBuildingCompleteSound(Unit* building);															// 008F310
 	void refreshSpriteData(Sprite* sprite);																	// 00983A0
@@ -289,27 +289,27 @@ namespace helper
 	void replaceUnitWithType(Unit* unit, u16 newUnitId);													// 009FED0
 
 	//// building_terran
-	bool isDistanceGreaterThanHaltDistance(Unit* unit, s32 x, s32 y, u32 distance);	                    // 00401240
+	bool isDistanceGreaterThanHaltDistance(Unit* unit, s32 x, s32 y, u32 distance);							// 00401240
 	void fixTargetLocation(Point16* coords, u32 unitId);								                    // 00401FA0
-	bool isUnitPositions2Equal(Unit* unit);											                    // 00402160
+	bool isUnitPositions2Equal(Unit* unit);																	// 00402160
 	b32 buildingAddon(Unit* unit, u32 hpGain, b32 canBeAborted);											// 004679A0
 	void prependOrderTargetingNothing(Unit* unit, Order* order, u8 orderId);								// 00474760
 	void addOrderTargetingNothing(Unit* unit, Order* order, u8 orderId);									// 004749A0
 	bool canStillPlaceBuilding();														                    // 0048DDA0
 	void endBuildingPlacement();															                // 0048E310
-	void playBuildingCompleteSound(Unit* building);									                    // 0048F310
+	void playBuildingCompleteSound(Unit* building);															// 0048F310
 	void function_00494BB0(Unit* unit, s32 x, s32 y);									                    // 00494BB0
 	void displayLastNetErrorForPlayer(u32 playerId);									                    // 0049E530
 	u32 RandomizeShort(u32 unknown_index);																	// 004DC4A0
 	u32 RandBetween(u32 min, u32 max, u32 someIndex);														// 004DC550
 	void initBuilding(Unit* unit, b32 flag);																// 004E65E0
 	bool SetMoveTarget_xy(Unit* unit, s32 x, s32 y);									                    // 004EB820
-	bool orderToMoveToTarget(Unit* unit, Unit* target);								                    // 004EB980
+	bool orderToMoveToTarget(Unit* unit, Unit* target);														// 004EB980
 	b32 unk_terrainCollision2(Unit* unit, s32 x, s32 y);													// 004F1870
 
 	// For updatePlacementState_Units
 	bool doesBuildingBlock(Unit* unit, s32 xTile, s32 yTile);												// 00473410
-	s32 isTileBlockedBy(Unit** array, Unit* builder, s32 xTile, s32 yTile,								// 00473300
+	s32 isTileBlockedBy(Unit** array, Unit* builder, s32 xTile, s32 yTile,									// 00473300
 		char bDontIgnoreReacting, char bAlsoInvisible);
 
 	// For updatePlacementStateForPlacementBox
@@ -324,42 +324,42 @@ namespace helper
 	//// liftland
 	void setUnitPathing(Unit* unit, u8 unkPathRelated);																				// 00401360
 	bool isUnitPositions2Equal(Unit* unit);																							// 00402160
-	Unit* connectAddonCheck(Unit* unit);																								// 004404A0
+	Unit* connectAddonCheck(Unit* unit);																							// 004404A0
 	void function_00463470(Unit* unit);																								// 00463470
 	void function_004634E0(Unit* unit);																								// 004634E0
 	void function_00463640(Unit* unit);																								// 00463640
-	void completeAddon(Unit* unit, Unit* addon);																						// 00463D50
+	void completeAddon(Unit* unit, Unit* addon);																					// 00463D50
 	void function_00464300(Unit* unit);																								// 00464300
-	void disconnectFromAddOn(Unit* unit);																								// 00464930
-	void function_00469EC0(Unit* unit, s32 x, s32 y);																					// 00469EC0
-	void function_00469F60(Unit* unit, s32 x, s32 y);																					// 00469F60
+	void disconnectFromAddOn(Unit* unit);																							// 00464930
+	void function_00469EC0(Unit* unit, s32 x, s32 y);																				// 00469EC0
+	void function_00469F60(Unit* unit, s32 x, s32 y);																				// 00469F60
 	void function_0046A560(Unit* unit);																								// 0046A560
 	void function_0046A5A0(Unit* unit);																								// 0046A5A0
 	u32 function_00473FB0(Unit* unit, u8 playerId, s32 x, s32 y, u16 unitId, u8 unk1, u8 unk2, u8 unk3, u8 unk4);	// 00473FB0
-	void actUnitReturnToIdle(Unit* unit);																								// 00475420
+	void actUnitReturnToIdle(Unit* unit);																							// 00475420
 	bool function_0047DF90(Unit* unit);																								// 0047DF90
-	void placebuildingProc();																											// 0048E6E0
+	void placebuildingProc();																										// 0048E6E0
 	void playBuildingLandSound(Unit* unit);																							// 0048F5A0
-	void SetUnitMovementSpeed(Unit* unit, u32 newSpeed);																				// 004951C0
-	void function_00498150(Sprite* sprite, u8 newVerticalOffset);																		// 00498150
+	void SetUnitMovementSpeed(Unit* unit, u32 newSpeed);																			// 004951C0
+	void function_00498150(Sprite* sprite, u8 newVerticalOffset);																	// 00498150
 	void function_004997E0(Sprite* sprite);																							// 004997E0
 	void function_004C3B40(Unit* unit);																								// 004C3B40
 
 	//// create_init_units
-	b32 spreadsCreep(u32 unitId, b32 defaultReturn);																					// 00413870
-	void function_004148F0(s32 x, s32 y, u32 unitId);																					// 004148F0
-	void CreateBuildingLarva(Unit* main_building);																						// 0049D660
-	b32 function_0049EC30(Unit* unit);																									// 0049EC30
-	Unit* FindBestUnit(Box16* coords, u32 searchProc);																					// 004E8830
+	b32 spreadsCreep(u32 unitId, b32 defaultReturn);																				// 00413870
+	void function_004148F0(s32 x, s32 y, u32 unitId);																				// 004148F0
+	void CreateBuildingLarva(Unit* main_building);																					// 0049D660
+	b32 function_0049EC30(Unit* unit);																								// 0049EC30
+	Unit* FindBestUnit(Box16* coords, u32 searchProc);																				// 004E8830
 
 	//// larva_creep_spawn
 	Unit* getUnitPointer();
-	u8 spreadCreep(u32 unitId, s32 x, s32 y);																							// 00414680
+	u8 spreadCreep(u32 unitId, s32 x, s32 y);																						// 00414680
 	void AI_TrainingOverlord(Unit* main_building, Unit* larva);																		// 00435770
-	void updateUnitStrength(Unit* unit);																								// 0049FA40
+	void updateUnitStrength(Unit* unit);																							// 0049FA40
 	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit* unit, Box16* coords);														// 004E8280
 	void function_004E8DA0(Unit* unit);																								// 004E8DA0
-	bool function_004E8E10(Unit* unit, Point32* coords);																				// 004E8E10
+	bool function_004E8E10(Unit* unit, Point32* coords);																			// 004E8E10
 
 	// TODO: move somewhere else?
 	// SC Variables and Buffers used in this file

@@ -117,6 +117,7 @@ namespace hooks
 			building->mainOrderState = 6;
 			helper::playBuildingCompleteSound(building);
 			jump_to_5D56C = true;
+
 			// TODO: Cleanup
 			/*
 			bool sEnd = false;
@@ -256,7 +257,7 @@ namespace hooks
 					helper::zergPlaceBuildingCntd(unit);
 				}
 				else
-				{
+				{ // ALL of this code is no longer run; previously used for protoss building morphs (e.g. gateway -> principality)
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 					resources->minerals[unit->playerId] += (units_dat::MineralCost[builtUnitId] * 3) / 4;
 					resources->gas[unit->playerId] += (units_dat::GasCost[builtUnitId] * 3) / 4;
@@ -276,8 +277,8 @@ namespace hooks
 					}
 					else
 					{
-						unit->sprite->createTopOverlay(970);
-						anchor = unit->getOverlay(970);
+						unit->sprite->createTopOverlay(ImageId::UnusedHeal_Small);
+						anchor = unit->getOverlay(ImageId::UnusedHeal_Small);
 						if (anchor != nullptr)
 						{
 							anchor->playIscriptAnim(IscriptAnimation::Death);
@@ -312,7 +313,6 @@ namespace hooks
 				}
 				else
 				{ // 0045DB1E
-							 // update various stuff (set hp, set shield...) not finished after createUnit
 					helper::updateUnitStatsFinishBuilding(drone);
 					helper::updateUnitStrength(drone);
 					drone->setHp(unit->previousHp * 256);
@@ -322,7 +322,7 @@ namespace hooks
 			}
 
 			if (!bStopThere)
-			{	// 0045DB45
+			{ // 0045DB45
 				Thingy* thingy = helper::createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->getX(), unit->getY(), 0);
 				if (thingy != nullptr)
 				{
@@ -331,9 +331,9 @@ namespace hooks
 				}
 				helper::playSoundFromSource(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
 				helper::replaceUnitWithType(unit, UnitId::ZergDroleth);
-				//probably AI related
+				// probably AI related
 				helper::updateBuildingsAI(unit);
-				//update various stuff (set hp, set shield...) not finished after unit change
+				// update various stuff (set hp, set shield...) not finished after unit change
 				helper::updateUnitStatsFinishBuilding(unit);
 				helper::updateUnitStrength(unit);
 
@@ -346,23 +346,10 @@ namespace hooks
 
 				helper::refreshSpriteData(unit->sprite);
 				unit->orderComputerClear(OrderId::ResetCollision1);
-				unit->order(
-					units_dat::ReturnToIdleOrder[unit->id],
-					0,
-					0,
-					nullptr,
-					UnitId::None,
-					false
-				);
+				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
 				unit->setHp(unit->previousHp * 256);
 
-				// ???
-				helper::function_0047DE40(
-					unit->sprite,
-					unit->id,
-					unit->getX(),
-					unit->getY()
-				);
+				helper::updateCreepDisappearance(unit->sprite, unit->id, unit->getX(), unit->getY());
 			}
 		}
 	}

@@ -14,14 +14,14 @@ namespace hooks
 		if (firstInList != nullptr)
 		{
 			// initial check for energy-based switch abilities
-			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
-				scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
+			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel
+				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
 			{
 				TechCapableUnit = true;
 
 			}
-			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect &&
-				scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionWeb) == 1)
+			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect
+				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionWeb) == 1)
 			{
 				TechCapableUnit = true;
 
@@ -40,12 +40,8 @@ namespace hooks
 			}
 			if (firstInList != nullptr)
 			{
-				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
-					scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
-				{
-					TechCapableUnit = true;
-				}
-				if (firstInList->_padding_0x132 & 0x8)
+				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel
+					&& scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
 				{
 					TechCapableUnit = true;
 				}
