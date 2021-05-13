@@ -30,10 +30,6 @@ u8 getDamageFactorForTooltip(u8 weaponId, Unit* unit)
 	{
 		return 2;
 	}
-	if (weaponId == WeaponId::HaloRockets)
-	{
-		return 1;
-	}
 	return weapons_dat::DamageFactor[weaponId];
 }
 
@@ -69,7 +65,7 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 	// Get game strings
 	const char* entryName = statTxtTblNew->getString(entryStrIndex);
 	const char* damageStr = statTxtTblNew->getString(777);					//"Damage:"
-	const char* perRocketStr = statTxtTblNew->getString(1301);				//"per rocket"
+//	const char* perRocketStr = statTxtTblNew->getString(1301);				//"per rocket"
 	const char* typeName = "";
 
 	u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
@@ -213,10 +209,12 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 		if (bonusDamage > 0) text += "+" + std::to_string(damageFactor * bonusDamage);
 	}
 
+	/*
 	if (!extended && weaponId == WeaponId::HaloRockets)
 	{
 		text += " " + std::string(perRocketStr);
 	}
+	*/
 
 	// Cooldown
 	std::string modifierColor = attackCdModifier > 0 ? "\006" : attackCdModifier < 0 ? "\007" : "\002";

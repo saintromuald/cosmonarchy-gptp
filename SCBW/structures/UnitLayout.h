@@ -203,7 +203,7 @@ enum ExtValueId
 	ValueClarionSFX,
 	ValueWraithLaserPos,
 	ValueHierophantOverlay,
-	ValueExecutingCorsairMoveOrder,
+	ValueExecutingLanifectMoveOrder,
 	ValueEnsnaringBroodAbility,
 	ValueCutaneousBarrier,
 	ValueIonCannonProjectilePos,
@@ -372,7 +372,7 @@ namespace RustId
 		CancelLandGrab,
 		ToggleReverseThrust,
 		ToggleSublimeShepherd,
-		ToggleDisruptionWeb,
+		ToggleDisruptionField,
 		DisruptionWebDamage,
 		ToggleTempoChange,
 		DirgeAttacker,
@@ -383,7 +383,7 @@ const u32 string_toggle_on[] = {1703, 1807, 1265, 1232};
 const u32 string_toggle_off[] = {1113, 1114, 1270, 1233};
 const u32 button_toggle_on[] = {374, 319, 369, 374};
 const u32 button_toggle_off[] = {375, 236, 236, 375};
-const u32 toggle_values[] = {RustId::ToggleReverseThrust, RustId::ToggleSublimeShepherd, RustId::ToggleDisruptionWeb, RustId::ToggleTempoChange};
+const u32 toggle_values[] = {RustId::ToggleReverseThrust, RustId::ToggleSublimeShepherd, RustId::ToggleDisruptionField, RustId::ToggleTempoChange};
 const u32 toggle_abilities[] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange};
 const u32 generictoggles = 4;
 

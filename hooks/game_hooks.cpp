@@ -523,7 +523,7 @@ namespace hooks
 			{
 				// Disruption Field - Lanifect ability
 				Unit* web = unitExt->units[UnitAttachedDisruptionWeb];
-				if (scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionWeb))
+				if (scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField))
 				{
 					if (web == nullptr)
 					{
@@ -531,7 +531,7 @@ namespace hooks
 						if (web == nullptr)
 						{
 							// CCMU case
-							scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionWeb, 0);
+							scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
 						}
 						else
 						{
@@ -541,7 +541,7 @@ namespace hooks
 					else
 						if (unit->isFrozen())
 						{
-							scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionWeb, 0);
+							scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
 							web->remove();
 						}
 						else

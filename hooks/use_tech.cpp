@@ -21,7 +21,7 @@ namespace hooks
 
 			}
 			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect
-				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionWeb) == 1)
+				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1)
 			{
 				TechCapableUnit = true;
 
@@ -282,7 +282,7 @@ namespace hooks
 			case TechId::DisruptionWeb:
 			{
 				s32 action = 1; // on
-				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionWeb) == 1)
+				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1)
 				{
 					action = 0; // off
 				}
@@ -291,7 +291,7 @@ namespace hooks
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::ToggleDisruptionWeb;
+				buf[4] = RustId::ToggleDisruptionField;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::MindControl:
