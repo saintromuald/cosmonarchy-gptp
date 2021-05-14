@@ -249,6 +249,11 @@ SCBW_DATA(u32*, isPlacingAddon, 0x00640884);
 SCBW_DATA(u16*, placeBuildingUnitType, 0x0064088A);
 SCBW_DATA(u32*, placeBuildBaseType, 0x00640888);
 
+SCBW_DATA(u16*, moveToTileX, 0x0057F1D0);
+SCBW_DATA(u16*, moveToTileY, 0x0057F1D2);
+SCBW_DATA(u32*, moveToX, 0x0062848C);
+SCBW_DATA(u32*, moveToY, 0x006284A8);
+
 // For incrementUnitScoresEx
 SCBW_DATA(u32*, factoriesOwned, 0x005820B4); // Array of 12
 SCBW_DATA(u32*, unitsProduced, 0x00581E14); // Array of 12
