@@ -1027,17 +1027,13 @@ namespace hooks
 			unitExt->timers[TimerRevive] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
 
-			if (playerTable[unit->playerId].type == PlayerType::Computer
-				|| playerTable[unit->playerId].type == PlayerType::ComputerSlot)
+			if (unitExt->units[UnitReviveParent])
 			{
-				if (unitExt->units[UnitReviveParent])
-				{
-					helper::AI_TrainingUnit(unit, unitExt->units[UnitReviveParent]);
-				}
-				else
-				{
-					hooks::AI_TrainingBroodling(unit, unit);
-				}
+				helper::AI_TrainingUnit(unit, unitExt->units[UnitReviveParent]);
+			}
+			else
+			{
+				hooks::AI_TrainingBroodling(unit, unit);
 			}
 		}
 
