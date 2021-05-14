@@ -110,22 +110,24 @@ namespace hooks
 
 		switch (techId)
 		{
-			case OrderId::Guard:
-			case OrderId::TurretGuard:
-			case OrderId::AttackMove:
-			case OrderId::InfestMine1:
-			case OrderId::Powerup1:
-			case OrderId::TowerAttack:
-			case OrderId::StayinRange:
-			case OrderId::TurretAttack:
-			case OrderId::DroneStartBuild:
-			case OrderId::BuildProtoss1:
+			// Targeting ground
+			case TechId::EMPShockwave:
+			case TechId::ScannerSweep:
+			case TechId::DarkSwarm:
+			case TechId::Plague:
+			case TechId::Ensnare:
+			case TechId::PsionicStorm:
+			case TechId::Hallucination: // HYDRA
+			case TechId::Recall:
+			case TechId::StasisField:
+			case TechId::DisruptionWeb:
+			case TechId::Maelstrom:
 			{
 				return 1;
 			}
 			default:
 			{
-				if (techId != OrderId::PlayerGuard)
+				if (techId != TechId::SpiderMines)
 				{
 					if (target)
 					{
@@ -168,7 +170,9 @@ namespace hooks
 					if (!v9 || !(~(units_dat::BaseProperty[fowUnitId] >> 29) & 1))
 					{
 						if (error)
+						{
 							*error = 876; // Invalid target.<0>
+						}
 						return 0;
 					}
 					goto LABEL_20;
