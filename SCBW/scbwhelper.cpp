@@ -837,10 +837,10 @@ namespace helper
 		return (bool)result;
 	}
 
-	bool getActiveTileFlag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags)
+	b32 getActiveTileFlag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags)
 	{
 		const u32 Func_getActiveTileFlag = 0x00472F80;
-		static u32 result;
+		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH excludeFlags
@@ -851,7 +851,7 @@ namespace helper
 			MOV result, EAX
 			POPAD
 		}
-		return (bool)result;
+		return result;
 	}
 
 	Unit* getTargetUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3)

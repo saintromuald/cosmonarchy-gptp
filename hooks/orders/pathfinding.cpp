@@ -76,4 +76,11 @@ namespace hooks
         unit->movementFlags |= 0x20u;
         return 1;
     }
+
+    // Hooked because the helper is fucked - Pr0nogo
+    b32 getActiveTileFlag(s16 y, s16 x, s32 includedFlags, s32 excludedFlags) // 00472F80
+    {
+        s32 result = (s32)activeTileArray[x / 32 + mapTileSize->width * (y / 32)];
+        return result & includedFlags && !(result * excludedFlags);
+    }
 }

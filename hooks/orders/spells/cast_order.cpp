@@ -1,6 +1,7 @@
 #include "cast_order.h"
 #include <SCBW/api.h>
 #include "SCBW/stat_txt_spec.h"
+#include "hooks/orders/pathfinding.h"
 
 namespace hooks
 {
@@ -177,7 +178,7 @@ namespace hooks
 					}
 					goto LABEL_20;
 				}
-				if (helper::getActiveTileFlag(y, x, 0x410000, 0))
+				if (hooks::getActiveTileFlag(y, x, 0x410000, 0))
 				{
 					return 1;
 				}
