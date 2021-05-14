@@ -1125,7 +1125,6 @@ namespace helper
 		return result;
 	}
 
-
 	// for AI_TrainUnit
 
 	char AI_TrainingWorker(Unit* result, Unit* parent)
