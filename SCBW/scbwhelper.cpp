@@ -837,21 +837,21 @@ namespace helper
 		return (bool)result;
 	}
 
-	bool getActiveTileFlag(s16 a1, s16 a2, s32 a3, s32 a4)
+	bool getActiveTileFlag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags)
 	{
 		const u32 Func_getActiveTileFlag = 0x00472F80;
-		static s32 result;
+		static bool result;
 		__asm {
 			PUSHAD
-			PUSH a4
-			PUSH a3
-			PUSH a2
-			MOVZX AX, a1
+			PUSH excludeFlags
+			PUSH includeFlags
+			PUSH x
+			MOVZX AX, y
 			CALL Func_getActiveTileFlag
-			MOV result, EAX
+			MOV result, AL
 			POPAD
 		}
-		return (bool)result;
+		return result;
 	}
 
 	Unit* getTargetUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3)

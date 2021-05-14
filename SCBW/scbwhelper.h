@@ -89,7 +89,7 @@ namespace helper
 	// For canCastSpell
 	bool unitIsFrozen(Unit* a1);
 	bool isUnitCasterNotHallucination(Unit* a1);
-	bool getActiveTileFlag(s16 a1, s16 a2, s32 a3, s32 a4);
+	bool getActiveTileFlag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags);
 	Unit* getTargetUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);
 
 	// For modifyUnitShields
