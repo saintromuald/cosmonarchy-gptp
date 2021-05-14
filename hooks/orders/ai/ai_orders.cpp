@@ -318,7 +318,9 @@ namespace hooks
 				auto prevIsNull = unitAI->link.prev == 0;
 				workerAIArray->first_free_worker = (WorkerAi*)unitAI->link.prev;
 				if (!prevIsNull)
+				{
 					previous1->link.next = 0;
+				}
 				if (unitAI != nullptr)
 				{
 					unitAI->link.next = 0;
@@ -345,7 +347,10 @@ namespace hooks
 		else if ((units_dat::BaseProperty[unit->id] & 1 && unit->id != UnitId::ResourceVespeneGeyser)
 			|| unit->id == UnitId::ZergLarva
 			|| unit->id == UnitId::ZergEgg
-			|| unit->id == UnitId::ZergOvileth)
+			|| unit->id == UnitId::ZergOvileth
+			|| unit->id == UnitId::ZergIroleth
+			|| unit->id == UnitId::ZergOthstoleth
+			|| unit->id == UnitId::ZergAlaszileth)
 		{
 			unitAI = helper::AI_CreateBuildingAi(town->free_buildings);
 			if (unitAI)
@@ -380,10 +385,10 @@ namespace hooks
 					|| unit->status & UnitStatus::GroundedBuilding
 					&& unit->id != UnitId::TerranWatchdog
 					&& unit->id != UnitId::TerranBunker
+					&& unit->id != UnitId::TerranIonCannon
 					&& unit->id != UnitId::ZergCreepColony
 					&& unit->id != UnitId::ZergSporeColony
 					&& unit->id != UnitId::ZergSunkenColony
-					&& unit->id != UnitId::ZergLarvalColony
 					&& unit->id != UnitId::ProtossPylon
 					&& unit->id != UnitId::ProtossPhotonCannon)
 				{
