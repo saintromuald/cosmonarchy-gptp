@@ -693,14 +693,14 @@ struct GuardAi
 {
 	Link<GuardAi>	link;				// 0x0, 0x4
 	u8 type;							// 0x8
-	u8 timesDied;					// 0x9
-	u8 unkA[2];						// 0xA
+	u8 timesDied;						// 0x9
+	u8 unkA[2];							// 0xA
 	Unit* parent;						// 0xC
-	u16 id;							// 0x10
+	u16 id;								// 0x10
 	Point16 home;						// 0x12
 	Point16 unkPos;						// 0x16
 	u8 unk1A[2];						// 0x1A
-	u32 previousUpdate;				// 0x1C
+	u32 previousUpdate;					// 0x1C
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
 
@@ -709,10 +709,10 @@ struct WorkerAi
 {
 	Link<WorkerAi>	link;				// 0x0, 0x4
 	u8 type;							// 0x8
-	u8 target_resource;				// 0x9
-	u8 reassign_count;				// 0xA
-	u8 waitTimer;					// 0xB
-	u32 last_update_second;			// 0xC
+	u8 target_resource;					// 0x9
+	u8 reassign_count;					// 0xA
+	u8 waitTimer;						// 0xB
+	u32 last_update_second;				// 0xC
 	Unit* parent;						// 0x10
 	AiTown* town;						// 0x14
 };
@@ -722,8 +722,8 @@ struct BuildingAi
 {
 	Link<BuildingAi>	link;			// 0x0, 0x4
 	u8 type;							// 0x8
-	u8 trainQueueTypes[5];			// 0x9
-	u8 unkE[2];						// 0xE
+	u8 trainQueueTypes[5];				// 0x9
+	u8 unkE[2];							// 0xE
 	Unit* parent;						// 0x10
 	AiTown* town;						// 0x14
 	void* trainQueueValues[5];			// 0x18
@@ -735,7 +735,7 @@ struct MilitaryAi
 	Link<MilitaryAi>	link;			// 0x0, 0x4
 	u8 type;							// 0x8
 	u8 padding1;						// 0x9
-	u16 padding2;					// 0xA
+	u16 padding2;						// 0xA
 	Unit* parent;						// 0xC
 	AiCaptain* region;					// 0x10
 };
@@ -767,19 +767,19 @@ struct AiTown
 	WorkerAi* workers;							//	0xC
 	BuildingAiArray* free_buildings;			//	0x10
 	BuildingAi* buildings;						//	0x14
-	u8 player;								//	0x18
-	u8 inited;								//	0x19
+	u8 player;									//	0x18
+	u8 inited;									//	0x19
 	u8 worker_count;							//	0x1a
 	u8 worker_limit;							//	0x1b
-	u8 resource_area;						//	0x1c
-	u8 resource_area_not_set;				//	0x1d
-	u8 in_battle;							//	0x1e
-	u8 unk1f;								//	0x1f
+	u8 resource_area;							//	0x1c
+	u8 resource_area_not_set;					//	0x1d
+	u8 in_battle;								//	0x1e
+	u8 unk1f;									//	0x1f
 	Point16 position;							//	0x20
 	Unit* main_building;						//	0x24
-	Unit* building_scv;						//	0x28
+	Unit* building_scv;							//	0x28
 	Unit* mineral;								//	0x2c
-	Unit* gas_buildings[3];					//	0x30
+	Unit* gas_buildings[3];						//	0x30
 	TownReq town_units[0x64];					//	0x3c
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);

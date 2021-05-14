@@ -4,8 +4,8 @@
 namespace
 {
 
-	void __declspec(naked) AI_TrainingUnit_Wrapper()
-	{ // 004A2830
+	void __declspec(naked) AI_TrainingUnit_Wrapper() // 004A2830
+	{
 		static Unit* result;
 		static Unit* parent;
 		__asm {
@@ -20,8 +20,28 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_CreateNuke_Wrapper()
-	{ // 0045B7A0
+	void __declspec(naked) AI_TrainingWorker_Wrapper() // 00435700
+	{
+		static char result;
+		static Unit* child;
+		static Unit* parent;
+		__asm
+		{
+			MOV child, EAX
+			MOV parent, ECX
+			PUSHAD
+		}
+		result = hooks::AI_TrainingWorker(child, parent);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) AI_CreateNuke_Wrapper() // 0045B7A0
+	{
 		static Unit* silo;
 		static Unit* result;
 		__asm {
@@ -36,8 +56,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_TrainingBroodling_Wrapper()
-	{ // 0043E280
+	void __declspec(naked) AI_TrainingBroodling_Wrapper() // 0043E280
+	{
 		static Unit* parent;
 		static Unit* result;
 		__asm {
@@ -61,8 +81,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_AddUnitAi_Wrapper()
-	{ // 00433DD0
+	void __declspec(naked) AI_AddUnitAi_Wrapper() // 00433DD0
+	{
 		static u8 result;
 		static Unit* unit;
 		static AiTown* town;
@@ -107,8 +127,8 @@ namespace
 
 	}
 
-	void __declspec(naked) AI_BuildTechUpgrade_Wrapper()
-	{ // 00431F90
+	void __declspec(naked) AI_BuildTechUpgrade_Wrapper() // 00431F90
+	{
 		static AiTown* town;
 		static s32 method;
 		static s32 amount;
@@ -142,8 +162,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_UnitWasHit_Wrapper()
-	{ // 0043F320
+	void __declspec(naked) AI_UnitWasHit_Wrapper() // 0043F320
+	{
 		static Unit* self;
 		static Unit* attacker;
 		static s32 mainTargetReactions;
@@ -170,8 +190,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_IterateBuildingAI_Wrapper()
-	{ // 00435770
+	void __declspec(naked) AI_IterateBuildingAI_Wrapper() // 00435770
+	{
 		static Unit* result;
 		static Unit* parent;
 		__asm {
@@ -342,14 +362,16 @@ namespace hooks
 {
 	void injectAIOrdersHooks()
 	{
-		jmpPatch(AI_TrainingUnit_Wrapper, 0x004A2830, 2);
+		jmpPatch(AI_TrainingUnit_Wrapper,					0x004A2830, 2);
+//		jmpPatch(AI_TrainingWorker_Wrapper,					0x00435700, 0);
 //		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
-		jmpPatch(AI_TrainingBroodling_Wrapper, 0x0043E280, 1);
+		jmpPatch(AI_TrainingBroodling_Wrapper,				0x0043E280, 1);
 //		jmpPatch(AI_AddUnitAi_Wrapper,						0x00433DD0, 2);
-		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper, 0x00433DE7, 1);
+		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
 //		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
 //		jmpPatch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);
 //		jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
+
 		/*
 		jmpPatch(AI_TrainAttackForce_Wrapper,				0x0043E670, 4);
 		jmpPatch(AI_GroupingForAttack_Wrapper,				0x0043EEC0, 4);
@@ -358,6 +380,7 @@ namespace hooks
 		jmpPatch(AI_AttackManager_Wrapper,					0x0043ABB0, 4);
 		jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);
 		*/
+
 		jmpPatch(AI_orderUnitCloaking_Wrapper, 0x0043B970, 1);
 	}
 }

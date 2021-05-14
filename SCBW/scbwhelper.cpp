@@ -8445,4 +8445,21 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For AI_TrainingWorker
+	char AI_AcceptNewUnit(Unit* worker, AiTown* town)
+	{
+		const u32 Func_AI_AcceptNewUnit = 0x00433DD0;
+		static char result;
+		__asm
+		{
+			PUSHAD
+			MOV EDI, town
+			MOV EBX, worker
+			CALL Func_AI_AcceptNewUnit
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

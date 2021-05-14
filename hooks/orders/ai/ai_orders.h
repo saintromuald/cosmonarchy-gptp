@@ -11,6 +11,7 @@ namespace hooks
 	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 amount, s32 id, s32 priority, s32 need);	            // 00431F90
 	void AI_UnitWasHit(Unit* self, Unit* attacker, s32 mainTargetReactions, s32 dontCallHelp);					// 0043F320
 	void AI_IterateBuildingAI(Unit* result, Unit* parent);														// 00435770
+	char AI_TrainingWorker(Unit* child, Unit* parent);															// 00435700
 
 	// Attack extender
 	u32 AI_TrainAttackForce(AiCaptain* region);																    // 0043E670
