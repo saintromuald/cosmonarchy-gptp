@@ -461,15 +461,14 @@ void Globals::frameHook()
 			{
 				UnitExt* revivedExt = globals.GetUnitExt(revived);
 				u32 heal = ApostleLazarusAgentHeal * agent.stacks;
-				revived->setHp(1);
+				revived->setHp(0);
 				revived->heal(heal);
 				revived->shields = std::max(heal - revived->hitPoints, 0u);
 				revived->energy = agent.energy;
-				revived->status |= UnitStatus::Invincible;
+				revived->status |= UnitStatus::Invincible | UnitStatus::CanNotReceiveOrders;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				revivedExt->values[ValueReviveStarted] = 1;
 				revivedExt->values[TimerRevive] = 3;
-				revivedExt->units[UnitReviveParent] = agent.creator;
 			}
 			apostleAgents.erase(apostleAgents.begin() + i);
 			i--;

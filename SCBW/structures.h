@@ -788,6 +788,13 @@ struct AiTown
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
 
+struct AiExpandList
+{
+	AiTown* first;
+	AiTown* last;
+};
+C_ASSERT(sizeof(AiExpandList) == 0x8);
+
 struct AiSpendingRequest
 {
 	u8 priority;

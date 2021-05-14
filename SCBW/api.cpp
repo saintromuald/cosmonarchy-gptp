@@ -1738,4 +1738,29 @@ namespace scbw
 		});
 		unitExt->values[ValueDirgeStacks] = 0;
 	}
+
+	void initUnitAI(Unit* unit)
+	{
+		if (!unit || playerTable[unit->playerId].type != PlayerType::Computer)
+		{
+			return;
+		}
+
+		if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
+		{
+			AiTown* town = AiDataList[unit->playerId].first;
+			if (town)
+			{
+				helper::AI_AcceptNewUnit(unit, town);
+			}
+		}
+		else
+		{
+			AiCaptain* captain = &AiRegionCaptains[unit->playerId][scbw::getTileIdAt(unit->getX(), unit->getY())];
+			if (captain)
+			{
+				helper::AI_AddMilitary(captain, unit, 1);
+			}
+		}
+	}
 }

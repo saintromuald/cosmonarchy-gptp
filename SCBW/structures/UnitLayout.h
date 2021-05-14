@@ -316,7 +316,6 @@ enum ExtUnitId
 	UnitMindController,
 	UnitWyvernTargetLock,
 	UnitDirgeSource,
-	UnitReviveParent,
 	UnitBunkerLockOn,
 
 	UnitCount,

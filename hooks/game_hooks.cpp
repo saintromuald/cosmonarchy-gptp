@@ -1023,18 +1023,10 @@ namespace hooks
 			&& unitExt->values[ValueReviveStarted]
 			&& !(unit->status & UnitStatus::NoBrkCodeStart))
 		{
-			unit->status &= ~(UnitStatus::Invincible);
+			unit->status &= ~(UnitStatus::Invincible | UnitStatus::CanNotReceiveOrders);
 			unitExt->timers[TimerRevive] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
-
-			if (unitExt->units[UnitReviveParent])
-			{
-				helper::AI_TrainingUnit(unit, unitExt->units[UnitReviveParent]);
-			}
-			else
-			{
-				helper::AI_TrainingUnit(unit, unit);
-			}
+			scbw::initUnitAI(unit);
 		}
 
 		// Savant - Entropy Gauntlets: remove overlay at end of effect
