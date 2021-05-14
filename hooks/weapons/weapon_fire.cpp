@@ -1130,6 +1130,111 @@ namespace hooks
 		return bullet;
 	}
 
+	// Hooked to stop Valkyries from being cucked by lardcode - Pr0nogo
+	Bullet* createBullet(s32 weaponId, Unit* parent, s32 x, s16 y, char playerId, s32 angle) // 0048C260
+	{
+		Bullet* pBullet;
+		s32 parentStatus;
+		Bullet* result;
+		Bullet* pNextBullet;
+		Bullet* firstBulletVar;
+		Bullet* nextBulletVar;
+
+		pBullet = *firstFreeBullet;
+		if (!firstFreeBullet)
+		{
+			return 0;
+		}
+		parentStatus = parent->status;
+		if ((parentStatus & 0x8000) != 0)
+		{
+			switch (weaponId)
+			{
+				case WeaponId::SpiderMines:
+				case WeaponId::Lockdown:
+				case WeaponId::EMP_Shockwave:
+				case WeaponId::Irradiate:
+				case WeaponId::Venom_Unused_Defiler:
+				case WeaponId::Venom_Unused_Defiler_Hero:
+				case WeaponId::Suicide_InfestedTerran:
+				case WeaponId::Parasite:
+				case WeaponId::SpawnBroodlings:
+				case WeaponId::Ensnare:
+				case WeaponId::DarkSwarm:
+				case WeaponId::Plague:
+				case WeaponId::Consume:
+				case WeaponId::PsiAssault_Normal_Unused:
+				case WeaponId::PsiAssault_Tassadar_Aldaris:
+				case WeaponId::Scarab:
+				case WeaponId::StasisField:
+				case WeaponId::PsiStorm:
+				case WeaponId::Restoration:
+				case WeaponId::MindControl:
+				case WeaponId::Feedback:
+				case WeaponId::OpticalFlare:
+				case WeaponId::Maelstrom:
+				{
+					goto LABEL_7;
+				}
+				default:
+				{
+					return 0;
+				}
+			}
+			return 0;
+		}
+LABEL_7:
+		if (!helper::initializeBullet(playerId, parent, y, *firstFreeBullet, weaponId, x, angle))
+		{
+			return 0;
+		}
+		if (*firstFreeBullet == pBullet)
+		{
+			*firstFreeBullet = pBullet->next;
+		}
+		if (*lastFreeBullet == pBullet)
+		{
+			*lastFreeBullet = pBullet->previous;
+		}
+		if (pBullet->previous)
+		{
+			pBullet->previous->next = pBullet->next;
+		}
+		pNextBullet = pBullet->next;
+		if (pNextBullet)
+		{
+			pNextBullet->previous = pBullet->previous;
+		}
+		pBullet->previous = 0;
+		pBullet->next = 0;
+		firstBulletVar = *firstBullet;
+		if (*firstBullet)
+		{
+			if (lastBullet == firstBullet)
+			{
+				*lastBullet = pBullet;
+			}
+			pBullet->previous = *firstBullet;
+			pBullet->next = firstBulletVar->next;
+			nextBulletVar = firstBulletVar->next;
+			if (nextBulletVar)
+			{
+				nextBulletVar->previous = pBullet;
+			}
+			firstBulletVar->next = pBullet;
+			++*bulletCount;
+			result = pBullet;
+		}
+		else
+		{
+			++*bulletCount;
+			*lastBullet = pBullet;
+			*firstBullet = pBullet;
+			result = pBullet;
+		}
+		return result;
+	}
+
 	/*
 	s32 writeBullets(FILE* hFile) {
 		s32 v1; // edi

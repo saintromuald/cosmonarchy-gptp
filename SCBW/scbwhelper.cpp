@@ -8462,4 +8462,26 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For createBullet
+	s32 initializeBullet(char playerId, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle)
+	{
+		const u32 Func_initializeBullet = 0x0048BEC0;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH angle
+			PUSH x
+			PUSH weaponId
+			PUSH bulletResult
+			MOVZX DX, y
+			MOV EAX, parent
+			MOVZX CL, playerId
+			CALL Func_initializeBullet
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

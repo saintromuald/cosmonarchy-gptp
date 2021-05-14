@@ -684,7 +684,10 @@ namespace helper
 	s32 canBeInfested(Unit* a1, Unit* a2);																							// 00402210
 
 	// For findNextBounceTarget
-	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);										// 004E8280
+	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);								// 004E8280
+
+	// For createBullet
+	s32 initializeBullet(char playerId, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle);					// 0048BEC0
 
 	// For writeBullets
 	/*
