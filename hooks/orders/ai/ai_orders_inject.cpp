@@ -66,7 +66,7 @@ namespace
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV parent, EAX
-			MOV EAX, [EBP + 0xC]
+			MOV EAX, [EBP + 0x0C]
 			MOV result, EAX
 			POP EAX
 			PUSHAD
@@ -141,7 +141,7 @@ namespace
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV method, EAX
-			MOV EAX, [EBP + 0xC]
+			MOV EAX, [EBP + 0x0C]
 			MOV amount, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV id, EAX
@@ -174,7 +174,7 @@ namespace
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV dontCallHelp, EAX
-			MOV EAX, [EBP + 0xC]
+			MOV EAX, [EBP + 0x0C]
 			MOV mainTargetReactions, EAX
 			POP EAX
 			MOV attacker, EDX
@@ -257,7 +257,7 @@ namespace
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV region, EAX
-			MOV EAX, [EBP + 0xC]
+			MOV EAX, [EBP + 0x0C]
 			MOV unitIds, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV isCampaign, EAX
@@ -306,7 +306,7 @@ namespace
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV player, EAX
-			MOV EAX, [EBP + 0xC]
+			MOV EAX, [EBP + 0x0C]
 			MOV x, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV y, EAX
