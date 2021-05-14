@@ -1033,7 +1033,7 @@ namespace hooks
 			}
 			else
 			{
-				hooks::AI_TrainingBroodling(unit, unit);
+				helper::AI_TrainingUnit(unit, unit);
 			}
 		}
 
