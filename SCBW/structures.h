@@ -428,7 +428,8 @@ C_ASSERT(sizeof(ColorShiftData) == 20);
 union ActiveTile
 {
 	u32 value;
-	struct {
+	struct
+	{
 	/*00*/  u8 visibilityFlags;				// 0xff
 	/*01*/  u8 exploredFlags;				// 0xff00
 	/*02*/  u8 isWalkable : 1;				// Set on tiles that can be walked on
