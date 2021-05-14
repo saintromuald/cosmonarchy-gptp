@@ -1184,6 +1184,10 @@ namespace hooks
 			return 0;
 		}
 LABEL_7:
+		if (!firstFreeBullet)
+		{
+			return 0;
+		}
 		if (!helper::initializeBullet(playerId, parent, y, *firstFreeBullet, weaponId, x, angle))
 		{
 			return 0;
