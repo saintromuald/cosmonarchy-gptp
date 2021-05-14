@@ -1756,7 +1756,7 @@ namespace scbw
 		}
 		else
 		{
-			AiCaptain* captain = &AiRegionCaptains[unit->playerId][scbw::getTileIdAt(unit->getX(), unit->getY())];
+			AiCaptain* captain = &AiRegionCaptains[unit->playerId][helper::SAI_GetRegionIdFromPxEx(unit->getX(), unit->getY())];
 			if (captain)
 			{
 				helper::AI_AddMilitary(captain, unit, 1);
