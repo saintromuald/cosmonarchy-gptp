@@ -66,7 +66,7 @@ namespace hooks
 
 		if (unit->mainOrderState == 2)
 		{
-			if (!(unit->orderSignal & 4))
+			if (unit->orderSignal & 4)
 			{
 				if (!(unit->status & UnitStatus::IsHallucination))
 				{
