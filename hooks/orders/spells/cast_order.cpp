@@ -128,14 +128,14 @@ namespace hooks
 			}
 			default:
 			{
-				if (techId != TechId::SpiderMines)
+				if (techId != TechId::SpiderMines
+					&& techId != TechId::LobotomyMine)
 				{
 					if (target)
 					{
 						if (!(target->status & UnitStatus::Invincible))
 						{
 						LABEL_20:
-
 							if (fowUnitId == UnitId::None)
 							{
 								v10 = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->playerId, techId);

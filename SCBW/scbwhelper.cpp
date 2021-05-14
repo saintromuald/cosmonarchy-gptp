@@ -2688,13 +2688,13 @@ namespace helper
 		}
 	}
 
-	void function_004E9A30(Unit* unit)
+	void burrowGeneric(Unit* unit)
 	{
-		const u32 Func_Sub4E9A30 = 0x004E9A30;
+		const u32 Func_burrowGeneric = 0x004E9A30;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub4E9A30
+			CALL Func_burrowGeneric
 			POPAD
 		}
 	}

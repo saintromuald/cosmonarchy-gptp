@@ -70,7 +70,7 @@ namespace hooks
 			{
 				if (!(unit->status & UnitStatus::IsHallucination))
 				{
-					helper::function_004E9A30(unit); // related to movement
+					helper::burrowGeneric(unit); // related to movement
 					helper::instantCloak(unit); // related to cloaking/stealth
 				}
 				unit->mainOrderState = 3;
@@ -100,8 +100,7 @@ namespace hooks
 				unit->status &= ~UnitStatus::NoCollide;
 				if (unit->orderTarget.unit != nullptr)
 				{
-					//probably trigger movement/acceleration of unit
-					//toward the target
+					// probably trigger movement/acceleration of unit toward the target
 					helper::moveToCollide(unit, unit->orderTarget.unit);
 
 					unit->mainOrderState = 5;
@@ -113,56 +112,55 @@ namespace hooks
 			}
 		}
 
-		else // unlike the previous states, going directly from state 4 to 5 in the same frame is impossible
-			if (unit->mainOrderState == 5)
+		// unlike the previous states, going directly from state 4 to 5 in the same frame is impossible
+		else if (unit->mainOrderState == 5)
+		{
+			bool bIsCompletelyInRange = false;
+			bool bEndThere = false;
+			helper::unburrowGeneric(unit); // related to movement, similar to function_004E9A30
+			if (unit->orderTarget.unit != nullptr)
 			{
-				bool bIsCompletelyInRange = false;
-				bool bEndThere = false;
-				helper::unburrowGeneric(unit); // related to movement, similar to function_004E9A30
-				if (unit->orderTarget.unit != nullptr)
+				if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineSeekRange))
 				{
-					if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineSeekRange))
+					// probably trigger movement/acceleration of unit
+					// toward the target
+					helper::moveToCollide(unit, unit->orderTarget.unit);
+					if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineDetonateRange))
 					{
-						// probably trigger movement/acceleration of unit
-						// toward the target
-						helper::moveToCollide(unit, unit->orderTarget.unit);
-						if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineDetonateRange))
-						{
-							bIsCompletelyInRange = true; // jump to 00463F22
-						}
-						else
-							if (unit->getMovableState() != 2) // unit not unmovable
-							{
-								bEndThere = true;
-							}
+						bIsCompletelyInRange = true; // jump to 00463F22
 					}
-				}
-				if (!bEndThere && !bIsCompletelyInRange) // 00463F14
-				{
-					helper::setNextWaypoint(unit);
-					unit->mainOrderState = 1;
-				}
-
-				if (bIsCompletelyInRange) // 00463F22
-				{
-					Image* current_image;
-					unit->orderTarget.unit = nullptr;
-					unit->orderTarget.pt.x = unit->sprite->position.x;
-					unit->orderTarget.pt.y = unit->sprite->position.y;
-					current_image = unit->sprite->images.head;
-					IscriptAnimation::Enum anim = IscriptAnimation::SpecialState1;
-					if (unit->id == UnitId::TerranLobotomyMine)
+					else if (unit->getMovableState() != 2) // unit not unmovable
 					{
-						anim = IscriptAnimation::Unused1;
+						bEndThere = true;
 					}
-					while (current_image != nullptr)
-					{
-						current_image->playIscriptAnim(anim);
-						current_image = current_image->link.next;
-					}
-					unit->mainOrderState = 6;
 				}
 			}
+			if (!bEndThere && !bIsCompletelyInRange) // 00463F14
+			{
+				helper::setNextWaypoint(unit);
+				unit->mainOrderState = 1;
+			}
+
+			if (bIsCompletelyInRange) // 00463F22
+			{
+				Image* current_image;
+				unit->orderTarget.unit = nullptr;
+				unit->orderTarget.pt.x = unit->sprite->position.x;
+				unit->orderTarget.pt.y = unit->sprite->position.y;
+				current_image = unit->sprite->images.head;
+				IscriptAnimation::Enum anim = IscriptAnimation::SpecialState1;
+				if (unit->id == UnitId::TerranLobotomyMine)
+				{
+					anim = IscriptAnimation::Unused1;
+				}
+				while (current_image != nullptr)
+				{
+					current_image->playIscriptAnim(anim);
+					current_image = current_image->link.next;
+				}
+				unit->mainOrderState = 6;
+			}
+		}
 
 		// unlike state 5 with state 4, state 6 can be chained from
 		// state 5, so no else here

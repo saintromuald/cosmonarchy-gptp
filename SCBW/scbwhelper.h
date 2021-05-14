@@ -261,7 +261,7 @@ namespace helper
 	Unit* SpiderMine_AcquireTarget(Unit* spiderMine);									                    // 00441270
 	void instantCloak(Unit* unit);												                            // 0049B1E0
 	void unburrowGeneric(Unit* unit);												                        // 004E99D0
-	void function_004E9A30(Unit* unit);																		// 004E9A30
+	void burrowGeneric(Unit* unit);																			// 004E9A30
 
 	// For orders_PlaceMine
 	s32 techUseAllowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
