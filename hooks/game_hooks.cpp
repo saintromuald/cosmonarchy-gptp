@@ -1023,7 +1023,7 @@ namespace hooks
 			&& unitExt->values[ValueReviveStarted]
 			&& !(unit->status & UnitStatus::NoBrkCodeStart))
 		{
-			unit->status &= ~(UnitStatus::Invincible | UnitStatus::CanNotReceiveOrders | UnitStatus::Unmovable);
+			unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 			unitExt->timers[TimerRevive] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
 			scbw::initUnitAI(unit);
