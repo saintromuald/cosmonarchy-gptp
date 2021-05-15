@@ -1180,7 +1180,7 @@ namespace helper
 		}
 	}
 
-	void AI_AssignCaptainToSlowestUnit(AiCaptain* region)
+	void AI_AssignCaptainToSlowestUnit(AiRegion* region)
 	{
 		const u32 Func_AI_AssignCaptainToSlowestUnit = 0x00436F70;
 		__asm {
@@ -1248,7 +1248,7 @@ namespace helper
 
 	// for AI_TrainingBroodling
 
-	void AI_AssignMilitary(s32 regionType, AiCaptain* region)
+	void AI_AssignMilitary(s32 regionType, AiRegion* region)
 	{
 		const u32 Func_AI_AssignMilitary = 0x004390A0;
 		__asm {
@@ -1260,7 +1260,7 @@ namespace helper
 		}
 	}
 
-	void AI_AddMilitary(AiCaptain* region, Unit* unit, s32 always_this_region)
+	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 always_this_region)
 	{
 		const u32 Func_AI_AddMilitary = 0x0043DA20;
 		__asm {
@@ -1756,7 +1756,7 @@ namespace helper
 
 	// for AI_TrainAttackForce
 
-	s32 AI_AddRegionToMilitary(AiCaptain* region, s32 unitId, s32 priority)
+	s32 AI_AddRegionToMilitary(AiRegion* region, s32 unitId, s32 priority)
 	{
 		const u32 Func_AI_AddRegionToMilitary = 0x0043E2E0;
 		static s32 result;
@@ -1808,7 +1808,7 @@ namespace helper
 		return result;
 	}
 
-	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiCaptain* region, char priority)
+	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiRegion* region, char priority)
 	{
 		const u32 Func_AI_AddBaseUnitSpendingRequest = 0x004484A0;
 		static u32 result;
@@ -1827,7 +1827,7 @@ namespace helper
 
 	// for AIRegion_GroupForAttack
 
-	u32 AI_RecalculateRegionStrength(AiCaptain* region)
+	u32 AI_RecalculateRegionStrength(AiRegion* region)
 	{
 		const u32 Func_AI_RecalculateRegionStrength = 0x0043A390;
 		static u32 result;
@@ -1841,7 +1841,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* AI_TargetEnemyInRegion(AiCaptain* region)
+	Unit* AI_TargetEnemyInRegion(AiRegion* region)
 	{
 		const u32 Func_AI_TargetEnemyInRegion = 0x0043CC40;
 		static Unit* result;
@@ -1855,7 +1855,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_MoveMilitaryToDefend(AiCaptain* region)
+	s32 AI_MoveMilitaryToDefend(AiRegion* region)
 	{
 		const u32 Func_AI_MoveMilitaryToDefend = 0x0043DE40;
 		static s32 result;
@@ -1869,7 +1869,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,
+	void AI_GetRegionMilitaryTypes(AiRegion* region, s32* hasGroundMilitary,
 		s32* cantAttackGround, s32* cantAttackAir)
 	{
 		const u32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
@@ -1884,7 +1884,7 @@ namespace helper
 		}
 	}
 
-	s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2)
+	s32 AI_CanTravelToRegion(AiRegion* region1, AiRegion* region2)
 	{
 		const u32 Func_AI_CanTravelToRegion = 0x0043A790;
 		static s32 result;
@@ -1899,7 +1899,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* AI_PickAttackTarget_NoBuildings(AiCaptain* region)
+	Unit* AI_PickAttackTarget_NoBuildings(AiRegion* region)
 	{
 		const u32 Func_AI_PickAttackTarget_NoBuildings = 0x0043A510;
 		static Unit* result;
@@ -1913,7 +1913,7 @@ namespace helper
 		return result;
 	}
 
-	u32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, u32 pullUnitsNearRegion,
+	u32 AI_MoveMilitaryToOtherRegion(AiRegion* target, AiRegion* source, u32 pullUnitsNearRegion,
 		u32 sendPureSpellcasters, u32 dontSendFromBunkers)
 	{
 		const u32 Func_AI_MoveMilitaryToOtherRegion = 0x0043E580;
@@ -1932,7 +1932,7 @@ namespace helper
 		return result;
 	}
 
-	AiTown* AI_IterateTownSomething(AiCaptain* region)
+	AiTown* AI_IterateTownSomething(AiRegion* region)
 	{
 		const u32 Func_AI_IterateTownSomething = 0x0043DD20;
 		static AiTown* result;

@@ -210,7 +210,7 @@ namespace
 
 	void __declspec(naked) AI_TrainAttackForce_Wrapper()
 	{ // 0043E670
-		static AiCaptain* region;
+		static AiRegion* region;
 		static u32 result;
 		__asm {
 			MOV region, EAX
@@ -226,7 +226,7 @@ namespace
 
 	void __declspec(naked) AI_GroupingForAttack_Wrapper()
 	{ // 0043EEC0
-		static AiCaptain* region;
+		static AiRegion* region;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -248,7 +248,7 @@ namespace
 	void __declspec(naked) AI_GetMissingAttackForceUnits_Wrapper()
 	{ // 00438050
 		static u32 result;
-		static AiCaptain* region;
+		static AiRegion* region;
 		static u32* unitIds;
 		static u32 isCampaign;
 		__asm {
