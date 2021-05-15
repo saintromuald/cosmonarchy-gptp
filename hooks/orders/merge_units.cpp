@@ -106,7 +106,7 @@ namespace hooks
 				//pathing related
 				helper::function_0046A820(unit);
 
-				helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+				helper::changeUnitButtonSet(unit, unit->id);
 
 				*bCanUpdateCurrentButtonSet = 1;
 				*bCanUpdateSelectedUnitPortrait = 1;
@@ -306,7 +306,7 @@ namespace hooks
 				}
 
 				//947E0:
-				helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+				helper::changeUnitButtonSet(unit, UnitId::None);
 				scbw::refreshConsole();
 
 				unit->killCount += targetUnit->killCount;
@@ -503,7 +503,7 @@ namespace hooks
 				}
 
 				//949F0:
-				helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+				helper::changeUnitButtonSet(unit, UnitId::None);
 				scbw::refreshConsole();
 
 				unit->killCount += targetUnit->killCount;

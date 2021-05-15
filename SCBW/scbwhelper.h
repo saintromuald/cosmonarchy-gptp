@@ -448,7 +448,7 @@ namespace helper
 	void incrementUnitDeathScores(Unit* unit, u8 player);																				// 00488AF0
 	void initializeEmptyUnitsLinkedListRef(Unit* unit, u8 playerId);																	// 0049E4E0
 	void GiveUnitHelper(Unit* unit, u32 playerId, s32 unkScore);																		// 0049EFA0
-	void changeUnitButtonSet_Sub_4E5D60(Unit* unit, u16 unitId);																		// 004E5D60
+	void changeUnitButtonSet(Unit* unit, u16 unitId);																					// 004E5D60
 	void showAndEnableUnit(Unit* unit);																									// 004E6490
 
 	//// tech_target_check
@@ -481,7 +481,6 @@ namespace helper
 	void playMorphingCompleteSound(Unit* unit);																							// 0048F440
 	void mergeStatusIntoUnit_Sub493180(Unit* unit_dst, Unit* unit_src);																	// 00493180
 	void animDecloak(Unit* unit, u32 soundId);			 																				// 0049B440
-	void changeUnitButtonSet_Sub4E5D60(Unit* unit, u16 unitId);																			// 004E5D60
 	bool delayedSetMoveTarget_xy_Sub4EB960(Unit* unit, u16 x, u16 y);																	// 004EB960
 
 	//// nuke_orders

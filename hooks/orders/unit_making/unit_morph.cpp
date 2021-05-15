@@ -177,7 +177,7 @@ namespace hooks
 							}
 							while (current_image != nullptr);
 						}
-						helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+						helper::changeUnitButtonSet(unit, UnitId::None);
 						scbw::refreshConsole();
 						unit->status &= ~UnitStatus::IsBuilding; // disable the flag if set
 						helper::setArchonPathing(unit);
@@ -190,7 +190,7 @@ namespace hooks
 						// morph into egg from source unit
 						helper::replaceUnitWithType(unit, eggId);
 					}
-					helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+					helper::changeUnitButtonSet(unit, unit->id);
 					unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 					unit->mainOrderState = 1;
 					auto origin = unit->eggOrigin;
