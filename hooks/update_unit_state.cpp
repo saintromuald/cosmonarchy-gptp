@@ -947,7 +947,7 @@ LABEL_13:
 				helper::refreshSprite(unitSprite, selectionCircleColor[unit->playerId]);
 			}
 		}
-		helper::updateUnitTimers(unitVar);
+		updateUnitStateHook(unitVar);
 		helper::progressOrder(unitVar);
 		s32 unused = 0;
 		helper::performSecondaryOrders(unitVar, unused);
