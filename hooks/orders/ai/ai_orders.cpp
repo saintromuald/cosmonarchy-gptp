@@ -194,7 +194,7 @@ namespace hooks
 			GPTP::logger << "null region in AI_TrainingBroodling!" << '\n';
 			return;
 		}
-		regionType = playerRegion[regionId].captainType;//state
+		regionType = playerRegion[regionId].captainType; // state
 		region = &playerRegion[regionId];
 		if (region == nullptr)
 		{
@@ -211,8 +211,9 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	/*	
-	void AI_TrainingNormal(Unit* a1, Unit* a2) {									// 00435DB0
+	/*
+	void AI_TrainingNormal(Unit* result, Unit* parent) // 00435DB0
+	{
 		s16 child;
 		Unit* parentAi;
 		s16 regionId;
@@ -225,12 +226,14 @@ namespace hooks
 		s16 v11;
 		UnitAi* v12;
 
-		parentAi = a1;
-		child = a1->id;
-		if (child != UnitId::ZergGuardian && child != UnitId::ZergDevourer) {
-			if (a1->status & 0x40000000) {
-				regionId = SAI_GetRegionIdFromPxEx(a1->sprite->position.x, a1->sprite->position.y);
-				AI_AddMilitary(&AiRegionCaptains[a1->playerId][regionId], a1, 1);
+		parentAi = result;
+		child = result->id;
+		if (child != UnitId::ZergGeszithalor && child != UnitId::ZergVithrilisk)
+		{
+			if (result->status & 0x40000000)
+			{
+				regionId = helper::SAI_GetRegionIdFromPxEx(result->sprite->position.x, result->sprite->position.y);
+				helper::AI_AddMilitary(&AiRegionCaptains[result->playerId][regionId], result, 1);
 				return;
 			}
 			if (child != UnitId::ProtossArchon
@@ -239,33 +242,41 @@ namespace hooks
 				&& child != UnitId::TerranNuclearMissile
 				&& child != UnitId::ProtossWitness)
 			{
-				childTown = a2->pAI;
-				v12 = a2->pAI;
-				if (childTown) {
-					if (a2 == a1) {
+				childTown = result->pAI;
+				v12 = result->pAI;
+				if (childTown)
+				{
+					if (result == result)
+					{
 						parentTown = 0;
-						AI_AssignWorker(a1);
+						helper::AI_AssignWorker(result);
 						v6 = parentAi->pAI;
 						if (v6)
 						{
 							v8 = v6->town;
-							AI_TownInfo(v6, (UnitAi*)&v8->field_10);
+							helper::AI_DeleteBuildingAI(v6, (UnitAi*)&v8->field_10);
 							if (v8)
 							{
 								if (parentAi == v8->field_28)
+								{
 									v8->field_28 = 0;
+								}
 								if (parentAi == v8->field_24)
+								{
 									v8->field_24 = 0;
+								}
 							}
 							childTown = v12;
 							parentAi->pAI = 0;
 						}
 					}
-					else if (a2->id == child) {
+					else if (result->id == child)
+					{
 						parentTown = 0;
 					}
-					else {
-						parentTown = (u8)a2->buildQueueSlot;
+					else
+					{
+						parentTown = (u8)result->buildQueueSlot;
 					}
 					v9 = (AiCaptain*)*(&childTown->field_18 + parentTown);
 					if (*(&childTown->field_9 + parentTown) == 2)
@@ -281,13 +292,17 @@ namespace hooks
 							return;
 						}
 						*(&childTown->field_9 + parentTown) = 1;
-						v9 = getAIRegionInfoFromUnitLocation(parentAi);
+						v9 = helper::getAIRegionInfoFromUnitLocation(parentAi);
 						*(&childTown->field_18 + parentTown) = (s32)v9;
 					}
 					if (*(&childTown->field_9 + parentTown) == 1)
-						AI_AddMilitary(v9, parentAi, 0);
+					{
+						helper::AI_AddMilitary(v9, parentAi, 0);
+					}
 					else
-						AI_AddGuard(parentAi);
+					{
+						helper::AI_AddGuard(parentAi);
+					}
 				}
 			}
 		}
