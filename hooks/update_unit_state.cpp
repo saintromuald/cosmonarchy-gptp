@@ -793,7 +793,7 @@ namespace hooks
 				v12 = v11->link.next;
 				*activeIscriptEntity = v11;
 				*activeIscriptUnit = v11;
-				helper::progressUnitFrame(v11);
+				progressUnitFrame(v11);
 				v11 = v12;
 			}
 			while (v12);
@@ -833,7 +833,7 @@ namespace hooks
 				v17 = v16->link.next;
 				*activeIscriptEntity = v16;
 				*activeIscriptUnit = v16;
-				helper::progressUnitFrame(v16);
+				progressUnitFrame(v16);
 				v16 = v17;
 			}
 			while (v17);
@@ -843,8 +843,8 @@ namespace hooks
 	}
 
 	// Hooked to help with the cloak rewrite - Pr0nogo
-	void updateBurrowingCloakingUnits()
-	{ // 00492EB0
+	void updateBurrowingCloakingUnits() // 00492EB0
+	{
 		Unit* v0;
 		s32 v1;
 		Unit* v2;
@@ -903,15 +903,12 @@ LABEL_13:
 	// Hooked for cloak rewrite animations - Pr0nogo
 	void doCloak(Unit* unit, s32 soundId) // 0049B440
 	{
-		Unit* v2;
-		Unit* v3;
-
-		v2 = unit;
+		Unit* unitVar = unit;
 		if (!(unit->status & UnitStatus::Burrowed))
 		{
 			helper::playSoundFromSource(soundId, unit, 1, 0);
 		}
-		if (!IS_IN_REPLAY && v2->playerId == *LOCAL_NATION_ID)
+		if (!IS_IN_REPLAY && unitVar->playerId == *LOCAL_NATION_ID)
 		{
 			*forceButtonRefresh = 1;
 			portraitRedraw[0] = 1;
@@ -919,21 +916,21 @@ LABEL_13:
 			*ctrlUnderMouse = 0;
 			*ctrlUnderMouseValue = 0;
 		}
-		if (v2->status & UnitStatus::Burrowed)
+		if (unitVar->status & UnitStatus::Burrowed)
 		{
-			helper::updateSpriteFlagOnPalette(v2->sprite);
-			helper::showImagesHiddenByCloak(v2->sprite);
-			v2->status &= 0xFFFFFCFF;
+			helper::updateSpriteFlagOnPalette(unitVar->sprite);
+			helper::showImagesHiddenByCloak(unitVar->sprite);
+			unitVar->status &= 0xFFFFFCFF;
 		}
 		else
 		{
-			helper::updateSpriteImagesForCloak(v2->sprite);
-			v2->status = v2->status & 0xFFFFFEFF | UnitStatus::Cloaked;
-			v3 = v2->subunit;
-			if (v3)
+			helper::updateSpriteImagesForCloak(unitVar->sprite);
+			unitVar->status = unitVar->status & 0xFFFFFEFF | UnitStatus::Cloaked;
+			Unit* unitSubunit = unitVar->subunit;
+			if (unitSubunit)
 			{
-				helper::updateSpriteImagesForCloak(v3->sprite);
-				v3->status = v3->status & 0xFFFFFEFF | UnitStatus::Cloaked;
+				helper::updateSpriteImagesForCloak(unitSubunit->sprite);
+				unitSubunit->status = unitSubunit->status & 0xFFFFFEFF | UnitStatus::Cloaked;
 			}
 		}
 	}
@@ -972,7 +969,7 @@ LABEL_13:
 		}
 
 		Sprite* unitSprite2 = unitVar->sprite;
-		if (unitSprite2)
+		if (unitSprite2 != nullptr)
 		{
 			helper::spriteToIscriptLoop(unitSprite2);
 			if (!unitVar->sprite->images.head)

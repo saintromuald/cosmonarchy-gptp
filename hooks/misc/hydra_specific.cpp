@@ -713,8 +713,8 @@ LABEL_18:
 		return false;
 	}
 
-	s32 gameLoop()
-	{ // 004D94B0 - hooked for lag testing - Pr0nogo
+	s32 gameLoop() // 004D94B0 - hooked for lag testing - Pr0nogo
+	{
 		bool v0;
 		win32::Stopwatch sw;
 		sw.Start();
