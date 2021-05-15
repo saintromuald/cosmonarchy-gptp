@@ -47,8 +47,7 @@ namespace hooks
 		}
 		else
 		{
-			if (playerTable[result->playerId].type == PlayerType::Computer
-				&& result->id == UnitId::TerranCleric)
+			if (result->id == UnitId::TerranCleric)
 			{
 				if (!(AIScriptController[result->playerId].mainMedic))
 				{
