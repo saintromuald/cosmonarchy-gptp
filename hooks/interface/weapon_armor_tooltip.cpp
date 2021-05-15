@@ -564,7 +564,8 @@ namespace hooks
 
 		// Vanilla Value
 		addStatus(statuses, "Parasited", unit->parasiteFlags != 0, 1);
-		addStatus(statuses, "Blinded", (bool)unit->isBlind, 1);
+		addStatus(statuses, "Blinded", unit->isBlind != 0, 1);
+		addStatus(statuses, "Lifted Off", (unit->status & UnitStatus::InAir) && units_dat::BaseProperty[unit->id] & UnitProperty::Building, 1);
 
 		// Case Specific
 		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
