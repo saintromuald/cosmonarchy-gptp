@@ -388,11 +388,11 @@ namespace hooks
 		return true;
 	}
 
-	/*
-	u32 remove_worker_or_building_ai(Unit* unit, u8 assert_is_building) {
+	u32 removeWorkerOrBuildingAI(Unit* unit, u8 assert_is_building) // 00434C90
+	{
 			BuildingAi* ai;
 			AiTown* town;
-			removeAITownGasReferences(unit);
+			helper::removeAITownGasReferences(unit);
 			ai = (BuildingAi*)unit->pAI;
 			auto result = 0;
 			if (ai)
@@ -401,40 +401,49 @@ namespace hooks
 					|| units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser
 					|| unit->id == UnitId::ZergLarva
 					|| unit->id == UnitId::ZergEgg
-					//|| scbw::isLarvalEgg(unit)
-					|| unit->id == UnitId::ZergOverlord)
+					|| unit->id == UnitId::ZergOvileth
+					|| unit->id == UnitId::ZergIroleth
+					|| unit->id == UnitId::ZergOthstoleth
+					|| unit->id == UnitId::ZergAlaszileth)
 				{
 					town = ai->town;
 					auto free = town->free_buildings;
-					deleteBuildingAi(free, ai);
+					helper::deleteBuildingAi(free, ai);
 				}
 				else
 				{
 
 					if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
+					{
 						return 0;
+					}
 					town = ai->town;
-					deleteWorkerAi(town->free_workers, (WorkerAi*)ai);
+					helper::deleteWorkerAi(town->free_workers, (WorkerAi*)ai);
 					town->worker_count--;
 				}
 				if (town)
 				{
 					if (unit == town->building_scv)
+					{
 						town->building_scv = nullptr;
+					}
 					if (unit == town->main_building)
+					{
 						town->main_building = nullptr;
+					}
 				}
 				if (!assert_is_building)
 				{
 					if (town)
-						deleteAiTownIfNeeded(town);
+					{
+						helper::deleteAiTownIfNeeded(town);
+					}
 				}
 				unit->pAI = nullptr;
 				result = 1;
 			}
 			return result;
 		}
-		*/
 
 		// Return the ID of the egg unit to use when morphing @p unitId.
 		// If the unit cannot morph, return UnitId::None.
