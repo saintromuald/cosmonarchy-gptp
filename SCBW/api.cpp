@@ -857,10 +857,6 @@ namespace scbw
 			{
 				helper::AI_TrainingUnit(unit, creator);
 			}
-			else
-			{
-				unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
-			}
 		}
 		return unit;
 	}
@@ -1756,15 +1752,13 @@ namespace scbw
 			if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
 			{
 				helper::AI_AddUnitAI(unit, town);
-				unit->orderComputerClear(OrderId::ComputerAI);
 			}
 			else
 			{
-				AiRegion* captain = &AiRegionCaptains[unit->playerId][helper::SAI_GetRegionIdFromPxEx(town->position.x, town->position.y)];
-				if (captain)
+				AiRegion* region = &AiRegionCaptains[unit->playerId][helper::SAI_GetRegionIdFromPxEx(town->position.x, town->position.y)];
+				if (region)
 				{
-					helper::AI_AddMilitary(captain, unit, 1);
-					unit->orderComputerClear(OrderId::ComputerAI);
+					helper::AI_AddMilitary(region, unit, 1);
 				}
 			}
 		}
