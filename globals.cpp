@@ -967,6 +967,12 @@ namespace scbw
 			unitExt->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
 		}
 
+		// Reset Hierophant Signify
+		if (unitExt->timers[TimerSignify])
+		{
+			unitExt->timers[TimerSignify] = 3 * 24 + 1;
+		}
+
 		//was hardcoded in original code
 		scbw::refreshConsole();
 	}
@@ -1039,9 +1045,7 @@ namespace scbw
 		if (auto timer = parentExt->timers[TimerCaptivatingClaws])
 		{
 			childExt->timers[TimerCaptivatingClaws] = timer;
-			auto& parentVec = parentExt->unitVectors[UnitVectorCaptivatingClaws];
-			auto& childVec = childExt->unitVectors[UnitVectorCaptivatingClaws];
-			childVec = parentVec;
+			parentExt->unitVectors[UnitVectorCaptivatingClaws] = childExt->unitVectors[UnitVectorCaptivatingClaws];
 		}
 
 		// Inherit Lobotomy Mine slow
@@ -1121,10 +1125,6 @@ namespace scbw
 			childExt->values[ValueSublimeShepherd] = parentExt->values[ValueSublimeShepherd];
 		}
 
-		// TODO: Implement
-		// Inherit Cowardice
-		// Inherit Malice
-
 		// Inherit Terminal Surge
 		if (parentExt->values[ValueTerminalSurge])
 		{
@@ -1186,6 +1186,16 @@ namespace scbw
 				childExt->values[ValueLazarusAgentApostleSrc] = parentExt->values[ValueLazarusAgentApostleSrc];
 			}
 		}
+
+		// Inherit Hierophant Signify
+		childExt->timers[TimerSignify] = parentExt->timers[TimerSignify];
+		childExt->values[ValueSignifyStacks] = parentExt->values[ValueSignifyStacks];
+		childExt->valueVectors[ValueVectorSignifySourcePlayer] = parentExt->valueVectors[ValueVectorSignifySourcePlayer];
+		scbw::updateSignifyOverlay(child, childExt);
+
+		// Inherit Siren Tetriary Eyes
+		childExt->unitVectors[UnitVectorTertiaryEyes] = parentExt->unitVectors[UnitVectorTertiaryEyes];
+		childExt->unitVectors[UnitVectorTertiaryEyesSirens] = parentExt->unitVectors[UnitVectorTertiaryEyesSirens];
 
 		scbw::refreshConsole();
 	}
@@ -1342,6 +1352,12 @@ namespace scbw
 			unitExt->timers[TimerDirgeFuse] = 0;
 			unitExt->values[ValueDirgeStacks] = 0;
 		}
+
+		// Remove Hierophant Signify
+		unitExt->timers[TimerSignify] = 0;
+		unitExt->values[ValueSignifyStacks] = 0;
+		unitExt->valueVectors[ValueVectorSignifySourcePlayer] = {};
+		scbw::updateSignifyOverlay(unit, unitExt);
 
 		scbw::refreshConsole();
 	}

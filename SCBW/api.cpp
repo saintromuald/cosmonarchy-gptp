@@ -1763,4 +1763,25 @@ namespace scbw
 			}
 		}
 	}
+
+	void updateSignifyOverlay(Unit* unit, UnitExt* unitExt)
+	{
+		const u32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
+		const u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
+
+		if (unitExt->values[ValueSignifyStacks] == 0)
+		{
+			unit->removeOverlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
+			unit->removeOverlay(ImageId::Malice_Small, ImageId::Malice_Large);
+		}
+		else if (unitExt->values[ValueSignifyStacks] < 5 && !unit->getOverlay(cowardiceId))
+		{
+			unit->sprite->createTopOverlay(cowardiceId);
+		}
+		else if (unitExt->values[ValueSignifyStacks] >= 5 && !unit->getOverlay(maliceId))
+		{
+			unit->removeOverlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
+			unit->sprite->createTopOverlay(maliceId);
+		}
+	}
 }
