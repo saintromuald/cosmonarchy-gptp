@@ -541,7 +541,7 @@ namespace hooks
 
 	/*
 	// Hooked to enable unit mover for human players - Pr0nogo
-	s32 updateBuildingPlacementState_Units(s32 yTile, Unit* builder, s32 xTile, u8 player, u16 unitId, s32 sizeWidthHeight,s32 placementStateEntry,
+	s32 updateBuildingPlacementState_Units(s32 yTile, Unit* builder, s32 xTile, u8 player, u16 unitId, s32 sizeWidthHeight, s32 placementStateEntry,
 		char bDontIgnoreReacting, char bAlsoInvisible, s32 withoutVision) // 00473720
 	{
 		s32 v14;
