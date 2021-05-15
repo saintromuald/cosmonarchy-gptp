@@ -65,6 +65,7 @@ const s32 WyvernBaseAttackCooldown = 30;
 
 // Seraph
 const s32 SeraphObservanceDebuffTimer = 5 * 24 + 1;
+const s32 SeraphIrradiateTimer = 10;
 
 // Azazel
 const s32 AzazelDefensiveMatrixTimer = 90; // roughly 30 seconds
@@ -126,10 +127,14 @@ const f64 VithriliskCorrosiveTouchArmorReduction = 0.2 * 256;
 // Zoryusthaleth
 const s32 ZoryusthalethReconstitutionHealing = 5 * 256;
 
+// Isthrathaleth
+const s32 IsthrathalethPlagueTimer = 30;
+
 // Matraleth
 const s32 DefaultArmParasiteTimer = 2 * 24 + 1;
 const s32 MatralethAIParasiteTimer = 75;
 const s32 MatralethAIEnsnaringBroodTimer = 75;
+const s32 MatralethEnsnareTimer = 37;
 
 // Akistrokor
 const s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second

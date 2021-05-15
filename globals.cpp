@@ -896,7 +896,7 @@ namespace scbw
 		// Reset Ensnare
 		if (unit->ensnareTimer != 0)
 		{
-			unit->ensnareTimer = 37;
+			unit->ensnareTimer = MatralethEnsnareTimer;
 			// specific update following ensnare removal
 			unit->updateSpeed();
 		}
@@ -904,35 +904,35 @@ namespace scbw
 		// Refresh Plague
 		if (unit->plagueTimer != 0)
 		{
-			unit->plagueTimer = 30;
+			unit->plagueTimer = IsthrathalethPlagueTimer;
 		}
 
 		// Reset Observance
-		if (unitExt->timers[TimerObservanceDebuff] > 0)
+		if (unitExt->timers[TimerObservanceDebuff])
 		{
 			unitExt->timers[TimerObservanceDebuff] = SeraphObservanceDebuffTimer;
 		}
 
 		// Reset Knockout Drivers
-		if (unitExt->timers[TimerKnockoutDrivers] > 0)
+		if (unitExt->timers[TimerKnockoutDrivers])
 		{
 			unitExt->timers[TimerKnockoutDrivers] = SouthpawKnockoutDriversTimer;
 		}
 
 		// Reset Hallucination
-		if (unitExt->timers[TimerHallucinating] > 0)
+		if (unitExt->timers[TimerHallucinating])
 		{
 			unitExt->timers[TimerHallucinating] = CantavisHallucinationTimer;
 		}
 
 		// Reset Captivating Claws
-		if (unitExt->timers[TimerCaptivatingClaws] > 0)
+		if (unitExt->timers[TimerCaptivatingClaws])
 		{
 			unitExt->timers[TimerCaptivatingClaws] = VorvalingCaptivatingClawsTimer;
 		}
 
 		// Reset Lobotomy Mine slow
-		if (unitExt->timers[TimerLobotomySlow] > 0)
+		if (unitExt->timers[TimerLobotomySlow])
 		{
 			unitExt->timers[TimerLobotomySlow] = LobotomyMineLockdownTimer;
 		}
@@ -940,17 +940,17 @@ namespace scbw
 		// Reset Lockdown
 		if (unit->lockdownTimer != 0)
 		{
-			unit->lockdownTimer = 18;
+			unit->lockdownTimer = LobotomyMineLockdownTimer;
 		}
 
 		// Reset Maelstrom
 		if (unit->maelstromTimer != 0)
 		{
-			unit->maelstromTimer = 18;
+			unit->maelstromTimer = MindTyrantMaelstromTimer;
 		}
 
 		// Reset Devourer Corrosive Spores
-		if (unitExt->timers[TimerCorrosiveTouch] > 0)
+		if (unitExt->timers[TimerCorrosiveTouch])
 		{
 			unitExt->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
 		}
@@ -958,7 +958,7 @@ namespace scbw
 		// Reset Irradiate
 		if (unit->irradiateTimer != 0)
 		{
-			unit->irradiateTimer = 10;
+			unit->irradiateTimer = SeraphIrradiateTimer;
 		}
 
 		// Reset Dirge
@@ -1175,6 +1175,16 @@ namespace scbw
 		{
 			childExt->timers[TimerDirgeFuse] = parentExt->timers[TimerDirgeFuse];
 			childExt->values[ValueDirgeStacks] = parentExt->values[ValueDirgeStacks];
+		}
+
+		// Inherit Lazarus Agent
+		if (parentExt->values[ValueLazarusAgent])
+		{
+			childExt->values[ValueLazarusAgent] = parentExt->values[ValueLazarusAgent];
+			if (parentExt->values[ValueLazarusAgentApostleSrc])
+			{
+				childExt->values[ValueLazarusAgentApostleSrc] = parentExt->values[ValueLazarusAgentApostleSrc];
+			}
 		}
 
 		scbw::refreshConsole();
