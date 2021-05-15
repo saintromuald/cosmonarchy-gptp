@@ -395,6 +395,8 @@ SCBW_DATA(s16*, larvaCounter,						0x0067D3F8);
 // For updateBuildingPlacementState_Units
 SCBW_DATA(s8*, buildingPlacementState,				0x006408F8);
 
+// For progressUnitFrame
+SCBW_DATA(s8*, selectionCircleColor,				0x00581D6A);
 
 //////////////////////////////////////////////////////////////// @}
 

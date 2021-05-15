@@ -901,8 +901,8 @@ LABEL_13:
 	}
 
 	// Hooked for cloak rewrite animations - Pr0nogo
-	void doCloak(Unit* unit, s32 soundId)
-	{ // 0049B440
+	void doCloak(Unit* unit, s32 soundId) // 0049B440
+	{
 		Unit* v2;
 		Unit* v3;
 
@@ -934,6 +934,50 @@ LABEL_13:
 			{
 				helper::updateSpriteImagesForCloak(v3->sprite);
 				v3->status = v3->status & 0xFFFFFEFF | UnitStatus::Cloaked;
+			}
+		}
+	}
+
+	// Hooked to add nullcheck - Pr0nogo
+	void progressUnitFrame(Unit* unit) // 004ECF70
+	{
+		if (unit == nullptr)
+		{
+			return;
+		}
+
+		Unit* unitVar = unit;
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit))
+		{
+			Sprite* unitSprite = unit->sprite;
+			if (!(unitSprite->flags & 0x20))
+			{
+				helper::refreshSprite(unitSprite, selectionCircleColor[unit->playerId]);
+			}
+		}
+		helper::updateUnitTimers(unitVar);
+		helper::progressOrder(unitVar);
+		s32 unused;
+		helper::performSecondaryOrders(unitVar, unused);
+
+		Unit* unitSubunit = unitVar->subunit;
+		if (unitSubunit)
+		{
+			if (!(units_dat::BaseProperty[unitVar->id] & UnitProperty::Subunit))
+			{
+				*activeIscriptUnit = unitVar->subunit;
+				progressUnitFrame(unitSubunit);
+				*activeIscriptUnit = unitVar;
+			}
+		}
+
+		Sprite* unitSprite2 = unitVar->sprite;
+		if (unitSprite2)
+		{
+			helper::spriteToIscriptLoop(unitSprite2);
+			if (!unitVar->sprite->images.head)
+			{
+				unitVar->sprite = 0;
 			}
 		}
 	}

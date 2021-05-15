@@ -769,22 +769,29 @@ namespace helper
 	void updateVisibility(Unit* unit);																						// 004EBE10
 	void progressActiveUnitFrame(Unit* unit);																				// 004EBC30
 	void checkUnitVisibility(Unit* unit);																					// 00443390
-	void progressUnitFrame(Unit* unit);																					// 004ECF70
+	void progressUnitFrame(Unit* unit);																						// 004ECF70
 	void unitUpdate(Unit* unit);																							// 004EC420
 	void updateUnitPower();																									// 00493790
 
 	// For updateBurrowingCloakingUnits
-	s32 isUnitCloaking(Unit* unit);																						// 004916E0
+	s32 isUnitCloaking(Unit* unit);																							// 004916E0
 	void playSoundFromDirect(Unit* unit, s32 soundId);																	    // 0049B5B0
 
 	// For doCloak
-	void updateSpriteFlagOnPalette(Sprite* sprite);																		// 00497E80
+	void updateSpriteFlagOnPalette(Sprite* sprite);																			// 00497E80
 	void showImagesHiddenByCloak(Sprite* sprite);																			// 00498170
 	void updateSpriteImagesForCloak(Sprite* sprite);																		// 00498A90
 
+	// For progressUnitFrame
+	char refreshSprite(Sprite* sprite, s32 spriteId);																		// 004EBBD0
+	void updateUnitTimers(Unit* unit);																						// 004EC290
+	void progressOrder(Unit* unit);																							// 004EC4D0
+	void performSecondaryOrders(Unit* result, s32 unused);																	// 004ECF70
+	void spriteToIscriptLoop(Sprite* sprite);																				// 00497920
+
 	//// select_larva
 
-	u32 getLarvaeUnitsFromList(Unit** unitList, Unit** outputList);													    // 00423190
+	u32 getLarvaeUnitsFromList(Unit** unitList, Unit** outputList);															// 00423190
 	b32 selectSingleUnitFromID(u32 unitIndex);																		        // 00496D30
 	void selectMultipleUnitsFromUnitList(Unit** unitList, u32 unitsCount, b32 unk1, b32 unk2);					            // 0049AEF0
 

@@ -8443,4 +8443,70 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For progressUnitFrame
+	char refreshSprite(Sprite* sprite, s32 spriteId)
+	{
+		const u32 Func_refreshSprite = 0x004EBBD0;
+		static char result;
+		__asm
+		{
+			PUSHAD
+			PUSH spriteId
+			MOV ESI, sprite
+			CALL Func_refreshSprite
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void updateUnitTimers(Unit* unit)
+	{
+		const u32 Func_updateUnitTimers = 0x004EC290;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_updateUnitTimers
+			POPAD
+		}
+	}
+
+	void progressOrder(Unit* unit)
+	{
+		const u32 Func_progressOrder = 0x004EC4D0;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_progressOrder
+			POPAD
+		}
+	}
+
+	void performSecondaryOrders(Unit* result, s32 unused)
+	{
+		const u32 Func_performSecondaryOrders = 0x004EC170;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, unused
+			MOV EAX, result
+			CALL Func_performSecondaryOrders
+			POPAD
+		}
+	}
+
+	void spriteToIscriptLoop(Sprite* sprite)
+	{
+		const u32 Func_spriteToIscriptLoop = 0x00497920;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, sprite
+			CALL Func_spriteToIscriptLoop
+			POPAD
+		}
+	}
 }
