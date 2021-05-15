@@ -1026,7 +1026,7 @@ namespace hooks
 			unit->status &= ~(UnitStatus::Invincible | UnitStatus::CanNotReceiveOrders | UnitStatus::Unmovable);
 			unitExt->timers[TimerRevive] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
-			//scbw::initUnitAI(unit);
+			scbw::initUnitAI(unit);
 		}
 
 		// Savant - Entropy Gauntlets: remove overlay at end of effect
