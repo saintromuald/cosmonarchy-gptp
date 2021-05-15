@@ -356,6 +356,23 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_ReactToHit_TownNullCheck()
+	{
+		static BuildingAi* v7;
+		__asm
+		{
+			MOV v7, EAX
+		}
+		if (v7->town)
+		{
+			v7->town->in_battle = 1;
+		}
+		__asm
+		{
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -382,5 +399,7 @@ namespace hooks
 		*/
 
 		jmpPatch(AI_orderUnitCloaking_Wrapper, 0x0043B970, 1);
+
+		callPatch(AI_ReactToHit_TownNullCheck, 0x0043F388, 5);
 	}
 }
