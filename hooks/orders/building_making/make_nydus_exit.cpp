@@ -6,7 +6,6 @@ namespace hooks
 	void orders_Build5(Unit* nydus_canal)
 	{
 		s32 x, y;
-		u32 result_f00473FB0;
 		x = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].x;
 		y = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].y;
 		if (x < 0)
@@ -31,7 +30,7 @@ namespace hooks
 		y /= 32;
 
 		// check if the nydus exit can be placed
-		result_f00473FB0 = helper::canBuildOnTileLocation(nydus_canal, nydus_canal->playerId, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0);
+		u32 result_f00473FB0 = helper::canBuildOnTileLocation(nydus_canal, nydus_canal->playerId, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0);
 		if (result_f00473FB0 != 0)
 		{
 			helper::playWorkerErrorSound(nydus_canal, 0x358); // "You can't build there"
@@ -52,7 +51,6 @@ namespace hooks
 		}
 		else
 		{ // 0045DCDB
-
 			Unit* nydusExit = helper::createUnit(UnitId::ZergNydusCanal, nydus_canal->orderTarget.pt.x, nydus_canal->orderTarget.pt.y, nydus_canal->playerId);
 			if (nydusExit == nullptr)
 			{
