@@ -843,8 +843,8 @@ namespace hooks
 	}
 
 	// Hooked to help with the cloak rewrite - Pr0nogo
-	void updateBurrowingCloakingUnits()
-	{ // 00492EB0
+	void updateBurrowingCloakingUnits() // 00492EB0
+	{
 		Unit* v0;
 		s32 v1;
 		Unit* v2;
