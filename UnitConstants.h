@@ -90,8 +90,8 @@ const s32 GodsMadeFleshEnergyDrain = 100;
 
 // Lanifect
 const s32 AIWebSeekRange = 96;
-const s32 AICorsairAllySeekRange = 128;
-const s32 AICorsairEnemySeekRange = 128;
+const s32 AICorsairAllySeekRange = 12 * 32;
+const s32 AICorsairEnemySeekRange = 4 * 32;
 const f64 AICorsairLifePercentage = 0.5;
 const s32 AIWebMinEnergy = 30;
 const s32 AIWebAllyMinCount = 3;

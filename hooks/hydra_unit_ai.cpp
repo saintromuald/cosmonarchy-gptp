@@ -203,9 +203,10 @@ void hydra_unit_ai(Unit* unit)
 		f64 percentage = (f64)(unit->hitPoints + unit->shields) / (f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256.0);
 		if (web_state == 0)
 		{
-			if (webs == 0 && unit->energy >= AIWebMinEnergy * 256
+			if (webs == 0
 				&& percentage >= AICorsairLifePercentage
-				&& allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount)
+				&& allies >= AIWebAllyMinCount
+				&& enemies >= AIWebEnemyMinCount)
 			{
 				Unit* mostSignificant = nullptr;
 				auto maxSignificance = 0;
