@@ -57,8 +57,8 @@ namespace hooks
             helper::unk_buildingPlacementRelated(1, &v6);
             if (*isPlacingAddon)
             {
-                v6.x -= units_dat::AddonPlacement[4 * *placeBuildingUnitType].x;
-                v6.y -= units_dat::AddonPlacement[4 * *placeBuildingUnitType].y;
+                v6.x -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+                v6.y -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
                 helper::unk_buildingPlacementRelated(0, &v6);
             }
             result = helper::refreshLayers3And4();
