@@ -91,7 +91,7 @@ namespace
 			MOV town, EDI
 			PUSHAD
 		}
-		result = hooks::AI_AddUnitAi(unit, town);
+		result = hooks::AI_AddUnitAI(unit, town);
 		__asm {
 			POPAD
 			MOV result, AL

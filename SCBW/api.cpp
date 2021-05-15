@@ -1751,7 +1751,7 @@ namespace scbw
 			AiTown* town = AiDataList[unit->playerId].first;
 			if (town)
 			{
-				helper::AI_AcceptNewUnit(unit, town);
+				helper::AI_AddUnitAI(unit, town);
 			}
 		}
 		else

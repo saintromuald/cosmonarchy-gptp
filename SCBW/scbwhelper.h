@@ -136,9 +136,9 @@ namespace helper
 	void AI_AddMilitary(AiCaptain* region, Unit* unit, s32 always_this_region);
 
 	// For AI_TrainingWorker
-	char AI_AcceptNewUnit(Unit* worker, AiTown* town);									// 00433DD0
+	char AI_AddUnitAI(Unit* worker, AiTown* town);									// 00433DD0
 
-	// for AI_AddUnitAi
+	// for AI_AddUnitAI
 	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI);
 	void orderComputerClear(Unit* unit, u8 orderId);
 	Unit* setSecondaryOrder(Unit* result, char orderId);

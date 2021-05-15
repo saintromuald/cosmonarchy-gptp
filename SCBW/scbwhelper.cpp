@@ -1273,7 +1273,7 @@ namespace helper
 		}
 	}
 
-	// for AI_AddUnitAi
+	// for AI_AddUnitAI
 
 	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI)
 	{
@@ -8406,7 +8406,7 @@ namespace helper
 	}
 
 	// For AI_TrainingWorker
-	char AI_AcceptNewUnit(Unit* worker, AiTown* town)
+	char AI_AddUnitAI(Unit* worker, AiTown* town)
 	{
 		const u32 Func_AI_AcceptNewUnit = 0x00433DD0;
 		static char result;
