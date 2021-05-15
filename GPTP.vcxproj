@@ -133,6 +133,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>"$(ProjectDir)post_build_hyd_debug.bat"</Command>
@@ -166,6 +167,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>"$(ProjectDir)post_build_hyd_fastdebug.bat"</Command>
@@ -202,6 +204,7 @@
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;</AdditionalLibraryDirectories>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>"$(ProjectDir)post_build_hyd_release.bat"</Command>
@@ -238,6 +241,7 @@
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;</AdditionalLibraryDirectories>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>"$(ProjectDir)post_build_hyd_release.bat"</Command>
