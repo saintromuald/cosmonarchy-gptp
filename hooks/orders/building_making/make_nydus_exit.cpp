@@ -31,14 +31,7 @@ namespace hooks
 		y /= 32;
 
 		// check if the nydus exit can be placed
-		result_f00473FB0 = helper::function_00473FB0(
-			nydus_canal,
-			nydus_canal->playerId,
-			x,
-			y,
-			UnitId::ZergNydusCanal,
-			0, 0, 1, 0
-		);
+		result_f00473FB0 = helper::canBuildOnTileLocation(nydus_canal, nydus_canal->playerId, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0);
 		if (result_f00473FB0 != 0)
 		{
 			helper::playWorkerErrorSound(nydus_canal, 0x358); // "You can't build there"
@@ -59,17 +52,18 @@ namespace hooks
 		}
 		else
 		{ // 0045DCDB
-			Unit* nydusExit =
-				helper::createUnit(
-					UnitId::ZergNydusCanal,
-					nydus_canal->orderTarget.pt.x,
-					nydus_canal->orderTarget.pt.y,
-					nydus_canal->playerId
-				);
+
+			Unit* nydusExit = helper::createUnit(UnitId::ZergNydusCanal, nydus_canal->orderTarget.pt.x, nydus_canal->orderTarget.pt.y, nydus_canal->playerId);
 			if (nydusExit == nullptr)
 			{
 				helper::displayLastNetErrorForPlayer(nydus_canal->playerId);
 				nydus_canal->orderToIdle();
+			}
+			else if (nydusExit->id != UnitId::ZergNydusCanal)
+			{
+				helper::displayLastNetErrorForPlayer(nydus_canal->playerId);
+				nydus_canal->orderToIdle();
+				nydusExit->remove();
 			}
 			else
 			{

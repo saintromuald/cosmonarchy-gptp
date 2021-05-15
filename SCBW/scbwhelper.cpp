@@ -3401,34 +3401,6 @@ namespace helper
 		}
 	}
 
-	u32 function_00473FB0(Unit* unit, u8 playerId, s32 x, s32 y, u16 unitId, u8 unk1, u8 unk2, u8 unk3, u8 unk4)
-	{
-		const u32 Func_Sub473FB0 = 0x00473FB0;
-		u32 return_value;
-		__asm {
-			PUSHAD
-			MOVZX EAX, unk4		/*28*/
-			PUSH EAX
-			MOVZX EAX, unk3		/*24*/
-			PUSH EAX
-			MOVZX EAX, unk2		/*20*/
-			PUSH EAX
-			MOVZX EAX, unk1		/*1C*/
-			PUSH EAX
-			MOVZX EAX, unitId	/*18*/
-			PUSH EAX
-			PUSH y				/*14*/
-			PUSH x				/*10*/
-			MOVZX EAX, playerId	/*0C*/
-			PUSH EAX
-			PUSH unit			/*08*/
-			CALL Func_Sub473FB0
-			MOV return_value, EAX
-			POPAD
-		}
-		return return_value;
-	}
-
 	void actUnitReturnToIdle(Unit* unit)
 	{
 		const u32 Func_ActUnitReturnToIdle = 0x00475420;

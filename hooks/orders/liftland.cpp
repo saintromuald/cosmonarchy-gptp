@@ -109,7 +109,7 @@ namespace hooks
 						//check for units occupying the landing zone before
 						//the final vertical movement started?
 						u32 return_00473FB0 =
-							helper::function_00473FB0(unit, unit->playerId, x, y, unit->id, 0, 0, 1, 0);
+							helper::canBuildOnTileLocation(unit, unit->playerId, x, y, unit->id, 0, 0, 1, 0);
 
 						if (return_00473FB0 != 0)
 						{

@@ -339,7 +339,6 @@ namespace helper
 	void function_00469F60(Unit* unit, s32 x, s32 y);																				// 00469F60
 	void function_0046A560(Unit* unit);																								// 0046A560
 	void function_0046A5A0(Unit* unit);																								// 0046A5A0
-	u32 function_00473FB0(Unit* unit, u8 playerId, s32 x, s32 y, u16 unitId, u8 unk1, u8 unk2, u8 unk3, u8 unk4);	// 00473FB0
 	void actUnitReturnToIdle(Unit* unit);																							// 00475420
 	bool function_0047DF90(Unit* unit);																								// 0047DF90
 	void placebuildingProc();																										// 0048E6E0
@@ -861,8 +860,6 @@ namespace helper
 	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);
 	s32 req_check(u32 reqFunc, u16 reqVar, u32 playerId, Unit* unit);
 	void updateMineralPatchImage(Unit* mineralPatch);
-	s32 canBuildOnTileLocation(Unit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
-		s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision);
 	void updateImagePositionOffset(Image* image);
 
 	// Identical to function @ 0x004F3AF0
