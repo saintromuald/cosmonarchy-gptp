@@ -531,7 +531,7 @@ namespace hooks
 			}
 
 			// Petrification - Gorgon behavior
-			if (GorgonCondition(data.attacker, data.target))
+			if (data.attacker->id == UnitId::TerranGorgon)
 			{
 				scbw::refreshDebuffs(data.target);
 			}
@@ -1048,21 +1048,6 @@ namespace hooks
 		// Apply effect
 		unit->ensnareTimer = 37;
 		unit->updateSpeed();
-	}
-
-	bool GorgonCondition(Unit* attacker, Unit* target)
-	{
-		if (attacker != nullptr && target != nullptr)
-		{
-			if (attacker->id == UnitId::TerranGorgon)
-			{
-				if (target->isFrozen() || scbw::isSlowed(target))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	u16 GetSporesOverlayId(Unit* target)
