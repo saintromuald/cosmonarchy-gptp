@@ -1379,22 +1379,26 @@ namespace scbw
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
-		if (unit->ensnareTimer || unit->unusedTimer)
+		if (unit->ensnareTimer)
 		{
 			return true;
 		}
-		if (unit->id == UnitId::TerranWyvern && get_generic_rust_value(unit, RustId::ToggleReverseThrust) == 1)
+
+		if (unitExt->timers[TimerSignify])
 		{
 			return true;
 		}
-		if (unitExt->timers[TimerMaledictionSlow] > 1)
+
+		if (unitExt->timers[TimerKnockoutDrivers])
 		{
 			return true;
 		}
-		if (unitExt->timers[TimerLobotomySlow] > 1)
+
+		if (unitExt->timers[TimerCaptivatingClaws])
 		{
 			return true;
 		}
+
 		if (unitExt->values[ValueKelvinMunitionsSlow])
 		{
 			return true;
