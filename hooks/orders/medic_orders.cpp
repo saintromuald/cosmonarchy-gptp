@@ -169,7 +169,7 @@ namespace hooks
 				if (acquired)
 				{
 					helper::unitOrderMoveToTargetUnit(cleric, acquired);
-					helper::moveToTarget(acquired, cleric);
+					//helper::moveToTarget(acquired, cleric);
 					if (!cleric->isTargetWithinMinRange(acquired, 30))
 					{
 						return 3;
