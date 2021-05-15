@@ -50,7 +50,7 @@ namespace hooks
 {
 	void injectPlacementHooks()
 	{
-		jmpPatch(InitPlacementBoxPos_Wrapper, 0x0048D660, 0);
-		jmpPatch(DrawPlacementBox_Wrapper, 0x0048DDC0, 4);
+		//jmpPatch(InitPlacementBoxPos_Wrapper, 0x0048D660, 0);
+		//jmpPatch(DrawPlacementBox_Wrapper, 0x0048DDC0, 4);
 	}
 }
