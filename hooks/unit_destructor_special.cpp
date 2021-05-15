@@ -287,6 +287,12 @@ void unitDestructorSpecialHook(Unit* unit)
 		scbw::dirgeFuse(unit, unitExt);
 	}
 
+	// Apostle Lazarus Agent - imply revive
+	if (unitExt->values[ValueLazarusAgent])
+	{
+		scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
+	}
+
 	// Apostle Last Breath behavior
 	{
 		u32 range = 4 * 32;

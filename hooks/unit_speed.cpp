@@ -284,9 +284,12 @@ namespace hooks
 	/// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
 	u32 getModifiedUnitSpeedHook(Unit* unit, u32 baseSpeed)
 	{
+		if (unit == nullptr)
+		{
+			return 1;
+		}
+
 		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
-
-
 		switch (unit->id)
 		{
 			case UnitId::ProtossPanoptus:
