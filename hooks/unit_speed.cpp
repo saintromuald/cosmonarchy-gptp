@@ -42,14 +42,8 @@ namespace hooks
 			speed *= 0.5;
 		}
 
-		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
-		{
-			f64 stacks = MathUtils::clamp<f64>(unitExt->values[ValueTerminalSurge], 0, 10) * 1.5;
-			if (stacks > 0)
-			{
-				speed *= 1.0 + stacks * 0.05;
-			}
-		}
+		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
+		speed *= 1.0 + unitExt->values[ValueTerminalSurge] * 0.05;
 
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby allies after kill
 		if (unitExt->timers[TimerNathrokor])
