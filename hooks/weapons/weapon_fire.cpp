@@ -1184,7 +1184,7 @@ namespace hooks
 			return 0;
 		}
 LABEL_7:
-		if (!firstFreeBullet)
+		if (!*firstFreeBullet)
 		{
 			return 0;
 		}
