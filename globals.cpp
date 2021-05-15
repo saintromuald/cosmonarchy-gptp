@@ -465,7 +465,7 @@ void Globals::frameHook()
 				revived->heal(heal);
 				revived->shields = std::max(heal - revived->hitPoints, 0u);
 				revived->energy = agent.energy;
-				revived->status |= UnitStatus::Invincible | UnitStatus::CanNotReceiveOrders;
+				revived->status |= UnitStatus::Invincible | UnitStatus::CanNotReceiveOrders | UnitStatus::Unmovable;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				revivedExt->values[ValueReviveStarted] = 1;
 				revivedExt->values[TimerRevive] = 3;
