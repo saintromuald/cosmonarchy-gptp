@@ -12,11 +12,12 @@ namespace hooks
 	void AI_UnitWasHit(Unit* self, Unit* attacker, s32 mainTargetReactions, s32 dontCallHelp);					// 0043F320
 	void AI_IterateBuildingAI(Unit* result, Unit* parent);														// 00435770
 	char AI_TrainingWorker(Unit* child, Unit* parent);															// 00435700
+//	void AI_AddMilitary(AiRegion* region, Unit* unit, b32 alwaysThisRegion);									// 0043DA20
 
 	// Attack extender
-	u32 AI_TrainAttackForce(AiCaptain* region);																    // 0043E670
-	void AI_GroupingForAttack(AiCaptain* region);																// 0043EEC0
-	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign);				            // 00438050
+	u32 AI_TrainAttackForce(AiRegion* region);																    // 0043E670
+	void AI_GroupingForAttack(AiRegion* region);																// 0043EEC0
+	u32 AI_GetMissingAttackForceUnits(AiRegion* region, u32* unitIds, u32 isCampaign);				            // 00438050
 	void AI_AddToAttack(u32 result, u32 player, u32 unitId);											        // 00447230
 	bool AI_AttackManager(u32 _player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack,				            // 0043ABB0
 		u32 allowFallbackAirOnly);

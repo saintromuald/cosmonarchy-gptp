@@ -80,11 +80,11 @@ namespace AI
 	bool isUnitInUnsafeRegion(Unit* unit)
 	{
 		u16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
-		AiCaptain* currentAiCaptain = &AiRegionCaptains[unit->playerId][currentRegion];
-		return currentAiCaptain->captainType == 3
-			|| currentAiCaptain->airTarget
-			|| currentAiCaptain->groundTarget
-			|| currentAiCaptain->captainFlags & 0x20;
+		AiRegion* currentAiRegion = &AiRegionCaptains[unit->playerId][currentRegion];
+		return currentAiRegion->captainType == 3
+			|| currentAiRegion->airTarget
+			|| currentAiRegion->groundTarget
+			|| currentAiRegion->captainFlags & 0x20;
 	}
 
 

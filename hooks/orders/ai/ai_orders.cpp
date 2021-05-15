@@ -94,12 +94,12 @@ namespace hooks
 	}
 
 	/*
-	void AI_AddMilitary(AiCaptain* region, Unit* unit, s32 alwaysThisRegion) // 0043DA20
+	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 alwaysThisRegion) // 0043DA20
 	{
 		// alwaysThisRegion acts as a bool, not sure why IDA thinks it's s32
 		// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
 		// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
-			AiCaptain* regionNew; // esi
+			AiRegion* regionNew; // esi
 			UnitAi* medicAI; // eax
 			Unit* medic; // edx
 			UnitAi* nextAI; // ecx
@@ -170,9 +170,9 @@ namespace hooks
 	// Hooked to add region null check - Pr0nogo
 	void AI_TrainingBroodling(Unit* result, Unit* parent) // 0043E280
 	{
-		AiCaptain* region;
+		AiRegion* region;
 		s16 regionType;
-		AiCaptain* playerRegion;
+		AiRegion* playerRegion;
 		s32 regionId;
 		s32 pX, pY;
 		if (result->sprite != nullptr)
@@ -220,7 +220,7 @@ namespace hooks
 		UnitAi* v6;
 		s32 parentTown;
 		AiTown* v8;
-		AiCaptain* v9;
+		AiRegion* v9;
 		s16 v10;
 		s16 v11;
 		UnitAi* v12;
@@ -277,7 +277,7 @@ namespace hooks
 					{
 						parentTown = (u8)result->buildQueueSlot;
 					}
-					v9 = (AiCaptain*)*(&childTown->field_18 + parentTown);
+					v9 = (AiRegion*)*(&childTown->field_18 + parentTown);
 					if (*(&childTown->field_9 + parentTown) == 2)
 					{
 						if (!*(s32*)&v9->field_C)
@@ -518,10 +518,10 @@ namespace hooks
 		s32 v11;
 		UnitAi* v12;
 		s32 v13;
-		AiCaptain* v14;
+		AiRegion* v14;
 		s32 v15;
 		s32 v16;
-		AiCaptain* selfRegion;
+		AiRegion* selfRegion;
 		char v18;
 		s16 v19;
 		s16 child0;
@@ -920,11 +920,11 @@ LABEL_126:
 
 	// hooked for attack extender
 //	0x0043E670 => train_attack_force(@eax *mut AiRegion)->u32;
-	u32 AI_TrainAttackForce(AiCaptain* region) // 0043E670
+	u32 AI_TrainAttackForce(AiRegion* region) // 0043E670
 	{
 		u32 result;
 		u32 child;
-		AiCaptain* parentAi;
+		AiRegion* parentAi;
 		u16 childAi;
 		u32 childTown;
 		u32 v6;
@@ -974,16 +974,16 @@ LABEL_126:
 	}
 
 	//	0x0043EEC0 => grouping_for_attack(*mut AiRegion);
-	void AI_GroupingForAttack(AiCaptain* region) // 0043EEC0
+	void AI_GroupingForAttack(AiRegion* region) // 0043EEC0
 	{
-		AiCaptain* regionVar;
+		AiRegion* regionVar;
 		Unit* attackTarget;
-		AiCaptain* targetRegion;
+		AiRegion* targetRegion;
 		u32 missingUnits;
 		u32 attackUnit;
 		u16 regionId;
-		AiCaptain* targetRegion2;
-		AiCaptain* targetRegion3;
+		AiRegion* targetRegion2;
+		AiRegion* targetRegion3;
 		u32 attackWave[63];
 		s32 a3;
 		s32 a4;
@@ -1051,7 +1051,7 @@ LABEL_14:
 	}
 
 	//	0x00438050 => get_missing_attack_force_units_hook(*mut AiRegion,*mut u32,bool)->u32;
-	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign) // 00438050
+	u32 AI_GetMissingAttackForceUnits(AiRegion* region, u32* unitIds, u32 isCampaign) // 00438050
 	{
 		s16 parentAi;
 		u16* childAi;

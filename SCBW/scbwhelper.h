@@ -123,7 +123,7 @@ namespace helper
 	void AI_TrainingOverlord(Unit* result, Unit* parent);
 	void AI_TrainingNormal(Unit* result, Unit* parent);
 	void AI_OrderToDestination(Unit* unit, s32 orderId, s32 x, s32 y);
-	void AI_AssignCaptainToSlowestUnit(AiCaptain* region);
+	void AI_AssignCaptainToSlowestUnit(AiRegion* region);
 
 	// for AI_CreateNuke
 	Unit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId);
@@ -132,8 +132,8 @@ namespace helper
 	void hideUnit(Unit* unit);
 
 	// for AI_TrainingBroodling
-	void AI_AssignMilitary(s32 regionType, AiCaptain* region);
-	void AI_AddMilitary(AiCaptain* region, Unit* unit, s32 always_this_region);
+	void AI_AssignMilitary(s32 regionType, AiRegion* region);
+	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 always_this_region);
 
 	// For AI_TrainingWorker
 	char AI_AddUnitAI(Unit* worker, AiTown* town);									// 00433DD0
@@ -181,22 +181,22 @@ namespace helper
 	// Attack extender
 
 	// for AI_TrainAttackForce
-	s32 AI_AddRegionToMilitary(AiCaptain* region, s32 unitId, s32 priority);
+	s32 AI_AddRegionToMilitary(AiRegion* region, s32 unitId, s32 priority);
 	u32 AI_FindUnit(u32 unitId, u32 playerId, u32 type);
 	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value);
-	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiCaptain* region, char priority);
+	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiRegion* region, char priority);
 
 	// for AIRegion_GroupForAttack
-	u32 AI_RecalculateRegionStrength(AiCaptain* region);
-	Unit* AI_TargetEnemyInRegion(AiCaptain* region);
-	s32 AI_MoveMilitaryToDefend(AiCaptain* region);
-	void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,
+	u32 AI_RecalculateRegionStrength(AiRegion* region);
+	Unit* AI_TargetEnemyInRegion(AiRegion* region);
+	s32 AI_MoveMilitaryToDefend(AiRegion* region);
+	void AI_GetRegionMilitaryTypes(AiRegion* region, s32* hasGroundMilitary,
 		s32* cantAttackGround, s32* cantAttackAir);
-	s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2);
-	Unit* AI_PickAttackTarget_NoBuildings(AiCaptain* region);
-	u32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, u32 pullUnitsNearRegion,
+	s32 AI_CanTravelToRegion(AiRegion* region1, AiRegion* region2);
+	Unit* AI_PickAttackTarget_NoBuildings(AiRegion* region);
+	u32 AI_MoveMilitaryToOtherRegion(AiRegion* target, AiRegion* source, u32 pullUnitsNearRegion,
 		u32 sendPureSpellcasters, u32 dontSendFromBunkers);
-	AiTown* AI_IterateTownSomething(AiCaptain* region);
+	AiTown* AI_IterateTownSomething(AiRegion* region);
 	u32 AI_AttackTimerDecrement(u32 player);
 	s32 AI_HasForcesMovingToAttack(u32 player);
 

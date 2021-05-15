@@ -637,7 +637,8 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 
 //-------- AI related stuff --------//
 
-struct AiCaptain // AiRegion
+struct MilitaryAiArray; // declaring this here to avoid compiler errors
+struct AiRegion // AiRegion
 {
 	/*00*/  u16 region;
 	/*02*/  u16 targetRegion;
@@ -660,12 +661,12 @@ struct AiCaptain // AiRegion
 	/*20*/  u32 groundTarget;
 	/*24*/  Unit* slowestUnit;
 	/*28*/  Unit* followTarget;
-	/*2C*/  Unit* mainMedic;
+	/*2C*/  MilitaryAiArray* military;
 	/*30*/  void* town;
 };
 
-C_ASSERT(sizeof(AiCaptain) == 52);
-//static_assert(sizeof(AiCaptain) == 52, "The size of the AiCaptain structure is invalid");
+C_ASSERT(sizeof(AiRegion) == 52);
+//static_assert(sizeof(AiRegion) == 52, "The size of the AiRegion structure is invalid");
 
 struct UnitAi
 {
@@ -741,7 +742,7 @@ struct MilitaryAi
 	u8 padding1;						// 0x9
 	u16 padding2;						// 0xA
 	Unit* parent;						// 0xC
-	AiCaptain* region;					// 0x10
+	AiRegion* region;					// 0x10
 };
 C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14
 
@@ -755,6 +756,12 @@ struct BuildingAiArray
 {
 	BuildingAi building_ais[1000];
 	BuildingAi* first_free_building;
+};
+
+struct MilitaryAiArray
+{
+	MilitaryAi military_ais[1000];
+	MilitaryAi* first_free_military;
 };
 
 struct TownReq
