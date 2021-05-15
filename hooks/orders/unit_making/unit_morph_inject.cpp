@@ -402,7 +402,7 @@ namespace
 	}
 
 	/*
-	void __declspec(naked) RemoveWorkerOrBuildingAiWrapper() {
+	void __declspec(naked) removeWorkerOrBuildingAI_Wrapper() {
 		static Unit* unit;
 		static u32 assert_is_building;
 		static u32 result;
@@ -413,7 +413,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::remove_worker_or_building_ai(unit,assert_is_building);
+		result = hooks::removeWorkerOrBuildingAI(unit,assert_is_building);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -567,15 +567,15 @@ namespace hooks
 	{
 		jmpPatch(orders_ZergBirthWrapper, 0x0045DD60, 1);
 		jmpPatch(orders_Morph1Wrapper, 0x0045DEA0, 0);
-		callPatch(unitMorphWrapper_CMDRECV_UnitMorph, 0x00486B50);	//jmp 004C1990  CMDRECV_UnitMorph
-		jmpPatch(unitMorphWrapper_BTNSCOND_CanBuildUnit, 0x00428E60);	//00428E60  BTNSCOND_CanBuildUnit
-		jmpPatch(unitMorphWrapper_Orders_Morph1_Check, 0x0045DFB0);	//0045DEA0  orders_Morph1 within	
-		jmpPatch(unitMorphWrapper_Orders_Morph1_EggType, 0x0045E019);	//0045DEA0  orders_Morph1 within
-		jmpPatch(hasSuppliesForUnitWrapper, 0x0042CF70);	//0042CF70  hasSuppliesForUnit EXACT
-		jmpPatch(cancelUnitWrapper, 0x00468280);	//00468280  AI_CancelStructure EXACT
-		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);	//004669E0  sub_4669E0 EXACT
-		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);	//0045DD60  orders_ZergBirth within
-		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);	//0045DD60  orders_ZergBirth within
+		callPatch(unitMorphWrapper_CMDRECV_UnitMorph, 0x00486B50);			// jmp 004C1990  CMDRECV_UnitMorph
+		jmpPatch(unitMorphWrapper_BTNSCOND_CanBuildUnit, 0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
+		jmpPatch(unitMorphWrapper_Orders_Morph1_Check, 0x0045DFB0);			// 0045DEA0  orders_Morph1 within	
+		jmpPatch(unitMorphWrapper_Orders_Morph1_EggType, 0x0045E019);		// 0045DEA0  orders_Morph1 within
+		jmpPatch(hasSuppliesForUnitWrapper, 0x0042CF70);					// 0042CF70  hasSuppliesForUnit EXACT
+		jmpPatch(cancelUnitWrapper, 0x00468280);							// 00468280  AI_CancelStructure EXACT
+		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);				// 004669E0  sub_4669E0 EXACT
+		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);			// 0045DD60  orders_ZergBirth within
+		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);					// 0045DD60  orders_ZergBirth within
 		
 		jmpPatch(beginTrainWrapper, 0x00468200);
 		jmpPatch(detachUnitTask_EggJmpWrapper, 0x00434CD0, 1);
@@ -585,6 +585,6 @@ namespace hooks
 		jmpPatch(deleteBuildingWorkerAiEggJmpWrapper, 0x00434CD0, 1);
 		jmpPatch(addUnitAiEggJmpWrapper, 0x00433E64, 1);
 
-//		jmpPatch(RemoveWorkerOrBuildingAiWrapper, 0x00434C90); // 00434C90 - failed hook, causes crashes
+//		jmpPatch(removeWorkerOrBuildingAI_Wrapper, 0x00434C90); // 00434C90
 	}
 }
