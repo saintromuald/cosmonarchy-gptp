@@ -1329,11 +1329,13 @@ Unit* Unit::getFirstLoadedUnit() const
 bool Unit::hasLoadedUnit() const
 {
 	assert(this);
-
 	for (s32 i = 0; i < 8; ++i)
+	{
 		if (!getLoadedUnit(i))
+		{
 			return true;
-
+		}
+	}
 	return false;
 }
 
