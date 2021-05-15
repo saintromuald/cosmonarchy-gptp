@@ -793,7 +793,7 @@ namespace hooks
 				v12 = v11->link.next;
 				*activeIscriptEntity = v11;
 				*activeIscriptUnit = v11;
-				helper::progressUnitFrame(v11);
+				progressUnitFrame(v11);
 				v11 = v12;
 			}
 			while (v12);
@@ -833,7 +833,7 @@ namespace hooks
 				v17 = v16->link.next;
 				*activeIscriptEntity = v16;
 				*activeIscriptUnit = v16;
-				helper::progressUnitFrame(v16);
+				progressUnitFrame(v16);
 				v16 = v17;
 			}
 			while (v17);
@@ -972,7 +972,7 @@ LABEL_13:
 		}
 
 		Sprite* unitSprite2 = unitVar->sprite;
-		if (unitSprite2)
+		if (unitSprite2 != nullptr)
 		{
 			helper::spriteToIscriptLoop(unitSprite2);
 			if (!unitVar->sprite->images.head)
