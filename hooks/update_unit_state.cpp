@@ -957,7 +957,7 @@ LABEL_13:
 		}
 		helper::updateUnitTimers(unitVar);
 		helper::progressOrder(unitVar);
-		s32 unused;
+		s32 unused = 0;
 		helper::performSecondaryOrders(unitVar, unused);
 
 		Unit* unitSubunit = unitVar->subunit;
