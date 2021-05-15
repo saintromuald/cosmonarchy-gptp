@@ -906,6 +906,7 @@ namespace hooks
 							}
 						});
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256);
+					helper::playSoundFromSource(SoundId::SirenTertiaryEyesCast01, unit, 1, 0);
 				}
 			} break;
 			case UnitId::TerranWyvern:

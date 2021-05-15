@@ -134,7 +134,7 @@ namespace hooks
 					unitInfested->setHp(units_dat::MaxHitPoints[infestedUnitNewId]);
 
 					//give the proper button set to the unit
-					helper::changeUnitButtonSet_Sub_4E5D60(unitInfested, infestedUnitNewId);
+					helper::changeUnitButtonSet(unitInfested, infestedUnitNewId);
 					scbw::refreshConsole();
 
 				} //if(unitInfested->remainingBuildTime == 0)

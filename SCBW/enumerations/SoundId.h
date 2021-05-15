@@ -1164,6 +1164,7 @@ namespace SoundId
 		DemiurgeGodsMadeFleshCast02 = 1408,
 		ArchitectWeaponSplit01 = 1416,
 		DemiurgeWorship01 = 1417,
+		SirenTertiaryEyesCast01 = 1459,
 
 	};
 }

@@ -24,7 +24,7 @@ namespace hooks
 						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
 
 					helper::actUnitReturnToIdle(unit);
-					helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+					helper::changeUnitButtonSet(unit, unit->id);
 					scbw::refreshConsole();
 
 					while (current_image != nullptr)

@@ -24,8 +24,8 @@ namespace hooks
 			{
 				vorvaling = true;
 			}
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg ||
-				unit->previousUnitType == UnitId::ZergCocoon || unit->previousUnitType == 179)
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg
+				|| unit->previousUnitType == UnitId::ZergCocoon)
 			{
 				bTwinEggOrCocoon = false;
 			}
@@ -38,8 +38,8 @@ namespace hooks
 					helper::AI_TrainingUnit(unit2, unit);
 				}
 			}
-			if (unit->id != UnitId::ZergDroleth &&
-				unit->id != UnitId::ZergOvileth) // TODO: investigate if the conditional is needed or if it should have other ovileth morphs in it
+			if (unit->id != UnitId::ZergDroleth
+				&& unit->id != UnitId::ZergOvileth) // TODO: investigate if the conditional is needed or if it should have other ovileth morphs in it
 			{
 				helper::AI_TrainingUnit(unit, unit);
 			}
@@ -177,7 +177,7 @@ namespace hooks
 							}
 							while (current_image != nullptr);
 						}
-						helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+						helper::changeUnitButtonSet(unit, UnitId::None);
 						scbw::refreshConsole();
 						unit->status &= ~UnitStatus::IsBuilding; // disable the flag if set
 						helper::setArchonPathing(unit);
@@ -190,7 +190,7 @@ namespace hooks
 						// morph into egg from source unit
 						helper::replaceUnitWithType(unit, eggId);
 					}
-					helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+					helper::changeUnitButtonSet(unit, unit->id);
 					unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 					unit->mainOrderState = 1;
 					auto origin = unit->eggOrigin;
@@ -245,7 +245,10 @@ namespace hooks
 				helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
 				unit->energy = unitExt->values[ValuePreMorphEnergy];
 				if (unit->id == UnitId::ZergDroleth
-					|| unit->id == UnitId::ZergOvileth)
+					|| unit->id == UnitId::ZergOvileth
+					|| unit->id == UnitId::ZergIroleth
+					|| unit->id == UnitId::ZergOthstoleth
+					|| unit->id == UnitId::ZergAlaszileth)
 				{
 					helper::AI_TrainingUnit(unit, unit);
 				}

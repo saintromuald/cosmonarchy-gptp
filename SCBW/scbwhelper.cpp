@@ -4178,14 +4178,14 @@ namespace helper
 		}
 	}
 
-	void changeUnitButtonSet_Sub_4E5D60(Unit* unit, u16 buttonSetId)
+	void changeUnitButtonSet(Unit* unit, u16 buttonSetId)
 	{
-		const u32 Func_Sub_4E5D60 = 0x004E5D60;
+		const u32 Func_changeUnitButtonSet = 0x004E5D60;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			MOV CX, buttonSetId
-			CALL Func_Sub_4E5D60
+			CALL Func_changeUnitButtonSet
 			POPAD
 		}
 	}
@@ -4464,18 +4464,6 @@ namespace helper
 			MOV EBX, soundId
 			MOV EAX, unit
 			CALL Func_animDecloak
-			POPAD
-		}
-	}
-
-	void changeUnitButtonSet_Sub4E5D60(Unit* unit, u16 buttonSetId)
-	{
-		const u32 Func_Sub4E5D60 = 0x004E5D60;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV CX, buttonSetId
-			CALL Func_Sub4E5D60
 			POPAD
 		}
 	}
