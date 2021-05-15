@@ -88,7 +88,7 @@ namespace hooks
 					child->pAI = 0;
 				}
 			}
-			result = helper::AI_AcceptNewUnit(child, parentTown);
+			result = helper::AI_AddUnitAI(child, parentTown);
 		}
 		return result;
 	}
@@ -309,7 +309,7 @@ namespace hooks
 	*/
 
 	// Hooked because iquare told me to - Pr0nogo
-	char AI_AddUnitAi(Unit* unit, AiTown* town) // 00433DD0
+	char AI_AddUnitAI(Unit* unit, AiTown* town) // 00433DD0
 	{
 		UnitAi* unitAI;
 		WorkerAi* unitAIWorker;
@@ -871,7 +871,7 @@ LABEL_126:
 						result->pAI = 0;
 					}
 				}
-				AI_AddUnitAi(result, parentTown);
+				AI_AddUnitAI(result, parentTown);
 				if (result->id != UnitId::TerranBunker || *elapsedTimeSeconds <= 60)
 				{
 					if (result->id == UnitId::TerranWatchdog)

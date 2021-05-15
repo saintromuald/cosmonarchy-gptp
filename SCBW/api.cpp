@@ -1751,7 +1751,7 @@ namespace scbw
 		{
 			if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
 			{
-				helper::AI_AcceptNewUnit(unit, town);
+				helper::AI_AddUnitAI(unit, town);
 			}
 			else
 			{
