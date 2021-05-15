@@ -12,7 +12,7 @@ namespace hooks
 {
 	void orders_ZergBirth(Unit* unit)
 	{
-		if (unit->orderSignal & 4)
+		if (unit->orderSignal & 4 && !(unit->status & UnitStatus::NoBrkCodeStart))
 		{
 			bool bTwinEggOrCocoon = true;
 			Point16 pos;
