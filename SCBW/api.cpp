@@ -857,6 +857,10 @@ namespace scbw
 			{
 				helper::AI_TrainingUnit(unit, creator);
 			}
+			else
+			{
+				unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+			}
 		}
 		return unit;
 	}
@@ -1752,6 +1756,7 @@ namespace scbw
 			if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
 			{
 				helper::AI_AddUnitAI(unit, town);
+				unit->orderComputerClear(OrderId::ComputerAI);
 			}
 			else
 			{
@@ -1759,6 +1764,7 @@ namespace scbw
 				if (captain)
 				{
 					helper::AI_AddMilitary(captain, unit, 1);
+					unit->orderComputerClear(OrderId::ComputerAI);
 				}
 			}
 		}
