@@ -893,8 +893,8 @@ namespace scbw
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
-		// Reset Ensnare
-		if (unit->ensnareTimer != 0)
+		// Refresh Ensnare
+		if (unit->ensnareTimer)
 		{
 			unit->ensnareTimer = MatralethEnsnareTimer;
 			// specific update following ensnare removal
@@ -902,72 +902,66 @@ namespace scbw
 		}
 
 		// Refresh Plague
-		if (unit->plagueTimer != 0)
+		if (unit->plagueTimer)
 		{
 			unit->plagueTimer = IsthrathalethPlagueTimer;
 		}
 
-		// Reset Observance
+		// Refresh Observance
 		if (unitExt->timers[TimerObservanceDebuff])
 		{
 			unitExt->timers[TimerObservanceDebuff] = SeraphObservanceDebuffTimer;
 		}
 
-		// Reset Knockout Drivers
+		// Refresh Knockout Drivers
 		if (unitExt->timers[TimerKnockoutDrivers])
 		{
 			unitExt->timers[TimerKnockoutDrivers] = SouthpawKnockoutDriversTimer;
 		}
 
-		// Reset Hallucination
+		// Refresh Hallucination
 		if (unitExt->timers[TimerHallucinating])
 		{
 			unitExt->timers[TimerHallucinating] = CantavisHallucinationTimer;
 		}
 
-		// Reset Captivating Claws
+		// Refresh Captivating Claws
 		if (unitExt->timers[TimerCaptivatingClaws])
 		{
 			unitExt->timers[TimerCaptivatingClaws] = VorvalingCaptivatingClawsTimer;
 		}
 
-		// Reset Lobotomy Mine slow
-		if (unitExt->timers[TimerLobotomySlow])
-		{
-			unitExt->timers[TimerLobotomySlow] = LobotomyMineLockdownTimer;
-		}
-
-		// Reset Lockdown
-		if (unit->lockdownTimer != 0)
+		// Refresh Lockdown
+		if (unit->lockdownTimer)
 		{
 			unit->lockdownTimer = LobotomyMineLockdownTimer;
 		}
 
-		// Reset Maelstrom
-		if (unit->maelstromTimer != 0)
+		// Refresh Maelstrom
+		if (unit->maelstromTimer)
 		{
 			unit->maelstromTimer = MindTyrantMaelstromTimer;
 		}
 
-		// Reset Devourer Corrosive Spores
+		// Refresh Devourer Corrosive Spores
 		if (unitExt->timers[TimerCorrosiveTouch])
 		{
 			unitExt->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
 		}
 
-		// Reset Irradiate
-		if (unit->irradiateTimer != 0)
+		// Refresh Irradiate
+		if (unit->irradiateTimer)
 		{
 			unit->irradiateTimer = SeraphIrradiateTimer;
 		}
 
-		// Reset Dirge
+		// Refresh Dirge
 		if (unitExt->timers[TimerDirgeFuse])
 		{
 			unitExt->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
 		}
 
-		// Reset Hierophant Signify
+		// Refresh Hierophant Signify
 		if (unitExt->timers[TimerSignify])
 		{
 			unitExt->timers[TimerSignify] = 3 * 24 + 1;
