@@ -169,9 +169,9 @@ namespace hooks
 				if (acquired)
 				{
 					helper::unitOrderMoveToTargetUnit(cleric, acquired);
-					//helper::moveToTarget(acquired, cleric);
 					if (!cleric->isTargetWithinMinRange(acquired, 30))
 					{
+						helper::moveToTarget(acquired, cleric);
 						return 3;
 					}
 					scbw::decloakProc(cleric);
@@ -186,7 +186,7 @@ namespace hooks
 	void orders_MedicHeal1(Unit* unit)
 	{
 		Unit* target = unit->orderTarget.unit;
-		u32 doMedicHeal_result = doMedicHeal_Func(unit, target);
+		u32 doMedicHeal_result = helper::doMedicHeal(unit, target);
 		if (doMedicHeal_result == 0)
 		{
 			helper::setNextWaypoint(unit);
