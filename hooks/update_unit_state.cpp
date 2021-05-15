@@ -716,12 +716,7 @@ namespace hooks
 						v6 = v4->playerId;
 						if (playerTable[v6].type == 2)
 						{ // PLAYER_OCCUPIED
-							helper::revealSightAtLocation(
-								1,
-								playerVision->flags[v6],
-								v4->sprite->position.x,
-								v4->sprite->position.y,
-								(v4->status >> 2) & 1); // is air unit
+							helper::revealSightAtLocation(1, playerVision->flags[v6], v4->sprite->position.x, v4->sprite->position.y, (v4->status >> 2) & 1); // is air unit
 						}
 					}
 					helper::updateVisibility(v4);
