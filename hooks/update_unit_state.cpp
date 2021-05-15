@@ -636,8 +636,8 @@ namespace hooks
 	}
 
 	// Hooked to help with the cloak rewrite - Pr0nogo
-	void updateUnits()
-	{ // 004ED000
+	void updateUnits() // 004ED000
+	{
 		s32 v0;
 		Unit* v1;
 		char v2;
