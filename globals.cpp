@@ -468,7 +468,7 @@ void Globals::frameHook()
 				revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				revivedExt->values[ValueReviveStarted] = 1;
-				revivedExt->values[TimerRevive] = 3;
+				revivedExt->timers[TimerRevive] = 3;
 			}
 			apostleAgents.erase(apostleAgents.begin() + i);
 			i--;
