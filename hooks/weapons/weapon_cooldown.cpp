@@ -28,13 +28,10 @@ namespace hooks
 			+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
 		// Vassal Terminal Surge behavior
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit)
+		f64 stacks = unitExt->values[ValueTerminalSurge];
+		if (stacks > 0)
 		{
-			f64 stacks = unitExt->values[ValueTerminalSurge];
-			if (stacks > 0)
-			{
-				cooldown /= 1.0 + 0.05 * stacks;
-			}
+			cooldown /= 1.0 + 0.05 * stacks;
 		}
 
 		// Madcap Maverick Feeders behavior: increase weapon speed while stationary
