@@ -1746,20 +1746,20 @@ namespace scbw
 			return;
 		}
 
-		if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
+		AiTown* town = AiDataList[unit->playerId].first;
+		if (town)
 		{
-			AiTown* town = AiDataList[unit->playerId].first;
-			if (town)
+			if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
 			{
 				helper::AI_AddUnitAI(unit, town);
 			}
-		}
-		else
-		{
-			AiRegion* captain = &AiRegionCaptains[unit->playerId][helper::SAI_GetRegionIdFromPxEx(unit->getX(), unit->getY())];
-			if (captain)
+			else
 			{
-				helper::AI_AddMilitary(captain, unit, 1);
+				AiCaptain* captain = &AiRegionCaptains[unit->playerId][helper::SAI_GetRegionIdFromPxEx(town->position.x, town->position.y)];
+				if (captain)
+				{
+					helper::AI_AddMilitary(captain, unit, 1);
+				}
 			}
 		}
 	}
