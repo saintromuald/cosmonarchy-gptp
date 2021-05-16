@@ -19,14 +19,17 @@ namespace hooks
 	void order_PhaseLink(Unit* unit);
 	bool canAttackTarget_EndChunk(Unit* source, u32 target_flags);
 	void createDamageOverlay(Sprite* sprite);
+	bool debugDamageOverlay(Sprite* sprite);
+
 	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, Unit* parent);
 	s32 isTileBlockedBy(Unit** unitArray, Unit* builder, s32 x_tile, s32 y_tile,
 		s8 dontIgnoreReacting, s8 alsoInvisible);													// 00473300
 	s32 gameLoop();																					// 004D94B0
-	Unit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId);										// 004A09D0
+	Unit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId);									// 004A09D0
 }
 
 namespace hooks
 {
 	void injectHydraSpecific();
+
 }
