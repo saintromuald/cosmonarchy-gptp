@@ -350,6 +350,14 @@ void Globals::unitDeathHook(Unit* unit)
 		}
 	}
 
+	for (s32 i = 0; i < this->effects.size(); i++)
+	{
+		if (effects[i].parent == unit)
+		{
+			effects[i].parent = nullptr;
+		}
+	}
+
 	lurkerSpineHits[unit].clear();
 	for (auto& a : lurkerSpineHits)
 	{
@@ -390,7 +398,7 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 	unit->irradiateTimer = time;
 }
 
-void Globals::createEffect(u8 impactId, u32 time, Point32 position, u32 radius, s32 spriteId, u8 elevation, u8 player)
+void Globals::createEffect(u8 impactId, u32 time, Point32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* parent)
 {
 	Effect effect;
 	effect.effectId = impactId;
@@ -402,6 +410,7 @@ void Globals::createEffect(u8 impactId, u32 time, Point32 position, u32 radius, 
 	effect.elevation = elevation;
 	effect.player = player;
 	effect.thingy = nullptr;
+	effect.parent = parent;
 
 	if (effect.spriteId >= 0)
 	{
@@ -479,6 +488,14 @@ void Globals::frameHook()
 	for (s32 i = 0; i < effects.size(); i++)
 	{
 		effects[i].currentTime--;
+		if (effects[i].parent)
+		{
+			effects[i].position = {effects[i].parent->position.x, effects[i].parent->position.y};
+			if (effects[i].thingy)
+			{
+				effects[i].thingy->sprite->setPosition(effects[i].parent->position.x, effects[i].parent->position.y);
+			}
+		}
 		const s32 framePeriod = 6;
 		if (effects[i].currentTime % framePeriod == 1)
 		{
@@ -496,8 +513,7 @@ void Globals::frameHook()
 					{
 						unit->damageWithCustom(2500 * damageMultiplier, DamageType::Chronal, nullptr, effects[i].player, 0, 1, true);
 					});
-					break;
-				}
+				} break;
 				case EffectId::SalamanderFire:
 				{
 					scbw::UnitFinder(
@@ -513,8 +529,7 @@ void Globals::frameHook()
 						}
 						unit->damageWithCustom(20 * damageMultiplier, DamageType::Concussive, nullptr, effects[i].player, 0, 1, true);
 					});
-					break;
-				}
+				} break;
 				case EffectId::Criticality:
 				{
 					scbw::UnitFinder(
@@ -530,8 +545,7 @@ void Globals::frameHook()
 						}
 						unit->damageWithCustom(30 * damageMultiplier, DamageType::Explosive, nullptr, effects[i].player, 0, 1, true);
 					});
-					break;
-				}
+				} break;
 				case EffectId::CausticDischarge:
 				{
 					scbw::UnitFinder(
@@ -549,8 +563,7 @@ void Globals::frameHook()
 						unit->damageWithCustom(30 * damageMultiplier, DamageType::Impact, nullptr, effects[i].player, 0, 1, true);
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
-					break;
-				}
+				} break;
 				case EffectId::IonField:
 				{
 					scbw::UnitFinder(
@@ -568,8 +581,7 @@ void Globals::frameHook()
 						unit->damageWithCustom(100 * damageMultiplier, DamageType::Chronal, nullptr, effects[i].player, 0, 1, true);
 						unitExt->timers[TimerIonFieldSpeed] = 2 * 24 + 1;
 					});
-					break;
-				}
+				} break;
 				case EffectId::Hallucination:
 				{
 					scbw::UnitFinder(
@@ -593,8 +605,7 @@ void Globals::frameHook()
 							unitExt->timers[TimerHallucinating] = effects[i].currentTime;
 						}
 					});
-					break;
-				}
+				} break;
 				case EffectId::Irradiate:
 				{
 					scbw::UnitFinder(
@@ -610,8 +621,38 @@ void Globals::frameHook()
 						}
 						ApplyIrradiate(unit, effects[i].player, 15);
 					});
-					break;
-				}
+				} break;
+				case EffectId::DisruptionWeb:
+				{
+					if (!effects[i].parent)
+					{
+						effects[i].currentTime = 0;
+						break;
+					}
+
+					UnitExt* parentExt = globals.GetUnitExt(effects[i].parent);
+					if (!parentExt->values[ValueDisruptionWebOn])
+					{
+						effects[i].currentTime = 0;
+						break;
+					}
+
+					scbw::UnitFinder(
+						effects[i].position.x - 60,
+						effects[i].position.y - 40,
+						effects[i].position.x + 60,
+						effects[i].position.y + 40
+					).forEachInMatch(hydraFinderMatch(nullptr, 0, {}), [&](Unit* unit)
+					{
+						if (unit == effects[i].parent)
+						{
+							return;
+						}
+						UnitExt* unitExt = globals.GetUnitExt(unit);
+						unitExt->timers[TimerDisruptionWebStatusClear] = 7;
+						unit->status |= UnitStatus::CanNotAttack;
+					});
+				} break;
 				case EffectId::GroundZero:
 				{
 					const u32 delta = effects[i].maxTime - effects[i].currentTime;
@@ -638,10 +679,10 @@ void Globals::frameHook()
 							}
 						} break;
 					}
-				}
+				} break;
 			}
 		}
-		if (effects[i].currentTime <= 0)
+		if (effects[i].currentTime == 0)
 		{
 			if (effects[i].thingy && effects[i].thingy->sprite)
 			{
