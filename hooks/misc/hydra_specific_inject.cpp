@@ -643,10 +643,9 @@ namespace hooks
 				POPAD
 				JMP DmgOverlay_JmpEnd
 			}
-		}
-		
-	
+		}	
 	}
+
 	void damageOverlayDebug()
 	{
 //		jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
