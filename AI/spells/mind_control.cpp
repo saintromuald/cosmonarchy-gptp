@@ -34,8 +34,8 @@ namespace AI
 
 			switch (target->id)
 			{
-				case UnitId::TerranPhalanx_TankMode:
-				case UnitId::TerranPhalanx_SiegeMode:
+				case UnitId::TerranPhalanxTankMode:
+				case UnitId::TerranPhalanxSiegeMode:
 				case UnitId::TerranMadrigal:
 				case UnitId::TerranSeraph:
 				case UnitId::TerranMinotaur:
