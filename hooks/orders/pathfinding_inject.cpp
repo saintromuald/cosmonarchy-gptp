@@ -63,6 +63,6 @@ namespace hooks
 	void injectPathfindingHooks()
 	{
 //		jmpPatch(moveToTarget_Wrapper,			0x004EB720, 0);
-		jmpPatch(getActiveTileFlag_Wrapper,		0x00472F80, 1);
+//		jmpPatch(getActiveTileFlag_Wrapper,		0x00472F80, 1);
 	}
 }

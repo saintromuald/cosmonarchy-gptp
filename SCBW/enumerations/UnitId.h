@@ -437,8 +437,6 @@ enum Enum {
 //	TerranArmory									= 123,		// Terran Armory
 //	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
 //	InfestedCommandCenter							= 130,		// Infested Command Center
-//	MatureChrysalis									= 150,		// Mature Chrysalis
-//	IndependentJumpGate								= 185,		// Independent Jump Gate
 
 // Soon to be unused
 //	DisruptionWeb									= 105,		// Disruption Web
@@ -454,8 +452,6 @@ enum Enum {
 //	TerranBioticBase								= x,		// 
 //	TerranTinkerersTower							= x,		// 
 //	ProtossProstrationStage							= x,		// 
-//	ZergSkithrokor									= x,		// 
-//	ZergSkithrokScab								= x,		// 
 
 // Shared-Unit
 	SharedCohort									= 50,		// Infested Terran
@@ -556,6 +552,7 @@ enum Enum {
 	ZergVorvaling									= 128,		// Uraj
 	ZergBactalisk									= 129,		// Khalis
 	ZergAlaszileth									= 173,		// Khaydarin Crystal Formation
+	ZergSkithrokor									= 185,		// Independent Jump Gate
 	ZergKonvilisk									= 217,		// Psi Emitter
 	ZergAkistrokor									= 218,		// Data Disc
 	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
@@ -567,6 +564,7 @@ enum Enum {
 	ZergKonvilNest									= 145,		// Unused Zerg 1
 	ZergKalkathBloom								= 147,		// Overmind (With Shell)
 	ZergGorgrokApiary								= 148,		// Overmind
+	ZergSkithrokScab								= 150,		// Mature Chrysalis
 	ZergOthstolOviform								= 152,		// Cerebrate Daggoth
 	ZergBactalDen									= 153,		// Unused Zerg 2
 	ZergAlmakAntre									= 179,		// Cave

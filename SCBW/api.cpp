@@ -531,9 +531,12 @@ namespace scbw
 			case UnitId::ZergKeskathalor:
 			case UnitId::ZergIsthrathaleth:
 			case UnitId::ProtossAugur:
+			{
 				return true;
+			}
 			default:
-				break;
+			{
+			} break;
 		}
 		return false;
 	}
@@ -548,9 +551,12 @@ namespace scbw
 		{
 			case UnitId::ProtossArchon:
 			case UnitId::ProtossMindTyrant:
+			{
 				return true;
+			}
 			default:
-				break;
+			{
+			} break;
 		}
 		return false;
 	}
@@ -564,14 +570,18 @@ namespace scbw
 			case UnitId::ZergZergling:
 			case UnitId::ZergHydralisk:
 			case UnitId::ZergMutalisk:
+			case UnitId::ZergSkithrokor:
 			case UnitId::ZergGorgrokor:
 			case UnitId::ZergQuazilisk:
 			case UnitId::ZergMatraleth:
 			case UnitId::ZergUltrakor:
 			case UnitId::ZergZoryusthaleth:
-				return true;
+			{
+				return true; 
+			}
 			default:
-				break;
+			{
+			} break;
 		}
 		if (id == UnitId::ProtossCantavis && allow_high_templar)
 		{
@@ -610,9 +620,12 @@ namespace scbw
 			case UnitId::ZergKeskathGrotto:
 			case UnitId::ZergAlkajChasm:
 			case UnitId::ZergIsthrathMound:
+			{
 				return true;
+			}
 			default:
-				break;
+			{
+			} break;
 		}
 		return false;
 	}
@@ -628,16 +641,19 @@ namespace scbw
 			case UnitId::ZergCreepColony:
 			case UnitId::ZergSpawningPool:
 			case UnitId::ZergMutalSpire:
-			case UnitId::ZergGorgrokApiary:
+			case UnitId::ZergSkithrokScab:
 			case UnitId::ZergHydralDen:
 			case UnitId::ZergBactalDen:
 			case UnitId::ZergQuazilQuay:
 			case UnitId::ZergMatralNest:
 			case UnitId::ZergUltrakCavern:
 			case UnitId::ZergZoryusShroud:
+			{
 				return true;
+			}
 			default:
-				break;
+			{
+			} break;
 		}
 		return false;
 	}
