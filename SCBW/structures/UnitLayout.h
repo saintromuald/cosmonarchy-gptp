@@ -239,6 +239,7 @@ enum ExtValueId
 	ValueReviveStarted,
 	ValuePreMorphHP,
 	ValueSkithrokorMissilePos,
+	ValueDisruptionWebOn,
 
 	ValueCount,
 };
@@ -291,6 +292,7 @@ enum ExtTimerId
 	TimerSignify,
 	TimerReviveFlagClearMin,
 	TimerReviveFlagClearMax,
+	TimerDisruptionWebStatusClear,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
@@ -308,7 +310,6 @@ enum ExtTimerId
 enum ExtUnitId
 {
 	UnitBroodlingMother,			// is this still really used?
-	UnitAttachedDisruptionWeb,
 	UnitParasiteSource,
 	UnitHallucinationPointer,
 	UnitDecaySavant,
