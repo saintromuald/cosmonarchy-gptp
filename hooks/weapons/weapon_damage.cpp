@@ -864,18 +864,16 @@ namespace hooks
 			data.finalDamage = 0;
 			data.target->setHp(256);
 			targetExt->timers[TimerEnthrallingAssaultHeal] = 24 * 10;
+
 			// Transfer unit ownership
 			Unit* akistrokor = targetExt->units[UnitAttachedSource];
 			if (akistrokor)
 			{
-				UnitExt* akistrokorExt = globals.GetUnitExt(akistrokor);
 				data.target->giveTo(akistrokor->playerId);
-				targetExt->values[ValueInfestedByAkistrokor] = 1;
-				akistrokorExt->values[ValueEnthrallingTalons] = 0;
-				akistrokorExt->units[UnitAttachedTarget] = nullptr;
 			}
-			// Housekeeping
-			targetExt->units[UnitAttachedSource] = nullptr;
+
+			// Cancel the attachment
+			scbw::set_generic_rust_value(akistrokor, RustId::CancelAttachment, 1);
 		}
 
 		switch (data.target->id)
