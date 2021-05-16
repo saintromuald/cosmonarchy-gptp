@@ -1014,7 +1014,14 @@ namespace hooks
 			// Generic
 			unitExt->units[UnitAttachedTarget] = nullptr;
 
-			unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+			if (unit->pAI != nullptr)
+			{
+				unit->orderComputerClear(OrderId::ComputerAI);
+			}
+			else
+			{
+				unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+			}
 		}
 
 		// Attachment - Generic behavior
