@@ -450,7 +450,6 @@ union ActiveTile
 };
 
 C_ASSERT(sizeof(ActiveTile) == 4);
-//static_assert(sizeof(ActiveTile) == 4, "The size of the ActiveTile structure is invalid");
 
 struct GroupFlag
 {
@@ -465,7 +464,6 @@ struct GroupFlag
 };
 
 C_ASSERT(sizeof(GroupFlag) == 1);
-//static_assert(sizeof(GroupFlag) == 1, "The size of the GroupFlag structure is invalid");
 
 struct TargetFlag
 {
