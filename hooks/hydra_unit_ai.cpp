@@ -160,12 +160,12 @@ void hydra_unit_ai(Unit* unit)
 					}
 					biases[i] /= 9;
 				}
-				u32 bestBias = 0;
+				u32 bestBias = 4;
 				u32 maxRange = std::max(weapons_dat::MaxRange[unit->getGroundWeapon()], weapons_dat::MaxRange[unit->getAirWeapon()]);
 				if (maxRange < 32)
 				{
 					// Forward kiting for melee
-					for (int i = 1; i < 9; i++)
+					for (int i = 0; i < 9; i++)
 					{
 						if (biases[i] < biases[bestBias])
 						{
@@ -176,7 +176,7 @@ void hydra_unit_ai(Unit* unit)
 				else
 				{
 					// Backwards kiting for ranged
-					for (int i = 1; i < 9; i++)
+					for (int i = 0; i < 9; i++)
 					{
 						if (biases[i] > biases[bestBias])
 						{
@@ -184,7 +184,6 @@ void hydra_unit_ai(Unit* unit)
 						}
 					}
 				}
-				
 
 				if (bestBias != 4) // don't move if least threatning square is current one
 				{
