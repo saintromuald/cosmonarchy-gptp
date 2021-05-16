@@ -203,14 +203,6 @@ void unitDestructorSpecialHook(Unit* unit)
 						target->updateSpeed();
 					});
 			} break;
-			case UnitId::ProtossLanifect:
-			{
-				auto web = unitExt->units[UnitAttachedDisruptionWeb];
-				if (web != nullptr)
-				{
-					web->removeTimer = 1;
-				}
-			} break;
 			case UnitId::ProtossAccantor:
 			case UnitId::ProtossSolarion:
 			{
