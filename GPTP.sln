@@ -7,18 +7,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPTP", "GPTP.vcxproj", "{BA
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		CM Debug|Win32 = Debug|Win32
-		CM Fast Debug|Win32 = Fast Debug|Win32
-		CM Release|Win32 = Release|Win32
+		Debug|Win32 = Debug|Win32
+		Fast Debug|Win32 = Fast Debug|Win32
+		Release|Win32 = Release|Win32
 		Slow Build|Win32 = Slow Build|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Debug|Win32.ActiveCfg = CM Debug|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Debug|Win32.Build.0 = CM Debug|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Fast Debug|Win32.ActiveCfg = CM FastDebug|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Fast Debug|Win32.Build.0 = CM FastDebug|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Release|Win32.ActiveCfg = CM Debug|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Release|Win32.Build.0 = CM Debug|Win32
+		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Debug|Win32.Build.0 = Debug|Win32
+		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Fast Debug|Win32.ActiveCfg = Fast Debug|Win32
+		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Fast Debug|Win32.Build.0 = Fast Debug|Win32
+		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Release|Win32.ActiveCfg = Debug|Win32
+		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Release|Win32.Build.0 = Debug|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Slow Build|Win32.ActiveCfg = Slow Build|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Slow Build|Win32.Build.0 = Slow Build|Win32
 	EndGlobalSection
