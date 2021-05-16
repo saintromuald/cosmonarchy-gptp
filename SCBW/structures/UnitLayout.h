@@ -313,7 +313,7 @@ enum ExtUnitId
 	UnitDecaySavant,
 	UnitWorshipDemiurge,
 	UnitAttachedTarget,
-	UnitAttachedAkistrokor,
+	UnitAttachedSource,
 	UnitMindController,
 	UnitWyvernTargetLock,
 	UnitDirgeSource,

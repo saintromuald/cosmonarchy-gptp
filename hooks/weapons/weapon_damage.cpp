@@ -865,7 +865,7 @@ namespace hooks
 			data.target->setHp(256);
 			targetExt->timers[TimerEnthrallingAssaultHeal] = 24 * 10;
 			// Transfer unit ownership
-			Unit* akistrokor = targetExt->units[UnitAttachedAkistrokor];
+			Unit* akistrokor = targetExt->units[UnitAttachedSource];
 			if (akistrokor)
 			{
 				UnitExt* akistrokorExt = globals.GetUnitExt(akistrokor);
@@ -875,7 +875,7 @@ namespace hooks
 				akistrokorExt->units[UnitAttachedTarget] = nullptr;
 			}
 			// Housekeeping
-			targetExt->units[UnitAttachedAkistrokor] = nullptr;
+			targetExt->units[UnitAttachedSource] = nullptr;
 		}
 
 		switch (data.target->id)

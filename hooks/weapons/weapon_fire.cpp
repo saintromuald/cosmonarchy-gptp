@@ -506,10 +506,10 @@ namespace hooks
 		if (weaponId == WeaponId::AkistrokorEnthrallingAssault && unit->orderTarget.unit != nullptr)
 		{
 			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
-			if (targetExt->units[UnitAttachedAkistrokor] == nullptr)
+			if (targetExt->units[UnitAttachedSource] == nullptr)
 			{
 				unitExt->units[UnitAttachedTarget] = unit->orderTarget.unit;
-				targetExt->units[UnitAttachedAkistrokor] = unit;
+				targetExt->units[UnitAttachedSource] = unit;
 				targetExt->values[ValueEnthrallingTalons] = 1;
 			}
 		}
