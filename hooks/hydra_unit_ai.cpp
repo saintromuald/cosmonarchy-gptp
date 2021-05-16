@@ -60,10 +60,11 @@ void hydra_unit_ai(Unit* unit)
 	*/
 	
 	u32 maxCooldown = std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) / 2;
+	bool isCapable = !unit->isFrozen();
 	bool inCombat = unitExt->combatTimer < 4 * 24
 		|| unit->mainOrderId == OrderId::AttackMove
 		|| unit->mainOrderId == OrderId::AttackUnit;
-	if (inCombat && unitExt->timers[TimerAI_Kite] == 0 && unit->hasWeapon())
+	if (isCapable && inCombat && unitExt->timers[TimerAI_Kite] == 0 && unit->hasWeapon())
 	{
 		const u32 groupRadius = 3 * 32;
 		const u32 groupOffset = groupRadius * 2;
