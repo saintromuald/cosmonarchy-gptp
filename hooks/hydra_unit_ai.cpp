@@ -67,24 +67,24 @@ void hydra_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::AttackUnit;
 	if (isCapable && inCombat && unitExt->timers[TimerAI_Kite] == 0 && unit->hasWeapon())
 	{
-		const u32 groupRadius = 3 * 32;
-		const u32 groupOffset = groupRadius * 2;
+		const u32 localGroupRadius = 3 * 32;
+		const u32 hostileGroupRadius = 6 * 32;
 
 		scbw::UnitFinder localGroup(
-			unit->getX() - groupRadius,
-			unit->getY() - groupRadius,
-			unit->getX() + groupRadius,
-			unit->getY() + groupRadius
+			unit->getX() - localGroupRadius,
+			unit->getY() - localGroupRadius,
+			unit->getX() + localGroupRadius,
+			unit->getY() + localGroupRadius
 		);
 		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {}));
 
 		if (maxCooldown == 0)
 		{
 			Unit* targetUnit = scbw::UnitFinder::getNearestTarget(
-				unit->getX() - groupRadius * 3,
-				unit->getY() - groupRadius * 3,
-				unit->getX() + groupRadius * 3,
-				unit->getY() + groupRadius * 3,
+				unit->getX() - hostileGroupRadius * 3,
+				unit->getY() - hostileGroupRadius * 3,
+				unit->getX() + hostileGroupRadius * 3,
+				unit->getY() + hostileGroupRadius * 3,
 				unit, hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}));
 			if (!targetUnit)
 			{
@@ -104,7 +104,7 @@ void hydra_unit_ai(Unit* unit)
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
 					targetExt->timers[TimerAI_Kite] = 12;
-					target->orderTo(OrderId::Patrol, targetPos.x, targetPos.y);
+					target->orderTo(OrderId::AttackMove, targetPos.x, targetPos.y);
 				});
 			}
 		}
@@ -123,14 +123,14 @@ void hydra_unit_ai(Unit* unit)
 			for (int i = 0; i < 9; i++)
 			{
 				Point16 searchPos = unit->position;
-				searchPos.x += identity[i].x * groupRadius;
-				searchPos.y += identity[i].y * groupRadius;
+				searchPos.x += identity[i].x * hostileGroupRadius;
+				searchPos.y += identity[i].y * hostileGroupRadius;
 
 				scbw::UnitFinder(
-					searchPos.x - groupRadius,
-					searchPos.y - groupRadius,
-					searchPos.x + groupRadius,
-					searchPos.y + groupRadius
+					searchPos.x - localGroupRadius,
+					searchPos.y - localGroupRadius,
+					searchPos.x + localGroupRadius,
+					searchPos.y + localGroupRadius
 				).forEachInMatch(hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}),
 					[&](Unit* target)
 				{
@@ -160,13 +160,18 @@ void hydra_unit_ai(Unit* unit)
 					}
 					biases[i] /= 9;
 				}
-				u32 bestBias = 4;
+				u32 bestBias = 0;
 				u32 maxRange = std::max(weapons_dat::MaxRange[unit->getGroundWeapon()], weapons_dat::MaxRange[unit->getAirWeapon()]);
 				if (maxRange < 32)
 				{
 					// Forward kiting for melee
-					for (int i = 0; i < 9; i++)
+					for (int i = 1; i < 9; i++)
 					{
+						if (bestBias == 4)
+						{
+							continue;
+						}
+
 						if (biases[i] < biases[bestBias])
 						{
 							bestBias = i;
@@ -176,8 +181,13 @@ void hydra_unit_ai(Unit* unit)
 				else
 				{
 					// Backwards kiting for ranged
-					for (int i = 0; i < 9; i++)
+					for (int i = 1; i < 9; i++)
 					{
+						if (bestBias == 4)
+						{
+							continue;
+						}
+
 						if (biases[i] > biases[bestBias])
 						{
 							bestBias = i;
@@ -185,48 +195,35 @@ void hydra_unit_ai(Unit* unit)
 					}
 				}
 
-				if (bestBias != 4) // don't move if least threatning square is current one
+				Point16 newPos = unit->position;
+				newPos.x += identity[bestBias].x * hostileGroupRadius;
+				newPos.y += identity[bestBias].y * hostileGroupRadius;
+
+				if (newPos.x < 0)
 				{
-					Point16 newPos = unit->position;
-					newPos.x += identity[bestBias].x * groupOffset;
-					newPos.y += identity[bestBias].y * groupOffset;
-
-					if (newPos.x < 0)
-					{
-						newPos.x = 0;
-					}
-					else if (newPos.x > mapTileSize->width * 32)
-					{
-						newPos.x = mapTileSize->width * 32;
-					}
-
-					if (newPos.y < 0)
-					{
-						newPos.y = 0;
-					}
-					else if (newPos.y > mapTileSize->height * 32)
-					{
-						newPos.y = mapTileSize->height * 32;
-					}
-
-					//scbw::printf("move");
-					localGroup.forEach([&](Unit* target)
-					{
-						UnitExt* targetExt = globals.GetUnitExt(target);
-						targetExt->timers[TimerAI_Kite] = maxCooldown;
-						target->orderTo(OrderId::Move, newPos.x, newPos.y);
-					});
+					newPos.x = 0;
 				}
-				else
+				else if (newPos.x > mapTileSize->width * 32)
 				{
-					//scbw::printf("stay");
-					localGroup.forEach([&](Unit* target)
-					{
-						UnitExt* targetExt = globals.GetUnitExt(target);
-						targetExt->timers[TimerAI_Kite] = 1 * 12;
-						unit->orderToIdle();
-					});
+					newPos.x = mapTileSize->width * 32;
 				}
+
+				if (newPos.y < 0)
+				{
+					newPos.y = 0;
+				}
+				else if (newPos.y > mapTileSize->height * 32)
+				{
+					newPos.y = mapTileSize->height * 32;
+				}
+
+				//scbw::printf("move");
+				localGroup.forEach([&](Unit* target)
+				{
+					UnitExt* targetExt = globals.GetUnitExt(target);
+					targetExt->timers[TimerAI_Kite] = maxCooldown;
+					target->orderTo(OrderId::Move, newPos.x, newPos.y);
+				});
 			}
 			else
 			{
