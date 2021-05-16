@@ -6,6 +6,6 @@ _tmp/
 _Build/
 docs/
 GPTP.vcxproj.user
-/post_build_hyd_debug.bat
-/post_build_hyd_fastdebug.bat
-/post_build_hyd_release.bat
+/post_build_debug.bat
+/post_build_fastdebug.bat
+/post_build_release.bat
