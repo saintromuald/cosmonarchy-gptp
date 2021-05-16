@@ -132,12 +132,13 @@ namespace hooks
 						{
 							eggId = UnitId::ZergEgg;
 						} break;
-						case UnitId::ZergNathrokor:
-						case UnitId::ZergMutalisk:
-						case UnitId::ZergGorgrokor:
 						case UnitId::ZergOvileth:
 						case UnitId::ZergIroleth:
 						case UnitId::ZergOthstoleth:
+						case UnitId::ZergNathrokor:
+						case UnitId::ZergMutalisk:
+						case UnitId::ZergSkithrokor:
+						case UnitId::ZergGorgrokor:
 						{
 							eggId = UnitId::ZergCocoon;
 						} break;
@@ -159,7 +160,6 @@ namespace hooks
 								return;
 							}
 						}  break;
-							
 					}
 
 					unitExt->values[ValuePreMorphEnergy] = unit->energy;

@@ -377,8 +377,6 @@ namespace hooks
 
 	// Determines the number of units which have @p unitId and are being built by the
 	// @p unit. This hook is used by StarCraft's AI for counting units and buildings.
-	// For example, Greater Spires are counted as Spires, so that the AI would not
-	// try to rebuild another Spire after morphing one into a Greater Spire.
 	s32 getMorphBuildingTypeCountHook(const Unit* unit, u16 unitId, bool ignoreIncomplete)
 	{
 		//Default StarCraft behavior
@@ -437,9 +435,13 @@ namespace hooks
 
 			case UnitId::ZergMutalSpire:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGorgrokApiary, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVithrilHaunt, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGeszithRoost, ignoreIncomplete);
+			} break;
+
+			case UnitId::ZergSkithrokScab:
+			{
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGorgrokApiary, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergQuazilQuay:
