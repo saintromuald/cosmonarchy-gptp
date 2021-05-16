@@ -6,60 +6,65 @@
 #include "globals.h"
 #include "hooks/weapons/weapon_cooldown.h"
 
+/* DONE
+Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby,
+cast the spell. **DONE**
+AI should also try to position Apostles near organics.
+
+Savant Power Siphon: If 2 or more allied specialists are nearby,
+target an enemy specialist within 7 range. **DONE**
+
+Matraleth Parasite: When 5 or more supply's worth of units (of any owner) are within 128px of each other,
+target the group. **DONE**
+
+Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 192px of the Star Sovereign,
+and there are no allied town halls and less than 2000 HP+shields worth of allied units within the same radius,
+and the Star Sovereign has more than 50% of HP+shields combined,
+channel the ability. **DONE**
+Attempt to protect the Star Sovereign with low-cost/low-HP units.
+
+Lanifect Disruption Field:
+When there are at least 3 allies within 128px, and there are at least 2 enemies within 128px,
+and there are no activated Disruption Fields within 96px,
+and the Lanifect is above 50% total HP and shields,
+move towards the most significant enemy threat within 128px (in terms of enemy unit count).
+Recheck conditions to disable the behavior (besides HP/shield checks). **DONE**
+*/
+
+/* TODO
+Eidolon Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them,
+I would suggest dropping them in positions where enemy ground units
+have been spotted/attacked/killed within the last few minutes.
+That way it's like they're responding to ground paths taken by enemies.
+Vulture Spider Mines could be done in similar ways.
+
+Madrigal Tempo Change: When 3 or more hostiles within 4 weapon range,
+switch to Tempo Up (Furia);
+else, switch to Tempo Down (Imperioso)
+
+Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within range,
+target terrain between the Paladin and the target group, 64px away from the group.
+
+Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target
+the group and stay within range while attempting to avoid damage.
+
+Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many
+allies as possible.
+
+Didact Recall: "Offensive" cast when the Didact is added to an attack and a group of 6 or more units are within 160px of
+one another. Attempt to group as many units as possible during the channel.
+*/
+
+static inline f32 getKiteWeaponCooldown(Unit* unit)
+{
+	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 0.75;
+}
+
 void hydra_unit_ai(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
-	/* DONE
-	Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby,
-	cast the spell. **DONE**
-	AI should also try to position Apostles near organics.
-
-	Savant Power Siphon: If 2 or more allied specialists are nearby,
-	target an enemy specialist within 7 range. **DONE**
-
-	Matraleth Parasite: When 5 or more supply's worth of units (of any owner) are within 128px of each other,
-	target the group. **DONE**
-
-	Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 192px of the Star Sovereign,
-	and there are no allied town halls and less than 2000 HP+shields worth of allied units within the same radius,
-	and the Star Sovereign has more than 50% of HP+shields combined,
-	channel the ability. **DONE**
-	Attempt to protect the Star Sovereign with low-cost/low-HP units.
-
-	Lanifect Disruption Field:
-	When there are at least 3 allies within 128px, and there are at least 2 enemies within 128px,
-	and there are no activated Disruption Fields within 96px,
-	and the Lanifect is above 50% total HP and shields,
-	move towards the most significant enemy threat within 128px (in terms of enemy unit count).
-	Recheck conditions to disable the behavior (besides HP/shield checks). **DONE**
-	*/
-
-	/* TODO
-	Eidolon Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them,
-					I would suggest dropping them in positions where enemy ground units
-					have been spotted/attacked/killed within the last few minutes.
-					That way it's like they're responding to ground paths taken by enemies.
-					Vulture Spider Mines could be done in similar ways.
-
-	Madrigal Tempo Change: When 3 or more hostiles within 4 weapon range,
-	switch to Tempo Up (Furia);
-	else, switch to Tempo Down (Imperioso)
-
-	Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within range,
-					target terrain between the Paladin and the target group, 64px away from the group.
-
-	Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target
-					the group and stay within range while attempting to avoid damage.
-
-	Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many
-					allies as possible.
-
-	Didact Recall: "Offensive" cast when the Didact is added to an attack and a group of 6 or more units are within 160px of
-					one another. Attempt to group as many units as possible during the channel.
-	*/
-	
-	u32 maxCooldown = std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 0.75;
+	// Kiting AI
 	bool isCapable = !unit->isFrozen();
 	bool inCombat = unitExt->combatTimer < 4 * 24
 		|| unit->mainOrderId == OrderId::Patrol
@@ -67,7 +72,7 @@ void hydra_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::AttackUnit;
 	if (isCapable && inCombat && unitExt->timers[TimerAI_Kite] == 0 && unit->hasWeapon())
 	{
-		const u32 localGroupRadius = 3 * 32;
+		const u32 localGroupRadius = 4 * 32;
 		const u32 hostileGroupRadius = 6 * 32;
 
 		scbw::UnitFinder localGroup(
@@ -78,22 +83,21 @@ void hydra_unit_ai(Unit* unit)
 		);
 		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {}));
 
+		u32 maxCooldown = getKiteWeaponCooldown(unit);
 		if (maxCooldown == 0)
 		{
 			Unit* targetUnit = scbw::UnitFinder::getNearestTarget(
-				unit->getX() - hostileGroupRadius * 3,
-				unit->getY() - hostileGroupRadius * 3,
-				unit->getX() + hostileGroupRadius * 3,
-				unit->getY() + hostileGroupRadius * 3,
+				unit->getX() - hostileGroupRadius * 2,
+				unit->getY() - hostileGroupRadius * 2,
+				unit->getX() + hostileGroupRadius * 2,
+				unit->getY() + hostileGroupRadius * 2,
 				unit, hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}));
 			if (!targetUnit)
 			{
-				//scbw::printf("idle (wants to attack)");
 				localGroup.forEach([&](Unit* target)
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
 					targetExt->timers[TimerAI_Kite] = 1 * 24;
-					unit->orderToIdle();
 				});
 			}
 			else
@@ -102,8 +106,13 @@ void hydra_unit_ai(Unit* unit)
 				Point16 targetPos = targetUnit->position;
 				localGroup.forEach([&](Unit* target)
 				{
+					if (getKiteWeaponCooldown(target))
+					{
+						return;
+					}
+
 					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAI_Kite] = 12;
+					targetExt->timers[TimerAI_Kite] = 0.5 * 24;
 					target->orderTo(OrderId::AttackMove, targetPos.x, targetPos.y);
 				});
 			}
@@ -167,7 +176,7 @@ void hydra_unit_ai(Unit* unit)
 					// Forward kiting for melee
 					for (int i = 1; i < 9; i++)
 					{
-						if (bestBias == 4)
+						if (i == 4)
 						{
 							continue;
 						}
@@ -183,7 +192,7 @@ void hydra_unit_ai(Unit* unit)
 					// Backwards kiting for ranged
 					for (int i = 1; i < 9; i++)
 					{
-						if (bestBias == 4)
+						if (i == 4)
 						{
 							continue;
 						}
@@ -221,18 +230,16 @@ void hydra_unit_ai(Unit* unit)
 				localGroup.forEach([&](Unit* target)
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAI_Kite] = maxCooldown;
+					targetExt->timers[TimerAI_Kite] = getKiteWeaponCooldown(target);
 					target->orderTo(OrderId::Move, newPos.x, newPos.y);
 				});
 			}
 			else
 			{
-				//scbw::printf("idle");
 				localGroup.forEach([&](Unit* target)
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
 					targetExt->timers[TimerAI_Kite] = 1 * 24;
-					unit->orderToIdle();
 				});
 			}
 		}
