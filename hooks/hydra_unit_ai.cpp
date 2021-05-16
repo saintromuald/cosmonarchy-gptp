@@ -68,6 +68,15 @@ void hydra_unit_ai(Unit* unit)
 	{
 		const u32 groupRadius = 3 * 32;
 		const u32 groupOffset = groupRadius * 2;
+
+		scbw::UnitFinder localGroup(
+			unit->getX() - groupRadius,
+			unit->getY() - groupRadius,
+			unit->getX() + groupRadius,
+			unit->getY() + groupRadius
+		);
+		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {}));
+
 		if (maxCooldown == 0)
 		{
 			Unit* targetUnit = scbw::UnitFinder::getNearestTarget(
@@ -75,36 +84,26 @@ void hydra_unit_ai(Unit* unit)
 				unit->getY() - groupRadius * 3,
 				unit->getX() + groupRadius * 3,
 				unit->getY() + groupRadius * 3,
-				unit,
-				hydraFinderMatch(unit, Flags::Enemy, {}));
+				unit, hydraFinderMatch(unit, Flags::Enemy, {}));
 			if (!targetUnit)
 			{
-				scbw::UnitFinder(
-					unit->getX() - groupRadius,
-					unit->getY() - groupRadius,
-					unit->getX() + groupRadius,
-					unit->getY() + groupRadius
-				).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {}),
-					[&](Unit* target)
+				//scbw::printf("idle (wants to attack)");
+				localGroup.forEach([&](Unit* target)
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAI_Kite] = 1 * 24; // group wait 1 second if no target found
+					targetExt->timers[TimerAI_Kite] = 1 * 24;
+					unit->orderToIdle();
 				});
 			}
 			else
 			{
+				//scbw::printf("attack");
 				Point16 targetPos = targetUnit->position;
-				scbw::UnitFinder(
-					unit->getX() - groupRadius,
-					unit->getY() - groupRadius,
-					unit->getX() + groupRadius,
-					unit->getY() + groupRadius
-				).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {}),
-					[&](Unit* target)
+				localGroup.forEach([&](Unit* target)
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAI_Kite] = 12; // group wait 12 frames after attack move
-					target->orderTo(OrderId::Patrol, targetPos.x, targetPos.y);
+					targetExt->timers[TimerAI_Kite] = 12;
+					target->orderTo(OrderId::AttackUnit, targetUnit);
 				});
 			}
 		}
@@ -117,17 +116,26 @@ void hydra_unit_ai(Unit* unit)
 				{-1, +1}, { 0, +1}, {+1, +1},	
 			};
 			u32 hostileCount = 0;
-			u32 unitCount[9] = {0};
+			u32 unitValue[9] = {0};
 			u32 biases[9] = {0};
 
 			for (int i = 0; i < 9; i++)
 			{
 				Point16 searchPos = unit->position;
-				searchPos.x += identity[i].x * groupOffset;
-				searchPos.y += identity[i].y * groupOffset;
-				u32 hostileCountLocal = hydraUnitCount(unit, searchPos, groupRadius, Flags::Enemy, {});
-				hostileCount += hostileCountLocal;
-				unitCount[i] += hostileCountLocal;
+				searchPos.x += identity[i].x * groupRadius;
+				searchPos.y += identity[i].y * groupRadius;
+
+				scbw::UnitFinder(
+					unit->getX() - groupRadius,
+					unit->getY() - groupRadius,
+					unit->getX() + groupRadius,
+					unit->getY() + groupRadius
+				).forEachInMatch(hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}),
+					[&](Unit* target)
+				{
+					hostileCount += 1;
+					unitValue[i] += unit->groundStrength + unit->airStrength;
+				});
 			}
 
 			if (hostileCount > 0)
@@ -140,8 +148,8 @@ void hydra_unit_ai(Unit* unit)
 				};
 				for (int i = 0; i < 9; i++)
 				{
-					biasVectors[i].x *= unitCount[i];
-					biasVectors[i].y *= unitCount[i];
+					biasVectors[i].x *= unitValue[i];
+					biasVectors[i].y *= unitValue[i];
 				}
 				for (int i = 0; i < 9; i++)
 				{
@@ -183,32 +191,33 @@ void hydra_unit_ai(Unit* unit)
 					newPos.x += identity[bestBias].x * groupOffset;
 					newPos.y += identity[bestBias].y * groupOffset;
 
-					scbw::UnitFinder(
-						unit->getX() - groupRadius,
-						unit->getY() - groupRadius,
-						unit->getX() + groupRadius,
-						unit->getY() + groupRadius
-					).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {}),
-						[&](Unit* target)
+					//scbw::printf("move");
+					localGroup.forEach([&](Unit* target)
 					{
 						UnitExt* targetExt = globals.GetUnitExt(target);
 						targetExt->timers[TimerAI_Kite] = maxCooldown;
 						target->orderTo(OrderId::Move, newPos.x, newPos.y);
 					});
 				}
+				else
+				{
+					//scbw::printf("stay");
+					localGroup.forEach([&](Unit* target)
+					{
+						UnitExt* targetExt = globals.GetUnitExt(target);
+						targetExt->timers[TimerAI_Kite] = 1 * 12;
+						unit->orderToIdle();
+					});
+				}
 			}
 			else
 			{
-				scbw::UnitFinder(
-					unit->getX() - groupRadius,
-					unit->getY() - groupRadius,
-					unit->getX() + groupRadius,
-					unit->getY() + groupRadius
-				).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {}),
-					[&](Unit* target)
+				//scbw::printf("idle");
+				localGroup.forEach([&](Unit* target)
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAI_Kite] = 1 * 24; // group wait 1 second if no kitting needed
+					targetExt->timers[TimerAI_Kite] = 1 * 24;
+					unit->orderToIdle();
 				});
 			}
 		}
