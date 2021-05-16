@@ -778,11 +778,8 @@ namespace hooks
 			case WeaponId::Plague:
 			{
 				// Plague - Don't kill
-				if (data.finalDamage >= data.target->hitPoints)
-				{
-					data.finalDamage = 0;
-					data.target->setHp(256);
-				}
+				data.finalDamage = 0;
+				data.target->setHp(256);
 			} break;
 			case WeaponId::PsiStorm:
 			{
@@ -869,10 +866,16 @@ namespace hooks
 			targetExt->timers[TimerEnthrallingAssaultHeal] = 24 * 10;
 			// Transfer unit ownership
 			Unit* akistrokor = targetExt->units[UnitAttachedAkistrokor];
-			data.target->giveTo(akistrokor->playerId);
+			if (akistrokor)
+			{
+				UnitExt* akistrokorExt = globals.GetUnitExt(akistrokor);
+				data.target->giveTo(akistrokor->playerId);
+				targetExt->values[ValueInfestedByAkistrokor] = 1;
+				akistrokorExt->values[ValueEnthrallingTalons] = 0;
+				akistrokorExt->units[UnitAttachedTarget] = nullptr;
+			}
 			// Housekeeping
 			targetExt->units[UnitAttachedAkistrokor] = nullptr;
-			targetExt->values[ValueInfestedByAkistrokor] = 1;
 		}
 
 		switch (data.target->id)

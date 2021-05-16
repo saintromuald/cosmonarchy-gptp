@@ -12,6 +12,7 @@
 #include "globals.h"
 #include "target_related.h"
 #include "hooks/orders/ai/ai_orders.h"
+#include "hooks/weapons/weapon_cooldown.h"
 
 const u32 hyperTrigger = 0x006509A0;
 const u32 Func_Irradiate = 0x00454E00;
@@ -998,6 +999,7 @@ namespace hooks
 		// Attachment - Generic behavior
 		if (Unit* target = unitExt->units[UnitAttachedTarget])
 		{
+			UnitExt* targetExt = globals.GetUnitExt(target);
 			if (true) // TODO: add cancel check
 			{
 				scbw::setUnitPosition(unit, target->getX(), target->getY());
@@ -1006,19 +1008,24 @@ namespace hooks
 				// Akistrokor - Attack Animation
 				if (unit->id == UnitId::ZergAkistrokor)
 				{
-					u32 currentAnim = unit->sprite->mainGraphic->animation;
-					if (currentAnim != IscriptAnimation::GndAttkInit
-						&& currentAnim != IscriptAnimation::GndAttkRpt
-						&& currentAnim != IscriptAnimation::CastSpell
-						&& !(unit->status & UnitStatus::NoBrkCodeStart))
+					if (unitExt->timers[TimerAttachedAttackCooldown] == 0)
 					{
+						const u8 weaponId = unit->getGroundWeapon();
+						unitExt->timers[TimerAttachedAttackCooldown] = getModifiedWeaponCooldownHook(unit, weaponId);
+						target->damageWith(weaponId, -1, unit, unit->playerId);
+						
 						//unit->sprite->playIscriptAnim(IscriptAnimation::GndAttkInit, true);
 					}
 				}
 			}
 			else
 			{
+				// Generic
 				unitExt->units[UnitAttachedTarget] = nullptr;
+
+				// Akistrokor
+				targetExt->values[ValueEnthrallingTalons] = 0;
+				targetExt->units[UnitAttachedAkistrokor] = 0;
 			}
 		}
 

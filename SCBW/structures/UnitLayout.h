@@ -290,6 +290,7 @@ enum ExtTimerId
 	TimerSignify,
 	TimerReviveFlagClearMin,
 	TimerReviveFlagClearMax,
+	TimerAttachedAttackCooldown,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
