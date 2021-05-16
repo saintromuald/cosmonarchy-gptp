@@ -650,7 +650,7 @@ namespace hooks
 	void damageOverlayDebug()
 	{
 //		jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
-		jmpPatch(newDamageOverlay_JmpWrapper, 0x004993C6, 1);
+//		jmpPatch(newDamageOverlay_JmpWrapper, 0x004993C6, 1);
 	}
 
 	void __declspec(naked) gameLoop_Wrapper()
