@@ -990,6 +990,10 @@ namespace hooks
 		{
 			unit->maelstromTimer = MindTyrantMaelstromTimer;
 		}
+		if (unit->plagueTimer > IsthrathalethPlagueTimer)
+		{
+			unit->plagueTimer = IsthrathalethPlagueTimer;
+		}
 
 		// Attachment - Generic behavior
 		if (Unit* target = unitExt->units[UnitAttachedTarget])

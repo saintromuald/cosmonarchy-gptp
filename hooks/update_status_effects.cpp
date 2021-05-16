@@ -345,10 +345,6 @@ namespace hooks
 		if (unit->plagueTimer != 0)
 		{
 			unit->plagueTimer--;
-			if (unit->plagueTimer <= 45)
-			{
-				unit->plagueTimer = 0;
-			}
 
 			if (!(unit->status & UnitStatus::Invincible))
 			{
