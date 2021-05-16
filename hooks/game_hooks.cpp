@@ -1019,12 +1019,12 @@ namespace hooks
 		}
 
 		// Reviving from Lazarus Agent
-		if (!unitExt->timers[TimerRevive]
-			&& unitExt->values[ValueReviveStarted]
-			&& !(unit->status & UnitStatus::NoBrkCodeStart))
+		if (((unitExt->timers[TimerReviveFlagClearMin] == 0 && !(unit->status & UnitStatus::NoBrkCodeStart)) || unitExt->timers[TimerReviveFlagClearMax] == 0)
+			&& unitExt->values[ValueReviveStarted])
 		{
 			unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
-			unitExt->timers[TimerRevive] = 0;
+			unitExt->timers[TimerReviveFlagClearMin] = 0;
+			unitExt->timers[TimerReviveFlagClearMax] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
 			scbw::initUnitAI(unit);
 		}

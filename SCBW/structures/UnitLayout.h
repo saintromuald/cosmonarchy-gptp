@@ -288,7 +288,8 @@ enum ExtTimerId
 	TimerWyvernAttackCooldown,
 	TimerDirgeFuse,
 	TimerSignify,
-	TimerRevive,
+	TimerReviveFlagClearMin,
+	TimerReviveFlagClearMax,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
