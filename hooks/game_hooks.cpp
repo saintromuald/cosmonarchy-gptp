@@ -996,36 +996,41 @@ namespace hooks
 			unit->plagueTimer = IsthrathalethPlagueTimer;
 		}
 
-		// Attachment - Generic behavior
-		if (Unit* target = unitExt->units[UnitAttachedTarget])
+		// Attachement - Clear
+		if (scbw::get_generic_rust_value(unit, RustId::CancelAttachment))
 		{
-			UnitExt* targetExt = globals.GetUnitExt(target);
-			if (true) // TODO: add cancel check
+			scbw::set_generic_rust_value(unit, RustId::CancelAttachment, 0);
+			if (Unit* target = unitExt->units[UnitAttachedTarget])
 			{
-				scbw::setUnitPosition(unit, target->getX(), target->getY());
-				unit->currentDirection1 = target->currentDirection1;
-
-				// Akistrokor - Attack Animation
-				if (unit->id == UnitId::ZergAkistrokor)
-				{
-					if (unitExt->timers[TimerAttachedAttackCooldown] == 0)
-					{
-						const u8 weaponId = unit->getGroundWeapon();
-						unitExt->timers[TimerAttachedAttackCooldown] = getModifiedWeaponCooldownHook(unit, weaponId);
-						target->damageWith(weaponId, -1, unit, unit->playerId);
-						
-						//unit->sprite->playIscriptAnim(IscriptAnimation::GndAttkInit, true);
-					}
-				}
-			}
-			else
-			{
-				// Generic
-				unitExt->units[UnitAttachedTarget] = nullptr;
+				UnitExt* targetExt = globals.GetUnitExt(target);
 
 				// Akistrokor
 				targetExt->values[ValueEnthrallingTalons] = 0;
 				targetExt->units[UnitAttachedAkistrokor] = nullptr;
+			}
+
+			// Generic
+			unitExt->units[UnitAttachedTarget] = nullptr;
+		}
+
+		// Attachment - Generic behavior
+		if (Unit* target = unitExt->units[UnitAttachedTarget])
+		{
+			UnitExt* targetExt = globals.GetUnitExt(target);
+			scbw::setUnitPosition(unit, target->getX(), target->getY());
+			unit->currentDirection1 = target->currentDirection1;
+
+			// Akistrokor - Attack Animation
+			if (unit->id == UnitId::ZergAkistrokor)
+			{
+				if (unitExt->timers[TimerAttachedAttackCooldown] == 0)
+				{
+					const u8 weaponId = unit->getGroundWeapon();
+					unitExt->timers[TimerAttachedAttackCooldown] = getModifiedWeaponCooldownHook(unit, weaponId);
+					target->damageWith(weaponId, -1, unit, unit->playerId);
+						
+					//unit->sprite->playIscriptAnim(IscriptAnimation::GndAttkInit, true);
+				}
 			}
 		}
 

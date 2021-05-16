@@ -478,6 +478,10 @@ namespace hooks
 				if (unitExt->timers[TimerEnthrallingAssaultHeal] > 0)
 				{
 					tickHeal += AkistrokorEnthrallingAssaultHeal;
+					if (unit->hitPoints >= unit->getMaxHpRaw() / 2)
+					{
+						unitExt->timers[TimerEnthrallingAssaultHeal] = 0;
+					}
 				}
 
 				if (tickHeal)

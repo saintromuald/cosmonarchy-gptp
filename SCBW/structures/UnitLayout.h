@@ -371,6 +371,7 @@ namespace RustId
 		CastTertiaryEyes,
 		CancelMindControl,
 		CancelLandGrab,
+		CancelAttachment,
 		ToggleReverseThrust,
 		ToggleSublimeShepherd,
 		ToggleDisruptionField,
