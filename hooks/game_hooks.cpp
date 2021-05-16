@@ -1006,11 +1006,13 @@ namespace hooks
 
 				// Akistrokor
 				targetExt->values[ValueEnthrallingTalons] = 0;
+
+				// Generic
+				targetExt->units[UnitAttachedSource] = nullptr;
 			}
 
 			// Generic
 			unitExt->units[UnitAttachedTarget] = nullptr;
-			targetExt->units[UnitAttachedSource] = nullptr;
 		}
 
 		// Attachment - Generic behavior
