@@ -77,6 +77,44 @@ bool isAttemptingProtossBuild(const Unit* probe)
 #include <array>
 namespace hooks
 {
+
+	bool debugDamageOverlay(Sprite* sprite) {
+		
+		if (sprite->mainGraphic == nullptr)
+		{
+			return false;
+		}
+		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
+		if (overlay == nullptr)
+		{
+			return false;
+		}
+		for (Image* image = sprite->images.head; image; image = image->link.next)
+		{
+			if (image->id >= ImageId::FirstMinorDamageOverlay
+				&& image->id <= ImageId::LastMinorDamageOverlay)
+			{
+				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
+				if (sprite->mainGraphic->frameIndex >= overlay->frameCount)
+				{
+					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
+						sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
+					{
+						return false;
+					}
+				}
+			}
+		}
+		std::array<s32, 22> results;
+		auto result_pos = results.begin();
+		if (sprite->mainGraphic->frameIndex >= overlay->frameCount)
+		{
+			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
+				sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
+			return false;
+		}
+		return true;
+	}
 	void createDamageOverlay(Sprite* sprite)
 	{
 		if (sprite->mainGraphic == nullptr)
@@ -103,7 +141,7 @@ namespace hooks
 						return; 
 					}
 				}
-				Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation); // not sure about first arg
+				Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);
 				sprite->createTopOverlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
 			}
 		}
@@ -111,8 +149,6 @@ namespace hooks
 		auto result_pos = results.begin();
 		if (sprite->mainGraphic->frameIndex >= overlay->frameCount)
 		{
-			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
-				sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
 			return;
 		}
 		for (s32 i = 0; i < 22; i++)
@@ -122,6 +158,7 @@ namespace hooks
 			{
 				continue;
 			}
+			scbw::printf("Overlay: %d", i);
 			u32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
 			bool found = false;
 			for (Image* image = sprite->images.head; image; image = image->link.next)
@@ -713,8 +750,8 @@ LABEL_18:
 		return false;
 	}
 
-	s32 gameLoop() // 004D94B0 - hooked for lag testing - Pr0nogo
-	{
+	s32 gameLoop()
+	{ // 004D94B0 - hooked for lag testing - Pr0nogo
 		bool v0;
 		win32::Stopwatch sw;
 		sw.Start();
