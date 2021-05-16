@@ -192,8 +192,8 @@ namespace hooks
 
 		if (!data.dontProcPhaseLink && scbw::hasClarionLinks(data.target))
 		{
+			data.finalDamage /= 2;
 			scbw::spreadClarionDamage(data);
-			return;
 		}
 
 		// Hallucinations deal half damage

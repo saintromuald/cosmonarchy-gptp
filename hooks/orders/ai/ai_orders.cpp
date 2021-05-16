@@ -13,30 +13,25 @@ namespace hooks
 		{
 			return;
 		}
+		if (parent == nullptr)
+		{
+			parent = result;
+		}
 		if (playerTable[result->playerId].type != PlayerType::Computer)
 		{
 			return;
 		}
-		if (parent == nullptr
-			|| result->id == UnitId::ZergBroodling
+		if (result->id == UnitId::ZergBroodling
 			|| result->id == UnitId::ZergBroodlisk
 			|| result->id == UnitId::ProtossSimulacrum
 			|| result->status & UnitStatus::IsHallucination
 			|| result->playerId != parent->playerId)
 		{
 			hooks::AI_TrainingBroodling(result, result);
-			return;
 		}
-
-		if (units_dat::BaseProperty[result->id] & UnitProperty::Worker)
+		else if (units_dat::BaseProperty[result->id] & UnitProperty::Worker)
 		{
 			helper::AI_TrainingWorker(result, parent);
-		}
-		else if (result == parent)
-		{
-			// do nothing for non worker units if that's the case,
-			// not sure if this check was needed,
-			// would be hard to test
 		}
 		else if (result->id == UnitId::ZergOvileth
 			|| result->id == UnitId::ZergIroleth

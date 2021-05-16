@@ -92,6 +92,7 @@ namespace scbw
 	s32 getAngle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd);
 
 	inline f64 bw_angle_to_normal(s32 bw_angle);
+	inline s32 normal_angle_to_bw(f64 normal_angle);
 	/// StarCraft's internal function used to quickly calculate distances between
 	/// two points (x1, y1) and (x2, y2).
 	/// Warning: This function is inaccurate for long distances.

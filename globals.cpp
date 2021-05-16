@@ -1506,7 +1506,7 @@ namespace scbw
 		auto& link = unitExt->unitVectors[UnitVectorPhaseLink];
 
 		clearClarionLinks(unit);
-		const s32 radius = 128;
+		const s32 radius = 3 * 32;
 		scbw::UnitFinder(
 			unit->getX() - radius,
 			unit->getY() - radius,
@@ -1603,12 +1603,20 @@ namespace scbw
 			{
 				links.erase(it);
 			}
+			s8 oldDirection = data.direction;
+			Unit* damageOriginUnit = data.attacker;
+			if (!damageOriginUnit)
+			{
+				damageOriginUnit = unit;
+			}
 			for (Unit* linkUnit : links)
 			{
 				s32 unitDamage = std::min(divided, linkUnit->shields);
 				damage -= unitDamage;
+				data.direction = scbw::getAngle(damageOriginUnit->getX(), damageOriginUnit->getY(), linkUnit->getX(), linkUnit->getY());
 				phaseLinkDamage(linkUnit, unitDamage, data);
 			}
+			data.direction = oldDirection;
 			phaseLinkDamage(unit, damage, data);
 		}
 	}
