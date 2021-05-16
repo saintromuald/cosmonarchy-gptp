@@ -1023,13 +1023,9 @@ namespace hooks
 			// Akistrokor - Attack Animation
 			if (unit->id == UnitId::ZergAkistrokor)
 			{
-				if (unitExt->timers[TimerAttachedAttackCooldown] == 0)
+				if (unit->mainOrderId != OrderId::AttackUnit || unit->orderTarget.unit != target)
 				{
-					const u8 weaponId = unit->getGroundWeapon();
-					unitExt->timers[TimerAttachedAttackCooldown] = getModifiedWeaponCooldownHook(unit, weaponId);
-					target->damageWith(weaponId, -1, unit, unit->playerId);
-						
-					//unit->sprite->playIscriptAnim(IscriptAnimation::GndAttkInit, true);
+					unit->orderTo(OrderId::AttackUnit, target);
 				}
 			}
 		}
