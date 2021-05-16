@@ -665,7 +665,7 @@ namespace hooks
 					{
 						vec.push_back(data.attackingPlayerId);
 					}
-					scbw::updateSignifyOverlay(data.target, targetExt);
+					scbw::updateSignifyStatus(data.target, targetExt);
 				} break;
 				case WeaponId::VorvalingClaws:
 				{

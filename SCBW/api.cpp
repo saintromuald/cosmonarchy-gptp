@@ -1764,8 +1764,10 @@ namespace scbw
 		}
 	}
 
-	void updateSignifyOverlay(Unit* unit, UnitExt* unitExt)
+	void updateSignifyStatus(Unit* unit, UnitExt* unitExt)
 	{
+		unit->updateSpeed();
+
 		const u32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
 		const u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
 

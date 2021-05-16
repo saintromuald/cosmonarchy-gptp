@@ -409,6 +409,6 @@ namespace scbw
 	bool weaponPiercesTargets(u16 weaponId);
 	void dirgeFuse(Unit* unit, UnitExt* unitExt);
 	void initUnitAI(Unit* unit);
-	void updateSignifyOverlay(Unit* unit, UnitExt* unitExt);
+	void updateSignifyStatus(Unit* unit, UnitExt* unitExt);
 
 }

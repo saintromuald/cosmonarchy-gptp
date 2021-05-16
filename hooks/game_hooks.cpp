@@ -930,7 +930,7 @@ namespace hooks
 		{
 			unitExt->values[ValueSignifyStacks] = 0;
 			unitExt->valueVectors[ValueVectorSignifySourcePlayer].clear();
-			scbw::updateSignifyOverlay(unit, unitExt);
+			scbw::updateSignifyStatus(unit, unitExt);
 		}
 
 		if (unit->isFrozen())

@@ -1186,7 +1186,7 @@ namespace scbw
 		childExt->timers[TimerSignify] = parentExt->timers[TimerSignify];
 		childExt->values[ValueSignifyStacks] = parentExt->values[ValueSignifyStacks];
 		childExt->valueVectors[ValueVectorSignifySourcePlayer] = parentExt->valueVectors[ValueVectorSignifySourcePlayer];
-		scbw::updateSignifyOverlay(child, childExt);
+		scbw::updateSignifyStatus(child, childExt);
 
 		// Inherit Siren Tetriary Eyes
 		childExt->unitVectors[UnitVectorTertiaryEyes] = parentExt->unitVectors[UnitVectorTertiaryEyes];
@@ -1352,7 +1352,7 @@ namespace scbw
 		unitExt->timers[TimerSignify] = 0;
 		unitExt->values[ValueSignifyStacks] = 0;
 		unitExt->valueVectors[ValueVectorSignifySourcePlayer] = {};
-		scbw::updateSignifyOverlay(unit, unitExt);
+		scbw::updateSignifyStatus(unit, unitExt);
 
 		scbw::refreshConsole();
 	}
