@@ -401,6 +401,10 @@ namespace hooks
 				{
 					scbw::setMissileSourcePos(unit, weaponId, ValueIonCannonProjectilePos, 1, ImagesDatEntries::OverlaySpecialPtr, 1);
 				}
+				else if (weaponId == WeaponId::SkithrokorSkitteringSpores)
+				{
+					scbw::setMissileSourcePos(unit, weaponId, ValueSkithrokorMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+				}
 				else if (weaponId == WeaponId::KalkaliskViscousAcid)
 				{
 					auto bullet = scbw::setMissileSourcePos(unit, weaponId, ValueKalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);

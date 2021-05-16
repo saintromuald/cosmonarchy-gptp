@@ -238,6 +238,7 @@ enum ExtValueId
 	ValueSignifyStacks,
 	ValueReviveStarted,
 	ValuePreMorphHP,
+	ValueSkithrokorMissilePos,
 
 	ValueCount,
 };
