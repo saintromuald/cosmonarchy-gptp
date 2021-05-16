@@ -150,20 +150,37 @@ void hydra_unit_ai(Unit* unit)
 					}
 					biases[i] /= 9;
 				}
-				u32 minBias = 0;
-				for (int i = 1; i < 9; i++)
+				u32 bestBias = 0;
+				u32 maxRange = std::max(weapons_dat::MaxRange[unit->getGroundWeapon()], weapons_dat::MaxRange[unit->getAirWeapon()]);
+				if (maxRange < 32)
 				{
-					if (biases[i] > biases[minBias])
+					// Forward kiting for melee
+					for (int i = 1; i < 9; i++)
 					{
-						minBias = i;
+						if (biases[i] < biases[bestBias])
+						{
+							bestBias = i;
+						}
 					}
 				}
+				else
+				{
+					// Backwards kiting for ranged
+					for (int i = 1; i < 9; i++)
+					{
+						if (biases[i] > biases[bestBias])
+						{
+							bestBias = i;
+						}
+					}
+				}
+				
 
-				if (minBias != 4) // don't move if least threatning square is current one
+				if (bestBias != 4) // don't move if least threatning square is current one
 				{
 					Point16 newPos = unit->position;
-					newPos.x += identity[minBias].x * groupOffset;
-					newPos.y += identity[minBias].y * groupOffset;
+					newPos.x += identity[bestBias].x * groupOffset;
+					newPos.y += identity[bestBias].y * groupOffset;
 
 					scbw::UnitFinder(
 						unit->getX() - groupRadius,
