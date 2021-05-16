@@ -149,6 +149,10 @@ scbw::UnitFinderCallbackMatchInterface hydraFinderMatch(Unit* center, u32 contex
 					return false;
 				}
 			}
+			if (context & Flags::Own && unit->playerId != center->playerId)
+			{
+				return false;
+			}
 			if (scbw::isAlliedTo(unit->playerId, center->playerId) && context & Flags::Enemy)
 			{
 				return false;
