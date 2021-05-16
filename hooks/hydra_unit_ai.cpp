@@ -59,6 +59,129 @@ void hydra_unit_ai(Unit* unit)
 					one another. Attempt to group as many units as possible during the channel.
 	*/
 
+	u32 maxCooldown = std::max(unit->groundWeaponCooldown != 0, unit->airWeaponCooldown != 0);
+	if (unitExt->timers[TimerAI_Kite] == 0 && unit->hasWeapon())
+	{
+		const u32 groupRadius = 4 * 32;
+		const u32 groupOffset = groupRadius * 2;
+		if (maxCooldown == 0)
+		{
+			Unit* targetUnit = scbw::UnitFinder::getNearestTarget(
+				unit->getX() - groupRadius * 3,
+				unit->getY() - groupRadius * 3,
+				unit->getX() + groupRadius * 3,
+				unit->getY() + groupRadius * 3,
+				unit,
+				hydraFinderMatch(unit, Flags::Enemy, {}));
+			if (!targetUnit)
+			{
+				return;
+			}
+			Point16 targetPos = targetUnit->position;
+
+			scbw::printf("attack..");
+			scbw::UnitFinder(
+				unit->getX() - groupRadius,
+				unit->getY() - groupRadius,
+				unit->getX() + groupRadius,
+				unit->getY() + groupRadius
+			).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Ally | Flags::Combatant, {}),
+				[&](Unit* target)
+			{
+				UnitExt* targetExt = globals.GetUnitExt(target);
+				targetExt->timers[TimerAI_Kite] = 1 * 24; // group wait 1 second after attack move
+				unit->order(OrderId::AttackMove, targetPos.x, targetPos.y, nullptr, 0, true);
+			});
+		}
+		else
+		{
+			Point32 identity[8] =
+			{
+				{-1, -1}, { 0, -1}, {+1, -1},	
+				{-1,  0},			{+1,  0},	
+				{-1, +1}, { 0, +1}, {+1, +1},	
+			};
+			u32 hostileCount = 0;
+			u32 unitCount[8] = {0};
+			u32 biases[8] = {0};
+
+			for (int i = 0; i < 8; i++)
+			{
+				Point16 searchPos = unit->position;
+				searchPos.x += identity[i].x * groupOffset;
+				searchPos.y += identity[i].y * groupOffset;
+				unitCount[i] += 1 * hydraUnitCount(unit, searchPos, groupRadius, Flags::Ally, {});
+				u32 hostileCountLocal = hydraUnitCount(unit, searchPos, groupRadius, Flags::Enemy, {});;
+				hostileCount += hostileCountLocal;
+				unitCount[i] += 2 * hostileCountLocal;
+			}
+
+			if (hostileCount > 0)
+			{
+				Point32 biasVectors[8] =
+				{
+					{-1, -1}, { 0, -1}, {+1, -1},	
+					{-1,  0},			{+1,  0},	
+					{-1, +1}, { 0, +1}, {+1, +1},	
+				};
+				for (int i = 0; i < 8; i++)
+				{
+					biasVectors[i].x *= unitCount[i];
+					biasVectors[i].y *= unitCount[i];
+				}
+				for (int i = 0; i < 8; i++)
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						biases[i] += identity[i].x * biasVectors[j].x + identity[i].y * biasVectors[j].y;
+					}
+					biases[i] /= 8;
+				}
+				u32 minBias = 0;
+				for (int i = 1; i < 8; i++)
+				{
+					if (biases[i] > biases[minBias])
+					{
+						minBias = i;
+					}
+				}
+
+				Point16 newPos = unit->position;
+				newPos.x += identity[minBias].x * groupOffset;
+				newPos.y += identity[minBias].y * groupOffset;
+
+				scbw::printf("move away..");
+				scbw::UnitFinder(
+					unit->getX() - groupRadius,
+					unit->getY() - groupRadius,
+					unit->getX() + groupRadius,
+					unit->getY() + groupRadius
+				).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Ally | Flags::Combatant, {}),
+					[&](Unit* target)
+				{
+					UnitExt* targetExt = globals.GetUnitExt(target);
+					targetExt->timers[TimerAI_Kite] = maxCooldown;
+					unit->order(OrderId::Move, newPos.x, newPos.y, nullptr, UnitId::None, true);
+				});
+			}
+			else
+			{
+				scbw::printf("wait..");
+				scbw::UnitFinder(
+					unit->getX() - groupRadius,
+					unit->getY() - groupRadius,
+					unit->getX() + groupRadius,
+					unit->getY() + groupRadius
+				).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Ally | Flags::Combatant, {}),
+					[&](Unit* target)
+				{
+					UnitExt* targetExt = globals.GetUnitExt(target);
+					targetExt->timers[TimerAI_Kite] = 5 * 24; // group wait 5 seconds if no kitting needed
+				});
+			}
+		}
+	}
+
 	if (unit->id == UnitId::TerranApostle)
 	{
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
