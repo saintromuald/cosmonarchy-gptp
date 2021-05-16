@@ -1025,7 +1025,7 @@ namespace hooks
 
 				// Akistrokor
 				targetExt->values[ValueEnthrallingTalons] = 0;
-				targetExt->units[UnitAttachedAkistrokor] = 0;
+				targetExt->units[UnitAttachedAkistrokor] = nullptr;
 			}
 		}
 
