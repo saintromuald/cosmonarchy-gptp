@@ -59,9 +59,10 @@ void hydra_unit_ai(Unit* unit)
 					one another. Attempt to group as many units as possible during the channel.
 	*/
 	
-	u32 maxCooldown = std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) / 2;
+	u32 maxCooldown = std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 0.75;
 	bool isCapable = !unit->isFrozen();
 	bool inCombat = unitExt->combatTimer < 4 * 24
+		|| unit->mainOrderId == OrderId::Patrol
 		|| unit->mainOrderId == OrderId::AttackMove
 		|| unit->mainOrderId == OrderId::AttackUnit;
 	if (isCapable && inCombat && unitExt->timers[TimerAI_Kite] == 0 && unit->hasWeapon())
@@ -84,7 +85,7 @@ void hydra_unit_ai(Unit* unit)
 				unit->getY() - groupRadius * 3,
 				unit->getX() + groupRadius * 3,
 				unit->getY() + groupRadius * 3,
-				unit, hydraFinderMatch(unit, Flags::Enemy, {}));
+				unit, hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}));
 			if (!targetUnit)
 			{
 				//scbw::printf("idle (wants to attack)");
@@ -103,7 +104,7 @@ void hydra_unit_ai(Unit* unit)
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
 					targetExt->timers[TimerAI_Kite] = 12;
-					target->orderTo(OrderId::AttackUnit, targetUnit);
+					target->orderTo(OrderId::Patrol, targetPos.x, targetPos.y);
 				});
 			}
 		}
@@ -126,10 +127,10 @@ void hydra_unit_ai(Unit* unit)
 				searchPos.y += identity[i].y * groupRadius;
 
 				scbw::UnitFinder(
-					unit->getX() - groupRadius,
-					unit->getY() - groupRadius,
-					unit->getX() + groupRadius,
-					unit->getY() + groupRadius
+					searchPos.x - groupRadius,
+					searchPos.y - groupRadius,
+					searchPos.x + groupRadius,
+					searchPos.y + groupRadius
 				).forEachInMatch(hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}),
 					[&](Unit* target)
 				{
@@ -190,6 +191,24 @@ void hydra_unit_ai(Unit* unit)
 					Point16 newPos = unit->position;
 					newPos.x += identity[bestBias].x * groupOffset;
 					newPos.y += identity[bestBias].y * groupOffset;
+
+					if (newPos.x < 0)
+					{
+						newPos.x = 0;
+					}
+					else if (newPos.x > mapTileSize->width * 32)
+					{
+						newPos.x = mapTileSize->width * 32;
+					}
+
+					if (newPos.y < 0)
+					{
+						newPos.y = 0;
+					}
+					else if (newPos.y > mapTileSize->height * 32)
+					{
+						newPos.y = mapTileSize->height * 32;
+					}
 
 					//scbw::printf("move");
 					localGroup.forEach([&](Unit* target)
