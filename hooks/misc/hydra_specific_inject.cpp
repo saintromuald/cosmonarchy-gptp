@@ -624,7 +624,7 @@ namespace hooks
 	}
 	const u32 DmgOverlay_JmpBack = 0x004993C9;
 	const u32 DmgOverlay_JmpEnd = 0x00499570;
-	void __declspec(naked) newDamageOverlay_JmpWrapper(){//
+	void __declspec(naked) newDamageOverlay_JmpWrapper(){
 		static Sprite* sprite;
 		__asm {
 			MOV EDX,[EBP+0x8]
@@ -650,7 +650,7 @@ namespace hooks
 	void damageOverlayDebug()
 	{
 //		jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
-		jmpPatch(newDamageOverlay_JmpWrapper, 0x004993C6, 1);
+//		jmpPatch(newDamageOverlay_JmpWrapper, 0x004993C6, 1);
 	}
 
 	void __declspec(naked) gameLoop_Wrapper()
