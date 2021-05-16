@@ -53,7 +53,7 @@ namespace TechId {
 		// HYDRA \\
 
 	// Shared
-		CancelNewAbiliity		= 26, // For Mind Control, Land Grab
+		CancelNewAbiliity		= 26, // For Land Grab, Mind Control, Enthralling Assault
 
 	// Terran
 		LobotomyMine			=  1, // Eidolon lay trap ability
