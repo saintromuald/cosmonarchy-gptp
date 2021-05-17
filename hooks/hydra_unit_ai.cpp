@@ -398,7 +398,7 @@ void hydra_unit_ai(Unit* unit)
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
 					localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit);
 
-					if (localUnit->hitPoints < localUnit->getMaxHpRaw() * 0.2)
+					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
 					{
 						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
 						localUnitExt->timers[TimerAI_Kite] *= 2;
