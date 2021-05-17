@@ -407,9 +407,9 @@ void hydra_unit_ai(Unit* unit)
 						localUnitExt->timers[TimerAI_Kite] *= 2;
 						//scbw::printf("%s: fall back", localUnit->getName());
 					}
-					else if ((distance > maxRange * 0.5 && localGroupValue > biases[forwardBias])
-						|| (distance > maxRange * 1 && crowdScore > 8)
-						|| (distance > maxRange * 1.5))
+					else if (distance > maxRange * 1
+						|| (distance > maxRange * 0.5 && localGroupValue > biases[forwardBias])
+						|| (distance > maxRange * 0.75 && crowdScore > 8))
 					{
 						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
