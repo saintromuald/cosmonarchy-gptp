@@ -380,7 +380,7 @@ namespace hooks
 				// Star Sovereign Intervention Missiles behavior + Grief of All Gods
 				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
 				{
-					globals.createEffect(EffectId::GriefOfAllGods, 360, { unit->position.x, unit->position.y }, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId);
+					globals.createEffect(EffectId::GriefOfAllGods, 360, { unit->position.x, unit->position.y }, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId, unit);
 				}
 				if (unitExt->timers[TimerStarcallerInterceptionMissiles] == 0)
 				{
@@ -523,42 +523,22 @@ namespace hooks
 			case UnitId::ProtossLanifect:
 			{
 				// Disruption Field - Lanifect ability
-				Unit* web = unitExt->units[UnitAttachedDisruptionWeb];
 				if (scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField))
 				{
-					if (web == nullptr)
+					if (!unitExt->values[ValueDisruptionWebOn])
 					{
-						web = hooks::createDisruptionWeb(unit->playerId, unit->getX(), unit->getY());
-						if (web == nullptr)
-						{
-							// CCMU case
-							scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
-						}
-						else
-						{
-							unitExt->units[UnitAttachedDisruptionWeb] = web;
-						}
+						unitExt->values[ValueDisruptionWebOn] = 1;
+						globals.createEffect(EffectId::DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->playerId, unit);
 					}
-					else
-						if (unit->isFrozen())
-						{
-							scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
-							web->remove();
-						}
-						else
-						{
-							// web attached
-							web->position = unit->sprite->position;
-							web->sprite->position = unit->sprite->position;
-							scbw::decloakProc(unit);
-						}
+					else if (unit->isFrozen())
+					{
+						scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
+					}
+					scbw::decloakProc(unit);
 				}
 				else
 				{
-					if (web != nullptr)
-					{
-						web->remove();
-					}
+					unitExt->values[ValueDisruptionWebOn] = 0;
 				}
 			} break;
 			case UnitId::TerranMadcap:
@@ -932,6 +912,12 @@ namespace hooks
 			unitExt->values[ValueSignifyStacks] = 0;
 			unitExt->valueVectors[ValueVectorSignifySourcePlayer].clear();
 			scbw::updateSignifyStatus(unit, unitExt);
+		}
+
+		// Disruption Web Clear Status
+		if (unitExt->timers[TimerDisruptionWebStatusClear] == 1)
+		{
+			unit->status &= ~UnitStatus::CanNotAttack;
 		}
 
 		if (unit->isFrozen())
