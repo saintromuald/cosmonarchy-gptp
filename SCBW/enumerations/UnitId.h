@@ -568,7 +568,7 @@ enum Enum {
 	ZergOthstolOviform								= 152,		// Cerebrate Daggoth
 	ZergBactalDen									= 153,		// Unused Zerg 2
 	ZergAlmakAntre									= 179,		// Cave
-	ZergAlazilArbor									= 181,		// Cantina
+	ZergAlaszilArbor								= 181,		// Cantina
 	ZergLakizDen									= 191,		// Zerg Marker
 	ZergZoryusShroud								= 193,		// Protoss Marker
 	ZergVithrilHaunt								= 197,		// Zerg Flag Beacon
