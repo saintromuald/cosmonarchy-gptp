@@ -704,7 +704,7 @@ namespace hooks
 					{
 						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= 128)
 						{
-							unit->playIscriptAnim(IscriptAnimation::Unused1);
+							unit->playIscriptAnim(IscriptAnimation::Unused2);
 						}
 					}
 				}
