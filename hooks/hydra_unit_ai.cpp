@@ -113,7 +113,7 @@ static inline u8 getCurrentWeaponCooldown(Unit* unit)
 	u32 a = unit->groundWeaponCooldown;
 	u32 b = unit->airWeaponCooldown;
 
-	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown);
+	return std::min(unit->groundWeaponCooldown, unit->airWeaponCooldown);
 }
 
 static inline u8 getMaxWeaponCooldown(Unit* unit)
@@ -132,7 +132,7 @@ static inline u8 getMaxWeaponCooldown(Unit* unit)
 		airCooldown = hooks::getModifiedWeaponCooldownHook(unit, airWeapon);
 	}
 
-	return std::max(groundCooldown, airCooldown);
+	return std::min(groundCooldown, airCooldown);
 }
 
 static inline bool canKite(Unit* unit)
