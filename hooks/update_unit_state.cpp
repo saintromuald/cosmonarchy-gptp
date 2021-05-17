@@ -4,7 +4,7 @@
 #include <algorithm>
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/weapon_effect.h"
-#include "hooks/hydra_unit_ai.h"
+#include "hooks/cosmonarchy_unit_ai.h"
 #include "globals.h"
 #include "SCBW\UnitFinder.h"
 #include "hooks/weapons/weapon_cooldown.h"
@@ -123,7 +123,7 @@ namespace hooks
 
 		if (unit->pAI != nullptr)
 		{
-			hydra_unit_ai(unit);
+			cosmonarchy_unit_ai(unit);
 		}
 
 		// Timers

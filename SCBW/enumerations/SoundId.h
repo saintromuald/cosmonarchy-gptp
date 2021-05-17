@@ -1150,7 +1150,7 @@ namespace SoundId
 		Protoss_Artanis_PAtYes03_wav = 1143,
 
 
-		// HYDRA \\
+		// Cosmonarchy \\
 
 		WyvernAttack01 = 1118,
 		WyvernAttack02 = 1119,

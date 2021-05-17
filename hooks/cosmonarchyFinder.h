@@ -33,16 +33,16 @@ namespace Flags
 	};
 }
 
-scbw::UnitFinderCallbackMatchInterface hydraFinderMatch(Unit* center, u32 context, std::vector<u16> allowedUnitIds);
+scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 context, std::vector<u16> allowedUnitIds);
 
 bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 Unit* rangeMatchPosition(Point32 position, u32 r, u32 context, std::vector<u16> allowedIds);
-u32 hydraUnitCount(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds);
-template<typename hydraLoop>
-inline void hydraFinderLoop(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds, hydraLoop l)
+u32 cosmonarchyUnitCount(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds);
+template<typename cosmonarchyLoop>
+inline void cosmonarchyFinderLoop(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds, cosmonarchyLoop l)
 {
-	auto condition = hydraFinderMatch(unitPtr, flags, unitIds);
+	auto condition = cosmonarchyFinderMatch(unitPtr, flags, unitIds);
 	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
 		pos.x + r, pos.y + r);
 	for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)

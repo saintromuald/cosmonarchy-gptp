@@ -1,6 +1,6 @@
 #include "globals.h"
 #include "hook_tools.h"
-#include "hooks/hydraFinder.h"
+#include "hooks/cosmonarchyFinder.h"
 #include "hooks/limits/attack_extender.h"
 #include "hooks/weapons/weapon_damage.h"
 #include <algorithm>
@@ -509,7 +509,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(hydraFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damageWithCustom(2500 * damageMultiplier, DamageType::Chronal, nullptr, effects[i].player, 0, 1, true);
 					});
@@ -521,7 +521,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(hydraFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
 						{
@@ -537,7 +537,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(hydraFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
 						{
@@ -553,7 +553,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(hydraFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
 						{
@@ -571,7 +571,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(hydraFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
 						{
@@ -589,7 +589,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(hydraFinderMatch(nullptr, 0, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
 						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
 						{
@@ -613,7 +613,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(hydraFinderMatch(nullptr, 0, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
 						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
 						{
@@ -642,7 +642,7 @@ void Globals::frameHook()
 						effects[i].position.y - 40,
 						effects[i].position.x + 60,
 						effects[i].position.y + 40
-					).forEachInMatch(hydraFinderMatch(nullptr, 0, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
 						if (unit == effects[i].parent)
 						{

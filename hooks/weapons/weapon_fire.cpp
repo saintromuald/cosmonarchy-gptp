@@ -5,7 +5,7 @@
 #include <SCBW/enumerations.h>
 #include <SCBW/api.h>
 #include "SCBW/UnitFinder.h"
-#include "hooks/hydraFinder.h"
+#include "hooks/cosmonarchyFinder.h"
 #include "MathUtils.h"
 #include "hooks/byte_operations_utils.h"
 #include "globals.h"
@@ -119,7 +119,7 @@ namespace hooks
 		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
 		{
 			u32 range = hooks::getMaxWeaponRangeHook(attacker, weaponId);
-			auto filter = hydraFinderMatch(attacker, flags, {});
+			auto filter = cosmonarchyFinderMatch(attacker, flags, {});
 			Unit* newTarget = scbw::UnitFinder::getNearestTarget(
 				attacker->getX() - range,
 				attacker->getY() - range,

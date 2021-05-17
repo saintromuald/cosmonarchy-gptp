@@ -1,4 +1,4 @@
-#include "hooks/misc/hydra_specific.h"
+#include "hooks/misc/cosmonarchy_specific.h"
 #include "globals.h"
 namespace hooks
 {
@@ -739,7 +739,7 @@ namespace hooks
 		}
 	}
 
-	void injectHydraSpecific()
+	void injectCosmonarchySpecific()
 	{
 		// must be finished first (and add Firegraft offsets)
 //		jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);

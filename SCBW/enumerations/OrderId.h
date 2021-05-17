@@ -384,7 +384,7 @@ enum Enum {
                     * Default Requirements: Unused. */
     None                   = 0xBD,
 
-    // HYDRA \\
+    // Cosmonarchy \\
 
     // Terran
     Skyfall                 = 12,   // Attack Tile              | Paladin missile barrage ability

@@ -42,7 +42,7 @@ void save_config()
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 
-	out << YAML::Comment("Project: HYDRA config");
+	out << YAML::Comment("Cosmonarchy config");
 	out << YAML::Newline << YAML::Newline;
 	out << YAML::Comment("Launch");
 	WriteField(out, "disable-wmode-prompt", config.disable_wmode_prompt);

@@ -1,6 +1,6 @@
 #include "unit_train.h"
 #include <SCBW/api.h>
-#include "hooks/hydraFinder.h"
+#include "hooks/cosmonarchyFinder.h"
 #include "globals.h"
 #ifndef TRUE
 #define TRUE 1
@@ -157,7 +157,7 @@ namespace hooks
 						if (builtUnitExt->values[ValueCrucible] == 0)
 						{
 							auto r = 256;
-							auto n = hydraFinderMatch(nullptr, Flags::Ally | Flags::Powered | Flags::Completed,
+							auto n = cosmonarchyFinderMatch(nullptr, Flags::Ally | Flags::Powered | Flags::Completed,
 								{UnitId::ProtossCrucible});
 							scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
 								builtUnit->position.x + r, builtUnit->position.y + r);

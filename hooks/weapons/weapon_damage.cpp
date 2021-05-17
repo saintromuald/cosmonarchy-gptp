@@ -4,7 +4,7 @@
 #include <cmath>
 #include "MathUtils.h"
 #include "Utils/captivating_claws.h"
-#include "hooks/hydraFinder.h"
+#include "hooks/cosmonarchyFinder.h"
 #include "globals.h"
 #include "logger.h"
 

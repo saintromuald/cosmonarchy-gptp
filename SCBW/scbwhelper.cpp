@@ -3607,15 +3607,15 @@ namespace helper
 		}
 	}
 
-	bool function_004E8E10(Unit* unit, Point32* coords)
+	bool getLarvaSpawnPos(Unit* unit, Point32* coords)
 	{
-		const u32 Func_Sub4E8E10 = 0x004E8E10;
+		const u32 Func_getLarvaSpawnPos = 0x004E8E10;
 		static b32 return_pre_value;
 		__asm {
 			PUSHAD
 			MOV EDI, coords
 			MOV EAX, unit
-			CALL Func_Sub4E8E10
+			CALL Func_getLarvaSpawnPos
 			MOV return_pre_value, EAX
 			POPAD
 		}

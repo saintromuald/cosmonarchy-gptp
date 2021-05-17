@@ -1,7 +1,7 @@
 #include "api.h"
 #include "scbwdata.h"
 #include <SCBW/UnitFinder.h>
-#include <hooks/hydraFinder.h>
+#include <hooks/cosmonarchyFinder.h>
 #include <algorithm>
 #include <cassert>
 #include <utility>
@@ -1220,7 +1220,7 @@ namespace scbw
 	}
 
 	// Identical to function OrderIsSpell @ 00436930 -- Pr0nogo
-	// We should update the lardcode for HYDRA
+	// We should update the lardcode for Cosmonarchy
 	bool orderIsSpell(s32 orderId)
 	{
 		return orderId == OrderId::Plague
@@ -1747,7 +1747,7 @@ namespace scbw
 			unit->getY() - radius,
 			unit->getX() + radius,
 			unit->getY() + radius
-		).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf, {}),
+		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::IncludingSelf, {}),
 			[&unitExt](Unit* target)
 		{
 			target->damageWithCustom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);

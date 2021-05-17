@@ -22,11 +22,10 @@ namespace hooks
 	void airSplash(Bullet* bullet, u32 weaponId);
 	void nuke(Bullet* bullet, u32 weaponId);
 
-	// HYDRA-specific
+	// Cosmonarchy-specific
 	bool isChargedGorgolethBullet(Bullet* bullet, u32 weaponId);
 	bool isUnsafeCyprianBullet(Bullet* bullet, u32 weaponId);
 	void parasite(Bullet* bullet, u32 weaponId);
 	void broodlings(Bullet* bullet, u32 weaponId);
 	void lockdown(Bullet* bullet, u32 weaponId);
-
-} //hooks
+}

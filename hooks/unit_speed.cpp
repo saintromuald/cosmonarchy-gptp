@@ -3,7 +3,7 @@
 #include "unit_speed.h"
 #include "../SCBW/enumerations.h"
 #include "../SCBW/scbwdata.h"
-#include "hooks/hydraFinder.h"
+#include "hooks/cosmonarchyFinder.h"
 #include <SCBW/UnitFinder.h>
 #include "SCBW/api.h"
 #include "globals.h"
@@ -73,7 +73,7 @@ namespace hooks
 		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
 		{
 			auto r = 10 * 32;
-			auto n = hydraFinderMatch(unit, Flags::Ally | Flags::FrontalArc, {UnitId::ZergZoryusthaleth});
+			auto n = cosmonarchyFinderMatch(unit, Flags::Ally | Flags::FrontalArc, {UnitId::ZergZoryusthaleth});
 			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
 				unit->position.x + r, unit->position.y + r);
 			bool accelerate = false;
@@ -106,7 +106,7 @@ namespace hooks
 		// Hierophant Signify: Cowardice
 		if (unitExt->values[ValueSignifyStacks])
 		{
-			auto match = hydraFinderMatch(unit, 0, {});
+			auto match = cosmonarchyFinderMatch(unit, 0, {});
 
 			// Direction Vector
 			f32 unitVecX = sin(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f);

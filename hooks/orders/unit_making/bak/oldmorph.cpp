@@ -151,16 +151,16 @@ void orders_Morph1(Unit* unit) {
 					unit->status -= UnitStatus::Completed;
 				
 				switch (unit->id) {
-				case UnitId::larva:
+				case UnitId::ZergLarva:
 					eggId = UnitId::ZergEgg;
 					break;
-				case UnitId::hydralisk:
+				case UnitId::ZergHydralisk:
 					eggId = UnitId::lurker_egg;
 					break;
-				case UnitId::zergling:
+				case UnitId::ZergZergling:
 					eggId = UnitId::Powerup_YoungChrysalis;
 					break;
-				case UnitId::mutalisk:
+				case UnitId::ZergMutalisk:
 					eggId = UnitId::cocoon;
 
 
@@ -257,7 +257,7 @@ void orders_Morph1(Unit* unit) {
 bool unitCanMorphHook(Unit* unit, u16 morphUnitId) {
 	//Default StarCraft behavior
 
-	if (unit->id == UnitId::hydralisk) {
+	if (unit->id == UnitId::ZergHydralisk) {
 		/*
 		if (morphUnitId == UnitId::lurker
 		&& unit->canUseTech(TechId::LurkerAspect, *ACTIVE_NATION_ID) == 1) {
@@ -322,7 +322,7 @@ u16 getUnitMorphEggTypeHook(u16 unitId, Unit* unit, u16 resultId) {
 			  return UnitId::cocoon;
 	}
 
-	if (unitId == UnitId::hydralisk)
+	if (unitId == UnitId::ZergHydralisk)
 		return UnitId::lurker_egg;
 
 	if (unitId == UnitId::zergling)
@@ -346,7 +346,7 @@ u16 getCancelMorphRevertTypeHook(Unit* eggUnit) {
 
 	if (eggUnit->id == UnitId::lurker_egg)
 	{
-		return UnitId::hydralisk;
+		return UnitId::ZergHydralisk;
 	}
 
 	if (eggUnit->id == UnitId::Powerup_YoungChrysalis)

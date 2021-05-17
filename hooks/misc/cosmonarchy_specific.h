@@ -30,6 +30,6 @@ namespace hooks
 
 namespace hooks
 {
-	void injectHydraSpecific();
+	void injectCosmonarchySpecific();
 
 }

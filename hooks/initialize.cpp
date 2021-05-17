@@ -92,7 +92,7 @@
 #include "hooks/economic_units.h"
 #include "hooks/limits/extender.h"
 #include "hooks/build_time.h"
-#include "hooks/misc/hydra_specific.h"
+#include "hooks/misc/cosmonarchy_specific.h"
 #include "hooks/interface/uifeatures/screen_hotkeys.h"
 #include "hooks/interface/uifeatures/uifeatures.h"
 #include "hooks/trap_hooks.h"
@@ -217,7 +217,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 //	const u8 retn = 0xc3;
 //	memoryPatch(0x004AAF23 + 5, &retn, 1);
 	injectGlobalsHooks();
-	hooks::injectHydraSpecific();
+	hooks::injectCosmonarchySpecific();
 	hooks::injectLimitHooks();
 	hooks::injectTargetRelatedHooks();
 	hooks::unitsDatWrapperPatches();
@@ -529,7 +529,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectWeaponFireHooks();
 
 
-	hooks::injectUnitDestructorSpecial();//hydra
+	hooks::injectUnitDestructorSpecial();
 
 	hooks::injectWeaponEffectHook();
 	hooks::injectUseTechHooks();
