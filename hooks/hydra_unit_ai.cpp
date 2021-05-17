@@ -183,9 +183,9 @@ void hydra_unit_ai(Unit* unit)
 			#define KITE_ZONE_COUNT 9
 			const Point32f offsets[KITE_ZONE_COUNT] =
 			{
-				{-0.7, -0.7}, {0, -1}, {+0.7, -0.7},
-				{-1,      0}, {0,  0}, {+1,      0},	
-				{-0.7, +0.7}, {0, +1}, {+0.7, +0.7},
+				{-1, -1}, {0, -1}, {+1, -1},
+				{-1,  0}, {0,  0}, {+1,  0},	
+				{-1, +1}, {0, +1}, {+1, +1},
 			};
 			bool enemiesAround = false;
 			u32 unitValue[KITE_ZONE_COUNT] = {0};
@@ -220,9 +220,9 @@ void hydra_unit_ai(Unit* unit)
 			{
 				Point32f biasVectors[KITE_ZONE_COUNT] =
 				{
-					{-0.7, -0.7}, { 0, -1}, {+0.7, -0.7},
-					{-1,      0}, { 0,  0}, {+1,      0},	
-					{-0.7, +0.7}, { 0, +1}, {+0.7, +0.7},
+					{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
+					{-1.1,    0}, { 0,    0}, {+1.1,    0},	
+					{-0.7, +0.7}, { 0, +1.1}, {+0.7, +0.7},
 				};
 				for (int i = 0; i < KITE_ZONE_COUNT; i++)
 				{
@@ -239,6 +239,8 @@ void hydra_unit_ai(Unit* unit)
 					biases[i] /= KITE_ZONE_COUNT;
 				}
 
+				// TODO: check if bias calc works properly
+				
 				u32 forwardBias = KITE_ZONE_COUNT / 2;
 				u32 backwardBias = KITE_ZONE_COUNT / 2;
 				for (int i = 0; i < KITE_ZONE_COUNT; i++)
