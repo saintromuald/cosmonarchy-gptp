@@ -232,12 +232,12 @@ void hydra_unit_ai(Unit* unit)
 						continue;
 					}
 
-					if (biases[i] < biases[forwardBias])
+					if (biases[i] > biases[forwardBias])
 					{
 						forwardBias = i;
 					}
 
-					if (biases[i] > biases[backwardBias])
+					if (biases[i] < biases[backwardBias])
 					{
 						backwardBias = i;
 					}
