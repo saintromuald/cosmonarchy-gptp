@@ -86,7 +86,21 @@ static inline Point16 ClampPoint(Point16 point)
 
 static inline u32 getMaxRange(Unit* unit)
 {
-	return std::max(weapons_dat::MaxRange[unit->getGroundWeapon()], weapons_dat::MaxRange[unit->getAirWeapon()]);
+	u32 groundWeapon = unit->getGroundWeapon();
+	u32 groundRange = 0;
+	if (groundWeapon != WeaponId::None)
+	{
+		groundRange = weapons_dat::MaxRange[groundWeapon];
+	}
+
+	u32 airWeapon = unit->getAirWeapon();
+	u32 airRange = 0;
+	if (airWeapon != WeaponId::None)
+	{
+		airRange = weapons_dat::MaxRange[airWeapon];
+	}
+
+	return std::max(groundRange, airRange);
 }
 
 static inline bool isMeleeAttacker(Unit* unit)
@@ -96,7 +110,7 @@ static inline bool isMeleeAttacker(Unit* unit)
 
 static inline u8 getKiteWeaponCooldown(Unit* unit)
 {
-	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 0.75;
+	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 1;
 }
 
 static inline bool canKite(Unit* unit)
@@ -104,9 +118,20 @@ static inline bool canKite(Unit* unit)
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 	return unit->hasWeapon()
 		&& !unit->isFrozen()
-		&& unit->mainOrderId != OrderId::AtkMoveEP
+		//&& unit->mainOrderId != OrderId::AtkMoveEP
 		&& unit->id != UnitId::ZergLakizilisk
 		&& !unitExt->values[ValueDisruptionWebOn];
+}
+
+static inline bool attackTargetHasSimilarRange(Unit* unit)
+{
+	Unit* target = unit->orderTarget.unit;
+	if (!target)
+	{
+		return false;
+	}
+
+	return labs(getMaxRange(target) - getMaxRange(unit)) < 48;
 }
 
 static inline bool attackTargetHasBiggerRange(Unit* unit)
@@ -117,7 +142,22 @@ static inline bool attackTargetHasBiggerRange(Unit* unit)
 		return false;
 	}
 
-	return getMaxRange(target) >= getMaxRange(unit);
+	return getMaxRange(target) > getMaxRange(unit);
+}
+
+static inline u32 getDistanceToTarget(Unit* unit)
+{
+	Unit* target = unit->orderTarget.unit;
+	if (!target)
+	{
+		return getMaxRange(unit);
+	}
+
+	Point32 diff = {unit->position.x, unit->position.y};
+	diff.x -= target->position.x;
+	diff.y -= target->position.y;
+
+	return sqrtl(powl(diff.x, 2) + powl(diff.y, 2));
 }
 
 void hydra_unit_ai(Unit* unit)
@@ -131,8 +171,8 @@ void hydra_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::AttackUnit;
 	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0 )
 	{
-		const u32 moveRadius = 4 * 32;
-		const u32 localGroupRadius = 4 * 32;
+		const u32 moveRadius = 3 * 32;
+		const u32 localGroupRadius = 2 * 32;
 		const u32 hostileGroupRadius = 4 * 32;
 
 		scbw::UnitFinder localGroup(
@@ -144,39 +184,39 @@ void hydra_unit_ai(Unit* unit)
 		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {unit->id}));
 		localGroup.filter([&](Unit* target){ return canKite(target); });
 
-		u32 maxCooldown = getKiteWeaponCooldown(unit);
+		u32 maxCooldown = getKiteWeaponCooldown(unit) * 0.75;
 		if (maxCooldown == 0)
 		{
-			Unit* targetUnit = scbw::UnitFinder::getNearestTarget(
-				unit->getX() - hostileGroupRadius * 3,
-				unit->getY() - hostileGroupRadius * 3,
-				unit->getX() + hostileGroupRadius * 3,
-				unit->getY() + hostileGroupRadius * 3,
-				unit, hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}));
-			if (!targetUnit)
+			localGroup.forEach([&](Unit* localUnit)
 			{
-				localGroup.forEach([&](Unit* target)
+				auto targetMatch = hydraFinderMatch(localUnit, Flags::Enemy | Flags::Combatant, {});
+				Unit* targetUnit = nullptr;
+				scbw::UnitFinder(
+					localUnit->getX() - hostileGroupRadius * 3,
+					localUnit->getY() - hostileGroupRadius * 3,
+					localUnit->getX() + hostileGroupRadius * 3,
+					localUnit->getY() + hostileGroupRadius * 3
+				).forEach([&](Unit* hostileUnit)
 				{
-					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAI_Kite] = 1 * 24;
-				});
-			}
-			else
-			{
-				Point16 targetPos = targetUnit->position;
-				localGroup.forEach([&](Unit* target)
-				{
-					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAI_Kite] = 0.5 * 24;
-
-					if (std::labs(maxCooldown - getKiteWeaponCooldown(target)) > 0.5 * 24)
+					if (!targetMatch(hostileUnit) /*|| !localUnit->canAttackTarget(hostileUnit)*/)
 					{
 						return;
 					}
-
-					target->orderTo(OrderId::AttackUnit, targetUnit);
+					
+					if (!targetUnit || hostileUnit->getTotalHitPointsPlusShields() < targetUnit->getTotalHitPointsPlusShields())
+					{
+						targetUnit = hostileUnit;
+					}
 				});
-			}
+
+				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+				localUnitExt->timers[TimerAI_Kite] = 24;
+
+				if (targetUnit)
+				{
+					localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+				}
+			});
 		}
 		else
 		{
@@ -193,8 +233,8 @@ void hydra_unit_ai(Unit* unit)
 			for (int i = 0; i < KITE_ZONE_COUNT; i++)
 			{
 				Point16 searchPos = unit->position;
-				searchPos.x += offsets[i].x * hostileGroupRadius * 2;
-				searchPos.y += offsets[i].y * hostileGroupRadius * 2;
+				searchPos.x += offsets[i].x * hostileGroupRadius;
+				searchPos.y += offsets[i].y * hostileGroupRadius;
 
 				scbw::UnitFinder(
 					searchPos.x - hostileGroupRadius,
@@ -202,22 +242,28 @@ void hydra_unit_ai(Unit* unit)
 					searchPos.x + hostileGroupRadius,
 					searchPos.y + hostileGroupRadius
 				).forEachInMatch(hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}),
-					[&](Unit* target)
+					[&](Unit* hostileUnit)
 				{
 					enemiesAround = true;
 					if (unit->status & UnitStatus::InAir)
 					{
-						unitValue[i] += target->airStrength;
+						unitValue[i] += hostileUnit->airStrength;
 					}
 					else
 					{
-						unitValue[i] += target->groundStrength;
+						unitValue[i] += hostileUnit->groundStrength;
 					}
 				});
 			}
 
 			if (enemiesAround)
 			{
+				const Point32f biasOrigins[KITE_ZONE_COUNT] =
+				{
+					{-0.7, -0.7}, { 0, -1.0}, {+0.7, -0.7},
+					{-1.0,    0}, { 0,    0}, {+1.0,    0},	
+					{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
+				};
 				Point32f biasVectors[KITE_ZONE_COUNT] =
 				{
 					{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
@@ -229,20 +275,19 @@ void hydra_unit_ai(Unit* unit)
 					biasVectors[i].x *= unitValue[i];
 					biasVectors[i].y *= unitValue[i];
 				}
-				u64 biases[KITE_ZONE_COUNT] = {0};
+				f32 biases[KITE_ZONE_COUNT] = {0};
 				for (int i = 0; i < KITE_ZONE_COUNT; i++)
 				{
 					for (int j = 0; j < KITE_ZONE_COUNT; j++)
 					{
-						biases[i] += offsets[i].x * biasVectors[j].x + offsets[i].y * biasVectors[j].y;
+						biases[i] += biasOrigins[i].x * biasVectors[j].x + biasOrigins[i].y * biasVectors[j].y;
 					}
 					biases[i] /= KITE_ZONE_COUNT;
 				}
 
-				// TODO: check if bias calc works properly
-				
 				u32 forwardBias = KITE_ZONE_COUNT / 2;
 				u32 backwardBias = KITE_ZONE_COUNT / 2;
+				u32 strafeBias = 0;
 				for (int i = 0; i < KITE_ZONE_COUNT; i++)
 				{
 					if (i == KITE_ZONE_COUNT / 2)
@@ -259,7 +304,17 @@ void hydra_unit_ai(Unit* unit)
 					{
 						backwardBias = i;
 					}
+
+					if (labs(biases[i]) < labs(biases[strafeBias]))
+					{
+						strafeBias = i;
+					}
 				}
+
+				//scbw::printf("%f %f %f", biases[0], biases[1], biases[2]);
+				//scbw::printf("%f %f %f", biases[3], biases[4], biases[5]);
+				//scbw::printf("%f %f %f", biases[6], biases[7], biases[8]);
+				//scbw::printf("\n");
 
 				Point16 forwardPos = unit->position;
 				forwardPos.x += offsets[forwardBias].x * moveRadius;
@@ -271,37 +326,56 @@ void hydra_unit_ai(Unit* unit)
 				backwardPos.y += offsets[backwardBias].y * moveRadius;
 				backwardPos = ClampPoint(backwardPos);
 
-				localGroup.forEach([&](Unit* target)
+				Point16 strafePos = unit->position;
+				strafePos.x += offsets[strafeBias].x * moveRadius;
+				strafePos.y += offsets[strafeBias].y * moveRadius;
+				strafePos = ClampPoint(strafePos);
+
+				u32 crowdScore = 0;
+				if (unit->status & UnitStatus::InAir)
 				{
-					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAI_Kite] = getKiteWeaponCooldown(target);
+					crowdScore = hydraUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoGround, {}) / 2;
+				}
+				else
+				{
+					crowdScore = hydraUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoAir, {});
+				}
 
-					if (target->mainOrderId == OrderId::Move)
-					{
-						return;
-					}
+				localGroup.forEach([&](Unit* localUnit)
+				{
+					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+					localUnitExt->timers[TimerAI_Kite] = getKiteWeaponCooldown(localUnit);
 
-					if (target->hitPoints < target->getMaxHpRaw() * 0.2)
+					if (localUnit->hitPoints < localUnit->getMaxHpRaw() * 0.2)
 					{
-						target->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
-						targetExt->timers[TimerAI_Kite] *= 2;
+						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
+						localUnitExt->timers[TimerAI_Kite] *= 2;
+						//scbw::printf("%s: fall back", localUnit->getName());
 					}
-					else if (isMeleeAttacker(target) || attackTargetHasBiggerRange(target))
+					else if (getDistanceToTarget(localUnit) > getMaxRange(localUnit) * 1.5
+						|| (getDistanceToTarget(localUnit) > getMaxRange(localUnit) * 1 && crowdScore > 8))
 					{
-						target->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
+						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
+						//scbw::printf("%s: forward", localUnit->getName());
 					}
-					else
+					else if (crowdScore > 8)
 					{
-						target->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
+						localUnit->orderTo(OrderId::Move, strafePos.x, strafePos.y);
+						//scbw::printf("%s: strafe", localUnit->getName());
+					}
+					else if (!isMeleeAttacker(localUnit))
+					{
+						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
+						//scbw::printf("%s: backward", localUnit->getName());
 					}
 				});
 			}
 			else
 			{
-				localGroup.forEach([&](Unit* target)
+				localGroup.forEach([&](Unit* localUnit)
 				{
-					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAI_Kite] = 1 * 24;
+					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+					localUnitExt->timers[TimerAI_Kite] = 24;
 				});
 			}
 		}
