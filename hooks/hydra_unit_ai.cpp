@@ -95,10 +95,12 @@ static inline u8 getKiteWeaponCooldown(Unit* unit)
 
 static inline bool canKite(Unit* unit)
 {
+	UnitExt* unitExt = globals.GetUnitExt(unit);
 	return unit->hasWeapon()
 		&& !unit->isFrozen()
 		&& unit->mainOrderId != OrderId::AtkMoveEP
-		&& unit->id != UnitId::ZergLakizilisk;
+		&& unit->id != UnitId::ZergLakizilisk
+		&& !unitExt->values[ValueDisruptionWebOn];
 }
 
 static inline bool attackTargetHasBiggerRange(Unit* unit)
@@ -125,7 +127,7 @@ void hydra_unit_ai(Unit* unit)
 	{
 		const u32 moveRadius = 2 * 32;
 		const u32 localGroupRadius = 4 * 32;
-		const u32 hostileGroupRadius = 6 * 32;
+		const u32 hostileGroupRadius = 3 * 32;
 
 		scbw::UnitFinder localGroup(
 			unit->getX() - localGroupRadius,
@@ -140,10 +142,10 @@ void hydra_unit_ai(Unit* unit)
 		if (maxCooldown == 0)
 		{
 			Unit* targetUnit = scbw::UnitFinder::getNearestTarget(
-				unit->getX() - hostileGroupRadius * 2,
-				unit->getY() - hostileGroupRadius * 2,
-				unit->getX() + hostileGroupRadius * 2,
-				unit->getY() + hostileGroupRadius * 2,
+				unit->getX() - hostileGroupRadius * 4,
+				unit->getY() - hostileGroupRadius * 4,
+				unit->getX() + hostileGroupRadius * 4,
+				unit->getY() + hostileGroupRadius * 4,
 				unit, hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}));
 			if (!targetUnit)
 			{
@@ -171,61 +173,65 @@ void hydra_unit_ai(Unit* unit)
 		}
 		else
 		{
-			Point32 identity[9] =
+			#define KITE_ZONE_COUNT 25
+			Point32 identity[KITE_ZONE_COUNT] =
 			{
-				{-1, -1}, { 0, -1}, {+1, -1},	
-				{-1,  0}, { 0,  0}, {+1,  0},	
-				{-1, +1}, { 0, +1}, {+1, +1},	
+				{-2, -2}, {-1, -2}, { 0, -2}, {+1, -2}, {+2, -2},
+				{-2, -1}, {-1, -1}, { 0, -1}, {+1, -1}, {+2, -1},
+				{-2,  0}, {-1,  0}, { 0,  0}, {+1,  0}, {+2,  0},	
+				{-2, +1}, {-1, +1}, { 0, +1}, {+1, +1}, {+2, +1},	
+				{-2, +2}, {-1, +2}, { 0, +2}, {+1, +2}, {+2, +2},	
 			};
-			u32 hostileCount = 0;
-			u32 unitValue[9] = {0};
-			u32 biases[9] = {0};
+			bool enemiesAround = false;
+			u32 unitValue[KITE_ZONE_COUNT] = {0};
+			u32 biases[KITE_ZONE_COUNT] = {0};
 
-			for (int i = 0; i < 9; i++)
+			for (int i = 0; i < KITE_ZONE_COUNT; i++)
 			{
 				Point16 searchPos = unit->position;
-				searchPos.x += identity[i].x * hostileGroupRadius;
-				searchPos.y += identity[i].y * hostileGroupRadius;
+				searchPos.x += identity[i].x * hostileGroupRadius * 2;
+				searchPos.y += identity[i].y * hostileGroupRadius * 2;
 
 				scbw::UnitFinder(
-					searchPos.x - localGroupRadius,
-					searchPos.y - localGroupRadius,
-					searchPos.x + localGroupRadius,
-					searchPos.y + localGroupRadius
+					searchPos.x - hostileGroupRadius,
+					searchPos.y - hostileGroupRadius,
+					searchPos.x + hostileGroupRadius,
+					searchPos.y + hostileGroupRadius
 				).forEachInMatch(hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}),
 					[&](Unit* target)
 				{
-					hostileCount += 1;
+					enemiesAround = true;
 					unitValue[i] += unit->groundStrength + unit->airStrength;
 				});
 			}
 
-			if (hostileCount > 0)
+			if (enemiesAround)
 			{
-				Point32 biasVectors[9] =
+				Point32 biasVectors[KITE_ZONE_COUNT] =
 				{
-					{-1, -1}, { 0, -1}, {+1, -1},	
-					{-1,  0}, { 0,  0}, {+1,  0},	
-					{-1, +1}, { 0, +1}, {+1, +1},	
+					{-2, -2}, {-1, -2}, { 0, -2}, {+1, -2}, {+2, -2},
+					{-2, -1}, {-1, -1}, { 0, -1}, {+1, -1}, {+2, -1},
+					{-2,  0}, {-1,  0}, { 0,  0}, {+1,  0}, {+2,  0},
+					{-2, +1}, {-1, +1}, { 0, +1}, {+1, +1}, {+2, +1},
+					{-2, +2}, {-1, +2}, { 0, +2}, {+1, +2}, {+2, +2},
 				};
-				for (int i = 0; i < 9; i++)
+				for (int i = 0; i < KITE_ZONE_COUNT; i++)
 				{
 					biasVectors[i].x *= unitValue[i];
 					biasVectors[i].y *= unitValue[i];
 				}
-				for (int i = 0; i < 9; i++)
+				for (int i = 0; i < KITE_ZONE_COUNT; i++)
 				{
-					for (int j = 0; j < 9; j++)
+					for (int j = 0; j < KITE_ZONE_COUNT; j++)
 					{
 						biases[i] += identity[i].x * biasVectors[j].x + identity[i].y * biasVectors[j].y;
 					}
-					biases[i] /= 9;
+					biases[i] /= KITE_ZONE_COUNT;
 				}
 
-				u32 forwardBias = 0;
-				u32 backwardBias = 0;
-
-				for (int i = 1; i < 9; i++)
+				u32 forwardBias = 4;
+				u32 backwardBias = 4;
+				for (int i = 0; i < KITE_ZONE_COUNT; i++)
 				{
 					if (i == 4)
 					{
@@ -257,6 +263,11 @@ void hydra_unit_ai(Unit* unit)
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
 					targetExt->timers[TimerAI_Kite] = getKiteWeaponCooldown(target);
+
+					if (target->mainOrderId == OrderId::Move)
+					{
+						return;
+					}
 
 					if (target->hitPoints < target->getMaxHpRaw() * 0.2)
 					{
