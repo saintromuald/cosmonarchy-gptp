@@ -229,11 +229,11 @@ void hydra_unit_ai(Unit* unit)
 					biases[i] /= KITE_ZONE_COUNT;
 				}
 
-				u32 forwardBias = 4;
-				u32 backwardBias = 4;
+				u32 forwardBias = KITE_ZONE_COUNT / 2;
+				u32 backwardBias = KITE_ZONE_COUNT / 2;
 				for (int i = 0; i < KITE_ZONE_COUNT; i++)
 				{
-					if (i == 4)
+					if (i == KITE_ZONE_COUNT / 2)
 					{
 						continue;
 					}
