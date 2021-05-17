@@ -218,7 +218,7 @@ void hydra_unit_ai(Unit* unit)
 				});
 
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				localUnitExt->timers[TimerAI_Kite] = 24;
+				localUnitExt->timers[TimerAI_Kite] = 32;
 
 				if (targetUnit)
 				{
