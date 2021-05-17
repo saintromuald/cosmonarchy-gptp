@@ -71,6 +71,9 @@ const s32 SeraphIrradiateTimer = 10;
 const s32 AzazelDefensiveMatrixTimer = 90; // roughly 30 seconds
 const s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
 
+// Centaur
+const s32 CentaurMissileDistance = 4 * 32;
+
 // Treasury
 const s32 TreasuryIncrease = 4;
 

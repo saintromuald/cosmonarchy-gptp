@@ -702,7 +702,7 @@ namespace hooks
 					unit->orderSignal &= ~0x20;
 					if (unit->orderTarget.unit != nullptr)
 					{
-						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= 128)
+						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= CentaurMissileDistance)
 						{
 							unit->playIscriptAnim(IscriptAnimation::Unused2);
 						}
