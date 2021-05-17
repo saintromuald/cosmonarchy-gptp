@@ -60,7 +60,7 @@ static inline bool isMeleeAttacker(Unit* unit)
 	return std::max(weapons_dat::MaxRange[unit->getGroundWeapon()], weapons_dat::MaxRange[unit->getAirWeapon()]) < 32;
 }
 
-static inline f32 getKiteWeaponCooldown(Unit* unit)
+static inline u8 getKiteWeaponCooldown(Unit* unit)
 {
 	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 0.75;
 }
@@ -75,7 +75,7 @@ void hydra_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::Patrol
 		|| unit->mainOrderId == OrderId::AttackMove
 		|| unit->mainOrderId == OrderId::AttackUnit;
-	if (isCapable && inCombat && unitExt->timers[TimerAI_Kite] == 0 && unit->hasWeapon())
+	if (isCapable && inCombat && unit->mainOrderId != OrderId::AtkMoveEP && unitExt->timers[TimerAI_Kite] == 0 && unit->hasWeapon())
 	{
 		const u32 localGroupRadius = 4 * 32;
 		const u32 hostileGroupRadius = 6 * 32;
@@ -111,14 +111,14 @@ void hydra_unit_ai(Unit* unit)
 				Point16 targetPos = targetUnit->position;
 				localGroup.forEach([&](Unit* target)
 				{
-					if (getKiteWeaponCooldown(target))
+					if (std::labs(maxCooldown - getKiteWeaponCooldown(target)) > 0.5 * 24)
 					{
 						return;
 					}
 
 					UnitExt* targetExt = globals.GetUnitExt(target);
 					targetExt->timers[TimerAI_Kite] = 0.5 * 24;
-					target->orderTo(OrderId::AttackMove, targetPos.x, targetPos.y);
+					target->orderTo(OrderId::AttackUnit, targetUnit);
 				});
 			}
 		}
