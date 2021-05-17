@@ -108,9 +108,28 @@ static inline bool isMeleeAttacker(Unit* unit)
 	return getMaxRange(unit) < 32;
 }
 
-static inline u8 getKiteWeaponCooldown(Unit* unit)
+static inline u8 getCurrentWeaponCooldown(Unit* unit)
 {
-	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 1.25;
+	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown);
+}
+
+static inline u8 getMaxWeaponCooldown(Unit* unit)
+{
+	u32 groundWeapon = unit->getGroundWeapon();
+	u32 groundCooldown = 0;
+	if (groundWeapon != WeaponId::None)
+	{
+		groundCooldown = hooks::getModifiedWeaponCooldownHook(unit, groundWeapon);
+	}
+
+	u32 airWeapon = unit->getAirWeapon();
+	u32 airCooldown = 0;
+	if (airWeapon != WeaponId::None)
+	{
+		airCooldown = hooks::getModifiedWeaponCooldownHook(unit, airCooldown);
+	}
+
+	return std::max(groundCooldown, airCooldown);
 }
 
 static inline bool canKite(Unit* unit)
@@ -184,12 +203,12 @@ void hydra_unit_ai(Unit* unit)
 		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {unit->id}));
 		localGroup.filter([&](Unit* target){ return canKite(target); });
 
-		u32 maxCooldown = getKiteWeaponCooldown(unit);
-		if (maxCooldown == 0)
+		u32 kiteCooldown = getCurrentWeaponCooldown(unit);
+		if (kiteCooldown == 0)
 		{
 			localGroup.forEach([&](Unit* localUnit)
 			{
-				if (getKiteWeaponCooldown(localUnit) > 0)
+				if (getCurrentWeaponCooldown(localUnit) > 0)
 				{
 					return;
 				}
@@ -218,7 +237,7 @@ void hydra_unit_ai(Unit* unit)
 				});
 
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				localUnitExt->timers[TimerAI_Kite] = 32;
+				localUnitExt->timers[TimerAI_Kite] = 12;
 
 				if (targetUnit)
 				{
@@ -352,7 +371,7 @@ void hydra_unit_ai(Unit* unit)
 				localGroup.forEach([&](Unit* localUnit)
 				{
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					localUnitExt->timers[TimerAI_Kite] = getKiteWeaponCooldown(localUnit);
+					localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit);
 
 					if (localUnit->hitPoints < localUnit->getMaxHpRaw() * 0.2)
 					{
@@ -383,7 +402,7 @@ void hydra_unit_ai(Unit* unit)
 				localGroup.forEach([&](Unit* localUnit)
 				{
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					localUnitExt->timers[TimerAI_Kite] = 24;
+					localUnitExt->timers[TimerAI_Kite] = 12;
 				});
 			}
 		}
