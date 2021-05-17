@@ -110,6 +110,9 @@ static inline bool isMeleeAttacker(Unit* unit)
 
 static inline u8 getCurrentWeaponCooldown(Unit* unit)
 {
+	u32 a = unit->groundWeaponCooldown;
+	u32 b = unit->airWeaponCooldown;
+
 	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown);
 }
 
@@ -126,7 +129,7 @@ static inline u8 getMaxWeaponCooldown(Unit* unit)
 	u32 airCooldown = 0;
 	if (airWeapon != WeaponId::None)
 	{
-		airCooldown = hooks::getModifiedWeaponCooldownHook(unit, airCooldown);
+		airCooldown = hooks::getModifiedWeaponCooldownHook(unit, airWeapon);
 	}
 
 	return std::max(groundCooldown, airCooldown);
@@ -168,12 +171,10 @@ static inline u32 getTargetCost(Unit* source, Unit* target)
 
 	cost += target->getTotalHitPointsPlusShields();
 
-	u32 realDist = getDistanceBetweenUnits(source, target);
-	u32 range = getMaxRange(source);
 	s32 dist = (s32)getDistanceBetweenUnits(source, target) - getMaxRange(source);
 	if (dist > 0)
 	{
-		cost += dist / 8;
+		cost += dist / 32.0;
 	}
 
 	return cost;
@@ -188,11 +189,13 @@ void hydra_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::Patrol
 		|| unit->mainOrderId == OrderId::AttackMove
 		|| unit->mainOrderId == OrderId::AttackUnit;
-	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0 )
+	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0)
 	{
 		const u32 moveRadius = 3 * 32;
 		const u32 localGroupRadius = 2 * 32;
 		const u32 hostileGroupRadius = 4 * 32;
+		const u32 sleepTime = 12;
+		const u32 attackTimeThreshold = 12;
 
 		scbw::UnitFinder localGroup(
 			unit->getX() - localGroupRadius,
@@ -203,12 +206,25 @@ void hydra_unit_ai(Unit* unit)
 		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {unit->id}));
 		localGroup.filter([&](Unit* target){ return canKite(target); });
 
+		u32 localGroupValue = 0;
+		localGroup.forEach([&](Unit* localUnit)
+		{
+			if (unit->status & UnitStatus::InAir)
+			{
+				localGroupValue += localUnit->airStrength;
+			}
+			else
+			{
+				localGroupValue += localUnit->groundStrength;
+			}
+		});
+
 		u32 kiteCooldown = getCurrentWeaponCooldown(unit);
-		if (kiteCooldown == 0)
+		if (kiteCooldown <= attackTimeThreshold)
 		{
 			localGroup.forEach([&](Unit* localUnit)
 			{
-				if (getCurrentWeaponCooldown(localUnit) > 0)
+				if (getCurrentWeaponCooldown(localUnit) > attackTimeThreshold)
 				{
 					return;
 				}
@@ -227,7 +243,7 @@ void hydra_unit_ai(Unit* unit)
 					{
 						return;
 					}
-					
+
 					u32 newTargetCost = getTargetCost(localUnit, hostileUnit);
 					if (!targetUnit || newTargetCost < targetCost)
 					{
@@ -237,27 +253,31 @@ void hydra_unit_ai(Unit* unit)
 				});
 
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				localUnitExt->timers[TimerAI_Kite] = 12;
 
 				if (targetUnit)
 				{
+					localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.75;
 					localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+				}
+				else 
+				{
+					localUnitExt->timers[TimerAI_Kite] = sleepTime;
 				}
 			});
 		}
 		else
 		{
-			#define KITE_ZONE_COUNT 9
-			const Point32f offsets[KITE_ZONE_COUNT] =
+			const u32 kiteZoneCount = 9;
+			const Point32f offsets[kiteZoneCount] =
 			{
 				{-1, -1}, {0, -1}, {+1, -1},
 				{-1,  0}, {0,  0}, {+1,  0},	
 				{-1, +1}, {0, +1}, {+1, +1},
 			};
 			bool enemiesAround = false;
-			u32 unitValue[KITE_ZONE_COUNT] = {0};
+			u32 unitValue[kiteZoneCount] = {0};
 
-			for (int i = 0; i < KITE_ZONE_COUNT; i++)
+			for (int i = 0; i < kiteZoneCount; i++)
 			{
 				Point16 searchPos = unit->position;
 				searchPos.x += offsets[i].x * hostileGroupRadius;
@@ -285,39 +305,39 @@ void hydra_unit_ai(Unit* unit)
 
 			if (enemiesAround)
 			{
-				const Point32f biasOrigins[KITE_ZONE_COUNT] =
+				const Point32f biasOrigins[kiteZoneCount] =
 				{
 					{-0.7, -0.7}, { 0, -1.0}, {+0.7, -0.7},
 					{-1.0,    0}, { 0,    0}, {+1.0,    0},	
 					{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
 				};
-				Point32f biasVectors[KITE_ZONE_COUNT] =
+				Point32f biasVectors[kiteZoneCount] =
 				{
 					{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
 					{-1.1,    0}, { 0,    0}, {+1.1,    0},	
 					{-0.7, +0.7}, { 0, +1.1}, {+0.7, +0.7},
 				};
-				for (int i = 0; i < KITE_ZONE_COUNT; i++)
+				for (int i = 0; i < kiteZoneCount; i++)
 				{
 					biasVectors[i].x *= unitValue[i];
 					biasVectors[i].y *= unitValue[i];
 				}
-				f32 biases[KITE_ZONE_COUNT] = {0};
-				for (int i = 0; i < KITE_ZONE_COUNT; i++)
+				f32 biases[kiteZoneCount] = {0};
+				for (int i = 0; i < kiteZoneCount; i++)
 				{
-					for (int j = 0; j < KITE_ZONE_COUNT; j++)
+					for (int j = 0; j < kiteZoneCount; j++)
 					{
 						biases[i] += biasOrigins[i].x * biasVectors[j].x + biasOrigins[i].y * biasVectors[j].y;
 					}
-					biases[i] /= KITE_ZONE_COUNT;
+					biases[i] /= kiteZoneCount;
 				}
 
-				u32 forwardBias = KITE_ZONE_COUNT / 2;
-				u32 backwardBias = KITE_ZONE_COUNT / 2;
+				u32 forwardBias = kiteZoneCount / 2;
+				u32 backwardBias = kiteZoneCount / 2;
 				u32 strafeBias = 0;
-				for (int i = 0; i < KITE_ZONE_COUNT; i++)
+				for (int i = 0; i < kiteZoneCount; i++)
 				{
-					if (i == KITE_ZONE_COUNT / 2)
+					if (i == kiteZoneCount / 2)
 					{
 						continue;
 					}
@@ -370,8 +390,13 @@ void hydra_unit_ai(Unit* unit)
 
 				localGroup.forEach([&](Unit* localUnit)
 				{
+					if (getCurrentWeaponCooldown(localUnit) <= attackTimeThreshold)
+					{
+						return;
+					}
+
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit);
+					localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit);
 
 					if (localUnit->hitPoints < localUnit->getMaxHpRaw() * 0.2)
 					{
@@ -379,7 +404,8 @@ void hydra_unit_ai(Unit* unit)
 						localUnitExt->timers[TimerAI_Kite] *= 2;
 						//scbw::printf("%s: fall back", localUnit->getName());
 					}
-					else if (getDistanceToTarget(localUnit) > getMaxRange(localUnit) * 1.5
+					else if (localGroupValue > biases[forwardBias]
+						|| getDistanceToTarget(localUnit) > getMaxRange(localUnit) * 1.5
 						|| (getDistanceToTarget(localUnit) > getMaxRange(localUnit) * 1 && crowdScore > 8))
 					{
 						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
@@ -402,7 +428,7 @@ void hydra_unit_ai(Unit* unit)
 				localGroup.forEach([&](Unit* localUnit)
 				{
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					localUnitExt->timers[TimerAI_Kite] = 12;
+					localUnitExt->timers[TimerAI_Kite] = sleepTime;
 				});
 			}
 		}
