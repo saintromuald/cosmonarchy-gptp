@@ -1624,6 +1624,7 @@ namespace scbw
 	{
 		Unit* unit = data.target;
 		auto links = getClarionLinks(unit); // has to be copy
+		links.erase(std::remove(links.begin(), links.end(), unit), links.end());
 		s32 damage = data.finalDamage;
 		if (links.size() == 0 || unit->shields < 256)
 		{
