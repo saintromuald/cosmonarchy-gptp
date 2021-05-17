@@ -125,7 +125,7 @@ void hydra_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::AttackUnit;
 	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0 )
 	{
-		const u32 moveRadius = 2 * 32;
+		const u32 moveRadius = 4 * 32;
 		const u32 localGroupRadius = 4 * 32;
 		const u32 hostileGroupRadius = 4 * 32;
 
@@ -160,13 +160,14 @@ void hydra_unit_ai(Unit* unit)
 				Point16 targetPos = targetUnit->position;
 				localGroup.forEach([&](Unit* target)
 				{
+					UnitExt* targetExt = globals.GetUnitExt(target);
+					targetExt->timers[TimerAI_Kite] = 0.5 * 24;
+
 					if (std::labs(maxCooldown - getKiteWeaponCooldown(target)) > 0.5 * 24)
 					{
 						return;
 					}
 
-					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAI_Kite] = 0.5 * 24;
 					target->orderTo(OrderId::AttackUnit, targetUnit);
 				});
 			}
