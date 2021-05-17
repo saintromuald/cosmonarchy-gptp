@@ -413,12 +413,12 @@ namespace hooks
 			case UnitId::ZergIrolIris:
 			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlaszilArbor, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergOthstolOviform:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlaszilArbor, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergSpawningPool:

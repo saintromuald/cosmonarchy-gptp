@@ -1321,7 +1321,7 @@ namespace hooks
 									|| (*activePortraitUnit)->id == UnitId::ZergSire
 									|| (*activePortraitUnit)->id == UnitId::ZergIrolIris
 									|| (*activePortraitUnit)->id == UnitId::ZergOthstolOviform
-									|| (*activePortraitUnit)->id == UnitId::ZergAlazilArbor) &&
+									|| (*activePortraitUnit)->id == UnitId::ZergAlaszilArbor) &&
 									current_button->iconID == IconId::Suicide_Scourge)
 								{
 									current_button_state = BUTTON_STATE::Enabled;

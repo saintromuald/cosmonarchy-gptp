@@ -601,7 +601,7 @@ namespace scbw
 			case UnitId::ZergHive:
 			case UnitId::ZergLair:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergAlazilArbor:
+			case UnitId::ZergAlaszilArbor:
 			case UnitId::ZergLarvalColony:
 			case UnitId::ZergOcsalColony:
 			case UnitId::ZergSporeColony:
