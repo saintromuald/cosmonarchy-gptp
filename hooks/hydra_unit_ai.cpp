@@ -127,7 +127,7 @@ void hydra_unit_ai(Unit* unit)
 	{
 		const u32 moveRadius = 2 * 32;
 		const u32 localGroupRadius = 4 * 32;
-		const u32 hostileGroupRadius = 3 * 32;
+		const u32 hostileGroupRadius = 4 * 32;
 
 		scbw::UnitFinder localGroup(
 			unit->getX() - localGroupRadius,
@@ -135,17 +135,17 @@ void hydra_unit_ai(Unit* unit)
 			unit->getX() + localGroupRadius,
 			unit->getY() + localGroupRadius
 		);
-		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {}));
-		localGroup.filter([&](Unit* target){ return canKite(unit); });
+		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {unit->id}));
+		localGroup.filter([&](Unit* target){ return canKite(target); });
 
 		u32 maxCooldown = getKiteWeaponCooldown(unit);
 		if (maxCooldown == 0)
 		{
 			Unit* targetUnit = scbw::UnitFinder::getNearestTarget(
-				unit->getX() - hostileGroupRadius * 4,
-				unit->getY() - hostileGroupRadius * 4,
-				unit->getX() + hostileGroupRadius * 4,
-				unit->getY() + hostileGroupRadius * 4,
+				unit->getX() - hostileGroupRadius * 3,
+				unit->getY() - hostileGroupRadius * 3,
+				unit->getX() + hostileGroupRadius * 3,
+				unit->getY() + hostileGroupRadius * 3,
 				unit, hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}));
 			if (!targetUnit)
 			{
@@ -173,14 +173,12 @@ void hydra_unit_ai(Unit* unit)
 		}
 		else
 		{
-			#define KITE_ZONE_COUNT 25
-			Point32 identity[KITE_ZONE_COUNT] =
+			#define KITE_ZONE_COUNT 9
+			const Point32 offsets[KITE_ZONE_COUNT] =
 			{
-				{-2, -2}, {-1, -2}, { 0, -2}, {+1, -2}, {+2, -2},
-				{-2, -1}, {-1, -1}, { 0, -1}, {+1, -1}, {+2, -1},
-				{-2,  0}, {-1,  0}, { 0,  0}, {+1,  0}, {+2,  0},	
-				{-2, +1}, {-1, +1}, { 0, +1}, {+1, +1}, {+2, +1},	
-				{-2, +2}, {-1, +2}, { 0, +2}, {+1, +2}, {+2, +2},	
+				{-1, -1}, { 0, -1}, {+1, -1},
+				{-1,  0}, { 0,  0}, {+1,  0},	
+				{-1, +1}, { 0, +1}, {+1, +1},	
 			};
 			bool enemiesAround = false;
 			u32 unitValue[KITE_ZONE_COUNT] = {0};
@@ -189,8 +187,8 @@ void hydra_unit_ai(Unit* unit)
 			for (int i = 0; i < KITE_ZONE_COUNT; i++)
 			{
 				Point16 searchPos = unit->position;
-				searchPos.x += identity[i].x * hostileGroupRadius * 2;
-				searchPos.y += identity[i].y * hostileGroupRadius * 2;
+				searchPos.x += offsets[i].x * hostileGroupRadius * 2;
+				searchPos.y += offsets[i].y * hostileGroupRadius * 2;
 
 				scbw::UnitFinder(
 					searchPos.x - hostileGroupRadius,
@@ -201,7 +199,14 @@ void hydra_unit_ai(Unit* unit)
 					[&](Unit* target)
 				{
 					enemiesAround = true;
-					unitValue[i] += unit->groundStrength + unit->airStrength;
+					if (unit->status & UnitStatus::InAir)
+					{
+						unitValue[i] += target->airStrength;
+					}
+					else
+					{
+						unitValue[i] += target->groundStrength;
+					}
 				});
 			}
 
@@ -209,11 +214,9 @@ void hydra_unit_ai(Unit* unit)
 			{
 				Point32 biasVectors[KITE_ZONE_COUNT] =
 				{
-					{-2, -2}, {-1, -2}, { 0, -2}, {+1, -2}, {+2, -2},
-					{-2, -1}, {-1, -1}, { 0, -1}, {+1, -1}, {+2, -1},
-					{-2,  0}, {-1,  0}, { 0,  0}, {+1,  0}, {+2,  0},
-					{-2, +1}, {-1, +1}, { 0, +1}, {+1, +1}, {+2, +1},
-					{-2, +2}, {-1, +2}, { 0, +2}, {+1, +2}, {+2, +2},
+					{-1, -1}, { 0, -1}, {+1, -1},
+					{-1,  0}, { 0,  0}, {+1,  0},
+					{-1, +1}, { 0, +1}, {+1, +1},
 				};
 				for (int i = 0; i < KITE_ZONE_COUNT; i++)
 				{
@@ -224,7 +227,7 @@ void hydra_unit_ai(Unit* unit)
 				{
 					for (int j = 0; j < KITE_ZONE_COUNT; j++)
 					{
-						biases[i] += identity[i].x * biasVectors[j].x + identity[i].y * biasVectors[j].y;
+						biases[i] += offsets[i].x * biasVectors[j].x + offsets[i].y * biasVectors[j].y;
 					}
 					biases[i] /= KITE_ZONE_COUNT;
 				}
@@ -250,13 +253,13 @@ void hydra_unit_ai(Unit* unit)
 				}
 
 				Point16 forwardPos = unit->position;
-				forwardPos.x += identity[forwardBias].x * moveRadius;
-				forwardPos.y += identity[forwardBias].y * moveRadius;
+				forwardPos.x += offsets[forwardBias].x * moveRadius;
+				forwardPos.y += offsets[forwardBias].y * moveRadius;
 				forwardPos = ClampPoint(forwardPos);
 
 				Point16 backwardPos = unit->position;
-				backwardPos.x += identity[backwardBias].x * moveRadius;
-				backwardPos.y += identity[backwardBias].y * moveRadius;
+				backwardPos.x += offsets[backwardBias].x * moveRadius;
+				backwardPos.y += offsets[backwardBias].y * moveRadius;
 				backwardPos = ClampPoint(backwardPos);
 
 				localGroup.forEach([&](Unit* target)
