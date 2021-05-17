@@ -142,7 +142,9 @@ static inline bool canKite(Unit* unit)
 		&& !unit->isFrozen()
 		&& unit->mainOrderId != OrderId::AtkMoveEP
 		&& unit->id != UnitId::ZergLakizilisk
-		&& !unitExt->values[ValueDisruptionWebOn];
+		&& !unitExt->values[ValueDisruptionWebOn]
+		&& !(unit->status & UnitStatus::Burrowed)
+		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
 }
 
 static inline u32 getDistanceBetweenUnits(Unit* source, Unit* target)
@@ -401,7 +403,8 @@ void hydra_unit_ai(Unit* unit)
 					const u32 distance = getDistanceToTarget(localUnit);
 					const u32 maxRange = getMaxRange(localUnit);
 
-					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
+					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
+						|| localGroupValue * 2 < biases[forwardBias])
 					{
 						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
 						localUnitExt->timers[TimerAI_Kite] *= 2;
