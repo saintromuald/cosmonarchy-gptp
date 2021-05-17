@@ -398,15 +398,18 @@ void hydra_unit_ai(Unit* unit)
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
 					localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit);
 
+					const u32 distance = getDistanceToTarget(localUnit);
+					const u32 maxRange = getMaxRange(localUnit);
+
 					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
 					{
 						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
 						localUnitExt->timers[TimerAI_Kite] *= 2;
 						//scbw::printf("%s: fall back", localUnit->getName());
 					}
-					else if (localGroupValue > biases[forwardBias]
-						|| getDistanceToTarget(localUnit) > getMaxRange(localUnit) * 1.5
-						|| (getDistanceToTarget(localUnit) > getMaxRange(localUnit) * 1 && crowdScore > 8))
+					else if ((distance > maxRange * 0.5 && localGroupValue > biases[forwardBias])
+						|| (distance > maxRange * 1 && crowdScore > 8)
+						|| (distance > maxRange * 1.5))
 					{
 						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
