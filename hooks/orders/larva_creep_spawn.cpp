@@ -9,7 +9,7 @@ namespace hooks
 	{
 		Point32 coords;
 		// look for a location to spawn a larva at
-		if (helper::function_004E8E10(main_building, &coords))
+		if (helper::getLarvaSpawnPos(main_building, &coords))
 		{
 			Unit* unit_created = helper::createUnit(UnitId::ZergLarva, coords.x, coords.y, main_building->playerId);
 			if (unit_created != nullptr)
@@ -84,29 +84,29 @@ namespace hooks
 				else
 				{
 					// 004EA80E:
-					unit->building.larvaTimer = 37;
+					unit->building.larvaTimer = LarvaSpawnRateHatchery;
 					if (unit->id == UnitId::ZergLarvalColony)
 					{
-						unit->building.larvaTimer = 37 / LarvalColonyMultiplier;
+						unit->building.larvaTimer = LarvaSpawnRateHatchery / LarvaFactorLarvalColony;
 					}
-					// if failed to find a spawn point for larva set the timer before retry to 3
 					if (unit->id == UnitId::ZergLair && unit->mainOrderId != OrderId::Morph2
 						|| unit->id == UnitId::ZergHive && unit->mainOrderId == OrderId::Morph2)
 					{
-						unit->building.larvaTimer = 27;
+						unit->building.larvaTimer = LarvaSpawnRateHatchery * LarvaFactorLair;
 					}
 					else if (unit->id == UnitId::ZergHive && unit->mainOrderId != OrderId::Morph2
 						|| unit->id == UnitId::ZergSire && unit->mainOrderId == OrderId::Morph2)
 					{
-						unit->building.larvaTimer = 18;
+						unit->building.larvaTimer = LarvaSpawnRateHatchery * LarvaFactorHive;
 					}
 					else if (unit->id == UnitId::ZergSire && unit->mainOrderId != OrderId::Morph2)
 					{
-						unit->building.larvaTimer = 12;
+						unit->building.larvaTimer = LarvaSpawnRateHatchery * LarvaFactorSire;
 					}
 
+					// if failed to find a spawn point for larva set the timer before retry to 3
 					Point32 coords_2;
-					if (!helper::function_004E8E10(unit, &coords_2))
+					if (!helper::getLarvaSpawnPos(unit, &coords_2))
 					{
 						unit->building.larvaTimer = 3;
 					}
@@ -141,7 +141,6 @@ namespace hooks
 			|| unit->id == UnitId::ZergLair
 			|| unit->id == UnitId::ZergHive
 			|| unit->id == UnitId::ZergSire
-			|| (unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
 			|| unit->id == UnitId::ZergLarvalColony
 			|| unit->id == UnitId::ZergOcsalColony)
 		{

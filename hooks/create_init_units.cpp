@@ -79,7 +79,7 @@ namespace hooks
 				);
 				//CreateBuildingLarva(created_unit);
 				//CreateBuildingLarva(created_unit);
-				//Starting larva is 1 - HYDRA
+				//Starting larva is 1 in Cosmonarchy
 			}
 		}
 	}

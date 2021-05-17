@@ -216,7 +216,7 @@ namespace FlingyId
 		Uraj,
 		Khalis,
 
-		// HYDRA \\
+		// Cosmonarchy \\
 
 		TerranQuarry = 211,
 		ProtossPennant = 212,

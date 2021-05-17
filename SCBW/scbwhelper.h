@@ -362,7 +362,7 @@ namespace helper
 	void updateUnitStrength(Unit* unit);																							// 0049FA40
 	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit* unit, Box16* coords);														// 004E8280
 	void function_004E8DA0(Unit* unit);																								// 004E8DA0
-	bool function_004E8E10(Unit* unit, Point32* coords);																			// 004E8E10
+	bool getLarvaSpawnPos(Unit* unit, Point32* coords);																			// 004E8E10
 
 	// TODO: move somewhere else?
 	// SC Variables and Buffers used in this file
@@ -821,7 +821,7 @@ namespace helper
 	// For isOrderValid
 	bool unitIsResource(Unit* unit);                                                                                       // 004688E0
 
-	//// hydra_specific
+	//// cosmonarchy_specific
 	u8 getHangerTrainCount(Unit* unit);
 	bool unitIsTrainingOrMorphing(Unit* unit);
 	u8 initializeRandomizerInfo();

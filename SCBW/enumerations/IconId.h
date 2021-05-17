@@ -397,7 +397,7 @@ namespace IconId
 		/*0184*/	Speed_Up_Replay,
 		/*0185*/	Slow_Down_Replay,
 
-		// Extended / HYDRA \\
+		// Extended / Cosmonarchy \\
 
 		MadcapDanaanAutogun,
 		AtreusDauntlessDisruptionCannon,

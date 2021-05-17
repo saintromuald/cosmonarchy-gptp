@@ -1,5 +1,5 @@
 //
-#include "hooks/misc/hydra_specific.h"
+#include "hooks/misc/cosmonarchy_specific.h"
 #include "globals.h"
 #include <cassert>
 #include "hooks/orders/unit_making/unit_train.h"

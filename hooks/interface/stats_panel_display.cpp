@@ -239,13 +239,13 @@ namespace hooks
 			if (activeUnit->id == UnitId::ProtossSolarion
 				|| activeUnit->id == UnitId::ProtossAccantor
 				)
-			{ // Originally had hardcode for Gantrithor and Warbringer, removed for HYDRA
+			{ // Originally had hardcode for Gantrithor and Warbringer
 				helper::StatHangerCount(dialog, index);
 				index++;
 			}
 
 			if (activeUnit->id == UnitId::TerranVulture)
-			{ // Originally also had hardcode for Raynor Vulture, removed for HYDRA
+			{ // Originally also had hardcode for Raynor Vulture
 				if (helper::StatSpidermineCount(dialog, index))
 					index++;
 			}
@@ -298,7 +298,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		// Originally had Gantrithor - Tassadar hardcode here, removed for HYDRA
+		// Originally had Gantrithor - Tassadar hardcode here
 		if (unitId != UnitId::TerranMinotaur
 			|| !(units_dat::BaseProperty[unitId] & UnitProperty::Hero)
 			|| !units_dat::MapStringId[unitId])

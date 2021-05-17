@@ -30,7 +30,7 @@ namespace
 		{UnitId::defiler, TechId::Burrowing, TechId::DarkSwarm, TechId::Plague, TechId::Consume, TechId::None},
 		{UnitId::drone, TechId::Burrowing, TechId::None},
 		{UnitId::zergling, TechId::Burrowing, TechId::None},
-		{UnitId::hydralisk, TechId::Burrowing, TechId::LurkerAspect, TechId::None},
+		{UnitId::ZergHydralisk, TechId::Burrowing, TechId::LurkerAspect, TechId::None},
 		{UnitId::infested_terran, TechId::Burrowing, TechId::None},
 		{UnitId::lurker, TechId::LurkerAspect, TechId::None},
 
@@ -62,7 +62,7 @@ namespace
 		//Zerg
 		{UnitId::overlord, UpgradeId::VentralSacs, UpgradeId::Antennae, UpgradeId::None},
 		{UnitId::zergling, UpgradeId::MetabolicBoost, UpgradeId::AdrenalGlands, UpgradeId::None},
-		{UnitId::hydralisk, UpgradeId::MuscularAugments, UpgradeId::GroovedSpines, UpgradeId::None},
+		{UnitId::ZergHydralisk, UpgradeId::MuscularAugments, UpgradeId::GroovedSpines, UpgradeId::None},
 		{UnitId::queen, UpgradeId::GameteMeiosis, UpgradeId::None},
 		{UnitId::defiler, UpgradeId::MetasynapticNode, UpgradeId::None},
 		{UnitId::ultralisk, UpgradeId::AnabolicSynthesis, UpgradeId::ChitinousPlating, UpgradeId::None},

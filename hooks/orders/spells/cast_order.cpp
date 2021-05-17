@@ -118,7 +118,7 @@ namespace hooks
 			case TechId::Plague:
 			case TechId::Ensnare:
 			case TechId::PsionicStorm:
-			case TechId::Hallucination: // HYDRA
+			case TechId::Hallucination: // New
 			case TechId::Recall:
 			case TechId::StasisField:
 			case TechId::DisruptionWeb:

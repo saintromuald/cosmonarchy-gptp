@@ -1,7 +1,7 @@
 //Contains hooks that control attack range and seek range (AKA target acquisition range).
 
 #include "weapon_range.h"
-#include "hooks/hydraFinder.h"
+#include "hooks/cosmonarchyFinder.h"
 #include <SCBW/api.h>
 #include "globals.h"
 namespace hooks

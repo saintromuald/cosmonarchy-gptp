@@ -8,7 +8,7 @@
 #include "hooks/interface/uifeatures/uifeatures.h"
 #include "hooks/interface/hpbars/hpbars.h"
 #include "Utils/captivating_claws.h"
-#include "hooks/hydraFinder.h"
+#include "hooks/cosmonarchyFinder.h"
 #include "globals.h"
 #include "target_related.h"
 #include "hooks/orders/ai/ai_orders.h"
@@ -385,7 +385,7 @@ namespace hooks
 				if (unitExt->timers[TimerStarcallerInterceptionMissiles] == 0)
 				{
 					auto r = 5 * 32;
-					auto n = hydraFinderMatch(unit, Flags::Enemy | Flags::FrontalArc, {});
+					auto n = cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::FrontalArc, {});
 					scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
 						unit->position.x + r, unit->position.y + r);
 					bool enemiesDetected = false;
@@ -502,7 +502,7 @@ namespace hooks
 					// Cast Lazarus Agent						
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256);
 					auto r = 4 * 32;
-					auto n = hydraFinderMatch(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination, {});
+					auto n = cosmonarchyFinderMatch(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination, {});
 					scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r,
 						unit->position.x + r, unit->position.y + r);
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
@@ -692,7 +692,7 @@ namespace hooks
 			case UnitId::ProtossBarghest:
 			{
 				// Barghest - Repentent Chorus
-				unitExt->values[ValueRepententChorus] = hydraUnitCount(unit, unit->position, 5 * 32, Flags::Ally | Flags::NotSelf, { UnitId::ProtossBarghest });
+				unitExt->values[ValueRepententChorus] = cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Ally | Flags::NotSelf, { UnitId::ProtossBarghest });
 			} break;
 			case UnitId::TerranCentaur:
 			{
@@ -956,8 +956,8 @@ namespace hooks
 		/*
 		else if (unit->id == UnitId::ZergBactalisk) {
 			if (unit->status & UnitStatus::Burrowed) {
-				if (!(unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed)) {
-					unit->_padding_0x132 |= HydraFlags1::BasiliskBurrowed;
+				if (!(unit->_padding_0x132 & cosmonarchyFlags1::BasiliskBurrowed)) {
+					unit->_padding_0x132 |= cosmonarchyFlags1::BasiliskBurrowed;
 					spawnCreeper(unit);
 				}
 			}
@@ -982,7 +982,7 @@ namespace hooks
 			unit->plagueTimer = IsthrathalethPlagueTimer;
 		}
 
-		// Attachement - Clear
+		// Attachment - Clear
 		if (scbw::get_generic_rust_value(unit, RustId::CancelAttachment))
 		{
 			scbw::set_generic_rust_value(unit, RustId::CancelAttachment, 0);

@@ -1,4 +1,4 @@
-#include "hooks\hydra_unit_ai.h"
+#include "hooks\cosmonarchy_unit_ai.h"
 #include "SCBW/api.h"
 #include "SCBW/scbwdata.h"
 #include "UnitConstants.h"
@@ -6,7 +6,7 @@
 #include "globals.h"
 #include "hooks/weapons/weapon_cooldown.h"
 
-void hydra_unit_ai(Unit* unit)
+void cosmonarchy_unit_ai(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -64,7 +64,7 @@ void hydra_unit_ai(Unit* unit)
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
 		{
 			s32 count = 0;
-			hydraFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
+			cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
 			{
 				UnitExt* uExt = globals.GetUnitExt(u);
 				if (uExt->values[ValueLazarusAgent] != 1)
@@ -88,7 +88,7 @@ void hydra_unit_ai(Unit* unit)
 		if (unitExt->timers[TimerAI_Siphon] == 0 && unit->mainOrderId != OrderId::PowerSiphon)
 		{
 			s32 count = 0;
-			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
+			cosmonarchyFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
 				Flags::Ally | Flags::Spellcaster, {}, [&](Unit* u)
 			{
 				if (u->energy < u->getMaxEnergy())
@@ -111,7 +111,7 @@ void hydra_unit_ai(Unit* unit)
 	else if (unit->id == UnitId::TerranMadrigal)
 	{
 		f32 furiaDamagePotential = hooks::getCurrentDPS(unit, WeaponId::MadrigalFuriaMissiles);
-		furiaDamagePotential *= hydraUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
+		furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
 		if (unit->orderTarget.unit)
 		{
 			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
@@ -132,12 +132,12 @@ void hydra_unit_ai(Unit* unit)
 	{
 		if (unit->mainOrderId != OrderId::CastParasite && unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0)
 		{
-			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
+			cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
 				Flags::NotSelf, {}, [&](Unit* u)
 			{
 				std::vector<std::pair<Unit*, u32>> group;
 				s32 supply = 0;
-				hydraFinderLoop(u, u->position, 128, 0, {}, [&](Unit* u2)
+				cosmonarchyFinderLoop(u, u->position, 128, 0, {}, [&](Unit* u2)
 				{
 					u32 priority = units_dat::SupplyRequired[u->id] * 100;
 					if (u->status & UnitStatus::InAir)
@@ -172,7 +172,7 @@ void hydra_unit_ai(Unit* unit)
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0)
 		{
 			s32 count = 0;
-			hydraFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
+			cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
 			{
 				UnitExt* uExt = globals.GetUnitExt(u);
 				if (!uExt->values[TimerEnsnaringBrood])
@@ -197,9 +197,9 @@ void hydra_unit_ai(Unit* unit)
 				unitExt->values[ValueExecutingLanifectMoveOrder] = 0;
 			}
 		}
-		u32 webs = hydraUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
-		u32 allies = hydraUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::Combatant, {});
-		u32 enemies = hydraUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::Combatant, {});
+		u32 webs = cosmonarchyUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
+		u32 allies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::Combatant, {});
+		u32 enemies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::Combatant, {});
 		f64 percentage = (f64)(unit->hitPoints + unit->shields) / (f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256.0);
 		if (web_state == 0)
 		{
@@ -210,9 +210,9 @@ void hydra_unit_ai(Unit* unit)
 			{
 				Unit* mostSignificant = nullptr;
 				auto maxSignificance = 0;
-				hydraFinderLoop(unit, unit->sprite->position, 128, Flags::Enemy, {}, [&](Unit* u)
+				cosmonarchyFinderLoop(unit, unit->sprite->position, 128, Flags::Enemy, {}, [&](Unit* u)
 				{
-					auto significance = hydraUnitCount(u, u->position, AICorsairEnemySeekRange / 2,
+					auto significance = cosmonarchyUnitCount(u, u->position, AICorsairEnemySeekRange / 2,
 						Flags::NotSelf | Flags::Ally, {});
 					if (significance > maxSignificance)
 					{
@@ -249,7 +249,7 @@ void hydra_unit_ai(Unit* unit)
 		auto enemyUnitsHealth = 0;
 		auto alliedUnitsHealth = 0;
 		bool alliedTownHalls = false;
-		hydraFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
+		cosmonarchyFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
 			Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u)
 		{
 			if (!scbw::isAlliedTo(unit->playerId, u->playerId))
@@ -281,13 +281,13 @@ void hydra_unit_ai(Unit* unit)
 	else if (unit->id == UnitId::TerranPaladin) {
 		if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
 			bool skyfallCondition = false;
-			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
+			cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
 				CFlags::Enemy, {}, [&](Unit* u) {
 
 				// scbw::print("Loop");
 				Unit* tryTarget = u;
 				s32 innerCount = 0;
-				hydraFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
+				cosmonarchyFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
 					[&](Unit* internalUnit) {
 					innerCount++;
 				});

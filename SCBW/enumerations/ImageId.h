@@ -1008,7 +1008,7 @@ enum Enum {
 	MaelstromHit                        = 998,
 	None                                = 999,
 
-	// HYDRA \\
+	// Cosmonarchy \\
 
 	ParasiteOverlay						= 1031,
 	HallucinationOverlay				= 1035,
