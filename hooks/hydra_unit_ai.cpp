@@ -55,6 +55,11 @@ Didact Recall: "Offensive" cast when the Didact is added to an attack and a grou
 one another. Attempt to group as many units as possible during the channel.
 */
 
+static inline bool isMeleeAttacker(Unit* unit)
+{
+	return std::max(weapons_dat::MaxRange[unit->getGroundWeapon()], weapons_dat::MaxRange[unit->getAirWeapon()]) < 32;
+}
+
 static inline f32 getKiteWeaponCooldown(Unit* unit)
 {
 	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 0.75;
@@ -170,8 +175,8 @@ void hydra_unit_ai(Unit* unit)
 					biases[i] /= 9;
 				}
 				u32 bestBias = 0;
-				u32 maxRange = std::max(weapons_dat::MaxRange[unit->getGroundWeapon()], weapons_dat::MaxRange[unit->getAirWeapon()]);
-				if (maxRange < 32)
+				bool isMelee = isMeleeAttacker(unit);
+				if (isMelee)
 				{
 					// Forward kiting for melee
 					for (int i = 1; i < 9; i++)
@@ -229,6 +234,10 @@ void hydra_unit_ai(Unit* unit)
 				//scbw::printf("move");
 				localGroup.forEach([&](Unit* target)
 				{
+					if (isMelee != isMeleeAttacker(target))
+					{
+						return;
+					}
 					UnitExt* targetExt = globals.GetUnitExt(target);
 					targetExt->timers[TimerAI_Kite] = getKiteWeaponCooldown(target);
 					target->orderTo(OrderId::Move, newPos.x, newPos.y);
