@@ -55,9 +55,37 @@ Didact Recall: "Offensive" cast when the Didact is added to an attack and a grou
 one another. Attempt to group as many units as possible during the channel.
 */
 
+static inline Point16 ClampPoint(Point16 point)
+{
+	if (point.x < 0)
+	{
+		point.x = 0;
+	}
+	else if (point.x > mapTileSize->width * 32)
+	{
+		point.x = mapTileSize->width * 32;
+	}
+
+	if (point.y < 0)
+	{
+		point.y = 0;
+	}
+	else if (point.y > mapTileSize->height * 32)
+	{
+		point.y = mapTileSize->height * 32;
+	}
+
+	return point;
+}
+
+static inline u32 getMaxRange(Unit* unit)
+{
+	return std::max(weapons_dat::MaxRange[unit->getGroundWeapon()], weapons_dat::MaxRange[unit->getAirWeapon()]);
+}
+
 static inline bool isMeleeAttacker(Unit* unit)
 {
-	return std::max(weapons_dat::MaxRange[unit->getGroundWeapon()], weapons_dat::MaxRange[unit->getAirWeapon()]) < 32;
+	return getMaxRange(unit) < 32;
 }
 
 static inline u8 getKiteWeaponCooldown(Unit* unit)
@@ -65,18 +93,37 @@ static inline u8 getKiteWeaponCooldown(Unit* unit)
 	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 0.75;
 }
 
+static inline bool canKite(Unit* unit)
+{
+	return unit->hasWeapon()
+		&& !unit->isFrozen()
+		&& unit->mainOrderId != OrderId::AtkMoveEP
+		&& unit->id != UnitId::ZergLakizilisk;
+}
+
+static inline bool attackTargetHasBiggerRange(Unit* unit)
+{
+	Unit* target = unit->orderTarget.unit;
+	if (!target)
+	{
+		return false;
+	}
+
+	return getMaxRange(target) >= getMaxRange(unit);
+}
+
 void hydra_unit_ai(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
 	// Kiting AI
-	bool isCapable = !unit->isFrozen();
 	bool inCombat = unitExt->combatTimer < 4 * 24
 		|| unit->mainOrderId == OrderId::Patrol
 		|| unit->mainOrderId == OrderId::AttackMove
 		|| unit->mainOrderId == OrderId::AttackUnit;
-	if (isCapable && inCombat && unit->mainOrderId != OrderId::AtkMoveEP && unitExt->timers[TimerAI_Kite] == 0 && unit->hasWeapon())
+	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0 )
 	{
+		const u32 moveRadius = 2 * 32;
 		const u32 localGroupRadius = 4 * 32;
 		const u32 hostileGroupRadius = 6 * 32;
 
@@ -87,6 +134,7 @@ void hydra_unit_ai(Unit* unit)
 			unit->getY() + localGroupRadius
 		);
 		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {}));
+		localGroup.filter([&](Unit* target){ return canKite(unit); });
 
 		u32 maxCooldown = getKiteWeaponCooldown(unit);
 		if (maxCooldown == 0)
@@ -107,7 +155,6 @@ void hydra_unit_ai(Unit* unit)
 			}
 			else
 			{
-				//scbw::printf("attack");
 				Point16 targetPos = targetUnit->position;
 				localGroup.forEach([&](Unit* target)
 				{
@@ -174,73 +221,56 @@ void hydra_unit_ai(Unit* unit)
 					}
 					biases[i] /= 9;
 				}
-				u32 bestBias = 0;
-				bool isMelee = isMeleeAttacker(unit);
-				if (isMelee)
-				{
-					// Forward kiting for melee
-					for (int i = 1; i < 9; i++)
-					{
-						if (i == 4)
-						{
-							continue;
-						}
 
-						if (biases[i] < biases[bestBias])
-						{
-							bestBias = i;
-						}
+				u32 forwardBias = 0;
+				u32 backwardBias = 0;
+
+				for (int i = 1; i < 9; i++)
+				{
+					if (i == 4)
+					{
+						continue;
 					}
-				}
-				else
-				{
-					// Backwards kiting for ranged
-					for (int i = 1; i < 9; i++)
-					{
-						if (i == 4)
-						{
-							continue;
-						}
 
-						if (biases[i] > biases[bestBias])
-						{
-							bestBias = i;
-						}
+					if (biases[i] < biases[forwardBias])
+					{
+						forwardBias = i;
+					}
+
+					if (biases[i] > biases[backwardBias])
+					{
+						backwardBias = i;
 					}
 				}
 
-				Point16 newPos = unit->position;
-				newPos.x += identity[bestBias].x * hostileGroupRadius;
-				newPos.y += identity[bestBias].y * hostileGroupRadius;
+				Point16 forwardPos = unit->position;
+				forwardPos.x += identity[forwardBias].x * moveRadius;
+				forwardPos.y += identity[forwardBias].y * moveRadius;
+				forwardPos = ClampPoint(forwardPos);
 
-				if (newPos.x < 0)
-				{
-					newPos.x = 0;
-				}
-				else if (newPos.x > mapTileSize->width * 32)
-				{
-					newPos.x = mapTileSize->width * 32;
-				}
+				Point16 backwardPos = unit->position;
+				backwardPos.x += identity[backwardBias].x * moveRadius;
+				backwardPos.y += identity[backwardBias].y * moveRadius;
+				backwardPos = ClampPoint(backwardPos);
 
-				if (newPos.y < 0)
-				{
-					newPos.y = 0;
-				}
-				else if (newPos.y > mapTileSize->height * 32)
-				{
-					newPos.y = mapTileSize->height * 32;
-				}
-
-				//scbw::printf("move");
 				localGroup.forEach([&](Unit* target)
 				{
-					if (isMelee != isMeleeAttacker(target))
-					{
-						return;
-					}
 					UnitExt* targetExt = globals.GetUnitExt(target);
 					targetExt->timers[TimerAI_Kite] = getKiteWeaponCooldown(target);
-					target->orderTo(OrderId::Move, newPos.x, newPos.y);
+
+					if (target->hitPoints < target->getMaxHpRaw() * 0.2)
+					{
+						target->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
+						targetExt->timers[TimerAI_Kite] *= 2;
+					}
+					else if (isMeleeAttacker(target) || attackTargetHasBiggerRange(target))
+					{
+						target->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
+					}
+					else
+					{
+						target->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
+					}
 				});
 			}
 			else
