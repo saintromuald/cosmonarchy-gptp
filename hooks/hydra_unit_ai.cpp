@@ -152,7 +152,7 @@ static inline u32 getTargetCost(Unit* source, Unit* target)
 	s32 dist = (s32)getDistanceBetweenUnits(source, target) - getMaxRange(source);
 	if (dist > 0)
 	{
-		cost += dist;
+		cost += dist / 8;
 	}
 
 	return cost;
