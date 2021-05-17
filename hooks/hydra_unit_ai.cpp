@@ -55,6 +55,12 @@ Didact Recall: "Offensive" cast when the Didact is added to an attack and a grou
 one another. Attempt to group as many units as possible during the channel.
 */
 
+struct Point32f
+{
+	f32 x;
+	f32 y;
+};
+
 static inline Point16 ClampPoint(Point16 point)
 {
 	if (point.x < 0)
@@ -175,15 +181,14 @@ void hydra_unit_ai(Unit* unit)
 		else
 		{
 			#define KITE_ZONE_COUNT 9
-			const Point32 offsets[KITE_ZONE_COUNT] =
+			const Point32f offsets[KITE_ZONE_COUNT] =
 			{
-				{-1, -1}, { 0, -1}, {+1, -1},
-				{-1,  0}, { 0,  0}, {+1,  0},	
-				{-1, +1}, { 0, +1}, {+1, +1},	
+				{-0.7, -0.7}, {0, -1}, {+0.7, -0.7},
+				{-1,      0}, {0,  0}, {+1,      0},	
+				{-0.7, +0.7}, {0, +1}, {+0.7, +0.7},
 			};
 			bool enemiesAround = false;
 			u32 unitValue[KITE_ZONE_COUNT] = {0};
-			u32 biases[KITE_ZONE_COUNT] = {0};
 
 			for (int i = 0; i < KITE_ZONE_COUNT; i++)
 			{
@@ -213,17 +218,18 @@ void hydra_unit_ai(Unit* unit)
 
 			if (enemiesAround)
 			{
-				Point32 biasVectors[KITE_ZONE_COUNT] =
+				Point32f biasVectors[KITE_ZONE_COUNT] =
 				{
-					{-1, -1}, { 0, -1}, {+1, -1},
-					{-1,  0}, { 0,  0}, {+1,  0},
-					{-1, +1}, { 0, +1}, {+1, +1},
+					{-0.7, -0.7}, { 0, -1}, {+0.7, -0.7},
+					{-1,      0}, { 0,  0}, {+1,      0},	
+					{-0.7, +0.7}, { 0, +1}, {+0.7, +0.7},
 				};
 				for (int i = 0; i < KITE_ZONE_COUNT; i++)
 				{
 					biasVectors[i].x *= unitValue[i];
 					biasVectors[i].y *= unitValue[i];
 				}
+				u64 biases[KITE_ZONE_COUNT] = {0};
 				for (int i = 0; i < KITE_ZONE_COUNT; i++)
 				{
 					for (int j = 0; j < KITE_ZONE_COUNT; j++)
