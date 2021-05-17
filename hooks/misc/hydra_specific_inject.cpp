@@ -622,17 +622,18 @@ namespace hooks
 			RETN 4
 		}
 	}
-	const u32 DmgOverlay_JmpBack = 0x004993C9;
-	const u32 DmgOverlay_JmpEnd = 0x00499570;
-	void __declspec(naked) newDamageOverlay_JmpWrapper(){
+	const u32 DmgOverlay_JmpBack = 0x004993E3;
+	const u32 DmgOverlay_JmpEnd = 0x0049956E;
+	void __declspec(naked) newDamageOverlay_JmpWrapper(){//
 		static Sprite* sprite;
+		static u32 cmp1, cmp2;
 		__asm {
-			MOV EDX,[EBP+0x8]
 			MOV sprite,EDX
-			MOV ECX,[EDX+0x18]
+			MOV cmp1,ESI
+			MOV cmp2,EDI
 			PUSHAD
 		}
-		if (debugDamageOverlay(sprite)) {
+		if (debugDamageOverlay(sprite) && cmp1!=cmp2) {
 			__asm {
 				POPAD
 				JMP DmgOverlay_JmpBack
@@ -644,13 +645,11 @@ namespace hooks
 				JMP DmgOverlay_JmpEnd
 			}
 		}
-		
-	
 	}
 	void damageOverlayDebug()
 	{
 //		jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
-//		jmpPatch(newDamageOverlay_JmpWrapper, 0x004993C6, 1);
+		jmpPatch(newDamageOverlay_JmpWrapper, 0x004993DB, 3);
 	}
 
 	void __declspec(naked) gameLoop_Wrapper()
