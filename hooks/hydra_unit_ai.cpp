@@ -193,7 +193,7 @@ void hydra_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::AttackUnit;
 	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0)
 	{
-		const u32 moveRadius = 3 * 32;
+		const u32 moveRadius = 4 * 32;
 		const u32 localGroupRadius = 2 * 32;
 		const u32 hostileGroupRadius = 4 * 32;
 		const u32 sleepTime = 12;
@@ -259,6 +259,12 @@ void hydra_unit_ai(Unit* unit)
 				if (targetUnit)
 				{
 					localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.75;
+					
+					if (isMeleeAttacker(localUnit))
+					{
+						localUnitExt->timers[TimerAI_Kite] *= 4;
+					}
+
 					localUnit->orderTo(OrderId::AttackUnit, targetUnit);
 				}
 				else 
@@ -407,12 +413,11 @@ void hydra_unit_ai(Unit* unit)
 						|| localGroupValue * 2 < biases[forwardBias])
 					{
 						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
-						localUnitExt->timers[TimerAI_Kite] *= 2;
 						//scbw::printf("%s: fall back", localUnit->getName());
 					}
 					else if (distance > maxRange * 1
 						|| (distance > maxRange * 0.75 && crowdScore > 8)
-						|| (distance > maxRange * 0.5 && localGroupValue > biases[forwardBias]))
+						|| (distance > maxRange * 0.5 && localGroupValue > biases[forwardBias] * 2))
 					{
 						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
@@ -422,7 +427,12 @@ void hydra_unit_ai(Unit* unit)
 						localUnit->orderTo(OrderId::Move, strafePos.x, strafePos.y);
 						//scbw::printf("%s: strafe", localUnit->getName());
 					}
-					else if (!isMeleeAttacker(localUnit))
+					else if (isMeleeAttacker(localUnit))
+					{
+						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
+						//scbw::printf("%s: forward", localUnit->getName());
+					}
+					else
 					{
 						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
 						//scbw::printf("%s: backward", localUnit->getName());
