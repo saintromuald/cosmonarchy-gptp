@@ -123,41 +123,39 @@ static inline bool canKite(Unit* unit)
 		&& !unitExt->values[ValueDisruptionWebOn];
 }
 
-static inline bool attackTargetHasSimilarRange(Unit* unit)
+static inline u32 getDistanceBetweenUnits(Unit* source, Unit* target)
 {
-	Unit* target = unit->orderTarget.unit;
-	if (!target)
-	{
-		return false;
-	}
-
-	return labs(getMaxRange(target) - getMaxRange(unit)) < 48;
-}
-
-static inline bool attackTargetHasBiggerRange(Unit* unit)
-{
-	Unit* target = unit->orderTarget.unit;
-	if (!target)
-	{
-		return false;
-	}
-
-	return getMaxRange(target) > getMaxRange(unit);
-}
-
-static inline u32 getDistanceToTarget(Unit* unit)
-{
-	Unit* target = unit->orderTarget.unit;
-	if (!target)
-	{
-		return getMaxRange(unit);
-	}
-
-	Point32 diff = {unit->position.x, unit->position.y};
+	Point32 diff = {source->position.x, source->position.y};
 	diff.x -= target->position.x;
 	diff.y -= target->position.y;
 
 	return sqrtl(powl(diff.x, 2) + powl(diff.y, 2));
+}
+
+static inline u32 getDistanceToTarget(Unit* source)
+{
+	Unit* target = source->orderTarget.unit;
+	if (!target)
+	{
+		return getMaxRange(source);
+	}
+
+	return getDistanceBetweenUnits(source, target);
+}
+
+static inline u32 getTargetCost(Unit* source, Unit* target)
+{
+	u32 cost = 0;
+
+	cost += target->getTotalHitPointsPlusShields();
+
+	s32 dist = (s32)getDistanceBetweenUnits(source, target) - getMaxRange(source);
+	if (dist > 0)
+	{
+		cost += dist;
+	}
+
+	return cost;
 }
 
 void hydra_unit_ai(Unit* unit)
@@ -191,6 +189,7 @@ void hydra_unit_ai(Unit* unit)
 			{
 				auto targetMatch = hydraFinderMatch(localUnit, Flags::Enemy | Flags::Combatant, {});
 				Unit* targetUnit = nullptr;
+				u32 targetCost = 0;
 				scbw::UnitFinder(
 					localUnit->getX() - hostileGroupRadius * 3,
 					localUnit->getY() - hostileGroupRadius * 3,
@@ -203,9 +202,11 @@ void hydra_unit_ai(Unit* unit)
 						return;
 					}
 					
-					if (!targetUnit || hostileUnit->getTotalHitPointsPlusShields() < targetUnit->getTotalHitPointsPlusShields())
+					u32 newTargetCost = getTargetCost(localUnit, hostileUnit);
+					if (!targetUnit || newTargetCost < targetCost)
 					{
 						targetUnit = hostileUnit;
+						targetCost = newTargetCost;
 					}
 				});
 
