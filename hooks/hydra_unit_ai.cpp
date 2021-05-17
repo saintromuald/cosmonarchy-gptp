@@ -118,7 +118,7 @@ static inline bool canKite(Unit* unit)
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 	return unit->hasWeapon()
 		&& !unit->isFrozen()
-		//&& unit->mainOrderId != OrderId::AtkMoveEP
+		&& unit->mainOrderId != OrderId::AtkMoveEP
 		&& unit->id != UnitId::ZergLakizilisk
 		&& !unitExt->values[ValueDisruptionWebOn];
 }
