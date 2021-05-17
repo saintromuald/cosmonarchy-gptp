@@ -387,11 +387,7 @@ void hydra_unit_ai(Unit* unit)
 				strafePos = ClampPoint(strafePos);
 
 				u32 crowdScore = 0;
-				if (unit->status & UnitStatus::InAir)
-				{
-					crowdScore = hydraUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoGround, {}) / 2;
-				}
-				else
+				if (!(unit->status & UnitStatus::InAir))
 				{
 					crowdScore = hydraUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoAir, {});
 				}
@@ -415,8 +411,8 @@ void hydra_unit_ai(Unit* unit)
 						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
 						//scbw::printf("%s: fall back", localUnit->getName());
 					}
-					else if (distance > maxRange * 1
-						|| (distance > maxRange * 0.75 && crowdScore > 8)
+					else if (distance > maxRange * 1.5
+						|| (distance > maxRange * 1 && crowdScore > 8)
 						|| (distance > maxRange * 0.5 && localGroupValue > biases[forwardBias] * 2))
 					{
 						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
