@@ -110,7 +110,7 @@ static inline bool isMeleeAttacker(Unit* unit)
 
 static inline u8 getKiteWeaponCooldown(Unit* unit)
 {
-	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 1;
+	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown) * 1.25;
 }
 
 static inline bool canKite(Unit* unit)
@@ -149,6 +149,8 @@ static inline u32 getTargetCost(Unit* source, Unit* target)
 
 	cost += target->getTotalHitPointsPlusShields();
 
+	u32 realDist = getDistanceBetweenUnits(source, target);
+	u32 range = getMaxRange(source);
 	s32 dist = (s32)getDistanceBetweenUnits(source, target) - getMaxRange(source);
 	if (dist > 0)
 	{
@@ -182,11 +184,16 @@ void hydra_unit_ai(Unit* unit)
 		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {unit->id}));
 		localGroup.filter([&](Unit* target){ return canKite(target); });
 
-		u32 maxCooldown = getKiteWeaponCooldown(unit) * 0.75;
+		u32 maxCooldown = getKiteWeaponCooldown(unit);
 		if (maxCooldown == 0)
 		{
 			localGroup.forEach([&](Unit* localUnit)
 			{
+				if (getKiteWeaponCooldown(localUnit) > 0)
+				{
+					return;
+				}
+
 				auto targetMatch = hydraFinderMatch(localUnit, Flags::Enemy | Flags::Combatant, {});
 				Unit* targetUnit = nullptr;
 				u32 targetCost = 0;
@@ -197,7 +204,7 @@ void hydra_unit_ai(Unit* unit)
 					localUnit->getY() + hostileGroupRadius * 3
 				).forEach([&](Unit* hostileUnit)
 				{
-					if (!targetMatch(hostileUnit) /*|| !localUnit->canAttackTarget(hostileUnit)*/)
+					if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
 					{
 						return;
 					}
