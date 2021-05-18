@@ -61,6 +61,12 @@ struct Point32f
 	f32 y;
 };
 
+const u32 moveRadius = 4 * 32;
+const u32 localGroupRadius = 2 * 32;
+const u32 hostileGroupRadius = 4 * 32;
+const u32 sleepTime = 12;
+const u32 attackTimeThreshold = 12;
+
 static inline Point16 ClampPoint(Point16 point)
 {
 	if (point.x < 0)
@@ -110,14 +116,27 @@ static inline bool isMeleeAttacker(Unit* unit)
 
 static inline u8 getCurrentWeaponCooldown(Unit* unit)
 {
-	u32 a = unit->groundWeaponCooldown;
-	u32 b = unit->airWeaponCooldown;
+	if (unit->id == UnitId::ProtossSolarion
+		|| unit->id == UnitId::ProtossAccantor)
+	{
+		if (unit->mainOrderTimer == 0)
+		{
+			return 0;
+		}
+		return attackTimeThreshold * 2;
+	}
 
 	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown);
 }
 
 static inline u8 getMaxWeaponCooldown(Unit* unit)
 {
+	if (unit->id == UnitId::ProtossSolarion
+		|| unit->id == UnitId::ProtossAccantor)
+	{
+		return attackTimeThreshold;
+	}
+
 	u32 groundWeapon = unit->getGroundWeapon();
 	u32 groundCooldown = 0;
 	if (groundWeapon != WeaponId::None)
@@ -193,12 +212,6 @@ void hydra_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::AttackUnit;
 	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0)
 	{
-		const u32 moveRadius = 4 * 32;
-		const u32 localGroupRadius = 2 * 32;
-		const u32 hostileGroupRadius = 4 * 32;
-		const u32 sleepTime = 12;
-		const u32 attackTimeThreshold = 12;
-
 		scbw::UnitFinder localGroup(
 			unit->getX() - localGroupRadius,
 			unit->getY() - localGroupRadius,
@@ -265,7 +278,19 @@ void hydra_unit_ai(Unit* unit)
 						localUnitExt->timers[TimerAI_Kite] *= 4;
 					}
 
-					localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+					//scbw::printf("attack");
+					if (localUnit->id == UnitId::ProtossSolarion)
+					{
+						localUnit->orderTo(OrderId::CarrierFight, targetUnit);
+					}
+					else if (localUnit->id == UnitId::ProtossAccantor)
+					{
+						localUnit->orderTo(OrderId::ReaverFight, targetUnit);
+					}
+					else
+					{
+						localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+					}
 				}
 				else 
 				{
