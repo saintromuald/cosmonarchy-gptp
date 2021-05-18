@@ -178,15 +178,10 @@ BUTTON_SET* getCustomButtonSet()
 
 namespace hooks
 {
-
-	//458BC0 
-
-	//Called (with a jump) as last instruction of
-	//updateButtonSet
-	//Will update the buttonset for the currently
-	//selected unit if alone.
-	//Handle special case of group orders if multiple
-	//units are selected
+	// 00458BC0 
+	// Called (with a jump) as last instruction of updateButtonSet.
+	// Will update the buttonset for the currently selected unit if alone.
+	// Handle special case of group orders if multiple units are selected.
 	void updateButtonSetEx()
 	{
 		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
@@ -201,7 +196,7 @@ namespace hooks
 		Unit* unitFromSelection;
 		activeButtonSetId = (*activePortraitUnit)->currentButtonSet;
 		do
-		{ //count units to know if will be using special group buttonset (peons, cloakables...)
+		{ // count units to know if will be using special group buttonset (peons, cloakables...)
 			unitFromSelection = clientSelectionGroup->unit[unitIndexFromSelection];
 			if (unitFromSelection != nullptr)
 			{
@@ -218,7 +213,7 @@ namespace hooks
 					countCloakables++;
 				}
 
-				//count flying zerg units (to disable "burrow group" if there's one)
+				// count flying zerg units (to disable "burrow group" if there's one)
 				if (!(unitFromSelection->status & UnitStatus::InAir)
 					&& units_dat::GroupFlags[unitFromSelection->id].isZerg)
 				{
@@ -230,8 +225,7 @@ namespace hooks
 					countBurrowables++;
 				}
 
-				// if you use a custom buttonset, and are reusing the currentButtonSet property
-				// of an unit differently, change these conditions to take it in account
+				// if you use a custom buttonset, and are reusing the currentButtonSet property of an unit differently, change these conditions to take it in account
 				if (selectedButtonSetId != activeButtonSetId)
 				{
 					BUTTON_SET* selectedUnitButtonSet = hooks::getButtonSet(selectedButtonSetId);
@@ -240,10 +234,7 @@ namespace hooks
 					{
 						if (selectedUnitButtonSet->connectedUnit != activeButtonSetId)
 						{
-							// kerrigan(ghost) and raynor(vulture) have the corresponding normal
-							// unit as "connected unit", they are the only ones unless you add
-							// some custom ones
-
+							// kerrigan (ghost) and raynor (vulture) have the corresponding normal unit as "connected unit"
 							if (activeUnitButtonSet->connectedUnit == selectedButtonSetId)
 							{
 								activeButtonSetId = selectedButtonSetId;
@@ -267,16 +258,14 @@ namespace hooks
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
 			}
-			else
-				if (countCloakables == *clientSelectionCount)
-				{
-					*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupCloaker;
-				}
-				else
-					if ((countBurrowables != 0) && (countNotInAirAndZergs == *clientSelectionCount))
-					{
-						*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; //aerial units and non-zergs units prevent this (but not Ultralisk)
-					}
+			else if (countCloakables == *clientSelectionCount)
+			{
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupCloaker;
+			}
+			else if ((countBurrowables != 0) && (countNotInAirAndZergs == *clientSelectionCount))
+			{
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // aerial units and non-zergs units prevent this (but not Ultralisk)
+			}
 		}
 	}
 
@@ -369,12 +358,9 @@ namespace hooks
 	}
 
 	// 00458DE0
-	// Case when buttonset would use 
-	// BUTTONSET_SPECIAL_BUTTONSETID
-	// Use updateButtonSetEx() for individual
-	// units and groups
-	// Called by updateCurrentButtonset and
-	// updateSelectedUnitData (004C38B0)
+	// Case when buttonset would use BUTTONSET_SPECIAL_BUTTONSETID
+	// Use updateButtonSetEx() for individual units and groups
+	// Called by updateCurrentButtonset and updateSelectedUnitData (004C38B0)
 	void updateButtonSet()
 	{
 		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
@@ -418,21 +404,14 @@ namespace hooks
 		}
 	}
 
-	// Add active/selected units checks here
-	// and you can change the buttonset to any
-	// you created here in GPTP using something
-	// based on getCustomButtonSet method or
-	// a more customized way.
-	// Note: if you use updateButtonSet_Sub4591D0,
-	// you can disable the injection of this
-	// function in the _inject.cpp file.
+	// Add active/selected units checks here and you can change the buttonset to any you created here in GPTP using something based on getCustomButtonSet method or a more customized way.
+	// Note: if you use updateButtonSet_Sub4591D0, you can disable the injection of this function in the _inject.cpp file.
 	BUTTON_SET* getButtonSet(s32 index)
 	{
 		return &(buttonSetTable[index]);
 	}
 	// 004599A0
-	//Main updateButtonSet function because it
-	//call updateButtonSet() and others
+	// Main updateButtonSet function because it call updateButtonSet() and others
 	void updateCurrentButtonset()
 	{
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
@@ -697,23 +676,22 @@ namespace hooks
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 							}
-							else
-								if (current_button->reqVar == UnitId::TerranEidolon
+							else if (current_button->reqVar == UnitId::TerranEidolon
 									|| current_button->reqVar == UnitId::TerranSavant)
+							{
+								if ((*activePortraitUnit)->building.addon == nullptr)
 								{
-									if ((*activePortraitUnit)->building.addon == nullptr)
-									{
-										current_button_state = BUTTON_STATE::Invisible;
-									}
-									else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps)
-									{
-										current_button_state = BUTTON_STATE::Invisible;
-									}
-									else
-									{
-										current_button_state = BUTTON_STATE::Enabled;
-									}
+									current_button_state = BUTTON_STATE::Invisible;
 								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
 
 							// Factory buttonset handling
 							if (current_button->reqVar == UnitId::TerranPhalanxTankMode
@@ -733,23 +711,22 @@ namespace hooks
 								}
 							}
 
-							else
-								if (current_button->reqVar == UnitId::TerranMadrigal
+							else if (current_button->reqVar == UnitId::TerranMadrigal
 									|| current_button->reqVar == UnitId::TerranPaladin)
+							{
+								if ((*activePortraitUnit)->building.addon == nullptr)
 								{
-									if ((*activePortraitUnit)->building.addon == nullptr)
-									{
-										current_button_state = BUTTON_STATE::Invisible;
-									}
-									else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard)
-									{
-										current_button_state = BUTTON_STATE::Invisible;
-									}
-									else
-									{
-										current_button_state = BUTTON_STATE::Enabled;
-									}
+									current_button_state = BUTTON_STATE::Invisible;
 								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
 
 							// Starport buttonset handling
 							if (current_button->reqVar == UnitId::TerranSalamander
@@ -770,23 +747,22 @@ namespace hooks
 								}
 							}
 
-							else
-								if (current_button->reqVar == UnitId::TerranAzazel
+							else if (current_button->reqVar == UnitId::TerranAzazel
 									|| current_button->reqVar == UnitId::TerranSeraph)
+							{
+								if ((*activePortraitUnit)->building.addon == nullptr)
 								{
-									if ((*activePortraitUnit)->building.addon == nullptr)
-									{
-										current_button_state = BUTTON_STATE::Invisible;
-									}
-									else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower)
-									{
-										current_button_state = BUTTON_STATE::Invisible;
-									}
-									else
-									{
-										current_button_state = BUTTON_STATE::Enabled;
-									}
+									current_button_state = BUTTON_STATE::Invisible;
 								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
 
 							// Scrapyard buttonset handling
 							if (current_button->reqVar == UnitId::TerranClaymore
@@ -803,6 +779,16 @@ namespace hooks
 								else
 								{
 									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
+
+							// Temporarily disable some buttons until the units are implemented
+							if (current_button->reqVar == UnitId::SharedCohort
+								|| current_button->reqVar == UnitId::SharedCharlatan)
+							{
+								if ((*activePortraitUnit)->id == UnitId::ZergLarva)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
 								}
 							}
 						}
