@@ -242,7 +242,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 			unit->getX() + localGroupRadius,
 			unit->getY() + localGroupRadius
 		);
-		localGroup.filter(hydraFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {unit->id}));
+		localGroup.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {unit->id}));
 		localGroup.filter([&](Unit* target){ return canKite(target); });
 
 		u32 localGroupValue = 0;
@@ -277,7 +277,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 					return;
 				}
 
-				auto targetMatch = hydraFinderMatch(localUnit, Flags::Enemy | Flags::Combatant, {});
+				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::Combatant, {});
 				Unit* targetUnit = nullptr;
 				u32 targetCost = 0;
 				scbw::UnitFinder(
@@ -348,7 +348,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 					searchPos.y - hostileGroupRadius,
 					searchPos.x + hostileGroupRadius,
 					searchPos.y + hostileGroupRadius
-				).forEachInMatch(hydraFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}),
+				).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}),
 					[&](Unit* hostileUnit)
 				{
 					enemiesAround = true;
@@ -441,7 +441,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 				u32 crowdScore = 0;
 				if (!(unit->status & UnitStatus::InAir))
 				{
-					crowdScore = hydraUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoAir, {});
+					crowdScore = cosmonarchyUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoAir, {});
 				}
 
 				localGroup.forEach([&](Unit* localUnit)
