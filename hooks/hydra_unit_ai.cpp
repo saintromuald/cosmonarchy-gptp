@@ -470,13 +470,13 @@ void hydra_unit_ai(Unit* unit)
 						//scbw::printf("%s: fall back", localUnit->getName());
 					}
 					else if (distance > maxRange * 1.5
-						|| (distance > maxRange * 1 && crowdScore > 8)
+						|| (distance > maxRange * 1 && crowdScore > 6)
 						|| (distance > maxRange * 0.75 && localGroupValue > biases[forwardBias] * 3))
 					{
 						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
 					}
-					else if (crowdScore > 8)
+					else if (crowdScore > 6)
 					{
 						localUnit->orderTo(OrderId::Move, strafePos.x, strafePos.y);
 						//scbw::printf("%s: strafe", localUnit->getName());
