@@ -318,7 +318,7 @@ enum Enum {
                     * Default Requirements: Unit must be Zerg Flag Beacon, Terran Flag Beacon, or Protoss Flag Beacon. */
     ComputerAI             = 0x9C, /**< AI Control.
                     * Default Requirements: Unused. */
-    AtkMoveEP              = 0x9D, /**< AI Attack Move?
+    AttackMoveComputer     = 0x9D, /**< AI Attack Move
                     * Default Requirements: Unit is able to move. Allow on Hallucinated units. */
     HarassMove             = 0x9E, /**< Aggressive Attack Move? Units won't give up on a target. If they see it, they will attack it, even worse than attack move. Might be a computer attack move?
                     * Default Requirements: Unused. */

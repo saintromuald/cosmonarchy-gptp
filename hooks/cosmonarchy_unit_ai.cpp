@@ -204,7 +204,6 @@ static inline bool canKite(Unit* unit)
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 	return unit->hasWeapon()
 		&& !unit->isFrozen()
-		&& unit->mainOrderId != OrderId::AtkMoveEP
 		&& unit->id != UnitId::ZergLakizilisk
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
@@ -227,6 +226,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 	bool inCombat = unitExt->combatTimer < 4 * 24
 		|| unit->mainOrderId == OrderId::Patrol
 		|| unit->mainOrderId == OrderId::AttackMove
+		|| unit->mainOrderId == OrderId::AttackMoveComputer
 		|| unit->mainOrderId == OrderId::AttackUnit
 		|| unit->mainOrderId == OrderId::CarrierFight
 		|| unit->mainOrderId == OrderId::ReaverFight
