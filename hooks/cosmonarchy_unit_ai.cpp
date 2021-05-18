@@ -230,13 +230,19 @@ void cosmonarchy_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::AttackUnit
 		|| unit->mainOrderId == OrderId::CarrierFight
 		|| unit->mainOrderId == OrderId::ReaverFight
-		|| unit->mainOrderId == OrderId::Move;
+		|| unit->mainOrderId == OrderId::Move
+		|| unit->mainOrderId == OrderId::MoveToMinerals;
 	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0)
 	{
+		const u32 sleepTime = 18;
 		const u32 moveRadius = 4 * 32;
 		const u32 localGroupRadius = 1 * 32;
-		const u32 hostileGroupRadius = 4 * 32;
-		const u32 sleepTime = 18;
+		u32 hostileGroupRadius = 4 * 32;
+
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		{
+			hostileGroupRadius = 32;
+		}
 
 		scbw::UnitFinder localGroup(
 			unit->getX() - localGroupRadius,
