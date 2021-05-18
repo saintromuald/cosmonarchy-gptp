@@ -216,22 +216,22 @@ namespace hooks
 	/// This hook is called every frame
 	bool nextFrame()
 	{
-		if (!scbw::isGamePaused())
-		{ // If the game is not paused
+		// This block is executed once every game
+		if (*elapsedTimeFrames == 0)
+		{
+			firstFrame();
+		}
+
+		if (!scbw::isGamePaused()) // If the game is not paused
+		{
 
 			scbw::setInGameLoopState(true); // Needed for scbw::random() to work
 			graphics::resetAllGraphics();
 			hooks::updatePsiFieldProviders();
 			*(s32*)hyperTrigger = 0; // Single frame hypertriggers
 
-			// This block is executed once every game
-			if (*elapsedTimeFrames == 0)
-			{
-				firstFrame();
-			}
 			hooks::handleScreenHotkeys();
-			scbw::refreshScreen(); // Needed for game clock and APM period to update every frame
-			scbw::refreshConsole();
+			scbw::refreshScreen();
 			globals.frameHook();
 
 			// Reset Treasury Stacks, before unit loop
