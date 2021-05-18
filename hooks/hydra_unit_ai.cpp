@@ -64,7 +64,7 @@ struct Point32f
 const u32 moveRadius = 4 * 32;
 const u32 localGroupRadius = 2 * 32;
 const u32 hostileGroupRadius = 4 * 32;
-const u32 sleepTime = 24;
+const u32 sleepTime = 18;
 
 static inline Point16 ClampPoint(Point16 point)
 {
