@@ -23,7 +23,7 @@ namespace AI
 		if (!attacker->isTargetEnemy(target))
 			return false;
 
-		if (target->id == UnitId::scarab
+		if (target->id == UnitId::ProtossPlasmaShell
 			|| target->id == UnitId::TerranSpiderMine
 			|| target->id == UnitId::ProtossSteward
 			|| target->id == UnitId::TerranLobotomyMine)

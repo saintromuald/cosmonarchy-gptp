@@ -3,25 +3,24 @@
 
 namespace hooks
 {
-
-	//Check if the given unit id can generate psi fields
+	// Check if the given unit id can generate psi fields
 	bool canMakePsiField(u16 unitId)
 	{
-		//Default StarCraft behavior
-		if (unitId == UnitId::pylon)
+		if (unitId == UnitId::ProtossPylon)
+		{
 			return true;
+		}
 		return false;
 	}
 
-	//Actual state check whether a unit can generate a psi field
+	// Actual state check whether a unit can generate a psi field
 	bool isReadyToMakePsiField(Unit* unit)
 	{
-		//Default StarCraft behavior
-
-		if (unit->id == UnitId::pylon)
+		if (unit->id == UnitId::ProtossPylon)
+		{
 			return true;
+		}
 
 		return false;
 	}
-
-} //hooks
+}
