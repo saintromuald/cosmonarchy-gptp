@@ -457,6 +457,12 @@ void hydra_unit_ai(Unit* unit)
 					const u32 distance = getDistanceToTarget(localUnit);
 					const u32 maxRange = getMaxRange(localUnit);
 
+					bool targetIsStructure = false;
+					if (localUnit->orderTarget.unit)
+					{
+						targetIsStructure = units_dat::BaseProperty[localUnit->orderTarget.unit->id] & UnitStatus::IsBuilding;
+					}
+
 					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
 						|| localGroupValue * 3 < biases[forwardBias])
 					{
@@ -480,7 +486,7 @@ void hydra_unit_ai(Unit* unit)
 						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
 					}
-					else
+					else if (!targetIsStructure || distance < maxRange * 0.5)
 					{
 						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
 						//scbw::printf("%s: backward", localUnit->getName());
