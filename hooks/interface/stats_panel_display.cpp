@@ -249,7 +249,7 @@ namespace hooks
 				if (helper::StatSpidermineCount(dialog, index))
 					index++;
 			}
-			if (activeUnit->id == UnitId::ghost)
+			if (activeUnit->id == UnitId::TerranEidolon)
 			{
 				if (StatLobotomyMineCount(dialog, index))
 				{

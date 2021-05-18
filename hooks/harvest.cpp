@@ -15,12 +15,18 @@ namespace hooks
 
 	bool isGasContainer(u16 unitId)
 	{
-		if (unitId == UnitId::assimilator)
+		if (unitId == UnitId::ProtossAquifer)
+		{
 			return true;
-		if (unitId == UnitId::refinery)
+		}
+		if (unitId == UnitId::TerranReservoir)
+		{
 			return true;
-		if (unitId == UnitId::extractor)
+		}
+		if (unitId == UnitId::ZergExtractor)
+		{
 			return true;
+		}
 		return false;
 	}
 
@@ -86,42 +92,45 @@ namespace hooks
 			bool isMineral = false;
 			bool bEndThere = false;
 
-			if (
-				resource->id >= UnitId::ResourceMineralField &&
-				resource->id <= UnitId::ResourceMineralFieldType3
-				)
-			{	//Is a mineral patch
+			// TODO: Add depleted mineral chunk
+			if (resource->id >= UnitId::ResourceMineralField &&
+				resource->id <= UnitId::ResourceMineralFieldType3)
+			{	// Is a mineral patch
 				chunkImageId = ImageId::MineralChunkType1;
 				isMineral = true;
 			}
+			else if (resource->id == UnitId::ProtossAquifer)
+			{
+				chunkImageId = ImageId::ProtossGasOrbType1;
+			}
+			else if (resource->id == UnitId::ZergExtractor)
+			{
+				chunkImageId = ImageId::ZergGasSacType1;
+			}
+			else if (resource->id == UnitId::TerranReservoir)
+			{
+				chunkImageId = ImageId::TerranGasTankType1;
+			}
 			else
-				if (resource->id == UnitId::assimilator)
-					chunkImageId = ImageId::ProtossGasOrbType1;
-				else
-					if (resource->id == UnitId::extractor)
-						chunkImageId = ImageId::ZergGasSacType1;
-					else
-						if (resource->id == UnitId::refinery)
-							chunkImageId = ImageId::TerranGasTankType1;
-						else
-							bEndThere = true;
+			{
+				bEndThere = true;
+			}
 
 			if (!bEndThere)
 			{
-
 				u8 resourceAmount = harvestResourceFrom(resource, isMineral);
-
 				if (resourceAmount < RESOURCE_HARVESTED)
-					chunkImageId += 1;	//Use depleted (smaller) chunk image
-
+				{
+					chunkImageId += 1;	// Use depleted (smaller) chunk image
+				}
 				if (resourceAmount > 0)
 				{
 
 					if (worker->resourceType & 3)
-					{ //Is carrying a mineral / gas
+					{ // Is carrying a mineral / gas
 
-//Identical to function @ 0x004F3900
-//Remove powerup shadows (mineral chunk shadow, psi emitter shadow, etc.)
+					// Identical to function @ 0x004F3900
+					// Remove powerup shadows (mineral chunk shadow, psi emitter shadow, etc.)
 						worker->sprite->removeOverlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
 
 						//Remove powerup graphics

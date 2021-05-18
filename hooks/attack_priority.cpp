@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <SCBW/UnitFinder.h>
 
-
 const s32 ATTACK_PRIORITY_GROUP_SIZE = 16;
 const s32 ATTACK_PRIORITY_LEVELS = 6;
 
@@ -23,36 +22,40 @@ struct AttackPriorityData
 	u32 targetCounts[ATTACK_PRIORITY_LEVELS];
 };
 
-//Global variables (bad practice, but it's faster)
+// Global variables (bad practice, but it's faster)
 AttackPriorityData attackPriorityData;
 scbw::UnitFinder attackTargetFinder;
 
-//Helper function declarations
 namespace
 {
 	bool isTargetPosWithinAttackAngle(s32 x, s32 y, Unit* unit, u8 weaponId);
 	bool cannotChaseTarget(Unit* unit, Unit* target);
-	//Returns the minimum air/ground weapon range of the @p unit, whichever is smaller.
+	// Returns the minimum air/ground weapon range of the @p unit, whichever is smaller.
 	u32 getMinimumRange(Unit* unit);
 
-	//Checks whether the @p target should be added to the attack priority group.
-	//Based on function @ 0x00442DA0
+	// Checks whether the @p target should be added to the attack priority group.
+	// Based on function @ 0x00442DA0
 	bool checkAttackableTarget(Unit* unit, Unit* target, u32 seekRange, u32 minRange = 0)
 	{
-		//Default StarCraft behavior
-
 		//Don't attack if the target is the unit itself.
 		if (unit == target)
+		{
 			return false;
+		}
 
 		//Don't attack if the target is covered by fog of war.
 		if (!target->sprite->isVisibleTo(unit->playerId))
+		{
 			return false;
+		}
 
 		//Check if the target can be attacked.
 		if (!unit->canAttackTarget(target))
+		{
 			return false;
-		if (unit->id == UnitId::civilian)
+		}
+
+		if (unit->id == UnitId::TerranCivilian)
 		{
 			if (unit->_padding_0x132 & 0x8)
 			{
@@ -104,53 +107,69 @@ namespace
 namespace hooks
 {
 
-	//Calculates the attack priority of the @p target for the @p attacker.
+	// Calculates the attack priority of the @p target for the @p attacker.
 	u32 getAttackPriorityHook(Unit* target, Unit* attacker)
 	{
-		//Default StarCraft behavior
-
 		Unit* actualTarget = target;
 
-		if (target->id == UnitId::bunker)
+		if (target->id == UnitId::TerranBunker)
 		{
 			Unit* firstLoadedUnit = target->getFirstLoadedUnit();
 			if (firstLoadedUnit)
+			{
 				actualTarget = firstLoadedUnit;
+			}
 		}
 
 
-		//Units that are not important
+		// Units that are not important
 		if (scbw::isZergEgg(target->id))
+		{
 			return 5;
+		}
 
-		//Normal units
+		// Normal units
 		u32 attackPriority = 4;
 
-		//Workers
+		// Workers
 		if (units_dat::BaseProperty[actualTarget->id] & UnitProperty::Worker)
-			attackPriority = 2;
-
-		//Units that can fight back
-		else if (actualTarget->canAttackTarget(attacker))
-			attackPriority = 0;
-
-		//Active combat units
-		else if (actualTarget->hasWeapon())
-			attackPriority = 2;
-
-		else if (actualTarget->status & UnitStatus::IsBuilding)
-			attackPriority = 3;
-
-		if (!(actualTarget->status & UnitStatus::Completed) || actualTarget != target)
-			attackPriority += 1;
-
-		//Units under Disruption Web are less important
-		if (attackPriority == 0 && actualTarget->status & UnitStatus::CanNotAttack)
-			attackPriority = 1;
-		if (actualTarget->id == UnitId::scarab)
 		{
 			attackPriority = 2;
 		}
+
+		//Units that can fight back
+		else if (actualTarget->canAttackTarget(attacker))
+		{
+			attackPriority = 0;
+		}
+
+		//Active combat units
+		else if (actualTarget->hasWeapon())
+		{
+			attackPriority = 2;
+		}
+
+		else if (actualTarget->status & UnitStatus::IsBuilding)
+		{
+			attackPriority = 3;
+		}
+
+		if (!(actualTarget->status & UnitStatus::Completed) || actualTarget != target)
+		{
+			attackPriority += 1;
+		}
+
+		// Units under Disruption Field are less important
+		if (attackPriority == 0 && actualTarget->status & UnitStatus::CanNotAttack)
+		{
+			attackPriority = 1;
+		}
+
+		if (actualTarget->id == UnitId::ProtossPlasmaShell)
+		{
+			attackPriority = 2;
+		}
+
 		return attackPriority;
 	}
 
@@ -171,7 +190,7 @@ namespace hooks
 
 		s32 searchRange = seekRange + 64;
 		u32 minRange = getMinimumRange(unit);
-		if (unit->id == UnitId::civilian)
+		if (unit->id == UnitId::TerranCivilian)
 		{
 			if (unit->_padding_0x132 & 0x8)
 			{
@@ -243,12 +262,10 @@ Unit* AttackPriorityData::findRandomTarget() const
 		return targets[priority][scbw::random() % targetCounts[priority]];
 }
 
-//Returns the best target selected from the attack target groups.
-//Based on 0x004405E0
+// Returns the best target selected from the attack target groups.
+// Based on 0x004405E0
 Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 {
-	//Default StarCraft behavior
-
 	s32 priority = 0;
 	while (targetCounts[priority] == 0)
 	{
@@ -260,10 +277,10 @@ Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 	if (targetCounts[priority] == 1)
 		return targets[priority][0];
 
-	//Prepare for search
+	// Prepare for search
 	Unit* bestTarget = targets[priority][0];
 
-	if (attacker->pAI && attacker->id == UnitId::scourge)
+	if (attacker->pAI && attacker->id == UnitId::ZergSkryling)
 	{
 		//AI-controlled Scourges auto-target units with the most HP + shields
 		u32 bestTargetLife = bestTarget->getCurrentLifeInGame();
@@ -337,7 +354,7 @@ namespace
 
 		s32 angle = scbw::getAngle(unit->getX(), unit->getY(), x, y);
 
-		if (unit->id == UnitId::lurker)
+		if (unit->id == UnitId::ZergLakizilisk)
 		{
 			unit->currentDirection1 = angle;
 			return true;

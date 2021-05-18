@@ -74,12 +74,12 @@ namespace hooks
 
 	const u32 jmp_33F7E = 0x00433F7E;
 	const u32 jmp_33FD1_ret = 0x00433FD1;
-	//	const u32 jmp_33F7A = 0x00433F7A;
+//	const u32 jmp_33F7A = 0x00433F7A;
 	const u32 jmp_33F77 = 0x00433F77;
 	void __declspec(naked) AddUnitAi_JmpWrapper()
 	{
 		static u8 race;
-		static u16 unit_id;//not in original function
+		static u16 unit_id; // not in original function
 		static u32 cmp_id;
 		static Unit* unit;
 		__asm {
@@ -104,24 +104,6 @@ namespace hooks
 				JMP jmp_33F7E
 			}
 		}
-		/*if (unit_id == UnitId::tactical_center) {
-			__asm {
-				POPAD
-				MOV EAX, 0x6a
-				MOV ECX, 0x6a
-				JMP jmp_33F77
-			}
-		}
-		else {*/
-
-		/*
-			__asm {
-				POPAD
-				MOV EAX, cmp_id
-				JMP jmp_33F77
-			}*/
-
-			//}
 
 	}
 	const u32 jmp_3660D = 0x0043660D;
@@ -136,7 +118,7 @@ namespace hooks
 		unit_id = get_townhall_from_race(race);
 		if (unit_id == 0xe4)
 		{
-			unit_id = UnitId::nexus;
+			unit_id = UnitId::ProtossNexus;
 		}
 		__asm {
 			POPAD

@@ -68,10 +68,14 @@ bool Unit::shieldsEnabledRaw() const
 u8 Unit::getGroundWeapon() const
 {
 	assert(this);
-	if (this->id == UnitId::lurker && !(this->status & UnitStatus::Burrowed))
+	if (this->id == UnitId::ZergLakizilisk && !(this->status & UnitStatus::Burrowed))
+	{
 		return WeaponId::None;
+	}
 	else
+	{
 		return units_dat::GroundWeapon[this->id];
+	}
 }
 
 u8 Unit::getAirWeapon() const
@@ -291,23 +295,29 @@ bool Unit::hasWeapon() const
 		|| this->getAirWeapon() != WeaponId::None)
 		return true;
 
-	if (this->id == UnitId::carrier || this->id == UnitId::gantrithor)
+	if (this->id == UnitId::ProtossSolarion)
 	{
 		if ((this->carrier.inHangarCount + this->carrier.outHangarCount) > 0)
+		{
 			return true;
+		}
 	}
 
-	if (this->id == UnitId::reaver || this->id == UnitId::warbringer)
+	if (this->id == UnitId::ProtossAccantor)
 	{
 		if (this->carrier.inHangarCount > 0)
+		{
 			return true;
+		}
 	}
 
 	if (this->subunit)
 	{
 		if (this->subunit->getGroundWeapon() != WeaponId::None
 			|| this->subunit->getAirWeapon() != WeaponId::None)
+		{
 			return true;
+		}
 	}
 
 	return false;
