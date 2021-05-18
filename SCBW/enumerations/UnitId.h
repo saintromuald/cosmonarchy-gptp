@@ -432,9 +432,7 @@ enum Enum {
 	//HYDRA\\
 
 // Unused
-//	TerranAcademy									= 112,		// Terran Academy
 //	TerranPhysicsLab								= 118,		// Physics Lab | Currently cannot set dat requirements because of firegraft being a good program
-//	TerranArmory									= 123,		// Terran Armory
 //	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
 //	InfestedCommandCenter							= 130,		// Infested Command Center
 
@@ -549,6 +547,8 @@ enum Enum {
 	ZergQuazilisk									= 95,		// Ragnasaur
 	ZergKeskathalor									= 96,		// Ursadon
 	ZergZoryusthaleth								= 97,		// Lurker Egg
+	ZergLiiralisk									= 112,		// Terran Academy
+	ZergSovroleth									= 123,		// Terran Armory
 	ZergVorvaling									= 128,		// Uraj
 	ZergBactalisk									= 129,		// Khalis
 	ZergAlaszileth									= 173,		// Khaydarin Crystal Formation
