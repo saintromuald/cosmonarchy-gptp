@@ -1306,7 +1306,7 @@ namespace hooks
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 							else if (((*activePortraitUnit)->id == UnitId::ZergLair					// Lair, Hive, Sire Larval Gestation passive
-								|| (*activePortraitUnit)->id == UnitId::ZergHive				// Irol Iris, Othstol Oviform, Alaszil Arbor Collective Integration passive
+								|| (*activePortraitUnit)->id == UnitId::ZergHive					// Irol Iris, Othstol Oviform, Alaszil Arbor Collective Integration passive
 								|| (*activePortraitUnit)->id == UnitId::ZergSire
 								|| (*activePortraitUnit)->id == UnitId::ZergIrolIris
 								|| (*activePortraitUnit)->id == UnitId::ZergOthstolOviform
