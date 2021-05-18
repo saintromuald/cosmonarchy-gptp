@@ -65,7 +65,6 @@ const u32 moveRadius = 4 * 32;
 const u32 localGroupRadius = 2 * 32;
 const u32 hostileGroupRadius = 4 * 32;
 const u32 sleepTime = 24;
-const u32 attackTimeThreshold = 12;
 
 static inline Point16 ClampPoint(Point16 point)
 {
@@ -123,7 +122,7 @@ static inline u8 getCurrentWeaponCooldown(Unit* unit)
 		{
 			return 0;
 		}
-		return attackTimeThreshold * 2;
+		return 2;
 	}
 
 	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown);
@@ -134,7 +133,7 @@ static inline u8 getMaxWeaponCooldown(Unit* unit)
 	if (unit->id == UnitId::ProtossSolarion
 		|| unit->id == UnitId::ProtossAccantor)
 	{
-		return attackTimeThreshold;
+		return 1;
 	}
 
 	u32 groundWeapon = unit->getGroundWeapon();
@@ -176,13 +175,32 @@ static inline u32 getDistanceToTarget(Unit* source)
 
 static inline u32 getTargetCost(Unit* source, Unit* target)
 {
-	u32 cost = target->getTotalHitPointsPlusShields();
+	f32 hpPercentage = 0;
+	if (units_dat::ShieldsEnabled[target->id])
+	{
+		hpPercentage = ((f32)target->hitPoints + target->shields) / (units_dat::MaxHitPoints[target->id] + units_dat::MaxShieldPoints[target->id] * 256);
+	}
+	else
+	{
+		hpPercentage = (f32)target->hitPoints / units_dat::MaxHitPoints[target->id];
+	}
+	u32 cost = hpPercentage * 10;
+
+	if (source->status & UnitStatus::InAir)
+	{
+		cost -= floorl(target->airStrength / hpPercentage / 100);
+	}
+	else
+	{
+		cost -= floorl(target->groundStrength / hpPercentage / 100);
+	}
 
 	s32 dist = (s32)getDistanceBetweenUnits(source, target) - getMaxRange(source);
 	if (dist > 0)
 	{
 		cost += dist / 32.0;
 	}
+
 
 	return cost;
 }
@@ -201,7 +219,7 @@ static inline bool canKite(Unit* unit)
 
 static inline bool unitWantsToAttack(Unit* unit)
 {
-	return getCurrentWeaponCooldown(unit) <= attackTimeThreshold;
+	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) / 2;
 }
 
 void hydra_unit_ai(Unit* unit)
@@ -440,14 +458,14 @@ void hydra_unit_ai(Unit* unit)
 					const u32 maxRange = getMaxRange(localUnit);
 
 					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
-						|| localGroupValue * 2 < biases[forwardBias])
+						|| localGroupValue * 3 < biases[forwardBias])
 					{
 						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
 						//scbw::printf("%s: fall back", localUnit->getName());
 					}
 					else if (distance > maxRange * 1.5
 						|| (distance > maxRange * 1 && crowdScore > 8)
-						|| (distance > maxRange * 0.5 && localGroupValue > biases[forwardBias] * 2))
+						|| (distance > maxRange * 0.75 && localGroupValue > biases[forwardBias] * 3))
 					{
 						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
