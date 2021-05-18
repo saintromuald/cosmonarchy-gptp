@@ -30,6 +30,7 @@ namespace Flags
 		NoTrap = 1 << 19,
 		NoHallucination = 1 << 20,
 		Combatant = 1 << 21,
+		Own = 1 << 22,
 	};
 }
 

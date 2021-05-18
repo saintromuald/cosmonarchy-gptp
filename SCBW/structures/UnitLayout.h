@@ -303,6 +303,7 @@ enum ExtTimerId
 	TimerAI_DisruptionField,
 	TimerAI_MadrigalTempoChangeTimer,
 	TimerAI_EnsnaringBrood,
+	TimerAI_Kite,
 		
 	TimerCount,
 };

@@ -149,6 +149,10 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 
 					return false;
 				}
 			}
+			if (context & Flags::Own && unit->playerId != center->playerId)
+			{
+				return false;
+			}
 			if (scbw::isAlliedTo(unit->playerId, center->playerId) && context & Flags::Enemy)
 			{
 				return false;
@@ -199,7 +203,8 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 
 			return false;
 		}
 		if (context & Flags::Combatant
-			&& ((!unit->hasWeapon() && !(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) || units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
+			&& ((!unit->hasWeapon() && !(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster))
+				|| (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) && unit->mainOrderId != OrderId::AttackMove && unit->mainOrderId != OrderId::AttackUnit))
 		{
 			return false;
 		}
