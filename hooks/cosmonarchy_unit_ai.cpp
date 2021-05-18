@@ -242,7 +242,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 			unit->getX() + localGroupRadius,
 			unit->getY() + localGroupRadius
 		);
-		localGroup.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::Combatant, {unit->id}));
+		localGroup.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
 		localGroup.filter([&](Unit* target){ return canKite(target); });
 
 		u32 localGroupValue = 0;
@@ -277,7 +277,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 					return;
 				}
 
-				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::Combatant, {});
+				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
 				Unit* targetUnit = nullptr;
 				u32 targetCost = 0;
 				scbw::UnitFinder(
@@ -348,7 +348,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 					searchPos.y - hostileGroupRadius,
 					searchPos.x + hostileGroupRadius,
 					searchPos.y + hostileGroupRadius
-				).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::Combatant, {}),
+				).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
 					[&](Unit* hostileUnit)
 				{
 					enemiesAround = true;
@@ -643,8 +643,8 @@ void cosmonarchy_unit_ai(Unit* unit)
 			}
 		}
 		u32 webs = cosmonarchyUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
-		u32 allies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::Combatant, {});
-		u32 enemies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::Combatant, {});
+		u32 allies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::CanAttackOrCast | Flags::NotWorker, {});
+		u32 enemies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::CanAttackOrCast | Flags::NotWorker, {});
 		f64 percentage = (f64)(unit->hitPoints + unit->shields) / (f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256.0);
 		if (web_state == 0)
 		{
