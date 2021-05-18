@@ -232,7 +232,7 @@ void hydra_unit_ai(Unit* unit)
 	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0)
 	{
 		const u32 moveRadius = 4 * 32;
-		const u32 localGroupRadius = 2 * 32;
+		const u32 localGroupRadius = 1 * 32;
 		const u32 hostileGroupRadius = 4 * 32;
 		const u32 sleepTime = 18;
 
