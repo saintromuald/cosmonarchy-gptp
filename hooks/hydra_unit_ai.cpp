@@ -64,7 +64,7 @@ struct Point32f
 const u32 moveRadius = 4 * 32;
 const u32 localGroupRadius = 2 * 32;
 const u32 hostileGroupRadius = 4 * 32;
-const u32 sleepTime = 12;
+const u32 sleepTime = 24;
 const u32 attackTimeThreshold = 12;
 
 static inline Point16 ClampPoint(Point16 point)
@@ -154,18 +154,6 @@ static inline u8 getMaxWeaponCooldown(Unit* unit)
 	return std::max(groundCooldown, airCooldown);
 }
 
-static inline bool canKite(Unit* unit)
-{
-	UnitExt* unitExt = globals.GetUnitExt(unit);
-	return unit->hasWeapon()
-		&& !unit->isFrozen()
-		&& unit->mainOrderId != OrderId::AtkMoveEP
-		&& unit->id != UnitId::ZergLakizilisk
-		&& !unitExt->values[ValueDisruptionWebOn]
-		&& !(unit->status & UnitStatus::Burrowed)
-		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
-}
-
 static inline u32 getDistanceBetweenUnits(Unit* source, Unit* target)
 {
 	Point32 diff = {source->position.x, source->position.y};
@@ -188,9 +176,7 @@ static inline u32 getDistanceToTarget(Unit* source)
 
 static inline u32 getTargetCost(Unit* source, Unit* target)
 {
-	u32 cost = 0;
-
-	cost += target->getTotalHitPointsPlusShields();
+	u32 cost = target->getTotalHitPointsPlusShields();
 
 	s32 dist = (s32)getDistanceBetweenUnits(source, target) - getMaxRange(source);
 	if (dist > 0)
@@ -201,6 +187,23 @@ static inline u32 getTargetCost(Unit* source, Unit* target)
 	return cost;
 }
 
+static inline bool canKite(Unit* unit)
+{
+	UnitExt* unitExt = globals.GetUnitExt(unit);
+	return unit->hasWeapon()
+		&& !unit->isFrozen()
+		&& unit->mainOrderId != OrderId::AtkMoveEP
+		&& unit->id != UnitId::ZergLakizilisk
+		&& !unitExt->values[ValueDisruptionWebOn]
+		&& !(unit->status & UnitStatus::Burrowed)
+		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
+}
+
+static inline bool unitWantsToAttack(Unit* unit)
+{
+	return getCurrentWeaponCooldown(unit) <= attackTimeThreshold;
+}
+
 void hydra_unit_ai(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -209,7 +212,10 @@ void hydra_unit_ai(Unit* unit)
 	bool inCombat = unitExt->combatTimer < 4 * 24
 		|| unit->mainOrderId == OrderId::Patrol
 		|| unit->mainOrderId == OrderId::AttackMove
-		|| unit->mainOrderId == OrderId::AttackUnit;
+		|| unit->mainOrderId == OrderId::AttackUnit
+		|| unit->mainOrderId == OrderId::CarrierFight
+		|| unit->mainOrderId == OrderId::ReaverFight
+		|| unit->mainOrderId == OrderId::Move;
 	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0)
 	{
 		scbw::UnitFinder localGroup(
@@ -234,12 +240,21 @@ void hydra_unit_ai(Unit* unit)
 			}
 		});
 
-		u32 kiteCooldown = getCurrentWeaponCooldown(unit);
-		if (kiteCooldown <= attackTimeThreshold)
+		if (unitWantsToAttack(unit))
 		{
 			localGroup.forEach([&](Unit* localUnit)
 			{
-				if (getCurrentWeaponCooldown(localUnit) > attackTimeThreshold)
+				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+				localUnitExt->timers[TimerAI_Kite] = sleepTime;
+
+				if (!unitWantsToAttack(localUnit))
+				{
+					return;
+				}
+
+				if (localUnit->mainOrderId == OrderId::AttackUnit
+					|| localUnit->mainOrderId == OrderId::CarrierFight
+					|| localUnit->mainOrderId == OrderId::ReaverFight)
 				{
 					return;
 				}
@@ -248,10 +263,10 @@ void hydra_unit_ai(Unit* unit)
 				Unit* targetUnit = nullptr;
 				u32 targetCost = 0;
 				scbw::UnitFinder(
-					localUnit->getX() - hostileGroupRadius * 3,
-					localUnit->getY() - hostileGroupRadius * 3,
-					localUnit->getX() + hostileGroupRadius * 3,
-					localUnit->getY() + hostileGroupRadius * 3
+					localUnit->getX() - hostileGroupRadius * 4,
+					localUnit->getY() - hostileGroupRadius * 4,
+					localUnit->getX() + hostileGroupRadius * 4,
+					localUnit->getY() + hostileGroupRadius * 4
 				).forEach([&](Unit* hostileUnit)
 				{
 					if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
@@ -267,8 +282,6 @@ void hydra_unit_ai(Unit* unit)
 					}
 				});
 
-				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-
 				if (targetUnit)
 				{
 					localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.75;
@@ -278,7 +291,7 @@ void hydra_unit_ai(Unit* unit)
 						localUnitExt->timers[TimerAI_Kite] *= 4;
 					}
 
-					//scbw::printf("attack");
+					//scbw::printf("%s: attack", localUnit->getName());
 					if (localUnit->id == UnitId::ProtossSolarion)
 					{
 						localUnit->orderTo(OrderId::CarrierFight, targetUnit);
@@ -291,10 +304,6 @@ void hydra_unit_ai(Unit* unit)
 					{
 						localUnit->orderTo(OrderId::AttackUnit, targetUnit);
 					}
-				}
-				else 
-				{
-					localUnitExt->timers[TimerAI_Kite] = sleepTime;
 				}
 			});
 		}
@@ -419,13 +428,13 @@ void hydra_unit_ai(Unit* unit)
 
 				localGroup.forEach([&](Unit* localUnit)
 				{
-					if (getCurrentWeaponCooldown(localUnit) <= attackTimeThreshold)
+					if (unitWantsToAttack(localUnit))
 					{
 						return;
 					}
 
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit);
+					localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit) * 0.75;
 
 					const u32 distance = getDistanceToTarget(localUnit);
 					const u32 maxRange = getMaxRange(localUnit);
