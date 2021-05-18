@@ -139,14 +139,14 @@ namespace UnitId
 		/*0x84*/	ZergLair								= 132,
 		/*0x85*/	ZergHive								= 133,
 		/*0x86*/	ZergNydusCanal							= 134,
-		/*0x87*/	ZergHydralDen							= 135,
+		/*0x87*/	ZergHydrokDen							= 135,
 		/*0x88*/	ZergIsthrathMound						= 136,
 		/*0x89*/	ZergGeszithRoost						= 137,
-		/*0x8A*/	ZergMatralNest							= 138,
-		/*0x8B*/	ZergAkisNest							= 139,
+		/*0x8A*/	ZergMatravilNest						= 138,
+		/*0x8B*/	ZergAlmakisNest							= 139,
 		/*0x8C*/	ZergUltrakCavern						= 140,
-		/*0x8D*/	ZergMutalSpire							= 141,
-		/*0x8E*/	ZergSpawningPool						= 142,
+		/*0x8D*/	ZergMuthrokSpire						= 141,
+		/*0x8E*/	ZergQuazrokPool							= 142,
 		/*0x8F*/	ZergCreepColony							= 143,
 		/*0x90*/	ZergSporeColony							= 144,
 		/*0x91*/	UnusedZerg1								= 145,
@@ -268,10 +268,20 @@ namespace UnitId
 
 	// Unused
 	//	TerranPhysicsLab								= 118,		// Physics Lab | Currently cannot set dat requirements because of firegraft being a good program
-	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
+	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser		
+	//  ZergGeszithRoost								= 137,		// Greater Spire
+	//	ZergKonvilNest									= 145,		// Unused Zerg 1
+	//	ZergKalkathBloom								= 147,		// Overmind (With Shell)
+	//	ZergGorgrokApiary								= 148,		// Overmind
+	//	ZergSkithrokScab								= 150,		// Mature Chrysalis
+	//	ZergAlmakAntre									= 179,		// Cave
+	//	ZergLakizDen									= 191,		// Zerg Marker
+	//	ZergNathrokLake									= 210,		// Left Wall Missile Trap
+	//	ZergQuazilQuay									= 220,		// Mineral Chunk Type 1
+	//	ZergOcsalColony									= 223,		// Protoss Gas Orb Type 2
 
 	// Soon to be unused
-	//	DisruptionWeb									= 105,		// Disruption Web
+	//	DisruptionField									= 105,		// Disruption Field
 	//	DarkSwarm										= 202,		// Dark Swarm
 
 	// Need IDs for
@@ -398,26 +408,17 @@ namespace UnitId
 		BasiliskCreeper									= 180,		// Cave-in
 
 	// Zerg-Building
-		ZergKonvilNest									= 145,		// Unused Zerg 1
-		ZergKalkathBloom								= 147,		// Overmind (With Shell)
-		ZergGorgrokApiary								= 148,		// Overmind
-		ZergSkithrokScab								= 150,		// Mature Chrysalis
 		ZergOthstolOviform								= 152,		// Cerebrate Daggoth
-		ZergBactalDen									= 153,		// Unused Zerg 2
-		ZergAlmakAntre									= 179,		// Cave
+		ZergGorgralSwamp								= 153,		// Unused Zerg 2
 		ZergAlaszilArbor								= 181,		// Cantina
-		ZergLakizDen									= 191,		// Zerg Marker
-		ZergZoryusShroud								= 193,		// Protoss Marker
-		ZergVithrilHaunt								= 197,		// Zerg Flag Beacon
-		ZergVorvalPond									= 204,		// Floor Hatch
-		ZergNathrokLake									= 210,		// Left Wall Missile Trap
+		ZergZorkizShroud								= 193,		// Protoss Marker
+		ZergVithrathHaunt								= 197,		// Zerg Flag Beacon
+		ZergLiivralPond									= 204,		// Floor Hatch
 		ZergAlkajChasm									= 212,		// Right Wall Missile Trap
 		ZergKeskathGrotto								= 219,		// Khaydarin Crystal
-		ZergQuazilQuay									= 220,		// Mineral Chunk Type 1
 		ZergIrolIris									= 224,		// Zerg Gas Sac Type 1
 		ZergSire										= 227,		// Terran Gas Tank Type 2
 		ZergLarvalColony								= 216,		// Young Chrysalis
-		ZergOcsalColony									= 223,		// Protoss Gas Orb Type 2
 
 	};
 }

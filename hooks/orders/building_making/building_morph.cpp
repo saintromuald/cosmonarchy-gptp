@@ -420,39 +420,24 @@ namespace hooks
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlaszilArbor, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergSpawningPool:
+			case UnitId::ZergQuazrokPool:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLiivralPond, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergHydralDen:
+			case UnitId::ZergHydrokDen:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGorgralSwamp, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergMutalSpire:
+			case UnitId::ZergMuthrokSpire:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVithrilHaunt, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVithrathHaunt, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergGorgrokApiary:
+			case UnitId::ZergMatravilNest:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGeszithRoost, ignoreIncomplete);
-			} break;
-
-			case UnitId::ZergNathrokLake:
-			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
-			} break;
-
-			case UnitId::ZergKonvilNest:
-			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
-			} break;
-
-			case UnitId::ZergMatralNest:
-			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAkisNest, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakisNest, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergKeskathGrotto:
@@ -460,9 +445,9 @@ namespace hooks
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergZoryusShroud:
+			case UnitId::ZergZorkizShroud:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergIsthrathMound, ignoreIncomplete); 
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergUltrakCavern, ignoreIncomplete); 
 			} break;
 			
 			default:
