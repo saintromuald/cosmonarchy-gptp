@@ -61,11 +61,6 @@ struct Point32f
 	f32 y;
 };
 
-const u32 moveRadius = 4 * 32;
-const u32 localGroupRadius = 2 * 32;
-const u32 hostileGroupRadius = 4 * 32;
-const u32 sleepTime = 18;
-
 static inline Point16 ClampPoint(Point16 point)
 {
 	if (point.x < 0)
@@ -236,6 +231,11 @@ void hydra_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::Move;
 	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0)
 	{
+		const u32 moveRadius = 4 * 32;
+		const u32 localGroupRadius = 2 * 32;
+		const u32 hostileGroupRadius = 4 * 32;
+		const u32 sleepTime = 18;
+
 		scbw::UnitFinder localGroup(
 			unit->getX() - localGroupRadius,
 			unit->getY() - localGroupRadius,
