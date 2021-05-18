@@ -196,7 +196,6 @@ static inline u32 getTargetCost(Unit* source, Unit* target)
 		cost += dist / 32.0;
 	}
 
-
 	return cost;
 }
 
@@ -207,6 +206,9 @@ static inline bool canKite(Unit* unit)
 		&& !unit->isFrozen()
 		&& unit->mainOrderId != OrderId::AtkMoveEP
 		&& unit->id != UnitId::ZergLakizilisk
+		&& unit->id != UnitId::ProtossSteward
+		&& unit->id != UnitId::ProtossPlasmaShell
+		&& unit->id != UnitId::TerranNuclearMissile
 		&& !unitExt->values[ValueDisruptionWebOn]
 		&& !(unit->status & UnitStatus::Burrowed)
 		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
