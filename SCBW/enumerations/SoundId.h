@@ -1320,7 +1320,7 @@ namespace DeathSoundId
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergEvolutionChamber
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergUltraliskCavern
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSpire
-		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSpawningPool
+		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergQuazrokPool
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergCreepColony
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSporeColony
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//UnusedZerg1

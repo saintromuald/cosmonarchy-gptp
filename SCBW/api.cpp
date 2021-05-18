@@ -602,10 +602,10 @@ namespace scbw
 			case UnitId::ZergLarvalColony:
 			case UnitId::ZergSporeColony:
 			case UnitId::ZergSunkenColony:
-			case UnitId::ZergVorvalPond:
-			case UnitId::ZergVithrilHaunt:
-			case UnitId::ZergBactalDen:
-			case UnitId::ZergAkisNest:
+			case UnitId::ZergLiivralPond:
+			case UnitId::ZergVithrathHaunt:
+			case UnitId::ZergGorgralSwamp:
+			case UnitId::ZergAlmakisNest:
 			case UnitId::ZergAlkajChasm:
 			case UnitId::ZergUltrakCavern:
 			{
@@ -627,11 +627,11 @@ namespace scbw
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergCreepColony:
-			case UnitId::ZergSpawningPool:
-			case UnitId::ZergHydralDen:
-			case UnitId::ZergMutalSpire:
-			case UnitId::ZergMatralNest:
-			case UnitId::ZergZoryusShroud:
+			case UnitId::ZergQuazrokPool:
+			case UnitId::ZergHydrokDen:
+			case UnitId::ZergMuthrokSpire:
+			case UnitId::ZergMatravilNest:
+			case UnitId::ZergZorkizShroud:
 			case UnitId::ZergKeskathGrotto:
 			case UnitId::ZergIsthrathMound:
 			{
