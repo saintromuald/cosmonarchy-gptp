@@ -310,7 +310,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 
 				if (targetUnit)
 				{
-					localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.75;
+					localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.5;
 					
 					if (isMeleeAttacker(localUnit))
 					{
@@ -479,7 +479,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 					}
 					else if (distance > maxRange * 1.5
 						|| (distance > maxRange * 1 && crowdScore > 6)
-						|| (distance > maxRange * 0.75 && localGroupValue > biases[forwardBias] * 3))
+						|| (!(unit->status & UnitStatus::InAir) && distance > maxRange * 0.75 && localGroupValue > biases[forwardBias] * 3))
 					{
 						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
