@@ -1156,7 +1156,7 @@ namespace hooks
 
 							// ZERG \\
 								
-							else if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  // Zergling Adrenal Glands passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergZethrokor &&  // Zergling Adrenal Glands passive
 								current_button->iconID == IconId::AdrenalGlands)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
@@ -1242,7 +1242,7 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergBroodling &&  // Broodling Incubators passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergRilirokor &&  // Broodling Incubators passive
 								current_button->iconID == IconId::RoarUnused)
 							{
 								current_button_state = BUTTON_STATE::Enabled;

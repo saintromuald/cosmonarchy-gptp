@@ -1215,10 +1215,10 @@ namespace DeathSoundId
 		{ SoundId::Terran_Medic_TMdDth00_wav, SoundId::Terran_Medic_TMdDth00_wav },					//TerranMedic
 		{ SoundId::Zerg_Larva_ZLaDth00_WAV, SoundId::Zerg_Larva_ZLaDth00_WAV }, 					//ZergLarva
 		{ SoundId::Zerg_Egg_ZEgDth00_WAV, SoundId::Zerg_Egg_ZEgDth00_WAV }, 						//ZergEgg
-		{ SoundId::Zerg_Zergling_ZZeDth00_WAV, SoundId::Zerg_Zergling_ZZeDth00_WAV },				//ZergZergling
+		{ SoundId::Zerg_Zergling_ZZeDth00_WAV, SoundId::Zerg_Zergling_ZZeDth00_WAV },				//ZergZethrokor
 		{ SoundId::Zerg_Hydra_ZHyDth00_WAV, SoundId::Zerg_Hydra_ZHyDth00_WAV }, 					//ZergHydralisk
 		{ SoundId::Zerg_Ultra_ZUlDth00_WAV, SoundId::Zerg_Ultra_ZUlDth00_WAV }, 					//ZergUltralisk
-		{ SoundId::Zerg_BROODLING_ZBrDth00_WAV, SoundId::Zerg_BROODLING_ZBrDth00_WAV },				//ZergBroodling
+		{ SoundId::Zerg_BROODLING_ZBrDth00_WAV, SoundId::Zerg_BROODLING_ZBrDth00_WAV },				//ZergRilirokor
 		{ SoundId::Zerg_DRONE_ZDrDth00_WAV, SoundId::Zerg_DRONE_ZDrDth00_WAV },						//ZergDrone
 		{ SoundId::Zerg_OVERLORD_ZOvDth00_WAV, SoundId::Zerg_OVERLORD_ZOvDth00_WAV },				//ZergOverlord
 		{ SoundId::Zerg_Mutalid_ZMuDth00_WAV, SoundId::Zerg_Mutalid_ZMuDth00_WAV }, 				//ZergMutalisk

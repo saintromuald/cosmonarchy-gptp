@@ -561,7 +561,7 @@ namespace hooks
 		{
 			bool jump_to_end_of_loop = false; // 004F4A82
 			// check various conditions before attempting to create a broodling
-			if (helper::function_0042D810(current_x, current_y, UnitId::ZergBroodling))
+			if (helper::function_0042D810(current_x, current_y, UnitId::ZergRilirokor))
 			{
 				Point16 inPos, outPos;
 				Box16 moveArea;
@@ -593,10 +593,10 @@ namespace hooks
 				pos.y = current_y;
 
 				// adjust the position to welcome the unit...I think
-				helper::fixTargetLocation(&pos, UnitId::ZergBroodling);
+				helper::fixTargetLocation(&pos, UnitId::ZergRilirokor);
 
 				// create the broodling
-				created_broodling = helper::createUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
+				created_broodling = helper::createUnit(UnitId::ZergRilirokor, pos.x, pos.y, attacker->playerId);
 				UnitExt* broodlingExt = globals.GetUnitExt(created_broodling);
 				broodlingExt->units[UnitBroodlingMother] = attacker;
 

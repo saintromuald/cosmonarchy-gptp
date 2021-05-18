@@ -71,7 +71,7 @@ namespace hooks
 			}
 			else
 			{
-				halTimer = halUnit2->id != UnitId::ZergBroodling ? 0 : 1800;
+				halTimer = halUnit2->id != UnitId::ZergRilirokor ? 0 : 1800;
 			}
 			currentHalTimer = halUnit2->removeTimer;
 			if (!currentHalTimer || halTimer < currentHalTimer)

@@ -21,8 +21,8 @@ namespace hooks
 		{
 			return;
 		}
-		if (result->id == UnitId::ZergBroodling
-			|| result->id == UnitId::ZergBroodlisk
+		if (result->id == UnitId::ZergRilirokor
+			|| result->id == UnitId::ZergRililisk
 			|| result->id == UnitId::ProtossSimulacrum
 			|| result->status & UnitStatus::IsHallucination
 			|| result->playerId != parent->playerId)

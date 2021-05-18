@@ -517,19 +517,15 @@ namespace scbw
 			case UnitId::ZergOthstoleth:
 			case UnitId::ZergAlaszileth:
 			case UnitId::ZergVorvaling:
-			case UnitId::ZergNathrokor:
+			case UnitId::ZergLiiralisk:
 			case UnitId::ZergBactalisk:
-			case UnitId::ZergLakizilisk:
-			case UnitId::ZergVithrilisk:
 			case UnitId::ZergGorgrokor:
-			case UnitId::ZergGeszithalor:
-			case UnitId::ZergAkistrokor:
-			case UnitId::ZergKonvilisk:
-			case UnitId::ZergAlmaksalisk:
+			case UnitId::ZergVithrilisk:
 			case UnitId::ZergKalkalisk:
+			case UnitId::ZergAkistrokor:
+			case UnitId::ZergAlmaksalisk:
+			case UnitId::ZergUltrakor:
 			case UnitId::ZergAlkajelisk:
-			case UnitId::ZergKeskathalor:
-			case UnitId::ZergIsthrathaleth:
 			case UnitId::ProtossAugur:
 			{
 				return true;
@@ -567,15 +563,16 @@ namespace scbw
 			case UnitId::ZergOvileth:
 			case UnitId::ZergIroleth:
 			case UnitId::ZergOthstoleth:
-			case UnitId::ZergZergling:
-			case UnitId::ZergHydralisk:
-			case UnitId::ZergMutalisk:
-			case UnitId::ZergSkithrokor:
-			case UnitId::ZergGorgrokor:
+			case UnitId::ZergZethrokor:
 			case UnitId::ZergQuazilisk:
+			case UnitId::ZergHydralisk:
+			case UnitId::ZergSkithrokor:
+			case UnitId::ZergMutalisk:
+			case UnitId::ZergNathrokor:
 			case UnitId::ZergMatraleth:
-			case UnitId::ZergUltrakor:
+			case UnitId::ZergKonvilisk:
 			case UnitId::ZergZoryusthaleth:
+			case UnitId::ZergKeskathalor:
 			{
 				return true; 
 			}
@@ -603,23 +600,14 @@ namespace scbw
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergAlaszilArbor:
 			case UnitId::ZergLarvalColony:
-			case UnitId::ZergOcsalColony:
 			case UnitId::ZergSporeColony:
 			case UnitId::ZergSunkenColony:
 			case UnitId::ZergVorvalPond:
-			case UnitId::ZergNathrokLake:
 			case UnitId::ZergVithrilHaunt:
-			case UnitId::ZergGorgrokApiary:
-			case UnitId::ZergGeszithRoost:
 			case UnitId::ZergBactalDen:
-			case UnitId::ZergLakizDen:
-			case UnitId::ZergAlmakAntre:
-			case UnitId::ZergKalkathBloom:
 			case UnitId::ZergAkisNest:
-			case UnitId::ZergKonvilNest:
-			case UnitId::ZergKeskathGrotto:
 			case UnitId::ZergAlkajChasm:
-			case UnitId::ZergIsthrathMound:
+			case UnitId::ZergUltrakCavern:
 			{
 				return true;
 			}
@@ -640,14 +628,12 @@ namespace scbw
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergCreepColony:
 			case UnitId::ZergSpawningPool:
-			case UnitId::ZergMutalSpire:
-			case UnitId::ZergSkithrokScab:
 			case UnitId::ZergHydralDen:
-			case UnitId::ZergBactalDen:
-			case UnitId::ZergQuazilQuay:
+			case UnitId::ZergMutalSpire:
 			case UnitId::ZergMatralNest:
-			case UnitId::ZergUltrakCavern:
 			case UnitId::ZergZoryusShroud:
+			case UnitId::ZergKeskathGrotto:
+			case UnitId::ZergIsthrathMound:
 			{
 				return true;
 			}
@@ -981,8 +967,8 @@ namespace scbw
 			}
 			switch (unitId)
 			{
-				case UnitId::ZergBroodling:
-				case UnitId::ZergBroodlisk:
+				case UnitId::ZergRilirokor:
+				case UnitId::ZergRililisk:
 				{
 					helper::playSoundFromSource(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
 					if (unit->removeTimer == 0 || unit->removeTimer > removeTimer)
@@ -1081,12 +1067,17 @@ namespace scbw
 	{
 		u32 overlayImageId;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
+		{
 			overlayImageId = initial + 1;
+		}
+		else if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+		{
+			overlayImageId = initial + 2;
+		}
 		else
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-				overlayImageId = initial + 2;
-			else
-				overlayImageId = initial;
+		{
+			overlayImageId = initial;
+		}
 		return overlayImageId;
 	}
 
@@ -1103,14 +1094,18 @@ namespace scbw
 	s32 getCliffAdvantage(Unit* unit, u8 weapon)
 	{
 		if (unit == nullptr)
+		{
 			return 0;
+		}
 		if (!canUseCliffAdvantage(unit, weapon))
+		{
 			return 0;
+		}
 		Unit* targetUnit = unit->orderTarget.unit;
 		if (targetUnit == nullptr)
+		{
 			return 0;
-		//if (targetUnit->status & UnitStatus::InAir)
-		//	return 0;
+		}
 		s32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
 		s32 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
 		return (sourceHeight - targetHeight) / 2;
@@ -1119,14 +1114,18 @@ namespace scbw
 	s32 getCreepAdvantage(Unit* unit, u8 weapon)
 	{
 		if (unit == nullptr)
+		{
 			return 0;
+		}
 		if (!canUseCliffAdvantage(unit, weapon) || unit->getRace() != RaceId::Zerg)
+		{
 			return 0;
+		}
 		Unit* targetUnit = unit->orderTarget.unit;
 		if (targetUnit == nullptr)
+		{
 			return 0;
-		//if (targetUnit->status & UnitStatus::InAir)
-		//	return 0;
+		}
 		bool sourceCreep = scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep;
 		bool targetCreep = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).hasCreep;
 		return (sourceCreep && !targetCreep) ? 1 : 0;
@@ -1134,15 +1133,10 @@ namespace scbw
 
 	void applyEnsnare(Unit* unit)
 	{ // 004F45E0
-		s32 baseProperty; // eax
-		u8 overlayPadding; // al
-		Unit* victim; // ecx
-
 		if (!(unit->ensnareTimer)
 			&& !(unit->status & UnitStatus::Burrowed))
 		{
-
-			victim = unit;
+			Unit* victim = unit;
 			if (unit->subunit != nullptr)
 			{
 				victim = unit->subunit;
@@ -1176,11 +1170,17 @@ namespace scbw
 		switch (race)
 		{
 			case RaceId::Zerg:
+			{
 				upgType = UpgradeId::ZergMeleeAttacks;
+			} break;
 			case RaceId::Protoss:
+			{
 				upgType = UpgradeId::ProtossGroundWeapons;
+			} break;
 			default:
+			{
 				upgType = UpgradeId::TerranInfantryWeapons;
+			}
 		}
 		return upgType;
 	}
@@ -1225,13 +1225,13 @@ namespace scbw
 	{
 		return orderId == OrderId::Plague
 			|| orderId == OrderId::DarkSwarm
-			//	|| orderId == OrderId::Ensnare				// Land Grab
+//			|| orderId == OrderId::Ensnare				// Land Grab
 			|| orderId == OrderId::Irradiate
 			|| orderId == OrderId::StasisField
-			|| orderId == OrderId::EmpShockwave				// Observance
-			|| orderId == OrderId::MagnaPulse				// Lobotomy Mine
+			|| orderId == OrderId::EmpShockwave			// Observance
+			|| orderId == OrderId::MagnaPulse			// Lobotomy Mine
 			|| orderId == OrderId::PsiStorm
-			//	|| orderId == OrderId::SummonBroodlings		// unused
+//			|| orderId == OrderId::SummonBroodlings		// unused
 			|| orderId == OrderId::FireYamatoGun1;
 	}
 
@@ -1240,8 +1240,8 @@ namespace scbw
 		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
 	}
 
-	//Creates the Plasma Shield flickering effect.
-	//Identical to function @ 0x004E6140
+	// Creates the Plasma Shield flickering effect.
+	// Identical to function @ 0x004E6140
 	void createShieldOverlay(Unit* unit, u32 attackDirection)
 	{
 		//const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];

@@ -254,7 +254,7 @@ namespace hooks
 			case UnitId::TerranEidolon:
 			case UnitId::ProtossAmaranth:
 			case UnitId::ProtossCabalist:
-			case UnitId::ZergZergling:
+			case UnitId::ZergZethrokor:
 			case UnitId::ZergZoryusthaleth:
 			case UnitId::ZergKonvilisk:
 			{

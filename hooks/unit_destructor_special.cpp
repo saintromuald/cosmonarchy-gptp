@@ -316,10 +316,10 @@ void unitDestructorSpecialHook(Unit* unit)
 	if (unit->parasiteFlags != 0)
 	{
 		u32 supplyCount = scbw::getBroodlingCountFromSupply(unit);
-		u16 type = UnitId::ZergBroodling;
+		u16 type = UnitId::ZergRilirokor;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Flyer)
 		{
-			type = UnitId::ZergBroodlisk;
+			type = UnitId::ZergRililisk;
 		}
 		for (u32 player = 0; player < PLAYER_COUNT; player++)
 		{

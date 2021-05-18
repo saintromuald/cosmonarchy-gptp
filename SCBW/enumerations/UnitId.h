@@ -41,10 +41,10 @@ namespace UnitId
 		/*0x22*/	TerranCleric							= 34,
 		/*0x23*/	ZergLarva								= 35,
 		/*0x24*/	ZergEgg									= 36,
-		/*0x25*/	ZergZergling							= 37,
+		/*0x25*/	ZergZethrokor							= 37,
 		/*0x26*/	ZergHydralisk							= 38,
 		/*0x27*/	ZergUltrakor							= 39,
-		/*0x28*/	ZergBroodling							= 40,
+		/*0x28*/	ZergRilirokor							= 40,
 		/*0x29*/	ZergDroleth								= 41,
 		/*0x2A*/	ZergOvileth								= 42,
 		/*0x2B*/	ZergMutalisk							= 43,
@@ -380,7 +380,7 @@ namespace UnitId
 		ZergNathrokor									= 54,		// Devouring One
 		ZergGorgrokor									= 56,		// Kukulza Guardian
 		ZergOthstoleth									= 57,		// Yggdrasil
-		ZergBroodlisk									= 93,		// Scantid
+		ZergRililisk									= 93,		// Scantid
 		ZergQuazilisk									= 95,		// Ragnasaur
 		ZergKeskathalor									= 96,		// Ursadon
 		ZergZoryusthaleth								= 97,		// Lurker Egg

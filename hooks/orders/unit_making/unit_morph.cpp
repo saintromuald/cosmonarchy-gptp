@@ -20,7 +20,7 @@ namespace hooks
 			unit->orderSignal -= 4;
 			bool vorvaling = false;
 			auto origin = unit->eggOrigin;
-			if (origin == UnitId::ZergZergling)
+			if (origin == UnitId::ZergZethrokor)
 			{
 				vorvaling = true;
 			}
@@ -122,7 +122,7 @@ namespace hooks
 					switch (unit->id)
 					{
 						case UnitId::ZergLarva:
-						case UnitId::ZergZergling:
+						case UnitId::ZergZethrokor:
 						case UnitId::ZergVorvaling:
 						case UnitId::ZergHydralisk:
 						case UnitId::ZergBactalisk:
@@ -194,7 +194,7 @@ namespace hooks
 					unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 					unit->mainOrderState = 1;
 					auto origin = unit->eggOrigin;
-					if (origin == UnitId::ZergZergling)
+					if (origin == UnitId::ZergZethrokor)
 					{
 						unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 					}
@@ -284,7 +284,7 @@ namespace hooks
 	bool unitCanMorphHook(Unit* unit, u16 morphUnitId)
 	{
 		// Default StarCraft behavior
-		if (unit->id == UnitId::ZergZergling)
+		if (unit->id == UnitId::ZergZethrokor)
 		{
 			if (morphUnitId == UnitId::ZergVorvaling
 				|| morphUnitId == UnitId::ZergNathrokor)

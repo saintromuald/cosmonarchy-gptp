@@ -29,7 +29,7 @@ namespace
 		{UnitId::ZergMatraleth, TechId::Infestation, TechId::Parasite, TechId::SpawnBroodlings, TechId::Ensnare, TechId::None},
 		{UnitId::ZergIsthrathaleth, TechId::Burrowing, TechId::DarkSwarm, TechId::Plague, TechId::Consume, TechId::None},
 		{UnitId::ZergDroleth, TechId::Burrowing, TechId::None},
-		{UnitId::ZergZergling, TechId::Burrowing, TechId::None},
+		{UnitId::ZergZethrokor, TechId::Burrowing, TechId::None},
 		{UnitId::ZergHydralisk, TechId::Burrowing, TechId::LurkerAspect, TechId::None},
 		{UnitId::ZergLakizilisk, TechId::LurkerAspect, TechId::None},
 
@@ -60,7 +60,7 @@ namespace
 
 		// Zerg
 		{UnitId::ZergOvileth, UpgradeId::VentralSacs, UpgradeId::Antennae, UpgradeId::None},
-		{UnitId::ZergZergling, UpgradeId::MetabolicBoost, UpgradeId::AdrenalGlands, UpgradeId::None},
+		{UnitId::ZergZethrokor, UpgradeId::MetabolicBoost, UpgradeId::AdrenalGlands, UpgradeId::None},
 		{UnitId::ZergHydralisk, UpgradeId::MuscularAugments, UpgradeId::GroovedSpines, UpgradeId::None},
 		{UnitId::ZergMatraleth, UpgradeId::GameteMeiosis, UpgradeId::None},
 		{UnitId::ZergIsthrathaleth, UpgradeId::MetasynapticNode, UpgradeId::None},
