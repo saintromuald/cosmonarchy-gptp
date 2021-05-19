@@ -112,9 +112,7 @@ namespace hooks
 							helper::incrementUnitScoresEx(unit, -1, 0);
 						} break;
 					}
-//					incrementUnitScoresEx(unit, -1, 0);
-					// was unit->status = unit->status & ~UnitStatus::Completed
-					// in original code
+
 					if (unit->status & UnitStatus::Completed)
 					{
 						unit->status -= UnitStatus::Completed;
@@ -123,12 +121,11 @@ namespace hooks
 					{
 						case UnitId::ZergLarva:
 						case UnitId::ZergZethrokor:
-						case UnitId::ZergVorvaling:
-						case UnitId::ZergHydralisk:
-						case UnitId::ZergBactalisk:
-						case UnitId::ZergZoryusthaleth:
-						case UnitId::ZergUltrakor:
 						case UnitId::ZergQuazilisk:
+						case UnitId::ZergHydralisk:
+						case UnitId::ZergZoryusthaleth:
+						case UnitId::ZergKonvilisk:
+						case UnitId::ZergKeskathalor:
 						{
 							eggId = UnitId::ZergEgg;
 						} break;
@@ -136,22 +133,11 @@ namespace hooks
 						case UnitId::ZergIroleth:
 						case UnitId::ZergOthstoleth:
 						case UnitId::ZergNathrokor:
-						case UnitId::ZergMutalisk:
 						case UnitId::ZergSkithrokor:
-						case UnitId::ZergGorgrokor:
-						{
-							eggId = UnitId::ZergCocoon;
-						} break;
+						case UnitId::ZergMutalisk:
 						case UnitId::ZergMatraleth:
 						{
-							if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergKonvilisk)
-							{
-								eggId = UnitId::ZergEgg;
-							}
-							else
-							{
-								eggId = UnitId::ZergCocoon;
-							}
+							eggId = UnitId::ZergCocoon;
 						} break;
 						default:
 						{
@@ -286,89 +272,103 @@ namespace hooks
 		// Default StarCraft behavior
 		if (unit->id == UnitId::ZergZethrokor)
 		{
-			if (morphUnitId == UnitId::ZergVorvaling
-				|| morphUnitId == UnitId::ZergNathrokor)
+			if (morphUnitId == UnitId::ZergVorvaling)
 			{
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ZergHydralisk)
+		else if (unit->id == UnitId::ZergQuazilisk)
 		{
-			if (morphUnitId == UnitId::ZergBactalisk
-				|| morphUnitId == UnitId::ZergLakizilisk)
+			if (morphUnitId == UnitId::ZergLiiralisk)
 			{
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ZergQuazilisk)
+		else if (unit->id == UnitId::ZergHydralisk)
 		{
-			if (morphUnitId == UnitId::ZergKalkalisk
-				|| morphUnitId == UnitId::ZergAlmaksalisk)
+			if (morphUnitId == UnitId::ZergBactalisk)
 			{
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ZergMatraleth)
+		else if (unit->id == UnitId::ZergSkithrokor)
 		{
-			if (morphUnitId == UnitId::ZergKonvilisk
-				|| morphUnitId == UnitId::ZergAkistrokor)
+			if (morphUnitId == UnitId::ZergGorgrokor)
 			{
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ZergUltrakor)
+		else if (unit->id == UnitId::ZergMutalisk)
 		{
-			if (morphUnitId == UnitId::ZergKeskathalor
-				|| morphUnitId == UnitId::ZergAlkajelisk)
+			if (morphUnitId == UnitId::ZergVithrilisk)
 			{
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ZergZoryusthaleth)
+		else if (unit->id == UnitId::ZergNathrokor)
 		{
-			if (morphUnitId == UnitId::ZergIsthrathaleth)
+			if (morphUnitId == UnitId::ZergKalkalisk)
 			{
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ZergOvileth)
+		else if (unit->id == UnitId::ZergZoryusthaleth)
+		{
+			if (morphUnitId == UnitId::ZergUltrakor)
+			{
+				return true;
+			}
+		}
+		else if (unit->id == UnitId::ZergMatraleth)
+		{
+			if (morphUnitId == UnitId::ZergAkistrokor)
+			{
+				return true;
+			}
+		}
+		else if (unit->id == UnitId::ZergKonvilisk)
+		{
+			if (morphUnitId == UnitId::ZergAlmaksalisk)
+			{
+				return true;
+			}
+		}
+		else if (unit->id == UnitId::ZergKeskathalor)
+		{
+			if (morphUnitId == UnitId::ZergAlkajelisk)
+			{
+				return true;
+			}
+		}
+		else if (unit->id == UnitId::ZergOvileth)
 		{
 			if (morphUnitId == UnitId::ZergIroleth)
 			{
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ZergIroleth)
+		else if (unit->id == UnitId::ZergIroleth)
 		{
 			if (morphUnitId == UnitId::ZergOthstoleth)
 			{
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ZergOthstoleth)
+		else if (unit->id == UnitId::ZergOthstoleth)
 		{
 			if (morphUnitId == UnitId::ZergAlaszileth)
 			{
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ZergMutalisk)
-		{
-			if (morphUnitId == UnitId::ZergGorgrokor
-				|| morphUnitId == UnitId::ZergVithrilisk
-				|| morphUnitId == UnitId::ZergGeszithalor)
-			{
-				return true;
-			}
-		}
-		if (unit->id == UnitId::ZergLarva)
+		else if (unit->id == UnitId::ZergLarva)
 		{
 			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
 			{
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ProtossCantavis)
+		else if (unit->id == UnitId::ProtossCantavis)
 		{
 			if (morphUnitId == UnitId::ProtossAugur)
 			{
