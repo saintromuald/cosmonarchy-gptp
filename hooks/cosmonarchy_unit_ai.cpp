@@ -326,6 +326,10 @@ void cosmonarchy_unit_ai(Unit* unit)
 					{
 						localUnit->orderTo(OrderId::ReaverFight, targetUnit);
 					}
+					else if (isMeleeAttacker(localUnit) && !(localUnit->status & UnitStatus::InAir))
+					{
+						localUnit->orderTo(OrderId::AttackMoveComputer, targetUnit->position.x, targetUnit->position.y);
+					}
 					else
 					{
 						localUnit->orderTo(OrderId::AttackUnit, targetUnit);
