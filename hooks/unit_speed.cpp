@@ -250,13 +250,20 @@ namespace hooks
 				speed *= multiplier;
 			} break;
 			// Hardcode ideal movement speeds
+			case UnitId::TerranClaymore:
+			{
+				speed *= 0.9;
+			} break;
+			case UnitId::ZergKonvilisk:
+			{
+				speed *= 1.1;
+			} break;
 			case UnitId::TerranCyprian:
 			case UnitId::TerranEidolon:
 			case UnitId::ProtossAmaranth:
 			case UnitId::ProtossCabalist:
 			case UnitId::ZergZethrokor:
 			case UnitId::ZergZoryusthaleth:
-			case UnitId::ZergKonvilisk:
 			{
 				speed *= 1.2;
 			} break;
@@ -269,10 +276,6 @@ namespace hooks
 			case UnitId::ZergHydralisk:
 			{
 				speed *= 1.5;
-			} break;
-			case UnitId::TerranClaymore:
-			{
-				speed *= 0.9;
 			} break;
 		}
 

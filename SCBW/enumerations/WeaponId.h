@@ -144,7 +144,6 @@ namespace WeaponId {
 
 		CohortGaussPistols = 20,				// Cohort weapon
 		AspirantPotentiumCannon = 69,			// Aspirant weapon
-		AspirantCriticality = 85,				// Aspirant behavior
 		CharlatanFerventBlaster = 101,			// Charlatan weapon
 
 		// Terran \\
@@ -177,10 +176,9 @@ namespace WeaponId {
 		SeraphObservance = 122,					// Seraph ability targeting
 		MadrigalDirge = 123,					// Madrigal Dirge damage
 		SalamanderIncendiaryPayload = 124,		// SalamanderFire behavior damage
-		WyvernJacksonCannon = 125,				// Wyvern weapon + Wyvern ability targeting
+		WyvernJacksonCannon = 125,				// Wyvern weapon
 		PaladinSkyfall = 126,					// Paladin ability targeting
 		IonCannon = 129,						// Ion Cannon weapon
-		IonField = 57,							// Ion Cannon behavior
 
 		// Protoss \\
 				
@@ -197,7 +195,6 @@ namespace WeaponId {
 		LegionnairePsiSabers = 86,				// Legionnaire weapon
 		StarSovereignCelestialCannon = 90,		// Star Sovereign primary weapon
 		StarSovereignInterventionMissiles = 91,	// Star Sovereign secondary weapon
-		StarSovereignGriefOfAllGods = 92,		// Star Sovereign ability
 		EcclesiastAstralBlaster = 97,			// Ecclesiast weapon
 		AtreusDauntlessDisruptorCannon = 98,	// Atreus weapon
 		AmaranthPsiCleaver = 99,				// Amaranth weapon
@@ -223,7 +220,9 @@ namespace WeaponId {
 		BactaliskCorrosiveAcid = 50,			// Bactalisk weapon
 		SkithrokorSkitteringSpores = 54,		// Skithrokor weapon
 		KeskathalorScreamingVenom2 = 58,		// Keskathalor weapon 2 (doesn't spawn Caustic Discharge field)
-		BroodliskSwarmingSpores = 81,			// Broodlisk weapon
+		RililiskSwarmingSpores = 81,			// Rililisk weapon
+		LiiraliskHollowedSpores = 85,			// Liiralisk weapon
+		SovrolethSpores = 92,					// Sovroleth weapon
 		KonviliskSowingSpines = 95,				// Konvilisk weapon
 		QuaziliskAcridBarbs = 102,				// Quazilisk weapon
 		AlmaksaliskPiercingSpines = 110,		// Almaksalisk weapon

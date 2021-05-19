@@ -992,7 +992,7 @@ namespace hooks
 					});
 				} break;
 				case WeaponId::ToxicSpores:
-				case WeaponId::BroodliskSwarmingSpores:
+				case WeaponId::RililiskSwarmingSpores:
 				{
 					// Incubators - Broodling/Broodlisk behavior
 					s32 type = data.attacker->id;
