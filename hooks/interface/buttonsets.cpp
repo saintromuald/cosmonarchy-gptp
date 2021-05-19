@@ -1187,12 +1187,12 @@ namespace hooks
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 							/*
-							else if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Basilisk Biogenesis passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Bactalisk Biogenesis passive
 								current_button->iconID == IconId::ZergAdvancedBuildings) {
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 							*/
-							else if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Basilisk Caustic Fission passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergLiiralisk && // Liiralisk Lithe Organelle passive
 								current_button->iconID == IconId::AcidSpore)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
@@ -1289,7 +1289,7 @@ namespace hooks
 							}
 							else if (((*activePortraitUnit)->id == UnitId::ZergIroleth
 								|| (*activePortraitUnit)->id == UnitId::ZergOthstoleth
-								|| (*activePortraitUnit)->id == UnitId::ZergAlaszileth) &&  //Iroleth, Othstoleth, Alaszileth Endomorphic Accelerant passive
+								|| (*activePortraitUnit)->id == UnitId::ZergAlaszileth) &&  // Iroleth, Othstoleth, Alaszileth Endomorphic Accelerant passive
 								current_button->iconID == IconId::ZergBasicBuildings)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
