@@ -938,7 +938,7 @@ namespace hooks
 					bullet->attackTarget.unit = 0;
 				}
 				posX = bullet->sprite;
-				bullet->unknown_0x4E = 0; // Was lowbyte
+				bullet->unknown_0x4E = 0;
 				bullet->someUnitType = UnitId::None;
 
 				for (j = posX->images.head; j; j = j->link.next)
