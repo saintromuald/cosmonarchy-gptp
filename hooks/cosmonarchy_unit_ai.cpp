@@ -280,7 +280,8 @@ void cosmonarchy_unit_ai(Unit* unit)
 
 				if (localUnit->mainOrderId == OrderId::AttackUnit
 					|| localUnit->mainOrderId == OrderId::CarrierFight
-					|| localUnit->mainOrderId == OrderId::ReaverFight)
+					|| localUnit->mainOrderId == OrderId::ReaverFight
+					|| localUnit->mainOrderId == OrderId::AttackMoveComputer)
 				{
 					return;
 				}
