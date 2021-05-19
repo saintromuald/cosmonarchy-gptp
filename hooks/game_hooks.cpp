@@ -525,9 +525,9 @@ namespace hooks
 				// Disruption Field - Lanifect ability
 				if (scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField))
 				{
-					if (!unitExt->values[ValueDisruptionWebOn])
+					if (!unitExt->values[ValueDisruptionFieldOn])
 					{
-						unitExt->values[ValueDisruptionWebOn] = 1;
+						unitExt->values[ValueDisruptionFieldOn] = 1;
 						globals.createEffect(EffectId::DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->playerId, unit);
 					}
 					else if (unit->isFrozen())
@@ -538,7 +538,7 @@ namespace hooks
 				}
 				else
 				{
-					unitExt->values[ValueDisruptionWebOn] = 0;
+					unitExt->values[ValueDisruptionFieldOn] = 0;
 				}
 			} break;
 			case UnitId::TerranMadcap:

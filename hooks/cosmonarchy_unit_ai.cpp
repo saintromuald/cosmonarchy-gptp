@@ -208,7 +208,7 @@ static inline bool canKite(Unit* unit)
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
 		&& unit->id != UnitId::TerranNuclearMissile
-		&& !unitExt->values[ValueDisruptionWebOn]
+		&& !unitExt->values[ValueDisruptionFieldOn]
 		&& !(unit->status & UnitStatus::Burrowed)
 		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
 }

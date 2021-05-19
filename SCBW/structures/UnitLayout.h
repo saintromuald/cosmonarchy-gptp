@@ -239,7 +239,8 @@ enum ExtValueId
 	ValueReviveStarted,
 	ValuePreMorphHP,
 	ValueSkithrokorMissilePos,
-	ValueDisruptionWebOn,
+	ValueDisruptionFieldOn,
+	ValueLiiraliskMissilePos,
 
 	ValueCount,
 };
