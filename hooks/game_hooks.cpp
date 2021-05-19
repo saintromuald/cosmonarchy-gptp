@@ -990,8 +990,11 @@ namespace hooks
 			{
 				UnitExt* targetExt = globals.GetUnitExt(target);
 
-				// Akistrokor
-				targetExt->values[ValueEnthrallingTalons] = 0;
+				if (targetExt->values[ValueEnthrallingTalons])
+				{
+					// Akistrokor
+					targetExt->values[ValueEnthrallingTalons] = 0;
+				}
 
 				// Generic
 				targetExt->units[UnitAttachedSource] = nullptr;

@@ -70,13 +70,13 @@ namespace TechId {
 
 	// Protoss
 		PlanetCracker			= 29, // Star Sovereign damage ability
-		PhaseLink				= 33, // unused
+		ConjoiningRoot			= 33, // Sovroleth attachment ability
 		GodsMadeFlesh			= 42, // Demiurge immortality ability
 
 	// Zerg
 		EnsnaringBrood			= 13, // Matraleth disruptive enchantment ability
 		Reconstitution			= 26, // unused
-		EntrallingAssault		= 35, // Akistrokor infestation ability
+		EntrallingAssault		= 35, // Akistrokor attachment ability
 
 		// extended
 		// ChasmalColonySwitch = 47,	// Chasmal Colony - Adaptive Barrier / Adrenal Secretion

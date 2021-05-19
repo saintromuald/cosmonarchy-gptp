@@ -193,6 +193,17 @@ namespace hooks
 					buf[4] = RustId::CancelAttachment;
 					helper::QueueGameCommand(buf, 0xc);
 				}
+				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergSovroleth)
+				{
+					s32 action = 1; // on
+					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
+					buf[0] = 0x99; // new general command
+					buf[1] = NewGameCommand::GenericSwitchAbility;
+					buf[2] = action;
+					buf[3] = *ACTIVE_PLAYER_ID;
+					buf[4] = RustId::CancelAttachment;
+					helper::QueueGameCommand(buf, 0xc);
+				}
 			} break;
 			case TechId::Observance:
 			{
@@ -208,33 +219,12 @@ namespace hooks
 				buf[4] = RustId::CastGodsMadeFlesh;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
-			case TechId::PhaseLink:
-			{
-				auto firstInList = clientSelectionGroup->unit[0];
-				if (firstInList != nullptr)
-				{
-					if (firstInList->id == UnitId::ProtossClarion)
-					{
-						s32 action = 0; // enable
-						if (scbw::get_aise_value(firstInList, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
-						{
-							action = 1; // disable
-						}
-						u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
-						buf[0] = 0x99; // new general command
-						buf[1] = NewGameCommand::PhaseLink;
-						buf[2] = action;
-						buf[3] = *ACTIVE_PLAYER_ID;
-						helper::QueueGameCommand(buf, 0xc);
-					}
-				}
-			} break;
 			case TechId::PlanetCracker:
 			{
 				auto firstInList = clientSelectionGroup->unit[0];
 				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
 				buf[0] = 0x99; // new general command
-				buf[1] = NewGameCommand::IssueCTFCop2; // used for Phase Link, Khaydarin Eclipse, and (in Overlord) Anti-Air Mode
+				buf[1] = NewGameCommand::IssueCTFCop2;
 				buf[2] = *ACTIVE_PLAYER_ID;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
@@ -283,6 +273,7 @@ namespace hooks
 				helper::issueTriTargetOrder(OrderId::Skyfall, 0, 0);
 			} break;
 			case TechId::EntrallingAssault:
+			case TechId::ConjoiningRoot:
 			{
 				helper::issueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
 			} break;
