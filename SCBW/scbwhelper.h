@@ -550,9 +550,9 @@ namespace helper
 	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId);																		// 00425790
 	bool StatSpidermineCount(BinDlg* dialog, u32 index);																				// 00426300
 
-	// For getUnitRankString
+	// For getUnitRankString and checkHotkeyChar
 	__int8 unitGetRace(Unit* a1);																										// 0047B150
-	char* getStatTxtString(__int16 a1);																									// 004C36F0
+	char* getStatTxtString(u16 a1);																									// 004C36F0
 
 	// For statsWeaponLevel / statsArmorLevel
 	char getArmorCount(Unit* unit, s32 a2);																							// 00453FC0

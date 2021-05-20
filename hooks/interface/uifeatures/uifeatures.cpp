@@ -205,4 +205,27 @@ LABEL_15:
 			result = helper::selectMultipleUnitsFromUnitList(a2, a1, a3, a4);
 		return result;
 	}
+
+	b32 checkHotkeyChar(BinDlg* dialog, char hotkey)
+	{
+		if (dialog->index < 0 || dialog->index > 9)
+		{
+			return 0;
+		}
+		if (!(dialog->flags & BinDlgFlags::Visible) || dialog->flags & BinDlgFlags::Disabled)
+		{
+			return 0;
+		}
+
+		if (config.grid_hotkeys && dialog->index > 0)
+		{
+			int index = dialog->index - 1;
+			int x = index % 3;
+			int y = index / 3;
+			return hotkey == tolower(config.layout[y].at(x));
+		}
+
+		char* label = helper::getStatTxtString(dialog->buttonUser->reqStringID);
+		return hotkey == label[0];
+	}
 }

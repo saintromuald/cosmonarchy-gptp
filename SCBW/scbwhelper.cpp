@@ -5137,7 +5137,7 @@ namespace helper
 		return (__int8)result;
 	}
 
-	char* getStatTxtString(__int16 a1)
+	char* getStatTxtString(u16 a1)
 	{
 		const u32 Func_getStatTxtString = 0x004C36F0;
 		static s32 result;
