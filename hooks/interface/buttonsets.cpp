@@ -193,6 +193,7 @@ namespace hooks
 		u8 countCloakables = 0;
 		u8 countNotInAirAndZergs = 0;
 		u8 countBurrowables = 0;
+		u8 countLarva = 0;
 		u16 activeButtonSetId;
 		u16 selectedButtonSetId;
 		u32 flagsHolder;
@@ -227,6 +228,11 @@ namespace hooks
 				if (flagsHolder & UnitProperty::Burrowable)
 				{
 					countBurrowables++;
+				}
+
+				if (unitFromSelection->id == UnitId::ZergLarva)
+				{
+					countLarva++;
 				}
 
 				// if you use a custom buttonset, and are reusing the currentButtonSet property of an unit differently, change these conditions to take it in account
@@ -269,6 +275,10 @@ namespace hooks
 			else if ((countBurrowables != 0) && (countNotInAirAndZergs == *clientSelectionCount))
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // aerial units and non-zergs units prevent this (but not Ultralisk)
+			}
+			else if (countLarva == *clientSelectionCount)
+			{
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
 			}
 		}
 	}
