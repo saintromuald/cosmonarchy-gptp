@@ -631,7 +631,7 @@ void Globals::frameHook()
 					}
 
 					UnitExt* parentExt = globals.GetUnitExt(effects[i].parent);
-					if (!parentExt->values[ValueDisruptionWebOn])
+					if (!parentExt->values[ValueDisruptionFieldOn])
 					{
 						effects[i].currentTime = 0;
 						break;

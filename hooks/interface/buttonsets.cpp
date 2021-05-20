@@ -193,6 +193,7 @@ namespace hooks
 		u8 countCloakables = 0;
 		u8 countNotInAirAndZergs = 0;
 		u8 countBurrowables = 0;
+		u8 countLarva = 0;
 		u16 activeButtonSetId;
 		u16 selectedButtonSetId;
 		u32 flagsHolder;
@@ -227,6 +228,11 @@ namespace hooks
 				if (flagsHolder & UnitProperty::Burrowable)
 				{
 					countBurrowables++;
+				}
+
+				if (unitFromSelection->id == UnitId::ZergLarva)
+				{
+					countLarva++;
 				}
 
 				// if you use a custom buttonset, and are reusing the currentButtonSet property of an unit differently, change these conditions to take it in account
@@ -269,6 +275,10 @@ namespace hooks
 			else if ((countBurrowables != 0) && (countNotInAirAndZergs == *clientSelectionCount))
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // aerial units and non-zergs units prevent this (but not Ultralisk)
+			}
+			else if (countLarva == *clientSelectionCount)
+			{
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
 			}
 		}
 	}
@@ -658,6 +668,16 @@ namespace hooks
 					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Upgrade_Not_At_Max_Level)
 					{
 						// Escalations were here
+					}
+
+					// I am currently forcing the buttons to show, which is effectively fighting lardcode that forces them not to show when group-selected.
+					// This is STUPID, EXPENSIVE, and should be REPLACED as soon as possible. - Pr0nogo
+					if (current_button->actFunc == (ACT_FUNC*)ButtonActions::Change_Displayed_Buttons)
+					{
+						if ((*activePortraitUnit)->id == UnitId::ZergLarva)
+						{
+							current_button_state = BUTTON_STATE::Enabled;
+						}
 					}
 
 					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding)
@@ -1187,12 +1207,12 @@ namespace hooks
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 							/*
-							else if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Basilisk Biogenesis passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Bactalisk Biogenesis passive
 								current_button->iconID == IconId::ZergAdvancedBuildings) {
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 							*/
-							else if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Basilisk Caustic Fission passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergLiiralisk && // Liiralisk Lithe Organelle passive
 								current_button->iconID == IconId::AcidSpore)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
@@ -1289,7 +1309,7 @@ namespace hooks
 							}
 							else if (((*activePortraitUnit)->id == UnitId::ZergIroleth
 								|| (*activePortraitUnit)->id == UnitId::ZergOthstoleth
-								|| (*activePortraitUnit)->id == UnitId::ZergAlaszileth) &&  //Iroleth, Othstoleth, Alaszileth Endomorphic Accelerant passive
+								|| (*activePortraitUnit)->id == UnitId::ZergAlaszileth) &&  // Iroleth, Othstoleth, Alaszileth Endomorphic Accelerant passive
 								current_button->iconID == IconId::ZergBasicBuildings)
 							{
 								current_button_state = BUTTON_STATE::Enabled;

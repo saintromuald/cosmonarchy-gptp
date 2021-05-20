@@ -405,6 +405,10 @@ namespace hooks
 				{
 					scbw::setMissileSourcePos(unit, weaponId, ValueSkithrokorMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
+				else if (weaponId == WeaponId::LiiraliskHollowedSpores)
+				{
+					scbw::setMissileSourcePos(unit, weaponId, ValueLiiraliskMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
+				}
 				else if (weaponId == WeaponId::KalkaliskViscousAcid)
 				{
 					auto bullet = scbw::setMissileSourcePos(unit, weaponId, ValueKalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
@@ -938,7 +942,7 @@ namespace hooks
 					bullet->attackTarget.unit = 0;
 				}
 				posX = bullet->sprite;
-				bullet->unknown_0x4E = 0; // Was lowbyte
+				bullet->unknown_0x4E = 0;
 				bullet->someUnitType = UnitId::None;
 
 				for (j = posX->images.head; j; j = j->link.next)

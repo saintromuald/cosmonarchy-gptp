@@ -23,6 +23,7 @@ u8 getDamageFactorForTooltip(u8 weaponId, Unit* unit)
 		|| weaponId == WeaponId::GolemBloodlessAssault
 		|| weaponId == WeaponId::PariahIconoclastBlades
 		|| weaponId == WeaponId::StarSovereignCelestialCannon
+		|| weaponId == WeaponId::LiiraliskHollowedSpores
 		|| weaponId == WeaponId::BactaliskCorrosiveAcid
 		|| weaponId == WeaponId::AlmaksaliskPiercingSpines
 		|| weaponId == WeaponId::KeskathalorScreamingVenom
