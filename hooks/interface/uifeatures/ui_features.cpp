@@ -1,4 +1,4 @@
-#include "uifeatures.h"
+#include "ui_features.h"
 #include <string>
 #include <sstream>
 #include <vector>
@@ -220,9 +220,9 @@ LABEL_15:
 		}
 
 		char* label = helper::getStatTxtString(dialog->buttonUser->reqStringID);
-		if (*label == 27) // escape handling for grid hotkeys
+		if (*label == 27 && hotkey == label[0]) // escape handling for grid hotkeys
 		{
-			return hotkey == label[0];
+			return 1;
 		}
 
 		if (config.grid_hotkeys && dialog->index > 0)
