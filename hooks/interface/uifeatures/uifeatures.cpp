@@ -228,4 +228,33 @@ LABEL_15:
 		char* label = helper::getStatTxtString(dialog->buttonUser->reqStringID);
 		return hotkey == label[0];
 	}
+
+	char createUpgradeLevelTooltip(char* text)
+	{
+		if (!*upgradeLevelTooltip)
+		{
+			if (text)
+			{
+				return helper::CreateTooltip(text);
+			}
+			return helper::refreshSelectionScreen();
+		}
+		if (!text)
+		{
+			return helper::refreshSelectionScreen();
+		}
+		const char* description;
+		if (**statTxtBuffer > 794u)
+		{
+			description = (char *)*statTxtBuffer + (*statTxtBuffer)[795];
+		}
+		else
+		{
+			description = "";
+		}
+		char buffer[128];
+		sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)*upgradeLevelTooltip);
+		scbw::printf("%s", buffer);
+		return helper::CreateTooltip(buffer);
+	}
 }

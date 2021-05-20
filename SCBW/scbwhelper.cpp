@@ -8509,4 +8509,32 @@ namespace helper
 			POPAD
 		}
 	}
+
+	s16 CreateTooltip(char* text)
+	{
+		const u32 Func_CreateTooltip = 0x004591A6;
+		static s16 result;
+		__asm
+		{
+			PUSHAD
+			PUSH text
+			CALL Func_CreateTooltip
+			MOV result, AX
+			POPAD
+		}
+		return result;
+	}
+
+	char refreshSelectionScreen()
+	{
+		const u32 Func_refreshSelectionScreen = 0x00481480;
+		static char result;
+		__asm
+		{
+			PUSHAD
+			CALL Func_refreshSelectionScreen
+			MOV result, AL
+			POPAD
+		}
+	}
 }

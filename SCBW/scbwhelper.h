@@ -896,6 +896,10 @@ namespace helper
 	bool isUnitTargetOutOfMaxRange(Unit* unit, Unit* target);												// 00476430
 	s32 moveForMeleeRange(Unit* target, Unit* unit);
 
+	// For createUpgradeLevelTooltip
+	s16 CreateTooltip(char* text);																			// 004591A6
+	char refreshSelectionScreen();																			// 00481480
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
