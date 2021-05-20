@@ -241,6 +241,7 @@ enum ExtValueId
 	ValueSkithrokorMissilePos,
 	ValueDisruptionFieldOn,
 	ValueLiiraliskMissilePos,
+	ValueAkistrokorInfestationSourcePlayer,
 
 	ValueCount,
 };
@@ -294,6 +295,7 @@ enum ExtTimerId
 	TimerReviveFlagClearMin,
 	TimerReviveFlagClearMax,
 	TimerDisruptionWebStatusClear,
+	TimerAkistrokorInfestationInvFrames,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,

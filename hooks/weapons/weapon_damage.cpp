@@ -869,6 +869,15 @@ namespace hooks
 			});
 		}
 
+		// Akistrokor - Prevent killing from own attacks just after the infestation
+		if (targetExt->timers[TimerAkistrokorInfestationInvFrames])
+		{
+			if (scbw::isAlliedTo(data.attackingPlayerId, targetExt->values[ValueAkistrokorInfestationSourcePlayer]))
+			{
+				data.finalDamage = 0;
+			}
+		}
+
 		// Akistrokor - Enthralling Assault
 		if (targetExt->values[ValueEnthrallingTalons] > 0)
 		{
@@ -876,6 +885,10 @@ namespace hooks
 			data.finalDamage = 0;
 			data.target->setHp(256);
 			targetExt->timers[TimerEnthrallingAssaultHeal] = 24 * 10;
+
+			// Prevent killing the unit from own attacks
+			targetExt->values[ValueAkistrokorInfestationSourcePlayer] = data.attacker->playerId;
+			targetExt->timers[TimerAkistrokorInfestationInvFrames] = 24;
 
 			// Transfer unit ownership
 			Unit* unit = targetExt->units[UnitLastHitAkistrokor];
