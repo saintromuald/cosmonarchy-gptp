@@ -1,8 +1,8 @@
 #include "hooks\cosmonarchy_unit_ai.h"
 #include "SCBW/api.h"
 #include "SCBW/scbwdata.h"
-#include "UnitConstants.h"
-#include "MathUtils.h"
+#include "unit_constants.h"
+#include "math_utils.h"
 #include "globals.h"
 #include "hooks/weapons/weapon_cooldown.h"
 

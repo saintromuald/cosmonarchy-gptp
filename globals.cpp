@@ -1,6 +1,6 @@
 #include "globals.h"
 #include "hook_tools.h"
-#include "hooks/cosmonarchyFinder.h"
+#include "hooks/cosmonarchy_finder.h"
 #include "hooks/limits/attack_extender.h"
 #include "hooks/weapons/weapon_damage.h"
 #include <algorithm>

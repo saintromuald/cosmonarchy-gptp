@@ -5,8 +5,8 @@
 #include <SCBW/enumerations.h>
 #include <SCBW/api.h>
 #include "SCBW/UnitFinder.h"
-#include "hooks/cosmonarchyFinder.h"
-#include "MathUtils.h"
+#include "hooks/cosmonarchy_finder.h"
+#include "math_utils.h"
 #include "hooks/byte_operations_utils.h"
 #include "globals.h"
 #include "hooks/unit_stats/weapon_range.h"

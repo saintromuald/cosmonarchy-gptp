@@ -8,7 +8,7 @@
 #include "hooks/interface/uifeatures/uifeatures.h"
 #include "hooks/interface/hpbars/hpbars.h"
 #include "Utils/captivating_claws.h"
-#include "hooks/cosmonarchyFinder.h"
+#include "hooks/cosmonarchy_finder.h"
 #include "globals.h"
 #include "target_related.h"
 #include "hooks/orders/ai/ai_orders.h"

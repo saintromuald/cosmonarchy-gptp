@@ -1,6 +1,6 @@
 #include "unit_train.h"
 #include <SCBW/api.h>
-#include "hooks/cosmonarchyFinder.h"
+#include "hooks/cosmonarchy_finder.h"
 #include "globals.h"
 #ifndef TRUE
 #define TRUE 1

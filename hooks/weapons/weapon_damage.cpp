@@ -2,9 +2,9 @@
 #include "../../SCBW/api.h"
 #include <algorithm>
 #include <cmath>
-#include "MathUtils.h"
+#include "math_utils.h"
 #include "Utils/captivating_claws.h"
-#include "hooks/cosmonarchyFinder.h"
+#include "hooks/cosmonarchy_finder.h"
 #include "globals.h"
 #include "logger.h"
 

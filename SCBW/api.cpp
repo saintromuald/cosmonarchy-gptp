@@ -1,7 +1,7 @@
 #include "api.h"
 #include "scbwdata.h"
 #include <SCBW/UnitFinder.h>
-#include <hooks/cosmonarchyFinder.h>
+#include <hooks/cosmonarchy_finder.h>
 #include <algorithm>
 #include <cassert>
 #include <utility>

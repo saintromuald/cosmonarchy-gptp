@@ -4,7 +4,7 @@
 #pragma once
 #include <algorithm>
 #include "UnitLayout.h"
-#include "UnitConstants.h"
+#include "unit_constants.h"
 #include <SCBW/enumerations.h>
 #include "../../graphics/graphics.h"
 

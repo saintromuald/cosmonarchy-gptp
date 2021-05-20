@@ -3,11 +3,11 @@
 #include "unit_speed.h"
 #include "../SCBW/enumerations.h"
 #include "../SCBW/scbwdata.h"
-#include "hooks/cosmonarchyFinder.h"
+#include "hooks/cosmonarchy_finder.h"
 #include <SCBW/UnitFinder.h>
 #include "SCBW/api.h"
 #include "globals.h"
-#include "MathUtils.h"
+#include "math_utils.h"
 #include "Utils/captivating_claws.h"
 
 namespace hooks

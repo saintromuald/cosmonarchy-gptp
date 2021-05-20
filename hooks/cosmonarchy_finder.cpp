@@ -1,4 +1,4 @@
-#include "hooks\cosmonarchyFinder.h"
+#include "hooks\cosmonarchy_finder.h"
 
 
 bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)

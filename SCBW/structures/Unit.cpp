@@ -6,7 +6,7 @@
 #include "hooks\limits\ccmu.h"
 #include "hooks\weapons\weapon_damage.h"
 
-#include "MathUtils.h"
+#include "math_utils.h"
 //-------- Unit stats and properties --------//
 
 extern const u32 Func_CanDetect = 0x00403430; //unitHasNoStatusAilments
