@@ -392,6 +392,7 @@ namespace hooks
 				// Searing Acid - Guardian behavior
 				data.finalDamage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
 			} break;
+			case WeaponId::SouthpawUppercutLaser:
 			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::GlaveWurm:
 			case WeaponId::CharlatanFerventBlaster:
@@ -414,7 +415,7 @@ namespace hooks
 					} break;
 					default:
 					{
-						mul = 1.0 / 9.0; // 4th bounce, currently unused
+						mul = 1.0 / 9.0; // 3rd bounce, currently unused
 					} break;
 				};
 				data.finalDamage *= mul;

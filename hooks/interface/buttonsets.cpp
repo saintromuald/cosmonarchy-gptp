@@ -893,6 +893,11 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
+							else if ((*activePortraitUnit)->id == UnitId::TerranSouthpaw &&  // Southpaw Bar-Brawl Refraction passive
+								current_button->iconID == IconId::Fusion_Cutter_Harvest)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 							else if ((*activePortraitUnit)->id == UnitId::TerranCyclops &&  // Cyclops Fragmentary Shells passive
 								current_button->iconID == IconId::FragmentationGrenade)
 							{

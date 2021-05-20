@@ -908,12 +908,12 @@ namespace hooks
 		if (bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y)
 		{
 			nextBounce = bullet->remainingBounces - 1;
-			//
+			// Gladius infinite bouncing
 			if (bullet->weaponId == WeaponId::GladiusPlasmaFlurry)
 			{
 				nextBounce = 1;
 			}
-			//
+
 			bullet->remainingBounces = nextBounce;
 			globals.bounce_bullet = bullet;
 			if (nextBounce && (target = helper::findNextBounceTarget_func(bullet), bullet->nextBounceUnit = bullet->attackTarget.unit, target))
@@ -965,7 +965,7 @@ namespace hooks
 		s32 v8;
 		bool v9;
 		s32 v10;
-		Unit* v11;
+		Unit* v11 = nullptr;
 		s32 v13;
 		s8 v14;
 
