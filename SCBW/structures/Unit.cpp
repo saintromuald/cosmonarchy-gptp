@@ -642,11 +642,11 @@ void Unit::reduceDefensiveMatrixHp(s32 amount)
 		while (current_image != nullptr)
 		{
 
-			if (
-				current_image->id < ImageId::DefensiveMatrixBack_Small ||
-				current_image->id > ImageId::DefensiveMatrixBack_Large
-				)
+			if (current_image->id < ImageId::DefensiveMatrixBack_Small
+				|| current_image->id > ImageId::DefensiveMatrixBack_Large)
+			{
 				current_image = current_image->link.next;
+			}
 			else
 			{
 				current_image->free();
@@ -660,7 +660,7 @@ void Unit::reduceDefensiveMatrixHp(s32 amount)
 	if (this->defensiveMatrixTimer != 0 && !(this->status & UnitStatus::Burrowed))
 	{
 		Unit* unit = this->subunit ? this->subunit : this;
-		//getUnitOverlayAdjustment code was hardcoded into function in original code)
+//		getUnitOverlayAdjustment code was hardcoded into function in original code)
 		unit->sprite->createTopOverlay(scbw::getUnitOverlayAdjustment(unit) + ImageId::DefensiveMatrixHit_Small);
 	}
 
