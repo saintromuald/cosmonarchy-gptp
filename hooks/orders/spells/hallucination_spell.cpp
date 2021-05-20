@@ -79,11 +79,12 @@ namespace hooks
 				halUnit2->removeTimer = halTimer;
 			}
 			unitType = halUnit2->id;
-			if (unitType == UnitId::ProtossAccantor)
-			{ // Originally also ran for Warbringer ID
+			if (unitType == UnitId::ProtossAccantor) // Originally also ran for Warbringer ID
+			{
 				helper::hallucinateScarabs(halUnit2, v3);
 			}
-			helper::AI_TrainingUnit(halUnit2, halUnit2);
+			//helper::AI_TrainingUnit(halUnit2, halUnit2);
+			scbw::initUnitAI(halUnit2);
 			result = halUnit2;
 		}
 		else
