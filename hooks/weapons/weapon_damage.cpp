@@ -461,6 +461,16 @@ namespace hooks
 		{
 			UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
+			// Akistrokor - Last hit tracking
+			if (targetExt->values[ValueEnthrallingTalons] > 0)
+			{
+				auto& vec = targetExt->unitVectors[UnitVectorAttachedSource];
+				if (std::find(vec.begin(), vec.end(), data.attacker) != vec.end())
+				{
+					targetExt->units[UnitLastHitAkistrokor] = data.attacker;
+				}
+			}
+
 			// Vithrilisk - Critical Mass (procced by any attack now)
 			if (targetExt->values[ValueCorrosiveTouchStacks])
 			{
@@ -868,14 +878,18 @@ namespace hooks
 			targetExt->timers[TimerEnthrallingAssaultHeal] = 24 * 10;
 
 			// Transfer unit ownership
-			Unit* akistrokor = targetExt->units[UnitAttachedSource];
-			if (akistrokor)
-			{
-				data.target->giveTo(akistrokor->playerId);
-			}
+			Unit* unit = targetExt->units[UnitLastHitAkistrokor];
+			data.target->giveTo(unit->playerId);
 
 			// Cancel the attachment
-			scbw::set_generic_rust_value(akistrokor, RustId::CancelAttachment, 1);
+			auto& vec = targetExt->unitVectors[UnitAttachedTarget];
+			for (Unit* source : vec)
+			{
+				if (source->id == UnitId::ZergAkistrokor)
+				{
+					scbw::set_generic_rust_value(unit, RustId::CancelAttachment, 1);
+				}
+			}
 		}
 
 		switch (data.target->id)

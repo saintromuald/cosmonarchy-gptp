@@ -514,12 +514,13 @@ namespace hooks
 		if (weaponId == WeaponId::AkistrokorEnthrallingAssault && unit->orderTarget.unit != nullptr)
 		{
 			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
-			if (targetExt->units[UnitAttachedSource] == nullptr)
+			unitExt->units[UnitAttachedTarget] = unit->orderTarget.unit;
+			auto& sourceUnits = targetExt->unitVectors[UnitVectorAttachedSource];
+			if (std::find(sourceUnits.begin(), sourceUnits.end(), unit) == sourceUnits.end())
 			{
-				unitExt->units[UnitAttachedTarget] = unit->orderTarget.unit;
-				targetExt->units[UnitAttachedSource] = unit;
-				targetExt->values[ValueEnthrallingTalons] = 1;
+				sourceUnits.push_back(unit);
 			}
+			targetExt->values[ValueEnthrallingTalons] = 1;
 		}
 	}
 

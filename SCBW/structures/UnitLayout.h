@@ -317,11 +317,11 @@ enum ExtUnitId
 	UnitDecaySavant,
 	UnitWorshipDemiurge,
 	UnitAttachedTarget,
-	UnitAttachedSource,
 	UnitMindController,
 	UnitWyvernTargetLock,
 	UnitDirgeSource,
 	UnitBunkerLockOn,
+	UnitLastHitAkistrokor,
 
 	UnitCount,
 };
@@ -340,6 +340,7 @@ enum ExtUnitVectorId
 	UnitVectorPhaseLinkClarions,
 	UnitVectorTertiaryEyes,
 	UnitVectorTertiaryEyesSirens,
+	UnitVectorAttachedSource,
 
 	UnitVectorCount,
 };

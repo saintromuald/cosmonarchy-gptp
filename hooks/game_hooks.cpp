@@ -997,7 +997,8 @@ namespace hooks
 				}
 
 				// Generic
-				targetExt->units[UnitAttachedSource] = nullptr;
+				auto& vec = targetExt->unitVectors[UnitVectorAttachedSource];
+				vec.erase(std::remove(vec.begin(), vec.end(), unit), vec.end());
 			}
 
 			// Generic
