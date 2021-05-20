@@ -73,7 +73,6 @@ struct KitePositions
 	Point16 strafePos;
 };
 
-
 const u32 sleepTime = 18;
 const u32 moveRadius = 4 * 32;
 const u32 localGroupRadius = 1 * 32;
@@ -249,6 +248,20 @@ static inline bool unitHasCooldownToAttack(Unit* unit)
 	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) / 2;
 }
 
+static inline bool shouldKiteBack(Unit* source)
+{
+	Unit* target = source->orderTarget.unit;
+	if (!target)
+	{
+		return true;
+	}
+	if (getMaxRange(source) + source->flingyTopSpeed / 343.0 >= getMaxRange(target) + target->flingyTopSpeed / 343.0)
+	{
+		return true;
+	}
+	return false;
+}
+
 static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 {
 	u32 unitValue[kiteZoneCount] = {0};
@@ -370,7 +383,6 @@ void cosmonarchyUnitAi(Unit* unit)
 	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0)
 	{
 		u32 hostileGroupRadius = 4 * 32;
-
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
 			hostileGroupRadius = 32;
@@ -465,10 +477,6 @@ void cosmonarchyUnitAi(Unit* unit)
 						{
 							localUnit->orderTo(OrderId::ReaverFight, targetUnit);
 						}
-						else if (isMeleeAttacker(localUnit) && !(localUnit->status & UnitStatus::InAir))
-						{
-							localUnit->orderTo(OrderId::AttackMoveComputer, targetUnit->position.x, targetUnit->position.y);
-						}
 						else
 						{
 							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
@@ -500,11 +508,19 @@ void cosmonarchyUnitAi(Unit* unit)
 
 					const u32 distance = getDistanceToTarget(localUnit);
 					const u32 maxRange = getMaxRange(localUnit);
-
-					bool targetIsStructure = false;
+					u32 enemyMaxRange = 0;
+					bool targetHasMinRange = false;
 					if (localUnit->orderTarget.unit)
 					{
-						targetIsStructure = units_dat::BaseProperty[localUnit->orderTarget.unit->id] & UnitStatus::IsBuilding;
+						enemyMaxRange = getMaxRange(localUnit->orderTarget.unit);
+						if (localUnit->status & UnitStatus::InAir)
+						{
+							targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getAirWeapon()];
+						}
+						else
+						{
+							targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getGroundWeapon()];
+						}
 					}
 
 					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
@@ -515,7 +531,9 @@ void cosmonarchyUnitAi(Unit* unit)
 					}
 					else if (distance > maxRange * 1.5
 						|| (distance > maxRange * 1 && crowdScore > 4)
-						|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 3))
+						|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 3)
+						|| distance > enemyMaxRange
+						|| targetHasMinRange)
 					{
 						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
@@ -530,7 +548,7 @@ void cosmonarchyUnitAi(Unit* unit)
 						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
 					}
-					else if (!targetIsStructure || distance < maxRange * 0.5)
+					else if (distance < maxRange * 0.5 || shouldKiteBack(localUnit))
 					{
 						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 						//scbw::printf("%s: backward", localUnit->getName());
