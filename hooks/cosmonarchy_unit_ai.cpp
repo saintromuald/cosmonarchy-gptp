@@ -180,11 +180,7 @@ static inline u8 getMaxWeaponCooldown(Unit* unit)
 
 static inline u32 getDistanceBetweenUnits(Unit* source, Unit* target)
 {
-	Point32 diff = {source->position.x, source->position.y};
-	diff.x -= target->position.x;
-	diff.y -= target->position.y;
-
-	return sqrtl(powl(diff.x, 2) + powl(diff.y, 2));
+	return scbw::getDistanceFast(source->position.x, source->position.y, target->position.x, target->position.y);
 }
 
 static inline u32 getDistanceToTarget(Unit* source)
