@@ -642,11 +642,11 @@ void Unit::reduceDefensiveMatrixHp(s32 amount)
 		while (current_image != nullptr)
 		{
 
-			if (
-				current_image->id < ImageId::DefensiveMatrixBack_Small ||
-				current_image->id > ImageId::DefensiveMatrixBack_Large
-				)
+			if (current_image->id < ImageId::DefensiveMatrixBack_Small
+				|| current_image->id > ImageId::DefensiveMatrixBack_Large)
+			{
 				current_image = current_image->link.next;
+			}
 			else
 			{
 				current_image->free();
