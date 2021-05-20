@@ -52,12 +52,14 @@ namespace hooks
 		return numberWithLeadingZero(hrs) + std::string(":") + numberWithLeadingZero(min) + std::string(":") + numberWithLeadingZero(sec);
 	}
 	/*
+		APM Counter TODO
+
 		We have hooks for:
 		- Most Orders
 		- Shift, Shift+Box, Double Click
 		- Queue Game Command
 
-		We need hooks for*:
+		We need hooks for:
 		- Morph, training and building orders
 		- Lift off, land orders
 		- Single unit selection, drag selection, select larva
@@ -69,9 +71,9 @@ namespace hooks
 		totalActions++;
 	}
 
-	void clearActions()
-	{ // Called on map start
-//actions.clear();
+	void clearActions() // Called on map start
+	{
+		//actions.clear();
 		totalActions = 0;
 	}
 
