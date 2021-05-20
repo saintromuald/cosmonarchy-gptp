@@ -418,7 +418,7 @@ namespace hooks
 		*/
 
 		jmpPatch(AI_orderUnitCloaking_Wrapper,	0x0043B970, 1);
-		jmpPatch(deleteWorkerAI_Wrapper,		0x00404470, 0);
+//		jmpPatch(deleteWorkerAI_Wrapper,		0x00404470, 0);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}
