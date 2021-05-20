@@ -493,6 +493,11 @@ void cosmonarchyUnitAi(Unit* unit)
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
 					localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit) * 0.75;
 
+					if (unitHasCooldownToAttack(localUnit))
+					{
+						return;
+					}
+
 					const u32 distance = getDistanceToTarget(localUnit);
 					const u32 maxRange = getMaxRange(localUnit);
 
