@@ -23,6 +23,7 @@ namespace hooks
 		u32 allowFallbackAirOnly);
 	s32 AI_HasUnitsForAttackForce(u32 player);																    // 00437F20    
 	void AI_orderUnitCloaking(Unit* unit);																		// 0043B970
+	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiList);									// 00404470
 
 	void injectAIOrdersHooks();
 }
