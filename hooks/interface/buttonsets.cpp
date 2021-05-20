@@ -670,6 +670,16 @@ namespace hooks
 						// Escalations were here
 					}
 
+					// I am currently forcing the buttons to show, which is effectively fighting lardcode that forces them not to show when group-selected.
+					// This is STUPID, EXPENSIVE, and should be REPLACED as soon as possible. - Pr0nogo
+					if (current_button->actFunc == (ACT_FUNC*)ButtonActions::Change_Displayed_Buttons)
+					{
+						if ((*activePortraitUnit)->id == UnitId::ZergLarva)
+						{
+							current_button_state = BUTTON_STATE::Enabled;
+						}
+					}
+
 					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding)
 					{
 						// Barracks buttonset handling
