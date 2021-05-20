@@ -1245,7 +1245,7 @@ namespace hooks
 		// Remove Swarming Omen overlay
 		if (unitExt->timers[TimerSwarmingOmen] == 1)
 		{
-//			unit->removeOverlay();
+			// unit->removeOverlay();
 		}
 
 		// TODO: Finish

@@ -112,7 +112,8 @@ namespace hooks
 	static bool wyvernCanFireAt(Unit* unit, Unit* target)
 	{
 		return scbw::canWeaponTargetUnit(WeaponId::WyvernJacksonCannon, target, unit)
-			&& scbw::getDistanceFast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
+			&& scbw::getDistanceFast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon]
+			&& unit->canAttackTarget(target);
 	}
 
 	/// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
