@@ -13,22 +13,15 @@ namespace hooks
 		{
 			return;
 		}
-		if (parent == nullptr)
+		if (parent == nullptr || result->playerId != parent->playerId)
 		{
 			parent = result;
 		}
-		if (playerTable[result->playerId].type != PlayerType::Computer)
+		if (playerTable[parent->playerId].type != PlayerType::Computer)
 		{
 			return;
 		}
-		if (result->id == UnitId::ZergRilirokor
-			|| result->id == UnitId::ZergRililisk
-			|| result->id == UnitId::ProtossSimulacrum
-			|| result->status & UnitStatus::IsHallucination)
-		{
-			hooks::AI_TrainingBroodling(result, result);
-		}
-		else if (units_dat::BaseProperty[result->id] & UnitProperty::Worker)
+		if (units_dat::BaseProperty[result->id] & UnitProperty::Worker)
 		{
 			helper::AI_TrainingWorker(result, parent);
 		}
@@ -38,6 +31,13 @@ namespace hooks
 			|| result->id == UnitId::ZergAlaszileth)
 		{
 			helper::AI_TrainingOverlord(result, parent); // replace with hook later
+		}
+		else if (result->id == UnitId::ZergRilirokor
+			|| result->id == UnitId::ZergRililisk
+			|| result->id == UnitId::ProtossSimulacrum
+			|| result->status & UnitStatus::IsHallucination)
+		{
+			hooks::AI_TrainingBroodling(result, result);
 		}
 		else
 		{
