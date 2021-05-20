@@ -283,6 +283,7 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 			[&](Unit* hostileUnit)
 		{
 			result.enemiesFound = true;
+			unitValue[i] += 1;
 			if (unit->status & UnitStatus::InAir)
 			{
 				unitValue[i] += hostileUnit->airStrength;
@@ -400,14 +401,7 @@ void cosmonarchyUnitAi(Unit* unit)
 		u32 localGroupValue = 0;
 		localGroup.forEach([&](Unit* localUnit)
 		{
-			if (unit->status & UnitStatus::InAir)
-			{
-				localGroupValue += localUnit->airStrength;
-			}
-			else
-			{
-				localGroupValue += localUnit->groundStrength;
-			}
+			localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
 		});
 
 		if (unitHasCooldownToAttack(unit))
