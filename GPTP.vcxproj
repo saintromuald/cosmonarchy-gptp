@@ -271,8 +271,8 @@
     <ClCompile Include="hooks\interface\mainmenu\lobby_inject.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\screen_hotkeys.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\screen_hotkeys_inject.cpp" />
-    <ClCompile Include="hooks\interface\uifeatures\uifeatures.cpp" />
-    <ClCompile Include="hooks\interface\uifeatures\uifeatures_inject.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\ui_features.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\ui_features_inject.cpp" />
     <ClCompile Include="hooks\limits\ccmu_inject.cpp" />
     <ClCompile Include="hooks\limits\extender.cpp" />
     <ClCompile Include="hooks\game\creategame.cpp" />
@@ -563,7 +563,7 @@
     <ClInclude Include="hooks\interface\hpbars\hpbars.h" />
     <ClInclude Include="hooks\interface\mainmenu\lobby.h" />
     <ClInclude Include="hooks\interface\uifeatures\screen_hotkeys.h" />
-    <ClInclude Include="hooks\interface\uifeatures\uifeatures.h" />
+    <ClInclude Include="hooks\interface\uifeatures\ui_features.h" />
     <ClInclude Include="hooks\limits\attack_extender.h" />
     <ClInclude Include="hooks\limits\fake_unitid_extender.h" />
     <ClInclude Include="hooks\limits\misc_extenders.h" />

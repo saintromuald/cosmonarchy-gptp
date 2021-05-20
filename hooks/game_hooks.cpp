@@ -5,7 +5,7 @@
 #include "psi_field.h"
 #include <cstdio>
 #include "hooks/interface/uifeatures/screen_hotkeys.h"
-#include "hooks/interface/uifeatures/uifeatures.h"
+#include "hooks/interface/uifeatures/ui_features.h"
 #include "hooks/interface/hpbars/hpbars.h"
 #include "Utils/captivating_claws.h"
 #include "hooks/cosmonarchy_finder.h"

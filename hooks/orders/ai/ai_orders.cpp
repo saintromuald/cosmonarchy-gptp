@@ -24,8 +24,7 @@ namespace hooks
 		if (result->id == UnitId::ZergRilirokor
 			|| result->id == UnitId::ZergRililisk
 			|| result->id == UnitId::ProtossSimulacrum
-			|| result->status & UnitStatus::IsHallucination
-			|| result->playerId != parent->playerId)
+			|| result->status & UnitStatus::IsHallucination)
 		{
 			hooks::AI_TrainingBroodling(result, result);
 		}
