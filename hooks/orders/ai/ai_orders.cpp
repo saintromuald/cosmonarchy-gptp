@@ -1386,4 +1386,36 @@ LABEL_22:
 		}
 		*/
 	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiList) // 00404470
+	{
+		WorkerAi* nextWorker;
+		WorkerAiArray* arrayVar;
+		WorkerAi* finalWorker;
+
+		if (&workerAiList->worker_ais[1] == workerAi)
+		{
+			workerAiList->worker_ais[1] = *workerAi->link.prev;
+		}
+		nextWorker = workerAi->link.next;
+		if (nextWorker)
+		{
+			nextWorker->link.prev = workerAi->link.prev;
+		}
+		if (workerAi)
+		{
+			workerAi->link.prev->link.next = workerAi->link.next;
+		}
+		arrayVar = workerAiList;
+		workerAi->link.next = 0;
+		workerAi = arrayVar->first_free_worker;
+		finalWorker = arrayVar->first_free_worker;
+		if (finalWorker)
+		{
+			finalWorker->link.prev = workerAi;
+		}
+		arrayVar->first_free_worker = workerAi;
+		return workerAi;
+	}
 }

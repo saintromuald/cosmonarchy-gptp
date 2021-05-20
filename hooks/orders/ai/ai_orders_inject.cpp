@@ -357,6 +357,25 @@ namespace
 		}
 	}
 
+	void __declspec(naked) deleteWorkerAI_Wrapper() // 00404470
+	{
+		static WorkerAi* result;
+		static WorkerAi* workerAi;
+		static WorkerAiArray* workerAiList;
+		__asm
+		{
+			MOV workerAi, EAX
+			MOV workerAiList, EDX
+			PUSHAD
+		}
+		result = hooks::deleteWorkerAI(workerAi, workerAiList);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
+
 	void __declspec(naked) AI_ReactToHit_TownNullCheck()
 	{
 		static BuildingAi* v7;
@@ -398,8 +417,9 @@ namespace hooks
 		jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);
 		*/
 
-		jmpPatch(AI_orderUnitCloaking_Wrapper, 0x0043B970, 1);
+		jmpPatch(AI_orderUnitCloaking_Wrapper,	0x0043B970, 1);
+		jmpPatch(deleteWorkerAI_Wrapper,		0x00404470, 0);
 
-		callPatch(AI_ReactToHit_TownNullCheck, 0x0043F388, 5);
+		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}
 }
