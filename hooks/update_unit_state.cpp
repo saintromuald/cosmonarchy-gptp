@@ -123,7 +123,7 @@ namespace hooks
 
 		if (unit->pAI != nullptr)
 		{
-			cosmonarchy_unit_ai(unit);
+			cosmonarchyUnitAi(unit);
 		}
 
 		// Timers

@@ -61,6 +61,37 @@ struct Point32f
 	f32 y;
 };
 
+struct KitePositions
+{
+	bool enemiesFound;
+	f32 biases[9];
+	u32 forwardIndex;
+	u32 backwardIndex;
+	u32 strafeIndex;
+	Point16 forwardPos;
+	Point16 backwardPos;
+	Point16 strafePos;
+};
+
+
+const u32 sleepTime = 18;
+const u32 moveRadius = 4 * 32;
+const u32 localGroupRadius = 1 * 32;
+
+const u32 kiteZoneCount = 9;
+const Point32f kiteOffsets[kiteZoneCount] =
+{
+	{-1, -1}, {0, -1}, {+1, -1},
+	{-1,  0}, {0,  0}, {+1,  0},	
+	{-1, +1}, {0, +1}, {+1, +1},
+};
+const Point32f biasOrigins[kiteZoneCount] =
+{
+	{-0.7, -0.7}, { 0, -1.0}, {+0.7, -0.7},
+	{-1.0,    0}, { 0,    0}, {+1.0,    0},	
+	{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
+};
+
 static inline Point16 ClampPoint(Point16 point)
 {
 	if (point.x < 0)
@@ -213,12 +244,116 @@ static inline bool canKite(Unit* unit)
 		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
 }
 
-static inline bool unitWantsToAttack(Unit* unit)
+static inline bool unitHasCooldownToAttack(Unit* unit)
 {
 	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) / 2;
 }
 
-void cosmonarchy_unit_ai(Unit* unit)
+static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
+{
+	u32 unitValue[kiteZoneCount] = {0};
+	KitePositions result = {};
+	result.enemiesFound = false;
+
+	for (int i = 0; i < kiteZoneCount; i++)
+	{
+		Point16 searchPos = unit->position;
+		searchPos.x += kiteOffsets[i].x * hostileGroupRadius;
+		searchPos.y += kiteOffsets[i].y * hostileGroupRadius;
+
+		scbw::UnitFinder(
+			searchPos.x - hostileGroupRadius,
+			searchPos.y - hostileGroupRadius,
+			searchPos.x + hostileGroupRadius,
+			searchPos.y + hostileGroupRadius
+		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
+			[&](Unit* hostileUnit)
+		{
+			result.enemiesFound = true;
+			if (unit->status & UnitStatus::InAir)
+			{
+				unitValue[i] += hostileUnit->airStrength;
+			}
+			else
+			{
+				unitValue[i] += hostileUnit->groundStrength;
+			}
+		});
+	}
+
+	if (result.enemiesFound)
+	{
+		Point32f biasVectors[kiteZoneCount] =
+		{
+			{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
+			{-1.1,    0}, { 0,    0}, {+1.1,    0},	
+			{-0.7, +0.7}, { 0, +1.1}, {+0.7, +0.7},
+		};
+		for (int i = 0; i < kiteZoneCount; i++)
+		{
+			result.biases[i] = 0;
+			biasVectors[i].x *= unitValue[i];
+			biasVectors[i].y *= unitValue[i];
+		}
+		for (int i = 0; i < kiteZoneCount; i++)
+		{
+			for (int j = 0; j < kiteZoneCount; j++)
+			{
+				result.biases[i] += biasOrigins[i].x * biasVectors[j].x + biasOrigins[i].y * biasVectors[j].y;
+			}
+			result.biases[i] /= kiteZoneCount;
+		}
+
+		result.forwardIndex = kiteZoneCount / 2;
+		result.backwardIndex = kiteZoneCount / 2;
+		result.strafeIndex = 0;
+		for (int i = 0; i < kiteZoneCount; i++)
+		{
+			if (i == kiteZoneCount / 2)
+			{
+				continue;
+			}
+
+			if (result.biases[i] > result.biases[result.forwardIndex])
+			{
+				result.forwardIndex = i;
+			}
+
+			if (result.biases[i] < result.biases[result.backwardIndex])
+			{
+				result.backwardIndex = i;
+			}
+
+			if (labs(result.biases[i]) < labs(result.biases[result.strafeIndex]))
+			{
+				result.strafeIndex = i;
+			}
+		}
+
+		//scbw::printf("%f %f %f", biases[0], biases[1], biases[2]);
+		//scbw::printf("%f %f %f", biases[3], biases[4], biases[5]);
+		//scbw::printf("%f %f %f", biases[6], biases[7], biases[8]);
+		//scbw::printf("\n");
+
+		result.forwardPos = unit->position;
+		result.forwardPos.x += kiteOffsets[result.forwardIndex].x * moveRadius;
+		result.forwardPos.y += kiteOffsets[result.forwardIndex].y * moveRadius;
+		result.forwardPos = ClampPoint(result.forwardPos);
+
+		result.backwardPos = unit->position;
+		result.backwardPos.x += kiteOffsets[result.backwardIndex].x * moveRadius;
+		result.backwardPos.y += kiteOffsets[result.backwardIndex].y * moveRadius;
+		result.backwardPos = ClampPoint(result.backwardPos);
+
+		result.strafePos = unit->position;
+		result.strafePos.x += kiteOffsets[result.strafeIndex].x * moveRadius;
+		result.strafePos.y += kiteOffsets[result.strafeIndex].y * moveRadius;
+		result.strafePos = ClampPoint(result.strafePos);
+	}
+	return result;
+}
+
+void cosmonarchyUnitAi(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -234,9 +369,6 @@ void cosmonarchy_unit_ai(Unit* unit)
 		|| unit->mainOrderId == OrderId::MoveToMinerals;
 	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0)
 	{
-		const u32 sleepTime = 18;
-		const u32 moveRadius = 4 * 32;
-		const u32 localGroupRadius = 1 * 32;
 		u32 hostileGroupRadius = 4 * 32;
 
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
@@ -266,204 +398,98 @@ void cosmonarchy_unit_ai(Unit* unit)
 			}
 		});
 
-		if (unitWantsToAttack(unit))
+		if (unitHasCooldownToAttack(unit))
 		{
+			bool attack = true;
 			localGroup.forEach([&](Unit* localUnit)
 			{
-				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				localUnitExt->timers[TimerAI_Kite] = sleepTime;
-
-				if (!unitWantsToAttack(localUnit))
+				if (!unitHasCooldownToAttack(localUnit))
 				{
-					return;
+					attack = false;
 				}
+			});
 
-				if (localUnit->mainOrderId == OrderId::AttackUnit
-					|| localUnit->mainOrderId == OrderId::CarrierFight
-					|| localUnit->mainOrderId == OrderId::ReaverFight
-					|| localUnit->mainOrderId == OrderId::AttackMoveComputer)
+			if (attack)
+			{
+				localGroup.forEach([&](Unit* localUnit)
 				{
-					return;
-				}
+					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+					localUnitExt->timers[TimerAI_Kite] = sleepTime;
 
-				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
-				Unit* targetUnit = nullptr;
-				u32 targetCost = 0;
-				scbw::UnitFinder(
-					localUnit->getX() - hostileGroupRadius * 4,
-					localUnit->getY() - hostileGroupRadius * 4,
-					localUnit->getX() + hostileGroupRadius * 4,
-					localUnit->getY() + hostileGroupRadius * 4
-				).forEach([&](Unit* hostileUnit)
-				{
-					if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
+					if (localUnit->mainOrderId == OrderId::AttackUnit
+						|| localUnit->mainOrderId == OrderId::CarrierFight
+						|| localUnit->mainOrderId == OrderId::ReaverFight
+						|| localUnit->mainOrderId == OrderId::AttackMoveComputer)
 					{
 						return;
 					}
 
-					u32 newTargetCost = getTargetCost(localUnit, hostileUnit);
-					if (!targetUnit || newTargetCost < targetCost)
+					auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
+					Unit* targetUnit = nullptr;
+					u32 targetCost = 0;
+					scbw::UnitFinder(
+						localUnit->getX() - hostileGroupRadius * 4,
+						localUnit->getY() - hostileGroupRadius * 4,
+						localUnit->getX() + hostileGroupRadius * 4,
+						localUnit->getY() + hostileGroupRadius * 4
+					).forEach([&](Unit* hostileUnit)
 					{
-						targetUnit = hostileUnit;
-						targetCost = newTargetCost;
-					}
-				});
+						if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
+						{
+							return;
+						}
 
-				if (targetUnit)
-				{
-					localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.5;
-					
-					if (isMeleeAttacker(localUnit))
-					{
-						localUnitExt->timers[TimerAI_Kite] *= 4;
-					}
+						u32 newTargetCost = getTargetCost(localUnit, hostileUnit);
+						if (!targetUnit || newTargetCost < targetCost)
+						{
+							targetUnit = hostileUnit;
+							targetCost = newTargetCost;
+						}
+					});
 
-					//scbw::printf("%s: attack", localUnit->getName());
-					if (localUnit->id == UnitId::ProtossSolarion)
+					if (targetUnit)
 					{
-						localUnit->orderTo(OrderId::CarrierFight, targetUnit);
-					}
-					else if (localUnit->id == UnitId::ProtossAccantor)
-					{
-						localUnit->orderTo(OrderId::ReaverFight, targetUnit);
-					}
-					else if (isMeleeAttacker(localUnit) && !(localUnit->status & UnitStatus::InAir))
-					{
-						localUnit->orderTo(OrderId::AttackMoveComputer, targetUnit->position.x, targetUnit->position.y);
-					}
-					else
-					{
-						localUnit->orderTo(OrderId::AttackUnit, targetUnit);
-					}
-				}
-			});
-		}
-		else
-		{
-			const u32 kiteZoneCount = 9;
-			const Point32f offsets[kiteZoneCount] =
-			{
-				{-1, -1}, {0, -1}, {+1, -1},
-				{-1,  0}, {0,  0}, {+1,  0},	
-				{-1, +1}, {0, +1}, {+1, +1},
-			};
-			bool enemiesAround = false;
-			u32 unitValue[kiteZoneCount] = {0};
+						localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.5;
 
-			for (int i = 0; i < kiteZoneCount; i++)
-			{
-				Point16 searchPos = unit->position;
-				searchPos.x += offsets[i].x * hostileGroupRadius;
-				searchPos.y += offsets[i].y * hostileGroupRadius;
+						if (isMeleeAttacker(localUnit))
+						{
+							localUnitExt->timers[TimerAI_Kite] *= 4;
+						}
 
-				scbw::UnitFinder(
-					searchPos.x - hostileGroupRadius,
-					searchPos.y - hostileGroupRadius,
-					searchPos.x + hostileGroupRadius,
-					searchPos.y + hostileGroupRadius
-				).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
-					[&](Unit* hostileUnit)
-				{
-					enemiesAround = true;
-					if (unit->status & UnitStatus::InAir)
-					{
-						unitValue[i] += hostileUnit->airStrength;
-					}
-					else
-					{
-						unitValue[i] += hostileUnit->groundStrength;
+						//scbw::printf("%s: attack", localUnit->getName());
+						if (localUnit->id == UnitId::ProtossSolarion)
+						{
+							localUnit->orderTo(OrderId::CarrierFight, targetUnit);
+						}
+						else if (localUnit->id == UnitId::ProtossAccantor)
+						{
+							localUnit->orderTo(OrderId::ReaverFight, targetUnit);
+						}
+						else if (isMeleeAttacker(localUnit) && !(localUnit->status & UnitStatus::InAir))
+						{
+							localUnit->orderTo(OrderId::AttackMoveComputer, targetUnit->position.x, targetUnit->position.y);
+						}
+						else
+						{
+							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+						}
 					}
 				});
 			}
-
-			if (enemiesAround)
+		}
+		else
+		{
+			KitePositions result = getKitePositions(unit, hostileGroupRadius);
+			if (result.enemiesFound)
 			{
-				const Point32f biasOrigins[kiteZoneCount] =
-				{
-					{-0.7, -0.7}, { 0, -1.0}, {+0.7, -0.7},
-					{-1.0,    0}, { 0,    0}, {+1.0,    0},	
-					{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
-				};
-				Point32f biasVectors[kiteZoneCount] =
-				{
-					{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
-					{-1.1,    0}, { 0,    0}, {+1.1,    0},	
-					{-0.7, +0.7}, { 0, +1.1}, {+0.7, +0.7},
-				};
-				for (int i = 0; i < kiteZoneCount; i++)
-				{
-					biasVectors[i].x *= unitValue[i];
-					biasVectors[i].y *= unitValue[i];
-				}
-				f32 biases[kiteZoneCount] = {0};
-				for (int i = 0; i < kiteZoneCount; i++)
-				{
-					for (int j = 0; j < kiteZoneCount; j++)
-					{
-						biases[i] += biasOrigins[i].x * biasVectors[j].x + biasOrigins[i].y * biasVectors[j].y;
-					}
-					biases[i] /= kiteZoneCount;
-				}
-
-				u32 forwardBias = kiteZoneCount / 2;
-				u32 backwardBias = kiteZoneCount / 2;
-				u32 strafeBias = 0;
-				for (int i = 0; i < kiteZoneCount; i++)
-				{
-					if (i == kiteZoneCount / 2)
-					{
-						continue;
-					}
-
-					if (biases[i] > biases[forwardBias])
-					{
-						forwardBias = i;
-					}
-
-					if (biases[i] < biases[backwardBias])
-					{
-						backwardBias = i;
-					}
-
-					if (labs(biases[i]) < labs(biases[strafeBias]))
-					{
-						strafeBias = i;
-					}
-				}
-
-				//scbw::printf("%f %f %f", biases[0], biases[1], biases[2]);
-				//scbw::printf("%f %f %f", biases[3], biases[4], biases[5]);
-				//scbw::printf("%f %f %f", biases[6], biases[7], biases[8]);
-				//scbw::printf("\n");
-
-				Point16 forwardPos = unit->position;
-				forwardPos.x += offsets[forwardBias].x * moveRadius;
-				forwardPos.y += offsets[forwardBias].y * moveRadius;
-				forwardPos = ClampPoint(forwardPos);
-
-				Point16 backwardPos = unit->position;
-				backwardPos.x += offsets[backwardBias].x * moveRadius;
-				backwardPos.y += offsets[backwardBias].y * moveRadius;
-				backwardPos = ClampPoint(backwardPos);
-
-				Point16 strafePos = unit->position;
-				strafePos.x += offsets[strafeBias].x * moveRadius;
-				strafePos.y += offsets[strafeBias].y * moveRadius;
-				strafePos = ClampPoint(strafePos);
-
 				u32 crowdScore = 0;
 				if (!(unit->status & UnitStatus::InAir))
 				{
 					crowdScore = cosmonarchyUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoAir, {});
 				}
-
+					
 				localGroup.forEach([&](Unit* localUnit)
 				{
-					if (unitWantsToAttack(localUnit))
-					{
-						return;
-					}
-
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
 					localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit) * 0.75;
 
@@ -477,31 +503,31 @@ void cosmonarchy_unit_ai(Unit* unit)
 					}
 
 					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
-						|| localGroupValue * 3 < biases[forwardBias])
+						|| localGroupValue * 3 < result.biases[result.forwardIndex])
 					{
-						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
+						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 						//scbw::printf("%s: fall back", localUnit->getName());
 					}
 					else if (distance > maxRange * 1.5
 						|| (distance > maxRange * 1 && crowdScore > 4)
-						|| (!(unit->status & UnitStatus::InAir) && distance > maxRange * 0.75 && localGroupValue > biases[forwardBias] * 3))
+						|| (!(unit->status & UnitStatus::InAir) && distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 3))
 					{
-						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
+						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
 					}
 					else if (crowdScore > 4)
 					{
-						localUnit->orderTo(OrderId::Move, strafePos.x, strafePos.y);
+						localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
 						//scbw::printf("%s: strafe", localUnit->getName());
 					}
 					else if (isMeleeAttacker(localUnit))
 					{
-						localUnit->orderTo(OrderId::Move, forwardPos.x, forwardPos.y);
+						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
 					}
 					else if (!targetIsStructure || distance < maxRange * 0.5)
 					{
-						localUnit->orderTo(OrderId::Move, backwardPos.x, backwardPos.y);
+						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 						//scbw::printf("%s: backward", localUnit->getName());
 					}
 				});
