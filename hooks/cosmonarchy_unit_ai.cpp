@@ -245,7 +245,7 @@ static inline bool canKite(Unit* unit)
 
 static inline bool unitHasCooldownToAttack(Unit* unit)
 {
-	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) / 2;
+	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.6;
 }
 
 static inline bool shouldKiteBack(Unit* source)
@@ -461,7 +461,7 @@ void cosmonarchyUnitAi(Unit* unit)
 
 					if (targetUnit)
 					{
-						localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.5;
+						localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.4;
 
 						if (isMeleeAttacker(localUnit))
 						{
