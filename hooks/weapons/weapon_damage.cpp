@@ -882,7 +882,7 @@ namespace hooks
 			data.target->giveTo(unit->playerId);
 
 			// Cancel the attachment
-			auto& vec = targetExt->unitVectors[UnitAttachedTarget];
+			auto& vec = targetExt->unitVectors[UnitVectorAttachedSource];
 			for (Unit* source : vec)
 			{
 				if (source->id == UnitId::ZergAkistrokor)
