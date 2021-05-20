@@ -515,7 +515,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					}
 					else if (distance > maxRange * 1.5
 						|| (distance > maxRange * 1 && crowdScore > 4)
-						|| (!(unit->status & UnitStatus::InAir) && distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 3))
+						|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 3))
 					{
 						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
