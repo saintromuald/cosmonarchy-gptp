@@ -217,6 +217,12 @@ LABEL_15:
 			return 0;
 		}
 
+		char* label = helper::getStatTxtString(dialog->buttonUser->reqStringID);
+		if (*label == 27) // escape handling for grid hotkeys
+		{
+			return hotkey == label[0];
+		}
+
 		if (config.grid_hotkeys && dialog->index > 0)
 		{
 			int index = dialog->index - 1;
@@ -225,7 +231,6 @@ LABEL_15:
 			return hotkey == tolower(config.layout[y].at(x));
 		}
 
-		char* label = helper::getStatTxtString(dialog->buttonUser->reqStringID);
 		return hotkey == label[0];
 	}
 
