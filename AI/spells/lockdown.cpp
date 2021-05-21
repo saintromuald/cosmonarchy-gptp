@@ -22,7 +22,6 @@ namespace AI
 
 		if (caster->vulture.spiderMineCount == 0)
 		{
-			scbw::print("u");
 			return false;
 		}
 
