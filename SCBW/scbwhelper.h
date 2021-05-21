@@ -178,6 +178,11 @@ namespace helper
 	s32 AI_GetQueuedCount(Unit* builder, u32 unitId);
 	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);
 
+	// For AI_SendSuicide
+	bool isThreat(Unit* target, Unit* unit);		// 00476930
+	void prepSuicide(Unit* unit);					// 0043CD40
+	u32 AI_AttackClear(s32 player);					// 00439500
+
 	// Attack extender
 
 	// for AI_TrainAttackForce
@@ -425,7 +430,7 @@ namespace helper
 	void function_00463040(Unit* unit);																									// 00463040
 	void function_00476D30(Unit* unit);																									// 00476D30
 	void incrementUnitScores(Unit* unit, s32 unkScore);																					// 00488BF0
-	void function_004A1E50(Unit* unit, u32 unk);																						// 004A1E50
+	void removeUnitAI(Unit* unit, u32 unk);																								// 004A1E50
 	void CreateUnitSelection(Unit* unit, u32 selectionIndex);																			// 004E6180
 	void DestroyUnitSelection(Unit* unit);																								// 004E6290
 	void function_004F3B70(Unit* powerup);																								// 004F3B70

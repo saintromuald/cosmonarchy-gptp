@@ -17,7 +17,7 @@ namespace hooks
 			bool isSelected;
 			u32 selectionIndex = 0;
 
-			helper::function_004A1E50(unit, 0);
+			helper::removeUnitAI(unit, 0);
 
 			if (unit->isRemorphingBuilding())
 			{

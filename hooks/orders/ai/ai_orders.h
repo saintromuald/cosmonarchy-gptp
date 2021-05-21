@@ -21,9 +21,10 @@ namespace hooks
 	void AI_AddToAttack(u32 result, u32 player, u32 unitId);											        // 00447230
 	bool AI_AttackManager(u32 _player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack,				            // 0043ABB0
 		u32 allowFallbackAirOnly);
-	s32 AI_HasUnitsForAttackForce(u32 player);																    // 00437F20    
+	s32 AI_HasUnitsForAttackForce(u32 player);																    // 00437F20
 	void AI_orderUnitCloaking(Unit* unit);																		// 0043B970
 	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiList);									// 00404470
+	void AI_SendSuicide(char argType, s32 player);																// 0043E050
 
 	void injectAIOrdersHooks();
 }

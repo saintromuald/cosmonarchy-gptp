@@ -3980,7 +3980,7 @@ namespace helper
 		}
 	}
 
-	void function_004A1E50(Unit* unit, u32 unk)
+	void removeUnitAI(Unit* unit, u32 unk)
 	{
 		const u32 Func_Sub4A1E50 = 0x004A1E50;
 		__asm {
@@ -8536,5 +8536,49 @@ namespace helper
 			MOV result, AL
 			POPAD
 		}
+	}
+
+	// For AI_SendSuicide
+	bool isThreat(Unit* target, Unit* unit)
+	{
+		const u32 Func_isThreat = 0x00476930;
+		static bool result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, target
+			MOV ECX, unit
+			CALL Func_isThreat
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void prepSuicide(Unit* unit)
+	{
+		const u32 Func_prepSuicide = 0x0043CD40;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_prepSuicide
+			POPAD
+		}
+	}
+
+	u32 AI_AttackClear(s32 player)
+	{
+		const u32 Func_AI_AttackClear = 0x00439500;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH player
+			CALL Func_AI_AttackClear
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

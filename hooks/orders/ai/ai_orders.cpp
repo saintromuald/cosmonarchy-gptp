@@ -1413,4 +1413,115 @@ LABEL_22:
 		arrayVar->first_free_worker = workerAi;
 		return workerAi;
 	}
+
+	// Hooked to improve functionality - Pr0nogo
+	void AI_SendSuicide(char argType, s32 player) // 0043E050
+	{
+		Unit* i;
+		Sprite* iSprite;
+		AiRegion* j;
+		UnitAi* unitAi;
+
+		s32 playerVar;
+		Unit* firstUnit;
+		char regionType;
+		s32 AI_Variable_Something;
+
+		AiRegion* region;
+		char aiType;
+		s16 regionId;
+
+		if (argType)
+		{
+			for (i = firstPlayerUnit->unit[player]; i; i = i->player_link.next)
+			{
+				iSprite = i->sprite;
+				if (iSprite)
+				{
+					if (i->mainOrderId)
+					{
+						if (!i->isSubunit()
+						  && i->id != UnitId::TerranNuclearMissile
+						  && i->id != UnitId::ZergLarva
+						  && !(iSprite->flags & 0x20)
+						  && !helper::isThreat(0, i))
+						{
+							helper::prepSuicide(i);
+						}
+					}
+				}
+			}
+			return;
+		}
+
+		playerVar = player;
+		if (!AIScriptController[player].strategic_suicide)
+		{
+			firstUnit = firstPlayerUnit->unit[player];
+			AI_Variable_Something = 2500;
+			for (j = 0; firstUnit; firstUnit = firstUnit->player_link.next)
+			{
+				if (!firstUnit->sprite)
+				{
+					continue;
+				}
+				if (!firstUnit->mainOrderId)
+				{
+					continue;
+				}
+				unitAi =(UnitAi*)firstUnit->pAI;
+				if (!unitAi
+				  || helper::unitIsActiveTransport(firstUnit)
+				  || firstUnit->status & UnitStatus::InBuilding && !(AIScriptController[playerVar].AI_Flags.isUseMapSettings))
+				{
+					continue;
+				}
+				regionId = helper::SAI_GetRegionIdFromPxEx(firstUnit->sprite->position.x, firstUnit->sprite->position.y);
+				aiType = unitAi->type;
+				region = &AiRegionCaptains[player][regionId];
+				if (aiType == 1)
+				{
+					GuardAi* guardAI = (GuardAi*)unitAi;
+					guardAI->parent->pAI = nullptr;
+					helper::AI_AddMilitary(region, guardAI->parent, 1);
+					guardAI->parent->pAI = nullptr;
+				}
+				else if (aiType != 4)
+				{
+					goto LABEL_34;
+				}
+				UnitAi* unitAI2 = (UnitAi*)firstUnit->pAI;
+				if (unitAI2)
+				{
+					if (unitAI2->type == 4)
+					{
+						MilitaryAi* militaryAI = (MilitaryAi*)unitAI2;
+						regionType = militaryAI->region->captainType;
+						if (regionType == 1 || regionType == 8 || regionType == 9 || regionType == 2)
+						{
+							goto LABEL_34;
+						}
+					}
+				}
+				if (AI_Variable_Something != 2500)
+				{
+					goto LABEL_33;
+				}
+				memset(AIScriptController[player].attackers, 0, sizeof(AIScriptController[player].attackers));
+				AIScriptController[player].AI_AttackGroup = 0;
+				helper::AI_AttackClear(player);
+				if (!AI_AttackManager(player, firstUnit->sprite->position.x, firstUnit->sprite->position.y, 0, 1))
+				{
+					AIScriptController[player].strategic_suicide = 24;
+					AI_Variable_Something = (u16)AIScriptController[player].AI_AttackGroup - 1;
+					j = &AiRegionCaptains[player][AI_Variable_Something];
+LABEL_33:
+					helper::removeUnitAI(firstUnit, 0);
+					helper::AI_AddMilitary(j, firstUnit, 1);
+				}
+LABEL_34:
+				playerVar = player;
+			}
+		}
+	}
 }
