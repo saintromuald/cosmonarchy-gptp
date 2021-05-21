@@ -451,11 +451,13 @@ void cosmonarchyUnitAi(Unit* unit)
 
 					if (targetUnit)
 					{
-						localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.4;
-
 						if (isMeleeAttacker(localUnit))
 						{
-							localUnitExt->timers[TimerAI_Kite] *= 4;
+							localUnitExt->timers[TimerAI_Kite] *= getMaxWeaponCooldown(localUnit) * 3.4;
+						}
+						else
+						{
+							localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.4;
 						}
 
 						//scbw::printf("%s: attack", localUnit->getName());
