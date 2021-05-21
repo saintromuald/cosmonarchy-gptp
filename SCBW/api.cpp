@@ -1784,16 +1784,13 @@ namespace scbw
 
 	Unit* findPAIUnit(u8 playerId)
 	{
-		Unit* unit = firstPlayerUnit->unit[playerId];
-
-		for (Unit* unit = firstPlayerUnit->unit[playerId]; unit; unit = unit->player_link.next)
+		for (AiTown* town = AiDataList[playerId].first; town; town = town->link.next)
 		{
-			if (unit->pAI)
+			if (town->main_building)
 			{
-				return unit;
+				return town->main_building;
 			}
 		}
-
 		return nullptr;
 	}
 }
