@@ -32,7 +32,7 @@ namespace hooks
 		unit->mainOrderState = 1;
 		if (unit->sprite != nullptr)
 		{
-			if (!(unit->sprite->flags & CSprite_Flags::Hidden))
+			if (!(unit->sprite->flags & SpriteFlags::Hidden))
 			{
 				if (!(unit->status & UnitStatus::IsHallucination)
 					|| unit->status & UnitStatus::IsSelfDestructing)

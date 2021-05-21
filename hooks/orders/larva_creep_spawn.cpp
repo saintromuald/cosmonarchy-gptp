@@ -38,7 +38,7 @@ namespace hooks
 		bool bReturnValue;
 		if (unit->id == UnitId::ZergLarva)
 		{
-			if (unit->sprite->flags & CSprite_Flags::Hidden)
+			if (unit->sprite->flags & SpriteFlags::Hidden)
 			{
 				bReturnValue = false;
 			}

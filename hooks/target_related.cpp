@@ -533,7 +533,7 @@ LABEL_42:
 		}
 		else
 		{
-			if (unit->sprite->flags & CSprite_Flags::Selected)
+			if (unit->sprite->flags & SpriteFlags::Selected)
 			{
 				helper::updateBuildingLandUnitSelection(unit->visibilityStatus, unit);
 			}

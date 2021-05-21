@@ -586,7 +586,7 @@ namespace scbw
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
 
 		//If the unit sprite is hidden
-		if (sourceUnit->sprite->flags & CSprite_Flags::Hidden)
+		if (sourceUnit->sprite->flags & SpriteFlags::Hidden)
 		{
 			UnitFinderData temp;
 			temp.position = sourceUnit->getX();

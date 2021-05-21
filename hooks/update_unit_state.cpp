@@ -102,7 +102,7 @@ namespace hooks
 			}
 
 			//If the unit is currently selected, redraw its graphics
-			if (!bStopHere && unit->sprite->flags & CSprite_Flags::Selected)
+			if (!bStopHere && unit->sprite->flags & SpriteFlags::Selected)
 			{
 				helper::setAllImageGroupFlagsPal11(unit->sprite);
 			}
@@ -378,7 +378,7 @@ namespace hooks
 					{
 						unit->shields = maxShields;
 					}
-					if (unit->sprite->flags & CSprite_Flags::Selected)
+					if (unit->sprite->flags & SpriteFlags::Selected)
 					{	// If the unit is currently selected, redraw its graphics
 						helper::setAllImageGroupFlagsPal11(unit->sprite);
 					}
@@ -396,7 +396,7 @@ namespace hooks
 		}
 
 		// update unit status effects (stim, maelstrom, plague, etc.)
-		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & CSprite_Flags::Hidden))
+		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & SpriteFlags::Hidden))
 		{
 			unit->cycleCounter++;
 			if (unit->cycleCounter >= 8)

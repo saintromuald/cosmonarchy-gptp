@@ -152,7 +152,7 @@ namespace hooks
 					if (unit->id == UnitId::ProtossCantavis)
 					{
 						helper::replaceUnitWithType(unit, UnitId::ProtossAugur);
-						unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
+						unit->sprite->flags &= ~SpriteFlags::IscriptCode;
 						if (unit->sprite->images.head != nullptr)
 						{
 							Image* current_image = unit->sprite->images.head;

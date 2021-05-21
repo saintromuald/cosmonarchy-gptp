@@ -85,7 +85,7 @@ namespace hooks
 			{
 				unit->orderTarget.unit = target;
 				unit->sprite->playIscriptAnim(IscriptAnimation::UnBurrow, true);
-				unit->sprite->flags &= ~CSprite_Flags::Burrowed;
+				unit->sprite->flags &= ~SpriteFlags::Burrowed;
 				// might have been some cloaking order before
 				unit->setSecondaryOrder(OrderId::Nothing2);
 				unit->mainOrderState = 4;

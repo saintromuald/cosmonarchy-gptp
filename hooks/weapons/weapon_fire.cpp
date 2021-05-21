@@ -969,7 +969,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (pIterator->sprite->flags & CSprite_Flags::Hidden)
+		if (pIterator->sprite->flags & SpriteFlags::Hidden)
 		{
 			return 0;
 		}

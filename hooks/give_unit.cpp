@@ -30,7 +30,7 @@ namespace hooks
 			if (unit->status & UnitStatus::Completed)
 				helper::incrementUnitScoresEx(unit, 0, -1);
 
-			isSelected = (unit->sprite->flags & CSprite_Flags::Selected) == 1;
+			isSelected = (unit->sprite->flags & SpriteFlags::Selected) == 1;
 
 			if (isSelected)
 			{

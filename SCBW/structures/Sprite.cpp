@@ -10,7 +10,7 @@ void Sprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurr
 
 	assert(this);
 
-	if (bReplaceCurrentScript || !(this->flags & CSprite_Flags::IscriptCode))
+	if (bReplaceCurrentScript || !(this->flags & SpriteFlags::IscriptCode))
 		for (Image* img = this->images.head; img != nullptr; img = img->link.next)
 			img->playIscriptAnim(animation);
 

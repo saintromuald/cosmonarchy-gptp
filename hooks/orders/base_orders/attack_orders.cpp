@@ -187,7 +187,7 @@ namespace hooks
 		if (unit->isFrozen()
 			|| target == nullptr
 			|| target->status & UnitStatus::Invincible
-			|| target->sprite->flags & CSprite_Flags::Hidden
+			|| target->sprite->flags & SpriteFlags::Hidden
 			|| helper::unitCantSeeCloakedTarget(unit, target))
 		{
 			jump_to_77A45 = true;
@@ -498,7 +498,7 @@ namespace hooks
 		if (unit->isFrozen()
 			|| target == nullptr
 			|| target->status & UnitStatus::Invincible
-			|| target->sprite->flags & CSprite_Flags::Hidden
+			|| target->sprite->flags & SpriteFlags::Hidden
 			|| helper::unitCantSeeCloakedTarget(unit, target))
 		{
 			jump_to_77E48 = true;

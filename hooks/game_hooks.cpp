@@ -318,7 +318,7 @@ namespace hooks
 						{
 							break;
 						}
-						if (corpse->sprite->flags & CSprite_Flags::Flag04)
+						if (corpse->sprite->flags & SpriteFlags::Flag04)
 						{
 							continue;
 						}
@@ -338,7 +338,7 @@ namespace hooks
 							//scbw::createAndInitThingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 						});
 						scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
-						corpse->sprite->flags |= CSprite_Flags::Flag04;
+						corpse->sprite->flags |= SpriteFlags::Flag04;
 						corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
 						unitExt->timers[TimerReconstitutionCooldown] = 1 * 24;
 						break;

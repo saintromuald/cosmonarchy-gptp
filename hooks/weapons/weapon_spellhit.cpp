@@ -399,7 +399,7 @@ namespace hooks
 					{
 						current_unit->energy -= 100;
 						current_unit->shields -= 100;
-						if (current_unit->sprite->flags & CSprite_Flags::Selected
+						if (current_unit->sprite->flags & SpriteFlags::Selected
 							&& current_unit->sprite != nullptr) // Follows original code, though this order of tests doesn't make sense
 						{
 							helper::setAllImageGroupFlagsPal11(current_unit->sprite); // redraw the unit

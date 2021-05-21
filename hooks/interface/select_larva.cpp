@@ -21,7 +21,7 @@ namespace hooks
 				if (
 					current_unit->id == UnitId::ZergLarva &&
 					current_unit->connectedUnit == *activePortraitUnit &&
-					!(current_unit->sprite->flags & CSprite_Flags::Hidden)
+					!(current_unit->sprite->flags & SpriteFlags::Hidden)
 					)
 				{
 					outputList[current_index] = current_unit;
