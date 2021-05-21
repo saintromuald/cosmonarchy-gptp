@@ -25,10 +25,7 @@ namespace hooks
 		{
 			helper::AI_TrainingWorker(result, parent);
 		}
-		else if (result->id == UnitId::ZergOvileth
-			|| result->id == UnitId::ZergIroleth
-			|| result->id == UnitId::ZergOthstoleth
-			|| result->id == UnitId::ZergAlaszileth)
+		else if (result->id == UnitId::ZergOvileth)
 		{
 			helper::AI_TrainingOverlord(result, parent); // replace with hook later
 		}
@@ -81,7 +78,7 @@ namespace hooks
 					child->pAI = 0;
 				}
 			}
-			result = helper::AI_AddUnitAI(child, parentTown);
+			result = helper::AI_AddWorkerStructureAI(child, parentTown);
 		}
 		return result;
 	}

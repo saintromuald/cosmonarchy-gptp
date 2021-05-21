@@ -136,7 +136,7 @@ namespace helper
 	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 always_this_region);
 
 	// For AI_TrainingWorker
-	char AI_AddUnitAI(Unit* worker, AiTown* town);									// 00433DD0
+	char AI_AddWorkerStructureAI(Unit* worker, AiTown* town);									// 00433DD0
 
 	// for AI_AddUnitAI
 	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI);

@@ -8406,7 +8406,7 @@ namespace helper
 	}
 
 	// For AI_TrainingWorker
-	char AI_AddUnitAI(Unit* worker, AiTown* town)
+	char AI_AddWorkerStructureAI(Unit* worker, AiTown* town)
 	{
 		const u32 Func_AI_AcceptNewUnit = 0x00433DD0;
 		static char result;

@@ -1766,21 +1766,24 @@ namespace scbw
 			return;
 		}
 
-		AiTown* town = AiDataList[unit->playerId].first;
-		if (town)
+		if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
 		{
-			if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
+			AiTown* town = AiDataList[unit->playerId].first;
+			if (town)
 			{
-				helper::AI_AddUnitAI(unit, town);
+				helper::AI_AddWorkerStructureAI(unit, town);
 			}
-			else
+		}
+		else
+		{
+			helper::AI_TrainingUnit(unit, unit);
+
+			// Causes panic, but seems to init ai more consistently:
+			/*AiRegion* region = &AiRegionCaptains[unit->playerId][helper::SAI_GetRegionIdFromPxEx(town->position.x, town->position.y)];
+			if (region)
 			{
-				AiRegion* region = &AiRegionCaptains[unit->playerId][helper::SAI_GetRegionIdFromPxEx(town->position.x, town->position.y)];
-				if (region)
-				{
-					helper::AI_AddMilitary(region, unit, 1);
-				}
-			}
+				helper::AI_AddMilitary(region, unit, 1);
+			}*/
 		}
 	}
 
