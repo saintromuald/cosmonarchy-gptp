@@ -1781,4 +1781,20 @@ namespace scbw
 			unit->sprite->createTopOverlay(maliceId);
 		}
 	}
+
+	Unit* findPAIUnit(u8 playerId)
+	{
+		Unit* unit = firstPlayerUnit->unit[playerId];
+
+		while (unit && !unit->pAI)
+		{
+			unit = unit->player_link.next;
+		}
+
+		if (unit)
+		{
+			return unit;
+		}
+		return nullptr;
+	}
 }
