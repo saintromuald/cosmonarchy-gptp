@@ -1415,36 +1415,22 @@ LABEL_22:
 	}
 
 	// Hooked to improve functionality - Pr0nogo
-	void AI_SendSuicide(char argType, s32 player) // 0043E050
+	void AI_SendSuicide(char randomSuicide, s32 player) // 0043E050
 	{
-		Unit* i;
-		Sprite* iSprite;
-		AiRegion* j;
-		UnitAi* unitAi;
-
-		s32 playerVar;
-		Unit* firstUnit;
-		char regionType;
-		s32 AI_Variable_Something;
-
-		AiRegion* region;
-		char aiType;
-		s16 regionId;
-
-		if (argType)
+		if (randomSuicide)
 		{
-			for (i = firstPlayerUnit->unit[player]; i; i = i->player_link.next)
+			for (Unit* i = firstPlayerUnit->unit[player]; i; i = i->player_link.next)
 			{
-				iSprite = i->sprite;
+				Sprite* iSprite = i->sprite;
 				if (iSprite)
 				{
 					if (i->mainOrderId)
 					{
 						if (!i->isSubunit()
-						  && i->id != UnitId::TerranNuclearMissile
-						  && i->id != UnitId::ZergLarva
-						  && !(iSprite->flags & 0x20)
-						  && !helper::isThreat(0, i))
+							&& i->id != UnitId::TerranNuclearMissile
+							&& i->id != UnitId::ZergLarva
+							&& !(iSprite->flags & 0x20)
+							&& !helper::isThreat(0, i))
 						{
 							helper::prepSuicide(i);
 						}
@@ -1454,12 +1440,12 @@ LABEL_22:
 			return;
 		}
 
-		playerVar = player;
 		if (!AIScriptController[player].strategic_suicide)
 		{
-			firstUnit = firstPlayerUnit->unit[player];
-			AI_Variable_Something = 2500;
-			for (j = 0; firstUnit; firstUnit = firstUnit->player_link.next)
+			AiRegion* region2 = 0;
+
+			s32 regionIndex = 2500;
+			for (Unit* firstUnit = firstPlayerUnit->unit[player]; firstUnit; firstUnit = firstUnit->player_link.next)
 			{
 				if (!firstUnit->sprite)
 				{
@@ -1469,43 +1455,44 @@ LABEL_22:
 				{
 					continue;
 				}
-				unitAi =(UnitAi*)firstUnit->pAI;
-				if (!unitAi
+				GuardAi* guardAI = (GuardAi*)firstUnit->pAI;
+				if (!guardAI
 				  || helper::unitIsActiveTransport(firstUnit)
-				  || firstUnit->status & UnitStatus::InBuilding && !(AIScriptController[playerVar].AI_Flags.isUseMapSettings))
+				  || firstUnit->status & UnitStatus::InBuilding && !(AIScriptController[player].AI_Flags.isUseMapSettings))
 				{
 					continue;
 				}
-				regionId = helper::SAI_GetRegionIdFromPxEx(firstUnit->sprite->position.x, firstUnit->sprite->position.y);
-				aiType = unitAi->type;
-				region = &AiRegionCaptains[player][regionId];
+				s16 regionId = helper::SAI_GetRegionIdFromPxEx(firstUnit->sprite->position.x, firstUnit->sprite->position.y);
+				AiRegion* region = &AiRegionCaptains[player][regionId];
+				u8 aiType = guardAI->type;
 				if (aiType == 1)
 				{
-					GuardAi* guardAI = (GuardAi*)unitAi;
 					guardAI->parent->pAI = nullptr;
 					helper::AI_AddMilitary(region, guardAI->parent, 1);
 					guardAI->parent->pAI = nullptr;
 				}
 				else if (aiType != 4)
 				{
-					goto LABEL_34;
+					continue;
 				}
-				UnitAi* unitAI2 = (UnitAi*)firstUnit->pAI;
+				MilitaryAi* unitAI2 = (MilitaryAi*)firstUnit->pAI;
 				if (unitAI2)
 				{
 					if (unitAI2->type == 4)
 					{
-						MilitaryAi* militaryAI = (MilitaryAi*)unitAI2;
-						regionType = militaryAI->region->captainType;
+						MilitaryAi* militaryAI = unitAI2;
+						u8 regionType = militaryAI->region->captainType;
 						if (regionType == 1 || regionType == 8 || regionType == 9 || regionType == 2)
 						{
-							goto LABEL_34;
+							continue;
 						}
 					}
 				}
-				if (AI_Variable_Something != 2500)
+				if (regionIndex != 2500)
 				{
-					goto LABEL_33;
+					helper::removeUnitAI(firstUnit, 0);
+					helper::AI_AddMilitary(region2, firstUnit, 1);
+					continue;
 				}
 				memset(AIScriptController[player].attackers, 0, sizeof(AIScriptController[player].attackers));
 				AIScriptController[player].AI_AttackGroup = 0;
@@ -1513,14 +1500,11 @@ LABEL_22:
 				if (!AI_AttackManager(player, firstUnit->sprite->position.x, firstUnit->sprite->position.y, 0, 1))
 				{
 					AIScriptController[player].strategic_suicide = 24;
-					AI_Variable_Something = (u16)AIScriptController[player].AI_AttackGroup - 1;
-					j = &AiRegionCaptains[player][AI_Variable_Something];
-LABEL_33:
+					regionIndex = (u16)AIScriptController[player].AI_AttackGroup - 1;
+					region2 = &AiRegionCaptains[player][regionIndex];
 					helper::removeUnitAI(firstUnit, 0);
-					helper::AI_AddMilitary(j, firstUnit, 1);
+					helper::AI_AddMilitary(region2, firstUnit, 1);
 				}
-LABEL_34:
-				playerVar = player;
 			}
 		}
 	}
