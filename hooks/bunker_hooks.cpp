@@ -8,6 +8,24 @@
 
 namespace hooks
 {
+	static inline bool isWithinAttackRange(Unit* attacker, Unit* target)
+	{
+		if (!target)
+		{
+			return false;
+		}
+		if (target->status & UnitStatus::InAir)
+		{
+			return !attacker->isTargetWithinMinRange(target, weapons_dat::MinRange[attacker->getAirWeapon()])
+				&& attacker->isTargetWithinMinRange(target, weapons_dat::MaxRange[attacker->getAirWeapon()]);
+		}
+		else
+		{
+			return !attacker->isTargetWithinMinRange(target, weapons_dat::MinRange[attacker->getGroundWeapon()])
+				&& attacker->isTargetWithinMinRange(target, weapons_dat::MaxRange[attacker->getGroundWeapon()]);
+		}
+	}
+
 	/// Checks whether the unit can attack from inside a bunker.
 	void unitAttackFromInsideBunkerHook(Unit* unit)
 	{
@@ -35,19 +53,20 @@ namespace hooks
 				{
 					unit->mainOrderTimer = 15;
 					
-					if (!unit->orderTarget.unit || !unit->canAttackTarget(unit->orderTarget.unit))
+					Unit* target = unit->orderTarget.unit;
+					if (!target || !unit->canAttackTarget(target) || !isWithinAttackRange(unit, target))
 					{
 						if (unit->connectedUnit)
 						{
 							UnitExt* bunkerExt = globals.GetUnitExt(unit->connectedUnit);
 							Unit* target = bunkerExt->units[UnitBunkerLockOn];
-							if (target && unit->canAttackTarget(target))
+							if (target && unit->canAttackTarget(target) && isWithinAttackRange(unit, target))
 							{
 								unit->orderTarget.unit = bunkerExt->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
 							}
 						}
 
-						if (!unit->orderTarget.unit || !unit->canAttackTarget(unit->orderTarget.unit))
+						if (!target || !unit->canAttackTarget(target) || !isWithinAttackRange(unit, target))
 						{
 							const u32 radius = std::max(unit->getMaxWeaponRange(unit->getGroundWeapon()), unit->getMaxWeaponRange(unit->getAirWeapon()));
 							unit->orderTarget.unit = scbw::UnitFinder::getNearestTarget(
@@ -59,7 +78,8 @@ namespace hooks
 								[&](Unit* target)
 							{
 								if (scbw::isAlliedTo(unit->playerId, target->playerId)
-									|| !unit->canAttackTarget(target))
+									|| !unit->canAttackTarget(target)
+									|| !isWithinAttackRange(unit, target))
 								{
 									return false;
 								}
@@ -68,7 +88,7 @@ namespace hooks
 						}
 					}
 
-					if (unit->orderTarget.unit != nullptr)
+					if (target != nullptr)
 					{
 						unit->orderQueueTimer = 0;
 					}
