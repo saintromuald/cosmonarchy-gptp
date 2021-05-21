@@ -270,10 +270,13 @@ static inline bool shouldKiteBack(Unit* source)
 		return true;
 	}
 
-	//if (source->flingyTopSpeed < target->flingyTopSpeed && getMaxRange(source) < getMaxRange(target))
-	//{
-	//	return false;
-	//}
+	// NOTE
+	// should figure out a way to calculate if unit will lose dps by kiting
+	// paradoxically this is quite hard, since for example mutalisks should 
+	// try to kite even with lower range and worse movement speed, 
+	// just because they are fragile and can use terrain advantage.
+	// thankfully it seems like current timing setup decreased dps loss
+	// significantly
 
 	return true;
 }
