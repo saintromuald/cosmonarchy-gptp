@@ -9,9 +9,8 @@ namespace hooks
 
 	const s32 RESOURCE_HARVESTED = 8;
 
-	//Harvests minerals/gas from the @p resource and returns the amount that a
-	//worker should carry.
-	//Identical to sub_469650
+	// Harvests minerals/gas from the @p resource and returns the amount that a worker should carry.
+	// Identical to sub_469650
 
 	bool isGasContainer(u16 unitId)
 	{
@@ -40,7 +39,7 @@ namespace hooks
 
 			if (isMineral)
 			{
-				//			resource->remove();
+//				resource->remove();
 				resource->building.resource.resourceAmount = 2;
 				return_value = (u8)(resource->building.resource.resourceAmount);
 			}
@@ -53,41 +52,33 @@ namespace hooks
 		}
 		else
 		{
-
 			resource->building.resource.resourceAmount -= RESOURCE_HARVESTED;
-
 			if (isMineral)
 			{
 				if (resource->building.resource.resourceAmount > 0)
-					helper::updateMineralPatchImage(resource);	//equivalent to setResourceCount @ 68830 ?
+					helper::updateMineralPatchImage(resource);	// equivalent to setResourceCount @ 00468830 ?
 				else
 				{
 					resource->building.resource.resourceAmount = 2;
-					//resource->remove();
+//					resource->remove();
 				}
 			}
-			else
-				if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED &&
-					isGasContainer(resource->id))
-					scbw::showErrorMessageWithSfx(resource->playerId, 875, 20); //Gas depleted message and sound
-
+			else if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED
+					&& isGasContainer(resource->id))
+			{
+				scbw::showErrorMessageWithSfx(resource->playerId, 875, 20); // Gas depleted message and sound
+			}
 			return_value = RESOURCE_HARVESTED;
-
 		}
-
 		return return_value;
+	}
 
-	} //u8 harvestResourceFrom(Unit* resource, bool isMineral)
-
-	;
-
-	//Transfers a set amount of resources from a resource patch to a worker.
+	// Transfers a set amount of resources from a resource patch to a worker.
 	void transferResourceToWorkerHook(Unit* worker, Unit* resource)
 	{
 
 		if (resource->id >= UnitId::TerranReservoir && resource->id <= UnitId::ResourceMineralFieldType3)
 		{
-
 			u32 chunkImageId;
 			bool isMineral = false;
 			bool bEndThere = false;
@@ -132,17 +123,13 @@ namespace hooks
 					// Identical to function @ 0x004F3900
 					// Remove powerup shadows (mineral chunk shadow, psi emitter shadow, etc.)
 						worker->sprite->removeOverlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
-
 						//Remove powerup graphics
 						worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2);
-
 						//Remove Uraj / Khalis
 						worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis);
 						worker->resourceType = 0;
-
 					}
-					//AI cheat
-					//if (playerTable[worker->playerId].type == 1 || playerTable[worker->playerId].type == 5) {
+					// AI cheat
 					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 1)
 					{
 						//+125%					
@@ -178,10 +165,8 @@ namespace hooks
 						//+250%
 						resourceAmount *= (2 + (1 / 2));
 					}
-					//}
-					//
-					helper::setResourceAmountCarried(worker, resourceAmount, chunkImageId, isMineral);
 
+					helper::setResourceAmountCarried(worker, resourceAmount, chunkImageId, isMineral);
 				}
 
 			}
