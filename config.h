@@ -20,10 +20,6 @@ struct Config
 
 	// Debug
 	bool verbose = false;
-	/*bool dump_ai_info = false;
-	bool dump_desync_game_data_arrays = false;
-	bool dump_desync_animation_info = false;
-	bool dump_crash_info = false;*/
 };
 extern Config config;
 
