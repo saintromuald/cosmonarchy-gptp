@@ -498,11 +498,9 @@ void cosmonarchyUnitAi(Unit* unit)
 
 					const u32 distance = getDistanceToTarget(localUnit);
 					const u32 maxRange = getMaxRange(localUnit);
-					u32 enemyMaxRange = 0;
 					bool targetHasMinRange = false;
 					if (localUnit->orderTarget.unit)
 					{
-						enemyMaxRange = getMaxRange(localUnit->orderTarget.unit);
 						if (localUnit->status & UnitStatus::InAir)
 						{
 							targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getAirWeapon()];
@@ -514,21 +512,20 @@ void cosmonarchyUnitAi(Unit* unit)
 					}
 
 					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
-						|| localGroupValue * 3 < result.biases[result.forwardIndex])
+						|| localGroupValue * 4 < result.biases[result.forwardIndex])
 					{
 						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 						//scbw::printf("%s: fall back", localUnit->getName());
 					}
 					else if (distance > maxRange * 1.5
-						|| (distance > maxRange * 1 && crowdScore > 4)
-						|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 3)
-						|| distance > enemyMaxRange
+						|| (distance > maxRange * 1 && crowdScore > 6)
+						|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 4)
 						|| targetHasMinRange)
 					{
 						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
 					}
-					else if (crowdScore > 4)
+					else if (crowdScore > 6)
 					{
 						localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
 						//scbw::printf("%s: strafe", localUnit->getName());
@@ -538,7 +535,7 @@ void cosmonarchyUnitAi(Unit* unit)
 						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 						//scbw::printf("%s: forward", localUnit->getName());
 					}
-					else if (distance < maxRange * 0.5 || shouldKiteBack(localUnit))
+					else if (distance < maxRange * 0.2 || shouldKiteBack(localUnit))
 					{
 						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 						//scbw::printf("%s: backward", localUnit->getName());
