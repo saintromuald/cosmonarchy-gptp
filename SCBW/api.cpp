@@ -1301,6 +1301,7 @@ namespace scbw
 		switch (id)
 		{
 			// Prohibited IDs
+			case UnitId::ProtossAmaranth:
 			case UnitId::ZergAkistrokor:
 			case UnitId::ZergUltrakor:
 			{
@@ -1308,8 +1309,11 @@ namespace scbw
 			} break;
 			// Allowed IDs
 			case UnitId::TerranHarakan:
+			case UnitId::TerranGoliathTurret:
 			case UnitId::TerranPhalanxTankMode:
 			case UnitId::TerranPhalanxSiegeMode:
+			case UnitId::TerranPhalanxTankModeTurret:
+			case UnitId::TerranPhalanxSiegeModeTurret:
 			{
 				return true;
 			} break;
