@@ -83,8 +83,7 @@ namespace hooks
 			{
 				helper::hallucinateScarabs(halUnit2, v3);
 			}
-			//helper::AI_TrainingUnit(halUnit2, halUnit2);
-			scbw::initUnitAI(halUnit2);
+			helper::AI_TrainingUnit(halUnit2, halUnit2);
 			result = halUnit2;
 		}
 		else

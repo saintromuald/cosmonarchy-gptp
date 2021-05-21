@@ -21,7 +21,7 @@ namespace hooks
 		{
 			return;
 		}
-		if (units_dat::BaseProperty[result->id] & UnitProperty::Worker)
+		if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
 		{
 			helper::AI_TrainingWorker(result, parent);
 		}
@@ -33,7 +33,7 @@ namespace hooks
 			|| result->id == UnitId::ZergRililisk
 			|| result->id == UnitId::ProtossSimulacrum)
 		{
-			hooks::AI_TrainingBroodling(result, result);
+			hooks::AI_TrainingBroodling(result, parent);
 		}
 		else
 		{

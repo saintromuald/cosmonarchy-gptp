@@ -1039,7 +1039,7 @@ namespace hooks
 			unitExt->timers[TimerReviveFlagClearMin] = 0;
 			unitExt->timers[TimerReviveFlagClearMax] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
-			scbw::initUnitAI(unit);
+			helper::AI_TrainingUnit(unit, unit);
 		}
 
 		// Savant - Entropy Gauntlets: remove overlay at end of effect

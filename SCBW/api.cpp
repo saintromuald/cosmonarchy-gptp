@@ -1759,34 +1759,6 @@ namespace scbw
 		unitExt->values[ValueDirgeStacks] = 0;
 	}
 
-	void initUnitAI(Unit* unit)
-	{
-		if (!unit || playerTable[unit->playerId].type != PlayerType::Computer)
-		{
-			return;
-		}
-
-		if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
-		{
-			AiTown* town = AiDataList[unit->playerId].first;
-			if (town)
-			{
-				helper::AI_AddWorkerStructureAI(unit, town);
-			}
-		}
-		else
-		{
-			helper::AI_TrainingUnit(unit, unit);
-
-			// Causes panic, but seems to init ai more consistently:
-			/*AiRegion* region = &AiRegionCaptains[unit->playerId][helper::SAI_GetRegionIdFromPxEx(town->position.x, town->position.y)];
-			if (region)
-			{
-				helper::AI_AddMilitary(region, unit, 1);
-			}*/
-		}
-	}
-
 	void updateSignifyStatus(Unit* unit, UnitExt* unitExt)
 	{
 		unit->updateSpeed();
