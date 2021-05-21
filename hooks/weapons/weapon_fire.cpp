@@ -956,26 +956,11 @@ namespace hooks
 
 	bool findNextBounceTargetProc(Unit* pIterator) // 0048AFD0
 	{
-		Unit* pSrc;
-		s32 nSrcStatus;
-		Unit* _pIterator;
-		s32 bulletSprite;
-		Unit* posY;
-		s32 posX;
-		s32 v7;
-		s32 v8;
-		bool v9;
-		s32 v10;
-		Unit* v11 = nullptr;
-		s32 v13;
-		s8 v14;
-
-		pSrc = *bulletBounceMissileSource;
-		nSrcStatus = (*bulletBounceMissileSource)->status;
-		_pIterator = pIterator;
+		Unit* pSrc = *bulletBounceMissileSource;
+		s32 nSrcStatus = (*bulletBounceMissileSource)->status;
+		Unit* _pIterator = pIterator;
 
 		// Previously disallowed bouncing if unit was disabled
-
 		if (!pIterator)
 		{
 			return 0;
@@ -992,53 +977,56 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (pSrc->subunit != nullptr
-			&& helper::unitIsSubunit(pSrc->subunit))
+
+		Unit* bounceSource = pSrc;
+		if (pSrc->subunit != nullptr && helper::unitIsSubunit(pSrc->subunit))
 		{
-			posY = pSrc->subunit;
-		}
-		else
-		{
-			posY = pSrc;
+			bounceSource = pSrc->subunit;
 		}
 		if (!(helper::unitIsCarrier(pSrc)))
 		{
+			bool miscBool;
 			if (helper::unitIsReaver(pSrc))
 			{
 				if (_pIterator->status & UnitStatus::InAir)
+				{
 					return 0;
-				v9 = helper::unitHasPathToUnit(pSrc, _pIterator);
+				}
+				miscBool = helper::unitHasPathToUnit(pSrc, _pIterator);
 			}
 			else
 			{
 				if (helper::unitCanInfest(pSrc))
 				{
-					v9 = helper::canBeInfested(v11, _pIterator) != 0; // v11 is not used..?
+					Unit* unusedUnit = nullptr;
+					miscBool = helper::canBeInfested(unusedUnit, _pIterator) != 0; // unusedUnit is not used..?
 				}
 				else
 				{
 					if (_pIterator->status & UnitStatus::InAir)
 					{
-						v9 = units_dat::AirWeapon[(u16)posY->id] != -126;
+						miscBool = units_dat::AirWeapon[(u16)bounceSource->id] != -126;
 					}
 					else
 					{
-						v9 = units_dat::GroundWeapon[(u16)posY->id] != -126;
+						miscBool = units_dat::GroundWeapon[(u16)bounceSource->id] != -126;
 					}
 				}
 			}
-			if (!v9)
+			if (!miscBool)
 			{
 				return 0;
 			}
 		}
-		v13 = _pIterator->status;
-		if (v13 & 0x300 && !((1 << pSrc->playerId) & _pIterator->visibilityStatus))
+
+		s32 unitStatus = _pIterator->status;
+		if (unitStatus & 0x300 && !((1 << pSrc->playerId) & _pIterator->visibilityStatus))
 		{
 			return 0;
 		}
-		v14 = _pIterator->playerId == 11 ? _pIterator->sprite->playerId : _pIterator->playerId;
-		if (playerAlliance[(u8)pSrc->playerId].flags[v14] || *bulletBounceMissileTarget == _pIterator)
+
+		s8 playerId = _pIterator->playerId == 11 ? _pIterator->sprite->playerId : _pIterator->playerId;
+		if (playerAlliance[(u8)pSrc->playerId].flags[playerId] || *bulletBounceMissileTarget == _pIterator)
 		{
 			return 0;
 		}
@@ -1088,7 +1076,7 @@ namespace hooks
 		coords.top = posX + 96;
 		coords.right = posY - 96;
 		coords.bottom = posY + 96;
-		//return (Unit*)helper::iterateUnitsAtLocationTargetProc(&coords, findNextBounceTargetProc, 0);
+//		return (Unit*)helper::iterateUnitsAtLocationTargetProc(&coords, findNextBounceTargetProc, 0);
 	}
 
 	// Hooked to resolve issues with multihit bullets - Pr0nogo

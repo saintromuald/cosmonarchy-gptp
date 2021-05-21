@@ -100,8 +100,15 @@ namespace hooks
 	//not checked against original code by UndeadStar
 	void createBunkerAttackThingyHook(Unit* unit)
 	{
-		Image* bunkerImage = unit->connectedUnit->sprite->mainGraphic;
-		u8 frameDirection = (unit->currentDirection1 + 16) / 32 % 8;
+		// Fixes units with subunits not attacking
+		Unit* unitVar = unit;
+		if (unit->subunit)
+		{
+			unitVar = unit->subunit;
+		}
+
+		Image* bunkerImage = unitVar->connectedUnit->sprite->mainGraphic;
+		u8 frameDirection = (unitVar->currentDirection1 + 16) / 32 % 8;
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
 		Point8 offset = loFile->getOffset(bunkerImage->frameIndex, frameDirection);
 
@@ -112,9 +119,9 @@ namespace hooks
 
 		u8 frameAngle;
 		u16 spriteId;
-		if (unit->id == UnitId::TerranHarakan)
+		if (unitVar->id == UnitId::TerranHarakan)
 		{
-			frameAngle = ((unit->currentDirection1 + 8) / 16 % 16) * 16;
+			frameAngle = ((unitVar->currentDirection1 + 8) / 16 % 16) * 16;
 			spriteId = 378; // Firebat flamethrower graphics
 		}
 		else
@@ -123,15 +130,16 @@ namespace hooks
 			spriteId = 377; // Bunker attack overlay
 		}
 
-		scbw::decloakProc(unit->connectedUnit);
+		scbw::decloakProc(unitVar->connectedUnit);
 
-		Thingy* bunkerAttackEffect = helper::createThingy(spriteId, offset.x + unit->getX(), offset.y + unit->getY(), unit->playerId);
+		// TODO: Fix effect nonsense with subunits
+		Thingy* bunkerAttackEffect = helper::createThingy(spriteId, offset.x + unitVar->getX(), offset.y + unitVar->getY(), unitVar->playerId);
 		if (!bunkerAttackEffect)
 		{
 			return;
 		}
 
-		bunkerAttackEffect->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
+		bunkerAttackEffect->sprite->elevationLevel = unitVar->sprite->elevationLevel + 1;
 		for (Image* image = bunkerAttackEffect->sprite->images.head;
 			image != nullptr;
 			image = image->link.next)
