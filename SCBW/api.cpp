@@ -1786,15 +1786,14 @@ namespace scbw
 	{
 		Unit* unit = firstPlayerUnit->unit[playerId];
 
-		while (unit && !unit->pAI)
+		for (Unit* unit = firstPlayerUnit->unit[playerId]; unit; unit = unit->player_link.next)
 		{
-			unit = unit->player_link.next;
+			if (unit->pAI)
+			{
+				return unit;
+			}
 		}
 
-		if (unit)
-		{
-			return unit;
-		}
 		return nullptr;
 	}
 }
