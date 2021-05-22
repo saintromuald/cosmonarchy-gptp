@@ -48,7 +48,7 @@ namespace hooks
 		}
 	}
 
-	// Hooked to help with reviving AI-controlled workers - Pr0nogo
+	// Hooked to help with reviving AI-controlled worker - Pr0nogo
 	char AI_TrainingWorker(Unit* child, Unit* parent) // 00435700
 	{
 		BuildingAi* parentAi = (BuildingAi*)parent->pAI;
@@ -328,12 +328,12 @@ namespace hooks
 				if (unitAI != nullptr)
 				{
 					unitAI->link.next = 0;
-					unitAI->link.prev = (UnitAi*)town->workers;
-					if (town->workers)
+					unitAI->link.prev = (UnitAi*)town->worker;
+					if (town->worker)
 					{
-						town->workers->link.next = (WorkerAi*)unitAI;
+						town->worker->link.next = (WorkerAi*)unitAI;
 					}
-					town->workers = (WorkerAi*)unitAI;
+					town->worker = (WorkerAi*)unitAI;
 					unitAIWorker = (WorkerAi*)unitAI;
 					unitAIWorker->type = 2;
 					unitAIWorker->parent = unit;
@@ -632,9 +632,7 @@ namespace hooks
 				parentAi9 = 1;
 			}
 LABEL_37:
-			v14 = &AiRegionCaptains[(u8)self->playerId][helper::SAI_GetRegionIdFromPxEx(
-				self->sprite->position.x,
-				self->sprite->position.y)];
+			v14 = &AiRegionCaptains[(u8)self->playerId][helper::SAI_GetRegionIdFromPxEx(self->sprite->position.x, self->sprite->position.y)];
 			if (!parentAi9)
 			{
 				if (!dontCallHelp)
@@ -726,7 +724,9 @@ LABEL_37:
 											{
 												child7 = realTarget;
 												if (helper::AI_Flee(self, realTarget))
+												{
 													return;
+												}
 											}
 											if (childAi4
 												|| !(self->status & UnitStatus::IsBuilding)
@@ -735,7 +735,7 @@ LABEL_37:
 											{
 LABEL_126:
 												if (self->orderTarget.unit != realTarget)
-												{ // Responding with workers
+												{ // Responding with worker
 													if (!(units_dat::BaseProperty[(u16)self->id] & UnitProperty::Worker)
 //														|| (child9 = realTarget->id, units_dat::BaseProperty[child9] & UnitProperty::Worker)
 														|| !scbw::unitIsRangedAttacker(realTarget) // previously only checked for Zergling id
@@ -866,7 +866,7 @@ LABEL_126:
 				{
 					if (result->id == UnitId::TerranWatchdog)
 					{
-						workerUnit = parentTown->workers->parent;
+						workerUnit = parentTown->worker->parent;
 						for (i = 0; workerUnit; i += queueCount)
 						{
 							workerTarget = workerUnit->moveTarget.unit;
@@ -1538,10 +1538,10 @@ LABEL_22:
 		region->fullGroundStrength = 0;
 		for (i = regionTown; i; i = i->link.prev)
 		{
-			v2 = (Unit*)i->workers;
+			v2 = i->worker;
 			if (!(v2->status & UnitStatus::InBuilding))
 			{
-				v3 = v2->groundStrength;
+				v3 = (u16)v2->groundStrength;
 				v4 = v2->airStrength;
 				region->fullAirStrength += v4;
 				region->fullGroundStrength += v3;
