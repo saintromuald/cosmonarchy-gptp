@@ -201,7 +201,7 @@ static inline u32 getDistanceToTarget(Unit* source)
 	return getDistanceBetweenUnits(source, target);
 }
 
-static inline u32 getTargetCost(Unit* source, Unit* target)
+static inline s32 getTargetCost(Unit* source, Unit* target)
 {
 	f32 hpPercentage = 0;
 	if (units_dat::ShieldsEnabled[target->id])
@@ -212,7 +212,7 @@ static inline u32 getTargetCost(Unit* source, Unit* target)
 	{
 		hpPercentage = (f32)target->hitPoints / units_dat::MaxHitPoints[target->id];
 	}
-	u32 cost = hpPercentage * 10;
+	s32 cost = hpPercentage * 10;
 
 	if (source->status & UnitStatus::InAir)
 	{
@@ -226,7 +226,7 @@ static inline u32 getTargetCost(Unit* source, Unit* target)
 	s32 dist = (s32)getDistanceBetweenUnits(source, target) - getMaxRange(source);
 	if (dist > 0)
 	{
-		cost += dist / 32.0;
+		cost += dist / 64.0;
 	}
 
 	return cost;
@@ -451,7 +451,7 @@ void cosmonarchyUnitAi(Unit* unit)
 
 					auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
 					Unit* targetUnit = nullptr;
-					u32 targetCost = 0;
+					s32 targetCost = 0;
 					scbw::UnitFinder(
 						localUnit->getX() - hostileGroupRadius * 4,
 						localUnit->getY() - hostileGroupRadius * 4,
@@ -464,7 +464,7 @@ void cosmonarchyUnitAi(Unit* unit)
 							return;
 						}
 
-						u32 newTargetCost = getTargetCost(localUnit, hostileUnit);
+						s32 newTargetCost = getTargetCost(localUnit, hostileUnit);
 						if (!targetUnit || newTargetCost < targetCost)
 						{
 							targetUnit = hostileUnit;
