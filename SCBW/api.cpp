@@ -1781,16 +1781,4 @@ namespace scbw
 			unit->sprite->createTopOverlay(maliceId);
 		}
 	}
-
-	Unit* findPAIUnit(u8 playerId)
-	{
-		for (AiTown* town = AiDataList[playerId].first; town; town = town->link.next)
-		{
-			if (town->main_building)
-			{
-				return town->main_building;
-			}
-		}
-		return nullptr;
-	}
 }
