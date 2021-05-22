@@ -204,21 +204,21 @@ static inline u32 getDistanceToTarget(Unit* source)
 static inline s32 getTargetCost(Unit* source, Unit* target)
 {
 	// Value attacking wounded units first
-	f32 hpPercentage = (f32)target->getCurrentLifeInGame() / target->getTotalHitPointsPlusShields();
-	s32 cost = hpPercentage * 30;
+	s32 cost = target->getCurrentLifeInGame() / 10;
 
 	// Value attacking more threatning units first
 	if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster)
 	{
-		cost -= target->energy / 50;
+		cost -= (target->energy / 50) * 5;
 	}
+	u32 weaponId = 0;
 	if (source->status & UnitStatus::InAir)
 	{
-		cost -= hooks::getCurrentDPS(target, units_dat::AirWeapon[target->id]) / 10;
+		cost -= hooks::getCurrentDPS(target, target->getAirWeapon());
 	}
 	else
 	{
-		cost -= hooks::getCurrentDPS(target, units_dat::GroundWeapon[target->id]) / 10;
+		cost -= hooks::getCurrentDPS(target, target->getGroundWeapon());
 	}
 
 	// Value attacking units with smaller pathing cost more
