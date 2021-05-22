@@ -331,9 +331,9 @@ namespace hooks
 					unitAI->link.prev = (UnitAi*)town->worker;
 					if (town->worker)
 					{
-						town->worker->link.next = (WorkerAi*)unitAI;
+						town->worker->link.next->pAI = (WorkerAi*)unitAI;
 					}
-					town->worker = (WorkerAi*)unitAI;
+					town->worker->pAI = (WorkerAi*)unitAI;
 					unitAIWorker = (WorkerAi*)unitAI;
 					unitAIWorker->type = 2;
 					unitAIWorker->parent = unit;
@@ -866,7 +866,7 @@ LABEL_126:
 				{
 					if (result->id == UnitId::TerranWatchdog)
 					{
-						workerUnit = parentTown->worker->parent;
+						workerUnit = parentTown->worker;
 						for (i = 0; workerUnit; i += queueCount)
 						{
 							workerTarget = workerUnit->moveTarget.unit;
@@ -1512,11 +1512,7 @@ LABEL_22:
 	// Hooked to investigate crashes - Pr0nogo
 	u32 AI_RecalculateRegionStrength(AiRegion* region) // 0043A390
 	{
-		AiTown* regionTown;
-		Unit* v2;
-		s32 v3;
-		s16 v4;
-		Sprite* v5;
+		// Needs cleanup
 		s32 v6;
 		s16 v7;
 		s32 v8;
@@ -1528,34 +1524,36 @@ LABEL_22:
 		s16 a1;
 		s16 regionTown5;
 		s32 regionTown6;
-		AiTown* i;
-		const u32 Func_CB_AICaptainStrengthIterator = 0x00438F60;
 
-		regionTown = region->town;
+		const u32 Func_CB_AICaptainStrengthIterator = 0x00438F60;
+		AiTown* regionTown = region->town;
 		region->regionAirStrength = 0;
 		region->fullAirStrength = 0;
 		region->regionGroundStrength = 0;
 		region->fullGroundStrength = 0;
+
+		AiTown* i;
 		for (i = regionTown; i; i = i->link.prev)
 		{
-			v2 = i->worker;
-			if (!(v2->status & UnitStatus::InBuilding))
+			Unit* townUnit = i->worker;
+			if (!(townUnit->status & UnitStatus::InBuilding))
 			{
-				v3 = (u16)v2->groundStrength;
-				v4 = v2->airStrength;
-				region->fullAirStrength += v4;
-				region->fullGroundStrength += v3;
-				v5 = v2->sprite;
-				v6 = v5->position.x;
-				regionTown6 = v3;
-				if (helper::SAI_GetRegionIdFromPxEx(v6, v5->position.y) == region->region)
+				s32 townUnitGroundStrength = (u16)townUnit->groundStrength;
+				s16 townUnitAirStrength = townUnit->airStrength;
+				region->fullAirStrength += townUnitAirStrength;
+				region->fullGroundStrength += townUnitGroundStrength;
+				Sprite* townUnitSprite = townUnit->sprite;
+				v6 = townUnitSprite->position.x;
+				regionTown6 = townUnitGroundStrength;
+				if (helper::SAI_GetRegionIdFromPxEx(v6, townUnitSprite->position.y) == region->region)
 				{
 					v7 = regionTown6;
-					region->regionAirStrength += v4;
+					region->regionAirStrength += townUnitAirStrength;
 					region->regionGroundStrength += v7;
 				}
 			}
 		}
+
 		if (AIScriptController[region->playerId].AI_Flags.isUseMapSettings)
 		{
 			v8 = region->region << 6;

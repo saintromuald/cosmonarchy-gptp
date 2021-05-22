@@ -12,7 +12,7 @@
 
 //Checks if the given unit ID can provide psi (for use in assertion)
 //The following unit types cannot make psi fields
-//  workers, factories, resource containers, ghosts, nydus canals, silos,
+//  worker, factories, resource containers, ghosts, nydus canals, silos,
 //  hatcheries, and powerups
 bool isValidPsiProviderType(u16 unitId)
 {

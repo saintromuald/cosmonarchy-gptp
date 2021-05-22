@@ -16,7 +16,7 @@
 
 /// The first nodes in StarCraft's internal linked lists (taken from BWAPI's Offsets.h)
 SCBW_DATA(Unit**, firstVisibleUnit, 0x00628430);
-/// Includes units in transports/bunkers, workers inside gas buildings, nukes in
+/// Includes units in transports/bunkers, worker inside gas buildings, nukes in
 /// silos, queens inside command centers, and units in production.
 SCBW_DATA(Unit**,		firstHiddenUnit,		0x006283EC);
 SCBW_DATA(Unit**,		lastHiddenUnit,			0x00628428);
