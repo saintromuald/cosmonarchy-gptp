@@ -431,6 +431,7 @@ namespace
 		__asm
 		{
 			POPAD
+			MOV EAX, result
 			RETN
 		}
 	}
