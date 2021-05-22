@@ -214,12 +214,14 @@ static inline s32 getTargetCost(Unit* source, Unit* target)
 	u32 weaponId = 0;
 	if (source->status & UnitStatus::InAir)
 	{
-		cost -= hooks::getCurrentDPS(target, target->getAirWeapon());
+		weaponId = target->getAirWeapon();
 	}
 	else
 	{
-		cost -= hooks::getCurrentDPS(target, target->getGroundWeapon());
+		weaponId = target->getGroundWeapon();
 	}
+	f32 multiplier = weapons_dat::InnerSplashRadius[weaponId] ? 1.5 : 1;
+	cost -= hooks::getCurrentDPS(target, weaponId) * multiplier;
 
 	// Value attacking units with smaller pathing cost more
 	s32 dist = (s32)getDistanceBetweenUnits(source, target) - getMaxRange(source);
