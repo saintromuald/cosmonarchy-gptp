@@ -12,6 +12,15 @@ namespace hooks
 {
 	void orders_ZergBirth(Unit* unit)
 	{
+		if (!(unit->orderSignal & 4))
+		{
+			Image* current_image = unit->sprite->mainGraphic;
+			if (current_image->animation != IscriptAnimation::SpecialState1)
+			{
+				current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+			}
+		}
+
 		if (unit->orderSignal & 4)
 		{
 			bool bTwinEggOrCocoon = true;
@@ -39,7 +48,7 @@ namespace hooks
 				}
 			}
 			if (unit->id != UnitId::ZergDroleth
-				&& unit->id != UnitId::ZergOvileth) // TODO: investigate if the conditional is needed or if it should have other ovileth morphs in it
+				&& unit->id != UnitId::ZergOvileth)
 			{
 				helper::AI_TrainingUnit(unit, unit);
 			}
