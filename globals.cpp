@@ -649,8 +649,8 @@ void Globals::frameHook()
 							return;
 						}
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						unitExt->timers[TimerDisruptionWebStatusClear] = 7;
-						unit->status |= UnitStatus::CanNotAttack;
+						unitExt->timers[TimerDisruptionWebStatusClear] = 8;
+						unit->status |= UnitStatus::CanNotAttack; // NOTE: this is being cleared everyframe somehow
 					});
 				} break;
 				case EffectId::GroundZero:
