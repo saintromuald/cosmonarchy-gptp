@@ -635,6 +635,7 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 
 //-------- AI related stuff --------//
 
+struct AiTown;
 struct MilitaryAiArray; // declaring this here to avoid compiler errors
 struct AiRegion // AiRegion
 {

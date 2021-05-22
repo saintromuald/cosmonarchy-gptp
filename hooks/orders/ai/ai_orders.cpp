@@ -1513,7 +1513,7 @@ LABEL_22:
 	u32 AI_RecalculateRegionStrength(AiRegion* region) // 0043A390
 	{
 		AiTown* regionTown;
-		WorkerAi* v2;
+		Unit* v2;
 		s32 v3;
 		s16 v4;
 		Sprite* v5;
@@ -1538,14 +1538,14 @@ LABEL_22:
 		region->fullGroundStrength = 0;
 		for (i = regionTown; i; i = i->link.prev)
 		{
-			v2 = i->workers;
-			if (!(v2->parent->status & UnitStatus::InBuilding))
+			v2 = (Unit*)i->workers;
+			if (!(v2->status & UnitStatus::InBuilding))
 			{
-				v3 = (u16)v2->parent->groundStrength;
-				v4 = v2->parent->airStrength;
+				v3 = v2->groundStrength;
+				v4 = v2->airStrength;
 				region->fullAirStrength += v4;
 				region->fullGroundStrength += v3;
-				v5 = v2->parent->sprite;
+				v5 = v2->sprite;
 				v6 = v5->position.x;
 				regionTown6 = v3;
 				if (helper::SAI_GetRegionIdFromPxEx(v6, v5->position.y) == region->region)
@@ -1556,20 +1556,21 @@ LABEL_22:
 				}
 			}
 		}
-		if (AIScriptController[(u8)region->playerId].AI_Flags.isUseMapSettings)
+		if (AIScriptController[region->playerId].AI_Flags.isUseMapSettings)
 		{
-			v8 = (u16)region->region << 6;
-			v9 = *(s32*)((char*)&SAI_Paths->regions[0].regionCenterY + v8);
-			regionTown0 = *(s32*)((char*)&SAI_Paths->regions[0].rgnCenterX + v8) >> 8;
+			v8 = region->region << 6;
+			v9 = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterY + v8);
+			regionTown0 = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterX + v8) >> 8;
 			v9 >>= 8;
 			a1 = regionTown0 - 256;
-			HIWORD(regionTown6) = v9 + 256;
+			regionTown6 = 0;
+			regionTown6 = (v9 + 256) << 16;
 			regionTown5 = v9 - 256;
-			LOWORD(regionTown6) = regionTown0 + 256;
-			helper::iterateUnitsAtLocationTargetProc((Box16*)&a1, (s32(__fastcall*)(s32, s32))Func_CB_AICaptainStrengthIterator, (Unit*)region);
+			regionTown6 |= regionTown0 + 256;
+			helper::iterateUnitsAtLocationTargetProc((Box16*)&a1, (Unit*(__fastcall*)(Unit*, Unit*))Func_CB_AICaptainStrengthIterator, (Unit*)region);
 		}
-		regionTown1 = (u16)region->enemyAirStrength;
-		if (!(AIScriptController[(u8)region->playerId].AI_Flags.isUseMapSettings))
+		regionTown1 = region->enemyAirStrength;
+		if (!(AIScriptController[region->playerId].AI_Flags.isUseMapSettings))
 		{
 			regionTown1 += regionTown1 >> 1;
 		}
@@ -1577,8 +1578,8 @@ LABEL_22:
 		{
 			region->neededAirStrength = regionTown1;
 		}
-		regionTown2 = (u16)region->enemyGroundStrength;
-		if (!(AIScriptController[(u8)region->playerId].AI_Flags.isUseMapSettings))
+		regionTown2 = region->enemyGroundStrength;
+		if (!(AIScriptController[region->playerId].AI_Flags.isUseMapSettings))
 		{
 			regionTown2 += regionTown2 >> 1;
 		}
@@ -1586,8 +1587,8 @@ LABEL_22:
 		{
 			region->neededGroundStrength = regionTown2;
 		}
-		result = (u16)AIScriptController[(u8)region->playerId].AI_MaxForce;
-		if (AIScriptController[(u8)region->playerId].AI_MaxForce)
+		result = (u16)AIScriptController[region->playerId].AI_MaxForce;
+		if (AIScriptController[region->playerId].AI_MaxForce)
 		{
 			if (region->neededAirStrength > result)
 			{
