@@ -417,6 +417,23 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_RecalculateRegionStrength_Wrapper()
+	{
+		static u32 result;
+		static AiRegion* region;
+		__asm
+		{
+			MOV region, ESI
+			PUSHAD
+		}
+		result = hooks::AI_RecalculateRegionStrength(region);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -442,9 +459,10 @@ namespace hooks
 		jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);
 		*/
 
-		jmpPatch(AI_orderUnitCloaking_Wrapper,	0x0043B970, 1);
-//		jmpPatch(deleteWorkerAI_Wrapper,		0x00404470, 0);
-		jmpPatch(AI_SendSuicide_Wrapper,		0x0043E050, 1);
+		jmpPatch(AI_orderUnitCloaking_Wrapper,				0x0043B970, 1);
+//		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
+		jmpPatch(AI_SendSuicide_Wrapper,					0x0043E050, 1);
+		jmpPatch(AI_RecalculateRegionStrength_Wrapper,		0x0043A390, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}

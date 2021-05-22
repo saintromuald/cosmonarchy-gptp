@@ -25,6 +25,7 @@ namespace hooks
 	void AI_orderUnitCloaking(Unit* unit);																		// 0043B970
 	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiList);									// 00404470
 	void AI_SendSuicide(char argType, s32 player);																// 0043E050
+	u32 AI_RecalculateRegionStrength(AiRegion* region);															// 0043A390
 
 	void injectAIOrdersHooks();
 }
