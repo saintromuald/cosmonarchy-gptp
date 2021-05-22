@@ -223,17 +223,8 @@ namespace hooks
 								{
 									s32 angle;
 									helper::setNextWaypoint(unit);
-									helper::function_00494BB0(
-										unit,
-										(unit->orderTarget.unit)->sprite->position.x,
-										(unit->orderTarget.unit)->sprite->position.y
-									);
-									angle = scbw::getAngle(
-										unit->sprite->position.x,
-										unit->sprite->position.y,
-										unit->nextTargetWaypoint.x,
-										unit->nextTargetWaypoint.y
-									);
+									helper::setSecondaryWaypoint(unit, (unit->orderTarget.unit)->sprite->position.x, (unit->orderTarget.unit)->sprite->position.y);
+									angle = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
 									unit->orderTarget.pt.x = (angleDistance[angle].x * 20) / 256 + unit->sprite->position.x;
 									unit->orderTarget.pt.y = (angleDistance[angle].y * 20) / 256 + unit->sprite->position.y;
 									unit->mainOrderState = 7;

@@ -348,7 +348,9 @@ LABEL_42:
 					if (v20 >= 128 || v20 <= -128)
 						v20 = -128;
 					if (abs(v20) >= 32)
+					{
 						helper::setSecondaryWaypoint(v1, v19, v18);
+					}
 				}
 				return;
 			}

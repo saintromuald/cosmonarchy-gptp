@@ -100,7 +100,7 @@ namespace hooks
 						}
 						else
 						{
-							helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
+							helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
 							helper::unitOrderMoveToTargetUnit(unit, target);
 							unit->mainOrderState = 7; // don't continue directly into this case
 							jump_to_default_switch = true;
@@ -117,7 +117,7 @@ namespace hooks
 					}
 					else
 					{
-						helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
+						helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
 						helper::unitOrderMoveToTargetUnit(unit, target);
 						if (!helper::isUnitPositions2Equal(unit))
 						{
@@ -162,7 +162,7 @@ namespace hooks
 
 				if (!bEndThere && !jump_to_default_switch && unit->mainOrderState == 8)
 				{
-					helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
+					helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
 					helper::unitOrderMoveToTargetUnit(unit, target);
 					if (unit->isTargetWithinMinRange(target, 5) && target->mainOrderId != OrderId::Liftoff)
 					{
