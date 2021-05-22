@@ -1533,6 +1533,10 @@ LABEL_22:
 				region->fullAirStrength += townUnitAirStrength;
 				region->fullGroundStrength += townUnitGroundStrength;
 				Sprite* townUnitSprite = townUnit->sprite;
+				if (!townUnitSprite)
+				{
+					continue;
+				}
 				s32 v6 = townUnitSprite->position.x;
 				s32 regionTown6 = townUnitGroundStrength;
 				if (helper::SAI_GetRegionIdFromPxEx(v6, townUnitSprite->position.y) == region->region)
