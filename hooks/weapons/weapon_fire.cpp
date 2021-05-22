@@ -159,7 +159,8 @@ namespace hooks
 			return;
 		}
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		if (unitExt->timers[TimerDisruptionWebStatusClear])
+		if (unitExt->values[ValueDisruptionFieldOn]
+			|| unitExt->timers[TimerDisruptionWebStatusClear])
 		{
 			return;
 		}

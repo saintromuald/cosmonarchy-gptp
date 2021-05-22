@@ -270,7 +270,8 @@ namespace hooks
 	void MeleeAttackHit(Unit* attacker)
 	{
 		UnitExt* attackerExt = globals.GetUnitExt(attacker);
-		if (attackerExt->timers[TimerDisruptionWebStatusClear])
+		if (attackerExt->values[ValueDisruptionFieldOn]
+			|| attackerExt->timers[TimerDisruptionWebStatusClear])
 		{
 			return;
 		}
