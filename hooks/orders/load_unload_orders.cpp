@@ -18,33 +18,32 @@ namespace hooks
 			helper::prependOrderTargetingUnit(unit, unitToLoad, OrderId::Pickup2);
 			prepareForNextOrder(unit);
 		}
-		else
-			if (unit->pAI != nullptr)
+		else if (unit->pAI != nullptr)
+		{
+			Point16 pos = {0,0};
+			unit->userActionFlags |= 1;
+			if (unit->mainOrderId != OrderId::Die)
 			{
-				Point16 pos = {0,0};
-				unit->userActionFlags |= 1;
-				if (unit->mainOrderId != OrderId::Die)
+				bool bStopLoop = (unit->orderQueueTail == nullptr);
+				while (!bStopLoop)
 				{
-					bool bStopLoop = (unit->orderQueueTail == nullptr);
-					while (!bStopLoop)
+					u8 orderId = (u8)unit->orderQueueTail->orderId;
+					if (orders_dat::CanBeInterrupted[orderId] == 0
+						&& orderId != OrderId::ComputerAI)
 					{
-						u8 orderId = (u8)unit->orderQueueTail->orderId;
-						if (orders_dat::CanBeInterrupted[orderId] == 0
-							&& orderId != OrderId::ComputerAI)
-						{
-							bStopLoop = true;
-						}
-
-						if (!bStopLoop)
-						{
-							helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
-							bStopLoop = (unit->orderQueueTail == nullptr);
-						}
+						bStopLoop = true;
 					}
-					unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
+
+					if (!bStopLoop)
+					{
+						helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+						bStopLoop = (unit->orderQueueTail == nullptr);
+					}
 				}
-				prepareForNextOrder(unit);
+				unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
 			}
+			prepareForNextOrder(unit);
+		}
 	}
 
 	// unit is a non-mobile transport (bunker)
@@ -217,12 +216,11 @@ namespace hooks
 								{
 									bStopLoop = true;
 								}
-								else
-									if (helper::canUnload(unit, unitToUnload, &pos) == 0)
-									{
-										bStopAll = true;
-										bStopLoop = true;
-									}
+								else if (helper::canUnload(unit, unitToUnload, &pos) == 0)
+								{
+									bStopAll = true;
+									bStopLoop = true;
+								}
 							}
 							// 004E78BC
 							if (!bStopAll)
@@ -246,6 +244,88 @@ namespace hooks
 	// COULD NOT BE TESTED (tried bunker and all and nothing called this function)
 	void orders_Pickup4_0(Unit* unit)
 	{
+		scbw::print("hello");
+		Unit* unitVar = unit;
+		bool bIsNeutral = unit->playerId == 11;
+		char unitStatus = unit->status;
+		if (bIsNeutral)
+		{
+			scbw::print("isNeutral");
+			u8 idleOrder;
+			if (unitStatus & 0x40)
+			{
+				idleOrder = OrderId::Nothing2;
+			}
+			else
+			{
+				idleOrder = units_dat::ReturnToIdleOrder[(u16)unitVar->id];
+			}
+			unitVar->userActionFlags |= 1u;
+			helper::order(1, unitVar, idleOrder, 0, 0, 228);
+			helper::orders_Nothing2(unitVar);
+			return;
+		}
+		if (!(unitStatus & 0x40) && !helper::AI_UpdateAttackTarget(unitVar, 0, 0, 1))
+		{
+			scbw::print("orderTarget");
+			Unit* orderTarget = unitVar->orderTarget.unit;
+			Unit** orderTargetOffset = &unitVar->orderTarget.unit;
+			if (orderTarget)
+			{
+				if (!helper::unitIsActiveTransport(orderTarget) || orderTarget->orderTarget.unit != unitVar)
+				{
+					scbw::print("goto label16");
+					goto LABEL_16;
+				}
+			}
+			else
+			{
+				if (!helper::Ai_FindTransport(unitVar, &unitVar->orderTarget.unit))
+				{
+					scbw::print("toIdle / return");
+					helper::toIdle(unitVar);
+					return;
+				}
+				orderTarget = *orderTargetOffset;
+				if (!*orderTargetOffset)
+				{
+					scbw::print("return");
+					return;
+				}
+			}
+			if (!canEnterTransport(orderTarget, unitVar))
+			{
+			LABEL_16:
+				scbw::print("can't enter transport");
+				*orderTargetOffset = 0;
+				return;
+			}
+			if (helper::isTargetWithinMinRange(unitVar, 1u, orderTarget))
+			{
+				scbw::print("target within min range");
+				helper::loadUnitProc(orderTarget, unitVar);
+				helper::issueOrderTargetingGround(orderTarget, OrderId::MoveUnload, unitVar->orderTarget.pt.x, unitVar->orderTarget.pt.y);
+				if (orderTarget->pAI)
+				{
+					scbw::print("has AI");
+					helper::_doOrder(orderTarget, OrderId::Move, orderTarget->sprite->position.x, orderTarget->sprite->position.y, 0);
+				}
+			}
+			else
+			{
+				scbw::print("target not within min range");
+				helper::prependOrderTargetingUnit(unitVar, orderTarget, 0x5Eu);
+				helper::orders_Nothing2(orderTarget);
+				if (helper::Ai_AreOnConnectedRegions(unitVar, orderTarget->sprite->position.x, orderTarget->sprite->position.y))
+				{
+					scbw::print("set waypoint");
+					helper::setSecondaryWaypoint(unitVar, orderTarget->sprite->position.x, orderTarget->sprite->position.y);
+					helper::moveTowards(orderTarget, unitVar);
+				}
+			}
+		}
+
+		/*
 		if (unit->playerId == 11)
 		{
 			unit->userActionFlags |= 1;
@@ -259,85 +339,84 @@ namespace hooks
 			}
 			prepareForNextOrder(unit);
 		}
-		else
-			if (!(unit->status & UnitStatus::InTransport)
+		else if (!(unit->status & UnitStatus::InTransport)
 				&& helper::Ai_UpdateAttackTarget(unit, 1, 0, 0) == 0)
-			{ // 004E7BEB
-				Unit* target = unit->orderTarget.unit;
-				bool jump_to_E7C2B = false;
-				bool jump_to_E7C37 = false;
-				bool jump_to_E7C44 = false;
-				bool bEndThere = false;
-				if (target == nullptr)
+		{ // 004E7BEB
+			Unit* target = unit->orderTarget.unit;
+			bool jump_to_E7C2B = false;
+			bool jump_to_E7C37 = false;
+			bool jump_to_E7C44 = false;
+			bool bEndThere = false;
+			if (target == nullptr)
+			{
+				if (helper::Ai_FindTransport(unit, &target) == 0)
 				{
-					if (helper::Ai_FindTransport(unit, &target) == 0)
+					unit->orderToIdle();
+					bEndThere = true;
+				}
+				else
+				if (target != nullptr)
+				{
+					jump_to_E7C2B = true;
+				}
+			}
+			if (!bEndThere)
+			{
+				if (!jump_to_E7C2B)
+				{ // 004E7C1B
+					if (target != nullptr
+						&& (!helper::unitIsActiveTransport(target) || target->orderTarget.unit != unit))
 					{
-						unit->orderToIdle();
-						bEndThere = true;
+						jump_to_E7C37 = true;
 					}
 					else
-						if (target != nullptr)
-						{
-							jump_to_E7C2B = true;
-						}
+					{
+						jump_to_E7C2B = true;
+					}
 				}
-				if (!bEndThere)
+				if (jump_to_E7C2B)
 				{
-					if (!jump_to_E7C2B)
-					{ // 004E7C1B
-						if (target != nullptr
-							&& (!helper::unitIsActiveTransport(target)
-							|| target->orderTarget.unit != unit))
-						{
-							jump_to_E7C37 = true;
-						}
-						else
-						{
-							jump_to_E7C2B = true;
-						}
-					}
-					if (jump_to_E7C2B)
+					if (scbw::canBeEnteredBy(target, unit))
 					{
-						if (scbw::canBeEnteredBy(target, unit))
-						{
-							jump_to_E7C44 = true;
-						}
-						else
-						{
-							jump_to_E7C37 = true;
-						}
+						jump_to_E7C44 = true;
 					}
-					if (jump_to_E7C37)
+					else
 					{
-						unit->orderTarget.unit = nullptr;
+						jump_to_E7C37 = true;
 					}
-					if (jump_to_E7C44)
+				}
+				if (jump_to_E7C37)
+				{
+					unit->orderTarget.unit = nullptr;
+				}
+				if (jump_to_E7C44)
+				{
+					if (target != nullptr)
 					{
-						if (target != nullptr)
-						{
-							if (unit->isTargetWithinMinRange(target, 1))
-							{ // 004E7C52
-								helper::loadUnitProc(target, unit);
-								target->orderTo(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-								if (target->pAI != nullptr)
-								{
-									helper::_doOrder(target, OrderId::Move, target->sprite->position.x, target->sprite->position.y, false);
-								}
+						if (unit->isTargetWithinMinRange(target, 1))
+						{ // 004E7C52
+							helper::loadUnitProc(target, unit);
+							target->orderTo(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+							if (target->pAI != nullptr)
+							{
+								helper::_doOrder(target, OrderId::Move, target->sprite->position.x, target->sprite->position.y, false);
 							}
-							else
-							{ // 004E7C94
-								helper::prependOrderTargetingUnit(target, unit, OrderId::Pickup2);
-								prepareForNextOrder(target);
-								if (helper::Ai_AreOnConnectedRegions(unit, target->sprite->position.x, target->sprite->position.y) != 0)
-								{
-									helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
-									helper::moveTowards(unit, target);
-								}
+						}
+						else
+						{ // 004E7C94
+							helper::prependOrderTargetingUnit(target, unit, OrderId::Pickup2);
+							prepareForNextOrder(target);
+							if (helper::Ai_AreOnConnectedRegions(unit, target->sprite->position.x, target->sprite->position.y) != 0)
+							{
+								helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
+								helper::moveTowards(unit, target);
 							}
 						}
 					}
 				}
 			}
+		}
+		*/
 	}
 
 	// unit is a unit aiming to enter a transport
@@ -379,15 +458,14 @@ namespace hooks
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
+			else if (unit->pAI != nullptr)
+			{
+				unit->orderComputerClear(OrderId::ComputerAI);
+			}
 			else
-				if (unit->pAI != nullptr)
-				{
-					unit->orderComputerClear(OrderId::ComputerAI);
-				}
-				else
-				{
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
-				}
+			{
+				unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+			}
 		}
 	}
 
@@ -454,16 +532,15 @@ namespace hooks
 				{
 					jump_to_E8195 = true;
 				}
-				else
-					if (unit->pAI == nullptr
+				else if (unit->pAI == nullptr
 						|| unit->status & UnitStatus::GroundedBuilding)
-					{
-						jump_to_E81AD = true;
-					}
-					else
-					{
-						helper::function_0043DF30(unit);
-					}
+				{
+					jump_to_E81AD = true;
+				}
+				else
+				{
+					helper::function_0043DF30(unit);
+				}
 			}
 			if (jump_to_E8191)
 			{
@@ -489,48 +566,42 @@ namespace hooks
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
 				}
-				else
-					if (unit->pAI != nullptr)
-					{ // 004E81DE
-						unit->userActionFlags |= 1;
-						if (unit->mainOrderId == OrderId::Die)
-						{
-							prepareForNextOrder(unit);
-						}
-						else
-						{
-							bEndLoop = (unit->orderQueueTail == nullptr);
-							while (!bEndLoop)
-							{
-								if (orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId]
-									|| unit->orderQueueTail->orderId == OrderId::ComputerAI)
-								{
-									helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
-								}
-								else
-								{
-									bEndLoop = true;
-								}
-								if (!bEndLoop)
-								{
-									bEndLoop = (unit->orderQueueTail == nullptr);
-								}
-							}
-							unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
-							prepareForNextOrder(unit);
-						}
-					}
-					else
-					{ // 004E823A
-						unit->userActionFlags |= 1;
-						unit->order(units_dat::ReturnToIdleOrder[unit->id],
-							0,
-							0,
-							nullptr,
-							UnitId::None,
-							true);
+				else if (unit->pAI != nullptr)
+				{ // 004E81DE
+					unit->userActionFlags |= 1;
+					if (unit->mainOrderId == OrderId::Die)
+					{
 						prepareForNextOrder(unit);
 					}
+					else
+					{
+						bEndLoop = (unit->orderQueueTail == nullptr);
+						while (!bEndLoop)
+						{
+							if (orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId]
+								|| unit->orderQueueTail->orderId == OrderId::ComputerAI)
+							{
+								helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+							}
+							else
+							{
+								bEndLoop = true;
+							}
+							if (!bEndLoop)
+							{
+								bEndLoop = (unit->orderQueueTail == nullptr);
+							}
+						}
+						unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
+						prepareForNextOrder(unit);
+					}
+				}
+				else
+				{ // 004E823A
+					unit->userActionFlags |= 1;
+					unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, true);
+					prepareForNextOrder(unit);
+				}
 			}
 		}
 	}

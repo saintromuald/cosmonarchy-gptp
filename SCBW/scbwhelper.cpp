@@ -3090,19 +3090,6 @@ namespace helper
 		}
 	}
 
-	void function_00494BB0(Unit* unit, s32 x, s32 y)
-	{
-		const u32 Func_Sub494BB0 = 0x00494BB0;
-		__asm {
-			PUSHAD
-			MOV ECX, y
-			MOV EDX, x
-			MOV EAX, unit
-			CALL Func_Sub494BB0
-			POPAD
-		}
-	}
-
 	u32 RandBetween(u32 min, u32 max, u32 someIndex)
 	{
 		const u32 Func_RandBetween = 0x004DC550;
@@ -4580,7 +4567,7 @@ namespace helper
 
 	// for canCastOrderedSpellNow
 
-	bool isTargetWithinMinRange(Unit* a1, u32 a2, Unit* a3)
+	bool isTargetWithinMinRange(Unit* unit, u32 minRange, Unit* target)
 	{
 		const u32 Func_isTargetWithinMinRange = 0x00430F10;
 		static s32 result;
@@ -4588,9 +4575,9 @@ namespace helper
 
 		__asm {
 			PUSHAD
-			PUSH a3
-			PUSH a2
-			PUSH a1
+			PUSH target
+			PUSH minRange
+			MOV ECX, unit
 			CALL Func_isTargetWithinMinRange
 			MOV result, EAX
 			POPAD
@@ -4688,21 +4675,20 @@ namespace helper
 		}
 		return result;
 	}
-
-	Unit* setSecondaryWaypoint(Unit* a1, s32 a2, s32 a3)
+	
+	void setSecondaryWaypoint(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_setSecondaryWaypoint = 0x00494BB0;
 		static Unit* result;
 		__asm {
 			PUSHAD
-			MOV ECX, a3
-			MOV EDX, a2
-			MOV EAX, a1
+			MOV ECX, y
+			MOV EDX, x
+			MOV EAX, unit
 			CALL Func_setSecondaryWaypoint
 			MOV result, EAX
 			POPAD
 		}
-		return result;
 	}
 
 	Point32 setResourceTarget(Unit* a1)
@@ -4718,17 +4704,6 @@ namespace helper
 			POPAD
 		}
 		return resultPoint = *(Point32*)&result;
-	}
-
-	void ordersNothing2(Unit* a1)
-	{
-		const u32 Func_ordersNothing2 = 0x00475000;
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_ordersNothing2
-			POPAD
-		}
 	}
 
 	// for genericRightClickUnitProc2
@@ -8580,5 +8555,21 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	// For orders_Pickup4_0
+	void issueOrderTargetingGround(Unit* unit, u8 orderId, s16 x, s16 y)
+	{
+		const u32 Func_issueOrderTargetingGround = 0x00475260;
+		__asm
+		{
+			PUSHAD
+			PUSH y
+			PUSH x
+			PUSH orderId
+			MOV ESI, unit
+			CALL Func_issueOrderTargetingGround
+			POPAD
+		}
 	}
 }

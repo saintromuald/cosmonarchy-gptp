@@ -180,7 +180,8 @@ namespace hooks
 					unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 					unit->mainOrderState = 1;
 					auto origin = unit->eggOrigin;
-					if (origin == UnitId::ZergZethrokor)
+					if (origin == UnitId::ZergZethrokor
+						|| origin == UnitId::ZergNathrokor)
 					{
 						unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 					}
@@ -201,7 +202,6 @@ namespace hooks
 			// advance
 			if (helper::advanceRemainingBuildTime(unit))
 			{
-				auto origin = unit->eggOrigin;
 				auto anim = IscriptAnimation::SpecialState1;
 				unit->sprite->playIscriptAnim(anim, true);
 				unit->mainOrderState = 2;
