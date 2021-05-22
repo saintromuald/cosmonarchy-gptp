@@ -162,6 +162,14 @@ namespace hooks
 		if (unitExt->values[ValueDisruptionFieldOn]
 			|| unitExt->timers[TimerUnderDisruptionWeb])
 		{
+			if (unit->getAirWeapon() == wId)
+			{
+				unit->playIscriptAnim(IscriptAnimation::AirAttkToIdle);
+			}
+			else if (unit->getGroundWeapon() == wId)
+			{
+				unit->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
+			}
 			return;
 		}
 		u8 weaponId = wId;

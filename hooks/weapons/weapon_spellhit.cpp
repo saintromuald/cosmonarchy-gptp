@@ -273,6 +273,7 @@ namespace hooks
 		if (attackerExt->values[ValueDisruptionFieldOn]
 			|| attackerExt->timers[TimerUnderDisruptionWeb])
 		{
+			attacker->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
 			return;
 		}
 		Unit* target = attacker->orderTarget.unit;
