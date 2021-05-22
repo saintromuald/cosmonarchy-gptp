@@ -810,7 +810,54 @@ void cosmonarchyUnitAi(Unit* unit)
 			unit->mainOrderState = 0;
 		}
 	}
-	
+	else if (unit->id == UnitId::TerranSiren && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
+	{
+		if (unit->energy >= techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256)
+		{
+			u32 count = 0;
+			const u32 radius = 6 * 32;
+			scbw::UnitFinder(
+				unit->getX() - radius,
+				unit->getY() - radius,
+				unit->getX() + radius,
+				unit->getY() + radius
+			).forEach([&](Unit* target)
+			{
+				if (!(units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster))
+				{
+					return;
+				}
+				UnitExt* targetExt = globals.GetUnitExt(target);
+				auto& vec = targetExt->unitVectors[UnitVectorTertiaryEyesSirens];
+				if (std::find(vec.begin(), vec.end(), target) != vec.end())
+				{
+					return;
+				}
+				count += 1;
+			});
+
+			if (count >= 2)
+			{
+				scbw::set_generic_rust_value(unit, RustId::CastTertiaryEyes, 1);
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+			}
+			else
+			{
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			}
+		}
+		else
+		{
+			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+		}
+	}
+
+
+
+
+
+
+
 	/*	
 	else if (unit->id == UnitId::TerranPaladin) {
 		if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
