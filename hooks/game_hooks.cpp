@@ -232,6 +232,16 @@ namespace hooks
 
 			hooks::handleScreenHotkeys();
 			scbw::refreshScreen();
+
+			// Needed for extended tooltips
+			static bool lastShift = 0;
+			bool newShift = GetAsyncKeyState(VK_SHIFT) & 0x1;
+			if (lastShift != newShift)
+			{
+				scbw::refreshConsole();
+			}
+			lastShift = newShift;
+
 			globals.frameHook();
 
 			// Reset Treasury Stacks, before unit loop
