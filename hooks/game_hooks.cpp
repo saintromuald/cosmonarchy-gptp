@@ -924,12 +924,6 @@ namespace hooks
 			scbw::updateSignifyStatus(unit, unitExt);
 		}
 
-		// Disruption Web Clear Status
-		if (unitExt->timers[TimerDisruptionWebStatusClear] == 1)
-		{
-			unit->status &= ~UnitStatus::CanNotAttack;
-		}
-
 		if (unit->isFrozen())
 		{
 			scbw::decloakProc(unit);

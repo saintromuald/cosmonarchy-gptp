@@ -154,8 +154,12 @@ namespace hooks
 	// This also affects Unit::fireWeapon().
 	void fireWeaponHook(Unit* unit, u8 wId)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
 		if (unit == nullptr)
+		{
+			return;
+		}
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+		if (unitExt->timers[TimerDisruptionWebStatusClear])
 		{
 			return;
 		}
