@@ -84,7 +84,6 @@ namespace hooks
 						bDontAddToList = true;
 					}
 
-					bDontAddToList = false;
 					if (!bDontAddToList)
 					{
 						// 0046F18C
