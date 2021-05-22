@@ -271,7 +271,7 @@ namespace hooks
 	{
 		UnitExt* attackerExt = globals.GetUnitExt(attacker);
 		if (attackerExt->values[ValueDisruptionFieldOn]
-			|| attackerExt->timers[TimerDisruptionWebStatusClear])
+			|| attackerExt->timers[TimerUnderDisruptionWeb])
 		{
 			return;
 		}

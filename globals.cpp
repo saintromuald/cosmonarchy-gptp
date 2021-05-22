@@ -649,7 +649,7 @@ void Globals::frameHook()
 							return;
 						}
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						unitExt->timers[TimerDisruptionWebStatusClear] = 7;
+						unitExt->timers[TimerUnderDisruptionWeb] = 7;
 					});
 				} break;
 				case EffectId::GroundZero:

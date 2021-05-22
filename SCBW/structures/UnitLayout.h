@@ -294,7 +294,7 @@ enum ExtTimerId
 	TimerSignify,
 	TimerReviveFlagClearMin,
 	TimerReviveFlagClearMax,
-	TimerDisruptionWebStatusClear,
+	TimerUnderDisruptionWeb,
 	TimerAkistrokorInfestationInvFrames,
 		
 	TimerAI_Lazarus,
