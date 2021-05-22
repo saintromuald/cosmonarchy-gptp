@@ -339,7 +339,7 @@ SCBW_DATA(Unit**, airSplashList, 0x0064EEE0);	// size of 1700
 SCBW_DATA(s32*, airSplashListCount, 0x0046DEB4);
 SCBW_DATA(s32*, isInGroundSplashProc, 0x0064DEB8);
 
-// For AI_AddMilitary -- Must add struct
+// For AI_AddMilitary
 SCBW_DATA(pathing**, SAI_Paths, 0x006D5BFC);
 
 SCBW_DATA(AiTown*, AiArray, 0x006AA090);

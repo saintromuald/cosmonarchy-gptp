@@ -276,7 +276,7 @@ namespace hooks
 							v11 = v9->field_18;
 							*(s32*)&v9->field_C = parentAi;
 							v9->regionAirStrength = v10;
-							v9->fullGndStrength = v11;
+							v9->fullGroundStrength = v11;
 							parentAi->pAI = (UnitAi*)v9;
 							return;
 						}
@@ -1507,5 +1507,97 @@ LABEL_22:
 				}
 			}
 		}
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	u32 AI_RecalculateRegionStrength(AiRegion* region) // 0043A390
+	{
+		AiTown* regionTown;
+		WorkerAi* v2;
+		s32 v3;
+		s16 v4;
+		Sprite* v5;
+		s32 v6;
+		s16 v7;
+		s32 v8;
+		s32 v9;
+		s32 regionTown0;
+		u32 regionTown1;
+		u32 regionTown2;
+		u32 result;
+		s16 a1;
+		s16 regionTown5;
+		s32 regionTown6;
+		AiTown* i;
+		const u32 Func_CB_AICaptainStrengthIterator = 0x00438F60;
+
+		regionTown = region->town;
+		region->regionAirStrength = 0;
+		region->fullAirStrength = 0;
+		region->regionGroundStrength = 0;
+		region->fullGroundStrength = 0;
+		for (i = regionTown; i; i = i->link.prev)
+		{
+			v2 = i->workers;
+			if (!(v2->parent->status & UnitStatus::InBuilding))
+			{
+				v3 = (u16)v2->parent->groundStrength;
+				v4 = v2->parent->airStrength;
+				region->fullAirStrength += v4;
+				region->fullGroundStrength += v3;
+				v5 = v2->parent->sprite;
+				v6 = v5->position.x;
+				regionTown6 = v3;
+				if (helper::SAI_GetRegionIdFromPxEx(v6, v5->position.y) == region->region)
+				{
+					v7 = regionTown6;
+					region->regionAirStrength += v4;
+					region->regionGroundStrength += v7;
+				}
+			}
+		}
+		if (AIScriptController[(u8)region->playerId].AI_Flags.isUseMapSettings)
+		{
+			v8 = (u16)region->region << 6;
+			v9 = *(s32*)((char*)&SAI_Paths->regions[0].regionCenterY + v8);
+			regionTown0 = *(s32*)((char*)&SAI_Paths->regions[0].rgnCenterX + v8) >> 8;
+			v9 >>= 8;
+			a1 = regionTown0 - 256;
+			HIWORD(regionTown6) = v9 + 256;
+			regionTown5 = v9 - 256;
+			LOWORD(regionTown6) = regionTown0 + 256;
+			helper::iterateUnitsAtLocationTargetProc((Box16*)&a1, (s32(__fastcall*)(s32, s32))Func_CB_AICaptainStrengthIterator, (Unit*)region);
+		}
+		regionTown1 = (u16)region->enemyAirStrength;
+		if (!(AIScriptController[(u8)region->playerId].AI_Flags.isUseMapSettings))
+		{
+			regionTown1 += regionTown1 >> 1;
+		}
+		if (regionTown1 > region->neededAirStrength)
+		{
+			region->neededAirStrength = regionTown1;
+		}
+		regionTown2 = (u16)region->enemyGroundStrength;
+		if (!(AIScriptController[(u8)region->playerId].AI_Flags.isUseMapSettings))
+		{
+			regionTown2 += regionTown2 >> 1;
+		}
+		if (regionTown2 > region->neededGroundStrength)
+		{
+			region->neededGroundStrength = regionTown2;
+		}
+		result = (u16)AIScriptController[(u8)region->playerId].AI_MaxForce;
+		if (AIScriptController[(u8)region->playerId].AI_MaxForce)
+		{
+			if (region->neededAirStrength > result)
+			{
+				region->neededAirStrength = result;
+			}
+			if (region->neededGroundStrength > result)
+			{
+				region->neededGroundStrength = result;
+			}
+		}
+		return result;
 	}
 }
