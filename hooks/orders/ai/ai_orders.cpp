@@ -328,12 +328,12 @@ namespace hooks
 				if (unitAI != nullptr)
 				{
 					unitAI->link.next = 0;
-					unitAI->link.prev = (UnitAi*)town->worker;
-					if (town->worker)
+					unitAI->link.prev = (UnitAi*)town->firstTownUnit;
+					if (town->firstTownUnit)
 					{
-						town->worker->link.next->pAI = (WorkerAi*)unitAI;
+						town->firstTownUnit->link.next->pAI = (WorkerAi*)unitAI;
 					}
-					town->worker->pAI = (WorkerAi*)unitAI;
+					town->firstTownUnit->pAI = (WorkerAi*)unitAI;
 					unitAIWorker = (WorkerAi*)unitAI;
 					unitAIWorker->type = 2;
 					unitAIWorker->parent = unit;
@@ -866,7 +866,7 @@ LABEL_126:
 				{
 					if (result->id == UnitId::TerranWatchdog)
 					{
-						workerUnit = parentTown->worker;
+						workerUnit = parentTown->firstTownUnit;
 						for (i = 0; workerUnit; i += queueCount)
 						{
 							workerTarget = workerUnit->moveTarget.unit;
@@ -1521,7 +1521,11 @@ LABEL_22:
 			
 		for (AiTown* i = regionTown; i; i = i->link.prev)
 		{
-			Unit* townUnit = i->worker;
+			Unit* townUnit = i->firstTownUnit;
+			if (!townUnit)
+			{
+				continue;
+			}
 			if (!(townUnit->status & UnitStatus::InBuilding))
 			{
 				s32 townUnitGroundStrength = townUnit->groundStrength;
