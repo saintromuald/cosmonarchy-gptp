@@ -519,6 +519,7 @@ void cosmonarchyUnitAi(Unit* unit)
 				{
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
 					localUnitExt->timers[TimerAI_Kite] = 12;
+					localUnit->orderComputerClear(OrderId::ComputerAI);
 				});
 				return;
 			}
