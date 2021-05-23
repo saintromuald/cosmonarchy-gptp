@@ -17,7 +17,7 @@ namespace hooks
 			bool isSelected;
 			u32 selectionIndex = 0;
 
-			helper::function_004A1E50(unit, 0);
+			helper::removeUnitAI(unit, 0);
 
 			if (unit->isRemorphingBuilding())
 			{
@@ -30,7 +30,7 @@ namespace hooks
 			if (unit->status & UnitStatus::Completed)
 				helper::incrementUnitScoresEx(unit, 0, -1);
 
-			isSelected = (unit->sprite->flags & CSprite_Flags::Selected) == 1;
+			isSelected = (unit->sprite->flags & SpriteFlags::Selected) == 1;
 
 			if (isSelected)
 			{

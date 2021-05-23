@@ -59,7 +59,7 @@ void save_config()
 	WriteField(out, "verbose", config.verbose);
 	out << YAML::Newline << YAML::Newline;
 
-	out << YAML::Comment("Hotkeys (Not Implemented Yet)");
+	out << YAML::Comment("Hotkeys");
 	WriteField(out, "grid-hotkeys", YAML::BeginMap);
 	WriteField(out, "enabled", config.grid_hotkeys);
 	WriteField(out, "layout", YAML::BeginSeq);

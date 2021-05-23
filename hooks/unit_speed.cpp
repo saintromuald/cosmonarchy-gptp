@@ -3,11 +3,11 @@
 #include "unit_speed.h"
 #include "../SCBW/enumerations.h"
 #include "../SCBW/scbwdata.h"
-#include "hooks/cosmonarchyFinder.h"
+#include "hooks/cosmonarchy_finder.h"
 #include <SCBW/UnitFinder.h>
 #include "SCBW/api.h"
 #include "globals.h"
-#include "MathUtils.h"
+#include "math_utils.h"
 #include "Utils/captivating_claws.h"
 
 namespace hooks
@@ -46,9 +46,9 @@ namespace hooks
 		speed *= 1.0 + unitExt->values[ValueTerminalSurge] * 0.05;
 
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby allies after kill
-		if (unitExt->timers[TimerNathrokor])
+		if (unitExt->timers[TimerNathrokorBuff])
 		{
-			speed *= 1.25;
+			speed *= 1 + 0.01 * unitExt->values[ValueNathrokorBuffStacks];
 		}
 
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
@@ -250,13 +250,20 @@ namespace hooks
 				speed *= multiplier;
 			} break;
 			// Hardcode ideal movement speeds
+			case UnitId::TerranClaymore:
+			{
+				speed *= 0.9;
+			} break;
+			case UnitId::ZergKonvilisk:
+			{
+				speed *= 1.1;
+			} break;
 			case UnitId::TerranCyprian:
 			case UnitId::TerranEidolon:
 			case UnitId::ProtossAmaranth:
 			case UnitId::ProtossCabalist:
-			case UnitId::ZergZergling:
+			case UnitId::ZergZethrokor:
 			case UnitId::ZergZoryusthaleth:
-			case UnitId::ZergKonvilisk:
 			{
 				speed *= 1.2;
 			} break;
@@ -269,10 +276,6 @@ namespace hooks
 			case UnitId::ZergHydralisk:
 			{
 				speed *= 1.5;
-			} break;
-			case UnitId::TerranClaymore:
-			{
-				speed *= 0.9;
 			} break;
 		}
 

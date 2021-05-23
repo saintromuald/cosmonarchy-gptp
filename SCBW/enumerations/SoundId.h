@@ -1149,7 +1149,6 @@ namespace SoundId
 		Protoss_Artanis_PAtYes02_wav = 1142,
 		Protoss_Artanis_PAtYes03_wav = 1143,
 
-
 		// Cosmonarchy \\
 
 		WyvernAttack01 = 1118,
@@ -1165,6 +1164,7 @@ namespace SoundId
 		ArchitectWeaponSplit01 = 1416,
 		DemiurgeWorship01 = 1417,
 		SirenTertiaryEyesCast01 = 1459,
+		OlympianMythicalMight01 = 1576,
 
 	};
 }
@@ -1215,10 +1215,10 @@ namespace DeathSoundId
 		{ SoundId::Terran_Medic_TMdDth00_wav, SoundId::Terran_Medic_TMdDth00_wav },					//TerranMedic
 		{ SoundId::Zerg_Larva_ZLaDth00_WAV, SoundId::Zerg_Larva_ZLaDth00_WAV }, 					//ZergLarva
 		{ SoundId::Zerg_Egg_ZEgDth00_WAV, SoundId::Zerg_Egg_ZEgDth00_WAV }, 						//ZergEgg
-		{ SoundId::Zerg_Zergling_ZZeDth00_WAV, SoundId::Zerg_Zergling_ZZeDth00_WAV },				//ZergZergling
+		{ SoundId::Zerg_Zergling_ZZeDth00_WAV, SoundId::Zerg_Zergling_ZZeDth00_WAV },				//ZergZethrokor
 		{ SoundId::Zerg_Hydra_ZHyDth00_WAV, SoundId::Zerg_Hydra_ZHyDth00_WAV }, 					//ZergHydralisk
 		{ SoundId::Zerg_Ultra_ZUlDth00_WAV, SoundId::Zerg_Ultra_ZUlDth00_WAV }, 					//ZergUltralisk
-		{ SoundId::Zerg_BROODLING_ZBrDth00_WAV, SoundId::Zerg_BROODLING_ZBrDth00_WAV },				//ZergBroodling
+		{ SoundId::Zerg_BROODLING_ZBrDth00_WAV, SoundId::Zerg_BROODLING_ZBrDth00_WAV },				//ZergRilirokor
 		{ SoundId::Zerg_DRONE_ZDrDth00_WAV, SoundId::Zerg_DRONE_ZDrDth00_WAV },						//ZergDrone
 		{ SoundId::Zerg_OVERLORD_ZOvDth00_WAV, SoundId::Zerg_OVERLORD_ZOvDth00_WAV },				//ZergOverlord
 		{ SoundId::Zerg_Mutalid_ZMuDth00_WAV, SoundId::Zerg_Mutalid_ZMuDth00_WAV }, 				//ZergMutalisk
@@ -1320,7 +1320,7 @@ namespace DeathSoundId
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergEvolutionChamber
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergUltraliskCavern
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSpire
-		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSpawningPool
+		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergQuazrokPool
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergCreepColony
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSporeColony
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//UnusedZerg1

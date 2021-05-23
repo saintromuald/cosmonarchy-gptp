@@ -102,7 +102,7 @@ namespace hooks
 			unit->id != UnitId::ZergHydralisk &&
 			unit->id != UnitId::ZergHatchery &&
 			unit->id != UnitId::ZergLair &&
-			unit->id != UnitId::ZergMutalSpire &&
+			unit->id != UnitId::ZergMuthrokSpire &&
 			unit->id != UnitId::ZergCreepColony &&
 			unit->status & UnitStatus::Completed &&
 			unit->playerId == *ACTIVE_NATION_ID

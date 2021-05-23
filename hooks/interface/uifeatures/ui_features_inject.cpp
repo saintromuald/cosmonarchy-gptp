@@ -1,4 +1,4 @@
-#include "uifeatures.h"
+#include "ui_features.h"
 #include "hook_tools.h"
 
 namespace
@@ -109,6 +109,46 @@ namespace
 			RETN 0x8
 		}
 	}
+
+	void __declspec(naked) checkHotkeyChar_wrapper()
+	{
+		static b32 result;
+		static BinDlg* dialog;
+		static char* hotkey;
+
+		__asm
+		{
+			MOV dialog, ECX
+			MOV hotkey, EDX
+			PUSHAD
+		}
+		result = hooks::checkHotkeyChar(dialog, *hotkey);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) createUpgradeLevelTooltip_wrapper()
+	{
+		static char result;
+		static char* text;
+
+		__asm
+		{
+			MOV text, ECX
+			PUSHAD
+		}
+		result = hooks::createUpgradeLevelTooltip(text);
+		__asm
+		{
+			POPAD
+			MOVZX EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -119,5 +159,8 @@ namespace hooks
 //		jmpPatch(targetedOrder_Wrapper, 0x004754F0, 1);
 //		jmpPatch(selectUnits_Wrapper, 0x0046FA00, 1);
 		jmpPatch(QueueGameCommand_wrapper, 0x00485BD0, 4);
+
+		jmpPatch(checkHotkeyChar_wrapper, 0x004588C0, 3);
+		//jmpPatch(createUpgradeLevelTooltip_wrapper, 0x00459150, 3);
 	}
 }

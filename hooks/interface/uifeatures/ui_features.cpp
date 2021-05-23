@@ -1,4 +1,4 @@
-#include "uifeatures.h"
+#include "ui_features.h"
 #include <string>
 #include <sstream>
 #include <vector>
@@ -52,12 +52,14 @@ namespace hooks
 		return numberWithLeadingZero(hrs) + std::string(":") + numberWithLeadingZero(min) + std::string(":") + numberWithLeadingZero(sec);
 	}
 	/*
+		APM Counter TODO
+
 		We have hooks for:
 		- Most Orders
 		- Shift, Shift+Box, Double Click
 		- Queue Game Command
 
-		We need hooks for*:
+		We need hooks for:
 		- Morph, training and building orders
 		- Lift off, land orders
 		- Single unit selection, drag selection, select larva
@@ -69,9 +71,9 @@ namespace hooks
 		totalActions++;
 	}
 
-	void clearActions()
-	{ // Called on map start
-//actions.clear();
+	void clearActions() // Called on map start
+	{
+		//actions.clear();
 		totalActions = 0;
 	}
 
@@ -204,5 +206,62 @@ LABEL_15:
 		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0)
 			result = helper::selectMultipleUnitsFromUnitList(a2, a1, a3, a4);
 		return result;
+	}
+
+	b32 checkHotkeyChar(BinDlg* dialog, char hotkey)
+	{
+		if (dialog->index < 0 || dialog->index > 9)
+		{
+			return 0;
+		}
+		if (!(dialog->flags & BinDlgFlags::Visible) || dialog->flags & BinDlgFlags::Disabled)
+		{
+			return 0;
+		}
+
+		char* label = helper::getStatTxtString(dialog->buttonUser->reqStringID);
+		if (*label == 27 && hotkey == label[0]) // escape handling for grid hotkeys
+		{
+			return 1;
+		}
+
+		if (config.grid_hotkeys && dialog->index > 0)
+		{
+			int index = dialog->index - 1;
+			int x = index % 3;
+			int y = index / 3;
+			return hotkey == tolower(config.layout[y].at(x));
+		}
+
+		return hotkey == label[0];
+	}
+
+	char createUpgradeLevelTooltip(char* text)
+	{
+		if (!*upgradeLevelTooltip)
+		{
+			if (text)
+			{
+				return helper::CreateTooltip(text);
+			}
+			return helper::refreshSelectionScreen();
+		}
+		if (!text)
+		{
+			return helper::refreshSelectionScreen();
+		}
+		const char* description;
+		if (**statTxtBuffer > 794u)
+		{
+			description = (char *)*statTxtBuffer + (*statTxtBuffer)[795];
+		}
+		else
+		{
+			description = "";
+		}
+		char buffer[128];
+		sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)*upgradeLevelTooltip);
+		scbw::printf("%s", buffer);
+		return helper::CreateTooltip(buffer);
 	}
 }

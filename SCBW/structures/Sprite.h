@@ -12,7 +12,7 @@ struct Image;
 
 //note: the flag number is chosen according to the value used in 
 //<< flag operations, that's why it start with 0.
-namespace CSprite_Flags
+namespace SpriteFlags
 {
 	enum Enum : u8
 	{

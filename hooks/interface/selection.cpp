@@ -84,7 +84,6 @@ namespace hooks
 						bDontAddToList = true;
 					}
 
-					bDontAddToList = false;
 					if (!bDontAddToList)
 					{
 						// 0046F18C
@@ -230,7 +229,7 @@ namespace hooks
 		Box16 local_temp_box16_structure;	// used instead of using from [EBP-0C] to [EBP-06]
 
 		bool isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit =
-			*IS_HOLDING_CTRL || (*IS_DOUBLE_CLICKING && (clicked_unit->sprite->flags & CSprite_Flags::Selected));
+			*IS_HOLDING_CTRL || (*IS_DOUBLE_CLICKING && (clicked_unit->sprite->flags & SpriteFlags::Selected));
 
 		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 		{
@@ -333,7 +332,7 @@ namespace hooks
 						local_temp_array_1[arrayIndex] = activePlayerSelection->unit[arrayIndex];
 					}
 
-					if (!(clicked_unit->sprite->flags & CSprite_Flags::Selected))
+					if (!(clicked_unit->sprite->flags & SpriteFlags::Selected))
 					{
 						// 0x0046FD13 (getting unit sprite) and 0x0046FD18 (middle of the test with the flag)
 						// unit not selected, so it's added to current selection if valid

@@ -635,6 +635,7 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 
 //-------- AI related stuff --------//
 
+struct AiTown;
 struct MilitaryAiArray; // declaring this here to avoid compiler errors
 struct AiRegion // AiRegion
 {
@@ -649,9 +650,9 @@ struct AiRegion // AiRegion
 	/*0A*/  u16 groundUnitCount;
 	/*0C*/  u16 neededGroundStrength;
 	/*0E*/  u16 neededAirStrength;
-	/*10*/  u16 regionGndStrength;
+	/*10*/  u16 regionGroundStrength;
 	/*12*/  u16 regionAirStrength;
-	/*14*/  u16 fullGndStrength;
+	/*14*/  u16 fullGroundStrength;
 	/*16*/  u16 fullAirStrength;
 	/*18*/  u16 enemyAirStrength;
 	/*1A*/  u16 enemyGroundStrength;
@@ -660,7 +661,7 @@ struct AiRegion // AiRegion
 	/*24*/  Unit* slowestUnit;
 	/*28*/  Unit* followTarget;
 	/*2C*/  MilitaryAiArray* military;
-	/*30*/  void* town;
+	/*30*/  AiTown* town;
 };
 
 C_ASSERT(sizeof(AiRegion) == 52);
@@ -675,11 +676,23 @@ C_ASSERT(sizeof(UnitAi) == 9);
 
 struct Region
 {
-	u16 accessabilityFlags;
-	u16 group;
-	u8 _dc4[0x14];
-	Box16 area;
-	u8 _dc20[0x20];
+	u16		accessabilityFlags;		// 0x00
+	u16		groupIndex;				// 0x02
+	u16		tileCount;				// 0x04
+	u8		pathCount;				// 0x06
+	u8		neighborCount;			// 0x07
+	u32		field_8;				// 0x08
+	u32		neighbors;				// 0x0C
+	u32		regionCenterX;			// 0x10
+	u32		regionCenterY;			// 0x14
+	u16		left;					// 0x18
+	u16		top;					// 0x1A
+	u16		right;					// 0x1C
+	u16		bottom;					// 0x1E
+	u32		properties;				// 0x20
+	u32		field_24;				// 0x24
+	u32		field_28;				// 0x28
+	u16		localData[14];			// 0x2C
 };
 
 struct pathing
@@ -689,8 +702,6 @@ struct pathing
 	Region regions[5000];
 	u8 _dc92bfc[0x4e24];
 };
-
-C_ASSERT(sizeof(pathing) == 0x97a20);
 
 struct GuardAi
 {
@@ -773,7 +784,7 @@ struct AiTown
 {
 	Link<AiTown> link;							//	0x0 and 0x4
 	WorkerAiArray* free_workers;				//	0x8
-	WorkerAi* workers;							//	0xC
+	Unit* firstTownUnit;						//	0xC
 	BuildingAiArray* free_buildings;			//	0x10
 	BuildingAi* buildings;						//	0x14
 	u8 player;									//	0x18

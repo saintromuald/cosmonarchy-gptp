@@ -2,9 +2,9 @@
 #include "../../SCBW/api.h"
 #include <algorithm>
 #include <cmath>
-#include "MathUtils.h"
+#include "math_utils.h"
 #include "Utils/captivating_claws.h"
-#include "hooks/cosmonarchyFinder.h"
+#include "hooks/cosmonarchy_finder.h"
 #include "globals.h"
 #include "logger.h"
 
@@ -281,6 +281,22 @@ namespace hooks
 					}
 				}
 			}
+
+			// Sovroleth Armor Bonus
+			for (Unit* unit : targetExt->unitVectors[UnitVectorAttachedSource])
+			{
+				if (unit->id == UnitId::ZergSovroleth)
+				{
+					armorTotal += 128;
+				}
+			}
+
+			// Autocrat Controlled Opposition
+			if (targetExt->values[ValueControlledOpposition])
+			{
+				armorTotal = std::max(armorTotal - (s32)targetExt->values[ValueControlledOpposition] * 256, 0);
+			}
+
 			data.finalDamage -= std::min(data.finalDamage, armorTotal);
 		}
 
@@ -292,6 +308,7 @@ namespace hooks
 			{
 				case UnitId::TerranHarakan:
 				{
+					// Harakan Apollyoid Adhesive - Full damage to structures
 					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
 					{
 						damage_factor = 256;
@@ -304,6 +321,16 @@ namespace hooks
 		if (data.shieldReduceAmount == 0 && data.finalDamage < 128)
 		{
 			data.finalDamage = 128;
+		}
+
+		// Olympian Mythical Might - execute enemies below 10% HP
+		if (!data.dontProcPhaseLink && (data.weaponId == WeaponId::OlympianMountainGun || data.weaponId == WeaponId::OlympianTitansFist))
+		{
+			if (data.target->hitPoints < data.target->getMaxHpRaw() * 0.1)
+			{
+				helper::playSoundFromSource(SoundId::OlympianMythicalMight01, data.target, 1, 0);
+				data.finalDamage = data.target->hitPoints;
+			}
 		}
 
 		weaponDamage_behaviors(data);
@@ -392,6 +419,8 @@ namespace hooks
 				// Searing Acid - Guardian behavior
 				data.finalDamage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
 			} break;
+			case WeaponId::SouthpawUppercutLaser:
+			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::GlaveWurm:
 			case WeaponId::CharlatanFerventBlaster:
 			{
@@ -405,7 +434,7 @@ namespace hooks
 					} break;
 					case 1:
 					{
-						mul = 1.0 / 3.0; // glave wurm 1st bounce
+						mul = 1.0 / 3.0; // 1st bounce
 					} break;
 					case 2:
 					{
@@ -413,7 +442,7 @@ namespace hooks
 					} break;
 					default:
 					{
-						mul = 1.0 / 9.0; // glave wurm 4th bounce
+						mul = 1.0 / 9.0; // 3rd bounce, currently unused
 					} break;
 				};
 				data.finalDamage *= mul;
@@ -458,6 +487,16 @@ namespace hooks
 		if (data.attacker != nullptr)
 		{
 			UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
+
+			// Akistrokor - Last hit tracking
+			if (targetExt->values[ValueEnthrallingTalons] > 0)
+			{
+				auto& vec = targetExt->unitVectors[UnitVectorAttachedSource];
+				if (std::find(vec.begin(), vec.end(), data.attacker) != vec.end())
+				{
+					targetExt->units[UnitLastHitAkistrokor] = data.attacker;
+				}
+			}
 
 			// Vithrilisk - Critical Mass (procced by any attack now)
 			if (targetExt->values[ValueCorrosiveTouchStacks])
@@ -558,12 +597,24 @@ namespace hooks
 
 			switch (data.weaponId)
 			{
+				case WeaponId::NathrokorPlasmidBreath:
+				{
+					// Adrenal Frenzy - Nathrokor behavior
+					targetExt->nathrokorTargetStacks[data.attackingPlayerId]++;
+				} break;
 				case WeaponId::DemiurgeGalacticWeaver:
 				{
 					// Demiurge - Worship
 					if (data.target->playerId != data.attacker->playerId
 						&& data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2))
 					{
+						auto& vec = attackerExt->unitVectors[UnitVectorWorshipersDemiurge];
+							
+						if (std::find(vec.begin(), vec.end(), data.target) == vec.end())
+						{
+							vec.push_back(data.target);
+						}
+
 						targetExt->values[ValueWorshipStack] = 1;
 						targetExt->units[UnitWorshipDemiurge] = data.attacker;
 						targetExt->values[ValueWorshipOriginalPlayer] = data.target->playerId;
@@ -600,6 +651,11 @@ namespace hooks
 							data.target->sprite->createOverlay(1332 + overlayOffset);
 						}
 					}
+				} break;
+				case WeaponId::AutocratEminanceRifle:
+				{
+					// Apply Controlled Opposition
+					targetExt->values[ValueControlledOpposition]++;
 				} break;
 				case WeaponId::SavantDiscoidRailgun:
 				{
@@ -857,6 +913,15 @@ namespace hooks
 			});
 		}
 
+		// Akistrokor - Prevent killing from own attacks just after the infestation
+		if (targetExt->timers[TimerAkistrokorInfestationInvFrames])
+		{
+			if (scbw::isAlliedTo(data.attackingPlayerId, targetExt->values[ValueAkistrokorInfestationSourcePlayer]))
+			{
+				data.finalDamage = 0;
+			}
+		}
+
 		// Akistrokor - Enthralling Assault
 		if (targetExt->values[ValueEnthrallingTalons] > 0)
 		{
@@ -865,15 +930,23 @@ namespace hooks
 			data.target->setHp(256);
 			targetExt->timers[TimerEnthrallingAssaultHeal] = 24 * 10;
 
+			// Prevent killing the unit from own attacks
+			targetExt->values[ValueAkistrokorInfestationSourcePlayer] = data.attacker->playerId;
+			targetExt->timers[TimerAkistrokorInfestationInvFrames] = 24;
+
 			// Transfer unit ownership
-			Unit* akistrokor = targetExt->units[UnitAttachedSource];
-			if (akistrokor)
-			{
-				data.target->giveTo(akistrokor->playerId);
-			}
+			Unit* unit = targetExt->units[UnitLastHitAkistrokor];
+			data.target->giveTo(unit->playerId);
 
 			// Cancel the attachment
-			scbw::set_generic_rust_value(akistrokor, RustId::CancelAttachment, 1);
+			auto& vec = targetExt->unitVectors[UnitVectorAttachedSource];
+			for (Unit* source : vec)
+			{
+				if (source->id == UnitId::ZergAkistrokor)
+				{
+					scbw::set_generic_rust_value(unit, RustId::CancelAttachment, 1);
+				}
+			}
 		}
 
 		switch (data.target->id)
@@ -969,30 +1042,8 @@ namespace hooks
 					attackerExt->timers[TimerKaiserRampage] = 1 + (2 * 24);
 					data.attacker->updateSpeed();
 				} break;
-				case WeaponId::NathrokorPlasmidBreath:
-				{
-					// Adrenal Frenzy - Nathrokor behavior
-					s32 player = data.attacker->playerId;
-					const s32 range = 48;
-					scbw::UnitFinder(
-						data.attacker->getX() - range,
-						data.attacker->getY() - range,
-						data.attacker->getX() + range,
-						data.attacker->getY() + range
-					).forEach([&](Unit* unit)
-					{
-						if (unit == nullptr
-							|| (player != unit->playerId && !scbw::isAlliedTo(player, unit->playerId)))
-						{
-							return;
-						}
-						UnitExt* forEachExt = globals.GetUnitExt(unit);
-						forEachExt->timers[TimerNathrokor] = (4 * 24) + 1;
-						unit->updateSpeed();
-					});
-				} break;
 				case WeaponId::ToxicSpores:
-				case WeaponId::BroodliskSwarmingSpores:
+				case WeaponId::RililiskSwarmingSpores:
 				{
 					// Incubators - Broodling/Broodlisk behavior
 					s32 type = data.attacker->id;
@@ -1004,8 +1055,17 @@ namespace hooks
 				case WeaponId::CyclopsFlakCannons:
 				{
 					// Cyclops - Flak Cannon passive
-					auto newAngle = scbw::getAngle(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
-					helper::createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
+					helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, data.target->getX(), data.target->getY(), 11);
+					const u32 radius = 1.5 * 32;
+					scbw::UnitFinder(
+						data.target->getX() - radius,
+						data.target->getY() - radius,
+						data.target->getX() + radius,
+						data.target->getY() + radius
+					).forEachInMatch(cosmonarchyFinderMatch(data.target, Flags::NotSelf, {}), [&](Unit* target)
+					{
+						target->damageWithCustom(10 * 256, DamageType::Impact, data.attacker, data.attackingPlayerId, 0, 1, false);
+					});
 				} break;
 			}
 

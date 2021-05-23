@@ -1,6 +1,6 @@
 #include <SCBW/api.h>
 #include "globals.h"
-#include <MathUtils.h>
+#include <math_utils.h>
 
 namespace hooks
 {

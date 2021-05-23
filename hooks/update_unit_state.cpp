@@ -102,7 +102,7 @@ namespace hooks
 			}
 
 			//If the unit is currently selected, redraw its graphics
-			if (!bStopHere && unit->sprite->flags & CSprite_Flags::Selected)
+			if (!bStopHere && unit->sprite->flags & SpriteFlags::Selected)
 			{
 				helper::setAllImageGroupFlagsPal11(unit->sprite);
 			}
@@ -112,7 +112,8 @@ namespace hooks
 	static bool wyvernCanFireAt(Unit* unit, Unit* target)
 	{
 		return scbw::canWeaponTargetUnit(WeaponId::WyvernJacksonCannon, target, unit)
-			&& scbw::getDistanceFast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
+			&& scbw::getDistanceFast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon]
+			&& unit->canAttackTarget(target);
 	}
 
 	/// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
@@ -123,7 +124,7 @@ namespace hooks
 
 		if (unit->pAI != nullptr)
 		{
-			cosmonarchy_unit_ai(unit);
+			cosmonarchyUnitAi(unit);
 		}
 
 		// Timers
@@ -370,14 +371,14 @@ namespace hooks
 			}
 			else
 			{
-				if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->combatTimer > 2 * 24)
+				if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->damageReceiveTimer > 2 * 24)
 				{
 					unit->shields += 11;
 					if (unit->shields > maxShields)
 					{
 						unit->shields = maxShields;
 					}
-					if (unit->sprite->flags & CSprite_Flags::Selected)
+					if (unit->sprite->flags & SpriteFlags::Selected)
 					{	// If the unit is currently selected, redraw its graphics
 						helper::setAllImageGroupFlagsPal11(unit->sprite);
 					}
@@ -386,7 +387,7 @@ namespace hooks
 		}
 
 		// supposedly, allows Zerglings to attack after unburrowing without delay
-		if (unit->id == UnitId::ZergZergling)
+		if (unit->id == UnitId::ZergZethrokor)
 		{
 			if (unit->groundWeaponCooldown == 0)
 			{
@@ -395,7 +396,7 @@ namespace hooks
 		}
 
 		// update unit status effects (stim, maelstrom, plague, etc.)
-		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & CSprite_Flags::Hidden))
+		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & SpriteFlags::Hidden))
 		{
 			unit->cycleCounter++;
 			if (unit->cycleCounter >= 8)
@@ -447,7 +448,7 @@ namespace hooks
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
 				unit->hitPoints > 0 &&
 				unit->hitPoints / 256 != unit->getMaxHpInGame() && 
-				unitExt->combatTimer > 2 * 24)
+				unitExt->damageReceiveTimer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
 				if (unitExt->timers[TimerAlaszilethRegenBoost] > 0)

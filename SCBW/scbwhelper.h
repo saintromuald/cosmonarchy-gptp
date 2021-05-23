@@ -136,7 +136,7 @@ namespace helper
 	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 always_this_region);
 
 	// For AI_TrainingWorker
-	char AI_AddUnitAI(Unit* worker, AiTown* town);									// 00433DD0
+	char AI_AddWorkerStructureAI(Unit* worker, AiTown* town);									// 00433DD0
 
 	// for AI_AddUnitAI
 	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI);
@@ -177,6 +177,11 @@ namespace helper
 	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList);
 	s32 AI_GetQueuedCount(Unit* builder, u32 unitId);
 	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);
+
+	// For AI_SendSuicide
+	bool isThreat(Unit* target, Unit* unit);		// 00476930
+	void prepSuicide(Unit* unit);					// 0043CD40
+	u32 AI_AttackClear(s32 player);					// 00439500
 
 	// Attack extender
 
@@ -301,7 +306,7 @@ namespace helper
 	bool canStillPlaceBuilding();														                    // 0048DDA0
 	void endBuildingPlacement();															                // 0048E310
 	void playBuildingCompleteSound(Unit* building);															// 0048F310
-	void function_00494BB0(Unit* unit, s32 x, s32 y);									                    // 00494BB0
+	void setSecondaryWaypoint(Unit* unit, s32 x, s32 y);									                // 00494BB0
 	void displayLastNetErrorForPlayer(u32 playerId);									                    // 0049E530
 	u32 RandomizeShort(u32 unknown_index);																	// 004DC4A0
 	u32 RandBetween(u32 min, u32 max, u32 someIndex);														// 004DC550
@@ -425,7 +430,7 @@ namespace helper
 	void function_00463040(Unit* unit);																									// 00463040
 	void function_00476D30(Unit* unit);																									// 00476D30
 	void incrementUnitScores(Unit* unit, s32 unkScore);																					// 00488BF0
-	void function_004A1E50(Unit* unit, u32 unk);																						// 004A1E50
+	void removeUnitAI(Unit* unit, u32 unk);																								// 004A1E50
 	void CreateUnitSelection(Unit* unit, u32 selectionIndex);																			// 004E6180
 	void DestroyUnitSelection(Unit* unit);																								// 004E6290
 	void function_004F3B70(Unit* powerup);																								// 004F3B70
@@ -499,7 +504,7 @@ namespace helper
 	bool isAngleInAttackAngle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4);
 
 	// for canCastOrderedSpellNow
-	bool isTargetWithinMinRange(Unit* a1, u32 a2, Unit* a3);
+	bool isTargetWithinMinRange(Unit* unit, u32 minRange, Unit* target);
 	s32 getFlingyHaltDistance(s32 a1);
 
 	// for ordersWatchTarget
@@ -509,7 +514,6 @@ namespace helper
 	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, s32 a4);
 	s32 ordersHoldPositionSuicidal(Unit* a1);
 	s32 getDirectionFromPoints(s32 a1, s32 a2, s32 a3, s32 a4);
-	Unit* setSecondaryWaypoint(Unit* a1, s32 a2, s32 a3);
 	Point32 setResourceTarget(Unit* a1);
 
 	// for genericRightClickUnitProc2
@@ -550,9 +554,9 @@ namespace helper
 	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId);																		// 00425790
 	bool StatSpidermineCount(BinDlg* dialog, u32 index);																				// 00426300
 
-	// For getUnitRankString
+	// For getUnitRankString and checkHotkeyChar
 	__int8 unitGetRace(Unit* a1);																										// 0047B150
-	char* getStatTxtString(__int16 a1);																									// 004C36F0
+	char* getStatTxtString(u16 a1);																									// 004C36F0
 
 	// For statsWeaponLevel / statsArmorLevel
 	char getArmorCount(Unit* unit, s32 a2);																							// 00453FC0
@@ -649,6 +653,7 @@ namespace helper
 	b32 Ai_FindTransport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
 	void loadUnitProc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
 	b32 unloadUnitProc(Unit* unit);																									// 004E7F70 (Hooked)
+	void issueOrderTargetingGround(Unit* unit, u8 orderId, s16 x, s16 y);															// 00475260
 
 	//// siege_transform
 	void unitSetRetreatPoint(Unit* unit, u8 angleValue);																			// 004011A0
@@ -895,6 +900,10 @@ namespace helper
 	bool isUnreachable(Unit* target, Unit* unit);
 	bool isUnitTargetOutOfMaxRange(Unit* unit, Unit* target);												// 00476430
 	s32 moveForMeleeRange(Unit* target, Unit* unit);
+
+	// For createUpgradeLevelTooltip
+	s16 CreateTooltip(char* text);																			// 004591A6
+	char refreshSelectionScreen();																			// 00481480
 
 	//// misc
 	s8 SETS(s32 x);

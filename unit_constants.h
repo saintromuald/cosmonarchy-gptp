@@ -47,6 +47,9 @@ const s32 ApostleBloodTitheHealing = 5 * 256;
 const s32 ApostleLastBreathEnergyGain = 5 * 256;
 const s32 ApostleAILastBreathTimer = 24;
 
+// Olympian
+const s32 OlympianMeleeDistance = 30;
+
 // Mines
 const s32 MineBurrowTime = 60;
 const s32 MineSeekRange = 576;
@@ -70,6 +73,9 @@ const s32 SeraphIrradiateTimer = 10;
 // Azazel
 const s32 AzazelDefensiveMatrixTimer = 90; // roughly 30 seconds
 const s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
+
+// Centaur
+const s32 CentaurMissileDistance = 4 * 32;
 
 // Treasury
 const s32 TreasuryIncrease = 4;

@@ -94,7 +94,7 @@
 #include "hooks/build_time.h"
 #include "hooks/misc/cosmonarchy_specific.h"
 #include "hooks/interface/uifeatures/screen_hotkeys.h"
-#include "hooks/interface/uifeatures/uifeatures.h"
+#include "hooks/interface/uifeatures/ui_features.h"
 #include "hooks/trap_hooks.h"
 #include "hooks/target_related.h"
 #include "hooks/unit_movement.h"
@@ -485,7 +485,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectCastOrderHooks();
 	hooks::injectWpnSpellHitHooks();
 	hooks::injectBuildingMorphHooks();
-//	hooks::injectMakeNydusExitHook();
+	hooks::injectMakeNydusExitHook();
 	hooks::injectUnitMorphHooks();
 	hooks::injectWireframeHook();
 	hooks::injectDieOrderHook();

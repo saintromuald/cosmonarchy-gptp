@@ -47,8 +47,6 @@ namespace hooks {
 	u16 GetSporesOverlayId(Unit* target);
 	s32 ApplySpores_hook(Unit* target); // 004F4480
 
-	bool GorgonCondition(Unit* attacker, Unit* target);
-
 	void injectWeaponDamageHook();
 
 } //hooks

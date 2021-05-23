@@ -74,7 +74,7 @@ namespace hooks
 			if (helper::advanceRemainingBuildTime(unit))
 			{
 
-				unit->sprite->flags &= ~CSprite_Flags::IscriptCode;	//unset that flag
+				unit->sprite->flags &= ~SpriteFlags::IscriptCode;	//unset that flag
 
 				if (unit->sprite->images.head != nullptr)
 				{
@@ -289,7 +289,7 @@ namespace hooks
 				//update stuff related to the beginning of merge process I think
 				helper::animDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 
-				unit->sprite->flags &= ~CSprite_Flags::IscriptCode; //disable the flag if set
+				unit->sprite->flags &= ~SpriteFlags::IscriptCode; //disable the flag if set
 
 				if (unit->sprite->images.head != nullptr)
 				{
@@ -486,7 +486,7 @@ namespace hooks
 				helper::mergeStatusIntoUnit_Sub493180(unit, targetUnit);
 				helper::replaceUnitWithType(unit, UnitId::ProtossArchon);
 
-				unit->sprite->flags &= ~CSprite_Flags::IscriptCode; //disable the flag if set
+				unit->sprite->flags &= ~SpriteFlags::IscriptCode; //disable the flag if set
 
 				if (unit->sprite->images.head != nullptr)
 				{

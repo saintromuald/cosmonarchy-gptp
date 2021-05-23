@@ -23,6 +23,7 @@ u8 getDamageFactorForTooltip(u8 weaponId, Unit* unit)
 		|| weaponId == WeaponId::GolemBloodlessAssault
 		|| weaponId == WeaponId::PariahIconoclastBlades
 		|| weaponId == WeaponId::StarSovereignCelestialCannon
+		|| weaponId == WeaponId::LiiraliskHollowedSpores
 		|| weaponId == WeaponId::BactaliskCorrosiveAcid
 		|| weaponId == WeaponId::AlmaksaliskPiercingSpines
 		|| weaponId == WeaponId::KeskathalorScreamingVenom
@@ -473,6 +474,8 @@ namespace hooks
 			unitExt->timers[TimerCorrosiveTouch], TimerType::Aise);
 		addStatus(statuses, "Dirge Fuse", unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage, 0,
 			unitExt->timers[TimerDirgeFuse], TimerType::Aise);
+		addStatus(statuses, "Adrenal Frenzy", unitExt->values[ValueNathrokorBuffStacks], 0,
+			unitExt->timers[TimerNathrokorBuff], TimerType::Aise);
 
 		if (unitExt->values[ValueSignifyStacks] < 5)
 		{
@@ -500,8 +503,6 @@ namespace hooks
 		//	unitExt->EggBoostTimer, TimerType::Aise)); // currently can't read tooltips from  eggs
 		//addStatus(statuses, "Endomorphic Accelerant", 0, -1,
 		//	unitExt->MineralSpecialRegenTimer, TimerType::Aise)); // nor mineral fields
-		addStatus(statuses, "Adrenal Frenzy", -1, 1,
-			unitExt->timers[TimerNathrokor], TimerType::Aise);
 		addStatus(statuses, "Controlled Demolition", -1, 1,
 			unitExt->timers[TimerControlledDemolition], TimerType::Aise);
 		addStatus(statuses, "Emergency Detonation", -1, 1,
@@ -527,6 +528,7 @@ namespace hooks
 		addStatus(statuses, "Terminal Surge", unitExt->values[ValueTerminalSurge], 0);
 		addStatus(statuses, "Tertiary Eyes [Caster]", unitExt->unitVectors[UnitVectorTertiaryEyes].size(), 0);
 		addStatus(statuses, "Tertiary Eye [Linked]", unitExt->unitVectors[UnitVectorTertiaryEyesSirens].size(), 0);
+		addStatus(statuses, "Controlled Opposition", unitExt->values[ValueControlledOpposition], 0);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
@@ -565,7 +567,8 @@ namespace hooks
 		// Vanilla Value
 		addStatus(statuses, "Parasited", unit->parasiteFlags != 0, 1);
 		addStatus(statuses, "Blinded", unit->isBlind != 0, 1);
-		addStatus(statuses, "Lifted Off", (unit->status & UnitStatus::InAir) && units_dat::BaseProperty[unit->id] & UnitProperty::Building, 1);
+		addStatus(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::BaseProperty[unit->id] & UnitProperty::Building, 1);
+		addStatus(statuses, "Cannot Attack", unitExt->timers[TimerUnderDisruptionWeb] > 0, 1);
 
 		// Case Specific
 		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);

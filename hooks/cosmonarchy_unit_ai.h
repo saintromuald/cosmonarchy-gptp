@@ -1,4 +1,4 @@
 #pragma once
-#include "cosmonarchyFinder.h"
+#include "cosmonarchy_finder.h"
 
-void cosmonarchy_unit_ai(Unit* unit);
+void cosmonarchyUnitAi(Unit* unit);

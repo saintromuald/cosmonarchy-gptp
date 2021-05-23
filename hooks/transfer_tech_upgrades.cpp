@@ -13,33 +13,32 @@ namespace
 		u16 relatedTech[5]; //Maximum number of tech (use TechId::None to mark a premature end-of-list)
 	};
 	const TechTransferData techTransferData[] = {
-		//Terran
-		{UnitId::marine, TechId::Stimpacks, TechId::None},
-		{UnitId::firebat, TechId::Stimpacks, TechId::None},
-		{UnitId::ghost, TechId::Lockdown, TechId::PersonnelCloaking, TechId::None},
-		{UnitId::medic, TechId::Healing, TechId::Restoration, TechId::OpticalFlare, TechId::None},
-		{UnitId::vulture, TechId::SpiderMines, TechId::None},
-		{UnitId::siege_tank, TechId::TankSiegeMode, TechId::None},
-		{UnitId::siege_tank_s, TechId::TankSiegeMode, TechId::None},
-		{UnitId::wraith, TechId::CloakingField, TechId::None},
-		{UnitId::science_vessel, TechId::DefensiveMatrix, TechId::Irradiate, TechId::EMPShockwave, TechId::None},
-		{UnitId::battlecruiser, TechId::YamatoGun, TechId::None},
+		// Terran
+		{UnitId::TerranMaverick, TechId::Stimpacks, TechId::None},
+		{UnitId::TerranHarakan, TechId::Stimpacks, TechId::None},
+		{UnitId::TerranEidolon, TechId::Lockdown, TechId::PersonnelCloaking, TechId::None},
+		{UnitId::TerranCleric, TechId::Healing, TechId::Restoration, TechId::OpticalFlare, TechId::None},
+		{UnitId::TerranVulture, TechId::SpiderMines, TechId::None},
+		{UnitId::TerranPhalanxTankMode, TechId::TankSiegeMode, TechId::None},
+		{UnitId::TerranPhalanxSiegeMode, TechId::TankSiegeMode, TechId::None},
+		{UnitId::TerranWraith, TechId::CloakingField, TechId::None},
+		{UnitId::TerranSeraph, TechId::DefensiveMatrix, TechId::Irradiate, TechId::EMPShockwave, TechId::None},
+		{UnitId::TerranMinotaur, TechId::YamatoGun, TechId::None},
 
-		//Zerg
-		{UnitId::queen, TechId::Infestation, TechId::Parasite, TechId::SpawnBroodlings, TechId::Ensnare, TechId::None},
-		{UnitId::defiler, TechId::Burrowing, TechId::DarkSwarm, TechId::Plague, TechId::Consume, TechId::None},
-		{UnitId::drone, TechId::Burrowing, TechId::None},
-		{UnitId::zergling, TechId::Burrowing, TechId::None},
+		// Zerg
+		{UnitId::ZergMatraleth, TechId::Infestation, TechId::Parasite, TechId::SpawnBroodlings, TechId::Ensnare, TechId::None},
+		{UnitId::ZergIsthrathaleth, TechId::Burrowing, TechId::DarkSwarm, TechId::Plague, TechId::Consume, TechId::None},
+		{UnitId::ZergDroleth, TechId::Burrowing, TechId::None},
+		{UnitId::ZergZethrokor, TechId::Burrowing, TechId::None},
 		{UnitId::ZergHydralisk, TechId::Burrowing, TechId::LurkerAspect, TechId::None},
-		{UnitId::infested_terran, TechId::Burrowing, TechId::None},
-		{UnitId::lurker, TechId::LurkerAspect, TechId::None},
+		{UnitId::ZergLakizilisk, TechId::LurkerAspect, TechId::None},
 
-		//Protoss
-		{UnitId::high_templar, TechId::ArchonWarp, TechId::PsionicStorm, TechId::Hallucination, TechId::None},
-		{UnitId::arbiter, TechId::Recall, TechId::StasisField, TechId::None},
-		{UnitId::corsair, TechId::DisruptionWeb, TechId::None},
-		{UnitId::dark_templar, TechId::DarkArchonMeld, TechId::None},
-		{UnitId::dark_archon, TechId::MindControl, TechId::Feedback, TechId::Maelstrom, TechId::None},
+		// Protoss
+		{UnitId::ProtossCantavis, TechId::ArchonWarp, TechId::PsionicStorm, TechId::Hallucination, TechId::None},
+		{UnitId::ProtossDidact, TechId::Recall, TechId::StasisField, TechId::None},
+		{UnitId::ProtossLanifect, TechId::DisruptionWeb, TechId::None},
+		{UnitId::ProtossCabalist, TechId::DarkArchonMeld, TechId::None},
+		{UnitId::ProtossMindTyrant, TechId::MindControl, TechId::Feedback, TechId::Maelstrom, TechId::None},
 	};
 
 	struct UpgradeTransferData
@@ -49,36 +48,36 @@ namespace
 	};
 
 	const UpgradeTransferData upgradeTransferData[] = {
-		//Terran
-		{UnitId::marine, UpgradeId::U238Shells, UpgradeId::None},
-		{UnitId::ghost, UpgradeId::OcularImplants, UpgradeId::MoebiusReactor, UpgradeId::None},
-		{UnitId::medic, UpgradeId::CaduceusReactor, UpgradeId::None},
-		{UnitId::vulture, UpgradeId::IonThrusters, UpgradeId::None},
-		{UnitId::goliath, UpgradeId::CharonBooster, UpgradeId::None},
-		{UnitId::science_vessel, UpgradeId::TitanReactor, UpgradeId::None},
-		{UnitId::wraith, UpgradeId::ApolloReactor, UpgradeId::None},
-		{UnitId::battlecruiser, UpgradeId::ColossusReactor, UpgradeId::None},
+		// Terran
+		{UnitId::TerranMaverick, UpgradeId::U238Shells, UpgradeId::None},
+		{UnitId::TerranEidolon, UpgradeId::OcularImplants, UpgradeId::MoebiusReactor, UpgradeId::None},
+		{UnitId::TerranCleric, UpgradeId::CaduceusReactor, UpgradeId::None},
+		{UnitId::TerranVulture, UpgradeId::IonThrusters, UpgradeId::None},
+		{UnitId::TerranGoliath, UpgradeId::CharonBooster, UpgradeId::None},
+		{UnitId::TerranSeraph, UpgradeId::TitanReactor, UpgradeId::None},
+		{UnitId::TerranWraith, UpgradeId::ApolloReactor, UpgradeId::None},
+		{UnitId::TerranMinotaur, UpgradeId::ColossusReactor, UpgradeId::None},
 
-		//Zerg
-		{UnitId::overlord, UpgradeId::VentralSacs, UpgradeId::Antennae, UpgradeId::None},
-		{UnitId::zergling, UpgradeId::MetabolicBoost, UpgradeId::AdrenalGlands, UpgradeId::None},
+		// Zerg
+		{UnitId::ZergOvileth, UpgradeId::VentralSacs, UpgradeId::Antennae, UpgradeId::None},
+		{UnitId::ZergZethrokor, UpgradeId::MetabolicBoost, UpgradeId::AdrenalGlands, UpgradeId::None},
 		{UnitId::ZergHydralisk, UpgradeId::MuscularAugments, UpgradeId::GroovedSpines, UpgradeId::None},
-		{UnitId::queen, UpgradeId::GameteMeiosis, UpgradeId::None},
-		{UnitId::defiler, UpgradeId::MetasynapticNode, UpgradeId::None},
-		{UnitId::ultralisk, UpgradeId::AnabolicSynthesis, UpgradeId::ChitinousPlating, UpgradeId::None},
+		{UnitId::ZergMatraleth, UpgradeId::GameteMeiosis, UpgradeId::None},
+		{UnitId::ZergIsthrathaleth, UpgradeId::MetasynapticNode, UpgradeId::None},
+		{UnitId::ZergUltrakor, UpgradeId::AnabolicSynthesis, UpgradeId::ChitinousPlating, UpgradeId::None},
 
-		//Protoss
-		{UnitId::zealot, UpgradeId::LegEnhancements, UpgradeId::None},
-		{UnitId::dragoon, UpgradeId::SingularityCharge, UpgradeId::None},
-		{UnitId::high_templar, UpgradeId::KhaydarinAmulet, UpgradeId::None},
-		{UnitId::dark_archon, UpgradeId::ArgusTalisman, UpgradeId::None},
-		{UnitId::reaver, UpgradeId::ReinforcedScarabs, UpgradeId::ReaverCapacity, UpgradeId::None},
-		{UnitId::shuttle, UpgradeId::GraviticDrive, UpgradeId::None},
-		{UnitId::observer, UpgradeId::SensorArray, UpgradeId::GraviticBoosters, UpgradeId::None},
-		{UnitId::scout, UpgradeId::ApialSensors, UpgradeId::GraviticThrusters, UpgradeId::None},
-		{UnitId::carrier, UpgradeId::AuxilliaryHangars, UpgradeId::None},
-		{UnitId::arbiter, UpgradeId::KhaydarinCore, UpgradeId::None},
-		{UnitId::corsair, UpgradeId::ArgusJewel, UpgradeId::None},
+		// Protoss
+		{UnitId::ProtossZealot, UpgradeId::LegEnhancements, UpgradeId::None},
+		{UnitId::ProtossDracadin, UpgradeId::SingularityCharge, UpgradeId::None},
+		{UnitId::ProtossCantavis, UpgradeId::KhaydarinAmulet, UpgradeId::None},
+		{UnitId::ProtossMindTyrant, UpgradeId::ArgusTalisman, UpgradeId::None},
+		{UnitId::ProtossAccantor, UpgradeId::ReinforcedScarabs, UpgradeId::ReaverCapacity, UpgradeId::None},
+		{UnitId::ProtossEnvoy, UpgradeId::GraviticDrive, UpgradeId::None},
+		{UnitId::ProtossWitness, UpgradeId::SensorArray, UpgradeId::GraviticBoosters, UpgradeId::None},
+		{UnitId::ProtossPanoptus, UpgradeId::ApialSensors, UpgradeId::GraviticThrusters, UpgradeId::None},
+		{UnitId::ProtossSolarion, UpgradeId::AuxilliaryHangars, UpgradeId::None},
+		{UnitId::ProtossDidact, UpgradeId::KhaydarinCore, UpgradeId::None},
+		{UnitId::ProtossLanifect, UpgradeId::ArgusJewel, UpgradeId::None},
 	};
 
 } //Unnamed namespace

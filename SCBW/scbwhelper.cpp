@@ -3090,19 +3090,6 @@ namespace helper
 		}
 	}
 
-	void function_00494BB0(Unit* unit, s32 x, s32 y)
-	{
-		const u32 Func_Sub494BB0 = 0x00494BB0;
-		__asm {
-			PUSHAD
-			MOV ECX, y
-			MOV EDX, x
-			MOV EAX, unit
-			CALL Func_Sub494BB0
-			POPAD
-		}
-	}
-
 	u32 RandBetween(u32 min, u32 max, u32 someIndex)
 	{
 		const u32 Func_RandBetween = 0x004DC550;
@@ -3980,7 +3967,7 @@ namespace helper
 		}
 	}
 
-	void function_004A1E50(Unit* unit, u32 unk)
+	void removeUnitAI(Unit* unit, u32 unk)
 	{
 		const u32 Func_Sub4A1E50 = 0x004A1E50;
 		__asm {
@@ -4580,7 +4567,7 @@ namespace helper
 
 	// for canCastOrderedSpellNow
 
-	bool isTargetWithinMinRange(Unit* a1, u32 a2, Unit* a3)
+	bool isTargetWithinMinRange(Unit* unit, u32 minRange, Unit* target)
 	{
 		const u32 Func_isTargetWithinMinRange = 0x00430F10;
 		static s32 result;
@@ -4588,9 +4575,9 @@ namespace helper
 
 		__asm {
 			PUSHAD
-			PUSH a3
-			PUSH a2
-			PUSH a1
+			PUSH target
+			PUSH minRange
+			MOV ECX, unit
 			CALL Func_isTargetWithinMinRange
 			MOV result, EAX
 			POPAD
@@ -4688,21 +4675,20 @@ namespace helper
 		}
 		return result;
 	}
-
-	Unit* setSecondaryWaypoint(Unit* a1, s32 a2, s32 a3)
+	
+	void setSecondaryWaypoint(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_setSecondaryWaypoint = 0x00494BB0;
 		static Unit* result;
 		__asm {
 			PUSHAD
-			MOV ECX, a3
-			MOV EDX, a2
-			MOV EAX, a1
+			MOV ECX, y
+			MOV EDX, x
+			MOV EAX, unit
 			CALL Func_setSecondaryWaypoint
 			MOV result, EAX
 			POPAD
 		}
-		return result;
 	}
 
 	Point32 setResourceTarget(Unit* a1)
@@ -4718,17 +4704,6 @@ namespace helper
 			POPAD
 		}
 		return resultPoint = *(Point32*)&result;
-	}
-
-	void ordersNothing2(Unit* a1)
-	{
-		const u32 Func_ordersNothing2 = 0x00475000;
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_ordersNothing2
-			POPAD
-		}
 	}
 
 	// for genericRightClickUnitProc2
@@ -5137,7 +5112,7 @@ namespace helper
 		return (__int8)result;
 	}
 
-	char* getStatTxtString(__int16 a1)
+	char* getStatTxtString(u16 a1)
 	{
 		const u32 Func_getStatTxtString = 0x004C36F0;
 		static s32 result;
@@ -8406,7 +8381,7 @@ namespace helper
 	}
 
 	// For AI_TrainingWorker
-	char AI_AddUnitAI(Unit* worker, AiTown* town)
+	char AI_AddWorkerStructureAI(Unit* worker, AiTown* town)
 	{
 		const u32 Func_AI_AcceptNewUnit = 0x00433DD0;
 		static char result;
@@ -8506,6 +8481,94 @@ namespace helper
 			PUSHAD
 			MOV ESI, sprite
 			CALL Func_spriteToIscriptLoop
+			POPAD
+		}
+	}
+
+	s16 CreateTooltip(char* text)
+	{
+		const u32 Func_CreateTooltip = 0x004591A6;
+		static s16 result;
+		__asm
+		{
+			PUSHAD
+			PUSH text
+			CALL Func_CreateTooltip
+			MOV result, AX
+			POPAD
+		}
+		return result;
+	}
+
+	char refreshSelectionScreen()
+	{
+		const u32 Func_refreshSelectionScreen = 0x00481480;
+		static char result;
+		__asm
+		{
+			PUSHAD
+			CALL Func_refreshSelectionScreen
+			MOV result, AL
+			POPAD
+		}
+	}
+
+	// For AI_SendSuicide
+	bool isThreat(Unit* target, Unit* unit)
+	{
+		const u32 Func_isThreat = 0x00476930;
+		static bool result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, target
+			MOV ECX, unit
+			CALL Func_isThreat
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void prepSuicide(Unit* unit)
+	{
+		const u32 Func_prepSuicide = 0x0043CD40;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_prepSuicide
+			POPAD
+		}
+	}
+
+	u32 AI_AttackClear(s32 player)
+	{
+		const u32 Func_AI_AttackClear = 0x00439500;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH player
+			CALL Func_AI_AttackClear
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For orders_Pickup4_0
+	void issueOrderTargetingGround(Unit* unit, u8 orderId, s16 x, s16 y)
+	{
+		const u32 Func_issueOrderTargetingGround = 0x00475260;
+		__asm
+		{
+			PUSHAD
+			PUSH y
+			PUSH x
+			PUSH orderId
+			MOV ESI, unit
+			CALL Func_issueOrderTargetingGround
 			POPAD
 		}
 	}

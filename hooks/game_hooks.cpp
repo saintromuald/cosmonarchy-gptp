@@ -5,10 +5,10 @@
 #include "psi_field.h"
 #include <cstdio>
 #include "hooks/interface/uifeatures/screen_hotkeys.h"
-#include "hooks/interface/uifeatures/uifeatures.h"
+#include "hooks/interface/uifeatures/ui_features.h"
 #include "hooks/interface/hpbars/hpbars.h"
 #include "Utils/captivating_claws.h"
-#include "hooks/cosmonarchyFinder.h"
+#include "hooks/cosmonarchy_finder.h"
 #include "globals.h"
 #include "target_related.h"
 #include "hooks/orders/ai/ai_orders.h"
@@ -210,28 +210,80 @@ std::vector<Thingy*> CorpseFinder::corpsesY;
 
 namespace hooks
 {
-	void firstFrame();
 	void tickUnit(Unit* unit);
 
 	/// This hook is called every frame
 	bool nextFrame()
 	{
-		if (!scbw::isGamePaused())
-		{ // If the game is not paused
+		// This block is executed once every game
+		if (*elapsedTimeFrames == 0)
+		{
+			hooks::initializeScreenLocations();
+			hooks::clearActions();
+			globals.reset();
+			for (s32 i = 0; i < 8; i++)
+			{
+				scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);
+			}			
+		}
+
+		// Requires a trigger that sets 1 death of Vespene Geyser for current player
+		if (*elapsedTimeFrames == 1 && unit_deaths[UnitId::ResourceVespeneGeyser].player[*ACTIVE_NATION_ID] == 1)
+		{
+			// Explore map
+			for (u32 y = 0; y < mapTileSize->height; y++)
+			{
+				for (u32 x = 0; x < mapTileSize->width; x++)
+				{
+					ActiveTile& tile = scbw::getActiveTileAt(x * 32, y * 32);
+					tile.exploredFlags = 0x00;
+				}
+			}
+
+			// Reveal resources
+			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
+			{
+				if (unit->id == UnitId::ResourceVespeneGeyser
+					|| unit->id == UnitId::ResourceMineralField
+					|| unit->id == UnitId::ResourceMineralFieldType2
+					|| unit->id == UnitId::ResourceMineralFieldType3)
+				{
+					unit->sprite->visibilityFlags = 0xff;
+				}
+			}
+
+			// Ping active player start locations 
+			// NOTE: active player check is a workaround for extistance of spectator slots
+			// we should remove it when spectators are removed, or find a way to ping every possible player start location
+			for (u32 i = 0; i < 8; i++)
+			{
+				if (firstPlayerUnit->unit[i])
+				{
+					scbw::minimapPing(startPositions[i].x, startPositions[i].y, 8, *ACTIVE_NATION_ID);
+				}
+			}
+		}
+
+		if (!scbw::isGamePaused()) // If the game is not paused
+		{
 
 			scbw::setInGameLoopState(true); // Needed for scbw::random() to work
 			graphics::resetAllGraphics();
 			hooks::updatePsiFieldProviders();
 			*(s32*)hyperTrigger = 0; // Single frame hypertriggers
 
-			// This block is executed once every game
-			if (*elapsedTimeFrames == 0)
-			{
-				firstFrame();
-			}
 			hooks::handleScreenHotkeys();
-			scbw::refreshScreen(); // Needed for game clock and APM period to update every frame
-			scbw::refreshConsole();
+			scbw::refreshScreen();
+
+			// Needed for extended tooltips
+			static bool lastShift = 0;
+			bool newShift = GetAsyncKeyState(VK_SHIFT) & 0x1;
+			if (lastShift != newShift)
+			{
+				scbw::refreshConsole();
+			}
+			lastShift = newShift;
+
 			globals.frameHook();
 
 			// Reset Treasury Stacks, before unit loop
@@ -270,18 +322,6 @@ namespace hooks
 		return true;
 	}
 
-	void firstFrame()
-	{
-		//Write your code here
-		hooks::initializeScreenLocations();
-		hooks::clearActions();
-		globals.reset();
-		for (s32 i = 0; i < 8; i++)
-		{
-			scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);
-		}
-	}
-
 	void tickUnit(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -318,7 +358,7 @@ namespace hooks
 						{
 							break;
 						}
-						if (corpse->sprite->flags & CSprite_Flags::Flag04)
+						if (corpse->sprite->flags & SpriteFlags::Flag04)
 						{
 							continue;
 						}
@@ -338,7 +378,7 @@ namespace hooks
 							//scbw::createAndInitThingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 						});
 						scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
-						corpse->sprite->flags |= CSprite_Flags::Flag04;
+						corpse->sprite->flags |= SpriteFlags::Flag04;
 						corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
 						unitExt->timers[TimerReconstitutionCooldown] = 1 * 24;
 						break;
@@ -525,9 +565,9 @@ namespace hooks
 				// Disruption Field - Lanifect ability
 				if (scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField))
 				{
-					if (!unitExt->values[ValueDisruptionWebOn])
+					if (!unitExt->values[ValueDisruptionFieldOn])
 					{
-						unitExt->values[ValueDisruptionWebOn] = 1;
+						unitExt->values[ValueDisruptionFieldOn] = 1;
 						globals.createEffect(EffectId::DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->playerId, unit);
 					}
 					else if (unit->isFrozen())
@@ -538,7 +578,7 @@ namespace hooks
 				}
 				else
 				{
-					unitExt->values[ValueDisruptionWebOn] = 0;
+					unitExt->values[ValueDisruptionFieldOn] = 0;
 				}
 			} break;
 			case UnitId::TerranMadcap:
@@ -702,13 +742,27 @@ namespace hooks
 					unit->orderSignal &= ~0x20;
 					if (unit->orderTarget.unit != nullptr)
 					{
-						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= 128)
+						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= CentaurMissileDistance)
 						{
 							unit->playIscriptAnim(IscriptAnimation::Unused2);
 						}
 					}
 				}
 			} break;
+			case UnitId::TerranOlympian:
+			{
+				if (unit->orderSignal & 0x20)
+				{
+					unit->orderSignal &= ~0x20;
+					if (unit->orderTarget.unit != nullptr && !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
+					{
+						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= OlympianMeleeDistance)
+						{
+							unit->playIscriptAnim(IscriptAnimation::SpecialState1);
+						}
+					}
+				}
+			}
 			case UnitId::TerranTreasury:
 			{
 				// Treasury - Expanded Storage
@@ -914,12 +968,6 @@ namespace hooks
 			scbw::updateSignifyStatus(unit, unitExt);
 		}
 
-		// Disruption Web Clear Status
-		if (unitExt->timers[TimerDisruptionWebStatusClear] == 1)
-		{
-			unit->status &= ~UnitStatus::CanNotAttack;
-		}
-
 		if (unit->isFrozen())
 		{
 			scbw::decloakProc(unit);
@@ -990,11 +1038,15 @@ namespace hooks
 			{
 				UnitExt* targetExt = globals.GetUnitExt(target);
 
-				// Akistrokor
-				targetExt->values[ValueEnthrallingTalons] = 0;
+				if (targetExt->values[ValueEnthrallingTalons])
+				{
+					// Akistrokor
+					targetExt->values[ValueEnthrallingTalons] = 0;
+				}
 
 				// Generic
-				targetExt->units[UnitAttachedSource] = nullptr;
+				auto& vec = targetExt->unitVectors[UnitVectorAttachedSource];
+				vec.erase(std::remove(vec.begin(), vec.end(), unit), vec.end());
 			}
 
 			// Generic
@@ -1035,7 +1087,18 @@ namespace hooks
 			unitExt->timers[TimerReviveFlagClearMin] = 0;
 			unitExt->timers[TimerReviveFlagClearMax] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
-			scbw::initUnitAI(unit);
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+			{
+				helper::AI_TrainingWorker(unit, unit);
+			}
+			else if (units_dat::BaseProperty[unit->id] & UnitProperty::Building || unit->id == UnitId::ZergOvileth)
+			{
+				helper::AI_TrainingOverlord(unit, unit);
+			}
+			else
+			{
+				hooks::AI_TrainingBroodling(unit, unit);
+			}
 		}
 
 		// Savant - Entropy Gauntlets: remove overlay at end of effect
@@ -1221,9 +1284,10 @@ namespace hooks
 		}
 
 		// Update flingy speed when Adrenal Frenzy period expires
-		if (unitExt->timers[TimerNathrokor] == 1)
+		if (unitExt->timers[TimerNathrokorBuff] == 1)
 		{
-			unitExt->timers[TimerNathrokor] = 0;
+			unitExt->timers[TimerNathrokorBuff] = 0;
+			unitExt->values[ValueNathrokorBuffStacks] = 0;
 			unit->updateSpeed();
 		}
 
@@ -1242,7 +1306,7 @@ namespace hooks
 		// Remove Swarming Omen overlay
 		if (unitExt->timers[TimerSwarmingOmen] == 1)
 		{
-//			unit->removeOverlay();
+			// unit->removeOverlay();
 		}
 
 		// TODO: Finish

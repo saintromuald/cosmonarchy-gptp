@@ -226,7 +226,7 @@ namespace hooks
 				//maybe the landing unit would get excluded from multi-units selection
 				//if that could happen in normal Starcraft gameplay?That may be what
 				//this function do.
-				if (unit->sprite->flags & CSprite_Flags::Selected && *clientSelectionCount > 1)
+				if (unit->sprite->flags & SpriteFlags::Selected && *clientSelectionCount > 1)
 					helper::function_004C3B40(unit);
 
 				//64648

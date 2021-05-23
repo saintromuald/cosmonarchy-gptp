@@ -5,8 +5,8 @@
 #include <SCBW/enumerations.h>
 #include <SCBW/api.h>
 #include "SCBW/UnitFinder.h"
-#include "hooks/cosmonarchyFinder.h"
-#include "MathUtils.h"
+#include "hooks/cosmonarchy_finder.h"
+#include "math_utils.h"
 #include "hooks/byte_operations_utils.h"
 #include "globals.h"
 #include "hooks/unit_stats/weapon_range.h"
@@ -154,9 +154,22 @@ namespace hooks
 	// This also affects Unit::fireWeapon().
 	void fireWeaponHook(Unit* unit, u8 wId)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
 		if (unit == nullptr)
 		{
+			return;
+		}
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+		if (unitExt->values[ValueDisruptionFieldOn]
+			|| unitExt->timers[TimerUnderDisruptionWeb])
+		{
+			if (unit->getAirWeapon() == wId)
+			{
+				unit->playIscriptAnim(IscriptAnimation::AirAttkToIdle);
+			}
+			else if (unit->getGroundWeapon() == wId)
+			{
+				unit->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
+			}
 			return;
 		}
 		u8 weaponId = wId;
@@ -401,10 +414,17 @@ namespace hooks
 				{
 					scbw::setMissileSourcePos(unit, weaponId, ValueIonCannonProjectilePos, 1, ImagesDatEntries::OverlaySpecialPtr, 1);
 				}
+				else if (weaponId == WeaponId::SkithrokorSkitteringSpores)
+				{
+					scbw::setMissileSourcePos(unit, weaponId, ValueSkithrokorMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+				}
+				else if (weaponId == WeaponId::LiiraliskHollowedSpores)
+				{
+					scbw::setMissileSourcePos(unit, weaponId, ValueLiiraliskMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
+				}
 				else if (weaponId == WeaponId::KalkaliskViscousAcid)
 				{
-					auto bullet = scbw::setMissileSourcePos(unit, weaponId, ValueKalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
-					globals.remove_multihit_bullet(bullet);
+					scbw::setMissileSourcePos(unit, weaponId, ValueKalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::KeskathalorScreamingVenom)
 				{
@@ -503,13 +523,24 @@ namespace hooks
 		}
 
 		// Akistrokor - Enthralling Assault ability
+		// Sovroleth - Conjoining Root
 		if (weaponId == WeaponId::AkistrokorEnthrallingAssault && unit->orderTarget.unit != nullptr)
 		{
 			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
-			if (targetExt->units[UnitAttachedSource] == nullptr)
+			if (targetExt->units[UnitAttachedTarget])
 			{
-				unitExt->units[UnitAttachedTarget] = unit->orderTarget.unit;
-				targetExt->units[UnitAttachedSource] = unit;
+				return;
+			}
+
+			unitExt->units[UnitAttachedTarget] = unit->orderTarget.unit;
+			auto& sourceUnits = targetExt->unitVectors[UnitVectorAttachedSource];
+			if (std::find(sourceUnits.begin(), sourceUnits.end(), unit) == sourceUnits.end())
+			{
+				sourceUnits.push_back(unit);
+			}
+
+			if (unit->id == UnitId::ZergAkistrokor)
+			{
 				targetExt->values[ValueEnthrallingTalons] = 1;
 			}
 		}
@@ -769,8 +800,10 @@ namespace hooks
 				}
 			}
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
-				bullet->position.x - range, bullet->position.y - range,
-				bullet->position.x + range, bullet->position.y + range,
+				bullet->position.x - range,
+				bullet->position.y - range,
+				bullet->position.x + range,
+				bullet->position.y + range,
 				bullet, [&](Unit* unit)
 			{
 				if (unit->status & UnitStatus::Invincible)
@@ -841,14 +874,24 @@ namespace hooks
 				}
 				else if (bullet->weaponId == WeaponId::KalkaliskViscousAcid) {
 					// Kalkalisk behavior
-//					auto divider = globals.get_multihit_count(bullet);
-					helper::weaponBulletShot(collisionTarget, bullet, 2);
+					auto count = globals.get_multihit_count(bullet);
 					helper::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-					bullet->moveTarget.unit = bullet->attackTarget.unit;
-					if (bullet->moveTarget.unit != nullptr)
+					collisionTarget->damageWithCustom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
+						weapons_dat::DamageType[WeaponId::KalkaliskViscousAcid],
+						bullet->sourceUnit, bullet->srcPlayer, 0, 1, false);
+
+					if (count >= 4)
 					{
-						bullet->targetPosition = bullet->moveTarget.unit->position;
-						bullet->targetPosition2 = bullet->moveTarget.unit->position;
+						bullet->time_remaining = 0;
+					}
+					else
+					{
+						bullet->moveTarget.unit = bullet->attackTarget.unit;
+						if (bullet->moveTarget.unit != nullptr)
+						{
+							bullet->targetPosition = bullet->moveTarget.unit->position;
+							bullet->targetPosition2 = bullet->moveTarget.unit->position;
+						}
 					}
 				}
 			}
@@ -873,7 +916,7 @@ namespace hooks
 			bullet->someUnitType = 228;
 			for (i = bulletSprite->images.head; i; i = i->link.next)
 			{
-				helper::playImageIscript(i, 1);
+				helper::playImageIscript(i, IscriptAnimation::Death);
 			}
 		}
 	}
@@ -900,12 +943,12 @@ namespace hooks
 		if (bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y)
 		{
 			nextBounce = bullet->remainingBounces - 1;
-			//
+			// Gladius infinite bouncing
 			if (bullet->weaponId == WeaponId::GladiusPlasmaFlurry)
 			{
 				nextBounce = 1;
 			}
-			//
+
 			bullet->remainingBounces = nextBounce;
 			globals.bounce_bullet = bullet;
 			if (nextBounce && (target = helper::findNextBounceTarget_func(bullet), bullet->nextBounceUnit = bullet->attackTarget.unit, target))
@@ -934,7 +977,7 @@ namespace hooks
 					bullet->attackTarget.unit = 0;
 				}
 				posX = bullet->sprite;
-				bullet->unknown_0x4E = 0; // Was lowbyte
+				bullet->unknown_0x4E = 0;
 				bullet->someUnitType = UnitId::None;
 
 				for (j = posX->images.head; j; j = j->link.next)
@@ -947,26 +990,11 @@ namespace hooks
 
 	bool findNextBounceTargetProc(Unit* pIterator) // 0048AFD0
 	{
-		Unit* pSrc;
-		s32 nSrcStatus;
-		Unit* _pIterator;
-		s32 bulletSprite;
-		Unit* posY;
-		s32 posX;
-		s32 v7;
-		s32 v8;
-		bool v9;
-		s32 v10;
-		Unit* v11;
-		s32 v13;
-		s8 v14;
-
-		pSrc = *bulletBounceMissileSource;
-		nSrcStatus = (*bulletBounceMissileSource)->status;
-		_pIterator = pIterator;
+		Unit* pSrc = *bulletBounceMissileSource;
+		s32 nSrcStatus = (*bulletBounceMissileSource)->status;
+		Unit* _pIterator = pIterator;
 
 		// Previously disallowed bouncing if unit was disabled
-
 		if (!pIterator)
 		{
 			return 0;
@@ -975,7 +1003,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (pIterator->sprite->flags & CSprite_Flags::Hidden)
+		if (pIterator->sprite->flags & SpriteFlags::Hidden)
 		{
 			return 0;
 		}
@@ -983,53 +1011,56 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (pSrc->subunit != nullptr
-			&& helper::unitIsSubunit(pSrc->subunit))
+
+		Unit* bounceSource = pSrc;
+		if (pSrc->subunit != nullptr && helper::unitIsSubunit(pSrc->subunit))
 		{
-			posY = pSrc->subunit;
-		}
-		else
-		{
-			posY = pSrc;
+			bounceSource = pSrc->subunit;
 		}
 		if (!(helper::unitIsCarrier(pSrc)))
 		{
+			bool miscBool;
 			if (helper::unitIsReaver(pSrc))
 			{
 				if (_pIterator->status & UnitStatus::InAir)
+				{
 					return 0;
-				v9 = helper::unitHasPathToUnit(pSrc, _pIterator);
+				}
+				miscBool = helper::unitHasPathToUnit(pSrc, _pIterator);
 			}
 			else
 			{
 				if (helper::unitCanInfest(pSrc))
 				{
-					v9 = helper::canBeInfested(v11, _pIterator) != 0; // v11 is not used..?
+					Unit* unusedUnit = nullptr;
+					miscBool = helper::canBeInfested(unusedUnit, _pIterator) != 0; // unusedUnit is not used..?
 				}
 				else
 				{
 					if (_pIterator->status & UnitStatus::InAir)
 					{
-						v9 = units_dat::AirWeapon[(u16)posY->id] != -126;
+						miscBool = units_dat::AirWeapon[(u16)bounceSource->id] != -126;
 					}
 					else
 					{
-						v9 = units_dat::GroundWeapon[(u16)posY->id] != -126;
+						miscBool = units_dat::GroundWeapon[(u16)bounceSource->id] != -126;
 					}
 				}
 			}
-			if (!v9)
+			if (!miscBool)
 			{
 				return 0;
 			}
 		}
-		v13 = _pIterator->status;
-		if (v13 & 0x300 && !((1 << pSrc->playerId) & _pIterator->visibilityStatus))
+
+		s32 unitStatus = _pIterator->status;
+		if (unitStatus & 0x300 && !((1 << pSrc->playerId) & _pIterator->visibilityStatus))
 		{
 			return 0;
 		}
-		v14 = _pIterator->playerId == 11 ? _pIterator->sprite->playerId : _pIterator->playerId;
-		if (playerAlliance[(u8)pSrc->playerId].flags[v14] || *bulletBounceMissileTarget == _pIterator)
+
+		s8 playerId = _pIterator->playerId == 11 ? _pIterator->sprite->playerId : _pIterator->playerId;
+		if (playerAlliance[(u8)pSrc->playerId].flags[playerId] || *bulletBounceMissileTarget == _pIterator)
 		{
 			return 0;
 		}
@@ -1079,7 +1110,7 @@ namespace hooks
 		coords.top = posX + 96;
 		coords.right = posY - 96;
 		coords.bottom = posY + 96;
-		//return (Unit*)helper::iterateUnitsAtLocationTargetProc(&coords, findNextBounceTargetProc, 0);
+//		return (Unit*)helper::iterateUnitsAtLocationTargetProc(&coords, findNextBounceTargetProc, 0);
 	}
 
 	// Hooked to resolve issues with multihit bullets - Pr0nogo

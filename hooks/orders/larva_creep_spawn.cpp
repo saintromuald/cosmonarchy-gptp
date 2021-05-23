@@ -38,7 +38,7 @@ namespace hooks
 		bool bReturnValue;
 		if (unit->id == UnitId::ZergLarva)
 		{
-			if (unit->sprite->flags & CSprite_Flags::Hidden)
+			if (unit->sprite->flags & SpriteFlags::Hidden)
 			{
 				bReturnValue = false;
 			}
@@ -141,8 +141,7 @@ namespace hooks
 			|| unit->id == UnitId::ZergLair
 			|| unit->id == UnitId::ZergHive
 			|| unit->id == UnitId::ZergSire
-			|| unit->id == UnitId::ZergLarvalColony
-			|| unit->id == UnitId::ZergOcsalColony)
+			|| unit->id == UnitId::ZergLarvalColony)
 		{
 			secondaryOrd_SpawningLarva(unit);
 		}
@@ -250,8 +249,7 @@ namespace hooks
 					|| unit->id == UnitId::ZergHive
 					|| unit->id == UnitId::ZergSire
 					|| (unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
-					|| unit->id == UnitId::ZergLarvalColony
-					|| unit->id == UnitId::ZergOcsalColony;
+					|| unit->id == UnitId::ZergLarvalColony;
 
 				u8 orderId;
 				if (isZergMainBuilding)
@@ -350,7 +348,6 @@ namespace hooks
 			case UnitId::ZergSporeColony:
 			case UnitId::ZergSunkenColony:
 			case UnitId::ZergLarvalColony:
-			case UnitId::ZergOcsalColony:
 			case UnitId::BasiliskCreeper:
 			{
 				return true;

@@ -6,7 +6,7 @@
 #include "hooks\limits\ccmu.h"
 #include "hooks\weapons\weapon_damage.h"
 
-#include "MathUtils.h"
+#include "math_utils.h"
 //-------- Unit stats and properties --------//
 
 extern const u32 Func_CanDetect = 0x00403430; //unitHasNoStatusAilments
@@ -68,10 +68,14 @@ bool Unit::shieldsEnabledRaw() const
 u8 Unit::getGroundWeapon() const
 {
 	assert(this);
-	if (this->id == UnitId::lurker && !(this->status & UnitStatus::Burrowed))
+	if (this->id == UnitId::ZergLakizilisk && !(this->status & UnitStatus::Burrowed))
+	{
 		return WeaponId::None;
+	}
 	else
+	{
 		return units_dat::GroundWeapon[this->id];
+	}
 }
 
 u8 Unit::getAirWeapon() const
@@ -291,23 +295,29 @@ bool Unit::hasWeapon() const
 		|| this->getAirWeapon() != WeaponId::None)
 		return true;
 
-	if (this->id == UnitId::carrier || this->id == UnitId::gantrithor)
+	if (this->id == UnitId::ProtossSolarion)
 	{
 		if ((this->carrier.inHangarCount + this->carrier.outHangarCount) > 0)
+		{
 			return true;
+		}
 	}
 
-	if (this->id == UnitId::reaver || this->id == UnitId::warbringer)
+	if (this->id == UnitId::ProtossAccantor)
 	{
 		if (this->carrier.inHangarCount > 0)
+		{
 			return true;
+		}
 	}
 
 	if (this->subunit)
 	{
 		if (this->subunit->getGroundWeapon() != WeaponId::None
 			|| this->subunit->getAirWeapon() != WeaponId::None)
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -593,8 +603,14 @@ void Unit::damageHp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify
 
 	u32 notify_ = notify ? 1 : 0;
 
+	if (attacker)
+	{
+		UnitExt* attackerExt = globals.GetUnitExt(attacker);
+		attackerExt->damageDealtTimer = 0;
+	}
+
 	UnitExt* unitExt = globals.GetUnitExt(this);
-	unitExt->combatTimer = 0;
+	unitExt->damageReceiveTimer = 0;
 
 	__asm {
 		PUSHAD
@@ -632,11 +648,11 @@ void Unit::reduceDefensiveMatrixHp(s32 amount)
 		while (current_image != nullptr)
 		{
 
-			if (
-				current_image->id < ImageId::DefensiveMatrixBack_Small ||
-				current_image->id > ImageId::DefensiveMatrixBack_Large
-				)
+			if (current_image->id < ImageId::DefensiveMatrixBack_Small
+				|| current_image->id > ImageId::DefensiveMatrixBack_Large)
+			{
 				current_image = current_image->link.next;
+			}
 			else
 			{
 				current_image->free();
@@ -650,7 +666,7 @@ void Unit::reduceDefensiveMatrixHp(s32 amount)
 	if (this->defensiveMatrixTimer != 0 && !(this->status & UnitStatus::Burrowed))
 	{
 		Unit* unit = this->subunit ? this->subunit : this;
-		//getUnitOverlayAdjustment code was hardcoded into function in original code)
+//		getUnitOverlayAdjustment code was hardcoded into function in original code)
 		unit->sprite->createTopOverlay(scbw::getUnitOverlayAdjustment(unit) + ImageId::DefensiveMatrixHit_Small);
 	}
 

@@ -16,7 +16,7 @@
 
 /// The first nodes in StarCraft's internal linked lists (taken from BWAPI's Offsets.h)
 SCBW_DATA(Unit**, firstVisibleUnit, 0x00628430);
-/// Includes units in transports/bunkers, workers inside gas buildings, nukes in
+/// Includes units in transports/bunkers, worker inside gas buildings, nukes in
 /// silos, queens inside command centers, and units in production.
 SCBW_DATA(Unit**,		firstHiddenUnit,		0x006283EC);
 SCBW_DATA(Unit**,		lastHiddenUnit,			0x00628428);
@@ -270,6 +270,10 @@ SCBW_DATA(u16*, placeBuildingUnitId, 0x0064088A);
 // For targetedOrder
 SCBW_DATA(u32*, COrderCount, 0x00641698);
 
+// For createUpgradeLevelTooltip
+SCBW_DATA(u16*, upgradeLevelTooltip, 0x0068C1CC);
+SCBW_DATA(char**, statTxtBuffer, 0x006D1238);
+
 //
 struct BufferStr {
 	char buf[260];
@@ -335,7 +339,7 @@ SCBW_DATA(Unit**, airSplashList, 0x0064EEE0);	// size of 1700
 SCBW_DATA(s32*, airSplashListCount, 0x0046DEB4);
 SCBW_DATA(s32*, isInGroundSplashProc, 0x0064DEB8);
 
-// For AI_AddMilitary -- Must add struct
+// For AI_AddMilitary
 SCBW_DATA(pathing**, SAI_Paths, 0x006D5BFC);
 
 SCBW_DATA(AiTown*, AiArray, 0x006AA090);

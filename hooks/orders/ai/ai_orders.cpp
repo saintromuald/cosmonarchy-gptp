@@ -13,32 +13,27 @@ namespace hooks
 		{
 			return;
 		}
-		if (parent == nullptr)
+		if (parent == nullptr || result->playerId != parent->playerId)
 		{
 			parent = result;
 		}
-		if (playerTable[result->playerId].type != PlayerType::Computer)
+		if (playerTable[parent->playerId].type != PlayerType::Computer)
 		{
 			return;
 		}
-		if (result->id == UnitId::ZergBroodling
-			|| result->id == UnitId::ZergBroodlisk
-			|| result->id == UnitId::ProtossSimulacrum
-			|| result->status & UnitStatus::IsHallucination
-			|| result->playerId != parent->playerId)
-		{
-			hooks::AI_TrainingBroodling(result, result);
-		}
-		else if (units_dat::BaseProperty[result->id] & UnitProperty::Worker)
+		if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
 		{
 			helper::AI_TrainingWorker(result, parent);
 		}
-		else if (result->id == UnitId::ZergOvileth
-			|| result->id == UnitId::ZergIroleth
-			|| result->id == UnitId::ZergOthstoleth
-			|| result->id == UnitId::ZergAlaszileth)
+		else if (result->id == UnitId::ZergOvileth)
 		{
 			helper::AI_TrainingOverlord(result, parent); // replace with hook later
+		}
+		else if (result->id == UnitId::ZergRilirokor
+			|| result->id == UnitId::ZergRililisk
+			|| result->id == UnitId::ProtossSimulacrum)
+		{
+			hooks::AI_TrainingBroodling(result, parent);
 		}
 		else
 		{
@@ -53,7 +48,7 @@ namespace hooks
 		}
 	}
 
-	// Hooked to help with reviving AI-controlled workers - Pr0nogo
+	// Hooked to help with reviving AI-controlled worker - Pr0nogo
 	char AI_TrainingWorker(Unit* child, Unit* parent) // 00435700
 	{
 		BuildingAi* parentAi = (BuildingAi*)parent->pAI;
@@ -83,7 +78,7 @@ namespace hooks
 					child->pAI = 0;
 				}
 			}
-			result = helper::AI_AddUnitAI(child, parentTown);
+			result = helper::AI_AddWorkerStructureAI(child, parentTown);
 		}
 		return result;
 	}
@@ -281,7 +276,7 @@ namespace hooks
 							v11 = v9->field_18;
 							*(s32*)&v9->field_C = parentAi;
 							v9->regionAirStrength = v10;
-							v9->fullGndStrength = v11;
+							v9->fullGroundStrength = v11;
 							parentAi->pAI = (UnitAi*)v9;
 							return;
 						}
@@ -333,12 +328,12 @@ namespace hooks
 				if (unitAI != nullptr)
 				{
 					unitAI->link.next = 0;
-					unitAI->link.prev = (UnitAi*)town->workers;
-					if (town->workers)
+					unitAI->link.prev = (UnitAi*)town->firstTownUnit;
+					if (town->firstTownUnit)
 					{
-						town->workers->link.next = (WorkerAi*)unitAI;
+						town->firstTownUnit->link.next->pAI = (WorkerAi*)unitAI;
 					}
-					town->workers = (WorkerAi*)unitAI;
+					town->firstTownUnit->pAI = (WorkerAi*)unitAI;
 					unitAIWorker = (WorkerAi*)unitAI;
 					unitAIWorker->type = 2;
 					unitAIWorker->parent = unit;
@@ -637,9 +632,7 @@ namespace hooks
 				parentAi9 = 1;
 			}
 LABEL_37:
-			v14 = &AiRegionCaptains[(u8)self->playerId][helper::SAI_GetRegionIdFromPxEx(
-				self->sprite->position.x,
-				self->sprite->position.y)];
+			v14 = &AiRegionCaptains[(u8)self->playerId][helper::SAI_GetRegionIdFromPxEx(self->sprite->position.x, self->sprite->position.y)];
 			if (!parentAi9)
 			{
 				if (!dontCallHelp)
@@ -731,7 +724,9 @@ LABEL_37:
 											{
 												child7 = realTarget;
 												if (helper::AI_Flee(self, realTarget))
+												{
 													return;
+												}
 											}
 											if (childAi4
 												|| !(self->status & UnitStatus::IsBuilding)
@@ -740,7 +735,7 @@ LABEL_37:
 											{
 LABEL_126:
 												if (self->orderTarget.unit != realTarget)
-												{ // Responding with workers
+												{ // Responding with worker
 													if (!(units_dat::BaseProperty[(u16)self->id] & UnitProperty::Worker)
 //														|| (child9 = realTarget->id, units_dat::BaseProperty[child9] & UnitProperty::Worker)
 														|| !scbw::unitIsRangedAttacker(realTarget) // previously only checked for Zergling id
@@ -871,7 +866,7 @@ LABEL_126:
 				{
 					if (result->id == UnitId::TerranWatchdog)
 					{
-						workerUnit = parentTown->workers->parent;
+						workerUnit = parentTown->firstTownUnit;
 						for (i = 0; workerUnit; i += queueCount)
 						{
 							workerTarget = workerUnit->moveTarget.unit;
@@ -1385,5 +1380,216 @@ LABEL_22:
 			}
 		}
 		*/
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiList) // 00404470
+	{
+		WorkerAi* nextWorker;
+		WorkerAiArray* arrayVar;
+		WorkerAi* finalWorker;
+
+		if (&workerAiList->worker_ais[1] == workerAi)
+		{
+			workerAiList->worker_ais[1] = *workerAi->link.prev;
+		}
+		nextWorker = workerAi->link.next;
+		if (nextWorker)
+		{
+			nextWorker->link.prev = workerAi->link.prev;
+		}
+		if (workerAi)
+		{
+			workerAi->link.prev->link.next = workerAi->link.next;
+		}
+		arrayVar = workerAiList;
+		workerAi->link.next = 0;
+		workerAi = arrayVar->first_free_worker;
+		finalWorker = arrayVar->first_free_worker;
+		if (finalWorker)
+		{
+			finalWorker->link.prev = workerAi;
+		}
+		arrayVar->first_free_worker = workerAi;
+		return workerAi;
+	}
+
+	// Hooked to improve functionality - Pr0nogo
+	void AI_SendSuicide(char randomSuicide, s32 player) // 0043E050
+	{
+		if (randomSuicide)
+		{
+			for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = unit->player_link.next)
+			{
+				if (unit->sprite)
+				{
+					if (unit->mainOrderId)
+					{
+						if (!unit->isSubunit()
+							&& unit->id != UnitId::TerranNuclearMissile
+							&& unit->id != UnitId::ZergLarva
+							&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+							&& !(unit->sprite->flags & SpriteFlags::Hidden)
+							&& !helper::isThreat(0, unit))
+						{
+							helper::prepSuicide(unit);
+						}
+					}
+				}
+			}
+			return;
+		}
+
+		if (!AIScriptController[player].strategic_suicide)
+		{
+			AiRegion* region2 = 0;
+
+			s32 regionIndex = 2500;
+			for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = unit->player_link.next)
+			{
+				if (!unit->sprite)
+				{
+					continue;
+				}
+				if (!unit->mainOrderId)
+				{
+					continue;
+				}
+				GuardAi* guardAI = (GuardAi*)unit->pAI;
+				if (!guardAI
+				  || helper::unitIsActiveTransport(unit)
+				  || unit->status & UnitStatus::InBuilding && !(AIScriptController[player].AI_Flags.isUseMapSettings))
+				{
+					continue;
+				}
+				s16 regionId = helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y);
+				AiRegion* region = &AiRegionCaptains[player][regionId];
+				u8 aiType = guardAI->type;
+				if (aiType == 1)
+				{
+					guardAI->parent->pAI = nullptr;
+					helper::AI_AddMilitary(region, guardAI->parent, 1);
+					guardAI->parent->pAI = nullptr;
+				}
+				else if (aiType != 4)
+				{
+					continue;
+				}
+				MilitaryAi* unitAI2 = (MilitaryAi*)unit->pAI;
+				if (unitAI2)
+				{
+					if (unitAI2->type == 4)
+					{
+						MilitaryAi* militaryAI = unitAI2;
+						u8 regionType = militaryAI->region->captainType;
+						if (regionType == 1 || regionType == 8 || regionType == 9 || regionType == 2)
+						{
+							continue;
+						}
+					}
+				}
+				if (regionIndex != 2500)
+				{
+					helper::removeUnitAI(unit, 0);
+					helper::AI_AddMilitary(region2, unit, 1);
+					continue;
+				}
+				memset(AIScriptController[player].attackers, 0, sizeof(AIScriptController[player].attackers));
+				AIScriptController[player].AI_AttackGroup = 0;
+				helper::AI_AttackClear(player);
+				if (!AI_AttackManager(player, unit->sprite->position.x, unit->sprite->position.y, 0, 1))
+				{
+					AIScriptController[player].strategic_suicide = 24;
+					regionIndex = (u16)AIScriptController[player].AI_AttackGroup - 1;
+					region2 = &AiRegionCaptains[player][regionIndex];
+					helper::removeUnitAI(unit, 0);
+					helper::AI_AddMilitary(region2, unit, 1);
+				}
+			}
+		}
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	u32 AI_RecalculateRegionStrength(AiRegion* region) // 0043A390
+	{
+		const u32 Func_CB_AICaptainStrengthIterator = 0x00438F60;
+		AiTown* regionTown = region->town;
+		region->regionAirStrength = 0;
+		region->fullAirStrength = 0;
+		region->regionGroundStrength = 0;
+		region->fullGroundStrength = 0;
+			
+		for (AiTown* i = regionTown; i; i = i->link.prev)
+		{
+			Unit* townUnit = i->firstTownUnit;
+			if (!townUnit)
+			{
+				continue;
+			}
+			if (!(townUnit->status & UnitStatus::InBuilding))
+			{
+				s32 townUnitGroundStrength = townUnit->groundStrength;
+				s16 townUnitAirStrength = townUnit->airStrength;
+				region->fullAirStrength += townUnitAirStrength;
+				region->fullGroundStrength += townUnitGroundStrength;
+				Sprite* townUnitSprite = townUnit->sprite;
+				if (!townUnitSprite)
+				{
+					continue;
+				}
+				s32 v6 = townUnitSprite->position.x;
+				s32 regionTown6 = townUnitGroundStrength;
+				if (helper::SAI_GetRegionIdFromPxEx(v6, townUnitSprite->position.y) == region->region)
+				{
+					s16 v7 = regionTown6;
+					region->regionAirStrength += townUnitAirStrength;
+					region->regionGroundStrength += v7;
+				}
+			}
+		}
+
+		if (AIScriptController[region->playerId].AI_Flags.isUseMapSettings)
+		{
+			s32 v8 = region->region << 6;
+			s32 v9 = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterY + v8);
+			s32 regionTown0 = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterX + v8) >> 8;
+			v9 >>= 8;
+			s16 a1 = regionTown0 - 256;
+			s32 regionTown6 = (v9 + 256) << 16;
+			s16 regionTown5 = v9 - 256;
+			regionTown6 |= regionTown0 + 256;
+			helper::iterateUnitsAtLocationTargetProc((Box16*)&a1, (Unit*(__fastcall*)(Unit*, Unit*))Func_CB_AICaptainStrengthIterator, (Unit*)region);
+		}
+		u32 regionAirStrength = region->enemyAirStrength;
+		if (!(AIScriptController[region->playerId].AI_Flags.isUseMapSettings))
+		{
+			regionAirStrength += regionAirStrength >> 1;
+		}
+		if (regionAirStrength > region->neededAirStrength)
+		{
+			region->neededAirStrength = regionAirStrength;
+		}
+		u32 regionGroundStrength = region->enemyGroundStrength;
+		if (!(AIScriptController[region->playerId].AI_Flags.isUseMapSettings))
+		{
+			regionGroundStrength += regionGroundStrength >> 1;
+		}
+		if (regionGroundStrength > region->neededGroundStrength)
+		{
+			region->neededGroundStrength = regionGroundStrength;
+		}
+		u16 result = AIScriptController[region->playerId].AI_MaxForce;
+		if (AIScriptController[region->playerId].AI_MaxForce)
+		{
+			if (region->neededAirStrength > result)
+			{
+				region->neededAirStrength = result;
+			}
+			if (region->neededGroundStrength > result)
+			{
+				region->neededGroundStrength = result;
+			}
+		}
+		return result;
 	}
 }

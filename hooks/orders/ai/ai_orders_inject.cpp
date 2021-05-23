@@ -357,6 +357,50 @@ namespace
 		}
 	}
 
+	void __declspec(naked) deleteWorkerAI_Wrapper() // 00404470
+	{
+		static WorkerAi* result;
+		static WorkerAi* workerAi;
+		static WorkerAiArray* workerAiList;
+		__asm
+		{
+			MOV workerAi, EAX
+			MOV workerAiList, EDX
+			PUSHAD
+		}
+		result = hooks::deleteWorkerAI(workerAi, workerAiList);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) AI_SendSuicide_Wrapper() // 0043E050
+	{
+		static char argType;
+		static s32 player;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			POP EAX
+			MOV argType, AL
+			PUSHAD
+		}
+		hooks::AI_SendSuicide(argType, player);
+		__asm
+		{
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
+
 	void __declspec(naked) AI_ReactToHit_TownNullCheck()
 	{
 		static BuildingAi* v7;
@@ -370,6 +414,24 @@ namespace
 		}
 		__asm
 		{
+			RETN
+		}
+	}
+
+	void __declspec(naked) AI_RecalculateRegionStrength_Wrapper()
+	{
+		static u32 result;
+		static AiRegion* region;
+		__asm
+		{
+			MOV region, ESI
+			PUSHAD
+		}
+		result = hooks::AI_RecalculateRegionStrength(region);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
 			RETN
 		}
 	}
@@ -398,8 +460,11 @@ namespace hooks
 		jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);
 		*/
 
-		jmpPatch(AI_orderUnitCloaking_Wrapper, 0x0043B970, 1);
+		jmpPatch(AI_orderUnitCloaking_Wrapper,				0x0043B970, 1);
+//		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
+		jmpPatch(AI_SendSuicide_Wrapper,					0x0043E050, 1);
+		jmpPatch(AI_RecalculateRegionStrength_Wrapper,		0x0043A390, 1);
 
-		callPatch(AI_ReactToHit_TownNullCheck, 0x0043F388, 5);
+		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}
 }

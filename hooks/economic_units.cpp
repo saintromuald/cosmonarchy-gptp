@@ -48,7 +48,7 @@ namespace hooks
 
 	bool unit_is_correct_townhall(u32 unit_id, u32 cmp_id, Unit* unit)
 	{
-		//unit is unused. this is function is supposed to be used for custom faction workers
+		//unit is unused. this is function is supposed to be used for custom faction worker
 		switch (unit_id)
 		{
 			case UnitId::TerranCommandCenter:
@@ -178,7 +178,7 @@ namespace hooks
 	}
 
 	// Checks if town has a free worker of given race
-	// First checks SC's first free worker var; If invalid iterates over all free workers
+	// First checks SC's first free worker var; If invalid iterates over all free worker
 	// This was needed since first free worker is sometimes null.
 	bool HasFreeWorker(AiTown* town, u8 raceId)
 	{
@@ -205,7 +205,7 @@ namespace hooks
 		if (GetTownRace(town) != raceId) return false;
 		if (town->main_building->remainingBuildTime != 0) return false; // town not finished, nullchecks are in the previous function
 		if (raceId == RaceId::Zerg)
-		{ // Zerg don't need workers for supply building, we could check for larvae instead, but it should be fine
+		{ // Zerg don't need worker for supply building, we could check for larvae instead, but it should be fine
 			return true;
 		}
 		return HasFreeWorker(town, raceId);

@@ -71,7 +71,7 @@ namespace hooks
 			}
 			else
 			{
-				halTimer = halUnit2->id != UnitId::ZergBroodling ? 0 : 1800;
+				halTimer = halUnit2->id != UnitId::ZergRilirokor ? 0 : 1800;
 			}
 			currentHalTimer = halUnit2->removeTimer;
 			if (!currentHalTimer || halTimer < currentHalTimer)
@@ -79,8 +79,8 @@ namespace hooks
 				halUnit2->removeTimer = halTimer;
 			}
 			unitType = halUnit2->id;
-			if (unitType == UnitId::ProtossAccantor)
-			{ // Originally also ran for Warbringer ID
+			if (unitType == UnitId::ProtossAccantor) // Originally also ran for Warbringer ID
+			{
 				helper::hallucinateScarabs(halUnit2, v3);
 			}
 			helper::AI_TrainingUnit(halUnit2, halUnit2);

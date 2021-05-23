@@ -147,11 +147,11 @@ enum ExtValueId
 	ValueWarpingIn,					// unused
 	ValueMalediction,				// unused
 	ValueWyvernSlow,				// unused
-	ValueWyvernLandGrabOn,
 	ValueLandGrabStart,				// unused
 	ValueUpgradeBoost,				// unused
 	ValueRemainingBuildTimeCopy,	// unused
 	ValueIonCannonSprite,			// unused
+	ValueWyvernLandGrabOn,
 	ValueAmitosis,
 	ValueSomaticImplants,
 	ValueSublimeShepherd,
@@ -238,7 +238,12 @@ enum ExtValueId
 	ValueSignifyStacks,
 	ValueReviveStarted,
 	ValuePreMorphHP,
-	ValueDisruptionWebOn,
+	ValueSkithrokorMissilePos,
+	ValueDisruptionFieldOn,
+	ValueLiiraliskMissilePos,
+	ValueAkistrokorInfestationSourcePlayer,
+	ValueControlledOpposition,
+	ValueNathrokorBuffStacks,
 
 	ValueCount,
 };
@@ -272,7 +277,7 @@ enum ExtTimerId
 	TimerAugurGimmick,
 	TimerEcclesiast,
 	TimerObservanceOverlay,
-	TimerNathrokor,
+	TimerNathrokorBuff,
 	TimerNaniteField,
 	TimerCorrosiveTouch,
 	TimerSkyfall,
@@ -291,7 +296,8 @@ enum ExtTimerId
 	TimerSignify,
 	TimerReviveFlagClearMin,
 	TimerReviveFlagClearMax,
-	TimerDisruptionWebStatusClear,
+	TimerUnderDisruptionWeb,
+	TimerAkistrokorInfestationInvFrames,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
@@ -302,6 +308,8 @@ enum ExtTimerId
 	TimerAI_DisruptionField,
 	TimerAI_MadrigalTempoChangeTimer,
 	TimerAI_EnsnaringBrood,
+	TimerAI_Kite,
+	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
 		
 	TimerCount,
 };
@@ -314,11 +322,11 @@ enum ExtUnitId
 	UnitDecaySavant,
 	UnitWorshipDemiurge,
 	UnitAttachedTarget,
-	UnitAttachedSource,
 	UnitMindController,
 	UnitWyvernTargetLock,
 	UnitDirgeSource,
 	UnitBunkerLockOn,
+	UnitLastHitAkistrokor,
 
 	UnitCount,
 };
@@ -337,6 +345,8 @@ enum ExtUnitVectorId
 	UnitVectorPhaseLinkClarions,
 	UnitVectorTertiaryEyes,
 	UnitVectorTertiaryEyesSirens,
+	UnitVectorAttachedSource,
+	UnitVectorWorshipersDemiurge,
 
 	UnitVectorCount,
 };
@@ -350,7 +360,10 @@ enum ExtTimerVectorId
 
 struct UnitExt
 {
-	u32						combatTimer;
+	u32						damageReceiveTimer;
+	u32						damageDealtTimer;
+
+	u32						nathrokorTargetStacks[8];
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];

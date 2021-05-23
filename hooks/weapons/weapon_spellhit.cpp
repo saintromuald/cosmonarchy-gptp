@@ -270,6 +270,12 @@ namespace hooks
 	void MeleeAttackHit(Unit* attacker)
 	{
 		UnitExt* attackerExt = globals.GetUnitExt(attacker);
+		if (attackerExt->values[ValueDisruptionFieldOn]
+			|| attackerExt->timers[TimerUnderDisruptionWeb])
+		{
+			attacker->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
+			return;
+		}
 		Unit* target = attacker->orderTarget.unit;
 		if (target != nullptr)
 		{
@@ -399,7 +405,7 @@ namespace hooks
 					{
 						current_unit->energy -= 100;
 						current_unit->shields -= 100;
-						if (current_unit->sprite->flags & CSprite_Flags::Selected
+						if (current_unit->sprite->flags & SpriteFlags::Selected
 							&& current_unit->sprite != nullptr) // Follows original code, though this order of tests doesn't make sense
 						{
 							helper::setAllImageGroupFlagsPal11(current_unit->sprite); // redraw the unit
@@ -561,7 +567,7 @@ namespace hooks
 		{
 			bool jump_to_end_of_loop = false; // 004F4A82
 			// check various conditions before attempting to create a broodling
-			if (helper::function_0042D810(current_x, current_y, UnitId::ZergBroodling))
+			if (helper::function_0042D810(current_x, current_y, UnitId::ZergRilirokor))
 			{
 				Point16 inPos, outPos;
 				Box16 moveArea;
@@ -593,10 +599,10 @@ namespace hooks
 				pos.y = current_y;
 
 				// adjust the position to welcome the unit...I think
-				helper::fixTargetLocation(&pos, UnitId::ZergBroodling);
+				helper::fixTargetLocation(&pos, UnitId::ZergRilirokor);
 
 				// create the broodling
-				created_broodling = helper::createUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
+				created_broodling = helper::createUnit(UnitId::ZergRilirokor, pos.x, pos.y, attacker->playerId);
 				UnitExt* broodlingExt = globals.GetUnitExt(created_broodling);
 				broodlingExt->units[UnitBroodlingMother] = attacker;
 

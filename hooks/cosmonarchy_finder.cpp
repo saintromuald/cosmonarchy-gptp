@@ -1,4 +1,4 @@
-#include "hooks\cosmonarchyFinder.h"
+#include "hooks\cosmonarchy_finder.h"
 
 
 bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
@@ -149,6 +149,10 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 
 					return false;
 				}
 			}
+			if (context & Flags::Own && unit->playerId != center->playerId)
+			{
+				return false;
+			}
 			if (scbw::isAlliedTo(unit->playerId, center->playerId) && context & Flags::Enemy)
 			{
 				return false;
@@ -198,8 +202,11 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 
 		{
 			return false;
 		}
-		if (context & Flags::Combatant
-			&& ((!unit->hasWeapon() && !(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) || units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
+		if (context & Flags::CanAttackOrCast && !unit->hasWeapon() && !(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster))
+		{
+			return false;
+		}
+		if (context & Flags::NotWorker && units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
 			return false;
 		}

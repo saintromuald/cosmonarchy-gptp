@@ -20,6 +20,11 @@ namespace AI
 			bounds = 32 * 32;
 		}
 
+		if (caster->vulture.spiderMineCount == 0)
+		{
+			return false;
+		}
+
 		return scbw::UnitFinder::getNearestTarget(
 			caster->getX() - bounds,
 			caster->getY() - bounds,
@@ -43,12 +48,6 @@ namespace AI
 			{
 				return false;
 			}
-			
-			if (caster->vulture.spiderMineCount == 0)
-			{
-				scbw::print("u");
-				return false;
-			}
 
 			if (target->id == UnitId::TerranTrojan || target->id == UnitId::ProtossEnvoy)
 			{
@@ -69,7 +68,6 @@ namespace AI
 			}
 
 			return false;
-
 		});
 	}
 }

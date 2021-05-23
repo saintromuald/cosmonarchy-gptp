@@ -138,6 +138,7 @@ namespace hooks
 						// 00426D54
 						helper::StatsWeaponLevel(dialog, index, groundWeapon);
 						index++;
+
 						// Display additional weapons
 						if (activeUnit->id == UnitId::TerranCentaur)
 						{
@@ -249,7 +250,7 @@ namespace hooks
 				if (helper::StatSpidermineCount(dialog, index))
 					index++;
 			}
-			if (activeUnit->id == UnitId::ghost)
+			if (activeUnit->id == UnitId::TerranEidolon)
 			{
 				if (StatLobotomyMineCount(dialog, index))
 				{

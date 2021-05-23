@@ -408,7 +408,5 @@ namespace scbw
 	void applyNewHallucination(Unit* unit, u8 playerId, u32 time);
 	bool weaponPiercesTargets(u16 weaponId);
 	void dirgeFuse(Unit* unit, UnitExt* unitExt);
-	void initUnitAI(Unit* unit);
 	void updateSignifyStatus(Unit* unit, UnitExt* unitExt);
-
 }

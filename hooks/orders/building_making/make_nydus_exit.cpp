@@ -39,15 +39,14 @@ namespace hooks
 				nydus_canal->userActionFlags |= 1;
 				prepareForNextOrder(nydus_canal);
 			}
+			else if (nydus_canal->pAI != nullptr)
+			{
+				nydus_canal->orderComputerClear(OrderId::ComputerAI);
+			}
 			else
-				if (nydus_canal->pAI != nullptr)
-				{
-					nydus_canal->orderComputerClear(OrderId::ComputerAI);
-				}
-				else
-				{
-					nydus_canal->orderComputerClear(units_dat::ReturnToIdleOrder[nydus_canal->id]);
-				}
+			{
+				nydus_canal->orderComputerClear(units_dat::ReturnToIdleOrder[nydus_canal->id]);
+			}
 		}
 		else
 		{ // 0045DCDB

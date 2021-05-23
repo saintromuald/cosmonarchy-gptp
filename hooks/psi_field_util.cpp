@@ -12,49 +12,56 @@
 
 //Checks if the given unit ID can provide psi (for use in assertion)
 //The following unit types cannot make psi fields
-//  workers, factories, resource containers, ghosts, nydus canals, silos,
+//  worker, factories, resource containers, ghosts, nydus canals, silos,
 //  hatcheries, and powerups
 bool isValidPsiProviderType(u16 unitId)
 {
 
 	if (unitId >= UNIT_TYPE_COUNT)
+	{
 		return false;
+	}
 
-	//Uses memory space of Unit::building for other purposes
+	// Uses memory space of Unit::building for other purposes
 	if (units_dat::BaseProperty[unitId] & (UnitProperty::Worker | UnitProperty::ResourceContainer | UnitProperty::NPCOrAccessories))
+	{
 		return false;
+	}
 
-	//Unit::rally shares memory space with Unit::psi_link
+	// Unit::rally shares memory space with Unit::psi_link
 	if (units_dat::GroupFlags[unitId].isFactory)
+	{
 		return false;
+	}
 
-	//Uses memory space of Unit::building for other purposes
-	if (unitId == UnitId::ghost ||
-		unitId == UnitId::sarah_kerrigan ||
-		unitId == UnitId::Hero_AlexeiStukov ||
-		unitId == UnitId::Hero_SamirDuran ||
-		unitId == UnitId::Hero_InfestedDuran ||
-		unitId == UnitId::nydus_canal ||
-		unitId == UnitId::nuclear_silo ||
-		unitId == UnitId::hatchery ||
-		unitId == UnitId::lair ||
-		unitId == UnitId::hive
-		)
+	// Uses memory space of Unit::building for other purposes
+	if (unitId == UnitId::TerranEidolon ||
+		unitId == UnitId::ZergNydusCanal ||
+		unitId == UnitId::TerranNuclearSilo ||
+		unitId == UnitId::ZergHatchery ||
+		unitId == UnitId::ZergLair ||
+		unitId == UnitId::ZergHive)
+	{
 		return false;
+	}
 
 	return true;
-
 }
 
-//Adds @p unit to the psi provider list and creates the psi field sprite.
-//Based on orders_InitPsiProvider() @ 00493F70
-//But this does not affect the unit's current order.
+// Adds @p unit to the psi provider list and creates the psi field sprite.
+// Based on orders_InitPsiProvider() @ 00493F70
+// But this does not affect the unit's current order.
 void addPsiField(Unit* unit)
 {
-	if (!unit) return;
+	if (!unit)
+	{
+		return;
+	}
 
 	if (*firstPsiFieldProvider == unit || unit->psi_link.next || unit->psi_link.prev)
+	{
 		return;
+	}
 
 	unit->psi_link.prev = nullptr;
 	unit->psi_link.next = *firstPsiFieldProvider;

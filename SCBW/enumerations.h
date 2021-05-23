@@ -253,7 +253,7 @@ namespace UnitStatus {
 		IsNormal = 0x00100000,  /**< 1 for "normal" units, 0 for hallucinated units */
 		NoCollide = 0x00200000, // ++if set, other units wont collide with the unit (like burrowed units)
 		UNKNOWN5 = 0x00400000,
-		IsGathering = 0x00800000, // ++if set, the unit wont collide with other units (like workers gathering)
+		IsGathering = 0x00800000, // ++if set, the unit wont collide with other units (like worker gathering)
 		UNKNOWN6 = 0x01000000,
 		UNKNOWN7 = 0x02000000, // Turret related
 		Invincible = 0x04000000,

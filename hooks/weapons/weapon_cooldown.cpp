@@ -2,7 +2,7 @@
 #include "../../SCBW/scbwdata.h"
 #include "../../SCBW/enumerations.h"
 #include "../../SCBW/api.h"
-#include "../../MathUtils.h"
+#include "../../math_utils.h"
 #include "globals.h"
 
 namespace hooks
