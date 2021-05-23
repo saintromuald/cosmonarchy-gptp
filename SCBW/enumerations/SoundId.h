@@ -1165,6 +1165,7 @@ namespace SoundId
 		ArchitectWeaponSplit01 = 1416,
 		DemiurgeWorship01 = 1417,
 		SirenTertiaryEyesCast01 = 1459,
+		OlympianMythicalMight01 = 1576,
 
 	};
 }
