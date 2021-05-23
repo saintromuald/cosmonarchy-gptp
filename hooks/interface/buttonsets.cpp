@@ -1443,7 +1443,6 @@ namespace hooks
 									}
 								}
 							}
-
 							else if ((*activePortraitUnit)->id == UnitId::TerranWyvern)
 							{
 								UnitExt* activeExt = globals.GetUnitExt(*activePortraitUnit);
@@ -1452,8 +1451,8 @@ namespace hooks
 									canCancel = true;
 								}
 							}
-
-							else if ((*activePortraitUnit)->id == UnitId::ZergAkistrokor)
+							else if ((*activePortraitUnit)->id == UnitId::ZergAkistrokor
+								|| (*activePortraitUnit)->id == UnitId::ZergSovroleth)
 							{
 								UnitExt* activeExt = globals.GetUnitExt(*activePortraitUnit);
 								if (activeExt->units[UnitAttachedTarget])

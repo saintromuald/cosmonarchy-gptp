@@ -535,6 +535,19 @@ namespace hooks
 			}
 			targetExt->values[ValueEnthrallingTalons] = 1;
 		}
+
+		// Sovroleth - Attachment ability
+		// TODO: add ability cast check here
+		if (false && unit->orderTarget.unit != nullptr)
+		{
+			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
+			unitExt->units[UnitAttachedTarget] = unit->orderTarget.unit;
+			auto& sourceUnits = targetExt->unitVectors[UnitVectorAttachedSource];
+			if (std::find(sourceUnits.begin(), sourceUnits.end(), unit) == sourceUnits.end())
+			{
+				sourceUnits.push_back(unit);
+			}
+		}
 	}
 
 	void progressBulletFlight(Bullet* bullet)
