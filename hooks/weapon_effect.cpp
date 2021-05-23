@@ -401,6 +401,23 @@ namespace hooks
 
 		darkSwarmDamage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weaponId);
 
+		// Kalkalisk behavior
+		if (bullet->weaponId == WeaponId::KalkaliskViscousAcid)
+		{
+			auto count = globals.get_multihit_count(bullet);
+
+			if (count >= 4)
+			{
+				return;
+			}
+
+			target->damageWithCustom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count) * 256,
+				weapons_dat::DamageType[WeaponId::KalkaliskViscousAcid],
+				bullet->sourceUnit, bullet->srcPlayer, 0, 1, false);
+
+			return;
+		}
+
 		u8 divisor = 1;
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo)
 		{

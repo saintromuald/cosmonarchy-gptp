@@ -424,8 +424,7 @@ namespace hooks
 				}
 				else if (weaponId == WeaponId::KalkaliskViscousAcid)
 				{
-					auto bullet = scbw::setMissileSourcePos(unit, weaponId, ValueKalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
-					globals.remove_multihit_bullet(bullet);
+					scbw::setMissileSourcePos(unit, weaponId, ValueKalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::KeskathalorScreamingVenom)
 				{
@@ -801,8 +800,10 @@ namespace hooks
 				}
 			}
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
-				bullet->position.x - range, bullet->position.y - range,
-				bullet->position.x + range, bullet->position.y + range,
+				bullet->position.x - range,
+				bullet->position.y - range,
+				bullet->position.x + range,
+				bullet->position.y + range,
 				bullet, [&](Unit* unit)
 			{
 				if (unit->status & UnitStatus::Invincible)
@@ -873,14 +874,24 @@ namespace hooks
 				}
 				else if (bullet->weaponId == WeaponId::KalkaliskViscousAcid) {
 					// Kalkalisk behavior
-//					auto divider = globals.get_multihit_count(bullet);
-					helper::weaponBulletShot(collisionTarget, bullet, 2);
+					auto count = globals.get_multihit_count(bullet);
 					helper::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-					bullet->moveTarget.unit = bullet->attackTarget.unit;
-					if (bullet->moveTarget.unit != nullptr)
+					collisionTarget->damageWithCustom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
+						weapons_dat::DamageType[WeaponId::KalkaliskViscousAcid],
+						bullet->sourceUnit, bullet->srcPlayer, 0, 1, false);
+
+					if (count >= 4)
 					{
-						bullet->targetPosition = bullet->moveTarget.unit->position;
-						bullet->targetPosition2 = bullet->moveTarget.unit->position;
+						bullet->time_remaining = 0;
+					}
+					else
+					{
+						bullet->moveTarget.unit = bullet->attackTarget.unit;
+						if (bullet->moveTarget.unit != nullptr)
+						{
+							bullet->targetPosition = bullet->moveTarget.unit->position;
+							bullet->targetPosition2 = bullet->moveTarget.unit->position;
+						}
 					}
 				}
 			}
@@ -905,7 +916,7 @@ namespace hooks
 			bullet->someUnitType = 228;
 			for (i = bulletSprite->images.head; i; i = i->link.next)
 			{
-				helper::playImageIscript(i, 1);
+				helper::playImageIscript(i, IscriptAnimation::Death);
 			}
 		}
 	}
