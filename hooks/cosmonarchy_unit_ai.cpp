@@ -242,7 +242,6 @@ static inline bool canKite(Unit* unit)
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
 		&& unit->id != UnitId::TerranNuclearMissile
-		&& unit->id != UnitId::TerranCentaur
 		&& unit->mainOrderId != OrderId::BuildTerran
 		&& unit->mainOrderId != OrderId::ConstructingBuilding
 		&& unit->mainOrderId != OrderId::BuildProtoss1
@@ -261,7 +260,9 @@ static inline bool unitHasCooldownToAttack(Unit* unit)
 static inline bool inAttackAnim(Unit* unit)
 {
 	return unit->sprite->mainGraphic->animation == IscriptAnimation::GndAttkInit
-		|| unit->sprite->mainGraphic->animation == IscriptAnimation::AirAttkInit;
+		|| unit->sprite->mainGraphic->animation == IscriptAnimation::AirAttkInit
+		|| unit->sprite->mainGraphic->animation == IscriptAnimation::Unused2
+		|| unit->status & UnitStatus::NoBrkCodeStart;
 }
 
 static inline bool shouldKiteBack(Unit* source)
