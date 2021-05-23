@@ -147,11 +147,11 @@ enum ExtValueId
 	ValueWarpingIn,					// unused
 	ValueMalediction,				// unused
 	ValueWyvernSlow,				// unused
-	ValueWyvernLandGrabOn,
 	ValueLandGrabStart,				// unused
 	ValueUpgradeBoost,				// unused
 	ValueRemainingBuildTimeCopy,	// unused
 	ValueIonCannonSprite,			// unused
+	ValueWyvernLandGrabOn,
 	ValueAmitosis,
 	ValueSomaticImplants,
 	ValueSublimeShepherd,
@@ -243,6 +243,7 @@ enum ExtValueId
 	ValueLiiraliskMissilePos,
 	ValueAkistrokorInfestationSourcePlayer,
 	ValueControlledOpposition,
+	ValueNathrokorBuffStacks,
 
 	ValueCount,
 };
@@ -276,7 +277,7 @@ enum ExtTimerId
 	TimerAugurGimmick,
 	TimerEcclesiast,
 	TimerObservanceOverlay,
-	TimerNathrokor,
+	TimerNathrokorBuff,
 	TimerNaniteField,
 	TimerCorrosiveTouch,
 	TimerSkyfall,
@@ -361,6 +362,8 @@ struct UnitExt
 {
 	u32						damageReceiveTimer;
 	u32						damageDealtTimer;
+
+	u32						nathrokorTargetStacks[8];
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];

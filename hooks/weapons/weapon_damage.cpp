@@ -588,6 +588,11 @@ namespace hooks
 
 			switch (data.weaponId)
 			{
+				case WeaponId::NathrokorPlasmidBreath:
+				{
+					// Adrenal Frenzy - Nathrokor behavior
+					targetExt->nathrokorTargetStacks[data.attackingPlayerId]++;
+				} break;
 				case WeaponId::DemiurgeGalacticWeaver:
 				{
 					// Demiurge - Worship
@@ -1030,28 +1035,6 @@ namespace hooks
 					// Kaiser Rampage - Ultralisk behavior
 					attackerExt->timers[TimerKaiserRampage] = 1 + (2 * 24);
 					data.attacker->updateSpeed();
-				} break;
-				case WeaponId::NathrokorPlasmidBreath:
-				{
-					// Adrenal Frenzy - Nathrokor behavior
-					s32 player = data.attacker->playerId;
-					const s32 range = 48;
-					scbw::UnitFinder(
-						data.attacker->getX() - range,
-						data.attacker->getY() - range,
-						data.attacker->getX() + range,
-						data.attacker->getY() + range
-					).forEach([&](Unit* unit)
-					{
-						if (unit == nullptr
-							|| (player != unit->playerId && !scbw::isAlliedTo(player, unit->playerId)))
-						{
-							return;
-						}
-						UnitExt* forEachExt = globals.GetUnitExt(unit);
-						forEachExt->timers[TimerNathrokor] = (4 * 24) + 1;
-						unit->updateSpeed();
-					});
 				} break;
 				case WeaponId::ToxicSpores:
 				case WeaponId::RililiskSwarmingSpores:

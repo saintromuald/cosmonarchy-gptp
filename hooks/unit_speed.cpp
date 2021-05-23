@@ -46,9 +46,9 @@ namespace hooks
 		speed *= 1.0 + unitExt->values[ValueTerminalSurge] * 0.05;
 
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby allies after kill
-		if (unitExt->timers[TimerNathrokor])
+		if (unitExt->timers[TimerNathrokorBuff])
 		{
-			speed *= 1.25;
+			speed *= 1 + 0.01 * unitExt->values[ValueNathrokorBuffStacks];
 		}
 
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack

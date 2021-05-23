@@ -474,6 +474,8 @@ namespace hooks
 			unitExt->timers[TimerCorrosiveTouch], TimerType::Aise);
 		addStatus(statuses, "Dirge Fuse", unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage, 0,
 			unitExt->timers[TimerDirgeFuse], TimerType::Aise);
+		addStatus(statuses, "Adrenal Frenzy", unitExt->values[ValueNathrokorBuffStacks], 0,
+			unitExt->timers[TimerNathrokorBuff], TimerType::Aise);
 
 		if (unitExt->values[ValueSignifyStacks] < 5)
 		{
@@ -501,8 +503,6 @@ namespace hooks
 		//	unitExt->EggBoostTimer, TimerType::Aise)); // currently can't read tooltips from  eggs
 		//addStatus(statuses, "Endomorphic Accelerant", 0, -1,
 		//	unitExt->MineralSpecialRegenTimer, TimerType::Aise)); // nor mineral fields
-		addStatus(statuses, "Adrenal Frenzy", -1, 1,
-			unitExt->timers[TimerNathrokor], TimerType::Aise);
 		addStatus(statuses, "Controlled Demolition", -1, 1,
 			unitExt->timers[TimerControlledDemolition], TimerType::Aise);
 		addStatus(statuses, "Emergency Detonation", -1, 1,

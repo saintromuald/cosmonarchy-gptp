@@ -1196,9 +1196,10 @@ namespace scbw
 		}
 
 		// Inherit Adrenal Frenzy
-		if (parentExt->timers[TimerNathrokor])
+		if (parentExt->timers[TimerNathrokorBuff])
 		{
-			childExt->timers[TimerNathrokor] = parentExt->timers[TimerNathrokor];
+			childExt->timers[TimerNathrokorBuff] = parentExt->timers[TimerNathrokorBuff];
+			childExt->values[ValueNathrokorBuffStacks] = parentExt->values[ValueNathrokorBuffStacks];
 		}
 
 		// Inherit Swarming Omen

@@ -1284,9 +1284,10 @@ namespace hooks
 		}
 
 		// Update flingy speed when Adrenal Frenzy period expires
-		if (unitExt->timers[TimerNathrokor] == 1)
+		if (unitExt->timers[TimerNathrokorBuff] == 1)
 		{
-			unitExt->timers[TimerNathrokor] = 0;
+			unitExt->timers[TimerNathrokorBuff] = 0;
+			unitExt->values[ValueNathrokorBuffStacks] = 0;
 			unit->updateSpeed();
 		}
 

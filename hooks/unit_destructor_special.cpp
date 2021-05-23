@@ -261,6 +261,31 @@ void unitDestructorSpecialHook(Unit* unit)
 		}
 	}
 
+	// Nathrokor - Passive
+	for (u32 i = 0; i < 8; i++)
+	{
+		u32 stacks = unitExt->nathrokorTargetStacks[i];
+		if (stacks)
+		{
+			const u32 radius = 3 * 32;
+			scbw::UnitFinder(
+				unit->getX() - radius,
+				unit->getY() - radius,
+				unit->getX() + radius,
+				unit->getY() + radius
+			).forEach([&](Unit* target)
+			{
+				if (scbw::isAlliedTo(i, target->playerId))
+				{
+					UnitExt* targetExt = globals.GetUnitExt(target);
+					targetExt->timers[TimerNathrokorBuff] = 5 * 24 + 1;
+					targetExt->values[ValueNathrokorBuffStacks] += stacks;
+					target->updateSpeed();
+				}
+			});
+		}
+	}
+
 	// Alkajelisk Parasitic Spores behavior
 	if (unitExt->values[ValueAlkajeliskParasite] == 1)
 	{
