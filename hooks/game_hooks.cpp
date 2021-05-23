@@ -210,7 +210,6 @@ std::vector<Thingy*> CorpseFinder::corpsesY;
 
 namespace hooks
 {
-	void firstFrame();
 	void tickUnit(Unit* unit);
 
 	/// This hook is called every frame
@@ -219,7 +218,49 @@ namespace hooks
 		// This block is executed once every game
 		if (*elapsedTimeFrames == 0)
 		{
-			firstFrame();
+			hooks::initializeScreenLocations();
+			hooks::clearActions();
+			globals.reset();
+			for (s32 i = 0; i < 8; i++)
+			{
+				scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);
+			}			
+		}
+
+		if (*elapsedTimeFrames == 1 && deathTable[UnitId::Special_StartLocation].player[11] == 1)
+		{
+			// Explore map
+			for (int y = 0; y < mapTileSize->height; y++)
+			{
+				for (int x = 0; x < mapTileSize->width; x++)
+				{
+					ActiveTile& tile = scbw::getActiveTileAt(x * 32, y * 32);
+					tile.exploredFlags = 0x00;
+				}
+			}
+
+			// Reveal resources
+			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
+			{
+				if (unit->id == UnitId::ResourceVespeneGeyser
+					|| unit->id == UnitId::ResourceMineralField
+					|| unit->id == UnitId::ResourceMineralFieldType2
+					|| unit->id == UnitId::ResourceMineralFieldType3)
+				{
+					unit->sprite->visibilityFlags = 0xff;
+				}
+			}
+
+			// Ping active player start locations 
+			// NOTE: active player check is a workaround for extistance of spectator slots
+			// we should remove it when spectators are removed, or find a way to ping every possible player start location
+			for (int i = 0; i < 8; i++)
+			{
+				if (firstPlayerUnit->unit[i])
+				{
+					scbw::minimapPing(startPositions[i].x, startPositions[i].y, 8, *ACTIVE_NATION_ID);
+				}
+			}
 		}
 
 		if (!scbw::isGamePaused()) // If the game is not paused
@@ -278,18 +319,6 @@ namespace hooks
 			scbw::setInGameLoopState(false);
 		}
 		return true;
-	}
-
-	void firstFrame()
-	{
-		//Write your code here
-		hooks::initializeScreenLocations();
-		hooks::clearActions();
-		globals.reset();
-		for (s32 i = 0; i < 8; i++)
-		{
-			scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);
-		}
 	}
 
 	void tickUnit(Unit* unit)
