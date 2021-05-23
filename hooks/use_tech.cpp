@@ -182,22 +182,12 @@ namespace hooks
 					buf[4] = RustId::CancelLandGrab;
 					helper::QueueGameCommand(buf, 0xc);
 				}
-				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergAkistrokor)
+				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergAkistrokor
+					|| playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergSovroleth)
 				{
 					s32 action = 1; // on
 					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
 					buf[0] = 0x99; // new general command
-					buf[1] = NewGameCommand::GenericSwitchAbility;
-					buf[2] = action;
-					buf[3] = *ACTIVE_PLAYER_ID;
-					buf[4] = RustId::CancelAttachment;
-					helper::QueueGameCommand(buf, 0xc);
-				}
-				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergSovroleth)
-				{
-					s32 action = 1;
-					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0};
-					buf[0] = 0x99;
 					buf[1] = NewGameCommand::GenericSwitchAbility;
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
