@@ -281,13 +281,23 @@ namespace hooks
 					}
 				}
 			}
-			data.finalDamage -= std::min(data.finalDamage, armorTotal);
+
+			// Sovroleth Armor Bonus
+			for (Unit* unit : targetExt->unitVectors[UnitVectorAttachedSource])
+			{
+				if (unit->id == UnitId::ZergSovroleth)
+				{
+					armorTotal += 128;
+				}
+			}
 
 			// Autocrat Controlled Opposition
 			if (targetExt->values[ValueControlledOpposition])
 			{
-				data.finalDamage += std::max((s32)targetExt->values[ValueControlledOpposition], armorTotal);
+				armorTotal = std::max(armorTotal - (s32)targetExt->values[ValueControlledOpposition] * 256, 0);
 			}
+
+			data.finalDamage -= std::min(data.finalDamage, armorTotal);
 		}
 
 		// Apply damage type/unit size factor
@@ -646,10 +656,7 @@ namespace hooks
 				case WeaponId::AutocratEminanceRifle:
 				{
 					// Apply Controlled Opposition
-					if (!targetExt->values[ValueControlledOpposition])
-					{
-						targetExt->values[ValueControlledOpposition]++;
-					}
+					targetExt->values[ValueControlledOpposition]++;
 				} break;
 				case WeaponId::SavantDiscoidRailgun:
 				{
