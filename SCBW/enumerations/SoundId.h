@@ -1149,7 +1149,6 @@ namespace SoundId
 		Protoss_Artanis_PAtYes02_wav = 1142,
 		Protoss_Artanis_PAtYes03_wav = 1143,
 
-
 		// Cosmonarchy \\
 
 		WyvernAttack01 = 1118,
