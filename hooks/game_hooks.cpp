@@ -227,12 +227,13 @@ namespace hooks
 			}			
 		}
 
-		if (*elapsedTimeFrames == 1 && deathTable[UnitId::Special_StartLocation].player[11] == 1)
+		// Requires a trigger that sets 1 death of Vespene Geyser for current player
+		if (*elapsedTimeFrames == 1 && unit_deaths[UnitId::ResourceVespeneGeyser].player[*ACTIVE_NATION_ID] == 1)
 		{
 			// Explore map
-			for (int y = 0; y < mapTileSize->height; y++)
+			for (u32 y = 0; y < mapTileSize->height; y++)
 			{
-				for (int x = 0; x < mapTileSize->width; x++)
+				for (u32 x = 0; x < mapTileSize->width; x++)
 				{
 					ActiveTile& tile = scbw::getActiveTileAt(x * 32, y * 32);
 					tile.exploredFlags = 0x00;
@@ -254,7 +255,7 @@ namespace hooks
 			// Ping active player start locations 
 			// NOTE: active player check is a workaround for extistance of spectator slots
 			// we should remove it when spectators are removed, or find a way to ping every possible player start location
-			for (int i = 0; i < 8; i++)
+			for (u32 i = 0; i < 8; i++)
 			{
 				if (firstPlayerUnit->unit[i])
 				{
