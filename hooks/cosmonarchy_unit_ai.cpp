@@ -853,7 +853,40 @@ void cosmonarchyUnitAi(Unit* unit)
 			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
 		}
 	}
+	else if (unit->id == UnitId::ProtossDemiurge && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
+	{
 
+		if (unit->energy >= 50 * 256)
+		{
+			auto& vec = unitExt->unitVectors[UnitVectorWorshipersDemiurge];
+
+			u32 totalCount = vec.size();
+			u32 inCombatCount = 0;
+			for (Unit* worshiper : vec)
+			{
+				UnitExt* worshiperExt = globals.GetUnitExt(worshiper);
+				if (worshiperExt->damageDealtTimer < 4 * 24
+					|| worshiperExt->damageReceiveTimer < 4 * 24)
+				{
+					inCombatCount++;
+				}
+			}
+
+			if (totalCount > 3 && inCombatCount > totalCount - inCombatCount)
+			{
+				scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 1);
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+			}
+			else
+			{
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			}
+		}
+		else
+		{
+			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+		}
+	}
 
 
 

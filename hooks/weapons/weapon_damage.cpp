@@ -594,6 +594,13 @@ namespace hooks
 					if (data.target->playerId != data.attacker->playerId
 						&& data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2))
 					{
+						auto& vec = attackerExt->unitVectors[UnitVectorWorshipersDemiurge];
+							
+						if (std::find(vec.begin(), vec.end(), data.target) == vec.end())
+						{
+							vec.push_back(data.target);
+						}
+
 						targetExt->values[ValueWorshipStack] = 1;
 						targetExt->units[UnitWorshipDemiurge] = data.attacker;
 						targetExt->values[ValueWorshipOriginalPlayer] = data.target->playerId;
