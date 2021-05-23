@@ -887,6 +887,60 @@ void cosmonarchyUnitAi(Unit* unit)
 			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
 		}
 	}
+	else if ((unit->id == UnitId::ZergAkistrokor || unit->id == UnitId::ZergSovroleth) && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
+	{
+		if (!unitExt->units[UnitAttachedTarget])
+		{
+			const u32 radius = 32 * 10;
+			scbw::UnitFinder finder(
+				unit->getX() - radius,
+				unit->getY() - radius,
+				unit->getX() + radius,
+				unit->getY() + radius
+			);
+
+			Unit* target = nullptr;
+			if (unit->id == UnitId::ZergAkistrokor)
+			{
+				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
+				target = finder.getBest([&](Unit* local) -> u32
+				{
+					if (!match(local))
+					{
+						return -1;
+					}
+					return getDistanceBetweenUnits(unit, local);
+				});
+			}
+			else if (unit->id == UnitId::ZergSovroleth)
+			{
+				auto match = cosmonarchyFinderMatch(unit, Flags::Ally | Flags::NotSelf | Flags::NoBuilding, {});
+				target = finder.getBest([&](Unit* local) -> u32
+				{
+					if (!match(local))
+					{
+						return -1;
+					}
+					return unit->getCurrentLifeInGame();
+				});
+			}
+
+			if (target)
+			{
+				unit->orderTo(OrderId::CTFCOP1, target);
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+			}
+			else
+			{
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			}
+		}
+		else
+		{
+			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+		}
+
+	}
 
 
 
