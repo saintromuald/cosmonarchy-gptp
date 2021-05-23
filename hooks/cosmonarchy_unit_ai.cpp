@@ -1,63 +1,606 @@
 #include "hooks\cosmonarchy_unit_ai.h"
 #include "SCBW/api.h"
 #include "SCBW/scbwdata.h"
-#include "UnitConstants.h"
-#include "MathUtils.h"
+#include "unit_constants.h"
+#include "math_utils.h"
 #include "globals.h"
 #include "hooks/weapons/weapon_cooldown.h"
 
-void cosmonarchy_unit_ai(Unit* unit)
+/* DONE
+Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby,
+cast the spell. **DONE**
+AI should also try to position Apostles near organics.
+
+Savant Power Siphon: If 2 or more allied specialists are nearby,
+target an enemy specialist within 7 range. **DONE**
+
+Matraleth Parasite: When 5 or more supply's worth of units (of any owner) are within 128px of each other,
+target the group. **DONE**
+
+Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 192px of the Star Sovereign,
+and there are no allied town halls and less than 2000 HP+shields worth of allied units within the same radius,
+and the Star Sovereign has more than 50% of HP+shields combined,
+channel the ability. **DONE**
+Attempt to protect the Star Sovereign with low-cost/low-HP units.
+
+Lanifect Disruption Field:
+When there are at least 3 allies within 128px, and there are at least 2 enemies within 128px,
+and there are no activated Disruption Fields within 96px,
+and the Lanifect is above 50% total HP and shields,
+move towards the most significant enemy threat within 128px (in terms of enemy unit count).
+Recheck conditions to disable the behavior (besides HP/shield checks). **DONE**
+*/
+
+/* TODO
+Eidolon Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them,
+I would suggest dropping them in positions where enemy ground units
+have been spotted/attacked/killed within the last few minutes.
+That way it's like they're responding to ground paths taken by enemies.
+Vulture Spider Mines could be done in similar ways.
+
+Madrigal Tempo Change: When 3 or more hostiles within 4 weapon range,
+switch to Tempo Up (Furia);
+else, switch to Tempo Down (Imperioso)
+
+Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within range,
+target terrain between the Paladin and the target group, 64px away from the group.
+
+Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target
+the group and stay within range while attempting to avoid damage.
+
+Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many
+allies as possible.
+
+Didact Recall: "Offensive" cast when the Didact is added to an attack and a group of 6 or more units are within 160px of
+one another. Attempt to group as many units as possible during the channel.
+*/
+
+#define ENABLE_KITE_DEBUG_MESSAGES 0
+
+#if ENABLE_KITE_DEBUG_MESSAGES
+#define KITE_DEBUG(...) scbw::printf(__VA_ARGS__)
+#else
+#define KITE_DEBUG(...)
+#endif
+
+struct Point32f
+{
+	f32 x;
+	f32 y;
+};
+
+struct KitePositions
+{
+	bool enemiesFound;
+	f32 biases[9];
+	u32 forwardIndex;
+	u32 backwardIndex;
+	u32 strafeIndex;
+	Point16 forwardPos;
+	Point16 backwardPos;
+	Point16 strafePos;
+};
+
+const u32 moveRadius = 4 * 32;
+const u32 localGroupRadius = 1 * 32;
+
+const u32 kiteZoneCount = 9;
+const Point32f kiteOffsets[kiteZoneCount] =
+{
+	{-1, -1}, {0, -1}, {+1, -1},
+	{-1,  0}, {0,  0}, {+1,  0},	
+	{-1, +1}, {0, +1}, {+1, +1},
+};
+const Point32f biasOrigins[kiteZoneCount] =
+{
+	{-0.7, -0.7}, { 0, -1.0}, {+0.7, -0.7},
+	{-1.0,    0}, { 0,    0}, {+1.0,    0},	
+	{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
+};
+
+static inline Point16 ClampPoint(Point16 point)
+{
+	if (point.x < 0)
+	{
+		point.x = 0;
+	}
+	else if (point.x > mapTileSize->width * 32)
+	{
+		point.x = mapTileSize->width * 32;
+	}
+
+	if (point.y < 0)
+	{
+		point.y = 0;
+	}
+	else if (point.y > mapTileSize->height * 32)
+	{
+		point.y = mapTileSize->height * 32;
+	}
+
+	return point;
+}
+
+static inline u32 getMaxRange(Unit* unit)
+{
+	u32 groundWeapon = unit->getGroundWeapon();
+	u32 groundRange = 0;
+	if (groundWeapon != WeaponId::None)
+	{
+		groundRange = weapons_dat::MaxRange[groundWeapon];
+	}
+
+	u32 airWeapon = unit->getAirWeapon();
+	u32 airRange = 0;
+	if (airWeapon != WeaponId::None)
+	{
+		airRange = weapons_dat::MaxRange[airWeapon];
+	}
+
+	return std::max(groundRange, airRange);
+}
+
+static inline bool isMeleeAttacker(Unit* unit)
+{
+	return getMaxRange(unit) < 32;
+}
+
+static inline u8 getCurrentWeaponCooldown(Unit* unit)
+{
+	if (unit->id == UnitId::ProtossSolarion
+		|| unit->id == UnitId::ProtossAccantor)
+	{
+		if (unit->mainOrderTimer == 0)
+		{
+			return 0;
+		}
+		return 2;
+	}
+
+	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown);
+}
+
+static inline u8 getMaxWeaponCooldown(Unit* unit)
+{
+	if (unit->id == UnitId::ProtossSolarion
+		|| unit->id == UnitId::ProtossAccantor)
+	{
+		return 1;
+	}
+
+	u32 groundWeapon = unit->getGroundWeapon();
+	u32 groundCooldown = 0;
+	if (groundWeapon != WeaponId::None)
+	{
+		groundCooldown = hooks::getModifiedWeaponCooldownHook(unit, groundWeapon);
+	}
+
+	u32 airWeapon = unit->getAirWeapon();
+	u32 airCooldown = 0;
+	if (airWeapon != WeaponId::None)
+	{
+		airCooldown = hooks::getModifiedWeaponCooldownHook(unit, airWeapon);
+	}
+
+	return std::max(groundCooldown, airCooldown);
+}
+
+static inline u32 getDistanceBetweenUnits(Unit* source, Unit* target)
+{
+	return scbw::getDistanceFast(source->position.x, source->position.y, target->position.x, target->position.y);
+}
+
+static inline u32 getDistanceToTarget(Unit* source)
+{
+	Unit* target = source->orderTarget.unit;
+	if (!target)
+	{
+		return getMaxRange(source);
+	}
+
+	return getDistanceBetweenUnits(source, target);
+}
+
+static inline s32 getTargetCost(Unit* source, Unit* target)
+{
+	// Value attacking wounded units first
+	s32 cost = target->getCurrentLifeInGame() / 10;
+
+	// Value attacking more threatning units first
+	if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster)
+	{
+		cost -= (target->energy / 50) * 5;
+	}
+	u32 weaponId = 0;
+	if (source->status & UnitStatus::InAir)
+	{
+		weaponId = target->getAirWeapon();
+	}
+	else
+	{
+		weaponId = target->getGroundWeapon();
+	}
+	f32 multiplier = weapons_dat::InnerSplashRadius[weaponId] ? 1.5 : 1;
+	cost -= hooks::getCurrentDPS(target, weaponId) * multiplier;
+
+	// Value attacking units with smaller pathing cost more
+	s32 dist = (s32)getDistanceBetweenUnits(source, target) - getMaxRange(source);
+	if (dist > 0)
+	{
+		cost += dist / 32.0;
+	}
+
+	return cost;
+}
+
+static inline bool canKite(Unit* unit)
+{
+	UnitExt* unitExt = globals.GetUnitExt(unit);
+	return unit->hasWeapon()
+		&& !unit->isFrozen()
+		&& unit->id != UnitId::ZergLakizilisk
+		&& unit->id != UnitId::ProtossSteward
+		&& unit->id != UnitId::ProtossPlasmaShell
+		&& unit->id != UnitId::TerranNuclearMissile
+		&& unit->mainOrderId != OrderId::BuildTerran
+		&& unit->mainOrderId != OrderId::ConstructingBuilding
+		&& unit->mainOrderId != OrderId::BuildProtoss1
+		&& unit->mainOrderId != OrderId::BuildProtoss2
+		&& unit->mainOrderId != OrderId::DroneStartBuild
+		&& !unitExt->values[ValueDisruptionFieldOn]
+		&& !(unit->status & UnitStatus::Burrowed)
+		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
+}
+
+static inline bool unitHasCooldownToAttack(Unit* unit)
+{
+	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.75;
+}
+
+static inline bool inAttackAnim(Unit* unit)
+{
+	return unit->sprite->mainGraphic->animation == IscriptAnimation::GndAttkInit
+		|| unit->sprite->mainGraphic->animation == IscriptAnimation::AirAttkInit
+		|| unit->sprite->mainGraphic->animation == IscriptAnimation::Unused2
+		|| unit->status & UnitStatus::NoBrkCodeStart;
+}
+
+static inline bool shouldKiteBack(Unit* source)
+{
+	Unit* target = source->orderTarget.unit;
+	if (!target)
+	{
+		return true;
+	}
+
+	// NOTE
+	// should figure out a way to calculate if unit will lose dps by kiting
+	// paradoxically this is quite hard, since for example mutalisks should 
+	// try to kite even with lower range and worse movement speed, 
+	// just because they are fragile and can use terrain advantage.
+	// thankfully it seems like current timing setup decreased dps loss
+	// significantly
+
+	return true;
+}
+
+static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
+{
+	u32 unitValue[kiteZoneCount] = {0};
+	KitePositions result = {};
+	result.enemiesFound = false;
+
+	for (int i = 0; i < kiteZoneCount; i++)
+	{
+		Point16 searchPos = unit->position;
+		searchPos.x += kiteOffsets[i].x * hostileGroupRadius;
+		searchPos.y += kiteOffsets[i].y * hostileGroupRadius;
+
+		scbw::UnitFinder(
+			searchPos.x - hostileGroupRadius,
+			searchPos.y - hostileGroupRadius,
+			searchPos.x + hostileGroupRadius,
+			searchPos.y + hostileGroupRadius
+		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
+			[&](Unit* hostileUnit)
+		{
+			result.enemiesFound = true;
+			unitValue[i] += 1;
+			if (unit->status & UnitStatus::InAir)
+			{
+				unitValue[i] += hostileUnit->airStrength;
+			}
+			else
+			{
+				unitValue[i] += hostileUnit->groundStrength;
+			}
+		});
+	}
+
+	if (result.enemiesFound)
+	{
+		Point32f biasVectors[kiteZoneCount] =
+		{
+			{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
+			{-1.1,    0}, { 0,    0}, {+1.1,    0},	
+			{-0.7, +0.7}, { 0, +1.1}, {+0.7, +0.7},
+		};
+		for (int i = 0; i < kiteZoneCount; i++)
+		{
+			result.biases[i] = 0;
+			biasVectors[i].x *= unitValue[i];
+			biasVectors[i].y *= unitValue[i];
+		}
+		for (int i = 0; i < kiteZoneCount; i++)
+		{
+			for (int j = 0; j < kiteZoneCount; j++)
+			{
+				result.biases[i] += biasOrigins[i].x * biasVectors[j].x + biasOrigins[i].y * biasVectors[j].y;
+			}
+			result.biases[i] /= kiteZoneCount;
+		}
+
+		result.forwardIndex = kiteZoneCount / 2;
+		result.backwardIndex = kiteZoneCount / 2;
+		result.strafeIndex = 0;
+		for (int i = 0; i < kiteZoneCount; i++)
+		{
+			if (i == kiteZoneCount / 2)
+			{
+				continue;
+			}
+
+			if (result.biases[i] > result.biases[result.forwardIndex])
+			{
+				result.forwardIndex = i;
+			}
+
+			if (result.biases[i] < result.biases[result.backwardIndex])
+			{
+				result.backwardIndex = i;
+			}
+
+			if (labs(result.biases[i]) < labs(result.biases[result.strafeIndex]))
+			{
+				result.strafeIndex = i;
+			}
+		}
+
+		//KITE_DEBUG("%f %f %f", biases[0], biases[1], biases[2]);
+		//KITE_DEBUG("%f %f %f", biases[3], biases[4], biases[5]);
+		//KITE_DEBUG("%f %f %f", biases[6], biases[7], biases[8]);
+		//KITE_DEBUG("\n");
+
+		result.forwardPos = unit->position;
+		result.forwardPos.x += kiteOffsets[result.forwardIndex].x * moveRadius;
+		result.forwardPos.y += kiteOffsets[result.forwardIndex].y * moveRadius;
+		result.forwardPos = ClampPoint(result.forwardPos);
+
+		result.backwardPos = unit->position;
+		result.backwardPos.x += kiteOffsets[result.backwardIndex].x * moveRadius;
+		result.backwardPos.y += kiteOffsets[result.backwardIndex].y * moveRadius;
+		result.backwardPos = ClampPoint(result.backwardPos);
+
+		result.strafePos = unit->position;
+		result.strafePos.x += kiteOffsets[result.strafeIndex].x * moveRadius;
+		result.strafePos.y += kiteOffsets[result.strafeIndex].y * moveRadius;
+		result.strafePos = ClampPoint(result.strafePos);
+	}
+	return result;
+}
+
+void cosmonarchyUnitAi(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
-	/* DONE
-	Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby,
-	cast the spell. **DONE**
-	AI should also try to position Apostles near organics.
+	// Kiting AI
+	bool inCombat = unitExt->damageReceiveTimer < 4 * 24
+		|| unitExt->damageDealtTimer < 4 * 24
+		|| unit->mainOrderId == OrderId::Patrol
+		|| unit->mainOrderId == OrderId::AttackMove
+		|| unit->mainOrderId == OrderId::AttackMoveComputer
+		|| unit->mainOrderId == OrderId::AttackUnit
+		|| unit->mainOrderId == OrderId::CarrierFight
+		|| unit->mainOrderId == OrderId::ReaverFight
+		|| unit->mainOrderId == OrderId::Move
+		|| unit->mainOrderId == OrderId::MoveToMinerals;
+	if (canKite(unit) && inCombat && unitExt->timers[TimerAI_Kite] == 0)
+	{
+		u32 hostileGroupRadius = 4 * 32;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		{
+			hostileGroupRadius = 32;
+		}
 
-	Savant Power Siphon: If 2 or more allied specialists are nearby,
-	target an enemy specialist within 7 range. **DONE**
+		scbw::UnitFinder localGroup(
+			unit->getX() - localGroupRadius,
+			unit->getY() - localGroupRadius,
+			unit->getX() + localGroupRadius,
+			unit->getY() + localGroupRadius
+		);
+		localGroup.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
+		localGroup.filter([&](Unit* target){ return canKite(target); });
 
-	Matraleth Parasite: When 5 or more supply's worth of units (of any owner) are within 128px of each other,
-	target the group. **DONE**
+		u32 localGroupValue = 0;
+		localGroup.forEach([&](Unit* localUnit)
+		{
+			localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
+		});
 
-	Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 192px of the Star Sovereign,
-	and there are no allied town halls and less than 2000 HP+shields worth of allied units within the same radius,
-	and the Star Sovereign has more than 50% of HP+shields combined,
-	channel the ability. **DONE**
-	Attempt to protect the Star Sovereign with low-cost/low-HP units.
+		if (unitHasCooldownToAttack(unit))
+		{
+			bool attack = true;
+			localGroup.forEach([&](Unit* localUnit)
+			{
+				if (!unitHasCooldownToAttack(localUnit))
+				{
+					attack = false;
+				}
+			});
 
-	Lanifect Disruption Field:
-	When there are at least 3 allies within 128px, and there are at least 2 enemies within 128px,
-	and there are no activated Disruption Fields within 96px,
-	and the Lanifect is above 50% total HP and shields,
-	move towards the most significant enemy threat within 128px (in terms of enemy unit count).
-	Recheck conditions to disable the behavior (besides HP/shield checks). **DONE**
-	*/
+			if (attack)
+			{
+				localGroup.forEach([&](Unit* localUnit)
+				{
+					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+					localUnitExt->timers[TimerAI_Kite] = 1;
 
-	/* TODO
-	Eidolon Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them,
-					I would suggest dropping them in positions where enemy ground units
-					have been spotted/attacked/killed within the last few minutes.
-					That way it's like they're responding to ground paths taken by enemies.
-					Vulture Spider Mines could be done in similar ways.
+					if (localUnit->mainOrderId == OrderId::AttackUnit
+						|| localUnit->mainOrderId == OrderId::CarrierFight
+						|| localUnit->mainOrderId == OrderId::ReaverFight
+						|| localUnit->mainOrderId == OrderId::AttackMoveComputer)
+					{
+						return;
+					}
 
-	Madrigal Tempo Change: When 3 or more hostiles within 4 weapon range,
-	switch to Tempo Up (Furia);
-	else, switch to Tempo Down (Imperioso)
+					auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
+					Unit* targetUnit = nullptr;
+					s32 targetCost = 0;
+					scbw::UnitFinder(
+						localUnit->getX() - hostileGroupRadius * 4,
+						localUnit->getY() - hostileGroupRadius * 4,
+						localUnit->getX() + hostileGroupRadius * 4,
+						localUnit->getY() + hostileGroupRadius * 4
+					).forEach([&](Unit* hostileUnit)
+					{
+						if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
+						{
+							return;
+						}
 
-	Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within range,
-					target terrain between the Paladin and the target group, 64px away from the group.
+						s32 newTargetCost = getTargetCost(localUnit, hostileUnit);
+						if (!targetUnit || newTargetCost < targetCost)
+						{
+							targetUnit = hostileUnit;
+							targetCost = newTargetCost;
+						}
+					});
 
-	Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target
-					the group and stay within range while attempting to avoid damage.
+					if (targetUnit)
+					{
+						if (isMeleeAttacker(localUnit))
+						{
+							localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 4;
+						}
+						else
+						{
+							localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.75;
+						}
 
-	Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many
-					allies as possible.
+						KITE_DEBUG("%s: attack", localUnit->getName());
+						if (localUnit->id == UnitId::ProtossSolarion)
+						{
+							localUnit->orderTo(OrderId::CarrierFight, targetUnit);
+						}
+						else if (localUnit->id == UnitId::ProtossAccantor)
+						{
+							localUnit->orderTo(OrderId::ReaverFight, targetUnit);
+						}
+						else
+						{
+							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+						}
+						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+					}
+					else
+					{
+						localUnitExt->timers[TimerAI_Kite] = 12;
+					}
+				});
+			}
+		}
+		else
+		{
+			if (inAttackAnim(unit))
+			{			
+				localGroup.forEach([&](Unit* localUnit)
+				{
+					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+					localUnitExt->timers[TimerAI_Kite] = 6;
+				});
+				return;
+			}
 
-	Didact Recall: "Offensive" cast when the Didact is added to an attack and a group of 6 or more units are within 160px of
-					one another. Attempt to group as many units as possible during the channel.
-	*/
+			KitePositions result = getKitePositions(unit, hostileGroupRadius);
+			if (!result.enemiesFound)
+			{			
+				localGroup.forEach([&](Unit* localUnit)
+				{
+					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+					localUnitExt->timers[TimerAI_Kite] = 12;
+				});
+				return;
+			}
+
+			u32 crowdScore = 0;
+			if (!(unit->status & UnitStatus::InAir))
+			{
+				crowdScore = cosmonarchyUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoAir, {});
+			}
+					
+			localGroup.forEach([&](Unit* localUnit)
+			{
+				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+				localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit) * 0.5;
+
+				if (unitHasCooldownToAttack(localUnit))
+				{
+					return;
+				}
+
+				if (inAttackAnim(localUnit))
+				{
+					return;
+				}
+
+				const u32 distance = getDistanceToTarget(localUnit);
+				const u32 maxRange = getMaxRange(localUnit);
+				bool targetHasMinRange = false;
+				if (localUnit->orderTarget.unit)
+				{
+					if (localUnit->status & UnitStatus::InAir)
+					{
+						targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getAirWeapon()];
+					}
+					else
+					{
+						targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getGroundWeapon()];
+					}
+				}
+
+				if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
+					|| localGroupValue * 4 < result.biases[result.forwardIndex])
+				{
+					localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+					KITE_DEBUG("%s: fall back", localUnit->getName());
+				}
+				else if (distance > maxRange * 1.5
+					|| (distance > maxRange * 1 && crowdScore > 6)
+					|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 4)
+					|| targetHasMinRange)
+				{
+					localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+					KITE_DEBUG("%s: forward", localUnit->getName());
+				}
+				else if (crowdScore > 6)
+				{
+					localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
+					KITE_DEBUG("%s: strafe", localUnit->getName());
+				}
+				else if (isMeleeAttacker(localUnit))
+				{
+					localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+					KITE_DEBUG("%s: forward", localUnit->getName());
+				}
+				else if (distance < maxRange * 0.2 || shouldKiteBack(localUnit))
+				{
+					localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+					KITE_DEBUG("%s: backward", localUnit->getName());
+				}
+				localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+			});
+		}
+	}
 
 	if (unit->id == UnitId::TerranApostle)
 	{
@@ -117,7 +660,7 @@ void cosmonarchy_unit_ai(Unit* unit)
 			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
 			furiaDamagePotential += (f32)targetExt->values[ValueDirgeStacks] * MadrigalDirgeDamage;
 		}
-		f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalDirge] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, WeaponId::MadrigalDirge);
+		f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, WeaponId::MadrigalImperiosoMissiles);
 
 		if (furiaDamagePotential > dirgeDamagePotential)
 		{
@@ -198,8 +741,8 @@ void cosmonarchy_unit_ai(Unit* unit)
 			}
 		}
 		u32 webs = cosmonarchyUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
-		u32 allies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::Combatant, {});
-		u32 enemies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::Combatant, {});
+		u32 allies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::CanAttackOrCast | Flags::NotWorker, {});
+		u32 enemies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::CanAttackOrCast | Flags::NotWorker, {});
 		f64 percentage = (f64)(unit->hitPoints + unit->shields) / (f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256.0);
 		if (web_state == 0)
 		{
@@ -276,7 +819,151 @@ void cosmonarchy_unit_ai(Unit* unit)
 			unit->mainOrderState = 0;
 		}
 	}
-	
+	else if (unit->id == UnitId::TerranSiren && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
+	{
+		if (unit->energy >= techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256)
+		{
+			u32 count = 0;
+			const u32 radius = 6 * 32;
+			scbw::UnitFinder(
+				unit->getX() - radius,
+				unit->getY() - radius,
+				unit->getX() + radius,
+				unit->getY() + radius
+			).forEach([&](Unit* target)
+			{
+				if (!(units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster))
+				{
+					return;
+				}
+				UnitExt* targetExt = globals.GetUnitExt(target);
+				auto& vec = targetExt->unitVectors[UnitVectorTertiaryEyesSirens];
+				if (std::find(vec.begin(), vec.end(), target) != vec.end())
+				{
+					return;
+				}
+				count += 1;
+			});
+
+			if (count >= 2)
+			{
+				scbw::set_generic_rust_value(unit, RustId::CastTertiaryEyes, 1);
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+			}
+			else
+			{
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			}
+		}
+		else
+		{
+			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+		}
+	}
+	else if (unit->id == UnitId::ProtossDemiurge && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
+	{
+
+		if (unit->energy >= 50 * 256)
+		{
+			auto& vec = unitExt->unitVectors[UnitVectorWorshipersDemiurge];
+
+			u32 totalCount = vec.size();
+			u32 inCombatCount = 0;
+			for (Unit* worshiper : vec)
+			{
+				UnitExt* worshiperExt = globals.GetUnitExt(worshiper);
+				if (worshiperExt->damageDealtTimer < 4 * 24
+					|| worshiperExt->damageReceiveTimer < 4 * 24)
+				{
+					inCombatCount++;
+				}
+			}
+
+			if (totalCount > 3 && inCombatCount > totalCount - inCombatCount)
+			{
+				scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 1);
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+			}
+			else
+			{
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			}
+		}
+		else
+		{
+			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+		}
+	}
+	else if ((unit->id == UnitId::ZergAkistrokor || unit->id == UnitId::ZergSovroleth) && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
+	{
+		if (!unitExt->units[UnitAttachedTarget])
+		{
+			const u32 radius = 32 * 10;
+			scbw::UnitFinder finder(
+				unit->getX() - radius,
+				unit->getY() - radius,
+				unit->getX() + radius,
+				unit->getY() + radius
+			);
+
+			Unit* target = nullptr;
+			if (unit->id == UnitId::ZergAkistrokor)
+			{
+				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
+				target = finder.getBest([&](Unit* local) -> u32
+				{
+					if (!match(local))
+					{
+						return -1;
+					}
+					UnitExt* localExt = globals.GetUnitExt(local);
+					if (localExt->units[UnitAttachedTarget])
+					{
+						return -2;
+					}
+					return getDistanceBetweenUnits(unit, local);
+				});
+			}
+			else if (unit->id == UnitId::ZergSovroleth)
+			{
+				auto match = cosmonarchyFinderMatch(unit, Flags::Ally | Flags::NotSelf | Flags::NoBuilding, {});
+				target = finder.getBest([&](Unit* local) -> u32
+				{
+					if (!match(local))
+					{
+						return -1;
+					}
+					UnitExt* localExt = globals.GetUnitExt(local);
+					if (localExt->units[UnitAttachedTarget])
+					{
+						return -2;
+					}
+					return unit->getCurrentLifeInGame();
+				});
+			}
+
+			if (target)
+			{
+				unit->orderTo(OrderId::CTFCOP1, target);
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+			}
+			else
+			{
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			}
+		}
+		else
+		{
+			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+		}
+
+	}
+
+
+
+
+
+
 	/*	
 	else if (unit->id == UnitId::TerranPaladin) {
 		if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
