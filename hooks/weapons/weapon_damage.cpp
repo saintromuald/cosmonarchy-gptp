@@ -323,6 +323,16 @@ namespace hooks
 			data.finalDamage = 128;
 		}
 
+		// Olympian Mythical Might - execute enemies below 10% HP
+		if (!data.dontProcPhaseLink && (data.weaponId == WeaponId::OlympianMountainGun || data.weaponId == WeaponId::OlympianTitansFist))
+		{
+			if (data.target->hitPoints < data.target->getMaxHpRaw() * 0.1)
+			{
+				helper::playSoundFromSource(SoundId::OlympianMythicalMight01, data.target, 1, 0);
+				data.finalDamage = data.target->hitPoints;
+			}
+		}
+
 		weaponDamage_behaviors(data);
 		if (data.attacker != nullptr)
 		{
@@ -331,18 +341,6 @@ namespace hooks
 		if (data.finalDamage >= data.target->hitPoints)
 		{
 			weaponDamage_fatal(data);
-		}
-
-		// Olympian Mythical Might - execute enemies below 10% HP
-		if (data.weaponId == WeaponId::OlympianMountainGun
-			|| data.weaponId == WeaponId::OlympianTitansFist)
-		{
-			if (data.target->hitPoints < data.target->getMaxHpRaw() * 0.1)
-			{
-				helper::playSoundFromSource(SoundId::OlympianMythicalMight01, data.target, 1, 0);
-				data.target->damageHp(99999, data.attacker, data.attackingPlayerId, true);
-				return;
-			}
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
