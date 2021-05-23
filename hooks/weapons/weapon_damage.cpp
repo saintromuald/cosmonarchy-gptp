@@ -749,6 +749,14 @@ namespace hooks
 						foundUnit->heal(data.finalDamage, data.target);
 					});
 				} break;
+				case WeaponId::OlympianMountainGun:
+				case WeaponId::OlympianTitansFist:
+				{
+					if (data.target->getCurrentLifeInGame() <= data.target->getMaxHpInGame() + units_dat::MaxShieldPoints[data.target->id]) // idk if shields are in game or raw
+					{
+						scbw::print("u.");
+					}
+				}
 			}
 		}
 	}

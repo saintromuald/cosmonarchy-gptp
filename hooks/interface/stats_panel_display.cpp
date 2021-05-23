@@ -138,7 +138,13 @@ namespace hooks
 						// 00426D54
 						helper::StatsWeaponLevel(dialog, index, groundWeapon);
 						index++;
+
 						// Display additional weapons
+						if (activeUnit->id == UnitId::TerranOlympian)
+						{
+							helper::StatsWeaponLevel(dialog, index, WeaponId::OlympianMountainGun);
+							index++;
+						}
 						if (activeUnit->id == UnitId::TerranCentaur)
 						{
 							helper::StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);

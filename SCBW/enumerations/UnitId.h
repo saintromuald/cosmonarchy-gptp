@@ -263,13 +263,12 @@ namespace UnitId
 		/*0xF7*/	Buttons_GroupBurrower					= 247,
 		/*0xF8*/	Buttons_ReplayPaused					= 248,
 		/*0xF9*/	Buttons_ReplayPlaying					= 249,
- 
+
 		// Cosmonarchy \\
 
 	// Unused
 	//	TerranPhysicsLab								= 118,		// Physics Lab | Currently cannot set dat requirements because of firegraft being a good program
-	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser		
-	//  ZergGeszithRoost								= 137,		// Greater Spire
+	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
 	//	ZergKonvilNest									= 145,		// Unused Zerg 1
 	//	ZergKalkathBloom								= 147,		// Overmind (With Shell)
 	//	ZergGorgrokApiary								= 148,		// Overmind
@@ -321,6 +320,7 @@ namespace UnitId
 		TerranWyvern									= 91,		// Cargo Ship
 		TerranCyprian									= 92,		// Mercenary Gunship
 		TerranAzazel									= 98,		// Raszagal Corsair
+		TerranOlympian									= 137,		// Greater Spire
 		TerranSiren										= 151,		// Cerebrate
 		TerranPaladin									= 186,		// Ruins
 		TerranSavant									= 187,		// Kyadarin Crystal Formation

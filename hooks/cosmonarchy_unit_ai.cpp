@@ -652,7 +652,7 @@ void cosmonarchyUnitAi(Unit* unit)
 			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
 			furiaDamagePotential += (f32)targetExt->values[ValueDirgeStacks] * MadrigalDirgeDamage;
 		}
-		f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalDirge] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, WeaponId::MadrigalDirge);
+		f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, WeaponId::MadrigalImperiosoMissiles);
 
 		if (furiaDamagePotential > dirgeDamagePotential)
 		{

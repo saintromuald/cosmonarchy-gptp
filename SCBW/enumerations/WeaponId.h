@@ -155,7 +155,7 @@ namespace WeaponId {
 		PaladinCrusaderMissiles = 10,			// Paladin weapon
 		WendigoFusionSaw = 12,					// Wendigo weapon
 		BlackjackMonogun = 15,					// Blackjack weapon
-		SalamanderPerditionBarrage = 17,		// SalamanderFire weapon
+		SalamanderPerditionBarrage = 17,		// Salamander weapon
 		GorgonArtificeBattery = 18,				// Gorgon weapon
 		MinotaurAsterionLaserBattery = 19,		// Minotaur weapon
 		MadrigalFuriaMissiles = 21,				// Madrigal weapon 1
@@ -174,8 +174,8 @@ namespace WeaponId {
 		CyclopsFragmentaryShells = 116,			// Cyclops behavior damage
 		ClaymoreHarpoonRailgun = 120,			// Claymore weapon
 		SeraphObservance = 122,					// Seraph ability targeting
-		MadrigalDirge = 123,					// Madrigal Dirge damage
-		SalamanderIncendiaryPayload = 124,		// SalamanderFire behavior damage
+		OlympianTitansFist = 123,				// Olympian weapon 2
+		OlympianMountainGun = 124,				// Olympian weapon 1
 		WyvernJacksonCannon = 125,				// Wyvern weapon
 		PaladinSkyfall = 126,					// Paladin ability targeting
 		IonCannon = 129,						// Ion Cannon weapon
@@ -193,8 +193,8 @@ namespace WeaponId {
 		ExemplarPlasmaTorpedo = 76,				// Exemplar weapon
 		MagisterNeutronCannon = 78,				// Magister weapon
 		LegionnairePsiSabers = 86,				// Legionnaire weapon
-		StarSovereignCelestialCannon = 90,		// Star Sovereign primary weapon
-		StarSovereignInterventionMissiles = 91,	// Star Sovereign secondary weapon
+		StarSovereignCelestialCannon = 90,		// Star Sovereign weapon 1
+		StarSovereignInterventionMissiles = 91,	// Star Sovereign weapon 2
 		EcclesiastAstralBlaster = 97,			// Ecclesiast weapon
 		AtreusDauntlessDisruptorCannon = 98,	// Atreus weapon
 		AmaranthPsiCleaver = 99,				// Amaranth weapon
