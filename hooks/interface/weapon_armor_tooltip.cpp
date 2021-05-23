@@ -529,6 +529,7 @@ namespace hooks
 		addStatus(statuses, "Controlled Opposition", unitExt->values[ValueControlledOpposition], 1);
 		addStatus(statuses, "Tertiary Eyes [Caster]", unitExt->unitVectors[UnitVectorTertiaryEyes].size(), 0);
 		addStatus(statuses, "Tertiary Eye [Linked]", unitExt->unitVectors[UnitVectorTertiaryEyesSirens].size(), 0);
+		addStatus(statuses, "Controlled Opposition", unitExt->values[ValueControlledOpposition], 0);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);

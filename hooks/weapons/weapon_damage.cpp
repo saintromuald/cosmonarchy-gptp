@@ -282,6 +282,12 @@ namespace hooks
 				}
 			}
 			data.finalDamage -= std::min(data.finalDamage, armorTotal);
+
+			// Autocrat Controlled Opposition
+			if (targetExt->values[ValueControlledOpposition])
+			{
+				data.finalDamage += std::max((s32)targetExt->values[ValueControlledOpposition], armorTotal);
+			}
 		}
 
 		// Apply damage type/unit size factor
@@ -299,12 +305,6 @@ namespace hooks
 					}
 				} break;
 			}
-		}
-
-		// Autocrat Controlled Opposition - All attacks deal Chronal damage to affected targets
-		if (targetExt->values[ValueControlledOpposition])
-		{
-			damage_factor = 256;
 		}
 
 		data.finalDamage = (data.finalDamage * damage_factor) / 256;
@@ -648,7 +648,7 @@ namespace hooks
 					// Apply Controlled Opposition
 					if (!targetExt->values[ValueControlledOpposition])
 					{
-						targetExt->values[ValueControlledOpposition] = 1;
+						targetExt->values[ValueControlledOpposition]++;
 					}
 				} break;
 				case WeaponId::SavantDiscoidRailgun:
