@@ -504,6 +504,12 @@ void Globals::frameHook()
 			{
 				case EffectId::GriefOfAllGods:
 				{
+					if (!effects[i].parent)
+					{
+						effects[i].currentTime = 0;
+						return;
+					}
+
 					scbw::UnitFinder(
 						effects[i].position.x - effects[i].radius,
 						effects[i].position.y - effects[i].radius,
