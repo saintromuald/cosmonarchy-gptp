@@ -47,6 +47,9 @@ const s32 ApostleBloodTitheHealing = 5 * 256;
 const s32 ApostleLastBreathEnergyGain = 5 * 256;
 const s32 ApostleAILastBreathTimer = 24;
 
+// Olympian
+const s32 OlympianMeleeDistance = 30;
+
 // Mines
 const s32 MineBurrowTime = 60;
 const s32 MineSeekRange = 576;

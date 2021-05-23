@@ -292,11 +292,18 @@ namespace hooks
 			{
 				case UnitId::TerranHarakan:
 				{
+					// Harakan Apollyoid Adhesive - Full damage to structures
 					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
 					{
 						damage_factor = 256;
 					}
 				} break;
+			}
+
+			// Autocrat Controlled Opposition - All attacks deal Chronal damage to affected targets
+			if (targetExt->values[ValueControlledOpposition])
+			{
+				damage_factor = 256;
 			}
 		}
 
@@ -316,6 +323,7 @@ namespace hooks
 			weaponDamage_fatal(data);
 		}
 
+		// Olympian Mythical Might - execute enemies below 10% HP
 		if (data.weaponId == WeaponId::OlympianMountainGun
 			|| data.weaponId == WeaponId::OlympianTitansFist)
 		{
@@ -623,6 +631,14 @@ namespace hooks
 						}
 					}
 				} break;
+				case WeaponId::AutocratEminanceRifle:
+				{
+					// Apply Controlled Opposition
+					if (!targetExt->values[ValueControlledOpposition])
+					{
+						targetExt->values[ValueControlledOpposition] = 1;
+					}
+				}
 				case WeaponId::SavantDiscoidRailgun:
 				{
 					// Savant Entropy Gauntlets behavior - Apply timer and overlay

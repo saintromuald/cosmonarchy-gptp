@@ -171,7 +171,7 @@ namespace WeaponId {
 		CyclopsFlakCannons = 93,				// Cyclops weapon
 		PhobosArgosLaserBatteries = 94,			// Phobos weapon
 		SirenCharybdalRifle = 96,				// Siren weapon
-		CyclopsFragmentaryShells = 116,			// Cyclops behavior damage
+		AutocratEminanceRifle = 116,			// Autocrat weapon
 		ClaymoreHarpoonRailgun = 120,			// Claymore weapon
 		SeraphObservance = 122,					// Seraph ability targeting
 		OlympianTitansFist = 123,				// Olympian weapon 2

@@ -805,6 +805,24 @@ namespace hooks
 							}
 						}
 
+						// Captaincy buttonset handling
+						if (current_button->reqVar == UnitId::TerranOlympian
+							|| current_button->reqVar == UnitId::TerranAutocrat)
+						{
+							if ((*activePortraitUnit)->building.addon == nullptr)
+							{
+								current_button_state = BUTTON_STATE::Invisible;
+							}
+							else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranGuildhall)
+							{
+								current_button_state = BUTTON_STATE::Invisible;
+							}
+							else
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+						}
+
 						// Temporarily disable some buttons until the units are implemented
 						if (current_button->reqVar == UnitId::SharedCohort
 							|| current_button->reqVar == UnitId::SharedCharlatan)
@@ -885,6 +903,16 @@ namespace hooks
 							}
 							else if ((*activePortraitUnit)->id == UnitId::TerranApostle &&  // Apostle Last Breath passive
 								current_button->iconID == IconId::Suicide_Scourge)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::TerranOlympian && // Olympian Mythical Might passive
+								current_button->iconID == IconId::PsiAssault)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::TerranAutocrat && // Autocrat Controlled Opposition passive
+								current_button->iconID == IconId::OcularImplants)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}

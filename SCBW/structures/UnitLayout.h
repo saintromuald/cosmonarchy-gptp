@@ -242,6 +242,7 @@ enum ExtValueId
 	ValueDisruptionFieldOn,
 	ValueLiiraliskMissilePos,
 	ValueAkistrokorInfestationSourcePlayer,
+	ValueControlledOpposition,
 
 	ValueCount,
 };

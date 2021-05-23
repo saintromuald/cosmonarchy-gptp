@@ -269,8 +269,6 @@ namespace UnitId
 	// Unused
 	//	TerranPhysicsLab								= 118,		// Physics Lab | Currently cannot set dat requirements because of firegraft being a good program
 	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
-	//	ZergKonvilNest									= 145,		// Unused Zerg 1
-	//	ZergKalkathBloom								= 147,		// Overmind (With Shell)
 	//	ZergGorgrokApiary								= 148,		// Overmind
 	//	ZergSkithrokScab								= 150,		// Mature Chrysalis
 	//	ZergAlmakAntre									= 179,		// Cave
@@ -321,6 +319,7 @@ namespace UnitId
 		TerranCyprian									= 92,		// Mercenary Gunship
 		TerranAzazel									= 98,		// Raszagal Corsair
 		TerranOlympian									= 137,		// Greater Spire
+		TerranAutocrat									= 145,		// Unused Zerg 1
 		TerranSiren										= 151,		// Cerebrate
 		TerranPaladin									= 186,		// Ruins
 		TerranSavant									= 187,		// Kyadarin Crystal Formation
@@ -332,6 +331,7 @@ namespace UnitId
 		TerranMedbay									= 119,		// Starbase / Terran Unused 1
 		TerranMunitionsBay								= 121,		// Repair Bay / Terran Unused 2
 		TerranIonCannon									= 127,		// Ion Cannon
+		TerranGuildhall									= 147,		// Overmind (With Shell)
 		TerranQuarry									= 174,		// Protoss Temple
 		TerranSalvoYard									= 189,		// Warp Gate
 		TerranFutureStation								= 192,		// Terran Marker

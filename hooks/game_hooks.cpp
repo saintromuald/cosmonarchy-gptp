@@ -719,6 +719,20 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::TerranOlympian:
+			{
+				if (unit->orderSignal & 0x20)
+				{
+					unit->orderSignal &= ~0x20;
+					if (unit->orderTarget.unit != nullptr && !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
+					{
+						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= OlympianMeleeDistance)
+						{
+							unit->playIscriptAnim(IscriptAnimation::SpecialState1);
+						}
+					}
+				}
+			}
 			case UnitId::TerranTreasury:
 			{
 				// Treasury - Expanded Storage
