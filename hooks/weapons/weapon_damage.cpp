@@ -638,7 +638,7 @@ namespace hooks
 					{
 						targetExt->values[ValueControlledOpposition] = 1;
 					}
-				}
+				} break;
 				case WeaponId::SavantDiscoidRailgun:
 				{
 					// Savant Entropy Gauntlets behavior - Apply timer and overlay
