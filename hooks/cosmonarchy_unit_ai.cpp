@@ -504,7 +504,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					else
 					{
 						localUnitExt->timers[TimerAI_Kite] = 12;
-						localUnit->orderComputerClear(OrderId::ComputerAI);
+						//localUnit->orderComputerClear(OrderId::ComputerAI);
 					}
 				});
 			}
