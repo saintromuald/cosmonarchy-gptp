@@ -561,7 +561,7 @@ struct UnitLayout
 		struct
 		{
 			/*0x0C0*/     Unit* inHangarChild;			// First child inside the hangar
-			/*0x0C4*/     Unit* outHangarChild;		// First child outside the hangar
+			/*0x0C4*/     Unit* outHangarChild;			// First child outside the hangar
 			/*0x0C8*/     u8      inHangarCount;		// Number inside the hangar
 			/*0x0C9*/     u8      outHangarCount;		// Number outside the hangar
 		} carrier; // also applies to reaver
@@ -582,16 +582,16 @@ struct UnitLayout
 
 		struct
 		{
-			/*0x0C0*/     Unit* addon;
-			/*0x0C4*/     u16     addonBuildType;
-			/*0x0C6*/     u16     upgradeResearchTime;
-			/*0x0C8*/     u8      techType;
-			/*0x0C9*/     u8      upgradeType;
-			/*0x0CA*/     u8      larvaTimer;
-			/*0x0CB*/     u8      landingTimer;
-			/*0x0CC*/     u8      creepTimer;
-			/*0x0CD*/     u8      upgradeLevel;
-			/*0x0CE*/     u16     _padding_0E;
+			/*0x0C0*/     Unit*		addon;
+			/*0x0C4*/     u16		addonBuildType;
+			/*0x0C6*/     u16		upgradeResearchTime;
+			/*0x0C8*/     u8		techType;
+			/*0x0C9*/     u8		upgradeType;
+			/*0x0CA*/     u8		larvaTimer;
+			/*0x0CB*/     u8		landingTimer;
+			/*0x0CC*/     u8		creepTimer;
+			/*0x0CD*/     u8		upgradeLevel;
+			/*0x0CE*/     u16		_padding_0E;
 			/*0x0D0*/     union
 			{
 				struct
@@ -599,20 +599,20 @@ struct UnitLayout
 					/*0x0D0*/         u16       resourceAmount;
 					/*0x0D2*/         u8        resourceIscript;
 					/*0x0D3*/         u8        gatherQueueCount;
-					/*0x0D4*/         Unit* nextGatherer;   // pointer to the next worker unit waiting in line to gather
+					/*0x0D4*/         Unit*		nextGatherer;   // pointer to the next worker unit waiting in line to gather
 					/*0x0D8*/         u8        resourceGroup;
 					/*0x0D9*/         u8        resourceBelongsToAI;
 				} resource;  // When the unit is resource container
-				/*0x0D0*/       Unit* nydusExit; // connected nydus canal
-				/*0x0D0*/       Unit* ghostNukeMissile;	// confirmed to be Unit* and not Sprite*
-				/*0x0D0*/       Sprite* pylonAura;
+				/*0x0D0*/       Unit*			nydusExit; // connected nydus canal
+				/*0x0D0*/       Unit*			ghostNukeMissile;	// confirmed to be Unit* and not Sprite*
+				/*0x0D0*/       Sprite*			pylonAura;
 				struct
 				{
-					/*0x0D0*/         Unit* nuke;  // attached nuke
-					/*0x0D4*/         bool    isReady;
+					/*0x0D0*/         Unit*		nuke;  // attached nuke
+					/*0x0D4*/         bool		isReady;
 				} silo;
-				/*0x0D0*/       Box16     hatcheryHarvestValue; // wtf???
-				/*0x0D0*/       Point16   powerupOrigin;
+				/*0x0D0*/       Box16			hatcheryHarvestValue; // wtf???
+				/*0x0D0*/       Point16			powerupOrigin;
 			};
 		} building;
 

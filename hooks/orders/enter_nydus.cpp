@@ -22,6 +22,12 @@ namespace hooks
 		Point16 oldPos, aimedPos, finalPos;
 		oldPos.x = unit->sprite->position.x;
 		oldPos.y = unit->sprite->position.y;
+		if (nydusCanal->building.nydusExit->sprite == nullptr)
+		{
+			scbw::print("null sprite of nydus exit!");
+			nydusCanal->building.nydusExit = nullptr;
+			return;
+		}
 		aimedPos.x = (nydusCanal->building.nydusExit)->sprite->position.x;
 		aimedPos.y = (nydusCanal->building.nydusExit)->sprite->position.y;
 		scbw::prepareUnitMove(unit, true);

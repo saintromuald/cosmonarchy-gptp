@@ -387,8 +387,7 @@ namespace
 		return result != 0;
 	}
 
-	//Identical to function @ 0x00440520
-	u32 getMinimumRange(Unit* unit)
+	u32 getMinimumRange(Unit* unit) // 00440520
 	{
 		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 		{
@@ -396,25 +395,37 @@ namespace
 		}
 		u8 groundWeapon = unit->getGroundWeapon();
 		if (groundWeapon == WeaponId::None && unit->subunit)
+		{
 			groundWeapon = unit->subunit->getGroundWeapon();
+		}
 
 		u8 airWeapon = unit->getAirWeapon();
 		if (airWeapon == WeaponId::None && unit->subunit)
+		{
 			airWeapon = unit->subunit->getAirWeapon();
+		}
 
 		if (groundWeapon == WeaponId::None)
 		{
 			if (airWeapon == WeaponId::None)
+			{
 				return 0;
+			}
 			else
+			{
 				return weapons_dat::MinRange[airWeapon];
+			}
 		}
 		else
 		{
 			if (airWeapon == WeaponId::None)
+			{
 				return weapons_dat::MinRange[groundWeapon];
+			}
 			else
+			{
 				return std::min(weapons_dat::MinRange[groundWeapon], weapons_dat::MinRange[airWeapon]);
+			}
 		}
 	}
 
