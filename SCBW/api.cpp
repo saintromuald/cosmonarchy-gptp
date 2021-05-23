@@ -1309,6 +1309,7 @@ namespace scbw
 			case UnitId::TerranPhalanxTankModeTurret:
 			case UnitId::TerranPhalanxSiegeModeTurret:
 			case UnitId::ProtossAccantor:
+			case UnitId::ProtossPlasmaShell:
 			{
 				return true;
 			} break;
