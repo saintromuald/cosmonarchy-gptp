@@ -524,6 +524,7 @@ namespace hooks
 		}
 
 		// Akistrokor - Enthralling Assault ability
+		// Sovroleth - Conjoining Root
 		if (weaponId == WeaponId::AkistrokorEnthrallingAssault && unit->orderTarget.unit != nullptr)
 		{
 			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
@@ -533,19 +534,10 @@ namespace hooks
 			{
 				sourceUnits.push_back(unit);
 			}
-			targetExt->values[ValueEnthrallingTalons] = 1;
-		}
 
-		// Sovroleth - Attachment ability
-		// TODO: add ability cast check here
-		if (false && unit->orderTarget.unit != nullptr)
-		{
-			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
-			unitExt->units[UnitAttachedTarget] = unit->orderTarget.unit;
-			auto& sourceUnits = targetExt->unitVectors[UnitVectorAttachedSource];
-			if (std::find(sourceUnits.begin(), sourceUnits.end(), unit) == sourceUnits.end())
+			if (unit->id == UnitId::ZergAkistrokor)
 			{
-				sourceUnits.push_back(unit);
+				targetExt->values[ValueEnthrallingTalons] = 1;
 			}
 		}
 	}
