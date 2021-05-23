@@ -909,6 +909,11 @@ void cosmonarchyUnitAi(Unit* unit)
 					{
 						return -1;
 					}
+					UnitExt* localExt = globals.GetUnitExt(local);
+					if (localExt->units[UnitAttachedTarget])
+					{
+						return -2;
+					}
 					return getDistanceBetweenUnits(unit, local);
 				});
 			}
@@ -920,6 +925,11 @@ void cosmonarchyUnitAi(Unit* unit)
 					if (!match(local))
 					{
 						return -1;
+					}
+					UnitExt* localExt = globals.GetUnitExt(local);
+					if (localExt->units[UnitAttachedTarget])
+					{
+						return -2;
 					}
 					return unit->getCurrentLifeInGame();
 				});
