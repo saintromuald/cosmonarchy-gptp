@@ -371,7 +371,7 @@ namespace hooks
 			}
 			else
 			{
-				if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->combatTimer > 2 * 24)
+				if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->damageReceiveTimer > 2 * 24)
 				{
 					unit->shields += 11;
 					if (unit->shields > maxShields)
@@ -448,7 +448,7 @@ namespace hooks
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
 				unit->hitPoints > 0 &&
 				unit->hitPoints / 256 != unit->getMaxHpInGame() && 
-				unitExt->combatTimer > 2 * 24)
+				unitExt->damageReceiveTimer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
 				if (unitExt->timers[TimerAlaszilethRegenBoost] > 0)

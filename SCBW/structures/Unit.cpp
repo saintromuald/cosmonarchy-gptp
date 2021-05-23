@@ -603,8 +603,14 @@ void Unit::damageHp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify
 
 	u32 notify_ = notify ? 1 : 0;
 
+	if (attacker)
+	{
+		UnitExt* attackerExt = globals.GetUnitExt(attacker);
+		attackerExt->damageDealtTimer = 0;
+	}
+
 	UnitExt* unitExt = globals.GetUnitExt(this);
-	unitExt->combatTimer = 0;
+	unitExt->damageReceiveTimer = 0;
 
 	__asm {
 		PUSHAD

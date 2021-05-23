@@ -23,6 +23,8 @@ static SaveState saveState;
 
 void Globals::aise_save()
 {
+	return;
+
 	output.clear();
 	std::ostringstream stream(std::stringstream::out | std::stringstream::binary);
 	stream.write(reinterpret_cast<const char*>(&extended_unit_table), sizeof(extended_unit_table));
@@ -106,7 +108,7 @@ void Globals::aise_save()
 
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
-		stream.write(reinterpret_cast<char*>(&unitExt[i].combatTimer), sizeof(unitExt[i].combatTimer));
+		stream.write(reinterpret_cast<char*>(&unitExt[i].damageReceiveTimer), sizeof(unitExt[i].damageReceiveTimer));
 		stream.write(reinterpret_cast<char*>(&unitExt[i].values), sizeof(unitExt[i].values));
 		stream.write(reinterpret_cast<char*>(&unitExt[i].timers), sizeof(unitExt[i].timers));
 		stream.write(reinterpret_cast<char*>(&unitExt[i].units), sizeof(unitExt[i].units));
@@ -158,6 +160,8 @@ void Globals::aise_save()
 
 void Globals::aise_load(const char* ptr, u32 len)
 {
+	return;
+
 	if (len == 0 || ptr == 0)
 	{
 		return; // error
@@ -259,7 +263,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
-		stream.read(reinterpret_cast<char*>(&unitExt[i].combatTimer), sizeof(unitExt[i].combatTimer));
+		stream.read(reinterpret_cast<char*>(&unitExt[i].damageReceiveTimer), sizeof(unitExt[i].damageReceiveTimer));
 		stream.read(reinterpret_cast<char*>(&unitExt[i].values), sizeof(unitExt[i].values));
 		stream.read(reinterpret_cast<char*>(&unitExt[i].timers), sizeof(unitExt[i].timers));
 		stream.read(reinterpret_cast<char*>(&unitExt[i].units), sizeof(unitExt[i].units));
@@ -301,7 +305,8 @@ static void ClearUnitExt(int index)
 	globals.unitExt[index] = {};
 	// this should set combat timer to highest u32,
 	// meaning every unit will start being out of combat
-	globals.unitExt[index].combatTimer = -1;
+	globals.unitExt[index].damageReceiveTimer = -1;
+	globals.unitExt[index].damageDealtTimer = -1;
 }
 
 void Globals::reset()
@@ -429,9 +434,13 @@ void Globals::frameHook()
 	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{
 		UnitExt* ext = &unitExt[j];
-		if (ext->combatTimer != -1) // don't increment past max value of u32
+		if (ext->damageReceiveTimer != -1) // don't increment past max value of u32
 		{
-			++ext->combatTimer;
+			++ext->damageReceiveTimer;
+		}
+		if (ext->damageDealtTimer != -1) // don't increment past max value of u32
+		{
+			++ext->damageDealtTimer;
 		}
 		for (u32 i = 0; i < TimerCount; ++i)
 		{

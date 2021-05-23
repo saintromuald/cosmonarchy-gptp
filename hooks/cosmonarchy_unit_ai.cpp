@@ -392,7 +392,8 @@ void cosmonarchyUnitAi(Unit* unit)
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
 	// Kiting AI
-	bool inCombat = unitExt->combatTimer < 4 * 24
+	bool inCombat = unitExt->damageReceiveTimer < 4 * 24
+		|| unitExt->damageDealtTimer < 4 * 24
 		|| unit->mainOrderId == OrderId::Patrol
 		|| unit->mainOrderId == OrderId::AttackMove
 		|| unit->mainOrderId == OrderId::AttackMoveComputer

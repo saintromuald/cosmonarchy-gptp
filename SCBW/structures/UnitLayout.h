@@ -358,7 +358,8 @@ enum ExtTimerVectorId
 
 struct UnitExt
 {
-	u32						combatTimer;
+	u32						damageReceiveTimer;
+	u32						damageDealtTimer;
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
