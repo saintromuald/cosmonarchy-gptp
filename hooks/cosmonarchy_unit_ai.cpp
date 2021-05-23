@@ -501,6 +501,11 @@ void cosmonarchyUnitAi(Unit* unit)
 							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
 						}
 					}
+					else
+					{
+						localUnitExt->timers[TimerAI_Kite] = 12;
+						localUnit->orderComputerClear(OrderId::ComputerAI);
+					}
 				});
 			}
 		}
