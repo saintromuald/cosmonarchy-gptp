@@ -339,6 +339,7 @@ namespace hooks
 		{
 			if (data.target->hitPoints < data.target->getMaxHpRaw() * 0.1)
 			{
+				helper::playSoundFromSource(SoundId::OlympianMythicalMight01, data.target, 1, 0);
 				data.target->damageHp(99999, data.attacker, data.attackingPlayerId, true);
 				return;
 			}
