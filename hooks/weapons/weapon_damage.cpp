@@ -299,12 +299,12 @@ namespace hooks
 					}
 				} break;
 			}
+		}
 
-			// Autocrat Controlled Opposition - All attacks deal Chronal damage to affected targets
-			if (targetExt->values[ValueControlledOpposition])
-			{
-				damage_factor = 256;
-			}
+		// Autocrat Controlled Opposition - All attacks deal Chronal damage to affected targets
+		if (targetExt->values[ValueControlledOpposition])
+		{
+			damage_factor = 256;
 		}
 
 		data.finalDamage = (data.finalDamage * damage_factor) / 256;
