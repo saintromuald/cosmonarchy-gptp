@@ -316,6 +316,16 @@ namespace hooks
 			weaponDamage_fatal(data);
 		}
 
+		if (data.weaponId == WeaponId::OlympianMountainGun
+			|| data.weaponId == WeaponId::OlympianTitansFist)
+		{
+			if (data.target->hitPoints < data.target->getMaxHpRaw() * 0.1)
+			{
+				data.target->damageHp(99999, data.attacker, data.attackingPlayerId, true);
+				return;
+			}
+		}
+
 		// Deal damage, except for Independent damage, which always deals 0
 		if (data.damageType != DamageType::Independent && data.target->hitPoints != 0 && data.target->defensiveMatrixHp == 0 && canDamage )
 		{
@@ -749,14 +759,6 @@ namespace hooks
 						foundUnit->heal(data.finalDamage, data.target);
 					});
 				} break;
-				case WeaponId::OlympianMountainGun:
-				case WeaponId::OlympianTitansFist:
-				{
-					if (data.target->getCurrentLifeInGame() <= data.target->getMaxHpInGame() + units_dat::MaxShieldPoints[data.target->id]) // idk if shields are in game or raw
-					{
-						scbw::print("u.");
-					}
-				}
 			}
 		}
 	}
