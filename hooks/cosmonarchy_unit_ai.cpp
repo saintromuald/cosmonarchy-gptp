@@ -500,11 +500,11 @@ void cosmonarchyUnitAi(Unit* unit)
 						{
 							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
 						}
+						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 					}
 					else
 					{
 						localUnitExt->timers[TimerAI_Kite] = 12;
-						//localUnit->orderComputerClear(OrderId::ComputerAI);
 					}
 				});
 			}
@@ -528,7 +528,6 @@ void cosmonarchyUnitAi(Unit* unit)
 				{
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
 					localUnitExt->timers[TimerAI_Kite] = 12;
-					localUnit->orderComputerClear(OrderId::ComputerAI);
 				});
 				return;
 			}
@@ -598,6 +597,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 					KITE_DEBUG("%s: backward", localUnit->getName());
 				}
+				localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 			});
 		}
 	}
