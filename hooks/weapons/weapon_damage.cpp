@@ -1033,8 +1033,17 @@ namespace hooks
 				case WeaponId::CyclopsFlakCannons:
 				{
 					// Cyclops - Flak Cannon passive
-					auto newAngle = scbw::getAngle(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
-					helper::createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
+					helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, data.target->getX(), data.target->getY(), 11);
+					const u32 radius = 1.5 * 32;
+					scbw::UnitFinder(
+						data.target->getX() - radius,
+						data.target->getY() - radius,
+						data.target->getX() + radius,
+						data.target->getY() + radius
+					).forEachInMatch(cosmonarchyFinderMatch(data.target, Flags::NotSelf, {}), [&](Unit* target)
+					{
+						target->damageWithCustom(10 * 256, DamageType::Impact, data.attacker, data.attackingPlayerId, 0, 1, false);
+					});
 				} break;
 			}
 
