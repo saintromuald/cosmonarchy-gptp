@@ -401,6 +401,208 @@ namespace hooks
 		patchWeaponDat(3, 0x00457720, PatchLabel);
 		patchWeaponDat(3, 0x00457788, PatchLabel);
 		patchWeaponDat(3, 0x004577FB, PatchLabel);
-		patchWeaponDat(2, 0x004DA0BA, PatchLabel);
+		patchWeaponDat(2, 0x004DA0BA, PatchLabel);		
+
+		// // Weapon checks
+		// void __stdcall drawDisplayButtons(int a2) // 00426C60
+		// 00426CFC  |.  80FB 82       CMP BL,82
+		// 00426D16  |>  80F9 82       CMP CL,82
+		// 00426D30  |>  80FB 82       CMP BL,82
+		// 00426D74  |.  80FB 82       CMP BL,82
+		// 00426D92  |>  3C 82         CMP AL,82
+		// 00426D9A  |.  80FB 82       CMP BL,82
+		// 00426DD7  |.  3C 82         CMP AL,82
+		// 00426DF5  |.  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x00426CFC, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x00426D16, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x00426D30, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x00426D74, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x00426D92, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x00426D9A, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x00426DD7, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x00426DF5, PatchNoneWeaponCMP);
+
+		// void __thiscall UnitStatAct_Building(void *dlg) // 00427890
+		// 004279EF   .  3C 82         CMP AL,82
+		patchWeaponDat(1, 0x004279EF, PatchNoneWeaponCMP);
+
+		// int __userpurge calcUnitStrength@<eax>(int a1@<eax>, unsigned __int8 weaponType) // 00431270
+		// 004312D6  |.  3C 82         CMP AL,82
+		patchWeaponDat(1, 0x004312D6, PatchNoneWeaponCMP);
+
+		// unsigned int __cdecl sub_4313C0() // 004313C0
+		// 00431416  |.  3D 82000000   |CMP EAX,82
+		// 0043148D  |.  3D 82000000   |CMP EAX,82
+		patchWeaponDat(1, 0x00431416, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x0043148D, PatchNoneWeaponCMP);
+	
+		// CUNIT *__userpurge sub_431990@<eax>(int *a1@<eax>, int arg0, CUNIT *a2, int a4, int a5) // 00431990
+		// 00431B13  |.  80F9 82       |CMP CL,82
+		// 00431B24  |.  3C 82         |CMP AL,82
+		patchWeaponDat(2, 0x00431B13, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x00431B24, PatchNoneWeaponCMP);
+		
+		// BOOL __usercall sub_437E70@<eax>(unsigned int playerID@<eax>, int rgn1@<ebx>, int rgn2@<esi>) // 00437E70
+		// 00437ECB  |.  3C 82         CMP AL,82
+		patchWeaponDat(1, 0x00437ECB, PatchNoneWeaponCMP);
+
+		// void __usercall getAITownCapabilities(aiCaptain *pCapn@<eax>, DWORD *a2@<ebx>, DWORD *a3@<edi>, DWORD *a4@<esi>) // 00438FC0
+		// 00439012  |.  80F9 82       |CMP CL,82
+		// 00439028  |.  80F9 82       |CMP CL,82
+		patchWeaponDat(2, 0x00439012, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x00439028, PatchNoneWeaponCMP);
+
+		// int __stdcall sub_43ADA0(CUNIT *arg0, CUNIT *a2, int a3) // 0043ADA0
+		// 0043AFD4  |>  3C 82         |CMP AL,82
+		patchWeaponDat(1, 0x0043AFD4, PatchNoneWeaponCMP);
+
+		// void __usercall prepSuicide(CUNIT *eax0@<eax>) // 0043CD40
+		// 0043CFAA   .  80FA 82       CMP DL,82
+		// 0043CFB9   .  3C 82         CMP AL,82
+		patchWeaponDat(2, 0x0043CFAA, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x0043CFB9, PatchNoneWeaponCMP);
+
+		// void __stdcall AI_AttackUnit(CUNIT *unitMem) // 0043FFD0
+		// 004400E8  |>  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x004400E8, PatchNoneWeaponCMP);
+
+		// char __usercall sub_440520@<al>(CUNIT *a1@<esi>) // 00440520
+		// 00440540  |.  80F9 82       CMP CL,82
+		// 00440561  |.  3C 82         CMP AL,82
+		// 0044057A  |>  80F9 82       CMP CL,82
+		// 0044057F  |.  3C 82         CMP AL,82
+		// 004405B3  |>  3C 82         CMP AL,82
+		patchWeaponDat(2, 0x00440540, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x00440561, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x0044057A, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x0044057F, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x004405B3, PatchNoneWeaponCMP);
+		
+		// int __fastcall canHitUnit(CUNIT *pTarget, CUNIT *pUnit) // 00441870
+		// 004418DE   .  3C 82         CMP AL,82
+		// 00441905   .  3C 82         CMP AL,82
+		patchWeaponDat(1, 0x004418DE, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x00441905, PatchNoneWeaponCMP);
+
+		// signed int __userpurge sub_462EA0@<eax>(CUNIT *a1@<eax>, int a2) // 00462EA0
+		// 00462FC3  |>  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x00462FC3, PatchNoneWeaponCMP);
+
+		// void __usercall orders_StrafeUnit(CUNIT *this@<eax>) // 00465F60
+		// 0046606F  |>  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x0046606F, PatchNoneWeaponCMP);
+
+		// __int16 __usercall getTargettingErrorString@<ax>(DWORD a1@<eax>, int a2@<edx>, CUNIT *a3@<ecx>) // 0046EFE0
+		// 0046F023  |>  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x0046F023, PatchNoneWeaponCMP);
+
+		// char __thiscall Unit::getAirWeapon(CUNIT *this) // 00475840
+		// 0047584A  |.  3C 82         CMP AL,82
+		patchWeaponDat(1, 0x0047584A, PatchNoneWeaponCMP);
+
+		// BOOL __usercall hasGrndWeaponGraphic@<eax>(int a1@<eax>) // 00475A10
+		// 00475A26  |.  3C 82         CMP AL,82
+		patchWeaponDat(1, 0x00475A26, PatchNoneWeaponCMP);
+
+		// char __thiscall getGroundWeaponType(CUNIT *this) // 00475A90
+		// 00475AAC  |.  3C 82         CMP AL,82
+		patchWeaponDat(1, 0x00475AAC, PatchNoneWeaponCMP);
+
+		// BOOL __usercall unitCanAttackGroundType@<eax>(unsigned __int16 a1@<ax>, CUNIT *pUnit@<ecx>) // 00475C80
+		// 00475CC2  |.  3C 82         CMP AL,82
+		patchWeaponDat(1, 0x00475CC2, PatchNoneWeaponCMP);
+
+		// int __userpurge canWeaponTargetUnit@<eax>(unsigned __int8 wpnType@<al>, CUNIT *target@<edx>, CUNIT *a3) // 00475CE0
+		// 00475CE3  |.  3C 82         CMP AL,82
+		patchWeaponDat(1, 0x00475CE3, PatchNoneWeaponCMP);
+
+		// bool __userpurge isUnitTargetOutOfMaxRange@<al>(CUNIT *unit@<eax>, CUNIT *target) // 00476430
+		// 004764A0  |>  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x004764A0, PatchNoneWeaponCMP);
+
+		// bool __usercall isUnitTargetInsideMinRange@<al>(CUNIT *unit@<eax>, CUNIT *target@<esi>) // 004764D0
+		// 0047651E  |>  3C 82         CMP AL,82
+		patchWeaponDat(1, 0x0047651E, PatchNoneWeaponCMP);
+
+		// bool __userpurge unitCanAttackTarget@<al>(CUNIT *target@<ebx>, CUNIT *unit@<esi>, int a3) // 00476730
+		// 0047683E  |.  80FA 82       CMP DL,82
+		// 00476854  |.  3C 82         CMP AL,82
+		patchWeaponDat(2, 0x0047683E, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x00476854, PatchNoneWeaponCMP);
+
+		// bool __userpurge isUnitInWeaponRange@<al>(CUNIT *a1@<eax>, CUNIT *a2) // 00476870
+		// 004768F3  |>  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x004768F3, PatchNoneWeaponCMP);
+
+		// signed int __userpurge doWeaponIscript@<eax>(CUNIT *a1@<eax>, unsigned __int8 a2@<bl>, int a3@<edi>, char iscriptAnim) // 00476C90
+		// 00476C93  |.  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x00476C93, PatchNoneWeaponCMP);
+
+		// void __usercall orders_TurretAttack(CUNIT *a1@<eax>, int a2@<ecx>) // 00477980
+		// 00477ADE  |.  80F9 82       CMP CL,82
+		// 00477AEF  |.  3C 82         CMP AL,82
+		// 00477C40  |>  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x00477ADE, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x00477AEF, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x00477C40, PatchNoneWeaponCMP);
+
+		// void __usercall orders_AttackFixedRange(CUNIT *this@<eax>, int a2@<ecx>) // 00477D00
+		// 00477E2C  |.  80F9 82       CMP CL,82
+		// 00477E3D  |.  3C 82         CMP AL,82
+		patchWeaponDat(2, 0x00477E2C, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x00477E3D, PatchNoneWeaponCMP);
+
+		// signed int __usercall OrderAttackBehaviour@<eax>(CUNIT *a1@<eax>) // 00478540
+		// 00478636  |.  80FA 82       CMP DL,82
+		// 00478647  |.  3C 82         CMP AL,82
+		// 0047879C  |>  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x00478636, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x00478647, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x0047879C, PatchNoneWeaponCMP);
+		
+		// void __usercall orders_WatchTarget(CUNIT *this@<eax>) // 0047BAB0
+		// 0047BB3C  |>  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x0047BB3C, PatchNoneWeaponCMP);
+
+		// void __usercall orders_StayInRange(CUNIT *this@<eax>) // 0047C4F0
+		// 0047C5CC  |>  80FB 82       CMP BL,82
+		// 0047C680  |>  80FB 82       CMP BL,82
+		patchWeaponDat(2, 0x0047C5CC, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x0047C680, PatchNoneWeaponCMP);
+
+		// BOOL __thiscall FindNextBounceTargetProc(CUNIT *pIterator) // 0048AFD0
+		// 0048B0C7   .  80FA 82       CMP DL,82
+		// 0048B0D8   .  3C 82         CMP AL,82
+		patchWeaponDat(2, 0x0048B0C7, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x0048B0D8, PatchNoneWeaponCMP);
+
+		// BOOL __usercall CMDRECV_PlaceBuildingAllowed@<eax>(unsigned __int16 a1@<ax>, unsigned __int8 a2@<dl>, CUNIT *a3@<ecx>) // 0048DBD0
+		// 0048DBDC  |.  81F9 82000000 CMP ECX,82
+		patchWeaponDat(2, 0x0048DBDC, PatchNoneWeaponCMP);
+
+		// void __cdecl ReassignTargetAcquisitionRange() // 0049E010
+		// 0049E04A   .  81F9 82000000 CMP ECX,82
+		// 0049E070   .  81F9 82000000 CMP ECX,82
+		// 0049E0A7   .  81F9 82000000 CMP ECX,82
+		// 0049E0CD   .  81F9 82000000 CMP ECX,82
+		// 0049E106   .  81F9 82000000 CMP ECX,82
+		// 0049E12C   .  81F9 82000000 CMP ECX,82
+		// 0049E163   .  81F9 82000000 CMP ECX,82
+		// 0049E189   .  81F9 82000000 CMP ECX,82
+		patchWeaponDat(2, 0x0049E04A, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x0049E070, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x0049E0A7, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x0049E0CD, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x0049E106, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x0049E12C, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x0049E163, PatchNoneWeaponCMP);
+		patchWeaponDat(2, 0x0049E189, PatchNoneWeaponCMP);
+		
+		// bool __usercall Unload@<al>(CUNIT *a1@<eax>) // 004E7F70
+		// 004E807E  |.  3D 82000000   CMP EAX,82
+		// 004E8094  |.  3D 82000000   CMP EAX,82
+		patchWeaponDat(1, 0x004E807E, PatchNoneWeaponCMP);
+		patchWeaponDat(1, 0x004E8094, PatchNoneWeaponCMP);
+
 	}
 }
