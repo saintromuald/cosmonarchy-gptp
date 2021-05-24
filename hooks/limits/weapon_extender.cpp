@@ -83,7 +83,8 @@ enum PatchType
 	PatchErrorMessage,		
 	PatchIcon,
 
-	PatchMaxWeaponCount,
+	PatchMaxWeaponCompare,
+	PatchMaxWeaponLoad,
 };
 
 static inline void patchWeaponDat(u32 opcodeSize, u32 address, u32 patchType)
@@ -116,9 +117,14 @@ static inline void patchWeaponDat(u32 opcodeSize, u32 address, u32 patchType)
 		weapons_dat::Icon,
 	};
 
-	if (patchType == PatchMaxWeaponCount)
+	if (patchType == PatchMaxWeaponCompare)
 	{
-		const u8 noneWeaponId = MAX_WEAPONS;
+		const u8 noneWeaponId = MAX_WEAPONS - 1;
+		memoryPatch(address + opcodeSize, noneWeaponId);
+	}
+	else if (patchType == PatchMaxWeaponLoad)
+	{
+		const u32 noneWeaponId = MAX_WEAPONS;
 		memoryPatch(address + opcodeSize, noneWeaponId);
 	}
 	else
@@ -182,30 +188,30 @@ namespace hooks
 		patchWeaponDat(0, 0x00513970, PatchErrorMessage);
 		patchWeaponDat(0, 0x0051397C, PatchIcon);
 
-		patchWeaponDat(8, 0x00513868, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513874, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513880, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x0051388C, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513898, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x005138A4, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x005138B0, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x005138BC, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x005138C8, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x005138D4, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x005138E0, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x005138EC, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x005138F8, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513904, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513910, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x0051391C, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513928, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513934, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513940, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x0051394C, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513958, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513964, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x00513970, PatchMaxWeaponCount);
-		patchWeaponDat(8, 0x0051397C, PatchMaxWeaponCount);
+		patchWeaponDat(8, 0x00513868, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513874, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513880, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x0051388C, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513898, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x005138A4, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x005138B0, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x005138BC, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x005138C8, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x005138D4, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x005138E0, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x005138EC, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x005138F8, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513904, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513910, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x0051391C, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513928, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513934, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513940, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x0051394C, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513958, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513964, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x00513970, PatchMaxWeaponLoad);
+		patchWeaponDat(8, 0x0051397C, PatchMaxWeaponLoad);
 
 		// dword weapons_dat_flingy
 		// 00475A33  |.  8B0C95 A86C65>MOV ECX,DWORD PTR DS:[EDX*4+656CA8]
@@ -493,58 +499,58 @@ namespace hooks
 		// 00426D9A  |.  80FB 82       CMP BL,82
 		// 00426DD7  |.  3C 82         CMP AL,82
 		// 00426DF5  |.  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x00426CFC, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x00426D16, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x00426D30, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x00426D74, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x00426D92, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x00426D9A, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x00426DD7, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x00426DF5, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x00426CFC, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x00426D16, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x00426D30, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x00426D74, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x00426D92, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x00426D9A, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x00426DD7, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x00426DF5, PatchMaxWeaponCompare);
 
 		// void __thiscall UnitStatAct_Building(void *dlg) // 00427890
 		// 004279EF   .  3C 82         CMP AL,82
-		patchWeaponDat(1, 0x004279EF, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x004279EF, PatchMaxWeaponCompare);
 
 		// int __userpurge calcUnitStrength@<eax>(int a1@<eax>, unsigned __int8 weaponType) // 00431270
 		// 004312D6  |.  3C 82         CMP AL,82
-		patchWeaponDat(1, 0x004312D6, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x004312D6, PatchMaxWeaponCompare);
 
 		// unsigned int __cdecl sub_4313C0() // 004313C0
 		// 00431416  |.  3D 82000000   |CMP EAX,82
 		// 0043148D  |.  3D 82000000   |CMP EAX,82
-		patchWeaponDat(1, 0x00431416, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x0043148D, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x00431416, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x0043148D, PatchMaxWeaponCompare);
 	
 		// CUNIT *__userpurge sub_431990@<eax>(int *a1@<eax>, int arg0, CUNIT *a2, int a4, int a5) // 00431990
 		// 00431B13  |.  80F9 82       |CMP CL,82
 		// 00431B24  |.  3C 82         |CMP AL,82
-		patchWeaponDat(2, 0x00431B13, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x00431B24, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x00431B13, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x00431B24, PatchMaxWeaponCompare);
 		
 		// BOOL __usercall sub_437E70@<eax>(unsigned int playerID@<eax>, int rgn1@<ebx>, int rgn2@<esi>) // 00437E70
 		// 00437ECB  |.  3C 82         CMP AL,82
-		patchWeaponDat(1, 0x00437ECB, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x00437ECB, PatchMaxWeaponCompare);
 
 		// void __usercall getAITownCapabilities(aiCaptain *pCapn@<eax>, DWORD *a2@<ebx>, DWORD *a3@<edi>, DWORD *a4@<esi>) // 00438FC0
 		// 00439012  |.  80F9 82       |CMP CL,82
 		// 00439028  |.  80F9 82       |CMP CL,82
-		patchWeaponDat(2, 0x00439012, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x00439028, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x00439012, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x00439028, PatchMaxWeaponCompare);
 
 		// int __stdcall sub_43ADA0(CUNIT *arg0, CUNIT *a2, int a3) // 0043ADA0
 		// 0043AFD4  |>  3C 82         |CMP AL,82
-		patchWeaponDat(1, 0x0043AFD4, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x0043AFD4, PatchMaxWeaponCompare);
 
 		// void __usercall prepSuicide(CUNIT *eax0@<eax>) // 0043CD40
 		// 0043CFAA   .  80FA 82       CMP DL,82
 		// 0043CFB9   .  3C 82         CMP AL,82
-		patchWeaponDat(2, 0x0043CFAA, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x0043CFB9, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x0043CFAA, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x0043CFB9, PatchMaxWeaponCompare);
 
 		// void __stdcall AI_AttackUnit(CUNIT *unitMem) // 0043FFD0
 		// 004400E8  |>  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x004400E8, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x004400E8, PatchMaxWeaponCompare);
 
 		// char __usercall sub_440520@<al>(CUNIT *a1@<esi>) // 00440520
 		// 00440540  |.  80F9 82       CMP CL,82
@@ -552,113 +558,113 @@ namespace hooks
 		// 0044057A  |>  80F9 82       CMP CL,82
 		// 0044057F  |.  3C 82         CMP AL,82
 		// 004405B3  |>  3C 82         CMP AL,82
-		patchWeaponDat(2, 0x00440540, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x00440561, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x0044057A, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x0044057F, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x004405B3, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x00440540, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x00440561, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x0044057A, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x0044057F, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x004405B3, PatchMaxWeaponCompare);
 		
 		// int __fastcall canHitUnit(CUNIT *pTarget, CUNIT *pUnit) // 00441870
 		// 004418DE   .  3C 82         CMP AL,82
 		// 00441905   .  3C 82         CMP AL,82
-		patchWeaponDat(1, 0x004418DE, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x00441905, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x004418DE, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x00441905, PatchMaxWeaponCompare);
 
 		// signed int __userpurge sub_462EA0@<eax>(CUNIT *a1@<eax>, int a2) // 00462EA0
 		// 00462FC3  |>  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x00462FC3, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x00462FC3, PatchMaxWeaponCompare);
 
 		// void __usercall orders_StrafeUnit(CUNIT *this@<eax>) // 00465F60
 		// 0046606F  |>  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x0046606F, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x0046606F, PatchMaxWeaponCompare);
 
 		// __int16 __usercall getTargettingErrorString@<ax>(DWORD a1@<eax>, int a2@<edx>, CUNIT *a3@<ecx>) // 0046EFE0
 		// 0046F023  |>  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x0046F023, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x0046F023, PatchMaxWeaponCompare);
 
 		// char __thiscall Unit::getAirWeapon(CUNIT *this) // 00475840
 		// 0047584A  |.  3C 82         CMP AL,82
-		patchWeaponDat(1, 0x0047584A, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x0047584A, PatchMaxWeaponCompare);
 
 		// BOOL __usercall hasGrndWeaponGraphic@<eax>(int a1@<eax>) // 00475A10
 		// 00475A26  |.  3C 82         CMP AL,82
-		patchWeaponDat(1, 0x00475A26, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x00475A26, PatchMaxWeaponCompare);
 
 		// char __thiscall getGroundWeaponType(CUNIT *this) // 00475A90
 		// 00475AAC  |.  3C 82         CMP AL,82
-		patchWeaponDat(1, 0x00475AAC, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x00475AAC, PatchMaxWeaponCompare);
 
 		// BOOL __usercall unitCanAttackGroundType@<eax>(unsigned __int16 a1@<ax>, CUNIT *pUnit@<ecx>) // 00475C80
 		// 00475CC2  |.  3C 82         CMP AL,82
-		patchWeaponDat(1, 0x00475CC2, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x00475CC2, PatchMaxWeaponCompare);
 
 		// int __userpurge canWeaponTargetUnit@<eax>(unsigned __int8 wpnType@<al>, CUNIT *target@<edx>, CUNIT *a3) // 00475CE0
 		// 00475CE3  |.  3C 82         CMP AL,82
-		patchWeaponDat(1, 0x00475CE3, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x00475CE3, PatchMaxWeaponCompare);
 
 		// bool __userpurge isUnitTargetOutOfMaxRange@<al>(CUNIT *unit@<eax>, CUNIT *target) // 00476430
 		// 004764A0  |>  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x004764A0, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x004764A0, PatchMaxWeaponCompare);
 
 		// bool __usercall isUnitTargetInsideMinRange@<al>(CUNIT *unit@<eax>, CUNIT *target@<esi>) // 004764D0
 		// 0047651E  |>  3C 82         CMP AL,82
-		patchWeaponDat(1, 0x0047651E, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x0047651E, PatchMaxWeaponCompare);
 
 		// bool __userpurge unitCanAttackTarget@<al>(CUNIT *target@<ebx>, CUNIT *unit@<esi>, int a3) // 00476730
 		// 0047683E  |.  80FA 82       CMP DL,82
 		// 00476854  |.  3C 82         CMP AL,82
-		patchWeaponDat(2, 0x0047683E, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x00476854, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x0047683E, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x00476854, PatchMaxWeaponCompare);
 
 		// bool __userpurge isUnitInWeaponRange@<al>(CUNIT *a1@<eax>, CUNIT *a2) // 00476870
 		// 004768F3  |>  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x004768F3, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x004768F3, PatchMaxWeaponCompare);
 
 		// signed int __userpurge doWeaponIscript@<eax>(CUNIT *a1@<eax>, unsigned __int8 a2@<bl>, int a3@<edi>, char iscriptAnim) // 00476C90
 		// 00476C93  |.  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x00476C93, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x00476C93, PatchMaxWeaponCompare);
 
 		// void __usercall orders_TurretAttack(CUNIT *a1@<eax>, int a2@<ecx>) // 00477980
 		// 00477ADE  |.  80F9 82       CMP CL,82
 		// 00477AEF  |.  3C 82         CMP AL,82
 		// 00477C40  |>  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x00477ADE, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x00477AEF, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x00477C40, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x00477ADE, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x00477AEF, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x00477C40, PatchMaxWeaponCompare);
 
 		// void __usercall orders_AttackFixedRange(CUNIT *this@<eax>, int a2@<ecx>) // 00477D00
 		// 00477E2C  |.  80F9 82       CMP CL,82
 		// 00477E3D  |.  3C 82         CMP AL,82
-		patchWeaponDat(2, 0x00477E2C, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x00477E3D, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x00477E2C, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x00477E3D, PatchMaxWeaponCompare);
 
 		// signed int __usercall OrderAttackBehaviour@<eax>(CUNIT *a1@<eax>) // 00478540
 		// 00478636  |.  80FA 82       CMP DL,82
 		// 00478647  |.  3C 82         CMP AL,82
 		// 0047879C  |>  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x00478636, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x00478647, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x0047879C, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x00478636, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x00478647, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x0047879C, PatchMaxWeaponCompare);
 		
 		// void __usercall orders_WatchTarget(CUNIT *this@<eax>) // 0047BAB0
 		// 0047BB3C  |>  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x0047BB3C, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x0047BB3C, PatchMaxWeaponCompare);
 
 		// void __usercall orders_StayInRange(CUNIT *this@<eax>) // 0047C4F0
 		// 0047C5CC  |>  80FB 82       CMP BL,82
 		// 0047C680  |>  80FB 82       CMP BL,82
-		patchWeaponDat(2, 0x0047C5CC, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x0047C680, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x0047C5CC, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x0047C680, PatchMaxWeaponCompare);
 
 		// BOOL __thiscall FindNextBounceTargetProc(CUNIT *pIterator) // 0048AFD0
 		// 0048B0C7   .  80FA 82       CMP DL,82
 		// 0048B0D8   .  3C 82         CMP AL,82
-		patchWeaponDat(2, 0x0048B0C7, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x0048B0D8, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x0048B0C7, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x0048B0D8, PatchMaxWeaponCompare);
 
 		// BOOL __usercall CMDRECV_PlaceBuildingAllowed@<eax>(unsigned __int16 a1@<ax>, unsigned __int8 a2@<dl>, CUNIT *a3@<ecx>) // 0048DBD0
 		// 0048DBDC  |.  81F9 82000000 CMP ECX,82
-		patchWeaponDat(2, 0x0048DBDC, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x0048DBDC, PatchMaxWeaponCompare);
 
 		// void __cdecl ReassignTargetAcquisitionRange() // 0049E010
 		// 0049E04A   .  81F9 82000000 CMP ECX,82
@@ -669,20 +675,20 @@ namespace hooks
 		// 0049E12C   .  81F9 82000000 CMP ECX,82
 		// 0049E163   .  81F9 82000000 CMP ECX,82
 		// 0049E189   .  81F9 82000000 CMP ECX,82
-		patchWeaponDat(2, 0x0049E04A, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x0049E070, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x0049E0A7, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x0049E0CD, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x0049E106, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x0049E12C, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x0049E163, PatchMaxWeaponCount);
-		patchWeaponDat(2, 0x0049E189, PatchMaxWeaponCount);
+		patchWeaponDat(2, 0x0049E04A, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x0049E070, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x0049E0A7, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x0049E0CD, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x0049E106, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x0049E12C, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x0049E163, PatchMaxWeaponCompare);
+		patchWeaponDat(2, 0x0049E189, PatchMaxWeaponCompare);
 		
 		// bool __usercall Unload@<al>(CUNIT *a1@<eax>) // 004E7F70
 		// 004E807E  |.  3D 82000000   CMP EAX,82
 		// 004E8094  |.  3D 82000000   CMP EAX,82
-		patchWeaponDat(1, 0x004E807E, PatchMaxWeaponCount);
-		patchWeaponDat(1, 0x004E8094, PatchMaxWeaponCount);
+		patchWeaponDat(1, 0x004E807E, PatchMaxWeaponCompare);
+		patchWeaponDat(1, 0x004E8094, PatchMaxWeaponCompare);
 
 	}
 }
