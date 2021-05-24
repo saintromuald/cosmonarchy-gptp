@@ -498,39 +498,6 @@ namespace hooks
 				}
 			}
 
-			// Vithrilisk - Critical Mass (procced by any attack now)
-			if (targetExt->values[ValueCorrosiveTouchStacks])
-			{
-				s32 range = 160;
-				scbw::UnitFinder(
-					data.target->getX() - 96,
-					data.target->getY() - 96,
-					data.target->getX() + 96,
-					data.target->getY() + 96
-				).forEach([&](Unit* target)
-				{
-					if (target->status & UnitStatus::Burrowed)
-					{
-						return;
-					}
-					if (target->status & UnitStatus::Invincible)
-					{
-						return;
-					}
-					if (scbw::isAlliedTo(data.attacker->playerId, target->playerId))
-					{
-						return; 
-					}
-					helper::ApplySpores(target);
-					Thingy* thingy = helper::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
-					if (thingy != nullptr)
-					{
-						thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
-						helper::setThingyVisibilityFlags(thingy);
-					}
-				});
-			}
-
 			// Cabalist - Decloak, Silent Kill
 			if (data.attacker->id == UnitId::ProtossCabalist && data.finalDamage < data.target->hitPoints)
 			{
@@ -793,6 +760,41 @@ namespace hooks
 						foundUnit->heal(data.finalDamage, data.target);
 					});
 				} break;
+				case WeaponId::VithriliskCorrosiveSpores:
+				{
+					// Vithrilisk - Critical Mass
+					if (targetExt->values[ValueCorrosiveTouchStacks])
+					{
+						s32 range = 160;
+						scbw::UnitFinder(
+							data.target->getX() - 96,
+							data.target->getY() - 96,
+							data.target->getX() + 96,
+							data.target->getY() + 96
+						).forEach([&](Unit* target)
+						{
+							if (target->status & UnitStatus::Burrowed)
+							{
+								return;
+							}
+							if (target->status & UnitStatus::Invincible)
+							{
+								return;
+							}
+							if (scbw::isAlliedTo(data.attacker->playerId, target->playerId))
+							{
+								return;
+							}
+							helper::ApplySpores(target);
+							Thingy* thingy = helper::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
+							if (thingy != nullptr)
+							{
+								thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
+								helper::setThingyVisibilityFlags(thingy);
+							}
+						});
+					}
+				}
 			}
 		}
 	}

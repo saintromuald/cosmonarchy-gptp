@@ -24,7 +24,7 @@ namespace hooks
 		oldPos.y = unit->sprite->position.y;
 		if (nydusCanal->building.nydusExit->sprite == nullptr)
 		{
-			scbw::print("null sprite of nydus exit!");
+			//scbw::print("null sprite of nydus exit!");
 			nydusCanal->building.nydusExit = nullptr;
 			return;
 		}

@@ -108,7 +108,7 @@ namespace WeaponId {
 		DisruptionWeb = 0x65,
 		Restoration = 0x66,
 		HaloRockets = 0x67,
-		CorrosiveAcid = 0x68,
+		VithriliskCorrosiveSpores = 0x68,
 		MindControl = 0x69,
 		Feedback = 0x6A,
 		OpticalFlare = 0x6B,

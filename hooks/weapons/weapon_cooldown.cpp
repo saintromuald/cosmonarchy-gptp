@@ -9,15 +9,14 @@ namespace hooks
 {
 
 	/// Calculates the unit's weapon cooldown, factoring in upgrades and status effects.
-	///
-	/// @return		The modified cooldown value.
+	/// @return	the modified cooldown value.
 	u32 getModifiedWeaponCooldownHook(Unit* unit, u8 weaponId)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		u32 cooldown = weapons_dat::Cooldown[weaponId];
 
-		// Devourer - Corrosive Spores: lower attack speed of victim
+		// Vithrilisk - Corrosive Spores: lower attack speed of victim
 		if (unitExt->values[ValueCorrosiveTouchStacks] != 0)
 		{
 			cooldown *= 1 + unitExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
