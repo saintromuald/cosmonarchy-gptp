@@ -134,9 +134,9 @@ namespace WeaponId {
 		GaussRifle11_Unused = 0x7F,
 		GaussRifle12_Unused = 0x80,
 		GaussRifle13_Unused = 0x81,
-		None = 0x82,
+		None = 0xff,
 		// Internal entries, not real IDs
-		Custom = 0x83,
+		Custom = 0x100,
 
 		// HYDRA \\
 
