@@ -1410,6 +1410,12 @@ namespace scbw
 		unitExt->valueVectors[ValueVectorSignifySourcePlayer] = {};
 		scbw::updateSignifyStatus(unit, unitExt);
 
+		// Remove Nathrokor attack stacks
+		for (u32 i = 0; i < 8; i++)
+		{
+			unitExt->nathrokorTargetStacks[i] = 0;
+		}
+
 		scbw::refreshConsole();
 	}
 
