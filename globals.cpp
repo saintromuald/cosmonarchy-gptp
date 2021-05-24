@@ -984,7 +984,7 @@ namespace scbw
 		// Refresh Captivating Claws
 		if (unitExt->timers[TimerCaptivatingClaws])
 		{
-			unitExt->timers[TimerCaptivatingClaws] = VorvalingCaptivatingClawsTimer;
+			unitExt->timers[TimerCaptivatingClaws] = VorvrokorCaptivatingClawsTimer;
 		}
 
 		// Refresh Lockdown

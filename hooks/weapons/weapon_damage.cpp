@@ -659,7 +659,7 @@ namespace hooks
 					{
 						attackerExt->values[ValueAdrenalStacks] += 1;
 					}
-					attackerExt->timers[TimerAdrenal] = ZerglingAdrenalGlandsTimer;
+					attackerExt->timers[TimerAdrenal] = ZethrokorAdrenalGlandsTimer;
 				} break;
 				case WeaponId::SouthpawUppercutLaser:
 				{

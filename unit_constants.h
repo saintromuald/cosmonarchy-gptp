@@ -116,14 +116,18 @@ const s32 AIStarsovereignAbilTimer = 612;
 
 // ZERG \\
 
-// Zergling
-const s32 ZerglingAdrenalGlandsTimer = 24 * 2 + 1;
-
-// Vorvaling
-const s32 VorvalingCaptivatingClawsTimer = 24 + 1;
+// Zethrokor
+const s32 ZethrokorAdrenalGlandsTimer = 24 * 2 + 1;
 
 // Quazilisk
 const f64 QuazaliskPassiveFactor = 0.1;
+
+// Nathrokor
+const s32 NathrokorAdrenalFrenzyTimer = 2 * 24 + 1;
+const f64 NathrokorAdrenalFrenzySpeedFactor = 0.05;
+
+// Vorvrokor
+const s32 VorvrokorCaptivatingClawsTimer = 24 + 1;
 
 // Vithrilisk
 const s32 VithriliskCorrosiveTouchTimer = 10 * 24 + 1;

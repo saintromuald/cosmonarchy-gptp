@@ -261,7 +261,7 @@ void unitDestructorSpecialHook(Unit* unit)
 		}
 	}
 
-	// Nathrokor - Passive
+	// Nathrokor - Adrenal Frenzy
 	for (u32 i = 0; i < 8; i++)
 	{
 		u32 stacks = unitExt->nathrokorTargetStacks[i];
@@ -278,7 +278,7 @@ void unitDestructorSpecialHook(Unit* unit)
 				if (scbw::isAlliedTo(i, target->playerId))
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerNathrokorBuff] = 5 * 24 + 1;
+					targetExt->timers[TimerNathrokorBuff] = NathrokorAdrenalFrenzyTimer;
 					targetExt->values[ValueNathrokorBuffStacks] += stacks;
 					target->updateSpeed();
 				}
