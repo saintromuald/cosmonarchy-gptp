@@ -281,17 +281,17 @@ namespace hooks
 		// 00475CEE  |.  0FB60445 9879>MOVZX EAX,BYTE PTR DS:[EAX*2+657998]
 		// 00475D19  |.  66:8B0445 987>MOV AX,WORD PTR DS:[EAX*2+657998]
 		patchWeaponDat(4, 0x00475CEE, PatchTargetFlags);
-		patchWeaponDat(3, 0x00475D19, PatchTargetFlags);
+		patchWeaponDat(4, 0x00475D19, PatchTargetFlags);
 
 		// byte weapons_dat_upgrade
 		// 0042579D  |.  66:0FB688 D07>MOVZX CX,BYTE PTR DS:[EAX+6571D0]
 		// 00475E47  |.  66:0FB68A D07>MOVZX CX,BYTE PTR DS:[EDX+6571D0]
 		// 00475EC7  |.  66:0FB68A D07>MOVZX CX,BYTE PTR DS:[EDX+6571D0]
 		// 0048ACE5  |.  66:0FB688 D07>MOVZX CX,BYTE PTR DS:[EAX+6571D0]
-		patchWeaponDat(3, 0x0042579D, PatchDamageUpgrade);
-		patchWeaponDat(3, 0x00475E47, PatchDamageUpgrade);
-		patchWeaponDat(3, 0x00475EC7, PatchDamageUpgrade);
-		patchWeaponDat(3, 0x0048ACE5, PatchDamageUpgrade);
+		patchWeaponDat(4, 0x0042579D, PatchDamageUpgrade);
+		patchWeaponDat(4, 0x00475E47, PatchDamageUpgrade);
+		patchWeaponDat(4, 0x00475EC7, PatchDamageUpgrade);
+		patchWeaponDat(4, 0x0048ACE5, PatchDamageUpgrade);
 
 		// word weapons_dat_upgrade_bonus
 		// 00475E9D  |.  66:8B0455 787>MOV AX,WORD PTR DS:[EDX*2+657678]
@@ -306,18 +306,18 @@ namespace hooks
 		// 004CAC9B  |.  66:89BA 78766>|MOV WORD PTR DS:[EDX+657678],DI
 		// 004CAE2A  |.  66:899F 78766>|MOV WORD PTR DS:[EDI+657678],BX
 		// 004CAE5B  |.  66:89BA 78766>|MOV WORD PTR DS:[EDX+657678],DI
-		patchWeaponDat(3, 0x00475E9D, PatchDamageBonus);
-		patchWeaponDat(3, 0x00475EE4, PatchDamageBonus);
-		patchWeaponDat(3, 0x00475EFF, PatchDamageBonus);
+		patchWeaponDat(4, 0x00475E9D, PatchDamageBonus);
+		patchWeaponDat(4, 0x00475EE4, PatchDamageBonus);
+		patchWeaponDat(4, 0x00475EFF, PatchDamageBonus);
 		patchWeaponDat(4, 0x0048AD1B, PatchDamageBonus);
 		patchWeaponDat(1, 0x004BF0F4, PatchDamageBonus);
 		patchWeaponDat(1, 0x004BF0F9, PatchDamageBonus);
 		patchWeaponDat(1, 0x004BF28B, PatchDamageBonus);
 		patchWeaponDat(1, 0x004BF43D, PatchDamageBonus);
-		patchWeaponDat(2, 0x004CAC6A, PatchDamageBonus);
-		patchWeaponDat(2, 0x004CAC9B, PatchDamageBonus);
-		patchWeaponDat(2, 0x004CAE2A, PatchDamageBonus);
-		patchWeaponDat(2, 0x004CAE5B, PatchDamageBonus);
+		patchWeaponDat(3, 0x004CAC6A, PatchDamageBonus);
+		patchWeaponDat(3, 0x004CAC9B, PatchDamageBonus);
+		patchWeaponDat(3, 0x004CAE2A, PatchDamageBonus);
+		patchWeaponDat(3, 0x004CAE5B, PatchDamageBonus);
 
 		// byte weapons_dat_damage_type
 		// 0047978E  |.  8A88 58726500 MOV CL,BYTE PTR DS:[EAX+657258]
@@ -333,7 +333,7 @@ namespace hooks
 
 		// word weapons_dat_error_msg
 		// 0046F02B  |.  66:8B044D 686>MOV AX,WORD PTR DS:[ECX*2+656568]
-		patchWeaponDat(3, 0x0046F02B, PatchErrorMessage);
+		patchWeaponDat(4, 0x0046F02B, PatchErrorMessage);
 
 		// byte weapons_dat_factor
 		// 0043120A   .  0FB691 E06465>MOVZX EDX,BYTE PTR DS:[ECX+6564E0]
@@ -377,17 +377,17 @@ namespace hooks
 		// 004CAE4C  |.  66:89BA B06E6>|MOV WORD PTR DS:[EDX+656EB0],DI
 		patchWeaponDat(4, 0x00431211, PatchDamageAmount);
 		patchWeaponDat(4, 0x004312B8, PatchDamageAmount);
-		patchWeaponDat(3, 0x00475F41, PatchDamageAmount);
+		patchWeaponDat(4, 0x00475F41, PatchDamageAmount);
 		patchWeaponDat(4, 0x00479BB3, PatchDamageAmount);
 		patchWeaponDat(4, 0x0048ACF1, PatchDamageAmount);
 		patchWeaponDat(1, 0x004BF0CE, PatchDamageAmount);
 		patchWeaponDat(1, 0x004BF0D3, PatchDamageAmount);
 		patchWeaponDat(1, 0x004BF277, PatchDamageAmount);
 		patchWeaponDat(1, 0x004BF425, PatchDamageAmount);
-		patchWeaponDat(2, 0x004CAC5B, PatchDamageAmount);
-		patchWeaponDat(2, 0x004CAC8C, PatchDamageAmount);
-		patchWeaponDat(2, 0x004CAE1B, PatchDamageAmount);
-		patchWeaponDat(2, 0x004CAE4C, PatchDamageAmount);
+		patchWeaponDat(3, 0x004CAC5B, PatchDamageAmount);
+		patchWeaponDat(3, 0x004CAC8C, PatchDamageAmount);
+		patchWeaponDat(3, 0x004CAE1B, PatchDamageAmount);
+		patchWeaponDat(3, 0x004CAE4C, PatchDamageAmount);
 
 		// byte weapons_dat_attack_angle
 		// 004675E0  |.  0FB681 906965>MOVZX EAX,BYTE PTR DS:[ECX+656990]
@@ -480,14 +480,14 @@ namespace hooks
 		// 00457788  |.  66:8B0C55 E07>MOV CX,WORD PTR DS:[EDX*2+6572E0]
 		// 004577FB  |.  66:8B0C4D E07>MOV CX,WORD PTR DS:[ECX*2+6572E0]
 		// 004DA0BA   >  8B0D 68385100 MOV ECX,DWORD PTR DS:[513868]            ;  StarCraf.006572E0
-		patchWeaponDat(3, 0x00457720, PatchLabel);
-		patchWeaponDat(3, 0x00457788, PatchLabel);
-		patchWeaponDat(3, 0x004577FB, PatchLabel);
+		patchWeaponDat(4, 0x00457720, PatchLabel);
+		patchWeaponDat(4, 0x00457788, PatchLabel);
+		patchWeaponDat(4, 0x004577FB, PatchLabel);
 		patchWeaponDat(2, 0x004DA0BA, PatchLabel);	
 
 		// weapons_dat icon
 		// 0x00425840  |.  66:8B0C55 806>MOV CX,WORD PTR DS:[EDX*2+656780]
-		patchWeaponDat(3, 0x00425840, PatchIcon);
+		patchWeaponDat(4, 0x00425840, PatchIcon);
 
 		// // Weapon checks
 		// void __stdcall drawDisplayButtons(int a2) // 00426C60
