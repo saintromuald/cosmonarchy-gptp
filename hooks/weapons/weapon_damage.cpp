@@ -611,11 +611,11 @@ namespace hooks
 							UnitExt* subunitExt = globals.GetUnitExt(data.target->subunit);
 							subunitExt->values[ValueDeconstruction] = 1;
 							subunitExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
-							data.target->subunit->sprite->createOverlay(1332 + overlayOffset);
+							data.target->subunit->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
 						}
 						else
 						{
-							data.target->sprite->createOverlay(1332 + overlayOffset);
+							data.target->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
 						}
 					}
 				} break;
