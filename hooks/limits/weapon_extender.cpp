@@ -477,7 +477,11 @@ namespace hooks
 		patchWeaponDat(3, 0x00457720, PatchLabel);
 		patchWeaponDat(3, 0x00457788, PatchLabel);
 		patchWeaponDat(3, 0x004577FB, PatchLabel);
-		patchWeaponDat(2, 0x004DA0BA, PatchLabel);		
+		patchWeaponDat(2, 0x004DA0BA, PatchLabel);	
+
+		// weapons_dat icon
+		// 0x00425840  |.  66:8B0C55 806>MOV CX,WORD PTR DS:[EDX*2+656780]
+		patchWeaponDat(3, 0x00425840, PatchIcon);
 
 		// // Weapon checks
 		// void __stdcall drawDisplayButtons(int a2) // 00426C60
