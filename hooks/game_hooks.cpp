@@ -227,7 +227,7 @@ namespace hooks
 			}			
 		}
 
-		// Requires a trigger that sets 1 death of Vespene Geyser for current player
+		// Requires a trigger that sets 1 death of Vespene Geyser for all players
 		if (*elapsedTimeFrames == 1 && unit_deaths[UnitId::ResourceVespeneGeyser].player[*ACTIVE_NATION_ID] == 1)
 		{
 			// Explore map
