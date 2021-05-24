@@ -26,6 +26,31 @@ u8*,		ForwardOffset,		weaponsDat[20].address); // 00657910
 u8*,		VerticalOffset,		weaponsDat[21].address); // 00656C20
 u16*,		ErrorMessage,		weaponsDat[22].address); // 00656568 //Target Error Message according to EUDDB
 u16*,		Icon,				weaponsDat[23].address); // 00656780 //Icon according to EUDDB
+
+patchWeaponDat(0, 0x00513868, PatchLabel);						  DATStruct <offset weaponsdat_label, 2, 130>
+patchWeaponDat(0, 0x00513874, PatchFlingyId);					  DATStruct <offset weaponsdat_graphics, 4, 130> ; 4
+patchWeaponDat(0, 0x00513880, PatchSpecialAttack);				  DATStruct <offset weaponsdat_technology, 1, 130>
+patchWeaponDat(0, 0x0051388C, PatchTargetFlags);				  DATStruct <offset weaponsdat_targetFlags, 2, 130> ; 2
+patchWeaponDat(0, 0x00513898, PatchMinRange);					  DATStruct <offset weaponsdat_minRange, 4, 130> ; 16
+patchWeaponDat(0, 0x005138A4, PatchMaxRange);					  DATStruct <offset weaponsdat_maxRange, 4, 130> ; 15
+patchWeaponDat(0, 0x005138B0, PatchDamageUpgrade);				  DATStruct <offset weaponsdat_damageUpgrade, 1, 130> ; 4
+patchWeaponDat(0, 0x005138BC, PatchDamageType);					  DATStruct <offset weaponsdat_wpnType, 1, 130> ; 5
+patchWeaponDat(0, 0x005138C8, PatchBehavior);					  DATStruct <offset gubWeapFireType, 1, 130> ; 6
+patchWeaponDat(0, 0x005138D4, PatchRemoveAfter);				  DATStruct <offset weaponsdat_removeAfter, 1, 130> ; 1
+patchWeaponDat(0, 0x005138E0, PatchExplosionType);				  DATStruct <offset gubWeapDamageType, 1, 130> ; 3
+patchWeaponDat(0, 0x005138EC, PatchInnerSplashRadius);			  DATStruct <offset weaponsdat_innerSplash, 2, 130> ; 4
+patchWeaponDat(0, 0x005138F8, PatchMediumSplashRadius);			  DATStruct <offset weaponsdat_middleSplash, 2, 130> ; 1
+patchWeaponDat(0, 0x00513904, PatchOuterSplashRadius);			  DATStruct <offset weaponsdat_outerSplash, 2, 130> ; 4
+patchWeaponDat(0, 0x00513910, PatchDamageAmount);				  DATStruct <offset weaponsdat_dmgAmount, 2, 130> ; 12
+patchWeaponDat(0, 0x0051391C, PatchDamageBonus);				  DATStruct <offset weaponsdat_dmgBonus, 2, 130> ; 12
+patchWeaponDat(0, 0x00513928, PatchCooldown);					  DATStruct <offset gnWeapCooldown, 1, 130> ; 2
+patchWeaponDat(0, 0x00513934, PatchDamageFactor);				  DATStruct <offset weaponsdat_dmgFactor, 1, 130> ; 7
+patchWeaponDat(0, 0x00513940, PatchAttackAngle);				  DATStruct <offset weaponsdat_AttackAngle, 1, 130> ; 4
+patchWeaponDat(0, 0x0051394C, PatchLaunchSpin);					  DATStruct <offset weaponsdat_LaunchSpin, 1, 130> ; 1
+patchWeaponDat(0, 0x00513958, PatchForwardOffset);				  DATStruct <offset weaponsdat_ForwardOffset, 1, 130> ; 2
+patchWeaponDat(0, 0x00513964, PatchVerticalOffset);				  DATStruct <offset weaponsdat_upwardOffset, 1, 130> ; 1
+patchWeaponDat(0, 0x00513970, PatchErrorMessage);				  DATStruct <offset weaponsdat_targetErrorStr, 2, 130> ; 1
+patchWeaponDat(0, 0x0051397C, PatchIcon);						  DATStruct <offset weaponsdat_icon, 2, 130> ; 1
 */
 
 namespace weapons_dat
@@ -170,10 +195,10 @@ namespace hooks
 		patchWeaponDat(0, 0x00513898, PatchMinRange);
 		patchWeaponDat(0, 0x005138A4, PatchMaxRange);
 		patchWeaponDat(0, 0x005138B0, PatchDamageUpgrade);
-		patchWeaponDat(0, 0x005138BC, PatchExplosionType);
+		patchWeaponDat(0, 0x005138BC, PatchDamageType);
 		patchWeaponDat(0, 0x005138C8, PatchBehavior);
 		patchWeaponDat(0, 0x005138D4, PatchRemoveAfter);
-		patchWeaponDat(0, 0x005138E0, PatchDamageType);
+		patchWeaponDat(0, 0x005138E0, PatchExplosionType);
 		patchWeaponDat(0, 0x005138EC, PatchInnerSplashRadius);
 		patchWeaponDat(0, 0x005138F8, PatchMediumSplashRadius);
 		patchWeaponDat(0, 0x00513904, PatchOuterSplashRadius);
