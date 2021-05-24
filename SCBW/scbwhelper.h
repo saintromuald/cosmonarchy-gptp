@@ -905,6 +905,18 @@ namespace helper
 	s16 CreateTooltip(char* text);																			// 004591A6
 	char refreshSelectionScreen();																			// 00481480
 
+	// lobby.cpp
+	
+	// For initGame
+	void switchAllAvailableComputerSlotsToOpen();															// 004DBBE0
+	bool setLastOpenSlotToComputer(s8 race);																// 004DBB70
+
+	// For startGame
+	s32 bootReason(u8 a1);																					// 004B8870
+	s32 isAuthedMap(void* a1);																				// 004C4870
+	void setTimerFunc();																					// 00472E00
+	s32 getTickCount();																						// 004FE0C4 // CAUSES CRASH when accessed, is it instead a variable to be defined in scbwdata?
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

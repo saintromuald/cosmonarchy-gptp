@@ -8572,4 +8572,85 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For initGame
+	void switchAllAvailableComputerSlotsToOpen()
+	{
+		const u32 Func_switchAllAvailableComputerSlotsToOpen = 0x004DBBE0;
+		__asm
+		{
+			PUSHAD
+			CALL Func_switchAllAvailableComputerSlotsToOpen
+			POPAD
+		}
+	}
+
+	bool setLastOpenSlotToComputer(s8 race)
+	{
+		const u32 Func_setLastOpenSlotToComputer = 0x004DBB70;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH race
+			CALL Func_setLastOpenSlotToComputer
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	// For startGame
+	s32 bootReason(u8 a1)
+	{
+		const u32 Func_bootReason = 0x004B8870;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			MOVZX AL, a1
+			CALL Func_bootReason
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 isAuthedMap(void* a1)
+	{
+		const u32 Func_isAuthedMap = 0x004C4870;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_isAuthedMap
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void setTimerFunc()
+	{
+		const u32 Func_setTimerFunc = 0x00472E00;
+		__asm {
+			PUSHAD
+			CALL Func_setTimerFunc
+			POPAD
+		}
+	}
+
+	s32 getTickCount()
+	{
+		static u32 Func_getTickCount = *(u32*)0x004FE0C4;
+		static s32 result;
+		__asm {
+			PUSHAD
+			CALL Func_getTickCount
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

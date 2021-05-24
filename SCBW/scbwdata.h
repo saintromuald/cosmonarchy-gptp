@@ -325,7 +325,7 @@ SCBW_DATA(void**, unkArray_59CB64, 0x0059CB64);	// size of 252
 SCBW_DATA(Unit*, unitReference, 0x0059CB58);
 
 // For startGame
-SCBW_DATA(s8*, gameState, 0x0066FBFA);
+SCBW_DATA(s8*, gameState, 0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
 SCBW_DATA(PLAYER*, playerReplayWatchers, 0x00640970);
 
 SCBW_DATA(s8*, countdownTimerInterval, 0x0066FBFC);
