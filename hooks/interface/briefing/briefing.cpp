@@ -6,6 +6,7 @@
 
 namespace hooks
 {
+    // Hooked in case we need it later - Pr0nogo
 	void updateMissionObjectives() // 0046CD30
 	{
         BinDlg* readyRoomVar = *readyRoomDialog;
