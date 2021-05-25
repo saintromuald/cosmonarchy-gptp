@@ -5,7 +5,6 @@
 
 namespace hooks
 {
-
 	s32 initGame() // 004EE110
 	{
 		if (*multiPlayerMode)
@@ -37,7 +36,7 @@ namespace hooks
 		return 1;
 	}
 
-	s32 startGame(void* lobbyState, s32 a2) // 00472060
+	s32 startGame(void* lobbyState, s32 playerId) // 00472060
 	{
 		lobbyState = gameState;
 		u8 bootReason = 4;
@@ -49,8 +48,8 @@ namespace hooks
 		}
 
 		// ?
-		s32 result = a2;
-		if (a2)
+		s32 result = playerId;
+		if (playerId)
 		{
 			return result;
 		}
