@@ -5275,7 +5275,8 @@ namespace helper
 	{
 		const u32 Func_hasSuppliesForUnit = 0x0042CF70;
 		static b32 bPreResult;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH canShowErrorMessage
 			PUSH unitId
@@ -8734,5 +8735,19 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	void displayErrorMessageIDWithSFX(s32 playerId, s32 messageId, s32 soundId)
+	{
+		const u32 Func_displayErrorMessageIDWithSFX = 0x0048EE30;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, soundId
+			MOV EDI, messageId
+			MOV EBX, playerId
+			CALL Func_displayErrorMessageIDWithSFX
+			POPAD
+		}
 	}
 }

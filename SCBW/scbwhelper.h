@@ -924,6 +924,9 @@ namespace helper
 	void appearOnTarget(Bullet* bullet, s16 x, s16 y);														// 004955C0
 	Bullet* attackFlyToTarget(Bullet* bullet, s32 x, s32 y);												// 00494B70
 
+	// For AI_ProgressBuild
+	void displayErrorMessageIDWithSFX(s32 playerId, s32 messageId, s32 soundId);							// 0048EE30
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

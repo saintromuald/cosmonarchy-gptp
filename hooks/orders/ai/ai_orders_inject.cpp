@@ -224,10 +224,11 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_GroupingForAttack_Wrapper()
-	{ // 0043EEC0
+	void __declspec(naked) AI_GroupingForAttack_Wrapper() // 0043EEC0
+	{
 		static AiRegion* region;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -237,7 +238,8 @@ namespace
 			PUSHAD
 		}
 		hooks::AI_GroupingForAttack(region);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -245,13 +247,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_GetMissingAttackForceUnits_Wrapper()
-	{ // 00438050
+	void __declspec(naked) AI_GetMissingAttackForceUnits_Wrapper() // 00438050
+	{
 		static u32 result;
 		static AiRegion* region;
 		static u32* unitIds;
 		static u32 isCampaign;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -265,7 +268,8 @@ namespace
 			PUSHAD
 		}
 		result = hooks::AI_GetMissingAttackForceUnits(region, unitIds, isCampaign);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV result, EAX
 			MOV ESP, EBP
@@ -274,33 +278,36 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_AddToAttack_Wrapper()
-	{ // 00447230
+	void __declspec(naked) AI_AddToAttack_Wrapper() // 00447230
+	{
 		static u32 result;
 		static u32 player;
 		static u32 unitId;
-		__asm {
+		__asm
+		{
 			MOV result, EAX
 			MOV player, ECX
 			MOV unitId, EDI
 			PUSHAD
 		}
 		hooks::AI_AddToAttack(result, player, unitId);
-		__asm {
+		__asm
+		{
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) AI_AttackManager_Wrapper()
-	{ // 0043ABB0
+	void __declspec(naked) AI_AttackManager_Wrapper() // 0043ABB0
+	{
 		static u32 result;
 		static u32 player;
 		static s32 x;
 		static s32 y;
 		static u32 alwaysOverwriteLastAttack;
 		static u32 allowFallbackAirOnly;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -318,7 +325,8 @@ namespace
 			PUSHAD
 		}
 		result = hooks::AI_AttackManager(player, x, y, alwaysOverwriteLastAttack, allowFallbackAirOnly);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -327,16 +335,18 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_HasUnitsForAttackForce_Wrapper()
-	{ // 00437F20
+	void __declspec(naked) AI_HasUnitsForAttackForce_Wrapper() // 00437F20
+	{
 		static s32 result;
 		static u32 player;
-		__asm {
+		__asm
+		{
 			MOV player, EDX
 			PUSHAD
 		}
 		result = hooks::AI_HasUnitsForAttackForce(player);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV result, EAX
 			RETN
@@ -435,6 +445,37 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_progressBuild_Wrapper() // 00434480
+	{
+		static s32 player;
+		static s32* minerals;
+		static s32* gas;
+		static AiTown* result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV minerals, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV gas, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::AI_progressBuild(player, minerals, gas);
+		__asm
+		{
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			MOV EAX, result
+			RETN 0x0C
+		}
+	}
 }
 
 namespace hooks
@@ -464,6 +505,7 @@ namespace hooks
 //		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
 		jmpPatch(AI_SendSuicide_Wrapper,					0x0043E050, 1);
 		jmpPatch(AI_RecalculateRegionStrength_Wrapper,		0x0043A390, 1);
+		jmpPatch(AI_progressBuild_Wrapper,					0x00434480, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}

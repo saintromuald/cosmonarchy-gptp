@@ -806,8 +806,8 @@ C_ASSERT(sizeof(AiTown) == 0x1cc);
 
 struct AiExpandList
 {
-	AiTown* first;
 	AiTown* last;
+	AiTown* first;
 };
 C_ASSERT(sizeof(AiExpandList) == 0x8);
 

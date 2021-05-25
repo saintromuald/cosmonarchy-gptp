@@ -26,6 +26,7 @@ namespace hooks
 	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiList);									// 00404470
 	void AI_SendSuicide(char argType, s32 player);																// 0043E050
 	u32 AI_RecalculateRegionStrength(AiRegion* region);															// 0043A390
+	AiTown* AI_progressBuild(s32 playerId, s32* minerals, s32* gas);											// 00434480
 
 	void injectAIOrdersHooks();
 }

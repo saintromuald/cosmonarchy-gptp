@@ -1560,6 +1560,7 @@ LABEL_22:
 			regionTown6 |= regionTown0 + 256;
 			helper::iterateUnitsAtLocationTargetProc((Box16*)&a1, (Unit*(__fastcall*)(Unit*, Unit*))Func_CB_AICaptainStrengthIterator, (Unit*)region);
 		}
+
 		u32 regionAirStrength = region->enemyAirStrength;
 		if (!(AIScriptController[region->playerId].AI_Flags.isUseMapSettings))
 		{
@@ -1569,6 +1570,7 @@ LABEL_22:
 		{
 			region->neededAirStrength = regionAirStrength;
 		}
+
 		u32 regionGroundStrength = region->enemyGroundStrength;
 		if (!(AIScriptController[region->playerId].AI_Flags.isUseMapSettings))
 		{
@@ -1578,6 +1580,7 @@ LABEL_22:
 		{
 			region->neededGroundStrength = regionGroundStrength;
 		}
+
 		u16 result = AIScriptController[region->playerId].AI_MaxForce;
 		if (AIScriptController[region->playerId].AI_MaxForce)
 		{
@@ -1589,6 +1592,75 @@ LABEL_22:
 			{
 				region->neededGroundStrength = result;
 			}
+		}
+		return result;
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	AiTown* AI_progressBuild(s32 playerId, s32* minerals, s32* gas) // 00434480
+	{
+		AiTown* result = AiTownManager[playerId].first;
+		AiTown* firstTown = AiTownManager[playerId].first;
+		if (result)
+		{
+			do
+			{
+				Unit* firstTownUnitVar = firstTown->firstTownUnit;
+				if (firstTown->firstTownUnit)
+				{
+					do
+					{
+						Unit* targetUnit = firstTownUnitVar->moveTarget.unit; // This was null during a crash
+						if (targetUnit == nullptr)
+						{
+							scbw::print("null unit in AI_progressBuild");
+							return result;
+						}
+						s32 buildOrderId = (u8)targetUnit->mainOrderId;
+						if (buildOrderId == OrderId::BuildTerran
+						  || buildOrderId == OrderId::BuildProtoss1
+						  || buildOrderId == OrderId::DroneLand
+						  || buildOrderId == OrderId::DroneBuild
+						  || buildOrderId == OrderId::DroneStartBuild)
+						{
+							u8* consoleVar = nullptr;
+							s32 playerIdVar = (u8)playerId;
+							u16 targetUnitQueue = targetUnit->buildQueue[(u8)targetUnit->buildQueueSlot % 5];
+							s32 targetUnitQueue2 = targetUnitQueue;
+							s32 targetQueueCostMinerals = units_dat::MineralCost[targetUnitQueue2];
+							s32 targetQueueCostGas = units_dat::GasCost[targetUnitQueue2];
+							AIMineralsReserve[playerIdVar] = targetQueueCostMinerals;
+							AIGasReserve[playerIdVar] = targetQueueCostGas;
+							if (helper::hasSuppliesForUnit(playerId, targetUnitQueue, 1))
+							{
+								if (gameMinerals[(u8)playerId] >= (s32)AIMineralsReserve[(u8)playerId])
+								{
+									if (gameGas[(u8)playerId] >= (s32)AIGasReserve[(u8)playerId])
+									{
+										*minerals -= AIMineralsReserve[playerId];
+										*gas -= AIGasReserve[playerId];
+									}
+									else
+									{
+										consoleVar = consoleIndex;
+										helper::displayErrorMessageIDWithSFX((u8)playerId, 851, *consoleVar + 150);
+									}
+								}
+								else
+								{
+									consoleVar = consoleIndex;
+									helper::displayErrorMessageIDWithSFX((u8)playerId, 850, *consoleVar + 147);
+								}
+							}
+						}
+						firstTownUnitVar = firstTownUnitVar->link.prev;
+					}
+					while (firstTownUnitVar);
+				}
+				result = firstTown->link.prev;
+				firstTown = firstTown->link.prev;
+			}
+			while (firstTown);
 		}
 		return result;
 	}
