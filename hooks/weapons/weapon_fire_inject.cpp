@@ -220,6 +220,6 @@ namespace hooks
 		jmpPatch(deleteBullet_Wrapper,				0x0048A560, 0);
 		jmpPatch(createBullet_Wrapper,				0x0048C260, 5);
 		jmpPatch(initializeBullet_Wrapper,			0x0048BEC0, 0);
-	//	jmpPatch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
+//		jmpPatch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
 	}
 }

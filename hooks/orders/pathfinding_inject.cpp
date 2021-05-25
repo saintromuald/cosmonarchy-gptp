@@ -56,6 +56,56 @@ namespace
 			RETN 0x0C
 		}
 	}
+
+	void __declspec(naked) unitHasPathToDest_Wrapper() // 0049CB60
+	{
+		static Unit* unit;
+		static s32 x;
+		static s32 y;
+		static bool result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV x, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV y, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::unitHasPathToDest(unit, x, y);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x8
+		}
+	}
+
+	void __declspec(naked) unitHasPathToUnit_Wrapper() // 0049CBB0
+	{
+		static Unit* pather;
+		static Unit* target;
+		static bool result;
+		__asm
+		{
+			MOV pather, EAX
+			MOV target, ECX
+			PUSHAD
+		}
+		result = hooks::unitHasPathToUnit(pather, target);
+		_asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -64,5 +114,7 @@ namespace hooks
 	{
 //		jmpPatch(moveToTarget_Wrapper,			0x004EB720, 0);
 //		jmpPatch(getActiveTileFlag_Wrapper,		0x00472F80, 1);
+		jmpPatch(unitHasPathToDest_Wrapper,		0x0049CB60, 1);
+		jmpPatch(unitHasPathToUnit_Wrapper,		0x0049CBB0, 0);
 	}
 }

@@ -7,7 +7,7 @@
 namespace hooks
 {
     // Hooked in case we need it later - Pr0nogo
-	void updateMissionObjectives() // 0046CD30
+	void updateMissionObjectives() // 0046CD30 | doesn't work currently due to null check late in the function
 	{
         BinDlg* readyRoomVar = *readyRoomDialog;
         if ((*readyRoomDialog)->controlType)
@@ -32,7 +32,7 @@ namespace hooks
         else
         {
 LABEL_6:
-            objectiveDlg = 0;
+            objectiveDlg = nullptr;
         }
 
         const char* objectiveText;
@@ -60,13 +60,20 @@ LABEL_6:
             objectiveText = 0;
         }
 
-        objectiveDlg->pszText = (char*)objectiveText;
-        helper::showDialog(objectiveDlg);
-        s32 objectiveDlgFlags = objectiveDlg->flags;
-        if (!(objectiveDlgFlags & 1))
+        if (objectiveDlg == nullptr)
         {
-            objectiveDlg->flags = objectiveDlgFlags | 1;
-            helper:: updateDialog(objectiveDlg);
+            return;
+        }
+        else
+        {
+            objectiveDlg->pszText = (char*)objectiveText;
+            helper::showDialog(objectiveDlg);
+            s32 objectiveDlgFlags = objectiveDlg->flags;
+            if (!(objectiveDlgFlags & 1))
+            {
+                objectiveDlg->flags = objectiveDlgFlags | 1;
+                helper::updateDialog(objectiveDlg);
+            }
         }
 	}
 }

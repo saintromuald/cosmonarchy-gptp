@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec (naked) updateMissionObjectives_Wrapper()
+	void __declspec (naked) updateMissionObjectives_Wrapper() // 0046CD30
 	{
 		__asm
 		{
@@ -22,7 +22,6 @@ namespace hooks
 {
 	void injectBriefingHooks()
 	{
-		jmpPatch(updateMissionObjectives_Wrapper, 0x0048BEC0, 0);
+//		jmpPatch(updateMissionObjectives_Wrapper, 0x0046CD30, 0);
 	}
-
 }
