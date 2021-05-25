@@ -146,6 +146,47 @@ namespace
 		}
 	}
 
+	void __declspec(naked) initializeBullet_Wrapper()
+	{
+		static char playerId;
+		static Unit* parent;
+		static s16 y;
+		static Bullet* bullet;
+		static s32 weaponId;
+		static s32 x;
+		static s32 angle;
+		static s32 result;
+
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV bullet, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV weaponId, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV x, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV angle, EAX
+			POP EAX
+			MOV playerId, CL
+			MOV parent, EAX
+			MOV y, DX
+			PUSHAD
+		}
+		result = hooks::initializeBullet(playerId, parent, y, bullet, weaponId, x, angle);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x10
+		}
+	}
+
 	/*
 	void __declspec(naked) writeBullets_Wrapper() {
 		static FILE* a1;
@@ -171,7 +212,6 @@ extern const u32 Func_FireUnitWeapon;
 
 namespace hooks
 {
-
 	void injectWeaponFireHooks()
 	{
 		jmpPatch(fireWeaponWrapper,					Func_FireUnitWeapon, 0);
@@ -180,6 +220,7 @@ namespace hooks
 		jmpPatch(findNextBounceTargetProc_Wrapper,	0x0048AFD0, 3);
 		jmpPatch(deleteBullet_Wrapper,				0x0048A560, 0);
 		jmpPatch(createBullet_Wrapper,				0x0048C260, 5);
+		jmpPatch(initializeBullet_Wrapper,			0x0048BEC0, 0);
 	//	jmpPatch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
 	}
-} //hooks
+}

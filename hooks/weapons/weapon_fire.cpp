@@ -1274,6 +1274,208 @@ LABEL_7:
 		return result;
 	}
 
+	// Hooked so we don't need aise for Bactalisks - Pr0nogo
+	s32 initializeBullet(char playerId, Unit* parent, s16 y, Bullet* bullet, s32 weaponId, s32 x, s32 angle) // 0048BEC0
+	{
+		char playerIdVar = playerId;
+		Unit* parentVar = parent;
+		if (!helper::initializeFlingy(weapons_dat::FlingyId[weaponId], y, x, (Flingy*)bullet, playerId, angle)) // Unit/Bullet/Flingy have a shared data structure, so this is presumably fine
+		{
+			return 0;
+		}
+
+		bullet->srcPlayer = playerIdVar;
+		bullet->someUnitType = 228;
+		bullet->behaviourTypeInternal = 188;
+		bullet->unknown_0x4E = 0;
+		bullet->attackTarget.unit = 0;
+		bullet->attackTarget.pt.y = 0;
+		bullet->attackTarget.pt.x = 0;
+		bullet->unknown_0x54 = 0;
+		bullet->weaponId = weaponId;
+		bullet->time_remaining = weapons_dat::RemoveAfter[weaponId];
+		char bulletMovementFlags = bullet->movementFlags | 8;
+		bullet->someUnitType = 228;
+		bullet->remainingBounces = 0;
+		bullet->hitFlags = 0;
+		bullet->movementFlags = bulletMovementFlags;
+		bullet->behaviourTypeInternal = 0;
+		bullet->attackTarget.unit = 0;
+		bullet->attackTarget.pt.y = 0;
+		bullet->attackTarget.pt.x = 0;
+		bullet->unknown_0x4E = 0;
+		helper::bulletBehaviorReassign(weaponId, bullet, (s32)parentVar);
+
+		u8 launchSpin = weapons_dat::LaunchSpin[weaponId];
+		if (launchSpin)
+		{
+			s32 launchSpinRandomVar = 0;
+			if (parentVar == *lastBulletCreator)
+			{
+				launchSpinRandomVar = launchSpinRandom == 0;
+			}
+			else
+			{
+				launchSpinRandomVar = helper::RandomizeShort(0) & 1;
+			}
+
+			*launchSpinRandom = launchSpinRandomVar;
+			launchSpinRandomVar = launchSpin;
+			if (launchSpinRandomVar == 0)
+			{
+				launchSpinRandomVar = -launchSpin;
+			}
+			char launchSpinDirection = launchSpinRandomVar + bullet->direction2;
+			bullet->direction2 = launchSpinDirection;
+			bullet->direction1 = launchSpinDirection;
+			*lastBulletCreator = parentVar;
+		}
+
+		bullet->sourceUnit = parentVar;
+		if (units_dat::BaseProperty[(u16)parentVar->id] & UnitProperty::Subunit)
+		{
+			bullet->sourceUnit = parentVar->subunit;
+		}
+		if (parentVar->id == UnitId::ProtossPlasmaShell)
+		{
+			bullet->sourceUnit = parentVar->interceptor.parent;
+		}
+		if (parentVar->status & UnitStatus::IsHallucination)
+		{
+			bullet->hitFlags |= 2u;
+		}
+		bullet->nextBounceUnit = 0;
+
+		Unit* targetUnit = parentVar->orderTarget.unit;
+		if (targetUnit)
+		{
+			bullet->sprite->elevationLevel = targetUnit->sprite->elevationLevel + 1;
+			bullet->attackTarget.unit = targetUnit;
+			bullet->attackTarget.pt.x = targetUnit->sprite->position.x;
+			bullet->attackTarget.pt.y = targetUnit->sprite->position.y;
+		}
+		else
+		{
+			bullet->sprite->elevationLevel = parentVar->sprite->elevationLevel + 1;
+			bullet->attackTarget.unit = 0;
+			bullet->attackTarget.pt.x = parentVar->orderTarget.pt.x;
+			bullet->attackTarget.pt.y = parentVar->orderTarget.pt.y;
+		}
+
+		s32 result;
+		s32 angleDistanceVar;
+		s32 finalDistanceVar;
+		switch (weapons_dat::Behavior[weaponId])
+		{
+			case WeaponBehavior::Fly_DoNotFollowTarget:
+			case WeaponBehavior::Fly_FollowTarget:
+			{
+				goto LABEL_31;
+			}
+			case WeaponBehavior::AppearOnTargetUnit:
+			case WeaponBehavior::AppearOnTargetSite:
+			{
+				if (!targetUnit)
+				{
+					goto LABEL_37;
+				}
+				Unit* sourceUnitVar3 = bullet->sourceUnit;
+				if (!sourceUnitVar3)
+				{
+					goto LABEL_37;
+				}
+				helper::weaponBehaviorCanHitTargetCheck(targetUnit, sourceUnitVar3);
+				goto LABEL_37;
+			}
+			case WeaponBehavior::PersistOnTargetSite:
+			{
+				helper::appearOnTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				return 1;
+			}
+			case WeaponBehavior::AppearOnAttacker:
+			{
+				goto LABEL_37;
+			}
+			case WeaponBehavior::AttackAndSelfDestruct:
+			{
+				Unit* sourceUnitVar0 = bullet->sourceUnit;
+				if (!sourceUnitVar0)
+				{
+					goto LABEL_37;
+				}
+				sourceUnitVar0->status |= 0x80000000;
+				Unit* sourceUnitVar1 = bullet->sourceUnit;
+				sourceUnitVar1->userActionFlags |= 4u;
+				helper::orders_SelfDestructing(sourceUnitVar1);
+				return 1;
+			}
+			case WeaponBehavior::Bounce:
+			{
+				switch (weaponId)
+				{
+					case WeaponId::BactaliskCorrosiveAcid:
+					{
+						// distance check
+//						bullet->remainingBounces = 2;
+					} break;
+					default:
+					{
+						bullet->remainingBounces = 3;
+					} break;
+				}
+LABEL_31:
+				if (targetUnit)
+				{
+					Unit* sourceUnitVar2 = bullet->sourceUnit;
+					if (sourceUnitVar2)
+					{
+						helper::weaponBehaviorCanHitTargetCheck(targetUnit, sourceUnitVar2);
+					}
+				}
+				finalDistanceVar = bullet->attackTarget.pt.y;
+				goto LABEL_36;
+			}
+			case WeaponBehavior::AttackNearbyArea:
+			{
+				s16 offset3x3 = parentVar->offsetIndex3by3;
+				s32 compileOffset3x3 = (u8)offset3x3;
+				bullet->cyclicMissileIndex = offset3x3;
+				bullet->attackTarget.pt.x -= (s16)attackCurve[compileOffset3x3].x;
+				bullet->attackTarget.pt.y -= (s16)attackCurve[compileOffset3x3].y;
+				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+
+				s16 offset3x3Plus = offset3x3 + 1;
+				if (!attackCurve[offset3x3Plus].x)
+				{
+					offset3x3Plus = 0;
+				}
+				parentVar->offsetIndex3by3 = offset3x3Plus;
+				result = 1;
+				break;
+			}
+			case WeaponBehavior::GoToMaxRange:
+			{
+				s32 bulletDirection = (u8)bullet->direction1;
+				angleDistanceVar = angleDistance[bulletDirection].y;
+				s32 maxRangeVar = (weapons_dat::MaxRange[(u8)bullet->weaponId] + 20) << 8;
+				bullet->attackTarget.pt.x = parentVar->sprite->position.x + ((u32)(maxRangeVar * angleDistance[bulletDirection].x) >> 16);
+				angleDistanceVar = parentVar->sprite->position.y + ((u32)(maxRangeVar * angleDistanceVar) >> 16);
+				bullet->attackTarget.pt.y = angleDistanceVar;
+				finalDistanceVar = (s16)angleDistanceVar;
+LABEL_36:
+				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, finalDistanceVar);
+LABEL_37:
+				result = 1;
+				break;
+			}
+			default:
+			{
+				return 0;
+			}
+		}
+		return result;
+	}
+
 	/*
 	s32 writeBullets(FILE* hFile) {
 		s32 v1; // edi

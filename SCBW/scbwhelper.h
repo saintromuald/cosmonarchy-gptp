@@ -917,6 +917,13 @@ namespace helper
 	void setTimerFunc();																					// 00472E00
 	s32 getTickCount();																						// 004FE0C4 // CAUSES CRASH when accessed, is it instead a variable to be defined in scbwdata?
 
+	// For initializeBullet
+	Flingy* initializeFlingy(s32 flingyId, s16 y, s32 x, Flingy* flingy, char player, char angle);			// 00496360
+	void bulletBehaviorReassign(s32 unused, Bullet* bullet, s32 probablyAlsoUnused);						// 0048BD50
+	s32 weaponBehaviorCanHitTargetCheck(Unit* target, Unit* attacker);										// 004765B0
+	void appearOnTarget(Bullet* bullet, s16 x, s16 y);														// 004955C0
+	Bullet* attackFlyToTarget(Bullet* bullet, s32 x, s32 y);												// 00494B70
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

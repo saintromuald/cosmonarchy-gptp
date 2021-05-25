@@ -8653,4 +8653,86 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For initializeBullet
+	Flingy* initializeFlingy(s32 flingyId, s16 y, s32 x, Flingy* flingy, char player, char angle)
+	{
+		const u32 Func_initializeFlingy = 0x00496360;
+		static Flingy* result;
+		__asm
+		{
+			PUSHAD
+			PUSH angle
+			PUSH player
+			PUSH flingy
+			MOV ECX, x
+			MOV DX, y
+			MOV EAX, flingyId
+			CALL Func_initializeFlingy
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void bulletBehaviorReassign(s32 unused, Bullet* bullet, s32 probablyAlsoUnused)
+	{
+		const u32 Func_bulletBehaviorReassign = 0x0048BD50;
+		__asm
+		{
+			PUSHAD
+			MOV EDI, probablyAlsoUnused
+			MOV ECX, bullet
+			MOV EAX, unused
+			CALL Func_bulletBehaviorReassign
+			POPAD
+		}
+	}
+
+	s32 weaponBehaviorCanHitTargetCheck(Unit* target, Unit* attacker)
+	{
+		const u32 Func_weaponBehaviorCanHitTargetCheck = 0x004765B0;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, attacker
+			MOV EAX, target
+			CALL Func_weaponBehaviorCanHitTargetCheck
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void appearOnTarget(Bullet* bullet, s16 x, s16 y)
+	{
+		const u32 Func_appearOnTarget = 0x004955C0;
+		__asm
+		{
+			PUSHAD
+			MOV CX, y
+			MOV DX, x
+			MOV EAX, bullet
+			CALL Func_appearOnTarget
+			POPAD
+		}
+	}
+
+	Bullet* attackFlyToTarget(Bullet* bullet, s32 x, s32 y)
+	{
+		const u32 Func_attackFlyToTarget = 0x00494B70;
+		static Bullet* result;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, y
+			MOV EDX, x
+			MOV EAX, bullet
+			CALL Func_attackFlyToTarget
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
