@@ -1312,7 +1312,7 @@ LABEL_7:
 			s32 launchSpinRandomVar = 0;
 			if (parentVar == *lastBulletCreator)
 			{
-				launchSpinRandomVar = launchSpinRandom == 0;
+				launchSpinRandomVar = *launchSpinRandom == 0;
 			}
 			else
 			{
@@ -1320,10 +1320,11 @@ LABEL_7:
 			}
 
 			*launchSpinRandom = launchSpinRandomVar;
+			bool isLaunchSpin = launchSpinRandomVar == 0;
 			launchSpinRandomVar = launchSpin;
-			if (launchSpinRandomVar == 0)
+			if (isLaunchSpin)
 			{
-				launchSpinRandomVar = -launchSpin;
+				launchSpinRandomVar = -(s8)launchSpin;
 			}
 			char launchSpinDirection = launchSpinRandomVar + bullet->direction2;
 			bullet->direction2 = launchSpinDirection;
