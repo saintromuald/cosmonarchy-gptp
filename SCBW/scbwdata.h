@@ -325,19 +325,19 @@ SCBW_DATA(void**, unkArray_59CB64, 0x0059CB64);	// size of 252
 SCBW_DATA(Unit*, unitReference, 0x0059CB58);
 
 // For startGame
-SCBW_DATA(s8*, gameState, 0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
-SCBW_DATA(PLAYER*, playerReplayWatchers, 0x00640970);
+SCBW_DATA(s8*, gameState,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
+SCBW_DATA(PLAYER*, playerReplayWatchers,	0x00640970);
 
-SCBW_DATA(s8*, countdownTimerInterval, 0x0066FBFC);
-SCBW_DATA(s32*, countdownTimeTickCount, 0x0059CC7C);
-SCBW_DATA(s32*, countdownTimeTickCount_0, 0x0059CC88);
-SCBW_DATA(s32*, isInGame, 0x006D5BC8);
-SCBW_DATA(s32*, countdownTimeRemaining, 0x0059CC78);
+SCBW_DATA(s8*, countdownTimerInterval,		0x0066FBFC);
+SCBW_DATA(s32*, countdownTimeTickCount,		0x0059CC7C);
+SCBW_DATA(s32*, countdownTimeTickCount_0,	0x0059CC88);
+SCBW_DATA(s32*, isInGame,					0x006D5BC8);
+SCBW_DATA(s32*, countdownTimeRemaining,		0x0059CC78);
 
 // For airSplash
-SCBW_DATA(Unit**, airSplashList, 0x0064EEE0);	// size of 1700
-SCBW_DATA(s32*, airSplashListCount, 0x0046DEB4);
-SCBW_DATA(s32*, isInGroundSplashProc, 0x0064DEB8);
+SCBW_DATA(Unit**, airSplashList,			0x0064EEE0);	// size of 1700
+SCBW_DATA(s32*, airSplashListCount,			0x0046DEB4);
+SCBW_DATA(s32*, isInGroundSplashProc,		0x0064DEB8);
 
 // For AI_AddMilitary
 SCBW_DATA(pathing**,		SAI_Paths,		0x006D5BFC);
@@ -345,36 +345,36 @@ SCBW_DATA(AiTown*,			AiArray,		0x006AA090);
 SCBW_DATA(AiExpandList*,	AiTownManager,	0x006AA050); // sizeof 0x64[0x8]
 
 // For CMDRECV_HoldPosition
-SCBW_DATA(s16*, mapHeightPixels, 0x006284B4);
-SCBW_DATA(s32*, orderType4Position, 0x006D5C20);
-SCBW_DATA(s32*, orderType4Target, 0x006D5C24);
+SCBW_DATA(s16*, mapHeightPixels,			0x006284B4);
+SCBW_DATA(s32*, orderType4Position,			0x006D5C20);
+SCBW_DATA(s32*, orderType4Target,			0x006D5C24);
 
 // For openMapFile
-SCBW_DATA(char*, mapsFolder, 0x0066FC08);
-SCBW_DATA(s32*, dword_5994DC, 0x005994DC);
+SCBW_DATA(char*, mapsFolder,				0x0066FC08);
+SCBW_DATA(s32*, dword_5994DC,				0x005994DC);
 
 // For loadMap
-SCBW_DATA(scenarioFormat*, stru_500574, 0x00500574);
-SCBW_DATA(scenarioFormat*, stru_50057C, 0x0050057C);
-SCBW_DATA(s32*, scenarioCHKSize, 0x006D0F20);
+SCBW_DATA(scenarioFormat*, stru_500574,		0x00500574);
+SCBW_DATA(scenarioFormat*, stru_50057C,		0x0050057C);
+SCBW_DATA(s32*, scenarioCHKSize,			0x006D0F20);
 
 // For gameLoop
-SCBW_DATA(s32*, visionUpdateCount, 0x0051CE98);
-SCBW_DATA(s8*, visionUpdated, 0x0051CE9C);
+SCBW_DATA(s32*, visionUpdateCount,			0x0051CE98);
+SCBW_DATA(s8*, visionUpdated,				0x0051CE9C);
 
 // X405: For displayEstablishing Shot
 SCBW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
 
 // For statsWeaponLevel / statsArmorLevel
-SCBW_DATA(s16*, unkUpgradeCount, 0x006CA940);
+SCBW_DATA(s16*, unkUpgradeCount,			0x006CA940);
 
 // For isUnitCloaked
 SCBW_DATA(Unit**,	firstInvisibleUnit,		0x0063FF5C);
-SCBW_DATA(s32*,	forceButtonRefresh,		0x0068C1B0);
-SCBW_DATA(s8*,	portraitRedraw,			0x0068AC74); // sizeof 4
-SCBW_DATA(s8*,	statusScreenRedraw,		0x0068C1F8);
-SCBW_DATA(s32*,	ctrlUnderMouse,			0x0068C1E8);
-SCBW_DATA(s32*,	ctrlUnderMouseValue,	0x0068C1EC); // void* in Neiv's list
+SCBW_DATA(s32*,	forceButtonRefresh,			0x0068C1B0);
+SCBW_DATA(s8*,	portraitRedraw,				0x0068AC74); // sizeof 4
+SCBW_DATA(s8*,	statusScreenRedraw,			0x0068C1F8);
+SCBW_DATA(s32*,	ctrlUnderMouse,				0x0068C1E8);
+SCBW_DATA(s32*,	ctrlUnderMouseValue,		0x0068C1EC); // void* in Neiv's list
 
 // For updateUnits
 SCBW_DATA(s32*,	interceptorFocusedThisFrame,		0x006957D0);
