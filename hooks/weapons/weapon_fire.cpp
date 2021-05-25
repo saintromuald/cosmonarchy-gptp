@@ -1416,8 +1416,11 @@ LABEL_7:
 				{
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						// distance check
-//						bullet->remainingBounces = 2;
+						const u32 dist = scbw::getDistanceFast(bullet->sourceUnit->getX(), bullet->sourceUnit->getY(), bullet->targetPosition.x, bullet->targetPosition.y);
+						if (dist >= 6 * 32)
+						{
+							bullet->remainingBounces = 2;
+						}
 					} break;
 					default:
 					{
