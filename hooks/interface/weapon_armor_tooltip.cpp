@@ -6,8 +6,10 @@
 #include "../weapons/weapon_cooldown.h"
 #include "../unit_stats/weapon_range.h"
 #include "../config.h"
+#define NOMINMAX
 #include <Windows.h>
 #include <Utils/captivating_claws.h>
+#include <algorithm>
 
 char buffer[256];
 
@@ -390,10 +392,20 @@ namespace hooks
 		const char* armorStr = statTxtTblNew->getString(778); // "Armor:"
 
 		const u8 baseArmor = units_dat::ArmorAmount[unit->id];
-		const u8 bonusArmor = unit->getArmorBonus();
 		const u8 unitSize = units_dat::SizeType[unit->id];
 		const char* sizeLabel = "Size:";
 		const char* sizeText = "";
+		f32 bonusArmor = unit->getArmorBonus();
+
+		bonusArmor = std::min(baseArmor - (s32)unitExt->values[ValueControlledOpposition], 0);
+		bonusArmor -= unitExt->values[ValueArmorReduce];
+		for (Unit* unit : unitExt->unitVectors[UnitVectorAttachedSource])
+		{
+			if (unit->id == UnitId::ZergSovroleth)
+			{
+				bonusArmor += 0.5;
+			}
+		}
 
 		const u8 transportSpace = units_dat::SpaceRequired[unit->id];
 		const s32 sightRange = units_dat::SightRange[unit->id];
@@ -577,13 +589,18 @@ namespace hooks
 			Unit* darkSwarm = scbw::getDarkSwarm(unit);
 			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitPoints / 256, 1, darkSwarm->removeTimer, TimerType::RemoveTimer);
 		}
+		u32 nathrokorTargetStacks = 0;
+		for (int i = 0; i < 8; i++)
+		{
+			nathrokorTargetStacks += unitExt->nathrokorTargetStacks[i];
+		}
+		addStatus(statuses, "Adrenal Mark", nathrokorTargetStacks, 0);
 
 		std::string status = formatStringVector(statuses);
 
 		// TODO Statuses
 		//	make sublime shepard show on targets not only caster
-		//	add optical flare period, mind control on target, last orders?, infested (when it's implemented)
-		//	properly track cowardice, malice timers
+		//	mind control on target, last orders
 		//	color code source player if possible
 
 		std::vector<std::string> flags;
@@ -637,7 +654,11 @@ namespace hooks
 
 		std::string text = "\004" + std::string(armorUpgradeName) + "\002";
 		text += "\n" + std::string(armorStr) + " " + std::to_string(baseArmor);
-		if (bonusArmor > 0) text += "+" + std::to_string(bonusArmor);
+		ss.str("");
+		ss << bonusArmor;
+		if (bonusArmor > 0) text += "+" + ss.str();
+		else if (bonusArmor < 0) text += ss.str();
+
 		text += "\nSize: " + std::string(sizeText);
 		text += "\nPlane: " + plane;
 		text += "\nMove Speed: " + movementSpeed;
