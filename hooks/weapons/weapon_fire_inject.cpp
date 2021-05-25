@@ -1,10 +1,9 @@
-//Injector source file for the Weapon Fire hook module.
 #include "weapon_fire.h"
 #include <hook_tools.h>
 #include <SCBW/UnitFinder.h>
+
 namespace
 {
-
 	void __declspec(naked) fireWeaponWrapper()
 	{
 

@@ -103,6 +103,7 @@
 #include "hooks/interface/mainmenu/glucustom.h"
 #include "hooks/orders/pathfinding.h"
 #include "hooks/placement.h"
+#include "hooks/interface/briefing/briefing.h"
 #include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -567,6 +568,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectGlucustomHooks();
 	hooks::injectPathfindingHooks();
 	hooks::injectPlacementHooks();
+	hooks::injectBriefingHooks();
 
 	return TRUE;
 }

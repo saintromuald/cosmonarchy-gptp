@@ -104,8 +104,8 @@ struct cv5 {
 SCBW_DATA(cv5**, tileGroup, 0x006D5EC8);
 
 /// TBL files
-SCBW_DATA(const u16*, statTxtTbl, 0x006D1238);
-SCBW_DATA(const StringTbl*, mapStringTbl, 0x005993D4);
+SCBW_DATA(const u16*,		statTxtTbl,		0x006D1238);
+SCBW_DATA(const StringTbl*, mapStringTbl,	0x005993D4);
 
 SCBW_DATA(const char*, StringEmpty, 0x00501B7D);
 
@@ -411,6 +411,10 @@ SCBW_DATA(s32*,	gameMinerals,						0x0057F0F0);
 SCBW_DATA(s32*,	gameGas,							0x0057F120);
 SCBW_DATA(s32*, AIMineralsReserve,					0x006CA51C);
 SCBW_DATA(s32*, AIGasReserve,						0x006CA4EC);
+
+// For updateBriefingRoomObjectives
+SCBW_DATA(BinDlg**, readyRoomDialog,				0x0066FF6C);
+SCBW_DATA(s32*, missionObjectivesStringIndex,		0x0058D6C4);
 
 //////////////////////////////////////////////////////////////// @}
 

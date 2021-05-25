@@ -263,6 +263,8 @@
     <ClCompile Include="hooks\economic_units.cpp" />
     <ClCompile Include="hooks\economic_units_inject.cpp" />
     <ClCompile Include="hooks\cosmonarchy_unit_ai.cpp" />
+    <ClCompile Include="hooks\interface\briefing\briefing.cpp" />
+    <ClCompile Include="hooks\interface\briefing\briefing_inject.cpp" />
     <ClCompile Include="hooks\interface\extender\selection_extender.cpp" />
     <ClCompile Include="hooks\interface\extender\selection_extender_inject.cpp" />
     <ClCompile Include="hooks\interface\hpbars\hpbars.cpp" />
@@ -560,6 +562,7 @@
     <ClInclude Include="hooks\game\file_operations.h" />
     <ClInclude Include="hooks\cosmonarchy_finder.h" />
     <ClInclude Include="hooks\cosmonarchy_unit_ai.h" />
+    <ClInclude Include="hooks\interface\briefing\briefing.h" />
     <ClInclude Include="hooks\interface\hpbars\hpbars.h" />
     <ClInclude Include="hooks\interface\mainmenu\lobby.h" />
     <ClInclude Include="hooks\interface\uifeatures\screen_hotkeys.h" />

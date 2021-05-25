@@ -495,77 +495,77 @@ struct UnitFinderData
 C_ASSERT(sizeof(UnitFinderData) == 8);
 //static_assert(sizeof(UnitFinderData) == 8, "The size of the UnitFinderData structure is invalid");
 
-//BinDlg is defined in https://code.google.com/p/vgce/source/browse/trunk/docs/Blizzard/Starcraft/BIN%20FORMAT.txt
-//as Dialog Structure
-//That structure is variable depending on the content
+// BinDlg is defined in https://code.google.com/p/vgce/source/browse/trunk/docs/Blizzard/Starcraft/BIN%20FORMAT.txt
+// as Dialog Structure
+// That structure is variable depending on the content
 
 struct BinDlg
 {
 	/*0x00*/  BinDlg*	next;
-	/*0x04*/  Bounds	bounds;			//0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
-	/*0x10*/  u8*	buffer;
+	/*0x04*/  Bounds	bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
+	/*0x10*/  u8*		buffer;
 	/*0x14*/  char*		pszText;
-	/*0x18*/  u32    flags;			//use BinDlgFlags::Enum
-	/*0x1C*/  u32    unk_1c;
-	/*0x20*/  u16    index;
-	/*0x22*/  u16    controlType;	//use DialogControlTypes::Enum
-	/*0x24*/  u16    graphic;
+	/*0x18*/  u32		flags;			// use BinDlgFlags::Enum
+	/*0x1C*/  u32		unk_1c;
+	/*0x20*/  u16		index;
+	/*0x22*/  u16		controlType;	// use DialogControlTypes::Enum
+	/*0x24*/  u16		graphic;
 
 	union
 	{
-		/*0x26*/  u32* user;
-		/*0x26*/  Unit* unitUser;
-		/*0x26*/  BinDlg* dlgUser;
-		/*0x26*/  BUTTON* buttonUser;
-		StatusScreenState* statButtonUser;//iquare
-		/*0x26*/  u32     nonUserValue;
+		/*0x26*/  u32*		user;
+		/*0x26*/  Unit*		unitUser;
+		/*0x26*/  BinDlg*	dlgUser;
+		/*0x26*/  BUTTON*	buttonUser;
+		StatusScreenState*	statButtonUser; // from iquare
+		/*0x26*/  u32		nonUserValue;
 	};
 
-	/*0x2A*/  void* fxnInteract;
-	/*0x2E*/  void* fxnUpdate;
-	/*0x32*/  BinDlg* parent;
+	/*0x2A*/  void*			fxnInteract;
+	/*0x2E*/  void*			fxnUpdate;
+	/*0x32*/  BinDlg*		parent;
 
 	union {
 		struct
 		{
-			/*0x36*/  Box16   responseArea;
-			/*0x3E*/  BinDlg* unk_3e;
-		}initialVersion0x36;
+			/*0x36*/  Box16		responseArea;
+			/*0x3E*/  BinDlg*	unk_3e;
+		} initialVersion0x36;
 		struct
 		{
-			/*0x36*/  s16     responseAreaWidth;		//guess
-			/*0x38*/  s16     responseAreaHeight;		//guess
-			/*0x3A*/  u32* responseAreaBitArray;	//set with a memory allocation function, bit array is a guess
-			/*0x3E*/  u32* unk3e;					//unverified filler
-		}onInitDialog0x36;
+			/*0x36*/  s16		responseAreaWidth;		// guess
+			/*0x38*/  s16		responseAreaHeight;		// guess
+			/*0x3A*/  u32*		responseAreaBitArray;	// set with a memory allocation function, bit array is a guess
+			/*0x3E*/  u32*		unk3e;					// unverified filler
+		} onInitDialog0x36;
 		struct
 		{
-			/*0x36*/  void* unkFunc36;				//should be a function
-			/*0x3A*/  u16     scrollMinValue;			//guess to be confirmed if used
-			/*0x3C*/  u16     scrollMaxValue;			//guess to be confirmed if used
-			/*0x3E*/  u16     scrollCurrentValue;		//guess to be confirmed if used
-			/*0x40*/  u16     unk40;					//unverified filler
-		}scrollDialog0x36;							//probably for scrollbar involving dialogs?
+			/*0x36*/  void*		unkFunc36;				// should be a function
+			/*0x3A*/  u16		scrollMinValue;			// guess to be confirmed if used
+			/*0x3C*/  u16		scrollMaxValue;			// guess to be confirmed if used
+			/*0x3E*/  u16		scrollCurrentValue;		// guess to be confirmed if used
+			/*0x40*/  u16		unk40;					// unverified filler
+		} scrollDialog0x36;								// probably for scrollbar involving dialogs?
 		struct
 		{
-			/*0x36*/  BinDlg* unkDlg36;
-			/*0x3A*/  u32     unk3a;					//unverified filler
-			/*0x3E*/  u32     unk3e;					//unverified filler
-		}dialogOn0x36;								//for when 0x36 is clearly BinDlg* but the rest is unknown
+			/*0x36*/  BinDlg*	unkDlg36;
+			/*0x3A*/  u32		unk3a;					// unverified filler
+			/*0x3E*/  u32		unk3e;					// unverified filler
+		} dialogOn0x36;									// for when 0x36 is clearly BinDlg* but the rest is unknown
 		struct
 		{
-			/*0x36*/  b32  unkBool32_36;				//based on the value only being compared to 0
-			/*0x3A*/  u32     unk3a;					//unverified filler
-			/*0x3E*/  u32     unk3e;					//unverified filler
-		}checkBox0x36;								//not completely sure
+			/*0x36*/  b32		unkBool32_36;			// based on the value only being compared to 0
+			/*0x3A*/  u32		unk3a;					// unverified filler
+			/*0x3E*/  u32		unk3e;					// unverified filler
+		} checkBox0x36;									// not completely sure
 		struct
 		{
-			/*0x36*/  u8      unkFlags36;				//"flag" because of possible unkFlags36 |= 1
-			/*0x37*/  unk_t     unk37[3];					//unverified filler
-			/*0x3A*/  u8** unk3aArrayCharPtr;		//seen in a different context so may be wrong and belong to another category
-			/*0x3E*/  u8      pszTextLen;				//should be the length of pszText
-			/*0x3F*/  unk_t     unk3f[3];					//unverified filler
-		}textDialog0x36;							//seems to apply to some text related dialogs
+			/*0x36*/  u8		unkFlags36;				// "flag" because of possible unkFlags36 |= 1
+			/*0x37*/  unk_t     unk37[3];				// unverified filler
+			/*0x3A*/  u8**		unk3aArrayCharPtr;		// seen in a different context so may be wrong and belong to another category
+			/*0x3E*/  u8		pszTextLen;				// should be the length of pszText
+			/*0x3F*/  unk_t     unk3f[3];				// unverified filler
+		} textDialog0x36;								// seems to apply to some text related dialogs
 	};
 
 	union {
@@ -576,30 +576,30 @@ struct BinDlg
 	union {
 		struct
 		{
-			/*0x46*/  Point16 textPos;
-			/*0x4A*/  u16     responseAreaWidth;
-			/*0x4C*/  u16     responseAreaHeight;
+			/*0x46*/  Point16	textPos;
+			/*0x4A*/  u16		responseAreaWidth;
+			/*0x4C*/  u16		responseAreaHeight;
 			/*0x4E*/  unk_t     unk_4e[8];
-		}initialVersion0x46;
+		} initialVersion0x46;
 		struct
 		{
-			/*0x46*/  Point16 textPos;					//unverified filler
-			/*0x4A*/  u32     unk4a;
-			/*0x4E*/  unk_t     unk_4e[8];				//unverified filler
-		}onInitDialog0x46;
+			/*0x46*/  Point16	textPos;				// unverified filler
+			/*0x4A*/  u32		unk4a;
+			/*0x4E*/  unk_t     unk_4e[8];				// unverified filler
+		} onInitDialog0x46;
 		struct
 		{
-			/*0x46*/  u8	  unk46;
-			/*0x47*/  u8      unk47;					//unverified filler
-			/*0x48*/  u8      unk48;
-			/*0x49*/  u8      unk49;
-			/*0x4A*/  u8      unk4a;
-			/*0x4B*/  u8      unk4b;
-			/*0x4C*/  b8   unk4c;
-			/*0x4D*/  u8      unk4d;
-			/*0x4E*/  u8      unk4e;
-			/*0x4F*/  unk_t     unk_4f[7];				//unverified filler
-		}alternateVersion0x46;
+			/*0x46*/  u8		unk46;
+			/*0x47*/  u8		unk47;					// unverified filler
+			/*0x48*/  u8		unk48;
+			/*0x49*/  u8		unk49;
+			/*0x4A*/  u8		unk4a;
+			/*0x4B*/  u8		unk4b;
+			/*0x4C*/  b8		unk4c;
+			/*0x4D*/  u8		unk4d;
+			/*0x4E*/  u8		unk4e;
+			/*0x4F*/  unk_t     unk_4f[7];				// unverified filler
+		} alternateVersion0x46;
 	};
 
 };
