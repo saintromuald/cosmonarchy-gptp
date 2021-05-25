@@ -402,7 +402,7 @@ const u32 toggle_values[] = {RustId::ToggleReverseThrust, RustId::ToggleSublimeS
 const u32 toggle_abilities[] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange};
 const u32 generictoggles = 4;
 
-namespace HydraFlags1
+namespace CosmonarchyFlags1
 {
 	enum
 	{
@@ -502,14 +502,14 @@ struct UnitLayout
 												// BW shows this value/256
 
 	/*0x064*/ u16       id;						// Unit ID in units.dat
-	/*0x066*/ u8		_unknown_0x066;			// HYDRA - mineral regen cooldown
-			  u8		_unknown_0x067;			// HYDRA - warp relay warp in
+	/*0x066*/ u8		_unknown_0x066;			// Cosmonarchy - mineral regen cooldown
+			  u8		_unknown_0x067;			// Cosmonarchy - warp relay warp in
 	/*0x068*/ Link<Unit> player_link;
 	/*0x070*/ Unit*	subunit;
 	/*0x074*/ Order*	orderQueueHead;
 	/*0x078*/ Order*	orderQueueTail;
-	/*0x07C*/ Unit*	autoTargetUnit;			//The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
-	/*0x080*/ Unit*	connectedUnit;			// larva store a reference to the structure who created it
+	/*0x07C*/ Unit*	autoTargetUnit;				// The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
+	/*0x080*/ Unit*	connectedUnit;				// larva store a reference to the structure who created it
 												// units inside transports store a reference to the transport
 												// addons store a reference to its parent building (but not the other way around)
 	/*0x084*/ u8        orderQueueCount;
@@ -519,7 +519,7 @@ struct UnitLayout
 	/*0x088*/ u16       previousUnitType;		// Also used by zerg buildings while morphing
 	/*0x08A*/ u8        lastEventTimer;			// Countdown that stops being recent when it hits 0
 	/*0x08B*/ u8        lastEventColor;			// 17 = was completed (train, morph), 174 = was attacked
-	/*0x08C*/ u16       _unknown_0x08C;			// HYDRA
+	/*0x08C*/ u16       _unknown_0x08C;			// Cosmonarchy
 												// 0x1 - Hierophant Detect Add Maelstrom Overlay
 												// 0x2 - Hierophant Detect Remove Maelstrom Overlay
 
@@ -665,11 +665,11 @@ struct UnitLayout
 	/*0x122*/ u8        cycleCounter;				// counts/cycles up from 0 to 7 (inclusive). See also 0x85.
 	/*0x123*/ u8        isBlind;					// is bool in BWAPI
 	/*0x124*/ u8        maelstromTimer;
-	/*0x125*/ u8        unusedTimer;				// Used on resources for regeneration delay - HYDRA
+	/*0x125*/ u8        unusedTimer;				// Used on resources for regeneration delay - Cosmonarchy
 	/*0x126*/ u8        corrosiveSporeCountUnused;  // replaced with generic_value
 	/*0x127*/ u8        corrosiveSporeTimeUnused[9];// replaced with generic_timer
 	/*0x130*/ u16       offsetIndex3by3;			// Cycles between 0-12 for each bullet fired by this unit (if it uses a "Attack 3x3 area" weapon)
-	/*0x132*/ u8		_padding_0x132;				// HYDRA - different flags
+	/*0x132*/ u8		_padding_0x132;				// Cosmonarchy - different flags
 													// 0x1 - burrowed basilisk flag
 													// 0x2 - vorvaling proc flag
 													// 0x4 - vorvaling egg flag (unused?)
