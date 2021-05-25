@@ -28,6 +28,8 @@ namespace hooks
 	u32 AI_RecalculateRegionStrength(AiRegion* region);															// 0043A390
 	AiTown* AI_progressBuild(s32 playerId, s32* minerals, s32* gas);											// 00434480
 	Unit* getClosestEnemyStructure(s32 x, s32 y, s32 playerId);													// 004A0F90
+	s32 AIManageBuildingPlacement(Unit* builder, u32 unitId,													// 004465C0
+		Point16 tryPosition, Point16* outPosition, s32 areaTiles);
 
 	void injectAIOrdersHooks();
 }

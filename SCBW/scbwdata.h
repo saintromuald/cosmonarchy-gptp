@@ -416,6 +416,10 @@ SCBW_DATA(s32*, AIGasReserve,						0x006CA4EC);
 SCBW_DATA(BinDlg**, readyRoomDialog,				0x0066FF6C);
 SCBW_DATA(s32*, missionObjectivesStringIndex,		0x0058D6C4);
 
+// For AIManageBuildingPlacement
+SCBW_DATA(Unit**, disabledUnitArray,				0x00692660);
+SCBW_DATA(Unit**, AIBuilderUnknown,					0x006D5DCC);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

@@ -8750,4 +8750,84 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For AIManageBuildingPlacement
+	s32 getBunkerPlacementPosition(s32 placementId, s32* regionId)
+	{
+		const u32 Func_getBunkerPlacementPosition = 0x004442E0;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH regionId
+			PUSH placementId
+			CALL Func_getBunkerPlacementPosition
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* getDisabledUnitInRange(s32 playerId, Point16 position)
+	{
+		const u32 Func_getDisabledUnitInRange = 0x00440420;
+		static Unit* result;
+		__asm
+		{
+			PUSHAD
+			PUSH position
+			PUSH playerId
+			CALL Func_getDisabledUnitInRange
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void AIGetBuildLocation(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition, s32 maxRange)
+	{
+		const u32 Func_AIGetBuildLocation = 0x004461B0;
+		__asm
+		{
+			PUSHAD
+			PUSH maxRange
+			PUSH tryPosition
+			PUSH playerId
+			MOV ESI, placementData
+			MOV EBX, unitId
+			CALL Func_AIGetBuildLocation
+			POPAD
+		}
+	}
+
+	void AIPlacementDataSomething(s8* placementData, Point16 tryPosition)
+	{
+		const u32 Func_AIPlacementDataSomething = 0x00443510;
+		__asm
+		{
+			PUSHAD
+			PUSH tryPosition
+			MOV EBX, placementData
+			CALL Func_AIPlacementDataSomething
+			POPAD
+		}
+	}
+
+	u32 getTileDistance(s32 x, s32 y, s32 x2, s32 y2)
+	{
+		const u32 Func_getTileDistance = 0x00444100;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH y2
+			PUSH x2
+			PUSH y
+			PUSH x
+			CALL Func_getTileDistance
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

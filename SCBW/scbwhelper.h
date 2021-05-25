@@ -927,6 +927,13 @@ namespace helper
 	// For AI_ProgressBuild
 	void displayErrorMessageIDWithSFX(s32 playerId, s32 messageId, s32 soundId);							// 0048EE30
 
+	// For AIManageBuildingPlacement
+	s32 getBunkerPlacementPosition(s32 placementId, s32* regionId);											// 004442E0
+	Unit* getDisabledUnitInRange(s32 playerId, Point16 position);											// 00440420
+	void AIGetBuildLocation(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition, s32 maxRange); // 004461B0
+	void AIPlacementDataSomething(s8* placementData, Point16 tryPosition);									// 00443510
+	u32 getTileDistance(s32 x, s32 y, s32 x2, s32 y2);														// 00444100
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

@@ -505,6 +505,42 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) AIManageBuildingPlacement_Wrapper() // 004465C0
+	{
+		static Unit* builder;
+		static u32 unitId;
+		static Point16 tryPosition;
+		static Point16* outPosition;
+		static s32 areaTiles;
+		static s32 result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV unitId, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV tryPosition, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV outPosition, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV areaTiles, EAX
+			POP EAX
+			MOV builder, ECX
+			PUSHAD
+		}
+		result == hooks::AIManageBuildingPlacement(builder, unitId, tryPosition, outPosition, areaTiles);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x10
+		}
+	}
 }
 
 namespace hooks
@@ -536,6 +572,7 @@ namespace hooks
 		jmpPatch(AI_RecalculateRegionStrength_Wrapper,		0x0043A390, 1);
 		jmpPatch(AI_progressBuild_Wrapper,					0x00434480, 1);
 		jmpPatch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
+//		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}
