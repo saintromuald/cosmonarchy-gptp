@@ -87,6 +87,10 @@ namespace hooks
     // Hooked to investigate crashes - Pr0nogo
     bool unitHasPathToDest(Unit* unit, s32 x, s32 y) // 0049CB60
     {
+        if (!unit->sprite)
+        {
+            return;
+        }
         pathing* paths = *SAI_Paths;
         s32 regionId = helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y) << 6;
         return paths->regions[helper::SAI_GetRegionIdFromPxEx(x, y)].groupIndex == *(s16*)((char*)&paths->regions[0].groupIndex + regionId);
@@ -95,6 +99,10 @@ namespace hooks
     // Hooked to investigate crashes - Pr0nogo
     bool unitHasPathToUnit(Unit* pather, Unit* target) // 0049CBB0
     {
+        if (!pather->sprite)
+        {
+            return;
+        }
         Sprite* patherSprite = pather->sprite;
         pathing* paths = *SAI_Paths;
         s32 regionId = helper::SAI_GetRegionIdFromPxEx(target->sprite->position.x, target->sprite->position.y) << 6;
