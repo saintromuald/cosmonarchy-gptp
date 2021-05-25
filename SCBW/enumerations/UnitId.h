@@ -269,7 +269,6 @@ namespace UnitId
 	// Unused
 	//	TerranPhysicsLab								= 118,		// Physics Lab | Currently cannot set dat requirements because of firegraft being a good program
 	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
-	//	ZergGorgrokApiary								= 148,		// Overmind
 	//	ZergSkithrokScab								= 150,		// Mature Chrysalis
 	//	ZergAlmakAntre									= 179,		// Cave
 	//	ZergLakizDen									= 191,		// Zerg Marker
@@ -320,6 +319,7 @@ namespace UnitId
 		TerranAzazel									= 98,		// Raszagal Corsair
 		TerranOlympian									= 137,		// Greater Spire
 		TerranAutocrat									= 145,		// Unused Zerg 1
+		TerranStriga									= 148,		// Overmind
 		TerranSiren										= 151,		// Cerebrate
 		TerranPaladin									= 186,		// Ruins
 		TerranSavant									= 187,		// Kyadarin Crystal Formation

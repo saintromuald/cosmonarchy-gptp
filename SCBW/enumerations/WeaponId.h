@@ -179,6 +179,7 @@ namespace WeaponId {
 		WyvernJacksonCannon = 125,				// Wyvern weapon
 		PaladinSkyfall = 126,					// Paladin ability targeting
 		IonCannon = 129,						// Ion Cannon weapon
+		StrigaPhaseSaber = 130,					// Striga weapon
 
 		// Protoss \\
 				
