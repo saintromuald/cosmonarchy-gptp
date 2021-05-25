@@ -283,7 +283,7 @@ namespace hooks
 		// 0048B5C0  |.  0FB7144D 8077>MOVZX EDX,WORD PTR DS:[ECX*2+657780]
 		// 0048B828  |>  0FB7044D 8077>MOVZX EAX,WORD PTR DS:[ECX*2+657780]     ;  Case 18 of switch 0048B785
 		// 0048B8CC  |.  0FB70445 8077>MOVZX EAX,WORD PTR DS:[EAX*2+657780]
-		patchWeaponDat(3, 0x0048B828, PatchOuterSplashRadius);
+		patchWeaponDat(3, 0x0048B181, PatchOuterSplashRadius);
 		patchWeaponDat(4, 0x0048B5C0, PatchOuterSplashRadius);
 		patchWeaponDat(4, 0x0048B828, PatchOuterSplashRadius);
 		patchWeaponDat(4, 0x0048B8CC, PatchOuterSplashRadius);
