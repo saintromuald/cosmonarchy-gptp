@@ -1265,6 +1265,7 @@ namespace hooks
 			}
 			else
 			{
+				unit->visibilityStatus = 0xff;
 				helper::updateVisibility(unit); // didact cloak needs special handling
 			}
 			unitExt->timers[TimerDecloak] = 0;
