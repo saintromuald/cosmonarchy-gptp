@@ -1827,6 +1827,10 @@ LABEL_22:
 			{
 				unitId = UnitId::TerranCaptaincy;
 			} break;
+			case UnitId::TerranFutureStation:
+			{
+				unitId = UnitId::TerranScrapyard;
+			} break;
 			// Misc special rules
 			case UnitId::TerranBunker:
 			{
