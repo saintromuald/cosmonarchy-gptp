@@ -1320,9 +1320,9 @@ LABEL_7:
 			}
 
 			*launchSpinRandom = launchSpinRandomVar;
-			bool isLaunchSpin = launchSpinRandomVar == 0;
+			bool invertSpin = launchSpinRandomVar == 0;
 			launchSpinRandomVar = launchSpin;
-			if (isLaunchSpin)
+			if (invertSpin)
 			{
 				launchSpinRandomVar = -(s8)launchSpin;
 			}
