@@ -402,6 +402,11 @@ SCBW_DATA(s8*, buildingPlacementState,				0x006408F8);
 // For progressUnitFrame
 SCBW_DATA(s8*, selectionCircleColor,				0x00581D6A);
 
+// For initializeBulet
+SCBW_DATA(Unit**, lastBulletCreator,				0x0064DEB0);
+SCBW_DATA(s32*, launchSpinRandom,					0x0064DEC0);
+SCBW_DATA(Point16*, attackCurve,					0x00513650);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data
