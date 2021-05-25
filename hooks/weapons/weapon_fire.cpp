@@ -1223,7 +1223,7 @@ LABEL_7:
 		{
 			return 0;
 		}
-		if (!helper::initializeBullet(playerId, parent, y, *firstFreeBullet, weaponId, x, angle))
+		if (!hooks::initializeBullet(playerId, parent, y, *firstFreeBullet, weaponId, x, angle))
 		{
 			return 0;
 		}
