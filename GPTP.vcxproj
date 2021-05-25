@@ -288,6 +288,7 @@
     <ClCompile Include="hooks\limits\misc_extenders_inject.cpp" />
     <ClCompile Include="hooks\limits\sfx_extender_inject.cpp" />
     <ClCompile Include="hooks\limits\tbl_extender.cpp" />
+    <ClCompile Include="hooks\limits\weapon_extender.cpp" />
     <ClCompile Include="hooks\maxhp.cpp" />
     <ClCompile Include="hooks\maxhp_inject.cpp" />
     <ClCompile Include="hooks\misc\cosmonarchy_specific.cpp" />
@@ -570,6 +571,7 @@
     <ClInclude Include="hooks\limits\attack_extender.h" />
     <ClInclude Include="hooks\limits\fake_unitid_extender.h" />
     <ClInclude Include="hooks\limits\misc_extenders.h" />
+    <ClInclude Include="hooks\limits\weapon_extender.h" />
     <ClInclude Include="hooks\neutral_related.h" />
     <ClInclude Include="hooks\orders\building_making\building_helper.h" />
     <ClInclude Include="hooks\orders\pathfinding.h" />

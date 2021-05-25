@@ -103,6 +103,7 @@
 #include "hooks/interface/mainmenu/glucustom.h"
 #include "hooks/orders/pathfinding.h"
 #include "hooks/placement.h"
+#include "hooks/limits/weapon_extender.h"
 #include "hooks/interface/briefing/briefing.h"
 #include "AI/spellcasting.h"
 
@@ -251,6 +252,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	injectGlobalsHooks();
 	hooks::injectCosmonarchySpecific();
 	hooks::injectLimitHooks();
+	hooks::injectWeaponExtender();
 	hooks::injectTargetRelatedHooks();
 //	hooks::unitsDatWrapperPatches();
 

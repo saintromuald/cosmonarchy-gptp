@@ -515,7 +515,7 @@ namespace sfx_dat {
 	SCBW_DATA(u32*, SoundPtr, sfxDat[4].address);
 }*/
 
-
+/*
 namespace weapons_dat {
 	SCBW_DATA(const DatLoad*, weaponsDat, 0x00513868);
 
@@ -544,6 +544,36 @@ namespace weapons_dat {
 	SCBW_DATA(u16*, ErrorMessage, weaponsDat[22].address); // 00656568 //Target Error Message according to EUDDB
 	SCBW_DATA(u16*, Icon, weaponsDat[23].address); // 00656780 //Icon according to EUDDB
 } //weapons_dat (last entry at 0x0051397C)
+*/
+
+#define MAX_WEAPONS 256
+namespace weapons_dat
+{
+	extern	u16			Label[MAX_WEAPONS];			
+	extern	u32			FlingyId[MAX_WEAPONS];			
+	extern	u8			SpecialAttack[MAX_WEAPONS];	
+	extern	TargetFlag	TargetFlags[MAX_WEAPONS];		
+	extern	u32			MinRange[MAX_WEAPONS];			
+	extern	u32			MaxRange[MAX_WEAPONS];			
+	extern	u8			DamageUpgrade[MAX_WEAPONS];		
+	extern	u8			DamageType[MAX_WEAPONS];			
+	extern	u8			Behavior[MAX_WEAPONS];			
+	extern	u8			RemoveAfter[MAX_WEAPONS];		
+	extern	u8			ExplosionType[MAX_WEAPONS];		
+	extern	u16			InnerSplashRadius[MAX_WEAPONS];	
+	extern	u16			MediumSplashRadius[MAX_WEAPONS]; 
+	extern	u16			OuterSplashRadius[MAX_WEAPONS];	
+	extern	u16			DamageAmount[MAX_WEAPONS];		
+	extern	u16			DamageBonus[MAX_WEAPONS];		
+	extern	u8			Cooldown[MAX_WEAPONS];			
+	extern	u8			DamageFactor[MAX_WEAPONS];		
+	extern	u8			AttackAngle[MAX_WEAPONS];		
+	extern	u8			LaunchSpin[MAX_WEAPONS];			
+	extern	u8			ForwardOffset[MAX_WEAPONS];		
+	extern	u8			VerticalOffset[MAX_WEAPONS];		
+	extern	u16			ErrorMessage[MAX_WEAPONS];		
+	extern	u16			Icon[MAX_WEAPONS];
+}
 
 namespace upgrades_dat {
 	SCBW_DATA(const DatLoad*, upgradesDat, 0x005136E0);
