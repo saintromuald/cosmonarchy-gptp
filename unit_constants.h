@@ -124,7 +124,7 @@ const f64 QuazaliskPassiveFactor = 0.1;
 
 // Nathrokor
 const s32 NathrokorAdrenalFrenzyTimer = 2 * 24 + 1;
-const f64 NathrokorAdrenalFrenzySpeedFactor = 0.005;
+const f64 NathrokorAdrenalFrenzySpeedFactor = 0.01;
 
 // Vorvrokor
 const s32 VorvrokorCaptivatingClawsTimer = 24 + 1;
