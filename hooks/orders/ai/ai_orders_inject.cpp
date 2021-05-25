@@ -476,6 +476,35 @@ namespace
 			RETN 0x0C
 		}
 	}
+
+	void __declspec(naked) getClosestEnemyStructure_Wrapper() // 004A0F90
+	{
+		static s32 x;
+		static s32 y;
+		static s32 playerId;
+		static Unit* result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV playerId, EAX
+			POP EAX
+			MOV y, ECX
+			MOV x, EAX
+			PUSHAD
+		}
+		result = hooks::getClosestEnemyStructure(x, y, playerId);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 }
 
 namespace hooks
@@ -506,6 +535,7 @@ namespace hooks
 		jmpPatch(AI_SendSuicide_Wrapper,					0x0043E050, 1);
 		jmpPatch(AI_RecalculateRegionStrength_Wrapper,		0x0043A390, 1);
 		jmpPatch(AI_progressBuild_Wrapper,					0x00434480, 1);
+		jmpPatch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}

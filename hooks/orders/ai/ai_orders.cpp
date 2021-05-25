@@ -1664,4 +1664,53 @@ LABEL_22:
 		}
 		return result;
 	}
+
+	// Hooked to change functionality later - Pr0nogo
+	Unit* getClosestEnemyStructure(s32 x, s32 y, s32 playerId) // 004A0F90
+	{
+		s16 regionId = helper::SAI_GetRegionIdFromPxEx(x, y);
+		Unit* firstUnit = *firstVisibleUnit;
+		s32 regionOffset = regionId << 6;
+		s32 regionCenterX = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterX + regionOffset);
+		s32 regionCenterY = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterY + regionOffset);
+
+		Unit* result = nullptr;
+		if (firstVisibleUnit)
+		{
+			// initialize vars used in loop
+			Sprite* firstSprite;
+			u32 fastDistance = 0;
+			u32 maxDistance = 99999999;
+			firstSprite = firstUnit->sprite;
+			Unit* foundUnit = nullptr;
+			u8 firstUnitPlayer;
+			do
+			{
+				if (firstSprite)
+				{
+					if (firstUnit->mainOrderId)
+					{
+						if (firstUnit->status & UnitStatus::GroundedBuilding)
+						{
+							firstUnitPlayer = firstUnit->playerId;
+							if (firstUnitPlayer == 11)
+								firstUnitPlayer = firstSprite->playerId;
+							if (!scbw::isAlliedTo(playerId, firstUnitPlayer))
+							{
+								fastDistance = helper::getDistanceFast(regionCenterX >> 8, firstUnit->sprite->position.x, regionCenterY >> 8, firstUnit->sprite->position.y);
+								if (fastDistance < maxDistance)
+								{
+									maxDistance = fastDistance;
+									foundUnit = firstUnit;
+								}
+							}
+						}
+					}
+				}
+				firstUnit = firstUnit->link.next;
+			} while (firstUnit);
+			result = foundUnit;
+		}
+		return result;
+	}
 }
