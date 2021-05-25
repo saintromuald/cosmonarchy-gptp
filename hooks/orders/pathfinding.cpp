@@ -89,7 +89,7 @@ namespace hooks
     {
         if (!unit->sprite)
         {
-            return;
+            return false;
         }
         pathing* paths = *SAI_Paths;
         s32 regionId = helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y) << 6;
@@ -101,7 +101,7 @@ namespace hooks
     {
         if (!pather->sprite)
         {
-            return;
+            return false;
         }
         Sprite* patherSprite = pather->sprite;
         pathing* paths = *SAI_Paths;
