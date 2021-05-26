@@ -3,6 +3,7 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 #include <windows.h>
+#include <globals.h>
 
 namespace hooks
 {
@@ -423,5 +424,229 @@ LABEL_55:
         {
             helper::unitStatAct_Standard(dialog);
         }
+    }
+
+    void incrementUnitScores(Unit* unit, s32 count) // 00488BF0
+    {
+        GroupFlag groupFlag;
+        u8 supply;
+        int queueUnit;
+
+        if (unit->status & UnitStatus::IsHallucination)
+        {
+            return;
+        }
+        if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit)
+        {
+            return;
+        }
+        allUnitCountTable[unit->id].player[unit->playerId] += count;
+        groupFlag = units_dat::GroupFlags[(u16)unit->id];
+        
+        if (unit->getRace() == RaceId::Zerg)
+        {
+            // zerg special handling
+            if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon && unit->id != UnitId::ZergLurkerEgg)
+            {
+                supply = units_dat::SupplyRequired[unit->id];
+                if (!(units_dat::BaseProperty[unit->id] & 0x400) || unit->status & 1)
+                {
+                    raceSupply[RaceId::Terran].used[unit->playerId] += count * supply;
+                }
+                else
+                {
+                    supply *= 2;
+                    raceSupply[RaceId::Terran].used[unit->playerId] += count * supply;
+                }
+            }
+            else
+            {
+                queueUnit = unit->buildQueue[unit->buildQueueSlot];
+                supply = units_dat::SupplyRequired[queueUnit];
+                if (units_dat::BaseProperty[queueUnit] & UnitProperty::TwoUnitsIn1Egg)
+                {
+                    supply *= 2;
+                }
+
+                raceSupply[RaceId::Terran].used[unit->playerId] += count * supply;
+            }
+        }
+        else
+        {
+            raceSupply[RaceId::Terran].used[unit->playerId] += count * units_dat::SupplyRequired[unit->id];
+        }
+
+        if (groupFlag.isFactory)
+        {
+            factoriesProduced[4 * unit->playerId] += count;
+        }
+        else if (groupFlag.isMen)
+        {
+            unitsProduced[unit->playerId] += count;
+        }
+        else if (groupFlag.isBuilding)
+        {
+            structuresBuilt[unit->playerId] += count;
+        }
+        else if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon && unit->id != UnitId::ZergLurkerEgg)
+        {
+            unitsProduced[unit->playerId] += count;
+        }
+
+        if (allUnitCountTable[unit->id].player[unit->playerId] < 0 )
+        {
+            allUnitCountTable[unit->id].player[unit->playerId] = 0;
+        }
+    }
+
+    void incrementUnitScoresEx(s32 count, Unit* unit, s32 increment_scores) // 00488D50
+    {
+        UnitExt* unitExt = globals.GetUnitExt(unit);
+
+        if (unit->status & UnitStatus::IsHallucination)
+        {
+            return;
+        }
+        if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit)
+        {
+            return;
+        }
+        auto player = unit->playerId;
+        auto unit_id = unit->id;
+        completed_unit_counts[unit->id].player[unit->playerId] += count;
+
+        s32 race = unit->getRace();
+        s32 supply = units_dat::SupplyProvided[unit->id];
+        if (scbw::isZergEggNew(unit, false, false))
+        {
+            if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergIroleth)
+            {
+                supply = units_dat::SupplyProvided[UnitId::ZergOvileth];
+            }
+            if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergOthstoleth)
+            {
+                supply = units_dat::SupplyProvided[UnitId::ZergIroleth];
+            }
+            if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergAlaszileth)
+            {
+                supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth];
+            }
+        }
+
+        if (*elapsedTimeFrames > 0)
+        {
+            u32 supply_new = unitExt->values[ValueSupplyProvided];
+            if (supply_new)
+            {
+                supply = supply_new;
+            }
+            unitExt->values[ValueSupplyProvided] = supply;
+            auto supply_overlord_modifier = unitExt->values[ValueOverlordSupply];
+            if (supply_overlord_modifier > 0)
+            {
+                switch (supply_overlord_modifier)
+                {
+                    case 1:
+                        supply = units_dat::SupplyProvided[UnitId::ZergIroleth] - units_dat::SupplyProvided[UnitId::ZergOvileth];
+                        break;
+                    case 2:
+                        supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth] - units_dat::SupplyProvided[UnitId::ZergIroleth];
+                        break;
+                    case 3:
+                        supply = units_dat::SupplyProvided[UnitId::ZergAlaszileth] - units_dat::SupplyProvided[UnitId::ZergOthstoleth];
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else if (unit->id == UnitId::ZergOthstoleth)
+            {
+                supply = units_dat::SupplyProvided[unit->id];
+            }
+            unitExt->values[ValueOverlordSupply] = 0;
+        }
+        if (race <= RaceId::Protoss)
+        {
+            raceSupply[RaceId::Terran].provided[player] += count * supply;
+        }
+        if (units_dat::GroupFlags[unit_id].isFactory)
+        {
+            factoriesOwned[unit->playerId] += count;
+        }
+        if (units_dat::GroupFlags[unit_id].isBuilding)
+        {
+            buildingsOwned[unit->playerId] += count;
+        }
+        if (units_dat::GroupFlags[unit_id].isMen)
+        {
+            unitsProduced[unit->playerId] += count;
+        }
+        if (increment_scores != 0)
+        {
+            if (units_dat::GroupFlags[unit_id].isMen)
+            {
+                if (!scbw::isAnyMorphMorphResult(unit_id))
+                {
+                    unitsOwned[unit->playerId] += count;
+                }
+                unitScore[unit->playerId] += count;
+            }
+            else if (units_dat::GroupFlags[unit_id].isBuilding)
+            {
+                if (!scbw::isZergBuildingMorphResult(unit_id))
+                {
+                    buildingsOwned[unit->playerId] += count;
+                }
+                buildingScore[unit->playerId] += count * units_dat::BuildScore[unit_id];
+            }
+        }
+        if (completed_unit_counts[unit_id].player[unit->playerId] < 0)
+        {
+            completed_unit_counts[unit_id].player[unit->playerId] = 0;
+        }
+    }
+
+    // Check if @p playerId has enough supplies to build @p unitId.
+    bool hasSuppliesForUnitHook(u8 playerId, u16 unitId, bool canShowErrorMessage)
+    {
+        // Default StarCraft behavior
+        s32 supplyCost = units_dat::SupplyRequired[unitId];
+        if (units_dat::BaseProperty[unitId] & UnitProperty::TwoUnitsIn1Egg)
+        {
+            supplyCost *= 2;
+        }
+        if (unitId == UnitId::ZergLakizilisk)
+        {
+            supplyCost -= units_dat::SupplyRequired[UnitId::ZergHydralisk];
+        }
+
+        aiSupplyReserved[playerId] = supplyCost;
+        // No supply cost check needed
+        if (supplyCost == 0 || units_dat::BaseProperty[unitId] & UnitProperty::MorphFromOtherUnit)
+        {
+            return true;
+        }
+        const RaceId::Enum raceId = RaceId::Terran;
+        assert(raceId <= 2);
+        const u32 supplyUsed = raceSupply[RaceId::Terran].used[playerId];
+        // Must construct additional pylons
+        if (supplyUsed + supplyCost > raceSupply[RaceId::Terran].max[playerId])
+        {
+            if (canShowErrorMessage)
+            {
+                scbw::showErrorMessageWithSfx(playerId, 847 + raceId, 1 + raceId);
+            }
+            return false;
+        }
+        // Supply limit exceeded
+        if (supplyCost > scbw::getSupplyRemaining(playerId, RaceId::Terran))
+        {
+            if (canShowErrorMessage)
+            {
+                scbw::showErrorMessageWithSfx(playerId, 844 + raceId, 153 + raceId);
+            }
+            return false;
+        }
+        return true;
     }
 }

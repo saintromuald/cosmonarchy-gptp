@@ -165,6 +165,68 @@ namespace
 			RETN
 		}
 	}
+
+	b32 __stdcall hasSuppliesForUnitWrapper(u8 playerId, u16 unitId, b32 canShowErrorMessage)
+	{
+		if (hooks::hasSuppliesForUnitHook(playerId, unitId, canShowErrorMessage != 0))
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	void __declspec(naked) incrementUnitScores_Wrapper() // 00488BF0
+	{
+		static Unit* unit;
+		static s32 count;
+		static s16 result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV count, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::incrementUnitScores(unit, count);
+		__asm {
+			POPAD
+			MOV EAX, 0
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
+
+	void __declspec(naked) incrementUnitScoresEx_Wrapper() // 00488D50
+	{
+		static s32 count;
+		static Unit* unit;
+		static s32 updateMorphMergeUnitScore;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV count, ECX
+			MOV unit, EDI
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV updateMorphMergeUnitScore, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::incrementUnitScoresEx(count, unit, updateMorphMergeUnitScore);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
 }
 
 namespace hooks
@@ -175,10 +237,14 @@ namespace hooks
 		jmpPatch(getSuppliesRemaining_Wrapper,	0x004889D0, 1);
 		jmpPatch(getSuppliesMax_Wrapper,		0x00488990, 4);
 		jmpPatch(getSuppliesUsed_Wrapper,		0x004888C0, 1);
-		jmpPatch(initializeUnitCounts_Wrapper,	0x00488F90, 0);
-		jmpPatch(StatRes_MainProc_Wrapper,		0x004E5640, 4);
-		jmpPatch(getSuppliesTemp_Wrapper,		0x004246D0, 1);
-		jmpPatch(redrawSupplyInfo_Wrapper,		0x00425230, 4);
-		jmpPatch(drawSupplyUnitStatus_Wrapper,	0x00427540, 1);
+		//jmpPatch(initializeUnitCounts_Wrapper,	0x00488F90, 0);
+		//jmpPatch(StatRes_MainProc_Wrapper,		0x004E5640, 4);
+		//jmpPatch(getSuppliesTemp_Wrapper,		0x004246D0, 1);
+		//jmpPatch(redrawSupplyInfo_Wrapper,		0x00425230, 4);
+		//jmpPatch(drawSupplyUnitStatus_Wrapper,	0x00427540, 1);
+		jmpPatch(hasSuppliesForUnitWrapper, 0x0042CF70);					// 0042CF70  hasSuppliesForUnit EXACT
+
+		jmpPatch(incrementUnitScores_Wrapper,			0x00488BF0, 2);
+		jmpPatch(incrementUnitScoresEx_Wrapper,			0x00488D50, 1);
 	}
 }

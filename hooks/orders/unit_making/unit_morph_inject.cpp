@@ -111,20 +111,6 @@ namespace
 		}
 	}
 
-	//-------- hasSuppliesForUnit --------//
-
-	b32 __stdcall hasSuppliesForUnitWrapper(u8 playerId, u16 unitId, b32 canShowErrorMessage)
-	{
-		if (hooks::hasSuppliesForUnitHook(playerId, unitId, canShowErrorMessage != 0))
-		{
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
 	//-------- cancelBuild --------//
 
 	typedef void(__stdcall* CancelZergBuildingFunc)(Unit*);
@@ -571,7 +557,6 @@ namespace hooks
 		jmpPatch(unitMorphWrapper_BTNSCOND_CanBuildUnit, 0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
 		jmpPatch(unitMorphWrapper_Orders_Morph1_Check, 0x0045DFB0);			// 0045DEA0  orders_Morph1 within	
 		jmpPatch(unitMorphWrapper_Orders_Morph1_EggType, 0x0045E019);		// 0045DEA0  orders_Morph1 within
-		jmpPatch(hasSuppliesForUnitWrapper, 0x0042CF70);					// 0042CF70  hasSuppliesForUnit EXACT
 		jmpPatch(cancelUnitWrapper, 0x00468280);							// 00468280  AI_CancelStructure EXACT
 		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);				// 004669E0  sub_4669E0 EXACT
 		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);			// 0045DD60  orders_ZergBirth within

@@ -515,50 +515,6 @@ namespace hooks
 		return 0;
 	}
 
-	// Check if @p playerId has enough supplies to build @p unitId.
-	bool hasSuppliesForUnitHook(u8 playerId, u16 unitId, bool canShowErrorMessage)
-	{
-		// Default StarCraft behavior
-		s32 supplyCost = units_dat::SupplyRequired[unitId];
-		if (units_dat::BaseProperty[unitId] & UnitProperty::TwoUnitsIn1Egg)
-		{
-			supplyCost *= 2;
-		}
-		if (unitId == UnitId::ZergLakizilisk)
-		{
-			supplyCost -= units_dat::SupplyRequired[UnitId::ZergHydralisk];
-		}
-
-		aiSupplyReserved[playerId] = supplyCost;
-		// No supply cost check needed
-		if (supplyCost == 0 || units_dat::BaseProperty[unitId] & UnitProperty::MorphFromOtherUnit)
-		{
-			return true;
-		}
-		const RaceId::Enum raceId = RaceId::Terran;
-		assert(raceId <= 2);
-		const u32 supplyUsed = raceSupply[RaceId::Terran].used[playerId];
-		// Must construct additional pylons
-		if (supplyUsed + supplyCost > raceSupply[RaceId::Terran].max[playerId])
-		{
-			if (canShowErrorMessage)
-			{
-				scbw::showErrorMessageWithSfx(playerId, 847 + raceId, 1 + raceId);
-			}
-			return false;
-		}
-		// Supply limit exceeded
-		if (supplyCost > scbw::getSupplyRemaining(playerId, raceId))
-		{
-			if (canShowErrorMessage)
-			{
-				scbw::showErrorMessageWithSfx(playerId, 844 + raceId, 153 + raceId);
-			}
-			return false;
-		}
-		return true;
-	}
-
 	Unit* beginTrain(Unit* unit, u16 unit_id, bool notify_error)
 	{
 		if (unit->status & UnitStatus::GroundedBuilding
