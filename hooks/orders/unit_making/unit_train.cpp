@@ -51,61 +51,59 @@ namespace hooks
 					}
 				}
 			}
-			else
-				if (unit->secondaryOrderState == 2)
+			else if (unit->secondaryOrderState == 2)
+			{
+				Unit* builtUnit = unit->currentBuildUnit;
+				u32 hpGain;
+				if (builtUnit != nullptr)
 				{
-					Unit* builtUnit = unit->currentBuildUnit;
-					u32 hpGain;
-					if (builtUnit != nullptr)
+					hpGain = helper::getHPGainForRepair(builtUnit);
+					helper::buildingAddon(builtUnit, hpGain, FALSE);
+					if (builtUnit->status & UnitStatus::Completed)
 					{
-						hpGain = helper::getHPGainForRepair(builtUnit);
-						helper::buildingAddon(builtUnit, hpGain, FALSE);
-						if (builtUnit->status & UnitStatus::Completed)
-						{
-							helper::addHangarUnit(unit, builtUnit);
-							unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-							unit->buildQueueSlot++;
+						helper::addHangarUnit(unit, builtUnit);
+						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+						unit->buildQueueSlot++;
 
-							if (unit->buildQueueSlot >= 5)
-							{
-								unit->buildQueueSlot = 0;
-							}
-							scbw::refreshConsole();
-							unit->currentBuildUnit = nullptr;
-							unit->secondaryOrderState = 0;
+						if (unit->buildQueueSlot >= 5)
+						{
+							unit->buildQueueSlot = 0;
 						}
-					}
-					else
-					{
 						scbw::refreshConsole();
 						unit->currentBuildUnit = nullptr;
 						unit->secondaryOrderState = 0;
 					}
 				}
 				else
-					if (unit->secondaryOrderState == 3)
+				{
+					scbw::refreshConsole();
+					unit->currentBuildUnit = nullptr;
+					unit->secondaryOrderState = 0;
+				}
+			}
+			else if (unit->secondaryOrderState == 3)
+			{
+				if (unit->id == UnitId::ProtossAccantor)
+				{
+					unit->secondaryOrderState = 4;
+				}
+				else
+				{
+					Unit* inHangarChild = unit->carrier.inHangarChild;
+					if (inHangarChild != nullptr)
 					{
-						if (unit->id == UnitId::ProtossAccantor)
+						s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
+						while (inHangarChild != nullptr && inHangarChild->hitPoints >= hpInterceptor)
 						{
-							unit->secondaryOrderState = 4;
+							inHangarChild = inHangarChild->interceptor.hangar_link.next;
 						}
-						else
+						if (inHangarChild != nullptr)
 						{
-							Unit* inHangarChild = unit->carrier.inHangarChild;
-							if (inHangarChild != nullptr)
-							{
-								s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
-								while (inHangarChild != nullptr && inHangarChild->hitPoints >= hpInterceptor)
-								{
-									inHangarChild = inHangarChild->interceptor.hangar_link.next;
-								}
-								if (inHangarChild != nullptr)
-								{
-									inHangarChild->setHp(inHangarChild->hitPoints + 128);
-								}
-							}
+							inHangarChild->setHp(inHangarChild->hitPoints + 128);
 						}
 					}
+				}
+			}
 		}
 	}
 
