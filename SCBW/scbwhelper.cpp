@@ -216,12 +216,12 @@ namespace helper
 		}
 	}
 
-	void hideDialog(BinDlg* a1)
+	void hideDialog(BinDlg* dialog)
 	{
 		const u32 Func_hideDialog = 0x00418700;
 		__asm {
 			PUSHAD
-			MOV ESI, a1
+			MOV ESI, dialog
 			CALL Func_hideDialog
 			POPAD
 		}
@@ -8829,5 +8829,112 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	// For initializeUnitCounts
+	char teamGame_CountRaces(char force, char* bIsLegal, char race)
+	{
+		const u32 Func_teamGame_CountRaces = 0x004857B0;
+		static char result;
+		__asm
+		{
+			PUSHAD
+			PUSH race
+			MOV EDI, bIsLegal
+			MOV AL, force
+			CALL Func_teamGame_CountRaces
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	// For StatRes_MainProc
+	void showSupplyInfo(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB)
+	{
+		const u32 Func_showSupplyInfo = 0x004E53B0;
+		__asm
+		{
+			PUSHAD
+			PUSH mathB
+			PUSH mathA
+			PUSH graphic
+			MOV EBX, dialog
+			CALL Func_showSupplyInfo
+			POPAD
+		}
+	}
+
+	void printStatResInfo(BinDlg* dialog, s16 graphic, char** a3, char* a4, s32 bSomething)
+	{
+		const u32 Func_printStatResInfo = 0x004E52E0;
+		__asm
+		{
+			PUSHAD
+			PUSH bSomething
+			PUSH a4
+			PUSH a3
+			PUSH graphic
+			MOV EBX, dialog
+			CALL Func_printStatResInfo
+			POPAD
+		}
+	}
+
+	// For redrawSupplyInfo
+	bool unitStatCond_Standard()
+	{
+		const u32 Func_unitStatCondStandard = 0x00424980;
+		static bool result;
+		__asm
+		{
+			PUSHAD
+			CALL Func_unitStatCondStandard
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	// For drawSupplyUnitStatus
+	u16 getLastQueueSlotType(Unit* unit)
+	{
+		const u32 Func_getLastQueueSlotType = 0x0047B270;
+		static u16 result;
+		__asm
+		{
+			PUSHAD
+			MOV EDX, unit
+			CALL Func_getLastQueueSlotType
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void hideOptionalStatusScreenControls(BinDlg* dialog)
+	{
+		const u32 Func_hideOptionalStatusScreenControls = 0x00457310;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, dialog
+			CALL Func_hideOptionalStatusScreenControls
+			POPAD
+		}
+	}
+
+	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId)
+	{
+		const u32 Func_showControlGroup = 0x00457250;
+		__asm
+		{
+			PUSHAD
+			PUSH lastId
+			MOV CX, firstId
+			MOV EAX, dialog
+			CALL Func_showControlGroup
+			POPAD
+		}
 	}
 }

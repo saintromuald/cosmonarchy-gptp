@@ -23,12 +23,145 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) getSuppliesRemaining_Wrapper()
+	{
+		static u8 playerId;
+		static u16 unitId;
+		static s32 result;
+		__asm
+		{
+			MOV unitId, DI
+			MOV playerId, BL
+			PUSHAD
+		}
+		result = hooks::getSuppliesRemaining(playerId, unitId);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) getSuppliesMax_Wrapper()
+	{
+		static u16 unitId;
+		static u8 playerId;
+		static s32 result;
+		__asm
+		{
+			MOV playerId, CL
+			MOV unitId, AX
+			PUSHAD
+		}
+		result = hooks::getSuppliesMax(unitId, playerId);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) getSuppliesUsed_Wrapper()
+	{
+		static s32 race;
+		static u8 playerId;
+		static s32 result;
+		__asm
+		{
+			MOV playerId, CL
+			MOV race, EAX
+			PUSHAD
+		}
+		result = hooks::getSuppliesUsed(race, playerId);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) initializeUnitCounts_Wrapper()
+	{
+		static char result;
+		__asm
+		{
+			PUSHAD
+		}
+		result = hooks::initializeUnitCounts();
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) StatRes_MainProc_Wrapper()
+	{
+		static BinDlg* dialog;
+		__asm
+		{
+			MOV dialog, ECX
+			PUSHAD
+		}
+		hooks::StatRes_MainProc(dialog);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) getSuppliesTemp_Wrapper()
+	{
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+		}
+		result = hooks::getSuppliesTemp();
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) redrawSupplyInfo_Wrapper()
+	{
+		static bool result;
+		__asm
+		{
+			PUSHAD
+		}
+		result = hooks::redrawSupplyInfo();
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+
 }
 
 namespace hooks
 {
 	void injectSupplyHooks()
 	{
-		jmpPatch(getSuppliesAvailable_Wrapper, 0x00488900, 1);
+		jmpPatch(getSuppliesAvailable_Wrapper,	0x00488900, 1);
+		jmpPatch(getSuppliesRemaining_Wrapper,	0x004889D0, 1);
+		jmpPatch(getSuppliesMax_Wrapper,		0x00488990, 4);
+		jmpPatch(getSuppliesUsed_Wrapper,		0x004888C0, 1);
+		jmpPatch(initializeUnitCounts_Wrapper,	0x00488F90, 0);
+		jmpPatch(StatRes_MainProc_Wrapper,		0x004E5640, 4);
+		jmpPatch(getSuppliesTemp_Wrapper,		0x004246D0, 1);
+		jmpPatch(redrawSupplyInfo_Wrapper,		0x00425230, 4);
 	}
 }

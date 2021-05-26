@@ -158,7 +158,7 @@ SCBW_DATA(const u32*, elapsedTimeSeconds, 0x0058D6F8);  //Elapsed game time in s
 SCBW_DATA(const u8*, GAME_TYPE, 0x00596820);  //Part of a larger structure; Compare with GameType::Enum.
 SCBW_DATA(const s32*, ACTIVE_NATION_ID, 0x00512678);  //AKA g_ActiveNationID
 SCBW_DATA(const s32*, ACTIVE_PLAYER_ID, 0x0051267C);  //Used by GetActivePlayerNextSelectionFunc
-SCBW_DATA(const s32*, LOCAL_NATION_ID, 0x00512684);  //AKA g_LocalNationID; Actually stores the player ID.
+SCBW_DATA(		s32*, LOCAL_NATION_ID, 0x00512684);  //AKA g_LocalNationID; Actually stores the player ID.
 SCBW_DATA(const s32*, LOCAL_HUMAN_ID, 0x00512688);  //AKA g_LocalHumanID; Invalid in replay games.
 SCBW_DATA(const u8*, CURRENT_TILESET, 0x00596828);  //Tileset of current map. Compare with TilesetType::Enum
 SCBW_DATA(const s32*, provider_MaxBuffer, 0x0057F0D8);
@@ -419,6 +419,35 @@ SCBW_DATA(s32*, missionObjectivesStringIndex,		0x0058D6C4);
 // For AIManageBuildingPlacement
 SCBW_DATA(Unit**, disabledUnitArray,				0x00692660);
 SCBW_DATA(Unit**, AIBuilderUnknown,					0x006D5DCC);
+
+// For getSuppliesAvailable
+SCBW_DATA(s32*,	suppliesAvailable_Protoss,			0x00582264);
+SCBW_DATA(s32*,	suppliesMax_Protoss,				0x005822C4);
+SCBW_DATA(s32*,	suppliesAvailable_Terran,			0x005821D4);
+SCBW_DATA(s32*,	suppliesMax_Terran,					0x00582234);
+SCBW_DATA(s32*,	suppliesAvailable_Zerg,				0x00582144);
+SCBW_DATA(s32*,	suppliesMax_Zerg,					0x005821A4);
+
+// For getSuppliesUsed
+SCBW_DATA(s32*,	suppliesUsed_Protoss,				0x00582294);
+SCBW_DATA(s32*,	suppliesUsed_Terran,				0x00582204);
+SCBW_DATA(s32*,	suppliesUsed_Zerg,					0x00582174);
+
+// For initializeUnitCounts
+SCBW_DATA(s32*,	unitCountScore,						0x00581DE4);
+SCBW_DATA(s8*,	unknown_57F41CB,					0x0057F1CB);
+
+// For StatRes_MainProc
+SCBW_DATA(s32*,	unknown_player_5153F8,				0x005153F8);
+SCBW_DATA(s32*,	unknown_68C22C,						0x0068C22C);
+
+// For getSuppliesTemp
+SCBW_DATA(s16*, suppliesAvailableTemp,				0x006CA93C);
+SCBW_DATA(s16*,	suppliesUsedTemp,					0x006CA93E);
+
+// For drawSupplyUnitStatus
+SCBW_DATA(s8*,	statusScreenFunc,					0x0068C1E5);
+SCBW_DATA(char*,unknown_struct_6CA9F8,				0x006CA9F8);
 
 //////////////////////////////////////////////////////////////// @}
 
