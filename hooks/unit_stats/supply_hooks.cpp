@@ -126,7 +126,7 @@ namespace hooks
         Unit* activeUnit;
         s8 activePlayer;
         u16 v6;
-        u8 v7;
+        u8 v7 = 0;
         s32 v8;
         u16 v9;
         u8 v10;
@@ -134,7 +134,7 @@ namespace hooks
         s32 v12;
         s32 v13;
         u16 v14;
-        s32 v15;
+        s32 v15 = 0;
         s32 v16;
         BinDlg* v17;
         BinDlg* v18;
@@ -186,15 +186,15 @@ LABEL_6:
                 }
                 *unknown_player_5153F8 = activePlayer;
 LABEL_15:
-                v8 = suppliesUsed_Terran[v2];
-                dialog = nullptr; // was lobyte = 0
-                v6 = getSuppliesAvailable(v2, (s32)dialog);
-                if (v6)
-                {
-                    helper::showSupplyInfo(dialogVar, 4, v8, v6);
-                    dialogVar = dialogVar->next;
-                    v7 = *LOCAL_NATION_ID;
-                }
+                //v8 = suppliesUsed_Zerg[v2];
+                //dialog = nullptr; // was lobyte = 0
+                //v6 = getSuppliesAvailable(v2, (s32)dialog);
+                //if (v6)
+                //{
+                //    helper::showSupplyInfo(dialogVar, 4, v8, v6);
+                //    dialogVar = dialogVar->next;
+                //    v7 = *LOCAL_NATION_ID;
+                //}
                 v12 = v7;
                 v13 = suppliesUsed_Terran[v7];
                 v12 = 1;
@@ -205,15 +205,15 @@ LABEL_15:
                     dialogVar = dialogVar->next;
                     v10 = *LOCAL_NATION_ID;
                 }
-                v16 = suppliesUsed_Terran[v10];
-                v11 = 2;
-                v14 = getSuppliesAvailable(v10, v11);
-                if (v14)
-                {
-                    helper::showSupplyInfo(dialogVar, 6, v16, v14);
-                    dialogVar = dialogVar->next;
-                    v15 = *LOCAL_NATION_ID;
-                }
+                //v16 = suppliesUsed_Protoss[v10];
+                //v11 = 2;
+                //v14 = getSuppliesAvailable(v10, v11);
+                //if (v14)
+                //{
+                //    helper::showSupplyInfo(dialogVar, 6, v16, v14);
+                //    dialogVar = dialogVar->next;
+                //    v15 = *LOCAL_NATION_ID;
+                //}
                 helper::printStatResInfo(dialogVar, *consoleIndex + 1, (char**)&(*unknown_68C22C), (char*)gameGas[v15], v3);
                 v18 = dialogVar->next;
                 helper::printStatResInfo(v18, 0, (char**)&(*unknown_68C22C), (char*)gameMinerals[*LOCAL_NATION_ID], v3);
@@ -300,11 +300,11 @@ LABEL_15:
         u16 v19;
         BinDlg* v20;
         s32 v21;
-        s32 race;
+        s32 playerId;
 
         BinDlg* dialogVar = dialog;
         Unit* activeUnit = *activePortraitUnit;
-        if (IS_IN_REPLAY || (u8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID)
+        if (*IS_IN_REPLAY || (u8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID)
         {
             getSuppliesTemp();
             if (*statusScreenFunc != 12)
@@ -315,12 +315,12 @@ LABEL_15:
                 *statusScreenFunc = 12;
             }
             GroupFlag groupFlag = units_dat::GroupFlags[(u16)activeUnit->id];
-            race = RaceId::Terran;
+            playerId = RaceId::Terran;
             v5 = activeUnit->playerId;
             v6 = suppliesUsed_Terran[v5];
-            v21 = (u8)race;
-            v7 = (u8)race + 820;
-            if ((u8)race == -821)
+            v21 = (u8)playerId;
+            v7 = (u8)playerId + 820;
+            if ((u8)playerId == -821)
             {
                 v8 = 0;
             }
@@ -333,8 +333,8 @@ LABEL_15:
                 v8 = "";
             }
             sprintf_s(unknown_struct_6CA9F8, 260, "%s %d", v8, (v6 + 1) / 2);
-            v9 = (u8)race + 814;
-            if ((u8)race == -815)
+            v9 = (u8)playerId + 814;
+            if ((u8)playerId == -815)
             {
                 v10 = 0;
             }
@@ -347,9 +347,9 @@ LABEL_15:
                 v10 = "";
             }
             v11 = helper::getLastQueueSlotType(*activePortraitUnit);
-            sprintf_s("", 260, "%s %d", v10, (units_dat::SupplyProvided[v11] + 1) / 2);
+            sprintf_s(aKills1, 260, "%s %d", v10, (units_dat::SupplyProvided[v11] + 1) / 2);
             v12 = v21 + 66353;
-            if ((u8)race == -818)
+            if ((u8)playerId == -818)
             {
                 v13 = 0;
             }
@@ -362,12 +362,12 @@ LABEL_15:
             {
                 v13 = "";
             }
-            v12 = race;
+            v12 = playerId;
             v14 = getSuppliesAvailable((*activePortraitUnit)->playerId, v12);
             sprintf_s(unkDialogByte, 260, "%s %d", v13, (s32)(v14 + 1) / 2);
-            race = (*activePortraitUnit)->playerId;
+            playerId = (*activePortraitUnit)->playerId;
             v15 = units_dat::GroupFlags[helper::getLastQueueSlotType(*activePortraitUnit)];
-            v16 = suppliesMax_Terran[(u8)race];
+            v16 = suppliesMax_Terran[(u8)playerId];
             v17 = v21 + 823;
             if ((s16)v21 == -824)
             {
