@@ -212,7 +212,7 @@ LABEL_15:
             do
             {
                 *(s32*)(result - 144) = 400;
-                *(s32*)(result = 400);
+                *(s32*)result = 400;
                 *(s32*)(result + 144) = 400;
                 result += 4;
             }
