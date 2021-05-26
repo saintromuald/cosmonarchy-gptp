@@ -20,7 +20,7 @@ namespace helper
 	void hideOptionalStatusScreenControls(BinDlg* a1);
 	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId);
 	void drawShieldUpgrade(s32 a1, u16 a2);
-	void hideDialog(BinDlg* a1);
+	void hideDialog(BinDlg* dialog);
 
 	// For drawSupplyUnitInfo
 	s32 getSuppliesUsed();
@@ -936,6 +936,10 @@ namespace helper
 
 	// For initializeUnitCounts
 	char teamGame_CountRaces(char force, char* bIsLegal, char race);										// 004857B0
+
+	// For StatRes_MainProc
+	void showSupplyInfo(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB);									// 004E53B0
+	void printStatResInfo(BinDlg* dialog, s16 graphic, char** a3, char* a4, s32 bSomething);				// 004E52E0
 
 	//// misc
 	s8 SETS(s32 x);

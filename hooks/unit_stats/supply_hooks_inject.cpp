@@ -99,16 +99,50 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) StatRes_MainProc_Wrapper()
+	{
+		static BinDlg* dialog;
+		__asm
+		{
+			MOV dialog, ECX
+			PUSHAD
+		}
+		hooks::StatRes_MainProc(dialog);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) getSuppliesTemp_Wrapper()
+	{
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+		}
+		result = hooks::getSuppliesUsed();
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectSupplyHooks()
 	{
-		jmpPatch(getSuppliesAvailable_Wrapper, 0x00488900, 1);
-		jmpPatch(getSuppliesRemaining_Wrapper, 0x004889D0, 1);
-		jmpPatch(getSuppliesMax_Wrapper, 0x00488990, 4);
-		jmpPatch(getSuppliesUsed_Wrapper, 0x004888C0, 1);
-		jmpPatch(initializeUnitCounts_Wrapper, 0x00488F90, 0);
+		jmpPatch(getSuppliesAvailable_Wrapper,	0x00488900, 1);
+		jmpPatch(getSuppliesRemaining_Wrapper,	0x004889D0, 1);
+		jmpPatch(getSuppliesMax_Wrapper,		0x00488990, 4);
+		jmpPatch(getSuppliesUsed_Wrapper,		0x004888C0, 1);
+		jmpPatch(initializeUnitCounts_Wrapper,	0x00488F90, 0);
+		jmpPatch(StatRes_MainProc_Wrapper,		0x004E5640, 4);
+		jmpPatch(getSuppliesTemp_Wrapper,		0x004246D0, 1);
 	}
 }

@@ -220,4 +220,198 @@ LABEL_15:
         }
         return result;
     }
+
+    void StatRes_MainProc(BinDlg* dialog) // 004E5640
+    {
+        u8 v2;
+        s32 v3;
+        Unit* activeUnit;
+        s8 activePlayer;
+        u16 v6;
+        u8 v7;
+        s32 v8;
+        u16 v9;
+        u8 v10;
+        s32 v11;
+        s32 v12;
+        s32 v13;
+        u16 v14;
+        s32 v15;
+        s32 v16;
+        BinDlg* v17;
+        BinDlg* v18;
+        s32 v19;
+
+        if (dialog->controlType)
+        {
+            dialog = dialog->parent;
+        }
+        BinDlg* dialogVar = dialog->childrenDlg;
+        if (dialogVar)
+        {
+            while (dialogVar->index != 1)
+            {
+                dialogVar = dialogVar->next;
+                if (!dialogVar)
+                {
+                    goto LABEL_6;
+                }
+            }
+        }
+        else
+        {
+LABEL_6:
+            dialogVar = 0;
+        }
+        v2 = *LOCAL_NATION_ID;
+        v3 = 0;
+        v19 = *LOCAL_NATION_ID;
+        if (!IS_IN_REPLAY)
+        {
+            goto LABEL_15;
+        }
+        if (clientSelectionCount)
+        {
+            activeUnit = *activePortraitUnit;
+            if (*clientSelectionCount != 1)
+            {
+                activeUnit = *clientSelectionGroup[0].unit;
+            }
+            activePlayer = activeUnit->playerId;
+            if (activePlayer != 11)
+            {
+                v2 = activePlayer;
+                *LOCAL_NATION_ID = activePlayer;
+                if (activePlayer != *unknown_player_5153F8)
+                {
+                    v3 = 1;
+                }
+                *unknown_player_5153F8 = activePlayer;
+LABEL_15:
+                v8 = suppliesUsed_Zerg[v2];
+                dialog = nullptr; // was lobyte = 0
+                v6 = getSuppliesAvailable(v2, (s32)dialog);
+                if (v6)
+                {
+                    helper::showSupplyInfo(dialogVar, 4, v8, v6);
+                    dialogVar = dialogVar->next;
+                    v7 = *LOCAL_NATION_ID;
+                }
+                v12 = v7;
+                v13 = suppliesUsed_Terran[v7];
+                v12 = 1;
+                v9 = getSuppliesAvailable(v7, v12);
+                if (v9)
+                {
+                    helper::showSupplyInfo(dialogVar, 5, v13, v9);
+                    dialogVar = dialogVar->next;
+                    v10 = *LOCAL_NATION_ID;
+                }
+                v16 = suppliesUsed_Protoss[v10];
+                v11 = 2;
+                v14 = getSuppliesAvailable(v10, v11);
+                if (v14)
+                {
+                    helper::showSupplyInfo(dialogVar, 6, v16, v14);
+                    dialogVar = dialogVar->next;
+                    v15 = *LOCAL_NATION_ID;
+                }
+                helper::printStatResInfo(dialogVar, *consoleIndex + 1, (char**)&(*unknown_68C22C), (char*)gameGas[v15], v3);
+                v18 = dialogVar->next;
+                helper::printStatResInfo(v18, 0, (char**)&(*unknown_68C22C), (char*)gameMinerals[*LOCAL_NATION_ID], v3);
+                v17 = v18->next;
+                if (v18->next)
+                {
+                    do
+                    {
+                        if (v17->index > 5)
+                        {
+                            break;
+                        }
+                        helper::hideDialog(v17);
+                        v17 = v17->next;
+                    }
+                    while (v17);
+                }
+                if (IS_IN_REPLAY)
+                {
+                    *LOCAL_NATION_ID = v19;
+                }
+                return;
+            }
+        }
+        for (*unknown_player_5153F8 = -1; dialogVar; dialogVar = dialogVar->next)
+        {
+            if (dialogVar->index > 5)
+            {
+                break;
+            }
+            helper::hideDialog(dialogVar);
+        }
+    }
+
+    s32 getSuppliesTemp() // 004246D0
+    {
+        Unit* activeUnit = *activePortraitUnit;
+        GroupFlag groupFlags = units_dat::GroupFlags[activeUnit->id];
+        s32 race = 0;
+        if (groupFlags.isZerg) // redundant now
+        {
+            race = 0;
+        }
+        else if (groupFlags.isProtoss)
+        {
+            race = 2;
+        }
+        else
+        {
+            race = (groupFlags.isTerran) != 0 ? 1 : 4;
+        }
+        *suppliesAvailableTemp = getSuppliesAvailable(activeUnit->playerId, race);
+
+        u8 playerId = activeUnit->playerId;
+        if (groupFlags.isZerg)
+        {
+            race = 0;
+        }
+        else if (groupFlags.isProtoss)
+        {
+            race = 2;
+        }
+        else
+        {
+            race = (groupFlags.isTerran) != 0 ? 1 : 4;
+        }
+
+        s32 result = 0;
+        race = (u8)race;
+        if ((s8)race)
+        {
+            s32 raceId = race - 1;
+            if (raceId)
+            {
+                if (raceId == 1)
+                {
+                    result = suppliesUsed_Protoss[playerId];
+                    *suppliesUsedTemp = suppliesUsed_Protoss[playerId];
+                }
+                else
+                {
+                    result = 0;
+                    *suppliesUsedTemp = 0;
+                }
+            }
+            else
+            {
+                result = suppliesUsed_Terran[playerId];
+                *suppliesUsedTemp = suppliesUsed_Terran[playerId];
+            }
+        }
+        else
+        {
+            result = suppliesUsed_Zerg[playerId];
+            *suppliesUsedTemp = suppliesUsed_Zerg[playerId];
+        }
+        return result;
+    }
 }

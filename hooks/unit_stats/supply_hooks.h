@@ -4,7 +4,6 @@
 namespace hooks
 {
 	/*
-	StatRes_MainProc			004E5640
 	sub_4246D0					004246D0
 	sub_425230					00425230
 	sub_427540					00427540
@@ -15,6 +14,8 @@ namespace hooks
 	s32 getSuppliesMax(u16 unitId, u8 playerId);					// 00488990
 	s32 getSuppliesUsed(s32 race, u8 playerId);						// 004888C0
 	char initializeUnitCounts();									// 00488F90
+	void StatRes_MainProc(BinDlg* dialog);							// 004E5640
+	s32 getSuppliesTemp();											// 004246D0
 
 	void injectSupplyHooks();
 }

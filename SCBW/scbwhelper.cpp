@@ -216,12 +216,12 @@ namespace helper
 		}
 	}
 
-	void hideDialog(BinDlg* a1)
+	void hideDialog(BinDlg* dialog)
 	{
 		const u32 Func_hideDialog = 0x00418700;
 		__asm {
 			PUSHAD
-			MOV ESI, a1
+			MOV ESI, dialog
 			CALL Func_hideDialog
 			POPAD
 		}
@@ -8847,5 +8847,35 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	// For StatRes_MainProc
+	void showSupplyInfo(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB)
+	{
+		const u32 Func_showSupplyInfo = 0x004E53B0;
+		__asm
+		{
+			PUSH mathB
+			PUSH mathA
+			PUSH graphic
+			MOV EBX, dialog
+			CALL Func_showSupplyInfo
+			POPAD
+		}
+	}
+
+	void printStatResInfo(BinDlg* dialog, s16 graphic, char** a3, char* a4, s32 bSomething)
+	{
+		const u32 Func_printStatResInfo = 0x004E52E0;
+		__asm
+		{
+			PUSH bSomething
+			PUSH a4
+			PUSH a3
+			PUSH graphic
+			MOV EBX, dialog
+			CALL Func_printStatResInfo
+			POPAD
+		}
 	}
 }
