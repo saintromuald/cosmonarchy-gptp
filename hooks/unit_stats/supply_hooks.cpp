@@ -184,7 +184,6 @@ namespace hooks
 
         s32 supplies = suppliesUsed_Terran[*LOCAL_NATION_ID];
 
-        const u8* activePlayerRace = (u8*)0x0057F1E2;
         if (*activePlayerRace == RaceId::Zerg)
         {
             helper::showSupplyInfo(dialogVar, 4, supplies, getSuppliesAvailable(*LOCAL_NATION_ID, RaceId::Zerg));

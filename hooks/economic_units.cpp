@@ -241,119 +241,71 @@ namespace hooks
 
 	// ---
 
-	void Ai_BuildSupplies(AiTown* town)
+	void Ai_BuildSupplies(AiTown* mainTown)
 	{
-		// Tidomann
-		u8 race_;
-		u8 player_;
-		bool hasTerran_ = false;
-		bool hasZerg_ = false;
-		bool hasProtoss_ = false;
-		if (town)
+		u8 player = mainTown->player;
+		u8 race = playerTable[player].race;
+		if (mainTown)
 		{
-			player_ = town->player;
-			race_ = playerTable[player_].race;
-			//Race Checks, Allows main race to continue to function, but will consider other races if there is supply exists
-			//and supply is provided
-			switch (race_)
+			if (checkSupplyNeed(player, RaceId::Terran))
 			{
-				case RaceId::Terran:
-					hasTerran_ = true;
-					if (raceSupply[RaceId::Zerg].used[player_] != 0 && raceSupply[RaceId::Zerg].provided[player_] != 0)
-					{
-						hasZerg_ = true;
-					}
-					if (raceSupply[RaceId::Protoss].used[player_] != 0 && raceSupply[RaceId::Protoss].provided[player_] != 0)
-					{
-						hasProtoss_ = true;
-					}
-					break;
-				case RaceId::Zerg:
-					hasZerg_ = true;
-					if (raceSupply[RaceId::Terran].used[player_] != 0 && raceSupply[RaceId::Terran].provided[player_] != 0)
-					{
-						hasTerran_ = true;
-					}
-					if (raceSupply[RaceId::Protoss].used[player_] != 0 && raceSupply[RaceId::Protoss].provided[player_] != 0)
-					{
-						hasProtoss_ = true;
-					}
-					break;
-				case RaceId::Protoss:
-					hasProtoss_ = true;
-					if (raceSupply[RaceId::Terran].used[player_] != 0 && raceSupply[RaceId::Terran].provided[player_] != 0)
-					{
-						hasTerran_ = true;
-					}
-					if (raceSupply[RaceId::Zerg].used[player_] != 0 && raceSupply[RaceId::Zerg].provided[player_] != 0)
-					{
-						hasZerg_ = true;
-					}
-					break;
-			}
-
-			if (hasProtoss_)
-			{
-				if (checkSupplyNeed(player_, RaceId::Protoss))
+				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Terran);
+				if (town)
 				{
-					town = GetFirstEligibleTown(town, player_, RaceId::Protoss);
-					if (town)
-						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*)town);
+					AI_AddTownSpendingRequest(player, scbw::getSupplyRemaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
 				}
 			}
-			if (hasZerg_)
+			if (checkSupplyNeed(player, RaceId::Protoss))
 			{
-				if (checkSupplyNeed(player_, RaceId::Zerg))
+				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Protoss);
+				if (town)
 				{
-					town = GetFirstEligibleTown(town, player_, RaceId::Zerg);
-					if (town)
-						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*)town);
+					AI_AddTownSpendingRequest(player, scbw::getSupplyRemaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
 				}
 			}
-			if (hasTerran_)
+			if (checkSupplyNeed(player, RaceId::Zerg))
 			{
-				if (checkSupplyNeed(player_, RaceId::Terran))
+				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Zerg);
+				if (town)
 				{
-					town = GetFirstEligibleTown(town, player_, RaceId::Terran);
-					if (town)
-						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*)town);
+					AI_AddTownSpendingRequest(player, scbw::getSupplyRemaining(player, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player), (void*)town);
 				}
 			}
 		}
 	}
 
-	bool checkSupplyNeed(u8 player_, u8 race_)
+	bool checkSupplyNeed(u8 player, u8 race)
 	{
-		u32 checkEcoUnits_;
-		s32 supplyRemaining_;
-		u32 workerUnit = get_worker_from_race(race_);
-		s32 supplyUsedCompare_;
-		u8 townHallSupply_;
-		u32 supplyUnit_ = get_supply_structure_from_race(race_, player_);
+		u32 checkEcoUnits;
+		s32 supplyRemaining;
+		u32 workerUnit = get_worker_from_race(race);
+		s32 supplyUsedCompare;
+		u8 townHallSupply;
+		u32 supplyUnit = get_supply_structure_from_race(race, player);
 
-		supplyRemaining_ = helper::getSuppliesRemaining(player_, workerUnit);
+		supplyRemaining = helper::getSuppliesRemaining(player, workerUnit);
 
-		if (race_ == RaceId::Protoss)
+		if (race == RaceId::Protoss)
 		{
-			if (helper::Ai_HasBuildingsNeedingPower(player_))
+			if (helper::Ai_HasBuildingsNeedingPower(player))
 			{
 				return true;
 			}
 		}
-		if (supplyRemaining_ < 13)
+		if (supplyRemaining < 13)
 		{
-			supplyUsedCompare_ = helper::getSuppliesUsed(race_, player_) + 13;
-			townHallSupply_ = units_dat::SupplyProvided[get_townhall_from_race(race_)];
-			if (supplyUsedCompare_ > townHallSupply_)
+			supplyUsedCompare = helper::getSuppliesUsed(race, player) + 13;
+			townHallSupply = units_dat::SupplyProvided[get_townhall_from_race(race)];
+			if (supplyUsedCompare > townHallSupply)
 			{
-				checkEcoUnits_ = (supplyUsedCompare_ - townHallSupply_) / units_dat::SupplyProvided[supplyUnit_];
+				checkEcoUnits = (supplyUsedCompare - townHallSupply) / units_dat::SupplyProvided[supplyUnit];
 				//farms_timing on, compare ecounits required vs ecounits count
-				if (!(AIScriptController[player_].AI_Flags.isFarmsNotimingOn) && (checkEcoUnits_ + 1 > helper::Ai_CountEconomyUnits(player_, supplyUnit_)))
+				if (!(AIScriptController[player].AI_Flags.isFarmsNotimingOn) && (checkEcoUnits + 1 > helper::Ai_CountEconomyUnits(player, supplyUnit)))
 				{
 					return true;
 				}
 				//if max supply , and current supply units (including those under construction) will not satisfy requirement
-				if ((!supplyRemaining_) && helper::Ai_CountEconomyUnits(player_, supplyUnit_) * units_dat::SupplyProvided[supplyUnit_] + townHallSupply_ <= helper::getSuppliesUsed(race_, player_))
+				if ((!supplyRemaining) && helper::Ai_CountEconomyUnits(player, supplyUnit) * units_dat::SupplyProvided[supplyUnit] + townHallSupply <= helper::getSuppliesUsed(race, player))
 				{
 					return true;
 				}
