@@ -8830,4 +8830,22 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For initializeUnitCounts
+	char teamGame_CountRaces(char force, char* bIsLegal, char race)
+	{
+		const u32 Func_teamGame_CountRaces = 0x004857B0;
+		static char result;
+		__asm
+		{
+			PUSHAD
+			PUSH race
+			MOV EDI, bIsLegal
+			MOV AL, force
+			CALL Func_teamGame_CountRaces
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

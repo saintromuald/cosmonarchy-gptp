@@ -151,5 +151,73 @@ LABEL_15:
         return 0;
     }
 
+    char initializeUnitCounts() // 00488F90
+    {
+        memset(unitCountScore, 0, 0x540u);
+        memset(allUnitCountTable, 0, 0xAB00u);
 
+        s32 result = 0;
+        if (multiPlayerMode && gameData->teamsEnabled)
+        {
+            s32 forceIterator = 1;
+            do
+            {
+                result = unknown_57F41CB[(u8)forceIterator];
+                u8 iteratorResult = unknown_57F41CB[(u8)forceIterator];
+                if ((s8)result != -1)
+                {
+                    s32 supplyMax1 = 0;
+                    s32 supplyMax2 = 0;
+                    s32 supplyMax3 = 0;
+
+                    if (400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 0) >= 400)
+                    {
+                        supplyMax1 = 400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 0);
+                    }
+                    else
+                    {
+                        supplyMax1 = 400;
+                    }
+
+                    supplyMax2 = iteratorResult;
+                    suppliesMax_Zerg[supplyMax2] = supplyMax1;
+                    if (400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 1) >= 400)
+                    {
+                        supplyMax3 = 400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 1);
+                    }
+                    else
+                    {
+                        supplyMax3 = 400;
+                    }
+
+                    suppliesMax_Terran[supplyMax2] = supplyMax3;
+                    if (400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 2) >= 400)
+                    {
+                        result = 400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 2);
+                    }
+                    else
+                    {
+                        result = 400;
+                    }
+
+                    suppliesMax_Protoss[supplyMax2] = result;
+                }
+                ++forceIterator;
+            }
+            while (forceIterator <= 4);
+        }
+        else
+        {
+            result = (int)suppliesMax_Terran;
+            do
+            {
+                *(s32*)(result - 144) = 400;
+                *(s32*)(result = 400);
+                *(s32*)(result + 144) = 400;
+                result += 4;
+            }
+            while (result < (s32)suppliesAvailable_Protoss);
+        }
+        return result;
+    }
 }

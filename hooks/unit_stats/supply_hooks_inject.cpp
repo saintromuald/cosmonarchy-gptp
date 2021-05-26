@@ -83,6 +83,22 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) initializeUnitCounts_Wrapper()
+	{
+		static char result;
+		__asm
+		{
+			PUSHAD
+		}
+		result = hooks::initializeUnitCounts();
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -93,5 +109,6 @@ namespace hooks
 		jmpPatch(getSuppliesRemaining_Wrapper, 0x004889D0, 1);
 		jmpPatch(getSuppliesMax_Wrapper, 0x00488990, 4);
 		jmpPatch(getSuppliesUsed_Wrapper, 0x004888C0, 1);
+		jmpPatch(initializeUnitCounts_Wrapper, 0x00488F90, 0);
 	}
 }

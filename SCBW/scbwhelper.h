@@ -934,6 +934,9 @@ namespace helper
 	void AIPlacementDataSomething(s8* placementData, Point16 tryPosition);									// 00443510
 	u32 getTileDistance(s32 x, s32 y, s32 x2, s32 y2);														// 00444100
 
+	// For initializeUnitCounts
+	char teamGame_CountRaces(char force, char* bIsLegal, char race);										// 004857B0
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

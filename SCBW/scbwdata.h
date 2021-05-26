@@ -433,6 +433,10 @@ SCBW_DATA(s32*,	suppliesUsed_Protoss,				0x00582294);
 SCBW_DATA(s32*,	suppliesUsed_Terran,				0x00582204);
 SCBW_DATA(s32*,	suppliesUsed_Zerg,					0x00582174);
 
+// For initializeUnitCounts
+SCBW_DATA(s32*,	unitCountScore,						0x00581DE4);
+SCBW_DATA(s8*,	unknown_57F41CB,					0x0057F1CB);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data
