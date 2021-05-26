@@ -592,24 +592,41 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::TerranStriga:
 			case UnitId::ProtossLegionnaire:
 			{
 				// Legionnaire - Blade Vortex
 				if (unit->orderTarget.unit != nullptr
 					&& (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::AttackUnit))
 				{
-					auto target = unit->orderTarget.unit;
-					auto distance = unit->getDistanceToTarget(target);
+					Unit* target = unit->orderTarget.unit;
+					u32 distance = unit->getDistanceToTarget(target);
+					bool doTeleport = false;
+					u32 imageId = 0;
 
-					if (distance > 15 && distance <= 96)
+					if (unit->id == UnitId::ProtossLegionnaire)
 					{
-						if (scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0)
+						if (distance > 15 && distance <= 3 * 32 && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0)
 						{
-							bool teleport = scbw::teleport(unit, target->sprite->position, 0, true);
-							if (!unit->getOverlay(ImageId::LegionnaireTeleportEffect) && teleport)
-							{
-								unit->sprite->createTopOverlay(ImageId::LegionnaireTeleportEffect);
-							}
+							doTeleport = true;
+							imageId = ImageId::LegionnaireTeleportEffect;
+						}
+					}
+					else if (unit->id == UnitId::TerranStriga)
+					{
+						if (distance > 15 && distance <= 5 * 32 && scbw::isUnitIsolated(target))
+						{
+							doTeleport = true;
+							imageId = ImageId::LegionnaireTeleportEffect;
+						}
+					}
+
+					if (doTeleport)
+					{
+						bool teleport = scbw::teleport(unit, target->sprite->position, 0, true);
+						if (!unit->getOverlay(imageId) && teleport)
+						{
+							unit->sprite->createTopOverlay(imageId);
 						}
 					}
 				}
