@@ -194,10 +194,11 @@ namespace helper
 	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId)
 	{
 		const u32 Func_showControlGroup = 0x00457250;
+		s32 lastIdArg = lastId;
 		__asm {
 			PUSHAD
-			PUSH lastId
-			MOVZX CX, firstId
+			PUSH lastIdArg
+			MOVZX ECX, firstId
 			MOV EAX, dialog
 			CALL Func_showControlGroup
 			POPAD
@@ -8917,10 +8918,11 @@ namespace helper
 	void drawArmor(BinDlg* dialog, s32 unitId, u16 statusScreenIndex)
 	{
 		const u32 Func_drawArmor = 0x00425600;
+		u32 statusScreenIndexArg = statusScreenIndex;
 		__asm
 		{
 			PUSHAD
-			PUSH statusScreenIndex
+			PUSH statusScreenIndexArg
 			MOV EDX, unitId
 			MOV EAX, dialog
 			CALL Func_drawArmor
