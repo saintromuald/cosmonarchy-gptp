@@ -1024,6 +1024,41 @@ namespace hooks
 				// Augur - Death behavior
 				augurSacrifice(data.target);
 			} break;
+			case UnitId::TerranStriga:
+			{
+				if (data.attacker != nullptr && !(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building))
+				{
+					const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
+					if (dist < 2 * 32)
+					{
+						Point32 diff = {data.target->getX(), data.target->getY()};
+						diff.x -= data.attacker->getX();
+						diff.y -= data.attacker->getY();
+
+						f32 diffDist = sqrtl(powl(diff.x, 2) + powl(diff.y, 2));
+						diff.x /= diffDist;
+						diff.y /= diffDist;
+
+						Point16 finalPos = data.attacker->position;
+						finalPos.x += diff.x;
+						finalPos.y += diff.y;
+
+						ActiveTile originalTile = scbw::getActiveTileAt(data.attacker->position.x, data.attacker->position.y);
+						ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);
+
+						if (data.attacker->status & UnitStatus::InAir
+							|| (!finalTile.isUnwalkable && originalTile.groundHeight == finalTile.groundHeight))
+						{
+							const u32 imageId = ImageId::LegionnaireTeleportEffect;
+							bool teleport = scbw::teleport(data.attacker, finalPos, 0, true);
+							if (!data.attacker->getOverlay(imageId) && teleport)
+							{
+								data.attacker->sprite->createTopOverlay(imageId);
+							}
+						}
+					}
+				}
+			} break;
 		}
 
 		if (data.attacker != nullptr)
