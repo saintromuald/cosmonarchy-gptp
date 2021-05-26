@@ -50,10 +50,11 @@ namespace TechId {
 		NuclearStrike			= 45, //based on bwapi/BWMemoryEdit/Enums/TechType.cs
 		UnknownLastEntry		= 46,	//based on bwapi/BWMemoryEdit/Enums/TechType.cs
 
-		// HYDRA \\
+		// Cosmonarchy \\
 
 	// Shared
 		CancelNewAbiliity		= 26, // For Land Grab, Mind Control, Enthralling Assault
+		AuralAssault			= 30, // Luminary blinding ability
 
 	// Terran
 		LobotomyMine			=  1, // Eidolon lay trap ability
