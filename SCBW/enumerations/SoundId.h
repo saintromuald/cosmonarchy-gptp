@@ -1337,7 +1337,7 @@ namespace DeathSoundId
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossPylon
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossAssimilator
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//UnusedProtoss1
-		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossObservatory
+		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossMachinistHall
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossGateway
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//UnusedProtoss2
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossPhotonCannon
