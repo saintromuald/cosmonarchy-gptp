@@ -8853,12 +8853,15 @@ namespace helper
 	void showSupplyInfo(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB)
 	{
 		const u32 Func_showSupplyInfo = 0x004E53B0;
+		s32 graphicArg = graphic;
+		s32 mathAArg = mathA;
+		s32 mathBArg = mathB;
 		__asm
 		{
 			PUSHAD
-			PUSH mathB
-			PUSH mathA
-			PUSH graphic
+			PUSH mathBArg
+			PUSH mathAArg
+			PUSH graphicArg
 			MOV EBX, dialog
 			CALL Func_showSupplyInfo
 			POPAD
@@ -8868,13 +8871,14 @@ namespace helper
 	void printStatResInfo(BinDlg* dialog, s16 graphic, char** a3, char* a4, s32 bSomething)
 	{
 		const u32 Func_printStatResInfo = 0x004E52E0;
+		s32 graphicArg = graphic;
 		__asm
 		{
 			PUSHAD
 			PUSH bSomething
 			PUSH a4
 			PUSH a3
-			PUSH graphic
+			PUSH graphicArg
 			MOV EBX, dialog
 			CALL Func_printStatResInfo
 			POPAD
