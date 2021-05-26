@@ -238,7 +238,7 @@ namespace hooks
 		jmpPatch(getSuppliesMax_Wrapper,		0x00488990, 4);
 		jmpPatch(getSuppliesUsed_Wrapper,		0x004888C0, 1);
 		jmpPatch(initializeUnitCounts_Wrapper,	0x00488F90, 0);
-		//jmpPatch(StatRes_MainProc_Wrapper,		0x004E5640, 4); // Disabled for testing
+		jmpPatch(StatRes_MainProc_Wrapper,		0x004E5640, 4);
 		jmpPatch(getSuppliesTemp_Wrapper,		0x004246D0, 1);
 		jmpPatch(redrawSupplyInfo_Wrapper,		0x00425230, 4);
 		//jmpPatch(drawSupplyUnitStatus_Wrapper,	0x00427540, 1); // Currently broken
