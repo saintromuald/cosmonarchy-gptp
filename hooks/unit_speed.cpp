@@ -51,6 +51,12 @@ namespace hooks
 			speed *= 1 + NathrokorAdrenalFrenzySpeedFactor * unitExt->values[ValueNathrokorBuffStacks];
 		}
 
+		// Luminary - Wax Wings
+		if (unitExt->timers[TimerLuminaryDebuff] > 1)
+		{
+			speed *= 0.6666;
+		}
+
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
 		if (unitExt->values[ValueKnockoutDriversStacks])
 		{
