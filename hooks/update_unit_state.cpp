@@ -497,14 +497,28 @@ namespace hooks
 					if (distance < 32)
 					{
 						unit->status |= UnitStatus::Invincible;
-						Bullet* bullet = helper::createBullet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
-						hooks::splash(bullet, WeaponId::AuroraLastOrders, SplashType::FriendlyNew, nullptr);
-						if (bullet)
+
+						auto match = cosmonarchyFinderMatch(unit, Flags::NoAir | Flags::Enemy, {});
+						const u32 radius = 64;
+						scbw::UnitFinder(
+							unit->getX() - radius,
+							unit->getY() - radius,
+							unit->getX() + radius,
+							unit->getY() + radius
+						).forEachInMatch(match, [&](Unit* target)
 						{
-							bullet->time_remaining = 0;
-						}
-						// TODO: Add impact graphic
-						unit->remove();
+							u32 dist = scbw::getDistanceFast(unit->position, target->position);
+							u32 damage = 20 * 256;
+							if (dist > 48)
+							{
+								damage /= 4;
+							}
+							else if (dist > 32)
+							{
+								damage /= 2;
+							}
+							target->damageWithCustom(damage, DamageType::Explosive, unit, unit->playerId, 0, 1, false);
+						});
 						bStopHere = true;
 					}
 				}

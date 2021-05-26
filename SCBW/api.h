@@ -97,6 +97,11 @@ namespace scbw
 	/// Warning: This function is inaccurate for long distances.
 	u32 getDistanceFast(s32 x1, s32 y1, s32 x2, s32 y2);
 
+	inline u32 getDistanceFast(Point16 p1, Point16 p2)
+	{
+		return getDistanceFast(p1.x, p1.y, p2.x, p2.y);
+	}
+
 	/// Distance, but in a square instead of circle (max of x dist and y dist)
 	inline u32 getDistanceSquare(s32 x1, s32 y1, s32 x2, s32 y2);
 
