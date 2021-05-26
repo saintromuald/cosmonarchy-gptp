@@ -941,6 +941,14 @@ namespace helper
 	void showSupplyInfo(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB);									// 004E53B0
 	void printStatResInfo(BinDlg* dialog, s16 graphic, char** a3, char* a4, s32 bSomething);				// 004E52E0
 
+	// For redrawSupplyInfo
+	bool unitStatCond_Standard();																			// 00424980
+
+	// For drawSupplyUnitStatus
+	u16 getLastQueueSlotType(Unit* unit);																	// 0047B270
+	void hideOptionalStatusScreenControls(BinDlg* dialog);													// 00457310
+	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId);											// 00457250
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

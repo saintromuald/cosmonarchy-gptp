@@ -414,4 +414,69 @@ LABEL_15:
         }
         return result;
     }
+
+    bool redrawSupplyInfo() // 00425230 // Guessed name
+    {
+        if (!IS_IN_REPLAY && (u8)(*activePortraitUnit)->playerId != *LOCAL_NATION_ID)
+        {
+            return helper::unitStatCond_Standard();
+        }
+
+        u8 activePlayer = (*activePortraitUnit)->playerId;
+        GroupFlag groupFlags = units_dat::GroupFlags[(u16)(*activePortraitUnit)->id];
+        char isZerg = groupFlags.isZerg;
+        char race = 0;
+
+        if (groupFlags.isZerg) // redundant now
+        {
+            race = 0;
+        }
+        else if (groupFlags.isProtoss)
+        {
+            race = 2;
+        }
+        else
+        {
+            race = (groupFlags.isTerran) != 0 ? 1 : 4;
+        }
+        bool result = 1;
+
+        if ((u16)suppliesAvailableTemp == getSuppliesAvailable(activePlayer, race))
+        {
+            char math = 0; // not initialized, defaulting to 0
+            s32 suppliesVar = 0;
+            char raceId = 0;
+
+            if (isZerg) // redundant now
+            {
+                raceId = 0;
+            }
+            else
+            {
+                raceId = math & 4 ? 2 : (math & 2) != 0 ? 1 : 4;
+            }
+            if (raceId)
+            {
+                if (raceId == 1)
+                {
+                    suppliesVar = suppliesUsed_Terran[activePlayer];
+                }
+                else
+                {
+                    suppliesVar = raceId == 2 ? suppliesUsed_Protoss[activePlayer] : 0;
+                }
+            }
+            else
+            {
+                suppliesVar = suppliesUsed_Zerg[activePlayer];
+            }
+            if ((u16)suppliesUsedTemp == suppliesVar)
+            {
+                result = 0;
+            }
+        }
+        return result;
+    }
+
+
 }

@@ -8855,6 +8855,7 @@ namespace helper
 		const u32 Func_showSupplyInfo = 0x004E53B0;
 		__asm
 		{
+			PUSHAD
 			PUSH mathB
 			PUSH mathA
 			PUSH graphic
@@ -8869,6 +8870,7 @@ namespace helper
 		const u32 Func_printStatResInfo = 0x004E52E0;
 		__asm
 		{
+			PUSHAD
 			PUSH bSomething
 			PUSH a4
 			PUSH a3
@@ -8876,6 +8878,61 @@ namespace helper
 			MOV EBX, dialog
 			CALL Func_printStatResInfo
 			POPAD
+		}
+	}
+
+	// For redrawSupplyInfo
+	bool unitStatCond_Standard()
+	{
+		const u32 Func_unitStatCondStandard = 0x00424980;
+		static bool result;
+		__asm
+		{
+			PUSHAD
+			CALL Func_unitStatCondStandard
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	// For drawSupplyUnitStatus
+	u16 getLastQueueSlotType(Unit* unit)
+	{
+		const u32 Func_getLastQueueSlotType = 0x0047B270;
+		static u16 result;
+		__asm
+		{
+			PUSHAD
+			MOV EDX, unit
+			CALL Func_getLastQueueSlotType
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void hideOptionalStatusScreenControls(BinDlg* dialog)
+	{
+		const u32 Func_hideOptionalStatusScreenControls = 0x00457310;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, dialog
+			CALL Func_hideOptionalStatusScreenControls
+			POPAD
+		}
+	}
+
+	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId)
+	{
+		const u32 Func_showControlGroup = 0x00457250;
+		__asm
+		{
+			PUSHAD
+			PUSH lastId
+			MOV CX, firstId
+			MOV EAX, dialog
 		}
 	}
 }

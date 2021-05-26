@@ -123,7 +123,7 @@ namespace
 		{
 			PUSHAD
 		}
-		result = hooks::getSuppliesUsed();
+		result = hooks::getSuppliesTemp();
 		__asm
 		{
 			POPAD
@@ -131,6 +131,24 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) redrawSupplyInfo_Wrapper()
+	{
+		static bool result;
+		__asm
+		{
+			PUSHAD
+		}
+		result = hooks::redrawSupplyInfo();
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+
 }
 
 namespace hooks
@@ -144,5 +162,6 @@ namespace hooks
 		jmpPatch(initializeUnitCounts_Wrapper,	0x00488F90, 0);
 		jmpPatch(StatRes_MainProc_Wrapper,		0x004E5640, 4);
 		jmpPatch(getSuppliesTemp_Wrapper,		0x004246D0, 1);
+		jmpPatch(redrawSupplyInfo_Wrapper,		0x00425230, 4);
 	}
 }
