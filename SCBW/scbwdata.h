@@ -420,6 +420,19 @@ SCBW_DATA(s32*, missionObjectivesStringIndex,		0x0058D6C4);
 SCBW_DATA(Unit**, disabledUnitArray,				0x00692660);
 SCBW_DATA(Unit**, AIBuilderUnknown,					0x006D5DCC);
 
+// For getSuppliesAvailable
+SCBW_DATA(s32*,	suppliesAvailable_Protoss,			0x00582264);
+SCBW_DATA(s32*,	suppliesMax_Protoss,				0x005822C4);
+SCBW_DATA(s32*,	suppliesAvailable_Terran,			0x005821D4);
+SCBW_DATA(s32*,	suppliesMax_Terran,					0x00582234);
+SCBW_DATA(s32*,	suppliesAvailable_Zerg,				0x00582144);
+SCBW_DATA(s32*,	suppliesMax_Zerg,					0x005821A4);
+
+// For getSuppliesUsed
+SCBW_DATA(s32*,	suppliesUsed_Protoss,				0x00582294);
+SCBW_DATA(s32*,	suppliesUsed_Terran,				0x00582204);
+SCBW_DATA(s32*,	suppliesUsed_Zerg,					0x00582174);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

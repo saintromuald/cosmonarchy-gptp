@@ -453,14 +453,14 @@ C_ASSERT(sizeof(ActiveTile) == 4);
 
 struct GroupFlag
 {
-	u8 isZerg : 1;	/*0x01*/
-	u8 isTerran : 1;	/*0x02*/
-	u8 isProtoss : 1;	/*0x04*/
-	u8 isMen : 1;	/*0x08*/
-	u8 isBuilding : 1;	/*0x10*/
-	u8 isFactory : 1;	/*0x20*/
+	u8 isZerg : 1;			/*0x01*/
+	u8 isTerran : 1;		/*0x02*/
+	u8 isProtoss : 1;		/*0x04*/
+	u8 isMen : 1;			/*0x08*/
+	u8 isBuilding : 1;		/*0x10*/
+	u8 isFactory : 1;		/*0x20*/
 	u8 isIndependent : 1;	/*0x40*/
-	u8 isNeutral : 1;	/*0x80*/
+	u8 isNeutral : 1;		/*0x80*/
 };
 
 C_ASSERT(sizeof(GroupFlag) == 1);
