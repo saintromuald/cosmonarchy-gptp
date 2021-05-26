@@ -105,6 +105,7 @@
 #include "hooks/placement.h"
 #include "hooks/limits/weapon_extender.h"
 #include "hooks/interface/briefing/briefing.h"
+#include "hooks/unit_stats/supply_hooks.h"
 #include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -571,6 +572,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectPathfindingHooks();
 	hooks::injectPlacementHooks();
 	hooks::injectBriefingHooks();
+	hooks::injectSupplyHooks();
 
 	return TRUE;
 }

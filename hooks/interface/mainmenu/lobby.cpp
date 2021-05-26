@@ -38,7 +38,7 @@ namespace hooks
 					++playerId;
 				}
 				while (playerId < 8);
-			}			
+			}
 		}
 		return 1;
 	}
