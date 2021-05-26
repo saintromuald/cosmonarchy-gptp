@@ -1785,10 +1785,10 @@ namespace scbw
 
 		const u32 radius = 5 * 32;
 		scbw::UnitFinder(
-			unit->getX() + radius,
-			unit->getY() + radius,
 			unit->getX() - radius,
-			unit->getY() - radius
+			unit->getY() - radius,
+			unit->getX() + radius,
+			unit->getY() + radius
 		).forEach([&](Unit* target)
 		{
 			if (scbw::isAlliedTo(target->playerId, unit->playerId))
