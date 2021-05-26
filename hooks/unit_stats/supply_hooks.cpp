@@ -190,14 +190,12 @@ namespace hooks
             helper::showSupplyInfo(dialogVar, 4, supplies, getSuppliesAvailable(*LOCAL_NATION_ID, RaceId::Zerg));
             dialogVar = dialogVar->next;
         }
-
-        if (*activePlayerRace == RaceId::Terran)
+        else if (*activePlayerRace == RaceId::Terran)
         {
             helper::showSupplyInfo(dialogVar, 5, supplies, getSuppliesAvailable(*LOCAL_NATION_ID, RaceId::Terran));
             dialogVar = dialogVar->next;
         }
-
-        if (*activePlayerRace == RaceId::Protoss)
+        else if (*activePlayerRace == RaceId::Protoss)
         {
             helper::showSupplyInfo(dialogVar, 6, supplies, getSuppliesAvailable(*LOCAL_NATION_ID, RaceId::Protoss));
             dialogVar = dialogVar->next;
@@ -205,7 +203,7 @@ namespace hooks
 
         helper::printStatResInfo(dialogVar, *consoleIndex + 1, (char**)unknown_68C22C, (char*)gameGas[*LOCAL_NATION_ID], replay_switch_something);
         BinDlg* v18 = dialogVar->next;
-        helper::printStatResInfo(v18, 0, (char**)unknown_68C22C, (char*)gameMinerals[*LOCAL_NATION_ID], replay_switch_something);
+        helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)gameMinerals[*LOCAL_NATION_ID], replay_switch_something);
         BinDlg* v17 = v18->next;
         if (v18->next)
         {
