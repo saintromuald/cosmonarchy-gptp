@@ -95,7 +95,7 @@ namespace
 		__asm
 		{
 			POPAD
-			MOV EAX, result
+			MOV AL, result
 			RETN
 		}
 	}
@@ -143,12 +143,28 @@ namespace
 		__asm
 		{
 			POPAD
-			MOV EAX, result
+			MOV AL, result
 			RETN
 		}
 	}
 
-
+	void __declspec(naked) drawSupplyUnitStatus_Wrapper()
+	{
+		static BinDlg* dialog;
+		static s32 unused;
+		__asm
+		{
+			MOV unused, EDI
+			MOV dialog, EAX
+			PUSHAD
+		}
+		hooks::drawSupplyUnitStatus(dialog, unused);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -163,5 +179,6 @@ namespace hooks
 		jmpPatch(StatRes_MainProc_Wrapper,		0x004E5640, 4);
 		jmpPatch(getSuppliesTemp_Wrapper,		0x004246D0, 1);
 		jmpPatch(redrawSupplyInfo_Wrapper,		0x00425230, 4);
+		jmpPatch(drawSupplyUnitStatus_Wrapper,	0x00427540, 1);
 	}
 }

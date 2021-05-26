@@ -945,9 +945,8 @@ namespace helper
 	bool unitStatCond_Standard();																			// 00424980
 
 	// For drawSupplyUnitStatus
-	u16 getLastQueueSlotType(Unit* unit);																	// 0047B270
-	void hideOptionalStatusScreenControls(BinDlg* dialog);													// 00457310
-	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId);											// 00457250
+	void drawShieldUpgrade(BinDlg* dialog, u16 statusScreenIndex);											// 00425510
+	void drawArmor(BinDlg* dialog, s32 unitId, u16 statusScreenIndex);										// 00425600
 
 	//// misc
 	s8 SETS(s32 x);

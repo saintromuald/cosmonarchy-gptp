@@ -442,12 +442,12 @@ SCBW_DATA(s32*,	unknown_player_5153F8,				0x005153F8);
 SCBW_DATA(s32*,	unknown_68C22C,						0x0068C22C);
 
 // For getSuppliesTemp
-SCBW_DATA(s16*, suppliesAvailableTemp,				0x006CA93C);
 SCBW_DATA(s16*,	suppliesUsedTemp,					0x006CA93E);
 
 // For drawSupplyUnitStatus
-SCBW_DATA(s8*,	statusScreenFunc,					0x0068C1E5);
 SCBW_DATA(char*,unknown_struct_6CA9F8,				0x006CA9F8);
+SCBW_DATA(char*,unknown_struct_6CAB08,				0x006CAB08);
+SCBW_DATA(s8*,	unkDialogByte,						0x006CA668);
 
 //////////////////////////////////////////////////////////////// @}
 

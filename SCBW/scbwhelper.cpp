@@ -8897,43 +8897,29 @@ namespace helper
 	}
 
 	// For drawSupplyUnitStatus
-	u16 getLastQueueSlotType(Unit* unit)
+	void drawShieldUpgrade(BinDlg* dialog, u16 statusScreenIndex)
 	{
-		const u32 Func_getLastQueueSlotType = 0x0047B270;
-		static u16 result;
+		const u32 Func_drawShieldUpgrade = 0x00425510;
 		__asm
 		{
 			PUSHAD
-			MOV EDX, unit
-			CALL Func_getLastQueueSlotType
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	void hideOptionalStatusScreenControls(BinDlg* dialog)
-	{
-		const u32 Func_hideOptionalStatusScreenControls = 0x00457310;
-		__asm
-		{
-			PUSHAD
+			PUSH statusScreenIndex
 			MOV EAX, dialog
-			CALL Func_hideOptionalStatusScreenControls
+			CALL Func_drawShieldUpgrade
 			POPAD
 		}
 	}
 
-	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId)
+	void drawArmor(BinDlg* dialog, s32 unitId, u16 statusScreenIndex)
 	{
-		const u32 Func_showControlGroup = 0x00457250;
+		const u32 Func_drawArmor = 0x00425600;
 		__asm
 		{
 			PUSHAD
-			PUSH lastId
-			MOV CX, firstId
+			PUSH statusScreenIndex
+			MOV EDX, unitId
 			MOV EAX, dialog
-			CALL Func_showControlGroup
+			CALL Func_drawArmor
 			POPAD
 		}
 	}

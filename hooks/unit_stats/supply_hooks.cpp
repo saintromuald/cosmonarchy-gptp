@@ -208,7 +208,7 @@ LABEL_15:
         }
         else
         {
-            result = (int)suppliesMax_Terran;
+            result = (s32)suppliesMax_Terran;
             do
             {
                 *(s32*)(result - 144) = 400;
@@ -478,5 +478,191 @@ LABEL_15:
         return result;
     }
 
+    void drawSupplyUnitStatus(BinDlg* dialog, s32 unused) // 00427540
+    {
+        u8 v5;
+        s32 v6;
+        WORD v7;
+        const char* v8;
+        WORD v9;
+        const char* v10;
+        u16 v11;
+        s32 v12;
+        const char* v13;
+        u32 v14;
+        GroupFlag v15;
+        s32 v16;
+        WORD v17;
+        const char* v18;
+        u16 v19;
+        BinDlg* v20;
+        s32 v21;
+        s32 race;
 
+        BinDlg* dialogVar = dialog;
+        Unit* activeUnit = *activePortraitUnit;
+        if (IS_IN_REPLAY || (u8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID)
+        {
+            getSuppliesTemp();
+            if (*statusScreenFunc != 12)
+            {
+                helper::hideOptionalStatusScreenControls(dialogVar);
+                helper::showControlGroup(dialogVar, -10, -13);
+                activeUnit = *activePortraitUnit;
+                *statusScreenFunc = 12;
+            }
+            GroupFlag groupFlag = units_dat::GroupFlags[(u16)activeUnit->id];
+            if (groupFlag.isZerg)
+            {
+                race = 0;
+            }
+            else if (groupFlag.isProtoss)
+            {
+                race = 2;
+            }
+            else
+            {
+                race = (groupFlag.isTerran) != 0 ? RaceId::Terran : RaceId::Neutral;
+            }
+            v5 = activeUnit->playerId;
+            if ((s8)race)
+            {
+                if ((u8)race == RaceId::Terran)
+                {
+                    v6 = suppliesUsed_Terran[v5];
+                }
+                else if ((u8)race == RaceId::Protoss)
+                {
+                    v6 = suppliesUsed_Protoss[v5];
+                }
+                else
+                {
+                    v6 = 0;
+                }
+            }
+            else
+            {
+                v6 = suppliesUsed_Zerg[v5];
+            }
+            v21 = (u8)race;
+            v7 = (u8)race + 820;
+            if ((u8)race == -821)
+            {
+                v8 = 0;
+            }
+            else if (v7 < *statTxtTbl)
+            {
+                v8 = (char*)statTxtTbl + statTxtTbl[v7 + 1];
+            }
+            else
+            {
+                v8 = "";
+            }
+            sprintf_s(unknown_struct_6CA9F8, 260, "%s %d", v8, (v6 + 1) / 2);
+            v9 = (u8)race + 814;
+            if ((u8)race == -815)
+            {
+                v10 = 0;
+            }
+            else if (v9 < *statTxtTbl)
+            {
+                v10 = (char*)statTxtTbl + statTxtTbl[v9 + 1];
+            }
+            else
+            {
+                v10 = "";
+            }
+            v11 = helper::getLastQueueSlotType(*activePortraitUnit);
+            sprintf_s("", 260, "%s %d", v10, (units_dat::SupplyProvided[v11] + 1) / 2);
+            v12 = v21 + 66353;
+            if ((u8)race == -818)
+            {
+                v13 = 0;
+            }
+            else if ((u16)v12 < *statTxtTbl)
+            {
+                v12 = (u16)v12;
+                v13 = (char*)statTxtTbl + statTxtTbl[(u16)v12 + 1];
+            }
+            else
+            {
+                v13 = "";
+            }
+            v12 = race;
+            v14 = getSuppliesAvailable((*activePortraitUnit)->playerId, v12);
+            sprintf_s(unkDialogByte, 260, "%s %d", v13, (s32)(v14 + 1) / 2);
+            race = (*activePortraitUnit)->playerId;
+            v15 = units_dat::GroupFlags[helper::getLastQueueSlotType(*activePortraitUnit)];
+            if (v15.isZerg)
+            {
+                v16 = suppliesMax_Zerg[(u8)race];
+            }
+            else if (v15.isTerran)
+            {
+                v16 = suppliesMax_Terran[(u8)race];
+            }
+            else if (v15.isProtoss)
+            {
+                v16 = suppliesMax_Protoss[(u8)race];
+            }
+            else
+            {
+                v16 = 0;
+            }
+            v17 = v21 + 823;
+            if ((s16)v21 == -824)
+            {
+                v18 = 0;
+            }
+            else if (v17 < *statTxtTbl)
+            {
+                v18 = (char*)statTxtTbl + statTxtTbl[v17 + 1];
+            }
+            else
+            {
+                v18 = "";
+            }
+            sprintf_s(unknown_struct_6CAB08, 260, "%s %d", v18, (u32)(v16 + 1) >> 1);
+            helper::addTextToDialog(dialogVar, -10, unknown_struct_6CA9F8);
+            helper::addTextToDialog(dialogVar, -11, "");
+            helper::addTextToDialog(dialogVar, -12, unkDialogByte);
+            helper::addTextToDialog(dialogVar, -13, unknown_struct_6CAB08);
+            v19 = (*activePortraitUnit)->id;
+            if (units_dat::ShieldsEnabled[v19])
+            {
+                helper::drawShieldUpgrade(dialogVar, 0);
+            }
+            else if (v19 != UnitId::ZergOvileth)
+            {
+                if (dialogVar->controlType)
+                    dialogVar = *(BinDlg**)&dialogVar->parent;
+                v20 = *(BinDlg**)&dialogVar->childrenDlg;
+                if (v20)
+                {
+                    while (v20->index != 9)
+                    {
+                        v20 = v20->next;
+                        if (!v20)
+                        {
+                            goto LABEL_55;
+                        }
+                    }
+                }
+                else
+                {
+LABEL_55:
+                    v20 = 0;
+                }
+                helper::hideDialog(v20);
+            }
+            else
+            {
+                helper::drawArmor(dialogVar, v19, 0);
+            }
+        }
+        else
+        {
+            helper::unitStatAct_Standard(dialog);
+        }
+    }
 }
