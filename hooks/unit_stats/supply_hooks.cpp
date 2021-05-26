@@ -122,25 +122,6 @@ namespace hooks
 
     void StatRes_MainProc(BinDlg* dialog) // 004E5640
     {
-        u8 v2;
-        s32 v3;
-        Unit* activeUnit;
-        s8 activePlayer;
-        u16 v6;
-        u8 v7 = 0;
-        s32 v8;
-        u16 v9;
-        u8 v10;
-        s32 v11;
-        s32 v12;
-        s32 v13;
-        u16 v14;
-        s32 v15 = 0;
-        s32 v16;
-        BinDlg* v17;
-        BinDlg* v18;
-        s32 v19;
-
         if (dialog->controlType)
         {
             dialog = dialog->parent;
@@ -153,99 +134,95 @@ namespace hooks
                 dialogVar = dialogVar->next;
                 if (!dialogVar)
                 {
-                    goto LABEL_6;
+                    dialogVar = 0;
+                    break;
                 }
             }
         }
         else
         {
-LABEL_6:
             dialogVar = 0;
         }
-        v2 = *LOCAL_NATION_ID;
-        v3 = 0;
-        v19 = *LOCAL_NATION_ID;
-        if (!*IS_IN_REPLAY)
+
+        s32 activePlayer = *LOCAL_NATION_ID;
+        s32 replay_switch_something = 0;
+        if (*IS_IN_REPLAY)
         {
-            goto LABEL_15;
-        }
-        if (*clientSelectionCount)
-        {
-            activeUnit = *activePortraitUnit;
-            if (*clientSelectionCount != 1)
+
+            if (*clientSelectionCount)
             {
-                activeUnit = clientSelectionGroup->unit[0];
-            }
-            activePlayer = activeUnit->playerId;
-            if (activePlayer != 11)
-            {
-                v2 = activePlayer;
-                *LOCAL_NATION_ID = activePlayer;
-                if (activePlayer != *unknown_player_5153F8)
+                Unit* activeUnit = *activePortraitUnit;
+                if (*clientSelectionCount != 1)
                 {
-                    v3 = 1;
+                    activeUnit = clientSelectionGroup->unit[0];
                 }
-                *unknown_player_5153F8 = activePlayer;
-LABEL_15:
-                //v8 = suppliesUsed_Zerg[v2];
-                //dialog = nullptr; // was lobyte = 0
-                //v6 = getSuppliesAvailable(v2, (s32)dialog);
-                //if (v6)
-                //{
-                //    helper::showSupplyInfo(dialogVar, 4, v8, v6);
-                //    dialogVar = dialogVar->next;
-                //    v7 = *LOCAL_NATION_ID;
-                //}
-                v12 = v7;
-                v13 = suppliesUsed_Terran[v7];
-                v12 = 1;
-                v9 = getSuppliesAvailable(v7, v12);
-                if (v9)
+                activePlayer = activeUnit->playerId;
+                if (activePlayer != 11)
                 {
-                    helper::showSupplyInfo(dialogVar, 5, v13, v9);
-                    dialogVar = dialogVar->next;
-                    v10 = *LOCAL_NATION_ID;
-                }
-                //v16 = suppliesUsed_Protoss[v10];
-                //v11 = 2;
-                //v14 = getSuppliesAvailable(v10, v11);
-                //if (v14)
-                //{
-                //    helper::showSupplyInfo(dialogVar, 6, v16, v14);
-                //    dialogVar = dialogVar->next;
-                //    v15 = *LOCAL_NATION_ID;
-                //}
-                helper::printStatResInfo(dialogVar, *consoleIndex + 1, (char**)&(*unknown_68C22C), (char*)gameGas[v15], v3);
-                v18 = dialogVar->next;
-                helper::printStatResInfo(v18, 0, (char**)&(*unknown_68C22C), (char*)gameMinerals[*LOCAL_NATION_ID], v3);
-                v17 = v18->next;
-                if (v18->next)
-                {
-                    do
+                    activePlayer = activePlayer;
+                    *LOCAL_NATION_ID = activePlayer;
+                    if (activePlayer != *unknown_player_5153F8)
                     {
-                        if (v17->index > 5)
-                        {
-                            break;
-                        }
-                        helper::hideDialog(v17);
-                        v17 = v17->next;
+                        replay_switch_something = 1;
                     }
-                    while (v17);
+                    *unknown_player_5153F8 = activePlayer;
                 }
-                if (*IS_IN_REPLAY)
+            }
+            else
+            {
+                for (*unknown_player_5153F8 = -1; dialogVar; dialogVar = dialogVar->next)
                 {
-                    *LOCAL_NATION_ID = v19;
+                    if (dialogVar->index > 5)
+                    {
+                        break;
+                    }
+                    helper::hideDialog(dialogVar);
                 }
                 return;
             }
         }
-        for (*unknown_player_5153F8 = -1; dialogVar; dialogVar = dialogVar->next)
+
+        s32 supplies = suppliesUsed_Terran[*LOCAL_NATION_ID];
+
+        const u8* activePlayerRace = (u8*)0x0057F1E2;
+        if (*activePlayerRace == RaceId::Zerg)
         {
-            if (dialogVar->index > 5)
+            helper::showSupplyInfo(dialogVar, 4, supplies, getSuppliesAvailable(*LOCAL_NATION_ID, RaceId::Zerg));
+            dialogVar = dialogVar->next;
+        }
+
+        if (*activePlayerRace == RaceId::Terran)
+        {
+            helper::showSupplyInfo(dialogVar, 5, supplies, getSuppliesAvailable(*LOCAL_NATION_ID, RaceId::Terran));
+            dialogVar = dialogVar->next;
+        }
+
+        if (*activePlayerRace == RaceId::Protoss)
+        {
+            helper::showSupplyInfo(dialogVar, 6, supplies, getSuppliesAvailable(*LOCAL_NATION_ID, RaceId::Protoss));
+            dialogVar = dialogVar->next;
+        }
+
+        helper::printStatResInfo(dialogVar, *consoleIndex + 1, (char**)unknown_68C22C, (char*)gameGas[*LOCAL_NATION_ID], replay_switch_something);
+        BinDlg* v18 = dialogVar->next;
+        helper::printStatResInfo(v18, 0, (char**)unknown_68C22C, (char*)gameMinerals[*LOCAL_NATION_ID], replay_switch_something);
+        BinDlg* v17 = v18->next;
+        if (v18->next)
+        {
+            do
             {
-                break;
+                if (v17->index > 5)
+                {
+                    break;
+                }
+                helper::hideDialog(v17);
+                v17 = v17->next;
             }
-            helper::hideDialog(dialogVar);
+            while (v17);
+        }
+        if (*IS_IN_REPLAY)
+        {
+            *LOCAL_NATION_ID = activePlayer;
         }
     }
 
