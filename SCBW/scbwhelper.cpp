@@ -8933,6 +8933,8 @@ namespace helper
 			PUSH lastId
 			MOV CX, firstId
 			MOV EAX, dialog
+			CALL Func_showControlGroup
+			POPAD
 		}
 	}
 }
