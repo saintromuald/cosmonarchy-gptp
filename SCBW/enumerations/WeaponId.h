@@ -180,6 +180,8 @@ namespace WeaponId {
 		PaladinSkyfall = 126,					// Paladin ability targeting
 		IonCannon = 129,						// Ion Cannon weapon
 		StrigaPhaseSaber = 130,					// Striga weapon
+		LuminaryIcarusMissiles = 131,			// Luminary weapon
+		LuminaryAuralAssault = 132,				// Luminary ability targeting
 
 		// Protoss \\
 				

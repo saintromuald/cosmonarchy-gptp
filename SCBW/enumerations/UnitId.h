@@ -267,9 +267,8 @@ namespace UnitId
 		// Cosmonarchy \\
 
 	// Unused
-	//	TerranPhysicsLab								= 118,		// Physics Lab | Currently cannot set dat requirements because of firegraft being a good program
+	//	TerranPhysicsLab								= 118,		// Physics Lab // Currently cannot set dat requirements because of firegraft being a good program
 	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
-	//	ZergSkithrokScab								= 150,		// Mature Chrysalis
 	//	ZergAlmakAntre									= 179,		// Cave
 	//	ZergLakizDen									= 191,		// Zerg Marker
 	//	ZergNathrokLake									= 210,		// Left Wall Missile Trap
@@ -281,8 +280,6 @@ namespace UnitId
 	//	DarkSwarm										= 202,		// Dark Swarm
 
 	// Need IDs for
-	//	SharedStriga									= x,		// 
-	//	SharedLuminary									= x,		// 
 	//	SharedTarasque									= x,		// 
 	//	SharedAnticthon									= x,		// 
 	//	SharedEmpress									= x,		// 
@@ -297,6 +294,8 @@ namespace UnitId
 	// Shared-Unit
 		SharedCohort									= 50,		// Infested Terran
 		SharedCharlatan									= 90,		// Bengalaas
+		SharedStriga									= 148,		// Overmind
+		SharedLuminary									= 150,		// Mature Chrysalis
 		SharedAspirant									= 194,		// Zerg Beacon
 
 	// Terran-Unit
@@ -319,7 +318,6 @@ namespace UnitId
 		TerranAzazel									= 98,		// Raszagal Corsair
 		TerranOlympian									= 137,		// Greater Spire
 		TerranAutocrat									= 145,		// Unused Zerg 1
-		TerranStriga									= 148,		// Overmind
 		TerranSiren										= 151,		// Cerebrate
 		TerranPaladin									= 186,		// Ruins
 		TerranSavant									= 187,		// Kyadarin Crystal Formation
