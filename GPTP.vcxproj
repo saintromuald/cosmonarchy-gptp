@@ -350,6 +350,8 @@
     <ClCompile Include="hooks\trap_hooks_inject.cpp" />
     <ClCompile Include="hooks\unit_movement.cpp" />
     <ClCompile Include="hooks\unit_movement_inject.cpp" />
+    <ClCompile Include="hooks\unit_stats\supply_hooks.cpp" />
+    <ClCompile Include="hooks\unit_stats\supply_hooks_inject.cpp" />
     <ClCompile Include="hooks\use_tech.cpp" />
     <ClCompile Include="hooks\use_tech_inject.cpp" />
     <ClCompile Include="hooks\weapon_effect.cpp" />
@@ -578,6 +580,7 @@
     <ClInclude Include="hooks\placement.h" />
     <ClInclude Include="hooks\trap_hooks.h" />
     <ClInclude Include="hooks\unit_movement.h" />
+    <ClInclude Include="hooks\unit_stats\supply_hooks.h" />
     <ClInclude Include="include\yaml-cpp\anchor.h" />
     <ClInclude Include="include\yaml-cpp\binary.h" />
     <ClInclude Include="include\yaml-cpp\contrib\anchordict.h" />
