@@ -1024,9 +1024,9 @@ namespace hooks
 				// Augur - Death behavior
 				augurSacrifice(data.target);
 			} break;
-			case UnitId::TerranStriga:
+			case UnitId::SharedStriga:
 			{
-				// Striga - Repulsion
+				// Striga - Fleeting Focus
 				if (data.attacker != nullptr && !(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building))
 				{
 					const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());

@@ -592,11 +592,11 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::TerranStriga:
+			case UnitId::SharedStriga:
 			case UnitId::ProtossLegionnaire:
 			{
+				// Striga - Transient Travels
 				// Legionnaire - Blade Vortex
-				// Striga - Teleport
 				if (unit->orderTarget.unit != nullptr
 					&& (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::AttackUnit))
 				{
@@ -613,7 +613,7 @@ namespace hooks
 							imageId = ImageId::LegionnaireTeleportEffect;
 						}
 					}
-					else if (unit->id == UnitId::TerranStriga)
+					else if (unit->id == UnitId::SharedStriga)
 					{
 						if (distance > 15 && distance <= 5 * 32 && scbw::isUnitIsolated(target))
 						{
