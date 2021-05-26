@@ -164,11 +164,11 @@ LABEL_6:
         v2 = *LOCAL_NATION_ID;
         v3 = 0;
         v19 = *LOCAL_NATION_ID;
-        if (!IS_IN_REPLAY)
+        if (!*IS_IN_REPLAY)
         {
             goto LABEL_15;
         }
-        if (clientSelectionCount)
+        if (*clientSelectionCount)
         {
             activeUnit = *activePortraitUnit;
             if (*clientSelectionCount != 1)
@@ -231,7 +231,7 @@ LABEL_15:
                     }
                     while (v17);
                 }
-                if (IS_IN_REPLAY)
+                if (*IS_IN_REPLAY)
                 {
                     *LOCAL_NATION_ID = v19;
                 }
