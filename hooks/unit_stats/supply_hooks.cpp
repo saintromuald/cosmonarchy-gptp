@@ -183,18 +183,17 @@ namespace hooks
         }
 
         s32 supplies = suppliesUsed_Terran[*LOCAL_NATION_ID];
-
-        if (*activePlayerRace == RaceId::Zerg)
+        if (playerTable[activePlayer].race == RaceId::Zerg)
         {
             helper::showSupplyInfo(dialogVar, 4, supplies, getSuppliesAvailable(*LOCAL_NATION_ID, RaceId::Zerg));
             dialogVar = dialogVar->next;
         }
-        else if (*activePlayerRace == RaceId::Terran)
+        else if (playerTable[activePlayer].race == RaceId::Terran)
         {
             helper::showSupplyInfo(dialogVar, 5, supplies, getSuppliesAvailable(*LOCAL_NATION_ID, RaceId::Terran));
             dialogVar = dialogVar->next;
         }
-        else if (*activePlayerRace == RaceId::Protoss)
+        else if (playerTable[activePlayer].race == RaceId::Protoss)
         {
             helper::showSupplyInfo(dialogVar, 6, supplies, getSuppliesAvailable(*LOCAL_NATION_ID, RaceId::Protoss));
             dialogVar = dialogVar->next;

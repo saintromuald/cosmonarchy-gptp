@@ -442,7 +442,6 @@ SCBW_DATA(s8*,	unknown_57F41CB,					0x0057F1CB);
 SCBW_DATA(s32*,	unknown_player_5153F8,				0x005153F8);
 SCBW_DATA(s32*,	unknown_68C22C,						0x0068C22C);
 SCBW_DATA(s32*,	unknown_68C230,						0x0068C230);
-SCBW_DATA(u8*,	activePlayerRace,					0x0057F1E2);
 
 // For getSuppliesTemp
 SCBW_DATA(s16*,	suppliesUsedTemp,					0x006CA93E);
