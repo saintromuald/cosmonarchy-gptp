@@ -163,7 +163,7 @@ namespace UnitId
 		/*0x9C*/	ProtossPylon							= 156,
 		/*0x9D*/	ProtossAquifer							= 157,
 		/*0x9E*/	UnusedProtoss1							= 158,
-		/*0x9F*/	ProtossObservatory						= 159,
+		/*0x9F*/	ProtossMachinistHall					= 159,
 		/*0xA0*/	ProtossGateway							= 160,
 		/*0xA1*/	UnusedProtoss2							= 161,
 		/*0xA2*/	ProtossPhotonCannon						= 162,
@@ -267,36 +267,24 @@ namespace UnitId
 		// Cosmonarchy \\
 
 	// Unused
+	//	DisruptionField									= 105,		// Disruption Field // might need mempatches?
 	//	TerranPhysicsLab								= 118,		// Physics Lab // Currently cannot set dat requirements because of firegraft being a good program
 	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
-	//	ZergAlmakAntre									= 179,		// Cave
-	//	ZergLakizDen									= 191,		// Zerg Marker
-	//	ZergNathrokLake									= 210,		// Left Wall Missile Trap
-	//	ZergQuazilQuay									= 220,		// Mineral Chunk Type 1
-	//	ZergOcsalColony									= 223,		// Protoss Gas Orb Type 2
 
 	// Soon to be unused
-	//	DisruptionField									= 105,		// Disruption Field
-	//	DarkSwarm										= 202,		// Dark Swarm
-
-	// Need IDs for
-	//	SharedTarasque									= x,		// 
-	//	SharedAnticthon									= x,		// 
-	//	SharedEmpress									= x,		// 
-	//	SharedAnthelion									= x,		// 
-	//	TerranOlympian									= x,		// 
-	//	TerranAutocrat									= x,		// 
-	//	TerranGuildhall									= x,		// 
-	//	TerranBioticBase								= x,		// 
-	//	TerranTinkerersTower							= x,		// 
-	//	ProtossProstrationStage							= x,		// 
+	//	DarkSwarm										= 202,		// Dark Swarm // might need mempatches?
 
 	// Shared-Unit
 		SharedCohort									= 50,		// Infested Terran
 		SharedCharlatan									= 90,		// Bengalaas
 		SharedStriga									= 148,		// Overmind
 		SharedLuminary									= 150,		// Mature Chrysalis
+		SharedAnthelion									= 179,		// Cave
+		SharedEmpress									= 183,		// Independent Command Center
+		SharedAxitrilisk								= 191,		// Zerg Marker
 		SharedAspirant									= 194,		// Zerg Beacon
+		SharedTarasque									= 210,		// Left Wall Missile Trap
+		SharedAnticthon									= 211,		// Left Wall Flame Trap
 
 	// Terran-Unit
 		TerranApostle									= 10,		// Gui Montag
@@ -338,6 +326,8 @@ namespace UnitId
 		TerranScrapyard									= 200,		// Power Generator
 		TerranNaniteAssembly							= 203,		// Floor Missile Trap	
 		TerranTreasury									= 215,		// Flag
+		TerranBioticBase								= 220,		// Mineral Chunk Type 1
+		TerranTinkerersTower							= 223,		// Protoss Gas Orb Type 2
 
 	// Protoss-Unit
 		ProtossManifold									= 16,		// Sarah Kerrigan
@@ -366,16 +356,16 @@ namespace UnitId
 		ProtossBarghest									= 104,		// Infested Duran
 
 	// Protoss-Building
-		ProtossAutomatonRegister						= 158,		// Unused Protoss 1				| Idol requirement
-		ProtossAncestralEffigy							= 161,		// Unused Protoss 2				| Atreus requirement
+		ProtossAutomatonRegister						= 158,		// Unused Protoss 1				| Robotic tier 1.5 requirement
+		ProtossProstrationStage							= 159,		// Observatory					| Profane production
+		ProtossRogueGallery								= 161,		// Unused Protoss 2				| Shared production
+		ProtossWaywardLure								= 163,		// Citadel of Adun				| Luminary, Striga, Empress requirement
 		ProtossArgosy									= 168,		// Stasis Chamber				| Advanced Stellar production
-		ProtossPrincipality								= 175,		// Xel'Naga Temple				| Legionnaire requirement
+		ProtossMonumentOfSin							= 175,		// Xel'Naga Temple				| Anthelion requirement
 		ProtossStridentStratum							= 182,		// Mining Platform				| Barghest requirement
-		ProtossStellarIcon								= 183,		// Independent Command Center	| Exemplar requirement
-		ProtossAstralOmen								= 184,		// Independent Starport			| Gladius requirement
+		ProtossAstralOmen								= 184,		// Independent Starport			| Exemplar, Gladius requirement
 		ProtossRoboticsAuthority						= 190,		// Psi Disruptor				| Advanced Robotics production
 		ProtossCrucible									= 201,		// Overmind Cocoon				| Structure w/ efficiency aura for production/upgrades
-		ProtossCelestialShrine							= 211,		// Left Wall Flame Trap			| Empyrean requirement
 		ProtossCosmicAltar								= 213,		// Right Wall Flame Trap		| Star Sovereign requirement
 		ProtossPennant									= 221,		// Mineral Cluster Type 2		| Structure w/ regeneration aura for resources
 		ProtossSanctumOfSorrow							= 225,		// Zerg Gas Sac Type 2			| Pariah and Augur requirement
@@ -406,6 +396,7 @@ namespace UnitId
 		BasiliskCreeper									= 180,		// Cave-in
 
 	// Zerg-Building
+		ZergOrbothOmlia									= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation
 		ZergOthstolOviform								= 152,		// Cerebrate Daggoth
 		ZergGorgralSwamp								= 153,		// Unused Zerg 2
 		ZergAlaszilArbor								= 181,		// Cantina
