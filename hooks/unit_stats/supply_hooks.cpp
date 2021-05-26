@@ -599,8 +599,7 @@ LABEL_55:
         {
             return true;
         }
-        const RaceId::Enum raceId = RaceId::Terran;
-        assert(raceId <= 2);
+        u32 raceId = playerTable[playerId].race;
         const u32 supplyUsed = raceSupply[RaceId::Terran].used[playerId];
         // Must construct additional pylons
         if (supplyUsed + supplyCost > raceSupply[RaceId::Terran].max[playerId])
