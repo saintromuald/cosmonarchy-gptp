@@ -596,6 +596,7 @@ namespace hooks
 			case UnitId::ProtossLegionnaire:
 			{
 				// Legionnaire - Blade Vortex
+				// Striga - Teleport
 				if (unit->orderTarget.unit != nullptr
 					&& (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::AttackUnit))
 				{

@@ -1026,6 +1026,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranStriga:
 			{
+				// Striga - Repulsion
 				if (data.attacker != nullptr && !(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building))
 				{
 					const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
