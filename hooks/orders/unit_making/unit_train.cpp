@@ -143,119 +143,115 @@ namespace hooks
 					}
 				}
 			}
-			else
-				if (unit->secondaryOrderState == 2)
+			else if (unit->secondaryOrderState == 2)
+			{
+				Unit* builtUnit = unit->currentBuildUnit;
+				if (builtUnit != nullptr)
 				{
-					Unit* builtUnit = unit->currentBuildUnit;
-					if (builtUnit != nullptr)
+					UnitExt* builtUnitExt = globals.GetUnitExt(builtUnit);
+					u32 hpGain = helper::getHPGainForRepair(builtUnit);
+					bool extraBuild = false;
+					if (builtUnitExt->values[ValueCrucible] == 0)
 					{
-						UnitExt* builtUnitExt = globals.GetUnitExt(builtUnit);
-						u32 hpGain = helper::getHPGainForRepair(builtUnit);
-						bool extraBuild = false;
-						if (builtUnitExt->values[ValueCrucible] == 0)
+						auto r = 256;
+						auto n = cosmonarchyFinderMatch(nullptr, Flags::Ally | Flags::Powered | Flags::Completed,
+							{UnitId::ProtossCrucible});
+						scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
+							builtUnit->position.x + r, builtUnit->position.y + r);
+						for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 						{
-							auto r = 256;
-							auto n = cosmonarchyFinderMatch(nullptr, Flags::Ally | Flags::Powered | Flags::Completed,
-								{UnitId::ProtossCrucible});
-							scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
-								builtUnit->position.x + r, builtUnit->position.y + r);
-							for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+							auto unit = unitsInSplash.getUnit(i);
+							if (n(unit))
 							{
-								auto unit = unitsInSplash.getUnit(i);
-								if (n(unit))
+								builtUnitExt->values[ValueCrucible] = 5; // 6 is ~100/15
+								helper::buildingAddon(builtUnit, hpGain, TRUE);
+								if (builtUnit->status & UnitStatus::Completed)
 								{
-									builtUnitExt->values[ValueCrucible] = 5; // 6 is ~100/15
-									helper::buildingAddon(builtUnit, hpGain, TRUE);
-									if (builtUnit->status & UnitStatus::Completed)
-									{
-										extraBuild = true;
-									}
-									break;
+									extraBuild = true;
 								}
-							}
-						}
-						else
-						{
-							builtUnitExt->values[ValueCrucible]--;
-						}
-						if (extraBuild || helper::buildingAddon(builtUnit, hpGain, TRUE))
-						{
-							if (builtUnit->status & UnitStatus::Completed)
-							{
-								helper::AI_TrainingUnit(builtUnit, unit);
-								if (builtUnit->id == UnitId::TerranNuclearMissile)
-								{
-									helper::hideAndDisableUnit(builtUnit);
-								}
-								else
-								{
-									helper::orderNewUnitToRally(builtUnit, unit);
-								}
-								helper::function_00432430(unit, unit->buildQueueSlot);
-								unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-								unit->buildQueueSlot = (unit->buildQueueSlot + 1) % 5;
-								jump_to_685D8 = true;
-							}
-						}
-						else // unit was canceled due to lack of space around the building
-						{
-							u32 queueSlot = unit->buildQueueSlot % 5;
-							if (unit->buildQueue[queueSlot] == UnitId::None)
-							{
-								jump_to_685D8 = true;
-							}
-							else
-							{
-								u8 counter = 4;
-								if (unit->currentBuildUnit != nullptr)
-								{
-									helper::AI_CancelStructure(unit->currentBuildUnit);
-								}
-								else
-								{
-									if (!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
-									{
-										helper::refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5], unit->playerId);
-									}
-								}
-								do
-								{
-									counter--;
-									unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
-									if (unit->pAI != nullptr && *(u8*)((u32)unit->pAI + 8) == 3)
-									{
-										*(u8*)((u32)unit->pAI + unit->buildQueueSlot + 9) = *(u8*)((u32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
-										*(u32*)((u32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(u32*)((u32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
-									}
-								} while (counter != 0);
-								unit->buildQueue[(unit->buildQueueSlot + 1) % 5] = UnitId::None;
-								jump_to_685D8 = true;
+								break;
 							}
 						}
 					}
 					else
 					{
-						jump_to_685D8 = true;
+						builtUnitExt->values[ValueCrucible]--;
 					}
-					if (jump_to_685D8)
+					if (extraBuild || helper::buildingAddon(builtUnit, hpGain, TRUE))
 					{
-						// Solarion - start with 12 interceptors
-						if (builtUnit != nullptr && builtUnit->id == UnitId::ProtossSolarion)
+						if (builtUnit->status & UnitStatus::Completed)
 						{
-							s32 interceptors = 12;
-							u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
-							buf[0] = 0x99; // new general command
-							buf[1] = NewGameCommand::CarrierPrebuild;
-							buf[2] = interceptors;
-							buf[3] = *ACTIVE_PLAYER_ID;
-							memcpy(&buf[4], &builtUnit, 4);
-							helper::QueueGameCommand(buf, 0xc);
+							helper::AI_TrainingUnit(builtUnit, unit);
+							if (builtUnit->id == UnitId::TerranNuclearMissile)
+							{
+								helper::hideAndDisableUnit(builtUnit);
+							}
+							else
+							{
+								helper::orderNewUnitToRally(builtUnit, unit);
+							}
+							helper::function_00432430(unit, unit->buildQueueSlot);
+							unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+							unit->buildQueueSlot = (unit->buildQueueSlot + 1) % 5;
+							jump_to_685D8 = true;
 						}
-						scbw::refreshConsole();
-						unit->currentBuildUnit = nullptr;
-						unit->secondaryOrderState = 0;
+					}
+					else // unit was canceled due to lack of space around the building
+					{
+						u32 queueSlot = unit->buildQueueSlot % 5;
+						if (unit->buildQueue[queueSlot] == UnitId::None)
+						{
+							jump_to_685D8 = true;
+						}
+						else
+						{
+							u8 counter = 4;
+							if (unit->currentBuildUnit != nullptr)
+							{
+								helper::AI_CancelStructure(unit->currentBuildUnit);
+							}
+							else if (!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
+							{
+								helper::refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5], unit->playerId);
+							}
+							do
+							{
+								counter--;
+								unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
+								if (unit->pAI != nullptr && *(u8*)((u32)unit->pAI + 8) == 3)
+								{
+									*(u8*)((u32)unit->pAI + unit->buildQueueSlot + 9) = *(u8*)((u32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
+									*(u32*)((u32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(u32*)((u32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
+								}
+							} while (counter != 0);
+							unit->buildQueue[(unit->buildQueueSlot + 1) % 5] = UnitId::None;
+							jump_to_685D8 = true;
+						}
 					}
 				}
+				else
+				{
+					jump_to_685D8 = true;
+				}
+				if (jump_to_685D8)
+				{
+					// Solarion - start with 12 interceptors
+					if (builtUnit != nullptr && builtUnit->id == UnitId::ProtossSolarion)
+					{
+						s32 interceptors = 12;
+						u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
+						buf[0] = 0x99; // new general command
+						buf[1] = NewGameCommand::CarrierPrebuild;
+						buf[2] = interceptors;
+						buf[3] = *ACTIVE_PLAYER_ID;
+						memcpy(&buf[4], &builtUnit, 4);
+						helper::QueueGameCommand(buf, 0xc);
+					}
+					scbw::refreshConsole();
+					unit->currentBuildUnit = nullptr;
+					unit->secondaryOrderState = 0;
+				}
+			}
 		}
 	}
 
