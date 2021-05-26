@@ -602,16 +602,15 @@ namespace hooks
 						break;
 				}
 			}
-			else
-				if (unit->id == UnitId::ZergOthstoleth)
-				{
-					supply = units_dat::SupplyProvided[unit->id];
-				}
+			else if (unit->id == UnitId::ZergOthstoleth)
+			{
+				supply = units_dat::SupplyProvided[unit->id];
+			}
 			unitExt->values[ValueOverlordSupply] = 0;
 		}
 		if (race <= RaceId::Protoss)
 		{
-			raceSupply[race].provided[player] += count * supply;
+			raceSupply[RaceId::Terran].provided[player] += count * supply;
 		}
 		if (units_dat::GroupFlags[unit_id].isFactory)
 		{

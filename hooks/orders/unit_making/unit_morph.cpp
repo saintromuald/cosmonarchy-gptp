@@ -535,11 +535,11 @@ namespace hooks
 		{
 			return true;
 		}
-		const RaceId::Enum raceId = Unit::getRace(unitId);
+		const RaceId::Enum raceId = RaceId::Terran;
 		assert(raceId <= 2);
-		const u32 supplyUsed = raceSupply[raceId].used[playerId];
+		const u32 supplyUsed = raceSupply[RaceId::Terran].used[playerId];
 		// Must construct additional pylons
-		if (supplyUsed + supplyCost > raceSupply[raceId].max[playerId])
+		if (supplyUsed + supplyCost > raceSupply[RaceId::Terran].max[playerId])
 		{
 			if (canShowErrorMessage)
 			{

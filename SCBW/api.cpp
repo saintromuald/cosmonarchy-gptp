@@ -350,13 +350,13 @@ namespace scbw
 		s32 supplyProvided;
 		if (isCheatEnabled(CheatFlags::FoodForThought))
 		{
-			supplyProvided = raceSupply[raceId].max[playerId];
+			supplyProvided = raceSupply[RaceId::Terran].max[playerId];
 		}
 		else
 		{
-			supplyProvided = std::min(raceSupply[raceId].max[playerId], raceSupply[raceId].provided[playerId]);
+			supplyProvided = std::min(raceSupply[RaceId::Terran].max[playerId], raceSupply[raceId].provided[playerId]);
 		}
-		return supplyProvided - raceSupply[raceId].used[playerId];
+		return supplyProvided - raceSupply[RaceId::Terran].used[playerId];
 
 	}
 

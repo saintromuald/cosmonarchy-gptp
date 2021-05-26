@@ -9,33 +9,8 @@ namespace hooks
     // Until further notice, these hooks are all for the shared supply rewrite - Pr0nogo
     u32 getSuppliesAvailable(u8 playerId, s32 race) // 00488900
     {
-        u32 result;
-        u32 suppliesAvailable;
-        race = (u8)race;
-        if ((s8)race)
-        {
-            // Overly-complicated nonsense
-            s32 raceId = race - 1;
-            if (raceId)
-            {
-                if (raceId != 1)
-                {
-                    return 0;
-                }
-                suppliesAvailable = suppliesAvailable_Protoss[playerId];
-                result = suppliesMax_Protoss[playerId];
-            }
-            else
-            {
-                suppliesAvailable = suppliesAvailable_Terran[playerId];
-                result = suppliesMax_Terran[playerId];
-            }
-        }
-        else
-        {
-            suppliesAvailable = suppliesAvailable_Zerg[playerId];
-            result = suppliesMax_Zerg[playerId];
-        }
+        u32 result = suppliesMax_Terran[playerId];
+        u32 suppliesAvailable = suppliesAvailable_Terran[playerId];
         if (suppliesAvailable < result)
         {
             result = suppliesAvailable;
@@ -45,110 +20,33 @@ namespace hooks
 
     s32 getSuppliesRemaining(u8 playerId, u16 unitId) // 004889D0
     {
-        GroupFlag  groupFlags = units_dat::GroupFlags[unitId];
-        u32 supplyVar1 = 0;
-        u32 supplyVar2 = 0;
-        GroupFlag groupFlags2 = units_dat::GroupFlags[unitId];
-        if (groupFlags.isZerg)
+        u32 supplyAvailable = 0;
+        u32 supplyUsed = 0;
+        if (hooks::getSuppliesMax(unitId, playerId) >= suppliesAvailable_Terran[playerId])
         {
-            supplyVar1 = suppliesAvailable_Zerg[playerId];
-            if (suppliesMax_Zerg[playerId] < supplyVar1)
-            {
-                supplyVar1 = hooks::getSuppliesMax(unitId, playerId);
-                groupFlags = groupFlags2;
-            }
-            supplyVar2 = suppliesUsed_Zerg[playerId];
+            supplyUsed = suppliesUsed_Terran[playerId];
+            supplyAvailable = suppliesAvailable_Terran[playerId];
         }
         else
         {
-            if (groupFlags.isTerran)
-            {
-                u32 supplyVar3 = suppliesAvailable_Terran[playerId];
-                if (hooks::getSuppliesMax(unitId, playerId) >= supplyVar3)
-                {
-                    supplyVar2 = suppliesUsed_Terran[playerId];
-                    supplyVar1 = supplyVar3;
-                }
-                else
-                {
-                    supplyVar1 = hooks::getSuppliesMax(unitId, playerId);
-                    supplyVar2 = suppliesUsed_Terran[playerId];
-                }
-            }
-            else
-            {
-                if (!(groupFlags.isProtoss))
-                {
-                    goto LABEL_15;
-                }
-                u32 supplyVar4 = suppliesAvailable_Protoss[playerId];
-                if (hooks::getSuppliesMax(unitId, playerId) >= supplyVar4)
-                {
-                    supplyVar1 = supplyVar4;
-                }
-                else
-                {
-                    supplyVar1 = hooks::getSuppliesMax(unitId, playerId);
-                }
-                supplyVar2 = suppliesUsed_Protoss[playerId];
-            }
-            groupFlags = groupFlags2;
+            supplyUsed = suppliesUsed_Terran[playerId];
+            supplyAvailable = hooks::getSuppliesMax(unitId, playerId);
         }
-LABEL_15:
         if (*CHEAT_STATE & 0x20000)
         {
-            if (groupFlags.isZerg)
-            {
-                return suppliesMax_Zerg[playerId] - supplyVar2;
-            }
-            if (groupFlags.isTerran)
-            {
-                return suppliesMax_Terran[playerId] - supplyVar2;
-            }
-            if (groupFlags.isProtoss)
-            {
-                return suppliesMax_Protoss[playerId] - supplyVar2;
-            }
-            supplyVar1 = 0;
+            return suppliesMax_Terran[playerId] - supplyUsed;
         }
-        return supplyVar1 - supplyVar2;
+        return supplyAvailable - supplyUsed;
     }
 
     s32 getSuppliesMax(u16 unitId, u8 playerId) // 00488990
     {
-        GroupFlag groupFlags = units_dat::GroupFlags[unitId];
-        if (groupFlags.isZerg)
-        {
-            return suppliesMax_Zerg[playerId];
-        }
-        if (groupFlags.isTerran)
-        {
-            return suppliesMax_Terran[playerId];
-        }
-        if (groupFlags.isProtoss)
-        {
-            return suppliesMax_Protoss[playerId];
-        }
-        return 0;
+        return suppliesMax_Terran[playerId];
     }
 
     s32 getSuppliesUsed(s32 race, u8 playerId) // 004888C0
     {
-        race = (u8)race;
-        if (!(s8)race)
-        {
-            return suppliesUsed_Zerg[playerId];
-        }
-        s32 raceId = race - 1;
-        if (!raceId)
-        {
-            return suppliesUsed_Terran[playerId];
-        }
-        if (raceId == 1)
-        {
-            return suppliesUsed_Protoss[playerId];
-        }
-        return 0;
+        return suppliesUsed_Terran[playerId];
     }
 
     char initializeUnitCounts() // 00488F90
@@ -180,7 +78,7 @@ LABEL_15:
                     }
 
                     supplyMax2 = iteratorResult;
-                    suppliesMax_Zerg[supplyMax2] = supplyMax1;
+                    suppliesMax_Terran[supplyMax2] = supplyMax1;
                     if (400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 1) >= 400)
                     {
                         supplyMax3 = 400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 1);
@@ -190,7 +88,7 @@ LABEL_15:
                         supplyMax3 = 400;
                     }
 
-                    suppliesMax_Terran[supplyMax2] = supplyMax3;
+                    suppliesMax_Terran[supplyMax2] += supplyMax3;
                     if (400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 2) >= 400)
                     {
                         result = 400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 2);
@@ -200,7 +98,7 @@ LABEL_15:
                         result = 400;
                     }
 
-                    suppliesMax_Protoss[supplyMax2] = result;
+                    suppliesMax_Terran[supplyMax2] += result;
                 }
                 ++forceIterator;
             }
@@ -275,7 +173,7 @@ LABEL_6:
             activeUnit = *activePortraitUnit;
             if (*clientSelectionCount != 1)
             {
-                activeUnit = *clientSelectionGroup[0].unit;
+                activeUnit = clientSelectionGroup->unit[0];
             }
             activePlayer = activeUnit->playerId;
             if (activePlayer != 11)
@@ -288,7 +186,7 @@ LABEL_6:
                 }
                 *unknown_player_5153F8 = activePlayer;
 LABEL_15:
-                v8 = suppliesUsed_Zerg[v2];
+                v8 = suppliesUsed_Terran[v2];
                 dialog = nullptr; // was lobyte = 0
                 v6 = getSuppliesAvailable(v2, (s32)dialog);
                 if (v6)
@@ -307,7 +205,7 @@ LABEL_15:
                     dialogVar = dialogVar->next;
                     v10 = *LOCAL_NATION_ID;
                 }
-                v16 = suppliesUsed_Protoss[v10];
+                v16 = suppliesUsed_Terran[v10];
                 v11 = 2;
                 v14 = getSuppliesAvailable(v10, v11);
                 if (v14)
@@ -354,64 +252,10 @@ LABEL_15:
     {
         Unit* activeUnit = *activePortraitUnit;
         GroupFlag groupFlags = units_dat::GroupFlags[activeUnit->id];
-        s32 race = 0;
-        if (groupFlags.isZerg) // redundant now
-        {
-            race = 0;
-        }
-        else if (groupFlags.isProtoss)
-        {
-            race = 2;
-        }
-        else
-        {
-            race = (groupFlags.isTerran) != 0 ? 1 : 4;
-        }
-        *suppliesAvailableTemp = getSuppliesAvailable(activeUnit->playerId, race);
-
+        *suppliesAvailableTemp = getSuppliesAvailable(activeUnit->playerId, RaceId::Terran);
         u8 playerId = activeUnit->playerId;
-        if (groupFlags.isZerg)
-        {
-            race = 0;
-        }
-        else if (groupFlags.isProtoss)
-        {
-            race = 2;
-        }
-        else
-        {
-            race = (groupFlags.isTerran) != 0 ? 1 : 4;
-        }
-
-        s32 result = 0;
-        race = (u8)race;
-        if ((s8)race)
-        {
-            s32 raceId = race - 1;
-            if (raceId)
-            {
-                if (raceId == 1)
-                {
-                    result = suppliesUsed_Protoss[playerId];
-                    *suppliesUsedTemp = suppliesUsed_Protoss[playerId];
-                }
-                else
-                {
-                    result = 0;
-                    *suppliesUsedTemp = 0;
-                }
-            }
-            else
-            {
-                result = suppliesUsed_Terran[playerId];
-                *suppliesUsedTemp = suppliesUsed_Terran[playerId];
-            }
-        }
-        else
-        {
-            result = suppliesUsed_Zerg[playerId];
-            *suppliesUsedTemp = suppliesUsed_Zerg[playerId];
-        }
+        s32 result = suppliesUsed_Terran[playerId];
+        *suppliesUsedTemp = suppliesUsed_Terran[playerId];
         return result;
     }
 
@@ -424,58 +268,17 @@ LABEL_15:
 
         u8 activePlayer = (*activePortraitUnit)->playerId;
         GroupFlag groupFlags = units_dat::GroupFlags[(u16)(*activePortraitUnit)->id];
-        char isZerg = groupFlags.isZerg;
-        char race = 0;
-
-        if (groupFlags.isZerg) // redundant now
-        {
-            race = 0;
-        }
-        else if (groupFlags.isProtoss)
-        {
-            race = 2;
-        }
-        else
-        {
-            race = (groupFlags.isTerran) != 0 ? 1 : 4;
-        }
-        bool result = 1;
+        char race = RaceId::Terran;
 
         if ((u16)suppliesAvailableTemp == getSuppliesAvailable(activePlayer, race))
         {
-            char math = 0; // not initialized, defaulting to 0
-            s32 suppliesVar = 0;
-            char raceId = 0;
-
-            if (isZerg) // redundant now
-            {
-                raceId = 0;
-            }
-            else
-            {
-                raceId = math & 4 ? 2 : (math & 2) != 0 ? 1 : 4;
-            }
-            if (raceId)
-            {
-                if (raceId == 1)
-                {
-                    suppliesVar = suppliesUsed_Terran[activePlayer];
-                }
-                else
-                {
-                    suppliesVar = raceId == 2 ? suppliesUsed_Protoss[activePlayer] : 0;
-                }
-            }
-            else
-            {
-                suppliesVar = suppliesUsed_Zerg[activePlayer];
-            }
+            s32 suppliesVar = suppliesUsed_Terran[activePlayer];
             if ((u16)suppliesUsedTemp == suppliesVar)
             {
-                result = 0;
+                return 0;
             }
         }
-        return result;
+        return 1;
     }
 
     void drawSupplyUnitStatus(BinDlg* dialog, s32 unused) // 00427540
@@ -512,38 +315,9 @@ LABEL_15:
                 *statusScreenFunc = 12;
             }
             GroupFlag groupFlag = units_dat::GroupFlags[(u16)activeUnit->id];
-            if (groupFlag.isZerg)
-            {
-                race = 0;
-            }
-            else if (groupFlag.isProtoss)
-            {
-                race = 2;
-            }
-            else
-            {
-                race = (groupFlag.isTerran) != 0 ? RaceId::Terran : RaceId::Neutral;
-            }
+            race = RaceId::Terran;
             v5 = activeUnit->playerId;
-            if ((s8)race)
-            {
-                if ((u8)race == RaceId::Terran)
-                {
-                    v6 = suppliesUsed_Terran[v5];
-                }
-                else if ((u8)race == RaceId::Protoss)
-                {
-                    v6 = suppliesUsed_Protoss[v5];
-                }
-                else
-                {
-                    v6 = 0;
-                }
-            }
-            else
-            {
-                v6 = suppliesUsed_Zerg[v5];
-            }
+            v6 = suppliesUsed_Terran[v5];
             v21 = (u8)race;
             v7 = (u8)race + 820;
             if ((u8)race == -821)
@@ -593,22 +367,7 @@ LABEL_15:
             sprintf_s(unkDialogByte, 260, "%s %d", v13, (s32)(v14 + 1) / 2);
             race = (*activePortraitUnit)->playerId;
             v15 = units_dat::GroupFlags[helper::getLastQueueSlotType(*activePortraitUnit)];
-            if (v15.isZerg)
-            {
-                v16 = suppliesMax_Zerg[(u8)race];
-            }
-            else if (v15.isTerran)
-            {
-                v16 = suppliesMax_Terran[(u8)race];
-            }
-            else if (v15.isProtoss)
-            {
-                v16 = suppliesMax_Protoss[(u8)race];
-            }
-            else
-            {
-                v16 = 0;
-            }
+            v16 = suppliesMax_Terran[(u8)race];
             v17 = v21 + 823;
             if ((s16)v21 == -824)
             {
