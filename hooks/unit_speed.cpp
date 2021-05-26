@@ -52,7 +52,7 @@ namespace hooks
 		}
 
 		// Luminary - Wax Wings
-		if (unitExt->timers[TimerLuminaryDebuff] > 1)
+		if (unitExt->timers[TimerWaxWingsDebuff] > 1)
 		{
 			speed *= 0.6666;
 		}

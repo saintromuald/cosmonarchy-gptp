@@ -645,7 +645,7 @@ namespace hooks
 				).forEachInMatch(match, [&](Unit* target)
 				{
 					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerLuminaryDebuff] = 4;
+					targetExt->timers[TimerWaxWingsDebuff] = 4;
 					target->updateSpeed();
 				});
 
@@ -1293,9 +1293,30 @@ namespace hooks
 		}
 
 		// Luminary - Wax Wings Clear
-		if (unitExt->timers[TimerLuminaryDebuff] == 1)
+		if (unitExt->timers[TimerWaxWingsDebuff] == 1)
 		{
 			unit->updateSpeed();
+		}
+
+		// Luminary - Aural Assault
+		if (unitExt->timers[TimerAuralAssaultBlind] > 1)
+		{
+			if (unit->mainOrderId != OrderId::AttackUnit)
+			{
+				auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf, {});
+				const u32 radius = unit->getSeekRange() * 32;
+				Unit* target = scbw::UnitFinder::getNearestTarget(
+					unit->getX() - radius,
+					unit->getY() - radius,
+					unit->getX() + radius,
+					unit->getY() + radius,
+					unit, match
+				);
+				if (target)
+				{
+					unit->orderTo(OrderId::AttackUnit, target);
+				}
+			}
 		}
 
 		// Cloaked units recloak after 2 seconds of being out of combat

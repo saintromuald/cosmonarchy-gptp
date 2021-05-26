@@ -102,21 +102,22 @@ namespace hooks
 
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
-	void OpticalFlareHit(Unit* target, u32 attackingPlayerId, Bullet* bullet)
+	void OpticalFlareHit(Unit* unused, u32 attackingPlayerId, Bullet* bullet)
 	{
-		if (target->status & UnitStatus::IsHallucination)
+		if (!bullet)
 		{
-			target->remove();
+			return; // not sure if bullet is guaranteed
 		}
-		else
+
+		const u32 radius = 2 * 32;
+		helper::playSoundFromSource(SoundId::Terran_Medic_Miopia1_wav, (Unit*)bullet, 1, 0);
+		scbw::UnitFinder(
+			bullet->position.x - radius,
+			bullet->position.y - radius,
+			bullet->position.x + radius,
+			bullet->position.y + radius
+		).forEach([&](Unit* target)
 		{
-			//blindness is applied for a specific player just like parasite, but due to how it's used, a blind unit is still blind for all players
-			target->isBlind |= (u8)(1 << attackingPlayerId);
-
-			// playing the impact sound
-			helper::playSoundFromSource(SoundId::Terran_Medic_Miopia1_wav, target, 1, 0);
-
-			// create impact overlay
 			u32 overlayImageId = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(target->id);
 			Unit* overlayTargetUnit;
 			if (target->subunit != nullptr)
@@ -127,14 +128,11 @@ namespace hooks
 			{
 				overlayTargetUnit = target;
 			}
-			(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
+			overlayTargetUnit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
 
-			// was hardcoded in original code
-			scbw::refreshConsole();
-
-			// cause some functions to be skipped in Game Loop; possibly delay fog of war reappearance following loss of sight, or cause it?
-			*visionUpdateCount = 1;
-		}
+			UnitExt* targetExt = globals.GetUnitExt(target);
+			targetExt->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
+		});
 	}
 
 	// bullet is not normally part of the function, so if the function is called

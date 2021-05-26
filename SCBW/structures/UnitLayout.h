@@ -298,7 +298,8 @@ enum ExtTimerId
 	TimerReviveFlagClearMax,
 	TimerUnderDisruptionWeb,
 	TimerAkistrokorInfestationInvFrames,
-	TimerLuminaryDebuff,
+	TimerWaxWingsDebuff,
+	TimerAuralAssaultBlind,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
