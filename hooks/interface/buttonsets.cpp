@@ -863,6 +863,21 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
+							else if ((*activePortraitUnit)->id == UnitId::SharedStriga &&  // Striga Fleeting Focus passive 
+								current_button->iconID == IconId::PsiAssault)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::SharedStriga &&  // Striga Transient Travels passive 
+								current_button->iconID == IconId::EMPShockwave)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::SharedLuminary &&  // Luminary Wax Wings passive 
+								current_button->iconID == IconId::GraviticThrusters)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 
 							// TERRAN \\
 
