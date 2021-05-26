@@ -15,25 +15,30 @@ namespace hooks
 		// Convert open slots to computers (singleplayer)
 		if (customSingleplayer[0])
 		{
+			bool shouldSwitch = false;
 			if (gameData->victoryCondition || gameData->startingUnits || gameData->tournamentModeEnabled)
 			{
+				shouldSwitch = true;
 				helper::switchAllAvailableComputerSlotsToOpen();
 			}
-			playerTable[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
-			s32 playerId = 0;
-			do
+			if (shouldSwitch || gameData->gameType & 0xA) // UMS
 			{
-				if (selectedSingleplayerRace[playerId + 1] != RaceId::None)
+				playerTable[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
+				s32 playerId = 0;
+				do
 				{
-					helper::setLastOpenSlotToComputer(selectedSingleplayerRace[playerId + 1]);
-					if (playerTable[playerId].type == PlayerType::OpenSlot)
+					if (selectedSingleplayerRace[playerId + 1] != RaceId::None)
 					{
-						playerTable[playerId].type = PlayerType::Computer;
+						helper::setLastOpenSlotToComputer(selectedSingleplayerRace[playerId + 1]);
+						if (playerTable[playerId].type == PlayerType::OpenSlot)
+						{
+							playerTable[playerId].type = PlayerType::Computer;
+						}
 					}
+					++playerId;
 				}
-				++playerId;
-			}
-			while (playerId < 8);
+				while (playerId < 8);
+			}			
 		}
 		return 1;
 	}
