@@ -1801,6 +1801,6 @@ namespace scbw
 			}
 		});
 
-		return allyCount < enemyCount;
+		return allyCount <= enemyCount;
 	}
 }
