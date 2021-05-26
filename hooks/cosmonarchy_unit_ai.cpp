@@ -63,12 +63,6 @@ one another. Attempt to group as many units as possible during the channel.
 #define KITE_DEBUG(...)
 #endif
 
-struct Point32f
-{
-	f32 x;
-	f32 y;
-};
-
 struct KitePositions
 {
 	bool enemiesFound;

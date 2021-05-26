@@ -33,6 +33,12 @@ struct Point32
 	s32 y;
 };
 
+struct Point32f
+{
+	f32 x;
+	f32 y;
+};
+
 struct Box16
 {
 	union
