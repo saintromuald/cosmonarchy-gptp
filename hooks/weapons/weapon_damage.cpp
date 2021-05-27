@@ -576,6 +576,7 @@ namespace hooks
 							Point16 finalPos = data.target->position;
 							finalPos.x += displacement.x;
 							finalPos.y += displacement.y;
+							finalPos = scbw::clampPoint(finalPos);
 
 							ActiveTile originalTile = scbw::getActiveTileAt(data.attacker->position.x, data.attacker->position.y);
 							ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);

@@ -634,6 +634,7 @@ namespace hooks
 
 					if (doTeleport)
 					{
+						position = scbw::clampPoint(position);
 						bool teleport = scbw::teleport(unit, position, 0, true);
 						if (!unit->getOverlay(imageId) && teleport)
 						{
