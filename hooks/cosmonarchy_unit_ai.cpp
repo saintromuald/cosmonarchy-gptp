@@ -76,7 +76,7 @@ struct KitePositions
 };
 
 const u32 moveRadius = 4 * 32;
-const u32 localGroupRadius = 1 * 32;
+const u32 localGroupRadius = 2 * 32;
 
 const u32 kiteZoneCount = 9;
 const Point32f kiteOffsets[kiteZoneCount] =
@@ -250,7 +250,7 @@ static inline u32 getMaxRange(Unit* unit)
 
 static inline bool isMeleeAttacker(Unit* unit)
 {
-	return getMaxRange(unit) < 32;
+	return getMaxRange(unit) <= 32;
 }
 
 static inline u8 getCurrentWeaponCooldown(Unit* unit)
