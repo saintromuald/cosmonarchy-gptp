@@ -416,7 +416,7 @@ LABEL_55:
         {
             u8 supply;
             // zerg special handling
-            if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon && unit->id != UnitId::ZergLurkerEgg)
+            if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon)
             {
                 supply = units_dat::SupplyRequired[unit->id];
                 if (!(units_dat::BaseProperty[unit->id] & 0x400) || unit->status & 1)
@@ -458,7 +458,7 @@ LABEL_55:
         {
             structuresProducedOwnedTotal[unit->playerId] += count;
         }
-        else if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon && unit->id != UnitId::ZergLurkerEgg)
+        else if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
         {
             unitsProducedOwnedTotal[unit->playerId] += count;
         }
