@@ -145,11 +145,39 @@ u32 Unit::getMaxHpInGame() const
 	}
 	return maxHp;
 }
+
+u32 Unit::getMaxShieldsInGame() const
+{
+	assert(this);
+
+	u32 maxShields = units_dat::MaxShieldPoints[this->id];
+	if (maxShields == 0)
+	{
+		maxShields = this->getCurrentShieldsInGame();
+		if (maxShields == 0)
+		{
+			maxShields = 1;
+		}
+	}
+	else
+	{
+		maxShields = maxShields >> 8;
+	}
+	return maxShields;
+}
+
 u32 Unit::getMaxHpRaw() const
 {
 	assert(this);
 	return units_dat::MaxHitPoints[this->id];
 }
+
+u32 Unit::getMaxShieldsRaw() const
+{
+	assert(this);
+	return units_dat::MaxShieldPoints[this->id];
+}
+
 u8 Unit::getSpellCountdown() const
 {
 	assert(this);
@@ -159,6 +187,7 @@ u8 Unit::getSpellCountdown() const
 	}
 	return this->spellCooldown;
 }
+
 extern const u32 Func_GetMaxWeaponRange = 0x00475870;
 u32 Unit::getMaxWeaponRange(u8 weaponId) const
 {

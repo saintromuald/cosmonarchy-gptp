@@ -82,6 +82,10 @@ struct Unit : public UnitLayout
 	u32 getMaxHpInGame() const;
 	u32 getMaxHpRaw() const;
 
+	u32 getMaxShieldsInGame() const;
+	u32 getMaxShieldsRaw() const;
+
+
 	/// Returns the maximum range of a weapon in pixels. The weapon is assumed to
 	/// be attached to this unit for calculating upgrade effects.
 	/// This is affected by the Weapon Range hook module.
