@@ -6,7 +6,6 @@ namespace
 {
 	void __declspec(naked) fireWeaponWrapper()
 	{
-
 		static Unit* unit;
 		static u8 weaponId;
 
@@ -221,7 +220,7 @@ namespace
 	}
 	*/
 
-	const u32 BulletDamageJmpBack = 0x0048B776;
+	const u32 BulletDamageJmpBack = 0x0048B77A;
 	void __declspec(naked) BulletDamage_bulletNullcheck()
 	{
 		static Bullet* bullet; 
@@ -230,7 +229,9 @@ namespace
 			PUSH EBP
 			MOV EBP, ESP
 			SUB ESP, 8
-			MOV bullet, EBP
+			PUSH EBX
+			MOV EBX, [EBP + 0x08]
+			MOV bullet, EBX
 			PUSHAD
 		}
 		if (bullet != nullptr)
@@ -266,6 +267,6 @@ namespace hooks
 		jmpPatch(initializeBullet_Wrapper,			0x0048BEC0, 0);
 //		jmpPatch(progressBulletFrames_Wrapper,		0x0048C3D0, 2);
 //		jmpPatch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
-		jmpPatch(BulletDamage_bulletNullcheck,		0x0048B770, 0);
+		jmpPatch(BulletDamage_bulletNullcheck,		0x0048B770, 1);
 	}
 }
