@@ -353,11 +353,21 @@ static inline bool canKite(Unit* unit)
 
 static inline bool unitHasCooldownToAttack(Unit* unit)
 {
+	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
+	{
+		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit);
+	}
 	if (unit->movementFlags & MovementFlags::Accelerating)
 	{
 		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.5;
 	}
 	return getCurrentWeaponCooldown(unit) <= 0;
+}
+
+static inline bool shouldKite(Unit* unit, UnitExt* unitExt)
+{
+	return (unitExt->values[ValueAI_KiteSignal] == 1 && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
+		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !unitHasCooldownToAttack(unit));
 }
 
 void cosmonarchyUnitAi(Unit* unit)
@@ -392,13 +402,13 @@ void cosmonarchyUnitAi(Unit* unit)
 		localGroup.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
 		localGroup.filter([&](Unit* target){ return canKite(target); });
 
-		if (unitExt->values[ValueAI_KiteSignal] == 1 && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
+		if (shouldKite(unit, unitExt))
 		{
 			u32 sync = 0;
 			localGroup.forEach([&](Unit* localUnit)
 			{
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				if (localUnitExt->values[ValueAI_KiteSignal] == 1)
+				if (shouldKite(localUnit, localUnitExt))
 				{
 					sync++;
 				}
@@ -425,13 +435,8 @@ void cosmonarchyUnitAi(Unit* unit)
 
 				localGroup.forEach([&](Unit* localUnit)
 				{
-					if (localUnit->sprite->mainGraphic->animation == IscriptAnimation::Unused2) // special case for centaur handling
-					{
-						return;
-					}
-
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					if (localUnitExt->values[ValueAI_KiteSignal] != 1)
+					if (!shouldKite(localUnit, localUnitExt))
 					{
 						return;
 					}
