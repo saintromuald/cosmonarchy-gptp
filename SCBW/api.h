@@ -113,15 +113,15 @@ namespace scbw
 	/// (distance, angle), using StarCraft's internal data.
 	inline s32 getPolarY(s32 distance, u8 angle);
 
-	inline Vector32 getVectorBetweenUnits(Unit* sourceUnit, Unit* targetUnit)
+	inline Vector32 getVectorBetweenPoints(Point16 source, Point16 target)
 	{
-		Vector32 diff = { targetUnit->getY(), targetUnit->getY() };
-		diff.x -= sourceUnit->getX();
-		diff.y -= sourceUnit->getY();
+		Vector32 diff = { target.x, target.y };
+		diff.x -= source.x;
+		diff.y -= source.y;
 		return diff;
 	}
 
-	inline Vector32f normalizeVector(Vector32 point)
+	inline Vector32f getNormalizedVector(Vector32 point)
 	{
 		f32 dist = sqrt(pow(point.x, 2) + pow(point.y, 2));
 		return { point.x / dist, point.y / dist };

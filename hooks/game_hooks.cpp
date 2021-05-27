@@ -604,7 +604,8 @@ namespace hooks
 					Unit* target = unit->orderTarget.unit;
 					u32 distance = unit->getDistanceToTarget(target);
 					bool doTeleport = false;
-					u32 imageId = 0;
+					u32 imageId;
+					Point16 position;
 
 					if (unit->id == UnitId::ProtossLegionnaire)
 					{
@@ -612,20 +613,28 @@ namespace hooks
 						{
 							doTeleport = true;
 							imageId = ImageId::LegionnaireTeleportEffect;
+							position = target->sprite->position;
 						}
 					}
 					else if (unit->id == UnitId::SharedStriga)
 					{
-						if (distance > 15 && distance <= 5 * 32 && scbw::isUnitIsolated(target))
+						if (distance > 3.5 * 32 && distance <= 5 * 32 && scbw::isUnitIsolated(target))
 						{
 							doTeleport = true;
 							imageId = ImageId::LegionnaireTeleportEffect;
+							Vector32 diff = scbw::getVectorBetweenPoints(target->sprite->position, unit->sprite->position);
+							Vector32f displacement = scbw::getNormalizedVector(diff);
+							displacement.x *= 3 * 32;
+							displacement.y *= 3 * 32;
+							position = target->position;
+							position.x += displacement.x;
+							position.y += displacement.y;
 						}
 					}
 
 					if (doTeleport)
 					{
-						bool teleport = scbw::teleport(unit, target->sprite->position, 0, true);
+						bool teleport = scbw::teleport(unit, position, 0, true);
 						if (!unit->getOverlay(imageId) && teleport)
 						{
 							unit->sprite->createTopOverlay(imageId);
