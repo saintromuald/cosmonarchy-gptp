@@ -115,6 +115,111 @@ static inline Point16 ClampPoint(Point16 point)
 	return point;
 }
 
+static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
+{
+	u32 unitValue[kiteZoneCount] = {0};
+	KitePositions result = {};
+	result.enemiesFound = false;
+
+	for (int i = 0; i < kiteZoneCount; i++)
+	{
+		Point16 searchPos = unit->position;
+		searchPos.x += kiteOffsets[i].x * hostileGroupRadius;
+		searchPos.y += kiteOffsets[i].y * hostileGroupRadius;
+
+		scbw::UnitFinder(
+			searchPos.x - hostileGroupRadius,
+			searchPos.y - hostileGroupRadius,
+			searchPos.x + hostileGroupRadius,
+			searchPos.y + hostileGroupRadius
+		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
+			[&](Unit* hostileUnit)
+		{
+			result.enemiesFound = true;
+			unitValue[i] += 1;
+			if (unit->status & UnitStatus::InAir)
+			{
+				unitValue[i] += hostileUnit->airStrength;
+			}
+			else
+			{
+				unitValue[i] += hostileUnit->groundStrength;
+			}
+		});
+	}
+
+	if (result.enemiesFound)
+	{
+		Point32f biasVectors[kiteZoneCount] =
+		{
+			{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
+			{-1.1,    0}, { 0,    0}, {+1.1,    0},	
+			{-0.7, +0.7}, { 0, +1.1}, {+0.7, +0.7},
+		};
+		for (int i = 0; i < kiteZoneCount; i++)
+		{
+			result.biases[i] = 0;
+			biasVectors[i].x *= unitValue[i];
+			biasVectors[i].y *= unitValue[i];
+		}
+		for (int i = 0; i < kiteZoneCount; i++)
+		{
+			for (int j = 0; j < kiteZoneCount; j++)
+			{
+				result.biases[i] += biasOrigins[i].x * biasVectors[j].x + biasOrigins[i].y * biasVectors[j].y;
+			}
+			result.biases[i] /= kiteZoneCount;
+		}
+
+		result.forwardIndex = kiteZoneCount / 2;
+		result.backwardIndex = kiteZoneCount / 2;
+		result.strafeIndex = 0;
+		for (int i = 0; i < kiteZoneCount; i++)
+		{
+			if (i == kiteZoneCount / 2)
+			{
+				continue;
+			}
+
+			if (result.biases[i] > result.biases[result.forwardIndex])
+			{
+				result.forwardIndex = i;
+			}
+
+			if (result.biases[i] < result.biases[result.backwardIndex])
+			{
+				result.backwardIndex = i;
+			}
+
+			if (labs(result.biases[i]) < labs(result.biases[result.strafeIndex]))
+			{
+				result.strafeIndex = i;
+			}
+		}
+
+		//KITE_DEBUG("%f %f %f", biases[0], biases[1], biases[2]);
+		//KITE_DEBUG("%f %f %f", biases[3], biases[4], biases[5]);
+		//KITE_DEBUG("%f %f %f", biases[6], biases[7], biases[8]);
+		//KITE_DEBUG("\n");
+
+		result.forwardPos = unit->position;
+		result.forwardPos.x += kiteOffsets[result.forwardIndex].x * moveRadius;
+		result.forwardPos.y += kiteOffsets[result.forwardIndex].y * moveRadius;
+		result.forwardPos = ClampPoint(result.forwardPos);
+
+		result.backwardPos = unit->position;
+		result.backwardPos.x += kiteOffsets[result.backwardIndex].x * moveRadius;
+		result.backwardPos.y += kiteOffsets[result.backwardIndex].y * moveRadius;
+		result.backwardPos = ClampPoint(result.backwardPos);
+
+		result.strafePos = unit->position;
+		result.strafePos.x += kiteOffsets[result.strafeIndex].x * moveRadius;
+		result.strafePos.y += kiteOffsets[result.strafeIndex].y * moveRadius;
+		result.strafePos = ClampPoint(result.strafePos);
+	}
+	return result;
+}
+
 static inline u32 getMaxRange(Unit* unit)
 {
 	u32 groundWeapon = unit->getGroundWeapon();
@@ -248,139 +353,12 @@ static inline bool canKite(Unit* unit)
 
 static inline bool unitHasCooldownToAttack(Unit* unit)
 {
-	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.75;
-}
-
-static inline bool inAttackAnim(Unit* unit)
-{
-	return unit->sprite->mainGraphic->animation == IscriptAnimation::GndAttkInit
-		|| unit->sprite->mainGraphic->animation == IscriptAnimation::AirAttkInit
-		|| unit->sprite->mainGraphic->animation == IscriptAnimation::Unused2
-		|| unit->status & UnitStatus::NoBrkCodeStart;
-}
-
-static inline bool shouldKiteBack(Unit* source)
-{
-	Unit* target = source->orderTarget.unit;
-	if (!target)
+	if (unit->movementFlags & MovementFlags::Accelerating)
 	{
-		return true;
+		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.75;
 	}
 
-	// NOTE
-	// should figure out a way to calculate if unit will lose dps by kiting
-	// paradoxically this is quite hard, since for example mutalisks should 
-	// try to kite even with lower range and worse movement speed, 
-	// just because they are fragile and can use terrain advantage.
-	// thankfully it seems like current timing setup decreased dps loss
-	// significantly
-
-	return true;
-}
-
-static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
-{
-	u32 unitValue[kiteZoneCount] = {0};
-	KitePositions result = {};
-	result.enemiesFound = false;
-
-	for (int i = 0; i < kiteZoneCount; i++)
-	{
-		Point16 searchPos = unit->position;
-		searchPos.x += kiteOffsets[i].x * hostileGroupRadius;
-		searchPos.y += kiteOffsets[i].y * hostileGroupRadius;
-
-		scbw::UnitFinder(
-			searchPos.x - hostileGroupRadius,
-			searchPos.y - hostileGroupRadius,
-			searchPos.x + hostileGroupRadius,
-			searchPos.y + hostileGroupRadius
-		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
-			[&](Unit* hostileUnit)
-		{
-			result.enemiesFound = true;
-			unitValue[i] += 1;
-			if (unit->status & UnitStatus::InAir)
-			{
-				unitValue[i] += hostileUnit->airStrength;
-			}
-			else
-			{
-				unitValue[i] += hostileUnit->groundStrength;
-			}
-		});
-	}
-
-	if (result.enemiesFound)
-	{
-		Point32f biasVectors[kiteZoneCount] =
-		{
-			{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
-			{-1.1,    0}, { 0,    0}, {+1.1,    0},	
-			{-0.7, +0.7}, { 0, +1.1}, {+0.7, +0.7},
-		};
-		for (int i = 0; i < kiteZoneCount; i++)
-		{
-			result.biases[i] = 0;
-			biasVectors[i].x *= unitValue[i];
-			biasVectors[i].y *= unitValue[i];
-		}
-		for (int i = 0; i < kiteZoneCount; i++)
-		{
-			for (int j = 0; j < kiteZoneCount; j++)
-			{
-				result.biases[i] += biasOrigins[i].x * biasVectors[j].x + biasOrigins[i].y * biasVectors[j].y;
-			}
-			result.biases[i] /= kiteZoneCount;
-		}
-
-		result.forwardIndex = kiteZoneCount / 2;
-		result.backwardIndex = kiteZoneCount / 2;
-		result.strafeIndex = 0;
-		for (int i = 0; i < kiteZoneCount; i++)
-		{
-			if (i == kiteZoneCount / 2)
-			{
-				continue;
-			}
-
-			if (result.biases[i] > result.biases[result.forwardIndex])
-			{
-				result.forwardIndex = i;
-			}
-
-			if (result.biases[i] < result.biases[result.backwardIndex])
-			{
-				result.backwardIndex = i;
-			}
-
-			if (labs(result.biases[i]) < labs(result.biases[result.strafeIndex]))
-			{
-				result.strafeIndex = i;
-			}
-		}
-
-		//KITE_DEBUG("%f %f %f", biases[0], biases[1], biases[2]);
-		//KITE_DEBUG("%f %f %f", biases[3], biases[4], biases[5]);
-		//KITE_DEBUG("%f %f %f", biases[6], biases[7], biases[8]);
-		//KITE_DEBUG("\n");
-
-		result.forwardPos = unit->position;
-		result.forwardPos.x += kiteOffsets[result.forwardIndex].x * moveRadius;
-		result.forwardPos.y += kiteOffsets[result.forwardIndex].y * moveRadius;
-		result.forwardPos = ClampPoint(result.forwardPos);
-
-		result.backwardPos = unit->position;
-		result.backwardPos.x += kiteOffsets[result.backwardIndex].x * moveRadius;
-		result.backwardPos.y += kiteOffsets[result.backwardIndex].y * moveRadius;
-		result.backwardPos = ClampPoint(result.backwardPos);
-
-		result.strafePos = unit->position;
-		result.strafePos.x += kiteOffsets[result.strafeIndex].x * moveRadius;
-		result.strafePos.y += kiteOffsets[result.strafeIndex].y * moveRadius;
-		result.strafePos = ClampPoint(result.strafePos);
-	}
-	return result;
+	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.5;
 }
 
 void cosmonarchyUnitAi(Unit* unit)
@@ -421,100 +399,8 @@ void cosmonarchyUnitAi(Unit* unit)
 			localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
 		});
 
-		if (unitHasCooldownToAttack(unit))
+		if (unitExt->values[ValueAI_KiteSignal] == 1 && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
 		{
-			bool attack = true;
-			localGroup.forEach([&](Unit* localUnit)
-			{
-				if (!unitHasCooldownToAttack(localUnit))
-				{
-					attack = false;
-				}
-			});
-
-			if (attack)
-			{
-				localGroup.forEach([&](Unit* localUnit)
-				{
-					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					localUnitExt->timers[TimerAI_Kite] = 1;
-
-					if (localUnit->mainOrderId == OrderId::AttackUnit
-						|| localUnit->mainOrderId == OrderId::CarrierFight
-						|| localUnit->mainOrderId == OrderId::ReaverFight
-						|| localUnit->mainOrderId == OrderId::AttackMoveComputer)
-					{
-						return;
-					}
-
-					auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
-					Unit* targetUnit = nullptr;
-					s32 targetCost = 0;
-					scbw::UnitFinder(
-						localUnit->getX() - hostileGroupRadius * 4,
-						localUnit->getY() - hostileGroupRadius * 4,
-						localUnit->getX() + hostileGroupRadius * 4,
-						localUnit->getY() + hostileGroupRadius * 4
-					).forEach([&](Unit* hostileUnit)
-					{
-						if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
-						{
-							return;
-						}
-
-						s32 newTargetCost = getTargetCost(localUnit, hostileUnit);
-						if (!targetUnit || newTargetCost < targetCost)
-						{
-							targetUnit = hostileUnit;
-							targetCost = newTargetCost;
-						}
-					});
-
-					if (targetUnit)
-					{
-						if (isMeleeAttacker(localUnit))
-						{
-							localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 4;
-						}
-						else
-						{
-							localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.75;
-						}
-
-						KITE_DEBUG("%s: attack", localUnit->getName());
-						if (localUnit->id == UnitId::ProtossSolarion)
-						{
-							localUnit->orderTo(OrderId::CarrierFight, targetUnit);
-						}
-						else if (localUnit->id == UnitId::ProtossAccantor)
-						{
-							localUnit->orderTo(OrderId::ReaverFight, targetUnit);
-						}
-						else
-						{
-							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
-						}
-						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
-					}
-					else
-					{
-						localUnitExt->timers[TimerAI_Kite] = 12;
-					}
-				});
-			}
-		}
-		else
-		{
-			if (inAttackAnim(unit))
-			{			
-				localGroup.forEach([&](Unit* localUnit)
-				{
-					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					localUnitExt->timers[TimerAI_Kite] = 6;
-				});
-				return;
-			}
-
 			KitePositions result = getKitePositions(unit, hostileGroupRadius);
 			if (!result.enemiesFound)
 			{			
@@ -531,21 +417,20 @@ void cosmonarchyUnitAi(Unit* unit)
 			{
 				crowdScore = cosmonarchyUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoAir, {});
 			}
-					
+
 			localGroup.forEach([&](Unit* localUnit)
 			{
+				if (localUnit->sprite->mainGraphic->animation == IscriptAnimation::Unused2) // special case for centaur handling
+				{
+					return;
+				}
+
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit) * 0.5;
-
-				if (unitHasCooldownToAttack(localUnit))
+				if (localUnitExt->values[ValueAI_KiteSignal] != 1)
 				{
 					return;
 				}
-
-				if (inAttackAnim(localUnit))
-				{
-					return;
-				}
+				localUnitExt->values[ValueAI_KiteSignal] = 0;
 
 				const u32 distance = getDistanceToTarget(localUnit);
 				const u32 maxRange = getMaxRange(localUnit);
@@ -586,13 +471,94 @@ void cosmonarchyUnitAi(Unit* unit)
 					localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 					KITE_DEBUG("%s: forward", localUnit->getName());
 				}
-				else if (distance < maxRange * 0.2 || shouldKiteBack(localUnit))
+				else if (distance < maxRange * 0.2)
 				{
 					localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 					KITE_DEBUG("%s: backward", localUnit->getName());
 				}
 				localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 			});
+		}
+		else if (unitHasCooldownToAttack(unit))
+		{
+			bool attack = true;
+			localGroup.forEach([&](Unit* localUnit)
+			{
+				if (!unitHasCooldownToAttack(localUnit))
+				{
+					attack = false;
+				}
+			});
+
+			if (attack)
+			{
+				localGroup.forEach([&](Unit* localUnit)
+				{
+					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+
+					if (localUnit->mainOrderId == OrderId::AttackUnit
+						|| localUnit->mainOrderId == OrderId::CarrierFight
+						|| localUnit->mainOrderId == OrderId::ReaverFight
+						|| localUnit->mainOrderId == OrderId::AttackMoveComputer)
+					{
+						return;
+					}
+
+					auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
+					Unit* targetUnit = nullptr;
+					s32 targetCost = 0;
+					scbw::UnitFinder(
+						localUnit->getX() - hostileGroupRadius * 4,
+						localUnit->getY() - hostileGroupRadius * 4,
+						localUnit->getX() + hostileGroupRadius * 4,
+						localUnit->getY() + hostileGroupRadius * 4
+					).forEach([&](Unit* hostileUnit)
+					{
+						if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
+						{
+							return;
+						}
+
+						s32 newTargetCost = getTargetCost(localUnit, hostileUnit);
+						if (!targetUnit || newTargetCost < targetCost)
+						{
+							targetUnit = hostileUnit;
+							targetCost = newTargetCost;
+						}
+					});
+
+					if (targetUnit)
+					{
+						if (isMeleeAttacker(localUnit))
+						{
+							localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 4;
+						}
+						else
+						{
+							localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.25;
+						}
+
+						KITE_DEBUG("%s: attack", localUnit->getName());
+						if (localUnit->id == UnitId::ProtossSolarion)
+						{
+							localUnit->orderTo(OrderId::CarrierFight, targetUnit);
+						}
+						else if (localUnit->id == UnitId::ProtossAccantor)
+						{
+							localUnit->orderTo(OrderId::ReaverFight, targetUnit);
+						}
+						else
+						{
+							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+						}
+						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+					}
+					else
+					{
+						localUnitExt->timers[TimerAI_Kite] = 12;
+					}
+				});
+			}
 		}
 	}
 

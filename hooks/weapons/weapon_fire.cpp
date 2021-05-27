@@ -172,6 +172,7 @@ namespace hooks
 			}
 			return;
 		}
+		unitExt->values[ValueAI_KiteSignal] = 1;
 		u8 weaponId = wId;
 		// Retrieve the spawning position for the bullet.
 		s32 x, y;

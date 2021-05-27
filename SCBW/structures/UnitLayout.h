@@ -245,6 +245,8 @@ enum ExtValueId
 	ValueControlledOpposition,
 	ValueNathrokorBuffStacks,
 
+	ValueAI_KiteSignal,
+
 	ValueCount,
 };
 
