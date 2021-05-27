@@ -401,10 +401,6 @@ LABEL_55:
 
     void incrementUnitScores(Unit* unit, s32 count) // 00488BF0
     {
-        GroupFlag groupFlag;
-        u8 supply;
-        int queueUnit;
-
         if (unit->status & UnitStatus::IsHallucination)
         {
             return;
@@ -414,10 +410,11 @@ LABEL_55:
             return;
         }
         allUnitCountTable[unit->id].player[unit->playerId] += count;
-        groupFlag = units_dat::GroupFlags[(u16)unit->id];
+        GroupFlag groupFlag = units_dat::GroupFlags[(u16)unit->id];
         
         if (unit->getRace() == RaceId::Zerg)
         {
+            u8 supply;
             // zerg special handling
             if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon && unit->id != UnitId::ZergLurkerEgg)
             {
@@ -434,7 +431,7 @@ LABEL_55:
             }
             else
             {
-                queueUnit = unit->buildQueue[unit->buildQueueSlot];
+                s32 queueUnit = unit->buildQueue[unit->buildQueueSlot];
                 supply = units_dat::SupplyRequired[queueUnit];
                 if (units_dat::BaseProperty[queueUnit] & UnitProperty::TwoUnitsIn1Egg)
                 {
@@ -451,7 +448,7 @@ LABEL_55:
 
         if (groupFlag.isFactory)
         {
-            factoriesProduced[4 * unit->playerId] += count;
+            factoriesProduced[unit->playerId] += count;
         }
         else if (groupFlag.isMen)
         {
