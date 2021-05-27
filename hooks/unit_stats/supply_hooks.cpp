@@ -517,16 +517,20 @@ LABEL_55:
                 switch (supply_overlord_modifier)
                 {
                     case 1:
+                    {
                         supply = units_dat::SupplyProvided[UnitId::ZergIroleth] - units_dat::SupplyProvided[UnitId::ZergOvileth];
-                        break;
+                    } break;
                     case 2:
-                        supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth] - units_dat::SupplyProvided[UnitId::ZergIroleth];
-                        break;
+                    {
+                        supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth] - units_dat::SupplyProvided[UnitId::ZergIroleth]; 
+                    } break;
                     case 3:
+                    {
                         supply = units_dat::SupplyProvided[UnitId::ZergAlaszileth] - units_dat::SupplyProvided[UnitId::ZergOthstoleth];
-                        break;
+                    } break;
                     default:
-                        break;
+                    {
+                    } break;
                 }
             }
             else if (unit->id == UnitId::ZergOthstoleth)
