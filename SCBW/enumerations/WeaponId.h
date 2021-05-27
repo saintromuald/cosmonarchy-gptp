@@ -138,16 +138,19 @@ namespace WeaponId {
 		// Internal entries, not real IDs
 		Custom = 0x100,
 
-		// HYDRA \\
+		// Cosmonarchy \\
 
 		// Shared \\
-
+			
+		CohortGaussPistols = 20,				// Cohort weapon
 		AspirantPotentiumCannon = 69,			// Aspirant weapon
+		CharlatanFerventBlaster = 101,			// Charlatan weapon
 		LuminaryIcarusMissiles = 131,			// Luminary weapon
 		LuminaryAuralAssault = 132,				// Luminary ability targeting
 		StrigaPhaseSaber = 133,					// Striga weapon
-		CohortGaussPistols = 20,				// Cohort weapon
-		CharlatanFerventBlaster = 101,			// Charlatan weapon
+		AxitriliskSearingVenom = 134,			// Axitrilisk weapon
+		TarasqueHedonCannon = 135,				// Tarasque weapon 1
+		TarasqueAcceleratedPlasmid = 136,		// Tarasque weapon 2
 
 		// Terran \\
 			
