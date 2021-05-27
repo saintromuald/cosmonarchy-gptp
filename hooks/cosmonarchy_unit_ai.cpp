@@ -430,6 +430,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					return;
 				}
 				localUnitExt->values[ValueAI_KiteSignal] = 0;
+				localUnitExt->timers[TimerAI_Kite] = 12;
 
 				const u32 distance = getDistanceToTarget(localUnit);
 				const u32 maxRange = getMaxRange(localUnit);
@@ -446,8 +447,10 @@ void cosmonarchyUnitAi(Unit* unit)
 					}
 				}
 
-				if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
-					|| localGroupValue * 4 < result.biases[result.forwardIndex])
+				if (!isMeleeAttacker(localUnit) &&
+					(localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
+					|| localGroupValue * 4 < result.biases[result.forwardIndex]
+					|| distance < maxRange * 0.25))
 				{
 					localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 					KITE_DEBUG("%s: fall back", localUnit->getName());
@@ -527,11 +530,11 @@ void cosmonarchyUnitAi(Unit* unit)
 				{
 					if (isMeleeAttacker(localUnit))
 					{
-						localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 4;
+						localUnitExt->timers[TimerAI_Kite] = 4 * 24;
 					}
 					else
 					{
-						localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit) * 0.25;
+						localUnitExt->timers[TimerAI_Kite] = 1;
 					}
 
 					KITE_DEBUG("%s: attack", localUnit->getName());
