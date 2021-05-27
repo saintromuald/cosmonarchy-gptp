@@ -237,6 +237,7 @@ namespace
 		{
 			__asm
 			{
+				POPAD
 				JMP BulletDamageJmpBack
 			}
 		}
@@ -263,7 +264,7 @@ namespace hooks
 		jmpPatch(deleteBullet_Wrapper,				0x0048A560, 0);
 //		jmpPatch(createBullet_Wrapper,				0x0048C260, 5);
 		jmpPatch(initializeBullet_Wrapper,			0x0048BEC0, 0);
-		jmpPatch(progressBulletFrames_Wrapper,		0x0048C3D0, 2);
+//		jmpPatch(progressBulletFrames_Wrapper,		0x0048C3D0, 2);
 //		jmpPatch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
 		jmpPatch(BulletDamage_bulletNullcheck,		0x0048B770, 0);
 	}
