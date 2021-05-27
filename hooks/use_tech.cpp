@@ -98,24 +98,6 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
 			} break;
-			case TechId::ReverseThrust:
-			{
-				if (firstInList != nullptr)
-				{
-					s32 action = 1; // on
-					if (scbw::get_generic_rust_value(firstInList, RustId::ToggleReverseThrust) == 1)
-					{
-						action = 0; // off
-					}
-					u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
-					buf[0] = 0x99; // new general command
-					buf[1] = NewGameCommand::GenericSwitchAbility;
-					buf[2] = action;
-					buf[3] = *ACTIVE_PLAYER_ID;
-					buf[4] = RustId::ToggleReverseThrust;
-					helper::QueueGameCommand(buf, 0xc);
-				}
-			} break;
 			case TechId::Irradiate:
 			{
 				helper::issueTriTargetOrder(OrderId::Irradiate, 0, 0);
@@ -195,18 +177,24 @@ namespace hooks
 					helper::QueueGameCommand(buf, 0xc);
 				}
 			} break;
-			case TechId::Observance:
-			{
-				helper::issueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
-			} break;
-			case TechId::GodsMadeFlesh:
+			case TechId::ControlledDemolition:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99; // new general command
+				buf[0] = 0x99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::CastGodsMadeFlesh;
+				buf[4] = RustId::CastControlledDemolition;
+				helper::QueueGameCommand(buf, 0xc);
+			} break;
+			case TechId::EmergencyDetonation:
+			{
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				buf[0] = 0x99;
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = 1;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = RustId::CastEmergencyDetonation;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::PlanetCracker:

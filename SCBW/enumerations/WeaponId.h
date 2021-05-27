@@ -187,6 +187,7 @@ namespace WeaponId {
 		WyvernJacksonCannon					= 125,	// Wyvern weapon
 		PaladinSkyfall						= 126,	// Paladin ability targeting
 		IonCannon							= 129,	// Ion Cannon weapon
+		EmergencyDetonationExplosion		= 140,	// Emergency Detonation area damage
 
 		// Protoss \\
 				

@@ -58,14 +58,14 @@ namespace TechId {
 
 	// Terran
 		LobotomyMine			=  1, // Eidolon lay trap ability
-		ReverseThrust			=  2, // unused
+		ControlledDemolition	=  2, // Structure self-destruct ability 1
 		LandGrab				= 17, // General target ground ability
 		TertiaryEyes			= 24, // Siren specialist linking ability
 		LazarusAgent			= 32, // Apostle ability
 		TempoChange				= 36, // Madrigal weapon switch ability
 		Skyfall					= 37, // Paladin missile salvo ability
 		NaniteField				= 38, // Shaman mech repair ability
-		Observance				= 39, // Seraph armor reduction ability
+		EmergencyDetonation		= 39, // Structure self-destruct ability 2
 		SublimeShepherd			= 40, // Azazel cloud cover ability
 		PowerSiphon				= 41, // Savant energy transfer ability
 
@@ -76,11 +76,10 @@ namespace TechId {
 
 	// Zerg
 		EnsnaringBrood			= 13, // Matraleth disruptive enchantment ability
-		Reconstitution			= 26, // unused
 		EnthrallingAssault		= 35, // Akistrokor attachment ability, also used for Sovroleth
 
-		// extended
-		// ChasmalColonySwitch = 47,	// Chasmal Colony - Adaptive Barrier / Adrenal Secretion
+	// techdata is not yet extended
+	//	ChasmalColonySwitch		= 47, // Chasmal Colony - Adaptive Barrier / Adrenal Secretion switch
 	};
 }
 

@@ -77,6 +77,9 @@ const s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
 // Centaur
 const s32 CentaurMissileDistance = 4 * 32;
 
+// Reservoir / Addon
+const s32 ControlledDemolitionTimer = 10 * 24 + 1;
+
 // Treasury
 const s32 TreasuryIncrease = 4;
 

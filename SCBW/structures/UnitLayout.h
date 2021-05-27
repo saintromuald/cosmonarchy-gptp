@@ -398,6 +398,8 @@ namespace RustId
 		DisruptionWebDamage,
 		ToggleTempoChange,
 		DirgeAttacker,
+		CastControlledDemolition,
+		CastEmergencyDetonation,
 	};
 }
 #include "SCBW\enumerations\TechId.h"
@@ -405,8 +407,8 @@ const u32 string_toggle_on[] = {1703, 1807, 1265, 1232};
 const u32 string_toggle_off[] = {1113, 1114, 1270, 1233};
 const u32 button_toggle_on[] = {374, 319, 369, 374};
 const u32 button_toggle_off[] = {375, 236, 236, 375};
-const u32 toggle_values[] = {RustId::ToggleReverseThrust, RustId::ToggleSublimeShepherd, RustId::ToggleDisruptionField, RustId::ToggleTempoChange};
-const u32 toggle_abilities[] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange};
+const u32 toggle_values[] = {RustId::ToggleSublimeShepherd, RustId::ToggleDisruptionField, RustId::ToggleTempoChange};
+const u32 toggle_abilities[] = {TechId::SublimeShepherd, TechId::DisruptionWeb, TechId::TempoChange};
 const u32 generictoggles = 4;
 
 namespace CosmonarchyFlags1

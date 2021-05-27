@@ -680,6 +680,31 @@ namespace hooks
 						}
 					}
 
+					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched)
+					{
+						UnitExt* unitExt = globals.GetUnitExt((*activePortraitUnit));
+						// Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
+						if (current_button->reqVar == TechId::ControlledDemolition
+							&& (unitExt->timers[TimerControlledDemolition] >= 1 || unitExt->timers[TimerEmergencyDetonation] >= 1))
+						{
+							current_button_state = BUTTON_STATE::Invisible;
+						}
+						else
+						{
+							current_button_state = BUTTON_STATE::Enabled;
+						}
+						if (current_button->reqVar == TechId::EmergencyDetonation
+							&& unitExt->timers[TimerControlledDemolition] == 0
+							&& unitExt->timers[TimerEmergencyDetonation] == 0)
+						{
+							current_button_state = BUTTON_STATE::Invisible;
+						}
+						else
+						{
+							current_button_state = BUTTON_STATE::Enabled;
+						}
+					}
+
 					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding)
 					{
 						// Barracks buttonset handling
@@ -865,6 +890,16 @@ namespace hooks
 							}
 							else if ((*activePortraitUnit)->id == UnitId::SharedLuminary &&  // Luminary Wax Wings passive 
 								current_button->iconID == IconId::GraviticThrusters)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::SharedAxitrilisk &&  // Axitrilisk Sating Strikes passive 
+								current_button->iconID == IconId::RoarUnused)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::SharedEmpress &&  // Empress Anodyne Annex passive 
+								current_button->iconID == IconId::Particle_Beam_Harvest)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}

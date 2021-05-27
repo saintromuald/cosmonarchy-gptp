@@ -1399,39 +1399,37 @@ namespace hooks
 			// unit->removeOverlay();
 		}
 
-		// TODO: Finish
 		// Controlled Demolition - initial cast
-		/*
-		if (conditional)
+		if (scbw::get_generic_rust_value(unit, RustId::CastControlledDemolition))
 		{
-			unitExt->ControlledDemolition = 10*24;
+			scbw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
+			unitExt->timers[TimerControlledDemolition] = ControlledDemolitionTimer;
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
 		//	unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
+			scbw::print("u");
 		}
-		*/
 
 		// Controlled Demolition - destroy structure
 		if (unitExt->timers[TimerControlledDemolition] == 1)
 		{
-			// Do we need more than this for the sake of calculating score screen counts and etc?
-			unit->remove();
+			// remove unit
+			unit->damageHp(unit->getCurrentLifeInGame() * 256, unit, unit->playerId, false);
 		}
 
 		// Emergency Detonation - initial cast
-		/*
-		if (conditional)
+		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation))
 		{
-			unitExt->EmergencyDetonationTimer = (u32)(0.5 * unitExt->ControlledDemolitionTimer);
+			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
+			unitExt->timers[TimerEmergencyDetonation] = (u32)(0.5 * unitExt->timers[TimerControlledDemolition]);
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
 		//	unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
 		}
-		*/
 
 		// Emergency Detonation - destroy structure
 		if (unitExt->timers[TimerEmergencyDetonation] == 1)
 		{
-			//scbw::createBullet(WeaponId::EmergencyDetonation, unit, unit->position.x, unit->position.y, unit->playerId);
-			unit->remove();
+			helper::createBullet(WeaponId::EmergencyDetonationExplosion, unit, unit->position.x, unit->position.y, unit->playerId, 0);
+			unit->damageHp(unit->getCurrentLifeInGame() * 256, unit, unit->playerId, false);
 		}
 
 		if (unitExt->units[UnitWorshipDemiurge]) {
