@@ -215,7 +215,7 @@ namespace
 			PUSH EBP
 			MOV EBP, ESP
 			SUB ESP, 8
-			MOV bullet, ESP
+			MOV bullet, EBP
 			PUSHAD
 		}
 		if (bullet != nullptr)
