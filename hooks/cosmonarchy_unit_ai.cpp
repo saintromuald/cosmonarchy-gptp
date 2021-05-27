@@ -135,7 +135,10 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
 			[&](Unit* hostileUnit)
 		{
-			result.enemiesFound = true;
+			if (!(units_dat::BaseProperty[hostileUnit->id] & UnitProperty::Building))
+			{
+				result.enemiesFound = true;
+			}
 			unitValue[i] += 1;
 			if (unit->status & UnitStatus::InAir)
 			{
