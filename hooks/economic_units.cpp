@@ -159,8 +159,6 @@ namespace hooks
 		return id;
 	}
 
-	// Veeq7
-
 	// Returns town race judging by main town, first checks if it has buildings assigned
 	u8 GetTownRace(AiTown* town)
 	{
@@ -239,8 +237,6 @@ namespace hooks
 		return nullptr; // couldn't find anything
 	}
 
-	// ---
-
 	void Ai_BuildSupplies(AiTown* mainTown)
 	{
 		u8 player = mainTown->player;
@@ -304,7 +300,7 @@ namespace hooks
 				{
 					return true;
 				}
-				//if max supply , and current supply units (including those under construction) will not satisfy requirement
+				//if max supply, and current supply units (including those under construction) will not satisfy requirement
 				if ((!supplyRemaining) && helper::Ai_CountEconomyUnits(player, supplyUnit) * units_dat::SupplyProvided[supplyUnit] + townHallSupply <= helper::getSuppliesUsed(race, player))
 				{
 					return true;
