@@ -142,8 +142,11 @@ namespace WeaponId {
 
 		// Shared \\
 
-		CohortGaussPistols = 20,				// Cohort weapon
 		AspirantPotentiumCannon = 69,			// Aspirant weapon
+		LuminaryIcarusMissiles = 131,			// Luminary weapon
+		LuminaryAuralAssault = 132,				// Luminary ability targeting
+		StrigaPhaseSaber = 133,					// Striga weapon
+		CohortGaussPistols = 20,				// Cohort weapon
 		CharlatanFerventBlaster = 101,			// Charlatan weapon
 
 		// Terran \\
@@ -179,9 +182,6 @@ namespace WeaponId {
 		WyvernJacksonCannon = 125,				// Wyvern weapon
 		PaladinSkyfall = 126,					// Paladin ability targeting
 		IonCannon = 129,						// Ion Cannon weapon
-		StrigaPhaseSaber = 130,					// Striga weapon
-		LuminaryIcarusMissiles = 131,			// Luminary weapon
-		LuminaryAuralAssault = 132,				// Luminary ability targeting
 
 		// Protoss \\
 				
