@@ -357,8 +357,7 @@ static inline bool unitHasCooldownToAttack(Unit* unit)
 	{
 		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.75;
 	}
-
-	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.5;
+	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.25;
 }
 
 void cosmonarchyUnitAi(Unit* unit)
@@ -418,79 +417,66 @@ void cosmonarchyUnitAi(Unit* unit)
 				crowdScore = cosmonarchyUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoAir, {});
 			}
 
-			bool synced = true;
 			localGroup.forEach([&](Unit* localUnit)
 			{
+				if (localUnit->sprite->mainGraphic->animation == IscriptAnimation::Unused2) // special case for centaur handling
+				{
+					return;
+				}
+
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
 				if (localUnitExt->values[ValueAI_KiteSignal] != 1)
 				{
-					synced = false;
+					return;
 				}
-			});
+				localUnitExt->values[ValueAI_KiteSignal] = 0;
 
-			if (synced || crowdScore > 6)
-			{
-				localGroup.forEach([&](Unit* localUnit)
+				const u32 distance = getDistanceToTarget(localUnit);
+				const u32 maxRange = getMaxRange(localUnit);
+				bool targetHasMinRange = false;
+				if (localUnit->orderTarget.unit)
 				{
-					if (localUnit->sprite->mainGraphic->animation == IscriptAnimation::Unused2) // special case for centaur handling
+					if (localUnit->status & UnitStatus::InAir)
 					{
-						return;
-					}
-
-					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					if (localUnitExt->values[ValueAI_KiteSignal] != 1)
-					{
-						return;
-					}
-					localUnitExt->values[ValueAI_KiteSignal] = 0;
-
-					const u32 distance = getDistanceToTarget(localUnit);
-					const u32 maxRange = getMaxRange(localUnit);
-					bool targetHasMinRange = false;
-					if (localUnit->orderTarget.unit)
-					{
-						if (localUnit->status & UnitStatus::InAir)
-						{
-							targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getAirWeapon()];
-						}
-						else
-						{
-							targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getGroundWeapon()];
-						}
-					}
-
-					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
-						|| localGroupValue * 4 < result.biases[result.forwardIndex])
-					{
-						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
-						KITE_DEBUG("%s: fall back", localUnit->getName());
-					}
-					else if (distance > maxRange * 1.5
-						|| (distance > maxRange * 1 && crowdScore > 6)
-						|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 4)
-						|| targetHasMinRange)
-					{
-						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
-						KITE_DEBUG("%s: forward", localUnit->getName());
-					}
-					else if (crowdScore > 6)
-					{
-						localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
-						KITE_DEBUG("%s: strafe", localUnit->getName());
-					}
-					else if (isMeleeAttacker(localUnit))
-					{
-						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
-						KITE_DEBUG("%s: forward", localUnit->getName());
+						targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getAirWeapon()];
 					}
 					else
 					{
-						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
-						KITE_DEBUG("%s: backward", localUnit->getName());
+						targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getGroundWeapon()];
 					}
-					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
-				});
-			}
+				}
+
+				if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
+					|| localGroupValue * 4 < result.biases[result.forwardIndex])
+				{
+					localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+					KITE_DEBUG("%s: fall back", localUnit->getName());
+				}
+				else if (distance > maxRange * 1.5
+					|| (distance > maxRange * 1 && crowdScore > 6)
+					|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 4)
+					|| targetHasMinRange)
+				{
+					localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+					KITE_DEBUG("%s: forward", localUnit->getName());
+				}
+				else if (crowdScore > 6)
+				{
+					localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
+					KITE_DEBUG("%s: strafe", localUnit->getName());
+				}
+				else if (isMeleeAttacker(localUnit))
+				{
+					localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+					KITE_DEBUG("%s: forward", localUnit->getName());
+				}
+				else
+				{
+					localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+					KITE_DEBUG("%s: backward", localUnit->getName());
+				}
+				localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+			});
 		}
 		else if (unitHasCooldownToAttack(unit))
 		{
