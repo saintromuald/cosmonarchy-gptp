@@ -205,6 +205,34 @@ namespace
 		}
 	}
 	*/
+
+	const u32 BulletDamageJmpBack = 0x0048B776;
+	void __declspec(naked) BulletDamage_bulletNullcheck()
+	{
+		static Bullet* bullet; 
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 8
+			MOV bullet, ESP
+			PUSHAD
+		}
+		if (bullet != nullptr)
+		{
+			__asm
+			{
+				JMP BulletDamageJmpBack
+			}
+		}
+		__asm
+		{
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
 }
 
 extern const u32 Func_FireUnitWeapon;
@@ -221,5 +249,7 @@ namespace hooks
 		jmpPatch(createBullet_Wrapper,				0x0048C260, 5);
 		jmpPatch(initializeBullet_Wrapper,			0x0048BEC0, 0);
 	//	jmpPatch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
+
+		jmpPatch(BulletDamage_bulletNullcheck,		0x0048B770, 0);
 	}
 }
