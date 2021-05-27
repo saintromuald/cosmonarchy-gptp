@@ -354,7 +354,7 @@ namespace scbw
 		}
 		else
 		{
-			supplyProvided = std::min(raceSupply[RaceId::Terran].max[playerId], raceSupply[raceId].provided[playerId]);
+			supplyProvided = std::min(raceSupply[RaceId::Terran].max[playerId], raceSupply[RaceId::Terran].provided[playerId]);
 		}
 		return supplyProvided - raceSupply[RaceId::Terran].used[playerId];
 
