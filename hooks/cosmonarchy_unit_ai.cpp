@@ -428,7 +428,7 @@ void cosmonarchyUnitAi(Unit* unit)
 				}
 			});
 
-			if (synced)
+			if (synced || crowdScore > 6)
 			{
 				localGroup.forEach([&](Unit* localUnit)
 				{
