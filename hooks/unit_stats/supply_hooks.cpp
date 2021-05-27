@@ -463,7 +463,7 @@ LABEL_55:
             unitsProducedOwnedTotal[unit->playerId] += count;
         }
 
-        if (allUnitCountTable[unit->id].player[unit->playerId] < 0 )
+        if (allUnitCountTable[unit->id].player[unit->playerId] < 0)
         {
             allUnitCountTable[unit->id].player[unit->playerId] = 0;
         }
