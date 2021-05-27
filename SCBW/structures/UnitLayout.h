@@ -302,6 +302,7 @@ enum ExtTimerId
 	TimerAkistrokorInfestationInvFrames,
 	TimerWaxWingsDebuff,
 	TimerAuralAssaultBlind,
+	TimerTarasqueSecondaryWeaponCooldown,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,

@@ -107,13 +107,17 @@ namespace hooks
 		}
 	}
 
-	static void fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags)
+	bool fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags)
 	{
+		bool fired = false;
 		std::unordered_set<Unit*> targets;
-		if (attacker->orderTarget.unit)
+		if (attacker->orderTarget.unit
+			&& attacker->mainOrderId != OrderId::Follow
+			&& attacker->mainOrderId != OrderId::Patrol)
 		{
 			targets.insert(attacker->orderTarget.unit);
 			launchMissile(attacker, attackerExt, attacker->orderTarget.unit, weaponId);
+			fired = true;
 		}
 		Unit* old = attacker->orderTarget.unit;
 		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
@@ -143,10 +147,12 @@ namespace hooks
 				break;
 			}
 			launchMissile(attacker, attackerExt, newTarget, weaponId);
+			fired = true;
 			targets.insert(newTarget);
 			attacker->orderTarget.unit = newTarget;
 		}
 		attacker->orderTarget.unit = old;
+		return fired;
 	}
 
 	// Fires a weapon from the @p unit.

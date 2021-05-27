@@ -835,28 +835,39 @@ namespace hooks
 
 	static void weaponDamage_lifesteal(WeaponDamageData& data)
 	{
-		u32 lifesteal = data.finalDamage + data.shieldReduceAmount;
+		u32 damageDealt = data.finalDamage + data.shieldReduceAmount;
 		switch (data.weaponId)
 		{
 			case WeaponId::KaiserBlades:
 			{
 				// Ultrakor Saber Siphon passive
-				lifesteal *= 0.5;
-				data.attacker->heal(lifesteal, data.attacker);
+				data.attacker->heal(damageDealt * 0.5, data.attacker);
 			} break;
 			case WeaponId::WendigoFusionSaw:
 			{
 				// Wendigo Automedicus passive (HP component)
-				lifesteal *= 0.25;
-				data.attacker->heal(lifesteal, data.attacker);
+				data.attacker->heal(damageDealt * 0.25, data.attacker);
 			} break;
 			case WeaponId::AmaranthPsiCleaver:
 			{
 				// Eternal Service - Amaranth behavior
 				const s32 hp = data.attacker->hitPoints / 256;
 				const s32 maxHp = data.attacker->getMaxHpInGame();
-				lifesteal *= MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
-				data.attacker->healShields(lifesteal, data.attacker);
+				u32 shieldsHeal = damageDealt * MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
+				data.attacker->healShields(shieldsHeal, data.attacker);
+			} break;
+			case WeaponId::AxitriliskSearingVenom:
+			{
+				// Axitrilisk passive
+				const s32 shields = data.attacker->getCurrentShieldsInGame();
+				const s32 maxShields = data.attacker->getMaxShieldsInGame();
+				u32 lifeHeal = damageDealt * MathUtils::map(shields, 0, maxShields, 1.0, 0.0, true);
+				data.attacker->heal(lifeHeal, data.attacker);
+
+				const s32 hp = data.attacker->getCurrentHpInGame();
+				const s32 maxHp = data.attacker->getMaxHpInGame();
+				u32 shieldsHeal = damageDealt * MathUtils::map(hp, 0, maxHp, 1.0, 0.0, true);
+				data.attacker->healShields(shieldsHeal, data.attacker);
 			} break;
 		}
 	}
