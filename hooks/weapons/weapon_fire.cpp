@@ -1167,6 +1167,7 @@ namespace hooks
 	}
 
 	// Hooked to stop Valkyries from being cucked by lardcode - Pr0nogo
+	// Current causes crashes, disabled for now
 	Bullet* createBullet(s32 weaponId, Unit* parent, s32 x, s16 y, char playerId, s32 angle) // 0048C260
 	{
 		Bullet* pBullet;
