@@ -209,7 +209,7 @@ SCBW_DATA(const u8*, unkVictoryVariable, 0x00581D66);
 SCBW_DATA(const u32*, saveLoadSuccess, 0x006D5A68);
 SCBW_DATA(u32*, elapstedTimeModifier, 0x006D5BCC);
 SCBW_DATA(const u32*, savedElapsedSeconds, 0x0057F240);
-SCBW_DATA(const Options*, optionsList, 0x006CDFD4);
+SCBW_DATA(		Options*, optionsList, 0x006CDFD4);
 SCBW_DATA(const ReplayData*, replayData, 0x00596BBC);
 SCBW_DATA(const u32*, replayVisions, 0x006D0F18);
 SCBW_DATA(const u32*, playerVisions, 0x0057F0B0);

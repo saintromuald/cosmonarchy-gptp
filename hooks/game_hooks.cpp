@@ -264,6 +264,7 @@ namespace hooks
 			}
 		}
 
+		optionsList->speed = 6; // Lock game speed at fastest
 		if (!scbw::isGamePaused()) // If the game is not paused
 		{
 
