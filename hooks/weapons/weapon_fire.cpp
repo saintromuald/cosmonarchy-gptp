@@ -1482,6 +1482,73 @@ LABEL_37:
 		return result;
 	}
 
+	// Hooked to investigate weaponsdat extender crashes - Pr0nogo
+	void progressBulletFrames() // 0048C3D0
+	{
+		Bullet* bulletVar = *firstBullet;
+		Bullet* nextBullet = nullptr;
+		Sprite* bulletSprite = nullptr;
+		s32 bulletBehavior = 0;
+		if (firstBullet)
+		{
+			do
+			{
+				nextBullet = bulletVar->next;
+				*activeIscriptEntity = (Unit*)bulletVar;
+				*activeIscriptBullet = bulletVar;
+				helper::setThingyVisibilityFlags((Thingy*)bulletVar);
+				bulletSprite = bulletVar->sprite;
+				if (bulletSprite)
+				{
+					helper::spriteToIscriptLoop(bulletSprite);
+					if (!bulletVar->sprite->images.head)
+					{
+						bulletVar->sprite = 0;
+					}
+				}
+				bulletBehavior = (u8)bulletVar->behaviourTypeInternal;
+				switch (bulletBehavior)
+				{
+					case 0:
+					{
+						helper::bulletBehaviorReassign(bulletBehavior, bulletVar, (s32)bulletVar);
+					} break;
+					case 1:
+					{
+						helper::bulletBehaviorFly(bulletVar);
+					} break;
+					case 2:
+					{
+						helper::bulletBehaviorFollow(bulletVar);
+					} break;
+					case 3:
+					{
+						helper::bulletBehaviorBounce(bulletVar);
+					} break;
+					case 4:
+					{
+						helper::bulletBehaviorPersist(bulletVar);
+					} break;
+					case 5:
+					{
+						helper::bulletBehaviorInstant(bulletVar);
+					} break;
+					case 6:
+					{
+						helper::bulletBehaviorArea(bulletVar);
+					} break;
+					default:
+					{
+					} break;
+				}
+				bulletVar = nextBullet;
+			}
+			while (nextBullet);
+		}
+		*activeIscriptEntity = 0;
+		*activeIscriptBullet = 0;
+	}
+
 	/*
 	s32 writeBullets(FILE* hFile) {
 		s32 v1; // edi

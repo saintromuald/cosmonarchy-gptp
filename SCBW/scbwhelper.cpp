@@ -8929,4 +8929,77 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For progressBulletFrame
+	void bulletBehaviorFly(Bullet* bullet)
+	{
+		const u32 Func_bulletBehaviorFly = 0x0048B3B0;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, bullet
+			CALL Func_bulletBehaviorFly
+			POPAD
+		}
+	}
+
+	void bulletBehaviorFollow(Bullet* bullet)
+	{
+		const u32 Func_bulletBehaviorFollow = 0x0048B500;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, bullet
+			CALL Func_bulletBehaviorFollow
+			POPAD
+		}
+	}
+
+	void bulletBehaviorBounce(Bullet* bullet)
+	{
+		const u32 Func_bulletBehaviorBounce = 0x0048B2D0;
+		__asm
+		{
+			PUSHAD
+			MOV EDI, bullet
+			CALL Func_bulletBehaviorBounce
+			POPAD
+		}
+	}
+
+	void bulletBehaviorPersist(Bullet* bullet)
+	{
+		const u32 Func_bulletBehaviorPersist = 0x0048BC70;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, bullet
+			CALL Func_bulletBehaviorPersist
+			POPAD
+		}
+	}
+
+	void bulletBehaviorInstant(Bullet* bullet)
+	{
+		const u32 Func_bulletBehaviorInstant = 0x0048A560;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, bullet
+			CALL Func_bulletBehaviorInstant
+			POPAD
+		}
+	}
+
+	void bulletBehaviorArea(Bullet* bullet)
+	{
+		const u32 Func_bulletBehaviorArea = 0x0048B440;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, bullet
+			CALL Func_bulletBehaviorArea
+			POPAD
+		}
+	}
 }

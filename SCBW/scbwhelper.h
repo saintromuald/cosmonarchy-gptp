@@ -948,6 +948,14 @@ namespace helper
 	void drawShieldUpgrade(BinDlg* dialog, u16 statusScreenIndex);											// 00425510
 	void drawArmor(BinDlg* dialog, s32 unitId, u16 statusScreenIndex);										// 00425600
 
+	// For progressBulletFrame
+	void bulletBehaviorFly(Bullet* bullet);																	// 0048B3B0
+	void bulletBehaviorFollow(Bullet* bullet);																// 0048B500
+	void bulletBehaviorBounce(Bullet* bullet);																// 0048B2D0
+	void bulletBehaviorPersist(Bullet* bullet);																// 0048BC70
+	void bulletBehaviorInstant(Bullet* bullet);																// 0048A560
+	void bulletBehaviorArea(Bullet* bullet);																// 0048B440
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
