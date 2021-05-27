@@ -144,15 +144,20 @@ namespace scbw
 		return diff;
 	}
 
-	inline Vector32f getNormalizedVector(Vector32 point)
+	inline Vector32f getNormalizedVector(Vector32 vector)
 	{
-		f32 dist = sqrt(pow(point.x, 2) + pow(point.y, 2));
-		return { point.x / dist, point.y / dist };
+		f32 dist = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
+		return { vector.x / dist, vector.y / dist };
 	}
 
 	inline f32 getDotProduct(Vector32f a, Vector32f b)
 	{
 		return a.x * b.x + a.y * b.y;
+	}
+
+	inline f32 getVectorDistance(Vector32f vector)
+	{
+		return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	}
 
 	//////////////////////////////////////////////////////////////// @}

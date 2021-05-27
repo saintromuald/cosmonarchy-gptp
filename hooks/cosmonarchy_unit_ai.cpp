@@ -271,11 +271,6 @@ static inline u8 getMaxWeaponCooldown(Unit* unit)
 	return std::max(groundCooldown, airCooldown);
 }
 
-static inline u32 getDistanceBetweenUnits(Unit* source, Unit* target)
-{
-	return scbw::getDistanceFast(source->position.x, source->position.y, target->position.x, target->position.y);
-}
-
 static inline u32 getDistanceToTarget(Unit* source)
 {
 	Unit* target = source->orderTarget.unit;
@@ -284,7 +279,7 @@ static inline u32 getDistanceToTarget(Unit* source)
 		return getMaxRange(source);
 	}
 
-	return getDistanceBetweenUnits(source, target);
+	return scbw::getDistanceFast(source->position, target->position);
 }
 
 static inline s32 getTargetCost(Unit* source, Unit* target)
@@ -310,7 +305,7 @@ static inline s32 getTargetCost(Unit* source, Unit* target)
 	cost -= hooks::getCurrentDPS(target, weaponId) * multiplier;
 
 	// Value attacking units with smaller pathing cost more
-	s32 dist = (s32)getDistanceBetweenUnits(source, target) - getMaxRange(source);
+	s32 dist = (s32)scbw::getDistanceFast(source->position, target->position) - getMaxRange(source);
 	if (dist > 0)
 	{
 		cost += dist / 32.0;
@@ -884,7 +879,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					{
 						return -2;
 					}
-					return getDistanceBetweenUnits(unit, local);
+					return scbw::getDistanceFast(unit->position, local->position);
 				});
 			}
 			else if (unit->id == UnitId::ZergSovroleth)
