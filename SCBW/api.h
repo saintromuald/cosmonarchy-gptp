@@ -113,6 +113,29 @@ namespace scbw
 	/// (distance, angle), using StarCraft's internal data.
 	inline s32 getPolarY(s32 distance, u8 angle);
 
+	inline Point16 clampPoint(Point16 point)
+	{
+		if (point.x < 0)
+		{
+			point.x = 0;
+		}
+		else if (point.x > mapTileSize->width * 32)
+		{
+			point.x = mapTileSize->width * 32;
+		}
+
+		if (point.y < 0)
+		{
+			point.y = 0;
+		}
+		else if (point.y > mapTileSize->height * 32)
+		{
+			point.y = mapTileSize->height * 32;
+		}
+
+		return point;
+	}
+
 	inline Vector32 getVectorBetweenPoints(Point16 source, Point16 target)
 	{
 		Vector32 diff = { target.x, target.y };
