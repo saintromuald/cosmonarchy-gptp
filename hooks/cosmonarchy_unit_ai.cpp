@@ -534,7 +534,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					}
 					else
 					{
-						localUnitExt->timers[TimerAI_Kite] = 6;
+						localUnitExt->timers[TimerAI_Kite] = 1;
 					}
 
 					KITE_DEBUG("%s: attack", localUnit->getName());
