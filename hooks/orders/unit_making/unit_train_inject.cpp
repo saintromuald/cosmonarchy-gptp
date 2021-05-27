@@ -75,8 +75,8 @@ namespace
 		}
 	}
 
-	const u32 loc_success_A = 0x0046DAC7;
-	const u32 loc_fail = 0x0046DA3E;
+	const u32 loc_success = 0x0046DA3E;
+	const u32 loc_fail_A = 0x0046DAC7;
 	void __declspec(naked) isLiftedOff_Wrapper() // 0046D832
 	{
 		static Unit* unit;
@@ -90,18 +90,18 @@ namespace
 			_asm
 			{
 				POPAD
-				JMP loc_success_A
+				JMP loc_fail_A
 			}
 		}
 		_asm
 		{
 			POPAD
 			INC edi
-			JMP loc_fail
+			JMP loc_success
 		}
 	}
 
-	const u32 loc_success_B = 0x0046DADB;
+	const u32 loc_fail_B = 0x0046DADB;
 	void __declspec(naked) isNotLiftedOff_Wrapper() // 0046D845
 	{
 
@@ -116,14 +116,14 @@ namespace
 			_asm
 			{
 				POPAD
-				JMP loc_success_B
+				JMP loc_fail_B
 			}
 		}
 		_asm
 		{
 			POPAD
 			INC edi
-			JMP loc_fail
+			JMP loc_success
 		}
 	}
 }
