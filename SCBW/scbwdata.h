@@ -255,7 +255,6 @@ SCBW_DATA(u32*, moveToX, 0x0062848C);
 SCBW_DATA(u32*, moveToY, 0x006284A8);
 
 // For incrementUnitScoresEx
-SCBW_DATA(u32*, factoriesProduced, 0x00582084); // Array of 12
 SCBW_DATA(u32*, factoriesOwned, 0x005820B4); // Array of 12
 SCBW_DATA(u32*, unitsProduced, 0x00581E14); // Array of 12
 SCBW_DATA(u32*, structuresBuilt, 0x00581F64); // Array of 12
@@ -263,6 +262,11 @@ SCBW_DATA(u32*, unitScore, 0x00581ED4); // Array of 12
 SCBW_DATA(u32*, buildingScore, 0x00582024); // Array of 12
 SCBW_DATA(u32*, unitsOwned, 0x00581E44); // Array of 12
 SCBW_DATA(u32*, buildingsOwned, 0x00582024); // Array of 12
+
+// For incrementUnitScores
+SCBW_DATA(u32*, factoriesProducedOwnedTotal, 0x00582084); // Array of 12
+SCBW_DATA(u32*, structuresProducedOwnedTotal, 0x00581F34); // Array of 12
+SCBW_DATA(u32*, unitsProducedOwnedTotal, 0x00581DE4); // Array of 12
 
 // For refreshScreen
 SCBW_DATA(u32*, placeBuildingMessageId, 0x00640958);

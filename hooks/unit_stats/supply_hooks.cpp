@@ -451,19 +451,19 @@ LABEL_55:
 
         if (groupFlag.isFactory)
         {
-            factoriesProduced[unit->playerId] += count;
+            factoriesProducedOwnedTotal[unit->playerId] += count;
         }
         else if (groupFlag.isMen)
         {
-            unitsProduced[unit->playerId] += count;
+            unitsProducedOwnedTotal[unit->playerId] += count;
         }
         else if (groupFlag.isBuilding)
         {
-            structuresBuilt[unit->playerId] += count;
+            structuresProducedOwnedTotal[unit->playerId] += count;
         }
         else if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon && unit->id != UnitId::ZergLurkerEgg)
         {
-            unitsProduced[unit->playerId] += count;
+            unitsProducedOwnedTotal[unit->playerId] += count;
         }
 
         if (allUnitCountTable[unit->id].player[unit->playerId] < 0 )
