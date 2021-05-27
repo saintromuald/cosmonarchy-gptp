@@ -185,7 +185,6 @@ enum ExtValueId
 	ValueLazarusAgent,
 	ValueRepententChorus,
 	ValueStellarEnforcement,
-	ValueCastLazarusAgent,
 	ValueAlkajeliskParasite,
 	ValueAlkajeliskParasitePlayer,
 	ValuePegasusLaserPos,
@@ -244,6 +243,8 @@ enum ExtValueId
 	ValueAkistrokorInfestationSourcePlayer,
 	ValueControlledOpposition,
 	ValueNathrokorBuffStacks,
+	ValueEmpressPassiveStacks,
+	ValueEmpressSourcePlayer,
 
 	ValueAI_KiteSignal,
 
@@ -332,6 +333,7 @@ enum ExtUnitId
 	UnitDirgeSource,
 	UnitBunkerLockOn,
 	UnitLastHitAkistrokor,
+	UnitEmpressSource,
 
 	UnitCount,
 };

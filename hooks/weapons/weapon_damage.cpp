@@ -598,6 +598,12 @@ namespace hooks
 
 			switch (data.weaponId)
 			{
+				case WeaponId::EmpressFadingBioplasma:
+				{
+					targetExt->units[UnitEmpressSource] = data.attacker;
+					targetExt->values[ValueEmpressPassiveStacks]++;
+					targetExt->values[ValueEmpressSourcePlayer] = data.attackingPlayerId;
+				} break;
 				case WeaponId::NathrokorPlasmidBreath:
 				{
 					// Adrenal Frenzy - Nathrokor behavior
@@ -919,8 +925,19 @@ namespace hooks
 			} break;
 		}
 
+		// Empress - passive
+		if (targetExt->values[ValueEmpressPassiveStacks])
+		{
+			data.finalDamage = 0;
+			data.target->hitPoints = 0;
+			data.target->shields = 0;
+			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 5 * 256, targetExt->units[UnitEmpressSource]);
+			data.target->giveTo(targetExt->values[ValueEmpressSourcePlayer]);
+			targetExt->values[ValueEmpressPassiveStacks] = 0;
+		}
+
 		// Apostle - Lazarus Agent
-		if (targetExt->values[ValueLazarusAgent])
+		if (data.finalDamage > 0 && targetExt->values[ValueLazarusAgent])
 		{
 			globals.initLazarusAgent(data.target->position.x, data.target->position.y,
 				data.target->playerId, data.target->id, data.target->energy, targetExt->values[ValueLazarusAgent],

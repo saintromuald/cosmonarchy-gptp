@@ -47,18 +47,15 @@ u32 Unit::getCurrentLifeInGame() const
 		return getCurrentHpInGame() + getCurrentShieldsInGame();
 	else
 		return getCurrentHpInGame();
-};
+}
+
 s32 Unit::maxShields() const
 {
 	assert(this);
 	return units_dat::MaxShieldPoints[this->id];
 }
+
 bool Unit::shieldsEnabled() const
-{
-	assert(this);
-	return units_dat::ShieldsEnabled[this->id];
-}
-bool Unit::shieldsEnabledRaw() const
 {
 	assert(this);
 	return units_dat::ShieldsEnabled[this->id];
@@ -150,6 +147,11 @@ u32 Unit::getMaxShieldsInGame() const
 {
 	assert(this);
 
+	if (!this->shieldsEnabled())
+	{
+		return 0;
+	}
+
 	u32 maxShields = units_dat::MaxShieldPoints[this->id];
 	if (maxShields == 0)
 	{
@@ -158,10 +160,6 @@ u32 Unit::getMaxShieldsInGame() const
 		{
 			maxShields = 1;
 		}
-	}
-	else
-	{
-		maxShields = maxShields >> 8;
 	}
 	return maxShields;
 }
@@ -175,7 +173,7 @@ u32 Unit::getMaxHpRaw() const
 u32 Unit::getMaxShieldsRaw() const
 {
 	assert(this);
-	return units_dat::MaxShieldPoints[this->id];
+	return units_dat::MaxShieldPoints[this->id] * 256;
 }
 
 u8 Unit::getSpellCountdown() const
@@ -482,11 +480,11 @@ void Unit::setHp(s32 hitPoints)
 	}
 }
 
-void Unit::heal(s32 hitPoints, Unit* source)
+void Unit::heal(s32 hitPoints, Unit* source, bool restore)
 {
 	assert(this);
-	if (this->hitPoints == this->getMaxHpRaw())
-	{ // skip healing if max hp already
+	if (this->hitPoints == this->getMaxHpRaw()) // skip healing if max hp already
+	{
 		return;
 	}
 
@@ -496,29 +494,41 @@ void Unit::heal(s32 hitPoints, Unit* source)
 		hitPoints *= 2;
 	}
 
-	setHp(std::min((u32)(this->hitPoints) + (u32)(hitPoints), this->getMaxHpRaw()));
+	setHp(std::min((u32)this->hitPoints + hitPoints, this->getMaxHpRaw()));
 
 	// If heals to full clear debuffs
-	if (this->hitPoints == this->getMaxHpRaw())
+	if (this->hitPoints == this->getMaxHpRaw() && restore)
 	{
 		scbw::restoreFunc(this);
 	}
 }
 
-void Unit::healShields(s32 shields, Unit* source)
+void Unit::healShields(s32 shields, Unit* source, bool restore)
 {
 	assert(this);
-	if (this->shields == this->maxShields() * 256)
-	{ // skip healing if max shields already
+	if (this->shields == this->getMaxShieldsRaw()) // skip healing if max shields already
+	{
 		return;
 	}
 
-	this->shields = std::min(this->shields + shields, this->maxShields() * 256);
+	this->shields = std::min((u32)this->shields + shields, this->getMaxShieldsRaw());
+	helper::updateUnitStrength(this);
 
 	// If heals to full clear debuffs
-	if (this->shields == this->maxShields() * 256)
+	if (this->shields == this->getMaxShieldsRaw() && restore)
 	{
 		scbw::restoreFunc(this);
+	}
+}
+
+void Unit::healOverflow(s32 amount, Unit* source, bool restore)
+{
+	s32 shields = this->hitPoints + amount;
+	shields -= this->getMaxHpRaw();
+	this->heal(amount, source, restore);
+	if (shields > 0)
+	{
+		this->healShields(shields, source, false);
 	}
 }
 

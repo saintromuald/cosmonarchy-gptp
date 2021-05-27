@@ -180,8 +180,9 @@ struct Unit : public UnitLayout
 	/// Sets the unit's HP, and also updates burning / bleeding graphics and unit
 	/// strength data (used by the AI). HP is guaranteed not to overflow.
 	void setHp(s32 hitPoints);
-	void heal(s32 hitPoints, Unit* source = nullptr);
-	void healShields(s32 shields, Unit* source = nullptr);
+	void heal(s32 hitPoints, Unit* source = nullptr, bool restore = true);
+	void healShields(s32 shields, Unit* source = nullptr, bool restore = true);
+	void healOverflow(s32 amount, Unit* source = nullptr, bool restore = true);
 	void healEnergy(s32 energy, Unit* source = nullptr);
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.
@@ -283,7 +284,6 @@ struct Unit : public UnitLayout
 	Image* getOverlay(u16 imageId) const;
 	s32 maxShields() const;
 	bool shieldsEnabled() const;
-	bool shieldsEnabledRaw() const;
 
 	/// Makes the unit's sprite play the specified Iscript animation entry.
 	void playIscriptAnim(IscriptAnimation::Enum animation);

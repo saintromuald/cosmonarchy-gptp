@@ -479,9 +479,9 @@ void Globals::frameHook()
 			{
 				UnitExt* revivedExt = globals.GetUnitExt(revived);
 				u32 heal = ApostleLazarusAgentHeal * agent.stacks;
-				revived->setHp(0);
-				revived->heal(heal);
-				revived->shields = std::max(heal - revived->hitPoints, 0u);
+				revived->hitPoints = 0;
+				revived->shields = 0;
+				revived->healOverflow(heal);
 				revived->energy = agent.energy;
 				revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
@@ -1232,10 +1232,14 @@ namespace scbw
 		if (parentExt->values[ValueLazarusAgent])
 		{
 			childExt->values[ValueLazarusAgent] = parentExt->values[ValueLazarusAgent];
-			if (parentExt->values[ValueLazarusAgentApostleSrc])
-			{
-				childExt->values[ValueLazarusAgentApostleSrc] = parentExt->values[ValueLazarusAgentApostleSrc];
-			}
+			childExt->values[ValueLazarusAgentApostleSrc] = parentExt->values[ValueLazarusAgentApostleSrc];
+		}
+
+		// Inherit Lazarus Agent
+		if (parentExt->values[ValueEmpressPassiveStacks])
+		{
+			childExt->values[ValueEmpressPassiveStacks] = parentExt->values[ValueEmpressPassiveStacks];
+			childExt->values[ValueEmpressSourcePlayer] = parentExt->values[ValueEmpressSourcePlayer];
 		}
 
 		// Inherit Hierophant Signify
@@ -1370,6 +1374,12 @@ namespace scbw
 		if (unitExt->timers[TimerLobotomySlow])
 		{
 			unitExt->timers[TimerLobotomySlow] = 1;
+		}
+
+		// Remove Empress stacks
+		if (unitExt->values[ValueEmpressPassiveStacks])
+		{
+			unitExt->values[ValueEmpressPassiveStacks] = 0;
 		}
 
 		// Remove Lockdown
