@@ -471,7 +471,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 					KITE_DEBUG("%s: forward", localUnit->getName());
 				}
-				else if (distance < maxRange * 0.2)
+				else
 				{
 					localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 					KITE_DEBUG("%s: backward", localUnit->getName());
