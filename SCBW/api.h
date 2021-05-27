@@ -22,7 +22,7 @@ namespace scbw
 	std::string readSamaseFile(char* name);
 	bool teleport(Unit* u, Point16 target, u16 spriteAnimation = 0, bool preserveOrder = false);
 	Thingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId = 11, s32 elevationLevel = 11);
-	Point32 rotate_point(Point32 anchor, Point32 point, f64 angle_degrees);
+	Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees);
 
 	/// @name Output functions
 	//////////////////////////////////////////////////////////////// @{
@@ -112,6 +112,48 @@ namespace scbw
 	/// Calculates the Y Cartesian coordinate from the given polar coordinates
 	/// (distance, angle), using StarCraft's internal data.
 	inline s32 getPolarY(s32 distance, u8 angle);
+
+	inline Point16 clampPoint(Point16 point)
+	{
+		if (point.x < 0)
+		{
+			point.x = 0;
+		}
+		else if (point.x > mapTileSize->width * 32)
+		{
+			point.x = mapTileSize->width * 32;
+		}
+
+		if (point.y < 0)
+		{
+			point.y = 0;
+		}
+		else if (point.y > mapTileSize->height * 32)
+		{
+			point.y = mapTileSize->height * 32;
+		}
+
+		return point;
+	}
+
+	inline Vector32 getVectorBetweenPoints(Point16 source, Point16 target)
+	{
+		Vector32 diff = { target.x, target.y };
+		diff.x -= source.x;
+		diff.y -= source.y;
+		return diff;
+	}
+
+	inline Vector32f getNormalizedVector(Vector32 point)
+	{
+		f32 dist = sqrt(pow(point.x, 2) + pow(point.y, 2));
+		return { point.x / dist, point.y / dist };
+	}
+
+	inline f32 getDotProduct(Vector32f a, Vector32f b)
+	{
+		return a.x * b.x + a.y * b.y;
+	}
 
 	//////////////////////////////////////////////////////////////// @}
 

@@ -568,19 +568,15 @@ namespace hooks
 						const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 						if (dist < 2 * 32)
 						{
-							Point32f diff = {data.attacker->getX(), data.attacker->getY()};
-							diff.x -= data.target->getX();
-							diff.y -= data.target->getY();
-
-							f32 diffDist = sqrt(pow(diff.x, 2) + pow(diff.y, 2));
-							diff.x /= diffDist;
-							diff.y /= diffDist;
-							diff.x *= 2 * 32.0;
-							diff.y *= 2 * 32.0;
+							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
+							Vector32f displacement = scbw::getNormalizedVector(diff);
+							displacement.x *= 2 * 32.0;
+							displacement.y *= 2 * 32.0;
 
 							Point16 finalPos = data.target->position;
-							finalPos.x += diff.x;
-							finalPos.y += diff.y;
+							finalPos.x += displacement.x;
+							finalPos.y += displacement.y;
+							finalPos = scbw::clampPoint(finalPos);
 
 							ActiveTile originalTile = scbw::getActiveTileAt(data.attacker->position.x, data.attacker->position.y);
 							ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);

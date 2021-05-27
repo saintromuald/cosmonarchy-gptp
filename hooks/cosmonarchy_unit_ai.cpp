@@ -79,41 +79,18 @@ const u32 moveRadius = 4 * 32;
 const u32 localGroupRadius = 2 * 32;
 
 const u32 kiteZoneCount = 9;
-const Point32f kiteOffsets[kiteZoneCount] =
+const Vector32f kiteOffsets[kiteZoneCount] =
 {
 	{-1, -1}, {0, -1}, {+1, -1},
 	{-1,  0}, {0,  0}, {+1,  0},	
 	{-1, +1}, {0, +1}, {+1, +1},
 };
-const Point32f biasOrigins[kiteZoneCount] =
+const Vector32f biasOrigins[kiteZoneCount] =
 {
 	{-0.7, -0.7}, { 0, -1.0}, {+0.7, -0.7},
 	{-1.0,    0}, { 0,    0}, {+1.0,    0},	
 	{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
 };
-
-static inline Point16 ClampPoint(Point16 point)
-{
-	if (point.x < 0)
-	{
-		point.x = 0;
-	}
-	else if (point.x > mapTileSize->width * 32)
-	{
-		point.x = mapTileSize->width * 32;
-	}
-
-	if (point.y < 0)
-	{
-		point.y = 0;
-	}
-	else if (point.y > mapTileSize->height * 32)
-	{
-		point.y = mapTileSize->height * 32;
-	}
-
-	return point;
-}
 
 static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 {
@@ -153,7 +130,7 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 
 	if (result.enemiesFound)
 	{
-		Point32f biasVectors[kiteZoneCount] =
+		Vector32f biasVectors[kiteZoneCount] =
 		{
 			{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
 			{-1.1,    0}, { 0,    0}, {+1.1,    0},	
@@ -169,7 +146,7 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 		{
 			for (int j = 0; j < kiteZoneCount; j++)
 			{
-				result.biases[i] += biasOrigins[i].x * biasVectors[j].x + biasOrigins[i].y * biasVectors[j].y;
+				result.biases[i] += scbw::getDotProduct(biasOrigins[i], biasVectors[j]);
 			}
 			result.biases[i] /= kiteZoneCount;
 		}
@@ -208,17 +185,17 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 		result.forwardPos = unit->position;
 		result.forwardPos.x += kiteOffsets[result.forwardIndex].x * moveRadius;
 		result.forwardPos.y += kiteOffsets[result.forwardIndex].y * moveRadius;
-		result.forwardPos = ClampPoint(result.forwardPos);
+		result.forwardPos = scbw::clampPoint(result.forwardPos);
 
 		result.backwardPos = unit->position;
 		result.backwardPos.x += kiteOffsets[result.backwardIndex].x * moveRadius;
 		result.backwardPos.y += kiteOffsets[result.backwardIndex].y * moveRadius;
-		result.backwardPos = ClampPoint(result.backwardPos);
+		result.backwardPos = scbw::clampPoint(result.backwardPos);
 
 		result.strafePos = unit->position;
 		result.strafePos.x += kiteOffsets[result.strafeIndex].x * moveRadius;
 		result.strafePos.y += kiteOffsets[result.strafeIndex].y * moveRadius;
-		result.strafePos = ClampPoint(result.strafePos);
+		result.strafePos = scbw::clampPoint(result.strafePos);
 	}
 	return result;
 }

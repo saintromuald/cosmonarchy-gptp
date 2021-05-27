@@ -12,7 +12,7 @@ namespace hooks
 		{
 			s32 counter = 1;
 
-			Point32 hit;
+			Vector32 hit;
 			if (Unit* target = unit->orderTarget.unit)
 			{
 				hit = {target->getX(), target->getY()};

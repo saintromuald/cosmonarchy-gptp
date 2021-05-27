@@ -118,7 +118,7 @@ namespace graphics
 
 	void Shape::draw() const
 	{
-		Point32 p1 = this->p1, p2 = this->p2;
+		Vector32 p1 = this->p1, p2 = this->p2;
 		switch (this->coordType)
 		{
 			case ON_SCREEN:

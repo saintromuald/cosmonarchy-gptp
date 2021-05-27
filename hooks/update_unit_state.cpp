@@ -192,8 +192,10 @@ namespace hooks
 				if (!target || !wyvernCanFireAt(unit, target))
 				{
 					target = scbw::UnitFinder::getNearestTarget(
-						unit->getX() - range, unit->getY() - range,
-						unit->getX() + range, unit->getY() + range,
+						unit->getX() - range,
+						unit->getY() - range,
+						unit->getX() + range,
+						unit->getY() + range,
 						unit, [&](Unit* target)
 					{
 						if (target == unit)

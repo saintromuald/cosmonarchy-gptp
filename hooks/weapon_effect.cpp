@@ -588,7 +588,7 @@ namespace hooks
 
 	void nuke(Bullet* bullet, u32 weaponId)
 	{
-		Point32 pos = { bullet->position.x, bullet->position.y } ;
+		Vector32 pos = { bullet->position.x, bullet->position.y } ;
 
 		globals.createEffect(EffectId::GroundZero, 24, pos, 0, -1, 5, bullet->srcPlayer);
 

@@ -37,8 +37,8 @@ struct Shape {
       DOTTED_ELLIPSE
     } type;
     CoordType coordType;
-    Point32 p1;
-    Point32 p2;
+    Vector32 p1;
+    Vector32 p2;
     s32 radius;
     ColorId color;
     FontSize fontSize;

@@ -125,7 +125,7 @@ SCBW_DATA(s32*, screenY, 0x00628470);
 SCBW_DATA(Point16*, startPositions, 0x0058D720);
 
 /// Mouse position relative to the screen
-SCBW_DATA(const Point32*, mouse, 0x006CDDC4);
+SCBW_DATA(const Vector32*, mouse, 0x006CDDC4);
 
 /// Booleans indicating which keyboard buttons are held
 
@@ -741,7 +741,7 @@ SCBW_DATA(UnitFinderData*, unitOrderingX, 0x0066FF78);
 SCBW_DATA(UnitFinderData*, unitOrderingY, 0x006769B8);
 SCBW_DATA(const u32*, unitOrderingCount, 0x0066FF74);
 
-SCBW_DATA(const Point32*, angleDistance, 0x00512D28);
+SCBW_DATA(const Vector32*, angleDistance, 0x00512D28);
 SCBW_DATA(u16*, megatileCount, 0x005998E0);
 //Used internally by Starcraft to manage temporary units lists
 SCBW_DATA(Unit***, tempUnitsListsArray, 0x006BB938);

@@ -43,7 +43,7 @@ namespace EffectId
 struct Effect
 {
 	u8 effectId;
-	Point32 position;
+	Vector32 position;
 	u32 radius;
 	u32 currentTime;
 	u32 maxTime;
@@ -72,7 +72,7 @@ struct MultihitBullet
 
 struct ApostleAgent
 {
-	Point32 position;
+	Vector32 position;
 	u32 timer;
 	u32 unitId;
 	u8 playerId;
@@ -155,7 +155,7 @@ struct Globals
 	bool was_hit_by_pariah(Unit* source, Unit* target);
 
 	void register_pariah_hit(Unit* source, Unit* target);
-	void createEffect(u8 impactId, u32 time, Point32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* parent = nullptr);
+	void createEffect(u8 impactId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* parent = nullptr);
 	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
 	bool multihit_bullet_is_set(Bullet* bullet);
 	u32 get_multihit_count(Bullet* bullet);

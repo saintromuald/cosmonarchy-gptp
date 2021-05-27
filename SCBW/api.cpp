@@ -311,14 +311,14 @@ namespace scbw
 
 	}
 
-	Point32 rotate_point(Point32 anchor, Point32 point, f64 angle_degrees)
+	Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees)
 	{
 		f64 x1 = point.x - anchor.x;
 		f64 y1 = point.y - anchor.y;
 		auto radians = angle_degrees / 57.296;
 		f64 x2 = x1 * cos(radians) - y1 * sin(radians);
 		f64 y2 = x1 * sin(radians) + y1 * cos(radians);
-		Point32 product;
+		Vector32 product;
 		product.x = x2 + anchor.x;
 		product.y = y2 + anchor.y;
 		return product;

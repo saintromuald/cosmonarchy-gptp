@@ -1679,7 +1679,7 @@ namespace helper
 		return result;
 	}
 
-	void orderInterrupt(Unit* unit, u8 orderId, Point32* pos, Unit* target)
+	void orderInterrupt(Unit* unit, u8 orderId, Vector32* pos, Unit* target)
 	{
 		const u32 Func_orderInterrupt = 0x00474C30;
 		__asm {
@@ -3595,7 +3595,7 @@ namespace helper
 		}
 	}
 
-	bool getLarvaSpawnPos(Unit* unit, Point32* coords)
+	bool getLarvaSpawnPos(Unit* unit, Vector32* coords)
 	{
 		const u32 Func_getLarvaSpawnPos = 0x004E8E10;
 		static b32 return_pre_value;
@@ -4227,7 +4227,7 @@ namespace helper
 		return result;
 	}
 
-	Order* performAnotherOrder(u8 a1, s32 a2, Unit* a3, s16 a4, Point32* a5, Unit* a6)
+	Order* performAnotherOrder(u8 a1, s32 a2, Unit* a3, s16 a4, Vector32* a5, Unit* a6)
 	{
 		const u32 Func_performAnotherOrder = 0x004745F0;
 		static Order* result;
@@ -4246,7 +4246,7 @@ namespace helper
 		return result;
 	}
 
-	void order(s32 a1, Unit* a2, s8 a3, Point32* a4, Unit* a5, s32 a6)
+	void order(s32 a1, Unit* a2, s8 a3, Vector32* a4, Unit* a5, s32 a6)
 	{
 		const u32 Func_order = 0x00474810;
 		__asm {
@@ -4692,11 +4692,11 @@ namespace helper
 		}
 	}
 
-	Point32 setResourceTarget(Unit* a1)
+	Vector32 setResourceTarget(Unit* a1)
 	{
 		const u32 Func_setResourceTarget = 0x004EB290;
 		static __int32 result;
-		static Point32 resultPoint;
+		static Vector32 resultPoint;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -4704,7 +4704,7 @@ namespace helper
 			MOV result, EAX
 			POPAD
 		}
-		return resultPoint = *(Point32*)&result;
+		return resultPoint = *(Vector32*)&result;
 	}
 
 	// for genericRightClickUnitProc2
@@ -6998,7 +6998,7 @@ namespace helper
 
 	// For targetedOrder
 
-	Order* queueNewOrder(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Point32* a8, Unit* a9)
+	Order* queueNewOrder(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9)
 	{
 		const u32 Func_queueNewOrder = 0x00474B90;
 		static Order* result;
@@ -7035,7 +7035,7 @@ namespace helper
 		return result;
 	}
 
-	void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Point32* a8, Unit* a9)
+	void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vector32* a8, Unit* a9)
 	{
 		const u32 Func_setOrderTarget = 0x00475470;
 		__asm {

@@ -169,7 +169,7 @@ LABEL_8:
 					{
 						if (*COrderCount < 1800)
 						{
-							helper::queueNewOrder((Order*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (Unit*)a10);
+							helper::queueNewOrder((Order*)a5, a1, a4, a3, a7, a8, a2, (Vector32*)a9, (Unit*)a10);
 						}
 						else
 						{
@@ -194,7 +194,7 @@ LABEL_8:
 		else
 		{
 LABEL_15:
-			helper::setOrderTarget(a7, a1, a4, a5, (s32)a3, (Unit*)a8, (u16)a2, (Point32*)a9, (Unit*)a10);
+			helper::setOrderTarget(a7, a1, a4, a5, (s32)a3, (Unit*)a8, (u16)a2, (Vector32*)a9, (Unit*)a10);
 		}
 	}
 
