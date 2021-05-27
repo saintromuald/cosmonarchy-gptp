@@ -439,7 +439,7 @@ namespace scbw
 		s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 		UnitFinderData* left, UnitFinderData* top,
 		UnitFinderData* right, UnitFinderData* bottom,
-		UnitFinderCallbackMatchInterface match, Point32 sourcePosition)
+		UnitFinderCallbackMatchInterface match, Vector32 sourcePosition)
 	{
 
 		s32 bestDistance = scbw::getDistanceFast(0, 0,
@@ -630,7 +630,7 @@ namespace scbw
 			match, sourceBullet);
 	}
 	Unit* UnitFinder::getNearestTarget(s32 left, s32 top, s32 right, s32 bottom,
-		Point32 sourcePosition, UnitFinderCallbackMatchInterface match)
+		Vector32 sourcePosition, UnitFinderCallbackMatchInterface match)
 	{
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
 

@@ -72,7 +72,7 @@ namespace scbw {
 		static Unit* getNearestTarget(s32 left, s32 top, s32 right, s32 bottom,
 			Bullet* sourceBullet, UnitFinderCallbackMatchInterface match);
 		static Unit* getNearestTarget(s32 left, s32 top, s32 right, s32 bottom,
-			Point32 position, UnitFinderCallbackMatchInterface match);
+			Vector32 position, UnitFinderCallbackMatchInterface match);
 		/// Searches the entire map, returning the nearest unit to @p sourceUnit
 		/// for which match(unit) evaluates to true. If there are no matches,
 		/// returns nullptr.
@@ -95,7 +95,7 @@ namespace scbw {
 			s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 			UnitFinderData* left, UnitFinderData* top,
 			UnitFinderData* right, UnitFinderData* bottom,
-			UnitFinderCallbackMatchInterface match, Point32 sourcePosition);
+			UnitFinderCallbackMatchInterface match, Vector32 sourcePosition);
 		static UnitFinderData* getStartX();
 		static UnitFinderData* getStartY();
 		static UnitFinderData* getEndX();

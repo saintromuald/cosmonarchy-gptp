@@ -7,7 +7,7 @@ namespace hooks
 	helper::setCreepRelationalData_callback runCreepRandomizerPtr = &runCreepRandomizer;
 	void function_0049D660(Unit* main_building)
 	{
-		Point32 coords;
+		Vector32 coords;
 		// look for a location to spawn a larva at
 		if (helper::getLarvaSpawnPos(main_building, &coords))
 		{
@@ -105,7 +105,7 @@ namespace hooks
 					}
 
 					// if failed to find a spawn point for larva set the timer before retry to 3
-					Point32 coords_2;
+					Vector32 coords_2;
 					if (!helper::getLarvaSpawnPos(unit, &coords_2))
 					{
 						unit->building.larvaTimer = 3;

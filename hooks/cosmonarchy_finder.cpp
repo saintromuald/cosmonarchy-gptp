@@ -42,7 +42,7 @@ Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds
 	return a;
 }
 
-Unit* rangeMatchPosition(Point32 position, u32 r, u32 context, std::vector<u16> allowedIds)
+Unit* rangeMatchPosition(Vector32 position, u32 r, u32 context, std::vector<u16> allowedIds)
 {
 	scbw::UnitFinder unitsInSplash(position.x - r, position.y - r, position.x + r, position.x + r);
 	auto a = scbw::UnitFinder::getNearestTarget(

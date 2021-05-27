@@ -673,10 +673,10 @@ namespace hooks
 						auto row = missile % 4;
 						auto distance = scbw::getDistanceFast(unit->getX(), unit->getY(), tgt_x, tgt_y);
 						auto angle = scbw::bw_angle_to_normal(scbw::getAngle(unit->getX(), unit->getY(), tgt_x, tgt_y));
-						Point32 rotation_pt = Point32{ 0,0 };
+						Vector32 rotation_pt = Vector32{ 0,0 };
 						rotation_pt.x += 16 + (row - 2) * 32;
 						rotation_pt.y -= (column - 2) * 32;
-						auto product = scbw::rotate_point(Point32{ 0,0 }, rotation_pt, angle);
+						auto product = scbw::rotate_point(Vector32{ 0,0 }, rotation_pt, angle);
 						Point16 missile_target;
 						missile_target.x = tgt_x + product.x;
 						missile_target.y = tgt_y + product.y;

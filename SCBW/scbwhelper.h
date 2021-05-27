@@ -367,14 +367,14 @@ namespace helper
 	void updateUnitStrength(Unit* unit);																							// 0049FA40
 	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit* unit, Box16* coords);														// 004E8280
 	void function_004E8DA0(Unit* unit);																								// 004E8DA0
-	bool getLarvaSpawnPos(Unit* unit, Point32* coords);																			// 004E8E10
+	bool getLarvaSpawnPos(Unit* unit, Vector32* coords);																			// 004E8E10
 
 	// TODO: move somewhere else?
 	// SC Variables and Buffers used in this file
 	u32* const mapTileBufWidth = (u32*)(0x006D0F08);
 	u32* const mapTileBufHeight = (u32*)(0x006D0C6C);
 	u16** const mapTileBuf = (u16**)(0x006D0E84);
-	Point32* const someCreepPointBuf = (Point32*)(0x006D7578);
+	Vector32* const someCreepPointBuf = (Vector32*)(0x006D7578);
 	typedef u32(*isTileVisible_func)(u32 x, u32 y);
 	typedef bool(*setCreepRelationalData_callback)(u16* tileBackup, u8* creepOverlayVal, u32* retval, u16* tile, u32 arg);
 	isTileVisible_func* const isTileVisible_ptr = (isTileVisible_func*)(0x006D0C78);
@@ -464,8 +464,8 @@ namespace helper
 	void refreshUnitVision(Unit* a1);																									// 004E5F30
 	void initUnitTrapDoodad(Unit* a1);																									// 004E6490
 	Order* removeOrderFromUnitQueue(Order* a1, Unit* a2);																				// 004742D0
-	Order* performAnotherOrder(u8 a1, s32 a2, Unit* a3, s16 a4, Point32* a5, Unit* a6);													// 004745F0
-	void order(s32 a1, Unit* a2, s8 a3, Point32* a4, Unit* a5, s32 a6);																	// 00474810
+	Order* performAnotherOrder(u8 a1, s32 a2, Unit* a3, s16 a4, Vector32* a5, Unit* a6);													// 004745F0
+	void order(s32 a1, Unit* a2, s8 a3, Vector32* a4, Unit* a5, s32 a6);																	// 00474810
 	u32 getUnitStrength(Unit* a1, s32 a2, bool a3);																						// 00431800
 
 	//// make_nydus_exit
@@ -514,7 +514,7 @@ namespace helper
 	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, s32 a4);
 	s32 ordersHoldPositionSuicidal(Unit* a1);
 	s32 getDirectionFromPoints(s32 a1, s32 a2, s32 a3, s32 a4);
-	Point32 setResourceTarget(Unit* a1);
+	Vector32 setResourceTarget(Unit* a1);
 
 	// for genericRightClickUnitProc2
 	s32 isOrderValid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																	// 00474D90
@@ -806,9 +806,9 @@ namespace helper
 	s32 GetColorHandle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
 
 	// For targetedOrder
-	Order* queueNewOrder(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Point32* a8, Unit* a9);	        // 00474B90
+	Order* queueNewOrder(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9);	        // 00474B90
 	s32 showStatTxtToPlayer(s32 a1, s32 a2);																			    // 0048CF00
-	void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Point32* a8, Unit* a9);		            // 00475470
+	void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vector32* a8, Unit* a9);		            // 00475470
 
 	// For selectUnits
 	s32 selectSingleUnitFromID(s32 a1);																					    // 00496D30

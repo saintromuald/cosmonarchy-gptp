@@ -25,11 +25,11 @@ struct Flingy
 	/*0x026*/ u8        _unknown_0x026;
 	/*0x027*/ u8        flingyMovementType;
 	/*0x028*/ Point16   position;
-	/*0x02C*/ Point32   halt;
+	/*0x02C*/ Vector32   halt;
 	/*0x034*/ u32       flingyTopSpeed;
 	/*0x038*/ u32       current_speed1;
 	/*0x03C*/ u32       current_speed2;
-	/*0x040*/ Point32   current_velocity;
+	/*0x040*/ Vector32   current_velocity;
 	/*0x048*/ u16       flingyAcceleration;
 	/*0x04A*/ u8        currentDirection2;
 	/*0x04B*/ u8        velocityDirection2;

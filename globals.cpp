@@ -403,7 +403,7 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 	unit->irradiateTimer = time;
 }
 
-void Globals::createEffect(u8 impactId, u32 time, Point32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* parent)
+void Globals::createEffect(u8 impactId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* parent)
 {
 	Effect effect;
 	effect.effectId = impactId;
@@ -684,7 +684,7 @@ void Globals::frameHook()
 							f32 d = stage * 2 * 32;
 							u32 count = stage * 8;
 
-							Point32 newPos = effects[i].position;
+							Vector32 newPos = effects[i].position;
 							newPos.x += d;
 							for (u32 j = 0; j < count; ++j)
 							{

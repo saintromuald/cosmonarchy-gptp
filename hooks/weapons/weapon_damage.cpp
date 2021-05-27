@@ -568,13 +568,8 @@ namespace hooks
 						const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 						if (dist < 2 * 32)
 						{
-							Point32f diff = {data.attacker->getX(), data.attacker->getY()};
-							diff.x -= data.target->getX();
-							diff.y -= data.target->getY();
-
-							f32 diffDist = sqrt(pow(diff.x, 2) + pow(diff.y, 2));
-							diff.x /= diffDist;
-							diff.y /= diffDist;
+							Vector32 diff = scbw::getVectorBetweenUnits(data.target, data.attacker);
+							Vector32f displacement = scbw::normalizeVector(diff);
 							diff.x *= 2 * 32.0;
 							diff.y *= 2 * 32.0;
 

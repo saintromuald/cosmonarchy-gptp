@@ -79,13 +79,13 @@ const u32 moveRadius = 4 * 32;
 const u32 localGroupRadius = 2 * 32;
 
 const u32 kiteZoneCount = 9;
-const Point32f kiteOffsets[kiteZoneCount] =
+const Vector32f kiteOffsets[kiteZoneCount] =
 {
 	{-1, -1}, {0, -1}, {+1, -1},
 	{-1,  0}, {0,  0}, {+1,  0},	
 	{-1, +1}, {0, +1}, {+1, +1},
 };
-const Point32f biasOrigins[kiteZoneCount] =
+const Vector32f biasOrigins[kiteZoneCount] =
 {
 	{-0.7, -0.7}, { 0, -1.0}, {+0.7, -0.7},
 	{-1.0,    0}, { 0,    0}, {+1.0,    0},	
@@ -153,7 +153,7 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 
 	if (result.enemiesFound)
 	{
-		Point32f biasVectors[kiteZoneCount] =
+		Vector32f biasVectors[kiteZoneCount] =
 		{
 			{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
 			{-1.1,    0}, { 0,    0}, {+1.1,    0},	
@@ -169,7 +169,7 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 		{
 			for (int j = 0; j < kiteZoneCount; j++)
 			{
-				result.biases[i] += biasOrigins[i].x * biasVectors[j].x + biasOrigins[i].y * biasVectors[j].y;
+				result.biases[i] += scbw::getDotProduct(biasOrigins[i], biasVectors[j]);
 			}
 			result.biases[i] /= kiteZoneCount;
 		}

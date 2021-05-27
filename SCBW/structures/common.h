@@ -27,13 +27,13 @@ struct Point16
 	}
 };
 
-struct Point32
+struct Vector32
 {
 	s32 x;
 	s32 y;
 };
 
-struct Point32f
+struct Vector32f
 {
 	f32 x;
 	f32 y;
@@ -106,7 +106,7 @@ struct Bounds
 
 C_ASSERT(sizeof(Point8) == 2);
 C_ASSERT(sizeof(Point16) == 4);
-C_ASSERT(sizeof(Point32) == 8);
+C_ASSERT(sizeof(Vector32) == 8);
 C_ASSERT(sizeof(Box16) == 8);
 C_ASSERT(sizeof(Box32) == 16);
 C_ASSERT(sizeof(Bounds) == 12);
