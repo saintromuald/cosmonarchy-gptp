@@ -480,6 +480,14 @@ void cosmonarchyUnitAi(Unit* unit)
 		}
 		else if (unitHasCooldownToAttack(unit))
 		{
+			if (unit->mainOrderId == OrderId::AttackUnit
+				|| unit->mainOrderId == OrderId::CarrierFight
+				|| unit->mainOrderId == OrderId::ReaverFight
+				|| unit->mainOrderId == OrderId::AttackMoveComputer)
+			{
+				return;
+			}
+
 			localGroup.forEach([&](Unit* localUnit)
 			{
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
@@ -523,7 +531,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					}
 					else
 					{
-						localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.25;
+						localUnitExt->timers[TimerAI_Kite] = getCurrentWeaponCooldown(localUnit) * 0.25;
 					}
 
 					KITE_DEBUG("%s: attack", localUnit->getName());
