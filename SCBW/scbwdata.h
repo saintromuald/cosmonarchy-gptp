@@ -387,6 +387,7 @@ SCBW_DATA(s8*,	isTargeting,						0x00641694);
 SCBW_DATA(s32*,	orderTimerReassignCount,			0x0059CCA4);
 SCBW_DATA(s32*,	secondaryOrderTimerReassignCount,	0x006283E8);
 SCBW_DATA(Unit**,	activeIscriptEntity,			0x006D11F4);
+SCBW_DATA(Bullet**,	activeIscriptBullet,			0x006D11F8);
 SCBW_DATA(Unit**,	activeIscriptUnit,				0x006D11FC);
 SCBW_DATA(Unit**,	firstDyingUnit,					0x0062842C);
 SCBW_DATA(Unit**,	lurkerSplashList,				0x0064DEC8); // sizeof 400

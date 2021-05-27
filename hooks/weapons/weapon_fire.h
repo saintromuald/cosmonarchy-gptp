@@ -10,6 +10,7 @@ namespace hooks
 	Bullet* deleteBullet(Bullet* bullet);																		// 0048A560
 	Bullet* createBullet(s32 weaponId, Unit* parent, s32 x, s16 y, char playerId, s32 angle);					// 0048C260
 	s32 initializeBullet(char playerId, Unit* parent, s16 y, Bullet* bullet, s32 weaponId, s32 x, s32 angle);	// 0048BEC0
+	void progressBulletFrames();																					// 0048C3D0
 //	s32 writeBullets(FILE *a1);																					// 0048AEB0
 
 	void injectWeaponFireHooks();
