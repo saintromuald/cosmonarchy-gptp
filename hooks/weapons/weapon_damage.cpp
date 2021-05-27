@@ -570,12 +570,12 @@ namespace hooks
 						{
 							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
 							Vector32f displacement = scbw::getNormalizedVector(diff);
-							diff.x *= 2 * 32.0;
-							diff.y *= 2 * 32.0;
+							displacement.x *= 2 * 32.0;
+							displacement.y *= 2 * 32.0;
 
 							Point16 finalPos = data.target->position;
-							finalPos.x += diff.x;
-							finalPos.y += diff.y;
+							finalPos.x += displacement.x;
+							finalPos.y += displacement.y;
 
 							ActiveTile originalTile = scbw::getActiveTileAt(data.attacker->position.x, data.attacker->position.y);
 							ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);
