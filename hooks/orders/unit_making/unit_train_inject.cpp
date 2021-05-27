@@ -75,6 +75,57 @@ namespace
 		}
 	}
 
+	const u32 loc_success_A = 0x0046DAC7;
+	const u32 loc_fail = 0x0046DA3E;
+	void __declspec(naked) isLiftedOff_Wrapper() // 0046D832
+	{
+		static Unit* unit;
+		_asm
+		{
+			MOV unit, ESI
+			PUSHAD
+		}
+		if (unit->status & UnitStatus::InAir)
+		{
+			_asm
+			{
+				POPAD
+				JMP loc_success_A
+			}
+		}
+		_asm
+		{
+			POPAD
+			INC edi
+			JMP loc_fail
+		}
+	}
+
+	const u32 loc_success_B = 0x0046DADB;
+	void __declspec(naked) isNotLiftedOff_Wrapper() // 0046D845
+	{
+
+		static Unit* unit;
+		_asm
+		{
+			MOV unit, ESI
+			PUSHAD
+		}
+		if (!(unit->status & UnitStatus::InAir))
+		{
+			_asm
+			{
+				POPAD
+				JMP loc_success_B
+			}
+		}
+		_asm
+		{
+			POPAD
+			INC edi
+			JMP loc_fail
+		}
+	}
 }
 
 namespace hooks
@@ -86,6 +137,9 @@ namespace hooks
 		jmpPatch(secondaryOrd_TrainFighterWrapper, 0x00466790, 2);
 		jmpPatch(function_00468420Wrapper, 0x00468420, 4);
 		jmpPatch(getMaxHangarSpace_Wrapper, 0x004653D0, 3);
+
+		jmpPatch(isLiftedOff_Wrapper, 0x00046D832, 3);
+		jmpPatch(isNotLiftedOff_Wrapper, 0x0046D845, 2);
 	}
 
 }; //hooks
