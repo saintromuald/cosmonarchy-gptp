@@ -13,6 +13,7 @@
 #include "target_related.h"
 #include "hooks/orders/ai/ai_orders.h"
 #include "hooks/weapons/weapon_cooldown.h"
+#include "hooks/weapons/weapon_fire.h"
 
 const u32 hyperTrigger = 0x006509A0;
 const u32 Func_Irradiate = 0x00454E00;
@@ -997,6 +998,20 @@ namespace hooks
 				{
 					scbw::set_generic_rust_value(unit, RustId::CancelLandGrab, 0);
 					unitExt->values[ValueWyvernLandGrabOn] = 0;
+				}
+			} break;
+			case UnitId::SharedTarasque:
+			{
+				if (unitExt->timers[TimerTarasqueSecondaryWeaponCooldown] == 0)
+				{
+					if (fireMultiple(unit, unitExt, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy))
+					{
+						unitExt->timers[TimerTarasqueSecondaryWeaponCooldown] = weapons_dat::Cooldown[WeaponId::TarasqueAcceleratedPlasmid];
+					}
+					else
+					{
+						unitExt->timers[TimerTarasqueSecondaryWeaponCooldown] = 3; // performance
+					}
 				}
 			} break;
 		}
