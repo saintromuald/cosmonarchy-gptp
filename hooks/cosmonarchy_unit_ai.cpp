@@ -355,9 +355,9 @@ static inline bool unitHasCooldownToAttack(Unit* unit)
 {
 	if (unit->movementFlags & MovementFlags::Accelerating)
 	{
-		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.75;
+		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.5;
 	}
-	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.25;
+	return getCurrentWeaponCooldown(unit) <= 0;
 }
 
 void cosmonarchyUnitAi(Unit* unit)
@@ -480,84 +480,72 @@ void cosmonarchyUnitAi(Unit* unit)
 		}
 		else if (unitHasCooldownToAttack(unit))
 		{
-			bool attack = true;
 			localGroup.forEach([&](Unit* localUnit)
 			{
-				if (!unitHasCooldownToAttack(localUnit))
+				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+
+				if (localUnit->mainOrderId == OrderId::AttackUnit
+					|| localUnit->mainOrderId == OrderId::CarrierFight
+					|| localUnit->mainOrderId == OrderId::ReaverFight
+					|| localUnit->mainOrderId == OrderId::AttackMoveComputer)
 				{
-					attack = false;
+					return;
 				}
-			});
 
-			if (attack)
-			{
-				localGroup.forEach([&](Unit* localUnit)
+				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
+				Unit* targetUnit = nullptr;
+				s32 targetCost = 0;
+				scbw::UnitFinder(
+					localUnit->getX() - hostileGroupRadius * 4,
+					localUnit->getY() - hostileGroupRadius * 4,
+					localUnit->getX() + hostileGroupRadius * 4,
+					localUnit->getY() + hostileGroupRadius * 4
+				).forEach([&](Unit* hostileUnit)
 				{
-					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-
-					if (localUnit->mainOrderId == OrderId::AttackUnit
-						|| localUnit->mainOrderId == OrderId::CarrierFight
-						|| localUnit->mainOrderId == OrderId::ReaverFight
-						|| localUnit->mainOrderId == OrderId::AttackMoveComputer)
+					if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
 					{
 						return;
 					}
 
-					auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
-					Unit* targetUnit = nullptr;
-					s32 targetCost = 0;
-					scbw::UnitFinder(
-						localUnit->getX() - hostileGroupRadius * 4,
-						localUnit->getY() - hostileGroupRadius * 4,
-						localUnit->getX() + hostileGroupRadius * 4,
-						localUnit->getY() + hostileGroupRadius * 4
-					).forEach([&](Unit* hostileUnit)
+					s32 newTargetCost = getTargetCost(localUnit, hostileUnit);
+					if (!targetUnit || newTargetCost < targetCost)
 					{
-						if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
-						{
-							return;
-						}
+						targetUnit = hostileUnit;
+						targetCost = newTargetCost;
+					}
+				});
 
-						s32 newTargetCost = getTargetCost(localUnit, hostileUnit);
-						if (!targetUnit || newTargetCost < targetCost)
-						{
-							targetUnit = hostileUnit;
-							targetCost = newTargetCost;
-						}
-					});
-
-					if (targetUnit)
+				if (targetUnit)
+				{
+					if (isMeleeAttacker(localUnit))
 					{
-						if (isMeleeAttacker(localUnit))
-						{
-							localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 4;
-						}
-						else
-						{
-							localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.25;
-						}
-
-						KITE_DEBUG("%s: attack", localUnit->getName());
-						if (localUnit->id == UnitId::ProtossSolarion)
-						{
-							localUnit->orderTo(OrderId::CarrierFight, targetUnit);
-						}
-						else if (localUnit->id == UnitId::ProtossAccantor)
-						{
-							localUnit->orderTo(OrderId::ReaverFight, targetUnit);
-						}
-						else
-						{
-							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
-						}
-						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+						localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 4;
 					}
 					else
 					{
-						localUnitExt->timers[TimerAI_Kite] = 12;
+						localUnitExt->timers[TimerAI_Kite] = getMaxWeaponCooldown(localUnit) * 0.25;
 					}
-				});
-			}
+
+					KITE_DEBUG("%s: attack", localUnit->getName());
+					if (localUnit->id == UnitId::ProtossSolarion)
+					{
+						localUnit->orderTo(OrderId::CarrierFight, targetUnit);
+					}
+					else if (localUnit->id == UnitId::ProtossAccantor)
+					{
+						localUnit->orderTo(OrderId::ReaverFight, targetUnit);
+					}
+					else
+					{
+						localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+					}
+					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+				}
+				else
+				{
+					localUnitExt->timers[TimerAI_Kite] = 12;
+				}
+			});
 		}
 	}
 
