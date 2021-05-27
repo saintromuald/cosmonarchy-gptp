@@ -822,16 +822,6 @@ namespace hooks
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 						}
-
-						// Temporarily disable some buttons until the units are implemented
-						if (current_button->reqVar == UnitId::SharedCohort
-							|| current_button->reqVar == UnitId::SharedCharlatan)
-						{
-							if ((*activePortraitUnit)->id == UnitId::ZergLarva)
-							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-						}
 					}
 
 					// Passive icons (yes, it's quite ugly)
