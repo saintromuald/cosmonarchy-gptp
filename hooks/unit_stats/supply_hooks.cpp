@@ -451,7 +451,7 @@ LABEL_55:
 
         if (groupFlag.isFactory)
         {
-            factoriesProduced[4 * unit->playerId] += count;
+            factoriesProduced[unit->playerId] += count;
         }
         else if (groupFlag.isMen)
         {
