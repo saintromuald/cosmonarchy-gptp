@@ -97,7 +97,7 @@ namespace scbw
 				if (u->connectedUnit != nullptr
 					&& u->connectedUnit->id == UnitId::TerranNuclearMissile)
 				{
-					(u->connectedUnit)->connectedUnit = nullptr;
+					u->connectedUnit->connectedUnit = nullptr;
 					u->connectedUnit = nullptr;
 				}
 			}
