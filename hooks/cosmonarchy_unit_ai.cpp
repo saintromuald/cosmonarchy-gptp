@@ -392,12 +392,6 @@ void cosmonarchyUnitAi(Unit* unit)
 		localGroup.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
 		localGroup.filter([&](Unit* target){ return canKite(target); });
 
-		u32 localGroupValue = 0;
-		localGroup.forEach([&](Unit* localUnit)
-		{
-			localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
-		});
-
 		if (unitExt->values[ValueAI_KiteSignal] == 1 && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
 		{
 			KitePositions result = getKitePositions(unit, hostileGroupRadius);
@@ -446,6 +440,12 @@ void cosmonarchyUnitAi(Unit* unit)
 						targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getGroundWeapon()];
 					}
 				}
+
+				u32 localGroupValue = 0;
+				localGroup.forEach([&](Unit* localUnit)
+				{
+					localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
+				});
 
 				if (!isMeleeAttacker(localUnit) &&
 					(localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
@@ -530,7 +530,7 @@ void cosmonarchyUnitAi(Unit* unit)
 				{
 					if (isMeleeAttacker(localUnit))
 					{
-						localUnitExt->timers[TimerAI_Kite] = 4 * 24;
+						localUnitExt->timers[TimerAI_Kite] = 8 * 24;
 					}
 					else
 					{
