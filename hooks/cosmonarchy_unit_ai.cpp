@@ -222,6 +222,15 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 
 static inline u32 getMaxRange(Unit* unit)
 {
+	if (unit->id == UnitId::ProtossSolarion)
+	{
+		return 8 * 32;
+	}
+	if (unit->id == UnitId::ProtossAccantor)
+	{
+		return 8 * 32;
+	}
+
 	u32 groundWeapon = unit->getGroundWeapon();
 	u32 groundRange = 0;
 	if (groundWeapon != WeaponId::None)
@@ -246,8 +255,7 @@ static inline bool isMeleeAttacker(Unit* unit)
 
 static inline u8 getCurrentWeaponCooldown(Unit* unit)
 {
-	if (unit->id == UnitId::ProtossSolarion
-		|| unit->id == UnitId::ProtossAccantor)
+	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 	{
 		if (unit->mainOrderTimer == 0)
 		{
@@ -261,8 +269,7 @@ static inline u8 getCurrentWeaponCooldown(Unit* unit)
 
 static inline u8 getMaxWeaponCooldown(Unit* unit)
 {
-	if (unit->id == UnitId::ProtossSolarion
-		|| unit->id == UnitId::ProtossAccantor)
+	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 	{
 		return 1;
 	}
