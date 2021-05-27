@@ -684,24 +684,28 @@ namespace hooks
 					{
 						UnitExt* unitExt = globals.GetUnitExt((*activePortraitUnit));
 						// Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
-						if (current_button->reqVar == TechId::ControlledDemolition
-							&& (unitExt->timers[TimerControlledDemolition] >= 1 || unitExt->timers[TimerEmergencyDetonation] >= 1))
+						if (current_button->reqVar == TechId::ControlledDemolition)
 						{
+							if (unitExt->timers[TimerControlledDemolition] >= 1 || unitExt->timers[TimerEmergencyDetonation] >= 1)
+							{
 							current_button_state = BUTTON_STATE::Invisible;
+							}
+							else
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 						}
-						else
+
+						else if (current_button->reqVar == TechId::EmergencyDetonation)							
 						{
-							current_button_state = BUTTON_STATE::Enabled;
-						}
-						if (current_button->reqVar == TechId::EmergencyDetonation
-							&& unitExt->timers[TimerControlledDemolition] == 0
-							&& unitExt->timers[TimerEmergencyDetonation] == 0)
-						{
-							current_button_state = BUTTON_STATE::Invisible;
-						}
-						else
-						{
-							current_button_state = BUTTON_STATE::Enabled;
+							if (unitExt->timers[TimerControlledDemolition] == 0 || unitExt->timers[TimerEmergencyDetonation >= 1])
+							{
+								current_button_state = BUTTON_STATE::Invisible;
+							}
+							else
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 						}
 					}
 
