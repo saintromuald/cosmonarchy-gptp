@@ -686,19 +686,18 @@ namespace hooks
 						// Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
 						if (current_button->reqVar == TechId::ControlledDemolition)
 						{
-							if (unitExt->timers[TimerControlledDemolition] >= 1 || unitExt->timers[TimerEmergencyDetonation] >= 1)
+							if (unitExt->timers[TimerControlledDemolition] || unitExt->timers[TimerEmergencyDetonation])
 							{
-							current_button_state = BUTTON_STATE::Invisible;
+								current_button_state = BUTTON_STATE::Invisible;
 							}
 							else
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 						}
-
 						else if (current_button->reqVar == TechId::EmergencyDetonation)							
 						{
-							if (unitExt->timers[TimerControlledDemolition] == 0 || unitExt->timers[TimerEmergencyDetonation >= 1])
+							if (unitExt->timers[TimerControlledDemolition] || unitExt->timers[TimerEmergencyDetonation])
 							{
 								current_button_state = BUTTON_STATE::Invisible;
 							}

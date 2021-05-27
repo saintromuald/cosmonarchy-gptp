@@ -1399,21 +1399,50 @@ namespace hooks
 			// unit->removeOverlay();
 		}
 
+		// Emergency Detonation - initial cast
+		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation) && !unitExt->timers[TimerEmergencyDetonation]
+			&& !unitExt->timers[TimerEmergencyDetonation] && !unitExt->timers[TimerControlledDemolition])
+		{
+			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
+			unitExt->timers[TimerEmergencyDetonation] = EmergencyDetonationTimer;
+			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
+			//unit->sprite->createOverlay(ImageId::EmergencyDemolitionOverlay_Small + overlayOffset);
+		}
+
 		// Controlled Demolition - initial cast
-		if (scbw::get_generic_rust_value(unit, RustId::CastControlledDemolition))
+		if (scbw::get_generic_rust_value(unit, RustId::CastControlledDemolition)
+			&& !unitExt->timers[TimerEmergencyDetonation] && !unitExt->timers[TimerControlledDemolition])
 		{
 			scbw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
 			unitExt->timers[TimerControlledDemolition] = ControlledDemolitionTimer;
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
-		//	unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
-			scbw::print("u");
+			//unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
 		}
 
 		// Controlled Demolition - destroy structure
 		if (unitExt->timers[TimerControlledDemolition] == 1)
 		{
-			// remove unit
-			unit->damageHp(unit->getCurrentLifeInGame() * 256, unit, unit->playerId, false);
+			unit->damageHp(unit->hitPoints, unit, unit->playerId, false);
+		}
+
+		// Emergency Detonation - destroy structure
+		if (unitExt->timers[TimerEmergencyDetonation] == 1)
+		{
+			auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf, {});
+			const u32 radius = 3 * 32;
+			scbw::UnitFinder(
+				unit->getX() - radius,
+				unit->getY() - radius,
+				unit->getX() + radius,
+				unit->getY() + radius
+			).forEachInMatch(match, [&](Unit* target)
+			{
+				if (scbw::getDistanceFast(unit->position, target->position) <= radius)
+				{
+					target->damageWithCustom(250 * 256, DamageType::Explosive, unit, unit->playerId, 0, 1, false);
+				}
+			});
+			unit->damageHp(unit->hitPoints, unit, unit->playerId, false);
 		}
 
 		// Emergency Detonation - initial cast
