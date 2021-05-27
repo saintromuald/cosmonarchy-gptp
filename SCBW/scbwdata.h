@@ -279,7 +279,7 @@ SCBW_DATA(u32*, COrderCount, 0x00641698);
 SCBW_DATA(u16*, upgradeLevelTooltip, 0x0068C1CC);
 SCBW_DATA(char**, statTxtBuffer, 0x006D1238);
 
-//
+
 struct BufferStr {
 	char buf[260];
 };

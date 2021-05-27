@@ -401,10 +401,6 @@ LABEL_55:
 
     void incrementUnitScores(Unit* unit, s32 count) // 00488BF0
     {
-        GroupFlag groupFlag;
-        u8 supply;
-        int queueUnit;
-
         if (unit->status & UnitStatus::IsHallucination)
         {
             return;
@@ -414,10 +410,11 @@ LABEL_55:
             return;
         }
         allUnitCountTable[unit->id].player[unit->playerId] += count;
-        groupFlag = units_dat::GroupFlags[(u16)unit->id];
+        GroupFlag groupFlag = units_dat::GroupFlags[(u16)unit->id];
         
         if (unit->getRace() == RaceId::Zerg)
         {
+            u8 supply;
             // zerg special handling
             if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon && unit->id != UnitId::ZergLurkerEgg)
             {
@@ -434,7 +431,7 @@ LABEL_55:
             }
             else
             {
-                queueUnit = unit->buildQueue[unit->buildQueueSlot];
+                s32 queueUnit = unit->buildQueue[unit->buildQueueSlot];
                 supply = units_dat::SupplyRequired[queueUnit];
                 if (units_dat::BaseProperty[queueUnit] & UnitProperty::TwoUnitsIn1Egg)
                 {
@@ -520,16 +517,20 @@ LABEL_55:
                 switch (supply_overlord_modifier)
                 {
                     case 1:
+                    {
                         supply = units_dat::SupplyProvided[UnitId::ZergIroleth] - units_dat::SupplyProvided[UnitId::ZergOvileth];
-                        break;
+                    } break;
                     case 2:
-                        supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth] - units_dat::SupplyProvided[UnitId::ZergIroleth];
-                        break;
+                    {
+                        supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth] - units_dat::SupplyProvided[UnitId::ZergIroleth]; 
+                    } break;
                     case 3:
+                    {
                         supply = units_dat::SupplyProvided[UnitId::ZergAlaszileth] - units_dat::SupplyProvided[UnitId::ZergOthstoleth];
-                        break;
+                    } break;
                     default:
-                        break;
+                    {
+                    } break;
                 }
             }
             else if (unit->id == UnitId::ZergOthstoleth)
