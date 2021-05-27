@@ -450,15 +450,15 @@ LABEL_55:
         {
             factoriesProducedOwnedTotal[unit->playerId] += count;
         }
-        else if (groupFlag.isMen)
+        if (groupFlag.isMen)
         {
             unitsProducedOwnedTotal[unit->playerId] += count;
         }
-        else if (groupFlag.isBuilding)
+        if (groupFlag.isBuilding)
         {
             structuresProducedOwnedTotal[unit->playerId] += count;
         }
-        else if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
+        if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
         {
             unitsProducedOwnedTotal[unit->playerId] += count;
         }
