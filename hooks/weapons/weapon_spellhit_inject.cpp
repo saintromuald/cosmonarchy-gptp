@@ -1,236 +1,170 @@
-//Injector source file for the Weapon/Spell Hit hook module.
 #include "weapon_spellhit.h"
 #include <hook_tools.h>
 #include <globals.h>
 
 namespace
 {
-
 	void __declspec(naked) IrradiateHitWrapper()
 	{
-
 		static Unit* attacker;
 		static Unit* target;
 		static u8 attackingPlayerId;
-
-		__asm {
-
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
-
 			MOV EAX, [EBP + 0x08]
 			MOV attacker, EAX
-
 			MOV AL, [EBP + 0x0C]
 			MOV attackingPlayerId, AL
-
 			MOV target, EDI
-
 			PUSHAD
-
 		}
-
 		hooks::IrradiateHit(attacker, target->position, attackingPlayerId);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			POP EBP
 			RETN 8
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) OpticalFlareHitWrapper()
 	{
-
 		static Unit* target;
 		static u32 attackingPlayerId;
 		static Bullet* bullet;
-
-		__asm {
-
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
-
 			MOV bullet, EBX
-
-			MOV EBX, [EBP + 0x08]			//borrowing EBX
+			MOV EBX, [EBP + 0x08]
 			MOV attackingPlayerId, EBX
-
 			MOV target, EAX
-
 			PUSHAD
-
 		}
-
 		hooks::OpticalFlareHit(target, attackingPlayerId, bullet);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			POP EBP
 			RETN 4
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) RestoreHitWrapper()
 	{
-
 		static Unit* target;
 		static Bullet* bullet;
-
-		__asm {
+		__asm
+		{
 			MOV bullet, EAX
 			MOV target, EBX
 			PUSHAD
 		}
-
 		hooks::RestoreHit(target, bullet);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) LockdownHitWrapper()
 	{
-
 		static Unit* target;
 		static u8 previousLockdownTimer;
 		static Bullet* bullet;
-
-		__asm {
-
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
-
 			MOV target, EDI
-
 			MOV AL, [EBP + 0x08]
 			MOV previousLockdownTimer, AL
-
 			MOV bullet, EBX
-
 			PUSHAD
-
 		}
-
 		hooks::LockdownHit(target, previousLockdownTimer, bullet);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			POP EBP
 			RETN 4
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) MeleeAttackHitWrapper()
 	{
-
 		static Unit* attacker;
-
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV attacker, EAX
 			PUSHAD
 		}
-
 		hooks::MeleeAttackHit(attacker);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) WeaponBulletHitWrapper()
 	{
-
 		static Bullet* bullet;
 		static Unit* target;
 		static u32 hitFlags;
-
-		__asm {
-
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
-
 			MOV bullet, EDX
 			MOV target, EAX
-
 			MOV EAX, [EBP + 0x08]
 			MOV hitFlags, EAX
-
 			PUSHAD
-
 		}
-
 		hooks::WeaponBulletHit(bullet, target, hitFlags);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			POP EBP
 			RETN 4
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) EMPShockwaveHitWrapper()
 	{
-
 		static Unit* attacker;
 		static Bullet* bullet;
 		static s32 x;
 		static s32 y;
-
-		__asm {
-
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
-
 			MOV y, EAX
 			MOV x, ECX
-
 			MOV EAX, [EBP + 0x08]
 			MOV attacker, EAX
-
 			MOV bullet, EBX
-
 			PUSHAD
-
 		}
-
 		hooks::EMPShockwaveHit(attacker, x, y, bullet);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) CorrosiveAcidHitWrapper()
 	{
@@ -238,7 +172,8 @@ namespace
 		static s32 y;
 		static u32 playerId;
 		static Bullet* bullet;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV x, ECX
@@ -249,7 +184,8 @@ namespace
 			PUSHAD
 		}
 		hooks::CorrosiveAcidHit(playerId, x, y, bullet);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -261,13 +197,15 @@ namespace
 	{
 		static Unit* attacker;
 		static Unit* target;
-		__asm {
+		__asm
+		{
 			MOV target, EAX
 			MOV attacker, ESI
 			PUSHAD
 		}
 		hooks::ConsumeHit(attacker, target);
-		__asm {
+		__asm
+		{
 			POPAD
 			RETN
 		}
@@ -279,7 +217,8 @@ namespace
 		static s32 x;
 		static s32 y;
 		static Bullet* bullet;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV x, ECX
@@ -290,7 +229,8 @@ namespace
 			PUSHAD
 		}
 		hooks::EnsnareHit(attacker, x, y, bullet);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -304,7 +244,8 @@ namespace
 		static s32 y;
 		static u32 attackingPlayerId;
 		static Bullet* bullet;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
@@ -317,7 +258,8 @@ namespace
 			PUSHAD
 		}
 		hooks::DarkSwarmHit(x, y, attackingPlayerId, bullet);
-		__asm {
+		__asm
+		{
 			POPAD
 			POP EBP
 			RETN 0x0C
@@ -329,7 +271,8 @@ namespace
 		static Unit* attacker;
 		static Unit* target;
 		static Bullet* bullet;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
@@ -340,7 +283,8 @@ namespace
 			PUSHAD
 		}
 		hooks::BroodlingHit(attacker, target, bullet);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -354,7 +298,8 @@ namespace
 		static s32 x;
 		static s32 y;
 		static Bullet* bullet;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV x, ECX
@@ -365,7 +310,8 @@ namespace
 			PUSHAD
 		}
 		hooks::PlagueHit(attacker, x, y, bullet);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -379,7 +325,8 @@ namespace
 		static s32 x;
 		static s32 y;
 		static Bullet* bullet;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV y, EAX
@@ -391,7 +338,8 @@ namespace
 			PUSHAD
 		}
 		hooks::MaelstromHit(attacker, x, y, bullet);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -403,7 +351,8 @@ namespace
 	{
 		static Unit* attacker;
 		static Unit* target;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV target, ESI
@@ -412,7 +361,8 @@ namespace
 			PUSHAD
 		}
 		hooks::MindControlHitHook(attacker, target);
-		__asm {
+		__asm
+		{
 			POPAD
 			POP EBP
 			RETN 4
@@ -425,7 +375,8 @@ namespace
 		static s32 x;
 		static s32 y;
 		static Bullet* bullet;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV y, EAX
@@ -436,7 +387,8 @@ namespace
 			PUSHAD
 		}
 		hooks::StasisFieldHit(attacker, x, y, bullet);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -450,7 +402,8 @@ namespace
 		static s32 y;
 		static u32 playerId;
 		static Bullet* bullet;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV x, ECX
@@ -461,7 +414,8 @@ namespace
 			PUSHAD
 		}
 		hooks::DisruptionWebHit(playerId, x, y, bullet);
-		__asm {
+		__asm
+		{
 			POPAD
 			POP EBP
 			RETN 0x0C
@@ -470,18 +424,18 @@ namespace
 
 	s32 __declspec(naked) ensnareProcWrapper()
 	{
-
 		static Unit* target;
 		static Unit* attacker;
 		static s32 result;
-
-		__asm {
+		__asm
+		{
 			MOV target, ECX
 			MOV attacker, EDX
 			PUSHAD
 		}
 		hooks::ensnareProc(target, attacker);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
@@ -491,12 +445,14 @@ namespace
 	void __declspec(naked) createScannerWrapper()
 	{
 		static Unit* a1;
-		__asm {
+		__asm
+		{
 			MOV a1, EAX
 			PUSHAD
 		}
 		hooks::createScanner(a1);
-		__asm {
+		__asm
+		{
 			POPAD
 			RETN
 		}
@@ -506,7 +462,8 @@ namespace
 	{
 		static Unit* unit;
 		static u32 a2;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EDI
@@ -517,7 +474,8 @@ namespace
 			PUSHAD
 		}
 		a2 = hooks::stasisFieldOverlay(unit, a2);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, a2
 			MOV ESP, EBP
@@ -526,42 +484,46 @@ namespace
 		}
 	}
 
-	void __declspec(naked) disableUnit_Wrapper()
-	{ // 00492CC0
+	void __declspec(naked) disableUnit_Wrapper() // 00492CC0
+	{
 		static char result;
 		static Unit* unit;
-		__asm {
+		__asm
+		{
 			MOV unit, EAX
 			PUSHAD
 		}
 		result = hooks::disableUnit(unit);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV AL, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) maelstromProc_Wrapper()
-	{ // 004F6760
+	void __declspec(naked) maelstromProc_Wrapper() // 004F6760
+	{
 		static bool result;
 		static Unit* target;
 		static Unit* source;
-		__asm {
+		__asm
+		{
 			MOV source, EDX
 			MOV target, ECX
 			PUSHAD
 		}
 		result = hooks::maelstromProc(target, source);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV AL, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) iterateUnitsAtLocationTargetProc_Wrapper()
-	{ // 004E8280
+	void __declspec(naked) iterateUnitsAtLocationTargetProc_Wrapper() // 004E8280
+	{
 		static Unit* result;
 		static Box16* location;
 		static Unit*(__fastcall *proc)(Unit*, Unit*);
@@ -586,6 +548,34 @@ namespace
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
+		}
+	}
+
+	void __declspec(naked) giveUnitToPlayer_Wrapper()
+	{
+		static Unit* unit;
+		static u32 playerId;
+		static s32 result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV playerId, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::giveUnitToPlayer(unit, playerId);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x8
 		}
 	}
 }
@@ -617,5 +607,6 @@ namespace hooks
         jmpPatch(disableUnit_Wrapper, 0x00492CC0, 2);
         jmpPatch(maelstromProc_Wrapper, 0x004F6760, 3);
 //      jmpPatch(iterateUnitsAtLocationTargetProc_Wrapper, 0x004F6760, 0);
+//		jmpPatch(giveUnitToPlayer_Wrapper, 0x004C8040, 2);
     }
 }

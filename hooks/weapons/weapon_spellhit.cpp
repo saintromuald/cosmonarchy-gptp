@@ -913,4 +913,74 @@ LABEL_15:
 		}
 	}
 
+	// Hooked to add Nydus handling, except it already existed - Pr0nogo
+	s32 giveUnitToPlayer(Unit* unit, u32 playerId) // 004C8040
+	{
+		u32 playerIdVar = playerId;
+		if (playerId == 13)
+		{
+			playerIdVar = *currentTriggerPlayerId;
+		}
+		if (!(playerIdVar < 0xC ? -(unit != 0) : 0))
+		{
+			helper::SErrSetLastError(87);
+			return 0;
+		}
+		if (unit->status & 0x40000000)
+		{
+			return 0;
+		}
+		s16 unitId = unit->id;
+		if (unitId == UnitId::ResourceMineralField
+		  || unitId == UnitId::ResourceMineralFieldType2
+		  || unitId == UnitId::ResourceMineralFieldType3
+		  || unitId == UnitId::ResourceVespeneGeyser
+		  || unitId == UnitId::ProtossSteward
+		  || unitId == UnitId::ProtossPlasmaShell
+		  || units_dat::BaseProperty[unitId] & UnitProperty::Addon
+		  || (u8)unit->playerId == playerIdVar)
+		{
+			return 0;
+		}
+		if (helper::unitIsGeyser(unit))
+		{
+			Unit* hiddenMiner = helper::getHiddenMiner(unit);
+			if (hiddenMiner)
+			{
+				helper::giveAllUnitPropertiesToPlayer(hiddenMiner, playerIdVar);
+			}
+		}
+		helper::giveAllUnitPropertiesToPlayer(unit, playerIdVar);
+		const u32 giveUnitsProc = 0x004C7CE0;
+		if (helper::unitIsActiveTransport(unit))
+		{
+			helper::iterateLoadedUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))giveUnitsProc, playerIdVar);
+		}
+		if (helper::unitHasHanger(unit))
+		{
+			helper::forHangarUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))giveUnitsProc, playerIdVar);
+		}
+		if (unit->status & 2)
+		{
+			Unit* connectedUnit = unit->building.addon;
+			if (connectedUnit)
+			{
+				helper::giveAllUnitPropertiesToPlayer(connectedUnit, playerIdVar);
+			}
+			if (helper::isConstructingAddon(unit))
+			{
+				Unit* creatingUnit = helper::getCreatingUnit(unit);
+				helper::giveAllUnitPropertiesToPlayer(creatingUnit, playerIdVar);
+			}
+			if (unit->id == UnitId::ZergNydusCanal)
+			{
+				Unit* nydusExit = unit->building.nydusExit;
+				if (nydusExit)
+				{
+					helper::giveAllUnitPropertiesToPlayer(nydusExit, playerIdVar);
+				}
+			}
+		}
+		return 1;
+	}
 }
