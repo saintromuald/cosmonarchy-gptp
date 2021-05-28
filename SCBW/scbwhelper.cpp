@@ -9002,4 +9002,55 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For giveUnitToPlayer
+	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 playerId)
+	{
+		const u32 Func_giveAllUnitPropertiesToPlayer = 0x0047C9F0;
+		__asm
+		{
+			PUSHAD
+			PUSH playerId
+			MOV EAX, unit
+			CALL Func_giveAllUnitPropertiesToPlayer
+			POPAD
+		}
+	}
+
+	bool unitHasHanger(Unit* unit)
+	{
+		return unit->id == UnitId::ProtossAccantor || unit->id == UnitId::ProtossSolarion;
+	}
+
+	s32 forHangarUnits(Unit* unit, s32(__fastcall* func)(s32, s32), s32 arg)
+	{
+		const u32 Func_forHangarUnits = 0x00465200;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH arg
+			PUSH func
+			MOV EDI, unit
+			CALL Func_forHangarUnits
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* getCreatingUnit(Unit* unit)
+	{
+		const u32 Func_getCreatingUnit = 0x00466A30;
+		static Unit* result;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_getCreatingUnit
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

@@ -565,15 +565,15 @@ struct UnitLayout
 	{
 		struct
 		{
-			/*0x0C0*/     u8 spiderMineCount;
+			/*0x0C0*/     u8 spiderMineCount;	// Used for Eidolon Lobotomy Mines
 		} vulture;
 
 		struct
 		{
 			/*0x0C0*/     Unit* inHangarChild;			// First child inside the hangar
 			/*0x0C4*/     Unit* outHangarChild;			// First child outside the hangar
-			/*0x0C8*/     u8      inHangarCount;		// Number inside the hangar
-			/*0x0C9*/     u8      outHangarCount;		// Number outside the hangar
+			/*0x0C8*/     u8    inHangarCount;			// Number inside the hangar
+			/*0x0C9*/     u8    outHangarCount;			// Number outside the hangar
 		} carrier; // also applies to reaver
 
 		struct

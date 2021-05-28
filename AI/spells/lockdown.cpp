@@ -5,8 +5,12 @@ namespace AI
 {
 	Unit* findBestLockdownTarget(Unit* caster, bool isUnderAttack)
 	{
-		s32 bounds;
+		if (caster->vulture.spiderMineCount == 0)
+		{
+			return false;
+		}
 
+		s32 bounds;
 		if (isUnderAttack)
 		{
 			bounds = 32 * 9;
@@ -47,19 +51,6 @@ namespace AI
 			if (target->isFrozen())
 			{
 				return false;
-			}
-
-			if (target->id == UnitId::TerranTrojan || target->id == UnitId::ProtossEnvoy)
-			{
-				if (target->movementFlags & MovementFlags::Accelerating && target->hasLoadedUnit())
-				{
-					return true;
-				}
-			}
-
-			if (target->id == UnitId::ProtossSolarion || target->id == UnitId::ProtossAccantor)
-			{
-				return true;
 			}
 
 			if (isTargetAttackingAlly(target, caster))
