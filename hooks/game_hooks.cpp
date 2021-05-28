@@ -1064,7 +1064,6 @@ namespace hooks
 				).forEachInMatch(match, [&](Unit* target)
 				{
 					u32 dist = scbw::getDistanceFast(unit->position, target->position);
-
 					if (dist <= weapons_dat::OuterSplashRadius[WeaponId::AnthelionEventHorizon])
 					{
 						UnitExt* targetExt = globals.GetUnitExt(target);
