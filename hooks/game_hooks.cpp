@@ -327,7 +327,7 @@ namespace hooks
 	void tickUnit(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		if (unit->id == UnitId::ProtossPariah && unit->orderSignal & 0x20)
+		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::SharedStriga) && unit->orderSignal & 0x20)
 		{
 			unit->orderSignal &= ~0x20;
 			globals.remove_unit_from_pariah_table(unit, true);
