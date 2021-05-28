@@ -8074,7 +8074,7 @@ namespace helper
 	}
 
 	// For irradiateDamageLoop
-	Unit* iterateLoadedUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), Unit* a3)
+	Unit* iterateLoadedUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 a3)
 	{
 		const u32 Func_iterateLoadedUnits = 0x004E6D00;
 		static Unit* result;
@@ -9017,12 +9017,27 @@ namespace helper
 		}
 	}
 
+	Unit* getHiddenMiner(Unit* unit)
+	{
+		const u32 Func_getHiddenMiner = 0x00468A60;
+		static Unit* result;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_getHiddenMiner
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 	bool unitHasHanger(Unit* unit)
 	{
 		return unit->id == UnitId::ProtossAccantor || unit->id == UnitId::ProtossSolarion;
 	}
 
-	s32 forHangarUnits(Unit* unit, s32(__fastcall* func)(s32, s32), s32 arg)
+	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg)
 	{
 		const u32 Func_forHangarUnits = 0x00465200;
 		static s32 result;

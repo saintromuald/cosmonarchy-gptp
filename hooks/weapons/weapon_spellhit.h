@@ -3,6 +3,7 @@
 #include <SCBW/structures/Unit.h>
 #include <SCBW/structures/Bullet.h>
 #include "SCBW\api.h"
+
 namespace hooks
 {
 	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId);		// 00454E00
@@ -31,11 +32,10 @@ namespace hooks
 	Unit* iterateUnitsAtLocationTargetProc(Box16* location,							// 004E8280
 		Unit*(__fastcall* proc)(Unit*, Unit*),
 		Unit* unit);
+	s32 giveUnitToPlayer(Unit* unit, u32 playerId);									// 004C8040
 
-	//The injector function for this hook module.
 	void injectWpnSpellHitHooks();
 }
 
-//Hooks could be confirmed thanks to 0048B770 CBullet_Damage that call almost all of them
-//Hit Features not supported by these hooks may be hardcoded in that function (like
-//the Parasite Hit effect)
+// Hooks could be confirmed thanks to 0048B770 CBullet_Damage that call almost all of them
+// Hit Features not supported by these hooks may be hardcoded in that function (like the Parasite Hit effect)

@@ -611,7 +611,7 @@ namespace helper
 	s32 splashFunc(Bullet* bullet, Unit* unit);																					// 0048B570
 
 	// For iterateLoadedUnits
-	Unit* iterateLoadedUnits(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), Unit* a3);										// 004E6D00
+	Unit* iterateLoadedUnits(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), s32 a3);										// 004E6D00
 
 	//// mindcontrol_spell
 	void MindControlHit(Unit* attacker, Unit* target);																			// 004F6910
@@ -958,8 +958,9 @@ namespace helper
 
 	// For giveUnitToPlayer
 	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 playerId);											// 0047C9F0
-	bool unitHasHanger(Unit* unit);
-	s32 forHangarUnits(Unit* unit, s32(__fastcall* func)(s32, s32), s32 arg);								// 00465200
+	Unit* getHiddenMiner(Unit* unit);																		// 00468A60
+	bool unitHasHanger(Unit* unit);																			// identical to 004014B0
+	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
 	Unit* getCreatingUnit(Unit* unit);																		// 00466A30
 
 	//// misc
