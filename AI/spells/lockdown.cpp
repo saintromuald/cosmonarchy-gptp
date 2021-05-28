@@ -22,7 +22,7 @@ namespace AI
 
 		if (caster->vulture.spiderMineCount == 0)
 		{
-			return false;
+			return nullptr;
 		}
 
 		return scbw::UnitFinder::getNearestTarget(
