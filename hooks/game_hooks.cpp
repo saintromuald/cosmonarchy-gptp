@@ -1127,6 +1127,37 @@ namespace hooks
 					unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 				}
 			} break;
+			case UnitId::TerranSeraph:
+			{
+				// Observance - Science Vessel ability
+				u32 radius = 6 * 32;
+				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
+				bool attacked = false;
+				scbw::UnitFinder(
+					unit->getX() - radius,
+					unit->getY() - radius,
+					unit->getX() + radius,
+					unit->getY() + radius
+				).forEachInMatch(match, [&](Unit* target)
+				{
+					if ((!scbw::isAlliedTo(unit->playerId, target->playerId)))
+					{
+						UnitExt* targetExt = globals.GetUnitExt(target);
+						if (!targetExt->timers[TimerObservanceDebuff])
+						{
+							unitExt->timers[TimerObservanceOverlay] = 2;
+							targetExt->timers[TimerObservanceDebuff] = 5 * 24 + 1;
+							targetExt->timers[TimerObservancePeriod] = 5 * 24 + 1;
+							if (targetExt->values[ValueObservanceRend] == 0)
+							{
+								s32 overlay = ImageId::ObservanceOverlaySmall - scbw::getOverlayOffset(target->id);
+								target->sprite->createOverlay(overlay);
+							}
+							targetExt->values[ValueObservanceRend] += 1;
+						}
+					}
+				});
+			}
 		}
 
 		// Madrigal - Dirge
@@ -1338,72 +1369,70 @@ namespace hooks
 				pos.x + radius,
 				pos.y + radius
 			).forEach([&](Unit* foundUnit)
+			{
+				if (!(scbw::isAlliedTo(foundUnit->playerId, unit->playerId)))
 				{
-					if (!(scbw::isAlliedTo(foundUnit->playerId, unit->playerId)))
-					{
-						return;
-					}
-					if (foundUnit->id != UnitId::ZergAlaszileth)
-					{
-						return;
-					}
-					unitExt->timers[TimerAlaszilethRegenBoost] = 2;
-				});
+					return;
+				}
+				if (foundUnit->id != UnitId::ZergAlaszileth)
+				{
+					return;
+				}
+				unitExt->timers[TimerAlaszilethRegenBoost] = 2;
+			});
 		}
 
-		{ // Seraph - Observance
-			auto timer = unitExt->timers[TimerObservanceDebuff];
-			if (timer > 1)
+		// Seraph - Observance
+		if (unitExt->timers[TimerObservanceDebuff] > 1)
+		{
+			const auto range = 6 * 32;
+			auto seraphs = scbw::UnitFinder(
+				unit->getX() - range,
+				unit->getY() - range,
+				unit->getX() + range,
+				unit->getY() + range
+			).filter([&](Unit* target)
 			{
-				const auto range = 192;
-				auto seraphs = scbw::UnitFinder(
-					unit->getX() - range,
-					unit->getY() - range,
-					unit->getX() + range,
-					unit->getY() + range
-				).filter([&](Unit* target)
+				if (unit->playerId == target->playerId
+					|| scbw::isAlliedTo(unit->playerId, target->playerId)
+					|| target->id != UnitId::TerranSeraph)
 				{
-					if (unit->playerId == target->playerId
-						|| scbw::isAlliedTo(unit->playerId, target->playerId)
-						|| target->id != UnitId::TerranSeraph)
-					{
-						return false;
-					}
-					return true;
-				}).getAllUnits();
+					return false;
+				}
+				return true;
+			}).getAllUnits();
 
-				if (!seraphs.empty())
+			if (!seraphs.empty())
+			{
+				// Seraph - Observance period
+				unitExt->timers[TimerObservanceDebuff] = 5 * 24 + 1;
+
+				// Seraph - Observance ability
+				if (unitExt->timers[TimerObservancePeriod] == 1)
 				{
-					// Seraph - Observance period
-					unitExt->timers[TimerObservanceDebuff] = (5 * 24) + 1;
+					unitExt->timers[TimerObservancePeriod] = 5 * 24 + 1;
+					unitExt->values[ValueObservanceRend] += 1;
+				}
 
-					// Seraph - Observance ability
-					if (unitExt->timers[TimerObservancePeriod] == 1)
+				// Seraph - Observance persistant overlay creation
+				for (auto seraph : seraphs)
+				{
+					if (!seraph)
 					{
-						unitExt->timers[TimerObservancePeriod] = (5 * 24) + 1;
-						unitExt->values[ValueObservanceRend] += 1;
+						continue;
 					}
-
-					// Seraph - Observance persistant overlay creation
-					for (auto seraph : seraphs)
+					UnitExt* seraphExt = globals.GetUnitExt(seraph);
+					if (seraphExt->timers[TimerObservanceOverlay] == 0)
 					{
-						if (!seraph)
-						{
-							continue;
-						}
-						UnitExt* seraphExt = globals.GetUnitExt(seraph);
-						if (seraphExt->timers[TimerObservanceOverlay] == 0)
-						{
-							seraph->sprite->createOverlay(ImageId::SeraphRedOverlay);
-							seraphExt->timers[TimerObservanceOverlay] = 18;
-						}
+						seraph->sprite->createOverlay(ImageId::SeraphRedOverlay);
+						seraphExt->timers[TimerObservanceOverlay] = 18;
 					}
 				}
 			}
-			else if (timer == 1)
-			{
-				unit->sprite->removeOverlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
-			}
+		}
+		else if (unitExt->timers[TimerObservanceDebuff] == 1)
+		{
+			unit->sprite->removeOverlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
 		}
 
 		// Vithrilisk - Corrosive Touch Clear

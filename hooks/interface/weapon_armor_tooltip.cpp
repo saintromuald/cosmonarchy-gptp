@@ -399,6 +399,7 @@ namespace hooks
 
 		bonusArmor -= std::min(unitExt->values[ValueControlledOpposition], (u32)baseArmor);
 		bonusArmor -= unitExt->values[ValueArmorReduce];
+		bonusArmor -= unitExt->values[ValueObservanceRend];
 		for (Unit* unit : unitExt->unitVectors[UnitVectorAttachedSource])
 		{
 			if (unit->id == UnitId::ZergSovroleth)

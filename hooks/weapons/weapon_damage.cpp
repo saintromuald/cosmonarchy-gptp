@@ -731,24 +731,6 @@ namespace hooks
 					targetExt->timers[TimerEcclesiast] = EcclesiastAstralBlessingTimer;
 					targetExt->values[ValueEcclesiastPlayer] = data.attacker->playerId;
 				} break;
-				case WeaponId::SeraphObservance:
-				{
-					// Observance - Science Vessel ability
-					if (data.weaponId == WeaponId::SeraphObservance
-						&& (!scbw::isAlliedTo(data.attacker->playerId, data.target->playerId)))
-					{
-						attackerExt->timers[TimerObservanceOverlay] = 2;
-						targetExt->timers[TimerObservanceDebuff] = 1 + (5 * 24);
-						targetExt->timers[TimerObservancePeriod] = 1 + (5 * 24);
-						s32 rend = targetExt->values[ValueObservanceRend];
-						if (rend == 0)
-						{
-							s32 overlay = ImageId::ObservanceOverlaySmall - scbw::getOverlayOffset(data.target->id);
-							data.target->sprite->createOverlay(overlay);
-						}
-						targetExt->values[ValueObservanceRend] += 1;
-					}
-				} break;
 				case WeaponId::GorgrokorSerratedCleavers:
 				{
 					// Essence Drain - Gorgrokor Energy Steal

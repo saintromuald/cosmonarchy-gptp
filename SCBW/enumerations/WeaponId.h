@@ -181,7 +181,7 @@ namespace WeaponId {
 		SirenCharybdalRifle					= 96,	// Siren weapon
 		AutocratEminanceRifle				= 116,	// Autocrat weapon
 		ClaymoreHarpoonRailgun				= 120,	// Claymore weapon
-		SeraphObservance					= 122,	// Seraph ability targeting
+		UnusedSeraphObservance				= 122,	// Was Seraph ability targeting
 		OlympianTitansFist					= 123,	// Olympian weapon 2
 		OlympianMountainGun					= 124,	// Olympian weapon 1
 		WyvernJacksonCannon					= 125,	// Wyvern weapon
