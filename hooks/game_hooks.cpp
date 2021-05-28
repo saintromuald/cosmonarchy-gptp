@@ -1177,7 +1177,7 @@ namespace hooks
 			}
 		}
 
-		// Reviving from Lazarus Agent
+		// Reviving
 		if (((unitExt->timers[TimerReviveFlagClearMin] == 0 && !(unit->status & UnitStatus::NoBrkCodeStart)) || unitExt->timers[TimerReviveFlagClearMax] == 0)
 			&& unitExt->values[ValueReviveStarted])
 		{
@@ -1185,17 +1185,20 @@ namespace hooks
 			unitExt->timers[TimerReviveFlagClearMin] = 0;
 			unitExt->timers[TimerReviveFlagClearMax] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+			if (playerTable[unit->playerId].type == PlayerType::Computer)
 			{
-				helper::AI_TrainingWorker(unit, unit);
-			}
-			else if (units_dat::BaseProperty[unit->id] & UnitProperty::Building || unit->id == UnitId::ZergOvileth)
-			{
-				helper::AI_TrainingOverlord(unit, unit);
-			}
-			else
-			{
-				hooks::AI_TrainingBroodling(unit, unit);
+				if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+				{
+					helper::AI_TrainingWorker(unit, unit);
+				}
+				else if (units_dat::BaseProperty[unit->id] & UnitProperty::Building || unit->id == UnitId::ZergOvileth)
+				{
+					helper::AI_TrainingOverlord(unit, unit);
+				}
+				else
+				{
+					hooks::AI_TrainingBroodling(unit, unit);
+				}
 			}
 		}
 
