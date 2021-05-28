@@ -1109,9 +1109,6 @@ namespace hooks
 
 				if (unit->mainOrderId == OrderId::Move)
 				{
-					unit->current_speed1 = 0;
-					unit->current_speed2 = 0;
-
 					if (unitExt->antlionLastMoveTarget != unit->moveTarget.pt)
 					{
 						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
@@ -1120,7 +1117,11 @@ namespace hooks
 
 					if (unitExt->timers[TimerAnthelionEndlessEclipse] == 1)
 					{
-						scbw::teleport(unit, unit->moveTarget.pt, ImageId::LegionnaireTeleportEffect, true);
+						bool teleport = scbw::teleport(unit, unit->moveTarget.pt, 0, true);
+						if (!unit->getOverlay(ImageId::LegionnaireTeleportEffect) && teleport)
+						{
+							unit->sprite->createTopOverlay(ImageId::LegionnaireTeleportEffect);
+						}
 					}
 				}
 				else
