@@ -563,7 +563,7 @@ namespace hooks
 				case UnitId::SharedStriga:
 				{
 					// Striga - Fleeting Focus
-					if (!(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building))
+					if (/* disabled for now */ false && !(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building))
 					{
 						const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 						if (dist < 2 * 32)
