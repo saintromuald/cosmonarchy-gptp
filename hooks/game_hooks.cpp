@@ -1232,7 +1232,7 @@ namespace hooks
 		if (Unit* target = unitExt->units[UnitAttachedTarget])
 		{
 			UnitExt* targetExt = globals.GetUnitExt(target);
-			scbw::setUnitPosition(unit, target->getX(), target->getY());
+			scbw::moveUnit(unit, target->getX(), target->getY(), scbw::MoveTypeForce);
 			unit->currentDirection1 = target->currentDirection1;
 
 			// Akistrokor - Attack Animation
