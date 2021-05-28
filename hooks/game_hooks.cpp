@@ -1098,7 +1098,7 @@ namespace hooks
 					unitExt->timers[TimerAnthelionAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::AnthelionEventHorizon);
 					if (!unit->sprite->getOverlay(ImageId::NukeHit))
 					{
-						unit->sprite->createTopUnderlay(ImageId::NukeHit);
+						unit->sprite->createUnderlay(ImageId::NukeHit);
 					}
 				}
 				else
