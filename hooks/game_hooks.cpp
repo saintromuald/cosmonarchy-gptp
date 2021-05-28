@@ -115,6 +115,7 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 #include "limits/sfx_extender.h"
 #include "hooks/weapons/weapon_spellhit.h"
 #include "globals.h"
+#include <hooks\unit_movement.h>
 
 struct CorpseFinder
 {
@@ -1306,7 +1307,7 @@ namespace hooks
 		if (Unit* target = unitExt->units[UnitAttachedTarget])
 		{
 			UnitExt* targetExt = globals.GetUnitExt(target);
-			scbw::moveUnit(unit, target->getX(), target->getY(), scbw::MoveTypeForce);
+			hooks::MoveUnit(unit, target->getX(), target->getY(), true);
 			unit->currentDirection1 = target->currentDirection1;
 
 			// Akistrokor - Attack Animation

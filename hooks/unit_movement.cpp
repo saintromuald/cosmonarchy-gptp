@@ -67,7 +67,7 @@ namespace hooks
         if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) && !ignoreCollision)
         {
             helper::updateUnitSortingInfo(newPos.x - oldPos.x, unit, newPos.y - oldPos.y);
-            if (!(unit->sprite->flags & SpriteFlags::Hidden))
+            if (!ignoreCollision && !(unit->sprite->flags & SpriteFlags::Hidden))
             {
                 helper::checkUnstack(unit);
             }
