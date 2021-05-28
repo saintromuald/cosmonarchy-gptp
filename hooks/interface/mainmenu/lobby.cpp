@@ -12,32 +12,28 @@ namespace hooks
 			return 0;
 		}
 
-		// Convert open slots to computers (singleplayer)
-		if (customSingleplayer[0])
+		if (*customSingleplayer)
 		{
-			bool shouldSwitch = false;
 			if (gameData->victoryCondition || gameData->startingUnits || gameData->tournamentModeEnabled)
 			{
-				shouldSwitch = true;
 				helper::switchAllAvailableComputerSlotsToOpen();
-			}
-			if (shouldSwitch || gameData->gameType & 0xA) // UMS
-			{
 				playerTable[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
-				s32 playerId = 0;
-				do
+				for (s32 playerId = 0; playerId < 8; playerId++)
 				{
 					if (selectedSingleplayerRace[playerId + 1] != RaceId::None)
 					{
 						helper::setLastOpenSlotToComputer(selectedSingleplayerRace[playerId + 1]);
-						if (playerTable[playerId].type == PlayerType::OpenSlot)
-						{
-							playerTable[playerId].type = PlayerType::Computer;
-						}
 					}
-					++playerId;
 				}
-				while (playerId < 8);
+			}
+
+			// Convert open slots to computers (singleplayer)
+			for (s32 playerId = 0; playerId < 8; playerId++)
+			{
+				if (playerTable[playerId].type == PlayerType::OpenSlot)
+				{
+					playerTable[playerId].type = PlayerType::Computer;
+				}
 			}
 		}
 		return 1;
@@ -96,7 +92,7 @@ namespace hooks
 		*elapstedTimeModifier = 0;
 		*countdownTimeRemaining = result;
 
-		// Convert open slots to computers
+		// Convert open slots to computers (multiplayer)
 		for (s32 i = 0; i < 8; i++)
 		{
 			if (playerTable[i].type == PlayerType::OpenSlot)
