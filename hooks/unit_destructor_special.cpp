@@ -310,6 +310,13 @@ void unitDestructorSpecialHook(Unit* unit)
 		scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
 	}
 
+	// Nuclear Silo - death
+	if (unit->id == UnitId::TerranNuclearSilo && unit->building.silo.isReady)
+	{
+		scbw::createAndInitThingy(SpriteId::Nuke_Hit, unit->getX(), unit->getY(), 11, 12);
+		helper::createBullet(WeaponId::NuclearMissile, unit, unit->getX(), unit->getY(), unit->playerId, 0);
+	}
+
 	// Apostle Last Breath behavior
 	{
 		u32 range = 4 * 32;
