@@ -1254,17 +1254,21 @@ namespace hooks
 		// Anthelion - Gravity Well
 		if (unitExt->timers[TimerAnthelionGravityWell] && unitExt->units[UnitAnthelionGravityWellSource])
 		{
-			Vector32 diff = scbw::getVectorBetweenPoints(unit->position, unitExt->units[UnitAnthelionGravityWellSource]->position);
-			Vector32f displacement = scbw::getNormalizedVector(diff);
-			displacement.x *= 2;
-			displacement.y *= 2;
+			Point16 targetPos = unitExt->units[UnitAnthelionGravityWellSource]->position;
+			if (unit->position != targetPos)
+			{
+				Vector32 diff = scbw::getVectorBetweenPoints(unit->position, targetPos);
+				Vector32f displacement = scbw::getNormalizedVector(diff);
+				displacement.x *= 2;
+				displacement.y *= 2;
 
-			Point16 finalPos = unit->position;
-			finalPos.x += displacement.x;
-			finalPos.y += displacement.y;
-			finalPos = scbw::clampPoint(finalPos);
+				Point16 finalPos = unit->position;
+				finalPos.x += displacement.x;
+				finalPos.y += displacement.y;
+				finalPos = scbw::clampPoint(finalPos);
 
-			scbw::moveUnit(unit, finalPos.x, finalPos.y, scbw::MoveTypeForceValid);
+				scbw::moveUnit(unit, finalPos.x, finalPos.y, scbw::MoveTypeForceValid);
+			}
 		}
 
 		// Attachment - Clear
