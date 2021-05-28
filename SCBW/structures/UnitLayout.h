@@ -310,6 +310,7 @@ enum ExtTimerId
 	TimerAnthelionGravityWell,
 	TimerAnthelionEndlessEclipse,
 	TimerAnthelionAttackCooldown,
+	TimerRepulsion,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
@@ -377,6 +378,7 @@ struct UnitExt
 	u32						damageDealtTimer;
 	u32						nathrokorTargetStacks[8];
 	Point16					antlionLastMoveTarget;
+	Vector32f				repulsionVector;
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];

@@ -813,17 +813,30 @@ namespace scbw
 
 	//-------- Moving Units --------//
 
-	bool moveUnit(Unit* unit, s16 x, s16 y)
+	bool moveUnit(Unit* unit, s16 x, s16 y, MoveType moveType)
 	{
 		Point16 targetPos = {x, y};
-		Point16 actualPos;
+		Point16 actualPos = {x, y};
 		Point16 prevPos = unit->sprite->position;
 
 		// Based on the code for Recall/Nydus Canal/Move Unit trigger
 		setUnitPosition(unit, x, y);
 
-		if (checkUnitCollisionPos(unit, &targetPos, &actualPos))
+		if (moveType != MoveTypeStandard || checkUnitCollisionPos(unit, &targetPos, &actualPos))
 		{
+
+			if (moveType == MoveTypeForceValid)
+			{
+				ActiveTile originalTile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
+				ActiveTile finalTile = scbw::getActiveTileAt(targetPos.x, targetPos.y);
+
+				if (!(unit->status & UnitStatus::InAir)
+					&& (finalTile.isUnwalkable || originalTile.groundHeight != finalTile.groundHeight))
+				{
+					return false;
+				}
+			}
+
 			prepareUnitMove(unit);
 			setUnitPosition(unit, actualPos.x, actualPos.y);
 			refreshUnitAfterMove(unit);

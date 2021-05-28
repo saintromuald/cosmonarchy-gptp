@@ -563,34 +563,19 @@ namespace hooks
 				case UnitId::SharedStriga:
 				{
 					// Striga - Fleeting Focus
-					if (/* disabled for now */ false && !(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building))
+					if (!(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building))
 					{
 						const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 						if (dist < 2 * 32)
 						{
+							const u32 displacementTime = 24;
 							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
 							Vector32f displacement = scbw::getNormalizedVector(diff);
-							displacement.x *= 2 * 32.0;
-							displacement.y *= 2 * 32.0;
+							displacement.x *= 1 * 32.0 / displacementTime;
+							displacement.y *= 1 * 32.0 / displacementTime;
 
-							Point16 finalPos = data.target->position;
-							finalPos.x += displacement.x;
-							finalPos.y += displacement.y;
-							finalPos = scbw::clampPoint(finalPos);
-
-							ActiveTile originalTile = scbw::getActiveTileAt(data.attacker->position.x, data.attacker->position.y);
-							ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);
-
-							if (data.attacker->status & UnitStatus::InAir
-								|| (!finalTile.isUnwalkable && originalTile.groundHeight == finalTile.groundHeight))
-							{
-								const u32 imageId = ImageId::LegionnaireTeleportEffect;
-								bool teleport = scbw::teleport(data.attacker, finalPos, 0, true);
-								if (!data.attacker->getOverlay(imageId) && teleport)
-								{
-									data.attacker->sprite->createTopOverlay(imageId);
-								}
-							}
+							attackerExt->timers[TimerRepulsion] = displacementTime;
+							attackerExt->repulsionVector = displacement;
 						}
 					}
 				} break;

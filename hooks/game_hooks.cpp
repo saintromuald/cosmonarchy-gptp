@@ -1179,6 +1179,23 @@ namespace hooks
 			unit->plagueTimer = IsthrathalethPlagueTimer;
 		}
 
+		// Repulsion
+		if (unitExt->timers[TimerRepulsion])
+		{
+			Point16 finalPos = unit->position;
+			finalPos.x += unitExt->repulsionVector.x;
+			finalPos.y += unitExt->repulsionVector.y;
+			finalPos = scbw::clampPoint(finalPos);
+
+			ActiveTile originalTile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
+			ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);
+
+			if (!scbw::moveUnit(unit, finalPos.x, finalPos.y, scbw::MoveTypeForceValid))
+			{
+				unitExt->timers[TimerRepulsion] = 0;
+			}
+		}
+
 		// Attachment - Clear
 		if (scbw::get_generic_rust_value(unit, RustId::CancelAttachment))
 		{

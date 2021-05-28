@@ -300,7 +300,22 @@ namespace scbw
 	/// Attempts to move the unit to @p (x, y), or to a nearby position if possible.
 	///
 	/// @return true if successful, false otherwise.
-	bool moveUnit(Unit* unit, s16 x, s16 y);
+	
+	enum MoveType
+	{
+		MoveTypeStandard,		// standard way of moving, checks and correct unit and terrain collision,
+								// bugs:
+								// - moving onto a ground unit stunlocks it
+								// - moving onto an air unit makes it move slightly
+								// - moving slightly will try to correct collision with itself, resulting in incorrect movement
+
+		MoveTypeForce,			// forces the move without corrections
+
+		MoveTypeForceValid,		// forces the move, but cancels it if the unit would end up on invalid terrain,
+								// useful for small movements like repulsion or pulling, might need corrections for bigger movements
+	};
+	
+	bool moveUnit(Unit* unit, s16 x, s16 y, MoveType moveType = MoveTypeStandard);
 
 	/// Removes various references to the @p unit.
 	/// Details not understood. See the source for moveUnit().
