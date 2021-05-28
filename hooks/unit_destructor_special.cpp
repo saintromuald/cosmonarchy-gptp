@@ -305,7 +305,7 @@ void unitDestructorSpecialHook(Unit* unit)
 	}
 
 	// Apostle Lazarus Agent - imply revive
-	if (unitExt->values[ValueLazarusAgent])
+	if (unitExt->values[ValueLazarusAgent] || unitExt->timers[TimerAnticthonRevive])
 	{
 		scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
 	}
