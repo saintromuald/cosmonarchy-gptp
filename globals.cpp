@@ -56,16 +56,15 @@ void Globals::aise_save()
 		stream.write(reinterpret_cast<const char*>(&pariahHits[i].target), sizeof(pariahHits[i].target));
 	}
 
-	u32 apostleCount = apostleAgents.size();
+	u32 apostleCount = revivingUnits.size();
 	for (s32 i = 0; i < apostleCount; i++)
 	{
-		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].creator), sizeof(apostleAgents[i].creator));
-		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].energy), sizeof(apostleAgents[i].energy));
-		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].playerId), sizeof(apostleAgents[i].playerId));
-		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].position.x), sizeof(apostleAgents[i].position.x));
-		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].position.y), sizeof(apostleAgents[i].position.y));
-		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].timer), sizeof(apostleAgents[i].timer));
-		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].unitId), sizeof(apostleAgents[i].unitId));
+		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].energy), sizeof(revivingUnits[i].energy));
+		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].playerId), sizeof(revivingUnits[i].playerId));
+		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].position.x), sizeof(revivingUnits[i].position.x));
+		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].position.y), sizeof(revivingUnits[i].position.y));
+		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].timer), sizeof(revivingUnits[i].timer));
+		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].unitId), sizeof(revivingUnits[i].unitId));
 	}
 
 	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
@@ -210,15 +209,14 @@ void Globals::aise_load(const char* ptr, u32 len)
 	stream.read(reinterpret_cast<char*>(&apostleCount), sizeof(apostleCount));
 	for (s32 i = 0; i < pariahHitsCount; i++)
 	{
-		ApostleAgent agent;
-		stream.read(reinterpret_cast<char*>(&agent.creator), sizeof(agent.creator));
+		RevivingUnit agent;
 		stream.read(reinterpret_cast<char*>(&agent.energy), sizeof(agent.energy));
 		stream.read(reinterpret_cast<char*>(&agent.playerId), sizeof(agent.playerId));
 		stream.read(reinterpret_cast<char*>(&agent.position.x), sizeof(agent.position.x));
 		stream.read(reinterpret_cast<char*>(&agent.position.y), sizeof(agent.position.y));
 		stream.read(reinterpret_cast<char*>(&agent.timer), sizeof(agent.timer));
 		stream.read(reinterpret_cast<char*>(&agent.unitId), sizeof(agent.unitId));
-		apostleAgents.push_back(agent);
+		revivingUnits.push_back(agent);
 	}
 
 	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
@@ -314,7 +312,7 @@ void Globals::reset()
 	effects.clear();
 	pariahHits.clear();
 	multihitBullets.clear();
-	apostleAgents.clear();
+	revivingUnits.clear();
 	lurkerSpineHits.clear();
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
@@ -346,14 +344,6 @@ void Globals::unitDeathHook(Unit* unit)
 		}
 	}
 	ClearUnitExt(unit->getIndex());
-
-	for (s32 i = 0; i < this->apostleAgents.size(); i++)
-	{
-		if (apostleAgents[i].creator == unit)
-		{
-			apostleAgents[i].creator = nullptr;
-		}
-	}
 
 	for (s32 i = 0; i < this->effects.size(); i++)
 	{
@@ -465,9 +455,9 @@ void Globals::frameHook()
 		}
 	}
 
-	for (s32 i = 0; i < apostleAgents.size(); ++i)
+	for (s32 i = 0; i < revivingUnits.size(); ++i)
 	{
-		auto& agent = apostleAgents[i];
+		auto& agent = revivingUnits[i];
 		if (agent.timer > 0)
 		{
 			agent.timer--;
@@ -478,10 +468,12 @@ void Globals::frameHook()
 			if (revived)
 			{
 				UnitExt* revivedExt = globals.GetUnitExt(revived);
-				u32 heal = ApostleLazarusAgentHeal * agent.stacks;
-				revived->hitPoints = 0;
-				revived->shields = 0;
-				revived->healOverflow(heal);
+				if (agent.hp > 0)
+				{
+					revived->hitPoints = 0;
+					revived->shields = 0;
+					revived->healOverflow(agent.hp);
+				}
 				revived->energy = agent.energy;
 				revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
@@ -489,7 +481,7 @@ void Globals::frameHook()
 				revivedExt->timers[TimerReviveFlagClearMin] = 3;
 				revivedExt->timers[TimerReviveFlagClearMax] = 14;
 			}
-			apostleAgents.erase(apostleAgents.begin() + i);
+			revivingUnits.erase(revivingUnits.begin() + i);
 			i--;
 		}
 	}
@@ -753,17 +745,6 @@ void Globals::register_pariah_hit(Unit* source, Unit* target)
 	pariahHits.push_back(hit);
 }
 
-void Globals::clear_ptr_in_apostle_table(Unit* ptr)
-{
-	for (auto& a : apostleAgents)
-	{
-		if (a.creator == ptr)
-		{
-			a.creator = nullptr; // agent values themselves must not be deleted to prevent non-working lazarus agent buffs
-		}
-	}
-}
-
 bool Globals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target)
 {
 	for (auto& a : multihitBullets)
@@ -860,18 +841,17 @@ void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 	multihitBullets.push_back(gb);
 }
 
-void Globals::initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 stacks, Unit* unit)
+void Globals::initRevive(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 hp)
 {
-	ApostleAgent a;
+	RevivingUnit a;
 	a.playerId = player;
 	a.position.x = x;
 	a.position.y = y;
 	a.timer = 48;
 	a.unitId = unitId;
 	a.energy = energy;
-	a.stacks = stacks;
-	a.creator = unit;
-	apostleAgents.push_back(a);
+	a.hp = hp;
+	revivingUnits.push_back(a);
 }
 
 void Globals::clear_lakizilisk(Unit* lurker)

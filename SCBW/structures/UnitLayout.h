@@ -305,6 +305,8 @@ enum ExtTimerId
 	TimerWaxWingsDebuff,
 	TimerAuralAssaultBlind,
 	TimerTarasqueSecondaryWeaponCooldown,
+	TimerAnticthonRevive,
+	TimerAnticthonFailureMode,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
@@ -390,17 +392,21 @@ namespace RustId
 		CastGodsMadeFlesh,
 		CastEnthrallingAssault,
 		CastTertiaryEyes,
+		CastControlledDemolition,
+		CastEmergencyDetonation,
+		CastFailureMode,
+
 		CancelMindControl,
 		CancelLandGrab,
 		CancelAttachment,
+
 		ToggleReverseThrust,
 		ToggleSublimeShepherd,
 		ToggleDisruptionField,
-		DisruptionWebDamage,
 		ToggleTempoChange,
+
+		DisruptionWebDamage,
 		DirgeAttacker,
-		CastControlledDemolition,
-		CastEmergencyDetonation,
 	};
 }
 #include "SCBW\enumerations\TechId.h"

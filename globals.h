@@ -70,15 +70,14 @@ struct MultihitBullet
 	MultihitBullet(Bullet* bullet, std::vector<Unit*> already_hit, u32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {}
 };
 
-struct ApostleAgent
+struct RevivingUnit
 {
 	Vector32 position;
 	u32 timer;
 	u32 unitId;
 	u8 playerId;
 	u32 energy;
-	u32 stacks;
-	Unit* creator;
+	u32 hp;
 };
 
 struct AttackExtender
@@ -116,7 +115,7 @@ struct Globals
 	std::vector<Effect> effects;
 	std::vector<PariahHit> pariahHits;
 	std::vector<MultihitBullet> multihitBullets;
-	std::vector<ApostleAgent> apostleAgents;
+	std::vector<RevivingUnit> revivingUnits;
 	std::unordered_map<Unit*, std::vector<Unit*>> lurkerSpineHits;
 	UnitExt unitExt[UNIT_ARRAY_LENGTH];
 
@@ -127,7 +126,7 @@ struct Globals
 	}
 
 	AttackExtender attackers;
-	ApostleAgent test;
+	RevivingUnit test;
 
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	s32 flingy_init_bullet_id;
@@ -162,8 +161,7 @@ struct Globals
 	void add_multihit_empty_bullet(Bullet* bullet, s32 divider);
 	void add_bullet_multihit(Bullet* bullet, Unit* target);
 	void add_incremental_bullet_multihit(Bullet* bullet, Unit* target);
-	void initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 stacks, Unit* unit);
-	void clear_ptr_in_apostle_table(Unit* unit);
+	void initRevive(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 hp);
 	void remove_multihit_bullet(Bullet* bullet);
 	s32 get_divider(Bullet* bullet);
 	void clear_lakizilisk(Unit* lurker);

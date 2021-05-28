@@ -20,7 +20,7 @@ namespace hooks
 			+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
 		// Anticthon - Passive
-		cooldown /= 1 + 0.1 * unitExt->values[ValueAnticthonStacks];
+		cooldown /= 1 + 0.02 * unitExt->values[ValueAnticthonStacks];
 
 		// Vithrilisk - Corrosive Spores: lower attack speed of victim
 		cooldown *= 1 + unitExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;

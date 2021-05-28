@@ -123,7 +123,7 @@ namespace hooks
 		}
 
 		// Anticthon - Passive
-		bonusAmount += weapons_dat::MaxRange[weaponId] * 0.1 * unitExt->values[ValueAnticthonStacks];
+		bonusAmount += weapons_dat::MaxRange[weaponId] * 0.02 * unitExt->values[ValueAnticthonStacks];
 
 		// Height advantage
 		bonusAmount += 128;

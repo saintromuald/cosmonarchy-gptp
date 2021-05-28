@@ -390,7 +390,6 @@ void unitDestructorSpecialHook(Unit* unit)
 
 	// Globals memory management
 	globals.remove_unit_from_pariah_table(unit, false);
-	globals.clear_ptr_in_apostle_table(unit);
 	globals.unitDeathHook(unit);
 }
 

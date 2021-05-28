@@ -936,12 +936,38 @@ namespace hooks
 			targetExt->values[ValueEmpressPassiveStacks] = 0;
 		}
 
-		// Apostle - Lazarus Agent
-		if (data.finalDamage > 0 && targetExt->values[ValueLazarusAgent])
+		// Apostle, Anticthon - Revive
+		if (data.finalDamage > 0 && (targetExt->values[ValueLazarusAgent] || targetExt->timers[TimerAnticthonRevive]))
 		{
-			globals.initLazarusAgent(data.target->position.x, data.target->position.y,
-				data.target->playerId, data.target->id, data.target->energy, targetExt->values[ValueLazarusAgent],
-				(Unit*)targetExt->values[ValueLazarusAgentApostleSrc]);
+			u32 hp = 0;
+			if (targetExt->values[ValueLazarusAgent] && !targetExt->timers[TimerAnticthonRevive])
+			{
+				hp = targetExt->values[ValueLazarusAgent] * 5 * 256;
+			}
+
+			if (targetExt->timers[TimerAnticthonRevive])
+			{
+				const u32 radius = 8 * 32;
+				scbw::UnitFinder(
+					data.target->getX() - radius,
+					data.target->getY() - radius,
+					data.target->getX() + radius,
+					data.target->getY() + radius
+				).forEach([&](Unit* unit)
+				{
+					UnitExt* unitExt = globals.GetUnitExt(unit);
+					u32 dist = scbw::getDistanceFast(data.target->position, unit->position);
+					if (dist <= 4 * 32 || (dist <= 8 * 32 && unitExt->timers[TimerAnticthonFailureMode]))
+					{
+						if (unitExt->timers[TimerAnticthonFailureMode] || scbw::isAlliedTo(data.target->playerId, unit->playerId))
+						{
+							unitExt->values[ValueAnticthonStacks]++;
+						}
+					}
+				});
+			}
+
+			globals.initRevive(data.target->position.x, data.target->position.y, data.target->playerId, data.target->id, data.target->energy, hp);
 		}
 
 		// Ecclesiast - Astral Blessing proc

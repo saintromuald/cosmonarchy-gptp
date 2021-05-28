@@ -1016,8 +1016,29 @@ namespace hooks
 			} break;
 			case UnitId::SharedAnticthon:
 			{
-				auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf | Flags::Ally | Flags::NoBuilding, {});
-				const u32 radius = 4 * 32;
+				// Failure Mode Cast
+				if (scbw::get_generic_rust_value(unit, RustId::CastFailureMode) == 1)
+				{
+					scbw::set_generic_rust_value(unit, RustId::CastFailureMode, 0);
+					unitExt->timers[TimerAnticthonFailureMode] = 30 * 24 + 1;
+				}
+
+				// Failure Mode End
+				if (unitExt->timers[TimerAnticthonFailureMode] == 1)
+				{
+					unit->heal(5 * 256 * unitExt->values[ValueAnticthonStacks], unit);
+					unitExt->values[ValueAnticthonStacks] = 0;
+				}
+
+				// Revive Status
+				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding;
+				u32 radius = 4 * 32;
+				if (unitExt->timers[TimerAnticthonFailureMode]) 
+				{
+					radius = 8 * 32;
+					flags &= ~Flags::Ally;
+				}
+				auto match = cosmonarchyFinderMatch(unit, flags, {});
 				scbw::UnitFinder(
 					unit->getX() - radius,
 					unit->getY() - radius,
@@ -1025,15 +1046,8 @@ namespace hooks
 					unit->getY() + radius
 				).forEachInMatch(match, [&](Unit* target)
 				{
-					if (target->getCurrentLifeInGame() < target->getTotalHitPointsPlusShields())
-					{
-						target->healOverflow(4.0 / 24, unit);
-						if (target->getCurrentLifeInGame() == target->getTotalHitPointsPlusShields())
-						{
-							target->remove();
-							unitExt->values[ValueAnticthonStacks]++;
-						}
-					}
+					UnitExt* targetExt = globals.GetUnitExt(target);
+					targetExt->timers[TimerAnticthonRevive] = 2;
 				});
 			} break;
 		}

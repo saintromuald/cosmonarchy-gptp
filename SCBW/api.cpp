@@ -1783,13 +1783,14 @@ namespace scbw
 		u32 allyCount = 0;
 		u32 enemyCount = 0;
 
+		auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf, {});
 		const u32 radius = 5 * 32;
 		scbw::UnitFinder(
 			unit->getX() - radius,
 			unit->getY() - radius,
 			unit->getX() + radius,
 			unit->getY() + radius
-		).forEach([&](Unit* target)
+		).forEachInMatch(match, [&](Unit* target)
 		{
 			if (scbw::isAlliedTo(target->playerId, unit->playerId))
 			{
@@ -1801,6 +1802,6 @@ namespace scbw
 			}
 		});
 
-		return allyCount <= enemyCount;
+		return allyCount < enemyCount;
 	}
 }

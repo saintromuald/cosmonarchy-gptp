@@ -528,7 +528,7 @@ void Unit::healOverflow(s32 amount, Unit* source, bool restore)
 	this->heal(amount, source, restore);
 	if (shields > 0)
 	{
-		this->healShields(shields, source, false);
+		this->healShields(shields, source, restore);
 	}
 }
 
