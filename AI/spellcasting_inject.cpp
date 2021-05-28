@@ -3,15 +3,13 @@
 
 namespace
 {
-
 	void __declspec(naked) AI_spellcasterWrapper()
 	{
-
 		static Unit* unit;
 		static b32 isUnderAttack;
 		static b32 result;
-
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
@@ -19,28 +17,28 @@ namespace
 			MOV isUnderAttack, EAX
 			PUSHAD
 		}
-
 		if (AI::AI_spellcasterHook(unit, isUnderAttack != 0))
+		{
 			result = 1;
+		}
 		else
+		{
 			result = 0;
-
-		__asm {
+		}
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			POP EBP
 			RETN 4
 		}
 	}
-
-} //unnamed namespace
+}
 
 namespace hooks
 {
-
 	void injectSpellcasterAI()
 	{
 		jmpPatch(AI_spellcasterWrapper, 0x004A13C0, 2);
 	}
-
-} //AI
+}
