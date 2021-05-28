@@ -1052,32 +1052,58 @@ namespace hooks
 			} break;
 			case UnitId::SharedAnthelion:
 			{
-				u32 radius = 4 * 32;
+				u32 attackRadius = 10 * 32;
 				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
+				bool attacked = false;
 				scbw::UnitFinder(
-					unit->getX() - radius,
-					unit->getY() - radius,
-					unit->getX() + radius,
-					unit->getY() + radius
+					unit->getX() - attackRadius,
+					unit->getY() - attackRadius,
+					unit->getX() + attackRadius,
+					unit->getY() + attackRadius
 				).forEachInMatch(match, [&](Unit* target)
 				{
-					UnitExt* targetExt = globals.GetUnitExt(target);
-					if (targetExt->timers[TimerAnthelionGravityWell])
+					u32 dist = scbw::getDistanceFast(unit->position, target->position);
+
+					if (dist <= weapons_dat::OuterSplashRadius[WeaponId::AnthelionEventHorizon])
 					{
-						targetExt->timers[TimerAnthelionGravityWell] = 2;
+						UnitExt* targetExt = globals.GetUnitExt(target);
+						if (targetExt->timers[TimerAnthelionGravityWell])
+						{
+							targetExt->timers[TimerAnthelionGravityWell] = 2;
+							targetExt->units[UnitAnthelionGravityWellSource] = unit;
+						}
+
+						if (unitExt->timers[TimerAnthelionAttackCooldown] == 0)
+						{
+							attacked = true;
+
+							u32 divider = 1;
+							if (dist > weapons_dat::MediumSplashRadius[WeaponId::AnthelionEventHorizon])
+							{
+								divider = 4;
+							}
+							else if (dist > weapons_dat::InnerSplashRadius[WeaponId::AnthelionEventHorizon])
+							{
+								divider = 2;
+							}
+
+							target->damageWith(WeaponId::AnthelionEventHorizon, -1, unit, unit->playerId, 0, 1);
+						}
 					}
+
 				});
 
-				if (unitExt->timers[TimerAnthelionGravityWell] == 0)
+				if (attacked)
 				{
-					if (fireMultiple(unit, unitExt, WeaponId::AnthelionEventHorizon, 1, Flags::Enemy))
+					unitExt->timers[TimerAnthelionAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::AnthelionEventHorizon);
+					if (!unit->sprite->getOverlay(ImageId::NukeHit))
 					{
-						unitExt->timers[TimerAnthelionGravityWell] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::AnthelionEventHorizon);
+						unit->sprite->createTopUnderlay(ImageId::NukeHit);
 					}
-					else
-					{
-						unitExt->timers[TimerAnthelionGravityWell] = 3; // performance
-					}
+				}
+				else
+				{
+					unitExt->timers[TimerAnthelionAttackCooldown] = 3; // performance
 				}
 
 				if (unit->mainOrderId == OrderId::Move)
@@ -1117,7 +1143,8 @@ namespace hooks
 			scbw::updateSignifyStatus(unit, unitExt);
 		}
 
-		if (unit->isFrozen())
+		// Decloak on stun
+		if (unit->isFrozen() || unitExt->timers[TimerStrigaRepulsion] || unitExt->timers[TimerAnthelionGravityWell])
 		{
 			scbw::decloakProc(unit);
 		}
@@ -1179,8 +1206,8 @@ namespace hooks
 			unit->plagueTimer = IsthrathalethPlagueTimer;
 		}
 
-		// Repulsion
-		if (unitExt->timers[TimerRepulsion])
+		// Striga - Repulsion
+		if (unitExt->timers[TimerStrigaRepulsion])
 		{
 			Point16 finalPos = unit->position;
 			finalPos.x += unitExt->repulsionVector.x;
@@ -1192,8 +1219,24 @@ namespace hooks
 
 			if (!scbw::moveUnit(unit, finalPos.x, finalPos.y, scbw::MoveTypeForceValid))
 			{
-				unitExt->timers[TimerRepulsion] = 0;
+				unitExt->timers[TimerStrigaRepulsion] = 0;
 			}
+		}
+
+		// Anthelion - Gravity Well
+		if (unitExt->timers[TimerAnthelionGravityWell] && unitExt->units[UnitAnthelionGravityWellSource])
+		{
+			Vector32 diff = scbw::getVectorBetweenPoints(unit->position, unitExt->units[UnitAnthelionGravityWellSource]->position);
+			Vector32f displacement = scbw::getNormalizedVector(diff);
+			displacement.x *= 2;
+			displacement.y *= 2;
+
+			Point16 finalPos = unit->position;
+			finalPos.x += displacement.x;
+			finalPos.y += displacement.y;
+			finalPos = scbw::clampPoint(finalPos);
+
+			scbw::moveUnit(unit, finalPos.x, finalPos.y, scbw::MoveTypeForceValid);
 		}
 
 		// Attachment - Clear

@@ -17,11 +17,6 @@ namespace hooks
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
-		if (unitExt->timers[TimerAnthelionGravityWell])
-		{
-			return 0;
-		}
-
 		f64 speed = 1;
 		// Set additives based on status effects and movespeed upgrades
 		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);

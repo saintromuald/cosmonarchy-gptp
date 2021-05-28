@@ -310,7 +310,7 @@ enum ExtTimerId
 	TimerAnthelionGravityWell,
 	TimerAnthelionEndlessEclipse,
 	TimerAnthelionAttackCooldown,
-	TimerRepulsion,
+	TimerStrigaRepulsion,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
@@ -341,6 +341,7 @@ enum ExtUnitId
 	UnitBunkerLockOn,
 	UnitLastHitAkistrokor,
 	UnitEmpressSource,
+	UnitAnthelionGravityWellSource,
 
 	UnitCount,
 };

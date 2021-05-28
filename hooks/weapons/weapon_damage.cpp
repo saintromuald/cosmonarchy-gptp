@@ -574,7 +574,7 @@ namespace hooks
 							displacement.x *= 1 * 32.0 / displacementTime;
 							displacement.y *= 1 * 32.0 / displacementTime;
 
-							attackerExt->timers[TimerRepulsion] = displacementTime;
+							attackerExt->timers[TimerStrigaRepulsion] = displacementTime;
 							attackerExt->repulsionVector = displacement;
 						}
 					}
