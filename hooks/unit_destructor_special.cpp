@@ -311,7 +311,7 @@ void unitDestructorSpecialHook(Unit* unit)
 	}
 
 	// Nuclear Silo - death
-	if (unit->id == UnitId::TerranNuclearSilo && unit->building.silo.isReady)
+	if (unit->id == UnitId::TerranNuclearSilo && unit->building.silo.isReady && !unitExt->timers[ControlledDemolitionTimer])
 	{
 		scbw::createAndInitThingy(SpriteId::Nuke_Hit, unit->getX(), unit->getY(), 11, 12);
 		helper::createBullet(WeaponId::NuclearMissile, unit, unit->getX(), unit->getY(), unit->playerId, 0);
