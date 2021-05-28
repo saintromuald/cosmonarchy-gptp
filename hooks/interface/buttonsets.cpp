@@ -896,6 +896,11 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
+							else if ((*activePortraitUnit)->id == UnitId::SharedAnticthon &&  // Anticthon Counter-Proposal passive 
+								current_button->iconID == IconId::Toxic_Spores)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 							else if ((*activePortraitUnit)->id == UnitId::SharedAxitrilisk &&  // Axitrilisk Sating Strikes passive 
 								current_button->iconID == IconId::RoarUnused)
 							{
@@ -1233,6 +1238,16 @@ namespace hooks
 								current_button->iconID == IconId::AntimatterMissiles)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::ProtossAnthelion &&  // Anthelion Gravity Well passive 
+							current_button->iconID == IconId::Recall)
+							{
+							current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::ProtossAnthelion &&  // Anthelion Gravity Well passive 
+							current_button->iconID == IconId::Argus_Jewel)
+							{
+							current_button_state = BUTTON_STATE::Enabled;
 							}
 							else if ((*activePortraitUnit)->id == UnitId::ProtossPylon &&  // Pylon Warp Matrix passive
 								current_button->iconID == IconId::KhaydarinCore)
