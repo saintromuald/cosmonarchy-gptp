@@ -1068,10 +1068,29 @@ namespace hooks
 					}
 				});
 
+				if (unitExt->timers[TimerAnthelionGravityWell] == 0)
+				{
+					if (fireMultiple(unit, unitExt, WeaponId::AnthelionEventHorizon, 1, Flags::Enemy))
+					{
+						unitExt->timers[TimerAnthelionGravityWell] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::AnthelionEventHorizon);
+					}
+					else
+					{
+						unitExt->timers[TimerAnthelionGravityWell] = 3; // performance
+					}
+				}
+
 				if (unit->mainOrderId == OrderId::Move)
 				{
 					unit->current_speed1 = 0;
 					unit->current_speed2 = 0;
+
+					if (unitExt->antlionLastMoveTarget != unit->moveTarget.pt)
+					{
+						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
+					}
+					unitExt->antlionLastMoveTarget = unit->moveTarget.pt;
+
 					if (unitExt->timers[TimerAnthelionEndlessEclipse] == 1)
 					{
 						scbw::teleport(unit, unit->moveTarget.pt, ImageId::LegionnaireTeleportEffect, true);

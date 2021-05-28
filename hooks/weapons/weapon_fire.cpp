@@ -136,7 +136,8 @@ namespace hooks
 					|| targets.find(target) != targets.end()
 					|| scbw::isAlliedTo(attacker->playerId, target->playerId)
 					|| !attacker->canAttackTarget(target)
-					|| !filter(target))
+					|| !filter(target)
+					|| (targets.size() >= maxTargets && maxTargets > 0))
 				{
 					return false;
 				}
@@ -236,7 +237,8 @@ namespace hooks
 				globals.clear_lakizilisk(unit);
 			}
 
-			if (unit->id != UnitId::TerranWyvern)
+			if (unit->id != UnitId::TerranWyvern // disable default weapon for custom behaviors
+				&& unit->id != UnitId::SharedAnthelion)
 			{
 				// Madrigal Tempo Change weapon switch
 				if (weaponId == WeaponId::MadrigalFuriaMissiles
