@@ -12,6 +12,7 @@
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <hooks\unit_movement.h>
 
 namespace scbw
 {
@@ -813,30 +814,17 @@ namespace scbw
 
 	//-------- Moving Units --------//
 
-	bool moveUnit(Unit* unit, s16 x, s16 y, MoveType moveType)
+	bool moveUnit(Unit* unit, s16 x, s16 y)
 	{
 		Point16 targetPos = {x, y};
-		Point16 actualPos = {x, y};
+		Point16 actualPos = {};
 		Point16 prevPos = unit->sprite->position;
 
 		// Based on the code for Recall/Nydus Canal/Move Unit trigger
 		setUnitPosition(unit, x, y);
 
-		if (moveType != MoveTypeStandard || checkUnitCollisionPos(unit, &targetPos, &actualPos))
+		if (checkUnitCollisionPos(unit, &targetPos, &actualPos))
 		{
-
-			if (moveType == MoveTypeForceValid)
-			{
-				ActiveTile originalTile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-				ActiveTile finalTile = scbw::getActiveTileAt(targetPos.x, targetPos.y);
-
-				if (!(unit->status & UnitStatus::InAir)
-					&& (finalTile.isUnwalkable || originalTile.groundHeight != finalTile.groundHeight))
-				{
-					return false;
-				}
-			}
-
 			prepareUnitMove(unit);
 			setUnitPosition(unit, actualPos.x, actualPos.y);
 			refreshUnitAfterMove(unit);
@@ -847,6 +835,44 @@ namespace scbw
 			setUnitPosition(unit, prevPos.x, prevPos.y);
 			return false;
 		}
+	}
+
+	bool moveUnitForce(Unit* unit, s16 x, s16 y)
+	{
+		prepareUnitMove(unit);
+		hooks::MoveUnit(unit, x, y, true);
+		return true;
+	}
+
+	bool moveUnitImproved(Unit* unit, s16 x, s16 y)
+	{
+		if (!(unit->status & UnitStatus::InAir))
+		{
+			ActiveTile originalTile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
+			ActiveTile finalTile = scbw::getActiveTileAt(x, y);
+
+			if (finalTile.isUnwalkable || originalTile.groundHeight != finalTile.groundHeight)
+			{
+				return false;
+			}
+
+			Unit* collision = scbw::UnitFinder(
+				unit->getLeft(),
+				unit->getTop(),
+				unit->getRight(),
+				unit->getBottom()
+			).getFirst(cosmonarchyFinderMatch(unit, Flags::NotSelf | Flags::NoAir, {}));
+
+			if (collision)
+			{
+				return false;
+			}
+		}
+
+		prepareUnitMove(unit);
+		setUnitPosition(unit, x, y);
+		refreshUnitAfterMove(unit);
+		return true;
 	}
 
 	//-------- Utility functions --------//

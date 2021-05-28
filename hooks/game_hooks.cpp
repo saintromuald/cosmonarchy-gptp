@@ -14,6 +14,10 @@
 #include "hooks/orders/ai/ai_orders.h"
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/weapons/weapon_fire.h"
+#include "logger.h"
+#include "limits/sfx_extender.h"
+#include "hooks/weapons/weapon_spellhit.h"
+#include "globals.h"
 
 const u32 hyperTrigger = 0x006509A0;
 const u32 Func_Irradiate = 0x00454E00;
@@ -110,12 +114,6 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	}
 	target->heal(heal * 256, shaman);
 }
-
-#include "logger.h"
-#include "limits/sfx_extender.h"
-#include "hooks/weapons/weapon_spellhit.h"
-#include "globals.h"
-#include <hooks\unit_movement.h>
 
 struct CorpseFinder
 {
@@ -1245,7 +1243,7 @@ namespace hooks
 			ActiveTile originalTile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 			ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);
 
-			if (!scbw::moveUnit(unit, finalPos.x, finalPos.y, scbw::MoveTypeForceValid))
+			if (!scbw::moveUnitImproved(unit, finalPos.x, finalPos.y))
 			{
 				unitExt->timers[TimerStrigaRepulsion] = 0;
 			}
@@ -1267,7 +1265,7 @@ namespace hooks
 				finalPos.y += displacement.y;
 				finalPos = scbw::clampPoint(finalPos);
 
-				scbw::moveUnit(unit, finalPos.x, finalPos.y, scbw::MoveTypeForceValid);
+				scbw::moveUnitImproved(unit, finalPos.x, finalPos.y);
 			}
 		}
 
@@ -1307,7 +1305,7 @@ namespace hooks
 		if (Unit* target = unitExt->units[UnitAttachedTarget])
 		{
 			UnitExt* targetExt = globals.GetUnitExt(target);
-			hooks::MoveUnit(unit, target->getX(), target->getY(), true);
+			scbw::moveUnitForce(unit, target->getX(), target->getY());
 			unit->currentDirection1 = target->currentDirection1;
 
 			// Akistrokor - Attack Animation
