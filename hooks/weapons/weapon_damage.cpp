@@ -961,7 +961,7 @@ namespace hooks
 					{
 						if (unitExt->timers[TimerAnticthonFailureMode] || scbw::isAlliedTo(data.target->playerId, unit->playerId))
 						{
-							hp += (25 + unitExt->values[ValueAnticthonStacks]) * 256;
+							hp += (1 + unitExt->values[ValueAnticthonStacks]) * 256;
 							unitExt->values[ValueAnticthonStacks]++;
 						}
 					}
