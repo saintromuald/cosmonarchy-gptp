@@ -1088,7 +1088,7 @@ namespace hooks
 								divider = 2;
 							}
 
-							target->damageWith(WeaponId::AnthelionEventHorizon, -1, unit, unit->playerId, 0, 1);
+							target->damageWith(WeaponId::AnthelionEventHorizon, -1, unit, unit->playerId, 0, divider);
 						}
 					}
 
@@ -1101,10 +1101,6 @@ namespace hooks
 					{
 						unit->sprite->createUnderlay(ImageId::NukeHit);
 					}
-				}
-				else
-				{
-					unitExt->timers[TimerAnthelionAttackCooldown] = 3; // performance
 				}
 
 				if (unit->mainOrderId == OrderId::Move)
