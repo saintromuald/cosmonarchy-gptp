@@ -160,6 +160,12 @@ namespace scbw
 		return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	}
 
+	inline Vector32f getUnitDirectionVector(Unit* unit)
+	{
+		return { (f32)sin(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f),
+			(f32)-cos(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f) };
+	}
+
 	//////////////////////////////////////////////////////////////// @}
 
 	/// @name Game information

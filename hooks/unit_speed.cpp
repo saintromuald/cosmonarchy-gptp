@@ -113,10 +113,7 @@ namespace hooks
 		if (unitExt->values[ValueSignifyStacks])
 		{
 			auto match = cosmonarchyFinderMatch(unit, 0, {});
-
-			// Direction Vector
-			f32 unitVecX = sin(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f);
-			f32 unitVecY = -cos(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f);
+			Vector32f dir = scbw::getUnitDirectionVector(unit);
 
 			const u32 radius = 6 * 32;
 			Unit* enemyUnit = scbw::UnitFinder::getNearestTarget(
@@ -145,12 +142,9 @@ namespace hooks
 					return false;
 				}
 				// Relative Position Vector
-				f32 targetVecX = (f32)unit->getX() - enemy->getX();
-				f32 targetVecY = (f32)unit->getY() - enemy->getY();
-				f32 dist = sqrtf(powf(targetVecX, 2) + powf(targetVecY, 2));
-				targetVecX /= dist;
-				targetVecY /= dist;
-				f32 dot = unitVecX * targetVecX + unitVecY * targetVecY;
+				Vector32 diff = scbw::getVectorBetweenPoints(enemy->position, unit->position);
+				Vector32f target = scbw::getNormalizedVector(diff);
+				f32 dot = scbw::getDotProduct(dir, target);
 
 				if (dot < 0)
 				{
