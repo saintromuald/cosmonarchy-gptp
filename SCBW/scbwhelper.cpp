@@ -9024,7 +9024,7 @@ namespace helper
 		__asm
 		{
 			PUSHAD
-			MOC ECX, unit
+			MOV ECX, unit
 			CALL Func_getHiddenMiner
 			MOV result, EAX
 			POPAD
