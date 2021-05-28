@@ -956,6 +956,12 @@ namespace helper
 	void bulletBehaviorInstant(Bullet* bullet);																// 0048A560
 	void bulletBehaviorArea(Bullet* bullet);																// 0048B440
 
+	// For giveUnitToPlayer
+	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 playerId);											// 0047C9F0
+	bool unitHasHanger(Unit* unit);
+	s32 forHangarUnits(Unit* unit, s32(__fastcall* func)(s32, s32), s32 arg);								// 00465200
+	Unit* getCreatingUnit(Unit* unit);																		// 00466A30
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

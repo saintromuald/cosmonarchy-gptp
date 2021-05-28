@@ -457,6 +457,9 @@ SCBW_DATA(char*,unknown_struct_6CAB08,				0x006CAB08);
 SCBW_DATA(s8*,	unkDialogByte,						0x006CA668);
 SCBW_DATA(char*,aKills1,							0x006CAC78);
 
+// For giveUnitToPlayer
+SCBW_DATA(s32*,	currentTriggerPlayerId,				0x006509B0);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

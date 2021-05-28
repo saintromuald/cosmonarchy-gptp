@@ -1398,7 +1398,7 @@ namespace
 {
 	typedef u32(__stdcall* GiveUnitToPlayerFunc)(Unit* unit, u32 playerId);
 	GiveUnitToPlayerFunc const giveUnitToPlayer = (GiveUnitToPlayerFunc)0x004C8040;
-} //unnamed namespace
+}
 
 bool Unit::giveTo(u8 playerId)
 {
