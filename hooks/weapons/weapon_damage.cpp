@@ -953,7 +953,7 @@ namespace hooks
 				{
 					UnitExt* unitExt = globals.GetUnitExt(unit);
 					u32 dist = scbw::getDistanceFast(data.target->position, unit->position);
-					if (dist <= 4 * 32 || (dist <= 8 * 32 && unitExt->timers[TimerAnticthonFailureMode]))
+					if (unit->id == UnitId::SharedAnticthon && (dist <= 4 * 32 || (dist <= 8 * 32 && unitExt->timers[TimerAnticthonFailureMode])))
 					{
 						if (unitExt->timers[TimerAnticthonFailureMode] || scbw::isAlliedTo(data.target->playerId, unit->playerId))
 						{

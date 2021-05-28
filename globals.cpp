@@ -457,24 +457,21 @@ void Globals::frameHook()
 
 	for (s32 i = 0; i < revivingUnits.size(); ++i)
 	{
-		auto& agent = revivingUnits[i];
-		if (agent.timer > 0)
+		auto& revivingUnit = revivingUnits[i];
+		if (revivingUnit.timer > 0)
 		{
-			agent.timer--;
+			revivingUnit.timer--;
 		}
 		else
 		{
-			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, nullptr, false);
+			auto revived = scbw::createUnitIngame(revivingUnit.unitId, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
 			if (revived)
 			{
 				UnitExt* revivedExt = globals.GetUnitExt(revived);
-				if (agent.hp > 0)
-				{
-					revived->hitPoints = 0;
-					revived->shields = 0;
-					revived->healOverflow(agent.hp);
-				}
-				revived->energy = agent.energy;
+				revived->hitPoints = 1;
+				revived->shields = 0;
+				revived->healOverflow(revivingUnit.hp);
+				revived->energy = revivingUnit.energy;
 				revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				revivedExt->values[ValueReviveStarted] = 1;
