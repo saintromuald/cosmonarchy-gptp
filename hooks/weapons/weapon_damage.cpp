@@ -939,11 +939,7 @@ namespace hooks
 		// Apostle, Anticthon - Revive
 		if (data.finalDamage > 0 && (targetExt->values[ValueLazarusAgent] || targetExt->timers[TimerAnticthonRevive]))
 		{
-			u32 hp = 0;
-			if (targetExt->values[ValueLazarusAgent] && !targetExt->timers[TimerAnticthonRevive])
-			{
-				hp = targetExt->values[ValueLazarusAgent] * 5 * 256;
-			}
+			u32 hp = targetExt->values[ValueLazarusAgent] * 25 * 256;
 
 			if (targetExt->timers[TimerAnticthonRevive])
 			{
@@ -962,6 +958,7 @@ namespace hooks
 						if (unitExt->timers[TimerAnticthonFailureMode] || scbw::isAlliedTo(data.target->playerId, unit->playerId))
 						{
 							unitExt->values[ValueAnticthonStacks]++;
+							hp += 25 * 256;
 						}
 					}
 				});
