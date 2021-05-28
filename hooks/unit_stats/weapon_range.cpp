@@ -113,7 +113,7 @@ namespace hooks
 
 		// Stellar Enforcement - Magister behavior
 		if (unit->orderTarget.unit != nullptr
-			&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32)
+			&& weapons_dat::MaxRange[weaponId] > 32)
 		{
 			UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
 			if (orderUnitExt->values[ValueStellarEnforcement])
@@ -121,6 +121,9 @@ namespace hooks
 				bonusAmount += 64;
 			}
 		}
+
+		// Anticthon - Passive
+		bonusAmount += weapons_dat::MaxRange[weaponId] * 0.1 * unitExt->values[ValueAnticthonStacks];
 
 		// Height advantage
 		bonusAmount += 128;

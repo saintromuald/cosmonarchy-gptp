@@ -13,18 +13,17 @@ namespace hooks
 	u32 getModifiedWeaponCooldownHook(Unit* unit, u8 weaponId)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-
 		u32 cooldown = weapons_dat::Cooldown[weaponId];
-
-		// Vithrilisk - Corrosive Spores: lower attack speed of victim
-		if (unitExt->values[ValueCorrosiveTouchStacks] != 0)
-		{
-			cooldown *= 1 + unitExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
-		}
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
 		s32 cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 			+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
+
+		// Anticthon - Passive
+		cooldown /= 1 + 0.1 * unitExt->values[ValueAnticthonStacks];
+
+		// Vithrilisk - Corrosive Spores: lower attack speed of victim
+		cooldown *= 1 + unitExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
 
 		// Vassal Terminal Surge behavior
 		cooldown /= 1.0 + 0.05 * unitExt->values[ValueTerminalSurge];

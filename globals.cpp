@@ -1235,12 +1235,15 @@ namespace scbw
 			childExt->values[ValueLazarusAgentApostleSrc] = parentExt->values[ValueLazarusAgentApostleSrc];
 		}
 
-		// Inherit Lazarus Agent
+		// Inherit Empress Passive Stacks
 		if (parentExt->values[ValueEmpressPassiveStacks])
 		{
 			childExt->values[ValueEmpressPassiveStacks] = parentExt->values[ValueEmpressPassiveStacks];
 			childExt->values[ValueEmpressSourcePlayer] = parentExt->values[ValueEmpressSourcePlayer];
 		}
+
+		// Inherit Anticthon
+		childExt->values[ValueAnticthonStacks] = parentExt->values[ValueAnticthonStacks];
 
 		// Inherit Hierophant Signify
 		childExt->timers[TimerSignify] = parentExt->timers[TimerSignify];

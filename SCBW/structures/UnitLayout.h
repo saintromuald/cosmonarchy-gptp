@@ -245,6 +245,7 @@ enum ExtValueId
 	ValueNathrokorBuffStacks,
 	ValueEmpressPassiveStacks,
 	ValueEmpressSourcePlayer,
+	ValueAnticthonStacks,
 
 	ValueAI_KiteSignal,
 

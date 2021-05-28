@@ -1014,6 +1014,28 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::SharedAnticthon:
+			{
+				auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf | Flags::Ally | Flags::NoBuilding, {});
+				const u32 radius = 4 * 32;
+				scbw::UnitFinder(
+					unit->getX() - radius,
+					unit->getY() - radius,
+					unit->getX() + radius,
+					unit->getY() + radius
+				).forEachInMatch(match, [&](Unit* target)
+				{
+					if (target->getCurrentLifeInGame() < target->getTotalHitPointsPlusShields())
+					{
+						target->healOverflow(4.0 / 24, unit);
+						if (target->getCurrentLifeInGame() == target->getTotalHitPointsPlusShields())
+						{
+							target->remove();
+							unitExt->values[ValueAnticthonStacks]++;
+						}
+					}
+				});
+			} break;
 		}
 
 		// Madrigal - Dirge
