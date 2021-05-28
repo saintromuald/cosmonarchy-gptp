@@ -279,7 +279,6 @@ namespace UnitId
 		SharedCharlatan									= 90,		// Bengalaas
 		SharedStriga									= 148,		// Overmind
 		SharedLuminary									= 150,		// Mature Chrysalis
-		SharedAnthelion									= 179,		// Cave
 		SharedEmpress									= 183,		// Independent Command Center
 		SharedAxitrilisk								= 191,		// Zerg Marker
 		SharedAspirant									= 194,		// Zerg Beacon
@@ -354,6 +353,7 @@ namespace UnitId
 		ProtossGolem									= 100,		// Alexei Stukov
 		ProtossAugur									= 102,		// Gerard DuGalle
 		ProtossBarghest									= 104,		// Infested Duran
+		ProtossAnthelion								= 179,		// Cave
 
 	// Protoss-Building
 		ProtossAutomatonRegister						= 158,		// Unused Protoss 1				| Robotic tier 1.5 requirement

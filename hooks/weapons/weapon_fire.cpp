@@ -238,7 +238,7 @@ namespace hooks
 			}
 
 			if (unit->id != UnitId::TerranWyvern // disable default weapon for custom behaviors
-				&& unit->id != UnitId::SharedAnthelion)
+				&& unit->id != UnitId::ProtossAnthelion)
 			{
 				// Madrigal Tempo Change weapon switch
 				if (weaponId == WeaponId::MadrigalFuriaMissiles

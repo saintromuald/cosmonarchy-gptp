@@ -1051,7 +1051,7 @@ namespace hooks
 					targetExt->timers[TimerAnticthonRevive] = 2;
 				});
 			} break;
-			case UnitId::SharedAnthelion:
+			case UnitId::ProtossAnthelion:
 			{
 				u32 attackRadius = 10 * 32;
 				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
