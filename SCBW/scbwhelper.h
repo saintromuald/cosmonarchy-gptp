@@ -963,6 +963,10 @@ namespace helper
 	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
 	Unit* getCreatingUnit(Unit* unit);																		// 00466A30
 
+	// For UnitMove
+	void MoveSprite(Sprite* a1, s16 a2, s16 a3);
+	u32 updateUnitSortingInfo(u32 a1, Unit* a2, u32 a3);
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

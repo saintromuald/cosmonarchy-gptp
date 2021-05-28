@@ -4,6 +4,8 @@
 namespace hooks
 {
 
-	s32 unitMovementDormant(Unit* unit);		// 0046A8D0
+	s32 unitMovementDormant(Unit* unit);							// 0046A8D0
+	void MoveUnit(Unit* unit, s16 x, s16 y, bool ignoreCollision);	// 004EB9F0
+
 	void injectUnitMovementHooks();
 }

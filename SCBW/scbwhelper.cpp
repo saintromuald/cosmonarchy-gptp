@@ -9068,4 +9068,35 @@ namespace helper
 		}
 		return result;
 	}
+
+	void MoveSprite(Sprite* a1, s16 a2, s16 a3)
+	{
+		const u32 Func_sub_497A10 = 0x00497A10;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, a1
+			MOV BX, a2
+			MOV DI, a3
+			CALL Func_sub_497A10
+			POPAD
+		}
+	}
+
+	u32 updateUnitSortingInfo(u32 a1, Unit* a2, u32 a3)
+	{
+		const u32 Func_updateUnitSortingInfo = 0x0046A000;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, a1
+			MOV ESI, a2
+			PUSH a3
+			CALL Func_updateUnitSortingInfo
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
