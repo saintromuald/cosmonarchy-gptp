@@ -307,6 +307,8 @@ enum ExtTimerId
 	TimerTarasqueSecondaryWeaponCooldown,
 	TimerAnticthonRevive,
 	TimerAnticthonFailureMode,
+	TimerAnthelionGravityWell,
+	TimerAnthelionEndlessEclipse,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,

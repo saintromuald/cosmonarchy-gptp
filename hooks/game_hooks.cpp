@@ -1050,6 +1050,38 @@ namespace hooks
 					targetExt->timers[TimerAnticthonRevive] = 2;
 				});
 			} break;
+			case UnitId::SharedAnthelion:
+			{
+				u32 radius = 4 * 32;
+				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
+				scbw::UnitFinder(
+					unit->getX() - radius,
+					unit->getY() - radius,
+					unit->getX() + radius,
+					unit->getY() + radius
+				).forEachInMatch(match, [&](Unit* target)
+				{
+					UnitExt* targetExt = globals.GetUnitExt(target);
+					if (targetExt->timers[TimerAnthelionGravityWell])
+					{
+						targetExt->timers[TimerAnthelionGravityWell] = 2;
+					}
+				});
+
+				if (unit->mainOrderId == OrderId::Move)
+				{
+					unit->current_speed1 = 0;
+					unit->current_speed2 = 0;
+					if (unitExt->timers[TimerAnthelionEndlessEclipse] == 1)
+					{
+						scbw::teleport(unit, unit->moveTarget.pt, ImageId::LegionnaireTeleportEffect, true);
+					}
+				}
+				else
+				{
+					unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
+				}
+			} break;
 		}
 
 		// Madrigal - Dirge

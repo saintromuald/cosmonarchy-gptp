@@ -598,6 +598,10 @@ namespace hooks
 
 			switch (data.weaponId)
 			{
+				case WeaponId::AnthelionEventHorizon:
+				{
+					targetExt->timers[TimerAnthelionGravityWell] = 2;
+				} break;
 				case WeaponId::EmpressFadingBioplasma:
 				{
 					targetExt->units[UnitEmpressSource] = data.attacker;
