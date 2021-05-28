@@ -522,6 +522,7 @@ namespace hooks
 							}
 							target->damageWithCustom(damage, DamageType::Explosive, unit, unit->playerId, 0, 1, false);
 						});
+						unit->remove();
 						bStopHere = true;
 					}
 				}
