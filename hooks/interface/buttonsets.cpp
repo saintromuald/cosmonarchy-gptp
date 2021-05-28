@@ -710,144 +710,189 @@ namespace hooks
 
 					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding)
 					{
-						// Barracks buttonset handling
-						if (current_button->reqVar == UnitId::TerranCleric
-							|| current_button->reqVar == UnitId::TerranShaman)
+						if ((*activePortraitUnit)->id == UnitId::TerranBarracks)
 						{
-							if ((*activePortraitUnit)->building.addon == nullptr)
+							// Barracks buttonset handling
+							if (current_button->reqVar == UnitId::TerranCleric
+								|| current_button->reqVar == UnitId::TerranShaman)
 							{
-								current_button_state = BUTTON_STATE::Invisible;
+								if ((*activePortraitUnit)->building.addon == nullptr)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMedbay)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 							}
-							else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMedbay)
+							else if (current_button->reqVar == UnitId::TerranEidolon
+									|| current_button->reqVar == UnitId::TerranSavant)
 							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-						}
-						else if (current_button->reqVar == UnitId::TerranEidolon
-								|| current_button->reqVar == UnitId::TerranSavant)
-						{
-							if ((*activePortraitUnit)->building.addon == nullptr)
-							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps)
-							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-						}
-
-						// Factory buttonset handling
-						if (current_button->reqVar == UnitId::TerranPhalanxTankMode
-							|| current_button->reqVar == UnitId::TerranGoliath)
-						{
-							if ((*activePortraitUnit)->building.addon == nullptr)
-							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMachineShop)
-							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else
-							{
-								current_button_state = BUTTON_STATE::Enabled;
+								if ((*activePortraitUnit)->building.addon == nullptr)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 							}
 						}
 
-						else if (current_button->reqVar == UnitId::TerranMadrigal
-								|| current_button->reqVar == UnitId::TerranPaladin)
+						else if ((*activePortraitUnit)->id == UnitId::TerranFactory)
 						{
-							if ((*activePortraitUnit)->building.addon == nullptr)
+							// Factory buttonset handling
+							if (current_button->reqVar == UnitId::TerranPhalanxTankMode
+								|| current_button->reqVar == UnitId::TerranGoliath)
 							{
-								current_button_state = BUTTON_STATE::Invisible;
+								if ((*activePortraitUnit)->building.addon == nullptr)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMachineShop)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 							}
-							else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard)
+							else if (current_button->reqVar == UnitId::TerranMadrigal
+									|| current_button->reqVar == UnitId::TerranPaladin)
 							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else
-							{
-								current_button_state = BUTTON_STATE::Enabled;
+								if ((*activePortraitUnit)->building.addon == nullptr)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 							}
 						}
 
-						// Starport buttonset handling
-						if (current_button->reqVar == UnitId::TerranSalamander
-							|| current_button->reqVar == UnitId::TerranWyvern
-							|| current_button->reqVar == UnitId::TerranValkyrie)
+						else if ((*activePortraitUnit)->id == UnitId::TerranStarport)
 						{
-							if ((*activePortraitUnit)->building.addon == nullptr)
+							// Starport buttonset handling
+							if (current_button->reqVar == UnitId::TerranSalamander
+								|| current_button->reqVar == UnitId::TerranWyvern
+								|| current_button->reqVar == UnitId::TerranValkyrie)
 							{
-								current_button_state = BUTTON_STATE::Invisible;
+								if ((*activePortraitUnit)->building.addon == nullptr)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 							}
-							else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay)
+							else if (current_button->reqVar == UnitId::TerranAzazel
+									|| current_button->reqVar == UnitId::TerranSeraph)
 							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-						}
-
-						else if (current_button->reqVar == UnitId::TerranAzazel
-								|| current_button->reqVar == UnitId::TerranSeraph)
-						{
-							if ((*activePortraitUnit)->building.addon == nullptr)
-							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower)
-							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else
-							{
-								current_button_state = BUTTON_STATE::Enabled;
+								if ((*activePortraitUnit)->building.addon == nullptr)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 							}
 						}
 
 						// Scrapyard buttonset handling
-						if (current_button->reqVar == UnitId::TerranClaymore
-							|| current_button->reqVar == UnitId::TerranSiren)
+						if ((*activePortraitUnit)->id == UnitId::TerranScrapyard)
 						{
-							if ((*activePortraitUnit)->building.addon == NULL)
+							if (current_button->reqVar == UnitId::TerranClaymore
+								|| current_button->reqVar == UnitId::TerranSiren)
 							{
-								current_button_state = BUTTON_STATE::Invisible;
+								if ((*activePortraitUnit)->building.addon == NULL)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranFutureStation)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 							}
-							else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranFutureStation)
+							if (current_button->reqVar == UnitId::SharedStriga
+								|| current_button->reqVar == UnitId::SharedLuminary)
 							{
-								current_button_state = BUTTON_STATE::Invisible;
+								if ((*activePortraitUnit)->building.addon == NULL)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranTinkerersTower)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 							}
-							else
+							if (current_button->reqVar == UnitId::SharedTarasque
+								|| current_button->reqVar == UnitId::SharedAnticthon)
 							{
-								current_button_state = BUTTON_STATE::Enabled;
+								if ((*activePortraitUnit)->building.addon == NULL)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranBioticBase)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 							}
 						}
 
-						// Captaincy buttonset handling
-						if (current_button->reqVar == UnitId::TerranOlympian
-							|| current_button->reqVar == UnitId::TerranAutocrat)
+						else if ((*activePortraitUnit)->id == UnitId::TerranCaptaincy)
 						{
-							if ((*activePortraitUnit)->building.addon == nullptr)
+							// Captaincy buttonset handling
+							if (current_button->reqVar == UnitId::TerranOlympian
+								|| current_button->reqVar == UnitId::TerranAutocrat)
 							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranGuildhall)
-							{
-								current_button_state = BUTTON_STATE::Invisible;
-							}
-							else
-							{
-								current_button_state = BUTTON_STATE::Enabled;
+								if ((*activePortraitUnit)->building.addon == nullptr)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranGuildhall)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 							}
 						}
 					}
