@@ -1333,9 +1333,6 @@ namespace scbw
 			unit->irradiatePlayerId = 8;
 		}
 
-		// Remove armor rend (generic)
-		unitExt->values[ValueArmorReduce] = 0;
-
 		// Remove Entropy Gauntlets
 		if (unitExt->timers[TimerEntropyGauntlets])
 		{
@@ -1379,11 +1376,14 @@ namespace scbw
 			unitExt->timers[TimerLobotomySlow] = 1;
 		}
 
+		// Remove armor rend (generic)
+		unitExt->values[ValueArmorReduce] = 0;
+
+		// Remove Controlled Opposition
+		unitExt->values[ValueControlledOpposition] = 0;
+
 		// Remove Empress stacks
-		if (unitExt->values[ValueEmpressPassiveStacks])
-		{
-			unitExt->values[ValueEmpressPassiveStacks] = 0;
-		}
+		unitExt->values[ValueEmpressPassiveStacks] = 0;
 
 		// Remove Lockdown
 		unit->removeLockdown();

@@ -397,7 +397,7 @@ namespace hooks
 		const char* sizeText = "";
 		f32 bonusArmor = unit->getArmorBonus();
 
-		bonusArmor = std::min(baseArmor - (s32)unitExt->values[ValueControlledOpposition], 0);
+		bonusArmor -= std::min(unitExt->values[ValueControlledOpposition], (u32)baseArmor);
 		bonusArmor -= unitExt->values[ValueArmorReduce];
 		for (Unit* unit : unitExt->unitVectors[UnitVectorAttachedSource])
 		{
