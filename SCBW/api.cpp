@@ -1418,7 +1418,7 @@ namespace scbw
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		// Sounds
-		if (!unitExt->values[TimerHallucinating])
+		if (!unitExt->timers[TimerHallucinating])
 		{
 			helper::playSoundFromSource(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit, 1, 0);
 		}
