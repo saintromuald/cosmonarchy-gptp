@@ -135,8 +135,8 @@ const s32 VorvrokorCaptivatingClawsTimer = 24 + 1;
 
 // Vithrilisk
 const s32 VithriliskCorrosiveTouchTimer = 10 * 24 + 1;
-const f64 VithriliskCorrosiveTouchCooldownIncrease = 0.02;
-const f64 VithriliskCorrosiveTouchArmorReduction = 0.2 * 256;
+const f64 VithriliskCorrosiveTouchCooldownIncrease = 0.05;
+const f64 VithriliskCorrosiveTouchArmorReduction = 1 * 256;
 
 // Zoryusthaleth
 const s32 ZoryusthalethReconstitutionHealing = 5 * 256;
