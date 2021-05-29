@@ -56,9 +56,9 @@ inline UnitArray search_square(Point16 center, u32 radius);
 
 using SearchScoreFunc = std::function<u32(Unit*)>;
 void unit_array_filter(UnitArray* unit_array, u32 flags = 0, SearchFilterFunc filter = nullptr, std::vector<u16> allowedUnitIds = {});
-void unit_array_sort(UnitArray* unit_array, SearchScoreFunc score_func);
-void unit_array_sort_by_distance(UnitArray* unit_array, Point16 center);
-Unit* unit_array_find_best(UnitArray* unit_array, SearchScoreFunc score_func);
+void unit_array_sort(UnitArray* unit_array, SearchScoreFunc score_func = nullptr); // score_func defaults to distance check
+Unit* unit_array_find_best(UnitArray* unit_array, SearchScoreFunc score_func = nullptr); // score_func defaults to distance check
+Unit* unit_array_get_first(UnitArray* unit_array, SearchFilterFunc match_func = nullptr); // defaults to no check
 bool unit_flag_match(Unit* center, Unit* unit, u32 context, std::vector<u16> allowedUnitIds);
 
 void update_unit_grid(); // must be done once per frame

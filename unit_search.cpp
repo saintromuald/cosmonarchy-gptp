@@ -56,16 +56,11 @@ bool is_rect_in_rect(Box32 inner, Box32 outer)
 		&& inner.bottom <= outer.bottom;
 }
 
-static void search_handle_tile(Box32 rect)
-{
-
-}
-
 UnitArray search_rect(Box32 rect)
 {
 	rect = scbw::clampRect(rect);
-	UnitArray array;
-	array.count = 0;
+	UnitArray unit_array;
+	unit_array.count = 0;
 
 	const u32 x1 = rect.left / CELL_SIZE;
 	const u32 x2 = ceil(rect.right / (f32)CELL_SIZE);
@@ -94,12 +89,12 @@ UnitArray search_rect(Box32 rect)
 				{
 					continue;
 				}
-				unit_array_add(&array, unit);
+				unit_array_add(&unit_array, unit);
 			}
 		}
 	}
 
-	return array;
+	return unit_array;
 }
 
 UnitArray search_square(Point16 center, u32 radius)
@@ -114,8 +109,8 @@ UnitArray search_square(Point16 center, u32 radius)
 
 UnitArray search_radial(Point16 center, u32 radius)
 {
-	UnitArray array;
-	array.count = 0;
+	UnitArray unit_array;
+	unit_array.count = 0;
 
 	const u32 x1 = (center.x - radius) / CELL_SIZE;
 	const u32 x2 = ceil((center.x + radius) / (f32)CELL_SIZE);
@@ -143,12 +138,12 @@ UnitArray search_radial(Point16 center, u32 radius)
 				{
 					continue;
 				}
-				unit_array_add(&array, unit);
+				unit_array_add(&unit_array, unit);
 			}
 		}
 	}
 
-	return array;
+	return unit_array;
 }
 
 void unit_array_filter(UnitArray* unit_array, u32 flags, SearchFilterFunc filter, std::vector<u16> allowedUnitIds)
@@ -161,18 +156,36 @@ void unit_array_sort(UnitArray* unit_array, SearchScoreFunc score_func)
 
 }
 
-void unit_array_sort_by_distance(UnitArray* unit_array, Point16 center)
-{
-
-}
-
 Unit* unit_array_find_best(UnitArray* unit_array, SearchScoreFunc score_func)
 {
 	return nullptr;
 }
 
-static void reset_unit_grid()
+Unit* unit_array_get_first(UnitArray* unit_array, SearchFilterFunc match_func)
 {
+	if (!match_func)
+	{
+		if (unit_array->count)
+		{
+			return unit_array->units[0];
+		}
+		return nullptr;
+	}
+
+	for (u32 i = 0; i < unit_array->count; i++)
+	{
+		Unit* unit = unit_array->units[i];
+		if (match_func(unit))
+		{
+			return unit;
+		}
+	}
+	return nullptr;
+}
+
+void update_unit_grid()
+{
+	// Reset
 	for (u32 x = 0; x < CELL_COUNT; x++)
 	{
 		for (u32 y = 0; y < CELL_COUNT; y++)
@@ -181,11 +194,8 @@ static void reset_unit_grid()
 			array->count = 0;
 		}
 	}
-}
 
-void update_unit_grid()
-{
-	reset_unit_grid();
+	// Update
 	for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 	{
 		u32 x = unit->position.x / 32 / CELL_SIZE;
@@ -195,7 +205,7 @@ void update_unit_grid()
 	}
 }
 
-static bool unit_flag_match(Unit* center, Unit* unit, u32 context, std::vector<u16> allowedUnitIds)
+bool unit_flag_match(Unit* center, Unit* unit, u32 context, std::vector<u16> allowedUnitIds)
 {
 	if (!(context & SearchFlagsIncludingSelf) && unit == center)
 	{
