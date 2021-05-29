@@ -63,4 +63,5 @@ bool unit_flag_match(Unit* center, Unit* unit, u32 context, std::vector<u16> all
 
 void update_unit_grid(); // must be done once per frame
 
-bool is_in_rect(Point16 point, Box16 box);
+inline bool is_point_in_rect(Point16 point, Box32 rect);
+inline bool is_rect_in_rect(Box32 inner, Box32 outer);

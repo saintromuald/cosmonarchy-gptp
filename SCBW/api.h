@@ -136,6 +136,47 @@ namespace scbw
 		return point;
 	}
 
+	inline Box32 clampRect(Box32 rect)
+	{
+		if (rect.left < 0)
+		{
+			rect.left = 0;
+		}
+		else if (rect.left > mapTileSize->width * 32)
+		{
+			rect.left = mapTileSize->width * 32;
+		}
+		
+		if (rect.right < 0)
+		{
+			rect.right = 0;
+		}
+		else if (rect.right > mapTileSize->width * 32)
+		{
+			rect.right = mapTileSize->width * 32;
+		}
+
+		if (rect.top < 0)
+		{
+			rect.top = 0;
+		}
+		else if (rect.top > mapTileSize->height * 32)
+		{
+			rect.top = mapTileSize->height * 32;
+		}
+
+		if (rect.bottom < 0)
+		{
+			rect.bottom = 0;
+		}
+		else if (rect.bottom > mapTileSize->height * 32)
+		{
+			rect.bottom = mapTileSize->height * 32;
+		}
+
+		return rect;
+	}
+
 	inline Vector32 getVectorBetweenPoints(Point16 source, Point16 target)
 	{
 		Vector32 diff = { target.x, target.y };
