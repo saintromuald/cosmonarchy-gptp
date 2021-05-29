@@ -635,25 +635,7 @@ namespace hooks
 					auto r = 3 * 32;
 					scbw::UnitFinder unitsInSplash(bullet->position.x - r, bullet->position.y - r,
 						bullet->position.x + r, bullet->position.y + r);
-					s32 count = 1;
-					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
-					{
-						Unit* target = unitsInSplash.getUnit(i);
-						if (target == nullptr)
-						{
-							continue;
-						}
-						if (target == targ)
-						{
-							continue;
-						}
-						if (!alkajSporeMatch(bullet, target))
-						{
-							continue;
-						}
-						count++;
-					};
-					globals.add_multihit_empty_bullet(bullet, count);
+					globals.add_multihit_empty_bullet(bullet, 1);
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 					{
 						Unit* target = unitsInSplash.getUnit(i);
@@ -677,7 +659,7 @@ namespace hooks
 						{
 							helper::playSoundFromSource(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
 							newBullet->position = bullet->position;
-							globals.add_multihit_empty_bullet(newBullet, count);
+							globals.add_multihit_empty_bullet(newBullet, 1);
 						}
 					};
 					bullet->sourceUnit->orderTarget.unit = old;
