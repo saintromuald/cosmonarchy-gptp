@@ -7,9 +7,7 @@
 // 8x8 tile cells for up to 256 map size
 // NOTE: static will init grid to zeros, and limit scope to this file
 // well not really, because unity build, but w/e
-static UnitArray unit_grid[CELL_COUNT][CELL_COUNT]; 
-
-bool unit_flag_match(Unit* center, Unit* unit, u32 context, std::vector<u16> allowedUnitIds);
+static UnitArray unit_grid[CELL_COUNT][CELL_COUNT];
 
 inline void unit_array_add(UnitArray* array, Unit* unit)
 {
@@ -146,7 +144,7 @@ UnitArray search_radial(Point16 center, u32 radius)
 	return unit_array;
 }
 
-void unit_array_filter(UnitArray* unit_array, u32 flags, SearchFilterFunc filter, std::vector<u16> allowedUnitIds)
+void unit_array_filter(UnitArray* unit_array, u32 flags, SearchFilterFunc filter, std::unordered_set<u16> allowedUnitIds)
 {
 
 }
@@ -205,7 +203,7 @@ void update_unit_grid()
 	}
 }
 
-bool unit_flag_match(Unit* center, Unit* unit, u32 context, std::vector<u16> allowedUnitIds)
+bool unit_flag_match(Unit* center, Unit* unit, u32 context, std::unordered_set<u16> allowedUnitIds)
 {
 	if (!(context & SearchFlagsIncludingSelf) && unit == center)
 	{

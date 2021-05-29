@@ -1,6 +1,7 @@
 #pragma once
 #include <SCBW\scbwdata.h>
 #include <functional>
+#include <unordered_set>
 
 // GENERAL NOTES:
 // more performant version of unit finder, with more reasonable syntax
@@ -45,9 +46,8 @@ void unit_array_remove(UnitArray* array, u32 index); // will preserve order
 void unit_array_combine(UnitArray* target, UnitArray* source);
 
 // NOTES:
-// not a fan of using a vector, but we already have the dependency in the code base
-// also not sure how I would handle variadic argument like that, without refactoring everything
-// that exists in this project
+// not a fan of using an STL container, but we already have that dependency in the code base
+// also not sure how I would handle variadic argument like that, without refactoring everything that exists in this project
 // optional allowance of lambdas is pretty handy, since most of behaviors need adhoc adjustments
 using SearchFilterFunc = std::function<bool(Unit*)>;
 UnitArray search_rect(Box32 rect);
@@ -55,7 +55,7 @@ UnitArray search_radial(Point16 center, u32 radius);
 inline UnitArray search_square(Point16 center, u32 radius);
 
 using SearchScoreFunc = std::function<u32(Unit*)>;
-void unit_array_filter(UnitArray* unit_array, u32 flags = 0, SearchFilterFunc filter = nullptr, std::vector<u16> allowedUnitIds = {});
+void unit_array_filter(UnitArray* unit_array, u32 flags = 0, SearchFilterFunc filter = nullptr, std::unordered_set<u16> allowedUnitIds = {});
 void unit_array_sort(UnitArray* unit_array, SearchScoreFunc score_func = nullptr); // score_func defaults to distance check
 Unit* unit_array_find_best(UnitArray* unit_array, SearchScoreFunc score_func = nullptr); // score_func defaults to distance check
 Unit* unit_array_get_first(UnitArray* unit_array, SearchFilterFunc match_func = nullptr); // defaults to no check
