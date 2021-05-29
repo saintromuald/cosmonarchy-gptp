@@ -1266,6 +1266,25 @@ namespace hooks
 			}
 		}
 
+		// Cyclops - Flak Cannon Fuse
+		for (u32 fuse_timer : unitExt->timerVectors[TimerVectorCyclopsFuse])
+		{
+			if (fuse_timer == 1)
+			{
+				helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, unit->getX(), unit->getY(), 11);
+				const u32 radius = 1.5 * 32;
+				scbw::UnitFinder(
+					unit->getX() - radius,
+					unit->getY() - radius,
+					unit->getX() + radius,
+					unit->getY() + radius
+				).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::NotSelf, {}), [&](Unit* target)
+				{
+					target->damageWithCustom(5 * 256, DamageType::Explosive, nullptr, 0, 0, 1, false);
+				});
+			}
+		}
+
 		// Attachment - Clear
 		if (scbw::get_generic_rust_value(unit, RustId::CancelAttachment))
 		{

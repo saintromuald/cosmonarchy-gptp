@@ -450,7 +450,7 @@ void Globals::frameHook()
 			}
 			ext->timerVectors[i].erase(std::remove_if(ext->timerVectors[i].begin(), ext->timerVectors[i].end(), [&](u32& timer)
 			{
-				if (timer == 0) return true;
+				return timer == 0;
 			}), ext->timerVectors[i].end());
 		}
 	}

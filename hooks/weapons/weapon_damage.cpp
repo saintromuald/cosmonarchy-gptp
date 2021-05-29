@@ -805,7 +805,11 @@ namespace hooks
 							}
 						});
 					}
-				}
+				} break;
+				case WeaponId::CyclopsFlakCannons:
+				{
+					targetExt->timerVectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
+				} break;
 			}
 		}
 	}
@@ -1109,21 +1113,6 @@ namespace hooks
 					scbw::createUnitFromAbility(type, supplyCount, data.attacker->playerId,
 						data.target->position.x, data.target->position.y, data.attacker->removeTimer,
 						scbw::getSourceQueens(data.attacker)[0]);
-				} break;
-				case WeaponId::CyclopsFlakCannons:
-				{
-					// Cyclops - Flak Cannon passive
-					helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, data.target->getX(), data.target->getY(), 11);
-					const u32 radius = 1.5 * 32;
-					scbw::UnitFinder(
-						data.target->getX() - radius,
-						data.target->getY() - radius,
-						data.target->getX() + radius,
-						data.target->getY() + radius
-					).forEachInMatch(cosmonarchyFinderMatch(data.target, Flags::NotSelf, {}), [&](Unit* target)
-					{
-						target->damageWithCustom(10 * 256, DamageType::Impact, data.attacker, data.attackingPlayerId, 0, 1, false);
-					});
 				} break;
 			}
 

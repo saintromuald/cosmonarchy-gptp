@@ -369,6 +369,7 @@ enum ExtUnitVectorId
 enum ExtTimerVectorId
 {
 	TimerVectorPhaseRushTimerArray, // unused, was size 8
+	TimerVectorCyclopsFuse,
 
 	TimerVectorCount,
 };

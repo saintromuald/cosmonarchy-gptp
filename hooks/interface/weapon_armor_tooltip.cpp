@@ -548,6 +548,7 @@ namespace hooks
 		addStatus(statuses, "Controlled Opposition", unitExt->values[ValueControlledOpposition], 0);
 		addStatus(statuses, "Anodyne Annex", unitExt->values[ValueEmpressPassiveStacks], 0);
 		addStatus(statuses, "Counter-Proposal", unitExt->values[ValueAnticthonStacks], 0);
+		addStatus(statuses, "Fragmentary Shells", unitExt->timerVectors[TimerVectorCyclopsFuse].size(), 0);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
@@ -566,11 +567,11 @@ namespace hooks
 		addStatus(statuses, "Dermal Accelerant", unitExt->timers[TimerAlaszilethRegenBoost] > 0, 1);
 		addStatus(statuses, "Failure Mode", unitExt->timers[TimerAnticthonFailureMode] > 0, 1);
 		addStatus(statuses, "Counter-Proposal Active", unitExt->timers[TimerAnticthonRevive] > 0, 1);
+		addStatus(statuses, "Energy Decay", unitExt->timers[TimerEntropyGauntlets] > 0, 1);
+		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh] > 0, 1);
 
 		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
 		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster
-		addStatus(statuses, "Energy Decay", unitExt->timers[TimerEntropyGauntlets] > 0, 1);
-		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh] > 0, 1);
 
 		// Vanilla Timer + Value
 		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, 200, unit->defensiveMatrixTimer);
