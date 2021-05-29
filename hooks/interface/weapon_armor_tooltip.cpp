@@ -549,6 +549,8 @@ namespace hooks
 		addStatus(statuses, "Anodyne Annex", unitExt->values[ValueEmpressPassiveStacks], 0);
 		addStatus(statuses, "Counter-Proposal", unitExt->values[ValueAnticthonStacks], 0);
 		addStatus(statuses, "Fragmentary Shells", unitExt->timerVectors[TimerVectorCyclopsFuse].size(), 0);
+		addStatus(statuses, "Energy Decay", unitExt->values[ValueEntropyGauntlets], 0);
+		addStatus(statuses, "Deconstructing", unitExt->values[ValueDeconstruction], 0);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
@@ -556,7 +558,6 @@ namespace hooks
 		addStatus(statuses, "Observing", unitExt->timers[TimerObservanceOverlay] > 0, 1);
 		addStatus(statuses, "Swarming Omen", unitExt->values[ValueSwarmingOmenStatus] > 0, 1);
 		addStatus(statuses, "Protective Instincts", unitExt->values[ValueProtectiveInstinctsStatus] > 0, 1);
-		addStatus(statuses, "Deconstructing", unitExt->values[ValueDeconstruction] > 0, 1);
 		addStatus(statuses, "Worshiping", unitExt->values[ValueWorshipStack] > 0, 1);
 		addStatus(statuses, "Making Gods from Flesh", unitExt->values[ValueGodsMadeFleshActive] > 0, 1);
 		addStatus(statuses, "Adaptive Amitosis", unitExt->values[ValueAdaptiveAmitosis] > 0, 1);
@@ -567,7 +568,6 @@ namespace hooks
 		addStatus(statuses, "Dermal Accelerant", unitExt->timers[TimerAlaszilethRegenBoost] > 0, 1);
 		addStatus(statuses, "Failure Mode", unitExt->timers[TimerAnticthonFailureMode] > 0, 1);
 		addStatus(statuses, "Counter-Proposal Active", unitExt->timers[TimerAnticthonRevive] > 0, 1);
-		addStatus(statuses, "Energy Decay", unitExt->timers[TimerEntropyGauntlets] > 0, 1);
 		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh] > 0, 1);
 
 		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);

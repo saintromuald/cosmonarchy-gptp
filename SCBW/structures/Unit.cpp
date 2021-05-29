@@ -803,9 +803,9 @@ void Unit::spendUnitEnergy(u32 energySpent)
 		}
 	}
 	// TODO: fix Entropy Gauntlets bug
-	if (unitExt->timers[TimerEntropyGauntlets] > 1)
+	if (unitExt->values[ValueEntropyGauntlets] > 0)
 	{
-		this->inflictDamage(energySpent, unitExt->units[UnitDecaySavant], -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
+		this->inflictDamage(energySpent * unitExt->values[ValueEntropyGauntlets] * 0.1, unitExt->units[UnitDecaySavant], -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
 	}
 }
 

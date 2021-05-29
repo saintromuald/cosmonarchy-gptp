@@ -1359,21 +1359,6 @@ namespace hooks
 			}
 		}
 
-		// Savant - Entropy Gauntlets: remove overlay at end of effect
-		if (unitExt->timers[TimerEntropyGauntlets] == 1)
-		{
-			u32 overlayOffset = scbw::getOverlayOffset(unit->id);
-			u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - overlayOffset;
-			if (unit->subunit != nullptr)
-			{
-				unit->subunit->sprite->removeOverlay(overlayImageId);
-			}
-			else
-			{
-				unit->sprite->removeOverlay(overlayImageId);
-			}
-		}
-
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP) {
 			// Alaszileth - Dermal Accelerant
 			Point16 pos = unit->position;

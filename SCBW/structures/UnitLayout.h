@@ -212,6 +212,7 @@ enum ExtValueId
 	ValueSwarmingOmenStatus,
 	ValueProtectiveInstinctsStatus,
 	ValueNemeanReactorsStack,
+	ValueEntropyGauntlets,
 	ValueDeconstruction,
 	ValueDeconstructionPlayer,
 	ValueRescindMindControl,
@@ -226,7 +227,6 @@ enum ExtValueId
 	ValueGodsMadeFleshActive,
 	ValueLazarusAgentApostleSrc,
 	ValueLurkerPickTarget,
-	ValueTurretParentLink,
 	ValueKelvinMunitionsSlow,
 	ValueLarvaType,
 	ValueRaceSupplyType,
@@ -259,7 +259,6 @@ enum ExtTimerId
 	TimerObservanceDebuff,
 	TimerObservancePeriod,
 	TimerLurkerETA,
-	TimerEntropyGauntlets,
 	TimerLobotomySlow,
 	TimerPlanetCrackerChannel,
 	TimerPlanetCrackerDelay,
@@ -342,6 +341,7 @@ enum ExtUnitId
 	UnitLastHitAkistrokor,
 	UnitEmpressSource,
 	UnitAnthelionGravityWellSource,
+	UnitTurretParentLink,
 
 	UnitCount,
 };

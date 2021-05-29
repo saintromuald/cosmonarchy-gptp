@@ -1130,16 +1130,16 @@ namespace scbw
 				subunitExt->values[ValueDeconstruction] = parentExt->values[ValueDeconstruction];
 				sprite = child->subunit->sprite;
 			}
-			if (!(sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset)))
+			if (!sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
 			{
 				sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
 			}
 		}
 
 		// Inherit Entropy Gauntlets
-		if (parentExt->timers[TimerEntropyGauntlets])
+		if (parentExt->values[ValueEntropyGauntlets])
 		{
-			childExt->timers[TimerEntropyGauntlets] = parentExt->timers[TimerEntropyGauntlets];
+			childExt->values[ValueEntropyGauntlets] = parentExt->values[ValueEntropyGauntlets];
 			if (!(child->sprite->getOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset)))
 			{
 				child->sprite->createOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset);
@@ -1235,6 +1235,7 @@ namespace scbw
 		scbw::refreshConsole();
 	}
 
+	// TODO: update
 	bool isDebuffed(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -1243,9 +1244,11 @@ namespace scbw
 			|| unitExt->timers[TimerLobotomySlow]
 			|| unitExt->timers[TimerObservancePeriod]
 			|| unitExt->timers[TimerCorrosiveTouch]
-			|| unitExt->timers[TimerEntropyGauntlets]
+			|| unitExt->values[ValueDeconstruction]
+			|| unitExt->values[ValueEntropyGauntlets]
 			|| unitExt->values[ValueArmorReduce]
 			|| unitExt->values[ValueKelvinMunitionsSlow]
+			|| unitExt->values[ValueSignifyStacks]
 			|| captivatingClawsGetTimer(unit) > 0
 			|| unit->irradiateTimer != 0
 			|| unit->ensnareTimer != 0
@@ -1254,7 +1257,6 @@ namespace scbw
 			|| unit->plagueTimer != 0
 			|| unit->parasiteFlags
 			|| unit->isBlind;
-		// TODO: cowardice, malice + also add them to status tooltip
 	}
 
 	void restoreFunc(Unit* unit)
@@ -1310,12 +1312,6 @@ namespace scbw
 			unit->irradiatePlayerId = 8;
 		}
 
-		// Remove Entropy Gauntlets
-		if (unitExt->timers[TimerEntropyGauntlets])
-		{
-			unitExt->timers[TimerEntropyGauntlets] = 1;
-		}
-
 		// Remove Malediction
 		if (unitExt->timers[TimerMaledictionSlow])
 		{
@@ -1351,6 +1347,22 @@ namespace scbw
 		if (unitExt->timers[TimerLobotomySlow])
 		{
 			unitExt->timers[TimerLobotomySlow] = 1;
+		}
+
+		// Remove Entropy Gauntlets
+		if (unitExt->values[ValueEntropyGauntlets])
+		{
+			unitExt->values[ValueEntropyGauntlets] = 0;
+			u32 overlayOffset = scbw::getOverlayOffset(unit->id);
+			u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - overlayOffset;
+			if (unit->subunit != nullptr)
+			{
+				unit->subunit->sprite->removeOverlay(overlayImageId);
+			}
+			else
+			{
+				unit->sprite->removeOverlay(overlayImageId);
+			}
 		}
 
 		// Remove armor rend (generic)
@@ -1479,11 +1491,11 @@ namespace scbw
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		// Deconstruction - Pazuzu passive
-		f64 selfDamage = (0.25 * (f64)(weapons_dat::DamageAmount[weaponId] * 256.0));
+		f64 selfDamage = (unitExt->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::DamageAmount[weaponId] * 256.0));
 		auto deconstructionTarget = unit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit)
 		{
-			deconstructionTarget = (Unit*)unitExt->values[ValueTurretParentLink]; // TODO: port as unit
+			deconstructionTarget = unitExt->units[UnitTurretParentLink]; // TODO: port as unit
 			if (deconstructionTarget == nullptr)
 			{
 				return;

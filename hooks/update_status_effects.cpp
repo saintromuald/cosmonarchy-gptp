@@ -22,7 +22,7 @@ void irradiateProc(Unit* unit, Unit* target)
 	if (unit->status & UnitStatus::InTransport
 		|| unit->getDistanceToTarget(target) <= 32)
 	{
-		//			const s32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
+		// const s32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
 		s32 damage = (125 * 256) / 24;
 		if (unit != nullptr)
 		{
@@ -106,7 +106,7 @@ namespace hooks
 		if (unit->subunit != nullptr)
 		{
 			UnitExt* subunitExt = globals.GetUnitExt(unit->subunit);
-			subunitExt->values[ValueTurretParentLink] = (u32)unit;
+			subunitExt->units[UnitTurretParentLink] = unit;
 		}
 
 		// Decrement Stasis Field timer (and remove effect if 0)

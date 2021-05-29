@@ -629,22 +629,27 @@ namespace hooks
 				case WeaponId::PazuzuJupiterDriver:
 				{
 					// Deconstruction - Pazuzu behavior - apply stack
-					if (!(scbw::unitIsPacifist(data.target))
-						&& targetExt->values[ValueDeconstruction] == 0)
+					if (!scbw::unitIsPacifist(data.target))
 					{
-						targetExt->values[ValueDeconstruction] = 1;
+						targetExt->values[ValueDeconstruction]++;
 						targetExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
 						s32 overlayOffset = scbw::getOverlayOffset(data.target->id);
 						if (data.target->subunit != nullptr)
 						{
 							UnitExt* subunitExt = globals.GetUnitExt(data.target->subunit);
-							subunitExt->values[ValueDeconstruction] = 1;
+							subunitExt->values[ValueDeconstruction]++;
 							subunitExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
-							data.target->subunit->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
+							if (!data.target->subunit->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
+							{
+								data.target->subunit->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
+							}
 						}
 						else
 						{
-							data.target->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
+							if (!data.target->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
+							{
+								data.target->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
+							}
 						}
 					}
 				} break;
@@ -658,7 +663,7 @@ namespace hooks
 					// Savant Entropy Gauntlets behavior - Apply timer and overlay
 					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster)
 					{
-						targetExt->timers[TimerEntropyGauntlets] = (5 * 24) + 1;
+						targetExt->values[ValueEntropyGauntlets]++;
 						targetExt->units[UnitDecaySavant] = data.attacker;
 						u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall + scbw::getOverlayOffset(data.target->id);
 						if (data.target->subunit != nullptr)
