@@ -750,8 +750,8 @@ namespace hooks
 						else if ((*activePortraitUnit)->id == UnitId::TerranFactory)
 						{
 							// Factory buttonset handling
-							if (current_button->reqVar == UnitId::TerranPhalanxTankMode
-								|| current_button->reqVar == UnitId::TerranGoliath)
+							if (current_button->reqVar == UnitId::TerranCyclops
+								|| current_button->reqVar == UnitId::TerranPhalanxTankMode)
 							{
 								if ((*activePortraitUnit)->building.addon == nullptr)
 								{
@@ -788,8 +788,7 @@ namespace hooks
 						{
 							// Starport buttonset handling
 							if (current_button->reqVar == UnitId::TerranSalamander
-								|| current_button->reqVar == UnitId::TerranWyvern
-								|| current_button->reqVar == UnitId::TerranValkyrie)
+								|| current_button->reqVar == UnitId::TerranWyvern)
 							{
 								if ((*activePortraitUnit)->building.addon == nullptr)
 								{
