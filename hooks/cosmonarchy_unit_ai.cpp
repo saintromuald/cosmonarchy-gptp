@@ -456,7 +456,11 @@ void cosmonarchyUnitAi(Unit* unit)
 					bool targetHasMinRange = false;
 					if (localUnit->orderTarget.unit)
 					{
-						if (localUnit->status & UnitStatus::InAir)
+						if (localUnit->orderTarget.unit->id == UnitId::ZergGeszithalor)
+						{
+							targetHasMinRange = true;
+						}
+						else if (localUnit->status & UnitStatus::InAir)
 						{
 							targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getAirWeapon()];
 						}
