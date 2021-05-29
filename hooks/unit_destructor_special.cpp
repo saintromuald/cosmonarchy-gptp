@@ -261,6 +261,15 @@ void unitDestructorSpecialHook(Unit* unit)
 		}
 	}
 
+	// Sovroleth - die on host death
+	for (Unit* attached : unitExt->unitVectors[UnitVectorAttachedSource])
+	{
+		if (attached->id == UnitId::ZergSovroleth)
+		{
+			attached->damageHp(attached->hitPoints);
+		}
+	}
+
 	// Nathrokor - Adrenal Frenzy
 	for (u32 i = 0; i < 8; i++)
 	{
