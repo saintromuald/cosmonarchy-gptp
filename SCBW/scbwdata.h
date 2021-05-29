@@ -856,6 +856,16 @@ struct _bwUpgrs {
 SCBW_DATA(_scUpgrs*, UpgradesSc, 0x0058D088); //Use with ScUpgrade::Enum
 SCBW_DATA(_bwUpgrs*, UpgradesBw, 0x0058F278); //Use with BwUpgrade::Enum
 
+// Requirement opcode lists
+namespace requirements
+{
+	SCBW_DATA(u16*, units, 0x00514178);
+	SCBW_DATA(u16*, orders, 0x00514CF8);
+	SCBW_DATA(u16*, research, 0x00514908);
+	SCBW_DATA(u16*, upgrade, 0x005145C0);
+	SCBW_DATA(u16*, tech, 0x00514A48);
+}
+
 //////////////////////////////////////////////////////////////// @}
 
 #undef SCBW_DATA

@@ -1085,7 +1085,7 @@ namespace scbw
 		bool ground = !(target->status & UnitStatus::InAir);
 		bool onCreep = scbw::getActiveTileAt(target->getX(), target->getY()).hasCreep;
 		f64 multiplier = (ground && onCreep) ? 1.5 : 1;
-		return ceil(std::max(((s32)units_dat::SupplyRequired[target->id]), 1) * multiplier);
+		return std::ceil(std::max((s32)units_dat::SupplyRequired[target->id], 1) * multiplier);
 	}
 
 	s32 dir_saturate(s32 direction, s32 value)

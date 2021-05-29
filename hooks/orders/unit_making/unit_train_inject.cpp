@@ -3,39 +3,33 @@
 
 namespace
 {
-
 	void __declspec(naked) secondaryOrd_TrainFighterWrapper()
 	{
-
 		static Unit* unit;
-
-		__asm {
+		__asm
+		{
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::secondaryOrd_TrainFighter(unit);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			RETN
 		}
-
 	}
 
 	void __declspec(naked) function_00468420Wrapper()
 	{
-
 		static Unit* unit;
-
-		__asm {
+		__asm
+		{
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orderTrain(unit);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			RETN
 		}
@@ -46,13 +40,15 @@ namespace
 		static Unit* unit;
 		static u32 slot;
 		static u32 result;
-		__asm {
+		__asm
+		{
 			MOV unit, ECX
 			MOV slot, EDX
 			PUSHAD
 		}
 		result = hooks::isQueueSlotActive(unit, slot);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
@@ -63,12 +59,14 @@ namespace
 	{
 		static Unit* a1;
 		static char result;
-		__asm {
+		__asm
+		{
 			MOV a1, ECX
 			PUSHAD
 		}
 		result = hooks::getMaxHangerSpace(a1);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOVZX EAX, result
 			RETN
@@ -104,7 +102,6 @@ namespace
 	const u32 loc_fail_B = 0x0046DADB;
 	void __declspec(naked) isNotLiftedOff_Wrapper() // 0046D845
 	{
-
 		static Unit* unit;
 		_asm
 		{
@@ -130,7 +127,6 @@ namespace
 
 namespace hooks
 {
-
 	void injectUnitTrainHooks()
 	{
 		jmpPatch(queueSlotActiveWrapper, 0x00401E70, 2);
@@ -141,5 +137,4 @@ namespace hooks
 		jmpPatch(isLiftedOff_Wrapper, 0x00046D832, 3);
 		jmpPatch(isNotLiftedOff_Wrapper, 0x0046D845, 2);
 	}
-
-}; //hooks
+}

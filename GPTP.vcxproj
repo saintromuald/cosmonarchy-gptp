@@ -249,6 +249,7 @@
     <ClCompile Include="AIScripter\AICore.cpp" />
     <ClCompile Include="AIScripter\AIParser.cpp" />
     <ClCompile Include="config.cpp" />
+    <ClCompile Include="DebugUtils.cpp" />
     <ClCompile Include="hooks\audiovisuals\player_color.cpp" />
     <ClCompile Include="hooks\audiovisuals\player_color_inject.cpp" />
     <ClCompile Include="hooks\build_time.cpp" />
@@ -344,6 +345,9 @@
     <ClCompile Include="hooks\give_unit_inject.cpp" />
     <ClCompile Include="hooks\orders\spells\hallucination_spell.cpp" />
     <ClCompile Include="hooks\orders\spells\hallucination_spell_inject.cpp" />
+    <ClCompile Include="hooks\requirements\requirements.cpp" />
+    <ClCompile Include="hooks\requirements\requirements_inject.cpp" />
+    <ClCompile Include="hooks\requirements\requirement_parser.cpp" />
     <ClCompile Include="hooks\target_related.cpp" />
     <ClCompile Include="hooks\target_related_inject.cpp" />
     <ClCompile Include="hooks\trap_hooks.cpp" />
@@ -410,6 +414,7 @@
     <ClCompile Include="hooks\orders\spells\nuke_orders.cpp" />
     <ClCompile Include="hooks\orders\spells\nuke_orders_inject.cpp" />
     <ClCompile Include="SCBW\scbwhelper.cpp" />
+    <ClCompile Include="SCBW\SFileReader.cpp" />
     <ClCompile Include="SCBW\structures\Player.cpp" />
     <ClCompile Include="Plugin.cpp" />
     <ClCompile Include="plugin_main.cpp" />
@@ -558,6 +563,7 @@
     <ClInclude Include="AIScripter\AIParser.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="config_utility.h" />
+    <ClInclude Include="DebugUtils.h" />
     <ClInclude Include="hooks\audiovisuals\player_color.h" />
     <ClInclude Include="hooks\build_time.h" />
     <ClInclude Include="globals.h" />
@@ -579,6 +585,8 @@
     <ClInclude Include="hooks\orders\building_making\building_helper.h" />
     <ClInclude Include="hooks\orders\pathfinding.h" />
     <ClInclude Include="hooks\placement.h" />
+    <ClInclude Include="hooks\requirements\requirements.h" />
+    <ClInclude Include="hooks\requirements\requirement_parser.h" />
     <ClInclude Include="hooks\trap_hooks.h" />
     <ClInclude Include="hooks\unit_movement.h" />
     <ClInclude Include="hooks\unit_stats\supply_hooks.h" />
@@ -641,6 +649,7 @@
     <ClInclude Include="lib_src\yaml-cpp\tag.h" />
     <ClInclude Include="lib_src\yaml-cpp\token.h" />
     <ClInclude Include="SCBW\scbwhelper.h" />
+    <ClInclude Include="SCBW\SFileReader.h" />
     <ClInclude Include="SCBW\stat_txt_spec.h" />
     <ClInclude Include="unit_constants.h" />
     <ClInclude Include="unit_search.h" />

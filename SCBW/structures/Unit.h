@@ -429,6 +429,33 @@ struct Unit : public UnitLayout
 	void setSupplyProvided(u8 amount);
 	s32 getTotalHitPointsPlusShields();
 	s32 Unit::isUnitAINonBuilding();
+
+	/// Returns whether the unit is currently constructing a Protoss building
+	bool isAttemptingProtossBuild();
+
+	/// Returns whether the unit is currently constructing an addon
+	bool isConstructingAddon();
+
+	/// Returns the number of hangar units currently being trained by the unit
+	u8 getHangarTrainCount();
+
+	/// Returns the maximum hangar space for the unit
+	u8 getMaxHangarSpace();
+
+	/// Returns whether the unit is of type Reaver (incl. hero Reaver)
+	bool isReaver();
+
+	/// Returns whether the unit is of type Carrier (incl. hero Carrier)
+	bool isCarrier();
+
+	/// Returns whether the unit is currently constructing a Protoss building
+	bool unitIsTrainingOrMorphing();
+
+	/// Returns whether the unit is currently constructing a Protoss building
+	bool isQueueSlotActive(int slot);
+
+	// Returns the right click action for the given unit
+	u8 getRightClickActionOrder();
 };
 
 C_ASSERT(sizeof(Flingy) == 0x4c);

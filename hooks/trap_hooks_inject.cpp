@@ -8,12 +8,14 @@ namespace
 	{
 		static u32 id;
 		static u32 result;
-		__asm {
+		__asm
+		{
 			MOV id, EAX
 			PUSHAD
 		}
 		result = hooks::unitIsInstallationAsset(id);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
@@ -24,12 +26,14 @@ namespace
 	{
 		static Unit* unit;
 		static u32 result;
-		__asm {
+		__asm
+		{
 			MOV unit, EAX
 			PUSHAD
 		}
 		result = hooks::unitIsFloorTrap(unit);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
@@ -40,12 +44,14 @@ namespace
 	{
 		static Unit* unit;
 		static u32 result;
-		__asm {
+		__asm
+		{
 			MOV unit, EDI
 			PUSHAD
 		}
 		result = hooks::disableTrap(unit);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
@@ -56,12 +62,14 @@ namespace
 	{
 		static Unit* a1;
 		static u32 result;
-		__asm {
+		__asm
+		{
 			MOV a1, EAX
 			PUSHAD
 		}
 		result = hooks::updateUnitStrengthAndApplyDefaultOrdersHook(a1);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
