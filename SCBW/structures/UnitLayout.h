@@ -321,7 +321,7 @@ enum ExtTimerId
 	TimerAI_DisruptionField,
 	TimerAI_MadrigalTempoChangeTimer,
 	TimerAI_EnsnaringBrood,
-	TimerAI_Kite,
+	TimerAI_KiteCooldown,
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
 		
 	TimerCount,
