@@ -550,6 +550,7 @@
     <ClCompile Include="hooks\unit_stats\weapon_range.cpp" />
     <ClCompile Include="hooks\unit_stats\weapon_range_inject.cpp" />
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
+    <ClCompile Include="unit_search.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -642,6 +643,7 @@
     <ClInclude Include="SCBW\scbwhelper.h" />
     <ClInclude Include="SCBW\stat_txt_spec.h" />
     <ClInclude Include="unit_constants.h" />
+    <ClInclude Include="unit_search.h" />
     <ClInclude Include="Utils\captivating_claws.h" />
     <ClInclude Include="hooks\interface\extender\selection_extender.h" />
     <ClInclude Include="hooks\limits\ccmu.h" />
