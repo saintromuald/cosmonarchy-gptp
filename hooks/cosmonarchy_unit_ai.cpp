@@ -55,7 +55,7 @@ Didact Recall: "Offensive" cast when the Didact is added to an attack and a grou
 one another. Attempt to group as many units as possible during the channel.
 */
 
-#define ENABLE_KITE_DEBUG_MESSAGES 1
+#define ENABLE_KITE_DEBUG_MESSAGES 0
 
 #if ENABLE_KITE_DEBUG_MESSAGES
 #define KITE_DEBUG(...) scbw::printf(__VA_ARGS__)
