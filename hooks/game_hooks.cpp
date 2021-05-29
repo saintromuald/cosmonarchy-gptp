@@ -1019,7 +1019,10 @@ namespace hooks
 				if (scbw::get_generic_rust_value(unit, RustId::CastFailureMode) == 1)
 				{
 					scbw::set_generic_rust_value(unit, RustId::CastFailureMode, 0);
-					unitExt->timers[TimerAnticthonFailureMode] = 30 * 24 + 1;
+					if (!unitExt->timers[TimerAnticthonFailureMode])
+					{
+						unitExt->timers[TimerAnticthonFailureMode] = 30 * 24 + 1;
+					}
 				}
 
 				// Failure Mode End
