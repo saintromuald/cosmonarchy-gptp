@@ -181,14 +181,26 @@ namespace hooks
 					{
 						if (builtUnit->status & UnitStatus::Completed)
 						{
-							helper::AI_TrainingUnit(builtUnit, unit);
-							if (builtUnit->id == UnitId::TerranNuclearMissile)
+							u32 count = 1;
+							Unit* builtUnits[2] = {builtUnit, nullptr};
+							if (units_dat::BaseProperty[builtUnit->id] & UnitProperty::TwoUnitsIn1Egg)
 							{
-								helper::hideAndDisableUnit(builtUnit);
+								count = 2;
+								builtUnits[1] = scbw::createUnitIngame(builtUnit->id, builtUnit->playerId, builtUnit->position.x - 32, builtUnit->position.y, unit, true);
 							}
-							else
+
+							for (u32 i = 0; i < count; i++)
 							{
-								helper::orderNewUnitToRally(builtUnit, unit);
+								Unit* newUnit = builtUnits[i];
+								helper::AI_TrainingUnit(newUnit, unit);
+								if (builtUnit->id == UnitId::TerranNuclearMissile)
+								{
+									helper::hideAndDisableUnit(newUnit);
+								}
+								else
+								{
+									helper::orderNewUnitToRally(newUnit, unit);
+								}
 							}
 							helper::function_00432430(unit, unit->buildQueueSlot);
 							unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
