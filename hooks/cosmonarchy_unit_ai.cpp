@@ -55,7 +55,7 @@ Didact Recall: "Offensive" cast when the Didact is added to an attack and a grou
 one another. Attempt to group as many units as possible during the channel.
 */
 
-#define ENABLE_KITE_DEBUG_MESSAGES 0
+#define ENABLE_KITE_DEBUG_MESSAGES 1
 
 #if ENABLE_KITE_DEBUG_MESSAGES
 #define KITE_DEBUG(...) scbw::printf(__VA_ARGS__)
@@ -387,45 +387,49 @@ void cosmonarchyUnitAi(Unit* unit)
 
 		if (shouldKite(unit, unitExt))
 		{
-			u32 sync = 0;
-			localGroup.forEach([&](Unit* localUnit)
-			{
-				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				if (shouldKite(localUnit, localUnitExt))
-				{
-					sync++;
-				}
-			});
-
-			if (sync >= localGroup.unitCount / 2)
-			{
-				KitePositions result = getKitePositions(unit, hostileGroupRadius);
-				if (!result.enemiesFound)
-				{			
-					localGroup.forEach([&](Unit* localUnit)
-					{
-						UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-						localUnitExt->timers[TimerAI_Kite] = 12;
-					});
-					return;
-				}
-
-				u32 crowdScore = 0;
-				if (!(unit->status & UnitStatus::InAir))
-				{
-					crowdScore = cosmonarchyUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoAir, {});
-				}
-
+			KitePositions result = getKitePositions(unit, hostileGroupRadius);
+			if (!result.enemiesFound)
+			{			
 				localGroup.forEach([&](Unit* localUnit)
 				{
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					if (!shouldKite(localUnit, localUnitExt))
-					{
-						return;
-					}
-					localUnitExt->values[ValueAI_KiteSignal] = 0;
 					localUnitExt->timers[TimerAI_Kite] = 12;
+				});
+				return;
+			}
 
+			u32 crowdScore = 0;
+			if (!(unit->status & UnitStatus::InAir))
+			{
+				crowdScore = cosmonarchyUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::IncludingSelf | Flags::NoAir, {});
+			}
+
+			localGroup.forEach([&](Unit* localUnit)
+			{
+				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+				if (!shouldKite(localUnit, localUnitExt))
+				{
+					return;
+				}
+				localUnitExt->values[ValueAI_KiteSignal] = 0;
+				localUnitExt->timers[TimerAI_Kite] = 12;
+
+				if (isMeleeAttacker(localUnit))
+				{
+					if (crowdScore > 6)
+					{
+						localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
+						KITE_DEBUG("%s: strafe", localUnit->getName());
+					}
+					else
+					{
+						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+						KITE_DEBUG("%s: forward", localUnit->getName());
+					}
+					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+				}
+				else
+				{
 					const u32 distance = getDistanceToTarget(localUnit);
 					const u32 maxRange = getMaxRange(localUnit);
 					bool targetHasMinRange = false;
@@ -447,17 +451,16 @@ void cosmonarchyUnitAi(Unit* unit)
 						localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
 					});
 
-					if (!isMeleeAttacker(localUnit) &&
-						(localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
-							|| localGroupValue * 4 < result.biases[result.forwardIndex]
-							|| distance < maxRange * 0.25))
+					if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
+						|| localGroupValue * 8 < result.biases[result.forwardIndex]
+						|| distance < maxRange * 0.5))
 					{
 						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 						KITE_DEBUG("%s: fall back", localUnit->getName());
 					}
 					else if (distance > maxRange * 1.5
 						|| (distance > maxRange * 1 && crowdScore > 6)
-						|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 4)
+						|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 8)
 						|| targetHasMinRange)
 					{
 						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
@@ -468,19 +471,14 @@ void cosmonarchyUnitAi(Unit* unit)
 						localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
 						KITE_DEBUG("%s: strafe", localUnit->getName());
 					}
-					else if (isMeleeAttacker(localUnit))
-					{
-						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
-						KITE_DEBUG("%s: forward", localUnit->getName());
-					}
-					else
+					else if (localGroupValue <= result.biases[result.forwardIndex] * 8)
 					{
 						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 						KITE_DEBUG("%s: backward", localUnit->getName());
 					}
 					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
-				});
-			}
+				}
+			});
 		}
 		else if (unitHasCooldownToAttack(unit))
 		{
