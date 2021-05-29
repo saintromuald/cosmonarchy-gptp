@@ -18,6 +18,7 @@
 #include "limits/sfx_extender.h"
 #include "hooks/weapons/weapon_spellhit.h"
 #include "globals.h"
+#include "unit_search.h"
 
 const u32 hyperTrigger = 0x006509A0;
 const u32 Func_Irradiate = 0x00454E00;
@@ -93,8 +94,7 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	{
 		return;
 	}
-	u32 dist = scbw::getDistanceFast(target->position.x, target->position.y,
-		shaman->position.x, shaman->position.y);
+	u32 dist = scbw::getDistanceFast(target->position, shaman->position);
 
 	bool reqHeal = false;
 	if (target->getCurrentHpInGame() < target->getMaxHpInGame())
@@ -267,6 +267,7 @@ namespace hooks
 		optionsList->speed = 6; // Lock game speed at fastest
 		if (!scbw::isGamePaused()) // If the game is not paused
 		{
+			//update_unit_grid();
 
 			scbw::setInGameLoopState(true); // Needed for scbw::random() to work
 			graphics::resetAllGraphics();
