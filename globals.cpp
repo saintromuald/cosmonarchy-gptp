@@ -520,12 +520,12 @@ void Globals::frameHook()
 				} break;
 				case EffectId::SalamanderFire:
 				{
-					UnitArray unit_array = search_radial({(u16)effects[i].position.x, (u16)effects[i].position.y}, effects[i].radius * 3);
+					UnitArray unit_array = search_radial({(u16)effects[i].position.x, (u16)effects[i].position.y}, effects[i].radius);
 					unit_array_filter(&unit_array, nullptr, SearchFlagsNoAir);
 
-					for (u32 i = 0; i < unit_array.size; i++)
+					for (u32 j = 0; j < unit_array.size; j++)
 					{
-						Unit* target = unit_array.units[i];
+						Unit* target = unit_array.units[j];
 						target->damageWithCustom(20 * damageMultiplier, DamageType::Concussive, nullptr, effects[i].player, 0, 1, true);
 					}
 				} break;

@@ -99,10 +99,10 @@ UnitArray search_rect(Box32 rect)
 UnitArray search_square(Point16 center, u32 radius)
 {
 	return search_rect({
-		center.x - (s32)radius / 2,
-		center.y - (s32)radius / 2,
-		center.x + (s32)radius / 2,
-		center.y + (s32)radius / 2
+		center.x - (s32)radius,
+		center.y - (s32)radius,
+		center.x + (s32)radius,
+		center.y + (s32)radius
 	});
 }
 
