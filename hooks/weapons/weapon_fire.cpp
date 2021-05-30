@@ -100,7 +100,7 @@ namespace hooks
 			posY = attacker->getY();
 		}
 		auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
-		hooks::createBullet(weaponId, attacker, posX, posY, attacker->playerId, newAngle);
+		helper::createBullet(weaponId, attacker, posX, posY, attacker->playerId, newAngle);
 		if (attackerExt->values[ValueDeconstruction])
 		{
 			scbw::doDeconstructionDamage(attacker, weaponId, false);
@@ -654,7 +654,7 @@ namespace hooks
 						}
 						bullet->sourceUnit->orderTarget.unit = target;
 						auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y, target->getX(), target->getY());
-						auto newBullet = hooks::createBullet(WeaponId::ArchitectDispersiveSalvo,
+						auto newBullet = helper::createBullet(WeaponId::ArchitectDispersiveSalvo,
 							bullet->sourceUnit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
 						if (newBullet)
 						{
