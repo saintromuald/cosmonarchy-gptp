@@ -41,7 +41,7 @@ struct UnitArray
 };
 
 inline void unit_array_add(UnitArray* array, Unit* unit);
-inline void unit_array_remove_fast(UnitArray* array, u32 index); // won't preserve order
+inline void unit_array_remove_fast(UnitArray* array, u32 index); // won't preserve order, will swap with last element
 void unit_array_remove(UnitArray* array, u32 index); // will preserve order
 
 // NOTES:
