@@ -844,6 +844,7 @@ namespace hooks
 				{
 					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 				}
+
 				if (bullet->weaponId == WeaponId::PenumbraErebolShockCannon)
 				{
 					// Penumbra - Shroud Piercer - pierce targets
