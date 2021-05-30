@@ -200,6 +200,22 @@ namespace
 		}
 	}
 
+	void __declspec(naked) bulletBehaviorReassign_Wrapper()
+	{
+		static Bullet* bullet;
+		__asm
+		{
+			MOV bullet, ECX
+			PUSHAD
+		}
+		hooks::bulletBehaviorReassign(bullet);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
+
 	/*
 	void __declspec(naked) writeBullets_Wrapper() {
 		static FILE* a1;
@@ -267,6 +283,7 @@ namespace hooks
 		jmpPatch(initializeBullet_Wrapper,			0x0048BEC0, 0);
 		jmpPatch(progressBulletFrames_Wrapper,		0x0048C3D0, 2);
 //		jmpPatch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
+		jmpPatch(bulletBehaviorReassign_Wrapper,	0x00488D50, 1);
 		jmpPatch(BulletDamage_bulletNullcheck,		0x0048B770, 1);
 	}
 }

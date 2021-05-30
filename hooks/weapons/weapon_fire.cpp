@@ -1499,9 +1499,9 @@ namespace hooks
 			if (bullet->unknown_0x4E & 1)
 			{
 				bullet->unknown_0x4E = bullet->unknown_0x4E & 0xFE;
+				Image* bulletOverlay = nullptr;
 				switch (weapons_dat::Behavior[bullet->weaponId])
 				{
-					Image* bulletOverlay = nullptr;
 					case WeaponBehavior::AppearOnTargetUnit:
 					case WeaponBehavior::AppearOnTargetSite:
 					case WeaponBehavior::AppearOnAttacker:
