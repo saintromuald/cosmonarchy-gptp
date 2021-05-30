@@ -1490,6 +1490,131 @@ namespace hooks
 		*activeIscriptBullet = 0;
 	}
 
+	// Hooked to investigate firstFreeBullet nonsense - Pr0nogo
+	void bulletBehaviorReassign(Bullet* bullet) // 0048BD50
+	{
+		while (2) // xd
+		{
+			if (bullet->unknown_0x4E & 1)
+			{
+				bullet->unknown_0x4E = bullet->unknown_0x4E & 0xFE;
+				switch (weapons_dat::Behavior[bullet->weaponId])
+				{
+					Image* bulletOverlay = nullptr;
+					case WeaponBehavior::AppearOnTargetUnit:
+					case WeaponBehavior::AppearOnTargetSite:
+					case WeaponBehavior::AppearOnAttacker:
+					case WeaponBehavior::AttackAndSelfDestruct:
+					{
+						bullet->behaviourTypeInternal = WeaponBehavior::AppearOnAttacker;
+						if (bullet->attackTarget.unit)
+						{
+							bullet->attackTarget.pt.x = bullet->attackTarget.unit->sprite->position.x;
+							bullet->attackTarget.pt.y = bullet->attackTarget.unit->sprite->position.y;
+						}
+						else
+						{
+							bullet->attackTarget.unit = nullptr;
+						}
+						bullet->unknown_0x4E = 0;
+						bullet->someUnitType = 228;
+						helper::playSpriteIscript(bullet->sprite, 1, 1);
+					} break;
+					case WeaponBehavior::Fly_FollowTarget:
+					{
+						helper::assignWeaponData(bullet, 2);
+						helper::playSpriteIscript(bullet->sprite, 2, 1);
+					} goto LABEL_27;
+					case WeaponBehavior::Bounce:
+					{
+						helper::assignWeaponData(bullet, 3);
+						helper::playSpriteIscript(bullet->sprite, 2, 1);
+					} goto LABEL_27;
+					case WeaponBehavior::PersistOnTargetSite:
+					{
+						helper::assignWeaponData(bullet, 4);
+						bulletOverlay = bullet->sprite->images.head;
+						if (bulletOverlay)
+						{
+							do
+							{
+								helper::playImageIscript(bulletOverlay, 14);
+								bulletOverlay = bulletOverlay->link.next;
+							}
+							while (bulletOverlay);
+							goto LABEL_27;
+						}
+					} break;
+					case WeaponBehavior::AttackNearbyArea:
+					{
+						helper::assignWeaponData(bullet, 6);
+						bulletOverlay = bullet->sprite->images.head;
+						if (bulletOverlay)
+						{
+							do
+							{
+								helper::playImageIscript(bulletOverlay, 2);
+								bulletOverlay = bulletOverlay->link.next;
+							}
+							while (bulletOverlay);
+							goto LABEL_27;
+						}
+					} break;
+					default:
+					{
+						helper::assignWeaponData(bullet, 1);
+						bulletOverlay = bullet->sprite->images.head;
+						if (bulletOverlay)
+						{
+							do
+							{
+								helper::playImageIscript(bulletOverlay, 2);
+								bulletOverlay = bulletOverlay->link.next;
+							}
+							while (bulletOverlay);
+							goto LABEL_27;
+						}
+					} break;
+				}
+			LABEL_27:
+				switch (bullet->behaviourTypeInternal)
+				{
+					case 0:
+					{
+						continue;
+					}
+					case 1:
+					{
+						helper::bulletBehaviorFly(bullet);
+					} break;
+					case 2:
+					{
+						helper::bulletBehaviorFollow(bullet);
+					} break;
+					case 3:
+					{
+						helper::bulletBehaviorBounce(bullet);
+					} break;
+					case 4:
+					{
+						helper::bulletBehaviorPersist(bullet);
+					} break;
+					case 5:
+					{
+						helper::bulletBehaviorInstant(bullet);
+					} break;
+					case 6:
+					{
+						helper::bulletBehaviorArea(bullet);
+					} break;
+					default:
+					{
+						return;
+					}
+				}
+			} break;
+		}
+	}
 
 	/*
 	s32 writeBullets(FILE* hFile) {
