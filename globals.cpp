@@ -1527,7 +1527,6 @@ namespace scbw
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
 		Bullet* bullet = helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
-		bullet->behaviourTypeInternal = weapons_dat::Behavior[weaponId]; // fixes penumbra bug, but only gameplay symptoms
 		return bullet;
 	}
 
