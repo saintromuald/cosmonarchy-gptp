@@ -10,6 +10,24 @@
 // well not really, because unity build, but w/e
 static UnitArray unit_grid[CELL_COUNT][CELL_COUNT];
 
+// GRID BASED (current):
+// - results in cache misses, because of sparse arrays (fixed size)
+// or allocation fracturing (malloc)
+// - has potential to result in fewer distance checks,
+// especially useful for radial, unfortunately it only is the case in
+// mostly niche cases, when cell size plays well with radius basically
+// 
+// having like 4 size would be ideal for usual finder procs, problem is
+// it would eat so much memory, it probably wouldn't be worth it
+// performance wise
+
+// BINARY SEARCHED BASED (unit finder had it, badly implemented though):
+// - has to sort whole unit array by X and Y
+// - always results in O(n) of distance checks
+// - still better than old unit finder, since it would sort only once per frame,
+// not every finder proc
+// - not sure how imperformant array intersection will be
+
 inline void unit_array_add(UnitArray* array, Unit* unit)
 {
 	array->units[array->size++] = unit;
