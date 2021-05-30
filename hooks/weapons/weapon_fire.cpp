@@ -503,8 +503,7 @@ namespace hooks
 					if (scbw::isAlliedTo(unit->playerId, target->playerId))
 						return false;
 					return scbw::canWeaponTargetUnit(weaponId, target, unit);
-				}
-				);
+				});
 				if (a != nullptr)
 				{
 					auto old = unit->orderTarget;
@@ -1154,8 +1153,8 @@ namespace hooks
 				*firstFreeBullet = bullet;
 				*bulletCount -= 1;
 			}
+			globals.remove_multihit_bullet(bullet);
 		}
-		globals.remove_multihit_bullet(bullet);
 		return bullet;
 	}
 
