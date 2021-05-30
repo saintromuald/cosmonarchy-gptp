@@ -71,8 +71,8 @@ UnitArray search_rect(Box32 rect)
 	unit_array.size = 0;
 
 	const u32 x1 = rect.left / CELL_PX_SIZE;
-	const u32 x2 = ceil(rect.right / (f32)CELL_PX_SIZE);
 	const u32 y1 = rect.top / CELL_PX_SIZE;
+	const u32 x2 = ceil(rect.right / (f32)CELL_PX_SIZE);
 	const u32 y2 = ceil(rect.bottom / (f32)CELL_PX_SIZE);
 
 	for (u32 x = x1; x < x2; x++)
