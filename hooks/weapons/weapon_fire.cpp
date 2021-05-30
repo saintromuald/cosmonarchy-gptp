@@ -1272,14 +1272,12 @@ LABEL_7:
 	// Hooked so we don't need aise for Bactalisks - Pr0nogo
 	s32 initializeBullet(char playerId, Unit* parent, s16 y, Bullet* bullet, s32 weaponId, s32 x, s32 angle) // 0048BEC0
 	{
-		char playerIdVar = playerId;
-		Unit* parentVar = parent;
 		if (!helper::initializeFlingy(weapons_dat::FlingyId[weaponId], y, x, (Flingy*)bullet, playerId, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
 		{
 			return 0;
 		}
 
-		bullet->srcPlayer = playerIdVar;
+		bullet->srcPlayer = playerId;
 		bullet->someUnitType = 228;
 		bullet->behaviourTypeInternal = 188;
 		bullet->unknown_0x4E = 0;
@@ -1298,50 +1296,50 @@ LABEL_7:
 		bullet->attackTarget.pt.y = 0;
 		bullet->attackTarget.pt.x = 0;
 		bullet->unknown_0x4E = 0;
-		helper::bulletBehaviorReassign(weaponId, bullet, (s32)parentVar);
+		helper::bulletBehaviorReassign(weaponId, bullet, (s32)parent);
 
 		u8 launchSpin = weapons_dat::LaunchSpin[weaponId];
 		if (launchSpin)
 		{
-			s32 launchSpinRandomVar = 0;
-			if (parentVar == *lastBulletCreator)
+			s32 launchSpinVariance = 0;
+			if (parent == *lastBulletCreator)
 			{
-				launchSpinRandomVar = *launchSpinRandom == 0;
+				launchSpinVariance = *launchSpinRandom == 0;
 			}
 			else
 			{
-				launchSpinRandomVar = helper::RandomizeShort(0) & 1;
+				launchSpinVariance = helper::RandomizeShort(0) & 1;
 			}
 
-			*launchSpinRandom = launchSpinRandomVar;
-			bool invertSpin = launchSpinRandomVar == 0;
-			launchSpinRandomVar = launchSpin;
+			*launchSpinRandom = launchSpinVariance;
+			bool invertSpin = launchSpinVariance == 0;
+			launchSpinVariance = launchSpin;
 			if (invertSpin)
 			{
-				launchSpinRandomVar = -(s8)launchSpin;
+				launchSpinVariance = -(s8)launchSpin;
 			}
-			char launchSpinDirection = launchSpinRandomVar + bullet->direction2;
+			char launchSpinDirection = launchSpinVariance + bullet->direction2;
 			bullet->direction2 = launchSpinDirection;
 			bullet->direction1 = launchSpinDirection;
-			*lastBulletCreator = parentVar;
+			*lastBulletCreator = parent;
 		}
 
-		bullet->sourceUnit = parentVar;
-		if (units_dat::BaseProperty[(u16)parentVar->id] & UnitProperty::Subunit)
+		bullet->sourceUnit = parent;
+		if (units_dat::BaseProperty[(u16)parent->id] & UnitProperty::Subunit)
 		{
-			bullet->sourceUnit = parentVar->subunit;
+			bullet->sourceUnit = parent->subunit;
 		}
-		if (parentVar->id == UnitId::ProtossPlasmaShell)
+		if (parent->id == UnitId::ProtossPlasmaShell)
 		{
-			bullet->sourceUnit = parentVar->interceptor.parent;
+			bullet->sourceUnit = parent->interceptor.parent;
 		}
-		if (parentVar->status & UnitStatus::IsHallucination)
+		if (parent->status & UnitStatus::IsHallucination)
 		{
 			bullet->hitFlags |= 2u;
 		}
 		bullet->nextBounceUnit = 0;
 
-		Unit* targetUnit = parentVar->orderTarget.unit;
+		Unit* targetUnit = parent->orderTarget.unit;
 		if (targetUnit)
 		{
 			bullet->sprite->elevationLevel = targetUnit->sprite->elevationLevel + 1;
@@ -1351,10 +1349,10 @@ LABEL_7:
 		}
 		else
 		{
-			bullet->sprite->elevationLevel = parentVar->sprite->elevationLevel + 1;
+			bullet->sprite->elevationLevel = parent->sprite->elevationLevel + 1;
 			bullet->attackTarget.unit = 0;
-			bullet->attackTarget.pt.x = parentVar->orderTarget.pt.x;
-			bullet->attackTarget.pt.y = parentVar->orderTarget.pt.y;
+			bullet->attackTarget.pt.x = parent->orderTarget.pt.x;
+			bullet->attackTarget.pt.y = parent->orderTarget.pt.y;
 		}
 
 		switch (weapons_dat::Behavior[weaponId])
@@ -1439,25 +1437,25 @@ LABEL_7:
 			}
 			case WeaponBehavior::AttackNearbyArea:
 			{
-				bullet->cyclicMissileIndex = parentVar->offsetIndex3by3;
-				bullet->attackTarget.pt.x -= (s16)attackCurve[parentVar->offsetIndex3by3].x;
-				bullet->attackTarget.pt.y -= (s16)attackCurve[parentVar->offsetIndex3by3].y;
+				bullet->cyclicMissileIndex = parent->offsetIndex3by3;
+				bullet->attackTarget.pt.x -= (s16)attackCurve[parent->offsetIndex3by3].x;
+				bullet->attackTarget.pt.y -= (s16)attackCurve[parent->offsetIndex3by3].y;
 				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 
-				s16 finalOffset = parentVar->offsetIndex3by3 + 1;
+				s16 finalOffset = parent->offsetIndex3by3 + 1;
 				if (!attackCurve[finalOffset].x)
 				{
 					finalOffset = 0;
 				}
-				parentVar->offsetIndex3by3 = finalOffset;
+				parent->offsetIndex3by3 = finalOffset;
 				return 1;
 			}
 			case WeaponBehavior::GoToMaxRange:
 			{
 				s32 bulletDirection = bullet->direction1;
 				s32 maxRangeVar = (weapons_dat::MaxRange[bullet->weaponId] + 20) << 8;
-				bullet->attackTarget.pt.x = parentVar->sprite->position.x + ((u32)(maxRangeVar * angleDistance[bulletDirection].x) >> 16);
-				bullet->attackTarget.pt.y = parentVar->sprite->position.y + ((u32)(maxRangeVar * angleDistance[bulletDirection].y) >> 16);
+				bullet->attackTarget.pt.x = parent->sprite->position.x + ((u32)(maxRangeVar * angleDistance[bulletDirection].x) >> 16);
+				bullet->attackTarget.pt.y = parent->sprite->position.y + ((u32)(maxRangeVar * angleDistance[bulletDirection].y) >> 16);
 				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 				return 1;
 			}
