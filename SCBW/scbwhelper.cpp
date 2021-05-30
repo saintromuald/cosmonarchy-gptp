@@ -8678,7 +8678,7 @@ namespace helper
 		return result;
 	}
 
-	void bulletBehaviorReassign(s32 unused, Bullet* bullet, s32 probablyAlsoUnused)
+	void bulletBehaviorReassign(s32 unused, Bullet* bullet, Unit* probablyAlsoUnused)
 	{
 		const u32 Func_bulletBehaviorReassign = 0x0048BD50;
 		__asm
