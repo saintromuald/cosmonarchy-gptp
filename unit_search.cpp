@@ -70,7 +70,7 @@ UnitArray search_rect(Box32 rect)
 	{
 		for (u32 y = y1; y < y2; y++)
 		{
-			// check if tile is entirely covered by rect
+			// check if tile is entirely covered by the area
 			const Box32 tile_rect =
 			{
 				x * CELL_PX_SIZE,
@@ -80,6 +80,7 @@ UnitArray search_rect(Box32 rect)
 			};
 			const bool tileIsFullyCovered = is_rect_in_rect(tile_rect, rect);
 
+			// check which units are in the area
 			UnitArray* current_array = &unit_grid[x][y];
 			for (u32 i = 0; i < current_array->size; i++)
 			{
@@ -120,7 +121,7 @@ UnitArray search_radial(Point16 center, u32 radius)
 	{
 		for (u32 y = y1; y < y2; y++)
 		{
-			// check if tile is entirely covered by rect
+			// check if tile is entirely covered by the area
 			const Point16 tile_center =
 			{
 				x * CELL_PX_SIZE + CELL_PX_SIZE / 2,
@@ -128,7 +129,7 @@ UnitArray search_radial(Point16 center, u32 radius)
 			};
 			const bool tileIsFullyCovered = scbw::getDistanceFast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
 
-			// check if unit is in the rect
+			// check which units are in the area
 			UnitArray* current_array = &unit_grid[x][y];
 			for (u32 i = 0; i < current_array->size; i++)
 			{
