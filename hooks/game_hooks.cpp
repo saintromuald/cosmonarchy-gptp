@@ -267,7 +267,7 @@ namespace hooks
 		optionsList->speed = 6; // Lock game speed at fastest
 		if (!scbw::isGamePaused()) // If the game is not paused
 		{
-			//update_unit_grid();
+			update_unit_grid();
 
 			scbw::setInGameLoopState(true); // Needed for scbw::random() to work
 			graphics::resetAllGraphics();

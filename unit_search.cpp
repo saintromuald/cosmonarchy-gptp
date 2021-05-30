@@ -2,6 +2,7 @@
 #include <SCBW\api.h>
 
 #define CELL_SIZE 8
+#define CELL_PX_SIZE (CELL_SIZE * 32)
 #define CELL_COUNT (256 / CELL_SIZE)
 
 // 8x8 tile cells for up to 256 map size
@@ -60,10 +61,10 @@ UnitArray search_rect(Box32 rect)
 	UnitArray unit_array;
 	unit_array.size = 0;
 
-	const u32 x1 = rect.left / CELL_SIZE;
-	const u32 x2 = ceil(rect.right / (f32)CELL_SIZE);
-	const u32 y1 = rect.top / CELL_SIZE;
-	const u32 y2 = ceil(rect.bottom / (f32)CELL_SIZE);
+	const u32 x1 = rect.left / CELL_PX_SIZE;
+	const u32 x2 = ceil(rect.right / (f32)CELL_PX_SIZE);
+	const u32 y1 = rect.top / CELL_PX_SIZE;
+	const u32 y2 = ceil(rect.bottom / (f32)CELL_PX_SIZE);
 
 	for (u32 x = x1; x < x2; x++)
 	{
@@ -72,10 +73,10 @@ UnitArray search_rect(Box32 rect)
 			// check if tile is entirely covered by rect
 			const Box32 tile_rect =
 			{
-				x * CELL_SIZE,
-				x * CELL_SIZE + CELL_SIZE,
-				y * CELL_SIZE,
-				y * CELL_SIZE + CELL_SIZE
+				x * CELL_PX_SIZE,
+				y * CELL_PX_SIZE,
+				x * CELL_PX_SIZE + CELL_PX_SIZE,
+				y * CELL_PX_SIZE + CELL_PX_SIZE
 			};
 			const bool tileIsFullyCovered = is_rect_in_rect(tile_rect, rect);
 
@@ -83,7 +84,7 @@ UnitArray search_rect(Box32 rect)
 			for (u32 i = 0; i < current_array->size; i++)
 			{
 				Unit* unit = current_array->units[i];
-				if (!tileIsFullyCovered || !is_point_in_rect(unit->position, rect))
+				if (!tileIsFullyCovered && !is_point_in_rect(unit->position, rect))
 				{
 					continue;
 				}
@@ -110,10 +111,10 @@ UnitArray search_radial(Point16 center, u32 radius)
 	UnitArray unit_array;
 	unit_array.size = 0;
 
-	const u32 x1 = (center.x - radius) / CELL_SIZE;
-	const u32 x2 = ceil((center.x + radius) / (f32)CELL_SIZE);
-	const u32 y1 = (center.y - radius) / CELL_SIZE;
-	const u32 y2 = ceil((center.y + radius) / (f32)CELL_SIZE);
+	const u32 x1 = (center.x - radius) / CELL_PX_SIZE;
+	const u32 x2 = ceil((center.x + radius) / (f32)CELL_PX_SIZE);
+	const u32 y1 = (center.y - radius) / CELL_PX_SIZE;
+	const u32 y2 = ceil((center.y + radius) / (f32)CELL_PX_SIZE);
 
 	for (u32 x = x1; x < x2; x++)
 	{
@@ -122,17 +123,17 @@ UnitArray search_radial(Point16 center, u32 radius)
 			// check if tile is entirely covered by rect
 			const Point16 tile_center =
 			{
-				x * CELL_SIZE + CELL_SIZE / 2,
-				y * CELL_SIZE + CELL_SIZE / 2
+				x * CELL_PX_SIZE + CELL_PX_SIZE / 2,
+				y * CELL_PX_SIZE + CELL_PX_SIZE / 2
 			};
-			const bool tileIsFullyCovered = scbw::getDistanceFast(center, tile_center) + CELL_SIZE * 32 * 1.414 <= radius;
+			const bool tileIsFullyCovered = scbw::getDistanceFast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
 
 			// check if unit is in the rect
 			UnitArray* current_array = &unit_grid[x][y];
 			for (u32 i = 0; i < current_array->size; i++)
 			{
 				Unit* unit = current_array->units[i];
-				if (!tileIsFullyCovered || scbw::getDistanceFast(center, unit->position) > radius)
+				if (!tileIsFullyCovered && scbw::getDistanceFast(center, unit->position) > radius)
 				{
 					continue;
 				}
@@ -144,7 +145,7 @@ UnitArray search_radial(Point16 center, u32 radius)
 	return unit_array;
 }
 
-void unit_array_default_filter(UnitArray* unit_array, Unit* center, u32 flags, std::unordered_set<u16> allowedUnitIds)
+void unit_array_filter(UnitArray* unit_array, Unit* center, u32 flags, std::unordered_set<u16> allowedUnitIds)
 {
 	for (u32 i = 0; i < unit_array->size; i++)
 	{
@@ -157,7 +158,7 @@ void unit_array_default_filter(UnitArray* unit_array, Unit* center, u32 flags, s
 	}
 }
 
-void unit_array_custom_filter(UnitArray* unit_array, Unit* center, SearchFilterFunc filter)
+void unit_array_custom_filter(UnitArray* unit_array, SearchFilterFunc filter)
 {
 	for (u32 i = 0; i < unit_array->size; i++)
 	{
@@ -182,7 +183,7 @@ void unit_array_sort(UnitArray* unit_array, SearchScoreFunc score_func)
 
 void unit_array_sort_by_distance(UnitArray* unit_array, Point16 center)
 {
-	u32* distances = (u32*)malloc(unit_array->size * sizeof(*distances));
+	u32* distances = (u32*)malloc(unit_array->size * sizeof(u32));
 
 	for (u32 i = 0; i < unit_array->size; i++)
 	{
@@ -368,21 +369,9 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 context, std::unordered_set<u
 			return false;
 		}
 	}
-	if (allowedUnitIds.size() > 0)
+	if (allowedUnitIds.find(unit->id) != allowedUnitIds.end())
 	{
-		bool good = false;
-		for (auto a : allowedUnitIds)
-		{
-			if (unit->id == a)
-			{
-				good = true;
-				break;
-			}
-		}
-		if (!good)
-		{
-			return false;
-		}
+		return false;
 	}
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic && context & SearchFlagsNoOrganic)
 	{

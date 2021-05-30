@@ -6,6 +6,7 @@
 #include <SCBW/enumerations.h>
 #include <string>
 #include <math.h>
+#include <unit_search.h>
 
 namespace scbw
 {

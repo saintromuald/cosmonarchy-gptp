@@ -50,13 +50,13 @@ void unit_array_combine(UnitArray* target, UnitArray* source);
 // also not sure how I would handle variadic argument like that, without refactoring everything that exists in this project
 // optional allowance of lambdas is pretty handy, since most of behaviors need adhoc adjustments
 using SearchFilterFunc = std::function<bool(Unit*)>;
+using SearchScoreFunc = std::function<u32(Unit*)>;
 UnitArray search_rect(Box32 rect);
 UnitArray search_radial(Point16 center, u32 radius);
 inline UnitArray search_square(Point16 center, u32 radius);
 
-using SearchScoreFunc = std::function<u32(Unit*)>;
-void unit_array_default_filter(UnitArray* unit_array, Unit* center, u32 flags = 0, std::unordered_set<u16> allowedUnitIds = {});
-void unit_array_custom_filter(UnitArray* unit_array, Unit* center, SearchFilterFunc filter);
+void unit_array_filter(UnitArray* unit_array, Unit* center, u32 flags = 0, std::unordered_set<u16> allowedUnitIds = {}); // will break ordering, prefer sorting after filter
+void unit_array_custom_filter(UnitArray* unit_array, SearchFilterFunc filter); // will break ordering, prefer sorting after filter
 void unit_array_sort(UnitArray* unit_array, SearchScoreFunc score_func);
 void unit_array_sort_by_distance(UnitArray* unit_array, Point16 center);
 Unit* unit_array_find_best(UnitArray* unit_array, SearchScoreFunc score_func = nullptr); // score_func defaults to distance check

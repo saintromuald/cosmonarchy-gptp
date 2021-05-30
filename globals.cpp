@@ -520,19 +520,14 @@ void Globals::frameHook()
 				} break;
 				case EffectId::SalamanderFire:
 				{
-					scbw::UnitFinder(
-						effects[i].position.x - effects[i].radius,
-						effects[i].position.y - effects[i].radius,
-						effects[i].position.x + effects[i].radius,
-						effects[i].position.y + effects[i].radius
-					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					UnitArray unit_array = search_radial({(u16)effects[i].position.x, (u16)effects[i].position.y}, effects[i].radius * 3);
+					unit_array_filter(&unit_array, nullptr, SearchFlagsNoAir);
+
+					for (u32 i = 0; i < unit_array.size; i++)
 					{
-						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
-						{
-							return;
-						}
-						unit->damageWithCustom(20 * damageMultiplier, DamageType::Concussive, nullptr, effects[i].player, 0, 1, true);
-					});
+						Unit* target = unit_array.units[i];
+						target->damageWithCustom(20 * damageMultiplier, DamageType::Concussive, nullptr, effects[i].player, 0, 1, true);
+					}
 				} break;
 				case EffectId::Criticality:
 				{
