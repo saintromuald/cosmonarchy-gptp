@@ -619,8 +619,10 @@ namespace hooks
 			}
 		}
 
-		if (bullet->weaponId == WeaponId::ArchitectDispersiveSalvo && bullet->sourceUnit && bullet->attackTarget.unit &&
-			bullet->attackTarget.unit->sprite && bullet->sourceUnit->sprite)
+		if (bullet->weaponId == WeaponId::ArchitectDispersiveSalvo
+			&& bullet->sourceUnit
+			&& bullet->attackTarget.unit
+			&& bullet->attackTarget.unit->sprite && bullet->sourceUnit->sprite)
 		{
 			Unit* targ = bullet->attackTarget.unit;
 			if (scbw::getDistanceFast(bullet->position.x, bullet->position.y, targ->getX(), targ->getY()) < 3 * 32)

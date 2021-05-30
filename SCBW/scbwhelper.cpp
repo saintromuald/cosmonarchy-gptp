@@ -5995,13 +5995,14 @@ namespace helper
 	Bullet* createBullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction)
 	{
 		const u32 Helper_CreateBullet = 0x0048C260;
-		static u32 attackingPlayer_;
-		static u32 direction_;
-		static s32 x_;
-		static s32 y_;
-		attackingPlayer_ = attackingPlayer;
-		direction_ = direction;
-		x_ = x; y_ = y;
+		static u32 new_attackingPlayer;
+		static u32 new_direction;
+		static s32 new_x;
+		static s32 new_y;
+		new_attackingPlayer = attackingPlayer;
+		new_direction = direction;
+		new_x = x;
+		new_y = y;
 
 		/// Paladin attacking behavior
 		if (weaponId == WeaponId::PaladinCrusaderMissiles)
@@ -6011,54 +6012,54 @@ namespace helper
 				|| source->sprite->mainGraphic->direction == 2
 				|| source->sprite->mainGraphic->direction == 3)
 			{
-				x_ = source->sprite->position.x + 6;
-				y_ = source->sprite->position.y - 45;
+				new_x = source->sprite->position.x + 6;
+				new_y = source->sprite->position.y - 45;
 			}
 			else if (source->sprite->mainGraphic->direction == 4
 				|| source->sprite->mainGraphic->direction == 5)
 			{
-				x_ = source->sprite->position.x + 4;
-				y_ = source->sprite->position.y - 44;
+				new_x = source->sprite->position.x + 4;
+				new_y = source->sprite->position.y - 44;
 			}
 			else if (source->sprite->mainGraphic->direction == 6
 				|| source->sprite->mainGraphic->direction == 7
 				|| source->sprite->mainGraphic->direction == 8
 				|| source->sprite->mainGraphic->direction == 9)
 			{
-				x_ = source->sprite->position.x + 1;
-				y_ = source->sprite->position.y - 43;
+				new_x = source->sprite->position.x + 1;
+				new_y = source->sprite->position.y - 43;
 			}
 			else if (source->sprite->mainGraphic->direction == 10
 				|| source->sprite->mainGraphic->direction == 11)
 			{
-				x_ = source->sprite->position.x - 3;
-				y_ = source->sprite->position.y - 42;
+				new_x = source->sprite->position.x - 3;
+				new_y = source->sprite->position.y - 42;
 			}
 			else if (source->sprite->mainGraphic->direction == 12
 				|| source->sprite->mainGraphic->direction == 13)
 			{
-				x_ = source->sprite->position.x - 6;
-				y_ = source->sprite->position.y - 41;
+				new_x = source->sprite->position.x - 6;
+				new_y = source->sprite->position.y - 41;
 			}
 			else if (source->sprite->mainGraphic->direction == 14
 				|| source->sprite->mainGraphic->direction == 15)
 			{
-				x_ = source->sprite->position.x - 8;
-				y_ = source->sprite->position.y - 44;
+				new_x = source->sprite->position.x - 8;
+				new_y = source->sprite->position.y - 44;
 			}
 			else if (source->sprite->mainGraphic->direction == 16)
 			{
-				x_ = source->sprite->position.x - 8;
-				y_ = source->sprite->position.y - 48;
+				new_x = source->sprite->position.x - 8;
+				new_y = source->sprite->position.y - 48;
 			}
 		}
 		static Bullet* bullet;
 		__asm {
 			PUSHAD
-			PUSH direction_
-			PUSH attackingPlayer_
-			PUSH y_
-			PUSH x_
+			PUSH new_direction
+			PUSH new_attackingPlayer
+			PUSH new_y
+			PUSH new_x
 			MOV EAX, source
 			MOVZX ECX, weaponId
 			CALL Helper_CreateBullet
