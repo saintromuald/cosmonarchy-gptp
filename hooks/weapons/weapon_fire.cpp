@@ -1274,7 +1274,7 @@ LABEL_7:
 	{
 		char playerIdVar = playerId;
 		Unit* parentVar = parent;
-		if (!helper::initializeFlingy(weapons_dat::FlingyId[weaponId], y, x, (Flingy*)bullet, playerId, angle)) // Unit/Bullet/Flingy have a shared data structure, so this is presumably fine
+		if (!helper::initializeFlingy(weapons_dat::FlingyId[weaponId], y, x, (Flingy*)bullet, playerId, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
 		{
 			return 0;
 		}
@@ -1358,7 +1358,6 @@ LABEL_7:
 			bullet->attackTarget.pt.y = parentVar->orderTarget.pt.y;
 		}
 
-		s32 result;
 		s32 angleDistanceVar;
 		s32 finalDistanceVar;
 		switch (weapons_dat::Behavior[weaponId])
@@ -1366,22 +1365,29 @@ LABEL_7:
 			case WeaponBehavior::Fly_DoNotFollowTarget:
 			case WeaponBehavior::Fly_FollowTarget:
 			{
-				goto LABEL_31;
+				if (targetUnit)
+				{
+					if (bullet->sourceUnit)
+					{
+						helper::weaponBehaviorCanHitTargetCheck(targetUnit, bullet->sourceUnit);
+					}
+				}
+				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				return 1;
 			}
 			case WeaponBehavior::AppearOnTargetUnit:
 			case WeaponBehavior::AppearOnTargetSite:
 			{
 				if (!targetUnit)
 				{
-					goto LABEL_37;
+					return 1;
 				}
-				Unit* sourceUnitVar3 = bullet->sourceUnit;
-				if (!sourceUnitVar3)
+				if (!bullet->sourceUnit)
 				{
-					goto LABEL_37;
+					return 1;
 				}
-				helper::weaponBehaviorCanHitTargetCheck(targetUnit, sourceUnitVar3);
-				goto LABEL_37;
+				helper::weaponBehaviorCanHitTargetCheck(targetUnit, bullet->sourceUnit);
+				return 1;
 			}
 			case WeaponBehavior::PersistOnTargetSite:
 			{
@@ -1390,19 +1396,17 @@ LABEL_7:
 			}
 			case WeaponBehavior::AppearOnAttacker:
 			{
-				goto LABEL_37;
+				return 1;
 			}
 			case WeaponBehavior::AttackAndSelfDestruct:
 			{
-				Unit* sourceUnitVar0 = bullet->sourceUnit;
-				if (!sourceUnitVar0)
+				if (!bullet->sourceUnit)
 				{
-					goto LABEL_37;
+					return 1;
 				}
-				sourceUnitVar0->status |= 0x80000000;
-				Unit* sourceUnitVar1 = bullet->sourceUnit;
-				sourceUnitVar1->userActionFlags |= 4u;
-				helper::orders_SelfDestructing(sourceUnitVar1);
+				bullet->sourceUnit->status |= 0x80000000;
+				bullet->sourceUnit->userActionFlags |= 4u;
+				helper::orders_SelfDestructing(bullet->sourceUnit);
 				return 1;
 			}
 			case WeaponBehavior::Bounce:
@@ -1411,28 +1415,30 @@ LABEL_7:
 				{
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						const u32 dist = scbw::getDistanceFast(bullet->sourceUnit->getX(), bullet->sourceUnit->getY(), bullet->targetPosition.x, bullet->targetPosition.y);
+						const u32 dist = scbw::getDistanceFast(bullet->sourceUnit->position, bullet->targetPosition);
 						if (dist >= 6 * 32)
 						{
 							bullet->remainingBounces = 2;
+						}
+						else
+						{
+							bullet->remainingBounces = 1;
 						}
 					} break;
 					default:
 					{
 						bullet->remainingBounces = 3;
-					} break;
-				}
-LABEL_31:
-				if (targetUnit)
-				{
-					Unit* sourceUnitVar2 = bullet->sourceUnit;
-					if (sourceUnitVar2)
-					{
-						helper::weaponBehaviorCanHitTargetCheck(targetUnit, sourceUnitVar2);
 					}
 				}
-				finalDistanceVar = bullet->attackTarget.pt.y;
-				goto LABEL_36;
+				if (targetUnit)
+				{
+					if (bullet->sourceUnit)
+					{
+						helper::weaponBehaviorCanHitTargetCheck(targetUnit, bullet->sourceUnit);
+					}
+				}
+				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				return 1;
 			}
 			case WeaponBehavior::AttackNearbyArea:
 			{
@@ -1449,8 +1455,7 @@ LABEL_31:
 					offset3x3Plus = 0;
 				}
 				parentVar->offsetIndex3by3 = offset3x3Plus;
-				result = 1;
-				break;
+				return 1;
 			}
 			case WeaponBehavior::GoToMaxRange:
 			{
@@ -1461,18 +1466,11 @@ LABEL_31:
 				angleDistanceVar = parentVar->sprite->position.y + ((u32)(maxRangeVar * angleDistanceVar) >> 16);
 				bullet->attackTarget.pt.y = angleDistanceVar;
 				finalDistanceVar = (s16)angleDistanceVar;
-LABEL_36:
 				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, finalDistanceVar);
-LABEL_37:
-				result = 1;
-				break;
-			}
-			default:
-			{
-				return 0;
+				return 1;
 			}
 		}
-		return result;
+		return 0;
 	}
 
 	// Hooked to investigate weaponsdat extender crashes - Pr0nogo
