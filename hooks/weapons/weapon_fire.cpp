@@ -446,7 +446,7 @@ namespace hooks
 					auto rotate = unitExt->values[ValueSalamanderAtkPos];
 					if (rotate == 1)
 					{
-						hooks::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+						helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 					}
 					else
 					{
@@ -476,7 +476,7 @@ namespace hooks
 				}
 				else
 				{
-					hooks::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}
 			}
 
