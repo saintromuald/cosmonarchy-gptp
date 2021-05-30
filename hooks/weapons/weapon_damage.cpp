@@ -1121,11 +1121,27 @@ namespace hooks
 				} break;
 			}
 
+			// Mind control - energy restore
 			if (attackerExt->units[UnitMindController] != nullptr)
 			{
 				Unit* mindController = attackerExt->units[UnitMindController];
 				mindController->addUnitEnergy(MindControlEnergyGain);
 				mindController->sprite->createUnderlay(ImageId::SmallExplosion_Unused);
+			}
+
+			// Spellcaster - restore energy on ally kill
+			{
+				UnitArray unit_array = search_radial(data.target->position, 11 * 32);
+				unit_array_filter(&unit_array, data.attacker, FilterAlly | FilterSpellcaster);
+
+				for (u32 i = 0; i < unit_array.size; ++i)
+				{
+					Unit* caster = unit_array.units[i];
+					if (scbw::getDistanceFast(data.target->position, caster->position) <= caster->getSightRange() * 32)
+					{
+						caster->healEnergy(5 * 256);
+					}
+				}
 			}
 		}
 	}

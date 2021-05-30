@@ -521,7 +521,7 @@ void Globals::frameHook()
 				case EffectId::SalamanderFire:
 				{
 					UnitArray unit_array = search_radial({(u16)effects[i].position.x, (u16)effects[i].position.y}, effects[i].radius);
-					unit_array_filter(&unit_array, nullptr, SearchFlagsNoAir);
+					unit_array_filter(&unit_array, nullptr, FilterNoAir);
 
 					for (u32 j = 0; j < unit_array.size; j++)
 					{

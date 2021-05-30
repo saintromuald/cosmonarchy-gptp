@@ -80,7 +80,7 @@ namespace scbw
 	{
 		//0: No match, 1: Passed X iteration, 2: Passed Y iteration
 		//(Necessary because each UnitFinderData array has 2 entries per unit)
-		u8 unitSearchFlags[UNIT_ARRAY_LENGTH + 1] = {0};
+		u8 unitFilter[UNIT_ARRAY_LENGTH + 1] = {0};
 
 		s32 r = right, b = bottom;
 		const bool isWidthExtended = right - left - 1 < *MAX_UNIT_WIDTH;
@@ -111,12 +111,12 @@ namespace scbw
 		// Iterate the Y entries of the finder
 		for (UnitFinderData* py = pTop; py < pBottom; ++py)
 		{
-			if (unitSearchFlags[py->unitIndex] == 0)
+			if (unitFilter[py->unitIndex] == 0)
 			{
 				// If height is small, check unit bounds
 				if (!isHeightExtended
 					|| Unit::getFromIndex(py->unitIndex)->getTop() < bottom)
-					unitSearchFlags[py->unitIndex] = 1;
+					unitFilter[py->unitIndex] = 1;
 			}
 		}
 
@@ -124,7 +124,7 @@ namespace scbw
 		this->unitCount = 0;
 		for (UnitFinderData* px = pLeft; px < pRight; ++px)
 		{
-			if (unitSearchFlags[px->unitIndex] == 1)
+			if (unitFilter[px->unitIndex] == 1)
 			{
 				// If width is small, check unit bounds
 				if (!isWidthExtended
@@ -134,7 +134,7 @@ namespace scbw
 					if (unit)
 						this->units[this->unitCount++] = unit;
 				}
-				unitSearchFlags[px->unitIndex] = 0; //Prevent duplicates
+				unitFilter[px->unitIndex] = 0; //Prevent duplicates
 			}
 		}
 	}

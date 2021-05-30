@@ -6,32 +6,32 @@
 // GENERAL NOTES:
 // more performant version of unit finder, with more reasonable syntax
 
-enum SearchFlags
+enum SearchFilter
 {
-	SearchFlagsInvincible		= 1 <<  0,
-	SearchFlagsNoAir			= 1 <<  1,
-	SearchFlagsNoGround			= 1 <<  2,
-	SearchFlagsNoMechanical		= 1 <<  3,
-	SearchFlagsNoOrganic		= 1 <<  4,
-	SearchFlagsNoBuilding		= 1 <<  5,
-	SearchFlagsOnlyOrganic		= 1 <<  6,
-	SearchFlagsOnlyMechanic		= 1 <<  7,
-	SearchFlagsEnemy			= 1 <<  8,
-	SearchFlagsAlly				= 1 <<  9,
-	SearchFlagsIncludingSelf	= 1 << 10,
-	SearchFlagsFrontalArc		= 1 << 11,
-	SearchFlagsSpellcaster		= 1 << 12,
-	SearchFlagsHasEnergy		= 1 << 13,
-	SearchFlagsNotSelf			= 1 << 14,
-	SearchFlagsShielded			= 1 << 15,
-	SearchFlagsEnabled			= 1 << 16,
-	SearchFlagsPowered			= 1 << 17,
-	SearchFlagsCompleted		= 1 << 18,
-	SearchFlagsNoTrap			= 1 << 19,
-	SearchFlagsNoHallucination	= 1 << 20,
-	SearchFlagsCanAttackOrCast	= 1 << 21,
-	SearchFlagsOwn				= 1 << 22,
-	SearchFlagsNotWorker		= 1 << 23,
+	FilterInvincible		= 1 <<  0,
+	FilterNoAir			= 1 <<  1,
+	FilterNoGround			= 1 <<  2,
+	FilterNoMechanical		= 1 <<  3,
+	FilterNoOrganic		= 1 <<  4,
+	FilterNoBuilding		= 1 <<  5,
+	FilterOnlyOrganic		= 1 <<  6,
+	FilterOnlyMechanic		= 1 <<  7,
+	FilterEnemy			= 1 <<  8,
+	FilterAlly				= 1 <<  9,
+	FilterIncludingSelf	= 1 << 10,
+	FilterFrontalArc		= 1 << 11,
+	FilterSpellcaster		= 1 << 12,
+	FilterHasEnergy		= 1 << 13,
+	FilterNotSelf			= 1 << 14,
+	FilterShielded			= 1 << 15,
+	FilterEnabled			= 1 << 16,
+	FilterPowered			= 1 << 17,
+	FilterCompleted		= 1 << 18,
+	FilterNoTrap			= 1 << 19,
+	FilterNoHallucination	= 1 << 20,
+	FilterCanAttackOrCast	= 1 << 21,
+	FilterOwn				= 1 << 22,
+	FilterNotWorker		= 1 << 23,
 };
 
 struct UnitArray
@@ -54,7 +54,7 @@ UnitArray search_rect(Box32 rect);
 UnitArray search_radial(Point16 center, u32 radius);
 inline UnitArray search_square(Point16 center, u32 radius);
 
-void unit_array_filter(UnitArray* unit_array, Unit* center, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, prefer sorting after filter
+void unit_array_filter(UnitArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, prefer sorting after filter
 void unit_array_custom_filter(UnitArray* unit_array, SearchFilterFunc filter); // will break ordering, prefer sorting after filter
 void unit_array_sort(UnitArray* unit_array, SearchScoreFunc score_func);
 void unit_array_sort_by_distance(UnitArray* unit_array, Point16 center);
