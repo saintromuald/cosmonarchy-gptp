@@ -915,7 +915,7 @@ namespace helper
 	s32 bootReason(u8 a1);																					// 004B8870
 	s32 isAuthedMap(void* a1);																				// 004C4870
 	void setTimerFunc();																					// 00472E00
-	s32 getTickCount();																						// 004FE0C4 // CAUSES CRASH when accessed, is it instead a variable to be defined in scbwdata?
+	s32 getTickCount();																						// 004FE0C4
 
 	// For initializeBullet
 	Flingy* initializeFlingy(s32 flingyId, s16 y, s32 x, Flingy* flingy, char player, char angle);			// 00496360
@@ -930,7 +930,8 @@ namespace helper
 	// For AIManageBuildingPlacement
 	s32 getBunkerPlacementPosition(s32 placementId, s32* regionId);											// 004442E0
 	Unit* getDisabledUnitInRange(s32 playerId, Point16 position);											// 00440420
-	void AIGetBuildLocation(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition, s32 maxRange); // 004461B0
+	void AIGetBuildLocation(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition,				// 004461B0
+		s32 maxRange);
 	void AIPlacementDataSomething(s8* placementData, Point16 tryPosition);									// 00443510
 	u32 getTileDistance(s32 x, s32 y, s32 x2, s32 y2);														// 00444100
 
