@@ -161,7 +161,9 @@ namespace hooks
 		}
 
 		// Demiurge - Gods Made Flesh - target is impervious to damage
-		if (targetExt->timers[TimerGodsMadeFlesh] > 0)
+		// Fake bullet handling
+		if (targetExt->timers[TimerGodsMadeFlesh] > 0
+			|| data.weaponId == WeaponId::None)
 		{
 			data.finalDamage = 0;
 			data.damageType = DamageType::Independent;

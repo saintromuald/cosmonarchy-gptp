@@ -1503,7 +1503,7 @@ namespace scbw
 		}
 	}
 
-	Bullet* setMissileSourcePos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset)
+	Bullet* setMissileSourcePos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset, u32 fake_amount)
 	{
 		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr)
 		{
@@ -1527,6 +1527,10 @@ namespace scbw
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
 		Bullet* bullet = helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
+		if (unitExt->values[valueId] < fake_amount)
+		{
+			bullet->hitFlags |= 0x1;
+		}
 		return bullet;
 	}
 

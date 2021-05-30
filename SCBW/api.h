@@ -486,7 +486,6 @@ namespace scbw
 
 	//////////////////////////////////////////////////////////////// @}
 
-	Bullet* setMissileSourcePos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0);
 	void rangeModifiedFire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset);
 	bool canSpawnBroodling(Unit* target);
 	s32 getBroodlingCountFromSupply(Unit* target);

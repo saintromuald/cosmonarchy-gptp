@@ -399,7 +399,7 @@ namespace hooks
 				}
 				else if (weaponId == WeaponId::BurstLasers)
 				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueWraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValueWraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr, 0, 2);
 				}
 				else if (weaponId == WeaponId::CentaurSunchaserMissiles)
 				{
@@ -437,7 +437,7 @@ namespace hooks
 				}
 				else if (weaponId == WeaponId::KeskathalorScreamingVenom)
 				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr, 0, 1);
 				}
 				// Missile spawn positions end
 				else if (weaponId == WeaponId::SalamanderPerditionBarrage)
