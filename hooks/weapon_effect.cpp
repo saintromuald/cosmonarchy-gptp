@@ -431,12 +431,9 @@ namespace hooks
 		{
 			// Searing Acid - Geszithalor behavior
 			UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
-			auto X = bulletSourceExt->values[ValueGeszithalorMissileLaunchPosX];
-			auto Y = bulletSourceExt->values[ValueGeszithalorMissileLaunchPosY];
-			if (X != 0 && Y != 0)
-			{
-				divisor = scbw::getDistanceFast(X, Y, target->getX(), target->getY()) / (32 * 3);
-			}
+			auto X = bulletSourceExt->lastBulletLaunchPos.x;
+			auto Y = bulletSourceExt->lastBulletLaunchPos.y;
+			divisor = scbw::getDistanceFast(X, Y, target->getX(), target->getY()) / (32 * 3);
 		}
 
 		if (bullet->hitFlags & 1) // Miss?

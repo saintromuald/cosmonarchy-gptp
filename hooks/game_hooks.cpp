@@ -1103,11 +1103,11 @@ namespace hooks
 
 				if (unit->mainOrderId == OrderId::Move)
 				{
-					if (unitExt->antlionLastMoveTarget != unit->moveTarget.pt)
+					if (unitExt->anthelionLastMoveTarget != unit->moveTarget.pt)
 					{
 						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 					}
-					unitExt->antlionLastMoveTarget = unit->moveTarget.pt;
+					unitExt->anthelionLastMoveTarget = unit->moveTarget.pt;
 
 					if (unitExt->timers[TimerAnthelionEndlessEclipse] == 1)
 					{

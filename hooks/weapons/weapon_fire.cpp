@@ -369,12 +369,8 @@ namespace hooks
 					unitExt->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
 				}
 
-				// Geszithalor - Searing Acid passive
-				if (weaponId == WeaponId::AcidSpore && unit->sprite)
-				{
-					unitExt->values[ValueGeszithalorMissileLaunchPosX] = unit->getX();
-					unitExt->values[ValueGeszithalorMissileLaunchPosY] = unit->getY();
-				}
+				// Track launch position
+				unitExt->lastBulletLaunchPos = unit->position;
 
 				// Missile spawn positions start
 				if (weaponId == WeaponId::ExemplarPlasmaTorpedo)
@@ -624,7 +620,13 @@ namespace hooks
 			&& bullet->attackTarget.unit->sprite && bullet->sourceUnit->sprite)
 		{
 			Unit* targ = bullet->attackTarget.unit;
-			if (scbw::getDistanceFast(bullet->position.x, bullet->position.y, targ->getX(), targ->getY()) < 3 * 32)
+
+			UnitExt* unitExt = globals.GetUnitExt(bullet->sourceUnit);
+			const u32 distFromSource = scbw::getDistanceFast(bullet->position, unitExt->lastBulletLaunchPos);
+			const u32 distFromTarget = scbw::getDistanceFast(bullet->position, targ->position);
+
+			if (distFromSource > 5 * 32
+				&& distFromTarget < 3 * 32)
 			{
 				if (!globals.multihit_bullet_is_set(bullet))
 				{

@@ -189,8 +189,6 @@ enum ExtValueId
 	ValueAlkajeliskParasitePlayer,
 	ValuePegasusLaserPos,
 	ValuePegasusMissilePos,
-	ValueGeszithalorMissileLaunchPosX,
-	ValueGeszithalorMissileLaunchPosY,
 	ValueSovereignCannonPos,
 	ValueAICloakGimmick,
 	ValueCrucible,
@@ -379,8 +377,9 @@ struct UnitExt
 	u32						damageReceiveTimer;
 	u32						damageDealtTimer;
 	u32						nathrokorTargetStacks[8];
-	Point16					antlionLastMoveTarget;
+	Point16					anthelionLastMoveTarget;
 	Vector32f				repulsionVector;
+	Point16					lastBulletLaunchPos;
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
