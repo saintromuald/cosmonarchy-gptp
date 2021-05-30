@@ -531,7 +531,7 @@ namespace
 			MOV builder, ECX
 			PUSHAD
 		}
-		result == hooks::AIManageBuildingPlacement(builder, unitId, tryPosition, outPosition, areaTiles);
+		result = hooks::AIManageBuildingPlacement(builder, unitId, tryPosition, outPosition, areaTiles);
 		__asm
 		{
 			POPAD
@@ -539,6 +539,24 @@ namespace
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x10
+		}
+	}
+
+	void __declspec(naked) getRegionIdFromUnit_Wrapper() // 0049CB40
+	{
+		static Unit* unit;
+		static s16 result;
+		__asm
+		{
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::getRegionIdFromUnit(unit);
+		__asm
+		{
+			POPAD
+			MOV AX, result
+			RETN
 		}
 	}
 }
@@ -573,6 +591,7 @@ namespace hooks
 		jmpPatch(AI_progressBuild_Wrapper,					0x00434480, 1);
 		jmpPatch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
 //		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
+		jmpPatch(getRegionIdFromUnit_Wrapper,				0x0049CB40, 2);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}

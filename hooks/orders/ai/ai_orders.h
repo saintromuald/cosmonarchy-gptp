@@ -30,6 +30,7 @@ namespace hooks
 	Unit* getClosestEnemyStructure(s32 x, s32 y, s32 playerId);													// 004A0F90
 	s32 AIManageBuildingPlacement(Unit* builder, u32 unitId,													// 004465C0
 		Point16 tryPosition, Point16* outPosition, s32 areaTiles);
+	s16 getRegionIdFromUnit(Unit* unit);																		// 0049CB40
 
 	void injectAIOrdersHooks();
 }
