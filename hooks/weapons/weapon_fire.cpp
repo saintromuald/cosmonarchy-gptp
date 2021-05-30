@@ -1279,7 +1279,6 @@ LABEL_7:
 
 		bullet->srcPlayer = playerId;
 		bullet->someUnitType = 228;
-		bullet->behaviourTypeInternal = 188;
 		bullet->unknown_0x4E = 0;
 		bullet->attackTarget.unit = 0;
 		bullet->attackTarget.pt.y = 0;
@@ -1467,64 +1466,60 @@ LABEL_7:
 	void progressBulletFrames() // 0048C3D0
 	{
 		Bullet* bulletVar = *firstBullet;
-		Bullet* nextBullet = nullptr;
 		Sprite* bulletSprite = nullptr;
 		s32 bulletBehavior = 0;
-		if (firstBullet)
+		Bullet* nextBullet = *firstBullet;
+		while (nextBullet)
 		{
-			do
+			nextBullet = bulletVar->next;
+			*activeIscriptEntity = (Unit*)bulletVar;
+			*activeIscriptBullet = bulletVar;
+			helper::setThingyVisibilityFlags((Thingy*)bulletVar);
+			bulletSprite = bulletVar->sprite;
+			if (bulletSprite)
 			{
-				nextBullet = bulletVar->next;
-				*activeIscriptEntity = (Unit*)bulletVar;
-				*activeIscriptBullet = bulletVar;
-				helper::setThingyVisibilityFlags((Thingy*)bulletVar);
-				bulletSprite = bulletVar->sprite;
-				if (bulletSprite)
+				helper::spriteToIscriptLoop(bulletSprite);
+				if (!bulletVar->sprite->images.head)
 				{
-					helper::spriteToIscriptLoop(bulletSprite);
-					if (!bulletVar->sprite->images.head)
-					{
-						bulletVar->sprite = 0;
-					}
+					bulletVar->sprite = 0;
 				}
-				bulletBehavior = (u8)bulletVar->behaviourTypeInternal;
-				switch (bulletBehavior)
-				{
-					case 0:
-					{
-						helper::bulletBehaviorReassign(bulletBehavior, bulletVar, (s32)bulletVar);
-					} break;
-					case 1:
-					{
-						helper::bulletBehaviorFly(bulletVar);
-					} break;
-					case 2:
-					{
-						helper::bulletBehaviorFollow(bulletVar);
-					} break;
-					case 3:
-					{
-						helper::bulletBehaviorBounce(bulletVar);
-					} break;
-					case 4:
-					{
-						helper::bulletBehaviorPersist(bulletVar);
-					} break;
-					case 5:
-					{
-						helper::bulletBehaviorInstant(bulletVar);
-					} break;
-					case 6:
-					{
-						helper::bulletBehaviorArea(bulletVar);
-					} break;
-					default:
-					{
-					} break;
-				}
-				bulletVar = nextBullet;
 			}
-			while (nextBullet);
+			bulletBehavior = (u8)bulletVar->behaviourTypeInternal;
+			switch (bulletBehavior)
+			{
+				case 0:
+				{
+					helper::bulletBehaviorReassign(bulletBehavior, bulletVar, (s32)bulletVar);
+				} break;
+				case 1:
+				{
+					helper::bulletBehaviorFly(bulletVar);
+				} break;
+				case 2:
+				{
+					helper::bulletBehaviorFollow(bulletVar);
+				} break;
+				case 3:
+				{
+					helper::bulletBehaviorBounce(bulletVar);
+				} break;
+				case 4:
+				{
+					helper::bulletBehaviorPersist(bulletVar);
+				} break;
+				case 5:
+				{
+					helper::bulletBehaviorInstant(bulletVar);
+				} break;
+				case 6:
+				{
+					helper::bulletBehaviorArea(bulletVar);
+				} break;
+				default:
+				{
+				} break;
+			}
+			bulletVar = nextBullet;
 		}
 		*activeIscriptEntity = 0;
 		*activeIscriptBullet = 0;
