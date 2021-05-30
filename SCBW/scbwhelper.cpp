@@ -8677,15 +8677,13 @@ namespace helper
 		return result;
 	}
 
-	void bulletBehaviorReassign(s32 unused, Bullet* bullet, Unit* probablyAlsoUnused)
+	void bulletBehaviorReassign(Bullet* bullet)
 	{
 		const u32 Func_bulletBehaviorReassign = 0x0048BD50;
 		__asm
 		{
 			PUSHAD
-			MOV EDI, probablyAlsoUnused
 			MOV ECX, bullet
-			MOV EAX, unused
 			CALL Func_bulletBehaviorReassign
 			POPAD
 		}
