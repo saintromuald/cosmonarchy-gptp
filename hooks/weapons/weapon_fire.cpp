@@ -1260,7 +1260,7 @@ namespace hooks
 		bullet->attackTarget.pt.y = 0;
 		bullet->attackTarget.pt.x = 0;
 		bullet->unknown_0x4E = 0;
-		helper::bulletBehaviorReassign(weaponId, bullet, parent);
+		hooks::bulletBehaviorReassign(bullet);
 
 		u8 launchSpin = weapons_dat::LaunchSpin[weaponId];
 		if (launchSpin)
@@ -1454,7 +1454,7 @@ namespace hooks
 			{
 				case 0:
 				{
-					helper::bulletBehaviorReassign(bulletBehavior, bulletVar, (Unit*)bulletVar);
+					hooks::bulletBehaviorReassign(bulletVar);
 				} break;
 				case 1:
 				{
