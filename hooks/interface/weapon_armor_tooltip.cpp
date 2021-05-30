@@ -532,6 +532,8 @@ namespace hooks
 			unitExt->timers[TimerControlledDemolition], TimerType::Aise);
 		addStatus(statuses, "Emergency Detonation", -1, 1,
 			unitExt->timers[TimerEmergencyDetonation], TimerType::Aise);
+		addStatus(statuses, "Failure Mode",-1, 1,
+			unitExt->timers[TimerAnticthonFailureMode], TimerType::Aise);
 
 		// Aise Value
 		addStatus(statuses, "Armor Reduction", unitExt->values[ValueArmorReduce], 0);
@@ -571,7 +573,6 @@ namespace hooks
 		// Aise Timers - Gimmicked
 		addStatus(statuses, "Observing", unitExt->timers[TimerObservanceOverlay] > 0, 1);
 		addStatus(statuses, "Dermal Accelerant", unitExt->timers[TimerAlaszilethRegenBoost] > 0, 1);
-		addStatus(statuses, "Failure Mode", unitExt->timers[TimerAnticthonFailureMode] > 0, 1);
 		addStatus(statuses, "Counter-Proposal Active", unitExt->timers[TimerAnticthonRevive] > 0, 1);
 		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh] > 0, 1);
 
