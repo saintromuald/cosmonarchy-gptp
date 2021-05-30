@@ -1405,7 +1405,25 @@ bool Unit::giveTo(u8 playerId)
 	assert(this);
 	assert(playerId < 12);
 
-	return giveUnitToPlayer(this, playerId) != 0;
+	if (giveUnitToPlayer(this, playerId) != 0)
+	{
+		if (!(units_dat::BaseProperty[this->id] & UnitProperty::Building)
+			&& this->id != UnitId::ZergEgg
+			&& this->id != UnitId::ZergLarva)
+		{
+			if (this->pAI != nullptr)
+			{
+				this->orderComputerClear(OrderId::ComputerAI);
+			}
+			else
+			{
+				this->orderComputerClear(units_dat::ReturnToIdleOrder[this->id]);
+			}
+		}
+
+		return true;
+	}
+	return false;
 }
 
 // Identical to function @ 00475A50

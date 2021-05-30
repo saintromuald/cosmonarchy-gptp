@@ -67,15 +67,14 @@ namespace hooks
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
+			else if (unit->pAI != nullptr)
+			{
+				unit->orderComputerClear(OrderId::ComputerAI);
+			}
 			else
-				if (unit->pAI != nullptr)
-				{
-					unit->orderComputerClear(OrderId::ComputerAI);
-				}
-				else
-				{
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
-				}
+			{
+				unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+			}
 		}
 	}
 }
