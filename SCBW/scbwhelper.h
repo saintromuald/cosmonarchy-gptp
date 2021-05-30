@@ -967,6 +967,10 @@ namespace helper
 	void MoveSprite(Sprite* a1, s16 a2, s16 a3);
 	u32 updateUnitSortingInfo(u32 a1, Unit* a2, u32 a3);
 
+	// For bulletBehaviorReassign
+	void playSpriteIscript(Sprite* sprite, char scriptId, s32 bPlay);										// 00499D00
+	Bullet* assignWeaponData(Bullet* bullet, char behaviorType);											// 0048AA80
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

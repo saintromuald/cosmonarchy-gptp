@@ -6083,7 +6083,6 @@ namespace helper
 	}
 
 	// For bulletBehavior_Bounce
-
 	Bullet* changeMovePos(Bullet* a1, s32 a2, s32 a3)
 	{
 		const u32 Func_changeMovePos = 0x00495240;
@@ -9095,6 +9094,37 @@ namespace helper
 			MOV ESI, a2
 			PUSH a3
 			CALL Func_updateUnitSortingInfo
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+	
+	// For bulletBehaviorReassign
+	void playSpriteIscript(Sprite* sprite, char scriptId, s32 bPlay)
+	{
+		const u32 Func_playSpriteIscript = 0x00499D00;
+		__asm
+		{
+			PUSHAD
+			PUSH bPlay
+			PUSH scriptId
+			MOV ECX, sprite
+			CALL Func_playSpriteIscript
+			POPAD
+		}
+	}
+
+	Bullet* assignWeaponData(Bullet* bullet, char behaviorType)
+	{
+		const u32 Func_assignWeaponData = 0x0048AA80;
+		static Bullet* result;
+		__asm
+		{
+			PUSHAD
+			MOV DL, behaviorType
+			MOV EAX, bullet
+			CALL Func_assignWeaponData
 			MOV result, EAX
 			POPAD
 		}
