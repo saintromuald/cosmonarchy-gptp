@@ -706,6 +706,17 @@ namespace hooks
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 						}
+						else if (current_button->reqVar == TechId::FailureMode)
+						{
+							if (unitExt->timers[TimerAnticthonFailureMode])
+							{
+								current_button_state = BUTTON_STATE::Invisible;
+							}
+							else
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+						}
 					}
 
 					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding)

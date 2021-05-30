@@ -8,24 +8,27 @@ namespace hooks
 {
 	void BTNSACT_UseTech(u16 tech, GrpHead* head)
 	{
-		// replacement for proc 0x00423660
+		// replacement for proc 00423660
 		bool TechCapableUnit = false;
 		Unit* firstInList = playersSelections->unit[*ACTIVE_NATION_ID][0];
 		if (firstInList != nullptr)
 		{
-			// initial check for energy-based switch abilities
+			// Initial check for energy-based switch abilities
 			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel
 				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
 			{
 				TechCapableUnit = true;
 
 			}
+
+			// Not sure if Lanifect needs this anymore
 			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect
 				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1)
 			{
 				TechCapableUnit = true;
 
 			}
+
 			if (tech == TechId::LobotomyMine)
 			{
 				TechCapableUnit = true;
@@ -83,7 +86,7 @@ namespace hooks
 			case TechId::EnsnaringBrood:
 			{
 				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
-				buf[0] = 0x99; // new general command
+				buf[0] = 0x99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
@@ -132,8 +135,8 @@ namespace hooks
 			} break;
 			case TechId::TertiaryEyes:
 			{
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 }; // 12
-				buf[0] = 0x99; // new general command
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
+				buf[0] = 0x99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
@@ -144,9 +147,9 @@ namespace hooks
 			{
 				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossMindTyrant)
 				{
-					s32 action = 1; // on
-					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
-					buf[0] = 0x99; // new general command
+					s32 action = 1;
+					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0};
+					buf[0] = 0x99;
 					buf[1] = NewGameCommand::GenericSwitchAbility;
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
@@ -155,9 +158,9 @@ namespace hooks
 				}
 				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranWyvern)
 				{
-					s32 action = 1; // on
-					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
-					buf[0] = 0x99; // new general command
+					s32 action = 1;
+					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0};
+					buf[0] = 0x99;
 					buf[1] = NewGameCommand::GenericSwitchAbility;
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
@@ -167,15 +170,25 @@ namespace hooks
 				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergAkistrokor
 					|| playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergSovroleth)
 				{
-					s32 action = 1; // on
-					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
-					buf[0] = 0x99; // new general command
+					s32 action = 1;
+					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0};
+					buf[0] = 0x99;
 					buf[1] = NewGameCommand::GenericSwitchAbility;
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
 					buf[4] = RustId::CancelAttachment;
 					helper::QueueGameCommand(buf, 0xc);
 				}
+			} break;
+			case TechId::FailureMode:
+			{
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				buf[0] = 0x99;
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = 1;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = RustId::CastFailureMode;
+				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::ControlledDemolition:
 			{
@@ -200,21 +213,21 @@ namespace hooks
 			case TechId::PlanetCracker:
 			{
 				auto firstInList = clientSelectionGroup->unit[0];
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
-				buf[0] = 0x99; // new general command
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				buf[0] = 0x99;
 				buf[1] = NewGameCommand::IssueCTFCop2;
 				buf[2] = *ACTIVE_PLAYER_ID;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::SublimeShepherd:
 			{
-				s32 action = 1; // on
+				s32 action = 1;
 				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
 				{
-					action = 0; // off
+					action = 0;
 				}
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
-				buf[0] = 0x99; // new general command
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				buf[0] = 0x99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
@@ -223,8 +236,8 @@ namespace hooks
 			} break;
 			case TechId::LazarusAgent:
 			{
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
-				buf[0] = 0x99; // new general command
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				buf[0] = 0x99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
@@ -233,13 +246,13 @@ namespace hooks
 			} break;
 			case TechId::TempoChange:
 			{
-				s32 action = 1; // on
+				s32 action = 1;
 				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleTempoChange) == 1)
 				{
-					action = 0; // off
+					action = 0;
 				}
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
-				buf[0] = 0x99; // new general command
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				buf[0] = 0x99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
@@ -261,13 +274,13 @@ namespace hooks
 			} break;
 			case TechId::DisruptionWeb:
 			{
-				s32 action = 1; // on
+				s32 action = 1;
 				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1)
 				{
-					action = 0; // off
+					action = 0;
 				}
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
-				buf[0] = 0x99; // new general command
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				buf[0] = 0x99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;

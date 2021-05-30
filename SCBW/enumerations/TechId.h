@@ -53,7 +53,8 @@ namespace TechId {
 		// Cosmonarchy \\
 
 	// Shared
-		CancelNewAbiliity		= 26, // For Land Grab, Mind Control, Enthralling Assault
+		FailureMode				= 23, // Anticthon ability
+		CancelNewAbiliity		= 26, // For Land Grab, Mind Control, Enthralling Assault, Conjoining Root
 		AuralAssault			= 30, // Luminary blinding ability
 
 	// Terran
