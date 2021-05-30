@@ -1341,12 +1341,10 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							/*
-							else if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Bactalisk Biogenesis passive
-								current_button->iconID == IconId::ZergAdvancedBuildings) {
+							else if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Bactalisk Caustic Fission passive
+								current_button->iconID == IconId::AcidSpore) {
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							*/
 							else if ((*activePortraitUnit)->id == UnitId::ZergLiiralisk && // Liiralisk Lithe Organelle passive
 								current_button->iconID == IconId::AcidSpore)
 							{
