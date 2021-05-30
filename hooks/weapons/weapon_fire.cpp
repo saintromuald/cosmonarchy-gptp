@@ -1401,8 +1401,8 @@ LABEL_7:
 				{
 					return 1;
 				}
-				bullet->sourceUnit->status |= 0x80000000;
-				bullet->sourceUnit->userActionFlags |= 4u;
+				bullet->sourceUnit->status |= UnitStatus::IsSelfDestructing;
+				bullet->sourceUnit->userActionFlags |= 0x4;
 				helper::orders_SelfDestructing(bullet->sourceUnit);
 				return 1;
 			}
