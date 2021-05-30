@@ -79,26 +79,30 @@ UnitArray search_rect(Box32 rect)
 	{
 		for (u32 y = y1; y < y2; y++)
 		{
-			// check if tile is entirely covered by the area
-			const Box32 tile_rect =
-			{
-				x * CELL_PX_SIZE,
-				y * CELL_PX_SIZE,
-				x * CELL_PX_SIZE + CELL_PX_SIZE,
-				y * CELL_PX_SIZE + CELL_PX_SIZE
-			};
-			const bool tileIsFullyCovered = is_rect_in_rect(tile_rect, rect);
-
-			// check which units are in the area
+			// check if tile is worth evaluating
 			UnitArray* current_array = &unit_grid[x][y];
-			for (u32 i = 0; i < current_array->size; i++)
+			if (current_array->size)
 			{
-				Unit* unit = current_array->units[i];
-				if (!tileIsFullyCovered && !is_point_in_rect(unit->position, rect))
+				// check if tile is entirely covered by the area
+				const Box32 tile_rect =
 				{
-					continue;
+					x * CELL_PX_SIZE,
+					y * CELL_PX_SIZE,
+					x * CELL_PX_SIZE + CELL_PX_SIZE,
+					y * CELL_PX_SIZE + CELL_PX_SIZE
+				};
+				const bool tileIsFullyCovered = is_rect_in_rect(tile_rect, rect);
+
+				// check which units are in the area
+				for (u32 i = 0; i < current_array->size; i++)
+				{
+					Unit* unit = current_array->units[i];
+					if (!tileIsFullyCovered && !is_point_in_rect(unit->position, rect))
+					{
+						continue;
+					}
+					unit_array_add(&unit_array, unit);
 				}
-				unit_array_add(&unit_array, unit);
 			}
 		}
 	}
@@ -139,24 +143,28 @@ UnitArray search_radial(Point16 center, u32 radius)
 	{
 		for (u32 y = y1; y < y2; y++)
 		{
-			// check if tile is entirely covered by the area
-			const Point16 tile_center =
-			{
-				x * CELL_PX_SIZE + CELL_PX_SIZE / 2,
-				y * CELL_PX_SIZE + CELL_PX_SIZE / 2
-			};
-			const bool tileIsFullyCovered = scbw::getDistanceFast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
-
-			// check which units are in the area
+			// check if tile is worth evaluating
 			UnitArray* current_array = &unit_grid[x][y];
-			for (u32 i = 0; i < current_array->size; i++)
+			if (current_array->size)
 			{
-				Unit* unit = current_array->units[i];
-				if (!tileIsFullyCovered && scbw::getDistanceFast(center, unit->position) > radius)
+				// check if tile is entirely covered by the area
+				const Point16 tile_center =
 				{
-					continue;
+					x * CELL_PX_SIZE + CELL_PX_SIZE / 2,
+					y * CELL_PX_SIZE + CELL_PX_SIZE / 2
+				};
+				const bool tileIsFullyCovered = scbw::getDistanceFast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
+
+				// check which units are in the area
+				for (u32 i = 0; i < current_array->size; i++)
+				{
+					Unit* unit = current_array->units[i];
+					if (!tileIsFullyCovered && scbw::getDistanceFast(center, unit->position) > radius)
+					{
+						continue;
+					}
+					unit_array_add(&unit_array, unit);
 				}
-				unit_array_add(&unit_array, unit);
 			}
 		}
 	}
