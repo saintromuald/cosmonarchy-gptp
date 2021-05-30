@@ -1171,12 +1171,12 @@ namespace hooks
 		Bullet* nextBulletVar;
 
 		pBullet = *firstFreeBullet;
-		if (!firstFreeBullet)
+		if (!*firstFreeBullet)
 		{
 			return 0;
 		}
 		parentStatus = parent->status;
-		if ((parentStatus & 0x8000) != 0)
+		if (parentStatus & UnitStatus::CanNotAttack)
 		{
 			switch (weaponId)
 			{
@@ -1204,16 +1204,14 @@ namespace hooks
 				case WeaponId::OpticalFlare:
 				case WeaponId::Maelstrom:
 				{
-					goto LABEL_7;
+					// it will just continue
 				}
 				default:
 				{
 					return 0;
 				}
 			}
-			return 0;
 		}
-LABEL_7:
 		if (!*firstFreeBullet)
 		{
 			return 0;
@@ -1244,7 +1242,7 @@ LABEL_7:
 		firstBulletVar = *firstBullet;
 		if (*firstBullet)
 		{
-			if (lastBullet == firstBullet)
+			if (*lastBullet == *firstBullet)
 			{
 				*lastBullet = pBullet;
 			}
