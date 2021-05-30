@@ -64,7 +64,7 @@ bool is_rect_in_rect(Box32 inner, Box32 outer)
 		&& inner.bottom <= outer.bottom;
 }
 
-UnitArray search_rect(Box32 rect)
+UnitArray unit_search_rect(Box32 rect)
 {
 	rect = scbw::clampRect(rect);
 	UnitArray unit_array;
@@ -110,9 +110,9 @@ UnitArray search_rect(Box32 rect)
 	return unit_array;
 }
 
-UnitArray search_square(Point16 center, u32 radius)
+UnitArray unit_search_square(Point16 center, u32 radius)
 {
-	return search_rect({
+	return unit_search_rect({
 		center.x - (s32)radius,
 		center.y - (s32)radius,
 		center.x + (s32)radius,
@@ -120,7 +120,7 @@ UnitArray search_square(Point16 center, u32 radius)
 	});
 }
 
-UnitArray search_radial(Point16 center, u32 radius)
+UnitArray unit_search_radial(Point16 center, u32 radius)
 {
 	UnitArray unit_array;
 	unit_array.size = 0;

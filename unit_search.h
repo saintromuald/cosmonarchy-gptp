@@ -50,9 +50,9 @@ void unit_array_remove(UnitArray* array, u32 index); // will preserve order
 // optional allowance of lambdas is pretty handy, since most of behaviors need adhoc adjustments
 using SearchFilterFunc = std::function<bool(Unit*)>;
 using SearchScoreFunc = std::function<u32(Unit*)>;
-UnitArray search_rect(Box32 rect);
-UnitArray search_radial(Point16 center, u32 radius);
-inline UnitArray search_square(Point16 center, u32 radius);
+UnitArray unit_search_rect(Box32 rect);
+UnitArray unit_search_radial(Point16 center, u32 radius);
+inline UnitArray unit_search_square(Point16 center, u32 radius);
 
 void unit_array_filter(UnitArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, prefer sorting after filter
 void unit_array_custom_filter(UnitArray* unit_array, SearchFilterFunc filter); // will break ordering, prefer sorting after filter

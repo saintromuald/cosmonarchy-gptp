@@ -1131,7 +1131,7 @@ namespace hooks
 
 			// Spellcaster - restore energy on ally kill
 			{
-				UnitArray unit_array = search_radial(data.target->position, 11 * 32);
+				UnitArray unit_array = unit_search_radial(data.target->position, 11 * 32);
 				unit_array_filter(&unit_array, data.attacker, FilterAlly | FilterSpellcaster);
 
 				for (u32 i = 0; i < unit_array.size; ++i)
