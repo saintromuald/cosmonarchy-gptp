@@ -1439,19 +1439,17 @@ LABEL_7:
 			}
 			case WeaponBehavior::AttackNearbyArea:
 			{
-				s16 offset3x3 = parentVar->offsetIndex3by3;
-				s32 compileOffset3x3 = (u8)offset3x3;
-				bullet->cyclicMissileIndex = offset3x3;
-				bullet->attackTarget.pt.x -= (s16)attackCurve[compileOffset3x3].x;
-				bullet->attackTarget.pt.y -= (s16)attackCurve[compileOffset3x3].y;
+				bullet->cyclicMissileIndex = parentVar->offsetIndex3by3;
+				bullet->attackTarget.pt.x -= (s16)attackCurve[parentVar->offsetIndex3by3].x;
+				bullet->attackTarget.pt.y -= (s16)attackCurve[parentVar->offsetIndex3by3].y;
 				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 
-				s16 offset3x3Plus = offset3x3 + 1;
-				if (!attackCurve[offset3x3Plus].x)
+				s16 finalOffset = parentVar->offsetIndex3by3 + 1;
+				if (!attackCurve[finalOffset].x)
 				{
-					offset3x3Plus = 0;
+					finalOffset = 0;
 				}
-				parentVar->offsetIndex3by3 = offset3x3Plus;
+				parentVar->offsetIndex3by3 = finalOffset;
 				return 1;
 			}
 			case WeaponBehavior::GoToMaxRange:
