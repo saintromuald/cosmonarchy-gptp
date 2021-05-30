@@ -1966,4 +1966,13 @@ LABEL_36:
 		outPosition->y = 32 * v41 + units_dat::BuildingDimensions[v28].y / 2;
 		return 1;
 	}
+
+	s16 getRegionIdFromUnit(Unit* unit) // 0049CB40
+	{
+		if (unit == nullptr || unit->sprite == nullptr)
+		{
+			return 0;
+		}
+		return helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y);
+	}
 }
