@@ -1289,11 +1289,10 @@ LABEL_7:
 		bullet->unknown_0x54 = 0;
 		bullet->weaponId = weaponId;
 		bullet->time_remaining = weapons_dat::RemoveAfter[weaponId];
-		char bulletMovementFlags = bullet->movementFlags | 8;
 		bullet->someUnitType = 228;
 		bullet->remainingBounces = 0;
 		bullet->hitFlags = 0;
-		bullet->movementFlags = bulletMovementFlags;
+		bullet->movementFlags |= MovementFlags::StartingAttack;
 		bullet->behaviourTypeInternal = 0;
 		bullet->attackTarget.unit = 0;
 		bullet->attackTarget.pt.y = 0;
@@ -1358,8 +1357,6 @@ LABEL_7:
 			bullet->attackTarget.pt.y = parentVar->orderTarget.pt.y;
 		}
 
-		s32 angleDistanceVar;
-		s32 finalDistanceVar;
 		switch (weapons_dat::Behavior[weaponId])
 		{
 			case WeaponBehavior::Fly_DoNotFollowTarget:
@@ -1459,14 +1456,11 @@ LABEL_7:
 			}
 			case WeaponBehavior::GoToMaxRange:
 			{
-				s32 bulletDirection = (u8)bullet->direction1;
-				angleDistanceVar = angleDistance[bulletDirection].y;
-				s32 maxRangeVar = (weapons_dat::MaxRange[(u8)bullet->weaponId] + 20) << 8;
+				s32 bulletDirection = bullet->direction1;
+				s32 maxRangeVar = (weapons_dat::MaxRange[bullet->weaponId] + 20) << 8;
 				bullet->attackTarget.pt.x = parentVar->sprite->position.x + ((u32)(maxRangeVar * angleDistance[bulletDirection].x) >> 16);
-				angleDistanceVar = parentVar->sprite->position.y + ((u32)(maxRangeVar * angleDistanceVar) >> 16);
-				bullet->attackTarget.pt.y = angleDistanceVar;
-				finalDistanceVar = (s16)angleDistanceVar;
-				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, finalDistanceVar);
+				bullet->attackTarget.pt.y = parentVar->sprite->position.y + ((u32)(maxRangeVar * angleDistance[bulletDirection].y) >> 16);
+				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 				return 1;
 			}
 		}
