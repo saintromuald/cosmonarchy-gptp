@@ -921,8 +921,8 @@ namespace hooks
 		char nextBounce;
 		Unit* target;
 		Image* i;
-		Unit* posY;
-		Sprite* posX;
+		Unit* target_unit;
+		Sprite* sprite;
 		Image* j;
 
 		v1 = bullet->attackTarget.unit;
@@ -959,22 +959,22 @@ namespace hooks
 				{
 					globals.remove_multihit_bullet(bullet);
 				}
-				posY = bullet->attackTarget.unit;
+				target_unit = bullet->attackTarget.unit;
 				bullet->behaviourTypeInternal = 5;
-				if (posY)
+				if (target_unit)
 				{
-					bullet->attackTarget.pt.x = posY->sprite->position.x;
-					bullet->attackTarget.pt.y = posY->sprite->position.y;
+					bullet->attackTarget.pt.x = target_unit->sprite->position.x;
+					bullet->attackTarget.pt.y = target_unit->sprite->position.y;
 				}
 				else
 				{
 					bullet->attackTarget.unit = 0;
 				}
-				posX = bullet->sprite;
+				sprite = bullet->sprite;
 				bullet->unknown_0x4E = 0;
 				bullet->someUnitType = UnitId::None;
 
-				for (j = posX->images.head; j; j = j->link.next)
+				for (j = sprite->images.head; j; j = j->link.next)
 				{
 					helper::playImageIscript(j, IscriptAnimation::Death);
 				}
