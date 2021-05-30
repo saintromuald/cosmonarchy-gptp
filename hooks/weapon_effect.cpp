@@ -451,37 +451,20 @@ namespace hooks
 			helper::doWeaponHit(target, bullet->sourceUnit, divisor);
 			return;
 		}
-
 		else
 		{
 			if (weapons_dat::Behavior[weaponId] == WeaponBehavior::Bounce)
 			{
-				bool mutalisk = true;
-				bool bounces = true;
-				if (bullet != nullptr && bullet->sourceUnit != nullptr)
+				if (bullet)
 				{
-					if (bullet->sourceUnit->id == 129)
+					if (bullet->sourceUnit && bullet->sourceUnit->id == UnitId::ZergBactalisk)
 					{
-						if (bullet->remainingBounces <= 1)
-						{
-							mutalisk = false;
-						}
-						else
-						{
-							bounces = false;
-						}
-					}
-				}
-				if (bounces)
-				{
-					if (mutalisk)
-					{
-						s32 bounceCount = 2;
-						divisor = bounceCount - bullet->remainingBounces;
+						divisor = 1;
 					}
 					else
 					{
-						divisor *= 3;
+						const s32 bounceCount = 2;
+						divisor = bounceCount - bullet->remainingBounces;
 					}
 				}
 			}
