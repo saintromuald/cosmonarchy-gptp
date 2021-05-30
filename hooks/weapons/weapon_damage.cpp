@@ -430,7 +430,7 @@ namespace hooks
 				{
 					case 0:
 					{
-						mul = 1.0;
+						mul = 1.0; // original attack
 					} break;
 					case 1:
 					{
@@ -438,7 +438,7 @@ namespace hooks
 					} break;
 					case 2:
 					{
-						mul = 1.0 / 6.0;
+						mul = 1.0 / 6.0; // 2nd bounce
 					} break;
 					default:
 					{
@@ -456,7 +456,7 @@ namespace hooks
 					divisor = 1;
 					scbw::printf("Incorrect weapon hit %d", data.weaponId);
 				}
-				data.finalDamage = data.finalDamage / divisor + (targetExt->values[ValueCorrosiveTouchStacks]* VithriliskCorrosiveTouchArmorReduction);
+				data.finalDamage = data.finalDamage / divisor + (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction);
 			}
 		}
 

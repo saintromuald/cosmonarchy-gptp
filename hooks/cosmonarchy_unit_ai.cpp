@@ -456,7 +456,9 @@ void cosmonarchyUnitAi(Unit* unit)
 					bool targetHasMinRange = false;
 					if (localUnit->orderTarget.unit)
 					{
-						if (localUnit->orderTarget.unit->id == UnitId::ZergGeszithalor)
+						if (localUnit->orderTarget.unit->id == UnitId::ZergGeszithalor
+							|| localUnit->orderTarget.unit->id == UnitId::ZergBactalisk
+							|| localUnit->orderTarget.unit->id == UnitId::ProtossArchitect)
 						{
 							targetHasMinRange = true;
 						}

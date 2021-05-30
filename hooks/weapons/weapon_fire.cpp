@@ -1374,7 +1374,7 @@ namespace hooks
 				{
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						const u32 dist = scbw::getDistanceFast(bullet->sourceUnit->position, bullet->targetPosition);
+						const u32 dist = scbw::getDistanceFast(bullet->sourceUnit->position, bullet->attackTarget.pt);
 						if (dist >= 6 * 32)
 						{
 							bullet->remainingBounces = 2;
