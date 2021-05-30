@@ -416,7 +416,7 @@ namespace hooks
 			} break;
 			case WeaponId::AcidSpore:
 			{
-				// Searing Acid - Guardian behavior
+				// Searing Acid - Geszithalor behavior
 				data.finalDamage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
 			} break;
 			case WeaponId::SouthpawUppercutLaser:

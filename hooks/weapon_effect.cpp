@@ -429,6 +429,7 @@ namespace hooks
 			&& bullet->sourceUnit->sprite
 			&& target->sprite)
 		{
+			// Searing Acid - Geszithalor behavior
 			UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
 			auto X = bulletSourceExt->values[ValueGeszithalorMissileLaunchPosX];
 			auto Y = bulletSourceExt->values[ValueGeszithalorMissileLaunchPosY];
