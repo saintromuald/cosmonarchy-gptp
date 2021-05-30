@@ -1524,15 +1524,16 @@ namespace hooks
 					{
 						helper::assignWeaponData(bullet, 2);
 						helper::playSpriteIscript(bullet->sprite, 2, 1);
-					} goto LABEL_27;
+					}  break;
 					case WeaponBehavior::Bounce:
 					{
 						helper::assignWeaponData(bullet, 3);
 						helper::playSpriteIscript(bullet->sprite, 2, 1);
-					} goto LABEL_27;
+					}  break;
 					case WeaponBehavior::PersistOnTargetSite:
 					{
 						helper::assignWeaponData(bullet, 4);
+						Image* bulletOverlay = nullptr;
 						bulletOverlay = bullet->sprite->images.head;
 						if (bulletOverlay)
 						{
@@ -1542,13 +1543,12 @@ namespace hooks
 								bulletOverlay = bulletOverlay->link.next;
 							}
 							while (bulletOverlay);
-							goto LABEL_27;
 						}
 					} break;
 					case WeaponBehavior::AttackNearbyArea:
 					{
 						helper::assignWeaponData(bullet, 6);
-						bulletOverlay = bullet->sprite->images.head;
+						Image* bulletOverlay = bullet->sprite->images.head;
 						if (bulletOverlay)
 						{
 							do
@@ -1557,13 +1557,12 @@ namespace hooks
 								bulletOverlay = bulletOverlay->link.next;
 							}
 							while (bulletOverlay);
-							goto LABEL_27;
 						}
 					} break;
 					default:
 					{
 						helper::assignWeaponData(bullet, 1);
-						bulletOverlay = bullet->sprite->images.head;
+						Image* bulletOverlay = bullet->sprite->images.head;
 						if (bulletOverlay)
 						{
 							do
@@ -1572,11 +1571,10 @@ namespace hooks
 								bulletOverlay = bulletOverlay->link.next;
 							}
 							while (bulletOverlay);
-							goto LABEL_27;
 						}
 					} break;
 				}
-			LABEL_27:
+
 				switch (bullet->behaviourTypeInternal)
 				{
 					case 0:
@@ -1612,7 +1610,8 @@ namespace hooks
 						return;
 					}
 				}
-			} break;
+			}
+			break;
 		}
 	}
 
