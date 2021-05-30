@@ -839,7 +839,6 @@ namespace scbw
 
 	bool moveUnitForce(Unit* unit, s16 x, s16 y)
 	{
-		prepareUnitMove(unit);
 		hooks::MoveUnit(unit, x, y, true);
 		return true;
 	}
