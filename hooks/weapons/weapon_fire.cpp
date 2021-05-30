@@ -100,7 +100,7 @@ namespace hooks
 			posY = attacker->getY();
 		}
 		auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
-		helper::createBullet(weaponId, attacker, posX, posY, attacker->playerId, newAngle);
+		hooks::createBullet(weaponId, attacker, posX, posY, attacker->playerId, newAngle);
 		if (attackerExt->values[ValueDeconstruction])
 		{
 			scbw::doDeconstructionDamage(attacker, weaponId, false);
@@ -446,7 +446,7 @@ namespace hooks
 					auto rotate = unitExt->values[ValueSalamanderAtkPos];
 					if (rotate == 1)
 					{
-						helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+						hooks::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 					}
 					else
 					{
@@ -476,7 +476,7 @@ namespace hooks
 				}
 				else
 				{
-					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					hooks::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}
 			}
 
@@ -575,8 +575,7 @@ namespace hooks
 					[&](Unit* unit)
 				{
 					return alkajSporeMatch(bullet, unit);
-				}
-				);
+				});
 				if (seekTarget != nullptr)
 				{
 					bullet->attackTarget.unit = seekTarget;
@@ -597,6 +596,7 @@ namespace hooks
 		{
 			helper::progressBulletMovement_func(bullet);
 		}
+
 		u8 time = bullet->time_remaining--;
 		if (bullet->weaponId == WeaponId::AlkajeliskParasiticSpores)
 		{
@@ -654,7 +654,7 @@ namespace hooks
 						}
 						bullet->sourceUnit->orderTarget.unit = target;
 						auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y, target->getX(), target->getY());
-						auto newBullet = helper::createBullet(WeaponId::ArchitectDispersiveSalvo,
+						auto newBullet = hooks::createBullet(WeaponId::ArchitectDispersiveSalvo,
 							bullet->sourceUnit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
 						if (newBullet)
 						{
@@ -669,6 +669,7 @@ namespace hooks
 				}
 			}
 		}
+
 		if (time == 0 || (bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y))
 		{
 			bEnd = true;
@@ -772,7 +773,7 @@ namespace hooks
 		// for missiles hitting targets mid-flight
 		else if (scbw::weaponPiercesTargets(bullet->weaponId))
 		{
-			u32 range;
+			u32 range = 0;
 			switch (bullet->weaponId)
 			{
 				case WeaponId::KalkaliskViscousAcid:
@@ -894,7 +895,7 @@ namespace hooks
 		{
 			target = bullet->attackTarget.unit;
 			bullet->behaviourTypeInternal = 5;
-			if (target != nullptr)
+			if (target != nullptr && target->sprite != nullptr)
 			{
 				bullet->attackTarget.pt.x = target->sprite->position.x;
 				bullet->attackTarget.pt.y = target->sprite->position.y;
@@ -1159,7 +1160,6 @@ namespace hooks
 	}
 
 	// Hooked to stop Valkyries from being cucked by lardcode - Pr0nogo
-	// Current causes crashes, disabled for now
 	Bullet* createBullet(s32 weaponId, Unit* parent, s32 x, s16 y, char playerId, s32 angle) // 0048C260
 	{
 		Bullet* pBullet;
@@ -1177,39 +1177,7 @@ namespace hooks
 		parentStatus = parent->status;
 		if (parentStatus & UnitStatus::CanNotAttack)
 		{
-			switch (weaponId)
-			{
-				case WeaponId::SpiderMines:
-				case WeaponId::Lockdown:
-				case WeaponId::EMP_Shockwave:
-				case WeaponId::Irradiate:
-				case WeaponId::Venom_Unused_Defiler:
-				case WeaponId::Venom_Unused_Defiler_Hero:
-				case WeaponId::Suicide_InfestedTerran:
-				case WeaponId::Parasite:
-				case WeaponId::SpawnBroodlings:
-				case WeaponId::Ensnare:
-				case WeaponId::DarkSwarm:
-				case WeaponId::Plague:
-				case WeaponId::Consume:
-				case WeaponId::PsiAssault_Normal_Unused:
-				case WeaponId::PsiAssault_Tassadar_Aldaris:
-				case WeaponId::Scarab:
-				case WeaponId::StasisField:
-				case WeaponId::PsiStorm:
-				case WeaponId::Restoration:
-				case WeaponId::MindControl:
-				case WeaponId::Feedback:
-				case WeaponId::OpticalFlare:
-				case WeaponId::Maelstrom:
-				{
-					// it will just continue
-				}
-				default:
-				{
-					return 0;
-				}
-			}
+			return 0;
 		}
 		if (!*firstFreeBullet)
 		{
@@ -1277,7 +1245,7 @@ namespace hooks
 		bullet->srcPlayer = playerId;
 		bullet->someUnitType = 228;
 		bullet->unknown_0x4E = 0;
-		bullet->attackTarget.unit = 0;
+		bullet->attackTarget.unit = nullptr;
 		bullet->attackTarget.pt.y = 0;
 		bullet->attackTarget.pt.x = 0;
 		bullet->unknown_0x54 = 0;
@@ -1288,11 +1256,11 @@ namespace hooks
 		bullet->hitFlags = 0;
 		bullet->movementFlags |= MovementFlags::StartingAttack;
 		bullet->behaviourTypeInternal = 0;
-		bullet->attackTarget.unit = 0;
+		bullet->attackTarget.unit = nullptr;
 		bullet->attackTarget.pt.y = 0;
 		bullet->attackTarget.pt.x = 0;
 		bullet->unknown_0x4E = 0;
-		helper::bulletBehaviorReassign(weaponId, bullet, (s32)parent);
+		helper::bulletBehaviorReassign(weaponId, bullet, parent);
 
 		u8 launchSpin = weapons_dat::LaunchSpin[weaponId];
 		if (launchSpin)
@@ -1321,7 +1289,7 @@ namespace hooks
 		}
 
 		bullet->sourceUnit = parent;
-		if (units_dat::BaseProperty[(u16)parent->id] & UnitProperty::Subunit)
+		if (units_dat::BaseProperty[parent->id] & UnitProperty::Subunit)
 		{
 			bullet->sourceUnit = parent->subunit;
 		}
@@ -1333,7 +1301,7 @@ namespace hooks
 		{
 			bullet->hitFlags |= 2u;
 		}
-		bullet->nextBounceUnit = 0;
+		bullet->nextBounceUnit = nullptr;
 
 		Unit* targetUnit = parent->orderTarget.unit;
 		if (targetUnit)
@@ -1356,11 +1324,11 @@ namespace hooks
 			case WeaponBehavior::Fly_DoNotFollowTarget:
 			case WeaponBehavior::Fly_FollowTarget:
 			{
-				if (targetUnit)
+				if (targetUnit != nullptr)
 				{
-					if (bullet->sourceUnit)
+					if (parent != nullptr)
 					{
-						helper::weaponBehaviorCanHitTargetCheck(targetUnit, bullet->sourceUnit);
+						helper::weaponBehaviorCanHitTargetCheck(targetUnit, parent);
 					}
 				}
 				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
@@ -1486,7 +1454,7 @@ namespace hooks
 			{
 				case 0:
 				{
-					helper::bulletBehaviorReassign(bulletBehavior, bulletVar, (s32)bulletVar);
+					helper::bulletBehaviorReassign(bulletBehavior, bulletVar, (Unit*)bulletVar);
 				} break;
 				case 1:
 				{
@@ -1521,6 +1489,7 @@ namespace hooks
 		*activeIscriptEntity = 0;
 		*activeIscriptBullet = 0;
 	}
+
 
 	/*
 	s32 writeBullets(FILE* hFile) {
