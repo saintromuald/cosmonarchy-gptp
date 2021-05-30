@@ -13,7 +13,7 @@ namespace hooks
 
 		bool bStopBigLoop = false;
 		bool bKeepForEmptyListCase = false;
-		bool bDontAddToList = false;
+		bool dontAddToList = false;
 		backup_current_unit = nullptr;
 
 		// if unit not null, become first entry of unit_list
@@ -57,14 +57,14 @@ namespace hooks
 							// if the unit is already in the list, skip it
 							if (unit_list[index] == current_unit)
 							{
-								bDontAddToList = true;
+								dontAddToList = true;
 							}
 						}
-						while (index != 0 && !bDontAddToList);
+						while (index != 0 && !dontAddToList);
 					}
 				}
 
-				if (!bDontAddToList)
+				if (!dontAddToList)
 				{
 					// 0046F161
 					// if the unit sprite is visible, perform additionnal visibility test, else skip the unit
@@ -75,21 +75,21 @@ namespace hooks
 						{
 							if (!(current_unit->visibilityStatus & *VISIBILITY_CHECK_0057F0B0))
 							{
-								bDontAddToList = true;
+								dontAddToList = true;
 							}
 						}
 					}
 					else
 					{
-						bDontAddToList = true;
+						dontAddToList = true;
 					}
 
-					if (!bDontAddToList)
+					if (!dontAddToList)
 					{
 						// 0046F18C
 						if (helper::unit_isUnselectable(current_unit->id))
 						{
-							bDontAddToList = true;
+							dontAddToList = true;
 						}
 						else if (!helper::unit_IsStandardAndMovable(current_unit))
 						{
@@ -111,12 +111,12 @@ namespace hooks
 								// all units should belong to the same player (the one owning the clicked unit)
 								if (unit->playerId != current_unit->playerId)
 								{
-									bDontAddToList = true;
+									dontAddToList = true;
 								}
 								// select only units with same Id
 								else if (unit->id != current_unit->id)
 								{
-									bDontAddToList = true;
+									dontAddToList = true;
 								}
 								else
 								{
@@ -130,12 +130,18 @@ namespace hooks
 									// burrowed state differ from the one of unit.
 									if (mixed_flags & UnitStatus::Burrowed)
 									{
-										bDontAddToList = true;
+										dontAddToList = true;
+									}
+
+									// Same thing for hallucinations
+									if (mixed_flags & UnitStatus::IsHallucination)
+									{
+										dontAddToList = true;
 									}
 								}
 							}
 
-							if (!bDontAddToList)
+							if (!dontAddToList)
 							{
 								// 0046F203
 								// 0x0046F208 (use of SELECTION_ARRAY_LENGTH)
@@ -166,7 +172,7 @@ namespace hooks
 			units_in_bounds += 1; // this actually advance by 4 bytes
 			current_unit = *units_in_bounds;
 			bKeepForEmptyListCase = false;
-			bDontAddToList = false;
+			dontAddToList = false;
 
 			// continue until current_unit is nullptr
 			if (current_unit == nullptr)
