@@ -21,7 +21,7 @@ static UnitArray unit_grid[CELL_COUNT][CELL_COUNT];
 // it would eat so much memory, it probably wouldn't be worth it
 // performance wise
 
-// BINARY SEARCHED BASED (unit finder had it, badly implemented though):
+// BINARY SEARCH BASED (unit finder had it, badly implemented though):
 // - has to sort whole unit array by X and Y
 // - always results in O(n) of distance checks
 // - still better than old unit finder, since it would sort only once per frame,
