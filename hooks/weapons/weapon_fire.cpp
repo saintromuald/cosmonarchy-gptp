@@ -369,11 +369,11 @@ namespace hooks
 					unitExt->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
 				}
 
-				// Geszithalor 
+				// Geszithalor - Searing Acid passive
 				if (weaponId == WeaponId::AcidSpore && unit->sprite)
 				{
-					unitExt->values[ValueGuardianMissileLaunchPosX] = unit->getX();
-					unitExt->values[ValueGuardianMissileLaunchPosY] = unit->getY();
+					unitExt->values[ValueGeszithalorMissileLaunchPosX] = unit->getX();
+					unitExt->values[ValueGeszithalorMissileLaunchPosY] = unit->getY();
 				}
 
 				// Missile spawn positions start
