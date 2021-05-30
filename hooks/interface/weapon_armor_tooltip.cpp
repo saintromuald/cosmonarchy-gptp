@@ -553,9 +553,9 @@ namespace hooks
 		addStatus(statuses, "Deconstructing", unitExt->values[ValueDeconstruction], 0);
 
 		// Aise Value - Gimmicked
+		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster
 		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
 		addStatus(statuses, "Tempo Down", scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1, 1);
-		addStatus(statuses, "Observing", unitExt->timers[TimerObservanceOverlay] > 0, 1);
 		addStatus(statuses, "Swarming Omen", unitExt->values[ValueSwarmingOmenStatus] > 0, 1);
 		addStatus(statuses, "Protective Instincts", unitExt->values[ValueProtectiveInstinctsStatus] > 0, 1);
 		addStatus(statuses, "Worshiping", unitExt->values[ValueWorshipStack] > 0, 1);
@@ -565,13 +565,15 @@ namespace hooks
 		addStatus(statuses, "Infested", unitExt->values[ValueInfestedByAkistrokor] > 0, 1);
 		addStatus(statuses, "Enthralling Assault", unitExt->values[ValueEnthrallingTalons] > 0, 1);
 		addStatus(statuses, "Kelvin Munitions", unitExt->values[ValueKelvinMunitionsSlow] > 0, 1);
+
+		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
+
+		// Aise Timers - Gimmicked
+		addStatus(statuses, "Observing", unitExt->timers[TimerObservanceOverlay] > 0, 1);
 		addStatus(statuses, "Dermal Accelerant", unitExt->timers[TimerAlaszilethRegenBoost] > 0, 1);
 		addStatus(statuses, "Failure Mode", unitExt->timers[TimerAnticthonFailureMode] > 0, 1);
 		addStatus(statuses, "Counter-Proposal Active", unitExt->timers[TimerAnticthonRevive] > 0, 1);
 		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh] > 0, 1);
-
-		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
-		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster
 
 		// Vanilla Timer + Value
 		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, 200, unit->defensiveMatrixTimer);
