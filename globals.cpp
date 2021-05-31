@@ -1527,7 +1527,7 @@ namespace scbw
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
 		Bullet* bullet = helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
-		if (unitExt->values[valueId] < fake_amount)
+		if (bullet && unitExt->values[valueId] < fake_amount)
 		{
 			bullet->hitFlags |= 0x1;
 		}
