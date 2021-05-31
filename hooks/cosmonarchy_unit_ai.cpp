@@ -462,13 +462,21 @@ void cosmonarchyUnitAi(Unit* unit)
 						{
 							targetHasMinRange = true;
 						}
-						else if (localUnit->status & UnitStatus::InAir)
-						{
-							targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getAirWeapon()];
-						}
 						else
 						{
-							targetHasMinRange = weapons_dat::MinRange[localUnit->orderTarget.unit->getGroundWeapon()];
+							Unit* context = localUnit->orderTarget.unit;
+							if (context->subunit)
+							{
+								context = context->subunit;
+							}
+							if (localUnit->status & UnitStatus::InAir)
+							{
+								targetHasMinRange = weapons_dat::MinRange[context->getAirWeapon()];
+							}
+							else
+							{
+								targetHasMinRange = weapons_dat::MinRange[context->getGroundWeapon()];
+							}
 						}
 					}
 
