@@ -291,7 +291,7 @@ namespace hooks
 				orders_dat::RequirementsOffset[OrderId::Stop]
 			) == 1)
 			{
-				helper::function_004754F0(
+				helper::TargetedOrderCopy(
 					current_unit,
 					UnitId::None,
 					*(u32*)(0x006D5C24),

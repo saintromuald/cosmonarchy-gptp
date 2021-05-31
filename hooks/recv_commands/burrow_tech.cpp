@@ -10,11 +10,11 @@ namespace hooks
 		selected_unit = getActivePlayerNextSelection();
 		while (selected_unit != nullptr)
 		{
-			if (
-				units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable &&
-				selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1
-				)
+			if (units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable
+				&& selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1)
+			{
 				helper::function_004E97C0(selected_unit);
+			}
 			selected_unit = getActivePlayerNextSelection();
 		}
 	}
@@ -26,29 +26,22 @@ namespace hooks
 		selected_unit = getActivePlayerNextSelection();
 		while (selected_unit != nullptr)
 		{
-			if (
-				units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable &&
-				selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1 &&
-				!(selected_unit->status & UnitStatus::Burrowed) &&
-				selected_unit->mainOrderId != OrderId::Burrow
-				)
+			if (units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable
+				&& selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1
+				&& !(selected_unit->status & UnitStatus::Burrowed)
+				&& selected_unit->mainOrderId != OrderId::Burrow)
 			{
 
 				if (bCommandType != 0)
+				{
 					bCommandType = 1;
+				}
 				else
+				{
 					bCommandType = 0;
+				}
 
-				helper::function_004754F0(
-					selected_unit,
-					UnitId::None,
-					*(u32*)(0x006D5C24),
-					*(u32*)(0x006D5C20),
-					OrderId::Burrow,
-					0,
-					bCommandType,
-					1
-				);
+				helper::TargetedOrderCopy(selected_unit, UnitId::None, *(u32*)(0x006D5C24), *(u32*)(0x006D5C20), OrderId::Burrow, 0, bCommandType, 1);
 			}
 			selected_unit = getActivePlayerNextSelection();
 		}
@@ -56,36 +49,34 @@ namespace hooks
 
 	void Unburrow_Proc(Unit* unit)
 	{
-
-		if (unit->mainOrderId == OrderId::Burrow ||
-			unit->mainOrderId == OrderId::Burrowed ||
-			unit->id == UnitId::ZergLakizilisk
-			)
+		if (unit->mainOrderId == OrderId::Burrow
+			|| unit->mainOrderId == OrderId::Burrowed
+			|| unit->id == UnitId::ZergLakizilisk)
 		{
-
 			if (unit->id == UnitId::ZergLakizilisk)
+			{
 				unit->status |= UnitStatus::CanNotReceiveOrders;
+			}
 
 			unit->userActionFlags |= 1;
-
 			if (unit->mainOrderId != OrderId::Die)
 			{
-
 				bool bStopLoop = false;
-
 				while (unit->orderQueueTail != nullptr && !bStopLoop)
 				{
-					if (
-						!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
-						unit->orderQueueTail->orderId != OrderId::Unburrow
-						)
+					if (!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId]
+						&& unit->orderQueueTail->orderId != OrderId::Unburrow)
+					{
 						bStopLoop = true;
+					}
 					else
+					{
 						helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+					}
 				}
 				unit->performAnotherOrder(OrderId::Unburrow, 0, 0, nullptr, UnitId::None);
 			}
-			//E9846
+			// 004E9846
 			prepareForNextOrder(unit);
 			helper::actUnitReturnToIdle(unit);
 		}

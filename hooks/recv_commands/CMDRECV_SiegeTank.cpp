@@ -27,7 +27,7 @@ namespace hooks
 					else
 						bCommandType = 0;
 
-					helper::function_004754F0(
+					helper::TargetedOrderCopy(
 						current_selection,
 						UnitId::None,
 						*(u32*)(0x006D5C24),
@@ -74,7 +74,7 @@ namespace hooks
 					else
 						bCommandType = 0;
 
-					helper::function_004754F0(
+					helper::TargetedOrderCopy(
 						current_selection,
 						UnitId::None,
 						*(u32*)(0x006D5C24),

@@ -3669,9 +3669,9 @@ namespace helper
 
 	// Note: this function was made from what was seen in this case of use, some things are hardcoded because it's hard to tell what is used or not.
 	// Basically, used elsewhere, the function would be implemented differently
-	void function_004754F0(Unit* unit, u32 unitId, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5)
+	void TargetedOrderCopy(Unit* unit, u32 unitId, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5)
 	{
-		const u32 Func_Sub_4754F0 = 0x004754F0;
+		const u32 Func_TargetedOrderCopy = 0x004754F0;
 		__asm {
 			PUSHAD
 			MOV EAX, 0
@@ -3684,7 +3684,7 @@ namespace helper
 			PUSH orderId
 			PUSH unk4
 			PUSH unk5
-			CALL Func_Sub_4754F0
+			CALL Func_TargetedOrderCopy
 			POPAD
 		}
 	}

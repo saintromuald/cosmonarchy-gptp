@@ -915,7 +915,7 @@ namespace hooks
 						{
 							current_button_state = BUTTON_STATE::Invisible;
 						}
-						if (current_button->reqVar == TechId::Healing && current_button->iconID != 365)
+						if (current_button->reqVar == TechId::Healing && current_button->iconID != IconId::Heal)
 						{
 							current_button_state = BUTTON_STATE::Disabled;
 
@@ -958,6 +958,11 @@ namespace hooks
 							}
 							else if ((*activePortraitUnit)->id == UnitId::SharedAxitrilisk &&  // Axitrilisk Sating Strikes passive 
 								current_button->iconID == IconId::RoarUnused)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::SharedTarasque &&  // Tarasque Fighting Flight passive 
+								current_button->iconID == IconId::AcidSpore)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
