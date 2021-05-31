@@ -394,7 +394,7 @@ namespace helper
 
 	//// burrow_tech
 	void actUnitReturnToIdle(Unit* unit);																								// 00475420
-	void function_004754F0(Unit* unit, u32 unitId, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5);						// 004754F0
+	void TargetedOrderCopy(Unit* unit, u32 unitId, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5);						// 004754F0
 	void function_004E97C0(Unit* unit);																								// 004E97C0
 
 	//// die_order

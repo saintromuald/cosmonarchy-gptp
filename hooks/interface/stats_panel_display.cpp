@@ -112,26 +112,26 @@ namespace hooks
 				{
 					if (groundWeaponSubunit == WeaponId::None)
 					{
-						bNoGroundWeaponDisplay = true;			// 00426D19
+						bNoGroundWeaponDisplay = true; // 00426D19
 					}
 					else
 						if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
 						{
-							groundWeapon = UnitId::None;			// 00426D2A
+							groundWeapon = UnitId::None; // 00426D2A
 						}
 						else
 							if (groundWeaponMainUnit != WeaponId::None)
 							{
-								groundWeapon = groundWeaponMainUnit;	// 00426D35
+								groundWeapon = groundWeaponMainUnit; // 00426D35
 							}
 							else
 								if (activeUnit->subunit == nullptr)
 								{
-									groundWeapon = WeaponId::None;			// 00426D41
+									groundWeapon = WeaponId::None; // 00426D41
 								}
 								else
 								{
-									groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id];	// 00426D51
+									groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id]; // 00426D51
 								}
 					if (!bNoGroundWeaponDisplay)
 					{
@@ -143,8 +143,12 @@ namespace hooks
 						if (activeUnit->id == UnitId::TerranCentaur)
 						{
 							helper::StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
-							index++;
 						}
+						else if (activeUnit->id == UnitId::SharedTarasque)
+						{
+							helper::StatsWeaponLevel(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
+						}
+						index++;
 					}
 				}
 			}
@@ -238,8 +242,7 @@ namespace hooks
 
 			// 00426E31
 			if (activeUnit->id == UnitId::ProtossSolarion
-				|| activeUnit->id == UnitId::ProtossAccantor
-				)
+				|| activeUnit->id == UnitId::ProtossAccantor)
 			{ // Originally had hardcode for Gantrithor and Warbringer
 				helper::StatHangerCount(dialog, index);
 				index++;
@@ -248,7 +251,9 @@ namespace hooks
 			if (activeUnit->id == UnitId::TerranVulture)
 			{ // Originally also had hardcode for Raynor Vulture
 				if (helper::StatSpidermineCount(dialog, index))
+				{
 					index++;
+				}
 			}
 			if (activeUnit->id == UnitId::TerranEidolon)
 			{
