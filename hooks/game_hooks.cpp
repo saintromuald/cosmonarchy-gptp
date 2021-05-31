@@ -1034,7 +1034,7 @@ namespace hooks
 				}
 
 				// Revive Status
-				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding;
+				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination;
 				u32 radius = 4 * 32;
 				if (unitExt->timers[TimerAnticthonFailureMode]) 
 				{
