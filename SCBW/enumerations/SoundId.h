@@ -1165,6 +1165,15 @@ namespace SoundId
 		DemiurgeWorship01 = 1417,
 		SirenTertiaryEyesCast01 = 1459,
 		OlympianMythicalMight01 = 1576,
+		AnthelionMoveCharge01 = 1589,
+		AnthelionMoveCharge02 = 1590,
+		AnthelionArrive01 = 1591,
+		AnthelionArrive02 = 1592,
+		AnthelionArrive03 = 1593,
+		AnthelionWeaponFire01 = 1594,
+		AnthelionWeaponFire02 = 1595,
+		AnthelionWeaponFire03 = 1596,
+		AnthelionWeaponFire04 = 1597,
 
 	};
 }
