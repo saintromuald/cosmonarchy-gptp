@@ -373,7 +373,15 @@ namespace hooks
 				unitExt->lastBulletLaunchPos = unit->position;
 
 				// Missile spawn positions start
-				if (weaponId == WeaponId::ExemplarPlasmaTorpedo)
+				if (weaponId == WeaponId::AxitriliskSearingVenom)
+				{
+					scbw::setMissileSourcePos(unit, weaponId, ValueAxitriliskMissilePos, 1, ImagesDatEntries::OverlaySpecialPtr);
+				}
+				else if (weaponId == WeaponId::CharlatanFerventBlaster)
+				{
+					scbw::setMissileSourcePos(unit, weaponId, ValueCharlatanMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+				}
+				else if (weaponId == WeaponId::ExemplarPlasmaTorpedo)
 				{
 					scbw::setMissileSourcePos(unit, weaponId, ValueExemplarMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
@@ -426,6 +434,10 @@ namespace hooks
 				else if (weaponId == WeaponId::LiiraliskHollowedSpores)
 				{
 					scbw::setMissileSourcePos(unit, weaponId, ValueLiiraliskMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
+				}
+				else if (weaponId == WeaponId::BactaliskCorrosiveAcid)
+				{
+					scbw::setMissileSourcePos(unit, weaponId, ValueBactaliskMissilePos, 2, ImagesDatEntries::OverlaySpecialPtr);
 				}
 				else if (weaponId == WeaponId::KalkaliskViscousAcid)
 				{
