@@ -488,7 +488,8 @@ void cosmonarchyUnitAi(Unit* unit)
 
 					if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
 						|| localGroupValue * 8 < result.biases[result.forwardIndex]
-						|| distance <= maxRange * 0.5))
+						|| distance <= maxRange * 0.5)
+						&& !targetHasMinRange)
 					{
 						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 						KITE_DEBUG("%s: fall back", localUnit->getName());
