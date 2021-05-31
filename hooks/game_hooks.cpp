@@ -1092,9 +1092,7 @@ namespace hooks
 							target->damageWith(WeaponId::AnthelionEventHorizon, -1, unit, unit->playerId, 0, divider);
 						}
 					}
-
 				});
-
 				if (attacked)
 				{
 					unitExt->timers[TimerAnthelionAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::AnthelionEventHorizon);
@@ -1153,7 +1151,17 @@ namespace hooks
 						}
 					}
 				});
-			}
+			} break;
+			case UnitId::SharedAxitrilisk:
+			{
+				// Axitrilisk - play sound on shield loss, timer of 5 seconds per unit
+				if (unit->shields < 1
+					&& !unitExt->timers[TimerAxitriliskShieldLossSFX])
+				{
+					unitExt->timers[TimerAxitriliskShieldLossSFX] = AxitriliskShieldLossSFXTimer;
+					helper::playSoundFromSource(scbw::randBetween(SoundId::AxitriliskShieldLoss01, SoundId::AxitriliskShieldLoss03), unit, 1, 0);
+				}
+			} break;
 		}
 
 		// Madrigal - Dirge
