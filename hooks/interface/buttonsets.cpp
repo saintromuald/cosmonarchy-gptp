@@ -761,7 +761,7 @@ namespace hooks
 						else if ((*activePortraitUnit)->id == UnitId::TerranFactory)
 						{
 							// Factory buttonset handling
-							if (current_button->reqVar == UnitId::TerranCyclops
+							if (current_button->reqVar == UnitId::TerranSouthpaw
 								|| current_button->reqVar == UnitId::TerranPhalanxTankMode)
 							{
 								if ((*activePortraitUnit)->building.addon == nullptr)
