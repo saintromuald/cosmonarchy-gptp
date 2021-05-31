@@ -92,6 +92,16 @@ namespace scbw
 	/// (xStart, yStart) and ends at (xEnd, yEnd).
 	s32 getAngle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd);
 
+	inline s32 getAngle(Point16 start, Point16 end)
+	{
+		return getAngle(start.x, start.y, end.x, end.y);
+	}
+
+	inline s32 getAngle(Vector32 start, Vector32 end)
+	{
+		return getAngle(start.x, start.y, end.x, end.y);
+	}
+
 	inline f64 bw_angle_to_normal(s32 bw_angle);
 	/// StarCraft's internal function used to quickly calculate distances between
 	/// two points (x1, y1) and (x2, y2).
@@ -195,6 +205,11 @@ namespace scbw
 	inline f32 getDotProduct(Vector32f a, Vector32f b)
 	{
 		return a.x * b.x + a.y * b.y;
+	}
+
+	inline f32 getVectorDistance(Vector32 vector)
+	{
+		return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	}
 
 	inline f32 getVectorDistance(Vector32f vector)

@@ -1265,17 +1265,40 @@ namespace hooks
 			if (unit->position != targetPos)
 			{
 				Vector32 diff = scbw::getVectorBetweenPoints(unit->position, targetPos);
-				Vector32f displacement = scbw::getNormalizedVector(diff);
-				displacement.x *= 2;
-				displacement.y *= 2;
 
-				Point16 finalPos = unit->position;
-				finalPos.x += displacement.x;
-				finalPos.y += displacement.y;
-				finalPos = scbw::clampPoint(finalPos);
+				if (scbw::getVectorDistance(diff) < 2)
+				{
+					scbw::moveUnitImproved(unit, targetPos.x, targetPos.y);
+				}
+				else
+				{
+					Vector32f displacement = scbw::getNormalizedVector(diff);
+					displacement.x *= 2;
+					displacement.y *= 2;
 
-				scbw::moveUnitImproved(unit, finalPos.x, finalPos.y);
+					Point16 finalPos = unit->position;
+					finalPos.x += displacement.x;
+					finalPos.y += displacement.y;
+					finalPos = scbw::clampPoint(finalPos);
+
+					scbw::moveUnitImproved(unit, finalPos.x, finalPos.y);
+				}
 			}
+
+			s32 angle = scbw::getAngle(unit->position, targetPos);
+			unit->currentDirection1 = angle;
+
+			// s32 diff = angle - unit->currentDirection1;
+			// diff = (diff + 128) % 256 - 128;
+			// if (abs(diff) >= 1)
+			// {
+			// 	s32 sign = copysign(1, diff);
+			// 	unit->currentDirection1 += sign;
+			// }
+			// else
+			// {
+			// 	unit->currentDirection1 += diff;
+			// }
 		}
 
 		// Cyclops - Flak Cannon Fuse
