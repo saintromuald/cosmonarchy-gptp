@@ -244,6 +244,9 @@ enum ExtValueId
 	ValueEmpressPassiveStacks,
 	ValueEmpressSourcePlayer,
 	ValueAnticthonStacks,
+	ValueAxitriliskMissilePos,
+	ValueBactaliskMissilePos,
+	ValueCharlatanMissilePos,
 
 	ValueAI_KiteSignal,
 

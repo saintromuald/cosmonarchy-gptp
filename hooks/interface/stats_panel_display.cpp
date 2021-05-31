@@ -143,12 +143,13 @@ namespace hooks
 						if (activeUnit->id == UnitId::TerranCentaur)
 						{
 							helper::StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
+							index++;
 						}
 						else if (activeUnit->id == UnitId::SharedTarasque)
 						{
 							helper::StatsWeaponLevel(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
+							index++;
 						}
-						index++;
 					}
 				}
 			}
@@ -158,40 +159,38 @@ namespace hooks
 			airWeaponMainUnit = units_dat::AirWeapon[activeUnit->id];
 			if (airWeaponMainUnit != WeaponId::None)
 			{
-				airWeaponSubunit = airWeaponMainUnit;	// 00426D79
+				airWeaponSubunit = airWeaponMainUnit; // 00426D79
+			}
+			else if (activeUnit->subunit == nullptr)
+			{
+				bNoAirWeaponDisplay = true; // 00426D82
 			}
 			else
-				if (activeUnit->subunit == nullptr)
-				{
-					bNoAirWeaponDisplay = true;				// 00426D82
-				}
-				else
-				{
-					airWeaponSubunit = units_dat::AirWeapon[activeUnit->subunit->id];	// 00426D8C
-				}
+			{
+				airWeaponSubunit = units_dat::AirWeapon[activeUnit->subunit->id]; // 00426D8C
+			}
 
 			if (!bNoAirWeaponDisplay)
 			{
 				if (airWeaponSubunit == WeaponId::None)
 				{
-					bNoAirWeaponDisplay = true;		// 00426D94
+					bNoAirWeaponDisplay = true; // 00426D94
+				}
+				else if (airWeaponMainUnit != WeaponId::None)
+				{
+					airWeapon = airWeaponMainUnit;	// 00426DA2
 				}
 				else
-					if (airWeaponMainUnit != WeaponId::None)
+				{
+					if (activeUnit->subunit == nullptr)
 					{
-						airWeapon = airWeaponMainUnit;	// 00426DA2
+						airWeapon = WeaponId::None;	// 00426DAF
 					}
 					else
 					{
-						if (activeUnit->subunit == nullptr)
-						{
-							airWeapon = WeaponId::None;	// 00426DAF
-						}
-						else
-						{
-							airWeapon = units_dat::AirWeapon[activeUnit->subunit->id];
-						}
+						airWeapon = units_dat::AirWeapon[activeUnit->subunit->id];
 					}
+				}
 				if (!bNoAirWeaponDisplay)
 				{
 					u8 groundWeapon;
@@ -215,23 +214,21 @@ namespace hooks
 					{
 						bNoAirWeaponDisplay = true;
 					}
-					else
-						if (airWeaponMainUnit != WeaponId::None)
+					else if (airWeaponMainUnit != WeaponId::None)
+					{
+						airWeapon = airWeaponMainUnit;	// 00426DFA
+					}
+					else if (airWeaponMainUnit == WeaponId::None)
+					{ // 00426DFF
+						if (activeUnit->subunit == nullptr)
 						{
-							airWeapon = airWeaponMainUnit;	// 00426DFA
+							airWeapon = WeaponId::None;	// 00426E06
 						}
 						else
-							if (airWeaponMainUnit == WeaponId::None)
-							{ // 00426DFF
-								if (activeUnit->subunit == nullptr)
-								{
-									airWeapon = WeaponId::None;	// 00426E06
-								}
-								else
-								{
-									airWeapon = units_dat::AirWeapon[activeUnit->subunit->id]; // 00426E16
-								}
-							}
+						{
+							airWeapon = units_dat::AirWeapon[activeUnit->subunit->id]; // 00426E16
+						}
+					}
 					if (!bNoAirWeaponDisplay)
 					{ // 00426E19
 						helper::StatsWeaponLevel(dialog, index, airWeapon);
