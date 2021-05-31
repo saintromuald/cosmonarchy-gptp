@@ -143,12 +143,13 @@ namespace hooks
 						if (activeUnit->id == UnitId::TerranCentaur)
 						{
 							helper::StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
+							index++;
 						}
 						else if (activeUnit->id == UnitId::SharedTarasque)
 						{
 							helper::StatsWeaponLevel(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
+							index++;
 						}
-						index++;
 					}
 				}
 			}
