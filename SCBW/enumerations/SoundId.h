@@ -1174,6 +1174,9 @@ namespace SoundId
 		AnthelionWeaponFire02 = 1595,
 		AnthelionWeaponFire03 = 1596,
 		AnthelionWeaponFire04 = 1597,
+		AxitriliskShieldLoss01 = 1631,
+		AxitriliskShieldLoss02 = 1632,
+		AxitriliskShieldLoss03 = 1633,
 
 	};
 }

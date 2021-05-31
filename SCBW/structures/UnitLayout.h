@@ -311,6 +311,7 @@ enum ExtTimerId
 	TimerAnthelionEndlessEclipse,
 	TimerAnthelionAttackCooldown,
 	TimerStrigaRepulsion,
+	TimerAxitriliskShieldLossSFX,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
