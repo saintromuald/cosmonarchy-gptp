@@ -146,17 +146,20 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
 			[&](Unit* hostileUnit)
 		{
-			if (!(units_dat::BaseProperty[hostileUnit->id] & UnitProperty::Building))
-			{
-				result.enemiesFound = true;
-			}
+			u32 strength = 0;
 			if (unit->status & UnitStatus::InAir)
 			{
-				unitValue[i] += hostileUnit->airStrength;
+				strength = hostileUnit->airStrength;
 			}
 			else
 			{
-				unitValue[i] += hostileUnit->groundStrength;
+				strength = hostileUnit->groundStrength;
+			}
+
+			if (strength && !(units_dat::BaseProperty[hostileUnit->id] & UnitProperty::Building))
+			{
+				unitValue[i] += strength;
+				result.enemiesFound = true;
 			}
 		});
 	}
@@ -505,8 +508,9 @@ void cosmonarchyUnitAi(Unit* unit)
 							localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
 						});
 
+						const f32 confidenceFactor = 1.5;
 						if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
-							|| localGroupValue * 8 < result.biases[result.forwardIndex]
+							|| localGroupValue * confidenceFactor < result.biases[result.forwardIndex]
 							|| distance <= maxRange * 0.5)
 							&& !targetHasMinRange)
 						{
@@ -515,7 +519,7 @@ void cosmonarchyUnitAi(Unit* unit)
 						}
 						else if (distance > maxRange * 1.5
 							|| (distance > maxRange * 1 && crowdScore > 6)
-							|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 8)
+							|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * confidenceFactor)
 							|| targetHasMinRange)
 						{
 							localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
@@ -526,7 +530,7 @@ void cosmonarchyUnitAi(Unit* unit)
 							localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
 							KITE_DEBUG("%s: strafe", localUnit->getName());
 						}
-						else if (localGroupValue <= result.biases[result.forwardIndex] * 8)
+						else if (localGroupValue <= result.biases[result.forwardIndex] * confidenceFactor)
 						{
 							localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 							KITE_DEBUG("%s: backward", localUnit->getName());
