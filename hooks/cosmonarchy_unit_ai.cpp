@@ -335,6 +335,7 @@ static inline bool canKite(Unit* unit)
 		&& unit->id != UnitId::ProtossPlasmaShell
 		&& unit->id != UnitId::TerranNuclearMissile
 		&& unit->id != UnitId::ProtossAnthelion
+		&& unit->id != UnitId::TerranMinotaur
 		&& unit->mainOrderId != OrderId::BuildTerran
 		&& unit->mainOrderId != OrderId::ConstructingBuilding
 		&& unit->mainOrderId != OrderId::BuildProtoss1
