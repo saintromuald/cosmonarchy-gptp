@@ -184,14 +184,14 @@ namespace hooks
 					{
 						if (newUnit == newUnitTown->building_scv)
 						{
-							newUnitTown->building_scv = 0;
+							newUnitTown->building_scv = nullptr;
 						}
 						if (newUnit == newUnitTown->main_building)
 						{
-							newUnitTown->main_building = 0;
+							newUnitTown->main_building = nullptr;
 						}
 					}
-					newUnit->pAI = 0;
+					newUnit->pAI = nullptr;
 				}
 			}
 			result = helper::AI_AddWorkerStructureAI(newUnit, otherUnitTown);
