@@ -10,7 +10,7 @@ namespace hooks
 	char AI_TrainingWorker(Unit* newUnit, Unit* otherUnit);														// 00435700
 	void AI_TrainingNormal(Unit* newUnit, Unit* parentUnit);													// 00435DB0
 	char AI_AddWorkerStructureAI(Unit* unit, AiTown* town);														// 00433DD0
-	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 amount, s32 id, s32 priority, s32 need);	            // 00431F90
+	void AI_BuildTechUpgrade(AiTown* town, char method, char amount, s16 id, char priority, bool need);	        // 00431F90
 	void AI_UnitWasHit(Unit* self, Unit* attacker, s32 mainTargetReactions, s32 dontCallHelp);					// 0043F320
 	void AI_IterateBuildingAI(Unit* result, Unit* parent);														// 00435770
 //	void AI_AddMilitary(AiRegion* region, Unit* unit, b32 alwaysThisRegion);									// 0043DA20

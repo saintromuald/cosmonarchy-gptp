@@ -445,9 +445,10 @@ namespace hooks
 		return (char)unit->id;
 	}
 
-	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 amount, s32 id, s32 priority, s32 need) // 00431F90
+	// Don't know what this was hooked for; tidied May 2021 - Pr0nogo
+	void AI_BuildTechUpgrade(AiTown* town, char method, char amount, s16 id, char priority, bool need) // 00431F90
 	{
-		s32 itr = 0;
+		s32 iterate = 0;
 		constexpr s32 BuildCountFlag = 0xF8;
 		TownReq* townUnits;
 		if (playerTable[(u8)town->player].type == PlayerType::Computer)
@@ -462,7 +463,7 @@ namespace hooks
 					if (!(townUnits->flags_and_count & BuildCountFlag)) // if not build
 					{
 						setNeed = true;
-						itr = i;
+						iterate = i;
 						break;
 					}
 				}
@@ -473,9 +474,9 @@ namespace hooks
 			}
 			if (setNeed)
 			{
-				town->town_units[itr].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
-				town->town_units[itr].id = id;
-				town->town_units[itr].priority = priority;
+				town->town_units[iterate].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
+				town->town_units[iterate].id = id;
+				town->town_units[iterate].priority = priority;
 				// build orders have 0xf8 flag, tech has 0x4, upgrade has 0x2, 0x1 - only if needed
 			}
 		}
