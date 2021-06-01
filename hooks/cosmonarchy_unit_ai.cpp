@@ -77,7 +77,7 @@ struct KitePositions
 
 const u32 rangedMoveRadius = 4 * 32;
 const u32 meleeMoveRadius = 1 * 32;
-const u32 localGroupRadius = 2 * 32;
+const u32 localGroupRadius = 4 * 32;
 
 const u32 kiteZoneCount = 9;
 const Vector32f kiteOffsets[kiteZoneCount] =
