@@ -81,7 +81,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_AddUnitAi_Wrapper() // 00433DD0
+	void __declspec(naked) AI_AddWorkerStructureAI_Wrapper() // 00433DD0
 	{
 		static u8 result;
 		static Unit* unit;
@@ -91,7 +91,7 @@ namespace
 			MOV town, EDI
 			PUSHAD
 		}
-		result = hooks::AI_AddUnitAI(unit, town);
+		result = hooks::AI_AddWorkerStructureAI(unit, town);
 		__asm {
 			POPAD
 			MOV result, AL
@@ -569,7 +569,7 @@ namespace hooks
 //		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
 		jmpPatch(AI_TrainingBroodling_Wrapper,				0x0043E280, 1);
 		jmpPatch(AI_TrainingWorker_Wrapper,					0x00435700, 0);
-//		jmpPatch(AI_AddUnitAi_Wrapper,						0x00433DD0, 2);
+//		jmpPatch(AI_AddWorkerStructureAI_Wrapper,			0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
 //		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
 //		jmpPatch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);

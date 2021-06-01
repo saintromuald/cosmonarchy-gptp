@@ -9102,4 +9102,32 @@ namespace helper
 		}
 		return result;
 	}
+	
+	// For AI_TrainingNormal
+	AiRegion* getAiRegionInfoFromUnitLoc(Unit* unit)
+	{
+		const u32 Func_getAiRegionInfoFromUnitLoc = 0x00438BF0;
+		static AiRegion* result;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, unit
+			CALL Func_getAiRegionInfoFromUnitLoc
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void AI_AddGuardAiToUnit(Unit* unit)
+	{
+		const u32 Func_AI_AddGuardAiToUnit = 0x00462960;
+		__asm
+		{
+			PUSHAD
+			PUSH unit
+			CALL Func_AI_AddGuardAiToUnit
+			POPAD
+		}
+	}
 }

@@ -199,107 +199,88 @@ namespace hooks
 		return result;
 	}
 
-	// Hooked to investigate crashes - Pr0nogo
-	/*
-	void AI_TrainingNormal(Unit* result, Unit* parent) // 00435DB0
+	// Hooked to investigate crashes and remove Archon hardcode - Pr0nogo
+	void AI_TrainingNormal(Unit* newUnit, Unit* parentUnit) // 00435DB0
 	{
-		s16 child;
-		Unit* parentAi;
-		s16 regionId;
-		UnitAi* childTown;
-		UnitAi* v6;
-		s32 parentTown;
-		AiTown* v8;
-		AiRegion* v9;
-		s16 v10;
-		s16 v11;
-		UnitAi* v12;
-
-		parentAi = result;
-		child = result->id;
-		if (child != UnitId::ZergGeszithalor && child != UnitId::ZergVithrilisk)
+		s16 unitId = newUnit->id;
+		if (unitId != UnitId::ZergGeszithalor && unitId != UnitId::ZergVithrilisk)
 		{
-			if (result->status & 0x40000000)
+			if (newUnit->status & 0x40000000)
 			{
-				regionId = helper::SAI_GetRegionIdFromPxEx(result->sprite->position.x, result->sprite->position.y);
-				helper::AI_AddMilitary(&AiRegionCaptains[result->playerId][regionId], result, 1);
+				helper::AI_AddMilitary(&AiRegionCaptains[(u8)newUnit->playerId][helper::SAI_GetRegionIdFromPxEx(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
 				return;
 			}
-			if (child != UnitId::ProtossArchon
-				&& child != UnitId::ProtossMindTyrant
-				&& child != UnitId::ZergLakizilisk
-				&& child != UnitId::TerranNuclearMissile
-				&& child != UnitId::ProtossWitness)
+			if (unitId != UnitId::TerranNuclearMissile && unitId != UnitId::ProtossWitness)
 			{
-				childTown = result->pAI;
-				v12 = result->pAI;
-				if (childTown)
+				BuildingAi* parentUnitAi = (BuildingAi*)parentUnit->pAI;
+				BuildingAi* parentUnitAiBackup = (BuildingAi*)parentUnit->pAI;
+				if (parentUnitAi)
 				{
-					if (result == result)
+					s32 queueSlot = 0;
+					if (parentUnit == newUnit)
 					{
-						parentTown = 0;
-						helper::AI_AssignWorker(result);
-						v6 = parentAi->pAI;
-						if (v6)
+						queueSlot = 0;
+						helper::AI_RemoveFromTowns(newUnit);
+						BuildingAi* newUnitAi = (BuildingAi*)newUnit->pAI;
+						if (newUnitAi)
 						{
-							v8 = v6->town;
-							helper::deleteBuildingAi(v6, (UnitAi*)&v8->field_10);
-							if (v8)
+							AiTown* newUnitTown = newUnitAi->town;
+							helper::deleteBuildingAi(newUnitAi, &newUnitTown->free_buildings);
+							if (newUnitTown)
 							{
-								if (parentAi == v8->field_28)
+								if (newUnit == newUnitTown->building_scv)
 								{
-									v8->field_28 = 0;
+									newUnitTown->building_scv = 0;
 								}
-								if (parentAi == v8->field_24)
+								if (newUnit == newUnitTown->main_building)
 								{
-									v8->field_24 = 0;
+									newUnitTown->main_building = 0;
 								}
 							}
-							childTown = v12;
-							parentAi->pAI = 0;
+							parentUnitAi = parentUnitAiBackup;
+							newUnit->pAI = 0;
 						}
 					}
-					else if (result->id == child)
+					else if (parentUnit->id == unitId)
 					{
-						parentTown = 0;
+						queueSlot = 0;
 					}
 					else
 					{
-						parentTown = (u8)result->buildQueueSlot;
+						queueSlot = (u8)parentUnit->buildQueueSlot;
 					}
-					v9 = (AiRegion*)*(&childTown->field_18 + parentTown);
-					if (*(&childTown->field_9 + parentTown) == 2)
+					AiRegion* region = (AiRegion*)*(&parentUnitAi->trainQueueValues[queueSlot]);
+					if (*(&parentUnitAi->trainQueueTypes[queueSlot]) == 2)
 					{
-						if (!*(s32*)&v9->field_C)
+						if (!*(s32*)&region->neededGroundStrength)
 						{
-							v10 = v9->fullAirStrength;
-							v11 = v9->field_18;
-							*(s32*)&v9->field_C = parentAi;
-							v9->regionAirStrength = v10;
-							v9->fullGroundStrength = v11;
-							parentAi->pAI = (UnitAi*)v9;
+							s16 regionFullAir = region->fullAirStrength;
+							s16 regionEnemyAir = region->enemyAirStrength;
+//							*(s32*)&region->neededGroundStrength = newUnit;
+							region->regionAirStrength = regionFullAir;
+							region->fullGroundStrength = regionEnemyAir;
+//							newUnit->pAI = (CAIController*)region;
 							return;
 						}
-						*(&childTown->field_9 + parentTown) = 1;
-						v9 = helper::getAIRegionInfoFromUnitLocation(parentAi);
-						*(&childTown->field_18 + parentTown) = (s32)v9;
+						*(&parentUnitAi->trainQueueTypes[queueSlot]) = 1;
+						region = helper::getAiRegionInfoFromUnitLoc(newUnit);
+//						*(&parentUnitAi->trainQueueValues[queueSlot]) = (s32)region;
 					}
-					if (*(&childTown->field_9 + parentTown) == 1)
+					if (*(&parentUnitAi->trainQueueTypes[queueSlot]) == 1)
 					{
-						helper::AI_AddMilitary(v9, parentAi, 0);
+						helper::AI_AddMilitary(region, newUnit, 0);
 					}
 					else
 					{
-						helper::AI_AddGuard(parentAi);
+						helper::AI_AddGuardAiToUnit(newUnit);
 					}
 				}
 			}
 		}
 	}
-	*/
 
 	// Hooked because iquare told me to - Pr0nogo
-	char AI_AddUnitAI(Unit* unit, AiTown* town) // 00433DD0
+	char AI_AddWorkerStructureAI(Unit* unit, AiTown* town) // 00433DD0
 	{
 		UnitAi* unitAI;
 		WorkerAi* unitAIWorker;
@@ -853,7 +834,7 @@ LABEL_126:
 						result->pAI = 0;
 					}
 				}
-				AI_AddUnitAI(result, parentTown);
+				helper::AI_AddWorkerStructureAI(result, parentTown);
 				if (result->id != UnitId::TerranBunker || *elapsedTimeSeconds <= 60)
 				{
 					if (result->id == UnitId::TerranWatchdog)

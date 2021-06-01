@@ -970,6 +970,10 @@ namespace helper
 	void playSpriteIscript(Sprite* sprite, char scriptId, s32 bPlay);										// 00499D00
 	Bullet* assignWeaponData(Bullet* bullet, char behaviorType);											// 0048AA80
 
+	// For AI_TrainingNormal
+	AiRegion* getAiRegionInfoFromUnitLoc(Unit* unit);														// 00438BF0
+	void AI_AddGuardAiToUnit(Unit* unit);																	// 00462960
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
