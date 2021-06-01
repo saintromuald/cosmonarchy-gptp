@@ -250,24 +250,24 @@ namespace hooks
 					{
 						queueSlot = (u8)parentUnit->buildQueueSlot;
 					}
-					AiRegion* region = (AiRegion*)*(&parentUnitAi->trainQueueValues[queueSlot]);
-					if (*(&parentUnitAi->trainQueueTypes[queueSlot]) == 2)
+					AiRegion* region = (AiRegion*)parentUnitAi->trainQueueValues[queueSlot];
+					if (parentUnitAi->trainQueueTypes[queueSlot] == 2)
 					{
-						if (!*(s32*)&region->neededGroundStrength)
+						if (!region->neededGroundStrength)
 						{
 							s16 regionFullAir = region->fullAirStrength;
 							s16 regionEnemyAir = region->enemyAirStrength;
-//							*(s32*)&region->neededGroundStrength = newUnit;
+							region->neededGroundStrength = (u16)newUnit;
 							region->regionAirStrength = regionFullAir;
 							region->fullGroundStrength = regionEnemyAir;
-//							newUnit->pAI = (CAIController*)region;
+							newUnit->pAI = (void*)region;
 							return;
 						}
-						*(&parentUnitAi->trainQueueTypes[queueSlot]) = 1;
+						parentUnitAi->trainQueueTypes[queueSlot] = 1;
 						region = helper::getAiRegionInfoFromUnitLoc(newUnit);
-//						*(&parentUnitAi->trainQueueValues[queueSlot]) = (s32)region;
+						parentUnitAi->trainQueueValues[queueSlot] = (void*)region;
 					}
-					if (*(&parentUnitAi->trainQueueTypes[queueSlot]) == 1)
+					if (parentUnitAi->trainQueueTypes[queueSlot] == 1)
 					{
 						helper::AI_AddMilitary(region, newUnit, 0);
 					}
