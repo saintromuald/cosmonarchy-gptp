@@ -401,7 +401,7 @@ namespace hooks
 	{
 			BuildingAi* ai;
 			AiTown* town;
-			helper::removeAITownGasReferences(unit);
+			helper::AI_RemoveFromTowns(unit);
 			ai = (BuildingAi*)unit->pAI;
 			auto result = 0;
 			if (ai)
@@ -417,7 +417,7 @@ namespace hooks
 				{
 					town = ai->town;
 					auto free = town->free_buildings;
-					helper::deleteBuildingAi(free, ai);
+					helper::deleteBuildingAi(ai, free);
 				}
 				else
 				{

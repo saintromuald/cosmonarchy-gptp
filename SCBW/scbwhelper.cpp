@@ -1709,21 +1709,6 @@ namespace helper
 		return result;
 	}
 
-	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList)
-	{
-		const u32 Func_AI_DeleteBuildingAI = 0x00404500;
-		static BuildingAi* result;
-		__asm {
-			PUSHAD
-			MOV EAX, building
-			MOV EDX, buildingList
-			CALL Func_AI_DeleteBuildingAI
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
 	s32 AI_GetQueuedCount(Unit* builder, u32 unitId)
 	{
 		const u32 Func_AI_GetQueuedCount = 0x00466B70;
@@ -7724,13 +7709,13 @@ namespace helper
 		return (bool)result;
 	}
 
-	void deleteBuildingAi(void* building_ai_list, BuildingAi* ai)
+	void deleteBuildingAi(BuildingAi* building, BuildingAiArray* buildingList)
 	{
 		const u32 Func_DeleteBuildingAi = 0x00404500;
 		__asm {
 			PUSHAD
-			MOV EDX, building_ai_list
-			MOV EAX, ai
+			MOV EDX, buildingList
+			MOV EAX, building
 			CALL Func_DeleteBuildingAi
 			POPAD
 		}

@@ -174,7 +174,6 @@ namespace helper
 
 	// for AI_IterateBuildingAI
 	u16 AI_RemoveFromTowns(Unit* worker);
-	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList);
 	s32 AI_GetQueuedCount(Unit* builder, u32 unitId);
 	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);
 
@@ -582,7 +581,7 @@ namespace helper
 	Unit* zergDualBirth(Unit* unit);																							    // 0045D910
 	void orderNewUnitToRally(Unit* unit, Unit* factory);																			// 00466F50
 	void AI_TrainingUnit(Unit* unit, Unit* creator);																				// 004A2830
-	void deleteBuildingAi(void* building_ai_list, BuildingAi* ai);                                                                  // 00404500
+	void deleteBuildingAi(BuildingAi* building, BuildingAiArray* buildingList);                                                     // 00404500
 	void deleteWorkerAi(void* worker_ai_list, WorkerAi* ai);                                                                        // 00404470
 	void deleteAiTownIfNeeded(AiTown* town);                                                                                        // 004347E0
 

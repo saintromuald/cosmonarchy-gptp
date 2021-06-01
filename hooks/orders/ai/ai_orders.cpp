@@ -179,7 +179,7 @@ namespace hooks
 				if (newUnitAI)
 				{
 					AiTown* newUnitTown = newUnitAI->town;
-					helper::AI_DeleteBuildingAI((BuildingAi*)newUnitAI, newUnitTown->free_buildings);
+					helper::deleteBuildingAi((BuildingAi*)newUnitAI, newUnitTown->free_buildings);
 					if (newUnitTown)
 					{
 						if (newUnit == newUnitTown->building_scv)
@@ -243,7 +243,7 @@ namespace hooks
 						if (v6)
 						{
 							v8 = v6->town;
-							helper::AI_DeleteBuildingAI(v6, (UnitAi*)&v8->field_10);
+							helper::deleteBuildingAi(v6, (UnitAi*)&v8->field_10);
 							if (v8)
 							{
 								if (parentAi == v8->field_28)
@@ -505,30 +505,22 @@ namespace hooks
 		BuildingAi* selfBuildingAi;
 		s32 quartTotalHP;
 		Unit* target;
-		s32 v11;
 		UnitAi* v12;
-		s32 v13;
 		AiRegion* v14;
 		s32 v15;
-		s32 v16;
 		AiRegion* selfRegion;
 		char v18;
 		s16 v19;
 		s16 child0;
 		s32 child1;
-		s32 child2;
 		s32 child3;
-		s32 child4;
 		s32 child5;
 		s32 child6;
 		Unit* child7;
-		u16 child9;
 		__int64 parentAi3;
 		Unit* parentAi4;
-		s32 parentAi5;
 		Unit* parentAi6;
 		Unit* parentAi7;
-		s32 parentAi8;
 		s32 parentAi9;
 		s32 childAi0;
 		s32 childAi1;
@@ -846,7 +838,7 @@ LABEL_126:
 					if (removeBuilding)
 					{
 						removeBuildingTown = removeBuilding->town;
-						helper::AI_DeleteBuildingAI(removeBuilding, removeBuildingTown->free_buildings);
+						helper::deleteBuildingAi(removeBuilding, removeBuildingTown->free_buildings);
 						if (removeBuildingTown)
 						{
 							if (result == removeBuildingTown->building_scv)
