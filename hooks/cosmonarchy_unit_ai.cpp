@@ -464,7 +464,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					else
 					{
 						localUnitExt->values[ValueAI_KiteSignal] = 0;
-						localUnitExt->timers[TimerAI_KiteCooldown] = 12;
+						localUnitExt->timers[TimerAI_KiteCooldown] = 10;
 						bool targetHasMinRange = false;
 						if (localUnit->orderTarget.unit)
 						{
