@@ -20,26 +20,6 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_TrainingWorker_Wrapper() // 00435700
-	{
-		static char result;
-		static Unit* child;
-		static Unit* parent;
-		__asm
-		{
-			MOV child, EAX
-			MOV parent, ECX
-			PUSHAD
-		}
-		result = hooks::AI_TrainingWorker(child, parent);
-		__asm
-		{
-			POPAD
-			MOV AL, result
-			RETN
-		}
-	}
-
 	void __declspec(naked) AI_CreateNuke_Wrapper() // 0045B7A0
 	{
 		static Unit* silo;
@@ -78,6 +58,26 @@ namespace
 			MOV ESP, EBP
 			POP EBP
 			RETN 8
+		}
+	}
+
+	void __declspec(naked) AI_TrainingWorker_Wrapper() // 00435700
+	{
+		static char result;
+		static Unit* newUnit;
+		static Unit* otherUnit;
+		__asm
+		{
+			MOV newUnit, EAX
+			MOV otherUnit, ECX
+			PUSHAD
+		}
+		result = hooks::AI_TrainingWorker(newUnit, otherUnit);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
 		}
 	}
 
@@ -566,9 +566,9 @@ namespace hooks
 	void injectAIOrdersHooks()
 	{
 		jmpPatch(AI_TrainingUnit_Wrapper,					0x004A2830, 2);
-//		jmpPatch(AI_TrainingWorker_Wrapper,					0x00435700, 0);
 //		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
 		jmpPatch(AI_TrainingBroodling_Wrapper,				0x0043E280, 1);
+		jmpPatch(AI_TrainingWorker_Wrapper,					0x00435700, 0);
 //		jmpPatch(AI_AddUnitAi_Wrapper,						0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
 //		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);

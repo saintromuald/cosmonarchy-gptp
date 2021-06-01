@@ -1698,15 +1698,15 @@ namespace helper
 	u16 AI_RemoveFromTowns(Unit* worker)
 	{
 		const u32 Func_AI_RemoveFromTowns = 0x00432760;
-		static u32 result;
+		static u16 result;
 		__asm {
 			PUSHAD
 			MOV ECX, worker
 			CALL Func_AI_RemoveFromTowns
-			MOV result, EAX
+			MOV result, AX
 			POPAD
 		}
-		return (u16)result;
+		return result;
 	}
 
 	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList)
@@ -7722,17 +7722,6 @@ namespace helper
 			POPAD
 		}
 		return (bool)result;
-	}
-
-	void removeAITownGasReferences(Unit* unit)
-	{
-		const u32 Func_RemoveGasRefs = 0x00432760;
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_RemoveGasRefs
-			POPAD
-		}
 	}
 
 	void deleteBuildingAi(void* building_ai_list, BuildingAi* ai)

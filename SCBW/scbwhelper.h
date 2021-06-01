@@ -582,7 +582,6 @@ namespace helper
 	Unit* zergDualBirth(Unit* unit);																							    // 0045D910
 	void orderNewUnitToRally(Unit* unit, Unit* factory);																			// 00466F50
 	void AI_TrainingUnit(Unit* unit, Unit* creator);																				// 004A2830
-	void removeAITownGasReferences(Unit* unit);																						 // 00432760
 	void deleteBuildingAi(void* building_ai_list, BuildingAi* ai);                                                                  // 00404500
 	void deleteWorkerAi(void* worker_ai_list, WorkerAi* ai);                                                                        // 00404470
 	void deleteAiTownIfNeeded(AiTown* town);                                                                                        // 004347E0

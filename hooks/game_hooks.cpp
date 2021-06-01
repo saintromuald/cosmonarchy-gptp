@@ -1123,7 +1123,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranSeraph:
 			{
-				// Observance - Science Vessel ability
+				// Observance - Seraph ability
 				u32 radius = 6 * 32;
 				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
 				bool attacked = false;

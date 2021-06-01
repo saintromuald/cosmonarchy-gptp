@@ -48,41 +48,6 @@ namespace hooks
 		}
 	}
 
-	// Hooked to help with reviving AI-controlled worker - Pr0nogo
-	char AI_TrainingWorker(Unit* child, Unit* parent) // 00435700
-	{
-		BuildingAi* parentAi = (BuildingAi*)parent->pAI;
-		char result = 0;
-		if (parentAi)
-		{
-			AiTown* parentTown = parentAi->town;
-			if (parent == child)
-			{
-				helper::AI_RemoveFromTowns(child);
-				WorkerAi* childAi = (WorkerAi*)child->pAI;
-				if (childAi)
-				{
-					AiTown* childTown = childAi->town;
-					helper::AI_DeleteBuildingAI((BuildingAi*)childAi, childTown->free_buildings);
-					if (childTown)
-					{
-						if (child == childTown->building_scv)
-						{
-							childTown->building_scv = 0;
-						}
-						if (child == childTown->main_building)
-						{
-							childTown->main_building = 0;
-						}
-					}
-					child->pAI = 0;
-				}
-			}
-			result = helper::AI_AddWorkerStructureAI(child, parentTown);
-		}
-		return result;
-	}
-
 	/*
 	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 alwaysThisRegion) // 0043DA20
 	{
@@ -197,6 +162,41 @@ namespace hooks
 			}
 			helper::AI_AddMilitary(region, result, 1);
 		}
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	char AI_TrainingWorker(Unit* newUnit, Unit* otherUnit) // 00435700
+	{
+		char result = 0;
+		WorkerAi* otherUnitAI = (WorkerAi*)otherUnit->pAI;
+		if (otherUnitAI)
+		{
+			AiTown* otherUnitTown = otherUnitAI->town;
+			if (otherUnit == newUnit)
+			{
+				helper::AI_RemoveFromTowns(newUnit);
+				WorkerAi* newUnitAI = (WorkerAi*)newUnit->pAI;
+				if (newUnitAI)
+				{
+					AiTown* newUnitTown = newUnitAI->town;
+					helper::AI_DeleteBuildingAI((BuildingAi*)newUnitAI, newUnitTown->free_buildings);
+					if (newUnitTown)
+					{
+						if (newUnit == newUnitTown->building_scv)
+						{
+							newUnitTown->building_scv = 0;
+						}
+						if (newUnit == newUnitTown->main_building)
+						{
+							newUnitTown->main_building = 0;
+						}
+					}
+					newUnit->pAI = 0;
+				}
+			}
+			result = helper::AI_AddWorkerStructureAI(newUnit, otherUnitTown);
+		}
+		return result;
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
