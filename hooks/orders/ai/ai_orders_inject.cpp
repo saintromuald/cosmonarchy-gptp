@@ -81,6 +81,24 @@ namespace
 		}
 	}
 
+	void __declspec(naked) AI_TrainingNormal_Wrapper() // 00435DB0
+	{
+		static Unit* newUnit;
+		static Unit* parentUnit;
+		__asm
+		{
+			MOV parentUnit, ECX
+			MOV newUnit, EAX
+			PUSHAD
+		}
+		hooks::AI_TrainingNormal(newUnit, parentUnit);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
+
 	void __declspec(naked) AI_AddWorkerStructureAI_Wrapper() // 00433DD0
 	{
 		static u8 result;
@@ -569,6 +587,7 @@ namespace hooks
 //		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
 		jmpPatch(AI_TrainingBroodling_Wrapper,				0x0043E280, 1);
 		jmpPatch(AI_TrainingWorker_Wrapper,					0x00435700, 0);
+		jmpPatch(AI_TrainingNormal_Wrapper,					0x00435DB0, 0);
 //		jmpPatch(AI_AddWorkerStructureAI_Wrapper,			0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
 //		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
