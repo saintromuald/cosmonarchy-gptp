@@ -1056,7 +1056,7 @@ namespace hooks
 			case UnitId::ProtossAnthelion:
 			{
 				u32 attackRadius = 10 * 32;
-				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
+				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::NoBuilding, {});
 				bool attacked = false;
 				scbw::UnitFinder(
 					unit->getX() - attackRadius,

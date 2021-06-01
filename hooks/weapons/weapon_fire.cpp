@@ -113,7 +113,8 @@ namespace hooks
 		std::unordered_set<Unit*> targets;
 		if (attacker->orderTarget.unit
 			&& attacker->mainOrderId != OrderId::Follow
-			&& attacker->mainOrderId != OrderId::Patrol)
+			&& attacker->mainOrderId != OrderId::Patrol
+			&& scbw::getDistanceFast(attacker->position, attacker->orderTarget.pt) <= weapons_dat::MaxRange[weaponId])
 		{
 			targets.insert(attacker->orderTarget.unit);
 			launchMissile(attacker, attackerExt, attacker->orderTarget.unit, weaponId);
