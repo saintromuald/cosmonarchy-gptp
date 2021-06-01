@@ -409,7 +409,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					sync++;
 				}
 			});
-			if (sync >= localGroup.unitCount / 3)
+			if (sync >= localGroup.unitCount / 2)
 			{
 				KitePositions result = getKitePositions(unit, hostileGroupRadius);
 				if (!result.enemiesFound)
@@ -431,10 +431,16 @@ void cosmonarchyUnitAi(Unit* unit)
 				localGroup.forEach([&](Unit* localUnit)
 				{
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					if (!shouldKite(localUnit, localUnitExt))
+					if (unit->sprite->mainGraphic->animation == IscriptAnimation::Unused2)
 					{
 						return;
 					}
+
+					// enabling might increase average dps, but will desync units more
+					//if (!shouldKite(localUnit, localUnitExt))
+					//{
+					//	return;
+					//}
 
 					const u32 distance = getDistanceToTarget(localUnit);
 					const u32 maxRange = getMaxRange(localUnit);
