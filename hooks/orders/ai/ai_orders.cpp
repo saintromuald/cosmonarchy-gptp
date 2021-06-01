@@ -32,7 +32,9 @@ namespace hooks
 		else if (result->id == UnitId::ZergRilirokor
 			|| result->id == UnitId::ZergRililisk
 			|| result->id == UnitId::ProtossSimulacrum
-			|| result->id == UnitId::ProtossArchon) // archon should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
+			|| result->id == UnitId::ProtossArchon
+			|| result->id == UnitId::ProtossMindTyrant)
+			// archon and mind tyrant should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
 		{
 			hooks::AI_TrainingBroodling(result, parent);
 		}
