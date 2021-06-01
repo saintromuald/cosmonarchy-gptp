@@ -179,7 +179,7 @@ namespace hooks
 				if (newUnitAI)
 				{
 					AiTown* newUnitTown = newUnitAI->town;
-					helper::deleteBuildingAi((BuildingAi*)newUnitAI, newUnitTown->free_buildings);
+					helper::deleteBuildingAi((BuildingAi*)newUnitAI, &newUnitTown->free_buildings);
 					if (newUnitTown)
 					{
 						if (newUnit == newUnitTown->building_scv)
@@ -838,7 +838,7 @@ LABEL_126:
 					if (removeBuilding)
 					{
 						removeBuildingTown = removeBuilding->town;
-						helper::deleteBuildingAi(removeBuilding, removeBuildingTown->free_buildings);
+						helper::deleteBuildingAi(removeBuilding, &removeBuildingTown->free_buildings);
 						if (removeBuildingTown)
 						{
 							if (result == removeBuildingTown->building_scv)

@@ -7709,7 +7709,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	void deleteBuildingAi(BuildingAi* building, BuildingAiArray* buildingList)
+	void deleteBuildingAi(BuildingAi* building, BuildingAiArray** buildingList)
 	{
 		const u32 Func_DeleteBuildingAi = 0x00404500;
 		__asm {
