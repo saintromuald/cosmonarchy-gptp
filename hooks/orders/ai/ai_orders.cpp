@@ -169,7 +169,7 @@ namespace hooks
 	{
 		char result = 0;
 		WorkerAi* otherUnitAI = (WorkerAi*)otherUnit->pAI;
-		if (otherUnitAI)
+		if (otherUnitAI != nullptr)
 		{
 			AiTown* otherUnitTown = otherUnitAI->town;
 			if (otherUnit == newUnit)

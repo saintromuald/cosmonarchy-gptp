@@ -8359,14 +8359,14 @@ namespace helper
 	// For AI_TrainingWorker
 	char AI_AddWorkerStructureAI(Unit* worker, AiTown* town)
 	{
-		const u32 Func_AI_AcceptNewUnit = 0x00433DD0;
+		const u32 Func_AI_AddWorkerStructureAI = 0x00433DD0;
 		static char result;
 		__asm
 		{
 			PUSHAD
 			MOV EDI, town
 			MOV EBX, worker
-			CALL Func_AI_AcceptNewUnit
+			CALL Func_AI_AddWorkerStructureAI
 			MOV result, AL
 			POPAD
 		}
