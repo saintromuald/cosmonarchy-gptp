@@ -400,124 +400,136 @@ void cosmonarchyUnitAi(Unit* unit)
 
 		if (shouldKite(unit, unitExt))
 		{
-			KitePositions result = getKitePositions(unit, hostileGroupRadius);
-			if (!result.enemiesFound)
-			{			
-				localGroup.forEach([&](Unit* localUnit)
-				{
-					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					localUnitExt->timers[TimerAI_KiteCooldown] = 12;
-				});
-				return;
-			}
-
-			u32 crowdScore = 0;
-			if (!(unit->status & UnitStatus::InAir))
-			{
-				crowdScore = cosmonarchyUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::NotSelf | Flags::NoAir, {});
-			}
-
+			u32 sync = 0;
 			localGroup.forEach([&](Unit* localUnit)
 			{
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				if (!shouldKite(localUnit, localUnitExt))
+				if (localUnitExt->values[ValueAI_KiteSignal])
 				{
+					sync++;
+				}
+			});
+			if (sync >= localGroup.unitCount / 3)
+			{
+				KitePositions result = getKitePositions(unit, hostileGroupRadius);
+				if (!result.enemiesFound)
+				{			
+					localGroup.forEach([&](Unit* localUnit)
+					{
+						UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+						localUnitExt->timers[TimerAI_KiteCooldown] = 12;
+					});
 					return;
 				}
 
-				const u32 distance = getDistanceToTarget(localUnit);
-				const u32 maxRange = getMaxRange(localUnit);
-				if (isMeleeAttacker(localUnit))
+				u32 crowdScore = 0;
+				if (!(unit->status & UnitStatus::InAir))
 				{
-					localUnitExt->values[ValueAI_KiteSignal] = 0;
-					localUnitExt->timers[TimerAI_KiteCooldown] = 8;
-					if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
-					{
-						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
-						KITE_DEBUG("%s: fall back", localUnit->getName());
-					}
-					else if (distance <= maxRange * 2)
-					{
-						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
-						KITE_DEBUG("%s: forward", localUnit->getName());
-					}
-					else if (crowdScore > 6 && distance <= maxRange * 4)
-					{
-						localUnitExt->timers[TimerAI_KiteCooldown] = 24;
-						localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
-						KITE_DEBUG("%s: strafe", localUnit->getName());
-					}
-					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+					crowdScore = cosmonarchyUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::NotSelf | Flags::NoAir, {});
 				}
-				else
+
+				localGroup.forEach([&](Unit* localUnit)
 				{
-					localUnitExt->values[ValueAI_KiteSignal] = 0;
-					localUnitExt->timers[TimerAI_KiteCooldown] = 12;
-					bool targetHasMinRange = false;
-					if (localUnit->orderTarget.unit)
+					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+					if (!shouldKite(localUnit, localUnitExt))
 					{
-						if (localUnit->orderTarget.unit->id == UnitId::ZergGeszithalor
-							|| localUnit->orderTarget.unit->id == UnitId::ZergBactalisk
-							|| localUnit->orderTarget.unit->id == UnitId::ProtossArchitect)
+						return;
+					}
+
+					const u32 distance = getDistanceToTarget(localUnit);
+					const u32 maxRange = getMaxRange(localUnit);
+					if (isMeleeAttacker(localUnit))
+					{
+						localUnitExt->values[ValueAI_KiteSignal] = 0;
+						localUnitExt->timers[TimerAI_KiteCooldown] = 8;
+						if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
 						{
-							targetHasMinRange = true;
+							localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+							KITE_DEBUG("%s: fall back", localUnit->getName());
 						}
-						else
+						else if (distance <= maxRange * 2)
 						{
-							Unit* context = localUnit->orderTarget.unit;
-							if (context->subunit)
+							localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+							KITE_DEBUG("%s: forward", localUnit->getName());
+						}
+						else if (crowdScore > 6 && distance <= maxRange * 4)
+						{
+							localUnitExt->timers[TimerAI_KiteCooldown] = 24;
+							localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
+							KITE_DEBUG("%s: strafe", localUnit->getName());
+						}
+						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+					}
+					else
+					{
+						localUnitExt->values[ValueAI_KiteSignal] = 0;
+						localUnitExt->timers[TimerAI_KiteCooldown] = 12;
+						bool targetHasMinRange = false;
+						if (localUnit->orderTarget.unit)
+						{
+							if (localUnit->orderTarget.unit->id == UnitId::ZergGeszithalor
+								|| localUnit->orderTarget.unit->id == UnitId::ZergBactalisk
+								|| localUnit->orderTarget.unit->id == UnitId::ProtossArchitect)
 							{
-								context = context->subunit;
-							}
-							u32 weaponId;
-							if (localUnit->status & UnitStatus::InAir)
-							{
-								weaponId = context->getAirWeapon();
+								targetHasMinRange = true;
 							}
 							else
 							{
-								weaponId = context->getGroundWeapon();
+								Unit* context = localUnit->orderTarget.unit;
+								if (context->subunit)
+								{
+									context = context->subunit;
+								}
+								u32 weaponId;
+								if (localUnit->status & UnitStatus::InAir)
+								{
+									weaponId = context->getAirWeapon();
+								}
+								else
+								{
+									weaponId = context->getGroundWeapon();
+								}
+								targetHasMinRange = weapons_dat::MinRange[weaponId]
+									|| weapons_dat::ExplosionType[weaponId] == WeaponEffect::SplashRadial;
 							}
-							targetHasMinRange = weapons_dat::MinRange[weaponId]
-								|| weapons_dat::ExplosionType[weaponId] == WeaponEffect::SplashRadial;
 						}
-					}
 
-					u32 localGroupValue = 0;
-					localGroup.forEach([&](Unit* localUnit)
-					{
-						localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
-					});
+						u32 localGroupValue = 0;
+						localGroup.forEach([&](Unit* localUnit)
+						{
+							localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
+						});
 
-					if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
-						|| localGroupValue * 8 < result.biases[result.forwardIndex]
-						|| distance <= maxRange * 0.5)
-						&& !targetHasMinRange)
-					{
-						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
-						KITE_DEBUG("%s: fall back", localUnit->getName());
+						if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
+							|| localGroupValue * 8 < result.biases[result.forwardIndex]
+							|| distance <= maxRange * 0.5)
+							&& !targetHasMinRange)
+						{
+							localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+							KITE_DEBUG("%s: fall back", localUnit->getName());
+						}
+						else if (distance > maxRange * 1.5
+							|| (distance > maxRange * 1 && crowdScore > 6)
+							|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 8)
+							|| targetHasMinRange)
+						{
+							localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+							KITE_DEBUG("%s: forward", localUnit->getName());
+						}
+						else if (crowdScore > 6)
+						{
+							localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
+							KITE_DEBUG("%s: strafe", localUnit->getName());
+						}
+						else if (localGroupValue <= result.biases[result.forwardIndex] * 8)
+						{
+							localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+							KITE_DEBUG("%s: backward", localUnit->getName());
+						}
+						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 					}
-					else if (distance > maxRange * 1.5
-						|| (distance > maxRange * 1 && crowdScore > 6)
-						|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * 8)
-						|| targetHasMinRange)
-					{
-						localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
-						KITE_DEBUG("%s: forward", localUnit->getName());
-					}
-					else if (crowdScore > 6)
-					{
-						localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
-						KITE_DEBUG("%s: strafe", localUnit->getName());
-					}
-					else if (localGroupValue <= result.biases[result.forwardIndex] * 8)
-					{
-						localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
-						KITE_DEBUG("%s: backward", localUnit->getName());
-					}
-					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
-				}
-			});
+				});
+			}
 		}
 		else if (unitHasCooldownToAttack(unit))
 		{
