@@ -1,9 +1,10 @@
+#pragma once
 #include <SCBW/structures/Unit.h>
 #include <SCBW/structures/Bullet.h>
 namespace hooks
 {
 	// Custom functions
-	bool fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags);
+	bool fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags, bool ignoreMain = false);
 
 	// Hooked functions
 	void fireWeaponHook(Unit* unit, u8 weaponId);

@@ -107,14 +107,14 @@ namespace hooks
 		}
 	}
 
-	bool fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags)
+	bool fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags, bool ignoreMain)
 	{
 		bool fired = false;
 		std::unordered_set<Unit*> targets;
-		if (attacker->orderTarget.unit
+		if (!ignoreMain
+			&& attacker->orderTarget.unit
 			&& attacker->mainOrderId != OrderId::Follow
-			&& attacker->mainOrderId != OrderId::Patrol
-			&& scbw::getDistanceFast(attacker->position, attacker->orderTarget.pt) <= weapons_dat::MaxRange[weaponId])
+			&& attacker->mainOrderId != OrderId::Patrol)
 		{
 			targets.insert(attacker->orderTarget.unit);
 			launchMissile(attacker, attackerExt, attacker->orderTarget.unit, weaponId);

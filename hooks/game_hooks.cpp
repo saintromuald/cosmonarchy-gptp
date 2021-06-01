@@ -1004,7 +1004,7 @@ namespace hooks
 			{
 				if (unitExt->timers[TimerTarasqueSecondaryWeaponCooldown] == 0)
 				{
-					if (fireMultiple(unit, unitExt, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy))
+					if (fireMultiple(unit, unitExt, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, true))
 					{
 						unitExt->timers[TimerTarasqueSecondaryWeaponCooldown] = weapons_dat::Cooldown[WeaponId::TarasqueAcceleratedPlasmid];
 					}
