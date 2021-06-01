@@ -150,7 +150,6 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 			{
 				result.enemiesFound = true;
 			}
-			unitValue[i] += 1;
 			if (unit->status & UnitStatus::InAir)
 			{
 				unitValue[i] += hostileUnit->airStrength;
