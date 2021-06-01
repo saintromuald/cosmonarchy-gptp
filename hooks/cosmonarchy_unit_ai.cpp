@@ -347,15 +347,13 @@ static inline bool canKite(Unit* unit)
 
 static inline bool unitCanAttack(Unit* unit)
 {
-	return true;
-
 	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 	{
 		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit);
 	}
 	if (unit->movementFlags & MovementFlags::Accelerating)
 	{
-		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.66;
+		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit);
 	}
 	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.5;
 }
