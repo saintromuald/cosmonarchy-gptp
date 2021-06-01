@@ -469,14 +469,17 @@ void cosmonarchyUnitAi(Unit* unit)
 							{
 								context = context->subunit;
 							}
+							u32 weaponId;
 							if (localUnit->status & UnitStatus::InAir)
 							{
-								targetHasMinRange = weapons_dat::MinRange[context->getAirWeapon()];
+								weaponId = context->getAirWeapon();
 							}
 							else
 							{
-								targetHasMinRange = weapons_dat::MinRange[context->getGroundWeapon()];
+								weaponId = context->getGroundWeapon();
 							}
+							targetHasMinRange = weapons_dat::MinRange[weaponId]
+								|| weapons_dat::ExplosionType[weaponId] == WeaponEffect::SplashRadial;
 						}
 					}
 
