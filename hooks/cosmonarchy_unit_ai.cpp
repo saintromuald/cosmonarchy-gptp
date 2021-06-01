@@ -345,23 +345,25 @@ static inline bool canKite(Unit* unit)
 		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
 }
 
-static inline bool unitHasCooldownToAttack(Unit* unit)
+static inline bool unitCanAttack(Unit* unit)
 {
+	return true;
+
 	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 	{
 		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit);
 	}
 	if (unit->movementFlags & MovementFlags::Accelerating)
 	{
-		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.5;
+		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.66;
 	}
-	return getCurrentWeaponCooldown(unit) <= 0;
+	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.5;
 }
 
 static inline bool shouldKite(Unit* unit, UnitExt* unitExt)
 {
 	return (unitExt->values[ValueAI_KiteSignal] == 1 && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
-		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !unitHasCooldownToAttack(unit));
+		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !unitCanAttack(unit));
 }
 
 void cosmonarchyUnitAi(Unit* unit)
@@ -417,7 +419,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					localGroup.forEach([&](Unit* localUnit)
 					{
 						UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-						localUnitExt->timers[TimerAI_KiteCooldown] = 12;
+						localUnitExt->timers[TimerAI_KiteCooldown] = 8;
 					});
 					return;
 				}
@@ -458,7 +460,6 @@ void cosmonarchyUnitAi(Unit* unit)
 							localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
 							KITE_DEBUG("%s: strafe", localUnit->getName());
 						}
-						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 					}
 					else
 					{
@@ -526,29 +527,18 @@ void cosmonarchyUnitAi(Unit* unit)
 							localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 							KITE_DEBUG("%s: backward", localUnit->getName());
 						}
-						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 					}
 				});
 			}
 		}
-		else if (unitHasCooldownToAttack(unit))
+		else if (unitCanAttack(unit))
 		{
-			if (unit->mainOrderId == OrderId::AttackUnit
-				|| unit->mainOrderId == OrderId::CarrierFight
-				|| unit->mainOrderId == OrderId::ReaverFight
-				|| unit->mainOrderId == OrderId::AttackMoveComputer)
-			{
-				return;
-			}
-
 			localGroup.forEach([&](Unit* localUnit)
 			{
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-
 				if (localUnit->mainOrderId == OrderId::AttackUnit
 					|| localUnit->mainOrderId == OrderId::CarrierFight
-					|| localUnit->mainOrderId == OrderId::ReaverFight
-					|| localUnit->mainOrderId == OrderId::AttackMoveComputer)
+					|| localUnit->mainOrderId == OrderId::ReaverFight)
 				{
 					return;
 				}
@@ -580,13 +570,7 @@ void cosmonarchyUnitAi(Unit* unit)
 				{
 					localUnitExt->timers[TimerAI_KiteCooldown] = 2;
 
-					if (localUnitExt->values[ValueAI_KiteSignal] == 2)
-					{
-						localUnitExt->values[ValueAI_KiteSignal] = 0;
-						localUnitExt->timers[TimerAI_KiteCooldown] = 4 * 24;
-					}
-
-					//KITE_DEBUG("%s: attack", localUnit->getName());
+					KITE_DEBUG("%s: attack", localUnit->getName());
 					if (localUnit->id == UnitId::ProtossSolarion)
 					{
 						localUnit->orderTo(OrderId::CarrierFight, targetUnit);
@@ -599,11 +583,10 @@ void cosmonarchyUnitAi(Unit* unit)
 					{
 						localUnit->orderTo(OrderId::AttackUnit, targetUnit);
 					}
-					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 				}
 				else
 				{
-					localUnitExt->timers[TimerAI_KiteCooldown] = 12;
+					localUnitExt->timers[TimerAI_KiteCooldown] = 8;
 				}
 			});
 		}
