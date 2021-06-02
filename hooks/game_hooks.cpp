@@ -1056,7 +1056,7 @@ namespace hooks
 			case UnitId::ProtossAnthelion:
 			{
 				u32 attackRadius = 10 * 32;
-				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::NoBuilding, {});
+				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
 				bool attacked = false;
 				scbw::UnitFinder(
 					unit->getX() - attackRadius,
@@ -1069,7 +1069,8 @@ namespace hooks
 					if (dist <= weapons_dat::OuterSplashRadius[WeaponId::AnthelionEventHorizon])
 					{
 						UnitExt* targetExt = globals.GetUnitExt(target);
-						if (targetExt->timers[TimerAnthelionGravityWell])
+						if (!(units_dat::BaseProperty[target->id] & UnitProperty::Building)
+							&& targetExt->timers[TimerAnthelionGravityWell])
 						{
 							targetExt->timers[TimerAnthelionGravityWell] = 2;
 							targetExt->units[UnitAnthelionGravityWellSource] = unit;
