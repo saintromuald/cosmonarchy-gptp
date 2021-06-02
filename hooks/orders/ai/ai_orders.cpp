@@ -9,15 +9,10 @@ namespace hooks
 {
 	void AI_TrainingUnit(Unit* result, Unit* parent) // 004A2830
 	{
-		if (result == nullptr)
-		{
-			return;
-		}
-		if (parent == nullptr || result->playerId != parent->playerId)
-		{
-			parent = result;
-		}
-		if (playerTable[parent->playerId].type != PlayerType::Computer)
+		if (result == nullptr
+			|| parent == nullptr
+			|| result->playerId != parent->playerId
+			|| playerTable[parent->playerId].type != PlayerType::Computer)
 		{
 			return;
 		}
