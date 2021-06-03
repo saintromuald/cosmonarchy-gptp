@@ -628,75 +628,30 @@ namespace hooks
 	}
 	*/
 
-	s32 updatePlacementStateForPlacementBox()
-	{ // 0x0048DCE0
-		s32 v0; // esi
-		s32 result; // eax
-
-/*		if (*activePortraitUnit == nullptr) {
+	s32 updatePlacementStateForPlacementBox() // 0048DCE0
+	{
+		if (*activePortraitUnit == nullptr)
+		{
 			return 0;
-		}*/
+		}
+		s32 bCanBuild = helper::canBuildOnTileLocation(*activePortraitUnit, *placingPlayer, *placeBuildingX, *placeBuildingY, *placeBuildingUnitType, 1, 1, 0, 0);
+		s32 result;
 
-		scbw::print("First call");
-		v0 = helper::canBuildOnTileLocation(
-			*activePortraitUnit,
-			*unk_placementRelated,
-			*placeBuildingX,
-			*placeBuildingY,
-			*placeBuildingUnitType,
-			1,
-			1,
-			0,
-			0);
-		scbw::print("First call over");
-
-		/*
-		if (*isPlacingAddon) {
-					u32 source = *placeBuildBaseType;
-					u32 target = *placeBuildingUnitType;
-					u16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-					u16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
-					scbw::adjustAddonCoordinates(target, source, addon_x, addon_y);
-					result = canBuildOnTileLocation(
-						*activePortraitUnit,
-						*unk_placementRelated,
-						addon_x,
-						addon_y,
-						source,
-						0,
-						1,
-						0,
-						0);
-				}
-				else {
-					result = v0;
-				}
-		*/
 		u32 source = *placeBuildBaseType;
 		u32 target = *placeBuildingUnitType;
-		u16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-		u16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
-		scbw::adjustAddonCoordinates(source, target, addon_x, addon_y);
+		u16 addon_x = (*placeBuildingX - units_dat::AddonPlacement[2 * *placeBuildingUnitType - 212].x / 32);
+		u16 addon_y = (*placeBuildingY - units_dat::AddonPlacement[2 * *placeBuildingUnitType - 211].y / 32);
+//		scbw::adjustAddonCoordinates(source, target, addon_x, addon_y);
 		if (!*isPlacingAddon
-			|| (result = helper::canBuildOnTileLocation(
-				*activePortraitUnit,
-				*unk_placementRelated,
-				addon_x,
-				addon_y,
-				*placeBuildBaseType,
-				0,
-				1,
-				0,
-				0),
-				v0))
+			|| (result = helper::canBuildOnTileLocation(*activePortraitUnit, *placingPlayer, addon_x, addon_y, *placeBuildBaseType, 0, 1, 0, 0), bCanBuild))
 		{
-			result = v0;
+			result = bCanBuild;
 		}
 		return result;
 	}
 
-	char refreshScreen(s32 ecx0)
-	{ // 0048DDC0
+	char refreshScreen(s32 ecx0) // 0048DDC0
+	{
 		auto v6 = ecx0;
 		auto result = *IS_PLACING_BUILDING;
 		if (*IS_PLACING_BUILDING)

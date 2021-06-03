@@ -320,8 +320,8 @@ namespace helper
 		char bDontIgnoreReacting, char bAlsoInvisible);
 
 	// For updatePlacementStateForPlacementBox
-	s32 canBuildOnTileLocation(Unit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
-		s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision);				// 00473FB0
+	s32 canBuildOnTileLocation(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType,				// 00473FB0
+		s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision);
 	
 	// For refreshScreen
 	s32 updatePlacementStateForPlacementBox_Func();															// 0048DCE0

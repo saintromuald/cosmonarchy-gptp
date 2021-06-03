@@ -3150,22 +3150,22 @@ namespace helper
 
 	// For updatePlacementStateForPlacementBox
 
-	s32 canBuildOnTileLocation(Unit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
-		s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision)
+	s32 canBuildOnTileLocation(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision)
 	{
 		const u32 Func_canBuildOnTileLocation = 0x00473FB0;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
-			PUSH without_vision
-			PUSH also_invisible
-			PUSH check_vision
-			PUSH placement_state_entry
+			PUSH bWithoutVision
+			PUSH bAlsoInvisible
+			PUSH bCheckVision
+			PUSH placementStateEntry
 			PUSH unitType
-			PUSH y_tile
-			PUSH x_tile
-			PUSH player
-			PUSH a1
+			PUSH yTile
+			PUSH xTile
+			PUSH playerId
+			PUSH builder
 			CALL Func_canBuildOnTileLocation
 			MOV result, EAX
 			POPAD
