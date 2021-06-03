@@ -910,7 +910,7 @@ namespace helper
 	bool setLastOpenSlotToComputer(s8 race);																// 004DBB70
 
 	// For startGame
-	s32 bootReason(u8 a1);																					// 004B8870
+	s32 bootReason(u8 player);																				// 004B8870
 	s32 isAuthedMap(void* a1);																				// 004C4870
 	void setTimerFunc();																					// 00472E00
 	s32 getTickCount();																						// 004FE0C4
@@ -927,10 +927,10 @@ namespace helper
 
 	// For AIManageBuildingPlacement
 	s32 getBunkerPlacementPosition(s32 placementId, s32* regionId);											// 004442E0
-	Unit* getDisabledUnitInRange(s32 playerId, Point16 position);											// 00440420
+	Unit* getDisabledUnitInRange(s32 owner, Point16 position);												// 00440420
 	void AIGetBuildLocation(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition,				// 004461B0
 		s32 maxRange);
-	void AIPlacementDataSomething(s8* placementData, Point16 tryPosition);									// 00443510
+	void AIPlacementDataSomething(s8* placementData, Point16 tryPosition);									// 00443610
 	u32 getTileDistance(s32 x, s32 y, s32 x2, s32 y2);														// 00444100
 
 	// For initializeUnitCounts
@@ -963,8 +963,8 @@ namespace helper
 	Unit* getCreatingUnit(Unit* unit);																		// 00466A30
 
 	// For UnitMove
-	void MoveSprite(Sprite* a1, s16 a2, s16 a3);
-	u32 updateUnitSortingInfo(u32 a1, Unit* a2, u32 a3);
+	void MoveSprite(Sprite* sprite, s16 x, s16 y);															// 00497A10
+	u32 updateUnitSortingInfo(u32 x_diff, Unit* unit, u32 y_diff);											// 0046A000
 
 	// For bulletBehaviorReassign
 	void playSpriteIscript(Sprite* sprite, char scriptId, s32 bPlay);										// 00499D00

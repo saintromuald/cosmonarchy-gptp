@@ -8564,27 +8564,27 @@ namespace helper
 	bool setLastOpenSlotToComputer(s8 race)
 	{
 		const u32 Func_setLastOpenSlotToComputer = 0x004DBB70;
-		static s32 result;
+		static s8 result;
 		__asm
 		{
 			PUSHAD
 			PUSH race
 			CALL Func_setLastOpenSlotToComputer
-			MOV result, EAX
+			MOV result, AL
 			POPAD
 		}
-		return (bool)result;
+		return result;
 	}
 
 	// For startGame
-	s32 bootReason(u8 a1)
+	s32 bootReason(u8 player)
 	{
 		const u32 Func_bootReason = 0x004B8870;
 		static s32 result;
 		__asm
 		{
 			PUSHAD
-			MOVZX AL, a1
+			MOVZX AL, player
 			CALL Func_bootReason
 			MOV result, EAX
 			POPAD
@@ -8599,7 +8599,7 @@ namespace helper
 		__asm
 		{
 			PUSHAD
-			MOV EAX, a1
+			MOV ECX, a1
 			CALL Func_isAuthedMap
 			MOV result, EAX
 			POPAD
@@ -8741,7 +8741,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* getDisabledUnitInRange(s32 playerId, Point16 position)
+	Unit* getDisabledUnitInRange(s32 owner, Point16 position)
 	{
 		const u32 Func_getDisabledUnitInRange = 0x00440420;
 		static Unit* result;
@@ -8749,7 +8749,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH position
-			PUSH playerId
+			PUSH owner
 			CALL Func_getDisabledUnitInRange
 			MOV result, EAX
 			POPAD
@@ -8775,7 +8775,7 @@ namespace helper
 
 	void AIPlacementDataSomething(s8* placementData, Point16 tryPosition)
 	{
-		const u32 Func_AIPlacementDataSomething = 0x00443510;
+		const u32 Func_AIPlacementDataSomething = 0x00443610;
 		__asm
 		{
 			PUSHAD
@@ -8808,11 +8808,12 @@ namespace helper
 	char teamGame_CountRaces(char force, char* bIsLegal, char race)
 	{
 		const u32 Func_teamGame_CountRaces = 0x004857B0;
+		s32 raceArg = race;
 		static char result;
 		__asm
 		{
 			PUSHAD
-			PUSH race
+			PUSH raceArg
 			MOV EDI, bIsLegal
 			MOV AL, force
 			CALL Func_teamGame_CountRaces
@@ -8877,10 +8878,11 @@ namespace helper
 	void drawShieldUpgrade(BinDlg* dialog, u16 statusScreenIndex)
 	{
 		const u32 Func_drawShieldUpgrade = 0x00425510;
+		u32 statusScreenIndexArg = statusScreenIndex;
 		__asm
 		{
 			PUSHAD
-			PUSH statusScreenIndex
+			PUSH statusScreenIndexArg
 			MOV EAX, dialog
 			CALL Func_drawShieldUpgrade
 			POPAD
@@ -8979,10 +8981,11 @@ namespace helper
 	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 playerId)
 	{
 		const u32 Func_giveAllUnitPropertiesToPlayer = 0x0047C9F0;
+		s32 playerIdArg = playerId;
 		__asm
 		{
 			PUSHAD
-			PUSH playerId
+			PUSH playerIdArg
 			MOV EAX, unit
 			CALL Func_giveAllUnitPropertiesToPlayer
 			POPAD
@@ -9041,30 +9044,30 @@ namespace helper
 		return result;
 	}
 
-	void MoveSprite(Sprite* a1, s16 a2, s16 a3)
+	void MoveSprite(Sprite* sprite, s16 x, s16 y)
 	{
-		const u32 Func_sub_497A10 = 0x00497A10;
+		const u32 Func_MoveSprite = 0x00497A10;
 		__asm
 		{
 			PUSHAD
-			MOV ECX, a1
-			MOV BX, a2
-			MOV DI, a3
-			CALL Func_sub_497A10
+			MOV ECX, sprite
+			MOV BX, x
+			MOV DI, y
+			CALL Func_MoveSprite
 			POPAD
 		}
 	}
 
-	u32 updateUnitSortingInfo(u32 a1, Unit* a2, u32 a3)
+	u32 updateUnitSortingInfo(u32 x_diff, Unit* unit, u32 y_diff)
 	{
 		const u32 Func_updateUnitSortingInfo = 0x0046A000;
 		static s32 result;
 		__asm
 		{
 			PUSHAD
-			MOV EAX, a1
-			MOV ESI, a2
-			PUSH a3
+			PUSH y_diff
+			MOV ESI, unit
+			MOV EAX, x_diff
 			CALL Func_updateUnitSortingInfo
 			MOV result, EAX
 			POPAD
@@ -9076,11 +9079,12 @@ namespace helper
 	void playSpriteIscript(Sprite* sprite, char scriptId, s32 bPlay)
 	{
 		const u32 Func_playSpriteIscript = 0x00499D00;
+		s32 scriptIdArg = scriptId;
 		__asm
 		{
 			PUSHAD
 			PUSH bPlay
-			PUSH scriptId
+			PUSH scriptIdArg
 			MOV ECX, sprite
 			CALL Func_playSpriteIscript
 			POPAD
