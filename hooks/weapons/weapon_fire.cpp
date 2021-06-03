@@ -148,10 +148,10 @@ namespace hooks
 			{
 				break;
 			}
+			attacker->orderTarget.unit = newTarget;
 			launchMissile(attacker, attackerExt, newTarget, weaponId);
 			fired = true;
 			targets.insert(newTarget);
-			attacker->orderTarget.unit = newTarget;
 		}
 		attacker->orderTarget.unit = old;
 		return fired;
