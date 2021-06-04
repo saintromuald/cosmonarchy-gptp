@@ -385,25 +385,6 @@ namespace
 		}
 	}
 
-	void __declspec(naked) deleteWorkerAI_Wrapper() // 00404470
-	{
-		static WorkerAi* result;
-		static WorkerAi* workerAi;
-		static WorkerAiArray* workerAiList;
-		__asm
-		{
-			MOV workerAi, EAX
-			MOV workerAiList, EDX
-			PUSHAD
-		}
-		result = hooks::deleteWorkerAI(workerAi, workerAiList);
-		__asm
-		{
-			POPAD
-			RETN
-		}
-	}
-
 	void __declspec(naked) AI_SendSuicide_Wrapper() // 0043E050
 	{
 		static char argType;
@@ -577,6 +558,26 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) deleteWorkerAI_Wrapper() // 00404470
+	{
+		static WorkerAi* result;
+		static WorkerAi* workerAi;
+		static WorkerAiArray* workerAiList;
+		__asm
+		{
+			MOV workerAi, EAX
+			MOV workerAiList, EDX
+			PUSHAD
+		}
+		result = hooks::deleteWorkerAI(workerAi, workerAiList);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -604,13 +605,13 @@ namespace hooks
 		*/
 
 		jmpPatch(AI_orderUnitCloaking_Wrapper,				0x0043B970, 1);
-//		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
 		jmpPatch(AI_SendSuicide_Wrapper,					0x0043E050, 1);
 		jmpPatch(AI_RecalculateRegionStrength_Wrapper,		0x0043A390, 1);
 		jmpPatch(AI_progressBuild_Wrapper,					0x00434480, 1);
 		jmpPatch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
 //		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
 		jmpPatch(getRegionIdFromUnit_Wrapper,				0x0049CB40, 2);
+//		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}

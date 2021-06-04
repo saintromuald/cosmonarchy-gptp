@@ -1354,38 +1354,6 @@ LABEL_22:
 		*/
 	}
 
-	// Hooked to investigate crashes - Pr0nogo
-	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiList) // 00404470
-	{
-		WorkerAi* nextWorker;
-		WorkerAiArray* arrayVar;
-		WorkerAi* finalWorker;
-
-		if (&workerAiList->worker_ais[1] == workerAi)
-		{
-			workerAiList->worker_ais[1] = *workerAi->link.prev;
-		}
-		nextWorker = workerAi->link.next;
-		if (nextWorker)
-		{
-			nextWorker->link.prev = workerAi->link.prev;
-		}
-		if (workerAi)
-		{
-			workerAi->link.prev->link.next = workerAi->link.next;
-		}
-		arrayVar = workerAiList;
-		workerAi->link.next = 0;
-		workerAi = arrayVar->first_free_worker;
-		finalWorker = arrayVar->first_free_worker;
-		if (finalWorker)
-		{
-			finalWorker->link.prev = workerAi;
-		}
-		arrayVar->first_free_worker = workerAi;
-		return workerAi;
-	}
-
 	// Hooked to improve functionality - Pr0nogo
 	void AI_SendSuicide(char randomSuicide, s32 player) // 0043E050
 	{
@@ -1946,5 +1914,41 @@ LABEL_36:
 			return 0;
 		}
 		return helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y);
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiList) // 00404470
+	{
+		// New
+		if (workerAi == nullptr)
+		{
+			return 0;
+		}
+
+		if (&workerAiList->worker_ais[1] == workerAi)
+		{
+			workerAiList->worker_ais[1] = *workerAi->link.prev;
+		}
+
+		WorkerAi* nextWorker = workerAi->link.next;
+		if (nextWorker)
+		{
+			nextWorker->link.prev = workerAi->link.prev;
+		}
+		if (workerAi)
+		{
+			workerAi->link.prev->link.next = workerAi->link.next;
+		}
+
+		workerAi->link.next = 0;
+		workerAi = workerAiList->first_free_worker;		
+		WorkerAi* finalWorker = workerAiList->first_free_worker;
+		if (finalWorker)
+		{
+			finalWorker->link.prev = workerAi;
+		}
+
+		workerAiList->first_free_worker = workerAi;
+		return workerAi;
 	}
 }
