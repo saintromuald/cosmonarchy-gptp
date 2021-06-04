@@ -1928,10 +1928,11 @@ LABEL_36:
 		if (&workerAiList->worker_ais[1] == workerAi)
 		{
 			workerAiList->worker_ais[1] = *workerAi->link.prev;
+			scbw::print("first if successful");
 		}
 
 		WorkerAi* nextWorker = workerAi->link.next;
-		if (nextWorker)
+		if (nextWorker != nullptr)
 		{
 			nextWorker->link.prev = workerAi->link.prev;
 		}
@@ -1940,12 +1941,12 @@ LABEL_36:
 			workerAi->link.prev->link.next = workerAi->link.next;
 		}
 
-		workerAi->link.next = 0;
-		workerAi = workerAiList->first_free_worker;		
+		workerAi->link.next = nullptr;
+//		workerAi->link.prev = workerAiList->first_free_worker; <-- this causes replay / end of game crashes
 		WorkerAi* finalWorker = workerAiList->first_free_worker;
-		if (finalWorker)
+		if (finalWorker != nullptr)
 		{
-			finalWorker->link.prev = workerAi;
+			finalWorker->link.next = workerAi;
 		}
 
 		workerAiList->first_free_worker = workerAi;
