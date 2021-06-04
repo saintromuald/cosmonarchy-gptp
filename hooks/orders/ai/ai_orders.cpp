@@ -1935,7 +1935,7 @@ LABEL_36:
 		{
 			nextWorker->link.prev = workerAi->link.prev;
 		}
-		if (workerAi)
+		if (workerAi->link.prev != nullptr)
 		{
 			workerAi->link.prev->link.next = workerAi->link.next;
 		}
