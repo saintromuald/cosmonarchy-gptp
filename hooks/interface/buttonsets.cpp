@@ -1332,12 +1332,12 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && // Vorvaling Adrenal Surge passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergVorvrokor && // Vorvaling Adrenal Surge passive
 								current_button->iconID == IconId::MetabolicBoost)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && // Vorvaling Captivating Claws passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergVorvrokor && // Vorvaling Captivating Claws passive
 								current_button->iconID == IconId::Claws)
 							{
 								current_button_state = BUTTON_STATE::Enabled;

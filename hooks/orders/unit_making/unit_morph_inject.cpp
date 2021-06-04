@@ -246,7 +246,7 @@ namespace
 			replaceSpriteImages(unit->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;
 			if (unit->id == UnitId::ZergZethrokor
-				|| unit->id == UnitId::ZergVorvaling)
+				|| unit->id == UnitId::ZergVorvrokor)
 			{
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
 			}

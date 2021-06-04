@@ -273,7 +273,7 @@ namespace hooks
 		}
 
 		// Why are we updating Vorvaling/Ovileth speed every frame?
-		if (unit->id == UnitId::ZergVorvaling || unit->id == UnitId::ZergOvileth)
+		if (unit->id == UnitId::ZergVorvrokor || unit->id == UnitId::ZergOvileth)
 		{
 			unit->updateSpeed();
 		}

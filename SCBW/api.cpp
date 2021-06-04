@@ -517,7 +517,7 @@ namespace scbw
 			case UnitId::ZergIroleth:
 			case UnitId::ZergOthstoleth:
 			case UnitId::ZergAlaszileth:
-			case UnitId::ZergVorvaling:
+			case UnitId::ZergVorvrokor:
 			case UnitId::ZergLiiralisk:
 			case UnitId::ZergBactalisk:
 			case UnitId::ZergGorgrokor:

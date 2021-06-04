@@ -354,6 +354,8 @@
     <ClCompile Include="hooks\trap_hooks_inject.cpp" />
     <ClCompile Include="hooks\unit_movement.cpp" />
     <ClCompile Include="hooks\unit_movement_inject.cpp" />
+    <ClCompile Include="hooks\unit_stats\new_requirements.cpp" />
+    <ClCompile Include="hooks\unit_stats\new_requirements_inject.cpp" />
     <ClCompile Include="hooks\unit_stats\supply_hooks.cpp" />
     <ClCompile Include="hooks\unit_stats\supply_hooks_inject.cpp" />
     <ClCompile Include="hooks\use_tech.cpp" />
@@ -589,6 +591,7 @@
     <ClInclude Include="hooks\requirements\requirement_parser.h" />
     <ClInclude Include="hooks\trap_hooks.h" />
     <ClInclude Include="hooks\unit_movement.h" />
+    <ClInclude Include="hooks\unit_stats\new_requirements.h" />
     <ClInclude Include="hooks\unit_stats\supply_hooks.h" />
     <ClInclude Include="include\yaml-cpp\anchor.h" />
     <ClInclude Include="include\yaml-cpp\binary.h" />

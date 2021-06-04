@@ -9134,4 +9134,20 @@ namespace helper
 			POPAD
 		}
 	}
+
+	s8 createUnitAllowed(u16 unitId, Unit* unit, s32 playerID)
+	{
+		const u32 Func_createUnitAllowed = 0x0046E1C0;
+		static s8 result;
+		__asm
+		{
+			PUSH playerID
+			MOV ESI, unit
+			MOV AX, unitId
+			CALL Func_createUnitAllowed
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

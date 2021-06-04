@@ -384,7 +384,7 @@ namespace UnitId
 		ZergZoryusthaleth								= 97,		// Lurker Egg
 		ZergLiiralisk									= 112,		// Terran Academy
 		ZergSovroleth									= 123,		// Terran Armory
-		ZergVorvaling									= 128,		// Uraj
+		ZergVorvrokor									= 128,		// Uraj
 		ZergBactalisk									= 129,		// Khalis
 		ZergAlaszileth									= 173,		// Khaydarin Crystal Formation
 		ZergSkithrokor									= 185,		// Independent Jump Gate

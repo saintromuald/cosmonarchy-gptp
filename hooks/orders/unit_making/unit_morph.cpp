@@ -281,7 +281,7 @@ namespace hooks
 		// Default StarCraft behavior
 		if (unit->id == UnitId::ZergZethrokor)
 		{
-			if (morphUnitId == UnitId::ZergVorvaling)
+			if (morphUnitId == UnitId::ZergVorvrokor)
 			{
 				return true;
 			}
