@@ -1925,10 +1925,11 @@ LABEL_36:
 			return nullptr;
 		}
 
+		// ASM seems quite different from IDA
+
 		if (&workerAiList->worker_ais[1] == workerAi)
 		{
 			workerAiList->worker_ais[1] = *workerAi->link.prev;
-			scbw::print("first if successful");
 		}
 
 		WorkerAi* nextWorker = workerAi->link.next;
@@ -1942,11 +1943,10 @@ LABEL_36:
 		}
 
 		workerAi->link.next = nullptr;
-//		workerAi->link.prev = workerAiList->first_free_worker; <-- this causes replay / end of game crashes
-		WorkerAi* finalWorker = workerAiList->first_free_worker;
-		if (finalWorker != nullptr)
+		workerAi->link.prev = workerAiList->first_free_worker; // <-- this causes replay / end of game crashes
+		if (workerAiList->first_free_worker != nullptr)
 		{
-			finalWorker->link.next = workerAi;
+			workerAiList->worker_ais[1] = *workerAi;
 		}
 
 		workerAiList->first_free_worker = workerAi;
