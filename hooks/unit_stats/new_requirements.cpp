@@ -113,12 +113,41 @@ namespace hooks
 						}
 						return -1;
 					}
+					case UnitId::ZergMatraleth:
+					case UnitId::ZergKonvilisk:
+					{
+						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlmakisAntre)
+							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergMatravilNest))
+						{
+							return 1;
+						}
+						return -1;
+					}
 					case UnitId::SharedTarasque:
 					case UnitId::SharedCharlatan:
 					case UnitId::SharedEmpress:
 					{
 						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
 							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
+						{
+							return 1;
+						}
+						return -1;
+					}
+					case UnitId::ZergKeskathalor:
+					case UnitId::ZergGeszithalor:
+					{
+						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlkajChasm)
+							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergGeszkathGrotto))
+						{
+							return 1;
+						}
+						return -1;
+					}
+					case UnitId::ZergIsthrathaleth:
+					case UnitId::ZergSovroleth:
+					{
+						if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergSovthrathMound))
 						{
 							return 1;
 						}
@@ -132,95 +161,174 @@ namespace hooks
 						}
 						return -1;
 					}
+					default:
+					{
+						return 0;
+					}
 				}
 			}
 			case UnitId::ZergOvileth:
 			{
-				if (unitId == UnitId::ZergIroleth
-					&& (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
-						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris)))
+				if (unitId == UnitId::ZergIroleth)
 				{
-					return 1;
+					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+					{
+						return 1;
+					}
+					return -1;
 				}
-				return -1;
+				return 0;
 			}
 			case UnitId::ZergZethrokor:
 			{
-				if (unitId == UnitId::ZergVorvrokor
-					&& PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergLiivralPond))
+				if (unitId == UnitId::ZergVorvrokor)
 				{
-					return 1;
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergLiivralPond))
+					{
+						return 1;
+					}
+					return -1;
 				}
-				return -1;
+				return 0;
 			}
 			case UnitId::ZergQuazilisk:
 			{
-				if (unitId == UnitId::ZergLiiralisk
-					&& PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergLiivralPond))
+				if (unitId == UnitId::ZergLiiralisk)
 				{
-					return 1;
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergLiivralPond))
+					{
+						return 1;
+					}
+					return -1;
 				}
-				return -1;
+				return 0;
 			}
 			case UnitId::ZergHydralisk:
 			{
-				if (unitId == UnitId::ZergBactalisk
-					&& PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergGorgralSwamp))
+				if (unitId == UnitId::ZergBactalisk)
 				{
-					return 1;
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergGorgralSwamp))
+					{
+						return 1;
+					}
+					return -1;
 				}
-				return -1;
+				return 0;
 			}
 			case UnitId::ZergSkithrokor:
 			{
-				if (unitId == UnitId::ZergGorgrokor
-					&& PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergGorgralSwamp))
+				if (unitId == UnitId::ZergGorgrokor)
 				{
-					return 1;
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergGorgralSwamp))
+					{
+						return 1;
+					}
+					return -1;
 				}
-				return -1;
+				return 0;
 			}
 			case UnitId::ZergMutalisk:
 			{
-				if (unitId == UnitId::ZergVithrilisk
-					&& PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergVithrathHaunt))
+				if (unitId == UnitId::ZergVithrilisk)
 				{
-					return 1;
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergVithrathHaunt))
+					{
+						return 1;
+					}
+					return -1;
 				}
-				return -1;
+				return 0;
 			}
 			case UnitId::ZergNathrokor:
 			{
-				if (unitId == UnitId::ZergKalkalisk
-					&& PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergVithrathHaunt))
+				if (unitId == UnitId::ZergKalkalisk)
 				{
-					return 1;
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergVithrathHaunt))
+					{
+						return 1;
+					}
+					return -1;
 				}
-				return -1;
+				return 0;
 			}
 			case UnitId::ZergIroleth:
 			{
-				if (unitId == UnitId::ZergOthstoleth
-					&& (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform)))
+				if (unitId == UnitId::ZergOthstoleth)
 				{
-					return 1;
+					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
+					{
+						return 1;
+					}
+					return -1;
 				}
-				return -1;
+				return 0;
+			}
+			case UnitId::ZergZoryusthaleth:
+			{
+				if (unitId == UnitId::ZergUltrakor)
+				{
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergUltrakCavern))
+					{
+						return 1;
+					}
+					return -1;
+				}
+				return 0;
+			}
+			case UnitId::ZergMatraleth:
+			{
+				if (unitId == UnitId::ZergAkistrokor)
+				{
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlmakisAntre))
+					{
+						return 1;
+					}
+					return -1;
+				}
+				return 0;
+			}
+			case UnitId::ZergKonvilisk:
+			{
+				if (unitId == UnitId::ZergAlmaksalisk)
+				{
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlmakisAntre))
+					{
+						return 1;
+					}
+					return -1;
+				}
+				return 0;
 			}
 			case UnitId::ZergOthstoleth:
 			{
-				if (unitId == UnitId::ZergAlaszileth
-					&& (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor)))
+				if (unitId == UnitId::ZergAlaszileth)
 				{
-					return 1;
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor))
+					{
+						return 1;
+					}
+					return -1;
 				}
-				return -1;
+				return 0;
+			}
+			case UnitId::ZergKeskathalor:
+			{
+				if (unitId == UnitId::ZergAlkajelisk)
+				{
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlkajChasm))
+					{
+						return 1;
+					}
+					return -1;
+				}
+				return 0;
 			}
 			default:
 			{
-				return -1;
+				return 0;
 			}
 		}
 	}

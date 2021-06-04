@@ -616,10 +616,9 @@ namespace hooks
 		BinDlg* current_dialog = *BUTTONSET_DIALOG;
 
 		// Custom buttonset overrides
-		// Treasury
-		if (buttonsetId == 215)
+		if (buttonsetId == UnitId::TerranTreasury)
 		{
-			buttonsetId = UnitId::Special_StartLocation; // Treasury
+			buttonsetId = UnitId::Special_StartLocation;
 		}
 
 		BUTTON_SET* const current_buttonset = getButtonSet(buttonsetId);
@@ -665,10 +664,6 @@ namespace hooks
 				while (current_button_state == BUTTON_STATE::Invisible && (buttons_count < current_buttonset->buttonsInSet))
 				{
 					current_button_state = helper::req_check((u32)current_button->reqFunc, (u8)current_button->reqVar, (u8)*LOCAL_NATION_ID, *activePortraitUnit);
-					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Upgrade_Not_At_Max_Level)
-					{
-						// Escalations were here
-					}
 
 					// I am currently forcing the buttons to show, which is effectively fighting lardcode that forces them not to show when group-selected.
 					// This is STUPID, EXPENSIVE, and should be REPLACED as soon as possible. - Pr0nogo

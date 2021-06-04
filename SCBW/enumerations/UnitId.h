@@ -140,10 +140,10 @@ namespace UnitId
 		/*0x85*/	ZergHive								= 133,
 		/*0x86*/	ZergNydusCanal							= 134,
 		/*0x87*/	ZergHydrokDen							= 135,
-		/*0x88*/	ZergIsthrathMound						= 136,
+		/*0x88*/	ZergSovthrathMound						= 136,
 		/*0x89*/	ZergGeszithRoost						= 137,
 		/*0x8A*/	ZergMatravilNest						= 138,
-		/*0x8B*/	ZergAlmakisNest							= 139,
+		/*0x8B*/	ZergAlmakisAntre						= 139,
 		/*0x8C*/	ZergUltrakCavern						= 140,
 		/*0x8D*/	ZergMuthrokSpire						= 141,
 		/*0x8E*/	ZergQuazrokPool							= 142,
@@ -404,7 +404,7 @@ namespace UnitId
 		ZergVithrathHaunt								= 197,		// Zerg Flag Beacon
 		ZergLiivralPond									= 204,		// Floor Hatch
 		ZergAlkajChasm									= 212,		// Right Wall Missile Trap
-		ZergKeskathGrotto								= 219,		// Khaydarin Crystal
+		ZergGeszkathGrotto								= 219,		// Khaydarin Crystal
 		ZergIrolIris									= 224,		// Zerg Gas Sac Type 1
 		ZergSire										= 227,		// Terran Gas Tank Type 2
 		ZergLarvalColony								= 216,		// Young Chrysalis

@@ -606,7 +606,7 @@ namespace scbw
 			case UnitId::ZergLiivralPond:
 			case UnitId::ZergVithrathHaunt:
 			case UnitId::ZergGorgralSwamp:
-			case UnitId::ZergAlmakisNest:
+			case UnitId::ZergAlmakisAntre:
 			case UnitId::ZergAlkajChasm:
 			case UnitId::ZergUltrakCavern:
 			{
@@ -633,8 +633,8 @@ namespace scbw
 			case UnitId::ZergMuthrokSpire:
 			case UnitId::ZergMatravilNest:
 			case UnitId::ZergZorkizShroud:
-			case UnitId::ZergKeskathGrotto:
-			case UnitId::ZergIsthrathMound:
+			case UnitId::ZergGeszkathGrotto:
+			case UnitId::ZergSovthrathMound:
 			{
 				return true;
 			}
