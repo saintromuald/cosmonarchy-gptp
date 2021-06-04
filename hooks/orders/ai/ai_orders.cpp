@@ -1922,7 +1922,7 @@ LABEL_36:
 		// New
 		if (workerAi == nullptr)
 		{
-			return 0;
+			return nullptr;
 		}
 
 		if (&workerAiList->worker_ais[1] == workerAi)
