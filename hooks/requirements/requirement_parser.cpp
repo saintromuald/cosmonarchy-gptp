@@ -4,7 +4,7 @@
 
 namespace
 {
-	// TODO Replace these later
+	// TODO: Replace these later
 	const int TMP_CONST_COUNT_ARG = 512;
 	const int ENTRY_OPCODE_LIMIT_ARG = 32;
 

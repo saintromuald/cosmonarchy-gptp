@@ -4,59 +4,7 @@
 #include <SCBW/api.h>
 #include <DebugUtils.h>
 
-namespace
-{
-	s32 parseRequirementOpcodesLogic(Unit* unit, u32 datReqOffset, u16 id, u32 player, u16* datReqBase);
-	s8 UnitCreateAllowedLogic(u16 unitId, Unit* parentUnit, s32 playerID, u16* unitsDat, u16* requirementsTable);
-
-	void parseUnitsDatReqs();
-}
-
 namespace hooks
-{
-	s32 parseRequirementOpcodes(Unit* unit, u32 datReqOffset, u16 id, u32 player, u16* datReqBase) // 0046D610
-	{
-		if (datReqBase == requirements::orders && customRequirements::getOrderRequirementOverrides()[id] != 0)
-		{
-			datReqOffset = customRequirements::getOrderRequirementOverrides()[id];
-			datReqBase = customRequirements::getOrderRequirementOpcodes();
-		}
-		else if (datReqBase == requirements::research && customRequirements::getResearchRequirementOverrides()[id] != 0)
-		{
-			datReqOffset = customRequirements::getResearchRequirementOverrides()[id];
-			datReqBase = customRequirements::getResearchRequirementOpcodes();
-		}
-		else if (datReqBase == requirements::tech && customRequirements::getTechRequirementOverrides()[id] != 0)
-		{
-			datReqOffset = customRequirements::getTechRequirementOverrides()[id];
-			datReqBase = customRequirements::getTechRequirementOpcodes();
-		}
-		else if (datReqBase == requirements::upgrade && customRequirements::getUpgradeRequirementOverrides()[id] != 0)
-		{
-			datReqOffset = customRequirements::getUpgradeRequirementOverrides()[id];
-			datReqBase = customRequirements::getUpgradeRequirementOpcodes();
-		}
-
-		s32 result = parseRequirementOpcodesLogic(unit, datReqOffset, id, player, datReqBase);
-		return result;
-	}
-
-	s8 UnitCreateAllowed(u16 unitId, Unit* parentUnit, s32 playerID) // 0046E1C0
-	{
-		u16* unitsDat = units_dat::unitsDat43;
-		u16* requirementsTable = requirements::units;
-
-		if (customRequirements::getUnitRequirementOverrides()[unitId] != 0)
-		{
-			unitsDat = customRequirements::getUnitRequirementOverrides();
-			requirementsTable = customRequirements::getUnitRequirementOpcodes();;
-		}
-
-		return UnitCreateAllowedLogic(unitId, parentUnit, playerID, unitsDat, requirementsTable);
-	}
-}
-
-namespace
 {
 	s32 parseRequirementOpcodesLogic(Unit* unit, u32 datReqOffset, u16 id, u32 playerId, u16* datReqBase)
 	{
@@ -885,6 +833,47 @@ LABEL_71_SUM_VALUES:
 					goto LABEL_72_NEXT_OPCODE;
 			}
 		}
+	}
+
+	s32 parseRequirementOpcodes(Unit* unit, u32 datReqOffset, u16 id, u32 player, u16* datReqBase) // 0046D610
+	{
+		if (datReqBase == requirements::orders && customRequirements::getOrderRequirementOverrides()[id] != 0)
+		{
+			datReqOffset = customRequirements::getOrderRequirementOverrides()[id];
+			datReqBase = customRequirements::getOrderRequirementOpcodes();
+		}
+		else if (datReqBase == requirements::research && customRequirements::getResearchRequirementOverrides()[id] != 0)
+		{
+			datReqOffset = customRequirements::getResearchRequirementOverrides()[id];
+			datReqBase = customRequirements::getResearchRequirementOpcodes();
+		}
+		else if (datReqBase == requirements::tech && customRequirements::getTechRequirementOverrides()[id] != 0)
+		{
+			datReqOffset = customRequirements::getTechRequirementOverrides()[id];
+			datReqBase = customRequirements::getTechRequirementOpcodes();
+		}
+		else if (datReqBase == requirements::upgrade && customRequirements::getUpgradeRequirementOverrides()[id] != 0)
+		{
+			datReqOffset = customRequirements::getUpgradeRequirementOverrides()[id];
+			datReqBase = customRequirements::getUpgradeRequirementOpcodes();
+		}
+
+		s32 result = hooks::parseRequirementOpcodesLogic(unit, datReqOffset, id, player, datReqBase);
+		return result;
+	}
+
+	s8 UnitCreateAllowed(u16 unitId, Unit* parentUnit, s32 playerID) // 0046E1C0
+	{
+		u16* unitsDat = units_dat::unitsDat43;
+		u16* requirementsTable = requirements::units;
+
+		if (customRequirements::getUnitRequirementOverrides()[unitId] != 0)
+		{
+			unitsDat = customRequirements::getUnitRequirementOverrides();
+			requirementsTable = customRequirements::getUnitRequirementOpcodes();;
+		}
+
+		return hooks::UnitCreateAllowedLogic(unitId, parentUnit, playerID, unitsDat, requirementsTable);
 	}
 
 	void parseUnitsDatReqs()

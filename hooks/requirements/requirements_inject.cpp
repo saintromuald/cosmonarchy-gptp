@@ -68,16 +68,9 @@ namespace
 
 namespace hooks
 {
-	s32 parseRequirementOpcodes(Unit* unit, u32 datReqOffset, u16 techID, u32 player)
-	{
-		return s32();
-	}
-	void injectParseRequirementOpcodesWrapper()
+	void injectRequirementHooks()
 	{
 		jmpPatch(getParseRequirementOpcodesWrapper, 0x0046D610, 0);
-	}
-	void injectUnitCreateAllowedWrapper()
-	{
 		jmpPatch(getUnitCreateAllowedWrapper, 0x0046E1C0, 0);
 	}
 }
