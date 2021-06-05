@@ -130,7 +130,7 @@ namespace hooks
 			else if (builtUnitId == UnitId::TerranQuarry) {
 				addonPlaceX = 128;
 			}*/
-			scbw::adjustAddonX(builtUnitId, builder->id, addonPlaceX);
+			scbw::adjustAddonX(builtUnitId, builder->id, &addonPlaceX);
 
 			if (addonPlaceX < 0)
 				addonPlaceX += 31;
@@ -151,7 +151,7 @@ namespace hooks
 			else if (builtUnitId == UnitId::TerranQuarry) {
 				addonPlaceY = 32;
 			}*/
-			scbw::adjustAddonY(builtUnitId, builder->id, addonPlaceY);
+			scbw::adjustAddonY(builtUnitId, builder->id, &addonPlaceY);
 			if (addonPlaceY < 0)
 				addonPlaceY += 31;
 

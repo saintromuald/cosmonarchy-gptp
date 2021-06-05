@@ -316,9 +316,9 @@ namespace scbw
 
 	/// Adjusts x,y addon coordinates of quarry and similar unit ids
 
-	void adjustAddonX(u16 addonId, u16 sourceId, u16& x);
-	void adjustAddonY(u16 addonId, u16 sourceId, u16& y);
-	void adjustAddonCoordinates(u16 addonId, u16 sourceId, u16& x, u16& y);
+	void adjustAddonX(u16 addonId, u16 sourceId, u16* x);
+	void adjustAddonY(u16 addonId, u16 sourceId, u16* y);
+	void adjustAddonCoordinates(u16 addonId, u16 sourceId, u16* x, u16* y);
 
 	u8 getUpgradeMaxLevel(u8 playerId, u8 upgradeId);
 	bool hasTechAvailable(u8 playerId, u16 techId);

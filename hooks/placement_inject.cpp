@@ -43,7 +43,21 @@ namespace
 		}
 	}
 
-
+	void __declspec(naked) updatePlacementStateForPlacementBox_Wrapper() // 0048DCE0
+	{
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+		}
+		result = hooks::updatePlacementStateForPlacementBox();
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -52,5 +66,6 @@ namespace hooks
 	{
 		jmpPatch(InitPlacementBoxPos_Wrapper, 0x0048D660, 0);
 		jmpPatch(DrawPlacementBox_Wrapper, 0x0048DDC0, 4);
+		//jmpPatch(updatePlacementStateForPlacementBox_Wrapper, 0x0048DCE0, 0);
 	}
 }

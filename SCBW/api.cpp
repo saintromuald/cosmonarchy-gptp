@@ -780,7 +780,6 @@ namespace scbw
 
 	}
 
-
 	void setUpgradeLevel(u8 playerId, u8 upgradeId, u8 level)
 	{
 		assert(playerId < PLAYER_COUNT);
@@ -791,22 +790,23 @@ namespace scbw
 			UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PrismaticShield] = level;
 	}
 
-	void adjustAddonX(u16 addonId, u16 sourceId, u16& x)
+	void adjustAddonX(u16 addonId, u16 sourceId, u16* x)
 	{
 		if (addonId == UnitId::TerranQuarry)
 		{
-			x = 128;
-		}
-	}
-	void adjustAddonY(u16 addonId, u16 sourceId, u16& y)
-	{
-		if (addonId == UnitId::TerranQuarry)
-		{
-			y = 32;
+			*x = 128;
 		}
 	}
 
-	void adjustAddonCoordinates(u16 addonId, u16 sourceId, u16& x, u16& y)
+	void adjustAddonY(u16 addonId, u16 sourceId, u16* y)
+	{
+		if (addonId == UnitId::TerranQuarry)
+		{
+			*y = 32;
+		}
+	}
+
+	void adjustAddonCoordinates(u16 addonId, u16 sourceId, u16* x, u16* y)
 	{
 		adjustAddonX(addonId, sourceId, x);
 		adjustAddonY(addonId, sourceId, y);

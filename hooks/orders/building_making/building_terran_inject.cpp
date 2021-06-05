@@ -62,22 +62,6 @@ namespace
 		}
 	}
 
-	void __declspec(naked) updatePlacementStateForPlacementBox_Wrapper() // 0048DCE0
-	{
-		static s32 result;
-		__asm
-		{
-			PUSHAD
-		}
-		result = hooks::updatePlacementStateForPlacementBox();
-		__asm
-		{
-			POPAD
-			MOV EAX, result
-			RETN
-		}
-	}
-
 	void __declspec(naked) refreshScreen_Wrapper() // 0048DDC0
 	{
 		static s32 ecx0;
@@ -106,7 +90,7 @@ namespace
 			MOV addonOffsetY, AX
 			PUSHAD
 		}
-		scbw::adjustAddonY(*placeBuildingUnitType, *placeBuildBaseType, addonOffsetY);
+		scbw::adjustAddonY(*placeBuildingUnitType, *placeBuildBaseType, &addonOffsetY);
 		__asm
 		{
 			POPAD
@@ -125,7 +109,7 @@ namespace
 			MOV addonOffsetX, AX
 			PUSHAD
 		}
-		scbw::adjustAddonX(*placeBuildingUnitType, *placeBuildBaseType, addonOffsetX);
+		scbw::adjustAddonX(*placeBuildingUnitType, *placeBuildBaseType, &addonOffsetX);
 		__asm
 		{
 			POPAD
@@ -150,7 +134,6 @@ namespace hooks
 		jmpPatch(orders_SCVBuildWrapper,							0x00467FD0, 0);
 //		placementSimpleWrappers(); // causes insane bug
 
-//		jmpPatch(updatePlacementStateForPlacementBox_Wrapper,		0x0048DCE0, 0);
 //		jmpPatch(refreshScreen_Wrapper,								0x0048DDC0, 4);
 	}
 }

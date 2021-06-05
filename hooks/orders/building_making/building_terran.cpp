@@ -628,28 +628,6 @@ namespace hooks
 	}
 	*/
 
-	s32 updatePlacementStateForPlacementBox() // 0048DCE0
-	{
-		if (*activePortraitUnit == nullptr)
-		{
-			return 0;
-		}
-		s32 bCanBuild = helper::canBuildOnTileLocation(*activePortraitUnit, *placingPlayer, *placeBuildingX, *placeBuildingY, *placeBuildingUnitType, 1, 1, 0, 0);
-		s32 result;
-
-		u32 source = *placeBuildBaseType;
-		u32 target = *placeBuildingUnitType;
-		u16 addon_x = (*placeBuildingX - units_dat::AddonPlacement[2 * *placeBuildingUnitType - 212].x / 32);
-		u16 addon_y = (*placeBuildingY - units_dat::AddonPlacement[2 * *placeBuildingUnitType - 211].y / 32);
-//		scbw::adjustAddonCoordinates(source, target, addon_x, addon_y);
-		if (!*isPlacingAddon
-			|| (result = helper::canBuildOnTileLocation(*activePortraitUnit, *placingPlayer, addon_x, addon_y, *placeBuildBaseType, 0, 1, 0, 0), bCanBuild))
-		{
-			result = bCanBuild;
-		}
-		return result;
-	}
-
 	char refreshScreen(s32 ecx0) // 0048DDC0
 	{
 		auto v6 = ecx0;
@@ -673,7 +651,7 @@ namespace hooks
 					Point16 addon_point;
 					addon_point.x = units_dat::AddonPlacement[v4].x;
 					addon_point.y = units_dat::AddonPlacement[v4].y;
-					scbw::adjustAddonCoordinates(*placeBuildingUnitId, 0, addon_point.x, addon_point.y);
+					scbw::adjustAddonCoordinates(*placeBuildingUnitId, 0, &addon_point.x, &addon_point.y);
 					helper::unk_buildingPlacementRelated(0, &addon_point);
 				}
 				result = helper::refreshLayers3And4();
