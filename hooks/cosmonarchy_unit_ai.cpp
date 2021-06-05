@@ -470,7 +470,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					}
 					else
 					{
-						localUnitExt->values[ValueAI_KiteSignal] = 0;
+						localUnitExt->values[ValueAI_KiteSignal] = 2;
 						localUnitExt->timers[TimerAI_KiteCooldown] = 10;
 						bool targetHasMinRange = false;
 						if (localUnit->orderTarget.unit)
@@ -576,20 +576,30 @@ void cosmonarchyUnitAi(Unit* unit)
 
 				if (targetUnit)
 				{
-					localUnitExt->timers[TimerAI_KiteCooldown] = 2;
 
-					KITE_DEBUG("%s: attack", localUnit->getName());
-					if (localUnit->id == UnitId::ProtossSolarion)
+					if (localUnitExt->values[ValueAI_KiteSignal] == 2)
 					{
-						localUnit->orderTo(OrderId::CarrierFight, targetUnit);
-					}
-					else if (localUnit->id == UnitId::ProtossAccantor)
-					{
-						localUnit->orderTo(OrderId::ReaverFight, targetUnit);
+						localUnitExt->timers[TimerAI_KiteCooldown] = 2;
+						localUnitExt->values[ValueAI_KiteSignal] = 0;
+						KITE_DEBUG("%s: preattack", localUnit->getName());
+						localUnit->orderTo(OrderId::Patrol, targetUnit->getX(), targetUnit->getY());
 					}
 					else
 					{
-						localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+						localUnitExt->timers[TimerAI_KiteCooldown] = 2;
+						KITE_DEBUG("%s: attack", localUnit->getName());
+						if (localUnit->id == UnitId::ProtossSolarion)
+						{
+							localUnit->orderTo(OrderId::CarrierFight, targetUnit);
+						}
+						else if (localUnit->id == UnitId::ProtossAccantor)
+						{
+							localUnit->orderTo(OrderId::ReaverFight, targetUnit);
+						}
+						else
+						{
+							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+						}
 					}
 				}
 				else
