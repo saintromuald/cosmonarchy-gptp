@@ -177,10 +177,10 @@ namespace hooks
 					speed *= 0.5;
 				}
 			} break;
-			case UnitId::ZergVorvaling:
+			case UnitId::ZergVorvrokor:
 			{
 				// Vorvaling Adrenal Surge: gains f64 movespeed when moving towards enemies
-				if (unit->id == UnitId::ZergVorvaling)
+				if (unit->id == UnitId::ZergVorvrokor)
 				{
 					u32 range = unit->getSightRange(false) * 32;
 					scbw::UnitFinder unitFinder(

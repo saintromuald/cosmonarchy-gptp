@@ -36,6 +36,7 @@ namespace
 			RETN 12
 		}
 	}
+
 	void __declspec(naked) getUnitCreateAllowedWrapper() // 0046E1C0
 	{
 		static s32 result;

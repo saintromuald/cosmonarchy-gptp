@@ -437,10 +437,10 @@ namespace hooks
 
 			case UnitId::ZergMatravilNest:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakisNest, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakisAntre, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergKeskathGrotto:
+			case UnitId::ZergGeszkathGrotto:
 			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
 			} break;
