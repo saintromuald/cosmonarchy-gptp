@@ -169,6 +169,16 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::TerranQuarry:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranMason:
+					{
+						return TECH_ACTIVE;
+					}
+				}
+			} break;
 			case UnitId::TerranTreasury:
 			{
 				switch (unitId)
