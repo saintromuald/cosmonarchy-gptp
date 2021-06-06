@@ -3,45 +3,50 @@
 
 namespace hooks
 {
+	enum
+	{
+		TECH_GRAYED = -1,
+		TECH_HIDDEN = 0,
+		TECH_ACTIVE = 1,
+	};
+
 	s8 createUnitAllowed_Partial(s16 unitId, Unit* unit, s32 playerId)
 	{
-		s8 result = 0;
-
 		*lastInternalErr = InternalErrors::UnknownError0;
 		if (unitId >= UnitId::None)
 		{
 			*lastInternalErr = InternalErrors::UnknownError16;
-			return 0;
+			return TECH_HIDDEN;
 		}
 		if (playerId != unit->playerId)
 		{
 			*lastInternalErr = InternalErrors::UnknownError1;
-			return 0;
+			return TECH_HIDDEN;
 		}
 		if (!(unit->status & UnitStatus::Completed))
 		{
 			*lastInternalErr = InternalErrors::UnknownError20;
-			return 0;
+			return TECH_HIDDEN;
 		}
 		if (unit->isFrozen())
 		{
 			*lastInternalErr = InternalErrors::UnitFrozen;
-			return 0;
+			return TECH_HIDDEN;
 		}
 		if (!UnitAvailability->available[unit->playerId][unitId])
 		{
 			*lastInternalErr = InternalErrors::UnknownError2;
-			return 0;
+			return TECH_HIDDEN;
 		}
 		if (unit->isQueueSlotActive(4))
 		{
 			*lastInternalErr = InternalErrors::UnknownError3;
-			return 0;
+			return TECH_HIDDEN;
 		}
 		if (unit->status & UnitStatus::IsHallucination)
 		{
 			*lastInternalErr = InternalErrors::UnknownError22;
-			return 0;
+			return TECH_HIDDEN;
 		}
 
 		switch (unit->id)
@@ -60,7 +65,7 @@ namespace hooks
 					case UnitId::ZergDroleth:
 					case UnitId::ZergOvileth:
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
 					case UnitId::ZergZethrokor:
 					case UnitId::ZergQuazilisk:
@@ -68,9 +73,9 @@ namespace hooks
 						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergLiivralPond)
 							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergQuazrokPool))
 						{
-							return 1;
+							return TECH_ACTIVE;
 						}
-						return -1;
+						return TECH_GRAYED;
 					}
 					case UnitId::ZergHydralisk:
 					case UnitId::ZergSkithrokor:
@@ -78,9 +83,9 @@ namespace hooks
 						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergGorgralSwamp)
 							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergHydrokDen))
 						{
-							return 1;
+							return TECH_ACTIVE;
 						}
-						return -1;
+						return TECH_GRAYED;
 					}
 					case UnitId::ZergMutalisk:
 					case UnitId::ZergNathrokor:
@@ -88,9 +93,9 @@ namespace hooks
 						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergVithrathHaunt)
 							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergMuthrokSpire))
 						{
-							return 1;
+							return TECH_ACTIVE;
 						}
-						return -1;
+						return TECH_GRAYED;
 					}
 					case UnitId::SharedCohort:
 					case UnitId::SharedAxitrilisk:
@@ -99,9 +104,9 @@ namespace hooks
 							|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
 							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
 						{
-							return 1;
+							return TECH_ACTIVE;
 						}
-						return -1;
+						return TECH_GRAYED;
 					}
 					case UnitId::ZergZoryusthaleth:
 					case UnitId::ZergLakizilisk:
@@ -109,9 +114,9 @@ namespace hooks
 						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergUltrakCavern)
 							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergZorkizShroud))
 						{
-							return 1;
+							return TECH_ACTIVE;
 						}
-						return -1;
+						return TECH_GRAYED;
 					}
 					case UnitId::ZergMatraleth:
 					case UnitId::ZergKonvilisk:
@@ -119,9 +124,9 @@ namespace hooks
 						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlmakisAntre)
 							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergMatravilNest))
 						{
-							return 1;
+							return TECH_ACTIVE;
 						}
-						return -1;
+						return TECH_GRAYED;
 					}
 					case UnitId::SharedTarasque:
 					case UnitId::SharedCharlatan:
@@ -130,9 +135,9 @@ namespace hooks
 						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
 							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
 						{
-							return 1;
+							return TECH_ACTIVE;
 						}
-						return -1;
+						return TECH_GRAYED;
 					}
 					case UnitId::ZergKeskathalor:
 					case UnitId::ZergGeszithalor:
@@ -140,30 +145,30 @@ namespace hooks
 						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlkajChasm)
 							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergGeszkathGrotto))
 						{
-							return 1;
+							return TECH_ACTIVE;
 						}
-						return -1;
+						return TECH_GRAYED;
 					}
 					case UnitId::ZergIsthrathaleth:
 					case UnitId::ZergSovroleth:
 					{
 						if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergSovthrathMound))
 						{
-							return 1;
+							return TECH_ACTIVE;
 						}
-						return -1;
+						return TECH_GRAYED;
 					}
 					case UnitId::SharedAnticthon:
 					{
 						if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor))
 						{
-							return 1;
+							return TECH_ACTIVE;
 						}
-						return -1;
+						return TECH_GRAYED;
 					}
 					default:
 					{
-						return 0;
+						return TECH_HIDDEN;
 					}
 				}
 			}
@@ -175,11 +180,11 @@ namespace hooks
 						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
 						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergZethrokor:
 			{
@@ -187,11 +192,11 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergLiivralPond))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergQuazilisk:
 			{
@@ -199,11 +204,11 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergLiivralPond))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergHydralisk:
 			{
@@ -211,11 +216,11 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergGorgralSwamp))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergSkithrokor:
 			{
@@ -223,11 +228,11 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergGorgralSwamp))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergMutalisk:
 			{
@@ -235,11 +240,11 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergVithrathHaunt))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergNathrokor:
 			{
@@ -247,11 +252,11 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergVithrathHaunt))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergIroleth:
 			{
@@ -260,11 +265,11 @@ namespace hooks
 					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
 						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergZoryusthaleth:
 			{
@@ -272,11 +277,11 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergUltrakCavern))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergMatraleth:
 			{
@@ -284,11 +289,11 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlmakisAntre))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergKonvilisk:
 			{
@@ -296,11 +301,11 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlmakisAntre))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergOthstoleth:
 			{
@@ -308,11 +313,11 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
+				return TECH_HIDDEN;
 			}
 			case UnitId::ZergKeskathalor:
 			{
@@ -320,16 +325,13 @@ namespace hooks
 				{
 					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlkajChasm))
 					{
-						return 1;
+						return TECH_ACTIVE;
 					}
-					return -1;
+					return TECH_GRAYED;
 				}
-				return 0;
-			}
-			default:
-			{
-				return 0;
+				return TECH_HIDDEN;
 			}
 		}
+		return TECH_HIDDEN;
 	}
 }
