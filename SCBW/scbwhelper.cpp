@@ -1131,13 +1131,13 @@ namespace helper
 	char AI_TrainingWorker(Unit* result, Unit* parent)
 	{
 		const u32 Func_AI_TrainingWorker = 0x00435700;
-		static s32 resultFunc;
+		static char resultFunc;
 		__asm {
 			PUSHAD
 			MOV EAX, result
 			MOV ECX, parent
 			CALL Func_AI_TrainingWorker
-			MOV resultFunc, EAX
+			MOV resultFunc, AL
 			POPAD
 		}
 		return resultFunc;
