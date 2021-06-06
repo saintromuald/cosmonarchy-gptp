@@ -3,7 +3,8 @@
 
 BuildingModifier get_building_modifier(Unit* unit)
 {
-	BuildingModifier modifier = {};
+	BuildingModifier modifier = {0};
+	modifier.multiplier = 1;
 
 	if (unit)
 	{
