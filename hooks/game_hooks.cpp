@@ -266,7 +266,7 @@ namespace hooks
 		}
 
 		// If you want to disable the color randomization add a trigger that sets 1 death of Mineral Field (Type 2) for all players
-		if (*elapsedTimeFrames == 1 && unit_deaths[UnitId::ResourceMineralFieldType2].player[*ACTIVE_NATION_ID] == 1)
+		if (*elapsedTimeFrames == 1 && unit_deaths[UnitId::ResourceMineralFieldType2].player[*ACTIVE_NATION_ID] != 1)
 		{
 			set_melee_player_colors();
 		}
