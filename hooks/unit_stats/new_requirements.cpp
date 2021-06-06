@@ -5,7 +5,7 @@ namespace hooks
 {
 	enum
 	{
-		TECH_GRAYED = -1,
+		TECH_LOCKED = -1,
 		TECH_HIDDEN = 0,
 		TECH_ACTIVE = 1,
 	};
@@ -49,10 +49,335 @@ namespace hooks
 			return TECH_HIDDEN;
 		}
 
+		enum
+		{
+			Tier1 = 0,
+			Tier2,
+			Tier3,
+			Tier4
+		};
+
+		bool TierUnlocked[3][4];
+		TierUnlocked[RaceId::Zerg][Tier1] = true;
+		TierUnlocked[RaceId::Zerg][Tier2] = Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris)
+			|| Player::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+			|| Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor);
+		TierUnlocked[RaceId::Zerg][Tier3] = Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+			|| Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor);
+		TierUnlocked[RaceId::Zerg][Tier4] = Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor);
+
+		TierUnlocked[RaceId::Terran][Tier1] = true;
+		TierUnlocked[RaceId::Terran][Tier2] = Player::numberOfCompletedUnitsOfType(playerId, UnitId::TerranEngineeringBay);
+		TierUnlocked[RaceId::Terran][Tier3] = Player::numberOfCompletedUnitsOfType(playerId, UnitId::TerranScienceFacility);
+		TierUnlocked[RaceId::Terran][Tier4] = true;
+
+		TierUnlocked[RaceId::Protoss][Tier1] = true;
+		TierUnlocked[RaceId::Protoss][Tier2] = true;
+		TierUnlocked[RaceId::Protoss][Tier3] = true;
+		TierUnlocked[RaceId::Protoss][Tier4] = true;
+
+		s32 addonId = -1; 
+		if (unit->building.addon)
+		{
+			addonId = unit->building.addon->id;
+		}
+
 		switch (unit->id)
 		{
 			// TERRAN
-
+			case UnitId::TerranMason:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranCommandCenter:
+					case UnitId::TerranSupplyDepot:
+					case UnitId::TerranBarracks:
+					case UnitId::TerranFactory:
+					case UnitId::TerranStarport:
+					case UnitId::TerranScrapyard:
+					case UnitId::TerranWatchdog:
+					case UnitId::TerranBunker:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::TerranTreasury:
+					case UnitId::TerranCaptaincy:
+					case UnitId::TerranScienceFacility:
+					{
+						if (TierUnlocked[RaceId::Terran][Tier1])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::TerranIronFoundry:
+					case UnitId::TerranNaniteAssembly:
+					{
+						if (TierUnlocked[RaceId::Terran][Tier2])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+				}
+			}
+			case UnitId::TerranCommandCenter:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranMason:
+					case UnitId::TerranComsatStation:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::TerranNuclearSilo:
+					case UnitId::TerranQuarry:
+					{
+						if (TierUnlocked[RaceId::Terran][Tier1])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+				}
+			} break;
+			case UnitId::TerranTreasury:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranComsatStation:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::TerranNuclearSilo:
+					case UnitId::TerranQuarry:
+					{
+						if (TierUnlocked[RaceId::Terran][Tier1])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+				}
+			} break;
+			case UnitId::TerranBarracks:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranMaverick:
+					case UnitId::TerranHarakan:
+					case UnitId::TerranCyprian:
+					case UnitId::TerranMedbay:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::TerranCovertOps:
+					{
+						if (TierUnlocked[RaceId::Terran][Tier1])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::TerranCleric:
+					case UnitId::TerranShaman:
+					{
+						if (addonId == UnitId::TerranMedbay)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranEidolon:
+					case UnitId::TerranSavant:
+					{
+						if (addonId == UnitId::TerranCovertOps)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+				}
+				return TECH_HIDDEN;
+			} break;
+			case UnitId::TerranFactory:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranVulture:
+					case UnitId::TerranGoliath:
+					case UnitId::TerranCyclops:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::TerranMachineShop:
+					case UnitId::TerranSalvoYard:
+					{
+						if (TierUnlocked[RaceId::Terran][Tier1])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::TerranPhalanxTankMode:
+					case UnitId::TerranSouthpaw:
+					{
+						if (addonId == UnitId::TerranMachineShop)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranPaladin:
+					case UnitId::TerranMadrigal:
+					{
+						if (addonId == UnitId::TerranSalvoYard)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+				}
+			} break;
+			case UnitId::TerranStarport:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranWraith:
+					case UnitId::TerranGorgon:
+					case UnitId::TerranValkyrie:
+					case UnitId::TerranTrojan:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::TerranMunitionsBay:
+					case UnitId::TerranControlTower:
+					{
+						if (TierUnlocked[RaceId::Terran][Tier1])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::TerranAzazel:
+					case UnitId::TerranSeraph:
+					{
+						if (addonId == UnitId::TerranControlTower)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranSalamander:
+					case UnitId::TerranWyvern:
+					{
+						if (addonId == UnitId::TerranMunitionsBay)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+				}
+			} break;
+			case UnitId::TerranScrapyard:
+			{
+				switch (unitId)
+				{
+					case UnitId::SharedCohort:
+					case UnitId::SharedAspirant:
+					case UnitId::TerranBlackjack:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::TerranFutureStation:
+					{
+						if (TierUnlocked[RaceId::Terran][Tier1])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::TerranClaymore:
+					case UnitId::TerranSiren:
+					{
+						if (addonId == UnitId::TerranFutureStation)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::SharedStriga:
+					case UnitId::SharedLuminary:
+					{
+						if (addonId == UnitId::TerranTinkerersTower2)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::SharedTarasque:
+					case UnitId::SharedAnticthon:
+					{
+						if (addonId == UnitId::TerranBioticBase2)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+				}
+			} break;
+			case UnitId::TerranCaptaincy:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranMadcap:
+					case UnitId::TerranHeracles:
+					case UnitId::TerranApostle:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::TerranGuildhall:
+					{
+						if (TierUnlocked[RaceId::Terran][Tier3])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::TerranOlympian:
+					case UnitId::TerranAutocrat:
+					{
+						if (addonId == UnitId::TerranGuildhall)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+				}
+			} break;
+			case UnitId::TerranIronFoundry:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranPenumbra:
+					case UnitId::TerranPazuzu:
+					{
+						return TECH_ACTIVE;
+					}
+				}
+			} break;
+			case UnitId::TerranNaniteAssembly:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranCentaur:
+					case UnitId::TerranMinotaur:
+					case UnitId::TerranPhobos:
+					{
+						return TECH_ACTIVE;
+					}
+				}
+			} break;
 			
 			// PROTOSS
 			// Units
@@ -99,7 +424,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					return TECH_HIDDEN;
 				}
@@ -120,7 +445,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					return TECH_HIDDEN;
 				}
@@ -142,7 +467,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					return TECH_HIDDEN;
 				}
@@ -162,7 +487,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					return TECH_HIDDEN;
 				}
@@ -184,7 +509,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					return TECH_HIDDEN;
 				}
@@ -204,7 +529,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::ProtossStarSovereign:
 					{
@@ -212,7 +537,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::ProtossSolarion:
 					{
@@ -220,7 +545,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					return TECH_HIDDEN;
 				}
@@ -241,7 +566,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::ProtossAnthelion:
 					{
@@ -249,7 +574,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					return TECH_HIDDEN;
 				}
@@ -272,7 +597,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					return TECH_HIDDEN;
 				}
@@ -287,7 +612,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -367,7 +692,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::ZergHydralisk:
 					case UnitId::ZergSkithrokor:
@@ -377,7 +702,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::ZergMutalisk:
 					case UnitId::ZergNathrokor:
@@ -387,7 +712,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::SharedCohort:
 					case UnitId::SharedAxitrilisk:
@@ -398,7 +723,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::ZergZoryusthaleth:
 					case UnitId::ZergLakizilisk:
@@ -408,7 +733,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::ZergMatraleth:
 					case UnitId::ZergKonvilisk:
@@ -418,7 +743,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::SharedTarasque:
 					case UnitId::SharedCharlatan:
@@ -429,7 +754,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::ZergKeskathalor:
 					case UnitId::ZergGeszithalor:
@@ -439,7 +764,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::ZergIsthrathaleth:
 					case UnitId::ZergSovroleth:
@@ -448,7 +773,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::SharedAnticthon:
 					{
@@ -456,13 +781,10 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
-					}
-					default:
-					{
-						return TECH_HIDDEN;
+						return TECH_LOCKED;
 					}
 				}
+				return TECH_HIDDEN;
 			}
 			
 			// Morphs
@@ -476,7 +798,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -488,7 +810,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -500,7 +822,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -512,7 +834,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -524,7 +846,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -536,7 +858,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -548,7 +870,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -561,7 +883,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -573,7 +895,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -585,7 +907,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -597,7 +919,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -609,7 +931,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -621,7 +943,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -650,7 +972,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 					case UnitId::ZergNydusCanal:
 					case UnitId::ZergGeszkathGrotto:
@@ -661,7 +983,7 @@ namespace hooks
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_GRAYED;
+						return TECH_LOCKED;
 					}
 				}
 				return TECH_HIDDEN;
@@ -688,7 +1010,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -702,7 +1024,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -716,7 +1038,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -730,7 +1052,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -751,7 +1073,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -764,7 +1086,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -777,7 +1099,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -789,7 +1111,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -809,7 +1131,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_GRAYED;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
