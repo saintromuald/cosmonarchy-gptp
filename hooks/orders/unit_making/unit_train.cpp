@@ -153,23 +153,25 @@ namespace hooks
 					bool extraBuild = false;
 					if (builtUnitExt->values[ValueCrucible] == 0)
 					{
-						auto r = 256;
-						auto n = cosmonarchyFinderMatch(nullptr, Flags::Ally | Flags::Powered | Flags::Completed,
-							{UnitId::ProtossCrucible});
-						scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
-							builtUnit->position.x + r, builtUnit->position.y + r);
+						u32 radius = 256;
+						auto match = cosmonarchyFinderMatch(nullptr, Flags::Ally | Flags::Powered | Flags::Completed, {UnitId::ProtossCrucible});
+						scbw::UnitFinder unitsInSplash(
+							builtUnit->position.x - radius,
+							builtUnit->position.y - radius,
+							builtUnit->position.x + radius,
+							builtUnit->position.y + radius
+						);
 						for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 						{
 							auto unit = unitsInSplash.getUnit(i);
-							if (n(unit))
+							if (match(unit))
 							{
-								builtUnitExt->values[ValueCrucible] = 5; // 6 is ~100/15
+								builtUnitExt->values[ValueCrucible] = 2; // 6 is ~100/15
 								helper::buildingAddon(builtUnit, hpGain, TRUE);
 								if (builtUnit->status & UnitStatus::Completed)
 								{
 									extraBuild = true;
 								}
-								break;
 							}
 						}
 					}
