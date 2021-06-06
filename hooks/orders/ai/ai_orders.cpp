@@ -9,29 +9,48 @@ namespace hooks
 {
 	void AI_TrainingUnit(Unit* result, Unit* parent) // 004A2830
 	{
-		if (result == nullptr
-			|| parent == nullptr
-			|| result->playerId != parent->playerId
+		if (result == nullptr)
+		{
+			return;
+		}
+
+		// archon and mind tyrant should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
+		bool useSimpleMilitaryAI =
+			result->id == UnitId::ZergRilirokor
+			|| result->id == UnitId::ZergRililisk
+			|| result->id == UnitId::ProtossSimulacrum
+			|| result->id == UnitId::ProtossArchon
+			|| result->id == UnitId::ProtossMindTyrant;
+
+		if (parent == nullptr)
+		{
+			if (useSimpleMilitaryAI)
+			{
+				parent = result; // for ai training broodling, parent can be the same as result, and will still work as intended
+			}
+			else
+			{
+				return;
+			}
+		}
+
+		if (result->playerId != parent->playerId
 			|| playerTable[parent->playerId].type != PlayerType::Computer)
 		{
 			return;
 		}
-		if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
+
+		if (useSimpleMilitaryAI)
+		{
+			hooks::AI_TrainingBroodling(result, parent);
+		}
+		else if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
 		{
 			helper::AI_TrainingWorker(result, parent);
 		}
 		else if (result->id == UnitId::ZergOvileth)
 		{
 			helper::AI_TrainingOverlord(result, parent); // replace with hook later
-		}
-		else if (result->id == UnitId::ZergRilirokor
-			|| result->id == UnitId::ZergRililisk
-			|| result->id == UnitId::ProtossSimulacrum
-			|| result->id == UnitId::ProtossArchon
-			|| result->id == UnitId::ProtossMindTyrant)
-			// archon and mind tyrant should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
-		{
-			hooks::AI_TrainingBroodling(result, parent);
 		}
 		else
 		{
