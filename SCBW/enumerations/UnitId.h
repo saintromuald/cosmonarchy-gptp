@@ -174,7 +174,7 @@ namespace UnitId
 		/*0xA7*/	ProtossStargate							= 167,
 		/*0xA8*/	Special_StasisCellPrison				= 168,
 		/*0xA9*/	ProtossFleetBeacon						= 169,
-		/*0xAA*/	ProtossDidactTribune					= 170,
+		/*0xAA*/	ProtossCelestialTribune					= 170,
 		/*0xAB*/	ProtossSyntheticSynod					= 171,
 		/*0xAC*/	ProtossShieldBattery					= 172,
 		/*0xAD*/	Special_KhaydarinCrystalForm			= 173,
@@ -318,9 +318,9 @@ namespace UnitId
 		TerranIonCannon									= 127,		// Ion Cannon
 		TerranGuildhall									= 147,		// Overmind (With Shell)
 		TerranQuarry									= 174,		// Protoss Temple
-		TerranBioticBase2								= 175,		// Xel'Naga Temple
+		TerranBioticBase								= 175,		// Xel'Naga Temple
 		TerranSalvoYard									= 189,		// Warp Gate
-		TerranTinkerersTower2							= 190,		// Psi Disruptor
+		TerranTinkerersTower							= 190,		// Psi Disruptor
 		TerranFutureStation								= 192,		// Terran Marker
 		TerranIronFoundry								= 198,		// Terran Flag Beacon
 		TerranCaptaincy									= 199,		// Protoss Flag Beacon

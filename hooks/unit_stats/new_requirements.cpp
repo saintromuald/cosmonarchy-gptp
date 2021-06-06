@@ -525,7 +525,7 @@ namespace hooks
 					case UnitId::ProtossDidact:
 					case UnitId::ProtossEmpyrean:
 					{
-						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossDidactTribune))
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossCelestialTribune))
 						{
 							return TECH_ACTIVE;
 						}
@@ -657,7 +657,7 @@ namespace hooks
 					case UnitId::ProtossRoboticsAuthority:
 					case UnitId::ProtossSyntheticSynod:
 					case UnitId::ProtossArgosy:
-					case UnitId::ProtossDidactTribune:
+					case UnitId::ProtossCelestialTribune:
 					case UnitId::ProtossProstrationStage:
 					case UnitId::ProtossRogueGallery:
 					case UnitId::ProtossArchonArchives:
