@@ -119,11 +119,11 @@ namespace helper
 	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);
 
 	// for AI_TrainUnit
-	char AI_TrainingWorker(Unit* result, Unit* parent);
-	void AI_TrainingOverlord(Unit* result, Unit* parent);
-	void AI_TrainingNormal(Unit* result, Unit* parent);
-	void AI_OrderToDestination(Unit* unit, s32 orderId, s32 x, s32 y);
-	void AI_AssignCaptainToSlowestUnit(AiRegion* region);
+	char AI_TrainingWorker(Unit* result, Unit* parent);											// 00435700
+	void AI_TrainingOverlord(Unit* result, Unit* parent);										// 00435770
+	void AI_TrainingNormal(Unit* result, Unit* parent);											// 00435DB0
+	void AI_OrderToDestination(Unit* unit, s32 orderId, s32 x, s32 y);							// 0043D5D0
+	void AI_AssignCaptainToSlowestUnit(AiRegion* region);										// 00436F70
 
 	// for AI_CreateNuke
 	Unit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId);
