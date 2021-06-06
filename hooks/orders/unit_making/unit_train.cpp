@@ -166,7 +166,7 @@ namespace hooks
 							auto unit = unitsInSplash.getUnit(i);
 							if (match(unit))
 							{
-								builtUnitExt->values[ValueCrucible] = 2; // 6 is ~100/15
+								builtUnitExt->values[ValueCrucible] = 2; // 6 is ~115%, 2 should be ~105%
 								helper::buildingAddon(builtUnit, hpGain, TRUE);
 								if (builtUnit->status & UnitStatus::Completed)
 								{
