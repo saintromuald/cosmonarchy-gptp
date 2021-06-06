@@ -1917,7 +1917,7 @@ LABEL_36:
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiList) // 00404470
+	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAi* workerAi2) // 00404470
 	{
 		// New
 		if (workerAi == nullptr)
@@ -1927,29 +1927,28 @@ LABEL_36:
 
 		// ASM seems quite different from IDA
 
-		if (&workerAiList->worker_ais[1] == workerAi)
+		if (workerAi2->link.next == workerAi)
 		{
-			workerAiList->worker_ais[1] = *workerAi->link.prev;
+			workerAi2->link.next = workerAi->link.prev;
 		}
 
-		WorkerAi* nextWorker = workerAi->link.next;
-		if (nextWorker != nullptr)
+		if (workerAi->link.next)
 		{
-			nextWorker->link.prev = workerAi->link.prev;
+			workerAi->link.next->link.prev = workerAi->link.prev;
 		}
-		if (workerAi->link.prev != nullptr)
+		if (workerAi->link.prev)
 		{
 			workerAi->link.prev->link.next = workerAi->link.next;
 		}
 
+		WorkerAiArray* aiList = (WorkerAiArray*)workerAi2->link.prev;
 		workerAi->link.next = nullptr;
-		workerAi->link.prev = workerAiList->first_free_worker; // <-- this causes replay / end of game crashes
-		if (workerAiList->first_free_worker != nullptr)
+		workerAi->link.prev = aiList->first_free_worker; // <-- this causes replay / end of game crashes
+		if (workerAi2->link.prev)
 		{
-			workerAiList->worker_ais[1] = *workerAi;
+			workerAi2->link.prev->link.next = workerAi;
 		}
-
-		workerAiList->first_free_worker = workerAi;
+		aiList->first_free_worker = workerAi;
 		return workerAi;
 	}
 }

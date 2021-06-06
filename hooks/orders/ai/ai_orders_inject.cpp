@@ -1,6 +1,7 @@
 #include "ai_orders.h"
 #include <hook_tools.h>
 #include "SCBW/api.h"
+
 namespace
 {
 
@@ -563,18 +564,54 @@ namespace
 	{
 		static WorkerAi* result;
 		static WorkerAi* workerAi;
-		static WorkerAiArray* workerAiList;
+		static WorkerAi* workerAi2;
 		__asm
 		{
 			MOV workerAi, EAX
-			MOV workerAiList, EDX
+			MOV workerAi2, EDX
 			PUSHAD
 		}
-		result = hooks::deleteWorkerAI(workerAi, workerAiList);
+		result = hooks::deleteWorkerAI(workerAi, workerAi2);
 		__asm
 		{
 			POPAD
 			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) deleteWorkerAI_nullcheck() // 00404470
+	{
+		static const u32 back_jump = 0x00404475;
+		static const u32 cmp_jump = 0x0040447A;
+		static WorkerAi* ai;
+		static WorkerAi* ai2;
+		__asm
+		{
+			MOV ai, EAX
+			MOV ai2, EDX
+			PUSHAD
+		}
+		if (!ai)
+		{
+			if (ai2->link.prev)
+			{
+				__asm
+				{
+					POPAD
+					JMP cmp_jump
+				}
+			}
+			__asm
+			{
+				POPAD
+				JMP back_jump
+			}
+		}
+		__asm
+		{
+			POPAD
+			MOV EAX, 0
 			RETN
 		}
 	}
@@ -611,7 +648,8 @@ namespace hooks
 		jmpPatch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
 //		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
 		jmpPatch(getRegionIdFromUnit_Wrapper,				0x0049CB40, 2);
-//		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
+		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
+//		jmpPatch(deleteWorkerAI_nullcheck,					0x00404470, 0);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}
