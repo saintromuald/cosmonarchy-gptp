@@ -331,6 +331,190 @@ namespace hooks
 				}
 				return TECH_HIDDEN;
 			}
+			case UnitId::ZergDroleth:
+			{
+				switch (unitId)
+				{
+					case UnitId::ZergHatchery:
+					case UnitId::ZergCreepColony:
+					case UnitId::ZergExtractor:
+					case UnitId::ZergQuazrokPool:
+					case UnitId::ZergHydrokDen:
+					case UnitId::ZergMuthrokSpire:
+					case UnitId::ZergIrolIris:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::ZergZorkizShroud:
+					case UnitId::ZergMatravilNest:
+					{
+						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+							|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					case UnitId::ZergNydusCanal:
+					case UnitId::ZergGeszkathGrotto:
+					case UnitId::ZergSovthrathMound:
+					{
+						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergCreepColony:
+			{
+				if (unitId == UnitId::ZergSunkenColony
+					|| unitId == UnitId::ZergSporeColony
+					|| unitId == UnitId::ZergLarvalColony)
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergHatchery:
+			{
+				if (unitId == UnitId::ZergLair)
+				{
+					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergQuazrokPool:
+			{
+				if (unitId == UnitId::ZergLiivralPond)
+				{
+					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergHydrokDen:
+			{
+				if (unitId == UnitId::ZergGorgralSwamp)
+				{
+					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergMuthrokSpire:
+			{
+				if (unitId == UnitId::ZergVithrathHaunt)
+				{
+					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergIrolIris:
+			{
+				if (unitId == UnitId::ZergOthstolOviform)
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergLair:
+			{
+				if (unitId == UnitId::ZergHive)
+				{
+					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergMatravilNest:
+			{
+				if (unitId == UnitId::ZergAlmakisAntre)
+				{
+					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergZorkizShroud:
+			{
+				if (unitId == UnitId::ZergUltrakCavern)
+				{
+					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergHive:
+			{
+				if (unitId == UnitId::ZergSire)
+				{
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergOthstolOviform:
+			{
+				if (unitId == UnitId::ZergAlaszilArbor)
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergGeszkathGrotto:
+			{
+				if (unitId == UnitId::ZergAlkajChasm)
+				{
+					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
 		}
 		return TECH_HIDDEN;
 	}
