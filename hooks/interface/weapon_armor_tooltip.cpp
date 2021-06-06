@@ -253,7 +253,7 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 
 	// Range
 	text += "\nRange: ";
-	if (range > 32)
+	if (range > 1)
 	{
 		ss.str("");
 		if (minRange > 0)
