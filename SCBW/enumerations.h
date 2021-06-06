@@ -12,8 +12,10 @@
 #include "enumerations/SoundId.h"
 #include "enumerations/IconId.h"
 
-namespace UnitSize {
-	enum {
+namespace UnitSize
+{
+	enum
+	{
 		Independent,
 		Small,
 		Medium,
@@ -22,8 +24,10 @@ namespace UnitSize {
 	};
 }
 
-namespace FlingyDatEntries {
-	enum {
+namespace FlingyDatEntries
+{
+	enum
+	{
 		TopSpeed,
 		Acceleration,
 		TurnRadius,
@@ -34,8 +38,10 @@ namespace FlingyDatEntries {
 	};
 }
 
-namespace UnitsDatEntries {
-	enum {
+namespace UnitsDatEntries
+{
+	enum
+	{
 		Flingy,//flingy
 		Subunit, //subunit
 		Infested, //infested unit
@@ -44,7 +50,6 @@ namespace UnitsDatEntries {
 		ShieldEnabled, //shield enabled
 		MaxShields, //max shields
 
-
 		SndReady = 29,
 		SndWhtFirst = 30,
 		SndWhtLast = 31,
@@ -52,10 +57,6 @@ namespace UnitsDatEntries {
 		SndPssLast = 33,
 		SndYesFirst = 34,
 		SndYesLast = 35,
-
-
-
-
 
 		/*
 		4, //max hits
@@ -107,18 +108,22 @@ namespace UnitsDatEntries {
 	};
 }
 
-namespace SfxDatEntries {
-	enum {
+namespace SfxDatEntries
+{
+	enum
+	{
 		Race,
 		MinVolume,
 		Flags,
 		Priority,
-		SoundFilePtrs = 1000,//unlike sfxdata, uses pointers instead of ids
+		SoundFilePtrs = 1000, // unlike sfxdata, uses pointers instead of ids
 	};
 }
 
-namespace SpritesDatEntries {
-	enum {
+namespace SpritesDatEntries
+{
+	enum
+	{
 		IncludeInVision,
 		StartAsVisible,
 		ImageId,
@@ -128,8 +133,10 @@ namespace SpritesDatEntries {
 	};
 }
 
-namespace ImagesDatEntries {
-	enum {
+namespace ImagesDatEntries
+{
+	enum
+	{
 		GrpId,
 		Turnable,
 		Clickable,
@@ -156,8 +163,10 @@ namespace ImagesDatEntries {
 }
 
 
-namespace RaceId {
-	enum Enum : u8 {
+namespace RaceId
+{
+	enum Enum : u8
+	{
 		Zerg = 0,
 		Terran = 1,
 		Protoss = 2,
@@ -169,8 +178,10 @@ namespace RaceId {
 	};
 }
 
-namespace PlayerType {
-	enum Enum {
+namespace PlayerType
+{
+	enum Enum
+	{
 		NotUsed = 0,
 		Computer = 1,
 		Human = 2,
@@ -181,14 +192,16 @@ namespace PlayerType {
 		Neutral = 7,
 		ClosedSlot = 8,
 		Unknown1 = 9,
-		HumanDefeated = 10, /**< Left */
-		ComputerDefeated = 11,  /**< Left */
+		HumanDefeated = 10, // Or left the game
+		ComputerDefeated = 11, // Or left the game
 	};
 }
 
 //Based on BWAPI; for use with units_dat::BaseProperty[]
-namespace UnitProperty {
-	enum Enum : u32 {
+namespace UnitProperty
+{
+	enum Enum : u32
+	{
 		Building = 0x00000001,
 		Addon = 0x00000002,
 		Flyer = 0x00000004,
@@ -225,8 +238,10 @@ namespace UnitProperty {
 }
 
 //Based on BWAPI; For use with the Unit::status member
-namespace UnitStatus {
-	enum Enum : u32 {
+namespace UnitStatus
+{
+	enum Enum : u32
+	{
 		Completed = 0x00000001,
 		GroundedBuilding = 0x00000002, // a building that is on the ground
 		InAir = 0x00000004,
@@ -263,25 +278,30 @@ namespace UnitStatus {
 }
 
 //For various newFlags fields
-namespace NewFlags1 {
-	enum Enum : u8 {
+namespace NewFlags1
+{
+	enum Enum : u8
+	{
 		Unused1 = 0x1,
 		RadiationShockwave = 0x2,
 		Metastasis = 0x4,
 	};
 }
 
-namespace NewFlags2 {
-	enum Enum : u8 {
+namespace NewFlags2
+{
+	enum Enum : u8
+	{
 		Unused1 = 0x1,
 		Unused2 = 0x2,
 		Unused4 = 0x4,
 	};
 }
 
-//---- Taken from buttons.cpp ----//
-namespace BUTTON_STATE {
-	enum Enum {
+namespace BUTTON_STATE
+{
+	enum Enum
+	{
 		Invisible = 0,
 		Disabled = -1,
 		Enabled = 1
@@ -289,8 +309,10 @@ namespace BUTTON_STATE {
 }
 
 // For use with scbw::print()
-namespace GameTextColor {
-	enum Enum {
+namespace GameTextColor
+{
+	enum Enum
+	{
 		Grey = 0x01,
 		Grey2 = 0x02,
 		Yellow = 0x03,
@@ -326,8 +348,10 @@ namespace GameTextColor {
 	};
 }
 
-namespace LobbyTextColor {
-	enum Enum {
+namespace LobbyTextColor
+{
+	enum Enum
+	{
 		Purple1 = 0x01,
 		Purple2 = 0x02,
 		YellowGreen = 0x04,
@@ -335,15 +359,17 @@ namespace LobbyTextColor {
 		White = 0x06,
 		Red = 0x07,
 		Tab = 0x09,
-		Black = 0x10, // Could be wrong. Needs check!
+		Black = 0x10, // Could be wrong!
 		AlignRight = 0x18,
 		AlignCenter = 0x19,
 	};
 };
 
 // For use with scbw::playIscriptAnim()
-namespace IscriptAnimation {
-	enum Enum : u8 {
+namespace IscriptAnimation
+{
+	enum Enum : u8
+	{
 		Init = 0x00,
 		Death = 0x01,
 		GndAttkInit = 0x02,
@@ -375,31 +401,35 @@ namespace IscriptAnimation {
 	};
 }
 
-namespace CheatFlags {
-	enum Enum {
+namespace CheatFlags
+{
+	enum Enum
+	{
 		None = 0,
-		BlackSheepWall = 1 << 0,		/*0x00000001*/
-		OperationCwal = 1 << 1,		/*0x00000002*/
-		PowerOverwhelming = 1 << 2,		/*0x00000004*/
+		BlackSheepWall = 1 << 0,			/*0x00000001*/
+		OperationCwal = 1 << 1,				/*0x00000002*/
+		PowerOverwhelming = 1 << 2,			/*0x00000004*/
 		SomethingForNothing = 1 << 3,		/*0x00000008*/
-		ShowMeTheMoney = 1 << 4,		/*0x00000010*/
-		GameOverMan = 1 << 6,		/*0x00000040*/
-		ThereIsNoCowLevel = 1 << 7,		/*0x00000080*/
-		StayingAlive = 1 << 8,		/*0x00000100*/
-		Ophelia = 1 << 9,		/*0x00000200*/
-		TheGathering = 1 << 11,		/*0x00000800*/
-		MedievalMan = 1 << 12,		/*0x00001000*/
-		ModifyThePhaseVariance = 1 << 13,		/*0x00002000*/
-		WarAintWhatItUsedToBe = 1 << 14,		/*0x00004000*/
-		FoodForThought = 1 << 17,		/*0x00020000*/
-		WhatsMineIsMine = 1 << 18,		/*0x00040000*/
-		BreatheDeep = 1 << 19,		/*0x00080000*/
-		NoGlues = 1 << 29		/*0x20000000*/
+		ShowMeTheMoney = 1 << 4,			/*0x00000010*/
+		GameOverMan = 1 << 6,				/*0x00000040*/
+		ThereIsNoCowLevel = 1 << 7,			/*0x00000080*/
+		StayingAlive = 1 << 8,				/*0x00000100*/
+		Ophelia = 1 << 9,					/*0x00000200*/
+		TheGathering = 1 << 11,				/*0x00000800*/
+		MedievalMan = 1 << 12,				/*0x00001000*/
+		ModifyThePhaseVariance = 1 << 13,	/*0x00002000*/
+		WarAintWhatItUsedToBe = 1 << 14,	/*0x00004000*/
+		FoodForThought = 1 << 17,			/*0x00020000*/
+		WhatsMineIsMine = 1 << 18,			/*0x00040000*/
+		BreatheDeep = 1 << 19,				/*0x00080000*/
+		NoGlues = 1 << 29					/*0x20000000*/
 	};
 }
 
-namespace DamageType {
-	enum Enum {
+namespace DamageType
+{
+	enum Enum
+	{
 		Independent,
 		Explosive,
 		Concussive,
@@ -410,8 +440,10 @@ namespace DamageType {
 }
 
 //Use with weapons_dat::ExplosionType[]
-namespace WeaponEffect {
-	enum Enum {
+namespace WeaponEffect
+{
+	enum Enum
+	{
 		None = 0,
 		NormalHit = 1,
 		SplashRadial = 2,
@@ -441,38 +473,44 @@ namespace WeaponEffect {
 }
 
 //Use with weapons_dat::Behavior[]
-namespace WeaponBehavior {
-	enum Enum {
+namespace WeaponBehavior
+{
+	enum Enum
+	{
 		Fly_DoNotFollowTarget = 0,
 		Fly_FollowTarget = 1,
 		AppearOnTargetUnit = 2,
-		PersistOnTargetSite = 3,  //Psionic Storm
+		PersistOnTargetSite = 3,
 		AppearOnTargetSite = 4,
 		AppearOnAttacker = 5,
 		AttackAndSelfDestruct = 6,
-		Bounce = 7,  //Mutalisk Glave Wurms
-		AttackNearbyArea = 8,  //Valkyrie Halo Rockets
-		GoToMaxRange = 9   //Lurker Subterranean Spines
+		Bounce = 7,
+		AttackNearbyArea = 8,
+		GoToMaxRange = 9
 	};
 }
 
 //Use with colorShift
-namespace ColorRemapping {
-	enum Enum {
+namespace ColorRemapping
+{
+	enum Enum
+	{
 		None = 0,
 		OFire = 1,
 		GFire = 2,
 		BFire = 3,
 		BExpl = 4,
-		Trans50 = 5,  //Special - OwnCloak
+		Trans50 = 5,  // Special - OwnCloak
 		Red_Crash = 6,
 		Green_Crash = 7,
 	};
 }
 
 //Compare with (*GAME_TYPE)
-namespace GameType {
-	enum Enum {
+namespace GameType
+{
+	enum Enum
+	{
 		Melee = 2,
 		FreeForAll = 3,
 		OneOnOne = 4,
@@ -490,8 +528,10 @@ namespace GameType {
 }
 
 /// Compare with (*CURRENT_TILESET)
-namespace TilesetType {
-	enum Enum {
+namespace TilesetType
+{
+	enum Enum
+	{
 		Badlands = 0,
 		Space_Platform = 1,
 		Installation = 2,
@@ -503,8 +543,10 @@ namespace TilesetType {
 	};
 }
 
-namespace BinDlgFlags {
-	enum Enum {
+namespace BinDlgFlags
+{
+	enum Enum
+	{
 		Unknown0 = 0x00000001,
 		Disabled = 0x00000002,
 		Active = 0x00000004,
@@ -540,8 +582,10 @@ namespace BinDlgFlags {
 	};
 }
 
-namespace SmkFlags {
-	enum Enum {
+namespace SmkFlags
+{
+	enum Enum
+	{
 		FadeIn = 0x0001,
 		Dark = 0x0002,
 		RepeatForever = 0x0004,
@@ -561,8 +605,10 @@ namespace SmkFlags {
 	};
 }
 
-namespace DialogControlTypes {
-	enum Enum {
+namespace DialogControlTypes
+{
+	enum Enum
+	{
 		DialogBoxDC = 0x00000000, // DialogBox cannot be used, since it's used in winapi
 		DefaultButton = 0x00000001,
 		Button = 0x00000002,
@@ -582,15 +628,17 @@ namespace DialogControlTypes {
 }
 
 //Use with units_dat::RightClickAction
-namespace RightClickActions {
-	enum Enum : u8 {
+namespace RightClickAction
+{
+	enum Enum : u8
+	{
 		NoCommand_AutoAttack = 0,
 		NormalMove_NormalAttack = 1,
 		NormalMove_NoAttack = 2,
 		NoMove_NormalAttack = 3,
 		Harvest = 4,
 		HarvestAndRepair = 5,
-		Unknown = 6				//only by ComSat addon
+		Unknown = 6				// only by ComSat addon
 	};
 }
 
@@ -676,5 +724,118 @@ namespace InternalErrors
 		MissingRequirement = 23,
 		UnknownError25 = 25,
 		UnknownError26 = 26,
+	};
+}
+
+namespace PlayerColor
+{
+	enum Enum
+	{
+		Red,
+		Blue,
+		Teal,
+		Purple,
+		Orange,
+		Brown,
+		White,
+		Yellow,
+		Green,
+		Lemon,
+		Peach,
+		RoyalBlue,
+		Asparagus,
+		DeepPeriwinkle,
+		Periwinkle,
+		Cyan,
+		Black,
+		RussianGreen,
+		AliceBlue,
+		Harlequin,
+		Saffron,
+		MayaBlue,
+		DarkOlive,
+		LightOlive,
+		Bronze,
+		TyrianPurple,
+		Ultramarine,
+		Celadon,
+		Maroon,
+		FernGreen,
+		Pumpkin,
+		Vermillion,
+		Magma,
+		Umber,
+		ElectricBlue,
+		EggshellBlue,
+		PalatinatePurple,
+		JetBlack,
+		Goldenrod,
+		Blood,
+		SilverPink,
+		DimGrey,
+		Grey,
+		Coral,
+		Salmon,
+		VividRed,
+		Glacial,
+		Silver,
+		Platinum,
+		Aero,
+		VineGreen,
+		CosmicCobalt,
+		DarkGreen,
+		Turquoise,
+		Rainbow,
+		ArylideYellow,
+		Mint,
+		SmokyBlack,
+		Snow,
+		SaddleBrown,
+		Zaffre,
+		YinmnBlue,
+		ElectricOrange,
+		Brass,
+		Scarlet,
+		Emerald,
+		Sienna,
+		CornflowerBlue,
+		Mango,
+		Chestnut,
+		NeonBlue,
+		DarkSapphire,
+		Mahogany,
+		Wine,
+		Auburn,
+		Cordovan,
+		Sunglow,
+		Magenta,
+		VividOrange,
+		DarkBronze,
+		BurntUmber,
+		IridescentYellow,
+		IridescentGreen,
+		IridescentBlue,
+		IridescentViolet,
+		RainbowNew,
+		Redwood,
+		Beaver,
+		Liver,
+		DelftBlue,
+		DarkCoral,
+		PersianOrange,
+		Tomato,
+		BistreBrown,
+		Beige,
+		TeaGreen,
+		Earthtone,
+		JapaneseViolet,
+		DarkSpringGreen,
+		GoldenBrown,
+		BdazzledBlue,
+		CoyoteBrown,
+		MidnightGreen,
+		PatrioticFreedom,
+		PalatinateBlue,
+		DarkLavender,
 	};
 }
