@@ -348,9 +348,9 @@ namespace hooks
 					case UnitId::ZergZorkizShroud:
 					case UnitId::ZergMatravilNest:
 					{
-						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-							|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
-							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+						if (Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+							|| Player::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+							|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
 						{
 							return TECH_ACTIVE;
 						}
@@ -360,8 +360,8 @@ namespace hooks
 					case UnitId::ZergGeszkathGrotto:
 					case UnitId::ZergSovthrathMound:
 					{
-						if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-							|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
+						if (Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+							|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
 						{
 							return TECH_ACTIVE;
 						}
@@ -384,9 +384,9 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergLair)
 				{
-					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
-						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+					if (Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| Player::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+						|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
 					{
 						return TECH_ACTIVE;
 					}
@@ -398,9 +398,9 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergLiivralPond)
 				{
-					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
-						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+					if (Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| Player::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+						|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
 					{
 						return TECH_ACTIVE;
 					}
@@ -412,9 +412,9 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergGorgralSwamp)
 				{
-					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
-						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+					if (Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| Player::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+						|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
 					{
 						return TECH_ACTIVE;
 					}
@@ -426,9 +426,9 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergVithrathHaunt)
 				{
-					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-						|| PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
-						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
+					if (Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| Player::numberOfUnitsOfType(playerId, UnitId::ZergOthstolOviform)
+						|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergIrolIris))
 					{
 						return TECH_ACTIVE;
 					}
@@ -448,8 +448,8 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergHive)
 				{
-					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
+					if (Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
 					{
 						return TECH_ACTIVE;
 					}
@@ -461,8 +461,8 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergAlmakisAntre)
 				{
-					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
+					if (Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
 					{
 						return TECH_ACTIVE;
 					}
@@ -474,8 +474,8 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergUltrakCavern)
 				{
-					if (PLAYER::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
-						|| PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
+					if (Player::numberOfUnitsOfType(playerId, UnitId::ZergAlaszilArbor)
+						|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOthstolOviform))
 					{
 						return TECH_ACTIVE;
 					}
@@ -487,7 +487,7 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergSire)
 				{
-					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor))
+					if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor))
 					{
 						return TECH_ACTIVE;
 					}
@@ -507,7 +507,7 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergAlkajChasm)
 				{
-					if (PLAYER::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor))
+					if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergAlaszilArbor))
 					{
 						return TECH_ACTIVE;
 					}
