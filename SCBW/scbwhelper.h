@@ -118,27 +118,27 @@ namespace helper
 	s32 randGetSFXBetween(s32 a1, s32 a2);
 	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);
 
-	// for AI_TrainUnit
+	// For AI_TrainUnit
 	char AI_TrainingWorker(Unit* result, Unit* parent);											// 00435700
 	void AI_TrainingOverlord(Unit* result, Unit* parent);										// 00435770
 	void AI_TrainingNormal(Unit* result, Unit* parent);											// 00435DB0
 	void AI_OrderToDestination(Unit* unit, s32 orderId, s32 x, s32 y);							// 0043D5D0
 	void AI_AssignCaptainToSlowestUnit(AiRegion* region);										// 00436F70
 
-	// for AI_CreateNuke
+	// For AI_CreateNuke
 	Unit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId);
 	void updateUnitStatsFinishBuilding(Unit* unit);
 	u32 updateUnitStrengthAndApplyDefaultOrders(Unit* unit);
 	void hideUnit(Unit* unit);
 
-	// for AI_TrainingBroodling
+	// For AI_TrainingBroodling
 	void AI_AssignMilitary(s32 regionType, AiRegion* region);
 	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 always_this_region);
 
 	// For AI_TrainingWorker
 	char AI_AddWorkerStructureAI(Unit* worker, AiTown* town);									// 00433DD0
 
-	// for AI_AddUnitAI
+	// For AI_AddUnitAI
 	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI);
 	void orderComputerClear(Unit* unit, u8 orderId);
 	Unit* setSecondaryOrder(Unit* result, char orderId);
