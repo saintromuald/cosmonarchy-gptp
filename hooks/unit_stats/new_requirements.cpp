@@ -1097,9 +1097,19 @@ namespace hooks
 					case UnitId::ZergQuazrokPool:
 					case UnitId::ZergHydrokDen:
 					case UnitId::ZergMuthrokSpire:
-					case UnitId::ZergIrolIris:
 					{
 						return TECH_ACTIVE;
+					}
+					case UnitId::ZergIrolIris:
+					{
+						if (Player::numberOfUnitsOfType(playerId, UnitId::ZergSire)
+							|| Player::numberOfUnitsOfType(playerId, UnitId::ZergHive)
+							|| Player::numberOfUnitsOfType(playerId, UnitId::ZergLair)
+							|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergHatchery))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
 					}
 					case UnitId::ZergZorkizShroud:
 					case UnitId::ZergMatravilNest:
