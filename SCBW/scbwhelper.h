@@ -517,55 +517,55 @@ namespace helper
 
 	// for genericRightClickUnitProc2
 	s32 isOrderValid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																	// 00474D90
-	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																		// 00491E80
+	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80
 
 	// for CMDRECV_HoldPosition
-	Unit* getActivePlayerFirstSelection();																								// 0049A850
+	Unit* getActivePlayerFirstSelection();																							// 0049A850
 	s32 orderAllowed(Unit* a1, u16 a2, s32 a3);																						// 0046DC20
 	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
 
 	// for checkUnitVisibility
-	u32 getDetectingPlayers(Unit* unit);																								// 00441130
-	u32 iteratePlayerUnitsSomething(u32 aResult, Unit* unit);																			// 0049E8A0
+	u32 getDetectingPlayers(Unit* unit);																							// 00441130
+	u32 iteratePlayerUnitsSomething(u32 aResult, Unit* unit);																		// 0049E8A0
 	void makeSpriteVisible(Sprite* sprite);																							// 00497ED0
-	s32 updateBuildingLandUnitSelection(u32 unused, Unit* selection);																	// 004C3B40
+	s32 updateBuildingLandUnitSelection(u32 unused, Unit* selection);																// 004C3B40
 	char removeSelectionCircle(Sprite* sprite);																						// 004975D0
 	Image* makeSpriteInvisible(Sprite* sprite);																						// 00498A10
 
 	//// receive_command
-	void function_004756B0(Unit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommandType);												// 004756B0
-	void function_004756E0(Unit* unit, Unit* target, u32 orderId, u32 bCommandType);													// 004756E0
-	u32 function_0049A410(Unit* unit, u8 orderId);																						// 0049A410
+	void function_004756B0(Unit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommandType);											// 004756B0
+	void function_004756E0(Unit* unit, Unit* target, u32 orderId, u32 bCommandType);												// 004756E0
+	u32 function_0049A410(Unit* unit, u8 orderId);																					// 0049A410
 	bool CanTargetSelf(Unit* unit, u8 orderId);																						// 0049A480
-	void function_0049A500(Unit* unit, u8* array_of_data);																				// 0049A500
-	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																	// 0049A8C0
+	void function_0049A500(Unit* unit, u8* array_of_data);																			// 0049A500
+	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																// 0049A8C0
 
 	//// load_unload_proc
-	void IgnoreAllScriptAndGotoIdle(Unit* unit);																						// 00476550
-	u32 canUnload(Unit* transport, Unit* loaded_unit, Point16* pos);																	// 004E76C0
-	void function_004E7E10(Unit* unit, u32 unk);																						// 004E7E10
+	void IgnoreAllScriptAndGotoIdle(Unit* unit);																					// 00476550
+	u32 canUnload(Unit* transport, Unit* loaded_unit, Point16* pos);																// 004E76C0
+	void function_004E7E10(Unit* unit, u32 unk);																					// 004E7E10
 
 	//// stats_panel_display
-	void StatsNukesCount(BinDlg* dialog, u32 index);																					// 00425310
-	void StatHangerCount(BinDlg* dialog, u32 index);																					// 004253D0
-	void StatsShieldLevel(BinDlg* dialog, u32 index);																					// 00425510
-	void StatsArmorLevel(BinDlg* dialog, u32 index);																					// 00425600
-	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId);																		// 00425790
-	bool StatSpidermineCount(BinDlg* dialog, u32 index);																				// 00426300
+	void StatsNukesCount(BinDlg* dialog, u32 index);																				// 00425310
+	void StatHangerCount(BinDlg* dialog, u32 index);																				// 004253D0
+	void StatsShieldLevel(BinDlg* dialog, u32 index);																				// 00425510
+	void StatsArmorLevel(BinDlg* dialog, u32 index);																				// 00425600
+	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId);																	// 00425790
+	bool StatSpidermineCount(BinDlg* dialog, u32 index);																			// 00426300
 
 	// For getUnitRankString and checkHotkeyChar
-	__int8 unitGetRace(Unit* a1);																										// 0047B150
+	__int8 unitGetRace(Unit* a1);																									// 0047B150
 	char* getStatTxtString(u16 a1);																									// 004C36F0
 
 	// For statsWeaponLevel / statsArmorLevel
 	char getArmorCount(Unit* unit, s32 a2);																							// 00453FC0
-	void showDialog(BinDlg* dialog);																									// 004186A0
-	s32 disableDialog(BinDlg* dialog);																									// 00418640
-	void updateDialog(BinDlg* dialog);																									// 0041C400
+	void showDialog(BinDlg* dialog);																								// 004186A0
+	s32 disableDialog(BinDlg* dialog);																								// 00418640
+	void updateDialog(BinDlg* dialog);																								// 0041C400
 
 	//// bunker_hooks
-	Unit* findRandomAttackTarget(Unit* unit);																							// 00442FC0
-	b32 attackApplyCooldown(Unit* unit);																								// 00478B40
+	Unit* findRandomAttackTarget(Unit* unit);																						// 00442FC0
+	b32 attackApplyCooldown(Unit* unit);																							// 00478B40
 	void setImageDirection(Image* image, s8 direction);																				// 004D5F80
 
 	//// api
@@ -581,8 +581,8 @@ namespace helper
 	Unit* zergDualBirth(Unit* unit);																							    // 0045D910
 	void orderNewUnitToRally(Unit* unit, Unit* factory);																			// 00466F50
 	void AI_TrainingUnit(Unit* unit, Unit* creator);																				// 004A2830
-	void deleteBuildingAi(BuildingAi* building, BuildingAiArray** buildingList);                                                     // 00404500
-	void deleteWorkerAi(void* worker_ai_list, WorkerAi* ai);                                                                        // 00404470
+	void deleteBuildingAi(BuildingAi* building, BuildingAiArray** buildingList);                                                    // 00404500
+	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray* workerArray);                                                                  // 00404470
 	void deleteAiTownIfNeeded(AiTown* town);                                                                                        // 004347E0
 
 	//// hallucination_spell
@@ -594,7 +594,7 @@ namespace helper
 
 	// for createHallucination
 	void applyHallucinationStats(Unit* halUnit);																					// 004F6180
-	s32 hallucinateScarabs(Unit* a1, Unit* a2);																					// 004F65B0
+	s32 hallucinateScarabs(Unit* a1, Unit* a2);																						// 004F65B0
 
 	//// feedback_spell
 	void replaceFeedbackSprite(Unit* unit, u32 spriteId);																			// 004F6350
@@ -605,14 +605,14 @@ namespace helper
 	void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target);
 
 	// for airSplash
-	Unit* findBestUnit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*));													// 004E8830
-	s32 splashFunc(Bullet* bullet, Unit* unit);																					// 0048B570
+	Unit* findBestUnit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*));														// 004E8830
+	s32 splashFunc(Bullet* bullet, Unit* unit);																						// 0048B570
 
 	// For iterateLoadedUnits
-	Unit* iterateLoadedUnits(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), s32 a3);										// 004E6D00
+	Unit* iterateLoadedUnits(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), s32 a3);											// 004E6D00
 
 	//// mindcontrol_spell
-	void MindControlHit(Unit* attacker, Unit* target);																			// 004F6910
+	void MindControlHit(Unit* attacker, Unit* target);																				// 004F6910
 
 	//// weapon_damage
 	u16 getUnitStrength(Unit* unit, bool useGroundStrength);
