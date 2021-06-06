@@ -4,6 +4,7 @@
 #ifndef FALSE
 #define FALSE 0
 #endif
+#include <globals.h>
 
 #ifndef TRUE
 #define TRUE 1
@@ -18,62 +19,56 @@ namespace hooks
 			if (building->hitPoints > 20 * units_dat::MaxHitPoints[building->id] / 100)
 				building->mainOrderState = 1;
 		}
-		else
-			if (building->mainOrderState == 1)
+		else if (building->mainOrderState == 1)
+		{
+			Image* current_image = building->sprite->images.head;
+			while (current_image != nullptr)
 			{
-				Image* current_image = building->sprite->images.head;
-				while (current_image != nullptr)
-				{
-					current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
-					current_image = current_image->link.next;
-				}
-				building->mainOrderState = 2;
+				current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+				current_image = current_image->link.next;
 			}
-			else
-				if (building->mainOrderState == 2)
-				{
-					if (building->hitPoints > 40 * units_dat::MaxHitPoints[building->id] / 100)
-						building->mainOrderState = 3;
-				}
-				else
-					if (building->mainOrderState == 3)
-					{
-						Image* current_image = building->sprite->images.head;
-						while (current_image != nullptr)
-						{
-							current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
-							current_image = current_image->link.next;
-						}
-						building->mainOrderState = 4;
-					}
-					else
-						if (building->mainOrderState == 4)
-						{
-							if (building->hitPoints > 60 * units_dat::MaxHitPoints[building->id] / 100)
-							{
-								building->mainOrderState = 5;
-							}
-						}
-						else
-							if (building->mainOrderState == 5)
-							{
-								helper::initBuilding(building, 0);
-								Image* current_image = building->sprite->images.head;
-								while (current_image != nullptr)
-								{
-									current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
-									current_image = current_image->link.next;
-								}
-								building->mainOrderState = 6;
-							}
-							else
-								if (building->mainOrderState == 6)
-								{
-									if (building->hitPoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
-									{
-										building->orderComputerClear(OrderId::Nothing2);
-									}
-								}
+			building->mainOrderState = 2;
+		}
+		else if (building->mainOrderState == 2)
+		{
+			if (building->hitPoints > 40 * units_dat::MaxHitPoints[building->id] / 100)
+				building->mainOrderState = 3;
+		}
+		else if (building->mainOrderState == 3)
+		{
+			Image* current_image = building->sprite->images.head;
+			while (current_image != nullptr)
+			{
+				current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
+				current_image = current_image->link.next;
+			}
+			building->mainOrderState = 4;
+		}
+		else if (building->mainOrderState == 4)
+		{
+			if (building->hitPoints > 60 * units_dat::MaxHitPoints[building->id] / 100)
+			{
+				building->mainOrderState = 5;
+			}
+		}
+		else if (building->mainOrderState == 5)
+		{
+			helper::initBuilding(building, 0);
+			Image* current_image = building->sprite->images.head;
+			while (current_image != nullptr)
+			{
+				current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+				current_image = current_image->link.next;
+			}
+			building->mainOrderState = 6;
+		}
+		else if (building->mainOrderState == 6)
+		{
+			if (building->hitPoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
+			{
+				building->orderComputerClear(OrderId::Nothing2);
+			}
+		}
 	}
 
 	// Go to build on an existing building
@@ -100,204 +95,197 @@ namespace hooks
 				{ // unmovable
 					unit->orderToIdle();
 				}
-				else
-					if (movableState == 1)
-					{ // reached destination
-						scbw::refreshConsole();
-						if (builtUnit->connectedUnit != nullptr &&
-							builtUnit->connectedUnit != unit &&
-							(builtUnit->connectedUnit)->orderTarget.unit == builtUnit)
+				else if (movableState == 1)
+				{ // reached destination
+					scbw::refreshConsole();
+					if (builtUnit->connectedUnit != nullptr &&
+						builtUnit->connectedUnit != unit &&
+						(builtUnit->connectedUnit)->orderTarget.unit == builtUnit)
+					{
+						unit->orderToIdle(); // another SCV is already on the job
+					}
+					else
+					{ // 00467AF9
+						builtUnit->connectedUnit = unit;
+						unit->status &= ~UnitStatus::IsNormal;	// remove UnitStatus::IsNormal if present
+						unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
+						unit->orderSimple(OrderId::ResetCollision1, false);
+						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
+						if (helper::changeMovementTargetMoveTarget2(unit,
+							builtUnit->sprite->position.x,
+							builtUnit->sprite->position.y))
 						{
-							unit->orderToIdle(); // another SCV is already on the job
-						}
-						else
-						{ // 00467AF9
-							builtUnit->connectedUnit = unit;
-							unit->status &= ~UnitStatus::IsNormal;	// remove UnitStatus::IsNormal if present
-							unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
-							unit->orderSimple(OrderId::ResetCollision1, false);
-							unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
-							if (helper::changeMovementTargetMoveTarget2(unit,
-								builtUnit->sprite->position.x,
-								builtUnit->sprite->position.y))
-							{
-								unit->mainOrderState = 3;
-							}
+							unit->mainOrderState = 3;
 						}
 					}
+				}
 			}
-			else
-				if (unit->mainOrderState == 3)
+			else if (unit->mainOrderState == 3)
+			{
+				if (unit->getMovableState() != 0)
 				{
-					if (unit->getMovableState() != 0)
+					unit->mainOrderState = 4;
+				}
+			}
+			else if (unit->mainOrderState == 4)
+			{
+				s16 ebp_18, ebp_16, ebp_14, ebp_12, x_min, y_min, x_max, y_max;
+				s32 ebp_08;
+				ebp_18 = builtUnit->sprite->position.x - builtUnit->sprite->width / 2;
+				ebp_14 = builtUnit->sprite->position.x + builtUnit->sprite->width / 2 - 1;
+				ebp_16 = builtUnit->sprite->position.y - builtUnit->sprite->height / 2;
+				ebp_12 = builtUnit->sprite->position.y + builtUnit->sprite->height / 2 - 1;
+				ebp_08 = units_dat::BuildingDimensions[builtUnit->id].x;
+				if (ebp_08 < 0)
+				{
+					x_min = builtUnit->sprite->position.x - (ebp_08 - 0xFFFFFFFF) / 2;
+				}
+				else
+				{
+					x_min = builtUnit->sprite->position.x - ebp_08 / 2;
+				}
+				x_max = ebp_08 + x_min - 1;
+				if (units_dat::BuildingDimensions[builtUnit->id].y < 0)
+				{
+					y_min = builtUnit->sprite->position.y - (units_dat::BuildingDimensions[builtUnit->id].y - 0xFFFFFFFF) / 2;
+				}
+				else
+				{
+					y_min = builtUnit->sprite->position.y - units_dat::BuildingDimensions[builtUnit->id].y / 2;
+				}
+				y_max = units_dat::BuildingDimensions[builtUnit->id].y + y_min - 1;
+				x_min = x_min + units_dat::UnitBounds[unit->id].left + 1;
+				x_max = x_max + (0xFFFF - units_dat::UnitBounds[unit->id].right);
+				y_min = y_min + units_dat::UnitBounds[unit->id].top + 1;
+				y_max = y_max + (0xFFFF - units_dat::UnitBounds[unit->id].bottom);
+
+				if (x_min < ebp_18)
+				{
+					x_min = ebp_18;
+				}
+				if (y_min < ebp_16)
+				{
+					y_min = ebp_16;
+				}
+				if (x_max > ebp_14)
+				{
+					x_max = ebp_14;
+				}
+				if (y_max > ebp_12)
+				{
+					y_max = ebp_12;
+				}
+				unit->orderTarget.pt.x = helper::RandBetween(ebp_18, ebp_14, 9);
+				unit->orderTarget.pt.y = helper::RandBetween(ebp_16, ebp_12, 9);
+				helper::fixTargetLocation(&unit->orderTarget.pt, unit->id);
+				if (helper::unk_terrainCollision2(
+					unit,
+					unit->orderTarget.pt.x - unit->sprite->position.x,
+					unit->orderTarget.pt.y - unit->sprite->position.y) != 0)
+				{
+					unit->orderTarget.pt.x = helper::RandBetween(x_min, x_max, 9);
+					unit->orderTarget.pt.y = helper::RandBetween(y_min, y_max, 9);
+					helper::fixTargetLocation(&unit->orderTarget.pt, unit->id);
+				}
+
+				if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
+				{
+					unit->mainOrderState = 5;
+					jump_to_switch_1 = true;
+				}
+			} // mainOrderState == 4
+			else if (unit->mainOrderState == 5)
+			{
+				unit->mainOrderState = 6;
+				jump_to_switch_1 = true;
+			}
+			else if (unit->mainOrderState == 6)
+			{
+				if (!helper::isDistanceGreaterThanHaltDistance(
+					unit,
+					unit->orderTarget.pt.x,
+					unit->orderTarget.pt.y,
+					20))
+				{
+					jump_to_switch_1 = true;
+				}
+				else
+				{
+					s32 angle;
+					helper::setNextWaypoint(unit);
+					helper::setSecondaryWaypoint(unit, (unit->orderTarget.unit)->sprite->position.x, (unit->orderTarget.unit)->sprite->position.y);
+					angle = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
+					unit->orderTarget.pt.x = (angleDistance[angle].x * 20) / 256 + unit->sprite->position.x;
+					unit->orderTarget.pt.y = (angleDistance[angle].y * 20) / 256 + unit->sprite->position.y;
+					unit->mainOrderState = 7;
+					jump_to_switch_1 = true;
+				}
+			}
+			else if (unit->mainOrderState == 7)
+			{
+				if (!helper::isUnitPositions2Equal(unit))
+				{
+					s32 angle = scbw::getAngle(
+						unit->sprite->position.x,
+						unit->sprite->position.y,
+						unit->nextTargetWaypoint.x,
+						unit->nextTargetWaypoint.y
+					);
+					angle = unit->currentDirection1 - angle;
+					if (angle < 0)
 					{
-						unit->mainOrderState = 4;
+						angle += 256;
+					}
+					if (angle > weapons_dat::AttackAngle[unit->getGroundWeapon()])
+					{
+						jump_to_switch_1 = true;
+					}
+					else
+					{ // 00467E4A
+						u8 rand_value = helper::RandomizeShort(10);
+						Image* current_image = unit->sprite->images.head;
+						unit->mainOrderTimer = (rand_value & 63) + 30;
+						while (current_image != nullptr)
+						{
+							current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+							current_image = current_image->link.next;
+						}
+						unit->mainOrderState = 8;
+						jump_to_switch_1 = true;
 					}
 				}
 				else
-					if (unit->mainOrderState == 4)
+				{
+					u8 rand_value = helper::RandomizeShort(10);
+					Image* current_image = unit->sprite->images.head;
+					unit->mainOrderTimer = (rand_value & 63) + 30;
+					while (current_image != nullptr)
 					{
-						s16 ebp_18, ebp_16, ebp_14, ebp_12, x_min, y_min, x_max, y_max;
-						s32 ebp_08;
-						ebp_18 = builtUnit->sprite->position.x - builtUnit->sprite->width / 2;
-						ebp_14 = builtUnit->sprite->position.x + builtUnit->sprite->width / 2 - 1;
-						ebp_16 = builtUnit->sprite->position.y - builtUnit->sprite->height / 2;
-						ebp_12 = builtUnit->sprite->position.y + builtUnit->sprite->height / 2 - 1;
-						ebp_08 = units_dat::BuildingDimensions[builtUnit->id].x;
-						if (ebp_08 < 0)
-						{
-							x_min = builtUnit->sprite->position.x - (ebp_08 - 0xFFFFFFFF) / 2;
-						}
-						else
-						{
-							x_min = builtUnit->sprite->position.x - ebp_08 / 2;
-						}
-						x_max = ebp_08 + x_min - 1;
-						if (units_dat::BuildingDimensions[builtUnit->id].y < 0)
-						{
-							y_min = builtUnit->sprite->position.y - (units_dat::BuildingDimensions[builtUnit->id].y - 0xFFFFFFFF) / 2;
-						}
-						else
-						{
-							y_min = builtUnit->sprite->position.y - units_dat::BuildingDimensions[builtUnit->id].y / 2;
-						}
-						y_max = units_dat::BuildingDimensions[builtUnit->id].y + y_min - 1;
-						x_min = x_min + units_dat::UnitBounds[unit->id].left + 1;
-						x_max = x_max + (0xFFFF - units_dat::UnitBounds[unit->id].right);
-						y_min = y_min + units_dat::UnitBounds[unit->id].top + 1;
-						y_max = y_max + (0xFFFF - units_dat::UnitBounds[unit->id].bottom);
-
-						if (x_min < ebp_18)
-						{
-							x_min = ebp_18;
-						}
-						if (y_min < ebp_16)
-						{
-							y_min = ebp_16;
-						}
-						if (x_max > ebp_14)
-						{
-							x_max = ebp_14;
-						}
-						if (y_max > ebp_12)
-						{
-							y_max = ebp_12;
-						}
-						unit->orderTarget.pt.x = helper::RandBetween(ebp_18, ebp_14, 9);
-						unit->orderTarget.pt.y = helper::RandBetween(ebp_16, ebp_12, 9);
-						helper::fixTargetLocation(&unit->orderTarget.pt, unit->id);
-						if (helper::unk_terrainCollision2(
-							unit,
-							unit->orderTarget.pt.x - unit->sprite->position.x,
-							unit->orderTarget.pt.y - unit->sprite->position.y) != 0)
-						{
-							unit->orderTarget.pt.x = helper::RandBetween(x_min, x_max, 9);
-							unit->orderTarget.pt.y = helper::RandBetween(y_min, y_max, 9);
-							helper::fixTargetLocation(&unit->orderTarget.pt, unit->id);
-						}
-
-						if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
-						{
-							unit->mainOrderState = 5;
-							jump_to_switch_1 = true;
-						}
-					} // mainOrderState == 4
-					else
-						if (unit->mainOrderState == 5)
-						{
-							unit->mainOrderState = 6;
-							jump_to_switch_1 = true;
-						}
-						else
-							if (unit->mainOrderState == 6)
-							{
-								if (!helper::isDistanceGreaterThanHaltDistance(
-									unit,
-									unit->orderTarget.pt.x,
-									unit->orderTarget.pt.y,
-									20))
-								{
-									jump_to_switch_1 = true;
-								}
-								else
-								{
-									s32 angle;
-									helper::setNextWaypoint(unit);
-									helper::setSecondaryWaypoint(unit, (unit->orderTarget.unit)->sprite->position.x, (unit->orderTarget.unit)->sprite->position.y);
-									angle = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
-									unit->orderTarget.pt.x = (angleDistance[angle].x * 20) / 256 + unit->sprite->position.x;
-									unit->orderTarget.pt.y = (angleDistance[angle].y * 20) / 256 + unit->sprite->position.y;
-									unit->mainOrderState = 7;
-									jump_to_switch_1 = true;
-								}
-							}
-							else
-								if (unit->mainOrderState == 7)
-								{
-									if (!helper::isUnitPositions2Equal(unit))
-									{
-										s32 angle = scbw::getAngle(
-											unit->sprite->position.x,
-											unit->sprite->position.y,
-											unit->nextTargetWaypoint.x,
-											unit->nextTargetWaypoint.y
-										);
-										angle = unit->currentDirection1 - angle;
-										if (angle < 0)
-										{
-											angle += 256;
-										}
-										if (angle > weapons_dat::AttackAngle[unit->getGroundWeapon()])
-										{
-											jump_to_switch_1 = true;
-										}
-										else
-										{ // 00467E4A
-											u8 rand_value = helper::RandomizeShort(10);
-											Image* current_image = unit->sprite->images.head;
-											unit->mainOrderTimer = (rand_value & 63) + 30;
-											while (current_image != nullptr)
-											{
-												current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
-												current_image = current_image->link.next;
-											}
-											unit->mainOrderState = 8;
-											jump_to_switch_1 = true;
-										}
-									}
-									else
-									{
-										u8 rand_value = helper::RandomizeShort(10);
-										Image* current_image = unit->sprite->images.head;
-										unit->mainOrderTimer = (rand_value & 63) + 30;
-										while (current_image != nullptr)
-										{
-											current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
-											current_image = current_image->link.next;
-										}
-										unit->mainOrderState = 8;
-										jump_to_switch_1 = true;
-									}
-								}
-								else
-									if (unit->mainOrderState == 8)
-									{
-										if (unit->mainOrderTimer != 0)
-										{
-											jump_to_switch_1 = true;
-										}
-										else
-										{
-											Image* current_image = unit->sprite->images.head;
-											while (current_image != nullptr)
-											{
-												current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
-												current_image = current_image->link.next;
-											}
-											unit->mainOrderState = 4;
-											jump_to_switch_1 = true;
-										}
-									}
+						current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+						current_image = current_image->link.next;
+					}
+					unit->mainOrderState = 8;
+					jump_to_switch_1 = true;
+				}
+			}
+			else if (unit->mainOrderState == 8)
+			{
+				if (unit->mainOrderTimer != 0)
+				{
+					jump_to_switch_1 = true;
+				}
+				else
+				{
+					Image* current_image = unit->sprite->images.head;
+					while (current_image != nullptr)
+					{
+						current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
+						current_image = current_image->link.next;
+					}
+					unit->mainOrderState = 4;
+					jump_to_switch_1 = true;
+				}
+			}
 
 			if (jump_to_switch_1)
 			{
@@ -355,15 +343,14 @@ namespace hooks
 							unit->userActionFlags |= 1;
 							prepareForNextOrder(unit);
 						}
+						else if (unit->pAI != nullptr)
+						{ // 00467F6F												
+							unit->orderComputerClear(OrderId::ComputerAI);
+						}
 						else
-							if (unit->pAI != nullptr)
-							{ // 00467F6F												
-								unit->orderComputerClear(OrderId::ComputerAI);
-							}
-							else
-							{
-								unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
-							}
+						{
+							unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+						}
 					}
 				}
 			}
@@ -415,15 +402,14 @@ namespace hooks
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
 				}
+				else if (unit->pAI != nullptr)
+				{ // 00467F6F
+					unit->orderComputerClear(OrderId::ComputerAI);
+				}
 				else
-					if (unit->pAI != nullptr)
-					{ // 00467F6F
-						unit->orderComputerClear(OrderId::ComputerAI);
-					}
-					else
-					{
-						unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
-					}
+				{
+					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+				}
 			}
 		}
 	}

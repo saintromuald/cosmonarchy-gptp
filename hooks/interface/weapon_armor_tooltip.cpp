@@ -253,7 +253,7 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 
 	// Range
 	text += "\nRange: ";
-	if (range > 0)
+	if (range > 32)
 	{
 		ss.str("");
 		if (minRange > 0)
@@ -553,6 +553,7 @@ namespace hooks
 		addStatus(statuses, "Fragmentary Shells", unitExt->timerVectors[TimerVectorCyclopsFuse].size(), 0);
 		addStatus(statuses, "Energy Decay", unitExt->values[ValueEntropyGauntlets], 0);
 		addStatus(statuses, "Deconstructing", unitExt->values[ValueDeconstruction], 0);
+		addStatus(statuses, "Khaydarin Charge", unitExt->unitVectors[UnitVectorCrucibles].size(), 0);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster

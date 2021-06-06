@@ -110,6 +110,7 @@ namespace hooks
 	// generic unit training function
 	void orderTrain(Unit* unit)
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 		if (!(unit->status & UnitStatus::DoodadStatesThing)
 			&& !(unit->isFrozen()))
 		{
@@ -153,25 +154,13 @@ namespace hooks
 					bool extraBuild = false;
 					if (builtUnitExt->values[ValueCrucible] == 0)
 					{
-						u32 radius = 256;
-						auto match = cosmonarchyFinderMatch(nullptr, Flags::Ally | Flags::Powered | Flags::Completed, {UnitId::ProtossCrucible});
-						scbw::UnitFinder unitsInSplash(
-							builtUnit->position.x - radius,
-							builtUnit->position.y - radius,
-							builtUnit->position.x + radius,
-							builtUnit->position.y + radius
-						);
-						for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+						for (Unit* unit : unitExt->unitVectors[UnitVectorCrucibles])
 						{
-							auto unit = unitsInSplash.getUnit(i);
-							if (match(unit))
+							builtUnitExt->values[ValueCrucible] = 18; // 6 is ~115%, 18 should be ~105%
+							helper::buildingAddon(builtUnit, hpGain, TRUE);
+							if (builtUnit->status & UnitStatus::Completed)
 							{
-								builtUnitExt->values[ValueCrucible] = 2; // 6 is ~115%, 2 should be ~105%
-								helper::buildingAddon(builtUnit, hpGain, TRUE);
-								if (builtUnit->status & UnitStatus::Completed)
-								{
-									extraBuild = true;
-								}
+								extraBuild = true;
 							}
 						}
 					}

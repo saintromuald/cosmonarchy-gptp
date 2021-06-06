@@ -19,6 +19,9 @@ namespace hooks
 		s32 cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 			+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
+		// Crucible Aura
+		cooldown /= 1 + 0.05 * unitExt->unitVectors[UnitVectorCrucibles].size();
+
 		// Anticthon - Passive
 		cooldown /= 1 + 0.02 * unitExt->values[ValueAnticthonStacks];
 

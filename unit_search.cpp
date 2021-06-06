@@ -420,6 +420,10 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16
 	{
 		return false;
 	}
+	if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building) && flags & FilterBuilding)
+	{
+		return false;
+	}
 	if (!(scbw::isEnabled(unit)) && flags & FilterEnabled)
 	{
 		return false;

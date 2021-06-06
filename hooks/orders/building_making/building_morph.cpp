@@ -7,6 +7,7 @@
 #include "hooks\orders\unit_making\unit_morph.h"
 #include "hooks\orders\building_making\building_helper.h"
 #include "logger.h"
+#include <globals.h>
 
 namespace hooks
 {
@@ -56,23 +57,22 @@ namespace hooks
 			jump_to_5D56C = false;
 			if (building->remainingBuildTime == 0)
 				jump_to_5D720 = true;
+			else if (!scbw::isCheatEnabled(CheatFlags::OperationCwal))
+			{
+				jump_to_5D718 = true;
+			}
 			else
-				if (!scbw::isCheatEnabled(CheatFlags::OperationCwal))
+			{					
+				if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE)
 				{
-					jump_to_5D718 = true;
+					building->remainingBuildTime -= OPCWAL_PROGRESS_INCREASE;
 				}
 				else
 				{
-					if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE)
-					{
-						building->remainingBuildTime -= OPCWAL_PROGRESS_INCREASE;
-					}
-					else
-					{
-						building->remainingBuildTime = 0;
-					}
-					jump_to_5D720 = true;
+					building->remainingBuildTime = 0;
 				}
+				jump_to_5D720 = true;
+			}
 		}
 		else if (building->mainOrderState == 1)
 		{ // 0045D5AE
@@ -202,23 +202,22 @@ namespace hooks
 			{
 				jump_to_5D720 = true;
 			}
+			else if (!scbw::isCheatEnabled(CheatFlags::OperationCwal))
+			{
+				jump_to_5D718 = true;
+			}
 			else
-				if (!scbw::isCheatEnabled(CheatFlags::OperationCwal))
+			{
+				if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE)
 				{
-					jump_to_5D718 = true;
+					building->remainingBuildTime -= OPCWAL_PROGRESS_INCREASE;
 				}
 				else
 				{
-					if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE)
-					{
-						building->remainingBuildTime -= OPCWAL_PROGRESS_INCREASE;
-					}
-					else
-					{
-						building->remainingBuildTime = 0;
-					}
-					jump_to_5D720 = true;
+					building->remainingBuildTime = 0;
 				}
+				jump_to_5D720 = true;
+			}
 		}
 
 		if (jump_to_5D718)
@@ -449,10 +448,6 @@ namespace hooks
 			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergUltrakCavern, ignoreIncomplete); 
 			} break;
-			
-			default:
-			{
-			}
 		}
 		return unitCount;
 	}

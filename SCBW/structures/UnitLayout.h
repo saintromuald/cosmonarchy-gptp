@@ -364,6 +364,7 @@ enum ExtUnitVectorId
 	UnitVectorTertiaryEyesSirens,
 	UnitVectorAttachedSource,
 	UnitVectorWorshipersDemiurge,
+	UnitVectorCrucibles,
 
 	UnitVectorCount,
 };

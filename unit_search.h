@@ -32,6 +32,7 @@ enum SearchFilter
 	FilterCanAttackOrCast	= 1 << 21,
 	FilterOwn				= 1 << 22,
 	FilterNotWorker			= 1 << 23,
+	FilterBuilding			= 1 << 25,
 };
 
 struct UnitArray

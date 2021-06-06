@@ -1614,6 +1614,37 @@ namespace hooks
 			// unit->removeOverlay();
 		}
 
+		// Crucible Stacks Clear
+		{
+			auto& crucibles = unitExt->unitVectors[UnitVectorCrucibles];
+			for (auto it = crucibles.begin(); it != crucibles.end(); ++it)
+			{
+				Unit* target = *it;
+				if (scbw::getDistanceFast(unit->position, target->position) > 8 * 32)
+				{
+					crucibles.erase(it);
+					--it;
+				}
+			}
+		}
+
+		// Crucible Stacks Add
+		if (unit->id == UnitId::ProtossCrucible)
+		{
+			UnitArray arr = unit_search_radial(unit->position, 8 * 32);
+			unit_array_filter(&arr, unit, FilterAlly | FilterBuilding);
+			for (u32 i = 0; i < arr.size; i++)
+			{
+				Unit* target = arr.units[i];
+				UnitExt* targetExt = globals.GetUnitExt(target);
+				auto& vec = targetExt->unitVectors[UnitVectorCrucibles];
+				if (std::find(vec.begin(), vec.end(), unit) == vec.end())
+				{
+					vec.push_back(unit);
+				}
+			}
+		}
+
 		// Emergency Detonation - initial cast
 		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation) && !unitExt->timers[TimerEmergencyDetonation]
 			&& !unitExt->timers[TimerEmergencyDetonation] && !unitExt->timers[TimerControlledDemolition])

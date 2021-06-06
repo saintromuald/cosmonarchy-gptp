@@ -30,6 +30,9 @@ namespace hooks
 			}
 		}
 
+		// Crucible Aura
+		speed /= 1 + 0.05 * unitExt->unitVectors[UnitVectorCrucibles].size();
+
 		// Mind Tyrant Malediction: Apply movespeed slow to non-organic targets
 		if (unitExt->timers[TimerMaledictionSlow] > 1)
 		{
@@ -141,7 +144,7 @@ namespace hooks
 				{
 					return false;
 				}
-				// Relative Position Vector
+
 				Vector32 diff = scbw::getVectorBetweenPoints(enemy->position, unit->position);
 				Vector32f target = scbw::getNormalizedVector(diff);
 				f32 dot = scbw::getDotProduct(dir, target);
