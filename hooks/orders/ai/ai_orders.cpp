@@ -1936,12 +1936,12 @@ LABEL_36:
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiArray) // 00404470
+	void deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiArray) // 00404470
 	{
 		// New
 		if (workerAi == nullptr)
 		{
-			return nullptr;
+			return;
 		}
 
 		if (workerAiArray->worker_ais[0].link.next == workerAi)
@@ -1965,6 +1965,5 @@ LABEL_36:
 			workerAiArray->first_free_worker->link.next = workerAi;
 		}
 		workerAiArray->first_free_worker = workerAi;
-		return workerAi;
 	}
 }

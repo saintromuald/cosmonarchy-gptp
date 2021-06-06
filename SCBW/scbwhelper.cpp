@@ -7725,12 +7725,12 @@ namespace helper
 		}
 	}
 
-	void deleteWorkerAi(void* worker_ai_list, WorkerAi* ai)
+	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray* workerArray)
 	{
 		const u32 Func_DeleteWorkerAi = 0x00404470;
 		__asm {
 			PUSHAD
-			MOV EDX, worker_ai_list
+			MOV EDX, workerArray
 			MOV EAX, ai
 			CALL Func_DeleteWorkerAi
 			POPAD

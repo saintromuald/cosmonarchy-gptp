@@ -6,6 +6,7 @@
 #include <cassert>
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
+#include "hooks\orders\ai\ai_orders.h"
 #include "globals.h"
 
 namespace hooks
@@ -427,7 +428,7 @@ namespace hooks
 						return 0;
 					}
 					town = ai->town;
-					helper::deleteWorkerAi(town->free_workers, (WorkerAi*)ai);
+					hooks::deleteWorkerAI((WorkerAi*)ai, town->free_workers);
 					town->worker_count--;
 				}
 				if (town)
