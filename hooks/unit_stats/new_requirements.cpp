@@ -94,14 +94,23 @@ namespace hooks
 				{
 					case UnitId::TerranCommandCenter:
 					case UnitId::TerranSupplyDepot:
-					case UnitId::TerranBarracks:
-					case UnitId::TerranFactory:
-					case UnitId::TerranStarport:
-					case UnitId::TerranScrapyard:
+					case UnitId::TerranReservoir:
 					case UnitId::TerranWatchdog:
 					case UnitId::TerranBunker:
 					{
 						return TECH_ACTIVE;
+					}
+					case UnitId::TerranBarracks:
+					case UnitId::TerranFactory:
+					case UnitId::TerranStarport:
+					case UnitId::TerranScrapyard:
+					case UnitId::TerranEngineeringBay:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::TerranCommandCenter))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
 					}
 					case UnitId::TerranTreasury:
 					case UnitId::TerranCaptaincy:
@@ -115,6 +124,7 @@ namespace hooks
 					}
 					case UnitId::TerranIronFoundry:
 					case UnitId::TerranNaniteAssembly:
+					case UnitId::TerranIonCannon:
 					{
 						if (TierUnlocked[RaceId::Terran][Tier3])
 						{
