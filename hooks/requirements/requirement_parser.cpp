@@ -1,6 +1,5 @@
 #include "requirement_parser.h"
 #include <SCBW/SFileReader.h>
-#include <DebugUtils.h>
 
 namespace
 {
@@ -13,20 +12,20 @@ namespace
 		HANDLE fileHandle;
 		if (!SFileOpenFileEx(0, path, 0, &fileHandle))
 		{
-			DebugOut("File not found: %s", path);
+			scbw::printf_console("File not found: %s", path);
 			return false;
 		}
 		int fileSize = SFileGetFileSize(fileHandle, 0);
 		if (fileSize == -1 || !fileSize)
 		{
-			DebugOut("File is empty: %s", path);
+			scbw::printf_console("File is empty: %s", path);
 			return false;
 		}
 		char* filePointer = (char*)SMemAlloc(fileSize, "logfilename", 0, 0);
 		int bytesRead;
 		if (!SFileReadFile(fileHandle, filePointer, fileSize, &bytesRead, 0) || bytesRead != fileSize)
 		{
-			DebugOut("File reading error %s (%d)", path, GetLastError());
+			scbw::printf_console("File reading error %s (%d)", path, GetLastError());
 			return false;
 		}
 

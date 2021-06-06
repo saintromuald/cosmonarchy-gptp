@@ -2,7 +2,6 @@
 #include "requirement_parser.h"
 #include "SCBW/structures/Player.h"
 #include <SCBW/api.h>
-#include <DebugUtils.h>
 
 namespace hooks
 {
@@ -37,7 +36,7 @@ namespace hooks
 				{
 					if (scbw::isBroodWarMode() == false)
 					{
-						*lastInternalErr = InternalErrors::UnknownError26;
+						*lastInternalError = InternalErrors::UnknownError26;
 						return 0;
 					}
 					success++;
@@ -47,7 +46,7 @@ namespace hooks
 				case RequirementOpcodes::CurrentUnitIs:
 				{
 					unitId = datReqBase[datReqOffset++];
-					if (PLAYER::numberOfCompletedUnitsOfType(unitId, playerId) != 0)
+					if (Player::numberOfCompletedUnitsOfType(unitId, playerId) != 0)
 					{
 						greyButton = false;
 					}
@@ -66,7 +65,7 @@ namespace hooks
 				case RequirementOpcodes::MustHave:
 				{
 					unitId = datReqBase[datReqOffset++];
-					success += PLAYER::numberOfCompletedUnitsOfType(unitId, playerId) + PLAYER::numberOfUnitsOfType(unitId, playerId);
+					success += Player::numberOfCompletedUnitsOfType(unitId, playerId) + Player::numberOfUnitsOfType(unitId, playerId);
 				}
 					break;
 
@@ -105,7 +104,7 @@ namespace hooks
 				{
 					if (unit->unitIsTrainingOrMorphing() || unit->building.techType != TechId::None)
 					{
-						*lastInternalErr = InternalErrors::UnknownError5;
+						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
 					}
 				}
@@ -114,7 +113,7 @@ namespace hooks
 				{
 					if (unit->building.upgradeType != UpgradeId::None)
 					{
-						*lastInternalErr = InternalErrors::UnknownError5;
+						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
 					}
 					success++;
@@ -125,12 +124,12 @@ namespace hooks
 				{
 					if (unit->secondaryOrderId == OrderId::BuildAddon && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->currentBuildUnit != NULL && (unit->currentBuildUnit->status & UnitStatus::Completed) == 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError5;
+						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
 					}
 					if (unit->mainOrderId == OrderId::BuildProtoss1 && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->orderTarget.unit != NULL && (unit->orderTarget.unit->status & UnitStatus::Completed) == 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError5;
+						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
 					}
 					success++;
@@ -141,7 +140,7 @@ namespace hooks
 				{
 					if (unit->building.techType != TechId::None)
 					{
-						*lastInternalErr = InternalErrors::UnknownError5;
+						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
 					}
 					success++;
@@ -152,7 +151,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::GroundedBuilding) == 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError7;
+						*lastInternalError = InternalErrors::UnknownError7;
 						return 0;
 					}
 					success++;
@@ -163,7 +162,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::GroundedBuilding) != 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError6;
+						*lastInternalError = InternalErrors::UnknownError6;
 						return 0;
 					}
 					success++;
@@ -178,7 +177,7 @@ namespace hooks
 						// or unit->building.nuke
 						// or unit->building.pylonAura
 						// or unit-> Worker - Harvest target unit
-						*lastInternalErr = InternalErrors::UnitBusyOrIncompatible;
+						*lastInternalError = InternalErrors::UnitBusyOrIncompatible;
 						return 0;
 					}
 					success++;
@@ -189,7 +188,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::Burrowed) != 0 && unit->pAI == NULL)
 					{
-						*lastInternalErr = InternalErrors::UnknownError5;
+						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
 					}
 					success++;
@@ -200,7 +199,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::Burrowed) == 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError5;
+						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
 					}
 					success++;
@@ -211,7 +210,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::GroundedBuilding) != 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError19;
+						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -222,7 +221,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::GroundedBuilding) == 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError19;
+						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -233,17 +232,17 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::GroundedBuilding) != 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError19;
+						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
 					if ((unit->id == UnitId::ZergLakizilisk || (unit->status & UnitStatus::Burrowed) == 0) && units_dat::RightClickAction[unit->id] == RightClickActions::NoCommand_AutoAttack)
 					{
-						*lastInternalErr = InternalErrors::UnknownError19;
+						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
 					if (unit->getRightClickActionOrder() == RightClickActions::NoMove_NormalAttack)
 					{
-						*lastInternalErr = InternalErrors::UnknownError19;
+						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -254,7 +253,7 @@ namespace hooks
 				{
 					if (unit->hasWeapon() == false)
 					{
-						*lastInternalErr = InternalErrors::UnknownError19;
+						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -265,7 +264,7 @@ namespace hooks
 				{
 					if ((units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) == 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError19;
+						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -276,7 +275,7 @@ namespace hooks
 				{
 					if ((units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding) == 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError19;
+						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -287,7 +286,7 @@ namespace hooks
 				{
 					if ((units_dat::BaseProperty[unit->id] & UnitProperty::Worker) == 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError19;
+						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -298,7 +297,7 @@ namespace hooks
 				{
 					if ((units_dat::BaseProperty[unit->id] & UnitProperty::NeutralAccessories) == 0)
 					{
-						*lastInternalErr = InternalErrors::UnknownError19;
+						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -309,7 +308,7 @@ namespace hooks
 				{
 					if (unit->vulture.spiderMineCount == 0)
 					{
-						*lastInternalErr = InternalErrors::UnitBusyOrIncompatible;
+						*lastInternalError = InternalErrors::UnitBusyOrIncompatible;
 						return 0;
 					}
 					success++;
@@ -322,7 +321,7 @@ namespace hooks
 						&& units_dat::RightClickAction[unit->id] == RightClickActions::NoCommand_AutoAttack
 						&& ((unit->status & UnitStatus::GroundedBuilding) == 0 || unit->isFactory() == false))
 					{
-						*lastInternalErr = InternalErrors::UnitBusyOrIncompatible;
+						*lastInternalError = InternalErrors::UnitBusyOrIncompatible;
 						return 0;
 					}
 					success++;
@@ -365,13 +364,13 @@ namespace hooks
 
 				case RequirementOpcodes::Grey:
 				{
-					*lastInternalErr = InternalErrors::UnknownError21;
+					*lastInternalError = InternalErrors::UnknownError21;
 				}
 					return -1;
 
 				case RequirementOpcodes::Blank:
 				{
-					*lastInternalErr = InternalErrors::MissingRequirement;
+					*lastInternalError = InternalErrors::MissingRequirement;
 				}
 					return 0;
 
@@ -379,7 +378,7 @@ namespace hooks
 				{
 					// Any invalid opcodes will be read here as unit IDs
 					unitId = opcode;
-					success += PLAYER::numberOfCompletedUnitsOfType(playerId, unitId);
+					success += Player::numberOfCompletedUnitsOfType(playerId, unitId);
 				}
 			}
 
@@ -392,14 +391,14 @@ namespace hooks
 			// no button on failure
 			if (invalidUnit == true)
 			{
-				*lastInternalErr = InternalErrors::UnknownError25;
+				*lastInternalError = InternalErrors::UnknownError25;
 				return 0;
 			}
 
 			// grey button on failure
 			if (success == 0 && greyButton == true)
 			{
-				*lastInternalErr = InternalErrors::UnitBusyOrIncompatible;
+				*lastInternalError = InternalErrors::UnitBusyOrIncompatible;
 				return -1;
 			}
 
@@ -410,7 +409,7 @@ namespace hooks
 		// Hides button for hallucinations unless explicitly allowed
 		if ((unit->status & UnitStatus::IsHallucination) != 0 && allowHalluc == false)
 		{
-			*lastInternalErr = InternalErrors::UnknownError22;
+			*lastInternalError = InternalErrors::UnknownError22;
 			return 0;
 		}
 
@@ -448,47 +447,47 @@ namespace hooks
 		opcodeIndex = (s16)unitsDat[unitId];
 		currentOpcode = requirementsTable[opcodeIndex];
 
-		*lastInternalErr = InternalErrors::UnknownError0;
+		*lastInternalError = InternalErrors::UnknownError0;
 		if (unitId >= UnitId::None)
 		{
-			*lastInternalErr = InternalErrors::UnknownError16;
+			*lastInternalError = InternalErrors::UnknownError16;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (playerID != parentUnit->playerId)
 		{
-			*lastInternalErr = InternalErrors::UnknownError1;
+			*lastInternalError = InternalErrors::UnknownError1;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (!(parentUnit->status & UnitStatus::Completed))
 		{
-			*lastInternalErr = InternalErrors::UnknownError20;
+			*lastInternalError = InternalErrors::UnknownError20;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (parentUnit->isFrozen())
 		{
-			*lastInternalErr = InternalErrors::UnitFrozen;
+			*lastInternalError = InternalErrors::UnitFrozen;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (!UnitAvailability->available[parentUnit->playerId][parentUnit->id])
 		{
-			*lastInternalErr = InternalErrors::UnknownError2;
+			*lastInternalError = InternalErrors::UnknownError2;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (parentUnit->isQueueSlotActive(4))
 		{
 LABEL_86_ERROR_3_RETURN_0:
-			*lastInternalErr = InternalErrors::UnknownError3;
+			*lastInternalError = InternalErrors::UnknownError3;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (parentUnit->status & UnitStatus::IsHallucination)
 		{
-			*lastInternalErr = InternalErrors::UnknownError22;
+			*lastInternalError = InternalErrors::UnknownError22;
 			//DebugOut(">Return Disallowed");
 			return 0;
 		}
@@ -503,7 +502,7 @@ LABEL_86_ERROR_3_RETURN_0:
 		if (unitsDat[unitId] == 0)
 		{
 LABEL_93_ERROR_23_RETURN_0:
-			*lastInternalErr = 23;
+			*lastInternalError = 23;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
@@ -534,7 +533,7 @@ LABEL_18_ENTER_MAIN_BODY:
 					////DebugOut("  current unit is = %d", nextOpcodeUnitId);
 					// Weirdly, nextOpcodeUnitId is sometimes still the old opcode value - but only while debugging (or when there's 
 					// an OR statement?) this is causing access violation reading completed_unit_counts. Work around this for now by checking unit Ids
-					if (PLAYER::numberOfCompletedUnitsOfType(parentUnit->playerId, nextOpcodeUnitId) > 0)
+					if (Player::numberOfCompletedUnitsOfType(parentUnit->playerId, nextOpcodeUnitId) > 0)
 					{
 						v27 = 0;
 					}
@@ -557,7 +556,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				{
 					//DebugOut("MustHave (%d):", currentOpcode);
 					v24 = requirementsTable[opcodeIndex++];
-					v25 = PLAYER::numberOfCompletedUnitsOfType(playerID, currentOpcode) + PLAYER::numberOfUnitsOfType(playerID, currentOpcode);
+					v25 = Player::numberOfCompletedUnitsOfType(playerID, currentOpcode) + Player::numberOfUnitsOfType(playerID, currentOpcode);
 					//DebugOut(">Checking next opcode");
 				}
 					goto LABEL_71_SUM_VALUES;
@@ -579,7 +578,7 @@ LABEL_18_ENTER_MAIN_BODY:
 								{
 									if (!v28)
 									{
-										*lastInternalErr = 4;
+										*lastInternalError = 4;
 									}
 									//DebugOut(">Return Gray");
 									return -1;
@@ -596,7 +595,7 @@ LABEL_18_ENTER_MAIN_BODY:
 					//DebugOut("IsNotLiftedOff (%d):", currentOpcode);
 					if (!(parentUnit->status & UnitStatus::GroundedBuilding))
 					{
-						*lastInternalErr = InternalErrors::UnknownError7;
+						*lastInternalError = InternalErrors::UnknownError7;
 						//DebugOut(">Return NotAllowed");
 						return 0;
 					}
@@ -671,7 +670,7 @@ LABEL_18_ENTER_MAIN_BODY:
 					{
 						if (!v28)
 						{
-							*lastInternalErr = InternalErrors::UnknownError4;
+							*lastInternalError = InternalErrors::UnknownError4;
 						}
 						//DebugOut(">Return NotAllowed");
 						return 0;
@@ -692,7 +691,7 @@ LABEL_73_PERHAPS_FINAL_CHECK:
 					}
 					if (!v29 && v27)
 					{
-						*lastInternalErr = InternalErrors::UnitBusyOrIncompatible;
+						*lastInternalError = InternalErrors::UnitBusyOrIncompatible;
 						//DebugOut(">Return Gray");
 						return -1;
 					}
@@ -705,7 +704,7 @@ LABEL_73_PERHAPS_FINAL_CHECK:
 					}
 					if (v28)
 					{
-						*lastInternalErr = InternalErrors::UnknownError25;
+						*lastInternalError = InternalErrors::UnknownError25;
 						//DebugOut(">Return Gray");
 						return -1;
 					}
@@ -758,7 +757,7 @@ LABEL_51:
 					if (parentUnit->status & UnitStatus::Burrowed)
 					{
 LABEL_87:
-						*lastInternalErr = InternalErrors::UnknownError5;
+						*lastInternalError = InternalErrors::UnknownError5;
 						//DebugOut(">Return NotAllowed");
 						return 0;
 					}
@@ -769,7 +768,7 @@ LABEL_87:
 				case RequirementOpcodes::Grey:
 				{
 					//DebugOut("Grey (%d):", currentOpcode);
-					*lastInternalErr = InternalErrors::UnknownError21;
+					*lastInternalError = InternalErrors::UnknownError21;
 					//DebugOut(">Return Grey");
 				}
 					return -1;
@@ -783,7 +782,7 @@ LABEL_87:
 					//DebugOut("MustBeBroodWar (%d):", currentOpcode);
 					if (!IS_BROOD_WAR)
 					{
-						*lastInternalErr = InternalErrors::UnknownError26;
+						*lastInternalError = InternalErrors::UnknownError26;
 						//DebugOut(">Return NotAllowed");
 						return 0;
 					}
@@ -797,7 +796,7 @@ LABEL_87:
 					v10 = requirementsTable[opcodeIndex++];
 					if (scbw::hasTechResearched(parentUnit->playerId, v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
 					{
-						*lastInternalErr = InternalErrors::UnknownError9;
+						*lastInternalError = InternalErrors::UnknownError9;
 						//DebugOut(">Return Gray");
 						return -1;
 					}
@@ -810,7 +809,7 @@ LABEL_87:
 					//DebugOut("IsBurrowed (%d):", currentOpcode);
 					if (!(parentUnit->status & UnitStatus::Burrowed))
 					{
-						*lastInternalErr = InternalErrors::UnknownError5;
+						*lastInternalError = InternalErrors::UnknownError5;
 						//DebugOut(">Return Gray");
 						return -1;
 					}
@@ -825,7 +824,7 @@ LABEL_87:
 					{
 						++v9;
 					}
-					v25 = PLAYER::numberOfCompletedUnitsOfType(playerID, currentOpcode);
+					v25 = Player::numberOfCompletedUnitsOfType(playerID, currentOpcode);
 					// DebugOut(">%s", v25 > 0 ? "True" : "False");
 LABEL_71_SUM_VALUES:
 					v11 = v25 + v9;

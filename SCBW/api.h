@@ -8,6 +8,9 @@
 #include <math.h>
 #include <unit_search.h>
 
+#define NOMINMAX
+#include <windows.h>
+
 namespace scbw
 {
 	bool isAnyMorphMorphResult(u16 id);
@@ -29,10 +32,12 @@ namespace scbw
 	//////////////////////////////////////////////////////////////// @{
 		
 	/// Prints text to the screen, optionally using the given text color.
-	void printString(std::string text, u32 color = GameTextColor::White);
+	void print_string(std::string text, u32 color = GameTextColor::White);
 	void print(const char* text, u32 color = GameTextColor::White);
 	void printf(const char* format, ...);
-	void printfColor(const char* format, u32 color, ...);
+	void printf_color(const char* format, u32 color, ...);
+
+	void printf_console(const char* fmt, ...);
 
 	/// Displays an error message and plays a sound for the player.
 	///

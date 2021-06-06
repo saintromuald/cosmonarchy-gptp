@@ -8,13 +8,13 @@
 // Return the proper ColorId to use a player color with graphics function
 // ----------------------------------------------------------------------------//
 
-graphics::ColorId PLAYER::getColor()
+graphics::ColorId Player::getColor()
 {
 	assert(this);
 	return playersColors[(u8)this->id];
 }
 
-graphics::ColorId PLAYER::getColor(u8 playerId)
+graphics::ColorId Player::getColor(u8 playerId)
 {
 	if (playerId < PLAYER_COUNT)
 	{
@@ -26,13 +26,13 @@ graphics::ColorId PLAYER::getColor(u8 playerId)
 	}
 }
 
-graphics::ColorId PLAYER::getFactionColor()
+graphics::ColorId Player::getFactionColor()
 {
 	assert(this);
 	return getFactionColor(this->id);
 }
 
-graphics::ColorId PLAYER::getFactionColor(u8 playerId)
+graphics::ColorId Player::getFactionColor(u8 playerId)
 {
 	// store a playerId until the end where it will properly store a ColorId
 	graphics::ColorId return_value;
@@ -73,7 +73,7 @@ graphics::ColorId PLAYER::getFactionColor(u8 playerId)
 	return return_value;
 }
 
-u32 PLAYER::numberOfUnitsOfType(u8 playerId, u16 unitId)
+u32 Player::numberOfUnitsOfType(u8 playerId, u16 unitId)
 {
 	if (unitId > UNIT_TYPE_COUNT - 1)
 	{
@@ -82,7 +82,7 @@ u32 PLAYER::numberOfUnitsOfType(u8 playerId, u16 unitId)
 	return allUnitCountTable[unitId].player[playerId];
 }
 
-u32 PLAYER::numberOfCompletedUnitsOfType(u8 playerId, u16 unitId)
+u32 Player::numberOfCompletedUnitsOfType(u8 playerId, u16 unitId)
 {
 	if (unitId > UNIT_TYPE_COUNT - 1)
 	{

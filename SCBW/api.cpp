@@ -117,9 +117,28 @@ namespace scbw
 		return thingy;
 	}
 
-	void printString(std::string text, u32 color)
+	void print_string(std::string text, u32 color)
 	{
 		print(text.c_str(), color);
+	}
+
+	void print(const char* text, u32 color)
+	{
+		const u32 Func_PrintText = 0x0048CD30;
+		if (!text)
+		{
+			return;
+		}
+		DWORD gtc = GetTickCount() + 7000;
+		__asm {
+			PUSHAD
+			PUSH 0;//unknown
+			MOV eax, text
+				PUSH gtc
+				PUSH color
+				CALL Func_PrintText
+				POPAD
+		}
 	}
 
 	void printf(const char* format, ...)
@@ -127,23 +146,36 @@ namespace scbw
 		char buf[256];
 
 		va_list _ArgList;
-		__crt_va_start(_ArgList, format);
+		va_start(_ArgList, format);
 		vsnprintf(buf, sizeof(buf), format, _ArgList);
 		__crt_va_end(_ArgList);
 
 		print(buf);
 	}
 
-	void printfColor(const char* format, u32 color, ...)
+	void printf_color(const char* format, u32 color, ...)
 	{
 		char buf[256];
 
 		va_list _ArgList;
-		__crt_va_start(_ArgList, format);
+		va_start(_ArgList, format);
 		vsnprintf(buf, sizeof(buf), format, _ArgList);
-		__crt_va_end(_ArgList);
+		va_end(_ArgList);
 
 		print(buf, color);
+	}
+
+	void printf_console(const char* format, ...)
+	{
+		char buf[1025];
+
+		va_list _ArgList;
+		va_start(_ArgList, format);
+		vsnprintf(buf, sizeof(buf), format, _ArgList);
+		va_end(_ArgList);
+
+		OutputDebugStringA(buf);
+		OutputDebugStringA("\n");
 	}
 
 	//-------- Unit checks --------//
@@ -1453,25 +1485,6 @@ namespace scbw
 			POPAD
 		}
 		return result != 0;
-	}
-
-	void print(const char* text, u32 color)
-	{
-		const u32 Func_PrintText = 0x0048CD30;
-		if (!text)
-		{
-			return;
-		}
-		DWORD gtc = GetTickCount() + 7000;
-		__asm {
-			PUSHAD
-			PUSH 0;//unknown
-			MOV eax, text
-				PUSH gtc
-				PUSH color
-				CALL Func_PrintText
-				POPAD
-		}
 	}
 
 	void showErrorMessageWithSfx(u32 playerId, u32 statTxtId, u32 sfxId)

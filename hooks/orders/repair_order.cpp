@@ -406,7 +406,7 @@ namespace hooks
 		s32 result = 0;
 		s16 unitId;
 
-		*lastInternalErr = 0;
+		*lastInternalError = 0;
 		if (orderId < OrderId::None)
 		{
 			if (orders_dat::RequirementsOffset[orderId] == -1)
@@ -419,12 +419,12 @@ namespace hooks
 				{
 					if (unit->isFrozen())
 					{
-						*lastInternalErr = 10;
+						*lastInternalError = 10;
 						result = 0;
 					}
 					else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk && orderId != OrderId::Unburrow)
 					{
-						*lastInternalErr = 11;
+						*lastInternalError = 11;
 						result = 0;
 					}
 					else
@@ -435,7 +435,7 @@ namespace hooks
 							|| unitId == UnitId::ProtossArchon && unit->mainOrderId == OrderId::CompletingArchonSummon
 							|| unitId == UnitId::ProtossMindTyrant && unit->mainOrderId == OrderId::CompletingArchonSummon)
 						{
-							*lastInternalErr = 8;
+							*lastInternalError = 8;
 							result = 0;
 						}
 						else
@@ -450,26 +450,26 @@ namespace hooks
 							}
 							else
 							{
-								*lastInternalErr = 23;
+								*lastInternalError = 23;
 							}
 						}
 					}
 				}
 				else
 				{
-					*lastInternalErr = 20;
+					*lastInternalError = 20;
 					result = 0;
 				}
 			}
 			else
 			{
-				*lastInternalErr = 1;
+				*lastInternalError = 1;
 				result = 0;
 			}
 		}
 		else
 		{
-			*lastInternalErr = 15;
+			*lastInternalError = 15;
 			result = 0;
 		}
 		return result;

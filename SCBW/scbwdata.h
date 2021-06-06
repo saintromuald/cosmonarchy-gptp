@@ -143,7 +143,7 @@ SCBW_DATA(u32*, MoveToX, 0x0062848C);
 SCBW_DATA(u32*, MoveToY, 0x006284A8);
 
 /// Contains various information (names, player types, race types, and associated forces) of each player in the current game
-SCBW_DATA(PLAYER*, playerTable, 0x0057EEE0);
+SCBW_DATA(Player*, playerTable, 0x0057EEE0);
 
 struct SupplyData {
 	u32 provided[PLAYER_COUNT];
@@ -331,7 +331,7 @@ SCBW_DATA(Unit*, unitReference, 0x0059CB58);
 
 // For startGame
 SCBW_DATA(s8*, gameState,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
-SCBW_DATA(PLAYER*, playerReplayWatchers,	0x00640970);
+SCBW_DATA(Player*, playerReplayWatchers,	0x00640970);
 
 SCBW_DATA(s8*, countdownTimerInterval,		0x0066FBFC);
 SCBW_DATA(s32*, countdownTimeTickCount,		0x0059CC7C);
@@ -395,7 +395,7 @@ SCBW_DATA(s32*,	lurkerSplashListIndex,				0x0064EEC8);
 SCBW_DATA(s32*,	lastBulletIndex,					0x0064DEA8);
 
 // For orderAllowed
-SCBW_DATA(s32*,	lastInternalErr,					0x0066FF60);
+SCBW_DATA(s32*,	lastInternalError,					0x0066FF60);
 SCBW_DATA(s16*, ordersRequirementTree,				0x00514CF8);
 
 // For larva_creep_spawn
