@@ -40,6 +40,6 @@ namespace hooks
 {
 	void injectNewRequirementsHooks()
 	{
-//		jmpPatch(createUnitAllowed_PartialWrapper, 0x0046E1C0, 1);
+		jmpPatch(createUnitAllowed_PartialWrapper, 0x0046E1C0, 1);
 	}
 }
