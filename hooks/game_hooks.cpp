@@ -1631,7 +1631,7 @@ namespace hooks
 		}
 
 		// Crucible Stacks Add
-		if (unit->id == UnitId::ProtossCrucible)
+		if (unit->id == UnitId::ProtossCrucible && unit->status & UnitStatus::Completed)
 		{
 			UnitArray arr = unit_search_radial(unit->position, 8 * 32);
 			unit_array_filter(&arr, unit, FilterAlly | FilterBuilding);
