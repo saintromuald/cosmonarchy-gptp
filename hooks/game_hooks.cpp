@@ -1384,7 +1384,6 @@ namespace hooks
 					|| unit->id == UnitId::ZergOvileth)
 				{
 					AiTown* town = AiTownManager[unit->playerId].first;
-
 					if (town)
 					{
 						helper::AI_AddWorkerStructureAI(unit, town);
