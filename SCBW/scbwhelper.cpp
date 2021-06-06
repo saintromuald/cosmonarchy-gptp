@@ -1132,7 +1132,8 @@ namespace helper
 	{
 		const u32 Func_AI_TrainingWorker = 0x00435700;
 		static char resultFunc;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, result
 			MOV ECX, parent
@@ -1146,7 +1147,8 @@ namespace helper
 	void AI_TrainingOverlord(Unit* result, Unit* parent)
 	{
 		const u32 Func_AI_TrainingOverlord = 0x00435770;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, result
 			MOV ECX, parent
@@ -1158,7 +1160,8 @@ namespace helper
 	void AI_TrainingNormal(Unit* result, Unit* parent)
 	{
 		const u32 Func_AI_TrainingNormal = 0x00435DB0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, result
 			MOV ECX, parent
@@ -1170,7 +1173,8 @@ namespace helper
 	void AI_OrderToDestination(Unit* unit, s32 orderId, s32 x, s32 y)
 	{
 		const u32 Func_AI_OrderToDestination = 0x0043D5D0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH y
 			PUSH x
@@ -1184,7 +1188,8 @@ namespace helper
 	void AI_AssignCaptainToSlowestUnit(AiRegion* region)
 	{
 		const u32 Func_AI_AssignCaptainToSlowestUnit = 0x00436F70;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH region
 			CALL Func_AI_AssignCaptainToSlowestUnit
@@ -1193,7 +1198,6 @@ namespace helper
 	}
 
 	// for AI_CreateNuke
-
 	Unit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId)
 	{
 		const u32 Func_createUnit = 0x004A09D0;
