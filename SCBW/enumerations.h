@@ -627,8 +627,8 @@ namespace DialogControlTypes
 	};
 }
 
-//Use with units_dat::RightClickAction
-namespace RightClickAction
+//Use with units_dat::RightClickActions
+namespace RightClickActions
 {
 	enum Enum : u8
 	{
