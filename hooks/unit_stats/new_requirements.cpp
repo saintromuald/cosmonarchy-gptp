@@ -10,7 +10,7 @@ namespace hooks
 		TECH_ACTIVE = 1,
 	};
 
-	s8 createUnitAllowed_Partial(s16 unitId, Unit* unit, s32 playerId)
+	s32 createUnitAllowed_Partial(s16 unitId, Unit* unit, s32 playerId)
 	{
 		*lastInternalError = InternalErrors::UnknownError0;
 		if (unitId >= UnitId::None)

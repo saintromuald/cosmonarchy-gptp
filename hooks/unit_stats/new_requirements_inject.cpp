@@ -6,7 +6,7 @@ namespace
 	void __declspec(naked) createUnitAllowed_PartialWrapper() // 0046E1C0
 	{
 		bool runOriginal;
-		static s8 result;
+		static s32 result;
 		static s16 unitId;
 		static Unit* unit;
 		static s32 playerId;
@@ -28,7 +28,7 @@ namespace
 		__asm
 		{
 			POPAD
-			MOV AL, result
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
