@@ -318,15 +318,15 @@ namespace UnitId
 		TerranIonCannon									= 127,		// Ion Cannon
 		TerranGuildhall									= 147,		// Overmind (With Shell)
 		TerranQuarry									= 174,		// Protoss Temple
+		TerranBioticBase2								= 175,		// Xel'Naga Temple
 		TerranSalvoYard									= 189,		// Warp Gate
+		TerranTinkerersTower2							= 190,		// Psi Disruptor
 		TerranFutureStation								= 192,		// Terran Marker
 		TerranIronFoundry								= 198,		// Terran Flag Beacon
 		TerranCaptaincy									= 199,		// Protoss Flag Beacon
 		TerranScrapyard									= 200,		// Power Generator
 		TerranNaniteAssembly							= 203,		// Floor Missile Trap	
 		TerranTreasury									= 215,		// Flag
-		TerranBioticBase								= 220,		// Mineral Chunk Type 1
-		TerranTinkerersTower							= 223,		// Protoss Gas Orb Type 2
 
 	// Protoss-Unit
 		ProtossManifold									= 16,		// Sarah Kerrigan
@@ -361,13 +361,13 @@ namespace UnitId
 		ProtossRogueGallery								= 161,		// Unused Protoss 2				| Shared production
 		ProtossWaywardLure								= 163,		// Citadel of Adun				| Luminary, Striga, Empress requirement
 		ProtossArgosy									= 168,		// Stasis Chamber				| Advanced Stellar production
-		ProtossMonumentOfSin							= 175,		// Xel'Naga Temple				| Anthelion requirement
 		ProtossStridentStratum							= 182,		// Mining Platform				| Barghest requirement
 		ProtossAstralOmen								= 184,		// Independent Starport			| Exemplar, Gladius requirement
-		ProtossRoboticsAuthority						= 190,		// Psi Disruptor				| Advanced Robotics production
 		ProtossCrucible									= 201,		// Overmind Cocoon				| Structure w/ efficiency aura for production/upgrades
 		ProtossCosmicAltar								= 213,		// Right Wall Flame Trap		| Star Sovereign requirement
+		ProtossRoboticsAuthority						= 220,		// Mineral Chunk Type 1			| Advanced Robotics production
 		ProtossPennant									= 221,		// Mineral Cluster Type 2		| Structure w/ regeneration aura for resources
+		ProtossMonumentOfSin							= 223,		// Protoss Gas Orb Type 2		| Anthelion requirement
 		ProtossSanctumOfSorrow							= 225,		// Zerg Gas Sac Type 2			| Pariah and Augur requirement
 		ProtossGrandLibrary								= 226,		// Terran Gas Tank Type 1		| Advanced Templar production
 
