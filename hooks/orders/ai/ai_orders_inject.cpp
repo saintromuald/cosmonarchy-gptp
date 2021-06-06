@@ -562,7 +562,6 @@ namespace
 
 	void __declspec(naked) deleteWorkerAI_Wrapper() // 00404470
 	{
-		static WorkerAi* result;
 		static WorkerAi* workerAi;
 		static WorkerAiArray* workerAiArray;
 		__asm
@@ -571,11 +570,10 @@ namespace
 			MOV workerAiArray, EDX
 			PUSHAD
 		}
-		result = hooks::deleteWorkerAI(workerAi, workerAiArray);
+		hooks::deleteWorkerAI(workerAi, workerAiArray);
 		__asm
 		{
 			POPAD
-			MOV EAX, result
 			RETN
 		}
 	}
