@@ -1380,11 +1380,11 @@ namespace hooks
 			unitExt->values[ValueReviveStarted] = 0;
 			if (playerTable[unit->playerId].type == PlayerType::Computer)
 			{
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+				if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
 				{
 					helper::AI_TrainingWorker(unit, unit);
 				}
-				else if (units_dat::BaseProperty[unit->id] & UnitProperty::Building || unit->id == UnitId::ZergOvileth)
+				else if (unit->id == UnitId::ZergOvileth)
 				{
 					helper::AI_TrainingOverlord(unit, unit);
 				}
