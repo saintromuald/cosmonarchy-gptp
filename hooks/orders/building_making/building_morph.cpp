@@ -1,4 +1,5 @@
 #include <SCBW/api.h>
+#include "building_modifier.h"
 //helper functions def
 //from unh
 #include <SCBW/enumerations.h>
@@ -28,6 +29,8 @@ namespace hooks
 
 	void orders_ZergBuildSelf(Unit* building)
 	{
+		BuildingModifier modifier = get_building_modifier(building);
+
 		const s32 OPCWAL_PROGRESS_INCREASE = 16;
 		u16 buildingId;
 		bool jump_to_5D56C = false;
@@ -47,16 +50,18 @@ namespace hooks
 			}
 			jump_to_5D56C = true;
 		}
-		else
-			if (building->mainOrderState > 6)
-			{
-				jump_to_5D56C = true;
-			}
+		else if (building->mainOrderState > 6)
+		{
+			jump_to_5D56C = true;
+		}
+
 		if (jump_to_5D56C)
 		{ // 0045D56C
 			jump_to_5D56C = false;
 			if (building->remainingBuildTime == 0)
+			{
 				jump_to_5D720 = true;
+			}
 			else if (!scbw::isCheatEnabled(CheatFlags::OperationCwal))
 			{
 				jump_to_5D718 = true;
@@ -223,7 +228,21 @@ namespace hooks
 		if (jump_to_5D718)
 		{
 			jump_to_5D718 = false;
+
 			building->remainingBuildTime--;
+
+			if (modifier.period && building->remainingBuildTime % modifier.period == 0)
+			{
+				if (building->remainingBuildTime > modifier.decrease)
+				{
+					building->remainingBuildTime -= modifier.decrease;
+				}
+				else
+				{
+					building->remainingBuildTime = 0;
+				}
+			}
+
 			jump_to_5D720 = true;
 		}
 
@@ -232,7 +251,7 @@ namespace hooks
 			jump_to_5D720 = false;
 			if (!scbw::isZergBuildingMorphResult(buildingId))
 			{
-				s32 hpGain = building->buildRepairHpGain;
+				s32 hpGain = building->buildRepairHpGain * modifier.multiplier;
 				if (scbw::isCheatEnabled(CheatFlags::OperationCwal))
 				{
 					hpGain *= OPCWAL_PROGRESS_INCREASE;

@@ -248,6 +248,7 @@
   <ItemGroup>
     <ClCompile Include="AIScripter\AICore.cpp" />
     <ClCompile Include="AIScripter\AIParser.cpp" />
+    <ClCompile Include="hooks\orders\building_making\building_modifier.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="hooks\audiovisuals\player_color.cpp" />
     <ClCompile Include="hooks\audiovisuals\player_color_inject.cpp" />
@@ -562,6 +563,7 @@
   <ItemGroup>
     <ClInclude Include="AIScripter\AICore.h" />
     <ClInclude Include="AIScripter\AIParser.h" />
+    <ClInclude Include="hooks\orders\building_making\building_modifier.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="config_utility.h" />
     <ClInclude Include="hooks\audiovisuals\player_color.h" />

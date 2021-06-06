@@ -1,4 +1,5 @@
 #include "building_terran.h"
+#include "building_modifier.h"
 #include <SCBW/api.h>
 
 #ifndef FALSE
@@ -75,6 +76,9 @@ namespace hooks
 	void orders_SCVBuild2(Unit* unit)
 	{
 		Unit* builtUnit = unit->orderTarget.unit;
+
+		BuildingModifier modifier = get_building_modifier(builtUnit);
+
 		if (builtUnit != nullptr && !(builtUnit->status & UnitStatus::Completed))
 		{
 			bool jump_to_switch_1 = false;
@@ -289,12 +293,24 @@ namespace hooks
 
 			if (jump_to_switch_1)
 			{
-				u32 hpGain = builtUnit->buildRepairHpGain;
+				u32 hpGain = builtUnit->buildRepairHpGain * modifier.multiplier;
+				UnitExt* unitExt = globals.GetUnitExt(builtUnit);
 				if (*CHEAT_STATE & CheatFlags::OperationCwal)
 				{
 					hpGain *= 16;
 				}
 				helper::buildingAddon(builtUnit, hpGain, FALSE);
+				if (modifier.period && builtUnit->remainingBuildTime % modifier.period == 0)
+				{
+					if (builtUnit->remainingBuildTime > modifier.decrease)
+					{
+						builtUnit->remainingBuildTime -= modifier.decrease;
+					}
+					else
+					{
+						builtUnit->remainingBuildTime = 0;
+					}
+				}
 				if (builtUnit->status & UnitStatus::Completed)
 				{
 					Image* current_image = unit->sprite->images.head;
