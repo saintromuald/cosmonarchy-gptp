@@ -228,7 +228,7 @@ namespace hooks
 			}			
 		}
 
-		// Requires a trigger that sets 1 death of Vespene Geyser for all players
+		// Explores entire map and pings start locations, requires a trigger that sets 1 death of Vespene Geyser for all players
 		if (*elapsedTimeFrames == 1 && unit_deaths[UnitId::ResourceVespeneGeyser].player[*ACTIVE_NATION_ID] == 1)
 		{
 			// Explore map
@@ -263,6 +263,12 @@ namespace hooks
 					scbw::minimapPing(startPositions[i].x, startPositions[i].y, 8, *ACTIVE_NATION_ID);
 				}
 			}
+		}
+
+		// If you want to disable the color randomization add a trigger that sets 1 death of Mineral Field (Type 2) for all players
+		if (*elapsedTimeFrames == 1 && unit_deaths[UnitId::ResourceMineralFieldType2].player[*ACTIVE_NATION_ID] == 1)
+		{
+			set_melee_player_colors();
 		}
 
 		optionsList->speed = 6; // Lock game speed at fastest
