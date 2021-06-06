@@ -55,6 +55,7 @@ namespace hooks
 
 			
 			// PROTOSS
+			// Units
 			case UnitId::ProtossNexus:
 			{
 				if (unitId == UnitId::ProtossScribe)
@@ -277,6 +278,7 @@ namespace hooks
 				}
 			}
 
+			// Morphs and subunits
 			case UnitId::ProtossCantavis:
 			{
 				if (unitId == UnitId::ProtossAugur)
@@ -306,6 +308,7 @@ namespace hooks
 				return TECH_HIDDEN;
 			}
 
+			// Structures
 			case UnitId::ProtossScribe:
 			{
 				switch (unitId)
@@ -346,6 +349,7 @@ namespace hooks
 			}
 			
 			// ZERG
+			// Units
 			case UnitId::ZergLarva:
 			{
 				switch (unitId)
@@ -460,6 +464,8 @@ namespace hooks
 					}
 				}
 			}
+			
+			// Morphs
 			case UnitId::ZergOvileth:
 			{
 				if (unitId == UnitId::ZergIroleth)
@@ -619,6 +625,8 @@ namespace hooks
 				}
 				return TECH_HIDDEN;
 			}
+
+			// Structures
 			case UnitId::ZergDroleth:
 			{
 				switch (unitId)
@@ -658,6 +666,8 @@ namespace hooks
 				}
 				return TECH_HIDDEN;
 			}
+
+			// Structure morphs
 			case UnitId::ZergCreepColony:
 			{
 				if (unitId == UnitId::ZergSunkenColony
