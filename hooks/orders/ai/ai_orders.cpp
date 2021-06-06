@@ -1925,8 +1925,6 @@ LABEL_36:
 			return nullptr;
 		}
 
-		// ASM seems quite different from IDA
-
 		if (workerAi2->link.next == workerAi)
 		{
 			workerAi2->link.next = workerAi->link.prev;
@@ -1943,7 +1941,7 @@ LABEL_36:
 
 		WorkerAiArray* aiList = (WorkerAiArray*)workerAi2->link.prev;
 		workerAi->link.next = nullptr;
-		workerAi->link.prev = aiList->first_free_worker; // <-- this causes replay / end of game crashes
+		workerAi->link.prev = aiList->first_free_worker;
 		if (workerAi2->link.prev)
 		{
 			workerAi2->link.prev->link.next = workerAi;
