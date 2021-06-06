@@ -55,7 +55,262 @@ namespace hooks
 
 			
 			// PROTOSS
+			case UnitId::ProtossNexus:
+			{
+				if (unitId == UnitId::ProtossScribe)
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ProtossForge:
+			{
+				if (unitId == UnitId::ProtossScribe
+					|| unitId == UnitId::ProtossEnvoy
+					|| unitId == UnitId::ProtossWitness)
+				{
+					return TECH_ACTIVE;
+				}
+				else if (unitId == UnitId::ProtossClarion)
+				{
+					if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossStridentStratum))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_HIDDEN;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ProtossGateway:
+			{
+				switch (unitId)
+				{
+					case UnitId::ProtossZealot:
+					case UnitId::ProtossDracadin:
+					case UnitId::ProtossEcclesiast:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossLegionnaire:
+					case UnitId::ProtossHierophant:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossCenotaph))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossGrandLibrary:
+			{
+				switch (unitId)
+				{
+					case UnitId::ProtossCantavis:
+					case UnitId::ProtossAmaranth:
+					case UnitId::ProtossAtreus:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossArchon:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossArchonArchives))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossCantavis:
+			{
+				if (unitId == UnitId::ProtossAugur)
+				{
+					if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossArchonArchives))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ProtossRoboticsFacility:
+			{
+				switch (unitId)
+				{
+					case UnitId::ProtossVassal:
+					case UnitId::ProtossSimulacrum:
+					case UnitId::ProtossManifold:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossGolem:
+					case UnitId::ProtossIdol:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossAutomatonRegister))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossRoboticsAuthority:
+			{
+				switch (unitId)
+				{
+					case UnitId::ProtossAccantor:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossArchitect:
+					case UnitId::ProtossDemiurge:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossSyntheticSynod))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossStargate:
+			{
+				switch (unitId)
+				{
+					case UnitId::ProtossAurora:
+					case UnitId::ProtossPanoptus:
+					case UnitId::ProtossLanifect:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossGladius:
+					case UnitId::ProtossExemplar:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossAstralOmen))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossArgosy:
+			{
+				switch (unitId)
+				{
+					case UnitId::ProtossMagister:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossDidact:
+					case UnitId::ProtossEmpyrean:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossDidactTribune))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossProstrationStage:
+			{
+				switch (unitId)
+				{
+					case UnitId::ProtossCabalist:
+					case UnitId::ProtossBarghest:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossMindTyrant:
+					case UnitId::ProtossPariah:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossSanctumOfSorrow))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					case UnitId::ProtossAnthelion:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossMonumentOfSin))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossRogueGallery:
+			{
+				switch (unitId)
+				{
+					case UnitId::SharedAspirant:
+					case UnitId::SharedCharlatan:
+					case UnitId::SharedAxitrilisk:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::SharedStriga:
+					case UnitId::SharedLuminary:
+					case UnitId::SharedEmpress:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossWaywardLure))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					return TECH_HIDDEN;
+				}
+			}
 
+			case UnitId::ProtossScribe:
+			{
+				switch (unitId)
+				{
+					case UnitId::ProtossNexus:
+					case UnitId::ProtossPylon:
+					case UnitId::ProtossAquifer:
+					case UnitId::ProtossPhotonCannon:
+					case UnitId::ProtossShieldBattery:
+					case UnitId::ProtossForge:
+					case UnitId::ProtossGateway:
+					case UnitId::ProtossCenotaph:
+					case UnitId::ProtossRoboticsFacility:
+					case UnitId::ProtossAutomatonRegister:
+					case UnitId::ProtossStargate:
+					case UnitId::ProtossAstralOmen:
+					case UnitId::ProtossStridentStratum:
+					case UnitId::ProtossCrucible:
+					case UnitId::ProtossPennant:
+					case UnitId::ProtossGrandLibrary:
+					case UnitId::ProtossRoboticsAuthority:
+					case UnitId::ProtossSyntheticSynod:
+					case UnitId::ProtossArgosy:
+					case UnitId::ProtossDidactTribune:
+					case UnitId::ProtossProstrationStage:
+					case UnitId::ProtossRogueGallery:
+					case UnitId::ProtossArchonArchives:
+					case UnitId::ProtossCosmicAltar:
+					case UnitId::ProtossFleetBeacon:
+					case UnitId::ProtossSanctumOfSorrow:
+					case UnitId::ProtossWaywardLure:
+					case UnitId::ProtossMonumentOfSin:
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_HIDDEN;
+				}
+			}
 			
 			// ZERG
 			case UnitId::ZergLarva:
