@@ -853,7 +853,7 @@ namespace hooks
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::ProtossMonumentOfSin)
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranTinkerersTower)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -869,7 +869,7 @@ namespace hooks
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::ProtossRoboticsAuthority)
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranBioticBase)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
