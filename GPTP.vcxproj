@@ -415,6 +415,7 @@
     <ClCompile Include="hooks\orders\spells\mindcontrol_spell_inject.cpp" />
     <ClCompile Include="hooks\orders\spells\nuke_orders.cpp" />
     <ClCompile Include="hooks\orders\spells\nuke_orders_inject.cpp" />
+    <ClCompile Include="player_color.cpp" />
     <ClCompile Include="SCBW\scbwhelper.cpp" />
     <ClCompile Include="SCBW\SFileReader.cpp" />
     <ClCompile Include="SCBW\structures\Player.cpp" />
@@ -651,6 +652,7 @@
     <ClInclude Include="lib_src\yaml-cpp\stringsource.h" />
     <ClInclude Include="lib_src\yaml-cpp\tag.h" />
     <ClInclude Include="lib_src\yaml-cpp\token.h" />
+    <ClInclude Include="player_color.h" />
     <ClInclude Include="SCBW\scbwhelper.h" />
     <ClInclude Include="SCBW\SFileReader.h" />
     <ClInclude Include="SCBW\stat_txt_spec.h" />

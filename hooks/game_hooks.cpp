@@ -19,6 +19,7 @@
 #include "hooks/weapons/weapon_spellhit.h"
 #include "globals.h"
 #include "unit_search.h"
+#include "player_color.h"
 
 const u32 hyperTrigger = 0x006509A0;
 const u32 Func_Irradiate = 0x00454E00;

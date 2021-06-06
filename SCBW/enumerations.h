@@ -731,6 +731,7 @@ namespace PlayerColor
 {
 	enum Enum
 	{
+		Invalid = -1,
 		Red,
 		Blue,
 		Teal,
@@ -837,5 +838,7 @@ namespace PlayerColor
 		PatrioticFreedom,
 		PalatinateBlue,
 		DarkLavender,
+
+		Count,
 	};
 }
