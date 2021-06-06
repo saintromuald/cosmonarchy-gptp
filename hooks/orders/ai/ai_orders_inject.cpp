@@ -564,14 +564,14 @@ namespace
 	{
 		static WorkerAi* result;
 		static WorkerAi* workerAi;
-		static WorkerAi* workerAi2;
+		static WorkerAiArray* workerAiArray;
 		__asm
 		{
 			MOV workerAi, EAX
-			MOV workerAi2, EDX
+			MOV workerAiArray, EDX
 			PUSHAD
 		}
-		result = hooks::deleteWorkerAI(workerAi, workerAi2);
+		result = hooks::deleteWorkerAI(workerAi, workerAiArray);
 		__asm
 		{
 			POPAD

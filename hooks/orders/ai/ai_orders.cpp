@@ -1936,7 +1936,7 @@ LABEL_36:
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAi* workerAi2) // 00404470
+	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiArray) // 00404470
 	{
 		// New
 		if (workerAi == nullptr)
@@ -1944,9 +1944,9 @@ LABEL_36:
 			return nullptr;
 		}
 
-		if (workerAi2->link.next == workerAi)
+		if (workerAiArray->worker_ais[0].link.next == workerAi)
 		{
-			workerAi2->link.next = workerAi->link.prev;
+			workerAiArray->worker_ais[0].link.next = workerAi->link.prev;
 		}
 
 		if (workerAi->link.next)
@@ -1958,14 +1958,13 @@ LABEL_36:
 			workerAi->link.prev->link.next = workerAi->link.next;
 		}
 
-		WorkerAiArray* aiList = (WorkerAiArray*)workerAi2->link.prev;
 		workerAi->link.next = nullptr;
-		workerAi->link.prev = aiList->first_free_worker;
-		if (workerAi2->link.prev)
+		workerAi->link.prev = workerAiArray->first_free_worker;
+		if (workerAiArray->first_free_worker)
 		{
-			workerAi2->link.prev->link.next = workerAi;
+			workerAiArray->first_free_worker->link.next = workerAi;
 		}
-		aiList->first_free_worker = workerAi;
+		workerAiArray->first_free_worker = workerAi;
 		return workerAi;
 	}
 }

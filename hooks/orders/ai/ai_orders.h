@@ -31,7 +31,7 @@ namespace hooks
 	s32 AIManageBuildingPlacement(Unit* builder, u32 unitId,													// 004465C0
 		Point16 tryPosition, Point16* outPosition, s32 areaTiles);
 	s16 getRegionIdFromUnit(Unit* unit);																		// 0049CB40
-	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAi* workerAi2);											// 00404470
+	WorkerAi* deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiArray);									// 00404470
 
 	void injectAIOrdersHooks();
 }
