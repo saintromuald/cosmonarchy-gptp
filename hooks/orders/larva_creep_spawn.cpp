@@ -1,4 +1,5 @@
 #include "larva_creep_spawn.h"
+#include "building_making\building_modifier.h"
 #include <SCBW/api.h>
 #include "SCBW\UnitFinder.h"
 
@@ -80,8 +81,22 @@ namespace hooks
 				if (unit->building.larvaTimer != 0)
 				{
 					unit->building.larvaTimer--;
+
+					BuildingModifier modifier = get_building_modifier(unit);
+					if (modifier.period && unit->building.larvaTimer % modifier.period == 0)
+					{
+						if (unit->building.larvaTimer > modifier.decrease)
+						{
+							unit->building.larvaTimer -= modifier.decrease;
+						}
+						else
+						{
+							unit->building.larvaTimer = 0;
+						}
+					}
 				}
-				else
+
+				if (unit->building.larvaTimer == 0)
 				{
 					// 004EA80E:
 					unit->building.larvaTimer = LarvaSpawnRateHatchery;
@@ -150,11 +165,25 @@ namespace hooks
 			if (unit->building.creepTimer >= 2)
 			{
 				unit->building.creepTimer -= 2;
+
+				BuildingModifier modifier = get_building_modifier(unit);
+				if (modifier.period && unit->building.creepTimer % modifier.period == 0)
+				{
+					if (unit->building.creepTimer > modifier.decrease)
+					{
+						unit->building.creepTimer -= modifier.decrease;
+					}
+					else
+					{
+						unit->building.creepTimer = 0;
+					}
+				}
 			}
 			else
 			{
 				unit->building.creepTimer = 0;
 			}
+
 		}
 		else
 		{
