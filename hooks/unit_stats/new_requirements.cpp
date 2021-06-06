@@ -124,18 +124,6 @@ namespace hooks
 					return TECH_HIDDEN;
 				}
 			}
-			case UnitId::ProtossCantavis:
-			{
-				if (unitId == UnitId::ProtossAugur)
-				{
-					if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossArchonArchives))
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_GRAYED;
-				}
-				return TECH_HIDDEN;
-			}
 			case UnitId::ProtossRoboticsFacility:
 			{
 				switch (unitId)
@@ -217,6 +205,22 @@ namespace hooks
 						}
 						return TECH_GRAYED;
 					}
+					case UnitId::ProtossStarSovereign:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossCosmicAltar))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
+					case UnitId::ProtossSolarion:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossFleetBeacon))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_GRAYED;
+					}
 					return TECH_HIDDEN;
 				}
 			}
@@ -271,6 +275,35 @@ namespace hooks
 					}
 					return TECH_HIDDEN;
 				}
+			}
+
+			case UnitId::ProtossCantavis:
+			{
+				if (unitId == UnitId::ProtossAugur)
+				{
+					if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ProtossArchonArchives))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_GRAYED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ProtossAccantor:
+			{
+				if (unitId == UnitId::ProtossPlasmaShell)
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ProtossSolarion:
+			{
+				if (unitId == UnitId::ProtossSteward)
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
 			}
 
 			case UnitId::ProtossScribe:
