@@ -34,7 +34,7 @@ u32 get_random_tint()
 
 u32 get_random_color_from_tint(u32 tint)
 {
-	return scbw::random() % tints[tint].size();
+	return tints[tint][scbw::randBetween(0, tints[tint].size() - 1)];
 }
 
 u32 get_color_for_personality(u32 player_id)
