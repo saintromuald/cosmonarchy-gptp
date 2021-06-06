@@ -42,7 +42,7 @@ namespace hooks
 
 		if (useSimpleMilitaryAI)
 		{
-			hooks::AI_TrainingBroodling(result, parent);
+			hooks::AI_TrainingSimpleMilitary(result, parent);
 		}
 		else if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
 		{
@@ -140,7 +140,7 @@ namespace hooks
 	}
 
 	// Hooked to add region null check - Pr0nogo
-	void AI_TrainingBroodling(Unit* result, Unit* parent) // 0043E280
+	void AI_TrainingSimpleMilitary(Unit* result, Unit* parent) // 0043E280
 	{
 		AiRegion* region;
 		s16 regionType;

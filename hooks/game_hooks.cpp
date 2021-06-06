@@ -1380,17 +1380,19 @@ namespace hooks
 			unitExt->values[ValueReviveStarted] = 0;
 			if (playerTable[unit->playerId].type == PlayerType::Computer)
 			{
-				if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building))
+				if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building)
+					|| unit->id == UnitId::ZergOvileth)
 				{
-					helper::AI_TrainingWorker(unit, unit);
-				}
-				else if (unit->id == UnitId::ZergOvileth)
-				{
-					helper::AI_TrainingOverlord(unit, unit);
+					AiTown* town = AiTownManager[unit->playerId].first;
+
+					if (town)
+					{
+						helper::AI_AddWorkerStructureAI(unit, town);
+					}
 				}
 				else
 				{
-					hooks::AI_TrainingBroodling(unit, unit);
+					hooks::AI_TrainingSimpleMilitary(unit, unit);
 				}
 			}
 		}
