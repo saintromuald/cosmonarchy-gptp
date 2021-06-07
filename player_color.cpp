@@ -29,12 +29,13 @@ bool can_use_player_tint(u32 color_tint, u32 last_player)
 
 u32 get_random_tint()
 {
-	return scbw::randBetween(0, tints.size() - 1);
+	return helper::randFunc() % tints.size();
+	
 }
 
 u32 get_random_color_from_tint(u32 tint)
 {
-	return tints[tint][scbw::randBetween(0, tints[tint].size() - 1)];
+	return tints[tint][helper::randFunc() % tints[tint].size()];
 }
 
 u32 get_color_for_personality(u32 player_id)
