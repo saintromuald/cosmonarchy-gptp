@@ -1953,6 +1953,7 @@ LABEL_36:
 		{
 			workerAi->link.next->link.prev = workerAi->link.prev;
 		}
+
 		if (workerAi->link.prev)
 		{
 			workerAi->link.prev->link.next = workerAi->link.next;
@@ -1965,5 +1966,38 @@ LABEL_36:
 			workerAiArray->first_free_worker->link.next = workerAi;
 		}
 		workerAiArray->first_free_worker = workerAi;
+	}
+
+	// Hooked to resolve a crash - Pr0nogo
+	void deleteBuildingAI(BuildingAi* buildingAi, BuildingAiArray* buildingAiArray) // 00404500
+	{
+		// New
+		if (buildingAi == nullptr)
+		{
+			return;
+		}
+
+		if (buildingAiArray->building_ais[0].link.next == buildingAi)
+		{
+			buildingAiArray->building_ais[0].link.next = buildingAi->link.prev;
+		}
+
+		if (buildingAi->link.next)
+		{
+			buildingAi->link.next->link.prev = buildingAi->link.prev;
+		}
+
+		if (buildingAi->link.prev)
+		{
+			buildingAi->link.prev->link.next = buildingAi->link.next;
+		}
+
+		buildingAi->link.next = nullptr;
+		buildingAi->link.prev = buildingAiArray->first_free_building;
+		if (buildingAiArray->first_free_building)
+		{
+			buildingAiArray->first_free_building->link.next = buildingAi;
+		}
+		buildingAiArray->first_free_building = buildingAi;
 	}
 }

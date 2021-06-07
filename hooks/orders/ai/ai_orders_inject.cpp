@@ -578,6 +578,24 @@ namespace
 		}
 	}
 
+	void __declspec(naked) deleteBuildingAI_Wrapper() // 00404500
+	{
+		static BuildingAi* buildingAi;
+		static BuildingAiArray* buildingAiArray;
+		__asm
+		{
+			MOV buildingAi, EAX
+			MOV buildingAiArray, EDX
+			PUSHAD
+		}
+		hooks::deleteBuildingAI(buildingAi, buildingAiArray);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
+
 	void __declspec(naked) deleteWorkerAI_nullcheck() // 00404470
 	{
 		static const u32 back_jump = 0x00404475;
@@ -647,6 +665,7 @@ namespace hooks
 //		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
 		jmpPatch(getRegionIdFromUnit_Wrapper,				0x0049CB40, 2);
 		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
+		jmpPatch(deleteBuildingAI_Wrapper,					0x00404500, 0);
 //		jmpPatch(deleteWorkerAI_nullcheck,					0x00404470, 0);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
