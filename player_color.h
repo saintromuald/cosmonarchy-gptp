@@ -156,10 +156,33 @@ const std::vector<std::vector<u32>> tints =
 	},
 };
 
-u32 get_random_tint();
-u32 get_random_color_from_tint(u32 tint);
-u32 get_player_tint(u32 color);
-bool can_use_player_tint(u32 color_tint, u32 last_player);
-u32 get_color_for_personality(u32 player_id);
+const std::vector<std::vector<u32>> banned_tints =
+{
+	{ // Badlands
+
+	},
+	{ // Space_Platform
+
+	},
+	{ // Installation
+
+	},
+	{ // Ash
+
+	},
+	{ // Jungle
+
+	},
+	{ // Desert
+		PlayerTintDarkAchromatic,
+		PlayerTintBrown,
+	},
+	{ // Ice
+		PlayerTintAchromatic,
+	},
+	{ // Twilight
+
+	},
+};
 
 void set_melee_player_colors();

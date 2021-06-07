@@ -134,10 +134,10 @@ namespace scbw
 			PUSHAD
 			PUSH 0;//unknown
 			MOV eax, text
-				PUSH gtc
-				PUSH color
-				CALL Func_PrintText
-				POPAD
+			PUSH gtc
+			PUSH color
+			CALL Func_PrintText
+			POPAD
 		}
 	}
 

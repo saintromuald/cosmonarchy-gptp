@@ -1,6 +1,13 @@
 #include "player_color.h"
 
-u32 get_player_tint(u32 color)
+static u32 get_random_tint();
+static u32 get_random_color_from_tint(u32 tint);
+static u32 get_player_tint(u32 color);
+static bool can_use_player_tint(u32 color_tint, u32 last_player);
+static u32 get_color_for_personality(u32 player_id);
+static void set_player_color(u32 player_id, u32 color);
+
+static u32 get_player_tint(u32 color)
 {
 	for (u32 tint = 0; tint < tints.size(); ++tint)
 	{
@@ -15,8 +22,15 @@ u32 get_player_tint(u32 color)
 	return -1;
 }
 
-bool can_use_player_tint(u32 color_tint, u32 last_player)
+static bool can_use_player_tint(u32 color_tint, u32 last_player)
 {
+	for (u32 banned_tint : banned_tints[*CURRENT_TILESET])
+	{
+		if (banned_tint == color_tint)
+		{
+			return false;
+		}
+	}
 	for (u32 player_id = 0; player_id < last_player; ++player_id)
 	{
 		if (get_player_tint(player_id) == color_tint)
@@ -27,18 +41,17 @@ bool can_use_player_tint(u32 color_tint, u32 last_player)
 	return true;
 }
 
-u32 get_random_tint()
+static u32 get_random_tint()
 {
 	return helper::randFunc() % tints.size();
-	
 }
 
-u32 get_random_color_from_tint(u32 tint)
+static u32 get_random_color_from_tint(u32 tint)
 {
 	return tints[tint][helper::randFunc() % tints[tint].size()];
 }
 
-u32 get_color_for_personality(u32 player_id)
+static u32 get_color_for_personality(u32 player_id)
 {
 	enum
 	{
@@ -154,7 +167,7 @@ u32 get_color_for_personality(u32 player_id)
 static u8 tminimap_colors[256];
 static u8 tunit_colors[2048];
 
-inline void set_player_color(u32 player_id, u32 color)
+static void set_player_color(u32 player_id, u32 color)
 {
 	playerMinimapColors[player_id] = tminimap_colors[color];
 	for (u32 i = 0; i < 8; i++)
@@ -163,8 +176,15 @@ inline void set_player_color(u32 player_id, u32 color)
 	}
 }
 
-void set_melee_player_colors()
+static void set_melee_player_colors()
 {
+	if (tints.size() - banned_tints[*CURRENT_TILESET].size() < 8)
+	{
+		scbw::print("Color Randomization Error:", GameTextColor::Red);
+		scbw::print("\tNot enough tints available for current tileset", GameTextColor::Red);
+		return;
+	}
+
 	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
 	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
 
