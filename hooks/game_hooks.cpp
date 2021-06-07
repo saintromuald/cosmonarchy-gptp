@@ -228,46 +228,50 @@ namespace hooks
 			}			
 		}
 
-		// Explores entire map and pings start locations, requires a trigger that sets 1 death of Vespene Geyser for all players
-		if (*elapsedTimeFrames == 1 && unit_deaths[UnitId::ResourceVespeneGeyser].player[*ACTIVE_NATION_ID] == 1)
+		// Map Features
+		if (*elapsedTimeFrames == 1)
 		{
-			// Explore map
-			for (u32 y = 0; y < mapTileSize->height; y++)
+			// Check deaths
+			bool reveal_map = false;
+			for (u32 player_id = 0; player_id < 12; ++player_id)
 			{
-				for (u32 x = 0; x < mapTileSize->width; x++)
+				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[*ACTIVE_NATION_ID])
 				{
-					ActiveTile& tile = scbw::getActiveTileAt(x * 32, y * 32);
-					tile.exploredFlags = 0x00;
+					reveal_map = true;
 				}
 			}
 
-			// Reveal resources
-			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
+			// Explores the entire map, requires a trigger that sets 1 death of Vespene Geyser for any player
+			if (reveal_map)
 			{
-				if (unit->id == UnitId::ResourceVespeneGeyser
-					|| unit->id == UnitId::ResourceMineralField
-					|| unit->id == UnitId::ResourceMineralFieldType2
-					|| unit->id == UnitId::ResourceMineralFieldType3)
+				// Explore map
+				for (u32 y = 0; y < mapTileSize->height; y++)
 				{
-					unit->sprite->visibilityFlags = 0xff;
+					for (u32 x = 0; x < mapTileSize->width; x++)
+					{
+						ActiveTile& tile = scbw::getActiveTileAt(x * 32, y * 32);
+						tile.exploredFlags = 0x00;
+					}
+				}
+
+				// Reveal resources
+				for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
+				{
+					if (unit->id == UnitId::ResourceVespeneGeyser
+						|| unit->id == UnitId::ResourceMineralField
+						|| unit->id == UnitId::ResourceMineralFieldType2
+						|| unit->id == UnitId::ResourceMineralFieldType3)
+					{
+						unit->sprite->visibilityFlags = 0xff;
+					}
 				}
 			}
-
-			// Ping active player start locations 
-			// NOTE: active player check is a workaround for extistance of spectator slots
-			// we should remove it when spectators are removed, or find a way to ping every possible player start location
-			for (u32 i = 0; i < 8; i++)
+			
+			// Randomize Player Colors, requires randomize start locations ticked for any force
+			if (!gameData->useFixedPositions)
 			{
-				if (firstPlayerUnit->unit[i])
-				{
-					scbw::minimapPing(startPositions[i].x, startPositions[i].y, 8, *ACTIVE_NATION_ID);
-				}
+				set_melee_player_colors();
 			}
-		}
-
-		if (*elapsedTimeFrames == 1 && !gameData->useFixedPositions)
-		{
-			set_melee_player_colors();
 		}
 
 		optionsList->speed = 6; // Lock game speed at fastest
