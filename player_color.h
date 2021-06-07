@@ -22,7 +22,7 @@ enum
 	PlayerTintCount,
 };
 
-const std::vector<std::vector<u32>> tints =
+const std::vector<std::vector<u32>> player_tints =
 {
 	{	// Dark Red
 		PlayerColor::Maroon,
@@ -156,7 +156,7 @@ const std::vector<std::vector<u32>> tints =
 	},
 };
 
-const std::vector<std::vector<u32>> banned_tints =
+const std::vector<std::vector<u32>> banned_player_tints =
 {
 	{ // Badlands
 
@@ -182,6 +182,55 @@ const std::vector<std::vector<u32>> banned_tints =
 	},
 	{ // Twilight
 
+	},
+};
+
+std::vector<std::vector<std::vector<u32>>> personality_colors =
+{
+	{ // Zerg
+		{ // Assault
+
+		},
+		{ // Swarm
+
+		},
+		{ // Air
+
+		},
+		{ // General
+
+		},
+	},
+	{ // Terran
+		{ // Mech
+
+		},
+		{ // Raider
+
+		},
+		{ // Air
+
+		},
+		{ // Shadow
+
+		},
+		{ // General
+
+		},
+	},
+	{ // Protoss
+		{ // Ranger
+
+		},
+		{ // Templar
+
+		},
+		{ // Skylord
+
+		},
+		{ // General
+
+		},
 	},
 };
 

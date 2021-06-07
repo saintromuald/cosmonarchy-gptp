@@ -9,11 +9,11 @@ static void set_player_color(u32 player_id, u32 color);
 
 static u32 get_player_tint(u32 color)
 {
-	for (u32 tint = 0; tint < tints.size(); ++tint)
+	for (u32 tint = 0; tint < player_tints.size(); ++tint)
 	{
-		for (u32 color_index = 0; color_index < tints[tint].size(); color_index++)
+		for (u32 color_index = 0; color_index < player_tints[tint].size(); color_index++)
 		{
-			if (tints[tint][color_index] == color)
+			if (player_tints[tint][color_index] == color)
 			{
 				return tint;
 			}
@@ -24,7 +24,7 @@ static u32 get_player_tint(u32 color)
 
 static bool can_use_player_tint(u32 color_tint, u32 last_player)
 {
-	for (u32 banned_tint : banned_tints[*CURRENT_TILESET])
+	for (u32 banned_tint : banned_player_tints[*CURRENT_TILESET])
 	{
 		if (banned_tint == color_tint)
 		{
@@ -43,124 +43,32 @@ static bool can_use_player_tint(u32 color_tint, u32 last_player)
 
 static u32 get_random_tint()
 {
-	return helper::randFunc() % tints.size();
+	return helper::randFunc() % player_tints.size();
 }
 
 static u32 get_random_color_from_tint(u32 tint)
 {
-	return tints[tint][helper::randFunc() % tints[tint].size()];
+	return player_tints[tint][helper::randFunc() % player_tints[tint].size()];
 }
 
 static u32 get_color_for_personality(u32 player_id)
 {
-	enum
-	{
-		TerranBuildMech = 1,
-		TerranBuildRaider,
-		TerranBuildAir,
-		TerranBuildShadow,
-		TerranBuildGeneral,
-
-		ProtossBuildRanger = 1,
-		ProtossBuildTemplar,
-		ProtossBuildSkylord,
-		ProtossBuildGeneral,
-
-		ZergBuildAssault = 1,
-		ZergBuildSwarm,
-		ZergBuildAir,
-		ZergBuildGeneral,
-	};
-
 	const u32 race = playerTable[player_id].race;
-	const u32 build = deathTable[UnitId::Spell_DisruptionWeb].player[player_id];
+	const u32 build = deathTable[UnitId::Spell_DisruptionWeb].player[player_id] - 1;
 
-	switch (race)
+	if (build >= 0
+		&& personality_colors.size() > race
+		&& personality_colors[race].size() > build)
 	{
-		case RaceId::Terran:
+		for (u32 color : personality_colors[race][build])
 		{
-			switch (build)
+			if (can_use_player_tint(get_player_tint(color), player_id))
 			{
-				case TerranBuildMech:
-				{
-					/*
-						EXAMPLE:
-
-					if (can_use_player_tint(PlayerTintDarkRed, player_id))
-					{
-						return PlayerColor::Red;
-					}
-					if (can_use_player_tint(PlayerTintLightRed, player_id))
-					{
-						return PlayerColor::VividRed;
-					}
-
-						...
-					*/
-				} break;
-				case TerranBuildRaider:
-				{
-
-				} break;
-				case TerranBuildAir:
-				{
-
-				} break;
-				case TerranBuildShadow:
-				{
-
-				} break;
-				case TerranBuildGeneral:
-				{
-
-				} break;
+				return color;
 			}
-		} break;
-		case RaceId::Protoss:
-		{
-			switch (build)
-			{
-				case ProtossBuildRanger:
-				{
-
-				} break;
-				case ProtossBuildTemplar:
-				{
-
-				} break;
-				case ProtossBuildSkylord:
-				{
-
-				} break;
-				case ProtossBuildGeneral:
-				{
-
-				} break;
-			}
-		} break;
-		case RaceId::Zerg:
-		{
-			switch (build)
-			{
-				case ZergBuildAssault:
-				{
-
-				} break;
-				case ZergBuildSwarm:
-				{
-
-				} break;
-				case ZergBuildAir:
-				{
-
-				} break;
-				case ZergBuildGeneral:
-				{
-
-				} break;
-			}
-		} break;
+		}
 	}
+
 	return PlayerColor::Invalid;
 }
 
@@ -178,7 +86,7 @@ static void set_player_color(u32 player_id, u32 color)
 
 static void set_melee_player_colors()
 {
-	if (tints.size() - banned_tints[*CURRENT_TILESET].size() < 8)
+	if (player_tints.size() - banned_player_tints[*CURRENT_TILESET].size() < 8)
 	{
 		scbw::print("Color Randomization Error:", GameTextColor::Red);
 		scbw::print("\tNot enough tints available for current tileset", GameTextColor::Red);
