@@ -1986,7 +1986,6 @@ LABEL_36:
 		{
 			buildingAi->link.next->link.prev = buildingAi->link.prev;
 		}
-
 		if (buildingAi->link.prev)
 		{
 			buildingAi->link.prev->link.next = buildingAi->link.next;
