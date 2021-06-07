@@ -17,7 +17,6 @@ enum
 	PlayerTintViolet,
 	PlayerTintAchromatic,
 	PlayerTintDarkAchromatic,
-	PlayerTintIridescent,
 
 	PlayerTintCount,
 };
@@ -78,6 +77,7 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::Brass,
 		PlayerColor::Mango,
 		PlayerColor::Sunglow,
+		PlayerColor::IridescentYellow,
 		PlayerColor::BistreBrown,
 	},
 	{	// Green
@@ -112,6 +112,7 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::Aero,
 		PlayerColor::CornflowerBlue,
 		PlayerColor::NeonBlue,
+		PlayerColor::IridescentBlue,
 		PlayerColor::PalatinateBlue,
 	},
 	{	// Cyan
@@ -119,12 +120,14 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::Cyan,
 		PlayerColor::EggshellBlue,
 		PlayerColor::Turquoise,
+		PlayerColor::IridescentGreen,
 		PlayerColor::MidnightGreen,
 	},
 	{	// Violet
 		PlayerColor::Purple,
 		PlayerColor::TyrianPurple,
 		PlayerColor::PalatinatePurple,
+		PlayerColor::IridescentViolet,
 		PlayerColor::JapaneseViolet,
 		PlayerColor::DarkLavender,
 	},
@@ -147,12 +150,6 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::Grey,
 		PlayerColor::SmokyBlack,
 		PlayerColor::DelftBlue,
-	},
-	{	// Iridescent
-		PlayerColor::IridescentYellow,
-		PlayerColor::IridescentGreen,
-		PlayerColor::IridescentBlue,
-		PlayerColor::IridescentViolet,
 	},
 };
 
