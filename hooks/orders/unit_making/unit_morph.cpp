@@ -241,10 +241,7 @@ namespace hooks
 				helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
 				unit->energy = unitExt->values[ValuePreMorphEnergy];
 				if (unit->id == UnitId::ZergDroleth
-					|| unit->id == UnitId::ZergOvileth
-					|| unit->id == UnitId::ZergIroleth
-					|| unit->id == UnitId::ZergOthstoleth
-					|| unit->id == UnitId::ZergAlaszileth)
+					|| unit->id == UnitId::ZergOvileth)
 				{
 					helper::AI_TrainingUnit(unit, unit);
 				}
@@ -411,10 +408,7 @@ namespace hooks
 					|| units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser
 					|| unit->id == UnitId::ZergLarva
 					|| unit->id == UnitId::ZergEgg
-					|| unit->id == UnitId::ZergOvileth
-					|| unit->id == UnitId::ZergIroleth
-					|| unit->id == UnitId::ZergOthstoleth
-					|| unit->id == UnitId::ZergAlaszileth)
+					|| unit->id == UnitId::ZergOvileth)
 				{
 					town = ai->town;
 					auto free = town->free_buildings;
