@@ -235,7 +235,7 @@ namespace hooks
 			bool reveal_map = false;
 			for (u32 player_id = 0; player_id < 12; ++player_id)
 			{
-				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[*ACTIVE_NATION_ID])
+				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id])
 				{
 					reveal_map = true;
 				}
