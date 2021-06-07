@@ -250,8 +250,6 @@
     <ClCompile Include="AIScripter\AIParser.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_modifier.cpp" />
     <ClCompile Include="config.cpp" />
-    <ClCompile Include="hooks\audiovisuals\player_color.cpp" />
-    <ClCompile Include="hooks\audiovisuals\player_color_inject.cpp" />
     <ClCompile Include="hooks\build_time.cpp" />
     <ClCompile Include="hooks\build_time_inject.cpp" />
     <ClCompile Include="globals.cpp" />
@@ -567,7 +565,6 @@
     <ClInclude Include="hooks\orders\building_making\building_modifier.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="config_utility.h" />
-    <ClInclude Include="hooks\audiovisuals\player_color.h" />
     <ClInclude Include="hooks\build_time.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
