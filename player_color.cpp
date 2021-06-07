@@ -69,10 +69,20 @@ u32 get_color_for_personality(u32 player_id)
 			{
 				case TerranBuildMech:
 				{
+					/*
+						EXAMPLE:
+
 					if (can_use_player_tint(PlayerTintDarkRed, player_id))
 					{
 						return PlayerColor::Red;
 					}
+					if (can_use_player_tint(PlayerTintLightRed, player_id))
+					{
+						return PlayerColor::VividRed;
+					}
+
+						...
+					*/
 				} break;
 				case TerranBuildRaider:
 				{
