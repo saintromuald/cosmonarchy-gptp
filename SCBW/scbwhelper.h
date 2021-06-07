@@ -974,7 +974,9 @@ namespace helper
 	AiRegion* getAiRegionInfoFromUnitLoc(Unit* unit);														// 00438BF0
 	void AI_AddGuardAiToUnit(Unit* unit);																	// 00462960
 
-	s8 createUnitAllowed(u16 unitId, Unit* unit, s32 playerID);												// 0046E1C0	
+	s8 createUnitAllowed(u16 unitId, Unit* unit, s32 playerID);												// 0046E1C0
+
+	b32 SBmpLoadImage(const char *filename, void* palette, void* buffer, u32 buffersize, u32* width, u32* height, u32* bpp); // 00410154
 
 	//// misc
 	s8 SETS(s32 x);

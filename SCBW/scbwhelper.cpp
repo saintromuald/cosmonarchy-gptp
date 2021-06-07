@@ -9145,11 +9145,33 @@ namespace helper
 		static s8 result;
 		__asm
 		{
+			PUSHAD
 			PUSH playerID
 			MOV ESI, unit
 			MOV AX, unitId
 			CALL Func_createUnitAllowed
 			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	b32 SBmpLoadImage(const char *filename, void* palette, void* buffer, u32 buffersize, u32* width, u32* height, u32* bpp) // 00410154
+	{
+		const u32 Func_SBmpLoadImage = 0x00410154;
+		static b32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH bpp
+			PUSH height
+			PUSH width
+			PUSH buffersize
+			PUSH buffer
+			PUSH palette
+			PUSH filename
+			CALL Func_SBmpLoadImage
+			MOV result, EAX
 			POPAD
 		}
 		return result;

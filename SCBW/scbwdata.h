@@ -774,7 +774,9 @@ SCBW_DATA(s32*, factionsColorsOrdering, 0x0057F21C);
 ///standard versions from graphics.h
 ///This is the PlayerColors from BWAPI
 ///Max index is PLAYER_COUNT-1
-SCBW_DATA(u8*, playersColors, 0x00581DD6);
+SCBW_DATA(u8*, playerMinimapColors, 0x00581DD6);
+
+SCBW_DATA(u8*, playerInGameColors, 0x00581D76);
 
 const ListExtern<Image, &Image::link> unusedImages(0x0057EB68, 0x0057EB70);
 SCBW_DATA(List<Sprite>*, unusedSprites, 0x0063FE30);

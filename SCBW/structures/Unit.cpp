@@ -1117,7 +1117,7 @@ graphics::ColorId Unit::getColor(Unit* unit)
 				POPAD
 			}
 
-			return_value = playersColors[return_value];
+			return_value = playerMinimapColors[return_value];
 
 		}
 		else

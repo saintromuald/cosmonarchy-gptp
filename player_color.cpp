@@ -29,7 +29,7 @@ bool can_use_player_tint(u32 color_tint, u32 last_player)
 
 u32 get_random_tint()
 {
-	return scbw::random() % tints.size();
+	return scbw::randBetween(0, tints.size() - 1);
 }
 
 u32 get_random_color_from_tint(u32 tint)
@@ -140,8 +140,23 @@ u32 get_color_for_personality(u32 player_id)
 	return PlayerColor::Invalid;
 }
 
+static u8 tminimap_colors[256];
+static u8 tunit_colors[2048];
+
+inline void set_player_color(u32 player_id, u32 color)
+{
+	playerMinimapColors[player_id] = tminimap_colors[color];
+	for (u32 i = 0; i < 8; i++)
+	{
+		playerInGameColors[player_id * 8 + i] = tunit_colors[8 * color + i];
+	}
+}
+
 void set_melee_player_colors()
 {
+	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
+	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
+
 	for (u32 player_id = 0; player_id < 8; player_id++)
 	{
 		if (playerTable[player_id].type == PlayerType::Computer)
@@ -149,8 +164,8 @@ void set_melee_player_colors()
 			u32 color = get_color_for_personality(player_id);
 			if (color != PlayerColor::Invalid)
 			{
-				playersColors[player_id] = color;
-				return;
+				set_player_color(player_id, color);
+				continue;
 			}
 		}
 
@@ -159,6 +174,6 @@ void set_melee_player_colors()
 		{
 			tint = get_random_tint();
 		}
-		playersColors[player_id] = get_random_color_from_tint(tint);
+		set_player_color(player_id, get_random_color_from_tint(tint));
 	}
 }
