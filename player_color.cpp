@@ -164,8 +164,8 @@ inline void set_player_color(u32 player_id, u32 color)
 
 void set_melee_player_colors()
 {
-	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
 	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
+	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
 
 	for (u32 player_id = 0; player_id < 8; player_id++)
 	{
