@@ -24,11 +24,24 @@ static u32 get_player_tint(u32 color)
 
 static bool can_use_player_tint(u32 color_tint, u32 last_player)
 {
-	for (u32 banned_tint : banned_player_tints[*CURRENT_TILESET])
+	if (playerTable[last_player].race < banned_race_tints.size())
 	{
-		if (banned_tint == color_tint)
+		for (u32 banned_tint : banned_race_tints[playerTable[last_player].race])
 		{
-			return false;
+			if (banned_tint == color_tint)
+			{
+				return false;
+			}
+		}
+	}
+	if (*CURRENT_TILESET < banned_tileset_tints.size())
+	{
+		for (u32 banned_tint : banned_tileset_tints[*CURRENT_TILESET])
+		{
+			if (banned_tint == color_tint)
+			{
+				return false;
+			}
 		}
 	}
 	for (u32 player_id = 0; player_id < last_player; ++player_id)
@@ -43,7 +56,7 @@ static bool can_use_player_tint(u32 color_tint, u32 last_player)
 
 static u32 get_random_tint()
 {
-	return helper::randFunc() % player_tints.size();
+	return helper::randFunc() % PlayerTintRollCount;
 }
 
 static u32 get_random_color_from_tint(u32 tint)
@@ -86,7 +99,16 @@ static void set_player_color(u32 player_id, u32 color)
 
 static void set_melee_player_colors()
 {
-	if (player_tints.size() - banned_player_tints[*CURRENT_TILESET].size() < 8)
+	u32 banned_race_tints_count = 0;
+	for (auto race : banned_race_tints)
+	{
+		if (race.size() > banned_race_tints_count)
+		{
+			banned_race_tints_count = race.size();
+		}
+	}
+
+	if (player_tints.size() - banned_tileset_tints[*CURRENT_TILESET].size() - banned_race_tints_count < 8)
 	{
 		scbw::print("Color Randomization Error:", GameTextColor::Red);
 		scbw::print("\tNot enough tints available for current tileset", GameTextColor::Red);

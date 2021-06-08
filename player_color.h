@@ -4,6 +4,8 @@
 enum
 {
 	PlayerTintInvalid = -1,
+
+	// Can be rolled
 	PlayerTintDarkRed,
 	PlayerTintLightRed,
 	PlayerTintOffRed,
@@ -17,6 +19,12 @@ enum
 	PlayerTintViolet,
 	PlayerTintAchromatic,
 	PlayerTintDarkAchromatic,
+
+	PlayerTintRollCount,
+	_ = PlayerTintRollCount - 1,
+
+	// Can't be rolled
+	PlayerTintCycleDependent, // technically still a tint, but can't be rolled. don't add the assigment, if you decide to add more
 
 	PlayerTintCount,
 };
@@ -130,6 +138,7 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::IridescentViolet,
 		PlayerColor::JapaneseViolet,
 		PlayerColor::DarkLavender,
+		PlayerColor::Magenta,
 	},
 	{	// Achromatic
 		PlayerColor::White,
@@ -156,9 +165,10 @@ const std::vector<std::vector<u32>> player_tints =
 	},
 };
 
-const std::vector<std::vector<u32>> banned_player_tints =
+const std::vector<std::vector<u32>> banned_tileset_tints =
 {
 	{ // Badlands
+		PlayerTintCycleDependent,
 		PlayerTintDarkAchromatic,
 	},
 	{ // Space Platform
@@ -168,20 +178,38 @@ const std::vector<std::vector<u32>> banned_player_tints =
 		PlayerTintDarkAchromatic,
 	},
 	{ // Ash
+		PlayerTintCycleDependent,
 		PlayerTintDarkAchromatic,
 	},
 	{ // Jungle
+		PlayerTintCycleDependent,
 		PlayerTintDarkAchromatic,
 	},
 	{ // Desert
+		PlayerTintCycleDependent,
 		PlayerTintDarkAchromatic,
 		PlayerTintBrown,
 	},
 	{ // Ice
+		PlayerTintCycleDependent,
 		PlayerTintAchromatic,
 	},
 	{ // Twilight
+		PlayerTintCycleDependent,
 		PlayerTintDarkAchromatic,
+	},
+};
+
+const std::vector<std::vector<u32>> banned_race_tints =
+{
+	{ // Zerg
+		
+	},
+	{ // Terran
+
+	},
+	{ // Protoss
+
 	},
 };
 
