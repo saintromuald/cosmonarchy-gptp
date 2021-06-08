@@ -282,11 +282,11 @@ namespace hooks
 			// Randomize Player Colors, requires randomize start locations ticked for any force
 			if (randomize_colors)
 			{
-				set_melee_player_colors();
+				load_melee_player_colors();
 			}
 			else
 			{
-				init_player_color_list();
+				load_default_player_colors();
 			}
 		}
 

@@ -414,5 +414,5 @@ extern u8 tunit_colors[2048];
 extern u8 player_color_list[8];
 
 // those 2 are mutually exclusive
-void set_melee_player_colors();
-void init_player_color_list();
+void load_melee_player_colors();
+void load_default_player_colors();
