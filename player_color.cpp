@@ -116,7 +116,7 @@ static void set_player_color(u32 player_id, u32 color)
 	playerMinimapColors[player_id] = tminimap_colors[color];
 	for (u32 i = 0; i < 8; i++)
 	{
-		playerInGameColors[player_id * 8 + i] = tunit_colors[8 * color + i];
+		playerInGameColors[player_id * 8 + i] = tunit_colors[color * 8 + i];
 	}
 }
 
@@ -175,7 +175,16 @@ void init_player_color_list()
 		{
 			for (u32 color = 0; color < 256; ++color)
 			{
-				if (playerMinimapColors[player_id] == tminimap_colors[color])
+				bool match = true;
+				for (u32 i = 0; i < 8; ++i)
+				{
+					if (playerInGameColors[player_id * 8 + i] != tunit_colors[color * 8 + i])
+					{
+						match = false;
+						break;
+					}
+				}
+				if (match)
 				{
 					player_color_list[player_id] = color;
 				}
