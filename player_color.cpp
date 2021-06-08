@@ -2,7 +2,6 @@
 
 u8 tminimap_colors[256];
 u8 tunit_colors[2048];
-bool player_color_list_inited = false;
 u8 player_color_list[8];
 
 static std::vector<u32> get_player_tints_from_color(u32 color);
@@ -140,7 +139,6 @@ void set_melee_player_colors()
 
 	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
 	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
-	player_color_list_inited = true;
 
 	for (u32 player_id = 0; player_id < 8; player_id++)
 	{
@@ -165,29 +163,25 @@ void set_melee_player_colors()
 
 void init_player_color_list()
 {
-	if (!player_color_list_inited)
-	{
-		helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
-		helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
-		player_color_list_inited = true;
+	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
+	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
 
-		for (u32 player_id = 0; player_id < 8; ++player_id)
+	for (u32 player_id = 0; player_id < 8; ++player_id)
+	{
+		for (u32 color = 0; color < 256; ++color)
 		{
-			for (u32 color = 0; color < 256; ++color)
+			bool match = true;
+			for (u32 i = 0; i < 8; ++i)
 			{
-				bool match = true;
-				for (u32 i = 0; i < 8; ++i)
+				if (playerInGameColors[player_id * 8 + i] != tunit_colors[color * 8 + i])
 				{
-					if (playerInGameColors[player_id * 8 + i] != tunit_colors[color * 8 + i])
-					{
-						match = false;
-						break;
-					}
+					match = false;
+					break;
 				}
-				if (match)
-				{
-					player_color_list[player_id] = color;
-				}
+			}
+			if (match)
+			{
+				player_color_list[player_id] = color;
 			}
 		}
 	}

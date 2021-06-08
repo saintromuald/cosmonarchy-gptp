@@ -411,9 +411,8 @@ std::vector<std::vector<std::vector<u32>>> personality_colors =
 
 extern u8 tminimap_colors[256];
 extern u8 tunit_colors[2048];
-
-extern bool player_color_list_inited;
 extern u8 player_color_list[8];
 
+// those 2 are mutually exclusive
 void set_melee_player_colors();
 void init_player_color_list();
