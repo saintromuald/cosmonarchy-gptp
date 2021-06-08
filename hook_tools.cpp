@@ -15,6 +15,7 @@ void callPatch(const void* target, void* position, const u32 nops)
 	memoryPatch(position, data, 5 + nops);
 	delete[] data;
 }
+
 void nops(const u32 address, u32 number)
 {
 	u8 nop = 0x90;
