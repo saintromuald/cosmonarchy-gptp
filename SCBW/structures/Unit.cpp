@@ -1407,18 +1407,11 @@ bool Unit::giveTo(u8 playerId)
 
 	if (giveUnitToPlayer(this, playerId) != 0)
 	{
-		if (!(units_dat::BaseProperty[this->id] & UnitProperty::Building)
+		if ((this->id == UnitId::ZergNydusCanal || !(units_dat::BaseProperty[this->id] & UnitProperty::Building))
 			&& this->id != UnitId::ZergEgg
 			&& this->id != UnitId::ZergLarva)
 		{
-			if (this->pAI != nullptr)
-			{
-				this->orderComputerClear(OrderId::ComputerAI);
-			}
-			else
-			{
-				this->orderComputerClear(units_dat::ReturnToIdleOrder[this->id]);
-			}
+			this->orderToIdle();
 		}
 
 		return true;
