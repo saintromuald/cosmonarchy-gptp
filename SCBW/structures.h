@@ -296,7 +296,7 @@ struct MapSize
 	u16   height;
 };
 
-struct LOCATION
+struct Location
 {
 	Box32 dimensions;
 	u16   stringId;

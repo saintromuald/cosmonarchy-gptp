@@ -57,7 +57,7 @@ SCBW_DATA(Thingy**, first_lone_sprite, 0x00654874);
 
 //From locations.cpp
 SCBW_DATA(const MapSize*, mapTileSize, 0x0057F1D4);
-SCBW_DATA(LOCATION*, locationTable, 0x0058DC60);
+SCBW_DATA(Location*, locationTable, 0x0058DC60);
 
 //for buttonsets
 SCBW_DATA(BUTTON_SET*, buttonSetTable, 0x005187E8);

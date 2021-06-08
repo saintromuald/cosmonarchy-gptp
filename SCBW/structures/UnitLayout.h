@@ -86,6 +86,13 @@ namespace GptpId
 		//ClearClarionLinks,
 		SetGenericVariable = 27,
 		SetSpriteData = 28,
+
+		// TODO
+		SetGuard = 29,
+		ResetGuard = 30,
+		SetBaseLayout = 31,
+		ResetBaseLayout = 32,
+
 		Void = 10005,
 	};
 }
