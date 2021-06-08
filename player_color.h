@@ -151,24 +151,27 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::SmokyBlack,
 		PlayerColor::DelftBlue,
 	},
+	{	// Cycle-dependent
+		PlayerColor::Magenta,
+	},
 };
 
 const std::vector<std::vector<u32>> banned_player_tints =
 {
 	{ // Badlands
-
+		PlayerTintDarkAchromatic,
 	},
-	{ // Space_Platform
-
+	{ // Space Platform
+		PlayerTintDarkAchromatic,
 	},
 	{ // Installation
-
+		PlayerTintDarkAchromatic,
 	},
 	{ // Ash
-
+		PlayerTintDarkAchromatic,
 	},
 	{ // Jungle
-
+		PlayerTintDarkAchromatic,
 	},
 	{ // Desert
 		PlayerTintDarkAchromatic,
@@ -178,7 +181,7 @@ const std::vector<std::vector<u32>> banned_player_tints =
 		PlayerTintAchromatic,
 	},
 	{ // Twilight
-
+		PlayerTintDarkAchromatic,
 	},
 };
 
