@@ -1,25 +1,41 @@
 #include "player_color.h"
 
+u8 tminimap_colors[256];
+u8 tunit_colors[2048];
+bool player_color_list_inited = false;
+u8 player_color_list[8];
+
+static std::vector<u32> get_player_tints_from_color(u32 color);
+static bool can_use_player_color(u32 color, u32 last_player);
+static bool can_use_player_tint(u32 color_tint, u32 last_player);
 static u32 get_random_tint();
 static u32 get_random_color_from_tint(u32 tint);
-static u32 get_player_tint(u32 color);
-static bool can_use_player_tint(u32 color_tint, u32 last_player);
 static u32 get_color_for_personality(u32 player_id);
 static void set_player_color(u32 player_id, u32 color);
 
-static u32 get_player_tint(u32 color)
+static std::vector<u32> get_player_tints_from_color(u32 color)
 {
+	std::vector<u32> tints = {};
 	for (u32 tint = 0; tint < player_tints.size(); ++tint)
 	{
 		for (u32 color_index = 0; color_index < player_tints[tint].size(); color_index++)
 		{
 			if (player_tints[tint][color_index] == color)
 			{
-				return tint;
+				tints.push_back(tint);
 			}
 		}
 	}
-	return -1;
+	return tints;
+}
+
+static bool can_use_player_color(u32 color, u32 last_player)
+{
+	for (u32 player_tint : get_player_tints_from_color(last_player))
+	{
+		if (!can_use_player_tint(player_tint, last_player));
+	}
+	return true;
 }
 
 static bool can_use_player_tint(u32 color_tint, u32 last_player)
@@ -46,9 +62,12 @@ static bool can_use_player_tint(u32 color_tint, u32 last_player)
 	}
 	for (u32 player_id = 0; player_id < last_player; ++player_id)
 	{
-		if (get_player_tint(player_id) == color_tint)
+		for (u32 other_tint : get_player_tints_from_color(player_id))
 		{
-			return false;
+			if (color_tint == other_tint)
+			{
+				return false;
+			}
 		}
 	}
 	return true;
@@ -79,7 +98,7 @@ static u32 get_color_for_personality(u32 player_id)
 
 		do
 		{
-			if (can_use_player_tint(get_player_tint(personality_colors[race][build][index]), player_id))
+			if (can_use_player_color(personality_colors[race][build][index], player_id))
 			{
 				return personality_colors[race][build][index];
 			}
@@ -90,11 +109,6 @@ static u32 get_color_for_personality(u32 player_id)
 
 	return PlayerColor::Invalid;
 }
-
-u8 tminimap_colors[256];
-u8 tunit_colors[2048];
-bool player_color_list_inited;
-u8 player_color_list[8];
 
 static void set_player_color(u32 player_id, u32 color)
 {

@@ -21,7 +21,7 @@ enum
 	PlayerTintDarkAchromatic,
 
 	PlayerTintRollCount,
-	_ = PlayerTintRollCount - 1,
+	__PlayerTintRollCorrection = PlayerTintRollCount - 1,
 
 	// Can't be rolled
 	PlayerTintCycleDependent, // technically still a tint, but can't be rolled. don't add the assigment, if you decide to add more
