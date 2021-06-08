@@ -10,6 +10,7 @@
 #include <Windows.h>
 #include <Utils/captivating_claws.h>
 #include <algorithm>
+#include "player_color.h"
 
 char buffer[256];
 
@@ -667,6 +668,7 @@ namespace hooks
 		std::string flag = formatStringVector(flags);
 
 		std::string text = "\004" + std::string(armorUpgradeName) + "\002";
+		text += "\nColor: " + std::string(player_color_names[player_color_list[unit->playerId]]); // TODO: move to rank text
 		text += "\n" + std::string(armorStr) + " " + std::to_string(baseArmor);
 		ss.str("");
 		ss << bonusArmor;

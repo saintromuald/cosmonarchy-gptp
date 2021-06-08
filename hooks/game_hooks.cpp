@@ -272,6 +272,10 @@ namespace hooks
 			{
 				set_melee_player_colors();
 			}
+			else
+			{
+				init_player_color_list();
+			}
 		}
 
 		optionsList->speed = 6; // Lock game speed at fastest

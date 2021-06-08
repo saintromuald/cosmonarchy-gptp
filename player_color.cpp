@@ -85,12 +85,14 @@ static u32 get_color_for_personality(u32 player_id)
 	return PlayerColor::Invalid;
 }
 
-static u8 tminimap_colors[256];
-static u8 tunit_colors[2048];
+u8 tminimap_colors[256];
+u8 tunit_colors[2048];
+bool player_color_list_inited;
+u8 player_color_list[8];
 
 static void set_player_color(u32 player_id, u32 color)
 {
-	factionsColorsOrdering[player_id] = color;
+	player_color_list[player_id] = color;
 	playerMinimapColors[player_id] = tminimap_colors[color];
 	for (u32 i = 0; i < 8; i++)
 	{
@@ -118,6 +120,7 @@ static void set_melee_player_colors()
 
 	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
 	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
+	player_color_list_inited = true;
 
 	for (u32 player_id = 0; player_id < 8; player_id++)
 	{
@@ -137,5 +140,26 @@ static void set_melee_player_colors()
 			tint = get_random_tint();
 		}
 		set_player_color(player_id, get_random_color_from_tint(tint));
+	}
+}
+
+void init_player_color_list()
+{
+	if (!player_color_list_inited)
+	{
+		helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
+		helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
+		player_color_list_inited = true;
+
+		for (u32 player_id = 0; player_id < 8; ++player_id)
+		{
+			for (u32 color = 0; color < 256; ++color)
+			{
+				if (playerMinimapColors[player_id] == tminimap_colors[color])
+				{
+					player_color_list[player_id] = color;
+				}
+			}
+		}
 	}
 }
