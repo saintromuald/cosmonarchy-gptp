@@ -90,6 +90,7 @@ static u8 tunit_colors[2048];
 
 static void set_player_color(u32 player_id, u32 color)
 {
+	factionsColorsOrdering[player_id] = color;
 	playerMinimapColors[player_id] = tminimap_colors[color];
 	for (u32 i = 0; i < 8; i++)
 	{
