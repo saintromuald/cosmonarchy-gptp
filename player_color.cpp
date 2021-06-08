@@ -73,13 +73,19 @@ static u32 get_color_for_personality(u32 player_id)
 		&& personality_colors.size() > race
 		&& personality_colors[race].size() > build)
 	{
-		for (u32 color : personality_colors[race][build])
+		u32 size = personality_colors[race][build].size();
+		u32 start_index = helper::randFunc() % size;
+		u32 index = start_index;
+
+		do
 		{
-			if (can_use_player_tint(get_player_tint(color), player_id))
+			if (can_use_player_tint(get_player_tint(personality_colors[race][build][index]), player_id))
 			{
-				return color;
+				return personality_colors[race][build][index];
 			}
-		}
+
+			index = (index + 1) % size;
+		} while(index != start_index);
 	}
 
 	return PlayerColor::Invalid;
@@ -100,7 +106,7 @@ static void set_player_color(u32 player_id, u32 color)
 	}
 }
 
-static void set_melee_player_colors()
+void set_melee_player_colors()
 {
 	u32 banned_race_tints_count = 0;
 	for (auto race : banned_race_tints)

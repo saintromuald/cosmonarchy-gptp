@@ -238,6 +238,7 @@ namespace hooks
 				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id])
 				{
 					reveal_map = true;
+					break;
 				}
 			}
 
@@ -266,9 +267,20 @@ namespace hooks
 					}
 				}
 			}
+
+			// Check forces
+			bool randomize_colors = false;
+			for (u32 i = 0; i < 4; i++)
+			{
+				if (playerForceFlags[i].randomize_start_locations)
+				{
+					randomize_colors = true;
+					break;
+				}
+			}
 			
 			// Randomize Player Colors, requires randomize start locations ticked for any force
-			if (!gameData->useFixedPositions)
+			if (randomize_colors)
 			{
 				set_melee_player_colors();
 			}

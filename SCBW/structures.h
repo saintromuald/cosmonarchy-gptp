@@ -918,4 +918,13 @@ struct StringTbl
 	u16* buffer;
 };
 
+struct ForceFlags
+{
+	u8 randomize_start_locations : 1;
+	u8 allied : 1;
+	u8 allied_victory : 1;
+	u8 shared_vision : 1;
+	u8 unused : 4;
+};
+
 #pragma pack()

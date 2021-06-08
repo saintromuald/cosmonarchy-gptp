@@ -190,6 +190,7 @@ SCBW_DATA(GrpHead**, cmdicons_grp, 0x0068C1E0);
 
 // For initGameLoad
 SCBW_DATA(void*, scenarioChk, 0x006D0F24);
+SCBW_DATA(const ForceFlags*, playerForceFlags, 0x0058D5B8); // array of 0x4
 SCBW_DATA(const u8*, playerForce, 0x0059BDA8); // array of 0x8
 SCBW_DATA(const u8*, playerForceSomethingReplay, 0x006D11A1); // array of 0x8
 SCBW_DATA(const FILE*, loadGameFileHandle, 0x006D1218);
