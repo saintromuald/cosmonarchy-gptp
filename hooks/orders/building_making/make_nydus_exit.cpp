@@ -3,8 +3,9 @@
 
 namespace hooks
 {
-	void orders_Build5(Unit* nydus_canal)
+	void orders_Build5(Unit* nydus_canal) // 0045DC20
 	{
+		// Fix coordinates if off-map (wasn't present in original function)
 		s32 x, y;
 		x = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].x;
 		y = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].y;
@@ -30,8 +31,7 @@ namespace hooks
 		y /= 32;
 
 		// check if the nydus exit can be placed
-		u32 result_f00473FB0 = helper::canBuildOnTileLocation(nydus_canal, nydus_canal->playerId, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0);
-		if (result_f00473FB0 != 0)
+		if (helper::canBuildOnTileLocation(nydus_canal, nydus_canal->playerId, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0))
 		{
 			helper::playWorkerErrorSound(nydus_canal, 0x358); // "You can't build there"
 			if (nydus_canal->orderQueueHead != nullptr)
@@ -54,12 +54,10 @@ namespace hooks
 			if (nydusExit == nullptr)
 			{
 				helper::displayLastNetErrorForPlayer(nydus_canal->playerId);
-				nydus_canal->orderToIdle();
 			}
 			else if (nydusExit->id != UnitId::ZergNydusCanal)
 			{
 				helper::displayLastNetErrorForPlayer(nydus_canal->playerId);
-				nydus_canal->orderToIdle();
 				nydusExit->remove();
 			}
 			else
@@ -72,8 +70,8 @@ namespace hooks
 				helper::stopCreepDisappearingAtBuilding(nydusExit);
 				nydus_canal->building.nydusExit = nydusExit;
 				nydusExit->building.nydusExit = nydus_canal;
-				nydus_canal->orderToIdle();
 			}
+			nydus_canal->orderToIdle();
 		}
 	}
 
