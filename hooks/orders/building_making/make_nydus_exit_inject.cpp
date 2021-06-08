@@ -6,7 +6,7 @@ static u32 playerCache = 0; // not the best solution of transfusion case, it's t
 
 namespace
 {
-	void __declspec(naked) orders_Build5Wrapper()
+	void __declspec(naked) orders_Build5Wrapper() // 0045DC20
 	{
 		static Unit* nydus_canal;
 		__asm

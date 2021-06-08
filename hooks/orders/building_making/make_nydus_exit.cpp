@@ -3,8 +3,9 @@
 
 namespace hooks
 {
-	void orders_Build5(Unit* nydus_canal)
+	void orders_Build5(Unit* nydus_canal) // 0045DC20
 	{
+		// Fix coordinates if off-map (wasn't present in original function)
 		s32 x, y;
 		x = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].x;
 		y = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].y;
