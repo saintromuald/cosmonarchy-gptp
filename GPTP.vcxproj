@@ -248,6 +248,7 @@
   <ItemGroup>
     <ClCompile Include="AIScripter\AICore.cpp" />
     <ClCompile Include="AIScripter\AIParser.cpp" />
+    <ClCompile Include="base_layout.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_modifier.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="hooks\build_time.cpp" />
@@ -562,6 +563,7 @@
   <ItemGroup>
     <ClInclude Include="AIScripter\AICore.h" />
     <ClInclude Include="AIScripter\AIParser.h" />
+    <ClInclude Include="base_layout.h" />
     <ClInclude Include="hooks\orders\building_making\building_modifier.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="config_utility.h" />

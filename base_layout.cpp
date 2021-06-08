@@ -57,16 +57,16 @@ void update_base_layouts()
 		{
 			for (BaseLayout& layout : layouts[town->resource_area])
 			{
+				layout.active = true;
+				layout.town = town; // hopefully town id can be handled from aise
 				if (units_dat::BaseProperty[layout.unit_id] & UnitProperty::Building)
 				{
-					scbw::sendGPTP_aise_cmd((Unit*)&layout, (Unit*)town, GptpId::SetBaseLayout, 0, 0, 0);
+					scbw::sendGPTP_aise_cmd((Unit*)&layout, 0, GptpId::SetBaseLayout, 0, 0, 0);
 				}
 				else
 				{
-					scbw::sendGPTP_aise_cmd((Unit*)&layout, (Unit*)town, GptpId::SetGuard, 0, 0, 0);
+					scbw::sendGPTP_aise_cmd((Unit*)&layout, 0, GptpId::SetGuard, 0, 0, 0);
 				}
-				layout.active = true;
-				layout.town = town; // hopefully town id can be handled from aise
 			}
 		}
 	}

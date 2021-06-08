@@ -475,7 +475,7 @@ namespace scbw
 	/// Sets the data of the Anywhere location.
 	inline void setAnywhereLocation()
 	{
-		LOCATION* location = &locationTable[63];
+		Location* location = &locationTable[63];
 		location->dimensions.left = 0;
 		location->dimensions.top = 0;
 		location->dimensions.right = 32 * mapTileSize->width;
@@ -486,7 +486,7 @@ namespace scbw
 	/// Sets the data of location @p locNumber.
 	inline void setLocation(s32 locNumber, s32 left, s32 top, s32 right, s32 bottom, s32 flags)
 	{
-		LOCATION* location = &locationTable[locNumber];
+		Location* location = &locationTable[locNumber];
 		location->dimensions.left = left;
 		location->dimensions.top = top;
 		location->dimensions.right = right;
