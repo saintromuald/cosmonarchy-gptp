@@ -467,6 +467,7 @@ void cosmonarchyUnitAi(Unit* unit)
 							localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
 							KITE_DEBUG("%s: strafe", localUnit->getName());
 						}
+						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 					}
 					else
 					{
@@ -535,6 +536,7 @@ void cosmonarchyUnitAi(Unit* unit)
 							localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 							KITE_DEBUG("%s: backward", localUnit->getName());
 						}
+						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 					}
 				});
 			}
@@ -583,6 +585,7 @@ void cosmonarchyUnitAi(Unit* unit)
 						localUnitExt->values[ValueAI_KiteSignal] = 0;
 						KITE_DEBUG("%s: preattack", localUnit->getName());
 						localUnit->orderTo(OrderId::Patrol, targetUnit->getX(), targetUnit->getY());
+						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 					}
 					else
 					{
@@ -600,6 +603,7 @@ void cosmonarchyUnitAi(Unit* unit)
 						{
 							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
 						}
+						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 					}
 				}
 				else
