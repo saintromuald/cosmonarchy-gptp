@@ -30,7 +30,7 @@ static std::vector<u32> get_player_tints_from_color(u32 color)
 
 static bool can_use_player_color(u32 color, u32 last_player)
 {
-	for (u32 player_tint : get_player_tints_from_color(last_player))
+	for (u32 player_tint : get_player_tints_from_color(color))
 	{
 		if (!can_use_player_tint(player_tint, last_player))
 		{
@@ -64,7 +64,7 @@ static bool can_use_player_tint(u32 color_tint, u32 last_player)
 	}
 	for (u32 player_id = 0; player_id < last_player; ++player_id)
 	{
-		for (u32 other_tint : get_player_tints_from_color(player_id))
+		for (u32 other_tint : get_player_tints_from_color(player_color_list[player_id]))
 		{
 			if (color_tint == other_tint)
 			{
