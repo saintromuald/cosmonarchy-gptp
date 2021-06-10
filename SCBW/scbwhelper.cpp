@@ -1127,7 +1127,6 @@ namespace helper
 	}
 
 	// for AI_TrainUnit
-
 	char AI_TrainingWorker(Unit* result, Unit* parent)
 	{
 		const u32 Func_AI_TrainingWorker = 0x00435700;
