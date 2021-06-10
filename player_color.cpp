@@ -32,7 +32,10 @@ static bool can_use_player_color(u32 color, u32 last_player)
 {
 	for (u32 player_tint : get_player_tints_from_color(last_player))
 	{
-		if (!can_use_player_tint(player_tint, last_player));
+		if (!can_use_player_tint(player_tint, last_player))
+		{
+			return false;
+		}
 	}
 	return true;
 }
@@ -43,7 +46,7 @@ static bool can_use_player_tint(u32 color_tint, u32 last_player)
 	{
 		for (u32 banned_tint : banned_race_tints[playerTable[last_player].race])
 		{
-			if (banned_tint == color_tint)
+			if (color_tint == banned_tint)
 			{
 				return false;
 			}
@@ -53,7 +56,7 @@ static bool can_use_player_tint(u32 color_tint, u32 last_player)
 	{
 		for (u32 banned_tint : banned_tileset_tints[*CURRENT_TILESET])
 		{
-			if (banned_tint == color_tint)
+			if (color_tint == banned_tint)
 			{
 				return false;
 			}
