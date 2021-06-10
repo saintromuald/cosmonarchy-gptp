@@ -852,7 +852,7 @@ LABEL_13:
 		}
 
 		Unit* unitVar = unit;
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit))
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) && unit->sprite)
 		{
 			Sprite* unitSprite = unit->sprite;
 			if (!(unitSprite->flags & 0x20))
