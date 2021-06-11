@@ -563,14 +563,14 @@ namespace
 	void __declspec(naked) deleteWorkerAI_Wrapper() // 00404470
 	{
 		static WorkerAi* workerAi;
-		static WorkerAiArray* workerAiArray;
+		static WorkerAiArray** workerAiArray;
 		__asm
 		{
 			MOV workerAi, EAX
 			MOV workerAiArray, EDX
 			PUSHAD
 		}
-		hooks::deleteWorkerAI(workerAi, workerAiArray);
+		hooks::deleteWorkerAI(workerAi, *workerAiArray);
 		__asm
 		{
 			POPAD
@@ -581,14 +581,14 @@ namespace
 	void __declspec(naked) deleteBuildingAI_Wrapper() // 00404500
 	{
 		static BuildingAi* buildingAi;
-		static BuildingAiArray* buildingAiArray;
+		static BuildingAiArray** buildingAiArray;
 		__asm
 		{
 			MOV buildingAi, EAX
 			MOV buildingAiArray, EDX
 			PUSHAD
 		}
-		hooks::deleteBuildingAI(buildingAi, buildingAiArray);
+		hooks::deleteBuildingAI(buildingAi, *buildingAiArray);
 		__asm
 		{
 			POPAD
@@ -601,34 +601,34 @@ namespace
 		static const u32 back_jump = 0x00404475;
 		static const u32 cmp_jump = 0x0040447A;
 		static WorkerAi* ai;
-		static WorkerAi* ai2;
+		static WorkerAiArray** aiArray;
 		__asm
 		{
 			MOV ai, EAX
-			MOV ai2, EDX
+			MOV aiArray, EDX
 			PUSHAD
 		}
 		if (!ai)
 		{
-			if (ai2->link.prev)
-			{
-				__asm
-				{
-					POPAD
-					JMP cmp_jump
-				}
-			}
 			__asm
 			{
 				POPAD
-				JMP back_jump
+				MOV EAX, 0
+				RETN
+			}
+		}
+		if ((*aiArray)->worker_ais[0].link.next == ai)
+		{
+			__asm
+			{
+				POPAD
+				JMP cmp_jump
 			}
 		}
 		__asm
 		{
 			POPAD
-			MOV EAX, 0
-			RETN
+			JMP back_jump
 		}
 	}
 }
@@ -664,9 +664,9 @@ namespace hooks
 		jmpPatch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
 //		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
 		jmpPatch(getRegionIdFromUnit_Wrapper,				0x0049CB40, 2);
-		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
-		jmpPatch(deleteBuildingAI_Wrapper,					0x00404500, 0);
-//		jmpPatch(deleteWorkerAI_nullcheck,					0x00404470, 0);
+		//jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
+		//jmpPatch(deleteBuildingAI_Wrapper,					0x00404500, 0);
+		jmpPatch(deleteWorkerAI_nullcheck,					0x00404470, 0);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}
