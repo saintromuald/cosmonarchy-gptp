@@ -666,27 +666,21 @@ void Unit::damageHp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify
 //Logically equivalent to function @ 0x00454ED0
 void Unit::reduceDefensiveMatrixHp(s32 amount)
 {
-
 	assert(this);
-
 	if (this->defensiveMatrixHp > amount)
+	{
 		this->defensiveMatrixHp -= amount;
+	}
 	else
 	{
-
 		Image* current_image;
-
 		this->defensiveMatrixHp = 0;
 		this->defensiveMatrixTimer = 0;
-
-		this->removeOverlay(ImageId::DefensiveMatrixFront_Small,
-			ImageId::DefensiveMatrixFront_Large);
-
+		this->removeOverlay(ImageId::DefensiveMatrixFront_Small, ImageId::DefensiveMatrixFront_Large);
 		current_image = this->sprite->images.head;
 
 		while (current_image != nullptr)
 		{
-
 			if (current_image->id < ImageId::DefensiveMatrixBack_Small
 				|| current_image->id > ImageId::DefensiveMatrixBack_Large)
 			{
@@ -695,99 +689,87 @@ void Unit::reduceDefensiveMatrixHp(s32 amount)
 			else
 			{
 				current_image->free();
-				current_image = nullptr;	//to exit loop
+				current_image = nullptr; // to exit loop
 			}
-
 		}
-
 	}
 
 	if (this->defensiveMatrixTimer != 0 && !(this->status & UnitStatus::Burrowed))
 	{
 		Unit* unit = this->subunit ? this->subunit : this;
-//		getUnitOverlayAdjustment code was hardcoded into function in original code)
+		// getUnitOverlayAdjustment code was hardcoded into function in original code)
 		unit->sprite->createTopOverlay(scbw::getUnitOverlayAdjustment(unit) + ImageId::DefensiveMatrixHit_Small);
 	}
 
 }
 
-const u32 Func_RemoveUnit = 0x00475710; //AKA orders_SelfDestructing()
+const u32 Func_RemoveUnit = 0x00475710; // AKA orders_SelfDestructing()
 void Unit::remove()
 {
-
 	assert(this);
-
-	__asm {
+	__asm
+	{
 		PUSHAD
 		MOV EAX, this
 		CALL Func_RemoveUnit
 		POPAD
 	}
-
 }
 
 const u32 Func_RemoveLockdown = 0x00454D90;
 void Unit::removeLockdown()
 {
-
 	assert(this);
-
-	__asm {
+	__asm
+	{
 		PUSHAD
 		MOV ESI, this
 		CALL Func_RemoveLockdown
 		POPAD
 	}
-
 }
 
 const u32 Func_RemoveMaelstrom = 0x00454D20;
 void Unit::removeMaelstrom()
 {
-
 	assert(this);
-
-	__asm {
+	__asm
+	{
 		PUSHAD
 		MOV ESI, this
 		CALL Func_RemoveMaelstrom
 		POPAD
 	}
-
 }
 
 const u32 Func_RemoveStasisField = 0x004F62D0;
 void Unit::removeStasisField()
 {
-
 	assert(this);
-
-	__asm {
+	__asm
+	{
 		PUSHAD
 		MOV ESI, this
 		CALL Func_RemoveStasisField
 		POPAD
 	}
-
 }
 
 const u32 Func_RemoveAcidSpores = 0x004F4160;
 void Unit::removeAcidSpores()
 {
-
 	assert(this);
-
-	__asm {
+	__asm
+	{
 		PUSHAD
 		MOV EDX, this
 		CALL Func_RemoveAcidSpores
 		POPAD
 	}
-
 }
 
-///Identical to Unit__SpendEnergy @ 0x00491460
-///May underflow if alone
+/// Identical to Unit__SpendEnergy @ 0x00491460
+/// May underflow if alone
 void Unit::spendUnitEnergy(u32 energySpent)
 {
 	UnitExt* unitExt = globals.GetUnitExt(this);
