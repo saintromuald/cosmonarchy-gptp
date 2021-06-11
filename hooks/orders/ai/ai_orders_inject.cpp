@@ -631,6 +631,42 @@ namespace
 			JMP back_jump
 		}
 	}
+
+	void __declspec(naked) deleteBuildingAI_nullcheck() // 00404500
+	{
+		static const u32 back_jump = 0x00404505;
+		static const u32 cmp_jump = 0x0040450A;
+		static BuildingAi* ai;
+		static BuildingAiArray** aiArray;
+		__asm
+		{
+			MOV ai, EAX
+			MOV aiArray, EDX
+			PUSHAD
+		}
+		if (!ai)
+		{
+			__asm
+			{
+				POPAD
+				MOV EAX, 0
+				RETN
+			}
+		}
+		if ((*aiArray)->building_ais[0].link.next == ai)
+		{
+			__asm
+			{
+				POPAD
+				JMP cmp_jump
+			}
+		}
+		__asm
+		{
+			POPAD
+			JMP back_jump
+		}
+	}
 }
 
 namespace hooks
@@ -664,9 +700,10 @@ namespace hooks
 		jmpPatch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
 //		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
 		jmpPatch(getRegionIdFromUnit_Wrapper,				0x0049CB40, 2);
-		//jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
-		//jmpPatch(deleteBuildingAI_Wrapper,					0x00404500, 0);
+//		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
+//		jmpPatch(deleteBuildingAI_Wrapper,					0x00404500, 0);
 		jmpPatch(deleteWorkerAI_nullcheck,					0x00404470, 0);
+		jmpPatch(deleteBuildingAI_nullcheck,				0x00404500, 0);
 
 		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
 	}
