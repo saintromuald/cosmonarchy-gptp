@@ -667,6 +667,26 @@ namespace
 			JMP back_jump
 		}
 	}
+
+	void __declspec(naked) getBestSCVForRepairProc_Wrapper() // 004402B0
+	{
+		static bool result;
+		static Unit* repairman;
+		static Unit* repairTarget;
+		__asm
+		{
+			MOV repairTarget, EDX
+			MOV repairman, ECX
+			PUSHAD
+		}
+		result = hooks::getBestSCVForRepairProc(repairman, repairTarget);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -702,9 +722,11 @@ namespace hooks
 		jmpPatch(getRegionIdFromUnit_Wrapper,				0x0049CB40, 2);
 //		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
 //		jmpPatch(deleteBuildingAI_Wrapper,					0x00404500, 0);
-		jmpPatch(deleteWorkerAI_nullcheck,					0x00404470, 0);
-		jmpPatch(deleteBuildingAI_nullcheck,				0x00404500, 0);
+//		jmpPatch(deleteWorkerAI_nullcheck,					0x00404470, 0);
+//		jmpPatch(deleteBuildingAI_nullcheck,				0x00404500, 0);
 
-		callPatch(AI_ReactToHit_TownNullCheck,	0x0043F388, 5);
+		jmpPatch(getBestSCVForRepairProc_Wrapper,			0x004402B0, 1);
+
+		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}
 }

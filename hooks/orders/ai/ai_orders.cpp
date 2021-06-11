@@ -1999,4 +1999,20 @@ LABEL_36:
 		}
 		buildingAiArray->first_free_building = buildingAi;
 	}
+
+	bool getBestSCVForRepairProc(Unit* repairman, Unit* repairTarget) // 004402B0
+	{
+		bool result = false;
+		WorkerAi* repairmanAI = (WorkerAi*)repairman->pAI;
+		if (repairman->playerId == repairTarget->playerId
+			&& units_dat::BaseProperty[repairman->id] & UnitProperty::Worker
+			&& !(repairman->status & UnitStatus::InTransport)
+			&& !(repairman->status & UnitStatus::InBuilding) // new
+			&& repairmanAI != nullptr
+			&& repairmanAI->town->building_scv != nullptr) // new
+		{
+			result = repairmanAI->town->building_scv == repairman;
+		}
+		return result;
+	}
 }
