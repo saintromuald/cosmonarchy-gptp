@@ -59,6 +59,11 @@ namespace hooks
 		u16 currentHalTimer; // ax
 		s16 unitType; // ax
 
+		if (units_dat::BaseProperty[source->id] & UnitProperty::Building)
+		{
+			return nullptr;
+		}
+
 		v3 = source;
 		halUnit = helper::createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);
 		halUnit2 = halUnit;
@@ -83,7 +88,7 @@ namespace hooks
 			{
 				helper::hallucinateScarabs(halUnit2, v3);
 			}
-			helper::AI_TrainingUnit(halUnit2, source);
+			helper::AI_TrainingUnit(halUnit2, halUnit2);
 			result = halUnit2;
 		}
 		else
