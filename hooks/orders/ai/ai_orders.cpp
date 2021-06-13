@@ -68,7 +68,7 @@ namespace hooks
 	/*
 	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 alwaysThisRegion) // 0043DA20
 	{
-		// alwaysThisRegion acts as a bool, not sure why IDA thinks it's s32
+		// alwaysThisRegion acts as a bool, should be b32?
 		// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
 		// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
 			AiRegion* regionNew; // esi
@@ -1449,7 +1449,7 @@ LABEL_22:
 				}
 				if (regionIndex != 2500)
 				{
-					helper::removeUnitAI(unit, 0);
+					helper::AI_RemoveUnitAI(unit, 0);
 					helper::AI_AddMilitary(region2, unit, 1);
 					continue;
 				}
@@ -1461,7 +1461,7 @@ LABEL_22:
 					AIScriptController[player].strategic_suicide = 24;
 					regionIndex = (u16)AIScriptController[player].AI_AttackGroup - 1;
 					region2 = &AiRegionCaptains[player][regionIndex];
-					helper::removeUnitAI(unit, 0);
+					helper::AI_RemoveUnitAI(unit, 0);
 					helper::AI_AddMilitary(region2, unit, 1);
 				}
 			}
@@ -2016,8 +2016,8 @@ LABEL_36:
 		return result;
 	}
 
-	// Hooked to add sprite nullcheck
-	bool AI_MilitaryShouldWaitForGroup(Unit* unit) // 0043AA10
+	// Hooked to add sprite nullcheck - Pr0nogo
+	b32 AI_MilitaryShouldWaitForGroup(Unit* unit) // 0043AA10
 	{
 		// new start
 		if (unit == nullptr)
@@ -2075,5 +2075,27 @@ LABEL_36:
 			return true;
 		}
 		return false;
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI) // 004A1E50
+	{
+		helper::AI_RemoveFromAIStructs(unit, unitAI);
+		helper::AI_RemoveWorkerOrBuildingAI(unit, 0);
+		if (unitAI != nullptr)
+		{
+			if (unitAI->type == AiType::Guard)
+			{
+				GuardAi* guardAI = (GuardAi*)unitAI;
+				u8 timesDied = guardAI->timesDied;
+				guardAI->parent = nullptr;
+				if ((u8)timesDied < 100u)
+				{
+					guardAI->timesDied = timesDied + 1;
+				}
+			}
+		}
+		helper::AI_MedicRemove(unit);
+		unit->pAI = nullptr;
 	}
 }

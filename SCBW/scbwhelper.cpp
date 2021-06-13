@@ -3955,14 +3955,14 @@ namespace helper
 		}
 	}
 
-	void removeUnitAI(Unit* unit, u32 unk)
+	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI)
 	{
-		const u32 Func_Sub4A1E50 = 0x004A1E50;
+		const u32 Func_AI_RemoveUnitAI = 0x004A1E50;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
-			MOV EDX, unk
-			CALL Func_Sub4A1E50
+			MOV EDX, unitAI
+			CALL Func_AI_RemoveUnitAI
 			POPAD
 		}
 	}
@@ -9205,5 +9205,50 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	// For AI_RemoveUnitAI
+	s32 AI_RemoveFromAIStructs(Unit* unit, UnitAi* unitAI)
+	{
+		const u32 Func_AI_RemoveFromAIStructs = 0x00439D60;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH unitAI
+			PUSH unit
+			CALL Func_AI_RemoveFromAIStructs
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	b32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI)
+	{
+		const u32 Func_AI_RemoveWorkerOrBuildingAI = 0x00434C90;
+		static b32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH unitAI
+			MOV EDI, unit
+			CALL Func_AI_RemoveWorkerOrBuildingAI
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void AI_MedicRemove(Unit* unit)
+	{
+		const u32 Func_AI_MedicRemove = 0x004477C0;
+		__asm
+		{
+			PUSHAD
+			MOV EDX, unit
+			CALL Func_AI_MedicRemove
+			POPAD
+		}
 	}
 }

@@ -427,7 +427,7 @@ namespace helper
 	void function_00463040(Unit* unit);																									// 00463040
 	void function_00476D30(Unit* unit);																									// 00476D30
 	void incrementUnitScores(Unit* unit, s32 unkScore);																					// 00488BF0
-	void removeUnitAI(Unit* unit, u32 unk);																								// 004A1E50
+	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);																					// 004A1E50
 	void CreateUnitSelection(Unit* unit, u32 selectionIndex);																			// 004E6180
 	void DestroyUnitSelection(Unit* unit);																								// 004E6290
 	void function_004F3B70(Unit* powerup);																								// 004F3B70
@@ -979,6 +979,11 @@ namespace helper
 	// For AI_MilitaryShouldWaitForGroup
 	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2);												// 00438E10
 	bool AI_CheckMilitaryGrouping(Unit* unit);																// 00439550
+
+	// For AI_RemoveUnitAI
+	s32 AI_RemoveFromAIStructs(Unit* unit, UnitAi* unitAI);													// 00439D60
+	b32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI);											// 00434C90
+	void AI_MedicRemove(Unit* unit);																		// 004477C0
 
 	//// misc
 	s8 SETS(s32 x);

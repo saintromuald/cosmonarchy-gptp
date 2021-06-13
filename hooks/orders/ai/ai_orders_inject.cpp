@@ -690,7 +690,7 @@ namespace
 
 	void __declspec(naked) AI_MilitaryShouldWaitForGroup_Wrapper() // 0043AA10
 	{
-		static bool result;
+		static b32 result;
 		static Unit* unit;
 		__asm
 		{
@@ -701,7 +701,25 @@ namespace
 		__asm
 		{
 			POPAD
-			MOV AL, result
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) AI_RemoveUnitAI_Wrapper() // 004A1E50
+	{
+		static Unit* unit;
+		static UnitAi* unitAI;
+		__asm
+		{
+			MOV unitAI, EDX
+			MOV unit, ECX
+			PUSHAD
+		}
+		hooks::AI_RemoveUnitAI(unit, unitAI);
+		__asm
+		{
+			POPAD
 			RETN
 		}
 	}

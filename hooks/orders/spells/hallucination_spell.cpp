@@ -51,24 +51,17 @@ namespace hooks
 	// Hooked to rule out AI issues -- Pr0nogo
 	Unit* createHallucination(Unit* source, s32 player)
 	{
-		Unit* halUnit; // eax
-		Unit* v3; // edi
-		Unit* halUnit2; // esi
-		Unit* result; // eax
-		u16 halTimer; // cx
-		u16 currentHalTimer; // ax
-		s16 unitType; // ax
-
 		if (units_dat::BaseProperty[source->id] & UnitProperty::Building)
 		{
 			return nullptr;
 		}
 
-		v3 = source;
-		halUnit = helper::createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);
-		halUnit2 = halUnit;
-		if (halUnit)
+		Unit* result = nullptr;
+		Unit* halUnit = helper::createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);
+		Unit* halUnit2 = halUnit;
+		if (halUnit != nullptr)
 		{
+			u16 halTimer = 0;
 			helper::applyHallucinationStats(halUnit);
 			if (halUnit2->status & UnitStatus::IsHallucination)
 			{
@@ -76,25 +69,33 @@ namespace hooks
 			}
 			else
 			{
-				halTimer = halUnit2->id != UnitId::ZergRilirokor ? 0 : 1800;
+				halTimer = (halUnit2->id != UnitId::ZergRilirokor && halUnit2->id != UnitId::ZergRililisk) ? 0 : 1800;
 			}
-			currentHalTimer = halUnit2->removeTimer;
+			u16 currentHalTimer = halUnit2->removeTimer;
 			if (!currentHalTimer || halTimer < currentHalTimer)
 			{
 				halUnit2->removeTimer = halTimer;
 			}
-			unitType = halUnit2->id;
+			s16 unitType = halUnit2->id;
 			if (unitType == UnitId::ProtossAccantor) // Originally also ran for Warbringer ID
 			{
-				helper::hallucinateScarabs(halUnit2, v3);
+				helper::hallucinateScarabs(halUnit2, source);
 			}
-			helper::AI_TrainingUnit(halUnit2, halUnit2);
+			if (!(units_dat::BaseProperty[halUnit2->id] & (UnitProperty::Worker | UnitProperty::Building)))
+			{
+				helper::AI_TrainingUnit(halUnit2, halUnit2);
+			}
+			else
+			{
+				WorkerAi* sourceAI = (WorkerAi*)source->pAI;
+				helper::AI_AddWorkerStructureAI(halUnit2, sourceAI->town);
+			}
 			result = halUnit2;
 		}
 		else
 		{
 			helper::displayLastNetErrorForPlayer(player);
-			result = 0;
+			result = nullptr;
 		}
 		return result;
 	}
