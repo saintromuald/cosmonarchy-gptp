@@ -2052,7 +2052,6 @@ LABEL_36:
 			return false;
 		}
 
-		bool result = false;
 		AiTown* i = nullptr;
 		AiTown* town = unitAI->region->town;
 		for (i = town; town; i = town)
@@ -2069,6 +2068,12 @@ LABEL_36:
 			}
 			town = town->link.prev;
 		}
-		return result;
+
+		// Not sure if this is correct
+		if (town)
+		{
+			return true;
+		}
+		return false;
 	}
 }
