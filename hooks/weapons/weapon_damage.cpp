@@ -944,7 +944,14 @@ namespace hooks
 				});
 			}
 
-			globals.initRevive(data.target->position.x, data.target->position.y, data.target->playerId, data.target->id, data.target->energy, hp, ((WorkerAi*)data.target->pAI)->town);
+			WorkerAi* ai = ((WorkerAi*)data.target->pAI);
+			AiTown* town = nullptr;
+			if (ai)
+			{
+				town = ai->town;
+			}
+
+			globals.initRevive(data.target->position.x, data.target->position.y, data.target->playerId, data.target->id, data.target->energy, hp, town);
 		}
 
 		// Ecclesiast - Astral Blessing proc
