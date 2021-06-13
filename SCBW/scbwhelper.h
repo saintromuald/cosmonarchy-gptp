@@ -985,6 +985,8 @@ namespace helper
 	b32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI);											// 00434C90
 	void AI_MedicRemove(Unit* unit);																		// 004477C0
 
+	void AI_TrainingSimpleMilitary(Unit* newUnit, Unit* sourceUnit);										// 0043E280
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

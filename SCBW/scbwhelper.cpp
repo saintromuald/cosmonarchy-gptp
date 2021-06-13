@@ -9250,4 +9250,17 @@ namespace helper
 			POPAD
 		}
 	}
+
+	void AI_TrainingSimpleMilitary(Unit* newUnit, Unit* sourceUnit)
+	{
+		const u32 Func_AI_TrainingSimpleMilitary = 0x0043E280;
+		__asm
+		{
+			PUSHAD
+			PUSH sourceUnit
+			PUSH newUnit
+			CALL Func_AI_TrainingSimpleMilitary
+			POPAD
+		}
+	}
 }

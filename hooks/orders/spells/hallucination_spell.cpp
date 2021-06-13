@@ -8,7 +8,7 @@ namespace hooks
 	{
 		s32 sightRange = unit->getSightRange(true);
 		u16 techCost;
-		if (helper::ordersSpell_Sub_4926D0(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899))
+		if (helper::spellOrder(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899))
 		{
 			s32 counter = 1;
 
@@ -90,7 +90,7 @@ namespace hooks
 				}
 				else
 				{
-					helper::AI_TrainingUnit(halUnit2, halUnit2);
+					helper::AI_TrainingSimpleMilitary(halUnit2, halUnit2);
 				}
 			}
 			result = halUnit2;

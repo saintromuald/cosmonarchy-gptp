@@ -40,7 +40,7 @@ namespace hooks
 
 				//energy cost is initialized in this function
 				//Corresponding error message is "Invalid Target"
-				spellCastSuccess = helper::ordersSpell_Sub_4926D0(unit, TechId::MindControl, &techEnergyCost, unitSightRangeForSpell, 0x052E);
+				spellCastSuccess = helper::spellOrder(unit, TechId::MindControl, &techEnergyCost, unitSightRangeForSpell, 0x052E);
 
 				if (spellCastSuccess)
 				{
