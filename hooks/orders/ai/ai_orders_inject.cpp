@@ -37,7 +37,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_TrainingBroodling_Wrapper() // 0043E280
+	void __declspec(naked) AI_TrainingSimpleMilitary_Wrapper() // 0043E280
 	{
 		static Unit* parent;
 		static Unit* result;
@@ -731,7 +731,7 @@ namespace hooks
 	{
 		jmpPatch(AI_TrainingUnit_Wrapper,					0x004A2830, 2);
 //		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
-		jmpPatch(AI_TrainingBroodling_Wrapper,				0x0043E280, 1);
+		jmpPatch(AI_TrainingSimpleMilitary_Wrapper,			0x0043E280, 1);
 //		jmpPatch(AI_TrainingWorker_Wrapper,					0x00435700, 0);
 //		jmpPatch(AI_TrainingNormal_Wrapper,					0x00435DB0, 0);
 //		jmpPatch(AI_AddWorkerStructureAI_Wrapper,			0x00433DD0, 2);
