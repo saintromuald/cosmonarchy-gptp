@@ -12,29 +12,28 @@ struct Flingy
 {
 	/*0x000*/ Link<Unit> link;
 	/*0x008*/ s32       value;                 ///for unit it's hitpoints
-	/*0x00C*/ Sprite* sprite;
-	/*0x010*/ Target    moveTarget;              ///< The position or unit to move to. It is NOT an order target.
-	/*0x018*/ Point16   nextMovementWaypoint;    ///< The next way point in the path the unit is following to get to its destination.
-												 ///< Equal to moveToPos for air units since they don't need to navigate around buildings.
-	/*0x01C*/ Point16   nextTargetWaypoint;      ///< The desired position
-	/*0x020*/ u8        movementFlags;		 /// Flags specifying movement type, MovementFlags::Enum contains possible explanations
-	/*0x021*/ u8        currentDirection1;	 /// The current direction the unit is facing
-	/*0x022*/ u8        flingyTurnSpeed;      //AKA flingy turn radius
+	/*0x00C*/ Sprite*   sprite;
+	/*0x010*/ Target    moveTarget;            ///< The position or unit to move to. It is NOT an order target.
+	/*0x018*/ Point16   nextMovementWaypoint;  ///< The next way point in the path the unit is following to get to its destination.
+											   ///< Equal to moveToPos for air units since they don't need to navigate around buildings.
+	/*0x01C*/ Point16   nextTargetWaypoint;    ///< The desired position
+	/*0x020*/ u8        movementFlags;		   /// Flags specifying movement type, MovementFlags::Enum contains possible explanations
+	/*0x021*/ u8        currentDirection1;	   /// The current direction the unit is facing
+	/*0x022*/ u8        flingyTurnSpeed;       //AKA flingy turn radius
 	/*0x023*/ u8        velocityDirection1;
 	/*0x024*/ u16       flingyId;
 	/*0x026*/ u8        _unknown_0x026;
 	/*0x027*/ u8        flingyMovementType;
 	/*0x028*/ Point16   position;
-	/*0x02C*/ Vector32   halt;
+	/*0x02C*/ Vector32  halt;
 	/*0x034*/ u32       flingyTopSpeed;
 	/*0x038*/ u32       current_speed1;
 	/*0x03C*/ u32       current_speed2;
-	/*0x040*/ Vector32   current_velocity;
+	/*0x040*/ Vector32  current_velocity;
 	/*0x048*/ u16       flingyAcceleration;
 	/*0x04A*/ u8        currentDirection2;
 	/*0x04B*/ u8        velocityDirection2;
 };
-
 
 //Wrapper structure that provides methods for the Unit structure.
 struct Unit : public UnitLayout
