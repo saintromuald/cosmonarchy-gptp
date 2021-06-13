@@ -81,7 +81,7 @@ namespace AI
 	{
 		u16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
 		AiRegion* currentAiRegion = &AiRegionCaptains[unit->playerId][currentRegion];
-		return currentAiRegion->captainType == 3
+		return currentAiRegion->state == 3
 			|| currentAiRegion->airTarget
 			|| currentAiRegion->groundTarget
 			|| currentAiRegion->captainFlags & 0x20;
