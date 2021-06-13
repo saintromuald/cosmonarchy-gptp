@@ -687,6 +687,24 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_MilitaryShouldWaitForGroup_Wrapper() // 0043AA10
+	{
+		static bool result;
+		static Unit* unit;
+		__asm
+		{
+			MOV unit, EBX
+			PUSHAD
+		}
+		result = hooks::AI_MilitaryShouldWaitForGroup(unit);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -726,6 +744,7 @@ namespace hooks
 //		jmpPatch(deleteBuildingAI_nullcheck,				0x00404500, 0);
 
 		jmpPatch(getBestSCVForRepairProc_Wrapper,			0x004402B0, 1);
+		jmpPatch(AI_MilitaryShouldWaitForGroup_Wrapper,		0x0043AA10, 5);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

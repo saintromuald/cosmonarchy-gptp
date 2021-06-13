@@ -15,6 +15,7 @@ namespace hooks
 	void AI_IterateBuildingAI(Unit* result, Unit* parent);														// 00435770
 //	void AI_AddMilitary(AiRegion* region, Unit* unit, b32 alwaysThisRegion);									// 0043DA20
 	bool getBestSCVForRepairProc(Unit* repairman, Unit* repairTarget);											// 004402B0
+	bool AI_MilitaryShouldWaitForGroup(Unit* unit);																// 0043AA10
 
 	// Attack extender
 	u32 AI_TrainAttackForce(AiRegion* region);																    // 0043E670

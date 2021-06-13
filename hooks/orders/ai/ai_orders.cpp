@@ -2015,4 +2015,61 @@ LABEL_36:
 		}
 		return result;
 	}
+
+	// Hooked to add sprite nullcheck
+	bool AI_MilitaryShouldWaitForGroup(Unit* unit) // 0043AA10
+	{
+		// new start
+		if (unit == nullptr)
+		{
+			return false;
+		}
+		if (unit->sprite == nullptr)
+		{
+			return false;
+		}
+		// new end
+
+		MilitaryAi* unitAI = (MilitaryAi*)unit->pAI;
+		if (unitAI == nullptr)
+		{
+			return 0;
+		}
+		if (unitAI->type != AiType::Military)
+		{
+			return 0;
+		}
+		if (unitAI->parent != unit)
+		{
+			return 0;
+		}
+		if (units_dat::BaseProperty[unit->id] & 1)
+		{
+			return 0;
+		}
+		AiRegion* unitRegion = unitAI->region;
+		if (unitRegion->captainType == 2)
+		{
+			return 0;
+		}
+
+		bool result = false;
+		AiTown* i = nullptr;
+		AiTown* town = unitRegion->town;
+		for (i = town; town; i = town)
+		{
+			Unit* firstUnit = town->firstTownUnit;
+			if (firstUnit != unit)
+			{
+				u32 distance = helper::getDistanceFast(firstUnit->sprite->position.x, unit->sprite->position.x, firstUnit->sprite->position.y, unit->sprite->position.y);
+				if (distance <= 0x180 && helper::AI_AreOnConnectedRegions(firstUnit, unit) && !(helper::AI_CheckMilitaryGrouping(firstUnit)) && distance > 0x100)
+				{
+					return 1;
+				}
+				result = i;
+			}
+			result = town->link.prev;
+		}
+		return result;
+	}
 }

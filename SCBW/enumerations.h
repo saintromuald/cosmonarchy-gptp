@@ -162,6 +162,17 @@ namespace ImagesDatEntries
 	};
 }
 
+namespace AiType
+{
+	enum Enum
+	{
+		Unassigned	= 0, // Never this?
+		Guard		= 1,
+		Worker		= 2,
+		Building	= 3, // Also "available to scripts"
+		Military	= 4,
+	};
+}
 
 namespace RaceId
 {
@@ -197,7 +208,7 @@ namespace PlayerType
 	};
 }
 
-//Based on BWAPI; for use with units_dat::BaseProperty[]
+// Based on BWAPI; for use with units_dat::BaseProperty[]
 namespace UnitProperty
 {
 	enum Enum : u32
@@ -237,7 +248,7 @@ namespace UnitProperty
 	};
 }
 
-//Based on BWAPI; For use with the Unit::status member
+// Based on BWAPI; For use with the Unit::status member
 namespace UnitStatus
 {
 	enum Enum : u32
@@ -277,7 +288,7 @@ namespace UnitStatus
 	};
 }
 
-//For various newFlags fields
+// For various newFlags fields
 namespace NewFlags1
 {
 	enum Enum : u8
@@ -439,7 +450,7 @@ namespace DamageType
 	};
 }
 
-//Use with weapons_dat::ExplosionType[]
+// Use with weapons_dat::ExplosionType[]
 namespace WeaponEffect
 {
 	enum Enum
@@ -472,7 +483,7 @@ namespace WeaponEffect
 	};
 }
 
-//Use with weapons_dat::Behavior[]
+// Use with weapons_dat::Behavior[]
 namespace WeaponBehavior
 {
 	enum Enum
@@ -490,7 +501,7 @@ namespace WeaponBehavior
 	};
 }
 
-//Use with colorShift
+// Use with colorShift
 namespace ColorRemapping
 {
 	enum Enum
@@ -506,7 +517,7 @@ namespace ColorRemapping
 	};
 }
 
-//Compare with (*GAME_TYPE)
+// Compare with (*GAME_TYPE)
 namespace GameType
 {
 	enum Enum
@@ -527,7 +538,7 @@ namespace GameType
 	};
 }
 
-/// Compare with (*CURRENT_TILESET)
+// Compare with (*CURRENT_TILESET)
 namespace TilesetType
 {
 	enum Enum
@@ -627,7 +638,7 @@ namespace DialogControlTypes
 	};
 }
 
-//Use with units_dat::RightClickActions
+// Use with units_dat::RightClickActions
 namespace RightClickActions
 {
 	enum Enum : u8
@@ -690,10 +701,8 @@ namespace RequirementOpcodes
 	};
 }
 
-/*
-* Contains Internal error codes returned from functions (hooks\requirements\)
-* Apparently used to signal to the AI when requirements fail
-*/
+// Contains Internal error codes returned from functions (hooks\requirements\)
+// Apparently used to signal to the AI when requirements fail
 namespace InternalErrors
 {
 	enum Enum
