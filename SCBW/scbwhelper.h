@@ -585,7 +585,7 @@ namespace helper
 
 	//// hallucination_spell
 	// for orders_Hallucination1
-	bool ordersSpell_Sub_4926D0(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index);				// 004926D0
+	bool spellOrder(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index);							// 004926D0
 
 	void UnitDestructor(Unit* unit);
 	bool placeHallucination(Unit* unit);																							// 004F66D0

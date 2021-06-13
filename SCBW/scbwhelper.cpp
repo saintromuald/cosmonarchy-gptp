@@ -5315,10 +5315,9 @@ namespace helper
 	}
 
 	// for orders_Hallucination1
-
-	bool ordersSpell_Sub_4926D0(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index)
+	bool spellOrder(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index)
 	{
-		const u32 Func_Sub_4926D0 = 0x004926D0;
+		const u32 Func_spellOrder = 0x004926D0;
 		static b32 bPreResult;
 		__asm {
 			PUSHAD
@@ -5327,7 +5326,7 @@ namespace helper
 			PUSH techId
 			MOV EAX, error_message_index
 			MOV EBX, unit
-			CALL Func_Sub_4926D0
+			CALL Func_spellOrder
 			MOV bPreResult, EAX
 			POPAD
 		}
