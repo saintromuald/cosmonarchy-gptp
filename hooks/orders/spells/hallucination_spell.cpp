@@ -81,16 +81,19 @@ namespace hooks
 			{
 				helper::hallucinateScarabs(halUnit2, source);
 			}
-			if (!(units_dat::BaseProperty[halUnit2->id] & (UnitProperty::Worker | UnitProperty::Building)))
+			if (source->pAI != nullptr)
 			{
-				helper::AI_TrainingUnit(halUnit2, halUnit2);
+				if (!(units_dat::BaseProperty[halUnit2->id] & (UnitProperty::Worker | UnitProperty::Building)))
+				{
+					helper::AI_TrainingUnit(halUnit2, halUnit2);
+				}
+				else
+				{
+					WorkerAi* sourceAI = (WorkerAi*)source->pAI;
+					helper::AI_AddWorkerStructureAI(halUnit2, sourceAI->town);
+				}
+				result = halUnit2;
 			}
-			else if (source->pAI != nullptr)
-			{
-				WorkerAi* sourceAI = (WorkerAi*)source->pAI;
-				helper::AI_AddWorkerStructureAI(halUnit2, sourceAI->town);
-			}
-			result = halUnit2;
 		}
 		else
 		{
