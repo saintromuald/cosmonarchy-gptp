@@ -1558,8 +1558,8 @@ LABEL_22:
 	// Hooked to investigate crashes - Pr0nogo
 	AiTown* AI_progressBuild(s32 playerId, s32* minerals, s32* gas) // 00434480
 	{
-		AiTown* result = AiTownManager[playerId].first;
-		AiTown* firstTown = AiTownManager[playerId].first;
+		AiTown* result = AiActiveTownArray[playerId].first;
+		AiTown* firstTown = AiActiveTownArray[playerId].first;
 		if (result)
 		{
 			do

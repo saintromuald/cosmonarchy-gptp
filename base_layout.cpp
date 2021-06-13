@@ -50,7 +50,7 @@ void update_base_layouts()
 	// Set New Layouts
 	for (u32 i = 0; i < 100; ++i)
 	{
-		AiTown* town = &AiArray[i];
+		AiTown* town = &AiTownArray[i];
 		if (town->inited && !town->resource_area_not_set)
 		{
 			for (BaseLayout& layout : layouts[town->resource_area])

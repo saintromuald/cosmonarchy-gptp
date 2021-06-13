@@ -475,6 +475,7 @@ void Globals::frameHook()
 				revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				revivedExt->values[ValueReviveStarted] = 1;
+				revivedExt->values[ValueReviveTownPointer] = (u32)revivingUnit.town;
 				revivedExt->timers[TimerReviveFlagClearMin] = 3;
 				revivedExt->timers[TimerReviveFlagClearMax] = 14;
 			}
@@ -833,17 +834,22 @@ void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 	multihitBullets.push_back(gb);
 }
 
-void Globals::initRevive(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 hp)
+void Globals::initRevive(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 hp, AiTown* town)
 {
-	RevivingUnit a;
-	a.playerId = player;
-	a.position.x = x;
-	a.position.y = y;
-	a.timer = 48;
-	a.unitId = unitId;
-	a.energy = energy;
-	a.hp = hp;
-	revivingUnits.push_back(a);
+	RevivingUnit revivingUnit = {};
+	revivingUnit.playerId = player;
+	revivingUnit.position.x = x;
+	revivingUnit.position.y = y;
+	revivingUnit.timer = 48;
+	revivingUnit.unitId = unitId;
+	revivingUnit.energy = energy;
+	revivingUnit.hp = hp;
+	if (units_dat::BaseProperty[unitId] & (UnitProperty::Worker | UnitProperty::Building)
+		|| unitId == UnitId::ZergOvileth)
+	{
+		revivingUnit.town = town;
+	}
+	revivingUnits.push_back(revivingUnit);
 }
 
 void Globals::clear_lakizilisk(Unit* lurker)

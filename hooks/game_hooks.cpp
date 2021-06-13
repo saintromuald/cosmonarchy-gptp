@@ -1406,14 +1406,12 @@ namespace hooks
 			unitExt->values[ValueReviveStarted] = 0;
 			if (playerTable[unit->playerId].type == PlayerType::Computer)
 			{
-				if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building)
-					|| unit->id == UnitId::ZergOvileth)
+				AiTown* town = (AiTown*)unitExt->values[ValueReviveTownPointer];
+				if (town
+					&& (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building)
+					|| unit->id == UnitId::ZergOvileth))
 				{
-					AiTown* town = AiTownManager[unit->playerId].last;
-					if (town)
-					{
-						helper::AI_AddWorkerStructureAI(unit, town);
-					}
+					helper::AI_AddWorkerStructureAI(unit, town);
 				}
 				else
 				{

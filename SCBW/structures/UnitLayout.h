@@ -241,6 +241,7 @@ enum ExtValueId
 	ValueDirgeStacks,
 	ValueSignifyStacks,
 	ValueReviveStarted,
+	ValueReviveTownPointer,
 	ValuePreMorphHP,
 	ValueSkithrokorMissilePos,
 	ValueDisruptionFieldOn,

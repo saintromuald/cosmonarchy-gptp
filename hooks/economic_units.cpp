@@ -220,7 +220,7 @@ namespace hooks
 				return mainTown;
 			}
 		}
-		AiTown* aiTown = AiArray; // first
+		AiTown* aiTown = AiTownArray; // first
 		if (!aiTown) return nullptr; // no AI towns
 		do
 		{
