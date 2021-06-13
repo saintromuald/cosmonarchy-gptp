@@ -1409,7 +1409,7 @@ namespace hooks
 				if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building)
 					|| unit->id == UnitId::ZergOvileth)
 				{
-					AiTown* town = AiTownManager[unit->playerId].first;
+					AiTown* town = AiTownManager[unit->playerId].last;
 					if (town)
 					{
 						helper::AI_AddWorkerStructureAI(unit, town);
