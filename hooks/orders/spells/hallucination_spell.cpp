@@ -83,14 +83,14 @@ namespace hooks
 			}
 			if (source->pAI != nullptr)
 			{
-				if (!(units_dat::BaseProperty[halUnit2->id] & (UnitProperty::Worker | UnitProperty::Building)))
-				{
-					helper::AI_TrainingUnit(halUnit2, halUnit2);
-				}
-				else
+				if (units_dat::BaseProperty[halUnit2->id] & (UnitProperty::Worker | UnitProperty::Building))
 				{
 					WorkerAi* sourceAI = (WorkerAi*)source->pAI;
 					helper::AI_AddWorkerStructureAI(halUnit2, sourceAI->town);
+				}
+				else
+				{
+					helper::AI_TrainingUnit(halUnit2, halUnit2);
 				}
 			}
 			result = halUnit2;
