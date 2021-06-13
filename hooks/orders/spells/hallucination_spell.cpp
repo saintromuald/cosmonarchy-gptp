@@ -92,8 +92,8 @@ namespace hooks
 					WorkerAi* sourceAI = (WorkerAi*)source->pAI;
 					helper::AI_AddWorkerStructureAI(halUnit2, sourceAI->town);
 				}
-				result = halUnit2;
 			}
+			result = halUnit2;
 		}
 		else
 		{
