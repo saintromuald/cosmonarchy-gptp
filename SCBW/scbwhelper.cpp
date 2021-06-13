@@ -1110,15 +1110,14 @@ namespace helper
 	}
 
 	// For getRandYesSFX
-
-	s32 randGetSFXBetween(s32 a1, s32 a2)
+	s32 randGetSFXBetween(s32 soundIdMin, s32 soundIdMax)
 	{
 		const u32 Func_randGetSFXBetween = 0x0048E940;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EDI, a1
-			MOV ESI, a2
+			MOV EDI, soundIdMin
+			MOV ESI, soundIdMax
 			CALL Func_randGetSFXBetween
 			MOV result, EAX
 			POPAD
@@ -9171,6 +9170,38 @@ namespace helper
 			PUSH filename
 			CALL Func_SBmpLoadImage
 			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For AI_MilitaryShouldWaitForGroup
+	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2)
+	{
+		const u32 Func_AI_AreOnConnectedRegions = 0x00438E10;
+		static bool result;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, unit2
+			MOV EAX, unit1
+			CALL Func_AI_AreOnConnectedRegions
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	bool AI_CheckMilitaryGrouping(Unit* unit)
+	{
+		const u32 Func_AI_CheckMilitaryGrouping = 0x00439550;
+		static bool result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_AI_CheckMilitaryGrouping
+			MOV result, AL
 			POPAD
 		}
 		return result;

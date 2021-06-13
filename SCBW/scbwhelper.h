@@ -101,7 +101,6 @@ namespace helper
 
 	// For AI_FindTransport
 	bool canEnterTransport(Unit* a1, Unit* a2);
-	s16 SAI_GetRegionIdFromPxEx(s32 a1, s32 a2);
 	s32 getUnitDistanceToHalt(s32 a1, Unit* a2, s32 a3);
 
 	// For mapDataTransfer
@@ -115,8 +114,8 @@ namespace helper
 	s32 dataTransfer06(s32 a1);
 
 	// For getRandYesSFX
-	s32 randGetSFXBetween(s32 a1, s32 a2);
-	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);
+	s32 randGetSFXBetween(s32 soundIdMin, s32 soundIdMax);										// 0048E940
+	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);													// 0049C9F0
 
 	// For AI_TrainUnit
 	char AI_TrainingWorker(Unit* result, Unit* parent);											// 00435700
@@ -211,7 +210,6 @@ namespace helper
 	void AI_FinishRegionAccessibility(char* regionData);
 	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
 		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
-	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);
 	char AI_CancelStructure(Unit* structure);
 
 	bool unitCantSeeCloakedTarget(Unit* unit, Unit* target);												// 00401D60
@@ -977,6 +975,10 @@ namespace helper
 	s8 createUnitAllowed(u16 unitId, Unit* unit, s32 playerID);												// 0046E1C0
 
 	b32 SBmpLoadImage(const char *filename, void* palette, void* buffer, u32 buffersize, u32* width, u32* height, u32* bpp); // 00410154
+
+	// For AI_MilitaryShouldWaitForGroup
+	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2);												// 00438E10
+	bool AI_CheckMilitaryGrouping(Unit* unit);																// 00439550
 
 	//// misc
 	s8 SETS(s32 x);
