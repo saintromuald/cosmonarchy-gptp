@@ -174,6 +174,23 @@ namespace AiType
 	};
 }
 
+namespace RegionState
+{
+	enum Enum
+	{
+		Nothing							= 0,
+		ContinueAttackHere				= 1,
+		Attacking						= 2,
+		EnemySighted					= 3,
+		TownRegionLow					= 4,
+		TownRegionHigh					= 5,
+		Defending						= 6,
+		ChaseAway						= 7,
+		PreparingAttack					= 8,
+		PreparingAttackOldUnreachable	= 9, // Never occurs in vanilla?
+	};
+}
+
 namespace RaceId
 {
 	enum Enum : u8

@@ -79,7 +79,7 @@ namespace hooks
 			AiTown* AItown; // ecx
 
 			regionNew = region;
-			if (region->captainType == 3 && !alwaysThisRegion) {
+			if (region->state == 3 && !alwaysThisRegion) {
 				regionNew = &AiRegionCaptains[(u8)unit->playerId][SAI_GetRegionIdFromPxEx(
 					unit->sprite->position.x,
 					unit->sprite->position.y)];
@@ -109,7 +109,7 @@ namespace hooks
 						unit->id != UnitId::TerranMedic ? 157 : 177,
 						SAI_Paths->regions[(u16)regionNew->region].rgnCenterX >> 8,
 						SAI_Paths->regions[(u16)regionNew->region].rgnCenterY >> 8);
-					if (regionNew->captainType == 8 || regionNew->captainType == 9 || regionNew->captainType == 1 || regionNew->captainType == 2)
+					if (regionNew->state == 8 || regionNew->state == 9 || regionNew->state == 1 || regionNew->state == 2)
 						assignCaptainToSlowestUnit(parentAi);
 				}
 			}
@@ -165,7 +165,7 @@ namespace hooks
 			GPTP::logger << "null region in AI_TrainingBroodling!" << '\n';
 			return;
 		}
-		regionType = playerRegion[regionId].captainType; // state
+		regionType = playerRegion[regionId].state; // state
 		region = &playerRegion[regionId];
 		if (region == nullptr)
 		{
@@ -597,7 +597,7 @@ namespace hooks
 		if (v12->type == 4)
 		{
 			militaryAi = (MilitaryAi*)v12;
-			if (militaryAi->region->captainType == 1)
+			if (militaryAi->region->state == 1)
 			{
 				if (self->isUnitAINonBuilding())
 				{
@@ -642,14 +642,14 @@ LABEL_37:
 					selfRegion = &AiRegionCaptains[(u8)self->playerId][helper::getRegionIdFromUnit(realTarget)];
 					if (childAi2)
 					{
-						v18 = v14->captainType;
+						v18 = v14->state;
 						if (v18 == 5 || v18 == 4)
 						{
 							helper::AI_AssignMilitary(6, v14);
 						}
-						if (v14->captainType)
+						if (v14->state)
 						{
-							if (!selfRegion->captainType && *elapsedTimeSeconds > 60)
+							if (!selfRegion->state && *elapsedTimeSeconds > 60)
 								helper::AI_AssignMilitary(5, selfRegion);
 						}
 					}
@@ -1440,7 +1440,7 @@ LABEL_22:
 					if (unitAI2->type == 4)
 					{
 						MilitaryAi* militaryAI = unitAI2;
-						u8 regionType = militaryAI->region->captainType;
+						u8 regionType = militaryAI->region->state;
 						if (regionType == 1 || regionType == 8 || regionType == 9 || regionType == 2)
 						{
 							continue;
@@ -2033,29 +2033,28 @@ LABEL_36:
 		MilitaryAi* unitAI = (MilitaryAi*)unit->pAI;
 		if (unitAI == nullptr)
 		{
-			return 0;
+			return false;
 		}
 		if (unitAI->type != AiType::Military)
 		{
-			return 0;
+			return false;
 		}
 		if (unitAI->parent != unit)
 		{
-			return 0;
+			return false;
 		}
-		if (units_dat::BaseProperty[unit->id] & 1)
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 		{
-			return 0;
+			return false;
 		}
-		AiRegion* unitRegion = unitAI->region;
-		if (unitRegion->captainType == 2)
+		if (unitAI->region->state == RegionState::Attacking)
 		{
-			return 0;
+			return false;
 		}
 
 		bool result = false;
 		AiTown* i = nullptr;
-		AiTown* town = unitRegion->town;
+		AiTown* town = unitAI->region->town;
 		for (i = town; town; i = town)
 		{
 			Unit* firstUnit = town->firstTownUnit;
@@ -2066,9 +2065,9 @@ LABEL_36:
 				{
 					return 1;
 				}
-				result = i;
+				town = i;
 			}
-			result = town->link.prev;
+			town = town->link.prev;
 		}
 		return result;
 	}

@@ -642,7 +642,7 @@ struct AiRegion // AiRegion
 	/*00*/  u16 region;
 	/*02*/  u16 targetRegion;
 	/*04*/  u8  playerId;
-	/*05*/  u8  captainType;
+	/*05*/  u8  state;
 	/*06*/  u8  defensePriorityAdd;
 	/*07*/  u8  unkCount;
 	/*08*/  u8  captainFlags;
