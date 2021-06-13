@@ -85,7 +85,7 @@ namespace hooks
 			{
 				helper::AI_TrainingUnit(halUnit2, halUnit2);
 			}
-			else
+			else if (source->pAI != nullptr)
 			{
 				WorkerAi* sourceAI = (WorkerAi*)source->pAI;
 				helper::AI_AddWorkerStructureAI(halUnit2, sourceAI->town);
