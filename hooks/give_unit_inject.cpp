@@ -13,10 +13,14 @@ namespace
 		__asm
 		{
 			PUSH EBP
+			PUSH EAX
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
 			MOV playerId, EAX
 			MOV EAX, [EBP + 0x0C]
+			MOV ESP, EBP
+			POP EAX
+			POP EBP
 			MOV unkScore, EAX
 			MOV unit, ECX
 			PUSHAD
@@ -25,8 +29,6 @@ namespace
 		__asm
 		{
 			POPAD
-			MOV ESP, EBP
-			POP EBP
 			RETN 0x08
 		}
 	}
