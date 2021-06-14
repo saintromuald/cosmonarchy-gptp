@@ -116,6 +116,6 @@ namespace hooks
 		jmpPatch(InitPlacementBoxPos_Wrapper, 0x0048D660, 0);
 		jmpPatch(DrawPlacementBox_Wrapper, 0x0048DDC0, 4);
 //		jmpPatch(updatePlacementStateForPlacementBox_Wrapper, 0x0048DCE0, 0);
-		jmpPatch(updateBuildingPlacementState_Units_Wrapper, 0x00473720, 1);
+//		jmpPatch(updateBuildingPlacementState_Units_Wrapper, 0x00473720, 1);
 	}
 }
