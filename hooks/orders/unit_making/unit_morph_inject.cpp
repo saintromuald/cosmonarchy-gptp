@@ -373,16 +373,12 @@ namespace
 	{
 		static Unit* unit;
 		__asm {
-			PUSH EBP
-			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
 		hooks::orders_Morph1(unit);
 		__asm {
 			POPAD
-			MOV ESP, EBP
-			POP EBP
 			RETN
 		}
 	}
