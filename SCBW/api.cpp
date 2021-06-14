@@ -421,7 +421,6 @@ namespace scbw
 		}
 	}
 
-
 	void setTechResearchState(u8 playerId, u16 techId, bool isResearched)
 	{
 		assert(playerId < PLAYER_COUNT);
@@ -436,7 +435,6 @@ namespace scbw
 			TechBw->isResearched[playerId][techId - TechId::Restoration] = isResearched;
 		}
 	}
-
 
 	const u32 Func_DoWeaponDamage = 0x00479930;
 	void sendGPTP_aise_cmd(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3)
@@ -477,7 +475,7 @@ namespace scbw
 	{
 		if (unit->id == UnitId::ZergEgg)
 		{
-			auto origin = unit->eggOrigin;
+			u8 origin = unit->eggOrigin;
 			if (origin == UnitId::ZergLarva)
 			{
 				return true;
@@ -542,6 +540,7 @@ namespace scbw
 		}
 		return false;
 	}
+
 	bool isConventionalUnitMorphResult(u16 id)
 	{
 		switch (id)
@@ -1855,5 +1854,13 @@ namespace scbw
 		});
 
 		return allyCount < enemyCount;
+	}
+
+	bool unitIdIsZergSupply(u16 unitId)
+	{
+		return (unitId == UnitId::ZergOvileth
+			|| unitId == UnitId::ZergIroleth
+			|| unitId == UnitId::ZergOthstoleth
+			|| unitId == UnitId::ZergAlaszileth);
 	}
 }

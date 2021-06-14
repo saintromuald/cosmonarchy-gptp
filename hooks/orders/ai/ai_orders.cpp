@@ -25,7 +25,7 @@ namespace hooks
 		{
 			if (useSimpleMilitaryAI)
 			{
-				parent = result; // for ai training broodling, parent can be the same as result, and will still work as intended
+				parent = result; // in this context, parent can be the same as result and will still work as intended
 			}
 			else
 			{
@@ -47,7 +47,7 @@ namespace hooks
 		{
 			helper::AI_TrainingWorker(result, parent);
 		}
-		else if (result->id == UnitId::ZergOvileth)
+		else if (scbw::unitIdIsZergSupply(result->id))
 		{
 			helper::AI_TrainingOverlord(result, parent); // replace with hook later
 		}
@@ -115,7 +115,7 @@ namespace hooks
 		}
 		*/
 
-		// Hooked to rule out AI crashes - Pr0nogo
+	// Hooked to rule out AI crashes - Pr0nogo
 	void AI_CreateNuke(Unit* silo, Unit* result)	// 0045B7A0
 	{												// originally had 3 args, but last one was unused
 		Unit* nuke;

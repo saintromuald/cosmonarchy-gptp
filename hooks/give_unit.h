@@ -3,9 +3,7 @@
 
 namespace hooks
 {
-
-	void GiveUnit(Unit* unit, u32 playerId, u32 unkScore);	//0049EFA0
+	void giveUnit(Unit* unit, u32 playerId, u32 bCountAsCompleted);		// 0049EFA0
 
 	void injectGiveUnitHook();
-
-} //hooks
+}

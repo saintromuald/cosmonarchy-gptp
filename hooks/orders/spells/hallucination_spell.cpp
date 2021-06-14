@@ -8,7 +8,7 @@ namespace hooks
 	{
 		s32 sightRange = unit->getSightRange(true);
 		u16 techCost;
-		if (helper::ordersSpell_Sub_4926D0(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899))
+		if (helper::spellOrder(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899))
 		{
 			s32 counter = 1;
 
@@ -82,14 +82,15 @@ namespace hooks
 			}
 			if (source->pAI)
 			{
-				if (units_dat::BaseProperty[halUnit->id] & (UnitProperty::Worker | UnitProperty::Building))
+				if (units_dat::BaseProperty[halUnit->id] & (UnitProperty::Worker | UnitProperty::Building)
+					|| scbw::unitIdIsZergSupply(source->id))
 				{
 					WorkerAi* sourceAI = (WorkerAi*)source->pAI;
 					helper::AI_AddWorkerStructureAI(halUnit, sourceAI->town);
 				}
 				else
 				{
-					helper::AI_TrainingUnit(halUnit, halUnit);
+					helper::AI_TrainingSimpleMilitary(halUnit, halUnit);
 				}
 			}
 			result = halUnit;

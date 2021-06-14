@@ -32,7 +32,7 @@ namespace hooks
 	Unit* iterateUnitsAtLocationTargetProc(Box16* location,							// 004E8280
 		Unit*(__fastcall* proc)(Unit*, Unit*),
 		Unit* unit);
-	s32 giveUnitToPlayer(Unit* unit, u32 playerId);									// 004C8040
+	b32 giveUnitToPlayer(Unit* unit, u32 playerId);									// 004C8040
 
 	void injectWpnSpellHitHooks();
 }

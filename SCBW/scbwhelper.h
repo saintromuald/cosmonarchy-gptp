@@ -424,8 +424,8 @@ namespace helper
 
 	//// give_unit
 	void ApplySpeedUpgradeFromUnitType(Unit* unit);																						// 00454370
-	void function_00463040(Unit* unit);																									// 00463040
-	void function_00476D30(Unit* unit);																									// 00476D30
+	void giveAI(Unit* unit);																									// 00463040
+	void recheckAttacks(Unit* unit);																									// 00476D30
 	void incrementUnitScores(Unit* unit, s32 unkScore);																					// 00488BF0
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);																					// 004A1E50
 	void CreateUnitSelection(Unit* unit, u32 selectionIndex);																			// 004E6180
@@ -585,7 +585,7 @@ namespace helper
 
 	//// hallucination_spell
 	// for orders_Hallucination1
-	bool ordersSpell_Sub_4926D0(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index);				// 004926D0
+	bool spellOrder(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index);							// 004926D0
 
 	void UnitDestructor(Unit* unit);
 	bool placeHallucination(Unit* unit);																							// 004F66D0
@@ -987,6 +987,7 @@ namespace helper
 
 	// AI utility
 	void giveAi(Unit* unit);
+	void AI_TrainingSimpleMilitary(Unit* newUnit, Unit* sourceUnit);										// 0043E280
 
 	//// misc
 	s8 SETS(s32 x);

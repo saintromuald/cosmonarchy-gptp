@@ -13,7 +13,7 @@ namespace hooks
 		{
 			u16 techCost;
 			s32 sightRange = unit->getSightRange(true);
-			if (helper::ordersSpell_Sub_4926D0(unit, TechId::Feedback, &techCost, sightRange * 32, 0x532)) // Must target units with energy
+			if (helper::spellOrder(unit, TechId::Feedback, &techCost, sightRange * 32, 0x532)) // Must target units with energy
 			{
 				if (target->status & UnitStatus::IsHallucination)
 				{
