@@ -555,7 +555,7 @@ namespace
 	{
 		static Unit* unit;
 		static u32 playerId;
-		static s32 result;
+		static b32 result;
 		__asm
 		{
 			PUSH EBP

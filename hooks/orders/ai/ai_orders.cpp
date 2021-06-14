@@ -116,7 +116,7 @@ namespace hooks
 		}
 		*/
 
-		// Hooked to rule out AI crashes - Pr0nogo
+	// Hooked to rule out AI crashes - Pr0nogo
 	void AI_CreateNuke(Unit* silo, Unit* result)	// 0045B7A0
 	{												// originally had 3 args, but last one was unused
 		Unit* nuke;

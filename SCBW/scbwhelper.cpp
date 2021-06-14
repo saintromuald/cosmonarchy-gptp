@@ -3005,19 +3005,17 @@ namespace helper
 	// Equivalent to function @ 0x00402160
 	bool isUnitPositions2Equal(Unit* unit)
 	{
-		return (
-			unit->nextTargetWaypoint.x == unit->position.x &&
-			unit->nextTargetWaypoint.y == unit->position.y
-			);
+		return (unit->nextTargetWaypoint.x == unit->position.x && unit->nextTargetWaypoint.y == unit->position.y);
 	}
 
-	//if canBeAborted is TRUE, the unit can be aborted because there's
-	//no room around the constructing building
+	// if canBeAborted is TRUE, the unit can be aborted because there's
+	// no room around the constructing building
 	b32 buildingAddon(Unit* unit, u32 hpGain, b32 canBeAborted)
 	{
 		const u32 Func_buildingAddon = 0x004679A0;
 		static b32 bResult;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDX, hpGain
 			MOV EAX, unit
@@ -3921,7 +3919,7 @@ namespace helper
 		}
 	}
 
-	void function_00463040(Unit* unit)
+	void giveAI(Unit* unit)
 	{
 		const u32 Func_Sub463040 = 0x00463040;
 		__asm {
@@ -3932,7 +3930,7 @@ namespace helper
 		}
 	}
 
-	void function_00476D30(Unit* unit)
+	void recheckAttacks(Unit* unit)
 	{
 		const u32 Func_Sub476D30 = 0x00476D30;
 		__asm {

@@ -914,7 +914,7 @@ LABEL_15:
 	}
 
 	// Hooked to add Nydus handling, except it already existed - Pr0nogo
-	s32 giveUnitToPlayer(Unit* unit, u32 playerId) // 004C8040
+	b32 giveUnitToPlayer(Unit* unit, u32 playerId) // 004C8040
 	{
 		u32 playerIdVar = playerId;
 		if (playerId == 13)
@@ -926,7 +926,7 @@ LABEL_15:
 			helper::SErrSetLastError(87);
 			return 0;
 		}
-		if (unit->status & 0x40000000)
+		if (unit->status & UnitStatus::IsHallucination)
 		{
 			return 0;
 		}
@@ -960,7 +960,7 @@ LABEL_15:
 		{
 			helper::forHangarUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))giveUnitsProc, playerIdVar);
 		}
-		if (unit->status & 2)
+		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			Unit* connectedUnit = unit->building.addon;
 			if (connectedUnit)
@@ -983,4 +983,6 @@ LABEL_15:
 		}
 		return 1;
 	}
+
+
 }

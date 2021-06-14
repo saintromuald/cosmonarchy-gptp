@@ -424,8 +424,8 @@ namespace helper
 
 	//// give_unit
 	void ApplySpeedUpgradeFromUnitType(Unit* unit);																						// 00454370
-	void function_00463040(Unit* unit);																									// 00463040
-	void function_00476D30(Unit* unit);																									// 00476D30
+	void giveAI(Unit* unit);																									// 00463040
+	void recheckAttacks(Unit* unit);																									// 00476D30
 	void incrementUnitScores(Unit* unit, s32 unkScore);																					// 00488BF0
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);																					// 004A1E50
 	void CreateUnitSelection(Unit* unit, u32 selectionIndex);																			// 004E6180
