@@ -32,6 +32,8 @@ namespace Flags
 		CanAttackOrCast = 1 << 21,
 		Own = 1 << 22,
 		NotWorker = 1 << 23,
+		NoEgg = 1 << 24,
+		NoLarva = 1 << 25,
 	};
 }
 

@@ -210,6 +210,14 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 
 		{
 			return false;
 		}
+		if (context & Flags::NoEgg && (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon))
+		{
+			return false;
+		}
+		if (context & Flags::NoLarva && unit->id == UnitId::ZergLarva)
+		{
+			return false;
+		}
 		return true;
 	};
 	return callback;

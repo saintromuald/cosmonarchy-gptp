@@ -119,7 +119,8 @@ namespace hooks
 		{
 			humanVisionSomething = 1 << player;
 		}
-		Point32 dimensions;
+		/*
+		Point32 dimensions; // Box32? Bounds?
 		dimensions.x = units_dat::BuildingDimensions[unitId].x;
 		dimensions.y = 32 * yTile + units_dat::BuildingDimensions[unitId].y / 2;
 		v14 = 32 * xTile + dimensions.x;
@@ -128,6 +129,7 @@ namespace hooks
 		v15 = dimensions.x + units_dat::UnitBounds[unitId].h;
 		v28.x = v14 + units_dat::UnitBounds[unitId].w;
 		v28.y = v15;
+		*/
 		Unit** allUnitsInBounds = helper::getAllUnitsInBounds((Box16*)&a1);
 		s32 iterateOffset = 0;
 		s16 xTileIterate;
