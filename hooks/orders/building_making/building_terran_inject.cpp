@@ -1,4 +1,3 @@
-//Injector source file for the Attack Orders hook module.
 #include "building_terran.h"
 #include <hook_tools.h>
 #include "SCBW/api.h"
@@ -129,11 +128,11 @@ namespace hooks
 {
 	void injectBuildingTerranHook()
 	{
-		jmpPatch(orders_TerranBuildSelfWrapper,						0x00467760, 2);
-		jmpPatch(orders_SCVBuild2Wrapper,							0x00467A70, 1);
-		jmpPatch(orders_SCVBuildWrapper,							0x00467FD0, 0);
+		jmpPatch(orders_TerranBuildSelfWrapper,				0x00467760, 2);
+		jmpPatch(orders_SCVBuild2Wrapper,					0x00467A70, 1);
+		jmpPatch(orders_SCVBuildWrapper,					0x00467FD0, 0);
 //		placementSimpleWrappers(); // causes insane bug
 
-//		jmpPatch(refreshScreen_Wrapper,								0x0048DDC0, 4);
+//		jmpPatch(refreshScreen_Wrapper,						0x0048DDC0, 4);
 	}
 }
