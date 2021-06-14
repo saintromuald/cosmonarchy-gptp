@@ -58,6 +58,55 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) updateBuildingPlacementState_Units_Wrapper() // 00473720
+	{
+		static s32 result;
+		static s32 yTile;
+		static Unit* builder;
+		static s32 xTile;
+		static u8 player;
+		static u16 unitId;
+		static s32 sizeWidthHeight;
+		static s32 placementStateEntry;
+		static char bDontIgnoreReacting;
+		static char bAlsoInvisible;
+		static s32 withoutVision;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV builder, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV xTile, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV player, AL
+			MOV EAX, [EBP + 0x14]
+			MOV unitId, AX
+			MOV EAX, [EBP + 0x18]
+			MOV sizeWidthHeight, EAX
+			MOV EAX, [EBP + 0x1C]
+			MOV placementStateEntry, EAX
+			MOV EAX, [EBP + 0x20]
+			MOV bDontIgnoreReacting, AL
+			MOV EAX, [EBP + 0x24]
+			MOV bAlsoInvisible, AL
+			MOV EAX, [EBP + 0x28]
+			MOV withoutVision, EAX
+			POP EAX
+			MOV yTile, EAX
+			PUSHAD
+		}
+		hooks::updateBuildingPlacementState_Units(yTile, builder, xTile, player, unitId, sizeWidthHeight, placementStateEntry, bDontIgnoreReacting, bAlsoInvisible, withoutVision);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN 0x24
+		}
+	}
 }
 
 namespace hooks
@@ -66,6 +115,7 @@ namespace hooks
 	{
 		jmpPatch(InitPlacementBoxPos_Wrapper, 0x0048D660, 0);
 		jmpPatch(DrawPlacementBox_Wrapper, 0x0048DDC0, 4);
-		//jmpPatch(updatePlacementStateForPlacementBox_Wrapper, 0x0048DCE0, 0);
+//		jmpPatch(updatePlacementStateForPlacementBox_Wrapper, 0x0048DCE0, 0);
+		jmpPatch(updateBuildingPlacementState_Units_Wrapper, 0x00473720, 1);
 	}
 }
