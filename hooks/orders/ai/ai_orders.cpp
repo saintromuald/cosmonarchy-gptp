@@ -18,7 +18,6 @@ namespace hooks
 		bool useSimpleMilitaryAI =
 			result->id == UnitId::ZergRilirokor
 			|| result->id == UnitId::ZergRililisk
-			|| result->id == UnitId::ProtossSimulacrum
 			|| result->id == UnitId::ProtossArchon
 			|| result->id == UnitId::ProtossMindTyrant;
 

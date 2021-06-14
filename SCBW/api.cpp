@@ -1020,7 +1020,8 @@ namespace scbw
 	{
 		for (s32 i = 0; i < count; i++)
 		{
-			Unit* unit = scbw::createUnitIngame(unitId, playerId, x, y, creator);
+			Unit* unit = scbw::createUnitIngame(unitId, playerId, x, y, creator, false);
+			helper::giveAi(unit);
 			if (unit == nullptr)
 			{
 				return;

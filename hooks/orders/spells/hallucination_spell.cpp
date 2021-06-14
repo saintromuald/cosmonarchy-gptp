@@ -58,42 +58,41 @@ namespace hooks
 
 		Unit* result = nullptr;
 		Unit* halUnit = helper::createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);
-		Unit* halUnit2 = halUnit;
-		if (halUnit != nullptr)
+		if (halUnit)
 		{
 			u16 halTimer = 0;
 			helper::applyHallucinationStats(halUnit);
-			if (halUnit2->status & UnitStatus::IsHallucination)
+			if (halUnit->status & UnitStatus::IsHallucination)
 			{
 				halTimer = 1350;
 			}
 			else
 			{
-				halTimer = (halUnit2->id != UnitId::ZergRilirokor && halUnit2->id != UnitId::ZergRililisk) ? 0 : 1800;
+				halTimer = (halUnit->id != UnitId::ZergRilirokor && halUnit->id != UnitId::ZergRililisk) ? 0 : 1800;
 			}
-			u16 currentHalTimer = halUnit2->removeTimer;
+			u16 currentHalTimer = halUnit->removeTimer;
 			if (!currentHalTimer || halTimer < currentHalTimer)
 			{
-				halUnit2->removeTimer = halTimer;
+				halUnit->removeTimer = halTimer;
 			}
-			s16 unitType = halUnit2->id;
+			s16 unitType = halUnit->id;
 			if (unitType == UnitId::ProtossAccantor) // Originally also ran for Warbringer ID
 			{
-				helper::hallucinateScarabs(halUnit2, source);
+				helper::hallucinateScarabs(halUnit, source);
 			}
-			if (source->pAI != nullptr)
+			if (source->pAI)
 			{
-				if (units_dat::BaseProperty[halUnit2->id] & (UnitProperty::Worker | UnitProperty::Building))
+				if (units_dat::BaseProperty[halUnit->id] & (UnitProperty::Worker | UnitProperty::Building))
 				{
 					WorkerAi* sourceAI = (WorkerAi*)source->pAI;
-					helper::AI_AddWorkerStructureAI(halUnit2, sourceAI->town);
+					helper::AI_AddWorkerStructureAI(halUnit, sourceAI->town);
 				}
 				else
 				{
-					helper::AI_TrainingUnit(halUnit2, halUnit2);
+					helper::AI_TrainingUnit(halUnit, halUnit);
 				}
 			}
-			result = halUnit2;
+			result = halUnit;
 		}
 		else
 		{

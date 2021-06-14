@@ -9251,4 +9251,16 @@ namespace helper
 			POPAD
 		}
 	}
+
+	void giveAi(Unit* unit)
+	{
+		const u32 Func_giveAi = 0x00463040;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_giveAi
+			POPAD
+		}
+	}
 }

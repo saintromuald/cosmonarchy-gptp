@@ -1404,6 +1404,7 @@ namespace hooks
 			unitExt->timers[TimerReviveFlagClearMin] = 0;
 			unitExt->timers[TimerReviveFlagClearMax] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
+
 			if (playerTable[unit->playerId].type == PlayerType::Computer)
 			{
 				AiTown* town = (AiTown*)unitExt->values[ValueReviveTownPointer];
