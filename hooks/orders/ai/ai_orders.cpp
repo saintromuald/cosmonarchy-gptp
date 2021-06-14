@@ -2056,7 +2056,7 @@ LABEL_36:
 		for (i = town; town; i = town)
 		{
 			Unit* firstUnit = town->firstTownUnit;
-			if (firstUnit != unit)
+			if (firstUnit != nullptr && firstUnit->sprite != nullptr && firstUnit != unit)
 			{
 				u32 distance = helper::getDistanceFast(firstUnit->sprite->position.x, unit->sprite->position.x, firstUnit->sprite->position.y, unit->sprite->position.y);
 				if (distance <= 0x180 && helper::AI_AreOnConnectedRegions(firstUnit, unit) && !(helper::AI_CheckMilitaryGrouping(firstUnit)) && distance > 0x100)

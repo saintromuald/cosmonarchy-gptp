@@ -161,7 +161,7 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::DelftBlue,
 	},
 	{	// Cycle-dependent
-		//PlayerColor::Magenta,
+//		PlayerColor::Magenta,
 	},
 };
 
@@ -193,6 +193,7 @@ const std::vector<std::vector<u32>> banned_tileset_tints =
 	{ // Ice
 		PlayerTintCycleDependent,
 		PlayerTintAchromatic,
+		PlayerTintDarkAchromatic,
 	},
 	{ // Twilight
 		PlayerTintCycleDependent,

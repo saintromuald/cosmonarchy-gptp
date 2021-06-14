@@ -763,6 +763,7 @@ namespace hooks
 
 		jmpPatch(getBestSCVForRepairProc_Wrapper,			0x004402B0, 1);
 		jmpPatch(AI_MilitaryShouldWaitForGroup_Wrapper,		0x0043AA10, 5);
+		jmpPatch(AI_RemoveUnitAI_Wrapper,					0x004A1E50, 0);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}
