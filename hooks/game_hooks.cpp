@@ -1410,7 +1410,7 @@ namespace hooks
 				AiTown* town = (AiTown*)unitExt->values[ValueReviveTownPointer];
 				if (town
 					&& (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building)
-					|| unit->id == UnitId::ZergOvileth))
+					|| scbw::unitIdIsZergSupply(unit->id)))
 				{
 					helper::AI_AddWorkerStructureAI(unit, town);
 				}
