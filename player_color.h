@@ -34,7 +34,6 @@ const std::vector<std::vector<u32>> player_tints =
 	{	// Dark Red
 		PlayerColor::Maroon,
 		PlayerColor::Blood,
-		PlayerColor::ElectricOrange,
 		PlayerColor::Mahogany,
 		PlayerColor::DarkCoral,
 	},
@@ -42,11 +41,8 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::Red,
 		PlayerColor::Vermillion,
 		PlayerColor::Coral,
-		PlayerColor::Salmon,
 		PlayerColor::VividRed,
 		PlayerColor::Scarlet,
-		PlayerColor::PersianOrange,
-		PlayerColor::Tomato,
 	},
 	{	// Off Red
 		PlayerColor::Wine,
@@ -56,7 +52,7 @@ const std::vector<std::vector<u32>> player_tints =
 	},
 	{	// Brown
 		PlayerColor::Brown,
-		PlayerColor::Bronze,
+		PlayerColor::Salmon,
 		PlayerColor::SaddleBrown,
 		PlayerColor::Sienna,
 		PlayerColor::Chestnut,
@@ -69,9 +65,13 @@ const std::vector<std::vector<u32>> player_tints =
 	},
 	{	// Orange
 		PlayerColor::Orange,
+		PlayerColor::Bronze,
 		PlayerColor::Pumpkin,
 		PlayerColor::Magma,
+		PlayerColor::ElectricOrange,
 		PlayerColor::VividOrange,
+		PlayerColor::PersianOrange,
+		PlayerColor::Tomato,
 	},
 	{	// Yellow
 		PlayerColor::Yellow,
@@ -211,7 +211,7 @@ const std::vector<std::vector<u32>> banned_race_tints =
 
 	},
 	{ // Protoss
-
+		PlayerTintBrown,
 	},
 };
 
