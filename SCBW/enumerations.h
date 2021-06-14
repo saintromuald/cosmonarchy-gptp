@@ -198,7 +198,7 @@ namespace RaceId
 		Zerg = 0,
 		Terran = 1,
 		Protoss = 2,
-		Other = 3,
+		Other = 3, // also called Independent
 		Neutral = 4,
 		Select = 5,
 		Random = 6,
