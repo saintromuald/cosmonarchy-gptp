@@ -93,4 +93,100 @@ namespace hooks
         }
         return result;
     }
+
+	// Hooked to enable unit mover for human players - Pr0nogo
+	s32 updateBuildingPlacementState_Units(s32 yTile, Unit* builder, s32 xTile, u8 player, u16 unitId, s32 sizeWidthHeight, s32 placementStateEntry,
+		char bDontIgnoreReacting, char bAlsoInvisible, s32 withoutVision) // 00473720
+	{
+		s32 v14;
+		s16 v15;
+		s32 sizeWH;
+		s32 v17;
+		Point16 v18;
+		s32 v20;
+		s32 v21;
+		u8 v22;
+		u8 v24;
+		s16 a1;
+		Point16 v28;
+		s32 v32;
+		s32 v37;
+
+		s32 result = 0;
+		ActiveTile** activeTile = &activeTileArray[xTile + yTile * mapTileSize->width];
+		s32 humanVisionSomething = 0;
+		if (playerTable[player].type == PlayerType::Human)
+		{
+			humanVisionSomething = 1 << player;
+		}
+		Point32 dimensions;
+		dimensions.x = units_dat::BuildingDimensions[unitId].x;
+		dimensions.y = 32 * yTile + units_dat::BuildingDimensions[unitId].y / 2;
+		v14 = 32 * xTile + dimensions.x;
+		a1 = v14 - units_dat::UnitBounds[unitId].x;
+		v28 = dimensions.x - units_dat::UnitBounds[unitId].y;
+		v15 = dimensions.x + units_dat::UnitBounds[unitId].h;
+		v28.x = v14 + units_dat::UnitBounds[unitId].w;
+		v28.y = v15;
+		Unit** allUnitsInBounds = helper::getAllUnitsInBounds((Box16*)&a1);
+		s32 iterateOffset = 0;
+		s16 xTileIterate;
+		s32 yTileIterate = yTile;
+		if (sizeWidthHeight > 0) // SHIWORD(sizeWidthHeight)
+		{
+			sizeWH = (s16)sizeWidthHeight;
+			v17 = 0;
+			v18.x = mapTileSize->width;
+			v18.y = sizeWidthHeight;
+			v28.x = mapTileSize->width;
+			v28.y = sizeWidthHeight;
+			do
+			{
+				v32 = 0;
+				xTileIterate = xTile;
+				if (sizeWH > 0)
+				{
+					v20 = 6 * (v17 + 8 * placementStateEntry);
+					v37 = v20;
+					v21 = 0;
+					do
+					{
+						v22 = 0;
+						if (!buildingPlacementState[v20 + v21] && (withoutVision || !(humanVisionSomething & (*activeTile)->visibilityFlags)))
+						{
+							if ((*activeTile)->isWalkable & 0x8000000 && helper::doesBuildingBlock(builder, xTileIterate, yTileIterate))
+							{
+								v22 = 4;
+							}
+							else
+							{
+								v24 = helper::isTileBlockedBy(allUnitsInBounds, builder, xTileIterate, yTileIterate, bDontIgnoreReacting, bAlsoInvisible);
+								if (v24)
+								{
+									v22 = v24;
+								}
+							}
+							if (result <= v22)
+							{
+								result = v22;
+							}
+							v20 = v37;
+							buildingPlacementState[v37 + v21] = v22;
+						}
+						++activeTile;
+						v21 = (u16)++v32;
+						sizeWH = (s16)sizeWidthHeight;
+						++xTileIterate;
+					} while ((u16)v32 < (s32)(s16)sizeWidthHeight);
+					v18 = v28;
+				}
+				activeTile = activeTile + v18.x;
+				v17 = iterateOffset + 1;
+				iterateOffset = v17;
+				++yTileIterate;
+			} while ((u16)v17 < (s32)sizeWidthHeight); // SHIWORD(sizeWidthHeight)
+		}
+		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
+		return result;
+	}
 }
