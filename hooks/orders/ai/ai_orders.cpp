@@ -70,12 +70,12 @@ namespace hooks
 		// alwaysThisRegion acts as a bool, should be b32?
 		// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
 		// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
-			AiRegion* regionNew; // esi
-			UnitAi* medicAI; // eax
-			Unit* medic; // edx
-			UnitAi* nextAI; // ecx
-			bool previousBool; // zf
-			AiTown* AItown; // ecx
+			AiRegion* regionNew;
+			UnitAi* medicAI;
+			Unit* medic;
+			UnitAi* nextAI;
+			bool previousBool;
+			AiTown* AItown;
 
 			regionNew = region;
 			if (region->state == 3 && !alwaysThisRegion) {
