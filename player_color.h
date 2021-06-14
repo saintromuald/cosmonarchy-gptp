@@ -138,7 +138,7 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::IridescentViolet,
 		PlayerColor::JapaneseViolet,
 		PlayerColor::DarkLavender,
-		//PlayerColor::Magenta,
+//		PlayerColor::Magenta,
 	},
 	{	// Achromatic
 		PlayerColor::White,
