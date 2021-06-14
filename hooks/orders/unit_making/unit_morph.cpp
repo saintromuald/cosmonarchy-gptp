@@ -27,7 +27,7 @@ namespace hooks
 			bool bTwinEggOrCocoon = true;
 			Point16 pos;
 
-			unit->orderSignal -= 4;
+			unit->orderSignal &= ~4;
 			bool vorvaling = false;
 			auto origin = unit->eggOrigin;
 			if (origin == UnitId::ZergZethrokor)
