@@ -84,10 +84,7 @@ namespace hooks
 			if (source->pAI != nullptr)
 			{
 				if (units_dat::BaseProperty[halUnit2->id] & (UnitProperty::Worker | UnitProperty::Building)
-					|| source->id != UnitId::ZergOvileth
-					|| source->id != UnitId::ZergIroleth
-					|| source->id != UnitId::ZergOthstoleth
-					|| source->id != UnitId::ZergAlaszileth)
+					|| scbw::unitIdIsZergSupply(source->id))
 				{
 					WorkerAi* sourceAI = (WorkerAi*)source->pAI;
 					helper::AI_AddWorkerStructureAI(halUnit2, sourceAI->town);

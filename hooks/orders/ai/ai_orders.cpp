@@ -26,7 +26,7 @@ namespace hooks
 		{
 			if (useSimpleMilitaryAI)
 			{
-				parent = result; // for ai training broodling, parent can be the same as result, and will still work as intended
+				parent = result; // in this context, parent can be the same as result and will still work as intended
 			}
 			else
 			{
@@ -48,7 +48,7 @@ namespace hooks
 		{
 			helper::AI_TrainingWorker(result, parent);
 		}
-		else if (result->id == UnitId::ZergOvileth)
+		else if (scbw::unitIdIsZergSupply(result->id))
 		{
 			helper::AI_TrainingOverlord(result, parent); // replace with hook later
 		}

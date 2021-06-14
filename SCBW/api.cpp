@@ -1854,4 +1854,12 @@ namespace scbw
 
 		return allyCount < enemyCount;
 	}
+
+	bool unitIdIsZergSupply(u16 unitId)
+	{
+		return (unitId == UnitId::ZergOvileth
+			|| unitId == UnitId::ZergIroleth
+			|| unitId == UnitId::ZergOthstoleth
+			|| unitId == UnitId::ZergAlaszileth);
+	}
 }

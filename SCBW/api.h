@@ -545,4 +545,5 @@ namespace scbw
 	void dirgeFuse(Unit* unit, UnitExt* unitExt);
 	void updateSignifyStatus(Unit* unit, UnitExt* unitExt);
 	bool isUnitIsolated(Unit* unit);
+	bool unitIdIsZergSupply(u16 unitId);
 }
