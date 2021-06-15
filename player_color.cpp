@@ -1,8 +1,8 @@
 #include "player_color.h"
 
-u8 tminimap_colors[256];
-u8 tunit_colors[2048];
-u8 player_color_list[8];
+u8 tminimap_colors[MINIMAP_COLOR_COUNT];
+u8 tunit_colors[UNIT_COLOR_COUNT];
+u8 player_color_list[PLAYABLE_PLAYER_COUNT];
 
 static std::vector<u32> get_player_tints_from_color(u32 color);
 static bool can_use_player_color(u32 color, u32 last_player);
@@ -115,17 +115,17 @@ static u32 get_color_for_personality(u32 player_id)
 static void set_player_color(u32 player_id, u32 color)
 {
 	player_color_list[player_id] = color;
-	playerMinimapColors[player_id] = tminimap_colors[color];
-	for (u32 i = 0; i < 8; i++)
+	playerMinimapColors[player_id] = tminimap_colors[color + COLOR_SET_COUNT * *CURRENT_TILESET];
+	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
 	{
-		playerInGameColors[player_id * 8 + i] = tunit_colors[color * 8 + i];
+		playerInGameColors[player_id * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * PLAYABLE_PLAYER_COUNT + i];
 	}
 }
 
-static void preload_player_colors()
+static void load_color_tables()
 {
-	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
-	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
+	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, MINIMAP_COLOR_COUNT, 0, 0, 0);
+	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, UNIT_COLOR_COUNT, 0, 0, 0);
 }
 
 void load_melee_player_colors()
@@ -139,7 +139,7 @@ void load_melee_player_colors()
 		}
 	}
 
-	if (player_tints.size() - banned_tileset_tints[*CURRENT_TILESET].size() - banned_race_tints_count < 8)
+	if (player_tints.size() - banned_tileset_tints[*CURRENT_TILESET].size() - banned_race_tints_count < PLAYABLE_PLAYER_COUNT)
 	{
 		scbw::print("Color Randomization Error:", GameTextColor::Red);
 		scbw::print("\tNot enough tints available for current tileset", GameTextColor::Red);
@@ -147,9 +147,8 @@ void load_melee_player_colors()
 		return;
 	}
 
-	preload_player_colors();
-
-	for (u32 player_id = 0; player_id < 8; player_id++)
+	load_color_tables();
+	for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; player_id++)
 	{
 		if (playerTable[player_id].type == PlayerType::Computer)
 		{
@@ -172,16 +171,15 @@ void load_melee_player_colors()
 
 void load_default_player_colors()
 {
-	preload_player_colors();
-
-	for (u32 player_id = 0; player_id < 8; ++player_id)
+	load_color_tables();
+	for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id)
 	{
-		for (u32 color = 0; color < 256; ++color)
+		for (u32 color = 0; color < COLOR_SET_COUNT; ++color)
 		{
 			bool match = true;
-			for (u32 i = 0; i < 8; ++i)
+			for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; ++i)
 			{
-				if (playerInGameColors[player_id * 8 + i] != tunit_colors[color * 8 + i])
+				if (playerInGameColors[player_id * PLAYABLE_PLAYER_COUNT + i] != tunit_colors[color * PLAYABLE_PLAYER_COUNT + i])
 				{
 					match = false;
 					break;
@@ -189,7 +187,8 @@ void load_default_player_colors()
 			}
 			if (match)
 			{
-				player_color_list[player_id] = color;
+				set_player_color(player_id, color);
+				break;
 			}
 		}
 	}

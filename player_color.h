@@ -410,9 +410,13 @@ std::vector<std::vector<std::vector<u32>>> personality_colors =
 	},
 };
 
-extern u8 tminimap_colors[256];
-extern u8 tunit_colors[2048];
-extern u8 player_color_list[8];
+#define COLOR_SET_COUNT 256
+#define MINIMAP_COLOR_COUNT (COLOR_SET_COUNT * TilesetType::Count)
+#define UNIT_COLOR_COUNT 2048
+
+extern u8 tminimap_colors[MINIMAP_COLOR_COUNT];
+extern u8 tunit_colors[UNIT_COLOR_COUNT];
+extern u8 player_color_list[PLAYABLE_PLAYER_COUNT];
 
 // those 2 are mutually exclusive
 void load_melee_player_colors();
