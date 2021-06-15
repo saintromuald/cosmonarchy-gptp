@@ -128,7 +128,7 @@ static void load_color_tables()
 	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, UNIT_COLOR_COUNT, 0, 0, 0);
 }
 
-void load_melee_player_colors()
+bool check_radomization_validity()
 {
 	u32 banned_race_tints_count = 0;
 	for (auto race : banned_race_tints)
@@ -144,52 +144,80 @@ void load_melee_player_colors()
 		scbw::print("Color Randomization Error:", GameTextColor::Red);
 		scbw::print("\tNot enough tints available for current tileset", GameTextColor::Red);
 		load_default_player_colors();
+		return false;
+	}
+	return true;
+}
+
+void randomize_color_for(u32 player_id)
+{
+	if (playerTable[player_id].type == PlayerType::Computer)
+	{
+		u32 color = get_color_for_personality(player_id);
+		if (color != PlayerColor::Invalid)
+		{
+			set_player_color(player_id, color);
+			return;
+		}
+	}
+
+	u32 tint = get_random_tint();
+	while (!can_use_player_tint(tint, player_id))
+	{
+		tint = get_random_tint();
+	}
+	set_player_color(player_id, get_random_color_from_tint(tint));
+}
+
+void match_color_of(u32 player_id)
+{
+	for (u32 color = 0; color < COLOR_SET_COUNT; ++color)
+	{
+		bool match = true;
+		for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; ++i)
+		{
+			if (playerInGameColors[player_id * PLAYABLE_PLAYER_COUNT + i] != tunit_colors[color * PLAYABLE_PLAYER_COUNT + i])
+			{
+				match = false;
+				break;
+			}
+		}
+		if (match)
+		{
+			set_player_color(player_id, color);
+			break;
+		}
+	}
+}
+
+void load_melee_player_colors()
+{
+	if (!check_radomization_validity())
+	{
+		load_default_player_colors();
 		return;
 	}
 
 	load_color_tables();
 	for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; player_id++)
 	{
-		if (playerTable[player_id].type == PlayerType::Computer)
-		{
-			u32 color = get_color_for_personality(player_id);
-			if (color != PlayerColor::Invalid)
-			{
-				set_player_color(player_id, color);
-				continue;
-			}
-		}
-
-		u32 tint = get_random_tint();
-		while (!can_use_player_tint(tint, player_id))
-		{
-			tint = get_random_tint();
-		}
-		set_player_color(player_id, get_random_color_from_tint(tint));
+		randomize_color_for(player_id);
 	}
 }
 
 void load_default_player_colors()
 {
 	load_color_tables();
+	bool can_random = check_radomization_validity();
 	for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id)
 	{
-		for (u32 color = 0; color < COLOR_SET_COUNT; ++color)
+		if (can_random && deathTable[UnitId::ResourceVespeneGeyser].player[player_id] & VespeneDeaths_RandomizeColor)
 		{
-			bool match = true;
-			for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; ++i)
-			{
-				if (playerInGameColors[player_id * PLAYABLE_PLAYER_COUNT + i] != tunit_colors[color * PLAYABLE_PLAYER_COUNT + i])
-				{
-					match = false;
-					break;
-				}
-			}
-			if (match)
-			{
-				set_player_color(player_id, color);
-				break;
-			}
+			randomize_color_for(player_id);
+		}
+		else
+		{
+			match_color_of(player_id);
 		}
 	}
 }

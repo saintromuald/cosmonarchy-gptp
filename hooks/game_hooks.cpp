@@ -232,18 +232,22 @@ namespace hooks
 		if (*elapsedTimeFrames == 1)
 		{
 			// Check deaths
-			bool reveal_map = false;
-			for (u32 player_id = 0; player_id < 12; ++player_id)
+			u8 reveal_flag = 0x00;
+			bool do_ping[PLAYABLE_PLAYER_COUNT] = {};
+			for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id)
 			{
-				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id])
+				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id] & VespeneDeaths_Reveal)
 				{
-					reveal_map = true;
-					break;
+					reveal_flag |= player_id + 1;
+				}
+				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id] & VespeneDeaths_Ping)
+				{
+					do_ping[player_id] = true;
 				}
 			}
 
-			// Explores the entire map, requires a trigger that sets 1 death of Vespene Geyser for any player
-			if (reveal_map)
+			// Explores the entire map, requires a trigger that sets 1 death of Vespene Geyser for players in question
+			if (reveal_flag)
 			{
 				// Explore map
 				for (u32 y = 0; y < mapTileSize->height; y++)
@@ -251,7 +255,7 @@ namespace hooks
 					for (u32 x = 0; x < mapTileSize->width; x++)
 					{
 						ActiveTile& tile = scbw::getActiveTileAt(x * 32, y * 32);
-						tile.exploredFlags = 0x00;
+						tile.exploredFlags &= ~reveal_flag;
 					}
 				}
 
@@ -263,24 +267,32 @@ namespace hooks
 						|| unit->id == UnitId::ResourceMineralFieldType2
 						|| unit->id == UnitId::ResourceMineralFieldType3)
 					{
-						unit->sprite->visibilityFlags = 0xff;
+						unit->sprite->visibilityFlags |= reveal_flag;
 					}
 				}
 			}
 
+			for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target)
+			{
+				if (do_ping[target])
+				{
+					scbw::minimapPing(startPositions[target].x, startPositions[target].y, 7, *LOCAL_NATION_ID);
+				}
+			}
+
 			// Check forces
-			bool randomize_colors = false;
+			bool randomize_all_colors = false;
 			for (u32 i = 0; i < 4; i++)
 			{
 				if (playerForceFlags[i].randomize_start_locations)
 				{
-					randomize_colors = true;
+					randomize_all_colors = true;
 					break;
 				}
 			}
 			
 			// Randomize Player Colors, requires randomize start locations ticked for any force
-			if (randomize_colors)
+			if (randomize_all_colors)
 			{
 				load_melee_player_colors();
 			}

@@ -981,3 +981,10 @@ static const char* player_color_names[] =
 	"Palatinate Blue",
 	"Dark Lavender",
 };
+
+enum VespeneDeaths
+{
+	VespeneDeaths_Reveal			= 0x01,
+	VespeneDeaths_Ping				= 0x02,
+	VespeneDeaths_RandomizeColor	= 0x04,
+};
