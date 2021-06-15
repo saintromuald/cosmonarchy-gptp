@@ -127,7 +127,6 @@ struct Globals
 	}
 
 	AttackExtender attackers;
-	RevivingUnit test;
 
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	s32 flingy_init_bullet_id;
