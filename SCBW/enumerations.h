@@ -567,7 +567,9 @@ namespace TilesetType
 		Jungle_World = 4,
 		Desert = 5,
 		Ice = 6,
-		Twilight = 7
+		Twilight = 7,
+
+		Count,
 	};
 }
 

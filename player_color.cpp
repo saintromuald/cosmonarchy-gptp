@@ -122,6 +122,12 @@ static void set_player_color(u32 player_id, u32 color)
 	}
 }
 
+static void preload_player_colors()
+{
+	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
+	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
+}
+
 void load_melee_player_colors()
 {
 	u32 banned_race_tints_count = 0;
@@ -137,11 +143,11 @@ void load_melee_player_colors()
 	{
 		scbw::print("Color Randomization Error:", GameTextColor::Red);
 		scbw::print("\tNot enough tints available for current tileset", GameTextColor::Red);
+		load_default_player_colors();
 		return;
 	}
 
-	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
-	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
+	preload_player_colors();
 
 	for (u32 player_id = 0; player_id < 8; player_id++)
 	{
@@ -166,8 +172,7 @@ void load_melee_player_colors()
 
 void load_default_player_colors()
 {
-	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, 256, 0, 0, 0);
-	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, 2048, 0, 0, 0);
+	preload_player_colors();
 
 	for (u32 player_id = 0; player_id < 8; ++player_id)
 	{
