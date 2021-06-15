@@ -726,19 +726,23 @@ void cosmonarchyUnitAi(Unit* unit)
 
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0)
 		{
-			s32 count = 0;
-			cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
+			s32 enemy_count = cosmonarchyUnitCount(nullptr, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast);
+			if (enemy_count >= 2)
 			{
-				UnitExt* uExt = globals.GetUnitExt(u);
-				if (!uExt->values[TimerEnsnaringBrood])
+				s32 count = 0;
+				cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally | Flags::CanAttackOrCast, {}, [&](Unit* u)
 				{
-					count++;
+					UnitExt* uExt = globals.GetUnitExt(u);
+					if (!uExt->values[TimerEnsnaringBrood])
+					{
+						count++;
+					}
+				});
+				if (count >= 5)
+				{
+					scbw::set_generic_rust_value(unit, RustId::CastEnsnaringBrood, 1);
+					unitExt->timers[TimerAI_EnsnaringBrood] = MatralethAIEnsnaringBroodTimer;
 				}
-			});
-			if (count >= 5)
-			{
-				scbw::set_generic_rust_value(unit, RustId::CastEnsnaringBrood, 1);
-				unitExt->timers[TimerAI_EnsnaringBrood] = MatralethAIEnsnaringBroodTimer;
 			}
 		}
 	}
@@ -938,7 +942,7 @@ void cosmonarchyUnitAi(Unit* unit)
 			}
 			else if (unit->id == UnitId::ZergSovroleth)
 			{
-				auto match = cosmonarchyFinderMatch(unit, Flags::Ally | Flags::NotSelf | Flags::NoBuilding, {});
+				auto match = cosmonarchyFinderMatch(unit, Flags::Ally | Flags::NotSelf | Flags::NoBuilding | Flags::CanAttackOrCast, {});
 				target = finder.getBest([&](Unit* local) -> u32
 				{
 					if (!match(local))
