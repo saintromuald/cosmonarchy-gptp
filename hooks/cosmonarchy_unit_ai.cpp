@@ -726,7 +726,7 @@ void cosmonarchyUnitAi(Unit* unit)
 
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0)
 		{
-			s32 enemy_count = cosmonarchyUnitCount(nullptr, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast);
+			s32 enemy_count = cosmonarchyUnitCount(nullptr, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast, {});
 			if (enemy_count >= 2)
 			{
 				s32 count = 0;
@@ -952,7 +952,7 @@ void cosmonarchyUnitAi(Unit* unit)
 					UnitExt* localExt = globals.GetUnitExt(local);
 					if (localExt->units[UnitAttachedTarget])
 					{
-						return -2;
+						return -1;
 					}
 					return unit->getCurrentLifeInGame();
 				});
