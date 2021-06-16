@@ -17,6 +17,7 @@ namespace hooks
 	bool getBestSCVForRepairProc(Unit* repairman, Unit* repairTarget);											// 004402B0
 	b32 AI_MilitaryShouldWaitForGroup(Unit* unit);																// 0043AA10
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);															// 004A1E50
+	AiTown* deleteAITownIfNeeded(AiTown* town);																	// 004347E0
 
 	// Attack extender
 	u32 AI_TrainAttackForce(AiRegion* region);																    // 0043E670

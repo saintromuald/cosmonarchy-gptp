@@ -663,7 +663,7 @@ void Unit::damageHp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify
 	}
 }
 
-//Logically equivalent to function @ 0x00454ED0
+// Logically equivalent to function @ 0x00454ED0
 void Unit::reduceDefensiveMatrixHp(s32 amount)
 {
 	assert(this);

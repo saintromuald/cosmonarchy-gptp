@@ -383,27 +383,6 @@ namespace
 		}
 	}
 
-	/*
-	void __declspec(naked) removeWorkerOrBuildingAI_Wrapper() {
-		static Unit* unit;
-		static u32 assert_is_building;
-		static u32 result;
-		__asm {
-			MOV unit,EDI
-			PUSH EAX
-			MOV EAX,[EBP+0x08]
-			POP EAX
-			PUSHAD
-		}
-		result = hooks::removeWorkerOrBuildingAI(unit,assert_is_building);
-		__asm {
-			POPAD
-			MOV EAX, result
-			RETN
-		}
-	}
-	*/
-
 	const u32 Jmp_IsEgg = 0x00434CF1;
 	const u32 Jmp_IsNotEgg = 0x00434CD6;
 	void __declspec(naked) deleteBuildingWorkerAiEggJmpWrapper()

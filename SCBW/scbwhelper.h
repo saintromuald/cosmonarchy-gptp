@@ -982,15 +982,18 @@ namespace helper
 
 	// For AI_RemoveUnitAI
 	s32 AI_RemoveFromAIStructs(Unit* unit, UnitAi* unitAI);													// 00439D60
-	b32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI);											// 00434C90
+	s32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI);											// 00434C90
 	void AI_MedicRemove(Unit* unit);																		// 004477C0
 
 	// AI utility
 	void giveAi(Unit* unit);
 	void AI_TrainingSimpleMilitary(Unit* newUnit, Unit* sourceUnit);										// 0043E280
 
+	// For deleteAITownIfNeeded
+	AiTown* tryBeginDeleteTown(AiTown* town);																// 00434330
+	aiscript* deleteAIScriptsUsingTown(AiTown* town);														// 0045AE20
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
-
 }

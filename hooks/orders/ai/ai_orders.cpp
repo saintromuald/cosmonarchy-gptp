@@ -118,13 +118,10 @@ namespace hooks
 	// Hooked to rule out AI crashes - Pr0nogo
 	void AI_CreateNuke(Unit* silo, Unit* result)	// 0045B7A0
 	{												// originally had 3 args, but last one was unused
-		Unit* nuke;
-		Unit* nuke2;
-
 		if (silo->id == UnitId::TerranNuclearSilo && !*(s32*)&silo->building.silo.isReady)
 		{
-			nuke = helper::createUnit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
-			nuke2 = nuke;
+			Unit* nuke = helper::createUnit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
+			Unit* nuke2 = nuke;
 			if (nuke)
 			{
 				helper::updateUnitStatsFinishBuilding(nuke);
@@ -141,10 +138,11 @@ namespace hooks
 	// Hooked to add region null check - Pr0nogo
 	void AI_TrainingSimpleMilitary(Unit* result, Unit* parent) // 0043E280
 	{
-		AiRegion* region;
-		s16 regionType;
-		AiRegion* playerRegion;
-		s32 regionId;
+		if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
+		{
+			scbw::printf("SimpleMilitary on worker or building! ID: %i", result->id);
+		}
+
 		s32 pX, pY;
 		if (result->sprite != nullptr)
 		{
@@ -157,22 +155,23 @@ namespace hooks
 			pY = result->position.y;
 			GPTP::logger << "null sprite of Create Broodling detected!" << '\n';
 		}
-		regionId = helper::SAI_GetRegionIdFromPxEx(pX, pY);
-		playerRegion = AiRegionCaptains[parent->playerId];
+
+		s32 regionId = helper::SAI_GetRegionIdFromPxEx(pX, pY);
+		AiRegion* playerRegion = AiRegionCaptains[parent->playerId];
 		if (playerRegion == nullptr)
 		{
 			GPTP::logger << "null region in AI_TrainingBroodling!" << '\n';
 			return;
 		}
-		regionType = playerRegion[regionId].state; // state
-		region = &playerRegion[regionId];
+
+		AiRegion* region = &playerRegion[regionId];
 		if (region == nullptr)
 		{
 			GPTP::logger << "AI Broodling Bug: Null region!" << '\n';
 		}
 		else
 		{
-			if (regionType != 0) // region has assigned state, state 0 is nothing
+			if (playerRegion[regionId].state != RegionState::Nothing)
 			{
 				helper::AI_AssignMilitary(1, region);
 			}
@@ -219,9 +218,9 @@ namespace hooks
 	void AI_TrainingNormal(Unit* newUnit, Unit* parentUnit) // 00435DB0
 	{
 		s16 unitId = newUnit->id;
-		if (unitId != UnitId::ZergGeszithalor && unitId != UnitId::ZergVithrilisk)
+		if (!scbw::isConventionalUnitMorphResult(unitId))
 		{
-			if (newUnit->status & 0x40000000)
+			if (newUnit->status & UnitStatus::IsHallucination)
 			{
 				helper::AI_AddMilitary(&AiRegionCaptains[(u8)newUnit->playerId][helper::SAI_GetRegionIdFromPxEx(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
 				return;
@@ -2080,7 +2079,7 @@ LABEL_36:
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI) // 004A1E50
 	{
 		helper::AI_RemoveFromAIStructs(unit, unitAI);
-		helper::AI_RemoveWorkerOrBuildingAI(unit, 0);
+		helper::AI_RemoveWorkerOrBuildingAI(unit, nullptr);
 		if (unitAI != nullptr)
 		{
 			if (unitAI->type == AiType::Guard)
@@ -2096,5 +2095,64 @@ LABEL_36:
 		}
 		helper::AI_MedicRemove(unit);
 		unit->pAI = nullptr;
+	}
+
+	// Hooked to add more functionality - Pr0nogo
+	AiTown* deleteAITownIfNeeded(AiTown* town) // 004347E0
+	{
+		AiTown* result = helper::tryBeginDeleteTown(town);
+		if (result)
+		{
+			helper::deleteAIScriptsUsingTown(town);
+			for (Unit* i = *firstVisibleUnit; i; i = i->link.next)
+			{
+				if (i->sprite != nullptr)
+				{
+					if (i->mainOrderId)
+					{
+						if (units_dat::BaseProperty[i->id] & UnitProperty::ResourceContainer)
+						{
+							i->building.resource.resourceGroup = 0;
+						}
+					}
+				}
+			}
+
+			u8 resourceArea = town->resource_area;
+			if (resourceArea)
+			{
+				baseArray[resourceArea].flags &= 0xFDu;
+			}
+
+			s32 player = (u8)town->player;
+			AiTown* firstTown = AiActiveTownArray[player].first;
+			AiExpandList* townList = &AiActiveTownArray[player];
+			if (firstTown == town)
+			{
+				townList->first = town->link.prev;
+			}
+
+			AiTown* nextTown = town->link.next;
+			if (nextTown)
+			{
+				nextTown->link.prev = town->link.prev;
+			}
+
+			if (town->link.prev)
+			{
+				town->link.prev->link.next = town->link.next;
+			}
+
+			result = townList->last;
+			town->link.next = 0;
+			town->link.prev = result[100].link.prev;
+			AiTown* previousTown = result[100].link.prev;
+			if (previousTown)
+			{
+				previousTown->link.next = town;
+			}
+			result[100].link.prev = town;
+		}
+		return result;
 	}
 }
