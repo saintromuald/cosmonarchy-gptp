@@ -1752,6 +1752,7 @@ namespace hooks
 		{
 			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
 			unitExt->timers[TimerEmergencyDetonation] = (u32)(0.5 * unitExt->timers[TimerControlledDemolition]);
+			unitExt->timers[TimerControlledDemolition] = 0;
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
 		//	unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
 		}
