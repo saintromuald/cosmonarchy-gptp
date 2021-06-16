@@ -976,8 +976,7 @@ namespace hooks
 			case UnitId::ProtossDemiurge:
 			{
 				// Demiurge - Gods Made Flesh - initial cast
-				if (scbw::get_generic_rust_value(unit, RustId::CastGodsMadeFlesh)
-					&& !unitExt->values[ValueGodsMadeFleshActive])
+				if (scbw::get_generic_rust_value(unit, RustId::CastGodsMadeFlesh) && !unitExt->values[ValueGodsMadeFleshActive])
 				{
 					scbw::decloakProc(unit);
 					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 0);
@@ -1708,7 +1707,7 @@ namespace hooks
 			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
 			unitExt->timers[TimerEmergencyDetonation] = EmergencyDetonationTimer;
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
-			//unit->sprite->createOverlay(ImageId::EmergencyDemolitionOverlay_Small + overlayOffset);
+//			unit->sprite->createOverlay(ImageId::EmergencyDemolitionOverlay_Small + overlayOffset);
 		}
 
 		// Controlled Demolition - initial cast
@@ -1718,7 +1717,7 @@ namespace hooks
 			scbw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
 			unitExt->timers[TimerControlledDemolition] = ControlledDemolitionTimer;
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
-			//unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
+//			unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
 		}
 
 		// Controlled Demolition - destroy structure
@@ -1754,7 +1753,7 @@ namespace hooks
 			unitExt->timers[TimerEmergencyDetonation] = (u32)(0.5 * unitExt->timers[TimerControlledDemolition]);
 			unitExt->timers[TimerControlledDemolition] = 0;
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
-		//	unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
+//			unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
 		}
 
 		// Emergency Detonation - destroy structure
