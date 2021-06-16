@@ -78,6 +78,7 @@ struct KitePositions
 const u32 rangedMoveRadius = 4 * 32;
 const u32 meleeMoveRadius = 1 * 32;
 const u32 localGroupRadius = 4 * 32;
+const u32 crowdCalcRadius = 2 * 32;
 
 const u32 kiteZoneCount = 9;
 const Vector32f kiteOffsets[kiteZoneCount] =
@@ -428,7 +429,7 @@ void cosmonarchyUnitAi(Unit* unit)
 				u32 crowdScore = 0;
 				if (!(unit->status & UnitStatus::InAir))
 				{
-					crowdScore = cosmonarchyUnitCount(unit, unit->position, localGroupRadius, Flags::Ally | Flags::NotSelf | Flags::NoAir, {});
+					crowdScore = cosmonarchyUnitCount(unit, unit->position, crowdCalcRadius, Flags::Ally | Flags::NotSelf | Flags::NoAir, {});
 				}
 
 				localGroup.forEach([&](Unit* localUnit)
@@ -461,7 +462,7 @@ void cosmonarchyUnitAi(Unit* unit)
 							localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 							KITE_DEBUG("%s: forward", localUnit->getName());
 						}
-						else if (crowdScore > 6 && distance <= maxRange * 4)
+						else if (crowdScore > 9 && distance <= maxRange * 4)
 						{
 							localUnitExt->timers[TimerAI_KiteCooldown] = 24;
 							localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
@@ -509,7 +510,7 @@ void cosmonarchyUnitAi(Unit* unit)
 							localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
 						});
 
-						const f32 confidenceFactor = 1.5;
+						const f32 confidenceFactor = 2;
 						if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
 							|| localGroupValue * confidenceFactor < result.biases[result.forwardIndex]
 							|| distance <= maxRange * 0.5)
@@ -519,14 +520,14 @@ void cosmonarchyUnitAi(Unit* unit)
 							KITE_DEBUG("%s: fall back", localUnit->getName());
 						}
 						else if (distance > maxRange * 1.5
-							|| (distance > maxRange * 1 && crowdScore > 6)
+							|| (distance > maxRange * 1 && crowdScore > 9)
 							|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * confidenceFactor)
 							|| targetHasMinRange)
 						{
 							localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 							KITE_DEBUG("%s: forward", localUnit->getName());
 						}
-						else if (crowdScore > 6)
+						else if (crowdScore > 9)
 						{
 							localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
 							KITE_DEBUG("%s: strafe", localUnit->getName());
