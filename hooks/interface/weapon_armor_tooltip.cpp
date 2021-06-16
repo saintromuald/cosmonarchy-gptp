@@ -211,14 +211,14 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 	{
 		text += std::string(damageStr) + " " + std::to_string(damageFactor * baseDamage);
 		if (bonusDamage > 0) text += "+" + std::to_string(damageFactor * bonusDamage);
-	}
 
-	/*
-	if (!extended && weaponId == WeaponId::HaloRockets)
-	{
-		text += " " + std::string(perRocketStr);
+		/*
+		if (weaponId == WeaponId::HaloRockets)
+		{
+			text += " " + std::string(perRocketStr);
+		}
+		*/
 	}
-	*/
 
 	// Cooldown
 	std::string modifierColor = attackCdModifier > 0 ? "\006" : attackCdModifier < 0 ? "\007" : "\002";
@@ -668,10 +668,6 @@ namespace hooks
 		std::string flag = formatStringVector(flags);
 
 		std::string text = "\004" + std::string(armorUpgradeName) + "\002";
-		if (extended)
-		{
-			text += "\nColor: " + std::string(player_color_names[player_color_list[unit->playerId]]); // TODO: move to rank text
-		}
 		text += "\n" + std::string(armorStr) + " " + std::to_string(baseArmor);
 		ss.str("");
 		ss << bonusArmor;
@@ -685,26 +681,20 @@ namespace hooks
 
 		if (extended)
 		{
+			text += "\nColor: " + std::string(player_color_names[player_color_list[unit->playerId]]); // TODO: move to rank text
 			text += "\nFlags: " + flag;
-		}
-		if (extended && accel != 1)
-		{
-			text += "\nAcceleration: " + acceleration;
-		}
-		if (extended)
-		{
+			if (accel != 1)
+			{
+				text += "\nAcceleration: " + acceleration;
+			}
 			text += "\nTurn Rate: " + turnRate;
-		}
-		if (extended)
-		{
 			text += "\nSight Range: " + std::to_string(sightRange);
+			if (transportSpace != 255)
+			{
+				text += "\nTransport Space: " + std::to_string(transportSpace);
+			}
 		}
-		if (extended && transportSpace != 255)
-		{
-			text += "\nTransport Space: " + std::to_string(transportSpace);
-		}
-
-		if (!extended)
+		else
 		{
 			text += "\n-- Hold \003Shift\002 for more details --";
 		}
