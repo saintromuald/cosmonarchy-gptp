@@ -1757,8 +1757,29 @@ namespace hooks
 			unit->damageHp(unit->getCurrentLifeInGame() * 256, unit, unit->playerId, false);
 		}
 
-		if (unitExt->units[UnitWorshipDemiurge]) {
-			UnitExt* demiurgeExt = globals.GetUnitExt(unitExt->units[UnitWorshipDemiurge]);
+		Unit* tyrant = unitExt->units[UnitMindController];
+		if (tyrant != nullptr)
+		{
+			// Transfer units if Mind Tyrant is mind controlled
+			if (unit->playerId != tyrant->playerId)
+			{
+				unit->giveTo(tyrant->playerId);
+				u32 overlayId = ImageId::MindControlHit_Small + scbw::getOverlayOffset(unit->id);
+				unit->sprite->createTopOverlay(overlayId, 0, 0, 0);
+			}
+		}
+
+		Unit* demiurge = unitExt->units[UnitWorshipDemiurge];
+		if (demiurge != nullptr) {
+			// Transfer units if Demiurge is mind controlled
+			if (unit->playerId != demiurge->playerId)
+			{
+				unit->giveTo(demiurge->playerId);
+				u32 overlayId = ImageId::MindControlHit_Small + scbw::getOverlayOffset(unit->id);
+				unit->sprite->createTopOverlay(overlayId, 0, 0, 0);
+			}
+
+			UnitExt* demiurgeExt = globals.GetUnitExt(demiurge);
 			// Demiurge - Gods Made Flesh - apply effect to linked units
 			if (demiurgeExt->values[ValueGodsMadeFleshActive])
 			{
@@ -1796,5 +1817,4 @@ namespace hooks
 	{
 		return true;
 	}
-
-} //hooks
+}
