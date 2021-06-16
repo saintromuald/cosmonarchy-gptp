@@ -2100,62 +2100,58 @@ LABEL_36:
 	// Hooked to add more functionality - Pr0nogo
 	AiTown* deleteAITownIfNeeded(AiTown* town) // 004347E0
 	{
-		AiTown* result;
-		AiTown* townVar;
-		Unit* i;
-		BYTE resourceArea;
-		AiExpandList* townList;
-		s32 player;
-		AiTown* firstTown;
-		AiTown* nextTown;
-		AiTown* previousTown;
-
-		townVar = town;
-		result = helper::tryBeginDeleteTown(town);
+		AiTown* result = helper::tryBeginDeleteTown(town);
 		if (result)
 		{
-			helper::deleteAIScriptsUsingTown(townVar);
-			for (i = *firstVisibleUnit; i; i = i->link.next)
+			helper::deleteAIScriptsUsingTown(town);
+			for (Unit* i = *firstVisibleUnit; i; i = i->link.next)
 			{
-				if (i->sprite)
+				if (i->sprite != nullptr)
 				{
 					if (i->mainOrderId)
 					{
-						if (units_dat::BaseProperty[i->id] & 0x2000)
+						if (units_dat::BaseProperty[i->id] & UnitProperty::ResourceContainer)
 						{
 							i->building.resource.resourceGroup = 0;
 						}
 					}
 				}
 			}
-			resourceArea = townVar->resource_area;
+
+			u8 resourceArea = town->resource_area;
 			if (resourceArea)
 			{
 				baseArray[resourceArea].flags &= 0xFDu;
 			}
-			player = (unsigned __int8)townVar->player;
-			firstTown = AiActiveTownArray[player].first;
-			townList = &AiActiveTownArray[player];
-			if (firstTown == townVar)
-				townList->first = townVar->link.prev;
-			nextTown = townVar->link.next;
+
+			s32 player = (u8)town->player;
+			AiTown* firstTown = AiActiveTownArray[player].first;
+			AiExpandList* townList = &AiActiveTownArray[player];
+			if (firstTown == town)
+			{
+				townList->first = town->link.prev;
+			}
+
+			AiTown* nextTown = town->link.next;
 			if (nextTown)
 			{
-				nextTown->link.prev = townVar->link.prev;
+				nextTown->link.prev = town->link.prev;
 			}
-			if (townVar->link.prev)
+
+			if (town->link.prev)
 			{
-				townVar->link.prev->link.next = townVar->link.next;
+				town->link.prev->link.next = town->link.next;
 			}
+
 			result = townList->last;
-			townVar->link.next = 0;
-			townVar->link.prev = result[100].link.prev;
-			previousTown = result[100].link.prev;
+			town->link.next = 0;
+			town->link.prev = result[100].link.prev;
+			AiTown* previousTown = result[100].link.prev;
 			if (previousTown)
 			{
-				previousTown->link.next = townVar;
+				previousTown->link.next = town;
 			}
-			result[100].link.prev = townVar;
+			result[100].link.prev = town;
 		}
 		return result;
 	}
