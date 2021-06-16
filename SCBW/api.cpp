@@ -1890,7 +1890,9 @@ namespace scbw
 
 	void mind_control(Unit* source, Unit* target)
 	{
-		if (source->playerId == target->playerId)
+		if (!source
+			|| !target
+			|| source->playerId == target->playerId)
 		{
 			return;
 		}
@@ -1928,6 +1930,11 @@ namespace scbw
 
 	void recede_mind_control(Unit* target)
 	{
+		if (!target)
+		{
+			return;
+		}
+
 		UnitExt* targetExt = globals.GetUnitExt(target);
 		Unit* mindController = targetExt->units[UnitMindController];
 		targetExt->units[UnitMindController] = nullptr;
