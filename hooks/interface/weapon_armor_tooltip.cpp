@@ -558,15 +558,28 @@ namespace hooks
 		addStatus(statuses, "Tempo Down", scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1, 1);
 		addStatus(statuses, "Swarming Omen", unitExt->values[ValueSwarmingOmenStatus] > 0, 1);
 		addStatus(statuses, "Protective Instincts", unitExt->values[ValueProtectiveInstinctsStatus] > 0, 1);
-		addStatus(statuses, "Worshiping", unitExt->values[ValueWorshipStack] > 0, 1);
 		addStatus(statuses, "Making Gods from Flesh", unitExt->values[ValueGodsMadeFleshActive] > 0, 1);
 		addStatus(statuses, "Adaptive Amitosis", unitExt->values[ValueAdaptiveAmitosis] > 0, 1);
 		addStatus(statuses, "Cutaneous Barrier", unitExt->values[ValueCutaneousBarrier] > 0, 1);
 		addStatus(statuses, "Infested", unitExt->values[ValueInfestedByAkistrokor] > 0, 1);
 		addStatus(statuses, "Enthralling Assault", unitExt->values[ValueEnthrallingTalons] > 0, 1);
 		addStatus(statuses, "Kelvin Munitions", unitExt->values[ValueKelvinMunitionsSlow] > 0, 1);
-
 		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
+
+		if (unitExt->units[UnitMindController])
+		{
+			switch (unitExt->units[UnitMindController]->id)
+			{
+				case UnitId::ProtossMindTyrant:
+				{
+					addStatus(statuses, "Tyranny", 1, 1);
+				} break;
+				case UnitId::ProtossDemiurge:
+				{
+					addStatus(statuses, "Worshiping", 1, 1);
+				} break;
+			}
+		}
 
 		// Aise Timers - Gimmicked
 		addStatus(statuses, "Observing", unitExt->timers[TimerObservanceOverlay] > 0, 1);
