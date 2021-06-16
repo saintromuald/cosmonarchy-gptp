@@ -632,19 +632,21 @@ struct UnitLayout
 					/*0x0D0*/         u16       resourceAmount;
 					/*0x0D2*/         u8        resourceIscript;
 					/*0x0D3*/         u8        gatherQueueCount;
-					/*0x0D4*/         Unit*		nextGatherer;   // pointer to the next worker unit waiting in line to gather
+					/*0x0D4*/         Unit*		nextGatherer;			// pointer to the next worker unit waiting in line to gather
 					/*0x0D8*/         u8        resourceGroup;
 					/*0x0D9*/         u8        resourceBelongsToAI;
-				} resource;  // When the unit is resource container
-				/*0x0D0*/       Unit*			nydusExit; // connected nydus canal
-				/*0x0D0*/       Unit*			ghostNukeMissile;	// confirmed to be Unit* and not Sprite*
+				} resource; // When the unit is resource container
+				/*0x0D0*/       Unit*			nydusExit;				// connected nydus canal
+				/*0x0D0*/       Unit*			ghostNukeMissile;		// confirmed to be Unit* and not Sprite*
 				/*0x0D0*/       Sprite*			pylonAura;
 				struct
 				{
-					/*0x0D0*/         Unit*		nuke;  // attached nuke
+					/*0x0D0*/         Unit*		nuke;					// attached nuke
 					/*0x0D4*/         bool		isReady;
 				} silo;
-				/*0x0D0*/       Box16			hatcheryHarvestValue; // wtf???
+				/*0x0D0*/       Box16			larvaSpawnZone;			// Not game coordinates, but "activity values".
+																		// Increased by 25 every time worker returns resources to the side unless over 100, and all
+																		// sides are decreased by 1 at the same time. Larvas spawn at the side with smallest value.
 				/*0x0D0*/       Point16			powerupOrigin;
 			};
 		} building;
