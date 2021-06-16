@@ -419,7 +419,7 @@ namespace scbw
 	///
 	/// @return           The created unit or nullptr if the unit cannot be created.
 	//function used for broodlings and similar stuff
-	Unit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator = nullptr, bool initAI = true);
+	Unit* createUnitInGame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator = nullptr, bool initAI = true);
 	/// Calculates the images.dat overlay adjustment for the given unit.
 	/// This piece of code is used throughout StarCraft.exe for various status
 	/// effects, such as Ensnare, Plague, and Defensive Matrix.

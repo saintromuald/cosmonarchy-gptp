@@ -177,7 +177,7 @@ namespace hooks
 							if (units_dat::BaseProperty[builtUnit->id] & UnitProperty::TwoUnitsIn1Egg)
 							{
 								count = 2;
-								builtUnits[1] = scbw::createUnitIngame(builtUnit->id, builtUnit->playerId, builtUnit->position.x - 32, builtUnit->position.y, unit, true);
+								builtUnits[1] = scbw::createUnitInGame(builtUnit->id, builtUnit->playerId, builtUnit->position.x - 32, builtUnit->position.y, unit, true);
 							}
 
 							for (u32 i = 0; i < count; i++)
