@@ -602,7 +602,8 @@ namespace hooks
 				{
 					// Demiurge - Worship
 					if (data.target->playerId != data.attacker->playerId
-						&& data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2))
+						&& data.target->getCurrentHpInGame() <= data.target->getMaxHpInGame() / 2
+						&& data.target->hitPoints > data.finalDamage)
 					{
 						auto& vec = attackerExt->unitVectors[UnitVectorWorshipersDemiurge];
 							
