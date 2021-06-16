@@ -989,8 +989,11 @@ namespace helper
 	void giveAi(Unit* unit);
 	void AI_TrainingSimpleMilitary(Unit* newUnit, Unit* sourceUnit);										// 0043E280
 
+	// For deleteAITownIfNeeded
+	AiTown* tryBeginDeleteTown(AiTown* town);																// 00434330
+	aiscript* deleteAIScriptsUsingTown(AiTown* town);														// 0045AE20
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
-
 }

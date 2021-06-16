@@ -723,6 +723,24 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) deleteAITownIfNeeded_Wrapper() // 004347E0
+	{
+		static AiTown* town;
+		static AiTown* result;
+		__asm
+		{
+			MOV town, EAX
+			PUSHAD
+		}
+		result = hooks::deleteAITownIfNeeded(town);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -764,6 +782,7 @@ namespace hooks
 		jmpPatch(getBestSCVForRepairProc_Wrapper,			0x004402B0, 1);
 		jmpPatch(AI_MilitaryShouldWaitForGroup_Wrapper,		0x0043AA10, 5);
 		jmpPatch(AI_RemoveUnitAI_Wrapper,					0x004A1E50, 0);
+		jmpPatch(deleteAITownIfNeeded_Wrapper,				0x004347E0, 3);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

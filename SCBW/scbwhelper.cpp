@@ -9273,4 +9273,35 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For deleteAITownIfNeeded
+	AiTown* tryBeginDeleteTown(AiTown* town)
+	{
+		const u32 Func_tryBeginDeleteTown = 0x00434330;
+		static AiTown* result;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, town
+			CALL Func_tryBeginDeleteTown
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	aiscript* deleteAIScriptsUsingTown(AiTown* town)
+	{
+		const u32 Func_deleteAIScriptsUsingTown = 0x0045AE20;
+		static aiscript* result;
+		__asm
+		{
+			PUSHAD
+			MOV EBX, town
+			CALL Func_deleteAIScriptsUsingTown
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

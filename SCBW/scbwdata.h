@@ -464,6 +464,9 @@ SCBW_DATA(char*,aKills1,							0x006CAC78);
 // For giveUnitToPlayer
 SCBW_DATA(s32*,	currentTriggerPlayerId,				0x006509B0);
 
+// For deleteAITownIfNeeded
+SCBW_DATA(Base*,	baseArray,						0x00692688);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

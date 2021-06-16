@@ -118,13 +118,10 @@ namespace hooks
 	// Hooked to rule out AI crashes - Pr0nogo
 	void AI_CreateNuke(Unit* silo, Unit* result)	// 0045B7A0
 	{												// originally had 3 args, but last one was unused
-		Unit* nuke;
-		Unit* nuke2;
-
 		if (silo->id == UnitId::TerranNuclearSilo && !*(s32*)&silo->building.silo.isReady)
 		{
-			nuke = helper::createUnit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
-			nuke2 = nuke;
+			Unit* nuke = helper::createUnit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
+			Unit* nuke2 = nuke;
 			if (nuke)
 			{
 				helper::updateUnitStatsFinishBuilding(nuke);
@@ -221,9 +218,9 @@ namespace hooks
 	void AI_TrainingNormal(Unit* newUnit, Unit* parentUnit) // 00435DB0
 	{
 		s16 unitId = newUnit->id;
-		if (unitId != UnitId::ZergGeszithalor && unitId != UnitId::ZergVithrilisk)
+		if (!scbw::isConventionalUnitMorphResult(unitId))
 		{
-			if (newUnit->status & 0x40000000)
+			if (newUnit->status & UnitStatus::IsHallucination)
 			{
 				helper::AI_AddMilitary(&AiRegionCaptains[(u8)newUnit->playerId][helper::SAI_GetRegionIdFromPxEx(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
 				return;
@@ -2098,5 +2095,68 @@ LABEL_36:
 		}
 		helper::AI_MedicRemove(unit);
 		unit->pAI = nullptr;
+	}
+
+	// Hooked to add more functionality - Pr0nogo
+	AiTown* deleteAITownIfNeeded(AiTown* town) // 004347E0
+	{
+		AiTown* result;
+		AiTown* townVar;
+		Unit* i;
+		BYTE resourceArea;
+		AiExpandList* townList;
+		s32 player;
+		AiTown* firstTown;
+		AiTown* nextTown;
+		AiTown* previousTown;
+
+		townVar = town;
+		result = helper::tryBeginDeleteTown(town);
+		if (result)
+		{
+			helper::deleteAIScriptsUsingTown(townVar);
+			for (i = *firstVisibleUnit; i; i = i->link.next)
+			{
+				if (i->sprite)
+				{
+					if (i->mainOrderId)
+					{
+						if (units_dat::BaseProperty[i->id] & 0x2000)
+						{
+							i->building.resource.resourceGroup = 0;
+						}
+					}
+				}
+			}
+			resourceArea = townVar->resource_area;
+			if (resourceArea)
+			{
+				baseArray[resourceArea].flags &= 0xFDu;
+			}
+			player = (unsigned __int8)townVar->player;
+			firstTown = AiActiveTownArray[player].first;
+			townList = &AiActiveTownArray[player];
+			if (firstTown == townVar)
+				townList->first = townVar->link.prev;
+			nextTown = townVar->link.next;
+			if (nextTown)
+			{
+				nextTown->link.prev = townVar->link.prev;
+			}
+			if (townVar->link.prev)
+			{
+				townVar->link.prev->link.next = townVar->link.next;
+			}
+			result = townList->last;
+			townVar->link.next = 0;
+			townVar->link.prev = result[100].link.prev;
+			previousTown = result[100].link.prev;
+			if (previousTown)
+			{
+				previousTown->link.next = townVar;
+			}
+			result[100].link.prev = townVar;
+		}
+		return result;
 	}
 }

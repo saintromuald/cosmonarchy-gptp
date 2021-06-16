@@ -117,6 +117,25 @@ struct dlgEvent
 	u16		field_12;			// 0x12
 };
 
+struct Base
+{
+	Point16	position;			// 0x0
+	u8		unk4;				// 0x4
+	u8		unk5;				// 0x5
+	u8		unk6;				// 0x6
+	u8		flags;				// 0x7
+	u32		unk8;				// 0x8
+	u32		unkC;				// 0xC
+	u32		unk10;				// 0x10
+	u32		unk14;				// 0x14
+	u32		unk18;				// 0x18
+	u32		unk1C;				// 0x1C
+	u32		unk20;				// 0x20
+	u32		unk24;				// 0x24
+	u32		unk28;				// 0x28
+	u32		unk2C;				// 0x2C
+};
+
 struct GameData // taken from IDA and from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
 { 
 	u32		saveTime;					// 0x0
@@ -625,8 +644,8 @@ C_ASSERT(sizeof(SMK_Structure) == 30); //0x1E
 struct GuiOverlay
 {
 	/*0x00*/  unk_t     unk_0[6];
-	/*0x06*/  u16     overlayType;
-	/*0x08*/  u16     id;
+	/*0x06*/  u16		overlayType;
+	/*0x08*/  u16		id;
 	/*0x0A*/  unk_t     unk_a[34];
 };
 
@@ -637,7 +656,7 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 
 struct AiTown;
 struct MilitaryAiArray; // declaring this here to avoid compiler errors
-struct AiRegion // AiRegion
+struct AiRegion
 {
 	/*00*/  u16 region;
 	/*02*/  u16 targetRegion;
@@ -879,6 +898,18 @@ struct AI_Main
 	u8 unit_build_limits[0xe4];		// 0x3f0
 	Unit* mainMedic;					// 0x4d4
 	u8 unk4d8[0x10];
+};
+
+struct aiscript
+{
+	Link<aiscript>		link;			// 0x0, 0x4
+	s32					scriptOffset;	// 0x8
+	s32					sleep;			// 0xC
+	s32					playerId;		// 0x10
+	Bounds				locBounds;		// 0x14
+	Point16				locCenter;		// 0x24
+	AiTown*				town;			// 0x2C
+	s32					flags;			// 0x30
 };
 
 C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
