@@ -606,7 +606,6 @@ namespace hooks
 						&& data.target->hitPoints > data.finalDamage)
 					{
 						auto& vec = attackerExt->unitVectors[UnitVectorWorshipersDemiurge];
-							
 						if (std::find(vec.begin(), vec.end(), data.target) == vec.end())
 						{
 							vec.push_back(data.target);
