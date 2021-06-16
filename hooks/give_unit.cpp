@@ -104,4 +104,34 @@ namespace hooks
 			*/
 		}
 	}
+
+	// Hooked to rule out unit AI type issues - Pr0nogo
+	void giveAI(Unit* unit) // 00463040
+	{
+		s32 player = unit->playerId;
+		if (player < 8 && playerTable[player].type == PlayerType::Computer)
+		{
+			if (unit->id == UnitId::TerranCleric)
+			{
+				Unit* freeMedic = AIScriptController[player].mainMedic;				
+				if (freeMedic == nullptr)
+				{
+					freeMedic = unit;
+				}
+			}
+
+			if (units_dat::ComputerAIInternal[unit->id] & 2) // "Non-military"
+			{
+				AiTown* firstTown = AiActiveTownArray[player].first;
+				if (firstTown)
+				{
+					helper::AI_AddWorkerStructureAI(unit, firstTown);
+				}
+			}
+			else
+			{
+				helper::AI_AddGuardAiToUnit(unit);
+			}
+		}
+	}
 }

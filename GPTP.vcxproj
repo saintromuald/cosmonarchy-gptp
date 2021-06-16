@@ -249,6 +249,8 @@
     <ClCompile Include="AIScripter\AICore.cpp" />
     <ClCompile Include="AIScripter\AIParser.cpp" />
     <ClCompile Include="base_layout.cpp" />
+    <ClCompile Include="hooks\limits\attack_extender.cpp" />
+    <ClCompile Include="hooks\limits\attack_extender_inject.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_modifier.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="hooks\build_time.cpp" />
@@ -351,6 +353,8 @@
     <ClCompile Include="hooks\target_related_inject.cpp" />
     <ClCompile Include="hooks\trap_hooks.cpp" />
     <ClCompile Include="hooks\trap_hooks_inject.cpp" />
+    <ClCompile Include="hooks\unit_ai.cpp" />
+    <ClCompile Include="hooks\unit_ai_inject.cpp" />
     <ClCompile Include="hooks\unit_movement.cpp" />
     <ClCompile Include="hooks\unit_movement_inject.cpp" />
     <ClCompile Include="hooks\unit_stats\new_requirements.cpp" />
@@ -590,6 +594,7 @@
     <ClInclude Include="hooks\requirements\requirements.h" />
     <ClInclude Include="hooks\requirements\requirement_parser.h" />
     <ClInclude Include="hooks\trap_hooks.h" />
+    <ClInclude Include="hooks\unit_ai.h" />
     <ClInclude Include="hooks\unit_movement.h" />
     <ClInclude Include="hooks\unit_stats\new_requirements.h" />
     <ClInclude Include="hooks\unit_stats\supply_hooks.h" />

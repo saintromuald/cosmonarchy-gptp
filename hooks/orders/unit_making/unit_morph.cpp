@@ -412,7 +412,7 @@ namespace hooks
 				{
 					town = ai->town;
 					auto free = town->free_buildings;
-					helper::deleteBuildingAi(ai, &free);
+					helper::deleteBuildingAI(ai, &free);
 				}
 				else
 				{

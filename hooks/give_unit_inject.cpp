@@ -1,4 +1,3 @@
-//Injector source file for the Give Unit hook module.
 #include "give_unit.h"
 #include <hook_tools.h>
 
@@ -29,7 +28,25 @@ namespace
 		__asm
 		{
 			POPAD
+			MOV ESP, EBP
+			POP EBP
 			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) giveAI_Wrapper() // 00463040
+	{
+		static Unit* unit;
+		__asm
+		{
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::giveAI(unit);
+		__asm
+		{
+			POPAD
+			RETN
 		}
 	}
 }
@@ -39,5 +56,6 @@ namespace hooks
 	void injectGiveUnitHook()
 	{
 		jmpPatch(giveUnit_Wrapper,		0x0049EFA0, 1);
+		jmpPatch(giveAI_Wrapper,		0x00463040,	1);
 	}
 }

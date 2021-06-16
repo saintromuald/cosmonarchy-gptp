@@ -108,6 +108,8 @@
 	#include "hooks/interface/briefing/briefing.h"
 	#include "hooks/unit_stats/supply_hooks.h"
 	#include "hooks/unit_stats/new_requirements.h"
+	#include "hooks/unit_ai.h"
+	#include "hooks/limits/attack_extender.h"
 //	#include "hooks/requirements/requirements.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -586,6 +588,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 //	hooks::injectRequirementHooks();
 	hooks::injectNewRequirementsHooks();
+	hooks::injectUnitAIHooks();
+	hooks::injectAttackExtenderHooks();
 
 	return TRUE;
 }

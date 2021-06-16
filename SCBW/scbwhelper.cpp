@@ -7708,14 +7708,14 @@ namespace helper
 		return (bool)result;
 	}
 
-	void deleteBuildingAi(BuildingAi* building, BuildingAiArray** buildingList)
+	void deleteBuildingAI(BuildingAi* building, BuildingAiArray** buildingList)
 	{
-		const u32 Func_DeleteBuildingAi = 0x00404500;
+		const u32 Func_DeleteBuildingAI = 0x00404500;
 		__asm {
 			PUSHAD
 			MOV EDX, buildingList
 			MOV EAX, building
-			CALL Func_DeleteBuildingAi
+			CALL Func_DeleteBuildingAI
 			POPAD
 		}
 	}
