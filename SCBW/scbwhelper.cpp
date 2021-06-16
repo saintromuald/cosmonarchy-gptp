@@ -7958,7 +7958,7 @@ namespace helper
 		return result;
 	}
 
-	// For AI_orderUnitCloaking
+	// For AI_OrderUnitCloaking
 
 	void applyCloakingOrder(Unit* unit)
 	{
@@ -8527,6 +8527,25 @@ namespace helper
 			PUSH player
 			CALL Func_AI_AttackClear
 			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool AI_AttackManager(s32 player, s32 x, s32 y, s32 bOverrideLastAttack, s32 bFallbackAirOnly)
+	{
+		const u32 Func_AI_AttackManager = 0x0043ABB0;
+		static bool result;
+		__asm
+		{
+			PUSHAD
+			PUSH bFallbackAirOnly
+			PUSH bOverrideLastAttack
+			PUSH y
+			PUSH x
+			PUSH player
+			CALL Func_AI_AttackManager
+			MOV result, AL
 			POPAD
 		}
 		return result;

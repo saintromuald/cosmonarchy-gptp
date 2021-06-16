@@ -11,7 +11,7 @@ There are 9 places where StarCraft checks unit ID for cloaking.
 * 0x004292C0: BTNSCOND_CanCloak   (Used by Infested Kerrigan, Infested Duran, and Mixed Cloakable Group)
 * 0x00491B30: ApplyCloakingOrder  (Used by all spell-cloaking units)
 * 0x004C0720: CMDRECV_Cloak       (Used by all spell-cloaking units)
-* 0x0043B970: AI_orderUnitCloaking(Used by AI-controlled units)
+* 0x0043B970: AI_OrderUnitCloaking(Used by AI-controlled units)
 * 0x004C0660: CMDRECV_Decloak     (Used by all spell-cloaking units)
 * 0x00491A50: getCloakingTech     (Used by "Create Unit With Properties" in StarEdit + create_unit opcode in aiscript.bin)
 * 0x00491A90: getCloakingEnergyConsumption (Used by energy regen; This is editable from the energy hook stuff)

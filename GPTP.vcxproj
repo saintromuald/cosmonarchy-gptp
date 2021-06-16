@@ -249,6 +249,8 @@
     <ClCompile Include="AIScripter\AICore.cpp" />
     <ClCompile Include="AIScripter\AIParser.cpp" />
     <ClCompile Include="base_layout.cpp" />
+    <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
+    <ClCompile Include="hooks\aiscript\ai_requests_inject.cpp" />
     <ClCompile Include="hooks\limits\attack_extender.cpp" />
     <ClCompile Include="hooks\limits\attack_extender_inject.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_modifier.cpp" />
@@ -568,6 +570,7 @@
     <ClInclude Include="AIScripter\AICore.h" />
     <ClInclude Include="AIScripter\AIParser.h" />
     <ClInclude Include="base_layout.h" />
+    <ClInclude Include="hooks\aiscript\ai_requests.h" />
     <ClInclude Include="hooks\orders\building_making\building_modifier.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="config_utility.h" />

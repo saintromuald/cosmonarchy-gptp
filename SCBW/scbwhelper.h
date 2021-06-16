@@ -177,9 +177,10 @@ namespace helper
 	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);
 
 	// For AI_SendSuicide
-	bool isThreat(Unit* target, Unit* unit);		// 00476930
-	void prepSuicide(Unit* unit);					// 0043CD40
-	u32 AI_AttackClear(s32 player);					// 00439500
+	bool isThreat(Unit* target, Unit* unit);														// 00476930
+	void prepSuicide(Unit* unit);																	// 0043CD40
+	u32 AI_AttackClear(s32 player);																	// 00439500
+	bool AI_AttackManager(s32 player, s32 x, s32 y, s32 bOverrideLastAttack, s32 bFallbackAirOnly); // 0043ABB0
 
 	// Attack extender
 
