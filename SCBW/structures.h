@@ -899,6 +899,7 @@ struct AI_Main
 	Unit* mainMedic;					// 0x4d4
 	u8 unk4d8[0x10];
 };
+C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
 
 struct aiscript
 {
@@ -911,9 +912,6 @@ struct aiscript
 	AiTown*				town;			// 0x2C
 	s32					flags;			// 0x30
 };
-
-C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
-//static_assert(sizeof(AI_Main) == 1256, "The size of the AI_Main structure is invalid");
 
 // From BWAPI Offsets.h, used in scbwdata.h by UnitAvailability
 struct _uavail

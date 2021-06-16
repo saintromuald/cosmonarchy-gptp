@@ -741,6 +741,24 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) Ai_CanMineExtra_Wrapper() // 00447A70
+	{
+		static Unit* unit;
+		static bool result;
+		__asm
+		{
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::Ai_CanMineExtra(unit);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -783,6 +801,7 @@ namespace hooks
 		jmpPatch(AI_MilitaryShouldWaitForGroup_Wrapper,		0x0043AA10, 5);
 		jmpPatch(AI_RemoveUnitAI_Wrapper,					0x004A1E50, 0);
 		jmpPatch(deleteAITownIfNeeded_Wrapper,				0x004347E0, 3);
+//		jmpPatch(Ai_CanMineExtra_Wrapper,					0x00447A70, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

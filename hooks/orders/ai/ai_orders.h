@@ -18,6 +18,7 @@ namespace hooks
 	b32 AI_MilitaryShouldWaitForGroup(Unit* unit);																// 0043AA10
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);															// 004A1E50
 	AiTown* deleteAITownIfNeeded(AiTown* town);																	// 004347E0
+	bool Ai_CanMineExtra(Unit* unit);																			// 00447A70
 
 	// Attack extender
 	u32 AI_TrainAttackForce(AiRegion* region);																    // 0043E670

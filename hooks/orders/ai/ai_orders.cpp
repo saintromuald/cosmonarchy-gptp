@@ -2155,4 +2155,33 @@ LABEL_36:
 		}
 		return result;
 	}
+
+	// Hooked because why not - Pr0nogo
+	bool Ai_CanMineExtra(Unit* unit) // 00447A70
+	{
+		if (!unit->pAI)
+		{
+			return 0;
+		}
+		s32 player = (u8)unit->playerId;
+		if (AIScriptController[player].difficulty != 2)
+		{
+			return 0;
+		}
+		s32 unitId;
+		u8 raceId = playerTable[player].race;
+		if (raceId == RaceId::Terran)
+		{
+			unitId = UnitId::TerranMason;
+		}
+		else
+		{
+			unitId = raceId != RaceId::Zerg ? UnitId::ProtossScribe : UnitId::ZergDroleth;
+		}
+		unitId = (u16)unitId;
+		u32 completedCount = unitCountTable[(u16)unitId].player[(u8)player];
+
+		// Originally had an inlined function that combined sieged and unsieged tanks for unit counts
+		return completedCount >= 12;
+	}
 }
