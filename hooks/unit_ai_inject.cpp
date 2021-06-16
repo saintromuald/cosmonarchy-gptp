@@ -309,7 +309,7 @@ namespace
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN
+			RETN 4
 		}
 	}
 }
