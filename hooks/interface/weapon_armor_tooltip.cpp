@@ -529,10 +529,6 @@ namespace hooks
 			unitExt->timers[TimerCausticDischargeSpeed], TimerType::Aise);
 		addStatus(statuses, "Ion Field", -1, 1,
 			unitExt->timers[TimerIonFieldSpeed], TimerType::Aise);
-		addStatus(statuses, "Controlled Demolition", -1, 1,
-			unitExt->timers[TimerControlledDemolition], TimerType::Aise);
-		addStatus(statuses, "Emergency Detonation", -1, 1,
-			unitExt->timers[TimerEmergencyDetonation], TimerType::Aise);
 		addStatus(statuses, "Failure Mode",-1, 1,
 			unitExt->timers[TimerAnticthonFailureMode], TimerType::Aise);
 

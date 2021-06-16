@@ -692,7 +692,7 @@ namespace hooks
 						}
 						else if (current_button->reqVar == TechId::EmergencyDetonation)							
 						{
-							if (unitExt->timers[TimerControlledDemolition] || unitExt->timers[TimerEmergencyDetonation])
+							if (!unitExt->timers[TimerControlledDemolition] || unitExt->timers[TimerEmergencyDetonation])
 							{
 								current_button_state = BUTTON_STATE::Invisible;
 							}
@@ -701,6 +701,7 @@ namespace hooks
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 						}
+						// Anticthon buttonset handling - Failure Mode
 						else if (current_button->reqVar == TechId::FailureMode)
 						{
 							if (unitExt->timers[TimerAnticthonFailureMode])
