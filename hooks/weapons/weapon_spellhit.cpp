@@ -274,7 +274,7 @@ namespace hooks
 			attacker->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
 			return;
 		}
-		attackerExt->values[ValueAI_KiteSignal] = 1;
+		attackerExt->values[ValueAI_KiteSignal]++;
 		Unit* target = attacker->orderTarget.unit;
 		if (target != nullptr)
 		{

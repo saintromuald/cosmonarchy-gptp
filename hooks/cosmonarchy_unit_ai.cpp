@@ -364,7 +364,7 @@ static inline bool unitCanAttack(Unit* unit)
 
 static inline bool shouldKite(Unit* unit, UnitExt* unitExt)
 {
-	return (unitExt->values[ValueAI_KiteSignal] == 1 && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
+	return (unitExt->values[ValueAI_KiteSignal] && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
 		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !unitCanAttack(unit));
 }
 
@@ -408,12 +408,9 @@ void cosmonarchyUnitAi(Unit* unit)
 			localGroup.forEach([&](Unit* localUnit)
 			{
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				if (localUnitExt->values[ValueAI_KiteSignal])
-				{
-					sync++;
-				}
+				sync += localUnitExt->values[ValueAI_KiteSignal];
 			});
-			if (sync >= localGroup.unitCount / 2)
+			if (sync >= localGroup.unitCount * 1.5)
 			{
 				KitePositions result = getKitePositions(unit, hostileGroupRadius);
 				if (!result.enemiesFound)
@@ -446,11 +443,11 @@ void cosmonarchyUnitAi(Unit* unit)
 					//	return;
 					//}
 
+					localUnitExt->values[ValueAI_KiteSignal] = 0;
 					const u32 distance = getDistanceToTarget(localUnit);
 					const u32 maxRange = getMaxRange(localUnit);
 					if (isMeleeAttacker(localUnit))
 					{
-						localUnitExt->values[ValueAI_KiteSignal] = 0;
 						localUnitExt->timers[TimerAI_KiteCooldown] = 8;
 						if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
 						{
@@ -472,7 +469,6 @@ void cosmonarchyUnitAi(Unit* unit)
 					}
 					else
 					{
-						localUnitExt->values[ValueAI_KiteSignal] = 2;
 						localUnitExt->timers[TimerAI_KiteCooldown] = 10;
 						bool targetHasMinRange = false;
 						if (localUnit->orderTarget.unit)
@@ -579,33 +575,21 @@ void cosmonarchyUnitAi(Unit* unit)
 
 				if (targetUnit)
 				{
-
-					if (localUnitExt->values[ValueAI_KiteSignal] == 2)
+					localUnitExt->timers[TimerAI_KiteCooldown] = 2;
+					KITE_DEBUG("%s: attack", localUnit->getName());
+					if (localUnit->id == UnitId::ProtossSolarion)
 					{
-						localUnitExt->timers[TimerAI_KiteCooldown] = 2;
-						localUnitExt->values[ValueAI_KiteSignal] = 0;
-						KITE_DEBUG("%s: preattack", localUnit->getName());
-						localUnit->orderTo(OrderId::Patrol, targetUnit->getX(), targetUnit->getY());
-						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+						localUnit->orderTo(OrderId::CarrierFight, targetUnit);
+					}
+					else if (localUnit->id == UnitId::ProtossAccantor)
+					{
+						localUnit->orderTo(OrderId::ReaverFight, targetUnit);
 					}
 					else
 					{
-						localUnitExt->timers[TimerAI_KiteCooldown] = 2;
-						KITE_DEBUG("%s: attack", localUnit->getName());
-						if (localUnit->id == UnitId::ProtossSolarion)
-						{
-							localUnit->orderTo(OrderId::CarrierFight, targetUnit);
-						}
-						else if (localUnit->id == UnitId::ProtossAccantor)
-						{
-							localUnit->orderTo(OrderId::ReaverFight, targetUnit);
-						}
-						else
-						{
-							localUnit->orderTo(OrderId::AttackUnit, targetUnit);
-						}
-						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+						localUnit->orderTo(OrderId::AttackUnit, targetUnit);
 					}
+					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 				}
 				else
 				{
