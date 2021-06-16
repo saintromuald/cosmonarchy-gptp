@@ -228,6 +228,18 @@ namespace hooks
 			}			
 		}
 
+		if (*elapsedTimeFrames % 3 == 0)
+		{
+			for (u32 i = 0; i < 16; ++i)
+			{
+				Ping* ping = PingArray + i;
+				if (ping->timer < 12)
+				{
+					ping->timer++;
+				}
+			}
+		}
+
 		// Map Features
 		if (*elapsedTimeFrames == 1)
 		{
