@@ -730,9 +730,7 @@ namespace hooks
 		}
 		else
 		{
-			UnitExt* targetExt = globals.GetUnitExt(target);
-			target->giveTo(attacker->playerId);
-			targetExt->units[UnitMindController] = attacker;
+			scbw::mind_control(attacker, target);
 		}
 	}
 

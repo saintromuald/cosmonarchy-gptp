@@ -612,13 +612,10 @@ namespace hooks
 						}
 
 						targetExt->values[ValueWorshipStack] = 1;
-						targetExt->units[UnitWorshipDemiurge] = data.attacker;
-						targetExt->values[ValueWorshipOriginalPlayer] = data.target->playerId;
-						data.target->giveTo(data.attacker->playerId);
+						scbw::mind_control(data.attacker, data.target);
 
 						helper::playSoundFromSource(SoundId::DemiurgeWorship01, data.target, 1, 0);
-						u32 overlayId = ImageId::MindControlHit_Small + scbw::getOverlayOffset(data.target->id);
-						data.target->sprite->createTopOverlay(overlayId, 0, 0, 0);
+						scbw::mind_control(data.attacker, data.target);
 					}
 				} break;
 				case WeaponId::KonviliskSowingSpines:

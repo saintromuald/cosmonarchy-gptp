@@ -1763,39 +1763,9 @@ namespace hooks
 			unit->damageHp(unit->getCurrentLifeInGame() * 256, unit, unit->playerId, false);
 		}
 
-		Unit* tyrant = unitExt->units[UnitMindController];
-		if (tyrant != nullptr)
-		{
-			// Transfer units if Mind Tyrant is mind controlled
-			if (unit->playerId != tyrant->playerId)
-			{
-				unit->giveTo(tyrant->playerId);
-				u32 overlayId = ImageId::MindControlHit_Small + scbw::getOverlayOffset(unit->id);
-				unit->sprite->createTopOverlay(overlayId, 0, 0, 0);
-			}
-		}
-
-		Unit* demiurge = unitExt->units[UnitWorshipDemiurge];
-		if (demiurge != nullptr) {
-			// Transfer units if Demiurge is mind controlled
-			if (unit->playerId != demiurge->playerId)
-			{
-				unit->giveTo(demiurge->playerId);
-				u32 overlayId = ImageId::MindControlHit_Small + scbw::getOverlayOffset(unit->id);
-				unit->sprite->createTopOverlay(overlayId, 0, 0, 0);
-			}
-
-			UnitExt* demiurgeExt = globals.GetUnitExt(demiurge);
-			// Demiurge - Gods Made Flesh - apply effect to linked units
-			if (demiurgeExt->values[ValueGodsMadeFleshActive])
-			{
-				unitExt->timers[TimerGodsMadeFlesh] = 3;
-			}
-		}
-
 		// Demiurge - Gods Made Flesh - return units to original owner
 		if (unitExt->values[ValueWorshipStack]
-			&& unitExt->units[UnitWorshipDemiurge] == nullptr)
+			&& unitExt->units[UnitMindController] == nullptr)
 		{
 			helper::playSoundFromSource(SoundId::DemiurgeWorship01, unit, 1, 0);
 			u32 overlayId = ImageId::MindControlHit_Small + scbw::getOverlayOffset(unit->id);
@@ -1803,12 +1773,13 @@ namespace hooks
 
 			unitExt->values[ValueWorshipStack] = 0;
 			unitExt->timers[TimerGodsMadeFlesh] = 0;
-			unit->giveTo(unitExt->values[ValueWorshipOriginalPlayer]);
+
+			scbw::recede_mind_control(unit);
 		}
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends
 		if (unitExt->timers[TimerGodsMadeFlesh] == 1
-			&& unitExt->units[UnitWorshipDemiurge])
+			&& unitExt->units[UnitMindController])
 		{
 			unit->remove();
 		}

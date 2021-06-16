@@ -1887,4 +1887,59 @@ namespace scbw
 			|| unitId == UnitId::ZergOthstoleth
 			|| unitId == UnitId::ZergAlaszileth);
 	}
+
+	void mind_control(Unit* source, Unit* target)
+	{
+		if (source->playerId == target->playerId)
+		{
+			return;
+		}
+
+		UnitExt* sourceExt = globals.GetUnitExt(source);
+		sourceExt->unitVectors[UnitVectorMindControlling].push_back(target);
+
+		UnitExt* targetExt = globals.GetUnitExt(target);
+		targetExt->units[UnitMindController] = source;
+
+		if (!targetExt->values[ValueMindControlOriginalPlayer])
+		{
+			targetExt->values[ValueMindControlOriginalPlayer] = target->playerId + 1;
+		}
+
+		if (source->id == UnitId::ProtossDemiurge)
+		{
+			// Demiurge - Gods Made Flesh - apply effect to linked units
+			if (sourceExt->values[ValueGodsMadeFleshActive])
+			{
+				targetExt->timers[TimerGodsMadeFlesh] = 3;
+			}
+		}
+
+		target->giveTo(source->playerId);
+		target->sprite->createTopOverlay(ImageId::MindControlHit_Small + scbw::getOverlayOffset(target->id), 0, 0, 0);
+
+		auto& vec = targetExt->unitVectors[UnitVectorMindControlling];
+		for (Unit* unit : vec)
+		{
+			mind_control(source, unit);
+		}
+		vec.clear();
+	}
+
+	void recede_mind_control(Unit* target)
+	{
+		UnitExt* targetExt = globals.GetUnitExt(target);
+		Unit* mindController = targetExt->units[UnitMindController];
+		targetExt->units[UnitMindController] = nullptr;
+
+		UnitExt* mindControllerExt = globals.GetUnitExt(mindController);
+		auto& vec = mindControllerExt->unitVectors[UnitVectorMindControlling];
+		vec.erase(std::remove(vec.begin(), vec.end(), target), vec.end());
+
+		target->giveTo(targetExt->values[ValueMindControlOriginalPlayer] - 1);
+		targetExt->values[ValueMindControlOriginalPlayer] = 0;
+
+		targetExt->values[ValueWorshipStack] = 0;
+		targetExt->timers[TimerGodsMadeFlesh] = 0;
+	}
 }

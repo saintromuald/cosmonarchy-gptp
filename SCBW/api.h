@@ -546,4 +546,6 @@ namespace scbw
 	void updateSignifyStatus(Unit* unit, UnitExt* unitExt);
 	bool isUnitIsolated(Unit* unit);
 	bool unitIdIsZergSupply(u16 unitId);
+	void mind_control(Unit* source, Unit* target);
+	void recede_mind_control(Unit* target);
 }
