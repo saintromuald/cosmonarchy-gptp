@@ -411,7 +411,7 @@ namespace hooks
 					|| unit->id == UnitId::ZergOvileth)
 				{
 					town = ai->town;
-					auto free = town->free_buildings;
+					auto free = town->freeBuildings;
 					helper::deleteBuildingAI(ai, &free);
 				}
 				else
@@ -422,25 +422,25 @@ namespace hooks
 						return 0;
 					}
 					town = ai->town;
-					hooks::deleteWorkerAI((WorkerAi*)ai, town->free_workers);
-					town->worker_count--;
+					hooks::deleteWorkerAI((WorkerAi*)ai, town->freeWorkers);
+					town->workerCount--;
 				}
 				if (town)
 				{
-					if (unit == town->building_scv)
+					if (unit == town->buildingSCV)
 					{
-						town->building_scv = nullptr;
+						town->buildingSCV = nullptr;
 					}
-					if (unit == town->main_building)
+					if (unit == town->mainBuilding)
 					{
-						town->main_building = nullptr;
+						town->mainBuilding = nullptr;
 					}
 				}
 				if (!assert_is_building)
 				{
 					if (town)
 					{
-						helper::deleteAiTownIfNeeded(town);
+						helper::deleteAITownIfNeeded(town);
 					}
 				}
 				unit->pAI = nullptr;

@@ -285,6 +285,33 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_RemoveWorkerOrBuildingAI_Wrapper() // 00434C90
+	{
+		static s32 result;
+		static Unit* unit;
+		static UnitAi* unitAI;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV unitAI, EAX
+			POP EAX
+			MOV unit, EDI
+			PUSHAD
+		}
+		result = hooks::AI_RemoveWorkerOrBuildingAI(unit, unitAI);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -305,5 +332,6 @@ namespace hooks
 //		jmpPatch(deleteWorkerAI_nullcheck,					0x00404470, 0);
 //		jmpPatch(deleteBuildingAI_nullcheck,				0x00404500, 0);
 		jmpPatch(AI_RemoveUnitAI_Wrapper,					0x004A1E50, 0);
+		jmpPatch(AI_RemoveWorkerOrBuildingAI_Wrapper,		0x00434C90, 0);
 	}
 }

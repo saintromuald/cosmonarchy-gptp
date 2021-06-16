@@ -80,7 +80,7 @@ namespace
 		}
 		if (v7->town)
 		{
-			v7->town->in_battle = 1;
+			v7->town->inBattle = 1;
 		}
 		__asm
 		{

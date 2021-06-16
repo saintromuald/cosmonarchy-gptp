@@ -51,9 +51,9 @@ void update_base_layouts()
 	for (u32 i = 0; i < 100; ++i)
 	{
 		AiTown* town = &AiTownArray[i];
-		if (town->inited && !town->resource_area_not_set)
+		if (town->inited && !town->resareaNotSet)
 		{
-			for (BaseLayout& layout : layouts[town->resource_area])
+			for (BaseLayout& layout : layouts[town->resarea])
 			{
 				layout.active = true;
 				layout.town = town; // hopefully town id can be handled from aise

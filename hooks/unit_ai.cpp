@@ -670,7 +670,7 @@ namespace hooks
 			}
 			else if (unitAIVar->type == AiType::Worker)
 			{
-				if (!(baseProperty & 8))
+				if (!(baseProperty & UnitProperty::Worker))
 				{
 					return 0;
 				}

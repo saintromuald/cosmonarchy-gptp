@@ -49,7 +49,7 @@ namespace hooks
 				selfBuildingAi = (BuildingAi*)self->pAI;
 				if (selfBuildingAi)
 				{
-					selfBuildingAi->town->in_battle = 1;
+					selfBuildingAi->town->inBattle = 1;
 				}
 				if (mainTargetReactions)
 				{
@@ -580,9 +580,9 @@ LABEL_126:
 			&& !(repairman->status & UnitStatus::InTransport)
 			&& !(repairman->status & UnitStatus::InBuilding) // new
 			&& repairmanAI != nullptr
-			&& repairmanAI->town->building_scv != nullptr) // new
+			&& repairmanAI->town->buildingSCV != nullptr) // new
 		{
-			result = repairmanAI->town->building_scv == repairman;
+			result = repairmanAI->town->buildingSCV == repairman;
 		}
 		return result;
 	}
@@ -669,7 +669,7 @@ LABEL_126:
 				}
 			}
 
-			u8 resourceArea = town->resource_area;
+			u8 resourceArea = town->resarea;
 			if (resourceArea)
 			{
 				baseArray[resourceArea].flags &= 0xFDu;

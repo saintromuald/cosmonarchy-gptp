@@ -14,9 +14,9 @@ namespace hooks
 		TownReq* townUnits;
 		if (playerTable[(u8)town->player].type == PlayerType::Computer)
 		{
-			townUnits = town->town_units;
+			townUnits = town->townUnits;
 			bool setNeed = false;
-			if (town->town_units[0].flags_and_count & BuildCountFlag) // if build
+			if (town->townUnits[0].flags_and_count & BuildCountFlag) // if build
 			{
 				for (s32 i = 0; i < 100; i++)
 				{
@@ -35,9 +35,9 @@ namespace hooks
 			}
 			if (setNeed)
 			{
-				town->town_units[iterate].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
-				town->town_units[iterate].id = id;
-				town->town_units[iterate].priority = priority;
+				town->townUnits[iterate].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
+				town->townUnits[iterate].id = id;
+				town->townUnits[iterate].priority = priority;
 				// build orders have 0xf8 flag, tech has 0x4, upgrade has 0x2, if needed (player_need) has 0x1
 			}
 		}
