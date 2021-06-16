@@ -288,7 +288,13 @@ namespace hooks
 			{
 				if (do_ping[target])
 				{
-					scbw::minimapPing(startPositions[target].x, startPositions[target].y, 7, *LOCAL_NATION_ID);
+					u32 color = 7; // yellow
+					if (scbw::isAlliedTo(*LOCAL_NATION_ID, target))
+					{
+						color = 8; // green
+					}
+
+					scbw::minimapPing(startPositions[target].x, startPositions[target].y, color, *LOCAL_NATION_ID);
 				}
 			}
 
