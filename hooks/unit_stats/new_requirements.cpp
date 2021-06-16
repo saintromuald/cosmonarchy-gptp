@@ -76,7 +76,7 @@ namespace hooks
 		TierUnlocked[RaceId::Protoss][Tier3] = true;
 		TierUnlocked[RaceId::Protoss][Tier4] = true;
 
-		bool hasAddon = false;
+		bool hasAddon = helper::isConstructingAddon(unit);
 		s32 addonId = -1; 
 		if (unit->building.addon)
 		{
