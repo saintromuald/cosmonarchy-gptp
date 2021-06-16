@@ -239,10 +239,10 @@ namespace hooks
 		jmpPatch(AI_RecalculateRegionStrength_Wrapper,		0x0043A390, 1);
 		jmpPatch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
 		jmpPatch(getRegionIdFromUnit_Wrapper,				0x0049CB40, 2);
-
 		jmpPatch(getBestSCVForRepairProc_Wrapper,			0x004402B0, 1);
+
 		jmpPatch(AI_MilitaryShouldWaitForGroup_Wrapper,		0x0043AA10, 5);
-		jmpPatch(deleteAITownIfNeeded_Wrapper,				0x004347E0, 3);
+//		jmpPatch(deleteAITownIfNeeded_Wrapper,				0x004347E0, 3);
 //		jmpPatch(AI_CanMineExtra_Wrapper,					0x00447A70, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);

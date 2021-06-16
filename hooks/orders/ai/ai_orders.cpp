@@ -408,7 +408,7 @@ LABEL_126:
 				}
 				if (regionIndex != 2500)
 				{
-					helper::AI_RemoveUnitAI(unit, 0);
+					helper::AI_RemoveUnitAI(unit, nullptr);
 					helper::AI_AddMilitary(region2, unit, 1);
 					continue;
 				}
@@ -420,7 +420,7 @@ LABEL_126:
 					AIScriptController[player].strategic_suicide = 24;
 					regionIndex = (u16)AIScriptController[player].AI_AttackGroup - 1;
 					region2 = &AiRegionCaptains[player][regionIndex];
-					helper::AI_RemoveUnitAI(unit, 0);
+					helper::AI_RemoveUnitAI(unit, nullptr);
 					helper::AI_AddMilitary(region2, unit, 1);
 				}
 			}

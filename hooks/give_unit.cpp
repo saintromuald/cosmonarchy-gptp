@@ -1,4 +1,5 @@
 #include "give_unit.h"
+#include "globals.h"
 #include <SCBW/api.h>
 
 namespace hooks
@@ -130,7 +131,15 @@ namespace hooks
 			}
 			else
 			{
-				helper::AI_AddGuardAiToUnit(unit);
+				UnitExt* unitExt = globals.GetUnitExt(unit);
+				if (unitExt->values[ValueInfestedByAkistrokor] || unitExt->units[UnitMindController])
+				{
+					helper::AI_TrainingSimpleMilitary(unit, unit);
+				}
+				else
+				{
+					helper::AI_AddGuardAiToUnit(unit);
+				}
 			}
 		}
 	}

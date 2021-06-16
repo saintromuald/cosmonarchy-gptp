@@ -454,4 +454,26 @@ LABEL_22:
 		}
 		return 0;
 	}
+
+	// I guess this was supposed to be hooked, but wasn't - Pr0nogo
+	void AI_RemoveFromAttack(s32 unitId, s32 player) // 00447040
+	{
+		if (unitId == UnitId::TerranPhalanxSiegeMode)
+		{
+			unitId = UnitId::TerranPhalanxTankMode;
+		}
+		u32 v2 = unitId + 1;
+		u32 v3 = 0;
+		u16* v4 = AIScriptController[player].attackers;
+		while (*v4 != v2)
+		{
+			++v3;
+			++v4;
+			if (v3 >= 63)
+			{
+				return;
+			}
+		}
+		AIScriptController[0].attackers[v3 + 628 * player] = 229;
+	}
 }
