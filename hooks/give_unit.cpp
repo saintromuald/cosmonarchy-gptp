@@ -92,7 +92,7 @@ namespace hooks
 
 			helper::ApplySpeedUpgradeFromUnitType(unit);
 
-			/* Disabled since Flag ID is used in Cosmonarchy
+			/* -- Disabled since Flag ID is used in Cosmonarchy
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker
 				&& unit->worker.powerup != nullptr
 				&& (unit->worker.powerup)->id == UnitId::Powerup_Flag)

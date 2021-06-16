@@ -385,7 +385,7 @@ namespace hooks
 
 	// Hooked to rule out AI crashes - Pr0nogo
 	void AI_CreateNuke(Unit* silo, Unit* result)	// 0045B7A0
-	{												// originally had 3 args, but last one was unused
+	{												// originally had 3 args; last one was unused
 		if (silo->id == UnitId::TerranNuclearSilo && !*(s32*)&silo->building.silo.isReady)
 		{
 			Unit* nuke = helper::createUnit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
@@ -407,9 +407,9 @@ namespace hooks
 	// Hooked to add functionality - Pr0nogo
 	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 alwaysThisRegion) // 0043DA20
 	{
-		// alwaysThisRegion acts as a bool, should be b32?
 		// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
 		// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
+
 		/*
 		if (region->state == 3 && !alwaysThisRegion)
 		{
@@ -530,7 +530,7 @@ namespace hooks
 							{
 								queueCount = helper::AI_GetQueuedCount(workerTarget, UnitId::TerranWatchdog);
 							}
-							//							workerUnit = *(u32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
+//							workerUnit = *(u32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
 						}
 						for (j = parentTown->buildings; j; i += queueCount2)
 						{
