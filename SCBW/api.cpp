@@ -16,7 +16,6 @@
 
 namespace scbw
 {
-
 	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt)
 	{
 		auto target_unit = source->orderTarget.unit;
@@ -129,8 +128,10 @@ namespace scbw
 		{
 			return;
 		}
+
 		DWORD gtc = GetTickCount() + 7000;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH 0;//unknown
 			MOV eax, text
@@ -258,22 +259,21 @@ namespace scbw
 
 	//-------- Graphics and geometry --------//
 
-	//Improved code from BWAPI's include/BWAPI/Position.h: getApproxDistance()
-	//Logically same as function @ 0x0040C360
-	//x1 = ECX;x2 = EDX;y1 = [EBP+08];y2 = [EBP+0C];
+	// Improved code from BWAPI's include/BWAPI/Position.h: getApproxDistance()
+	// Logically same as function @ 0x0040C360
+	// x1 = ECX;x2 = EDX;y1 = [EBP+08];y2 = [EBP+0C];
 	u32 getDistanceFast(s32 x1, s32 y1, s32 x2, s32 y2)
 	{
-
 		s32 dMax = abs(x1 - x2), dMin = abs(y1 - y2);
-
 		if (dMax < dMin)
+		{
 			std::swap(dMax, dMin);
-
+		}
 		if (dMin <= (dMax >> 2))
+		{
 			return dMax;
-
+		}
 		return (dMin * 3 >> 3) + (dMin * 3 >> 8) + dMax - (dMax >> 4) - (dMax >> 6);
-
 	}
 
 	u32 getDistanceSquare(s32 x1, s32 y1, s32 x2, s32 y2)
@@ -281,10 +281,9 @@ namespace scbw
 		return std::max(abs(x1 - x2), abs(y1 - y2));
 	}
 
-	//Identical to function @ 0x00494C10
+	// Identical to function @ 0x00494C10
 	s32 arctangent(s32 slope)
 	{
-
 		const u32 tangentTable[] = {
 				 7,	 13,	 19,	 26,	 32,	 38,	 45,	 51,
 				58,	 65,	 71,	 78,	 85,	 92,	 99,	107,
@@ -297,7 +296,6 @@ namespace scbw
 		};
 
 		bool isNegative = false;
-
 		if (slope < 0)
 		{
 			isNegative = true;
@@ -305,25 +303,23 @@ namespace scbw
 		}
 
 		s32 min = 0, max = 64, angle = 32;
-
 		do
 		{
-
 			if ((u32)slope <= tangentTable[angle])
+			{
 				max = angle;
+			}
 			else
+			{
 				min = angle + 1;
-
+			}
 			angle = (min + max) / 2;
-
-		}
-		while (min != max);
-
+		} while (min != max);
 		return (isNegative ? -angle : angle);
 	}
 
-	//Identical to function @ 0x00495300
-				//    EDX		[EBP+08]	ECX			EAX
+	// Identical to function @ 0x00495300
+	//					EDX		[EBP+08]	ECX			EAX
 	s32 getAngle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd)
 	{
 
@@ -439,7 +435,8 @@ namespace scbw
 	const u32 Func_DoWeaponDamage = 0x00479930;
 	void sendGPTP_aise_cmd(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3)
 	{
-		_asm {
+		_asm
+		{
 			PUSHAD
 			MOV EAX, v3
 			MOV EDI, unit2
@@ -588,6 +585,7 @@ namespace scbw
 		}
 		return false;
 	}
+
 	bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_templar)
 	{
 		switch (id)
@@ -622,6 +620,7 @@ namespace scbw
 		}
 		return false;
 	}
+
 	bool isZergBuildingMorphResult(u16 id)
 	{
 		switch (id)
@@ -649,6 +648,7 @@ namespace scbw
 		}
 		return false;
 	}
+
 	bool isZergBuildingMorphSource(u16 id)
 	{
 		switch (id)
@@ -701,15 +701,18 @@ namespace scbw
 	{
 		return get_aise_value(nullptr, nullptr, AiseId::GenericVariable, id, 0);
 	}
+
 	Unit* get_generic_rust_unit(Unit* unit, u32 id)
 	{
 		u32 val = get_aise_value(unit, nullptr, AiseId::GenericUnit, id, 0);
 		return reinterpret_cast<Unit*>(val);
 	}
+
 	void set_generic_rust_unit(Unit* unit, u32 id, Unit* targ)
 	{
 		scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
 	}
+
 	void set_generic_variable(u32 id, s32 val)
 	{
 		scbw::sendGPTP_aise_cmd(nullptr, nullptr, GptpId::SetGenericVariable, id, val, 0);
@@ -719,10 +722,12 @@ namespace scbw
 	{
 		return get_aise_value(u, nullptr, AiseId::GenericValue, val, 0);
 	}
+
 	void set_generic_rust_value(Unit* u, u32 id, u32 val)
 	{
 		scbw::sendGPTP_aise_cmd(u, nullptr, GptpId::SetGenericValue, id, val, 0);
 	}
+
 	void setSpriteData(u32 entry, u32 index, u32 value)
 	{
 		return sendGPTP_aise_cmd(nullptr, nullptr, GptpId::SetSpriteData, entry, index, value);
@@ -732,16 +737,17 @@ namespace scbw
 	u32 get_aise_value(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2)
 	{
 		u32 result = 0;
-		u32 v3 = 0;//pointer
-		_asm {
+		u32 v3 = 0; // pointer
+		_asm
+		{
 			PUSHAD
-			MOV ESI, v2//fow_unit_id
-			MOV EDI, unit2//target
-			MOV EDX, 50000//tech
-			PUSH v3//outerror
-			PUSH v1//y
-			PUSH command//x
-			PUSH unit1//unit
+			MOV ESI, v2 // fow_unit_id
+			MOV EDI, unit2 // target
+			MOV EDX, 50000 // tech
+			PUSH v3 // outerror
+			PUSH v1 // y
+			PUSH command // x
+			PUSH unit1 // unit
 			CALL Func_CanTargetSpell
 			MOV result, EAX
 			POPAD
@@ -753,14 +759,19 @@ namespace scbw
 	u8 getUpgradeLevel(u8 playerId, u8 upgradeId)
 	{
 		assert(playerId < PLAYER_COUNT);
-		//assert(upgradeId < UpgradeId::None);
+//		assert(upgradeId < UpgradeId::None);
 		assert(upgradeId < 256);
 
-
 		if (upgradeId < UpgradeId::PrismaticShield)
+		{
 			return UpgradesSc->currentLevel[playerId][upgradeId];
-		/*else if (upgradeId<UpgradeId::None)
-			return UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PStructurePlating];*/
+		}
+		/*
+		else if (upgradeId<UpgradeId::None)
+		{
+			return UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PStructurePlating];
+		}
+		*/
 		else
 		{
 			u32 result = 0;
@@ -781,22 +792,28 @@ namespace scbw
 	}
 	//EBX = max/current upgrade read, ECX - player, EDI - id
 
-
 	u8 getUpgradeMaxLevel(u8 playerId, u8 upgradeId)
 	{
 		assert(playerId < PLAYER_COUNT);
-		//	assert(upgradeId < UpgradeId::None);
+//		assert(upgradeId < UpgradeId::None);
 		assert(upgradeId < 256);
 		if (upgradeId < UpgradeId::PrismaticShield)
+		{
 			return UpgradesSc->maxLevel[playerId][upgradeId];
-		/*else if (upgradeId<UpgradeId::None)
-			return UpgradesBw->maxLevel[playerId][upgradeId - UpgradeId::PStructurePlating];*/
+		}
+		/*
+		else if (upgradeId<UpgradeId::None)
+		{
+			return UpgradesBw->maxLevel[playerId][upgradeId - UpgradeId::PStructurePlating];
+		}
+		*/
 		else
 		{
 			u32 result = 0;
 			u32 player_u32 = playerId;
 			u32 upgrade_u32 = upgradeId;
-			_asm {
+			_asm
+			{
 				PUSHAD
 				MOV ESI, upgrade_u32
 				MOV EAX, player_u32
@@ -808,7 +825,6 @@ namespace scbw
 			}
 			return result;
 		}
-
 	}
 
 	void setUpgradeLevel(u8 playerId, u8 upgradeId, u8 level)
