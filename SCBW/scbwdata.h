@@ -172,6 +172,9 @@ SCBW_DATA(char*, CurrentMapFileName, 0x0057FD3C);
 SCBW_DATA(const char*, CurrentMapName, 0x0057FE40);
 SCBW_DATA(const _uavail*, UnitAvailability, 0x0057F27C);
 
+// Ping Data
+SCBW_DATA(Ping*, PingArray, 0x0059C1B8); // 16
+
 // Added by Pr0nogo
 // For raceDropdown
 SCBW_DATA(bStringMap*, singleRaceSelect, 0x0051AAA0);

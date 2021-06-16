@@ -927,4 +927,13 @@ struct ForceFlags
 	u8 unused : 4;
 };
 
+struct Ping
+{
+	b32 isActive;
+	u32 x;
+	u32 y;
+	u16 timer;
+	u16 player;
+};
+
 #pragma pack()
