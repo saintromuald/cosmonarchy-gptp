@@ -1939,9 +1939,12 @@ namespace scbw
 		Unit* mindController = targetExt->units[UnitMindController];
 		targetExt->units[UnitMindController] = nullptr;
 
-		UnitExt* mindControllerExt = globals.GetUnitExt(mindController);
-		auto& vec = mindControllerExt->unitVectors[UnitVectorMindControlling];
-		vec.erase(std::remove(vec.begin(), vec.end(), target), vec.end());
+		if (mindController)
+		{
+			UnitExt* mindControllerExt = globals.GetUnitExt(mindController);
+			auto& vec = mindControllerExt->unitVectors[UnitVectorMindControlling];
+			vec.erase(std::remove(vec.begin(), vec.end(), target), vec.end());
+		}
 
 		target->giveTo(targetExt->values[ValueMindControlOriginalPlayer] - 1);
 		targetExt->values[ValueMindControlOriginalPlayer] = 0;
