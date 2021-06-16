@@ -318,9 +318,9 @@ namespace UnitId
 		TerranIonCannon									= 127,		// Ion Cannon
 		TerranGuildhall									= 147,		// Overmind (With Shell)
 		TerranQuarry									= 174,		// Protoss Temple
-		TerranBioticBase								= 175,		// Xel'Naga Temple
+		TerranTinkerersTower							= 175,		// Xel'Naga Temple
 		TerranSalvoYard									= 189,		// Warp Gate
-		TerranTinkerersTower							= 190,		// Psi Disruptor
+		TerranBioticBase								= 190,		// Psi Disruptor
 		TerranFutureStation								= 192,		// Terran Marker
 		TerranIronFoundry								= 198,		// Terran Flag Beacon
 		TerranCaptaincy									= 199,		// Protoss Flag Beacon
