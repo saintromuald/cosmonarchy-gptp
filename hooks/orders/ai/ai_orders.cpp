@@ -2168,15 +2168,23 @@ LABEL_36:
 		{
 			return 0;
 		}
-		s32 unitId;
+
+		s32 unitId = UnitId::None;
 		u8 raceId = playerTable[player].race;
-		if (raceId == RaceId::Terran)
+		switch(raceId)
 		{
-			unitId = UnitId::TerranMason;
-		}
-		else
-		{
-			unitId = raceId != RaceId::Zerg ? UnitId::ProtossScribe : UnitId::ZergDroleth;
+			case RaceId::Terran:
+			{
+				unitId = UnitId::TerranMason;
+			} break;
+			case RaceId::Protoss:
+			{
+				unitId = UnitId::ProtossScribe;
+			} break;
+			case RaceId::Zerg:
+			{
+				unitId = UnitId::ZergDroleth;
+			} break;
 		}
 		unitId = (u16)unitId;
 		u32 completedCount = unitCountTable[(u16)unitId].player[(u8)player];
