@@ -50,7 +50,8 @@ namespace hooks
 		}
 		else
 		{ // 0045DCDB
-			Unit* nydusExit = helper::createUnit(UnitId::ZergNydusCanal, nydus_canal->orderTarget.pt.x, nydus_canal->orderTarget.pt.y, nydus_canal->playerId);
+			// Original function used helper::createUnit, which did not initialize AI
+			Unit* nydusExit = scbw::createUnitInGame(UnitId::ZergNydusCanal, nydus_canal->playerId, nydus_canal->orderTarget.pt.x, nydus_canal->orderTarget.pt.y, nydus_canal);
 			if (nydusExit == nullptr)
 			{
 				helper::displayLastNetErrorForPlayer(nydus_canal->playerId);

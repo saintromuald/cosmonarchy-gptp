@@ -907,7 +907,7 @@ namespace scbw
 
 	//-------- Utility functions --------//
 
-	Unit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator, bool initAI)
+	Unit* createUnitInGame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator, bool initAI)
 	{
 		if (*unitCount >= 1700)
 		{
@@ -955,20 +955,27 @@ namespace scbw
 		top >>= 4; bottom = (bottom + 15) >> 4;
 
 		if (left > right)
+		{
 			std::swap(left, right);
+		}
 		if (top > bottom)
+		{
 			std::swap(top, bottom);
+		}
 
-		//Rect out of bounds
+		// Rect out of bounds
 		if (left >= 40 || right < 0 || top >= 30 || bottom < 0)
+		{
 			return;
+		}
 
 		left = std::max(left, 0); right = std::min(right, 40 - 1);
 		top = std::max(top, 0); bottom = std::min(bottom, 30 - 1);
 
 		for (s32 y = top; y <= bottom; ++y)
+		{
 			memset(&refreshRegions[40 * y + left], 1, right - left + 1);
-
+		}
 	}
 
 	void refreshScreen()
@@ -976,30 +983,32 @@ namespace scbw
 		memset(refreshRegions, 1, 1200);
 	}
 
-	/* /!\ Not working like 004DC550	RandBetween /!\ */
+	/* /!\ Not working like 004DC550 RandBetween /!\ */
 	u32 randBetween(u32 min, u32 max)
 	{
 		assert(min <= max);
 		return min + ((max - min + 1) * random() >> 15);
 	}
 
-	//similar to 004DC4A0 RandomizeShort, but don't update
-	//the RNG and don't use a parameter among possible
-	//differences
+	// similar to 004DC4A0 RandomizeShort, but don't update
+	// the RNG and don't use a parameter among possible
+	// differences
 	u16 random()
 	{
 		if (*IS_IN_GAME_LOOP)
 		{
 			*lastRandomNumber = 22695477 * (*lastRandomNumber) + 1;
-			return (*lastRandomNumber >> 16) % 32768;	//Make a number between 0 and 32767
+			return (*lastRandomNumber >> 16) % 32768;	// Make a number between 0 and 32767
 		}
 		else
+		{
 			return 0;
+		}
 	}
 
 	//-------- Needs research --------//
 
-		//Logically equivalent to function @ 0x004C36C0
+	// Logically equivalent to function @ 0x004C36C0
 	void refreshConsole()
 	{
 		static u32* const bCanUpdateCurrentButtonSet = (u32*)0x0068C1B0;
@@ -1019,7 +1028,7 @@ namespace scbw
 	{
 		for (s32 i = 0; i < count; i++)
 		{
-			Unit* unit = scbw::createUnitIngame(unitId, playerId, x, y, creator, false);
+			Unit* unit = scbw::createUnitInGame(unitId, playerId, x, y, creator, false);
 			if (unit == nullptr)
 			{
 				return;
@@ -1087,8 +1096,7 @@ namespace scbw
 	{
 		auto target_unit = unit->orderTarget.unit;
 		auto target_pos = unit->orderTarget.pt;
-		auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
-			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y);
+		auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y);
 		distance += offset;
 		if (distance < 0)
 		{
