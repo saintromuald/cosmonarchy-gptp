@@ -7722,7 +7722,7 @@ namespace helper
 		}
 	}
 
-	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray* workerArray)
+	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray** workerArray)
 	{
 		const u32 Func_DeleteWorkerAi = 0x00404470;
 		__asm

@@ -676,7 +676,7 @@ namespace hooks
 				}
 				WorkerAi* workerAIVar = (WorkerAi*)unitAIVar;
 				town = workerAIVar->town;
-				helper::deleteWorkerAI((WorkerAi*)unitAIVar, town->freeWorkers);
+				helper::deleteWorkerAI((WorkerAi*)unitAIVar, &town->freeWorkers);
 				town->workerCount -= 1;
 			}
 
