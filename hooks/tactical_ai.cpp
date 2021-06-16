@@ -1,4 +1,4 @@
-#include "hooks\cosmonarchy_unit_ai.h"
+#include "hooks\tactical_ai.h"
 #include "SCBW/api.h"
 #include "SCBW/scbwdata.h"
 #include "unit_constants.h"
@@ -368,7 +368,7 @@ static inline bool shouldKite(Unit* unit, UnitExt* unitExt)
 		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !unitCanAttack(unit));
 }
 
-void cosmonarchyUnitAi(Unit* unit)
+void tacticalAi(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
