@@ -7697,7 +7697,8 @@ namespace helper
 	{
 		const u32 Func_isAIAllowedToBuild = 0x00447830;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ECX, a2
 			MOV EAX, a1
@@ -7711,7 +7712,8 @@ namespace helper
 	void deleteBuildingAI(BuildingAi* building, BuildingAiArray** buildingList)
 	{
 		const u32 Func_DeleteBuildingAI = 0x00404500;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDX, buildingList
 			MOV EAX, building
@@ -7723,7 +7725,8 @@ namespace helper
 	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray* workerArray)
 	{
 		const u32 Func_DeleteWorkerAi = 0x00404470;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDX, workerArray
 			MOV EAX, ai
@@ -7732,13 +7735,14 @@ namespace helper
 		}
 	}
 
-	void deleteAiTownIfNeeded(AiTown* town)
+	void deleteAITownIfNeeded(AiTown* town)
 	{
-		const u32 Func_DeleteAiTownIfNeeded = 0x004347E0;
-		__asm {
+		const u32 Func_DeleteAITownIfNeeded = 0x004347E0;
+		__asm
+		{
 			PUSHAD
 			MOV EAX, town
-			CALL Func_DeleteAiTownIfNeeded
+			CALL Func_DeleteAITownIfNeeded
 			POPAD
 		}
 	}
@@ -7748,7 +7752,8 @@ namespace helper
 	{
 		const u32 Func_unitIsResource = 0x004688E0;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_unitIsResource
@@ -7761,7 +7766,8 @@ namespace helper
 	void returnAllInterceptors(Unit* unit)
 	{
 		const u32 Func_returnAllInterceptors = 0x004655F0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_returnAllInterceptors
@@ -7773,7 +7779,8 @@ namespace helper
 	{
 		const u32 Func_ignoreAllScriptsAndGoToIdle = 0x00476550;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ESI, unit
 			CALL Func_ignoreAllScriptsAndGoToIdle
@@ -7786,7 +7793,8 @@ namespace helper
 	void orders_SelfDestructing(Unit* unit)
 	{
 		const u32 Func_orders_SelfDestructing = 0x00475710;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_orders_SelfDestructing
@@ -7798,7 +7806,8 @@ namespace helper
 	{
 		const u32 Func_setMaelstromTimer = 0x004553F0;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH time
 			MOV EDI, unit
@@ -7810,12 +7819,12 @@ namespace helper
 	}
 
 	// For CBulletDamage
-
 	s32 _fastcall lurkerSplashProc(Unit* target, Bullet* bullet)
 	{
 		const u32 Func_lurkerSplashProc = 0x0048B680;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDX, bullet
 			MOV ECX, target
@@ -7830,7 +7839,8 @@ namespace helper
 	{
 		const u32 Func_groundSplashProc = 0x0048B750;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDX, bullet
 			MOV ECX, target
@@ -7845,7 +7855,8 @@ namespace helper
 	{
 		const u32 Func_airSplashProc = 0x0048B150;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDX, bullet
 			MOV ECX, unit
@@ -7860,7 +7871,8 @@ namespace helper
 	{
 		const u32 Func_airSplashProc2 = 0x0048B730;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDX, bullet
 			MOV ECX, unit
@@ -7875,7 +7887,8 @@ namespace helper
 	{
 		const u32 Func_unitHasNoMainOrderType = 0x00475A50;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_unitHasNoMainOrderType
@@ -7889,7 +7902,8 @@ namespace helper
 	{
 		const u32 Func_setEventUnitComplete = 0x004C36C0;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			CALL Func_setEventUnitComplete
 			MOV result, EAX
@@ -7899,7 +7913,6 @@ namespace helper
 	}
 
 	// For use_tech
-
 	const void issueTriTargetOrder(u8 order1, u8 order2, u8 order3)
 	{
 		const u32 Func_TriTargetOrder = 0x0048CAF0;

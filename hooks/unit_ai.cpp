@@ -122,14 +122,14 @@ namespace hooks
 					AiTown* newUnitTown = newAI->town;
 					if (newUnitTown != nullptr)
 					{
-						helper::deleteBuildingAI((BuildingAi*)newAI, &newUnitTown->free_buildings); // moved within nullcheck for sanity
-						if (newUnit == newUnitTown->building_scv)
+						helper::deleteBuildingAI((BuildingAi*)newAI, &newUnitTown->freeBuildings); // moved within nullcheck for sanity
+						if (newUnit == newUnitTown->buildingSCV)
 						{
-							newUnitTown->building_scv = 0;
+							newUnitTown->buildingSCV = 0;
 						}
-						if (newUnit == newUnitTown->main_building)
+						if (newUnit == newUnitTown->mainBuilding)
 						{
-							newUnitTown->main_building = 0;
+							newUnitTown->mainBuilding = 0;
 						}
 					}
 					newUnit->pAI = nullptr;
@@ -172,16 +172,16 @@ namespace hooks
 						if (newUnitAi)
 						{
 							AiTown* newUnitTown = newUnitAi->town;
-							helper::deleteBuildingAI(newUnitAi, &newUnitTown->free_buildings);
+							helper::deleteBuildingAI(newUnitAi, &newUnitTown->freeBuildings);
 							if (newUnitTown)
 							{
-								if (newUnit == newUnitTown->building_scv)
+								if (newUnit == newUnitTown->buildingSCV)
 								{
-									newUnitTown->building_scv = 0;
+									newUnitTown->buildingSCV = 0;
 								}
-								if (newUnit == newUnitTown->main_building)
+								if (newUnit == newUnitTown->mainBuilding)
 								{
-									newUnitTown->main_building = 0;
+									newUnitTown->mainBuilding = 0;
 								}
 							}
 							parentUnitAi = parentUnitAiBackup;
@@ -232,7 +232,7 @@ namespace hooks
 		UnitAi* unitAI;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
-			WorkerAiArray* workerAIArray = town->free_workers;
+			WorkerAiArray* workerAIArray = town->freeWorkers;
 			unitAI = (UnitAi*)(workerAIArray->first_free_worker);
 			if (unitAI != nullptr)
 			{
@@ -261,7 +261,7 @@ namespace hooks
 					unitAIWorker->reassign_count = 0;
 					unit->beacon.flagSpawnFrame = 0;
 					unit->pAI = unitAI;
-					++town->worker_count;
+					++town->workerCount;
 				}
 			}
 		}
@@ -270,7 +270,7 @@ namespace hooks
 			|| unit->id == UnitId::ZergEgg
 			|| scbw::unitIdIsZergSupply(unit->id))
 		{
-			unitAI = helper::AI_CreateBuildingAi(town->free_buildings);
+			unitAI = helper::AI_CreateBuildingAi(town->freeBuildings);
 			if (unitAI != nullptr)
 			{
 				unitAI->type = AiType::Building;
@@ -321,7 +321,7 @@ namespace hooks
 					town->mineral = 0;
 					for (s32 i = 0; i < 3; i++)
 					{
-						town->gas_buildings[i] = 0;
+						town->gasBuildings[i] = 0;
 					}
 				}
 
@@ -343,10 +343,10 @@ namespace hooks
 
 				if (unit->id == unitType || helper::unitIsActiveResourceDepot(unit))
 				{
-					unitAI = (UnitAi*)town->main_building->pAI;
+					unitAI = (UnitAi*)town->mainBuilding->pAI;
 					if (!unitAI)
 					{
-						town->main_building = unit;
+						town->mainBuilding = unit;
 					}
 				}
 				else
@@ -354,27 +354,27 @@ namespace hooks
 					auto gas_structure_id = helper::getPlayerDefaultRefineryUnitType(playerID);
 					if (unit->id == gas_structure_id || unit->id == UnitId::ResourceVespeneGeyser)
 					{
-						if (town->gas_buildings[0])
+						if (town->gasBuildings[0])
 						{
-							if (town->gas_buildings[1])
+							if (town->gasBuildings[1])
 							{
-								if (!town->gas_buildings[2])
+								if (!town->gasBuildings[2])
 								{
-									town->gas_buildings[2] = unit;
+									town->gasBuildings[2] = unit;
 								}
 							}
 							else
 							{
-								town->gas_buildings[1] = unit;
+								town->gasBuildings[1] = unit;
 							}
 						}
 						else
 						{
-							town->gas_buildings[0] = unit;
+							town->gasBuildings[0] = unit;
 						}
-						if (town->resource_area)
+						if (town->resarea)
 						{
-							town->resource_area_not_set = 1;
+							town->resareaNotSet = 1;
 						}
 					}
 				}
@@ -498,16 +498,16 @@ namespace hooks
 					if (removeBuilding)
 					{
 						removeBuildingTown = removeBuilding->town;
-						helper::deleteBuildingAI(removeBuilding, &removeBuildingTown->free_buildings);
+						helper::deleteBuildingAI(removeBuilding, &removeBuildingTown->freeBuildings);
 						if (removeBuildingTown)
 						{
-							if (result == removeBuildingTown->building_scv)
+							if (result == removeBuildingTown->buildingSCV)
 							{
-								removeBuildingTown->building_scv = 0;
+								removeBuildingTown->buildingSCV = 0;
 							}
-							if (result == removeBuildingTown->main_building)
+							if (result == removeBuildingTown->mainBuilding)
 							{
-								removeBuildingTown->main_building = 0;
+								removeBuildingTown->mainBuilding = 0;
 							}
 						}
 						result->pAI = 0;
@@ -560,4 +560,154 @@ namespace hooks
 		}
 	}
 
+	// Hooked to investigate crashes - Pr0nogo
+	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI) // 004A1E50
+	{
+		helper::AI_RemoveFromAIStructs(unit, unitAI);
+		helper::AI_RemoveWorkerOrBuildingAI(unit, nullptr);
+		if (unitAI != nullptr)
+		{
+			if (unitAI->type == AiType::Guard)
+			{
+				GuardAi* guardAI = (GuardAi*)unitAI;
+				u8 timesDied = guardAI->timesDied;
+				guardAI->parent = nullptr;
+				if ((u8)timesDied < 100u)
+				{
+					guardAI->timesDied = timesDied + 1;
+				}
+			}
+		}
+		helper::AI_MedicRemove(unit);
+		unit->pAI = nullptr;
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	void deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiArray) // 00404470
+	{
+		// New
+		if (workerAi == nullptr)
+		{
+			return;
+		}
+
+		if (workerAiArray->worker_ais[0].link.next == workerAi)
+		{
+			workerAiArray->worker_ais[0].link.next = workerAi->link.prev;
+		}
+
+		if (workerAi->link.next)
+		{
+			workerAi->link.next->link.prev = workerAi->link.prev;
+		}
+
+		if (workerAi->link.prev)
+		{
+			workerAi->link.prev->link.next = workerAi->link.next;
+		}
+
+		workerAi->link.next = nullptr;
+		workerAi->link.prev = workerAiArray->first_free_worker;
+		if (workerAiArray->first_free_worker)
+		{
+			workerAiArray->first_free_worker->link.next = workerAi;
+		}
+		workerAiArray->first_free_worker = workerAi;
+	}
+
+	// Hooked to resolve a crash - Pr0nogo
+	void deleteBuildingAI(BuildingAi* buildingAi, BuildingAiArray* buildingAiArray) // 00404500
+	{
+		// New
+		if (buildingAi == nullptr)
+		{
+			return;
+		}
+
+		if (buildingAiArray->building_ais[0].link.next == buildingAi)
+		{
+			buildingAiArray->building_ais[0].link.next = buildingAi->link.prev;
+		}
+
+		if (buildingAi->link.next)
+		{
+			buildingAi->link.next->link.prev = buildingAi->link.prev;
+		}
+		if (buildingAi->link.prev)
+		{
+			buildingAi->link.prev->link.next = buildingAi->link.next;
+		}
+
+		buildingAi->link.next = nullptr;
+		buildingAi->link.prev = buildingAiArray->first_free_building;
+		if (buildingAiArray->first_free_building)
+		{
+			buildingAiArray->first_free_building->link.next = buildingAi;
+		}
+		buildingAiArray->first_free_building = buildingAi;
+	}
+
+	// Hooked to add type check - Pr0nogo
+	s32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI) // 00434C90
+	{
+		helper::AI_RemoveFromTowns(unit);
+		UnitAi* unitAIVar = (UnitAi*)unit->pAI;
+		if (unitAIVar)
+		{
+			u16 unitId = unit->id;
+			u32 baseProperty = units_dat::BaseProperty[unitId];
+			AiTown* town = nullptr;
+			if (unitAI != nullptr
+			  && unitAIVar->type == AiType::Building
+			  || baseProperty & UnitProperty::Building && unitId != UnitId::ResourceVespeneGeyser
+			  || unitId == UnitId::ZergLarva
+			  || scbw::isLarvalEgg(unit)
+			  || scbw::unitIdIsZergSupply(unitId))
+			{
+				BuildingAi* buildingAIVar = (BuildingAi*)unitAIVar;
+				town = buildingAIVar->town;
+				helper::deleteBuildingAI((BuildingAi*)unitAIVar, &town->freeBuildings);
+			}
+			else if (unitAIVar->type == AiType::Worker)
+			{
+				if (!(baseProperty & 8))
+				{
+					return 0;
+				}
+				WorkerAi* workerAIVar = (WorkerAi*)unitAIVar;
+				town = workerAIVar->town;
+				helper::deleteWorkerAI((WorkerAi*)unitAIVar, town->freeWorkers);
+				town->workerCount -= 1;
+			}
+
+			if (town != nullptr)
+			{
+				if (unit == town->buildingSCV)
+				{
+					town->buildingSCV = 0;
+				}
+				if (unit == town->mainBuilding)
+				{
+					town->mainBuilding = 0;
+				}
+			}
+
+			if (unitAI == nullptr)
+			{
+				if (town != nullptr)
+				{
+					helper::deleteAITownIfNeeded(town);
+				}
+			}
+
+			unit->pAI = nullptr;
+			return 1;
+		}
+
+		if (unit->pAI != nullptr)
+		{
+			return 1;
+		}
+		return 0;
+	}
 }

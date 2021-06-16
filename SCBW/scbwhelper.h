@@ -582,7 +582,7 @@ namespace helper
 	void AI_TrainingUnit(Unit* unit, Unit* creator);																				// 004A2830
 	void deleteBuildingAI(BuildingAi* building, BuildingAiArray** buildingList);                                                    // 00404500
 	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray* workerArray);                                                                  // 00404470
-	void deleteAiTownIfNeeded(AiTown* town);                                                                                        // 004347E0
+	void deleteAITownIfNeeded(AiTown* town);                                                                                        // 004347E0
 
 	//// hallucination_spell
 	// for orders_Hallucination1

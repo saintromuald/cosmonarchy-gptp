@@ -571,71 +571,6 @@ LABEL_126:
 		return helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y);
 	}
 
-	// Hooked to investigate crashes - Pr0nogo
-	void deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiArray) // 00404470
-	{
-		// New
-		if (workerAi == nullptr)
-		{
-			return;
-		}
-
-		if (workerAiArray->worker_ais[0].link.next == workerAi)
-		{
-			workerAiArray->worker_ais[0].link.next = workerAi->link.prev;
-		}
-
-		if (workerAi->link.next)
-		{
-			workerAi->link.next->link.prev = workerAi->link.prev;
-		}
-
-		if (workerAi->link.prev)
-		{
-			workerAi->link.prev->link.next = workerAi->link.next;
-		}
-
-		workerAi->link.next = nullptr;
-		workerAi->link.prev = workerAiArray->first_free_worker;
-		if (workerAiArray->first_free_worker)
-		{
-			workerAiArray->first_free_worker->link.next = workerAi;
-		}
-		workerAiArray->first_free_worker = workerAi;
-	}
-
-	// Hooked to resolve a crash - Pr0nogo
-	void deleteBuildingAI(BuildingAi* buildingAi, BuildingAiArray* buildingAiArray) // 00404500
-	{
-		// New
-		if (buildingAi == nullptr)
-		{
-			return;
-		}
-
-		if (buildingAiArray->building_ais[0].link.next == buildingAi)
-		{
-			buildingAiArray->building_ais[0].link.next = buildingAi->link.prev;
-		}
-
-		if (buildingAi->link.next)
-		{
-			buildingAi->link.next->link.prev = buildingAi->link.prev;
-		}
-		if (buildingAi->link.prev)
-		{
-			buildingAi->link.prev->link.next = buildingAi->link.next;
-		}
-
-		buildingAi->link.next = nullptr;
-		buildingAi->link.prev = buildingAiArray->first_free_building;
-		if (buildingAiArray->first_free_building)
-		{
-			buildingAiArray->first_free_building->link.next = buildingAi;
-		}
-		buildingAiArray->first_free_building = buildingAi;
-	}
-
 	bool getBestSCVForRepairProc(Unit* repairman, Unit* repairTarget) // 004402B0
 	{
 		bool result = false;
@@ -711,28 +646,6 @@ LABEL_126:
 			return true;
 		}
 		return false;
-	}
-
-	// Hooked to investigate crashes - Pr0nogo
-	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI) // 004A1E50
-	{
-		helper::AI_RemoveFromAIStructs(unit, unitAI);
-		helper::AI_RemoveWorkerOrBuildingAI(unit, nullptr);
-		if (unitAI != nullptr)
-		{
-			if (unitAI->type == AiType::Guard)
-			{
-				GuardAi* guardAI = (GuardAi*)unitAI;
-				u8 timesDied = guardAI->timesDied;
-				guardAI->parent = nullptr;
-				if ((u8)timesDied < 100u)
-				{
-					guardAI->timesDied = timesDied + 1;
-				}
-			}
-		}
-		helper::AI_MedicRemove(unit);
-		unit->pAI = nullptr;
 	}
 
 	// Hooked to add more functionality - Pr0nogo
