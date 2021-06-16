@@ -1498,9 +1498,8 @@ LABEL_22:
 				s32 regionTown6 = townUnitGroundStrength;
 				if (helper::SAI_GetRegionIdFromPxEx(v6, townUnitSprite->position.y) == region->region)
 				{
-					s16 v7 = regionTown6;
 					region->regionAirStrength += townUnitAirStrength;
-					region->regionGroundStrength += v7;
+					region->regionGroundStrength += regionTown6;
 				}
 			}
 		}
