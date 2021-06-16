@@ -982,7 +982,7 @@ namespace helper
 
 	// For AI_RemoveUnitAI
 	s32 AI_RemoveFromAIStructs(Unit* unit, UnitAi* unitAI);													// 00439D60
-	b32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI);											// 00434C90
+	s32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI);											// 00434C90
 	void AI_MedicRemove(Unit* unit);																		// 004477C0
 
 	// AI utility

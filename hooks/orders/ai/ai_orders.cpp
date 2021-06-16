@@ -141,10 +141,11 @@ namespace hooks
 	// Hooked to add region null check - Pr0nogo
 	void AI_TrainingSimpleMilitary(Unit* result, Unit* parent) // 0043E280
 	{
-		AiRegion* region;
-		s16 regionType;
-		AiRegion* playerRegion;
-		s32 regionId;
+		if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
+		{
+			scbw::printf("SimpleMilitary on worker or building! ID: %i", result->id);
+		}
+
 		s32 pX, pY;
 		if (result->sprite != nullptr)
 		{
@@ -157,22 +158,23 @@ namespace hooks
 			pY = result->position.y;
 			GPTP::logger << "null sprite of Create Broodling detected!" << '\n';
 		}
-		regionId = helper::SAI_GetRegionIdFromPxEx(pX, pY);
-		playerRegion = AiRegionCaptains[parent->playerId];
+
+		s32 regionId = helper::SAI_GetRegionIdFromPxEx(pX, pY);
+		AiRegion* playerRegion = AiRegionCaptains[parent->playerId];
 		if (playerRegion == nullptr)
 		{
 			GPTP::logger << "null region in AI_TrainingBroodling!" << '\n';
 			return;
 		}
-		regionType = playerRegion[regionId].state; // state
-		region = &playerRegion[regionId];
+
+		AiRegion* region = &playerRegion[regionId];
 		if (region == nullptr)
 		{
 			GPTP::logger << "AI Broodling Bug: Null region!" << '\n';
 		}
 		else
 		{
-			if (regionType != 0) // region has assigned state, state 0 is nothing
+			if (playerRegion[regionId].state != RegionState::Nothing)
 			{
 				helper::AI_AssignMilitary(1, region);
 			}
@@ -2080,7 +2082,7 @@ LABEL_36:
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI) // 004A1E50
 	{
 		helper::AI_RemoveFromAIStructs(unit, unitAI);
-		helper::AI_RemoveWorkerOrBuildingAI(unit, 0);
+		helper::AI_RemoveWorkerOrBuildingAI(unit, nullptr);
 		if (unitAI != nullptr)
 		{
 			if (unitAI->type == AiType::Guard)

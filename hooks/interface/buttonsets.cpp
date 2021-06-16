@@ -145,10 +145,9 @@ namespace ButtonActions
 	};
 }
 
-//Example on how to create a custom button set.
-//This make a copy of the Marine buttonset.
-//Note that the function would have to be duplicated
-//for each buttonset to create
+// Example on how to create a custom button set.
+// This makes a copy of the Marine buttonset.
+// Note that the function would have to be duplicated for each custom buttonset
 BUTTON_SET* getCustomButtonSet()
 {
 	// Use static variables to avoid memory allocation trouble
@@ -235,7 +234,7 @@ namespace hooks
 					countLarva++;
 				}
 
-				// if you use a custom buttonset, and are reusing the currentButtonSet property of an unit differently, change these conditions to take it in account
+				// if you use a custom buttonset, and are reusing the currentButtonSet property of a unit differently, change these conditions to take it in account
 				if (selectedButtonSetId != activeButtonSetId)
 				{
 					BUTTON_SET* selectedUnitButtonSet = hooks::getButtonSet(selectedButtonSetId);
@@ -244,7 +243,7 @@ namespace hooks
 					{
 						if (selectedUnitButtonSet->connectedUnit != activeButtonSetId)
 						{
-							// kerrigan (ghost) and raynor (vulture) have the corresponding normal unit as "connected unit"
+							// Kerrigan (Ghost) and Raynor (Vulture) have the corresponding normal unit as "connected unit"
 							if (activeUnitButtonSet->connectedUnit == selectedButtonSetId)
 							{
 								activeButtonSetId = selectedButtonSetId;

@@ -470,7 +470,7 @@ namespace hooks
 		}
 	}
 
-	//  case WPNEffect_Splash_Air:
+	// case WPNEffect_Splash_Air:
 	void airSplash(Bullet* bullet, u32 weaponId) // 0048B790
 	{
 		Unit* target = bullet->attackTarget.unit;
@@ -544,6 +544,7 @@ namespace hooks
 				}
 			}
 		}
+
 		if (airSplashListCount)
 		{
 			if (*airSplashListCount == 1)

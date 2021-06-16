@@ -9221,10 +9221,10 @@ namespace helper
 		return result;
 	}
 
-	b32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI)
+	s32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI)
 	{
 		const u32 Func_AI_RemoveWorkerOrBuildingAI = 0x00434C90;
-		static b32 result;
+		static s32 result;
 		__asm
 		{
 			PUSHAD
