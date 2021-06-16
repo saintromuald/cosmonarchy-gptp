@@ -464,20 +464,23 @@ void Globals::frameHook()
 		}
 		else
 		{
-			auto revived = scbw::createUnitInGame(revivingUnit.unitId, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
-			if (revived)
+			if (revivingUnit.town)
 			{
-				UnitExt* revivedExt = globals.GetUnitExt(revived);
-				revived->hitPoints = 1;
-				revived->shields = 0;
-				revived->healOverflow(revivingUnit.hp);
-				revived->energy = revivingUnit.energy;
-				revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
-				revived->playIscriptAnim(IscriptAnimation::Unused1);
-				revivedExt->values[ValueReviveStarted] = 1;
-				revivedExt->values[ValueReviveTownPointer] = (u32)revivingUnit.town;
-				revivedExt->timers[TimerReviveFlagClearMin] = 3;
-				revivedExt->timers[TimerReviveFlagClearMax] = 14;
+				auto revived = scbw::createUnitInGame(revivingUnit.unitId, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
+				if (revived)
+				{
+					UnitExt* revivedExt = globals.GetUnitExt(revived);
+					revived->hitPoints = 1;
+					revived->shields = 0;
+					revived->healOverflow(revivingUnit.hp);
+					revived->energy = revivingUnit.energy;
+					revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
+					revived->playIscriptAnim(IscriptAnimation::Unused1);
+					revivedExt->values[ValueReviveStarted] = 1;
+					revivedExt->values[ValueReviveTownPointer] = (u32)revivingUnit.town;
+					revivedExt->timers[TimerReviveFlagClearMin] = 3;
+					revivedExt->timers[TimerReviveFlagClearMax] = 14;
+				}
 			}
 			revivingUnits.erase(revivingUnits.begin() + i);
 			i--;
