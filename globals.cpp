@@ -464,7 +464,7 @@ void Globals::frameHook()
 		}
 		else
 		{
-			if (revivingUnit.town)
+			if (playerTable[revivingUnit.playerId].type != PlayerType::Computer || revivingUnit.town)
 			{
 				auto revived = scbw::createUnitInGame(revivingUnit.unitId, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
 				if (revived)
