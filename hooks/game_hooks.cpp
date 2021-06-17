@@ -20,6 +20,7 @@
 #include "globals.h"
 #include "unit_search.h"
 #include "player_color.h"
+#include "unit_ai.h"
 
 const u32 hyperTrigger = 0x006509A0;
 const u32 Func_Irradiate = 0x00454E00;
@@ -600,7 +601,7 @@ namespace hooks
 					// Cast Lazarus Agent						
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256);
 					auto r = 4 * 32;
-					auto n = cosmonarchyFinderMatch(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva, {});
+					auto n = cosmonarchyFinderMatch(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar, {});
 					scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r,
 						unit->position.x + r, unit->position.y + r);
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
@@ -1089,7 +1090,7 @@ namespace hooks
 				}
 
 				// Revive Status
-				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva;
+				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar;
 				u32 radius = 4 * 32;
 				if (unitExt->timers[TimerAnticthonFailureMode]) 
 				{
