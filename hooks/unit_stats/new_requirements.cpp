@@ -786,7 +786,7 @@ namespace hooks
 					}
 					if (scarabCount >= 5)
 					{
-						return TECH_LOCKED;
+						return TECH_HIDDEN;
 					}
 					return TECH_ACTIVE;
 				}
@@ -803,7 +803,7 @@ namespace hooks
 					}
 					if (stewardCount >= 12)
 					{
-						return TECH_LOCKED;
+						return TECH_HIDDEN;
 					}
 					return TECH_ACTIVE;
 				}
