@@ -1842,14 +1842,19 @@ namespace scbw
 			unit->removeOverlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
 			unit->removeOverlay(ImageId::Malice_Small, ImageId::Malice_Large);
 		}
-		else if (unitExt->values[ValueSignifyStacks] < 5 && !unit->getOverlay(cowardiceId))
+		else if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+			|| units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding
+			|| unit->hasWeapon())
 		{
-			unit->sprite->createTopOverlay(cowardiceId);
-		}
-		else if (unitExt->values[ValueSignifyStacks] >= 5 && !unit->getOverlay(maliceId))
-		{
-			unit->removeOverlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
-			unit->sprite->createTopOverlay(maliceId);
+			if (unitExt->values[ValueSignifyStacks] < 5 && !unit->getOverlay(cowardiceId))
+			{
+				unit->sprite->createTopOverlay(cowardiceId);
+			}
+			else if (unitExt->values[ValueSignifyStacks] >= 5 && !unit->getOverlay(maliceId))
+			{
+				unit->removeOverlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
+				unit->sprite->createTopOverlay(maliceId);
+			}
 		}
 	}
 
