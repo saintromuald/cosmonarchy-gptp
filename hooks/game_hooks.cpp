@@ -248,7 +248,7 @@ namespace hooks
 			{
 				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id] & VespeneDeaths_Reveal)
 				{
-					reveal_flag |= player_id + 1;
+					reveal_flag |= 1 << player_id;
 				}
 				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id] & VespeneDeaths_Ping)
 				{
