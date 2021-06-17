@@ -76,7 +76,12 @@ namespace hooks
 		TierUnlocked[RaceId::Protoss][Tier3] = true;
 		TierUnlocked[RaceId::Protoss][Tier4] = true;
 
-		bool hasAddon = helper::isConstructingAddon(unit);
+		if (helper::isConstructingAddon(unit))
+		{
+			return TECH_HIDDEN;
+		}
+
+		bool hasAddon = false;
 		s32 addonId = -1; 
 		if (unit->building.addon)
 		{
@@ -782,6 +787,15 @@ namespace hooks
 			{
 				if (unitId == UnitId::ProtossSteward)
 				{
+					u32 stewardCount = unit->carrier.inHangarCount + unit->carrier.outHangarCount;
+					for (u32 i = 0; i < 5; ++i)
+					{
+						stewardCount += unit->buildQueue[i] != UnitId::None;
+					}
+					if (stewardCount >= 12)
+					{
+						return TECH_LOCKED;
+					}
 					return TECH_ACTIVE;
 				}
 				return TECH_HIDDEN;
