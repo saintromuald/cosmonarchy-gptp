@@ -743,4 +743,25 @@ LABEL_126:
 		// Originally had an inlined function that combined sieged and unsieged tanks for unit counts
 		return completedCount >= 12;
 	}
+
+	// Hooked to fix crashes - Pr0nogo
+	bool AI_IsBuildingSafe(Unit* unit) // 00438910
+	{
+		bool result = 0;
+		if (unit != nullptr && unit->sprite != nullptr)
+		{
+			if (unit->mainOrderId)
+			{
+				s16 regionId = helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y);
+				AiRegion* playerRegions = AiRegionCaptains[unit->playerId];
+				char regionState = playerRegions[regionId].state;
+				AiRegion* region = &playerRegions[regionId];
+				if (regionState != RegionState::EnemySighted && !region->airTarget && !region->groundTarget && !(region->captainFlags & 0x20))
+				{
+					result = 1;
+				}
+			}
+		}
+		return result;
+	}
 }

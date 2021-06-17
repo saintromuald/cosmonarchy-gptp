@@ -13,6 +13,7 @@ namespace hooks
 	u32 AI_RecalculateRegionStrength(AiRegion* region);															// 0043A390
 	Unit* getClosestEnemyStructure(s32 x, s32 y, s32 playerId);													// 004A0F90
 	s16 getRegionIdFromUnit(Unit* unit);																		// 0049CB40
+	bool AI_IsBuildingSafe(Unit* unit);																			// 00438910
 
 	void injectAIOrdersHooks();
 }

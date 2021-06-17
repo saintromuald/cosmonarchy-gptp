@@ -226,6 +226,24 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_IsBuildingSafe_Wrapper() // 00438910
+	{
+		static Unit* unit;
+		static bool result;
+		__asm
+		{
+			MOV unit, ESI
+			PUSHAD
+		}
+		result = hooks::AI_IsBuildingSafe(unit);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -244,6 +262,7 @@ namespace hooks
 		jmpPatch(AI_MilitaryShouldWaitForGroup_Wrapper,		0x0043AA10, 5);
 //		jmpPatch(deleteAITownIfNeeded_Wrapper,				0x004347E0, 3);
 //		jmpPatch(AI_CanMineExtra_Wrapper,					0x00447A70, 1);
+		jmpPatch(AI_IsBuildingSafe_Wrapper,					0x00438910, 2);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}
