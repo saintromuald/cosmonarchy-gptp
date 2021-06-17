@@ -145,8 +145,8 @@ namespace WeaponId {
 		CohortGaussPistols					= 20,	// Cohort weapon
 		AspirantPotentiumCannon				= 69,	// Aspirant weapon
 		CharlatanFerventBlaster				= 101,	// Charlatan weapon
+		LuminaryAuralAssault				= 121,	// Luminary ability targeting
 		LuminaryIcarusMissiles				= 131,	// Luminary weapon
-		LuminaryAuralAssault				= 132,	// Luminary ability targeting
 		StrigaPhaseSaber					= 133,	// Striga weapon
 		AxitriliskSearingVenom				= 134,	// Axitrilisk weapon
 		TarasqueHedonCannon					= 135,	// Tarasque weapon 1
@@ -215,7 +215,6 @@ namespace WeaponId {
 		PariahIconoclastBlades				= 115,	// Pariah weapon
 		ManifoldPhaseBlaster				= 118,	// Manifold weapon
 		ArchitectDispersiveSalvo			= 119,	// Architect weapon
-		AuroraLastOrders					= 121,	// Aurora behavior damage
 		AugurFinalHour						= 128,	// Augur behavior
 		AnthelionEventHorizon				= 139,	// Anthelion weapon
 
