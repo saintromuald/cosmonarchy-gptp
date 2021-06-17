@@ -47,11 +47,7 @@ void spawnCreeper(Unit* unit)
 			u32 tile_x = creep_spawned->sprite->position.x / 32;
 			u32 tile_y = creep_spawned->sprite->position.y / 32;
 
-			helper::function_004148F0(
-				tile_x * 32,
-				tile_y * 32,
-				UnitId::ZergNydusCanal
-			); // apply creep
+			helper::function_004148F0(tile_x * 32, tile_y * 32, UnitId::ZergNydusCanal); // apply creep
 			helper::stopCreepDisappearingAtBuilding(creep_spawned);
 
 			creep_spawned->status |= UnitStatus::Invincible;
@@ -64,7 +60,8 @@ void spawnCreeper(Unit* unit)
 			creep_spawned->sprite->images.tail->flags |= 0x40;
 //			unit->connectedUnit = creep_spawned;
 //			scbw::print("Burrow basilisk");
-			__asm {
+			__asm
+			{
 				PUSHAD
 				MOV EDI, creep_spawned
 				PUSH 50000
