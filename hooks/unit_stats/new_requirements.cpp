@@ -779,6 +779,15 @@ namespace hooks
 			{
 				if (unitId == UnitId::ProtossPlasmaShell)
 				{
+					u32 scarabCount = unit->carrier.inHangarCount + unit->carrier.outHangarCount;
+					for (u32 i = 0; i < 5; ++i)
+					{
+						scarabCount += unit->buildQueue[i] != UnitId::None;
+					}
+					if (scarabCount >= 5)
+					{
+						return TECH_LOCKED;
+					}
 					return TECH_ACTIVE;
 				}
 				return TECH_HIDDEN;
