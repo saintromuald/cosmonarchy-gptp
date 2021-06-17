@@ -657,30 +657,35 @@ namespace hooks
 			u16 unitId = unit->id;
 			u32 baseProperty = units_dat::BaseProperty[unitId];
 			AiTown* town = nullptr;
-			if (unitAI != nullptr
-			  && unitAIVar->type == AiType::Building
-			  || baseProperty & UnitProperty::Building && unitId != UnitId::ResourceVespeneGeyser
-			  || unitId == UnitId::ZergLarva
-			  || scbw::isLarvalEgg(unit)
-			  || scbw::unitIdIsZergSupply(unitId))
+			if (unitAI)
 			{
-				BuildingAi* buildingAIVar = (BuildingAi*)unitAIVar;
-				town = buildingAIVar->town;
-				helper::deleteBuildingAI((BuildingAi*)unitAIVar, &town->freeBuildings);
-			}
-			else if (unitAIVar->type == AiType::Worker)
-			{
-				if (!(baseProperty & UnitProperty::Worker))
+				if (unitAIVar->type == AiType::Building
+					&& (baseProperty & UnitProperty::Building && unitId != UnitId::ResourceVespeneGeyser
+					|| unitId == UnitId::ZergLarva
+					|| scbw::isLarvalEgg(unit)
+					|| scbw::unitIdIsZergSupply(unitId)))
 				{
-					return 0;
+					BuildingAi* buildingAIVar = (BuildingAi*)unitAIVar;
+					town = buildingAIVar->town;
+					if (town)
+					{
+						helper::deleteBuildingAI(buildingAIVar, &town->freeBuildings);
+					}
 				}
-				WorkerAi* workerAIVar = (WorkerAi*)unitAIVar;
-				town = workerAIVar->town;
-				helper::deleteWorkerAI((WorkerAi*)unitAIVar, &town->freeWorkers);
-				town->workerCount -= 1;
+				else if (unitAIVar->type == AiType::Worker
+					&& baseProperty & UnitProperty::Worker)
+				{
+					WorkerAi* workerAIVar = (WorkerAi*)unitAIVar;
+					town = workerAIVar->town;
+					if (town)
+					{
+						helper::deleteWorkerAI(workerAIVar, &town->freeWorkers);
+						town->workerCount -= 1;
+					}
+				}
 			}
 
-			if (town != nullptr)
+			if (town)
 			{
 				if (unit == town->buildingSCV)
 				{
@@ -692,9 +697,9 @@ namespace hooks
 				}
 			}
 
-			if (unitAI == nullptr)
+			if (!unitAI)
 			{
-				if (town != nullptr)
+				if (town)
 				{
 					helper::deleteAITownIfNeeded(town);
 				}
@@ -704,7 +709,7 @@ namespace hooks
 			return 1;
 		}
 
-		if (unit->pAI != nullptr)
+		if (unit->pAI)
 		{
 			return 1;
 		}
