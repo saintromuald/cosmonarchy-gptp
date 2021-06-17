@@ -34,6 +34,7 @@ namespace Flags
 		NotWorker = 1 << 23,
 		NoEgg = 1 << 24,
 		NoLarva = 1 << 25,
+		NoHangar = 1 << 26,
 	};
 }
 

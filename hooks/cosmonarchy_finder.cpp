@@ -218,6 +218,10 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 
 		{
 			return false;
 		}
+		if (context & Flags::NoHangar && (unit->id == UnitId::ProtossPlasmaShell || unit->id == UnitId::ProtossSteward))
+		{
+			return false;
+		}
 		return true;
 	};
 	return callback;
