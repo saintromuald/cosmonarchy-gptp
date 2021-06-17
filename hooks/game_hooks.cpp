@@ -286,7 +286,7 @@ namespace hooks
 			{
 				if (do_ping[target])
 				{
-					u32 color = 7; // yellow
+					u32 color = 0; // red
 					if (scbw::isAlliedTo(*LOCAL_NATION_ID, target))
 					{
 						color = 8; // green
