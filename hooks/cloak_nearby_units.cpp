@@ -54,7 +54,7 @@ namespace hooks
 				&& current_unit->id != UnitId::ResourceVespeneGeyser									//
 				&& current_unit->mainOrderId != OrderId::Warpin											// Don't cloak units doing order WarpIn
 				&& scbw::isAlliedTo(current_unit->playerId, cloaker->playerId)							// Only cloak allied units
-				&& current_unit->playerId != 12															// Don't cloak neutral units
+				&& current_unit->playerId != 11															// Don't cloak neutral units
 				&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius)							// Check again if unit in range of cloaking
 				&& !current_unit->isFrozen())
 			{
