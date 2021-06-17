@@ -126,15 +126,16 @@ namespace hooks
 			// TODO: Cleanup
 			/*
 			bool sEnd = false;
-			//if (building->orderSignal & 0x1) {
-			building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-			sEnd = true;
+			if (building->orderSignal & 0x1)
+			{
+				building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+				sEnd = true;
+				replaceSpriteImages_copy(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
+				function_004D8500_copy(building->sprite->mainGraphic);
+			}
 
-			replaceSpriteImages_copy(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
-			function_004D8500_copy(building->sprite->mainGraphic);
-			//}
-			if (sEnd) {
-				//scbw::print("Set order state 6");
+			if (sEnd)
+			{
 				building->orderSignal |= 4;
 				building->mainOrderState = 6;
 				playBuildingCompleteSound(building);
@@ -397,7 +398,6 @@ namespace hooks
 	// @p unit. This hook is used by StarCraft's AI for counting units and buildings.
 	s32 getMorphBuildingTypeCountHook(const Unit* unit, u16 unitId, bool ignoreIncomplete)
 	{
-		//Default StarCraft behavior
 		s32 unitCount = BuildingHelper::getNumberOfUnitType(unit, unitId, ignoreIncomplete);
 
 		switch (unitId)
