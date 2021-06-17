@@ -9336,4 +9336,84 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For displayEstablishingShot
+	void* loadInitCreditsBIN(char* a1)
+	{
+		s32 address = 0x4D8DF0;
+		void* result_;
+		__asm
+		{
+			MOV EAX, a1
+			CALL address
+			MOV result_, EAX
+		}
+		return result_;
+	}
+
+	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle)
+	{
+		const u32 Func_SFileOpenArchive = 0x004100B2;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH handle
+			PUSH dwFlags
+			PUSH dwPriority
+			PUSH archiveName
+			CALL Func_SFileOpenArchive
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	bool SFileCloseArchive(void* archive)
+	{
+		const u32 Func_SFileCloseArchive = 0x004100BE;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH archive
+			CALL Func_SFileCloseArchive
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile)
+	{
+		const u32 Func_SFileOpenFileEx = 0x004100C4;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH phFile
+			PUSH dwSearchScope
+			PUSH szFileName
+			PUSH hMPQ
+			CALL Func_SFileOpenFileEx
+			MOV result, eAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	bool SFileCloseFile(void* hFile)
+	{
+		const u32 Func_SFileCloseFile = 0x4100B8;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH hFile
+			CALL Func_SFileCloseFile
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
 }
