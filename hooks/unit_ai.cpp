@@ -695,11 +695,7 @@ namespace hooks
 				{
 					town->mainBuilding = 0;
 				}
-			}
-
-			if (!unitAI)
-			{
-				if (town)
+				if (!unitAI)
 				{
 					helper::deleteAITownIfNeeded(town);
 				}
