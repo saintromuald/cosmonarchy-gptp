@@ -652,12 +652,12 @@ namespace hooks
 	{
 		helper::AI_RemoveFromTowns(unit);
 		UnitAi* unitAIVar = (UnitAi*)unit->pAI;
-		if (unitAIVar != nullptr)
+		if (unitAIVar)
 		{
 			u16 unitId = unit->id;
 			u32 baseProperty = units_dat::BaseProperty[unitId];
 			AiTown* town = nullptr;
-			if (unitAI != nullptr)
+			if (!unitAI)
 			{
 				if (unitAIVar->type == AiType::Building
 					&& (baseProperty & UnitProperty::Building && unitId != UnitId::ResourceVespeneGeyser
@@ -667,7 +667,7 @@ namespace hooks
 				{
 					BuildingAi* buildingAIVar = (BuildingAi*)unitAIVar;
 					town = buildingAIVar->town;
-					if (town != nullptr)
+					if (town)
 					{
 						helper::deleteBuildingAI(buildingAIVar, &town->freeBuildings);
 					}
@@ -676,15 +676,19 @@ namespace hooks
 				{
 					WorkerAi* workerAIVar = (WorkerAi*)unitAIVar;
 					town = workerAIVar->town;
-					if (town != nullptr)
+					if (town)
 					{
 						helper::deleteWorkerAI(workerAIVar, &town->freeWorkers);
 						town->workerCount -= 1;
 					}
 				}
+				else
+				{
+					return 0;
+				}
 			}
 
-			if (town != nullptr)
+			if (town)
 			{
 				if (unit == town->buildingSCV)
 				{
@@ -696,9 +700,9 @@ namespace hooks
 				}
 			}
 
-			if (unitAI == nullptr)
+			if (unitAI)
 			{
-				if (town != nullptr)
+				if (town)
 				{
 					helper::deleteAITownIfNeeded(town);
 				}
