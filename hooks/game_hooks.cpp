@@ -1218,6 +1218,13 @@ namespace hooks
 			} break;
 		}
 
+		// Phase Link Overlay
+		if (*elapsedTimeFrames % 10 == 0
+			&& unitExt->unitVectors[UnitVectorPhaseLinkClarions].size())
+		{
+			unit->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(unit->id), 0, 0, 0);
+		}
+
 		// Madrigal - Dirge
 		if (unitExt->timers[TimerDirgeFuse] == 1)
 		{

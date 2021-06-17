@@ -1612,8 +1612,6 @@ namespace scbw
 			return true;
 		}).forEach([&](Unit* target)
 		{
-			target->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(target->id), 0, 0, 0);
-
 			auto it = std::find(link.begin(), link.end(), target);
 			if (it == link.end()) {
 				link.push_back(target);
