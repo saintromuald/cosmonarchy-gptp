@@ -692,17 +692,13 @@ namespace hooks
 			{
 				if (unit == town->buildingSCV)
 				{
-					town->buildingSCV = 0;
+					town->buildingSCV = nullptr;
 				}
 				if (unit == town->mainBuilding)
 				{
-					town->mainBuilding = 0;
+					town->mainBuilding = nullptr;
 				}
-			}
-
-			if (unitAI)
-			{
-				if (town)
+				if (!unitAI)
 				{
 					helper::deleteAITownIfNeeded(town);
 				}
