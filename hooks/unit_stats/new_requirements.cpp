@@ -892,9 +892,17 @@ namespace hooks
 						return TECH_LOCKED;
 					}
 					case UnitId::SharedCohort:
+					{
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOrbothOmlia))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
 					case UnitId::SharedAxitrilisk:
 					{
-						if (TierUnlocked[RaceId::Zerg][Tier2])
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOrbothOmlia)
+							&& TierUnlocked[RaceId::Zerg][Tier2])
 						{
 							return TECH_ACTIVE;
 						}
@@ -924,7 +932,8 @@ namespace hooks
 					case UnitId::SharedCharlatan:
 					case UnitId::SharedEmpress:
 					{
-						if (TierUnlocked[RaceId::Zerg][Tier3])
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOrbothOmlia)
+							&& TierUnlocked[RaceId::Zerg][Tier3])
 						{
 							return TECH_ACTIVE;
 						}
@@ -951,7 +960,8 @@ namespace hooks
 					}
 					case UnitId::SharedAnticthon:
 					{
-						if (TierUnlocked[RaceId::Zerg][Tier4])
+						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOrbothOmlia)
+							&& TierUnlocked[RaceId::Zerg][Tier4])
 						{
 							return TECH_ACTIVE;
 						}
@@ -1130,6 +1140,7 @@ namespace hooks
 					case UnitId::ZergQuazrokPool:
 					case UnitId::ZergHydrokDen:
 					case UnitId::ZergMuthrokSpire:
+					case UnitId::ZergOrbothOmlia:
 					{
 						return TECH_ACTIVE;
 					}

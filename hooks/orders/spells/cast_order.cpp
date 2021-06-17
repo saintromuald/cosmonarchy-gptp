@@ -7,26 +7,17 @@ namespace hooks
 {
 	// Hooked to change order conditions and actions for Hallucination - Pr0nogo
 	s32 spellOrder(s32 defaultOrderString, Unit* caster, u16 techId, s32 range, u16* energyCost) // 004926D0
-	{		
-		u16 v6;
-		char v7;
-		GroupFlag v8;
-		char v9;
-		u8 v10;
-		char* v11;
-		u8 v12; // not written to
-		s16 v14;
-		char* v15;
-		u16 v16;
-
+	{
 		Unit* orderTarget = caster->orderTarget.unit;
-		v16 = defaultOrderString;
-		if (techId == TechId::Hallucination || (orderTarget && hooks::canTargetSpell(techId, orderTarget, 228, caster, orderTarget->sprite->position.x, orderTarget->sprite->position.y, &v16)))
+		u16 meme = (u16)defaultOrderString;
+		if (techId == TechId::Hallucination
+			|| techId == TechId::AuralAssault
+			|| (orderTarget && hooks::canTargetSpell(techId, orderTarget, 228, caster, orderTarget->sprite->position.x, orderTarget->sprite->position.y, &meme)))
 		{
-			v7 = *CHEAT_STATE;
-			v6 = techdata_dat::EnergyCost[techId] << 8;
-			*energyCost = v6;
-			if ((v7 & 8 || caster->energy >= v6))
+			char cheatFlags = *CHEAT_STATE;
+			u16 techCost = techdata_dat::EnergyCost[techId] << 8;
+			*energyCost = techCost;
+			if ((cheatFlags & 8 || caster->energy >= techCost))
 			{
 				if (orderTarget)
 				{
@@ -37,49 +28,53 @@ namespace hooks
 					return 1;
 				}
 			}
-			v8 = units_dat::GroupFlags[caster->id];
-			v9 = caster->playerId;
-			if (v8.isZerg)
+
+			GroupFlag casterGroupFlags = units_dat::GroupFlags[caster->id];
+			char casterPlayer = caster->playerId;
+			u8 casterRace;
+			if (casterGroupFlags.isZerg)
 			{
-				v10 = 0;
+				casterRace = 0;
 			}
-			else if (v8.isTerran)
+			else if (casterGroupFlags.isTerran)
 			{
-				v10 = 1;
+				casterRace = 1;
 			}
 			else
 			{
-				v10 = (v8.isProtoss) != 0 ? 2 : 4;
+				casterRace = (casterGroupFlags.isProtoss) != 0 ? 2 : 4;
 			}
-			v11 = helper::getStatTxtString(v10 + 864);
-			if (v11)
+
+			char* string = helper::getStatTxtString(casterRace + 864);
+			if (string)
 			{
-				if (/*v12 == *LOCAL_NATION_ID && */*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+				if (*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
 				{
-					helper::setUnitStatTxtErrorMsg((s32)v11);
+					helper::setUnitStatTxtErrorMsg((s32)string);
 				}
 			}
 			helper::toIdle(caster);
 			return 0;
 		}
-		defaultOrderString = v16;
-		v14 = defaultOrderString - 1;
-		if ((s16)defaultOrderString)
+
+		s16 orderStringIndex = defaultOrderString - 1;
+		char* finalString;
+		if ((u16)defaultOrderString)
 		{
-			if (v14 < *statTxtTbl)
+			if (orderStringIndex < *statTxtTbl)
 			{
-				v15 = (char*)statTxtTbl + statTxtTbl[v14 + 1];
+				finalString = (char*)statTxtTbl + statTxtTbl[orderStringIndex + 1];
 			}
 			else
 			{
-				v15 = "";
+				finalString = "";
 			}
 		}
 		else
 		{
-			v15 = 0;
+			finalString = 0;
 		}
-		helper::get_statTxt_Str_0(caster, (u8)caster->playerId, v15);
+		helper::get_statTxt_Str_0(caster, (u8)caster->playerId, finalString);
 
 		s32 result;
 		if (caster->orderQueueHead)
@@ -106,9 +101,6 @@ namespace hooks
 	// Same as above
 	bool canTargetSpell(u16 techId, Unit* target, s16 fowUnitId, Unit* caster, s16 x, s16 y, u16* error) // 00492020
 	{
-		bool v9;
-		s16 v10;
-
 		switch (techId)
 		{
 			// Targeting ground
@@ -123,7 +115,9 @@ namespace hooks
 			case TechId::StasisField:
 			case TechId::DisruptionWeb:
 			case TechId::Maelstrom:
+			case TechId::OpticalFlare: // New, Aural Assault for Luminary
 			{
+				scbw::print("can target ground");
 				return 1;
 			}
 			default:
@@ -131,6 +125,8 @@ namespace hooks
 				if (techId != TechId::SpiderMines
 					&& techId != TechId::LobotomyMine)
 				{
+					bool hasTarget;
+					u16 errorStatString;
 					if (target)
 					{
 						if (!(target->status & UnitStatus::Invincible))
@@ -138,27 +134,27 @@ namespace hooks
 						LABEL_20:
 							if (fowUnitId == UnitId::None)
 							{
-								v10 = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->playerId, techId);
+								errorStatString = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->playerId, techId);
 							}
 							else
 							{
-								v10 = helper::canTargetSpellOnFOWUnit((s32)techId, fowUnitId);
+								errorStatString = helper::canTargetSpellOnFOWUnit((s32)techId, fowUnitId);
 							}
 							
-							if (v10)
+							if (errorStatString)
 							{
 								if (error)
 								{
-									*error = v10;
+									*error = errorStatString;
 								}
 							}
-							return v10 == 0;
+							return errorStatString == 0;
 						}
-						v9 = fowUnitId < UnitId::None;
+						hasTarget = fowUnitId < UnitId::None;
 					}
 					else
 					{
-						v9 = fowUnitId < UnitId::None;
+						hasTarget = fowUnitId < UnitId::None;
 						if (fowUnitId == UnitId::None)
 						{
 							if (error)
@@ -168,7 +164,7 @@ namespace hooks
 							return 0;
 						}
 					}
-					if (!v9 || !(~(units_dat::BaseProperty[fowUnitId] >> 29) & 1))
+					if (!hasTarget || !(~(units_dat::BaseProperty[fowUnitId] >> 29) & 1))
 					{
 						if (error)
 						{
@@ -194,7 +190,6 @@ namespace hooks
 	void orders_Spell(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		s32 spellCost;
 		u8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
 		Unit* target = unit->orderTarget.unit;
 
@@ -263,6 +258,7 @@ namespace hooks
 			else
 			{ // 0049291A
 				u8 techUsed = orders_dat::TechUsed[unit->mainOrderId];
+				s32 spellCost;
 				if (techUsed >= TechId::None)
 				{
 					spellCost = 0;
