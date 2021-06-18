@@ -902,7 +902,7 @@ namespace hooks
 			} break;
 		}
 
-		// Empress - passive
+		// Empress - Anodyne Annex passive
 		if (targetExt->values[ValueEmpressPassiveStacks])
 		{
 			data.finalDamage = 0;
@@ -911,6 +911,7 @@ namespace hooks
 			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 5 * 256, targetExt->units[UnitEmpressSource]);
 			data.target->giveTo(targetExt->values[ValueEmpressSourcePlayer]);
 			targetExt->values[ValueEmpressPassiveStacks] = 0;
+			data.target->sprite->createOverlay(ImageId::MindControlHit_Small + scbw::getOverlayOffset(data.target->id));
 		}
 
 		// Apostle, Anticthon - Revive
