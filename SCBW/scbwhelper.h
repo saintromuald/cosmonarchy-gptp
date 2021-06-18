@@ -1001,6 +1001,9 @@ namespace helper
 	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);	// 004100C4
 	bool SFileCloseFile(void* hFile);	                                                        // 004100C4
 
+	// For AI_AreOnConnectedRegions
+	bool AI_RegionsAreConnected(u32 playerId, u32 region1, u32 region2);						// 00437E70
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

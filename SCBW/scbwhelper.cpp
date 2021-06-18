@@ -9416,4 +9416,22 @@ namespace helper
 		}
 		return (bool)result;
 	}
+
+	// For AI_AreOnConnectedRegions
+	bool AI_RegionsAreConnected(u32 playerId, u32 region1, u32 region2)
+	{
+		const u32 Func_AI_RegionsAreConnected = 0x00437E70;
+		static bool result;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, region2
+			MOV EBX, region1
+			MOV EAX, playerId
+			CALL Func_AI_RegionsAreConnected
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

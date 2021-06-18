@@ -764,4 +764,17 @@ LABEL_126:
 		}
 		return result;
 	}
+
+	// Hooked to fix crashes - Pr0nogo
+	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2) // 00438E10
+	{
+		if (!unit1 || !unit2 || !unit1->sprite || !unit2->sprite)
+		{
+			return 0;
+		}
+
+		u16 regionId = helper::SAI_GetRegionIdFromPxEx(unit2->sprite->position.x, unit2->sprite->position.y);
+		u16 regionId2 = helper::SAI_GetRegionIdFromPxEx(unit1->sprite->position.x, unit1->sprite->position.y);
+		return helper::AI_RegionsAreConnected(unit2->playerId, regionId2, regionId);
+	}
 }
