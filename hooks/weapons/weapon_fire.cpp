@@ -213,7 +213,7 @@ namespace hooks
 
 		// Cloaked Units - Decloak
 		// Cabalist uses silent strike, so the check has to be in weapon damage
-		// It is a melee unit, so this check is just a fail safe
+		// It is a melee unit, so this check is just a failsafe
 		if (unit->id != UnitId::ProtossCabalist)
 		{
 			scbw::decloakProc(unit);
@@ -521,7 +521,8 @@ namespace hooks
 					unitExt->values[ValueAdaptiveAmitosis] = 1;
 					// TODO: verify that this will work with all weapon types
 					const u32 Iscript_UseWeapon = 0x00479C30;
-					__asm {
+					__asm
+					{
 						PUSHAD
 						MOV ESI, unit
 						PUSH weaponId
@@ -1629,85 +1630,4 @@ namespace hooks
 			break;
 		}
 	}
-
-	/*
-	s32 writeBullets(FILE* hFile) {
-		s32 v1; // edi
-		Bullet* nextBounce; // esi
-		Bullet* target; // eax
-		s32 bulletSprite; // edx
-		s32 posY; // ecx
-		s32 posX; // esi
-		size_t v7; // eax
-		s16* v8; // eax
-		u16 v9; // dx
-		Bullet* v10; // ebx
-		void* v11; // edi
-		u32 v12; // esi
-		s16* v13; // eax
-		Bullet* v14; // ecx
-		s32 v15; // edi
-		Bullet* v16; // ecx
-		s32 v18; // [esp+8h] [ebp-Ch]
-		s16* v19; // [esp+Ch] [ebp-8h]
-		s32 data; // [esp+10h] [ebp-4h]
-
-		nextBounce = bulletTable;
-		v1 = 100;
-		do {
-			packBulletData(nextBounce, 1);
-			++nextBounce;
-			--v1;
-		} while (v1);
-		bulletSprite = 0;
-		data = 0;
-		target = (Bullet*)((char*)bulletTable + 12);
-		posY = 100;
-		do {
-			if (target->previous)
-				++bulletSprite;
-			++target;
-			--posY;
-		} while (posY);
-		data = bulletSprite;
-		v7 = _lockwrite(&data, 2u, 1u, hFile);
-		posX = v7 == 1;
-		if (v7 == 1) {
-			if ((s16)data) {
-				v12 = 114 * (unsigned __int16)data;
-				v18 = 114 * (unsigned __int16)data;
-				v8 = SMemAlloc(114 * (unsigned __int16)data, "Starcraft\\SWAR\\lang\\Bullet.cpp", 1276, 8);
-				v11 = v8;
-				v19 = v8;
-				data = 0;
-				v9 = 0;
-				v10 = bulletTable;
-				do
-				{
-					if (v10->sprite)
-					{
-						*v8 = v9;
-						v13 = v8 + 1;
-						qmemcpy(v13, v10, 0x70u);
-						v11 = v19;
-						v12 = v18;
-						v8 = v13 + 56;
-						++data;
-					}
-					++v9;
-					++v10;
-				} while (v9 < 0x64u);
-				posX = compressWrite(v11, v12, hFile);
-				SMemFree(v11, "Starcraft\\SWAR\\lang\\Bullet.cpp", 1299, 0);
-			}
-		}
-		v14 = bulletTable;
-		v15 = 100;
-		do {
-			unpackBulletData(v14, 1);
-			v14 = v16 + 1;
-			--v15;
-		} while (v15);
-		return posX;
-	}*/
 }

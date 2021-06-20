@@ -568,7 +568,7 @@ namespace hooks
 						const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 						if (dist < 2 * 32)
 						{
-							const u32 displacementTime = 24;
+							const u32 displacementTime = 9;
 							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
 							Vector32f displacement = scbw::getNormalizedVector(diff);
 							displacement.x *= 1 * 32.0 / displacementTime;
@@ -902,7 +902,7 @@ namespace hooks
 			} break;
 		}
 
-		// Empress - passive
+		// Empress - Anodyne Annex passive
 		if (targetExt->values[ValueEmpressPassiveStacks])
 		{
 			data.finalDamage = 0;
@@ -911,6 +911,7 @@ namespace hooks
 			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 5 * 256, targetExt->units[UnitEmpressSource]);
 			data.target->giveTo(targetExt->values[ValueEmpressSourcePlayer]);
 			targetExt->values[ValueEmpressPassiveStacks] = 0;
+			data.target->sprite->createOverlay(ImageId::MindControlHit_Small + scbw::getOverlayOffset(data.target->id));
 		}
 
 		// Apostle, Anticthon - Revive

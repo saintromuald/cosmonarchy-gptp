@@ -301,7 +301,7 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::CastMindControl, 0, 0);
 			} break;
-			case TechId::OpticalFlare:
+			case TechId::AuralAssault:
 			{
 				helper::issueTriTargetOrder(OrderId::CastOpticalFlare, 0, 0);
 			} break;

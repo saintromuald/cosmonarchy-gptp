@@ -14,6 +14,7 @@ namespace hooks
 	Unit* getClosestEnemyStructure(s32 x, s32 y, s32 playerId);													// 004A0F90
 	s16 getRegionIdFromUnit(Unit* unit);																		// 0049CB40
 	bool AI_IsBuildingSafe(Unit* unit);																			// 00438910
+	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2);													// 00438E10
 
 	void injectAIOrdersHooks();
 }

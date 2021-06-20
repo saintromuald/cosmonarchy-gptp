@@ -216,26 +216,6 @@ namespace
 		}
 	}
 
-	/*
-	void __declspec(naked) writeBullets_Wrapper() {
-		static FILE* a1;
-		static s32 result;
-		__asm {
-			PUSH EBP
-			MOV EBP, ESP
-			MOVZX EAX, [EBP + 0x08]
-			PUSHAD
-		}
-		result = hooks::writeBullets(a1);
-		__asm {
-			POPAD
-			MOV ESP, EBP
-			POP EBP
-			RETN 4
-		}
-	}
-	*/
-
 	const u32 BulletDamageJmpBack = 0x0048B77A;
 	void __declspec(naked) BulletDamage_bulletNullcheck()
 	{

@@ -268,7 +268,7 @@ namespace UnitId
 
 	// Unused
 	//	DisruptionField									= 105,		// Disruption Field // might need mempatches?
-	//	TerranPhysicsLab								= 118,		// Physics Lab // Currently cannot set dat requirements because of firegraft being a good program
+	//	TerranPhysicsLab								= 118,		// Physics Lab
 	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
 
 	// Soon to be unused

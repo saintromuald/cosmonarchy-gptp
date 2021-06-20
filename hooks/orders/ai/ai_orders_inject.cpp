@@ -244,6 +244,26 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_AreOnConnectedRegions_Wrapper() // 00438E10
+	{
+		static Unit* unit1;
+		static Unit* unit2;
+		static bool result;
+		__asm
+		{
+			MOV unit1, EAX
+			MOV unit2, ECX
+			PUSHAD
+		}
+		result = hooks::AI_AreOnConnectedRegions(unit1, unit2);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -263,6 +283,7 @@ namespace hooks
 //		jmpPatch(deleteAITownIfNeeded_Wrapper,				0x004347E0, 3);
 //		jmpPatch(AI_CanMineExtra_Wrapper,					0x00447A70, 1);
 		jmpPatch(AI_IsBuildingSafe_Wrapper,					0x00438910, 2);
+		jmpPatch(AI_AreOnConnectedRegions_Wrapper,			0x00438E10, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}
