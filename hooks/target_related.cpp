@@ -625,8 +625,7 @@ LABEL_42:
 			|| !target
 			|| target->status & UnitStatus::Invincible
 			|| target->sprite->flags & 0x20
-			|| a3
-			&& helper::unitCanSeeCloakedTarget(target, unit))
+			|| a3 && helper::unitCanSeeCloakedTarget(target, unit))
 		{
 			return 0;
 		}
@@ -664,18 +663,15 @@ LABEL_42:
 			return 0;
 		}
 
+		if (units_dat::SizeType[target->id] == UnitSize::Titanic)
+		{
+			return units_dat::AirWeapon[unitWithWeapon->id] != -126
+				|| units_dat::GroundWeapon[unitWithWeapon->id] != -126;
+		}
+
 		if (target->status & UnitStatus::InAir)
 		{
-
-			if (units_dat::SizeType[target->id] == UnitSize::Titanic)
-			{
-				return units_dat::AirWeapon[unitWithWeapon->id] != -126
-					|| units_dat::GroundWeapon[unitWithWeapon->id] != -126;
-			}
-			else 
-			{
-				return units_dat::AirWeapon[unitWithWeapon->id] != -126;
-			}
+			return units_dat::AirWeapon[unitWithWeapon->id] != -126;
 		}
 
 		return units_dat::GroundWeapon[unitWithWeapon->id] != -126;
