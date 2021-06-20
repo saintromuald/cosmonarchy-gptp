@@ -410,6 +410,7 @@ void tacticalAi(Unit* unit)
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
 				sync += localUnitExt->values[ValueAI_KiteSignal];
 			});
+			sync >>= 8;
 			if (sync >= localGroup.unitCount * 1.5)
 			{
 				KitePositions result = getKitePositions(unit, hostileGroupRadius);
@@ -469,7 +470,7 @@ void tacticalAi(Unit* unit)
 					}
 					else
 					{
-						localUnitExt->timers[TimerAI_KiteCooldown] = 10;
+						localUnitExt->timers[TimerAI_KiteCooldown] = 8;
 						bool targetHasMinRange = false;
 						if (localUnit->orderTarget.unit)
 						{

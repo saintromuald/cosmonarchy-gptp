@@ -274,7 +274,6 @@ namespace hooks
 			attacker->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
 			return;
 		}
-		attackerExt->values[ValueAI_KiteSignal]++;
 		Unit* target = attacker->orderTarget.unit;
 		if (target != nullptr)
 		{
@@ -290,6 +289,7 @@ namespace hooks
 			{
 				weaponId = WeaponId::None;
 			}
+			attackerExt->values[ValueAI_KiteSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId];
 
 			if (attacker->status & UnitStatus::IsHallucination)
 			{
