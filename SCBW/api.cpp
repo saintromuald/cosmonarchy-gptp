@@ -8,6 +8,7 @@
 #include <hooks/weapons/weapon_damage.h>
 #include <globals.h>
 #include "hooks/target_related.h"
+#include "hooks/unit_ai.h"
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -1049,7 +1050,7 @@ namespace scbw
 			{
 				return;
 			}
-			helper::giveAi(unit);
+			hooks::AI_TrainingUnit(unit, creator, true);
 			if (creator != nullptr)
 			{
 				if (creator->status & UnitStatus::IsHallucination)

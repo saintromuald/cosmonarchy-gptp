@@ -6,51 +6,45 @@
 
 namespace hooks
 {
-	void AI_TrainingUnit(Unit* result, Unit* parent) // 004A2830
+	void AI_TrainingUnit(Unit* result, Unit* parent, b32 preferSimpleMilitary) // 004A2830
 	{
-		if (result == nullptr)
+		if (!result
+			|| playerTable[result->playerId].type != PlayerType::Computer)
 		{
 			return;
 		}
 
-		// archon and mind tyrant should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
-		bool useSimpleMilitaryAI =
-			result->id == UnitId::ZergRilirokor
-			|| result->id == UnitId::ZergRililisk
-			|| result->id == UnitId::ProtossArchon
-			|| result->id == UnitId::ProtossMindTyrant;
+		b32 isValidParent = parent && result->playerId == parent->playerId;
 
-		if (parent == nullptr)
+		// Worker or Ovileth
+		if (isValidParent)
 		{
-			if (useSimpleMilitaryAI)
+			if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
 			{
-				parent = result; // in this context, parent can be the same as result and will still work as intended
+				helper::AI_TrainingWorker(result, parent);
+				return;
 			}
-			else
+			if (scbw::unitIdIsZergSupply(result->id))
 			{
+				helper::AI_TrainingOverlord(result, parent); // replace with hook later
 				return;
 			}
 		}
 
-		if (result->playerId != parent->playerId
-			|| playerTable[parent->playerId].type != PlayerType::Computer)
+		// Military
+		if (result->id == UnitId::ZergRilirokor
+			|| result->id == UnitId::ZergRililisk
+			|| result->id == UnitId::ProtossArchon
+			|| result->id == UnitId::ProtossMindTyrant
+			|| preferSimpleMilitary)
+			// archon and mind tyrant should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
 		{
+			hooks::AI_TrainingSimpleMilitary(result, result);
 			return;
 		}
-
-		if (useSimpleMilitaryAI)
-		{
-			hooks::AI_TrainingSimpleMilitary(result, parent);
-		}
-		else if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
-		{
-			helper::AI_TrainingWorker(result, parent);
-		}
-		else if (scbw::unitIdIsZergSupply(result->id))
-		{
-			helper::AI_TrainingOverlord(result, parent); // replace with hook later
-		}
-		else
+		
+		// Military or Guard
+		if (isValidParent)
 		{
 			if (result->id == UnitId::TerranCleric)
 			{
@@ -60,6 +54,7 @@ namespace hooks
 				}
 			}
 			helper::AI_TrainingNormal(result, parent);
+			return;
 		}
 	}
 
