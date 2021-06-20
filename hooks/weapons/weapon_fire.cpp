@@ -167,19 +167,6 @@ namespace hooks
 			return;
 		}
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		if (unitExt->values[ValueDisruptionFieldOn]
-			|| unitExt->timers[TimerUnderDisruptionWeb])
-		{
-			if (unit->getAirWeapon() == wId)
-			{
-				unit->playIscriptAnim(IscriptAnimation::AirAttkToIdle);
-			}
-			else if (unit->getGroundWeapon() == wId)
-			{
-				unit->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
-			}
-			return;
-		}
 		u8 weaponId = wId;
 		unitExt->values[ValueAI_KiteSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId];
 		// Retrieve the spawning position for the bullet.

@@ -208,9 +208,10 @@ namespace hooks
 
 	void injectTargetHooks()
 	{
-		// disruption web
-		nops(0x004EB176, 8);
-		nops(0x004EB316, 2);
+		// Removes can not attack status checks from some update functions, it was done by iquare pretty sure
+		// not exactly sure what was the intention. Currently it doesn't seem to do anything
+//		nops(0x004EB176, 8);
+//		nops(0x004EB316, 2);
 
 //		jmpPatch(genericRightClickUnitProc2_Wrapper,	0x00455E00, 1);
 //		jmpPatch(genericRightClickUnitProc2_Wrapper,	0x004C20C0, 0);

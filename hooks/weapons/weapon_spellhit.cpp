@@ -268,12 +268,6 @@ namespace hooks
 	void MeleeAttackHit(Unit* attacker)
 	{
 		UnitExt* attackerExt = globals.GetUnitExt(attacker);
-		if (attackerExt->values[ValueDisruptionFieldOn]
-			|| attackerExt->timers[TimerUnderDisruptionWeb])
-		{
-			attacker->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
-			return;
-		}
 		Unit* target = attacker->orderTarget.unit;
 		if (target != nullptr)
 		{

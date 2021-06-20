@@ -612,7 +612,8 @@ namespace hooks
 			}
 			*secondaryOrderTimerReassignCount = 300;
 		}
-		helper::updateDisruptionWebStatus();
+		// Now handled in global effect
+		//helper::updateDisruptionWebStatus();
 		v4 = *firstDyingUnit;
 		if (*firstDyingUnit)
 		{

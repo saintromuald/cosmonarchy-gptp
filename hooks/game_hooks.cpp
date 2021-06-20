@@ -1225,6 +1225,12 @@ namespace hooks
 			unit->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(unit->id), 0, 0, 0);
 		}
 
+		// Disruption Web Clear
+		if (unitExt->timers[TimerUnderDisruptionWeb] == 1)
+		{
+			unit->status &= ~UnitStatus::CanNotAttack;
+		}
+
 		// Madrigal - Dirge
 		if (unitExt->timers[TimerDirgeFuse] == 1)
 		{
