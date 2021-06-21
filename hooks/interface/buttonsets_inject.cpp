@@ -86,11 +86,9 @@ namespace
 		}
 	}
 
-	// Modify offset 004591ED to use the custom
-	// getButtonSet function
+	// Modify offset 004591ED to use the custom getButtonSet function
 	// Don't replace the entire function
-	// You can (and should) disable this if you're
-	// already using the hooked 4591D0 function.
+	// You can (and should) disable this if you're already using the hooked 4591D0 function.
 	const u32 Func_Sub_4591ED = 0x004591ED;
 	const u32 Patch_For_Sub4591D0_Back = 0x004591F4;
 	void __declspec(naked) getButtonSetPatch_For_Sub4591D0()

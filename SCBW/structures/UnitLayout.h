@@ -1,6 +1,6 @@
-//This header file contains the binary layout of the Unit structure.
-//For the member functions, see Unit.h
-//Based on BWAPI's BW/Unit.h
+// This header file contains the binary layout of the Unit structure.
+// For the member functions, see Unit.h
+// Based on BWAPI's BW/Unit.h
 
 #include "Target.h"
 #include "List.h"
@@ -14,21 +14,6 @@ struct Sprite;
 struct Order;
 struct Unit;
 
-//
-
-//From BWAPI/Source/BW/MovementFlags.h
-/** Definition of Flags specifying movement type - used in BW#Unit#movementFlags */
-
-namespace RelicType
-{
-	enum
-	{
-		Weapon,
-		Armor,
-		Augment,
-	};
-}
-
 namespace NewGameCommand
 {
 	enum
@@ -37,10 +22,10 @@ namespace NewGameCommand
 		CyprianAction = 0x02,
 		RelicAction = 0x03,
 		Aperture = 0x04,
-		PhaseLink = 0x05,//also Khaydarin Eclipse
+		PhaseLink = 0x05, // also Khaydarin Eclipse, obsolete
 		PlanetCracker = 0x06,
 		CreateUnit = 0x07,
-		// KhaydarinControl = 0x08,//obsolete
+		// KhaydarinControl = 0x08, // obsolete
 		CarrierPrebuild = 0x09,
 
 		OverlordDamageField = 0xA,
@@ -96,7 +81,6 @@ namespace GptpId
 		Void = 10005,
 	};
 }
-
 
 namespace AiseId
 {
@@ -426,14 +410,15 @@ namespace RustId
 		DirgeAttacker,
 	};
 }
+
 #include "SCBW\enumerations\TechId.h"
-const u32 string_toggle_on[] = {1703, 1807, 1265, 1232};
-const u32 string_toggle_off[] = {1113, 1114, 1270, 1233};
-const u32 button_toggle_on[] = {374, 319, 369, 374};
-const u32 button_toggle_off[] = {375, 236, 236, 375};
+const u32 string_toggle_on[] = {1807, 1265, 1232};
+const u32 string_toggle_off[] = {1114, 1270, 1233};
+const u32 button_toggle_on[] = {319, 369, 374};
+const u32 button_toggle_off[] = {236, 236, 375};
 const u32 toggle_values[] = {RustId::ToggleSublimeShepherd, RustId::ToggleDisruptionField, RustId::ToggleTempoChange};
 const u32 toggle_abilities[] = {TechId::SublimeShepherd, TechId::DisruptionWeb, TechId::TempoChange};
-const u32 generictoggles = 4;
+const u32 generictoggles = 3;
 
 namespace CosmonarchyFlags1
 {
@@ -449,6 +434,9 @@ namespace CosmonarchyFlags1
 		Infestation = 1 << 7,
 	};
 }
+
+// From BWAPI/Source/BW/MovementFlags.h
+// Definition of Flags specifying movement type - used in BW#Unit#movementFlags
 
 namespace MovementFlags
 {
@@ -466,8 +454,8 @@ namespace MovementFlags
 	};
 }
 
-//Layout of the Unit structure
-//Comments marked with ++ added by RavenWolf
+// Layout of the Unit structure
+// Comments marked with ++ added by RavenWolf
 struct UnitLayout
 {
 	/*0x000*/ Link<Unit> link;

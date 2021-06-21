@@ -117,7 +117,6 @@ namespace hooks
 			case TechId::Maelstrom:
 			case TechId::OpticalFlare: // New, Aural Assault for Luminary
 			{
-				scbw::print("can target ground");
 				return 1;
 			}
 			default:
@@ -347,11 +346,9 @@ namespace hooks
 							unit->getMovableState() != 0
 							)
 						{ // 00492A38
-						 // scbw::print("Conditions good");
 							bool bStopHere = false;
 
-							// in case it was modified by a previous function,
-							// relinking
+							// in case it was modified by a previous function, relinking
 							target = unit->orderTarget.unit;
 
 							if (unit->pAI != nullptr && target != nullptr)
@@ -363,10 +360,8 @@ namespace hooks
 									// array bound to the function
 									const u8* const array_00492B44 = (u8*)(0x00492B44);
 
-									// this code would not work for weapons id of NuclearMissile, YamatoGun 
-									// and weapons id before those, they must be excluded somewhere else
-									// Maybe the switch and array use could be removed in a future version
-									// since enough elements use default value (switch 6)
+									// This code would not work for weapons id of NuclearMissile, YamatoGun, and weapons id before those, they must be excluded somewhere else
+									// Maybe the switch and array use could be removed in a future version since enough elements use default value (switch 6)
 									u32 switch_value = array_00492B44[orderWeaponId - 0x20];
 									if (switch_value != 6)
 									{
@@ -415,7 +410,7 @@ namespace hooks
 								}
 
 								// disable flag 2 if enabled, else has no effect
-								unit->orderSignal &= ~2;	//&= -3
+								unit->orderSignal &= ~2; //&= -3
 								unit->movementFlags |= MovementFlags::StartingAttack;
 								if (unit->sprite->images.head != nullptr)
 								{

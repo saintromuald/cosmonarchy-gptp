@@ -1,13 +1,12 @@
 #pragma once
 #include <SCBW/structures/Unit.h>
 
-namespace hooks {
+namespace hooks
+{
+	const char* getWeaponTooltipString(u8 weaponId, Unit* unit);
+	const char* getArmorTooltipString(Unit* unit);
+	const char* getShieldTooltipString(Unit* unit);
+	const char* getSpecialTooltipString(u16 iconUnitId, Unit* unit);
 
-const char* getWeaponTooltipString(u8 weaponId, Unit* unit);
-const char* getArmorTooltipString(Unit* unit);
-const char* getShieldTooltipString(Unit* unit);
-const char* getSpecialTooltipString(u16 iconUnitId, Unit* unit);
-
-void injectUnitTooltipHook();
-
-} //hooks
+	void injectUnitTooltipHook();
+}
