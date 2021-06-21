@@ -411,7 +411,7 @@ void tacticalAi(Unit* unit)
 				sync += localUnitExt->values[ValueAI_KiteSignal];
 			});
 			sync >>= 8;
-			if (sync >= localGroup.unitCount * 1.5)
+			if (sync >= localGroup.unitCount * 1)
 			{
 				KitePositions result = getKitePositions(unit, hostileGroupRadius);
 				if (!result.enemiesFound)
