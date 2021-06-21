@@ -645,12 +645,8 @@ void Globals::frameHook()
 						effects[i].position.y - 40,
 						effects[i].position.x + 60,
 						effects[i].position.y + 40
-					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::IncludingSelf, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
-						if (unit == effects[i].parent)
-						{
-							return;
-						}
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unitExt->timers[TimerUnderDisruptionWeb] = 8;
 						unit->status |= UnitStatus::CanNotAttack;
