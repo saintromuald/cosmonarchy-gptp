@@ -438,11 +438,10 @@ void tacticalAi(Unit* unit)
 						return;
 					}
 
-					// enabling might increase average dps, but will desync units more
-					//if (!shouldKite(localUnit, localUnitExt))
-					//{
-					//	return;
-					//}
+					if (!shouldKite(localUnit, localUnitExt))
+					{
+						return;
+					}
 
 					localUnitExt->values[ValueAI_KiteSignal] = 0;
 					const u32 distance = getDistanceToTarget(localUnit);
