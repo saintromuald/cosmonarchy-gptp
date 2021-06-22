@@ -517,17 +517,17 @@ namespace hooks
 				unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 				unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
 			}
-			bMoveTargetResult = helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 			if ((unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
 				&& !(unit->orderTarget.pt.x == 0 && unit->orderTarget.pt.y == 0))
 			{
+				bMoveTargetResult = helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
-			}
-			if (bMoveTargetResult)
-			{
-				unit->mainOrderState = 1;
+				if (bMoveTargetResult)
+				{
+					unit->mainOrderState = 1;
+				}
 			}
 		}
 	}
