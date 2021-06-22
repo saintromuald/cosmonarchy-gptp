@@ -84,7 +84,7 @@ namespace hooks
                     result = orders_dat::RequirementsOffset[OrderId::RallyPoint2];
                     if (orders_dat::RequirementsOffset[OrderId::RallyPoint2])
                     {
-                        result = helper::parseRequirementOpcodes(unit, OrderId::RallyPoint2, player, *ordersRequirementTree, orders_dat::RequirementsOffset[OrderId::RallyPoint2]);
+                        result = helper::parseRequirementOpcodes(unit, OrderId::RallyPoint2, player, (u32)ordersRequirementTree, orders_dat::RequirementsOffset[OrderId::RallyPoint2]);
                     }
                     else
                     {
