@@ -5,21 +5,21 @@ u8 tunitColors[UNIT_COLOR_COUNT];
 u8 playerColorList[PLAYABLE_PLAYER_COUNT];
 
 static std::vector<u32> GetPlayerTintsFromColor(u32 color);
-static bool CanUsePlayerColor(u32 color, u32 last_player);
-static bool CanUsePlayerTint(u32 color_tint, u32 last_player);
+static bool CanUsePlayerColor(u32 color, u32 lastPlayer);
+static bool CanUsePlayerTint(u32 colorTint, u32 lastPlayer);
 static u32 GetRandomTint();
 static u32 GetRandomColorFromTint(u32 tint);
-static u32 GetColorForPersonality(u32 player_id);
-static void SetPlayerColor(u32 player_id, u32 color);
+static u32 GetColorForPersonality(u32 playerId);
+static void SetPlayerColor(u32 playerId, u32 color);
 
 static std::vector<u32> GetPlayerTintsFromColor(u32 color)
 {
 	std::vector<u32> tints = {};
 	for (u32 tint = 0; tint < playerTints.size(); ++tint)
 	{
-		for (u32 color_index = 0; color_index < playerTints[tint].size(); color_index++)
+		for (u32 colorIndex = 0; colorIndex < playerTints[tint].size(); colorIndex++)
 		{
-			if (playerTints[tint][color_index] == color)
+			if (playerTints[tint][colorIndex] == color)
 			{
 				tints.push_back(tint);
 			}
@@ -28,11 +28,11 @@ static std::vector<u32> GetPlayerTintsFromColor(u32 color)
 	return tints;
 }
 
-static bool CanUsePlayerColor(u32 color, u32 last_player)
+static bool CanUsePlayerColor(u32 color, u32 lastPlayer)
 {
-	for (u32 player_tint : GetPlayerTintsFromColor(color))
+	for (u32 playerTint : GetPlayerTintsFromColor(color))
 	{
-		if (!CanUsePlayerTint(player_tint, last_player))
+		if (!CanUsePlayerTint(playerTint, lastPlayer))
 		{
 			return false;
 		}
@@ -44,9 +44,9 @@ static bool CanUsePlayerTint(u32 colorTint, u32 lastPlayer)
 {
 	if (playerTable[lastPlayer].race < bannedRaceTints.size())
 	{
-		for (u32 banned_tint : bannedRaceTints[playerTable[lastPlayer].race])
+		for (u32 bannedTint : bannedRaceTints[playerTable[lastPlayer].race])
 		{
-			if (colorTint == banned_tint)
+			if (colorTint == bannedTint)
 			{
 				return false;
 			}
@@ -54,19 +54,19 @@ static bool CanUsePlayerTint(u32 colorTint, u32 lastPlayer)
 	}
 	if (*CURRENT_TILESET < bannedTilesetTints.size())
 	{
-		for (u32 banned_tint : bannedTilesetTints[*CURRENT_TILESET])
+		for (u32 bannedTint : bannedTilesetTints[*CURRENT_TILESET])
 		{
-			if (colorTint == banned_tint)
+			if (colorTint == bannedTint)
 			{
 				return false;
 			}
 		}
 	}
-	for (u32 player_id = 0; player_id < lastPlayer; ++player_id)
+	for (u32 playerId = 0; playerId < lastPlayer; ++playerId)
 	{
-		for (u32 other_tint : GetPlayerTintsFromColor(playerColorList[player_id]))
+		for (u32 otherTint : GetPlayerTintsFromColor(playerColorList[playerId]))
 		{
-			if (colorTint == other_tint)
+			if (colorTint == otherTint)
 			{
 				return false;
 			}
@@ -85,61 +85,61 @@ static u32 GetRandomColorFromTint(u32 tint)
 	return playerTints[tint][helper::randFunc() % playerTints[tint].size()];
 }
 
-static u32 GetColorForPersonality(u32 player_id)
+static u32 GetColorForPersonality(u32 playerId)
 {
-	const u32 race = playerTable[player_id].race;
-	const u32 build = deathTable[UnitId::Spell_DisruptionWeb].player[player_id] - 1;
+	const u32 race = playerTable[playerId].race;
+	const u32 build = deathTable[UnitId::Spell_DisruptionWeb].player[playerId] - 1;
 
 	if (build >= 0
 		&& personalityColors.size() > race
 		&& personalityColors[race].size() > build)
 	{
 		u32 size = personalityColors[race][build].size();
-		u32 start_index = helper::randFunc() % size;
-		u32 index = start_index;
+		u32 startIndex = helper::randFunc() % size;
+		u32 index = startIndex;
 
 		do
 		{
-			if (CanUsePlayerColor(personalityColors[race][build][index], player_id))
+			if (CanUsePlayerColor(personalityColors[race][build][index], playerId))
 			{
 				return personalityColors[race][build][index];
 			}
 
 			index = (index + 1) % size;
-		} while(index != start_index);
+		} while(index != startIndex);
 	}
 
 	return PlayerColor::Invalid;
 }
 
-static void SetPlayerColor(u32 player_id, u32 color)
+static void SetPlayerColor(u32 playerId, u32 color)
 {
-	playerColorList[player_id] = color;
-	playerMinimapColors[player_id] = tminimapColors[color + COLOR_SET_COUNT * *CURRENT_TILESET];
+	playerColorList[playerId] = color;
+	playerMinimapColors[playerId] = tminimapColors[color + COLOR_SET_COUNT * *CURRENT_TILESET];
 	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
 	{
-		playerInGameColors[player_id * PLAYABLE_PLAYER_COUNT + i] = tunitColors[color * PLAYABLE_PLAYER_COUNT + i];
+		playerInGameColors[playerId * PLAYABLE_PLAYER_COUNT + i] = tunitColors[color * PLAYABLE_PLAYER_COUNT + i];
 	}
 }
 
-static void load_color_tables()
+static void LoadColorTables()
 {
 	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimapColors, MINIMAP_COLOR_COUNT, 0, 0, 0);
 	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunitColors, UNIT_COLOR_COUNT, 0, 0, 0);
 }
 
-bool check_radomization_validity()
+bool CheckRandomizationValidity()
 {
-	u32 banned_race_tints_count = 0;
+	u32 bannedRaceTintsCount = 0;
 	for (auto race : bannedRaceTints)
 	{
-		if (race.size() > banned_race_tints_count)
+		if (race.size() > bannedRaceTintsCount)
 		{
-			banned_race_tints_count = race.size();
+			bannedRaceTintsCount = race.size();
 		}
 	}
 
-	if (playerTints.size() - bannedTilesetTints[*CURRENT_TILESET].size() - banned_race_tints_count < PLAYABLE_PLAYER_COUNT)
+	if (playerTints.size() - bannedTilesetTints[*CURRENT_TILESET].size() - bannedRaceTintsCount < PLAYABLE_PLAYER_COUNT)
 	{
 		scbw::print("Color Randomization Error:", GameTextColor::Red);
 		scbw::print("\tNot enough tints available for current tileset", GameTextColor::Red);
@@ -149,27 +149,27 @@ bool check_radomization_validity()
 	return true;
 }
 
-void randomize_color_for(u32 player_id)
+void RandomizeColorFor(u32 playerId)
 {
-	if (playerTable[player_id].type == PlayerType::Computer)
+	if (playerTable[playerId].type == PlayerType::Computer)
 	{
-		u32 color = GetColorForPersonality(player_id);
+		u32 color = GetColorForPersonality(playerId);
 		if (color != PlayerColor::Invalid)
 		{
-			SetPlayerColor(player_id, color);
+			SetPlayerColor(playerId, color);
 			return;
 		}
 	}
 
 	u32 tint = GetRandomTint();
-	while (!CanUsePlayerTint(tint, player_id))
+	while (!CanUsePlayerTint(tint, playerId))
 	{
 		tint = GetRandomTint();
 	}
-	SetPlayerColor(player_id, GetRandomColorFromTint(tint));
+	SetPlayerColor(playerId, GetRandomColorFromTint(tint));
 }
 
-void match_color_of(u32 player_id)
+void MatchColorOf(u32 player_id)
 {
 	for (u32 color = 0; color < COLOR_SET_COUNT; ++color)
 	{
@@ -192,32 +192,32 @@ void match_color_of(u32 player_id)
 
 void LoadMeleePlayerColors()
 {
-	if (!check_radomization_validity())
+	if (!CheckRandomizationValidity())
 	{
 		LoadDefaultPlayerColors();
 		return;
 	}
 
-	load_color_tables();
-	for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; player_id++)
+	LoadColorTables();
+	for (u32 playerId = 0; playerId < PLAYABLE_PLAYER_COUNT; playerId++)
 	{
-		randomize_color_for(player_id);
+		RandomizeColorFor(playerId);
 	}
 }
 
 void LoadDefaultPlayerColors()
 {
-	load_color_tables();
-	bool can_random = check_radomization_validity();
-	for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id)
+	LoadColorTables();
+	bool canRandomize = CheckRandomizationValidity();
+	for (u32 playerId = 0; playerId < PLAYABLE_PLAYER_COUNT; ++playerId)
 	{
-		if (can_random && deathTable[UnitId::ResourceVespeneGeyser].player[player_id] & VespeneDeaths_RandomizeColor)
+		if (canRandomize && deathTable[UnitId::ResourceVespeneGeyser].player[playerId] & VespeneDeaths_RandomizeColor)
 		{
-			randomize_color_for(player_id);
+			RandomizeColorFor(playerId);
 		}
 		else
 		{
-			match_color_of(player_id);
+			MatchColorOf(playerId);
 		}
 	}
 }
