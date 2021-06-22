@@ -3657,7 +3657,8 @@ namespace helper
 	void TargetedOrderCopy(Unit* unit, u32 unitId, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5)
 	{
 		const u32 Func_TargetedOrderCopy = 0x004754F0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, 0
 			MOV EDX, 0
@@ -3677,7 +3678,8 @@ namespace helper
 	void clearUnitSprites(Sprite* unit_sprite, Sprite* subunit_sprite)
 	{
 		const u32 Func_clearUnitSprites = 0x00496F00;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ECX, subunit_sprite
 			MOV ESI, unit_sprite
@@ -3689,7 +3691,8 @@ namespace helper
 	void function_00497480(Sprite* thingySprite, u32 visibility_flags)
 	{
 		const u32 Func_Sub497480 = 0x00497480;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EBX, thingySprite
 			PUSH visibility_flags
@@ -3701,7 +3704,8 @@ namespace helper
 	void _UnitDestructor(Unit* unit)
 	{
 		const u32 Func__UnitDestructor = 0x004A0740;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func__UnitDestructor
@@ -3712,7 +3716,8 @@ namespace helper
 	void UnitDestructor(Unit* unit)
 	{
 		const u32 Func_UnitDestructor = 0x004A0990;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ECX, unit
 			CALL Func_UnitDestructor
@@ -3723,7 +3728,8 @@ namespace helper
 	void hideAndDisableUnit(Unit* unit)
 	{
 		const u32 Func_unitDeathSomething_0 = 0x004E6340;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_unitDeathSomething_0
@@ -3734,7 +3740,8 @@ namespace helper
 	void CancelResearch_Proc(Unit* unit)
 	{
 		const u32 Func_Sub453E30 = 0x00453E30;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDX, unit
 			CALL Func_Sub453E30
@@ -3745,7 +3752,8 @@ namespace helper
 	void CancelUpgrade_Proc(Unit* unit)
 	{
 		const u32 Func_Sub454280 = 0x00454280;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_Sub454280
@@ -3756,7 +3764,8 @@ namespace helper
 	void refundQueueSlot(Unit* unit, u16 slot)
 	{
 		const u32 Func_refundQueueSlot = 0x00466A70;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDI, unit
 			MOVZX EAX, slot
@@ -3768,7 +3777,8 @@ namespace helper
 	void function_00466E40(Unit* unit)
 	{
 		const u32 Func_Sub466E40 = 0x00466E40;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_Sub466E40
@@ -3779,7 +3789,8 @@ namespace helper
 	void CancelAddon_Proc(Unit* unit)
 	{
 		const u32 Func_Sub4E66E0 = 0x004E66E0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_Sub4E66E0
@@ -3791,7 +3802,8 @@ namespace helper
 	{
 		const u32 Func_OrderAllowed = 0x0046DC20;
 		static b32 bResult;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV BX, order
 			MOV EAX, unit
@@ -3807,7 +3819,8 @@ namespace helper
 	{
 		const u32 Func_placeBuildingMsg = 0x0048D930;
 		static b32 bPreResult;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, result_function_473FB0
 			CALL Func_placeBuildingMsg
@@ -3821,7 +3834,8 @@ namespace helper
 	{
 		const u32 Func_CMDRECV_PlaceBuildingAllowed = 0x0048DBD0;
 		static b32 bPreResult;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV AX, builtUnitId
 			MOV DL, orderId
@@ -3838,7 +3852,8 @@ namespace helper
 		const u32 Func_Sub48DE70 = 0x0048DE70;
 		static Point16 dim;
 		dim.x = dimensionX; dim.y = dimensionY;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH builtUnitId
 			PUSH dim
@@ -3854,7 +3869,8 @@ namespace helper
 		const u32 Func_cmdRECV_PlaceBuilding = 0x0048E190;
 		static Point16 pos;
 		pos.x = x; pos.y = y;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOVZX EAX, builtUnitId	// bugfix: should have been "MOV AX, builtUnitId" but for some reason it crashed
 			MOV CL, orderId
@@ -3868,7 +3884,8 @@ namespace helper
 	{
 		const u32 Func_templarMergePartner = 0x004BFA80;
 		static Unit* return_value;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, units_list_length
 			PUSH units_list
@@ -3883,7 +3900,8 @@ namespace helper
 	void parseOrdersDatReqs()
 	{
 		const u32 Func_parseOrdersDatReqs = 0x0046D450;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			CALL Func_parseOrdersDatReqs
 			POPAD
@@ -3894,7 +3912,8 @@ namespace helper
 	{
 		const u32 Func_parseRequirementOpcodes = 0x0046D610;
 		static s32 return_value;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, req_offset
 			MOV ESI, unit
@@ -3911,7 +3930,8 @@ namespace helper
 	void ApplySpeedUpgradeFromUnitType(Unit* unit)
 	{
 		const u32 Func_ApplySpeedUpgradeFromUnitType = 0x00454370;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ESI, unit
 			CALL Func_ApplySpeedUpgradeFromUnitType
@@ -3922,7 +3942,8 @@ namespace helper
 	void giveAI(Unit* unit)
 	{
 		const u32 Func_Sub463040 = 0x00463040;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_Sub463040
@@ -3933,7 +3954,8 @@ namespace helper
 	void recheckAttacks(Unit* unit)
 	{
 		const u32 Func_Sub476D30 = 0x00476D30;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDI, unit
 			CALL Func_Sub476D30
@@ -3944,7 +3966,8 @@ namespace helper
 	void incrementUnitScores(Unit* unit, s32 unkScore)
 	{
 		const u32 Func_incrementUnitScores = 0x00488BF0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			PUSH unkScore
