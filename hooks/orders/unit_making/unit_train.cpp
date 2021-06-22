@@ -281,4 +281,9 @@ namespace hooks
 		}
 		return hangarSpace;
 	}
+
+	b32 _stdcall ButtonIsTraining(Unit* unit)
+	{
+		return unit->buildQueue[unit->buildQueueSlot % 5] != UnitId::None;
+	}
 }

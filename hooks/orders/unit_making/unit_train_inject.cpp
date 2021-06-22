@@ -134,6 +134,8 @@ namespace hooks
 		jmpPatch(function_00468420Wrapper, 0x00468420, 4);
 		jmpPatch(getMaxHangarSpace_Wrapper, 0x004653D0, 3);
 
+		jmpPatch(ButtonIsTraining, 0x00428530, 0);
+
 		jmpPatch(isLiftedOff_Wrapper, 0x00046D832, 3);
 		jmpPatch(isNotLiftedOff_Wrapper, 0x0046D845, 2);
 	}
