@@ -1958,4 +1958,13 @@ namespace scbw
 		targetExt->values[ValueWorshipStack] = 0;
 		targetExt->timers[TimerGodsMadeFlesh] = 0;
 	}
+
+	bool isZergProduction(u16 unitId)
+	{
+		return unitId == UnitId::ZergHatchery
+			|| unitId == UnitId::ZergLair
+			|| unitId == UnitId::ZergHive
+			|| unitId == UnitId::ZergSire
+			|| unitId == UnitId::ZergLarvalColony;
+	}
 }

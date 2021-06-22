@@ -7419,7 +7419,8 @@ namespace helper
 	void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3)
 	{
 		const u32 Func_SetCallbackTimer = 0x00416090;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH unk3
 			PUSH unk2
@@ -7433,7 +7434,8 @@ namespace helper
 	void removeFromSelections(Unit* unit)
 	{
 		const u32 Func_removeFromSelections = 0x0049A7F0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDI, unit
 			CALL Func_removeFromSelections
@@ -7446,7 +7448,8 @@ namespace helper
 		static u32 return_value;
 		static u32 fxnInteract;
 		fxnInteract = (u32)dialog->fxnInteract;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ESI, dialog // possibly useless, but just in case
 			MOV ECX, dialog
@@ -7461,7 +7464,8 @@ namespace helper
 	void registerUserDialogAction(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray)
 	{
 		const u32 Func_registerUserDialogAction = 0x00418100;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, dialog
 			MOV EDI, array_of_fxnInteractFunc
@@ -7474,7 +7478,8 @@ namespace helper
 	void enableControl(BinDlg* dialog)
 	{
 		const u32 Func_enableControl = 0x00418E00;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ESI, dialog
 			CALL Func_enableControl
@@ -7485,7 +7490,8 @@ namespace helper
 	void replayStatBtns(BinDlg* dialog)
 	{
 		const u32 Func_ReplayStatBtns = 0x00427A80;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EBX, dialog
 			CALL Func_ReplayStatBtns
@@ -7496,7 +7502,8 @@ namespace helper
 	void updateCommandCard()
 	{
 		const u32 Func_updateCommandCard = 0x004591D0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			CALL Func_updateCommandCard
 			POPAD
@@ -7506,7 +7513,8 @@ namespace helper
 	void function_459770()
 	{
 		const u32 Func_Sub_459770 = 0x00459770;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			CALL Func_Sub_459770
 			POPAD
@@ -7516,7 +7524,8 @@ namespace helper
 	void BINDLG_BlitSurface(BinDlg* dialog)
 	{
 		const u32 Func_BINDLG_BlitSurface = 0x004C35F0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ESI, dialog
 			CALL Func_BINDLG_BlitSurface
@@ -7528,7 +7537,8 @@ namespace helper
 	s32 req_check(u32 reqFunc, u16 reqVar, u32 playerId, Unit* unit)
 	{
 		static s32 return_value;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV CX, reqVar
 			MOV EDX, playerId
@@ -7544,18 +7554,26 @@ namespace helper
 	{
 		IscriptAnimation::Enum anim;
 		if (mineralPatch->building.resource.resourceAmount >= 750)
+		{
 			anim = IscriptAnimation::WorkingToIdle;
+		}
+		else if (mineralPatch->building.resource.resourceAmount >= 500)
+		{
+			anim = IscriptAnimation::AlmostBuilt;
+		}
+		else if (mineralPatch->building.resource.resourceAmount >= 250)
+		{
+			anim = IscriptAnimation::SpecialState2;
+		}
+		else if (mineralPatch->building.resource.resourceAmount >= 50)
+		{
+			anim = IscriptAnimation::SpecialState1;
+		}
 		else
-			if (mineralPatch->building.resource.resourceAmount >= 500)
-				anim = IscriptAnimation::AlmostBuilt;
-			else
-				if (mineralPatch->building.resource.resourceAmount >= 250)
-					anim = IscriptAnimation::SpecialState2;
-				else
-					if (mineralPatch->building.resource.resourceAmount >= 50)
-						anim = IscriptAnimation::SpecialState1;
-					else
-						anim = IscriptAnimation::Landing;
+		{
+			anim = IscriptAnimation::Landing;
+		}
+
 		if (anim != mineralPatch->building.resource.resourceIscript)
 		{
 			mineralPatch->building.resource.resourceIscript = anim;
@@ -7567,8 +7585,8 @@ namespace helper
 	{
 
 		const u32 Func_updateImagePositionOffset = 0x004D5A00;
-
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ECX, image
 			CALL Func_updateImagePositionOffset
@@ -7577,17 +7595,18 @@ namespace helper
 
 	}
 
-	//Identical to function @ 0x004F3AF0
+	// Identical to function @ 0x004F3AF0
 	void setResourceAmountCarried(Unit* worker, u8 amountCarried, u32 chunkImageId, bool isMineral)
 	{
 
 		if (worker->resourceType != 0)
+		{
 			return;
+		}
 
 		worker->resourceType = isMineral ? 2 : 1;
 
 		Image* chunkImage = worker->sprite->createOverlay(chunkImageId);
-
 		if (chunkImage && !(chunkImage->flags & CImage_Flags::Flag07))
 		{
 			chunkImage->flags |= CImage_Flags::Flag07;
@@ -7596,14 +7615,14 @@ namespace helper
 
 		worker->worker.resourceCarryAmount = amountCarried;
 		scbw::refreshConsole();
-
 	}
 
 	s32 Ai_HasBuildingsNeedingPower(u32 player)
 	{
 		const u32 Func_Ai_HasBuildingsNeedingPower = 0x00433410;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, player
 			CALL Func_Ai_HasBuildingsNeedingPower
@@ -7617,7 +7636,8 @@ namespace helper
 	{
 		const u32 Func_Ai_CountEconomyUnits = 0x00433470;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, player
 			PUSH unit_id
@@ -7632,7 +7652,8 @@ namespace helper
 	{
 		const u32 Func_getSuppliesRemaining = 0x004889D0;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV BL, player
 			MOV DI, unit_id
@@ -7647,7 +7668,8 @@ namespace helper
 	{
 		const u32 Func_getSuppliesUsed = 0x004888C0;
 		static u32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, byte_data
 			MOV CL, player
@@ -7662,7 +7684,8 @@ namespace helper
 	{
 		const u32 Func_AI_AddCostToNeeds = 0x00447DC0;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH a3
 			MOV EBX, a2
@@ -7678,7 +7701,8 @@ namespace helper
 	{
 		const u32 Func_AI_AddSpendingRequest = 0x00447980;
 		static s32 result;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH a5
 			PUSH a4
@@ -9430,6 +9454,24 @@ namespace helper
 			MOV EAX, playerId
 			CALL Func_AI_RegionsAreConnected
 			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+	
+	// For BTNSCOND_ZergBuildingRally
+	u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit)
+	{
+		const u32 Func_BTNSCOND_Rally = 0x00429520;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH unit
+			MOV EDX, player
+			MOV ECX, unused
+			CALL Func_BTNSCOND_Rally
+			MOV result, EAX
 			POPAD
 		}
 		return result;

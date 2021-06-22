@@ -214,26 +214,51 @@ namespace
 		}
 	}
 
-	;
-
-} //unnamed namespace
+	void __declspec(naked) BTNSCOND_Rally_Wrapper() // 00429520
+	{
+		static u32 unused;
+		static u32 player;
+		static Unit* unit;
+		static u32 result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
+			POP EAX
+			MOV player, EDX
+			MOV unused, ECX
+			PUSHAD
+		}
+		result = hooks::BTNSCOND_Rally(unused, player, unit);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
+}
 
 namespace hooks
 {
-
 	void injectRallyHooks()
 	{
+		/*
+		jmpPatch(setRallyPositionWrapper,		0x00466910, 2);
+		jmpPatch(setRallyUnitWrapper,			0x00466B40, 1);
+		jmpPatch(orderNewUnitToRallyWrapper,	0x00466F50, 0);
 
-		jmpPatch(setRallyPositionWrapper, 0x00466910, 2);
-		jmpPatch(setRallyUnitWrapper, 0x00466B40, 1);
-		jmpPatch(orderNewUnitToRallyWrapper, 0x00466F50, 0);
+		jmpPatch(setRallyPositionWrapper_Jmp1,	0x00456256, 19);	// 24 - 5 of jump
+		jmpPatch(setRallyPositionWrapper_Jmp2,	0x0049ACEF, 19);	// 24 - 5 of jump
 
-		jmpPatch(setRallyPositionWrapper_Jmp1, 0x00456256, 19);	//24 - 5 of jump
-		jmpPatch(setRallyPositionWrapper_Jmp2, 0x0049ACEF, 19);	//24 - 5 of jump
+		jmpPatch(setRallyUnitWrapper_Jmp1,		0x0045620D, 35);	// 40 - 5 of jump
+		jmpPatch(setRallyUnitWrapper_Jmp2,		0x0049ACB0, 37);	// 42 - 5 of jump
+		*/
 
-		jmpPatch(setRallyUnitWrapper_Jmp1, 0x0045620D, 35);	//40 - 5 of jump
-		jmpPatch(setRallyUnitWrapper_Jmp2, 0x0049ACB0, 37);	//42 - 5 of jump
-
+		jmpPatch(BTNSCOND_Rally_Wrapper,		0x00429520, 7);
 	}
-
-} //hooks
+}

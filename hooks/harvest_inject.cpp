@@ -3,36 +3,30 @@
 
 void __declspec(naked) transferResourceToWorkerWrapper()
 {
-
 	static Unit* worker;
 	static Unit* resource;
-
-	__asm {
+	__asm
+	{
 		PUSH EBP
 		MOV EBP, ESP
 		MOV worker, ECX
 		MOV resource, EAX
 		PUSHAD
 	}
-
 	hooks::transferResourceToWorkerHook(worker, resource);
-
-	__asm {
+	__asm
+	{
 		POPAD
 		MOV ESP, EBP
 		POP EBP
 		RETN
 	}
-
 }
 
 namespace hooks
 {
-
 	void injectHarvestResource()
 	{
 		jmpPatch(transferResourceToWorkerWrapper, 0x004696D0, 0);
 	}
-
-
-} //hooks
+}

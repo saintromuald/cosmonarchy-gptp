@@ -439,6 +439,19 @@ namespace hooks
 		return true;
 	}
 
+	u32 BTNSCOND_ZergBuildingRally(u32 unused, u32 player, Unit* unit) // 00429740
+	{
+		if (scbw::isZergProduction(unit->id)
+			|| scbw::isZergProduction(unit->buildQueue[unit->buildQueueSlot]))
+		{
+			return helper::BTNSCOND_Rally(unused, player, unit);
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
 	/*
 	char applyCreepAtLocationFromUnitType(s16 a1, s32 a2, s32 a3) // 004148F0
 	{

@@ -995,14 +995,17 @@ namespace helper
 	aiscript* deleteAIScriptsUsingTown(AiTown* town);														// 0045AE20
 
 	// For displayEstablishingShot
-	void* loadInitCreditsBIN(char* a1);															// 004D8DF0
-	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);	// 004100B2
-	bool SFileCloseArchive(void* archive);														// 004100BE
-	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);	// 004100C4
-	bool SFileCloseFile(void* hFile);	                                                        // 004100C4
+	void* loadInitCreditsBIN(char* a1);																		// 004D8DF0
+	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);				// 004100B2
+	bool SFileCloseArchive(void* archive);																	// 004100BE
+	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);				// 004100C4
+	bool SFileCloseFile(void* hFile);																		// 004100C4
 
 	// For AI_AreOnConnectedRegions
-	bool AI_RegionsAreConnected(u32 playerId, u32 region1, u32 region2);						// 00437E70
+	bool AI_RegionsAreConnected(u32 playerId, u32 region1, u32 region2);									// 00437E70
+
+	// For BTNSCOND_ZergBuildingRally
+	u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit);													// 00429520
 
 	//// misc
 	s8 SETS(s32 x);
