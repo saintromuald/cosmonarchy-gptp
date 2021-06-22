@@ -125,7 +125,7 @@ namespace hooks
 
 		if (unit->pAI != nullptr)
 		{
-			tacticalAi(unit);
+			TacticalAi(unit);
 		}
 
 		// Timers

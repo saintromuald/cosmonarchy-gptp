@@ -6,14 +6,17 @@
 
 Config config;
 
-bool file_exists(std::string file)
+// NOTE: this code is pretty gross, the yaml library is pretty bad, so not sure what to do about it
+// it would probably be better to have a custom config format
+
+bool FileExists(std::string file)
 {
 	return std::ifstream(file).good();
 }
 
-void load_config()
+void LoadConfig()
 {
-	if (file_exists(CONFIG_FILENAME))
+	if (FileExists(CONFIG_FILENAME))
 	{
 		YAML::Node configNode = YAML::LoadFile(CONFIG_FILENAME);
 
@@ -34,10 +37,10 @@ void load_config()
 			LoadField(gridNode, "layout", config.layout);
 		}
 	}
-	save_config();
+	SaveConfig();
 }
 
-void save_config()
+void SaveConfig()
 {
 	YAML::Emitter out;
 	out << YAML::BeginMap;

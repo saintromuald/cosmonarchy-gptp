@@ -94,7 +94,7 @@ const Vector32f biasOrigins[kiteZoneCount] =
 	{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
 };
 
-static inline u32 getMaxRange(Unit* unit)
+static inline u32 GetMaxRange(Unit* unit)
 {
 	if (unit->id == UnitId::ProtossSolarion)
 	{
@@ -122,12 +122,12 @@ static inline u32 getMaxRange(Unit* unit)
 	return std::max(groundRange, airRange);
 }
 
-static inline bool isMeleeAttacker(Unit* unit)
+static inline bool IsMeleeAttacker(Unit* unit)
 {
-	return getMaxRange(unit) <= 32;
+	return GetMaxRange(unit) <= 32;
 }
 
-static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
+static KitePositions GetKitePositions(Unit* unit, u32 hostileGroupRadius)
 {
 	u32 unitValue[kiteZoneCount] = {0};
 	KitePositions result = {};
@@ -220,7 +220,7 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 		//KITE_DEBUG("\n");
 
 		u32 moveRadius;
-		if (isMeleeAttacker(unit))
+		if (IsMeleeAttacker(unit))
 		{
 			moveRadius = meleeMoveRadius;
 		}
@@ -247,7 +247,7 @@ static KitePositions getKitePositions(Unit* unit, u32 hostileGroupRadius)
 	return result;
 }
 
-static inline u8 getCurrentWeaponCooldown(Unit* unit)
+static inline u8 GetCurrentWeaponCooldown(Unit* unit)
 {
 	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 	{
@@ -261,7 +261,7 @@ static inline u8 getCurrentWeaponCooldown(Unit* unit)
 	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown);
 }
 
-static inline u8 getMaxWeaponCooldown(Unit* unit)
+static inline u8 GetMaxWeaponCooldown(Unit* unit)
 {
 	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 	{
@@ -285,18 +285,18 @@ static inline u8 getMaxWeaponCooldown(Unit* unit)
 	return std::max(groundCooldown, airCooldown);
 }
 
-static inline u32 getDistanceToTarget(Unit* source)
+static inline u32 GetDistanceToTarget(Unit* source)
 {
 	Unit* target = source->orderTarget.unit;
 	if (!target)
 	{
-		return getMaxRange(source);
+		return GetMaxRange(source);
 	}
 
 	return scbw::getDistanceFast(source->position, target->position);
 }
 
-static inline s32 getTargetCost(Unit* source, Unit* target)
+static inline s32 GetTargetCost(Unit* source, Unit* target)
 {
 	// Value attacking wounded units first
 	s32 cost = target->getCurrentLifeInGame() / 10;
@@ -319,7 +319,7 @@ static inline s32 getTargetCost(Unit* source, Unit* target)
 	cost -= hooks::getCurrentDPS(target, weaponId) * multiplier;
 
 	// Value attacking units with smaller pathing cost more
-	s32 dist = (s32)scbw::getDistanceFast(source->position, target->position) - getMaxRange(source);
+	s32 dist = (s32)scbw::getDistanceFast(source->position, target->position) - GetMaxRange(source);
 	if (dist > 0)
 	{
 		cost += dist / 32.0;
@@ -328,7 +328,7 @@ static inline s32 getTargetCost(Unit* source, Unit* target)
 	return cost;
 }
 
-static inline bool canKite(Unit* unit)
+static inline bool CanKite(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 	return unit->hasWeapon()
@@ -349,26 +349,26 @@ static inline bool canKite(Unit* unit)
 		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
 }
 
-static inline bool unitCanAttack(Unit* unit)
+static inline bool UnitCanAttack(Unit* unit)
 {
 	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 	{
-		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit);
+		return GetCurrentWeaponCooldown(unit) <= GetMaxWeaponCooldown(unit);
 	}
 	if (unit->movementFlags & MovementFlags::Accelerating)
 	{
-		return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit);
+		return GetCurrentWeaponCooldown(unit) <= GetMaxWeaponCooldown(unit);
 	}
-	return getCurrentWeaponCooldown(unit) <= getMaxWeaponCooldown(unit) * 0.5;
+	return GetCurrentWeaponCooldown(unit) <= GetMaxWeaponCooldown(unit) * 0.5;
 }
 
-static inline bool shouldKite(Unit* unit, UnitExt* unitExt)
+static inline bool ShouldKite(Unit* unit, UnitExt* unitExt)
 {
 	return (unitExt->values[ValueAI_KiteSignal] && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
-		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !unitCanAttack(unit));
+		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !UnitCanAttack(unit));
 }
 
-void tacticalAi(Unit* unit)
+void TacticalAi(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -385,7 +385,7 @@ void tacticalAi(Unit* unit)
 		|| unit->mainOrderId == OrderId::MoveToMinerals;
 
 	// TODO: find a way to prevent computer return, instead of doing this weak hardcode
-	if (canKite(unit) && inCombat && (unitExt->timers[TimerAI_KiteCooldown] == 0 || unit->mainOrderId == OrderId::ComputerReturn))
+	if (CanKite(unit) && inCombat && (unitExt->timers[TimerAI_KiteCooldown] == 0 || unit->mainOrderId == OrderId::ComputerReturn))
 	{
 		u32 hostileGroupRadius = 4 * 32;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
@@ -400,9 +400,9 @@ void tacticalAi(Unit* unit)
 			unit->getY() + localGroupRadius
 		);
 		localGroup.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
-		localGroup.filter([&](Unit* target){ return canKite(target); });
+		localGroup.filter([&](Unit* target){ return CanKite(target); });
 
-		if (shouldKite(unit, unitExt))
+		if (ShouldKite(unit, unitExt))
 		{
 			u32 sync = 0;
 			localGroup.forEach([&](Unit* localUnit)
@@ -413,7 +413,7 @@ void tacticalAi(Unit* unit)
 			sync >>= 8;
 			if (sync >= localGroup.unitCount * 1)
 			{
-				KitePositions result = getKitePositions(unit, hostileGroupRadius);
+				KitePositions result = GetKitePositions(unit, hostileGroupRadius);
 				if (!result.enemiesFound)
 				{			
 					localGroup.forEach([&](Unit* localUnit)
@@ -438,15 +438,15 @@ void tacticalAi(Unit* unit)
 						return;
 					}
 
-					if (!shouldKite(localUnit, localUnitExt))
+					if (!ShouldKite(localUnit, localUnitExt))
 					{
 						return;
 					}
 
 					localUnitExt->values[ValueAI_KiteSignal] = 0;
-					const u32 distance = getDistanceToTarget(localUnit);
-					const u32 maxRange = getMaxRange(localUnit);
-					if (isMeleeAttacker(localUnit))
+					const u32 distance = GetDistanceToTarget(localUnit);
+					const u32 maxRange = GetMaxRange(localUnit);
+					if (IsMeleeAttacker(localUnit))
 					{
 						localUnitExt->timers[TimerAI_KiteCooldown] = 8;
 						if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
@@ -506,7 +506,7 @@ void tacticalAi(Unit* unit)
 							localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
 						});
 
-						const f32 confidenceFactor = 2;
+						const f32 confidenceFactor = 8;
 						if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
 							|| localGroupValue * confidenceFactor < result.biases[result.forwardIndex]
 							|| distance <= maxRange * 0.5)
@@ -538,7 +538,7 @@ void tacticalAi(Unit* unit)
 				});
 			}
 		}
-		else if (unitCanAttack(unit))
+		else if (UnitCanAttack(unit))
 		{
 			localGroup.forEach([&](Unit* localUnit)
 			{
@@ -565,7 +565,7 @@ void tacticalAi(Unit* unit)
 						return;
 					}
 
-					s32 newTargetCost = getTargetCost(localUnit, hostileUnit);
+					s32 newTargetCost = GetTargetCost(localUnit, hostileUnit);
 					if (!targetUnit || newTargetCost < targetCost)
 					{
 						targetUnit = hostileUnit;

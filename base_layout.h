@@ -12,6 +12,6 @@ struct BaseLayout
 	AiTown* town;
 };
 
-void init_base_layouts();
-void update_base_layouts();
+void InitBaseLayouts();
+void UpdateBaseLayouts();
 

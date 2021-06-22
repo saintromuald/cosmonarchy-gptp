@@ -29,7 +29,7 @@ enum
 	PlayerTintCount,
 };
 
-const std::vector<std::vector<u32>> player_tints =
+const std::vector<std::vector<u32>> playerTints =
 {
 	{	// Dark Red
 		PlayerColor::Maroon,
@@ -165,7 +165,7 @@ const std::vector<std::vector<u32>> player_tints =
 	},
 };
 
-const std::vector<std::vector<u32>> banned_tileset_tints =
+const std::vector<std::vector<u32>> bannedTilesetTints =
 {
 	{ // Badlands
 		PlayerTintCycleDependent,
@@ -201,7 +201,7 @@ const std::vector<std::vector<u32>> banned_tileset_tints =
 	},
 };
 
-const std::vector<std::vector<u32>> banned_race_tints =
+const std::vector<std::vector<u32>> bannedRaceTints =
 {
 	{ // Zerg
 		PlayerTintDarkBlue,
@@ -215,7 +215,7 @@ const std::vector<std::vector<u32>> banned_race_tints =
 	},
 };
 
-std::vector<std::vector<std::vector<u32>>> personality_colors =
+std::vector<std::vector<std::vector<u32>>> personalityColors =
 {
 	{ // Zerg
 		{ // Assault
@@ -414,10 +414,10 @@ std::vector<std::vector<std::vector<u32>>> personality_colors =
 #define MINIMAP_COLOR_COUNT (COLOR_SET_COUNT * TilesetType::Count)
 #define UNIT_COLOR_COUNT 2048
 
-extern u8 tminimap_colors[MINIMAP_COLOR_COUNT];
-extern u8 tunit_colors[UNIT_COLOR_COUNT];
-extern u8 player_color_list[PLAYABLE_PLAYER_COUNT];
+extern u8 tminimapColors[MINIMAP_COLOR_COUNT];
+extern u8 tunitColors[UNIT_COLOR_COUNT];
+extern u8 playerColorList[PLAYABLE_PLAYER_COUNT];
 
 // those 2 are mutually exclusive
-void load_melee_player_colors();
-void load_default_player_colors();
+void LoadMeleePlayerColors();
+void LoadDefaultPlayerColors();

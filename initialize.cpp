@@ -154,7 +154,7 @@ namespace
 }
 BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 {
-	load_config();
+	LoadConfig();
 	runWMode(config.disable_wmode_prompt, config.prefer_wmode);
 	//StarCraft.exe version check
 	char exePath[300];

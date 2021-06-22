@@ -690,7 +690,7 @@ namespace hooks
 
 		if (extended)
 		{
-			text += "\nColor: " + std::string(player_color_names[player_color_list[unit->playerId]]); // TODO: move to rank text
+			text += "\nColor: " + std::string(playerColorNames[playerColorList[unit->playerId]]); // TODO: move to rank text
 			text += "\nFlags: " + flag;
 			if (accel != 1)
 			{

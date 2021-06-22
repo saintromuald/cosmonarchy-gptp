@@ -1,8 +1,8 @@
 #include "base_layout.h"
 
-static std::unordered_map<u32, std::vector<BaseLayout>> layouts;
+static std::unordered_map<u32, std::vector<BaseLayout>> layouts; // TODO: replace with more optimized hash table
 
-void init_base_layouts()
+void InitBaseLayouts()
 {
 	layouts.clear();
 
@@ -35,7 +35,7 @@ void init_base_layouts()
 			layout.player_id = player_id;
 			layout.unit_id = unit->id;
 			layout.position = unit->position;
-			layout.priority = 100.0 * unit->hitPoints / unit->getMaxHpRaw();
+			layout.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
 			layout.active = false;
 			layout.town = nullptr;
 			layouts[res_area].push_back(layout);
@@ -45,7 +45,7 @@ void init_base_layouts()
 	}
 }
 
-void update_base_layouts()
+void UpdateBaseLayouts()
 {
 	// Set New Layouts
 	for (u32 i = 0; i < 100; ++i)
