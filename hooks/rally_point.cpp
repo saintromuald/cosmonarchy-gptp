@@ -12,7 +12,6 @@ namespace hooks
 
 	void orderNewUnitToRallyHook(Unit* unit, Unit* factory)
 	{
-
 		// Do nothing if the rally target is the factory itself or the rally target position is 0
 		if (factory != nullptr
 			&& factory->isFactory()
@@ -21,9 +20,13 @@ namespace hooks
 		{
 			// Following should be allowed only on friendly units
 			if (factory->rally.unit != nullptr && (factory->rally.unit)->playerId == unit->playerId)
-				unit->orderTo(OrderId::Follow, factory->rally.unit);
+            {
+                unit->orderTo(OrderId::Follow, factory->rally.unit);
+            }
 			else
-				unit->orderTo(OrderId::Move, factory->rally.pt.x, factory->rally.pt.y);
+            {
+                unit->orderTo(OrderId::Move, factory->rally.pt.x, factory->rally.pt.y);
+            }
 		}
 	}
 
@@ -39,7 +42,9 @@ namespace hooks
 	void setRallyUnit(Unit* unit, Unit* target)
 	{
 		if (target == nullptr)
-			target = unit;
+        {
+            target = unit;
+        }
 
 		unit->rally.unit = target;
 		unit->rally.pt.x = target->getX();
@@ -57,7 +62,7 @@ namespace hooks
         }
 
         u32 result;
-        if (player == (u8)unit->playerId)
+        if (player == unit->playerId)
         {
             if (unit->isFrozen())
             {
@@ -84,7 +89,14 @@ namespace hooks
                     result = orders_dat::RequirementsOffset[OrderId::RallyPoint2];
                     if (orders_dat::RequirementsOffset[OrderId::RallyPoint2])
                     {
-                        result = helper::parseRequirementOpcodes(unit, OrderId::RallyPoint2, player, (u32)ordersRequirementTree, orders_dat::RequirementsOffset[OrderId::RallyPoint2]);
+                        if (unit->id == UnitId::ZergCreepColony && unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergLarvalColony) // lame
+                        {
+                            result = 1;
+                        }
+                        else
+                        {
+                            result = helper::parseRequirementOpcodes(unit, OrderId::RallyPoint2, player, (u32)ordersRequirementTree, orders_dat::RequirementsOffset[OrderId::RallyPoint2]);
+                        }
                     }
                     else
                     {
