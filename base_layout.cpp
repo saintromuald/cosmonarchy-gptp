@@ -32,8 +32,8 @@ void InitBaseLayouts()
 			Unit* unit = arr.units[j];
 
 			BaseLayout layout;
-			layout.player_id = player_id;
-			layout.unit_id = unit->id;
+			layout.playerId = player_id;
+			layout.unitId = unit->id;
 			layout.position = unit->position;
 			layout.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
 			layout.active = false;
@@ -57,7 +57,7 @@ void UpdateBaseLayouts()
 			{
 				layout.active = true;
 				layout.town = town; // hopefully town id can be handled from aise
-				if (units_dat::BaseProperty[layout.unit_id] & UnitProperty::Building)
+				if (units_dat::BaseProperty[layout.unitId] & UnitProperty::Building)
 				{
 					scbw::sendGPTP_aise_cmd((Unit*)&layout, 0, GptpId::SetBaseLayout, 0, 0, 0);
 				}
@@ -76,7 +76,7 @@ void UpdateBaseLayouts()
 		{
 			if (layout.active && !layout.town->inited)
 			{
-				if (units_dat::BaseProperty[layout.unit_id] & UnitProperty::Building)
+				if (units_dat::BaseProperty[layout.unitId] & UnitProperty::Building)
 				{
 					scbw::sendGPTP_aise_cmd((Unit*)&layout, 0, GptpId::ResetBaseLayout, 0, 0, 0);
 				}

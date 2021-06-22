@@ -5,8 +5,8 @@
 struct BaseLayout
 {
 	Point16 position;
-	u8 player_id;
-	u8 unit_id;
+	u8 playerId;
+	u8 unitId;
 	u8 priority;
 	b8 active;
 	AiTown* town;
