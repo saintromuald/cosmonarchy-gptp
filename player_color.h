@@ -29,6 +29,8 @@ enum
 	PlayerTintCount,
 };
 
+// TODO: convert those vectors into switch statements, it will be more performant, flexible and readable
+
 const std::vector<std::vector<u32>> playerTints =
 {
 	{	// Dark Red
