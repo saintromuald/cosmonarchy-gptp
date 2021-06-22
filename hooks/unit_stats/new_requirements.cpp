@@ -174,6 +174,19 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::TerranNuclearSilo:
+			{
+				switch (unitId)
+				{
+					case UnitId::TerranNuclearMissile:
+					{
+						if (!unit->building.silo.nuke && unit->buildQueue[unit->buildQueueSlot] == UnitId::None)
+						{
+							return TECH_ACTIVE;
+						}
+					}
+				}
+			} break;
 			case UnitId::TerranQuarry:
 			{
 				switch (unitId)
