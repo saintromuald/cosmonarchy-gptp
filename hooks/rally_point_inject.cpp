@@ -259,6 +259,6 @@ namespace hooks
 		jmpPatch(setRallyUnitWrapper_Jmp2,		0x0049ACB0, 37);	// 42 - 5 of jump
 		*/
 
-		jmpPatch(BTNSCOND_Rally_Wrapper,		0x00429520, 7);
+//		jmpPatch(BTNSCOND_Rally_Wrapper,		0x00429520, 7);
 	}
 }

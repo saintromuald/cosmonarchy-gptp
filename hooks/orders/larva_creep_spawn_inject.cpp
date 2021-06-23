@@ -321,7 +321,7 @@ namespace hooks
 
 		jmpPatch(bugWrapper, 0x0047DCCA); // attempt to fix Bug
 
-		jmpPatch(BTNSCOND_ZergBuildingRally_Wrapper, 0x00429740, 2);
+//		jmpPatch(BTNSCOND_ZergBuildingRally_Wrapper, 0x00429740, 2);
 		
 		const u32 offs_a = 0x004147A4;
 		const u32 offs_b = 0x004145E7;
