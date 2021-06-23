@@ -272,10 +272,7 @@ namespace hooks
 				// Reveal resources
 				for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 				{
-					if (unit->id == UnitId::ResourceVespeneGeyser
-						|| unit->id == UnitId::ResourceMineralField
-						|| unit->id == UnitId::ResourceMineralFieldType2
-						|| unit->id == UnitId::ResourceMineralFieldType3)
+					if (unit->playerId == 11 && units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 					{
 						unit->sprite->visibilityFlags |= reveal_flag;
 					}
