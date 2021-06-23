@@ -128,6 +128,7 @@ namespace hooks
 			unit->loadedUnit[counter].unitId = 0;
 		}
 
+		// TODO: revisit those, seems like it should be unitToLoad
 		if (unit->id == UnitId::ZergCreepColony
 			|| unit->id == UnitId::ZergSunkenColony
 			|| unit->id == UnitId::ZergSporeColony
@@ -162,6 +163,13 @@ namespace hooks
 				// TODO: Disable cargo units
 			}
 		}
+
+		if (unit->playerId == 11)
+		{
+			UnitExt* unitExt = globals.GetUnitExt(unit);
+			unitExt->values[ValueIsNeutralBunker] = 1;
+			unit->giveTo(unitToLoad->playerId);
+		}		
 
 		scbw::refreshConsole();
 		if (unit->status & UnitStatus::GroundedBuilding)
@@ -325,6 +333,31 @@ namespace hooks
 					else
 					{
 						unit->orderComputerClear(OrderId::ComputerAI);
+					}
+
+					UnitExt* transportExt = globals.GetUnitExt(transport);
+					if (transportExt->values[ValueIsNeutralBunker])
+					{
+						if (!transport->getFirstLoadedUnit())
+						{
+							transport->giveTo(11);
+						}
+						else
+						{
+							bool isOwnerValid = true;
+							for (u32 i = 0; i < 4; ++i)
+							{
+								Unit* cargoUnit = transport->getLoadedUnit(i);
+								if (cargoUnit->playerId != unit->playerId)
+								{
+									isOwnerValid = false;
+								}
+							}
+							if (!isOwnerValid)
+							{
+								transport->giveTo(transport->getFirstLoadedUnit()->playerId);
+							}
+						}
 					}
 
 					scbw::refreshConsole();

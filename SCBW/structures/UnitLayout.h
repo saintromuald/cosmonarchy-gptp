@@ -237,6 +237,7 @@ enum ExtValueId
 	ValueAxitriliskMissilePos,
 	ValueBactaliskMissilePos,
 	ValueCharlatanMissilePos,
+	ValueIsNeutralBunker,
 
 	ValueAI_KiteSignal,
 
