@@ -1141,6 +1141,10 @@ namespace hooks
 							}
 
 							target->damageWith(WeaponId::AnthelionEventHorizon, -1, unit, unit->playerId, 0, divider);
+							if (!target->sprite->getOverlay(ImageId::NeutronFlareOrange_Damageless))
+							{
+//								target->sprite->createTopOverlay(ImageId::NeutronFlareOrange_Damageless);
+							}
 						}
 					}
 				});
@@ -1148,6 +1152,7 @@ namespace hooks
 				{
 					unitExt->timers[TimerAnthelionAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::AnthelionEventHorizon);
 					unit->sprite->createUnderlay(ImageId::OpticalFlareHit_Large);
+					helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire04), unit, 1, 0);
 				}
 
 				if (unit->mainOrderId == OrderId::Move)
@@ -1155,6 +1160,7 @@ namespace hooks
 					if (unitExt->anthelionLastMoveTarget != unit->moveTarget.pt)
 					{
 						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
+						helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02), unit, 1, 0);
 					}
 					unitExt->anthelionLastMoveTarget = unit->moveTarget.pt;
 
@@ -1164,6 +1170,7 @@ namespace hooks
 						if (!unit->getOverlay(ImageId::LegionnaireTeleportEffect) && teleport)
 						{
 							unit->sprite->createTopOverlay(ImageId::LegionnaireTeleportEffect);
+							helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
 						}
 					}
 				}
