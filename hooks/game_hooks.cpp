@@ -1141,10 +1141,7 @@ namespace hooks
 							}
 
 							target->damageWith(WeaponId::AnthelionEventHorizon, -1, unit, unit->playerId, 0, divider);
-							if (!target->sprite->getOverlay(ImageId::NeutronFlareOrange_Damageless))
-							{
-//								target->sprite->createTopOverlay(ImageId::NeutronFlareOrange_Damageless);
-							}
+							helper::createThingy(SpriteId::NeutronFlareOrange_Damageless, target->sprite->position.x, target->sprite->position.y, unit->playerId);
 						}
 					}
 				});
