@@ -1967,4 +1967,14 @@ namespace scbw
 			|| unitId == UnitId::ZergSire
 			|| unitId == UnitId::ZergLarvalColony;
 	}
+	
+	bool unitIdIsTownCenter(u16 unitId)
+	{
+		return unitId == UnitId::TerranCommandCenter
+			|| unitId == UnitId::ProtossNexus
+			|| unitId == UnitId::ZergHatchery
+			|| unitId == UnitId::ZergLair
+			|| unitId == UnitId::ZergHive
+			|| unitId == UnitId::ZergSire;
+	}
 }

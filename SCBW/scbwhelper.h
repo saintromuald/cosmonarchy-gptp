@@ -143,7 +143,7 @@ namespace helper
 	Unit* setSecondaryOrder(Unit* result, char orderId);
 	void AI_MakeGuard(s32 playerId, Unit* unit);
 	bool unitIsActiveResourceDepot(Unit* unit);
-	s32 getPlayerDefaultRefineryUnitType(s32 playerId);
+	u32 getPlayerDefaultRefineryUnitType(u32 playerId);
 
 	// for AI_UnitWasHit // some of these should probably be methods in api/etc
 	char AI_CancelStructure(Unit* structure);
