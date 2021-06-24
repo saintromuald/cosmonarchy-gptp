@@ -348,7 +348,7 @@ namespace hooks
 							for (u32 i = 0; i < 4; ++i)
 							{
 								Unit* cargoUnit = transport->getLoadedUnit(i);
-								if (cargoUnit->playerId != unit->playerId)
+								if (cargoUnit && cargoUnit->playerId != unit->playerId)
 								{
 									isOwnerValid = false;
 								}
