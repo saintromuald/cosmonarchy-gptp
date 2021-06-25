@@ -908,9 +908,10 @@ namespace hooks
 			data.finalDamage = 0;
 			data.target->hitPoints = 0;
 			data.target->shields = 0;
-			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 5 * 256, targetExt->units[UnitEmpressSource]);
+			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 256, targetExt->units[UnitEmpressSource]);
 			data.target->giveTo(targetExt->values[ValueEmpressSourcePlayer]);
 			targetExt->values[ValueEmpressPassiveStacks] = 0;
+			targetExt->values[ValueIsZombified] = 1;
 			data.target->sprite->createOverlay(ImageId::MindControlHit_Small + scbw::getOverlayOffset(data.target->id));
 		}
 

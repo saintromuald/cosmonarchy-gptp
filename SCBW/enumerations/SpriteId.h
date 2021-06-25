@@ -716,6 +716,9 @@ namespace SpriteId
 		ProtossHallucinationEffect = 708,
 		
 		NeutronFlareOrange_Damageless = 747,
+		MindControlHitSmall = 748,
+		MindControlHitMedium = 749,
+		MindControlHitLarge = 750,
 
 		// CORPSE \\
 
