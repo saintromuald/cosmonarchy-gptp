@@ -355,7 +355,8 @@ static inline bool UnitCanAttack(Unit* unit)
 	{
 		return GetCurrentWeaponCooldown(unit) <= GetMaxWeaponCooldown(unit);
 	}
-	if (unit->movementFlags & MovementFlags::Accelerating)
+	if (unit->movementFlags & MovementFlags::Accelerating
+		|| unit->flingyTurnSpeed < 35)
 	{
 		return GetCurrentWeaponCooldown(unit) <= GetMaxWeaponCooldown(unit);
 	}
