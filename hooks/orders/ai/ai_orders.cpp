@@ -580,6 +580,7 @@ LABEL_126:
 			&& !(repairman->status & UnitStatus::InTransport)
 			&& !(repairman->status & UnitStatus::InBuilding) // new
 			&& repairmanAI != nullptr
+			&& repairmanAI->town != nullptr
 			&& repairmanAI->town->buildingSCV != nullptr) // new
 		{
 			result = repairmanAI->town->buildingSCV == repairman;
