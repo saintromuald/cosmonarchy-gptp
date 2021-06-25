@@ -215,25 +215,16 @@ void UnitArraySort(UnitArray* unit_array, SearchScoreFunc score_func)
 	});
 }
 
+static Point16 TempCenter;
+static s32 DistanceCompareFunc(void const* a, void const* b)
+{
+	return scbw::getDistanceFast(TempCenter, ((Unit*)a)->position) > scbw::getDistanceFast(TempCenter, ((Unit*)b)->position);	
+}
+
 void UnitArraySortByDistance(UnitArray* unit_array, Point16 center)
 {
-	u32* distances = (u32*)malloc(unit_array->size * sizeof(u32));
-
-	for (u32 i = 0; i < unit_array->size; i++)
-	{
-		Unit* unit = unit_array->units[i];
-		distances[i] = (u32)scbw::getDistanceFast(center, unit->position);
-	}
-
-	std::sort(unit_array->units, unit_array->units + unit_array->size, [&](Unit*& a, Unit*& b)
-	{
-		int index_a = &a - unit_array->units;
-		int index_b = &b - unit_array->units;
-
-		return distances[index_a] > distances[index_b];	
-	});
-
-	free(distances);
+	TempCenter = center;
+	qsort(unit_array->units, unit_array->size, sizeof(Unit*), DistanceCompareFunc);
 }
 
 Unit* UnitArrayFindBest(UnitArray* unit_array, SearchScoreFunc score_func)
