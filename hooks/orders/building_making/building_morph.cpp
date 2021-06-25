@@ -43,10 +43,14 @@ namespace hooks
 			buildingId = building->id;
 		}
 
-		// Remove no-collide status if source Droleth had it before morphing
+		// Remove statuses if the source Droleth had them before morphing
 		if (building->status & UnitStatus::NoCollide)
 		{
 			building->status &= ~UnitStatus::NoCollide;
+		}
+		if (building->status & UnitStatus::IsGathering)
+		{
+			building->status &= ~UnitStatus::IsGathering;
 		}
 
 		if (building->mainOrderState == 0)
