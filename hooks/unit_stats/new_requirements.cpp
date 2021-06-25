@@ -89,6 +89,7 @@ namespace hooks
 			addonId = unit->building.addon->id;
 		}
 		bool inAir = unit->status & UnitStatus::InAir;
+		bool isTraining = unit->buildQueue[unit->buildQueueSlot] != UnitId::None;
 
 		switch (unit->id)
 		{
@@ -153,7 +154,7 @@ namespace hooks
 					}
 					case UnitId::TerranComsatStation:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
@@ -203,7 +204,7 @@ namespace hooks
 				{
 					case UnitId::TerranComsatStation:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
@@ -212,7 +213,7 @@ namespace hooks
 					case UnitId::TerranNuclearSilo:
 					case UnitId::TerranQuarry:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
@@ -230,7 +231,7 @@ namespace hooks
 				{
 					case UnitId::TerranMedbay:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
@@ -238,7 +239,7 @@ namespace hooks
 					}
 					case UnitId::TerranCovertOps:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
@@ -294,7 +295,7 @@ namespace hooks
 					case UnitId::TerranMachineShop:
 					case UnitId::TerranSalvoYard:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
@@ -349,7 +350,7 @@ namespace hooks
 					case UnitId::TerranMunitionsBay:
 					case UnitId::TerranControlTower:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
@@ -404,7 +405,7 @@ namespace hooks
 				{
 					case UnitId::TerranFutureStation:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
@@ -417,7 +418,7 @@ namespace hooks
 					case UnitId::TerranBioticBase:
 					case UnitId::TerranTinkerersTower:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
@@ -484,7 +485,7 @@ namespace hooks
 				{
 					case UnitId::TerranGuildhall:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}

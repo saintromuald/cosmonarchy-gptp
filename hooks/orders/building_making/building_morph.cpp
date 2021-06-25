@@ -42,6 +42,13 @@ namespace hooks
 		{
 			buildingId = building->id;
 		}
+
+		// Remove no-collide status if source Droleth had it before morphing
+		if (building->status & UnitStatus::NoCollide)
+		{
+			building->status &= ~UnitStatus::NoCollide;
+		}
+
 		if (building->mainOrderState == 0)
 		{
 			if (building->remainingBuildTime < (units_dat::TimeCost[buildingId] * 3 / 4))
@@ -186,7 +193,6 @@ namespace hooks
 					building->remainingBuildTime = 0;
 				}
 				// 0045D6CD
-				// update various stuff (set hp, set shield...) not finished on Morph
 				helper::updateUnitStatsFinishBuilding(building);
 				helper::updateUnitStrength(building);
 				// relate to building placement / taking room around?
@@ -352,7 +358,6 @@ namespace hooks
 				helper::replaceUnitWithType(unit, UnitId::ZergDroleth);
 				// probably AI related
 				helper::updateBuildingsAI(unit);
-				// update various stuff (set hp, set shield...) not finished after unit change
 				helper::updateUnitStatsFinishBuilding(unit);
 				helper::updateUnitStrength(unit);
 
