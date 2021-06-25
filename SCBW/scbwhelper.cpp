@@ -1345,10 +1345,10 @@ namespace helper
 		return (bool)result;
 	}
 
-	s32 getPlayerDefaultRefineryUnitType(s32 playerId)
+	u32 getPlayerDefaultRefineryUnitType(u32 playerId)
 	{
 		const u32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
-		static s32 result;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, playerId

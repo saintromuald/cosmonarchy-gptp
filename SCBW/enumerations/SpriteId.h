@@ -714,6 +714,8 @@ namespace SpriteId
 		ProtossExemplar = 704,
 		ArcliteShockCannon_Damageless = 705,
 		ProtossHallucinationEffect = 708,
+		
+		NeutronFlareOrange_Damageless = 747,
 
 		// CORPSE \\
 

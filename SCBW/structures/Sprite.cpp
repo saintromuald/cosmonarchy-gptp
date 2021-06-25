@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cassert>
 
-//Functionally identical to playSpriteIscript() (offset 0x00499D00)
+// Functionally identical to playSpriteIscript() (offset 0x00499D00)
 void Sprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurrentScript)
 {
 
@@ -16,10 +16,9 @@ void Sprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurr
 
 }
 
-//Equivalent to SpriteDestructor @ 0x00497B40
+// Equivalent to SpriteDestructor @ 0x00497B40
 void Sprite::free()
 {
-
 	assert(this);
 
 	Image* image = this->images.head;
@@ -33,43 +32,60 @@ void Sprite::free()
 	}
 
 	if (((s32)this->position.y) < 0)
+	{
 		sprite_row_position = (this->position.y + 31) / 32;
+	}
 	else
+	{
 		sprite_row_position = (this->position.y) / 32;
+	}
 
 	if (sprite_row_position < 0)
+	{
 		sprite_row_position = 0;
-	else
-		if (sprite_row_position >= mapTileSize->height)
-			sprite_row_position = mapTileSize->height - 1;
+	}
+	else if (sprite_row_position >= mapTileSize->height)
+	{
+		sprite_row_position = mapTileSize->height - 1;
+	}
 
-	//remove the sprite from the spritesOnTileRow list
+	// remove the sprite from the spritesOnTileRow list
 	if (spritesOnTileRow->heads[sprite_row_position] == this)
+	{
 		spritesOnTileRow->heads[sprite_row_position] = this->link.next;
+	}
 
 	if (spritesOnTileRow->tails[sprite_row_position] == this)
+	{
 		spritesOnTileRow->tails[sprite_row_position] = this->link.prev;
+	}
 
 	//untie the sprite from the previous and next one
 	if (this->link.prev != nullptr)
+	{
 		(this->link.prev)->link.next = this->link.next;
+	}
 
 	if (this->link.next != nullptr)
+	{
 		(this->link.next)->link.prev = this->link.prev;
+	}
 
 	this->link.prev = nullptr;
 	this->link.next = nullptr;
 
-	//perform identically to original code
+	// perform identically to original code
 	unusedSprites->insertAfterHead<&Sprite::link>(this);
-
 }
 
 
 void Sprite::setPosition(u16 x, u16 y)
 {
 	assert(this);
-	if (this->position.x == x && this->position.y == y) return;
+	if (this->position.x == x && this->position.y == y)
+	{
+		return;
+	}
 
 	const s32 oldTileY = CLAMP(this->position.y / 32, 0, mapTileSize->height - 1);
 	const s32 newTileY = CLAMP(y / 32, 0, mapTileSize->height - 1);
@@ -90,9 +106,10 @@ void Sprite::setPosition(u16 x, u16 y)
 	}
 
 	for (Image* i = this->images.head; i; i = i->link.next)
+	{
 		i->flags |= CImage_Flags::Redraw;
+	}
 }
-
 
 //-------- Create overlay --------//
 
@@ -123,7 +140,7 @@ void updateImageDirection(Image* image, u32 direction)
 
 //-------- Create overlay --------//
 
-//Identical to function @ 0x00498E00
+// Identical to function @ 0x00498E00
 Image* Sprite::createOverlay(u32 imageId, s8 x, s8 y, u32 direction)
 {
 	assert(this);
@@ -176,7 +193,7 @@ Image* Sprite::createUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
 	return underlay;
 }
 
-//Identical to function @ 0x00498EA0
+// Identical to function @ 0x00498EA0
 Image* Sprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction)
 {
 	assert(this);
@@ -202,6 +219,7 @@ Image* Sprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction)
 	}
 	return overlay;
 }
+
 Image* Sprite::createTopUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
 {
 	assert(this);
@@ -227,7 +245,6 @@ Image* Sprite::createTopUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
 	}
 	return underlay;
 }
-
 
 //-------- Remove overlay --------//
 
@@ -260,6 +277,7 @@ void Sprite::removeOverlay(u32 imageId)
 		}
 	}
 }
+
 void Sprite::playForOverlay(u32 imageId, u8 anim)
 {
 	assert(this);
@@ -273,6 +291,7 @@ void Sprite::playForOverlay(u32 imageId, u8 anim)
 		}
 	}
 }
+
 //-------- Get overlay --------//
 
 //Identical to function @ 0x00497460

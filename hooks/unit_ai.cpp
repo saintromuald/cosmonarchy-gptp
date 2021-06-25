@@ -103,42 +103,39 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	char AI_TrainingWorker(Unit* newUnit, Unit* otherUnit) // 00435700
+	void AI_TrainingWorker(Unit* newUnit, Unit* otherUnit) // 00435700
 	{
 		WorkerAi* otherAI = (WorkerAi*)otherUnit->pAI;
-		if (otherAI != nullptr)
+		if (otherAI)
 		{
 			if (otherUnit == newUnit)
 			{
 				helper::AI_RemoveFromTowns(newUnit);
 				WorkerAi* newAI = (WorkerAi*)newUnit->pAI;
-				if (newAI != nullptr)
+				if (newAI)
 				{
 					AiTown* newUnitTown = newAI->town;
-					if (newUnitTown != nullptr)
+					if (newUnitTown && newAI->type == AiType::Building) // type check is new
 					{
 						helper::deleteBuildingAI((BuildingAi*)newAI, &newUnitTown->freeBuildings); // moved within nullcheck for sanity
 						if (newUnit == newUnitTown->buildingSCV)
 						{
-							newUnitTown->buildingSCV = 0;
+							newUnitTown->buildingSCV = nullptr;
 						}
 						if (newUnit == newUnitTown->mainBuilding)
 						{
-							newUnitTown->mainBuilding = 0;
+							newUnitTown->mainBuilding = nullptr;
 						}
 					}
 					newUnit->pAI = nullptr;
 				}
 			}
 
-			AiTown* otherUnitTown = otherAI->town;
-			if (otherUnitTown != nullptr) // new
+			if (otherAI->town) // new
 			{
-				return helper::AI_AddWorkerStructureAI(newUnit, otherUnitTown);
+				helper::AI_AddWorkerStructureAI(newUnit, otherAI->town);
 			}
 		}
-
-		return 0;
 	}
 
 	// Hooked to investigate crashes and remove Archon hardcode - Pr0nogo
@@ -229,23 +226,24 @@ namespace hooks
 		{
 			WorkerAiArray* workerAIArray = town->freeWorkers;
 			unitAI = (UnitAi*)(workerAIArray->first_free_worker);
-			if (unitAI != nullptr)
+			if (unitAI)
 			{
 				UnitAi* previous1 = unitAI->link.prev;
 				workerAIArray->first_free_worker = (WorkerAi*)unitAI->link.prev;
-				if (previous1 != nullptr)
+				if (previous1)
 				{
 					previous1->link.next = nullptr;
 				}
-				if (unitAI != nullptr)
+
+				if (unitAI)
 				{
 					unitAI->link.next = 0;
 					unitAI->link.prev = (UnitAi*)town->firstTownUnit;
-					if (town->firstTownUnit != nullptr && town->firstTownUnit->link.next != nullptr)
+					if (town->firstTownUnit && town->firstTownUnit->link.next)
 					{
-						town->firstTownUnit->link.next->pAI = (WorkerAi*)unitAI;
+						town->firstTownUnit->link.next->pAI = (void*)unitAI;
 					}
-					town->firstTownUnit->pAI = (WorkerAi*)unitAI;
+					town->firstTownUnit->pAI = (void*)unitAI;
 					WorkerAi* unitAIWorker = (WorkerAi*)unitAI;
 					unitAIWorker->type = 2;
 					unitAIWorker->parent = unit;
@@ -266,7 +264,7 @@ namespace hooks
 			|| scbw::unitIdIsZergSupply(unit->id))
 		{
 			unitAI = helper::AI_CreateBuildingAi(town->freeBuildings);
-			if (unitAI != nullptr)
+			if (unitAI)
 			{
 				unitAI->type = AiType::Building;
 				BuildingAi* unitAIBuilding = (BuildingAi*)unitAI;
@@ -296,6 +294,7 @@ namespace hooks
 						helper::setSecondaryOrder(unit, OrderId::SpreadCreep);
 					}
 				}
+
 				if (!(AIScriptController[town->player].AI_Flags.isUseMapSettings)
 					|| unit->status & UnitStatus::GroundedBuilding
 					&& unit->id != UnitId::TerranWatchdog
@@ -321,32 +320,17 @@ namespace hooks
 				}
 
 				s32 playerID = unit->playerId;
-				s16 unitType;
-				s8 playerRACE = playerTable[playerID].race;
-				if (playerRACE == RaceId::Terran)
+				// Originally checked for race-specific town centers
+				if (unit->id == scbw::unitIdIsTownCenter(unit->id) || helper::unitIsActiveResourceDepot(unit))
 				{
-					unitType = UnitId::TerranCommandCenter;
-				}
-				else if (playerRACE == RaceId::Protoss)
-				{
-					unitType = UnitId::ProtossNexus;
-				}
-				else
-				{
-					unitType = UnitId::ZergHatchery;
-				}
-
-				if (unit->id == unitType || helper::unitIsActiveResourceDepot(unit))
-				{
-					unitAI = (UnitAi*)town->mainBuilding->pAI;
-					if (!unitAI)
+					if (!town->mainBuilding->pAI)
 					{
 						town->mainBuilding = unit;
 					}
 				}
 				else
 				{
-					auto gas_structure_id = helper::getPlayerDefaultRefineryUnitType(playerID);
+					u32 gas_structure_id = helper::getPlayerDefaultRefineryUnitType(playerID);
 					if (unit->id == gas_structure_id || unit->id == UnitId::ResourceVespeneGeyser)
 					{
 						if (town->gasBuildings[0])
@@ -367,6 +351,7 @@ namespace hooks
 						{
 							town->gasBuildings[0] = unit;
 						}
+
 						if (town->resarea)
 						{
 							town->resareaNotSet = 1;

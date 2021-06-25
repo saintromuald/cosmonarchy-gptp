@@ -1059,6 +1059,8 @@ enum Enum {
 	ArcliteShockCannon_Damageless		= 1382,
 	ProtossHallucinationEffect			= 1385,
 
+	NeutronFlareOrange_Damageless		= 1446,
+
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,
 	FirstMajorDamageOverlay				= 472,

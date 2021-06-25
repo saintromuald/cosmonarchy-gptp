@@ -549,4 +549,5 @@ namespace scbw
 	void mind_control(Unit* source, Unit* target);
 	void recede_mind_control(Unit* target);
 	bool isZergProduction(u16 unitId);
+	bool unitIdIsTownCenter(u16 unitId);
 }
