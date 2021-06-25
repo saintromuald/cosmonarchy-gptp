@@ -341,6 +341,7 @@ namespace hooks
 						if (!transport->getFirstLoadedUnit())
 						{
 							transport->giveTo(11);
+							transport->sprite->playerId = 11;
 						}
 						else
 						{

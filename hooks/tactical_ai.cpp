@@ -603,16 +603,18 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 	if (unit->id == UnitId::TerranBunker
 		&& !unitExt->timers[TimerAI_GenericAbilityCooldown])
 	{
+		const u32 bunkerCapacity = units_dat::SpaceProvided[unit->id];
+
 		UnitArray allies = UnitSearchSquare(unit->position, unit->getSightRange(false) * 32);
 		UnitArraySortByDistance(&allies, unit->position);
 		UnitArray enemies = UnitArrayDuplicate(&allies);
 		UnitArrayFilter(&allies, unit, FilterAlly);
-		UnitArrayFilter(&enemies, unit, FilterEnemy);
+		UnitArrayFilter(&enemies, unit, unit->playerId == 11 ? 0 : FilterEnemy);
 
 		if (enemies.size)
 		{
 			u32 counter = 0;
-			for (u32 i = 0; i < 4; ++i)
+			for (u32 i = 0; i < bunkerCapacity; ++i)
 			{
 				Unit* target = unit->getLoadedUnit(i);
 				if (target)
@@ -620,7 +622,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 					counter += units_dat::SpaceRequired[target->id];
 				}
 			}
-			for (u32 i = 0; i < allies.size && counter <= 4; ++i)
+			for (u32 i = 0; i < allies.size && counter <= bunkerCapacity; ++i)
 			{
 				Unit* target = allies.units[i];
 
@@ -632,14 +634,21 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			}
 			unitExt->timers[TimerAI_GenericAbilityCooldown] = 2 * 24;
 		}
-		else
+		else if (!unitExt->values[ValueIsNeutralBunker])
 		{
-			unit->orderTo(OrderId::Unload);
+			for (u32 i = 0; i < bunkerCapacity; ++i)
+			{
+				Unit* target = unit->getLoadedUnit(i);
+				if (target && target->pAI)
+				{
+					unit->orderTo(OrderId::Unload);
+				}
+			}
 			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
 		}
 	}
 
-	if (unit->pAI != nullptr)
+	if (unit->pAI && !helper::isUnitLoaded(unit))
 	{
 		KitingAi(unit, unitExt);
 
