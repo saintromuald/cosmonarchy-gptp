@@ -1701,7 +1701,7 @@ namespace hooks
 			}
 		}
 
-		// Crucible Stacks Add
+		// Crucible - Khaydarin Charge stacks
 		if (unit->id == UnitId::ProtossCrucible && unit->status & UnitStatus::Completed)
 		{
 			UnitArray arr = UnitSearchRadial(unit->position, 8 * 32);
@@ -1800,6 +1800,14 @@ namespace hooks
 			&& unitExt->units[UnitMindController])
 		{
 			unit->remove();
+		}
+
+		// Empress - Anodyne Annex - kill zombies when the controller dies
+		if (unitExt->values[ValueIsZombified]
+			&& !unitExt->units[UnitEmpressSource])
+		{
+			helper::createThingy(SpriteId::MindControlHitSmall + scbw::getOverlayOffset(unit->id), unit->sprite->position.x, unit->sprite->position.y, unit->playerId);
+			unit->damageHp(unit->hitPoints, unit, unit->playerId, false);
 		}
 	}
 
