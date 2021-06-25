@@ -368,10 +368,8 @@ static inline bool ShouldKite(Unit* unit, UnitExt* unitExt)
 		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !UnitCanAttack(unit));
 }
 
-void TacticalAi(Unit* unit)
+void KitingAi(Unit* unit, UnitExt* unitExt)
 {
-	UnitExt* unitExt = globals.GetUnitExt(unit);
-
 	// Kiting AI
 	bool inCombat = unitExt->damageReceiveTimer < 4 * 24
 		|| unitExt->damageDealtTimer < 4 * 24
@@ -598,404 +596,451 @@ void TacticalAi(Unit* unit)
 			});
 		}
 	}
+}
 
-	if (unit->id == UnitId::TerranApostle)
+void TacticalAi(Unit* unit, UnitExt* unitExt)
+{
+	if (unit->id == UnitId::TerranBunker
+		&& !unitExt->timers[TimerAI_GenericAbilityCooldown])
 	{
-		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
+		UnitArray allies = UnitSearchSquare(unit->position, unit->getSightRange(false) * 32);
+		UnitArraySortByDistance(&allies, unit->position);
+		UnitArray enemies = UnitArrayDuplicate(&allies);
+		UnitArrayFilter(&allies, unit, FilterAlly);
+		UnitArrayFilter(&enemies, unit, FilterEnemy);
+
+		if (enemies.size)
 		{
-			s32 count = 0;
-			cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
+			u32 counter = 0;
+			for (u32 i = 0; i < 4; ++i)
 			{
-				UnitExt* uExt = globals.GetUnitExt(u);
-				if (uExt->values[ValueLazarusAgent] != 1)
+				Unit* target = unit->getLoadedUnit(i);
+				if (target)
 				{
-					count++;
-				}
-			});
-			if (count >= 5)
-			{
-				scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 1);
-				unitExt->timers[TimerAI_Lazarus] = ApostleAILastBreathTimer;
-			}
-		}
-	}
-	else if (unit->id == UnitId::TerranEidolon)
-	{
-		// mines
-	}
-	else if (unit->id == UnitId::TerranSavant)
-	{
-		if (unitExt->timers[TimerAI_Siphon] == 0 && unit->mainOrderId != OrderId::PowerSiphon)
-		{
-			s32 count = 0;
-			cosmonarchyFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
-				Flags::Ally | Flags::Spellcaster, {}, [&](Unit* u)
-			{
-				if (u->energy < u->getMaxEnergy())
-				{
-					count++;
-				}
-			});
-			if (count >= 2)
-			{
-				// Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range.
-				auto enemy = rangeMatchUnit(unit, 7 * 32, Flags::Enemy | Flags::Spellcaster | Flags::HasEnergy, {});
-				if (enemy != nullptr)
-				{
-					unit->orderTo(OrderId::PowerSiphon, enemy);
-					unitExt->timers[TimerAI_Siphon] = 3 * 32;
+					counter += units_dat::SpaceRequired[target->id];
 				}
 			}
-		}
-	}
-	else if (unit->id == UnitId::TerranMadrigal)
-	{
-		f32 furiaDamagePotential = hooks::getCurrentDPS(unit, WeaponId::MadrigalFuriaMissiles);
-		furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
-		if (unit->orderTarget.unit)
-		{
-			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
-			furiaDamagePotential += (f32)targetExt->values[ValueDirgeStacks] * MadrigalDirgeDamage;
-		}
-		f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, WeaponId::MadrigalImperiosoMissiles);
+			for (u32 i = 0; i < allies.size && counter <= 4; ++i)
+			{
+				Unit* target = allies.units[i];
 
-		if (furiaDamagePotential > dirgeDamagePotential)
-		{
-			scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 0);
+				if (target->pAI && helper::canEnterTransport(unit, target))
+				{
+					target->orderTo(OrderId::EnterTransport, unit);
+					counter += units_dat::SpaceRequired[target->id];
+				}
+			}
+			unitExt->timers[TimerAI_GenericAbilityCooldown] = 2 * 24;
 		}
 		else
 		{
-			scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 1);
+			unit->orderTo(OrderId::Unload);
+			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
 		}
 	}
-	else if (unit->id == UnitId::ZergMatraleth)
-	{
-		if (unit->mainOrderId != OrderId::CastParasite && unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0)
-		{
-			cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
-				Flags::NotSelf, {}, [&](Unit* u)
-			{
-				std::vector<std::pair<Unit*, u32>> group;
-				s32 supply = 0;
-				cosmonarchyFinderLoop(u, u->position, 128, 0, {}, [&](Unit* u2)
-				{
-					u32 priority = units_dat::SupplyRequired[u->id] * 100;
-					if (u->status & UnitStatus::InAir)
-					{
-						priority /= 4;
-					}
-					auto weapon = u->getGroundWeapon();
-					if (weapon != WeaponId::None)
-					{
-						if (weapons_dat::MaxRange[weapon] >= 64)
-						{
-							priority /= 2;
-						}
-					}
-					group.push_back(std::make_pair(u, priority));
-					supply += units_dat::SupplyRequired[u->id];
-				});
-				std::sort(group.begin(), group.end(), [](auto& left, auto& right)
-				{
-					return left.second > right.second;
-				});
-				supply /= 2;
-				if (supply >= 5)
-				{
-					unit->orderTo(OrderId::CastParasite, group[0].first);
-					unitExt->timers[TimerAI_Parasite] = MatralethAIParasiteTimer;
-					return;
-				}
-			});
-		}
 
-		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0)
+	if (unit->pAI != nullptr)
+	{
+		KitingAi(unit, unitExt);
+
+		if (unit->id == UnitId::TerranApostle)
 		{
-			s32 enemy_count = cosmonarchyUnitCount(nullptr, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast, {});
-			if (enemy_count >= 2)
+			if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
 			{
 				s32 count = 0;
-				cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally | Flags::CanAttackOrCast, {}, [&](Unit* u)
+				cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
 				{
 					UnitExt* uExt = globals.GetUnitExt(u);
-					if (!uExt->values[TimerEnsnaringBrood])
+					if (uExt->values[ValueLazarusAgent] != 1)
 					{
 						count++;
 					}
 				});
 				if (count >= 5)
 				{
-					scbw::set_generic_rust_value(unit, RustId::CastEnsnaringBrood, 1);
-					unitExt->timers[TimerAI_EnsnaringBrood] = MatralethAIEnsnaringBroodTimer;
+					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 1);
+					unitExt->timers[TimerAI_Lazarus] = ApostleAILastBreathTimer;
 				}
 			}
 		}
-	}
-	else if (unit->id == UnitId::ProtossLanifect)
-	{
-		auto web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
-		if (unitExt->values[ValueExecutingLanifectMoveOrder] != 0)
+		else if (unit->id == UnitId::TerranEidolon)
 		{
-			if (unit->mainOrderId != OrderId::Move)
-			{
-				unitExt->values[ValueExecutingLanifectMoveOrder] = 0;
-			}
+			// mines
 		}
-		u32 webs = cosmonarchyUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
-		u32 allies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::CanAttackOrCast | Flags::NotWorker, {});
-		u32 enemies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::CanAttackOrCast | Flags::NotWorker, {});
-		f64 percentage = (f64)(unit->hitPoints + unit->shields) / (f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256.0);
-		if (web_state == 0)
+		else if (unit->id == UnitId::TerranSavant)
 		{
-			if (webs == 0
-				&& percentage >= AICorsairLifePercentage
-				&& allies >= AIWebAllyMinCount
-				&& enemies >= AIWebEnemyMinCount)
+			if (unitExt->timers[TimerAI_Siphon] == 0 && unit->mainOrderId != OrderId::PowerSiphon)
 			{
-				Unit* mostSignificant = nullptr;
-				auto maxSignificance = 0;
-				cosmonarchyFinderLoop(unit, unit->sprite->position, 128, Flags::Enemy, {}, [&](Unit* u)
+				s32 count = 0;
+				cosmonarchyFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
+					Flags::Ally | Flags::Spellcaster, {}, [&](Unit* u)
 				{
-					auto significance = cosmonarchyUnitCount(u, u->position, AICorsairEnemySeekRange / 2,
-						Flags::NotSelf | Flags::Ally, {});
-					if (significance > maxSignificance)
+					if (u->energy < u->getMaxEnergy())
 					{
-						maxSignificance = significance;
-						mostSignificant = u;
+						count++;
 					}
 				});
-				if (mostSignificant != nullptr)
+				if (count >= 2)
 				{
-					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
-					scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 1);
-					unitExt->timers[TimerAI_DisruptionField] = AIWebTimer;
+					// Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range.
+					auto enemy = rangeMatchUnit(unit, 7 * 32, Flags::Enemy | Flags::Spellcaster | Flags::HasEnergy, {});
+					if (enemy != nullptr)
+					{
+						unit->orderTo(OrderId::PowerSiphon, enemy);
+						unitExt->timers[TimerAI_Siphon] = 3 * 32;
+					}
 				}
 			}
 		}
-		else
+		else if (unit->id == UnitId::TerranMadrigal)
 		{
-			if (!(allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount))
+			f32 furiaDamagePotential = hooks::getCurrentDPS(unit, WeaponId::MadrigalFuriaMissiles);
+			furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
+			if (unit->orderTarget.unit)
 			{
-				if (unitExt->timers[TimerAI_DisruptionField] == 0)
+				UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
+				furiaDamagePotential += (f32)targetExt->values[ValueDirgeStacks] * MadrigalDirgeDamage;
+			}
+			f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, WeaponId::MadrigalImperiosoMissiles);
+
+			if (furiaDamagePotential > dirgeDamagePotential)
+			{
+				scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 0);
+			}
+			else
+			{
+				scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 1);
+			}
+		}
+		else if (unit->id == UnitId::ZergMatraleth)
+		{
+			if (unit->mainOrderId != OrderId::CastParasite && unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0)
+			{
+				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
+					Flags::NotSelf, {}, [&](Unit* u)
 				{
-					scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
+					std::vector<std::pair<Unit*, u32>> group;
+					s32 supply = 0;
+					cosmonarchyFinderLoop(u, u->position, 128, 0, {}, [&](Unit* u2)
+					{
+						u32 priority = units_dat::SupplyRequired[u->id] * 100;
+						if (u->status & UnitStatus::InAir)
+						{
+							priority /= 4;
+						}
+						auto weapon = u->getGroundWeapon();
+						if (weapon != WeaponId::None)
+						{
+							if (weapons_dat::MaxRange[weapon] >= 64)
+							{
+								priority /= 2;
+							}
+						}
+						group.push_back(std::make_pair(u, priority));
+						supply += units_dat::SupplyRequired[u->id];
+					});
+					std::sort(group.begin(), group.end(), [](auto& left, auto& right)
+					{
+						return left.second > right.second;
+					});
+					supply /= 2;
+					if (supply >= 5)
+					{
+						unit->orderTo(OrderId::CastParasite, group[0].first);
+						unitExt->timers[TimerAI_Parasite] = MatralethAIParasiteTimer;
+						return;
+					}
+				});
+			}
+
+			if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0)
+			{
+				s32 enemy_count = cosmonarchyUnitCount(nullptr, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast, {});
+				if (enemy_count >= 2)
+				{
+					s32 count = 0;
+					cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally | Flags::CanAttackOrCast, {}, [&](Unit* u)
+					{
+						UnitExt* uExt = globals.GetUnitExt(u);
+						if (!uExt->values[TimerEnsnaringBrood])
+						{
+							count++;
+						}
+					});
+					if (count >= 5)
+					{
+						scbw::set_generic_rust_value(unit, RustId::CastEnsnaringBrood, 1);
+						unitExt->timers[TimerAI_EnsnaringBrood] = MatralethAIEnsnaringBroodTimer;
+					}
+				}
+			}
+		}
+		else if (unit->id == UnitId::ProtossLanifect)
+		{
+			auto web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
+			if (unitExt->values[ValueExecutingLanifectMoveOrder] != 0)
+			{
+				if (unit->mainOrderId != OrderId::Move)
+				{
 					unitExt->values[ValueExecutingLanifectMoveOrder] = 0;
-					if (unit->mainOrderId == OrderId::Move)
+				}
+			}
+			u32 webs = cosmonarchyUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
+			u32 allies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::CanAttackOrCast | Flags::NotWorker, {});
+			u32 enemies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::CanAttackOrCast | Flags::NotWorker, {});
+			f64 percentage = (f64)(unit->hitPoints + unit->shields) / (f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256.0);
+			if (web_state == 0)
+			{
+				if (webs == 0
+					&& percentage >= AICorsairLifePercentage
+					&& allies >= AIWebAllyMinCount
+					&& enemies >= AIWebEnemyMinCount)
+				{
+					Unit* mostSignificant = nullptr;
+					auto maxSignificance = 0;
+					cosmonarchyFinderLoop(unit, unit->sprite->position, 128, Flags::Enemy, {}, [&](Unit* u)
 					{
-						unit->orderTo(OrderId::Stop);
+						auto significance = cosmonarchyUnitCount(u, u->position, AICorsairEnemySeekRange / 2,
+							Flags::NotSelf | Flags::Ally, {});
+						if (significance > maxSignificance)
+						{
+							maxSignificance = significance;
+							mostSignificant = u;
+						}
+					});
+					if (mostSignificant != nullptr)
+					{
+						unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
+						scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 1);
+						unitExt->timers[TimerAI_DisruptionField] = AIWebTimer;
 					}
 				}
-			}
-		}
-	}
-	else if (unit->id == UnitId::ProtossStarSovereign && unitExt->timers[TimerAI_GriefOfAllGods] == 0)
-	{
-		auto enemyUnitsHealth = 0;
-		auto alliedUnitsHealth = 0;
-		bool alliedTownHalls = false;
-		cosmonarchyFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
-			Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u)
-		{
-			if (!scbw::isAlliedTo(unit->playerId, u->playerId))
-			{
-				enemyUnitsHealth += (u->hitPoints + u->shields) / 256;
-			}
-			if (scbw::isAlliedTo(unit->playerId, u->playerId))
-			{
-				if (units_dat::BaseProperty[u->id] & UnitProperty::ResourceDepot)
-				{
-					alliedTownHalls = true;
-					return;
-				}
-				alliedUnitsHealth += (u->hitPoints + u->shields) / 256;
-			}
-		});
-		if (!alliedTownHalls && enemyUnitsHealth >= 2000
-			&& alliedUnitsHealth < 2000
-			&& (unit->hitPoints + unit->shields) * 2 >=	(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
-		{
-			unitExt->timers[TimerAI_GriefOfAllGods] = 612;
-			unit->orderComputerClear(OrderId::KhaydarinEclipse);
-			unit->orderTarget.pt = unit->sprite->position;
-			unit->mainOrderState = 0;
-		}
-	}
-	else if (unit->id == UnitId::TerranSiren && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
-	{
-		if (unit->energy >= techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256)
-		{
-			u32 count = 0;
-			const u32 radius = 6 * 32;
-			scbw::UnitFinder(
-				unit->getX() - radius,
-				unit->getY() - radius,
-				unit->getX() + radius,
-				unit->getY() + radius
-			).forEach([&](Unit* target)
-			{
-				if (!(units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster))
-				{
-					return;
-				}
-				UnitExt* targetExt = globals.GetUnitExt(target);
-				auto& vec = targetExt->unitVectors[UnitVectorTertiaryEyesSirens];
-				if (std::find(vec.begin(), vec.end(), target) != vec.end())
-				{
-					return;
-				}
-				count += 1;
-			});
-
-			if (count >= 2)
-			{
-				scbw::set_generic_rust_value(unit, RustId::CastTertiaryEyes, 1);
-				unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
 			}
 			else
 			{
-				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
-			}
-		}
-		else
-		{
-			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
-		}
-	}
-	else if (unit->id == UnitId::ProtossDemiurge && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
-	{
-
-		if (unit->energy >= 50 * 256)
-		{
-			auto& vec = unitExt->unitVectors[UnitVectorWorshipersDemiurge];
-
-			u32 totalCount = vec.size();
-			u32 inCombatCount = 0;
-			for (Unit* worshiper : vec)
-			{
-				UnitExt* worshiperExt = globals.GetUnitExt(worshiper);
-				if (worshiperExt->damageDealtTimer < 4 * 24
-					|| worshiperExt->damageReceiveTimer < 4 * 24)
+				if (!(allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount))
 				{
-					inCombatCount++;
+					if (unitExt->timers[TimerAI_DisruptionField] == 0)
+					{
+						scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
+						unitExt->values[ValueExecutingLanifectMoveOrder] = 0;
+						if (unit->mainOrderId == OrderId::Move)
+						{
+							unit->orderTo(OrderId::Stop);
+						}
+					}
 				}
 			}
-
-			if (totalCount > 3 && inCombatCount > totalCount - inCombatCount)
-			{
-				scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 1);
-				unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
-			}
-			else
-			{
-				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
-			}
 		}
-		else
+		else if (unit->id == UnitId::ProtossStarSovereign && unitExt->timers[TimerAI_GriefOfAllGods] == 0)
 		{
-			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
-		}
-	}
-	else if ((unit->id == UnitId::ZergAkistrokor || unit->id == UnitId::ZergSovroleth) && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
-	{
-		if (!unitExt->units[UnitAttachedTarget])
-		{
-			const u32 radius = 32 * 10;
-			scbw::UnitFinder finder(
-				unit->getX() - radius,
-				unit->getY() - radius,
-				unit->getX() + radius,
-				unit->getY() + radius
-			);
-
-			Unit* target = nullptr;
-			if (unit->id == UnitId::ZergAkistrokor)
+			auto enemyUnitsHealth = 0;
+			auto alliedUnitsHealth = 0;
+			bool alliedTownHalls = false;
+			cosmonarchyFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
+				Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u)
 			{
-				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
-				target = finder.getBest([&](Unit* local) -> u32
+				if (!scbw::isAlliedTo(unit->playerId, u->playerId))
 				{
-					if (!match(local))
-					{
-						return -1;
-					}
-					UnitExt* localExt = globals.GetUnitExt(local);
-					if (localExt->units[UnitAttachedTarget])
-					{
-						return -2;
-					}
-					return scbw::getDistanceFast(unit->position, local->position);
-				});
-			}
-			else if (unit->id == UnitId::ZergSovroleth)
-			{
-				auto match = cosmonarchyFinderMatch(unit, Flags::Ally | Flags::NotSelf | Flags::NoBuilding | Flags::CanAttackOrCast, {});
-				target = finder.getBest([&](Unit* local) -> u32
+					enemyUnitsHealth += (u->hitPoints + u->shields) / 256;
+				}
+				if (scbw::isAlliedTo(unit->playerId, u->playerId))
 				{
-					if (!match(local))
+					if (units_dat::BaseProperty[u->id] & UnitProperty::ResourceDepot)
 					{
-						return -1;
+						alliedTownHalls = true;
+						return;
 					}
-					UnitExt* localExt = globals.GetUnitExt(local);
-					if (localExt->units[UnitAttachedTarget])
-					{
-						return -1;
-					}
-					return unit->getCurrentLifeInGame();
-				});
-			}
-
-			if (target)
-			{
-				unit->orderTo(OrderId::CTFCOP1, target);
-				unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
-			}
-			else
-			{
-				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
-			}
-		}
-		else
-		{
-			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
-		}
-
-	}
-
-
-
-
-
-
-	/*	
-	else if (unit->id == UnitId::TerranPaladin) {
-		if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
-			bool skyfallCondition = false;
-			cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
-				CFlags::Enemy, {}, [&](Unit* u) {
-
-				// scbw::print("Loop");
-				Unit* tryTarget = u;
-				s32 innerCount = 0;
-				cosmonarchyFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
-					[&](Unit* internalUnit) {
-					innerCount++;
-				});
-				// scbw::printf("Count is %d", innerCount);
-				if (innerCount >= 6) {
-					Point16 source = unit->position;
-					Point16 target = u->position;
-
-					auto distance = scbw::getDistanceFast(source.x, source.y, target.x, target.y);
-					if (distance >= 64) {
-						f64 fraction = (distance - 64) / distance;
-						u16 resultX, resultY;
-						resultX = MathUtils::lerp(fraction, source.x, target.x, false);
-						resultY = MathUtils::lerp(fraction, source.y, target.y, false);
-						unit->orderTo(OrderId::Skyfall, u->position.x, u->position.y);
-						scbw::set_generic_timer(unit, RustId::AI_PaladinTimer, 50);
-					}
+					alliedUnitsHealth += (u->hitPoints + u->shields) / 256;
 				}
 			});
+			if (!alliedTownHalls && enemyUnitsHealth >= 2000
+				&& alliedUnitsHealth < 2000
+				&& (unit->hitPoints + unit->shields) * 2 >=	(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
+			{
+				unitExt->timers[TimerAI_GriefOfAllGods] = 612;
+				unit->orderComputerClear(OrderId::KhaydarinEclipse);
+				unit->orderTarget.pt = unit->sprite->position;
+				unit->mainOrderState = 0;
+			}
 		}
+		else if (unit->id == UnitId::TerranSiren && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
+		{
+			if (unit->energy >= techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256)
+			{
+				u32 count = 0;
+				const u32 radius = 6 * 32;
+				scbw::UnitFinder(
+					unit->getX() - radius,
+					unit->getY() - radius,
+					unit->getX() + radius,
+					unit->getY() + radius
+				).forEach([&](Unit* target)
+				{
+					if (!(units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster))
+					{
+						return;
+					}
+					UnitExt* targetExt = globals.GetUnitExt(target);
+					auto& vec = targetExt->unitVectors[UnitVectorTertiaryEyesSirens];
+					if (std::find(vec.begin(), vec.end(), target) != vec.end())
+					{
+						return;
+					}
+					count += 1;
+				});
+
+				if (count >= 2)
+				{
+					scbw::set_generic_rust_value(unit, RustId::CastTertiaryEyes, 1);
+					unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+				}
+				else
+				{
+					unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+				}
+			}
+			else
+			{
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			}
+		}
+		else if (unit->id == UnitId::ProtossDemiurge && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
+		{
+
+			if (unit->energy >= 50 * 256)
+			{
+				auto& vec = unitExt->unitVectors[UnitVectorWorshipersDemiurge];
+
+				u32 totalCount = vec.size();
+				u32 inCombatCount = 0;
+				for (Unit* worshiper : vec)
+				{
+					UnitExt* worshiperExt = globals.GetUnitExt(worshiper);
+					if (worshiperExt->damageDealtTimer < 4 * 24
+						|| worshiperExt->damageReceiveTimer < 4 * 24)
+					{
+						inCombatCount++;
+					}
+				}
+
+				if (totalCount > 3 && inCombatCount > totalCount - inCombatCount)
+				{
+					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 1);
+					unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+				}
+				else
+				{
+					unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+				}
+			}
+			else
+			{
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			}
+		}
+		else if ((unit->id == UnitId::ZergAkistrokor || unit->id == UnitId::ZergSovroleth) && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
+		{
+			if (!unitExt->units[UnitAttachedTarget])
+			{
+				const u32 radius = 32 * 10;
+				scbw::UnitFinder finder(
+					unit->getX() - radius,
+					unit->getY() - radius,
+					unit->getX() + radius,
+					unit->getY() + radius
+				);
+
+				Unit* target = nullptr;
+				if (unit->id == UnitId::ZergAkistrokor)
+				{
+					auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
+					target = finder.getBest([&](Unit* local) -> u32
+					{
+						if (!match(local))
+						{
+							return -1;
+						}
+						UnitExt* localExt = globals.GetUnitExt(local);
+						if (localExt->units[UnitAttachedTarget])
+						{
+							return -2;
+						}
+						return scbw::getDistanceFast(unit->position, local->position);
+					});
+				}
+				else if (unit->id == UnitId::ZergSovroleth)
+				{
+					auto match = cosmonarchyFinderMatch(unit, Flags::Ally | Flags::NotSelf | Flags::NoBuilding | Flags::CanAttackOrCast, {});
+					target = finder.getBest([&](Unit* local) -> u32
+					{
+						if (!match(local))
+						{
+							return -1;
+						}
+						UnitExt* localExt = globals.GetUnitExt(local);
+						if (localExt->units[UnitAttachedTarget])
+						{
+							return -1;
+						}
+						return unit->getCurrentLifeInGame();
+					});
+				}
+
+				if (target)
+				{
+					unit->orderTo(OrderId::CTFCOP1, target);
+					unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+				}
+				else
+				{
+					unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+				}
+			}
+			else
+			{
+				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			}
+
+		}
+
+
+
+
+
+
+		/*	
+		else if (unit->id == UnitId::TerranPaladin) {
+			if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
+				bool skyfallCondition = false;
+				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
+					CFlags::Enemy, {}, [&](Unit* u) {
+
+					// scbw::print("Loop");
+					Unit* tryTarget = u;
+					s32 innerCount = 0;
+					cosmonarchyFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
+						[&](Unit* internalUnit) {
+						innerCount++;
+					});
+					// scbw::printf("Count is %d", innerCount);
+					if (innerCount >= 6) {
+						Point16 source = unit->position;
+						Point16 target = u->position;
+
+						auto distance = scbw::getDistanceFast(source.x, source.y, target.x, target.y);
+						if (distance >= 64) {
+							f64 fraction = (distance - 64) / distance;
+							u16 resultX, resultY;
+							resultX = MathUtils::lerp(fraction, source.x, target.x, false);
+							resultY = MathUtils::lerp(fraction, source.y, target.y, false);
+							unit->orderTo(OrderId::Skyfall, u->position.x, u->position.y);
+							scbw::set_generic_timer(unit, RustId::AI_PaladinTimer, 50);
+						}
+					}
+				});
+			}
+		}
+		*/
 	}
-	*/
 }

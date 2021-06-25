@@ -26,7 +26,7 @@ void InitBaseLayouts()
 		u8 player_id = atoi(player_str);
 		u8 res_area = atoi(res_area_str);
 
-		UnitArray arr = unit_search_rect(location.dimensions);
+		UnitArray arr = UnitSearchRect(location.dimensions);
 		for (u32 j = 0; j < arr.size; ++j)
 		{
 			Unit* unit = arr.units[j];

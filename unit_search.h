@@ -41,9 +41,10 @@ struct UnitArray
 	Unit* units[1700];
 };
 
-inline void unit_array_add(UnitArray* array, Unit* unit);
-inline void unit_array_remove_fast(UnitArray* array, u32 index); // won't preserve order, will swap with last element
-void unit_array_remove(UnitArray* array, u32 index); // will preserve order
+inline UnitArray UnitArrayDuplicate(UnitArray* array);
+inline void UnitArrayAdd(UnitArray* array, Unit* unit);
+inline void UnitArrayRemoveFast(UnitArray* array, u32 index); // won't preserve order, will swap with last element
+inline void UnitArrayRemove(UnitArray* array, u32 index); // will preserve order
 
 // NOTES:
 // not a fan of using an STL container, but we already have that dependency in the code base
@@ -51,19 +52,19 @@ void unit_array_remove(UnitArray* array, u32 index); // will preserve order
 // optional allowance of lambdas is pretty handy, since most of behaviors need adhoc adjustments
 using SearchFilterFunc = std::function<bool(Unit*)>;
 using SearchScoreFunc = std::function<u32(Unit*)>;
-UnitArray unit_search_rect(Box32 rect);
-UnitArray unit_search_radial(Point16 center, u32 radius);
-inline UnitArray unit_search_square(Point16 center, u32 radius);
+UnitArray UnitSearchRect(Box32 rect);
+UnitArray UnitSearchRadial(Point16 center, u32 radius);
+inline UnitArray UnitSearchSquare(Point16 center, u32 radius);
 
-void unit_array_filter(UnitArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, prefer sorting after filter
-void unit_array_custom_filter(UnitArray* unit_array, SearchFilterFunc filter); // will break ordering, prefer sorting after filter
-void unit_array_sort(UnitArray* unit_array, SearchScoreFunc score_func);
-void unit_array_sort_by_distance(UnitArray* unit_array, Point16 center);
-Unit* unit_array_find_best(UnitArray* unit_array, SearchScoreFunc score_func = nullptr); // score_func defaults to distance check
-Unit* unit_array_get_first(UnitArray* unit_array, SearchFilterFunc match_func = nullptr); // defaults to no check
-bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids);
+void UnitArrayFilter(UnitArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, prefer sorting after filter
+void UnitArrayCustomFilter(UnitArray* unit_array, SearchFilterFunc filter); // will break ordering, prefer sorting after filter
+void UnitArraySort(UnitArray* unit_array, SearchScoreFunc score_func);
+void UnitArraySortByDistance(UnitArray* unit_array, Point16 center);
+Unit* UnitArrayFindBest(UnitArray* unit_array, SearchScoreFunc score_func = nullptr); // score_func defaults to distance check
+Unit* UnitArrayGetFirst(UnitArray* unit_array, SearchFilterFunc match_func = nullptr); // defaults to no check
+bool UnitFlagMatch(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids);
 
-void update_unit_grid(); // must be done once per frame
+void UpdateUnitGrid(); // must be done once per frame
 
-inline bool is_point_in_rect(Point16 point, Box32 rect);
-inline bool is_rect_in_rect(Box32 inner, Box32 outer);
+inline bool IsPointInRect(Point16 point, Box32 rect);
+inline bool IsRectInRect(Box32 inner, Box32 outer);

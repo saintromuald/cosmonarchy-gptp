@@ -28,17 +28,24 @@ static UnitArray unit_grid[CELL_COUNT][CELL_COUNT];
 // not every finder proc
 // - not sure how imperformant array intersection will be
 
-inline void unit_array_add(UnitArray* array, Unit* unit)
+inline UnitArray UnitArrayDuplicate(UnitArray* array)
+{
+	UnitArray newArray = {};
+	memcpy(&newArray, array, sizeof(UnitArray));
+	return newArray;
+}
+
+inline void UnitArrayAdd(UnitArray* array, Unit* unit)
 {
 	array->units[array->size++] = unit;
 }
 
-inline void unit_array_remove_fast(UnitArray* array, u32 index)
+inline void UnitArrayRemoveFast(UnitArray* array, u32 index)
 {
 	array->units[index] = array->units[--array->size];
 }
 
-void unit_array_remove(UnitArray* array, u32 index)
+inline void UnitArrayRemove(UnitArray* array, u32 index)
 {
 	for (u32 i = array->size - 1; i >= index; i--)
 	{
@@ -46,7 +53,7 @@ void unit_array_remove(UnitArray* array, u32 index)
 	}
 }
 
-bool is_point_in_rect(Point16 point, Box32 rect)
+bool IsPointInRect(Point16 point, Box32 rect)
 {
 	return true
 		&& point.x >= rect.left
@@ -55,7 +62,7 @@ bool is_point_in_rect(Point16 point, Box32 rect)
 		&& point.y <= rect.bottom;
 }
 
-bool is_rect_in_rect(Box32 inner, Box32 outer)
+bool IsRectInRect(Box32 inner, Box32 outer)
 {
 	return true
 		&& outer.left <= inner.left
@@ -64,7 +71,7 @@ bool is_rect_in_rect(Box32 inner, Box32 outer)
 		&& inner.bottom <= outer.bottom;
 }
 
-UnitArray unit_search_rect(Box32 rect)
+UnitArray UnitSearchRect(Box32 rect)
 {
 	rect = scbw::clampRect(rect);
 	UnitArray unit_array;
@@ -91,17 +98,17 @@ UnitArray unit_search_rect(Box32 rect)
 					x * CELL_PX_SIZE + CELL_PX_SIZE,
 					y * CELL_PX_SIZE + CELL_PX_SIZE
 				};
-				const bool tileIsFullyCovered = is_rect_in_rect(tile_rect, rect);
+				const bool tileIsFullyCovered = IsRectInRect(tile_rect, rect);
 
 				// check which units are in the area
 				for (u32 i = 0; i < current_array->size; i++)
 				{
 					Unit* unit = current_array->units[i];
-					if (!tileIsFullyCovered && !is_point_in_rect(unit->position, rect))
+					if (!tileIsFullyCovered && !IsPointInRect(unit->position, rect))
 					{
 						continue;
 					}
-					unit_array_add(&unit_array, unit);
+					UnitArrayAdd(&unit_array, unit);
 				}
 			}
 		}
@@ -110,9 +117,9 @@ UnitArray unit_search_rect(Box32 rect)
 	return unit_array;
 }
 
-UnitArray unit_search_square(Point16 center, u32 radius)
+UnitArray UnitSearchSquare(Point16 center, u32 radius)
 {
-	return unit_search_rect({
+	return UnitSearchRect({
 		center.x - (s32)radius,
 		center.y - (s32)radius,
 		center.x + (s32)radius,
@@ -120,7 +127,7 @@ UnitArray unit_search_square(Point16 center, u32 radius)
 	});
 }
 
-UnitArray unit_search_radial(Point16 center, u32 radius)
+UnitArray UnitSearchRadial(Point16 center, u32 radius)
 {
 	UnitArray unit_array;
 	unit_array.size = 0;
@@ -163,7 +170,7 @@ UnitArray unit_search_radial(Point16 center, u32 radius)
 					{
 						continue;
 					}
-					unit_array_add(&unit_array, unit);
+					UnitArrayAdd(&unit_array, unit);
 				}
 			}
 		}
@@ -172,33 +179,33 @@ UnitArray unit_search_radial(Point16 center, u32 radius)
 	return unit_array;
 }
 
-void unit_array_filter(UnitArray* unit_array, Unit* reference, u32 flags, std::unordered_set<u16> allowed_unit_ids)
+void UnitArrayFilter(UnitArray* unit_array, Unit* reference, u32 flags, std::unordered_set<u16> allowed_unit_ids)
 {
 	for (u32 i = 0; i < unit_array->size; i++)
 	{
 		Unit* unit = unit_array->units[i];
-		if (!unit_flag_match(unit, reference, flags, allowed_unit_ids))
+		if (!UnitFlagMatch(unit, reference, flags, allowed_unit_ids))
 		{
-			unit_array_remove_fast(unit_array, i--);
+			UnitArrayRemoveFast(unit_array, i--);
 			continue;
 		}
 	}
 }
 
-void unit_array_custom_filter(UnitArray* unit_array, SearchFilterFunc filter)
+void UnitArrayCustomFilter(UnitArray* unit_array, SearchFilterFunc filter)
 {
 	for (u32 i = 0; i < unit_array->size; i++)
 	{
 		Unit* unit = unit_array->units[i];
 		if (!filter(unit))
 		{
-			unit_array_remove_fast(unit_array, i--);
+			UnitArrayRemoveFast(unit_array, i--);
 			continue;
 		}
 	}
 }
 
-void unit_array_sort(UnitArray* unit_array, SearchScoreFunc score_func)
+void UnitArraySort(UnitArray* unit_array, SearchScoreFunc score_func)
 {
 	// not a fan of std::sort, probably should replace with own qsort
 	// qsort from C can't work with lambdas
@@ -208,7 +215,7 @@ void unit_array_sort(UnitArray* unit_array, SearchScoreFunc score_func)
 	});
 }
 
-void unit_array_sort_by_distance(UnitArray* unit_array, Point16 center)
+void UnitArraySortByDistance(UnitArray* unit_array, Point16 center)
 {
 	u32* distances = (u32*)malloc(unit_array->size * sizeof(u32));
 
@@ -229,7 +236,7 @@ void unit_array_sort_by_distance(UnitArray* unit_array, Point16 center)
 	free(distances);
 }
 
-Unit* unit_array_find_best(UnitArray* unit_array, SearchScoreFunc score_func)
+Unit* UnitArrayFindBest(UnitArray* unit_array, SearchScoreFunc score_func)
 {
 	u32 best_score;
 	Unit* best_unit = nullptr;
@@ -248,7 +255,7 @@ Unit* unit_array_find_best(UnitArray* unit_array, SearchScoreFunc score_func)
 	return best_unit;
 }
 
-Unit* unit_array_get_first(UnitArray* unit_array, SearchFilterFunc match_func)
+Unit* UnitArrayGetFirst(UnitArray* unit_array, SearchFilterFunc match_func)
 {
 	if (!match_func)
 	{
@@ -270,7 +277,7 @@ Unit* unit_array_get_first(UnitArray* unit_array, SearchFilterFunc match_func)
 	return nullptr;
 }
 
-void update_unit_grid()
+void UpdateUnitGrid()
 {
 	// Reset
 	for (u32 x = 0; x < CELL_COUNT; x++)
@@ -288,11 +295,11 @@ void update_unit_grid()
 		u32 x = unit->position.x / 32 / CELL_SIZE;
 		u32 y = unit->position.y / 32 / CELL_SIZE;
 		UnitArray* array = &unit_grid[x][y];
-		unit_array_add(array, unit);
+		UnitArrayAdd(array, unit);
 	}
 }
 
-bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids)
+bool UnitFlagMatch(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids)
 {
 	if (!(flags & FilterIncludingSelf) && unit == center)
 	{

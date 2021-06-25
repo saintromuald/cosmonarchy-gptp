@@ -123,10 +123,7 @@ namespace hooks
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
-		if (unit->pAI != nullptr)
-		{
-			TacticalAi(unit);
-		}
+		TacticalAi(unit, unitExt);
 
 		// Timers
 		if (unit->mainOrderTimer)

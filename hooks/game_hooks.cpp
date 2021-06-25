@@ -318,7 +318,7 @@ namespace hooks
 		optionsList->speed = 6; // Lock game speed at fastest
 		if (!scbw::isGamePaused()) // If the game is not paused
 		{
-			update_unit_grid();
+			UpdateUnitGrid();
 
 			scbw::setInGameLoopState(true); // Needed for scbw::random() to work
 			graphics::resetAllGraphics();
@@ -1704,8 +1704,8 @@ namespace hooks
 		// Crucible Stacks Add
 		if (unit->id == UnitId::ProtossCrucible && unit->status & UnitStatus::Completed)
 		{
-			UnitArray arr = unit_search_radial(unit->position, 8 * 32);
-			unit_array_filter(&arr, unit, FilterAlly | FilterBuilding);
+			UnitArray arr = UnitSearchRadial(unit->position, 8 * 32);
+			UnitArrayFilter(&arr, unit, FilterAlly | FilterBuilding);
 			for (u32 i = 0; i < arr.size; i++)
 			{
 				Unit* target = arr.units[i];
