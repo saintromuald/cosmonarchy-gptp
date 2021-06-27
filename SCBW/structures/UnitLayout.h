@@ -240,7 +240,8 @@ enum ExtValueId
 	ValueIsNeutralBunker,
 	ValueIsZombified,
 
-	ValueAI_KiteSignal,
+	ValueAI_KitingSignal,
+	ValueAI_BunkerCustom,
 
 	ValueCount,
 };

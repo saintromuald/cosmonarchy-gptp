@@ -283,7 +283,7 @@ namespace hooks
 			{
 				weaponId = WeaponId::None;
 			}
-			attackerExt->values[ValueAI_KiteSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId];
+			attackerExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId];
 
 			if (attacker->status & UnitStatus::IsHallucination)
 			{

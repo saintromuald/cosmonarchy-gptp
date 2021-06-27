@@ -365,7 +365,7 @@ static inline bool UnitCanAttack(Unit* unit)
 
 static inline bool ShouldKite(Unit* unit, UnitExt* unitExt)
 {
-	return (unitExt->values[ValueAI_KiteSignal] && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
+	return (unitExt->values[ValueAI_KitingSignal] && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
 		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !UnitCanAttack(unit));
 }
 
@@ -407,7 +407,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 			localGroup.forEach([&](Unit* localUnit)
 			{
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				sync += localUnitExt->values[ValueAI_KiteSignal];
+				sync += localUnitExt->values[ValueAI_KitingSignal];
 			});
 			sync >>= 8;
 			if (sync >= localGroup.unitCount * 1)
@@ -442,7 +442,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 						return;
 					}
 
-					localUnitExt->values[ValueAI_KiteSignal] = 0;
+					localUnitExt->values[ValueAI_KitingSignal] = 0;
 					const u32 distance = GetDistanceToTarget(localUnit);
 					const u32 maxRange = GetMaxRange(localUnit);
 					if (IsMeleeAttacker(localUnit))
@@ -648,8 +648,10 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 				}
 			}
 			unitExt->timers[TimerAI_GenericAbilityCooldown] = 2 * 24;
+			unitExt->values[ValueAI_BunkerCustom] = 1;
 		}
-		else if (!unitExt->values[ValueIsNeutralBunker])
+		else if (!unitExt->values[ValueIsNeutralBunker]
+			&& unitExt->values[ValueAI_BunkerCustom])
 		{
 			for (u32 i = 0; i < bunkerCapacity; ++i)
 			{
@@ -660,6 +662,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 				}
 			}
 			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			unitExt->values[ValueAI_BunkerCustom] = 0;
 		}
 	}
 

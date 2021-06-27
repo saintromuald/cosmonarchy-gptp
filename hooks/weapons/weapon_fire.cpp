@@ -168,7 +168,7 @@ namespace hooks
 		}
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 		u8 weaponId = wId;
-		unitExt->values[ValueAI_KiteSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId];
+		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId];
 		// Retrieve the spawning position for the bullet.
 		s32 x, y;
 		u8 behavior = weapons_dat::Behavior[weaponId];
