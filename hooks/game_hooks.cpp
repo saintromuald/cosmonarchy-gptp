@@ -1156,8 +1156,11 @@ namespace hooks
 				{
 					if (unitExt->anthelionLastMoveTarget != unit->moveTarget.pt)
 					{
+						if (unitExt->timers[TimerAnthelionEndlessEclipse] > 1)
+						{
+							helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02), unit, 1, 0);
+						}
 						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
-						helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02), unit, 1, 0);
 					}
 					unitExt->anthelionLastMoveTarget = unit->moveTarget.pt;
 
