@@ -950,5 +950,6 @@ LABEL_21:
 	u32 getTurretPlacementPosition(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag) // 00443AC0
 	{
 		// will do this later
+		return 0;
 	}
 }
