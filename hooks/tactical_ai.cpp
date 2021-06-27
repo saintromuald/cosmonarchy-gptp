@@ -419,6 +419,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 					{
 						UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
 						localUnitExt->timers[TimerAI_KitingCooldown] = 8;
+						localUnitExt->timers[TimerAI_KitingLeashTimer] = 0;
 					});
 					return;
 				}
@@ -608,6 +609,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 				else
 				{
 					localUnitExt->timers[TimerAI_KitingCooldown] = 8;
+					localUnitExt->timers[TimerAI_KitingLeashTimer] = 0;
 				}
 			});
 		}
