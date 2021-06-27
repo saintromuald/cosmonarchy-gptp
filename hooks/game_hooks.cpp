@@ -381,7 +381,7 @@ namespace hooks
 			if (selected
 				&& selected->id == UnitId::ZergNydusCanal
 				&& selected->building.nydusExit
-				&& (scbw::isAlliedTo(selected->playerId, *LOCAL_NATION_ID) || helper::getDetectingPlayers(selected) & (1 << *LOCAL_NATION_ID)))
+				&& (scbw::isAlliedTo(selected->playerId, *LOCAL_HUMAN_ID) || helper::getDetectingPlayers(selected) & (1 << *LOCAL_HUMAN_ID)))
 			{
 				Unit* exit = selected->building.nydusExit;
 				graphics::drawLine(
