@@ -138,10 +138,89 @@ namespace hooks
 		{
 			jump_to_E50EE = true;
 		}
-		else
-			if (building->mainOrderState == 0)
+		else if (building->mainOrderState == 0)
+		{
+			if (building->remainingBuildTime == 0)
 			{
-				if (building->remainingBuildTime == 0)
+				Image* current_image = building->sprite->images.head;
+				while (current_image != nullptr)
+				{
+					if (current_image->flags & CImage_Flags::Flag04)
+					{
+						const u32* u32_006D1200 = (u32*)0x006D1200;
+						current_image->animation = IscriptAnimation::SpecialState1;
+						current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x22);
+						current_image->wait = 0;
+						current_image->unknown14 = 0;
+						helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+					}
+					current_image = current_image->link.next;
+				}
+				helper::playSoundFromSource(SoundId::Protoss_SHUTTLE_pshBld03_wav, building, 1, 0);
+				building->mainOrderState = 1;
+				jump_to_E50EE = true;
+			}
+			else
+			{
+				jump_to_E50EE = true;
+			}
+		}
+		else if (building->mainOrderState == 1)
+		{
+			if (building->orderSignal & 1)
+			{
+				building->orderSignal &= ~1;
+				helper::replaceSpriteImages(
+					building->sprite,
+					//							sprites_dat::ImageId[building->sprite->spriteId],
+					scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
+					0
+				);
+				helper::switchToWarpTexture(building->sprite->mainGraphic);
+				building->mainOrderState = 2;
+			}
+		}
+		else if (building->mainOrderState == 2)
+		{
+			if (building->orderSignal & 1)
+			{
+				Image* current_image;
+				building->orderSignal &= ~1;
+				helper::replaceSpriteImages(
+					building->sprite,
+					//							sprites_dat::ImageId[building->sprite->spriteId],
+					scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
+					0
+				);
+				current_image = building->sprite->images.head;
+				while (current_image != nullptr)
+				{
+					if (current_image->flags & CImage_Flags::Flag04)
+					{
+						const u32* u32_006D1200 = (u32*)0x006D1200;
+						current_image->animation = IscriptAnimation::WarpIn;
+						current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
+						current_image->wait = 0;
+						current_image->unknown14 = 0;
+						helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+					}
+					current_image = current_image->link.next;
+				}
+				building->mainOrderState = 3;
+				building->orderSignal |= 1;
+			}
+
+		}
+		else if (building->mainOrderState == 3)
+		{
+			if (building->orderSignal & 1)
+			{
+				building->orderSignal &= ~1;
+				helper::updateUnitStatsFinishBuilding(building);
+				helper::updateUnitStrength(building);
+				helper::checkUnstack(building);
+
+				if (building->status & UnitStatus::DoodadStatesThing)
 				{
 					Image* current_image = building->sprite->images.head;
 					while (current_image != nullptr)
@@ -149,16 +228,14 @@ namespace hooks
 						if (current_image->flags & CImage_Flags::Flag04)
 						{
 							const u32* u32_006D1200 = (u32*)0x006D1200;
-							current_image->animation = IscriptAnimation::SpecialState1;
-							current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x22);
+							current_image->animation = IscriptAnimation::Disable;
+							current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x38);
 							current_image->wait = 0;
 							current_image->unknown14 = 0;
 							helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
 						}
 						current_image = current_image->link.next;
 					}
-					helper::playSoundFromSource(SoundId::Protoss_SHUTTLE_pshBld03_wav, building, 1, 0);
-					building->mainOrderState = 1;
 					jump_to_E50EE = true;
 				}
 				else
@@ -166,92 +243,13 @@ namespace hooks
 					jump_to_E50EE = true;
 				}
 			}
-			else if (building->mainOrderState == 1)
-			{
-				if (building->orderSignal & 1)
-				{
-					building->orderSignal -= 1;
-					helper::replaceSpriteImages(
-						building->sprite,
-						//							sprites_dat::ImageId[building->sprite->spriteId],
-						scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
-						0
-					);
-					helper::switchToWarpTexture(building->sprite->mainGraphic);
-					building->mainOrderState = 2;
-				}
-			}
-			else if (building->mainOrderState == 2)
-			{
-				if (building->orderSignal & 1)
-				{
-					Image* current_image;
-					building->orderSignal -= 1;
-					helper::replaceSpriteImages(
-						building->sprite,
-						//							sprites_dat::ImageId[building->sprite->spriteId],
-						scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
-						0
-					);
-					current_image = building->sprite->images.head;
-					while (current_image != nullptr)
-					{
-						if (current_image->flags & CImage_Flags::Flag04)
-						{
-							const u32* u32_006D1200 = (u32*)0x006D1200;
-							current_image->animation = IscriptAnimation::WarpIn;
-							current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
-							current_image->wait = 0;
-							current_image->unknown14 = 0;
-							helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
-						}
-						current_image = current_image->link.next;
-					}
-					building->mainOrderState = 3;
-					building->orderSignal |= 1;
-				}
-
-			}
-			else if (building->mainOrderState == 3)
-			{
-				if (building->orderSignal & 1)
-				{
-					building->orderSignal -= 1;
-					helper::updateUnitStatsFinishBuilding(building);
-					helper::updateUnitStrength(building);
-					helper::checkUnstack(building);
-
-					if (building->status & UnitStatus::DoodadStatesThing)
-					{
-						Image* current_image = building->sprite->images.head;
-						while (current_image != nullptr)
-						{
-							if (current_image->flags & CImage_Flags::Flag04)
-							{
-								const u32* u32_006D1200 = (u32*)0x006D1200;
-								current_image->animation = IscriptAnimation::Disable;
-								current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x38);
-								current_image->wait = 0;
-								current_image->unknown14 = 0;
-								helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
-							}
-							current_image = current_image->link.next;
-						}
-						jump_to_E50EE = true;
-					}
-					else
-					{
-						jump_to_E50EE = true;
-					}
-				}
-			}
+		}
 
 		if (jump_to_E50EE)
 		{
 			u32 hpGain, shieldGain;
 			
 			BuildingModifier modifier = get_building_modifier(building);
-
 			if (building->remainingBuildTime != 0)
 			{
 				if (*CHEAT_STATE & CheatFlags::OperationCwal)
@@ -291,8 +289,8 @@ namespace hooks
 			{
 				hpGain = building->buildRepairHpGain * modifier.multiplier;
 			}
-
 			building->setHp(building->hitPoints + hpGain);
+
 			if (*CHEAT_STATE & CheatFlags::OperationCwal)
 			{
 				shieldGain = building->shieldGain * 16;
@@ -301,7 +299,6 @@ namespace hooks
 			{
 				shieldGain = building->shieldGain * modifier.multiplier;
 			}
-
 			if (building->shields + shieldGain >= (u32)units_dat::MaxShieldPoints[building->id] * 256)
 			{
 				building->shields = units_dat::MaxShieldPoints[building->id] * 256;
