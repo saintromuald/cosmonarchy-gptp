@@ -372,6 +372,24 @@ namespace hooks
 			}
 			scbw::setInGameLoopState(false);
 		}
+
+		if (*activePortraitUnit)
+		{
+			// TODO: update to work with multi building select
+			Unit* selected = *activePortraitUnit;
+
+			if (selected
+				&& selected->id == UnitId::ZergNydusCanal
+				&& selected->building.nydusExit
+				&& scbw::isAlliedTo(selected->playerId, *ACTIVE_NATION_ID))
+			{
+				Unit* exit = selected->building.nydusExit;
+				graphics::drawLine(
+					selected->getX(), selected->getY(),
+					exit->getX(), exit->getY(),
+					graphics::GREEN, graphics::ON_MAP);
+			}
+		}
 		return true;
 	}
 
