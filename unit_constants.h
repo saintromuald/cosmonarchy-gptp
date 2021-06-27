@@ -95,6 +95,9 @@ const s32 EcclesiastAstralBlessingTimer = 5 * 24 + 1;
 // Cantavis
 const s32 CantavisHallucinationTimer = 10 * 24 + 1;
 
+// Archon
+const s32 ArchonAstralAegisShieldHeal = 50 * 256;
+
 // Mind Tyrant
 const s32 MindTyrantMaelstromTimer = 16; // 5 seconds
 

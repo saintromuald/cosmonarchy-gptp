@@ -1038,7 +1038,7 @@ namespace hooks
 					{
 						return;
 					}
-					u32 value = 50 * 256;
+					u32 value = ArchonAstralAegisShieldHeal;
 					unit->healShields(value, data.target);
 				});
 			} break;
