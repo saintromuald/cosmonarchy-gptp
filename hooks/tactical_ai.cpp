@@ -443,6 +443,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 					}
 
 					localUnitExt->values[ValueAI_KitingSignal] = 0;
+					localUnitExt->timers[TimerAI_KitingLeashTimer] = 0;
 					const u32 distance = GetDistanceToTarget(localUnit);
 					const u32 maxRange = GetMaxRange(localUnit);
 					if (IsMeleeAttacker(localUnit))
