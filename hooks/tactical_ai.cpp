@@ -384,7 +384,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 		|| unit->mainOrderId == OrderId::MoveToMinerals;
 
 	// TODO: find a way to prevent computer return, instead of doing this weak hardcode
-	if (CanKite(unit) && inCombat && (unitExt->timers[TimerAI_KiteCooldown] == 0 || unit->mainOrderId == OrderId::ComputerReturn))
+	if (CanKite(unit) && inCombat && (unitExt->timers[TimerAI_KitingCooldown] == 0 || unit->mainOrderId == OrderId::ComputerReturn))
 	{
 		u32 hostileGroupRadius = 4 * 32;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
@@ -418,7 +418,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 					localGroup.forEach([&](Unit* localUnit)
 					{
 						UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-						localUnitExt->timers[TimerAI_KiteCooldown] = 8;
+						localUnitExt->timers[TimerAI_KitingCooldown] = 8;
 					});
 					return;
 				}
@@ -447,7 +447,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 					const u32 maxRange = GetMaxRange(localUnit);
 					if (IsMeleeAttacker(localUnit))
 					{
-						localUnitExt->timers[TimerAI_KiteCooldown] = 8;
+						localUnitExt->timers[TimerAI_KitingCooldown] = 8;
 						if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
 						{
 							localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
@@ -460,7 +460,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 						}
 						else if (crowdScore > 9 && distance <= maxRange * 4)
 						{
-							localUnitExt->timers[TimerAI_KiteCooldown] = 24;
+							localUnitExt->timers[TimerAI_KitingCooldown] = 24;
 							localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
 							KITE_DEBUG("%s: strafe", localUnit->getName());
 						}
@@ -468,7 +468,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 					}
 					else
 					{
-						localUnitExt->timers[TimerAI_KiteCooldown] = 8;
+						localUnitExt->timers[TimerAI_KitingCooldown] = 8;
 						bool targetHasMinRange = false;
 						if (localUnit->orderTarget.unit)
 						{
@@ -542,11 +542,25 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 			localGroup.forEach([&](Unit* localUnit)
 			{
 				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+
+				if (localUnitExt->timers[TimerAI_KitingLeashTimer] == 1)
+				{
+					localUnitExt->timers[TimerAI_KitingCooldown] = 2 * 24;
+					localUnit->orderTo(OrderId::Move, localUnitExt->aiKitingOrigin.x, localUnitExt->aiKitingOrigin.y);
+					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+				}
+
 				if (localUnit->mainOrderId == OrderId::AttackUnit
 					|| localUnit->mainOrderId == OrderId::CarrierFight
 					|| localUnit->mainOrderId == OrderId::ReaverFight)
 				{
 					return;
+				}
+
+				if (!localUnitExt->timers[TimerAI_KitingLeashTimer])
+				{
+					localUnitExt->timers[TimerAI_KitingLeashTimer] = 4 * 24;
+					localUnitExt->aiKitingOrigin = localUnit->position;
 				}
 
 				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
@@ -574,7 +588,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 
 				if (targetUnit)
 				{
-					localUnitExt->timers[TimerAI_KiteCooldown] = 2;
+					localUnitExt->timers[TimerAI_KitingCooldown] = 2;
 					KITE_DEBUG("%s: attack", localUnit->getName());
 					if (localUnit->id == UnitId::ProtossSolarion)
 					{
@@ -592,7 +606,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 				}
 				else
 				{
-					localUnitExt->timers[TimerAI_KiteCooldown] = 8;
+					localUnitExt->timers[TimerAI_KitingCooldown] = 8;
 				}
 			});
 		}

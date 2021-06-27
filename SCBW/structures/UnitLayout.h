@@ -314,7 +314,8 @@ enum ExtTimerId
 	TimerAI_DisruptionField,
 	TimerAI_MadrigalTempoChangeTimer,
 	TimerAI_EnsnaringBrood,
-	TimerAI_KiteCooldown,
+	TimerAI_KitingCooldown,
+	TimerAI_KitingLeashTimer,
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
 		
 	TimerCount,
@@ -377,6 +378,7 @@ struct UnitExt
 	Point16					anthelionLastMoveTarget;
 	Vector32f				repulsionVector;
 	Point16					lastBulletLaunchPos;
+	Point16					aiKitingOrigin;
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
