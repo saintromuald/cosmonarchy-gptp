@@ -163,7 +163,7 @@ namespace hooks
 					case UnitId::TerranNuclearSilo:
 					case UnitId::TerranQuarry:
 					{
-						if (hasAddon)
+						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
