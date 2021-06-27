@@ -869,13 +869,12 @@ LABEL_126:
 			helper::Ai_RemoveDangerousRegions(unitId, placementData, playerId, desiredPos);
 		}
 		helper::Ai_RemoveFarAwayTiles(placementData, desiredPos, maxRange);
-		char* placementDataVar = placementData;
 		while (2)
 		{
 			u32 iterator1 = 0;
 			do
 			{
-				if (placementDataVar[iterator1])
+				if (placementData[iterator1])
 				{
 					helper::Ai_RemoveDifferentHeight(placementData, desiredPos); // Owned?
 					helper::Ai_PlacementRelatedSomething(unitId, placementData, desiredPos);
@@ -937,7 +936,7 @@ LABEL_21:
 
 			u32 iterator2 = 0;
 			++iterator2;
-			placementDataVar += 64;
+			placementData += 64;
 			if (iterator2 < 0x40)
 			{
 				continue;
