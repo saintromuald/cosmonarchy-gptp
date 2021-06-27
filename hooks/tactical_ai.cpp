@@ -306,17 +306,32 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 	{
 		cost -= (target->energy / 50) * 5;
 	}
-	u32 weaponId = 0;
-	if (source->status & UnitStatus::InAir)
+
+	if (target->id == UnitId::ProtossAccantor)
 	{
-		weaponId = target->getAirWeapon();
+		cost -= (weapons_dat::DamageAmount[WeaponId::Scarab] /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
+			* 1.5; // aoe multiplier
+	}
+	else if (target->id == UnitId::ProtossSolarion)
+	{
+		cost -= (weapons_dat::DamageAmount[WeaponId::PulseCannon] /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
+			* (target->carrier.inHangarCount + target->carrier.outHangarCount)
+			* 1.5; // additional bias to encourage targeting solarions more
 	}
 	else
 	{
-		weaponId = target->getGroundWeapon();
+		u32 weaponId = 0;
+		if (source->status & UnitStatus::InAir)
+		{
+			weaponId = target->getAirWeapon();
+		}
+		else
+		{
+			weaponId = target->getGroundWeapon();
+		}
+		f32 multiplier = weapons_dat::InnerSplashRadius[weaponId] ? 1.5 : 1;
+		cost -= hooks::getCurrentDPS(target, weaponId) * multiplier;
 	}
-	f32 multiplier = weapons_dat::InnerSplashRadius[weaponId] ? 1.5 : 1;
-	cost -= hooks::getCurrentDPS(target, weaponId) * multiplier;
 
 	// Value attacking units with smaller pathing cost more
 	s32 dist = (s32)scbw::getDistanceFast(source->position, target->position) - GetMaxRange(source);
