@@ -576,7 +576,7 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
-					return TECH_HIDDEN;
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
