@@ -21,6 +21,7 @@
 #include "unit_search.h"
 #include "player_color.h"
 #include "unit_ai.h"
+#include "tactical_ai.h"
 
 const u32 hyperTrigger = 0x006509A0;
 const u32 Func_Irradiate = 0x00454E00;
@@ -396,6 +397,8 @@ namespace hooks
 	void tickUnit(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
+		TacticalAi(unit, unitExt);
+
 		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::SharedStriga) && unit->orderSignal & 0x20)
 		{
 			unit->orderSignal &= ~0x20;

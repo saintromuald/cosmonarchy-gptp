@@ -122,7 +122,6 @@ namespace hooks
 	void updateUnitStateHook(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		TacticalAi(unit, unitExt);
 
 		// Timers
 		if (unit->mainOrderTimer)
