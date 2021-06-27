@@ -642,7 +642,10 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			{
 				Unit* target = allies.units[i];
 
-				if (target->pAI && helper::canEnterTransport(unit, target))
+				if (target->pAI
+					&& helper::canEnterTransport(unit, target)
+					&& !IsMeleeAttacker(target)
+					&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
 				{
 					target->orderTo(OrderId::EnterTransport, unit);
 					counter += units_dat::SpaceRequired[target->id];
