@@ -264,6 +264,67 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) getBunkerPlacementPosition_Wrapper() // 004442E0
+	{
+		static u32 placementId;
+		static u32* regionId;
+		static s32 result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV placementId, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV regionId, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::getBunkerPlacementPosition(placementId, regionId);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x8
+		}
+	}
+
+	void __declspec(naked) AI_GetBuildLocation_Wrapper() // 004461B0
+	{
+		static u32 unitId;
+		static char* placementData;
+		static u32 playerId;
+		static Point16 desiredPos;
+		static s32 maxRange;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV playerId, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV desiredPos, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV maxRange, EAX
+			POP EAX
+			MOV placementData, ESI
+			MOV unitId, EBX
+			PUSHAD
+		}
+		hooks::AI_GetBuildLocation(unitId, placementData, playerId, desiredPos, maxRange);
+		__asm
+		{
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x0C
+		}
+	}
 }
 
 namespace hooks
@@ -284,6 +345,9 @@ namespace hooks
 //		jmpPatch(AI_CanMineExtra_Wrapper,					0x00447A70, 1);
 		jmpPatch(AI_IsBuildingSafe_Wrapper,					0x00438910, 2);
 		jmpPatch(AI_AreOnConnectedRegions_Wrapper,			0x00438E10, 1);
+
+//		jmpPatch(getBunkerPlacementPosition_Wrapper,		0x004442E0, 4);
+//		jmpPatch(AI_GetBuildLocation_Wrapper,				0x004461B0, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}
