@@ -9499,4 +9499,195 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For AI_GetBuildingLocation
+	u32 Ai_GetBuildingPlacementData(u32 maxRange, u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	{
+		const u32 Func_Ai_GetBuildingPlacementData = 0x00445D60;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH desiredPos
+			PUSH playerId
+			PUSH placementData
+			PUSH unitId
+			MOV EAX, maxRange
+			CALL Func_Ai_GetBuildingPlacementData
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char* Ai_RemoveUnreachableRegions(char* placementData, Point16 desiredPos)
+	{
+		const u32 Func_Ai_RemoveUnreachableRegions = 0x00443900;
+		static char* result;
+		__asm
+		{
+			PUSHAD
+			PUSH desiredPos
+			PUSH placementData
+			CALL Func_Ai_RemoveUnreachableRegions
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 Ai_RemoveDangerousRegions(u32 unitId, char* placementData, u32 placementId, Point16 desiredPos)
+	{
+		const u32 Func_Ai_RemoveDangerousRegions = 0x00443870;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH desiredPos
+			PUSH placementId
+			MOV ECX, placementData
+			MOV EAX, unitId
+			CALL Func_Ai_RemoveDangerousRegions
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 Ai_RemoveFarAwayTiles(char* placementData, Point16 desiredPos, u32 maxRange)
+	{
+		const u32 Func_Ai_RemoveFarAwayTiles = 0x00444E20;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH maxRange
+			PUSH desiredPos
+			MOV ECX, placementData
+			CALL Func_Ai_RemoveFarAwayTiles
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 Ai_RemoveDifferentHeight(char* placementData, Point16 desiredPos)
+	{
+		const u32 Func_Ai_RemoveDifferentHeight = 0x004436C0;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH desiredPos
+			PUSH placementData
+			CALL Func_Ai_RemoveDifferentHeight
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 Ai_PlacementRelatedSomething(u16 unitId, char* placementData, Point16 desiredPos)
+	{
+		const u32 Func_Ai_PlacementRelatedSomething = 0x00443E30;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH desiredPos
+			PUSH placementData
+			PUSH unitId
+			CALL Func_Ai_PlacementRelatedSomething
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void Ai_RemoveTilesIfUnfit(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	{
+		const u32 Func_Ai_RemoveTilesIfUnfit = 0x00444CE0;
+		__asm
+		{
+			PUSHAD
+			PUSH desiredPos
+			PUSH playerId
+			PUSH placementData
+			MOV ECX, unitId
+			CALL Func_Ai_RemoveTilesIfUnfit
+			POPAD
+		}
+	}
+
+	u32 Ai_RemoveAddonPlaces(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	{
+		const u32 Func_Ai_RemoveAddonPlaces = 0x00443CC0;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH desiredPos
+			PUSH playerId
+			PUSH placementData
+			PUSH unitId
+			CALL Func_Ai_RemoveAddonPlaces
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 getTurretPlacementPosition(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag)
+	{
+		const u32 Func_getTurretPlacementPosition = 0x00443AC0;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH unkFlag
+			PUSH unitId
+			PUSH desiredPos
+			PUSH playerId
+			PUSH placementData
+			CALL Func_getTurretPlacementPosition
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 getPylonPlacementPosition(char* placementData, u8 playerId, Point16 desiredPos)
+	{
+		const u32 Func_getPylonPlacementPosition = 0x004448D0;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH desiredPos
+			PUSH playerId
+			PUSH placementData
+			CALL Func_getPylonPlacementPosition
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 getDefaultPlacementPosition(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	{
+		const u32 Func_getDefaultPlacementPosition = 0x004449A0;
+		static u32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH desiredPos
+			PUSH playerId
+			PUSH placementData
+			MOV ECX, unitId
+			CALL Func_getDefaultPlacementPosition
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

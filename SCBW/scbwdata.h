@@ -467,6 +467,10 @@ SCBW_DATA(s32*,	currentTriggerPlayerId,				0x006509B0);
 // For deleteAITownIfNeeded
 SCBW_DATA(Base*,	baseArray,						0x00692688);
 
+// For getBunkerPlacementPosition
+SCBW_DATA(u32*,		regionIdsCount,					0x0069265C);
+SCBW_DATA(u16*,		regionIds,						0x0069262C);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

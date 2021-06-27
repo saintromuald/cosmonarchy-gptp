@@ -778,4 +778,177 @@ LABEL_126:
 		u16 regionId2 = helper::SAI_GetRegionIdFromPxEx(unit1->sprite->position.x, unit1->sprite->position.y);
 		return helper::AI_RegionsAreConnected(unit2->playerId, regionId2, regionId);
 	}
+
+	// Hooked to change default behaviors - Pr0nogo
+	s32 getBunkerPlacementPosition(u32 placementId, u32* regionId) // 004442E0
+	{
+		u32 region_max = *regionIdsCount;
+		if (!regionIdsCount)
+		{
+			return 0;
+		}
+
+		s32 result;
+		if (*regionIdsCount == 1)
+		{
+			*regionId = regionIds[0];
+			result = 1;
+		}
+		else
+		{
+			u32 iterator1 = 0;
+			Point16 regionPositions[24];
+			u32 tileDistances[24];
+			if (regionIdsCount)
+			{
+				memset(tileDistances, 99999999, *regionIdsCount);
+				pathing* _paths = *SAI_Paths;
+				do
+				{
+					u32 regionOffset = regionIds[iterator1] << 6;
+					u32 region_x = *(u32*)((char*)&_paths->regions[0].regionCenterX + regionOffset) >> 8;
+					u32 region_y = *(u32*)((char*)&_paths->regions[0].regionCenterY + regionOffset) >> 8;
+					regionPositions[iterator1].x = region_x;
+					regionPositions[iterator1++].y = region_y;
+				} while (iterator1 < region_max);
+			}
+
+			Unit* i;
+			for (i = *firstPlayerUnit[placementId].unit; i; i = i->player_link.next)
+			{
+				if (i->sprite)
+				{
+					if (i->mainOrderId)
+					{
+						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCreepColony || i->id == UnitId::ZergSunkenColony)
+						{
+							u32 iterator2 = 0;
+							if (region_max)
+							{
+								do
+								{ // Distance from unit to region position
+									u32 newTileDistance = helper::getTileDistance(i->sprite->position.x, i->sprite->position.y, regionPositions[iterator2].x, regionPositions[iterator2].y);
+									if (newTileDistance < tileDistances[iterator2])
+									{
+										tileDistances[iterator2] = newTileDistance;
+									}
+									region_max = *regionIdsCount;
+									++iterator2;
+								} while (iterator2 < *regionIdsCount);
+							}
+						}
+					}
+				}
+			}
+
+			u32 bestTileDistance = tileDistances[0];
+			u32 currentRegionId = 1;
+			u32 bestRegionId;
+			for (bestRegionId = 0; currentRegionId < region_max; ++currentRegionId)
+			{
+				if (tileDistances[currentRegionId] > bestTileDistance)
+				{
+					bestTileDistance = tileDistances[currentRegionId];
+					bestRegionId = currentRegionId;
+				}
+			}
+			*regionId = regionIds[bestRegionId];
+			result = 1;
+		}
+		return result;
+	}
+
+	// Hooked to change default behaviors - Pr0nogo
+	void AI_GetBuildLocation(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos, s32 maxRange) // 004461B0
+	{
+		memset(placementData, 0, 0x1000u);
+		helper::Ai_GetBuildingPlacementData(maxRange, unitId, placementData, playerId, desiredPos);
+		helper::Ai_RemoveUnreachableRegions(placementData, desiredPos);
+		if (unitId != UnitId::ProtossPylon)
+		{
+			helper::Ai_RemoveDangerousRegions(unitId, placementData, playerId, desiredPos);
+		}
+		helper::Ai_RemoveFarAwayTiles(placementData, desiredPos, maxRange);
+		char* placementDataVar = placementData;
+		while (2)
+		{
+			u32 iterator1 = 0;
+			do
+			{
+				if (placementDataVar[iterator1])
+				{
+					helper::Ai_RemoveDifferentHeight(placementData, desiredPos); // Owned?
+					helper::Ai_PlacementRelatedSomething(unitId, placementData, desiredPos);
+					if (unitId == UnitId::TerranCommandCenter || unitId == UnitId::ZergHatchery || unitId == UnitId::ProtossNexus)
+					{
+						maxRange = 1;
+					}
+					else
+					{
+						maxRange = 0;
+						helper::Ai_RemoveTilesIfUnfit(unitId, placementData, playerId, desiredPos);
+					}
+					helper::Ai_RemoveAddonPlaces(unitId, placementData, playerId, desiredPos);
+					switch (unitId)
+					{
+						case UnitId::TerranWatchdog:
+						case UnitId::ProtossPhotonCannon:
+						{
+							goto LABEL_17; 
+						}
+						case UnitId::TerranBunker:
+						{
+							if (!helper::getBunkerPlacementPosition(playerId, &maxRange))
+							{
+LABEL_17:
+								helper::getTurretPlacementPosition(placementData, playerId, desiredPos, unitId, 0);
+								return;
+							}
+						}
+						case UnitId::ZergCreepColony:
+						{
+							if (!AIScriptController[playerId].AI_Flags.isSecureFinished) // SLOBYTE(AIScriptController[playerId].AI_Flags) < 0
+							{
+								goto LABEL_21;
+							}
+
+							if (!helper::getBunkerPlacementPosition(playerId, &maxRange))
+							{
+LABEL_21:
+								helper::getTurretPlacementPosition(placementData, playerId, desiredPos, unitId, 0);
+							}
+						} break;
+						case UnitId::ProtossPylon:
+						{
+							helper::getPylonPlacementPosition(placementData, playerId, desiredPos);
+						} break;
+						default:
+						{
+							if (!maxRange)
+							{
+								helper::getDefaultPlacementPosition(unitId, placementData, playerId, desiredPos);
+							}
+						} break;
+					}
+					return;
+				}
+				++iterator1;
+			} while (iterator1 < 0x40);
+
+			u32 iterator2 = 0;
+			++iterator2;
+			placementDataVar += 64;
+			if (iterator2 < 0x40)
+			{
+				continue;
+			}
+			break;
+		}
+	}
+
+	// Hooked to change default behaviors - Pr0nogo
+	u32 getTurretPlacementPosition(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag) // 00443AC0
+	{
+		// will do this later
+	}
 }

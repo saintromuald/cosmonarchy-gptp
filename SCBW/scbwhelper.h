@@ -1007,6 +1007,19 @@ namespace helper
 	// For BTNSCOND_ZergBuildingRally
 	u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit);													// 00429520
 
+	// For AI_GetBuildLocation
+	u32 Ai_GetBuildingPlacementData(u32 maxRange, u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);	// 00445D60
+	char* Ai_RemoveUnreachableRegions(char* placementData, Point16 desiredPos);											// 00443900
+	u32 Ai_RemoveDangerousRegions(u32 unitId, char* placementData, u32 placementId, Point16 desiredPos);				// 00443870
+	u32 Ai_RemoveFarAwayTiles(char* placementData, Point16 desiredPos, u32 maxRange);									// 00444E20
+	u32 Ai_RemoveDifferentHeight(char* placementData, Point16 desiredPos);												// 004436C0
+	u32 Ai_PlacementRelatedSomething(u16 unitId, char* placementData, Point16 desiredPos);								// 00443E30
+	void Ai_RemoveTilesIfUnfit(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);						// 00444CE0
+	u32 Ai_RemoveAddonPlaces(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);						// 00443CC0
+	u32 getTurretPlacementPosition(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag);		// 00443AC0
+	u32 getPylonPlacementPosition(char* placementData, u8 playerId, Point16 desiredPos);								// 004448D0
+	u32 getDefaultPlacementPosition(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);					// 004449A0
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
