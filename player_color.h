@@ -87,8 +87,9 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::Brass,
 		PlayerColor::Mango,
 		PlayerColor::Sunglow,
-		PlayerColor::IridescentYellow,
 		PlayerColor::BistreBrown,
+
+//		PlayerColor::IridescentYellow,
 	},
 	{	// Green
 		PlayerColor::Green,
@@ -121,8 +122,9 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::Aero,
 		PlayerColor::CornflowerBlue,
 		PlayerColor::NeonBlue,
-		PlayerColor::IridescentBlue,
 		PlayerColor::PalatinateBlue,
+
+//		PlayerColor::IridescentBlue,
 	},
 	{	// Cyan
 		PlayerColor::Teal,
@@ -130,16 +132,18 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::EggshellBlue,
 		PlayerColor::Mint,
 		PlayerColor::Turquoise,
-		PlayerColor::IridescentGreen,
 		PlayerColor::MidnightGreen,
+		
+//		PlayerColor::IridescentGreen,
 	},
 	{	// Violet
 		PlayerColor::Purple,
 		PlayerColor::TyrianPurple,
 		PlayerColor::PalatinatePurple,
-		PlayerColor::IridescentViolet,
 		PlayerColor::JapaneseViolet,
 		PlayerColor::DarkLavender,
+
+//		PlayerColor::IridescentViolet,
 //		PlayerColor::Magenta,
 	},
 	{	// Achromatic
@@ -242,7 +246,8 @@ std::vector<std::vector<std::vector<u32>>> personalityColors =
 			PlayerColor::Goldenrod,
 			PlayerColor::ArylideYellow,
 			PlayerColor::Brass,
-			PlayerColor::IridescentYellow,
+			
+//			PlayerColor::IridescentYellow,
 		},
 		{ // Air
 			PlayerColor::White,
@@ -290,9 +295,6 @@ std::vector<std::vector<std::vector<u32>>> personalityColors =
 			PlayerColor::NeonBlue,
 			PlayerColor::Glacial,
 			PlayerColor::Aero,
-			PlayerColor::IridescentBlue,
-			PlayerColor::IridescentGreen,
-			PlayerColor::IridescentViolet,
 			PlayerColor::Yellow,
 			PlayerColor::BurntUmber,
 			PlayerColor::Bronze,
@@ -301,6 +303,10 @@ std::vector<std::vector<std::vector<u32>>> personalityColors =
 			PlayerColor::Silver,
 			PlayerColor::Platinum,
 			PlayerColor::Snow,
+
+//			PlayerColor::IridescentBlue,
+//			PlayerColor::IridescentGreen,
+//			PlayerColor::IridescentViolet,
 		},
 		{ // Air
 			PlayerColor::Red,
