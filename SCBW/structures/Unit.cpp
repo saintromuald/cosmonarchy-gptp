@@ -1396,6 +1396,8 @@ bool Unit::giveTo(u8 playerId)
 			this->orderToIdle();
 		}
 
+		UnitExt* unitExt = globals.GetUnitExt(this);
+		unitExt->timers[TimerOwnerChangedRecently] = 2;
 		return true;
 	}
 	return false;

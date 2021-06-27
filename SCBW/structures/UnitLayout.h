@@ -305,16 +305,17 @@ enum ExtTimerId
 	TimerAnthelionAttackCooldown,
 	TimerStrigaRepulsion,
 	TimerAxitriliskShieldLossSFX,
+	TimerOwnerChangedRecently,
 		
-	TimerAI_Lazarus,
-	TimerAI_Siphon,
-	TimerAI_Clarion,
-	TimerAI_Parasite,
-	TimerAI_Skyfall,
-	TimerAI_GriefOfAllGods,
-	TimerAI_DisruptionField,
-	TimerAI_MadrigalTempoChangeTimer,
-	TimerAI_EnsnaringBrood,
+	TimerAI_Lazarus,					   // |
+	TimerAI_Siphon,						   // |
+	TimerAI_Clarion,					   // |
+	TimerAI_Parasite,					   // |
+	TimerAI_Skyfall,					   // |
+	TimerAI_GriefOfAllGods,				   // |
+	TimerAI_DisruptionField,			   // |
+	TimerAI_MadrigalTempoChangeTimer,	   // |
+	TimerAI_EnsnaringBrood,				   // > probably convert to use TimerAI_GenericAbilityCooldown
 	TimerAI_KitingCooldown,
 	TimerAI_KitingLeashTimer,
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities

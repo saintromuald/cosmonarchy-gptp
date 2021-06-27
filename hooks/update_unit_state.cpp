@@ -142,6 +142,19 @@ namespace hooks
 			unit->spellCooldown--;
 		}
 
+		// Wyvern clear target when changed owner to allied
+		if (unit->id == UnitId::TerranWyvern
+			&& unitExt->units[UnitWyvernTargetLock])
+		{
+			Unit* target = unitExt->units[UnitWyvernTargetLock];
+			UnitExt* targetExt = globals.GetUnitExt(target);
+			if (targetExt->timers[TimerOwnerChangedRecently]
+				&& scbw::isAlliedTo(unit->playerId, target->playerId))
+			{
+				unitExt->units[UnitWyvernTargetLock] = nullptr;
+			}
+		}
+
 		// Wyvern Reverse Thrust - fire while moving
 		if (unit->id == UnitId::TerranWyvern
 			&& unitExt->timers[TimerWyvernAttackCooldown] == 0)
