@@ -8,7 +8,6 @@ enum
 	// Can be rolled
 	PlayerTintDarkRed,
 	PlayerTintLightRed,
-	PlayerTintOffRed,
 	PlayerTintBrown,
 	PlayerTintOrange,
 	PlayerTintYellow,
@@ -24,12 +23,12 @@ enum
 	__PlayerTintRollCorrection = PlayerTintRollCount - 1,
 
 	// Can't be rolled
-	PlayerTintCycleDependent, // technically still a tint, but can't be rolled. don't add the assigment, if you decide to add more
+	PlayerTintCycleDependent, // technically still a tint, but can't be rolled. Don't add the assigment if you decide to add more
 
 	PlayerTintCount,
 };
 
-// TODO: convert those vectors into switch statements, it will be more performant, flexible and readable
+// TODO: Convert the vectors into switch statements - it will be more performant, flexible, and readable
 
 const std::vector<std::vector<u32>> playerTints =
 {
@@ -45,12 +44,6 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::Coral,
 		PlayerColor::VividRed,
 		PlayerColor::Scarlet,
-	},
-	{	// Off Red
-		PlayerColor::Wine,
-		PlayerColor::Auburn,
-		PlayerColor::Cordovan,
-		PlayerColor::Redwood,
 	},
 	{	// Brown
 		PlayerColor::Brown,
@@ -140,6 +133,10 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::Purple,
 		PlayerColor::TyrianPurple,
 		PlayerColor::PalatinatePurple,
+		PlayerColor::Wine,
+		PlayerColor::Auburn,
+		PlayerColor::Cordovan,
+		PlayerColor::Redwood,
 		PlayerColor::JapaneseViolet,
 		PlayerColor::DarkLavender,
 
