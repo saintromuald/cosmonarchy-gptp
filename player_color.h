@@ -8,7 +8,6 @@ enum
 	// Can be rolled
 	PlayerTintDarkRed,
 	PlayerTintLightRed,
-	PlayerTintOffRed,
 	PlayerTintBrown,
 	PlayerTintOrange,
 	PlayerTintYellow,
@@ -45,11 +44,6 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::Coral,
 		PlayerColor::VividRed,
 		PlayerColor::Scarlet,
-	},
-	{	// Off Red
-		PlayerColor::Wine,
-		PlayerColor::Auburn,
-		PlayerColor::Redwood,
 	},
 	{	// Brown
 		PlayerColor::Brown,
@@ -139,7 +133,10 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::Purple,
 		PlayerColor::TyrianPurple,
 		PlayerColor::PalatinatePurple,
+		PlayerColor::Wine,
+		PlayerColor::Auburn,
 		PlayerColor::Cordovan,
+		PlayerColor::Redwood,
 		PlayerColor::JapaneseViolet,
 		PlayerColor::DarkLavender,
 
