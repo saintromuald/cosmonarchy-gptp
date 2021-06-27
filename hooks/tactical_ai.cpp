@@ -547,7 +547,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 
 				if (localUnitExt->timers[TimerAI_KitingLeashTimer] == 1)
 				{
-					localUnitExt->timers[TimerAI_KitingCooldown] = 2 * 24;
+					localUnitExt->timers[TimerAI_KitingCooldown] = 1 * 24;
 					localUnit->orderTo(OrderId::Move, localUnitExt->aiKitingOrigin.x, localUnitExt->aiKitingOrigin.y);
 					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 				}
@@ -561,7 +561,14 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 
 				if (!localUnitExt->timers[TimerAI_KitingLeashTimer])
 				{
-					localUnitExt->timers[TimerAI_KitingLeashTimer] = 4 * 24;
+					if (units_dat::BaseProperty[localUnit->id] & UnitProperty::Worker)
+					{
+						localUnitExt->timers[TimerAI_KitingLeashTimer] = 4 * 24;
+					}
+					else
+					{
+						localUnitExt->timers[TimerAI_KitingLeashTimer] = 16 * 24;
+					}
 					localUnitExt->aiKitingOrigin = localUnit->position;
 				}
 
