@@ -1121,7 +1121,7 @@ namespace hooks
 				} break;
 			}
 
-			// Mind control - energy restore
+			// Mind Control - energy restore
 			if (attackerExt->units[UnitMindController] != nullptr)
 			{
 				Unit* mindController = attackerExt->units[UnitMindController];
