@@ -484,6 +484,15 @@ namespace hooks
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
 
+		// Allied Invincibility Frames
+		if (targetExt->timers[TimerAlliedInvFrames])
+		{
+			if (scbw::isAlliedTo(data.attackingPlayerId, targetExt->values[ValueAlliedInvPlayer]))
+			{
+				data.finalDamage = 0;
+			}
+		}
+
 		if (data.attacker != nullptr)
 		{
 			UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
@@ -903,7 +912,8 @@ namespace hooks
 		}
 
 		// Empress - Anodyne Annex passive
-		if (targetExt->values[ValueEmpressPassiveStacks])
+		if (targetExt->values[ValueEmpressPassiveStacks]
+			&& !targetExt->values[ValueIsZombified])
 		{
 			data.finalDamage = 0;
 			data.target->hitPoints = 0;
@@ -913,6 +923,8 @@ namespace hooks
 			data.target->giveTo(targetExt->values[ValueEmpressSourcePlayer]);
 			targetExt->values[ValueEmpressPassiveStacks] = 0;
 			targetExt->values[ValueIsZombified] = 1;
+			targetExt->values[ValueAlliedInvPlayer] = targetExt->values[ValueEmpressSourcePlayer];
+			targetExt->timers[TimerAlliedInvFrames] = 24;
 			data.target->sprite->createOverlay(ImageId::MindControlHit_Small + scbw::getOverlayOffset(data.target->id));
 		}
 
@@ -987,15 +999,6 @@ namespace hooks
 			});
 		}
 
-		// Akistrokor - Prevent killing from own attacks just after the infestation
-		if (targetExt->timers[TimerAkistrokorInfestationInvFrames])
-		{
-			if (scbw::isAlliedTo(data.attackingPlayerId, targetExt->values[ValueAkistrokorInfestationSourcePlayer]))
-			{
-				data.finalDamage = 0;
-			}
-		}
-
 		// Akistrokor - Enthralling Assault
 		if (targetExt->values[ValueEnthrallingTalons] > 0)
 		{
@@ -1005,8 +1008,8 @@ namespace hooks
 			targetExt->timers[TimerEnthrallingAssaultHeal] = 24 * 10;
 
 			// Prevent killing the unit from own attacks
-			targetExt->values[ValueAkistrokorInfestationSourcePlayer] = data.attacker->playerId;
-			targetExt->timers[TimerAkistrokorInfestationInvFrames] = 24;
+			targetExt->values[ValueAlliedInvPlayer] = data.attacker->playerId;
+			targetExt->timers[TimerAlliedInvFrames] = 24;
 
 			// Transfer unit ownership
 			Unit* unit = targetExt->units[UnitLastHitAkistrokor];
