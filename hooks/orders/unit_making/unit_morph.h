@@ -10,7 +10,6 @@ namespace hooks
 	u16 getUnitMorphEggTypeHook(u16 unitId, Unit* unit, u16 resultId);
 	u16 getCancelMorphRevertTypeHook(Unit* eggUnit);
 	s16 getUnitVerticalOffsetOnBirth(Unit* unit);
-	u32 removeWorkerOrBuildingAI(Unit* unit, u8 assert_is_building);
 	Unit* beginTrain(Unit* unit, u16 unit_id, bool notify_error);
 
 	void injectUnitMorphHooks();

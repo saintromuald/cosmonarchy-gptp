@@ -395,61 +395,6 @@ namespace hooks
 		return true;
 	}
 
-	u32 removeWorkerOrBuildingAI(Unit* unit, u8 assert_is_building) // 00434C90
-	{
-		helper::AI_RemoveFromTowns(unit);
-		BuildingAi* ai = (BuildingAi*)unit->pAI;
-		auto result = 0;
-		if (ai)
-		{
-			AiTown* town;
-			if (assert_is_building
-				|| units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser
-				|| unit->id == UnitId::ZergLarva
-				|| unit->id == UnitId::ZergEgg
-				|| unit->id == UnitId::ZergOvileth)
-			{
-				town = ai->town;
-				auto free = town->freeBuildings;
-				helper::deleteBuildingAI(ai, &free);
-			}
-			else
-			{
-
-				if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
-				{
-					return 0;
-				}
-				town = ai->town;
-				helper::deleteWorkerAI((WorkerAi*)ai, &town->freeWorkers);
-				town->workerCount--;
-			}
-
-			if (town)
-			{
-				if (unit == town->buildingSCV)
-				{
-					town->buildingSCV = nullptr;
-				}
-				if (unit == town->mainBuilding)
-				{
-					town->mainBuilding = nullptr;
-				}
-			}
-
-			if (!assert_is_building)
-			{
-				if (town)
-				{
-					helper::deleteAITownIfNeeded(town);
-				}
-			}
-			unit->pAI = nullptr;
-			result = 1;
-		}
-		return result;
-	}
-
 	// Return the ID of the egg unit to use when morphing @p unitId.
 	// If the unit cannot morph, return UnitId::None.
 	u16 getUnitMorphEggTypeHook(u16 unitId, Unit* unit, u16 resultId)

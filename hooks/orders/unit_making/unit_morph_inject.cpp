@@ -544,7 +544,5 @@ namespace hooks
 
 		jmpPatch(deleteBuildingWorkerAiEggJmpWrapper, 0x00434CD0, 1);
 		jmpPatch(addUnitAiEggJmpWrapper, 0x00433E64, 1);
-
-//		jmpPatch(removeWorkerOrBuildingAI_Wrapper, 0x00434C90); // 00434C90
 	}
 }

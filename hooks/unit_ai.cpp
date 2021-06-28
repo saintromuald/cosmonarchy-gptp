@@ -682,7 +682,6 @@ namespace hooks
 					helper::deleteAITownIfNeeded(town);
 				}
 			}
-
 			unit->pAI = nullptr;
 			return 1;
 		}
