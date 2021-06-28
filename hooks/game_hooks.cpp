@@ -1743,8 +1743,9 @@ namespace hooks
 		}
 
 		// Emergency Detonation - initial cast
-		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation) && !unitExt->timers[TimerEmergencyDetonation]
-			&& !unitExt->timers[TimerEmergencyDetonation] && !unitExt->timers[TimerControlledDemolition])
+		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation)
+			&& !unitExt->timers[TimerEmergencyDetonation]
+			&& !unitExt->timers[TimerControlledDemolition])
 		{
 			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
 			unitExt->timers[TimerEmergencyDetonation] = EmergencyDetonationTimer;
@@ -1785,6 +1786,7 @@ namespace hooks
 					target->damageWithCustom(250 * 256, DamageType::Explosive, unit, unit->playerId, 0, 1, false);
 				}
 			});
+			helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->playerId);
 			unit->damageHp(unit->hitPoints, unit, unit->playerId, false);
 		}
 
@@ -1796,13 +1798,6 @@ namespace hooks
 			unitExt->timers[TimerControlledDemolition] = 0;
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
 //			unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
-		}
-
-		// Emergency Detonation - destroy structure
-		if (unitExt->timers[TimerEmergencyDetonation] == 1)
-		{
-			helper::createBullet(WeaponId::EmergencyDetonationExplosion, unit, unit->position.x, unit->position.y, unit->playerId, 0);
-			unit->damageHp(unit->getCurrentLifeInGame() * 256, unit, unit->playerId, false);
 		}
 
 		// Demiurge - Gods Made Flesh - return units to original owner
