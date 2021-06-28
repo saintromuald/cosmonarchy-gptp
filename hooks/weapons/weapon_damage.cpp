@@ -1116,16 +1116,6 @@ namespace hooks
 					attackerExt->timers[TimerKaiserRampage] = 1 + (2 * 24);
 					data.attacker->updateSpeed();
 				} break;
-				case WeaponId::ToxicSpores:
-				case WeaponId::RililiskSwarmingSpores:
-				{
-					// Incubators - Broodling/Broodlisk behavior
-					s32 type = data.attacker->id;
-					s32 supplyCount = scbw::canSpawnBroodling(data.target) ? 2 : 0;// scbw::getBroodlingCountFromSupply(data.target);
-					scbw::createUnitFromAbility(type, supplyCount, data.attacker->playerId,
-						data.target->position.x, data.target->position.y, data.attacker->removeTimer,
-						scbw::getSourceQueens(data.attacker)[0]);
-				} break;
 			}
 
 			// Mind control - energy restore
