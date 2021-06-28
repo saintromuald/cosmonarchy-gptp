@@ -373,6 +373,15 @@ namespace hooks
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
 
+		// Allied Invincibility Frames
+		if (targetExt->timers[TimerAlliedInvFrames])
+		{
+			if (scbw::isAlliedTo(data.attackingPlayerId, targetExt->values[ValueAlliedInvPlayer]))
+			{
+				data.finalDamage = 0;
+			}
+		}
+
 		// Isthrathaleth Dark Swarm
 		if (scbw::isUnderDarkSwarm(data.target) && weapons_dat::MaxRange[data.weaponId] > 32
 			&& (data.damageDivisor == 1 || data.weaponId == WeaponId::AcidSpore)
@@ -483,15 +492,6 @@ namespace hooks
 	static void weaponDamage_behaviors(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
-
-		// Allied Invincibility Frames
-		if (targetExt->timers[TimerAlliedInvFrames])
-		{
-			if (scbw::isAlliedTo(data.attackingPlayerId, targetExt->values[ValueAlliedInvPlayer]))
-			{
-				data.finalDamage = 0;
-			}
-		}
 
 		if (data.attacker != nullptr)
 		{
