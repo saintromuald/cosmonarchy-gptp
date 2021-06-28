@@ -908,8 +908,8 @@ namespace hooks
 			data.finalDamage = 0;
 			data.target->hitPoints = 0;
 			data.target->shields = 0;
-			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 256 * 5, targetExt->units[UnitEmpressSource]);
-			data.target->removeTimer = 1 + targetExt->values[ValueEmpressPassiveStacks] * 24 * 0.5;
+			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 256 * 2.5, targetExt->units[UnitEmpressSource]);
+			data.target->removeTimer = 1 + targetExt->values[ValueEmpressPassiveStacks] * 24 * 0.25;
 			data.target->giveTo(targetExt->values[ValueEmpressSourcePlayer]);
 			targetExt->values[ValueEmpressPassiveStacks] = 0;
 			targetExt->values[ValueIsZombified] = 1;
