@@ -1620,7 +1620,6 @@ namespace hooks
 				unit->visibilityStatus = 0xff;
 				helper::updateVisibility(unit); // didact cloak needs special handling
 			}
-			unitExt->timers[TimerDecloak] = 0;
 		}
 
 		// Remove all Nemean Reactors stacks after not attacking for 5 seconds
