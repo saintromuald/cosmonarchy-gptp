@@ -1,5 +1,3 @@
-//Contains hooks that control how rally points are used.
-
 #include "rally_point.h"
 #include "../SCBW/api.h"
 
@@ -19,7 +17,7 @@ namespace hooks
 			&& factory->rally.pt.x != 0)
 		{
 			// Following should be allowed only on friendly units
-			if (factory->rally.unit != nullptr && (factory->rally.unit)->playerId == unit->playerId)
+			if (factory->rally.unit != nullptr && scbw::isAlliedTo((factory->rally.unit)->playerId, unit->playerId))
             {
                 unit->orderTo(OrderId::Follow, factory->rally.unit);
             }
