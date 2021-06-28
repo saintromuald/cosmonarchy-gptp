@@ -1177,7 +1177,6 @@ namespace SoundId
 		AxitriliskShieldLoss01 = 1631,
 		AxitriliskShieldLoss02 = 1632,
 		AxitriliskShieldLoss03 = 1633,
-
 	};
 }
 
