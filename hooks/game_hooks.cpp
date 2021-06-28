@@ -24,55 +24,6 @@
 #include "tactical_ai.h"
 
 const u32 hyperTrigger = 0x006509A0;
-const u32 Func_Irradiate = 0x00454E00;
-
-void spawnCreeper(Unit* unit)
-{
-	s32 width = mapTileSize->width * 32;
-	s32 height = mapTileSize->height * 32;
-	if (unit->position.y >= 64 && unit->position.x >= 64 &&
-		unit->position.y < height - 64 && unit->position.x < width - 64)
-	{
-		Unit* creep_spawned = helper::createUnit(UnitId::BasiliskCreeper,
-			unit->position.x, unit->position.y,
-			unit->playerId);
-		if (creep_spawned == nullptr)
-		{
-//			scbw::print("Error: Creeper");
-		}
-		else
-		{
-			helper::updateUnitStatsFinishBuilding(creep_spawned);
-			helper::updateUnitStrength(creep_spawned);
-
-			u32 tile_x = creep_spawned->sprite->position.x / 32;
-			u32 tile_y = creep_spawned->sprite->position.y / 32;
-
-			helper::function_004148F0(tile_x * 32, tile_y * 32, UnitId::ZergNydusCanal); // apply creep
-			helper::stopCreepDisappearingAtBuilding(creep_spawned);
-
-			creep_spawned->status |= UnitStatus::Invincible;
-			creep_spawned->status |= UnitStatus::NoCollide;
-			creep_spawned->sprite->elevationLevel = 0;
-			creep_spawned->status |= UnitStatus::NoCollide;
-			creep_spawned->sprite->images.head->flags |= 0x20;
-			creep_spawned->sprite->images.head->flags |= 0x40;
-			creep_spawned->sprite->images.tail->flags |= 0x20;
-			creep_spawned->sprite->images.tail->flags |= 0x40;
-//			unit->connectedUnit = creep_spawned;
-//			scbw::print("Burrow basilisk");
-			__asm
-			{
-				PUSHAD
-				MOV EDI, creep_spawned
-				PUSH 50000
-				PUSH unit
-				CALL Func_Irradiate
-				POPAD
-			}
-		}
-	}
-}
 
 #include "SCBW\UnitFinder.h"
 void shamanProc(Unit* shaman, u32 heal, Unit* target)
@@ -1743,8 +1694,9 @@ namespace hooks
 		}
 
 		// Emergency Detonation - initial cast
-		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation) && !unitExt->timers[TimerEmergencyDetonation]
-			&& !unitExt->timers[TimerEmergencyDetonation] && !unitExt->timers[TimerControlledDemolition])
+		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation)
+			&& !unitExt->timers[TimerEmergencyDetonation]
+			&& !unitExt->timers[TimerControlledDemolition])
 		{
 			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
 			unitExt->timers[TimerEmergencyDetonation] = EmergencyDetonationTimer;
@@ -1785,6 +1737,7 @@ namespace hooks
 					target->damageWithCustom(250 * 256, DamageType::Explosive, unit, unit->playerId, 0, 1, false);
 				}
 			});
+			helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->playerId);
 			unit->damageHp(unit->hitPoints, unit, unit->playerId, false);
 		}
 
@@ -1796,13 +1749,6 @@ namespace hooks
 			unitExt->timers[TimerControlledDemolition] = 0;
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
 //			unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
-		}
-
-		// Emergency Detonation - destroy structure
-		if (unitExt->timers[TimerEmergencyDetonation] == 1)
-		{
-			helper::createBullet(WeaponId::EmergencyDetonationExplosion, unit, unit->position.x, unit->position.y, unit->playerId, 0);
-			unit->damageHp(unit->getCurrentLifeInGame() * 256, unit, unit->playerId, false);
 		}
 
 		// Demiurge - Gods Made Flesh - return units to original owner

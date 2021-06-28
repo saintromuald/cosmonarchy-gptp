@@ -1,37 +1,32 @@
-//Based on BWAPI's BW/Sprite.h
-
 #pragma once
 #include "common.h"
 #include "List.h"
 #include "../enumerations.h"
 #pragma pack(1)
 
-//V241 for VS2008
-
 struct Image;
 
-//note: the flag number is chosen according to the value used in 
-//<< flag operations, that's why it start with 0.
+// note: the flag number is chosen according to the value used in << flag operations, that's why it start with 0.
 namespace SpriteFlags
 {
 	enum Enum : u8
 	{
-		DrawSelCircle = 0x01,		//flag 0: 0x01, Draw selection circle.
-		Flag01 = 0x02,		//flag 1: 0x02
-		Flag02 = 0x04,		//flag 2: 0x04
-		Selected = 0x08,		//flag 3: 0x08, Selected.
-		Flag04 = 0x10,		//flag 4: 0x10
-		Hidden = 0x20,		//flag 5: 0x20, Hidden
-		Burrowed = 0x40,		//flag 6: 0x40, Burrowed
-		IscriptCode = 0x80,		//flag 7: 0x80, Iscript unbreakable code section.
+		DrawSelCircle = 0x01,	// flag 0: Draw selection circle
+		Flag01 = 0x02,			// flag 1:
+		Flag02 = 0x04,			// flag 2:
+		Selected = 0x08,		// flag 3: Selected
+		Flag04 = 0x10,			// flag 4:
+		Hidden = 0x20,			// flag 5: Hidden
+		Burrowed = 0x40,		// flag 6: Burrowed
+		IscriptCode = 0x80,		// flag 7: Iscript unbreakable code section
 	};
 }
 
 struct Sprite
 {
-	//Utility method definitions added by pastelmind
+	// Utility method definitions added by pastelmind
 
-	  /// Makes the sprite play the specified Iscript animation entry.
+	/// Makes the sprite play the specified Iscript animation entry.
 	void playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurrentScript = true);
 
 	/// AKA SpriteDestructor() @ 0x00497B40

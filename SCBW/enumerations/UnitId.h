@@ -270,6 +270,7 @@ namespace UnitId
 	//	DisruptionField									= 105,		// Disruption Field // might need mempatches?
 	//	TerranPhysicsLab								= 118,		// Physics Lab
 	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
+	//	CaveIn											= 180,		// Cave-in
 
 	// Soon to be unused
 	//	DarkSwarm										= 202,		// Dark Swarm // might need mempatches?
@@ -391,9 +392,6 @@ namespace UnitId
 		ZergKonvilisk									= 217,		// Psi Emitter
 		ZergAkistrokor									= 218,		// Data Disc
 		ZergIroleth										= 222,		// Protoss Gas Orb Type 1
-
-	// Zerg-Misc
-		BasiliskCreeper									= 180,		// Cave-in
 
 	// Zerg-Building
 		ZergOrbothOmlia									= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation
