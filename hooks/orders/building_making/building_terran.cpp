@@ -433,7 +433,6 @@ namespace hooks
 	//// Go to build a not yet existing building
 	void orders_SCVBuild(Unit* unit)
 	{
-		bool bEndThere = false;
 		if (unit->pAI != nullptr)
 		{
 			unit->status |= UnitStatus::IsGathering;
@@ -480,7 +479,6 @@ namespace hooks
 					{
 						helper::displayLastNetErrorForPlayer(unit->playerId);
 						unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
-						bEndThere = true;
 					}
 					else
 					{ // 00468131
@@ -499,16 +497,15 @@ namespace hooks
 						scbw::refreshConsole();
 						builtUnit->orderComputerClear(OrderId::BuildSelf1);
 						helper::AI_TrainingOverlord(builtUnit, unit);
-						bEndThere = true;
 					}
 				}
-				if (!bEndThere)
+				else
 				{
 					unit->orderToIdle();
 				}
 			}
 		}
-		if (!bEndThere && unit->mainOrderState == 0)
+		else if (unit->mainOrderState == 0)
 		{ // 00468188
 			bool bMoveTargetResult;
 			scbw::refreshConsole();
@@ -517,17 +514,17 @@ namespace hooks
 				unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 				unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
 			}
+			bMoveTargetResult = helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 			if ((unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
 				&& !(unit->orderTarget.pt.x == 0 && unit->orderTarget.pt.y == 0))
 			{
-				bMoveTargetResult = helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
-				if (bMoveTargetResult)
-				{
-					unit->mainOrderState = 1;
-				}
+			}
+			if (bMoveTargetResult)
+			{
+				unit->mainOrderState = 1;
 			}
 		}
 	}
