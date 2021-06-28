@@ -1355,11 +1355,13 @@ namespace scbw
 		{
 			if (unitExt->timers[TimerDecloak] == 0)
 			{
-				helper::updateVisibility(unit);
 				unit->visibilityStatus = 0xff;
 				helper::animDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 			}
-			unitExt->timers[TimerDecloak] = 48 + 1;
+			if (unitExt->timers[TimerDecloak] != 1)
+			{
+				unitExt->timers[TimerDecloak] = 48 + 1;
+			}
 		}
 		if (unit->isSubunit() && unit->subunit)
 		{
