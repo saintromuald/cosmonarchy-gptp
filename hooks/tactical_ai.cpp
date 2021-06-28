@@ -574,18 +574,15 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 					return;
 				}
 
-				if (!localUnitExt->timers[TimerAI_KitingLeashTimer])
+				if (units_dat::BaseProperty[localUnit->id] & UnitProperty::Worker)
 				{
-					if (units_dat::BaseProperty[localUnit->id] & UnitProperty::Worker)
-					{
-						localUnitExt->timers[TimerAI_KitingLeashTimer] = 4 * 24;
-					}
-					else
-					{
-						localUnitExt->timers[TimerAI_KitingLeashTimer] = 16 * 24;
-					}
-					localUnitExt->aiKitingOrigin = localUnit->position;
+					localUnitExt->timers[TimerAI_KitingLeashTimer] = 4 * 24;
 				}
+				else
+				{
+					localUnitExt->timers[TimerAI_KitingLeashTimer] = 16 * 24;
+				}
+				localUnitExt->aiKitingOrigin = localUnit->position;
 
 				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
 				Unit* targetUnit = nullptr;
