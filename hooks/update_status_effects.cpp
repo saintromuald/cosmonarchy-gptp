@@ -84,10 +84,6 @@ namespace hooks
 		{
 			return false;
 		}
-		if (target->id == UnitId::BasiliskCreeper)
-		{
-			return false;
-		}
 		if (target == unit)
 		{
 			return false;

@@ -377,7 +377,6 @@ namespace hooks
 			case UnitId::ZergSporeColony:
 			case UnitId::ZergSunkenColony:
 			case UnitId::ZergLarvalColony:
-			case UnitId::BasiliskCreeper:
 			{
 				return true;
 			}
