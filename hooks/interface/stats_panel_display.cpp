@@ -301,12 +301,14 @@ namespace hooks
 		{
 			return 0;
 		}
+
 		// Originally had Gantrithor - Tassadar hardcode here
 		if (unitId != UnitId::TerranMinotaur
 			|| !(units_dat::BaseProperty[unitId] & UnitProperty::Hero)
 			|| !units_dat::MapStringId[unitId])
 		{
-			if (helper::unitGetRace(unit) == RaceId::Terran)
+			if (helper::unitGetRace(unit) == RaceId::Terran
+				&& !scbw::unitIdIsShared(unit->id))
 			{
 				return helper::getStatTxtString((unit->rankIncrease + units_dat::Rank[unitId]) + 1302);
 			}

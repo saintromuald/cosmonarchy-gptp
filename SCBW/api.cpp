@@ -1980,4 +1980,17 @@ namespace scbw
 			|| unitId == UnitId::ZergHive
 			|| unitId == UnitId::ZergSire;
 	}
+
+	bool unitIdIsShared(u16 unitId)
+	{
+		return unitId == UnitId::SharedAnticthon
+			|| unitId == UnitId::SharedAspirant
+			|| unitId == UnitId::SharedAxitrilisk
+			|| unitId == UnitId::SharedCharlatan
+			|| unitId == UnitId::SharedCohort
+			|| unitId == UnitId::SharedEmpress
+			|| unitId == UnitId::SharedLuminary
+			|| unitId == UnitId::SharedStriga
+			|| unitId == UnitId::SharedTarasque;
+	}
 }
