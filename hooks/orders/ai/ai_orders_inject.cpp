@@ -325,6 +325,24 @@ namespace
 			RETN 0x0C
 		}
 	}
+
+	void __declspec(naked) AI_CheckMilitaryGrouping_Wrapper() // 00439550
+	{
+		static bool result;
+		static Unit* unit;
+		__asm
+		{
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::AI_CheckMilitaryGrouping(unit);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -348,6 +366,7 @@ namespace hooks
 
 //		jmpPatch(getBunkerPlacementPosition_Wrapper,		0x004442E0, 4);
 //		jmpPatch(AI_GetBuildLocation_Wrapper,				0x004461B0, 1);
+		jmpPatch(AI_CheckMilitaryGrouping_Wrapper,			0x00439550, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

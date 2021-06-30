@@ -9690,4 +9690,19 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For AI_CheckMilitaryGrouping
+	void getRegionCenter(u16 regionId, s32* out_x, s32* out_y)
+	{
+		const u32 Func_getRegionCenter = 0x0049CAA0;
+		__asm
+		{
+			PUSHAD
+			PUSH out_y
+			PUSH out_x
+			MOV AX, regionId
+			CALL Func_getRegionCenter
+			POPAD
+		}
+	}
 }

@@ -951,4 +951,39 @@ LABEL_21:
 		// will do this later
 		return 0;
 	}
+
+	// Hooked to nullcheck sprites - Pr0nogo
+	bool AI_CheckMilitaryGrouping(Unit* unit) // 00439550
+	{
+		UnitAi* unitAi = (UnitAi*)unit->pAI;
+		if (!unitAi || unitAi->type != 4 || units_dat::BaseProperty[unit->id] & 1)
+		{
+			return 1;
+		}
+
+		MilitaryAi* militaryAi = (MilitaryAi*)unit->pAI;
+		if (militaryAi->parent != unit)
+		{
+			return 1;
+		}
+
+		AiRegion* region = militaryAi->region;
+		Unit* slowestUnitVar = region->slowestUnit;
+		if (!slowestUnitVar
+		  || !slowestUnitVar->sprite // new
+		  || slowestUnitVar->status & UnitStatus::InTransport
+		  || slowestUnitVar == unit
+		  || region->state == 2
+		  || (u16)(&(*SAI_Paths)->regionCount + 32 * (helper::getRegionIdFromUnit(region->slowestUnit) + 4392)) < 60u
+		  || !helper::AI_AreOnConnectedRegions(slowestUnitVar, unit)
+		  || helper::getDistanceFast(region->slowestUnit->sprite->position.x, unit->sprite->position.x, region->slowestUnit->sprite->position.y, unit->sprite->position.y) <= 0x80)
+		{
+			return 1;
+		}
+
+		s32 x2;
+		s32 y2;
+		helper::getRegionCenter(region->region, &x2, &y2);
+		return helper::getDistanceFast(unit->sprite->position.x, x2, unit->sprite->position.y, y2) <= 0x180;
+	}
 }

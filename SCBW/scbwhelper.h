@@ -1020,6 +1020,9 @@ namespace helper
 	u32 getPylonPlacementPosition(char* placementData, u8 playerId, Point16 desiredPos);								// 004448D0
 	u32 getDefaultPlacementPosition(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);					// 004449A0
 
+	// For AI_CheckMilitaryGrouping
+	void getRegionCenter(u16 regionId, s32* out_x, s32* out_y);															// 0049CAA0
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
