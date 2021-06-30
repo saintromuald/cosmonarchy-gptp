@@ -414,6 +414,13 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 			hostileGroupRadius = 32;
 		}
 
+		// TODO:
+		// - replace unit finder with unit search
+		// - calcuate for advantage using a search, instead of local value and forward value
+		// - reconsider and revisit strafing and crowd scoring
+		// - try removing local group id reliance,
+		//		not sure if it's feasible in bw, as it would need to be much more complex
+
 		scbw::UnitFinder localGroup(
 			unit->getX() - localGroupRadius,
 			unit->getY() - localGroupRadius,
