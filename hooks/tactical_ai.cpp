@@ -75,8 +75,7 @@ struct KitePositions
 	Point16 strafePos;
 };
 
-const u32 rangedMoveRadius = 4 * 32;
-const u32 meleeMoveRadius = 1 * 32;
+const u32 moveRadius = 4 * 32;
 const u32 localGroupRadius = 4 * 32;
 const u32 crowdCalcRadius = 2 * 32;
 
@@ -94,37 +93,29 @@ const Vector32f biasOrigins[kiteZoneCount] =
 	{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
 };
 
-static inline u32 GetMaxRange(Unit* unit)
+static inline u32 GetMaxRange(u32 unitId)
 {
-	if (unit->id == UnitId::ProtossSolarion)
+	if (unitId == UnitId::ProtossSolarion)
 	{
 		return 8 * 32;
 	}
-	if (unit->id == UnitId::ProtossAccantor)
+	if (unitId == UnitId::ProtossAccantor)
 	{
 		return 8 * 32;
 	}
 
-	u32 groundWeapon = unit->getGroundWeapon();
-	u32 groundRange = 0;
-	if (groundWeapon != WeaponId::None)
-	{
-		groundRange = weapons_dat::MaxRange[groundWeapon];
-	}
+	u32 groundWeapon = units_dat::GroundWeapon[unitId];
+	u32 groundRange = groundWeapon != WeaponId::None ? weapons_dat::MaxRange[groundWeapon] : 0;
 
-	u32 airWeapon = unit->getAirWeapon();
-	u32 airRange = 0;
-	if (airWeapon != WeaponId::None)
-	{
-		airRange = weapons_dat::MaxRange[airWeapon];
-	}
+	u32 airWeapon = units_dat::AirWeapon[unitId];
+	u32 airRange = airWeapon != WeaponId::None ? weapons_dat::MaxRange[airWeapon] : 0;
 
 	return std::max(groundRange, airRange);
 }
 
-static inline bool IsMeleeAttacker(Unit* unit)
+static inline bool IsMeleeAttacker(u32 unitId)
 {
-	return GetMaxRange(unit) <= 32;
+	return GetMaxRange(unitId) <= 32;
 }
 
 static KitePositions GetKitePositions(Unit* unit, u32 hostileGroupRadius)
@@ -219,16 +210,6 @@ static KitePositions GetKitePositions(Unit* unit, u32 hostileGroupRadius)
 		//KITE_DEBUG("%f %f %f", biases[6], biases[7], biases[8]);
 		//KITE_DEBUG("\n");
 
-		u32 moveRadius;
-		if (IsMeleeAttacker(unit))
-		{
-			moveRadius = meleeMoveRadius;
-		}
-		else
-		{
-			moveRadius = rangedMoveRadius;
-		}
-
 		result.forwardPos = unit->position;
 		result.forwardPos.x += kiteOffsets[result.forwardIndex].x * moveRadius;
 		result.forwardPos.y += kiteOffsets[result.forwardIndex].y * moveRadius;
@@ -290,7 +271,7 @@ static inline u32 GetDistanceToTarget(Unit* source)
 	Unit* target = source->orderTarget.unit;
 	if (!target)
 	{
-		return GetMaxRange(source);
+		return GetMaxRange(source->id);
 	}
 
 	return scbw::getDistanceFast(source->position, target->position);
@@ -334,7 +315,7 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 	}
 
 	// Value attacking units with smaller pathing cost more
-	s32 dist = (s32)scbw::getDistanceFast(source->position, target->position) - GetMaxRange(source);
+	s32 dist = (s32)scbw::getDistanceFast(source->position, target->position) - GetMaxRange(source->id);
 	if (dist > 0)
 	{
 		cost += dist / 32.0;
@@ -361,7 +342,8 @@ static inline bool CanKite(Unit* unit)
 		&& unit->mainOrderId != OrderId::DroneStartBuild
 		&& !unitExt->values[ValueDisruptionFieldOn]
 		&& !(unit->status & UnitStatus::Burrowed)
-		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
+		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+		&& unit->hitPoints > 10 * 256;
 }
 
 static inline bool UnitCanAttack(Unit* unit)
@@ -384,6 +366,28 @@ static inline bool ShouldKite(Unit* unit, UnitExt* unitExt)
 		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !UnitCanAttack(unit));
 }
 
+enum KiterType
+{
+	KiterNone = 0,
+	KiterMelee,
+	KiterRanged,
+	KiterArtillery,
+};
+
+KiterType GetKiterType(u32 unitId)
+{
+	u32 range = GetMaxRange(unitId);
+	if (IsMeleeAttacker(unitId))
+	{
+		return KiterMelee;
+	}
+	if (range >= 10 * 32)
+	{
+		return KiterArtillery;
+	}
+	return KiterRanged;	
+}
+
 void KitingAi(Unit* unit, UnitExt* unitExt)
 {
 	// Kiting AI
@@ -399,7 +403,10 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 		|| unit->mainOrderId == OrderId::MoveToMinerals;
 
 	// TODO: find a way to prevent computer return, instead of doing this weak hardcode
-	if (CanKite(unit) && inCombat && (unitExt->timers[TimerAI_KitingCooldown] == 0 || unit->mainOrderId == OrderId::ComputerReturn))
+	if (CanKite(unit)
+		&& inCombat
+		&& (unitExt->timers[TimerAI_KitingCooldown] == 0
+			|| unit->mainOrderId == OrderId::ComputerReturn))
 	{
 		u32 hostileGroupRadius = 4 * 32;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
@@ -458,99 +465,114 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 						return;
 					}
 
-					localUnitExt->values[ValueAI_KitingSignal] = 0;
+					localUnitExt->timers[TimerAI_KitingCooldown] = 8;
 					localUnitExt->timers[TimerAI_KitingLeashTimer] = 0;
-					const u32 distance = GetDistanceToTarget(localUnit);
-					const u32 maxRange = GetMaxRange(localUnit);
-					if (IsMeleeAttacker(localUnit))
+					localUnitExt->values[ValueAI_KitingSignal] = 0;
+
+					bool targetHasMinRange = false;
+					if (localUnit->orderTarget.unit)
 					{
-						localUnitExt->timers[TimerAI_KitingCooldown] = 8;
-						if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
+						if (localUnit->orderTarget.unit->id == UnitId::ZergGeszithalor
+							|| localUnit->orderTarget.unit->id == UnitId::ZergBactalisk
+							|| localUnit->orderTarget.unit->id == UnitId::ProtossArchitect)
 						{
-							localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
-							KITE_DEBUG("%s: fall back", localUnit->getName());
+							targetHasMinRange = true;
 						}
-						else if (distance <= maxRange * 2)
+						else
 						{
-							localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
-							KITE_DEBUG("%s: forward", localUnit->getName());
-						}
-						else if (crowdScore > 9 && distance <= maxRange * 4)
-						{
-							localUnitExt->timers[TimerAI_KitingCooldown] = 24;
-							localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
-							KITE_DEBUG("%s: strafe", localUnit->getName());
-						}
-						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
-					}
-					else
-					{
-						localUnitExt->timers[TimerAI_KitingCooldown] = 8;
-						bool targetHasMinRange = false;
-						if (localUnit->orderTarget.unit)
-						{
-							if (localUnit->orderTarget.unit->id == UnitId::ZergGeszithalor
-								|| localUnit->orderTarget.unit->id == UnitId::ZergBactalisk
-								|| localUnit->orderTarget.unit->id == UnitId::ProtossArchitect)
+							Unit* context = localUnit->orderTarget.unit;
+							if (context->subunit)
 							{
-								targetHasMinRange = true;
+								context = context->subunit;
+							}
+							u32 weaponId;
+							if (localUnit->status & UnitStatus::InAir)
+							{
+								weaponId = context->getAirWeapon();
 							}
 							else
 							{
-								Unit* context = localUnit->orderTarget.unit;
-								if (context->subunit)
-								{
-									context = context->subunit;
-								}
-								u32 weaponId;
-								if (localUnit->status & UnitStatus::InAir)
-								{
-									weaponId = context->getAirWeapon();
-								}
-								else
-								{
-									weaponId = context->getGroundWeapon();
-								}
-								targetHasMinRange = weapons_dat::MinRange[weaponId]
-									|| weapons_dat::ExplosionType[weaponId] == WeaponEffect::SplashRadial;
+								weaponId = context->getGroundWeapon();
+							}
+							targetHasMinRange = weapons_dat::MinRange[weaponId]
+								|| weapons_dat::ExplosionType[weaponId] == WeaponEffect::SplashRadial;
+						}
+					}
+
+					u32 localGroupValue = 0;
+					localGroup.forEach([&](Unit* localUnit)
+					{
+						localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
+					});
+
+					const f32 confidenceFactor = 8;
+					const u32 distance = GetDistanceToTarget(localUnit);
+					const u32 maxRange = GetMaxRange(localUnit->id);
+					switch (GetKiterType(localUnit->id))
+					{
+						case KiterMelee:
+						{
+							if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
+							{
+								localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+								KITE_DEBUG("%s: fall back", localUnit->getName());
+							}
+							else if (distance <= maxRange * 2)
+							{
+								localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+								KITE_DEBUG("%s: forward", localUnit->getName());
+							}
+							else if (crowdScore > 9 && distance <= maxRange * 4)
+							{
+								localUnitExt->timers[TimerAI_KitingCooldown] = 24;
+								localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
+								KITE_DEBUG("%s: strafe", localUnit->getName());
+							}
+						} break;
+						case KiterRanged:
+						{
+							if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
+								|| localGroupValue * confidenceFactor < result.biases[result.forwardIndex]
+								|| distance <= maxRange * 0.5)
+								&& !targetHasMinRange)
+							{
+								localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+								KITE_DEBUG("%s: fall back", localUnit->getName());
+							}
+							else if (distance > maxRange * 1.5
+								|| (distance > maxRange * 1 && crowdScore > 9)
+								|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * confidenceFactor)
+								|| targetHasMinRange)
+							{
+								localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+								KITE_DEBUG("%s: forward", localUnit->getName());
+							}
+							else if (crowdScore > 9)
+							{
+								localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
+								KITE_DEBUG("%s: strafe", localUnit->getName());
+							}
+							else if (localGroupValue <= result.biases[result.forwardIndex] * confidenceFactor)
+							{
+								localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+								KITE_DEBUG("%s: backward", localUnit->getName());
+							}
+						} break;
+						case KiterArtillery:
+						{
+							if (distance > maxRange * 1.5)
+							{
+								localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+								KITE_DEBUG("%s: forward", localUnit->getName());
+							}
+							else
+							{
+								localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+								KITE_DEBUG("%s: backward", localUnit->getName());
 							}
 						}
-
-						u32 localGroupValue = 0;
-						localGroup.forEach([&](Unit* localUnit)
-						{
-							localGroupValue += std::max(localUnit->groundStrength, localUnit->airStrength);
-						});
-
-						const f32 confidenceFactor = 8;
-						if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
-							|| localGroupValue * confidenceFactor < result.biases[result.forwardIndex]
-							|| distance <= maxRange * 0.5)
-							&& !targetHasMinRange)
-						{
-							localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
-							KITE_DEBUG("%s: fall back", localUnit->getName());
-						}
-						else if (distance > maxRange * 1.5
-							|| (distance > maxRange * 1 && crowdScore > 9)
-							|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * confidenceFactor)
-							|| targetHasMinRange)
-						{
-							localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
-							KITE_DEBUG("%s: forward", localUnit->getName());
-						}
-						else if (crowdScore > 9)
-						{
-							localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
-							KITE_DEBUG("%s: strafe", localUnit->getName());
-						}
-						else if (localGroupValue <= result.biases[result.forwardIndex] * confidenceFactor)
-						{
-							localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
-							KITE_DEBUG("%s: backward", localUnit->getName());
-						}
-						localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 					}
+					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 				});
 			}
 		}
@@ -665,7 +687,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 
 				if (target->pAI
 					&& helper::canEnterTransport(unit, target)
-					&& !IsMeleeAttacker(target)
+					&& !IsMeleeAttacker(target->id)
 					&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
 				{
 					target->orderTo(OrderId::EnterTransport, unit);

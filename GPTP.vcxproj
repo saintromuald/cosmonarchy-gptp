@@ -120,6 +120,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
+      <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -153,6 +154,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
+      <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -188,6 +190,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -225,6 +228,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
