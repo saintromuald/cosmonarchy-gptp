@@ -402,6 +402,7 @@ KiterType GetKiterType(u32 unitId)
 
 	switch(unitId)
 	{
+		case UnitId::ProtossSolarion:
 		case UnitId::ProtossArchitect:
 		case UnitId::ProtossAccantor:
 		case UnitId::ZergKeskathalor:
@@ -547,13 +548,21 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 		else
 		{
 			u32 sync = 0;
-			localGroup.forEach([&](Unit* localUnit)
+
+			if (unit->id != UnitId::ProtossSolarion
+				&& unit->id != UnitId::ProtossAccantor)
 			{
-				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-				sync += localUnitExt->values[ValueAI_KitingSignal];
-			});
-			sync >>= 8;
-			if (sync >= localGroup.unitCount * 1)
+				localGroup.forEach([&](Unit* localUnit)
+				{
+					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+					sync += localUnitExt->values[ValueAI_KitingSignal];
+				});
+				sync >>= 8;
+			}
+
+			if (sync >= localGroup.unitCount * 1
+				|| unit->id == UnitId::ProtossSolarion
+				|| unit->id == UnitId::ProtossAccantor)
 			{
 				KitePositions result = GetKitePositions(unit, hostileGroupRadius);
 				if (!result.enemiesFound)
