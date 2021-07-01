@@ -11,6 +11,7 @@ namespace hooks
 		{
 			unit->status |= UnitStatus::IsGathering;
 		}
+
 		if (unit->mainOrderState == 0)
 		{
 			if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
@@ -30,6 +31,7 @@ namespace hooks
 			{
 				distance_wanted = 70;
 			}
+
 			if (distance / 256 > distance_wanted)
 			{
 				if (unit->getMovableState() != 0)
@@ -57,6 +59,7 @@ namespace hooks
 				{
 					distance_wanted = 70;
 				}
+
 				if (!helper::isDistanceGreaterThanHaltDistance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, distance_wanted))
 				{
 					if (unit->getMovableState() != 0)
@@ -82,6 +85,7 @@ namespace hooks
 								unit->playerId
 							);
 						}
+
 						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 						if (builtUnit == nullptr)
 						{
@@ -103,7 +107,9 @@ namespace hooks
 						}
 					}
 					else
+					{
 						unit->orderToIdle();
+					}
 				}
 			}
 
@@ -112,11 +118,12 @@ namespace hooks
 		{
 			Unit* target = unit->orderTarget.unit;
 			Image* current_image;
-			if (target == nullptr ||
-				target->id != UnitId::ProtossAquifer ||
-				unit->orderQueueHead != nullptr
-				)
+			if (target == nullptr
+				|| target->id != UnitId::ProtossAquifer
+				|| unit->orderQueueHead != nullptr)
+			{
 				unit->orderToIdle();
+			}
 			else
 			{
 				unit->orderTo(OrderId::HarvestGas2, target);
@@ -130,7 +137,7 @@ namespace hooks
 		}
 	}
 
-	// Protoss building self-building
+	// Protoss self-building
 	void orders_BuildSelf2(Unit* building)
 	{
 		bool jump_to_E50EE = false;
@@ -170,12 +177,7 @@ namespace hooks
 			if (building->orderSignal & 1)
 			{
 				building->orderSignal &= ~1;
-				helper::replaceSpriteImages(
-					building->sprite,
-					//							sprites_dat::ImageId[building->sprite->spriteId],
-					scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
-					0
-				);
+				helper::replaceSpriteImages(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
 				helper::switchToWarpTexture(building->sprite->mainGraphic);
 				building->mainOrderState = 2;
 			}
@@ -186,12 +188,7 @@ namespace hooks
 			{
 				Image* current_image;
 				building->orderSignal &= ~1;
-				helper::replaceSpriteImages(
-					building->sprite,
-					//							sprites_dat::ImageId[building->sprite->spriteId],
-					scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
-					0
-				);
+				helper::replaceSpriteImages(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
 				current_image = building->sprite->images.head;
 				while (current_image != nullptr)
 				{
@@ -209,7 +206,6 @@ namespace hooks
 				building->mainOrderState = 3;
 				building->orderSignal |= 1;
 			}
-
 		}
 		else if (building->mainOrderState == 3)
 		{
@@ -247,8 +243,7 @@ namespace hooks
 
 		if (jump_to_E50EE)
 		{
-			u32 hpGain, shieldGain;
-			
+			u32 hpGain, shieldGain;			
 			BuildingModifier modifier = get_building_modifier(building);
 			if (building->remainingBuildTime != 0)
 			{
@@ -299,6 +294,7 @@ namespace hooks
 			{
 				shieldGain = building->shieldGain * modifier.multiplier;
 			}
+
 			if (building->shields + shieldGain >= (u32)units_dat::MaxShieldPoints[building->id] * 256)
 			{
 				building->shields = units_dat::MaxShieldPoints[building->id] * 256;
@@ -309,5 +305,4 @@ namespace hooks
 			}
 		}
 	}
-
 }
