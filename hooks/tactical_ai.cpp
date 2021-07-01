@@ -505,7 +505,15 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 						return;
 					}
 
-					localUnitExt->timers[TimerAI_KitingCooldown] = 8;
+					if (unit->movementFlags & MovementFlags::Accelerating
+						|| unit->flingyTurnSpeed < 35)
+					{
+						localUnitExt->timers[TimerAI_KitingCooldown] = 2;
+					}
+					else
+					{
+						localUnitExt->timers[TimerAI_KitingCooldown] = 6;
+					}
 					localUnitExt->timers[TimerAI_KitingLeashTimer] = 0;
 					localUnitExt->values[ValueAI_KitingSignal] = 0;
 
