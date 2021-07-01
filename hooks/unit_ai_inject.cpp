@@ -360,6 +360,6 @@ namespace hooks
 //		jmpPatch(deleteBuildingAI_nullcheck,				0x00404500, 0);
 		jmpPatch(AI_RemoveUnitAI_Wrapper,					0x004A1E50, 0);
 		jmpPatch(AI_RemoveWorkerOrBuildingAI_Wrapper,		0x00434C90, 0);
-		jmpPatch(AI_TrainingOverlord_Wrapper,				0x00435770, 1);
+//		jmpPatch(AI_TrainingOverlord_Wrapper,				0x00435770, 1);
 	}
 }
