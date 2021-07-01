@@ -283,7 +283,9 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 	s32 cost = target->getCurrentLifeInGame() / 10;
 
 	// Value attacking more threatning units first
-	if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster)
+	if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster
+		&& target->id != UnitId::TerranComsatStation
+		&& target->id != UnitId::ProtossShieldBattery)
 	{
 		cost -= (target->energy / 50) * 5;
 	}
@@ -373,7 +375,8 @@ static inline bool CanKite(Unit* unit)
 
 static inline bool UnitCanAttack(Unit* unit)
 {
-	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
+	if (unit->id == UnitId::ProtossSolarion
+		|| unit->id == UnitId::ProtossAccantor)
 	{
 		return GetCurrentWeaponCooldown(unit) <= GetMaxWeaponCooldown(unit);
 	}
@@ -473,6 +476,11 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 				if (localUnit->mainOrderId == OrderId::AttackUnit
 					|| localUnit->mainOrderId == OrderId::CarrierFight
 					|| localUnit->mainOrderId == OrderId::ReaverFight)
+				{
+					return;
+				}
+
+				if (!UnitCanAttack(localUnit))
 				{
 					return;
 				}
