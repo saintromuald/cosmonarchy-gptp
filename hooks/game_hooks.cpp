@@ -36,7 +36,9 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 		}
 	}
 	if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+	{
 		return;
+	}
 	if (target->stasisTimer)
 	{
 		return;
@@ -45,8 +47,8 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	{
 		return;
 	}
-	u32 dist = scbw::getDistanceFast(target->position, shaman->position);
 
+	u32 dist = scbw::getDistanceFast(target->position, shaman->position);
 	bool reqHeal = false;
 	if (target->getCurrentHpInGame() < target->getMaxHpInGame())
 	{
@@ -783,6 +785,11 @@ namespace hooks
 			case UnitId::TerranShaman:
 			{
 				// Shaman - Nanite Field
+				if (unit->isFrozen() || unitExt->values[ValueReviveStarted])
+				{
+					break;
+				}
+
 				auto timer = unitExt->timers[TimerNaniteField];
 				unit->_padding_0x133 = 0;
 				if (timer == 0)
