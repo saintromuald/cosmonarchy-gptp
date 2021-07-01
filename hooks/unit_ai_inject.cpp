@@ -321,6 +321,24 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) AI_TrainingOverlord_Wrapper() // 00435770
+	{
+		static Unit* newUnit;
+		static Unit* oldUnit;
+		__asm
+		{
+			MOV newUnit, EAX
+			MOV oldUnit, ECX
+			PUSHAD
+		}
+		hooks::AI_TrainingOverlord(newUnit, oldUnit);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -342,5 +360,6 @@ namespace hooks
 //		jmpPatch(deleteBuildingAI_nullcheck,				0x00404500, 0);
 		jmpPatch(AI_RemoveUnitAI_Wrapper,					0x004A1E50, 0);
 		jmpPatch(AI_RemoveWorkerOrBuildingAI_Wrapper,		0x00434C90, 0);
+		jmpPatch(AI_TrainingOverlord_Wrapper,				0x00435770, 1);
 	}
 }

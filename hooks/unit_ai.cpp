@@ -692,4 +692,102 @@ namespace hooks
 		}
 		return 0;
 	}
+
+	// Hooked to investigate unit AI corruption - Pr0nogo
+	void AI_TrainingOverlord(Unit* newUnit, Unit* oldUnit) // 00435770
+	{
+		if (playerTable[oldUnit->playerId].type == PlayerType::Computer)
+		{
+			UnitAi* oldUnitAI = (UnitAi*)oldUnit->pAI;
+			if (oldUnitAI)
+			{
+				AiTown* oldUnitTown;
+				if (oldUnitAI->type == AiType::Worker)
+				{
+					WorkerAi* oldWorkerAi = (WorkerAi*)oldUnit->pAI;
+					oldUnitTown = oldWorkerAi->town;
+				}
+				else
+				{
+					BuildingAi* oldBuildingAi = (BuildingAi*)oldUnit->pAI;
+					oldUnitTown = oldBuildingAi->town;
+				}
+
+				if (oldUnit == newUnit)
+				{
+					helper::AI_RemoveFromTowns(newUnit);
+					UnitAi* newUnitAI = (UnitAi*)newUnit->pAI;
+					if (newUnitAI)
+					{
+						BuildingAi* newBuildingAi = (BuildingAi*)newUnit->pAI;
+						AiTown* newUnitTown = newBuildingAi->town;
+						deleteBuildingAI(newBuildingAi, newUnitTown->freeBuildings);
+						if (newUnitTown)
+						{
+							if (newUnit == newUnitTown->buildingSCV)
+							{
+								newUnitTown->buildingSCV = nullptr;
+							}
+							if (newUnit == newUnitTown->mainBuilding)
+							{
+								newUnitTown->mainBuilding = nullptr;
+							}
+						}
+						newUnit->pAI = nullptr;
+					}
+				}
+
+				helper::AI_AddWorkerStructureAI(newUnit, oldUnitTown);
+				u16 newUnitId = newUnit->id;
+				if (newUnitId != UnitId::TerranBunker || *elapsedTimeSeconds <= 60)
+				{
+					if (newUnitId == UnitId::TerranWatchdog)
+					{
+						u32 i;
+						BuildingAi* j;
+						s32 queuedCount;
+						Unit* oldFirstTownUnit = oldUnitTown->firstTownUnit;
+						for (i = 0; oldFirstTownUnit; i += queuedCount)
+						{
+							Unit* oldFirstTownMoveTarget = oldFirstTownUnit->moveTarget.unit;
+							if (oldFirstTownMoveTarget->id == UnitId::TerranWatchdog)
+							{
+								queuedCount = 1;
+							}
+							else
+							{
+								queuedCount = helper::AI_GetQueuedCount(oldFirstTownMoveTarget, UnitId::TerranWatchdog);
+							}
+							oldFirstTownUnit = oldFirstTownUnit->link.prev;
+						}
+
+						Unit* iterateUnit;
+						s32 queuedCount2;
+						for (j = oldUnitTown->buildings; j; i += queuedCount2)
+						{
+							iterateUnit = j->parent;
+							if (iterateUnit->id == UnitId::TerranWatchdog)
+							{
+								queuedCount2 = 1;
+							}
+							else
+							{
+								queuedCount2 = helper::AI_GetQueuedCount(iterateUnit, UnitId::TerranWatchdog);
+							}
+							j = j->link.prev;
+						}
+						if (i >= 4)
+						{
+							helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->playerId, 1, newUnit->sprite->position.x);
+						}
+					}
+				}
+				else
+				{
+					helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->playerId, 5, newUnit->sprite->position.x);
+					helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->playerId, 1, newUnit->sprite->position.x);
+				}
+			}
+		}
+	}
 }
