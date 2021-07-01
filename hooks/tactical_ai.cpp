@@ -321,20 +321,45 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 		cost += dist / 32.0;
 	}
 
+	// Value attacking strategically important targets
+	if (target->id == UnitId::ZergNydusCanal
+		|| (units_dat::BaseProperty[target->id] & UnitProperty::Worker
+			&& target->mainOrderId == OrderId::ConstructingBuilding)
+		|| (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
+			&& !(target->status & UnitStatus::Completed)))
+	{
+		cost -= 50;
+	}
+	else if (target->id == UnitId::ProtossPylon
+		|| units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
+		|| units_dat::BaseProperty[target->id] & UnitProperty::Worker
+		|| units_dat::GroupFlags[target->id].isFactory)
+	{
+		cost -= 25;
+	}
+
 	return cost;
 }
 
 static inline bool CanKite(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
+
 	return unit->hasWeapon()
 		&& !unit->isFrozen()
+		// Special units
 		&& unit->id != UnitId::ZergLakizilisk
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
 		&& unit->id != UnitId::TerranNuclearMissile
 		&& unit->id != UnitId::ProtossAnthelion
+		// Flagships
 		&& unit->id != UnitId::TerranMinotaur
+		&& unit->id != UnitId::TerranCentaur
+		&& unit->id != UnitId::TerranPhobos
+		&& unit->id != UnitId::ProtossEmpyrean
+		&& unit->id != UnitId::ProtossStarSovereign
+		// Other rules
 		&& unit->mainOrderId != OrderId::BuildTerran
 		&& unit->mainOrderId != OrderId::ConstructingBuilding
 		&& unit->mainOrderId != OrderId::BuildProtoss1
@@ -377,13 +402,21 @@ enum KiterType
 KiterType GetKiterType(u32 unitId)
 {
 	u32 range = GetMaxRange(unitId);
+
+	switch(unitId)
+	{
+		case UnitId::ProtossArchitect:
+		case UnitId::ProtossAccantor:
+		case UnitId::ZergKeskathalor:
+		case UnitId::ZergGeszithalor:
+		{
+			return KiterArtillery;
+		} break;
+	}
+
 	if (IsMeleeAttacker(unitId))
 	{
 		return KiterMelee;
-	}
-	if (range >= 10 * 32)
-	{
-		return KiterArtillery;
 	}
 	return KiterRanged;	
 }
@@ -613,7 +646,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 				}
 				localUnitExt->aiKitingOrigin = localUnit->position;
 
-				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy | Flags::CanAttackOrCast, {});
+				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy, {});
 				Unit* targetUnit = nullptr;
 				s32 targetCost = 0;
 				scbw::UnitFinder(
