@@ -385,12 +385,6 @@ static inline bool UnitCanAttack(Unit* unit)
 	return GetCurrentWeaponCooldown(unit) <= GetMaxWeaponCooldown(unit) * 0.5;
 }
 
-static inline bool ShouldKite(Unit* unit, UnitExt* unitExt)
-{
-	return (unitExt->values[ValueAI_KitingSignal] && unit->sprite->mainGraphic->animation != IscriptAnimation::Unused2)
-		|| ((unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) && !UnitCanAttack(unit));
-}
-
 enum KiterType
 {
 	KiterNone = 0,
@@ -463,7 +457,86 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 		localGroup.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
 		localGroup.filter([&](Unit* target){ return CanKite(target); });
 
-		if (ShouldKite(unit, unitExt))
+		if (UnitCanAttack(unit))
+		{
+			localGroup.forEach([&](Unit* localUnit)
+			{
+				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+
+				if (localUnitExt->timers[TimerAI_KitingLeashTimer] == 1)
+				{
+					localUnitExt->timers[TimerAI_KitingCooldown] = 1 * 24;
+					localUnit->orderTo(OrderId::Move, localUnitExt->aiKitingOrigin.x, localUnitExt->aiKitingOrigin.y);
+					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+				}
+
+				if (localUnit->mainOrderId == OrderId::AttackUnit
+					|| localUnit->mainOrderId == OrderId::CarrierFight
+					|| localUnit->mainOrderId == OrderId::ReaverFight)
+				{
+					return;
+				}
+
+				if (units_dat::BaseProperty[localUnit->id] & UnitProperty::Worker)
+				{
+					localUnitExt->timers[TimerAI_KitingLeashTimer] = 4 * 24;
+				}
+				else
+				{
+					localUnitExt->timers[TimerAI_KitingLeashTimer] = 16 * 24;
+				}
+				localUnitExt->aiKitingOrigin = localUnit->position;
+
+				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy, {});
+				Unit* targetUnit = nullptr;
+				s32 targetCost = 0;
+				scbw::UnitFinder(
+					localUnit->getX() - hostileGroupRadius * 4,
+					localUnit->getY() - hostileGroupRadius * 4,
+					localUnit->getX() + hostileGroupRadius * 4,
+					localUnit->getY() + hostileGroupRadius * 4
+				).forEach([&](Unit* hostileUnit)
+				{
+					if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
+					{
+						return;
+					}
+
+					s32 newTargetCost = GetTargetCost(localUnit, hostileUnit);
+					if (!targetUnit || newTargetCost < targetCost)
+					{
+						targetUnit = hostileUnit;
+						targetCost = newTargetCost;
+					}
+				});
+
+				if (targetUnit)
+				{
+					localUnitExt->timers[TimerAI_KitingCooldown] = 2;
+					KITE_DEBUG("%s: attack", localUnit->getName());
+					if (localUnit->id == UnitId::ProtossSolarion)
+					{
+						localUnit->orderTo(OrderId::CarrierFight, targetUnit);
+					}
+					else if (localUnit->id == UnitId::ProtossAccantor)
+					{
+						localUnit->orderTo(OrderId::ReaverFight, targetUnit);
+					}
+					else
+					{
+						localUnit->orderTo(OrderId::AttackUnit, targetUnit);
+					}
+					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+				}
+				else
+				{
+					localUnitExt->timers[TimerAI_KitingCooldown] = 8;
+					localUnitExt->timers[TimerAI_KitingLeashTimer] = 0;
+					localUnitExt->values[ValueAI_KitingSignal] = 0;
+				}
+			});
+		}
+		else
 		{
 			u32 sync = 0;
 			localGroup.forEach([&](Unit* localUnit)
@@ -482,6 +555,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 						UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
 						localUnitExt->timers[TimerAI_KitingCooldown] = 8;
 						localUnitExt->timers[TimerAI_KitingLeashTimer] = 0;
+						localUnitExt->values[ValueAI_KitingSignal] = 0;
 					});
 					return;
 				}
@@ -495,12 +569,10 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 				localGroup.forEach([&](Unit* localUnit)
 				{
 					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-					if (unit->sprite->mainGraphic->animation == IscriptAnimation::Unused2)
-					{
-						return;
-					}
 
-					if (!ShouldKite(localUnit, localUnitExt))
+					if (!localUnitExt->values[ValueAI_KitingSignal]
+						&& localUnit->id != UnitId::ProtossAccantor
+						&& localUnit->id != UnitId::ProtossSolarion)
 					{
 						return;
 					}
@@ -623,84 +695,6 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 				});
 			}
-		}
-		else if (UnitCanAttack(unit))
-		{
-			localGroup.forEach([&](Unit* localUnit)
-			{
-				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
-
-				if (localUnitExt->timers[TimerAI_KitingLeashTimer] == 1)
-				{
-					localUnitExt->timers[TimerAI_KitingCooldown] = 1 * 24;
-					localUnit->orderTo(OrderId::Move, localUnitExt->aiKitingOrigin.x, localUnitExt->aiKitingOrigin.y);
-					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
-				}
-
-				if (localUnit->mainOrderId == OrderId::AttackUnit
-					|| localUnit->mainOrderId == OrderId::CarrierFight
-					|| localUnit->mainOrderId == OrderId::ReaverFight)
-				{
-					return;
-				}
-
-				if (units_dat::BaseProperty[localUnit->id] & UnitProperty::Worker)
-				{
-					localUnitExt->timers[TimerAI_KitingLeashTimer] = 4 * 24;
-				}
-				else
-				{
-					localUnitExt->timers[TimerAI_KitingLeashTimer] = 16 * 24;
-				}
-				localUnitExt->aiKitingOrigin = localUnit->position;
-
-				auto targetMatch = cosmonarchyFinderMatch(localUnit, Flags::Enemy, {});
-				Unit* targetUnit = nullptr;
-				s32 targetCost = 0;
-				scbw::UnitFinder(
-					localUnit->getX() - hostileGroupRadius * 4,
-					localUnit->getY() - hostileGroupRadius * 4,
-					localUnit->getX() + hostileGroupRadius * 4,
-					localUnit->getY() + hostileGroupRadius * 4
-				).forEach([&](Unit* hostileUnit)
-				{
-					if (!targetMatch(hostileUnit) || !localUnit->canAttackTarget(hostileUnit, false))
-					{
-						return;
-					}
-
-					s32 newTargetCost = GetTargetCost(localUnit, hostileUnit);
-					if (!targetUnit || newTargetCost < targetCost)
-					{
-						targetUnit = hostileUnit;
-						targetCost = newTargetCost;
-					}
-				});
-
-				if (targetUnit)
-				{
-					localUnitExt->timers[TimerAI_KitingCooldown] = 2;
-					KITE_DEBUG("%s: attack", localUnit->getName());
-					if (localUnit->id == UnitId::ProtossSolarion)
-					{
-						localUnit->orderTo(OrderId::CarrierFight, targetUnit);
-					}
-					else if (localUnit->id == UnitId::ProtossAccantor)
-					{
-						localUnit->orderTo(OrderId::ReaverFight, targetUnit);
-					}
-					else
-					{
-						localUnit->orderTo(OrderId::AttackUnit, targetUnit);
-					}
-					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
-				}
-				else
-				{
-					localUnitExt->timers[TimerAI_KitingCooldown] = 8;
-					localUnitExt->timers[TimerAI_KitingLeashTimer] = 0;
-				}
-			});
 		}
 	}
 }
