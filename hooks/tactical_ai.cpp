@@ -328,7 +328,7 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 		|| (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
 			&& !(target->status & UnitStatus::Completed)))
 	{
-		cost -= 50;
+		cost -= 75;
 	}
 	else if (target->id == UnitId::ProtossPylon
 		|| units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
