@@ -8,13 +8,15 @@ namespace
 	{
 		static Unit* result;
 		static Unit* parent;
-		__asm {
+		__asm
+		{
 			MOV result, EAX
 			MOV parent, ECX
 			PUSHAD
 		}
 		hooks::AI_TrainingUnit(result, parent);
-		__asm {
+		__asm
+		{
 			POPAD
 			RETN
 		}
@@ -24,13 +26,15 @@ namespace
 	{
 		static Unit* silo;
 		static Unit* result;
-		__asm {
+		__asm
+		{
 			MOV silo, EDI
 			MOV result, EAX
 			PUSHAD
 		}
 		hooks::AI_CreateNuke(silo, result);
-		__asm {
+		__asm
+		{
 			POPAD
 			RETN
 		}
@@ -40,7 +44,8 @@ namespace
 	{
 		static Unit* parent;
 		static Unit* result;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -52,7 +57,8 @@ namespace
 			PUSHAD
 		}
 		hooks::AI_TrainingSimpleMilitary(result, parent);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -102,13 +108,15 @@ namespace
 		static u8 result;
 		static Unit* unit;
 		static AiTown* town;
-		__asm {
+		__asm
+		{
 			MOV unit, EBX
 			MOV town, EDI
 			PUSHAD
 		}
 		result = hooks::AI_AddWorkerStructureAI(unit, town);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV result, AL
 			RETN
@@ -119,14 +127,16 @@ namespace
 	void __declspec(naked) AI_AddUnitAi_FreeWorkerCheck_JmpWrapper()
 	{
 		static WorkerAiArray* free;
-		__asm {
+		__asm
+		{
 			MOV free, EDX
 			PUSHAD
 		}
 		if ((u32)free <= 0x100000)
 		{
 			scbw::print("Corrupted pointer in AddUnitAi!");
-			__asm {
+			__asm
+			{
 				POPAD
 				POP ESI
 				RETN
@@ -134,7 +144,8 @@ namespace
 		}
 		else
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				MOV EAX, [EDX + 0x5DC0]
 				JMP addUnitAiShortJump
