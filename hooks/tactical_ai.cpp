@@ -409,6 +409,7 @@ KiterType GetKiterType(u32 unitId)
 		case UnitId::ZergKeskathalor:
 		case UnitId::ZergGeszithalor:
 		case UnitId::ZergBactalisk:
+		case UnitId::TerranPaladin:
 		{
 			// Stay back
 			return KiterArtillery;
