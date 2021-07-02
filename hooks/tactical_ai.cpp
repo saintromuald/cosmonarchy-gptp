@@ -721,7 +721,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 								localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 								KITE_DEBUG("%s: forward", localUnit->getName());
 							}
-							else if (distance < maxRange)
+							else if (distance < maxRange * 1.25)
 							{
 								localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 								KITE_DEBUG("%s: backward", localUnit->getName());
@@ -730,8 +730,8 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 						} break;
 						case KiterFlagship:
 						{
-							if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
-								|| localGroupValue * confidenceFactor < result.biases[result.forwardIndex]))
+							if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
+								|| localGroupValue * confidenceFactor < result.biases[result.forwardIndex])
 							{
 								localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 								KITE_DEBUG("%s: fall back", localUnit->getName());
