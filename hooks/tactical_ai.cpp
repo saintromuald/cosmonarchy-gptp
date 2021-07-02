@@ -350,17 +350,10 @@ static inline bool CanKite(Unit* unit)
 	return unit->hasWeapon()
 		&& !unit->isFrozen()
 		// Special units
-		&& unit->id != UnitId::ZergLakizilisk
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
 		&& unit->id != UnitId::TerranNuclearMissile
 		&& unit->id != UnitId::ProtossAnthelion
-		// Flagships
-		&& unit->id != UnitId::TerranMinotaur
-		&& unit->id != UnitId::TerranCentaur
-		&& unit->id != UnitId::TerranPhobos
-		&& unit->id != UnitId::ProtossEmpyrean
-		&& unit->id != UnitId::ProtossStarSovereign
 		// Other rules
 		&& unit->mainOrderId != OrderId::BuildTerran
 		&& unit->mainOrderId != OrderId::ConstructingBuilding
@@ -394,6 +387,7 @@ enum KiterType
 	KiterMelee,
 	KiterRanged,
 	KiterArtillery,
+	KiterFlagship,
 };
 
 KiterType GetKiterType(u32 unitId)
@@ -402,21 +396,41 @@ KiterType GetKiterType(u32 unitId)
 
 	switch(unitId)
 	{
+		case UnitId::ZergLakizilisk:
+		case UnitId::TerranPhalanxSiegeMode:
+		{
+			// No kiting; Just smart targeting
+			return KiterNone;
+		}
+
 		case UnitId::ProtossSolarion:
 		case UnitId::ProtossArchitect:
 		case UnitId::ProtossAccantor:
 		case UnitId::ZergKeskathalor:
 		case UnitId::ZergGeszithalor:
 		{
+			// Stay back
 			return KiterArtillery;
-		} break;
+		}
+
+		case UnitId::TerranMinotaur:
+		case UnitId::TerranCentaur:
+		case UnitId::TerranPhobos:
+		case UnitId::ProtossEmpyrean:
+		case UnitId::ProtossStarSovereign:
+		{
+			// Advantage / Disadvantage kiting
+			return KiterFlagship;
+		}
 	}
 
 	if (IsMeleeAttacker(unitId))
 	{
+		// Minor adjustments, while in melee range
 		return KiterMelee;
 	}
-	return KiterRanged;	
+	// Default kiting
+	return KiterRanged;
 }
 
 void KitingAi(Unit* unit, UnitExt* unitExt)
@@ -492,7 +506,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 				}
 				else
 				{
-					localUnitExt->timers[TimerAI_KitingLeashTimer] = 16 * 24;
+					localUnitExt->timers[TimerAI_KitingLeashTimer] = 24 * 24;
 				}
 				localUnitExt->aiKitingOrigin = localUnit->position;
 
@@ -545,7 +559,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 				}
 			});
 		}
-		else
+		else if (GetKiterType(unit->id) != KiterNone)
 		{
 			u32 sync = 0;
 
@@ -665,6 +679,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 								localUnit->orderTo(OrderId::Move, result.strafePos.x, result.strafePos.y);
 								KITE_DEBUG("%s: strafe", localUnit->getName());
 							}
+							localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 						} break;
 						case KiterRanged:
 						{
@@ -694,6 +709,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 								localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 								KITE_DEBUG("%s: backward", localUnit->getName());
 							}
+							localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 						} break;
 						case KiterArtillery:
 						{
@@ -702,14 +718,30 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 								localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 								KITE_DEBUG("%s: forward", localUnit->getName());
 							}
-							else
+							else if (distance < maxRange)
 							{
 								localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 								KITE_DEBUG("%s: backward", localUnit->getName());
 							}
-						}
+							localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+						} break;
+						case KiterFlagship:
+						{
+							if ((localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2
+								|| localGroupValue * confidenceFactor < result.biases[result.forwardIndex]))
+							{
+								localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
+								KITE_DEBUG("%s: fall back", localUnit->getName());
+							}
+							else if (distance > maxRange * 1.5
+								|| (distance > maxRange * 0.75 && localGroupValue > result.biases[result.forwardIndex] * confidenceFactor))
+							{
+								localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
+								KITE_DEBUG("%s: forward", localUnit->getName());
+							}
+							localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+						} break;
 					}
-					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
 				});
 			}
 		}
