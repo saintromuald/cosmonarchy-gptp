@@ -878,25 +878,28 @@ void Unit::orderComputerClear(u8 orderId)
 	prepareForNextOrder(this);
 }
 
-//Equivalent to 00474D60 __order function
+// Equivalent to 00474D60 __order function
 void Unit::orderSimple(u8 orderId, bool stopPreviousOrders)
 {
 	this->order(orderId, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
 }
 
-//Equivalent to 00474D10 issueQueuedOrderTarget function
+// Equivalent to 00474D10 issueQueuedOrderTarget function
 void Unit::issueQueuedOrderTarget(u8 orderId, Unit* target, bool stopPreviousOrders)
 {
 	if (target == nullptr)
+	{
 		this->order(orderId, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
+	}
 	else
+	{
 		this->order(orderId, target->sprite->position.x, target->sprite->position.y, target, UnitId::None, stopPreviousOrders);
+	}
 }
 
-//Logically equivalent to function toIdle @ 0x004753A0
+// Logically equivalent to function toIdle @ 0x004753A0
 void Unit::orderToIdle()
 {
-
 	assert(this);
 
 	if (this->orderQueueHead)
@@ -907,11 +910,14 @@ void Unit::orderToIdle()
 	else
 	{
 		if (this->pAI)
+		{
 			this->orderTo(OrderId::ComputerAI);
+		}
 		else
+		{
 			this->orderTo(units_dat::ReturnToIdleOrder[this->id]);
+		}
 	}
-
 }
 
 const u32 Func_Order = 0x00474810;

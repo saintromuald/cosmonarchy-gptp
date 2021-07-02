@@ -256,7 +256,7 @@ enum ExtTimerId
 	TimerLobotomySlow,
 	TimerPlanetCrackerChannel,
 	TimerPlanetCrackerDelay,
-	TimerStarcallerInterceptionMissiles,
+	TimerStarSovereignInterventionMissiles,
 	TimerUltrakorCancel,
 	TimerCausticDischargeSpeed,
 	TimerIonFieldSpeed,
