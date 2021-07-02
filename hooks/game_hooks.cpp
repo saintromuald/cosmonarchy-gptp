@@ -36,7 +36,9 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 		}
 	}
 	if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+	{
 		return;
+	}
 	if (target->stasisTimer)
 	{
 		return;
@@ -45,8 +47,8 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	{
 		return;
 	}
-	u32 dist = scbw::getDistanceFast(target->position, shaman->position);
 
+	u32 dist = scbw::getDistanceFast(target->position, shaman->position);
 	bool reqHeal = false;
 	if (target->getCurrentHpInGame() < target->getMaxHpInGame())
 	{
@@ -442,12 +444,8 @@ namespace hooks
 			} break;
 			case UnitId::ProtossStarSovereign:
 			{
-				// Star Sovereign Intervention Missiles behavior + Grief of All Gods
-				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
-				{
-					globals.createEffect(EffectId::GriefOfAllGods, 360, { unit->position.x, unit->position.y }, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId, unit);
-				}
-				if (unitExt->timers[TimerStarcallerInterceptionMissiles] == 0)
+				// Star Sovereign - Intervention Missiles
+				if (unitExt->timers[TimerStarSovereignInterventionMissiles] == 0)
 				{
 					auto r = 5 * 32;
 					auto n = cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::FrontalArc, {});
@@ -465,7 +463,7 @@ namespace hooks
 					}
 					if (enemiesDetected)
 					{
-						unitExt->timers[TimerStarcallerInterceptionMissiles] = weapons_dat::Cooldown[WeaponId::StarSovereignInterventionMissiles];
+						unitExt->timers[TimerStarSovereignInterventionMissiles] = weapons_dat::Cooldown[WeaponId::StarSovereignInterventionMissiles];
 						for (s32 arc = 0; arc < 6; arc++)
 						{
 							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
@@ -496,7 +494,13 @@ namespace hooks
 					}
 				}
 
-				// Star Sovereign - blast effects
+				// Star Sovereign - Grief of All Gods
+				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
+				{
+					globals.createEffect(EffectId::GriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId, unit);
+				}
+
+				// blast effects
 				u32 player = unit->playerId;
 				u16 X = unit->position.x;
 				u16 Y = unit->position.y;
@@ -783,6 +787,11 @@ namespace hooks
 			case UnitId::TerranShaman:
 			{
 				// Shaman - Nanite Field
+				if (unit->isFrozen() || unitExt->values[ValueReviveStarted])
+				{
+					break;
+				}
+
 				auto timer = unitExt->timers[TimerNaniteField];
 				unit->_padding_0x133 = 0;
 				if (timer == 0)

@@ -15,6 +15,7 @@ namespace hooks
 	void deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiArray);										// 00404470
 	void deleteBuildingAI(BuildingAi* buildingAi, BuildingAiArray* buildingAiArray);							// 00404500
 	s32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI);												// 00434C90
+	void AI_TrainingOverlord(Unit* newUnit, Unit* oldUnit);														// 00435770
 
 	void injectUnitAIHooks();
 }

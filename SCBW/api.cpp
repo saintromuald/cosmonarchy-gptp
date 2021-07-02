@@ -1715,7 +1715,8 @@ namespace scbw
 	void makeToHoldPosition(Unit* unit)
 	{
 		const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ESI, unit
 			CALL Func_OrdersHoldPositionSuicidal

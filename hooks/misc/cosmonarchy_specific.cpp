@@ -625,23 +625,11 @@ LABEL_18:
 	void order_PhaseLink(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-
 		scbw::decloakProc(unit);
 
 		u32 status = 0;
-		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; // might be changed later if required
-		if (unit->id == UnitId::ProtossClarion)
-		{
-			if (scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
-			{
-				status = 1;//disable clarion
-			}
-			else
-			{
-				status = 0;//enable clarion
-			}
-		}
-		else if (unit->id == UnitId::ProtossStarSovereign)
+		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell;
+		if (unit->id == UnitId::ProtossStarSovereign)
 		{
 			auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 			if (order_state == 0)
