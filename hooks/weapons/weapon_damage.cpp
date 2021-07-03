@@ -1013,7 +1013,10 @@ namespace hooks
 
 			// Transfer unit ownership
 			Unit* unit = targetExt->units[UnitLastHitAkistrokor];
-			data.target->giveTo(unit->playerId);
+			if (unit)
+			{
+				data.target->giveTo(unit->playerId);
+			}
 
 			// Cancel the attachment
 			auto& vec = targetExt->unitVectors[UnitVectorAttachedSource];
