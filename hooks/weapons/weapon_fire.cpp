@@ -413,7 +413,7 @@ namespace hooks
 				}
 				else if (weaponId == WeaponId::IonCannon)
 				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueIonCannonProjectilePos, 1, ImagesDatEntries::OverlaySpecialPtr, 1);
+//					scbw::setMissileSourcePos(unit, weaponId, ValueIonCannonProjectilePos, 1, ImagesDatEntries::OverlaySpecialPtr, 1);
 				}
 				else if (weaponId == WeaponId::SkithrokorSkitteringSpores)
 				{
