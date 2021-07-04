@@ -330,7 +330,7 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 		|| (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
 			&& !(target->status & UnitStatus::Completed)))
 	{
-		cost -= 75;
+		cost -= 50;
 	}
 	else if (target->id == UnitId::ProtossPylon
 		|| units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
@@ -613,7 +613,11 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 						return;
 					}
 
-					if (unit->movementFlags & MovementFlags::Accelerating
+					if (unit->id == UnitId::ProtossSolarion)
+					{
+						localUnitExt->timers[TimerAI_KitingCooldown] = 12;
+					}
+					else if (unit->movementFlags & MovementFlags::Accelerating
 						|| unit->flingyTurnSpeed < 35)
 					{
 						localUnitExt->timers[TimerAI_KitingCooldown] = 2;
