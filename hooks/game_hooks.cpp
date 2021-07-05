@@ -1144,14 +1144,17 @@ namespace hooks
 						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 					}
 					unitExt->anthelionLastMoveTarget = unit->moveTarget.pt;
+					s16 oldX = unit->sprite->position.x;
+					s16 oldY = unit->sprite->position.y;
 
 					if (unitExt->timers[TimerAnthelionEndlessEclipse] == 1)
 					{
 						bool teleport = scbw::teleport(unit, unit->moveTarget.pt, 0, true);
-						if (!unit->getOverlay(ImageId::LegionnaireTeleportEffect) && teleport)
+						if (teleport)
 						{
-							unit->sprite->createTopOverlay(ImageId::LegionnaireTeleportEffect);
+							scbw::createAndInitThingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->playerId, 11);
 							helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
+//							scbw::createAndInitThingy(SpriteId::AnthelionTeleportArrive, unit->sprite->position.x, unit->sprite->position.y, unit->playerId, 11);
 						}
 					}
 				}

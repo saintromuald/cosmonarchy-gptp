@@ -762,6 +762,8 @@ namespace SpriteId
 		ZergAirExplosionReversedSmall = 754,
 		IonCannonAttackGlow = 755,
 		WarpAnchor = 756,
+		AnthelionTeleportDepart = 757,
+		AnthelionTeleportArrive = 758,
 
 		// CORPSE \\
 

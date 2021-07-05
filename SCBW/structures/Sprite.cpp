@@ -7,7 +7,6 @@
 // Functionally identical to playSpriteIscript() (offset 0x00499D00)
 void Sprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurrentScript)
 {
-
 	assert(this);
 
 	if (bReplaceCurrentScript || !(this->flags & SpriteFlags::IscriptCode))
@@ -17,7 +16,6 @@ void Sprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurr
 			img->playIscriptAnim(animation);
 		}
 	}
-
 }
 
 // Equivalent to SpriteDestructor @ 0x00497B40
@@ -147,7 +145,7 @@ void updateImageDirection(Image* image, u32 direction)
 //-------- Create overlay --------//
 
 // Identical to function @ 0x00498E00
-Image* Sprite::createOverlay(u32 imageId, s8 x_offset, s8 y_offset, u32 direction)
+Image* Sprite::createOverlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -168,14 +166,14 @@ Image* Sprite::createOverlay(u32 imageId, s8 x_offset, s8 y_offset, u32 directio
 			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
-		overlay->initializeData(this, imageId, x_offset, y_offset);
+		overlay->initializeData(this, imageId, offsetX, offsetY);
 		createUpdateImageSomething(overlay);
 		updateImageDirection(overlay, direction);
 	}
 	return overlay;
 }
 
-Image* Sprite::createUnderlay(u32 imageId, s8 x_offset, s8 y_offset, u32 direction)
+Image* Sprite::createUnderlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -196,7 +194,7 @@ Image* Sprite::createUnderlay(u32 imageId, s8 x_offset, s8 y_offset, u32 directi
 			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
-		underlay->initializeData(this, imageId, x_offset, y_offset);
+		underlay->initializeData(this, imageId, offsetX, offsetY);
 		createUpdateImageSomething(underlay);
 		updateImageDirection(underlay, direction);
 	}
@@ -204,7 +202,7 @@ Image* Sprite::createUnderlay(u32 imageId, s8 x_offset, s8 y_offset, u32 directi
 }
 
 // Identical to function @ 0x00498EA0
-Image* Sprite::createTopOverlay(u32 imageId, s8 x_offset, s8 y_offset, u32 direction)
+Image* Sprite::createTopOverlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -225,14 +223,14 @@ Image* Sprite::createTopOverlay(u32 imageId, s8 x_offset, s8 y_offset, u32 direc
 			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
-		overlay->initializeData(this, imageId, x_offset, y_offset);
+		overlay->initializeData(this, imageId, offsetX, offsetY);
 		createUpdateImageSomething(overlay);
 		updateImageDirection(overlay, direction);
 	}
 	return overlay;
 }
 
-Image* Sprite::createTopUnderlay(u32 imageId, s8 x_offset, s8 y_offset, u32 direction)
+Image* Sprite::createTopUnderlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -253,7 +251,7 @@ Image* Sprite::createTopUnderlay(u32 imageId, s8 x_offset, s8 y_offset, u32 dire
 			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
-		underlay->initializeData(this, imageId, x_offset, y_offset);
+		underlay->initializeData(this, imageId, offsetX, offsetY);
 		createUpdateImageSomething(underlay);
 		updateImageDirection(underlay, direction);
 	}
