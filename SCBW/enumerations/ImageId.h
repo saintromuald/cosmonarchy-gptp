@@ -1061,6 +1061,7 @@ enum Enum {
 	ProtossHallucinationEffect			= 1385,
 
 	NeutronFlareOrange_Damageless		= 1446,
+	AnthelionTeleportArrival			= 1456,
 
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,

@@ -1154,7 +1154,7 @@ namespace hooks
 						{
 							scbw::createAndInitThingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->playerId, 11);
 							helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
-//							scbw::createAndInitThingy(SpriteId::AnthelionTeleportArrive, unit->sprite->position.x, unit->sprite->position.y, unit->playerId, 11);
+							unit->sprite->createTopOverlay(ImageId::AnthelionTeleportArrival, 0, 0, 0);
 						}
 					}
 				}
