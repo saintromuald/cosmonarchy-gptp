@@ -1042,6 +1042,7 @@ enum Enum {
 	DeconstructionMedium				= 1333,
 	DeconstructionLarge					= 1334,
 	LegionnaireTeleportEffect			= 1358,
+	WarpAnchorUnderlay					= 1365,
 	WarpFlashFade						= 1368,
 	IrradiateNew_Small					= 1369,
 	IrradiateNew_Medium					= 1370,

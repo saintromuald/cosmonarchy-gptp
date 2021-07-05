@@ -11,8 +11,12 @@ void Sprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurr
 	assert(this);
 
 	if (bReplaceCurrentScript || !(this->flags & SpriteFlags::IscriptCode))
+	{
 		for (Image* img = this->images.head; img != nullptr; img = img->link.next)
+		{
 			img->playIscriptAnim(animation);
+		}
+	}
 
 }
 
@@ -117,7 +121,8 @@ void createUpdateImageSomething(Image* image)
 {
 	const u32 Func_createUpdateImageSomething = 0x004D66B0;
 
-	__asm {
+	__asm
+	{
 		PUSHAD
 		MOV EAX, image
 		CALL Func_createUpdateImageSomething
@@ -129,7 +134,8 @@ void updateImageDirection(Image* image, u32 direction)
 {
 	const u32 Func_updateImageDirection = 0x004D5EA0;
 
-	__asm {
+	__asm
+	{
 		PUSHAD
 		PUSH direction
 		MOV EAX, image
@@ -141,7 +147,7 @@ void updateImageDirection(Image* image, u32 direction)
 //-------- Create overlay --------//
 
 // Identical to function @ 0x00498E00
-Image* Sprite::createOverlay(u32 imageId, s8 x, s8 y, u32 direction)
+Image* Sprite::createOverlay(u32 imageId, s8 x_offset, s8 y_offset, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -153,21 +159,23 @@ Image* Sprite::createOverlay(u32 imageId, s8 x, s8 y, u32 direction)
 	if (overlay)
 	{
 		if (this->images.head)
+		{
 			this->images.insertBefore<&Image::link>(overlay, this->mainGraphic);
+		}
 		else
 		{
 			this->mainGraphic = overlay;
 			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
-		overlay->initializeData(this, imageId, x, y);
+		overlay->initializeData(this, imageId, x_offset, y_offset);
 		createUpdateImageSomething(overlay);
 		updateImageDirection(overlay, direction);
 	}
 	return overlay;
 }
 
-Image* Sprite::createUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
+Image* Sprite::createUnderlay(u32 imageId, s8 x_offset, s8 y_offset, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -179,14 +187,16 @@ Image* Sprite::createUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
 	if (underlay)
 	{
 		if (this->images.head)
+		{
 			this->images.insertAfter<&Image::link>(underlay, this->mainGraphic);
+		}
 		else
 		{
 			this->mainGraphic = underlay;
 			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
-		underlay->initializeData(this, imageId, x, y);
+		underlay->initializeData(this, imageId, x_offset, y_offset);
 		createUpdateImageSomething(underlay);
 		updateImageDirection(underlay, direction);
 	}
@@ -194,7 +204,7 @@ Image* Sprite::createUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
 }
 
 // Identical to function @ 0x00498EA0
-Image* Sprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction)
+Image* Sprite::createTopOverlay(u32 imageId, s8 x_offset, s8 y_offset, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -206,21 +216,23 @@ Image* Sprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction)
 	if (overlay)
 	{
 		if (this->images.head)
+		{
 			this->images.insertBeforeHead<&Image::link>(overlay);
+		}
 		else
 		{
 			this->mainGraphic = overlay;
 			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
-		overlay->initializeData(this, imageId, x, y);
+		overlay->initializeData(this, imageId, x_offset, y_offset);
 		createUpdateImageSomething(overlay);
 		updateImageDirection(overlay, direction);
 	}
 	return overlay;
 }
 
-Image* Sprite::createTopUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
+Image* Sprite::createTopUnderlay(u32 imageId, s8 x_offset, s8 y_offset, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -232,14 +244,16 @@ Image* Sprite::createTopUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
 	if (underlay)
 	{
 		if (this->images.head)
+		{
 			this->images.insertAfterHead<&Image::link>(underlay);
+		}
 		else
 		{
 			this->mainGraphic = underlay;
 			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
-		underlay->initializeData(this, imageId, x, y);
+		underlay->initializeData(this, imageId, x_offset, y_offset);
 		createUpdateImageSomething(underlay);
 		updateImageDirection(underlay, direction);
 	}
@@ -300,8 +314,12 @@ Image* Sprite::getOverlay(u16 imageId) const
 	assert(this);
 
 	for (Image* image = this->images.head; image; image = image->link.next)
+	{
 		if (image->id == imageId)
+		{
 			return image;
+		}
+	}
 
 	return nullptr;
 }

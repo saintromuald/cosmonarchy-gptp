@@ -53,7 +53,7 @@ namespace scbw
 		previous_pos.y = u->sprite->position.y;
 
 		// identical code to setUnitPosition() but for some reason, is using another function to do exactly the same thing
-		helper::function_004EBAE0(u, target.x, target.y);
+		helper::moveUnit_Duplicate(u, target.x, target.y);
 
 		if (!scbw::checkUnitCollisionPos(u, &(u->sprite->position), &new_pos, nullptr, false, 0))
 		{

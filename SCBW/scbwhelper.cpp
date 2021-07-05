@@ -2396,7 +2396,8 @@ namespace helper
 	void setNextWaypoint(Unit* unit)
 	{
 		const u32 Func_setNextWaypoint = 0x004EB290;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_setNextWaypoint
@@ -2408,7 +2409,8 @@ namespace helper
 	{
 		const u32 Func_changeMovementTargetMoveTarget2 = 0x004EB9C0;
 		static b32 bPreResult;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EDX, unit
 			MOV ECX, x
@@ -2424,7 +2426,8 @@ namespace helper
 	{
 		const u32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
 		static b32 bPreResult;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH x
 			PUSH distance
@@ -2440,7 +2443,8 @@ namespace helper
 	void checkUnstack(Unit* unit)
 	{
 		const u32 Func_checkUnstack = 0x0042D9A0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_checkUnstack
@@ -2452,7 +2456,8 @@ namespace helper
 	{
 		const u32 Func_beginBuilding = 0x00467030;
 		static b32 bPreResult;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_beginBuilding
@@ -2466,7 +2471,8 @@ namespace helper
 	{
 		const u32 Func_beginGasBuilding = 0x004678A0;
 		static Unit* newUnit;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			PUSH unitId
@@ -2478,16 +2484,17 @@ namespace helper
 	}
 
 	// imageId may not be really a parameter
-	void addOverlayBelowMain(Sprite* sprite, u32 imageId, u32 unk1, u32 unk2, u32 unk3)
+	void addOverlayBelowMain(Sprite* sprite, u32 imageId, u32 x_offset, u32 y_offset, u32 direction)
 	{
 		const u32 Func_addOverlayBelowMain = 0x00498D70;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, sprite
 			MOV ESI, imageId
-			PUSH unk1
-			PUSH unk2
-			PUSH unk3
+			PUSH x_offset
+			PUSH y_offset
+			PUSH direction
 			CALL Func_addOverlayBelowMain
 			POPAD
 		}
@@ -2496,7 +2503,8 @@ namespace helper
 	void replaceSpriteImages(Sprite* sprite, u32 imageId, u32 imageDirection)
 	{
 		const u32 Func_Sub499BB0 = 0x00499BB0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH imageDirection
 			PUSH imageId
@@ -2509,7 +2517,8 @@ namespace helper
 	void displayLastNetErrorForPlayer(u32 playerId)
 	{
 		const u32 Func_displayLastNetErrorForPlayer = 0x0049E530;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH playerId
 			CALL Func_displayLastNetErrorForPlayer
@@ -2520,7 +2529,8 @@ namespace helper
 	void updateUnitStrength(Unit* unit)
 	{
 		const u32 Func_UpdateUnitStrength = 0x0049FA40;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_UpdateUnitStrength
@@ -2531,7 +2541,8 @@ namespace helper
 	void iscript_OpcodeCases(Image* image, u32 offset_, u32 unk1, u32 unk2)
 	{
 		const u32 Func_iscript_OpcodeCases = 0x004D74C0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH unk1
 			PUSH unk2
@@ -2545,7 +2556,8 @@ namespace helper
 	void switchToWarpTexture(Image* image)
 	{
 		const u32 Func_switchToWarpTexture = 0x004D8500;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, image
 			CALL Func_switchToWarpTexture
@@ -2557,7 +2569,8 @@ namespace helper
 	{
 		const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
 		static b32 bPreResult;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV ESI, thingy
 			CALL Func_SetThingyVisibilityFlags
@@ -2572,7 +2585,8 @@ namespace helper
 		const u32 Func_CreateThingy = 0x00488210;
 		static Thingy* thingy;
 		s32 x_ = x;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH playerId
 			MOVSX EDI, y
@@ -2590,7 +2604,8 @@ namespace helper
 		const u32 Func_playUnitSFX = 0x0048EC10;
 		static Point16 pos;
 		pos.x = x; pos.y = y;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH unk2
 			PUSH unk1
@@ -2605,7 +2620,8 @@ namespace helper
 	{
 		const u32 Func_RandomizeShort = 0x004DC4A0;
 		static u32 return_value;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, unknown_index
 			CALL Func_RandomizeShort
@@ -2618,7 +2634,8 @@ namespace helper
 	void setUnitStatTxtErrorMsg(char* message)
 	{
 		const u32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, message
 			CALL Func_setUnitStatTxtErrorMsg
@@ -2626,15 +2643,16 @@ namespace helper
 		}
 	}
 
-	void function_004EBAE0(Unit* unit, s32 x, s32 y)
+	void moveUnit_Duplicate(Unit* unit, s32 x, s32 y)
 	{
-		const u32 Func_Sub4EBAE0 = 0x004EBAE0;
-		__asm {
+		const u32 Func_moveUnit_Duplicate = 0x004EBAE0;
+		__asm
+		{
 			PUSHAD
 			MOV EDX, unit
 			MOV EAX, x
 			MOV ECX, y
-			CALL Func_Sub4EBAE0
+			CALL Func_moveUnit_Duplicate
 			POPAD
 		}
 	}

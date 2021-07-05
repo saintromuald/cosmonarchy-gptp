@@ -758,6 +758,10 @@ namespace SpriteId
 		MindControlHitLarge = 750,
 		ZergOrbothOmlia = 751,
 		OvilethDeathReversed = 752,
+		ZergAirExplosionReversedLarge = 753,
+		ZergAirExplosionReversedSmall = 754,
+		IonCannonAttackGlow = 755,
+		WarpAnchor = 756,
 
 		// CORPSE \\
 

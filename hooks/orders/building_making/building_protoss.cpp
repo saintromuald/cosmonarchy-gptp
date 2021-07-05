@@ -78,12 +78,7 @@ namespace hooks
 						}
 						else
 						{
-							builtUnit = helper::createUnit(
-								unit->buildQueue[unit->buildQueueSlot],
-								unit->orderTarget.pt.x,
-								unit->orderTarget.pt.y,
-								unit->playerId
-							);
+							builtUnit = helper::createUnit(unit->buildQueue[unit->buildQueueSlot], unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->playerId);
 						}
 
 						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
@@ -97,8 +92,9 @@ namespace hooks
 							helper::replaceSpriteImages(builtUnit->sprite, ImageId::WarpAnchor, 0);
 							if (isBuildingAssimilator)
 							{
-								helper::addOverlayBelowMain(builtUnit->sprite, ImageId::VespeneGeyser, 0, 0, 0);
+								builtUnit->sprite->createUnderlay(ImageId::VespeneGeyser, 0, 0, 0);
 							}
+							builtUnit->sprite->createTopUnderlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
 							unit->orderTarget.unit = builtUnit;
 							helper::AI_TrainingOverlord(builtUnit, unit);
 							builtUnit->orderComputerClear(OrderId::BuildSelf2);

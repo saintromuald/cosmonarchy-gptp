@@ -23,7 +23,7 @@ namespace hooks
 
 		//identical code to setUnitPosition() but for some reason, is
 		//using another function to do exactly the same thing
-		helper::function_004EBAE0(target, caster->sprite->position.x, caster->sprite->position.y);
+		helper::moveUnit_Duplicate(target, caster->sprite->position.x, caster->sprite->position.y);
 
 		if (!scbw::checkUnitCollisionPos(target, &(caster->sprite->position), &new_pos, nullptr, false, 0))
 			//collision detected, cancel the movement

@@ -246,7 +246,7 @@ namespace helper
 	void checkUnstack(Unit* unit);												                            // 0042D9A0
 	bool beginBuilding(Unit* unit);																			// 00467030
 	Unit* beginGasBuilding(Unit* unit, u32 unitId);															// 004678A0
-	void addOverlayBelowMain(Sprite* sprite, u32 imageId, u32 unk1, u32 unk2, u32 unk3);					// 00498D70
+	void addOverlayBelowMain(Sprite* sprite, u32 imageId, u32 x_offset, u32 y_offset, u32 direction);		// 00498D70
 	void replaceSpriteImages(Sprite* sprite, u32 imageId, u32 imageDirection);								// 00499BB0
 	void displayLastNetErrorForPlayer(u32 playerId);										                // 0049E530
 	void updateUnitStrength(Unit* unit);												                    // 0049FA40
@@ -258,7 +258,7 @@ namespace helper
 	void playUnitSFX(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2);										// 0048EC10
 	u32 RandomizeShort(u32 unknown_index);																	// 004DC4A0
 	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit* unit, Box16* coords);							// 004E8280
-	void function_004EBAE0(Unit* unit, s32 x, s32 y);														// 004EBAE0
+	void moveUnit_Duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
 
 	//// spider_mine
 	Unit* SpiderMine_AcquireTarget(Unit* spiderMine);									                    // 00441270
