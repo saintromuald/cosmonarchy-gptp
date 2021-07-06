@@ -869,6 +869,8 @@ namespace PlayerColor
 		DarkLavender,
 		ForestGreen,
 		ZinnwalditeBrown,
+		NeonCarrot,
+		Aquamarine,
 
 		Count,
 	};

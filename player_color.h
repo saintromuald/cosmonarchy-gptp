@@ -72,6 +72,7 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::VividOrange,
 		PlayerColor::PersianOrange,
 		PlayerColor::Tomato,
+		PlayerColor::NeonCarrot,
 	},
 	{	// Yellow
 		PlayerColor::Yellow,
@@ -86,6 +87,7 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::Mango,
 		PlayerColor::Sunglow,
 		PlayerColor::BistreBrown,
+		PlayerColor::NeonCarrot,
 
 //		PlayerColor::IridescentYellow,
 	},
@@ -122,6 +124,7 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::CornflowerBlue,
 		PlayerColor::NeonBlue,
 		PlayerColor::PalatinateBlue,
+		PlayerColor::Aquamarine,
 
 //		PlayerColor::IridescentBlue,
 	},
@@ -132,6 +135,7 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::Mint,
 		PlayerColor::Turquoise,
 		PlayerColor::MidnightGreen,
+		PlayerColor::Aquamarine,
 		
 //		PlayerColor::IridescentGreen,
 	},
