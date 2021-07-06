@@ -867,6 +867,7 @@ namespace PlayerColor
 		PatrioticFreedom,
 		PalatinateBlue,
 		DarkLavender,
+		ForestGreen,
 
 		Count,
 	};

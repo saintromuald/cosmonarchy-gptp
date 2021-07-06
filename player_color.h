@@ -95,6 +95,7 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::DarkGreen,
 		PlayerColor::Emerald,
 		PlayerColor::DarkSpringGreen,
+		PlayerColor::ForestGreen,
 	},
 	{	// Dark Blue
 		PlayerColor::Blue,
