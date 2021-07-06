@@ -868,6 +868,7 @@ namespace PlayerColor
 		PalatinateBlue,
 		DarkLavender,
 		ForestGreen,
+		ZinnwalditeBrown,
 
 		Count,
 	};

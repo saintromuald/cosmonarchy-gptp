@@ -57,6 +57,11 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::Earthtone,
 		PlayerColor::GoldenBrown,
 		PlayerColor::CoyoteBrown,
+		PlayerColor::Wine,
+		PlayerColor::Auburn,
+		PlayerColor::Cordovan,
+		PlayerColor::Redwood,
+		PlayerColor::ZinnwalditeBrown,
 	},
 	{	// Orange
 		PlayerColor::Orange,
@@ -134,10 +139,6 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::Purple,
 		PlayerColor::TyrianPurple,
 		PlayerColor::PalatinatePurple,
-		PlayerColor::Wine,
-		PlayerColor::Auburn,
-		PlayerColor::Cordovan,
-		PlayerColor::Redwood,
 		PlayerColor::JapaneseViolet,
 		PlayerColor::DarkLavender,
 
