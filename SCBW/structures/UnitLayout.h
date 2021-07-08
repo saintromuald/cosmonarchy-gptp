@@ -257,7 +257,7 @@ enum ExtTimerId
 	TimerPlanetCrackerChannel,
 	TimerPlanetCrackerDelay,
 	TimerStarSovereignInterventionMissiles,
-	TimerUltrakorCancel,
+	TimerQuaziliskCancel,
 	TimerCausticDischargeSpeed,
 	TimerIonFieldSpeed,
 	TimerReconstitutionCooldown,
@@ -318,7 +318,7 @@ enum ExtTimerId
 	TimerAI_EnsnaringBrood,				   // > probably convert to use TimerAI_GenericAbilityCooldown
 	TimerAI_KitingCooldown,
 	TimerAI_KitingLeashTimer,
-	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
+	TimerAI_GenericAbilityCooldown,			// reusable for multiple unit ids, probably add second one if unit has two seperate abilities
 		
 	TimerCount,
 };

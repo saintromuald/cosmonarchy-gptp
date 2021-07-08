@@ -254,10 +254,10 @@ namespace
 			{
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
 			}
-			else if (unit->id == UnitId::ZergUltrakor)
+			else if (unit->id == UnitId::ZergQuazilisk)
 			{
 				unit->playIscriptAnim(IscriptAnimation::CastSpell);
-				unitExt->timers[TimerUltrakorCancel] = 4;
+				unitExt->timers[TimerQuaziliskCancel] = 4;
 			}
 			else
 			{

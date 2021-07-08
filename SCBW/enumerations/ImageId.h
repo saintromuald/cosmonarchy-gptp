@@ -1034,6 +1034,7 @@ enum Enum {
 	ObservanceOverlayMedium				= 1232,
 	ObservanceOverlaySmall				= 1233,
 	LazarusAgentCast					= 1265,
+	SublimeShepherdOverlay				= 1267,
 	KhaydarinEclipseOverlayLarge		= 1270,
 	KhaydarinEclipseOverlayMedium		= 1271,
 	EnsnaringBroodOverlay				= 1281,

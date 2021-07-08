@@ -412,11 +412,11 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::ZergUltrakor:
 			case UnitId::ZergEgg:
+			case UnitId::ZergQuazilisk:
 			{
-				// Gimmick to allow the Ultrakor morph cancellation animation to play correctly
-				if (unitExt->timers[TimerUltrakorCancel])
+				// Gimmick to allow morph cancellation animations to play correctly
+				if (unitExt->timers[TimerQuaziliskCancel])
 				{
 					if (unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell)
 					{
@@ -429,16 +429,16 @@ namespace hooks
 				if (scbw::get_generic_rust_value(unit, RustId::ToggleSublimeShepherd) == 1)
 				{
 					scbw::decloakProc(unit);
-					if (!unit->getOverlay(1267))
+					if (!unit->getOverlay(ImageId::SublimeShepherdOverlay))
 					{
-						unit->sprite->createTopOverlay(1267);
+						unit->sprite->createTopOverlay(ImageId::SublimeShepherdOverlay);
 					}
 				}
 				else
 				{
-					if (unit->getOverlay(1267))
+					if (unit->getOverlay(ImageId::SublimeShepherdOverlay))
 					{
-						unit->sprite->removeOverlay(1267);
+						unit->sprite->removeOverlay(ImageId::SublimeShepherdOverlay);
 					}
 				}
 			} break;

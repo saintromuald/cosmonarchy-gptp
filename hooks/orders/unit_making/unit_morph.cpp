@@ -197,8 +197,12 @@ namespace hooks
 					}
 					else if (origin == UnitId::ZergUltrakor
 						|| origin == UnitId::ZergOvileth)
-					{ // Iroleth uses air cocoon
+					{
 						unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+					}
+					else if (origin == UnitId::ZergQuazilisk)
+					{
+						unit->sprite->playIscriptAnim(IscriptAnimation::GndAttkToIdle, true);
 					}
 					else if (origin == UnitId::ZergLarva)
 					{
