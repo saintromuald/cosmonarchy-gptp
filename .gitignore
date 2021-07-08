@@ -9,3 +9,6 @@ GPTP.vcxproj.user
 /post_build_debug.bat
 /post_build_fastdebug.bat
 /post_build_release.bat
+post_build_debug.bat
+post_build_fastdebug.bat
+post_build_release.bat
