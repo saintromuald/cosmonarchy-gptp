@@ -233,7 +233,7 @@ namespace scbw
 
 	bool isUnderDarkSwarm(Unit* unit)
 	{
-		return getDarkSwarm(unit) != nullptr;
+		return !(unit->status & UnitStatus::InAir) && getDarkSwarm(unit) != nullptr;
 	}
 
 	bool IsDarkswarm(Unit* unit)
