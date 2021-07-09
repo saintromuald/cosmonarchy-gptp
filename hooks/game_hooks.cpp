@@ -1405,6 +1405,9 @@ namespace hooks
 			{
 				unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
 			}
+
+			// Fix unit
+			scbw::moveUnit(unit, unit->getX(), unit->getY());
 		}
 
 		// Attachment - Generic behavior
