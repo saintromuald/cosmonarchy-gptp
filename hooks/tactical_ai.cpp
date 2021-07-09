@@ -862,6 +862,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 					{
 						unit->orderTo(OrderId::PowerSiphon, enemy);
 						unitExt->timers[TimerAI_Siphon] = 3 * 32;
+						unitExt->timers[TimerAI_KitingCooldown] = 3 * 24;
 					}
 				}
 			}
@@ -987,6 +988,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 						unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
 						scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 1);
 						unitExt->timers[TimerAI_DisruptionField] = AIWebTimer;
+						unitExt->timers[TimerAI_KitingCooldown] = 5 * 24;
 					}
 				}
 			}
@@ -1033,6 +1035,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 				&& (unit->hitPoints + unit->shields) * 2 >=	(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
 			{
 				unitExt->timers[TimerAI_GriefOfAllGods] = 612;
+				unitExt->timers[TimerAI_KitingCooldown] = 5 * 24;
 				unit->orderComputerClear(OrderId::KhaydarinEclipse);
 				unit->orderTarget.pt = unit->sprite->position;
 				unit->mainOrderState = 0;
@@ -1165,6 +1168,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 				{
 					unit->orderTo(OrderId::CTFCOP1, target);
 					unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+					unitExt->timers[TimerAI_KitingCooldown] = 5 * 24;
 				}
 				else
 				{
