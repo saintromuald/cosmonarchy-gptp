@@ -354,6 +354,7 @@ static inline bool CanKite(Unit* unit)
 		&& unit->id != UnitId::ProtossPlasmaShell
 		&& unit->id != UnitId::TerranNuclearMissile
 		&& unit->id != UnitId::ProtossAnthelion
+		&& unit->id != UnitId::ZergAkistrokor
 		// Other rules
 		&& unit->mainOrderId != OrderId::BuildTerran
 		&& unit->mainOrderId != OrderId::ConstructingBuilding
@@ -383,7 +384,7 @@ static inline bool UnitCanAttack(Unit* unit)
 
 enum KiterType
 {
-	KiterNone = 0,
+	KiterTargeting,
 	KiterMelee,
 	KiterRanged,
 	KiterArtillery,
@@ -400,7 +401,7 @@ KiterType GetKiterType(u32 unitId)
 		case UnitId::TerranPhalanxSiegeMode:
 		{
 			// No kiting; Just smart targeting
-			return KiterNone;
+			return KiterTargeting;
 		}
 
 		case UnitId::ProtossSolarion:
@@ -502,7 +503,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 					return;
 				}
 
-				if (GetKiterType(localUnit->id) != KiterNone)
+				if (GetKiterType(localUnit->id) != KiterTargeting)
 				{
 					if (units_dat::BaseProperty[localUnit->id] & UnitProperty::Worker)
 					{
@@ -564,7 +565,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 				}
 			});
 		}
-		else if (GetKiterType(unit->id) != KiterNone)
+		else if (GetKiterType(unit->id) != KiterTargeting)
 		{
 			u32 sync = 0;
 
