@@ -984,6 +984,10 @@ static const char* playerColorNames[] =
 	"Patriotic Freedom",
 	"Palatinate Blue",
 	"Dark Lavender",
+	"Forest Green",
+	"Zinnwaldite Brown",
+	"Neon Carrot",
+	"Aquamarine",
 };
 
 enum VespeneDeaths
