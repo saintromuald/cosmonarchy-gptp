@@ -111,6 +111,7 @@
 	#include "hooks/unit_ai.h"
 	#include "hooks/limits/attack_extender.h"
 	#include "hooks/aiscript/ai_requests.h"
+	#include "SCBW/ExtendSightLimit.h"
 //	#include "hooks/requirements/requirements.h"
 
 /// This function is called when the plugin is loaded into StarCraft.

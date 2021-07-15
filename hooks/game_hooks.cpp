@@ -1789,6 +1789,7 @@ namespace hooks
 
 	bool gameOn()
 	{
+		setMaxSightRange<20>();
 		return true;
 	}
 
