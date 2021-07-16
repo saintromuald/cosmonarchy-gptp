@@ -740,6 +740,24 @@ namespace hooks
 		}
 	}
 
+	void __declspec(naked) ignoreIscriptGoToIdle_Wrapper() // 00476550
+	{
+		static Unit* unit;
+		static char result;
+		__asm
+		{
+			MOV unit, ESI
+			PUSHAD
+		}
+		result = hooks::ignoreIscriptGoToIdle(unit);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
+
 	void injectCosmonarchySpecific()
 	{
 		// must be finished first (and add Firegraft offsets)
@@ -765,6 +783,7 @@ namespace hooks
 //      jmpPatch(gameLoop_Wrapper, 0x004D94B0, 3);
 //      jmpPatch(isTileBlockedBy_Wrapper, 0x00473300, 0);
 //		jmpPatch(createUnit_Wrapper, 0x004A09D0, 1);
+		jmpPatch(ignoreIscriptGoToIdle_Wrapper, 0x00476550, 1);
 	}
 }
 

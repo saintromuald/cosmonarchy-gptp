@@ -1023,6 +1023,9 @@ namespace helper
 	// For AI_CheckMilitaryGrouping
 	void getRegionCenter(u16 regionId, s32* out_x, s32* out_y);															// 0049CAA0
 
+	// For ignoreIscriptGoToIdle
+	void playIdleIscript(Sprite* sprite);																				// 00497880
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

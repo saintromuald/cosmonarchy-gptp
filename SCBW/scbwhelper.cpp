@@ -9723,4 +9723,17 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For ignoreIscriptGoToIdle
+	void playIdleIscript(Sprite* sprite)
+	{
+		const u32 Func_PlayIdleIscript = 0x00497880;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, sprite
+			CALL Func_PlayIdleIscript
+			POPAD
+		}
+	}
 }
