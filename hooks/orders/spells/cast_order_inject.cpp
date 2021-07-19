@@ -98,14 +98,46 @@ namespace
 			RETN 0x10
 		}
 	}
+
+	void __declspec(naked) issueOrderTargetingGround_Wrapper() // 00475260
+	{
+		static Unit* unit;
+		static u8 id;
+		static u16 coordX;
+		static u16 coordY;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV id, AL
+			MOV EAX, [EBP + 0x0C]
+			MOV coordX, AX
+			MOV EAX, [EBP + 0x10]
+			MOV coordY, AX
+			POP EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hooks::issueOrderTargetingGround(unit, id, coordX, coordY);
+		__asm
+		{
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x0C
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectCastOrderHooks()
 	{
-		jmpPatch(orders_Spell_Wrapper,		0x00492850, 1);
-		jmpPatch(spellOrder_Wrapper,		0x004926D0, 0);
-		jmpPatch(canTargetSpell_Wrapper,	0x00492020, 1);
+		jmpPatch(orders_Spell_Wrapper,					0x00492850, 1);
+		jmpPatch(spellOrder_Wrapper,					0x004926D0, 0);
+		jmpPatch(canTargetSpell_Wrapper,				0x00492020, 1);
+		jmpPatch(issueOrderTargetingGround_Wrapper,		0x00475260, 1);
 	}
 }

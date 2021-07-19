@@ -1026,6 +1026,9 @@ namespace helper
 	// For ignoreIscriptGoToIdle
 	void playIdleIscript(Sprite* sprite);																				// 00497880
 
+	// For issueOrderTargetingGround
+	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6);											// 00447810
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
