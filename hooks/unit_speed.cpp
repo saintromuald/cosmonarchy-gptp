@@ -261,6 +261,10 @@ namespace hooks
 			{
 				speed *= 1.1;
 			} break;
+			case UnitId::TerranHeracles:
+			{
+				speed *= 1.15;
+			} break;
 			case UnitId::TerranCyprian:
 			case UnitId::TerranEidolon:
 			case UnitId::ProtossAmaranth:
