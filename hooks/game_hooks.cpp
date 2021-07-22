@@ -1206,6 +1206,24 @@ namespace hooks
 			} break;
 		}
 
+		// Fix animation bug with acceleration movement flag
+		if (unit->movementFlags & MovementFlags::Accelerating
+			&& unit->sprite->mainGraphic->animation != IscriptAnimation::Walking
+			&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle)
+		{
+			unit->movementFlags &= ~MovementFlags::Accelerating;
+		}
+
+		// Fix target clearing bug
+		/*
+		if (unit->orderTarget.unit
+			&& !(unit->orderTarget.unit->visibilityStatus & (1 << unit->playerId)))
+		{
+			scbw::print("lard");
+			unit->orderToIdle();
+		}
+		*/
+
 		// Phase Link Overlay
 		if (*elapsedTimeFrames % 10 == 0
 			&& unitExt->unitVectors[UnitVectorPhaseLinkClarions].size())
