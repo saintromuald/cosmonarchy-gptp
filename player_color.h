@@ -106,7 +106,6 @@ const std::vector<std::vector<u32>> playerTints =
 	},
 	{	// Dark Blue
 		PlayerColor::Blue,
-		PlayerColor::RoyalBlue,
 		PlayerColor::Ultramarine,
 		PlayerColor::CosmicCobalt,
 		PlayerColor::Zaffre,
@@ -115,6 +114,7 @@ const std::vector<std::vector<u32>> playerTints =
 		PlayerColor::BdazzledBlue,
 	},
 	{	// Light Blue
+		PlayerColor::RoyalBlue,
 		PlayerColor::Periwinkle,
 		PlayerColor::AliceBlue,
 		PlayerColor::MayaBlue,

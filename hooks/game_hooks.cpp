@@ -1207,7 +1207,8 @@ namespace hooks
 		}
 
 		// Fix animation bug with acceleration movement flag
-		if (unit->movementFlags & MovementFlags::Accelerating
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding)
+			&& unit->movementFlags & MovementFlags::Accelerating
 			&& unit->sprite->mainGraphic->animation != IscriptAnimation::Walking
 			&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle)
 		{

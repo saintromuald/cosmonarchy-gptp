@@ -263,7 +263,15 @@ namespace hooks
 			|| unit->id == UnitId::ZergEgg
 			|| scbw::unitIdIsZergSupply(unit->id))
 		{
-			unitAI = helper::AI_CreateBuildingAi(town->freeBuildings);
+			if (town->freeBuildings)
+			{
+				unitAI = helper::AI_CreateBuildingAi(town->freeBuildings);
+			}
+			else
+			{
+				unitAI = nullptr;
+			}
+
 			if (unitAI)
 			{
 				unitAI->type = AiType::Building;

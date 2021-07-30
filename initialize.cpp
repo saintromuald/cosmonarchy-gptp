@@ -487,7 +487,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectGameHooks();
 	hooks::injectDrawHook();
 
-//	hooks::injectInfestationHooks();
+	hooks::injectInfestationHooks();
 	hooks::injectSiegeTransformHooks();
 	hooks::injectButtonSetHooks();
 
