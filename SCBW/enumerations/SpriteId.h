@@ -764,6 +764,7 @@ namespace SpriteId
 		WarpAnchor = 756,
 		AnthelionTeleportDepart = 757,
 		AnthelionTeleportArrive = 758,
+		ArcliteShockCannon_Damageless_Silent = 759,
 
 		// CORPSE \\
 

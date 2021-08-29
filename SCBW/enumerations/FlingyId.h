@@ -379,6 +379,9 @@ namespace FlingyId
 		ProtossExemplar = 369,
 		ArcliteShockCannon_Damageless = 370,
 		ProtossHallucinationEffect = 373,
+
 		NeutronFlareOrange_Damageless = 402,
+		ZergOrbothOmlia = 403,
+		ArcliteShockCannon_Damageless_Silent = 404,
 	};
 }

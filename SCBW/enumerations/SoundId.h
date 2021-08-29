@@ -1177,9 +1177,15 @@ namespace SoundId
 		AxitriliskShieldLoss01 = 1631,
 		AxitriliskShieldLoss02 = 1632,
 		AxitriliskShieldLoss03 = 1633,
+
 		EmpressZombify01 = 1778,
 		EmpressZombify02 = 1779,
 		EmpressZombify03 = 1780,
+
+		CyclopsPassive01 = 1791,
+		CyclopsPassive02 = 1792,
+		CyclopsPassive03 = 1793,
+		CyclopsPassive04 = 1794,
 	};
 }
 

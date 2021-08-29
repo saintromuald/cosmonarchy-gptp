@@ -1380,7 +1380,8 @@ namespace hooks
 		{
 			if (fuse_timer == 1)
 			{
-				helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, unit->getX(), unit->getY(), 11);
+				helper::createThingy(SpriteId::ArcliteShockCannon_Damageless_Silent, unit->getX(), unit->getY(), 11);
+				helper::playSoundFromSource(scbw::randBetween(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
 				const u32 radius = 1.5 * 32;
 				scbw::UnitFinder(
 					unit->getX() - radius,
