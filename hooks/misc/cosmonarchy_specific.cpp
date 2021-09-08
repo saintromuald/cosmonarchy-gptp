@@ -652,16 +652,12 @@ LABEL_18:
 			}
 			else if (order_state == 2)
 			{
-				if (unitExt->timers[TimerPlanetCrackerDelay] == 0)
+				if (unitExt->timers[TimerPlanetCrackerDelay] == 0 && unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell)
 				{
 					unit->playIscriptAnim(anim);
 					unitExt->timers[TimerPlanetCrackerChannel] = 121;
-					unitExt->values[ValueProtossSwitchOrderState] = 3;
 				}
-			}
-			else if (order_state == 3)
-			{
-				if (unit->orderSignal & 4)
+				else if (unit->orderSignal & 4)
 				{
 					unit->orderSignal &= ~0x4;
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
