@@ -625,13 +625,13 @@ LABEL_18:
 	void order_PhaseLink(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		scbw::decloakProc(unit);
-
+		auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 		u32 status = 0;
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell;
+
+		scbw::decloakProc(unit);
 		if (unit->id == UnitId::ProtossStarSovereign)
 		{
-			auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 			if (order_state == 0)
 			{
 				if (unit->movementFlags & MovementFlags::Accelerating)
@@ -642,7 +642,9 @@ LABEL_18:
 			}
 			else if (order_state == 1)
 			{
-				if (!(unit->movementFlags & MovementFlags::Accelerating))
+				if (!(unit->movementFlags & MovementFlags::Accelerating)
+					&& unit->sprite->mainGraphic->animation != IscriptAnimation::Walking
+					&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle)
 				{
 					unitExt->timers[TimerPlanetCrackerDelay] = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
@@ -673,7 +675,6 @@ LABEL_18:
 			return;
 		}
 
-		auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 		if (order_state == 0)
 		{
 			if (unit->movementFlags & MovementFlags::Accelerating)
