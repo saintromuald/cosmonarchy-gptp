@@ -598,13 +598,14 @@ namespace hooks
 				} break;
 				case WeaponId::EmpressFadingBioplasma:
 				{
+					// Empress - Anodyne Annex - add stack
 					targetExt->units[UnitEmpressSource] = data.attacker;
 					targetExt->values[ValueEmpressPassiveStacks]++;
 					targetExt->values[ValueEmpressSourcePlayer] = data.attackingPlayerId;
 				} break;
 				case WeaponId::NathrokorPlasmidBreath:
 				{
-					// Adrenal Frenzy - Nathrokor behavior
+					// Nathrokor - Adrenal Frenzy
 					targetExt->nathrokorTargetStacks[data.attackingPlayerId]++;
 				} break;
 				case WeaponId::DemiurgeGalacticWeaver:
@@ -911,7 +912,7 @@ namespace hooks
 			} break;
 		}
 
-		// Empress - Anodyne Annex passive
+		// Empress - Anodyne Annex - zombify target
 		if (targetExt->values[ValueEmpressPassiveStacks]
 			&& !targetExt->values[ValueIsZombified])
 		{
@@ -926,6 +927,7 @@ namespace hooks
 			targetExt->values[ValueAlliedInvPlayer] = targetExt->values[ValueEmpressSourcePlayer];
 			targetExt->timers[TimerAlliedInvFrames] = 24;
 			data.target->sprite->createOverlay(ImageId::MindControlHit_Small + scbw::getOverlayOffset(data.target->id));
+			helper::playSoundFromSource(scbw::randBetween(SoundId::EmpressZombify01, SoundId::EmpressZombify03), data.target, 1, 0);
 		}
 
 		// Apostle, Anticthon - Revive

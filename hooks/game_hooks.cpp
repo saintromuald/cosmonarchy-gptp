@@ -1206,6 +1206,25 @@ namespace hooks
 			} break;
 		}
 
+		// Fix animation bug with acceleration movement flag
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding)
+			&& unit->movementFlags & MovementFlags::Accelerating
+			&& unit->sprite->mainGraphic->animation != IscriptAnimation::Walking
+			&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle)
+		{
+			unit->movementFlags &= ~MovementFlags::Accelerating;
+		}
+
+		// Fix target clearing bug
+		/*
+		if (unit->orderTarget.unit
+			&& !(unit->orderTarget.unit->visibilityStatus & (1 << unit->playerId)))
+		{
+			scbw::print("lard");
+			unit->orderToIdle();
+		}
+		*/
+
 		// Phase Link Overlay
 		if (*elapsedTimeFrames % 10 == 0
 			&& unitExt->unitVectors[UnitVectorPhaseLinkClarions].size())
@@ -1361,7 +1380,8 @@ namespace hooks
 		{
 			if (fuse_timer == 1)
 			{
-				helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, unit->getX(), unit->getY(), 11);
+				helper::createThingy(SpriteId::ArcliteShockCannon_Damageless_Silent, unit->getX(), unit->getY(), 11);
+				helper::playSoundFromSource(scbw::randBetween(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
 				const u32 radius = 1.5 * 32;
 				scbw::UnitFinder(
 					unit->getX() - radius,

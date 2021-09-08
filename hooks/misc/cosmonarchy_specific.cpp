@@ -625,13 +625,13 @@ LABEL_18:
 	void order_PhaseLink(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		scbw::decloakProc(unit);
-
+		auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 		u32 status = 0;
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell;
+
+		scbw::decloakProc(unit);
 		if (unit->id == UnitId::ProtossStarSovereign)
 		{
-			auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 			if (order_state == 0)
 			{
 				if (unit->movementFlags & MovementFlags::Accelerating)
@@ -642,7 +642,9 @@ LABEL_18:
 			}
 			else if (order_state == 1)
 			{
-				if (!(unit->movementFlags & MovementFlags::Accelerating))
+				if (!(unit->movementFlags & MovementFlags::Accelerating)
+					&& unit->sprite->mainGraphic->animation != IscriptAnimation::Walking
+					&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle)
 				{
 					unitExt->timers[TimerPlanetCrackerDelay] = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
@@ -669,7 +671,6 @@ LABEL_18:
 			return;
 		}
 
-		auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 		if (order_state == 0)
 		{
 			if (unit->movementFlags & MovementFlags::Accelerating)
@@ -826,6 +827,35 @@ LABEL_18:
 			helper::setSpriteMainImageOffset(unitConstructorResult4->sprite, *pointer, randomSeed);
 			result = unitConstructorResult2;
 		}
+		return result;
+	}
+
+	// Hooked to add nullcheck - Pr0nogo
+	char ignoreIscriptGoToIdle(Unit* unit) // 00476550
+	{
+		if (!unit)
+		{
+			return 0;
+		}
+		Sprite* unitSprite = unit->sprite;
+		if (!unitSprite)
+		{
+			return 0;
+		}
+
+		unit->status &= 0xFFFFDFFF;
+		Unit* activeEntity = *activeIscriptEntity;
+		Unit* activeSubunit = *activeIscriptUnit;
+		unitSprite->flags &= 0x7Fu;
+		*activeIscriptUnit = unit;
+		*activeIscriptEntity = unit;
+		helper::playIdleIscript(unitSprite);
+		char unitMovementFlags = unit->movementFlags;
+		*activeIscriptUnit = activeSubunit;
+
+		char result = unitMovementFlags & 0xF7;
+		*activeIscriptEntity = activeEntity;
+		unit->movementFlags = result;
 		return result;
 	}
 }

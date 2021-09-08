@@ -438,4 +438,16 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to safeguard against crashes
+	void issueOrderTargetingGround(Unit* unit, u8 id, u16 coordX, u16 coordY) // 00475260
+	{
+		if (!unit)
+		{
+			return;
+		}
+		unit->userActionFlags |= 1u;
+		unit->order(id, coordX, coordY, nullptr, UnitId::None, true);
+		helper::orders_Nothing2(unit);
+	}
 }

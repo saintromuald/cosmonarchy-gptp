@@ -9723,4 +9723,35 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For ignoreIscriptGoToIdle
+	void playIdleIscript(Sprite* sprite)
+	{
+		const u32 Func_PlayIdleIscript = 0x00497880;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, sprite
+			CALL Func_PlayIdleIscript
+			POPAD
+		}
+	}
+
+	// For issueOrderTargetingGround
+	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6)
+	{
+		const u32 Func_order = 0x00474810;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, a1
+			MOV EDX, a2
+			MOVZX CL, a3
+			PUSH a4
+			PUSH a5
+			PUSH a6
+			CALL Func_order
+			POPAD
+		}
+	}
 }
