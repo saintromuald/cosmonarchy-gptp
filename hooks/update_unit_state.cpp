@@ -96,12 +96,12 @@ namespace hooks
 				}
 				else
 				{
-					unit->addUnitEnergy(8, maxEnergy);
+					unit->addUnitEnergy(11, maxEnergy);
 					unit->addUnitEnergy(unitExt->unitVectors[UnitVectorTertiaryEyes].size() * 2, maxEnergy);
 				}
 			}
 
-			//If the unit is currently selected, redraw its graphics
+			// If the unit is currently selected, redraw its graphics
 			if (!bStopHere && unit->sprite->flags & SpriteFlags::Selected)
 			{
 				helper::setAllImageGroupFlagsPal11(unit->sprite);
