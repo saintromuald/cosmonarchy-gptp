@@ -9755,18 +9755,23 @@ namespace helper
 		}
 	}
 
+	static u32 __cdecl removeCreepAtUnit_nop(u32 x_tile, u32 y_tile, Box32* rect)
+	{
+		return 0;
+	}
+
 	// For unit_destructor_special
-	s32 removeCreepAtUnit(s32 a1, s32 a2, s16 a3, void* func)
+	s32 removeCreepAtUnit(s32 left, s32 top, s16 unit_id)
 	{
 		const u32 Func_removeCreepAtUnit = 0x00414560;
 		static s32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH func
-			MOV DX, a3
-			MOV ECX, a2
-			MOV EAX, a1
+			PUSH removeCreepAtUnit_nop
+			MOV DX, unit_id
+			MOV EAX, top
+			MOV ECX, left
 			CALL Func_removeCreepAtUnit
 			MOV result, EAX
 			POPAD

@@ -214,9 +214,9 @@ namespace hooks
 			if (reveal_flag)
 			{
 				// Explore map
-				for (u32 y = 0; y < mapTileSize->height; y++)
+				for (u32 x = 0; x < mapTileSize->width; x++)
 				{
-					for (u32 x = 0; x < mapTileSize->width; x++)
+					for (u32 y = 0; y < mapTileSize->height; y++)
 					{
 						ActiveTile& tile = scbw::getActiveTileAt(x * 32, y * 32);
 						tile.exploredFlags &= ~reveal_flag;

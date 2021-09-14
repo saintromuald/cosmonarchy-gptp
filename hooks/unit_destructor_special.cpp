@@ -96,6 +96,26 @@ void unitDestructorSpecialHook(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
+	if (unit->status & UnitStatus::Completed && 
+	   (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
+		unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
+		units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding))
+	{
+		u32 w = units_dat::BuildingDimensions[unit->id].x;
+		u32 h = units_dat::BuildingDimensions[unit->id].y;
+
+		for (u32 x = 0; x < w / 32; ++x)
+		{
+			for (u32 y = 0; y < h / 32; ++y)
+			{
+				helper::removeCreepAtUnit(
+					unit->position.x - w / 2 + x * 32,
+					unit->position.y - h / 2 + y * 32,
+					UnitId::ZergEgg);
+			}
+		}
+	}
+
 	// These do not require the unit to be completed
 	switch (unit->id)
 	{
