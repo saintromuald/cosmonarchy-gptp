@@ -1133,6 +1133,11 @@ namespace hooks
 					helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire04), unit, 1, 0);
 				}
 
+				if (unit->mainOrderId == OrderId::Follow || unit->mainOrderId == OrderId::AttackUnit)
+				{
+					unit->orderTo(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				}
+
 				if (unit->mainOrderId == OrderId::Move)
 				{
 					if (unitExt->anthelionLastMoveTarget != unit->moveTarget.pt)
