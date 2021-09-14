@@ -201,6 +201,12 @@ void unitDestructorSpecialHook(Unit* unit)
 						}
 						targetExt->values[ValueTerminalSurge]++;
 						target->updateSpeed();
+						
+						if (target->subunit != nullptr)
+						{
+							UnitExt* subunitExt = globals.GetUnitExt(target->subunit);
+							subunitExt->values[ValueTerminalSurge]++;
+						}
 					});
 			} break;
 			case UnitId::ProtossAccantor:
