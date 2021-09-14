@@ -1029,6 +1029,9 @@ namespace helper
 	// For issueOrderTargetingGround
 	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6);											// 00447810
 
+	// For unit_destructor_special
+	s32 removeCreepAtUnit(s32 a1, s32 a2, s16 a3, void* func);															// 00414560
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

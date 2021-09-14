@@ -9754,4 +9754,23 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For unit_destructor_special
+	s32 removeCreepAtUnit(s32 a1, s32 a2, s16 a3, void* func)
+	{
+		const u32 Func_removeCreepAtUnit = 0x00414560;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH func
+			MOV DX, a3
+			MOV ECX, a2
+			MOV EAX, a1
+			CALL Func_removeCreepAtUnit
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
