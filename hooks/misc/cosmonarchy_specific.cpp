@@ -644,7 +644,8 @@ LABEL_18:
 			{
 				if (!(unit->movementFlags & MovementFlags::Accelerating)
 					&& unit->sprite->mainGraphic->animation != IscriptAnimation::Walking
-					&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle)
+					&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle
+					&& unitExt->timers[TimerPlanetCrackerDelay] == 0)
 				{
 					unitExt->timers[TimerPlanetCrackerDelay] = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
