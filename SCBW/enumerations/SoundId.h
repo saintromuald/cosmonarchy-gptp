@@ -1186,6 +1186,8 @@ namespace SoundId
 		CyclopsPassive02 = 1792,
 		CyclopsPassive03 = 1793,
 		CyclopsPassive04 = 1794,
+
+		PhobosArgentCapacitorsProc = 1353,
 	};
 }
 
