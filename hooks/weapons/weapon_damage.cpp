@@ -1028,7 +1028,7 @@ namespace hooks
 			{
 				if (source->id == UnitId::ZergAkistrokor)
 				{
-					scbw::set_generic_rust_value(unit, RustId::CancelAttachment, 1);
+					scbw::set_generic_rust_value(source, RustId::CancelAttachment, 1);
 				}
 			}
 		}
