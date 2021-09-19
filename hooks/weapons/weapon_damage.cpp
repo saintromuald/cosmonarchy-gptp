@@ -383,9 +383,11 @@ namespace hooks
 		}
 
 		// Isthrathaleth Dark Swarm
-		if (scbw::isUnderDarkSwarm(data.target) && weapons_dat::MaxRange[data.weaponId] > 32
+		if (scbw::isUnderDarkSwarm(data.target)
+			&& weapons_dat::MaxRange[data.weaponId] > 32
 			&& (data.damageDivisor == 1 || data.weaponId == WeaponId::AcidSpore)
-			&& data.weaponId != WeaponId::SubterraneanSpines)
+			&& data.weaponId != WeaponId::SubterraneanSpines
+			&& data.weaponId != WeaponId::Custom)
 		{
 			data.damageType = DamageType::Independent;
 		}

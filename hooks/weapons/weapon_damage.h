@@ -31,7 +31,7 @@ namespace hooks {
 		s32 shieldReduceAmount;
 		u8 damageType;
 		u8 damageDivisor;
-		u8 weaponId;
+		u16 weaponId;
 		s8 direction;
 
 		Unit* target;
