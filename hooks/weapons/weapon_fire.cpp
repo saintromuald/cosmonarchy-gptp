@@ -13,6 +13,7 @@
 #include "weapon_damage.h"
 #include "weapon_spellhit.h"
 #include <set>
+#include "weapon_cooldown.h"
 
 //-------- Helper function declarations. Do NOT modify! ---------//
 
@@ -406,9 +407,12 @@ namespace hooks
 						if (unit->energy == unit->getMaxEnergy())
 						{
 							unitExt->values[ValuePhobosDischarge] = 1;
+							unit->groundWeaponCooldown = getModifiedWeaponCooldownHook(unit, WeaponId::PhobosArgosLaserBatteries);
+							unit->airWeaponCooldown = getModifiedWeaponCooldownHook(unit, WeaponId::PhobosArgosLaserBatteries);
+							helper::playSoundFromSource(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
+							unit->sprite->createOverlay(ImageId::OpticalFlareHit_Large);
 						}
 					}
-
 					scbw::setMissileSourcePos(unit, weaponId, ValuePhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::SkithrokorSkitteringSpores)
