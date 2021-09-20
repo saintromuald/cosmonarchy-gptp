@@ -34,22 +34,13 @@ namespace hooks
 		helper::BWFXN_PrintXY(text, x, y);
 	}
 
-	std::string numberWithLeadingZero(u32 n)
-	{
-		std::string str = std::to_string(n);
-		if (n < 10)
-		{
-			str = std::string("0") + str;
-		}
-		return str;
-	}
-
-	std::string getFormattedTime(u32 seconds)
+	void getFormattedTime(char* buffer, u32 seconds)
 	{
 		u32 sec = seconds % 60;
-		u32 min = seconds / 60;
+		u32 min = seconds / 60 % 60;
 		u32 hrs = seconds / 60 / 60;
-		return numberWithLeadingZero(hrs) + std::string(":") + numberWithLeadingZero(min) + std::string(":") + numberWithLeadingZero(sec);
+
+		sprintf(buffer, "%02u:%02u:%02u", hrs, min, sec);
 	}
 	/*
 		APM Counter TODO
@@ -89,8 +80,9 @@ namespace hooks
 	{
 		if (config.show_timer)
 		{
-			std::string time = getFormattedTime(*elapsedTimeFrames / 24);
-			drawText(time.c_str(), 10, 3, 100, 15, 7);
+			char buffer[32] = {0};
+			getFormattedTime(buffer, *elapsedTimeFrames / 24);
+			drawText(buffer, 10, 3, 100, 15, 7);
 		}
 
 		//std::string apm = "APM: " + std::to_string(getAPM());
