@@ -97,7 +97,6 @@ namespace hooks
 				else
 				{
 					unit->addUnitEnergy(11, maxEnergy);
-					unit->addUnitEnergy(unitExt->unitVectors[UnitVectorTertiaryEyes].size() * 2, maxEnergy);
 				}
 			}
 
