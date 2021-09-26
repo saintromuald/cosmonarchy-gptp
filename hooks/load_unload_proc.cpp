@@ -293,7 +293,8 @@ namespace hooks
 
 						if (unit->id == UnitId::ZergCreepColony
 							|| unit->id == UnitId::ZergSunkenColony
-							|| unit->id == UnitId::ZergSporeColony)
+							|| unit->id == UnitId::ZergSporeColony
+							|| unit->id == UnitId::ZergLarvalColony)
 						{
 							// TODO: spawn creep
 						}

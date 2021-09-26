@@ -372,7 +372,7 @@ namespace hooks
 				// Zoryusthaleth - Reconstitution
 				if (unitExt->timers[TimerReconstitutionCooldown] == 0)
 				{
-					auto radius = 128;
+					auto radius = 160;
 					std::vector<Thingy*> corpseList = CorpseFinder::findCorpses(
 						unit->position.x - radius,
 						unit->position.y - radius,
