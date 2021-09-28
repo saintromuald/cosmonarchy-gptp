@@ -822,7 +822,16 @@ namespace hooks
 				} break;
 				case WeaponId::CyclopsFlakCannons:
 				{
+					// Cyclops - Flak Cannons
 					targetExt->timerVectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
+				} break;
+				case WeaponId::ClaymoreHarpoonRailgun:
+				{
+					// Claymore - Kelvin Munitions - Slow primary target
+					if (!targetExt->values[ValueKelvinMunitionsSlow])
+					{
+						targetExt->values[ValueKelvinMunitionsSlow] = 1;
+					}
 				} break;
 			}
 		}

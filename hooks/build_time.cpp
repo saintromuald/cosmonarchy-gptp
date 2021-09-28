@@ -18,7 +18,7 @@ namespace hooks
 		{
 			multiplier = 16;
 		}
-		if (unitExt->timers[TimerEggBoost] % 2 == 1)
+		if (unitExt->timers[TimerSireEggBoost] % 2 == 1)
 		{
 			multiplier *= 2;
 		}
