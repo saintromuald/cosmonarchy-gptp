@@ -814,7 +814,9 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 		}
 	}
 
-	if (unit->pAI && !helper::isUnitLoaded(unit))
+	if (unit->pAI && !helper::isUnitLoaded(unit) &&
+		playerTable[unit->playerId].type != PlayerType::Human &&
+		playerTable[unit->playerId].type != PlayerType::HumanDefeated)
 	{
 		KitingAi(unit, unitExt);
 
