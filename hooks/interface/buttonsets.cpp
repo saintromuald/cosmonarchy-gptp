@@ -1451,33 +1451,27 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if (((*activePortraitUnit)->id == UnitId::ZergIroleth
-								|| (*activePortraitUnit)->id == UnitId::ZergOthstoleth
-								|| (*activePortraitUnit)->id == UnitId::ZergAlaszileth) &&  // Iroleth, Othstoleth, Alaszileth Endomorphic Accelerant passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergIroleth &&  // Iroleth Endomorphic Accelerant passive
 								current_button->iconID == IconId::ZergBasicBuildings)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if (((*activePortraitUnit)->id == UnitId::ZergOthstoleth
-								|| (*activePortraitUnit)->id == UnitId::ZergAlaszileth) &&  // Othstoleth, Alaszileth Ectomorphic Accelerant passive
-								current_button->iconID == IconId::ZergAdvancedBuildings)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergAlaszileth &&  // Alaszileth Ectomorphic Accelerant passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergAlaszileth &&  // Alaszileth Dermal Accelerant passive
 								current_button->iconID == IconId::Consume)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if (((*activePortraitUnit)->id == UnitId::ZergLair					// Lair, Hive, Sire Larval Gestation passive
-								|| (*activePortraitUnit)->id == UnitId::ZergHive					// Irol Iris, Othstol Oviform, Alaszil Arbor Collective Integration passive
-								|| (*activePortraitUnit)->id == UnitId::ZergSire
-								|| (*activePortraitUnit)->id == UnitId::ZergIrolIris
-								|| (*activePortraitUnit)->id == UnitId::ZergOthstolOviform
-								|| (*activePortraitUnit)->id == UnitId::ZergAlaszilArbor) &&
+							else if (((*activePortraitUnit)->id == UnitId::ZergLair			// Lair, Hive, Sire Larval Gestation passive
+								|| (*activePortraitUnit)->id == UnitId::ZergHive
+								|| (*activePortraitUnit)->id == UnitId::ZergSire) &&
 								current_button->iconID == IconId::Suicide_Scourge)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::ZergSire &&  // Sire Ectomorphic Accelerant passive
+							current_button->iconID == IconId::ZergAdvancedBuildings)
+							{
+							current_button_state = BUTTON_STATE::Enabled;
 							}
 							else if ((*activePortraitUnit)->id == UnitId::ZergLarvalColony &&  // Larval Colony Larval Gestation passive
 								current_button->iconID == IconId::MetasynapticNode)

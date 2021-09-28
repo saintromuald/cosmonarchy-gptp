@@ -429,7 +429,7 @@ namespace hooks
 				}
 				else if (weaponId == WeaponId::KalkaliskViscousAcid)
 				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueKalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValueKalkaliskMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::KeskathalorScreamingVenom)
 				{
@@ -860,9 +860,9 @@ namespace hooks
 				{
 					// Claymore - Kelvin Munitions - pierce targets
 					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-					hooks::WeaponBulletHit(bullet, collisionTarget, 2);
+					hooks::WeaponBulletHit(bullet, collisionTarget, 1);
 
-					// Claymore - Kelvin Munitions - Slow targets
+					// Claymore - Kelvin Munitions - Slow pierced targets
 					UnitExt* collisionTargetExt = globals.GetUnitExt(collisionTarget);
 					if (!collisionTargetExt->values[ValueKelvinMunitionsSlow])
 					{

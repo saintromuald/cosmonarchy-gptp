@@ -220,8 +220,8 @@ namespace hooks
 			});
 		}
 
-		// Othstoleth morph speed increase aura
-		if (unit->id == UnitId::ZergOthstoleth)
+		// Sire Ectomorphic Accelerant - egg morph speed aura
+		if (unit->id == UnitId::ZergSire)
 		{
 			u32 radius = 224;
 			scbw::UnitFinder(
@@ -239,9 +239,11 @@ namespace hooks
 				{
 					return;
 				}
-				if (scbw::isAlliedTo(target->playerId, unit->playerId) && scbw::isZergEggNew(target, true, false))
+				if (scbw::isAlliedTo(target->playerId, unit->playerId)
+					&& (target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon))
 				{
-					unitExt->timers[TimerEggBoost] = 24;
+					UnitExt* targetExt = globals.GetUnitExt(target);
+					targetExt->timers[TimerSireEggBoost] = 24;
 				}
 			});
 		}

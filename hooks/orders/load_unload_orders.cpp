@@ -628,13 +628,10 @@ namespace hooks
 		{
 			return 0;
 		}
-		/* TODO: Limit transport space to 8 slots
-		else
-			if (conditional)
-			{
-				return 0;
-			}
-		*/
+		if (scbw::transportIsFull(transport))
+		{
+			return 0;
+		}
 		u32 spaceProvided = units_dat::SpaceProvided[transport->id];
 		u32 index = 0;
 		s32 spaceRequired = 0;

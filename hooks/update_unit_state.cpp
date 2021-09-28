@@ -97,7 +97,6 @@ namespace hooks
 				else
 				{
 					unit->addUnitEnergy(11, maxEnergy);
-					unit->addUnitEnergy(unitExt->unitVectors[UnitVectorTertiaryEyes].size() * 2, maxEnergy);
 				}
 			}
 
@@ -456,24 +455,26 @@ namespace hooks
 			}
 
 			// HP regeneration
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
-				unit->hitPoints > 0 &&
-				unit->hitPoints / 256 != unit->getMaxHpInGame() && 
-				unitExt->damageReceiveTimer > 2 * 24)
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP
+				&& unit->hitPoints > 0
+				&& unit->hitPoints / 256 != unit->getMaxHpInGame()
+				&& unitExt->damageReceiveTimer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
 
 				regen *=  1 + 0.05 * unitExt->unitVectors[UnitVectorCrucibles].size();
-				if (unitExt->timers[TimerAlaszilethRegenBoost] > 0)
-				{
-					regen *= 3;
-				}
 				unit->setHp(unit->hitPoints + regen);
 			}
 
 			// Deliberate healing
 			{
 				s32 tickHeal = 0;
+				// Alaszileth - Dermal Accelerant - 500% life regen
+				if (unitExt->timers[TimerAlaszilethRegenBoost] > 0)
+				{
+					tickHeal += 11 * 5;
+				}
+
 				// Azazel Innervating Matrices - heal over time
 				if (unit->defensiveMatrixHp != 0)
 				{

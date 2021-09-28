@@ -372,7 +372,7 @@ namespace hooks
 				// Zoryusthaleth - Reconstitution
 				if (unitExt->timers[TimerReconstitutionCooldown] == 0)
 				{
-					auto radius = 128;
+					auto radius = 160;
 					std::vector<Thingy*> corpseList = CorpseFinder::findCorpses(
 						unit->position.x - radius,
 						unit->position.y - radius,
@@ -1483,28 +1483,26 @@ namespace hooks
 			}
 		}
 
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP) {
-			// Alaszileth - Dermal Accelerant
-			Point16 pos = unit->position;
-			s32 radius = 7 * 32;
-			scbw::UnitFinder(
-				pos.x - radius,
-				pos.y - radius,
-				pos.x + radius,
-				pos.y + radius
-			).forEach([&](Unit* foundUnit)
+		// Alaszileth - Dermal Accelerant
+		Point16 pos = unit->position;
+		s32 radius = 7 * 32;
+		scbw::UnitFinder(
+			pos.x - radius,
+			pos.y - radius,
+			pos.x + radius,
+			pos.y + radius
+		).forEach([&](Unit* foundUnit)
+		{
+			if (!(scbw::isAlliedTo(foundUnit->playerId, unit->playerId)))
 			{
-				if (!(scbw::isAlliedTo(foundUnit->playerId, unit->playerId)))
-				{
-					return;
-				}
-				if (foundUnit->id != UnitId::ZergAlaszileth)
-				{
-					return;
-				}
-				unitExt->timers[TimerAlaszilethRegenBoost] = 2;
-			});
-		}
+				return;
+			}
+			if (foundUnit->id != UnitId::ZergAlaszileth)
+			{
+				return;
+			}
+			unitExt->timers[TimerAlaszilethRegenBoost] = 2;
+		});
 
 		// Seraph - Observance
 		if (unitExt->timers[TimerObservanceDebuff] > 1)

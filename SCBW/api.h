@@ -551,4 +551,5 @@ namespace scbw
 	bool isZergProduction(u16 unitId);
 	bool unitIdIsTownCenter(u16 unitId);
 	bool unitIdIsShared(u16 unitId);
+	bool transportIsFull(Unit* transport);
 }

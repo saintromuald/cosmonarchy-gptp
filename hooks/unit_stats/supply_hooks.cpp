@@ -511,7 +511,7 @@ LABEL_55:
                 supply = supply_new;
             }
             unitExt->values[ValueSupplyProvided] = supply;
-            auto supply_overlord_modifier = unitExt->values[ValueOverlordSupply];
+            auto supply_overlord_modifier = unitExt->values[ValueOvilethSupply];
             if (supply_overlord_modifier > 0)
             {
                 switch (supply_overlord_modifier)
@@ -537,7 +537,7 @@ LABEL_55:
             {
                 supply = units_dat::SupplyProvided[unit->id];
             }
-            unitExt->values[ValueOverlordSupply] = 0;
+            unitExt->values[ValueOvilethSupply] = 0;
         }
         if (race <= RaceId::Protoss)
         {

@@ -231,15 +231,15 @@ namespace hooks
 				{
 					case UnitId::ZergOvileth:
 					{
-						unitExt->values[ValueOverlordSupply] = 1;
+						unitExt->values[ValueOvilethSupply] = 1;
 					} break;
 					case UnitId::ZergIroleth:
 					{
-						unitExt->values[ValueOverlordSupply] = 2;
+						unitExt->values[ValueOvilethSupply] = 2;
 					} break;
 					case UnitId::ZergOthstoleth:
 					{
-						unitExt->values[ValueOverlordSupply] = 3;
+						unitExt->values[ValueOvilethSupply] = 3;
 					} break;
 				}
 				helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
