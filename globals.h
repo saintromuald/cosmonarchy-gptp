@@ -79,6 +79,7 @@ struct RevivingUnit
 	u32 energy;
 	u32 hp;
 	AiTown* town;
+	bool ignore_town;
 };
 
 struct AttackExtender

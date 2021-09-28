@@ -464,7 +464,7 @@ void Globals::frameHook()
 		}
 		else
 		{
-			if (playerTable[revivingUnit.playerId].type != PlayerType::Computer || revivingUnit.town)
+			if (playerTable[revivingUnit.playerId].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town)
 			{
 				auto revived = scbw::createUnitInGame(revivingUnit.unitId, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
 				if (revived)
@@ -844,10 +844,13 @@ void Globals::initRevive(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 hp
 	revivingUnit.unitId = unitId;
 	revivingUnit.energy = energy;
 	revivingUnit.hp = hp;
-	if (units_dat::BaseProperty[unitId] & (UnitProperty::Worker | UnitProperty::Building)
-		|| unitId == UnitId::ZergOvileth)
+	if (units_dat::BaseProperty[unitId] & (UnitProperty::Worker | UnitProperty::Building) || unitId == UnitId::ZergOvileth)
 	{
 		revivingUnit.town = town;
+	}
+	else
+	{
+		revivingUnit.ignore_town = true;
 	}
 	revivingUnits.push_back(revivingUnit);
 }
