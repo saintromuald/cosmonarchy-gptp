@@ -1463,22 +1463,22 @@ namespace hooks
 
 			if (playerTable[unit->playerId].type == PlayerType::Computer)
 			{
-				AiTown* town = (AiTown*)unitExt->values[ValueReviveTownPointer];
-				if (town)
+				if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building)
+					|| scbw::unitIdIsZergSupply(unit->id))
 				{
-					if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building)
-						|| scbw::unitIdIsZergSupply(unit->id))
+					AiTown* town = (AiTown*)unitExt->values[ValueReviveTownPointer];
+					if (town)
 					{
 						helper::AI_AddWorkerStructureAI(unit, town);
 					}
 					else
 					{
-						hooks::AI_TrainingSimpleMilitary(unit, unit);
+						unit->remove();
 					}
 				}
 				else
 				{
-					unit->remove();
+					hooks::AI_TrainingSimpleMilitary(unit, unit);
 				}
 			}
 		}
