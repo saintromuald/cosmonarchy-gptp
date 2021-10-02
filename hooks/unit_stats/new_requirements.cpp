@@ -990,7 +990,8 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergIroleth)
 				{
-					if (TierUnlocked[RaceId::Zerg][Tier2])
+					if (TierUnlocked[RaceId::Zerg][Tier2]
+						&& scbw::transportIsEmpty(unit))
 					{
 						return TECH_ACTIVE;
 					}
@@ -1074,7 +1075,8 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergOthstoleth)
 				{
-					if (TierUnlocked[RaceId::Zerg][Tier3])
+					if (TierUnlocked[RaceId::Zerg][Tier3]
+						&& scbw::transportIsEmpty(unit))
 					{
 						return TECH_ACTIVE;
 					}
@@ -1122,7 +1124,8 @@ namespace hooks
 			{
 				if (unitId == UnitId::ZergAlaszileth)
 				{
-					if (TierUnlocked[RaceId::Zerg][Tier4])
+					if (TierUnlocked[RaceId::Zerg][Tier4]
+						&& scbw::transportIsEmpty(unit))
 					{
 						return TECH_ACTIVE;
 					}

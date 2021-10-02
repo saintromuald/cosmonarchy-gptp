@@ -2007,4 +2007,16 @@ namespace scbw
 			&& transport->loadedUnit[6].index
 			&& transport->loadedUnit[7].index;
 	}
+
+	bool transportIsEmpty(Unit* transport)
+	{
+		return (!transport->loadedUnit[0].index
+			&& !transport->loadedUnit[1].index
+			&& !transport->loadedUnit[2].index
+			&& !transport->loadedUnit[3].index
+			&& !transport->loadedUnit[4].index
+			&& !transport->loadedUnit[5].index
+			&& !transport->loadedUnit[6].index
+			&& !transport->loadedUnit[7].index);
+	}
 }

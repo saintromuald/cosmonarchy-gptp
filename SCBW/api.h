@@ -552,4 +552,5 @@ namespace scbw
 	bool unitIdIsTownCenter(u16 unitId);
 	bool unitIdIsShared(u16 unitId);
 	bool transportIsFull(Unit* transport);
+	bool transportIsEmpty(Unit* transport);
 }
