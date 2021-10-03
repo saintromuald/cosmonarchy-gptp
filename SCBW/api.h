@@ -526,7 +526,7 @@ namespace scbw
 	bool isEnabled(Unit* unit);
 	bool isDebuffed(Unit* unit);
 	s32 getUpgradeType(Unit* unit);
-	s32 getOverlayOffset(u16 unitId);
+	s32 getOverlayOffset(u16 unitId, bool xlargeAllowed = false);
 	s32 getFinalDamage(Unit* unit, u16 weaponId);
 	bool unitIsPacifist(Unit* unit);
 	bool orderIsSpell(s32 orderId);
@@ -553,4 +553,5 @@ namespace scbw
 	bool unitIdIsShared(u16 unitId);
 	bool transportIsFull(Unit* transport);
 	bool transportIsEmpty(Unit* transport);
+	bool unitIdUsesXlargeOverlays(u16 unitId);
 }

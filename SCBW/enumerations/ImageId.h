@@ -1063,6 +1063,10 @@ enum Enum {
 
 	NeutronFlareOrange_Damageless		= 1446,
 	AnthelionTeleportArrival			= 1456,
+	DermalAccelerantSmall				= 1462,
+	DermalAccelerantMedium				= 1463,
+	DermalAccelerantLarge				= 1464,
+	DermalAccelerantXLarge				= 1465,
 
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,

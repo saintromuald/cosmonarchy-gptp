@@ -1281,10 +1281,14 @@ namespace scbw
 		return upgType;
 	}
 
-	s32 getOverlayOffset(u16 unitId)
+	s32 getOverlayOffset(u16 unitId, bool xlargeAllowed)
 	{
 		u32 overlayOffset = 0;
-		if (units_dat::BaseProperty[unitId] & UnitProperty::MediumOverlay)
+		if (xlargeAllowed && scbw::unitIdUsesXlargeOverlays(unitId))
+		{
+			overlayOffset = 3;
+		}
+		else if (units_dat::BaseProperty[unitId] & UnitProperty::MediumOverlay)
 		{
 			overlayOffset = 1;
 		}
@@ -2018,5 +2022,12 @@ namespace scbw
 			&& !transport->loadedUnit[5].index
 			&& !transport->loadedUnit[6].index
 			&& !transport->loadedUnit[7].index);
+	}
+
+	bool unitIdUsesXlargeOverlays(u16 unitId)
+	{
+		return unitId == UnitId::TerranPenumbra
+			|| unitId == UnitId::TerranPhobos
+			|| unitId == UnitId::ProtossStarSovereign;
 	}
 }

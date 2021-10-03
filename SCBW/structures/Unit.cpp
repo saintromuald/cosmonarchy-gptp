@@ -1449,7 +1449,10 @@ void Unit::setSupplyProvided(u8 amount) // overwrites previous supply provided
 	u32 race = this->getRace();
 	u32 previous_supply = unitExt->values[ValueSupplyProvided];
 	if (previous_supply)
+	{
 		raceSupply[RaceId::Terran].provided[this->playerId] -= previous_supply;
+	}
+
 	raceSupply[RaceId::Terran].provided[this->playerId] += amount;
 	unitExt->values[ValueSupplyProvided] = amount;
 }

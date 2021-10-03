@@ -1502,6 +1502,13 @@ namespace hooks
 				return;
 			}
 			unitExt->timers[TimerAlaszilethRegenBoost] = 2;
+
+			// Create overlay
+			s32 overlay = ImageId::DermalAccelerantSmall + scbw::getOverlayOffset(unit->id, true);
+			if (!unit->getOverlay(overlay))
+			{
+				unit->sprite->createTopOverlay(overlay);
+			}
 		});
 
 		// Seraph - Observance
@@ -1807,6 +1814,16 @@ namespace hooks
 			&& unitExt->units[UnitMindController])
 		{
 			unit->remove();
+		}
+
+		// Alaszileth - Dermal Accelerant - remove overlays
+		if (unitExt->timers[TimerAlaszilethRegenBoost] == 0)
+		{
+			s32 overlay = ImageId::DermalAccelerantSmall + scbw::getOverlayOffset(unit->id, true);
+			if (unit->getOverlay(overlay))
+			{
+				unit->removeOverlay(overlay);
+			}
 		}
 	}
 
