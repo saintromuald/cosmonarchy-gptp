@@ -514,6 +514,9 @@ namespace helper
 	s32 getDirectionFromPoints(s32 a1, s32 a2, s32 a3, s32 a4);
 	Vector32 setResourceTarget(Unit* a1);
 
+	// for AI_AttackUnit
+	void stimpackProc(Unit* unit);																									// 004554A0
+
 	// for genericRightClickUnitProc2
 	s32 isOrderValid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																	// 00474D90
 	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80

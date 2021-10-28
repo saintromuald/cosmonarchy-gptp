@@ -913,4 +913,106 @@ LABEL_65:
 		}
 		return 1;
 	}
+
+	// Hooked to help with the Titanic size game rule - Pr0nogo
+	void AI_AttackUnit(Unit* unit) // 0043FFD0
+	{
+		if (!unit)
+		{
+			return;
+		}
+
+		u16 unitId = unit->id;
+		if (!unitId || unitId == 32)
+		{
+			Unit* unitTarget = unit->orderTarget.unit;
+			if (unitTarget)
+			{
+				s32 cooldownVar = 0;
+				if (unit->stimTimer)
+				{
+					cooldownVar = 1;
+				}
+				if (unit->status & UnitStatus::SpeedUpgrade)
+				{
+					++cooldownVar;
+				}
+				if (unit->ensnareTimer)
+				{
+					--cooldownVar;
+				}
+				if (cooldownVar <= 0)
+				{
+					s32 unitHP = units_dat::MaxHitPoints[unitId] >> 8;
+					if (!unitHP)
+					{
+						unitHP = (unit->hitPoints + 255) >> 8;
+						if (!unitHP)
+						{
+							unitHP = 1;
+						}
+					}
+					if ((unit->hitPoints + 255) >> 8 >= unitHP / 2)
+					{
+						if (unitCanAttackTarget(unit, unitTarget, 1))
+						{
+							unitTarget = unit->orderTarget.unit;
+							if (!unitTarget)
+							{
+								if (helper::techUseAllowed(unit, 0, unit->playerId) == 1
+								  && helper::getCurrentHitPointsPlusShields(unitTarget) >= 100)
+								{
+									helper::stimpackProc(unit);
+								}
+								return;
+							}
+							if (helper::isTargetVisible(unitTarget, unit))
+							{
+								Unit* subunit = unit->subunit;
+								if (!subunit || !(units_dat::BaseProperty[subunit->id] & UnitProperty::Subunit))
+								{
+									subunit = unit;
+								}
+
+								u8 airWeapon;
+								if (unitTarget->status & 4)
+								{
+									airWeapon = units_dat::AirWeapon[subunit->id];
+								}
+								else
+								{
+									u16 subunitId = subunit->id;
+									if (subunitId != UnitId::ZergLakizilisk || subunit->status & 0x10)
+									{
+										airWeapon = units_dat::GroundWeapon[subunitId];
+									}
+									else
+									{
+										airWeapon = WeaponId::None;
+									}
+								}
+								if (airWeapon < WeaponId::None)
+								{
+									u32 airWeaponMinRange = weapons_dat::MinRange[airWeapon];
+									if (!airWeaponMinRange || !(helper::isTargetWithinMinRange(subunit, airWeaponMinRange, unitTarget)))
+									{
+										s32 airWeaponMaxRange = weapons_dat::MaxRange[airWeapon];
+										if (helper::isTargetWithinMinMovementRange(unitTarget, airWeaponMaxRange, subunit))
+										{
+											if (helper::techUseAllowed(unit, 0, unit->playerId) == 1
+											  && helper::getCurrentHitPointsPlusShields(unitTarget) >= 100)
+											{
+												helper::stimpackProc(unit);
+											}
+											return;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

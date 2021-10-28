@@ -170,9 +170,9 @@ namespace
 			MOV EAX, [EBP + 0x08]
 			MOV a3, EAX
 			POP EAX
-			POP EBP
 			MOV target, EBX
 			MOV unit, ESI
+			POP EBP
 			PUSHAD
 		}
 		result = hooks::unitCanAttackTarget(target, unit, a3);
@@ -201,6 +201,30 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_AttackUnit_Wrapper() // 0043FFD0
+	{
+		static Unit* unit;
+		__asm
+		{
+			PUSH EBP
+			PUSH EAX
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
+			POP EAX
+			POP EBP
+			PUSHAD
+		}
+		hooks::AI_AttackUnit(unit);
+		__asm
+		{
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
 }
 
 namespace hooks
@@ -221,6 +245,7 @@ namespace hooks
 //		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
 		jmpPatch(unitCanAttackTarget_Wrapper,			0x00476730, 5);
 //		jmpPatch(orderAttackBehavior_Wrapper,			0x00478540, 0);
+		jmpPatch(AI_AttackUnit_Wrapper,					0x0043FFD0, 1);
 	}
 
 	void injectTargetRelatedHooks()

@@ -1281,24 +1281,19 @@ bool Unit::canAttackTarget(Unit* target, bool checkVisibility) const
 extern const u32 Func_FireUnitWeapon = 0x00479C90;
 void Unit::fireWeapon(u8 weaponId) const
 {
-
 	assert(this);
 
 	static u32 weaponId_;
-
 	weaponId_ = weaponId;
-
-	__asm {
+	__asm
+	{
 		PUSHAD
 		PUSH weaponId_
 		MOV ESI, this
 		CALL Func_FireUnitWeapon
 		POPAD
 	}
-
 }
-
-
 
 Unit* Unit::getFromIndex(u16 index)
 {

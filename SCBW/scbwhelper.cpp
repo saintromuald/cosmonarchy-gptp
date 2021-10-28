@@ -9784,4 +9784,17 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For AI_AttackUnit
+	void stimpackProc(Unit* unit)
+	{
+		const u32 Func_stimpackSFXRand = 0x004554A0;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_stimpackSFXRand
+			POPAD
+		}
+	}
 }

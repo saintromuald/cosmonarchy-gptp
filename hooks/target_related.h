@@ -17,6 +17,7 @@ namespace hooks
 	void updateUnitVisibility(Unit* unit);																// Extracted part of checkUnitVisibility
 	bool unitCanAttackTarget(Unit* target, Unit* unit, int checkVisibility);							// 
 	s32 orderAttackBehavior(Unit *a1);																	// 00478540
+	void AI_AttackUnit(Unit* unit);																		// 0043FFD0
 
 	void injectTargetRelatedHooks();
 }

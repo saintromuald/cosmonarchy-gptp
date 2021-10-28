@@ -37,54 +37,60 @@ namespace
 	// Based on function @ 0x00442DA0
 	bool checkAttackableTarget(Unit* unit, Unit* target, u32 seekRange, u32 minRange = 0)
 	{
-		//Don't attack if the target is the unit itself.
+		// Shouldn't be necessary
+		if (!unit || !target)
+		{
+			return false;
+		}
+
+		// Don't attack if the target is the unit itself.
 		if (unit == target)
 		{
 			return false;
 		}
 
-		//Don't attack if the target is covered by fog of war.
+		// Don't attack if the target is covered by fog of war.
 		if (!target->sprite->isVisibleTo(unit->playerId))
 		{
 			return false;
 		}
 
-		//Check if the target can be attacked.
+		// Check if the target can be attacked.
 		if (!unit->canAttackTarget(target))
 		{
 			return false;
 		}
 
-		if (unit->id == UnitId::TerranCivilian)
-		{
-			if (unit->_padding_0x132 & 0x8)
-			{
-				return false;
-			}
-		}
-		//Check if the target is an enemy
+		// Check if the target is an enemy
 		bool is_enemy = unit->isTargetEnemy(target);
 		if (unit->isBlind)
 		{
 			is_enemy = true;
 		}
-		if (!is_enemy)
-			return false;
 
-		//Check if the target is within the minimum weapon range
+		if (!is_enemy)
+		{
+			return false;
+		}
+
+		// Check if the target is within the minimum weapon range
 		if (minRange != 0)
 		{
 			if (unit->getDistanceToTarget(target) <= minRange)
+			{
 				return false;
+			}
 		}
 
-		//Check if the target is within the seek range
+		// Check if the target is within the seek range
 		if (!(unit->getDistanceToTarget(target) <= seekRange))
+		{
 			return false;
+		}
 
 		Unit* actualUnit = unit->subunit->isSubunit() ? unit->subunit : unit;
 
-		//If the unit can't turn around, check if the target is within the attack angle.
+		// If the unit can't turn around, check if the target is within the attack angle.
 		if (!(actualUnit->status & UnitStatus::CanTurnAroundToAttack))
 		{
 			if (!isTargetPosWithinAttackAngle(target->getX(), target->getY(),
@@ -94,19 +100,18 @@ namespace
 			}
 		}
 
-		//If the target cannot be chased (i.e. ground vs air, is out of range),
-		//don't bother
+		// If the target cannot be chased (i.e. ground vs air, is out of range), don't bother
 		if (cannotChaseTarget(unit, target))
+		{
 			return false;
+		}
 
 		return true;
-	}
-
-} //unnamed namespace
+	}	
+}
 
 namespace hooks
 {
-
 	// Calculates the attack priority of the @p target for the @p attacker.
 	u32 getAttackPriorityHook(Unit* target, Unit* attacker)
 	{
@@ -120,7 +125,6 @@ namespace hooks
 				actualTarget = firstLoadedUnit;
 			}
 		}
-
 
 		// Units that are not important
 		if (scbw::isZergEgg(target->id))
@@ -173,20 +177,23 @@ namespace hooks
 		return attackPriority;
 	}
 
-	//Searches for the best attack target nearby for the @p unit.
+	// Searches for the best attack target nearby for the @p unit.
 	Unit* findBestAttackTargetHook(Unit* unit)
 	{
-		//Default StarCraft behavior
-
 		attackPriorityData.reset();
 		s32 seekRange = unit->getSeekRange() * 32;
 
-		//Bunker bonus
+		// Bunker bonus
 		if (unit->status & UnitStatus::InBuilding)
+		{
 			seekRange += 64;
-		//AI units have use default sight range if it is bigger
+		}
+
+		// AI units have use default sight range if it is bigger
 		else if (unit->pAI)
+		{
 			seekRange = std::max(seekRange, units_dat::SightRange[unit->id] * 32);
+		}
 
 		s32 searchRange = seekRange + 64;
 		u32 minRange = getMinimumRange(unit);
@@ -204,28 +211,26 @@ namespace hooks
 		attackTargetFinder.forEach([&](Unit* target)
 		{
 			if (checkAttackableTarget(unit, target, seekRange, minRange))
+			{
 				attackPriorityData.addTarget(target, getAttackPriorityHook(target, unit));
+			}
 		});
-
 		return attackPriorityData.findBestTarget(unit);
-
 	}
 
-	//Searches for a random attack target nearby for the @p unit.
+	// Searches for a random attack target nearby for the @p unit.
 	Unit* findRandomAttackTargetHook(Unit* unit)
 	{
-		//Default StarCraft behavior
-
 		attackPriorityData.reset();
-
 		s32 seekRange = unit->getSeekRange() * 32;
 
-		//Bunker bonus
+		// Bunker bonus
 		if (unit->status & UnitStatus::InBuilding)
+		{
 			seekRange += 64;
+		}
 
 		s32 searchRange = seekRange + 64;
-
 		attackTargetFinder.search(
 			unit->getX() - searchRange, unit->getY() - searchRange,
 			unit->getX() + searchRange, unit->getY() + searchRange);
@@ -235,31 +240,33 @@ namespace hooks
 			if (checkAttackableTarget(unit, target, seekRange))
 				attackPriorityData.addTarget(target, getAttackPriorityHook(target, unit));
 		});
-
 		return attackPriorityData.findRandomTarget();
 	}
+}
 
-} //hooks
 
-
-//Returns a random target selected from the attack target groups.
-//Based on 0x004401B0
+// Returns a random target selected from the attack target groups.
+// Based on 0x004401B0
 Unit* AttackPriorityData::findRandomTarget() const
 {
-	//Default StarCraft behavior
-
 	s32 priority = 0;
 	while (targetCounts[priority] == 0)
 	{
 		++priority;
 		if (priority >= countof(targetCounts))
+		{
 			return nullptr;
+		}
 	}
 
 	if (targetCounts[priority] == 1)
+	{
 		return targets[priority][0];
+	}
 	else
+	{
 		return targets[priority][scbw::random() % targetCounts[priority]];
+	}
 }
 
 // Returns the best target selected from the attack target groups.
@@ -271,18 +278,22 @@ Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 	{
 		++priority;
 		if (priority >= countof(targetCounts))
+		{
 			return nullptr;
+		}
 	}
 
 	if (targetCounts[priority] == 1)
+	{
 		return targets[priority][0];
+	}
 
 	// Prepare for search
 	Unit* bestTarget = targets[priority][0];
 
 	if (attacker->pAI && attacker->id == UnitId::ZergSkryling)
 	{
-		//AI-controlled Scourges auto-target units with the most HP + shields
+		// AI-controlled Scourges auto-target units with the most HP + shields
 		u32 bestTargetLife = bestTarget->getCurrentLifeInGame();
 
 		for (u32 i = 1; i < targetCounts[priority]; ++i)
@@ -299,7 +310,7 @@ Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 	}
 	else
 	{
-		//Find the nearest target (don't use unit box sizes)
+		// Find the nearest target (don't use unit box sizes)
 		u32 bestTargetDistance = scbw::getDistanceFast(
 			attacker->getX(), attacker->getY(),
 			bestTarget->getX(), bestTarget->getY());
@@ -318,14 +329,13 @@ Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 			}
 		}
 	}
-
 	return bestTarget;
 }
 
 
 //-------- The following function definitions should not be touched. --------//
 
-//Identical to function @ 0x00440160
+// Identical to function @ 0x00440160
 void AttackPriorityData::addTarget(Unit* target, u32 attackPriority)
 {
 	assert(target);
