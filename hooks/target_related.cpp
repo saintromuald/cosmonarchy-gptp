@@ -654,10 +654,12 @@ LABEL_42:
 			return 0;
 		}
 
+		/*
 		if (helper::unitCanInfest(unit))
 		{
 			return helper::canBeInfested(nullptr, target) != 0;
 		}
+		*/
 
 		// Originally had code to disable AI Didact attacks
 
