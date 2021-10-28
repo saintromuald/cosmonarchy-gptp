@@ -619,14 +619,14 @@ LABEL_42:
 		return 1;
 	}
 
-	bool unitCanAttackTarget(Unit* target, Unit* unit, int a3)
+	bool unitCanAttackTarget(Unit* target, Unit* unit, int checkVisibility)
 	{
 		if (unit->isFrozen()
 			|| !target
 			|| !target->sprite // new
 			|| target->status & UnitStatus::Invincible
-			|| target->sprite->flags & 0x20
-			|| a3 && helper::unitCanSeeCloakedTarget(target, unit))
+			|| target->sprite->flags & SpriteFlags::Hidden
+			|| checkVisibility && helper::unitCanSeeCloakedTarget(target, unit))
 		{
 			return 0;
 		}
@@ -794,11 +794,11 @@ LABEL_23:
 		{
 			if (target->status & UnitStatus::InAir || (units_dat::SizeType[target->id] == UnitSize::Titanic && units_dat::AirWeapon[v5->id] != -126))
 			{
-				v8 = units_dat::AirWeapon[v5->id] != -126;
+				v8 = units_dat::AirWeapon[v5->id] != WeaponId::None;
 			}
 			else
 			{
-				v8 = units_dat::GroundWeapon[v5->id] != -126;
+				v8 = units_dat::GroundWeapon[v5->id] != WeaponId::None;
 			}
 		}
 LABEL_22:

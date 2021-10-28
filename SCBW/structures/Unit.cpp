@@ -1275,7 +1275,7 @@ bool Unit::canAttackTarget(Unit* target, bool checkVisibility) const
 		POPAD
 	}
 
-	return result != 0;
+	return result;
 }
 
 extern const u32 Func_FireUnitWeapon = 0x00479C90;

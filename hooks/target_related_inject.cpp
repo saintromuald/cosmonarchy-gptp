@@ -158,7 +158,7 @@ namespace
 
 	void __declspec(naked) unitCanAttackTarget_Wrapper() // 00476730
 	{
-		static bool result;
+		static u32 result;
 		static Unit* target;
 		static Unit* unit;
 		static u32 a3;
@@ -179,7 +179,7 @@ namespace
 		__asm
 		{
 			POPAD
-			MOV AL, result
+			MOV EAX, result
 			RETN 4
 		}
 	}
@@ -219,7 +219,7 @@ namespace hooks
 //		jmpPatch(isUnitVisible_Wrapper,					0x004E5DB0, 1);
 		jmpPatch(checkUnitVisibility_Wrapper,			0x00443390, 3);
 //		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
-//		jmpPatch(unitCanAttackTarget_Wrapper,			0x00476730, 5);
+		jmpPatch(unitCanAttackTarget_Wrapper,			0x00476730, 5);
 //		jmpPatch(orderAttackBehavior_Wrapper,			0x00478540, 0);
 	}
 
