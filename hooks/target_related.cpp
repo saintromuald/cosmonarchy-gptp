@@ -666,17 +666,17 @@ LABEL_42:
 		/*
 		if (units_dat::SizeType[target->id] == UnitSize::Titanic)
 		{
-			return units_dat::AirWeapon[unitWithWeapon->id] != 255
-				|| units_dat::GroundWeapon[unitWithWeapon->id] != 255;
+			return units_dat::AirWeapon[unitWithWeapon->id] != WeaponId::None
+				|| units_dat::GroundWeapon[unitWithWeapon->id] != WeaponId::None;
 		}
 		*/
 
 		if (target->status & UnitStatus::InAir)
 		{
-			return units_dat::AirWeapon[unitWithWeapon->id] != 255;
+			return units_dat::AirWeapon[unitWithWeapon->id] != WeaponId::None;
 		}
 
-		return units_dat::GroundWeapon[unitWithWeapon->id] != 255;
+		return units_dat::GroundWeapon[unitWithWeapon->id] != WeaponId::None;
 	}
 
 	s32 orderAttackBehavior(Unit* unit) // 00478540
