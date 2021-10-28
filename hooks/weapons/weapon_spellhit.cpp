@@ -100,15 +100,16 @@ namespace hooks
 		globals.createEffect(EffectId::Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId);
 	}
 
-	// bullet is not normally part of the function, so if the function is called
-	// in an unexpected way, it may not contain the correct value.
+	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void OpticalFlareHit(Unit* unused, u32 attackingPlayerId, Bullet* bullet)
 	{
 		if (!bullet)
 		{
-			return; // not sure if bullet is guaranteed
+			scbw::print("no");
+			return;
 		}
 
+		scbw::print("fire");
 		const u32 radius = 2 * 32;
 		helper::playSoundFromSource(SoundId::Terran_Medic_Miopia1_wav, (Unit*)bullet, 1, 0);
 		scbw::UnitFinder(
@@ -118,25 +119,20 @@ namespace hooks
 			bullet->position.y + radius
 		).forEach([&](Unit* target)
 		{
-			u32 overlayImageId = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(target->id);
-			Unit* overlayTargetUnit;
+			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(target->id);
+			Unit* overlayUnit = target;
+			UnitExt* targetExt = globals.GetUnitExt(target);
 			if (target->subunit != nullptr)
 			{
-				overlayTargetUnit = target->subunit;
+				targetExt = globals.GetUnitExt(target->subunit);
+				overlayUnit = target->subunit;
 			}
-			else
-			{
-				overlayTargetUnit = target;
-			}
-			overlayTargetUnit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
-
-			UnitExt* targetExt = globals.GetUnitExt(target);
+			overlayUnit->sprite->createTopOverlay(overlay, 0, 0, 0);
 			targetExt->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
 		});
 	}
 
-	// bullet is not normally part of the function, so if the function is called
-	// in an unexpected way, it may not contain the correct value.
+	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void RestoreHit(Unit* target, Bullet* bullet)
 	{
 		if (target->status & UnitStatus::IsHallucination)
@@ -150,15 +146,11 @@ namespace hooks
 		}
 	}
 
-	// bullet is not normally part of the function, so if the function is called
-	// in an unexpected way, it may not contain the correct value.
-	// ...
-	// the timer is reset before this call 2 times out of 3 (with
-	// previousLockdownTimer holding the pre-reset value), and
-	// the 3rd case, previousLockdownTimer is set to 131 (0x83)
+	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	// the timer is reset before this call 2 times out of 3 (with previousLockdownTimer holding the pre-reset value),
+	// and the 3rd case, previousLockdownTimer is set to 131 (0x83)
 	void LockdownHit(Unit* target, u8 previousLockdownTimer, Bullet* bullet)
 	{
-
 		// add lockdown overlay if no ongoing lockdown already
 		if (target->lockdownTimer == 0)
 		{
@@ -175,43 +167,16 @@ namespace hooks
 			(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 		}
 
-		// this added to the fact that target->lockdownTimer is set to 0 before
-		// this function probably prevent lockdown to reset the duration of a 
-		// previous lock
+		// this, added to the fact that target->lockdownTimer is set to 0 before this function, probably prevents lockdown to reset the duration of a previous lock
 		if (previousLockdownTimer > target->lockdownTimer)
 		{
 			target->lockdownTimer = previousLockdownTimer;
 		}
 
-		// should stop movements/orders/scripts of the unit, give it the status 
-		// DoodadStatesThing, may have an effect on selection, and perform
-		// scbw::refreshConsole() code at the end
+		// Should stop movements/orders/scripts of the unit, give it the status DoodadStatesThing.
+		// May have an effect on selection. Performs scbw::refreshConsole() code at the end
 		disableUnit(target);
 	}
-
-	// TODO: Cleanup
-	// was called "Shot" instead of "Hit", changed due to the context
-	/*
-	Unit* swarmSearch(Unit* hitunit){
-		scbw::print("Loop...");
-		for (Unit *unit = *firstVisibleUnit; unit; unit = unit->link.next) {
-			if(unit->id==UnitId::Spell_DarkSwarm){
-				scbw::print("dark swarm detected in the loop!");
-				char buf[64];
-				sprintf(buf,"Compare coords, unit: %d %d, swarm %d %d", hitunit->position.x,hitunit->position.y,
-																	  unit->position.x,unit->position.y);
-				scbw::print(buf);
-				if(hitunit->position.x >= unit->getLeft() && hitunit->position.x <= unit->getRight()){
-					if(hitunit->position.y >= unit->getTop() && hitunit->position.y <= unit->getBottom()){
-						scbw::print("Found!");
-						return unit;
-					}
-				}
-			}
-		}
-		return nullptr;
-	}
-	*/
 
 	void WeaponBulletHit(Bullet* bullet, Unit* target, u32 damageDivisor)
 	{

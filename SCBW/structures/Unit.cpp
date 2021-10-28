@@ -199,7 +199,8 @@ u32 Unit::getMaxWeaponRange(u8 weaponId) const
 	assert(weaponId < WEAPON_TYPE_COUNT);
 
 	static u32 maxWeaponRange;
-	__asm {
+	__asm
+	{
 		PUSHAD
 		MOV BL, weaponId
 		MOV EAX, this
@@ -1263,7 +1264,8 @@ bool Unit::canAttackTarget(Unit* target, bool checkVisibility) const
 	u32 _checkVisibility = checkVisibility ? 1 : 0;
 	static u32 result;
 
-	__asm {
+	__asm
+	{
 		PUSHAD
 		PUSH _checkVisibility
 		MOV EBX, target

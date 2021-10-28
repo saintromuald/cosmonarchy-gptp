@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	// Hooked to change order conditions and actions for Hallucination - Pr0nogo
+	// Hooked to change order conditions and actions for custom spells - Pr0nogo
 	s32 spellOrder(s32 defaultOrderString, Unit* caster, u16 techId, s32 range, u16* energyCost) // 004926D0
 	{
 		Unit* orderTarget = caster->orderTarget.unit;
@@ -223,7 +223,6 @@ namespace hooks
 			{
 				unit->orderSignal -= 2;
 				unit->orderToIdle();
-
 			}
 			else
 			{ // 00492886
@@ -246,7 +245,7 @@ namespace hooks
 		{ // 004928CF
 			if (!helper::canCastSpell_0(unit))
 			{
-				char* message = (char*)statTxtTblNew->getString(876); // Invalid Target
+				char* message = (char*)statTxtTblNew->getString(876); // Invalid target
 				// do the actual transmission corresponding to the message
 				helper::get_statTxt_Str_0(unit, unit->playerId, message);
 				// make the unit stop since the order failed
@@ -291,12 +290,11 @@ namespace hooks
 								raceId = RaceId::Neutral;
 							}
 
-					message = (char*)statTxtTblNew->getString(864 + raceId); // Not Enough Energy
+					message = (char*)statTxtTblNew->getString(864 + raceId); // Not enough energy
 
 					if (message != nullptr)
 					{
-						// display an error message only for the owner
-						// of the unit
+						// display an error message only for the owner of the unit
 						if (*LOCAL_NATION_ID == unit->playerId &&
 							*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
 						{
@@ -307,7 +305,7 @@ namespace hooks
 
 				}
 				else
-				{ //929C2
+				{ // 004929C2
 
 					u32 result_00492620;
 					// may initiate movement from unit depending on mainOrderState
@@ -331,7 +329,7 @@ namespace hooks
 					}
 					if (result_00492620 == 0)
 					{
-						if (unit->getMovableState() == 2) //unmovable
+						if (unit->getMovableState() == 2) // unmovable
 						{
 							unit->orderToIdle();
 						}
@@ -354,8 +352,8 @@ namespace hooks
 							if (unit->pAI != nullptr && target != nullptr)
 							{
 
-								if (orderWeaponId <= WeaponId::Maelstrom)
-								{ // Maelstrom is the last spell-related weapon
+								if (orderWeaponId <= WeaponId::Maelstrom) // Maelstrom is the last spell-related weapon
+								{
 
 									// array bound to the function
 									const u8* const array_00492B44 = (u8*)(0x00492B44);
@@ -365,7 +363,7 @@ namespace hooks
 									u32 switch_value = array_00492B44[orderWeaponId - 0x20];
 									if (switch_value != 6)
 									{
-										//no idea why irradiate is so important
+										// no idea why irradiate is so important
 										u32 analyzed_target_status = target->irradiateTimer;
 										if (switch_value == 2)
 										{

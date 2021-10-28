@@ -833,6 +833,18 @@ namespace hooks
 						targetExt->values[ValueKelvinMunitionsSlow] = 1;
 					}
 				} break;
+				case WeaponId::LuminaryAuralAssault:
+				{
+					u32 overlay = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(data.target->id);
+					Unit* overlayUnit = data.target;
+					if (data.target->subunit != nullptr)
+					{
+						targetExt = globals.GetUnitExt(data.target->subunit);
+						overlayUnit = data.target->subunit;
+					}
+					overlayUnit->sprite->createTopOverlay(overlay, 0, 0, 0);
+					targetExt->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
+				}
 			}
 		}
 	}

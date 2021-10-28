@@ -6154,6 +6154,8 @@ namespace helper
 
 	bool unitIsCarrier(Unit* a1)
 	{
+		return a1->id == UnitId::ProtossSolarion;
+		/*
 		const u32 Func_unitIsCarrier = 0x00401470;
 		static s32 result;
 		__asm {
@@ -6164,10 +6166,13 @@ namespace helper
 			POPAD
 		}
 		return (bool)result;
+		*/
 	}
 
 	bool unitIsReaver(Unit* a1)
 	{
+		return a1->id == UnitId::ProtossAccantor;
+		/*
 		const u32 Func_unitIsReaver = 0x00401490;
 		static s32 result;
 		__asm {
@@ -6178,6 +6183,7 @@ namespace helper
 			POPAD
 		}
 		return (bool)result;
+		*/
 	}
 
 	bool unitHasPathToUnit(Unit* a1, Unit* a2)

@@ -205,7 +205,6 @@ namespace
 
 namespace hooks
 {
-
 	void injectTargetHooks()
 	{
 		// Removes can not attack status checks from some update functions, it was done by iquare pretty sure

@@ -623,6 +623,7 @@ LABEL_42:
 	{
 		if (unit->isFrozen()
 			|| !target
+			|| !target->sprite // new
 			|| target->status & UnitStatus::Invincible
 			|| target->sprite->flags & 0x20
 			|| a3 && helper::unitCanSeeCloakedTarget(target, unit))
@@ -643,7 +644,7 @@ LABEL_42:
 
 		if (helper::unitIsReaver(unit))
 		{
-			if (!(unit->status & UnitStatus::InAir))
+			if (!(target->status & UnitStatus::InAir))
 			{
 				if (helper::unitHasPathToUnit(unit, target))
 				{
@@ -663,18 +664,22 @@ LABEL_42:
 			return 0;
 		}
 
+		// GAME RULE: Ground titanic units can be targeted by air-only weapons
+		// Doesn't work currently.
+		/*
 		if (units_dat::SizeType[target->id] == UnitSize::Titanic)
 		{
-			return units_dat::AirWeapon[unitWithWeapon->id] != -126
-				|| units_dat::GroundWeapon[unitWithWeapon->id] != -126;
+			return units_dat::AirWeapon[unitWithWeapon->id] != 255
+				|| units_dat::GroundWeapon[unitWithWeapon->id] != 255;
 		}
+		*/
 
 		if (target->status & UnitStatus::InAir)
 		{
-			return units_dat::AirWeapon[unitWithWeapon->id] != -126;
+			return units_dat::AirWeapon[unitWithWeapon->id] != 255;
 		}
 
-		return units_dat::GroundWeapon[unitWithWeapon->id] != -126;
+		return units_dat::GroundWeapon[unitWithWeapon->id] != 255;
 	}
 
 	s32 orderAttackBehavior(Unit* unit) // 00478540
