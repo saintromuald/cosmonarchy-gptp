@@ -659,10 +659,7 @@ LABEL_42:
 			return helper::canBeInfested(nullptr, target) != 0;
 		}
 
-		if (unit->id == UnitId::ProtossDidact && unit->pAI)
-		{
-			return 0;
-		}
+		// Originally had code to disable AI Didact attacks
 
 		// GAME RULE: Ground titanic units can be targeted by air-only weapons
 		// Doesn't work currently.
