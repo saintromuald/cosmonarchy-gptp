@@ -253,6 +253,7 @@
     <ClCompile Include="AIScripter\AICore.cpp" />
     <ClCompile Include="AIScripter\AIParser.cpp" />
     <ClCompile Include="base_layout.cpp" />
+    <ClCompile Include="direct_sound.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests_inject.cpp" />
     <ClCompile Include="hooks\limits\attack_extender.cpp" />
@@ -567,6 +568,7 @@
     <ClCompile Include="hooks\unit_stats\weapon_range.cpp" />
     <ClCompile Include="hooks\unit_stats\weapon_range_inject.cpp" />
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
+    <ClCompile Include="direct_sound_inject.cpp" />
     <ClCompile Include="unit_search.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
   </ItemGroup>
@@ -574,6 +576,7 @@
     <ClInclude Include="AIScripter\AICore.h" />
     <ClInclude Include="AIScripter\AIParser.h" />
     <ClInclude Include="base_layout.h" />
+    <ClInclude Include="direct_sound.h" />
     <ClInclude Include="hooks\aiscript\ai_requests.h" />
     <ClInclude Include="hooks\orders\building_making\building_modifier.h" />
     <ClInclude Include="config.h" />
