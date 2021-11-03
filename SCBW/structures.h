@@ -965,4 +965,19 @@ struct Ping
 	u16 player;
 };
 
+struct DSound
+{
+	s32 lpVtbl;
+};
+
+struct CritSect
+{
+	s32 debugInfo;
+	s32 lockCount;
+	s32 recursionCount;
+	s32 owningThread;
+	s32 lockSemaphore;
+	s32 spinCount;
+};
+
 #pragma pack()

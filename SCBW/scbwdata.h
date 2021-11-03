@@ -471,6 +471,32 @@ SCBW_DATA(Base*,	baseArray,						0x00692688);
 SCBW_DATA(u32*,		regionIdsCount,					0x0069265C);
 SCBW_DATA(u16*,		regionIds,						0x0069262C);
 
+// For soundThread
+SCBW_DATA(HANDLE*,	soundThreadEvent,				0x006D5A00);
+SCBW_DATA(s32*,		unkSoundCore,					0x006D5A08);
+SCBW_DATA(s32*,		soundVolume,					0x00599900);
+SCBW_DATA(s8*,		soundData,						0x006D1270);
+SCBW_DATA(s32*,		volumeReduction,				0x006D5A0C);
+SCBW_DATA(DSound*,	directSoundInterface,			0x006D59F4);
+SCBW_DATA(s32*,		unkSoundCore2,					0x005999C0);
+SCBW_DATA(s32*,		currentSoundMemory,				0x006D59FC);
+SCBW_DATA(CritSect*,soundLock,						0x006D5F4C);
+
+// For soundInit
+SCBW_DATA(s32*,		soundChannels,					0x005998F0);
+SCBW_DATA(HMODULE*,	hdSoundModule,					0x006D59F0);
+SCBW_DATA(s8*,		ddaInitialized,					0x006D1265);
+SCBW_DATA(s8*,		vidInitialized,					0x006D1266);
+SCBW_DATA(s32*,		soundMemoryCache,				0x005129B8);
+SCBW_DATA(HANDLE*,	soundHandle,					0x006D5A04);
+SCBW_DATA(s32*,		unkSoundCore3,					0x005998E4);
+SCBW_DATA(s8*,		unkSoundBoolCore,				0x006D1264);
+
+// temporary
+SCBW_DATA(s32*,		SFXDAT_SoundFile,				0x0068DAA0);
+SCBW_DATA(s8*,		SFXDAT_Flags,					0x0068C8C0);
+SCBW_DATA(s8*,		SFXDAT_Priority,				0x0068D628);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data
@@ -544,31 +570,32 @@ namespace units_dat {
 	SCBW_DATA(u16*, MapStringId, unitsDat[51].address);	//00660260
 	SCBW_DATA(u8*, BroodwarOnly, unitsDat[52].address);	//006606D8
 	SCBW_DATA(u16*, StarEditAvailFlags, unitsDat[53].address);	//00661518 // "Staredit Availability Flags" according to EUDDB
-} //units_dat (last entry at 0x00513EAC)
+} // (last entry at 0x00513EAC)
 
 namespace flingy_dat {
 	SCBW_DATA(const DatLoad*, flingyDat, 0x00515A38);
 
-	SCBW_DATA(u16*, SpriteID, flingyDat[0].address);	//006CA318
-	SCBW_DATA(u32*, TopSpeed, flingyDat[1].address);	//006C9EF8
-	SCBW_DATA(u16*, Acceleration, flingyDat[2].address);	//006C9C78
-	SCBW_DATA(u32*, HaltDistance, flingyDat[3].address);	//006C9930
-	SCBW_DATA(u8*, TurnSpeed, flingyDat[4].address);	//006C9E20 Incorrectly known as "Turn Radius"
-	//SCBW_DATA(u8*, ???,				flingyDat[5].address);	//006CA240
-	SCBW_DATA(u8*, MovementControl, flingyDat[6].address);	//006C9858
-} //flingy_dat (last entry at 0x00515A80)
+	SCBW_DATA(u16*,	SpriteID,			flingyDat[0].address);	// 006CA318
+	SCBW_DATA(u32*,	TopSpeed,			flingyDat[1].address);	// 006C9EF8
+	SCBW_DATA(u16*,	Acceleration,		flingyDat[2].address);	// 006C9C78
+	SCBW_DATA(u32*,	HaltDistance,		flingyDat[3].address);	// 006C9930
+	SCBW_DATA(u8*,	TurnSpeed,			flingyDat[4].address);	// 006C9E20 Incorrectly known as "Turn Radius"
+//	SCBW_DATA(u8*,	???,				flingyDat[5].address);	// 006CA240
+	SCBW_DATA(u8*,	MovementControl,	flingyDat[6].address);	// 006C9858
+} // (last entry at 0x00515A80)
 
-//incorrect must be clarified
+// incorrect, must be clarified
 /*
 namespace sfx_dat {
-	SCBW_DATA(const DatLoad*, sfxDat, 0x00515498);
+	SCBW_DATA(const	DatLoad*,	sfxDat,	0x00515498);
 
-	SCBW_DATA(u8*, Volume, sfxDat[0].address);
-	SCBW_DATA(u8*, Flags, sfxDat[1].address);
-	SCBW_DATA(u16*, Race, sfxDat[2].address);
-	SCBW_DATA(u8*, Priority, sfxDat[3].address);
-	SCBW_DATA(u32*, SoundPtr, sfxDat[4].address);
-}*/
+	SCBW_DATA(u8*,	Volume,		sfxDat[0].address);	// 0068C448
+	SCBW_DATA(u8*,	Flags,		sfxDat[1].address);	// 0068C8C0
+	SCBW_DATA(u16*,	Race,		sfxDat[2].address);	// 0068CD38
+	SCBW_DATA(u8*,	Priority,	sfxDat[3].address);	// 0068D628
+	SCBW_DATA(u32*,	SoundPtr,	sfxDat[4].address);	// 0068DAA0
+}
+*/
 
 /*
 namespace weapons_dat {

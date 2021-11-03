@@ -830,22 +830,6 @@ namespace hooks
 						// Scrapyard buttonset handling
 						if ((*activePortraitUnit)->id == UnitId::TerranScrapyard)
 						{
-							if (current_button->reqVar == UnitId::TerranClaymore
-								|| current_button->reqVar == UnitId::TerranSiren)
-							{
-								if ((*activePortraitUnit)->building.addon == NULL)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranFutureStation)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-							}
 							if (current_button->reqVar == UnitId::SharedStriga
 								|| current_button->reqVar == UnitId::SharedLuminary)
 							{

@@ -428,28 +428,16 @@ namespace hooks
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::SharedCohort:
-					case UnitId::SharedAspirant:
 					case UnitId::TerranBlackjack:
-					{
-						if (inAir)
-						{
-							return TECH_HIDDEN;
-						}
-						return TECH_ACTIVE;
-					}
-					case UnitId::TerranClaymore:
+					case UnitId::SharedAspirant:
+					case UnitId::SharedCohort:
 					case UnitId::TerranSiren:
 					{
 						if (inAir)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranFutureStation)
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_HIDDEN;
+						return TECH_ACTIVE;
 					}
 					case UnitId::SharedStriga:
 					case UnitId::SharedLuminary:
@@ -524,8 +512,9 @@ namespace hooks
 			{
 				switch (unitId)
 				{
-					case UnitId::TerranPenumbra:
 					case UnitId::TerranPazuzu:
+					case UnitId::TerranClaymore:
+					case UnitId::TerranPenumbra:
 					{
 						if (inAir)
 						{

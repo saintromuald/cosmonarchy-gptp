@@ -9797,4 +9797,239 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For soundThread
+	void fastFileRead(s32 a1, s32 a2, char* a3, s32 fileName, s32 buffer, s32 bytesRead, char* logFileName, s32 logLine)
+	{
+		const u32 Func_fastFileRead = 0x004D2D10;
+		__asm
+		{
+			PUSHAD
+			PUSH logLine
+			PUSH logFileName
+			PUSH bytesRead
+			PUSH buffer
+			PUSH fileName
+			MOV EDI, a3
+			MOV ECX, a2
+			MOV EAX, a1
+			CALL Func_fastFileRead
+			POPAD
+		}
+	}
+
+	s32 parseWaveFile(s32 a1, s32 a2, s32 a3)
+	{
+		static s32 result;
+		const u32 Func_parseWaveFile = 0x004BBD80;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, a3
+			MOV EDI, a2
+			MOV ECX, a1
+			CALL Func_parseWaveFile
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool SMemFree(void* location, char* logFileName, s32 logLine, char defaultValue)
+	{
+		static s32 result;
+		const u32 Func_SMemFree = 0x00410070;
+		__asm
+		{
+			PUSHAD
+			PUSH defaultValue
+			PUSH logLine
+			PUSH logFileName
+			PUSH location
+			CALL Func_SMemFree
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	u32 getSoundDuration(s32 a1)
+	{
+		static u32 result;
+		const u32 Func_getSoundDuration = 0x004BB890;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, a1
+			CALL Func_getSoundDuration
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For soundInit
+	void dSoundDestroy()
+	{
+		const u32 Func_dSoundDestroy = 0x004BC180;
+		__asm
+		{
+			PUSHAD
+			CALL Func_dSoundDestroy
+			POPAD
+		}
+	}
+
+	s32 dSoundCreate(s32 a1)
+	{
+		static s32 result;
+		const u32 Func_dSoundCreate = 0x004BB640;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, a1
+			CALL Func_dSoundCreate
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 setCoopLevel(s32 a1, s32 a2)
+	{
+		static s32 result;
+		const u32 Func_setCoopLevel = 0x004BB600;
+		__asm
+		{
+			PUSHAD
+			MOV EDI, a1
+			MOV ESI, a2
+			CALL Func_setCoopLevel
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 createSoundBuffer(s32 a1)
+	{
+		static s32 result;
+		const u32 Func_createSoundBuffer = 0x004BB5A0;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, a1
+			CALL Func_createSoundBuffer
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 unkSoundCoreFunc()
+	{
+		static s32 result;
+		const u32 Func_unkSoundCoreFunc = 0x004BBA90;
+		__asm
+		{
+			PUSHAD
+			CALL Func_unkSoundCoreFunc
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 sFileDdaInitialize(char directSound)
+	{
+		static s32 result;
+		const u32 Func_sFileDdaInitialize = 0x004101C0;
+		__asm
+		{
+			PUSHAD
+			PUSH directSound
+			CALL Func_sFileDdaInitialize
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 sVidInitialize(char video)
+	{
+		static s32 result;
+		const u32 Func_sVidInitialize = 0x004101C6;
+		__asm
+		{
+			PUSHAD
+			PUSH video
+			CALL Func_sVidInitialize
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 loadButtonSFXFile()
+	{
+		static s32 result;
+		const u32 Func_loadButtonSFXFile = 0x004BCB20;
+		__asm
+		{
+			PUSHAD
+			CALL Func_loadButtonSFXFile
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void initVolume()
+	{
+		const u32 Func_initVolume = 0x004BC450;
+		__asm
+		{
+			PUSHAD
+			CALL Func_initVolume
+			POPAD
+		}
+	}
+
+	s32 sRegLoadValue(char keyName, char valueName, char a3, char value)
+	{
+		static s32 result;
+		const u32 Func_sRegLoadValue = 0x00410076;
+		__asm
+		{
+			PUSHAD
+			PUSH value
+			PUSH a3
+			PUSH valueName
+			PUSH keyName
+			CALL Func_sRegLoadValue
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	HANDLE beginThreadEx(s32 lpThreadAttributes, s32 dwStackSize, s32 threadId, s32 a4, s32 dwCreationFlags, s32 lpThreadId)
+	{
+		static HANDLE result;
+		const u32 Func_beginThreadEx = 0x0040CD3C;
+		__asm
+		{
+			PUSHAD
+			PUSH lpThreadId
+			PUSH dwCreationFlags
+			PUSH a4
+			PUSH threadId
+			PUSH dwStackSize
+			PUSH lpThreadAttributes
+			CALL Func_beginThreadEx
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

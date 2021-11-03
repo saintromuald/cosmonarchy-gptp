@@ -50,8 +50,8 @@ namespace hooks
 		return v8 == 0;
 	}
 
-	s32 isReadyToAttack(Unit* a1, unsigned __int8 a2)
-	{ // 00476640
+	s32 isReadyToAttack(Unit* a1, unsigned __int8 a2) // 00476640
+	{
 		Unit* v2; // esi
 		Unit* v4; // ecx
 		u32 v5; // eax
@@ -81,8 +81,8 @@ namespace hooks
 		return 1;
 	}
 
-	bool isUnitInWeaponRange(Unit* a1, Unit* a2)
-	{ // 00476870
+	bool isUnitInWeaponRange(Unit* a1, Unit* a2) // 00476870
+	{
 		Unit* v2; // edi
 		Unit* v4; // esi
 		unsigned __int8 v5; // bl
@@ -126,8 +126,8 @@ namespace hooks
 		return helper::isTargetWithinMinMovementRange(v2, v8, v4);
 	}
 
-	char canCastOrderedSpellNow(Unit* a1)
-	{ // 00491DB0
+	char canCastOrderedSpellNow(Unit* a1) // 00491DB0
+	{
 		Unit* v1; // esi
 		u32 v2; // eax
 		Unit* v3; // edi
@@ -171,8 +171,8 @@ namespace hooks
 		return v2;
 	}
 
-	void ordersWatchTarget(Unit* a1)
-	{ // 0047BAB0
+	void ordersWatchTarget(Unit* a1) // 0047BAB0
+	{
 		Unit* v1; // esi
 		Unit* v2; // ebx
 		s32 v3; // eax
@@ -188,19 +188,27 @@ namespace hooks
 		v1 = a1;
 		v2 = a1->orderTarget.unit;
 		if (!v2)
+		{
 			goto LABEL_22;
+		}
 		ByteOperations::SetLowByte(v3, helper::unitCanAttackTarget(v2, a1, 1));
 		if (!v3)
+		{
 			goto LABEL_22;
+		}
 		v4 = v1->orderTarget.unit;
 		target = v1->orderTarget.unit;
 		if (v4)
 		{
 			if (!isTargetVisibleHook(v4, v1))
+			{
 				goto LABEL_23;
+			}
 			v5 = v1->subunit;
 			if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].isBuilding))
+			{
 				v5 = v1;
+			}
 			if (v4->status & 4)
 			{
 				v6 = units_dat::AirWeapon[(unsigned __int16)v5->id];
@@ -209,9 +217,13 @@ namespace hooks
 			{
 				v7 = v5->id;
 				if (v7 != 103 || v5->status & 0x10)
+				{
 					v6 = units_dat::GroundWeapon[v7];
+				}
 				else
+				{
 					v6 = 0x82;
+				}
 			}
 			if (v6 >= (unsigned __int8)0x82
 				|| (v8 = weapons_dat::MinRange[v6]) != 0 && helper::isTargetWithinMinRange(v5, v8, target)
@@ -219,14 +231,16 @@ namespace hooks
 			{
 LABEL_23:
 				if (helper::getRightClickActionOrder(v1) == 3)
-					LABEL_22 :
+LABEL_22:
+				{
 					helper::unknownOrdersFunc((s32)v1, v1->orderTarget.pt.x, v1->orderTarget.pt.y);
+				}
 			}
 		}
 	}
 
-	void ordersStayInRange(Unit* a1)
-	{ // 0047C4F0
+	void ordersStayInRange(Unit* a1) // 0047C4F0
+	{
 		Unit* v1; // esi
 		Unit* v2; // ebx
 		s32 v3; // eax

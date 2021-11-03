@@ -1035,6 +1035,27 @@ namespace helper
 	// For unit_destructor_special
 	s32 removeCreepAtUnit(s32 left, s32 top, s16 unit_id);															    // 00414560
 
+	//// For direct_sound
+
+	// For soundThread
+	void fastFileRead(s32 a1, s32 a2, char* a3, s32 fileName, s32 buffer, s32 bytesRead, char* logFileName, s32 logLine);		// 004D2D10
+	s32 parseWaveFile(s32 a1, s32 a2, s32 a3);																					// 004BBD80
+	bool SMemFree(void* location, char* logFileName, s32 logLine, char defaultValue);											// 00410070
+	u32 getSoundDuration(s32 a1);																								// 004BB890
+
+	// For soundInit
+	void dSoundDestroy();																										// 004BC180
+	s32 dSoundCreate(s32 a1);																									// 004BB640
+	s32 setCoopLevel(s32 a1, s32 a2);																							// 004BB600
+	s32 createSoundBuffer(s32 a1);																								// 004BB5A0
+	s32 unkSoundCoreFunc();																										// 004BBA90
+	s32 sFileDdaInitialize(char directSound);																					// 004101C0
+	s32 sVidInitialize(char video);																								// 004101C6
+	s32 loadButtonSFXFile();																									// 004BCB20
+	void initVolume();																											// 004BC450
+	s32 sRegLoadValue(char keyName, char valueName, char a3, char value);														// 00410076
+	HANDLE beginThreadEx(s32 lpThreadAttributes, s32 dwStackSize, s32 threadId, s32 a4, s32 dwCreationFlags, s32 lpThreadId);	// 0040CD3C
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
