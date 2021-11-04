@@ -492,11 +492,6 @@ SCBW_DATA(HANDLE*,	soundHandle,					0x006D5A04);
 SCBW_DATA(s32*,		unkSoundCore3,					0x005998E4);
 SCBW_DATA(s8*,		unkSoundBoolCore,				0x006D1264);
 
-// temporary
-SCBW_DATA(s32*,		SFXDAT_SoundFile,				0x0068DAA0);
-SCBW_DATA(s8*,		SFXDAT_Flags,					0x0068C8C0);
-SCBW_DATA(s8*,		SFXDAT_Priority,				0x0068D628);
-
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data
@@ -585,17 +580,17 @@ namespace flingy_dat {
 } // (last entry at 0x00515A80)
 
 // incorrect, must be clarified
-/*
-namespace sfx_dat {
-	SCBW_DATA(const	DatLoad*,	sfxDat,	0x00515498);
 
-	SCBW_DATA(u8*,	Volume,		sfxDat[0].address);	// 0068C448
-	SCBW_DATA(u8*,	Flags,		sfxDat[1].address);	// 0068C8C0
-	SCBW_DATA(u16*,	Race,		sfxDat[2].address);	// 0068CD38
-	SCBW_DATA(u8*,	Priority,	sfxDat[3].address);	// 0068D628
-	SCBW_DATA(u32*,	SoundPtr,	sfxDat[4].address);	// 0068DAA0
+namespace sfx_dat {
+	SCBW_DATA(const	DatLoad*,			sfxDat,		0x00515498);
+	
+	SCBW_DATA(u32*,	SoundPtr,			sfxDat[0].address);	// 0068DAA0
+	SCBW_DATA(u8*,	Priority,			sfxDat[1].address);	// 0068D628
+	SCBW_DATA(u8*,	Flags,				sfxDat[2].address);	// 0068C8C0
+	SCBW_DATA(u16*,	PortraitDuration,	sfxDat[3].address);	// 0068CD38
+	SCBW_DATA(u8*,	Volume,				sfxDat[4].address);	// 0068C448
 }
-*/
+
 
 /*
 namespace weapons_dat {

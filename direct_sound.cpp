@@ -61,11 +61,11 @@ namespace hooks
                     v3 = v29;
                     v25 = v4;
                     *(v4 + 1) = 81 - GetTickCount();
-                    if (!SFXDAT_SoundFile[v3])
+                    if (!sfx_dat::SoundPtr[v3])
                     {
                         goto LABEL_17;
                     }
-                    sprintf_s(&fileName, 260, "sound\\%s", SFXDAT_SoundFile[v3]);
+                    sprintf_s(&fileName, 260, "sound\\%s", sfx_dat::SoundPtr[v3]);
                     soundFile = helper::fastFileRead(fileSize, 1, &fileName, fileName, 0, 1, "Starcraft\\SWAR\\lang\\snd.cpp", 737);
                     if (soundFile)
                     {
@@ -97,7 +97,7 @@ namespace hooks
                                     memcpy(v26, v5, v27); // was qmemcpy
                                     v17 = 0;
                                     (*(**v7 + 76))(*v7, v26, v27, 0);
-                                    if (!(SFXDAT_Flags[v29] & 1))
+                                    if (!(sfx_dat::Flags[v29] & 1))
                                     {
                                         v28 += fileSize;
                                     }
@@ -112,9 +112,9 @@ namespace hooks
                                         (*(**v7 + 64))(*v7, v11[1]);
                                         (*(**v7 + 48))(*v7, 0, 0, 0);
                                         v12 = v29;
-                                        v13 = SFXDAT_Flags[v29];
+                                        v13 = sfx_dat::Flags[v29];
                                         *(v11 - 4) = *v7;
-                                        v14 = SFXDAT_Priority[v12];
+                                        v14 = sfx_dat::Priority[v12];
                                         *(v11 - 10) = v13;
                                         *(v11 - 9) = v14;
                                         *(v11 - 8) = 0;
@@ -129,7 +129,7 @@ LABEL_17:
                             soundFile = 0;
                         }
                     }
-                    SFXDAT_Flags[v29] &= 0xF7u;
+                    sfx_dat::Flags[v29] &= 0xF7u;
                     v2 = v32;
                     *(v2 - 10) &= 0xF7u;
 LABEL_20:
