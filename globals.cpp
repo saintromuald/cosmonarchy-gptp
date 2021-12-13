@@ -159,6 +159,7 @@ void Globals::aise_save()
 
 void Globals::aise_load(const char* ptr, u32 len)
 {
+	this->reset();
 	return;
 
 	if (len == 0 || ptr == 0)
@@ -170,7 +171,6 @@ void Globals::aise_load(const char* ptr, u32 len)
 	std::stringstream stream(std::stringstream::in | std::stringstream::out | std::stringstream::binary);
 	std::string str(ptr, len);
 	stream << str;
-	this->reset();
 	stream.read(reinterpret_cast<char*>(&extended_unit_table), sizeof(extended_unit_table));
 	stream.read(reinterpret_cast<char*>(&extended_sfx), sizeof(extended_sfx));
 	stream.read(reinterpret_cast<char*>(&tbl_extender), sizeof(tbl_extender));
