@@ -105,6 +105,24 @@ namespace
 			RETN 0x10
 		}
 	}
+
+	void __declspec(naked) AI_PerformTask_Wrapper() // 004361A0
+	{
+		static Unit* unit;
+		static char result;
+		__asm
+		{
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::AI_PerformTask(unit);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -114,5 +132,6 @@ namespace hooks
 //		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
 		jmpPatch(AI_ProgressBuild_Wrapper,					0x00434480, 1);
 //		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
+		jmpPatch(AI_PerformTask_Wrapper,					0x004361A0, 0);
 	}
 }

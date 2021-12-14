@@ -1058,6 +1058,20 @@ namespace helper
 	HANDLE beginThreadEx(s32 lpThreadAttributes, s32 dwStackSize, s32 threadId, s32 a4, s32 dwCreationFlags, s32 lpThreadId);	// 0040CD3C
 	*/
 
+	//// For ai_requests
+
+	// For AI_PerformTask
+	void AI_OverlordBehavior(Unit* unit);																						// 00434DF0
+	void AI_NukeSiloBehavior(Unit* unit);																						// 00434D50
+	bool AI_UnitConstructionBehavior(s32 playerId, Unit* unit, s32 someBool);													// 00433890
+	char AI_PlanDoMergeMorph(s32 playerId, Unit* unit, s32 someBool);															// 00435F10
+	s32 AI_MorphBehavior(s32 player, Unit* unit, void* unit_ai);																// 00434FF0
+	void AI_TrainBehavior(Unit* unit, void* unit_ai, s32 player);																// 00434720
+	void AI_UpgradeBehavior(Unit* unit, s32 player);																			// 00434670
+	s32 AI_ResearchBehavior(Unit* unit, s32 player);																			// 0043462F - return value unused
+	char AI_ConstructBehavior(Unit* unit, void* unit_ai, s32 player);															// 00434E70
+	s32 AI_MakeDetectorBehavior(Unit* unit, s32 player);																		// 00435130
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

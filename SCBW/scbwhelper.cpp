@@ -10034,4 +10034,156 @@ namespace helper
 		return result;
 	}
 	*/
+	
+	// For AI_PerformTask
+	void AI_OverlordBehavior(Unit* unit)
+	{
+		const u32 Func_AI_OverlordBehavior = 0x00434DF0;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_AI_OverlordBehavior
+			POPAD
+		}
+	}
+
+	void AI_NukeSiloBehavior(Unit* unit)
+	{
+		const u32 Func_AI_NukeSiloBehavior = 0x00434D50;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_AI_NukeSiloBehavior
+			POPAD
+		}
+	}
+
+	bool AI_UnitConstructionBehavior(s32 playerId, Unit* unit, s32 someBool)
+	{
+		static s32 result;
+		const u32 Func_AI_UnitConstructionBehavior = 0x00433890;
+		__asm
+		{
+			PUSHAD
+			PUSH someBool
+			PUSH unit
+			PUSH playerId
+			CALL Func_AI_UnitConstructionBehavior
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	char AI_PlanDoMergeMorph(s32 playerId, Unit* unit, s32 someBool)
+	{
+		static s32 result;
+		const u32 Func_AI_PlanDoMergeMorph = 0x00435F10;
+		__asm
+		{
+			PUSHAD
+			PUSH someBool
+			PUSH unit
+			PUSH playerId
+			CALL Func_AI_PlanDoMergeMorph
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
+	}
+
+	s32 AI_MorphBehavior(s32 player, Unit* unit, void* unit_ai)
+	{
+		static s32 result;
+		const u32 Func_AI_MorphBehavior = 0x00434FF0;
+		__asm
+		{
+			PUSHAD
+			PUSH unit_ai
+			PUSH unit
+			MOV EBX, player
+			CALL Func_AI_MorphBehavior
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void AI_TrainBehavior(Unit* unit, void* unit_ai, s32 player)
+	{
+		const u32 Func_AI_TrainBehavior = 0x00434720;
+		__asm
+		{
+			PUSHAD
+			MOV EBX, player
+			MOV EDX, unit_ai
+			MOV EAX, unit
+			CALL Func_AI_TrainBehavior
+			POPAD
+		}
+	}
+
+	void AI_UpgradeBehavior(Unit* unit, s32 player)
+	{
+		const u32 Func_AI_UpgradeBehavior = 0x00434670;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, player
+			MOV EAX, unit
+			CALL Func_AI_UpgradeBehavior
+			POPAD
+		}
+	}
+
+	s32 AI_ResearchBehavior(Unit* unit, s32 player) // return value unused
+	{
+		static s32 result;
+		const u32 Func_AI_ResearchBehavior = 0x0043462F;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, player
+			MOV EAX, unit
+			CALL Func_AI_ResearchBehavior
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char AI_ConstructBehavior(Unit* unit, void* unit_ai, s32 player)
+	{
+		static s32 result;
+		const u32 Func_AI_ConstructBehavior = 0x00434E70;
+		__asm
+		{
+			PUSHAD
+			PUSH player
+			MOV EAX, unit_ai
+			MOV ECX, unit
+			CALL Func_AI_ConstructBehavior
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
+	}
+
+	s32 AI_MakeDetectorBehavior(Unit* unit, s32 player)
+	{
+		static s32 result;
+		const u32 Func_AI_MakeDetectorBehavior = 0x00435130;
+		__asm
+		{
+			PUSHAD
+			MOV EDI, player
+			MOV EAX, unit
+			CALL Func_AI_MakeDetectorBehavior
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

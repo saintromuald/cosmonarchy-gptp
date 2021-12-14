@@ -7,6 +7,7 @@ namespace hooks
 	AiTown* AI_ProgressBuild(s32 playerId, s32* minerals, s32* gas);											// 00434480
 	s32 AIManageBuildingPlacement(Unit* builder, u32 unitId,													// 004465C0
 		Point16 tryPosition, Point16* outPosition, s32 areaTiles);
+	char AI_PerformTask(Unit* unit);																			// 004361A0
 
 	void injectAIRequestsHooks();
 }
