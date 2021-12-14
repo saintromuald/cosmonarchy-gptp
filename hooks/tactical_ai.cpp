@@ -199,7 +199,7 @@ static KitePositions GetKitePositions(Unit* unit, u32 hostileGroupRadius)
 				result.backwardIndex = i;
 			}
 
-			if (labs(result.biases[i]) < labs(result.biases[result.strafeIndex]))
+			if (fabs(result.biases[i]) < fabs(result.biases[result.strafeIndex]))
 			{
 				result.strafeIndex = i;
 			}
@@ -352,6 +352,7 @@ static inline bool CanKite(Unit* unit)
 		// Special units
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
+		&& unit->id != UnitId::ProtossAccantor // currently disabled
 		&& unit->id != UnitId::TerranNuclearMissile
 		&& unit->id != UnitId::ProtossAnthelion
 		&& unit->id != UnitId::ZergAkistrokor
