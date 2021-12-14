@@ -7,7 +7,7 @@
 // These hooks facilitate a new DirectSound implementation, which will enable arbitrary sound channels and other features. -Pr0nogo
 namespace hooks
 {
-
+    /*
     s32 soundThread(s32 edi0, s32 a2) // 004BC620
     {
         s32* v2;
@@ -212,4 +212,5 @@ LABEL_6:
         }
         return result;
     }
+    */
 }

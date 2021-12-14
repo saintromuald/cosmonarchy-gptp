@@ -472,6 +472,7 @@ SCBW_DATA(u32*,		regionIdsCount,					0x0069265C);
 SCBW_DATA(u16*,		regionIds,						0x0069262C);
 
 // For soundThread
+/*
 SCBW_DATA(HANDLE*,	soundThreadEvent,				0x006D5A00);
 SCBW_DATA(s32*,		unkSoundCore,					0x006D5A08);
 SCBW_DATA(s32*,		soundVolume,					0x00599900);
@@ -491,6 +492,7 @@ SCBW_DATA(s32*,		soundMemoryCache,				0x005129B8);
 SCBW_DATA(HANDLE*,	soundHandle,					0x006D5A04);
 SCBW_DATA(s32*,		unkSoundCore3,					0x005998E4);
 SCBW_DATA(s8*,		unkSoundBoolCore,				0x006D1264);
+*/
 
 //////////////////////////////////////////////////////////////// @}
 

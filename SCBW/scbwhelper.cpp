@@ -9798,6 +9798,7 @@ namespace helper
 		}
 	}
 
+	/*
 	// For soundThread
 	void fastFileRead(s32 a1, s32 a2, char* a3, s32 fileName, s32 buffer, s32 bytesRead, char* logFileName, s32 logLine)
 	{
@@ -10032,4 +10033,5 @@ namespace helper
 		}
 		return result;
 	}
+	*/
 }

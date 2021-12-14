@@ -3,6 +3,7 @@
 
 namespace
 {
+	/*
 	void __declspec(naked) soundThread_Wrapper() // 004BC620
 	{
 		static s32 edi0;
@@ -56,14 +57,15 @@ namespace
 			RETN 4
 		}
 	}
+	*/
 }
 
 namespace hooks
 {
 	void injectDirectSoundSub()
 	{
-		jmpPatch(soundThread_Wrapper,	0x004BC620, 4);
-		jmpPatch(soundInit_Wrapper,		0x004BCB70, 1);
+//		jmpPatch(soundThread_Wrapper,	0x004BC620, 4);
+//		jmpPatch(soundInit_Wrapper,		0x004BCB70, 1);
 	}
 
 	void injectDirectSoundHooks()
