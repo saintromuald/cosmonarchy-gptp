@@ -601,6 +601,7 @@ LABEL_36:
 			helper::AI_RemoveUnitAI(unitCopy, 0);
 			if (helper::AI_GetRequestedBuildType(player) == 2)
 			{
+				/*
 				BuildingAi* unitAI = (BuildingAi*)AIScriptController[player].requests->val;
 				mainTownTown = unitAI->town;
 				unitAIQueues = (s16)unitAI->trainQueueValues;
@@ -608,6 +609,7 @@ LABEL_36:
 				unitAI->region = mainTownTown;
 				unitAI->town = unitAIQueues;
 				unitCopy->pAI = unitAI;
+				*/
 			}
 			else
 			{

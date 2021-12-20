@@ -164,6 +164,6 @@ namespace hooks
 		jmpPatch(AI_ProgressBuild_Wrapper,					0x00434480, 1);
 //		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
 		jmpPatch(AI_PerformTask_Wrapper,					0x004361A0, 0);
-		jmpPatch(AI_PlanDoMergeMorph_Wrapper,				0x00435F10, 1);
+//		jmpPatch(AI_PlanDoMergeMorph_Wrapper,				0x00435F10, 1);
 	}
 }
