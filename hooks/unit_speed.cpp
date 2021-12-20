@@ -216,6 +216,10 @@ namespace hooks
 						speed *= 2;
 						unit->_padding_0x132 &= ~0x2;
 					}
+					else
+					{
+						speed * 1.25;
+					}
 				}
 			} break;
 			case UnitId::TerranVulture:
@@ -269,13 +273,13 @@ namespace hooks
 			case UnitId::TerranEidolon:
 			case UnitId::ProtossAmaranth:
 			case UnitId::ProtossCabalist:
-			case UnitId::ZergZethrokor:
 			case UnitId::ZergZoryusthaleth:
 			{
 				speed *= 1.2;
 			} break;
 			case UnitId::ProtossZealot:
 			case UnitId::ProtossManifold:
+			case UnitId::ZergZethrokor:
 			{
 				speed *= 1.25;
 			} break;

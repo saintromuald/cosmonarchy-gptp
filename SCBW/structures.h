@@ -848,56 +848,56 @@ struct SpendingRequest
 
 struct AI_Main
 {
-	u32 mineralCollection;
-	u32 gasCollection;
-	u32 supplyCollection;
-	u32 minerals_available;
-	u32 gas_available;
-	u32 supply_available;
-	SpendingRequest requests[0x3f];
-	u8 request_count;
-	u8 liftoff_cooldown;
-	u16 AI_NukeRate;
-	u16 AI_Attacks;
-	u16 AI_LastNukeTime;
+	u32 mineralCollection;				/*0000*/
+	u32 gasCollection;					/*0004*/
+	u32 supplyCollection;				/*0008*/
+	u32 minerals_available;				/*000C*/
+	u32 gas_available;					/*0010*/
+	u32 supply_available;				/*0014*/
+	SpendingRequest requests[0x3f];		/*0018*/
+	u8 request_count;					/*0210*/
+	u8 liftoff_cooldown;				/*0211*/
+	u8 AI_NukeRate;						/*0212*/
+	u8 AI_Attacks;						/*0213*/
+	u32 AI_LastNukeTime;				/*0214*/
 	struct
 	{
-		u16 isSecureFinished : 1;	/*0001*/
-		u16 isTownStarted : 1;		/*0002*/
-		u16 isDefaultBuildOff : 1;	/*0004*/
+		u16 isSecureFinished : 1;		/*0001*/
+		u16 isTownStarted : 1;			/*0002*/
+		u16 isDefaultBuildOff : 1;		/*0004*/
 		u16 isTransportsOff : 1;		/*0008*/
-		u16 isFarmsNotimingOn : 1;	/*0010*/
-		u16 isUseMapSettings : 1;	/*0020*/
-		u16 flag_0x40 : 1;			/*0040*/
+		u16 isFarmsNotimingOn : 1;		/*0010*/
+		u16 isUseMapSettings : 1;		/*0020*/
+		u16 flag_0x40 : 1;				/*0040*/
 		u16 spreadCreep : 1;			/*0080*/
-		u16 flag_0x100 : 1;			/*0100*/
+		u16 flag_0x100 : 1;				/*0100*/
 		u16 hasStrongestGndArmy : 1;	/*0200*/ //Set if the AI's ground army is stronger than the total strength of the strongest enemy force
-		u16 bUpgradesFinished : 1;	/*0400*/
-		u16 bTargetExpansion : 1;	/*0800*/
+		u16 bUpgradesFinished : 1;		/*0400*/
+		u16 bTargetExpansion : 1;		/*0800*/
 	} AI_Flags;
-	u16 AI_PanicBlock;
-	u16 AI_MaxForce;
-	u16 AI_AttackGroup;
-	u16 wanted_unit;
-	u8 dc222[0x2];
-	u32 lastIndividualUpdateTime;	// 0x224
-	u32 last_attack_seconds;
-	u8 strategic_suicide;			// 0x22c
-	u8 spellcasterTimer;
-	u8 attack_failed;
-	u8 difficulty;
-	u16 attackers[0x40];				// 0x230
-	/*2B0*/  u32 AI_DefenseBuild_GG[10];
-	/*2D8*/  u32 AI_DefenseBuild_AG[10];
-	/*300*/  u32 AI_DefenseBuild_GA[10];
-	/*328*/  u32 AI_DefenseBuild_AA[10];
-	/*350*/  u32 AI_DefenseUse_GG[10];
-	/*378*/  u32 AI_DefenseUse_AG[10];
-	/*3A0*/  u32 AI_DefenseUse_GA[10];
-	/*3C8*/  u32 AI_DefenseUse_AA[10];
-	u8 unit_build_limits[0xe4];		// 0x3f0
-	Unit* mainMedic;					// 0x4d4
-	u8 unk4d8[0x10];
+	u16 AI_PanicBlock;					/*021A*/
+	u16 AI_MaxForce;					/*021C*/
+	u16 AI_AttackGroup;					/*021E*/
+	u16 wanted_unit;					/*0220*/
+	u8 dc222[0x2];						/*0222*/
+	u32 lastIndividualUpdateTime;		/*0224*/
+	u32 last_attack_seconds;			/*0228*/
+	u8 strategic_suicide;				/*022C*/
+	u8 spellcasterTimer;				/*022D*/
+	u8 attack_failed;					/*022E*/
+	u8 difficulty;						/*022F*/
+	u16 attackers[0x40];				/*0230*/
+	u32 AI_DefenseBuild_GG[10];			/*02B0*/
+	u32 AI_DefenseBuild_AG[10];			/*02D8*/
+	u32 AI_DefenseBuild_GA[10];			/*0300*/
+	u32 AI_DefenseBuild_AA[10];			/*0328*/
+	u32 AI_DefenseUse_GG[10];			/*0350*/
+	u32 AI_DefenseUse_AG[10];			/*0378*/
+	u32 AI_DefenseUse_GA[10];			/*03A0*/
+	u32 AI_DefenseUse_AA[10];			/*03C8*/
+	u8 unit_build_limits[0xe4];			/*03F0*/
+	Unit* mainMedic;					/*04D4*/
+	u8 unk4d8[0x10];					/*04D8*/
 };
 C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
 
