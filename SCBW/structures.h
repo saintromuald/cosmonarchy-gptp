@@ -695,7 +695,7 @@ C_ASSERT(sizeof(UnitAi) == 9);
 
 struct Region
 {
-	u16		accessabilityFlags;		// 0x00
+	u16		accessibilityFlags;		// 0x00
 	u16		groupIndex;				// 0x02
 	u16		tileCount;				// 0x04
 	u8		pathCount;				// 0x06
@@ -841,7 +841,7 @@ struct AiSpendingRequest
 struct SpendingRequest
 {
 	u8 priority;
-	u8 ty;
+	u8 type;
 	u16 id;
 	void* val;
 };

@@ -1072,6 +1072,20 @@ namespace helper
 	char AI_ConstructBehavior(Unit* unit, void* unit_ai, s32 player);															// 00434E70
 	s32 AI_MakeDetectorBehavior(Unit* unit, s32 player);																		// 00435130
 
+	// For AI_PlanDoMergeMorph
+	Unit* AI_GetMutaliskForMorph(s32 player);																					// 004375F0
+	s32 AI_GetHighTemplarsForSummon(s32 player, Unit** first, Unit** second);													// 00437410
+	s32 AI_GetDarkTemplarsForSummon(s32 player, Unit** first, Unit** second);													// 00437320
+	void AssignOrderWithTarget(Unit* unit, Unit* target, s32 orderId);															// 004752B0
+	s16 AI_Reserve(s32 player, s32 someBool);																					// 00447D00
+	AI_Main* AI_PopSpendingRequest(s32 player);																					// 004476D0
+	Unit* AI_GetHydraliskForMorph(s32 player);																					// 00437570
+	s32 isUnitTypeRaceUnitRace(u16 unitId, Unit* unit);																			// 00432480
+	bool hasResourcesForUnit(u16 unitId, s32 player);																			// 004487B0
+	char AI_PerformTask(Unit* unit);																							// 004361A0
+	s32 AI_GetRequestedBuildType(s32 player);																					// 00447590
+	bool AI_TrainUnit(Unit* unit, u16 unitId, char requestId, void* value);														// 004672F0
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
