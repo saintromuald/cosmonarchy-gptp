@@ -85,7 +85,7 @@ namespace hooks
 		}
 		helper::AI_GetRegionMilitaryTypes(region, &a2, &a3, &a4);
 		regionVar = region;
-		if (a2 && (*SAI_Paths)->regions[region->region].accessabilityFlags == 0x1FFD || helper::AI_CanTravelToRegion(region, region))
+		if (a2 && (*SAI_Paths)->regions[region->region].accessibilityFlags == 0x1FFD || helper::AI_CanTravelToRegion(region, region))
 		{
 			helper::AI_AssignMilitary(0, region);
 			attackTarget = helper::AI_PickAttackTarget_NoBuildings(region);
