@@ -365,6 +365,19 @@ LABEL_36:
 		return 1;
 	}
 
+	enum RequestType
+	{
+		RequestType_UnitMake = 0,
+		RequestType_UnitMergeMorph1 = 1,
+		RequestType_UnitMergeMorph2 = 2,
+		RequestType_ConstructMorph = 3,
+		RequestType_Train = 4,
+		RequestType_Upgrade = 5,
+		RequestType_Research = 6,
+		RequestType_PlaceAddon = 7,
+		RequestType_MakeDetector = 8,
+	};
+
 	char AI_PerformTask(Unit* unit) // 004361A0 -- hooked to fix AI Archon training -- Pr0nogo
 	{
 		switch (unit->id)
@@ -381,7 +394,6 @@ LABEL_36:
 		}
 
 		UnitAi* unitAIVar = (UnitAi*)unit->pAI;
-		UnitAi* unitAIVar2 = (UnitAi*)unit->pAI;
 		if (!unitAIVar || unitAIVar->type != AiType::Building)
 		{
 			return 1;
@@ -398,7 +410,6 @@ LABEL_36:
 					someBool = 1;
 				}
 			}
-			unitAIVar = unitAIVar2;
 		}
 
 		AI_Main* AI_Mainframe = &AIScriptController[player];
@@ -406,63 +417,62 @@ LABEL_36:
 		if (AI_Mainframe->request_count)
 		{
 			request_type = AI_Mainframe->requests->ty;
+			if (AI_Mainframe->requests->id == UnitId::ProtossArchon || AI_Mainframe->requests->id == UnitId::ProtossMindTyrant)
+			{
+				// Override archon and mind tyrant type
+				//request_type = RequestType_Train;
+			}
 		}
 		else
 		{
 			request_type = 0;
 		}
 
-		char result;
 		switch (request_type)
 		{
-			case 0: // UnitMake
+			case RequestType_UnitMake:
 			{
 				if (!helper::AI_UnitConstructionBehavior(player, unit, 50))
 				{
-					result = 1;
-					break; // Was goto label 21
+					return 1;
 				}
 				someBool = 1;
 				return helper::AI_PlanDoMergeMorph(player, unit, someBool);
 			}
-			case 1: // UnitMergeMorph1
-			case 2: // UnitMergeMorph2
+			case RequestType_UnitMergeMorph1:
+			case RequestType_UnitMergeMorph2:
 			{
 				return helper::AI_PlanDoMergeMorph(player, unit, someBool);
 			}
-			case 3: // ConstructMorph
+			case RequestType_ConstructMorph:
 			{
 				return helper::AI_MorphBehavior(player, unit, unit->pAI);
 			}
-			case 4: // Train
+			case RequestType_Train:
 			{
 				helper::AI_TrainBehavior(unit, unit->pAI, player);
-				result = 1;
+				return 1;
 			} break;
-			case 5: // Upgrade
+			case RequestType_Upgrade:
 			{
 				helper::AI_UpgradeBehavior(unit, player);
-				result = 1;
+				return 1;
 			} break;
-			case 6: // Research
+			case RequestType_Research:
 			{
 				helper::AI_ResearchBehavior(unit, player);
-				result = 1;
+				return 1;
 			} break;
-			case 7: // PlaceAddon
+			case RequestType_PlaceAddon:
 			{
 				helper::AI_ConstructBehavior(unit, unit->pAI, player);
-				result = 1;
+				return 1;
 			} break;
-			case 8: // MakeDetector
+			case RequestType_MakeDetector:
 			{
-				result = helper::AI_MakeDetectorBehavior(unit, player);
-			} break;
-			default:
-			{
-				result = 1;
+				return helper::AI_MakeDetectorBehavior(unit, player);
 			} break;
 		}
-		return result;
+		return 1;
 	}
 }
