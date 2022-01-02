@@ -1,0 +1,338 @@
+#include "scenario.h"
+#include "unit_search.h"
+
+#include <assert.h>
+
+u32 get_transmission_playing() {
+	return unit_deaths[UnitId::Special_PitDoor].player[0];
+}
+
+bool is_map(u32 campaign, u32 map) {
+	return unit_deaths[UnitId::Spell_ScannerSweep].player[0] == campaign
+		&& unit_deaths[UnitId::Special_RightPitDoor].player[0] == map;
+}
+
+enum {
+	Fraud_None,
+
+	/*
+	-- The Legion of Frauds
+	All members of this force are hostile to one another.
+	A new member of this force arrives every five minutes.Each run has a unique order of arrival.
+	*/
+	// == TERRAN ==
+	Fraud_AlexeiUkov,					// --	Orbital + Timing	--	<06> Autocrat
+	Fraud_UllenBankOnMeBigmunney,		// --	Armor + Greed		--	<18> Blackjack
+	Fraud_knightoftherealm,				// --	Raider + Rush		--	<1A> Maverick
+	Fraud_KKKhris,						// --	General + Timing	--	<15> Cyprian
+	Fraud_Dynamo,						// --	Raider + Timing		--	<11> Penumbra
+	Fraud_TodsDadPat,					// --	Armor + Rush		--	<1B> Phalanx
+	Fraud_Piglet,						// --	Shadow + Timing		--	<10> Cohort
+	Fraud_DarkenedFantasies,			// --	Armor + Timing		--	<18> Goliath
+	Fraud_CustomerSupporter,			// --	Orbital + Greed		--	<0F> Cyprian
+	// == PROTOSS ==
+	Fraud_BitcoinBoris,					// --	Profane + Rush		--	<15> Nexus
+	Fraud_CryptoCarl,					// --	Skylord + Timing	--	<1B> Atreus
+	Fraud_Veeq7,						// --	Ranger + Timing		--	<1A> Didact
+	Fraud_jun3hong,						// --	Templar + Timing	--	<1B> Envoy
+	Fraud_DigitalRightsManager,			// --	Templar + Rush		--	<05> Amaranth
+	// == ZERG ==
+	Fraud_CerebrateStalin,				// --	Miscreant + Timing	--	<10> Anticthon
+	Fraud_AndyRoseUh,					// --	Assault + Timing	--	<10> Konvilisk
+	Fraud_Winnie,						// --	Swarm + Greed		--	<03> Hatchery
+	Fraud_A,							// --	Miscreant + Rush	--	<18> Zethrokor
+	Fraud_SelloutSam,					// --	Swarm + Timing		--	<1B> Rilirokor
+	Fraud_PlagiaristPaul,				// --	Assault + Greed		--	<15> Matraleth
+	Fraud_RimTechCombot,				// --	Swarm + Timing		--	<10> Shaman
+	// == RANDOM ==	
+	Fraud_LightenedRealities,			// --	General + Rush							--	<03> Augur
+	Fraud_AchromaticHalfdreams,			// --	General + Timing						--	<18> Wendigo
+	Fraud_TonyTron,						// --	Orbital / Sunblot / Skylord + Greed		--	<0E> Olympian
+	Fraud_Pr0nogo,						// --	Armor / Assault / Profane + Timing		--	<1A> Seraph
+	Fraud_Ba3lethal,					// --	Raider / Assault / Templar + Rush		--	<11> Eidolon
+	Fraud_theToweringPigprophet,	 	// --	Orbital / Sunblot / Skylord + Timing	--	<15> Ovileth
+	Fraud_theAnalCrowsummoner,			// --	Shadow / Sunblot / Ranger + Greed		--	<05> Mutalisk
+	Fraud_thePissingPorncultist,		// --	Shadow / Miscreant / Profane + Rush		--	<03> Cyprian
+	Fraud_theBearborneArkanianpussy,	// --	Shadow / Swarm / Templar + Timing		--	<1D> Ultrokor
+	Fraud_theDoublingWuckdevourer,		// --	Armor / Swarm / Templar + Greed			--	<0E> Droleth
+	Fraud_theMongoloidPointcorruptor,	// --	Raider / Assault / Ranger + Timing		--	<1F> Cohort
+	Fraud_theCalendaredRageboy,			// --	Orbital / Assault / Skylord + Rush		--	<06> Zealot
+	Fraud_theWorthyPizzasniffer,		// --	Raider / Swarm / Templar + Rush			--	<01> Goliath
+	Fraud_theSkeletalTodzombie,			// --	Armor / Miscreant / Profane + Timing	--	<1F> Sovroleth
+	Fraud_HoopThrower,					// --	Raider / Miscreant / Templar + Timing	--	<07> Mason
+	Fraud_Veeq8,						// --	Orbital / Swarm / Ranger + Timing		--	<1A> Didact
+
+	Fraud_Count,
+
+	Fraud_TerranFirst = Fraud_AlexeiUkov,
+	Fraud_TerranLast = Fraud_CustomerSupporter,
+	Fraud_ProtossFirst = Fraud_BitcoinBoris,
+	Fraud_ProtossLast = Fraud_DigitalRightsManager,
+	Fraud_ZergFirst = Fraud_CerebrateStalin,
+	Fraud_ZergLast = Fraud_RimTechCombot,
+	Fraud_RandomFirst = Fraud_LightenedRealities,
+	Fraud_RandomLast = Fraud_Veeq8,
+};
+
+struct FraudSpawnLocation {
+	bool set;
+	Point16 pos;
+	std::vector<Point16> sources;
+	std::vector<Point16> rallies;
+};
+
+struct FraudSpawn {
+	// Fraud Spawning
+	u32 used_count;
+	bool used[Fraud_Count];
+	u32 timer;
+	u32 player;
+	u32 fraud;
+	u32 race;
+
+	// Unit Spawning
+	u32 unit_timer;
+	u32 unit_index;
+	FraudSpawnLocation* location;
+	std::vector<FraudSpawnLocation> spawns;
+	std::vector<u32> units[Fraud_Count][RaceId::Count];
+};
+
+FraudSpawn fraud_spawn;
+
+FraudSpawnLocation* get_random_spawn() {
+	u32 count = fraud_spawn.spawns.size();
+	if (!count) {
+		return 0;
+	}
+	u32 offset = scbw::randBetween(0, count - 1);
+	for (u32 i = 0; i < count; ++i) {
+		u32 location = (i + offset) % count;
+
+		UnitArray unit_array = UnitSearchRadial(fraud_spawn.spawns[location].pos, 12 * 32);
+		UnitArrayFilter(&unit_array, 0, FilterBuilding);
+		if (!unit_array.size) {
+			return &fraud_spawn.spawns[location];
+		}
+	}
+	return &fraud_spawn.spawns[offset];
+}
+
+FraudSpawnLocation* get_closest_spawn(Point16 pos) {
+	FraudSpawnLocation* closest_loc = 0;
+	f32 lowest_distance = 999999999;
+
+	for (FraudSpawnLocation& loc : fraud_spawn.spawns) {
+		f32 distance = scbw::getDistanceFast(loc.pos, pos);
+		if (distance < lowest_distance) {
+			closest_loc = &loc;
+			lowest_distance = distance;
+		}
+	}
+
+	return closest_loc;
+}
+
+Point16 get_closest_source(FraudSpawnLocation* location, Point16 pos) {
+	Point16 closest_loc = pos;
+	f32 lowest_distance = 999999999;
+
+	for (Point16 loc : location->sources) {
+		f32 distance = scbw::getDistanceFast(loc, pos);
+		if (distance < lowest_distance) {
+			closest_loc = loc;
+			lowest_distance = distance;
+		}
+	}
+
+	return closest_loc;
+}
+
+void init_fraud_spawns() {
+	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = unit->player_link.next) {
+		if (unit->id == UnitId::TerranCommandCenter) {
+			FraudSpawnLocation spawn = {};
+			spawn.set = true;
+			spawn.pos = unit->position;
+			fraud_spawn.spawns.push_back(spawn);
+			unit->remove();
+		}
+	}
+	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = unit->player_link.next) {
+		FraudSpawnLocation* spawn = get_closest_spawn(unit->position);
+		if (spawn) {
+			if (unit->id == UnitId::ProtossPylon) {
+				spawn->sources.push_back(unit->position);
+				unit->remove();
+			} else if (unit->id == UnitId::TerranMaverick) {
+				spawn->rallies.push_back(unit->position);
+				unit->remove();
+			}
+		}
+	}
+}
+
+void add_fraud_units(u32 fraud, u32 race, u32 unit, u32 count = 1) {
+	assert(race < RaceId::Count);
+	assert(fraud < Fraud_Count);
+	assert(unit < UnitId::None);
+	for (u32 i = 0; i < count; ++i) {
+		fraud_spawn.units[fraud][race].push_back(unit);
+	}
+}
+
+void init_fraud_units() {
+	// Todo: Add units for all personalities
+
+	// Veeq7
+	add_fraud_units(Fraud_Veeq7, RaceId::Protoss, UnitId::ProtossScribe, 4);
+	add_fraud_units(Fraud_Veeq7, RaceId::Protoss, UnitId::ProtossZealot, 10);
+
+	// Pr0nogo
+	add_fraud_units(Fraud_Pr0nogo, RaceId::Protoss, UnitId::ProtossScribe, 4);
+	add_fraud_units(Fraud_Pr0nogo, RaceId::Protoss, UnitId::ProtossZealot, 10);
+}
+
+bool place_fraud(u32 player) {
+	u32 race_first = 0;
+	u32 race_last = 0;
+	if (player == 2 || player == 5) { // Terran
+		race_first = Fraud_TerranFirst;
+		race_last = Fraud_TerranLast;
+	} else if (player == 3 || player == 6) { // Protoss
+		race_first = Fraud_ProtossFirst;
+		race_last = Fraud_ProtossLast;
+	} else if (player == 4 || player == 7) { // Zerg
+		race_first = Fraud_ZergFirst;
+		race_last = Fraud_ZergLast;
+	}
+
+	u32 race_count = 0;
+	u32 random_count = 0;
+	for (u32 i = race_first; i <= race_last; ++i) {
+		if (fraud_spawn.used[i]) {
+			++race_count;
+		}
+	}
+	for (u32 i = Fraud_RandomFirst; i <= Fraud_RandomLast; ++i) {
+		if (fraud_spawn.used[i]) {
+			++random_count;
+		}
+	}
+
+	u32 next_fraud = 0;
+	if (race_count && scbw::random() % (race_count + random_count) < race_count) {
+		next_fraud = scbw::randBetween(race_first, race_last);
+		while (fraud_spawn.used[next_fraud]) {
+			next_fraud = scbw::randBetween(race_first, race_last);
+		}
+	} else if (random_count) {
+		next_fraud = scbw::randBetween(Fraud_RandomFirst, Fraud_RandomLast);
+		while (fraud_spawn.used[next_fraud]) {
+			next_fraud = scbw::randBetween(Fraud_RandomFirst, Fraud_RandomLast);
+		}
+	}
+
+	if (next_fraud) {
+		FraudSpawnLocation* spawn_location = get_random_spawn();
+		if (spawn_location) {
+			++fraud_spawn.used_count;
+			fraud_spawn.used[next_fraud] = true;
+			fraud_spawn.timer = 5 * 60 * 24;
+			fraud_spawn.player = player;
+			fraud_spawn.fraud = next_fraud;
+
+			fraud_spawn.unit_timer = 0;
+			fraud_spawn.unit_index = 0;
+			fraud_spawn.location = spawn_location;
+			unit_deaths[UnitId::Special_MapRevealer].player[player] = next_fraud;
+			return true;
+		}
+	}
+	return false;
+}
+
+void init_scenario() {
+	fraud_spawn = {};
+	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch)) {
+		fraud_spawn.timer = 5 * 60 * 24;
+
+		u32 first_fraud = scbw::randBetween(0, 5);
+		u32 second_fraud = scbw::randBetween(0, 5);
+		while (second_fraud == first_fraud) {
+			u32 second_fraud = scbw::randBetween(0, 5);
+		}
+
+		init_fraud_spawns();
+		init_fraud_units();
+
+		place_fraud(first_fraud);
+		place_fraud(second_fraud);
+	}	
+}
+
+void tick_scenario() {
+	/*
+		Terran players: 2, 5
+		Protoss players: 3, 6
+		Zerg players: 4, 7
+	*/
+	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch)) {
+		u32 alive_count = 0;
+		for (u32 i = 1; i < 7; ++i) {
+			if (unit_deaths[UnitId::Factories].player[i] > 0) {
+				++alive_count;
+			}
+		}
+		
+		// Victory
+		if (alive_count && fraud_spawn.used_count == Fraud_Count) {
+			// Todo: make a helper for victory trigger
+		}
+
+		// Fraud Spawning
+		if (alive_count && fraud_spawn.timer) {
+			--fraud_spawn.timer;
+		} else {
+			fraud_spawn.timer = 0;
+		}
+		if (!fraud_spawn.timer) {
+			u32 offset = scbw::randBetween(0, 5);
+			for (u32 i = 0; i < 6; ++i) {
+				u32 player = (i + offset) % 6 + 1;
+				if (unit_deaths[UnitId::Factories].player[player] == 0) {
+					if (place_fraud(player)) {
+						break;
+					}
+				}
+			}
+		}
+
+		// Unit Spawning
+		if (fraud_spawn.location) {
+			if (fraud_spawn.unit_timer) {
+				--fraud_spawn.unit_timer;
+			}
+			if (!fraud_spawn.unit_timer) {
+				if (fraud_spawn.unit_index < fraud_spawn.units[fraud_spawn.fraud][fraud_spawn.race].size() && fraud_spawn.location->rallies.size()) {
+					Point16 rally = fraud_spawn.location->rallies[fraud_spawn.unit_index % fraud_spawn.location->rallies.size()];
+					Point16 source = get_closest_source(fraud_spawn.location, rally);
+
+					Unit* augur = scbw::createUnitInGame(UnitId::ProtossAugur, fraud_spawn.player, source.x, source.y);
+					if (augur) {
+						augur->remove();
+					}
+					Unit* unit = scbw::createUnitInGame(fraud_spawn.units[fraud_spawn.fraud][fraud_spawn.race][fraud_spawn.unit_index], fraud_spawn.player, source.x, source.y);
+					if (unit) {
+						unit->order(OrderId::AttackMove, rally.x, rally.y, 0, 0, true);
+
+						fraud_spawn.unit_timer = 24 * 0.8;
+						++fraud_spawn.unit_index;
+					}
+				} else {
+					fraud_spawn.location = 0;
+				}
+			}
+		}
+	}
+}

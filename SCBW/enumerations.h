@@ -203,6 +203,8 @@ namespace RaceId
 		Select = 5,
 		Random = 6,
 		None = 7, // also called Inactive
+
+		Count = 3,
 	};
 }
 

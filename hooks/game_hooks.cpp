@@ -22,6 +22,7 @@
 #include "player_color.h"
 #include "unit_ai.h"
 #include "tactical_ai.h"
+#include "scenario.h"
 
 const u32 hyperTrigger = 0x006509A0;
 
@@ -191,6 +192,12 @@ namespace hooks
 				}
 			}
 		}
+
+		// Scenario Features
+		if (*elapsedTimeFrames == 1) {
+			init_scenario();
+		}
+		tick_scenario();
 
 		// Map Features
 		if (*elapsedTimeFrames == 1)
