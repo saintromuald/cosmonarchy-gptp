@@ -8,6 +8,7 @@
 #include "globals.h"
 #include "SCBW\UnitFinder.h"
 #include "hooks/weapons/weapon_cooldown.h"
+#include "hooks/unit_destructor_special.h"
 
 namespace hooks
 {

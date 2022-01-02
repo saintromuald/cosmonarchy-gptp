@@ -11,6 +11,59 @@
 #include <SCBW/UnitFinder.h>
 #include "globals.h"
 
+void augurSacrifice(Unit* target)
+{
+	UnitExt* targetExt = globals.GetUnitExt(target);
+	if (targetExt->values[ValueAugurSafetyCheck] == 0)
+	{
+		targetExt->values[ValueAugurSafetyCheck] = 1;
+		const s32 radius = 6 * 32;
+		Unit* nearest = scbw::UnitFinder::getNearestTarget(
+			target->getX() - radius,
+			target->getY() - radius,
+			target->getX() + radius,
+			target->getY() + radius,
+			target, [&](Unit* unit)
+		{
+			// Don't attack friendly / allied units
+			if (unit->sprite == nullptr)
+			{
+				return false;
+			}
+			if (unit->playerId == target->playerId)
+			{
+				return false;
+			}
+			if (scbw::isAlliedTo(unit->playerId, target->playerId))
+			{
+				return false;
+			}
+			if (unit->status & UnitStatus::Invincible)
+			{
+				return false;
+			}
+			return true;
+		});
+		if (nearest != nullptr)
+		{
+			target->orderTarget.unit = nearest;
+			helper::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
+				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
+			scbw::hideAndDisableUnit(target);
+			target->status |= UnitStatus::Invincible;
+			helper::createThingy(SpriteId::AugurDeathExplosion, target->getX(), target->getY(), target->playerId);
+			helper::playSoundFromSource(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), target, 1, 0);
+			target->removeTimer = 5 * 32;
+			target->userActionFlags |= 0x4;
+			return;
+		}
+		else
+		{
+			target->remove();
+		}
+	}
+}
+
 void killAllHangarUnits(Unit* unit)
 {
 	u32 random_value;
@@ -283,6 +336,10 @@ void unitDestructorSpecialHook(Unit* unit)
 			case UnitId::ZergExtractor:
 			{
 				freeResourceContainer(unit);
+			} break;
+			case UnitId::ProtossAugur:
+			{
+				augurSacrifice(unit);
 			} break;
 		}
 	}

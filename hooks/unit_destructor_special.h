@@ -1,7 +1,7 @@
 #pragma once
 
-namespace hooks {
-
-void injectUnitDestructorSpecial();
-
-} //hooks
+void augurSacrifice(Unit* unit);
+namespace hooks
+{
+	void injectUnitDestructorSpecial();
+}

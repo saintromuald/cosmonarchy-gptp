@@ -1,7 +1,6 @@
 #pragma once
 #include "../../SCBW/structures/Unit.h"
 
-void augurSacrifice(Unit* target);
 namespace hooks {
 
 	void weaponDamageHook(
