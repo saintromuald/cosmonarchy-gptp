@@ -99,7 +99,12 @@ enum {
 	FraudSuper_Zerghere,                // --    Swarm + Greed      --    <10> Hatchery
 
 	// == RANDOM ==
-	FraudSuper_God,                     // --    General + Timing   --    <06> Mind Tyrant
+	FraudSuper_God1,                    // --    General + Timing   --    <06> Mind Tyrant
+	FraudSuper_God2,                    // --    General + Timing   --    <06> Mind Tyrant
+	FraudSuper_God3,                    // --    General + Timing   --    <06> Mind Tyrant
+	FraudSuper_God4,                    // --    General + Timing   --    <06> Mind Tyrant
+	FraudSuper_God5,                    // --    General + Timing   --    <06> Mind Tyrant
+	FraudSuper_God6,                    // --    General + Timing   --    <06> Mind Tyrant
 
 	Fraud_Count,
 
@@ -126,13 +131,15 @@ enum {
 	FraudSuper_ZergFirst = FraudSuper_Zerghere,
 	FraudSuper_ZergLast = FraudSuper_Zerghere,
 
-	FraudGod_Final = FraudSuper_God,
+	FraudGod_FinalFirst = FraudSuper_God1,
+	FraudGod_FinalLast = FraudSuper_God6,
 
 	FraudClass_Fraud = 0,
 	FraudClass_Hero,
 	FraudClass_Super,
-	FraudClass_God,
 	FraudClass_Count,
+
+	FraudClass_God,
 };
 
 struct Fraud {
@@ -149,20 +156,22 @@ struct FraudSpawnLocation {
 	std::vector<Point16> rallies;
 };
 
+struct FraudSpawnSequence {
+	u32 fraud;
+	u32 race;
+	u32 unit_timer;
+	u32 unit_index;
+	FraudSpawnLocation* location;
+};
+
 struct FraudSpawn {
-	// Fraud Spawning
 	Fraud frauds[Fraud_Count][RaceId::Count];
 	u32 used_count;
 	bool used[Fraud_Count];
 	u32 timer[FraudClass_Count];
-	u32 player;
-	u32 fraud;
-	u32 race;
 
-	// Unit Spawning
-	u32 unit_timer;
-	u32 unit_index;
-	FraudSpawnLocation* location;
+	FraudSpawnSequence sequence[6];
+
 	std::vector<FraudSpawnLocation> spawns;
 	std::vector<u8> units[Fraud_Count][RaceId::Count];
 };
@@ -265,103 +274,102 @@ void init_fraud_units() {
 }
 
 bool place_fraud(u32 player, u32 fraud_class) {
-	u32 race = 0;
-	u32 race_first = 0;
-	u32 race_last = 0;
-	u32 random_first = 0;
-	u32 random_last = 0;
-	if (fraud_class == FraudClass_Fraud) {
-		random_first = Fraud_RandomFirst;
-		random_last = Fraud_RandomLast;
-	} else if (fraud_class == FraudClass_God) {
-		random_first = FraudGod_Final;
-		random_last = FraudGod_Final;
-	}
-	if (player == 2 || player == 5) { // Terran
-		race = RaceId::Terran;
+	if (!fraud_spawn.sequence[player - 1].location) {
+		u32 race = 0;
+		u32 race_first = 0;
+		u32 race_last = 0;
+		u32 random_first = 0;
+		u32 random_last = 0;
 		if (fraud_class == FraudClass_Fraud) {
-			race_first = Fraud_TerranFirst;
-			race_last  = Fraud_TerranLast;
-		} else if (fraud_class == FraudClass_Hero) {
-			race_first = FraudHero_TerranFirst;
-			race_last  = FraudHero_TerranLast;
-		} else if (fraud_class == FraudClass_Super) {
-			race_first = FraudSuper_TerranFirst;
-			race_last  = FraudSuper_TerranLast;
+			random_first = Fraud_RandomFirst;
+			random_last = Fraud_RandomLast;
+		} else if (fraud_class == FraudClass_God) {
+			random_first = FraudGod_FinalFirst;
+			random_last = FraudGod_FinalLast;
 		}
-	} else if (player == 3 || player == 6) { // Protoss
-		race = RaceId::Protoss;
-		if (fraud_class == FraudClass_Fraud) {
-			race_first = Fraud_ProtossFirst;
-			race_last  = Fraud_ProtossLast;
-		} else if (fraud_class == FraudClass_Hero) {
-			race_first = FraudHero_ProtossFirst;
-			race_last  = FraudHero_ProtossLast;
-		} else if (fraud_class == FraudClass_Super) {
-			race_first = FraudSuper_ProtossFirst;
-			race_last  = FraudSuper_ProtossLast;
-		}
-	} else if (player == 4 || player == 7) { // Zerg
-		race = RaceId::Zerg;
-		if (fraud_class == FraudClass_Fraud) {
-			race_first = Fraud_ZergFirst;
-			race_last  = Fraud_ZergLast;
-		} else if (fraud_class == FraudClass_Hero) {
-			race_first = FraudHero_ZergFirst;
-			race_last  = FraudHero_ZergLast;
-		} else if (fraud_class == FraudClass_Super) {
-			race_first = FraudSuper_ZergFirst;
-			race_last  = FraudSuper_ZergLast;
-		}
-	}
-
-	u32 race_count = 0;
-	u32 random_count = 0;
-	for (u32 i = race_first; i <= race_last; ++i) {
-		if (fraud_spawn.used[i]) {
-			++race_count;
-		}
-	}
-	for (u32 i = random_first; i <= random_last; ++i) {
-		if (fraud_spawn.used[i]) {
-			++random_count;
-		}
-	}
-
-	u32 next_fraud = 0;
-	if (race_count && scbw::random() % (race_count + random_count) < race_count) {
-		next_fraud = scbw::randBetween(race_first, race_last);
-		while (fraud_spawn.used[next_fraud]) {
-			next_fraud = scbw::randBetween(race_first, race_last);
-		}
-	} else if (random_count) {
-		next_fraud = scbw::randBetween(random_first, random_last);
-		while (fraud_spawn.used[next_fraud]) {
-			next_fraud = scbw::randBetween(random_first, random_last);
-		}
-	}
-
-	if (next_fraud) {
-		FraudSpawnLocation* spawn_location = get_random_spawn();
-		if (spawn_location) {
-			++fraud_spawn.used_count;
-			fraud_spawn.used[next_fraud] = true;
+		if (player == 2 || player == 5) { // Terran
+			race = RaceId::Terran;
 			if (fraud_class == FraudClass_Fraud) {
-				fraud_spawn.timer[fraud_class] = 5 * 60 * 24;
+				race_first = Fraud_TerranFirst;
+				race_last  = Fraud_TerranLast;
 			} else if (fraud_class == FraudClass_Hero) {
-				fraud_spawn.timer[fraud_class] = 8 * 60 * 24;
+				race_first = FraudHero_TerranFirst;
+				race_last  = FraudHero_TerranLast;
 			} else if (fraud_class == FraudClass_Super) {
-				fraud_spawn.timer[fraud_class] = 15 * 60 * 24;
+				race_first = FraudSuper_TerranFirst;
+				race_last  = FraudSuper_TerranLast;
 			}
-			fraud_spawn.player = player;
-			fraud_spawn.fraud = next_fraud;
-			fraud_spawn.race = race;
+		} else if (player == 3 || player == 6) { // Protoss
+			race = RaceId::Protoss;
+			if (fraud_class == FraudClass_Fraud) {
+				race_first = Fraud_ProtossFirst;
+				race_last  = Fraud_ProtossLast;
+			} else if (fraud_class == FraudClass_Hero) {
+				race_first = FraudHero_ProtossFirst;
+				race_last  = FraudHero_ProtossLast;
+			} else if (fraud_class == FraudClass_Super) {
+				race_first = FraudSuper_ProtossFirst;
+				race_last  = FraudSuper_ProtossLast;
+			}
+		} else if (player == 4 || player == 7) { // Zerg
+			race = RaceId::Zerg;
+			if (fraud_class == FraudClass_Fraud) {
+				race_first = Fraud_ZergFirst;
+				race_last  = Fraud_ZergLast;
+			} else if (fraud_class == FraudClass_Hero) {
+				race_first = FraudHero_ZergFirst;
+				race_last  = FraudHero_ZergLast;
+			} else if (fraud_class == FraudClass_Super) {
+				race_first = FraudSuper_ZergFirst;
+				race_last  = FraudSuper_ZergLast;
+			}
+		}
 
-			fraud_spawn.unit_timer = 0;
-			fraud_spawn.unit_index = 0;
-			fraud_spawn.location = spawn_location;
-			unit_deaths[UnitId::Special_MapRevealer].player[player] = next_fraud;
-			return true;
+		u32 race_count = 0;
+		u32 random_count = 0;
+		for (u32 i = race_first; i <= race_last; ++i) {
+			if (fraud_spawn.used[i]) {
+				++race_count;
+			}
+		}
+		for (u32 i = random_first; i <= random_last; ++i) {
+			if (fraud_spawn.used[i]) {
+				++random_count;
+			}
+		}
+
+		u32 next_fraud = 0;
+		if (race_count && scbw::random() % (race_count + random_count) < race_count) {
+			next_fraud = scbw::randBetween(race_first, race_last);
+			while (fraud_spawn.used[next_fraud]) {
+				next_fraud = scbw::randBetween(race_first, race_last);
+			}
+		} else if (random_count) {
+			next_fraud = scbw::randBetween(random_first, random_last);
+			while (fraud_spawn.used[next_fraud]) {
+				next_fraud = scbw::randBetween(random_first, random_last);
+			}
+		}
+
+		if (next_fraud) {
+			FraudSpawnLocation* spawn_location = get_random_spawn();
+			if (spawn_location) {
+				++fraud_spawn.used_count;
+				fraud_spawn.used[next_fraud] = true;
+				if (fraud_class == FraudClass_Fraud) {
+					fraud_spawn.timer[fraud_class] = 5 * 60 * 24;
+				} else if (fraud_class == FraudClass_Hero) {
+					fraud_spawn.timer[fraud_class] = 8 * 60 * 24;
+				} else if (fraud_class == FraudClass_Super) {
+					fraud_spawn.timer[fraud_class] = 15 * 60 * 24;
+				}
+				fraud_spawn.sequence[player-1].fraud = next_fraud;
+				fraud_spawn.sequence[player-1].race = race;
+				fraud_spawn.sequence[player-1].unit_timer = 0;
+				fraud_spawn.sequence[player-1].unit_index = 0;
+				fraud_spawn.sequence[player-1].location = spawn_location;
+				return true;
+			}
 		}
 	}
 	return false;
@@ -423,7 +431,7 @@ void tick_scenario() {
 			} else {
 				fraud_spawn.timer[i] = 0;
 			}
-			if (!fraud_spawn.timer[i] && !fraud_spawn.location) {
+			if (!fraud_spawn.timer[i]) {
 				u32 offset = scbw::randBetween(0, 5);
 				for (u32 i = 0; i < 6; ++i) {
 					u32 player = (i + offset) % 6 + 1;
@@ -437,29 +445,43 @@ void tick_scenario() {
 			}
 		}
 
-		// Unit Spawning
-		if (fraud_spawn.location) {
-			if (fraud_spawn.unit_timer) {
-				--fraud_spawn.unit_timer;
+		u32 final_counter = 0;
+		for (u32 i = 0; i < FraudSuper_God1; ++i) {
+			if (fraud_spawn.used[i]) {
+				++final_counter;
 			}
-			if (!fraud_spawn.unit_timer) {
-				if (fraud_spawn.unit_index < fraud_spawn.units[fraud_spawn.fraud][fraud_spawn.race].size() && fraud_spawn.location->rallies.size()) {
-					Point16 rally = fraud_spawn.location->rallies[fraud_spawn.unit_index % fraud_spawn.location->rallies.size()];
-					Point16 source = get_closest_source(fraud_spawn.location, rally);
+		}
+		if (!alive_count && !final_counter) {
+			for (u32 i = 1; i < 7; ++i) {
+				place_fraud(i, FraudClass_God);
+			}
+		}
 
-					Unit* augur = scbw::createUnitInGame(UnitId::ProtossAugur, fraud_spawn.player, source.x, source.y);
-					if (augur) {
-						augur->remove();
-					}
-					Unit* unit = scbw::createUnitInGame(fraud_spawn.units[fraud_spawn.fraud][fraud_spawn.race][fraud_spawn.unit_index], fraud_spawn.player, source.x, source.y);
-					if (unit) {
-						unit->order(OrderId::AttackMove, rally.x, rally.y, 0, 0, true);
+		// Unit Spawning
+		for (u32 i = 0; i < 6; ++i) {
+			if (fraud_spawn.sequence[i].location) {
+				if (fraud_spawn.sequence[i].unit_timer) {
+					--fraud_spawn.sequence[i].unit_timer;
+				}
+				if (!fraud_spawn.sequence[i].unit_timer) {
+					if (fraud_spawn.sequence[i].unit_index < fraud_spawn.units[fraud_spawn.sequence[i].fraud][fraud_spawn.sequence[i].race].size() && fraud_spawn.sequence[i].location->rallies.size()) {
+						Point16 rally = fraud_spawn.sequence[i].location->rallies[fraud_spawn.sequence[i].unit_index % fraud_spawn.sequence[i].location->rallies.size()];
+						Point16 source = get_closest_source(fraud_spawn.sequence[i].location, rally);
 
-						fraud_spawn.unit_timer = 24 * 0.8;
-						++fraud_spawn.unit_index;
+						Unit* augur = scbw::createUnitInGame(UnitId::ProtossAugur, i + 1, source.x, source.y);
+						if (augur) {
+							augur->remove();
+						}
+						Unit* unit = scbw::createUnitInGame(fraud_spawn.units[fraud_spawn.sequence[i].fraud][fraud_spawn.sequence[i].race][fraud_spawn.sequence[i].unit_index], i + 1, source.x, source.y);
+						if (unit) {
+							unit->order(OrderId::AttackMove, rally.x, rally.y, 0, 0, true);
+
+							fraud_spawn.sequence[i].unit_timer = 24 * 0.8;
+							++fraud_spawn.sequence[i].unit_index;
+						}
+					} else {
+						fraud_spawn.sequence[i].location = 0;
 					}
-				} else {
-					fraud_spawn.location = 0;
 				}
 			}
 		}
