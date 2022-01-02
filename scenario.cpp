@@ -388,6 +388,9 @@ void init_scenario() {
 	}	
 }
 
+typedef s32 __cdecl VictoryFunc();
+VictoryFunc* Victory = (VictoryFunc*)0x4C5310;
+
 void tick_scenario() {
 	/*
 		Terran players: 2, 5
@@ -408,8 +411,9 @@ void tick_scenario() {
 			}
 		}
 		
-		if (alive_count && fraud_spawn.used_count == Fraud_Count) {
-			// Todo: place god, handle victory after defeating god
+		if (!alive_count && fraud_spawn.used_count == Fraud_Count) {
+			*currentTriggerPlayerId = 0;
+			Victory();
 		}
 
 		// Fraud Spawning
