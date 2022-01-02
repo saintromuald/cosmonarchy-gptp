@@ -10186,4 +10186,195 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For AI_PlanDoMergeMorph
+
+	Unit* AI_GetMutaliskForMorph(s32 player)
+	{
+		static Unit* result;
+		const u32 Func_AI_GetMutaliskForMorph = 0x004375F0;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, player
+			CALL Func_AI_GetMutaliskForMorph
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 AI_GetHighTemplarsForSummon(s32 player, Unit** first, Unit** second)
+	{
+		static s32 result;
+		const u32 Func_AI_GetHighTemplarsForSummon = 0x00437410;
+		__asm
+		{
+			PUSHAD
+			PUSH second
+			PUSH first
+			PUSH player
+			CALL Func_AI_GetHighTemplarsForSummon
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 AI_GetDarkTemplarsForSummon(s32 player, Unit** first, Unit** second)
+	{
+		static s32 result;
+		const u32 Func_AI_GetDarkTemplarsForSummon = 0x00437320;
+		__asm
+		{
+			PUSHAD
+			PUSH second
+			MOV EBX, first
+			MOV EAX, player
+			CALL Func_AI_GetDarkTemplarsForSummon
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void AssignOrderWithTarget(Unit* unit, Unit* target, s32 orderId)
+	{
+		const u32 Func_AssignOrderWithTarget = 0x004752B0;
+		__asm
+		{
+			PUSHAD
+			PUSH orderId
+			MOV ESI, target
+			MOV EAX, unit
+			CALL Func_AssignOrderWithTarget
+			POPAD
+		}
+	}
+
+	s16 AI_Reserve(s32 player, s32 someBool)
+	{
+		static s16 result;
+		const u32 Func_AI_Reserve = 0x00447D00;
+		__asm
+		{
+			PUSHAD
+			PUSH someBool
+			MOV ECX, player
+			CALL Func_AI_Reserve
+			MOV result, AX
+			POPAD
+		}
+		return result;
+	}
+
+	AI_Main* AI_PopSpendingRequest(s32 player)
+	{
+		static AI_Main* result;
+		const u32 Func_AI_PopSpendingRequest = 0x004476D0;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, player
+			CALL Func_AI_PopSpendingRequest
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* AI_GetHydraliskForMorph(s32 player)
+	{
+		static Unit* result;
+		const u32 Func_AI_GetHydraliskForMorph = 0x00437570;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, player
+			CALL Func_AI_GetHydraliskForMorph
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 isUnitTypeRaceUnitRace(u16 unitId, Unit* unit)
+	{
+		static s32 result;
+		const u32 Func_isUnitTypeRaceUnitRace = 0x00432480;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, unit
+			MOV AX, unitId
+			CALL Func_isUnitTypeRaceUnitRace
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool hasResourcesForUnit(u16 unitId, s32 player)
+	{
+		static bool result;
+		const u32 Func_hasResourcesForUnit = 0x004487B0;
+		__asm
+		{
+			PUSHAD
+			PUSH player
+			MOV CX, unitId
+			CALL Func_hasResourcesForUnit
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	char AI_PerformTask(Unit* unit)
+	{
+		static char result;
+		const u32 Func_AI_PerformTask = 0x004361A0;
+		__asm
+		{
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_AI_PerformTask
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	s32 AI_GetRequestedBuildType(s32 player)
+	{
+		static s32 result;
+		const u32 Func_AI_GetRequestedBuildType = 0x00447590;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, player
+			CALL Func_AI_GetRequestedBuildType
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool AI_TrainUnit(Unit* unit, u16 unitId, char requestId, void* value)
+	{
+		static bool result;
+		const u32 Func_AI_TrainUnit = 0x004672F0;
+		__asm
+		{
+			PUSHAD
+			PUSH value
+			PUSH requestId
+			PUSH unitId
+			MOV EAX, unit
+			CALL Func_AI_TrainUnit
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

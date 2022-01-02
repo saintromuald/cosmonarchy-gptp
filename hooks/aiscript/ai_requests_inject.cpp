@@ -123,6 +123,37 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_PlanDoMergeMorph_Wrapper() // 00435F10
+	{
+		static char result;
+		static s32 player;
+		static Unit* unit;
+		static s32 boolSomething;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV unit, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV boolSomething, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::AI_PlanDoMergeMorph(player, unit, boolSomething);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0xC
+		}
+	}
 }
 
 namespace hooks
@@ -133,5 +164,6 @@ namespace hooks
 		jmpPatch(AI_ProgressBuild_Wrapper,					0x00434480, 1);
 //		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
 		jmpPatch(AI_PerformTask_Wrapper,					0x004361A0, 0);
+//		jmpPatch(AI_PlanDoMergeMorph_Wrapper,				0x00435F10, 1);
 	}
 }

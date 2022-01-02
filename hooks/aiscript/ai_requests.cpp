@@ -416,7 +416,7 @@ LABEL_36:
 		s32 request_type;
 		if (AI_Mainframe->request_count)
 		{
-			request_type = AI_Mainframe->requests->ty;
+			request_type = AI_Mainframe->requests->type;
 			if (AI_Mainframe->requests->id == UnitId::ProtossArchon || AI_Mainframe->requests->id == UnitId::ProtossMindTyrant)
 			{
 				// Override archon and mind tyrant type
@@ -474,5 +474,161 @@ LABEL_36:
 			} break;
 		}
 		return 1;
+	}
+
+	char AI_PlanDoMergeMorph(s32 player, Unit* unit, s32 boolSomething) // 00435F10
+	{
+		bool error;
+		AiTown* mainTown2;
+		char requestedBuildId;
+		AI_Main* mainTown;
+		s16 mainTownTown;
+		s16 unitAIQueues;
+		s16 unitId;
+
+		Unit* unitCopy = unit;
+		s32 nextBuildType = AIScriptController[player].requests->type;
+		Unit* dummy = nullptr;
+		switch (nextBuildType)
+		{
+			case UnitId::ZergGeszithalor:
+			case UnitId::ZergVithrilisk:
+				unitCopy = helper::AI_GetMutaliskForMorph(player);
+				if (!unitCopy)
+				{
+					helper::AI_Reserve(player, 0);
+					helper::AI_PopSpendingRequest(player);
+					return 0;
+				}
+				break;
+			case UnitId::ProtossArchon:
+				if (helper::AI_GetHighTemplarsForSummon(player, &unit, &dummy))
+				{
+					helper::AssignOrderWithTarget(dummy, unit, OrderId::WarpingArchon);
+					helper::AssignOrderWithTarget(unit, dummy, OrderId::WarpingArchon);
+					helper::AI_Reserve(player, 1);
+					helper::AI_PopSpendingRequest(player);
+					return 0;
+				}
+			case UnitId::ProtossMindTyrant:
+				if (helper::AI_GetDarkTemplarsForSummon(player, &dummy, &unit))
+				{
+					helper::AssignOrderWithTarget(dummy, unit, OrderId::WarpingDarkArchon);
+					helper::AssignOrderWithTarget(unit, dummy, OrderId::WarpingDarkArchon);
+					helper::AI_Reserve(player, 1);
+					helper::AI_PopSpendingRequest(player);
+					return 0;
+				}
+				helper::AI_Reserve(player, 0);
+				helper::AI_PopSpendingRequest(player);
+				return 0;
+			case UnitId::ZergLakizilisk:
+				unitCopy = helper::AI_GetHydraliskForMorph(player);
+				if (!unitCopy)
+				{
+					helper::AI_Reserve(player, 0);
+					helper::AI_PopSpendingRequest(player);
+					return 0;
+				}
+				break;
+		}
+
+		if (!helper::isUnitTypeRaceUnitRace(nextBuildType, unitCopy) || helper::createUnitAllowed(nextBuildType, unitCopy, player) != 1)
+		{
+			if (*lastInternalError == 2
+			  || *lastInternalError == 23
+			  || *lastInternalError == 21
+			  || *lastInternalError == 8
+			  || *lastInternalError == 7)
+			{
+				helper::AI_Reserve(player, 0);
+				helper::AI_PopSpendingRequest(player);
+				if (!boolSomething)
+				{
+					helper::AI_PerformTask(unit);
+				}
+				return 0;
+			}
+			error = *lastInternalError == 13;
+			if (error)
+			{
+				helper::AI_Reserve(player, 0);
+				helper::AI_PopSpendingRequest(player);
+				if (!boolSomething)
+				{
+					helper::AI_PerformTask(unit);
+				}
+				return 0;
+			}
+		}
+
+		if (!helper::hasResourcesForUnit(nextBuildType, player))
+		{
+			error = (AIScriptController[player].AI_Flags.isUseMapSettings) == 0;
+			if (error)
+			{
+				helper::AI_Reserve(player, 0);
+				helper::AI_PopSpendingRequest(player);
+				if (!boolSomething)
+				{
+					helper::AI_PerformTask(unit);
+				}
+			}
+			return 0;
+		}
+
+		if (helper::isAIAllowedToBuild(player, nextBuildType))
+		{
+			helper::AI_Reserve(player, 0);
+			helper::AI_PopSpendingRequest(player);
+			return 0;
+		}
+
+		if (unit == unitCopy)
+		{
+			requestedBuildId = helper::AI_GetRequestedBuildType(player);
+			if (!helper::AI_TrainUnit(unitCopy, nextBuildType, requestedBuildId, AIScriptController[player].requests->val))
+			{
+				return 0;
+			}
+		}
+		else
+		{
+			if (!helper::HasMoneyCanMake(unitCopy, nextBuildType))
+			{
+				return 0;
+			}
+			helper::AI_RemoveUnitAI(unitCopy, 0);
+			if (helper::AI_GetRequestedBuildType(player) == 2)
+			{
+				/*
+				BuildingAi* unitAI = (BuildingAi*)AIScriptController[player].requests->val;
+				mainTownTown = unitAI->town;
+				unitAIQueues = (s16)unitAI->trainQueueValues;
+				unitAI->parent = unitCopy;
+				unitAI->region = mainTownTown;
+				unitAI->town = unitAIQueues;
+				unitCopy->pAI = unitAI;
+				*/
+			}
+			else
+			{
+				helper::AI_AddMilitary((AiRegion*)AIScriptController[player].requests->val, unitCopy, 1);
+			}
+		}
+
+		helper::AI_Reserve(player, 1);
+		helper::AI_PopSpendingRequest(player);
+		unitId = unitCopy->id;
+		if (unitId == UnitId::ZergLarva || unitId == UnitId::ZergMutalisk || unitId == UnitId::ZergHydralisk)
+		{
+			helper::orderComputerClear(unitCopy, OrderId::Morph1);
+			return 1;
+		}
+		else
+		{
+			helper::setSecondaryOrder(unitCopy, OrderId::Train);
+			return 1;
+		}
 	}
 }
