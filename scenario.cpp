@@ -19,7 +19,7 @@ enum {
 	/*
 	-- The Legion of Frauds
 	All members of this force are hostile to one another.
-	A new member of this force arrives every five minutes.Each run has a unique order of arrival.
+	A new member of this force arrives every five minutes. Each run has a unique order of arrival.
 	*/
 	// == TERRAN ==
 	Fraud_AlexeiUkov,					// --	Orbital + Timing	--	<06> Autocrat
@@ -157,11 +157,17 @@ struct FraudSpawnLocation {
 };
 
 struct FraudSpawnSequence {
+	u32 fraud_class;
 	u32 fraud;
 	u32 race;
 	u32 unit_timer;
 	u32 unit_index;
 	FraudSpawnLocation* location;
+};
+
+struct FraudSpawnUnit {
+	u32 count;
+	u32 unit_id;
 };
 
 struct FraudSpawn {
@@ -171,9 +177,8 @@ struct FraudSpawn {
 	u32 timer[FraudClass_Count];
 
 	FraudSpawnSequence sequence[6];
-
 	std::vector<FraudSpawnLocation> spawns;
-	std::vector<u8> units[Fraud_Count][RaceId::Count];
+	std::vector<FraudSpawnUnit> units[Fraud_Count][RaceId::Count];
 };
 
 FraudSpawn fraud_spawn;
@@ -250,27 +255,19 @@ void init_fraud_spawns() {
 	}
 }
 
-void add_fraud_units(u32 fraud, u32 race, u8 unit, u32 count = 1) {
-	assert(race < RaceId::Count);
-	assert(fraud < Fraud_Count);
-	assert(unit < UnitId::None);
-	for (u32 i = 0; i < count; ++i) {
-		fraud_spawn.units[fraud][race].push_back(unit);
-	}
-}
-
 void init_fraud_units() {
 	// Todo: Add units for all personalities
 
 	// Veeq7
 	fraud_spawn.frauds[Fraud_Veeq7][RaceId::Protoss] = {0, 0, 0, PlayerColor::Aero};
-	add_fraud_units(Fraud_Veeq7, RaceId::Protoss, UnitId::ProtossScribe, 4);
-	add_fraud_units(Fraud_Veeq7, RaceId::Protoss, UnitId::ProtossZealot, 10);
+
+	fraud_spawn.units[Fraud_Veeq7][RaceId::Protoss].push_back({4, UnitId::ProtossScribe});
+	fraud_spawn.units[Fraud_Veeq7][RaceId::Protoss].push_back({2, UnitId::ProtossZealot});
 
 	// Pr0nogo
 	fraud_spawn.frauds[Fraud_Pr0nogo][RaceId::Protoss] = {0, 0, 0, PlayerColor::Aero};
-	add_fraud_units(Fraud_Pr0nogo, RaceId::Protoss, UnitId::ProtossScribe, 4);
-	add_fraud_units(Fraud_Pr0nogo, RaceId::Protoss, UnitId::ProtossZealot, 10);
+	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Protoss].push_back({4, UnitId::ProtossScribe});
+	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Protoss].push_back({2, UnitId::ProtossZealot});
 }
 
 bool place_fraud(u32 player, u32 fraud_class) {
@@ -287,7 +284,7 @@ bool place_fraud(u32 player, u32 fraud_class) {
 			random_first = FraudGod_FinalFirst;
 			random_last = FraudGod_FinalLast;
 		}
-		if (player == 2 || player == 5) { // Terran
+		if (player == 1 || player == 4) { // Terran
 			race = RaceId::Terran;
 			if (fraud_class == FraudClass_Fraud) {
 				race_first = Fraud_TerranFirst;
@@ -299,7 +296,7 @@ bool place_fraud(u32 player, u32 fraud_class) {
 				race_first = FraudSuper_TerranFirst;
 				race_last  = FraudSuper_TerranLast;
 			}
-		} else if (player == 3 || player == 6) { // Protoss
+		} else if (player == 2 || player == 5) { // Protoss
 			race = RaceId::Protoss;
 			if (fraud_class == FraudClass_Fraud) {
 				race_first = Fraud_ProtossFirst;
@@ -311,7 +308,7 @@ bool place_fraud(u32 player, u32 fraud_class) {
 				race_first = FraudSuper_ProtossFirst;
 				race_last  = FraudSuper_ProtossLast;
 			}
-		} else if (player == 4 || player == 7) { // Zerg
+		} else if (player == 3 || player == 6) { // Zerg
 			race = RaceId::Zerg;
 			if (fraud_class == FraudClass_Fraud) {
 				race_first = Fraud_ZergFirst;
@@ -363,11 +360,25 @@ bool place_fraud(u32 player, u32 fraud_class) {
 				} else if (fraud_class == FraudClass_Super) {
 					fraud_spawn.timer[fraud_class] = 15 * 60 * 24;
 				}
+				fraud_spawn.sequence[player-1].fraud_class = fraud_class;
 				fraud_spawn.sequence[player-1].fraud = next_fraud;
 				fraud_spawn.sequence[player-1].race = race;
 				fraud_spawn.sequence[player-1].unit_timer = 0;
 				fraud_spawn.sequence[player-1].unit_index = 0;
 				fraud_spawn.sequence[player-1].location = spawn_location;
+
+				for (u32 i = 1; i < 7; ++i) {
+					for (u32 j = 1; j < 7; ++j) {
+						if (fraud_spawn.sequence[i - 1].fraud_class == fraud_spawn.sequence[i - 1].fraud_class &&
+							(fraud_spawn.sequence[j - 1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[j - 1].fraud_class == FraudClass_God)) {
+							playerAlliance[i].flags[j] = true;
+							playerAlliance[j].flags[i] = true;
+						} else {
+							playerAlliance[i].flags[j] = false;
+							playerAlliance[j].flags[i] = false;
+						}
+					}
+				}
 				return true;
 			}
 		}
@@ -458,29 +469,35 @@ void tick_scenario() {
 		}
 
 		// Unit Spawning
-		for (u32 i = 0; i < 6; ++i) {
-			if (fraud_spawn.sequence[i].location) {
-				if (fraud_spawn.sequence[i].unit_timer) {
-					--fraud_spawn.sequence[i].unit_timer;
+		for (u32 i = 1; i < 7; ++i) {
+			FraudSpawnSequence* sequence = &fraud_spawn.sequence[i - 1];
+			if (sequence->location) {
+				if (sequence->unit_timer) {
+					--sequence->unit_timer;
 				}
-				if (!fraud_spawn.sequence[i].unit_timer) {
-					if (fraud_spawn.sequence[i].unit_index < fraud_spawn.units[fraud_spawn.sequence[i].fraud][fraud_spawn.sequence[i].race].size() && fraud_spawn.sequence[i].location->rallies.size()) {
-						Point16 rally = fraud_spawn.sequence[i].location->rallies[fraud_spawn.sequence[i].unit_index % fraud_spawn.sequence[i].location->rallies.size()];
-						Point16 source = get_closest_source(fraud_spawn.sequence[i].location, rally);
+				if (!sequence->unit_timer) {
+					if (sequence->unit_index < fraud_spawn.units[sequence->fraud][sequence->race].size() && sequence->location->rallies.size()) {
+						Point16 rally = sequence->location->rallies[sequence->unit_index % sequence->location->rallies.size()];
+						Point16 source = get_closest_source(sequence->location, rally);
 
-						Unit* augur = scbw::createUnitInGame(UnitId::ProtossAugur, i + 1, source.x, source.y);
+						Unit* augur = scbw::createUnitInGame(UnitId::ProtossAugur, i, source.x, source.y);
 						if (augur) {
 							augur->remove();
 						}
-						Unit* unit = scbw::createUnitInGame(fraud_spawn.units[fraud_spawn.sequence[i].fraud][fraud_spawn.sequence[i].race][fraud_spawn.sequence[i].unit_index], i + 1, source.x, source.y);
+						Unit* unit = scbw::createUnitInGame(fraud_spawn.units[sequence->fraud][sequence->race][sequence->unit_index].unit_id, i, source.x, source.y);
 						if (unit) {
 							unit->order(OrderId::AttackMove, rally.x, rally.y, 0, 0, true);
 
-							fraud_spawn.sequence[i].unit_timer = 24 * 0.8;
-							++fraud_spawn.sequence[i].unit_index;
+							sequence->unit_timer = 24 * 0.8;
+
+							if (fraud_spawn.units[sequence->fraud][sequence->race][sequence->unit_index].count) {
+								--fraud_spawn.units[sequence->fraud][sequence->race][sequence->unit_index].count;
+							} else {
+								++sequence->unit_index;
+							}
 						}
 					} else {
-						fraud_spawn.sequence[i].location = 0;
+						sequence->location = 0;
 					}
 				}
 			}
