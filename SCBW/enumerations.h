@@ -1001,6 +1001,7 @@ enum VespeneDeaths
 
 enum AiPersonality // disruption_web_unit
 {
+	AiPersonality_None = 0,
 	AiPersonality_TerranArmor = 1,
 	AiPersonality_TerranRaider,
 	AiPersonality_TerranOrbital,
@@ -1025,6 +1026,7 @@ enum AiPersonality // disruption_web_unit
 
 enum AiBuildType // plasma_shell
 {
+	AiBuildType_None = 0,
 	AiBuildType_Timing = 1,
 	AiBuildType_Rush,
 	AiBuildType_Greed,
@@ -1033,6 +1035,7 @@ enum AiBuildType // plasma_shell
 
 enum AiBuildOrder // dark_swarm_unit
 {
+	AiBuildOrder_None = 0,
 	AiBuildOrder_TerranArmor_PhalanxTiming = 1,
 	AiBuildOrder_TerranArmor_FE5Fact,
 	AiBuildOrder_TerranArmor_2FactVult,

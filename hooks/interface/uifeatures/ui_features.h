@@ -2,7 +2,7 @@
 #include "SCBW/scbwdata.h"
 #include "SCBW/api.h"
 
-void format_time(char* buffer, u32 size, u32 seconds);
+void format_time(char* buffer, u32 size, char* prefix, u32 seconds);
 
 namespace hooks
 {

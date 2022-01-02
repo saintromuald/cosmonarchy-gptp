@@ -31,13 +31,15 @@ enum {
 	Fraud_Piglet,						// --	Shadow + Timing		--	<10> Cohort
 	Fraud_DarkenedFantasies,			// --	Armor + Timing		--	<18> Goliath
 	Fraud_CustomerSupporter,			// --	Orbital + Greed		--	<0F> Cyprian
+
 	// == PROTOSS ==
 	Fraud_BitcoinBoris,					// --	Profane + Rush		--	<15> Nexus
 	Fraud_CryptoCarl,					// --	Skylord + Timing	--	<1B> Atreus
 	Fraud_Veeq7,						// --	Ranger + Timing		--	<1A> Didact
 	Fraud_jun3hong,						// --	Templar + Timing	--	<1B> Envoy
 	Fraud_DigitalRightsManager,			// --	Templar + Rush		--	<05> Amaranth
-	Fraud_Zeratool,                     // --   Profane + Timing    --    <10> Anthelion
+	Fraud_Zeratool,                     // --   Profane + Timing    --  <10> Anthelion
+
 	// == ZERG ==
 	Fraud_CerebrateStalin,				// --	Miscreant + Timing	--	<10> Anticthon
 	Fraud_AndyRoseUh,					// --	Assault + Timing	--	<10> Konvilisk
@@ -46,6 +48,7 @@ enum {
 	Fraud_SelloutSam,					// --	Swarm + Timing		--	<1B> Rilirokor
 	Fraud_PlagiaristPaul,				// --	Assault + Greed		--	<15> Matraleth
 	Fraud_RimTechCombot,				// --	Swarm + Timing		--	<10> Shaman
+
 	// == RANDOM ==	
 	Fraud_LightenedRealities,			// --	General + Rush							--	<03> Augur
 	Fraud_AchromaticHalfdreams,			// --	General + Timing						--	<18> Wendigo
@@ -259,13 +262,12 @@ void init_fraud_units() {
 	// Todo: Add units for all personalities
 
 	// Veeq7
-	fraud_spawn.frauds[Fraud_Veeq7][RaceId::Protoss] = {0, 0, 0, PlayerColor::Aero};
-
+	fraud_spawn.frauds[Fraud_Veeq7][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Aero};
 	fraud_spawn.units[Fraud_Veeq7][RaceId::Protoss].push_back({4, UnitId::ProtossScribe});
 	fraud_spawn.units[Fraud_Veeq7][RaceId::Protoss].push_back({2, UnitId::ProtossZealot});
 
 	// Pr0nogo
-	fraud_spawn.frauds[Fraud_Pr0nogo][RaceId::Protoss] = {0, 0, 0, PlayerColor::Aero};
+	fraud_spawn.frauds[Fraud_Pr0nogo][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Aero};
 	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Protoss].push_back({4, UnitId::ProtossScribe});
 	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Protoss].push_back({2, UnitId::ProtossZealot});
 }
@@ -367,10 +369,14 @@ bool place_fraud(u32 player, u32 fraud_class) {
 				fraud_spawn.sequence[player-1].unit_index = 0;
 				fraud_spawn.sequence[player-1].location = spawn_location;
 
+				unit_deaths[UnitId::Spell_DisruptionWeb].player[player] = fraud_spawn.frauds[next_fraud][race].personality;
+				unit_deaths[UnitId::ProtossPlasmaShell].player[player] = fraud_spawn.frauds[next_fraud][race].build_type;
+				unit_deaths[UnitId::Spell_DarkSwarm].player[player] = fraud_spawn.frauds[next_fraud][race].build_order;
+
 				for (u32 i = 1; i < 7; ++i) {
 					for (u32 j = 1; j < 7; ++j) {
-						if (fraud_spawn.sequence[i - 1].fraud_class == fraud_spawn.sequence[i - 1].fraud_class &&
-							(fraud_spawn.sequence[j - 1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[j - 1].fraud_class == FraudClass_God)) {
+						if (fraud_spawn.sequence[i - 1].fraud_class == fraud_spawn.sequence[j - 1].fraud_class &&
+							(fraud_spawn.sequence[i - 1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[i - 1].fraud_class == FraudClass_God)) {
 							playerAlliance[i].flags[j] = true;
 							playerAlliance[j].flags[i] = true;
 						} else {
@@ -417,9 +423,14 @@ void tick_scenario() {
 		Zerg players: 4, 7
 	*/
 	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch)) {
+		char* timer_prefix[FraudClass_Count] = {
+			"Next Fraud: ",
+			"Next Hero: ",
+			"Next Super: ",
+		};
 		for (u32 i = 0; i < FraudClass_Count; ++i) {
 			char buffer[64];
-			format_time(buffer, 64, fraud_spawn.timer[i]);
+			format_time(buffer, 64, timer_prefix[i], fraud_spawn.timer[i]);
 			hooks::drawText(buffer, 10, 3, 100 + 100 * i, 15, 7);
 		}
 

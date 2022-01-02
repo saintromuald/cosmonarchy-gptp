@@ -217,6 +217,10 @@ struct PlayerName
 	char	playerName[0x19];			// 0x0
 };
 
+struct MENDEATHS
+{
+	u32        player[12];
+};
 struct UNITDEATHS
 {
 	u32        player[12];
