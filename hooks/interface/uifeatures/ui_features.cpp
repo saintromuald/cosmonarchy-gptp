@@ -21,9 +21,17 @@ namespace
 	Box16* const drawTextBox = (Box16*)0x006CE0C8;
 }
 
+void format_time(char* buffer, u32 size, u32 seconds) {
+	u32 sec = seconds % 60;
+	u32 min = seconds / 60 % 60;
+	u32 hrs = seconds / 60 / 60;
+
+	sprintf_s(buffer, size, "%02u:%02u:%02u", hrs, min, sec);
+}
+
 namespace hooks
 {
-	void drawText(const char* text, s32 x, s32 y, s32 width, s32 height, char color = 2)
+	void drawText(const char* text, s32 x, s32 y, s32 width, s32 height, char color)
 	{
 		helper::GetColorHandle(color);
 		*printXYAlignment = 0x11;
@@ -33,15 +41,7 @@ namespace hooks
 		drawTextBox->bottom = y + height;
 		helper::BWFXN_PrintXY(text, x, y);
 	}
-
-	void getFormattedTime(char* buffer, u32 seconds)
-	{
-		u32 sec = seconds % 60;
-		u32 min = seconds / 60 % 60;
-		u32 hrs = seconds / 60 / 60;
-
-		sprintf(buffer, "%02u:%02u:%02u", hrs, min, sec);
-	}
+	
 	/*
 		APM Counter TODO
 
@@ -81,7 +81,7 @@ namespace hooks
 		if (config.show_timer)
 		{
 			char buffer[32] = {0};
-			getFormattedTime(buffer, *elapsedTimeFrames / 24);
+			format_time(buffer, 32, *elapsedTimeFrames / 24);
 			drawText(buffer, 10, 3, 100, 15, 7);
 		}
 

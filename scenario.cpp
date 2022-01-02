@@ -1,5 +1,6 @@
 #include "scenario.h"
 #include "unit_search.h"
+#include "hooks/interface/uifeatures/ui_features.h"
 
 #include <assert.h>
 
@@ -36,6 +37,7 @@ enum {
 	Fraud_Veeq7,						// --	Ranger + Timing		--	<1A> Didact
 	Fraud_jun3hong,						// --	Templar + Timing	--	<1B> Envoy
 	Fraud_DigitalRightsManager,			// --	Templar + Rush		--	<05> Amaranth
+	Fraud_Zeratool,                     // --   Profane + Timing    --    <10> Anthelion
 	// == ZERG ==
 	Fraud_CerebrateStalin,				// --	Miscreant + Timing	--	<10> Anticthon
 	Fraud_AndyRoseUh,					// --	Assault + Timing	--	<10> Konvilisk
@@ -62,16 +64,82 @@ enum {
 	Fraud_HoopThrower,					// --	Raider / Miscreant / Templar + Timing	--	<07> Mason
 	Fraud_Veeq8,						// --	Orbital / Swarm / Ranger + Timing		--	<1A> Didact
 
+	/*
+	-- The Hall of Heroes
+	All members of this type are allied to one another, and deploy with additional starting units and resources.
+	A new member of this type arrives once every eight minutes. Each run has a unique order of arrival.
+	*/
+	// == TERRAN ==
+	FraudHero_Francisco_Goska,          // --    Raider + Timing    --    <11> Eidolon
+	FraudHero_Ackmed_Clone,             // --    Raider + Rush      --    <11> Harakan
+	FraudHero_Cullen,                   // --    Orbital + Rush     --    <0F> Blackjack
+
+	// == PROTOSS ==
+	FraudHero_Torros,                   // --    Templar + Rush     --    <0F> Amaranth
+	FraudHero_Asalamir,                 // --    Ranger + Timing    --    <0F> Atreus
+	FraudHero_Thalazim,					// --    Profane + Rush     --    <05> Cabalist
+
+	// == ZERG ==
+	FraudHero_Stroluum,                 // --    Swarm + Rush       --    <11> Isthrathaleth
+	FraudHero_Tuzor,                    // --    Miscreant + Greed  --    <11> Anticthon
+	FraudHero_Charlie,                  // --    Assaault + Timing  --    <16> Axitrilisk
+
+	/*
+	-- The Supreme Kings
+	All members of this type are hostile to one another, deploy with additional starting units and resources, and have an increased resource multiplier.
+	A new member of this type arrives every fifteen minutes. Each run has a unique order of arrival.
+	*/
+	// == TERRAN ==
+	FraudSuper_Ackmed,                  // --    Raider + Rush      --    <10> Harakan
+
+	// == PROTOSS ==
+	FraudSuper_Drakkar,                 // --    Ranger + Timing    --    <0E> Atreus
+
+	// == ZERG ==
+	FraudSuper_Zerghere,                // --    Swarm + Greed      --    <10> Hatchery
+
+	// == RANDOM ==
+	FraudSuper_God,                     // --    General + Timing   --    <06> Mind Tyrant
+
 	Fraud_Count,
 
 	Fraud_TerranFirst = Fraud_AlexeiUkov,
 	Fraud_TerranLast = Fraud_CustomerSupporter,
 	Fraud_ProtossFirst = Fraud_BitcoinBoris,
-	Fraud_ProtossLast = Fraud_DigitalRightsManager,
+	Fraud_ProtossLast = Fraud_Zeratool,
 	Fraud_ZergFirst = Fraud_CerebrateStalin,
 	Fraud_ZergLast = Fraud_RimTechCombot,
 	Fraud_RandomFirst = Fraud_LightenedRealities,
 	Fraud_RandomLast = Fraud_Veeq8,
+
+	FraudHero_TerranFirst = Fraud_AlexeiUkov,
+	FraudHero_TerranLast = Fraud_CustomerSupporter,
+	FraudHero_ProtossFirst = Fraud_BitcoinBoris,
+	FraudHero_ProtossLast = Fraud_Zeratool,
+	FraudHero_ZergFirst = Fraud_CerebrateStalin,
+	FraudHero_ZergLast = Fraud_RimTechCombot,
+
+	FraudSuper_TerranFirst = FraudSuper_Ackmed,
+	FraudSuper_TerranLast = FraudSuper_Ackmed,
+	FraudSuper_ProtossFirst = FraudSuper_Drakkar,
+	FraudSuper_ProtossLast = FraudSuper_Drakkar,
+	FraudSuper_ZergFirst = FraudSuper_Zerghere,
+	FraudSuper_ZergLast = FraudSuper_Zerghere,
+
+	FraudGod_Final = FraudSuper_God,
+
+	FraudClass_Fraud = 0,
+	FraudClass_Hero,
+	FraudClass_Super,
+	FraudClass_God,
+	FraudClass_Count,
+};
+
+struct Fraud {
+	u32 personality;
+	u32 build_type;
+	u32 build_order;
+	u32 color;
 };
 
 struct FraudSpawnLocation {
@@ -83,9 +151,10 @@ struct FraudSpawnLocation {
 
 struct FraudSpawn {
 	// Fraud Spawning
+	Fraud frauds[Fraud_Count][RaceId::Count];
 	u32 used_count;
 	bool used[Fraud_Count];
-	u32 timer;
+	u32 timer[FraudClass_Count];
 	u32 player;
 	u32 fraud;
 	u32 race;
@@ -95,7 +164,7 @@ struct FraudSpawn {
 	u32 unit_index;
 	FraudSpawnLocation* location;
 	std::vector<FraudSpawnLocation> spawns;
-	std::vector<u32> units[Fraud_Count][RaceId::Count];
+	std::vector<u8> units[Fraud_Count][RaceId::Count];
 };
 
 FraudSpawn fraud_spawn;
@@ -172,7 +241,7 @@ void init_fraud_spawns() {
 	}
 }
 
-void add_fraud_units(u32 fraud, u32 race, u32 unit, u32 count = 1) {
+void add_fraud_units(u32 fraud, u32 race, u8 unit, u32 count = 1) {
 	assert(race < RaceId::Count);
 	assert(fraud < Fraud_Count);
 	assert(unit < UnitId::None);
@@ -185,26 +254,65 @@ void init_fraud_units() {
 	// Todo: Add units for all personalities
 
 	// Veeq7
+	fraud_spawn.frauds[Fraud_Veeq7][RaceId::Protoss] = {0, 0, 0, PlayerColor::Aero};
 	add_fraud_units(Fraud_Veeq7, RaceId::Protoss, UnitId::ProtossScribe, 4);
 	add_fraud_units(Fraud_Veeq7, RaceId::Protoss, UnitId::ProtossZealot, 10);
 
 	// Pr0nogo
+	fraud_spawn.frauds[Fraud_Pr0nogo][RaceId::Protoss] = {0, 0, 0, PlayerColor::Aero};
 	add_fraud_units(Fraud_Pr0nogo, RaceId::Protoss, UnitId::ProtossScribe, 4);
 	add_fraud_units(Fraud_Pr0nogo, RaceId::Protoss, UnitId::ProtossZealot, 10);
 }
 
-bool place_fraud(u32 player) {
+bool place_fraud(u32 player, u32 fraud_class) {
+	u32 race = 0;
 	u32 race_first = 0;
 	u32 race_last = 0;
+	u32 random_first = 0;
+	u32 random_last = 0;
+	if (fraud_class == FraudClass_Fraud) {
+		random_first = Fraud_RandomFirst;
+		random_last = Fraud_RandomLast;
+	} else if (fraud_class == FraudClass_God) {
+		random_first = FraudGod_Final;
+		random_last = FraudGod_Final;
+	}
 	if (player == 2 || player == 5) { // Terran
-		race_first = Fraud_TerranFirst;
-		race_last = Fraud_TerranLast;
+		race = RaceId::Terran;
+		if (fraud_class == FraudClass_Fraud) {
+			race_first = Fraud_TerranFirst;
+			race_last  = Fraud_TerranLast;
+		} else if (fraud_class == FraudClass_Hero) {
+			race_first = FraudHero_TerranFirst;
+			race_last  = FraudHero_TerranLast;
+		} else if (fraud_class == FraudClass_Super) {
+			race_first = FraudSuper_TerranFirst;
+			race_last  = FraudSuper_TerranLast;
+		}
 	} else if (player == 3 || player == 6) { // Protoss
-		race_first = Fraud_ProtossFirst;
-		race_last = Fraud_ProtossLast;
+		race = RaceId::Protoss;
+		if (fraud_class == FraudClass_Fraud) {
+			race_first = Fraud_ProtossFirst;
+			race_last  = Fraud_ProtossLast;
+		} else if (fraud_class == FraudClass_Hero) {
+			race_first = FraudHero_ProtossFirst;
+			race_last  = FraudHero_ProtossLast;
+		} else if (fraud_class == FraudClass_Super) {
+			race_first = FraudSuper_ProtossFirst;
+			race_last  = FraudSuper_ProtossLast;
+		}
 	} else if (player == 4 || player == 7) { // Zerg
-		race_first = Fraud_ZergFirst;
-		race_last = Fraud_ZergLast;
+		race = RaceId::Zerg;
+		if (fraud_class == FraudClass_Fraud) {
+			race_first = Fraud_ZergFirst;
+			race_last  = Fraud_ZergLast;
+		} else if (fraud_class == FraudClass_Hero) {
+			race_first = FraudHero_ZergFirst;
+			race_last  = FraudHero_ZergLast;
+		} else if (fraud_class == FraudClass_Super) {
+			race_first = FraudSuper_ZergFirst;
+			race_last  = FraudSuper_ZergLast;
+		}
 	}
 
 	u32 race_count = 0;
@@ -214,7 +322,7 @@ bool place_fraud(u32 player) {
 			++race_count;
 		}
 	}
-	for (u32 i = Fraud_RandomFirst; i <= Fraud_RandomLast; ++i) {
+	for (u32 i = random_first; i <= random_last; ++i) {
 		if (fraud_spawn.used[i]) {
 			++random_count;
 		}
@@ -227,9 +335,9 @@ bool place_fraud(u32 player) {
 			next_fraud = scbw::randBetween(race_first, race_last);
 		}
 	} else if (random_count) {
-		next_fraud = scbw::randBetween(Fraud_RandomFirst, Fraud_RandomLast);
+		next_fraud = scbw::randBetween(random_first, random_last);
 		while (fraud_spawn.used[next_fraud]) {
-			next_fraud = scbw::randBetween(Fraud_RandomFirst, Fraud_RandomLast);
+			next_fraud = scbw::randBetween(random_first, random_last);
 		}
 	}
 
@@ -238,9 +346,16 @@ bool place_fraud(u32 player) {
 		if (spawn_location) {
 			++fraud_spawn.used_count;
 			fraud_spawn.used[next_fraud] = true;
-			fraud_spawn.timer = 5 * 60 * 24;
+			if (fraud_class == FraudClass_Fraud) {
+				fraud_spawn.timer[fraud_class] = 5 * 60 * 24;
+			} else if (fraud_class == FraudClass_Hero) {
+				fraud_spawn.timer[fraud_class] = 8 * 60 * 24;
+			} else if (fraud_class == FraudClass_Super) {
+				fraud_spawn.timer[fraud_class] = 15 * 60 * 24;
+			}
 			fraud_spawn.player = player;
 			fraud_spawn.fraud = next_fraud;
+			fraud_spawn.race = race;
 
 			fraud_spawn.unit_timer = 0;
 			fraud_spawn.unit_index = 0;
@@ -255,7 +370,9 @@ bool place_fraud(u32 player) {
 void init_scenario() {
 	fraud_spawn = {};
 	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch)) {
-		fraud_spawn.timer = 5 * 60 * 24;
+		fraud_spawn.timer[FraudClass_Fraud] = 5 * 60 * 24;
+		fraud_spawn.timer[FraudClass_Hero] = 8 * 60 * 24;
+		fraud_spawn.timer[FraudClass_Super] = 15 * 60 * 24;
 
 		u32 first_fraud = scbw::randBetween(0, 5);
 		u32 second_fraud = scbw::randBetween(0, 5);
@@ -266,8 +383,8 @@ void init_scenario() {
 		init_fraud_spawns();
 		init_fraud_units();
 
-		place_fraud(first_fraud);
-		place_fraud(second_fraud);
+		place_fraud(first_fraud, FraudClass_Fraud);
+		place_fraud(second_fraud, FraudClass_Fraud);
 	}	
 }
 
@@ -278,6 +395,12 @@ void tick_scenario() {
 		Zerg players: 4, 7
 	*/
 	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch)) {
+		for (u32 i = 0; i < FraudClass_Count; ++i) {
+			char buffer[64];
+			format_time(buffer, 64, fraud_spawn.timer[i]);
+			hooks::drawText(buffer, 10, 3, 100 + 100 * i, 15, 7);
+		}
+
 		u32 alive_count = 0;
 		for (u32 i = 1; i < 7; ++i) {
 			if (unit_deaths[UnitId::Factories].player[i] > 0) {
@@ -285,24 +408,26 @@ void tick_scenario() {
 			}
 		}
 		
-		// Victory
 		if (alive_count && fraud_spawn.used_count == Fraud_Count) {
-			// Todo: make a helper for victory trigger
+			// Todo: place god, handle victory after defeating god
 		}
 
 		// Fraud Spawning
-		if (alive_count && fraud_spawn.timer) {
-			--fraud_spawn.timer;
-		} else {
-			fraud_spawn.timer = 0;
-		}
-		if (!fraud_spawn.timer) {
-			u32 offset = scbw::randBetween(0, 5);
-			for (u32 i = 0; i < 6; ++i) {
-				u32 player = (i + offset) % 6 + 1;
-				if (unit_deaths[UnitId::Factories].player[player] == 0) {
-					if (place_fraud(player)) {
-						break;
+		for (u32 i = 0; i < FraudClass_Count; ++i) {
+			if (alive_count && fraud_spawn.timer) {
+				--fraud_spawn.timer[i];
+			} else {
+				fraud_spawn.timer[i] = 0;
+			}
+			if (!fraud_spawn.timer[i] && !fraud_spawn.location) {
+				u32 offset = scbw::randBetween(0, 5);
+				for (u32 i = 0; i < 6; ++i) {
+					u32 player = (i + offset) % 6 + 1;
+					if (unit_deaths[UnitId::Factories].player[player] == 0) {
+						if (place_fraud(player, i)) {
+							++alive_count;
+							break;
+						}
 					}
 				}
 			}
