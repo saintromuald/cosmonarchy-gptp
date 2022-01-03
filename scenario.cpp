@@ -654,6 +654,8 @@ void run_ai(u32 player, Point16 pos, s32 name) {
 	s32 block = helper::parseAIScriptName(name, &is_bw);
 	if (block) {
 		fraud_spawn.sequence[player].ai_script = helper::AI_RunAIScript(&area, player, block, is_bw);
+	} else {
+		scbw::printf("scenario.cpp, run_ai: Invalid AI block!");
 	}
 }
 
@@ -781,6 +783,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					fraud_spawn.sequence[player-1].unit_timer = 24 * 0.8;
 				}
 
+				run_ai(player, spawn_location->pos, 'H5eT');
 				if (race == RaceId::Terran) {
 					run_ai(player, spawn_location->pos, 'xCMT');
 				} else if (race == RaceId::Protoss) {
