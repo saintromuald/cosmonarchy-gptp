@@ -905,16 +905,35 @@ struct AI_Main
 };
 C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
 
-struct aiscript
+struct AiScript
 {
-	Link<aiscript>		link;			// 0x0, 0x4
+	Link<AiScript>		link;			// 0x0, 0x4
 	s32					scriptOffset;	// 0x8
 	s32					sleep;			// 0xC
 	s32					playerId;		// 0x10
-	Bounds				locBounds;		// 0x14
-	Point16				locCenter;		// 0x24
+	Box32				locBounds;		// 0x14
+	Vector32			locCenter;		// 0x24
 	AiTown*				town;			// 0x2C
 	s32					flags;			// 0x30
+};
+C_ASSERT(sizeof(AiScript) == 52);
+
+struct ResourceArea {
+	Point16 pos;
+	u8 mineral_field_count;
+	u8 geyser_count;
+	bool is_start_location;
+	u8 flags;					// 0x1 = Occupied / start location, 0x2 = allies_watch claimed(0069268F)
+	u32 total_mineral_count;
+	u32 total_gas_count;
+	u8 padding[32];
+};
+C_ASSERT(sizeof(ResourceArea) == 48);
+
+struct ResourceAreaArray {
+	ResourceArea areas[250];
+	u32 used_count;
+	u32 frames_till_update;
 };
 
 // From BWAPI Offsets.h, used in scbwdata.h by UnitAvailability

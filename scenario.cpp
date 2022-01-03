@@ -14,6 +14,14 @@ bool is_map(u32 campaign, u32 map) {
 		&& unit_deaths[UnitId::Special_RightPitDoor].player[0] == map;
 }
 
+/*
+Todo:
+	- Fix resarea mismatch (start location related)
+	- Add automatic dialogue system
+	- Remove hero/super timer, use the chance system instead
+	- Spawn god properly
+*/
+
 enum {
 	Fraud_None,
 
@@ -164,7 +172,7 @@ enum {
 	FraudClass_God,
 };
 
-struct Fraud {
+struct FraudInfo {
 	u32 personality;
 	u32 build_type;
 	u32 build_order;
@@ -177,7 +185,6 @@ struct FraudSpawnSource {
 };
 
 struct FraudSpawnLocation {
-	bool set;
 	Point16 pos;
 	std::vector<FraudSpawnSource> sources;
 };
@@ -190,7 +197,8 @@ struct FraudSpawnSequence {
 	u32 source_index;
 	u32 rally_index;
 	u32 unit_index;
-	void* ai_script;
+	bool assigned_resarea;
+	AiScript* ai_script;
 	FraudSpawnLocation* location;
 };
 
@@ -200,7 +208,7 @@ struct FraudSpawnUnit {
 };
 
 struct FraudSpawn {
-	Fraud frauds[Fraud_Count][RaceId::Count];
+	FraudInfo frauds[Fraud_Count][RaceId::Count];
 	u32 used_count;
 	bool used[Fraud_Count];
 	u32 timer[FraudClass_Count];
@@ -278,7 +286,6 @@ void init_fraud_spawns() {
 		next = unit->player_link.next;
 		if (unit->id == UnitId::TerranCommandCenter) {
 			FraudSpawnLocation spawn = {};
-			spawn.set = true;
 			spawn.pos = unit->position;
 			fraud_spawn.spawns.push_back(spawn);
 
@@ -610,7 +617,7 @@ void init_fraud_units() {
 
 
 	// Echo of Mixplay
-	fraud_spawn.frauds[FraudHero_Thalazim][RaceId::Protoss] = {AiPersonality_ProtossGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Cyan};
+	fraud_spawn.frauds[FraudHero_EchoOfMixplay][RaceId::Protoss] = {AiPersonality_ProtossGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Cyan};
 
 
 	// Stroluum
@@ -644,12 +651,27 @@ void init_fraud_units() {
 	// God - TBD
 }
 
+u8 get_closest_resarea(Point16 pos) {
+	u8 closest_index = 0;
+	f32 lowest_distance = 999999999;
+
+	for (u32 i = 1; i < resource_areas->used_count; ++i) {
+		f32 distance = scbw::getDistanceFast(pos, resource_areas->areas[i].pos);
+		if (distance < lowest_distance) {
+			closest_index = i;
+			lowest_distance = distance;
+		}
+	}
+
+	return closest_index;
+}
+
 void run_ai(u32 player, Point16 pos, s32 name) {
 	Box32 area;
-	area.left = pos.x - 32 * 2;
-	area.right = pos.x + 32 * 2;
-	area.top = pos.y - 32 * 1.5;
-	area.bottom = pos.y + 32 * 1.5;
+	area.left = pos.x - 10 * 32;
+	area.right = pos.x + 10 * 32;
+	area.top = pos.y - 10 * 32;
+	area.bottom = pos.y + 10 * 32;
 	s32 is_bw;
 	s32 block = helper::parseAIScriptName(name, &is_bw);
 	if (block) {
@@ -726,14 +748,26 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 
 		u32 next_fraud = 0;
 		if (race_count && scbw::randBetween(0, race_count + random_count - 1) < race_count) {
-			next_fraud = scbw::randBetween(race_first, race_last);
-			while (fraud_spawn.used[next_fraud]) {
-				next_fraud = scbw::randBetween(race_first, race_last);
+			u32 index = scbw::randBetween(0, race_count - 1);
+			for (u32 i = race_first; i <= race_last; ++i) {
+				if (!fraud_spawn.used[i]) {
+					--index;
+				}
+				if (index == 0) {
+					next_fraud = i;
+					break;
+				}
 			}
 		} else if (random_count) {
-			next_fraud = scbw::randBetween(random_first, random_last);
-			while (fraud_spawn.used[next_fraud]) {
-				next_fraud = scbw::randBetween(random_first, random_last);
+			u32 index = scbw::randBetween(0, random_count - 1);
+			for (u32 i = random_first; i <= random_last; ++i) {
+				if (!fraud_spawn.used[i]) {
+					--index;
+				}
+				if (index == 0) {
+					next_fraud = i;
+					break;
+				}
 			}
 		}
 
@@ -757,6 +791,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				fraud_spawn.sequence[player-1].rally_index = 0;
 				fraud_spawn.sequence[player-1].unit_index = 0;
 				fraud_spawn.sequence[player-1].location = spawn_location;
+				fraud_spawn.sequence[player-1].assigned_resarea = false;
 
 				unit_deaths[UnitId::Spell_DisruptionWeb].player[player] = fraud_spawn.frauds[next_fraud][race].personality;
 				unit_deaths[UnitId::ProtossPlasmaShell].player[player] = fraud_spawn.frauds[next_fraud][race].build_type;
@@ -783,7 +818,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					fraud_spawn.sequence[player-1].unit_timer = 24 * 0.8;
 				}
 
-				run_ai(player, spawn_location->pos, 'H5eT');
+				//startPositions[player] = spawn_location->pos;
 				if (race == RaceId::Terran) {
 					run_ai(player, spawn_location->pos, 'xCMT');
 				} else if (race == RaceId::Protoss) {
@@ -832,8 +867,8 @@ void init_scenario() {
 
 		u32 first_fraud = scbw::randBetween(1, 6);
 		u32 second_fraud = scbw::randBetween(1, 6);
-		while (second_fraud == first_fraud) {
-			second_fraud = scbw::randBetween(1, 6);
+		if (second_fraud == first_fraud) {
+			second_fraud = (second_fraud % 6) + 1;
 		}
 		
 		// Todo: spawn creep
@@ -905,9 +940,10 @@ void tick_scenario() {
 			}
 		}
 
-		// Unit Spawning
 		for (u32 i = 1; i < 7; ++i) {
 			FraudSpawnSequence* sequence = &fraud_spawn.sequence[i - 1];
+
+			// Spawn Unit
 			if (sequence->location) {
 				if (sequence->unit_timer) {
 					--sequence->unit_timer;

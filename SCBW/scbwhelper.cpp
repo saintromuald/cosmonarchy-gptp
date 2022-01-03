@@ -9393,10 +9393,10 @@ namespace helper
 		return result;
 	}
 
-	aiscript* deleteAIScriptsUsingTown(AiTown* town)
+	AiScript* deleteAIScriptsUsingTown(AiTown* town)
 	{
 		const u32 Func_deleteAIScriptsUsingTown = 0x0045AE20;
-		static aiscript* result;
+		static AiScript* result;
 		__asm
 		{
 			PUSHAD
@@ -10410,8 +10410,8 @@ namespace helper
 		return result;
 	}
 
-	void* AI_RunAIScript(Box32* area, u32 player, u32 block, u32 is_bw) {
-		static void* result;
+	AiScript* AI_RunAIScript(Box32* area, u32 player, u32 block, u32 is_bw) {
+		static AiScript* result;
 		const u32 Func_AI_RunAIScript = 0x0045AEF0;
 		__asm
 		{
@@ -10428,8 +10428,8 @@ namespace helper
 	}
 
 	// not functional!
-	void* AI_Stop(void* ai_script) {
-		static void* result;
+	AiScript* AI_Stop(AiScript* ai_script) {
+		static AiScript* result;
 		const u32 Func_AI_Stop = 0x00403380;
 		const void* Var_AI_thread_end = (void*)0x0068C0FC;
 		__asm
@@ -10438,6 +10438,39 @@ namespace helper
 			MOV EAX, ai_script
 			MOV EDX, Var_AI_thread_end
 			CALL Func_AI_Stop
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	AiTown* AiScript_StartTown(u32 x, u32 y, u32 resarea, u32 player) {
+		static AiTown* result;
+		const u32 Func_AiScript_StartTown = 0x00434220;
+		__asm
+		{
+			PUSHAD
+			PUSH resarea
+			PUSH y
+			PUSH x
+			MOV EAX, player
+			CALL Func_AiScript_StartTown
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	AiTown* AiScript_StartAreaTown(Box32* area, u32 resarea, u32 player) {
+		static AiTown* result;
+		const u32 Func_AiScript_StartAreaTown = 0x00434060;
+		__asm
+		{
+			PUSHAD
+			PUSH resarea
+			PUSH area
+			MOV EAX, player
+			CALL Func_AiScript_StartAreaTown
 			MOV result, EAX
 			POPAD
 		}

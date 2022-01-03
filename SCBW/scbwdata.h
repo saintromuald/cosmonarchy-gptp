@@ -852,6 +852,8 @@ SCBW_DATA(AI_Main*, AIScriptController, 0x0068FEE8);
 SCBW_DATA(AiRegion* const*, AiRegionCaptains, 0x0069A604);
 SCBW_DATA(u32*, aiSupplyReserved, 0x006CA4BC);
 
+SCBW_DATA(ResourceAreaArray*, resource_areas, 0x00692688);
+
 //-------- Internal constants --------//
 
 SCBW_DATA(const b32*, IS_GAME_PAUSED, 0x006509C4);  //See scbw::isGamePaused()

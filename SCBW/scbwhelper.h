@@ -995,7 +995,7 @@ namespace helper
 
 	// For deleteAITownIfNeeded
 	AiTown* tryBeginDeleteTown(AiTown* town);																// 00434330
-	aiscript* deleteAIScriptsUsingTown(AiTown* town);														// 0045AE20
+	AiScript* deleteAIScriptsUsingTown(AiTown* town);														// 0045AE20
 
 	// For displayEstablishingShot
 	void* loadInitCreditsBIN(char* a1);																		// 004D8DF0
@@ -1089,8 +1089,11 @@ namespace helper
 	// For scenario.cpp
 	Unit* AI_CreateUnit(s32 x, s32 y, u32 unit_id, s32 player);																	// 004A0AD0
 	s32 parseAIScriptName(s32 name, s32* is_bw);																				// 0045AEF0
-	void* AI_RunAIScript(Box32* area, u32 player, u32 block, u32 is_bw);														// 0045B170
-	void* AI_Stop(void* ai_script);																								// 00403380
+	AiScript* AI_RunAIScript(Box32* area, u32 player, u32 block, u32 is_bw);													// 0045B170
+	AiScript* AI_Stop(AiScript* ai_script);																						// 00403380
+
+	AiTown* AiScript_StartTown(u32 x, u32 y, u32 resarea, u32 player);															// 00434220
+	AiTown* AiScript_StartAreaTown(Box32* area, u32 resarea, u32 player);														// 00434060
 
 	typedef s32 __cdecl VictoryFunc();
 	extern VictoryFunc* Victory;
