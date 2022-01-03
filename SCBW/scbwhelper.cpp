@@ -10377,4 +10377,21 @@ namespace helper
 		}
 		return result;
 	}
+
+	Unit* AI_CreateUnit(s32 x, s32 y, u32 unit_id, s32 player) {
+		static Unit* result;
+		const u32 Func_AI_CreateUnit = 0x004A0AD0;
+		__asm
+		{
+			PUSHAD
+			PUSH player
+			PUSH unit_id
+			MOV ECX, x
+			MOV EAX, y
+			CALL Func_AI_CreateUnit
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

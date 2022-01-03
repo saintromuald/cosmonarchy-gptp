@@ -193,12 +193,6 @@ namespace hooks
 			}
 		}
 
-		// Scenario Features
-		if (*elapsedTimeFrames == 1) {
-			init_scenario();
-		}
-		tick_scenario();
-
 		// Map Features
 		if (*elapsedTimeFrames == 1)
 		{
@@ -285,6 +279,17 @@ namespace hooks
 			graphics::resetAllGraphics();
 			hooks::updatePsiFieldProviders();
 			*(s32*)hyperTrigger = 0; // Single frame hypertriggers
+
+			// Scenario Features
+			if (*elapsedTimeFrames == 1 && is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch)) {
+				scbw::printf("Initializing...");
+			}
+			if (*elapsedTimeFrames == 2) {
+				init_scenario();
+			}
+			if (*elapsedTimeFrames >= 2) {
+				tick_scenario();
+			}
 
 			hooks::handleScreenHotkeys();
 			scbw::refreshScreen();

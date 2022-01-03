@@ -112,7 +112,7 @@ static u32 GetColorForPersonality(u32 playerId)
 	return PlayerColor::Invalid;
 }
 
-static void SetPlayerColor(u32 playerId, u32 color)
+void SetPlayerColor(u32 playerId, u32 color)
 {
 	playerColorList[playerId] = color;
 	playerMinimapColors[playerId] = tminimapColors[color + COLOR_SET_COUNT * *CURRENT_TILESET];

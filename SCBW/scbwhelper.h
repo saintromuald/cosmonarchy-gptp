@@ -1085,6 +1085,9 @@ namespace helper
 	char AI_PerformTask(Unit* unit);																							// 004361A0
 	s32 AI_GetRequestedBuildType(s32 player);																					// 00447590
 	bool AI_TrainUnit(Unit* unit, u16 unitId, char requestId, void* value);														// 004672F0
+	
+	// For scenario
+	Unit* AI_CreateUnit(s32 x, s32 y, u32 unit_id, s32 player);																	// 004A0AD0
 
 	//// misc
 	s8 SETS(s32 x);

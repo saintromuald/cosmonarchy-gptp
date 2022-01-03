@@ -430,5 +430,6 @@ extern u8 tunitColors[UNIT_COLOR_COUNT];
 extern u8 playerColorList[PLAYABLE_PLAYER_COUNT];
 
 // those 2 are mutually exclusive
+void SetPlayerColor(u32 playerId, u32 color);
 void LoadMeleePlayerColors();
 void LoadDefaultPlayerColors();
