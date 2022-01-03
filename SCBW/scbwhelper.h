@@ -1086,8 +1086,14 @@ namespace helper
 	s32 AI_GetRequestedBuildType(s32 player);																					// 00447590
 	bool AI_TrainUnit(Unit* unit, u16 unitId, char requestId, void* value);														// 004672F0
 	
-	// For scenario
+	// For scenario.cpp
 	Unit* AI_CreateUnit(s32 x, s32 y, u32 unit_id, s32 player);																	// 004A0AD0
+	s32 parseAIScriptName(s32 name, s32* is_bw);																				// 0045AEF0
+	void* AI_RunAIScript(Box32* area, u32 player, u32 block, u32 is_bw);														// 0045B170
+	void* AI_Stop(void* ai_script);																								// 00403380
+
+	typedef s32 __cdecl VictoryFunc();
+	extern VictoryFunc* Victory;
 
 	//// misc
 	s8 SETS(s32 x);

@@ -39,6 +39,9 @@ SCBW_DATA(Units12*, firstPlayerUnit, 0x006283F8);  //Indexed by player Id
 /// @name Structure tables
 //////////////////////////////////////////////////////////////// @{
 
+SCBW_DATA(Units12*, completed_factory_counts, 0x0068A9D8);
+SCBW_DATA(Units12*, all_factory_counts, 0x0068A9A8);
+
 SCBW_DATA(Unit*, unitTable, 0x0059CCA8);
 SCBW_DATA(u32*, unitCount, 0x006283F0);
 SCBW_DATA(Bullet*, bulletTable, 0x0064B2E8);
