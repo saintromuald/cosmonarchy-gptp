@@ -1400,12 +1400,12 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergUltrakor &&  // Ultrakor Saber Siphon passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergUltrokor &&  // Ultrakor Saber Siphon passive
 								current_button->iconID == IconId::KaiserBlades)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergUltrakor &&  // Ultrakor Kaiser Rampage passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergUltrokor &&  // Ultrakor Kaiser Rampage passive
 								current_button->iconID == IconId::AnabolicSynthesis)
 							{
 								current_button_state = BUTTON_STATE::Enabled;

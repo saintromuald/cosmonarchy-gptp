@@ -914,7 +914,7 @@ namespace hooks
 					case UnitId::ZergZoryusthaleth:
 					case UnitId::ZergLakizilisk:
 					{
-						if (Player::numberOfUnitsOfType(playerId, UnitId::ZergUltrakCavern)
+						if (Player::numberOfUnitsOfType(playerId, UnitId::ZergUltrokCavern)
 							|| Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergZorkizShroud))
 						{
 							return TECH_ACTIVE;
@@ -1075,9 +1075,9 @@ namespace hooks
 			}
 			case UnitId::ZergZoryusthaleth:
 			{
-				if (unitId == UnitId::ZergUltrakor)
+				if (unitId == UnitId::ZergUltrokor)
 				{
-					if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergUltrakCavern))
+					if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergUltrokCavern))
 					{
 						return TECH_ACTIVE;
 					}
@@ -1277,7 +1277,7 @@ namespace hooks
 			}
 			case UnitId::ZergZorkizShroud:
 			{
-				if (unitId == UnitId::ZergUltrakCavern)
+				if (unitId == UnitId::ZergUltrokCavern)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier3])
 					{

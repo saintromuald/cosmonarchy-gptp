@@ -164,7 +164,7 @@ namespace hooks
 
 		switch (unit->id)
 		{
-			case UnitId::ZergUltrakor:
+			case UnitId::ZergUltrokor:
 			{
 				// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
 				if (unitExt->timers[TimerKaiserRampage])

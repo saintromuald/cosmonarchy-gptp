@@ -195,7 +195,7 @@ namespace hooks
 					{
 						unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 					}
-					else if (origin == UnitId::ZergUltrakor
+					else if (origin == UnitId::ZergUltrokor
 						|| origin == UnitId::ZergOvileth)
 					{
 						unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
@@ -325,7 +325,7 @@ namespace hooks
 		}
 		else if (unit->id == UnitId::ZergZoryusthaleth)
 		{
-			if (morphUnitId == UnitId::ZergUltrakor)
+			if (morphUnitId == UnitId::ZergUltrokor)
 			{
 				return true;
 			}

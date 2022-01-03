@@ -49,8 +49,8 @@ enum {
 	Fraud_DigitalRightsManager,			// --	Templar + Rush							--	<05> Amaranth
 	Fraud_Zeratool,                     // --   Profane + Timing						--  <10> Anthelion
 	Fraud_FRAUDGrandpaOfTony,			// --	General + Rush							--	<03> Cantavis
-	Fraud_Mike,							// --	Templar + Greed							--	<1A> Sovroleth
-	Fraud_Penix,						// --	Templar + Timing						--	<0F> Amaranth
+	Fraud_DK,							// --	Skylord + Greed							--	<1F> Panoptus
+	Fraud_iquare,						// --	Ranger + Timing							--	<03> Accantor
 
 	// == ZERG ==
 	Fraud_CerebrateStalin,				// --	Miscreant + Timing						--	<10> Anticthon
@@ -61,7 +61,7 @@ enum {
 	Fraud_PlagiaristPaul,				// --	Assault + Greed							--	<15> Matraleth
 	Fraud_RimTechCombot,				// --	Swarm + Timing							--	<10> Shaman
 	Fraud_AfricanizedCrowkenyan,		// --	Sunblot + Rush							--	<05> Start Location
-	Fraud_Bonzibuddy,					// --	General + Greed							--	<16> Command Center
+	Fraud_Ultralisks,					// --	Swarm + Timing							--	<1F> Ultrokor
 
 	// == RANDOM ==
 	Fraud_LightenedRealities,			// --	General + Rush							--	<03> Augur
@@ -80,6 +80,8 @@ enum {
 	Fraud_SkeletalTodzombie,			// --	Armor / Miscreant / Profane + Timing	--	<1A> Sovroleth
 	Fraud_HoopThrower,					// --	Raider / Miscreant / Templar + Timing	--	<07> Mason
 	Fraud_Veeq8,						// --	Orbital / Swarm / Ranger + Timing		--	<1A> Didact
+	Fraud_Bonzibuddy,					// --	General + Greed							--	<16> Command Center
+	Fraud_IskatuMesk,					// --	Shadow / Assault / Profane + Rush		--	<15> Mutalisk
 
 	/*
 	-- The Hall of Heroes
@@ -141,11 +143,11 @@ enum {
 	Fraud_TerranFirst = Fraud_AlexeiUkov,
 	Fraud_TerranLast = Fraud_CustomerSupporter,
 	Fraud_ProtossFirst = Fraud_BitcoinBoris,
-	Fraud_ProtossLast = Fraud_Penix,
+	Fraud_ProtossLast = Fraud_iquare,
 	Fraud_ZergFirst = Fraud_CerebrateStalin,
-	Fraud_ZergLast = Fraud_Bonzibuddy,
+	Fraud_ZergLast = Fraud_Ultralisks,
 	Fraud_RandomFirst = Fraud_LightenedRealities,
-	Fraud_RandomLast = Fraud_Veeq8,
+	Fraud_RandomLast = Fraud_IskatuMesk,
 
 	FraudHero_TerranFirst = FraudHero_Francisco_Goska,
 	FraudHero_TerranLast = FraudHero_SteveMiller,
@@ -346,86 +348,143 @@ void init_fraud_units() {
 
 	// Ullen "Bank on Me" Bigmunney
 	fraud_spawn.frauds[Fraud_UllenBankOnMeBigmunney][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_None, AiBuildOrder_TerranArmor_IronCrusade, PlayerColor::VineGreen};
-	fraud_spawn.units[Fraud_UllenBankOnMeBigmunney][RaceId::Terran].push_back({10, UnitId::TerranMason});
-	fraud_spawn.units[Fraud_UllenBankOnMeBigmunney][RaceId::Terran].push_back({3, UnitId::TerranGoliath});
+	fraud_spawn.units[Fraud_UllenBankOnMeBigmunney][RaceId::Terran].push_back({4, UnitId::TerranMason});
+	fraud_spawn.units[Fraud_UllenBankOnMeBigmunney][RaceId::Terran].push_back({2, UnitId::TerranGoliath});
 	fraud_spawn.units[Fraud_UllenBankOnMeBigmunney][RaceId::Terran].push_back({2, UnitId::TerranPhalanxTankMode});
 
 	// knightoftherealm
 	fraud_spawn.frauds[Fraud_knightoftherealm][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Aero};
+	fraud_spawn.units[Fraud_knightoftherealm][RaceId::Terran].push_back({4, UnitId::TerranMaverick});
+	fraud_spawn.units[Fraud_knightoftherealm][RaceId::Terran].push_back({4, UnitId::TerranCyprian});
+	fraud_spawn.units[Fraud_knightoftherealm][RaceId::Terran].push_back({1, UnitId::TerranShaman});
 
 	// KKKhris
 	fraud_spawn.frauds[Fraud_KKKhris][RaceId::Terran] = {AiPersonality_TerranGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Brown};
+	fraud_spawn.units[Fraud_KKKhris][RaceId::Terran].push_back({4, UnitId::TerranMaverick});
+	fraud_spawn.units[Fraud_KKKhris][RaceId::Terran].push_back({2, UnitId::TerranPhalanxTankMode});
+	fraud_spawn.units[Fraud_KKKhris][RaceId::Terran].push_back({2, UnitId::TerranWraith});
 
 	// Dynamo
 	fraud_spawn.frauds[Fraud_Dynamo][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::ElectricOrange};
+	fraud_spawn.units[Fraud_Dynamo][RaceId::Terran].push_back({4, UnitId::TerranMadcap});
+	fraud_spawn.units[Fraud_Dynamo][RaceId::Terran].push_back({1, UnitId::TerranAutocrat});
 
 	// TodsDadPat
 	fraud_spawn.frauds[Fraud_TodsDadPat][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::SilverPink};
+	fraud_spawn.units[Fraud_TodsDadPat][RaceId::Terran].push_back({2, UnitId::TerranPaladin});
 
 	// Piglet
 	fraud_spawn.frauds[Fraud_Piglet][RaceId::Terran] = {AiPersonality_TerranShadow, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::JapaneseViolet};
+	fraud_spawn.units[Fraud_Piglet][RaceId::Terran].push_back({2, UnitId::TerranBlackjack});
+	fraud_spawn.units[Fraud_Piglet][RaceId::Terran].push_back({2, UnitId::SharedCohort});
+	fraud_spawn.units[Fraud_Piglet][RaceId::Terran].push_back({2, UnitId::TerranSiren});
 
 	// DarkenedFantasies
 	fraud_spawn.frauds[Fraud_DarkenedFantasies][RaceId::Terran] = { AiPersonality_TerranArmor, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::DarkSpringGreen};
+	fraud_spawn.units[Fraud_DarkenedFantasies][RaceId::Terran].push_back({2, UnitId::TerranVulture});
+	fraud_spawn.units[Fraud_DarkenedFantasies][RaceId::Terran].push_back({2, UnitId::TerranCyclops});
+	fraud_spawn.units[Fraud_DarkenedFantasies][RaceId::Terran].push_back({2, UnitId::TerranGoliath});
 
 	// Customer Supporter
 	fraud_spawn.frauds[Fraud_CustomerSupporter][RaceId::Terran] = {AiPersonality_TerranOrbital, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::Turquoise};
+	fraud_spawn.units[Fraud_CustomerSupporter][RaceId::Terran].push_back({2, UnitId::TerranGorgon});
+	fraud_spawn.units[Fraud_CustomerSupporter][RaceId::Terran].push_back({1, UnitId::TerranSalamander});
 
 	// Bitcoin Boris
 	fraud_spawn.frauds[Fraud_BitcoinBoris][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Brown};
+	fraud_spawn.units[Fraud_BitcoinBoris][RaceId::Protoss].push_back({4, UnitId::ProtossBarghest});
+	fraud_spawn.units[Fraud_BitcoinBoris][RaceId::Protoss].push_back({1, UnitId::SharedCharlatan});
+	fraud_spawn.units[Fraud_BitcoinBoris][RaceId::Protoss].push_back({2, UnitId::SharedStriga});
 
 	// Crypto Carl
 	fraud_spawn.frauds[Fraud_CryptoCarl][RaceId::Protoss] = {AiPersonality_ProtossSkylord, AiBuildType_None, AiBuildOrder_ProtossSkylord_SolarEscort, PlayerColor::BistreBrown};
+	fraud_spawn.units[Fraud_CryptoCarl][RaceId::Protoss].push_back({2, UnitId::ProtossPanoptus});
+	fraud_spawn.units[Fraud_CryptoCarl][RaceId::Protoss].push_back({1, UnitId::ProtossEmpyrean});
 
 	// Veeq7
 	fraud_spawn.frauds[Fraud_Veeq7][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::NeonBlue};
-	fraud_spawn.units[Fraud_Veeq7][RaceId::Protoss].push_back({2, UnitId::ProtossZealot});
-	fraud_spawn.units[Fraud_Veeq7][RaceId::Protoss].push_back({8, UnitId::ProtossScribe});
+	fraud_spawn.units[Fraud_Veeq7][RaceId::Protoss].push_back({4, UnitId::ProtossSimulacrum});
+	fraud_spawn.units[Fraud_Veeq7][RaceId::Protoss].push_back({2, UnitId::ProtossDracadin});
 
 	// jun3hong
 	fraud_spawn.frauds[Fraud_jun3hong][RaceId::Protoss] = {AiPersonality_ProtossTemplar, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::NeonCarrot};
+	fraud_spawn.units[Fraud_jun3hong][RaceId::Protoss].push_back({4, UnitId::ProtossLegionnaire});
+	fraud_spawn.units[Fraud_jun3hong][RaceId::Protoss].push_back({2, UnitId::ProtossHierophant});
+	fraud_spawn.units[Fraud_jun3hong][RaceId::Protoss].push_back({1, UnitId::ProtossWitness});
 
 	// Digital Rights Manager
 	fraud_spawn.frauds[Fraud_DigitalRightsManager][RaceId::Protoss] = {AiPersonality_ProtossTemplar, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Glacial};
+	fraud_spawn.units[Fraud_DigitalRightsManager][RaceId::Protoss].push_back({3, UnitId::ProtossAmaranth});
+	fraud_spawn.units[Fraud_DigitalRightsManager][RaceId::Protoss].push_back({2, UnitId::ProtossAtreus});
 
 	// Zeratool
 	fraud_spawn.frauds[Fraud_Zeratool][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::TyrianPurple};
+	fraud_spawn.units[Fraud_Zeratool][RaceId::Protoss].push_back({4, UnitId::ProtossCabalist});
+	fraud_spawn.units[Fraud_Zeratool][RaceId::Protoss].push_back({2, UnitId::ProtossMindTyrant});
 
 	// F.R.A.U.D. Grandpa of Tony
 	fraud_spawn.frauds[Fraud_FRAUDGrandpaOfTony][RaceId::Protoss] = {AiPersonality_ProtossGeneral, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Yellow};
+	fraud_spawn.units[Fraud_FRAUDGrandpaOfTony][RaceId::Protoss].push_back({4, UnitId::ProtossZealot});
+	fraud_spawn.units[Fraud_FRAUDGrandpaOfTony][RaceId::Protoss].push_back({2, UnitId::ProtossDracadin});
 
-	// Mike
-	fraud_spawn.frauds[Fraud_Mike][RaceId::Protoss] = {AiPersonality_ProtossTemplar, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::SilverPink};
+	// DK
+	fraud_spawn.frauds[Fraud_DK][RaceId::Protoss] = {AiPersonality_ProtossSkylord, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::EggshellBlue};
+	fraud_spawn.units[Fraud_DK][RaceId::Protoss].push_back({4, UnitId::ProtossAurora});
+	fraud_spawn.units[Fraud_DK][RaceId::Protoss].push_back({2, UnitId::ProtossPanoptus});
 
-	// Penix
-	fraud_spawn.frauds[Fraud_Penix][RaceId::Protoss] = {AiPersonality_ProtossTemplar, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Teal};
+	// iquare
+	fraud_spawn.frauds[Fraud_iquare][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Brass};
+	fraud_spawn.units[Fraud_iquare][RaceId::Protoss].push_back({2, UnitId::ProtossIdol});
+	fraud_spawn.units[Fraud_iquare][RaceId::Protoss].push_back({2, UnitId::ProtossAccantor});
+	fraud_spawn.units[Fraud_iquare][RaceId::Protoss].push_back({1, UnitId::ProtossArchitect});
 
 	// Cerebrate Stalin
 	fraud_spawn.frauds[Fraud_CerebrateStalin][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Magma};
+	fraud_spawn.units[Fraud_CerebrateStalin][RaceId::Zerg].push_back({4, UnitId::SharedCohort});
+	fraud_spawn.units[Fraud_CerebrateStalin][RaceId::Zerg].push_back({2, UnitId::SharedAxitrilisk});
 
 	// Andy Rose Uh
 	fraud_spawn.frauds[Fraud_AndyRoseUh][RaceId::Zerg] = {AiPersonality_ZergAssault, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Orange};
+	fraud_spawn.units[Fraud_AndyRoseUh][RaceId::Zerg].push_back({4, UnitId::ZergHydralisk});
+	fraud_spawn.units[Fraud_AndyRoseUh][RaceId::Zerg].push_back({2, UnitId::ZergMutalisk});
 
 	// Winnie
 	fraud_spawn.frauds[Fraud_Winnie][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::Yellow};
+	fraud_spawn.units[Fraud_Winnie][RaceId::Zerg].push_back({8, UnitId::ZergZethrokor});
+	fraud_spawn.units[Fraud_Winnie][RaceId::Zerg].push_back({4, UnitId::ZergQuazilisk});
 
 	// A
 	fraud_spawn.frauds[Fraud_A][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::ForestGreen};
+	fraud_spawn.units[Fraud_A][RaceId::Zerg].push_back({8, UnitId::ZergZethrokor});
+	fraud_spawn.units[Fraud_A][RaceId::Zerg].push_back({4, UnitId::SharedCohort});
 
 	// Sellout Sam
 	fraud_spawn.frauds[Fraud_SelloutSam][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Beaver};
+	fraud_spawn.units[Fraud_SelloutSam][RaceId::Zerg].push_back({6, UnitId::ZergZethrokor});
+	fraud_spawn.units[Fraud_SelloutSam][RaceId::Zerg].push_back({2, UnitId::ZergVorvrokor});
+	fraud_spawn.units[Fraud_SelloutSam][RaceId::Zerg].push_back({3, UnitId::ZergLiiralisk});
 
 	// Plagiarist Paul
 	fraud_spawn.frauds[Fraud_PlagiaristPaul][RaceId::Zerg] = {AiPersonality_ZergAssault, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::ZinnwalditeBrown};
+	fraud_spawn.units[Fraud_PlagiaristPaul][RaceId::Zerg].push_back({6, UnitId::ZergHydralisk});
+	fraud_spawn.units[Fraud_PlagiaristPaul][RaceId::Zerg].push_back({2, UnitId::ZergKonvilisk});
 
 	// RimTechCombot
 	fraud_spawn.frauds[Fraud_RimTechCombot][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::DarkLavender};
+	fraud_spawn.units[Fraud_RimTechCombot][RaceId::Zerg].push_back({6, UnitId::ZergZethrokor});
+	fraud_spawn.units[Fraud_RimTechCombot][RaceId::Zerg].push_back({3, UnitId::ZergQuazilisk});
+	fraud_spawn.units[Fraud_RimTechCombot][RaceId::Zerg].push_back({6, UnitId::ZergNathrokor});
 
 	// Africanized Crowkenyan
 	fraud_spawn.frauds[Fraud_AfricanizedCrowkenyan][RaceId::Zerg] = {AiPersonality_ZergSunblot, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::BurntUmber};
+	fraud_spawn.units[Fraud_RimTechCombot][RaceId::Zerg].push_back({8, UnitId::ZergNathrokor});
+	fraud_spawn.units[Fraud_RimTechCombot][RaceId::Zerg].push_back({2, UnitId::ZergSkithrokor});
+	fraud_spawn.units[Fraud_RimTechCombot][RaceId::Zerg].push_back({2, UnitId::ZergMutalisk});
 
-	// Bonzibuddy
-	fraud_spawn.frauds[Fraud_Bonzibuddy][RaceId::Zerg] = {AiPersonality_ZergGeneral, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::JapaneseViolet};
+	// Ultralisks
+	fraud_spawn.frauds[Fraud_Ultralisks][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Glacial};
+	fraud_spawn.units[Fraud_RimTechCombot][RaceId::Zerg].push_back({2, UnitId::ZergLakizilisk});
+	fraud_spawn.units[Fraud_RimTechCombot][RaceId::Zerg].push_back({2, UnitId::ZergUltrokor});
 
 	// LightenedRealities
 	fraud_spawn.frauds[Fraud_LightenedRealities][RaceId::Terran] = {AiPersonality_TerranGeneral, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Harlequin};
@@ -459,14 +518,16 @@ void init_fraud_units() {
 
 	// Pr0nogo
 	fraud_spawn.frauds[Fraud_Pr0nogo][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Aquamarine};
-
+	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Terran].push_back({2, UnitId::TerranGoliath});
+	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Terran].push_back({2, UnitId::TerranPhalanxTankMode});
 	
 	fraud_spawn.frauds[Fraud_Pr0nogo][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Aquamarine};
 	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Protoss].push_back({2, UnitId::ProtossZealot});
-	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Protoss].push_back({8, UnitId::ProtossScribe});
+	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Protoss].push_back({2, UnitId::ProtossCabalist});
 
 	fraud_spawn.frauds[Fraud_Pr0nogo][RaceId::Zerg] = {AiPersonality_ZergAssault, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Aquamarine};
-
+	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Zerg].push_back({4, UnitId::ZergHydralisk});
+	fraud_spawn.units[Fraud_Pr0nogo][RaceId::Zerg].push_back({2, UnitId::ZergBactalisk});
 
 	// Ba3lethal
 	fraud_spawn.frauds[Fraud_Ba3lethal][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::NeonCarrot};
@@ -577,15 +638,37 @@ void init_fraud_units() {
 
 	fraud_spawn.frauds[Fraud_HoopThrower][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::VineGreen};
 
-
 	// Veeq8
 	fraud_spawn.frauds[Fraud_Veeq8][RaceId::Terran] = {AiPersonality_TerranOrbital, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::NeonBlue};
-
+	fraud_spawn.units[Fraud_Veeq8][RaceId::Terran].push_back({4, UnitId::TerranWraith});
+	fraud_spawn.units[Fraud_Veeq8][RaceId::Terran].push_back({2, UnitId::TerranSalamander});
 
 	fraud_spawn.frauds[Fraud_Veeq8][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::NeonBlue};
-
+	fraud_spawn.units[Fraud_Veeq8][RaceId::Protoss].push_back({6, UnitId::ProtossSimulacrum});
+	fraud_spawn.units[Fraud_Veeq8][RaceId::Protoss].push_back({1, UnitId::ProtossClarion});
 
 	fraud_spawn.frauds[Fraud_Veeq8][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::NeonBlue};
+	fraud_spawn.units[Fraud_Veeq8][RaceId::Zerg].push_back({8, UnitId::ZergZethrokor});
+	fraud_spawn.units[Fraud_Veeq8][RaceId::Zerg].push_back({4, UnitId::SharedCohort});
+
+	// Bonzibuddy
+	fraud_spawn.frauds[Fraud_Bonzibuddy][RaceId::Terran] = {AiPersonality_TerranGeneral, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::JapaneseViolet};
+
+
+	fraud_spawn.frauds[Fraud_Bonzibuddy][RaceId::Protoss] = {AiPersonality_ProtossGeneral, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::JapaneseViolet};
+
+
+	fraud_spawn.frauds[Fraud_Bonzibuddy][RaceId::Zerg] = {AiPersonality_ZergGeneral, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::JapaneseViolet};
+
+
+	// IskatuMesk
+	fraud_spawn.frauds[Fraud_IskatuMesk][RaceId::Terran] = {AiPersonality_TerranShadow, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Chestnut};
+
+
+	fraud_spawn.frauds[Fraud_IskatuMesk][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Chestnut};
+
+
+	fraud_spawn.frauds[Fraud_IskatuMesk][RaceId::Zerg] = {AiPersonality_ZergAssault, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Chestnut};
 
 
 	// Francisco Goska

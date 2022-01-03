@@ -554,7 +554,7 @@ namespace scbw
 			case UnitId::ZergKalkalisk:
 			case UnitId::ZergAkistrokor:
 			case UnitId::ZergAlmaksalisk:
-			case UnitId::ZergUltrakor:
+			case UnitId::ZergUltrokor:
 			case UnitId::ZergAlkajelisk:
 			case UnitId::ProtossAugur:
 			{
@@ -639,7 +639,7 @@ namespace scbw
 			case UnitId::ZergGorgralSwamp:
 			case UnitId::ZergAlmakisAntre:
 			case UnitId::ZergAlkajChasm:
-			case UnitId::ZergUltrakCavern:
+			case UnitId::ZergUltrokCavern:
 			{
 				return true;
 			}
@@ -1400,7 +1400,7 @@ namespace scbw
 			// Prohibited IDs
 			case UnitId::ProtossAmaranth:
 			case UnitId::ZergAkistrokor:
-			case UnitId::ZergUltrakor:
+			case UnitId::ZergUltrokor:
 			{
 				return false;
 			} break;
