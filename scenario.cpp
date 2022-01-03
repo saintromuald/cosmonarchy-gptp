@@ -16,7 +16,6 @@ bool is_map(u32 campaign, u32 map) {
 
 /*
 Todo:
-	- Fix resarea mismatch (start location related)
 	- Add automatic dialogue system
 	- Remove hero/super timer, use the chance system instead
 	- Spawn god properly
@@ -850,14 +849,18 @@ u8 get_closest_resarea(Point16 pos) {
 
 void run_ai(u32 player, Point16 pos, s32 name) {
 	Box32 area;
-	area.left = pos.x - 10 * 32;
-	area.right = pos.x + 10 * 32;
-	area.top = pos.y - 10 * 32;
-	area.bottom = pos.y + 10 * 32;
+	area.left = pos.x - 2 * 32;
+	area.right = pos.x + 2 * 32;
+	area.top = pos.y - 1.5 * 32;
+	area.bottom = pos.y + 1.5 * 32;
 	s32 is_bw;
 	s32 block = helper::parseAIScriptName(name, &is_bw);
 	if (block) {
 		fraud_spawn.sequence[player].ai_script = helper::AI_RunAIScript(&area, player, block, is_bw);
+		if (fraud_spawn.sequence[player].ai_script) {
+			fraud_spawn.sequence[player].ai_script->flags &= 0x3;
+			fraud_spawn.sequence[player].ai_script->flags |= get_closest_resarea(pos) << 3;
+		}
 	} else {
 		scbw::printf("scenario.cpp, run_ai: Invalid AI block!");
 	}
@@ -985,12 +988,20 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				resources->minerals[player] = 400;
 				resources->gas[player] = 200;
 
+				startPositions[player] = spawn_location->pos;
+				if (race == RaceId::Terran) {
+					run_ai(player, spawn_location->pos, 'xCMT');
+				} else if (race == RaceId::Protoss) {
+					run_ai(player, spawn_location->pos, 'xCMP');
+				} else if (race == RaceId::Zerg) {
+					run_ai(player, spawn_location->pos, 'xCMZ');
+				}
+
 				if (spawn_townhall) {
 					u32 townhall = UnitId::TerranCommandCenter;
 					if (player == 2 || player == 5) {
 						townhall = UnitId::ProtossNexus;
 					} else if (player == 3 || player == 6) {
-						// Todo: spawn creep
 						townhall = UnitId::ZergHatchery;
 					}
 
@@ -1001,15 +1012,6 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					}
 					Unit* unit = helper::createUnitAtPos(townhall, player, pos.x, pos.y);
 					fraud_spawn.sequence[player-1].unit_timer = 24 * 0.8;
-				}
-
-				startPositions[player] = spawn_location->pos;
-				if (race == RaceId::Terran) {
-					run_ai(player, spawn_location->pos, 'xCMT');
-				} else if (race == RaceId::Protoss) {
-					run_ai(player, spawn_location->pos, 'xCMP');
-				} else if (race == RaceId::Zerg) {
-					run_ai(player, spawn_location->pos, 'xCMZ');
 				}
 
 				for (u32 i = 1; i < 7; ++i) {
