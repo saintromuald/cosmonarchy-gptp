@@ -1063,6 +1063,10 @@ void init_scenario() {
 	}	
 }
 
+void end_scenario() {
+	fraud_spawn = {};
+}
+
 void tick_scenario() {
 	/*
 		Terran players: 2, 5

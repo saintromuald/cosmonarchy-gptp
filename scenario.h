@@ -22,4 +22,5 @@ u32 get_transmission_playing();
 bool is_map(u32 campaign, u32 map);
 
 void init_scenario();
+void end_scenario();
 void tick_scenario();

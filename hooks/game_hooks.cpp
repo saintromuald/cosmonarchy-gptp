@@ -1844,6 +1844,7 @@ namespace hooks
 
 	bool gameEnd()
 	{
+		end_scenario();
 		return true;
 	}
 }
