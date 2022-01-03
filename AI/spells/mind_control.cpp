@@ -42,7 +42,7 @@ namespace AI
 				case UnitId::TerranCleric:
 				case UnitId::TerranShaman:
 				case UnitId::ZergOvileth:
-				case UnitId::ZergUltrakor:
+				case UnitId::ZergUltrokor:
 				case UnitId::ZergMatraleth:
 				case UnitId::ZergIsthrathaleth:
 				case UnitId::ZergVithrilisk:

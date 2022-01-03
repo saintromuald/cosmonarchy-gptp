@@ -474,7 +474,7 @@ namespace hooks
 
 			case UnitId::ZergZorkizShroud:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergUltrakCavern, ignoreIncomplete); 
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergUltrokCavern, ignoreIncomplete); 
 			} break;
 		}
 		return unitCount;

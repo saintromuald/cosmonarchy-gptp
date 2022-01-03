@@ -64,7 +64,7 @@ namespace
 		{UnitId::ZergHydralisk, UpgradeId::MuscularAugments, UpgradeId::GroovedSpines, UpgradeId::None},
 		{UnitId::ZergMatraleth, UpgradeId::GameteMeiosis, UpgradeId::None},
 		{UnitId::ZergIsthrathaleth, UpgradeId::MetasynapticNode, UpgradeId::None},
-		{UnitId::ZergUltrakor, UpgradeId::AnabolicSynthesis, UpgradeId::ChitinousPlating, UpgradeId::None},
+		{UnitId::ZergUltrokor, UpgradeId::AnabolicSynthesis, UpgradeId::ChitinousPlating, UpgradeId::None},
 
 		// Protoss
 		{UnitId::ProtossZealot, UpgradeId::LegEnhancements, UpgradeId::None},

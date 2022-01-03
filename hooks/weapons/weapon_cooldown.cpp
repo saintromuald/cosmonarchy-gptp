@@ -53,7 +53,7 @@ namespace hooks
 		}
 
 		// Kaiser Rampage upgrade: gains f64 attack speed for 1 second on kill
-		if (unit->id == UnitId::ZergUltrakor)
+		if (unit->id == UnitId::ZergUltrokor)
 		{
 			if (unitExt->timers[TimerKaiserRampage] > 0)
 			{
