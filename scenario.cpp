@@ -192,7 +192,6 @@ struct FraudSpawnSequence {
 	u32 rally_index;
 	u32 unit_index;
 	FraudSpawnLocation* location;
-	Unit* revealer;
 };
 
 struct FraudSpawnUnit {
@@ -273,6 +272,7 @@ FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point16 pos) 
 }
 
 void init_fraud_spawns() {
+	// Todo: remove units properly
 	Unit* next = 0;
 	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
 		next = unit->player_link.next;
@@ -281,8 +281,10 @@ void init_fraud_spawns() {
 			spawn.set = true;
 			spawn.pos = unit->position;
 			fraud_spawn.spawns.push_back(spawn);
-			unit->userActionFlags |= 4;
-			unit->remove();
+
+			helper::hideAndDisableUnit(unit);
+			//unit->userActionFlags |= 4;
+			//unit->remove();
 		}
 	}
 	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
@@ -292,8 +294,10 @@ void init_fraud_spawns() {
 			if (spawn) {
 				spawn->sources.push_back({unit->position});
 			}
-			unit->userActionFlags |= 4;
-			unit->remove();
+
+			helper::hideAndDisableUnit(unit);
+			//unit->userActionFlags |= 4;
+			//unit->remove();
 		}
 	}
 	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
@@ -306,8 +310,10 @@ void init_fraud_spawns() {
 					source->rallies.push_back(unit->position);
 				}
 			}
-			unit->userActionFlags |= 4;
-			unit->remove();
+
+			helper::hideAndDisableUnit(unit);
+			//unit->userActionFlags |= 4;
+			//unit->remove();
 		}
 	}
 }
@@ -759,7 +765,6 @@ bool place_fraud(u32 player, u32 fraud_class) {
 				fraud_spawn.sequence[player-1].rally_index = 0;
 				fraud_spawn.sequence[player-1].unit_index = 0;
 				fraud_spawn.sequence[player-1].location = spawn_location;
-				fraud_spawn.sequence[player-1].revealer = scbw::createUnitInGame(UnitId::Special_MapRevealer, 0, spawn_location->pos.x, spawn_location->pos.y);
 
 				scbw::minimapPing(spawn_location->pos.x, spawn_location->pos.y, 0, *LOCAL_NATION_ID);
 
@@ -768,19 +773,22 @@ bool place_fraud(u32 player, u32 fraud_class) {
 				unit_deaths[UnitId::Spell_DarkSwarm].player[player] = fraud_spawn.frauds[next_fraud][race].build_order;
 				SetPlayerColor(player, fraud_spawn.frauds[next_fraud][race].color);
 
+				playerVision[0].flags[player] = true;
 				for (u32 i = 1; i < 7; ++i) {
-					for (u32 j = 1; j < 7; ++j) {
-						if (i == j) {
-							continue;
-						}
-						if (fraud_spawn.sequence[i-1].fraud_class == fraud_spawn.sequence[j-1].fraud_class &&
-							(fraud_spawn.sequence[i-1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[i-1].fraud_class == FraudClass_God)) {
-							playerAlliance[i].flags[j] = true;
-							playerAlliance[j].flags[i] = true;
-						} else {
-							playerAlliance[i].flags[j] = false;
-							playerAlliance[j].flags[i] = false;
-						}
+					if (player == i) {
+						continue;
+					}
+					if (fraud_spawn.sequence[player-1].fraud_class == fraud_spawn.sequence[i-1].fraud_class &&
+						(fraud_spawn.sequence[player-1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[player-1].fraud_class == FraudClass_God)) {
+						playerAlliance[player].flags[i] = true;
+						playerAlliance[i].flags[player] = true;
+						playerVision[player].flags[i] = true;
+						playerVision[i].flags[player] = true;
+					} else {
+						playerAlliance[player].flags[i] = false;
+						playerAlliance[i].flags[player] = false;
+						playerVision[player].flags[i] = false;
+						playerVision[i].flags[player] = false;
 					}
 				}
 				return true;
@@ -954,11 +962,8 @@ void tick_scenario() {
 							}
 						}
 					} else {
+						playerVision[0].flags[i] = false;
 						sequence->location = 0;
-						if (sequence->revealer) {
-							sequence->revealer->remove();
-							sequence->revealer = 0;
-						}
 					}
 				}
 			}
