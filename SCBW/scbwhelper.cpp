@@ -10394,4 +10394,55 @@ namespace helper
 		}
 		return result;
 	}
+
+	s32 parseAIScriptName(s32 name, s32* is_bw) {
+		static s32 result;
+		const u32 Func_parseAIScriptName = 0x0045B170;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, is_bw
+			MOV EDX, name
+			CALL Func_parseAIScriptName
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void* AI_RunAIScript(Box32* area, u32 player, u32 block, u32 is_bw) {
+		static void* result;
+		const u32 Func_AI_RunAIScript = 0x0045AEF0;
+		__asm
+		{
+			PUSHAD
+			PUSH is_bw
+			PUSH block
+			PUSH player
+			MOV ESI, area
+			CALL Func_AI_RunAIScript
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// not functional!
+	void* AI_Stop(void* ai_script) {
+		static void* result;
+		const u32 Func_AI_Stop = 0x00403380;
+		const void* Var_AI_thread_end = (void*)0x0068C0FC;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, ai_script
+			MOV EDX, Var_AI_thread_end
+			CALL Func_AI_Stop
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	VictoryFunc* Victory = (VictoryFunc*)0x4C5310;
 }

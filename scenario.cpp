@@ -185,7 +185,6 @@ struct FraudSpawnLocation {
 };
 
 struct FraudSpawnSequence {
-	bool townhall_placed;
 	u32 fraud_class;
 	u32 fraud;
 	u32 race;
@@ -193,8 +192,8 @@ struct FraudSpawnSequence {
 	u32 source_index;
 	u32 rally_index;
 	u32 unit_index;
+	void* ai_script;
 	FraudSpawnLocation* location;
-	Unit* revealer;
 };
 
 struct FraudSpawnUnit {
@@ -275,6 +274,7 @@ FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point16 pos) 
 }
 
 void init_fraud_spawns() {
+	// Todo: remove units properly
 	Unit* next = 0;
 	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
 		next = unit->player_link.next;
@@ -283,8 +283,10 @@ void init_fraud_spawns() {
 			spawn.set = true;
 			spawn.pos = unit->position;
 			fraud_spawn.spawns.push_back(spawn);
-			unit->userActionFlags |= 4;
-			unit->remove();
+
+			helper::hideAndDisableUnit(unit);
+			//unit->userActionFlags |= 4;
+			//unit->remove();
 		}
 	}
 	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
@@ -294,8 +296,10 @@ void init_fraud_spawns() {
 			if (spawn) {
 				spawn->sources.push_back({unit->position});
 			}
-			unit->userActionFlags |= 4;
-			unit->remove();
+
+			helper::hideAndDisableUnit(unit);
+			//unit->userActionFlags |= 4;
+			//unit->remove();
 		}
 	}
 	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
@@ -308,46 +312,25 @@ void init_fraud_spawns() {
 					source->rallies.push_back(unit->position);
 				}
 			}
-			unit->userActionFlags |= 4;
-			unit->remove();
+
+			helper::hideAndDisableUnit(unit);
+			//unit->userActionFlags |= 4;
+			//unit->remove();
 		}
 	}
 }
 
 void init_fraud_units() {
-	// Todo: Only for testing, remove this
 	for (u32 i = 0; i < Fraud_Count; ++i) {
-		fraud_spawn.frauds[i][RaceId::Terran] = {AiPersonality_None, AiBuildType_None, AiBuildOrder_None, PlayerColor::Aero};
 		fraud_spawn.units[i][RaceId::Terran].push_back({8, UnitId::TerranMason});
-		fraud_spawn.units[i][RaceId::Terran].push_back({2, UnitId::ZergOvileth});
-		fraud_spawn.units[i][RaceId::Terran].push_back({8, UnitId::TerranMaverick});
-		fraud_spawn.units[i][RaceId::Terran].push_back({4, UnitId::TerranCyprian});
-
-		fraud_spawn.frauds[i][RaceId::Protoss] = {AiPersonality_None, AiBuildType_None, AiBuildOrder_None, PlayerColor::Magma};
+		fraud_spawn.units[i][RaceId::Terran].push_back({3, UnitId::ZergOvileth});
 		fraud_spawn.units[i][RaceId::Protoss].push_back({8, UnitId::ProtossScribe});
-		fraud_spawn.units[i][RaceId::Protoss].push_back({2, UnitId::ZergOvileth});
-		fraud_spawn.units[i][RaceId::Protoss].push_back({4, UnitId::ProtossZealot});
-		fraud_spawn.units[i][RaceId::Protoss].push_back({2, UnitId::ProtossDracadin});
-
-		fraud_spawn.frauds[i][RaceId::Zerg] = {AiPersonality_None, AiBuildType_None, AiBuildOrder_None, PlayerColor::Magenta};
+		fraud_spawn.units[i][RaceId::Protoss].push_back({3, UnitId::ZergOvileth});
 		fraud_spawn.units[i][RaceId::Zerg].push_back({8, UnitId::ZergDroleth});
-		fraud_spawn.units[i][RaceId::Zerg].push_back({2, UnitId::ZergOvileth});
-		fraud_spawn.units[i][RaceId::Zerg].push_back({16, UnitId::ZergZethrokor});
-		fraud_spawn.units[i][RaceId::Zerg].push_back({8, UnitId::ZergHydralisk});
+		fraud_spawn.units[i][RaceId::Zerg].push_back({3, UnitId::ZergOvileth});
 	}
 
-	// Todo: Add units for all personalities, using the format below
-
-	// Defaults:
-	/*
-	//	8 workers, 3 ovileths
-	//	fraud_spawn.units[i][RaceId::Terran].push_back({8, UnitId::TerranMason});
-	//	fraud_spawn.units[i][RaceId::Terran].push_back({3, UnitId::ZergOvileth});
-	//	fraud_spawn.units[i][RaceId::Protoss].push_back({8, UnitId::ProtossScribe});
-	//	fraud_spawn.units[i][RaceId::Protoss].push_back({3, UnitId::ZergOvileth});
-	//	fraud_spawn.units[i][RaceId::Zerg].push_back({8, UnitId::ZergDroleth});
-	//	fraud_spawn.units[i][RaceId::Zerg].push_back({3, UnitId::ZergOvileth});
-	*/
+	// Todo: Finish adding units for all personalities
 
 	// Alexei Ukov
 	fraud_spawn.frauds[Fraud_AlexeiUkov][RaceId::Terran] = {AiPersonality_TerranOrbital, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::VividRed};
@@ -744,7 +727,20 @@ void init_fraud_units() {
 	// God - TBD
 }
 
-bool place_fraud(u32 player, u32 fraud_class) {
+void run_ai(u32 player, Point16 pos, s32 name) {
+	Box32 area;
+	area.left = pos.x - 32 * 2;
+	area.right = pos.x + 32 * 2;
+	area.top = pos.y - 32 * 1.5;
+	area.bottom = pos.y + 32 * 1.5;
+	s32 is_bw;
+	s32 block = helper::parseAIScriptName(name, &is_bw);
+	if (block) {
+		fraud_spawn.sequence[player].ai_script = helper::AI_RunAIScript(&area, player, block, is_bw);
+	}
+}
+
+bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 	if (!fraud_spawn.sequence[player - 1].location) {
 		u32 race = 0;
 		u32 race_first = 0;
@@ -842,30 +838,61 @@ bool place_fraud(u32 player, u32 fraud_class) {
 				fraud_spawn.sequence[player-1].rally_index = 0;
 				fraud_spawn.sequence[player-1].unit_index = 0;
 				fraud_spawn.sequence[player-1].location = spawn_location;
-				fraud_spawn.sequence[player-1].revealer = scbw::createUnitInGame(UnitId::Special_MapRevealer, 0, spawn_location->pos.x, spawn_location->pos.y);
-
-				scbw::minimapPing(spawn_location->pos.x, spawn_location->pos.y, 0, *LOCAL_NATION_ID);
 
 				unit_deaths[UnitId::Spell_DisruptionWeb].player[player] = fraud_spawn.frauds[next_fraud][race].personality;
 				unit_deaths[UnitId::ProtossPlasmaShell].player[player] = fraud_spawn.frauds[next_fraud][race].build_type;
 				unit_deaths[UnitId::Spell_DarkSwarm].player[player] = fraud_spawn.frauds[next_fraud][race].build_order;
 				SetPlayerColor(player, fraud_spawn.frauds[next_fraud][race].color);
 
+				// Todo: reset kills using aise
+				resources->cumulativeMinerals[player] += 400;
+				resources->cumulativeGas[player] += 200;
+				resources->minerals[player] = 400;
+				resources->gas[player] = 200;
+
+				if (spawn_townhall) {
+					u32 townhall = UnitId::TerranCommandCenter;
+					if (player == 2 || player == 5) townhall = UnitId::ProtossNexus;
+					if (player == 3 || player == 6) townhall = UnitId::ZergHatchery;
+
+					Point16 pos = fraud_spawn.sequence[player-1].location->pos;
+					Unit* augur = scbw::createUnitInGame(UnitId::ProtossAugur, player, pos.x, pos.y);
+					if (augur) {
+						augur->remove();
+					}
+					Unit* unit = scbw::createUnitInGame(townhall, player, pos.x, pos.y);
+					fraud_spawn.sequence[player-1].unit_timer = 24 * 0.8;
+				}
+
+				if (race == RaceId::Terran) {
+					run_ai(player, spawn_location->pos, 'xCMT');
+				} else if (race == RaceId::Protoss) {
+					run_ai(player, spawn_location->pos, 'xCMP');
+				} else if (race == RaceId::Zerg) {
+					run_ai(player, spawn_location->pos, 'xCMZ');
+				}
+
 				for (u32 i = 1; i < 7; ++i) {
-					for (u32 j = 1; j < 7; ++j) {
-						if (i == j) {
-							continue;
-						}
-						if (fraud_spawn.sequence[i-1].fraud_class == fraud_spawn.sequence[j-1].fraud_class &&
-							(fraud_spawn.sequence[i-1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[i-1].fraud_class == FraudClass_God)) {
-							playerAlliance[i].flags[j] = true;
-							playerAlliance[j].flags[i] = true;
-						} else {
-							playerAlliance[i].flags[j] = false;
-							playerAlliance[j].flags[i] = false;
-						}
+					if (player == i) {
+						continue;
+					}
+					if (fraud_spawn.sequence[player-1].fraud_class == fraud_spawn.sequence[i-1].fraud_class &&
+						(fraud_spawn.sequence[player-1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[player-1].fraud_class == FraudClass_God)) {
+						playerAlliance[player].flags[i] = true;
+						playerAlliance[i].flags[player] = true;
+						playerVision[player].flags[i] = true;
+						playerVision[i].flags[player] = true;
+					} else {
+						playerAlliance[player].flags[i] = false;
+						playerAlliance[i].flags[player] = false;
+						playerVision[player].flags[i] = false;
+						playerVision[i].flags[player] = false;
 					}
 				}
+
+				scbw::minimapPing(spawn_location->pos.x, spawn_location->pos.y, 0, *LOCAL_NATION_ID);
+				playerVision[0].flags[player] = true;
+
 				return true;
 			}
 		}
@@ -890,29 +917,10 @@ void init_scenario() {
 		}
 		
 		// Todo: spawn creep
-		place_fraud(first_fraud, FraudClass_Fraud);
-		if (fraud_spawn.sequence[first_fraud-1].location) {
-			fraud_spawn.sequence[first_fraud - 1].townhall_placed = true;
-			u32 townhall = UnitId::TerranCommandCenter;
-			if (first_fraud == 2 || first_fraud == 5) townhall = UnitId::ProtossNexus;
-			if (first_fraud == 3 || first_fraud == 6) townhall = UnitId::ZergHatchery;
-		
-			scbw::createUnitInGame(townhall, first_fraud, fraud_spawn.sequence[first_fraud-1].location->pos.x, fraud_spawn.sequence[first_fraud-1].location->pos.y);
-		}
-		place_fraud(second_fraud, FraudClass_Fraud);
-		if (fraud_spawn.sequence[second_fraud-1].location) {
-			fraud_spawn.sequence[second_fraud - 1].townhall_placed = true;
-			u32 townhall = UnitId::TerranCommandCenter;
-			if (second_fraud == 2 || second_fraud == 5) townhall = UnitId::ProtossNexus;
-			if (second_fraud == 3 || second_fraud == 6) townhall = UnitId::ZergHatchery;
-		
-			scbw::createUnitInGame(townhall, second_fraud, fraud_spawn.sequence[second_fraud-1].location->pos.x, fraud_spawn.sequence[second_fraud-1].location->pos.y);
-		}
+		place_fraud(first_fraud, FraudClass_Fraud, true);
+		place_fraud(second_fraud, FraudClass_Fraud, true);
 	}	
 }
-
-typedef s32 __cdecl VictoryFunc();
-VictoryFunc* Victory = (VictoryFunc*)0x4C5310;
 
 void tick_scenario() {
 	/*
@@ -934,14 +942,14 @@ void tick_scenario() {
 
 		u32 alive_count = 0;
 		for (u32 i = 1; i < 7; ++i) {
-			if (unit_deaths[UnitId::Factories].player[i] > 0) {
+			if (fraud_spawn.sequence[i-1].location || all_factory_counts->unit[i] > 0) {
 				++alive_count;
 			}
 		}
 		
 		if (!alive_count && fraud_spawn.used_count == Fraud_Count) {
 			*currentTriggerPlayerId = 0;
-			Victory();
+			helper::Victory();
 		}
 
 		// Fraud Spawning
@@ -955,8 +963,8 @@ void tick_scenario() {
 				u32 offset = scbw::randBetween(0, 5);
 				for (u32 i = 0; i < 6; ++i) {
 					u32 player = (i + offset) % 6 + 1;
-					if (unit_deaths[UnitId::Factories].player[player] == 0) {
-						if (place_fraud(player, i)) {
+					if (all_factory_counts->unit[player] == 0) {
+						if (place_fraud(player, i, false)) {
 							++alive_count;
 							break;
 						}
@@ -973,7 +981,7 @@ void tick_scenario() {
 		}
 		if (!alive_count && !final_counter) {
 			for (u32 i = 1; i < 7; ++i) {
-				place_fraud(i, FraudClass_God);
+				place_fraud(i, FraudClass_God, true);
 			}
 		}
 
@@ -998,26 +1006,7 @@ void tick_scenario() {
 							}
 							Unit* unit = helper::AI_CreateUnit(source_pos.x, source_pos.y, unit_id, i);
 							if (unit) {
-								if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker) {
-									if (!sequence->townhall_placed) {
-										sequence->townhall_placed = true;
-
-										// Todo: make sure this counts properly
-										resources->cumulativeMinerals[i] += 400;
-										resources->minerals[i] += 400;
-
-										// Todo: make building work
-										unit->userActionFlags |= 0x1;
-										if (unit_id == UnitId::TerranMason) {
-											unit->order(OrderId::BuildTerran, sequence->location->pos.x, sequence->location->pos.y, 0, UnitId::TerranCommandCenter, true);
-										} if (unit_id == UnitId::ProtossScribe) {
-											unit->order(OrderId::BuildProtoss1, sequence->location->pos.x, sequence->location->pos.y, 0, UnitId::ProtossNexus, true);
-										} if (unit_id == UnitId::ZergDroleth) {
-											unit->order(OrderId::DroneLand, sequence->location->pos.x, sequence->location->pos.y, 0, UnitId::ZergHatchery, true);
-										}
-										prepareForNextOrder(unit);
-									}
-								} else {
+								if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Worker)) {
 									unit->orderTo(OrderId::AttackMove, rally.x, rally.y);
 								}
 
@@ -1037,11 +1026,8 @@ void tick_scenario() {
 							}
 						}
 					} else {
+						playerVision[0].flags[i] = false;
 						sequence->location = 0;
-						if (sequence->revealer) {
-							sequence->revealer->remove();
-							sequence->revealer = 0;
-						}
 					}
 				}
 			}
