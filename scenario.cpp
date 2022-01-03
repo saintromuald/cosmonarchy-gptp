@@ -16,6 +16,12 @@ bool is_map(u32 campaign, u32 map) {
 
 /*
 Todo:
+	= Bugfix:
+	- Resolve aise panic ("delete_ai_town_if_needed")
+	- Clean up memory properly (resolves crash on restart)
+	- Investigate wrong spawn types (super instead of fraud, etc)
+
+	= Feature:
 	- Add automatic dialogue system
 	- Remove hero/super timer, use the chance system instead
 	- Spawn god properly
