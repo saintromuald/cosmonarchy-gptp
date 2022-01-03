@@ -281,13 +281,10 @@ namespace hooks
 			*(s32*)hyperTrigger = 0; // Single frame hypertriggers
 
 			// Scenario Features
-			if (*elapsedTimeFrames == 1 && is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch)) {
-				scbw::printf("Initializing...");
-			}
-			if (*elapsedTimeFrames == 2) {
+			if (*elapsedTimeFrames == 1) {
 				init_scenario();
 			}
-			if (*elapsedTimeFrames >= 2) {
+			if (*elapsedTimeFrames >= 1) {
 				tick_scenario();
 			}
 

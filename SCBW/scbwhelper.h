@@ -1087,7 +1087,7 @@ namespace helper
 	bool AI_TrainUnit(Unit* unit, u16 unitId, char requestId, void* value);														// 004672F0
 	
 	// For scenario.cpp
-	Unit* AI_CreateUnit(s32 x, s32 y, u32 unit_id, s32 player);																	// 004A0AD0
+	Unit* AI_CreateUnit(u32 unit_id, s32 player, s32 x, s32 y);																	// 004A0AD0
 	s32 parseAIScriptName(s32 name, s32* is_bw);																				// 0045AEF0
 	AiScript* AI_RunAIScript(Box32* area, u32 player, u32 block, u32 is_bw);													// 0045B170
 	AiScript* AI_Stop(AiScript* ai_script);																						// 00403380

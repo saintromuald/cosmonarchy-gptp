@@ -10378,7 +10378,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* AI_CreateUnit(s32 x, s32 y, u32 unit_id, s32 player) {
+	Unit* AI_CreateUnit(u32 unit_id, s32 player, s32 x, s32 y) {
 		static Unit* result;
 		const u32 Func_AI_CreateUnit = 0x004A0AD0;
 		__asm
