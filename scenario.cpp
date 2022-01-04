@@ -987,13 +987,17 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 		if (next_fraud) {
 			FraudSpawnLocation* spawn_location = get_random_spawn();
 			if (spawn_location) {
+
 				++fraud_spawn.used_count;
 				fraud_spawn.used[next_fraud] = true;
 				if (fraud_class == FraudClass_Fraud) {
+					scbw::printf("Spawn fraud %u", next_fraud);
 					fraud_spawn.timer[fraud_class] = 5 * 60 * 24;
 				} else if (fraud_class == FraudClass_Hero) {
+					scbw::printf("Spawn hero %u", next_fraud);
 					fraud_spawn.timer[fraud_class] = 8 * 60 * 24;
 				} else if (fraud_class == FraudClass_Super) {
+					scbw::printf("Spawn super %u", next_fraud);
 					fraud_spawn.timer[fraud_class] = 15 * 60 * 24;
 				}
 				fraud_spawn.sequence[player-1].fraud_class = fraud_class;
@@ -1134,8 +1138,8 @@ void tick_scenario() {
 			}
 			if (!fraud_spawn.timer[i]) {
 				u32 offset = scbw::randBetween(0, 5);
-				for (u32 i = 0; i < 6; ++i) {
-					u32 player = (i + offset) % 6 + 1;
+				for (u32 j = 0; j < 6; ++j) {
+					u32 player = (j + offset) % 6 + 1;
 					if (all_factory_counts->unit[player] == 0) {
 						if (place_fraud(player, i, false)) {
 							++alive_count;
