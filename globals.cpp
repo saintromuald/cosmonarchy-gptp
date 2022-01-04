@@ -23,6 +23,7 @@ static SaveState saveState;
 
 void Globals::aise_save()
 {
+	scbw::print("WARNING: Saving doesn't work properly in Cosmonarchy.\n\t\t\tAny plugin specific data will be lost.", GameTextColor::Yellow);
 	return;
 
 	output.clear();
