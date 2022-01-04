@@ -301,9 +301,8 @@ void init_fraud_spawns() {
 				scbw::printf("Spawn cap reached (" STR(FraudSpawnCap) ")");
 			}
 
-			helper::hideAndDisableUnit(unit);
-			//unit->userActionFlags |= 4;
-			//unit->remove();
+			unit->userActionFlags |= 4;
+			unit->remove();
 		}
 	}
 	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
@@ -318,9 +317,8 @@ void init_fraud_spawns() {
 				}
 			}
 
-			helper::hideAndDisableUnit(unit);
-			//unit->userActionFlags |= 4;
-			//unit->remove();
+			unit->userActionFlags |= 4;
+			unit->remove();
 		}
 	}
 	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
@@ -338,9 +336,8 @@ void init_fraud_spawns() {
 				}
 			}
 
-			helper::hideAndDisableUnit(unit);
-			//unit->userActionFlags |= 4;
-			//unit->remove();
+			unit->userActionFlags |= 4;
+			unit->remove();
 		}
 	}
 }
@@ -1015,10 +1012,10 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				SetPlayerColor(player, fraud_spawn.frauds[next_fraud][race].color);
 
 				// Todo: reset kills using aise
-				resources->cumulativeMinerals[player] += 400;
-				resources->cumulativeGas[player] += 200;
-				resources->minerals[player] = 400;
-				resources->gas[player] = 200;
+				resources->cumulativeMinerals[player] += 1200;
+				resources->cumulativeGas[player] += 300;
+				resources->minerals[player] = 1200;
+				resources->gas[player] = 300;
 
 				startPositions[player] = spawn_location->pos;
 				if (race == RaceId::Terran) {
@@ -1075,7 +1072,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 }
 
 void init_scenario() {
-	fraud_spawn = {};
+	memset(&fraud_spawn, 0, sizeof(fraud_spawn));
 	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch)) {
 		fraud_spawn.timer[FraudClass_Fraud] = 5 * 60 * 24;
 		fraud_spawn.timer[FraudClass_Hero] = 8 * 60 * 24;
@@ -1096,7 +1093,7 @@ void init_scenario() {
 }
 
 void end_scenario() {
-	fraud_spawn = {};
+	memset(&fraud_spawn, 0, sizeof(fraud_spawn));;
 }
 
 void tick_scenario() {
