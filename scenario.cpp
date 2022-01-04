@@ -16,12 +16,6 @@ bool is_map(u32 campaign, u32 map) {
 
 /*
 Todo:
-	= Bugfix:
-	- Resolve aise panic ("delete_ai_town_if_needed")
-	- Clean up memory properly (resolves crash on restart)
-	- Investigate wrong spawn types (super instead of fraud, etc)
-
-	= Feature:
 	- Add automatic dialogue system
 	- Remove hero/super timer, use the chance system instead
 	- Spawn god properly
@@ -186,20 +180,20 @@ struct FraudInfo {
 	u32 color;
 };
 
-#define SpawnCap 100
-#define UnitCap 20
-#define SourceCap 10
-#define RallyCap 100
+#define FraudSpawnCap 100
+#define FraudUnitCap 20
+#define FraudSourceCap 10
+#define FraudRallyCap 100
 struct FraudSpawnSource {
 	Point16 pos;
 	u32 rally_count;
-	Point16 rallies[RallyCap];
+	Point16 rallies[FraudRallyCap];
 };
 
 struct FraudSpawnLocation {
 	Point16 pos;
 	u32 source_count;
-	FraudSpawnSource sources[SourceCap];
+	FraudSpawnSource sources[FraudSourceCap];
 };
 
 struct FraudSpawnSequence {
@@ -227,9 +221,9 @@ struct FraudSpawn {
 
 	FraudSpawnSequence sequence[6];
 	u32 spawn_count;
-	FraudSpawnLocation spawns[SpawnCap];
+	FraudSpawnLocation spawns[FraudSpawnCap];
 	u32 unit_count[Fraud_Count][RaceId::Count];
-	FraudSpawnUnit units[Fraud_Count][RaceId::Count][UnitCap];
+	FraudSpawnUnit units[Fraud_Count][RaceId::Count][FraudUnitCap];
 };
 
 FraudSpawn fraud_spawn;
@@ -301,10 +295,10 @@ void init_fraud_spawns() {
 		if (unit->id == UnitId::TerranCommandCenter) {
 			FraudSpawnLocation spawn = {};
 			spawn.pos = unit->position;
-			if (fraud_spawn.spawn_count < SpawnCap) {
+			if (fraud_spawn.spawn_count < FraudSpawnCap) {
 				fraud_spawn.spawns[fraud_spawn.spawn_count++] = spawn;
 			} else {
-				scbw::printf("Spawn cap reached (" STR(SpawnCap) ")");
+				scbw::printf("Spawn cap reached (" STR(FraudSpawnCap) ")");
 			}
 
 			helper::hideAndDisableUnit(unit);
@@ -317,10 +311,10 @@ void init_fraud_spawns() {
 		if (unit->id == UnitId::ProtossPylon) {
 			FraudSpawnLocation* spawn = get_closest_spawn(unit->position);
 			if (spawn) {
-				if (spawn->source_count < SpawnCap) {
+				if (spawn->source_count < FraudSourceCap) {
 					spawn->sources[spawn->source_count++] = {unit->position};
 				} else {
-					scbw::printf("Source cap per spawn reached (" STR(SourceCap) ")");
+					scbw::printf("Source cap per spawn reached (" STR(FraudSourceCap) ")");
 				}
 			}
 
@@ -336,10 +330,10 @@ void init_fraud_spawns() {
 			if (spawn) {
 				FraudSpawnSource* source = get_closest_source(spawn, unit->position);
 				if (source) {
-					if (source->rally_count < RallyCap) {
+					if (source->rally_count < FraudRallyCap) {
 						source->rallies[source->rally_count++] = unit->position;
 					} else {
-						scbw::printf("Rally cap per source reached (" STR(RallyCap) ")");
+						scbw::printf("Rally cap per source reached (" STR(FraudRallyCap) ")");
 					}
 				}
 			}
@@ -352,10 +346,10 @@ void init_fraud_spawns() {
 }
 
 void add_fraud_unit(u32 fraud, u32 race, FraudSpawnUnit unit) {
-	if (fraud_spawn.unit_count[fraud][race] < RallyCap) {
+	if (fraud_spawn.unit_count[fraud][race] < FraudUnitCap) {
 		fraud_spawn.units[fraud][race][fraud_spawn.unit_count[fraud][race]++] = unit;
 	} else {
-		scbw::printf("Rally cap per source reached (" STR(RallyCap) ")");
+		scbw::printf("Unit entry cap per fraud/race reached (" STR(FraudUnitCap) ")");
 	}
 }
 
