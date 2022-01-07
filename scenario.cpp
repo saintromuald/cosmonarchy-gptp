@@ -222,6 +222,7 @@ struct FraudSpawn {
 	u32 god_count;
 	bool used[Fraud_Count];
 	u32 timer;
+	u32 initial_spawn_count;
 
 	FraudSpawnSequence sequence[6];
 	u32 spawn_count;
@@ -1036,6 +1037,9 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				if (fraud_class == FraudClass_God) {
 					fraud_spawn.timer = 3 * 60 * 24;
 				}
+				if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
+					fraud_spawn.timer /= 2;
+				}
 
 				if (fraud_class == FraudClass_Fraud) {
 					scbw::printf("Spawn fraud %u", next_fraud);
@@ -1076,7 +1080,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				SetPlayerColor(player, fraud_spawn.frauds[next_fraud][race].color);
 
 				// Todo: reset kills using aise
-				s32 fraud_count = fraud_spawn.used_count - 2; // Don't count first two spawns towards the multiplier
+				s32 fraud_count = fraud_spawn.used_count - fraud_spawn.initial_spawn_count; // Don't count initial spawns towards the multiplier
 				if (fraud_count < 0) {
 					fraud_count = 0;
 				}
@@ -1163,17 +1167,20 @@ void init_scenario() {
 		init_fraud_spawns();
 		init_fraud_units();
 
-		fraud_spawn.hero_spawn_counter = -4;   // 2 starting + 2 standard spawns
-		fraud_spawn.super_spawn_counter = -10; // 2 starting + 8 standard spawns
-
-		u32 first_fraud = scbw::randBetween(1, 6);
-		u32 second_fraud = scbw::randBetween(1, 6);
-		while (second_fraud == first_fraud) {
-			second_fraud = scbw::randBetween(1, 6);
+		if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
+			fraud_spawn.initial_spawn_count = 4;
+		} else {
+			fraud_spawn.initial_spawn_count = 2;
 		}
 
-		place_fraud(first_fraud, FraudClass_Fraud, true);
-		place_fraud(second_fraud, FraudClass_Fraud, true);
+		fraud_spawn.hero_spawn_counter = -2 - fraud_spawn.initial_spawn_count;
+		fraud_spawn.super_spawn_counter = -8 - fraud_spawn.initial_spawn_count;
+
+		u32 offset = scbw::randBetween(0, 5);
+		for (u32 j = 0; j < fraud_spawn.initial_spawn_count; ++j) {
+			u32 player = (j + offset) % 6 + 1;
+			place_fraud(player, FraudClass_Fraud, true);
+		}
 	}
 }
 
