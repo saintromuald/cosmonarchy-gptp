@@ -370,7 +370,6 @@ void init_fraud_units() {
 
 	// Alexei Ukov
 	fraud_spawn.frauds[Fraud_AlexeiUkov][RaceId::Terran] = {AiPersonality_TerranOrbital, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::VividRed};
-	add_fraud_unit(Fraud_AlexeiUkov, RaceId::Terran, {8, UnitId::TerranMason});
 	add_fraud_unit(Fraud_AlexeiUkov, RaceId::Terran, {5, UnitId::TerranMaverick});
 	add_fraud_unit(Fraud_AlexeiUkov, RaceId::Terran, {2, UnitId::TerranGorgon});
 	add_fraud_unit(Fraud_AlexeiUkov, RaceId::Terran, {1, UnitId::TerranWyvern});
@@ -394,7 +393,7 @@ void init_fraud_units() {
 	add_fraud_unit(Fraud_KKKhris, RaceId::Terran, {2, UnitId::TerranWraith});
 
 	// Dynamo
-	fraud_spawn.frauds[Fraud_Dynamo][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::ElectricOrange};
+	fraud_spawn.frauds[Fraud_Dynamo][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_None, AiBuildOrder_TerranRaider_3RaxMarineAndCleric, PlayerColor::ElectricOrange};
 	add_fraud_unit(Fraud_Dynamo, RaceId::Terran, {4, UnitId::TerranMadcap});
 	add_fraud_unit(Fraud_Dynamo, RaceId::Terran, {1, UnitId::TerranAutocrat});
 
