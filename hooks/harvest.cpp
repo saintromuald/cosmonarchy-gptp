@@ -116,7 +116,6 @@ namespace hooks
 				}
 				if (resourceAmount > 0)
 				{
-
 					if (worker->resourceType & 3)
 					{ // Is carrying a mineral / gas
 
@@ -129,43 +128,49 @@ namespace hooks
 						worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis);
 						worker->resourceType = 0;
 					}
-					// AI cheat
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 1)
-					{
-						//+125%					
-						resourceAmount += (resourceAmount / 4);
-					}
-					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 2)
-					{
-						//+133%					
-						resourceAmount += (resourceAmount / 3);
-					}
-					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 3)
-					{
-						//+150%					
-						resourceAmount += (resourceAmount / 2);
-					}
-					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 4)
-					{
-						//+175%, mapcrap only				
-						resourceAmount += ((resourceAmount / 4) + (resourceAmount / 4) + (resourceAmount / 4));
-					}
-					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 5)
-					{
-						//+200%
-						resourceAmount *= 2;
-					}
-					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 6)
-					{
-						//+225%
-						resourceAmount *= (2 + (1 / 4));
-					}
-					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) >= 7)
-					{
-						//+250%
-						resourceAmount *= (2 + (1 / 2));
-					}
 
+					// AI cheat
+					switch (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency))
+					{
+						case 99:
+						{
+						} break;
+						case 1:
+						{
+							// 125% - Protoss
+							resourceAmount += (resourceAmount / 4);
+						} break;
+						case 2:
+						{
+							// 133% - Terran
+							resourceAmount += (resourceAmount / 3);
+						} break;
+						case 3:
+						{
+							// 150% - Zerg
+							resourceAmount += (resourceAmount / 2);
+						} break;
+						case 4:
+						{
+							// 175%
+							resourceAmount += ((resourceAmount / 4) + (resourceAmount / 4) + (resourceAmount / 4));
+						} break;
+						case 5:
+						{
+							// 200%
+							resourceAmount *= 2;
+						} break;
+						case 6:
+						{
+							// 225%
+							resourceAmount *= (2 + (1 / 4));
+						} break;
+						default:
+						{
+							// 250%
+							resourceAmount *= (2 + (1 / 2));
+						}
+					}
 					helper::setResourceAmountCarried(worker, resourceAmount, chunkImageId, isMineral);
 				}
 
