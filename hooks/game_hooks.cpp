@@ -196,6 +196,29 @@ namespace hooks
 		// Map Features
 		if (*elapsedTimeFrames == 1)
 		{
+			// Check forces
+			bool randomize_all_colors = false;
+			for (u32 i = 0; i < 4; i++)
+			{
+				if (playerForceFlags[i].randomize_start_locations)
+				{
+					randomize_all_colors = true;
+					break;
+				}
+			}
+
+			// Randomize Player Colors, requires randomize start locations ticked for any force
+			if (randomize_all_colors)
+			{
+				LoadMeleePlayerColors();
+			}
+			else
+			{
+				LoadDefaultPlayerColors();
+			}
+		}
+		if (*elapsedTimeFrames == 2)
+		{
 			// Check deaths
 			u8 reveal_flag = 0x00;
 			bool do_ping[PLAYABLE_PLAYER_COUNT] = {};
@@ -246,27 +269,6 @@ namespace hooks
 
 					scbw::minimapPing(startPositions[target].x, startPositions[target].y, color, *LOCAL_NATION_ID);
 				}
-			}
-
-			// Check forces
-			bool randomize_all_colors = false;
-			for (u32 i = 0; i < 4; i++)
-			{
-				if (playerForceFlags[i].randomize_start_locations)
-				{
-					randomize_all_colors = true;
-					break;
-				}
-			}
-			
-			// Randomize Player Colors, requires randomize start locations ticked for any force
-			if (randomize_all_colors)
-			{
-				LoadMeleePlayerColors();
-			}
-			else
-			{
-				LoadDefaultPlayerColors();
 			}
 		}
 

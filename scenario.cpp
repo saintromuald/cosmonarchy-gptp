@@ -1147,6 +1147,9 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 
 				scbw::minimapPing(spawn_location->pos.x, spawn_location->pos.y, 0, *LOCAL_NATION_ID);
 				playerVision->flags[player] |= 1 << 0;
+				if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
+					playerVision->flags[player] |= 1 << 7;
+				}
 
 				return true;
 			}
@@ -1157,7 +1160,9 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 
 void init_scenario() {
 	memset(&fraud_spawn, 0, sizeof(fraud_spawn));
-	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch)) {
+	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch) ||
+		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1) ||
+		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
 		init_fraud_spawns();
 		init_fraud_units();
 
@@ -1185,7 +1190,9 @@ void tick_scenario() {
 		Protoss players: 3, 6
 		Zerg players: 4, 7
 	*/
-	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch)) {
+	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch) ||
+		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1) ||
+		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
 		// God
 		const u32 god_spawn_breakpoint = 33;
 		C_ASSERT(god_spawn_breakpoint <= Fraud_Count);
@@ -1328,6 +1335,9 @@ void tick_scenario() {
 						}
 					} else {
 						playerVision->flags[i] &= ~(1 << 0);
+						if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
+							playerVision->flags[i] &= ~(1 << 7);
+						}
 						sequence->location = 0;
 					}
 				}

@@ -4,6 +4,7 @@
 enum Campaign {
 	Campaign_OneForTheFuture = 2,
 	Campaign_TheLostGods = 3,
+	Campaign_Veeq7 = 7,
 };
 
 enum Mission {
@@ -16,6 +17,9 @@ enum Mission {
 	Mission_OFTF_FavoredFiction,
 	Mission_OFTF_TheShitflingSinners,
 	Mission_OFTF_TheCosmonarch,
+
+	Mission_Veeq7_Fraudscendence1 = 1,
+	Mission_Veeq7_Fraudscendence2,
 };
 
 u32 get_transmission_playing();

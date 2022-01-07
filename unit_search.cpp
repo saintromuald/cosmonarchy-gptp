@@ -104,6 +104,9 @@ UnitArray UnitSearchRect(Box32 rect)
 				for (u32 i = 0; i < current_array->size; i++)
 				{
 					Unit* unit = current_array->units[i];
+					if (unit->isDead()) {
+						continue;
+					}
 					if (!tileIsFullyCovered && !IsPointInRect(unit->position, rect))
 					{
 						continue;
@@ -166,6 +169,9 @@ UnitArray UnitSearchRadial(Point16 center, u32 radius)
 				for (u32 i = 0; i < current_array->size; i++)
 				{
 					Unit* unit = current_array->units[i];
+					if (unit->isDead()) {
+						continue;
+					}
 					if (!tileIsFullyCovered && scbw::getDistanceFast(center, unit->position) > radius)
 					{
 						continue;
