@@ -1082,12 +1082,10 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				}
 
 				f32 multiplier = 1 + fraud_count * 0.1;
-				scbw::printf("Start Unit Multi: %f", multiplier);
 				for (u32 i = 0; i < fraud_spawn.unit_count[next_fraud][race]; ++i) {
 					fraud_spawn.units[next_fraud][race][i].count *= multiplier;
 				}
 				multiplier += 0.25 * (fraud_class - 1);
-				scbw::printf("Start Res Multi: %f", multiplier);
 				resources->cumulativeMinerals[player] += 1200 * multiplier;
 				resources->cumulativeGas[player] += 300 * multiplier;
 				resources->minerals[player] = 1200 * multiplier;
@@ -1103,7 +1101,6 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					resource_upgrade = 3;
 				}
 				resource_upgrade += fraud_class - 1;
-				scbw::printf("Res Multi Upgrade: %u", resource_upgrade);
 				scbw::setUpgradeLevel(player, UpgradeId::MiningEfficiency, resource_upgrade);
 
 				startPositions[player] = spawn_location->pos;
