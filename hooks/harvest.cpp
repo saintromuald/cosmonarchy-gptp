@@ -135,32 +135,32 @@ namespace hooks
 						//+125%					
 						resourceAmount += (resourceAmount / 4);
 					}
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 2)
+					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 2)
 					{
 						//+133%					
 						resourceAmount += (resourceAmount / 3);
 					}
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 3)
+					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 3)
 					{
 						//+150%					
 						resourceAmount += (resourceAmount / 2);
 					}
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 4)
+					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 4)
 					{
 						//+175%, mapcrap only				
 						resourceAmount += ((resourceAmount / 4) + (resourceAmount / 4) + (resourceAmount / 4));
 					}
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 5)
+					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 5)
 					{
 						//+200%
 						resourceAmount *= 2;
 					}
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 6)
+					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 6)
 					{
 						//+225%
 						resourceAmount *= (2 + (1 / 4));
 					}
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 7)
+					else if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) >= 7)
 					{
 						//+250%
 						resourceAmount *= (2 + (1 / 2));
