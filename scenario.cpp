@@ -18,8 +18,6 @@ bool is_map(u32 campaign, u32 map) {
 /*
 Todo:
 	- Add automatic dialogue system
-	- Remove hero/super timer, use the chance system instead
-	- Spawn god properly
 */
 
 enum {
