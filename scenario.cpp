@@ -885,7 +885,7 @@ void init_fraud_units() {
 	add_fraud_unit(FraudHero_Francisco_Goska, RaceId::Terran, {2, UnitId::TerranAutocrat});
 
 	// Ackmed Clone
-	fraud_spawn.frauds[FraudHero_Ackmed_Clone][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::BurntUmber};
+	fraud_spawn.frauds[FraudHero_Ackmed_Clone][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_None, AiBuildOrder_TerranRaider_HolyAckmeds, PlayerColor::BurntUmber};
 	add_fraud_unit(FraudHero_Ackmed_Clone, RaceId::Terran, {16, UnitId::TerranHarakan});
 	add_fraud_unit(FraudHero_Ackmed_Clone, RaceId::Terran, {2, UnitId::TerranHeracles});
 
@@ -951,7 +951,7 @@ void init_fraud_units() {
 	//// Supers
 
 	// Ackmed
-	fraud_spawn.frauds[FraudSuper_Ackmed][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::BurntUmber};
+	fraud_spawn.frauds[FraudSuper_Ackmed][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_None, AiBuildOrder_TerranRaider_HolyAckmeds, PlayerColor::BurntUmber};
 	add_fraud_unit(FraudSuper_Ackmed, RaceId::Zerg, {24, UnitId::TerranHarakan});
 	add_fraud_unit(FraudSuper_Ackmed, RaceId::Zerg, {8, UnitId::TerranHeracles});
 
