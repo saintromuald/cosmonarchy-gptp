@@ -308,7 +308,7 @@ namespace hooks
 			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 			{
 				UnitExt* unitExt = globals.GetUnitExt(unit);
-				s32 supply = unitExt->values[ValueSupplyProvided];
+				s32 supply = unit->getSupplyProvided();
 				s32 stacks = unitExt->values[ValueTreasuryStacks];
 				unitExt->values[ValueTreasuryStacks] = 0;
 				unit->setSupplyProvided(supply - stacks * TreasuryIncrease);
@@ -889,7 +889,7 @@ namespace hooks
 						}
 						UnitExt* targetExt = globals.GetUnitExt(target);
 						targetExt->values[ValueTreasuryStacks]++;
-						s32 supply = targetExt->values[ValueSupplyProvided];
+						s32 supply = target->getSupplyProvided();
 						target->setSupplyProvided(supply + TreasuryIncrease);
 					});
 				}

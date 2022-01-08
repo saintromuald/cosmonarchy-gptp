@@ -510,7 +510,6 @@ LABEL_55:
             {
                 supply = supply_new;
             }
-            unitExt->values[ValueSupplyProvided] = supply;
             auto supply_overlord_modifier = unitExt->values[ValueOvilethSupply];
             if (supply_overlord_modifier > 0)
             {

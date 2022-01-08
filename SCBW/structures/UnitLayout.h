@@ -156,6 +156,7 @@ enum ExtValueId
 	ValueKnockoutDriversStacks,
 	ValueTempoChange,
 	ValueTreasuryStacks,
+	ValueSupplyProvidedSet,
 	ValueSupplyProvided,
 	ValueSkyfallStacks,
 	ValueSkyfallX,

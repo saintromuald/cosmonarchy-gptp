@@ -424,7 +424,8 @@ struct Unit : public UnitLayout
 	u8 getSpellCountdown() const;
 
 	//////////////////////////////////////////////////////////////// @}
-
+	
+	u32 Unit::getSupplyProvided();
 	void setSupplyProvided(u8 amount);
 	s32 getTotalHitPointsPlusShields();
 	s32 Unit::isUnitAINonBuilding();

@@ -1439,18 +1439,22 @@ void Unit::updateSpeed()
 	}
 }
 
+u32 Unit::getSupplyProvided() // overwrites previous supply provided
+{
+	UnitExt* unitExt = globals.GetUnitExt(this);
+	if (unitExt->values[ValueSupplyProvidedSet])
+	{
+		return unitExt->values[ValueSupplyProvided];
+	}
+	return units_dat::SupplyProvided[id];
+}
+
 void Unit::setSupplyProvided(u8 amount) // overwrites previous supply provided
 {
 	UnitExt* unitExt = globals.GetUnitExt(this);
-
-	u32 race = this->getRace();
-	u32 previous_supply = unitExt->values[ValueSupplyProvided];
-	if (previous_supply)
-	{
-		raceSupply[RaceId::Terran].provided[this->playerId] -= previous_supply;
-	}
-
-	raceSupply[RaceId::Terran].provided[this->playerId] += amount;
+	raceSupply[RaceId::Terran].provided[playerId] -= getSupplyProvided();
+	raceSupply[RaceId::Terran].provided[playerId] += amount;
+	unitExt->values[ValueSupplyProvidedSet] = 1;
 	unitExt->values[ValueSupplyProvided] = amount;
 }
 
