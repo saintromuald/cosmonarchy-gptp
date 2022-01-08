@@ -226,22 +226,6 @@ namespace hooks
 			if (unit->orderSignal & 4)
 			{
 				unit->orderSignal -= 4;
-				auto origin = unit->eggOrigin;
-				switch (origin)
-				{
-					case UnitId::ZergOvileth:
-					{
-						unitExt->values[ValueOvilethSupply] = 1;
-					} break;
-					case UnitId::ZergIroleth:
-					{
-						unitExt->values[ValueOvilethSupply] = 2;
-					} break;
-					case UnitId::ZergOthstoleth:
-					{
-						unitExt->values[ValueOvilethSupply] = 3;
-					} break;
-				}
 				helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
 				unit->energy = unitExt->values[ValuePreMorphEnergy];
 				if (unit->id == UnitId::ZergDroleth

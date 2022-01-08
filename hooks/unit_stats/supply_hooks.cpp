@@ -487,57 +487,6 @@ LABEL_55:
 
         s32 race = unit->getRace();
         s32 supply = unit->getSupplyProvided();
-        if (scbw::isZergEggNew(unit, false, false))
-        {
-            if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergIroleth)
-            {
-                supply = units_dat::SupplyProvided[UnitId::ZergOvileth];
-            }
-            if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergOthstoleth)
-            {
-                supply = units_dat::SupplyProvided[UnitId::ZergIroleth];
-            }
-            if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergAlaszileth)
-            {
-                supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth];
-            }
-        }
-
-        if (*elapsedTimeFrames > 0)
-        {
-            u32 supply_new = unit->getSupplyProvided();
-            if (supply_new)
-            {
-                supply = supply_new;
-            }
-            auto supply_overlord_modifier = unitExt->values[ValueOvilethSupply];
-            if (supply_overlord_modifier > 0)
-            {
-                switch (supply_overlord_modifier)
-                {
-                    case 1:
-                    {
-                        supply = units_dat::SupplyProvided[UnitId::ZergIroleth] - units_dat::SupplyProvided[UnitId::ZergOvileth];
-                    } break;
-                    case 2:
-                    {
-                        supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth] - units_dat::SupplyProvided[UnitId::ZergIroleth]; 
-                    } break;
-                    case 3:
-                    {
-                        supply = units_dat::SupplyProvided[UnitId::ZergAlaszileth] - units_dat::SupplyProvided[UnitId::ZergOthstoleth];
-                    } break;
-                    default:
-                    {
-                    } break;
-                }
-            }
-            else if (unit->id == UnitId::ZergOthstoleth)
-            {
-                supply = unit->getSupplyProvided();
-            }
-            unitExt->values[ValueOvilethSupply] = 0;
-        }
         if (race <= RaceId::Protoss)
         {
             raceSupply[RaceId::Terran].provided[player] += count * supply;

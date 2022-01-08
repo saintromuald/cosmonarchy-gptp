@@ -1444,9 +1444,34 @@ u32 Unit::getSupplyProvided() // overwrites previous supply provided
 	UnitExt* unitExt = globals.GetUnitExt(this);
 	if (unitExt->values[ValueSupplyProvidedSet])
 	{
-		return unitExt->values[ValueSupplyProvided];
+		if (unitExt->values[ValueSupplyProvidedId] == id) {
+			return unitExt->values[ValueSupplyProvided];
+		} else {
+			raceSupply[RaceId::Terran].provided[playerId] -= unitExt->values[ValueSupplyProvided];
+			raceSupply[RaceId::Terran].provided[playerId] += units_dat::SupplyProvided[unitExt->values[ValueSupplyProvidedId]];
+			unitExt->values[ValueSupplyProvidedSet] = 0;
+			unitExt->values[ValueSupplyProvidedId] = 0;
+			unitExt->values[ValueSupplyProvided] = 0;
+		}
 	}
-	return units_dat::SupplyProvided[id];
+
+	u32 supply = units_dat::SupplyProvided[id];
+	if (scbw::isZergEggNew(this, false, false))
+	{
+		if (buildQueue[buildQueueSlot % 5] == UnitId::ZergIroleth)
+		{
+			supply = units_dat::SupplyProvided[UnitId::ZergOvileth];
+		}
+		if (buildQueue[buildQueueSlot % 5] == UnitId::ZergOthstoleth)
+		{
+			supply = units_dat::SupplyProvided[UnitId::ZergIroleth];
+		}
+		if (buildQueue[buildQueueSlot % 5] == UnitId::ZergAlaszileth)
+		{
+			supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth];
+		}
+	}
+	return supply;
 }
 
 void Unit::setSupplyProvided(u8 amount) // overwrites previous supply provided
@@ -1455,6 +1480,7 @@ void Unit::setSupplyProvided(u8 amount) // overwrites previous supply provided
 	raceSupply[RaceId::Terran].provided[playerId] -= getSupplyProvided();
 	raceSupply[RaceId::Terran].provided[playerId] += amount;
 	unitExt->values[ValueSupplyProvidedSet] = 1;
+	unitExt->values[ValueSupplyProvidedId] = id;
 	unitExt->values[ValueSupplyProvided] = amount;
 }
 
@@ -1463,6 +1489,8 @@ void Unit::resetSupplyProvided() // overwrites previous supply provided
 	UnitExt* unitExt = globals.GetUnitExt(this);
 	setSupplyProvided(units_dat::SupplyProvided[id]);
 	unitExt->values[ValueSupplyProvidedSet] = 0;
+	unitExt->values[ValueSupplyProvidedId] = 0;
+	unitExt->values[ValueSupplyProvided] = 0;
 }
 
 bool Unit::isAttemptingProtossBuild()
