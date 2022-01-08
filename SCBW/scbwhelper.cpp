@@ -10478,4 +10478,32 @@ namespace helper
 	}
 
 	VictoryFunc* Victory = (VictoryFunc*)0x4C5310;
+
+	void DisplayTextMessage(char* text, u8 color, u32 ticks, b8 from_trigger) {
+		const u32 Func_DisplayTextMessage = 0x0048CD30;
+		__asm
+		{
+			PUSHAD
+			PUSH from_trigger
+			PUSH ticks
+			PUSH color
+			MOV EAX, text
+			CALL Func_DisplayTextMessage
+			POPAD
+		}
+	}
+
+	u32 GetTextDisplayTime(char* text) {
+		static u32 result;
+		const u32 Func_GetTextDisplayTime = 0x004C51D0;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, text
+			CALL Func_GetTextDisplayTime
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
