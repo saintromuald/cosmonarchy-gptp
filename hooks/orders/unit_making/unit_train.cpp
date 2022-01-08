@@ -242,7 +242,7 @@ namespace hooks
 					if (builtUnit != nullptr && builtUnit->id == UnitId::ProtossSolarion)
 					{
 						s32 interceptors = 12;
-						u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
+						u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
 						buf[0] = 0x99; // new general command
 						buf[1] = NewGameCommand::CarrierPrebuild;
 						buf[2] = interceptors;
@@ -258,12 +258,12 @@ namespace hooks
 		}
 	}
 
-	char getMaxHangerSpace(Unit* a1)
-	{ // 0x004653D0
-		u16 id; // ax
-		s32 hangarSpace; // eax
+	char getMaxHangerSpace(Unit* unit) // 0x004653D0
+	{
+		u16 id;
+		s32 hangarSpace;
 
-		id = a1->id;
+		id = unit->id;
 		if (id != UnitId::ProtossSolarion)
 		{
 			if (id != UnitId::ProtossAccantor)

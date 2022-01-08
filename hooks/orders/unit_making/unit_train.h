@@ -10,5 +10,5 @@ namespace hooks
 
 	void injectUnitTrainHooks();
 	s32 isQueueSlotActive(Unit* unit, u32 slot);
-	char getMaxHangerSpace(Unit* a1);				// 004653D0
+	char getMaxHangerSpace(Unit* unit);				// 004653D0
 }
