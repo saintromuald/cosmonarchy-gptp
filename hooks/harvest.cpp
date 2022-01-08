@@ -132,6 +132,7 @@ namespace hooks
 					// AI cheat
 					switch (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency))
 					{
+						case 0:
 						case 99:
 						{
 						} break;
