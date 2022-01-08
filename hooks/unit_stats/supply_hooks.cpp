@@ -486,7 +486,7 @@ LABEL_55:
         completed_unit_counts[unit->id].player[unit->playerId] += count;
 
         s32 race = unit->getRace();
-        s32 supply = units_dat::SupplyProvided[unit->id];
+        s32 supply = unit->getSupplyProvided();
         if (scbw::isZergEggNew(unit, false, false))
         {
             if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergIroleth)
@@ -505,7 +505,7 @@ LABEL_55:
 
         if (*elapsedTimeFrames > 0)
         {
-            u32 supply_new = unitExt->values[ValueSupplyProvided];
+            u32 supply_new = unit->getSupplyProvided();
             if (supply_new)
             {
                 supply = supply_new;
@@ -534,7 +534,7 @@ LABEL_55:
             }
             else if (unit->id == UnitId::ZergOthstoleth)
             {
-                supply = units_dat::SupplyProvided[unit->id];
+                supply = unit->getSupplyProvided();
             }
             unitExt->values[ValueOvilethSupply] = 0;
         }

@@ -1458,6 +1458,13 @@ void Unit::setSupplyProvided(u8 amount) // overwrites previous supply provided
 	unitExt->values[ValueSupplyProvided] = amount;
 }
 
+void Unit::resetSupplyProvided() // overwrites previous supply provided
+{
+	UnitExt* unitExt = globals.GetUnitExt(this);
+	setSupplyProvided(units_dat::SupplyProvided[id]);
+	unitExt->values[ValueSupplyProvidedSet] = 0;
+}
+
 bool Unit::isAttemptingProtossBuild()
 {
 	assert(this);

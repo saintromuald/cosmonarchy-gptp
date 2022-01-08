@@ -148,6 +148,7 @@ void freeResourceContainer(Unit* resource)
 void unitDestructorSpecialHook(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
+	unit->resetSupplyProvided();
 
 	if (unit->status & UnitStatus::Completed && 
 	   (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||

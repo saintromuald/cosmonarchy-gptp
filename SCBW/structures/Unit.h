@@ -425,10 +425,12 @@ struct Unit : public UnitLayout
 
 	//////////////////////////////////////////////////////////////// @}
 	
-	u32 Unit::getSupplyProvided();
+	u32 getSupplyProvided();
 	void setSupplyProvided(u8 amount);
+	void resetSupplyProvided();
+
 	s32 getTotalHitPointsPlusShields();
-	s32 Unit::isUnitAINonBuilding();
+	s32 isUnitAINonBuilding();
 
 	/// Returns whether the unit is currently constructing a Protoss building
 	bool isAttemptingProtossBuild();
