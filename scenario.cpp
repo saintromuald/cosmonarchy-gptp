@@ -307,6 +307,7 @@ struct FraudSpawnSequence {
 	u32 fraud;
 	u32 race;
 	u32 unit_timer;
+	u32 safety_timer;
 	u32 source_index;
 	u32 rally_index;
 	u32 unit_index;
@@ -1191,6 +1192,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				fraud_spawn.sequence[player-1].fraud = next_fraud;
 				fraud_spawn.sequence[player-1].race = race;
 				fraud_spawn.sequence[player-1].unit_timer = 0;
+				fraud_spawn.sequence[player-1].safety_timer = 30 * 24;
 				fraud_spawn.sequence[player-1].source_index = 0;
 				fraud_spawn.sequence[player-1].rally_index = 0;
 				fraud_spawn.sequence[player-1].unit_index = 0;
@@ -1252,7 +1254,6 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 						augur->remove();
 					}
 					Unit* unit = helper::createUnitAtPos(townhall, player, pos.x, pos.y);
-					fraud_spawn.sequence[player-1].unit_timer = 24 * 0.4;
 				}
 
 				set_ally(player, 0, false);
@@ -1361,9 +1362,13 @@ void tick_scenario() {
 
 		// Fraud *Boom*
 		for (u32 player = 1; player < 7; ++player) {
-			if (all_factory_counts->unit[player] == 0 && !fraud_spawn.sequence[player-1].location && fraud_spawn.sequence[player-1].fraud) {
+			FraudSpawnSequence* sequence = &fraud_spawn.sequence[player-1];
+			if (sequence->safety_timer) {
+				--sequence->safety_timer;
+			}
+			if (all_factory_counts->unit[player] == 0 && sequence->fraud && !sequence->location && !sequence->safety_timer) {
 				if (firstPlayerUnit->unit[player]) {
-					messagef("%s<1> (Class: %s) died!", fraud_names[fraud_spawn.sequence[player-1].fraud], fraud_class_names[fraud_spawn.sequence[player-1].fraud_class]);
+					messagef("%s<1> (Class: %s) died!", fraud_names[sequence->fraud], fraud_class_names[fraud_spawn.sequence[player-1].fraud_class]);
 				}
 				Unit* next = 0;
 				for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = next) {
