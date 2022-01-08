@@ -453,7 +453,13 @@ void init_fraud_spawns() {
 	}
 }
 
-void add_fraud_unit(u32 fraud, u32 race, FraudSpawnUnit unit) {
+void add_fraud_unit(u32 fraud, u32 race, FraudSpawnUnit unit, u32 min_index = 0) {
+	for (u32 i = min_index; i < fraud_spawn.unit_count[fraud][race]; ++i) {
+		if (fraud_spawn.units[fraud][race][i].unit_id == unit.unit_id) {
+			fraud_spawn.units[fraud][race][i].count += unit.count;
+			return;
+		}
+	}
 	if (fraud_spawn.unit_count[fraud][race] < FraudUnitCap) {
 		fraud_spawn.units[fraud][race][fraud_spawn.unit_count[fraud][race]++] = unit;
 	} else {
@@ -464,11 +470,8 @@ void add_fraud_unit(u32 fraud, u32 race, FraudSpawnUnit unit) {
 void init_fraud_units() {
 	for (u32 i = 0; i < Fraud_Count; ++i) {
 		add_fraud_unit(i, RaceId::Terran, {8, UnitId::TerranMason});
-		add_fraud_unit(i, RaceId::Terran, {3, UnitId::ZergOvileth});
 		add_fraud_unit(i, RaceId::Protoss, {8, UnitId::ProtossScribe});
-		add_fraud_unit(i, RaceId::Protoss, {3, UnitId::ZergOvileth});
 		add_fraud_unit(i, RaceId::Zerg, {8, UnitId::ZergDroleth});
-		add_fraud_unit(i, RaceId::Zerg, {3, UnitId::ZergOvileth});
 	}
 
 	// Todo: Finish adding units for all personalities
@@ -1157,7 +1160,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 			if (spawn_location) {
 				++fraud_spawn.used_count;
 				fraud_spawn.used[next_fraud] = true;
-				fraud_spawn.timer = 5 * 60 * 24;
+				fraud_spawn.timer = 4 * 60 * 24;
 				if (fraud_class == FraudClass_God) {
 					fraud_spawn.timer = 3 * 60 * 24;
 				}
@@ -1213,11 +1216,12 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				for (u32 i = 0; i < fraud_spawn.unit_count[next_fraud][race]; ++i) {
 					fraud_spawn.units[next_fraud][race][i].count *= multiplier;
 				}
-				multiplier += 0.25 * (fraud_class - 1);
+				multiplier += 0.5 * (fraud_class - 1);
 				resources->cumulativeMinerals[player] += 1200 * multiplier;
 				resources->cumulativeGas[player] += 300 * multiplier;
 				resources->minerals[player] = 1200 * multiplier;
 				resources->gas[player] = 300 * multiplier;
+				raceSupply[RaceId::Terran].provided[player] = 10 * 2;
 
 				unit_deaths[UnitId::ResourceVespeneGeyser].player[player] = 1; // Disable AI upgrade overwrite
 				u32 resource_upgrade = 0;
@@ -1392,9 +1396,9 @@ void tick_scenario() {
 					u32 fraud_class = FraudClass_None;
 					if (fraud_spawn.used_count < god_spawn_breakpoint) {
 						fraud_class = FraudClass_Fraud;
-						if (get_next_fraud(player, FraudClass_Hero) && scbw::randBetween(0, 99) < fraud_spawn.hero_spawn_counter * 25) {
+						if (get_next_fraud(player, FraudClass_Hero) && (s32)scbw::randBetween(0, 99) < fraud_spawn.hero_spawn_counter * 25) {
 							fraud_class = FraudClass_Hero;
-						} else if (get_next_fraud(player, FraudClass_Super) && scbw::randBetween(0, 99) < fraud_spawn.super_spawn_counter * 15) {
+						} else if (get_next_fraud(player, FraudClass_Super) && (s32)scbw::randBetween(0, 99) < fraud_spawn.super_spawn_counter * 15) {
 							fraud_class = FraudClass_Super;
 						}
 					} else if (fraud_spawn.used_type_count[FraudClass_God]) {
@@ -1448,6 +1452,7 @@ void tick_scenario() {
 							}
 							Unit* unit = helper::AI_CreateUnit(unit_id, i, source_pos.x, source_pos.y);
 							if (unit) {
+								raceSupply[RaceId::Terran].provided[i] += units_dat::SupplyRequired[unit_id];
 								if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Worker)) {
 									unit->orderTo(OrderId::AttackMove, rally.x, rally.y);
 								}
