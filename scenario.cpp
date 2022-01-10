@@ -17,6 +17,7 @@ bool is_map(u32 campaign, u32 map) {
 
 /*
 	Bugs:
+		- Initially-created town centers do not provide collision (probably need to inline some obscure function call)
 		- Frauds fail to build while:
 			- supply blocked (should be fixed by setting supplies, maybe didn't work due to old towns not being cleared?)
 			- an old town is still active (should be fixed by Pr0's AI changes)

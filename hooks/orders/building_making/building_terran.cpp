@@ -133,31 +133,33 @@ namespace hooks
 			}
 			else if (unit->mainOrderState == 4)
 			{
+				// Insane logic just to randomize the movement of Masons while constructing...
+				// Reworked to limit the bounds Masons can shuffle within
 				s16 ebp_18, ebp_16, ebp_14, ebp_12, x_min, y_min, x_max, y_max;
 				s32 ebp_08;
-				ebp_18 = builtUnit->sprite->position.x - builtUnit->sprite->width / 2;
-				ebp_14 = builtUnit->sprite->position.x + builtUnit->sprite->width / 2 - 1;
-				ebp_16 = builtUnit->sprite->position.y - builtUnit->sprite->height / 2;
-				ebp_12 = builtUnit->sprite->position.y + builtUnit->sprite->height / 2 - 1;
+				ebp_18 = builtUnit->sprite->position.x - unit->sprite->width / 3;
+				ebp_14 = builtUnit->sprite->position.x + unit->sprite->width / 3 - 1;
+				ebp_16 = builtUnit->sprite->position.y - unit->sprite->height / 3;
+				ebp_12 = builtUnit->sprite->position.y + unit->sprite->height / 3 - 1;
 				ebp_08 = units_dat::BuildingDimensions[builtUnit->id].x;
 				if (ebp_08 < 0)
 				{
-					x_min = builtUnit->sprite->position.x - (ebp_08 - 0xFFFFFFFF) / 2;
+					x_min = unit->sprite->position.x - (ebp_08 - 0xFFFFFFFF) / 3;
 				}
 				else
 				{
-					x_min = builtUnit->sprite->position.x - ebp_08 / 2;
+					x_min = unit->sprite->position.x - ebp_08 / 3;
 				}
 				x_max = ebp_08 + x_min - 1;
 				if (units_dat::BuildingDimensions[builtUnit->id].y < 0)
 				{
-					y_min = builtUnit->sprite->position.y - (units_dat::BuildingDimensions[builtUnit->id].y - 0xFFFFFFFF) / 2;
+					y_min = unit->sprite->position.y - (units_dat::BuildingDimensions[builtUnit->id].y - 0xFFFFFFFF) / 3;
 				}
 				else
 				{
-					y_min = builtUnit->sprite->position.y - units_dat::BuildingDimensions[builtUnit->id].y / 2;
+					y_min = unit->sprite->position.y - units_dat::BuildingDimensions[builtUnit->id].y / 3;
 				}
-				y_max = units_dat::BuildingDimensions[builtUnit->id].y + y_min - 1;
+				y_max = (units_dat::BuildingDimensions[builtUnit->id].y + y_min) / 3;
 				x_min = x_min + units_dat::UnitBounds[unit->id].left + 1;
 				x_max = x_max + (0xFFFF - units_dat::UnitBounds[unit->id].right);
 				y_min = y_min + units_dat::UnitBounds[unit->id].top + 1;
@@ -179,6 +181,7 @@ namespace hooks
 				{
 					y_max = ebp_12;
 				}
+
 				unit->orderTarget.pt.x = helper::RandBetween(ebp_18, ebp_14, 9);
 				unit->orderTarget.pt.y = helper::RandBetween(ebp_16, ebp_12, 9);
 				helper::fixTargetLocation(&unit->orderTarget.pt, unit->id);
