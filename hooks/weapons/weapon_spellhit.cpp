@@ -473,8 +473,7 @@ namespace hooks
 		return 0;
 	}
 
-	// bullet is not normally part of the function, so if the function is called
-	// in an unexpected way, it may not contain the correct value.
+	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void DarkSwarmHit(s32 x, s32 y, u32 attackingPlayerId, Bullet* bullet)
 	{
 		Point16 coords;
@@ -482,8 +481,7 @@ namespace hooks
 		coords.x = x;
 		coords.y = y;
 
-		// adjust location where Dark Swarm will be created
-		// if necessary (by modifying coords)
+		// adjust location where Dark Swarm will be created if necessary (by modifying coords)
 		helper::fixTargetLocation(&coords, UnitId::Spell_DarkSwarm);
 
 		// the dark swarm is created for player 11 (neutral), not for the owner

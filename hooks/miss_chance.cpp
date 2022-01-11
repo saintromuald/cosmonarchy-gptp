@@ -2,7 +2,6 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
-#include "SCBW/api.h"
 
 namespace hooks
 {

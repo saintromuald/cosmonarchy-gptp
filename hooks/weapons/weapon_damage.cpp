@@ -180,11 +180,13 @@ namespace hooks
 			data.target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
 		}
 
-		// Cliff Advantage - Armor
+		// Cliff Advantage - Armor | Disabled 10 Jan 2022
+		/*
 		if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
 		{
 			data.finalDamage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 		}
+		*/
 
 		// Reduce Plasma Shields
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256)
