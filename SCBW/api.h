@@ -81,8 +81,8 @@ namespace scbw
 	/// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
 	/// unit is a ground unit or a building.
 	bool isUnderDarkSwarm(Unit* unit);
-	Unit* getDarkSwarm(Unit* unit);
-	Unit* getDarkSwarm(u16 x, u16 y, u16 radius);
+	Unit* getDarkSwarmFromUnit(Unit* unit);
+	Unit* getDarkSwarmFromPosition(u16 x, u16 y, u16 radius);
 	//Checks if the @p target can be targeted by player @p castingPlayer with
 	//tech/spell @p techId
 	//If yes, return 0, else return error message id in stat_txt.tbl to use
