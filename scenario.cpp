@@ -415,7 +415,7 @@ void init_fraud_spawns() {
 				scbw::printf("Spawn cap reached (" STR(FraudSpawnCap) ")");
 			}
 
-			unit->userActionFlags |= 4;
+			unit->userActionFlags |= 4; // silent remove
 			unit->remove();
 		}
 	}
@@ -431,7 +431,7 @@ void init_fraud_spawns() {
 				}
 			}
 
-			unit->userActionFlags |= 4;
+			unit->userActionFlags |= 4; // silent remove
 			unit->remove();
 		}
 	}
@@ -450,7 +450,7 @@ void init_fraud_spawns() {
 				}
 			}
 
-			unit->userActionFlags |= 4;
+			unit->userActionFlags |= 4; // silent remove
 			unit->remove();
 		}
 	}
@@ -1056,7 +1056,7 @@ void messagef(char* format, ...) {
 	va_end(va);
 	
 	scbw::print(buffer);
-	//helper::DisplayTextMessage(buffer, 2, *elapsedTimeFrames + helper::GetTextDisplayTime(buffer), 0);
+	helper::DisplayTextMessage(buffer, 2, *elapsedTimeFrames + helper::GetTextDisplayTime(buffer), 0);
 }
 
 u32 get_next_fraud(u32 player, u32 fraud_class) {
@@ -1260,7 +1260,15 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					if (augur) {
 						augur->remove();
 					}
-					Unit* unit = helper::createUnitAtPos(townhall, player, pos.x, pos.y);
+
+					if (townhall == UnitId::ZergHatchery) {
+						Unit* unit = helper::createUnitAtPos(townhall, player, pos.x, pos.y);
+						if (unit) {
+							unit->userActionFlags |= 4; // silent remove
+							unit->remove();
+						}
+					}
+					scbw::createUnitInGame(townhall, player, pos.x, pos.y);
 				}
 
 				set_ally(player, 0, false);
@@ -1329,7 +1337,7 @@ void tick_scenario() {
 		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
 		// God
 		const u32 god_spawn_breakpoint = 33;
-		C_ASSERT(god_spawn_breakpoint <= Fraud_Count);
+		C_ASSERT(god_spawn_breakpoint < Fraud_Count - 1);
 
 		static char buffer[64];
 		u32 y = 3;

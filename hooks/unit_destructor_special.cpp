@@ -150,7 +150,8 @@ void unitDestructorSpecialHook(Unit* unit)
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 	unit->resetSupplyProvided();
 
-	if (unit->status & UnitStatus::Completed && 
+	if (!(unit->userActionFlags & 4) && // for silent remove
+		unit->status & UnitStatus::Completed && 
 	   (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
 		unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
 		units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding))
