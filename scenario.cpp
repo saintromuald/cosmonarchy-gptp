@@ -17,6 +17,7 @@ bool is_map(u32 campaign, u32 map) {
 
 /*
 	Bugs:
+		- Initially-created town centers do not provide collision (probably need to inline some obscure function call)
 		- Frauds fail to build while:
 			- supply blocked (should be fixed by setting supplies, maybe didn't work due to old towns not being cleared?)
 			- an old town is still active (should be fixed by Pr0's AI changes)
@@ -543,7 +544,7 @@ void init_fraud_units() {
 	add_fraud_unit(Fraud_CryptoCarl, RaceId::Protoss, {1, UnitId::ProtossEmpyrean});
 
 	// Veeq7
-	fraud_spawn.frauds[Fraud_Veeq7][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::NeonBlue};
+	fraud_spawn.frauds[Fraud_Veeq7][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::RoyalBlue};
 	add_fraud_unit(Fraud_Veeq7, RaceId::Protoss, {4, UnitId::ProtossSimulacrum});
 	add_fraud_unit(Fraud_Veeq7, RaceId::Protoss, {2, UnitId::ProtossDracadin});
 

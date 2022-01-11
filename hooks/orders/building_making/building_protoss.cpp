@@ -39,8 +39,8 @@ namespace hooks
 					helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 				}
 			}
-			else
-			{ // 004E4DA9
+			else // 004E4DA9
+			{
 				helper::makeToHoldPosition(unit);
 				unit->mainOrderState = 2;
 			}
@@ -87,8 +87,8 @@ namespace hooks
 							helper::displayLastNetErrorForPlayer(unit->playerId);
 							unit->orderToIdle();
 						}
-						else
-						{ // 004E4E63
+						else // 004E4E63
+						{
 							helper::replaceSpriteImages(builtUnit->sprite, ImageId::WarpAnchor, 0);
 							if (isBuildingAssimilator)
 							{
@@ -175,10 +175,10 @@ namespace hooks
 				building->orderSignal &= ~1;
 				helper::replaceSpriteImages(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
 				helper::switchToWarpTexture(building->sprite->mainGraphic);
-				building->mainOrderState = 2;
+				building->mainOrderState = 3; // DF: Skip state 2 as it's now redundant.
 			}
 		}
-		else if (building->mainOrderState == 2)
+		else if (building->mainOrderState == 2) // DF: Could theorically comment out this entire if block, but I haven't extensively checked/tested if it's truly not used by anything else. Your call.
 		{
 			if (building->orderSignal & 1)
 			{
@@ -200,17 +200,32 @@ namespace hooks
 					current_image = current_image->link.next;
 				}
 				building->mainOrderState = 3;
-				building->orderSignal |= 1;
+				building->orderSignal |= 1; // DF: This is what skipped the warp fadeout animation.
 			}
 		}
 		else if (building->mainOrderState == 3)
 		{
 			if (building->orderSignal & 1)
 			{
+				Image* current_image; // DF: Copied over from state 2.
 				building->orderSignal &= ~1;
-				helper::updateUnitStatsFinishBuilding(building);
+				helper::updateUnitStatsFinishBuilding(building); // DF: Copying over replaceSpriteImages is not necessary because of this function.
 				helper::updateUnitStrength(building);
 				helper::checkUnstack(building);
+				current_image = building->sprite->images.head; // DF: Copied over from state 2.
+				while (current_image != nullptr) // DF: Copied over from state 2.
+				{
+					if (current_image->flags & CImage_Flags::Flag04)
+					{
+						const u32* u32_006D1200 = (u32*)0x006D1200;
+						current_image->animation = IscriptAnimation::WarpIn;
+						current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
+						current_image->wait = 0;
+						current_image->unknown14 = 0;
+						helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+					}
+					current_image = current_image->link.next;
+				}
 
 				if (building->status & UnitStatus::DoodadStatesThing)
 				{

@@ -95,11 +95,11 @@ namespace hooks
 			if (unit->mainOrderState == 2)
 			{
 				u32 movableState = unit->getMovableState();
-				if (movableState == 2)
+				if (movableState == MovableState::UnmovableAtDestination)
 				{ // unmovable
 					unit->orderToIdle();
 				}
-				else if (movableState == 1)
+				else if (movableState == MovableState::ReachedDestination)
 				{ // reached destination
 					scbw::refreshConsole();
 					if (builtUnit->connectedUnit != nullptr &&
@@ -111,81 +111,46 @@ namespace hooks
 					else
 					{ // 00467AF9
 						builtUnit->connectedUnit = unit;
-						unit->status &= ~UnitStatus::IsNormal;	// remove UnitStatus::IsNormal if present
+						unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
 						unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
-						unit->orderSimple(OrderId::ResetCollision1, false);
-						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
-						if (helper::changeMovementTargetMoveTarget2(unit,
-							builtUnit->sprite->position.x,
-							builtUnit->sprite->position.y))
-						{
-							unit->mainOrderState = 3;
-						}
+						unit->orderSimple(OrderId::ResetCollision1,false);
+						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id],false);
+						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
+						//    the randomized orderTarget is very near the same spot the SCV resumed construction, but I think the function_004F1870 condition in State 4 should handle it.
+						//if (function_004EB9C0(unit, builtUnit->sprite->position.x, builtUnit->sprite->position.y))
+						unit->mainOrderState = 3;
 					}
 				}
 			}
 			else if (unit->mainOrderState == 3)
 			{
-				if (unit->getMovableState() != 0)
+				if (unit->getMovableState() != MovableState::NotReachedDestination)
 				{
 					unit->mainOrderState = 4;
 				}
 			}
 			else if (unit->mainOrderState == 4)
 			{
-				s16 ebp_18, ebp_16, ebp_14, ebp_12, x_min, y_min, x_max, y_max;
-				s32 ebp_08;
-				ebp_18 = builtUnit->sprite->position.x - builtUnit->sprite->width / 2;
-				ebp_14 = builtUnit->sprite->position.x + builtUnit->sprite->width / 2 - 1;
-				ebp_16 = builtUnit->sprite->position.y - builtUnit->sprite->height / 2;
-				ebp_12 = builtUnit->sprite->position.y + builtUnit->sprite->height / 2 - 1;
-				ebp_08 = units_dat::BuildingDimensions[builtUnit->id].x;
-				if (ebp_08 < 0)
+				s16 x_min, x_max, y_min, y_max;
+				x_min = builtUnit->sprite->position.x - units_dat::UnitBounds[builtUnit->id].left + units_dat::UnitBounds[unit->id].left;
+				x_max = builtUnit->sprite->position.x + units_dat::UnitBounds[builtUnit->id].right - units_dat::UnitBounds[unit->id].right;
+				y_min = builtUnit->sprite->position.y - units_dat::UnitBounds[builtUnit->id].top + units_dat::UnitBounds[unit->id].top;
+				y_max = builtUnit->sprite->position.y + units_dat::UnitBounds[builtUnit->id].bottom - units_dat::UnitBounds[unit->id].bottom;
+				if (x_min > x_max) // DF: If worker is wider than building, don't make him shuffle around horizontally. Might be safer to compare units_dat bounds, but this should be true for like 99% of cases.
 				{
-					x_min = builtUnit->sprite->position.x - (ebp_08 - 0xFFFFFFFF) / 2;
+					x_min = builtUnit->sprite->position.x;
+					x_max = builtUnit->sprite->position.y;
 				}
-				else
+				if (y_min > y_max) // DF: If worker is taller than building, don't make him shuffle around vertically.
 				{
-					x_min = builtUnit->sprite->position.x - ebp_08 / 2;
+					y_min = 0;
+					y_max = 0;
 				}
-				x_max = ebp_08 + x_min - 1;
-				if (units_dat::BuildingDimensions[builtUnit->id].y < 0)
-				{
-					y_min = builtUnit->sprite->position.y - (units_dat::BuildingDimensions[builtUnit->id].y - 0xFFFFFFFF) / 2;
-				}
-				else
-				{
-					y_min = builtUnit->sprite->position.y - units_dat::BuildingDimensions[builtUnit->id].y / 2;
-				}
-				y_max = units_dat::BuildingDimensions[builtUnit->id].y + y_min - 1;
-				x_min = x_min + units_dat::UnitBounds[unit->id].left + 1;
-				x_max = x_max + (0xFFFF - units_dat::UnitBounds[unit->id].right);
-				y_min = y_min + units_dat::UnitBounds[unit->id].top + 1;
-				y_max = y_max + (0xFFFF - units_dat::UnitBounds[unit->id].bottom);
 
-				if (x_min < ebp_18)
-				{
-					x_min = ebp_18;
-				}
-				if (y_min < ebp_16)
-				{
-					y_min = ebp_16;
-				}
-				if (x_max > ebp_14)
-				{
-					x_max = ebp_14;
-				}
-				if (y_max > ebp_12)
-				{
-					y_max = ebp_12;
-				}
-				unit->orderTarget.pt.x = helper::RandBetween(ebp_18, ebp_14, 9);
-				unit->orderTarget.pt.y = helper::RandBetween(ebp_16, ebp_12, 9);
-				helper::fixTargetLocation(&unit->orderTarget.pt, unit->id);
-				if (helper::unk_terrainCollision2(
-					unit,
-					unit->orderTarget.pt.x - unit->sprite->position.x,
-					unit->orderTarget.pt.y - unit->sprite->position.y) != 0)
+				unit->orderTarget.pt.x = helper::RandBetween(x_min, x_max, 9); // DF: Can't tell what effect the third value has on the randomization.
+				unit->orderTarget.pt.y = helper::RandBetween(y_min, y_max, 9);
+				helper::fixTargetLocation(&unit->orderTarget.pt,unit->id);
+				if (helper::unk_terrainCollision2(unit, unit->orderTarget.pt.x - unit->sprite->position.x, unit->orderTarget.pt.y - unit->sprite->position.y) != 0)
 				{
 					unit->orderTarget.pt.x = helper::RandBetween(x_min, x_max, 9);
 					unit->orderTarget.pt.y = helper::RandBetween(y_min, y_max, 9);

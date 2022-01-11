@@ -180,11 +180,13 @@ namespace hooks
 			data.target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
 		}
 
-		// Cliff Advantage - Armor
+		// Cliff Advantage - Armor | Disabled 10 Jan 2022
+		/*
 		if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
 		{
 			data.finalDamage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 		}
+		*/
 
 		// Reduce Plasma Shields
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256)
@@ -502,7 +504,8 @@ namespace hooks
 
 			// Ensnaring Brood - Queen enchantment ability
 			if (attackerExt->timers[TimerEnsnaringBrood] > 0
-				&& !(units_dat::BaseProperty[data.target->id] & UnitProperty::Building))
+				&& !(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
+				&& !scbw::isUnderDarkSwarm(data.target))
 			{
 				applyEnsnare(data.target);
 			}
@@ -513,6 +516,7 @@ namespace hooks
 				{
 					// Autovitality - Simulacrum behavior
 					if (!scbw::isAlliedTo(data.target->playerId, data.attacker->playerId)
+						&& !scbw::isUnderDarkSwarm(data.target)
 						&& targetExt->timers[TimerSimulacrumClone] == 0)
 					{
 						targetExt->timers[TimerSimulacrumClone] = 5 * 24;
@@ -521,7 +525,8 @@ namespace hooks
 				case UnitId::SharedStriga:
 				{
 					// Striga - Fleeting Focus
-					if (!(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building))
+					if (!(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building)
+						&& !scbw::isUnderDarkSwarm(data.target))
 					{
 						const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 						if (dist < 2 * 32)
@@ -545,103 +550,6 @@ namespace hooks
 				{
 					targetExt->timers[TimerAnthelionGravityWell] = 2;
 				} break;
-				case WeaponId::EmpressFadingBioplasma:
-				{
-					// Empress - Anodyne Annex - add stack
-					targetExt->units[UnitEmpressSource] = data.attacker;
-					targetExt->values[ValueEmpressPassiveStacks]++;
-					targetExt->values[ValueEmpressSourcePlayer] = data.attackingPlayerId;
-				} break;
-				case WeaponId::NathrokorPlasmidBreath:
-				{
-					// Nathrokor - Adrenal Frenzy
-					targetExt->nathrokorTargetStacks[data.attackingPlayerId]++;
-				} break;
-				case WeaponId::DemiurgeGalacticWeaver:
-				{
-					// Demiurge - Worship
-					if (data.target->playerId != data.attacker->playerId
-						&& data.target->getCurrentHpInGame() <= data.target->getMaxHpInGame() / 2
-						&& data.target->hitPoints > data.finalDamage)
-					{
-						auto& vec = attackerExt->unitVectors[UnitVectorWorshipersDemiurge];
-						if (std::find(vec.begin(), vec.end(), data.target) == vec.end())
-						{
-							vec.push_back(data.target);
-						}
-
-						targetExt->values[ValueWorshipStack] = 1;
-						scbw::mind_control(data.attacker, data.target);
-
-						helper::playSoundFromSource(SoundId::DemiurgeWorship01, data.target, 1, 0);
-						scbw::mind_control(data.attacker, data.target);
-					}
-				} break;
-				case WeaponId::KonviliskSowingSpines:
-				{
-					// Fertile Spines - Konvilisk behavior
-					scbw::applyParasite(data.target, data.attacker->playerId, data.attacker);
-				} break;
-				case WeaponId::PazuzuJupiterDriver:
-				{
-					// Deconstruction - Pazuzu behavior - apply stack
-					if (!scbw::unitIsPacifist(data.target))
-					{
-						targetExt->values[ValueDeconstruction]++;
-						targetExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
-						s32 overlayOffset = scbw::getOverlayOffset(data.target->id);
-						if (data.target->subunit != nullptr)
-						{
-							UnitExt* subunitExt = globals.GetUnitExt(data.target->subunit);
-							subunitExt->values[ValueDeconstruction]++;
-							subunitExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
-							if (!data.target->subunit->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
-							{
-								data.target->subunit->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
-							}
-						}
-						else
-						{
-							if (!data.target->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
-							{
-								data.target->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
-							}
-						}
-					}
-				} break;
-				case WeaponId::AutocratEminanceRifle:
-				{
-					// Apply Controlled Opposition
-					targetExt->values[ValueControlledOpposition]++;
-				} break;
-				case WeaponId::SavantDiscoidRailgun:
-				{
-					// Savant Entropy Gauntlets behavior - Apply timer and overlay
-					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster)
-					{
-						targetExt->values[ValueEntropyGauntlets]++;
-						targetExt->units[UnitDecaySavant] = data.attacker;
-						u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall + scbw::getOverlayOffset(data.target->id);
-						if (data.target->subunit != nullptr)
-						{
-							data.target->subunit->sprite->removeOverlay(overlayImageId);
-							data.target->subunit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
-						}
-						else
-						{
-							data.target->sprite->removeOverlay(overlayImageId);
-							data.target->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
-						}
-					}
-				} break;
-				case WeaponId::CharlatanFerventBlaster:
-				{
-					// Charlatan - Leading the Blind passive
-					if (!scbw::isAlliedTo(data.attacker->playerId, data.target->playerId))
-					{
-						scbw::applyNewHallucination(data.target, data.attacker->playerId, CharlatanHallucinationTimer);
-					}
-				} break;
 				case WeaponId::Claws:
 				{
 					// Adrenal Glands - Zergling behavior
@@ -650,135 +558,6 @@ namespace hooks
 						attackerExt->values[ValueAdrenalStacks] += 1;
 					}
 					attackerExt->timers[TimerAdrenal] = ZethrokorAdrenalGlandsTimer;
-				} break;
-				case WeaponId::SouthpawUppercutLaser:
-				{
-					// Knockout Drivers - Southpaw behavior
-					if (targetExt->values[ValueKnockoutDriversStacks] < 20)
-					{
-						targetExt->values[ValueKnockoutDriversStacks] += 1;
-					}
-					targetExt->timers[TimerKnockoutDrivers] = SouthpawKnockoutDriversTimer;
-					data.target->updateSpeed();
-				} break;
-				case WeaponId::MadrigalImperiosoMissiles:
-				{
-					// Dirge - Madrigal behavior
-					targetExt->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
-					targetExt->values[ValueDirgeStacks] += 1;
-					targetExt->values[ValueDirgeSourcePlayer] = data.attackingPlayerId;
-					targetExt->units[UnitDirgeSource] = data.attacker;
-				} break;
-				case WeaponId::HierophantPhaseSignifier:
-				{
-					targetExt->values[ValueSignifyStacks]++;
-					targetExt->timers[TimerSignify] = 3 * 24 + 1;
-					auto& vec = targetExt->valueVectors[ValueVectorSignifySourcePlayer];
-					if (std::find(vec.begin(), vec.end(), data.attackingPlayerId) == vec.end())
-					{
-						vec.push_back(data.attackingPlayerId);
-					}
-					scbw::updateSignifyStatus(data.target, targetExt);
-				} break;
-				case WeaponId::VorvalingClaws:
-				{
-					// Captivating Claws - Vorvaling behavior
-					captivatingClawsApply(data.attacker, data.target);
-				} break;
-				case WeaponId::EcclesiastAstralBlaster:
-				{
-					// Astral Blessing - Ecclesiast behavior
-					targetExt->values[ValueEcclesiastStack] += 1;
-					targetExt->timers[TimerEcclesiast] = EcclesiastAstralBlessingTimer;
-					targetExt->values[ValueEcclesiastPlayer] = data.attacker->playerId;
-				} break;
-				case WeaponId::GorgrokorSerratedCleavers:
-				{
-					// Essence Drain - Gorgrokor Energy Steal
-					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster)
-					{
-						u16 energy = std::min(data.target->energy, (u16)(data.finalDamage + data.shieldReduceAmount));
-						data.target->energy -= energy;
-						data.attacker->energy += energy;
-					}
-				} break;
-				case WeaponId::MagisterNeutronCannon:
-				{
-					// Stellar Enforcement - Magister behavior
-					if (!targetExt->values[ValueStellarEnforcement])
-					{
-						targetExt->values[ValueStellarEnforcement] = 1;
-					}
-				} break;
-				case WeaponId::ApostleCharonRifle:
-				{
-					// Blood Tithe - Apostle behavior
-					u32 range = 3 * 32;
-					scbw::UnitFinder(
-						data.target->getX() - range,
-						data.target->getY() - range,
-						data.target->getX() + range,
-						data.target->getY() + range
-					).forEach([&data](Unit* foundUnit)
-					{
-						if (foundUnit->playerId != data.attacker->playerId && !scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId))
-						{
-							return;
-						}
-						if (foundUnit == data.target)
-						{
-							return;
-						}
-						foundUnit->heal(data.finalDamage, data.target);
-					});
-				} break;
-				case WeaponId::VithriliskCorrosiveSpores:
-				{
-					// Vithrilisk - Critical Mass
-					if (targetExt->values[ValueCorrosiveTouchStacks])
-					{
-						s32 range = 160;
-						scbw::UnitFinder(
-							data.target->getX() - 96,
-							data.target->getY() - 96,
-							data.target->getX() + 96,
-							data.target->getY() + 96
-						).forEach([&](Unit* target)
-						{
-							if (target->status & UnitStatus::Burrowed)
-							{
-								return;
-							}
-							if (target->status & UnitStatus::Invincible)
-							{
-								return;
-							}
-							if (scbw::isAlliedTo(data.attacker->playerId, target->playerId))
-							{
-								return;
-							}
-							helper::ApplySpores(target);
-							Thingy* thingy = helper::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
-							if (thingy != nullptr)
-							{
-								thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
-								helper::setThingyVisibilityFlags(thingy);
-							}
-						});
-					}
-				} break;
-				case WeaponId::CyclopsFlakCannons:
-				{
-					// Cyclops - Flak Cannons
-					targetExt->timerVectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
-				} break;
-				case WeaponId::ClaymoreHarpoonRailgun:
-				{
-					// Claymore - Kelvin Munitions - Slow primary target
-					if (!targetExt->values[ValueKelvinMunitionsSlow])
-					{
-						targetExt->values[ValueKelvinMunitionsSlow] = 1;
-					}
 				} break;
 				case WeaponId::LuminaryAuralAssault:
 				{
@@ -791,6 +570,239 @@ namespace hooks
 					}
 					overlayUnit->sprite->createTopOverlay(overlay, 0, 0, 0);
 					targetExt->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
+				} break;
+				case WeaponId::VorvalingClaws:
+				{
+					// Captivating Claws - Vorvaling behavior
+					captivatingClawsApply(data.attacker, data.target);
+				} break;
+				case WeaponId::GorgrokorSerratedCleavers:
+				{
+					// Essence Drain - Gorgrokor Energy Steal
+					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster)
+					{
+						u16 energy = std::min(data.target->energy, (u16)(data.finalDamage + data.shieldReduceAmount));
+						data.target->energy -= energy;
+						data.attacker->energy += energy;
+					}
+				} break;
+			}
+
+			if (!scbw::isUnderDarkSwarm(data.target))
+			{
+				switch (data.weaponId)
+				{
+					case WeaponId::EmpressFadingBioplasma:
+					{
+						// Empress - Anodyne Annex - add stack
+						targetExt->units[UnitEmpressSource] = data.attacker;
+						targetExt->values[ValueEmpressPassiveStacks]++;
+						targetExt->values[ValueEmpressSourcePlayer] = data.attackingPlayerId;
+					} break;
+					case WeaponId::NathrokorPlasmidBreath:
+					{
+						// Nathrokor - Adrenal Frenzy
+						targetExt->nathrokorTargetStacks[data.attackingPlayerId]++;
+					} break;
+					case WeaponId::DemiurgeGalacticWeaver:
+					{
+						// Demiurge - Worship
+						if (data.target->playerId != data.attacker->playerId
+							&& data.target->getCurrentHpInGame() <= data.target->getMaxHpInGame() / 2
+							&& data.target->hitPoints > data.finalDamage)
+						{
+							auto& vec = attackerExt->unitVectors[UnitVectorWorshipersDemiurge];
+							if (std::find(vec.begin(), vec.end(), data.target) == vec.end())
+							{
+								vec.push_back(data.target);
+							}
+
+							targetExt->values[ValueWorshipStack] = 1;
+							scbw::mind_control(data.attacker, data.target);
+
+							helper::playSoundFromSource(SoundId::DemiurgeWorship01, data.target, 1, 0);
+							scbw::mind_control(data.attacker, data.target);
+						}
+					} break;
+					case WeaponId::KonviliskSowingSpines:
+					{
+						// Fertile Spines - Konvilisk behavior
+						scbw::applyParasite(data.target, data.attacker->playerId, data.attacker);
+					} break;
+					case WeaponId::PazuzuJupiterDriver:
+					{
+						// Deconstruction - Pazuzu behavior - apply stack
+						if (!scbw::unitIsPacifist(data.target))
+						{
+							targetExt->values[ValueDeconstruction]++;
+							targetExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
+							s32 overlayOffset = scbw::getOverlayOffset(data.target->id);
+							if (data.target->subunit != nullptr)
+							{
+								UnitExt* subunitExt = globals.GetUnitExt(data.target->subunit);
+								subunitExt->values[ValueDeconstruction]++;
+								subunitExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
+								if (!data.target->subunit->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
+								{
+									data.target->subunit->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
+								}
+							}
+							else
+							{
+								if (!data.target->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
+								{
+									data.target->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
+								}
+							}
+						}
+					} break;
+					case WeaponId::AutocratEminanceRifle:
+					{
+						// Apply Controlled Opposition
+						targetExt->values[ValueControlledOpposition]++;
+					} break;
+					case WeaponId::SavantDiscoidRailgun:
+					{
+						// Savant Entropy Gauntlets behavior - Apply timer and overlay
+						if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster)
+						{
+							targetExt->values[ValueEntropyGauntlets]++;
+							targetExt->units[UnitDecaySavant] = data.attacker;
+							u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall + scbw::getOverlayOffset(data.target->id);
+							if (data.target->subunit != nullptr)
+							{
+								data.target->subunit->sprite->removeOverlay(overlayImageId);
+								data.target->subunit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
+							}
+							else
+							{
+								data.target->sprite->removeOverlay(overlayImageId);
+								data.target->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
+							}
+						}
+					} break;
+					case WeaponId::CharlatanFerventBlaster:
+					{
+						// Charlatan - Leading the Blind passive
+						if (!scbw::isAlliedTo(data.attacker->playerId, data.target->playerId))
+						{
+							scbw::applyNewHallucination(data.target, data.attacker->playerId, CharlatanHallucinationTimer);
+						}
+					} break;
+					case WeaponId::SouthpawUppercutLaser:
+					{
+						// Knockout Drivers - Southpaw behavior
+						if (targetExt->values[ValueKnockoutDriversStacks] < 20)
+						{
+							targetExt->values[ValueKnockoutDriversStacks] += 1;
+						}
+						targetExt->timers[TimerKnockoutDrivers] = SouthpawKnockoutDriversTimer;
+						data.target->updateSpeed();
+					} break;
+					case WeaponId::MadrigalImperiosoMissiles:
+					{
+						// Dirge - Madrigal behavior
+						targetExt->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
+						targetExt->values[ValueDirgeStacks] += 1;
+						targetExt->values[ValueDirgeSourcePlayer] = data.attackingPlayerId;
+						targetExt->units[UnitDirgeSource] = data.attacker;
+					} break;
+					case WeaponId::HierophantPhaseSignifier:
+					{
+						targetExt->values[ValueSignifyStacks]++;
+						targetExt->timers[TimerSignify] = 3 * 24 + 1;
+						auto& vec = targetExt->valueVectors[ValueVectorSignifySourcePlayer];
+						if (std::find(vec.begin(), vec.end(), data.attackingPlayerId) == vec.end())
+						{
+							vec.push_back(data.attackingPlayerId);
+						}
+						scbw::updateSignifyStatus(data.target, targetExt);
+					} break;
+					case WeaponId::EcclesiastAstralBlaster:
+					{
+						// Astral Blessing - Ecclesiast behavior
+						targetExt->values[ValueEcclesiastStack] += 1;
+						targetExt->timers[TimerEcclesiast] = EcclesiastAstralBlessingTimer;
+						targetExt->values[ValueEcclesiastPlayer] = data.attacker->playerId;
+					} break;
+					case WeaponId::MagisterNeutronCannon:
+					{
+						// Stellar Enforcement - Magister behavior
+						if (!targetExt->values[ValueStellarEnforcement])
+						{
+							targetExt->values[ValueStellarEnforcement] = 1;
+						}
+					} break;
+					case WeaponId::ApostleCharonRifle:
+					{
+						// Blood Tithe - Apostle behavior
+						u32 range = 3 * 32;
+						scbw::UnitFinder(
+							data.target->getX() - range,
+							data.target->getY() - range,
+							data.target->getX() + range,
+							data.target->getY() + range
+						).forEach([&data](Unit* foundUnit)
+							{
+								if (foundUnit->playerId != data.attacker->playerId && !scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId))
+								{
+									return;
+								}
+								if (foundUnit == data.target)
+								{
+									return;
+								}
+								foundUnit->heal(data.finalDamage, data.target);
+							});
+					} break;
+					case WeaponId::VithriliskCorrosiveSpores:
+					{
+						// Vithrilisk - Critical Mass
+						if (targetExt->values[ValueCorrosiveTouchStacks])
+						{
+							s32 range = 160;
+							scbw::UnitFinder(
+								data.target->getX() - 96,
+								data.target->getY() - 96,
+								data.target->getX() + 96,
+								data.target->getY() + 96
+							).forEach([&](Unit* target)
+								{
+									if (target->status & UnitStatus::Burrowed)
+									{
+										return;
+									}
+									if (target->status & UnitStatus::Invincible)
+									{
+										return;
+									}
+									if (scbw::isAlliedTo(data.attacker->playerId, target->playerId))
+									{
+										return;
+									}
+									helper::ApplySpores(target);
+									Thingy* thingy = helper::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
+									if (thingy != nullptr)
+									{
+										thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
+										helper::setThingyVisibilityFlags(thingy);
+									}
+								});
+						}
+					} break;
+					case WeaponId::CyclopsFlakCannons:
+					{
+						// Cyclops - Flak Cannons
+						targetExt->timerVectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
+					} break;
+					case WeaponId::ClaymoreHarpoonRailgun:
+					{
+						// Claymore - Kelvin Munitions - Slow primary target
+						if (!targetExt->values[ValueKelvinMunitionsSlow])
+						{
+							targetExt->values[ValueKelvinMunitionsSlow] = 1;
+						}
+					} break;
 				}
 			}
 		}

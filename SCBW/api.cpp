@@ -233,28 +233,28 @@ namespace scbw
 
 	bool isUnderDarkSwarm(Unit* unit)
 	{
-		return !(unit->status & UnitStatus::InAir) && getDarkSwarm(unit) != nullptr;
+		return !(unit->status & UnitStatus::InAir) && getDarkSwarmFromUnit(unit) != nullptr;
 	}
 
-	bool IsDarkswarm(Unit* unit)
+	bool IsDarkSwarm(Unit* unit)
 	{
 		return unit->id == UnitId::Spell_DarkSwarm;
 	}
 
-	Unit* getDarkSwarm(Unit* unit)
+	Unit* getDarkSwarmFromUnit(Unit* unit)
 	{
 		static UnitFinder darkSwarmFinder;
 		darkSwarmFinder.search(unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom());
 
-		Unit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
+		Unit* darkSwarm = darkSwarmFinder.getFirst(IsDarkSwarm);
 		return darkSwarm;
 	}
 
-	Unit* getDarkSwarm(u16 x, u16 y, u16 radius)
+	Unit* getDarkSwarmFromPosition(u16 x, u16 y, u16 radius)
 	{
 		UnitFinder darkSwarmFinder;
 		darkSwarmFinder.search(x - radius, y - radius, x + radius, y + radius);
-		Unit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
+		Unit* darkSwarm = darkSwarmFinder.getFirst(IsDarkSwarm);
 		return darkSwarm;
 	}
 

@@ -575,6 +575,16 @@ namespace TilesetType
 	};
 }
 
+namespace MovableState
+{
+	enum Enum
+	{
+		NotReachedDestination = 0,
+		ReachedDestination = 1,
+		UnmovableAtDestination = 2
+	};
+}
+
 namespace BinDlgFlags
 {
 	enum Enum

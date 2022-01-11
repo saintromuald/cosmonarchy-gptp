@@ -610,7 +610,7 @@ namespace hooks
 		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
 		if (scbw::isUnderDarkSwarm(unit))
 		{
-			Unit* darkSwarm = scbw::getDarkSwarm(unit);
+			Unit* darkSwarm = scbw::getDarkSwarmFromUnit(unit);
 			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitPoints / 256, 1, darkSwarm->removeTimer, TimerType::RemoveTimer);
 		}
 		u32 nathrokorTargetStacks = 0;

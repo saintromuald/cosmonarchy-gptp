@@ -3,8 +3,8 @@
 
 namespace
 {
-	s32 __declspec(naked) canHitTargetCheck_Wrapper()
-	{ // 004765B0
+	s32 __declspec(naked) canHitTargetCheck_Wrapper() // 004765B0
+	{
 		static Unit* a1;
 		static Unit* a2;
 		static s32 result;
@@ -19,7 +19,7 @@ namespace
 			MOV EAX, result
 			RETN
 		}
-	};
+	}
 }
 
 namespace hooks
@@ -27,14 +27,14 @@ namespace hooks
 
 	void injectMissChanceHooks()
 	{
-		// remove misschange when on height disadvantage
+		// remove miss change from height disadvantage
 		jmpPatch(canHitTargetCheck_Wrapper, 0x004765B0, 1);
 
-		// remove misschance for hitscan
+		// remove miss chance for non-projectile attacks
 		memoryPatch(0x0048C0C7, (u8)0x90);
 		memoryPatch(0x0048C0C7 + 1, (u8)0xE9);
 
-		// remove misschance for bullets
+		// remove miss chance for projectile attacks
 		memoryPatch(0x0048C1DB, (u8)0xEB);
 	}
 }
