@@ -316,6 +316,7 @@ struct FraudSpawnSequence {
 	u32 source_index;
 	u32 rally_index;
 	u32 unit_index;
+	Unit* temp_townhall;
 	AiScript* ai_script;
 	FraudSpawnLocation* location;
 };
@@ -1196,15 +1197,16 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					race = RaceId::Zerg;
 				}
 
-				fraud_spawn.sequence[player-1].fraud_class = fraud_class;
-				fraud_spawn.sequence[player-1].fraud = next_fraud;
-				fraud_spawn.sequence[player-1].race = race;
-				fraud_spawn.sequence[player-1].unit_timer = 0;
-				fraud_spawn.sequence[player-1].safety_timer = 30 * 24;
-				fraud_spawn.sequence[player-1].source_index = 0;
-				fraud_spawn.sequence[player-1].rally_index = 0;
-				fraud_spawn.sequence[player-1].unit_index = 0;
-				fraud_spawn.sequence[player-1].location = spawn_location;
+				FraudSpawnSequence* sequence = &fraud_spawn.sequence[player-1];
+				sequence->fraud_class = fraud_class;
+				sequence->fraud = next_fraud;
+				sequence->race = race;
+				sequence->unit_timer = 0;
+				sequence->safety_timer = 30 * 24;
+				sequence->source_index = 0;
+				sequence->rally_index = 0;
+				sequence->unit_index = 0;
+				sequence->location = spawn_location;
 
 				unit_deaths[UnitId::Spell_DisruptionWeb].player[player] = fraud_spawn.frauds[next_fraud][race].personality;
 				unit_deaths[UnitId::ProtossPlasmaShell].player[player] = fraud_spawn.frauds[next_fraud][race].build_type;
@@ -1264,14 +1266,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 						augurSacrifice(augur);
 					}
 
-					if (townhall == UnitId::ZergHatchery) {
-						Unit* unit = helper::createUnitAtPos(townhall, player, pos.x, pos.y);
-						if (unit) {
-							unit->userActionFlags |= 4; // silent remove
-							unit->remove();
-						}
-					}
-					scbw::createUnitInGame(townhall, player, pos.x, pos.y);
+					sequence->temp_townhall = helper::createUnitAtPos(townhall, player, pos.x, pos.y);
 				}
 
 				set_ally(player, 0, false);
@@ -1419,7 +1414,7 @@ void tick_scenario() {
 						fraud_class = FraudClass_God;
 					}
 
-					if (place_fraud(player, fraud_class, false)) {
+					if (place_fraud(player, fraud_class, true)) {
 						++alive_count;
 						break;
 					}
@@ -1446,6 +1441,12 @@ void tick_scenario() {
 
 		for (u32 i = 1; i < 7; ++i) {
 			FraudSpawnSequence* sequence = &fraud_spawn.sequence[i - 1];
+
+			if (sequence->temp_townhall && *elapsedTimeFrames > 1) {
+				Unit* unit = sequence->temp_townhall;
+				helper::SetBuildingTileFlag(unit, unit->getX(), unit->getY());
+				sequence->temp_townhall = 0;
+			}
 
 			// Spawn Unit
 			if (sequence->location) {

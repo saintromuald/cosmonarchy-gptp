@@ -339,7 +339,7 @@ namespace helper
 	void function_00464300(Unit* unit);																								// 00464300
 	void disconnectFromAddOn(Unit* unit);																							// 00464930
 	void function_00469EC0(Unit* unit, s32 x, s32 y);																				// 00469EC0
-	void function_00469F60(Unit* unit, s32 x, s32 y);																				// 00469F60
+	void SetBuildingTileFlag(Unit* unit, s32 x, s32 y);																				// 00469F60
 	void function_0046A560(Unit* unit);																								// 0046A560
 	void function_0046A5A0(Unit* unit);																								// 0046A5A0
 	void actUnitReturnToIdle(Unit* unit);																							// 00475420

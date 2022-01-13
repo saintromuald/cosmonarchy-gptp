@@ -3357,7 +3357,7 @@ namespace helper
 		}
 	}
 
-	void function_00469F60(Unit* unit, s32 x, s32 y)
+	void SetBuildingTileFlag(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_Sub469F60 = 0x00469F60;
 		__asm {

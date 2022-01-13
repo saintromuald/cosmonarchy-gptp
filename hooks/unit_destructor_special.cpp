@@ -151,16 +151,14 @@ void unitDestructorSpecialHook(Unit* unit)
 		unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
 		units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding))
 	{
-		u32 w = units_dat::BuildingDimensions[unit->id].x;
-		u32 h = units_dat::BuildingDimensions[unit->id].y;
-
-		for (u32 x = 0; x < w / 32; ++x)
+		Point16 dims = units_dat::BuildingDimensions[unit->id];
+		for (u32 x = 0; x < dims.x / 32; ++x)
 		{
-			for (u32 y = 0; y < h / 32; ++y)
+			for (u32 y = 0; y < dims.y / 32; ++y)
 			{
 				helper::removeCreepAtUnit(
-					unit->position.x - w / 2 + x * 32,
-					unit->position.y - h / 2 + y * 32,
+					unit->position.x - dims.x / 2 + x * 32,
+					unit->position.y - dims.y / 2 + y * 32,
 					UnitId::ZergEgg);
 			}
 		}

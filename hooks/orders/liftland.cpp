@@ -134,7 +134,7 @@ namespace hooks
 							//6452B:
 
 							//use a AddFogMask() function after some coordinates calculations
-							helper::function_00469F60(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+							helper::SetBuildingTileFlag(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 							unit->building.landingTimer = 1;
 
