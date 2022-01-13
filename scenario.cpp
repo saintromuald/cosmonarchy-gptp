@@ -2,6 +2,7 @@
 #include "unit_search.h"
 #include "player_color.h"
 #include "hooks/interface/uifeatures/ui_features.h"
+#include "hooks/unit_destructor_special.h"
 
 #include <assert.h>
 #include <math.h>
@@ -1259,7 +1260,8 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					Point16 pos = fraud_spawn.sequence[player-1].location->pos;
 					Unit* augur = scbw::createUnitInGame(UnitId::ProtossAugur, player, pos.x, pos.y);
 					if (augur) {
-						augur->remove();
+						augur->userActionFlags |= 4;
+						augurSacrifice(augur);
 					}
 
 					if (townhall == UnitId::ZergHatchery) {
@@ -1460,7 +1462,8 @@ void tick_scenario() {
 
 							Unit* augur = scbw::createUnitInGame(UnitId::ProtossAugur, i, source_pos.x, source_pos.y);
 							if (augur) {
-								augur->remove();
+								augur->userActionFlags |= 4;
+								augurSacrifice(augur);
 							}
 							Unit* unit = helper::AI_CreateUnit(unit_id, i, source_pos.x, source_pos.y);
 							if (unit) {

@@ -11,30 +11,25 @@
 #include <SCBW/UnitFinder.h>
 #include "globals.h"
 
-void augurSacrifice(Unit* target)
-{
-	UnitExt* targetExt = globals.GetUnitExt(target);
-	if (targetExt->values[ValueAugurSafetyCheck] == 0)
-	{
-		targetExt->values[ValueAugurSafetyCheck] = 1;
-		const s32 radius = 6 * 32;
-		Unit* nearest = scbw::UnitFinder::getNearestTarget(
-			target->getX() - radius,
-			target->getY() - radius,
-			target->getX() + radius,
-			target->getY() + radius,
-			target, [&](Unit* unit)
+void augurProc(Unit* augur) {
+	const s32 radius = 6 * 32;
+	Unit* target = scbw::UnitFinder::getNearestTarget(
+		augur->getX() - radius,
+		augur->getY() - radius,
+		augur->getX() + radius,
+		augur->getY() + radius,
+		augur, [&](Unit* unit)
 		{
 			// Don't attack friendly / allied units
 			if (unit->sprite == nullptr)
 			{
 				return false;
 			}
-			if (unit->playerId == target->playerId)
+			if (unit->playerId == augur->playerId)
 			{
 				return false;
 			}
-			if (scbw::isAlliedTo(unit->playerId, target->playerId))
+			if (scbw::isAlliedTo(unit->playerId, augur->playerId))
 			{
 				return false;
 			}
@@ -44,23 +39,23 @@ void augurSacrifice(Unit* target)
 			}
 			return true;
 		});
-		if (nearest != nullptr)
-		{
-			target->orderTarget.unit = nearest;
-			helper::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
-				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
-			scbw::hideAndDisableUnit(target);
-			target->status |= UnitStatus::Invincible;
-			helper::createThingy(SpriteId::AugurDeathExplosion, target->getX(), target->getY(), target->playerId);
-			helper::playSoundFromSource(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), target, 1, 0);
-			target->removeTimer = 5 * 32;
-			target->userActionFlags |= 0x4;
-			return;
-		}
-		else
-		{
-			target->remove();
-		}
+	Thingy* thingy = helper::createThingy(SpriteId::AugurDeathExplosion, augur->getX(), augur->getY(), augur->playerId);
+	helper::playSoundFromSource(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
+	if (target)
+	{
+		augur->orderTarget.unit = target;
+		helper::createBullet(WeaponId::AugurFinalHour, augur, augur->getX(), augur->getY(), augur->playerId, scbw::getAngle(augur->getX(), augur->getY(), target->getX(), target->getY()));
+	}
+}
+
+void augurSacrifice(Unit* augur)
+{
+	UnitExt* targetExt = globals.GetUnitExt(augur);
+	if (targetExt->values[ValueAugurSafetyCheck] == 0)
+	{
+		targetExt->values[ValueAugurSafetyCheck] = 1;
+		augurProc(augur);
+		augur->remove();
 	}
 }
 

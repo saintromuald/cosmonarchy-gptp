@@ -353,7 +353,7 @@ namespace helper
 
 	//// create_init_units
 	b32 spreadsCreep(u32 unitId, b32 defaultReturn);																				// 00413870
-	void function_004148F0(s32 x, s32 y, u32 unitId);																				// 004148F0
+	void ApplyCreepAtLocationFromUnitType(s32 x, s32 y, u32 unitId);																				// 004148F0
 	void CreateBuildingLarva(Unit* main_building);																					// 0049D660
 	b32 function_0049EC30(Unit* unit);																								// 0049EC30
 	Unit* FindBestUnit(Box16* coords, u32 searchProc);																				// 004E8830

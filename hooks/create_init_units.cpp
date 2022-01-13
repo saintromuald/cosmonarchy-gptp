@@ -72,7 +72,7 @@ namespace hooks
 			if (helper::spreadsCreep(created_unit->id, 1)
 				|| units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding)
 			{
-				helper::function_004148F0(
+				helper::ApplyCreepAtLocationFromUnitType(
 					created_unit->sprite->position.x,
 					created_unit->sprite->position.y,
 					created_unit->id

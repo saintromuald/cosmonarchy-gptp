@@ -3499,7 +3499,7 @@ namespace helper
 		return bReturnValue;
 	}
 
-	void function_004148F0(s32 x, s32 y, u32 unitId)
+	void ApplyCreepAtLocationFromUnitType(s32 x, s32 y, u32 unitId)
 	{
 		const u32 Func_Sub4148F0 = 0x004148F0;
 		__asm {
