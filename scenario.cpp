@@ -1164,7 +1164,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 		if (next_fraud) {
 			FraudSpawnLocation* spawn_location = get_random_spawn();
 			if (spawn_location) {
-				++fraud_spawn.used_count;
+				fraud_spawn.used_count += fraud_class;
 				fraud_spawn.used[next_fraud] = true;
 				fraud_spawn.timer = 3 * 60 * 24;
 				if (fraud_class == FraudClass_God) {
