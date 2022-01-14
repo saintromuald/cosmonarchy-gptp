@@ -1059,7 +1059,7 @@ void messagef(char* format, ...) {
 	va_end(va);
 	
 	scbw::print(buffer);
-	helper::DisplayTextMessage(buffer, 2, *elapsedTimeFrames + helper::GetTextDisplayTime(buffer), 0);
+	helper::DisplayTextMessage(buffer, 2, *elapsedTimeFrames + helper::GetTextDisplayTime(buffer), 1);
 }
 
 u32 get_next_fraud(u32 player, u32 fraud_class) {
