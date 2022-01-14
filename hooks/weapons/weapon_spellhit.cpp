@@ -824,11 +824,11 @@ LABEL_15:
 						}
 						else if (v1->pAI)
 						{
-							helper::orderComputerClear(v1, 0x9Cu);
+							helper::order_computer(v1, 0x9Cu);
 						}
 						else
 						{
-							helper::orderComputerClear(v1, units_dat::ReturnToIdleOrder[(u16)v1->id]);
+							helper::order_computer(v1, units_dat::ReturnToIdleOrder[(u16)v1->id]);
 						}
 						return;
 					}

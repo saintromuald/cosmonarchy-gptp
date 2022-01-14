@@ -1292,7 +1292,7 @@ namespace helper
 		return result;
 	}
 
-	void orderComputerClear(Unit* unit, u8 orderId)
+	void order_computer(Unit* unit, u8 orderId)
 	{
 		const u32 Func_orderComputerClear = 0x00475310;
 		__asm {

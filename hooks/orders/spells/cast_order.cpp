@@ -87,11 +87,11 @@ namespace hooks
 		{
 			if (caster->pAI)
 			{
-				helper::orderComputerClear(caster, 0x9Cu);
+				helper::order_computer(caster, 0x9Cu);
 			}
 			else
 			{
-				helper::orderComputerClear(caster, units_dat::ReturnToIdleOrder[caster->id]);
+				helper::order_computer(caster, units_dat::ReturnToIdleOrder[caster->id]);
 			}
 			result = 0;
 		}

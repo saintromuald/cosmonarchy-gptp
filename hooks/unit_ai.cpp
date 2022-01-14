@@ -298,7 +298,7 @@ namespace hooks
 				{
 					if (unit->status & UnitStatus::Completed)
 					{
-						helper::orderComputerClear(unit, OrderId::ComputerAI);
+						helper::order_computer(unit, OrderId::ComputerAI);
 						helper::setSecondaryOrder(unit, OrderId::SpreadCreep);
 					}
 				}
@@ -796,6 +796,15 @@ namespace hooks
 					helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->playerId, 1, newUnit->sprite->position.x);
 				}
 			}
+		}
+	}
+
+	// Hooked in case we need it for Lakizilisk tactical AI
+	void AI_orderLurkerBurrow(Unit* unit) // 0043C230
+	{
+		if (unit->id == UnitId::ZergLakizilisk && !(unit->status & UnitStatus::Burrowed) && unit->mainOrderId != OrderId::Burrow)
+		{
+			helper::order_computer(unit, OrderId::Burrow);
 		}
 	}
 }
