@@ -5,6 +5,7 @@
 #include "math_utils.h"
 #include "globals.h"
 #include "hooks/weapons/weapon_cooldown.h"
+#include "hooks/weapons/weapon_damage.h"
 
 /* DONE
 Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby,
@@ -277,6 +278,28 @@ static inline u32 GetDistanceToTarget(Unit* source)
 	return scbw::getDistanceFast(source->position, target->position);
 }
 
+static bool is_channeling(Unit* unit) {
+	if (unit->mainOrderId == OrderId::NukeTrack) {
+		return true;
+	}
+	if (unit->mainOrderId == OrderId::Plague && unit->sprite->mainGraphic->animation == IscriptAnimation::Unused2) {
+		return true;
+	}
+	if (unit->mainOrderId == OrderId::FireYamatoGun1 && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+		return true;
+	}
+	if (unit->mainOrderId == OrderId::Skyfall && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+		return true;
+	}
+	if (unit->id == UnitId::ProtossStarSovereign && unit->mainOrderId == OrderId::CTFCOP2 && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+		return true;
+	}
+	if (unit->id == UnitId::ProtossAnthelion && unit->mainOrderId == OrderId::Move && unit->sprite->mainGraphic->animation == IscriptAnimation::Walking) {
+		return true;
+	}
+	return false;
+}
+
 static inline s32 GetTargetCost(Unit* source, Unit* target)
 {
 	// Value attacking wounded units first
@@ -287,7 +310,25 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 		&& target->id != UnitId::TerranComsatStation
 		&& target->id != UnitId::ProtossShieldBattery)
 	{
-		cost -= (target->energy / 50) * 5;
+		cost -= (target->energy / 256 / 50) * 20;
+	}
+
+	// Value channeling units more
+	if (is_channeling(target)) {
+		cost -= 50;
+	}
+
+	// Value anthelions and anticthons more
+	if (target->id == UnitId::ProtossAnthelion) {
+		cost -= 50;
+	} else if (target->id == UnitId::SharedAnticthon) {
+		cost -= 25;
+	}
+
+	// Value splitting simulacra more
+	UnitExt* targetExt = globals.GetUnitExt(target);
+	if (targetExt->timers[TimerSimulacrumClone]) {
+		cost -= 5;
 	}
 
 	if (target->id == UnitId::ProtossAccantor)
@@ -338,6 +379,24 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 		|| units_dat::GroupFlags[target->id].isFactory)
 	{
 		cost -= 25;
+	}
+	
+	{
+		u32 weaponId = 0;
+		if (target->status & UnitStatus::InAir)
+		{
+			weaponId = source->getAirWeapon();
+		}
+		else
+		{
+			weaponId = source->getGroundWeapon();
+		}
+
+		// Value dark swarm immune units way less
+		if (darkswarm_blocks_damage(target, weaponId, 1))
+		{
+			cost += 1000;
+		}
 	}
 
 	return cost;

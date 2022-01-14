@@ -1,6 +1,8 @@
 #pragma once
 #include "../../SCBW/structures/Unit.h"
 
+bool darkswarm_blocks_damage(Unit* target, u32 weaponId, u32 damageDivisor);
+
 namespace hooks {
 
 	void weaponDamageHook(

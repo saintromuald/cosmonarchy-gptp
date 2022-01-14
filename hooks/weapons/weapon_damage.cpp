@@ -27,6 +27,15 @@ namespace
 
 #include "SCBW\UnitFinder.h"
 
+bool darkswarm_blocks_damage(Unit* target, u32 weaponId, u32 damageDivisor) {
+	return scbw::isUnderDarkSwarm(target)
+		&& weapons_dat::MaxRange[weaponId] > 32
+		&& (damageDivisor == 1 || weaponId == WeaponId::AcidSpore)
+		&& weaponId != WeaponId::FlameThrower
+		&& weaponId != WeaponId::SubterraneanSpines
+		&& weaponId != WeaponId::Custom;
+}
+
 bool irradiateTarget(Unit* unit)
 {
 	return true; // Originally prohibited targeting eggs
@@ -332,11 +341,7 @@ namespace hooks
 		}
 
 		// Isthrathaleth Dark Swarm
-		if (scbw::isUnderDarkSwarm(data.target)
-			&& weapons_dat::MaxRange[data.weaponId] > 32
-			&& (data.damageDivisor == 1 || data.weaponId == WeaponId::AcidSpore)
-			&& data.weaponId != WeaponId::SubterraneanSpines
-			&& data.weaponId != WeaponId::Custom)
+		if (darkswarm_blocks_damage(data.target, data.weaponId, data.damageDivisor))
 		{
 			data.damageType = DamageType::Independent;
 		}
