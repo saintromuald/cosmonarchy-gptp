@@ -475,9 +475,9 @@ void add_fraud_unit(u32 fraud, u32 race, FraudSpawnUnit unit, u32 min_index = 0)
 
 void init_fraud_units() {
 	for (u32 i = 0; i < Fraud_Count; ++i) {
-		add_fraud_unit(i, RaceId::Terran, {8, UnitId::TerranMason});
-		add_fraud_unit(i, RaceId::Protoss, {8, UnitId::ProtossScribe});
-		add_fraud_unit(i, RaceId::Zerg, {8, UnitId::ZergDroleth});
+		add_fraud_unit(i, RaceId::Terran,  {12, UnitId::TerranMason});
+		add_fraud_unit(i, RaceId::Protoss, {12, UnitId::ProtossScribe});
+		add_fraud_unit(i, RaceId::Zerg,    {12, UnitId::ZergDroleth});
 	}
 
 	// Todo: Finish adding units for all personalities
@@ -1178,12 +1178,12 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 
 				++fraud_spawn.used_type_count[fraud_class];
 				if (fraud_class == FraudClass_Hero) {
-					fraud_spawn.hero_spawn_counter = -1;
+					fraud_spawn.hero_spawn_counter = 0;
 				} else {
 					++fraud_spawn.hero_spawn_counter;
 				}
 				if (fraud_class == FraudClass_Super) {
-					fraud_spawn.super_spawn_counter = -3;
+					fraud_spawn.super_spawn_counter = -2;
 				} else {
 					++fraud_spawn.super_spawn_counter;
 				}
@@ -1219,7 +1219,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					fraud_count = 0;
 				}
 
-				f32 multiplier = 1 + fraud_count * 0.1;
+				f32 multiplier = 0.5 + fraud_count * 0.2;
 				for (u32 i = 0; i < fraud_spawn.unit_count[next_fraud][race]; ++i) {
 					fraud_spawn.units[next_fraud][race][i].count *= multiplier;
 				}
@@ -1309,8 +1309,8 @@ void init_scenario() {
 			fraud_spawn.initial_spawn_count = 2;
 		}
 
-		fraud_spawn.hero_spawn_counter = -2 - fraud_spawn.initial_spawn_count;
-		fraud_spawn.super_spawn_counter = -8 - fraud_spawn.initial_spawn_count;
+		fraud_spawn.hero_spawn_counter = -1 - fraud_spawn.initial_spawn_count;
+		fraud_spawn.super_spawn_counter = -7 - fraud_spawn.initial_spawn_count;
 
 		u32 offset = scbw::randBetween(0, 5);
 		for (u32 j = 0; j < fraud_spawn.initial_spawn_count; ++j) {
@@ -1352,9 +1352,11 @@ void tick_scenario() {
 			sprintf_s(buffer, sizeof(buffer), "Hands remaining: %u", 6 - fraud_spawn.used_type_count[FraudClass_God]);
 			graphics::drawText(10, y, buffer);
 
-			y += 15;
-			format_time(buffer, sizeof(buffer), "Next Hand: ", fraud_spawn.timer / 24);
-			graphics::drawText(10, y, buffer);
+			if (fraud_spawn.used_type_count[FraudClass_God] < 6) {
+				y += 15;
+				format_time(buffer, sizeof(buffer), "Next Hand: ", fraud_spawn.timer / 24);
+				graphics::drawText(10, y, buffer);
+			}
 		} else {
 			y += 15;
 			sprintf_s(buffer, sizeof(buffer), "Frauds remaining: 0");
@@ -1392,7 +1394,7 @@ void tick_scenario() {
 		}
 
 		// Fraud Spawning
-		if (alive_count && fraud_spawn.timer) {
+		if (alive_count >= 2 && fraud_spawn.timer) {
 			--fraud_spawn.timer;
 		} else {
 			fraud_spawn.timer = 0;
