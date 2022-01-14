@@ -622,7 +622,7 @@ LABEL_36:
 		unitId = unitCopy->id;
 		if (unitId == UnitId::ZergLarva || unitId == UnitId::ZergMutalisk || unitId == UnitId::ZergHydralisk)
 		{
-			helper::orderComputerClear(unitCopy, OrderId::Morph1);
+			helper::order_computer(unitCopy, OrderId::Morph1);
 			return 1;
 		}
 		else

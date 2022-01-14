@@ -1083,17 +1083,20 @@ namespace hooks
 					radius = 8 * 32;
 					flags &= ~Flags::Ally;
 				}
-				auto match = cosmonarchyFinderMatch(unit, flags, {});
-				scbw::UnitFinder(
-					unit->getX() - radius,
-					unit->getY() - radius,
-					unit->getX() + radius,
-					unit->getY() + radius
-				).forEachInMatch(match, [&](Unit* target)
+				if (!unitExt->values[ValueReviveStarted])
 				{
-					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerAnticthonRevive] = 2;
-				});
+					auto match = cosmonarchyFinderMatch(unit, flags, {});
+					scbw::UnitFinder(
+						unit->getX() - radius,
+						unit->getY() - radius,
+						unit->getX() + radius,
+						unit->getY() + radius
+					).forEachInMatch(match, [&](Unit* target)
+						{
+							UnitExt* targetExt = globals.GetUnitExt(target);
+							targetExt->timers[TimerAnticthonRevive] = 2;
+						});
+				}
 			} break;
 			case UnitId::ProtossAnthelion:
 			{

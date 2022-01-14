@@ -121,7 +121,7 @@ namespace hooks
 		{
 			if (self->mainOrderId != 111)
 			{
-				helper::orderComputerClear(self, 0x6Fu);
+				helper::order_computer(self, 0x6Fu);
 			}
 			return;
 		}

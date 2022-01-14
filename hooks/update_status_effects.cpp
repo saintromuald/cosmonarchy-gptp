@@ -431,7 +431,7 @@ namespace hooks
 						}
 						if (canBurrow)
 						{
-							helper::orderComputerClear(a1, OrderId::Burrow);
+							helper::order_computer(a1, OrderId::Burrow);
 						}
 					}
 				}

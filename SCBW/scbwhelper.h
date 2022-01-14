@@ -139,7 +139,7 @@ namespace helper
 
 	// For AI_AddUnitAI
 	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI);
-	void orderComputerClear(Unit* unit, u8 orderId);
+	void order_computer(Unit* unit, u8 orderId);
 	Unit* setSecondaryOrder(Unit* result, char orderId);
 	void AI_MakeGuard(s32 playerId, Unit* unit);
 	bool unitIsActiveResourceDepot(Unit* unit);

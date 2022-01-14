@@ -339,6 +339,22 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_orderLurkerBurrow_Wrapper() // 0043C230
+	{
+		static Unit* unit;
+		__asm
+		{
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::AI_orderLurkerBurrow(unit);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -361,5 +377,6 @@ namespace hooks
 		jmpPatch(AI_RemoveUnitAI_Wrapper,					0x004A1E50, 0);
 		jmpPatch(AI_RemoveWorkerOrBuildingAI_Wrapper,		0x00434C90, 0);
 //		jmpPatch(AI_TrainingOverlord_Wrapper,				0x00435770, 1);
+		jmpPatch(AI_orderLurkerBurrow_Wrapper,				0x0043C230, 3);
 	}
 }
