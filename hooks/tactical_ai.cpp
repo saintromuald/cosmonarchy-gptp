@@ -318,10 +318,10 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 		cost -= 50;
 	}
 
-	// Value anthelions and anticthons more
+	// Value big boys more
 	if (target->id == UnitId::ProtossAnthelion) {
 		cost -= 50;
-	} else if (target->id == UnitId::SharedAnticthon) {
+	} else if (target->id == UnitId::SharedAnticthon || target->id == UnitId::SharedEmpress || target->id == UnitId::ProtossClarion) {
 		cost -= 25;
 	}
 
