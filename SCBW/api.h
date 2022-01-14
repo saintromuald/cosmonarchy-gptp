@@ -554,4 +554,5 @@ namespace scbw
 	bool transportIsFull(Unit* transport);
 	bool transportIsEmpty(Unit* transport);
 	bool unitIdUsesXlargeOverlays(u16 unitId);
+	bool unitIdIsResource(u16 unit_id, bool count_gas_structures);
 }
