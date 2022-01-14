@@ -319,10 +319,16 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 	}
 
 	// Value big boys more
-	if (target->id == UnitId::ProtossAnthelion) {
-		cost -= 50;
-	} else if (target->id == UnitId::SharedAnticthon || target->id == UnitId::SharedEmpress || target->id == UnitId::ProtossClarion) {
-		cost -= 25;
+	switch (target->id) {
+		case UnitId::ProtossAnthelion: {
+			cost -= 50;
+		} break;
+		case UnitId::SharedAnticthon:
+		case UnitId::SharedEmpress:
+		case UnitId::ProtossDemiurge:
+		case UnitId::ProtossClarion: {
+			cost -= 25;
+		} break;
 	}
 
 	// Value splitting simulacra more
