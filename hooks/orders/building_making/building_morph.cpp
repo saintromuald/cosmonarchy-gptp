@@ -336,6 +336,7 @@ namespace hooks
 				Unit* drone = helper::createUnit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
 				if (drone == nullptr)
 				{
+					helper::refundUnitTrainCost(UnitId::ZergDroleth, unit->playerId);
 					helper::displayLastNetErrorForPlayer(unit->playerId);
 					unit->remove();
 					bStopThere = true;

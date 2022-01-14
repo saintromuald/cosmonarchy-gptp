@@ -81,9 +81,11 @@ namespace hooks
 							builtUnit = helper::createUnit(unit->buildQueue[unit->buildQueueSlot], unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->playerId);
 						}
 
+						u32 unit_id = unit->buildQueue[unit->buildQueueSlot];
 						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 						if (builtUnit == nullptr)
 						{
+							helper::refundUnitTrainCost(unit_id, unit->playerId);
 							helper::displayLastNetErrorForPlayer(unit->playerId);
 							unit->orderToIdle();
 						}
