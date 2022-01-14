@@ -3499,15 +3499,15 @@ namespace helper
 		return bReturnValue;
 	}
 
-	void ApplyCreepAtLocationFromUnitType(s32 x, s32 y, u32 unitId)
+	void applyCreepAtLocationFromUnitType(s32 x, s32 y, u32 unitId)
 	{
-		const u32 Func_Sub4148F0 = 0x004148F0;
+		const u32 Func_applyCreepAtLocationFromUnitType = 0x004148F0;
 		__asm {
 			PUSHAD
 			PUSH y
 			PUSH x
 			PUSH unitId
-			CALL Func_Sub4148F0
+			CALL Func_applyCreepAtLocationFromUnitType
 			POPAD
 		}
 	}
@@ -3523,7 +3523,7 @@ namespace helper
 		}
 	}
 
-	b32 function_0049EC30(Unit* unit)
+	b32 show_finished_unit(Unit* unit)
 	{
 		const u32 Func_Sub49EC30 = 0x0049EC30;
 		b32 bResult;

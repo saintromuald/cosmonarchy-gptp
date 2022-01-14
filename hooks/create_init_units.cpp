@@ -39,52 +39,43 @@ namespace hooks
 
 		buildingSizeX = units_dat::BuildingDimensions[buildingId].x;
 		buildingSizeY = units_dat::BuildingDimensions[buildingId].y;
-
 		if (buildingSizeX < 0)
+		{
 			buildingSizeX++;
+		}
 		if (buildingSizeY < 0)
+		{
 			buildingSizeY++;
+		}
 
 		searchBox.left = (startPositions[playerId].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0;
 		searchBox.top = (startPositions[playerId].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0;
 		searchBox.bottom = buildingSizeY / 2 + ((startPositions[playerId].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2 - 1;
 		searchBox.right = buildingSizeX / 2 + ((startPositions[playerId].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
 
-		//yes, the return value is unused for some reason
+		// yes, the return value is unused for some reason
 		helper::FindBestUnit(&searchBox, 0x0049D640);
-
-		created_unit =
-			helper::createUnit(
-				buildingId,
+		created_unit = helper::createUnit(buildingId,
 				((startPositions[playerId].x - (buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2,
 				((startPositions[playerId].y - (buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2,
-				playerId
-			);
+				playerId);
 
 		if (created_unit != nullptr)
 		{
 
 			helper::updateUnitStatsFinishBuilding(created_unit);
 
-			if (helper::function_0049EC30(created_unit) != 0)
+			if (helper::show_finished_unit(created_unit) != 0)
+			{
 				helper::updateUnitStrength(created_unit);
-
+			}
 			if (helper::spreadsCreep(created_unit->id, 1)
 				|| units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding)
 			{
-				helper::ApplyCreepAtLocationFromUnitType(
-					created_unit->sprite->position.x,
-					created_unit->sprite->position.y,
-					created_unit->id
-				);
-				//CreateBuildingLarva(created_unit);
-				//CreateBuildingLarva(created_unit);
-				//Starting larva is 1 in Cosmonarchy
+				helper::applyCreepAtLocationFromUnitType(created_unit->sprite->position.x, created_unit->sprite->position.y, created_unit->id);
 			}
 		}
 	}
-
-	;
 
 	f64 Sign(f64 x)
 	{
@@ -255,7 +246,7 @@ namespace hooks
 							{
 								helper::updateUnitStatsFinishBuilding(created_unit);
 
-								if (helper::function_0049EC30(created_unit) != 0)
+								if (helper::show_finished_unit(created_unit) != 0)
 									helper::updateUnitStrength(created_unit);
 							}
 						}
@@ -294,7 +285,7 @@ namespace hooks
 
 			helper::updateUnitStatsFinishBuilding(created_unit);
 
-			if (helper::function_0049EC30(created_unit) != 0)
+			if (helper::show_finished_unit(created_unit) != 0)
 				helper::updateUnitStrength(created_unit);
 
 		}

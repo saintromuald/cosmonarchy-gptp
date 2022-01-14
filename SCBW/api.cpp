@@ -2030,4 +2030,25 @@ namespace scbw
 			|| unitId == UnitId::TerranPhobos
 			|| unitId == UnitId::ProtossStarSovereign;
 	}
+
+	bool unitIdIsResource(u16 unit_id, bool count_gas_structures)
+	{
+		if (count_gas_structures)
+		{
+			return unit_id == UnitId::ResourceMineralField
+				|| unit_id == UnitId::ResourceMineralFieldType2
+				|| unit_id == UnitId::ResourceMineralFieldType3
+				|| unit_id == UnitId::ResourceVespeneGeyser
+				|| unit_id == UnitId::TerranReservoir
+				|| unit_id == UnitId::ProtossAquifer
+				|| unit_id == UnitId::ZergExtractor;
+		}
+		else
+		{
+			return unit_id == UnitId::ResourceMineralField
+				|| unit_id == UnitId::ResourceMineralFieldType2
+				|| unit_id == UnitId::ResourceMineralFieldType3
+				|| unit_id == UnitId::ResourceVespeneGeyser;
+		}
+	}
 }

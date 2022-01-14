@@ -1512,6 +1512,10 @@ namespace hooks
 			{
 				return;
 			}
+			if (scbw::unitIdIsResource(unit->id, false))
+			{
+				return;
+			}
 			unitExt->timers[TimerAlaszilethRegenBoost] = 2;
 
 			// Create overlay
