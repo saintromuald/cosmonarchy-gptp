@@ -17,12 +17,13 @@ bool is_map(u32 campaign, u32 map) {
 }
 
 /*
+	Shortcomings:
+		- Heroes & especially supers will not spawn if their race's slot is not open; can be fixed by adding more heroes & especially supers
 	Bugs:
-		- Initially-created town centers do not provide collision (probably need to inline some obscure function call)
+		- Fraud colors are not always accurate (needs more testing)
 		- Frauds fail to build while:
 			- supply blocked (should be fixed by setting supplies, maybe didn't work due to old towns not being cleared?)
 			- an old town is still active (should be fixed by Pr0's AI changes)
-		- Frauds sometimes fail to spawn entirely (only observed once so far)
 	Todo:
 		- Add automatic dialogue system
 */
@@ -91,8 +92,8 @@ enum {
 	/*
 	-- The Hall of Heroes
 	All members of this type are allied to one another, and deploy with additional starting units and resources.
-	A hero can first arrive after 2 standard spawns. Each time a hero is not spawned, the chance to spawn a hero increases by 25%.
-	When a hero spawns, another one cannot arrive until after 1 spawn, after which the chance returns to the default 25%.
+	A hero can first arrive after 2 standard spawns. Each time a hero is not spawned, the chance to spawn a hero increases by 33%.
+	When a hero spawns, another one cannot arrive until after 1 spawn, after which the chance returns to the default 33%.
 	*/
 	// == TERRAN ==
 	FraudHero_Francisco_Goska,          // --    Raider + Timing						-- <11> Eidolon
@@ -115,18 +116,20 @@ enum {
 	/*
 	-- The Supreme Kings
 	All members of this type are hostile to one another, deploy with additional starting units and resources, and have an increased resource multiplier.
-	A super first arrives after 8 spawns. Each time a super is not spawned, the chance to spawn a super increases by 15%.
-	When a super spawns, another one cannot arrive until after 3 spawns, after which the chance returns to the default 15%.
+	A super first arrives after 8 spawns. Each time a super is not spawned, the chance to spawn a super increases by 20%.
+	When a super spawns, another one cannot arrive until after 3 spawns, after which the chance returns to the default 20%.
 	*/
 	// == TERRAN ==
 	FraudSuper_Ackmed,                  // --    Raider + Rush							-- <10> Harakan
+	FraudSuper_TheDon,					// --	 Orbital + Greed						-- <06> Minotaur
 
 	// == PROTOSS ==
 	FraudSuper_Tetragram,               // --    Ranger + Greed							-- <0E> Demiurge
+	FraudSuper_Amon,					// --	 Profane + Rush							-- <0E> Mind Tyrant
 
 	// == ZERG ==
 	FraudSuper_Zerghere,                // --    Swarm + Greed							-- <10> Hatchery
-
+	FraudSuper_Connor,					// --	 Assault + Rush							-- <16> Bactalisk
 
 	/*
 	-- The Cosmonarch
@@ -162,11 +165,11 @@ enum {
 	FraudHero_ZergLast = FraudHero_RektSon,
 
 	FraudSuper_TerranFirst = FraudSuper_Ackmed,
-	FraudSuper_TerranLast = FraudSuper_Ackmed,
+	FraudSuper_TerranLast = FraudSuper_TheDon,
 	FraudSuper_ProtossFirst = FraudSuper_Tetragram,
-	FraudSuper_ProtossLast = FraudSuper_Tetragram,
+	FraudSuper_ProtossLast = FraudSuper_Amon,
 	FraudSuper_ZergFirst = FraudSuper_Zerghere,
-	FraudSuper_ZergLast = FraudSuper_Zerghere,
+	FraudSuper_ZergLast = FraudSuper_Connor,
 
 	FraudGod_FinalFirst = FraudGod_Hand1,
 	FraudGod_FinalLast = FraudGod_Hand6,
@@ -254,16 +257,18 @@ const char* fraud_names[] = {
 	"<16>Charlie",
 	"<11>RektSon",
 
-
 	//// -- The Supreme Kings
 	// == TERRAN ==
 	"<10>Ackmed",
+	"<06>The Don",
 
 	// == PROTOSS ==
 	"<0E>Tetragram",
+	"<08>Amon",
 
 	// == ZERG ==
 	"<10>Zerghere",
+	"<16>Connor",
 
 	// == RANDOM ==
 	"<06>God's Hand",
@@ -960,6 +965,15 @@ void init_fraud_units() {
 	fraud_spawn.frauds[FraudSuper_Ackmed][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_None, AiBuildOrder_TerranRaider_HolyAckmeds, PlayerColor::BurntUmber};
 	add_fraud_unit(FraudSuper_Ackmed, RaceId::Zerg, {24, UnitId::TerranHarakan});
 	add_fraud_unit(FraudSuper_Ackmed, RaceId::Zerg, {8, UnitId::TerranHeracles});
+	add_fraud_unit(FraudSuper_Ackmed, RaceId::Zerg, {5, UnitId::TerranSalamander});
+	add_fraud_unit(FraudSuper_Ackmed, RaceId::Zerg, {2, UnitId::TerranSeraph});
+
+	// The Don
+	fraud_spawn.frauds[FraudSuper_Ackmed][RaceId::Terran] = {AiPersonality_TerranOrbital, AiBuildType_None, AiBuildOrder_TerranOrbital_TheDon, PlayerColor::Vermillion};
+	add_fraud_unit(FraudSuper_Ackmed, RaceId::Zerg, {2, UnitId::TerranSeraph});
+	add_fraud_unit(FraudSuper_Ackmed, RaceId::Zerg, {9, UnitId::TerranCentaur});
+	add_fraud_unit(FraudSuper_Ackmed, RaceId::Zerg, {6, UnitId::TerranMinotaur});
+	add_fraud_unit(FraudSuper_Ackmed, RaceId::Zerg, {3, UnitId::TerranPhobos});
 
 	// Tetragram
 	fraud_spawn.frauds[FraudSuper_Tetragram][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_None, AiBuildOrder_ProtossRanger_1GateExpo, PlayerColor::PalatinateBlue};
@@ -967,11 +981,28 @@ void init_fraud_units() {
 	add_fraud_unit(FraudSuper_Tetragram, RaceId::Zerg, {2, UnitId::ProtossClarion});
 	add_fraud_unit(FraudSuper_Tetragram, RaceId::Zerg, {2, UnitId::ProtossDemiurge});
 
+	// Amon
+	fraud_spawn.frauds[FraudSuper_Amon][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_Rush, AiBuildOrder_ProtossProfane_Starbreach, PlayerColor::Scarlet};
+	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {8, UnitId::ProtossCabalist});
+	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {20, UnitId::ProtossBarghest});
+	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {6, UnitId::ProtossArchon});
+	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {3, UnitId::ProtossMindTyrant});
+	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {3, UnitId::ProtossPariah});
+	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {6, UnitId::SharedEmpress});
+	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {1, UnitId::ProtossAnthelion});
+
 	// Zerghere
 	fraud_spawn.frauds[FraudSuper_Zerghere][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_None, AiBuildOrder_ZergSwarm_GatesOfHell, PlayerColor::DarkLavender};
 	add_fraud_unit(FraudSuper_Zerghere, RaceId::Zerg, {20, UnitId::ZergZethrokor});
 	add_fraud_unit(FraudSuper_Zerghere, RaceId::Zerg, {20, UnitId::ZergQuazilisk});
 	add_fraud_unit(FraudSuper_Zerghere, RaceId::Zerg, {20, UnitId::ZergNathrokor});
+
+	// Connor
+	fraud_spawn.frauds[FraudSuper_Connor][RaceId::Zerg] = {AiPersonality_ZergAssault, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Beige};
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {20, UnitId::ZergHydralisk});
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {15, UnitId::ZergBactalisk});
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {12, UnitId::ZergAlmaksalisk});
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {10, UnitId::SharedAxitrilisk});
 
 	//// God - TBD
 
@@ -1407,9 +1438,9 @@ void tick_scenario() {
 					u32 fraud_class = FraudClass_None;
 					if (fraud_spawn.used_count < god_spawn_breakpoint) {
 						fraud_class = FraudClass_Fraud;
-						if (get_next_fraud(player, FraudClass_Hero) && (s32)scbw::randBetween(0, 99) < fraud_spawn.hero_spawn_counter * 25) {
+						if (get_next_fraud(player, FraudClass_Hero) && (s32)scbw::randBetween(0, 99) < fraud_spawn.hero_spawn_counter * 33) {
 							fraud_class = FraudClass_Hero;
-						} else if (get_next_fraud(player, FraudClass_Super) && (s32)scbw::randBetween(0, 99) < fraud_spawn.super_spawn_counter * 15) {
+						} else if (get_next_fraud(player, FraudClass_Super) && (s32)scbw::randBetween(0, 99) < fraud_spawn.super_spawn_counter * 20) {
 							fraud_class = FraudClass_Super;
 						}
 					} else if (fraud_spawn.used_type_count[FraudClass_God]) {
