@@ -115,18 +115,6 @@ namespace hooks
 			}
 		}
 
-		//// Update speed based on behaviors or status effects
-
-		// This switch statement is for units that can change speeds at will (e.g. on toggle)
-		switch (unit->id)
-		{
-			case UnitId::ProtossExemplar:
-			{
-				unit->updateSpeed();
-				break;
-			}
-		}
-
 		// Forcibly unburrow units that collide with buildings
 		if (unit->status & UnitStatus::Burrowed)
 		{
@@ -143,53 +131,26 @@ namespace hooks
 					return safetyUnburrowCheck(unit, target);
 				});
 				bool canBurrowAfter = false;
-				//from Ai_Burrowable
-				//
+				// from Ai_Burrowable
 				if (nearest != nullptr)
 				{
 					helper::unburrow(unit);
 				}
 			}
-
 		}
 
-		// Azazel - Sublime Shepherd ability
-		if (unit->id == UnitId::TerranAzazel)
-		{
-			if (scbw::get_generic_rust_value(unit, RustId::ToggleSublimeShepherd) == 1)
-			{
-				scbw::UnitFinder(
-					unit->getX() - 96,
-					unit->getY() - 96,
-					unit->getX() + 96,
-					unit->getY() + 96
-				).forEach([&](Unit* target)
-				{
-					if (target == unit)
-					{
-						return;
-					}
-					if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
-						return;
-					scbw::sendGPTP_aise_cmd(unit, target, GptpId::SetSublimeShepherd, 1, 0, 0);
-				});
-			}
-		}
-
-		// Quarry, Iroleth, Othstoleth, Pennant resource regeneration aura
+		// Quarry, Iroleth, Pennant resource regeneration aura
 		if (unit->sprite != nullptr && unit->mainOrderId != OrderId::Die
 			&& (unit->id == UnitId::TerranQuarry
 				|| unit->id == UnitId::ZergIroleth
-				|| unit->id == UnitId::ZergOthstoleth
 				|| unit->id == UnitId::ProtossPennant))
 		{
-
 			u32 radius;
 			if (unit->id == UnitId::TerranQuarry)
 			{
 				radius = 320;
 			}
-			else if (unit->id == UnitId::ZergIroleth || unit->id == UnitId::ZergOthstoleth)
+			else if (unit->id == UnitId::ZergIroleth)
 			{
 				radius = 224;
 			}

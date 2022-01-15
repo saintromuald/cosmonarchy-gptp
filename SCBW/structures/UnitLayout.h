@@ -146,6 +146,7 @@ enum ExtValueId
 	ValueAmitosis,
 	ValueSomaticImplants,
 	ValueSublimeShepherd,
+	ValueHasSublimeShepherd,
 	ValueWyvernLandGrabX,
 	ValueWyvernLandGrabY,
 	ValueObservanceRend,
@@ -409,7 +410,7 @@ namespace RustId
 		CancelAttachment,
 
 		ToggleReverseThrust,
-		ToggleSublimeShepherd,
+		ToggleSublimeShepherd, // unused
 		ToggleDisruptionField,
 		ToggleTempoChange,
 
@@ -419,13 +420,13 @@ namespace RustId
 }
 
 #include "SCBW\enumerations\TechId.h"
-const u32 string_toggle_on[] = {1807, 1265, 1232};
-const u32 string_toggle_off[] = {1114, 1270, 1233};
-const u32 button_toggle_on[] = {319, 369, 374};
-const u32 button_toggle_off[] = {236, 236, 375};
-const u32 toggle_values[] = {RustId::ToggleSublimeShepherd, RustId::ToggleDisruptionField, RustId::ToggleTempoChange};
-const u32 toggle_abilities[] = {TechId::SublimeShepherd, TechId::DisruptionWeb, TechId::TempoChange};
-const u32 generictoggles = 3;
+const u32 string_toggle_on[] = {1265, 1232};
+const u32 string_toggle_off[] = {1270, 1233};
+const u32 button_toggle_on[] = {369, 374};
+const u32 button_toggle_off[] = {236, 375};
+const u32 toggle_values[] = {RustId::ToggleDisruptionField, RustId::ToggleTempoChange};
+const u32 toggle_abilities[] = {TechId::DisruptionWeb, TechId::TempoChange};
+const u32 generictoggles = 2;
 
 namespace CosmonarchyFlags1
 {

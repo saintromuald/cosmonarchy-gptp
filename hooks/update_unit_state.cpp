@@ -55,14 +55,6 @@ namespace hooks
 					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
 				}
 			}
-			else if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, RustId::ToggleSublimeShepherd) == 1)
-			{
-				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
-				if (unit->energy == 0)
-				{
-					scbw::set_generic_rust_value(unit, RustId::ToggleSublimeShepherd, 0);
-				}
-			}
 			else
 			{ // 004EB526
 				if (unit == nullptr)

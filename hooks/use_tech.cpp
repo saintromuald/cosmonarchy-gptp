@@ -14,26 +14,16 @@ namespace hooks
 		if (firstInList != nullptr)
 		{
 			// Initial check for energy-based switch abilities
-			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel
-				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
-			{
-				TechCapableUnit = true;
-
-			}
-
 			// Not sure if Lanifect needs this anymore
 			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect
 				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1)
 			{
 				TechCapableUnit = true;
-
 			}
-
 			if (tech == TechId::LobotomyMine)
 			{
 				TechCapableUnit = true;
 			}
-
 		}
 		if (!TechCapableUnit)
 		{
@@ -43,11 +33,13 @@ namespace hooks
 			}
 			if (firstInList != nullptr)
 			{
+				/*
 				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel
 					&& scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
 				{
 					TechCapableUnit = true;
 				}
+				*/
 			}
 			if (!TechCapableUnit)
 			{
@@ -227,21 +219,6 @@ namespace hooks
 				buf[0] = 0x99;
 				buf[1] = NewGameCommand::IssueCTFCop2;
 				buf[2] = *ACTIVE_PLAYER_ID;
-				helper::QueueGameCommand(buf, 0xc);
-			} break;
-			case TechId::SublimeShepherd:
-			{
-				s32 action = 1;
-				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
-				{
-					action = 0;
-				}
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
-				buf[0] = 0x99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = action;
-				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::ToggleSublimeShepherd;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::LazarusAgent:

@@ -435,24 +435,6 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::TerranAzazel:
-			{
-				if (scbw::get_generic_rust_value(unit, RustId::ToggleSublimeShepherd) == 1)
-				{
-					scbw::decloakProc(unit);
-					if (!unit->getOverlay(ImageId::SublimeShepherdOverlay))
-					{
-						unit->sprite->createTopOverlay(ImageId::SublimeShepherdOverlay);
-					}
-				}
-				else
-				{
-					if (unit->getOverlay(ImageId::SublimeShepherdOverlay))
-					{
-						unit->sprite->removeOverlay(ImageId::SublimeShepherdOverlay);
-					}
-				}
-			} break;
 			case UnitId::ProtossStarSovereign:
 			{
 				// Star Sovereign - Intervention Missiles
@@ -1213,6 +1195,28 @@ namespace hooks
 					}
 				});
 			} break;
+			case UnitId::TerranAzazel:
+			{
+				// Tag nearby units for Sublime Shepherd
+				scbw::UnitFinder(
+					unit->getX() - 128,
+					unit->getY() - 128,
+					unit->getX() + 128,
+					unit->getY() + 128
+				).forEach([&](Unit* target)
+					{
+						if (target == unit)
+						{
+							return;
+						}
+						if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+						{
+							return;
+						}
+						UnitExt* targetExt = globals.GetUnitExt(target);
+						targetExt->values[ValueHasSublimeShepherd] = 1;
+					});
+			} break;
 			case UnitId::SharedAxitrilisk:
 			{
 				// Axitrilisk - play sound on shield loss, timer of 5 seconds per unit
@@ -1232,6 +1236,40 @@ namespace hooks
 			&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle)
 		{
 			unit->movementFlags &= ~MovementFlags::Accelerating;
+		}
+
+		// Sublime Shepherd - Check tagged units for nearby Azazels
+		unitExt->values[ValueSublimeShepherd] = 0;
+		if (unitExt->values[ValueHasSublimeShepherd])
+		{
+			unitExt->values[ValueHasSublimeShepherd] = 0;
+			scbw::UnitFinder(
+				unit->getX() - 128,
+				unit->getY() - 128,
+				unit->getX() + 128,
+				unit->getY() + 128
+			).forEach([&](Unit* target)
+				{
+					if (target == unit)
+					{
+						return;
+					}
+					if (target->id != UnitId::TerranAzazel)
+					{
+						return;
+					}
+					unitExt->values[ValueSublimeShepherd]++;
+				});
+		}
+
+		// Azazel - Sublime Shepherd overlay
+		if (unitExt->values[ValueSublimeShepherd] && !unit->getOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::getOverlayOffset(unit->id)))
+		{
+			unit->sprite->createTopOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::getOverlayOffset(unit->id));
+		}
+		else if (unit->getOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::getOverlayOffset(unit->id)) && !unitExt->values[ValueSublimeShepherd])
+		{
+			unit->sprite->removeOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::getOverlayOffset(unit->id));
 		}
 
 		// Fix target clearing bug

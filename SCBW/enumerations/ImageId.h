@@ -1067,6 +1067,9 @@ enum Enum {
 	DermalAccelerantMedium				= 1463,
 	DermalAccelerantLarge				= 1464,
 	DermalAccelerantXLarge				= 1465,
+	SublimeShepherdOverlayLarge			= 1466,
+	SublimeShepherdOverlayMedium		= 1467,
+	SublimeShepherdOverlaySmall			= 1468,
 
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,
