@@ -1209,10 +1209,6 @@ namespace hooks
 						{
 							return;
 						}
-						if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
-						{
-							return;
-						}
 						UnitExt* targetExt = globals.GetUnitExt(target);
 						targetExt->values[ValueHasSublimeShepherd] = 1;
 					});
