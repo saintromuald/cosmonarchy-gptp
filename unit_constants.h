@@ -85,7 +85,7 @@ const s32 EmergencyDetonationTimer = 5 * 24 + 1;
 const s32 ControlledDemolitionTimer = 10 * 24 + 1;
 
 // Treasury
-const s32 TreasuryIncrease = 4;
+const s32 TreasuryIncrease = 8;
 
 // PROTOSS \\
 
