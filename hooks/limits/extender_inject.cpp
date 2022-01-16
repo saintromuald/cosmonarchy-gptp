@@ -470,14 +470,14 @@ namespace hooks
 	void injectLimitHooks()
 	{
 
-		//		hooks::injectCCMUHooks();
-		//		hooks::sfxExtender();
+//		hooks::injectCCMUHooks();
+//		hooks::sfxExtender();
 		newSfxExtender();
-		//		injectPortdataLimits();
-		//		hooks::injectTblExtender();
+//		injectPortdataLimits();
+//		hooks::injectTblExtender();
 		insaneFlingyIdExtender();
 
-		//		newAttackExtender(); // if extended attack config option is not enabled in aise, will cause aise crashes
+//		newAttackExtender(); // if extended attack config option is not enabled in aise, will cause aise crashes
 
 		jmpPatch(preInitDataWrapper, 0x004DAF31);
 		/*
