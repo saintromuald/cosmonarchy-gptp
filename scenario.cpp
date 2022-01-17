@@ -20,11 +20,11 @@ bool is_map(u32 campaign, u32 map) {
 	Shortcomings:
 		P - Heroes & especially supers will not spawn if their race's slot is not open; can be fixed by adding more heroes & especially supers
 	Bugs:
-		V - Frauds occasionally initialize multiple towns
+		V - Frauds occasionally initialize multiple towns (maybe not taking into account spawned town center?)
 		P/V - Fraud colors are not always accurate (needs more testing)
 		P - Frauds fail to build while:
 			- supply blocked (should be fixed by setting supplies, maybe didn't work due to old towns not being cleared?)
-			- an old town is still active (should be fixed by Pr0's AI changes)
+			- an old town is still active (should be fixed by P's AI changes)
 	Todo:
 		V - Limit worker count to 30 (or maybe 2.5 * number of mineral fields + 3.5 * number of geysers, rounding up, if we can get that data in GPTP)
 		V - Add some kind of dialogue system
@@ -193,6 +193,103 @@ enum {
 	FraudClass_Count,
 };
 
+/*	Fraud alliances:
+	If the following frauds are on the field at the same time, they should ally immediately, with a special dialogue event that plays instead of the newcomer's normal spawn quote.
+	Line breaks denote new alliances.
+
+	//// One for the Future
+
+	// New Ruska
+	Fraud_AlexeiUkov
+	Fraud_CerebrateStalin
+
+	// Nah, Fuck That!
+	Fraud_BitcoinBoris
+	Fraud_CryptoCarl
+	Fraud_Ba3lethal
+
+	// East Aero Progamers
+	Fraud_Veeq7
+	Fraud_knightoftherealm
+
+	// StarEdit Crusaders
+	Fraud_AndyRoseUh
+	Fraud_KKKhris
+
+	// ColoredVaguery
+	Fraud_LightenedRealities
+	Fraud_AchromaticHalfdreams
+
+	// Of the Utalian Peninsula...
+	Fraud_Todsdadpat
+	Fraud_Dynamo
+
+	// Chinese Translators
+	Fraud_Winnie
+	Fraud_Piglet
+
+	// The Wireframers
+	Fraud_jun3hong
+	Fraud_DarkenedFantasies
+
+	// The 3%
+	Fraud_UllenBankOnMeBigmunney
+	Fraud_A
+
+	// The Vile Voidspeakers
+	Fraud_ToweringPigprophet
+	Fraud_AnalCrowsummoner
+	Fraud_PissingPorncultist
+	Fraud_BearborneArkanianpussy
+	Fraud_DoublingWuckdevourer
+	Fraud_MongoloidPointcorruptor
+	Fraud_CalendaredRageboy
+	Fraud_WorthyPizzasniffer
+	Fraud_SkeletalTodzombie
+
+	// Aged Emperors
+	Fraud_HoopThrower
+	Fraud_RimTechCombot
+
+	// Gatesoft Microbills
+	Fraud_CustomerSupporter
+	Fraud_DigitalRightsManager
+
+	// The Shitfling Sinners
+	Fraud_SelloutSam
+	Fraud_PlagiaristPaul
+
+	// Fraudulent Task Force
+	Fraud_TonyTron
+	Fraud_Veeq8
+
+	//// Simulation Theory
+
+	// Ego Death
+	Fraud_Pr0nogo
+	Fraud_iquare
+
+	// We May Not Be Enemies, But We Can Never Be Friends.
+	Fraud_AfricanizedCrowkenyan
+	Fraud_Bonzibuddy
+
+	// The Mediocrity Principle
+	Fraud_Desler
+	Fraud_Metathrom
+
+	// N? Ah.
+	Fraud_NThrower
+	Fraud_IskatuMesk
+
+	// Likewise, My Dark Brother
+	Fraud_Zeratool
+	Fraud_FRAUDGrandpaOfTony
+
+	// From YouTube With Love
+	Fraud_DK
+	Fraud_Ultralisks
+*/
+
 const char* fraud_names[] = {
 	"None",
 	//// -- The Legion of Frauds
@@ -215,7 +312,7 @@ const char* fraud_names[] = {
 	"<1B>jun3hong",
 	"<05>Digital Rights Manager",
 	"<10>Zeratool",
-	"<03>FRAUDGrandpaOfTony",
+	"<03>F.R.A.U.D. Grandpa of Tony",
 	"<1F>DK",
 	"<03>iquare",
 	"<0E>Metathrom",
