@@ -197,8 +197,6 @@ enum {
 	If the following frauds are on the field at the same time, they should ally immediately, with a special dialogue event that plays instead of the newcomer's normal spawn quote.
 	Line breaks denote new alliances.
 
-	//// One for the Future
-
 	// New Ruska
 	Fraud_AlexeiUkov
 	Fraud_CerebrateStalin
@@ -247,10 +245,6 @@ enum {
 	Fraud_WorthyPizzasniffer
 	Fraud_SkeletalTodzombie
 
-	// Aged Emperors
-	Fraud_HoopThrower
-	Fraud_RimTechCombot
-
 	// Gatesoft Microbills
 	Fraud_CustomerSupporter
 	Fraud_DigitalRightsManager
@@ -263,31 +257,9 @@ enum {
 	Fraud_TonyTron
 	Fraud_Veeq8
 
-	//// Simulation Theory
-
 	// Ego Death
 	Fraud_Pr0nogo
 	Fraud_iquare
-
-	// We May Not Be Enemies, But We Can Never Be Friends.
-	Fraud_AfricanizedCrowkenyan
-	Fraud_Bonzibuddy
-
-	// The Mediocrity Principle
-	Fraud_Desler
-	Fraud_Metathrom
-
-	// N? Ah.
-	Fraud_NThrower
-	Fraud_IskatuMesk
-
-	// Likewise, My Dark Brother
-	Fraud_Zeratool
-	Fraud_FRAUDGrandpaOfTony
-
-	// From YouTube With Love
-	Fraud_DK
-	Fraud_Ultralisks
 */
 
 const char* fraud_names[] = {
