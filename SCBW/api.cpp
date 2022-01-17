@@ -2051,4 +2051,9 @@ namespace scbw
 				|| unit_id == UnitId::ResourceVespeneGeyser;
 		}
 	}
+
+	void set_cmbw_ai_preference(u16 unit_id, u32 player)
+	{
+		unit_deaths[unit_id].player[player] = 1;
+	}
 }

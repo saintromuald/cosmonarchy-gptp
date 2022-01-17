@@ -27,8 +27,7 @@ bool is_map(u32 campaign, u32 map) {
 			- an old town is still active (should be fixed by Pr0's AI changes)
 	Todo:
 		V - Limit worker count to 30 (or maybe 2.5 * number of mineral fields + 3.5 * number of geysers, rounding up, if we can get that data in GPTP)
-		V - Finish "speeding up" AI build orders (Terran DONE, Protoss TBD, Zerg TBD)
-		V - Add automatic dialogue system
+		V - Add some kind of dialogue system
 		P - Add more AI build orders for more varied fraud behavior
 		P - Make all frauds use unique player colors
 		P - Audit fraud spawns for accuracy
@@ -125,20 +124,23 @@ enum {
 	/*
 	-- The Supreme Kings
 	All members of this type are hostile to one another, deploy with additional starting units and resources, and have an increased resource multiplier.
-	A super first arrives after 8 spawns. Each time a super is not spawned, the chance to spawn a super increases by 20%.
+	A super first arrives after 5 spawns. Each time a super is not spawned, the chance to spawn a super increases by 20%.
 	When a super spawns, another one cannot arrive until after 3 spawns, after which the chance returns to the default 20%.
 	*/
 	// == TERRAN ==
 	FraudSuper_Ackmed,                  // --    Raider + Rush							-- <10> Harakan
 	FraudSuper_TheDon,					// --	 Orbital + Greed						-- <06> Minotaur
+	FraudSuper_Tolrim,					// --	 Armor + Timing							-- <10> Eidolon
 
 	// == PROTOSS ==
 	FraudSuper_Tetragram,               // --    Ranger + Greed							-- <0E> Demiurge
-	FraudSuper_Amon,					// --	 Profane + Rush							-- <0E> Mind Tyrant
+	FraudSuper_Amon,					// --	 Profane + Rush							-- <08> Mind Tyrant
+	FraudSuper_TheGreatDevourer,		// --	 General + Timing						-- <0E> Accantor
 
 	// == ZERG ==
 	FraudSuper_Zerghere,                // --    Swarm + Greed							-- <10> Hatchery
 	FraudSuper_Connor,					// --	 Assault + Rush							-- <16> Bactalisk
+	FraudSuper_Kagg,					// --	 Timing + Rush							-- <15> Anticthon
 
 	/*
 	-- The Cosmonarch
@@ -174,11 +176,11 @@ enum {
 	FraudHero_ZergLast = FraudHero_RektSon,
 
 	FraudSuper_TerranFirst = FraudSuper_Ackmed,
-	FraudSuper_TerranLast = FraudSuper_TheDon,
+	FraudSuper_TerranLast = FraudSuper_Tolrim,
 	FraudSuper_ProtossFirst = FraudSuper_Tetragram,
-	FraudSuper_ProtossLast = FraudSuper_Amon,
+	FraudSuper_ProtossLast = FraudSuper_TheGreatDevourer,
 	FraudSuper_ZergFirst = FraudSuper_Zerghere,
-	FraudSuper_ZergLast = FraudSuper_Connor,
+	FraudSuper_ZergLast = FraudSuper_Kagg,
 
 	FraudGod_FinalFirst = FraudGod_Hand1,
 	FraudGod_FinalLast = FraudGod_Hand6,
@@ -273,14 +275,17 @@ const char* fraud_names[] = {
 	// == TERRAN ==
 	"<10>Ackmed",
 	"<06>The Don",
+	"<10>Mathias Tolrim",
 
 	// == PROTOSS ==
 	"<0E>Tetragram",
 	"<08>Amon",
+	"<0E>The Great Devourer",
 
 	// == ZERG ==
 	"<10>Zerghere",
 	"<16>Connor",
+	"<15>Kagg",
 
 	// == RANDOM ==
 	"<06>God's Hand",
@@ -422,7 +427,6 @@ FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point16 pos) 
 }
 
 void init_fraud_spawns() {
-	// Todo: remove units properly
 	Unit* next = 0;
 	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
 		next = unit->player_link.next;
@@ -493,11 +497,12 @@ void add_fraud_unit(u32 fraud, u32 race, FraudSpawnUnit unit, u32 min_index = 0)
 void init_fraud_units() {
 	for (u32 i = 0; i < Fraud_Count; ++i) {
 		add_fraud_unit(i, RaceId::Terran,  {12, UnitId::TerranMason});
+		add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranSeraph});
 		add_fraud_unit(i, RaceId::Protoss, {12, UnitId::ProtossScribe});
+		add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossWitness});
 		add_fraud_unit(i, RaceId::Zerg,    {12, UnitId::ZergDroleth});
+		add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergIroleth});
 	}
-
-	// Todo: Finish adding units for all personalities
 
 	//// Frauds
 
@@ -996,7 +1001,7 @@ void init_fraud_units() {
 	fraud_spawn.frauds[FraudSuper_Ackmed][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_None, AiBuildOrder_TerranRaider_HolyAckmeds, PlayerColor::BurntUmber};
 	add_fraud_unit(FraudSuper_Ackmed, RaceId::Terran, {24, UnitId::TerranHarakan});
 	add_fraud_unit(FraudSuper_Ackmed, RaceId::Terran, {8, UnitId::TerranHeracles});
-	add_fraud_unit(FraudSuper_Ackmed, RaceId::Terran, {5, UnitId::TerranSalamander});
+	add_fraud_unit(FraudSuper_Ackmed, RaceId::Terran, {6, UnitId::TerranSalamander});
 	add_fraud_unit(FraudSuper_Ackmed, RaceId::Terran, {2, UnitId::TerranSeraph});
 
 	// The Don
@@ -1005,6 +1010,19 @@ void init_fraud_units() {
 	add_fraud_unit(FraudSuper_TheDon, RaceId::Terran, {9, UnitId::TerranCentaur});
 	add_fraud_unit(FraudSuper_TheDon, RaceId::Terran, {6, UnitId::TerranMinotaur});
 	add_fraud_unit(FraudSuper_TheDon, RaceId::Terran, {3, UnitId::TerranPhobos});
+	add_fraud_unit(FraudSuper_Tolrim, RaceId::Terran, {2, UnitId::TerranAzazel});
+
+	// Tolrim
+	fraud_spawn.frauds[FraudSuper_Tolrim][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Redwood};
+	add_fraud_unit(FraudSuper_Tolrim, RaceId::Terran, {4, UnitId::TerranEidolon});
+	add_fraud_unit(FraudSuper_Tolrim, RaceId::Terran, {2, UnitId::TerranAutocrat});
+	add_fraud_unit(FraudSuper_Tolrim, RaceId::Terran, {6, UnitId::TerranMadrigal});
+	add_fraud_unit(FraudSuper_Tolrim, RaceId::Terran, {4, UnitId::TerranPaladin});
+	add_fraud_unit(FraudSuper_Tolrim, RaceId::Terran, {6, UnitId::TerranPazuzu});
+	add_fraud_unit(FraudSuper_Tolrim, RaceId::Terran, {4, UnitId::TerranClaymore});
+	add_fraud_unit(FraudSuper_Tolrim, RaceId::Terran, {3, UnitId::TerranPenumbra});
+	add_fraud_unit(FraudSuper_Tolrim, RaceId::Terran, {2, UnitId::TerranAzazel});
+	add_fraud_unit(FraudSuper_Tolrim, RaceId::Terran, {1, UnitId::TerranSeraph});
 
 	// Tetragram
 	fraud_spawn.frauds[FraudSuper_Tetragram][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_None, AiBuildOrder_ProtossRanger_1GateExpo, PlayerColor::PalatinateBlue};
@@ -1022,6 +1040,17 @@ void init_fraud_units() {
 	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {6, UnitId::SharedEmpress});
 	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {1, UnitId::ProtossAnthelion});
 
+	// Tetragram
+	fraud_spawn.frauds[FraudSuper_Tetragram][RaceId::Protoss] = {AiPersonality_ProtossGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::DelftBlue};
+	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {4, UnitId::ProtossIdol});
+	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {4, UnitId::ProtossGolem});
+	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {8, UnitId::ProtossAtreus});
+	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {6, UnitId::ProtossAccantor});
+	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {4, UnitId::ProtossArchitect});
+	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {3, UnitId::ProtossClarion});
+	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {3, UnitId::ProtossMagister});
+	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {1, UnitId::ProtossDidact});
+
 	// Zerghere
 	fraud_spawn.frauds[FraudSuper_Zerghere][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_None, AiBuildOrder_ZergSwarm_GatesOfHell, PlayerColor::DarkLavender};
 	add_fraud_unit(FraudSuper_Zerghere, RaceId::Zerg, {20, UnitId::ZergZethrokor});
@@ -1034,6 +1063,23 @@ void init_fraud_units() {
 	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {15, UnitId::ZergBactalisk});
 	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {12, UnitId::ZergAlmaksalisk});
 	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {10, UnitId::SharedAxitrilisk});
+
+	// Kagg
+	fraud_spawn.frauds[FraudSuper_Kagg][RaceId::Zerg] = {AiPersonality_ZergGeneral, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::SmokyBlack};
+	// Todo: figure out how to pass unit preferences to player
+	//scbw::set_cmbw_ai_preference(UnitId::ZergVorvrokor, current_player);
+	//scbw::set_cmbw_ai_preference(UnitId::ZergBactalisk, current_player);
+	//scbw::set_cmbw_ai_preference(UnitId::ZergGeszithalor, current_player);
+	//scbw::set_cmbw_ai_preference(UnitId::ZergUltrokor, current_player);
+	//scbw::set_cmbw_ai_preference(UnitId::ZergIsthrathaleth, current_player);
+	//scbw::set_cmbw_ai_preference(UnitId::ZergAlkajelisk, current_player);
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {20, UnitId::ZergZethrokor});
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {10, UnitId::ZergVorvrokor});
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {10, UnitId::ZergHydralisk});
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {8, UnitId::ZergBactalisk});
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {5, UnitId::ZergZoryusthaleth});
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {10, UnitId::ZergUltrokor});
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {5, UnitId::ZergGeszithalor});
 
 	//// God - TBD
 

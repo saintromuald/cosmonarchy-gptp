@@ -555,4 +555,5 @@ namespace scbw
 	bool transportIsEmpty(Unit* transport);
 	bool unitIdUsesXlargeOverlays(u16 unitId);
 	bool unitIdIsResource(u16 unit_id, bool count_gas_structures);
+	void set_cmbw_ai_preference(u16 unit_id, u32 player);
 }
