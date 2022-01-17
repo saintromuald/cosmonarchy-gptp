@@ -31,11 +31,65 @@ bool is_map(u32 campaign, u32 map) {
 		P - Add more AI build orders for more varied fraud behavior
 		P - Make all frauds use unique player colors
 		P - Audit fraud spawns for accuracy
+
+	Proposed dialogue rules:
+		1. God introduces the map
+			i.		Use bank data to track number of attempts and number of completions
+			ii.		Randomize through available lines (varies depending on the above calculation)
+		2. The initial frauds are revealed
+			i.		Initial fraud 1 plays their spawn line
+			ii.		Initial fraud 2 plays their spawn line
+			iii.	God has a chance to play a taunting line if the number of attempts is high enough
+		3. If an incoming fraud will ally with the player...
+			i.		God acknowledges the alliance first, before the fraud spawns
+			ii.		The incoming fraud acknowledges the alliance last, right after their spawn line
+		4. If an incoming fraud will ally with another fraud...
+			i.		God acknowledges the alliance first, before the fraud spawns
+			ii.		The established fraud acknowledges the alliance second, after the fraud spawns
+			iii.	The incoming fraud acknowledges the alliance last, after the established fraud's line
+		5. A fraud spawns,
+		6. A fraud and the player do battle for the first time,
+		7. A fraud destroys one of the player's bases,
+		8. A fraud loses a base to the player,
+		9. A fraud kills a large number of the player's units,
+		10. A fraud loses a large number of units to the player,
+		11. A fraud defeats another fraud,
+		12. A fraud loses to another fraud,
+		13. A fraud defeats the player,
+		14. A fraud loses to the player
+			i.		Randomize through available lines (average of 3 per event)
+		15. If an incoming fraud is the first hero of the run,
+		16. If an incoming fraud is the first super of the run
+			i.		God acknowledges the arrival of a hero or super, before they spawn
+		17. If an incoming fraud is a hero, and there is another hero on the map...
+			i.		God acknowledges the pending alliance, before the hero spawns
+		18. When the player destroys a hero for the first time,
+		19. When the player destroys a super for the first time
+			i.		Depending on how long the hero or super was active, the response from God will change
+			ii.		God "congratulates" the player on their achievement (varies depending on the above calculation)
+		20. When the player is 1/3rd of the way through,
+		21. When the player is 2/3rds of the way through
+			i.		Use bank data to track number of attempts and number of completions
+			ii.		Track the average amount of uptime for frauds, heroes, and supers, as well as game time and unit deaths, to approximate the challenge the player has faced thus far
+			iii.	God acknowledges the player's progress (varies depending on the above calculations)
+		22. When the player completes the marathon
+			i.		Use bank data to track number of attempts and number of completions
+			ii.		Track the average amount of uptime for frauds, heroes, and supers, as well as game time and unit deaths, to approximate the challenge the player has faced thus far
+			iii.	God acknowledges the player's progress (varies depending on the above calculations)
+			iv.		God spawns, with a line for each hand
+		23.	When a new hand spawns
+			i.		Use bank data to track number of attempts and number of completions
+			ii.		God reaffirms his greatness (varies depending on the above calculations)
+		24.	If God defeats the player
+			i.		Use bank data to track number of attempts and number of completions
+			ii.		God acknowledges the player's failure (varies depending on the above calculations)
+		25. If the player defeats God
+			i.		Use bank data to track number of attempts and number of completions
+			ii.		God acknowledges the player's success (varies depending on the above calculations)
 */
 
 enum {
 	Fraud_None,
-
 	/*
 	-- The Legion of Frauds
 	All members of this force are hostile to one another.
@@ -96,7 +150,6 @@ enum {
 	Fraud_Veeq8,						// --	Orbital / Swarm / Ranger + Timing		--	<1A> Didact
 	Fraud_Bonzibuddy,					// --	General + Greed							--	<16> Command Center
 	Fraud_IskatuMesk,					// --	Shadow / Assault / Profane + Rush		--	<15> Mutalisk
-
 	/*
 	-- The Hall of Heroes
 	All members of this type are allied to one another, and deploy with additional starting units and resources.
@@ -120,7 +173,6 @@ enum {
 	FraudHero_Tuzor,                    // --    Miscreant + Greed						-- <11> Anticthon
 	FraudHero_Charlie,                  // --    Assault + Timing						-- <16> Axitrilisk
 	FraudHero_RektSon,                  // --    General + Rush							-- <11> Lakizilisk
-
 	/*
 	-- The Supreme Kings
 	All members of this type are hostile to one another, deploy with additional starting units and resources, and have an increased resource multiplier.
@@ -141,12 +193,11 @@ enum {
 	FraudSuper_Zerghere,                // --    Swarm + Greed							-- <10> Hatchery
 	FraudSuper_Connor,					// --	 Assault + Rush							-- <16> Bactalisk
 	FraudSuper_Kagg,					// --	 Timing + Rush							-- <15> Anticthon
-
 	/*
 	-- The Cosmonarch
 	The final boss of the level awaits any player who can defeat 33 enemies in a single run.
 	The Cosmonarch spawns controlling three distinct players at once, all of which are allied to each other.
-	Every three minutes, another hand of The Cosmonarch arrives, to a maxmimum of six.
+	Every one minute, another hand of The Cosmonarch arrives, to a maximum of six.
 	Frauds, heroes, and supers can no longer spawn after The Cosmonarch appears.
 	*/
 	// == RANDOM ==
