@@ -243,74 +243,104 @@ enum {
 	FraudClass_Count,
 };
 
-/*	Fraud alliances:
-	If the following frauds are on the field at the same time, they should ally immediately, with a special dialogue event that plays instead of the newcomer's normal spawn quote.
-	Line breaks denote new alliances.
+// Fraud alliances:
+// If the following frauds are on the field at the same time, they should ally immediately, with a special dialogue event that plays instead of the newcomer's normal spawn quote.
+// Line breaks denote new alliances.
+#define AlliancePlayerCap 16
+u32 fraud_alliances[][AlliancePlayerCap] = {
 
 	// New Ruska
-	Fraud_AlexeiUkov
-	Fraud_CerebrateStalin
+	{
+		Fraud_AlexeiUkov,
+		Fraud_CerebrateStalin,
+	},
 
 	// Nah, Fuck That!
-	Fraud_BitcoinBoris
-	Fraud_CryptoCarl
-	Fraud_Ba3lethal
+	{
+		Fraud_BitcoinBoris,
+		Fraud_CryptoCarl,
+		Fraud_Ba3lethal,
+	},
 
 	// East Aero Progamers
-	Fraud_Veeq7
-	Fraud_knightoftherealm
+	{
+		Fraud_Veeq7,
+		Fraud_knightoftherealm,
+	},
 
 	// StarEdit Crusaders
-	Fraud_AndyRoseUh
-	Fraud_KKKhris
+	{
+		Fraud_AndyRoseUh,
+		Fraud_KKKhris,
+	},
 
 	// ColoredVaguery
-	Fraud_LightenedRealities
-	Fraud_AchromaticHalfdreams
+	{
+		Fraud_LightenedRealities,
+		Fraud_AchromaticHalfdreams,
+	},
 
 	// Of the Utalian Peninsula...
-	Fraud_Todsdadpat
-	Fraud_Dynamo
+	{
+		Fraud_TodsDadPat,
+		Fraud_Dynamo,
+	},
 
 	// Chinese Translators
-	Fraud_Winnie
-	Fraud_Piglet
+	{
+		Fraud_Winnie,
+		Fraud_Piglet,
+	},
 
 	// The Wireframers
-	Fraud_jun3hong
-	Fraud_DarkenedFantasies
+	{
+		Fraud_jun3hong,
+		Fraud_DarkenedFantasies,
+	},
 
 	// The 3%
-	Fraud_UllenBankOnMeBigmunney
-	Fraud_A
+	{
+		Fraud_UllenBankOnMeBigmunney,
+		Fraud_A,
+	},
 
 	// The Vile Voidspeakers
-	Fraud_ToweringPigprophet
-	Fraud_AnalCrowsummoner
-	Fraud_PissingPorncultist
-	Fraud_BearborneArkanianpussy
-	Fraud_DoublingWuckdevourer
-	Fraud_MongoloidPointcorruptor
-	Fraud_CalendaredRageboy
-	Fraud_WorthyPizzasniffer
-	Fraud_SkeletalTodzombie
+	{
+		Fraud_ToweringPigprophet,
+		Fraud_AnalCrowsummoner,
+		Fraud_PissingPorncultist,
+		Fraud_BearborneArkanianpussy,
+		Fraud_DoublingWuckdevourer,
+		Fraud_MongoloidPointcorruptor,
+		Fraud_CalendaredRageboy,
+		Fraud_WorthyPizzasniffer,
+		Fraud_SkeletalTodzombie,
+	},
 
 	// Gatesoft Microbills
-	Fraud_CustomerSupporter
-	Fraud_DigitalRightsManager
+	{
+		Fraud_CustomerSupporter,
+		Fraud_DigitalRightsManager,
+	},
 
 	// The Shitfling Sinners
-	Fraud_SelloutSam
-	Fraud_PlagiaristPaul
+	{
+		Fraud_SelloutSam,
+		Fraud_PlagiaristPaul,
+	},
 
 	// Fraudulent Task Force
-	Fraud_TonyTron
-	Fraud_Veeq8
+	{
+		Fraud_TonyTron,
+		Fraud_Veeq8,
+	},
 
 	// Ego Death
-	Fraud_Pr0nogo
-	Fraud_iquare
-*/
+	{
+		Fraud_Pr0nogo,
+		Fraud_iquare,
+	},
+};
 
 const char* fraud_names[] = {
 	"None",
@@ -430,6 +460,8 @@ struct FraudInfo {
 	u32 build_type;
 	u32 build_order;
 	u32 color;
+
+	u8 deaths[UnitId::Count];
 };
 
 #define FraudSpawnCap 100
@@ -1159,16 +1191,16 @@ void init_fraud_units() {
 	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {6, UnitId::SharedEmpress});
 	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {1, UnitId::ProtossAnthelion});
 
-	// Tetragram
-	fraud_spawn.frauds[FraudSuper_Tetragram][RaceId::Protoss] = {AiPersonality_ProtossGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::DelftBlue};
-	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {4, UnitId::ProtossIdol});
-	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {4, UnitId::ProtossGolem});
-	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {8, UnitId::ProtossAtreus});
-	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {6, UnitId::ProtossAccantor});
-	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {4, UnitId::ProtossArchitect});
-	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {3, UnitId::ProtossClarion});
-	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {3, UnitId::ProtossMagister});
-	add_fraud_unit(FraudSuper_Tetragram, RaceId::Protoss, {1, UnitId::ProtossDidact});
+	// The Great Devourer
+	fraud_spawn.frauds[FraudSuper_TheGreatDevourer][RaceId::Protoss] = {AiPersonality_ProtossGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::DelftBlue};
+	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {4, UnitId::ProtossIdol});
+	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {4, UnitId::ProtossGolem});
+	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {8, UnitId::ProtossAtreus});
+	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {6, UnitId::ProtossAccantor});
+	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {4, UnitId::ProtossArchitect});
+	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {3, UnitId::ProtossClarion});
+	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {3, UnitId::ProtossMagister});
+	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {1, UnitId::ProtossDidact});
 
 	// Zerghere
 	fraud_spawn.frauds[FraudSuper_Zerghere][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_None, AiBuildOrder_ZergSwarm_GatesOfHell, PlayerColor::Auburn};
@@ -1185,20 +1217,19 @@ void init_fraud_units() {
 
 	// Kagg
 	fraud_spawn.frauds[FraudSuper_Kagg][RaceId::Zerg] = {AiPersonality_ZergGeneral, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::SmokyBlack};
-	// Todo: figure out how to pass unit preferences to player
-	//scbw::set_cmbw_ai_preference(UnitId::ZergVorvrokor, current_player);
-	//scbw::set_cmbw_ai_preference(UnitId::ZergBactalisk, current_player);
-	//scbw::set_cmbw_ai_preference(UnitId::ZergGeszithalor, current_player);
-	//scbw::set_cmbw_ai_preference(UnitId::ZergUltrokor, current_player);
-	//scbw::set_cmbw_ai_preference(UnitId::ZergIsthrathaleth, current_player);
-	//scbw::set_cmbw_ai_preference(UnitId::ZergAlkajelisk, current_player);
-	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {20, UnitId::ZergZethrokor});
-	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {10, UnitId::ZergVorvrokor});
-	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {10, UnitId::ZergHydralisk});
-	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {8, UnitId::ZergBactalisk});
-	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {5, UnitId::ZergZoryusthaleth});
-	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {10, UnitId::ZergUltrokor});
-	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {5, UnitId::ZergGeszithalor});
+	fraud_spawn.frauds[FraudSuper_Kagg][RaceId::Zerg].deaths[UnitId::ZergVorvrokor] = 1;
+	fraud_spawn.frauds[FraudSuper_Kagg][RaceId::Zerg].deaths[UnitId::ZergBactalisk] = 1;
+	fraud_spawn.frauds[FraudSuper_Kagg][RaceId::Zerg].deaths[UnitId::ZergGeszithalor] = 1;
+	fraud_spawn.frauds[FraudSuper_Kagg][RaceId::Zerg].deaths[UnitId::ZergUltrokor] = 1;
+	fraud_spawn.frauds[FraudSuper_Kagg][RaceId::Zerg].deaths[UnitId::ZergIsthrathaleth] = 1;
+	fraud_spawn.frauds[FraudSuper_Kagg][RaceId::Zerg].deaths[UnitId::ZergAlkajelisk] = 1;
+	add_fraud_unit(FraudSuper_Kagg, RaceId::Zerg, {20, UnitId::ZergZethrokor});
+	add_fraud_unit(FraudSuper_Kagg, RaceId::Zerg, {10, UnitId::ZergVorvrokor});
+	add_fraud_unit(FraudSuper_Kagg, RaceId::Zerg, {10, UnitId::ZergHydralisk});
+	add_fraud_unit(FraudSuper_Kagg, RaceId::Zerg, {8, UnitId::ZergBactalisk});
+	add_fraud_unit(FraudSuper_Kagg, RaceId::Zerg, {5, UnitId::ZergZoryusthaleth});
+	add_fraud_unit(FraudSuper_Kagg, RaceId::Zerg, {10, UnitId::ZergUltrokor});
+	add_fraud_unit(FraudSuper_Kagg, RaceId::Zerg, {5, UnitId::ZergGeszithalor});
 
 	//// God - TBD
 
@@ -1263,6 +1294,27 @@ void run_ai(u32 player, Point16 pos, s32 name) {
 	} else {
 		scbw::printf("scenario.cpp, run_ai: Invalid AI block!");
 	}
+}
+
+bool fraud_share_alliance(u32 a, u32 b) {
+	u32* alliance = 0;
+	for (u32 i = 0; i < ARRAY_SIZE(fraud_alliances); ++i) {
+		for (u32 j = 0; j < AlliancePlayerCap; ++j) {
+			if (fraud_alliances[i][j] == a) {
+				alliance = fraud_alliances[i];
+				break;
+			}
+		}
+	}
+
+	if (alliance) {
+		for (u32 i = 0; i < AlliancePlayerCap; ++i) {
+			if (alliance[i] == b) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void set_ally(u32 a, u32 b, bool ally) {
@@ -1435,6 +1487,10 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				sequence->unit_index = 0;
 				sequence->location = spawn_location;
 
+				for (u32 i = 0; i < UnitId::Count; ++i) {
+					unit_deaths[i].player[player] = fraud_spawn.frauds[next_fraud][race].deaths[i];
+				}
+
 				unit_deaths[UnitId::Spell_DisruptionWeb].player[player] = fraud_spawn.frauds[next_fraud][race].personality;
 				unit_deaths[UnitId::ProtossPlasmaShell].player[player] = fraud_spawn.frauds[next_fraud][race].build_type;
 				unit_deaths[UnitId::Spell_DarkSwarm].player[player] = fraud_spawn.frauds[next_fraud][race].build_order;
@@ -1502,7 +1558,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 						continue;
 					}
 					if (fraud_spawn.sequence[player-1].fraud_class == fraud_spawn.sequence[i-1].fraud_class &&
-						(fraud_spawn.sequence[player-1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[player-1].fraud_class == FraudClass_God)) {
+						(fraud_share_alliance(player, i) || fraud_spawn.sequence[player - 1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[player - 1].fraud_class == FraudClass_God)) {
 						set_ally(player, i, true);
 					} else {
 						set_ally(player, i, false);

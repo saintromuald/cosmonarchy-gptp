@@ -233,6 +233,7 @@ namespace UnitId
 		/*0xE2*/	Powerup_TerranGasTankType1				= 226,
 		/*0xE3*/	Powerup_TerranGasTankType2				= 227,
 		/*0xE4*/	None									= 228,
+		/*0xE4*/	Count									= 228,
 		/*0xE5*/	AnyUnit									= 229,
 		/*0xE6*/	Men										= 230,
 		/*0xE7*/	Buildings								= 231,
