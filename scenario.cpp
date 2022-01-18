@@ -1647,6 +1647,18 @@ void tick_scenario() {
 			graphics::drawText(10, y, buffer);
 		}
 
+		y += 15;
+		sprintf_s(buffer, sizeof(buffer), "Active Frauds:");
+		graphics::drawText(10, y, buffer);
+		for (u32 i = 1; i < 7; ++i) {
+			FraudSpawnSequence* sequence = &fraud_spawn.sequence[i - 1];
+			if (sequence->fraud) {
+				y += 15;
+				sprintf_s(buffer, sizeof(buffer), "%s\x02 [%s\x02]", fraud_names[sequence->fraud], fraud_class_names[sequence->fraud_class]);
+				graphics::drawText(10, y, buffer);
+			}
+		}
+
 		u32 alive_count = 0;
 		for (u32 i = 1; i < 7; ++i) {
 			if (fraud_spawn.sequence[i - 1].location || all_factory_counts->unit[i] > 0) {
