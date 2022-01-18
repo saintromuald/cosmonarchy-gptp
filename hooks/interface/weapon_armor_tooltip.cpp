@@ -623,7 +623,6 @@ namespace hooks
 		std::string status = formatStringVector(statuses);
 
 		// TODO Statuses
-		//	make sublime shepard show on targets not only caster
 		//	mind control on target, last orders
 		//	color code source player if possible
 

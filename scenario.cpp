@@ -28,6 +28,7 @@ bool is_map(u32 campaign, u32 map) {
 			- A more optimal amount would be 2.5 * number of mineral fields + 3.5 * number of geysers, rounding up
 			- Maybe Zerg gain +5 flat to account for their building consumption
 		V - Add some kind of dialogue system
+		V - Make mind controlled units (Mind Tyrant, Empress) run AI_TrainingBroodling or sendsuicide or w/e
 		P - Add more AI build orders for more varied fraud behavior
 		P - Audit fraud spawns for accuracy
 
@@ -395,8 +396,8 @@ const char* fraud_names[] = {
 	"\x1F\Mongoloid Pointcorruptor",
 	"\x06\Calendared Rageboy",
 	"\x01\Worthy Pizzasniffer",
-	"\x1A\Skeletal Todzombie",
-	"\x07\HoopThrower",
+	"\x16\Skeletal Todzombie",
+	"\x07\Hoop_Thrower",
 	"\x1A\Veeq8",
 	"\x16\Bonzibuddy",
 	"\x15\IskatuMesk",
@@ -404,7 +405,7 @@ const char* fraud_names[] = {
 	//// -- The Hall of Heroes
 	// == TERRAN ==
 	"\x11\Francisco Goska",
-	"\x11\Ackmed Clone",
+	"\x11\An Ackmed Clone",
 	"\x0F\Cullen",
 	"\x16\Steve Miller",
 
@@ -418,7 +419,7 @@ const char* fraud_names[] = {
 	"\x11\Stroluum",
 	"\x11\Tuzor",
 	"\x16\Charlie",
-	"\x11\RektSon",
+	"\x1F\Rekt'Son",
 
 	//// -- The Supreme Kings
 	// == TERRAN ==

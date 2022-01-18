@@ -1209,6 +1209,10 @@ namespace hooks
 						{
 							return;
 						}
+						if (scbw::unitIdIsResource(target->id, false))
+						{
+							return;
+						}
 						UnitExt* targetExt = globals.GetUnitExt(target);
 						targetExt->values[ValueHasSublimeShepherd] = 1;
 					});
