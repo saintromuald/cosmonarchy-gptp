@@ -1706,6 +1706,7 @@ void tick_scenario() {
 				} else {
 					if (firstPlayerUnit->unit[player]) {
 						messagef("%s\x01 (Class: %s\x01) died!", fraud_names[sequence->fraud], fraud_class_names[fraud_spawn.sequence[player-1].fraud_class]);
+						sequence->safety_timer = 24;
 					}
 					Unit* next = 0;
 					for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = next) {
@@ -1728,7 +1729,8 @@ void tick_scenario() {
 			u32 offset = scbw::randBetween(0, 5);
 			for (u32 j = 0; j < 6; ++j) {
 				u32 player = (j + offset) % 6 + 1;
-				if (all_factory_counts->unit[player] == 0 && *unitCount < 1600) {
+				FraudSpawnSequence* sequence = &fraud_spawn.sequence[player-1];
+				if (all_factory_counts->unit[player] == 0 && !sequence->safety_timer && *unitCount < 1600) {
 					u32 fraud_class = FraudClass_None;
 					if (fraud_spawn.used_count < god_spawn_breakpoint) {
 						fraud_class = FraudClass_Fraud;
