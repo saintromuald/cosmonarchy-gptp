@@ -1779,7 +1779,7 @@ void tick_scenario() {
 				sequence->temp_townhall = 0;
 			}
 
-			// Spawn Unit
+			// Spawn Units
 			if (sequence->location) {
 				if (sequence->unit_timer) {
 					--sequence->unit_timer;
@@ -1797,8 +1797,9 @@ void tick_scenario() {
 								augur->userActionFlags |= 4;
 								augurSacrifice(augur, 10 * 32);
 							}
-							Unit* unit = helper::AI_CreateUnit(unit_id, i, source_pos.x, source_pos.y);
+							Unit* unit = scbw::createUnitInGame(unit_id, i, source_pos.x, source_pos.y);
 							if (unit) {
+								helper::giveAI(unit);
 								raceSupply[RaceId::Terran].provided[i] += units_dat::SupplyRequired[unit_id];
 								if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Worker)) {
 									unit->orderTo(OrderId::AttackMove, rally.x, rally.y);
