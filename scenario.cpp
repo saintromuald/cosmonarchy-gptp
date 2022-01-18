@@ -1503,6 +1503,11 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				f32 multiplier = 0.5 + fraud_count * 0.2;
 				for (u32 i = 0; i < fraud_spawn.unit_count[next_fraud][race]; ++i) {
 					fraud_spawn.units[next_fraud][race][i].count *= multiplier;
+					if (units_dat::BaseProperty[fraud_spawn.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
+						if (fraud_spawn.units[next_fraud][race][i].count > 40) {
+							fraud_spawn.units[next_fraud][race][i].count = 40;
+						}
+					}
 				}
 				multiplier += 0.5 * (fraud_class - 1);
 				resources->cumulativeMinerals[player] += 1200 * multiplier;
