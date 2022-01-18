@@ -1098,7 +1098,7 @@ namespace helper
 	typedef s32 __cdecl VictoryFunc();
 	extern VictoryFunc* Victory;
 
-	void DisplayTextMessage(char* text, u8 color, u32 ticks, b8 from_trigger);
+	void DisplayTextMessage(char* text, u32 color, u32 ticks, b32 from_trigger);
 	u32 GetTextDisplayTime(char* text);
 
 	//// misc

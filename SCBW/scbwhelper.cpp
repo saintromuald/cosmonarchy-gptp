@@ -10479,7 +10479,7 @@ namespace helper
 
 	VictoryFunc* Victory = (VictoryFunc*)0x4C5310;
 
-	void DisplayTextMessage(char* text, u8 color, u32 ticks, b8 from_trigger) {
+	void DisplayTextMessage(char* text, u32 color, u32 ticks, b32 from_trigger) {
 		const u32 Func_DisplayTextMessage = 0x0048CD30;
 		__asm
 		{

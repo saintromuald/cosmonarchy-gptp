@@ -346,112 +346,112 @@ const char* fraud_names[] = {
 	"None",
 	//// -- The Legion of Frauds
 	// == TERRAN ==
-	"<06>Alexei Ukov",
-	"<18>Ullen \"BankOnMe\" Bigmunney",
-	"<1A>knightoftherealm",
-	"<15>KKKhris",
-	"<11>Dynamo",
-	"<1B>TodsDadPat",
-	"<10>Piglet",
-	"<18>DarkenedFantasies",
-	"<0F>Customer Supporter",
-	"<18>Desler",
+	"\x06\Alexei Ukov",
+	"\x18Ullen \"BankOnMe\" Bigmunney",
+	"\x1A\knightoftherealm",
+	"\x15\KKKhris",
+	"\x11\Dynamo",
+	"\x1B\TodsDadPat",
+	"\x10\Piglet",
+	"\x18\DarkenedFantasies",
+	"\x0F\Customer Supporter",
+	"\x18\Desler",
 
 	// == PROTOSS ==
-	"<15>Bitcoin Boris",
-	"<1B>Crypto Carl",
-	"<1A>Veeq7",
-	"<1B>jun3hong",
-	"<05>Digital Rights Manager",
-	"<10>Zeratool",
-	"<03>F.R.A.U.D. Grandpa of Tony",
-	"<1F>DK",
-	"<03>iquare",
-	"<0E>Metathrom",
+	"\x15\Bitcoin Boris",
+	"\x1B\Crypto Carl",
+	"\x1A\Veeq7",
+	"\x1B\jun3hong",
+	"\x1E\Digital Rights Manager",
+	"\x10\Zeratool",
+	"\x03\F.R.A.U.D. Grandpa of Tony",
+	"\x1F\DK",
+	"\x03\iquare",
+	"\x0E\Metathrom",
 
 	// == ZERG ==
-	"<10>CerebrateStalin",
-	"<10>AndyRoseUh",
-	"<03>Winnie",
-	"<18>A",
-	"<1B>SelloutSam",
-	"<15>PlagiaristPaul",
-	"<10>RimTechCombot",
-	"<05>AfricanizedCrowkenyan",
-	"<1F>Ultralisks",
-	"<1F>N Thrower",
+	"\x10\CerebrateStalin",
+	"\x10\AndyRoseUh",
+	"\x03\Winnie",
+	"\x18\A",
+	"\x1B\SelloutSam",
+	"\x15\PlagiaristPaul",
+	"\x10\RimTechCombot",
+	"\x1E\AfricanizedCrowkenyan",
+	"\x1FUltralisks",
+	"\x1F\N Thrower",
 
 	// == RANDOM ==
-	"<03>LightenedRealities",
-	"<18>AchromaticHalfdreams",
-	"<0E>TonyTron",
-	"<1A>Pr0nogo",
-	"<11>Ba3lethal",
-	"<15>Towering Pigprophet",
-	"<05>Anal Crowsummoner",
-	"<03>Pissing Porncultist",
-	"<1D>Bearborne Arkanianpussy",
-	"<0E>Doubling Wuckdevourer",
-	"<1F>Mongoloid Pointcorruptor",
-	"<06>Calendared Rageboy",
-	"<01>Worthy Pizzasniffer",
-	"<1A>Skeletal Todzombie",
-	"<07>HoopThrower",
-	"<1A>Veeq8",
-	"<16>Bonzibuddy",
-	"<15>IskatuMesk",
+	"\x03\LightenedRealities",
+	"\x18\AchromaticHalfdreams",
+	"\x0E\TonyTron",
+	"\x1A\Pr0nogo",
+	"\x11\Ba3lethal",
+	"\x15\Towering Pigprophet",
+	"\x1E\Anal Crowsummoner",
+	"\x03\Pissing Porncultist",
+	"\x1D\Bearborne Arkanianpussy",
+	"\x0E\Doubling Wuckdevourer",
+	"\x1F\Mongoloid Pointcorruptor",
+	"\x06\Calendared Rageboy",
+	"\x01\Worthy Pizzasniffer",
+	"\x1A\Skeletal Todzombie",
+	"\x07\HoopThrower",
+	"\x1A\Veeq8",
+	"\x16\Bonzibuddy",
+	"\x15\IskatuMesk",
 
 	//// -- The Hall of Heroes
 	// == TERRAN ==
-	"<11>Francisco Goska",
-	"<11>Ackmed Clone",
-	"<0F>Cullen",
-	"<16>SteveMiller",
+	"\x11\Francisco Goska",
+	"\x11\Ackmed Clone",
+	"\x0F\Cullen",
+	"\x16\SteveMiller",
 
 	// == PROTOSS ==
-	"<0F>Torros",
-	"<0F>Drakkar",
-	"<05>Thalazim",
-	"<1F>Echo Of Mixplay",
+	"\x0F\Torros",
+	"\x0F\Drakkar",
+	"\x1E\Thalazim",
+	"\x1F\Echo Of Mixplay",
 
 	// == ZERG ==
-	"<11>Stroluum",
-	"<11>Tuzor",
-	"<16>Charlie",
-	"<11>RektSon",
+	"\x11\Stroluum",
+	"\x11\Tuzor",
+	"\x16\Charlie",
+	"\x11\RektSon",
 
 	//// -- The Supreme Kings
 	// == TERRAN ==
-	"<10>Ackmed",
-	"<06>The Don",
-	"<10>Mathias Tolrim",
+	"\x10\Ackmed",
+	"\x06\The Don",
+	"\x10\Mathias Tolrim",
 
 	// == PROTOSS ==
-	"<0E>Tetragram",
-	"<08>Amon",
-	"<0E>The Great Devourer",
+	"\x0E\Tetragram",
+	"\x08\Amon",
+	"\x0E\The Great Devourer",
 
 	// == ZERG ==
-	"<10>Zerghere",
-	"<16>Connor",
-	"<15>Kagg",
+	"\x10\Zerghere",
+	"\x16\Connor",
+	"\x15\Kagg",
 
 	// == RANDOM ==
-	"<06>God's Hand",
-	"<06>God's Hand",
-	"<06>God's Hand",
-	"<06>God's Hand",
-	"<06>God's Hand",
-	"<06>God's Hand",
+	"\x06\God's Hand",
+	"\x06\God's Hand",
+	"\x06\God's Hand",
+	"\x06\God's Hand",
+	"\x06\God's Hand",
+	"\x06\God's Hand",
 };
 C_ASSERT(ARRAY_SIZE(fraud_names) == Fraud_Count);
 
 const char* fraud_class_names[] = {
 	"None",
-	"Fraud",
-	"Hero",
-	"Super",
-	"God",
+	"\x10\Fraud",
+	"\x11\Hero",
+	"\x0F\Super",
+	"\x06\God",
 };
 C_ASSERT(ARRAY_SIZE(fraud_class_names) == FraudClass_Count);
 
@@ -490,7 +490,6 @@ struct FraudSpawnSequence {
 	u32 rally_index;
 	u32 unit_index;
 	Unit* temp_townhall;
-	AiScript* ai_script;
 	FraudSpawnLocation* location;
 };
 
@@ -807,20 +806,20 @@ void init_fraud_units() {
 
 	// Africanized Crowkenyan
 	fraud_spawn.frauds[Fraud_AfricanizedCrowkenyan][RaceId::Zerg] = {AiPersonality_ZergSunblot, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::DarkOlive};
-	add_fraud_unit(Fraud_RimTechCombot, RaceId::Zerg, {8, UnitId::ZergNathrokor});
-	add_fraud_unit(Fraud_RimTechCombot, RaceId::Zerg, {2, UnitId::ZergSkithrokor});
-	add_fraud_unit(Fraud_RimTechCombot, RaceId::Zerg, {2, UnitId::ZergMutalisk});
+	add_fraud_unit(Fraud_AfricanizedCrowkenyan, RaceId::Zerg, {8, UnitId::ZergNathrokor});
+	add_fraud_unit(Fraud_AfricanizedCrowkenyan, RaceId::Zerg, {2, UnitId::ZergSkithrokor});
+	add_fraud_unit(Fraud_AfricanizedCrowkenyan, RaceId::Zerg, {2, UnitId::ZergMutalisk});
 
 	// Ultralisks
 	fraud_spawn.frauds[Fraud_Ultralisks][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Silver};
-	add_fraud_unit(Fraud_RimTechCombot, RaceId::Zerg, {2, UnitId::ZergLakizilisk});
-	add_fraud_unit(Fraud_RimTechCombot, RaceId::Zerg, {2, UnitId::ZergUltrokor});
+	add_fraud_unit(Fraud_Ultralisks, RaceId::Zerg, {2, UnitId::ZergLakizilisk});
+	add_fraud_unit(Fraud_Ultralisks, RaceId::Zerg, {2, UnitId::ZergUltrokor});
 
 	// N Thrower
-	fraud_spawn.frauds[Fraud_Ultralisks][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Cyan};
-	add_fraud_unit(Fraud_RimTechCombot, RaceId::Zerg, {4, UnitId::SharedCohort});
-	add_fraud_unit(Fraud_RimTechCombot, RaceId::Zerg, {2, UnitId::ZergKonvilisk});
-	add_fraud_unit(Fraud_RimTechCombot, RaceId::Zerg, {2, UnitId::ZergMatraleth});
+	fraud_spawn.frauds[Fraud_NThrower][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Cyan};
+	add_fraud_unit(Fraud_NThrower, RaceId::Zerg, {4, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_NThrower, RaceId::Zerg, {2, UnitId::ZergKonvilisk});
+	add_fraud_unit(Fraud_NThrower, RaceId::Zerg, {2, UnitId::ZergMatraleth});
 
 	// LightenedRealities
 	fraud_spawn.frauds[Fraud_LightenedRealities][RaceId::Terran] = {AiPersonality_TerranGeneral, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Harlequin};
@@ -1286,10 +1285,10 @@ void run_ai(u32 player, Point16 pos, s32 name) {
 	s32 is_bw;
 	s32 block = helper::parseAIScriptName(name, &is_bw);
 	if (block) {
-		fraud_spawn.sequence[player].ai_script = helper::AI_RunAIScript(&area, player, block, is_bw);
-		if (fraud_spawn.sequence[player].ai_script) {
-			fraud_spawn.sequence[player].ai_script->flags &= 0x3;
-			fraud_spawn.sequence[player].ai_script->flags |= get_closest_resarea(pos) << 3;
+		AiScript* ai_script = helper::AI_RunAIScript(&area, player, block, is_bw);
+		if (ai_script) {
+			ai_script->flags &= 0x3;
+			ai_script->flags |= get_closest_resarea(pos) << 3;
 		}
 	} else {
 		scbw::printf("scenario.cpp, run_ai: Invalid AI block!");
@@ -1337,8 +1336,7 @@ void messagef(char* format, ...) {
 	vsprintf_s(buffer, sizeof(buffer), format, va);
 	va_end(va);
 	
-	scbw::print(buffer);
-	helper::DisplayTextMessage(buffer, 2, *elapsedTimeFrames + helper::GetTextDisplayTime(buffer), 1);
+	helper::DisplayTextMessage(buffer, 2, GetTickCount() + helper::GetTextDisplayTime(buffer), 1);
 }
 
 u32 get_next_fraud(u32 player, u32 fraud_class) {
@@ -1453,7 +1451,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					fraud_spawn.timer /= 2;
 				}
 
-				messagef("Spawn %s<1> (Class: %s)!", fraud_names[next_fraud], fraud_class_names[fraud_class]);
+				messagef("Spawn %s\x02 (Class: %s\x01)!", fraud_names[next_fraud], fraud_class_names[fraud_class]);
 
 				++fraud_spawn.used_type_count[fraud_class];
 				if (fraud_class == FraudClass_Hero) {
@@ -1562,7 +1560,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 							fraud_spawn.sequence[player - 1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[player - 1].fraud_class == FraudClass_God)) {
 						set_ally(player, i, true);
 
-						messagef("%s allies to %s!", fraud_names[fraud_spawn.sequence[player-1].fraud], fraud_names[fraud_spawn.sequence[i-1].fraud]);
+						messagef("%s\x01 allies to %s\x01!", fraud_names[fraud_spawn.sequence[player-1].fraud], fraud_names[fraud_spawn.sequence[i-1].fraud]);
 					} else {
 						set_ally(player, i, false);
 					}
@@ -1669,13 +1667,15 @@ void tick_scenario() {
 			}
 			if (all_factory_counts->unit[player] == 0 && sequence->fraud && !sequence->location && !sequence->safety_timer) {
 				if (firstPlayerUnit->unit[player]) {
-					messagef("%s<1> (Class: %s) died!", fraud_names[sequence->fraud], fraud_class_names[fraud_spawn.sequence[player-1].fraud_class]);
+					messagef("%s\x01 (Class: %s\x01) died!", fraud_names[sequence->fraud], fraud_class_names[fraud_spawn.sequence[player-1].fraud_class]);
 				}
 				Unit* next = 0;
 				for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = next) {
 					next = unit->player_link.next;
 					unit->remove();
 				}
+				sequence->fraud = Fraud_None;
+				sequence->fraud_class = FraudClass_None;
 			}
 		}
 
