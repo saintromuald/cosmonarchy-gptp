@@ -11,7 +11,6 @@ namespace hooks
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 		if (unitExt->values[ValueSublimeShepherd])
 		{
-			scbw::printf("%u", unitExt->values[ValueSublimeShepherd]);
 			armorUpg += unitExt->values[ValueSublimeShepherd];
 		}
 
