@@ -17,16 +17,16 @@ bool is_map(u32 campaign, u32 map) {
 }
 
 /*
-	Shortcomings:
-		P - Heroes & especially supers will not spawn if their race's slot is not open; can be fixed by adding more heroes & especially supers
 	Bugs:
 		V - Frauds occasionally initialize multiple towns (maybe not taking into account spawned town center?)
+		V - Unit AI fails to initialize near the unit limit, for some reason
+		V - Frauds fail to build while:
+			- an old town is still active - needs to be fixed by waiting (for 1 second, probably less) when an incoming fraud uses the same player slot as a defeated fraud
 		P/V - Fraud colors are not always accurate (needs more testing)
-		P - Frauds fail to build while:
-			- supply blocked (should be fixed by setting supplies, maybe didn't work due to old towns not being cleared?)
-			- an old town is still active (should be fixed by P's AI changes)
 	Todo:
-		V - Limit worker count to 30 (or maybe 2.5 * number of mineral fields + 3.5 * number of geysers, rounding up, if we can get that data in GPTP)
+		V - Limit worker count to 30
+			- A more optimal amount would be 2.5 * number of mineral fields + 3.5 * number of geysers, rounding up
+			- Maybe Zerg gain +5 flat to account for their building consumption
 		V - Add some kind of dialogue system
 		P - Add more AI build orders for more varied fraud behavior
 		P - Audit fraud spawns for accuracy
@@ -347,7 +347,7 @@ const char* fraud_names[] = {
 	//// -- The Legion of Frauds
 	// == TERRAN ==
 	"\x06\Alexei Ukov",
-	"\x18Ullen \"BankOnMe\" Bigmunney",
+	"\x18Ullen \"Bank On Me\" Bigmunney",
 	"\x1A\knightoftherealm",
 	"\x15\KKKhris",
 	"\x11\Dynamo",
@@ -370,14 +370,14 @@ const char* fraud_names[] = {
 	"\x0E\Metathrom",
 
 	// == ZERG ==
-	"\x10\CerebrateStalin",
-	"\x10\AndyRoseUh",
+	"\x11\Cerebrate Stalin",
+	"\x11\AndyRoseUh",
 	"\x03\Winnie",
 	"\x18\A",
-	"\x1B\SelloutSam",
-	"\x15\PlagiaristPaul",
+	"\x1B\Sellout Sam",
+	"\x15\Plagiarist Paul",
 	"\x10\RimTechCombot",
-	"\x1E\AfricanizedCrowkenyan",
+	"\x1E\Africanized Crowkenyan",
 	"\x1FUltralisks",
 	"\x1F\N Thrower",
 
@@ -387,7 +387,7 @@ const char* fraud_names[] = {
 	"\x0E\TonyTron",
 	"\x1A\Pr0nogo",
 	"\x11\Ba3lethal",
-	"\x15\Towering Pigprophet",
+	"\x05\Towering Pigprophet",
 	"\x1E\Anal Crowsummoner",
 	"\x03\Pissing Porncultist",
 	"\x1D\Bearborne Arkanianpussy",
@@ -406,13 +406,13 @@ const char* fraud_names[] = {
 	"\x11\Francisco Goska",
 	"\x11\Ackmed Clone",
 	"\x0F\Cullen",
-	"\x16\SteveMiller",
+	"\x16\Steve Miller",
 
 	// == PROTOSS ==
 	"\x0F\Torros",
 	"\x0F\Drakkar",
 	"\x1E\Thalazim",
-	"\x1F\Echo Of Mixplay",
+	"\x1F\Echo of Mixplay",
 
 	// == ZERG ==
 	"\x11\Stroluum",
@@ -422,7 +422,7 @@ const char* fraud_names[] = {
 
 	//// -- The Supreme Kings
 	// == TERRAN ==
-	"\x10\Ackmed",
+	"\x15\Ackmed",
 	"\x06\The Don",
 	"\x10\Mathias Tolrim",
 
