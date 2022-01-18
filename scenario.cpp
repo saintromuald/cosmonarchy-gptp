@@ -1558,8 +1558,11 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 						continue;
 					}
 					if (fraud_spawn.sequence[player-1].fraud_class == fraud_spawn.sequence[i-1].fraud_class &&
-						(fraud_share_alliance(player, i) || fraud_spawn.sequence[player - 1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[player - 1].fraud_class == FraudClass_God)) {
+						(fraud_share_alliance(fraud_spawn.sequence[player-1].fraud, fraud_spawn.sequence[i-1].fraud) ||
+							fraud_spawn.sequence[player - 1].fraud_class == FraudClass_Hero || fraud_spawn.sequence[player - 1].fraud_class == FraudClass_God)) {
 						set_ally(player, i, true);
+
+						messagef("%s allies to %s!", fraud_names[fraud_spawn.sequence[player-1].fraud], fraud_names[fraud_spawn.sequence[i-1].fraud]);
 					} else {
 						set_ally(player, i, false);
 					}
