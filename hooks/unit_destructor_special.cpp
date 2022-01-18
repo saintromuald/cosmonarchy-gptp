@@ -11,8 +11,7 @@
 #include <SCBW/UnitFinder.h>
 #include "globals.h"
 
-void augurProc(Unit* augur) {
-	const s32 radius = 6 * 32;
+void augurProc(Unit* augur, s32 radius) {
 	Unit* target = scbw::UnitFinder::getNearestTarget(
 		augur->getX() - radius,
 		augur->getY() - radius,
@@ -48,13 +47,13 @@ void augurProc(Unit* augur) {
 	}
 }
 
-void augurSacrifice(Unit* augur)
+void augurSacrifice(Unit* augur, s32 radius)
 {
 	UnitExt* targetExt = globals.GetUnitExt(augur);
 	if (targetExt->values[ValueAugurSafetyCheck] == 0)
 	{
 		targetExt->values[ValueAugurSafetyCheck] = 1;
-		augurProc(augur);
+		augurProc(augur, radius);
 		augur->remove();
 	}
 }

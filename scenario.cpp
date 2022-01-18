@@ -507,6 +507,7 @@ struct FraudSpawn {
 	bool used[Fraud_Count];
 	u32 timer;
 	u32 initial_spawn_count;
+	u32 min_frauds_active;
 
 	FraudSpawnSequence sequence[6];
 	u32 spawn_count;
@@ -522,7 +523,10 @@ FraudSpawnLocation* get_random_spawn() {
 	if (!count) {
 		return 0;
 	}
+
 	u32 offset = scbw::randBetween(0, count - 1);
+	u32 best_cost = 1000;
+	u32 best_location = offset;
 	for (u32 i = 0; i < count; ++i) {
 		u32 location = (i + offset) % count;
 
@@ -537,13 +541,22 @@ FraudSpawnLocation* get_random_spawn() {
 			continue;
 		}
 
+		u32 cost = 0;
 		UnitArray unit_array = UnitSearchRadial(fraud_spawn.spawns[location].pos, 12 * 32);
+		if (unit_array.size) {
+			cost += 1;
+		}
 		UnitArrayFilter(&unit_array, 0, FilterBuilding);
-		if (!unit_array.size) {
-			return &fraud_spawn.spawns[location];
+		if (unit_array.size) {
+			cost += 1;
+		}
+
+		if (cost < best_cost) {
+			best_cost = cost;
+			best_location = location;
 		}
 	}
-	return &fraud_spawn.spawns[offset];
+	return &fraud_spawn.spawns[best_location];
 }
 
 FraudSpawnLocation* get_closest_spawn(Point16 pos) {
@@ -1549,7 +1562,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					Unit* augur = scbw::createUnitInGame(UnitId::ProtossAugur, player, pos.x, pos.y);
 					if (augur) {
 						augur->userActionFlags |= 4;
-						augurSacrifice(augur);
+						augurSacrifice(augur, 10 * 32);
 					}
 
 					sequence->temp_townhall = helper::createUnitAtPos(townhall, player, pos.x, pos.y);
@@ -1594,8 +1607,10 @@ void init_scenario() {
 
 		if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
 			fraud_spawn.initial_spawn_count = 4;
+			fraud_spawn.min_frauds_active = 4;
 		} else {
 			fraud_spawn.initial_spawn_count = 2;
+			fraud_spawn.min_frauds_active = 2;
 		}
 
 		fraud_spawn.hero_spawn_counter = -1 - fraud_spawn.initial_spawn_count;
@@ -1704,7 +1719,7 @@ void tick_scenario() {
 		}
 
 		// Fraud Spawning
-		if (alive_count >= 2 && fraud_spawn.timer) {
+		if (alive_count >= fraud_spawn.min_frauds_active && fraud_spawn.timer) {
 			--fraud_spawn.timer;
 		} else {
 			fraud_spawn.timer = 0;
@@ -1776,7 +1791,7 @@ void tick_scenario() {
 							Unit* augur = scbw::createUnitInGame(UnitId::ProtossAugur, i, source_pos.x, source_pos.y);
 							if (augur) {
 								augur->userActionFlags |= 4;
-								augurSacrifice(augur);
+								augurSacrifice(augur, 10 * 32);
 							}
 							Unit* unit = helper::AI_CreateUnit(unit_id, i, source_pos.x, source_pos.y);
 							if (unit) {
