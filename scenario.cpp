@@ -1683,16 +1683,23 @@ void tick_scenario() {
 				--sequence->safety_timer;
 			}
 			if (all_factory_counts->unit[player] == 0 && sequence->fraud && !sequence->location && !sequence->safety_timer) {
-				if (firstPlayerUnit->unit[player]) {
-					messagef("%s\x01 (Class: %s\x01) died!", fraud_names[sequence->fraud], fraud_class_names[fraud_spawn.sequence[player-1].fraud_class]);
+				if (sequence->fraud_class == FraudClass_God) {
+					if (firstPlayerUnit->unit[player]) {
+						sequence->fraud = Fraud_None;
+						sequence->fraud_class = FraudClass_None;
+					}
+				} else {
+					if (firstPlayerUnit->unit[player]) {
+						messagef("%s\x01 (Class: %s\x01) died!", fraud_names[sequence->fraud], fraud_class_names[fraud_spawn.sequence[player-1].fraud_class]);
+					}
+					Unit* next = 0;
+					for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = next) {
+						next = unit->player_link.next;
+						unit->remove();
+					}
+					sequence->fraud = Fraud_None;
+					sequence->fraud_class = FraudClass_None;
 				}
-				Unit* next = 0;
-				for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = next) {
-					next = unit->player_link.next;
-					unit->remove();
-				}
-				sequence->fraud = Fraud_None;
-				sequence->fraud_class = FraudClass_None;
 			}
 		}
 
@@ -1759,7 +1766,7 @@ void tick_scenario() {
 					--sequence->unit_timer;
 				}
 				if (!sequence->unit_timer) {
-					if (sequence->unit_index < fraud_spawn.unit_count[sequence->fraud][sequence->race] && sequence->location->source_count) {
+					if (sequence->unit_index < fraud_spawn.unit_count[sequence->fraud][sequence->race] && sequence->location->source_count && *unitCount < 1650) {
 						FraudSpawnSource* source = &sequence->location->sources[sequence->source_index % sequence->location->source_count];
 						u32 unit_id = fraud_spawn.units[sequence->fraud][sequence->race][sequence->unit_index].unit_id;
 						if (source->rally_count) {
