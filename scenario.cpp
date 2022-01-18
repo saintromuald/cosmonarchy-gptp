@@ -1616,7 +1616,7 @@ void init_scenario() {
 		}
 
 		fraud_spawn.hero_spawn_counter = -1 - fraud_spawn.initial_spawn_count;
-		fraud_spawn.super_spawn_counter = -7 - fraud_spawn.initial_spawn_count;
+		fraud_spawn.super_spawn_counter = -4 - fraud_spawn.initial_spawn_count;
 
 		u32 offset = scbw::randBetween(0, 5);
 		for (u32 j = 0; j < fraud_spawn.initial_spawn_count; ++j) {
