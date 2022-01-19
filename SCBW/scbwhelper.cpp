@@ -6656,10 +6656,6 @@ namespace helper
 			MOV return_value_unconverted, EAX
 			POPAD
 		}
-		if (unit->id == UnitId::UnusedCaveIn)
-		{
-			return false;
-		}
 		return (return_value_unconverted != 0);
 	}
 
@@ -10505,5 +10501,33 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	// For prepare_unit_move_custom
+	s32 sort_unit(Unit* unit)
+	{
+		static s32 result;
+		const u32 Func_sort_unit = 0x0046A300;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, unit
+			CALL Func_sort_unit
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void refresh_grp_image(Sprite* sprite)
+	{
+		const u32 Func_refresh_grp_image = 0x00497530;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, sprite
+			CALL Func_refresh_grp_image
+			POPAD
+		}
 	}
 }

@@ -917,10 +917,25 @@ namespace scbw
 			}
 		}
 
-		prepareUnitMove(unit);
+		prepare_unit_move_custom(unit);
 		setUnitPosition(unit, x, y);
 		refreshUnitAfterMove(unit);
 		return true;
+	}
+
+	void prepare_unit_move_custom(Unit* unit)
+	{
+		helper::sort_unit(unit);
+		helper::refresh_grp_image(unit->sprite);
+		if (unit->subunit)
+		{
+			helper::refresh_grp_image(unit->subunit->sprite);
+		}
+
+		helper::toggleUnitPath(unit);
+		char pathing_flags = unit->pathingFlags;
+		unit->movementState = 0;
+		unit->pathingFlags = (pathing_flags ^ (unit->sprite->elevationLevel < 12)) & 1 ^ pathing_flags;
 	}
 
 	//-------- Utility functions --------//

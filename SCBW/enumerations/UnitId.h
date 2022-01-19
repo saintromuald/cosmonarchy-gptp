@@ -270,7 +270,6 @@ namespace UnitId
 	// Unused
 	//	DisruptionField									= 105,		// Disruption Field // might need mempatches?
 	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
-	//	CaveIn											= 180,		// Cave-in
 
 	// Soon to be unused
 	//	DarkSwarm										= 202,		// Dark Swarm // might need mempatches?
@@ -389,6 +388,7 @@ namespace UnitId
 		ZergVorvrokor									= 128,		// Uraj
 		ZergBactalisk									= 129,		// Khalis
 		ZergAlaszileth									= 173,		// Khaydarin Crystal Formation
+		ZergIzirokor									= 180,		// Cave-in
 		ZergSkithrokor									= 185,		// Independent Jump Gate
 		ZergKonvilisk									= 217,		// Psi Emitter
 		ZergAkistrokor									= 218,		// Data Disc

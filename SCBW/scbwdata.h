@@ -474,6 +474,9 @@ SCBW_DATA(Base*,	baseArray,						0x00692688);
 SCBW_DATA(u32*,		regionIdsCount,					0x0069265C);
 SCBW_DATA(u16*,		regionIds,						0x0069262C);
 
+// For prepare_unit_move_custom
+SCBW_DATA(BinDlg*,	portrait,						0x0068AC98);
+
 // For soundThread
 /*
 SCBW_DATA(HANDLE*,	soundThreadEvent,				0x006D5A00);

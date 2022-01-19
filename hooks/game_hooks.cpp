@@ -1380,9 +1380,6 @@ namespace hooks
 			finalPos.y += unitExt->repulsionVector.y;
 			finalPos = scbw::clampPoint(finalPos);
 
-			ActiveTile originalTile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-			ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);
-
 			if (!scbw::moveUnitImproved(unit, finalPos.x, finalPos.y))
 			{
 				unitExt->timers[TimerStrigaRepulsion] = 0;
@@ -1390,17 +1387,14 @@ namespace hooks
 		}
 
 		// Magnetar - Attraction
-		// Todo - fix attacker and target orders being cleared
 		// Todo - fix lag time between multiple pulls
+		// Todo - fix delay before moved unit is able to do stuff
 		if (unitExt->timers[TimerMagnetarAttraction])
 		{
 			Point16 finalPos = unit->position;
 			finalPos.x += unitExt->repulsionVector.x;
 			finalPos.y += unitExt->repulsionVector.y;
 			finalPos = scbw::clampPoint(finalPos);
-
-			ActiveTile originalTile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-			ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);
 
 			if (!scbw::moveUnitImproved(unit, finalPos.x, finalPos.y))
 			{
@@ -1434,21 +1428,8 @@ namespace hooks
 					scbw::moveUnitImproved(unit, finalPos.x, finalPos.y);
 				}
 			}
-
 			s32 angle = scbw::getAngle(unit->position, targetPos);
 			unit->currentDirection1 = angle;
-
-			// s32 diff = angle - unit->currentDirection1;
-			// diff = (diff + 128) % 256 - 128;
-			// if (abs(diff) >= 1)
-			// {
-			// 	s32 sign = copysign(1, diff);
-			// 	unit->currentDirection1 += sign;
-			// }
-			// else
-			// {
-			// 	unit->currentDirection1 += diff;
-			// }
 		}
 
 		// Cyclops - Flak Cannon Fuse

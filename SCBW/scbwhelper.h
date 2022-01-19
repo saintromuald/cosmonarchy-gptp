@@ -1101,6 +1101,10 @@ namespace helper
 	void DisplayTextMessage(char* text, u32 color, u32 ticks, b32 from_trigger);
 	u32 GetTextDisplayTime(char* text);
 
+	// For prepare_unit_move_custom
+	s32 sort_unit(Unit* unit);																									// 0046A300
+	void refresh_grp_image(Sprite* sprite);																						// 00497530
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

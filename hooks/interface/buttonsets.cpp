@@ -1311,17 +1311,17 @@ namespace hooks
 
 							// ZERG \\
 								
-							else if ((*activePortraitUnit)->id == UnitId::ZergZethrokor &&  // Zergling Adrenal Glands passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergZethrokor &&  // Zethrokor Adrenal Glands passive
 								current_button->iconID == IconId::AdrenalGlands)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergVorvrokor && // Vorvaling Adrenal Surge passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergVorvrokor && // Vorvrokor Adrenal Surge passive
 								current_button->iconID == IconId::MetabolicBoost)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergVorvrokor && // Vorvaling Captivating Claws passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergVorvrokor && // Vorvrokor Captivating Claws passive
 								current_button->iconID == IconId::Claws)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
@@ -1331,12 +1331,17 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
+							else if ((*activePortraitUnit)->id == UnitId::ZergIzirokor && // Izirokor Crushing Tide passive
+								current_button->iconID == IconId::AcidSpore)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 							else if ((*activePortraitUnit)->id == UnitId::ZergNathrokor && // Nathrokor Adrenal Frenzy passive
 								current_button->iconID == IconId::Suicide_Scourge)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergKalkalisk && // Kalkaleth Lithe Organelle passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergKalkalisk && // Kalkalisk Lithe Organelle passive
 								current_button->iconID == IconId::AcidSpore)
 							{
 								current_button_state = BUTTON_STATE::Enabled;

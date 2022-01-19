@@ -912,6 +912,14 @@ namespace hooks
 						}
 						return TECH_LOCKED;
 					}
+					case UnitId::ZergIzirokor:
+					{
+						if (Player::numberOfUnitsOfType(playerId, UnitId::ZergLiivralPond))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
 					case UnitId::ZergZoryusthaleth:
 					case UnitId::ZergLakizilisk:
 					{
