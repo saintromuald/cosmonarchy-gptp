@@ -269,7 +269,6 @@ namespace UnitId
 
 	// Unused
 	//	DisruptionField									= 105,		// Disruption Field // might need mempatches?
-	//	TerranPhysicsLab								= 118,		// Physics Lab
 	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
 	//	CaveIn											= 180,		// Cave-in
 
@@ -305,6 +304,7 @@ namespace UnitId
 		TerranWyvern									= 91,		// Cargo Ship
 		TerranCyprian									= 92,		// Mercenary Gunship
 		TerranAzazel									= 98,		// Raszagal Corsair
+		TerranMagnetar									= 118,		// Physics Lab
 		TerranOlympian									= 137,		// Greater Spire
 		TerranAutocrat									= 145,		// Unused Zerg 1
 		TerranSiren										= 151,		// Cerebrate

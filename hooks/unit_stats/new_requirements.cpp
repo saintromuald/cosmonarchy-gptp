@@ -530,6 +530,7 @@ namespace hooks
 				{
 					case UnitId::TerranCentaur:
 					case UnitId::TerranMinotaur:
+					case UnitId::TerranMagnetar:
 					case UnitId::TerranPhobos:
 					{
 						if (inAir)

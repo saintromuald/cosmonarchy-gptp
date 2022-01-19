@@ -308,6 +308,7 @@ enum ExtTimerId
 	TimerStrigaRepulsion,
 	TimerAxitriliskShieldLossSFX,
 	TimerOwnerChangedRecently,
+	TimerMagnetarAttraction,
 		
 	TimerAI_Lazarus,					   // |
 	TimerAI_Siphon,						   // |

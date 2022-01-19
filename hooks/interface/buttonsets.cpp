@@ -1105,6 +1105,11 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
+							else if ((*activePortraitUnit)->id == UnitId::TerranMagnetar &&  // Magnetar Gravitational Theory passive 
+								current_button->iconID == IconId::PsionicShockwave)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 							else if ((*activePortraitUnit)->id == UnitId::TerranPhobos &&  // Phobos Argent Capacitors passive 
 								current_button->iconID == IconId::KhaydarinCore)
 							{

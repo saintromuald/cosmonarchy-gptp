@@ -1389,6 +1389,25 @@ namespace hooks
 			}
 		}
 
+		// Magnetar - Attraction
+		// Todo - fix attacker and target orders being cleared
+		// Todo - fix lag time between multiple pulls
+		if (unitExt->timers[TimerMagnetarAttraction])
+		{
+			Point16 finalPos = unit->position;
+			finalPos.x += unitExt->repulsionVector.x;
+			finalPos.y += unitExt->repulsionVector.y;
+			finalPos = scbw::clampPoint(finalPos);
+
+			ActiveTile originalTile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
+			ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);
+
+			if (!scbw::moveUnitImproved(unit, finalPos.x, finalPos.y))
+			{
+				unitExt->timers[TimerMagnetarAttraction] = 0;
+			}
+		}
+
 		// Anthelion - Gravity Well
 		if (unitExt->timers[TimerAnthelionGravityWell] && unitExt->units[UnitAnthelionGravityWellSource])
 		{

@@ -188,6 +188,7 @@ namespace WeaponId {
 		PaladinSkyfall						= 126,	// Paladin ability targeting
 		IonCannon							= 129,	// Ion Cannon weapon
 		EmergencyDetonationExplosion		= 140,	// Emergency Detonation area damage
+		MagnetarNewtonianShockCannon		= 141,	// Emergency Detonation area damage
 
 		// Protoss \\
 				

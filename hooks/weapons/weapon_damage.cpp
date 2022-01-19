@@ -808,6 +808,21 @@ namespace hooks
 							targetExt->values[ValueKelvinMunitionsSlow] = 1;
 						}
 					} break;
+					case WeaponId::MagnetarNewtonianShockCannon:
+					{
+						// Magnetar - Gravitational Theory - Pull target to attacker
+						if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Building))
+						{
+							const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
+							const u32 displacementTime = 9;
+							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
+							Vector32f displacement = scbw::getNormalizedVector(diff);
+							displacement.x *= 2 * 32.0 / displacementTime;
+							displacement.y *= 2 * 32.0 / displacementTime;
+							targetExt->timers[TimerMagnetarAttraction] = displacementTime;
+							targetExt->repulsionVector = displacement;
+						}
+					} break;
 				}
 			}
 		}
