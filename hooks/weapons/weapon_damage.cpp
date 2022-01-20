@@ -810,7 +810,7 @@ namespace hooks
 					} break;
 					case WeaponId::MagnetarNewtonianShockCannon:
 					{
-						// Magnetar - Gravitational Theory - Pull target to attacker
+						// Magnetar - Law of Attraction - Pull target to attacker
 						if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
 							|| (data.target->status & UnitStatus::InAir
 								&& data.target->mainOrderId != OrderId::Liftoff

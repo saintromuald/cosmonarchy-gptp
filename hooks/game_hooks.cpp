@@ -1372,7 +1372,7 @@ namespace hooks
 			unit->plagueTimer = IsthrathalethPlagueTimer;
 		}
 
-		// Striga - Repulsion
+		// Striga - Fleeting Focus
 		if (unitExt->timers[TimerStrigaRepulsion])
 		{
 			Point16 finalPos = unit->position;
@@ -1386,7 +1386,7 @@ namespace hooks
 			}
 		}
 
-		// Magnetar - Attraction
+		// Magnetar - Law of Attraction
 		// Todo - fix lag time between multiple pulls
 		// Todo - fix delay before moved unit is able to do stuff
 		if (unitExt->timers[TimerMagnetarAttraction])

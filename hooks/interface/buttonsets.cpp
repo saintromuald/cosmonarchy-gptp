@@ -1105,7 +1105,7 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranMagnetar &&  // Magnetar Gravitational Theory passive 
+							else if ((*activePortraitUnit)->id == UnitId::TerranMagnetar &&  // Magnetar Law of Attraction passive 
 								current_button->iconID == IconId::PsionicShockwave)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
