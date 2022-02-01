@@ -694,16 +694,6 @@ namespace hooks
 							scbw::applyNewHallucination(data.target, data.attacker->playerId, CharlatanHallucinationTimer);
 						}
 					} break;
-					case WeaponId::SouthpawUppercutLaser:
-					{
-						// Knockout Drivers - Southpaw behavior
-						if (targetExt->values[ValueKnockoutDriversStacks] < 20)
-						{
-							targetExt->values[ValueKnockoutDriversStacks] += 1;
-						}
-						targetExt->timers[TimerKnockoutDrivers] = SouthpawKnockoutDriversTimer;
-						data.target->updateSpeed();
-					} break;
 					case WeaponId::MadrigalImperiosoMissiles:
 					{
 						// Dirge - Madrigal behavior

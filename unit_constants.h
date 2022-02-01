@@ -44,6 +44,10 @@ const s32 MadcapPassiveDecayTime = 0.5 * 24;
 const s32 MadcapMaxStacks = 10;
 const f64 MadcapAttackSpeedPerStack = 0.05;
 
+// Heracles
+const f64 HeraclesWeaponRangePerStack = 2;
+const f64 HeraclesWeaponCooldownPerStack = 0.02;
+
 // Apostle
 const s32 ApostleLazarusAgentHeal = 25 * 256;
 const s32 ApostleBloodTitheHealing = 5 * 256;

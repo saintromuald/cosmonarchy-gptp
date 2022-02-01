@@ -1481,15 +1481,16 @@ namespace scbw
 			|| id == UnitId::TerranHarakan
 			|| id == UnitId::TerranCyprian
 			|| id == UnitId::TerranVulture
-			|| id == UnitId::TerranSouthpaw
 			|| id == UnitId::TerranCyclops
-			|| id == UnitId::TerranWendigo
+			|| id == UnitId::TerranGoliath
 			|| id == UnitId::TerranWraith
 			|| id == UnitId::TerranGorgon
 			|| id == UnitId::TerranTrojan
+			|| id == UnitId::TerranValkyrie
 			|| id == UnitId::TerranBlackjack
 			|| id == UnitId::SharedCohort
-			|| id == UnitId::SharedAspirant;
+			|| id == UnitId::SharedAspirant
+			|| id == UnitId::TerranSiren;
 	}
 
 	void applyNewHallucination(Unit* unit, u8 playerId, u32 time)

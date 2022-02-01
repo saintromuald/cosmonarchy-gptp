@@ -316,7 +316,7 @@ namespace hooks
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranPhalanxTankMode:
-					case UnitId::TerranSouthpaw:
+					case UnitId::TerranCuirass:
 					{
 						if (inAir)
 						{

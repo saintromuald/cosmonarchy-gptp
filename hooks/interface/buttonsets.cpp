@@ -756,7 +756,7 @@ namespace hooks
 						else if ((*activePortraitUnit)->id == UnitId::TerranFactory)
 						{
 							// Factory buttonset handling
-							if (current_button->reqVar == UnitId::TerranSouthpaw
+							if (current_button->reqVar == UnitId::TerranCuirass
 								|| current_button->reqVar == UnitId::TerranPhalanxTankMode)
 							{
 								if ((*activePortraitUnit)->building.addon == nullptr)
@@ -1003,12 +1003,12 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranSouthpaw &&  // Southpaw Knockout Drivers passive
+							else if ((*activePortraitUnit)->id == UnitId::TerranCuirass &&  // Southpaw Knockout Drivers passive
 								current_button->iconID == IconId::BurstLasers)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranSouthpaw &&  // Southpaw Bar-Brawl Refraction passive
+							else if ((*activePortraitUnit)->id == UnitId::TerranCuirass &&  // Southpaw Bar-Brawl Refraction passive
 								current_button->iconID == IconId::Fusion_Cutter_Harvest)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
@@ -1055,18 +1055,18 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranTrojan &&  // Trojan Hotdrop passive
-								current_button->iconID == IconId::Land)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranWendigo &&  // Wendigo Automedicus passive
-								current_button->iconID == IconId::PhotonCannon_Weapon)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
 							else if ((*activePortraitUnit)->id == UnitId::TerranGorgon &&  // Gorgon Petrification passive
 								current_button->iconID == IconId::Argus_Jewel)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::TerranValkyrie &&  // Valkyrie Charon Afterburners passive
+								current_button->iconID == IconId::GraviticBoosters)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::TerranTrojan &&  // Trojan Hotdrop passive
+								current_button->iconID == IconId::Land)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
@@ -1077,11 +1077,6 @@ namespace hooks
 							}
 							else if ((*activePortraitUnit)->id == UnitId::TerranSalamander &&  // Salamander Incendiary Payload passive
 								current_button->iconID == IconId::Flame_Thrower)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranValkyrie &&  // Valkyrie Charon Afterburners passive
-								current_button->iconID == IconId::GraviticBoosters)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}

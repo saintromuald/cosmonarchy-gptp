@@ -614,6 +614,17 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::TerranHeracles:
+			{
+				// Heracles Nemean Reactors - subtract stacks while moving
+				if (unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving)
+				{
+					if (unitExt->values[ValueNemeanReactorsStack] > 0)
+					{
+						unitExt->values[ValueNemeanReactorsStack]--;
+					}
+				}
+			} break;
 			case UnitId::SharedStriga:
 			case UnitId::ProtossLegionnaire:
 			{
@@ -1672,14 +1683,6 @@ namespace hooks
 				}
 				sprite->createOverlay(ImageId::HallucinationOverlay, 0, 0, 0);
 			}
-		}
-
-		// Southpaw - Knockout Drivers behavior
-		if (unitExt->values[ValueKnockoutDriversStacks]
-			&& unitExt->timers[TimerKnockoutDrivers] < 2)
-		{
-			unitExt->values[ValueKnockoutDriversStacks] = 0;
-			unit->updateSpeed();
 		}
 
 		// Luminary - Wax Wings Clear

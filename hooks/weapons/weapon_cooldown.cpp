@@ -37,10 +37,16 @@ namespace hooks
 			u32 stacks = ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime);
 			if (stacks > 0)
 			{
-				//scbw::printString(std::to_string(stacks) + ", " + std::to_string(scbw::get_generic_value(unit, RustId::MadcapStacks)));
 				f64 newCooldown = (f64)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
 				cooldown = newCooldown;
 			}
+		}
+
+		// Heracles Nemean Reactors: increase weapon cooldown per stack
+		if (unit->id == UnitId::TerranHeracles)
+		{
+			f64 newCooldown = (f64)cooldown * (1.0 + unitExt->values[ValueNemeanReactorsStack] * HeraclesWeaponCooldownPerStack);
+			cooldown = newCooldown;
 		}
 
 		// Blackjack Wear and Tear: reduce weapon speed based on missing health

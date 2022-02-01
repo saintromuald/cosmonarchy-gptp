@@ -289,7 +289,7 @@ namespace UnitId
 		TerranApostle									= 10,		// Gui Montag
 		TerranShaman									= 15,		// Civilian
 		TerranMadcap									= 18,		// Alan Schezar Turret
-		TerranSouthpaw									= 19,		// Raynor Vulture
+		TerranCuirass									= 19,		// Raynor Vulture
 		TerranWendigo									= 20,		// Raynor Marine
 		TerranSalamander								= 22,		// Magellan
 		TerranGorgon									= 23,		// Edmund Duke Tank

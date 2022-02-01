@@ -154,7 +154,6 @@ enum ExtValueId
 	ValueSpineY,
 	ValueAdrenalStacks,
 	ValueLastOrdersInit,
-	ValueKnockoutDriversStacks,
 	ValueTempoChange,
 	ValueTreasuryStacks,
 	ValueSupplyProvidedSet,

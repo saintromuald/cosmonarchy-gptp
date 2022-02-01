@@ -339,16 +339,11 @@ namespace hooks
 					}
 				}
 
-				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
+				// Nemean Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::HeraclesJavelinCannons)
 				{
-					unitExt->timers[TimerNemeanReactors] = 24 * 5;
-					s32 stacks = unitExt->values[ValueNemeanReactorsStack];
-					if (stacks < 5)
-					{
-						unitExt->values[ValueNemeanReactorsStack] = stacks++;
-						helper::playSoundFromSource(1372, unit, 1, 0);
-					}
+					unitExt->values[ValueNemeanReactorsStack]++;
+					helper::playSoundFromSource(1372, unit, 1, 0);
 				}
 
 				// Madcap - Maverick Feeders passive

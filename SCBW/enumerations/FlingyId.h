@@ -235,7 +235,7 @@ namespace FlingyId
 		ProtossAurora = 225,
 		ProtossPanoptus = 226,
 		TerranCentaur = 227,
-		TerranSouthpaw = 228,
+		TerranCuirass = 228,
 		CentaurMissile = 229,
 		MadrigalMissile = 230,
 		ProtossAugur = 231,
