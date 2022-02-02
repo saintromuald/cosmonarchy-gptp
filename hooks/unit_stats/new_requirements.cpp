@@ -316,7 +316,7 @@ namespace hooks
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranPhalanxTankMode:
-					case UnitId::TerranSouthpaw:
+					case UnitId::TerranCuirass:
 					{
 						if (inAir)
 						{
@@ -530,6 +530,7 @@ namespace hooks
 				{
 					case UnitId::TerranCentaur:
 					case UnitId::TerranMinotaur:
+					case UnitId::TerranMagnetar:
 					case UnitId::TerranPhobos:
 					{
 						if (inAir)
@@ -906,6 +907,14 @@ namespace hooks
 					{
 						if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergOrbothOmlia)
 							&& TierUnlocked[RaceId::Zerg][Tier2])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::ZergIzirokor:
+					{
+						if (Player::numberOfUnitsOfType(playerId, UnitId::ZergLiivralPond))
 						{
 							return TECH_ACTIVE;
 						}

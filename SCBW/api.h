@@ -390,6 +390,9 @@ namespace scbw
 	/// Details not understood. See the source for moveUnit().
 	void prepareUnitMove(Unit* unit, bool hideUnit = false);
 
+	// 
+	void prepare_unit_move_custom(Unit* unit);
+
 	/// Checks whether the given unit overlaps other units, and if so, whether it
 	/// can be moved to an unoccupied nearby position. The resulting position is
 	/// saved to @p outPos.

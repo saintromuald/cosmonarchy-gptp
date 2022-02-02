@@ -339,16 +339,11 @@ namespace hooks
 					}
 				}
 
-				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
+				// Nemean Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::HeraclesJavelinCannons)
 				{
-					unitExt->timers[TimerNemeanReactors] = 24 * 5;
-					s32 stacks = unitExt->values[ValueNemeanReactorsStack];
-					if (stacks < 5)
-					{
-						unitExt->values[ValueNemeanReactorsStack] = stacks++;
-						helper::playSoundFromSource(1372, unit, 1, 0);
-					}
+					unitExt->values[ValueNemeanReactorsStack]++;
+					helper::playSoundFromSource(1372, unit, 1, 0);
 				}
 
 				// Madcap - Maverick Feeders passive
@@ -361,118 +356,129 @@ namespace hooks
 				// Track launch position
 				unitExt->lastBulletLaunchPos = unit->position;
 
-				// Missile spawn positions start
-				if (weaponId == WeaponId::AxitriliskSearingVenom)
+				switch (weaponId)
 				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueAxitriliskMissilePos, 1, ImagesDatEntries::OverlaySpecialPtr);
-				}
-				else if (weaponId == WeaponId::CharlatanFerventBlaster)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueCharlatanMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::ExemplarPlasmaTorpedo)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueExemplarMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::EmpyreanPlasmaBarrage)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueEmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::StarSovereignCelestialCannon)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueSovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::ClaymoreHarpoonRailgun)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueClaymoreMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::PenumbraErebolShockCannon)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValuePenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::BurstLasers)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueWraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr, 0, 2);
-				}
-				else if (weaponId == WeaponId::CentaurSunchaserMissiles)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueCentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::PhobosArgosLaserBatteries)
-				{
-					// Phobos - Argent Capacitors passive
-					if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] == 0)
+					// Missile spawn positions start
+					case WeaponId::AxitriliskSearingVenom:
 					{
-						unit->addUnitEnergy(5 * 256);
-						if (unit->energy == unit->getMaxEnergy())
+						scbw::setMissileSourcePos(unit, weaponId, ValueAxitriliskMissilePos, 1, ImagesDatEntries::OverlaySpecialPtr);
+					} break;
+					case WeaponId::CharlatanFerventBlaster:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueCharlatanMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::ExemplarPlasmaTorpedo:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueExemplarMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::EmpyreanPlasmaBarrage:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueEmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::StarSovereignCelestialCannon:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueSovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::ClaymoreHarpoonRailgun:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueClaymoreMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::PenumbraErebolShockCannon:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValuePenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::BurstLasers:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueWraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr, 0, 2);
+					} break;
+					case WeaponId::CentaurSunchaserMissiles:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueCentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::PhobosArgosLaserBatteries:
+					{
+						// Phobos - Argent Capacitors passive
+						if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] == 0)
 						{
-							unitExt->values[ValuePhobosDischarge] = 1;
-							unit->groundWeaponCooldown = getModifiedWeaponCooldownHook(unit, WeaponId::PhobosArgosLaserBatteries);
-							unit->airWeaponCooldown = getModifiedWeaponCooldownHook(unit, WeaponId::PhobosArgosLaserBatteries);
-							helper::playSoundFromSource(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
-							unit->sprite->createOverlay(ImageId::OpticalFlareHit_Large);
+							unit->addUnitEnergy(5 * 256);
+							if (unit->energy == unit->getMaxEnergy())
+							{
+								unitExt->values[ValuePhobosDischarge] = 1;
+								unit->groundWeaponCooldown = getModifiedWeaponCooldownHook(unit, WeaponId::PhobosArgosLaserBatteries);
+								unit->airWeaponCooldown = getModifiedWeaponCooldownHook(unit, WeaponId::PhobosArgosLaserBatteries);
+								helper::playSoundFromSource(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
+								unit->sprite->createOverlay(ImageId::OpticalFlareHit_Large);
+							}
 						}
-					}
-					scbw::setMissileSourcePos(unit, weaponId, ValuePhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::SkithrokorSkitteringSpores)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueSkithrokorMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::LiiraliskHollowedSpores)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueLiiraliskMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::BactaliskCorrosiveAcid)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueBactaliskMissilePos, 2, ImagesDatEntries::OverlaySpecialPtr);
-				}
-				else if (weaponId == WeaponId::KalkaliskViscousAcid)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueKalkaliskMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::KeskathalorScreamingVenom)
-				{
-					scbw::setMissileSourcePos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr, 0, 1);
-				}
-				// Missile spawn positions end
-				else if (weaponId == WeaponId::SalamanderPerditionBarrage)
-				{
-					// Salamander missile target positions
-					auto rotate = unitExt->values[ValueSalamanderAtkPos];
-					if (rotate == 1)
+						scbw::setMissileSourcePos(unit, weaponId, ValuePhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::SkithrokorSkitteringSpores:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueSkithrokorMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::LiiraliskHollowedSpores:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueLiiraliskMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::BactaliskCorrosiveAcid:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueBactaliskMissilePos, 2, ImagesDatEntries::OverlaySpecialPtr);
+					} break;
+					case WeaponId::KalkaliskViscousAcid:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueKalkaliskMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					} break;
+					case WeaponId::KeskathalorScreamingVenom:
+					{
+						scbw::setMissileSourcePos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr, 0, 1);
+					} break;
+					// Missile spawn positions end
+					case WeaponId::SalamanderPerditionBarrage:
+					{
+						// Salamander missile target positions
+						auto rotate = unitExt->values[ValueSalamanderAtkPos];
+						if (rotate == 1)
+						{
+							helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+						}
+						else
+						{
+							scbw::rangeModifiedFire(weaponId, unit, x, y, 32 - 32 * rotate);
+						}
+						rotate++;
+						if (rotate > 2)
+						{
+							rotate = 0;
+						}
+						unitExt->values[ValueSalamanderAtkPos] = rotate;
+					} break;
+					case WeaponId::MinotaurAsterionLaserBattery:
+					{
+						// Monoceros Targeting - Minotaur
+						fireMultiple(unit, unitExt, weaponId, 5, Flags::Enemy | Flags::FrontalArc);
+					} break;
+					case WeaponId::SirenCharybdalRifle:
+					{
+						// Tertiary Eyes - Siren
+						fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyes].size(), Flags::Enemy);
+					} break;
+					case WeaponId::MadrigalFuriaMissiles:
+					{
+						// Madrigal Furia Salvo
+						if (unit->orderTarget.unit != nullptr)
+						{
+							fireMultiple(unit, unitExt, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy);
+						}
+					} break;
+					case WeaponId::IzirokorEnergizedBioplasma:
+					{
+						// Crushing Tide - Izirokor
+						fireMultiple(unit, unitExt, weaponId, 3, Flags::Enemy);
+					} break;
+					default:
 					{
 						helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-					}
-					else
-					{
-						scbw::rangeModifiedFire(weaponId, unit, x, y, 32 - 32 * rotate);
-					}
-					rotate++;
-					if (rotate > 2)
-					{
-						rotate = 0;
-					}
-					unitExt->values[ValueSalamanderAtkPos] = rotate;
-				}
-				// Monoceros Targeting - Battlecruiser behavior
-				else if (weaponId == WeaponId::MinotaurAsterionLaserBattery)
-				{
-					fireMultiple(unit, unitExt, weaponId, 5, Flags::Enemy | Flags::FrontalArc);
-				}
-				// Tertiary Eyes - Siren behavior
-				else if (weaponId == WeaponId::SirenCharybdalRifle)
-				{
-					fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyes].size(), Flags::Enemy);
-				}
-				// Madrigal Furia Salvo
-				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr)
-				{
-					fireMultiple(unit, unitExt, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy); 
-				}
-				else
-				{
-					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					} break;
 				}
 			}
 
@@ -1386,6 +1392,10 @@ namespace hooks
 						{
 							bullet->remainingBounces = 1;
 						}
+					} break;
+					case WeaponId::IzirokorEnergizedBioplasma:
+					{
+						bullet->remainingBounces = 2;
 					} break;
 					default:
 					{

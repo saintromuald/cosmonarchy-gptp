@@ -470,8 +470,6 @@ namespace hooks
 		}
 
 		// Aise Timer + Value
-		addStatus(statuses, "Knockout Drivers", unitExt->values[ValueKnockoutDriversStacks], 20,
-			unitExt->timers[TimerKnockoutDrivers], TimerType::Aise);
 		addStatus(statuses, "Adrenal Glands", unitExt->values[ValueAdrenalStacks], 4,
 			unitExt->timers[TimerAdrenal], TimerType::Aise);
 		addStatus(statuses, "Astral Blessing", unitExt->values[ValueEcclesiastStack], 0,
@@ -480,8 +478,6 @@ namespace hooks
 			captivatingClawsGetTimer(unit), TimerType::Aise);
 		addStatus(statuses, "Swarming Omen Aura", unitExt->values[ValueSwarmingOmenAbility], 1,
 			unitExt->timers[TimerSwarmingOmen], TimerType::Aise);
-		addStatus(statuses, "Nemean Reactors", unitExt->values[ValueNemeanReactorsStack], 5,
-			unitExt->timers[TimerNemeanReactors], TimerType::Aise);
 		addStatus(statuses, "Observance", unitExt->values[ValueObservanceRend], 0,
 			unitExt->timers[TimerObservanceDebuff], TimerType::Aise);
 		addStatus(statuses, "Corrosive Spores", unitExt->values[ValueCorrosiveTouchStacks], 0,
@@ -514,7 +510,7 @@ namespace hooks
 		addStatus(statuses, "Hallucinating", -1, 1,
 			unitExt->timers[TimerHallucinating], TimerType::Aise);
 		//addStatus(statuses, "Ectomorphic Accelerant", 0, -1,
-		//	unitExt->EggBoostTimer, TimerType::Aise)); // currently can't read tooltips from  eggs
+		//	unitExt->EggBoostTimer, TimerType::Aise)); // currently can't read tooltips from eggs
 		//addStatus(statuses, "Endomorphic Accelerant", 0, -1,
 		//	unitExt->MineralSpecialRegenTimer, TimerType::Aise)); // nor mineral fields
 		addStatus(statuses, "Controlled Demolition", -1, 1,
@@ -535,6 +531,7 @@ namespace hooks
 		// Aise Value
 		addStatus(statuses, "Armor Reduction", unitExt->values[ValueArmorReduce], 0);
 		addStatus(statuses, "Cabeirus Feeders", ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
+		addStatus(statuses, "Nemean Reactors", unitExt->values[ValueNemeanReactorsStack], 0);
 		addStatus(statuses, "Sublime Shepherd", unitExt->values[ValueSublimeShepherd], 0);
 		addStatus(statuses, "Lazarus Agent", unitExt->values[ValueLazarusAgent], 0);
 		addStatus(statuses, "Expanded Storage", unitExt->values[ValueTreasuryStacks], 0); // currently only works for Ovileth and its morphs

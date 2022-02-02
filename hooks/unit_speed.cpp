@@ -12,7 +12,6 @@
 
 namespace hooks
 {
-
 	f64 getSpeedMultiplier(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -58,13 +57,6 @@ namespace hooks
 		if (unitExt->timers[TimerWaxWingsDebuff] > 1)
 		{
 			speed *= 0.6666;
-		}
-
-		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
-		if (unitExt->values[ValueKnockoutDriversStacks])
-		{
-			u32 knockoutValue = unitExt->values[ValueKnockoutDriversStacks];
-			speed *= 1 - 0.05 * knockoutValue;
 		}
 
 		// Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
@@ -261,6 +253,7 @@ namespace hooks
 			{
 				speed *= 0.9;
 			} break;
+			case UnitId::SharedTarasque:
 			case UnitId::ZergKonvilisk:
 			{
 				speed *= 1.1;
@@ -293,9 +286,6 @@ namespace hooks
 		return speed;
 	}
 
-	/// Calculates the unit's modified movement speed, factoring in upgrades and status effects.
-	///
-	/// @return		The modified speed value.
 	/// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
 	u32 getModifiedUnitSpeedHook(Unit* unit, u32 baseSpeed)
 	{
@@ -332,18 +322,12 @@ namespace hooks
 		return baseSpeed * getSpeedMultiplier(unit);
 	}
 
-	/// Calculates the unit's acceleration, factoring in upgrades and status effects.
-	///
-	/// @return		The modified acceleration value.
 	/// Logically equivalent to getModifiedUnitAcceleration @ 0047B8A0 
 	u32 getModifiedUnitAccelerationHook(Unit* unit)
 	{
 		return std::max(scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
 	}
 
-	/// Calculates the unit's turn speed, factoring in upgrades and status effects.
-	///
-	/// @return		The modified turning speed value.
 	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
 	u32 getModifiedUnitTurnSpeedHook(Unit* unit)
 	{

@@ -544,7 +544,7 @@ namespace SpriteId
 		ProtossAurora = 534,
 		ProtossPanoptus = 535,
 		TerranCentaur = 536,
-		TerranSouthpaw = 537,
+		TerranCuirass = 537,
 		CentaurMissile = 538,
 		ProtossAugur = 539,
 		ZergVorvalPond = 540,

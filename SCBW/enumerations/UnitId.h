@@ -269,9 +269,7 @@ namespace UnitId
 
 	// Unused
 	//	DisruptionField									= 105,		// Disruption Field // might need mempatches?
-	//	TerranPhysicsLab								= 118,		// Physics Lab
 	//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
-	//	CaveIn											= 180,		// Cave-in
 
 	// Soon to be unused
 	//	DarkSwarm										= 202,		// Dark Swarm // might need mempatches?
@@ -291,7 +289,7 @@ namespace UnitId
 		TerranApostle									= 10,		// Gui Montag
 		TerranShaman									= 15,		// Civilian
 		TerranMadcap									= 18,		// Alan Schezar Turret
-		TerranSouthpaw									= 19,		// Raynor Vulture
+		TerranCuirass									= 19,		// Raynor Vulture
 		TerranWendigo									= 20,		// Raynor Marine
 		TerranSalamander								= 22,		// Magellan
 		TerranGorgon									= 23,		// Edmund Duke Tank
@@ -305,6 +303,7 @@ namespace UnitId
 		TerranWyvern									= 91,		// Cargo Ship
 		TerranCyprian									= 92,		// Mercenary Gunship
 		TerranAzazel									= 98,		// Raszagal Corsair
+		TerranMagnetar									= 118,		// Physics Lab
 		TerranOlympian									= 137,		// Greater Spire
 		TerranAutocrat									= 145,		// Unused Zerg 1
 		TerranSiren										= 151,		// Cerebrate
@@ -389,6 +388,7 @@ namespace UnitId
 		ZergVorvrokor									= 128,		// Uraj
 		ZergBactalisk									= 129,		// Khalis
 		ZergAlaszileth									= 173,		// Khaydarin Crystal Formation
+		ZergIzirokor									= 180,		// Cave-in
 		ZergSkithrokor									= 185,		// Independent Jump Gate
 		ZergKonvilisk									= 217,		// Psi Emitter
 		ZergAkistrokor									= 218,		// Data Disc

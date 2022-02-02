@@ -614,6 +614,17 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::TerranHeracles:
+			{
+				// Heracles Nemean Reactors - subtract stacks while moving
+				if (unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving)
+				{
+					if (unitExt->values[ValueNemeanReactorsStack] > 0)
+					{
+						unitExt->values[ValueNemeanReactorsStack]--;
+					}
+				}
+			} break;
 			case UnitId::SharedStriga:
 			case UnitId::ProtossLegionnaire:
 			{
@@ -1372,7 +1383,7 @@ namespace hooks
 			unit->plagueTimer = IsthrathalethPlagueTimer;
 		}
 
-		// Striga - Repulsion
+		// Striga - Fleeting Focus
 		if (unitExt->timers[TimerStrigaRepulsion])
 		{
 			Point16 finalPos = unit->position;
@@ -1380,12 +1391,25 @@ namespace hooks
 			finalPos.y += unitExt->repulsionVector.y;
 			finalPos = scbw::clampPoint(finalPos);
 
-			ActiveTile originalTile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-			ActiveTile finalTile = scbw::getActiveTileAt(finalPos.x, finalPos.y);
-
 			if (!scbw::moveUnitImproved(unit, finalPos.x, finalPos.y))
 			{
 				unitExt->timers[TimerStrigaRepulsion] = 0;
+			}
+		}
+
+		// Magnetar - Law of Attraction
+		// Todo - fix lag time between multiple pulls
+		// Todo - fix delay before moved unit is able to do stuff
+		if (unitExt->timers[TimerMagnetarAttraction])
+		{
+			Point16 finalPos = unit->position;
+			finalPos.x += unitExt->repulsionVector.x;
+			finalPos.y += unitExt->repulsionVector.y;
+			finalPos = scbw::clampPoint(finalPos);
+
+			if (!scbw::moveUnitImproved(unit, finalPos.x, finalPos.y))
+			{
+				unitExt->timers[TimerMagnetarAttraction] = 0;
 			}
 		}
 
@@ -1415,21 +1439,8 @@ namespace hooks
 					scbw::moveUnitImproved(unit, finalPos.x, finalPos.y);
 				}
 			}
-
 			s32 angle = scbw::getAngle(unit->position, targetPos);
 			unit->currentDirection1 = angle;
-
-			// s32 diff = angle - unit->currentDirection1;
-			// diff = (diff + 128) % 256 - 128;
-			// if (abs(diff) >= 1)
-			// {
-			// 	s32 sign = copysign(1, diff);
-			// 	unit->currentDirection1 += sign;
-			// }
-			// else
-			// {
-			// 	unit->currentDirection1 += diff;
-			// }
 		}
 
 		// Cyclops - Flak Cannon Fuse
@@ -1672,14 +1683,6 @@ namespace hooks
 				}
 				sprite->createOverlay(ImageId::HallucinationOverlay, 0, 0, 0);
 			}
-		}
-
-		// Southpaw - Knockout Drivers behavior
-		if (unitExt->values[ValueKnockoutDriversStacks]
-			&& unitExt->timers[TimerKnockoutDrivers] < 2)
-		{
-			unitExt->values[ValueKnockoutDriversStacks] = 0;
-			unit->updateSpeed();
 		}
 
 		// Luminary - Wax Wings Clear

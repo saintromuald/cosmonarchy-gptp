@@ -1,17 +1,11 @@
 #include "harvest.h"
 #include "../SCBW/api.h"
 
-
-//-------- Actual hooks --------//
-
 namespace hooks
 {
-
 	const s32 RESOURCE_HARVESTED = 8;
-
 	// Harvests minerals/gas from the @p resource and returns the amount that a worker should carry.
 	// Identical to sub_469650
-
 	bool isGasContainer(u16 unitId)
 	{
 		if (unitId == UnitId::ProtossAquifer)
@@ -31,24 +25,11 @@ namespace hooks
 
 	u8 harvestResourceFrom(Unit* resource, bool isMineral)
 	{
-
 		u8 return_value;
-
 		if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED)
 		{
-
-			if (isMineral)
-			{
-//				resource->remove();
-				resource->building.resource.resourceAmount = 2;
-				return_value = (u8)(resource->building.resource.resourceAmount);
-			}
-			else
-			{
-				resource->building.resource.resourceAmount = 0;
-				return_value = 2;
-			}
-
+			return_value = std::max((s32)resource->building.resource.resourceAmount, 1);
+			resource->building.resource.resourceAmount = 0;
 		}
 		else
 		{
@@ -56,11 +37,12 @@ namespace hooks
 			if (isMineral)
 			{
 				if (resource->building.resource.resourceAmount > 0)
+				{
 					helper::updateMineralPatchImage(resource);	// equivalent to setResourceCount @ 00468830 ?
+				}
 				else
 				{
 					resource->building.resource.resourceAmount = 2;
-//					resource->remove();
 				}
 			}
 			else if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED
@@ -73,20 +55,18 @@ namespace hooks
 		return return_value;
 	}
 
-	// Transfers a set amount of resources from a resource patch to a worker.
 	void transferResourceToWorkerHook(Unit* worker, Unit* resource)
 	{
-
 		if (resource->id >= UnitId::TerranReservoir && resource->id <= UnitId::ResourceMineralFieldType3)
 		{
 			u32 chunkImageId;
 			bool isMineral = false;
 			bool bEndThere = false;
 
-			// TODO: Add depleted mineral chunk
+			// TODO: Add depleted mineral chunk to worker
 			if (resource->id >= UnitId::ResourceMineralField &&
 				resource->id <= UnitId::ResourceMineralFieldType3)
-			{	// Is a mineral patch
+			{
 				chunkImageId = ImageId::MineralChunkType1;
 				isMineral = true;
 			}
@@ -118,14 +98,11 @@ namespace hooks
 				{
 					if (worker->resourceType & 3)
 					{ // Is carrying a mineral / gas
-
 					// Identical to function @ 0x004F3900
 					// Remove powerup shadows (mineral chunk shadow, psi emitter shadow, etc.)
 						worker->sprite->removeOverlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
-						//Remove powerup graphics
-						worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2);
-						//Remove Uraj / Khalis
-						worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis);
+						worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2); // Remove powerup graphics
+						worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis); // Remove Uraj / Khalis
 						worker->resourceType = 0;
 					}
 
@@ -174,14 +151,8 @@ namespace hooks
 					}
 					helper::setResourceAmountCarried(worker, resourceAmount, chunkImageId, isMineral);
 				}
-
 			}
-
 		}
-
-	} //void transferResourceToWorkerHook(Unit* worker, Unit* resource)
-
-	;
-
-} //hooks
+	}
+}
 

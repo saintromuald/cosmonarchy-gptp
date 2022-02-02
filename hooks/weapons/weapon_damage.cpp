@@ -536,7 +536,7 @@ namespace hooks
 						const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 						if (dist < 2 * 32)
 						{
-							const u32 displacementTime = 9;
+							const u32 displacementTime = 5;
 							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
 							Vector32f displacement = scbw::getNormalizedVector(diff);
 							displacement.x *= 1 * 32.0 / displacementTime;
@@ -694,16 +694,6 @@ namespace hooks
 							scbw::applyNewHallucination(data.target, data.attacker->playerId, CharlatanHallucinationTimer);
 						}
 					} break;
-					case WeaponId::SouthpawUppercutLaser:
-					{
-						// Knockout Drivers - Southpaw behavior
-						if (targetExt->values[ValueKnockoutDriversStacks] < 20)
-						{
-							targetExt->values[ValueKnockoutDriversStacks] += 1;
-						}
-						targetExt->timers[TimerKnockoutDrivers] = SouthpawKnockoutDriversTimer;
-						data.target->updateSpeed();
-					} break;
 					case WeaponId::MadrigalImperiosoMissiles:
 					{
 						// Dirge - Madrigal behavior
@@ -806,6 +796,24 @@ namespace hooks
 						if (!targetExt->values[ValueKelvinMunitionsSlow])
 						{
 							targetExt->values[ValueKelvinMunitionsSlow] = 1;
+						}
+					} break;
+					case WeaponId::MagnetarNewtonianShockCannon:
+					{
+						// Magnetar - Law of Attraction - Pull target to attacker
+						if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
+							|| (data.target->status & UnitStatus::InAir
+								&& data.target->mainOrderId != OrderId::Liftoff
+								&& data.target->mainOrderId != OrderId::BuildingLand))
+						{
+							const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
+							const u32 displacementTime = 5;
+							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
+							Vector32f displacement = scbw::getNormalizedVector(diff);
+							displacement.x *= 2 * 32.0 / displacementTime;
+							displacement.y *= 2 * 32.0 / displacementTime;
+							targetExt->timers[TimerMagnetarAttraction] = displacementTime;
+							targetExt->repulsionVector = displacement;
 						}
 					} break;
 				}

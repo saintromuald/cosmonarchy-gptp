@@ -154,7 +154,6 @@ enum ExtValueId
 	ValueSpineY,
 	ValueAdrenalStacks,
 	ValueLastOrdersInit,
-	ValueKnockoutDriversStacks,
 	ValueTempoChange,
 	ValueTreasuryStacks,
 	ValueSupplyProvidedSet,
@@ -308,6 +307,7 @@ enum ExtTimerId
 	TimerStrigaRepulsion,
 	TimerAxitriliskShieldLossSFX,
 	TimerOwnerChangedRecently,
+	TimerMagnetarAttraction,
 		
 	TimerAI_Lazarus,					   // |
 	TimerAI_Siphon,						   // |
