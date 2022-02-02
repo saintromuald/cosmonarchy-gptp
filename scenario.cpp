@@ -1693,8 +1693,7 @@ void tick_scenario() {
 		}
 
 		if (!alive_count && fraud_spawn.used_type_count[FraudClass_God] == 6) {
-			*currentTriggerPlayerId = 0;
-			helper::Victory();
+			unit_deaths[UnitId::Special_PitDoor].player[0] = 69;
 		}
 
 		// Fraud *Boom*
