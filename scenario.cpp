@@ -392,7 +392,7 @@ const char* fraud_names[] = {
 	"\x1E\Anal Crowsummoner",
 	"\x03\Pissing Porncultist",
 	"\x1D\Bearborne Arkanianpussy",
-	"\x0E\Doubling Wuckdevourer",
+	"\x10\Doubling Wuckdevourer",
 	"\x1F\Mongoloid Pointcorruptor",
 	"\x06\Calendared Rageboy",
 	"\x01\Worthy Pizzasniffer",
