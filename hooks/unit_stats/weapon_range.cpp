@@ -24,12 +24,6 @@ namespace hooks
 					bonusAmount += 4;
 				}
 			} break;
-			case UnitId::TerranHeracles:
-			{
-				// Heracles Nemean Reactors: increase seek range per stack
-				f64 new_bonus = (f64)bonusAmount * (1.0 + unitExt->values[ValueNemeanReactorsStack] * HeraclesWeaponRangePerStack);
-				bonusAmount = new_bonus;
-			} break;
 			default:
 			{
 				bonusAmount += 0;
@@ -96,13 +90,6 @@ namespace hooks
 				{
 					bonusAmount += 4 * 32;
 				}
-			} break;
-			case UnitId::TerranHeracles:
-			{
-				// Heracles Nemean Reactors: increase weapon range per stack
-				u32 new_bonus = unitExt->values[ValueNemeanReactorsStack] * HeraclesWeaponRangePerStack;
-				scbw::printf("Range increased by %u", new_bonus);
-				bonusAmount += new_bonus;
 			} break;
 			default:
 			{

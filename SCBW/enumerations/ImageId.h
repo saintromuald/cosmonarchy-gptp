@@ -1062,7 +1062,9 @@ enum Enum {
 	ProtossHallucinationEffect			= 1385,
 
 	NeutronFlareOrange_Damageless		= 1446,
+
 	AnthelionTeleportArrival			= 1456,
+
 	DermalAccelerantSmall				= 1462,
 	DermalAccelerantMedium				= 1463,
 	DermalAccelerantLarge				= 1464,
@@ -1070,6 +1072,8 @@ enum Enum {
 	SublimeShepherdOverlayLarge			= 1466,
 	SublimeShepherdOverlayMedium		= 1467,
 	SublimeShepherdOverlaySmall			= 1468,
+
+	StonewallProtocolOverlay			= 1477,
 
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,

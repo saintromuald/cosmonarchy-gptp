@@ -240,6 +240,7 @@ enum ExtValueId
 	ValueCharlatanMissilePos,
 	ValueIsNeutralBunker,
 	ValueIsZombified,
+	ValueIsSelfReviving,
 
 	ValueAI_KitingSignal,
 	ValueAI_BunkerCustom,
@@ -489,11 +490,11 @@ struct UnitLayout
 												// 0x4 - metastasis plague
 	/*0x027*/ u8        flingyMovementType;
 	/*0x028*/ Point16   position;				// Current position of the unit
-	/*0x02C*/ Vector32   halt;
+	/*0x02C*/ Vector32  halt;
 	/*0x034*/ u32       flingyTopSpeed;			// top speed
 	/*0x038*/ u32       current_speed1;			// ++current speed
 	/*0x03C*/ u32       current_speed2;			// ++not sure if there are any differences with these 2 variables, they always have the same value
-	/*0x040*/ Vector32   current_velocity;
+	/*0x040*/ Vector32  current_velocity;
 	/*0x048*/ u16       flingyAcceleration;
 	/*0x04A*/ u8        currentDirection2;		// ?
 	/*0x04B*/ u8        velocityDirection2;		// pathing related, BWAPI has more info

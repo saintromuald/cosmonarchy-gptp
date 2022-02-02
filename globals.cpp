@@ -951,12 +951,6 @@ namespace scbw
 			unitExt->timers[TimerObservanceDebuff] = SeraphObservanceDebuffTimer;
 		}
 
-		// Refresh Knockout Drivers
-		if (unitExt->timers[TimerKnockoutDrivers])
-		{
-			unitExt->timers[TimerKnockoutDrivers] = SouthpawKnockoutDriversTimer;
-		}
-
 		// Refresh Hallucination
 		if (unitExt->timers[TimerHallucinating])
 		{

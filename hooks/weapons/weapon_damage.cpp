@@ -384,7 +384,6 @@ namespace hooks
 				// Searing Acid - Geszithalor behavior
 				data.finalDamage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
 			} break;
-			case WeaponId::SouthpawUppercutLaser:
 			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::GlaveWurm:
 			case WeaponId::CharlatanFerventBlaster:
@@ -453,6 +452,9 @@ namespace hooks
 		{
 			UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
+			// Ignore dark swarm!
+			// START
+
 			// Akistrokor - Last hit tracking
 			if (targetExt->values[ValueEnthrallingTalons] > 0)
 			{
@@ -501,11 +503,8 @@ namespace hooks
 				}
 			}
 
-			// Petrification - Gorgon behavior
-			if (data.attacker->id == UnitId::TerranGorgon)
-			{
-				scbw::refreshDebuffs(data.target);
-			}
+			// Ignore dark swarm!
+			// END
 
 			// Ensnaring Brood - Queen enchantment ability
 			if (attackerExt->timers[TimerEnsnaringBrood] > 0
@@ -547,6 +546,20 @@ namespace hooks
 						}
 					}
 				} break;
+				case UnitId::TerranCuirass:
+				{
+					// Cuirass - Stonewall Protocol
+					if (!targetExt->values[ValueIsSelfReviving]
+						&& data.target->hitPoints < data.finalDamage)
+					{
+						targetExt->values[ValueIsSelfReviving] = 1;
+						data.target->hitPoints = CuirassSelfReviveHP;
+						data.finalDamage = 0;
+						data.target->orderComputerClear(OrderId::Stop);
+						data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
+						helper::playSoundFromSource(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
+					}
+				} break;
 			}
 
 			switch (data.weaponId)
@@ -566,6 +579,7 @@ namespace hooks
 				} break;
 				case WeaponId::LuminaryAuralAssault:
 				{
+					// Aural Assault - Luminary ability
 					u32 overlay = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(data.target->id);
 					Unit* overlayUnit = data.target;
 					if (data.target->subunit != nullptr)
@@ -634,6 +648,11 @@ namespace hooks
 						// Fertile Spines - Konvilisk behavior
 						scbw::applyParasite(data.target, data.attacker->playerId, data.attacker);
 					} break;
+					case WeaponId::GorgonArtificeBattery:
+					{
+						// Petrification - Gorgon behavior
+						scbw::refreshDebuffs(data.target);
+					} break;
 					case WeaponId::PazuzuJupiterDriver:
 					{
 						// Deconstruction - Pazuzu behavior - apply stack
@@ -685,6 +704,10 @@ namespace hooks
 								data.target->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
 							}
 						}
+					} break;
+					case WeaponId::HeraclesJavelinCannons:
+					{
+						data.finalDamage += attackerExt->values[ValueNemeanReactorsStack];
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
@@ -830,11 +853,6 @@ namespace hooks
 			{
 				// Ultrakor Saber Siphon passive
 				data.attacker->heal(damageDealt * 0.5, data.attacker);
-			} break;
-			case WeaponId::WendigoFusionSaw:
-			{
-				// Wendigo Automedicus passive (HP component)
-				data.attacker->heal(damageDealt * 0.25, data.attacker);
 			} break;
 			case WeaponId::AmaranthPsiCleaver:
 			{
