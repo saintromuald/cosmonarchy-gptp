@@ -365,7 +365,7 @@ const char* fraud_names[] = {
 	"\x1B\jun3hong",
 	"\x1E\Digital Rights Manager",
 	"\x10\Zeratool",
-	"\x03\F.R.A.U.D. Grandpa of Tony",
+	"\x19\F.R.A.U.D. Grandpa of Tony",
 	"\x1F\DK",
 	"\x03\iquare",
 	"\x0E\Metathrom",
@@ -379,63 +379,63 @@ const char* fraud_names[] = {
 	"\x15\Plagiarist Paul",
 	"\x10\RimTechCombot",
 	"\x1E\Africanized Crowkenyan",
-	"\x1FUltralisks",
+	"\x16Ultralisks",
 	"\x1F\N Thrower",
 
 	// == RANDOM ==
-	"\x03\LightenedRealities",
-	"\x18\AchromaticHalfdreams",
+	"\x07\LightenedRealities",
+	"\x16\AchromaticHalfdreams",
 	"\x0E\TonyTron",
 	"\x1A\Pr0nogo",
 	"\x11\Ba3lethal",
-	"\x05\Towering Pigprophet",
+	"\x1C\Towering Pigprophet",
 	"\x1E\Anal Crowsummoner",
 	"\x03\Pissing Porncultist",
 	"\x1D\Bearborne Arkanianpussy",
 	"\x10\Doubling Wuckdevourer",
 	"\x1F\Mongoloid Pointcorruptor",
 	"\x06\Calendared Rageboy",
-	"\x01\Worthy Pizzasniffer",
+	"\x03\Worthy Pizzasniffer",
 	"\x16\Skeletal Todzombie",
-	"\x07\Hoop_Thrower",
+	"\x18\Hoop Thrower",
 	"\x1A\Veeq8",
-	"\x16\Bonzibuddy",
+	"\x10\Bonzibuddy",
 	"\x15\IskatuMesk",
 
 	//// -- The Hall of Heroes
 	// == TERRAN ==
 	"\x11\Francisco Goska",
-	"\x11\An Ackmed Clone",
-	"\x0F\Cullen",
+	"\x15\An Ackmed Clone",
+	"\x1E\Cullen",
 	"\x16\Steve Miller",
 
 	// == PROTOSS ==
-	"\x0F\Torros",
-	"\x0F\Drakkar",
-	"\x1E\Thalazim",
-	"\x1F\Echo of Mixplay",
+	"\x19\Torros",
+	"\x18\Drakkar",
+	"\x15\Thalazim",
+	"\x0F\Echo of Mixplay",
 
 	// == ZERG ==
-	"\x11\Stroluum",
-	"\x11\Tuzor",
-	"\x16\Charlie",
-	"\x1F\Rekt'Son",
+	"\x1D\Stroluum",
+	"\x10\Tuzor",
+	"\x18\Charlie",
+	"\x1E\Rekt'Son",
 
 	//// -- The Supreme Kings
 	// == TERRAN ==
 	"\x15\Ackmed",
 	"\x06\The Don",
-	"\x10\Mathias Tolrim",
+	"\x1B\Mathias Tolrim",
 
 	// == PROTOSS ==
-	"\x0E\Tetragram",
+	"\x1C\Tetragram",
 	"\x08\Amon",
-	"\x0E\The Great Devourer",
+	"\x1C\The Great Devourer",
 
 	// == ZERG ==
-	"\x10\Zerghere",
+	"\x15\Zerghere",
 	"\x16\Connor",
-	"\x15\Kagg",
+	"\x1E\Kagg",
 
 	// == RANDOM ==
 	"\x06\God's Hand",
@@ -1123,7 +1123,7 @@ void init_fraud_units() {
 	add_fraud_unit(FraudHero_Drakkar, RaceId::Protoss, {1, UnitId::ProtossArchitect});
 
 	// Thalazim
-	fraud_spawn.frauds[FraudHero_Thalazim][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_None, AiBuildOrder_ProtossProfane_CloakAndDagger, PlayerColor::Saffron};
+	fraud_spawn.frauds[FraudHero_Thalazim][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_None, AiBuildOrder_ProtossProfane_CloakAndDagger, PlayerColor::Earthtone};
 	add_fraud_unit(FraudHero_Thalazim, RaceId::Protoss, {8, UnitId::ProtossCabalist});
 	add_fraud_unit(FraudHero_Thalazim, RaceId::Protoss, {2, UnitId::ProtossPariah});
 
