@@ -3,6 +3,7 @@
 #include "music_system.h"
 #include "SCBW/api.h"
 
+// Copy paste from Antikythera
 #define RiffId(a, b, c, d) ((a << 0) | (b << 8) | (c << 16) | (d << 24))
 
 enum RiffFormat {
@@ -99,18 +100,18 @@ struct Music {
 	s16* data;
 };
 
-struct Playlist {
-	bool shuffle;
-	u32 index;
-	u32 size;
-	Music* tracks[MaxMusic];
-};
+static LPDIRECTSOUND direct_sound;
+static LPDIRECTSOUNDBUFFER ds_buffer;
 
-static b32 music_system_init;
 static u32 music_tracks_count;
 static Music music_tracks[MaxMusic];
 static Music* music_tracks_hash[MaxMusicHash];
-static Playlist current_playlist;
+
+static bool playlist_shuffle;
+static u32 playlist_index;
+static u32 playlist_size;
+static Music* playlist_tracks[MaxMusic];
+
 static Music* current_music;
 static Music* next_music;
 static f32 music_fade_in;
@@ -205,9 +206,6 @@ static Music* get_music(char* filename) {
 	}
 	return music;
 }
-
-static LPDIRECTSOUND direct_sound;
-static LPDIRECTSOUNDBUFFER ds_buffer;
 
 static void custom_error(char* title, char* message) {
 	scbw::printf("%s:\n\t%s", title, message);
@@ -371,15 +369,15 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 				f32 fade_out = parser_get_f32(&parser);
 				music_fade_out = fade_out;
 			} else if (parser_eq(&parser, "playlist_clear")) {
-				current_playlist.size = 0;
+				playlist_size = 0;
 			} else if (parser_eq(&parser, "playlist_add")) {
 				Token filename = parser_get_token(&parser);
-				if (current_playlist.size < MaxMusic) {
-					current_playlist.tracks[current_playlist.size++] = get_music(filename.data);
+				if (playlist_size < MaxMusic) {
+					playlist_tracks[playlist_size++] = get_music(filename.data);
 				}
 			} else if (parser_eq(&parser, "playlist_shuffle")) {
 				s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
-				current_playlist.shuffle = do_shuffle;
+				playlist_shuffle = do_shuffle;
 			}
 		}
 	}
@@ -387,11 +385,10 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 }
 
 static void init_music_system() {
-	if (!music_system_init) {
-		music_system_init = true;
+	if (!direct_sound) {
 		init_direct_sound();
-		actionTable[47] = parse_comment_action;
 	}
+	actionTable[47] = parse_comment_action;
 	target_fade = 1;
 	for (u32 i = 0; i < MaxMusic; ++i) {
 		free_music(&music_tracks[i]);
@@ -401,18 +398,18 @@ static void init_music_system() {
 }
 
 static Music* get_next_music() {
-	if (!current_playlist.size) {
+	if (!playlist_size) {
 		return 0;
 	}
 
-	if (current_playlist.shuffle) {
-		current_playlist.index = rand() % current_playlist.size;
+	if (playlist_shuffle) {
+		playlist_index = rand() % playlist_size;
 	}
 
-	return current_playlist.tracks[current_playlist.index];
-	Music* music = current_playlist.tracks[current_playlist.index++];
-	if (current_playlist.index >= current_playlist.size) {
-		current_playlist.index = 0;
+	return playlist_tracks[playlist_index];
+	Music* music = playlist_tracks[playlist_index++];
+	if (playlist_index >= playlist_size) {
+		playlist_index = 0;
 	}
 	return music;
 }
