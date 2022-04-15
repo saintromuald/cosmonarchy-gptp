@@ -146,6 +146,7 @@ static Music* load_music(char* filename) {
 	if (music_tracks_count < MaxMusic) {
 		LoadedFile file = load_entire_sfile(filename);
 		if (!file.data) {
+			scbw::printf("Error: File %s missing!", filename);
 			return 0;
 		}
 
@@ -196,7 +197,10 @@ static Music* load_music(char* filename) {
 }
 
 static void free_music(Music* music) {
-	free(music->data);
+	if (music->data) {
+		free(music->data);
+		music->data = 0;
+	}
 }
 
 static Music* get_music(char* filename) {
@@ -209,10 +213,6 @@ static Music* get_music(char* filename) {
 		music = load_music(filename);
 	}
 	return music;
-}
-
-static void custom_error(char* title, char* message) {
-	scbw::printf("%s:\n\t%s", title, message);
 }
 
 static void init_direct_sound() {
@@ -233,19 +233,11 @@ static void init_direct_sound() {
 			buffer_description.dwFlags = DSBCAPS_PRIMARYBUFFER;
 
 			// @Todo: what is a primary buffer needed for? seems like sounds play without too 
-			LPDIRECTSOUNDBUFFER primary_buffer;
+			LPDIRECTSOUNDBUFFER primary_buffer = 0;
 			if (SUCCEEDED(direct_sound->CreateSoundBuffer(&buffer_description, &primary_buffer, 0))) {
-				if (!SUCCEEDED(primary_buffer->SetFormat(&wave_format))) {
-					custom_error("DirectSound initialization failed", "Can't set wave format!");
-				}
-			} else {
-				custom_error("DirectSound initialization failed", "Can't create primary buffer!");
+				primary_buffer->SetFormat(&wave_format);
 			}
-		} else {
-			custom_error("DirectSound initialization failed", "Can't set cooperative level!");
 		}
-	} else {
-		custom_error("DirectSound initialization failed", "Can't create direct sound!");
 	}
 }
 
@@ -400,6 +392,8 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 				Token filename = parser_get_token(&parser);
 				if (playlist_size < MaxMusic) {
 					playlist_tracks[playlist_size++] = get_music(filename.data);
+				} else {
+					scbw::printf("Error: Playlist already fully! (%s)", filename.data);
 				}
 			} else if (parser_eq(&parser, "playlist_shuffle")) {
 				s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
@@ -445,16 +439,27 @@ static void init_music_system() {
 	music_paused = false;
 }
 
+static void shuffle_playlist() {
+	for (u32 i = 0; i < playlist_size; ++i) {
+		Music* music_a = playlist_tracks[i];
+		for (u32 j = i + 1; j < playlist_size; ++j) {
+			Music* music_b = playlist_tracks[j];
+			if (rand() % 2 == 0) {
+				Music temp = *music_a;
+				*music_a = *music_b;
+				*music_b = temp;
+			}
+		}
+	}
+}
+
 static Music* get_next_music() {
 	if (!playlist_size) {
 		return 0;
 	}
-
-	if (playlist_shuffle) {
-		playlist_index = rand() % playlist_size;
+	if (playlist_index == 0) {
+		shuffle_playlist();
 	}
-
-	return playlist_tracks[playlist_index];
 	Music* music = playlist_tracks[playlist_index++];
 	if (playlist_index >= playlist_size) {
 		playlist_index = 0;
