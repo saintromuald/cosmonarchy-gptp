@@ -116,8 +116,11 @@ static Music* current_music;
 static Music* next_music;
 static f32 music_fade_in;
 static f32 music_fade_out;
-static f32 fade_volume;
-static s32 target_fade;
+static f32 music_fade;
+static s32 music_target_fade;
+static f32 music_volume;
+static f32 music_target_volume;
+static f32 music_volume_time;
 static bool music_paused;
 
 #define MaxToken 256
@@ -248,7 +251,7 @@ static void init_direct_sound() {
 
 static s32 get_volume() {
 	s32 volume = *musicVolume;
-	volume += (DSBVOLUME_MIN - volume) * (1 - fade_volume);
+	volume += (DSBVOLUME_MIN - volume) * (1 - music_fade * music_volume);
 	return volume;
 }
 
@@ -361,14 +364,14 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 			if (parser_eq(&parser, "play_music")) {
 				Token filename = parser_get_token(&parser);
 				next_music = get_music(filename.data);
-				target_fade = 0;
+				music_target_fade = 0;
 			} else if (parser_eq(&parser, "stop_music")) {
-				target_fade = 0;
+				music_target_fade = 0;
 			} else if (parser_eq(&parser, "pause_music")) {
-				target_fade = 0;
+				music_target_fade = 0;
 				music_paused = true;
 			} else if (parser_eq(&parser, "resume_music")) {
-				target_fade = 1;
+				music_target_fade = 1;
 				music_paused = false;
 			} else if (parser_eq(&parser, "fade_in")) {
 				f32 fade_in = parser_get_f32(&parser);
@@ -376,6 +379,14 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 			} else if (parser_eq(&parser, "fade_out")) {
 				f32 fade_out = parser_get_f32(&parser);
 				music_fade_out = fade_out;
+			} else if (parser_eq(&parser, "volume")) {
+				f32 volume = parser_get_f32(&parser);
+				f32 time = parser_get_f32(&parser);
+				if (time == 0) {
+					music_volume = 0;
+				}
+				music_target_volume = volume;
+				music_volume_time = time;
 			} else if (parser_eq(&parser, "playlist_clear")) {
 				playlist_size = 0;
 			} else if (parser_eq(&parser, "playlist_add")) {
@@ -419,8 +430,11 @@ static void init_music_system() {
 	next_music = 0;
 	music_fade_in = 0;
 	music_fade_out = 0;
-	fade_volume = 1;
-	target_fade = 1;
+	music_fade = 1;
+	music_target_fade = 1;
+	music_volume = 1;
+	music_target_volume = 1;
+	music_volume_time = 0;
 	music_paused = false;
 }
 
@@ -456,14 +470,14 @@ void tick_music_system() {
 		current_music = 0;
 	}
 
-	if (target_fade == 0) {
+	if (music_target_fade == 0) {
 		if (music_fade_out) {
-			fade_volume -= 1 / music_fade_out;
+			music_fade -= (1 / music_fade_out) / 24;
 		} else {
-			fade_volume = 0;
+			music_fade = 0;
 		}
-		if (fade_volume <= 0) {
-			fade_volume = 0;
+		if (music_fade <= 0) {
+			music_fade = 0;
 			stop_music();
 		}
 	}
@@ -475,7 +489,7 @@ void tick_music_system() {
 		current_music = next_music;
 		next_music = get_next_music();
 		if (current_music) {
-			target_fade = 1;
+			music_target_fade = 1;
 			play_music(current_music);
 		}
 	}
@@ -490,15 +504,32 @@ void tick_music_system() {
 		}
 	}
 
-	if (target_fade == 1) {
+	if (music_target_fade == 1) {
 		if (music_fade_in) {
-			fade_volume += 1 / music_fade_in;
+			music_fade += 1 / music_fade_in;
 		} else {
-			fade_volume = 1;
+			music_fade = 1;
 		}
-		if (fade_volume >= 1) {
-			fade_volume = 1;
+		if (music_fade >= 1) {
+			music_fade = 1;
 		}
+	}
+
+	if (music_volume_time) {
+		f32 music_volume_delta = (1 / music_volume_time) / 24;
+		if (music_volume < music_target_volume) {
+			music_volume += music_volume_delta;
+			if (music_volume >= music_target_volume) {
+				music_volume = music_target_volume;
+			}
+		} else {
+			music_volume -= music_volume_delta;
+			if (music_volume <= music_target_volume) {
+				music_volume = music_target_volume;
+			}
+		}
+	} else {
+		music_volume = music_target_volume;
 	}
 
 	if (ds_buffer) {
