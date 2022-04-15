@@ -175,9 +175,17 @@ namespace hooks
 		// This block is executed once every game
 		if (*elapsedTimeFrames == 0)
 		{
+			// Default maps to "semi-explored", from DarkenedFantasies
+			for (s32 i = 0; i < 4092; i++) {
+				if (fog_of_war_mask->unexplored[i] < 5)
+					fog_of_war_mask->unexplored[i] = 5;
+			}
+
 			hooks::initializeScreenLocations();
 			hooks::clearActions();
 			globals.reset();
+
+			// Set AI-required upgrades
 			for (s32 i = 0; i < 8; i++)
 			{
 				scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);

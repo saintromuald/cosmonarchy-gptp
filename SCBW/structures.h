@@ -1003,4 +1003,12 @@ struct CritSect
 	s32 spinCount;
 };
 
+struct FogMask
+{
+//	u8  unexplored[1980];	// 0x0 (0x00657AA0)
+//	u8  explored[2112];		// 0x7BC (0x0065825C)
+	u8  unexplored[4092];
+	u8  visible[4];			// 0x840 (0x00658A9C)
+};
+
 #pragma pack()

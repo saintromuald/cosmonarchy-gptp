@@ -482,6 +482,9 @@ SCBW_DATA(u16*,		regionIds,						0x0069262C);
 // For prepare_unit_move_custom
 SCBW_DATA(BinDlg*,	portrait,						0x0068AC98);
 
+// For fog of war changes by DarkenedFantasies
+SCBW_DATA(FogMask*,	fog_of_war_mask,				0x00657AA0);
+
 // For soundThread
 /*
 SCBW_DATA(HANDLE*,	soundThreadEvent,				0x006D5A00);
