@@ -65,7 +65,11 @@ SCBW_DATA(Location*, locationTable, 0x0058DC60);
 //for buttonsets
 SCBW_DATA(BUTTON_SET*, buttonSetTable, 0x005187E8);
 
-SCBW_DATA(ActionPointer*, actionTable, 0x00512800);  //From triggers.cpp
+SCBW_DATA(ActionPointer*, actionTable,         0x00512800); // From triggers.cpp
+SCBW_DATA(ActionPointer*, briefingActionTable, 0x00512800);
+SCBW_DATA(char**,         chkStringTable,      0x005993D4);
+SCBW_DATA(void*,          mainWindow,          0x0051BFB0);
+SCBW_DATA(s32*,           musicVolume,         0x006CDFE0);
 
 //This was in the InitializePlugin() code in qdp.cpp.
 //Not sure what this does, so I'm leaving it as a comment.

@@ -23,6 +23,7 @@
 #include "unit_ai.h"
 #include "tactical_ai.h"
 #include "scenario.h"
+#include "music_system.h"
 
 const u32 hyperTrigger = 0x006509A0;
 
@@ -169,6 +170,8 @@ namespace hooks
 	/// This hook is called every frame
 	bool nextFrame()
 	{
+		tick_music_system();
+
 		// This block is executed once every game
 		if (*elapsedTimeFrames == 0)
 		{
@@ -178,7 +181,7 @@ namespace hooks
 			for (s32 i = 0; i < 8; i++)
 			{
 				scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);
-			}			
+			}
 		}
 
 		if (*elapsedTimeFrames % 2 == 0)

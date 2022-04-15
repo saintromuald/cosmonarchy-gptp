@@ -9469,20 +9469,20 @@ namespace helper
 		return (bool)result;
 	}
 
-	bool SFileCloseFile(void* hFile)
-	{
-		const u32 Func_SFileCloseFile = 0x4100B8;
-		static u32 result;
-		__asm
-		{
-			PUSHAD
-			PUSH hFile
-			CALL Func_SFileCloseFile
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
+	//bool SFileCloseFile(void* hFile)
+	//{
+	//	const u32 Func_SFileCloseFile = 0x4100B8;
+	//	static u32 result;
+	//	__asm
+	//	{
+	//		PUSHAD
+	//		PUSH hFile
+	//		CALL Func_SFileCloseFile
+	//		MOV result, EAX
+	//		POPAD
+	//	}
+	//	return (bool)result;
+	//}
 
 	// For AI_AreOnConnectedRegions
 	bool AI_RegionsAreConnected(u32 playerId, u32 region1, u32 region2)
@@ -10530,4 +10530,24 @@ namespace helper
 			POPAD
 		}
 	}
+
+	char* get_chk_string(u32 i) {
+		static char* result;
+		const u32 func_get_chk_string = 0x004BD0C0;
+		__asm {
+			PUSHAD
+			MOV EDX, i
+			CALL func_get_chk_string
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	SFileOpenFile_Func* SFileOpenFile       = (SFileOpenFile_Func*)    0x0041013C;
+	SFileCloseFile_Func* SFileCloseFile     = (SFileCloseFile_Func*)   0x004100B8;
+	SFileDdaBeginEx_Func* SFileDdaBeginEx   = (SFileDdaBeginEx_Func*)  0x004101CC;
+	SFileDdaEnd_Func* SFileDdaEnd           = (SFileDdaEnd_Func*)      0x004101D8;
+	SFileGetFileSize_Func* SFileGetFileSize = (SFileGetFileSize_Func*) 0x00410142;
+	SFileReadFile_Func* SFileReadFile       = (SFileReadFile_Func*)    0x00410148;
 }

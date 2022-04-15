@@ -1,6 +1,9 @@
 #pragma once
 #include "SCBW\scbwdata.h"
 
+#define NOMINMAX
+#include <windows.h>
+
 namespace helper
 {
 	bool HasMoneyCanMake(Unit* builder, u32 unitToBuild);
@@ -1002,7 +1005,7 @@ namespace helper
 	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);				// 004100B2
 	bool SFileCloseArchive(void* archive);																	// 004100BE
 	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);				// 004100C4
-	bool SFileCloseFile(void* hFile);																		// 004100C4
+	//bool SFileCloseFile(void* hFile);																		// 004100C4
 
 	// For AI_AreOnConnectedRegions
 	bool AI_RegionsAreConnected(u32 playerId, u32 region1, u32 region2);									// 00437E70
@@ -1108,4 +1111,20 @@ namespace helper
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
+
+	char* get_chk_string(u32 i);
+
+	typedef BOOL __stdcall SFileOpenFile_Func(const char *filename, HANDLE *phFile);
+	typedef BOOL __stdcall SFileCloseFile_Func(HANDLE hFile);
+	typedef BOOL __stdcall SFileDdaBeginEx_Func(HANDLE directsound, DWORD flags, DWORD mask, unsigned __int32 lDistanceToMove, signed __int32 volume, signed int a6, int a7);
+	typedef BOOL __stdcall SFileDdaEnd_Func(HANDLE directsound);
+	typedef LONG __stdcall SFileGetFileSize_Func(HANDLE hFile, LPDWORD lpFileSizeHigh);
+	typedef int __stdcall SFileReadFile_Func(HANDLE a1, void* a2, DWORD a3, LPDWORD a4, LPOVERLAPPED a5);
+
+	extern SFileOpenFile_Func* SFileOpenFile;
+	extern SFileCloseFile_Func* SFileCloseFile;
+	extern SFileDdaBeginEx_Func* SFileDdaBeginEx;
+	extern SFileDdaEnd_Func* SFileDdaEnd;
+	extern SFileGetFileSize_Func* SFileGetFileSize;
+	extern SFileReadFile_Func* SFileReadFile;
 }
