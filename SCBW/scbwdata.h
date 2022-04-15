@@ -185,9 +185,9 @@ SCBW_DATA(Ping*, PingArray, 0x0059C1B8); // 16
 
 // Added by Pr0nogo
 // For raceDropdown
-SCBW_DATA(bStringMap*, singleRaceSelect, 0x0051AAA0);
-SCBW_DATA(wStringMap*, singleTypeSelect, 0x0051AAA8);
-SCBW_DATA(const u16*, networkTable, 0x006D1220);
+SCBW_DATA(bStringMap*,	singleRaceSelect,	0x0051AAA0);
+SCBW_DATA(wStringMap*,	singleTypeSelect,	0x0051AAA8);
+SCBW_DATA(const u16*,	networkTable,		0x006D1220);
 
 // For initSingleplayerCustom
 SCBW_DATA(const u32*, selectedGameType, 0x0059BA64);
@@ -481,6 +481,14 @@ SCBW_DATA(u16*,		regionIds,						0x0069262C);
 
 // For prepare_unit_move_custom
 SCBW_DATA(BinDlg*,	portrait,						0x0068AC98);
+
+// For fog of war changes by DarkenedFantasies
+SCBW_DATA(FogMask*,	fog_of_war_mask,				0x00657AA0);
+
+// For score screen player name overrides, from DarkenedFantasies
+SCBW_DATA(const StringTbl*,	network_table_DF,	0x0058F442);
+SCBW_DATA(ColorTable*,		colorTable,			0x0058F442);
+SCBW_DATA(PlayerNames*,		playerNameList,		0x0059B3D8);
 
 // For soundThread
 /*
