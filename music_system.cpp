@@ -425,10 +425,6 @@ void tick_music_system() {
 		if (status != DSBSTATUS_PLAYING) {
 			current_music = 0;
 		}
-
-		DWORD play = 0;
-		DWORD write = 0;
-		ds_buffer->GetCurrentPosition(&play, &write);
 	} else {
 		current_music = 0;
 	}

@@ -69,8 +69,8 @@ SCBW_DATA(ActionPointer*, actionTable,         0x00512800); // From triggers.cpp
 SCBW_DATA(ActionPointer*, briefingActionTable, 0x00512800);
 SCBW_DATA(char**,         chkStringTable,      0x005993D4);
 SCBW_DATA(void*,          mainWindow,          0x0051BFB0);
-SCBW_DATA(s32*,           musicVolume,         0x006CDFE0);
-SCBW_DATA(b8*,            musicPlaying,         0x006D5BBC);
+SCBW_DATA(s32*,           musicVolume,         0x006D5BB4);
+SCBW_DATA(b8*,            musicPlaying,        0x006D5BBC);
 
 //This was in the InitializePlugin() code in qdp.cpp.
 //Not sure what this does, so I'm leaving it as a comment.
