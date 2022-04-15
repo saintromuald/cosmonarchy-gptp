@@ -250,8 +250,12 @@ static void init_direct_sound() {
 }
 
 static s32 get_volume() {
+	if (music_fade == 0 || music_volume == 0) {
+		return DSBVOLUME_MIN;
+	}
+
 	s32 volume = *musicVolume;
-	volume += (DSBVOLUME_MIN - volume) * (1 - music_fade * music_volume);
+	volume += (-5000 - volume) * (1 - music_fade * music_volume);
 	return volume;
 }
 
@@ -331,7 +335,7 @@ static bool parser_get_word(Parser* parser) {
 		++parser->at;
 	}
 
-	return *parser->at != 0;
+	return parser->token.size != 0;
 }
 
 static Token parser_get_token(Parser* parser) {
@@ -373,6 +377,9 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 			} else if (parser_eq(&parser, "resume_music")) {
 				music_target_fade = 1;
 				music_paused = false;
+				if (ds_buffer) {
+					ds_buffer->Play(0, 0, 0);
+				}
 			} else if (parser_eq(&parser, "fade_in")) {
 				f32 fade_in = parser_get_f32(&parser);
 				music_fade_in = fade_in;
@@ -472,13 +479,20 @@ void tick_music_system() {
 
 	if (music_target_fade == 0) {
 		if (music_fade_out) {
-			music_fade -= (1 / music_fade_out) / 24;
+			music_fade -= (1.0 / music_fade_out) / 24.0;
 		} else {
 			music_fade = 0;
 		}
 		if (music_fade <= 0) {
 			music_fade = 0;
-			stop_music();
+
+			if (music_paused) {
+				if (ds_buffer) {
+					ds_buffer->Stop();
+				}
+			} else {
+				stop_music();
+			}
 		}
 	}
 
@@ -506,7 +520,7 @@ void tick_music_system() {
 
 	if (music_target_fade == 1) {
 		if (music_fade_in) {
-			music_fade += 1 / music_fade_in;
+			music_fade += (1.0 / music_fade_in) / 24.0;
 		} else {
 			music_fade = 1;
 		}
@@ -516,7 +530,7 @@ void tick_music_system() {
 	}
 
 	if (music_volume_time) {
-		f32 music_volume_delta = (1 / music_volume_time) / 24;
+		f32 music_volume_delta = (1.0 / music_volume_time) / 24.0;
 		if (music_volume < music_target_volume) {
 			music_volume += music_volume_delta;
 			if (music_volume >= music_target_volume) {
