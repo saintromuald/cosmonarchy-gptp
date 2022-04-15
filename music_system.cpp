@@ -118,6 +118,7 @@ static f32 music_fade_in;
 static f32 music_fade_out;
 static f32 fade_volume;
 static s32 target_fade;
+static bool music_paused;
 
 #define MaxToken 256
 struct Token {
@@ -257,6 +258,7 @@ static void play_music(Music* music) {
 	}
 
 	if (ds_buffer) {
+		ds_buffer->Stop();
 		ds_buffer->Release();
 		ds_buffer = 0;
 	}
@@ -362,6 +364,12 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 				target_fade = 0;
 			} else if (parser_eq(&parser, "stop_music")) {
 				target_fade = 0;
+			} else if (parser_eq(&parser, "pause_music")) {
+				target_fade = 0;
+				music_paused = true;
+			} else if (parser_eq(&parser, "resume_music")) {
+				target_fade = 1;
+				music_paused = false;
 			} else if (parser_eq(&parser, "fade_in")) {
 				f32 fade_in = parser_get_f32(&parser);
 				music_fade_in = fade_in;
@@ -388,13 +396,32 @@ static void init_music_system() {
 	if (!direct_sound) {
 		init_direct_sound();
 	}
+	if (ds_buffer) {
+		ds_buffer->Stop();
+		ds_buffer->Release();
+		ds_buffer = 0;
+	}
 	actionTable[47] = parse_comment_action;
-	target_fade = 1;
+
 	for (u32 i = 0; i < MaxMusic; ++i) {
 		free_music(&music_tracks[i]);
 	}
+	music_tracks_count = 0;
 	memset(music_tracks, 0, sizeof(music_tracks));
 	memset(music_tracks_hash, 0, sizeof(music_tracks_hash));
+
+	playlist_shuffle = false;
+	playlist_index = 0;
+	playlist_size = 0;
+	memset(playlist_tracks, 0, sizeof(playlist_tracks));
+
+	current_music = 0;
+	next_music = 0;
+	music_fade_in = 0;
+	music_fade_out = 0;
+	fade_volume = 1;
+	target_fade = 1;
+	music_paused = false;
 }
 
 static Music* get_next_music() {
@@ -441,20 +468,19 @@ void tick_music_system() {
 		}
 	}
 
-	if (!current_music) {
+	if (!current_music && !music_paused) {
 		if (!next_music) {
 			next_music = get_next_music();
 		}
 		current_music = next_music;
 		next_music = get_next_music();
 		if (current_music) {
-			fade_volume = 0;
 			target_fade = 1;
 			play_music(current_music);
 		}
 	}
 
-	if (current_music) {
+	if (current_music || music_paused) {
 		if (*musicPlaying) {
 			helper::stopMusic();
 		}
