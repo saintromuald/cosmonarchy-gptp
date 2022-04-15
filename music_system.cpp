@@ -52,31 +52,11 @@ struct LoadedFile {
 	char* data;
 };
 
-static size_t file_read(HANDLE handle, char* data, size_t size) {
-	if (!data) return 0;
-	if (!size) return 0;
-
-	size_t total_read = 0;
-	while (total_read < size) {
-		size_t remaining = size - total_read;
-		DWORD to_read = 0;
-		if (remaining < INT_MAX) {
-			to_read = remaining;
-		} else {
-			to_read = INT_MAX;			
-		}
-
-		DWORD read = 0;
-		ReadFile(handle, data + total_read, to_read, &read, 0);
-		total_read += read;
-	}
-	return total_read;
-}
-
 static LoadedFile load_entire_sfile(char* filename) {
 	HANDLE file = 0;
 	helper::SFileOpenFile(filename, &file);
 	if (!file) {
+		scbw::printf("Error: File %s missing!", filename);
 		return {};
 	}
 	
@@ -136,6 +116,7 @@ static Music* next_music;
 static f32 music_fade_in;
 static f32 music_fade_out;
 static f32 fade_volume;
+static s32 target_fade;
 
 #define MaxToken 256
 struct Token {
@@ -266,6 +247,12 @@ static void init_direct_sound() {
 	}
 }
 
+static s32 get_volume() {
+	s32 volume = *musicVolume;
+	volume += (DSBVOLUME_MIN - volume) * (1 - fade_volume);
+	return volume;
+}
+
 static void play_music(Music* music) {
 	if (!direct_sound) {
 		return;
@@ -283,11 +270,10 @@ static void play_music(Music* music) {
 	buffer_description.lpwfxFormat = &music->wave_format;
 
 	if (!SUCCEEDED(direct_sound->CreateSoundBuffer(&buffer_description, &ds_buffer, 0))) {
-		// @Todo: log error
 		return;
 	}
 
-	ds_buffer->SetVolume(DSBVOLUME_MIN * (1 - fade_volume));
+	ds_buffer->SetVolume(get_volume());
 
 	u32 play_cursor = 0;
 	u32 write_cursor = 0;
@@ -319,7 +305,12 @@ static void play_music(Music* music) {
 }
 
 static void stop_music() {
-	ds_buffer->Stop();
+	if (ds_buffer) {
+		ds_buffer->Stop();
+		ds_buffer->Release();
+		ds_buffer = 0;
+	}
+	current_music = 0;
 }
 
 static bool parser_get_word(Parser* parser) {
@@ -340,7 +331,7 @@ static bool parser_get_word(Parser* parser) {
 	return *parser->at != 0;
 }
 
-static Token parser_get_token(Parser* parser, u32 radix = 10) {
+static Token parser_get_token(Parser* parser) {
 	parser_get_word(parser);
 	return parser->token;
 }
@@ -370,8 +361,9 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 			if (parser_eq(&parser, "play_music")) {
 				Token filename = parser_get_token(&parser);
 				next_music = get_music(filename.data);
+				target_fade = 0;
 			} else if (parser_eq(&parser, "stop_music")) {
-				next_music = 0;
+				target_fade = 0;
 			} else if (parser_eq(&parser, "fade_in")) {
 				f32 fade_in = parser_get_f32(&parser);
 				music_fade_in = fade_in;
@@ -400,7 +392,7 @@ static void init_music_system() {
 		init_direct_sound();
 		actionTable[47] = parse_comment_action;
 	}
-	fade_volume = 1;
+	target_fade = 1;
 	for (u32 i = 0; i < MaxMusic; ++i) {
 		free_music(&music_tracks[i]);
 	}
@@ -408,19 +400,89 @@ static void init_music_system() {
 	memset(music_tracks_hash, 0, sizeof(music_tracks_hash));
 }
 
+static Music* get_next_music() {
+	if (!current_playlist.size) {
+		return 0;
+	}
+
+	if (current_playlist.shuffle) {
+		current_playlist.index = rand() % current_playlist.size;
+	}
+
+	return current_playlist.tracks[current_playlist.index];
+	Music* music = current_playlist.tracks[current_playlist.index++];
+	if (current_playlist.index >= current_playlist.size) {
+		current_playlist.index = 0;
+	}
+	return music;
+}
+
 void tick_music_system() {
 	if (*elapsedTimeFrames == 0) {
 		init_music_system();
 	}
+	
+	if (ds_buffer) {
+		DWORD status = 0;
+		ds_buffer->GetStatus(&status);
+		if (status != DSBSTATUS_PLAYING) {
+			current_music = 0;
+		}
+
+		DWORD play = 0;
+		DWORD write = 0;
+		ds_buffer->GetCurrentPosition(&play, &write);
+	} else {
+		current_music = 0;
+	}
+
+	if (target_fade == 0) {
+		if (music_fade_out) {
+			fade_volume -= 1 / music_fade_out;
+		} else {
+			fade_volume = 0;
+		}
+		if (fade_volume <= 0) {
+			fade_volume = 0;
+			stop_music();
+		}
+	}
+
+	if (!current_music) {
+		if (!next_music) {
+			next_music = get_next_music();
+		}
+		current_music = next_music;
+		next_music = get_next_music();
+		if (current_music) {
+			fade_volume = 0;
+			target_fade = 1;
+			play_music(current_music);
+		}
+	}
+
+	if (current_music) {
+		if (*musicPlaying) {
+			helper::stopMusic();
+		}
+	} else {
+		if (!*musicPlaying) {
+			helper::playNextMusic();
+		}
+	}
+
+	if (target_fade == 1) {
+		if (music_fade_in) {
+			fade_volume += 1 / music_fade_in;
+		} else {
+			fade_volume = 1;
+		}
+		if (fade_volume >= 1) {
+			fade_volume = 1;
+		}
+	}
 
 	if (ds_buffer) {
-		s32 volume = DSBVOLUME_MIN * (1 - fade_volume);
-		volume += *musicVolume;
-		if (volume < DSBVOLUME_MIN) {
-			volume = DSBVOLUME_MIN;
-		}
-		ds_buffer->SetVolume(volume);
+		ds_buffer->SetVolume(get_volume());
 	}
-	// copy music volume
-	// handle fades
 }

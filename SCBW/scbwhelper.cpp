@@ -10550,4 +10550,7 @@ namespace helper
 	SFileDdaEnd_Func* SFileDdaEnd           = (SFileDdaEnd_Func*)      0x004101D8;
 	SFileGetFileSize_Func* SFileGetFileSize = (SFileGetFileSize_Func*) 0x00410142;
 	SFileReadFile_Func* SFileReadFile       = (SFileReadFile_Func*)    0x00410148;
+
+	playNextMusic_Func* playNextMusic = (playNextMusic_Func*) 0x004A6250;
+	stopMusic_Func* stopMusic         = (stopMusic_Func*)     0x004A5F50;
 }

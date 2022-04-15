@@ -1127,4 +1127,10 @@ namespace helper
 	extern SFileDdaEnd_Func* SFileDdaEnd;
 	extern SFileGetFileSize_Func* SFileGetFileSize;
 	extern SFileReadFile_Func* SFileReadFile;
+
+	typedef void   __cdecl playNextMusic_Func();
+	typedef HANDLE __cdecl stopMusic_Func();
+
+	extern playNextMusic_Func* playNextMusic;
+	extern stopMusic_Func* stopMusic;
 }
