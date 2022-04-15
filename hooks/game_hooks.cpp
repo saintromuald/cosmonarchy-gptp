@@ -619,15 +619,36 @@ namespace hooks
 			} break;
 			case UnitId::TerranHeracles:
 			{
-				// Heracles Nemean Reactors - subtract stacks while moving
-				if (unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving)
+				// Heracles Nemean Reactors - remove stacks when out of combat
+				if (unitExt->values[ValueNemeanReactorsStack] > 0
+					&& unitExt->timers[TimerNemeanReactors] <= 1)
 				{
-					if (unitExt->values[ValueNemeanReactorsStack] > 0)
-					{
-						unitExt->values[ValueNemeanReactorsStack]--;
-					}
+					unitExt->values[ValueNemeanReactorsStack] = 0;
 				}
 			} break;
+			case UnitId::TerranCuirass:
+			{
+				if (unitExt->values[ValueIsSelfReviving])
+				{
+					if (unit->hitPoints + CuirassSelfHeal >= unit->getMaxHpRaw())
+					{
+						unitExt->values[ValueIsSelfReviving] = 0;
+						unit->hitPoints = unit->getMaxHpRaw();
+						scbw::restoreFunc(unit);
+						unit->orderComputerClear(OrderId::Stop);
+						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
+						helper::playSoundFromSource(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
+					}
+					else
+					{
+						unit->heal(CuirassSelfHeal);
+						if (!unit->sprite->getOverlay(ImageId::StonewallProtocolOverlay))
+						{
+							unit->sprite->createTopOverlay(ImageId::StonewallProtocolOverlay, -3, -8);
+						}
+					}
+				}
+			}
 			case UnitId::SharedStriga:
 			case UnitId::ProtossLegionnaire:
 			{

@@ -44,10 +44,6 @@ const s32 MadcapPassiveDecayTime = 0.5 * 24;
 const s32 MadcapMaxStacks = 10;
 const f64 MadcapAttackSpeedPerStack = 0.05;
 
-// Heracles
-const f64 HeraclesWeaponRangePerStack = 2;
-const f64 HeraclesWeaponCooldownPerStack = 0.02;
-
 // Apostle
 const s32 ApostleLazarusAgentHeal = 25 * 256;
 const s32 ApostleBloodTitheHealing = 5 * 256;
@@ -63,8 +59,9 @@ const s32 MineSeekRange = 576;
 const s32 MineDetonateRange = 30;
 const s32 LobotomyMineLockdownTimer = 12; // 4 seconds
 
-// Southpaw
-const s32 SouthpawKnockoutDriversTimer = 24 * 2 + 1;
+// Cuirass
+const u32 CuirassSelfReviveHP = 15 * 256;
+const s32 CuirassSelfHeal = 107; // (10 * 256) / 24 = 106.666+
 
 // Madrigal
 const s32 MadrigalDirgeTimer = 48 + 1;

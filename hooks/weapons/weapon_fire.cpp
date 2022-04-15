@@ -343,6 +343,7 @@ namespace hooks
 				if (weaponId == WeaponId::HeraclesJavelinCannons)
 				{
 					unitExt->values[ValueNemeanReactorsStack]++;
+					unitExt->timers[TimerNemeanReactors] = 49;
 					helper::playSoundFromSource(1372, unit, 1, 0);
 				}
 

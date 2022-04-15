@@ -1003,13 +1003,8 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranCuirass &&  // Southpaw Knockout Drivers passive
-								current_button->iconID == IconId::BurstLasers)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranCuirass &&  // Southpaw Bar-Brawl Refraction passive
-								current_button->iconID == IconId::Fusion_Cutter_Harvest)
+							else if ((*activePortraitUnit)->id == UnitId::TerranCuirass &&  // Cuirass Stonewall Protocol passive
+								current_button->iconID == IconId::MoebiusReactor)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}

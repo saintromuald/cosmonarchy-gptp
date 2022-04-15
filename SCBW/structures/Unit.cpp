@@ -484,7 +484,7 @@ void Unit::setHp(s32 hitPoints)
 void Unit::heal(s32 hitPoints, Unit* source, bool restore)
 {
 	assert(this);
-	if (this->hitPoints == this->getMaxHpRaw()) // skip healing if max hp already
+	if (this->hitPoints == this->getMaxHpRaw()) // If unit is fully healed already, skip healing
 	{
 		return;
 	}
@@ -497,7 +497,7 @@ void Unit::heal(s32 hitPoints, Unit* source, bool restore)
 
 	setHp(std::min((u32)this->hitPoints + hitPoints, this->getMaxHpRaw()));
 
-	// If heals to full clear debuffs
+	// If the unit is fully healed after this, clear any debuffs
 	if (this->hitPoints == this->getMaxHpRaw() && restore)
 	{
 		scbw::restoreFunc(this);

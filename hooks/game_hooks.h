@@ -1,11 +1,9 @@
 #pragma once
 
-namespace hooks {
-
+namespace hooks
+{
 	bool gameOn();
 	bool gameEnd();
 	bool nextFrame();
-
 	void injectGameHooks();
-
-} //hooks
+}

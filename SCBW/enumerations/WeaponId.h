@@ -158,7 +158,7 @@ namespace WeaponId {
 			
 		HeraclesJavelinCannons				= 1,	// Heracles weapon
 		ApostleCharonRifle					= 3,	// Apostle weapon
-		SouthpawUppercutLaser				= 5,	// Southpaw weapon
+		CuirassHaymakerAutogun				= 5,	// Cuirass weapon
 		MadcapDanannAutogun					= 9,	// Madcap weapon
 		PaladinCrusaderMissiles				= 10,	// Paladin weapon
 		WendigoFusionSaw					= 12,	// Wendigo weapon
