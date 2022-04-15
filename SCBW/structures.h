@@ -1011,4 +1011,14 @@ struct FogMask
 	u8  visible[4];			// 0x840 (0x00658A9C)
 };
 
+struct ColorTable
+{
+	u8  playerColorId[8];
+};
+
+struct PlayerNames
+{
+	char  playerName[8][72];// Array length is actually 25. Followed by forceName[30], and someStuff[17]
+};
+
 #pragma pack()
