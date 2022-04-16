@@ -247,7 +247,7 @@ static s32 get_volume() {
 	}
 
 	s32 volume = *musicVolume;
-	volume += (-5000 - volume) * (1 - music_fade * music_volume);
+	volume += (-4000 - volume) * (1 - music_fade * music_volume);
 	return volume;
 }
 
