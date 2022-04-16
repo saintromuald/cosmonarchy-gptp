@@ -20,7 +20,6 @@ namespace hooks
 		{
 			return true;
 		}
-
 		return false;
 	}
 }
