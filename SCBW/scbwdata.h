@@ -486,7 +486,7 @@ SCBW_DATA(BinDlg*,	portrait,						0x0068AC98);
 SCBW_DATA(FogMask*,	fog_of_war_mask,				0x00657AA0);
 
 // For score screen player name overrides, from DarkenedFantasies
-SCBW_DATA(const StringTbl*,	network_table_DF,	0x0058F442);
+SCBW_DATA(const StringTbl*,	network_table_DF,	0x006D1220);
 SCBW_DATA(ColorTable*,		colorTable,			0x0058F442);
 SCBW_DATA(PlayerNames*,		playerNameList,		0x0059B3D8);
 
