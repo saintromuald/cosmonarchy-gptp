@@ -1137,7 +1137,7 @@ namespace helper
 	void PrepareFormationMovement(MovementGroup* a1, char a2); // 49A8C0
 	Unit* FindFowUnit(__int16 ax0, __int16 a2, unsigned __int16 a3); // 487FD0
 	void TargetedOrder_Unit(Unit* a1, Unit* a2, int a3, char a4); // 4756E0
-	void TargetedOrder_Ground(u8 a1, int a2, Unit* a3, int a4, s16 a5, s16 a6); // 4756B0
+	void TargetedOrder_Ground(int a1, int a2, Unit* a3, int a4, int a5, int a6); // 4756B0
 	Unit* GetNextCommandedUnit(); // 49A850
 	void GetFormationMovementTarget(Unit *a1, MovementGroup* a2); // 49A500
 

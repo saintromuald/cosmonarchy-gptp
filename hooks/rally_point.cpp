@@ -184,11 +184,12 @@ namespace hooks
         Order* result = unit->orderQueueHead;
         while (result)
         {
+            Order* next = result->next;
             if (result->target.unit == dying)
             {
                 helper::removeOrderFromUnitQueue(result, unit);
             }
-            result = result->next;
+            result = next;
         }
         return 0; // used to return result, but it will always be 0. the return value is never used anyways
     }
@@ -291,7 +292,7 @@ namespace hooks
                             if (target)
                             {
                                 helper::TargetedOrder_Unit(target, unit, queued != 0, rightOrder);
-                                if (byte_68C300[0] != 23)
+                                if (byte_68C300[0] != OrderId::Nothing2)
                                 {
                                     helper::TargetedOrder_Unit(target, unit, queued != 0, byte_68C300[0]);
                                 }
@@ -308,10 +309,13 @@ namespace hooks
                                 {
                                     movement_group.current_unit_target = movement_group.pos;
                                 }
-                                helper::TargetedOrder_Ground(rightOrder, fow_unit_id, unit, queued != 0, movement_group.current_unit_target.x, movement_group.current_unit_target.y);
-                                if (byte_68C300[0] != 23)
+
+                                u16 target_x = movement_group.current_unit_target.x;
+                                u16 target_y = movement_group.current_unit_target.y;
+                                helper::TargetedOrder_Ground(rightOrder, fow_unit_id, unit, queued != 0, target_x, target_y);
+                                if (byte_68C300[0] != OrderId::Nothing2)
                                 {
-                                    helper::TargetedOrder_Ground(byte_68C300[0], fow_unit_id, unit, queued != 0, movement_group.current_unit_target.x, movement_group.current_unit_target.y);
+                                    helper::TargetedOrder_Ground(byte_68C300[0], fow_unit_id, unit, queued != 0, target_x, target_y);
                                 }
                             }
                             unit->userActionFlags |= 2u;

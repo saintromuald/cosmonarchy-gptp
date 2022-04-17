@@ -10593,7 +10593,7 @@ namespace helper
 		}
 	}
 
-	void TargetedOrder_Ground(u8 a1, int a2, Unit* a3, int a4, s16 a5, s16 a6) { // 4756B0
+	void TargetedOrder_Ground(int a1, int a2, Unit* a3, int a4, int a5, int a6) { // 4756B0
 		const u32 func_address = 0x004756B0;
 		__asm {
 			PUSHAD
@@ -10602,7 +10602,7 @@ namespace helper
 			PUSH a4
 			MOV ESI, a3
 			MOV EBX, a2
-			MOV DL, a1
+			MOV EDX, a1
 			CALL func_address
 			POPAD
 		}
