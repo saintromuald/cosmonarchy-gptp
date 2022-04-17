@@ -788,7 +788,7 @@ LABEL_18:
 		s32* pointer;
 
 		u32 randomSeed;
-		if (IS_IN_GAME_LOOP)
+		if (*IS_IN_GAME_LOOP)
 		{
 			++randomCounts[14];
 			*lastRandomNumber = 0x15A4E35 * *lastRandomNumber + 1;

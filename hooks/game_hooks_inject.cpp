@@ -73,6 +73,19 @@ void __declspec(naked) nextFrameHook()
 	}
 }
 
+void __declspec(naked) nextUiFrameHook() {
+	__asm {
+		PUSHAD
+		MOV EBP, ESP
+	}
+	hooks::nextUiFrame();
+	__asm {
+		POPAD
+		MOV EDI, 4 // original line
+		RETN
+	}
+}
+
 //-------- Hook injector --------//
 
 namespace hooks
@@ -83,6 +96,8 @@ namespace hooks
 		jmpPatch(onGameStart, Hook_OnGameStart);
 		callPatch(onGameEnd, 0x004EE983);
 		callPatch(nextFrameHook, 0x004D974E);
+
+		callPatch(nextUiFrameHook, 0x004DE433);
 	}
 
 } //hooks

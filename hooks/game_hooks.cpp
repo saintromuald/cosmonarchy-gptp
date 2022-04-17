@@ -167,10 +167,14 @@ namespace hooks
 {
 	void tickUnit(Unit* unit);
 
+	void nextUiFrame() {
+		tick_music_system(false);
+	}
+
 	/// This hook is called every frame
 	bool nextFrame()
 	{
-		tick_music_system();
+		tick_music_system(true);
 
 		// This block is executed once every game
 		if (*elapsedTimeFrames == 0)

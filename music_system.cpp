@@ -100,6 +100,8 @@ struct Music {
 	s16* data;
 };
 
+static bool music_init;
+static bool music_in_game;
 static LPDIRECTSOUND direct_sound;
 static LPDIRECTSOUNDBUFFER ds_buffer;
 
@@ -404,10 +406,40 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 	return 1;
 }
 
+static void shuffle_playlist() {
+	for (u32 i = 0; i < playlist_size; ++i) {
+		Music* music_a = playlist_tracks[i];
+		for (u32 j = i + 1; j < playlist_size; ++j) {
+			Music* music_b = playlist_tracks[j];
+			if (rand() % 2 == 0) {
+				Music temp = *music_a;
+				*music_a = *music_b;
+				*music_b = temp;
+			}
+		}
+	}
+}
+
+static Music* get_next_music() {
+	if (!playlist_size) {
+		return 0;
+	}
+	if (playlist_index == 0) {
+		shuffle_playlist();
+	}
+	Music* music = playlist_tracks[playlist_index++];
+	if (playlist_index >= playlist_size) {
+		playlist_index = 0;
+	}
+	return music;
+}
+
 static void init_music_system() {
+	music_init = true;
 	if (!direct_sound) {
 		init_direct_sound();
 	}
+
 	if (ds_buffer) {
 		ds_buffer->Stop();
 		ds_buffer->Release();
@@ -439,36 +471,16 @@ static void init_music_system() {
 	music_paused = false;
 }
 
-static void shuffle_playlist() {
-	for (u32 i = 0; i < playlist_size; ++i) {
-		Music* music_a = playlist_tracks[i];
-		for (u32 j = i + 1; j < playlist_size; ++j) {
-			Music* music_b = playlist_tracks[j];
-			if (rand() % 2 == 0) {
-				Music temp = *music_a;
-				*music_a = *music_b;
-				*music_b = temp;
-			}
-		}
+void tick_music_system(bool in_game) {
+	if (!music_init || (*IS_IN_GAME_LOOP && *elapsedTimeFrames == 0)) {
+		init_music_system();
 	}
-}
 
-static Music* get_next_music() {
-	if (!playlist_size) {
-		return 0;
-	}
-	if (playlist_index == 0) {
-		shuffle_playlist();
-	}
-	Music* music = playlist_tracks[playlist_index++];
-	if (playlist_index >= playlist_size) {
-		playlist_index = 0;
-	}
-	return music;
-}
-
-void tick_music_system() {
-	if (*elapsedTimeFrames == 0) {
+	if (in_game) {
+		music_in_game = true;
+	} else if (music_in_game) {
+		// Leaving the game should reset music
+		music_in_game = false;
 		init_music_system();
 	}
 	
