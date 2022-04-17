@@ -292,7 +292,7 @@ namespace hooks
 		if (!scbw::isGamePaused()) // If the game is not paused
 		{
 			for (u32 i = 0; i < 8; ++i) {
-				raceSupply[RaceId::Terran].provided[i] = 65535;
+				raceSupply[RaceId::Terran].provided[i] = 60000;
 			}
 
 			UpdateUnitGrid();
