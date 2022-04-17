@@ -1,5 +1,6 @@
 #include "infestation.h"
 #include <SCBW/api.h>
+#include "globals.h"
 
 namespace hooks
 {
@@ -71,7 +72,8 @@ namespace hooks
 					// this is the same as calling 0047B2E0 unitIsFactoryUnit like original code but faster
 					if (unitInfested->isFactory())
 					{
-						unitInfested->rally.unit = unitInfested;
+						UnitExt* unitInfestedExt = globals.GetUnitExt(unitInfested);
+						unitInfestedExt->rally.unit = unitInfested;
 					}
 
 					// original code was *(u16*)(0x006648AC + 2*unitInfested->id);

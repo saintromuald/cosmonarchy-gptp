@@ -10553,4 +10553,98 @@ namespace helper
 
 	playNextMusic_Func* playNextMusic = (playNextMusic_Func*) 0x004A6250;
 	stopMusic_Func* stopMusic         = (stopMusic_Func*)     0x004A5F50;
+
+	void PrepareFormationMovement(MovementGroup* a1, char a2) { // 49A8C0
+		const u32 func_address = 0x0049A8C0;
+		__asm {
+			PUSHAD
+			PUSH a2
+			MOV EDI, a1
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Unit* FindFowUnit(__int16 ax0, __int16 a2, unsigned __int16 a3) { // 487FD0
+		static Unit* result;
+		const u32 func_address = 0x00487FD0;
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOV CX, a2
+			MOV AX, ax0
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void TargetedOrder_Unit(Unit* a1, Unit* a2, int a3, char a4) { // 4756E0
+		const u32 func_address = 0x004756E0;
+		__asm {
+			PUSHAD
+			PUSH a4
+			PUSH a3
+			MOV ESI, a2
+			MOV EDX, a1
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void TargetedOrder_Ground(u8 a1, int a2, Unit* a3, int a4, s16 a5, s16 a6) { // 4756B0
+		const u32 func_address = 0x004756B0;
+		__asm {
+			PUSHAD
+			PUSH a6
+			PUSH a5
+			PUSH a4
+			MOV ESI, a3
+			MOV EBX, a2
+			MOV DL, a1
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Unit* GetNextCommandedUnit() { // 49A850
+		static Unit* result;
+		const u32 func_address = 0x0049A850;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void GetFormationMovementTarget(Unit *a1, MovementGroup* a2) { // 49A500
+		const u32 func_address = 0x0049A500;
+		__asm {
+			PUSHAD
+			PUSH a2
+			PUSH a1
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u8 GetRightClickOrder(u32 index, Unit* unit, s32 x, s32 y, Unit** target, s32 unit_id) {
+		static u8 result;
+		void* function = GetRightClickOrderArray[index];
+		__asm {
+			PUSHAD
+			PUSH unit_id
+			PUSH target
+			PUSH y
+			MOV EDX, x
+			MOV ECX, unit
+			CALL function
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

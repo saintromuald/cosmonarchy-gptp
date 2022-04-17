@@ -1021,4 +1021,15 @@ struct PlayerNames
 	char  playerName[8][72];// Array length is actually 25. Followed by forceName[30], and someStuff[17]
 };
 
+struct MovementGroup {
+	Point16 pos;
+	Point16 current_unit_target;
+	Point16 pathed_pos;
+	Point16 nonpathed_pos;
+	s32 unit_offset;
+	s16 sqrt_2_times_unit_area_sum;
+	s16 unit_area_sum;
+	s32 flags;
+};
+
 #pragma pack()

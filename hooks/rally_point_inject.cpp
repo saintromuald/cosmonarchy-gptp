@@ -241,13 +241,74 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) RemoveReferences_Wrapper() { // 0049E590
+		static Unit* unit;
+		static Unit* dying;
+		static Order* result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV dying, EAX
+			POP EAX
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::RemoveReferences(unit, dying);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) RightClickCommand_Wrapper() { // 004560D0
+		static s32 x;
+		static s32 y;
+		static Unit* unit;
+		static s32 fow_unit_id;
+		static s8 queued;
+		static Unit* result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV x, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV y, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV unit, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV fow_unit_id, EAX
+			MOV EAX, [EBP + 0x18]
+			MOV queued, AL
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::RightClickCommand(x, y, unit, fow_unit_id, queued);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x20
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectRallyHooks()
 	{
-		/*
 		jmpPatch(setRallyPositionWrapper,		0x00466910, 2);
 		jmpPatch(setRallyUnitWrapper,			0x00466B40, 1);
 		jmpPatch(orderNewUnitToRallyWrapper,	0x00466F50, 0);
@@ -257,7 +318,9 @@ namespace hooks
 
 		jmpPatch(setRallyUnitWrapper_Jmp1,		0x0045620D, 35);	// 40 - 5 of jump
 		jmpPatch(setRallyUnitWrapper_Jmp2,		0x0049ACB0, 37);	// 42 - 5 of jump
-		*/
+
+		jmpPatch(RemoveReferences_Wrapper,		0x0049E590, 1);
+		jmpPatch(RightClickCommand_Wrapper,		0x004560D0, 1);
 
 //		jmpPatch(BTNSCOND_Rally_Wrapper,		0x00429520, 7);
 	}

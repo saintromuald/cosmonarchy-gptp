@@ -1,5 +1,6 @@
 #include "larva_creep_spawn.h"
 #include <SCBW/api.h>
+#include "globals.h"
 
 namespace hooks
 {
@@ -340,8 +341,10 @@ namespace hooks
 			if (unit->building.addon != nullptr)
 				helper::disconnectFromAddOn(unit);
 
-			if (unit->isFactory())
-				unit->rally.unit = unit;
+			if (unit->isFactory()) {
+				UnitExt* unitExt = globals.GetUnitExt(unit);
+				unitExt->rally.unit = unit;
+			}
 
 			//update globally known position and may
 			//remove repulse tile if no longer needed

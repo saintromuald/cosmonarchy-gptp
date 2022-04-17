@@ -1,5 +1,6 @@
 #include "receive_command.h"
 #include <SCBW/api.h>
+#include "globals.h"
 
 namespace hooks
 {
@@ -192,9 +193,10 @@ namespace hooks
 										if (target == nullptr)
 											target = current_unit;
 
-										current_unit->rally.unit = target;
-										current_unit->rally.pt.x = target->sprite->position.x;
-										current_unit->rally.pt.y = target->sprite->position.y;
+										UnitExt* current_unitExt = globals.GetUnitExt(current_unit);
+										current_unitExt->rally.unit = target;
+										current_unitExt->rally.pt.x = target->sprite->position.x;
+										current_unitExt->rally.pt.y = target->sprite->position.y;
 
 										jump_to_9ad77 = true;
 										loop_to_9ac0d = false;
@@ -207,9 +209,10 @@ namespace hooks
 
 										loop_to_9ac0d = false;
 
-										current_unit->rally.unit = nullptr;
-										current_unit->rally.pt.x = x;
-										current_unit->rally.pt.y = y;
+										UnitExt* current_unitExt = globals.GetUnitExt(current_unit);
+										current_unitExt->rally.unit = nullptr;
+										current_unitExt->rally.pt.x = x;
+										current_unitExt->rally.pt.y = y;
 
 										jump_to_9ad77 = true;
 

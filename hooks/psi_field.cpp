@@ -16,11 +16,6 @@ namespace hooks
 	// Actual state check whether a unit can generate a psi field
 	bool isReadyToMakePsiField(Unit* unit)
 	{
-		if (unit->id == UnitId::ProtossPylon)
-		{
-			return true;
-		}
-
-		return false;
+		return canMakePsiField(unit->id);
 	}
 }

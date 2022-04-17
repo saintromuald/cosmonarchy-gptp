@@ -29,10 +29,12 @@ bool isValidPsiProviderType(u16 unitId)
 	}
 
 	// Unit::rally shares memory space with Unit::psi_link
-	if (units_dat::GroupFlags[unitId].isFactory)
-	{
-		return false;
-	}
+	//if (units_dat::GroupFlags[unitId].isFactory)
+	//{
+	//	return false;
+	//}
+
+	// Rally is now in UnitExt to allow factories to provide psi
 
 	// Uses memory space of Unit::building for other purposes
 	if (unitId == UnitId::TerranEidolon ||
