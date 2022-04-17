@@ -894,15 +894,15 @@ namespace hooks
 				if ((unit->status & UnitStatus::Completed)
 					&& (unit->status & UnitStatus::GroundedBuilding))
 				{
-				Point16 pos = unit->position;
-				s32 radius = (10 * 32) / 2;
-				scbw::UnitFinder(
-					pos.x - radius,
-					pos.y - radius,
-					pos.x + radius,
-					pos.y + radius
-				).forEach([&](Unit* target)
-					{
+					/*
+					Point16 pos = unit->position;
+					s32 radius = (10 * 32) / 2;
+					scbw::UnitFinder(
+						pos.x - radius,
+						pos.y - radius,
+						pos.x + radius,
+						pos.y + radius
+					).forEach([&](Unit* target) {
 						if (units_dat::SupplyProvided[target->id] == 0)
 						{
 							return;
@@ -926,6 +926,7 @@ namespace hooks
 						s32 supply = target->getSupplyProvided();
 						target->setSupplyProvided(supply + TreasuryIncrease);
 					});
+					*/
 				}
 			} break;
 			case UnitId::ZergMatraleth:
