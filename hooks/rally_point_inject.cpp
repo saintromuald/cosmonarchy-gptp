@@ -3,242 +3,133 @@
 
 namespace
 {
-
-	///
-	/// Main functions wrappers
-	///
-
 	void __declspec(naked) orderNewUnitToRallyWrapper()
 	{
-
 		static Unit* unit;
 		static Unit* factory;
-
 		__asm {
 			MOV unit, EAX
 			MOV factory, ECX
 			PUSHAD
 		}
-
 		hooks::orderNewUnitToRallyHook(unit, factory);
-
 		__asm {
 			POPAD
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) setRallyPositionWrapper()
 	{
-
 		static Unit* unit;
 		static u16 x;
 		static u16 y;
-
 		__asm {
-
 			PUSH EBP
 			MOV EBP, ESP
-
 			MOV unit, EAX
-
 			MOV CX, [EBP + 0x08]
 			MOV x, CX
-
 			MOV DX, [EBP + 0x0C]
 			MOV y, DX
-
 			PUSHAD
-
 		}
-
 		hooks::setRallyPosition(unit, x, y);
-
 		__asm {
 			POPAD
 			POP EBP
 			RETN 0x08
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) setRallyUnitWrapper()
 	{
-
 		static Unit* unit;
 		static Unit* target;
-
 		__asm {
 			MOV unit, ECX
 			MOV target, EAX
 			PUSHAD
 		}
-
 		hooks::setRallyUnit(unit, target);
-
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	;
-
-	///
-	/// Additional wrappers for uses of the logic that
-	/// would be hardcoded instead of using the functions
-	///
-
-	//Replace hardcoded execution at 0x00456256
-	//Jump to 0x00456384 because the code equivalent
-	//to the function is followed by a jmp to that
-	//position
+	/// Additional wrappers for uses of the logic that would be hardcoded instead of using the functions
 
 	void __declspec(naked) setRallyPositionWrapper_Jmp1()
 	{
-
 		static const u32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
-
 		static Unit* unit;
 		static u16 x;
 		static u16 y;
-
 		__asm {
 			MOV unit, EDI
 			MOV x, BX
 			MOV y, SI
 			PUSHAD
 		}
-
 		hooks::setRallyPosition(unit, x, y);
-
 		__asm {
 			POPAD
 			JMP Hook_SetRallyGenericJmpBack1
 		}
 	}
 
-	;
-
-	//Replace hardcoded execution at 0x0049ACEF
-	//Jump to 0x0049AD77 because the code equivalent
-	//to the function is followed by a jmp to that
-	//position
-
 	void __declspec(naked) setRallyPositionWrapper_Jmp2()
 	{
-
 		static const u32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
-
 		static Unit* unit;
 		static u16 x;
 		static u16 y;
-
 		__asm {
 			MOV unit, ESI
 			MOV x, CX
 			MOV y, DX
 			PUSHAD
 		}
-
 		hooks::setRallyPosition(unit, x, y);
-
 		__asm {
 			POPAD
 			JMP Hook_SetRallyGenericJmpBack2
 		}
-
 	}
-
-	;
-
-	//Replace hardcoded execution at 0x0045620D
-	//Jump to 0x00456384 because the code equivalent
-	//to the function is followed by a jmp to that
-	//position
 
 	void __declspec(naked) setRallyUnitWrapper_Jmp1()
 	{
-
 		static const u32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
-
 		static Unit* unit;
 		static Unit* target;
-
 		__asm {
 			MOV unit, EDI
 			MOV target, EAX
 			PUSHAD
 		}
-
 		hooks::setRallyUnit(unit, target);
-
 		__asm {
 			POPAD
 			JMP Hook_SetRallyGenericJmpBack1
 		}
-
 	}
-
-	;
-
-	//Replace hardcoded execution at 0x0049ACB0
-	//Jump to 0x0049AD77 because the code equivalent
-	//to the function is followed by a jmp to that
-	//position
 
 	void __declspec(naked) setRallyUnitWrapper_Jmp2()
 	{
-
 		static const u32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
-
 		static Unit* unit;
 		static Unit* target;
-
 		__asm {
 			MOV unit, ESI
 			MOV target, EBX
 			PUSHAD
 		}
-
 		hooks::setRallyUnit(unit, target);
 
 		__asm {
 			POPAD
 			JMP Hook_SetRallyGenericJmpBack2
-		}
-	}
-
-	void __declspec(naked) BTNSCOND_Rally_Wrapper() // 00429520
-	{
-		static u32 unused;
-		static u32 player;
-		static Unit* unit;
-		static u32 result;
-		__asm
-		{
-			PUSH EBP
-			MOV EBP, ESP
-			MOV EAX, [EBP + 0x08]
-			MOV unit, EAX
-			POP EAX
-			MOV player, EDX
-			MOV unused, ECX
-			PUSHAD
-		}
-		result = hooks::BTNSCOND_Rally(unused, player, unit);
-		__asm
-		{
-			POPAD
-			MOV EAX, result
-			MOV ESP, EBP
-			POP EBP
-			RETN 4
 		}
 	}
 
@@ -301,6 +192,34 @@ namespace
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x14
+		}
+	}
+
+	void __declspec(naked) BTNSCOND_Rally_Wrapper() // 00429520
+	{
+		static u32 unused;
+		static u32 player;
+		static Unit* unit;
+		static u32 result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
+			POP EAX
+			MOV player, EDX
+			MOV unused, ECX
+			PUSHAD
+		}
+		result = hooks::BTNSCOND_Rally(unused, player, unit);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
 		}
 	}
 }
