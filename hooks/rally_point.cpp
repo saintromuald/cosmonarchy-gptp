@@ -291,7 +291,7 @@ namespace hooks
                             if (target)
                             {
                                 helper::TargetedOrder_Unit(target, unit, queued != 0, rightOrder);
-                                if (byte_68C300[0] != 23)
+                                if (byte_68C300[0] != OrderId::Nothing2)
                                 {
                                     helper::TargetedOrder_Unit(target, unit, queued != 0, byte_68C300[0]);
                                 }
@@ -309,7 +309,7 @@ namespace hooks
                                     movement_group.current_unit_target = movement_group.pos;
                                 }
                                 helper::TargetedOrder_Ground(rightOrder, fow_unit_id, unit, queued != 0, movement_group.current_unit_target.x, movement_group.current_unit_target.y);
-                                if (byte_68C300[0] != 23)
+                                if (byte_68C300[0] != OrderId::Nothing2)
                                 {
                                     helper::TargetedOrder_Ground(byte_68C300[0], fow_unit_id, unit, queued != 0, movement_group.current_unit_target.x, movement_group.current_unit_target.y);
                                 }
