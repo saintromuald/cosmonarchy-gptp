@@ -395,7 +395,7 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 				if (playlist_size < MaxMusic) {
 					playlist_tracks[playlist_size++] = get_music(filename.data);
 				} else {
-					scbw::printf("Error: Playlist already fully! (%s)", filename.data);
+					scbw::printf("Error: Playlist already full! (%s)", filename.data);
 				}
 			} else if (parser_eq(&parser, "playlist_shuffle")) {
 				s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
@@ -410,6 +410,10 @@ static void shuffle_playlist() {
 	for (u32 i = 0; i < playlist_size; ++i) {
 		Music* music_a = playlist_tracks[i];
 		for (u32 j = i + 1; j < playlist_size; ++j) {
+			if (i == 0 && j == playlist_size - 1) {
+				// Avoid swapping first and last, so we don't hear the same music twice
+				continue;
+			}
 			Music* music_b = playlist_tracks[j];
 			if (rand() % 2 == 0) {
 				Music temp = *music_a;
@@ -424,7 +428,7 @@ static Music* get_next_music() {
 	if (!playlist_size) {
 		return 0;
 	}
-	if (playlist_index == 0) {
+	if (playlist_index == 0 && playlist_shuffle) {
 		shuffle_playlist();
 	}
 	Music* music = playlist_tracks[playlist_index++];
