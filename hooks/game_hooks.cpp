@@ -188,14 +188,15 @@ namespace hooks
 				if (fog_of_war_mask->unexplored[i] < 5)
 					fog_of_war_mask->unexplored[i] = 5;
 			}
+			scbw::refreshScreen();
 
 			for (s32 i = 0; i < 8; i++)
 			{
 				// Allow score screen player name overrides, from DarkenedFantasies
-				if (colorTable->playerColorId[i] > 11)
-				{
-					strcpy_s(playerNameList->playerName[i], sizeof(playerNameList->playerName[i]), network_table_DF->getString(colorTable->playerColorId[i] + 157));
-				}
+				//if (colorTable->playerColorId[i] > 11)
+				//{
+				//	strcpy_s(playerNameList->playerName[i], sizeof(playerNameList->playerName[i]), network_table_DF->getString(colorTable->playerColorId[i] + 157));
+				//}
 				// Set AI-required upgrades
 				scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);
 			}

@@ -150,17 +150,12 @@ void unitDestructorSpecialHook(Unit* unit)
 		unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
 		units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding))
 	{
-		Point16 dims = units_dat::BuildingDimensions[unit->id];
-		for (u32 x = 0; x < dims.x / 32; ++x)
-		{
-			for (u32 y = 0; y < dims.y / 32; ++y)
-			{
-				helper::removeCreepAtUnit(
-					unit->position.x - dims.x / 2 + x * 32,
-					unit->position.y - dims.y / 2 + y * 32,
-					UnitId::ZergEgg);
-			}
-		}
+		Box32 area = {};
+		area.w = units_dat::BuildingDimensions[unit->id].x;
+		area.h = units_dat::BuildingDimensions[unit->id].y;
+		area.x = unit->position.x - area.w / 2;
+		area.y = unit->position.y - area.h / 2;
+		scbw::clear_creep(area);
 	}
 
 	// These do not require the unit to be completed

@@ -1016,9 +1016,15 @@ struct ColorTable
 	u8  playerColorId[8];
 };
 
+struct PlayerNamesEntry {
+	char player_name[25];
+	char force_name[30];
+	char some_stuff[17];
+};
+
 struct PlayerNames
 {
-	char  playerName[8][72];// Array length is actually 25. Followed by forceName[30], and someStuff[17]
+	PlayerNamesEntry player[8]; // Array length is actually 25. Followed by forceName[30], and someStuff[17]
 };
 
 struct MovementGroup {

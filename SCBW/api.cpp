@@ -2068,8 +2068,18 @@ namespace scbw
 		}
 	}
 
-	void set_cmbw_ai_preference(u16 unit_id, u32 player)
-	{
+	void set_cmbw_ai_preference(u16 unit_id, u32 player) {
 		unit_deaths[unit_id].player[player] = 1;
+	}
+
+	void clear_creep(Box32 area) {
+		for (u32 x = 0; x < area.w / 32; ++x) {
+			for (u32 y = 0; y < area.h / 32; ++y) {
+				helper::removeCreepAtUnit(
+					area.x + x * 32,
+					area.y + y * 32,
+					UnitId::ZergEgg);
+			}
+		}
 	}
 }

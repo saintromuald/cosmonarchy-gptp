@@ -315,13 +315,14 @@ static void stop_music() {
 }
 
 static bool parser_get_word(Parser* parser) {
+	memset(&parser->token, 0, sizeof(parser->token));
+
 	// Skip Whitespace
 	while (*parser->at && isspace(*parser->at)) {
 		++parser->at;
 	}
 
 	// Write Token
-	memset(&parser->token, 0, sizeof(parser->token));
 	while (*parser->at && !isspace(*parser->at)) {
 		if (parser->token.size < MaxToken - 1) {
 			parser->token.data[parser->token.size++] = *parser->at;
@@ -334,6 +335,29 @@ static bool parser_get_word(Parser* parser) {
 
 static Token parser_get_token(Parser* parser) {
 	parser_get_word(parser);
+	return parser->token;
+}
+
+static Token parser_get_rest_of_the_line(Parser* parser) {
+	memset(&parser->token, 0, sizeof(parser->token));
+
+	// Skip Whitespace
+	while (*parser->at && isspace(*parser->at)) {
+		++parser->at;
+
+		if (*parser->at == '\r' || *parser->at == '\n') {
+			return parser->token;
+		}
+	}
+
+	// Write Token
+	while (*parser->at && *parser->at != '\r' && *parser->at != '\n') {
+		if (parser->token.size < MaxToken - 1) {
+			parser->token.data[parser->token.size++] = *parser->at;
+		}
+		++parser->at;
+	}
+
 	return parser->token;
 }
 
@@ -400,6 +424,28 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 			} else if (parser_eq(&parser, "playlist_shuffle")) {
 				s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
 				playlist_shuffle = do_shuffle;
+			} else if (parser_eq(&parser, "clear_creep")) {
+				s32 location = parser_get_s32(&parser);
+				if (location >= 0 && location < 256) {
+					scbw::clear_creep(locationTable[location].dimensions);
+				}
+			} else if (parser_eq(&parser, "set_player_name")) {
+				s32 player = parser_get_s32(&parser);
+				Token name = parser_get_rest_of_the_line(&parser);
+				if (player >= 0 && player < 8) {
+					if (playerTable[player].type == PlayerType::Human || playerTable[player].type == PlayerType::HumanDefeated) {
+						sprintf_s(playerNameList->player[player].player_name, 25, "%s (%s)", name.data, playerTable[player].name);
+					} else {
+						sprintf_s(playerNameList->player[player].player_name, 25, "%s", name.data);
+					}
+
+				}
+			} else if (parser_eq(&parser, "set_force_name")) {
+				s32 player = parser_get_s32(&parser);
+				Token force = parser_get_rest_of_the_line(&parser);
+				if (player >= 0 && player < 8) {
+					sprintf_s(playerNameList->player[player].force_name, 25, "%s", force.data);
+				}
 			}
 		}
 	}
