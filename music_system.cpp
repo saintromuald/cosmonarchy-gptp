@@ -434,17 +434,17 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 				Token name = parser_get_rest_of_the_line(&parser);
 				if (player >= 0 && player < 8) {
 					if (playerTable[player].type == PlayerType::Human || playerTable[player].type == PlayerType::HumanDefeated) {
-						sprintf_s(playerNameList->player[player].player_name, 25, "%s (%s)", name.data, playerTable[player].name);
+						sprintf_s(playerNameList->player[player].player_name, "%s (%s)", name.data, playerTable[player].name);
 					} else {
-						sprintf_s(playerNameList->player[player].player_name, 25, "%s", name.data);
+						sprintf_s(playerNameList->player[player].player_name, "%s", name.data);
 					}
 
 				}
 			} else if (parser_eq(&parser, "set_force_name")) {
 				s32 player = parser_get_s32(&parser);
-				Token force = parser_get_rest_of_the_line(&parser);
+				Token name = parser_get_rest_of_the_line(&parser);
 				if (player >= 0 && player < 8) {
-					sprintf_s(playerNameList->player[player].force_name, 25, "%s", force.data);
+					sprintf_s(playerNameList->player[player].force_name, "%s", name.data);
 				}
 			}
 		}

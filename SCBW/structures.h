@@ -1024,7 +1024,7 @@ struct PlayerNamesEntry {
 
 struct PlayerNames
 {
-	PlayerNamesEntry player[8]; // Array length is actually 25. Followed by forceName[30], and someStuff[17]
+	PlayerNamesEntry player[8];
 };
 
 struct MovementGroup {
