@@ -544,7 +544,6 @@ namespace scbw
 		switch (id)
 		{
 			case UnitId::ZergIroleth:
-			case UnitId::ZergOthstoleth:
 			case UnitId::ZergAlaszileth:
 			case UnitId::ZergVorvrokor:
 			case UnitId::ZergLiiralisk:
@@ -592,7 +591,6 @@ namespace scbw
 		switch (id)
 		{
 			case UnitId::ZergOvileth:
-			case UnitId::ZergIroleth:
 			case UnitId::ZergOthstoleth:
 			case UnitId::ZergZethrokor:
 			case UnitId::ZergQuazilisk:
@@ -944,7 +942,7 @@ namespace scbw
 	{
 		if (*unitCount >= 1700)
 		{
-			return nullptr; // prevent crashes, move to create unit later
+			return nullptr; // Prevent crashes, move to create unit later. - Veeq7
 		}
 		Point16 pos = {x, y};
 		helper::fixTargetLocation(&pos, unitId);
@@ -1023,15 +1021,13 @@ namespace scbw
 		return min + ((max - min + 1) * random() >> 15);
 	}
 
-	// similar to 004DC4A0 RandomizeShort, but don't update
-	// the RNG and don't use a parameter among possible
-	// differences
+	// Similar to 004DC4A0 RandomizeShort, but doesn't update the RNG and doesn't use a parameter among possible differences.
 	u16 random()
 	{
 		if (*IS_IN_GAME_LOOP)
 		{
 			*lastRandomNumber = 22695477 * (*lastRandomNumber) + 1;
-			return (*lastRandomNumber >> 16) % 32768;	// Make a number between 0 and 32767
+			return (*lastRandomNumber >> 16) % 32768; // Make a number between 0 and 32767
 		}
 		else
 		{
@@ -1039,10 +1035,7 @@ namespace scbw
 		}
 	}
 
-	//-------- Needs research --------//
-
-	// Logically equivalent to function @ 0x004C36C0
-	void refreshConsole()
+	void refreshConsole() // 004C36C0
 	{
 		static u32* const bCanUpdateCurrentButtonSet = (u32*)0x0068C1B0;
 		static u8* const bCanUpdateSelectedUnitPortrait = (u8*)0x0068AC74;
@@ -1745,10 +1738,8 @@ namespace scbw
 		}
 	}
 
-	// Player check added based on how others functions test it
-	// Values above or equal to 8 means all players
-	// Equivalent to moveScreenToUnit @ 0x004E6020
-	void MoveScreenToUnit(Unit* unit, u32 playerId)
+	// Player check added based on how others functions test it. Values above or equal to 8 means all players.
+	void MoveScreenToUnit(Unit* unit, u32 playerId) // 004E6020
 	{
 		const u32 Func_MoveScreen = 0x0049C440;
 		if (playerId >= 8 || playerId == *LOCAL_NATION_ID)

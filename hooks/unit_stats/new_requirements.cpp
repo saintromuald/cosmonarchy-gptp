@@ -865,6 +865,14 @@ namespace hooks
 					{
 						return TECH_ACTIVE;
 					}
+					case UnitId::ZergOthstoleth:
+					{
+						if (TierUnlocked[RaceId::Zerg][Tier3])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
 					case UnitId::ZergZethrokor:
 					case UnitId::ZergQuazilisk:
 					{
@@ -1062,19 +1070,6 @@ namespace hooks
 				if (unitId == UnitId::ZergKalkalisk)
 				{
 					if (Player::numberOfCompletedUnitsOfType(playerId, UnitId::ZergVithrathHaunt))
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_LOCKED;
-				}
-				return TECH_HIDDEN;
-			}
-			case UnitId::ZergIroleth:
-			{
-				if (unitId == UnitId::ZergOthstoleth)
-				{
-					if (TierUnlocked[RaceId::Zerg][Tier3]
-						&& scbw::transportIsEmpty(unit))
 					{
 						return TECH_ACTIVE;
 					}
