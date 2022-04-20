@@ -33,12 +33,12 @@ bool isValidPsiProviderType(u16 unitId)
 	// Rally is now in UnitExt to allow factories to provide psi
 
 	// Uses memory space of Unit::building for other purposes
-	if (unitId == UnitId::TerranEidolon ||
-		unitId == UnitId::ZergNydusCanal ||
-		unitId == UnitId::TerranNuclearSilo ||
-		unitId == UnitId::ZergHatchery ||
-		unitId == UnitId::ZergLair ||
-		unitId == UnitId::ZergHive)
+	if (unitId == UnitId::TerranEidolon
+		|| unitId == UnitId::ZergNydusCanal
+		|| unitId == UnitId::TerranNuclearSilo
+		|| unitId == UnitId::ZergHatchery
+		|| unitId == UnitId::ZergLair
+		|| unitId == UnitId::ZergHive)
 	{
 		return false;
 	}
@@ -47,7 +47,7 @@ bool isValidPsiProviderType(u16 unitId)
 
 // Adds @p unit to the psi provider list and creates the psi field sprite.
 // Based on orders_InitPsiProvider() @ 00493F70
-// But this does not affect the unit's current order.
+// This does not affect the unit's current order.
 void addPsiField(Unit* unit)
 {
 	if (!unit)
