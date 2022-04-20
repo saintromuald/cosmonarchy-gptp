@@ -73,7 +73,7 @@ namespace hooks
 					if (unitInfested->isFactory())
 					{
 						UnitExt* unitInfestedExt = globals.GetUnitExt(unitInfested);
-						unitInfestedExt->rally.unit = unitInfested;
+						unitInfested->rally.unit = unitInfested;
 					}
 
 					// original code was *(u16*)(0x006648AC + 2*unitInfested->id);

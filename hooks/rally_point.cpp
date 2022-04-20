@@ -15,17 +15,17 @@ namespace hooks
         if (factory) {
             UnitExt* factoryExt = globals.GetUnitExt(factory);
             if (factory->isFactory()
-                && factoryExt->rally.unit != factory
-                && factoryExt->rally.pt.x != 0)
+                && factory->rally.unit != factory
+                && factory->rally.pt.x != 0)
             {
                 // Following should be allowed only on friendly units
-                if (factoryExt->rally.unit && scbw::isAlliedTo((factoryExt->rally.unit)->playerId, unit->playerId))
+                if (factory->rally.unit && scbw::isAlliedTo((factory->rally.unit)->playerId, unit->playerId))
                 {
-                    unit->orderTo(OrderId::Follow, factoryExt->rally.unit);
+                    unit->orderTo(OrderId::Follow, factory->rally.unit);
                 }
                 else
                 {
-                    unit->orderTo(OrderId::Move, factoryExt->rally.pt.x, factoryExt->rally.pt.y);
+                    unit->orderTo(OrderId::Move, factory->rally.pt.x, factory->rally.pt.y);
                 }
             }
         }
@@ -35,9 +35,9 @@ namespace hooks
 	void setRallyPosition(Unit* unit, u16 x, u16 y)
 	{
         UnitExt* unitExt = globals.GetUnitExt(unit);
-        unitExt->rally.unit = nullptr;
-        unitExt->rally.pt.x = x;
-        unitExt->rally.pt.y = y;
+        unit->rally.unit = nullptr;
+        unit->rally.pt.x = x;
+        unit->rally.pt.y = y;
 	}
 
 	// Called when the player sets the rally point on a unit.
@@ -49,9 +49,9 @@ namespace hooks
         }
 
         UnitExt* unitExt = globals.GetUnitExt(unit);
-        unitExt->rally.unit = target;
-        unitExt->rally.pt.x = target->getX();
-        unitExt->rally.pt.y = target->getY();
+        unit->rally.unit = target;
+        unit->rally.pt.x = target->getX();
+        unit->rally.pt.y = target->getY();
 	}
 
     // Hooked to allow rally for morphing Larval Colonies - Pr0nogo
@@ -167,11 +167,11 @@ namespace hooks
         if (unit->isFactory())
         {
             UnitExt* unitExt = globals.GetUnitExt(unit);
-            if (unitExt->rally.unit == dying)
+            if (unit->rally.unit == dying)
             {
-                unitExt->rally.unit = 0;
-                unitExt->rally.pt.x = dying->sprite->position.x;
-                unitExt->rally.pt.y = dying->sprite->position.y;
+                unit->rally.unit = 0;
+                unit->rally.pt.x = dying->sprite->position.x;
+                unit->rally.pt.y = dying->sprite->position.y;
             }
         }
         if (unit->subunit)
@@ -258,10 +258,10 @@ namespace hooks
                             rallyTarget = unit;
                         }
 
-                        UnitExt* unit_itExt = globals.GetUnitExt(unit);
-                        unit_itExt->rally.unit = rallyTarget;
-                        unit_itExt->rally.pt.x = rallyTarget->sprite->position.x;
-                        unit_itExt->rally.pt.y = rallyTarget->sprite->position.y;
+                        UnitExt* unitExt = globals.GetUnitExt(unit);
+                        unit->rally.unit = rallyTarget;
+                        unit->rally.pt.x = rallyTarget->sprite->position.x;
+                        unit->rally.pt.y = rallyTarget->sprite->position.y;
                     }
                 }
                 else if (unit != target)
@@ -270,10 +270,10 @@ namespace hooks
                     {
                         if (unit->isFactory())
                         {
-                            UnitExt* unit_itExt = globals.GetUnitExt(unit);
-                            unit_itExt->rally.unit = 0;
-                            unit_itExt->rally.pt.x = x;
-                            unit_itExt->rally.pt.y = y;
+                            UnitExt* unitExt = globals.GetUnitExt(unit);
+                            unit->rally.unit = 0;
+                            unit->rally.pt.x = x;
+                            unit->rally.pt.y = y;
                         }
                     }
                     else

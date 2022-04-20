@@ -343,7 +343,7 @@ namespace hooks
 
 			if (unit->isFactory()) {
 				UnitExt* unitExt = globals.GetUnitExt(unit);
-				unitExt->rally.unit = unit;
+				unit->rally.unit = unit;
 			}
 
 			//update globally known position and may

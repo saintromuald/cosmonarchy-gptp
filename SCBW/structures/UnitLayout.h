@@ -384,7 +384,7 @@ struct UnitExt
 	Vector32f				repulsionVector;
 	Point16					lastBulletLaunchPos;
 	Point16					aiKitingOrigin;
-	Target					rally;
+	// Target					rally;
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
@@ -672,7 +672,7 @@ struct UnitLayout
 	/*0x0F0*/ Link<Unit> burrow_link;
 	/*0x0F8*/ union
 	{
-		Target __rally; // It's now in UnitExt, so rally and psi_link can be set together
+		Target rally;
 		Link<Unit> psi_link;
 	};
 	/*0x100*/ void*		path;						// use BW::Path* in BWAPI

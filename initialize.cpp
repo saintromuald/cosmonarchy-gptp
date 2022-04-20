@@ -544,10 +544,10 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	hooks::injectDetectorHooks();
 	hooks::injectHarvestResource();
 
-	hooks::injectRallyHooks();
-	hooks::injectLiftLandHooks();    // Needed for rally/psi link extender
-	hooks::injectInfestationHooks(); // Needed for rally/psi link extender
-	hooks::injectRecvCmdHook();      // Needed for rally/psi link extender
+	//hooks::injectRallyHooks();
+	//hooks::injectLiftLandHooks();
+	//hooks::injectInfestationHooks();
+	//hooks::injectRecvCmdHook();
 
 	hooks::injectRechargeShieldsHooks();
 	hooks::injectSpiderMineHooks();
