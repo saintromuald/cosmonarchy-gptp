@@ -28,7 +28,7 @@ static void init_base_layouts() {
 	Unit* next = 0;
 	for (Unit* unit = *firstVisibleUnit; unit; unit = next) {
 		next = unit->link.next;
-		if (unit->playerId > PlayerLimit) {
+		if (unit->playerId > PlayerLimit || unit->playerId == 11) {
 			continue;
 		}
 		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
@@ -36,9 +36,11 @@ static void init_base_layouts() {
 			continue;
 		}
 
-		if (unit->playerId == 11 && unit->status & UnitStatus::IsHallucination) {
-			for (u32 i = 0; i < 8; ++i) {
-				add_base_layout(unit, i);
+		if (unit->playerId == 11) {
+			if (unit->status & UnitStatus::IsHallucination) {
+				for (u32 i = 0; i < 8; ++i) {
+					add_base_layout(unit, i);
+				}
 			}
 		} else {
 			add_base_layout(unit, unit->playerId);
