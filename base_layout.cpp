@@ -28,7 +28,7 @@ static void init_base_layouts() {
 	Unit* next = 0;
 	for (Unit* unit = *firstVisibleUnit; unit; unit = next) {
 		next = unit->link.next;
-		if (unit->playerId > PlayerLimit || unit->playerId == 11) {
+		if (unit->playerId > PlayerLimit && unit->playerId != 11) {
 			continue;
 		}
 		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
