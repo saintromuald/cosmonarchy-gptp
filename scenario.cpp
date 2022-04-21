@@ -1518,7 +1518,6 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				resources->cumulativeGas[player] += 300 * multiplier;
 				resources->minerals[player] = 1200 * multiplier;
 				resources->gas[player] = 300 * multiplier;
-				raceSupply[RaceId::Terran].provided[player] = 10 * 2;
 
 				unit_deaths[UnitId::ResourceVespeneGeyser].player[player] = 1; // Disable AI upgrade overwrite
 				u32 resource_upgrade = 0;
@@ -1530,7 +1529,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					resource_upgrade = 3;
 				}
 				resource_upgrade += fraud_class - 1;
-				scbw::setUpgradeLevel(player, UpgradeId::MiningEfficiency, resource_upgrade);
+				scbw::setUpgradeLevel(player, UpgradeId::ZergStructureCarapace, resource_upgrade);
 
 				startPositions[player] = spawn_location->pos;
 				if (race == RaceId::Terran) {
@@ -1788,7 +1787,6 @@ void tick_scenario() {
 							Unit* unit = scbw::createUnitInGame(unit_id, i, source_pos.x, source_pos.y);
 							if (unit) {
 								helper::giveAI(unit);
-								raceSupply[RaceId::Terran].provided[i] += units_dat::SupplyRequired[unit_id];
 								if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Worker)) {
 									unit->orderTo(OrderId::AttackMove, rally.x, rally.y);
 								}

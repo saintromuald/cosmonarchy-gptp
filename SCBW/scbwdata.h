@@ -519,6 +519,10 @@ SCBW_DATA(s32*,		unkSoundCore3,					0x005998E4);
 SCBW_DATA(s8*,		unkSoundBoolCore,				0x006D1264);
 */
 
+// For handle_window_messages
+//typedef void(__fastcall* input_procs_func[19])(s32 arg);
+//SCBW_DATA(input_procs_func,	input_procs,	0x005968A0);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

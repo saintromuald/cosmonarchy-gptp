@@ -9407,7 +9407,7 @@ namespace helper
 	// For displayEstablishingShot
 	void* loadInitCreditsBIN(char* a1)
 	{
-		s32 address = 0x4D8DF0;
+		s32 address = 0x004D8DF0;
 		void* result_;
 		__asm
 		{
@@ -10646,5 +10646,76 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	// For HandleWindowMessages
+	char check_last_file_error()
+	{
+		static char result;
+		const u32 func_address = 0x004D28D0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	s32 has_messages_waiting(void* tag_msg, s32 b_something) {
+		static s32 result;
+		const u32 func_address = 0x004D1650;
+		__asm {
+			PUSHAD
+			PUSH b_something
+			MOV EAX, tag_msg
+			CALL func_address
+			MOV result, EAX 
+			POPAD
+		}
+		return result;
+	}
+
+	void send_mouse_move_event(void* fast_call_func) {
+		const u32 func_address = 0x004D1AE0;
+		__asm {
+			PUSHAD
+			PUSH fast_call_func
+			POPAD
+		}
+	}
+
+	s32 send_input_to_all_dialogs(dlgEvent* dlg_event) {
+		static s32 result;
+		const u32 func_address = 0x00419FD0;
+		__asm {
+			PUSHAD
+			MOV EBX, dlg_event
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	vectorHead* play_briefing_wav_begin() {
+		static vectorHead* result;
+		const u32 func_address = 0x004BBE50;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void iterate_timers() {
+		const u32 func_address = 0x00415DC0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
 	}
 }
