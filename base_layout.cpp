@@ -20,7 +20,7 @@ static void init_base_layouts() {
 		BaseLayout layout = {};
 		layout.position = unit->position;
 		layout.unit_id = unit->id;
-		layout.priority = round(200.0 * unit->hitPoints / unit->getMaxHpRaw());
+		layout.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
 
 		u32 res_area = scbw::get_closest_resarea(unit->position);
 		BaseLayouts* base_layouts = &all_base_layouts[unit->playerId][res_area];
