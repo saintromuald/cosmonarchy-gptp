@@ -461,7 +461,7 @@ namespace hooks
 		u32 v4; // ebx
 		s32 v5; // edi
 		u32 v6; // esi
-		s32 v7; // eax
+		Point16 building_dimensions; // eax
 		u32 v8; // eax
 		s32 v9; // edi
 		char result; // al
@@ -470,7 +470,7 @@ namespace hooks
 		u32 v13; // [esp+14h] [ebp-8h]
 		s32 v14; // [esp+18h] [ebp-4h]
 
-		v7 = units_dat::BuildingDimensions[a1];
+		building_dimensions = units_dat::BuildingDimensions[a1];
 		v5 = (s16)v7 / 32;
 		v4 = a2 / 32 - v5 / 2;
 		v6 = a3 / 32 - (v7 >> 16) / 32 / 2;

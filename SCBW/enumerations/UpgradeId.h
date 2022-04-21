@@ -23,7 +23,7 @@ namespace UpgradeId {
 		ProtossPlasmaShields = 0x0F,	//
 		U238Shells = 0x10,				// Marine attack range
 		IonThrusters = 0x11,			// Vulture movespeed
-		FusionSealer = 0x12,			// SCV repair rate
+		MiningEfficiency = 0x12,		
 		TitanReactor = 0x13,			// Science Vessel energy
 		OcularImplants = 0x14,			// Ghost sight range
 		MoebiusReactor = 0x15,			// Ghost energy
@@ -62,9 +62,9 @@ namespace UpgradeId {
 		CharonBooster = 0x36,			// Goliath attack range
 		SignifyMalice = 0x37,			// Hierophant attack speed slow
 		BladeVortex = 0x38,				// Legionnaire teleport to target
-		Relocators = 0x39,				// Scarab "fly" behavior
-		MiningEfficiency = 0x3A,		// Income multiplier
-		KhaydarinDrive = 0x3B,			// Starcaller energy
+		ProtossStructurePlating = 0x39,	
+		ZergStructureCarapace = 0x3A,	
+		TerranStructureArmor = 0x3B,	
 		GlobalUpgrade60 = 0x3C,			// Unused 60 // DO NOT USE
 		None = 0x3D,
 
@@ -255,9 +255,9 @@ namespace BwUpgrade {
 		CharonBooster = 8,
 		SignifyMalice = 9,
 		BattleHarmony = 10,
-		Relocators = 11,
+		ProtossStructurePlating = 11,
 		AIMiningEfficiency = 12,
-		KhaydarinDrive = 13, // (Starcaller +50)
+		TerranStructureArmor = 13,
 		GlobalUpgrade60 = 14, // (unused 60)
 	};
 }
