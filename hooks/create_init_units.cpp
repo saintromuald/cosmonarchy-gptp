@@ -270,6 +270,8 @@ namespace hooks
 		
 	void CreateInitialOverlord(u8 playerId)
 	{
+		return; // Ovileth no longer spawns
+
 		static u16* const maxBoxRightValue = (u16*)0x00628450;
 		static u16* const maxBoxBottomValue = (u16*)0x006284B4;
 		s32 overlordStartX, overlordStartY;
@@ -301,5 +303,51 @@ namespace hooks
 				helper::updateUnitStrength(created_unit);
 			}
 		}
+	}
+
+	Unit* CreateUnitXY(u16 player_id, u16 id, u32 x, u32 y, bool prevent_creep) {
+		if (units_dat::StarEditAvailFlags[id] & 0x200 && !*IS_BROOD_WAR) {
+			return 0;
+		}
+		Unit* unit = helper::createUnit(id, x, y, player_id);
+		if (unit) {
+			if (!prevent_creep && (helper::spreadsCreep(unit->id, 1) || units_dat::BaseProperty[id] & UnitProperty::CreepBuilding)) {
+				helper::applyCreepAtLocationFromUnitType(unit->sprite->position.x, unit->sprite->position.y, id);
+			}
+			helper::updateUnitStatsFinishBuilding(unit);
+			if (helper::show_finished_unit(unit)) {
+				helper::updateUnitStrengthAndApplyDefaultOrders(unit);
+				helper::AI_AddGuardAiToUnit(unit);
+				return unit;
+			} else {
+				const char* text  = "";
+				if ( *networkTable > 0x11u ) {
+					text = (char *)networkTable + networkTable[18];
+				}
+				const char* text2 = helper::getUnitNameStatString(unit->id);
+				char buffer[256] = {};
+				sprintf_s(buffer, 256, text, text2, unit->sprite->position.x, unit->sprite->position.y);
+				helper::UnitPlacementError(buffer, 3);
+				unit->userActionFlags |= 4u;
+				helper::orders_SelfDestructing(unit);
+			}
+		} else {
+			helper::displayLastNetErrorForPlayer(player_id);
+		}
+		return 0;
+	}
+
+	Unit* CreatePreplacedUnit(CHKUnit* chkunit) {
+		Unit* unit = CreateUnitXY(chkunit->playerId, chkunit->unitid, chkunit->x, chkunit->y, true);
+		if (unit) {
+			helper::editUnitFlags(unit, &chkunit->validStateFlags);
+
+			if (!(unit->status & UnitStatus::IsHallucination)) {
+				if (helper::spreadsCreep(unit->id, 1) || units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) {
+					helper::applyCreepAtLocationFromUnitType(unit->sprite->position.x, unit->sprite->position.y, unit->id);
+				}
+			}
+		}
+		return unit;
 	}
 }

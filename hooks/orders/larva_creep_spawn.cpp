@@ -64,6 +64,9 @@ namespace hooks
 
 	void secondaryOrd_SpawningLarva(Unit* unit)
 	{
+		if (unit->status & UnitStatus::IsHallucination) {
+			return;
+		}
 		if (unit->orderQueueTimer == 0 && unit->playerId != 11)
 		{
 			// 004EA79E

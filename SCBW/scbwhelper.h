@@ -1142,4 +1142,7 @@ namespace helper
 	void GetFormationMovementTarget(Unit *a1, MovementGroup* a2); // 49A500
 
 	u8 GetRightClickOrder(u32 type, Unit* unit, s32 x, s32 y, Unit** target, s32 unit_id);
+
+	void editUnitFlags(Unit* unit, u16* flags); // 4CD480
+	void UnitPlacementError(const char *a1, char a2);
 }

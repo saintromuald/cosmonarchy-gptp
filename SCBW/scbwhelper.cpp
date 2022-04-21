@@ -10647,4 +10647,26 @@ namespace helper
 		}
 		return result;
 	}
+
+	void editUnitFlags(Unit* unit, u16* flags) {
+		const u32 func_address = 0x004CD480;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			MOV EBX, flags
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void UnitPlacementError(const char *a1, char a2) {
+		const u32 func_address = 0x0048D140;
+		__asm {
+			PUSHAD
+			MOV ESI, a1
+			PUSH a2
+			CALL func_address
+			POPAD
+		}
+	}
 }
