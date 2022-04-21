@@ -3,6 +3,25 @@
 static BaseLayouts all_base_layouts[PlayerLimit][ResAreaLimit];
 static BaseLayouts* active_base_layouts[ResAreaLimit];
 
+static void add_base_layout(Unit* unit, u32 player) {
+	BaseLayout layout = {};
+	layout.position = unit->position;
+	layout.unit_id = unit->id;
+	layout.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
+
+	u32 res_area = scbw::get_closest_resarea(unit->position);
+	BaseLayouts* base_layouts = &all_base_layouts[player][res_area];
+	if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+		if (base_layouts->structures_count < BaseLayoutLimit) {
+			base_layouts->structures[base_layouts->structures_count++] = layout;
+		}
+	} else {
+		if (base_layouts->units_count < BaseLayoutLimit) {
+			base_layouts->units[base_layouts->units_count++] = layout;
+		}
+	}
+}
+
 static void init_base_layouts() {
 	memset(all_base_layouts, 0, sizeof(all_base_layouts));
 	memset(active_base_layouts, 0, sizeof(active_base_layouts));
@@ -17,21 +36,12 @@ static void init_base_layouts() {
 			continue;
 		}
 
-		BaseLayout layout = {};
-		layout.position = unit->position;
-		layout.unit_id = unit->id;
-		layout.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
-
-		u32 res_area = scbw::get_closest_resarea(unit->position);
-		BaseLayouts* base_layouts = &all_base_layouts[unit->playerId][res_area];
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
-			if (base_layouts->structures_count < BaseLayoutLimit) {
-				base_layouts->structures[base_layouts->structures_count++] = layout;
+		if (unit->playerId == 11 && unit->status & UnitStatus::IsHallucination) {
+			for (u32 i = 0; i < 8; ++i) {
+				add_base_layout(unit, i);
 			}
 		} else {
-			if (base_layouts->units_count < BaseLayoutLimit) {
-				base_layouts->units[base_layouts->units_count++] = layout;
-			}
+			add_base_layout(unit, unit->playerId);
 		}
 
 		if (unit->status & UnitStatus::IsHallucination) {
