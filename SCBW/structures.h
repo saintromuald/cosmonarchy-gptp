@@ -5,6 +5,10 @@
 #pragma once
 #include "types.h"
 
+#define PlayerLimit 8
+#define AiTownLimit 100
+#define ResAreaLimit 250
+
 const s32 PLAYER_COUNT = 12;
 const s32 PLAYABLE_PLAYER_COUNT = 8;
 const s32 UNIT_ARRAY_LENGTH = 1700;

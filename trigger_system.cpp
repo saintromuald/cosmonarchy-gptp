@@ -1,6 +1,6 @@
 #include <dsound.h>
 #include <limits.h>
-#include "music_system.h"
+#include "trigger_system.h"
 #include "SCBW/api.h"
 
 // Copy paste from Antikythera
@@ -100,6 +100,79 @@ struct Music {
 	s16* data;
 };
 
+#define MaxToken 256
+struct Token {
+	u32 size;
+	char data[MaxToken];
+};
+
+struct Parser {
+	char* at;
+	Token token;
+};
+
+static bool parser_get_word(Parser* parser) {
+	memset(&parser->token, 0, sizeof(parser->token));
+
+	// Skip Whitespace
+	while (*parser->at && isspace(*parser->at)) {
+		++parser->at;
+	}
+
+	// Write Token
+	while (*parser->at && !isspace(*parser->at)) {
+		if (parser->token.size < MaxToken - 1) {
+			parser->token.data[parser->token.size++] = *parser->at;
+		}
+		++parser->at;
+	}
+
+	return parser->token.size != 0;
+}
+
+static Token parser_get_token(Parser* parser) {
+	parser_get_word(parser);
+	return parser->token;
+}
+
+static Token parser_get_rest_of_the_line(Parser* parser) {
+	memset(&parser->token, 0, sizeof(parser->token));
+
+	// Skip Whitespace
+	while (*parser->at && isspace(*parser->at)) {
+		++parser->at;
+
+		if (*parser->at == '\r' || *parser->at == '\n') {
+			return parser->token;
+		}
+	}
+
+	// Write Token
+	while (*parser->at && *parser->at != '\r' && *parser->at != '\n') {
+		if (parser->token.size < MaxToken - 1) {
+			parser->token.data[parser->token.size++] = *parser->at;
+		}
+		++parser->at;
+	}
+
+	return parser->token;
+}
+
+static s32 parser_get_s32(Parser* parser, u32 radix = 10) {
+	parser_get_word(parser);
+	return strtol(parser->token.data, 0, radix);
+}
+
+static f32 parser_get_f32(Parser* parser) {
+	parser_get_word(parser);
+	return strtof(parser->token.data, 0);
+}
+
+static bool parser_eq(Parser* parser, char* string) {
+	if (!string) return false;
+	return strcmp(parser->token.data, string) == 0;
+}
+
 static bool music_init;
 static bool music_in_game;
 static LPDIRECTSOUND direct_sound;
@@ -124,17 +197,6 @@ static f32 music_volume;
 static f32 music_target_volume;
 static f32 music_volume_time;
 static bool music_paused;
-
-#define MaxToken 256
-struct Token {
-	u32 size;
-	char data[MaxToken];
-};
-
-struct Parser {
-	char* at;
-	Token token;
-};
 
 static u32 hash_string(char* string) {
 	u32 hash = 5381;
@@ -243,12 +305,15 @@ static void init_direct_sound() {
 	}
 }
 
+typedef int __cdecl getMusicVolume_Func();
+static getMusicVolume_Func* getMusicVolume = (getMusicVolume_Func*)0x004A5EF0;
+
 static s32 get_volume() {
 	if (music_fade == 0 || music_volume == 0) {
 		return DSBVOLUME_MIN;
 	}
 
-	s32 volume = *musicVolume;
+	s32 volume = getMusicVolume();
 	volume += (-4000 - volume) * (1 - music_fade * music_volume);
 	return volume;
 }
@@ -314,66 +379,36 @@ static void stop_music() {
 	current_music = 0;
 }
 
-static bool parser_get_word(Parser* parser) {
-	memset(&parser->token, 0, sizeof(parser->token));
-
-	// Skip Whitespace
-	while (*parser->at && isspace(*parser->at)) {
-		++parser->at;
-	}
-
-	// Write Token
-	while (*parser->at && !isspace(*parser->at)) {
-		if (parser->token.size < MaxToken - 1) {
-			parser->token.data[parser->token.size++] = *parser->at;
-		}
-		++parser->at;
-	}
-
-	return parser->token.size != 0;
-}
-
-static Token parser_get_token(Parser* parser) {
-	parser_get_word(parser);
-	return parser->token;
-}
-
-static Token parser_get_rest_of_the_line(Parser* parser) {
-	memset(&parser->token, 0, sizeof(parser->token));
-
-	// Skip Whitespace
-	while (*parser->at && isspace(*parser->at)) {
-		++parser->at;
-
-		if (*parser->at == '\r' || *parser->at == '\n') {
-			return parser->token;
+static void shuffle_playlist() {
+	for (u32 i = 0; i < playlist_size; ++i) {
+		Music* music_a = playlist_tracks[i];
+		for (u32 j = i + 1; j < playlist_size; ++j) {
+			if (i == 0 && j == playlist_size - 1) {
+				// Avoid swapping first and last, so we don't hear the same music twice
+				continue;
+			}
+			Music* music_b = playlist_tracks[j];
+			if (rand() % 2 == 0) {
+				Music temp = *music_a;
+				*music_a = *music_b;
+				*music_b = temp;
+			}
 		}
 	}
+}
 
-	// Write Token
-	while (*parser->at && *parser->at != '\r' && *parser->at != '\n') {
-		if (parser->token.size < MaxToken - 1) {
-			parser->token.data[parser->token.size++] = *parser->at;
-		}
-		++parser->at;
+static Music* get_next_music() {
+	if (!playlist_size) {
+		return 0;
 	}
-
-	return parser->token;
-}
-
-static s32 parser_get_s32(Parser* parser, u32 radix = 10) {
-	parser_get_word(parser);
-	return strtol(parser->token.data, 0, radix);
-}
-
-static f32 parser_get_f32(Parser* parser) {
-	parser_get_word(parser);
-	return strtof(parser->token.data, 0);
-}
-
-static bool parser_eq(Parser* parser, char* string) {
-	if (!string) return false;
-	return strcmp(parser->token.data, string) == 0;
+	if (playlist_index == 0 && playlist_shuffle) {
+		shuffle_playlist();
+	}
+	Music* music = playlist_tracks[playlist_index++];
+	if (playlist_index >= playlist_size) {
+		playlist_index = 0;
+	}
+	return music;
 }
 
 static b32 __fastcall parse_comment_action(ACTION* action) {
@@ -452,39 +487,7 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 	return 1;
 }
 
-static void shuffle_playlist() {
-	for (u32 i = 0; i < playlist_size; ++i) {
-		Music* music_a = playlist_tracks[i];
-		for (u32 j = i + 1; j < playlist_size; ++j) {
-			if (i == 0 && j == playlist_size - 1) {
-				// Avoid swapping first and last, so we don't hear the same music twice
-				continue;
-			}
-			Music* music_b = playlist_tracks[j];
-			if (rand() % 2 == 0) {
-				Music temp = *music_a;
-				*music_a = *music_b;
-				*music_b = temp;
-			}
-		}
-	}
-}
-
-static Music* get_next_music() {
-	if (!playlist_size) {
-		return 0;
-	}
-	if (playlist_index == 0 && playlist_shuffle) {
-		shuffle_playlist();
-	}
-	Music* music = playlist_tracks[playlist_index++];
-	if (playlist_index >= playlist_size) {
-		playlist_index = 0;
-	}
-	return music;
-}
-
-static void init_music_system() {
+static void init_trigger_system() {
 	music_init = true;
 	if (!direct_sound) {
 		init_direct_sound();
@@ -521,9 +524,9 @@ static void init_music_system() {
 	music_paused = false;
 }
 
-void tick_music_system(bool in_game) {
+void tick_trigger_system(bool in_game) {
 	if (!music_init || (*IS_IN_GAME_LOOP && *elapsedTimeFrames == 0)) {
-		init_music_system();
+		init_trigger_system();
 	}
 
 	if (in_game) {
@@ -531,7 +534,7 @@ void tick_music_system(bool in_game) {
 	} else if (music_in_game) {
 		// Leaving the game should reset music
 		music_in_game = false;
-		init_music_system();
+		init_trigger_system();
 	}
 	
 	if (ds_buffer) {

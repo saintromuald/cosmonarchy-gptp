@@ -2,16 +2,21 @@
 #include "SCBW\api.h"
 #include "unit_constants.h";
 
-struct BaseLayout
-{
+#define BaseLayoutLimit 256
+
+struct BaseLayout {
 	Point16 position;
-	u8 playerId;
-	u8 unitId;
+	u8 unit_id;
 	u8 priority;
-	b8 active;
-	AiTown* town;
 };
 
-void InitBaseLayouts();
-void UpdateBaseLayouts();
+struct BaseLayouts {
+	AiTown* town;
+	u32 structures_count;
+	BaseLayout structures[BaseLayoutLimit];
+	u32 units_count;
+	BaseLayout units[BaseLayoutLimit];
+};
+
+void tick_base_layouts();
 

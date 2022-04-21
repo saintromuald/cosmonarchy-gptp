@@ -1,91 +1,72 @@
 #include "base_layout.h"
 
-static std::unordered_map<u32, std::vector<BaseLayout>> layouts; // TODO: replace with more optimized hash table
+static BaseLayouts all_base_layouts[PlayerLimit][ResAreaLimit];
+static BaseLayouts* active_base_layouts[ResAreaLimit];
 
-void InitBaseLayouts()
-{
-	layouts.clear();
-
-	for (u32 i = 0; i < 256; ++i)
-	{
-		Location location = locationTable[i];
-
-		char buffer[64];
-		const char* name = mapStringTbl->getString(location.stringId);
-
-		strcpy(buffer, name);
-
-		char* prefix = buffer;
-		char* player_str = strtok(prefix, "_");
-		char* res_area_str = strtok(player_str, "_");
-
-		if (strcmp(prefix, "Town") != 0)
-		{
+static void init_base_layouts() {
+	memset(all_base_layouts, 0, sizeof(all_base_layouts));
+	memset(active_base_layouts, 0, sizeof(active_base_layouts));
+	Unit* next = 0;
+	for (Unit* unit = *firstVisibleUnit; unit; unit = next) {
+		next = unit->link.next;
+		if (unit->playerId > PlayerLimit) {
 			continue;
 		}
-		u8 player_id = atoi(player_str);
-		u8 res_area = atoi(res_area_str);
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
+			units_dat::ComputerAIInternal[unit->id] & 0x2) { // Don't become guard
+			continue;
+		}
 
-		UnitArray arr = UnitSearchRect(location.dimensions);
-		for (u32 j = 0; j < arr.size; ++j)
-		{
-			Unit* unit = arr.units[j];
+		BaseLayout layout = {};
+		layout.position = unit->position;
+		layout.unit_id = unit->id;
+		layout.priority = round(200.0 * unit->hitPoints / unit->getMaxHpRaw());
 
-			BaseLayout layout;
-			layout.playerId = player_id;
-			layout.unitId = unit->id;
-			layout.position = unit->position;
-			layout.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
-			layout.active = false;
-			layout.town = nullptr;
-			layouts[res_area].push_back(layout);
+		u32 res_area = scbw::get_closest_resarea(unit->position);
+		BaseLayouts* base_layouts = &all_base_layouts[unit->playerId][res_area];
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+			if (base_layouts->structures_count < BaseLayoutLimit) {
+				base_layouts->structures[base_layouts->structures_count++] = layout;
+			}
+		} else {
+			if (base_layouts->units_count < BaseLayoutLimit) {
+				base_layouts->units[base_layouts->units_count++] = layout;
+			}
+		}
 
-			unit->remove(); // TODO: find a silent remove function
+		if (unit->status & UnitStatus::IsHallucination) {
+			unit->userActionFlags |= 0x4;
+			unit->remove();
 		}
 	}
 }
 
-void UpdateBaseLayouts()
-{
-	// Set New Layouts
-	for (u32 i = 0; i < 100; ++i)
-	{
-		AiTown* town = &AiTownArray[i];
-		if (town->inited && !town->resareaNotSet)
-		{
-			for (BaseLayout& layout : layouts[town->resarea])
-			{
-				layout.active = true;
-				layout.town = town; // hopefully town id can be handled from aise
-				if (units_dat::BaseProperty[layout.unitId] & UnitProperty::Building)
-				{
-					scbw::sendGPTP_aise_cmd((Unit*)&layout, 0, GptpId::SetBaseLayout, 0, 0, 0);
-				}
-				else
-				{
-					scbw::sendGPTP_aise_cmd((Unit*)&layout, 0, GptpId::SetGuard, 0, 0, 0);
-				}
-			}
+void tick_base_layouts() {
+	if (*elapsedTimeFrames == 0) {
+		init_base_layouts();
+	}
+
+	for (u32 i = 0; i < ResAreaLimit; ++i) {
+		BaseLayouts* base_layouts = active_base_layouts[i];
+		if (base_layouts && !base_layouts->town->inited) {
+			base_layouts->town = 0;
+			active_base_layouts[i] = 0;
 		}
 	}
 
-	// Clear layouts
-	for (auto& pair : layouts)
-	{
-		for (BaseLayout& layout : pair.second)
-		{
-			if (layout.active && !layout.town->inited)
-			{
-				if (units_dat::BaseProperty[layout.unitId] & UnitProperty::Building)
-				{
-					scbw::sendGPTP_aise_cmd((Unit*)&layout, 0, GptpId::ResetBaseLayout, 0, 0, 0);
-				}
-				else
-				{
-					scbw::sendGPTP_aise_cmd((Unit*)&layout, 0, GptpId::ResetGuard, 0, 0, 0);
-				}
-				layout.active = false;
-				layout.town = nullptr;
+	for (u32 i = 0; i < AiTownLimit; ++i) {
+		AiTown* town = &AiTownArray[i];
+		if (town->inited && !town->resareaNotSet && !active_base_layouts[town->resarea]) {
+			BaseLayouts* base_layouts = &all_base_layouts[town->player][town->resarea];
+			base_layouts->town = town;
+			active_base_layouts[town->resarea] = base_layouts;
+			for (u32 j = 0; j < base_layouts->units_count; ++j) {
+				BaseLayout* base_layout = &base_layouts->units[j];
+				scbw::sendGPTP_aise_cmd((Unit*)base_layout, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
+			}
+			for (u32 j = 0; j < base_layouts->structures_count; ++j) {
+				BaseLayout* base_layout = &base_layouts->structures[j];
+				scbw::sendGPTP_aise_cmd((Unit*)base_layout, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
 			}
 		}
 	}

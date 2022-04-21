@@ -74,9 +74,7 @@ namespace GptpId
 
 		// TODO
 		SetGuard = 29,
-		ResetGuard = 30,
-		SetBaseLayout = 31,
-		ResetBaseLayout = 32,
+		SetBaseLayout = 30,
 
 		Void = 10005,
 	};

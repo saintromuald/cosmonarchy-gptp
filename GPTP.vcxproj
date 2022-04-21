@@ -570,7 +570,7 @@
     <ClCompile Include="hooks\unit_stats\weapon_range_inject.cpp" />
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
     <ClCompile Include="direct_sound_inject.cpp" />
-    <ClCompile Include="music_system.cpp" />
+    <ClCompile Include="trigger_system.cpp" />
     <ClCompile Include="unit_search.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
   </ItemGroup>
@@ -673,7 +673,7 @@
     <ClInclude Include="SCBW\scbwhelper.h" />
     <ClInclude Include="SCBW\SFileReader.h" />
     <ClInclude Include="SCBW\stat_txt_spec.h" />
-    <ClInclude Include="music_system.h" />
+    <ClInclude Include="trigger_system.h" />
     <ClInclude Include="unit_constants.h" />
     <ClInclude Include="unit_search.h" />
     <ClInclude Include="Utils\captivating_claws.h" />

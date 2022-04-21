@@ -1278,21 +1278,6 @@ void init_fraud_units() {
 	}
 }
 
-u8 get_closest_resarea(Point16 pos) {
-	u8 closest_index = 0;
-	f32 lowest_distance = 999999999;
-
-	for (u32 i = 1; i < resource_areas->used_count; ++i) {
-		f32 distance = scbw::getDistanceFast(pos, resource_areas->areas[i].pos);
-		if (distance < lowest_distance) {
-			closest_index = i;
-			lowest_distance = distance;
-		}
-	}
-
-	return closest_index;
-}
-
 void run_ai(u32 player, Point16 pos, s32 name) {
 	Box32 area;
 	area.left = pos.x - 2 * 32;
@@ -1305,7 +1290,7 @@ void run_ai(u32 player, Point16 pos, s32 name) {
 		AiScript* ai_script = helper::AI_RunAIScript(&area, player, block, is_bw);
 		if (ai_script) {
 			ai_script->flags &= 0x3;
-			ai_script->flags |= get_closest_resarea(pos) << 3;
+			ai_script->flags |= scbw::get_closest_resarea(pos) << 3;
 		}
 	} else {
 		scbw::printf("scenario.cpp, run_ai: Invalid AI block!");

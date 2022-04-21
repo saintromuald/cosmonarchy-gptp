@@ -23,7 +23,8 @@
 #include "unit_ai.h"
 #include "tactical_ai.h"
 #include "scenario.h"
-#include "music_system.h"
+#include "trigger_system.h"
+#include "base_layout.h"
 
 const u32 hyperTrigger = 0x006509A0;
 
@@ -168,13 +169,14 @@ namespace hooks
 	void tickUnit(Unit* unit);
 
 	void nextUiFrame() {
-		tick_music_system(false);
+		tick_trigger_system(false);
 	}
 
 	/// This hook is called every frame
 	bool nextFrame()
 	{
-		tick_music_system(true);
+		tick_trigger_system(true);
+		tick_base_layouts();
 
 		// This block is executed once every game
 		if (*elapsedTimeFrames == 0)
