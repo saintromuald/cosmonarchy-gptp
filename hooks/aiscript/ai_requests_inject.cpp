@@ -154,6 +154,26 @@ namespace
 			RETN 0xC
 		}
 	}
+
+	void __declspec(naked) ai_train_defensive_military_Wrapper() { // 0043F990
+		static u8 player_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player_id, AL
+			POP EAX
+			PUSHAD
+		}
+		hooks::ai_train_defensive_military(player_id);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 }
 
 namespace hooks
@@ -165,5 +185,6 @@ namespace hooks
 //		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
 		jmpPatch(AI_PerformTask_Wrapper,					0x004361A0, 0);
 //		jmpPatch(AI_PlanDoMergeMorph_Wrapper,				0x00435F10, 1);
+//		jmpPatch(ai_train_defensive_military_Wrapper,		0x0043F990, 1);
 	}
 }

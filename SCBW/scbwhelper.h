@@ -1147,4 +1147,18 @@ namespace helper
 
 	void Ai_Build(u32 unit_id, b32 only_if_needed, u32 count, AiTown* town, u32 priority); // 004323D0
 	// void Ai_AddBuildRequest(AiTown* town, s32 method, s32 count, s32 id, s32 priority, b32 only_if_needed); // 00431F90
+
+	// For HandleWindowMessages
+	char check_last_file_error(); // 004D28D0
+	s32 has_messages_waiting(void* tag_msg, s32 b_something); // 004D1650
+	void send_mouse_move_event(void* fast_call_func); // 004D1AE0
+	s32 send_input_to_all_dialogs(dlgEvent* dlg_event); // 00419FD0
+	vectorHead* play_briefing_wav_begin(); // 004BBE50
+	void iterate_timers(); // 00415DC0
+
+	// For ai_train_defensive_military
+	u32 ai_region_train_attack_force(AiRegion* region); // 0043E670
+	u32 ai_defend_region(AiRegion* military_region, s32 defense_region, s32 against_air, s32 region_strength); // 0043F100
+	s32 AI_AddBaseUnitSpendingRequest(s32 final_unit_id, s8 player_id, AiRegion* region, u8 priority); // 004484A0
+
 }

@@ -631,4 +631,182 @@ LABEL_36:
 			return 1;
 		}
 	}
+
+	// Hooked to add more transport calls and hopefully improve AI defense logic. -Pr0nogo
+	void ai_train_defensive_military(BYTE player_id) // 0043F990
+	{
+		u32 region_count;
+		s32 v2;
+		u8 v3;
+		AiRegion* player_regions;
+		AiRegion* military_region;
+		u16 defense_region_id;
+		u32 i;
+		AiRegion* defense_region;
+		u32 region_air_strength;
+		s32 defense_region_id_copy;
+		u32 j;
+		u32 region_gnd_strength;
+		u16 ai_flags;
+		u8 v15;
+		bool finished_with_regions;
+		s16 transport_unit_id_1;
+		u32 witness_count;
+		s32 witness_request_quantity;
+		u8 witness_supply_cost;
+		s32 witness_gas_cost;
+		u32 transport_1_count;
+		u32 transport_1_quantity;
+		s32 transport_1_priority;
+		u8 transport_supply_cost;
+		s32 v29;
+		s32 transport_1_gas_cost;
+		s32 region_count_zeroed;
+		u32 transport_1_request_count;
+		AiRegion* v33;
+		s32 v34;
+		u16 transport_unit_id_2;
+
+		region_count = (*SAI_Paths)->regionCount;
+		v33 = 0;
+		if (region_count > 1)
+		{
+			v2 = 52;
+			v34 = 52;
+			region_count_zeroed = region_count - 1;
+			do
+			{
+				player_regions = AiRegionCaptains[player_id];
+				v3 = *(&player_regions->state + v2);
+				military_region = (player_regions + v2);
+				if (v3 > 3u)
+				{
+					if (v3 == 8)
+					{
+						helper::ai_region_train_attack_force(military_region);
+					}
+					else
+					{
+						if (v3 == 5 || v3 == 4)
+						{
+							v33 = military_region;
+						}
+						if (v3 < 7u)
+						{
+							defense_region_id = military_region->region;
+						}
+						else
+						{
+							defense_region_id = military_region->targetRegion;
+						}
+						region_air_strength = military_region->fullAirStrength;
+						defense_region_id_copy = defense_region_id;
+						i = player_regions[defense_region_id_copy].neededAirStrength;
+						defense_region = &player_regions[defense_region_id_copy];
+						if (i)
+						{
+							for (i = i; i > region_air_strength; i = defense_region->neededAirStrength)
+							{
+								region_air_strength += helper::ai_defend_region(military_region, defense_region_id, 1, i - region_air_strength);
+							}
+						}
+						j = defense_region->neededGroundStrength;
+						region_gnd_strength = military_region->fullGroundStrength;
+						if (j)
+						{
+							for (j = j; j > region_gnd_strength; j = defense_region->neededGroundStrength)
+							{
+								region_gnd_strength += helper::ai_defend_region(military_region, defense_region_id, defense_region->enemyAirStrength != 0, j - region_gnd_strength);
+							}
+						}
+						if (AIScriptController[player_id].AI_Flags.flag_0x40)
+						{
+							v15 = AIScriptController[player_id].defense_priority_base;
+							if (v15)
+							{
+								AIScriptController[player_id].defense_priority_base = v15 - 1;
+							}
+							AIScriptController[player_id].AI_Flags.flag_0x40 = false;
+						}
+					}
+				}
+				v2 = v34 + 52;
+				finished_with_regions = region_count_zeroed == 1;
+				v34 += 52;
+				--region_count_zeroed;
+			} while (!finished_with_regions);
+		}
+		if (!(AIScriptController[player_id].AI_Flags.isTransportsOff))
+		{
+			u32 player_race = playerTable[player_id].race;
+			if (player_race == RaceId::Terran)
+			{
+				if (!unitCountTable[UnitId::TerranPhalanxTankModeTurret].player[player_id + 12]) // what
+				{
+					return;
+				}
+				transport_unit_id_1 = UnitId::TerranTrojan;
+				transport_unit_id_2 = UnitId::TerranTrojan;
+			}
+			else
+			{
+				if (player_race != RaceId::Protoss)
+				{
+					return;
+				}
+				witness_count = allUnitCountTable[UnitId::ProtossWitness].player[player_id];
+				if (witness_count < 2)
+				{
+					witness_request_quantity = 2 - witness_count;
+					do
+					{
+						witness_gas_cost = units_dat::GasCost[UnitId::ProtossWitness];
+						witness_supply_cost = units_dat::SupplyRequired[UnitId::ProtossWitness];
+						if (units_dat::BaseProperty[UnitId::ProtossWitness] & UnitProperty::TwoUnitsIn1Egg)
+						{
+							witness_supply_cost = 2 * units_dat::SupplyRequired[84];
+						}
+						AIScriptController[player_id].mineralCollection += units_dat::MineralCost[UnitId::ProtossWitness];
+						AIScriptController[player_id].gasCollection += witness_gas_cost;
+						AIScriptController[player_id].supplyCollection += witness_supply_cost;
+						helper::AI_AddSpendingRequest(UnitId::ProtossWitness, player_id, 8, 80, 0);
+						--witness_request_quantity;
+					} while (witness_request_quantity);
+				}
+				transport_unit_id_2 = UnitId::ProtossEnvoy;
+				transport_unit_id_1 = UnitId::ProtossEnvoy;
+			}
+			if (v33)
+			{
+				transport_1_count = allUnitCountTable[0].player[player_id + 12 * transport_unit_id_1];
+				transport_1_quantity = (AIScriptController[player_id].AI_Flags.isUseMapSettings) != 0 ? 2 : 5;
+				transport_1_priority = allUnitCountTable[0].player[player_id + 12 * transport_unit_id_1] != 0 ? 50 : 80;
+				if (transport_1_count < transport_1_quantity)
+				{
+					transport_1_request_count = transport_1_quantity - transport_1_count;
+					while (1)
+					{
+						AIScriptController[player_id].AI_Flags.flag_0x40 = true;
+						transport_1_gas_cost = units_dat::GasCost[transport_unit_id_1];
+						transport_supply_cost = units_dat::SupplyRequired[transport_unit_id_1];
+						if (units_dat::BaseProperty[transport_unit_id_1] & UnitProperty::TwoUnitsIn1Egg)
+						{
+							transport_supply_cost *= 2;
+						}
+						v29 = AIScriptController[player_id].gasCollection;
+						AIScriptController[player_id].mineralCollection += units_dat::MineralCost[transport_unit_id_1];
+						AIScriptController[player_id].gasCollection = transport_1_gas_cost + v29;
+						AIScriptController[player_id].supplyCollection += transport_supply_cost;
+						helper::AI_AddSpendingRequest(transport_unit_id_1, player_id, 1, transport_1_priority, v33);
+						helper::AI_AddBaseUnitSpendingRequest(transport_unit_id_2, player_id, v33, transport_1_priority);
+						if (!--transport_1_request_count)
+						{
+							break;
+						}
+						transport_unit_id_1 = transport_unit_id_2;
+					}
+				}
+			}
+		}
+	}
 }
