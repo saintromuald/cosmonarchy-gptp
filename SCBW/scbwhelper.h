@@ -190,7 +190,7 @@ namespace helper
 	// for AI_TrainAttackForce
 	s32 AI_AddRegionToMilitary(AiRegion* region, s32 unitId, s32 priority);
 	u32 AI_FindUnit(u32 unitId, u32 playerId, u32 type);
-	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value);
+	u32 AI_AddSpendingRequest(u16 unitId, u32 player, u8 type, char priority, void* value);
 	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiRegion* region, char priority);
 
 	// for AIRegion_GroupForAttack
@@ -886,7 +886,6 @@ namespace helper
 	s32 getSuppliesRemaining(u8 player, u16 unit_id);
 	s32 getSuppliesUsed(s32 byte_data, u8 player);
 	s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3);
-	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5);
 	bool isAIAllowedToBuild(s32 a1, s32 a2);
 	void applyCloakingOrder(Unit* unit);																	// 00491B30
 

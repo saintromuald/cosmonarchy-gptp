@@ -1777,18 +1777,18 @@ namespace helper
 		return result;
 	}
 
-	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value)
+	u32 AI_AddSpendingRequest(u16 unitId, u32 player, u8 type, char priority, void* value)
 	{
 		const u32 Func_AI_AddSpendingRequest = 0x00447980;
-		static u32 typeXD = type;
+		u32 type32 = type;
 		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH value
 			PUSH priority
-			MOVZX CL, player
-			MOV EDX, typeXD
-			MOVZX AX, unitId
+			MOV ECX, type32
+			MOV EDX, player
+			MOV AX, unitId
 			CALL Func_AI_AddSpendingRequest
 			MOV result, EAX
 			POPAD
@@ -7734,25 +7734,6 @@ namespace helper
 			MOV EBX, a2
 			MOV EAX, a1
 			CALL Func_AI_AddCostToNeeds
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5)
-	{
-		const u32 Func_AI_AddSpendingRequest = 0x00447980;
-		static s32 result;
-		__asm
-		{
-			PUSHAD
-			PUSH a5
-			PUSH a4
-			MOVZX CL, a3
-			MOV EDX, a2
-			MOVZX AX, a1
-			CALL Func_AI_AddSpendingRequest
 			MOV result, EAX
 			POPAD
 		}

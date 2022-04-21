@@ -8,6 +8,7 @@ struct BaseLayout {
 	Point16 position;
 	u8 unit_id;
 	u8 priority;
+	b8 should_request;
 };
 
 struct BaseLayouts {

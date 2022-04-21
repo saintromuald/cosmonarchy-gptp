@@ -8,6 +8,9 @@ static void add_base_layout(Unit* unit, u32 player) {
 	layout.position = unit->position;
 	layout.unit_id = unit->id;
 	layout.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
+	if (unit->status & UnitStatus::IsHallucination) {
+		layout.should_request = true;
+	}
 
 	u32 res_area = scbw::get_closest_resarea(unit->position);
 	BaseLayouts* base_layouts = &all_base_layouts[player][res_area];
@@ -79,6 +82,9 @@ void tick_base_layouts() {
 			for (u32 j = 0; j < base_layouts->structures_count; ++j) {
 				BaseLayout* base_layout = &base_layouts->structures[j];
 				scbw::sendGPTP_aise_cmd((Unit*)base_layout, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
+				if (base_layout->should_request) {
+					helper::AI_AddSpendingRequest(base_layout->unit_id, town->player, 3, base_layout->priority / 2, town);
+				}
 			}
 		}
 	}
