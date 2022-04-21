@@ -83,7 +83,7 @@ void tick_base_layouts() {
 				BaseLayout* base_layout = &base_layouts->structures[j];
 				scbw::sendGPTP_aise_cmd((Unit*)base_layout, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
 				if (base_layout->should_request) {
-					helper::AI_AddSpendingRequest(base_layout->unit_id, town->player, 3, base_layout->priority / 2, town);
+					helper::AI_AddSpendingRequest(base_layout->unit_id, town->player, 3, base_layout->priority, town);
 				}
 			}
 		}

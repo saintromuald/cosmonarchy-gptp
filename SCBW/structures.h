@@ -887,13 +887,14 @@ struct AI_Main
 	u16 AI_MaxForce;					/*021C*/
 	u16 AI_AttackGroup;					/*021E*/
 	u16 wanted_unit;					/*0220*/
-	u8 dc222[0x2];						/*0222*/
+	u8	dc222;							/*0222*/
+	u8	defense_priority_base;			/*0223*/
 	u32 lastIndividualUpdateTime;		/*0224*/
 	u32 last_attack_seconds;			/*0228*/
-	u8 strategic_suicide;				/*022C*/
-	u8 spellcasterTimer;				/*022D*/
-	u8 attack_failed;					/*022E*/
-	u8 difficulty;						/*022F*/
+	u8	strategic_suicide;				/*022C*/
+	u8	spellcasterTimer;				/*022D*/
+	u8	attack_failed;					/*022E*/
+	u8	difficulty;						/*022F*/
 	u16 attackers[0x40];				/*0230*/
 	u32 AI_DefenseBuild_GG[10];			/*02B0*/
 	u32 AI_DefenseBuild_AG[10];			/*02D8*/

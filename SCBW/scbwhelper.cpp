@@ -10721,4 +10721,50 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For ai_train_defensive_military
+	u32 ai_region_train_attack_force(AiRegion* region) {
+		static u32 result;
+		const u32 func_address = 0x0043E670;
+		__asm {
+			PUSHAD
+			MOV EAX, region
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 ai_defend_region(AiRegion* military_region, s32 defense_region, s32 against_air, s32 region_strength) {
+		static u32 result;
+		const u32 func_address = 0x0043F100;
+		__asm {
+			PUSHAD
+			PUSH region_strength
+			PUSH against_air
+			PUSH defense_region
+			MOV EAX, military_region
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 AI_AddBaseUnitSpendingRequest(s32 final_unit_id, s8 player_id, AiRegion* region, u8 priority) {
+		static s32 result;
+		const u32 func_address = 0x004484A0;
+		__asm {
+			PUSHAD
+			PUSH priority
+			MOV EAX, final_unit_id
+			MOV CL, player_id
+			MOV ESI, region
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
