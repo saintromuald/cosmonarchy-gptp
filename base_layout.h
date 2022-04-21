@@ -9,6 +9,7 @@ struct BaseLayout {
 	u8 unit_id;
 	u8 priority;
 	b8 should_request;
+	b8 built_guard;
 };
 
 struct BaseLayouts {
@@ -17,6 +18,7 @@ struct BaseLayouts {
 	BaseLayout structures[BaseLayoutLimit];
 	u32 units_count;
 	BaseLayout units[BaseLayoutLimit];
+	u32 request_count[UnitId::Count];
 };
 
 void tick_base_layouts();

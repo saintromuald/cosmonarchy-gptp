@@ -8,7 +8,7 @@ static void add_base_layout(Unit* unit, u32 player) {
 	layout.position = unit->position;
 	layout.unit_id = unit->id;
 	layout.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
-	if (unit->status & UnitStatus::IsHallucination) {
+	if (!(unit->status & UnitStatus::Invincible)) {
 		layout.should_request = true;
 	}
 
@@ -34,8 +34,11 @@ static void init_base_layouts() {
 		if (unit->playerId > PlayerLimit && unit->playerId != 11) {
 			continue;
 		}
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
-			units_dat::ComputerAIInternal[unit->id] & 0x2) { // Don't become guard
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building) && units_dat::ComputerAIInternal[unit->id] & 0x2) { // Don't become guard
+			if (unit->status & UnitStatus::IsHallucination) {
+				unit->userActionFlags |= 0x4;
+				unit->remove();
+			}
 			continue;
 		}
 
@@ -53,6 +56,79 @@ static void init_base_layouts() {
 			unit->userActionFlags |= 0x4;
 			unit->remove();
 		}
+	}
+}
+
+struct Equivalent {
+	u32 from;
+	u32 to;
+};
+
+Equivalent equivalents[] = {
+	{UnitId::ZergHatchery, UnitId::ZergLair},
+	{UnitId::ZergLair, UnitId::ZergHive},
+	{UnitId::ZergHive, UnitId::ZergSire},
+	
+	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform},
+	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor},
+
+	{UnitId::ZergQuazrokPool, UnitId::ZergLiivralPond},
+	{UnitId::ZergHydrokDen, UnitId::ZergGorgralSwamp},
+	{UnitId::ZergMuthrokSpire, UnitId::ZergVithrathHaunt},
+	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre},
+	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern},
+	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm},
+
+	{UnitId::ZergCreepColony, UnitId::ZergSunkenColony},
+	{UnitId::ZergCreepColony, UnitId::ZergSporeColony},
+	{UnitId::ZergCreepColony, UnitId::ZergLarvalColony},
+
+	{UnitId::ZergOthstoleth, UnitId::ZergAlaszileth},
+	{UnitId::ZergOvileth, UnitId::ZergIroleth},
+
+	{UnitId::ZergZethrokor, UnitId::ZergVorvrokor},
+	{UnitId::ZergQuazilisk, UnitId::ZergLiiralisk},
+	{UnitId::ZergHydralisk, UnitId::ZergBactalisk},
+	{UnitId::ZergSkithrokor, UnitId::ZergGorgrokor},
+	{UnitId::ZergMutalisk, UnitId::ZergVithrilisk},
+	{UnitId::ZergNathrokor, UnitId::ZergKalkalisk},
+	{UnitId::ZergKonvilisk, UnitId::ZergAlmaksalisk},
+	{UnitId::ZergMatraleth, UnitId::ZergAkistrokor},
+	{UnitId::ZergZoryusthaleth, UnitId::ZergUltrokor},
+	{UnitId::ZergKeskathalor, UnitId::ZergAlkajelisk},
+
+	{UnitId::ProtossCantavis, UnitId::ProtossAugur},
+};
+
+u32 find_unit_equivalent(u32 unit_id) {
+	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
+		if (unit_id == equivalents[i].to) {
+			return equivalents[i].from;
+		}
+	}
+	return UnitId::None;
+}
+
+static void set_guard(BaseLayouts* base_layouts, AiTown* town, BaseLayout* base_layout) {
+	u32 equivalent = find_unit_equivalent(base_layout->unit_id);
+	if (equivalent != UnitId::None) {
+		BaseLayout copy = *base_layout;
+		copy.unit_id = equivalent;
+		set_guard(base_layouts, town, &copy);
+	}
+	scbw::sendGPTP_aise_cmd((Unit*)base_layout, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
+}
+
+static void set_base_layout(BaseLayouts* base_layouts, AiTown* town, BaseLayout* base_layout) {
+	u32 equivalent = find_unit_equivalent(base_layout->unit_id);
+	if (equivalent != UnitId::None) {
+		BaseLayout copy = *base_layout;
+		copy.unit_id = equivalent;
+		set_base_layout(base_layouts, town, &copy);
+	}
+	scbw::sendGPTP_aise_cmd((Unit*)base_layout, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
+	if (base_layout->should_request) {
+		helper::Ai_Build(base_layout->unit_id, false, ++base_layouts->request_count[base_layout->unit_id], town, base_layout->priority);
 	}
 }
 
@@ -74,17 +150,13 @@ void tick_base_layouts() {
 		if (town->inited && !town->resareaNotSet && !active_base_layouts[town->resarea]) {
 			BaseLayouts* base_layouts = &all_base_layouts[town->player][town->resarea];
 			base_layouts->town = town;
+			memset(base_layouts->request_count, 0, sizeof(base_layouts->request_count));
 			active_base_layouts[town->resarea] = base_layouts;
 			for (u32 j = 0; j < base_layouts->units_count; ++j) {
-				BaseLayout* base_layout = &base_layouts->units[j];
-				scbw::sendGPTP_aise_cmd((Unit*)base_layout, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
+				set_guard(base_layouts, town, &base_layouts->units[j]);
 			}
 			for (u32 j = 0; j < base_layouts->structures_count; ++j) {
-				BaseLayout* base_layout = &base_layouts->structures[j];
-				scbw::sendGPTP_aise_cmd((Unit*)base_layout, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
-				if (base_layout->should_request) {
-					helper::AI_AddSpendingRequest(base_layout->unit_id, town->player, 3, base_layout->priority / 2, town);
-				}
+				set_base_layout(base_layouts, town, &base_layouts->structures[j]);
 			}
 		}
 	}

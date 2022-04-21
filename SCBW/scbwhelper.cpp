@@ -10721,4 +10721,33 @@ namespace helper
 			POPAD
 		}
 	}
+
+	void Ai_Build(u32 unit_id, b32 only_if_needed, u32 count, AiTown* town, u32 priority) { // 004323D0
+		const u32 func_address = 0x004323D0;
+		__asm {
+			PUSHAD
+			PUSH priority
+			MOV ESI, town
+			MOV EAX, count
+			MOV EDX, only_if_needed
+			MOV ECX, unit_id
+			CALL func_address
+			POPAD
+		}
+	}
+
+	// void Ai_AddBuildRequest(AiTown* town, s32 method, s32 count, s32 type, s32 priority, b32 only_if_needed) { // 00431F90
+	// 	const u32 func_address = 0x00431F90;
+	// 	__asm {
+	// 		PUSHAD
+	// 		PUSH only_if_needed
+	// 		PUSH priority
+ 	// 		PUSH type
+	// 		PUSH count
+	// 		PUSH method
+	// 		MOV ESX, town
+	// 		CALL func_address
+	// 		POPAD
+	// 	}
+	// }
 }
