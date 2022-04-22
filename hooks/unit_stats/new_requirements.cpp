@@ -1,8 +1,7 @@
 #include "new_requirements.h"
 #include <hook_tools.h>
 
-namespace hooks
-{
+namespace hooks {
 	enum {
 		TECH_LOCKED = -1,
 		TECH_HIDDEN = 0,
