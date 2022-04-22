@@ -54,7 +54,7 @@ u32 find_unit_equivalent(u32 unit_id) {
 	return UnitId::None;
 }
 
-static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* placeholder, u32 unit_id) {
+static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder placeholder, u32 unit_id) {
 	u32 equivalent = find_unit_equivalent(unit_id);
 	if (equivalent != UnitId::None) {
 		add_placeholder_by_unit_id(base_layouts, placeholder, equivalent);
@@ -62,17 +62,16 @@ static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* p
 
 	for (u32 i = 0; i < base_layouts->placeholders_count; ++i) {
 		Placeholder* other = &base_layouts->placeholders[i];
-		if (unit_id == base_layouts->placeholders[i].unit_id && placeholder->position.x == other->position.x && placeholder->position.y == other->position.y) {
+		if (unit_id == base_layouts->placeholders[i].unit_id && placeholder.position.x == other->position.x && placeholder.position.y == other->position.y) {
 			return;
 		}
 	}
 
-	placeholder->unit_id = unit_id;
+	placeholder.unit_id = unit_id;
 	if (base_layouts->placeholders_count < PlaceholderLimit) {
-		placeholder->wait_build_start_count = base_layouts->request_count[unit_id]++;
-		base_layouts->placeholders[base_layouts->placeholders_count++] = *placeholder;
+		placeholder.wait_build_start_count = base_layouts->request_count[unit_id]++;
+		base_layouts->placeholders[base_layouts->placeholders_count++] = placeholder;
 	}
-	placeholder->priority -= 1;
 }
 
 static void add_placeholder(Unit* unit, u32 player) {
@@ -85,7 +84,7 @@ static void add_placeholder(Unit* unit, u32 player) {
 
 	u32 res_area = scbw::get_closest_resarea(unit->position);
 	BaseLayouts* base_layouts = &all_base_layouts[player][res_area];
-	add_placeholder_by_unit_id(base_layouts, &placeholder, unit->id);
+	add_placeholder_by_unit_id(base_layouts, placeholder, unit->id);
 }
 
 static b32 is_tech_unitid(u32 unit_id) {
