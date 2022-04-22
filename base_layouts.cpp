@@ -127,7 +127,7 @@ static u32 get_unit_class(u32 unit_id) {
 		return 1;
 	}
 	return 0;
-}
+} 
 
 static u32 get_unit_cost(u32 unit_id) {
 	return units_dat::MineralCost[unit_id] + units_dat::GasCost[unit_id];

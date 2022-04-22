@@ -224,40 +224,42 @@ namespace hooks
 		void* result = 0;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
-			WorkerAi* ai = town->freeWorkers->first_free_worker;
-			if (ai)
-			{
-				result = ai;
-				WorkerAi* worker_prev = ai->link.prev;
-				town->freeWorkers->first_free_worker = ai->link.prev;
-				if (worker_prev) {
-					worker_prev->link.next = 0;
-				}
-				ai->link.next = 0;
-				ai->link.prev = town->workers;
-				if (town->workers)
+			if (town->freeWorkers) {
+				WorkerAi* ai = town->freeWorkers->first_free_worker;
+				if (ai)
 				{
-					town->workers->link.next = ai;
-				}
-				town->workers = ai;
-				ai->type = 2;
-				ai->parent = unit;
-				ai->town = town;
-				ai->target_resource = 1;
-				ai->last_update_second = *elapsedTimeSeconds;
-				ai->waitTimer = 0;
-				ai->reassign_count = 0;
-				unit->worker.targetResource.unit = 0;
-				unit->pAI = ai;
-				++town->workerCount;
+					result = ai;
+					WorkerAi* worker_prev = ai->link.prev;
+					town->freeWorkers->first_free_worker = ai->link.prev;
+					if (worker_prev) {
+						worker_prev->link.next = 0;
+					}
+					ai->link.next = 0;
+					ai->link.prev = town->workers;
+					if (town->workers)
+					{
+						town->workers->link.next = ai;
+					}
+					town->workers = ai;
+					ai->type = 2;
+					ai->parent = unit;
+					ai->town = town;
+					ai->target_resource = 1;
+					ai->last_update_second = *elapsedTimeSeconds;
+					ai->waitTimer = 0;
+					ai->reassign_count = 0;
+					unit->worker.targetResource.unit = 0;
+					unit->pAI = ai;
+					++town->workerCount;
 
-				if (!town->inited)
-				{
-					town->inited = 1;
-					town->mineral = 0;
-					town->gasBuildings[0] = 0;
-					town->gasBuildings[1] = 0;
-					town->gasBuildings[2] = 0;
+					if (!town->inited)
+					{
+						town->inited = 1;
+						town->mineral = 0;
+						town->gasBuildings[0] = 0;
+						town->gasBuildings[1] = 0;
+						town->gasBuildings[2] = 0;
+					}
 				}
 			}
 		}
