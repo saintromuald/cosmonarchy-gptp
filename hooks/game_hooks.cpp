@@ -24,7 +24,7 @@
 #include "tactical_ai.h"
 #include "scenario.h"
 #include "trigger_system.h"
-#include "base_layout.h"
+#include "base_layouts.h"
 
 const u32 hyperTrigger = 0x006509A0;
 

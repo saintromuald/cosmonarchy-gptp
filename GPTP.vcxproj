@@ -252,7 +252,7 @@
   <ItemGroup>
     <ClCompile Include="AIScripter\AICore.cpp" />
     <ClCompile Include="AIScripter\AIParser.cpp" />
-    <ClCompile Include="base_layout.cpp" />
+    <ClCompile Include="base_layouts.cpp" />
     <ClCompile Include="direct_sound.cpp" />
     <ClCompile Include="scenario.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
@@ -577,7 +577,7 @@
   <ItemGroup>
     <ClInclude Include="AIScripter\AICore.h" />
     <ClInclude Include="AIScripter\AIParser.h" />
-    <ClInclude Include="base_layout.h" />
+    <ClInclude Include="base_layouts.h" />
     <ClInclude Include="direct_sound.h" />
     <ClInclude Include="scenario.h" />
     <ClInclude Include="hooks\aiscript\ai_requests.h" />
