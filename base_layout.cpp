@@ -1,4 +1,5 @@
 #include "base_layout.h"
+#include "hooks/unit_stats/new_requirements.h"
 
 static BaseLayouts all_base_layouts[PlayerLimit][ResAreaLimit];
 static BaseLayouts* active_base_layouts[ResAreaLimit];
@@ -26,6 +27,20 @@ static void add_base_layout(Unit* unit, u32 player) {
 			base_layouts->units[base_layouts->units_count++] = layout;
 		}
 	}
+}
+
+static int __cdecl compare_base_layout(const void* a, const void* b) {
+	BaseLayout* bl_a = (BaseLayout*)a;
+	BaseLayout* bl_b = (BaseLayout*)b;
+	u32 cost_a = units_dat::MineralCost[bl_a->unit_id] + units_dat::GasCost[bl_a->unit_id];
+	u32 cost_b = units_dat::MineralCost[bl_b->unit_id] + units_dat::GasCost[bl_b->unit_id];
+	if (bl_a->unit_id == UnitId::ProtossPylon) {
+		cost_a = 10000;
+	}
+	if (bl_b->unit_id == UnitId::ProtossPylon) {
+		cost_b = 10000;
+	}
+	return cost_b - cost_a;
 }
 
 static void init_base_layouts() {
@@ -62,6 +77,13 @@ static void init_base_layouts() {
 			unit->remove();
 		} else {
 			unit->status &= ~UnitStatus::Invincible;
+		}
+	}
+
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+		for (u32 j = 0; j < ResAreaLimit; ++j) {
+			qsort(all_base_layouts[i][j].units, all_base_layouts[i][j].units_count, sizeof(BaseLayout), compare_base_layout);
+			qsort(all_base_layouts[i][j].structures, all_base_layouts[i][j].structures_count, sizeof(BaseLayout), compare_base_layout);
 		}
 	}
 }
@@ -180,9 +202,30 @@ void tick_base_layouts() {
 
 	for (u32 i = 0; i < ResAreaLimit; ++i) {
 		BaseLayouts* base_layouts = active_base_layouts[i];
-		if (base_layouts && !base_layouts->town->inited) {
-			base_layouts->town = 0;
-			active_base_layouts[i] = 0;
+		if (base_layouts) {
+			if (!base_layouts->town->inited) {
+				base_layouts->town = 0;
+				active_base_layouts[i] = 0;
+				continue;
+			}
+			AiTown* town = base_layouts->town;
+			for (u32 j = 0; j < base_layouts->units_count; ++j) {
+				BaseLayout* base_layout = &base_layouts->units[j];
+				if (!base_layouts->units_active[j] && hooks::createUnitIdAllowed(base_layout->unit_id, town->player)) {
+					base_layouts->units_active[j] = true;
+					set_guard(base_layouts, town, base_layout);
+				}
+			}
+			for (u32 j = 0; j < base_layouts->structures_count; ++j) {
+				BaseLayout* base_layout = &base_layouts->structures[j];
+				if (base_layout->unit_id == UnitId::ProtossGateway) {
+					int i = 0;
+				}
+				if (!base_layouts->structures_active[j] && hooks::createUnitIdAllowed(base_layout->unit_id, town->player)) {
+					base_layouts->structures_active[j] = true;
+					set_base_layout(base_layouts, town, base_layout);
+				}
+			}
 		}
 	}
 
@@ -191,15 +234,11 @@ void tick_base_layouts() {
 		if (town->inited && !town->resareaNotSet && !active_base_layouts[town->resarea]) {
 			BaseLayouts* base_layouts = &all_base_layouts[town->player][town->resarea];
 			base_layouts->town = town;
+			memset(base_layouts->units_active, 0, sizeof(base_layouts->units_active));
+			memset(base_layouts->structures_active, 0, sizeof(base_layouts->structures_active));
 			memset(base_layouts->preplaced_request_count, 0, sizeof(base_layouts->preplaced_request_count));
 			memset(base_layouts->request_count, 0, sizeof(base_layouts->request_count));
 			active_base_layouts[town->resarea] = base_layouts;
-			for (u32 j = 0; j < base_layouts->units_count; ++j) {
-				set_guard(base_layouts, town, &base_layouts->units[j]);
-			}
-			for (u32 j = 0; j < base_layouts->structures_count; ++j) {
-				set_base_layout(base_layouts, town, &base_layouts->structures[j]);
-			}
 		}
 	}
 }
