@@ -7,17 +7,17 @@ struct Placeholder {
 	u8 unit_id;
 	u8 priority;
 	b8 should_request;
-	b8 was_preplaced;
-	u16 wait_build_start_count;
+	u8 wait_build_start_count;
 };
 
 #define PlaceholderLimit 512
 
 struct BaseLayouts {
 	AiTown* town;
+	Point16 resarea_pos;
 	u32 placeholders_count;
-	bool placeholders_requested[PlaceholderLimit];
 	Placeholder placeholders[PlaceholderLimit];
+	bool placeholders_requested[PlaceholderLimit];
 	u32 request_count[UnitId::Count]; // First used to set wait_build_start_count, then used to track request counts
 };
 

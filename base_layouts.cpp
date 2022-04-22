@@ -82,9 +82,6 @@ static void add_placeholder(Unit* unit, u32 player) {
 	if (!(unit->status & UnitStatus::Invincible)) {
 		placeholder.should_request = true;
 	}
-	if (!(unit->status & UnitStatus::IsHallucination)) {
-		placeholder.was_preplaced = true;
-	}
 
 	u32 res_area = scbw::get_closest_resarea(unit->position);
 	BaseLayouts* base_layouts = &all_base_layouts[player][res_area];
@@ -134,7 +131,8 @@ static u32 get_unit_cost(u32 unit_id) {
 	return units_dat::MineralCost[unit_id] + units_dat::GasCost[unit_id];
 }
 
-static int compare_base_layout(const void* a, const void* b) {
+static int compare_base_layout(void* context, const void* a, const void* b) {
+	BaseLayouts* base_layouts = (BaseLayouts*)context;
 	Placeholder* pa = (Placeholder*)a;
 	Placeholder* pb = (Placeholder*)b;
 
@@ -147,12 +145,22 @@ static int compare_base_layout(const void* a, const void* b) {
 	s32 cost_diff = get_unit_cost(pa->unit_id) - get_unit_cost(pb->unit_id);
 	if (cost_diff) return cost_diff;
 
+	s32 pos_diff = scbw::getDistanceFast(pa->position, base_layouts->resarea_pos) - scbw::getDistanceFast(pb->position, base_layouts->resarea_pos);
+	if (pos_diff) return pos_diff;
+
 	return 0;
 }
 
 static void init_base_layouts() {
 	memset(all_base_layouts, 0, sizeof(all_base_layouts));
 	memset(active_base_layouts, 0, sizeof(active_base_layouts));
+
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+		for (u32 j = 0; j < ResAreaLimit; ++j) {
+			all_base_layouts[i][j].resarea_pos = resource_areas->areas[j].pos;
+		}
+	}
+
 	Unit* next = 0;
 	for (Unit* unit = *firstVisibleUnit; unit; unit = next) {
 		next = unit->link.next;
@@ -189,7 +197,7 @@ static void init_base_layouts() {
 
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		for (u32 j = 0; j < ResAreaLimit; ++j) {
-			qsort(all_base_layouts[i][j].placeholders, all_base_layouts[i][j].placeholders_count, sizeof(Placeholder), compare_base_layout);
+			qsort_s(all_base_layouts[i][j].placeholders, all_base_layouts[i][j].placeholders_count, sizeof(Placeholder), compare_base_layout, &all_base_layouts[i][j]);
 		}
 	}
 }

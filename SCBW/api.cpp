@@ -2079,7 +2079,6 @@ namespace scbw
 		u32 best_resarea = 0;
 		for (u32 i = 0; i < ResAreaLimit; ++i) {
 			ResourceArea* resarea = &resource_areas->areas[i];
-			resarea->pos;
 			u32 distance = scbw::getDistanceFast(position, resarea->pos);
 			if (distance < min_distance) {
 				min_distance = distance;
