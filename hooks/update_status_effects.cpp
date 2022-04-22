@@ -356,35 +356,33 @@ namespace hooks
 		}
 	}
 
-	void AI_Burrower(Unit* a1)
+	void AI_Burrower(Unit* unit)
 	{
-		return; // Disable idle burrowing
-
-		if (units_dat::BaseProperty[a1->id] & UnitProperty::Burrowable)
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)
 		{
-			if (!(a1->status & UnitStatus::Burrowed) && a1->id != UnitId::ZergDroleth)
+			if (!(unit->status & UnitStatus::Burrowed) && unit->id != UnitId::ZergDroleth)
 			{
-				if (a1->mainOrderId == OrderId::ComputerAI || a1->mainOrderId == OrderId::Guard)
+				if (unit->mainOrderId == OrderId::ComputerAI || unit->mainOrderId == OrderId::Guard)
 				{
-					if (a1->moveTarget.pt.x == a1->sprite->position.x
-						&& a1->moveTarget.pt.y == a1->sprite->position.y
-						&& ((a1->status & UnitStatus::Unmovable) != 0) != -1
+					if (unit->moveTarget.pt.x == unit->sprite->position.x
+						&& unit->moveTarget.pt.y == unit->sprite->position.y
+						&& ((unit->status & UnitStatus::Unmovable) != 0) != -1
 						// Originally checked for burrow tech here
 						)
 					{
 						bool canBurrow = true;
-						auto tile = scbw::getActiveTileAt(a1->position.x, a1->position.y);
+						auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 						if (tile.currentlyOccupied)
 						{
 							Unit* nearest = scbw::UnitFinder::getNearestTarget(
-								a1->getLeft() - 32,
-								a1->getTop() - 32,
-								a1->getRight() + 32,
-								a1->getBottom() + 32,
-								a1,
+								unit->getLeft() - 32,
+								unit->getTop() - 32,
+								unit->getRight() + 32,
+								unit->getBottom() + 32,
+								unit,
 								[&](Unit* target)
 							{
-								return safetyUnburrowCheck(a1, target);
+								return safetyUnburrowCheck(unit, target);
 							}
 							);
 							if (nearest != nullptr)
@@ -394,7 +392,14 @@ namespace hooks
 						}
 						if (canBurrow)
 						{
-							helper::order_computer(a1, OrderId::Burrow);
+							if (unit->id != UnitId::ZergLakizilisk) {
+								UnitArray array = UnitSearchRadial(unit->position, 10 * 32);
+								UnitArrayFilter(&array, unit, FilterAlly | FilterBuilding);
+								if (array.size) {
+									return; // Disable idle burrowing close to infrastructure
+								}
+							}
+							helper::order_computer(unit, OrderId::Burrow);
 						}
 					}
 				}
