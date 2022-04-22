@@ -11,7 +11,7 @@ namespace hooks
 	void StatRes_MainProc(BinDlg* dialog);											// 004E5640
 	s32 getSuppliesTemp();															// 004246D0
 	bool redrawSupplyInfo();														// 00425230
-	void drawSupplyUnitStatus(BinDlg* dialog, s32 unused);							// 00427540
+	void drawSupplyUnitStatus(BinDlg* dialog);										// 00427540
 
 	bool hasSuppliesForUnitHook(u8 playerId, u16 unitId, bool canShowErrorMessage); // 0042CF70
 	void incrementUnitScores(Unit* unit, s32 count);								// 00488BF0

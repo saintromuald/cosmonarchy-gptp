@@ -289,7 +289,7 @@ SCBW_DATA(u32*, COrderCount, 0x00641698);
 
 // For createUpgradeLevelTooltip
 SCBW_DATA(u16*, upgradeLevelTooltip, 0x0068C1CC);
-SCBW_DATA(char**, statTxtBuffer, 0x006D1238);
+SCBW_DATA(u16**, statTxtBuffer, 0x006D1238);
 
 
 struct BufferStr {
@@ -464,10 +464,10 @@ SCBW_DATA(s32*,	unknown_68C230,						0x0068C230);
 SCBW_DATA(s16*,	suppliesUsedTemp,					0x006CA93E);
 
 // For drawSupplyUnitStatus
-SCBW_DATA(char*,unknown_struct_6CA9F8,				0x006CA9F8);
-SCBW_DATA(char*,unknown_struct_6CAB08,				0x006CAB08);
-SCBW_DATA(s8*,	unkDialogByte,						0x006CA668);
-SCBW_DATA(char*,aKills1,							0x006CAC78);
+SCBW_DATA(char*, supply_available_buffer,			0x006CA668);
+SCBW_DATA(char*, supply_used_buffer,				0x006CA9F8);
+SCBW_DATA(char*, supply_max_buffer,					0x006CAB08);
+SCBW_DATA(char*, supply_provided_buffer,			0x006CAC78);
 
 // For giveUnitToPlayer
 SCBW_DATA(s32*,	currentTriggerPlayerId,				0x006509B0);

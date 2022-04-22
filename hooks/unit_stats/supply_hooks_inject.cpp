@@ -151,14 +151,12 @@ namespace
 	void __declspec(naked) drawSupplyUnitStatus_Wrapper()
 	{
 		static BinDlg* dialog;
-		static s32 unused;
 		__asm
 		{
-			MOV unused, EDI
 			MOV dialog, EAX
 			PUSHAD
 		}
-		hooks::drawSupplyUnitStatus(dialog, unused);
+		hooks::drawSupplyUnitStatus(dialog);
 		__asm
 		{
 			POPAD
@@ -247,7 +245,7 @@ namespace hooks
 		jmpPatch(StatRes_MainProc_Wrapper,		0x004E5640, 4);
 		jmpPatch(getSuppliesTemp_Wrapper,		0x004246D0, 1);
 		jmpPatch(redrawSupplyInfo_Wrapper,		0x00425230, 4);
-//		jmpPatch(drawSupplyUnitStatus_Wrapper,	0x00427540, 1); // Currently broken, supply used in unit status display won't show properly for zerg and protoss units
+		jmpPatch(drawSupplyUnitStatus_Wrapper,	0x00427540, 1); // Currently broken, supply used in unit status display won't show properly for zerg and protoss units
 		jmpPatch(hasSuppliesForUnitWrapper,		0x0042CF70);
 		jmpPatch(incrementUnitScores_Wrapper,	0x00488BF0, 2);
 		jmpPatch(incrementUnitScoresEx_Wrapper,	0x00488D50, 1);
