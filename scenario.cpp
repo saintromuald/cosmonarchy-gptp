@@ -1529,7 +1529,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					resource_upgrade = 3;
 				}
 				resource_upgrade += fraud_class - 1;
-				scbw::setUpgradeLevel(player, UpgradeId::ZergStructureCarapace, resource_upgrade);
+				scbw::setUpgradeLevel(player, UpgradeId::MiningEfficiency, resource_upgrade);
 
 				startPositions[player] = spawn_location->pos;
 				if (race == RaceId::Terran) {
