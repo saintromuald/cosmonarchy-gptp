@@ -204,6 +204,24 @@ static void init_base_layouts() {
 	}
 }
 
+bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder) {
+	AiTown* town = base_layouts->town;
+	if (!hooks::createUnitIdAllowed(placeholder->unit_id, town->player)) {
+		return false;
+	}
+	if (Player::numberOfUnitsOfType(town->player, placeholder->unit_id) < placeholder->wait_build_start_count) {
+		return false;
+	}
+	if (!town->mainBuilding && units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
+		if (placeholder->unit_id != UnitId::TerranCommandCenter &&
+			placeholder->unit_id != UnitId::ProtossNexus && 
+			placeholder->unit_id != UnitId::ZergHatchery) {
+			return false;
+		}
+	}
+	return true;
+}
+
 void tick_base_layouts() {
 	if (*elapsedTimeFrames == 0) {
 		init_base_layouts();
@@ -221,9 +239,7 @@ void tick_base_layouts() {
 			AiTown* town = base_layouts->town;
 			for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
 				Placeholder* placeholder = &base_layouts->placeholders[j];
-				if (!base_layouts->placeholders_requested[j] &&
-						hooks::createUnitIdAllowed(placeholder->unit_id, town->player) &&
-						Player::numberOfUnitsOfType(town->player, placeholder->unit_id) >= placeholder->wait_build_start_count) {
+				if (!base_layouts->placeholders_requested[j] && can_build_placeholder(base_layouts, placeholder)) {
 					base_layouts->placeholders_requested[j] = true;
 					u32 count = ++base_layouts->request_count[placeholder->unit_id];
 					if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
