@@ -52,18 +52,18 @@ namespace hooks
 		{
 			do
 			{
-				Unit* firstTownUnitVar = firstTown->firstTownUnit;
-				if (firstTown->firstTownUnit)
+				WorkerAi* firstWorker = firstTown->workers;
+				if (firstTown->workers)
 				{
 					do
 					{
-						Unit* targetUnit = firstTownUnitVar->moveTarget.unit; // This was null during a crash
-						if (targetUnit == nullptr)
+						Unit* worker = firstWorker->parent; // This was null during a crash
+						if (!worker)
 						{
 							scbw::print("null unit in AI_progressBuild");
 							return result;
 						}
-						s32 buildOrderId = (u8)targetUnit->mainOrderId;
+						s32 buildOrderId = (u8)worker->mainOrderId;
 						if (buildOrderId == OrderId::BuildTerran
 						  || buildOrderId == OrderId::BuildProtoss1
 						  || buildOrderId == OrderId::DroneLand
@@ -72,7 +72,7 @@ namespace hooks
 						{
 							u8* consoleVar = nullptr;
 							s32 playerIdVar = (u8)playerId;
-							u16 targetUnitQueue = targetUnit->buildQueue[(u8)targetUnit->buildQueueSlot % 5];
+							u16 targetUnitQueue = worker->buildQueue[(u8)worker->buildQueueSlot % 5];
 							s32 targetUnitQueue2 = targetUnitQueue;
 							s32 targetQueueCostMinerals = units_dat::MineralCost[targetUnitQueue2];
 							s32 targetQueueCostGas = units_dat::GasCost[targetUnitQueue2];
@@ -100,9 +100,9 @@ namespace hooks
 								}
 							}
 						}
-						firstTownUnitVar = firstTownUnitVar->link.prev;
+						firstWorker = firstWorker->link.prev;
 					}
-					while (firstTownUnitVar);
+					while (firstWorker);
 				}
 				result = firstTown->link.prev;
 				firstTown = firstTown->link.prev;

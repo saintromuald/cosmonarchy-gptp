@@ -35,7 +35,7 @@ namespace hooks
 
 			if (helper::AI_OrderHeal(unit, target) != 0)
 			{
-				unit->orderComputerClear(OrderId::MedicHeal1);
+				unit->orderComputer(OrderId::MedicHeal1);
 				unit->orderTarget.unit = target;
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
@@ -140,7 +140,7 @@ namespace hooks
 				{
 					if (*(u8*)((u32)unit->pAI + 8) != 1)
 					{
-						unit->orderComputerClear(OrderId::ComputerAI);
+						unit->orderComputer(OrderId::ComputerAI);
 					}
 					else if (unit->sprite->position.x != *(u16*)((u32)unit->pAI + 0x12)
 						|| unit->sprite->position.y != *(u16*)((u32)unit->pAI + 0x14))
@@ -197,11 +197,11 @@ namespace hooks
 			}
 			else if (unit->pAI != nullptr)
 			{
-				unit->orderComputerClear(OrderId::ComputerAI);
+				unit->orderComputer(OrderId::ComputerAI);
 			}
 			else
 			{
-				unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
 		else // 004641D3

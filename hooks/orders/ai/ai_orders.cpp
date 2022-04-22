@@ -439,18 +439,18 @@ LABEL_126:
 			
 		for (AiTown* i = regionTown; i; i = i->link.prev)
 		{
-			Unit* townUnit = i->firstTownUnit;
-			if (!townUnit)
+			Unit* townWorker = (Unit*)i->workers;
+			if (!townWorker)
 			{
 				continue;
 			}
-			if (!(townUnit->status & UnitStatus::InBuilding))
+			if (!(townWorker->status & UnitStatus::InBuilding))
 			{
-				s32 townUnitGroundStrength = townUnit->groundStrength;
-				s16 townUnitAirStrength = townUnit->airStrength;
+				s32 townUnitGroundStrength = townWorker->groundStrength;
+				s16 townUnitAirStrength = townWorker->airStrength;
 				region->fullAirStrength += townUnitAirStrength;
 				region->fullGroundStrength += townUnitGroundStrength;
-				Sprite* townUnitSprite = townUnit->sprite;
+				Sprite* townUnitSprite = townWorker->sprite;
 				if (!townUnitSprite)
 				{
 					continue;
@@ -628,7 +628,7 @@ LABEL_126:
 		AiTown* town = unitAI->region->town;
 		for (i = town; town; i = town)
 		{
-			Unit* firstUnit = town->firstTownUnit;
+			Unit* firstUnit = (Unit*)town->workers;
 			if (firstUnit != nullptr && firstUnit->sprite != nullptr && firstUnit != unit)
 			{
 				u32 distance = helper::getDistanceFast(firstUnit->sprite->position.x, unit->sprite->position.x, firstUnit->sprite->position.y, unit->sprite->position.y);

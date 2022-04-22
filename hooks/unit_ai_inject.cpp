@@ -105,7 +105,7 @@ namespace
 
 	void __declspec(naked) AI_AddWorkerStructureAI_Wrapper() // 00433DD0
 	{
-		static u8 result;
+		static void* result;
 		static Unit* unit;
 		static AiTown* town;
 		__asm
@@ -118,7 +118,7 @@ namespace
 		__asm
 		{
 			POPAD
-			MOV result, AL
+			MOV result, EAX
 			RETN
 		}
 	}
@@ -366,7 +366,7 @@ namespace hooks
 		jmpPatch(AI_TrainingSimpleMilitary_Wrapper,			0x0043E280, 1);
 		jmpPatch(AI_TrainingWorker_Wrapper,					0x00435700, 0);
 //		jmpPatch(AI_TrainingNormal_Wrapper,					0x00435DB0, 0);
-//		jmpPatch(AI_AddWorkerStructureAI_Wrapper,			0x00433DD0, 2);
+		jmpPatch(AI_AddWorkerStructureAI_Wrapper,			0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
 //		jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
 

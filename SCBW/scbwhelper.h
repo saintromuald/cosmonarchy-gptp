@@ -141,7 +141,7 @@ namespace helper
 	char AI_AddWorkerStructureAI(Unit* worker, AiTown* town);									// 00433DD0
 
 	// For AI_AddUnitAI
-	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI);
+	BuildingAi* AI_CreateBuildingAi(BuildingAiArray** buildingAI);
 	void order_computer(Unit* unit, u8 orderId);
 	Unit* setSecondaryOrder(Unit* result, char orderId);
 	void AI_MakeGuard(s32 playerId, Unit* unit);

@@ -48,11 +48,11 @@ namespace hooks
 
 				if (unit->pAI != nullptr)
 				{
-					unit->orderComputerClear(OrderId::ComputerAI);
+					unit->orderComputer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -84,11 +84,11 @@ namespace hooks
 			{ // 004EA497
 				if (unit->pAI != nullptr)
 				{
-					unit->orderComputerClear(OrderId::ComputerAI);
+					unit->orderComputer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}

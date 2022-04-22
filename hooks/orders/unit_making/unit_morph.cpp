@@ -104,7 +104,7 @@ namespace hooks
 				if (!helper::hasSuppliesForUnit(unit->buildQueue[unit->buildQueueSlot], unit->playerId, 1))
 				{
 					helper::refundAllQueueSlots(unit);
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 				else
 				{
@@ -177,7 +177,7 @@ namespace hooks
 						scbw::refreshConsole();
 						unit->status &= ~UnitStatus::IsBuilding; // disable the flag if set
 						helper::setArchonPathing(unit);
-						unit->orderComputerClear(OrderId::CompletingArchonSummon);
+						unit->orderComputer(OrderId::CompletingArchonSummon);
 						return;
 					}
 					else
@@ -246,7 +246,7 @@ namespace hooks
 						current_image->playIscriptAnim(anim);
 						current_image = current_image->link.next;
 					}
-					unit->orderComputerClear(OrderId::ZergBirth);
+					unit->orderComputer(OrderId::ZergBirth);
 				}
 				else // 0045DF60
 				{

@@ -138,7 +138,7 @@ namespace hooks
 				{
 					if (!(unit->orderQueueHead->orderId == OrderId::WatchTarget))
 					{
-						unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+						unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 						helper::actUnitReturnToIdle(unit);
 						helper::orderReturnToIdle(unit->subunit);
 						bStopThere = true;

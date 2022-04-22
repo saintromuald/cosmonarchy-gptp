@@ -1278,10 +1278,10 @@ namespace helper
 
 	// for AI_AddUnitAI
 
-	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI)
+	BuildingAi* AI_CreateBuildingAi(BuildingAiArray** buildingAI)
 	{
 		const u32 Func_AI_CreateBuildingAi = 0x004044C0;
-		static UnitAi* result;
+		static BuildingAi* result;
 		__asm {
 			PUSHAD
 			MOV ESI, buildingAI

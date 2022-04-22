@@ -272,7 +272,7 @@ namespace hooks
 
 						//646AF
 						if (unit->orderQueueHead == nullptr)
-							unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+							unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 
 					}
 

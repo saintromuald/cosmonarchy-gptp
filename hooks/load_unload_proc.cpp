@@ -329,11 +329,11 @@ namespace hooks
 					helper::function_004E7E10(unit, 0);
 					if (unit->pAI == nullptr)
 					{
-						unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+						unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 					}
 					else
 					{
-						unit->orderComputerClear(OrderId::ComputerAI);
+						unit->orderComputer(OrderId::ComputerAI);
 					}
 
 					UnitExt* transportExt = globals.GetUnitExt(transport);

@@ -780,11 +780,11 @@ LABEL_23:
 				{
 					if (v2->pAI)
 					{
-						v2->orderComputerClear(OrderId::ComputerAI);
+						v2->orderComputer(OrderId::ComputerAI);
 					}
 					else
 					{
-						v2->orderComputerClear(units_dat::ReturnToIdleOrder[v2->id]);
+						v2->orderComputer(units_dat::ReturnToIdleOrder[v2->id]);
 					}
 					result = 0;
 				}

@@ -99,7 +99,7 @@ namespace hooks
 							builtUnit->sprite->createTopUnderlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
 							unit->orderTarget.unit = builtUnit;
 							helper::AI_TrainingOverlord(builtUnit, unit);
-							builtUnit->orderComputerClear(OrderId::BuildSelf2);
+							builtUnit->orderComputer(OrderId::BuildSelf2);
 							helper::playSoundFromSource(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
 							unit->mainOrderState = 3;
 						}

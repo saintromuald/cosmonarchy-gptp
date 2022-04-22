@@ -67,7 +67,7 @@ namespace hooks
 		{
 			if (building->hitPoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
 			{
-				building->orderComputerClear(OrderId::Nothing2);
+				building->orderComputer(OrderId::Nothing2);
 			}
 		}
 	}
@@ -326,11 +326,11 @@ namespace hooks
 						}
 						else if (unit->pAI != nullptr)
 						{ // 00467F6F												
-							unit->orderComputerClear(OrderId::ComputerAI);
+							unit->orderComputer(OrderId::ComputerAI);
 						}
 						else
 						{
-							unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+							unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 						}
 					}
 				}
@@ -385,11 +385,11 @@ namespace hooks
 				}
 				else if (unit->pAI != nullptr)
 				{ // 00467F6F
-					unit->orderComputerClear(OrderId::ComputerAI);
+					unit->orderComputer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -445,7 +445,7 @@ namespace hooks
 					{
 						helper::refundUnitTrainCost(unit_id, unit->playerId);
 						helper::displayLastNetErrorForPlayer(unit->playerId);
-						unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+						unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 					}
 					else
 					{ // 00468131
@@ -462,7 +462,7 @@ namespace hooks
 							}
 						}
 						scbw::refreshConsole();
-						builtUnit->orderComputerClear(OrderId::BuildSelf1);
+						builtUnit->orderComputer(OrderId::BuildSelf1);
 						helper::AI_TrainingOverlord(builtUnit, unit);
 					}
 				}

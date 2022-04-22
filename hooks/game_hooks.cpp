@@ -661,7 +661,7 @@ namespace hooks
 						unitExt->values[ValueIsSelfReviving] = 0;
 						unit->hitPoints = unit->getMaxHpRaw();
 						scbw::restoreFunc(unit);
-						unit->orderComputerClear(OrderId::Stop);
+						unit->orderComputer(OrderId::Stop);
 						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 						helper::playSoundFromSource(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
 					}
@@ -1538,11 +1538,11 @@ namespace hooks
 
 			if (unit->pAI != nullptr)
 			{
-				unit->orderComputerClear(OrderId::ComputerAI);
+				unit->orderComputer(OrderId::ComputerAI);
 			}
 			else
 			{
-				unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
 			// Fix unit

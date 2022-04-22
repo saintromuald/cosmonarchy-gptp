@@ -170,9 +170,9 @@ namespace hooks
 
 				//9487D
 				if (unit->pAI != nullptr)
-					unit->orderComputerClear(OrderId::ComputerAI);
+					unit->orderComputer(OrderId::ComputerAI);
 				else
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 
 			}
 
@@ -319,7 +319,7 @@ namespace hooks
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
 				helper::function_0046A820(unit); ////pathing related
 
-				unit->orderComputerClear(OrderId::CompletingArchonSummon);
+				unit->orderComputer(OrderId::CompletingArchonSummon);
 
 			} //if(distanceBetweenUnits <= 20)
 
@@ -369,9 +369,9 @@ namespace hooks
 
 				//94A84
 				if (unit->pAI != nullptr)
-					unit->orderComputerClear(OrderId::ComputerAI);
+					unit->orderComputer(OrderId::ComputerAI);
 				else
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 
 			}
 
@@ -515,7 +515,7 @@ namespace hooks
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
 				helper::function_0046A820(unit); ////pathing related
 
-				unit->orderComputerClear(OrderId::CompletingArchonSummon);
+				unit->orderComputer(OrderId::CompletingArchonSummon);
 			}
 		}
 	}

@@ -26,12 +26,12 @@ namespace hooks
 				// 004656B2:
 				if (unit->pAI != nullptr)
 				{
-					unit->orderComputerClear(OrderId::ComputerAI);
+					unit->orderComputer(OrderId::ComputerAI);
 				}
 				else
 				{
 					// 004656C6
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -100,11 +100,11 @@ namespace hooks
 				// 00465981
 				if (unit->pAI != nullptr)
 				{
-					unit->orderComputerClear(OrderId::ComputerAI);
+					unit->orderComputer(OrderId::ComputerAI);
 				}
 				else // 00465998
 				{
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -351,11 +351,11 @@ namespace hooks
 							}
 							else
 							{ // 00477B9D
-								unit->orderComputerClear(OrderId::Nothing2);
+								unit->orderComputer(OrderId::Nothing2);
 
 								// this orderId is hardcoded, not calculated 
 								unit->orderSimple(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeModeTurret], false);
-								current_subunit->orderComputerClear(OrderId::SiegeMode);
+								current_subunit->orderComputer(OrderId::SiegeMode);
 
 								// this orderId is hardcoded, not calculated
 								current_subunit->issueQueuedOrderTarget(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeMode], target, false);
@@ -435,7 +435,7 @@ namespace hooks
 							}
 							else
 							{
-								unit->orderComputerClear(OrderId::TurretGuard); // 00477C93
+								unit->orderComputer(OrderId::TurretGuard); // 00477C93
 							}
 						}
 
@@ -593,11 +593,11 @@ namespace hooks
 			else
 				if (unit->pAI != nullptr) // 00477E6B
 				{
-					unit->orderComputerClear(OrderId::ComputerAI);
+					unit->orderComputer(OrderId::ComputerAI);
 				}
 				else // 00477E83
 				{
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 		}
 
@@ -642,11 +642,11 @@ namespace hooks
 			{
 				if (unit->pAI != nullptr)
 				{
-					unit->orderComputerClear(OrderId::ComputerAI);
+					unit->orderComputer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}

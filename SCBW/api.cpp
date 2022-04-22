@@ -77,7 +77,7 @@ namespace scbw
 			// stop some currently active orders
 			if (u->id != UnitId::ZergCocoon && !preserveOrder)
 			{
-				u->orderComputerClear(units_dat::ReturnToIdleOrder[u->id]);
+				u->orderComputer(units_dat::ReturnToIdleOrder[u->id]);
 			}
 
 			// create the Recall animation over the unit

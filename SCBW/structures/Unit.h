@@ -251,7 +251,7 @@ struct Unit : public UnitLayout
 	void orderTo(u8 orderId, u16 x, u16 y);
 
 	//  Issue the @p order to the unit, without a target
-	void orderComputerClear(u8 orderId);
+	void orderComputer(u8 orderId);
 
 	//  Issue the @p order to the unit and specify if previous orders should be stopped
 	void orderSimple(u8 orderId, bool stopPreviousOrders);
