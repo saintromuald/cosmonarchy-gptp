@@ -7,18 +7,18 @@ struct Placeholder {
 	u8 unit_id;
 	u8 priority;
 	b8 should_request;
-	b8 is_placeholder;
+	b8 was_preplaced;
+	u16 wait_build_start_count;
 };
 
-#define PlaceholderLimit 1024
+#define PlaceholderLimit 512
 
 struct BaseLayouts {
 	AiTown* town;
-	u32 units_count;
-	bool units_requested[PlaceholderLimit];
-	Placeholder units[PlaceholderLimit];
-	u32 placeholder_request_count[UnitId::Count];
-	u32 request_count[UnitId::Count];
+	u32 placeholders_count;
+	bool placeholders_requested[PlaceholderLimit];
+	Placeholder placeholders[PlaceholderLimit];
+	u32 request_count[UnitId::Count]; // First used to set wait_build_start_count, then used to track request counts
 };
 
 void tick_base_layouts();
