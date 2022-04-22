@@ -4,77 +4,42 @@
 
 namespace hooks
 {
-
 	void orders_BuildingLand(Unit* unit)
 	{
-
 		Target unitTarget;
-		unitTarget.unit = unit->orderTarget.unit;	//[ebp-04]
-		unitTarget.pt = unit->orderTarget.pt;		//[ebp-08]
-
+		unitTarget.unit = unit->orderTarget.unit;
+		unitTarget.pt = unit->orderTarget.pt;
 		Point16 coords;
-		coords.x = 0;	//[ebp-10]
-		coords.y = 0;	//[ebp-0e]
-
+		coords.x = 0;
+		coords.y = 0;
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-
 			unit->userActionFlags |= 1;
-
 			if (unit->mainOrderId != OrderId::Die)
 			{
-
 				bool bLoopBreak = false;
-
-				//643B0
-				while (unit->orderQueueTail != nullptr && !bLoopBreak)
+				while (unit->orderQueueTail != nullptr && !bLoopBreak) // 004643B0
 				{
-
 					bLoopBreak =
 						!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
 						(unit->orderQueueTail->orderId != OrderId::BuildingLiftoff);
-
-					if (!bLoopBreak)
+					if (!bLoopBreak) {
 						helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
-
+					}
 				}
-
-				//643D3:
-				unit->performAnotherOrder(
-					OrderId::BuildingLiftoff,
-					coords.x,
-					coords.y,
-					nullptr,
-					0
-				);
-
-			} //if( (unit->mainOrderId != OrderId::Die) )
-
-			//643E8
-			prepareForNextOrder(unit);
-
+				unit->performAnotherOrder(OrderId::BuildingLiftoff, coords.x, coords.y,	nullptr, 0); // 004643D3:
+			}
+			prepareForNextOrder(unit); // 004643E8
 			if (unit->mainOrderId != OrderId::Die)
 			{
-
 				while (unit->orderQueueTail != nullptr && unit->orderQueueTail->orderId == OrderId::BuildingLand)
+				{
 					helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
-
-				//6440A:
-				unit->performAnotherOrder(
-					OrderId::BuildingLand,
-					unitTarget.pt.x,
-					unitTarget.pt.y,
-					unitTarget.unit,
-					UnitId::None
-				);
-
+				}
+				unit->performAnotherOrder(OrderId::BuildingLand, unitTarget.pt.x, unitTarget.pt.y, unitTarget.unit, UnitId::None); // 0046440A:
 			}
-
-			//64422
-			unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
-
-		} //if( !(unit->status & UnitStatus::GroundedBuilding) )
-
+			unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false); // 00464422
+		}
 		else
 			//64450
 			if (unit->mainOrderState == 0)
