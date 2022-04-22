@@ -358,6 +358,8 @@ namespace hooks
 
 	void AI_Burrower(Unit* a1)
 	{
+		return; // Disable idle burrowing
+
 		if (units_dat::BaseProperty[a1->id] & UnitProperty::Burrowable)
 		{
 			if (!(a1->status & UnitStatus::Burrowed) && a1->id != UnitId::ZergDroleth)
