@@ -183,26 +183,28 @@ namespace hooks
         }
 
         s32 workers = 0;
+        s32 men = 0;
         for (Unit* unit = firstPlayerUnit->unit[*LOCAL_NATION_ID]; unit; unit = unit->player_link.next) {
             if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
                 workers += 2;
+            } else if (units_dat::GroupFlags[unit->id].isMen) {
+                men += 2;
             }
         }
 
-        s32 total = unitsProduced[*LOCAL_NATION_ID] * 2 - workers;
         if (playerTable[activePlayer].race == RaceId::Zerg)
         {
-            helper::showSupplyInfo(dialogVar, 4, workers, total);
+            helper::showSupplyInfo(dialogVar, 4, workers, men);
             dialogVar = dialogVar->next;
         }
         else if (playerTable[activePlayer].race == RaceId::Terran)
         {
-            helper::showSupplyInfo(dialogVar, 5, workers, total);
+            helper::showSupplyInfo(dialogVar, 5, workers, men);
             dialogVar = dialogVar->next;
         }
         else if (playerTable[activePlayer].race == RaceId::Protoss)
         {
-            helper::showSupplyInfo(dialogVar, 6, workers, total);
+            helper::showSupplyInfo(dialogVar, 6, workers, men);
             dialogVar = dialogVar->next;
         }
 

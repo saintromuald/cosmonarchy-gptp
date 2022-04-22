@@ -8,6 +8,9 @@ static void add_base_layout(Unit* unit, u32 player) {
 	layout.position = unit->position;
 	layout.unit_id = unit->id;
 	layout.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
+	if (unit->status & UnitStatus::IsHallucination) {
+		layout.is_placeholder = true;
+	}
 	if (!(unit->status & UnitStatus::Invincible)) {
 		layout.should_request = true;
 	}
@@ -38,6 +41,8 @@ static void init_base_layouts() {
 			if (unit->status & UnitStatus::IsHallucination) {
 				unit->userActionFlags |= 0x4;
 				unit->remove();
+			} else {
+				unit->status &= ~UnitStatus::Invincible;
 			}
 			continue;
 		}
@@ -55,6 +60,8 @@ static void init_base_layouts() {
 		if (unit->status & UnitStatus::IsHallucination) {
 			unit->userActionFlags |= 0x4;
 			unit->remove();
+		} else {
+			unit->status &= ~UnitStatus::Invincible;
 		}
 	}
 }
@@ -119,6 +126,35 @@ static void set_guard(BaseLayouts* base_layouts, AiTown* town, BaseLayout* base_
 	scbw::sendGPTP_aise_cmd((Unit*)base_layout, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
 }
 
+static b32 is_tech_unitid(u32 unit_id) {
+	if (!units_dat::GroupFlags[unit_id].isBuilding) {
+		return false;
+	}
+	if (units_dat::GroupFlags[unit_id].isFactory) {
+		return false;
+	}
+	if (units_dat::BaseProperty[unit_id] & UnitProperty::Attack) {
+		return false;
+	}
+	if (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) {
+		return false;
+	}
+	if (scbw::unitIdIsResource(unit_id, true)) {
+		return false;
+	}
+	if (unit_id == UnitId::TerranSupplyDepot || unit_id == UnitId::TerranBunker || unit_id == UnitId::TerranTreasury) {
+		return false;
+	}
+	if (unit_id == UnitId::ProtossPylon || unit_id == UnitId::ProtossShieldBattery ||
+		unit_id == UnitId::ProtossCrucible || unit_id == UnitId::ProtossPennant) {
+		return false;
+	}
+	if (unit_id == UnitId::ZergCreepColony || unit_id == UnitId::ZergNydusCanal) {
+		return false;
+	}
+	return true;
+}
+
 static void set_base_layout(BaseLayouts* base_layouts, AiTown* town, BaseLayout* base_layout) {
 	u32 equivalent = find_unit_equivalent(base_layout->unit_id);
 	if (equivalent != UnitId::None) {
@@ -128,7 +164,12 @@ static void set_base_layout(BaseLayouts* base_layouts, AiTown* town, BaseLayout*
 	}
 	scbw::sendGPTP_aise_cmd((Unit*)base_layout, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
 	if (base_layout->should_request) {
-		helper::Ai_Build(base_layout->unit_id, false, ++base_layouts->request_count[base_layout->unit_id], town, base_layout->priority);
+		u32 count = ++base_layouts->preplaced_request_count[base_layout->unit_id];
+		if (base_layout->is_placeholder) {
+			count = ++base_layouts->request_count[base_layout->unit_id];
+		}
+		b32 only_if_needed = is_tech_unitid(base_layout->unit_id);
+		helper::Ai_Build(base_layout->unit_id, only_if_needed, count, town, base_layout->priority);
 	}
 }
 
@@ -150,6 +191,7 @@ void tick_base_layouts() {
 		if (town->inited && !town->resareaNotSet && !active_base_layouts[town->resarea]) {
 			BaseLayouts* base_layouts = &all_base_layouts[town->player][town->resarea];
 			base_layouts->town = town;
+			memset(base_layouts->preplaced_request_count, 0, sizeof(base_layouts->preplaced_request_count));
 			memset(base_layouts->request_count, 0, sizeof(base_layouts->request_count));
 			active_base_layouts[town->resarea] = base_layouts;
 			for (u32 j = 0; j < base_layouts->units_count; ++j) {
