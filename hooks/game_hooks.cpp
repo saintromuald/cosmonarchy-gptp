@@ -261,6 +261,7 @@ namespace hooks
 			if (reveal_flag)
 			{
 				// Explore map
+				/*
 				for (u32 x = 0; x < mapTileSize->width; x++)
 				{
 					for (u32 y = 0; y < mapTileSize->height; y++)
@@ -269,6 +270,7 @@ namespace hooks
 						tile.exploredFlags &= ~reveal_flag;
 					}
 				}
+				*/
 
 				// Reveal resources
 				for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
