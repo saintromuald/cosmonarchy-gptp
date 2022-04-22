@@ -118,6 +118,9 @@ static b32 is_tech_unitid(u32 unit_id) {
 
 static u32 get_unit_class(u32 unit_id) {
 	if (unit_id == UnitId::ProtossPylon) {
+		return 3;
+	}
+	if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Building)) {
 		return 2;
 	}
 	if (units_dat::GroupFlags[unit_id].isFactory || is_tech_unitid(unit_id)) {
