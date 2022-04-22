@@ -6,7 +6,7 @@
 namespace hooks
 {
 	// the transport is "unit", the target is "unitToLoad"
-	void loadUnitProc(Unit* unit, Unit* unitToLoad)
+	void loadUnitProc(Unit* transport, Unit* cargo_unit)
 	{
 		u8 unitRaceId;
 		u32 loaded_index;
@@ -25,26 +25,26 @@ namespace hooks
 		static u32* u32_0x006BEE84 = (u32*)(0x006BEE84);
 		static u32* u32_0x006BEE8C = (u32*)(0x006BEE8C);
 
-		if (units_dat::SpaceProvided[unit->id] != 0)
+		if (units_dat::SpaceProvided[transport->id] != 0)
 		{
 			for (;;)
 			{
-				u32* loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
+				u32* loadedUnitOffset = (u32*)&transport->loadedUnit[counter];
 				if (*loadedUnitOffset == 0 ||
-					unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev == nullptr)
+					unitTable_0059CB64[transport->loadedUnit[counter].index].link.prev == nullptr)
 				{
 					break;
 				}
 
-				Unit* current_loaded_unit = (Unit*)&(unitTable_0059CB58[unit->loadedUnit[counter].index]);
+				Unit* current_loaded_unit = (Unit*)&(unitTable_0059CB58[transport->loadedUnit[counter].index]);
 				if ((current_loaded_unit->mainOrderId == OrderId::Die && current_loaded_unit->mainOrderState == 1) ||
-					current_loaded_unit->targetOrderSpecial != unit->loadedUnit[counter].unitId)
+					current_loaded_unit->targetOrderSpecial != transport->loadedUnit[counter].unitId)
 				{
 					break;
 				}
 
 				counter++;
-				if (counter >= units_dat::SpaceProvided[unit->id])
+				if (counter >= units_dat::SpaceProvided[transport->id])
 				{
 					break;
 				}
@@ -52,15 +52,15 @@ namespace hooks
 		}
 		
 		// 004E7952
-		if (units_dat::GroupFlags[unit->id].isZerg)
+		if (units_dat::GroupFlags[transport->id].isZerg)
 		{
 			unitRaceId = RaceId::Zerg;
 		}
-		else if (units_dat::GroupFlags[unit->id].isProtoss)
+		else if (units_dat::GroupFlags[transport->id].isProtoss)
 		{
 			unitRaceId = RaceId::Protoss;
 		}
-		else if (units_dat::GroupFlags[unit->id].isTerran)
+		else if (units_dat::GroupFlags[transport->id].isTerran)
 		{
 			unitRaceId = RaceId::Terran;
 		}
@@ -69,15 +69,15 @@ namespace hooks
 			unitRaceId = RaceId::Neutral;
 		}
 
-		scbw::decloakProc(unit);
-		scbw::decloakProc(unitToLoad);
-		helper::playSoundFromSource(SoundId::Misc_ZOvTra00_wav + unitRaceId, unit, 1, 0);
-		if (unitToLoad->id == UnitId::TerranMason)
+		scbw::decloakProc(transport);
+		scbw::decloakProc(cargo_unit);
+		helper::playSoundFromSource(SoundId::Misc_ZOvTra00_wav + unitRaceId, transport, 1, 0);
+		if (cargo_unit->id == UnitId::TerranMason)
 		{
-			if (unitToLoad->pAI != nullptr)
+			if (cargo_unit->pAI != nullptr)
 			{
-				u32* pAI_0x14 = (u32*)((u32)unitToLoad->pAI + 0x14);
-				if (*pAI_0x14 == (u32)unitToLoad)
+				u32* pAI_0x14 = (u32*)((u32)cargo_unit->pAI + 0x14);
+				if (*pAI_0x14 == (u32)cargo_unit)
 				{
 					*pAI_0x14 = NULL;
 				}
@@ -94,7 +94,7 @@ namespace hooks
 		__asm
 		{
 			PUSHAD
-			MOV ECX, unitToLoad
+			MOV ECX, cargo_unit
 			SUB ECX, new_table
 			MOV EAX, 0x86186187
 			MUL ECX
@@ -107,7 +107,7 @@ namespace hooks
 			POPAD
 		}
 
-		unitToLoad->connectedUnit = unit;
+		cargo_unit->connectedUnit = transport;
 
 		/*
 		s32 unit_array_length = UNIT_ARRAY_LENGTH;
@@ -119,93 +119,93 @@ namespace hooks
 
 		if (loaded_index < UNIT_ARRAY_LENGTH)
 		{
-			unit->loadedUnit[counter].index = loaded_index;
-			unit->loadedUnit[counter].unitId = unitToLoad->targetOrderSpecial;
+			transport->loadedUnit[counter].index = loaded_index;
+			transport->loadedUnit[counter].unitId = cargo_unit->targetOrderSpecial;
 		}
 		else
 		{
-			unit->loadedUnit[counter].index = 0;
-			unit->loadedUnit[counter].unitId = 0;
+			transport->loadedUnit[counter].index = 0;
+			transport->loadedUnit[counter].unitId = 0;
 		}
 
-		// TODO: revisit those, seems like it should be unitToLoad
-		if (unit->id == UnitId::ZergCreepColony
-			|| unit->id == UnitId::ZergSunkenColony
-			|| unit->id == UnitId::ZergSporeColony
-			|| unit->id == UnitId::ZergLarvalColony)
+		// TODO: revisit those, seems like it should be cargo_unit
+		if (transport->id == UnitId::ZergCreepColony
+			|| transport->id == UnitId::ZergSunkenColony
+			|| transport->id == UnitId::ZergSporeColony
+			|| transport->id == UnitId::ZergLarvalColony)
 		{
 			// TODO: inform creep about missing colony?
 		}
-		else if (unit->id == UnitId::ProtossPylon)
+		else if (transport->id == UnitId::ProtossPylon)
 		{
 			// TODO: enable nearby disabled structures, update energy sprite position
 		}
-		else if (unit->id == UnitId::TerranBunker)
+		else if (transport->id == UnitId::TerranBunker)
 		{
 			for (s32 i = 0; i < 8; i++)
 			{
-				Unit* cargoUnit = unit->getLoadedUnit(i);
+				Unit* cargoUnit = transport->getLoadedUnit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: disable cargo units
 //				scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
 			}
 		}
-		unitToLoad->status |= UnitStatus::InTransport;
-		helper::hideAndDisableUnit(unitToLoad);
-		unitToLoad->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
+		cargo_unit->status |= UnitStatus::InTransport;
+		helper::hideAndDisableUnit(cargo_unit);
+		cargo_unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
 
-		if (unit->id == UnitId::TerranBunker)
+		if (transport->id == UnitId::TerranBunker)
 		{
 			for (s32 i = 0; i < 8; i++)
 			{
-				Unit* cargoUnit = unit->getLoadedUnit(i);
+				Unit* cargoUnit = transport->getLoadedUnit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: Disable cargo units
 			}
 		}
 
-		if (unit->playerId == 11)
+		if (transport->playerId == 11)
 		{
-			UnitExt* unitExt = globals.GetUnitExt(unit);
+			UnitExt* unitExt = globals.GetUnitExt(transport);
 			unitExt->values[ValueIsNeutralBunker] = 1;
-			unit->giveTo(unitToLoad->playerId);
+			transport->giveTo(cargo_unit->playerId);
 		}		
 
 		scbw::refreshConsole();
-		if (unit->status & UnitStatus::GroundedBuilding)
+		if (transport->status & UnitStatus::GroundedBuilding)
 		{
-			unitToLoad->status = (unitToLoad->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
-			if (unitToLoad->path != nullptr)
+			cargo_unit->status = (cargo_unit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
+			if (cargo_unit->path != nullptr)
 			{
-				u32* path_0x4 = (u32*)((u32)unitToLoad->path + 4);
-				*path_0x4 = ((u32)unitToLoad->path - *u32_0x006BEE8C) / 128 + 1;
+				u32* path_0x4 = (u32*)((u32)cargo_unit->path + 4);
+				*path_0x4 = ((u32)cargo_unit->path - *u32_0x006BEE8C) / 128 + 1;
 				if (*u32_0x006BEE84 == 0)
 				{
-					unitToLoad->path = nullptr;
+					cargo_unit->path = nullptr;
 				}
 				else
 				{
-					unitToLoad->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
+					cargo_unit->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
 				}
-				*u32_0x006BEE84 = (u32)unitToLoad->path;
-				unitToLoad->path = nullptr;
+				*u32_0x006BEE84 = (u32)cargo_unit->path;
+				cargo_unit->path = nullptr;
 			}
 
 			// 004E7A81
-			unitToLoad->movementState = 0;
-			if (unitToLoad->sprite->elevationLevel < 12)
+			cargo_unit->movementState = 0;
+			if (cargo_unit->sprite->elevationLevel < 12)
 			{
-				unitToLoad->pathingFlags |= 1;
+				cargo_unit->pathingFlags |= 1;
 			}
 			else
 			{
-				unitToLoad->pathingFlags &= ~1;
+				cargo_unit->pathingFlags &= ~1;
 			}
-			if (unitToLoad->subunit != nullptr
-				&& units_dat::BaseProperty[unitToLoad->subunit->id] & UnitProperty::Subunit)
+			if (cargo_unit->subunit != nullptr
+				&& units_dat::BaseProperty[cargo_unit->subunit->id] & UnitProperty::Subunit)
 			{
-				Unit* subUnit = unitToLoad->subunit;
-				scbw::setUnitPosition(subUnit, unit->sprite->position.x, unit->sprite->position.y);
+				Unit* subUnit = cargo_unit->subunit;
+				scbw::setUnitPosition(subUnit, transport->sprite->position.x, transport->sprite->position.y);
 				subUnit->status = (subUnit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
 				if (subUnit->path != nullptr)
 				{
@@ -236,7 +236,7 @@ namespace hooks
 			}
 			else // 004E7B51
 			{
-				scbw::setUnitPosition(unitToLoad, unit->sprite->position.x, unit->sprite->position.y);
+				scbw::setUnitPosition(cargo_unit, transport->sprite->position.x, transport->sprite->position.y);
 			}
 		}
 	}
