@@ -99,7 +99,6 @@ namespace hooks
 				switch (unitId)
 				{
 					case UnitId::TerranCommandCenter:
-					case UnitId::TerranSupplyDepot:
 					case UnitId::TerranReservoir:
 					case UnitId::TerranWatchdog:
 					case UnitId::TerranBunker:
