@@ -179,12 +179,6 @@ static void init_base_layouts() {
 	memset(local_base_layouts, 0, sizeof(local_base_layouts));
 	memset(active_base_layouts, 0, sizeof(active_base_layouts));
 
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		for (u32 j = 0; j < ResAreaLimit; ++j) {
-			local_base_layouts[i][j].resarea_pos = resource_areas->areas[j].pos;
-		}
-	}
-
 	Unit* next = 0;
 	for (Unit* unit = *firstVisibleUnit; unit; unit = next) {
 		next = unit->link.next;
@@ -222,6 +216,7 @@ static void init_base_layouts() {
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		for (u32 j = 0; j < ResAreaLimit; ++j) {
 			BaseLayouts* base_layouts = &local_base_layouts[i][j];
+			base_layouts->resarea_pos = resource_areas->areas[j].pos;
 			sort_base_layouts(base_layouts);
 		}
 	}
