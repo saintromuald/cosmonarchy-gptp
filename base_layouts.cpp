@@ -221,7 +221,7 @@ static void init_base_layouts() {
 }
 
 static u32 has_down_equivalent(u32 player, u32 unit_id) {
-	Equivalent equivalent = find_unit_equivalent_up(unit_id);
+	Equivalent equivalent = find_unit_equivalent_down(unit_id);
 	if (equivalent.to != UnitId::None) {
 		return Player::numberOfUnitsOfType(player, equivalent.to);
 	}
