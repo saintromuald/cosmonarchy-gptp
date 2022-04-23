@@ -7,22 +7,23 @@ static BaseLayouts* active_base_layouts[ResAreaLimit];
 struct Equivalent {
 	u32 from;
 	u32 to;
+	u32 priority_decrease;
 };
 
 Equivalent equivalents[] = {
-	{UnitId::ZergHatchery, UnitId::ZergLair},
-	{UnitId::ZergLair, UnitId::ZergHive},
-	{UnitId::ZergHive, UnitId::ZergSire},
+	{UnitId::ZergHatchery, UnitId::ZergLair, 1},
+	{UnitId::ZergLair, UnitId::ZergHive, 1},
+	{UnitId::ZergHive, UnitId::ZergSire, 1},
 
-	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform},
-	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor},
+	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 3},
+	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor, 3},
 
-	{UnitId::ZergQuazrokPool, UnitId::ZergLiivralPond},
-	{UnitId::ZergHydrokDen, UnitId::ZergGorgralSwamp},
-	{UnitId::ZergMuthrokSpire, UnitId::ZergVithrathHaunt},
-	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre},
-	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern},
-	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm},
+	{UnitId::ZergQuazrokPool, UnitId::ZergLiivralPond, 1},
+	{UnitId::ZergHydrokDen, UnitId::ZergGorgralSwamp, 1},
+	{UnitId::ZergMuthrokSpire, UnitId::ZergVithrathHaunt, 1},
+	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre, 1},
+	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern, 1},
+	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, 1},
 
 	{UnitId::ZergCreepColony, UnitId::ZergSunkenColony},
 	{UnitId::ZergCreepColony, UnitId::ZergSporeColony},
@@ -45,32 +46,43 @@ Equivalent equivalents[] = {
 	{UnitId::ProtossCantavis, UnitId::ProtossAugur},
 };
 
-u32 find_unit_equivalent(u32 unit_id) {
+static Equivalent find_unit_equivalent_down(u32 unit_id) {
 	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
 		if (unit_id == equivalents[i].to) {
-			return equivalents[i].from;
+			return equivalents[i];
 		}
 	}
-	return UnitId::None;
+	return {UnitId::None, UnitId::None, 0};
 }
 
-static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder placeholder, u32 unit_id) {
-	u32 equivalent = find_unit_equivalent(unit_id);
-	if (equivalent != UnitId::None) {
-		add_placeholder_by_unit_id(base_layouts, placeholder, equivalent);
+static Equivalent find_unit_equivalent_up(u32 unit_id) {
+	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
+		if (unit_id == equivalents[i].from) {
+			return equivalents[i];
+		}
+	}
+	return {UnitId::None, UnitId::None, 0};
+}
+
+static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* placeholder, u32 unit_id) {
+	Equivalent equivalent = find_unit_equivalent_down(unit_id);
+	if (equivalent.from != UnitId::None) {
+		add_placeholder_by_unit_id(base_layouts, placeholder, equivalent.from);
 	}
 
 	for (u32 i = 0; i < base_layouts->placeholders_count; ++i) {
 		Placeholder* other = &base_layouts->placeholders[i];
-		if (unit_id == base_layouts->placeholders[i].unit_id && placeholder.position.x == other->position.x && placeholder.position.y == other->position.y) {
+		if (unit_id == base_layouts->placeholders[i].unit_id &&
+			placeholder->position.x == other->position.x && placeholder->position.y == other->position.y) {
 			return;
 		}
 	}
 
-	placeholder.unit_id = unit_id;
+	placeholder->unit_id = unit_id;
 	if (base_layouts->placeholders_count < PlaceholderLimit) {
-		base_layouts->placeholders[base_layouts->placeholders_count++] = placeholder;
+		base_layouts->placeholders[base_layouts->placeholders_count++] = *placeholder;
 	}
+	placeholder->priority -= equivalent.priority_decrease;
 }
 
 static void add_placeholder(Unit* unit, u32 player) {
@@ -83,7 +95,7 @@ static void add_placeholder(Unit* unit, u32 player) {
 
 	u32 res_area = scbw::get_closest_resarea(unit->position);
 	BaseLayouts* base_layouts = &all_base_layouts[player][res_area];
-	add_placeholder_by_unit_id(base_layouts, placeholder, unit->id);
+	add_placeholder_by_unit_id(base_layouts, &placeholder, unit->id);
 }
 
 static b32 is_tech_unitid(u32 unit_id) {
@@ -208,12 +220,35 @@ static void init_base_layouts() {
 	}
 }
 
-bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder) {
+static u32 has_down_equivalent(u32 player, u32 unit_id) {
+	Equivalent equivalent = find_unit_equivalent_up(unit_id);
+	if (equivalent.to != UnitId::None) {
+		return Player::numberOfUnitsOfType(player, equivalent.to);
+	}
+	return true;
+}
+
+static u32 number_of_equivalents_up(u32 player, u32 unit_id) {
+	u32 i = Player::numberOfUnitsOfType(player, unit_id);
+	if (unit_id == UnitId::ZergCreepColony) {
+		i += number_of_equivalents_up(player, UnitId::ZergSunkenColony);
+		i += number_of_equivalents_up(player, UnitId::ZergSporeColony);
+		i += number_of_equivalents_up(player, UnitId::ZergLarvalColony);
+	} else {
+		Equivalent equivalent = find_unit_equivalent_up(unit_id);
+		if (equivalent.to != UnitId::None) {
+			i += number_of_equivalents_up(player, equivalent.to);
+		}
+	}
+	return i;
+}
+
+static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder) {
 	AiTown* town = base_layouts->town;
 	if (!hooks::createUnitIdAllowed(placeholder->unit_id, town->player)) {
 		return false;
 	}
-	if (Player::numberOfUnitsOfType(town->player, placeholder->unit_id) < placeholder->wait_build_start_count) {
+	if (number_of_equivalents_up(town->player, placeholder->unit_id) < placeholder->wait_build_start_count) {
 		return false;
 	}
 	if (!town->mainBuilding && units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
@@ -222,6 +257,12 @@ bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder) 
 			placeholder->unit_id != UnitId::ZergHatchery) {
 			return false;
 		}
+	}
+	if (units_dat::GasCost[placeholder->unit_id] > resources->gas[town->player] &&
+		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::TerranReservoir) &&
+		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ProtossAquifer) &&
+		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ZergExtractor)) {
+		return false;
 	}
 	return true;
 }
@@ -251,6 +292,12 @@ void tick_base_layouts() {
 					} else {
 						scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
 					}
+				}
+				if (base_layouts->placeholders_requested[j] &&
+					units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
+					has_down_equivalent(town->player, placeholder->unit_id) &&
+					number_of_equivalents_up(town->player, placeholder->unit_id) <= placeholder->wait_build_start_count) {
+					break;
 				}
 			}
 		}
