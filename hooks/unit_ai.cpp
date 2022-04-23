@@ -259,6 +259,8 @@ namespace hooks
 						town->gasBuildings[0] = 0;
 						town->gasBuildings[1] = 0;
 						town->gasBuildings[2] = 0;
+
+						unit->orderTo(OrderId::Move, town->position.x, town->position.y);
 					}
 				}
 			}
