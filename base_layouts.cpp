@@ -247,8 +247,7 @@ void tick_base_layouts() {
 					base_layouts->placeholders_requested[j] = true;
 					u32 count = ++base_layouts->request_count[placeholder->unit_id];
 					if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
-						b32 only_if_needed = is_tech_unitid(placeholder->unit_id);
-						helper::Ai_Build(placeholder->unit_id, only_if_needed, only_if_needed ? 1 : count, town, placeholder->priority);
+						helper::Ai_Build(placeholder->unit_id, false, count, town, placeholder->priority);
 					} else {
 						scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
 					}
