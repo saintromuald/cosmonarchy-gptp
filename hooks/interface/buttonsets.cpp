@@ -1125,11 +1125,6 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranTreasury &&  // Treasury Expanded Storage passive 
-								current_button->iconID == IconId::ApolloReactor)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
 							else if ((*activePortraitUnit)->id == UnitId::TerranIonCannon &&  // Ion Cannon Ion Field passive 
 								current_button->iconID == IconId::Optical_Flare)
 							{
@@ -1282,11 +1277,6 @@ namespace hooks
 							current_button->iconID == IconId::Argus_Jewel)
 							{
 							current_button_state = BUTTON_STATE::Enabled;
-							}
-							else if ((*activePortraitUnit)->id == UnitId::ProtossPylon &&  // Pylon Warp Matrix passive
-								current_button->iconID == IconId::KhaydarinCore)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
 							}
 							else if ((*activePortraitUnit)->id == UnitId::ProtossCrucible &&  // Crucible Khaydarin Charge passive
 								current_button->iconID == IconId::KhaydarinCore)
