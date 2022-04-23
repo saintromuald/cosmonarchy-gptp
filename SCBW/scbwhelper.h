@@ -1161,4 +1161,5 @@ namespace helper
 	u32 ai_defend_region(AiRegion* military_region, s32 defense_region, s32 against_air, s32 region_strength); // 0043F100
 	s32 AI_AddBaseUnitSpendingRequest(s32 final_unit_id, s8 player_id, AiRegion* region, u8 priority); // 004484A0
 
+	bool unit_has_power(u32 id, u32 x, u32 y, u32 player);
 }

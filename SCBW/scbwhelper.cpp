@@ -10796,4 +10796,20 @@ namespace helper
 		}
 		return result;
 	}
+
+	bool unit_has_power(u32 id, u32 x, u32 y, u32 player) {
+		static bool result;
+		const u32 func_address = 0x004936B0;
+		__asm {
+			PUSHAD
+			PUSH player
+			PUSH y
+			PUSH x
+			MOV EAX, id
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

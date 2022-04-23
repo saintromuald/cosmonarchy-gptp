@@ -89,9 +89,7 @@ static void add_placeholder(Unit* unit, u32 player) {
 	Placeholder placeholder = {};
 	placeholder.position = unit->position;
 	placeholder.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
-	if (!(unit->status & UnitStatus::Invincible)) {
-		placeholder.should_request = true;
-	}
+	placeholder.should_request = true;
 
 	u32 res_area = scbw::get_closest_resarea(unit->position);
 	BaseLayouts* base_layouts = &all_base_layouts[player][res_area];
@@ -243,6 +241,22 @@ static u32 number_of_equivalents_up(u32 player, u32 unit_id) {
 	return i;
 }
 
+static bool unit_has_creep(u32 unit_id, u32 x, u32 y, u32 player) {
+	Box32 area = {};
+	area.w = units_dat::BuildingDimensions[unit_id].x;
+	area.h = units_dat::BuildingDimensions[unit_id].y;
+	area.x = x - area.w / 2;
+	area.y = y - area.h / 2;
+	for (u32 xx = 0; xx < area.w / 32; ++xx) {
+		for (u32 yy = 0; yy < area.h / 32; ++yy) {
+			if (!scbw::getActiveTileAt(area.x + xx * 32, area.y + yy * 32).hasCreep) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder) {
 	AiTown* town = base_layouts->town;
 	if (!hooks::createUnitIdAllowed(placeholder->unit_id, town->player)) {
@@ -262,6 +276,14 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::TerranReservoir) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ProtossAquifer) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ZergExtractor)) {
+		return false;
+	}
+	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::CreepBuilding &&
+		!unit_has_creep(placeholder->unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
+		return false;
+	}
+	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::RequiredPsi &&
+		!helper::unit_has_power(placeholder->unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
 		return false;
 	}
 	return true;
@@ -297,6 +319,7 @@ void tick_base_layouts() {
 					units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
 					has_down_equivalent(town->player, placeholder->unit_id) &&
 					number_of_equivalents_up(town->player, placeholder->unit_id) <= placeholder->wait_build_start_count) {
+					// Lock adding new request until this request is started
 					break;
 				}
 			}
