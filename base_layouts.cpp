@@ -138,7 +138,7 @@ static int compare_base_layout(void* context, const void* a, const void* b) {
 	Placeholder* pa = (Placeholder*)a;
 	Placeholder* pb = (Placeholder*)b;
 
-	s32 priority_diff = get_unit_class(pb->priority) - get_unit_class(pa->priority);
+	s32 priority_diff = pb->priority - pa->priority;
 	if (priority_diff) return priority_diff;
 
 	s32 class_diff = get_unit_class(pb->unit_id) - get_unit_class(pa->unit_id);
