@@ -69,7 +69,6 @@ static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder pl
 
 	placeholder.unit_id = unit_id;
 	if (base_layouts->placeholders_count < PlaceholderLimit) {
-		placeholder.wait_build_start_count = base_layouts->request_count[unit_id]++;
 		base_layouts->placeholders[base_layouts->placeholders_count++] = placeholder;
 	}
 }
@@ -199,7 +198,12 @@ static void init_base_layouts() {
 
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		for (u32 j = 0; j < ResAreaLimit; ++j) {
-			qsort_s(all_base_layouts[i][j].placeholders, all_base_layouts[i][j].placeholders_count, sizeof(Placeholder), compare_base_layout, &all_base_layouts[i][j]);
+			BaseLayouts* base_layouts = &all_base_layouts[i][j];
+			qsort_s(base_layouts->placeholders, base_layouts->placeholders_count, sizeof(Placeholder), compare_base_layout, base_layouts);
+			for (u32 k = 0; k < base_layouts->placeholders_count; ++k) {
+				Placeholder* placeholder = &base_layouts->placeholders[k];
+				placeholder->wait_build_start_count = base_layouts->request_count[placeholder->unit_id]++;
+			}
 		}
 	}
 }
