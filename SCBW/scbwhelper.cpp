@@ -10824,4 +10824,18 @@ namespace helper
 			POPAD
 		}
 	}
+
+	vectorHead* play_sound_from_file(const char* filename, char* unused) {
+		static vectorHead* result;
+		const u32 func_address = 0x004BC490;
+		__asm {
+			PUSHAD
+			MOV EAX, filename
+			MOV EDI, unused
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

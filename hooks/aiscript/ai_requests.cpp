@@ -765,7 +765,7 @@ LABEL_36:
 						witness_supply_cost = units_dat::SupplyRequired[UnitId::ProtossWitness];
 						if (units_dat::BaseProperty[UnitId::ProtossWitness] & UnitProperty::TwoUnitsIn1Egg)
 						{
-							witness_supply_cost = 2 * units_dat::SupplyRequired[84];
+							witness_supply_cost = 2 * units_dat::SupplyRequired[UnitId::ProtossWitness];
 						}
 						AIScriptController[player_id].mineralCollection += units_dat::MineralCost[UnitId::ProtossWitness];
 						AIScriptController[player_id].gasCollection += witness_gas_cost;

@@ -1164,4 +1164,5 @@ namespace helper
 	bool unit_has_power(u32 id, u32 x, u32 y, u32 player);
 
 	void playSoundGlobal(u32 id); // 004BC2C0
+	vectorHead* play_sound_from_file(const char* filename, char* unused); // 004BC490
 }
