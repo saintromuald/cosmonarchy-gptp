@@ -78,7 +78,7 @@ namespace hooks
 							s32 targetQueueCostGas = units_dat::GasCost[targetUnitQueue2];
 							AIMineralsReserve[playerIdVar] = targetQueueCostMinerals;
 							AIGasReserve[playerIdVar] = targetQueueCostGas;
-							if (helper::hasSuppliesForUnit(playerId, targetUnitQueue, 1))
+							if (helper::hasSuppliesForUnit(targetUnitQueue, playerId, 1))
 							{
 								if (gameMinerals[(u8)playerId] >= (s32)AIMineralsReserve[(u8)playerId])
 								{

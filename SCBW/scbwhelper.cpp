@@ -5300,6 +5300,8 @@ namespace helper
 
 	bool hasSuppliesForUnit(u32 unitId, u32 playerId, b32 canShowErrorMessage)
 	{
+		return 1; // Supply was removed
+
 		const u32 Func_hasSuppliesForUnit = 0x0042CF70;
 		static b32 bPreResult;
 		__asm

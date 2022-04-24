@@ -153,6 +153,7 @@ namespace
 		}
 	}
 }
+
 BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 {
 	LoadConfig();
