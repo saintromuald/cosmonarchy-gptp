@@ -219,26 +219,7 @@ namespace hooks
 		// Map Features
 		if (*elapsedTimeFrames == 1)
 		{
-			// Check forces
-			bool randomize_all_colors = false;
-			for (u32 i = 0; i < 4; i++)
-			{
-				if (playerForceFlags[i].randomize_start_locations)
-				{
-					randomize_all_colors = true;
-					break;
-				}
-			}
-
-			// Randomize Player Colors, requires randomize start locations ticked for any force
-			if (randomize_all_colors)
-			{
-				LoadMeleePlayerColors();
-			}
-			else
-			{
-				LoadDefaultPlayerColors();
-			}
+			load_player_colors();
 		}
 		if (*elapsedTimeFrames == 2)
 		{

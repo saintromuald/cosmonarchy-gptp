@@ -421,15 +421,14 @@ std::vector<std::vector<std::vector<u32>>> personalityColors =
 	},
 };
 
-#define COLOR_SET_COUNT 256
-#define MINIMAP_COLOR_COUNT (COLOR_SET_COUNT * TilesetType::Count)
-#define UNIT_COLOR_COUNT 2048
+#define ColorSetCount 256
+#define MinimapColorCount (ColorSetCount * TilesetType::Count)
+#define UnitColorCount 2048
 
-extern u8 tminimapColors[MINIMAP_COLOR_COUNT];
-extern u8 tunitColors[UNIT_COLOR_COUNT];
-extern u8 playerColorList[PLAYABLE_PLAYER_COUNT];
+extern u8 tminimap_colors[MinimapColorCount];
+extern u8 tunit_colors[UnitColorCount];
+extern u8 player_color_list[PLAYABLE_PLAYER_COUNT];
 
-// those 2 are mutually exclusive
-void SetPlayerColor(u32 playerId, u32 color);
-void LoadMeleePlayerColors();
-void LoadDefaultPlayerColors();
+void set_player_color(u32 player, u32 color);
+void load_color_tables();
+void load_player_colors();

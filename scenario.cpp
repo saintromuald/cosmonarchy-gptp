@@ -1496,7 +1496,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				unit_deaths[UnitId::Spell_DisruptionWeb].player[player] = fraud_spawn.frauds[next_fraud][race].personality;
 				unit_deaths[UnitId::ProtossPlasmaShell].player[player] = fraud_spawn.frauds[next_fraud][race].build_type;
 				unit_deaths[UnitId::Spell_DarkSwarm].player[player] = fraud_spawn.frauds[next_fraud][race].build_order;
-				SetPlayerColor(player, fraud_spawn.frauds[next_fraud][race].color);
+				set_player_color(player, fraud_spawn.frauds[next_fraud][race].color);
 
 				// Todo: reset kills using aise
 				s32 fraud_count = fraud_spawn.used_count - fraud_spawn.initial_spawn_count; // Don't count initial spawns towards the multiplier
