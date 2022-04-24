@@ -1,6 +1,7 @@
 #include "player_color.h"
 
-static b8 loaded_colors;
+static bool loaded_colors;
+static bool can_randomize_player_colors;
 static u8 tminimap_colors[MinimapColorCount];
 static u8 tunit_colors[UnitColorCount];
 static u8 player_color_list[PLAYABLE_PLAYER_COUNT];
@@ -11,6 +12,17 @@ static bool can_use_player_tint(u32 color_tint, u32 last_player);
 static u32 get_random_tint();
 static u32 get_random_color_from_tint(u32 tint);
 static u32 get_color_for_personality(u32 player);
+
+static bool is_player_randomizable(u32 player) {
+	if (can_randomize_player_colors) {
+		bool randomize = playerForceFlags[playerTable[player].force - 1].randomize_start_locations;
+		if (deathTable[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
+			randomize = !randomize;
+		}
+		return randomize;
+	}
+	return false;
+}
 
 static std::vector<u32> get_player_tints_from_color(u32 color) {
 	std::vector<u32> tints = {};
@@ -35,23 +47,25 @@ static bool can_use_player_color(u32 color, u32 last_player) {
 
 static bool can_use_player_tint(u32 color_tint, u32 last_player) {
 	if (playerTable[last_player].race < bannedRaceTints.size()) {
-		for (u32 bannedTint : bannedRaceTints[playerTable[last_player].race]) {
-			if (color_tint == bannedTint) {
+		for (u32 banned_tint : bannedRaceTints[playerTable[last_player].race]) {
+			if (color_tint == banned_tint) {
 				return false;
 			}
 		}
 	}
 	if (*CURRENT_TILESET < bannedTilesetTints.size()) {
-		for (u32 bannedTint : bannedTilesetTints[*CURRENT_TILESET]) {
-			if (color_tint == bannedTint) {
+		for (u32 banned_tint : bannedTilesetTints[*CURRENT_TILESET]) {
+			if (color_tint == banned_tint) {
 				return false;
 			}
 		}
 	}
-	for (u32 player = 0; player < last_player; ++player) {
-		for (u32 otherTint : get_player_tints_from_color(player_color_list[player])) {
-			if (color_tint == otherTint) {
-				return false;
+	for (u32 player = 0; player < PlayerLimit; ++player) {
+		if (player != last_player && (player < last_player || !is_player_randomizable(player))) {
+			for (u32 other_tint : get_player_tints_from_color(player_color_list[player])) {
+				if (color_tint == other_tint) {
+					return false;
+				}
 			}
 		}
 	}
@@ -144,18 +158,18 @@ void set_player_color(u32 player, u32 color) {
 }
 
 static void load_color_tables() {
-	helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, MinimapColorCount, 0, 0, 0);
-	helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, UnitColorCount, 0, 0, 0);
+	if (!loaded_colors) {
+		loaded_colors = true;
+		helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, MinimapColorCount, 0, 0, 0);
+		helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, UnitColorCount, 0, 0, 0);
+	}
 }
 
 void load_player_colors() {
 	load_color_tables();
-	bool can_randomize = has_enough_colors();
+	can_randomize_player_colors = has_enough_colors();
 	for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; ++player) {
-		bool randomize = playerForceFlags[playerTable[player].force - 1].randomize_start_locations ||
-			deathTable[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_RandomizeColor;
-
-		if (can_randomize && randomize) {
+		if (is_player_randomizable(player)) {
 			randomize_player_color(player);
 		} else {
 			match_color_of(player);

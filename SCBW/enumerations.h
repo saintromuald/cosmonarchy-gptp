@@ -1004,9 +1004,9 @@ static const char* playerColorNames[] =
 
 enum VespeneDeaths
 {
-	VespeneDeaths_Reveal			= 0x01,
-	VespeneDeaths_Ping				= 0x02,
-	VespeneDeaths_RandomizeColor	= 0x04,
+	VespeneDeaths_Reveal				= 0x01,
+	VespeneDeaths_Ping					= 0x02,
+	VespeneDeaths_ToggleRandomizeColor	= 0x04,
 };
 
 enum AiPersonality // disruption_web_unit
