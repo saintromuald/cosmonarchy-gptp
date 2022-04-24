@@ -1146,7 +1146,7 @@ namespace helper
 	void UnitPlacementError(const char *a1, char a2);
 
 	void Ai_Build(u32 unit_id, b32 only_if_needed, u32 count, AiTown* town, u32 priority); // 004323D0
-	// void Ai_AddBuildRequest(AiTown* town, s32 method, s32 count, s32 id, s32 priority, b32 only_if_needed); // 00431F90
+	void Ai_AddBuildRequest(AiTown* town, s32 method, s32 count, s32 id, s32 priority, b32 only_if_needed); // 00431F90
 
 	// For HandleWindowMessages
 	char check_last_file_error(); // 004D28D0

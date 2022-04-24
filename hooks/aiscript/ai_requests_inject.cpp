@@ -174,6 +174,34 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) AI_Build_Wrapper() { // 004323D0
+		static u32 unit_id;
+		static bool need;
+		static u32 count;
+		static AiTown* town;
+		static u8 priority;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV priority, AL
+			POP EAX
+			MOV town, ESI
+			MOV count, EAX
+			MOV need, DL
+			MOV unit_id, ECX
+			PUSHAD
+		}
+		hooks::AI_Build(unit_id, need, count, town, priority);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 }
 
 namespace hooks
@@ -186,5 +214,6 @@ namespace hooks
 		jmpPatch(AI_PerformTask_Wrapper,					0x004361A0, 0);
 //		jmpPatch(AI_PlanDoMergeMorph_Wrapper,				0x00435F10, 1);
 //		jmpPatch(ai_train_defensive_military_Wrapper,		0x0043F990, 1);
+		jmpPatch(AI_Build_Wrapper,							0x004323D0, 1);
 	}
 }
