@@ -273,13 +273,6 @@ namespace hooks {
 		{
 			switch (unitId)
 			{
-				case UnitId::TerranFutureStation:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier2])
-					{
-						return true;
-					}
-				}
 				case UnitId::TerranBioticBase:
 				case UnitId::TerranTinkerersTower:
 				{
@@ -1432,18 +1425,6 @@ namespace hooks {
 			{
 				switch (unitId)
 				{
-					case UnitId::TerranFutureStation:
-					{
-						if (hasAddon || isTraining)
-						{
-							return TECH_HIDDEN;
-						}
-						if (TierUnlocked[RaceId::Terran][Tier2])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
 					case UnitId::TerranBioticBase:
 					case UnitId::TerranTinkerersTower:
 					{

@@ -10736,20 +10736,20 @@ namespace helper
 		}
 	}
 
-	// void Ai_AddBuildRequest(AiTown* town, s32 method, s32 count, s32 type, s32 priority, b32 only_if_needed) { // 00431F90
-	// 	const u32 func_address = 0x00431F90;
-	// 	__asm {
-	// 		PUSHAD
-	// 		PUSH only_if_needed
-	// 		PUSH priority
- 	// 		PUSH type
-	// 		PUSH count
-	// 		PUSH method
-	// 		MOV ESX, town
-	// 		CALL func_address
-	// 		POPAD
-	// 	}
-	// }
+	void Ai_AddBuildRequest(AiTown* town, s32 method, s32 count, s32 id, s32 priority, b32 only_if_needed) { // 00431F90
+		const u32 func_address = 0x00431F90;
+		__asm {
+			PUSHAD
+			PUSH only_if_needed
+			PUSH priority
+ 			PUSH id
+			PUSH count
+			PUSH method
+			MOV ESI, town
+			CALL func_address
+			POPAD
+		}
+	}
 	
 	// For ai_train_defensive_military
 	u32 ai_region_train_attack_force(AiRegion* region) {

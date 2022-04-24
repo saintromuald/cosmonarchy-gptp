@@ -225,7 +225,8 @@ namespace hooks
 			{
 				unitId = UnitId::TerranCaptaincy;
 			} break;
-			case UnitId::TerranFutureStation:
+			case UnitId::TerranBioticBase:
+			case UnitId::TerranTinkerersTower:
 			{
 				unitId = UnitId::TerranScrapyard;
 			} break;
@@ -807,6 +808,14 @@ LABEL_36:
 					}
 				}
 			}
+		}
+	}
+	
+	void AI_Build(u32 unit_id, bool need, u32 count, AiTown* town, u8 priority) // 004323D0
+	{
+		if (count <= 30 && unit_id < UnitId::None)
+		{
+			helper::Ai_AddBuildRequest(town, 0, count, unit_id, priority, need);
 		}
 	}
 }
