@@ -300,7 +300,7 @@ static bool has_expanding_town(u32 player) {
 	return false;
 }
 
-void process_base_layouts(u32 town_id, BaseLayouts* base_layouts) {
+void process_base_layouts(BaseLayouts* base_layouts) {
 	AiTown* town = base_layouts->town;
 	for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
 		Placeholder* placeholder = &base_layouts->placeholders[j];
@@ -318,7 +318,6 @@ void process_base_layouts(u32 town_id, BaseLayouts* base_layouts) {
 			has_down_equivalent(town->player, placeholder->unit_id) &&
 			number_of_equivalents_up(town->player, placeholder->unit_id) <= placeholder->wait_build_start_count) {
 			// Lock adding new requests until this request is started
-			//scbw::printf("Locking on %u %ux %s town %u", j, placeholder->wait_build_start_count + 1, Unit::getName(placeholder->unit_id), town_id);
 			break;
 		}
 	}
@@ -354,7 +353,7 @@ void tick_base_layouts() {
 			if (base_layouts->town->mainBuilding && has_expanding_town(base_layouts->town->player)) {
 				continue;
 			}
-			process_base_layouts(i, base_layouts);
+			process_base_layouts(base_layouts);
 		}
 	}
 
@@ -369,7 +368,7 @@ void tick_base_layouts() {
 			if (has_expanding_town(i)) {
 				continue;
 			}
-			process_base_layouts(1000 + i, base_layouts);
+			process_base_layouts(base_layouts);
 		}
 	}
 
