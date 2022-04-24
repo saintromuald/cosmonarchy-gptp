@@ -290,11 +290,10 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	return true;
 }
 
-bool has_other_expanding_town(AiTown* town) {
+static bool has_expanding_town(u32 player) {
 	for (u32 i = 0; i < ResAreaLimit; ++i) {
 		BaseLayouts* base_layouts = active_base_layouts[i];
-		if (base_layouts && base_layouts->town->player == town->player &&
-			base_layouts->town != town && !base_layouts->town->mainBuilding) {
+		if (base_layouts && base_layouts->town->player == player && !base_layouts->town->mainBuilding) {
 			return true;
 		}
 	}
@@ -352,7 +351,7 @@ void tick_base_layouts() {
 				active_base_layouts[i] = 0;
 				continue;
 			}
-			if (has_other_expanding_town(base_layouts->town)) {
+			if (base_layouts->town->mainBuilding && has_expanding_town(base_layouts->town->player)) {
 				continue;
 			}
 			process_base_layouts(i, base_layouts);
@@ -365,6 +364,9 @@ void tick_base_layouts() {
 		if (base_layouts->town) {
 			if (!base_layouts->town->inited) {
 				base_layouts->town = 0;
+				continue;
+			}
+			if (has_expanding_town(i)) {
 				continue;
 			}
 			process_base_layouts(1000 + i, base_layouts);
