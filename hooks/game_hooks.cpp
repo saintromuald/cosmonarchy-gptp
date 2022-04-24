@@ -181,6 +181,10 @@ namespace hooks
 		// This block is executed once every game
 		if (*elapsedTimeFrames == 0)
 		{
+#ifdef CM_DEBUG
+			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
+#endif
+
 			hooks::initializeScreenLocations();
 			hooks::clearActions();
 			globals.reset();
