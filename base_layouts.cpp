@@ -79,7 +79,7 @@ static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* p
 		}
 	}
 
-	placeholder->unit_id = unit_id;
+	placeholder->unit_id = (UnitId::Enum)unit_id;
 	if (base_layouts->placeholders_count < PlaceholderLimit) {
 		base_layouts->placeholders[base_layouts->placeholders_count++] = *placeholder;
 	}
@@ -129,13 +129,10 @@ static b32 is_tech_unitid(u32 unit_id) {
 }
 
 static u32 get_unit_class(u32 unit_id) {
-	if (unit_id == UnitId::ProtossPylon) {
-		return 3;
-	}
-	if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Building)) {
+	if (unit_id == UnitId::ProtossPylon || !(units_dat::BaseProperty[unit_id] & UnitProperty::Building)) {
 		return 2;
 	}
-	if (units_dat::GroupFlags[unit_id].isFactory || is_tech_unitid(unit_id)) {
+	if (unit_id == UnitId::ZergCreepColony || units_dat::GroupFlags[unit_id].isFactory || is_tech_unitid(unit_id)) {
 		return 1;
 	}
 	return 0;
@@ -266,9 +263,9 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	if (!hooks::createUnitIdAllowed(placeholder->unit_id, town->player)) {
 		return false;
 	}
-	if (number_of_equivalents_up(town->player, placeholder->unit_id) < placeholder->wait_build_start_count) {
-		return false;
-	}
+	//if (number_of_equivalents_up(town->player, placeholder->unit_id) < placeholder->wait_build_start_count) {
+	//	return false;
+	//}
 	if (!town->mainBuilding && units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
 		if (placeholder->unit_id != UnitId::TerranCommandCenter &&
 			placeholder->unit_id != UnitId::ProtossNexus && 
@@ -293,7 +290,18 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	return true;
 }
 
-void process_base_layouts(BaseLayouts* base_layouts) {
+bool has_other_expanding_town(AiTown* town) {
+	for (u32 i = 0; i < ResAreaLimit; ++i) {
+		BaseLayouts* base_layouts = active_base_layouts[i];
+		if (base_layouts && base_layouts->town->player == town->player &&
+			base_layouts->town != town && !base_layouts->town->mainBuilding) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void process_base_layouts(u32 town_id, BaseLayouts* base_layouts) {
 	AiTown* town = base_layouts->town;
 	for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
 		Placeholder* placeholder = &base_layouts->placeholders[j];
@@ -310,7 +318,8 @@ void process_base_layouts(BaseLayouts* base_layouts) {
 			units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
 			has_down_equivalent(town->player, placeholder->unit_id) &&
 			number_of_equivalents_up(town->player, placeholder->unit_id) <= placeholder->wait_build_start_count) {
-			// Lock adding new request until this request is started
+			// Lock adding new requests until this request is started
+			//scbw::printf("Locking on %u %ux %s town %u", j, placeholder->wait_build_start_count + 1, Unit::getName(placeholder->unit_id), town_id);
 			break;
 		}
 	}
@@ -343,7 +352,10 @@ void tick_base_layouts() {
 				active_base_layouts[i] = 0;
 				continue;
 			}
-			process_base_layouts(base_layouts);
+			if (has_other_expanding_town(base_layouts->town)) {
+				continue;
+			}
+			process_base_layouts(i, base_layouts);
 		}
 	}
 
@@ -355,7 +367,7 @@ void tick_base_layouts() {
 				base_layouts->town = 0;
 				continue;
 			}
-			process_base_layouts(base_layouts);
+			process_base_layouts(1000 + i, base_layouts);
 		}
 	}
 
