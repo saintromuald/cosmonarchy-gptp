@@ -182,6 +182,7 @@ namespace hooks
 		if (*elapsedTimeFrames == 0)
 		{
 #ifdef CM_DEBUG
+			helper::playSoundGlobal(SoundId::Misc_Buzz_wav_1);
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
 #endif
 

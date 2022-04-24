@@ -2599,7 +2599,7 @@ namespace helper
 		return thingy;
 	}
 
-	void playUnitSFX(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2)
+	void playSoundAtPos(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2)
 	{
 		const u32 Func_playUnitSFX = 0x0048EC10;
 		static Point16 pos;
@@ -10813,5 +10813,15 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	void playSoundGlobal(u32 id) {
+		const u32 func_address = 0x004BC2C0;
+		__asm {
+			PUSHAD
+			PUSH id
+			CALL func_address
+			POPAD
+		}
 	}
 }

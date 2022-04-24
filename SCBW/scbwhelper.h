@@ -258,7 +258,7 @@ namespace helper
 	bool setThingyVisibilityFlags(Thingy* thingy);									                        // 004878F0
 	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);		    								// 00488210
 	void setUnitStatTxtErrorMsg(char* message);										                        // 0048CCB0
-	void playUnitSFX(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2);										// 0048EC10
+	void playSoundAtPos(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2);										// 0048EC10
 	u32 RandomizeShort(u32 unknown_index);																	// 004DC4A0
 	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit* unit, Box16* coords);							// 004E8280
 	void moveUnit_Duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
@@ -1162,4 +1162,6 @@ namespace helper
 	s32 AI_AddBaseUnitSpendingRequest(s32 final_unit_id, s8 player_id, AiRegion* region, u8 priority); // 004484A0
 
 	bool unit_has_power(u32 id, u32 x, u32 y, u32 player);
+
+	void playSoundGlobal(u32 id); // 004BC2C0
 }

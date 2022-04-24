@@ -246,7 +246,7 @@ namespace hooks
 				//The compiler may make it back like the original anyway.
 
 				if ((random_value & 1) == 0)
-					helper::playUnitSFX(
+					helper::playSoundAtPos(
 						SoundId::Protoss_ARBITER_PAbFol00_WAV,
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y,
@@ -254,7 +254,7 @@ namespace hooks
 						0
 					);
 				else
-					helper::playUnitSFX(
+					helper::playSoundAtPos(
 						SoundId::Protoss_ARBITER_PAbFol01_WAV,
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y,
