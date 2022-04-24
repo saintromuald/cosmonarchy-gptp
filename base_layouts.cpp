@@ -263,9 +263,6 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	if (!hooks::createUnitIdAllowed(placeholder->unit_id, town->player)) {
 		return false;
 	}
-	//if (number_of_equivalents_up(town->player, placeholder->unit_id) < placeholder->wait_build_start_count) {
-	//	return false;
-	//}
 	if (!town->mainBuilding && units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
 		if (placeholder->unit_id != UnitId::TerranCommandCenter &&
 			placeholder->unit_id != UnitId::ProtossNexus && 
