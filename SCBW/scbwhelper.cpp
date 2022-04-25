@@ -1080,10 +1080,10 @@ namespace helper
 		return result;
 	}
 
-	vectorHead* vectorTransfer(char a1, char a2)
+	VectorHead* vectorTransfer(char a1, char a2)
 	{
 		const u32 Func_vectorTransfer = 0x0045A010;
-		static vectorHead* result;
+		static VectorHead* result;
 		__asm {
 			PUSHAD
 			PUSH a2
@@ -10703,8 +10703,8 @@ namespace helper
 		return result;
 	}
 
-	vectorHead* play_briefing_wav_begin() {
-		static vectorHead* result;
+	VectorHead* play_briefing_wav_begin() {
+		static VectorHead* result;
 		const u32 func_address = 0x004BBE50;
 		__asm {
 			PUSHAD
@@ -10825,13 +10825,41 @@ namespace helper
 		}
 	}
 
-	vectorHead* play_sound_from_file(const char* filename, char* unused) {
-		static vectorHead* result;
+	VectorHead* play_sound_from_file(const char* filename, char* unused) {
+		static VectorHead* result;
 		const u32 func_address = 0x004BC490;
 		__asm {
 			PUSHAD
 			MOV EAX, filename
 			MOV EDI, unused
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	b32 sub_43B6D0(u32 a1, Unit* unit, u32 a3) {
+		static b32 result;
+		const u32 func_address = 0x0043B6D0;
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOV ESI, unit
+			MOV ECX, a1
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	b32 Ai_IsAttackPrepareRegion(AiRegion* region) {
+		static b32 result;
+		const u32 func_address = 0x004369F0;
+		__asm {
+			PUSHAD
+			MOV EAX, region
 			CALL func_address
 			MOV result, EAX
 			POPAD

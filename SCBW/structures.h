@@ -69,7 +69,7 @@ struct scenarioFormat
 	u32 chkStructCount;
 };
 
-struct vectorHead
+struct VectorHead
 {
 	u32 next;
 	u32 prev;
@@ -800,9 +800,33 @@ struct MilitaryAiArray
 	MilitaryAi* first_free_military;
 };
 
+struct GuardAiArray
+{
+	GuardAi guard_ais[1000];
+	GuardAi* first_free_guard;
+};
+
+struct GuardAiList
+{
+	GuardAiArray* free_ais;
+	GuardAi* first;
+};
+
+struct GuardAiListPlayers {
+	GuardAiList player[8];
+};
+
 struct TownReq
 {
-	u8 flags_and_count;
+	union {
+		u8 flags_and_count;
+		struct {
+			u8 only_if_needed : 1;
+			u8 is_upgrade : 1;
+			u8 is_tech : 1;
+			u8 count : 5;
+		};
+	};
 	u8 priority;
 	u16 id;
 };
@@ -811,7 +835,7 @@ struct AiTown
 {
 	Link<AiTown> link;							//	0x0 and 0x4
 	WorkerAiArray* freeWorkers;					//	0x8
-	WorkerAi* workers;							//	0xC
+	WorkerAi* workers;							//		
 	BuildingAiArray* freeBuildings;				//	0x10
 	BuildingAi* buildings;						//	0x14
 	u8 player;									//	0x18

@@ -795,4 +795,101 @@ namespace hooks
 			helper::order_computer(unit, OrderId::Burrow);
 		}
 	}
+	
+	UnitAi* __stdcall Ai_FindNearestMilitaryOrGuardAi(AiRegion *ai_region, u32 a2, u32 a3, u32 x1, u32 y1, u32 a6)
+	{
+		MilitaryAi *result; // eax
+		AiRegion *ai_region_1; // edi
+		Unit *first_player_unit; // esi
+		unsigned int distance; // edx
+		MilitaryAi *unit_ai; // ecx
+		char ai_type; // al
+		char region_type; // al
+		AiRegion *unit_ai_region; // ebx
+		__int16 unit_ai_region_id; // di
+		char unit_region_type; // al
+		MilitaryAi *best_ai; // [esp+Ch] [ebp-8h]
+		unsigned int min_distance; // [esp+10h] [ebp-4h]
+
+		ai_region_1 = ai_region;
+		first_player_unit = firstPlayerUnit->unit[ai_region->playerId];
+		result = 0;
+		min_distance = 9999999;
+		best_ai = 0;
+		if (first_player_unit)
+		{
+			while (1)
+			{
+				if (!helper::sub_43B6D0(a3, first_player_unit, 0))
+				{
+					goto next;
+				}
+				distance = scbw::getDistanceFast(x1, first_player_unit->sprite->position.x, y1, first_player_unit->sprite->position.y);
+				if ( distance >= min_distance )
+				{
+					goto next;
+				}
+				unit_ai = (MilitaryAi*)first_player_unit->pAI;
+				if (!unit_ai)
+				{
+					goto next;
+				}
+				ai_type = unit_ai->type;
+				if (ai_type != 1)
+				{
+					if (ai_type == 4)
+					{
+						unit_ai_region = unit_ai->region;
+						unit_ai_region_id = unit_ai_region->region;
+						if (unit_ai_region->region != ai_region->region)
+						{
+							if (unit_ai->type != 4 ||
+								(unit_region_type = unit_ai_region->state, unit_region_type != 1) &&
+								unit_region_type != 2 ||
+								AIScriptController[ai_region->playerId].AI_Flags.isUseMapSettings)
+							{
+								if ( (!(first_player_unit->status & UnitStatus::InBuilding)
+									|| a2 != 20
+									&& (AIScriptController[first_player_unit->playerId].AI_Flags.isUseMapSettings
+										|| helper::Ai_IsAttackPrepareRegion(ai_region)))
+									&& (ai_region->state != 7 && !helper::Ai_IsAttackPrepareRegion(ai_region) || unit_ai_region_id != a6)
+									&& unit_ai_region->defensePriorityAdd < a2 )
+								{
+									best_ai = unit_ai;
+									min_distance = distance;
+								}
+							}
+						}
+						ai_region_1 = ai_region;
+					}
+					goto next;
+				}
+				if (AIScriptController[ai_region_1->playerId].AI_Flags.isUseMapSettings)
+				{
+					if (ai_region_1->airTarget == 7)
+					{
+						goto next;
+					}
+				}
+				else
+				{
+					region_type = ai_region_1->state;
+					if ( region_type != 8 && region_type != 9 )
+					{
+						goto next;
+					}
+				}
+				best_ai = (MilitaryAi*)first_player_unit->pAI;
+				min_distance = distance;
+
+			next:
+				first_player_unit = first_player_unit->player_link.next;
+				if ( !first_player_unit )
+				{
+					return (UnitAi*)best_ai;
+				}
+			}
+		}
+		return (UnitAi*)result;
+	}
 }

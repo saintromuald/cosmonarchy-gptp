@@ -934,6 +934,9 @@ namespace requirements
 	SCBW_DATA(u16*, tech, 0x00514A48);
 }
 
+SCBW_DATA(GuardAiArray*,       guard_array,        0x0067D400);
+SCBW_DATA(GuardAiListPlayers*, first_player_guard, 0x00685108);
+
 //////////////////////////////////////////////////////////////// @}
 
 #undef SCBW_DATA

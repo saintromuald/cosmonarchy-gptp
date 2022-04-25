@@ -9,7 +9,7 @@ namespace hooks
 	void AI_TrainingSimpleMilitary(Unit* result, Unit* parent);													// 0043E280
 	void AI_TrainingWorker(Unit* newUnit, Unit* otherUnit);														// 00435700
 	void AI_TrainingNormal(Unit* newUnit, Unit* parentUnit);													// 00435DB0
-	void* AI_AddWorkerStructureAI(Unit* unit, AiTown* town);														// 00433DD0
+	void* AI_AddWorkerStructureAI(Unit* unit, AiTown* town);													// 00433DD0
 	void AI_IterateBuildingAI(Unit* result, Unit* parent);														// 00435770
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);															// 004A1E50
 	void deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiArray);										// 00404470
@@ -17,6 +17,8 @@ namespace hooks
 	s32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI);												// 00434C90
 	void AI_TrainingOverlord(Unit* newUnit, Unit* oldUnit);														// 00435770
 	void AI_orderLurkerBurrow(Unit* unit);																		// 0043C230
+
+	UnitAi* __stdcall Ai_FindNearestMilitaryOrGuardAi(AiRegion *ai_region, u32 a2, u32 a3, u32 x1, u32 y1, u32 a6); // 0043BAC0
 
 	void injectUnitAIHooks();
 }

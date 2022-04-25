@@ -113,7 +113,7 @@ namespace helper
 	s32 dataTransfer03(s32 a1, char a2, s32 a3);
 	s32 dataTransfer04(u32 a1, s32 a2, s32 a3);
 	s32 dataTransfer05(s32 a1, s32 a2);
-	vectorHead* vectorTransfer(char a1, char a2);
+	VectorHead* vectorTransfer(char a1, char a2);
 	s32 dataTransfer06(s32 a1);
 
 	// For getRandYesSFX
@@ -1153,7 +1153,7 @@ namespace helper
 	s32 has_messages_waiting(void* tag_msg, s32 b_something); // 004D1650
 	void send_mouse_move_event(void* fast_call_func); // 004D1AE0
 	s32 send_input_to_all_dialogs(dlgEvent* dlg_event); // 00419FD0
-	vectorHead* play_briefing_wav_begin(); // 004BBE50
+	VectorHead* play_briefing_wav_begin(); // 004BBE50
 	void iterate_timers(); // 00415DC0
 
 	// For ai_train_defensive_military
@@ -1164,5 +1164,8 @@ namespace helper
 	bool unit_has_power(u32 id, u32 x, u32 y, u32 player);
 
 	void playSoundGlobal(u32 id); // 004BC2C0
-	vectorHead* play_sound_from_file(const char* filename, char* unused); // 004BC490
+	VectorHead* play_sound_from_file(const char* filename, char* unused); // 004BC490
+
+	b32 sub_43B6D0(u32 a1, Unit* unit, u32 a3);
+	b32 Ai_IsAttackPrepareRegion(AiRegion* region);
 }
