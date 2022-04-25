@@ -14,7 +14,7 @@ struct Equivalent {
 	u32 priority_decrease;
 };
 
-Equivalent equivalents[] = {
+static Equivalent equivalents[] = {
 	{UnitId::ZergHatchery, UnitId::ZergLair, 1},
 	{UnitId::ZergLair, UnitId::ZergHive, 1},
 	{UnitId::ZergHive, UnitId::ZergSire, 1},
@@ -288,7 +288,7 @@ static bool has_expanding_town(u32 player) {
 	return false;
 }
 
-void process_base_layouts(BaseLayouts* base_layouts) {
+static void process_base_layouts(BaseLayouts* base_layouts) {
 	AiTown* town = base_layouts->town;
 	for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
 		Placeholder* placeholder = &base_layouts->placeholders[j];
