@@ -209,24 +209,24 @@ static void init_base_layouts() {
 	}
 }
 
-static u32 has_down_equivalent(u32 player, u32 unit_id) {
+static u32 has_down_equivalent(AiTown* town, u32 unit_id) {
 	Equivalent equivalent = find_unit_equivalent_down(unit_id);
 	if (equivalent.to != UnitId::None) {
-		return Player::numberOfUnitsOfType(player, equivalent.to);
+		return helper::Ai_CountUnitsInTown(town, false, equivalent.to);
 	}
 	return true;
 }
 
-static u32 number_of_equivalents_up(u32 player, u32 unit_id) {
-	u32 i = Player::numberOfUnitsOfType(player, unit_id);
+static u32 number_of_equivalents_up(AiTown* town, u32 unit_id) {
+	u32 i = helper::Ai_CountUnitsInTown(town, false, unit_id);
 	if (unit_id == UnitId::ZergCreepColony) {
-		i += number_of_equivalents_up(player, UnitId::ZergSunkenColony);
-		i += number_of_equivalents_up(player, UnitId::ZergSporeColony);
-		i += number_of_equivalents_up(player, UnitId::ZergLarvalColony);
+		i += number_of_equivalents_up(town, UnitId::ZergSunkenColony);
+		i += number_of_equivalents_up(town, UnitId::ZergSporeColony);
+		i += number_of_equivalents_up(town, UnitId::ZergLarvalColony);
 	} else {
 		Equivalent equivalent = find_unit_equivalent_up(unit_id);
 		if (equivalent.to != UnitId::None) {
-			i += number_of_equivalents_up(player, equivalent.to);
+			i += number_of_equivalents_up(town, equivalent.to);
 		}
 	}
 	return i;
@@ -303,8 +303,8 @@ void process_base_layouts(BaseLayouts* base_layouts) {
 		}
 		if (base_layouts->placeholders_requested[j] &&
 			units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
-			has_down_equivalent(town->player, placeholder->unit_id) &&
-			number_of_equivalents_up(town->player, placeholder->unit_id) < placeholder->wait_build_start_count) {
+			has_down_equivalent(town, placeholder->unit_id) &&
+			number_of_equivalents_up(town, placeholder->unit_id) < placeholder->wait_build_start_count) {
 			// Lock adding new requests until this request is started
 			break;
 		}

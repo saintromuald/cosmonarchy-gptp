@@ -10866,4 +10866,20 @@ namespace helper
 		}
 		return result;
 	}
+
+	u32 Ai_CountUnitsInTown(AiTown* town, bool finished, u32 unit_id) {
+		static u32 result;
+		const u32 func_address = 0x00433210;
+		__asm {
+			PUSHAD
+			PUSH unit_id
+			PUSH finished
+			MOV EAX, town
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 }
