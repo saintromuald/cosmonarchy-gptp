@@ -7,13 +7,15 @@ namespace UnitId
 		// Cosmonarchy \\
 
 	// AI
-	//	DisruptionField										= 105,		// Disruption Field		// might need mempatches?
-	//	DarkSwarm											= 202,		// Dark Swarm			// might need mempatches?
+	//	DisruptionField										= 105,		// Disruption Field			- might need mempatches?
+	//	DarkSwarm											= 202,		// Dark Swarm				- might need mempatches?
 	
 	// Unused
-	//	TerranWendigo										= 20,		// Raynor Marine
+	//	ZergSkryling										= 47,		// Scourge
 	//	CrashedBattlecruiser								= 126,		// Norad II Crashed Battlecruiser
 	//	TerranFutureStation									= 192,		// Terran Marker
+	//	LeftUpperLevelDoor									= 205		// Left Upper Level Door 	- might need mempatches?
+	//	RightUpperLevelDoor									= 206		// Right Upper Level Door	- might need mempatches?
 
 	// Shared-Unit
 		SharedCohort										= 50,		// Infested Terran
@@ -31,6 +33,7 @@ namespace UnitId
 		TerranShaman										= 15,		// Civilian
 		TerranMadcap										= 18,		// Alan Schezar Turret
 		TerranCuirass										= 19,		// Raynor Vulture
+		TerranTalos											= 20,		// Raynor Marine
 		TerranSalamander									= 22,		// Magellan
 		TerranGorgon										= 23,		// Edmund Duke Tank
 		TerranPhobos										= 24,		// Edmund Duke Tank Turret

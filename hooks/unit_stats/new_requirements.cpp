@@ -102,12 +102,16 @@ namespace hooks {
 			switch (unitId)
 			{
 				case UnitId::TerranMason:
-				{
-					return true;
-				}
 				case UnitId::TerranComsatStation:
 				{
 					return true;
+				}
+				case UnitId::TerranTalos:
+				{
+					if (TierUnlocked[RaceId::Terran][Tier3])
+					{
+						return true;
+					}
 				}
 				case UnitId::TerranNuclearSilo:
 				case UnitId::TerranQuarry:

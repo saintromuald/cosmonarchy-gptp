@@ -953,6 +953,11 @@ namespace hooks
 
 							// TERRAN \\
 
+							else if ((*activePortraitUnit)->id == UnitId::TerranTalos && // Talos Fusion Sealers passive
+								current_button->iconID == IconId::Fusion_Cutter_Harvest)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 							else if ((*activePortraitUnit)->id == UnitId::TerranHarakan && // Harakan Apollyoid Adhesive passive
 								current_button->iconID == IconId::Flyer_Attack)
 							{

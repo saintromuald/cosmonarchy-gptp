@@ -213,11 +213,9 @@ namespace hooks
 							hpGain *= 16;
 						}
 						// Talos - Advanced repair speed
-						/*
 						if (unit->id == UnitId::TerranTalos) {
 							hpGain *= 1.5;
 						}
-						*/
 						target->heal(hpGain, unit);
 						if (target->hitPoints < units_dat::MaxHitPoints[target->id])
 						{
