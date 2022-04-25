@@ -161,7 +161,7 @@ namespace WeaponId {
 		CuirassHaymakerAutogun				= 5,	// Cuirass weapon
 		MadcapDanannAutogun					= 9,	// Madcap weapon
 		PaladinCrusaderMissiles				= 10,	// Paladin weapon
-		WendigoFusionSaw					= 12,	// Wendigo weapon
+		TalosFusionBattery					= 12,	// Talos weapon
 		BlackjackMonogun					= 15,	// Blackjack weapon
 		SalamanderPerditionBarrage			= 17,	// Salamander weapon
 		GorgonArtificeBattery				= 18,	// Gorgon weapon
