@@ -10867,13 +10867,13 @@ namespace helper
 		return result;
 	}
 
-	u32 Ai_CountUnitsInTown(AiTown* town, bool finished, u32 unit_id) {
+	u32 Ai_CountUnitsInTown(AiTown* town, u32 unit_id, bool finished) {
 		static u32 result;
 		const u32 func_address = 0x00433210;
 		__asm {
 			PUSHAD
-			PUSH unit_id
 			PUSH finished
+			PUSH unit_id
 			MOV EAX, town
 			CALL func_address
 			MOV result, EAX

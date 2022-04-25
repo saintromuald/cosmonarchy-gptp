@@ -1169,5 +1169,5 @@ namespace helper
 	b32 sub_43B6D0(u32 a1, Unit* unit, u32 a3);
 	b32 Ai_IsAttackPrepareRegion(AiRegion* region);
 
-	u32 Ai_CountUnitsInTown(AiTown* town, bool finished, u32 unit_id); // 00433210 Aka AI_WaitBuild
+	u32 Ai_CountUnitsInTown(AiTown* town, u32 unit_id, bool finished); // 00433210 Aka AI_WaitBuild
 }

@@ -213,13 +213,13 @@ static void init_base_layouts() {
 static u32 has_down_equivalent(AiTown* town, u32 unit_id) {
 	Equivalent equivalent = find_unit_equivalent_down(unit_id);
 	if (equivalent.to != UnitId::None) {
-		return helper::Ai_CountUnitsInTown(town, false, equivalent.to);
+		return helper::Ai_CountUnitsInTown(town, equivalent.to, false);
 	}
 	return true;
 }
 
 static u32 number_of_equivalents_up(AiTown* town, u32 unit_id) {
-	u32 i = helper::Ai_CountUnitsInTown(town, false, unit_id);
+	u32 i = helper::Ai_CountUnitsInTown(town, unit_id, false);
 	if (unit_id == UnitId::ZergCreepColony) {
 		i += number_of_equivalents_up(town, UnitId::ZergSunkenColony);
 		i += number_of_equivalents_up(town, UnitId::ZergSporeColony);
