@@ -1,6 +1,9 @@
 #include "base_layouts.h"
 #include "hooks/unit_stats/new_requirements.h"
 
+u32 chk_cache_size;
+CHKUnit chk_cache[ChkCacheLimit];
+
 static BaseLayouts global_base_layouts[PlayerLimit];
 static BaseLayouts local_base_layouts[PlayerLimit][ResAreaLimit];
 static BaseLayouts* active_base_layouts[ResAreaLimit];
@@ -86,16 +89,19 @@ static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* p
 	placeholder->priority -= equivalent.priority_decrease;
 }
 
-static void add_placeholder(Unit* unit, u32 player) {
+static void add_placeholder(CHKUnit* unit, u32 player) {
 	Placeholder placeholder = {};
-	placeholder.position = unit->position;
-	placeholder.priority = round(100.0 * unit->hitPoints / unit->getMaxHpRaw());
+	placeholder.position.x = unit->x;
+	placeholder.position.y = unit->y;
+	placeholder.priority = unit->hp;
 	placeholder.should_request = true;
-	if (unit->status & UnitStatus::Invincible) {
-		add_placeholder_by_unit_id(&global_base_layouts[player], &placeholder, unit->id);
+
+	u32 flags = unit->validStateFlags & unit->stateFlags;
+	if (flags & ChkUnitFlags_Invincible) {
+		add_placeholder_by_unit_id(&global_base_layouts[player], &placeholder, unit->unitid);
 	} else {
-		u32 res_area = scbw::get_closest_resarea(unit->position);
-		add_placeholder_by_unit_id(&local_base_layouts[player][res_area], &placeholder, unit->id);
+		u32 res_area = scbw::get_closest_resarea(placeholder.position);
+		add_placeholder_by_unit_id(&local_base_layouts[player][res_area], &placeholder, unit->unitid);
 	}
 }
 
@@ -130,9 +136,12 @@ static b32 is_tech_unitid(u32 unit_id) {
 
 static u32 get_unit_class(u32 unit_id) {
 	if (unit_id == UnitId::ProtossPylon || !(units_dat::BaseProperty[unit_id] & UnitProperty::Building)) {
+		return 3;
+	}
+	if (unit_id == UnitId::ZergLarvalColony || unit_id == UnitId::ZergSunkenColony || unit_id == UnitId::ZergSporeColony) {
 		return 2;
 	}
-	if (unit_id == UnitId::ZergCreepColony || units_dat::GroupFlags[unit_id].isFactory || is_tech_unitid(unit_id)) {
+	if (units_dat::GroupFlags[unit_id].isFactory || is_tech_unitid(unit_id)) {
 		return 1;
 	}
 	return 0;
@@ -163,12 +172,7 @@ static int compare_base_layout(void* context, const void* a, const void* b) {
 }
 
 static void sort_base_layouts(BaseLayouts* base_layouts) {
-	memset(base_layouts->request_count, 0, sizeof(base_layouts->request_count));
 	qsort_s(base_layouts->placeholders, base_layouts->placeholders_count, sizeof(Placeholder), compare_base_layout, base_layouts);
-	for (u32 k = 0; k < base_layouts->placeholders_count; ++k) {
-		Placeholder* placeholder = &base_layouts->placeholders[k];
-		placeholder->wait_build_start_count = base_layouts->request_count[placeholder->unit_id]++;
-	}
 }
 
 static void init_base_layouts() {
@@ -176,37 +180,24 @@ static void init_base_layouts() {
 	memset(local_base_layouts, 0, sizeof(local_base_layouts));
 	memset(active_base_layouts, 0, sizeof(active_base_layouts));
 
-	Unit* next = 0;
-	for (Unit* unit = *firstVisibleUnit; unit; unit = next) {
-		next = unit->link.next;
+	for (u32 i = 0; i < chk_cache_size; ++i) {
+		CHKUnit* unit = &chk_cache[i];
 		if (unit->playerId > PlayerLimit && unit->playerId != 11) {
 			continue;
 		}
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building) && units_dat::ComputerAIInternal[unit->id] & 0x2) { // Don't become guard
-			if (unit->status & UnitStatus::IsHallucination) {
-				unit->userActionFlags |= 0x4;
-				unit->remove();
-			} else {
-				unit->status &= ~UnitStatus::Invincible;
-			}
+		if (!(units_dat::BaseProperty[unit->unitid] & UnitProperty::Building) && units_dat::ComputerAIInternal[unit->unitid] & 0x2) { // Don't become guard
 			continue;
 		}
 
 		if (unit->playerId == 11) {
-			if (unit->status & UnitStatus::IsHallucination) {
+			u32 flags = unit->validStateFlags & unit->stateFlags;
+			if (flags & ChkUnitFlags_Hallucinated) {
 				for (u32 i = 0; i < 8; ++i) {
 					add_placeholder(unit, i);
 				}
 			}
 		} else {
 			add_placeholder(unit, unit->playerId);
-		}
-
-		if (unit->status & UnitStatus::IsHallucination) {
-			unit->userActionFlags |= 0x4;
-			unit->remove();
-		} else {
-			unit->status &= ~UnitStatus::Invincible;
 		}
 	}
 
@@ -304,6 +295,8 @@ void process_base_layouts(BaseLayouts* base_layouts) {
 		if (!base_layouts->placeholders_requested[j] && can_build_placeholder(base_layouts, placeholder)) {
 			base_layouts->placeholders_requested[j] = true;
 			u32 count = ++base_layouts->request_count[placeholder->unit_id];
+			placeholder->wait_build_start_count = count;
+			placeholder->lock_timeout = 30 * 24;
 			if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
 				helper::Ai_Build(placeholder->unit_id, false, count, town, placeholder->priority);
 			} else {
@@ -313,8 +306,10 @@ void process_base_layouts(BaseLayouts* base_layouts) {
 		if (base_layouts->placeholders_requested[j] &&
 			units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
 			has_down_equivalent(town->player, placeholder->unit_id) &&
-			number_of_equivalents_up(town->player, placeholder->unit_id) <= placeholder->wait_build_start_count) {
+			number_of_equivalents_up(town->player, placeholder->unit_id) < placeholder->wait_build_start_count &&
+			placeholder->lock_timeout) {
 			// Lock adding new requests until this request is started
+			placeholder->lock_timeout -= 1;
 			break;
 		}
 	}

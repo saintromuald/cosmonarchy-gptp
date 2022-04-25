@@ -2,17 +2,29 @@
 #include "SCBW\api.h"
 #include "unit_constants.h"
 
+enum ChkUnitFlags {
+	ChkUnitFlags_Cloaked      = 0x01,
+	ChkUnitFlags_Burrowed     = 0x02,
+	ChkUnitFlags_Lifted       = 0x04,
+	ChkUnitFlags_Hallucinated = 0x08,
+	ChkUnitFlags_Invincible   = 0x10,
+};
+
+#define ChkCacheLimit UNIT_ARRAY_LENGTH
+extern u32 chk_cache_size;
+extern CHKUnit chk_cache[ChkCacheLimit];
+
 struct Placeholder {
 	Point16 position;
 	u8 unit_id;
 	u8 priority;
 	b8 should_request;
 	u8 wait_build_start_count;
-	u8 order_number;
+	u16 lock_timeout;
+	u16 order_number;
 };
 
 #define PlaceholderLimit 512
-
 struct BaseLayouts {
 	AiTown* town;
 	Point16 resarea_pos;
@@ -23,4 +35,3 @@ struct BaseLayouts {
 };
 
 void tick_base_layouts();
-

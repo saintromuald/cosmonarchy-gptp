@@ -296,7 +296,7 @@ struct Thingy
 
 struct CHKUnit
 {
-	/*00*/	u32	 id;
+	/*00*/	u32	 chkid;
 	/*04*/	u16	 x;
 	/*06*/	u16	 y;
 	/*08*/	u16	 unitid;

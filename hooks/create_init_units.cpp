@@ -1,7 +1,7 @@
 #include "create_init_units.h"
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
-#include <vector>
+#include "base_layouts.h"
 
 u8 GetRaceTownhall(u8 raceId)
 {
@@ -97,7 +97,6 @@ namespace hooks
 
 	Point16 FindWorkerSpawnPositions(s32 townhallId, const u16& startX, const u16& startY, bool& horizontal)
 	{
-		std::vector<Point16> positions;
 		s32 sumX = 0;
 		s32 sumY = 0;
 		u32 count = 0;
@@ -338,16 +337,25 @@ namespace hooks
 	}
 
 	Unit* CreatePreplacedUnit(CHKUnit* chkunit) {
-		Unit* unit = CreateUnitXY(chkunit->playerId, chkunit->unitid, chkunit->x, chkunit->y, true);
-		if (unit) {
-			helper::editUnitFlags(unit, &chkunit->validStateFlags);
-
-			if (!(unit->status & UnitStatus::IsHallucination)) {
-				if (helper::spreadsCreep(unit->id, 1) || units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) {
-					helper::applyCreepAtLocationFromUnitType(unit->sprite->position.x, unit->sprite->position.y, unit->id);
-				}
-			}
+		if (chk_cache_size < ChkCacheLimit) {
+			chk_cache[chk_cache_size++] = *chkunit;
 		}
-		return unit;
+		u32 flags = chkunit->validStateFlags & chkunit->stateFlags;
+		if (!(flags & ChkUnitFlags_Hallucinated)) {
+			Unit* unit = CreateUnitXY(chkunit->playerId, chkunit->unitid, chkunit->x, chkunit->y, false);
+			if (unit) {
+				helper::editUnitFlags(unit, &chkunit->validStateFlags);
+
+				unit->hitPoints = unit->getMaxHpRaw();
+				unit->shields = unit->getMaxShieldsRaw();
+				unit->energy = unit->getMaxEnergy();
+
+				unit->status &= ~UnitStatus::Cloaked;
+				unit->status &= ~UnitStatus::Invincible;
+				unit->status &= ~UnitStatus::IsHallucination;
+			}
+			return unit;
+		}
+		return 0;
 	}
 }

@@ -1925,6 +1925,7 @@ namespace hooks
 
 	bool gameOn()
 	{
+		chk_cache_size = 0;
 		setMaxSightRange<20>();
 		return true;
 	}
