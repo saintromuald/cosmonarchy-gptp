@@ -319,16 +319,6 @@ namespace hooks
 
 			globals.frameHook();
 
-			// Reset Treasury Stacks, before unit loop
-			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
-			{
-				UnitExt* unitExt = globals.GetUnitExt(unit);
-				s32 supply = unit->getSupplyProvided();
-				s32 stacks = unitExt->values[ValueTreasuryStacks];
-				unitExt->values[ValueTreasuryStacks] = 0;
-				unit->setSupplyProvided(supply - stacks * TreasuryIncrease);
-			}
-
 			// Loop through bullets
 			for (Bullet* bullet = *firstBullet; bullet; bullet = bullet->next)
 			{
@@ -883,47 +873,6 @@ namespace hooks
 					}
 				}
 			}
-			case UnitId::TerranTreasury:
-			{
-				// Treasury - Expanded Storage
-				if ((unit->status & UnitStatus::Completed)
-					&& (unit->status & UnitStatus::GroundedBuilding))
-				{
-					/*
-					Point16 pos = unit->position;
-					s32 radius = (10 * 32) / 2;
-					scbw::UnitFinder(
-						pos.x - radius,
-						pos.y - radius,
-						pos.x + radius,
-						pos.y + radius
-					).forEach([&](Unit* target) {
-						if (units_dat::SupplyProvided[target->id] == 0)
-						{
-							return;
-						}
-						if (target->playerId != unit->playerId && !scbw::isAlliedTo(unit->playerId, target->playerId))
-						{
-							return;
-						}
-						if (!(target->status & UnitStatus::Completed))
-						{
-							return;
-						}
-
-						u32 stacks = unitExt->values[ValueTreasuryStacks];
-						if (*elapsedTimeFrames % 36 == 0 && stacks == 0)
-						{
-							target->sprite->createUnderlay(ImageId::TreasurySupplyOverlay, 0, 0, 0);
-						}
-						UnitExt* targetExt = globals.GetUnitExt(target);
-						targetExt->values[ValueTreasuryStacks]++;
-						s32 supply = target->getSupplyProvided();
-						target->setSupplyProvided(supply + TreasuryIncrease);
-					});
-					*/
-				}
-			} break;
 			case UnitId::ZergMatraleth:
 			{
 				// Matraleth - Ensnaring Brood
@@ -1810,6 +1759,7 @@ namespace hooks
 				Unit* target = *it;
 				if (scbw::getDistanceFast(unit->position, target->position) > 8 * 32)
 				{
+					target->removeOverlay(ImageId::TreasurySupplyOverlay);
 					crucibles.erase(it);
 					--it;
 				}
@@ -1829,6 +1779,9 @@ namespace hooks
 				if (std::find(vec.begin(), vec.end(), unit) == vec.end())
 				{
 					vec.push_back(unit);
+				}
+				if (!target->getOverlay(ImageId::TreasurySupplyOverlay)) {
+					target->sprite->createUnderlay(ImageId::TreasurySupplyOverlay, 0, 0, 0);
 				}
 			}
 		}
