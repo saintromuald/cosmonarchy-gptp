@@ -55,7 +55,8 @@ namespace hooks {
 		TierUnlocked[RaceId::Protoss][Tier4] = true;
 
 		// TERRAN
-		if (player_has_completed_unit_id(player_id, UnitId::TerranMason))
+		if (player_has_completed_unit_id(player_id, UnitId::TerranMason)
+			|| player_has_completed_unit_id(player_id, UnitId::TerranTalos))
 		{
 			switch (unitId)
 			{
@@ -1122,6 +1123,7 @@ namespace hooks {
 		{
 			// TERRAN
 			case UnitId::TerranMason:
+			case UnitId::TerranTalos:
 			{
 				switch (unitId)
 				{
@@ -1177,6 +1179,16 @@ namespace hooks {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
+					}
+					case UnitId::TerranTalos:
+					{
+						if (inAir) {
+							return TECH_HIDDEN;
+						}
+						if (TierUnlocked[RaceId::Terran][Tier3]) {
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
 					}
 					case UnitId::TerranComsatStation:
 					{
