@@ -94,9 +94,9 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 	placeholder.position.x = unit->x;
 	placeholder.position.y = unit->y;
 	placeholder.priority = unit->hp;
+	placeholder.guard_rebuilds = unit->energy == 100 ? 0 : unit->energy + 1;
 	u32 flags = unit->validStateFlags & unit->stateFlags;
 	placeholder.should_request = !(flags & ChkUnitFlags_Cloaked);
-	placeholder.guard_rebuilds = unit->energy == 100 ? 0 : unit->energy + 1;
 	if (flags & ChkUnitFlags_Invincible) {
 		add_placeholder_by_unit_id(&global_base_layouts[player], &placeholder, unit->unit_id);
 	} else {
