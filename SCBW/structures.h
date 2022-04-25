@@ -299,7 +299,7 @@ struct CHKUnit
 	/*00*/	u32	 chkid;
 	/*04*/	u16	 x;
 	/*06*/	u16	 y;
-	/*08*/	u16	 unitid;
+	/*08*/	u16	 unit_id;
 	/*0A*/	u16	 relation;
 	/*0C*/	u16	 validStateFlags;
 	/*0E*/	u16	 validProperties;

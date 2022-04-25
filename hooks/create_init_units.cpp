@@ -342,7 +342,7 @@ namespace hooks
 		}
 		u32 flags = chkunit->validStateFlags & chkunit->stateFlags;
 		if (!(flags & ChkUnitFlags_Hallucinated)) {
-			Unit* unit = CreateUnitXY(chkunit->playerId, chkunit->unitid, chkunit->x, chkunit->y, false);
+			Unit* unit = CreateUnitXY(chkunit->playerId, chkunit->unit_id, chkunit->x, chkunit->y, false);
 			if (unit) {
 				helper::editUnitFlags(unit, &chkunit->validStateFlags);
 

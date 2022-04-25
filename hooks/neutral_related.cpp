@@ -17,7 +17,7 @@ namespace hooks
 		if (gameData->startingUnits)
 		{
 			if (unit->playerId != 0xb // PLAYER_Player12
-				|| ((v1 = (u16)unit->unitid, v1 < UnitId::ResourceMineralField) || v1 > UnitId::ResourceMineralFieldType3)
+				|| ((v1 = (u16)unit->unit_id, v1 < UnitId::ResourceMineralField) || v1 > UnitId::ResourceMineralFieldType3)
 				&& v1 != UnitId::ResourceVespeneGeyser
 				/*              && v1 != UnitId::Critter_Rhynadon
 								&& v1 != UnitId::Critter_Bengalaas

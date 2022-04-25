@@ -561,4 +561,5 @@ namespace scbw
 	void set_cmbw_ai_preference(u16 unit_id, u32 player);
 	void clear_creep(Box32 area);
 	u32 get_closest_resarea(Point16 position);
+	AiRegion* get_ai_region(u32 player, Point16 position);
 }

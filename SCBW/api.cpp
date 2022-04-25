@@ -2087,4 +2087,8 @@ namespace scbw
 		}
 		return best_resarea;
 	}
+
+	AiRegion* get_ai_region(u32 player, Point16 position) {
+		return &AiRegionCaptains[player][helper::SAI_GetRegionIdFromPxEx(position.x, position.y)];
+	}
 }

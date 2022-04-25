@@ -20,8 +20,6 @@ struct Placeholder {
 	u8 priority;
 	b8 should_request;
 	u8 wait_build_start_count;
-	u16 lock_timeout;
-	u16 order_number;
 };
 
 #define PlaceholderLimit 512

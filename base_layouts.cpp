@@ -94,14 +94,13 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 	placeholder.position.x = unit->x;
 	placeholder.position.y = unit->y;
 	placeholder.priority = unit->hp;
-	placeholder.should_request = true;
-
 	u32 flags = unit->validStateFlags & unit->stateFlags;
+	placeholder.should_request = !(flags & ChkUnitFlags_Cloaked);
 	if (flags & ChkUnitFlags_Invincible) {
-		add_placeholder_by_unit_id(&global_base_layouts[player], &placeholder, unit->unitid);
+		add_placeholder_by_unit_id(&global_base_layouts[player], &placeholder, unit->unit_id);
 	} else {
 		u32 res_area = scbw::get_closest_resarea(placeholder.position);
-		add_placeholder_by_unit_id(&local_base_layouts[player][res_area], &placeholder, unit->unitid);
+		add_placeholder_by_unit_id(&local_base_layouts[player][res_area], &placeholder, unit->unit_id);
 	}
 }
 
@@ -185,7 +184,7 @@ static void init_base_layouts() {
 		if (unit->playerId > PlayerLimit && unit->playerId != 11) {
 			continue;
 		}
-		if (!(units_dat::BaseProperty[unit->unitid] & UnitProperty::Building) && units_dat::ComputerAIInternal[unit->unitid] & 0x2) { // Don't become guard
+		if (!(units_dat::BaseProperty[unit->unit_id] & UnitProperty::Building) && units_dat::ComputerAIInternal[unit->unit_id] & 0x2) { // Don't become guard
 			continue;
 		}
 
@@ -296,7 +295,6 @@ void process_base_layouts(BaseLayouts* base_layouts) {
 			base_layouts->placeholders_requested[j] = true;
 			u32 count = ++base_layouts->request_count[placeholder->unit_id];
 			placeholder->wait_build_start_count = count;
-			placeholder->lock_timeout = 30 * 24;
 			if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
 				helper::Ai_Build(placeholder->unit_id, false, count, town, placeholder->priority);
 			} else {
@@ -306,10 +304,8 @@ void process_base_layouts(BaseLayouts* base_layouts) {
 		if (base_layouts->placeholders_requested[j] &&
 			units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
 			has_down_equivalent(town->player, placeholder->unit_id) &&
-			number_of_equivalents_up(town->player, placeholder->unit_id) < placeholder->wait_build_start_count &&
-			placeholder->lock_timeout) {
+			number_of_equivalents_up(town->player, placeholder->unit_id) < placeholder->wait_build_start_count) {
 			// Lock adding new requests until this request is started
-			placeholder->lock_timeout -= 1;
 			break;
 		}
 	}
