@@ -96,6 +96,7 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 	placeholder.priority = unit->hp;
 	u32 flags = unit->validStateFlags & unit->stateFlags;
 	placeholder.should_request = !(flags & ChkUnitFlags_Cloaked);
+	placeholder.guard_rebuilds = unit->energy == 100 ? 0 : unit->energy + 1;
 	if (flags & ChkUnitFlags_Invincible) {
 		add_placeholder_by_unit_id(&global_base_layouts[player], &placeholder, unit->unit_id);
 	} else {
@@ -298,7 +299,7 @@ void process_base_layouts(BaseLayouts* base_layouts) {
 			if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
 				helper::Ai_Build(placeholder->unit_id, false, count, town, placeholder->priority);
 			} else {
-				scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
+				scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, placeholder->guard_rebuilds, 0);
 			}
 		}
 		if (base_layouts->placeholders_requested[j] &&

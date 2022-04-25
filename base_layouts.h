@@ -18,6 +18,7 @@ struct Placeholder {
 	Point16 position;
 	u8 unit_id;
 	u8 priority;
+	u8 guard_rebuilds;
 	b8 should_request;
 	u8 wait_build_start_count;
 };
