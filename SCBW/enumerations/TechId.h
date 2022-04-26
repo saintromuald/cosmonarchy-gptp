@@ -47,40 +47,40 @@ namespace TechId {
 		UnusedTech42			= 42, // (unused)
 		UnusedTech43			= 43, // (unused)
 		None					= 44,
-		NuclearStrike			= 45, //based on bwapi/BWMemoryEdit/Enums/TechType.cs
-		UnknownLastEntry		= 46,	//based on bwapi/BWMemoryEdit/Enums/TechType.cs
+		NuclearStrike			= 45,
+		UnknownLastEntry		= 46, // based on bwapi/BWMemoryEdit/Enums/TechType.cs
 
 		// Cosmonarchy \\
 
 	// Shared
-		FailureMode				= 23, // Anticthon ability
-		CancelNewAbiliity		= 26, // For Land Grab, Mind Control, Enthralling Assault, Conjoining Root
-		AuralAssault			= 30, // Luminary blinding ability
+		TargetGround					= 17, // Ensnare
+		AnticthonFailureMode			= 23, // Archon Warp
+		CancelNewAbility				= 26, // Unused Tech 26 | used for: Land Grab, Mind Control, Enthralling Assault, Conjoining Root
+		LuminaryAuralAssault			= 30, // Optical Flare
 
 	// Terran
-		LobotomyMine			=  1, // Eidolon lay trap ability
-		ControlledDemolition	=  2, // Structure self-destruct ability 1
-		LandGrab				= 17, // General target ground ability
-		TertiaryEyes			= 24, // Siren specialist linking ability
-		LazarusAgent			= 32, // Apostle ability
-		TempoChange				= 36, // Madrigal weapon switch ability
-		Skyfall					= 37, // Paladin missile salvo ability
-		NaniteField				= 38, // Shaman mech repair ability
-		EmergencyDetonation		= 39, // Structure self-destruct ability 2
-		SublimeShepherd			= 40, // Azazel cloud cover ability
-		PowerSiphon				= 41, // Savant energy transfer ability
+		EidolonLobotomyMine				=  1, // Lockdown
+		ControlledDemolition			=  2, // EMP Shockwave
+		SirenTertiaryEyes				= 24, // Restoration
+		ApostleLazarusAgent				= 32, // Lurker Aspect
+		MadrigalTempoChange				= 36, // Unused Tech 36
+		PaladinSkyfall					= 37, // Unused Tech 37
+		TalosSalvage					= 38, // Unused Tech 38
+		EmergencyDetonation				= 39, // Unused Tech 39
+		AzazelSublimeShepherd			= 40, // Unused Tech 40
+		SavantPowerSiphon				= 41, // Unused Tech 41
 
 	// Protoss
-		PlanetCracker			= 29, // Star Sovereign damage ability
-		ConjoiningRoot			= 33, // Sovroleth attachment ability
-		GodsMadeFlesh			= 42, // Demiurge immortality ability
+		StarSovereignTheGriefOfAllGods	= 29, // Feedback
+		SovrolethConjoiningRoot			= 33, // Unused Tech 33
+		DemiurgeGodsMadeFlesh			= 42, // Unused Tech 42
 
 	// Zerg
-		EnsnaringBrood			= 13, // Matraleth disruptive enchantment ability
-		EnthrallingAssault		= 35, // Akistrokor attachment ability, also used for Sovroleth
+		MatralethEnsnaringBrood			= 13, // Spawn Broodlings
+		AkistrokorEnthrallingAssault	= 35, // Unused Tech 35
 
-	// techdata is not yet extended
-	//	ChasmalColonySwitch		= 47, // Chasmal Colony - Adaptive Barrier / Adrenal Secretion switch
+	// techdata.dat is not yet extended
+	//	ChasmalColonySwitch				= 47,
 	};
 }
 

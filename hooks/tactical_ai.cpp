@@ -288,7 +288,7 @@ static bool is_channeling(Unit* unit) {
 	if (unit->mainOrderId == OrderId::FireYamatoGun1 && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
 		return true;
 	}
-	if (unit->mainOrderId == OrderId::Skyfall && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+	if (unit->mainOrderId == OrderId::PaladinSkyfall && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
 		return true;
 	}
 	if (unit->id == UnitId::ProtossStarSovereign && unit->mainOrderId == OrderId::CTFCOP2 && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
@@ -888,7 +888,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 
 		if (unit->id == UnitId::TerranApostle)
 		{
-			if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
+			if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::ApostleLazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
 			{
 				s32 count = 0;
 				cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
@@ -912,7 +912,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 		}
 		else if (unit->id == UnitId::TerranSavant)
 		{
-			if (unitExt->timers[TimerAI_Siphon] == 0 && unit->mainOrderId != OrderId::PowerSiphon)
+			if (unitExt->timers[TimerAI_Siphon] == 0 && unit->mainOrderId != OrderId::SavantPowerSiphon)
 			{
 				s32 count = 0;
 				cosmonarchyFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
@@ -929,7 +929,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 					auto enemy = rangeMatchUnit(unit, 7 * 32, Flags::Enemy | Flags::Spellcaster | Flags::HasEnergy, {});
 					if (enemy != nullptr)
 					{
-						unit->orderTo(OrderId::PowerSiphon, enemy);
+						unit->orderTo(OrderId::SavantPowerSiphon, enemy);
 						unitExt->timers[TimerAI_Siphon] = 3 * 32;
 						unitExt->timers[TimerAI_KitingCooldown] = 3 * 24;
 					}
@@ -997,7 +997,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 				});
 			}
 
-			if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0)
+			if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::MatralethEnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0)
 			{
 				s32 enemy_count = cosmonarchyUnitCount(nullptr, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast, {});
 				if (enemy_count >= 2)
@@ -1112,7 +1112,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 		}
 		else if (unit->id == UnitId::TerranSiren && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
 		{
-			if (unit->energy >= techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256)
+			if (unit->energy >= techdata_dat::EnergyCost[TechId::SirenTertiaryEyes] * 256)
 			{
 				u32 count = 0;
 				const u32 radius = 6 * 32;

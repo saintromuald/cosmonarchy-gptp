@@ -505,7 +505,7 @@ void Globals::frameHook()
 			const f64 damageMultiplier = 256.0 * (f64)framePeriod / effects[i].maxTime;
 			switch (effects[i].effectId)
 			{
-				case EffectId::GriefOfAllGods:
+				case EffectId::StarSovereignTheGriefOfAllGods:
 				{
 					if (!effects[i].parent)
 					{

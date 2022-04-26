@@ -56,7 +56,7 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	if (target->getCurrentHpInGame() < target->getMaxHpInGame())
 	{
 		reqHeal = true;
-		u32 overlayImageId = ImageId::NaniteField;
+		u32 overlayImageId = ImageId::ShamanNaniteField;
 		Unit* tgt = nullptr;
 		if (target->subunit != nullptr)
 		{
@@ -495,7 +495,7 @@ namespace hooks
 				// Star Sovereign - Grief of All Gods
 				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
 				{
-					globals.createEffect(EffectId::GriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId, unit);
+					globals.createEffect(EffectId::StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId, unit);
 				}
 
 				// blast effects
@@ -567,7 +567,7 @@ namespace hooks
 					scbw::decloakProc(unit);
 					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 0);
 					// Cast Lazarus Agent						
-					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256);
+					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::ApostleLazarusAgent] * 256);
 					auto r = 4 * 32;
 					auto n = cosmonarchyFinderMatch(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar, {});
 					scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r,
@@ -907,7 +907,7 @@ namespace hooks
 						targetExt->timers[TimerEnsnaringBrood] = 12 * 24;
 						target->sprite->createTopOverlay(ImageId::EnsnaringBroodOverlay);
 					});
-					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256);
+					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::MatralethEnsnaringBrood] * 256);
 				}
 			} break;
 			case UnitId::ProtossPylon:
@@ -1009,7 +1009,7 @@ namespace hooks
 								sources.push_back(unit);
 							}
 						});
-					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256);
+					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::SirenTertiaryEyes] * 256);
 					helper::playSoundFromSource(SoundId::SirenTertiaryEyesCast01, unit, 1, 0);
 				}
 			} break;

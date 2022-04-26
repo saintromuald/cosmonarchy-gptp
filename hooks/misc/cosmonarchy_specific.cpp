@@ -574,7 +574,7 @@ LABEL_18:
 		switch (orderId)
 		{
 			case OrderId::GuardianAspect:
-			case OrderId::Skyfall: // OrderId::AttackTile
+			case OrderId::PaladinSkyfall: // OrderId::AttackTile
 			case OrderId::Hover:
 			case OrderId::Warpin:
 			case OrderId::CTFCOP2:

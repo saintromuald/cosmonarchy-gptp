@@ -421,7 +421,7 @@ LABEL_36:
 			if (AI_Mainframe->requests->id == UnitId::ProtossArchon || AI_Mainframe->requests->id == UnitId::ProtossMindTyrant)
 			{
 				// Override archon and mind tyrant type
-				//request_type = RequestType_Train;
+				request_type = RequestType_Train;
 			}
 		}
 		else

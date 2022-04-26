@@ -116,8 +116,8 @@ namespace hooks
 						unit->orderSimple(OrderId::ResetCollision1,false);
 						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id],false);
 						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
-						//    the randomized orderTarget is very near the same spot the SCV resumed construction, but I think the function_004F1870 condition in State 4 should handle it.
-						//if (function_004EB9C0(unit, builtUnit->sprite->position.x, builtUnit->sprite->position.y))
+						//    the randomized orderTarget is very near the same spot the SCV resumed construction, but I think the helper::TerrainCollision_? condition in State 4 should handle it.
+						//if (helper::ChangeMovementTargetMoveTarget2(unit, builtUnit->sprite->position.x, builtUnit->sprite->position.y))
 						unit->mainOrderState = 3;
 					}
 				}
