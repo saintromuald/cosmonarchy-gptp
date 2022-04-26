@@ -95,55 +95,45 @@ namespace hooks
     }
 
 	// Hooked to enable unit mover for human players - Pr0nogo
-    s32 isTileBlockedBy(Unit** unitArray, Unit* builder, s32 x_tile, s32 y_tile, s8 dontIgnoreReacting, s8 alsoInvisible) // 00473300
+    s32 isTileBlockedBy(Unit** unit_array, Unit* builder, s32 x_tile, s32 y_tile, s8 dont_ignore_reacting, s8 also_invisible) // 00473300
     {
-        if (!*unitArray)
+        for (Unit** it = unit_array; *it; ++it)
         {
-            return 0;
-        }
-        while (1)
-        {
-            Unit** unitArrayVar = unitArray;
-            Unit* unitArrayPtr = *unitArray;
-            bool needsDetection = false;
+            Unit* other_unit = *it;
+            bool needs_detection = false;
             if (builder)
             {
-                if (unitArrayPtr->status & 0x300) // Requires Detection + Cloaked
+                if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked))
                 {
-                    if (!((1 << builder->playerId) & unitArrayPtr->visibilityStatus))
+                    if (!(other_unit->visibilityStatus & (1 << builder->playerId)))
                     {
-                        needsDetection = true;
+                        needs_detection = true;
                     }
                 }
-            }
-            if (!dontIgnoreReacting && unitArrayPtr->status & UnitStatus::IsBuilding
-                || unitArrayPtr == builder
-                || unitArrayPtr->status & 6
-                || unitArrayPtr->id == UnitId::Spell_DarkSwarm
-                || unitArrayPtr->id == UnitId::Spell_DisruptionWeb
-                || needsDetection && !alsoInvisible
-                || unitArrayPtr->sprite->flags & SpriteFlags::Hidden)
-            {
-                unitArrayPtr = unitArrayVar[1];
-                ++unitArrayVar;
-                if (!unitArrayPtr)
+                if (scbw::isAlliedTo(other_unit->playerId, builder->playerId))
                 {
-                    return 0;
+                    continue;
                 }
             }
-            if (unitOrderingX[unitArrayPtr->finderIndex.left].position < 32 * x_tile + 32
-                && unitOrderingX[unitArrayPtr->finderIndex.right].position > 32 * x_tile
-                && unitOrderingY[unitArrayPtr->finderIndex.top].position < 32 * y_tile + 32
-                && unitOrderingY[unitArrayPtr->finderIndex.bottom].position > 32 * y_tile)
+            if ((!dont_ignore_reacting && other_unit->status & UnitStatus::IsBuilding)
+                || (needs_detection && !also_invisible)
+                || other_unit == builder
+                || other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir)
+                || other_unit->id == UnitId::Spell_DarkSwarm
+                || other_unit->id == UnitId::Spell_DisruptionWeb
+                || other_unit->sprite->flags & SpriteFlags::Hidden)
             {
-                return needsDetection != 0 ? 1 : 4;
+                continue;
             }
-            unitArrayPtr = unitArrayVar[1];
-            ++unitArrayVar;
-            if (!unitArrayPtr)
+
+            if (unitOrderingX[other_unit->finderIndex.left].position < 32 * x_tile + 32
+                && unitOrderingX[other_unit->finderIndex.right].position > 32 * x_tile
+                && unitOrderingY[other_unit->finderIndex.top].position < 32 * y_tile + 32
+                && unitOrderingY[other_unit->finderIndex.bottom].position > 32 * y_tile)
             {
-                return 0;
+                return needs_detection != 0 ? 1 : 4;
             }
         }
+        return 0;
     }
 }

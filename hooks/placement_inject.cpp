@@ -137,6 +137,7 @@ namespace
 		result = hooks::isTileBlockedBy(unitArray, builder, x_tile, y_tile, dontIgnoreReacting, alsoInvisible);
 		__asm {
 			POPAD
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x14
