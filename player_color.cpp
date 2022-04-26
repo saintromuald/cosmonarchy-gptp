@@ -37,18 +37,18 @@ static std::vector<u32> get_player_tints_from_color(u32 color) {
 	return tints;
 }
 
-static bool can_use_player_color(u32 color, u32 last_player) {
+static bool can_use_player_color(u32 color, u32 player) {
 	for (u32 player_tint : get_player_tints_from_color(color)) {
-		if (!can_use_player_tint(player_tint, last_player)) {
+		if (!can_use_player_tint(player_tint, player)) {
 			return false;
 		}
 	}
 	return true;
 }
 
-static bool can_use_player_tint(u32 color_tint, u32 last_player) {
-	if (playerTable[last_player].race < banned_race_tints.size()) {
-		for (u32 banned_tint : banned_race_tints[playerTable[last_player].race]) {
+static bool can_use_player_tint(u32 color_tint, u32 player) {
+	if (playerTable[player].race < banned_race_tints.size()) {
+		for (u32 banned_tint : banned_race_tints[playerTable[player].race]) {
 			if (color_tint == banned_tint) {
 				return false;
 			}
@@ -61,9 +61,9 @@ static bool can_use_player_tint(u32 color_tint, u32 last_player) {
 			}
 		}
 	}
-	for (u32 player = 0; player < PlayerLimit; ++player) {
-		if (player != last_player && (player < last_player || !is_player_randomizable(player))) {
-			for (u32 other_tint : get_player_tints_from_color(player_color_list[player])) {
+	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
+		if (other_player != player && (other_player < player || !is_player_randomizable(other_player))) {
+			for (u32 other_tint : get_player_tints_from_color(player_color_list[other_player])) {
 				if (color_tint == other_tint) {
 					return false;
 				}
