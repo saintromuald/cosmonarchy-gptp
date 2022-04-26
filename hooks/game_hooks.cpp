@@ -25,6 +25,7 @@
 #include "scenario.h"
 #include "trigger_system.h"
 #include "base_layouts.h"
+#include "parser.h"
 
 const u32 hyperTrigger = 0x006509A0;
 
@@ -168,7 +169,24 @@ namespace hooks
 {
 	void tickUnit(Unit* unit);
 
+	static bool game_inited;
+
 	void nextUiFrame() {
+		if (!game_inited) {
+			game_inited = true;
+
+			/*
+			Parser parser = {};
+			parser.at = ...;
+			while (parser_get_word(&parser)) {
+				if (parser_eq(&parser, "-map")) {
+					Token token = parser_get_string(&parser);
+					helper::LoadScenarioSingle(token.data, 0, "Some Error Message", "Player Name", 6);
+				}
+			}
+			*/
+		}
+
 		tick_trigger_system(false);
 	}
 

@@ -10882,4 +10882,20 @@ namespace helper
 		return result;
 	}
 
+	u32 LoadScenarioSingle(char* title, u32 unused, char* error, char* player, u32 speed) {
+		static u32 result;
+		const u32 func_address = 0x004A8590;
+		__asm {
+			PUSHAD
+			PUSH speed
+			MOV ESI, player
+			MOV EDI, error
+			MOV ECX, unused
+			MOV EAX, title
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

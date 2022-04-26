@@ -254,6 +254,7 @@
     <ClCompile Include="AIScripter\AIParser.cpp" />
     <ClCompile Include="base_layouts.cpp" />
     <ClCompile Include="direct_sound.cpp" />
+    <ClCompile Include="parser.cpp" />
     <ClCompile Include="scenario.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests_inject.cpp" />
@@ -579,6 +580,7 @@
     <ClInclude Include="AIScripter\AIParser.h" />
     <ClInclude Include="base_layouts.h" />
     <ClInclude Include="direct_sound.h" />
+    <ClInclude Include="parser.h" />
     <ClInclude Include="scenario.h" />
     <ClInclude Include="hooks\aiscript\ai_requests.h" />
     <ClInclude Include="hooks\orders\building_making\building_modifier.h" />

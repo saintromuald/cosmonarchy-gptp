@@ -345,14 +345,18 @@ namespace hooks
 			Unit* unit = CreateUnitXY(chkunit->playerId, chkunit->unit_id, chkunit->x, chkunit->y, false);
 			if (unit) {
 				helper::editUnitFlags(unit, &chkunit->validStateFlags);
+				if (unit->id != UnitId::ResourceMineralField
+					&& unit->id != UnitId::ResourceMineralFieldType2
+					&& unit->id != UnitId::ResourceMineralFieldType3
+					&& unit->id != UnitId::ResourceVespeneGeyser) {
+					unit->hitPoints = unit->getMaxHpRaw();
+					unit->shields = unit->getMaxShieldsRaw();
+					unit->energy = unit->getMaxEnergy();
 
-				unit->hitPoints = unit->getMaxHpRaw();
-				unit->shields = unit->getMaxShieldsRaw();
-				unit->energy = unit->getMaxEnergy();
-
-				unit->status &= ~UnitStatus::Cloaked;
-				unit->status &= ~UnitStatus::Invincible;
-				unit->status &= ~UnitStatus::IsHallucination;
+					unit->status &= ~UnitStatus::Cloaked;
+					unit->status &= ~UnitStatus::Invincible;
+					unit->status &= ~UnitStatus::IsHallucination;
+				}
 			}
 			return unit;
 		}

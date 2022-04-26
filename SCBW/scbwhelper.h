@@ -1170,4 +1170,6 @@ namespace helper
 	b32 Ai_IsAttackPrepareRegion(AiRegion* region);
 
 	u32 Ai_CountUnitsInTown(AiTown* town, u32 unit_id, bool finished); // 00433210 Aka AI_WaitBuild
+
+	u32 LoadScenarioSingle(char* title, u32 unused, char* error, char* player, u32 speed); // 004A8590
 }

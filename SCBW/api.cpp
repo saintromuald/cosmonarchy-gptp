@@ -1187,52 +1187,42 @@ namespace scbw
 
 	bool canUseCliffAdvantage(Unit* unit, u8 weapon)
 	{
-		return unit != nullptr
-			&& !(unit->status & UnitStatus::InAir)
+		return !(unit->status & UnitStatus::InAir)
 			&& unit->id != UnitId::ProtossPlasmaShell
-			&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32)
-			&& !(unit->status & UnitStatus::InBuilding)
+			&& (!weapon || weapons_dat::MaxRange[weapon] > 32)
 			&& unit->id != UnitId::TerranHarakan;
 	}
 
 	s32 getCliffAdvantage(Unit* unit, u8 weapon)
 	{
-		if (unit == nullptr)
-		{
-			return 0;
-		}
 		if (!canUseCliffAdvantage(unit, weapon))
 		{
 			return 0;
 		}
+		s32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight / 2;
 		Unit* targetUnit = unit->orderTarget.unit;
-		if (targetUnit == nullptr)
+		if (!targetUnit)
 		{
-			return 0;
+			return sourceHeight;
 		}
-		s32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
-		s32 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
-		return (sourceHeight - targetHeight) / 2;
+		s32 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight / 2;
+		return std::max(sourceHeight - targetHeight, 0);
 	}
 
 	s32 getCreepAdvantage(Unit* unit, u8 weapon)
 	{
-		if (unit == nullptr)
-		{
-			return 0;
-		}
 		if (!canUseCliffAdvantage(unit, weapon) || unit->getRace() != RaceId::Zerg)
 		{
 			return 0;
 		}
-		Unit* targetUnit = unit->orderTarget.unit;
-		if (targetUnit == nullptr)
-		{
-			return 0;
-		}
 		bool sourceCreep = scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep;
+		Unit* targetUnit = unit->orderTarget.unit;
+		if (!targetUnit)
+		{
+			return sourceCreep;
+		}
 		bool targetCreep = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).hasCreep;
-		return (sourceCreep && !targetCreep) ? 1 : 0;
+		return sourceCreep && !targetCreep;
 	}
 
 	void applyEnsnare(Unit* unit)

@@ -57,12 +57,10 @@ namespace hooks
 			&& !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
 		{
 			// Height advantage
-			seekRange += 2;
-			seekRange -= (2 - std::max(scbw::getCliffAdvantage(unit), 0));
+			seekRange += scbw::getCliffAdvantage(unit) * 2;
 
 			// Creep advantage
-			seekRange += 1;
-			seekRange -= (1 - std::max(scbw::getCreepAdvantage(unit), 0));
+			seekRange += scbw::getCreepAdvantage(unit) * 2;
 		}
 
 		return seekRange;
@@ -118,12 +116,10 @@ namespace hooks
 		bonusAmount += weapons_dat::MaxRange[weaponId] * 0.02 * unitExt->values[ValueAnticthonStacks];
 
 		// Height advantage
-		bonusAmount += 128;
-		bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit, weaponId), 0)) * 64;
+		bonusAmount += scbw::getCliffAdvantage(unit, weaponId) * (2 * 32);
 
 		// Creep advantage
-		bonusAmount += 64;
-		bonusAmount -= (1 - std::max(scbw::getCreepAdvantage(unit, weaponId), 0)) * 64;
+		bonusAmount += scbw::getCreepAdvantage(unit, weaponId) * (2 * 32);
 
 		return weapons_dat::MaxRange[weaponId] + bonusAmount;
 	}
