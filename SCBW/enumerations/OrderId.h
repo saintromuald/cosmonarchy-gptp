@@ -387,8 +387,8 @@ enum Enum {
     // Cosmonarchy \\
 
     // Terran
-    Skyfall                 = 12,   // Attack Tile              | Paladin missile barrage ability
-    PowerSiphon             = 13,   // Hover                    | Savant energy siphon ability
+    PaladinSkyfall                 = 12,   // Attack Tile              | Paladin missile barrage ability
+    SavantPowerSiphon             = 13,   // Hover                    | Savant energy siphon ability
     EnergyDecay             = 104,  // Guardian Aspect          | Savant anti-specialist ability
     Observance              = 122,  // EMP Shockwave            | Science Vessel armor rend ability
 

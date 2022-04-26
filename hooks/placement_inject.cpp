@@ -107,15 +107,51 @@ namespace
 			RETN 0x24
 		}
 	}
+
+	void __declspec(naked) isTileBlockedBy_Wrapper() { // 00473300
+		static s32 result;
+		static Unit** unitArray;
+		static Unit* builder;
+		static s32 x_tile;
+		static s32 y_tile;
+		static s8 dontIgnoreReacting;
+		static s8 alsoInvisible;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV builder, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV x_tile, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV y_tile, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV dontIgnoreReacting, AL
+			MOV EAX, [EBP + 0x18]
+			MOV alsoInvisible, AL
+			POP EAX
+			MOV unitArray, EAX
+			PUSHAD
+		}
+		result = hooks::isTileBlockedBy(unitArray, builder, x_tile, y_tile, dontIgnoreReacting, alsoInvisible);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x14
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectPlacementHooks()
 	{
-		jmpPatch(InitPlacementBoxPos_Wrapper, 0x0048D660, 0);
-		jmpPatch(DrawPlacementBox_Wrapper, 0x0048DDC0, 4);
-//		jmpPatch(updatePlacementStateForPlacementBox_Wrapper, 0x0048DCE0, 0);
-//		jmpPatch(updateBuildingPlacementState_Units_Wrapper, 0x00473720, 1);
+		jmpPatch(InitPlacementBoxPos_Wrapper,					0x0048D660, 0);
+		jmpPatch(DrawPlacementBox_Wrapper,						0x0048DDC0, 4);
+//		jmpPatch(updatePlacementStateForPlacementBox_Wrapper,	0x0048DCE0, 0);
+//		jmpPatch(updateBuildingPlacementState_Units_Wrapper,	0x00473720, 1);
+		jmpPatch(isTileBlockedBy_Wrapper,						0x00473300, 0);
 	}
 }

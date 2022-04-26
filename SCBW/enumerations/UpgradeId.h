@@ -91,7 +91,7 @@ namespace UpgradeId {
 		Reservations = 81,				// Terran Building extra addon spot
 		RadiationShockwave = 82,		// Irradiate EMP on death
 		ExpandedHull = 83,				// Shuttle transport capacity
-		EnsnaringBrood = 84,			// Broodling/Infested Terran ensnare on attack/death
+		MatralethEnsnaringBrood = 84,			// Broodling/Infested Terran ensnare on attack/death
 		KaumodakiReactor = 85,			// Savant energy and ability area increase
 		EntropyGauntlets = 86,			// Savant Energy Decay area damage
 		ChaosMatter = 87,				// Exemplar bounce during Khaydarin Eclipse
@@ -130,7 +130,7 @@ namespace UpgradeId {
 		Incubators = 121,				// Broodling Broodspawn on kill
 		Autovitality = 122,				// Robotic unit shield capacity
 		IonPropulsion = 123,			// Vulture "fly" behavior
-		TempoChange = 124,				// Madrigal weapon switch // UNUSED
+		MadrigalTempoChange = 124,				// Madrigal weapon switch // UNUSED
 		RequiemAfterburners = 125,		// Madrigal missile speed
 		HammerfallShells = 126,			// Siege Tank splash radius
 		SunchaserMissiles = 127,		// Centaur secondary explosion

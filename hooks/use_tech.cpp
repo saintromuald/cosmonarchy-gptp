@@ -20,7 +20,7 @@ namespace hooks
 			{
 				TechCapableUnit = true;
 			}
-			if (tech == TechId::LobotomyMine)
+			if (tech == TechId::EidolonLobotomyMine)
 			{
 				TechCapableUnit = true;
 			}
@@ -75,7 +75,7 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::DefensiveMatrix, 0, 0);
 			} break;
-			case TechId::EnsnaringBrood:
+			case TechId::MatralethEnsnaringBrood:
 			{
 				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
 				buf[0] = 0x99;
@@ -125,7 +125,7 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::Hallucination1, 0, 0);
 			} break;
-			case TechId::TertiaryEyes:
+			case TechId::SirenTertiaryEyes:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
 				buf[0] = 0x99;
@@ -135,7 +135,7 @@ namespace hooks
 				buf[4] = RustId::CastTertiaryEyes;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
-			case TechId::GodsMadeFlesh:
+			case TechId::DemiurgeGodsMadeFlesh:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
 				buf[0] = 0x99;
@@ -145,7 +145,7 @@ namespace hooks
 				buf[4] = RustId::CastGodsMadeFlesh;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
-			case TechId::CancelNewAbiliity:
+			case TechId::CancelNewAbility:
 			{
 				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossMindTyrant)
 				{
@@ -182,7 +182,7 @@ namespace hooks
 					helper::QueueGameCommand(buf, 0xc);
 				}
 			} break;
-			case TechId::FailureMode:
+			case TechId::AnticthonFailureMode:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
 				buf[0] = 0x99;
@@ -212,7 +212,7 @@ namespace hooks
 				buf[4] = RustId::CastEmergencyDetonation;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
-			case TechId::PlanetCracker:
+			case TechId::StarSovereignTheGriefOfAllGods:
 			{
 				auto firstInList = clientSelectionGroup->unit[0];
 				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
@@ -221,7 +221,7 @@ namespace hooks
 				buf[2] = *ACTIVE_PLAYER_ID;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
-			case TechId::LazarusAgent:
+			case TechId::ApostleLazarusAgent:
 			{
 				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
 				buf[0] = 0x99;
@@ -231,7 +231,7 @@ namespace hooks
 				buf[4] = RustId::CastLazarusAgent;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
-			case TechId::TempoChange:
+			case TechId::MadrigalTempoChange:
 			{
 				s32 action = 1;
 				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleTempoChange) == 1)
@@ -246,16 +246,16 @@ namespace hooks
 				buf[4] = RustId::ToggleTempoChange;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
-			case TechId::Skyfall:
+			case TechId::PaladinSkyfall:
 			{
-				helper::issueTriTargetOrder(OrderId::Skyfall, 0, 0);
+				helper::issueTriTargetOrder(OrderId::PaladinSkyfall, 0, 0);
 			} break;
-			case TechId::EnthrallingAssault:
-			case TechId::ConjoiningRoot:
+			case TechId::AkistrokorEnthrallingAssault:
+			case TechId::SovrolethConjoiningRoot:
 			{
 				helper::issueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
 			} break;
-			case TechId::PowerSiphon:
+			case TechId::SavantPowerSiphon:
 			{
 				helper::issueTriTargetOrder(OrderId::Hover, 0, 0);
 			} break;
@@ -278,7 +278,7 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::CastMindControl, 0, 0);
 			} break;
-			case TechId::AuralAssault:
+			case TechId::LuminaryAuralAssault:
 			{
 				helper::issueTriTargetOrder(OrderId::CastOpticalFlare, 0, 0);
 			} break;

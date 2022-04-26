@@ -701,7 +701,7 @@ namespace hooks
 							}
 						}
 						// Anticthon buttonset handling - Failure Mode
-						else if (current_button->reqVar == TechId::FailureMode)
+						else if (current_button->reqVar == TechId::AnticthonFailureMode)
 						{
 							if (unitExt->timers[TimerAnticthonFailureMode])
 							{
@@ -894,6 +894,10 @@ namespace hooks
 						{
 							current_button_state = BUTTON_STATE::Invisible;
 						}
+						if (current_button->iconID == IconId::Fusion_Cutter
+							&& (*activePortraitUnit)->mainOrderId == OrderId::ConstructingBuilding) { // Talos Salvage ability
+							current_button_state = BUTTON_STATE::Invisible;
+						}
 						if (current_button->reqVar == TechId::Healing && current_button->iconID != IconId::Heal)
 						{
 							current_button_state = BUTTON_STATE::Disabled;
@@ -953,8 +957,8 @@ namespace hooks
 
 							// TERRAN \\
 
-							else if ((*activePortraitUnit)->id == UnitId::TerranTalos && // Talos Fusion Sealers passive
-								current_button->iconID == IconId::Fusion_Cutter_Harvest)
+							else if ((*activePortraitUnit)->id == UnitId::TerranTalos &&
+								current_button->iconID == IconId::Fusion_Cutter_Harvest) // Talos Fusion Sealers passive
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
@@ -1510,7 +1514,7 @@ namespace hooks
 						}
 
 						// Cancel new abilities!
-						if (current_button->actVar == TechId::CancelNewAbiliity)
+						if (current_button->actVar == TechId::CancelNewAbility)
 						{
 							bool canCancel = false;
 							if ((*activePortraitUnit)->id == UnitId::ProtossMindTyrant)

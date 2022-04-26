@@ -95,96 +95,55 @@ namespace hooks
     }
 
 	// Hooked to enable unit mover for human players - Pr0nogo
-	s32 updateBuildingPlacementState_Units(s32 yTile, Unit* builder, s32 xTile, u8 player, u16 unitId, s32 sizeWidthHeight, s32 placementStateEntry,
-		char bDontIgnoreReacting, char bAlsoInvisible, s32 withoutVision) // 00473720
-	{
-		s16 a1; // remove after fixing error
-
-		s32 result = 0;
-		ActiveTile** activeTile = &activeTileArray[xTile + yTile * mapTileSize->width];
-		s32 humanVisionSomething = 0;
-		if (playerTable[player].type == PlayerType::Human)
-		{
-			humanVisionSomething = 1 << player;
-		}
-
-		/*
-		Point32 dimensions; // Box32? Bounds?
-		dimensions.x = units_dat::BuildingDimensions[unitId].x;
-		dimensions.y = 32 * yTile + units_dat::BuildingDimensions[unitId].y / 2;
-		s32 xFactor = 32 * xTile + dimensions.x;
-		s16 a1 = xFactor - units_dat::UnitBounds[unitId].x;
-		v28 = dimensions.x - units_dat::UnitBounds[unitId].y;
-		v28.x = xFactor + units_dat::UnitBounds[unitId].w;
-		v28.y = dimensions.x + units_dat::UnitBounds[unitId].h;
-		*/
-
-		Unit** allUnitsInBounds = helper::getAllUnitsInBounds((Box16*)&a1);
-		s32 iterateOffset = 0;
-		s16 xTileIterate;
-		s32 yTileIterate = yTile;
-		if (sizeWidthHeight > 0) // SHIWORD(sizeWidthHeight)
-		{
-			// Vars used in iteration
-			s32 sizeWH = (s16)sizeWidthHeight;
-			s32 iterator = 0;
-			s32 placementOffset;
-			s32 placementOffset2;
-			s32 whileParam1;
-			s32 placementIterator;
-
-			u8 resultLowBound;
-			u8 bTileBlocked;
-
-			Point16 mapSize;
-			mapSize.x = mapTileSize->width;
-			mapSize.y = sizeWidthHeight;
-			do
-			{
-				whileParam1 = 0;
-				xTileIterate = xTile;
-				if (sizeWH > 0)
-				{
-					placementOffset = 6 * (iterator + 8 * placementStateEntry);
-					placementOffset2 = placementOffset;
-					placementIterator = 0;
-					do
-					{
-						resultLowBound = 0;
-						if (!buildingPlacementState[placementOffset + placementIterator] && (withoutVision || !(humanVisionSomething & (*activeTile)->visibilityFlags)))
-						{
-							if ((*activeTile)->isWalkable & 0x8000000 && helper::doesBuildingBlock(builder, xTileIterate, yTileIterate))
-							{
-								resultLowBound = 4;
-							}
-							else
-							{
-								bTileBlocked = helper::isTileBlockedBy(allUnitsInBounds, builder, xTileIterate, yTileIterate, bDontIgnoreReacting, bAlsoInvisible);
-								if (bTileBlocked)
-								{
-									resultLowBound = bTileBlocked;
-								}
-							}
-							if (result <= resultLowBound) // stupid
-							{
-								result = resultLowBound;
-							}
-							placementOffset = placementOffset2;
-							buildingPlacementState[placementOffset2 + placementIterator] = resultLowBound;
-						}
-						++activeTile;
-						placementIterator = (u16)whileParam1 + 1;
-						sizeWH = (s16)sizeWidthHeight;
-						++xTileIterate;
-					} while ((u16)whileParam1 < (s32)(s16)sizeWidthHeight);
-				}
-				activeTile = activeTile + mapSize.x;
-				iterator = iterateOffset + 1;
-				iterateOffset = iterator;
-				++yTileIterate;
-			} while ((u16)iterator < (s32)sizeWidthHeight); // SHIWORD(sizeWidthHeight)
-		}
-		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
-		return result;
-	}
+    s32 isTileBlockedBy(Unit** unitArray, Unit* builder, s32 x_tile, s32 y_tile, s8 dontIgnoreReacting, s8 alsoInvisible) // 00473300
+    {
+        if (!*unitArray)
+        {
+            return 0;
+        }
+        while (1)
+        {
+            Unit** unitArrayVar = unitArray;
+            Unit* unitArrayPtr = *unitArray;
+            bool needsDetection = false;
+            if (builder)
+            {
+                if (unitArrayPtr->status & 0x300) // Requires Detection + Cloaked
+                {
+                    if (!((1 << builder->playerId) & unitArrayPtr->visibilityStatus))
+                    {
+                        needsDetection = true;
+                    }
+                }
+            }
+            if (!dontIgnoreReacting && unitArrayPtr->status & UnitStatus::IsBuilding
+                || unitArrayPtr == builder
+                || unitArrayPtr->status & 6
+                || unitArrayPtr->id == UnitId::Spell_DarkSwarm
+                || unitArrayPtr->id == UnitId::Spell_DisruptionWeb
+                || needsDetection && !alsoInvisible
+                || unitArrayPtr->sprite->flags & SpriteFlags::Hidden)
+            {
+                unitArrayPtr = unitArrayVar[1];
+                ++unitArrayVar;
+                if (!unitArrayPtr)
+                {
+                    return 0;
+                }
+            }
+            if (unitOrderingX[unitArrayPtr->finderIndex.left].position < 32 * x_tile + 32
+                && unitOrderingX[unitArrayPtr->finderIndex.right].position > 32 * x_tile
+                && unitOrderingY[unitArrayPtr->finderIndex.top].position < 32 * y_tile + 32
+                && unitOrderingY[unitArrayPtr->finderIndex.bottom].position > 32 * y_tile)
+            {
+                return needsDetection != 0 ? 1 : 4;
+            }
+            unitArrayPtr = unitArrayVar[1];
+            ++unitArrayVar;
+            if (!unitArrayPtr)
+            {
+                return 0;
+            }
+        }
+    }
 }

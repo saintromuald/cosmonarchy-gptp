@@ -669,45 +669,6 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) isTileBlockedBy_Wrapper() // 00473300
-	{
-		static s32 result;
-		static Unit** unitArray;
-		static Unit* builder;
-		static s32 tile_x;
-		static s32 tile_y;
-		static s8 dontIgnoreReacting;
-		static s8 alsoInvisible;
-		__asm
-		{
-			PUSH EBP
-			MOV EBP, ESP
-			PUSH EAX
-			MOV EAX, [EBP + 0x08]
-			MOV builder, EAX
-			MOV EAX, [EBP + 0xC]
-			MOV tile_x, EAX
-			MOV EAX, [EBP + 0x10]
-			MOV tile_y, EAX
-			MOV EAX, [EBP + 0x14]
-			MOV dontIgnoreReacting, AL
-			MOV EAX, [EBP + 0x18]
-			MOV alsoInvisible, AL
-			POP EAX
-			MOV unitArray, EAX
-			PUSHAD
-		}
-		result = hooks::isTileBlockedBy(unitArray, builder, tile_x, tile_y, dontIgnoreReacting, alsoInvisible);
-		__asm
-		{
-			POPAD
-			MOV EAX, result
-			MOV ESP, EBP
-			POP EBP
-			RETN 0x14
-		}
-	}
-
 	void __declspec(naked) createUnit_Wrapper() // 004A09D0
 	{
 		static Unit* result;
@@ -781,7 +742,6 @@ namespace hooks
 
 		// Hook patches!
 //      jmpPatch(gameLoop_Wrapper, 0x004D94B0, 3);
-//      jmpPatch(isTileBlockedBy_Wrapper, 0x00473300, 0);
 //		jmpPatch(createUnit_Wrapper, 0x004A09D0, 1);
 		jmpPatch(ignoreIscriptGoToIdle_Wrapper, 0x00476550, 1);
 	}

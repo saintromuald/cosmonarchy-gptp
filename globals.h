@@ -29,7 +29,7 @@ namespace EffectId
 	enum
 	{
 		SalamanderFire,
-		GriefOfAllGods,
+		StarSovereignTheGriefOfAllGods,
 		IonField,
 		Criticality,
 		CausticDischarge,

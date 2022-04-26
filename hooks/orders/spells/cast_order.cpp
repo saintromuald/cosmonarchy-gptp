@@ -11,7 +11,7 @@ namespace hooks
 		Unit* orderTarget = caster->orderTarget.unit;
 		u16 meme = (u16)defaultOrderString;
 		if (techId == TechId::Hallucination
-			|| techId == TechId::AuralAssault
+			|| techId == TechId::LuminaryAuralAssault
 			|| (orderTarget && hooks::canTargetSpell(techId, orderTarget, 228, caster, orderTarget->sprite->position.x, orderTarget->sprite->position.y, &meme)))
 		{
 			char cheatFlags = *CHEAT_STATE;
@@ -122,7 +122,7 @@ namespace hooks
 			default:
 			{
 				if (techId != TechId::SpiderMines
-					&& techId != TechId::LobotomyMine)
+					&& techId != TechId::EidolonLobotomyMine)
 				{
 					bool hasTarget;
 					u16 errorStatString;

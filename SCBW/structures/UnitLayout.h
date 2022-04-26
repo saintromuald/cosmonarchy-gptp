@@ -23,7 +23,7 @@ namespace NewGameCommand
 		RelicAction = 0x03,
 		Aperture = 0x04,
 		PhaseLink = 0x05, // also Khaydarin Eclipse, obsolete
-		PlanetCracker = 0x06,
+		StarSovereignTheGriefOfAllGods = 0x06,
 		CreateUnit = 0x07,
 		// KhaydarinControl = 0x08, // obsolete
 		CarrierPrebuild = 0x09,
@@ -425,7 +425,7 @@ const u32 string_toggle_off[] = {1270, 1233};
 const u32 button_toggle_on[] = {369, 374};
 const u32 button_toggle_off[] = {236, 375};
 const u32 toggle_values[] = {RustId::ToggleDisruptionField, RustId::ToggleTempoChange};
-const u32 toggle_abilities[] = {TechId::DisruptionWeb, TechId::TempoChange};
+const u32 toggle_abilities[] = {TechId::DisruptionWeb, TechId::MadrigalTempoChange};
 const u32 generictoggles = 2;
 
 namespace CosmonarchyFlags1
