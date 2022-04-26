@@ -30,7 +30,7 @@ enum
 
 // TODO: Convert the vectors into switch statements - it will be more performant, flexible, and readable
 
-const std::vector<std::vector<u32>> playerTints =
+const std::vector<std::vector<u32>> player_tints =
 {
 	{	// Dark Red
 		PlayerColor::Maroon,
@@ -174,7 +174,7 @@ const std::vector<std::vector<u32>> playerTints =
 	},
 };
 
-const std::vector<std::vector<u32>> bannedTilesetTints =
+const std::vector<std::vector<u32>> banned_tileset_tints =
 {
 	{ // Badlands
 		PlayerTintCycleDependent,
@@ -210,7 +210,7 @@ const std::vector<std::vector<u32>> bannedTilesetTints =
 	},
 };
 
-const std::vector<std::vector<u32>> bannedRaceTints =
+const std::vector<std::vector<u32>> banned_race_tints =
 {
 	{ // Zerg
 		PlayerTintDarkBlue,
@@ -224,7 +224,7 @@ const std::vector<std::vector<u32>> bannedRaceTints =
 	},
 };
 
-std::vector<std::vector<std::vector<u32>>> personalityColors =
+std::vector<std::vector<std::vector<u32>>> personality_colors =
 {
 	{ // Zerg
 		{ // Assault
