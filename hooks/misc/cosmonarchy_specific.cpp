@@ -11,7 +11,6 @@ namespace ReqOpcode
 {
 	enum
 	{
-
 		Or = 0xff01,
 		CurrentUnitIs = 0xff02,
 		HasUnit = 0xff03,
@@ -179,68 +178,6 @@ namespace hooks
 			s32 variation = results[scbw::randBetween(0, result_pos - results.begin() - 1)];
 			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);
 			sprite->createTopOverlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
-		}
-	}
-
-	// Hooked to enable unit mover when placing buildings
-	s32 isTileBlockedBy(Unit** unitArray, Unit* builder, s32 x_tile, s32 y_tile, s8 dontIgnoreReacting, s8 alsoInvisible)
-	{ // 00473300
-		Unit* unitArrayPtr; // edx
-		Unit* builderVar; // edi
-		Unit** unitArrayVar; // esi
-		DWORD unitStatus; // eax
-		BOOL needsDetection; // eax
-
-		unitArrayVar = unitArray;
-		unitArrayPtr = *unitArray;
-		builderVar = builder;
-
-		if (!*unitArray)
-		{
-			return 0;
-		}
-
-		while (1)
-		{
-			needsDetection = 0;
-			if (builderVar)
-			{
-				unitStatus = unitArrayPtr->status;
-				if (unitStatus & 0x300)
-				{ // Requires Detection + Cloaked
-					if (!((1 << builderVar->playerId) & unitArrayPtr->visibilityStatus))
-						needsDetection = 1;
-				}
-			}
-			if (!dontIgnoreReacting && unitArrayPtr->status & 0x20000
-				|| unitArrayPtr == builderVar
-				|| unitArrayPtr->status & 6
-				|| unitArrayPtr->id == UnitId::Spell_DarkSwarm
-				|| unitArrayPtr->id == UnitId::Spell_DisruptionWeb
-				|| needsDetection && !alsoInvisible
-				|| unitArrayPtr->sprite->flags & 0x20)
-			{
-				unitArrayPtr = unitArrayVar[1];
-				++unitArrayVar;
-				if (!unitArrayPtr)
-				{
-					return 0;
-				}
-			}
-			if (unitOrderingX[unitArrayPtr->finderIndex.left].position < 32 * x_tile + 32
-				&& unitOrderingX[unitArrayPtr->finderIndex.right].position > 32 * x_tile
-				&& unitOrderingY[unitArrayPtr->finderIndex.top].position < 32 * y_tile + 32
-				&& unitOrderingY[unitArrayPtr->finderIndex.bottom].position > 32 * y_tile)
-			{
-				return needsDetection != 0 ? 1 : 4;
-			}
-			builderVar = builder;
-			unitArrayPtr = unitArrayVar[1];
-			++unitArrayVar;
-			if (!unitArrayPtr)
-			{
-				return 0;
-			}
 		}
 	}
 
