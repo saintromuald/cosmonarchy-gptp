@@ -220,7 +220,7 @@ namespace helper
 	bool unitCanInfest(Unit* unit);																			// 00402750
 	void AI_AttackUnit(Unit* unit);																			// 0043FFD0
 	Unit* findBestAttackTarget(Unit* unit);																	// 00443080
-	bool function_00462EA0(Unit* unit, u8 unknownByteValue);												// 00462EA0
+	bool Ai_TryReturnHome(Unit* unit, u8 unknownByteValue);												// 00462EA0
 	void function_00465780(Unit* unit);																		// 00465780
 	void removeOrderFromUnitQueue(Unit* unit, Order* order);												// 004742D0
 	void prependOrderTargetingUnit(Unit* unit, Unit* target, u8 orderId);									// 00474A70
@@ -228,10 +228,10 @@ namespace helper
 	bool function_00476610(Unit* unit, s32 x, s32 y);														// 00476610
 	bool isUnitInWeaponRange(Unit* unit, Unit* target);														// 00476870
 	void getWeaponBeginIscript(Unit* unit, IscriptAnimation::Enum anim);									// 00476ED0
-	void function_00477510(Unit* unit);																		// 00477510
+	void PickNewAttackTargetIfNeeded(Unit* unit);																		// 00477510
 	void function_00477820(Unit* unit, u8 orderId);															// 00477820
 	bool function_00478370(Unit* unit, u8 orderId);															// 00478370
-	bool function_00478540(Unit* unit);																		// 00478540
+	bool Order_AttackUnit_Main(Unit* unit);																		// 00478540
 	bool isUnitCritter(Unit* unit);																			// 0047B450
 	void moveToCollide(Unit* unit, Unit* target);														    // 00495400
 

@@ -599,5 +599,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectAttackExtenderHooks();
 	hooks::injectAIRequestsHooks();
 
+	hooks::injectAttackOrdersHooks();
+
 	return TRUE;
 }

@@ -174,7 +174,7 @@ namespace hooks
 
 		// perform lots of checks, possibly in an attempt to
 		// auto-select a better target if the turret has choice
-		helper::function_00477510(unit);
+		helper::PickNewAttackTargetIfNeeded(unit);
 		target = unit->orderTarget.unit;
 
 		if (target != nullptr)
@@ -484,7 +484,7 @@ namespace hooks
 		{
 			// perform lots of checks, possibly in an attempt to
 			// auto-select a better target if the unit has choice
-			helper::function_00477510(unit); // 00477D1F
+			helper::PickNewAttackTargetIfNeeded(unit); // 00477D1F
 		}
 
 		// 00477D25:
@@ -809,7 +809,7 @@ namespace hooks
 		if (helper::function_00478370(unit, unit->mainOrderId)
 			&& unit->mainOrderTimer == 0)
 		{ // 00478E0B
-			unit->mainOrderTimer = 15;
+			unit->mainOrderTimer = 0; // used to be 15
 			if (helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y) == helper::SAI_GetRegionIdFromPxEx(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 			{
 				helper::makeToHoldPosition(unit);
@@ -854,7 +854,7 @@ namespace hooks
 		if (helper::function_00478370(unit, unit->mainOrderId) != 0
 			&& unit->mainOrderTimer == 0)
 		{ // 00479058
-			unit->mainOrderTimer = 15;
+			unit->mainOrderTimer = 0; // used to be 15
 			if (unit->moveTarget.pt.x != unit->sprite->position.x
 				|| unit->moveTarget.pt.y != unit->sprite->position.y)
 			{ // Logically, this function would check one last time if a target is in range, and attack it if that's the case, else AttackMove end here
@@ -871,17 +871,17 @@ namespace hooks
 	{
 		if (playerTable[unit->playerId].type != PlayerType::Computer
 			|| (unit->orderTarget.unit != nullptr && units_dat::BaseProperty[(unit->orderTarget.unit)->id] & UnitProperty::Building)
-			|| !helper::function_00462EA0(unit, 0))
+			|| !helper::Ai_TryReturnHome(unit, 0))
 		{ // 00479C05
 
 			// perform lots of checks, possibly in an attempt to
 			// auto-select a better target if the unit has choice
-			helper::function_00477510(unit);
+			helper::PickNewAttackTargetIfNeeded(unit);
 
 			// function perform tests to see if attack is possible
 			// and how it should be done and return true if attack
 			// can be done
-			if (helper::function_00478540(unit))
+			if (helper::Order_AttackUnit_Main(unit))
 			{ // 00479C16
 				if (unit->pAI != nullptr)
 				{

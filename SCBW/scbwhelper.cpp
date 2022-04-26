@@ -2091,7 +2091,7 @@ namespace helper
 		return result;
 	}
 
-	bool function_00462EA0(Unit* unit, u8 unknownByteValue)
+	bool Ai_TryReturnHome(Unit* unit, u8 unknownByteValue)
 	{
 		const u32 Func_Sub462EA0 = 0x00462EA0;
 		static u32 _unknownByteValue;
@@ -2203,7 +2203,7 @@ namespace helper
 		}
 	}
 
-	void function_00477510(Unit* unit)
+	void PickNewAttackTargetIfNeeded(Unit* unit)
 	{
 		const u32 Func_Sub477510 = 0x00477510;
 		__asm {
@@ -2245,7 +2245,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool function_00478540(Unit* unit)
+	bool Order_AttackUnit_Main(Unit* unit)
 	{
 		const u32 Func_Sub478540 = 0x00478540;
 		static b32 bPreResult;
