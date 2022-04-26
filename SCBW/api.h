@@ -516,9 +516,9 @@ namespace scbw
 	Unit** getSourceQueens(Unit* unit);
 	u16 getLastQueueSlotType(Unit* a1);
 	s32 dir_saturate(s32 direction, s32 value);
-	bool canUseCliffAdvantage(Unit* unit, u8 weapon = NULL);
-	s32 getCliffAdvantage(Unit* unit, u8 weapon = NULL);
-	s32 getCreepAdvantage(Unit* unit, u8 weapon = NULL);
+	bool canUseCliffAdvantage(Unit* unit, u8 weapon = 0);
+	s32 getCliffAdvantage(Unit* unit, u8 weapon, bool defaultToMax);
+	s32 getCreepAdvantage(Unit* unit, u8 weapon, bool defaultToMax);
 	void setOffsetToParentSpecialOverlay(Image* image);
 	bool isSlowed(Unit* unit);
 	void hideAndDisableUnit(Unit* unit);

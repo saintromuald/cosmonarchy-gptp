@@ -11,11 +11,8 @@ namespace hooks
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
-		u16 unitId = unit->id;
-		u32 seekRange;
 		u8 bonusAmount = 0;
-
-		switch (unitId)
+		switch (unit->id)
 		{
 			case UnitId::TerranMadrigal:
 			{
@@ -34,7 +31,7 @@ namespace hooks
 		bonusAmount += unitExt->values[ValueRepententChorus] / 4;
 
 		// Stellar Enforcement - Magister behavior
-		if (unit->orderTarget.unit != nullptr)
+		if (unit->orderTarget.unit)
 		{
 			UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
 
@@ -51,17 +48,13 @@ namespace hooks
 		}
 
 		// Compile variable for use in height advantage calculations
-		seekRange = units_dat::SeekRange[unitId] + bonusAmount;
+		u32 seekRange = units_dat::SeekRange[unit->id] + bonusAmount;
 
-		if (unit->orderTarget.unit != nullptr
-			&& !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
-		{
-			// Height advantage
-			seekRange += scbw::getCliffAdvantage(unit) * 2;
+		// Height advantage
+		seekRange += scbw::getCliffAdvantage(unit, 0, true) * 2;
 
-			// Creep advantage
-			seekRange += scbw::getCreepAdvantage(unit) * 2;
-		}
+		// Creep advantage
+		seekRange += scbw::getCreepAdvantage(unit, 0, true) * 2;
 
 		return seekRange;
 	};
@@ -102,7 +95,7 @@ namespace hooks
 		}
 
 		// Stellar Enforcement - Magister behavior
-		if (unit->orderTarget.unit != nullptr
+		if (unit->orderTarget.unit
 			&& weapons_dat::MaxRange[weaponId] > 32)
 		{
 			UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
@@ -116,10 +109,10 @@ namespace hooks
 		bonusAmount += weapons_dat::MaxRange[weaponId] * 0.02 * unitExt->values[ValueAnticthonStacks];
 
 		// Height advantage
-		bonusAmount += scbw::getCliffAdvantage(unit, weaponId) * (2 * 32);
+		bonusAmount += scbw::getCliffAdvantage(unit, weaponId, false) * (2 * 32);
 
 		// Creep advantage
-		bonusAmount += scbw::getCreepAdvantage(unit, weaponId) * (2 * 32);
+		bonusAmount += scbw::getCreepAdvantage(unit, weaponId, false) * (2 * 32);
 
 		return weapons_dat::MaxRange[weaponId] + bonusAmount;
 	}

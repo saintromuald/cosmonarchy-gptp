@@ -1193,7 +1193,7 @@ namespace scbw
 			&& unit->id != UnitId::TerranHarakan;
 	}
 
-	s32 getCliffAdvantage(Unit* unit, u8 weapon)
+	s32 getCliffAdvantage(Unit* unit, u8 weapon, bool defaultToMax)
 	{
 		if (!canUseCliffAdvantage(unit, weapon))
 		{
@@ -1203,13 +1203,17 @@ namespace scbw
 		Unit* targetUnit = unit->orderTarget.unit;
 		if (!targetUnit)
 		{
-			return sourceHeight;
+			if (defaultToMax) {
+				return sourceHeight;
+			} else {
+				return 0;
+			}
 		}
 		s32 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight / 2;
 		return std::max(sourceHeight - targetHeight, 0);
 	}
 
-	s32 getCreepAdvantage(Unit* unit, u8 weapon)
+	s32 getCreepAdvantage(Unit* unit, u8 weapon, bool defaultToMax)
 	{
 		if (!canUseCliffAdvantage(unit, weapon) || unit->getRace() != RaceId::Zerg)
 		{
@@ -1219,7 +1223,11 @@ namespace scbw
 		Unit* targetUnit = unit->orderTarget.unit;
 		if (!targetUnit)
 		{
-			return sourceCreep;
+			if (defaultToMax) {
+				return sourceCreep;
+			} else {
+				return 0;
+			}
 		}
 		bool targetCreep = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).hasCreep;
 		return sourceCreep && !targetCreep;
