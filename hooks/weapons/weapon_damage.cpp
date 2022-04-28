@@ -1078,7 +1078,7 @@ namespace hooks
 					).getNearestTarget(data.target,
 						[&](Unit* unit)
 					{
-						//Don't attack friendly / allied units
+						// Don't attack friendly / allied units
 						if (unit->playerId == data.target->playerId)
 						{
 							return false;
@@ -1093,6 +1093,9 @@ namespace hooks
 						}
 						if (unit->status & UnitStatus::InAir)
 						{
+							return false;
+						}
+						if (!unit->isVisibleTo(data.target->playerId)) {
 							return false;
 						}
 						// TODO: iquare consultation
