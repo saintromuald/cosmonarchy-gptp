@@ -32,7 +32,7 @@ namespace
 			MOV weaponId, BL
 			PUSHAD
 		}
-		maxWeaponRange = hooks::getMaxWeaponRangeHook(unit, weaponId);
+		maxWeaponRange = hooks::getMaxWeaponRangeHook(unit, weaponId, unit->orderTarget.unit);
 		__asm
 		{
 			POPAD

@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
+#include <hooks/unit_stats/weapon_range.h>
 #include <globals.h>
 #include "byte_operations_utils.h"
 
@@ -689,9 +690,17 @@ LABEL_42:
 
 		if (target->status & UnitStatus::InAir)
 		{
+			f32 range = hooks::getMaxWeaponRangeHook(unit, unit->getAirWeapon(), target);
+			if (!helper::isTargetWithinMinRange(unit, range, target)) {
+				return false;
+			}
 			return units_dat::AirWeapon[unitWithWeapon->id] != WeaponId::None;
 		}
 
+		f32 range = hooks::getMaxWeaponRangeHook(unit, unit->getGroundWeapon(), target);
+		if (!helper::isTargetWithinMinRange(unit, range, target)) {
+			return false;
+		}
 		return units_dat::GroundWeapon[unitWithWeapon->id] != WeaponId::None;
 	}
 

@@ -80,7 +80,7 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 
 	f32 minRange = weapons_dat::MinRange[weaponId] / 32.0;
 	f32 range = weapons_dat::MaxRange[weaponId] / 32.0;
-	f32 bonusRange = hooks::getMaxWeaponRangeHook(unit, weaponId) / 32.0 - range;
+	f32 bonusRange = hooks::getMaxWeaponRangeHook(unit, weaponId, unit->orderTarget.unit) / 32.0 - range;
 	bonusRange -= scbw::get_cliff_advantage(unit, unit->orderTarget.unit, weaponId);
 
 	std::string damageModifiers = "";

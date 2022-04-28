@@ -124,7 +124,7 @@ namespace hooks
 		Unit* old = attacker->orderTarget.unit;
 		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
 		{
-			u32 range = hooks::getMaxWeaponRangeHook(attacker, weaponId);
+			u32 range = hooks::getMaxWeaponRangeHook(attacker, weaponId, 0);
 			auto filter = cosmonarchyFinderMatch(attacker, flags, {});
 			Unit* newTarget = scbw::UnitFinder::getNearestTarget(
 				attacker->getX() - range,

@@ -59,7 +59,7 @@ namespace hooks
 	// Returns the modified max range for the weapon, which is assumed to be attached to the given unit.
 	// This hook affects the behavior of Unit::getMaxWeaponRange().
 	// Note: Weapon ranges are measured in pixels.
-	u32 getMaxWeaponRangeHook(Unit* unit, u8 weaponId)
+	u32 getMaxWeaponRangeHook(Unit* unit, u8 weaponId, Unit* target)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -106,7 +106,7 @@ namespace hooks
 		bonusAmount += weapons_dat::MaxRange[weaponId] * 0.02 * unitExt->values[ValueAnticthonStacks];
 
 		// Height advantage
-		bonusAmount += scbw::get_cliff_advantage(unit, unit->orderTarget.unit, weaponId) * 32;
+		bonusAmount += scbw::get_cliff_advantage(unit, target, weaponId) * 32;
 
 		return weapons_dat::MaxRange[weaponId] + bonusAmount;
 	}
@@ -122,13 +122,8 @@ namespace hooks
 				{
 					if (attacker->isTargetEnemy(target))
 					{
-						u32 weapon = units_dat::GroundWeapon[attacker->id];
-						u32 max_range = *max_range_in_px;
-						max_range -= scbw::get_cliff_advantage(attacker, 0, weapon);
-						max_range += scbw::get_cliff_advantage(attacker, target, weapon);
-
 						if ((!min_range[9] || !helper::isTargetWithinMinRange(attacker, min_range[9], target))
-							&& helper::isTargetWithinMinRange(attacker, max_range, target))
+							&& helper::isTargetWithinMinRange(attacker, *max_range_in_px, target))
 						{
 							Unit* attacker_final = attacker;
 							if (attacker->subunit && helper::unitIsSubunit(attacker->subunit))
@@ -137,7 +132,7 @@ namespace hooks
 							}
 							if (!(attacker_final->status & UnitStatus::CanTurnAroundToAttack))
 							{
-								if (!helper::isAngleInAttackAngle(target->sprite->position.y, target->sprite->position.x, attacker_final, weapon))
+								if (!helper::isAngleInAttackAngle(target->sprite->position.y, target->sprite->position.x, attacker_final, units_dat::GroundWeapon[attacker->id]))
 								{
 									return 0;
 								}
