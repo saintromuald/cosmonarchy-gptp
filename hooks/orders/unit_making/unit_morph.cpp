@@ -93,6 +93,29 @@ namespace hooks
 		}
 	}
 
+	bool advanceRemainingBuildTimeCustom(Unit* unit) {
+		if (!unit->remainingBuildTime) {
+			return 1;
+		}
+
+		if (*CHEAT_STATE & CheatFlags::OperationCwal) {
+			unit->remainingBuildTime -= 16;
+		} else {
+			unit->remainingBuildTime -= 1;
+		}
+
+		if (!scbw::isLarvalEgg(unit) &&
+			scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep && 
+			*elapsedTimeFrames % 3 == 0) {
+			unit->remainingBuildTime -= 1;
+		}
+
+		if (unit->remainingBuildTime < 0) {
+			unit->remainingBuildTime = 0;
+		}
+		return 0;
+	}
+
 	void orders_Morph1(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -187,6 +210,7 @@ namespace hooks
 						helper::replaceUnitWithType(unit, eggId);
 					}
 					helper::changeUnitButtonSet(unit, unit->id);
+					
 					unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 					unit->mainOrderState = 1;
 					auto origin = unit->eggOrigin;
@@ -214,7 +238,7 @@ namespace hooks
 		else if (unit->mainOrderState == 1)
 		{
 			// advance
-			if (helper::advanceRemainingBuildTime(unit))
+			if (advanceRemainingBuildTimeCustom(unit))
 			{
 				auto anim = IscriptAnimation::SpecialState1;
 				unit->sprite->playIscriptAnim(anim, true);

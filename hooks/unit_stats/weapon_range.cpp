@@ -53,8 +53,8 @@ namespace hooks
 		// Height advantage
 		seekRange += scbw::getCliffAdvantage(unit, 0, true) * 2;
 
-		// Creep advantage
-		seekRange += scbw::getCreepAdvantage(unit, 0, true) * 2;
+		// Creep advantage (disabled)
+		//seekRange += scbw::getCreepAdvantage(unit, 0, true) * 2;
 
 		return seekRange;
 	};
@@ -111,8 +111,8 @@ namespace hooks
 		// Height advantage
 		bonusAmount += scbw::getCliffAdvantage(unit, weaponId, false) * (2 * 32);
 
-		// Creep advantage
-		bonusAmount += scbw::getCreepAdvantage(unit, weaponId, false) * (2 * 32);
+		// Creep advantage (disabled)
+		//bonusAmount += scbw::getCreepAdvantage(unit, weaponId, false) * (2 * 32);
 
 		return weapons_dat::MaxRange[weaponId] + bonusAmount;
 	}
