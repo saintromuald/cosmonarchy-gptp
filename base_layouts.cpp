@@ -20,8 +20,8 @@ static Equivalent equivalents[] = {
 	{UnitId::ZergLair, UnitId::ZergHive, 1},
 	{UnitId::ZergHive, UnitId::ZergSire, 1},
 
-	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 3},
-	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor, 3},
+	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 2},
+	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor, 2},
 
 	{UnitId::ZergQuazrokPool, UnitId::ZergLiivralPond, 1},
 	{UnitId::ZergHydrokDen, UnitId::ZergGorgralSwamp, 1},
