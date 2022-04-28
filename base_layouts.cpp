@@ -98,10 +98,6 @@ static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* p
 		return;
 	}
 
-	if (unit_id == UnitId::ZergAlaszilArbor) {
-		int i = 0;
-	}
-
 	Equivalent equivalent = find_unit_equivalent_down(unit_id);
 	if (equivalent.from != UnitId::None && !equivalent.merge_requests) {
 		add_placeholder_by_unit_id(base_layouts, placeholder, equivalent.from);
@@ -185,7 +181,7 @@ static u32 get_unit_cost(u32 unit_id) {
 	return units_dat::MineralCost[unit_id] + units_dat::GasCost[unit_id];
 }
 
-static int compare_base_layout(void* context, const void* a, const void* b) {
+static s32 compare_base_layout(void* context, const void* a, const void* b) {
 	BaseLayouts* base_layouts = (BaseLayouts*)context;
 	Placeholder* pa = (Placeholder*)a;
 	Placeholder* pb = (Placeholder*)b;
