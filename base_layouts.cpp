@@ -4,14 +4,15 @@
 u32 chk_cache_size;
 CHKUnit chk_cache[ChkCacheLimit];
 
-static BaseLayouts global_base_layouts[PlayerLimit];
-static BaseLayouts local_base_layouts[PlayerLimit][ResAreaLimit];
+static BaseLayouts mainarea_base_layouts[PlayerLimit];
+static BaseLayouts resarea_base_layouts[PlayerLimit][ResAreaLimit];
 static BaseLayouts* active_base_layouts[ResAreaLimit];
 
 struct Equivalent {
 	u32 from;
 	u32 to;
 	s32 priority_offset;
+	b32 merge_requests;
 };
 
 static Equivalent equivalents[] = {
@@ -29,9 +30,9 @@ static Equivalent equivalents[] = {
 	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern, -1},
 	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, -1},
 
-	{UnitId::ZergCreepColony, UnitId::ZergSunkenColony},
-	{UnitId::ZergCreepColony, UnitId::ZergSporeColony},
-	{UnitId::ZergCreepColony, UnitId::ZergLarvalColony},
+	{UnitId::ZergCreepColony, UnitId::ZergSunkenColony, 0, true},
+	{UnitId::ZergCreepColony, UnitId::ZergSporeColony, 0, true},
+	{UnitId::ZergCreepColony, UnitId::ZergLarvalColony, 0, true},
 
 	{UnitId::ZergOthstoleth, UnitId::ZergAlaszileth},
 	{UnitId::ZergOvileth, UnitId::ZergIroleth},
@@ -52,7 +53,7 @@ static Equivalent equivalents[] = {
 
 static Equivalent find_unit_equivalent_down(u32 unit_id) {
 	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
-		if (unit_id == equivalents[i].to) {
+		if (unit_id == equivalents[i].to && !equivalents[i].merge_requests) {
 			return equivalents[i];
 		}
 	}
@@ -68,6 +69,24 @@ static Equivalent find_unit_equivalent_up(u32 unit_id) {
 	return {UnitId::None, UnitId::None, 0};
 }
 
+static u32 find_unit_merge(u32 unit_id) {
+	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
+		if (unit_id == equivalents[i].to && equivalents[i].merge_requests) {
+			return equivalents[i].from;
+		}
+	}
+	return UnitId::None;
+}
+
+static u32 find_unit_base_merge(u32 unit_id) {
+	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
+		if (unit_id == equivalents[i].to && equivalents[i].merge_requests) {
+			return find_unit_base_merge(equivalents[i].from);
+		}
+	}
+	return unit_id;
+}
+
 static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* placeholder, u32 unit_id) {
 	if (unit_id == UnitId::SpecialControlNode) {
 		if (!placeholder->was_preplaced) {
@@ -80,7 +99,7 @@ static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* p
 	}
 
 	Equivalent equivalent = find_unit_equivalent_down(unit_id);
-	if (equivalent.from != UnitId::None) {
+	if (equivalent.from != UnitId::None && !equivalent.merge_requests) {
 		add_placeholder_by_unit_id(base_layouts, placeholder, equivalent.from);
 	}
 
@@ -110,10 +129,10 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 	placeholder.was_preplaced = !(flags & ChkUnitFlags_Hallucinated);
 	placeholder.should_request = !(flags & ChkUnitFlags_Cloaked);
 	if (flags & ChkUnitFlags_Invincible) {
-		add_placeholder_by_unit_id(&global_base_layouts[player], &placeholder, unit->unit_id);
+		add_placeholder_by_unit_id(&mainarea_base_layouts[player], &placeholder, unit->unit_id);
 	} else {
 		u32 res_area = scbw::get_closest_resarea(placeholder.position);
-		add_placeholder_by_unit_id(&local_base_layouts[player][res_area], &placeholder, unit->unit_id);
+		add_placeholder_by_unit_id(&resarea_base_layouts[player][res_area], &placeholder, unit->unit_id);
 	}
 }
 
@@ -147,10 +166,10 @@ static b32 is_tech_unitid(u32 unit_id) {
 }
 
 static u32 get_unit_class(u32 unit_id) {
-	if (unit_id == UnitId::ProtossPylon || unit_id == UnitId::ZergCreepColony || !(units_dat::BaseProperty[unit_id] & UnitProperty::Building)) {
+	if (unit_id == UnitId::ProtossPylon || !(units_dat::BaseProperty[unit_id] & UnitProperty::Building)) {
 		return 3;
 	}
-	if (unit_id == UnitId::ZergLarvalColony || unit_id == UnitId::ZergSunkenColony || unit_id == UnitId::ZergSporeColony) {
+	if (unit_id == UnitId::ZergCreepColony || unit_id == UnitId::ZergLarvalColony || unit_id == UnitId::ZergSunkenColony || unit_id == UnitId::ZergSporeColony) {
 		return 2;
 	}
 	if (units_dat::GroupFlags[unit_id].isFactory || is_tech_unitid(unit_id)) {
@@ -188,8 +207,8 @@ static void sort_base_layouts(BaseLayouts* base_layouts) {
 }
 
 static void init_base_layouts() {
-	memset(global_base_layouts, 0, sizeof(global_base_layouts));
-	memset(local_base_layouts, 0, sizeof(local_base_layouts));
+	memset(mainarea_base_layouts, 0, sizeof(mainarea_base_layouts));
+	memset(resarea_base_layouts, 0, sizeof(resarea_base_layouts));
 	memset(active_base_layouts, 0, sizeof(active_base_layouts));
 
 	for (u32 i = 0; i < chk_cache_size; ++i) {
@@ -215,7 +234,7 @@ static void init_base_layouts() {
 
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		for (u32 j = 0; j < ResAreaLimit; ++j) {
-			BaseLayouts* base_layouts = &local_base_layouts[i][j];
+			BaseLayouts* base_layouts = &resarea_base_layouts[i][j];
 			base_layouts->resarea_pos = resource_areas->areas[j].pos;
 			sort_base_layouts(base_layouts);
 
@@ -283,29 +302,31 @@ static bool unit_has_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 }
 
 static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder) {
+	u32 unit_id = find_unit_base_merge(placeholder->unit_id);
+
 	AiTown* town = base_layouts->town;
-	if (!hooks::createUnitIdAllowed(placeholder->unit_id, town->player)) {
+	if (!hooks::createUnitIdAllowed(unit_id, town->player)) {
 		return false;
 	}
-	if (!town->mainBuilding && units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
-		if (placeholder->unit_id != UnitId::TerranCommandCenter &&
-			placeholder->unit_id != UnitId::ProtossNexus && 
-			placeholder->unit_id != UnitId::ZergHatchery) {
+	if (!town->mainBuilding && units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
+		if (unit_id != UnitId::TerranCommandCenter &&
+			unit_id != UnitId::ProtossNexus && 
+			unit_id != UnitId::ZergHatchery) {
 			return false;
 		}
 	}
-	if (units_dat::GasCost[placeholder->unit_id] > resources->gas[town->player] &&
+	if (units_dat::GasCost[unit_id] > resources->gas[town->player] &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::TerranReservoir) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ProtossAquifer) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ZergExtractor)) {
 		return false;
 	}
-	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::CreepBuilding &&
-		!unit_has_creep(placeholder->unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
+	if (units_dat::BaseProperty[unit_id] & UnitProperty::CreepBuilding &&
+		!unit_has_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
 		return false;
 	}
-	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::RequiredPsi &&
-		!helper::unit_has_power(placeholder->unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
+	if (units_dat::BaseProperty[unit_id] & UnitProperty::RequiredPsi &&
+		!helper::unit_has_power(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
 		return false;
 	}
 	return true;
@@ -321,40 +342,39 @@ static bool has_expanding_town(u32 player) {
 	return false;
 }
 
-static void process_base_layouts(BaseLayouts* base_layouts) {
-	AiTown* town = base_layouts->town;
-	for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
-		Placeholder* placeholder = &base_layouts->placeholders[j];
-		if (!base_layouts->placeholders_requested[j] && can_build_placeholder(base_layouts, placeholder)) {
-			base_layouts->placeholders_requested[j] = true;
-			u32 count = ++base_layouts->request_count[placeholder->unit_id];
-			placeholder->wait_build_start_count = count;
-			if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
-				helper::Ai_Build(placeholder->unit_id, false, count, town, placeholder->priority);
-			} else {
-				scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, placeholder->guard_rebuilds, 0);
-			}
-		}
-		if (base_layouts->placeholders_requested[j] &&
-			units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
-			has_down_equivalent(town, placeholder->unit_id) &&
-			number_of_equivalents_up(town, placeholder->unit_id) < placeholder->wait_build_start_count) {
-			// Lock adding new requests until this request is started
-			break;
-		}
+static void init_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder) {
+	u32 merge = find_unit_merge(placeholder->unit_id);
+	if (merge != UnitId::None) {
+		Placeholder copy = *placeholder;
+		copy.unit_id = merge;
+		init_placeholder(base_layouts, &copy);
+	}
+
+	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
+		scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetBaseLayout, base_layouts->town->player, 0, 0);
 	}
 }
 
-static void start_base_layouts_town(BaseLayouts* base_layouts, AiTown* town) {
-	base_layouts->town = town;
-	memset(base_layouts->placeholders_requested, 0, sizeof(base_layouts->placeholders_requested));
-	memset(base_layouts->request_count, 0, sizeof(base_layouts->request_count));
-	for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
-		Placeholder* placeholder = &base_layouts->placeholders[j];
-		base_layouts->placeholders_requested[j] = !placeholder->should_request;
-		if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
-			scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
+static void request_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder) {
+	u32 merge = find_unit_merge(placeholder->unit_id);
+	if (merge != UnitId::None) {
+		Placeholder copy = *placeholder;
+		copy.unit_id = merge;
+		copy.priority += 1;
+		request_placeholder(base_layouts, &copy);
+	}
+
+	u32 count = ++base_layouts->request_count[placeholder->unit_id];
+	placeholder->wait_build_start_count = count;
+	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
+		if (placeholder->unit_id == UnitId::ZergSunkenColony ||
+			placeholder->unit_id == UnitId::ZergSporeColony ||
+			placeholder->unit_id == UnitId::ZergLarvalColony) {
+			helper::Ai_Build(UnitId::ZergCreepColony, false, count, base_layouts->town, placeholder->priority);
 		}
+		helper::Ai_Build(placeholder->unit_id, false, count, base_layouts->town, placeholder->priority);
+	} else {
+		scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetGuard, base_layouts->town->player, placeholder->guard_rebuilds, 0);
 	}
 }
 
@@ -367,30 +387,31 @@ void tick_base_layouts() {
 	for (u32 i = 0; i < ResAreaLimit; ++i) {
 		BaseLayouts* base_layouts = active_base_layouts[i];
 		if (base_layouts) {
-			if (!base_layouts->town->inited) {
+			AiTown* town = base_layouts->town;
+			if (!town->inited) {
 				base_layouts->town = 0;
 				active_base_layouts[i] = 0;
 				continue;
 			}
-			if (base_layouts->town->mainBuilding && has_expanding_town(base_layouts->town->player)) {
+			if (town->mainBuilding && has_expanding_town(town->player)) {
 				continue;
 			}
-			process_base_layouts(base_layouts);
-		}
-	}
-
-	// Tick global layouts
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		BaseLayouts* base_layouts = &global_base_layouts[i];
-		if (base_layouts->town) {
-			if (!base_layouts->town->inited) {
-				base_layouts->town = 0;
-				continue;
+			for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
+				Placeholder* placeholder = &base_layouts->placeholders[j];
+				if (placeholder->should_request) {
+					if (!base_layouts->placeholders_requested[j] && can_build_placeholder(base_layouts, placeholder)) {
+						base_layouts->placeholders_requested[j] = true;
+						request_placeholder(base_layouts, placeholder);
+					}
+					if (base_layouts->placeholders_requested[j] &&
+						units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
+						has_down_equivalent(town, placeholder->unit_id) &&
+						number_of_equivalents_up(town, placeholder->unit_id) < placeholder->wait_build_start_count) {
+						// Lock adding new requests until this request is started
+						break;
+					}
+				}
 			}
-			if (has_expanding_town(i)) {
-				continue;
-			}
-			process_base_layouts(base_layouts);
 		}
 	}
 
@@ -398,14 +419,26 @@ void tick_base_layouts() {
 	for (u32 i = 0; i < AiTownLimit; ++i) {
 		AiTown* town = &AiTownArray[i];
 		if (town->inited && !town->resareaNotSet && !active_base_layouts[town->resarea]) {
-			if (!global_base_layouts[town->player].town) {
-				start_base_layouts_town(&global_base_layouts[town->player], town);
-				global_base_layouts[town->player].resarea_pos = resource_areas->areas[town->resarea].pos;
-				sort_base_layouts(&global_base_layouts[town->player]);
+			BaseLayouts* base_layouts = &resarea_base_layouts[town->player][town->resarea];
+
+			BaseLayouts* mainarea_layouts = &mainarea_base_layouts[town->player];
+			if (mainarea_layouts->placeholders_count) {
+				for (u32 j = 0; j < mainarea_layouts->placeholders_count; ++j) {
+					if (base_layouts->placeholders_count < PlaceholderLimit) {
+						base_layouts->placeholders[base_layouts->placeholders_count++] = mainarea_layouts->placeholders[j];
+					}
+				}
+				sort_base_layouts(base_layouts);
+				memset(mainarea_layouts, 0, sizeof(BaseLayouts));
 			}
 
-			BaseLayouts* base_layouts = &local_base_layouts[town->player][town->resarea];
-			start_base_layouts_town(base_layouts, town);
+			base_layouts->town = town;
+			memset(base_layouts->placeholders_requested, 0, sizeof(base_layouts->placeholders_requested));
+			memset(base_layouts->request_count, 0, sizeof(base_layouts->request_count));
+			for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
+				Placeholder* placeholder = &base_layouts->placeholders[j];
+				init_placeholder(base_layouts, placeholder);
+			}
 			active_base_layouts[town->resarea] = base_layouts;
 		}
 	}
