@@ -402,7 +402,7 @@ void tick_base_layouts() {
 						base_layouts->placeholders_requested[j] = true;
 						request_placeholder(base_layouts, placeholder);
 					}
-					u32 base_unit_id = placeholder->unit_id; //find_unit_base_merge(placeholder->unit_id);
+					u32 base_unit_id = find_unit_base_merge(placeholder->unit_id);
 					if (base_layouts->placeholders_requested[j] &&
 						units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
 						has_down_equivalent(town, placeholder->unit_id) &&
