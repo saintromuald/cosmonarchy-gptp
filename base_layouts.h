@@ -14,6 +14,7 @@ enum ChkUnitFlags {
 extern u32 chk_cache_size;
 extern CHKUnit chk_cache[ChkCacheLimit];
 
+// This structure is mirrored in aise, be careful when you change it 
 struct Placeholder {
 	Point16 position;
 	u8 unit_id;

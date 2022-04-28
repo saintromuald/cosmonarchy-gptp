@@ -85,6 +85,12 @@ namespace
 
 		// Required to make cliff adventage changes work properly (target dependent check)
 		seekRange = hooks::getSeekRangeHook(unit, target) * 32;
+		
+		// Bunker bonus
+		if (unit->status & UnitStatus::InBuilding)
+		{
+			seekRange += 64;
+		}
 
 		// Check if the target is within the seek range
 		if (!(unit->getDistanceToTarget(target) <= seekRange))

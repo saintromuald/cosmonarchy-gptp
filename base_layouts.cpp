@@ -11,23 +11,23 @@ static BaseLayouts* active_base_layouts[ResAreaLimit];
 struct Equivalent {
 	u32 from;
 	u32 to;
-	u32 priority_decrease;
+	s32 priority_offset;
 };
 
 static Equivalent equivalents[] = {
-	{UnitId::ZergHatchery, UnitId::ZergLair, 1},
-	{UnitId::ZergLair, UnitId::ZergHive, 1},
-	{UnitId::ZergHive, UnitId::ZergSire, 1},
+	{UnitId::ZergHatchery, UnitId::ZergLair, -1},
+	{UnitId::ZergLair, UnitId::ZergHive, -1},
+	{UnitId::ZergHive, UnitId::ZergSire, -1},
 
-	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 3},
-	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor, 3},
+	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, -3},
+	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor, -3},
 
-	{UnitId::ZergQuazrokPool, UnitId::ZergLiivralPond, 1},
-	{UnitId::ZergHydrokDen, UnitId::ZergGorgralSwamp, 1},
-	{UnitId::ZergMuthrokSpire, UnitId::ZergVithrathHaunt, 1},
-	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre, 1},
-	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern, 1},
-	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, 1},
+	{UnitId::ZergQuazrokPool, UnitId::ZergLiivralPond, -1},
+	{UnitId::ZergHydrokDen, UnitId::ZergGorgralSwamp, -1},
+	{UnitId::ZergMuthrokSpire, UnitId::ZergVithrathHaunt, -1},
+	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre, -1},
+	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern, -1},
+	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, -1},
 
 	{UnitId::ZergCreepColony, UnitId::ZergSunkenColony},
 	{UnitId::ZergCreepColony, UnitId::ZergSporeColony},
@@ -88,6 +88,7 @@ static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* p
 		Placeholder* other = &base_layouts->placeholders[i];
 		if (unit_id == base_layouts->placeholders[i].unit_id &&
 			placeholder->position.x == other->position.x && placeholder->position.y == other->position.y) {
+			placeholder->priority += equivalent.priority_offset;
 			return;
 		}
 	}
@@ -96,7 +97,7 @@ static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* p
 	if (base_layouts->placeholders_count < PlaceholderLimit) {
 		base_layouts->placeholders[base_layouts->placeholders_count++] = *placeholder;
 	}
-	placeholder->priority -= equivalent.priority_decrease;
+	placeholder->priority += equivalent.priority_offset;
 }
 
 static void add_placeholder(CHKUnit* unit, u32 player) {
@@ -146,7 +147,7 @@ static b32 is_tech_unitid(u32 unit_id) {
 }
 
 static u32 get_unit_class(u32 unit_id) {
-	if (unit_id == UnitId::ProtossPylon || !(units_dat::BaseProperty[unit_id] & UnitProperty::Building)) {
+	if (unit_id == UnitId::ProtossPylon || unit_id == UnitId::ZergCreepColony || !(units_dat::BaseProperty[unit_id] & UnitProperty::Building)) {
 		return 3;
 	}
 	if (unit_id == UnitId::ZergLarvalColony || unit_id == UnitId::ZergSunkenColony || unit_id == UnitId::ZergSporeColony) {
@@ -217,6 +218,27 @@ static void init_base_layouts() {
 			BaseLayouts* base_layouts = &local_base_layouts[i][j];
 			base_layouts->resarea_pos = resource_areas->areas[j].pos;
 			sort_base_layouts(base_layouts);
+
+			/*
+			if (base_layouts->placeholders_count) {
+				char buffer[256] = {};
+				sprintf_s(buffer, "player_%u_resarea_%u.txt", i, j);
+				FILE* file = fopen(buffer, "wb");
+
+				for (u32 k = 0; k < base_layouts->placeholders_count; ++k) {
+					Placeholder* placeholder = &base_layouts->placeholders[k];
+					if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
+						fprintf(file, "%s\n", Unit::getName(placeholder->unit_id));
+						fprintf(file, "Priority: %u\n", placeholder->priority);
+						fprintf(file, "Was Preplaced: %u\n", placeholder->was_preplaced);
+						fprintf(file, "Should Request: %u\n", placeholder->should_request);
+						fprintf(file, "\n");
+					}
+				}
+
+				fclose(file);
+			}
+			*/
 		}
 	}
 }
