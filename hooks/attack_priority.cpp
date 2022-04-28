@@ -6,6 +6,7 @@
 #include <cassert>
 #include <algorithm>
 #include <SCBW/UnitFinder.h>
+#include <hooks/unit_stats/weapon_range.h>
 
 const s32 ATTACK_PRIORITY_GROUP_SIZE = 16;
 const s32 ATTACK_PRIORITY_LEVELS = 6;
@@ -81,6 +82,9 @@ namespace
 				return false;
 			}
 		}
+
+		// Required to make cliff adventage changes work properly (target dependent check)
+		seekRange = hooks::getSeekRangeHook(unit, target) * 32;
 
 		// Check if the target is within the seek range
 		if (!(unit->getDistanceToTarget(target) <= seekRange))

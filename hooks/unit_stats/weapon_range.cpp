@@ -7,7 +7,7 @@ namespace hooks
 	// Returns the modified seek range (AKA target acquisition range) for the unit.
 	// This hook affects the behavior of Unit::getSeekRange().
 	// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
-	u8 getSeekRangeHook(Unit* unit) // seek range is measured in tiles, unfortunately
+	u8 getSeekRangeHook(Unit* unit, Unit* target) // seek range is measured in tiles, unfortunately
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -51,7 +51,7 @@ namespace hooks
 		u32 seekRange = units_dat::SeekRange[unit->id] + bonusAmount;
 
 		// Height advantage
-		seekRange += scbw::get_cliff_advantage(unit, unit->orderTarget.unit, 0) * 2;
+		seekRange += scbw::get_cliff_advantage(unit, target, 0) * 2;
 
 		return seekRange;
 	};
@@ -114,6 +114,15 @@ namespace hooks
 	// Hooked to enable target filtering for units with height advantage or range increases. -Pr0nogo
 	s32 get_standard_attack_target(Unit* target, Unit* attacker) // 00442DA0
 	{
+		u32 weapon = attacker->getGroundWeapon();
+		if (target->status & UnitStatus::InAir) {
+			weapon = attacker->getAirWeapon();
+		}
+		f32 range = hooks::getMaxWeaponRangeHook(attacker, weapon, target);
+		if (!helper::isTargetWithinMinRange(attacker, range, target)) {
+			return false;
+		}
+
 		if (target != attacker)
 		{
 			if ((1 << attacker->playerId) & target->sprite->visibilityFlags)
@@ -132,7 +141,7 @@ namespace hooks
 							}
 							if (!(attacker_final->status & UnitStatus::CanTurnAroundToAttack))
 							{
-								if (!helper::isAngleInAttackAngle(target->sprite->position.y, target->sprite->position.x, attacker_final, units_dat::GroundWeapon[attacker->id]))
+								if (!helper::isAngleInAttackAngle(target->sprite->position.y, target->sprite->position.x, attacker_final, weapon))
 								{
 									return 0;
 								}
