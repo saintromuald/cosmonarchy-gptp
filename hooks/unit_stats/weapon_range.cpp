@@ -109,7 +109,7 @@ namespace hooks
 		bonusAmount += weapons_dat::MaxRange[weaponId] * 0.02 * unitExt->values[ValueAnticthonStacks];
 
 		// Height advantage
-		bonusAmount += scbw::getCliffAdvantage(unit, weaponId, false) * (2 * 32);
+		bonusAmount += scbw::getCliffAdvantage(unit, weaponId, true) * (2 * 32);
 
 		// Creep advantage (Disabled)
 		//bonusAmount += scbw::getCreepAdvantage(unit, weaponId, false) * (2 * 32);
