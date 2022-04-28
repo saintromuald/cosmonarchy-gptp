@@ -51,10 +51,7 @@ namespace hooks
 		u32 seekRange = units_dat::SeekRange[unit->id] + bonusAmount;
 
 		// Height advantage
-		seekRange += scbw::getCliffAdvantage(unit, 0) * 2;
-
-		// Creep advantage (Disabled)
-		//seekRange += scbw::getCreepAdvantage(unit, 0) * 2;
+		seekRange += scbw::get_cliff_advantage(unit, unit->orderTarget.unit, 0) * 2;
 
 		return seekRange;
 	};
@@ -109,10 +106,7 @@ namespace hooks
 		bonusAmount += weapons_dat::MaxRange[weaponId] * 0.02 * unitExt->values[ValueAnticthonStacks];
 
 		// Height advantage
-		bonusAmount += scbw::getCliffAdvantage(unit, weaponId) * 32;
-
-		// Creep advantage (Disabled)
-		//bonusAmount += scbw::getCreepAdvantage(unit, weaponId) * 32;
+		bonusAmount += scbw::get_cliff_advantage(unit, unit->orderTarget.unit, weaponId) * 32;
 
 		return weapons_dat::MaxRange[weaponId] + bonusAmount;
 	}
@@ -128,8 +122,13 @@ namespace hooks
 				{
 					if (attacker->isTargetEnemy(target))
 					{
+						u32 weapon = units_dat::GroundWeapon[attacker->id];
+						u32 max_range = *max_range_in_px;
+						max_range -= scbw::get_cliff_advantage(attacker, 0, weapon);
+						max_range += scbw::get_cliff_advantage(attacker, target, weapon);
+
 						if ((!min_range[9] || !helper::isTargetWithinMinRange(attacker, min_range[9], target))
-							&& helper::isTargetWithinMinRange(attacker, *max_range_in_px, target))
+							&& helper::isTargetWithinMinRange(attacker, max_range, target))
 						{
 							Unit* attacker_final = attacker;
 							if (attacker->subunit && helper::unitIsSubunit(attacker->subunit))
@@ -138,7 +137,7 @@ namespace hooks
 							}
 							if (!(attacker_final->status & UnitStatus::CanTurnAroundToAttack))
 							{
-								if (!helper::isAngleInAttackAngle(target->sprite->position.y, target->sprite->position.x, attacker_final, units_dat::GroundWeapon[attacker_final->id]))
+								if (!helper::isAngleInAttackAngle(target->sprite->position.y, target->sprite->position.x, attacker_final, weapon))
 								{
 									return 0;
 								}
