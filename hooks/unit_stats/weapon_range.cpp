@@ -51,10 +51,10 @@ namespace hooks
 		u32 seekRange = units_dat::SeekRange[unit->id] + bonusAmount;
 
 		// Height advantage
-		seekRange += scbw::getCliffAdvantage(unit, 0, true) * 2;
+		seekRange += scbw::getCliffAdvantage(unit, 0) * 2;
 
 		// Creep advantage (Disabled)
-		//seekRange += scbw::getCreepAdvantage(unit, 0, true) * 2;
+		//seekRange += scbw::getCreepAdvantage(unit, 0) * 2;
 
 		return seekRange;
 	};
@@ -109,10 +109,10 @@ namespace hooks
 		bonusAmount += weapons_dat::MaxRange[weaponId] * 0.02 * unitExt->values[ValueAnticthonStacks];
 
 		// Height advantage
-		bonusAmount += scbw::getCliffAdvantage(unit, weaponId, true) * (2 * 32);
+		bonusAmount += scbw::getCliffAdvantage(unit, weaponId) * 32;
 
 		// Creep advantage (Disabled)
-		//bonusAmount += scbw::getCreepAdvantage(unit, weaponId, false) * (2 * 32);
+		//bonusAmount += scbw::getCreepAdvantage(unit, weaponId) * 32;
 
 		return weapons_dat::MaxRange[weaponId] + bonusAmount;
 	}
