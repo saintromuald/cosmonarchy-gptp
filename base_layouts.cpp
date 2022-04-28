@@ -11,24 +11,24 @@ static BaseLayouts* active_base_layouts[ResAreaLimit];
 struct Equivalent {
 	u32 from;
 	u32 to;
-	s32 priority_offset;
+	s32 priority_decrease;
 	b32 merge_requests;
 };
 
 static Equivalent equivalents[] = {
-	{UnitId::ZergHatchery, UnitId::ZergLair, -1},
-	{UnitId::ZergLair, UnitId::ZergHive, -1},
-	{UnitId::ZergHive, UnitId::ZergSire, -1},
+	{UnitId::ZergHatchery, UnitId::ZergLair, 1},
+	{UnitId::ZergLair, UnitId::ZergHive, 1},
+	{UnitId::ZergHive, UnitId::ZergSire, 1},
 
-	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, -3},
-	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor, -3},
+	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 3},
+	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor, 3},
 
-	{UnitId::ZergQuazrokPool, UnitId::ZergLiivralPond, -1},
-	{UnitId::ZergHydrokDen, UnitId::ZergGorgralSwamp, -1},
-	{UnitId::ZergMuthrokSpire, UnitId::ZergVithrathHaunt, -1},
-	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre, -1},
-	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern, -1},
-	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, -1},
+	{UnitId::ZergQuazrokPool, UnitId::ZergLiivralPond, 1},
+	{UnitId::ZergHydrokDen, UnitId::ZergGorgralSwamp, 1},
+	{UnitId::ZergMuthrokSpire, UnitId::ZergVithrathHaunt, 1},
+	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre, 1},
+	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern, 1},
+	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, 1},
 
 	{UnitId::ZergCreepColony, UnitId::ZergSunkenColony, 0, true},
 	{UnitId::ZergCreepColony, UnitId::ZergSporeColony, 0, true},
@@ -98,25 +98,28 @@ static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* p
 		return;
 	}
 
+	if (unit_id == UnitId::ZergAlaszilArbor) {
+		int i = 0;
+	}
+
 	Equivalent equivalent = find_unit_equivalent_down(unit_id);
 	if (equivalent.from != UnitId::None && !equivalent.merge_requests) {
 		add_placeholder_by_unit_id(base_layouts, placeholder, equivalent.from);
 	}
 
+	placeholder->priority -= equivalent.priority_decrease;
 	for (u32 i = 0; i < base_layouts->placeholders_count; ++i) {
 		Placeholder* other = &base_layouts->placeholders[i];
 		if (unit_id == base_layouts->placeholders[i].unit_id &&
 			placeholder->position.x == other->position.x && placeholder->position.y == other->position.y) {
-			placeholder->priority += equivalent.priority_offset;
 			return;
 		}
 	}
 
-	placeholder->unit_id = (UnitId::Enum)unit_id;
+	placeholder->unit_id = unit_id;
 	if (base_layouts->placeholders_count < PlaceholderLimit) {
 		base_layouts->placeholders[base_layouts->placeholders_count++] = *placeholder;
 	}
-	placeholder->priority += equivalent.priority_offset;
 }
 
 static void add_placeholder(CHKUnit* unit, u32 player) {
