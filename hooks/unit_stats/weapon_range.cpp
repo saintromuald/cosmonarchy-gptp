@@ -17,7 +17,7 @@ namespace hooks
 			case UnitId::TerranMadrigal:
 			{
 				if (scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange))
-				{
+				{	
 					bonusAmount += 4;
 				}
 			} break;
