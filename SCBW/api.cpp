@@ -1193,7 +1193,7 @@ namespace scbw
 			&& unit->id != UnitId::TerranHarakan;
 	}
 
-	s32 getCliffAdvantage(Unit* unit, u8 weapon, bool defaultToMax)
+	s32 getCliffAdvantage(Unit* unit, u8 weapon)
 	{
 		if (!canUseCliffAdvantage(unit, weapon))
 		{
@@ -1203,17 +1203,13 @@ namespace scbw
 		Unit* targetUnit = unit->orderTarget.unit;
 		if (!targetUnit)
 		{
-			if (defaultToMax) {
-				return sourceHeight;
-			} else {
-				return 0;
-			}
+			return sourceHeight * 2;
 		}
 		s32 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight / 2;
-		return std::max(sourceHeight - targetHeight, 0);
+		return std::max(sourceHeight - targetHeight, 0) * 2;
 	}
 
-	s32 getCreepAdvantage(Unit* unit, u8 weapon, bool defaultToMax)
+	s32 getCreepAdvantage(Unit* unit, u8 weapon)
 	{
 		if (!canUseCliffAdvantage(unit, weapon) || unit->getRace() != RaceId::Zerg)
 		{
@@ -1223,14 +1219,10 @@ namespace scbw
 		Unit* targetUnit = unit->orderTarget.unit;
 		if (!targetUnit)
 		{
-			if (defaultToMax) {
-				return sourceCreep;
-			} else {
-				return 0;
-			}
+			return sourceCreep * 2;
 		}
 		bool targetCreep = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).hasCreep;
-		return sourceCreep && !targetCreep;
+		return (sourceCreep && !targetCreep) * 2;
 	}
 
 	void applyEnsnare(Unit* unit)
