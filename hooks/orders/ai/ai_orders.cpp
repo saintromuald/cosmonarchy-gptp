@@ -306,7 +306,6 @@ LABEL_126:
 		}
 	}
 
-
 	// Hooked to help with AI recloaking units after the cloak rewrite - Pr0nogo
 	void AI_OrderUnitCloaking(Unit* unit) // 0043B970
 	{
@@ -985,5 +984,75 @@ LABEL_21:
 		s32 y2;
 		helper::getRegionCenter(region->region, &x2, &y2);
 		return helper::getDistanceFast(unit->sprite->position.x, x2, unit->sprite->position.y, y2) <= 0x180;
+	}
+
+	// Hooked to fix AI height stupidity... or DUMBNESS??? -Pr0nogo
+	u32 __stdcall AI_remove_different_height(char* placement_data, Point16 desired_pos) // 004436C0
+	{
+		return 0;
+
+		/*
+		u32 ground_height;
+		char* placement_data_local;
+		s32 pos_x_copy;
+		u32 placement_data_iterator;
+		u32 ground_height_2;
+		bool iterate_done;
+		u32 loop_var;
+		char* placement_data_local_2;
+		u32 result;
+		char placement_data_buffer[4096];
+		s32 pos_x;
+		s32 times_to_iterate;
+		s32 pos_y;
+
+		memcpy(placement_data_buffer, placement_data, sizeof(placement_data_buffer));
+		ground_height = helper::get_ground_height_at_px(desired_pos.y, desired_pos.x);
+		pos_x = desired_pos.x - 1024;
+		pos_y = desired_pos.y - 1024;
+		placement_data_local = placement_data;
+		times_to_iterate = 64;
+		do
+		{
+			pos_x_copy = pos_x;
+			placement_data_iterator = 0;
+			do
+			{
+				if (placement_data_local[placement_data_iterator])
+				{
+					ground_height_2 = helper::get_ground_height_at_px(pos_y, pos_x_copy);
+					if (ground_height != ground_height_2)
+					{
+						placement_data_local[placement_data_iterator] = 0;
+					}
+				}
+				++placement_data_iterator;
+				pos_x_copy += 32;
+			} while (placement_data_iterator < 0x40);
+			placement_data_local += 64;
+			iterate_done = times_to_iterate == 1;
+			pos_y += 32;
+			--times_to_iterate;
+		} while (!iterate_done);
+		loop_var = 0;
+		placement_data_local_2 = placement_data;
+	LABEL_9:
+		result = 0;
+		while (!placement_data_local_2[result])
+		{
+			if (++result >= 0x40)
+			{
+				++loop_var;
+				placement_data_local_2 += 64;
+				if (loop_var < 0x40)
+				{
+					goto LABEL_9;
+				}
+				memcpy(placement_data, placement_data_buffer, 0x1000u);
+				return result;
+			}
+		}
+		return result;
+	*/
 	}
 }

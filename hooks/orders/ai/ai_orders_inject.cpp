@@ -343,6 +343,7 @@ namespace
 			RETN
 		}
 	}
+
 }
 
 namespace hooks
@@ -367,6 +368,7 @@ namespace hooks
 //		jmpPatch(getBunkerPlacementPosition_Wrapper,		0x004442E0, 4);
 //		jmpPatch(AI_GetBuildLocation_Wrapper,				0x004461B0, 1);
 		jmpPatch(AI_CheckMilitaryGrouping_Wrapper,			0x00439550, 1);
+		jmpPatch(hooks::AI_remove_different_height,			0x004436C0, 3);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

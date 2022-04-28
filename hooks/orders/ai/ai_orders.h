@@ -20,6 +20,7 @@ namespace hooks
 	void AI_GetBuildLocation(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos, s32 maxRange);			// 004461B0
 	u32 getTurretPlacementPosition(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag);		// 00443AC0
 	bool AI_CheckMilitaryGrouping(Unit* unit);																			// 00439550
+	u32 __stdcall AI_remove_different_height(char* placement_data, Point16 desired_pos);								// 004BD0F0
 
 	void injectAIOrdersHooks();
 }

@@ -10898,4 +10898,19 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For AI_remove_different_height
+	u32 get_ground_height_at_px(s32 y, s32 x) {
+		static u32 result;
+		static u32 func_address = 0x004BD0F0;
+		__asm {
+			PUSHAD
+			MOV EAX, y
+			MOV ECX, x
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

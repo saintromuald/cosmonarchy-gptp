@@ -1169,7 +1169,8 @@ namespace helper
 	b32 sub_43B6D0(u32 a1, Unit* unit, u32 a3);
 	b32 Ai_IsAttackPrepareRegion(AiRegion* region);
 
-	u32 Ai_CountUnitsInTown(AiTown* town, u32 unit_id, bool finished); // 00433210 Aka AI_WaitBuild
+	u32 Ai_CountUnitsInTown(AiTown* town, u32 unit_id, bool finished);						// 00433210 Aka AI_WaitBuild
 
-	u32 LoadScenarioSingle(char* title, u32 unused, char* error, char* player, u32 speed); // 004A8590
+	u32 LoadScenarioSingle(char* title, u32 unused, char* error, char* player, u32 speed);	// 004A8590
+	u32 get_ground_height_at_px(s32 y, s32 x);												// 004BD0F0
 }
