@@ -10902,11 +10902,54 @@ namespace helper
 	// For AI_remove_different_height
 	u32 get_ground_height_at_px(s32 y, s32 x) {
 		static u32 result;
-		static u32 func_address = 0x004BD0F0;
+		const u32 func_address = 0x004BD0F0;
 		__asm {
 			PUSHAD
 			MOV EAX, y
 			MOV ECX, x
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For get_standard_attack_target
+	s32 is_AI_target_related(Unit* attacker, Unit* target) {
+		static s32 result;
+		const u32 func_address = 0x004A1140;
+		__asm {
+			PUSHAD
+			MOV ECX, attacker
+			MOV ESI, target
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 get_threat_level(Unit* attacker, Unit* target) {
+		static s32 result;
+		const u32 func_address = 0x00442160;
+		__asm {
+			PUSHAD
+			MOV EBX, attacker
+			MOV EDI, target
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 add_unit_to_possible_targets(s32 threat_level, Unit* unit) {
+		static u32 result;
+		const u32 func_address = 0x00440160;
+		__asm {
+			PUSHAD
+			MOV ECX, threat_level
+			MOV ESI, unit
 			CALL func_address
 			MOV result, EAX
 			POPAD

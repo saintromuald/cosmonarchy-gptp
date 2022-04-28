@@ -66,20 +66,20 @@ struct Sprite
 	////////////////////////////////////////////////////////////////
 	//Actual data structure
 
-	/*0x00*/ Link<Sprite> link;
-	/*0x08*/ u16       spriteId;
-	/*0x0A*/ u8        playerId;        // officially "creator"
-	/*0x0B*/ u8        selectionIndex;  // 0 <= selectionIndex <= 11. Index in the selection area at bottom of screen.
-	/*0x0C*/ u8        visibilityFlags; // Determines whether the sprite is visible (not hidden by the fog-of-war).
-	/*0x0D*/ u8        elevationLevel;
-	/*0x0E*/ u8        flags;			// Use Sprite_Flags
-	/*0x0F*/ u8        selectionTimer;
-	/*0x10*/ u16       index;			// u32->u16 based on BWAPI/Source/BW/Sprite.h
-	/*0x12*/ u8		   width;			// based on BWAPI/Source/BW/Sprite.h
-	/*0x13*/ u8		   height;			// based on BWAPI/Source/BW/Sprite.h
-	/*0x14*/ Point16   position;
-	/*0x18*/ Image* mainGraphic;		// officially "pImagePrimary"
-	/*0x1C*/ List<Image> images;		// officially "pImageHead" and "pImageTail"
+	/*0x00*/ Link<Sprite>	link;
+	/*0x08*/ u16			spriteId;
+	/*0x0A*/ u8				playerId;			// officially "creator"
+	/*0x0B*/ u8				selectionIndex;		// 0 <= selectionIndex <= 11. Index in the selection area at bottom of screen.
+	/*0x0C*/ u8				visibilityFlags;	// Determines whether the sprite is visible (not hidden by the fog-of-war).
+	/*0x0D*/ u8				elevationLevel;
+	/*0x0E*/ u8				flags;				// Use Sprite_Flags
+	/*0x0F*/ u8				selectionTimer;
+	/*0x10*/ u16			index;				// u32->u16 based on BWAPI/Source/BW/Sprite.h
+	/*0x12*/ u8				width;				// based on BWAPI/Source/BW/Sprite.h
+	/*0x13*/ u8				height;				// based on BWAPI/Source/BW/Sprite.h
+	/*0x14*/ Point16		position;
+	/*0x18*/ Image*			mainGraphic;		// officially "pImagePrimary"
+	/*0x1C*/ List<Image>	images;				// officially "pImageHead" and "pImageTail"
 
 	////////////////////////////////////////////////////////////////////
 	// Official Broodwar methods (from beta), ignore these

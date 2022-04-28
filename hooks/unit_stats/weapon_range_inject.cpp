@@ -40,6 +40,23 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) get_standard_attack_target_Wrapper() { // 00442DA0
+		static s32 result;
+		static Unit* target;
+		static Unit* attacker;
+		__asm {
+			MOV target, ECX
+			MOV attacker, EDX
+			PUSHAD
+		}
+		result = hooks::get_standard_attack_target(target, attacker);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 // Defined in SCBW/structures/Unit.cpp
@@ -50,7 +67,9 @@ namespace hooks
 {
 	void injectWeaponRangeHooks()
 	{
-		jmpPatch(getSeekRangeWrapper,		0x00476000, 3);
-		jmpPatch(getMaxWeaponRangeWrapper,	0x00475870, 1);
+		jmpPatch(getSeekRangeWrapper,					0x00476000, 3);
+		jmpPatch(getMaxWeaponRangeWrapper,				0x00475870, 1);
+
+		jmpPatch(get_standard_attack_target_Wrapper,	0x00442DA0, 2);
 	}
 }

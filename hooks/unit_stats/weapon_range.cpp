@@ -116,4 +116,43 @@ namespace hooks
 
 		return weapons_dat::MaxRange[weaponId] + bonusAmount;
 	}
+
+	// Hooked to enable target filtering for units with height advantage or range increases. -Pr0nogo
+	s32 get_standard_attack_target(Unit* target, Unit* attacker) // 00442DA0
+	{
+		if (target != attacker)
+		{
+			if ((1 << attacker->playerId) & target->sprite->visibilityFlags)
+			{
+				if (helper::unitCanAttackTarget(target, attacker, 1))
+				{
+					if (attacker->isTargetEnemy(target))
+					{
+						if ((!min_range[9] || !helper::isTargetWithinMinRange(attacker, min_range[9], target))
+							&& helper::isTargetWithinMinRange(attacker, *max_range_in_px, target))
+						{
+							Unit* attacker_final = attacker;
+							if (attacker->subunit && helper::unitIsSubunit(attacker->subunit))
+							{
+								attacker_final = attacker->subunit;
+							}
+							if (!(attacker_final->status & UnitStatus::CanTurnAroundToAttack))
+							{
+								if (!helper::isAngleInAttackAngle(target->sprite->position.y, target->sprite->position.x, attacker_final, units_dat::GroundWeapon[attacker_final->id]))
+								{
+									return 0;
+								}
+							}
+							if (!helper::is_AI_target_related(attacker_final, target))
+							{
+								s32 threat_level = helper::get_threat_level(attacker_final, target);
+								helper::add_unit_to_possible_targets(threat_level, target);
+							}
+						}
+					}
+				}
+			}
+		}
+		return 0;
+	}
 }

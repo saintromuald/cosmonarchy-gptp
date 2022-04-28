@@ -523,6 +523,10 @@ SCBW_DATA(s8*,		unkSoundBoolCore,				0x006D1264);
 //typedef void(__fastcall* input_procs_func[19])(s32 arg);
 //SCBW_DATA(input_procs_func,	input_procs,	0x005968A0);
 
+// For get_standard_attack_target
+SCBW_DATA(u32*,		min_range,					0x006955B8); // sizeof 10
+SCBW_DATA(s32*,		max_range_in_px,			0x006957A4);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data
