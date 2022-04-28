@@ -13,9 +13,11 @@ namespace UnitId
 	// Unused
 	//	ZergSkryling										= 47,		// Scourge
 	//	CrashedBattlecruiser								= 126,		// Norad II Crashed Battlecruiser
-	//	TerranFutureStation									= 192,		// Terran Marker
 	//	LeftUpperLevelDoor									= 205		// Left Upper Level Door 	- might need mempatches?
 	//	RightUpperLevelDoor									= 206		// Right Upper Level Door	- might need mempatches?
+
+	// Special
+		SpecialControlNode									= 192,		// Terran Marker
 
 	// Shared-Unit
 		SharedCohort										= 50,		// Infested Terran
