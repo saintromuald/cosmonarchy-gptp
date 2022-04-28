@@ -25,7 +25,7 @@
 #include "scenario.h"
 #include "trigger_system.h"
 #include "base_layouts.h"
-#include "parser.h"
+#include "token_parser.h"
 
 const u32 hyperTrigger = 0x006509A0;
 

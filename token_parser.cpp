@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "token_parser.h"
 
 bool parser_get_word(Parser* parser) {
 	memset(&parser->token, 0, sizeof(parser->token));

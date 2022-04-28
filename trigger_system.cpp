@@ -2,7 +2,7 @@
 #include <dsound.h>
 #include <limits.h>
 
-#include "parser.h"
+#include "token_parser.h"
 
 // Copy paste from Antikythera
 #define RiffId(a, b, c, d) ((a << 0) | (b << 8) | (c << 16) | (d << 24))
