@@ -19,8 +19,9 @@ struct Placeholder {
 	u8 unit_id;
 	u8 priority;
 	u8 guard_rebuilds;
-	b8 should_request;
 	u8 wait_build_start_count;
+	b8 was_preplaced;
+	b8 should_request;
 };
 
 #define PlaceholderLimit 512

@@ -69,6 +69,16 @@ static Equivalent find_unit_equivalent_up(u32 unit_id) {
 }
 
 static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* placeholder, u32 unit_id) {
+	if (unit_id == UnitId::SpecialControlNode) {
+		if (!placeholder->was_preplaced) {
+			placeholder->should_request = false;
+			add_placeholder_by_unit_id(base_layouts, placeholder, UnitId::TerranCommandCenter);
+			add_placeholder_by_unit_id(base_layouts, placeholder, UnitId::ProtossNexus);
+			add_placeholder_by_unit_id(base_layouts, placeholder, UnitId::ZergHatchery);
+		}
+		return;
+	}
+
 	Equivalent equivalent = find_unit_equivalent_down(unit_id);
 	if (equivalent.from != UnitId::None) {
 		add_placeholder_by_unit_id(base_layouts, placeholder, equivalent.from);
@@ -96,6 +106,7 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 	placeholder.priority = unit->hp;
 	placeholder.guard_rebuilds = unit->energy == 100 ? 0 : unit->energy + 1;
 	u32 flags = unit->validStateFlags & unit->stateFlags;
+	placeholder.was_preplaced = !(flags & ChkUnitFlags_Hallucinated);
 	placeholder.should_request = !(flags & ChkUnitFlags_Cloaked);
 	if (flags & ChkUnitFlags_Invincible) {
 		add_placeholder_by_unit_id(&global_base_layouts[player], &placeholder, unit->unit_id);
