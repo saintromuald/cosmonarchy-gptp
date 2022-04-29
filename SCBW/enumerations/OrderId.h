@@ -98,7 +98,7 @@ enum Enum {
                     * Default Requirements: Unused. */
     Build5                 = 0x2E, /**< Nydus canal exit build order.
                     * Default Requirements: Unit must be Zerg Nydus Canal and must not have exit. */
-    Enternyduscanal        = 0x2F, /**< Enter/transport through nydus canal
+    EnterNydusCanal        = 0x2F, /**< Enter/transport through nydus canal
                     * Default Requirements: Unused. */
     BuildSelf2             = 0x30, /**< Protoss Building being built order.
                     * Default Requirements: Unused. */
