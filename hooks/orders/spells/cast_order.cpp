@@ -11,8 +11,8 @@ namespace hooks
 		Unit* orderTarget = caster->orderTarget.unit;
 		u16 meme = (u16)defaultOrderString;
 		if (techId == TechId::Hallucination
-			|| techId == TechId::LuminaryAuralAssault
-			|| (orderTarget && hooks::canTargetSpell(techId, orderTarget, 228, caster, orderTarget->sprite->position.x, orderTarget->sprite->position.y, &meme)))
+		||	techId == TechId::LuminaryAuralAssault
+		||	(orderTarget && hooks::canTargetSpell(techId, orderTarget, 228, caster, orderTarget->sprite->position.x, orderTarget->sprite->position.y, &meme)))
 		{
 			char cheatFlags = *CHEAT_STATE;
 			u16 techCost = techdata_dat::EnergyCost[techId] << 8;
@@ -267,31 +267,13 @@ namespace hooks
 				if (!(*CHEAT_STATE & CheatFlags::TheGathering) &&
 					unit->energy < spellCost)
 				{
-					u8 raceId;
-					char* message;
-					if (units_dat::GroupFlags[unit->id].isZerg)
-					{
-						raceId = RaceId::Zerg;
-					}
-					else if (units_dat::GroupFlags[unit->id].isTerran)
-					{
-						raceId = RaceId::Terran;
-					}
-					else if (units_dat::GroupFlags[unit->id].isProtoss)
-					{
-						raceId = RaceId::Protoss;
-					}
-					else
-					{
-						raceId = RaceId::Neutral;
-					}
-
-					message = (char*)statTxtTblNew->getString(864 + raceId); // Not enough energy
+					u8 raceId = unit->getRace();
+					char* message = (char*)statTxtTblNew->getString(864 + raceId); // Not enough energy
 					if (message != nullptr)
 					{
 						// display an error message only for the owner of the unit
-						if (*LOCAL_NATION_ID == unit->playerId &&
-							*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+						if (*LOCAL_NATION_ID == unit->playerId
+						&&	*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
 						{
 							helper::setUnitStatTxtErrorMsg(message);
 						}

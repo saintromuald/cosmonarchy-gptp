@@ -288,7 +288,7 @@ namespace hooks
 			} break;
 			case TechId::TalosSalvage:
 			{
-				helper::issueTriTargetOrder(OrderId::InfestMine2, 0, 0);
+				helper::issueTriTargetOrder(OrderId::CastFeedback, 0, 0);
 			} break;
 			default:
 			{
