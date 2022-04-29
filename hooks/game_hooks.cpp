@@ -51,8 +51,10 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	{
 		return;
 	}
+	if (scbw::getDistanceFast(target->position, shaman->position) > 128) {
+		return;
+	}
 
-	u32 dist = scbw::getDistanceFast(target->position, shaman->position);
 	bool reqHeal = false;
 	if (target->getCurrentHpInGame() < target->getMaxHpInGame())
 	{
