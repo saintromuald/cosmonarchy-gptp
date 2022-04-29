@@ -4,8 +4,7 @@
 struct BuildingModifier
 {
 	f32 multiplier;
-	u32 period;
 	u32 decrease;
 };
 
-BuildingModifier get_building_modifier(Unit* unit);
+BuildingModifier get_building_modifier(Unit* building, Unit* builder);

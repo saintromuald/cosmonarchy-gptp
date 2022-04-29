@@ -381,6 +381,10 @@ struct UnitExt
 	Point16					aiKitingOrigin;
 	// Target					rally;
 
+	f32						building_tick_last_progress;
+	f32						building_tick_progress;
+	u32						building_tick_last_update;
+
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
 	Unit*					units[UnitCount];

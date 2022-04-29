@@ -85,8 +85,8 @@ namespace hooks
 				{
 					unit->building.larvaTimer--;
 
-					BuildingModifier modifier = get_building_modifier(unit);
-					if (modifier.period && unit->building.larvaTimer % modifier.period == 0)
+					BuildingModifier modifier = get_building_modifier(unit, 0);
+					if (modifier.decrease)
 					{
 						if (unit->building.larvaTimer > modifier.decrease)
 						{
@@ -169,8 +169,8 @@ namespace hooks
 			{
 				unit->building.creepTimer -= 2;
 
-				BuildingModifier modifier = get_building_modifier(unit);
-				if (modifier.period && unit->building.creepTimer % modifier.period == 0)
+				BuildingModifier modifier = get_building_modifier(unit, 0);
+				if (modifier.decrease)
 				{
 					if (unit->building.creepTimer > modifier.decrease)
 					{

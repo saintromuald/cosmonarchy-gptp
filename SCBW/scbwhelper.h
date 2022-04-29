@@ -301,7 +301,7 @@ namespace helper
 	bool isDistanceGreaterThanHaltDistance(Unit* unit, s32 x, s32 y, u32 distance);							// 00401240
 	void fixTargetLocation(Point16* coords, u32 unitId);								                    // 00401FA0
 	bool isUnitPositions2Equal(Unit* unit);																	// 00402160
-	b32 buildingAddon(Unit* unit, u32 hpGain, b32 canBeAborted);											// 004679A0
+	b32 ProgressBuild(Unit* unit, u32 hpGain, b32 showHidden);											// 004679A0
 	void prependOrderTargetingNothing(Unit* unit, Order* order, u8 orderId);								// 00474760
 	void addOrderTargetingNothing(Unit* unit, Order* order, u8 orderId);									// 004749A0
 	bool canStillPlaceBuilding();														                    // 0048DDA0

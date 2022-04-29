@@ -1,20 +1,30 @@
 #include "building_modifier.h"
 #include <globals.h>
 
-BuildingModifier get_building_modifier(Unit* unit)
-{
-	BuildingModifier modifier = {0};
+BuildingModifier get_building_modifier(Unit* building, Unit* builder) {
+	BuildingModifier modifier = {};
 	modifier.multiplier = 1;
 
-	if (unit)
-	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
-		modifier.multiplier = 1 + 0.05 * unitExt->unitVectors[UnitVectorCrucibles].size();
-		if (unitExt->unitVectors[UnitVectorCrucibles].size())
-		{
-			modifier.decrease = 1 + (unitExt->unitVectors[UnitVectorCrucibles].size() - 1) / 20;
-			modifier.period = modifier.decrease / 0.05 / unitExt->unitVectors[UnitVectorCrucibles].size();
-		}
+	UnitExt* buildingExt = globals.GetUnitExt(building);
+	if (building) {
+		modifier.multiplier *= 1 + 0.05 * buildingExt->unitVectors[UnitVectorCrucibles].size();
+	}
+	if (builder && builder->id == UnitId::TerranTalos) {
+		modifier.multiplier *= 1.5;
+	}
+
+	// First time this is called in a frame, update the value
+	if (buildingExt->building_tick_last_update != *elapsedTimeFrames) {
+		buildingExt->building_tick_progress += (modifier.multiplier - 1);
+		buildingExt->building_tick_last_progress = buildingExt->building_tick_progress;
+	}
+	buildingExt->building_tick_last_update = *elapsedTimeFrames;
+
+	// Recall the value to calculate the new one and return properly
+	buildingExt->building_tick_progress = buildingExt->building_tick_last_progress;
+	while (buildingExt->building_tick_progress >= 1) {
+		buildingExt->building_tick_progress -= 1;
+		modifier.decrease += 1;
 	}
 
 	return modifier;
