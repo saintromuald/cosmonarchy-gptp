@@ -750,18 +750,22 @@ namespace hooks
 								if (data.attackingPlayerId != unit->playerId &&
 									!scbw::isAlliedTo(data.attackingPlayerId, unit->playerId))
 								{
-									return; // Ally Check
+									// Ally Check
+									return;
 								}
 								if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256)
-								{ // Shield Check for default behavior
+								{ 
+									// Shield Check for default behavior
 									helper::addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 								}
 								else
 								{ 
-									return; // Return if both checks failed
+									// Return if both checks failed
+									return;
 								}
 								if (units_dat::ShieldsEnabled[unit->id])
-								{ // Shield Heal
+								{ 
+									// Shield Heal
 									unit->healShields(2 * 256, data.target);
 								}
 							});
