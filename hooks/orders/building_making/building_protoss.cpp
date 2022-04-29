@@ -257,7 +257,7 @@ namespace hooks
 		if (jump_to_E50EE)
 		{
 			u32 hpGain, shieldGain;			
-			BuildingModifier modifier = get_building_modifier(building);
+			BuildingModifier modifier = get_building_modifier(building, 0);
 			if (building->remainingBuildTime != 0)
 			{
 				if (*CHEAT_STATE & CheatFlags::OperationCwal)
@@ -275,7 +275,7 @@ namespace hooks
 				{
 					building->remainingBuildTime--;
 
-					if (modifier.period && building->remainingBuildTime % modifier.period == 0)
+					if (modifier.decrease)
 					{
 						if (building->remainingBuildTime > modifier.decrease)
 						{

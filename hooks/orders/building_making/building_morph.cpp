@@ -29,7 +29,7 @@ namespace hooks
 
 	void orders_ZergBuildSelf(Unit* building)
 	{
-		BuildingModifier modifier = get_building_modifier(building);
+		BuildingModifier modifier = get_building_modifier(building, 0);
 
 		const s32 OPCWAL_PROGRESS_INCREASE = 16;
 		u16 buildingId;
@@ -242,7 +242,7 @@ namespace hooks
 
 			building->remainingBuildTime--;
 
-			if (modifier.period && building->remainingBuildTime % modifier.period == 0)
+			if (modifier.decrease)
 			{
 				if (building->remainingBuildTime > modifier.decrease)
 				{

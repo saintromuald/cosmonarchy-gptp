@@ -58,7 +58,7 @@ namespace hooks
 				if (builtUnit != nullptr)
 				{
 					hpGain = helper::getHPGainForRepair(builtUnit);
-					helper::buildingAddon(builtUnit, hpGain, FALSE);
+					helper::ProgressBuild(builtUnit, hpGain, FALSE);
 					if (builtUnit->status & UnitStatus::Completed)
 					{
 						helper::addHangarUnit(unit, builtUnit);
@@ -157,7 +157,7 @@ namespace hooks
 						for (Unit* unit : unitExt->unitVectors[UnitVectorCrucibles])
 						{
 							builtUnitExt->values[ValueCrucible] = 18; // 6 is ~115%, 18 should be ~105%
-							helper::buildingAddon(builtUnit, hpGain, TRUE);
+							helper::ProgressBuild(builtUnit, hpGain, TRUE);
 							if (builtUnit->status & UnitStatus::Completed)
 							{
 								extraBuild = true;
@@ -168,7 +168,7 @@ namespace hooks
 					{
 						builtUnitExt->values[ValueCrucible]--;
 					}
-					if (extraBuild || helper::buildingAddon(builtUnit, hpGain, TRUE))
+					if (extraBuild || helper::ProgressBuild(builtUnit, hpGain, TRUE))
 					{
 						if (builtUnit->status & UnitStatus::Completed)
 						{

@@ -3028,7 +3028,7 @@ namespace helper
 
 	// if canBeAborted is TRUE, the unit can be aborted because there's
 	// no room around the constructing building
-	b32 buildingAddon(Unit* unit, u32 hpGain, b32 canBeAborted)
+	b32 ProgressBuild(Unit* unit, u32 hpGain, b32 showHidden)
 	{
 		const u32 Func_buildingAddon = 0x004679A0;
 		static b32 bResult;
@@ -3037,7 +3037,7 @@ namespace helper
 			PUSHAD
 			MOV EDX, hpGain
 			MOV EAX, unit
-			PUSH canBeAborted
+			PUSH showHidden
 			CALL Func_buildingAddon
 			MOV bResult, EAX
 			POPAD

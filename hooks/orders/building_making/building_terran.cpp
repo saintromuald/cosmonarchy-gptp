@@ -77,7 +77,7 @@ namespace hooks
 	{
 		Unit* builtUnit = unit->orderTarget.unit;
 
-		BuildingModifier modifier = get_building_modifier(builtUnit);
+		BuildingModifier modifier = get_building_modifier(builtUnit, unit);
 
 		if (builtUnit != nullptr && !(builtUnit->status & UnitStatus::Completed))
 		{
@@ -264,14 +264,11 @@ namespace hooks
 				{
 					hpGain *= 16;
 				}
-				helper::buildingAddon(builtUnit, hpGain, FALSE);
-				if (modifier.period && builtUnit->remainingBuildTime % modifier.period == 0)
+				helper::ProgressBuild(builtUnit, hpGain, FALSE);
+				if (modifier.decrease)
 				{
-					if (builtUnit->remainingBuildTime > modifier.decrease)
-					{
-						builtUnit->remainingBuildTime -= modifier.decrease;
-					}
-					else
+					builtUnit->remainingBuildTime -= modifier.decrease;
+					if (builtUnit->remainingBuildTime < 0)
 					{
 						builtUnit->remainingBuildTime = 0;
 					}
