@@ -4101,7 +4101,7 @@ namespace helper
 		return (bPreResult == 0);
 	}
 
-	u32 function_00492620(Unit* unit, b32 wasMainOrderStateZero)
+	u32 OrderedSpell_ProgressMoving(Unit* unit, b32 wasMainOrderStateZero)
 	{
 		const u32 Func_Sub492620 = 0x00492620;
 		static u32 return_value;

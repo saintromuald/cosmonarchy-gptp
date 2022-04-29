@@ -428,7 +428,7 @@ namespace helper
 
 	//// give_unit
 	void ApplySpeedUpgradeFromUnitType(Unit* unit);																						// 00454370
-	void giveAI(Unit* unit);																									// 00463040
+	void giveAI(Unit* unit);																											// 00463040
 	void recheckAttacks(Unit* unit);																									// 00476D30
 	void incrementUnitScores(Unit* unit, s32 unkScore);																					// 00488BF0
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);																					// 004A1E50
@@ -441,7 +441,7 @@ namespace helper
 	bool function_00476640(Unit* unit, u32 weaponId);																					// 00476640
 	u32 get_statTxt_Str_0(Unit* unit, u32 playerId, char* message);																		// 0048EF30
 	bool canCastSpell_0(Unit* unit);																									// 00492140
-	u32 function_00492620(Unit* unit, b32 wasMainOrderStateZero);																		// 00492620
+	u32 OrderedSpell_ProgressMoving(Unit* unit, b32 wasMainOrderStateZero);																		// 00492620
 
 	// For spellOrder
 	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, u16* a7);										// 00492020
@@ -465,8 +465,8 @@ namespace helper
 	void refreshUnitVision(Unit* a1);																									// 004E5F30
 	void initUnitTrapDoodad(Unit* a1);																									// 004E6490
 	Order* removeOrderFromUnitQueue(Order* a1, Unit* a2);																				// 004742D0
-	Order* performAnotherOrder(u8 a1, s32 a2, Unit* a3, s16 a4, Vector32* a5, Unit* a6);													// 004745F0
-	void order(s32 a1, Unit* a2, s8 a3, Vector32* a4, Unit* a5, s32 a6);																	// 00474810
+	Order* performAnotherOrder(u8 a1, s32 a2, Unit* a3, s16 a4, Vector32* a5, Unit* a6);												// 004745F0
+	void order(s32 a1, Unit* a2, s8 a3, Vector32* a4, Unit* a5, s32 a6);																// 00474810
 	u32 getUnitStrength(Unit* a1, s32 a2, bool a3);																						// 00431800
 
 	//// make_nydus_exit

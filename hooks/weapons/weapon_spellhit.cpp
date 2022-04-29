@@ -11,7 +11,6 @@
 namespace hooks
 {
 	// Hooked to allow for replacing proc functions - Pr0nogo
-	// Still needs work, lots of weird conversions/casting in this one
 	Unit* iterateUnitsAtLocationTargetProc(Box16* location, Unit*(__fastcall* proc)(Unit*, Unit*), Unit* unit) // 004E8280
 	{
 		Unit** unitsInBounds = helper::getAllUnitsInBounds(location);
@@ -147,8 +146,7 @@ namespace hooks
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	// the timer is reset before this call 2 times out of 3 (with previousLockdownTimer holding the pre-reset value),
-	// and the 3rd case, previousLockdownTimer is set to 131 (0x83)
+	// the timer is reset before this call 2 times out of 3 (with previousLockdownTimer holding the pre-reset value), and the 3rd case, previousLockdownTimer is set to 131 (0x83)
 	void LockdownHit(Unit* target, u8 previousLockdownTimer, Bullet* bullet)
 	{
 		// add lockdown overlay if no ongoing lockdown already
@@ -299,12 +297,10 @@ namespace hooks
 		}
 	}
 
-	// bullet is not normally part of the function, so if the function is called
-	// in an unexpected way, it may not contain the correct value.
-	// /...
+	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	// In the original code, the parameters are gotten from Bullet as:
-	// attacker from bullet->sourceUnit
-	// x and y from bullet->sprite->position
+	//		attacker from bullet->sourceUnit
+	//		x and y from bullet->sprite->position
 	void EMPShockwaveHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		Thingy* emp_sprite = helper::createThingy(371, x, y, 0);
@@ -330,21 +326,19 @@ namespace hooks
 		{
 			area_of_effect.left = 0;
 		}
-		else
-			if (area_of_effect.right > *maxBoxRightValue)
-			{
-				area_of_effect.right = *maxBoxRightValue;
-			}
+		else if (area_of_effect.right > *maxBoxRightValue)
+		{
+			area_of_effect.right = *maxBoxRightValue;
+		}
 		// check and fix effect if beyond height of map
 		if (area_of_effect.top < 0)
 		{
 			area_of_effect.top = 0;
 		}
-		else
-			if (area_of_effect.bottom > *maxBoxBottomValue)
-			{
-				area_of_effect.bottom = *maxBoxBottomValue;
-			}
+		else if (area_of_effect.bottom > *maxBoxBottomValue)
+		{
+			area_of_effect.bottom = *maxBoxBottomValue;
+		}
 
 		// find all units in area of effect and pick the first
 		unitsInAreaOfEffect = helper::getAllUnitsInBounds(&area_of_effect);
@@ -358,19 +352,18 @@ namespace hooks
 				{
 					current_unit->remove();
 				}
-				else
-					if (current_unit->stasisTimer == 0) // don't affect units in stasis
+				else if (current_unit->stasisTimer == 0) // don't affect units in stasis
+				{
+					current_unit->energy -= 100;
+					current_unit->shields -= 100;
+					if (current_unit->sprite->flags & SpriteFlags::Selected
+						&& current_unit->sprite != nullptr) // Follows original code, though this order of tests doesn't make sense
 					{
-						current_unit->energy -= 100;
-						current_unit->shields -= 100;
-						if (current_unit->sprite->flags & SpriteFlags::Selected
-							&& current_unit->sprite != nullptr) // Follows original code, though this order of tests doesn't make sense
-						{
-							helper::setAllImageGroupFlagsPal11(current_unit->sprite); // redraw the unit
-						}
+						helper::setAllImageGroupFlagsPal11(current_unit->sprite); // redraw the unit
 					}
+				}
 			}
-			unitsInAreaOfEffect++;					// go on next unit of the list (or null)
+			unitsInAreaOfEffect++; // go on next unit of the list (or null)
 			current_unit = *unitsInAreaOfEffect;
 		}
 		// reload the previous temporary unit list from before the call to getAllUnitsInBounds
@@ -507,8 +500,7 @@ namespace hooks
 		}
 	}
 
-	//bullet is not normally part of the function, so if the function is called
-	//in an unexpected way, it may not contain the correct value.
+	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void BroodlingHit(Unit* attacker, Unit* target, Bullet* bullet)
 	{
 		u32 broodlings_to_spawn = 3;
@@ -595,8 +587,7 @@ namespace hooks
 		}
 	}
 
-	// bullet is not normally part of the function, so if the function is called
-	// in an unexpected way, it may not contain the correct value.
+	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		Box16 coords;

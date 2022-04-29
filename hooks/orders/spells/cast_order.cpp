@@ -122,7 +122,7 @@ namespace hooks
 			default:
 			{
 				if (techId != TechId::SpiderMines
-					&& techId != TechId::EidolonLobotomyMine)
+				&&	techId != TechId::EidolonLobotomyMine)
 				{
 					bool hasTarget;
 					u16 errorStatString;
@@ -224,25 +224,24 @@ namespace hooks
 				unit->orderSignal -= 2;
 				unit->orderToIdle();
 			}
-			else
-			{ // 00492886
+			else // 00492886
+			{
 				if (target != nullptr)
 				{
 					unit->orderTarget.pt.x = target->sprite->position.x;
 					unit->orderTarget.pt.y = target->sprite->position.y;
 
-					if (target->sprite->position.x != unit->nextTargetWaypoint.x ||
-						target->sprite->position.y != unit->nextTargetWaypoint.y)
-					{ // 004928C1
+					if (target->sprite->position.x != unit->nextTargetWaypoint.x
+					||	target->sprite->position.y != unit->nextTargetWaypoint.y) // 004928C1
+					{
 						unit->nextTargetWaypoint.x = target->sprite->position.x;
 						unit->nextTargetWaypoint.y = target->sprite->position.y;
 					}
 				}
 			}
-
 		}
-		else
-		{ // 004928CF
+		else // 004928CF
+		{
 			if (!helper::canCastSpell_0(unit))
 			{
 				char* message = (char*)statTxtTblNew->getString(876); // Invalid target
@@ -251,10 +250,9 @@ namespace hooks
 				// make the unit stop since the order failed
 				helper::setNextWaypoint(unit);
 				unit->orderToIdle();
-
 			}
-			else
-			{ // 0049291A
+			else // 0049291A
+			{
 				u8 techUsed = orders_dat::TechUsed[unit->mainOrderId];
 				s32 spellCost;
 				if (techUsed >= TechId::None)
@@ -275,23 +273,20 @@ namespace hooks
 					{
 						raceId = RaceId::Zerg;
 					}
+					else if (units_dat::GroupFlags[unit->id].isTerran)
+					{
+						raceId = RaceId::Terran;
+					}
+					else if (units_dat::GroupFlags[unit->id].isProtoss)
+					{
+						raceId = RaceId::Protoss;
+					}
 					else
-						if (units_dat::GroupFlags[unit->id].isTerran)
-						{
-							raceId = RaceId::Terran;
-						}
-						else
-							if (units_dat::GroupFlags[unit->id].isProtoss)
-							{
-								raceId = RaceId::Protoss;
-							}
-							else
-							{
-								raceId = RaceId::Neutral;
-							}
+					{
+						raceId = RaceId::Neutral;
+					}
 
 					message = (char*)statTxtTblNew->getString(864 + raceId); // Not enough energy
-
 					if (message != nullptr)
 					{
 						// display an error message only for the owner of the unit
@@ -302,20 +297,18 @@ namespace hooks
 						}
 					}
 					unit->orderToIdle();
-
 				}
-				else
-				{ // 004929C2
-
+				else // 004929C2
+				{
 					u32 result_00492620;
 					// may initiate movement from unit depending on mainOrderState
 					if (unit->mainOrderState == 0)
 					{
-						result_00492620 = helper::function_00492620(unit, 1);
+						result_00492620 = helper::OrderedSpell_ProgressMoving(unit, 1);
 					}
 					else
 					{
-						result_00492620 = helper::function_00492620(unit, 0);
+						result_00492620 = helper::OrderedSpell_ProgressMoving(unit, 0);
 					}
 
 					if (unit->mainOrderState == 0)
@@ -334,27 +327,22 @@ namespace hooks
 							unit->orderToIdle();
 						}
 					}
-					else
-					{ // 00492A01
+					else // 00492A01
+					{
 
-						if (unit->getSpellCountdown() == 0 &&
-							gcd_condition && // new
-							helper::function_00476640(unit, orderWeaponId) && // is ready to fire weapon (angle,range...) maybe?
-							!(unit->movementFlags & MovementFlags::Accelerating) &&
-							unit->getMovableState() != 0
-							)
+						if (unit->getSpellCountdown() == 0
+						&&	gcd_condition // new
+						&&	helper::function_00476640(unit, orderWeaponId) // is ready to fire weapon (angle,range...) maybe?
+						&&	!(unit->movementFlags & MovementFlags::Accelerating)
+						&&	unit->getMovableState() != 0)
 						{ // 00492A38
 							bool bStopHere = false;
-
 							// in case it was modified by a previous function, relinking
 							target = unit->orderTarget.unit;
-
 							if (unit->pAI != nullptr && target != nullptr)
 							{
-
 								if (orderWeaponId <= WeaponId::Maelstrom) // Maelstrom is the last spell-related weapon
 								{
-
 									// array bound to the function
 									const u8* const array_00492B44 = (u8*)(0x00492B44);
 
@@ -394,8 +382,8 @@ namespace hooks
 								}
 							}
 
-							if (!bStopHere)
-							{ // 00492AA3
+							if (!bStopHere) // 00492AA3
+							{
 								u8 cooldown;
 								u32 random_value;
 								unit->spendUnitEnergy(spellCost);

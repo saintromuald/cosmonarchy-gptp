@@ -405,13 +405,13 @@ namespace RustId
 		CastControlledDemolition,
 		CastEmergencyDetonation,
 		CastFailureMode,
+		CastSalvage,
 
 		CancelMindControl,
 		CancelLandGrab,
 		CancelAttachment,
 
 		ToggleReverseThrust,
-		ToggleSublimeShepherd, // unused
 		ToggleDisruptionField,
 		ToggleTempoChange,
 
