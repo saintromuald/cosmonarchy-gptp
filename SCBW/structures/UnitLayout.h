@@ -190,7 +190,7 @@ enum ExtValueId
 	ValueHierophantOverlay,
 	ValueExecutingLanifectMoveOrder,
 	ValueEnsnaringBroodAbility,
-	ValueCutaneousBarrier,			// unused
+	ValuePetrificationStacks,
 	ValueIonCannonProjectilePos,
 	ValueSwarmingOmenAbility,
 	ValueReconstitution,
@@ -277,7 +277,7 @@ enum ExtTimerId
 	TimerSkyfall,
 	TimerSireEggBoost,
 	TimerHallucinating,
-	TimerKnockoutDrivers,
+	TimerPetrification,
 	TimerDecloak,
 	TimerMineralSpecialRegen,
 	TimerAdrenal,

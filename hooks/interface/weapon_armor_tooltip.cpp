@@ -485,6 +485,8 @@ namespace hooks
 			unitExt->timers[TimerDirgeFuse], TimerType::Aise);
 		addStatus(statuses, "Adrenal Frenzy", unitExt->values[ValueNathrokorBuffStacks], 0,
 			unitExt->timers[TimerNathrokorBuff], TimerType::Aise);
+		addStatus(statuses, "Petrification", unitExt->values[ValuePetrificationStacks], 0,
+			unitExt->timers[TimerPetrification], TimerType::Aise);
 
 		if (unitExt->values[ValueSignifyStacks] < 5)
 		{
@@ -557,7 +559,6 @@ namespace hooks
 		addStatus(statuses, "Protective Instincts", unitExt->values[ValueProtectiveInstinctsStatus] > 0, 1);
 		addStatus(statuses, "Making Gods from Flesh", unitExt->values[ValueGodsMadeFleshActive] > 0, 1);
 		addStatus(statuses, "Adaptive Amitosis", unitExt->values[ValueAdaptiveAmitosis] > 0, 1);
-		addStatus(statuses, "Cutaneous Barrier", unitExt->values[ValueCutaneousBarrier] > 0, 1);
 		addStatus(statuses, "Infested", unitExt->values[ValueInfestedByAkistrokor] > 0, 1);
 		addStatus(statuses, "Enthralling Assault", unitExt->values[ValueEnthrallingTalons] > 0, 1);
 		addStatus(statuses, "Kelvin Munitions", unitExt->values[ValueKelvinMunitionsSlow] > 0, 1);
