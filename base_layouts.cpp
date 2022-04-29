@@ -366,11 +366,6 @@ static void request_placeholder(BaseLayouts* base_layouts, Placeholder* placehol
 	u32 count = ++base_layouts->request_count[placeholder->unit_id];
 	placeholder->wait_build_start_count = count;
 	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
-		if (placeholder->unit_id == UnitId::ZergSunkenColony ||
-			placeholder->unit_id == UnitId::ZergSporeColony ||
-			placeholder->unit_id == UnitId::ZergLarvalColony) {
-			helper::Ai_Build(UnitId::ZergCreepColony, false, count, base_layouts->town, placeholder->priority);
-		}
 		helper::Ai_Build(placeholder->unit_id, false, count, base_layouts->town, placeholder->priority);
 	} else {
 		scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetGuard, base_layouts->town->player, placeholder->guard_rebuilds, 0);
