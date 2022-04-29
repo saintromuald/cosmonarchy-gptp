@@ -1730,6 +1730,14 @@ namespace hooks
 			}
 		}
 
+		// Talos - Salvage Stun
+		if (unitExt->timers[TimerSalvageStunTimer] > 1) {
+			unit->status |= UnitStatus::Disabled;
+		}
+		if (unitExt->timers[TimerSalvageStunTimer] == 1) {
+			unit->status &= ~UnitStatus::Disabled;
+		}
+
 		// Cloaked units recloak after 2 seconds of being out of combat
 		if (unitExt->timers[TimerDecloak] == 1)
 		{

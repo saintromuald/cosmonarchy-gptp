@@ -304,6 +304,7 @@ enum ExtTimerId
 	TimerAxitriliskShieldLossSFX,
 	TimerOwnerChangedRecently,
 	TimerMagnetarAttraction,
+	TimerSalvageStunTimer,
 		
 	TimerAI_Lazarus,					   // |
 	TimerAI_Siphon,						   // |
@@ -381,9 +382,13 @@ struct UnitExt
 	Point16					aiKitingOrigin;
 	// Target					rally;
 
-	f32						building_tick_last_progress;
 	f32						building_tick_progress;
+	f32						building_tick_last_progress;
 	u32						building_tick_last_update;
+
+	u32						salvage_time;
+	f32						salvage_minerals;
+	f32						salvage_gas;
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
