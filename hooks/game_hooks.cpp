@@ -928,15 +928,6 @@ namespace hooks
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::MatralethEnsnaringBrood] * 256);
 				}
 			} break;
-			case UnitId::ProtossPylon:
-			{
-				// Pylon - Warp Matrix
-				if (unit->status & UnitStatus::Completed)
-				{
-					u32 nexusCount = unitCountTable[UnitId::ProtossNexus].player[unit->playerId];
-					unit->setSupplyProvided((7 + nexusCount) * 2);
-				}
-			} break;
 			case UnitId::ProtossClarion:
 			{
 				// Clarion Harmony Drive
@@ -1241,6 +1232,15 @@ namespace hooks
 					unitExt->timers[TimerAxitriliskShieldLossSFX] = AxitriliskShieldLossSFXTimer;
 					helper::playSoundFromSource(scbw::randBetween(SoundId::AxitriliskShieldLoss01, SoundId::AxitriliskShieldLoss03), unit, 1, 0);
 				}
+			} break;
+			case UnitId::TerranPhalanxSiegeMode:
+			{
+				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, courtesy of DarkenedFantasies.
+				/*
+				if (playerTable[unit->playerId].type == PlayerType::Computer && unit->mainOrderId == OrderId::WatchTarget) {
+					helper::order_computer(unit, OrderId::ComputerAI);
+				}
+				*/
 			} break;
 		}
 
