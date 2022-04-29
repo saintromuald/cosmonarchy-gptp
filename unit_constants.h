@@ -34,7 +34,7 @@ const s32 CharlatanHallucinationTimer = 3 * 24;
 // TERRAN \\
 
 // Cleric
-const s32 ClericHealValue = 107; // roughly 10 HP per second
+const s32 ClericHealValue = 128; // 12 HP per second
 
 // Shaman
 const s32 ShamanHeal = 2;

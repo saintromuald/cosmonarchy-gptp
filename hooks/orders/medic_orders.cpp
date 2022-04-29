@@ -29,7 +29,7 @@ namespace hooks
 		{
 			if (target->id == UnitId::ZergNydusCanal && target->building.nydusExit)
 			{
-				unit->orderTo(OrderId::Enternyduscanal, target);
+				unit->orderTo(OrderId::EnterNydusCanal, target);
 				return;
 			}
 

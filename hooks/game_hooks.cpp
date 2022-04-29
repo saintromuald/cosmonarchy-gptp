@@ -51,8 +51,11 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	{
 		return;
 	}
-
 	u32 dist = scbw::getDistanceFast(target->position, shaman->position);
+	if (dist > 128) {
+		return;
+	}
+
 	bool reqHeal = false;
 	if (target->getCurrentHpInGame() < target->getMaxHpInGame())
 	{
@@ -69,7 +72,18 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 		}
 		(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 	}
-	target->heal(heal * 256, shaman);
+
+	u32 new_heal = heal;
+	if (dist <= 32) {
+		new_heal *= 2.5;
+	}
+	else if (dist <= 64) {
+		new_heal *= 2;
+	}
+	else if (dist <= 96) {
+		new_heal *= 1.5;
+	}
+	target->heal(new_heal * 256, shaman);
 }
 
 struct CorpseFinder
@@ -928,15 +942,6 @@ namespace hooks
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::MatralethEnsnaringBrood] * 256);
 				}
 			} break;
-			case UnitId::ProtossPylon:
-			{
-				// Pylon - Warp Matrix
-				if (unit->status & UnitStatus::Completed)
-				{
-					u32 nexusCount = unitCountTable[UnitId::ProtossNexus].player[unit->playerId];
-					unit->setSupplyProvided((7 + nexusCount) * 2);
-				}
-			} break;
 			case UnitId::ProtossClarion:
 			{
 				// Clarion Harmony Drive
@@ -1241,6 +1246,15 @@ namespace hooks
 					unitExt->timers[TimerAxitriliskShieldLossSFX] = AxitriliskShieldLossSFXTimer;
 					helper::playSoundFromSource(scbw::randBetween(SoundId::AxitriliskShieldLoss01, SoundId::AxitriliskShieldLoss03), unit, 1, 0);
 				}
+			} break;
+			case UnitId::TerranPhalanxSiegeMode:
+			{
+				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, courtesy of DarkenedFantasies.
+				/*
+				if (playerTable[unit->playerId].type == PlayerType::Computer && unit->mainOrderId == OrderId::WatchTarget) {
+					helper::order_computer(unit, OrderId::ComputerAI);
+				}
+				*/
 			} break;
 		}
 

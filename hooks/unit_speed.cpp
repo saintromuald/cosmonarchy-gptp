@@ -254,6 +254,7 @@ namespace hooks
 				speed *= 0.9;
 			} break;
 			case UnitId::SharedTarasque:
+			case UnitId::TerranHarakan:
 			case UnitId::ZergKonvilisk:
 			{
 				speed *= 1.1;
