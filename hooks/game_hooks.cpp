@@ -1737,12 +1737,6 @@ namespace hooks
 			// remove overlay later
 		}
 
-		// Apply Ecclesiast - Astral Blessing stacks and period
-		if (unitExt->timers[TimerEcclesiast] == 1)
-		{
-			unitExt->values[ValueEcclesiastStack] = 0;
-		}
-
 		// Update flingy speed when Adrenal Frenzy period expires
 		if (unitExt->timers[TimerNathrokorBuff] == 1)
 		{

@@ -1157,14 +1157,6 @@ namespace scbw
 			childExt->values[ValueTerminalSurge] = parentExt->values[ValueTerminalSurge];
 		}
 
-		// Inherit Astral Blessing
-		if (parentExt->timers[TimerEcclesiast])
-		{
-			childExt->values[ValueEcclesiastStack] = parentExt->values[ValueEcclesiastStack];
-			childExt->values[ValueEcclesiastPlayer] = parentExt->values[ValueEcclesiastPlayer];
-			childExt->timers[TimerEcclesiast] = parentExt->timers[TimerEcclesiast];
-		}
-
 		// Inherit Stellar Enforcement
 		if (parentExt->values[ValueStellarEnforcement])
 		{

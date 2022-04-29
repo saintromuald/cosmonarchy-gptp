@@ -739,9 +739,32 @@ namespace hooks
 					case WeaponId::EcclesiastAstralBlaster:
 					{
 						// Astral Blessing - Ecclesiast behavior
-						targetExt->values[ValueEcclesiastStack] += 1;
-						targetExt->timers[TimerEcclesiast] = EcclesiastAstralBlessingTimer;
-						targetExt->values[ValueEcclesiastPlayer] = data.attacker->playerId;
+						const s32 range = 64;
+						scbw::UnitFinder(
+							data.target->getX() - range,
+							data.target->getY() - range,
+							data.target->getX() + range,
+							data.target->getY() + range
+						).forEach([&](Unit* unit)
+							{
+								if (data.attackingPlayerId != unit->playerId &&
+									!scbw::isAlliedTo(data.attackingPlayerId, unit->playerId))
+								{
+									return; // Ally Check
+								}
+								if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256)
+								{ // Shield Check for default behavior
+									helper::addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+								}
+								else
+								{ 
+									return; // Return if both checks failed
+								}
+								if (units_dat::ShieldsEnabled[unit->id])
+								{ // Shield Heal
+									unit->healShields(2 * 256, data.target);
+								}
+							});
 					} break;
 					case WeaponId::MagisterNeutronCannon:
 					{
@@ -979,39 +1002,6 @@ namespace hooks
 			}
 
 			globals.initRevive(data.target->position.x, data.target->position.y, data.target->playerId, data.target->id, data.target->energy, hp, town);
-		}
-
-		// Ecclesiast - Astral Blessing proc
-		if (targetExt->values[ValueEcclesiastStack])
-		{
-			s32 stacks = targetExt->values[ValueEcclesiastStack];
-			s32 player = targetExt->values[ValueEcclesiastPlayer];
-			const s32 range = 64;
-			scbw::UnitFinder(
-				data.target->getX() - range,
-				data.target->getY() - range,
-				data.target->getX() + range,
-				data.target->getY() + range
-			).forEach([&](Unit* unit)
-			{
-				if (player != unit->playerId && !scbw::isAlliedTo(player, unit->playerId))
-				{
-					return; // Ally Check
-				}
-				if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256)
-				{ // Shield Check for default behavior
-					helper::addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
-				}
-				else
-				{ // Return if both checks failed
-					return;
-				}
-				s32 healAmount = (stacks + 1) * 256;
-				if (units_dat::ShieldsEnabled[unit->id])
-				{ // Shield Heal
-					unit->healShields(healAmount, data.target);
-				}
-			});
 		}
 
 		// Akistrokor - Enthralling Assault

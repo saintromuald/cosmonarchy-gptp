@@ -473,8 +473,6 @@ namespace hooks
 		// Aise Timer + Value
 		addStatus(statuses, "Adrenal Glands", unitExt->values[ValueAdrenalStacks], 4,
 			unitExt->timers[TimerAdrenal], TimerType::Aise);
-		addStatus(statuses, "Astral Blessing", unitExt->values[ValueEcclesiastStack], 0,
-			unitExt->timers[TimerEcclesiast], TimerType::Aise);
 		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), 4,
 			captivatingClawsGetTimer(unit), TimerType::Aise);
 		addStatus(statuses, "Swarming Omen Aura", unitExt->values[ValueSwarmingOmenAbility], 1,
