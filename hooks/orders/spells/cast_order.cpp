@@ -39,18 +39,14 @@ namespace hooks
 			else if (casterGroupFlags.isTerran)
 			{
 				casterRace = 1;
-			}
-			else
-			{
-				casterRace = (casterGroupFlags.isProtoss) != 0 ? 2 : 4;
+			} else {
+			casterRace = (casterGroupFlags.isProtoss) != 0 ? 2 : 4;
 			}
 
 			char* string = helper::getStatTxtString(casterRace + 864);
-			if (string)
-			{
-				if (*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
-				{
-					helper::setUnitStatTxtErrorMsg((s32)string);
+			if (string) {
+				if (*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID) {
+					helper::setUnitStatTxtErrorMsg((s32) string);
 				}
 			}
 			helper::toIdle(caster);
@@ -59,38 +55,26 @@ namespace hooks
 
 		s16 orderStringIndex = defaultOrderString - 1;
 		char* finalString;
-		if ((u16)defaultOrderString)
-		{
-			if (orderStringIndex < *statTxtTbl)
-			{
-				finalString = (char*)statTxtTbl + statTxtTbl[orderStringIndex + 1];
-			}
-			else
-			{
+		if ((u16) defaultOrderString) {
+			if (orderStringIndex < *statTxtTbl) {
+				finalString = (char*) statTxtTbl + statTxtTbl[orderStringIndex + 1];
+			} else {
 				finalString = "";
 			}
-		}
-		else
-		{
+		} else {
 			finalString = 0;
 		}
-		helper::get_statTxt_Str_0(caster, (u8)caster->playerId, finalString);
+		helper::get_statTxt_Str_0(caster, (u8) caster->playerId, finalString);
 
 		s32 result;
-		if (caster->orderQueueHead)
-		{
+		if (caster->orderQueueHead) {
 			caster->userActionFlags |= 1u;
 			helper::orders_Nothing2(caster);
 			result = 0;
-		}
-		else
-		{
-			if (caster->pAI)
-			{
+		} else {
+			if (caster->pAI) {
 				helper::order_computer(caster, 0x9Cu);
-			}
-			else
-			{
+			} else {
 				helper::order_computer(caster, units_dat::ReturnToIdleOrder[caster->id]);
 			}
 			result = 0;
@@ -101,8 +85,7 @@ namespace hooks
 	// Same as above
 	bool canTargetSpell(u16 techId, Unit* target, s16 fowUnitId, Unit* caster, s16 x, s16 y, u16* error) // 00492020
 	{
-		switch (techId)
-		{
+		switch (techId) {
 			// Targeting ground
 			case TechId::EMPShockwave:
 			case TechId::ScannerSweep:
@@ -122,16 +105,24 @@ namespace hooks
 			default:
 			{
 				if (techId != TechId::SpiderMines
-				&&	techId != TechId::EidolonLobotomyMine)
-				{
-					bool hasTarget;
-					u16 errorStatString;
-					if (target)
-					{
-						if (!(target->status & UnitStatus::Invincible))
-						{
+					&& techId != TechId::EidolonLobotomyMine) {
+					bool hasTarget = false;
+					u16 errorStatString = 0;
+					if (target) {
+						if (!(target->status & UnitStatus::Invincible)) {
 						LABEL_20:
-							if (fowUnitId == UnitId::None)
+							if (techId == TechId::TalosSalvage) {
+								if (!target
+								|| target == caster
+								|| !scbw::isAlliedTo(target->playerId, caster->playerId)
+								|| !(target->status & UnitStatus::Completed)) {
+									errorStatString = 897; // Invalid target
+								}
+								if (target->stasisTimer) {
+									errorStatString = 900; // Can't target stasis
+								}
+							}
+							else if (fowUnitId == UnitId::None)
 							{
 								errorStatString = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->playerId, techId);
 							}
@@ -195,27 +186,29 @@ namespace hooks
 		if (unit->mainOrderId == OrderId::CastFeedback) {
 			Unit* target = unit->orderTarget.unit;
 			if (target) {
-				UnitExt* targetExt = globals.GetUnitExt(target);
-				targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
+				if (helper::moveTowards(unit, target)) {
+					UnitExt* targetExt = globals.GetUnitExt(target);
+					targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
 
-				targetExt->salvage_time += 1;
+					targetExt->salvage_time += 1;
 
-				targetExt->salvage_minerals += (f32)units_dat::MineralCost[target->id] / units_dat::TimeCost[target->id];
-				while (targetExt->salvage_minerals > 1) {
-					targetExt->salvage_minerals -= 1;
-					resources->minerals[unit->playerId] += 1;
-				}
+					targetExt->salvage_minerals += (f32)units_dat::MineralCost[target->id] / units_dat::TimeCost[target->id];
+					while (targetExt->salvage_minerals > 1) {
+						targetExt->salvage_minerals -= 1;
+						resources->minerals[unit->playerId] += 1;
+					}
 
-				targetExt->salvage_gas += (f32)units_dat::GasCost[target->id] / units_dat::TimeCost[target->id];
-				while (targetExt->salvage_gas > 1) {
-					targetExt->salvage_gas -= 1;
-					resources->gas[unit->playerId] += 1;
-				}
+					targetExt->salvage_gas += (f32)units_dat::GasCost[target->id] / units_dat::TimeCost[target->id];
+					while (targetExt->salvage_gas > 1) {
+						targetExt->salvage_gas -= 1;
+						resources->gas[unit->playerId] += 1;
+					}
 
-				if (targetExt->salvage_time >= units_dat::TimeCost[target->id]) {
-					resources->minerals[unit->playerId] += ceilf(targetExt->salvage_minerals);
-					resources->gas[unit->playerId] += ceilf(targetExt->salvage_gas);
-					target->remove();
+					if (targetExt->salvage_time >= units_dat::TimeCost[target->id]) {
+						resources->minerals[unit->playerId] += ceilf(targetExt->salvage_minerals);
+						resources->gas[unit->playerId] += ceilf(targetExt->salvage_gas);
+						target->remove();
+					}
 				}
 			}
 		}

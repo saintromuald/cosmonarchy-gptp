@@ -466,9 +466,13 @@ namespace hooks
 			}
 
 			// Cabalist - Decloak, Silent Kill
-			if (data.attacker->id == UnitId::ProtossCabalist && data.finalDamage < data.target->hitPoints)
+			if (data.attacker->id == UnitId::ProtossCabalist)
 			{
-				scbw::decloakProc(data.attacker);
+				if (data.finalDamage < data.target->hitPoints) {
+					scbw::decloakProc(data.attacker);
+				} else if (targetExt->timers[TimerDecloak] > 1) {
+					targetExt->timers[TimerDecloak] = 1;
+				}
 			}
 
 			// Cantavis - Hallucinating
