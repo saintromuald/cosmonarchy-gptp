@@ -51,7 +51,8 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	{
 		return;
 	}
-	if (scbw::getDistanceFast(target->position, shaman->position) > 128) {
+	u32 dist = scbw::getDistanceFast(target->position, shaman->position);
+	if (dist > 128) {
 		return;
 	}
 
@@ -71,7 +72,18 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 		}
 		(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 	}
-	target->heal(heal * 256, shaman);
+
+	u32 new_heal = heal;
+	if (dist <= 32) {
+		new_heal *= 2.5;
+	}
+	else if (dist <= 64) {
+		new_heal *= 2;
+	}
+	else if (dist <= 96) {
+		new_heal *= 1.5;
+	}
+	target->heal(new_heal * 256, shaman);
 }
 
 struct CorpseFinder
