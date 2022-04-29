@@ -190,7 +190,7 @@ enum ExtValueId
 	ValueHierophantOverlay,
 	ValueExecutingLanifectMoveOrder,
 	ValueEnsnaringBroodAbility,
-	ValueCutaneousBarrier,			// unused
+	ValuePetrificationStacks,
 	ValueIonCannonProjectilePos,
 	ValueSwarmingOmenAbility,
 	ValueReconstitution,
@@ -277,7 +277,7 @@ enum ExtTimerId
 	TimerSkyfall,
 	TimerSireEggBoost,
 	TimerHallucinating,
-	TimerKnockoutDrivers,
+	TimerPetrification,
 	TimerDecloak,
 	TimerMineralSpecialRegen,
 	TimerAdrenal,
@@ -410,13 +410,13 @@ namespace RustId
 		CastControlledDemolition,
 		CastEmergencyDetonation,
 		CastFailureMode,
+		CastSalvage,
 
 		CancelMindControl,
 		CancelLandGrab,
 		CancelAttachment,
 
 		ToggleReverseThrust,
-		ToggleSublimeShepherd, // unused
 		ToggleDisruptionField,
 		ToggleTempoChange,
 

@@ -1481,6 +1481,11 @@ namespace hooks
 			}
 		}
 
+		// Gorgon - Petrification
+		if (unitExt->timers[TimerPetrification] == 1) {
+			unitExt->values[ValuePetrificationStacks] = 0;
+		}
+
 		// Attachment - Clear
 		if (scbw::get_generic_rust_value(unit, RustId::CancelAttachment))
 		{

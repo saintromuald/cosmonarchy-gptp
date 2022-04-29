@@ -3,41 +3,22 @@
 
 namespace hooks
 {
-	void orders_Repair1(Unit* unit)
-	{ // 004673D0
+	void orders_Repair1(Unit* unit) // 004673D0
+	{
 		bool jump_to_676C4 = false; // handle various early invalid cases
 		bool bEndThere = false;
 		Unit* target = unit->orderTarget.unit;
-		if (target == nullptr)
-		{
-			jump_to_676C4 = true;
-		}
-		else if (target->hitPoints >= units_dat::MaxHitPoints[target->id])
-		{
-			jump_to_676C4 = true;
-		}
-		else if (target->stasisTimer != 0)
-		{
-			jump_to_676C4 = true;
-		}
-		else if (unit->pAI != nullptr && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
-		{
-			jump_to_676C4 = true;
-		}
-		else if (target->status & UnitStatus::InTransport)
-		{
-			jump_to_676C4 = true;
-		}
-		else if (!(target->status & UnitStatus::Completed))
-		{
-			jump_to_676C4 = true;
-		}
-
-		if (jump_to_676C4)
+		if (target == nullptr
+		||	target->hitPoints >= units_dat::MaxHitPoints[target->id]
+		||	target->stasisTimer != 0
+		||	(unit->pAI != nullptr && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
+		||	target->status & UnitStatus::InTransport
+		||  !(target->status & UnitStatus::Completed))
 		{
 			unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
 			unit->orderToIdle();
 			bEndThere = true;
+			jump_to_676C4 = true; // No
 		}
 
 		if (!bEndThere)
@@ -303,7 +284,7 @@ namespace hooks
 					return 0;
 				}
 				return 1;
-			}
+			} break;
 			case OrderId::Harvest1:
 			{
 				if (!target)
@@ -342,7 +323,7 @@ namespace hooks
 					return 0;
 				}
 				return 1;
-			}
+			} break;
 			case OrderId::Pickup2:
 			{
 				errorStringId = 890;
@@ -367,7 +348,7 @@ namespace hooks
 					*(s16*)bErrorFlag = errorStringId;
 				}
 				return 0;
-			}
+			} break;
 			case OrderId::HealMove:
 			{
 				if (!target)
@@ -390,6 +371,24 @@ namespace hooks
 				}
 				return 0;
 			}
+			case OrderId::CastFeedback: // Talos Salvage
+			{
+				if (!helper::techUseAllowed(unit, TechId::TalosSalvage, unit->playerId)) {
+					return 0;
+				}
+				errorStringId = 872;
+				if (!target || target == unit || !scbw::isAlliedTo(target->playerId, unit->playerId)) {
+					return 0;
+				}
+				if (target->status & UnitStatus::Completed) {
+					return 1;
+				}
+				if (bErrorFlag)
+				{
+					*(s16*)bErrorFlag = errorStringId;
+				}
+				return 0;
+			} break;
 			default:
 			{
 				return 1;

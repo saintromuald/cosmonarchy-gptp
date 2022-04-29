@@ -1056,9 +1056,9 @@ namespace scbw
 		}
 
 		// Inherit Knockout Drivers
-		if (parentExt->timers[TimerKnockoutDrivers] > 0)
+		if (parentExt->timers[TimerPetrification] > 0)
 		{
-			childExt->timers[TimerKnockoutDrivers] = parentExt->timers[TimerKnockoutDrivers];
+			childExt->timers[TimerPetrification] = parentExt->timers[TimerPetrification];
 		}
 
 		// Inherit Hallucination
@@ -1231,7 +1231,7 @@ namespace scbw
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 		return unitExt->timers[TimerMaledictionSlow]
-			|| unitExt->timers[TimerKnockoutDrivers]
+			|| unitExt->timers[TimerPetrification]
 			|| unitExt->timers[TimerLobotomySlow]
 			|| unitExt->timers[TimerObservancePeriod]
 			|| unitExt->timers[TimerCorrosiveTouch]
@@ -1316,9 +1316,9 @@ namespace scbw
 		}
 
 		// Remove Knockout Drivers
-		if (unitExt->timers[TimerKnockoutDrivers])
+		if (unitExt->timers[TimerPetrification])
 		{
-			unitExt->timers[TimerKnockoutDrivers] = 1;
+			unitExt->timers[TimerPetrification] = 1;
 		}
 
 		// Remove Hallucination
@@ -1445,7 +1445,7 @@ namespace scbw
 			return true;
 		}
 
-		if (unitExt->timers[TimerKnockoutDrivers])
+		if (unitExt->timers[TimerPetrification])
 		{
 			return true;
 		}

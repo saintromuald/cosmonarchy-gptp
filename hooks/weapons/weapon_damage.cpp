@@ -562,6 +562,7 @@ namespace hooks
 				} break;
 			}
 
+			// These bypass Dark Swarm
 			switch (data.weaponId)
 			{
 				case WeaponId::AnthelionEventHorizon:
@@ -651,7 +652,10 @@ namespace hooks
 					case WeaponId::GorgonArtificeBattery:
 					{
 						// Petrification - Gorgon behavior
-						scbw::refreshDebuffs(data.target);
+						if (targetExt->values[ValuePetrificationStacks] < 20) {
+							targetExt->values[ValuePetrificationStacks] += 1;
+						}
+						targetExt->timers[TimerPetrification] = 24 + 1;
 					} break;
 					case WeaponId::PazuzuJupiterDriver:
 					{

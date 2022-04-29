@@ -3,8 +3,8 @@
 
 namespace
 {
-	void __declspec(naked) orders_Repair1Wrapper()
-	{ // 004673D0
+	void __declspec(naked) orders_Repair1Wrapper() // 004673D0
+	{
 		static Unit* unit;
 		__asm {
 			PUSH EBP
@@ -21,8 +21,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) isOrderValid_Wrapper()
-	{ // 00474D90
+	void __declspec(naked) isOrderValid_Wrapper() // 00474D90
+	{
 		static s32 result;
 		static char orderId;
 		static Unit* unit;
@@ -52,8 +52,8 @@ namespace
 		}
 	}
 
-	void __declspec() orderAllowed_Wrapper()
-	{ // 0046DC20
+	void __declspec() orderAllowed_Wrapper() // 0046DC20
+	{
 		static s32 result;
 		static Unit* unit;
 		static u16 orderId;
@@ -84,8 +84,8 @@ namespace hooks
 {
 	void injectRepairOrderHook()
 	{
-		jmpPatch(orders_Repair1Wrapper, 0x004673D0, 1);
-		jmpPatch(isOrderValid_Wrapper, 0x00474D90, 1);
-		//		jmpPatch(orderAllowed_Wrapper,		0x0046DC20, 3); // crashes
+		jmpPatch(orders_Repair1Wrapper,		0x004673D0, 1);
+		jmpPatch(isOrderValid_Wrapper,		0x00474D90, 1);
+//		jmpPatch(orderAllowed_Wrapper,		0x0046DC20, 3); // crashes
 	}
 }

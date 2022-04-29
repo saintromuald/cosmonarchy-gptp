@@ -286,6 +286,10 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::CastMaelstrom, 0, 0);
 			} break;
+			case TechId::TalosSalvage:
+			{
+				helper::issueTriTargetOrder(OrderId::CastFeedback, 0, 0);
+			} break;
 			default:
 			{
 			}
