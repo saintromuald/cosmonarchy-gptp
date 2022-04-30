@@ -1028,7 +1028,7 @@ enum Enum {
 	EntropyGauntletsOverlaySmall		= 1107,
 	EntropyGauntletsOverlayMedium		= 1108,
 	EntropyGauntletsOverlayLarge		= 1109,
-	ShamanNaniteField							= 1158,
+	ShamanNaniteField					= 1158,
 	SeraphRedOverlay					= 1230,
 	ObservanceOverlayLarge				= 1231,
 	ObservanceOverlayMedium				= 1232,
@@ -1080,6 +1080,5 @@ enum Enum {
 	LastMinorDamageOverlay			    = 471,
 	FirstMajorDamageOverlay				= 472,
 	LastMajorDamageOverlay				= 493,
-
 };
 }

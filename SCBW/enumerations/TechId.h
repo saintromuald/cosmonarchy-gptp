@@ -2,6 +2,41 @@
 
 namespace TechId {
 	enum Enum {
+		// Cosmonarchy \\
+	
+	//	UnusedTech38					= 38, // Unused Tech 38
+
+	// Shared
+		TargetGround					= 17, // Ensnare
+		AnticthonFailureMode			= 23, // Archon Warp
+		CancelNewAbility				= 26, // Unused Tech 26 | used for: Land Grab, Mind Control, Enthralling Assault, Conjoining Root
+		LuminaryAuralAssault			= 30, // Optical Flare
+
+	// Terran
+		EidolonLobotomyMine				=  1, // Lockdown
+		ControlledDemolition			=  2, // EMP Shockwave
+		SavantOnhitToggle				= 24, // Restoration
+		ApostleLazarusAgent				= 32, // Lurker Aspect
+		MadrigalTempoChange				= 36, // Unused Tech 36
+		PaladinSkyfall					= 37, // Unused Tech 37
+		EmergencyDetonation				= 39, // Unused Tech 39
+		AzazelSublimeShepherd			= 40, // Unused Tech 40
+		TalosSalvage					= 41, // Unused Tech 41
+
+	// Protoss
+		StarSovereignTheGriefOfAllGods	= 29, // Feedback
+		SovrolethConjoiningRoot			= 33, // Unused Tech 33
+		DemiurgeGodsMadeFlesh			= 42, // Unused Tech 42
+
+	// Zerg
+		MatralethEnsnaringBrood			= 13, // Spawn Broodlings
+		AkistrokorEnthrallingAssault	= 35, // Unused Tech 35
+
+	// techdata.dat is not yet extended
+	//	ChasmalColonySwitch				= 47,
+
+		// Brood War \\
+
 		Stimpacks				=  0,
 		Lockdown				=  1,
 		EMPShockwave			=  2,
@@ -49,38 +84,6 @@ namespace TechId {
 		None					= 44,
 		NuclearStrike			= 45,
 		UnknownLastEntry		= 46, // based on bwapi/BWMemoryEdit/Enums/TechType.cs
-
-		// Cosmonarchy \\
-
-	// Shared
-		TargetGround					= 17, // Ensnare
-		AnticthonFailureMode			= 23, // Archon Warp
-		CancelNewAbility				= 26, // Unused Tech 26 | used for: Land Grab, Mind Control, Enthralling Assault, Conjoining Root
-		LuminaryAuralAssault			= 30, // Optical Flare
-
-	// Terran
-		EidolonLobotomyMine				=  1, // Lockdown
-		ControlledDemolition			=  2, // EMP Shockwave
-		SavantOnhitToggle				= 24, // Restoration
-		ApostleLazarusAgent				= 32, // Lurker Aspect
-		MadrigalTempoChange				= 36, // Unused Tech 36
-		PaladinSkyfall					= 37, // Unused Tech 37
-		TalosSalvage					= 38, // Unused Tech 38
-		EmergencyDetonation				= 39, // Unused Tech 39
-		AzazelSublimeShepherd			= 40, // Unused Tech 40
-		SavantPowerSiphon				= 41, // Unused Tech 41
-
-	// Protoss
-		StarSovereignTheGriefOfAllGods	= 29, // Feedback
-		SovrolethConjoiningRoot			= 33, // Unused Tech 33
-		DemiurgeGodsMadeFlesh			= 42, // Unused Tech 42
-
-	// Zerg
-		MatralethEnsnaringBrood			= 13, // Spawn Broodlings
-		AkistrokorEnthrallingAssault	= 35, // Unused Tech 35
-
-	// techdata.dat is not yet extended
-	//	ChasmalColonySwitch				= 47,
 	};
 }
 
