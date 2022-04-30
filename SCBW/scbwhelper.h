@@ -711,51 +711,51 @@ namespace helper
 	void incrementUnitKillCount(Unit* unit);																	// 004759C0
 	u32 getUnitDamageBonus(Unit* unit, u8 weaponId);														    // 00475EC0
 	void attackOverlayAndNotify(Unit* attacker, Unit* target, u32 weaponType, u32 direction);			        // 00479730
-	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);									        // 00488210
-	u32 GetUnitBulletDamage(Bullet* bullet, Unit* target);													// 0048ACD0
+	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);												// 00488210
+	u32 GetUnitBulletDamage(Bullet* bullet, Unit* target);														// 0048ACD0
 	u32 getSpellStatString(Unit* target, u32 techId, u8 playerId);									            // 00491E80
-	void disableUnitFunc(Unit* unit);																			// 00492CC0
+	void disableUnitFunc(Unit* unit);																			// 00492CC0 (hooked in weapon_spellhit)
 	void setAllImageGroupFlagsPal11(Sprite* sprite);															// 00497430
 	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);				    // 004E8280
 	void IterateUnitsAtLocationTargetProc_Ensnare(Unit* attacker, Box16* coords);								// 004E8280
 	void IterateUnitsAtLocationTargetProc_Plague(Unit* attacker, Box16* coords);								// 004E8280
-	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords);							// 004E8280
+	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords);								// 004E8280
 	void IterateUnitsAtLocationTargetProc_StasisField(Unit* attacker, Box16* coords);							// 004E8280
 	void createEnsnareOverlay(Unit* a1);																		// 004F45E0
 
 	// For createScanner
 	s32 setUnitStatTxtErrorMsg(s32 a1);																		    // 0048CCB0
-	s32 playSoundFromSource(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume);								// 0048ED50
-	void returnAllInterceptors(Unit* unit);                                                                    // 004655F0
-	char ignoreAllScriptsAndGoToIdle(Unit* unit);                                                              // 00476550
+	s32 playSoundFromSource(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume);									// 0048ED50
+	void returnAllInterceptors(Unit* unit);																		// 004655F0
+	char ignoreAllScriptsAndGoToIdle(Unit* unit);																// 00476550
 
 	// For maelstromProc
-	void orders_SelfDestructing(Unit* unit);                                                                   // 00475710
-	char setMaelstromTimer(Unit* unit, u8 time);                                                               // 004553F0
+	void orders_SelfDestructing(Unit* unit);																	// 00475710
+	char setMaelstromTimer(Unit* unit, u8 time);																// 004553F0
 
 	// For CBulletDamage
-	s32 _fastcall lurkerSplashProc(Unit* target, Bullet* bullet);                                             // 0048B680
-	s32 _fastcall groundSplashProc(Unit* target, Bullet* bullet);                                             // 0048B750
-	s32 _fastcall airSplashProc(Unit* unit, Bullet* bullet);                                                  // 0048B150
-	s32 _fastcall airSplashProc2(Unit* unit, Bullet* bullet);                                                 // 0048B730
-	bool unitHasNoMainOrderType(Unit* unit);                                                                   // 00475A50
+	s32 _fastcall lurkerSplashProc(Unit* target, Bullet* bullet);												// 0048B680
+	s32 _fastcall groundSplashProc(Unit* target, Bullet* bullet);												// 0048B750
+	s32 _fastcall airSplashProc(Unit* unit, Bullet* bullet);													// 0048B150
+	s32 _fastcall airSplashProc2(Unit* unit, Bullet* bullet);													// 0048B730
+	bool unitHasNoMainOrderType(Unit* unit);																	// 00475A50
 	s32 setEventUnitComplete();                                                                                 // 004C36C0
 
 	// For findBestUnit
-	Unit** findAllUnits(Box16* coords);																		// 004308A0
+	Unit** findAllUnits(Box16* coords);																			// 004308A0
 
 	//// selection
 	bool unitIsOwnedByCurrentPlayer(Unit* unit); 																// 00401170
 	bool isUnitBurrowed(Unit* unit);																			// 00402A70
 	void SC_memcpy_0(u32 dest, u32 src, u32 memsize);													        // 00408FD0
-	void function_00468670(Unit* unit);																		// 00468670
+	void function_00468670(Unit* unit);																			// 00468670
 	bool unit_isUnselectable(u16 unitId);																	    // 0046ED80
-	void function_0046F040(Unit* current_unit, Unit** unit_list, Unit* clicked_unit, u32 list_length);	    // 0046F040
+	void function_0046F040(Unit* current_unit, Unit** unit_list, Unit* clicked_unit, u32 list_length);			// 0046F040
 	u32 combineLists_Sub_6F290(Unit* unit, Unit** unit_list_1, Unit** unit_list_2, u32 list_length);	        // 0046F290
 	void applyNewSelect_Sub_6FA00(Unit** unit_list, u32 unit_list_length);									    // 0046FA00
 	u32 CUnitToUnitID(Unit* unit);																			    // 0047B1D0
 	bool unit_IsStandardAndMovable(Unit* unit); 																// 0047B770
-	void selectBuildingSFX(Unit* unit);																		// 0048F910
+	void selectBuildingSFX(Unit* unit);																			// 0048F910
 	b32 selectSingleUnitFromID(u32 unitIndex);															        // 00496D30
 	void CreateNewUnitSelectionsFromList(Unit** unit_list, u32 unit_list_length);							    // 0049AE40
 	void CMDACT_Select(Unit** unit_list, u32 unit_list_length); 											    // 004C0860
@@ -764,7 +764,7 @@ namespace helper
 	void secondaryOrder_Cloak(Unit* unit);																		// 00491790
 
 	//// update_unit_state
-	bool unitHpIsInRedZone(Unit* unit);						                                                // 004022C0
+	bool unitHpIsInRedZone(Unit* unit);																			// 004022C0
 	void RestoreAllUnitStats(Unit* unit);						                                                // 00492F70 (hooked by hooks\update_status_effects.cpp)
 
 	// For updateUnits
