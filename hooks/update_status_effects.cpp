@@ -111,7 +111,7 @@ namespace hooks
 			unit->stasisTimer--;
 			if (unit->stasisTimer == 0)
 			{
-				unit->removeStasisField();
+				unit->unfreeze();
 			}
 		}
 

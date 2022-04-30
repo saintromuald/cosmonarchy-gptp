@@ -743,15 +743,15 @@ void Unit::removeMaelstrom()
 	}
 }
 
-const u32 Func_RemoveStasisField = 0x004F62D0;
-void Unit::removeStasisField()
+const u32 Func_UnfreezeUnit = 0x004F62D0;
+void Unit::unfreeze()
 {
 	assert(this);
 	__asm
 	{
 		PUSHAD
 		MOV ESI, this
-		CALL Func_RemoveStasisField
+		CALL Func_UnfreezeUnit
 		POPAD
 	}
 }

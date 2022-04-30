@@ -229,7 +229,7 @@ struct Unit : public UnitLayout
 	void removeMaelstrom();
 
 	/// Removes the Stasis Field effect from the unit.
-	void removeStasisField();
+	void unfreeze();
 
 	/// Removes the Acid Spores effect from the unit.
 	void removeAcidSpores();
