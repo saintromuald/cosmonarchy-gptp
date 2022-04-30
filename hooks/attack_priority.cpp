@@ -83,8 +83,10 @@ namespace
 			}
 		}
 
+		Unit* actualUnit = unit->subunit->isSubunit() ? unit->subunit : unit;
+
 		// Required to make cliff adventage changes work properly (target dependent check)
-		seekRange = hooks::getSeekRangeHook(unit, target) * 32;
+		seekRange = hooks::getSeekRangeHook(actualUnit, target) * 32;
 		
 		// Bunker bonus
 		if (unit->status & UnitStatus::InBuilding)
@@ -97,8 +99,6 @@ namespace
 		{
 			return false;
 		}
-
-		Unit* actualUnit = unit->subunit->isSubunit() ? unit->subunit : unit;
 
 		// If the unit can't turn around, check if the target is within the attack angle.
 		if (!(actualUnit->status & UnitStatus::CanTurnAroundToAttack))
