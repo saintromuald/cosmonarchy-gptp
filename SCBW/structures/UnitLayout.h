@@ -403,7 +403,6 @@ namespace RustId
 		CastLazarusAgent,
 		CastEnsnaringBrood,
 		CastGodsMadeFlesh,
-		CastSavantOnhitToggle,
 		CastEnthrallingAssault,
 		CastControlledDemolition,
 		CastEmergencyDetonation,
@@ -414,6 +413,7 @@ namespace RustId
 		CancelLandGrab,
 		CancelAttachment,
 
+		ToggleSavantOnhit,
 		ToggleReverseThrust,
 		ToggleDisruptionField,
 		ToggleTempoChange,

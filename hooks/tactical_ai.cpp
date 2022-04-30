@@ -12,9 +12,6 @@ Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) ar
 cast the spell. **DONE**
 AI should also try to position Apostles near organics.
 
-Savant Power Siphon: If 2 or more allied specialists are nearby,
-target an enemy specialist within 7 range. **DONE**
-
 Matraleth Parasite: When 5 or more supply's worth of units (of any owner) are within 128px of each other,
 target the group. **DONE**
 
@@ -912,28 +909,11 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 		}
 		else if (unit->id == UnitId::TerranSavant)
 		{
-			if (unitExt->timers[TimerAI_Siphon] == 0 && unit->mainOrderId != OrderId::SavantPowerSiphon)
-			{
-				s32 count = 0;
-				cosmonarchyFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
-					Flags::Ally | Flags::Spellcaster, {}, [&](Unit* u)
-				{
-					if (u->energy < u->getMaxEnergy())
-					{
-						count++;
-					}
-				});
-				if (count >= 2)
-				{
-					// Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range.
-					auto enemy = rangeMatchUnit(unit, 7 * 32, Flags::Enemy | Flags::Spellcaster | Flags::HasEnergy, {});
-					if (enemy != nullptr)
-					{
-						unit->orderTo(OrderId::SavantPowerSiphon, enemy);
-						unitExt->timers[TimerAI_Siphon] = 3 * 32;
-						unitExt->timers[TimerAI_KitingCooldown] = 3 * 24;
-					}
-				}
+			Unit* target = unit->orderTarget.unit;
+			if (target && target->energy > 5 * 256 && unit->energy < 190 * 256) {
+				scbw::set_generic_rust_value(unit, RustId::ToggleSavantOnhit, 1);
+			} else {
+				scbw::set_generic_rust_value(unit, RustId::ToggleSavantOnhit, 0);
 			}
 		}
 		else if (unit->id == UnitId::TerranMadrigal)

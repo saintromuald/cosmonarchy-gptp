@@ -135,16 +135,6 @@ namespace hooks
 				buf[4] = RustId::CastGodsMadeFlesh;
 				helper::QueueGameCommand(buf, 0xc);
 			} break;
-			case TechId::SavantOnhitToggle:
-			{
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = 1;
-				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::CastSavantOnhitToggle;
-				helper::QueueGameCommand(buf, 0xc);
-			} break;
 			case TechId::CancelNewAbility:
 			{
 				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossMindTyrant)
@@ -230,6 +220,20 @@ namespace hooks
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastLazarusAgent;
 				helper::QueueGameCommand(buf, 0xc);
+			} break;
+			case TechId::SavantOnhitToggle:
+			{
+				s32 action = 1;
+				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleSavantOnhit)) {
+					action = 0;
+				}
+				u8 buf[0xC] = {};
+				buf[0] = 0x99;
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = RustId::ToggleSavantOnhit;
+				helper::QueueGameCommand(buf, 0xC);
 			} break;
 			case TechId::MadrigalTempoChange:
 			{

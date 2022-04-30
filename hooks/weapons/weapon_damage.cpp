@@ -676,7 +676,7 @@ namespace hooks
 					case WeaponId::SavantDiscoidRailgun:
 					{
 						u32 target_offset = scbw::getOverlayOffset(data.target->id);
-						if (scbw::get_generic_rust_value(data.attacker, RustId::CastSavantOnhitToggle)) {
+						if (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
 							// Power Siphon
 							u32 energy = std::min(data.target->energy, (u16)10);
 							data.target->energy -= energy;
