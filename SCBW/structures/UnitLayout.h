@@ -238,6 +238,7 @@ enum ExtValueId
 	ValueIsNeutralBunker,
 	ValueIsZombified,
 	ValueIsSelfReviving,
+	ValueTalosAnimationTimer,
 
 	ValueAI_KitingSignal,
 	ValueAI_BunkerCustom,

@@ -438,9 +438,45 @@ namespace hooks
 								target->remove();
 							}
 
-							if (*elapsedTimeFrames % 12 == 0) {
+							if (!(unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving)
+								&& unitExt->values[ValueTalosAnimationTimer] % 12 == 0) {
 								target->sprite->createTopOverlay(ImageId::FusionCutterHit);
 							}
+
+							if (unitExt->values[ValueTalosAnimationTimer] == 0
+								|| unitExt->values[ValueTalosAnimationTimer] % 128 == 0) {
+								u32 random = scbw::random() % 4;
+
+								Point16 pos = target->sprite->position;
+								switch (random) {
+									case 1:
+									{
+										pos.x -= units_dat::UnitBounds[target->id].left * 0.75;
+										pos.y -= units_dat::UnitBounds[target->id].top * 0.75;
+									} break;
+									case 2:
+									{
+										pos.x += units_dat::UnitBounds[target->id].right * 0.75;
+										pos.y -= units_dat::UnitBounds[target->id].top * 0.75;
+									} break;
+									case 3:
+									{
+										pos.x -= units_dat::UnitBounds[target->id].left * 0.75;
+										pos.y += units_dat::UnitBounds[target->id].bottom * 0.75;
+									} break;
+									case 4:
+									{
+										pos.x += units_dat::UnitBounds[target->id].right * 0.75;
+										pos.y += units_dat::UnitBounds[target->id].bottom * 0.75;
+									} break;
+								}
+								
+								helper::setMoveTargetXY(pos.x, pos.y, unit);
+							}
+
+							unitExt->values[ValueTalosAnimationTimer] += 1;
+						} else {
+							unitExt->values[ValueTalosAnimationTimer] = 0;
 						}
 					}
 				}
