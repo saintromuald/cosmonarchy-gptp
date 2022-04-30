@@ -1,15 +1,7 @@
 #include "building_terran.h"
 #include "building_modifier.h"
 #include <SCBW/api.h>
-
-#ifndef FALSE
-#define FALSE 0
-#endif
 #include <globals.h>
-
-#ifndef TRUE
-#define TRUE 1
-#endif
 
 namespace hooks
 {
@@ -113,8 +105,8 @@ namespace hooks
 						builtUnit->connectedUnit = unit;
 						unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
 						unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
-						unit->orderSimple(OrderId::ResetCollision1,false);
-						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id],false);
+						unit->orderSimple(OrderId::ResetCollision1, false);
+						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
 						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
 						//    the randomized orderTarget is very near the same spot the SCV resumed construction, but I think the helper::TerrainCollision_? condition in State 4 should handle it.
 						//if (helper::ChangeMovementTargetMoveTarget2(unit, builtUnit->sprite->position.x, builtUnit->sprite->position.y))
@@ -264,7 +256,7 @@ namespace hooks
 				{
 					hpGain *= 16;
 				}
-				helper::ProgressBuild(builtUnit, hpGain, FALSE);
+				helper::ProgressBuild(builtUnit, hpGain, false);
 				if (modifier.decrease)
 				{
 					builtUnit->remainingBuildTime -= modifier.decrease;
