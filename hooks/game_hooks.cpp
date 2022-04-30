@@ -986,56 +986,6 @@ namespace hooks
 					scbw::decloakProc(unit);
 				}
 			} break;
-			case UnitId::TerranSiren:
-			{
-				if (scbw::get_generic_rust_value(unit, RustId::CastTertiaryEyes))
-				{
-					Point16 pos = unit->position;
-					s32 radius = 6 * 32;
-					scbw::set_generic_rust_value(unit, RustId::CastTertiaryEyes, 0);
-					scbw::UnitFinder(
-						pos.x - radius,
-						pos.y - radius,
-						pos.x + radius,
-						pos.y + radius
-					).forEach([&](Unit* pickedUnit)
-						{
-							if (!(units_dat::BaseProperty[pickedUnit->id] & UnitProperty::Spellcaster)
-								|| !(pickedUnit->status & UnitStatus::Completed)
-								|| unit == pickedUnit)
-							{
-								return;
-							}
-
-							// Overlays
-							/*
-							if (unit->getOverlay(ImageId::TertiaryEyesOverlay))
-							{
-								unit->removeOverlay(ImageId::TertiaryEyesOverlay);
-							}
-							if (pickedUnit->getOverlay(ImageId::TertiaryEyesOverlay))
-							{
-								pickedUnit->removeOverlay(ImageId::TertiaryEyesOverlay);
-							}
-							*/
-
-							auto& victims = unitExt->unitVectors[UnitVectorTertiaryEyes];
-							if (std::find(victims.begin(), victims.end(), unit) == victims.end())
-							{
-								victims.push_back(pickedUnit);
-							}
-
-							UnitExt* pickedExt = globals.GetUnitExt(pickedUnit);
-							auto& sources = pickedExt->unitVectors[UnitVectorTertiaryEyesSirens];
-							if (std::find(sources.begin(), sources.end(), unit) == sources.end())
-							{
-								sources.push_back(unit);
-							}
-						});
-					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::SirenTertiaryEyes] * 256);
-					helper::playSoundFromSource(SoundId::SirenTertiaryEyesCast01, unit, 1, 0);
-				}
-			} break;
 			case UnitId::TerranWyvern:
 			{
 				if (scbw::get_generic_rust_value(unit, RustId::CancelLandGrab))

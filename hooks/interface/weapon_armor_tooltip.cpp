@@ -541,8 +541,6 @@ namespace hooks
 		addStatus(statuses, "Repentent Chorus", unitExt->values[ValueRepententChorus], 0);
 		addStatus(statuses, "Stellar Enforcement", unitExt->values[ValueStellarEnforcement], 1);
 		addStatus(statuses, "Terminal Surge", unitExt->values[ValueTerminalSurge], 0);
-		addStatus(statuses, "Tertiary Eyes [Caster]", unitExt->unitVectors[UnitVectorTertiaryEyes].size(), 0);
-		addStatus(statuses, "Tertiary Eye [Linked]", unitExt->unitVectors[UnitVectorTertiaryEyesSirens].size(), 0);
 		addStatus(statuses, "Controlled Opposition", unitExt->values[ValueControlledOpposition], 0);
 		addStatus(statuses, "Anodyne Annex", unitExt->values[ValueEmpressPassiveStacks], 0);
 		addStatus(statuses, "Counter-Proposal", unitExt->values[ValueAnticthonStacks], 0);

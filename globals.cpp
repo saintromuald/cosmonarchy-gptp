@@ -1219,10 +1219,6 @@ namespace scbw
 		childExt->valueVectors[ValueVectorSignifySourcePlayer] = parentExt->valueVectors[ValueVectorSignifySourcePlayer];
 		scbw::updateSignifyStatus(child, childExt);
 
-		// Inherit Siren Tetriary Eyes
-		childExt->unitVectors[UnitVectorTertiaryEyes] = parentExt->unitVectors[UnitVectorTertiaryEyes];
-		childExt->unitVectors[UnitVectorTertiaryEyesSirens] = parentExt->unitVectors[UnitVectorTertiaryEyesSirens];
-
 		scbw::refreshConsole();
 	}
 

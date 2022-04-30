@@ -460,8 +460,31 @@ namespace hooks
 					} break;
 					case WeaponId::SirenCharybdalRifle:
 					{
+						u32 count = 0;
+
+						s32 radius = 3 * 32;
+						scbw::UnitFinder(
+							unit->position.x - radius,
+							unit->position.y - radius,
+							unit->position.x + radius,
+							unit->position.y + radius
+						).forEach([&](Unit* pickedUnit) {
+							if (!(pickedUnit->status & UnitStatus::Completed)
+								|| unit == pickedUnit
+								|| scbw::isAlliedTo(pickedUnit->playerId, unit->playerId)
+								|| scbw::getDistanceFast(unit->position, pickedUnit->position) > radius)
+							{
+								return;
+							}
+
+							count += 1;
+						});
+						if (count) {
+							helper::playSoundFromSource(SoundId::SirenTertiaryEyesCast01, unit, 1, 0);
+						}
+
 						// Tertiary Eyes - Siren
-						fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyes].size(), Flags::Enemy);
+						fireMultiple(unit, unitExt, weaponId, 1 + count, Flags::Enemy | Flags::FrontalArc);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles:
 					{

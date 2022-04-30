@@ -125,16 +125,6 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::Hallucination1, 0, 0);
 			} break;
-			case TechId::SirenTertiaryEyes:
-			{
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = 1;
-				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::CastTertiaryEyes;
-				helper::QueueGameCommand(buf, 0xc);
-			} break;
 			case TechId::DemiurgeGodsMadeFlesh:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
