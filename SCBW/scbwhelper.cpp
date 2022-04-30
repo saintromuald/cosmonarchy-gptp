@@ -10977,4 +10977,17 @@ namespace helper
 			POPAD
 		}
 	}
+
+	char unfreeze_unit(Unit* unit) {
+		static char result;
+		const u32 func_address = 0x004F62D0;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

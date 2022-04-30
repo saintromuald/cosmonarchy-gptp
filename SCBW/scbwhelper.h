@@ -1179,4 +1179,5 @@ namespace helper
 
 	void enable_doodad_state(Unit* unit);													// 0047BA00
 	void disable_doodad_state(Unit* unit);													// 0047B960
+	char unfreeze_unit(Unit* unit);															// 004F62D0
 }
