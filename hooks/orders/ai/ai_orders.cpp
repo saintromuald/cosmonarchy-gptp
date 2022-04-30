@@ -1053,7 +1053,6 @@ LABEL_21:
 	// Hooked to investigate removing AI ally retaliation. (No cigar!) -Pr0nogo
 	s32 attack_recent_attacker(Unit* unit) // 004770E0
 	{
-		scbw::print("hook");
 		Unit* target_unit = unit->autoTargetUnit;
 		if (target_unit && !unit->pAI)
 		{
