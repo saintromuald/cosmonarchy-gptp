@@ -669,12 +669,7 @@ LABEL_42:
 			return 0;
 		}
 
-		/*
-		if (helper::unitCanInfest(unit))
-		{
-			return helper::canBeInfested(nullptr, target) != 0;
-		}
-		*/
+		// Originally had code related to infestation
 
 		// Originally had code to disable AI Didact attacks
 
@@ -688,12 +683,15 @@ LABEL_42:
 		}
 		*/
 
-		if (target->status & UnitStatus::InAir)
-		{
-			return units_dat::AirWeapon[unitWithWeapon->id] != WeaponId::None;
+		u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[unitWithWeapon->id] : units_dat::GroundWeapon[unitWithWeapon->id];
+
+		if (unit->status & UnitStatus::GroundedBuilding) {
+			if (!unit->isTargetWithinMinRange(target, hooks::getMaxWeaponRangeHook(unit, weapon, target))) {
+				return false;
+			}
 		}
 
-		return units_dat::GroundWeapon[unitWithWeapon->id] != WeaponId::None;
+		return weapon != WeaponId::None;
 	}
 
 	s32 orderAttackBehavior(Unit* unit) // 00478540
