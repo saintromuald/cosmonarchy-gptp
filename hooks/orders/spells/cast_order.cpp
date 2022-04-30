@@ -19,14 +19,22 @@ namespace hooks
 			*energyCost = techCost;
 			if ((cheatFlags & 8 || caster->energy >= techCost))
 			{
-				if (orderTarget)
-				{
-					return helper::spellOrder_MoveTowardsTarget(caster, range);
-				}
-				else
-				{
+				if (techId == TechId::Hallucination && !orderTarget) {
+					Point16 target_pos = caster->orderTarget.pt;
+					if (scbw::getDistanceFast(caster->position, target_pos) > range) {
+						helper::setMoveTargetXY(target_pos.x, target_pos.y, caster);
+						return 0;
+					}
+					helper::setMoveTargetXY(caster->position.x, caster->position.y, caster);
+
+					if (!helper::isAngleInAttackAngle(target_pos.y, target_pos.x, caster, TechId::Hallucination)) {
+						helper::turnUnit(caster, scbw::getAngle(caster->position, target_pos));
+						return 0;
+					}
+
 					return 1;
 				}
+				return helper::spellOrder_MoveTowardsTarget(caster, range);
 			}
 
 			GroupFlag casterGroupFlags = units_dat::GroupFlags[caster->id];
