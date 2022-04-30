@@ -1,15 +1,7 @@
 #include "building_terran.h"
 #include "building_modifier.h"
 #include <SCBW/api.h>
-
-#ifndef FALSE
-#define FALSE 0
-#endif
 #include <globals.h>
-
-#ifndef TRUE
-#define TRUE 1
-#endif
 
 namespace hooks
 {
@@ -96,11 +88,11 @@ namespace hooks
 			{
 				u32 movableState = unit->getMovableState();
 				if (movableState == MovableState::UnmovableAtDestination)
-				{ // unmovable
+				{
 					unit->orderToIdle();
 				}
 				else if (movableState == MovableState::ReachedDestination)
-				{ // reached destination
+				{
 					scbw::refreshConsole();
 					if (builtUnit->connectedUnit != nullptr &&
 						builtUnit->connectedUnit != unit &&
@@ -108,13 +100,13 @@ namespace hooks
 					{
 						unit->orderToIdle(); // another SCV is already on the job
 					}
-					else
-					{ // 00467AF9
+					else // 00467AF9
+					{
 						builtUnit->connectedUnit = unit;
 						unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
 						unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
-						unit->orderSimple(OrderId::ResetCollision1,false);
-						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id],false);
+						unit->orderSimple(OrderId::ResetCollision1, false);
+						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
 						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
 						//    the randomized orderTarget is very near the same spot the SCV resumed construction, but I think the helper::TerrainCollision_? condition in State 4 should handle it.
 						//if (helper::ChangeMovementTargetMoveTarget2(unit, builtUnit->sprite->position.x, builtUnit->sprite->position.y))
@@ -162,7 +154,7 @@ namespace hooks
 					unit->mainOrderState = 5;
 					jump_to_switch_1 = true;
 				}
-			} // mainOrderState == 4
+			}
 			else if (unit->mainOrderState == 5)
 			{
 				unit->mainOrderState = 6;
@@ -209,8 +201,8 @@ namespace hooks
 					{
 						jump_to_switch_1 = true;
 					}
-					else
-					{ // 00467E4A
+					else // 00467E4A
+					{
 						u8 rand_value = helper::RandomizeShort(10);
 						Image* current_image = unit->sprite->images.head;
 						unit->mainOrderTimer = (rand_value & 63) + 30;
@@ -264,7 +256,7 @@ namespace hooks
 				{
 					hpGain *= 16;
 				}
-				helper::ProgressBuild(builtUnit, hpGain, FALSE);
+				helper::ProgressBuild(builtUnit, hpGain, false);
 				if (modifier.decrease)
 				{
 					builtUnit->remainingBuildTime -= modifier.decrease;
@@ -300,8 +292,8 @@ namespace hooks
 								}
 							}
 						}
-						if (!jump_to_67F3C)
-						{ // 00467F2C
+						if (!jump_to_67F3C) // 00467F2C
+						{
 							if (builtUnit->id >= UnitId::ResourceMineralField &&
 								builtUnit->id <= UnitId::ResourceMineralFieldType3)
 							{
@@ -314,15 +306,15 @@ namespace hooks
 							bEndThere = true;
 						}
 					}
-					if (!bEndThere)
-					{ // 00467F4C
+					if (!bEndThere) // 00467F4C
+					{
 						if (!(unit->orderQueueHead == nullptr))
 						{
 							unit->userActionFlags |= 1;
 							prepareForNextOrder(unit);
 						}
-						else if (unit->pAI != nullptr)
-						{ // 00467F6F												
+						else if (unit->pAI != nullptr) // 00467F6F
+						{
 							unit->orderComputer(OrderId::ComputerAI);
 						}
 						else
@@ -333,8 +325,8 @@ namespace hooks
 				}
 			}
 		}
-		else
-		{ // 00467ED0
+		else // 00467ED0
+		{
 			Image* current_image = unit->sprite->images.head;
 			bool bEndThere = false;
 			while (current_image != nullptr)
@@ -359,8 +351,8 @@ namespace hooks
 						}
 					}
 				}
-				if (!jump_to_67F3C)
-				{ // 00467F2C
+				if (!jump_to_67F3C) // 00467F2C
+				{
 					if (builtUnit->id >= UnitId::ResourceMineralField &&
 						builtUnit->id <= UnitId::ResourceMineralFieldType3)
 					{
@@ -373,15 +365,15 @@ namespace hooks
 					bEndThere = true;
 				}
 			}
-			if (!bEndThere)
-			{ // 00467F4C
+			if (!bEndThere) // 00467F4C
+			{
 				if (!(unit->orderQueueHead == nullptr))
 				{
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
 				}
-				else if (unit->pAI != nullptr)
-				{ // 00467F6F
+				else if (unit->pAI != nullptr) // 00467F6F
+				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}
 				else
@@ -392,7 +384,7 @@ namespace hooks
 		}
 	}
 
-	//// Go to build a not yet existing building
+	// Go to build a not yet existing building
 	void orders_SCVBuild(Unit* unit)
 	{
 		if (unit->pAI != nullptr)
@@ -415,8 +407,8 @@ namespace hooks
 					Unit* builtUnit;
 					unit->status &= ~UnitStatus::IsNormal;
 					unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
-					if (unit->orderQueueHead == nullptr)
-					{ // 004680A5
+					if (unit->orderQueueHead == nullptr) // 004680A5
+					{
 						helper::addOrderTargetingNothing(unit, nullptr, OrderId::ResetCollision1);
 						helper::addOrderTargetingNothing(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
 					}
@@ -444,8 +436,8 @@ namespace hooks
 						helper::displayLastNetErrorForPlayer(unit->playerId);
 						unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 					}
-					else
-					{ // 00468131
+					else // 00468131
+					{
 						builtUnit->connectedUnit = unit;
 						unit->mainOrderId = OrderId::ConstructingBuilding;
 						unit->mainOrderState = 3;
@@ -469,8 +461,8 @@ namespace hooks
 				}
 			}
 		}
-		else if (unit->mainOrderState == 0)
-		{ // 00468188
+		else if (unit->mainOrderState == 0) // 00468188
+		{
 			bool bMoveTargetResult;
 			scbw::refreshConsole();
 			if (unit->orderTarget.unit != nullptr)
