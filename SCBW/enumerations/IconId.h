@@ -1,7 +1,4 @@
 #pragma once
-
-//From DatEdit Icons.txt 
-
 namespace IconId
 {
 	enum Enum
@@ -332,9 +329,9 @@ namespace IconId
 		/*0143*/	Gauss_Rifle,
 		/*0144*/	C10_Canister_Rifle,
 		/*0145*/	FragmentationGrenade,
-		/*0146*/	Twin_Autocannons,
+		/*0146*/	TwinAutocannons,
 		/*0147*/	HellfireMissilePack,
-		/*0148*/	Arclite_Cannon,
+		/*0148*/	ArcliteCannon,
 		/*0149*/	Fusion_Cutter,
 		/*014A*/	Fusion_Cutter_Harvest,
 		/*014B*/	GeminiMissiles,

@@ -977,13 +977,20 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranSavant &&  // Savant Energy Decay passive
-								current_button->iconID == IconId::Feedback)
+							else if ((*activePortraitUnit)->id == UnitId::TerranSavant &&  // Savant Entropy Gauntlets passive
+								current_button->iconID == IconId::PhaseDisruptorCannon &&
+								scbw::get_generic_rust_value((*activePortraitUnit), RustId::ToggleSavantOnhit) == 0)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::TerranSavant &&  // Savant Power Siphon passive
+								current_button->iconID == IconId::IonThrusters &&
+								scbw::get_generic_rust_value((*activePortraitUnit), RustId::ToggleSavantOnhit) > 0)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 							else if ((*activePortraitUnit)->id == UnitId::TerranMadcap && // Madcap Maverick Feeders passive
-								current_button->iconID == IconId::Twin_Autocannons)
+								current_button->iconID == IconId::TwinAutocannons)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}

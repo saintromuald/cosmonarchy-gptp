@@ -13,7 +13,8 @@ namespace hooks
 		{
 			stringId = 900; // Units in stasis can't be targeted.<0>
 		}
-		else if (techId != TechId::SavantPowerSiphon && (techId < TechId::DefensiveMatrix || techId > TechId::OpticalFlare))
+		else if (techId != TechId::TalosSalvage // Why?
+		&&		(techId < TechId::DefensiveMatrix || techId > TechId::OpticalFlare))
 		{
 			stringId = 876; // Invalid target.<0>
 		}
@@ -120,7 +121,7 @@ namespace hooks
 				}
 
 			}
-			else if (techId == TechId::SavantPowerSiphon)
+			else if (techId == TechId::TalosSalvage)
 				{
 					stringId = 0;
 				}

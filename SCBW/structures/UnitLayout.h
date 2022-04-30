@@ -6,6 +6,7 @@
 #include "List.h"
 #include <vector>
 #include <unordered_map>
+#include "SCBW/enumerations/IconId.h"
 
 #pragma pack(1)
 
@@ -305,20 +306,22 @@ enum ExtTimerId
 	TimerOwnerChangedRecently,
 	TimerMagnetarAttraction,
 	TimerSalvageStunTimer,
-		
-	TimerAI_Lazarus,					   // |
-	TimerAI_Siphon,						   // |
-	TimerAI_Clarion,					   // |
-	TimerAI_Parasite,					   // |
-	TimerAI_Skyfall,					   // |
-	TimerAI_GriefOfAllGods,				   // |
-	TimerAI_DisruptionField,			   // |
-	TimerAI_MadrigalTempoChangeTimer,	   // |
-	TimerAI_EnsnaringBrood,				   // > probably convert to use TimerAI_GenericAbilityCooldown
+	
+	// probably convert the following to use TimerAI_GenericAbilityCooldown
+	TimerAI_Lazarus,
+	TimerAI_Siphon,
+	TimerAI_Clarion,
+	TimerAI_Parasite,
+	TimerAI_Skyfall,
+	TimerAI_GriefOfAllGods,
+	TimerAI_DisruptionField,
+	TimerAI_MadrigalTempoChangeTimer,
+	TimerAI_EnsnaringBrood,	
+
 	TimerAI_KitingCooldown,
 	TimerAI_KitingLeashTimer,
-	TimerAI_GenericAbilityCooldown,			// reusable for multiple unit ids, probably add second one if unit has two seperate abilities
-		
+	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
+	
 	TimerCount,
 };
 
@@ -378,7 +381,7 @@ struct UnitExt
 	Vector32f				repulsionVector;
 	Point16					lastBulletLaunchPos;
 	Point16					aiKitingOrigin;
-	// Target					rally;
+// Target					rally;
 
 	f32						building_tick_progress;
 	f32						building_tick_last_progress;
@@ -424,13 +427,13 @@ namespace RustId
 }
 
 #include "SCBW\enumerations\TechId.h"
-const u32 string_toggle_on[] = {1265, 1232};
-const u32 string_toggle_off[] = {1270, 1233};
-const u32 button_toggle_on[] = {369, 374};
-const u32 button_toggle_off[] = {236, 375};
-const u32 toggle_values[] = {RustId::ToggleDisruptionField, RustId::ToggleTempoChange};
-const u32 toggle_abilities[] = {TechId::DisruptionWeb, TechId::MadrigalTempoChange};
-const u32 generictoggles = 2;
+const u32 string_toggle_on[] = {1265, 1232, 1355};
+const u32 string_toggle_off[] = {1270, 1233, 1351};
+const u32 button_toggle_on[] = {IconId::Disruption_Web2, IconId::Afterburners_ON_Unused, IconId::RechargeShields};
+const u32 button_toggle_off[] = {IconId::Cancel, IconId::Afterburners_OFF_Unused, IconId::Feedback};
+const u32 toggle_values[] = {RustId::ToggleDisruptionField, RustId::ToggleTempoChange, RustId::ToggleSavantOnhit};
+const u32 toggle_abilities[] = {TechId::DisruptionWeb, TechId::MadrigalTempoChange, TechId::SavantOnhitToggle};
+const u32 generictoggles = 3;
 
 namespace CosmonarchyFlags1
 {
