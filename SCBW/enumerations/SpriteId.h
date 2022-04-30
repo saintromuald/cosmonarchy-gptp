@@ -765,6 +765,11 @@ namespace SpriteId
 		AnthelionTeleportDepart = 757,
 		AnthelionTeleportArrive = 758,
 		ArcliteShockCannon_Damageless_Silent = 759,
+		Magnetar = 760,
+		Izirokor = 761,
+		IzirokorProjectile = 762,
+		IzirokorCorpse = 763,
+		EntropyGauntletsOverlay = 764,
 
 		// CORPSE \\
 
@@ -795,6 +800,7 @@ namespace SpriteId
 		Corpse_Lakizilisk = 484,
 		Corpse_Bactalisk = 617,
 		Corpse_Konvilisk = 689,
+		Corpse_Izirokor = 763,
 
 		Corpse_ZergBuildingSmall = 186,
 		Corpse_ZergBuildingLarge = 187,
