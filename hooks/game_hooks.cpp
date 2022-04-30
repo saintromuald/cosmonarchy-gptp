@@ -409,6 +409,38 @@ namespace hooks
 
 		switch (unit->id)
 		{
+			case UnitId::TerranTalos:
+			{
+				if (unit->mainOrderId == OrderId::TalosSalvage) {
+					//Unit* target = unit->orderTarget.unit;
+					//if (target) {
+					//	if (helper::moveTowards(unit, target)) {
+					//		UnitExt* targetExt = globals.GetUnitExt(target);
+					//		targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
+					//
+					//		targetExt->salvage_time += 1;
+					//
+					//		targetExt->salvage_minerals += (f32)units_dat::MineralCost[target->id] / units_dat::TimeCost[target->id];
+					//		while (targetExt->salvage_minerals > 1) {
+					//			targetExt->salvage_minerals -= 1;
+					//			resources->minerals[unit->playerId] += 1;
+					//		}
+					//
+					//		targetExt->salvage_gas += (f32)units_dat::GasCost[target->id] / units_dat::TimeCost[target->id];
+					//		while (targetExt->salvage_gas > 1) {
+					//			targetExt->salvage_gas -= 1;
+					//			resources->gas[unit->playerId] += 1;
+					//		}
+					//
+					//		if (targetExt->salvage_time >= units_dat::TimeCost[target->id]) {
+					//			resources->minerals[unit->playerId] += ceilf(targetExt->salvage_minerals);
+					//			resources->gas[unit->playerId] += ceilf(targetExt->salvage_gas);
+					//			target->remove();
+					//		}
+					//	}
+					//}
+				}
+			} break;
 			case UnitId::ZergZoryusthaleth:
 			{
 				// Zoryusthaleth - Swarming Omen

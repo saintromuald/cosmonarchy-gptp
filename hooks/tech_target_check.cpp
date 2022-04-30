@@ -121,10 +121,15 @@ namespace hooks
 				}
 
 			}
-			else if (techId == TechId::TalosSalvage)
-				{
+			else if (techId == TechId::TalosSalvage) {
+				if (!target
+					|| !scbw::isAlliedTo(target->playerId, castingPlayerId)
+					|| !(target->status & UnitStatus::Completed)) {
+					stringId = 876; // Invalid target.<0>
+				} else {
 					stringId = 0;
 				}
+			}
 			else
 			{
 				stringId = 876; // Invalid target.<0>
