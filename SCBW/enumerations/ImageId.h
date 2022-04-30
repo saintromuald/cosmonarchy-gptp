@@ -1074,6 +1074,7 @@ enum Enum {
 	SublimeShepherdOverlaySmall			= 1468,
 
 	StonewallProtocolOverlay			= 1477,
+	CyclopsFragmentaryExplosion			= 1478,
 
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,
