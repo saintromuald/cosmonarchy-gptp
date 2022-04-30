@@ -634,7 +634,7 @@ namespace helper
 	//// stopholdpos_orders
 	Unit* MedicHeal_TargetAcquire(Unit* medic);																						// 004422A0
 	u32 doMedicHeal(Unit* unit, Unit* target);																						// 00463C40
-	void function_00476FC0(Unit* unit, Unit* target, u32 unk1, u32 unk2);															// 00476FC0
+	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2);															// 00476FC0
 	b32 function_004770E0(Unit* unit);																								// 004770E0
 
 	//// medic_orders
@@ -1180,4 +1180,7 @@ namespace helper
 	void enable_doodad_state(Unit* unit);													// 0047BA00
 	void disable_doodad_state(Unit* unit);													// 0047B960
 	char unfreeze_unit(Unit* unit);															// 004F62D0
+
+	bool unit_can_attack_target(Unit* target, Unit* attacker, s32 check_duration);			// 00476730
+
 }

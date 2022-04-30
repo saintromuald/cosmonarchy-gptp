@@ -295,7 +295,7 @@ namespace hooks
 
 					if (target != nullptr)
 						//attack target I think, also used by function_004770E0
-						helper::function_00476FC0(unit, target, 0, 1);
+						helper::order_to_attack_target(unit, target, 0, 1);
 
 				}
 			}
