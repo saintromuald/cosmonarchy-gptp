@@ -403,6 +403,7 @@ namespace RustId
 		CastLazarusAgent,
 		CastEnsnaringBrood,
 		CastGodsMadeFlesh,
+		CastSavantOnhitToggle,
 		CastEnthrallingAssault,
 		CastControlledDemolition,
 		CastEmergencyDetonation,

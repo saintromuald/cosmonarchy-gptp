@@ -61,7 +61,7 @@ namespace TechId {
 	// Terran
 		EidolonLobotomyMine				=  1, // Lockdown
 		ControlledDemolition			=  2, // EMP Shockwave
-		SirenTertiaryEyes				= 24, // Restoration
+		SavantOnhitToggle				= 24, // Restoration
 		ApostleLazarusAgent				= 32, // Lurker Aspect
 		MadrigalTempoChange				= 36, // Unused Tech 36
 		PaladinSkyfall					= 37, // Unused Tech 37
