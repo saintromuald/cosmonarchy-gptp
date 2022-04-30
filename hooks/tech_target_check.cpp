@@ -7,7 +7,6 @@ namespace hooks
 {
 	u16 getTechUseErrorMessageHook(Unit* target, u8 castingPlayerId, u16 techId) // 00491E80
 	{
-		scbw::print("u");
 		u16 stringId;
 		if (target->stasisTimer != 0)
 		{
