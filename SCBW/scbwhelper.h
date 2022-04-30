@@ -1176,4 +1176,7 @@ namespace helper
 	s32 is_AI_target_related(Unit* attacker, Unit* target);									// 004A1140
 	s32 get_threat_level(Unit* attacker, Unit* target);										// 00442160
 	u32 add_unit_to_possible_targets(s32 threat_level, Unit* unit);							// 00440160
+
+	void enable_doodad_state(Unit* unit);													// 0047BA00
+	void disable_doodad_state(Unit* unit);													// 0047B960
 }

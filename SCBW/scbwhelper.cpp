@@ -10956,4 +10956,25 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For Talos ability
+	void enable_doodad_state(Unit* unit) {
+		const u32 func_address = 0x0047BA00;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void disable_doodad_state(Unit* unit) {
+		const u32 func_address = 0x0047B960;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }
