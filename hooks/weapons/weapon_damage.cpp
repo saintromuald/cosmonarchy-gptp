@@ -389,27 +389,7 @@ namespace hooks
 			case WeaponId::CharlatanFerventBlaster:
 			{
 				// Lithe Organelle - bounce damage
-				f64 mul = 1.0;
-				switch (data.damageDivisor)
-				{
-					case 0:
-					{
-						mul = 1.0; // original attack
-					} break;
-					case 1:
-					{
-						mul = 1.0 / 3.0; // 1st bounce
-					} break;
-					case 2:
-					{
-						mul = 1.0 / 6.0; // 2nd bounce
-					} break;
-					default:
-					{
-						mul = 1.0 / 9.0; // 3rd bounce, currently unused
-					} break;
-				};
-				data.finalDamage *= mul;
+				data.finalDamage *= 1 - data.damageDivisor * 0.33;
 				data.finalDamage += (s32)targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
 			default:
