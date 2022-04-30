@@ -105,8 +105,7 @@ namespace hooks
 		}
 
 		if (!scbw::isLarvalEgg(unit) &&
-			scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep && 
-			*elapsedTimeFrames % 3 == 0) {
+			scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep) {
 			unit->remainingBuildTime -= 1;
 		}
 
