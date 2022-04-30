@@ -259,10 +259,6 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
 			} break;
-			case TechId::SavantPowerSiphon:
-			{
-				helper::issueTriTargetOrder(OrderId::Hover, 0, 0);
-			} break;
 			case TechId::DisruptionWeb:
 			{
 				s32 action = 1;
@@ -292,7 +288,7 @@ namespace hooks
 			} break;
 			case TechId::TalosSalvage:
 			{
-				helper::issueTriTargetOrder(OrderId::CastFeedback, 0, 0);
+				helper::issueTriTargetOrder(OrderId::Hover, 0, 0);
 			} break;
 			default:
 			{
