@@ -412,33 +412,37 @@ namespace hooks
 			case UnitId::TerranTalos:
 			{
 				if (unit->mainOrderId == OrderId::TalosSalvage) {
-					//Unit* target = unit->orderTarget.unit;
-					//if (target) {
-					//	if (helper::moveTowards(unit, target)) {
-					//		UnitExt* targetExt = globals.GetUnitExt(target);
-					//		targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
-					//
-					//		targetExt->salvage_time += 1;
-					//
-					//		targetExt->salvage_minerals += (f32)units_dat::MineralCost[target->id] / units_dat::TimeCost[target->id];
-					//		while (targetExt->salvage_minerals > 1) {
-					//			targetExt->salvage_minerals -= 1;
-					//			resources->minerals[unit->playerId] += 1;
-					//		}
-					//
-					//		targetExt->salvage_gas += (f32)units_dat::GasCost[target->id] / units_dat::TimeCost[target->id];
-					//		while (targetExt->salvage_gas > 1) {
-					//			targetExt->salvage_gas -= 1;
-					//			resources->gas[unit->playerId] += 1;
-					//		}
-					//
-					//		if (targetExt->salvage_time >= units_dat::TimeCost[target->id]) {
-					//			resources->minerals[unit->playerId] += ceilf(targetExt->salvage_minerals);
-					//			resources->gas[unit->playerId] += ceilf(targetExt->salvage_gas);
-					//			target->remove();
-					//		}
-					//	}
-					//}
+					Unit* target = unit->orderTarget.unit;
+					if (target) {
+						if (unit->isTargetWithinMinRange(target, unit->getMaxWeaponRange(unit->getGroundWeapon()))) {
+							UnitExt* targetExt = globals.GetUnitExt(target);
+							targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
+					
+							targetExt->salvage_time += 1;
+					
+							targetExt->salvage_minerals += (f32)units_dat::MineralCost[target->id] / units_dat::TimeCost[target->id];
+							while (targetExt->salvage_minerals > 1) {
+								targetExt->salvage_minerals -= 1;
+								resources->minerals[unit->playerId] += 1;
+							}
+					
+							targetExt->salvage_gas += (f32)units_dat::GasCost[target->id] / units_dat::TimeCost[target->id];
+							while (targetExt->salvage_gas > 1) {
+								targetExt->salvage_gas -= 1;
+								resources->gas[unit->playerId] += 1;
+							}
+					
+							if (targetExt->salvage_time >= units_dat::TimeCost[target->id]) {
+								resources->minerals[unit->playerId] += ceilf(targetExt->salvage_minerals);
+								resources->gas[unit->playerId] += ceilf(targetExt->salvage_gas);
+								target->remove();
+							}
+
+							if (*elapsedTimeFrames % 12 == 0) {
+								target->sprite->createTopOverlay(ImageId::FusionCutterHit);
+							}
+						}
+					}
 				}
 			} break;
 			case UnitId::ZergZoryusthaleth:
@@ -1721,10 +1725,20 @@ namespace hooks
 
 		// Talos - Salvage Stun
 		if (unitExt->timers[TimerSalvageStunTimer] > 1) {
-			unit->status |= UnitStatus::Disabled;
+			unit->freeze();
+
+			u32 offset = scbw::getOverlayOffset(unit->id);
+			if (!unit->getOverlay(ImageId::MaelstromOverlay_Small + offset)) {
+				unit->sprite->createTopOverlay(ImageId::MaelstromOverlay_Small + offset);
+			}
 		}
 		if (unitExt->timers[TimerSalvageStunTimer] == 1) {
-			unit->status &= ~UnitStatus::Disabled;
+			unit->unfreeze();
+
+			u32 offset = scbw::getOverlayOffset(unit->id);
+			if (unit->getOverlay(ImageId::MaelstromOverlay_Small + offset)) {
+				unit->sprite->removeOverlay(ImageId::MaelstromOverlay_Small + offset);
+			}
 		}
 
 		// Cloaked units recloak after 2 seconds of being out of combat

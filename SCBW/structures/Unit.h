@@ -228,6 +228,9 @@ struct Unit : public UnitLayout
 	/// Removes the Maelstrom effect from the unit.
 	void removeMaelstrom();
 
+	/// Freezes the unit
+	void freeze();
+
 	/// Removes the Stasis Field effect from the unit.
 	void unfreeze();
 

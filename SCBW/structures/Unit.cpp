@@ -743,6 +743,18 @@ void Unit::removeMaelstrom()
 	}
 }
 
+const u32 Func_FreezeUnit = 0x00492CC0;
+void Unit::freeze()
+{
+	assert(this);
+	__asm {
+		PUSHAD
+		MOV EAX, this
+		CALL Func_FreezeUnit
+		POPAD
+	}
+}
+
 const u32 Func_UnfreezeUnit = 0x004F62D0;
 void Unit::unfreeze()
 {
