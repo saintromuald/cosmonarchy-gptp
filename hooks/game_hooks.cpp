@@ -445,10 +445,8 @@ namespace hooks
 
 							if (unitExt->values[ValueTalosAnimationTimer] == 0
 								|| unitExt->values[ValueTalosAnimationTimer] % 128 == 0) {
-								u32 random = scbw::random() % 4;
-
 								Point16 pos = target->sprite->position;
-								switch (random) {
+								switch (scbw::random() % 4) {
 									case 1:
 									{
 										pos.x -= units_dat::UnitBounds[target->id].left * 0.75;
