@@ -370,24 +370,6 @@ namespace hooks
 					*(s16*)bErrorFlag = errorStringId;
 				}
 				return 0;
-			}
-			case OrderId::CastFeedback: // Talos Salvage
-			{
-				if (!helper::techUseAllowed(unit, TechId::TalosSalvage, unit->playerId)) {
-					return 0;
-				}
-				errorStringId = 872;
-				if (!target || target == unit || !scbw::isAlliedTo(target->playerId, unit->playerId)) {
-					return 0;
-				}
-				if (target->status & UnitStatus::Completed && !(target->status & UnitStatus::Invincible)) {
-					return 1;
-				}
-				if (bErrorFlag)
-				{
-					*(s16*)bErrorFlag = errorStringId;
-				}
-				return 0;
 			} break;
 			default:
 			{
