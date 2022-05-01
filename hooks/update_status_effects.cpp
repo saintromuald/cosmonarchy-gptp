@@ -179,7 +179,12 @@ namespace hooks
 					unitExt->timers[TimerMineralSpecialRegen] = 24;
 					u32 underlay = ImageId::ResourceBoostOverlay_Small + scbw::getOverlayOffset(target->id);
 					if (!target->sprite->getOverlay(underlay)) {
-						target->sprite->createUnderlay(underlay);
+						if (scbw::unit_id_is_gas_structure(target->id)) {
+							target->sprite->createUnderlay(underlay, -5, 2);
+						}
+						else {
+							target->sprite->createUnderlay(underlay);
+						}
 					}
 				}
 			});

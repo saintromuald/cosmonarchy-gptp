@@ -2091,4 +2091,13 @@ namespace scbw
 			}
 		}
 	}
+
+	bool unit_id_is_gas_structure(u16 unit_id, bool ignore_geysers) {
+		if (ignore_geysers) {
+			return unit_id == UnitId::TerranReservoir || unit_id == UnitId::ProtossAquifer || unit_id == UnitId::ZergExtractor;
+		}
+		else {
+			return unit_id == UnitId::TerranReservoir || unit_id == UnitId::ProtossAquifer || unit_id == UnitId::ZergExtractor || unit_id == UnitId::ResourceVespeneGeyser;
+		}
+	}
 }
