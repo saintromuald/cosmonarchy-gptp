@@ -52,6 +52,20 @@ namespace
 		}
 	}
 
+	void __declspec(naked) drawUnitKillsString_Wrapper()
+	{ // 00425DD0
+		static BinDlg* dialog;
+		__asm {
+			MOV dialog, EBX
+			PUSHAD
+		}
+		hooks::drawUnitKillsString(dialog);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void __declspec(naked) statsArmorLevel_Wrapper()
 	{ // 00425600
 		static BinDlg* dialog;
@@ -121,6 +135,7 @@ namespace hooks
 	{
 		jmpPatch(stats_panel_display_Wrapper,	0x00426C60, 1);
 		jmpPatch(getUnitRankString_Wrapper,		0x0042F370, 2);
+		jmpPatch(drawUnitKillsString_Wrapper,	0x00425DD0, 2);
 //		jmpPatch(drawBuildingInfo_Wrapper,		0x00427890, 3);
 //		jmpPatch(statsArmorLevel_Wrapper,		0x00425600, 1);
 //		jmpPatch(statsWeaponLevel_Wrapper,		0x00425790, 1);

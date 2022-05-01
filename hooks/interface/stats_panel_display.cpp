@@ -302,6 +302,13 @@ namespace hooks
 			return 0;
 		}
 
+		if (unit->playerId == 11) {
+			return "";
+		} else {
+			return playerNameList->player[unit->playerId].player_name;
+		}
+
+		/*
 		// Originally had Gantrithor - Tassadar hardcode here
 		if (unitId != UnitId::TerranMinotaur
 			|| !(units_dat::BaseProperty[unitId] & UnitProperty::Hero)
@@ -319,6 +326,51 @@ namespace hooks
 			return "";
 		}
 		return (char*)statTxtTblNew->getString(571); // "Admiral"
+		*/
+	}
+
+	void drawUnitKillsString(BinDlg* dialog) // 00425DD0
+	{
+		Unit* unit = *activePortraitUnit;
+		sprintf_s(kills_buffer, 260, "%s", playerNameList->player[unit->playerId].force_name);
+		helper::addTextToDialog(dialog, -21, kills_buffer);
+
+		/*
+		if (unit->id == UnitId::ZergSkryling
+			|| unit->id == UnitId::ZergInfestedTerran
+			|| unit->status & UnitStatus::IsHallucination
+			&& unit->playerId == *LOCAL_NATION_ID
+			&& !*IS_IN_REPLAY)
+		{
+			BinDlg* actual_dialog = dialog->controlType ? dialog->parent : dialog;
+			BinDlg* child = actual_dialog->childrenDlg;
+			while (child && child->index != 65515)
+			{
+				child = child->next;
+			}
+			if (child) {
+				helper::hideDialog(child);
+			}
+		}
+		else
+		{
+			if (helper::AI_UnitCanAttack(unit) || unit->killCount)
+			{
+				char* text = "";
+				if (**statTxtBuffer > 0x2FBu)
+				{
+					text = (char *)*statTxtBuffer + (*statTxtBuffer)[764];
+				}
+				sprintf_s(kills_buffer, 260, "%s %d", text, unit->killCount);
+				helper::addTextToDialog(dialog, -21, kills_buffer);
+			}
+			else
+			{
+				BinDlg* other = helper::getControlFromIndex(dialog, -21);
+				helper::hideDialog(other);
+			}
+		}
+		*/
 	}
 
 	// TODO: Fix progress bar drawing during addon construction, unit training

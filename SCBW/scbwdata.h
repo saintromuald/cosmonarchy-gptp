@@ -469,6 +469,8 @@ SCBW_DATA(char*, supply_used_buffer,				0x006CA9F8);
 SCBW_DATA(char*, supply_max_buffer,					0x006CAB08);
 SCBW_DATA(char*, supply_provided_buffer,			0x006CAC78);
 
+SCBW_DATA(char*, kills_buffer,						0x006CAC78);
+
 // For giveUnitToPlayer
 SCBW_DATA(s32*,	currentTriggerPlayerId,				0x006509B0);
 
