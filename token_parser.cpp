@@ -1,15 +1,38 @@
 #include "token_parser.h"
 
+static bool is_normal_space(char c) {
+	return c == ' ' || c == '\t';
+}
+
+static bool is_any_space(char c) {
+	return isspace(c);
+}
+
+static u32 is_newline(char c) {
+	if (c == '\r' || c == '\n') {
+		return 2;
+	}
+	return 0;
+}
+
+static bool parser_skip_whitespace(Parser* parser) {
+	while (*parser->at && is_any_space(*parser->at)) {
+		if (is_newline(*parser->at)) {
+			return false;
+		}
+		++parser->at;
+	}
+	return true;
+}
+
 bool parser_get_word(Parser* parser) {
 	memset(&parser->token, 0, sizeof(parser->token));
 
-	// Skip Whitespace
-	while (*parser->at && isspace(*parser->at)) {
-		++parser->at;
+	if (!parser_skip_whitespace(parser)) {
+		return false;
 	}
 
-	// Write Token
-	while (*parser->at && !isspace(*parser->at)) {
+	while (*parser->at && !is_any_space(*parser->at)) {
 		if (parser->token.size < MaxToken - 1) {
 			parser->token.data[parser->token.size++] = *parser->at;
 		}
@@ -19,58 +42,47 @@ bool parser_get_word(Parser* parser) {
 	return parser->token.size != 0;
 }
 
-Token parser_get_token(Parser* parser) {
-	parser_get_word(parser);
-	return parser->token;
+bool parser_get_command(Parser* parser) {
+	if (!parser->inited) {
+		parser->inited = true;
+	} else {
+		while (*parser->at && !is_newline(*parser->at)) {
+			++parser->at;
+		}
+	}
+
+	while (*parser->at && is_newline(*parser->at)) {
+		++parser->at;
+	}
+
+	return parser_get_word(parser);
 }
 
-Token parser_get_rest_of_the_line(Parser* parser) {
+Token parser_get_string(Parser* parser, bool consume_rest) {
 	memset(&parser->token, 0, sizeof(parser->token));
 
-	// Skip Whitespace
-	while (*parser->at && isspace(*parser->at)) {
-		++parser->at;
-
-		if (*parser->at == '\r' || *parser->at == '\n') {
-			return parser->token;
-		}
+	if (!parser_skip_whitespace(parser)) {
+		return parser->token;
 	}
 
-	// Write Token
-	while (*parser->at && *parser->at != '\r' && *parser->at != '\n') {
-		if (parser->token.size < MaxToken - 1) {
-			parser->token.data[parser->token.size++] = *parser->at;
-		}
-		++parser->at;
-	}
-
-	return parser->token;
-}
-
-Token parser_get_string(Parser* parser) {
-	memset(&parser->token, 0, sizeof(parser->token));
-
-	// Skip Whitespace
-	while (*parser->at && isspace(*parser->at)) {
-		++parser->at;
-
-		if (*parser->at == '\r' || *parser->at == '\n') {
-			return parser->token;
-		}
-	}
-
-	// Write Token
 	bool is_string = false;
 	if (*parser->at == '"') {
 		++parser->at;
-		while (*parser->at && *parser->at != '"' && *parser->at != '\r' && *parser->at != '\n') {
+		while (*parser->at && *parser->at != '"' && is_newline(*parser->at)) {
 			if (parser->token.size < MaxToken - 1) {
 				parser->token.data[parser->token.size++] = *parser->at;
 			}
 			++parser->at;
 		}
 	} else {
-		while (*parser->at && !isspace(*parser->at)) {
+		while (*parser->at) {
+			if (consume_rest && is_any_space(*parser->at)) {
+				break;
+			}
+			if (!consume_rest && is_newline(*parser->at)) {
+				break;
+			}
+
 			if (parser->token.size < MaxToken - 1) {
 				parser->token.data[parser->token.size++] = *parser->at;
 			}
@@ -89,6 +101,65 @@ s32 parser_get_s32(Parser* parser, u32 radix) {
 f32 parser_get_f32(Parser* parser) {
 	parser_get_word(parser);
 	return strtof(parser->token.data, 0);
+}
+
+Box32 parser_get_location(Parser* parser) {
+	memset(&parser->token, 0, sizeof(parser->token));
+
+	if (!parser_skip_whitespace(parser)) {
+		return {};
+	}
+
+	if (*parser->at == '(') {
+		++parser->at;
+
+		while (*parser->at && *parser->at != ')') {
+			if (is_newline(*parser->at)) {
+				break;
+			}
+
+			if (parser->token.size < MaxToken - 1) {
+				parser->token.data[parser->token.size++] = *parser->at;
+			}
+			++parser->at;
+		}
+
+		if (*parser->at == ')') {
+			++parser->at;
+		}
+
+		Box32 box = {};
+		sscanf(parser->token.data, "%u %u %u %u", &box.x, &box.y, &box.w, &box.h);
+		return box;
+	}
+
+	Token string = parser_get_string(parser, true);
+	for (u32 i = 0; i < 256; ++i) {
+		char* name = helper::get_chk_string(locationTable[i].stringId);
+		if (name && strcmp(name, string.data) == 0) {
+			Box32 box = locationTable[i].dimensions;
+			box.w -= box.x;
+			box.h -= box.y;
+			return box;
+		}
+	}
+
+	s32 i = parser_get_s32(parser);
+	if (i >= 0 && i < 256) {
+		Box32 box = locationTable[i].dimensions;
+		box.w -= box.x;
+		box.h -= box.y;
+		return box;
+	}
+
+	return {};
+}
+
+Point16 box_center(Box32 box) {
+	Point16 point = {};
+	point.x = box.x + box.w / 2;
+	point.y = box.y + box.h / 2;
+	return point;
 }
 
 bool parser_eq(Parser* parser, char* string) {

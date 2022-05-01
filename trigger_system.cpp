@@ -345,9 +345,9 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 
 		Parser parser = {};
 		parser.at = comment;
-		while (parser_get_word(&parser)) {
+		while (parser_get_command(&parser)) {
 			if (parser_eq(&parser, "play_music")) {
-				Token filename = parser_get_token(&parser);
+				Token filename = parser_get_string(&parser, true);
 				next_music = get_music(filename.data);
 				music_target_fade = 0;
 			} else if (parser_eq(&parser, "stop_music")) {
@@ -378,9 +378,12 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 			} else if (parser_eq(&parser, "playlist_clear")) {
 				playlist_size = 0;
 			} else if (parser_eq(&parser, "playlist_add")) {
-				Token filename = parser_get_token(&parser);
+				Token filename = parser_get_string(&parser, true);
 				if (playlist_size < MaxMusic) {
-					playlist_tracks[playlist_size++] = get_music(filename.data);
+					Music* music = get_music(filename.data);
+					if (music) {
+						playlist_tracks[playlist_size++] = music;
+					}
 				} else {
 					scbw::printf("Error: Playlist already full! (%s)", filename.data);
 				}
@@ -388,13 +391,11 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 				s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
 				playlist_shuffle = do_shuffle;
 			} else if (parser_eq(&parser, "clear_creep")) {
-				s32 location = parser_get_s32(&parser);
-				if (location >= 0 && location < 256) {
-					scbw::clear_creep(locationTable[location].dimensions);
-				}
+				Box32 location = parser_get_location(&parser);
+				scbw::clear_creep(location);
 			} else if (parser_eq(&parser, "set_player_name")) {
 				s32 player = parser_get_s32(&parser);
-				Token name = parser_get_rest_of_the_line(&parser);
+				Token name = parser_get_string(&parser, true);
 				if (player >= 0 && player < 8) {
 					if (playerTable[player].type == PlayerType::Human || playerTable[player].type == PlayerType::HumanDefeated) {
 						sprintf_s(playerNameList->player[player].player_name, "%s (%s)", name.data, playerTable[player].name);
@@ -405,7 +406,7 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 				}
 			} else if (parser_eq(&parser, "set_force_name")) {
 				s32 player = parser_get_s32(&parser);
-				Token name = parser_get_rest_of_the_line(&parser);
+				Token name = parser_get_string(&parser, true);
 				if (player >= 0 && player < 8) {
 					sprintf_s(playerNameList->player[player].force_name, "%s", name.data);
 				}
