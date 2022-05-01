@@ -307,6 +307,23 @@ namespace hooks
 			data.target->damageHp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		}
 
+		// Make AI defend player
+		for (u32 i = 0; i < 8; ++i) {
+			if (playerTable[i].type == PlayerType::Computer && data.target->isVisibleTo(i) &&
+				!scbw::isAlliedTo(i, data.attackingPlayerId) && scbw::isAlliedTo(i, data.target->playerId)) {
+				AiRegion* region = scbw::get_ai_region(i, data.target->position);
+				switch (region->state) {
+					case 0:
+					case 3:
+					case 4:
+					case 5:
+					case 7: {
+						helper::AI_AssignMilitary(6, region);
+					} break;
+				}
+			}
+		}
+
 		// Reduce shields
 		if (data.shieldReduceAmount != 0 && canDamage)
 		{
