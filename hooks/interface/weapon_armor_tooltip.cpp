@@ -617,6 +617,13 @@ namespace hooks
 			nathrokorTargetStacks += unitExt->nathrokorTargetStacks[i];
 		}
 		addStatus(statuses, "Adrenal Mark", nathrokorTargetStacks, 0);
+		/* // Can't see armor icons on eggs yet
+		if ((unit->id == UnitId::ZergEgg && !scbw::isLarvalEgg(unit)) || unit->id == UnitId::ZergCocoon) {
+			if (scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep) {
+				addStatus(statuses, "Biogenesis");
+			}
+		}
+		*/
 
 		std::string status = formatStringVector(statuses);
 
