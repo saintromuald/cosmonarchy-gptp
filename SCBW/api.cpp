@@ -2071,11 +2071,11 @@ namespace scbw
 		}
 
 		UnitArray nearby_allied_units = UnitSearchRadial(victim->position, 60 * 32);
-		UnitArrayFilter(&nearby_allied_units, victim, FilterAlly);
+		UnitArrayFilter(&nearby_allied_units, victim, FilterIncludingSelf | FilterAlly);
 		for (u32 i = 0; i < 8; ++i) {
 			bool should_help = false;
 			for (u32 j = 0; j < nearby_allied_units.size; ++j) {
-				Unit* unit = nearby_allied_units.units[i];
+				Unit* unit = nearby_allied_units.units[j];
 				if (unit->playerId == i || units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
 					should_help = true;
 					break;
