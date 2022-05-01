@@ -308,22 +308,24 @@ namespace hooks
 		}
 
 		// New AI defense logic
-		for (u32 i = 0; i < 8; ++i) {
-			if (playerTable[i].type == PlayerType::Computer && data.target->isVisibleTo(i) &&
-				!scbw::isAlliedTo(i, data.attackingPlayerId) && scbw::isAlliedTo(i, data.target->playerId)) {
-				// Sanity check, so the AI doesn't occasionally try to suicide it's units due to harassment
-				UnitArray infrastructure = UnitSearchRadial(data.target->position, 40 * 32);
-				UnitArrayFilter(&infrastructure, data.target, FilterAlly | FilterBuilding);
-				if (infrastructure.size) {
-					AiRegion* region = scbw::get_ai_region(i, data.target->position);
-					switch (region->state) {
-						case 0:
-						case 3:
-						case 4:
-						case 5:
-						case 7: {
-							helper::AI_AssignMilitary(6, region);
-						} break;
+		if (data.attacker) {
+			// Sanity check, so the AI doesn't occasionally try to suicide it's units due to harassment
+			UnitArray infrastructure = UnitSearchRadial(data.target->position, 40 * 32);
+			UnitArrayFilter(&infrastructure, data.target, FilterAlly | FilterBuilding);
+			if (infrastructure.size) {
+				for (u32 i = 0; i < 8; ++i) {
+					if (playerTable[i].type == PlayerType::Computer && data.target->isVisibleTo(i) &&
+						!scbw::isAlliedTo(i, data.attackingPlayerId) && scbw::isAlliedTo(i, data.target->playerId)) {
+						AiRegion* region = scbw::get_ai_region(i, data.attacker->position);
+						switch (region->state) {
+							case 0:
+							case 3:
+							case 4:
+							case 5:
+							case 7: {
+								helper::AI_AssignMilitary(6, region);
+							} break;
+						}
 					}
 				}
 			}
