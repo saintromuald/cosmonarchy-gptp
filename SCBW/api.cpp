@@ -2070,15 +2070,20 @@ namespace scbw
 			return;
 		}
 
-		// Sanity check, so the AI doesn't try to send units too far into uncontroled territory
-		UnitArray infrastructure = UnitSearchRadial(victim->position, 40 * 32);
-		UnitArrayFilter(&infrastructure, victim, FilterAlly | FilterBuilding);
-		if (!infrastructure.size) {
-			return;
-		}
-
+		UnitArray nearby_allied_units = UnitSearchRadial(victim->position, 40 * 32);
+		UnitArrayFilter(&nearby_allied_units, victim, FilterAlly);
 		for (u32 i = 0; i < 8; ++i) {
-			if (playerTable[i].type == PlayerType::Computer && victim->isVisibleTo(i) &&
+			bool should_help = false;
+			for (u32 j = 0; j < nearby_allied_units.size; ++j) {
+				Unit* unit = nearby_allied_units.units[i];
+				if (unit->playerId == i || units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+					should_help = true;
+					break;
+				}
+			}
+
+			if (should_help && 
+				playerTable[i].type == PlayerType::Computer && victim->isVisibleTo(i) &&
 				!scbw::isAlliedTo(i, attacker->playerId) && scbw::isAlliedTo(i, victim->playerId)) {
 				AiRegion* region = scbw::get_ai_region(i, attacker->position);
 				switch (region->state) {
