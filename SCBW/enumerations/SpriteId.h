@@ -770,6 +770,7 @@ namespace SpriteId
 		IzirokorProjectile = 762,
 		IzirokorCorpse = 763,
 		EntropyGauntletsOverlay = 764,
+		FragmentaryExplosion = 765,
 
 		// CORPSE \\
 

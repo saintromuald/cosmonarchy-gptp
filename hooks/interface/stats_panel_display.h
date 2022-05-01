@@ -4,7 +4,6 @@
 
 namespace hooks
 {
-
 	void stats_panel_display(BinDlg* dialog);										// 00426C60
 	char* getUnitRankString(Unit* a1);												// 0042F370
 	void drawUnitKillsString(BinDlg* dialog);                                       // 00425DD0
@@ -14,5 +13,4 @@ namespace hooks
 	const char* getUnitName(Unit* unit);											// 0047B5A0
 
 	void injectStatsPanelDisplayHook();
-
 }

@@ -531,6 +531,7 @@ namespace hooks
 				}
 			} break;
 			case UnitId::ZergEgg:
+			case UnitId::ZergCocoon:
 			case UnitId::ZergQuazilisk:
 			{
 				// Gimmick to allow morph cancellation animations to play correctly
@@ -539,6 +540,12 @@ namespace hooks
 					if (unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell)
 					{
 						unit->playIscriptAnim(IscriptAnimation::CastSpell);
+					}
+				}
+				if ((unit->id == UnitId::ZergEgg && !scbw::isLarvalEgg(unit)) || unit->id == UnitId::ZergCocoon) {
+					if (scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep
+						&& !unit->getOverlay(ImageId::CreepMorphOverlay)) {
+						unit->sprite->createUnderlay(ImageId::CreepMorphOverlay, -5, 3);
 					}
 				}
 			} break;
@@ -1487,8 +1494,7 @@ namespace hooks
 			if (fuse_timer == 1)
 			{
 				// Todo: make thingy
-				//helper::createThingy(SpriteId::ArcliteShockCannon_Damageless_Silent, unit->getX(), unit->getY(), 11);
-				unit->sprite->createTopOverlay(ImageId::CyclopsFragmentaryExplosion);
+				helper::createThingy(SpriteId::FragmentaryExplosion, unit->getX(), unit->getY(), 11);
 				helper::playSoundFromSource(scbw::randBetween(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
 				const u32 radius = 1.5 * 32;
 				scbw::UnitFinder(

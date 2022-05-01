@@ -383,5 +383,9 @@ namespace FlingyId
 		NeutronFlareOrange_Damageless = 402,
 		ZergOrbothOmlia = 403,
 		ArcliteShockCannon_Damageless_Silent = 404,
+		TerranMagnetar = 405,
+		ZergIzirokor = 406,
+		IzirokorProjectile = 407,
+		CyclopsFragmentaryExplosion = 408,
 	};
 }

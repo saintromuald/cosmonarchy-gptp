@@ -114,25 +114,22 @@ namespace hooks
 					{
 						bNoGroundWeaponDisplay = true; // 00426D19
 					}
+					else if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
+					{
+						groundWeapon = UnitId::None; // 00426D2A
+					}
+					else if (groundWeaponMainUnit != WeaponId::None)
+					{
+						groundWeapon = groundWeaponMainUnit; // 00426D35
+					}
+					else if (activeUnit->subunit == nullptr)
+					{
+						groundWeapon = WeaponId::None; // 00426D41
+					}
 					else
-						if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
-						{
-							groundWeapon = UnitId::None; // 00426D2A
-						}
-						else
-							if (groundWeaponMainUnit != WeaponId::None)
-							{
-								groundWeapon = groundWeaponMainUnit; // 00426D35
-							}
-							else
-								if (activeUnit->subunit == nullptr)
-								{
-									groundWeapon = WeaponId::None; // 00426D41
-								}
-								else
-								{
-									groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id]; // 00426D51
-								}
+					{
+						groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id]; // 00426D51
+					}
 					if (!bNoGroundWeaponDisplay)
 					{
 						// 00426D54

@@ -297,13 +297,13 @@ struct BufferStr {
 };
 
 // For drawUnitInfo
-SCBW_DATA(u16*, suppliesAvailableTemp, 0x006CA93C);
-SCBW_DATA(u8*, statusScreenFunc, 0x0068C1E5);
-SCBW_DATA(BufferStr*, struct_Char, 0x006CA9F8);
+SCBW_DATA(u16*, suppliesAvailableTemp,	0x006CA93C);
+SCBW_DATA(u8*, statusScreenFunc,		0x0068C1E5);
+SCBW_DATA(BufferStr*, struct_Char,		0x006CA9F8);
 
 // For drawSupplyUnitInfo
-SCBW_DATA(BufferStr*, struct_Char2, 0x006CAB08);
-SCBW_DATA(char*, unkString_Char, 0x006CA668);
+SCBW_DATA(BufferStr*, struct_Char2,		0x006CAB08);
+SCBW_DATA(char*, unkString_Char,		0x006CA668);
 
 // For drawWireframeShield
 SCBW_DATA(char*, charBuffer, 0x0068C208);
