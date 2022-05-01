@@ -2070,7 +2070,7 @@ namespace scbw
 			return;
 		}
 
-		UnitArray nearby_allied_units = UnitSearchRadial(victim->position, 40 * 32);
+		UnitArray nearby_allied_units = UnitSearchRadial(victim->position, 60 * 32);
 		UnitArrayFilter(&nearby_allied_units, victim, FilterAlly);
 		for (u32 i = 0; i < 8; ++i) {
 			bool should_help = false;
