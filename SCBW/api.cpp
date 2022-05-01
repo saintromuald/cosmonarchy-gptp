@@ -2070,31 +2070,23 @@ namespace scbw
 			return;
 		}
 
-		UnitArray nearby_allied_units = UnitSearchRadial(victim->position, 60 * 32);
-		UnitArrayFilter(&nearby_allied_units, victim, FilterIncludingSelf | FilterAlly);
-		for (u32 i = 0; i < 8; ++i) {
-			bool should_help = false;
-			for (u32 j = 0; j < nearby_allied_units.size; ++j) {
-				Unit* unit = nearby_allied_units.units[j];
-				if (unit->playerId == i || units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
-					should_help = true;
-					break;
-				}
-			}
-
-			if (should_help && 
-				playerTable[i].type == PlayerType::Computer && victim->isVisibleTo(i) &&
-				!scbw::isAlliedTo(i, attacker->playerId) && scbw::isAlliedTo(i, victim->playerId)) {
-				AiRegion* region = scbw::get_ai_region(i, attacker->position);
-				switch (region->state) {
-					case RegionState::Nothing:
-					case RegionState::EnemySighted:
-					case RegionState::TownRegionLow:
-					case RegionState::TownRegionHigh:
-					case RegionState::Defending:
-					case RegionState::ChaseAway: {
-						helper::AI_AssignMilitary(RegionState::Defending, region);
-					} break;
+		UnitArray allied_structures = UnitSearchRadial(victim->position, 40 * 32);
+		UnitArrayFilter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
+		if (allied_structures.size) {
+			for (u32 i = 0; i < 8; ++i) {
+				if (playerTable[i].type == PlayerType::Computer && victim->isVisibleTo(i) &&
+					!scbw::isAlliedTo(i, attacker->playerId) && scbw::isAlliedTo(i, victim->playerId)) {
+					AiRegion* region = scbw::get_ai_region(i, attacker->position);
+					switch (region->state) {
+						case RegionState::Nothing:
+						case RegionState::EnemySighted:
+						case RegionState::TownRegionLow:
+						case RegionState::TownRegionHigh:
+						case RegionState::Defending:
+						case RegionState::ChaseAway: {
+							helper::AI_AssignMilitary(RegionState::Defending, region);
+						} break;
+					}
 				}
 			}
 		}
