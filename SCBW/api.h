@@ -561,4 +561,5 @@ namespace scbw
 	void clear_creep(Box32 area);
 	u32 get_closest_resarea(Point16 position);
 	AiRegion* get_ai_region(u32 player, Point16 position);
+	void ask_for_ai_help(Unit* victim, Unit* attacker);
 }

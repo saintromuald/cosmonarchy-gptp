@@ -308,29 +308,7 @@ namespace hooks
 		}
 
 		// New AI defense logic
-		if (data.attacker) {
-			// Sanity check, so the AI doesn't occasionally try to suicide it's units due to harassment
-			UnitArray infrastructure = UnitSearchRadial(data.target->position, 40 * 32);
-			UnitArrayFilter(&infrastructure, data.target, FilterAlly | FilterBuilding);
-			if (infrastructure.size) {
-				for (u32 i = 0; i < 8; ++i) {
-					if (playerTable[i].type == PlayerType::Computer && data.target->isVisibleTo(i) &&
-						!scbw::isAlliedTo(i, data.attackingPlayerId) && scbw::isAlliedTo(i, data.target->playerId)) {
-						AiRegion* region = scbw::get_ai_region(i, data.attacker->position);
-						switch (region->state) {
-							case RegionState::Nothing:
-							case RegionState::EnemySighted:
-							case RegionState::TownRegionLow:
-							case RegionState::TownRegionHigh:
-							case RegionState::Defending:
-							case RegionState::ChaseAway: {
-								helper::AI_AssignMilitary(RegionState::Defending, region);
-							} break;
-						}
-					}
-				}
-			}
-		}
+		scbw::ask_for_ai_help(data.target, data.attacker);
 
 		// Reduce shields
 		if (data.shieldReduceAmount != 0 && canDamage)

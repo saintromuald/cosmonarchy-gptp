@@ -2064,4 +2064,34 @@ namespace scbw
 	AiRegion* get_ai_region(u32 player, Point16 position) {
 		return &AiRegionCaptains[player][helper::SAI_GetRegionIdFromPxEx(position.x, position.y)];
 	}
+
+	void ask_for_ai_help(Unit* victim, Unit* attacker) {
+		if (!victim || !attacker) {
+			return;
+		}
+
+		// Sanity check, so the AI doesn't try to send units too far into uncontroled territory
+		UnitArray infrastructure = UnitSearchRadial(victim->position, 40 * 32);
+		UnitArrayFilter(&infrastructure, victim, FilterAlly | FilterBuilding);
+		if (!infrastructure.size) {
+			return;
+		}
+
+		for (u32 i = 0; i < 8; ++i) {
+			if (playerTable[i].type == PlayerType::Computer && victim->isVisibleTo(i) &&
+				!scbw::isAlliedTo(i, attacker->playerId) && scbw::isAlliedTo(i, victim->playerId)) {
+				AiRegion* region = scbw::get_ai_region(i, attacker->position);
+				switch (region->state) {
+					case RegionState::Nothing:
+					case RegionState::EnemySighted:
+					case RegionState::TownRegionLow:
+					case RegionState::TownRegionHigh:
+					case RegionState::Defending:
+					case RegionState::ChaseAway: {
+						helper::AI_AssignMilitary(RegionState::Defending, region);
+					} break;
+				}
+			}
+		}
+	}
 }
