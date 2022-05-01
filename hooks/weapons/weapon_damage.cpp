@@ -318,12 +318,13 @@ namespace hooks
 						!scbw::isAlliedTo(i, data.attackingPlayerId) && scbw::isAlliedTo(i, data.target->playerId)) {
 						AiRegion* region = scbw::get_ai_region(i, data.attacker->position);
 						switch (region->state) {
-							case 0:
-							case 3:
-							case 4:
-							case 5:
-							case 7: {
-								helper::AI_AssignMilitary(6, region);
+							case RegionState::Nothing:
+							case RegionState::EnemySighted:
+							case RegionState::TownRegionLow:
+							case RegionState::TownRegionHigh:
+							case RegionState::Defending:
+							case RegionState::ChaseAway: {
+								helper::AI_AssignMilitary(RegionState::Defending, region);
 							} break;
 						}
 					}
