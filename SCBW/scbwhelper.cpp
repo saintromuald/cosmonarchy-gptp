@@ -141,13 +141,13 @@ namespace helper
 		return result;
 	}
 
-	u16 getLastQueueSlotType(Unit* a1)
+	u16 getLastQueueSlotType(Unit* unit)
 	{
 		const u32 Func_getLastQueueSlotType = 0x0047B270;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EDX, a1
+			MOV EDX, unit
 			CALL Func_getLastQueueSlotType
 			MOV result, EAX
 			POPAD
@@ -155,14 +155,14 @@ namespace helper
 		return (u16)result;
 	}
 
-	void addTextToDialog(BinDlg* a1, s16 a2, const char* a3)
+	void addTextToDialog(BinDlg* dialog, s16 index, const char* text)
 	{
 		const u32 Func_addTextToDialog = 0x004258B0;
-		static s32 _a3 = (s32)a3;
+		static s32 _a3 = (s32)text;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
-			MOVZX CX, a2
+			MOV EAX, dialog
+			MOVZX CX, index
 			PUSH _a3
 			CALL Func_addTextToDialog
 			POPAD

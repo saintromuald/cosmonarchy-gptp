@@ -252,7 +252,7 @@ std::vector<std::vector<std::vector<u32>>> personality_colors =
 			
 //			PlayerColor::IridescentYellow,
 		},
-		{ // Air
+		{ // Sunblot
 			PlayerColor::White,
 			PlayerColor::SilverPink,
 			PlayerColor::Silver,
@@ -277,7 +277,7 @@ std::vector<std::vector<std::vector<u32>>> personality_colors =
 		},
 	},
 	{ // Terran
-		{ // Mech
+		{ // Armor
 			PlayerColor::Brown,
 			PlayerColor::SaddleBrown,
 			PlayerColor::Sienna,
@@ -311,7 +311,7 @@ std::vector<std::vector<std::vector<u32>>> personality_colors =
 //			PlayerColor::IridescentGreen,
 //			PlayerColor::IridescentViolet,
 		},
-		{ // Air
+		{ // Orbital
 			PlayerColor::Red,
 			PlayerColor::Scarlet,
 			PlayerColor::Vermillion,

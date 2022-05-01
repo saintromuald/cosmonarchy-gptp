@@ -17,8 +17,8 @@ namespace helper
 	bool unitHPbelow33_percent(Unit* a1);
 	bool unitHPbetween33_66_percent(s32 a1, Unit* a2);
 	s32 getMaxHP(Unit* a1);
-	u16 getLastQueueSlotType(Unit* a1);
-	void addTextToDialog(BinDlg* a1, s16 a2, const char* a3);
+	u16 getLastQueueSlotType(Unit* unit);
+	void addTextToDialog(BinDlg* dialog, s16 index, const char* text);
 	void drawEnergy(BinDlg* a1);
 	void hideOptionalStatusScreenControls(BinDlg* a1);
 	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId);
@@ -27,7 +27,6 @@ namespace helper
 
 	// For drawSupplyUnitInfo
 	s32 getSuppliesUsed();
-	u16 getLastQueueSlotType(Unit* a1);
 	u32 getSuppliesAvailable(u8 a1, s32 a2);
 	void drawArmor(s32 a1, s32 a2, u16 a3);
 	void unitStatAct_Standard(void* a1);
