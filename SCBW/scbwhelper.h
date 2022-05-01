@@ -41,7 +41,7 @@ namespace helper
 	void drawNukeSiloInfo(BinDlg* a1);
 	bool unitIsActiveTransport(Unit* a1);
 	bool isQueueSlotActive(Unit* unit, s32 slot);
-	void drawTrainingProgress(BinDlg* dialog);
+	void drawTrainingProgress(BinDlg* dialog);					// 004268D0
 	bool isConstructingAddon(const Unit* a1);
 	bool isAttemptingProtossBuild(Unit* a1);
 	void drawAddonProgress(BinDlg* a1);
@@ -1179,6 +1179,7 @@ namespace helper
 	void enable_doodad_state(Unit* unit);													// 0047BA00
 	void disable_doodad_state(Unit* unit);													// 0047B960
 	char unfreeze_unit(Unit* unit);															// 004F62D0
+	s32 dialog_set_progress_bar_value(BinDlg* dialog, s16 index, s16 value);				// 00457200
 
 	bool unit_can_attack_target(Unit* target, Unit* attacker, s32 check_duration);			// 00476730
 

@@ -440,7 +440,7 @@ namespace hooks
 
 							if (!(unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving)
 								&& unitExt->values[ValueTalosAnimationTimer] % 12 == 0) {
-								target->sprite->createTopOverlay(ImageId::FusionCutterHit);
+								target->sprite->createTopOverlay(ImageId::SalvagePeriodicZap);
 							}
 
 							if (unitExt->values[ValueTalosAnimationTimer] == 0
@@ -1768,16 +1768,16 @@ namespace hooks
 			unit->freeze();
 
 			u32 offset = scbw::getOverlayOffset(unit->id);
-			if (!unit->getOverlay(ImageId::MaelstromOverlay_Small + offset)) {
-				unit->sprite->createTopOverlay(ImageId::MaelstromOverlay_Small + offset);
+			if (!unit->getOverlay(ImageId::SalvageDisableSmall + offset)) {
+				unit->sprite->createTopOverlay(ImageId::SalvageDisableSmall + offset);
 			}
 		}
 		if (unitExt->timers[TimerSalvageStunTimer] == 1) {
 			unit->unfreeze();
 
 			u32 offset = scbw::getOverlayOffset(unit->id);
-			if (unit->getOverlay(ImageId::MaelstromOverlay_Small + offset)) {
-				unit->sprite->removeOverlay(ImageId::MaelstromOverlay_Small + offset);
+			if (unit->getOverlay(ImageId::SalvageDisableSmall + offset)) {
+				unit->sprite->removeOverlay(ImageId::SalvageDisableSmall + offset);
 			}
 		}
 

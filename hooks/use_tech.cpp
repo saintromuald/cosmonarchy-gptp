@@ -288,7 +288,7 @@ namespace hooks
 			} break;
 			case TechId::TalosSalvage:
 			{
-				helper::issueTriTargetOrder(OrderId::Hover, 0, 0);
+				helper::issueTriTargetOrder(OrderId::TalosSalvage, 0, 0);
 			} break;
 			default:
 			{

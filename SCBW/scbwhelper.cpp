@@ -11005,4 +11005,19 @@ namespace helper
 		}
 		return result;
 	}
+
+	s32 dialog_set_progress_bar_value(BinDlg* dialog, s16 index, s16 value) {
+		static s32 result;
+		const s32 func_address = 0x00457200;
+		__asm {
+			PUSHAD
+			PUSH value
+			MOV CX, index
+			MOV EAX, dialog
+			call func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
