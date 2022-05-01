@@ -177,6 +177,10 @@ namespace hooks
 				if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
 				{
 					unitExt->timers[TimerMineralSpecialRegen] = 24;
+					u32 underlay = ImageId::ResourceBoostOverlay_Small + scbw::getOverlayOffset(target->id);
+					if (!target->sprite->getOverlay(underlay)) {
+						target->sprite->createUnderlay(underlay);
+					}
 				}
 			});
 		}

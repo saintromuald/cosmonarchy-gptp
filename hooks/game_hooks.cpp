@@ -545,7 +545,7 @@ namespace hooks
 				if ((unit->id == UnitId::ZergEgg && !scbw::isLarvalEgg(unit)) || unit->id == UnitId::ZergCocoon) {
 					if (scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep
 						&& !unit->getOverlay(ImageId::CreepMorphOverlay)) {
-						unit->sprite->createUnderlay(ImageId::CreepMorphOverlay, -5, 3);
+						unit->sprite->createUnderlay(ImageId::CreepMorphOverlay);
 					}
 				}
 			} break;

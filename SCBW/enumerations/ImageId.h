@@ -1099,6 +1099,9 @@ enum Enum {
 	SalvageDisableSmall							= 1481,
 	SalvageDisableMedium						= 1482,
 	SalvageDisableLarge							= 1483,
+	ResourceBoostOverlay_Small					= 1484,
+	ResourceBoostOverlay_Medium					= 1485,
+	ResourceBoostOverlay_Large					= 1486,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,
