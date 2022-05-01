@@ -5650,16 +5650,16 @@ namespace helper
 		return return_value;
 	}
 
-	void function_00476FC0(Unit* unit, Unit* target, u32 unk1, u32 unk2)
+	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2)
 	{
-		const u32 Func_Sub476FC0 = 0x00476FC0;
+		const u32 func_address = 0x00476FC0;
 		__asm {
 			PUSHAD
 			PUSH unk1
 			PUSH unk2
 			MOV EAX, target
 			MOV EDI, unit
-			CALL Func_Sub476FC0
+			CALL func_address
 			POPAD
 		}
 	}
@@ -10984,6 +10984,21 @@ namespace helper
 		__asm {
 			PUSHAD
 			MOV ESI, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	bool unit_can_attack_target(Unit* target, Unit* attacker, s32 check_duration) {
+		static bool result;
+		const u32 func_address = 0x00476730;
+		__asm {
+			PUSHAD
+			PUSH check_duration
+			MOV ESI, attacker
+			MOV EBX, target
 			CALL func_address
 			MOV result, AL
 			POPAD

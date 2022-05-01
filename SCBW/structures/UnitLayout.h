@@ -542,11 +542,11 @@ struct UnitLayout
 	/*0x066*/ u8		_unknown_0x066;			// Cosmonarchy - mineral regen cooldown
 			  u8		_unknown_0x067;			// Cosmonarchy - warp relay warp in
 	/*0x068*/ Link<Unit> player_link;
-	/*0x070*/ Unit*	subunit;
+	/*0x070*/ Unit*		subunit;
 	/*0x074*/ Order*	orderQueueHead;
 	/*0x078*/ Order*	orderQueueTail;
-	/*0x07C*/ Unit*	autoTargetUnit;				// The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
-	/*0x080*/ Unit*	connectedUnit;				// larva store a reference to the structure who created it
+	/*0x07C*/ Unit*		autoTargetUnit;			// The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
+	/*0x080*/ Unit*		connectedUnit;			// larva store a reference to the structure who created it
 												// units inside transports store a reference to the transport
 												// addons store a reference to its parent building (but not the other way around)
 	/*0x084*/ u8        orderQueueCount;
@@ -556,7 +556,7 @@ struct UnitLayout
 	/*0x088*/ u16       previousUnitType;		// Also used by zerg buildings while morphing
 	/*0x08A*/ u8        lastEventTimer;			// Countdown that stops being recent when it hits 0
 	/*0x08B*/ u8        lastEventColor;			// 17 = was completed (train, morph), 174 = was attacked
-	/*0x08C*/ u16       _unknown_0x08C;			// Cosmonarchy
+	/*0x08C*/ u16       _unknown_0x08C;			// Cosmonarchy BW
 												// 0x1 - Hierophant Detect Add Maelstrom Overlay
 												// 0x2 - Hierophant Detect Remove Maelstrom Overlay
 
