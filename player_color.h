@@ -442,8 +442,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		{},
 		// Assault
 		{
-			"Assault One",
-			"Assault Two",
+			"Hydra5620",
+			"Amon's Lost Dogs",
 			"Assault THREE!",
 			"Assault Four",
 			"Assault Five",
@@ -453,8 +453,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// Swarm
 		{
-			"Swarm One",
-			"Swarm Two",
+			"Pathfinding Organ",
+			"BingBongBorrowers",
 			"Swarm THREE!",
 			"Swarm Four",
 			"Swarm Five",
@@ -475,7 +475,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// Miscreant
 		{
-			"Miscreant One",
+			"N's Miracle Workers",
 			"Miscreant Two",
 			"Miscreant THREE!",
 			"Miscreant Four",
@@ -486,9 +486,9 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// General
 		{
-			"General One",
-			"General Two",
-			"General THREE!",
+			"Whathere?",
+			"The Friendship Buffet",
+			"BonziBossy",
 			"General Four",
 			"General Five",
 			"General Six",
@@ -501,8 +501,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		{},
 		// Armor
 		{
-			"Armor One",
-			"Armor Two",
+			"Todny Terranus",
+			"Foreign Dogwalkers",
 			"Armor THREE!",
 			"Armor Four",
 			"Armor Five",
@@ -512,8 +512,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// Raider
 		{
-			"Raider One",
-			"Raider Two",
+			"The Ackmen",
+			"The Ciox Crew",
 			"Raider THREE!",
 			"Raider Four",
 			"Raider Five",
@@ -523,8 +523,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// Orbital
 		{
-			"Orbital One",
-			"Orbital Two",
+			"IskatuMengsk",
+			"Crows from Kenya",
 			"Orbital THREE!",
 			"Orbital Four",
 			"Orbital Five",
@@ -534,7 +534,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// Shadow
 		{
-			"Shadow One",
+			"Vacuum Hitler Busboys",
 			"Shadow Two",
 			"Shadow THREE!",
 			"Shadow Four",
@@ -545,7 +545,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// General
 		{
-			"General One",
+			"Deputy Dads",
 			"General Two",
 			"General THREE!",
 			"General Four",
@@ -560,8 +560,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		{},
 		// Ranger
 		{
-			"Ranger One",
-			"Ranger Two",
+			"Champions of Iquaria",
+			"Day 7: Autoveeqality",
 			"Ranger THREE!",
 			"Ranger Four",
 			"Ranger Five",
@@ -571,7 +571,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// Templar
 		{
-			"Templar One",
+			"Knights of a Realm",
 			"Templar Two",
 			"Templar THREE!",
 			"Templar Four",
@@ -582,8 +582,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// Skylord
 		{
-			"Skylord One",
-			"Skylord Two",
+			"Solawrong!",
+			"Estranged Aviary",
 			"Skylord THREE!",
 			"Skylord Four",
 			"Skylord Five",
@@ -593,8 +593,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// Profane
 		{
-			"Profane One",
-			"Profane Two",
+			"Tree Tribe",
+			"Shadowcloaked Skullcrusher",
 			"Profane THREE!",
 			"Profane Four",
 			"Profane Five",
@@ -604,7 +604,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 		// General
 		{
-			"General One",
+			"F.R.A.U.D.s",
 			"General Two",
 			"General THREE!",
 			"General Four",
