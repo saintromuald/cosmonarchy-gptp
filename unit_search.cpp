@@ -74,7 +74,7 @@ bool IsRectInRect(Box32 inner, Box32 outer)
 UnitArray UnitSearchRect(Box32 rect)
 {
 	rect = scbw::clampRect(rect);
-	UnitArray unit_array;
+	UnitArray unit_array = {};
 	unit_array.size = 0;
 
 	const u32 x1 = rect.left / CELL_PX_SIZE;
@@ -132,7 +132,7 @@ UnitArray UnitSearchSquare(Point16 center, u32 radius)
 
 UnitArray UnitSearchRadial(Point16 center, u32 radius)
 {
-	UnitArray unit_array;
+	UnitArray unit_array = {};
 	unit_array.size = 0;
 
 	Box32 dims =

@@ -254,10 +254,15 @@ namespace hooks
 		}
 
 		// Map Features
-		if (*elapsedTimeFrames == 1)
-		{
+		scbw::setInGameLoopState(true);
+		if (*elapsedTimeFrames == 1) {
 			load_player_colors();
 		}
+		if (*elapsedTimeFrames == 0 || *elapsedTimeFrames == 24) {
+			load_player_names();
+		}
+		scbw::setInGameLoopState(false);
+
 		if (*elapsedTimeFrames == 2)
 		{
 			// Check deaths

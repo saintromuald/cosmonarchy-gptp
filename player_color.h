@@ -224,7 +224,7 @@ const std::vector<std::vector<u32>> banned_race_tints =
 	},
 };
 
-std::vector<std::vector<std::vector<u32>>> personality_colors =
+const std::vector<std::vector<std::vector<u32>>> personality_colors =
 {
 	{ // Zerg
 		{ // Assault
@@ -432,3 +432,188 @@ extern u8 player_color_list[PLAYABLE_PLAYER_COUNT];
 void set_player_color(u32 player, u32 color);
 void load_color_tables();
 void load_player_colors();
+
+// Feel free to modify this to suit your needed amount of names per personality
+// (you can also specify less names than this maximum)
+#define PlayerPesonalityMaxNames 8
+char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPesonalityMaxNames] = {
+	// Zerg
+	{
+		{},
+		// Assault
+		{
+			"Assault One",
+			"Assault Two",
+			"Assault THREE!",
+			"Assault Four",
+			"Assault Five",
+			"Assault Six",
+			"Assault SEVEN!",
+			"Assault Eight",
+		},
+		// Swarm
+		{
+			"Swarm One",
+			"Swarm Two",
+			"Swarm THREE!",
+			"Swarm Four",
+			"Swarm Five",
+			"Swarm Six",
+			"Swarm SEVEN!",
+			"Swarm Eight",
+		},
+		// Sunblot
+		{
+			"Sunblot One",
+			"Sunblot Two",
+			"Sunblot THREE!",
+			"Sunblot Four",
+			"Sunblot Five",
+			"Sunblot Six",
+			"Sunblot SEVEN!",
+			"Sunblot Eight",
+		},
+		// Miscreant
+		{
+			"Miscreant One",
+			"Miscreant Two",
+			"Miscreant THREE!",
+			"Miscreant Four",
+			"Miscreant Five",
+			"Miscreant Six",
+			"Miscreant SEVEN!",
+			"Miscreant Eight",
+		},
+		// General
+		{
+			"General One",
+			"General Two",
+			"General THREE!",
+			"General Four",
+			"General Five",
+			"General Six",
+			"General SEVEN!",
+			"General Eight",
+		},
+	},
+	// Terran
+	{
+		{},
+		// Armor
+		{
+			"Armor One",
+			"Armor Two",
+			"Armor THREE!",
+			"Armor Four",
+			"Armor Five",
+			"Armor Six",
+			"Armor SEVEN!",
+			"Armor Eight",
+		},
+		// Raider
+		{
+			"Raider One",
+			"Raider Two",
+			"Raider THREE!",
+			"Raider Four",
+			"Raider Five",
+			"Raider Six",
+			"Raider SEVEN!",
+			"Raider Eight",
+		},
+		// Orbital
+		{
+			"Orbital One",
+			"Orbital Two",
+			"Orbital THREE!",
+			"Orbital Four",
+			"Orbital Five",
+			"Orbital Six",
+			"Orbital SEVEN!",
+			"Orbital Eight",
+		},
+		// Shadow
+		{
+			"Shadow One",
+			"Shadow Two",
+			"Shadow THREE!",
+			"Shadow Four",
+			"Shadow Five",
+			"Shadow Six",
+			"Shadow SEVEN!",
+			"Shadow Eight",
+		},
+		// General
+		{
+			"General One",
+			"General Two",
+			"General THREE!",
+			"General Four",
+			"General Five",
+			"General Six",
+			"General SEVEN!",
+			"General Eight",
+		},
+	},
+	// Protoss
+	{
+		{},
+		// Ranger
+		{
+			"Ranger One",
+			"Ranger Two",
+			"Ranger THREE!",
+			"Ranger Four",
+			"Ranger Five",
+			"Ranger Six",
+			"Ranger SEVEN!",
+			"Ranger Eight",
+		},
+		// Templar
+		{
+			"Templar One",
+			"Templar Two",
+			"Templar THREE!",
+			"Templar Four",
+			"Templar Five",
+			"Templar Six",
+			"Templar SEVEN!",
+			"Templar Eight",
+		},
+		// Skylord
+		{
+			"Skylord One",
+			"Skylord Two",
+			"Skylord THREE!",
+			"Skylord Four",
+			"Skylord Five",
+			"Skylord Six",
+			"Skylord SEVEN!",
+			"Skylord Eight",
+		},
+		// Profane
+		{
+			"Profane One",
+			"Profane Two",
+			"Profane THREE!",
+			"Profane Four",
+			"Profane Five",
+			"Profane Six",
+			"Profane SEVEN!",
+			"Profane Eight",
+		},
+		// General
+		{
+			"General One",
+			"General Two",
+			"General THREE!",
+			"General Four",
+			"General Five",
+			"General Six",
+			"General SEVEN!",
+			"General Eight",
+		},
+	},
+};
+
+void load_player_names();

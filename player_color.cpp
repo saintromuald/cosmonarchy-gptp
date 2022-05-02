@@ -1,4 +1,5 @@
 #include "player_color.h"
+#include "trigger_system.h"
 
 static bool loaded_colors;
 static bool can_randomize_player_colors;
@@ -74,11 +75,11 @@ static bool can_use_player_tint(u32 color_tint, u32 player) {
 }
 
 static u32 get_random_tint() {
-	return helper::randFunc() % PlayerTintRollCount;
+	return scbw::random() % PlayerTintRollCount;
 }
 
 static u32 get_random_color_from_tint(u32 tint) {
-	return player_tints[tint][helper::randFunc() % player_tints[tint].size()];
+	return player_tints[tint][scbw::random() % player_tints[tint].size()];
 }
 
 static u32 get_color_for_personality(u32 player) {
@@ -88,7 +89,7 @@ static u32 get_color_for_personality(u32 player) {
 		&& personality_colors.size() > race
 		&& personality_colors[race].size() > build) {
 		u32 size = personality_colors[race][build].size();
-		u32 start_index = helper::randFunc() % size;
+		u32 start_index = scbw::random() % size;
 		u32 index = start_index;
 		do {
 			if (can_use_player_color(personality_colors[race][build][index], player)) {
@@ -169,5 +170,65 @@ void load_player_colors() {
 		} else {
 			match_color_of(player);
 		}
+	}
+}
+
+static bool can_get_player_name(u32 player) {
+	if (!has_custom_name[player]
+	&&  playerTable[player].type == PlayerType::Computer) {
+		return true;
+	}
+	return false;
+}
+
+static bool is_valid_name(u32 player, char* name) {
+	if (!name) {
+		return false;
+	}
+	for (u32 i = 0; i < 8; ++i) {
+		if (i != player && can_get_player_name(i)) {
+			if (strcmp(playerNameList->player[i].player_name, name) == 0) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+static u32 get_name_count(u32 race, u32 personality) {
+	u32 count = 0;
+	if (personality < AiPersonality_AnyCount) {
+		for (u32 i = 0; i < PlayerPesonalityMaxNames; ++i) {
+			if (player_personality_names[race][personality][i]) {
+				count = i;
+			}
+		}
+	}
+	return count;
+}
+
+static void update_player_name(u32 player) {
+	u32 race = playerTable[player].race;
+	u32 personality = unit_deaths[UnitId::Spell_DisruptionWeb].player[player];
+
+	u32 count = get_name_count(race, personality);
+	if (count) {
+		for (u32 tries = 0; tries < 20; ++tries) {
+			u32 random = scbw::randBetween(0, PlayerPesonalityMaxNames - 1);
+			char* name = player_personality_names[race][personality][random];
+
+			if (is_valid_name(player, name)) {
+				strcpy_s(playerNameList->player[player].player_name, name);
+				return;
+			}
+		}
+	}
+
+	strcpy_s(playerNameList->player[player].player_name, "Computer");
+}
+
+void load_player_names() {
+	for (u32 i = 0; i < 8; ++i) {
+		update_player_name(i);
 	}
 }

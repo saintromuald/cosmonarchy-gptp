@@ -339,6 +339,8 @@ static Music* get_next_music() {
 	return music;
 }
 
+bool has_custom_name[PlayerLimit];
+
 static b32 __fastcall parse_comment_action(ACTION* action) {
 	if (*currentTriggerPlayerId == *LOCAL_NATION_ID) {
 		char* comment = helper::get_chk_string(action->string);
@@ -397,6 +399,7 @@ static b32 __fastcall parse_comment_action(ACTION* action) {
 				s32 player = parser_get_s32(&parser);
 				Token name = parser_get_string(&parser, true);
 				if (player >= 0 && player < 8) {
+					has_custom_name[player] = true;
 					if (playerTable[player].type == PlayerType::Human || playerTable[player].type == PlayerType::HumanDefeated) {
 						sprintf_s(playerNameList->player[player].player_name, "%s (%s)", name.data, playerTable[player].name);
 					} else {
@@ -428,6 +431,8 @@ static void init_trigger_system() {
 		ds_buffer = 0;
 	}
 	actionTable[47] = parse_comment_action;
+
+	memset(has_custom_name, 0, sizeof(has_custom_name));
 
 	for (u32 i = 0; i < MaxMusic; ++i) {
 		free_music(&music_tracks[i]);

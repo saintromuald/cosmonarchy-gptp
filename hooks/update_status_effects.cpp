@@ -181,8 +181,7 @@ namespace hooks
 					if (!target->sprite->getOverlay(underlay)) {
 						if (scbw::unit_id_is_gas_structure(target->id)) {
 							target->sprite->createUnderlay(underlay, -5, 2);
-						}
-						else {
+						} else {
 							target->sprite->createUnderlay(underlay);
 						}
 					}
