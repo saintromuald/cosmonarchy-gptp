@@ -208,22 +208,22 @@ static u32 get_name_count(u32 race, u32 personality) {
 }
 
 static void update_player_name(u32 player) {
+	if (!can_get_player_name(player)) {
+		return;
+	}
 	u32 race = playerTable[player].race;
 	u32 personality = unit_deaths[UnitId::Spell_DisruptionWeb].player[player];
-
 	u32 count = get_name_count(race, personality);
 	if (count) {
 		for (u32 tries = 0; tries < 20; ++tries) {
 			u32 random = scbw::randBetween(0, PlayerPesonalityMaxNames - 1);
 			char* name = player_personality_names[race][personality][random];
-
 			if (is_valid_name(player, name)) {
 				strcpy_s(playerNameList->player[player].player_name, name);
 				return;
 			}
 		}
 	}
-
 	strcpy_s(playerNameList->player[player].player_name, "Computer");
 }
 
