@@ -671,7 +671,7 @@ struct AiRegion
 	/*04*/  u8  playerId;
 	/*05*/  u8  state;
 	/*06*/  u8  defensePriorityAdd;
-	/*07*/  u8  unkCount;
+	/*07*/  u8  defendTimeout;
 	/*08*/  u8  captainFlags;
 	/*09*/  u8  unknown_0x9;
 	/*0A*/  u16 groundUnitCount;

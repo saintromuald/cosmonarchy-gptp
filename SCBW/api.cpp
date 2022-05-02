@@ -2085,6 +2085,7 @@ namespace scbw
 						case RegionState::Defending:
 						case RegionState::ChaseAway: {
 							helper::AI_AssignMilitary(RegionState::Defending, region);
+							region->defendTimeout = 0;
 						} break;
 					}
 				}
