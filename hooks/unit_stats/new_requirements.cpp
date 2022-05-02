@@ -381,13 +381,6 @@ namespace hooks {
 			{
 				return true;
 			}
-			else if (unitId == UnitId::ProtossClarion)
-			{
-				if (player_has_completed_unit_id(player_id, UnitId::ProtossStridentStratum))
-				{
-					return true;
-				}
-			}
 		}
 		if (player_has_completed_unit_id(player_id, UnitId::ProtossGateway))
 		{
@@ -453,11 +446,12 @@ namespace hooks {
 			switch (unitId)
 			{
 				case UnitId::ProtossAccantor:
+				case UnitId::ProtossArchitect:
 				{
 					return true;
 				}
-				case UnitId::ProtossArchitect:
 				case UnitId::ProtossDemiurge:
+				case UnitId::ProtossClarion:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod))
 					{
@@ -1590,14 +1584,6 @@ namespace hooks {
 				{
 					return TECH_ACTIVE;
 				}
-				else if (unitId == UnitId::ProtossClarion)
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossStridentStratum))
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_LOCKED;
-				}
 				return TECH_HIDDEN;
 			}
 			case UnitId::ProtossGateway:
@@ -1670,11 +1656,12 @@ namespace hooks {
 				switch (unitId)
 				{
 					case UnitId::ProtossAccantor:
+					case UnitId::ProtossArchitect:
 					{
 						return TECH_ACTIVE;
 					}
-					case UnitId::ProtossArchitect:
 					case UnitId::ProtossDemiurge:
+					case UnitId::ProtossClarion:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod))
 						{
