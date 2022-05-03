@@ -238,7 +238,7 @@ void unitDestructorSpecialHook(Unit* unit)
 		{
 			case UnitId::SharedAspirant:
 			{
-				globals.createEffect(EffectId::Criticality, 5 * 24, { unit->getX(), unit->getY() }, 1.25 * 32, SpriteId::Criticality, 5, unit->playerId);
+				globals.createEffect(EffectId::Criticality, 10 * 24, { unit->getX(), unit->getY() }, 2 * 32, SpriteId::Criticality, 5, unit->playerId, unit);
 			} break;
 			case UnitId::ProtossClarion:
 			{

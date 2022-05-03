@@ -609,7 +609,7 @@ namespace hooks
 				// Star Sovereign - Grief of All Gods
 				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
 				{
-					globals.createEffect(EffectId::StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId, unit);
+					globals.createEffect(EffectId::StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId, unit, unit);
 				}
 
 				// blast effects
@@ -709,7 +709,7 @@ namespace hooks
 					if (!unitExt->values[ValueDisruptionFieldOn])
 					{
 						unitExt->values[ValueDisruptionFieldOn] = 1;
-						globals.createEffect(EffectId::DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->playerId, unit);
+						globals.createEffect(EffectId::DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->playerId, unit, unit);
 					}
 					else if (unit->isFrozen())
 					{

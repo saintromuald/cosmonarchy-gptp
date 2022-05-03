@@ -182,6 +182,7 @@ struct Unit : public UnitLayout
 	void heal(s32 hitPoints, Unit* source = nullptr, bool restore = true);
 	void healShields(s32 shields, Unit* source = nullptr, bool restore = true);
 	void healOverflow(s32 amount, Unit* source = nullptr, bool restore = true);
+	void healUnderflow(s32 amount, Unit* source = nullptr, bool restore = true);
 	void healEnergy(s32 energy, Unit* source = nullptr);
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.

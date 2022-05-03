@@ -37,17 +37,18 @@ void Globals::aise_save()
 	stream.write(reinterpret_cast<const char*>(&effectsSize), sizeof(effectsSize));
 	for (s32 i = 0; i < effectsSize; i++)
 	{
-		stream.write(reinterpret_cast<const char*>(&effects[i].effectId), sizeof(effects[i].effectId));
-		stream.write(reinterpret_cast<const char*>(&effects[i].position.x), sizeof(effects[i].position.x));
-		stream.write(reinterpret_cast<const char*>(&effects[i].position.y), sizeof(effects[i].position.y));
-		stream.write(reinterpret_cast<const char*>(&effects[i].radius), sizeof(effects[i].radius));
-		stream.write(reinterpret_cast<const char*>(&effects[i].currentTime), sizeof(effects[i].currentTime));
-		stream.write(reinterpret_cast<const char*>(&effects[i].maxTime), sizeof(effects[i].maxTime));;
-		stream.write(reinterpret_cast<const char*>(&effects[i].elevation), sizeof(effects[i].elevation));
-		stream.write(reinterpret_cast<const char*>(&effects[i].spriteId), sizeof(effects[i].spriteId));
-		stream.write(reinterpret_cast<const char*>(&effects[i].player), sizeof(effects[i].player));
+		Effect* effect = &effects[i];
+		stream.write(reinterpret_cast<const char*>(&effect->effectId), sizeof(effect->effectId));
+		stream.write(reinterpret_cast<const char*>(&effect->position.x), sizeof(effect->position.x));
+		stream.write(reinterpret_cast<const char*>(&effect->position.y), sizeof(effect->position.y));
+		stream.write(reinterpret_cast<const char*>(&effect->radius), sizeof(effect->radius));
+		stream.write(reinterpret_cast<const char*>(&effect->currentTime), sizeof(effect->currentTime));
+		stream.write(reinterpret_cast<const char*>(&effect->maxTime), sizeof(effect->maxTime));;
+		stream.write(reinterpret_cast<const char*>(&effect->elevation), sizeof(effect->elevation));
+		stream.write(reinterpret_cast<const char*>(&effect->spriteId), sizeof(effect->spriteId));
+		stream.write(reinterpret_cast<const char*>(&effect->player), sizeof(effect->player));
 		// should find a way on how to serialize thingy, since pointers won't match after save / load
-		//stream.write(reinterpret_cast<const char*>(&effects[i].thingy), sizeof(effects[i].thingy));
+		//stream.write(reinterpret_cast<const char*>(&effect->thingy), sizeof(effect->thingy));
 	}
 
 	u32 pariahHitCount = pariahHits.size();
@@ -348,9 +349,14 @@ void Globals::unitDeathHook(Unit* unit)
 
 	for (s32 i = 0; i < this->effects.size(); i++)
 	{
-		if (effects[i].parent == unit)
+		Effect* effect = &effects[i];
+		if (effect->source == unit)
 		{
-			effects[i].parent = nullptr;
+			effect->source = nullptr;
+		}
+		if (effect->origin == unit)
+		{
+			effect->origin = nullptr;
 		}
 	}
 
@@ -394,7 +400,7 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 	unit->irradiateTimer = time;
 }
 
-void Globals::createEffect(u8 impactId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* parent)
+void Globals::createEffect(u8 impactId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent)
 {
 	Effect effect;
 	effect.effectId = impactId;
@@ -406,7 +412,8 @@ void Globals::createEffect(u8 impactId, u32 time, Vector32 position, u32 radius,
 	effect.elevation = elevation;
 	effect.player = player;
 	effect.thingy = nullptr;
-	effect.parent = parent;
+	effect.source = source;
+	effect.origin = parent;
 
 	if (effect.spriteId >= 0)
 	{
@@ -491,162 +498,163 @@ void Globals::frameHook()
 
 	for (s32 i = 0; i < effects.size(); i++)
 	{
-		effects[i].currentTime--;
-		if (effects[i].parent)
+		Effect* effect = &effects[i];
+		effect->currentTime--;
+		if (effect->origin)
 		{
-			effects[i].position = {effects[i].parent->position.x, effects[i].parent->position.y};
-			if (effects[i].thingy)
+			effect->position = {effect->origin->position.x, effect->origin->position.y};
+			if (effect->thingy)
 			{
-				effects[i].thingy->sprite->setPosition(effects[i].parent->position.x, effects[i].parent->position.y);
+				effect->thingy->sprite->setPosition(effect->origin->position.x, effect->origin->position.y);
 			}
 		}
 		const s32 framePeriod = 6;
-		if (effects[i].currentTime % framePeriod == 1)
+		if (effect->currentTime % framePeriod == 1)
 		{
-			const f64 damageMultiplier = 256.0 * (f64)framePeriod / effects[i].maxTime;
-			switch (effects[i].effectId)
+			const f64 damageMultiplier = 256.0 * (f64)framePeriod / effect->maxTime;
+			switch (effect->effectId)
 			{
 				case EffectId::StarSovereignTheGriefOfAllGods:
 				{
-					if (!effects[i].parent)
+					if (!effect->origin)
 					{
-						effects[i].currentTime = 0;
+						effect->currentTime = 0;
 						return;
 					}
 
 					scbw::UnitFinder(
-						effects[i].position.x - effects[i].radius,
-						effects[i].position.y - effects[i].radius,
-						effects[i].position.x + effects[i].radius,
-						effects[i].position.y + effects[i].radius
+						effect->position.x - effect->radius,
+						effect->position.y - effect->radius,
+						effect->position.x + effect->radius,
+						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						unit->damageWithCustom(2500 * damageMultiplier, DamageType::Chronal, nullptr, effects[i].player, 0, 1, true);
+						unit->damageWithCustom(2500 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
 					});
 				} break;
 				case EffectId::SalamanderFire:
 				{
-					UnitArray unit_array = UnitSearchRadial({(u16)effects[i].position.x, (u16)effects[i].position.y}, effects[i].radius);
+					UnitArray unit_array = UnitSearchRadial({(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
 					UnitArrayFilter(&unit_array, nullptr, FilterNoAir);
 
 					for (u32 j = 0; j < unit_array.size; j++)
 					{
 						Unit* target = unit_array.units[j];
-						target->damageWithCustom(20 * damageMultiplier, DamageType::Concussive, nullptr, effects[i].player, 0, 1, true);
+						target->damageWithCustom(20 * damageMultiplier, DamageType::Concussive, effect->source, effect->player, 0, 1, true);
 					}
 				} break;
 				case EffectId::Criticality:
 				{
 					scbw::UnitFinder(
-						effects[i].position.x - effects[i].radius,
-						effects[i].position.y - effects[i].radius,
-						effects[i].position.x + effects[i].radius,
-						effects[i].position.y + effects[i].radius
+						effect->position.x - effect->radius,
+						effect->position.y - effect->radius,
+						effect->position.x + effect->radius,
+						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						if (scbw::getDistanceFast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
 						{
 							return;
 						}
-						unit->damageWithCustom(30 * damageMultiplier, DamageType::Explosive, nullptr, effects[i].player, 0, 1, true);
+						unit->healUnderflow(2 * 256 / framePeriod, effect->source, true); // this math seems wrong
 					});
 				} break;
 				case EffectId::CausticDischarge:
 				{
 					scbw::UnitFinder(
-						effects[i].position.x - effects[i].radius,
-						effects[i].position.y - effects[i].radius,
-						effects[i].position.x + effects[i].radius,
-						effects[i].position.y + effects[i].radius
+						effect->position.x - effect->radius,
+						effect->position.y - effect->radius,
+						effect->position.x + effect->radius,
+						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						if (scbw::getDistanceFast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
 						{
 							return;
 						}
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						unit->damageWithCustom(30 * damageMultiplier, DamageType::Impact, nullptr, effects[i].player, 0, 1, true);
+						unit->damageWithCustom(30 * damageMultiplier, DamageType::Impact, effect->source, effect->player, 0, 1, true);
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 				} break;
 				case EffectId::IonField:
 				{
 					scbw::UnitFinder(
-						effects[i].position.x - effects[i].radius,
-						effects[i].position.y - effects[i].radius,
-						effects[i].position.x + effects[i].radius,
-						effects[i].position.y + effects[i].radius
+						effect->position.x - effect->radius,
+						effect->position.y - effect->radius,
+						effect->position.x + effect->radius,
+						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						if (scbw::getDistanceFast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
 						{
 							return;
 						}
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						unit->damageWithCustom(100 * damageMultiplier, DamageType::Chronal, nullptr, effects[i].player, 0, 1, true);
+						unit->damageWithCustom(100 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
 						unitExt->timers[TimerIonFieldSpeed] = 2 * 24 + 1;
 					});
 				} break;
 				case EffectId::Hallucination:
 				{
 					scbw::UnitFinder(
-						effects[i].position.x - effects[i].radius,
-						effects[i].position.y - effects[i].radius,
-						effects[i].position.x + effects[i].radius,
-						effects[i].position.y + effects[i].radius
+						effect->position.x - effect->radius,
+						effect->position.y - effect->radius,
+						effect->position.x + effect->radius,
+						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						if (scbw::getDistanceFast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
 						{
 							return;
 						}
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						if (!unitExt->timers[TimerHallucinating])
 						{
-							scbw::applyNewHallucination(unit, effects[i].player, effects[i].currentTime);
+							scbw::applyNewHallucination(unit, effect->player, effect->currentTime);
 						}
 						else
 						{
-							unitExt->timers[TimerHallucinating] = effects[i].currentTime;
+							unitExt->timers[TimerHallucinating] = effect->currentTime;
 						}
 					});
 				} break;
 				case EffectId::Irradiate:
 				{
 					scbw::UnitFinder(
-						effects[i].position.x - effects[i].radius,
-						effects[i].position.y - effects[i].radius,
-						effects[i].position.x + effects[i].radius,
-						effects[i].position.y + effects[i].radius
+						effect->position.x - effect->radius,
+						effect->position.y - effect->radius,
+						effect->position.x + effect->radius,
+						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						if (scbw::getDistanceFast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
 						{
 							return;
 						}
-						ApplyIrradiate(unit, effects[i].player, 15);
+						ApplyIrradiate(unit, effect->player, 15);
 					});
 				} break;
 				case EffectId::DisruptionWeb:
 				{
-					if (!effects[i].parent)
+					if (!effect->origin)
 					{
-						effects[i].currentTime = 0;
+						effect->currentTime = 0;
 						break;
 					}
 
-					UnitExt* parentExt = globals.GetUnitExt(effects[i].parent);
+					UnitExt* parentExt = globals.GetUnitExt(effect->origin);
 					if (!parentExt->values[ValueDisruptionFieldOn])
 					{
-						effects[i].currentTime = 0;
+						effect->currentTime = 0;
 						break;
 					}
 
 					scbw::UnitFinder(
-						effects[i].position.x - 60,
-						effects[i].position.y - 40,
-						effects[i].position.x + 60,
-						effects[i].position.y + 40
+						effect->position.x - 60,
+						effect->position.y - 40,
+						effect->position.x + 60,
+						effect->position.y + 40
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -656,14 +664,14 @@ void Globals::frameHook()
 				} break;
 				case EffectId::GroundZero:
 				{
-					const u32 delta = effects[i].maxTime - effects[i].currentTime;
+					const u32 delta = effect->maxTime - effect->currentTime;
 					const u32 stage = delta / framePeriod;
 
 					switch (stage)
 					{
 						case 0:
 						{
-							globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, effects[i].position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effects[i].player);
+							globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 						} break;
 						case 1:
 						case 2:
@@ -671,23 +679,23 @@ void Globals::frameHook()
 							f32 d = stage * 2 * 32;
 							u32 count = stage * 8;
 
-							Vector32 newPos = effects[i].position;
+							Vector32 newPos = effect->position;
 							newPos.x += d;
 							for (u32 j = 0; j < count; ++j)
 							{
-								newPos = scbw::rotate_point(effects[i].position, newPos, (360.0 / count));
-								globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effects[i].player);
+								newPos = scbw::rotate_point(effect->position, newPos, (360.0 / count));
+								globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 							}
 						} break;
 					}
 				} break;
 			}
 		}
-		if (effects[i].currentTime == 0)
+		if (effect->currentTime == 0)
 		{
-			if (effects[i].thingy && effects[i].thingy->sprite)
+			if (effect->thingy && effect->thingy->sprite)
 			{
-				effects[i].thingy->sprite->playIscriptAnim(IscriptAnimation::Death);
+				effect->thingy->sprite->playIscriptAnim(IscriptAnimation::Death);
 			}
 
 			effects.erase(effects.begin() + i);

@@ -51,7 +51,8 @@ struct Effect
 	u8 elevation;
 	u8 player;
 	Thingy* thingy;
-	Unit* parent;
+	Unit* source;
+	Unit* origin;
 };
 
 struct PariahHit
@@ -153,7 +154,7 @@ struct Globals
 	bool was_hit_by_pariah(Unit* source, Unit* target);
 
 	void register_pariah_hit(Unit* source, Unit* target);
-	void createEffect(u8 impactId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* parent = nullptr);
+	void createEffect(u8 impactId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent = nullptr);
 	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
 	bool multihit_bullet_is_set(Bullet* bullet);
 	u32 get_multihit_count(Bullet* bullet);

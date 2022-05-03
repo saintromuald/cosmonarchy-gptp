@@ -508,7 +508,8 @@ namespace hooks
 					// Autovitality - Simulacrum behavior
 					if (!scbw::isAlliedTo(data.target->playerId, data.attacker->playerId)
 						&& !scbw::isUnderDarkSwarm(data.target)
-						&& !data.target->shields
+						&& data.shieldReduceAmount >= data.target->shields
+						&& data.finalDamage
 						&& targetExt->timers[TimerSimulacrumClone] == 0)
 					{
 						targetExt->timers[TimerSimulacrumClone] = 4 * 24;

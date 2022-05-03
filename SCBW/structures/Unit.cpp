@@ -524,12 +524,21 @@ void Unit::healShields(s32 shields, Unit* source, bool restore)
 
 void Unit::healOverflow(s32 amount, Unit* source, bool restore)
 {
-	s32 shields = this->hitPoints + amount;
-	shields -= this->getMaxHpRaw();
-	this->heal(amount, source, restore);
+	heal(amount, source, restore);
+	s32 shields = this->hitPoints + amount - getMaxHpRaw();
 	if (shields > 0)
 	{
-		this->healShields(shields, source, restore);
+		healShields(shields, source, restore);
+	}
+}
+
+void Unit::healUnderflow(s32 amount, Unit* source, bool restore)
+{
+	healShields(amount, source, restore);
+	s32 health = shields + amount - getMaxShieldsRaw();
+	if (health > 0)
+	{
+		heal(health, source, restore);
 	}
 }
 

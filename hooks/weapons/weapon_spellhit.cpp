@@ -96,7 +96,7 @@ namespace hooks
 
 	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId)
 	{
-		globals.createEffect(EffectId::Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId);
+		globals.createEffect(EffectId::Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId, attacker);
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
