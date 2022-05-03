@@ -768,28 +768,6 @@ namespace hooks
 							targetExt->values[ValueStellarEnforcement] = 1;
 						}
 					} break;
-					case WeaponId::ApostleCharonRifle:
-					{
-						// Blood Tithe - Apostle behavior
-						u32 range = 3 * 32;
-						scbw::UnitFinder(
-							data.target->getX() - range,
-							data.target->getY() - range,
-							data.target->getX() + range,
-							data.target->getY() + range
-						).forEach([&data](Unit* foundUnit)
-							{
-								if (foundUnit->playerId != data.attacker->playerId && !scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId))
-								{
-									return;
-								}
-								if (foundUnit == data.target)
-								{
-									return;
-								}
-								foundUnit->heal(data.finalDamage, data.target);
-							});
-					} break;
 					case WeaponId::VithriliskCorrosiveSpores:
 					{
 						// Vithrilisk - Critical Mass
@@ -963,7 +941,7 @@ namespace hooks
 		// Apostle, Anticthon - Revive
 		if (data.finalDamage > 0 && (targetExt->values[ValueLazarusAgent] || targetExt->timers[TimerAnticthonRevive]))
 		{
-			u32 hp = targetExt->values[ValueLazarusAgent] * 25 * 256;
+			u32 hp = targetExt->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
 
 			if (targetExt->timers[TimerAnticthonRevive])
 			{

@@ -129,11 +129,11 @@ struct Globals
 
 	AttackExtender attackers;
 
-	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
+	// non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	s32 flingy_init_bullet_id;
 	u8 flingy_init_player_id;
 	Bullet* bounce_bullet;
-	//	SaveState aise_save();
+//	SaveState aise_save();
 	void aise_save();
 	void aise_load(const char* ptr, u32 len);
 	Globals()
@@ -144,8 +144,6 @@ struct Globals
 		unitid_extender = false;
 
 		refreshDebuggingInfo();
-
-		//
 	}
 	void refreshDebuggingInfo();
 	void reset();
@@ -168,7 +166,6 @@ struct Globals
 	void clear_lakizilisk(Unit* lurker);
 	void add_lurker_spine_pair(Unit* lurker, Unit* target);
 	bool spine_pair_exists(Unit* lurker, Unit* target);
-
 };
 
 void ApplyIrradiate(Unit* unit, u8 player, u32 time);

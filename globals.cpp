@@ -456,6 +456,7 @@ void Globals::frameHook()
 		}
 	}
 
+	// Lazarus Agent and Counter-Proposal
 	for (s32 i = 0; i < revivingUnits.size(); ++i)
 	{
 		auto& revivingUnit = revivingUnits[i];
