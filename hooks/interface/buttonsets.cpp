@@ -929,16 +929,6 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::SharedLuminary &&  // Luminary Wax Wings passive 
-								current_button->iconID == IconId::GraviticThrusters)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-							else if ((*activePortraitUnit)->id == UnitId::SharedAnticthon &&  // Anticthon Counter-Proposal passive 
-								current_button->iconID == IconId::Toxic_Spores)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
 							else if ((*activePortraitUnit)->id == UnitId::SharedAxitrilisk &&  // Axitrilisk Sating Strikes passive 
 								current_button->iconID == IconId::RoarUnused)
 							{
@@ -996,11 +986,6 @@ namespace hooks
 							}
 							else if ((*activePortraitUnit)->id == UnitId::TerranHeracles && // Heracles Titan Reactors passive
 								current_button->iconID == IconId::TitanReactor)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranApostle &&  // Apostle Blood Tithe passive
-								current_button->iconID == IconId::Optical_Flare)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
