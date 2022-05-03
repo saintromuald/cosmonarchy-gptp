@@ -447,11 +447,11 @@ namespace hooks {
 			{
 				case UnitId::ProtossAccantor:
 				case UnitId::ProtossArchitect:
+				case UnitId::ProtossClarion:
 				{
 					return true;
 				}
 				case UnitId::ProtossDemiurge:
-				case UnitId::ProtossClarion:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod))
 					{
@@ -1657,11 +1657,11 @@ namespace hooks {
 				{
 					case UnitId::ProtossAccantor:
 					case UnitId::ProtossArchitect:
+					case UnitId::ProtossClarion:
 					{
 						return TECH_ACTIVE;
 					}
 					case UnitId::ProtossDemiurge:
-					case UnitId::ProtossClarion:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod))
 						{
