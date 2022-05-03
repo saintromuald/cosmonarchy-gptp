@@ -314,21 +314,21 @@ namespace hooks
 	static std::string timerToString(s32 timer)
 	{
 		std::stringstream ss;
-		ss << round(timer * 0.042 * 8.0) << "s";
+		ss << ceil(timer * 0.042 * 8.0) << "s";
 		return ss.str();
 	}
 
 	static std::string aiseTimerToString(s32 timer)
 	{
 		std::stringstream ss;
-		ss << round((timer - 1) / 24.0) << "s";
+		ss << ceil((timer - 1) / 24.0) << "s";
 		return ss.str();
 	}
 
 	static std::string removeTimerToString(s32 timer)
 	{
 		std::stringstream ss;
-		ss << round(timer / 24.0) << "s";
+		ss << ceil(timer / 24.0) << "s";
 		return ss.str();
 	}
 
