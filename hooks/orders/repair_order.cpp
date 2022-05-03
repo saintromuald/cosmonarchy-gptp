@@ -294,11 +294,13 @@ namespace hooks
 				errorStringId = unit->getRace() + 893;
 				if (target->id == UnitId::ResourceVespeneGeyser)
 				{
-					if (bErrorFlag)
-					{
-						*(s16*)bErrorFlag = errorStringId;
-					}
-					return 0;
+					//if (bErrorFlag)
+					//{
+					//	*(s16*)bErrorFlag = errorStringId;
+					//}
+					//return 0;
+
+					return 1;
 				}
 				if (!helper::unitIsResource(target))
 				{

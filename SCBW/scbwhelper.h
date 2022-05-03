@@ -1190,5 +1190,5 @@ namespace helper
 	Unit* finished_mining(Unit* worker, Unit* resource_node);										// 00468E40
 	Order* delete_order(Unit* unit, u8 order_id);													// 00474400
 	void append_order_targeting_ground(u8 order_id, Unit* unit, Point16 pos);						// 00474D60
-	void prepare_unit_move(Unit* unit, s32 hide_unit);												// 00493CA0
+	void hide_unit_partial(Unit* unit, s32 hide_unit);												// 00493CA0
 }

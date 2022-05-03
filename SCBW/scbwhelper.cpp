@@ -11099,7 +11099,7 @@ namespace helper
 		}
 	}
 
-	void prepare_unit_move(Unit* unit, s32 hide_unit) {
+	void hide_unit_partial(Unit* unit, s32 hide_unit) {
 		const u32 func_address = 0x00493CA0;
 		__asm {
 			PUSHAD
