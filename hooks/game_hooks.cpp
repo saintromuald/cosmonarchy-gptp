@@ -815,24 +815,6 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::SharedLuminary:
-			{
-				// Luminary - Wax Wings
-				auto match = cosmonarchyFinderMatch(unit, Flags::NoGround | Flags::Enemy, {});
-				const u32 radius = 4 * 32;
-				scbw::UnitFinder(
-					unit->getX() - radius,
-					unit->getY() - radius,
-					unit->getX() + radius,
-					unit->getY() + radius
-				).forEachInMatch(match, [&](Unit* target)
-				{
-					UnitExt* targetExt = globals.GetUnitExt(target);
-					targetExt->timers[TimerWaxWingsDebuff] = 4;
-					target->updateSpeed();
-				});
-
-			} break;
 			case UnitId::TerranPaladin:
 			{
 				// Paladin - Skyfall

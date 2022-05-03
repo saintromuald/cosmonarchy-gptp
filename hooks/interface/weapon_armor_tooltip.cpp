@@ -18,8 +18,9 @@ char buffer[256];
 // "Damage Factor" property in weapons.dat.
 u8 getDamageFactorForTooltip(u8 weaponId, Unit* unit)
 {
-	if (weaponId == WeaponId::FlameThrower
-		|| weaponId == WeaponId::CohortGaussPistols
+	if (weaponId == WeaponId::CohortGaussPistols
+		|| weaponId == WeaponId::FlameThrower
+		|| weaponId == WeaponId::PazuzuJupiterDriver
 		|| weaponId == WeaponId::PsiBlades
 		|| weaponId == WeaponId::LegionnairePsiSabers
 		|| weaponId == WeaponId::AmaranthPsiCleaver
