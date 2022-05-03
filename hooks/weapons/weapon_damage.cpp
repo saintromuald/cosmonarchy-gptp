@@ -511,7 +511,7 @@ namespace hooks
 						&& !data.target->shields
 						&& targetExt->timers[TimerSimulacrumClone] == 0)
 					{
-						targetExt->timers[TimerSimulacrumClone] = 5 * 24;
+						targetExt->timers[TimerSimulacrumClone] = 4 * 24;
 					}
 				} break;
 				case UnitId::SharedStriga:
