@@ -195,7 +195,7 @@ namespace hooks
 					nuke->orderTo(OrderId::NukeLaunch, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					nuke->connectedUnit = unit;
 					helper::setAllOverlayDirectionsGeneric(nuke, 0);
-					helper::showAndEnableUnit(nuke);
+					helper::show_and_enable_unit(nuke);
 					unit->connectedUnit = nuke;
 					unit->orderTo(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
 					if (unit->isFrozen())

@@ -198,7 +198,7 @@ namespace hooks
 			{
 				scbw::setUnitPosition(unitInfesting, actualpos.x, actualpos.y);
 				helper::makeToHoldPosition(unitInfesting);
-				helper::showAndEnableUnit(unitInfesting);
+				helper::show_and_enable_unit(unitInfesting);
 
 				if (unitInfesting->orderQueueHead == nullptr)
 				{

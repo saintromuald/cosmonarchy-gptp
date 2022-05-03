@@ -55,7 +55,7 @@ namespace hooks
 		return return_value;
 	}
 
-	void transferResourceToWorkerHook(Unit* worker, Unit* resource)
+	void transferResourceToWorkerHook(Unit* worker, Unit* resource) // 004696D0
 	{
 		if (resource->id >= UnitId::TerranReservoir && resource->id <= UnitId::ResourceMineralFieldType3)
 		{
@@ -154,5 +154,96 @@ namespace hooks
 			}
 		}
 	}
-}
 
+	// Hooked as part of the vespene rework. -Pr0nogo
+	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker) // 00468930
+	{
+		if (resource_node->status & UnitStatus::Completed)
+		{
+			if (scbw::unit_id_is_gas_structure(resource_node->id) && resource_node->playerId == worker->playerId)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Hooked as part of the vespene rework. -Pr0nogo
+	void order_enter_exit_gas(Unit* unit) // 00469980
+	{
+		Unit* unit_var = unit;
+		bool sprite_flags_bool = (unit->sprite->flags & 0x20) == 0;
+		Unit* target_node = unit->orderTarget.unit;
+		Unit* target_node_copy = unit->orderTarget.unit;
+		char resource_type = 0;
+		if (!sprite_flags_bool
+			|| target_node
+			&& unit_is_geyser_ex(target_node, unit)
+			&& ((resource_type = unit_var->resourceType) == 0 || resource_type & 3))
+		{
+			helper::set_gathering_flags(unit_var);
+			char order_state = unit_var->mainOrderState;
+			if (order_state)
+			{
+				if (order_state == 5 && !unit_var->mainOrderTimer)
+				{
+					s32 worker_direction = unit_var->currentDirection1;
+					Point16 pos = {};
+					if (helper::get_gas_exit_point(unit_var, target_node, &pos, &worker_direction))
+					{
+						helper::turnUnit(unit_var, worker_direction);
+						helper::move_unit(unit_var, pos.x, pos.y);
+						helper::show_and_enable_unit(unit_var);
+						if (target_node_copy)
+						{
+							hooks::transferResourceToWorkerHook(target_node_copy, unit_var);
+						}
+						if (unit_var->worker.repairResourceLossTimer)
+						{
+							helper::finished_mining(unit_var, *&unit_var->worker.harvestTarget);
+						}
+						helper::delete_order(unit_var, 0x97u);
+						if (!unit_var->orderQueueHead)
+						{
+							u8 resource_return_order = units_dat::ReturnToIdleOrder[unit_var->id];;
+							if (unit_var->resourceType & 1)
+							{
+								resource_return_order = OrderId::ReturnGas;
+							}
+							Point16 dummy = {};
+							helper::append_order_targeting_ground(resource_return_order, unit_var, dummy);
+						}
+						helper::prepend_order_targeting_nothing(unit_var, unit_var->orderQueueHead, OrderId::ResetCollision2);
+						helper::actUnitReturnToIdle(unit_var);
+					}
+					else
+					{
+						unit_var->mainOrderTimer = 18;
+					}
+				}
+			}
+			else
+			{
+				helper::prepare_unit_move(unit_var, 1);
+				unit_var->mainOrderState = 5;
+				unit_var->mainOrderTimer = 37;
+			}
+		}
+		else
+		{
+			helper::setResourceTarget(unit_var);
+			s32 target_pos_x = unit_var->moveTarget.pt.x;
+			s32 target_pos_y = unit_var->moveTarget.pt.y;
+			if (target_pos_x != unit_var->nextTargetWaypoint.x || target_pos_y != unit_var->nextTargetWaypoint.y)
+			{
+				unit_var->nextTargetWaypoint.x = target_pos_x;
+				unit_var->nextTargetWaypoint.y = target_pos_y;
+			}
+			helper::actUnitReturnToIdle(unit_var);
+			if (unit_var->worker.repairResourceLossTimer)
+			{
+				helper::finished_mining(unit_var, *&unit_var->worker.harvestTarget);
+			}
+		}
+	}
+}

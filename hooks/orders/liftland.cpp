@@ -245,7 +245,7 @@ namespace hooks
 						//646C7
 						//this cause the landed building to immediately take off again to
 						//execute the queued move/follow order
-						helper::prependOrderTargetingNothing(unit, unit->orderQueueHead, OrderId::BuildingLiftoff);
+						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::BuildingLiftoff);
 
 				} //if(unit->orderQueueHead != nullptr)
 

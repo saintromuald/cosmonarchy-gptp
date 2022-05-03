@@ -414,7 +414,7 @@ namespace hooks
 					}
 					else
 					{
-						helper::prependOrderTargetingNothing(unit, unit->orderQueueHead, OrderId::ResetCollision1);
+						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::ResetCollision1);
 					}
 					if (unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranReservoir)
 					{

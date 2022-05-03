@@ -300,8 +300,8 @@ namespace helper
 	bool isDistanceGreaterThanHaltDistance(Unit* unit, s32 x, s32 y, u32 distance);							// 00401240
 	void fixTargetLocation(Point16* coords, u32 unitId);								                    // 00401FA0
 	bool isUnitPositions2Equal(Unit* unit);																	// 00402160
-	b32 ProgressBuild(Unit* unit, u32 hpGain, b32 showHidden);											// 004679A0
-	void prependOrderTargetingNothing(Unit* unit, Order* order, u8 orderId);								// 00474760
+	b32 ProgressBuild(Unit* unit, u32 hpGain, b32 showHidden);												// 004679A0
+	void prepend_order_targeting_nothing(Unit* unit, Order* order, u8 orderId);								// 00474760
 	void addOrderTargetingNothing(Unit* unit, Order* order, u8 orderId);									// 004749A0
 	bool canStillPlaceBuilding();														                    // 0048DDA0
 	void endBuildingPlacement();															                // 0048E310
@@ -453,7 +453,7 @@ namespace helper
 	void initializeEmptyUnitsLinkedListRef(Unit* unit, u8 playerId);																	// 0049E4E0
 	void GiveUnitHelper(Unit* unit, u32 playerId, s32 unkScore);																		// 0049EFA0
 	void changeUnitButtonSet(Unit* unit, u16 unitId);																					// 004E5D60
-	void showAndEnableUnit(Unit* unit);																									// 004E6490
+	void show_and_enable_unit(Unit* unit);																									// 004E6490
 
 	//// tech_target_check
 	bool isInfestableUnit(Unit* unit);																									// 00402210
@@ -1183,4 +1183,12 @@ namespace helper
 
 	bool unit_can_attack_target(Unit* target, Unit* attacker, s32 check_duration);			// 00476730
 
+	// For vespene rework in harvest.cpp
+	void set_gathering_flags(Unit* unit);															// 00468AA0
+	bool get_gas_exit_point(Unit* worker, Unit* resource_node, Point16* position, s32* direction);	// 00468B00
+	void move_unit(Unit* unit, s16 x, s16 y);														// 004EB9F0
+	Unit* finished_mining(Unit* worker, Unit* resource_node);										// 00468E40
+	Order* delete_order(Unit* unit, u8 order_id);													// 00474400
+	void append_order_targeting_ground(u8 order_id, Unit* unit, Point16 pos);						// 00474D60
+	void prepare_unit_move(Unit* unit, s32 hide_unit);												// 00493CA0
 }

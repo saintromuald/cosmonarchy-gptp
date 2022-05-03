@@ -3045,7 +3045,7 @@ namespace helper
 		return bResult;
 	}
 
-	void prependOrderTargetingNothing(Unit* unit, Order* order, u8 orderId)
+	void prepend_order_targeting_nothing(Unit* unit, Order* order, u8 orderId)
 	{
 		const u32 Func_prependOrderTargetingNothing = 0x00474760;
 		__asm {
@@ -4177,7 +4177,7 @@ namespace helper
 	}
 
 	// What make the target reappear
-	void showAndEnableUnit(Unit* unit)
+	void show_and_enable_unit(Unit* unit)
 	{
 		const u32 Func_InitUnitTrapDoodad = 0x004E6490;
 		__asm {
@@ -11008,7 +11008,7 @@ namespace helper
 
 	s32 dialog_set_progress_bar_value(BinDlg* dialog, s16 index, s16 value) {
 		static s32 result;
-		const s32 func_address = 0x00457200;
+		const u32 func_address = 0x00457200;
 		__asm {
 			PUSHAD
 			PUSH value
@@ -11019,5 +11019,94 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	void set_gathering_flags(Unit* unit) {
+		const u32 func_address = 0x00468AA0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	bool get_gas_exit_point(Unit* worker, Unit* resource_node, Point16* position, s32* direction) {
+		static bool result;
+		const u32 func_address = 0x00468B00;
+		__asm {
+			PUSHAD
+			PUSH direction
+			PUSH position
+			PUSH resource_node
+			PUSH worker
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void move_unit(Unit* unit, s16 x, s16 y) {
+		const u32 func_address = 0x004EB9F0;
+		__asm {
+			PUSHAD
+			MOV CX, y
+			MOV AX, x
+			MOV EDX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Unit* finished_mining(Unit* worker, Unit* resource_node) {
+		static Unit* result;
+		const u32 func_address = 0x00468E40;
+		_asm {
+			PUSHAD
+			MOV EAX, worker
+			MOV ECX, resource_node
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Order* delete_order(Unit* unit, u8 order_id) {
+		static Order* result;
+		const u32 func_address = 0x00474400;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			MOV DL, order_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void append_order_targeting_ground(u8 order_id, Unit* unit, Point16 pos) {
+		const u32 func_address = 0x00474D60;
+		__asm {
+			PUSHAD
+			PUSH pos
+			MOV CL, order_id
+			MOV EDX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void prepare_unit_move(Unit* unit, s32 hide_unit) {
+		const u32 func_address = 0x00493CA0;
+		__asm {
+			PUSHAD
+			PUSH hide_unit
+			MOV EDI, unit
+			CALL func_address
+			POPAD
+		}
 	}
 }
