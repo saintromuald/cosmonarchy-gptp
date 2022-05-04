@@ -368,7 +368,7 @@ static void request_placeholder(BaseLayouts* base_layouts, Placeholder* placehol
 	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
 		helper::Ai_Build(placeholder->unit_id, false, count, base_layouts->town, placeholder->priority);
 	} else {
-		scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetGuard, base_layouts->town->player, placeholder->guard_rebuilds, 0);
+		scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetGuard, base_layouts->town->player, 0, 0);
 	}
 }
 
