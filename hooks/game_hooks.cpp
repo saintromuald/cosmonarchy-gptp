@@ -427,7 +427,9 @@ namespace hooks
 			case UnitId::ZergExtractor:
 			{
 				// Fixes an issue where geyser would freeze, when upgrading the geyser while a harvester was mining
-				helper::RemoveHarvesters(unit);
+				if (!(unit->status & UnitStatus::Completed)) {
+					helper::RemoveHarvesters(unit);
+				}
 			} break;
 			case UnitId::TerranTalos:
 			{
