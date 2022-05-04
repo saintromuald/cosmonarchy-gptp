@@ -57,104 +57,101 @@ namespace hooks
 
 	void transferResourceToWorkerHook(Unit* worker, Unit* resource) // 004696D0
 	{
-		if (resource->id >= UnitId::TerranReservoir && resource->id <= UnitId::ResourceMineralFieldType3)
+		u32 chunkImageId;
+		bool isMineral = false;
+		bool bEndThere = false;
+
+		// TODO: Add depleted mineral chunk to worker
+		if (resource->id >= UnitId::ResourceMineralField &&
+			resource->id <= UnitId::ResourceMineralFieldType3)
 		{
-			u32 chunkImageId;
-			bool isMineral = false;
-			bool bEndThere = false;
+			chunkImageId = ImageId::MineralChunkType1;
+			isMineral = true;
+		}
+		else if (resource->id == UnitId::ProtossAquifer)
+		{
+			chunkImageId = ImageId::ProtossGasOrbType1;
+		}
+		else if (resource->id == UnitId::ZergExtractor)
+		{
+			chunkImageId = ImageId::ZergGasSacType1;
+		}
+		else if (resource->id == UnitId::TerranReservoir)
+		{
+			chunkImageId = ImageId::TerranGasTankType1;
+		}
+		else if (resource->id == UnitId::ResourceVespeneGeyser)
+		{
+			chunkImageId = ImageId::ZergGasSacType1;
+		}
+		else
+		{
+			bEndThere = true;
+		}
 
-			// TODO: Add depleted mineral chunk to worker
-			if (resource->id >= UnitId::ResourceMineralField &&
-				resource->id <= UnitId::ResourceMineralFieldType3)
+		if (!bEndThere)
+		{
+			u8 resourceAmount = harvestResourceFrom(resource, isMineral);
+			if (resourceAmount < RESOURCE_HARVESTED)
 			{
-				chunkImageId = ImageId::MineralChunkType1;
-				isMineral = true;
+				chunkImageId += 1;	// Use depleted (smaller) chunk image
 			}
-			else if (resource->id == UnitId::ProtossAquifer)
+			if (resourceAmount > 0)
 			{
-				chunkImageId = ImageId::ProtossGasOrbType1;
-			}
-			else if (resource->id == UnitId::ZergExtractor)
-			{
-				chunkImageId = ImageId::ZergGasSacType1;
-			}
-			else if (resource->id == UnitId::TerranReservoir)
-			{
-				chunkImageId = ImageId::TerranGasTankType1;
-			}
-			else if (resource->id == UnitId::ResourceVespeneGeyser)
-			{
-				chunkImageId = ImageId::ZergGasSacType1;
-			}
-			else
-			{
-				bEndThere = true;
-			}
-
-			if (!bEndThere)
-			{
-				u8 resourceAmount = harvestResourceFrom(resource, isMineral);
-				if (resourceAmount < RESOURCE_HARVESTED)
-				{
-					chunkImageId += 1;	// Use depleted (smaller) chunk image
+				if (worker->resourceType & 3)
+				{ // Is carrying a mineral / gas
+				// Identical to function @ 0x004F3900
+				// Remove powerup shadows (mineral chunk shadow, psi emitter shadow, etc.)
+					worker->sprite->removeOverlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
+					worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2); // Remove powerup graphics
+					worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis); // Remove Uraj / Khalis
+					worker->resourceType = 0;
 				}
-				if (resourceAmount > 0)
-				{
-					if (worker->resourceType & 3)
-					{ // Is carrying a mineral / gas
-					// Identical to function @ 0x004F3900
-					// Remove powerup shadows (mineral chunk shadow, psi emitter shadow, etc.)
-						worker->sprite->removeOverlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
-						worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2); // Remove powerup graphics
-						worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis); // Remove Uraj / Khalis
-						worker->resourceType = 0;
-					}
 
-					// AI cheat
-					switch (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency))
+				// AI cheat
+				switch (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency))
+				{
+					case 0:
+					case 99:
 					{
-						case 0:
-						case 99:
-						{
-						} break;
-						case 1:
-						{
-							// 125% - Protoss
-							resourceAmount += (resourceAmount / 4);
-						} break;
-						case 2:
-						{
-							// 133% - Terran
-							resourceAmount += (resourceAmount / 3);
-						} break;
-						case 3:
-						{
-							// 150% - Zerg
-							resourceAmount += (resourceAmount / 2);
-						} break;
-						case 4:
-						{
-							// 175%
-							resourceAmount += ((resourceAmount / 4) + (resourceAmount / 4) + (resourceAmount / 4));
-						} break;
-						case 5:
-						{
-							// 200%
-							resourceAmount *= 2;
-						} break;
-						case 6:
-						{
-							// 225%
-							resourceAmount *= (2 + (1 / 4));
-						} break;
-						default:
-						{
-							// 250%
-							resourceAmount *= (2 + (1 / 2));
-						}
+					} break;
+					case 1:
+					{
+						// 125% - Protoss
+						resourceAmount += (resourceAmount / 4);
+					} break;
+					case 2:
+					{
+						// 133% - Terran
+						resourceAmount += (resourceAmount / 3);
+					} break;
+					case 3:
+					{
+						// 150% - Zerg
+						resourceAmount += (resourceAmount / 2);
+					} break;
+					case 4:
+					{
+						// 175%
+						resourceAmount += ((resourceAmount / 4) + (resourceAmount / 4) + (resourceAmount / 4));
+					} break;
+					case 5:
+					{
+						// 200%
+						resourceAmount *= 2;
+					} break;
+					case 6:
+					{
+						// 225%
+						resourceAmount *= (2 + (1 / 4));
+					} break;
+					default:
+					{
+						// 250%
+						resourceAmount *= (2 + (1 / 2));
 					}
-					helper::setResourceAmountCarried(worker, resourceAmount, chunkImageId, isMineral);
 				}
+				helper::setResourceAmountCarried(worker, resourceAmount, chunkImageId, isMineral);
 			}
 		}
 	}
@@ -171,9 +168,7 @@ namespace hooks
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExtractor: {
-
-				if (node->status & UnitStatus::Completed && node->playerId == worker->playerId)
-				{
+				if (node->status & UnitStatus::Completed && node->playerId == worker->playerId) {
 					return true;
 				}
 			} break;
@@ -255,6 +250,57 @@ namespace hooks
 			if (unit->worker.repairResourceLossTimer)
 			{
 				helper::finished_mining(unit, unit->worker.harvestTarget);
+			}
+		}
+	}
+
+	void MoveToHarvestGas(Unit* unit) { // 00469000
+		Unit* node = unit->orderTarget.unit;
+
+		bool valid_structure = false;
+		if (node) {
+			if (node->id == UnitId::ResourceVespeneGeyser) {
+				valid_structure = true;
+			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExtractor)
+				&& node->playerId == unit->playerId) {
+				valid_structure = true;
+			}
+		}
+
+		if (node
+			&& node->status & UnitStatus::Completed
+			&& valid_structure
+			&& (unit->resourceType == 0 || unit->resourceType & 3))
+		{
+			if (node->id == UnitId::ResourceVespeneGeyser && unit->mainOrderState == 2) {
+				unit->mainOrderState = 0;
+			}
+			if (!unit->mainOrderState) {
+				helper::Order_BeginHarvest(node, unit);
+			}
+		}
+		else
+		{
+			helper::setResourceTarget(unit);
+			u32 harvest_gas_x = unit->orderTarget.pt.x;
+			u32 harvest_gas_y = unit->orderTarget.pt.y;
+			if (harvest_gas_x != unit->nextTargetWaypoint.x || harvest_gas_y != unit->nextTargetWaypoint.y)
+			{
+				unit->nextTargetWaypoint.x = harvest_gas_x;
+				unit->nextTargetWaypoint.y = harvest_gas_y;
+			}
+			if (unit->orderQueueHead)
+			{
+				unit->userActionFlags |= 1u;
+				helper::orders_Nothing2(unit);
+			}
+			else if (unit->pAI)
+			{
+				unit->orderComputer(OrderId::ComputerAI);
+			}
+			else
+			{
+				unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
 	}

@@ -61,6 +61,20 @@ void __declspec(naked) order_enter_exit_gas_Wrapper() // 00469980
 	}
 }
 
+void __declspec(naked) MoveToHarvestGas_Wrapper() {
+	static const u32 jmp_address = 0x004690B0;
+	static Unit* unit;
+	__asm {
+		MOV unit, EAX
+		PUSHAD
+	}
+	hooks::MoveToHarvestGas(unit);
+	__asm {
+		POPAD
+		JMP jmp_address
+	}
+}
+
 namespace hooks
 {
 	void injectHarvestResource()
@@ -68,5 +82,6 @@ namespace hooks
 		jmpPatch(transferResourceToWorkerWrapper,	0x004696D0, 0);
 		jmpPatch(unit_is_geyser_ex_Wrapper,			0x00468930, 5);
 		jmpPatch(order_enter_exit_gas_Wrapper,		0x00469980, 1);
+		jmpPatch(MoveToHarvestGas_Wrapper,			0x00469000, 0);
 	}
 }

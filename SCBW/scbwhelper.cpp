@@ -11109,4 +11109,15 @@ namespace helper
 			POPAD
 		}
 	}
+
+	void Order_BeginHarvest(Unit* node, Unit* worker) {
+		const u32 func_address = 0x00468D10;
+		__asm {
+			PUSHAD
+			MOV EAX, node
+			MOV ECX, worker
+			CALL func_address
+			POPAD
+		}
+	}
 }

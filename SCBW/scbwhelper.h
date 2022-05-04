@@ -1191,4 +1191,6 @@ namespace helper
 	Order* delete_order(Unit* unit, u8 order_id);													// 00474400
 	void append_order_targeting_ground(u8 order_id, Unit* unit, Point16 pos);						// 00474D60
 	void hide_unit_partial(Unit* unit, s32 hide_unit);												// 00493CA0
+
+	void Order_BeginHarvest(Unit* node, Unit* worker);												// 00468D10
 }
