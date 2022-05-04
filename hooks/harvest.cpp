@@ -215,7 +215,8 @@ namespace hooks
 						}
 						else if (unit->orderQueueHead->orderId == OrderId::Harvest4)
 						{
-							// Semi fixes a bug with simultaneous vespene geyser mining freezing the unit
+							// May cause issues if this is actually used for something important.
+							// By the time units have Harvest4 when harvesting from geysers, they no longer have a resource target. We could check for resource link instead...
 							unit->orderQueueHead->orderId = resource_return_order;
 						}
 						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::ResetCollision2);
