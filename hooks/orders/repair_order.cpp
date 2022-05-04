@@ -316,7 +316,7 @@ namespace hooks
 					return 0;
 				}
 				errorStringId = 896;
-				if (unit->playerId != target->playerId)
+				if (unit->playerId != target->playerId && scbw::unit_id_is_gas_structure(target->id, true))
 				{
 					if (bErrorFlag)
 					{
