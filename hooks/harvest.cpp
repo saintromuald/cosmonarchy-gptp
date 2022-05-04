@@ -194,9 +194,11 @@ namespace hooks
 					Point16 pos = {};
 					if (helper::get_gas_exit_point(unit, node, &pos, &worker_direction))
 					{
-						helper::turnUnit(unit, worker_direction);
-						helper::move_unit(unit, pos.x, pos.y);
-						helper::show_and_enable_unit(unit);
+						if (!node || node->id != UnitId::ResourceVespeneGeyser) {
+							helper::turnUnit(unit, worker_direction);
+							helper::move_unit(unit, pos.x, pos.y);
+							helper::show_and_enable_unit(unit);
+						}
 						if (node)
 						{
 							hooks::transferResourceToWorkerHook(unit, node);
@@ -206,10 +208,15 @@ namespace hooks
 							helper::finished_mining(unit, unit->worker.harvestTarget);
 						}
 						helper::delete_order(unit, OrderId::ResetCollision2);
+						u8 resource_return_order = unit->resourceType & 1 ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
 						if (!unit->orderQueueHead)
 						{
-							u8 resource_return_order = unit->resourceType & 1 ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
 							helper::append_order_targeting_ground(resource_return_order, unit, {});
+						}
+						else if (unit->orderQueueHead->orderId == OrderId::Harvest4)
+						{
+							// Semi fixes a bug with simultenous vespene geyser mining freezing the unit
+							unit->orderTo(resource_return_order);
 						}
 						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::ResetCollision2);
 						helper::actUnitReturnToIdle(unit);
@@ -225,9 +232,11 @@ namespace hooks
 				u32 timer = 37;
 				if (node && node->id == UnitId::ResourceVespeneGeyser) {
 					timer *= 1.5;
+					unit->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+				} else {
+					helper::hide_unit_partial(unit, true);
 				}
 
-				helper::hide_unit_partial(unit, true);
 				unit->mainOrderState = 5;
 				unit->mainOrderTimer = timer;
 			}
