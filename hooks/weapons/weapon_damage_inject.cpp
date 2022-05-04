@@ -1,11 +1,9 @@
 #include "weapon_damage.h"
 #include "../../hook_tools.h"
 
-extern const u32 Func_DoWeaponDamage; //Defined in Unit.cpp
-
+extern const u32 Func_DoWeaponDamage; // Defined in Unit.cpp
 namespace
 {
-
 	void __declspec(naked) weaponDamageWrapper()
 	{
 		static Unit* target;
@@ -56,8 +54,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) updateCorrosiveSpores_Wrapper()
-	{ // 004F4480
+	void __declspec(naked) updateCorrosiveSpores_Wrapper() // 004F4480
+	{
 		static Unit* target;
 		static u32 result;
 		__asm {
@@ -71,15 +69,14 @@ namespace
 			RETN
 		}
 	}
-
-} //unnamed namespace
+}
 
 namespace hooks
 {
 	void injectWeaponDamageHook()
 	{
-		jmpPatch(weaponDamageWrapper, 0x00479930, 1);
-		jmpPatch(applyEnsnare_Wrapper, 0x004F45E0, 2);
-		jmpPatch(updateCorrosiveSpores_Wrapper, 0x004F4480, 1);
+		jmpPatch(weaponDamageWrapper,				0x00479930, 1);
+		jmpPatch(applyEnsnare_Wrapper,				0x004F45E0, 2);
+		jmpPatch(updateCorrosiveSpores_Wrapper,		0x004F4480, 1);
 	}
-} //hooks
+}

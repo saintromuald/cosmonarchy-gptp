@@ -634,37 +634,37 @@ struct UnitLayout
 			{
 				struct
 				{
-					/*0x0D0*/         u16       resourceAmount;
-					/*0x0D2*/         u8        resourceIscript;
-					/*0x0D3*/         u8        gatherQueueCount;
-					/*0x0D4*/         Unit*		nextGatherer;			// pointer to the next worker unit waiting in line to gather
-					/*0x0D8*/         u8        resourceGroup;
-					/*0x0D9*/         u8        resourceBelongsToAI;
+					/*0x0D0*/		u16     resourceAmount;
+					/*0x0D2*/		u8      resourceIscript;
+					/*0x0D3*/		u8      gatherQueueCount;
+					/*0x0D4*/		Unit*	nextGatherer;			// pointer to the next worker unit waiting in line to gather
+					/*0x0D8*/		u8      resourceGroup;
+					/*0x0D9*/		u8      resourceBelongsToAI;
 				} resource; // When the unit is resource container
-				/*0x0D0*/       Unit*			nydusExit;				// connected nydus canal
-				/*0x0D0*/       Unit*			ghostNukeMissile;		// confirmed to be Unit* and not Sprite*
-				/*0x0D0*/       Sprite*			pylonAura;
+				/*0x0D0*/			Unit*	nydusExit;				// connected nydus canal
+				/*0x0D0*/			Unit*	ghostNukeMissile;		// confirmed to be Unit* and not Sprite*
+				/*0x0D0*/			Sprite*	pylonAura;
 				struct
 				{
-					/*0x0D0*/         Unit*		nuke;					// attached nuke
-					/*0x0D4*/         bool		isReady;
+					/*0x0D0*/		Unit*	nuke;					// attached nuke
+					/*0x0D4*/		bool	isReady;
 				} silo;
-				/*0x0D0*/       Box16			larvaSpawnZone;			// Not game coordinates, but "activity values".
-																		// Increased by 25 every time worker returns resources to the side unless over 100, and all
-																		// sides are decreased by 1 at the same time. Larvas spawn at the side with smallest value.
-				/*0x0D0*/       Point16			powerupOrigin;
+				/*0x0D0*/			Box16	larvaSpawnZone;			// Not game coordinates, but "activity values".
+																	// Increased by 25 every time worker returns resources to the side unless over 100, and all
+																	// sides are decreased by 1 at the same time. Larvas spawn at the side with smallest value.
+				/*0x0D0*/			Point16	powerupOrigin;
 			};
 		} building;
 
 		struct
 		{
-			/*0x0C0*/     Unit* powerup;
-			/*0x0C4*/     Target  targetResource;
-			/*0x0CC*/     u16     repairResourceLossTimer;
-			/*0x0CE*/     bool    isCarryingSomething;
-			/*0x0CF*/     u8      resourceCarryAmount;
-			/*0x0D0*/     Unit* harvestTarget;
-			/*0x0D4*/     Link<Unit> harvest_link;  // When there is a gather conflict
+			/*0x0C0*/				Unit*		powerup;
+			/*0x0C4*/				Target		targetResource;
+			/*0x0CC*/				u16			repairResourceLossTimer;
+			/*0x0CE*/				bool		isCarryingSomething;
+			/*0x0CF*/				u8			resourceCarryAmount;
+			/*0x0D0*/				Unit*		harvestTarget;
+			/*0x0D4*/				Link<Unit>	harvest_link;  // When there is a gather conflict
 		} worker;
 	};
 

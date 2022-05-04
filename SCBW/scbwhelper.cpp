@@ -11133,4 +11133,18 @@ namespace helper
 		}
 		return result;
 	}
+
+	Unit* remove_from_current_harvesters(Unit* worker, Unit* node) {
+		static Unit* result;
+		const u32 func_address = 0x004686D0;
+		__asm {
+			PUSHAD
+			PUSH node
+			MOV EAX, worker
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
