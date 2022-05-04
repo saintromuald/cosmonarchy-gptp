@@ -40,7 +40,7 @@ void __declspec(naked) unit_is_geyser_ex_Wrapper() // 00468930
 	result = hooks::unit_is_geyser_ex(resource_node, worker);
 	__asm {
 		POPAD
-		MOV result, AL
+		MOV AL, result
 		MOV ESP, EBP
 		POP EBP
 		RETN 0x4
@@ -61,17 +61,34 @@ void __declspec(naked) order_enter_exit_gas_Wrapper() // 00469980
 	}
 }
 
-void __declspec(naked) MoveToHarvestGas_Wrapper() {
+void __declspec(naked) CanHarvestGas_Wrapper() { // 00469000
 	static const u32 jmp_address = 0x004690B0;
 	static Unit* unit;
 	__asm {
 		MOV unit, EAX
 		PUSHAD
 	}
-	hooks::MoveToHarvestGas(unit);
+	hooks::CanHarvestGas(unit);
 	__asm {
 		POPAD
 		JMP jmp_address
+	}
+}
+
+void __declspec(naked) AI_getVespeneType_Wrapper() { // 004326E0
+	static u32 result;
+	static Unit* unit;
+	static u32 player_id;
+	__asm {
+		MOV unit, EAX
+		MOV player_id, EDX
+		PUSHAD
+	}
+	result = hooks::AI_getVespeneType(unit, player_id);
+	__asm {
+		POPAD
+		MOV EAX, result
+		RETN
 	}
 }
 
@@ -82,6 +99,7 @@ namespace hooks
 		jmpPatch(transferResourceToWorkerWrapper,	0x004696D0, 0);
 		jmpPatch(unit_is_geyser_ex_Wrapper,			0x00468930, 5);
 		jmpPatch(order_enter_exit_gas_Wrapper,		0x00469980, 1);
-		jmpPatch(MoveToHarvestGas_Wrapper,			0x00469000, 0);
+		jmpPatch(CanHarvestGas_Wrapper,				0x00469000, 0);
+		jmpPatch(AI_getVespeneType_Wrapper,         0x004326E0, 2);
 	}
 }

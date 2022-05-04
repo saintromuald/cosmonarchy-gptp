@@ -259,7 +259,7 @@ namespace hooks
 		}
 	}
 
-	void MoveToHarvestGas(Unit* unit) { // 00469000
+	void CanHarvestGas(Unit* unit) { // 00469000
 		Unit* node = unit->orderTarget.unit;
 
 		bool valid_structure = false;
@@ -308,5 +308,32 @@ namespace hooks
 				unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
+	}
+
+	u32 AI_getVespeneType(Unit* unit, u32 player_id) {
+		if (!unit || !unit->sprite || !unit->mainOrderId)
+		{
+			return 0;
+		}
+
+		if (unit->id == UnitId::ResourceVespeneGeyser )
+		{
+			return 1;
+		}
+		u32 race = playerTable[player_id].race;
+		u32 unit_id = UnitId::TerranReservoir;
+		if (race == RaceId::Protoss)
+		{
+			unit_id = UnitId::ProtossAquifer;
+		}
+		else if (race == RaceId::Zerg)
+		{
+			unit_id = UnitId::ZergExtractor;
+		}
+		if (unit->id == unit_id)
+		{
+			return (unit->building.resource.resourceAmount != 0) + 2;
+		}
+		return 0;
 	}
 }
