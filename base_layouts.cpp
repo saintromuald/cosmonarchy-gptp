@@ -122,7 +122,7 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 	Placeholder placeholder = {};
 	placeholder.position.x = unit->x;
 	placeholder.position.y = unit->y;
-	placeholder.priority = unit->hp + 20;
+	placeholder.priority = unit->hp;
 	placeholder.guard_rebuilds = unit->energy == 100 ? 0 : unit->energy + 1;
 	u32 flags = unit->validStateFlags & unit->stateFlags;
 	placeholder.was_preplaced = !(flags & ChkUnitFlags_Hallucinated);
