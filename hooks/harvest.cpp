@@ -201,18 +201,14 @@ namespace hooks
 						{
 							hooks::transferResourceToWorkerHook(unit, node);
 						}
-						if (unit->worker.repairResourceLossTimer)
+						if (unit->worker.resourceCarryAmount)
 						{
 							helper::finished_mining(unit, unit->worker.harvestTarget);
 						}
-						helper::delete_order(unit, 0x97u);
+						helper::delete_order(unit, OrderId::ResetCollision2);
 						if (!unit->orderQueueHead)
 						{
-							u8 resource_return_order = units_dat::ReturnToIdleOrder[unit->id];
-							if (unit->resourceType & 1)
-							{
-								resource_return_order = OrderId::ReturnGas;
-							}
+							u8 resource_return_order = unit->resourceType & 1 ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
 							helper::append_order_targeting_ground(resource_return_order, unit, {});
 						}
 						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::ResetCollision2);
@@ -247,7 +243,7 @@ namespace hooks
 				unit->nextTargetWaypoint.y = target_pos_y;
 			}
 			helper::actUnitReturnToIdle(unit);
-			if (unit->worker.repairResourceLossTimer)
+			if (unit->worker.resourceCarryAmount)
 			{
 				helper::finished_mining(unit, unit->worker.harvestTarget);
 			}
