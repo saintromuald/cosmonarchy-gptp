@@ -11120,4 +11120,17 @@ namespace helper
 			POPAD
 		}
 	}
+
+	Unit* RemoveHarvesters(Unit* node) {
+		static Unit* result;
+		const u32 func_address = 0x00468770;
+		__asm {
+			PUSHAD
+			MOV EDI, node
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

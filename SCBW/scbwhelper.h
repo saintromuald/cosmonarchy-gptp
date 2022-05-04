@@ -1193,4 +1193,5 @@ namespace helper
 	void hide_unit_partial(Unit* unit, s32 hide_unit);												// 00493CA0
 
 	void Order_BeginHarvest(Unit* node, Unit* worker);												// 00468D10
+	Unit* RemoveHarvesters(Unit* node);																// 00468770
 }

@@ -401,6 +401,13 @@ namespace hooks
 		return true;
 	}
 
+	static void clear_gatherer_queue(Unit* unit) {
+		if (unit) {
+			clear_gatherer_queue(unit->worker.harvest_link.next);
+			unit->worker.harvest_link.next = 0;
+		}
+	}
+
 	void tickUnit(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -415,6 +422,13 @@ namespace hooks
 
 		switch (unit->id)
 		{
+			case UnitId::TerranReservoir:
+			case UnitId::ProtossAquifer:
+			case UnitId::ZergExtractor:
+			{
+				// Fixes an issue where geyser would freeze, when upgrading the geyser while a harvester was mining
+				helper::RemoveHarvesters(unit);
+			} break;
 			case UnitId::TerranTalos:
 			{
 				if (unit->mainOrderId == OrderId::TalosSalvage) {
