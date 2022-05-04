@@ -323,6 +323,7 @@ namespace hooks
 		optionsList->speed = 6; // Lock game speed at fastest
 		if (!scbw::isGamePaused()) // If the game is not paused
 		{
+			*ai_update_cooldown = 0;
 			for (u32 i = 0; i < 8; ++i) {
 				raceSupply[RaceId::Terran].provided[i] = 60000;
 			}

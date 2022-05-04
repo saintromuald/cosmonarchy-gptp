@@ -943,6 +943,8 @@ namespace requirements
 SCBW_DATA(GuardAiArray*,       guard_array,        0x0067D400);
 SCBW_DATA(GuardAiListPlayers*, first_player_guard, 0x00685108);
 
+SCBW_DATA(u32*, ai_update_cooldown, 0x0059CC94);
+
 //////////////////////////////////////////////////////////////// @}
 
 #undef SCBW_DATA
