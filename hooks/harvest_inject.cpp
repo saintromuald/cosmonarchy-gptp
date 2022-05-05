@@ -75,23 +75,6 @@ void __declspec(naked) CanHarvestGas_Wrapper() { // 00469000
 	}
 }
 
-void __declspec(naked) AI_getVespeneType_Wrapper() { // 004326E0
-	static u32 result;
-	static Unit* unit;
-	static u32 player_id;
-	__asm {
-		MOV unit, EAX
-		MOV player_id, EDX
-		PUSHAD
-	}
-	result = hooks::AI_getVespeneType(unit, player_id);
-	__asm {
-		POPAD
-		MOV EAX, result
-		RETN
-	}
-}
-
 void __declspec(naked) order_acquire_generic_right_click_harvest_proc_Wrapper() { // 004557C0
 	static u32 result;
 	static Unit* node;
@@ -130,7 +113,6 @@ namespace hooks
 		jmpPatch(unit_is_geyser_ex_Wrapper,									0x00468930, 5);
 		jmpPatch(order_enter_exit_gas_Wrapper,								0x00469980, 1);
 		jmpPatch(CanHarvestGas_Wrapper,										0x00469000, 0);
-		jmpPatch(AI_getVespeneType_Wrapper,									0x004326E0, 2);
 		jmpPatch(order_acquire_generic_right_click_harvest_proc_Wrapper,	0x004557C0, 2);
 		jmpPatch(orders_harvest4_Wrapper,									0x00468ED0, 1);
 	}

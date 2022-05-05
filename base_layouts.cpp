@@ -307,7 +307,7 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	if (!hooks::createUnitIdAllowed(unit_id, town->player)) {
 		return false;
 	}
-	if (!town->mainBuilding && units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
+	if (!town->main_building && units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
 		if (unit_id != UnitId::TerranCommandCenter &&
 			unit_id != UnitId::ProtossNexus && 
 			unit_id != UnitId::ZergHatchery) {
@@ -334,7 +334,7 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 static bool has_expanding_town(u32 player) {
 	for (u32 i = 0; i < ResAreaLimit; ++i) {
 		BaseLayouts* base_layouts = active_base_layouts[i];
-		if (base_layouts && base_layouts->town->player == player && !base_layouts->town->mainBuilding) {
+		if (base_layouts && base_layouts->town->player == player && !base_layouts->town->main_building) {
 			return true;
 		}
 	}
@@ -387,7 +387,7 @@ void tick_base_layouts() {
 				active_base_layouts[i] = 0;
 				continue;
 			}
-			if (town->mainBuilding && has_expanding_town(town->player)) {
+			if (town->main_building && has_expanding_town(town->player)) {
 				continue;
 			}
 			for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {

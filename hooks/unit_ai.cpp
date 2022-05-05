@@ -122,9 +122,9 @@ namespace hooks
 						{
 							newUnitTown->buildingSCV = nullptr;
 						}
-						if (newUnit == newUnitTown->mainBuilding)
+						if (newUnit == newUnitTown->main_building)
 						{
-							newUnitTown->mainBuilding = nullptr;
+							newUnitTown->main_building = nullptr;
 						}
 					}
 					newUnit->pAI = nullptr;
@@ -171,9 +171,9 @@ namespace hooks
 								{
 									newUnitTown->buildingSCV = 0;
 								}
-								if (newUnit == newUnitTown->mainBuilding)
+								if (newUnit == newUnitTown->main_building)
 								{
-									newUnitTown->mainBuilding = 0;
+									newUnitTown->main_building = 0;
 								}
 							}
 							parentUnitAi = parentUnitAiBackup;
@@ -246,7 +246,7 @@ namespace hooks
 					ai->town = town;
 					ai->target_resource = 1;
 					ai->last_update_second = *elapsedTimeSeconds;
-					ai->waitTimer = 0;
+					ai->wait_timer = 0;
 					ai->reassign_count = 0;
 					unit->worker.targetResource.unit = 0;
 					unit->pAI = ai;
@@ -324,11 +324,11 @@ namespace hooks
 					town_hall_id = UnitId::ProtossNexus;
 				}
 
-				if (unit->id == town_hall_id || helper::unitIsActiveResourceDepot(unit))
+				if (unit->id == town_hall_id || helper::unit_is_active_resource_depot(unit))
 				{
-					if (!town->mainBuilding)
+					if (!town->main_building)
 					{
-						town->mainBuilding = unit;
+						town->main_building = unit;
 					}
 				}
 				else
@@ -480,9 +480,9 @@ namespace hooks
 							{
 								removeBuildingTown->buildingSCV = 0;
 							}
-							if (result == removeBuildingTown->mainBuilding)
+							if (result == removeBuildingTown->main_building)
 							{
-								removeBuildingTown->mainBuilding = 0;
+								removeBuildingTown->main_building = 0;
 							}
 						}
 						result->pAI = 0;
@@ -669,9 +669,9 @@ namespace hooks
 				{
 					town->buildingSCV = nullptr;
 				}
-				if (unit == town->mainBuilding)
+				if (unit == town->main_building)
 				{
-					town->mainBuilding = nullptr;
+					town->main_building = nullptr;
 				}
 				if (!unitAI)
 				{
@@ -724,9 +724,9 @@ namespace hooks
 							{
 								newUnitTown->buildingSCV = nullptr;
 							}
-							if (newUnit == newUnitTown->mainBuilding)
+							if (newUnit == newUnitTown->main_building)
 							{
-								newUnitTown->mainBuilding = nullptr;
+								newUnitTown->main_building = nullptr;
 							}
 						}
 						newUnit->pAI = nullptr;

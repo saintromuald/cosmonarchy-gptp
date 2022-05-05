@@ -1331,7 +1331,7 @@ namespace helper
 		}
 	}
 
-	bool unitIsActiveResourceDepot(Unit* unit)
+	bool unit_is_active_resource_depot(Unit* unit)
 	{
 		const u32 Func_unitIsActiveResourceDepot = 0x00401CF0;
 		static s32 result;
@@ -11141,6 +11141,101 @@ namespace helper
 			PUSHAD
 			PUSH node
 			MOV EAX, worker
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 AI_SCV_repair_controller(Unit* unit, AiTown* town) {
+		static s32 result;
+		const u32 func_address = 0x00433C70;
+		__asm {
+			PUSHAD
+			PUSH town
+			PUSH unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+	s32 AI_try_progress_spending_queue_worker(AiTown* town, Unit* unit) {
+		static s32 result;
+		const u32 func_address = 0x004348C0;
+		__asm {
+			PUSHAD
+			PUSH unit
+			PUSH town
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool unit_is_mineral_field(Unit* unit) {
+		static bool result;
+		const u32 func_address = 0x00468890;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void AI_auto_harvest(Unit* town_mineral, Unit* worker, Unit* town_refinery) {
+		const u32 func_address = 0x00433B90;
+		__asm {
+			PUSHAD
+			PUSH town_refinery
+			MOV ECX, worker
+			MOV EAX, town_mineral
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, Point16 worker_pos) {
+		static Unit* result;
+		const u32 func_address = 0x004432D0;
+		__asm {
+			PUSHAD
+			PUSH worker_pos
+			PUSH worker
+			MOV EAX, worker_count_bool
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* get_AI_refinery(AiTown* town, s32 gas_state, s32 index) {
+		static Unit* result;
+		const u32 func_address = 0x00432B90;
+		__asm {
+			PUSHAD
+			PUSH index
+			PUSH gas_state
+			MOV ESI, town
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+	u32 AI_get_vespene_type(Unit* node, s32 player_id) {
+		static u32 result;
+		const u32 func_address = 0x004326E0;
+		__asm {
+			PUSHAD
+			MOV EDX, player_id
+			MOV EAX, node
 			CALL func_address
 			MOV result, EAX
 			POPAD

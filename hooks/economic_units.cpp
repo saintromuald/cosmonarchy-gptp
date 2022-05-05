@@ -163,8 +163,8 @@ namespace hooks
 	u8 GetTownRace(AiTown* town)
 	{
 		if (!town) return RaceId::Neutral;
-		if (!town->mainBuilding) return RaceId::Neutral; // can't tell from main town, might want to check from buildings maybe
-		return town->mainBuilding->getRace();
+		if (!town->main_building) return RaceId::Neutral; // can't tell from main town, might want to check from buildings maybe
+		return town->main_building->getRace();
 	}
 
 	// Checks if worker is valid (exists && correct race)
@@ -201,7 +201,7 @@ namespace hooks
 		if (!town) return false;
 		if (town->inBattle) return false; // We probably don't want supplies to be built in attacked towns. We might want to ommit this condition if it's the only eligable town
 		if (GetTownRace(town) != raceId) return false;
-		if (town->mainBuilding->remainingBuildTime != 0) return false; // town not finished, nullchecks are in the previous function
+		if (town->main_building->remainingBuildTime != 0) return false; // town not finished, nullchecks are in the previous function
 		if (raceId == RaceId::Zerg)
 		{ // Zerg don't need worker for supply building, we could check for larvae instead, but it should be fine
 			return true;

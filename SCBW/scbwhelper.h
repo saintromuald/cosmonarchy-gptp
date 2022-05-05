@@ -144,7 +144,7 @@ namespace helper
 	void order_computer(Unit* unit, u8 orderId);
 	Unit* setSecondaryOrder(Unit* result, char orderId);
 	void AI_MakeGuard(s32 playerId, Unit* unit);
-	bool unitIsActiveResourceDepot(Unit* unit);
+	bool unit_is_active_resource_depot(Unit* unit);
 	u32 getPlayerDefaultRefineryUnitType(u32 playerId);
 
 	// for AI_UnitWasHit // some of these should probably be methods in api/etc
@@ -1195,4 +1195,12 @@ namespace helper
 	void Order_BeginHarvest(Unit* node, Unit* worker);												// 00468D10
 	Unit* RemoveHarvesters(Unit* node);																// 00468770
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);									// 004686D0
+
+	s32 AI_SCV_repair_controller(Unit* unit, AiTown* town);												// 00433C70
+	s32 AI_try_progress_spending_queue_worker(AiTown* town, Unit* unit);								// 004348C0
+	bool unit_is_mineral_field(Unit* unit);																// 00468890
+	void AI_auto_harvest(Unit* town_mineral, Unit* worker, Unit* town_refinery);						// 00433B90
+	Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, Point16 worker_pos);	// 004432D0
+	Unit* get_AI_refinery(AiTown* town, s32 gas_state, s32 index);										// 00432B90
+	u32 AI_get_vespene_type(Unit* node, s32 player_id);													// 004326E0
 }

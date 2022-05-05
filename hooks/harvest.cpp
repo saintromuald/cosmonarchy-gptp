@@ -311,33 +311,6 @@ namespace hooks
 		}
 	}
 
-	u32 AI_getVespeneType(Unit* unit, u32 player_id) {
-		if (!unit || !unit->sprite || !unit->mainOrderId)
-		{
-			return 0;
-		}
-
-		if (unit->id == UnitId::ResourceVespeneGeyser)
-		{
-			return 1;
-		}
-		u32 race = playerTable[player_id].race;
-		u32 unit_id = UnitId::TerranReservoir;
-		if (race == RaceId::Protoss)
-		{
-			unit_id = UnitId::ProtossAquifer;
-		}
-		else if (race == RaceId::Zerg)
-		{
-			unit_id = UnitId::ZergExtractor;
-		}
-		if (unit->id == unit_id)
-		{
-			return (unit->building.resource.resourceAmount != 0) + 2;
-		}
-		return 0;
-	}
-
 	// Hooked to investigate right-click error on geysers. -Pr0nogo
 	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker) // 004557C0
 	{
@@ -365,7 +338,7 @@ namespace hooks
 			}
 			else
 			{
-				if (!helper::unitIsActiveResourceDepot(node) || node->playerId != worker->playerId)
+				if (!helper::unit_is_active_resource_depot(node) || node->playerId != worker->playerId)
 				{
 					result = OrderId::None;
 					return result;

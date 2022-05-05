@@ -752,7 +752,7 @@ struct WorkerAi
 	u8 type;							// 0x8
 	u8 target_resource;					// 0x9
 	u8 reassign_count;					// 0xA
-	u8 waitTimer;						// 0xB
+	u8 wait_timer;						// 0xB
 	u32 last_update_second;				// 0xC
 	Unit* parent;						// 0x10
 	AiTown* town;						// 0x14
@@ -847,7 +847,7 @@ struct AiTown
 	u8 inBattle;								//	0x1e
 	u8 unk1f;									//	0x1f
 	Point16 position;							//	0x20
-	Unit* mainBuilding;							//	0x24
+	Unit* main_building;						//	0x24
 	Unit* buildingSCV;							//	0x28
 	Unit* mineral;								//	0x2c
 	Unit* gasBuildings[3];						//	0x30

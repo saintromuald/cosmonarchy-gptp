@@ -359,6 +359,42 @@ namespace
 		}
 	}
 
+	void __declspec(naked) AI_getVespeneType_Wrapper() { // 004326E0
+		static u32 result;
+		static Unit* unit;
+		static u32 player_id;
+		__asm {
+			MOV unit, EAX
+			MOV player_id, EDX
+			PUSHAD
+		}
+		result = hooks::AI_getVespeneType(unit, player_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) AI_worker_controller_Wrapper() { // 00435210
+		static Unit* worker;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV worker, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::AI_worker_controller(worker);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 }
 
 namespace hooks
@@ -385,6 +421,8 @@ namespace hooks
 		jmpPatch(AI_CheckMilitaryGrouping_Wrapper,			0x00439550, 1);
 		jmpPatch(hooks::AI_remove_different_height,			0x004436C0, 3);
 		jmpPatch(attack_recent_attacker_Wrapper,			0x004770E0, 2);
+		jmpPatch(AI_getVespeneType_Wrapper,					0x004326E0, 2);
+		jmpPatch(AI_worker_controller_Wrapper,				0x00435210, 0);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

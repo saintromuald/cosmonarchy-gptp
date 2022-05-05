@@ -10,7 +10,6 @@ namespace hooks
 	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker);						// 00468930
 	void order_enter_exit_gas(Unit* unit);											// 00469980
 	void CanHarvestGas(Unit* unit);													// 00469000
-	u32 AI_getVespeneType(Unit* unit, u32 index);									// 004326E0
 	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker);	// 004557C0
 	void orders_harvest4(Unit* worker);												// 00468ED0
 
