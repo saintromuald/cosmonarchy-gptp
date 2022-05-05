@@ -468,11 +468,11 @@ namespace hooks
 			Unit* unit = *selected_units;
 			if (*selected_units)
 			{
-				char error_case = 0;
+				u8 action = RightClickActions::NoCommand_AutoAttack;
 				u16 unit_id = unit->id;
 				if (unit_id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
 				{
-					error_case = 3;
+					action = RightClickActions::NoMove_NormalAttack;
 				}
 				else
 				{
@@ -483,27 +483,42 @@ namespace hooks
 						{
 							if (helper::unit_is_factory(unit))
 							{
-								right_click_order = 2;
+								right_click_order = RightClickActions::NormalMove_NoAttack;
 							}
 						}
 					}
-					error_case = right_click_order;
+					action = right_click_order;
 				}
 				if (unit->status & UnitStatus::IsHallucination)
 				{
-					if (error_case == 4 || error_case == 5)
+					if (action == RightClickActions::Harvest || action == RightClickActions::HarvestAndRepair)
 					{
-						error_case = 1;
+						action = RightClickActions::NormalMove_NormalAttack;
 					}
 				}
 
-				switch (error_case)
+				switch (action)
 				{
-				case 0:
-					break;
-				case 1:
-					goto LABEL_21;
-				case 3:
+				case RightClickActions::NormalMove_NormalAttack:
+					if (!target)
+					{
+						return 1;
+					}
+					if (!helper::is_unit_enemy(*activePortraitUnit, target))
+					{
+						return 1;
+					}
+					if (units_dat::BaseProperty[target->id] & UnitProperty::NeutralAccessories)
+					{
+						return 1;
+					}
+					if (helper::unit_can_attack_target(target, unit, 1))
+					{
+						return 1;
+					}
+					text_id = 879;
+					sfx_id = unit->getRace() + 138;
+				case RightClickActions::NoMove_NormalAttack:
 					if (!target)
 					{
 						break;
@@ -536,9 +551,9 @@ namespace hooks
 					{
 						text_id = 879;
 					}
-					goto LABEL_38;
-				case 4:
-				case 5:
+					sfx_id = unit->getRace() + 138;
+				case RightClickActions::Harvest:
+				case RightClickActions::HarvestAndRepair:
 					if (!target)
 					{
 						return 1;
@@ -549,16 +564,11 @@ namespace hooks
 					}
 					if (target->id == UnitId::ResourceVespeneGeyser)
 					{
-						sfx_id = unit->getRace() + 1;
-						text_id = unit->getRace()  + 893;
+						//sfx_id = unit->getRace() + 1;
+						//text_id = unit->getRace()  + 893;
 					}
 					else
 					{
-					LABEL_21:
-						if (!target)
-						{
-							return 1;
-						}
 						if (!helper::is_unit_enemy(*activePortraitUnit, target))
 						{
 							return 1;
@@ -572,7 +582,6 @@ namespace hooks
 							return 1;
 						}
 						text_id = 879;
-					LABEL_38:
 						sfx_id = unit->getRace() + 138;
 					}
 					break;
@@ -621,15 +630,11 @@ namespace hooks
 			u32 text_id_zeroed = text_id - 1;
 			if (text_id)
 			{
-				const char* text_string = "";
-				if (text_id_zeroed >= *statTxtTbl)
-				{
-					goto LABEL_58;
+				char* text_string = 0;
+				if (text_id_zeroed < *statTxtTbl) {
+					text_string = (char*)statTxtTbl + statTxtTbl[text_id_zeroed + 1];
 				}
-				text_string = (char*)*statTxtTbl + (*statTxtTbl)[text_id_zeroed + 1];
-				if (text_string)
-				{
-				LABEL_58:
+				if (text_string) {
 					if (*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
 					{
 						strncpy(draw_out_text_left, text_string, 0xDAu);
