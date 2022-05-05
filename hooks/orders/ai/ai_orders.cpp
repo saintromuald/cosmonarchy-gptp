@@ -1133,9 +1133,10 @@ LABEL_21:
 					{
 						if (worker_ai->target_resource == 1)
 						{
-							if (worker->worker.targetResource.unit && helper::unit_is_mineral_field(worker->worker.targetResource.unit))
+							Unit* target_resource = worker->worker.targetResource.unit;
+							if (target_resource && helper::unit_is_mineral_field(target_resource))
 							{
-								helper::AI_auto_harvest(0, worker, 0);
+								helper::AI_auto_harvest(target_resource, worker, 0);
 							}
 							else
 							{
