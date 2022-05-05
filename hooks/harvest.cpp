@@ -231,7 +231,7 @@ namespace hooks
 			{
 				u32 timer = 37;
 				if (node && node->id == UnitId::ResourceVespeneGeyser) {
-					timer *= 1.5;
+					timer = 75;
 					unit->playIscriptAnim(IscriptAnimation::AlmostBuilt);
 				} else {
 					helper::hide_unit_partial(unit, true);
@@ -316,7 +316,7 @@ namespace hooks
 			return 0;
 		}
 
-		if (unit->id == UnitId::ResourceVespeneGeyser )
+		if (unit->id == UnitId::ResourceVespeneGeyser)
 		{
 			return 1;
 		}
