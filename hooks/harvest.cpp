@@ -16,7 +16,7 @@ namespace hooks
 		{
 			return true;
 		}
-		if (unitId == UnitId::ZergExtractor)
+		if (unitId == UnitId::ZergExcisant)
 		{
 			return true;
 		}
@@ -72,7 +72,7 @@ namespace hooks
 		{
 			chunkImageId = ImageId::ProtossGasOrbType1;
 		}
-		else if (resource->id == UnitId::ZergExtractor)
+		else if (resource->id == UnitId::ZergExcisant)
 		{
 			chunkImageId = ImageId::ZergGasSacType1;
 		}
@@ -167,7 +167,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
-			case UnitId::ZergExtractor: {
+			case UnitId::ZergExcisant: {
 				if (node->status & UnitStatus::Completed && node->playerId == worker->playerId) {
 					return true;
 				}
@@ -261,7 +261,7 @@ namespace hooks
 		if (node) {
 			if (node->id == UnitId::ResourceVespeneGeyser) {
 				valid_structure = true;
-			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExtractor)
+			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant)
 				&& node->playerId == unit->playerId) {
 				valid_structure = true;
 			}

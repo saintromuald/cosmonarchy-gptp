@@ -1086,7 +1086,7 @@ LABEL_21:
 		if (!for_harvesting && unit->id == UnitId::ResourceVespeneGeyser) {
 			return 1;
 		}
-		if (unit->id == UnitId::ResourceVespeneGeyser || unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExtractor) {
+		if (unit->id == UnitId::ResourceVespeneGeyser || unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExcisant) {
 			return 2 + (unit->building.resource.resourceAmount != 0);
 		}
 		return 0;

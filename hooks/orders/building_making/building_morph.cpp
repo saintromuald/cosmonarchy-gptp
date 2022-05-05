@@ -92,7 +92,7 @@ namespace hooks
 		}
 		else if (building->mainOrderState == 1)
 		{ // 0045D5AE
-			if (building->id == UnitId::ZergExtractor)
+			if (building->id == UnitId::ZergExcisant)
 			{
 				Image* overlay = building->sprite->getOverlay(ImageId::VespeneGeyser2);
 				if (overlay != nullptr)
@@ -331,7 +331,7 @@ namespace hooks
 			u32_00581ED4[unit->playerId] = u32_00581ED4[unit->playerId] - *u16_0066345A;
 			u32_00581E44[unit->playerId] = u32_00581E44[unit->playerId] - 1;
 
-			if (unit->id == UnitId::ZergExtractor)
+			if (unit->id == UnitId::ZergExcisant)
 			{
 				Unit* drone = helper::createUnit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
 				if (drone == nullptr)

@@ -301,7 +301,7 @@ namespace UnitId
 		/*0x92*/	ZergSunkenColony						= 146,
 		/*0x93*/	Special_OvermindWithShell				= 147,
 		/*0x94*/	Special_Overmind						= 148,
-		/*0x95*/	ZergExtractor							= 149,
+		/*0x95*/	ZergExcisant							= 149,
 		/*0x96*/	Special_MatureChrysalis					= 150,
 		/*0x97*/	Special_Cerebrate						= 151,
 		/*0x98*/	Special_CerebrateDaggoth				= 152,

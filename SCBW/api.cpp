@@ -2021,7 +2021,7 @@ namespace scbw
 				|| unit_id == UnitId::ResourceVespeneGeyser
 				|| unit_id == UnitId::TerranReservoir
 				|| unit_id == UnitId::ProtossAquifer
-				|| unit_id == UnitId::ZergExtractor;
+				|| unit_id == UnitId::ZergExcisant;
 		}
 		else
 		{
@@ -2096,10 +2096,10 @@ namespace scbw
 
 	bool unit_id_is_gas_structure(u16 unit_id, bool ignore_geysers) {
 		if (ignore_geysers) {
-			return unit_id == UnitId::TerranReservoir || unit_id == UnitId::ProtossAquifer || unit_id == UnitId::ZergExtractor;
+			return unit_id == UnitId::TerranReservoir || unit_id == UnitId::ProtossAquifer || unit_id == UnitId::ZergExcisant;
 		}
 		else {
-			return unit_id == UnitId::TerranReservoir || unit_id == UnitId::ProtossAquifer || unit_id == UnitId::ZergExtractor || unit_id == UnitId::ResourceVespeneGeyser;
+			return unit_id == UnitId::TerranReservoir || unit_id == UnitId::ProtossAquifer || unit_id == UnitId::ZergExcisant || unit_id == UnitId::ResourceVespeneGeyser;
 		}
 	}
 }

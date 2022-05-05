@@ -284,7 +284,7 @@ namespace hooks
 						{
 							if (builtUnit->id == UnitId::TerranReservoir
 								|| builtUnit->id == UnitId::ProtossAquifer
-								|| builtUnit->id == UnitId::ZergExtractor)
+								|| builtUnit->id == UnitId::ZergExcisant)
 							{
 								if (builtUnit->playerId == unit->playerId)
 								{
@@ -343,7 +343,7 @@ namespace hooks
 				{
 					if (builtUnit->id == UnitId::TerranReservoir
 						|| builtUnit->id == UnitId::ProtossAquifer
-						|| builtUnit->id == UnitId::ZergExtractor)
+						|| builtUnit->id == UnitId::ZergExcisant)
 					{
 						if (builtUnit->playerId == unit->playerId)
 						{

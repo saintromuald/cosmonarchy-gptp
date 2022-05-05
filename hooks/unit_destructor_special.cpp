@@ -322,7 +322,7 @@ void unitDestructorSpecialHook(Unit* unit)
 			case UnitId::ResourceVespeneGeyser:
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
-			case UnitId::ZergExtractor:
+			case UnitId::ZergExcisant:
 			{
 				freeResourceContainer(unit);
 			} break;
