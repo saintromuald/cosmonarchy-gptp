@@ -1198,7 +1198,7 @@ namespace helper
 	s32 AI_SCV_repair_controller(Unit* unit, AiTown* town);												// 00433C70
 	s32 AI_try_progress_spending_queue_worker(AiTown* town, Unit* unit);								// 004348C0
 	bool unit_is_mineral_field(Unit* unit);																// 00468890
-	void AI_auto_harvest(Unit* town_mineral, Unit* worker, Unit* town_refinery);						// 00433B90
+	void AI_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90
 	Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, Point16 worker_pos);	// 004432D0
 	Unit* get_AI_refinery(AiTown* town, s32 gas_state, s32 index);										// 00432B90
 	u32 AI_get_vespene_type(Unit* node, s32 player_id);													// 004326E0

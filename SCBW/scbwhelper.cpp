@@ -11176,13 +11176,13 @@ namespace helper
 		return result;
 	}
 
-	void AI_auto_harvest(Unit* town_mineral, Unit* worker, Unit* town_refinery) {
+	void AI_auto_harvest(Unit* resource, Unit* worker, Unit* fallback) {
 		const u32 func_address = 0x00433B90;
 		__asm {
 			PUSHAD
-			PUSH town_refinery
+			PUSH fallback
 			MOV ECX, worker
-			MOV EAX, town_mineral
+			MOV EAX, resource
 			CALL func_address
 			POPAD
 		}
