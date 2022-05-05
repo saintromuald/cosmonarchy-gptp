@@ -1079,7 +1079,7 @@ LABEL_21:
 		return 0;
 	}
 
-	u32 AI_getVespeneType(Unit* unit, u32 player_id) { // 004326E0
+	u32 AI_get_vespene_type(Unit* unit, u32 player_id) { // 004326E0
 		if (!unit || !unit->sprite || !unit->mainOrderId)
 		{
 			return 0;

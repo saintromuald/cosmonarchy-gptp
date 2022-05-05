@@ -22,7 +22,7 @@ namespace hooks
 	bool AI_CheckMilitaryGrouping(Unit* unit);																			// 00439550
 	u32 __stdcall AI_remove_different_height(char* placement_data, Point16 desired_pos);								// 004BD0F0
 	s32 attack_recent_attacker(Unit* unit);																				// 004770E0
-	u32 AI_getVespeneType(Unit* unit, u32 index);																		// 004326E0
+	u32 AI_get_vespene_type(Unit* unit, u32 index);																		// 004326E0
 	void AI_worker_controller(Unit* worker);																			// 00435210
 
 	void injectAIOrdersHooks();

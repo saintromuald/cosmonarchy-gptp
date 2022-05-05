@@ -368,7 +368,7 @@ namespace
 			MOV player_id, EDX
 			PUSHAD
 		}
-		result = hooks::AI_getVespeneType(unit, player_id);
+		result = hooks::AI_get_vespene_type(unit, player_id);
 		__asm {
 			POPAD
 			MOV EAX, result
