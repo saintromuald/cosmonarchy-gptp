@@ -226,6 +226,7 @@ namespace hooks
 			}
 			else
 			{
+				helper::turnUnit(unit, scbw::getAngle(unit->position, node->position));
 				u32 timer = 30;
 				if (node && node->id == UnitId::ResourceVespeneGeyser) {
 					timer = 75;
