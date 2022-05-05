@@ -1526,7 +1526,7 @@ LABEL_21:
 	}
 
 	// Hooked as part of the vespene overhaul. -Pr0nogo
-	void AI_auto_harvest(Unit* mineral, Unit* worker, Unit* gas) // 00433B90
+	void AI_auto_harvest(Unit* resource, Unit* worker, Unit* fallback) // 00433B90
 	{
 		if (worker->resourceType & ResourceType::Minerals)
 		{
@@ -1556,20 +1556,14 @@ LABEL_21:
 		}
 		else
 		{
-			if (!mineral || mineral->id == UnitId::ResourceVespeneGeyser || !(mineral->status & 1))
+			if (!resource || !(resource->status & UnitStatus::Completed))
 			{
-				mineral = gas;
+				resource = fallback;
 			}
-			if (mineral)
+			if (resource && (resource->id == UnitId::ResourceVespeneGeyser || resource->status & UnitStatus::Completed))
 			{
-				if (mineral->id != UnitId::ResourceVespeneGeyser)
-				{
-					if (mineral->status & 1)
-					{
-						helper::assign_order_with_target(mineral, worker, OrderId::Harvest1);
-						mineral->building.resource.resourceBelongsToAI = 1;
-					}
-				}
+				helper::assign_order_with_target(resource, worker, OrderId::Harvest1);
+				resource->building.resource.resourceBelongsToAI = 1;
 			}
 		}
 	}
