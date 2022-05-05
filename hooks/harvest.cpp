@@ -194,12 +194,6 @@ namespace hooks
 					Point16 pos = {};
 					if (helper::get_gas_exit_point(unit, node, &pos, &worker_direction))
 					{
-						if (!node || node->id != UnitId::ResourceVespeneGeyser) {
-							helper::turnUnit(unit, worker_direction);
-							// Disable teleportation (worker will appear at the position it entered)
-							//helper::move_unit(unit, pos.x, pos.y);
-							helper::show_and_enable_unit(unit);
-						}
 						if (node)
 						{
 							hooks::transferResourceToWorkerHook(unit, node);
@@ -232,12 +226,10 @@ namespace hooks
 			}
 			else
 			{
-				u32 timer = 37;
+				u32 timer = 30;
 				if (node && node->id == UnitId::ResourceVespeneGeyser) {
 					timer = 75;
 					unit->playIscriptAnim(IscriptAnimation::AlmostBuilt);
-				} else {
-					helper::hide_unit_partial(unit, true);
 				}
 
 				unit->mainOrderState = 5;
