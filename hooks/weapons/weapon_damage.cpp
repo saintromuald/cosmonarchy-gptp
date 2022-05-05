@@ -644,7 +644,7 @@ namespace hooks
 						if (targetExt->values[ValuePetrificationStacks] < 20) {
 							targetExt->values[ValuePetrificationStacks] += 1;
 						}
-						targetExt->timers[TimerPetrification] = 24 + 1;
+						targetExt->timers[TimerPetrification] = 48 + 1;
 					} break;
 					case WeaponId::PazuzuJupiterDriver:
 					{
