@@ -28,7 +28,7 @@ namespace hooks
 		u8 return_value;
 		if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED)
 		{
-			return_value = std::max((s32)resource->building.resource.resourceAmount, 1);
+			return_value = std::max((s32)resource->building.resource.resourceAmount, 2);
 			resource->building.resource.resourceAmount = 0;
 		}
 		else
@@ -42,7 +42,7 @@ namespace hooks
 				}
 				else
 				{
-					resource->building.resource.resourceAmount = 2;
+					resource->building.resource.resourceAmount = 0;
 				}
 			}
 			else if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED
