@@ -1109,19 +1109,6 @@ LABEL_21:
 	// Hooked to help with AI implementation of the vespene overhaul. -Pr0nogo
 	void AI_worker_controller(Unit* worker) // 00435210
 	{
-		signed int gas_iterator; // ebx
-		bool resource_is_none; // zf
-		Unit* town_gas_copy; // eax
-		signed int gas_iterator_copy; // ebx
-		Unit* town_gas_2_copy; // edi
-		Unit* town_gas_copy_2; // eax
-		signed int gas_iterator_copy_2; // ebx
-		Unit* town_gas_2_copy_2; // edi
-		Unit* town_gas_copy_3; // ebx
-		Unit* town_gas_2_copy_3; // edi
-		signed int gas_iterator_copy_3; // [esp+8h] [ebp-4h]
-		signed int gas_iterator_copy_4; // [esp+8h] [ebp-4h]
-
 		WorkerAi* worker_ai = (WorkerAi*)worker->pAI;
 		if (worker_ai)
 		{
@@ -1153,7 +1140,7 @@ LABEL_21:
 							else
 							{
 								Unit* town_mineral = town->mineral;
-								if (!town_mineral || town_mineral->building.resource.resourceGroup)
+								if (!town_mineral || town_mineral->building.resource.resourceBelongsToAI)
 								{
 									worker_pos = worker->sprite->position;
 									town_mineral = helper::harvest_next_nearest_resources_ex(town->workerCount <= 0xCu, worker, worker_pos);
@@ -1181,10 +1168,11 @@ LABEL_21:
 							}
 							goto exit;
 						}
-						gas_iterator = 0;
-						resource_is_none = worker_ai->target_resource == 3;
+
+						u32 gas_iterator = 0;
+						u32 gas_type = 0;
 						town_gas = town->gasBuildings[0];
-						if (resource_is_none)
+						if (worker_ai->target_resource == 3)
 						{
 							if (town_gas)
 							{
@@ -1194,12 +1182,12 @@ LABEL_21:
 								}
 							}
 							town_gas_2 = town->gasBuildings[1];
-							if (!town_gas_2
-								|| helper::AI_get_vespene_type(town->gasBuildings[1], town->player) != 3
-								|| (++gas_iterator, gas_iterator != 2))
+							gas_type = helper::AI_get_vespene_type(town->gasBuildings[1], town->player);
+							if (!town_gas_2 || gas_type != 3 || (++gas_iterator, gas_iterator != 2))
 							{
 								town_gas_2 = town->gasBuildings[2];
-								if (!town_gas_2 || helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 3)
+								gas_type = helper::AI_get_vespene_type(town->gasBuildings[2], town->player);
+								if (!town_gas_2 || gas_type != 3)
 								{
 									goto exit;
 								}
@@ -1233,12 +1221,12 @@ LABEL_21:
 							if (!town_gas_2 || type != 3 || gas_iterator != 2)
 							{
 								town_gas_2 = town->gasBuildings[2];
-								if (!town_gas_2 || helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 3)
+								type = helper::AI_get_vespene_type(town->gasBuildings[2], town->player);
+								if (!town_gas_2 || type != 3)
 								{
 									goto exit;
 								}
-								resource_is_none = gas_iterator == 2;
-								if (!resource_is_none)
+								if (gas_iterator != 2)
 								{
 									goto exit;
 								}
@@ -1264,78 +1252,78 @@ LABEL_21:
 						Unit* ai_refinery = helper::get_AI_refinery(town, 3, 1);
 						if (!ai_refinery)
 						{
-							town_gas_copy = town->gasBuildings[0];
-							gas_iterator_copy = 0;
-							if (town_gas_copy)
+							Unit* town_gas_final = town->gasBuildings[0];
+							u32 gas_iterator_final = 0;
+							if (town_gas_final)
 							{
-								if (helper::AI_get_vespene_type(town_gas_copy, town->player) == 3)
+								if (helper::AI_get_vespene_type(town_gas_final, town->player) == 3)
 								{
-									gas_iterator_copy = 1;
+									gas_iterator_final = 1;
 								}
 							}
-							town_gas_2_copy = town->gasBuildings[1];
-							if ((!town_gas_2_copy
+							town_gas_final = town->gasBuildings[1];
+							if ((!town_gas_final
 								|| helper::AI_get_vespene_type(town->gasBuildings[1], town->player) != 3
-								|| (++gas_iterator_copy, gas_iterator_copy != 2))
-								&& ((town_gas_2_copy = town->gasBuildings[2]) == 0
+								|| (++gas_iterator_final, gas_iterator_final != 2))
+								&& ((town_gas_final = town->gasBuildings[2]) == 0
 									|| helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 3
-									|| gas_iterator_copy != 1)
-								|| (ai_refinery = town_gas_2_copy) == 0)
+									|| gas_iterator_final != 1)
+								|| (ai_refinery = town_gas_final) == 0)
 							{
-								town_gas_copy_2 = town->gasBuildings[0];
-								gas_iterator_copy_2 = 0;
-								if (town_gas_copy_2)
+								town_gas_final = town->gasBuildings[0];
+								gas_iterator_final = 0;
+								if (town_gas_final)
 								{
-									if (helper::AI_get_vespene_type(town_gas_copy_2, town->player) == 3)
+									if (helper::AI_get_vespene_type(town_gas_final, town->player) == 3)
 									{
-										gas_iterator_copy_2 = 1;
+										gas_iterator_final = 1;
 									}
 								}
-								town_gas_2_copy_2 = town->gasBuildings[1];
-								if ((!town_gas_2_copy_2
+								town_gas_final = town->gasBuildings[1];
+								if ((!town_gas_final
 									|| helper::AI_get_vespene_type(town->gasBuildings[1], town->player) != 3
-									|| (++gas_iterator_copy_2, gas_iterator_copy_2 != 3))
-									&& ((town_gas_2_copy_2 = town->gasBuildings[2]) == 0
+									|| (++gas_iterator_final, gas_iterator_final != 3))
+									&& ((town_gas_final = town->gasBuildings[2]) == 0
 										|| helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 3
-										|| gas_iterator_copy_2 != 2)
-									|| (ai_refinery = town_gas_2_copy_2) == 0)
+										|| gas_iterator_final != 2)
+									|| (ai_refinery = town_gas_final) == 0)
 								{
 									ai_refinery = helper::get_AI_refinery(town, 2, 1);
 									if (!ai_refinery)
 									{
-										town_gas_copy_3 = town->gasBuildings[0];
-										gas_iterator_copy_3 = 0;
-										if (town_gas_copy_3)
+										town_gas_final = town->gasBuildings[0];
+										gas_iterator_final = 0;
+										if (town_gas_final)
 										{
-											if (helper::AI_get_vespene_type(town_gas_copy_3, town->player) == 2)
+											if (helper::AI_get_vespene_type(town_gas_final, town->player) == 2)
 											{
-												gas_iterator_copy_3 = 1;
+												gas_iterator_final = 1;
 											}
 										}
-										town_gas_2_copy_3 = town->gasBuildings[1];
-										if ((!town_gas_2_copy_3
+										town_gas_final = town->gasBuildings[1];
+										if ((!town_gas_final
 											|| helper::AI_get_vespene_type(town->gasBuildings[1], town->player) != 2
-											|| (++gas_iterator_copy_3, gas_iterator_copy_3 != 2))
-											&& ((town_gas_2_copy_3 = town->gasBuildings[2]) == 0
+											|| (++gas_iterator_final, gas_iterator_final != 2))
+											&& ((town_gas_final = town->gasBuildings[2]) == 0
 												|| helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 2
-												|| gas_iterator_copy_3 != 1)
-											|| (ai_refinery = town_gas_2_copy_3) == 0)
+												|| gas_iterator_final != 1)
+											|| (ai_refinery = town_gas_final) == 0)
 										{
-											gas_iterator_copy_4 = 0;
-											if (town_gas_copy_3)
+											gas_iterator_final = 0;
+											if (town_gas_final)
 											{
-												if (helper::AI_get_vespene_type(town_gas_copy_3, town->player) == 2)
+												if (helper::AI_get_vespene_type(town_gas_final, town->player) == 2)
 												{
-													gas_iterator_copy_4 = 1;
+													gas_iterator_final = 1;
 												}
 											}
 											Unit* town_gas_2_copy_4 = town->gasBuildings[1];
 											if (town_gas_2_copy_4
 												&& helper::AI_get_vespene_type(town->gasBuildings[1], town->player) == 2
-												&& (++gas_iterator_copy_4, gas_iterator_copy_4 == 3)
+												&& (++gas_iterator_final, gas_iterator_final == 3)
 												|| (town_gas_2_copy_4 = town->gasBuildings[2]) != 0
 												&& helper::AI_get_vespene_type(town->gasBuildings[2], town->player) == 2
-												&& gas_iterator_copy_4 == 2)
+												&& gas_iterator_final == 2)
 											{
 												ai_refinery = town_gas_2_copy_4;
 											}
