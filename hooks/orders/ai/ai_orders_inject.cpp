@@ -368,11 +368,38 @@ namespace
 			MOV player_id, EDX
 			PUSHAD
 		}
-		result = hooks::AI_get_vespene_type(unit, player_id);
+		result = hooks::AI_get_vespene_type(unit, player_id, false);
 		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
+		}
+	}
+
+	void __declspec(naked) get_ai_refinery_Wrapper() { // 432B90
+		static Unit* result;
+		static AiTown* town;
+		static u32 gas_state;
+		static u32 index;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV gas_state, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV index, EAX
+			POP EAX
+			MOV town, ESI
+			PUSHAD
+		}
+		result = hooks::get_ai_refinery(town, gas_state, index, false);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
 		}
 	}
 
@@ -422,6 +449,7 @@ namespace hooks
 		jmpPatch(hooks::AI_remove_different_height,			0x004436C0, 3);
 		jmpPatch(attack_recent_attacker_Wrapper,			0x004770E0, 2);
 		jmpPatch(AI_getVespeneType_Wrapper,					0x004326E0, 2);
+		jmpPatch(get_ai_refinery_Wrapper,					0x00432B90, 0);
 		jmpPatch(AI_worker_controller_Wrapper,				0x00435210, 0);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);

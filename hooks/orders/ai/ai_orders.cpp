@@ -1079,29 +1079,23 @@ LABEL_21:
 		return 0;
 	}
 
-	u32 AI_get_vespene_type(Unit* unit, u32 player_id) { // 004326E0
-		if (!unit || !unit->sprite || !unit->mainOrderId)
-		{
+	u32 AI_get_vespene_type(Unit* unit, u32 player_id, bool for_harvesting) { // 004326E0
+		if (!unit || !unit->sprite || !unit->mainOrderId) {
 			return 0;
 		}
-
-		if (unit->id == UnitId::ResourceVespeneGeyser)
-		{
+		if (!for_harvesting && unit->id == UnitId::ResourceVespeneGeyser) {
 			return 1;
 		}
-		u32 race = playerTable[player_id].race;
-		u32 unit_id = UnitId::TerranReservoir;
-		if (race == RaceId::Protoss)
-		{
-			unit_id = UnitId::ProtossAquifer;
+		if (unit->id == UnitId::ResourceVespeneGeyser || unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExtractor) {
+			return 2 + (unit->building.resource.resourceAmount != 0);
 		}
-		else if (race == RaceId::Zerg)
+		return 0;
+	}
+
+	Unit* get_ai_refinery(AiTown* town, u32 gas_state, u32 index, bool for_harvesting) { // 00432B90
+		if (town->gasBuildings[index] && AI_get_vespene_type(town->gasBuildings[index], town->player, for_harvesting) == gas_state)
 		{
-			unit_id = UnitId::ZergExtractor;
-		}
-		if (unit->id == unit_id)
-		{
-			return (unit->building.resource.resourceAmount != 0) + 2;
+			return town->gasBuildings[index];
 		}
 		return 0;
 	}
