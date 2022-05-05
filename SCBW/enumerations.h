@@ -767,6 +767,16 @@ namespace InternalErrors
 	};
 }
 
+namespace ResourceType
+{
+	enum Enum
+	{
+		VespeneGas = 1,
+		Minerals = 2,
+		None = 3
+	};
+}
+
 namespace PlayerColor
 {
 	enum Enum

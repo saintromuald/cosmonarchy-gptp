@@ -215,8 +215,9 @@ namespace hooks
 						}
 						else if (unit->orderQueueHead->orderId == OrderId::Harvest4)
 						{
-							// Semi fixes a bug with simultenous vespene geyser mining freezing the unit
-							unit->orderTo(resource_return_order);
+							// May cause issues if this is actually used for something important.
+							// By the time units have Harvest4 when harvesting from geysers, they no longer have a resource target. We could check for resource link instead...
+							unit->orderQueueHead->orderId = resource_return_order;
 						}
 						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::ResetCollision2);
 						helper::actUnitReturnToIdle(unit);
@@ -335,5 +336,77 @@ namespace hooks
 			return (unit->building.resource.resourceAmount != 0) + 2;
 		}
 		return 0;
+	}
+
+	// Hooked to investigate right-click error on geysers. -Pr0nogo
+	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker) // 004557C0
+	{
+		u16 node_id = node->id;
+		if (units_dat::BaseProperty[node_id] & UnitStatus::CloakingForFree)
+		{
+			return OrderId::Move;
+		}
+
+		u32 result;
+		char worker_resource_type;
+		if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3)
+		{
+			if (unit_is_geyser_ex(node, worker) || node_id == UnitId::ResourceVespeneGeyser)
+			{
+				worker_resource_type = worker->resourceType;
+				if (!worker_resource_type || worker_resource_type & ResourceType::None)
+				{
+					result = OrderId::HarvestGas1;
+				}
+				else
+				{
+					result = OrderId::Move;
+				}
+			}
+			else
+			{
+				if (!helper::unitIsActiveResourceDepot(node) || node->playerId != worker->playerId)
+				{
+					result = OrderId::None;
+					return result;
+				}
+				worker_resource_type = worker->resourceType;
+				if (worker_resource_type & ResourceType::Minerals)
+				{
+					return OrderId::ReturnMinerals;
+				}
+				if (worker_resource_type & ResourceType::VespeneGas)
+				{
+					result = OrderId::ReturnGas;
+				}
+				else
+				{
+					result = OrderId::None;
+				}
+			}
+		}
+		else
+		{
+			worker_resource_type = worker->resourceType;
+			if (!worker_resource_type || worker_resource_type & ResourceType::None)
+			{
+				result = OrderId::MoveToMinerals;
+			}
+			else
+			{
+				result = OrderId::Move;
+			}
+		}
+		return result;
+	}
+
+	// Hooked to resolve delay on first-time multi-worker vespene harvesting. -Pr0nogo
+	void orders_harvest4(Unit* worker) // 00468ED0
+	{
+		if (worker->worker.harvestTarget && worker->worker.harvestTarget->id != UnitId::ResourceVespeneGeyser)
+		{
+			worker = helper::remove_from_current_harvesters(worker, worker->worker.harvestTarget);
+		}
+		helper::actUnitReturnToIdle(worker);
 	}
 }

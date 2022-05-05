@@ -1194,4 +1194,5 @@ namespace helper
 
 	void Order_BeginHarvest(Unit* node, Unit* worker);												// 00468D10
 	Unit* RemoveHarvesters(Unit* node);																// 00468770
+	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);									// 004686D0
 }
