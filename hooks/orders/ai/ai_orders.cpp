@@ -1109,9 +1109,7 @@ LABEL_21:
 	// Hooked to help with AI implementation of the vespene overhaul. -Pr0nogo
 	void AI_worker_controller(Unit* worker) // 00435210
 	{
-		Unit* town_gas; // eax
 		signed int gas_iterator; // ebx
-		Unit* town_gas_2; // edi
 		bool resource_is_none; // zf
 		Unit* town_gas_copy; // eax
 		signed int gas_iterator_copy; // ebx
@@ -1121,7 +1119,6 @@ LABEL_21:
 		Unit* town_gas_2_copy_2; // edi
 		Unit* town_gas_copy_3; // ebx
 		Unit* town_gas_2_copy_3; // edi
-		Unit* town_gas_2_copy_4; // edi
 		signed int gas_iterator_copy_3; // [esp+8h] [ebp-4h]
 		signed int gas_iterator_copy_4; // [esp+8h] [ebp-4h]
 
@@ -1143,10 +1140,11 @@ LABEL_21:
 				Unit* main_building = town->main_building;
 				if (main_building)
 				{
+					Unit* town_gas = 0;
+					Unit* town_gas_2 = 0;
 					if (helper::unit_is_active_resource_depot(main_building))
 					{
-						char target_resource = worker_ai->target_resource;
-						if (target_resource == 1)
+						if (worker_ai->target_resource == 1)
 						{
 							if (worker->worker.targetResource.unit && helper::unit_is_mineral_field(worker->worker.targetResource.unit))
 							{
@@ -1173,14 +1171,18 @@ LABEL_21:
 							}
 							return;
 						}
-						Unit* ai_refinery_2;
-						if (target_resource == 2)
+						if (worker_ai->target_resource == 2)
 						{
-							ai_refinery_2 = helper::get_AI_refinery(town, 3, 1);
-							goto LABEL_44;
+							Unit* ai_refinery = helper::get_AI_refinery(town, 3, 1);
+							if (ai_refinery)
+							{
+								helper::AI_auto_harvest(ai_refinery, worker, town->mineral);
+								return;
+							}
+							goto exit;
 						}
 						gas_iterator = 0;
-						resource_is_none = target_resource == 3;
+						resource_is_none = worker_ai->target_resource == 3;
 						town_gas = town->gasBuildings[0];
 						if (resource_is_none)
 						{
@@ -1199,15 +1201,19 @@ LABEL_21:
 								town_gas_2 = town->gasBuildings[2];
 								if (!town_gas_2 || helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 3)
 								{
-									goto LABEL_45;
+									goto exit;
 								}
-								resource_is_none = gas_iterator == 1;
-							LABEL_42:
-								if (!resource_is_none)
+								if (gas_iterator != 1)
 								{
-									goto LABEL_45;
+									goto exit;
 								}
-								goto LABEL_43;
+								Unit* ai_refinery = town_gas_2;
+								if (ai_refinery)
+								{
+									helper::AI_auto_harvest(ai_refinery, worker, town->mineral);
+									return;
+								}
+								goto exit;
 							}
 						}
 						else
@@ -1220,31 +1226,43 @@ LABEL_21:
 								}
 							}
 							town_gas_2 = town->gasBuildings[1];
-							if (!town_gas_2
-								|| helper::AI_get_vespene_type(town->gasBuildings[1], town->player) != 3
-								|| (++gas_iterator, gas_iterator != 3))
+							u32 type = helper::AI_get_vespene_type(town->gasBuildings[1], town->player);
+							if (town_gas_2 || type == 3) {
+								++gas_iterator;
+							}
+							if (!town_gas_2 || type != 3 || gas_iterator != 2)
 							{
 								town_gas_2 = town->gasBuildings[2];
 								if (!town_gas_2 || helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 3)
 								{
-									goto LABEL_45;
+									goto exit;
 								}
 								resource_is_none = gas_iterator == 2;
-								goto LABEL_42;
+								if (!resource_is_none)
+								{
+									goto exit;
+								}
+								Unit* ai_refinery_2 = town_gas_2;
+								if (ai_refinery_2)
+								{
+									helper::AI_auto_harvest(ai_refinery_2, worker, town->mineral);
+									return;
+								}
+								goto exit;
 							}
 						}
-					LABEL_43:
-						ai_refinery_2 = town_gas_2;
-					LABEL_44:
-						if (ai_refinery_2)
 						{
-						LABEL_88:
-							helper::AI_auto_harvest(ai_refinery_2, worker, town->mineral);
-							return;
+							Unit* ai_refinery = town_gas_2;
+							if (ai_refinery)
+							{
+								helper::AI_auto_harvest(ai_refinery, worker, town->mineral);
+								return;
+							}
 						}
-					LABEL_45:
-						ai_refinery_2 = helper::get_AI_refinery(town, 3, 1);
-						if (!ai_refinery_2)
+
+					exit:
+						Unit* ai_refinery = helper::get_AI_refinery(town, 3, 1);
+						if (!ai_refinery)
 						{
 							town_gas_copy = town->gasBuildings[0];
 							gas_iterator_copy = 0;
@@ -1262,7 +1280,7 @@ LABEL_21:
 								&& ((town_gas_2_copy = town->gasBuildings[2]) == 0
 									|| helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 3
 									|| gas_iterator_copy != 1)
-								|| (ai_refinery_2 = town_gas_2_copy) == 0)
+								|| (ai_refinery = town_gas_2_copy) == 0)
 							{
 								town_gas_copy_2 = town->gasBuildings[0];
 								gas_iterator_copy_2 = 0;
@@ -1280,10 +1298,10 @@ LABEL_21:
 									&& ((town_gas_2_copy_2 = town->gasBuildings[2]) == 0
 										|| helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 3
 										|| gas_iterator_copy_2 != 2)
-									|| (ai_refinery_2 = town_gas_2_copy_2) == 0)
+									|| (ai_refinery = town_gas_2_copy_2) == 0)
 								{
-									ai_refinery_2 = helper::get_AI_refinery(town, 2, 1);
-									if (!ai_refinery_2)
+									ai_refinery = helper::get_AI_refinery(town, 2, 1);
+									if (!ai_refinery)
 									{
 										town_gas_copy_3 = town->gasBuildings[0];
 										gas_iterator_copy_3 = 0;
@@ -1301,7 +1319,7 @@ LABEL_21:
 											&& ((town_gas_2_copy_3 = town->gasBuildings[2]) == 0
 												|| helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 2
 												|| gas_iterator_copy_3 != 1)
-											|| (ai_refinery_2 = town_gas_2_copy_3) == 0)
+											|| (ai_refinery = town_gas_2_copy_3) == 0)
 										{
 											gas_iterator_copy_4 = 0;
 											if (town_gas_copy_3)
@@ -1311,7 +1329,7 @@ LABEL_21:
 													gas_iterator_copy_4 = 1;
 												}
 											}
-											town_gas_2_copy_4 = town->gasBuildings[1];
+											Unit* town_gas_2_copy_4 = town->gasBuildings[1];
 											if (town_gas_2_copy_4
 												&& helper::AI_get_vespene_type(town->gasBuildings[1], town->player) == 2
 												&& (++gas_iterator_copy_4, gas_iterator_copy_4 == 3)
@@ -1319,18 +1337,19 @@ LABEL_21:
 												&& helper::AI_get_vespene_type(town->gasBuildings[2], town->player) == 2
 												&& gas_iterator_copy_4 == 2)
 											{
-												ai_refinery_2 = town_gas_2_copy_4;
+												ai_refinery = town_gas_2_copy_4;
 											}
 											else
 											{
-												ai_refinery_2 = 0;
+												ai_refinery = 0;
 											}
 										}
 									}
 								}
 							}
 						}
-						goto LABEL_88;
+						helper::AI_auto_harvest(ai_refinery, worker, town->mineral);
+						return;
 					}
 				}
 			}
