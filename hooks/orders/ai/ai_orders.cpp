@@ -1375,11 +1375,11 @@ LABEL_21:
 
 			if (resarea)
 			{
-				Base* ai_base = &baseArray[resarea];
+				ResourceArea* ai_resarea = &baseArray[resarea];
 				u32 new_worker_limit = 0;
-				if (resarea && resarea < 250u && ai_base != 0)
+				if (resarea && resarea < 250u && ai_resarea != 0)
 				{
-					new_worker_limit = 3 * ai_base->unk5 + helper::get_optimal_mineral_workers(resarea, town->player);
+					new_worker_limit = 3 * ai_resarea->geyser_count + helper::get_optimal_mineral_workers(resarea, town->player);
 				}
 				town->worker_limit = new_worker_limit;
 			}
@@ -1415,7 +1415,7 @@ LABEL_21:
 				worker_id = race != RaceId::Zerg ? UnitId::ProtossScribe : UnitId::ZergDroleth;
 			}
 			u32 worker_count = unitCountTable[worker_id].player[town_player + 12];
-			if (gas_percentage_1 <= 4 * baseArray[resarea].unk5)
+			if (gas_percentage_1 <= 4 * baseArray[resarea].geyser_count)
 			{
 				if (gameGas[town_player] >= 800)
 				{
@@ -1462,7 +1462,7 @@ LABEL_21:
 			}
 			else
 			{
-				gas_percentage_2 = 4 * baseArray[resarea].unk5;
+				gas_percentage_2 = 4 * baseArray[resarea].geyser_count;
 			}
 			gas_percentage_1 = gas_percentage_2;
 		exit:

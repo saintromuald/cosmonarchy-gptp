@@ -475,7 +475,7 @@ SCBW_DATA(char*, kills_buffer,						0x006CAC78);
 SCBW_DATA(s32*,	currentTriggerPlayerId,				0x006509B0);
 
 // For deleteAITownIfNeeded
-SCBW_DATA(Base*,	baseArray,						0x00692688);
+SCBW_DATA(ResourceArea*,	baseArray,				0x00692688);
 
 // For getBunkerPlacementPosition
 SCBW_DATA(u32*,		regionIdsCount,					0x0069265C);
