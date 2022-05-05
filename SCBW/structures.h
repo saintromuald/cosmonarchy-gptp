@@ -835,7 +835,7 @@ struct AiTown
 {
 	Link<AiTown> link;							//	0x0 and 0x4
 	WorkerAiArray* free_workers;				//	0x8
-	WorkerAi* workers;							//		
+	WorkerAi* workers;							//	0xC
 	BuildingAiArray* free_buildings;			//	0x10
 	BuildingAi* buildings;						//	0x14
 	u8 player;									//	0x18

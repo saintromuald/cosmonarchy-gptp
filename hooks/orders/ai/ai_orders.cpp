@@ -1093,9 +1093,9 @@ LABEL_21:
 	}
 
 	Unit* get_ai_refinery(AiTown* town, u32 gas_state, u32 index, bool for_harvesting) { // 00432B90
-		if (town->gasBuildings[index] && AI_get_vespene_type(town->gasBuildings[index], town->player, for_harvesting) == gas_state)
+		if (town->gas_buildings[index] && AI_get_vespene_type(town->gas_buildings[index], town->player, for_harvesting) == gas_state)
 		{
-			return town->gasBuildings[index];
+			return town->gas_buildings[index];
 		}
 		return 0;
 	}
@@ -1466,7 +1466,7 @@ LABEL_21:
 			}
 			gas_percentage_1 = gas_percentage_2;
 		exit:
-			WorkerAi* town_worker_ai = town->free_workers->worker_ais;
+			WorkerAi* town_worker_ai = town->workers;
 			for (u32 i = 0; town_worker_ai; town_worker_ai = town_worker_ai->link.prev)
 			{
 				Unit* town_unit = town_worker_ai->parent;
