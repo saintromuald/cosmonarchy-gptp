@@ -25,6 +25,7 @@ namespace hooks
 	u32 AI_get_vespene_type(Unit* unit, u32 index, bool for_harvesting = false);										// 004326E0
 	Unit* get_ai_refinery(AiTown* town, u32 gas_state, u32 index, bool for_harvesting = false);							// 004326E0
 	void AI_worker_controller(Unit* worker);																			// 00435210
+	char AI_reassign_worker_resources(AiTown* town);																	// 00435900
 
 	void injectAIOrdersHooks();
 }

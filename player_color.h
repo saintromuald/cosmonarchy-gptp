@@ -476,8 +476,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		// Miscreant
 		{
 			"N's Miracle Workers",
-			"Miscreant Two",
-			"Miscreant THREE!",
+			"Boron Enthusiasts",
+			":endofallthings:",
 			"Miscreant Four",
 			"Miscreant Five",
 			"Miscreant Six",
@@ -503,7 +503,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		{
 			"Todny Terranus",
 			"Foreign Dogwalkers",
-			"Armor THREE!",
+			"ShiningAwakenings",
 			"Armor Four",
 			"Armor Five",
 			"Armor Six",
@@ -514,7 +514,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		{
 			"The Ackmen",
 			"The Ciox Crew",
-			"Raider THREE!",
+			"Folca's Leftover APM",
 			"Raider Four",
 			"Raider Five",
 			"Raider Six",
@@ -546,8 +546,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		// General
 		{
 			"Deputy Dads",
-			"General Two",
-			"General THREE!",
+			"The Dreamwhackers",
+			"A Solid-Snake Shit",
 			"General Four",
 			"General Five",
 			"General Six",
@@ -561,8 +561,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		// Ranger
 		{
 			"Champions of Iquaria",
-			"Day 7: Autoveeqality",
-			"Ranger THREE!",
+			"Prank7: Autoveeqality",
+			"Dethroned D",
 			"Ranger Four",
 			"Ranger Five",
 			"Ranger Six",
@@ -594,10 +594,10 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		// Profane
 		{
 			"Tree Tribe",
-			"Shadowcloaked Skullcrusher",
-			"Profane THREE!",
-			"Profane Four",
-			"Profane Five",
+			"Shadowcloak Skullcrusher",
+			"The Action-Voiders",
+			"Metzen's Matriarchs",
+			"Voidthem Ifyoucan",
 			"Profane Six",
 			"Profane SEVEN!",
 			"Profane Eight",
@@ -605,7 +605,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		// General
 		{
 			"F.R.A.U.D.s",
-			"General Two",
+			"The Fraudclave",
 			"General THREE!",
 			"General Four",
 			"General Five",

@@ -196,7 +196,7 @@ namespace hooks
 			{
 				v12 = units_dat::HumanIdleOrder[v4];
 			}
-			helper::order_computer(v1, v12);
+			helper::issue_order_targeting_nothing(v1, v12);
 		}
 		v13 = (u16)v1->id;
 		v14 = units_dat::BaseProperty[v13];

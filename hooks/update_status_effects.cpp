@@ -411,7 +411,7 @@ namespace hooks
 									return; // Disable idle burrowing close to infrastructure
 								}
 							}
-							helper::order_computer(unit, OrderId::Burrow);
+							helper::issue_order_targeting_nothing(unit, OrderId::Burrow);
 						}
 					}
 				}

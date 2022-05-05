@@ -81,9 +81,9 @@ namespace hooks
 			result = 0;
 		} else {
 			if (caster->pAI) {
-				helper::order_computer(caster, 0x9Cu);
+				helper::issue_order_targeting_nothing(caster, 0x9Cu);
 			} else {
-				helper::order_computer(caster, units_dat::ReturnToIdleOrder[caster->id]);
+				helper::issue_order_targeting_nothing(caster, units_dat::ReturnToIdleOrder[caster->id]);
 			}
 			result = 0;
 		}

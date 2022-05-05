@@ -115,7 +115,7 @@ namespace hooks
 		{
 			if (self->mainOrderId != 111)
 			{
-				helper::order_computer(self, 0x6Fu);
+				helper::issue_order_targeting_nothing(self, 0x6Fu);
 			}
 			return;
 		}
@@ -574,9 +574,9 @@ LABEL_126:
 			&& !(repairman->status & UnitStatus::InBuilding) // new
 			&& repairmanAI != nullptr
 			&& repairmanAI->town != nullptr
-			&& repairmanAI->town->buildingSCV != nullptr) // new
+			&& repairmanAI->town->building_SCV != nullptr) // new
 		{
-			result = repairmanAI->town->buildingSCV == repairman;
+			result = repairmanAI->town->building_SCV == repairman;
 		}
 		return result;
 	}
@@ -1138,7 +1138,7 @@ LABEL_21:
 								if (!town_mineral || town_mineral->building.resource.resourceBelongsToAI)
 								{
 									worker_pos = worker->sprite->position;
-									town_mineral = helper::harvest_next_nearest_resources_ex(town->workerCount <= 0xCu, worker, worker_pos);
+									town_mineral = helper::harvest_next_nearest_resources_ex(town->worker_count <= 0xCu, worker, worker_pos);
 									if (!town_mineral)
 									{
 										town_mineral = town->mineral;
@@ -1166,7 +1166,7 @@ LABEL_21:
 
 						u32 gas_iterator = 0;
 						u32 gas_type = 0;
-						town_gas = town->gasBuildings[0];
+						town_gas = town->gas_buildings[0];
 						if (worker_ai->target_resource == 3)
 						{
 							if (town_gas)
@@ -1176,12 +1176,12 @@ LABEL_21:
 									gas_iterator = 1;
 								}
 							}
-							town_gas_2 = town->gasBuildings[1];
-							gas_type = helper::AI_get_vespene_type(town->gasBuildings[1], town->player);
+							town_gas_2 = town->gas_buildings[1];
+							gas_type = helper::AI_get_vespene_type(town->gas_buildings[1], town->player);
 							if (!town_gas_2 || gas_type != 3 || (++gas_iterator, gas_iterator != 2))
 							{
-								town_gas_2 = town->gasBuildings[2];
-								gas_type = helper::AI_get_vespene_type(town->gasBuildings[2], town->player);
+								town_gas_2 = town->gas_buildings[2];
+								gas_type = helper::AI_get_vespene_type(town->gas_buildings[2], town->player);
 								if (!town_gas_2 || gas_type != 3)
 								{
 									goto exit;
@@ -1207,15 +1207,15 @@ LABEL_21:
 									gas_iterator = 1;
 								}
 							}
-							town_gas_2 = town->gasBuildings[1];
-							u32 type = helper::AI_get_vespene_type(town->gasBuildings[1], town->player);
+							town_gas_2 = town->gas_buildings[1];
+							u32 type = helper::AI_get_vespene_type(town->gas_buildings[1], town->player);
 							if (town_gas_2 && type == 3) {
 								++gas_iterator;
 							}
 							if (!town_gas_2 || type != 3 || gas_iterator != 2)
 							{
-								town_gas_2 = town->gasBuildings[2];
-								type = helper::AI_get_vespene_type(town->gasBuildings[2], town->player);
+								town_gas_2 = town->gas_buildings[2];
+								type = helper::AI_get_vespene_type(town->gas_buildings[2], town->player);
 								if (!town_gas_2 || type != 3)
 								{
 									goto exit;
@@ -1241,7 +1241,7 @@ LABEL_21:
 						Unit* ai_refinery = helper::get_AI_refinery(town, 3, 1);
 						if (!ai_refinery)
 						{
-							Unit* town_gas_final = town->gasBuildings[0];
+							Unit* town_gas_final = town->gas_buildings[0];
 							u32 gas_iterator_final = 0;
 							if (town_gas_final)
 							{
@@ -1250,16 +1250,16 @@ LABEL_21:
 									gas_iterator_final = 1;
 								}
 							}
-							town_gas_final = town->gasBuildings[1];
+							town_gas_final = town->gas_buildings[1];
 							if ((!town_gas_final
-								|| helper::AI_get_vespene_type(town->gasBuildings[1], town->player) != 3
+								|| helper::AI_get_vespene_type(town->gas_buildings[1], town->player) != 3
 								|| (++gas_iterator_final, gas_iterator_final != 2))
-								&& ((town_gas_final = town->gasBuildings[2]) == 0
-									|| helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 3
+								&& ((town_gas_final = town->gas_buildings[2]) == 0
+									|| helper::AI_get_vespene_type(town->gas_buildings[2], town->player) != 3
 									|| gas_iterator_final != 1)
 								|| (ai_refinery = town_gas_final) == 0)
 							{
-								town_gas_final = town->gasBuildings[0];
+								town_gas_final = town->gas_buildings[0];
 								gas_iterator_final = 0;
 								if (town_gas_final)
 								{
@@ -1268,19 +1268,19 @@ LABEL_21:
 										gas_iterator_final = 1;
 									}
 								}
-								town_gas_final = town->gasBuildings[1];
+								town_gas_final = town->gas_buildings[1];
 								if ((!town_gas_final
-									|| helper::AI_get_vespene_type(town->gasBuildings[1], town->player) != 3
+									|| helper::AI_get_vespene_type(town->gas_buildings[1], town->player) != 3
 									|| (++gas_iterator_final, gas_iterator_final != 3))
-									&& ((town_gas_final = town->gasBuildings[2]) == 0
-										|| helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 3
+									&& ((town_gas_final = town->gas_buildings[2]) == 0
+										|| helper::AI_get_vespene_type(town->gas_buildings[2], town->player) != 3
 										|| gas_iterator_final != 2)
 									|| (ai_refinery = town_gas_final) == 0)
 								{
 									ai_refinery = helper::get_AI_refinery(town, 2, 1);
 									if (!ai_refinery)
 									{
-										town_gas_final = town->gasBuildings[0];
+										town_gas_final = town->gas_buildings[0];
 										gas_iterator_final = 0;
 										if (town_gas_final)
 										{
@@ -1289,12 +1289,12 @@ LABEL_21:
 												gas_iterator_final = 1;
 											}
 										}
-										town_gas_final = town->gasBuildings[1];
+										town_gas_final = town->gas_buildings[1];
 										if ((!town_gas_final
-											|| helper::AI_get_vespene_type(town->gasBuildings[1], town->player) != 2
+											|| helper::AI_get_vespene_type(town->gas_buildings[1], town->player) != 2
 											|| (++gas_iterator_final, gas_iterator_final != 2))
-											&& ((town_gas_final = town->gasBuildings[2]) == 0
-												|| helper::AI_get_vespene_type(town->gasBuildings[2], town->player) != 2
+											&& ((town_gas_final = town->gas_buildings[2]) == 0
+												|| helper::AI_get_vespene_type(town->gas_buildings[2], town->player) != 2
 												|| gas_iterator_final != 1)
 											|| (ai_refinery = town_gas_final) == 0)
 										{
@@ -1306,12 +1306,12 @@ LABEL_21:
 													gas_iterator_final = 1;
 												}
 											}
-											Unit* town_gas_2_copy_4 = town->gasBuildings[1];
+											Unit* town_gas_2_copy_4 = town->gas_buildings[1];
 											if (town_gas_2_copy_4
-												&& helper::AI_get_vespene_type(town->gasBuildings[1], town->player) == 2
+												&& helper::AI_get_vespene_type(town->gas_buildings[1], town->player) == 2
 												&& (++gas_iterator_final, gas_iterator_final == 3)
-												|| (town_gas_2_copy_4 = town->gasBuildings[2]) != 0
-												&& helper::AI_get_vespene_type(town->gasBuildings[2], town->player) == 2
+												|| (town_gas_2_copy_4 = town->gas_buildings[2]) != 0
+												&& helper::AI_get_vespene_type(town->gas_buildings[2], town->player) == 2
 												&& gas_iterator_final == 2)
 											{
 												ai_refinery = town_gas_2_copy_4;
@@ -1331,5 +1331,200 @@ LABEL_21:
 				}
 			}
 		}
+	}
+
+	// Hooked as part of the vespene overhaul. -Pr0nogo
+	char AI_reassign_worker_resources(AiTown* town) // 00435900, unused int arg
+	{
+		u8 target_resource_type = 0;
+		if (town->inited)
+		{
+			if (!town->resarea)
+			{
+				town->resarea = helper::get_closest_base_from_startloc(town->player, town->position.x, town->position.y);
+				town->resource_units_not_set = 1;
+			}
+
+			u32 resarea = town->resarea;
+			if (town->resource_units_not_set)
+			{
+				town->resource_units_not_set = 0;
+				helper::get_resource_area_gas(resarea, &town->gas_buildings[0], &town->gas_buildings[1], &town->gas_buildings[2]);
+				if (town->gas_buildings[0])
+				{
+					helper::AI_MakeGuard(town->player, town->gas_buildings[0]);
+				}
+				if (town->gas_buildings[1])
+				{
+					helper::AI_MakeGuard(town->player, town->gas_buildings[1]);
+				}
+				if (town->gas_buildings[2])
+				{
+					helper::AI_MakeGuard(town->player, town->gas_buildings[2]);
+				}
+			}
+			if (!town->mineral)
+			{
+				Unit* resarea_minerals = helper::get_resource_area_mineral(town->resarea);
+				town->mineral = resarea_minerals;
+				if (resarea_minerals)
+				{
+					helper::AI_MakeGuard(town->player, resarea_minerals);
+				}
+			}
+
+			if (resarea)
+			{
+				Base* ai_base = &baseArray[resarea];
+				u32 new_worker_limit = 0;
+				if (resarea && resarea < 250u && ai_base != 0)
+				{
+					new_worker_limit = 3 * ai_base->unk5 + helper::get_optimal_mineral_workers(resarea, town->player);
+				}
+				town->worker_limit = new_worker_limit;
+			}
+			u8 mineral_bool = 1;
+			u8 gas_bool = 2;
+			if (helper::get_AI_refinery(town, 3, 1) || helper::get_AI_refinery(town, 2, 1))
+			{
+				if (!town->mineral)
+				{
+					mineral_bool = 2;
+				}
+			}
+			else
+			{
+				gas_bool = 1;
+			}
+
+			u32 town_player = town->player;
+			u8 out_minerals = 0;
+			u8 out_gas = 0;
+			helper::AI_resource_need_split(&out_gas, town_player, &out_minerals);
+			u32 gas_percentage_1 = out_gas * town->worker_count / 100;
+			u32 gas_percentage_2 = out_gas * town->worker_count / 100;
+
+			u8 race = playerTable[town_player].race;
+			u16 worker_id = UnitId::None;
+			if (race == RaceId::Terran)
+			{
+				worker_id = UnitId::TerranMason;
+			}
+			else
+			{
+				worker_id = race != RaceId::Zerg ? UnitId::ProtossScribe : UnitId::ZergDroleth;
+			}
+			u32 worker_count = unitCountTable[worker_id].player[town_player + 12];
+			if (gas_percentage_1 <= 4 * baseArray[resarea].unk5)
+			{
+				if (gameGas[town_player] >= 800)
+				{
+					goto exit;
+				}
+				if (worker_count < 20)
+				{
+					if (worker_count < 15)
+					{
+						if (worker_count < 10)
+						{
+							if (worker_count < 5 || gas_percentage_1 >= 1)
+							{
+								goto exit;
+							}
+							gas_percentage_2 = 1;
+						}
+						else
+						{
+							if (gas_percentage_1 >= 2)
+							{
+								goto exit;
+							}
+							gas_percentage_2 = 2;
+						}
+					}
+					else
+					{
+						if (gas_percentage_1 >= 3)
+						{
+							goto exit;
+						}
+						gas_percentage_2 = 3;
+					}
+				}
+				else
+				{
+					if (gas_percentage_1 >= 4)
+					{
+						goto exit;
+					}
+					gas_percentage_2 = 4;
+				}
+			}
+			else
+			{
+				gas_percentage_2 = 4 * baseArray[resarea].unk5;
+			}
+			gas_percentage_1 = gas_percentage_2;
+		exit:
+			WorkerAi* town_worker_ai = town->free_workers->worker_ais;
+			for (u32 i = 0; town_worker_ai; town_worker_ai = town_worker_ai->link.prev)
+			{
+				Unit* town_unit = town_worker_ai->parent;
+				u8 unit_order = town_unit->mainOrderId;
+				if (unit_order == OrderId::ConstructingBuilding
+					|| unit_order == OrderId::Pickup4
+					|| unit_order == OrderId::DroneBuild
+					|| town_unit->status & UnitStatus::InTransport)
+				{
+					town_worker_ai->last_update_second = *elapsedTimeSeconds;
+				}
+				else if (*elapsedTimeSeconds - town_worker_ai->last_update_second >= 60)
+				{
+					helper::issue_order_targeting_nothing(town_unit, OrderId::ComputerAI);
+					u8 reassign_count = town_worker_ai->reassign_count;
+					AiTown* worker_town = town_worker_ai->town;
+					town_worker_ai->wait_timer = 10;
+					town_worker_ai->last_update_second = *elapsedTimeSeconds;
+					town_worker_ai->reassign_count = reassign_count + 1;
+					helper::AI_get_old_peons(worker_town, 1u);
+					gas_percentage_1 = gas_percentage_2;
+				}
+				u8 mineral_bool_2 = mineral_bool;
+				u8 gas_bool_2 = gas_bool;
+
+				target_resource_type = mineral_bool;
+				if (gas_percentage_1)
+				{
+					--gas_percentage_1;
+					target_resource_type = gas_bool;
+					gas_percentage_2 = gas_percentage_1;
+				}
+
+				town_worker_ai->target_resource = target_resource_type;
+				if (target_resource_type != 1 && ++i >= 4)
+				{
+					i = 0;
+					if (gas_bool == target_resource_type)
+					{
+						gas_bool_2 = gas_bool + 1;
+						gas_bool = (gas_bool + 1);
+					}
+					if (mineral_bool == target_resource_type)
+					{
+						mineral_bool_2 = mineral_bool + 1;
+						mineral_bool = (mineral_bool + 1);
+					}
+					if (gas_bool_2 > 4)
+					{
+						gas_bool = 2;
+					}
+					if (mineral_bool_2 > 4)
+					{
+						mineral_bool = 2;
+					}
+				}
+			}
+		}
+		return target_resource_type;
 	}
 }

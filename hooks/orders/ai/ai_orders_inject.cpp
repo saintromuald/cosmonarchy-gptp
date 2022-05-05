@@ -422,6 +422,21 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) AI_reassign_worker_resources_Wrapper() { // 00435900
+		static char result;
+		static AiTown* town;
+		__asm {
+			MOV town, EAX
+			PUSHAD
+		}
+		result = hooks::AI_reassign_worker_resources(town);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -451,6 +466,7 @@ namespace hooks
 		jmpPatch(AI_getVespeneType_Wrapper,					0x004326E0, 2);
 		jmpPatch(get_ai_refinery_Wrapper,					0x00432B90, 0);
 		jmpPatch(AI_worker_controller_Wrapper,				0x00435210, 0);
+		jmpPatch(AI_reassign_worker_resources_Wrapper,		0x00435900, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

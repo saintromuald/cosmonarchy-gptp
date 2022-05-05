@@ -815,11 +815,11 @@ LABEL_15:
 						}
 						else if (v1->pAI)
 						{
-							helper::order_computer(v1, 0x9Cu);
+							helper::issue_order_targeting_nothing(v1, 0x9Cu);
 						}
 						else
 						{
-							helper::order_computer(v1, units_dat::ReturnToIdleOrder[(u16)v1->id]);
+							helper::issue_order_targeting_nothing(v1, units_dat::ReturnToIdleOrder[(u16)v1->id]);
 						}
 						return;
 					}
