@@ -818,4 +818,58 @@ LABEL_36:
 			helper::Ai_AddBuildRequest(town, 0, count, unit_id, priority, need);
 		}
 	}
+
+	// Hooked to improve logic. -Pr0nogo
+	char AI_build_gas_building(AiTown* town) // 00433660
+	{
+		char result = 0;
+		u32 player = town->player;
+		u8 mineral_percent;
+		u8 gas_percent;
+		helper::AI_resource_need_split(&gas_percent, player, &mineral_percent);
+		if (gas_percent || town->mineral)
+		{
+			Unit* refinery;
+			u32 priority;
+			if (helper::get_AI_refinery(town, 3, 1))
+			{
+				priority = 80;
+				refinery = helper::get_AI_refinery(town, 1, 1);
+				if (!refinery)
+				{
+					return 0;
+				}
+
+				u8 worker_count = town->workerCount;
+				if (worker_count < town->workerLimit && worker_count < 0xFu)
+				{
+					return worker_count;
+				}
+
+				if (gameMinerals[player] < 500)
+				{
+					return player;
+				}
+			}
+			else
+			{
+				refinery = helper::get_AI_refinery(town, 1, 1);
+				if (!refinery)
+				{
+					return 0;
+				}
+				priority = 90;
+			}
+			u8 race = playerTable[player].race;
+			if (race == RaceId::Terran)
+			{
+				result = helper::AI_add_town_spending_request(player, priority, 110, town);
+			}
+			else
+			{
+				result = helper::AI_add_town_spending_request(player, priority, 8 * (race != RaceId::Zerg) + 149, town);
+			}
+		}
+		return result;
+	}
 }

@@ -11229,6 +11229,7 @@ namespace helper
 		}
 		return result;
 	}
+
 	u32 AI_get_vespene_type(Unit* node, s32 player_id) {
 		static u32 result;
 		const u32 func_address = 0x004326E0;
@@ -11236,6 +11237,34 @@ namespace helper
 			PUSHAD
 			MOV EDX, player_id
 			MOV EAX, node
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void AI_resource_need_split(u8* out_gas_percentage, u32 player, u8* out_mineral_percentage) {
+		const u32 func_address = 0x004475B0;
+		__asm {
+			PUSHAD
+			PUSH out_mineral_percentage
+			MOV ESI, player
+			MOV EBX, out_gas_percentage
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u32 AI_add_town_spending_request(u32 player, u32 priority, u32 unit_id, void* param) {
+		static u32 result;
+		const u32 func_address = 0x00448400;
+		__asm {
+			PUSHAD
+			PUSH param
+			MOV ESI, unit_id
+			MOV EDI, priority
+			MOV EAX, player
 			CALL func_address
 			MOV result, EAX
 			POPAD

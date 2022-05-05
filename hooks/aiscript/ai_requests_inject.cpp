@@ -202,6 +202,19 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) AI_build_gas_building_Wrapper() { // 00433660
+		static AiTown* town;
+		__asm {
+			MOV town, EAX
+			PUSHAD
+		}
+		hooks::AI_build_gas_building(town);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -215,5 +228,6 @@ namespace hooks
 //		jmpPatch(AI_PlanDoMergeMorph_Wrapper,				0x00435F10, 1);
 //		jmpPatch(ai_train_defensive_military_Wrapper,		0x0043F990, 1);
 		jmpPatch(AI_Build_Wrapper,							0x004323D0, 1);
+		jmpPatch(AI_build_gas_building_Wrapper,				0x00433660, 1);
 	}
 }
