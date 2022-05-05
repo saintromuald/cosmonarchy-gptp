@@ -95,7 +95,7 @@ namespace hooks
 		{
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
-			case UnitId::ZergExtractor:
+			case UnitId::ZergExcisant:
 				return true;
 			default:
 				break;
@@ -108,7 +108,7 @@ namespace hooks
 		{
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
-			case UnitId::ZergExtractor:
+			case UnitId::ZergExcisant:
 				//		case UnitId::KelMorianGasPump:
 				return true;
 			default:

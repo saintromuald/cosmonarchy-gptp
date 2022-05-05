@@ -384,14 +384,17 @@ LABEL_36:
 		switch (unit->id)
 		{
 			case UnitId::ZergOvileth:
+			{
 				helper::AI_OverlordBehavior(unit);
-				break;
+			} break;
 			case UnitId::TerranComsatStation:
+			{
 				helper::AI_CastSpellBehaviour(unit, 0);
-				break;
+			} break;
 			case UnitId::TerranNuclearSilo:
+			{
 				helper::AI_NukeSiloBehavior(unit);
-				break;
+			} break;
 		}
 
 		UnitAi* unitAIVar = (UnitAi*)unit->pAI;
@@ -861,14 +864,16 @@ LABEL_36:
 				priority = 90;
 			}
 			u8 race = playerTable[player].race;
-			if (race == RaceId::Terran)
+			u16 refinery_id = UnitId::TerranReservoir;
+			if (race == RaceId::Zerg)
 			{
-				result = helper::AI_add_town_spending_request(player, priority, 110, town);
+				refinery_id = UnitId::ZergExcisant;
 			}
-			else
+			else if (race == RaceId::Protoss)
 			{
-				result = helper::AI_add_town_spending_request(player, priority, 8 * (race != RaceId::Zerg) + 149, town);
+				refinery_id = UnitId::ProtossAquifer;
 			}
+			result = helper::AI_add_town_spending_request(player, priority, refinery_id, town);
 		}
 		return result;
 	}

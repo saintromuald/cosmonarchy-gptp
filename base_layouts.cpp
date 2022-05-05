@@ -317,7 +317,7 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	if (units_dat::GasCost[unit_id] > resources->gas[town->player] &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::TerranReservoir) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ProtossAquifer) &&
-		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ZergExtractor)) {
+		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ZergExcisant)) {
 		return false;
 	}
 	if (units_dat::BaseProperty[unit_id] & UnitProperty::CreepBuilding &&

@@ -877,7 +877,7 @@ namespace hooks {
 			{
 				case UnitId::ZergHatchery:
 				case UnitId::ZergCreepColony:
-				case UnitId::ZergExtractor:
+				case UnitId::ZergExcisant:
 				case UnitId::ZergQuazrokPool:
 				case UnitId::ZergHydrokDen:
 				case UnitId::ZergMuthrokSpire:
@@ -2163,7 +2163,7 @@ namespace hooks {
 				{
 					case UnitId::ZergHatchery:
 					case UnitId::ZergCreepColony:
-					case UnitId::ZergExtractor:
+					case UnitId::ZergExcisant:
 					case UnitId::ZergQuazrokPool:
 					case UnitId::ZergHydrokDen:
 					case UnitId::ZergMuthrokSpire:
