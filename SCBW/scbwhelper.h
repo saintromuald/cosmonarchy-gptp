@@ -493,7 +493,7 @@ namespace helper
 
 	//// target_related
 
-	// for isUnitTargetOutOfMaxRange
+	// for is_unit_target_out_of_max_range
 	s32 getUnitMaxWeaponRange(Unit* a1, unsigned __int8 a2);
 	bool isTargetWithinMinMovementRange(Unit* a1, u32 a2, Unit* a3);
 
@@ -898,7 +898,7 @@ namespace helper
 	// order attack behavior
 	bool hasGroundWeaponGraphic(Unit* unit);
 	bool isUnreachable(Unit* target, Unit* unit);
-	bool isUnitTargetOutOfMaxRange(Unit* unit, Unit* target);												// 00476430
+	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target);												// 00476430
 	s32 moveForMeleeRange(Unit* target, Unit* unit);
 
 	// For createUpgradeLevelTooltip
@@ -1210,4 +1210,10 @@ namespace helper
 	Unit* get_resource_area_mineral(u32 resarea);														// 004445E0
 	u32 get_optimal_mineral_workers(u32 resarea, u32 player);											// 004439B0
 	void AI_get_old_peons(AiTown* town, u32 count);														// 004355C0
+
+	bool unit_is_factory(Unit* unit);																	// 0047B2E0
+	bool is_unit_target_inside_min_range(Unit* unit, Unit* target);										// 004764D0
+	bool is_unit_enemy(Unit* unit, Unit* target);														// 0047B910
+	u32 play_transmission_from_location(u32 sfx_id, u32 volume, u32 misc, Unit* unit);					// 004BC270
+	s32 update_text_display(s32 update_case);															// 0048CB80
 }

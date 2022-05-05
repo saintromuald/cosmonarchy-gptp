@@ -78,14 +78,37 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) show_right_click_error_if_needed_Wrapper() {
+		static s32 result;
+		static Unit* target;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV target, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::show_right_click_error_if_needed(target);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectRepairOrderHook()
 	{
-		jmpPatch(orders_Repair1Wrapper,		0x004673D0, 1);
-		jmpPatch(isOrderValid_Wrapper,		0x00474D90, 1);
-//		jmpPatch(orderAllowed_Wrapper,		0x0046DC20, 3); // crashes
+		jmpPatch(orders_Repair1Wrapper,						0x004673D0, 1);
+		jmpPatch(isOrderValid_Wrapper,						0x00474D90, 1);
+//		jmpPatch(orderAllowed_Wrapper,						0x0046DC20, 3); // crashes
+		jmpPatch(show_right_click_error_if_needed_Wrapper,	0x00455A00, 0);
 	}
 }

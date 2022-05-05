@@ -882,7 +882,7 @@ LABEL_76:
 			v2->mainOrderState = 1;
 			return 1;
 		}
-		if (helper::isUnitTargetOutOfMaxRange(v2, v15))
+		if (helper::is_unit_target_out_of_max_range(v2, v15))
 		{
 			if (v2->pAI)
 			{

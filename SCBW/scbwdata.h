@@ -121,9 +121,9 @@ SCBW_DATA(const char*, StringEmpty, 0x00501B7D);
 struct UnitsSel {
 	Unit* unit[SELECTION_ARRAY_LENGTH];
 };
-SCBW_DATA(const UnitsSel*, clientSelectionGroup, 0x00597208);
+SCBW_DATA(UnitsSel*, clientSelectionGroup, 0x00597208);
 SCBW_DATA(Unit*, clientSelectionGroupEnd, 0x00597238);
-SCBW_DATA(const u8*, clientSelectionCount, 0x0059723D);
+SCBW_DATA(u8*, clientSelectionCount, 0x0059723D);
 
 /// Screen position relative to the map
 SCBW_DATA(s32*, screenX, 0x00628448);
@@ -528,6 +528,12 @@ SCBW_DATA(s8*,		unkSoundBoolCore,				0x006D1264);
 // For get_standard_attack_target
 SCBW_DATA(u32*,		min_range,					0x006955B8); // sizeof 10
 SCBW_DATA(s32*,		max_range_in_px,			0x006957A4);
+
+// For show_right_click_error_if_needed
+SCBW_DATA(u32*,		use_quiet_sounds,			0x0064086C);
+SCBW_DATA(char*,	draw_out_text_left,			0x00641598);
+SCBW_DATA(char*,	text_bytes,					0x00641674); // sizeof 13
+SCBW_DATA(s32*,		unit_stat_update_timer,		0x00640B54);
 
 //////////////////////////////////////////////////////////////// @}
 

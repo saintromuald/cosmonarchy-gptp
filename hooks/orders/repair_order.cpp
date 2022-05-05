@@ -455,4 +455,192 @@ namespace hooks
 		}
 		return result;
 	}
+
+	// Hooked to remove right-click error message on harvesting from geysers. -Pr0nogo
+	s32 show_right_click_error_if_needed(Unit* target) // 00455A00
+	{
+		s32 sfx_id = -1;
+		s32 text_id = -1;
+		Unit** selected_units = &clientSelectionGroup->unit[11];
+		Unit** selected_units_2 = &clientSelectionGroup->unit[11];
+		do
+		{
+			Unit* unit = *selected_units;
+			if (*selected_units)
+			{
+				char error_case = 0;
+				u16 unit_id = unit->id;
+				if (unit_id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
+				{
+					error_case = 3;
+				}
+				else
+				{
+					char right_click_order = units_dat::RightClickAction[unit_id];
+					if (!right_click_order)
+					{
+						if (unit->status & UnitStatus::GroundedBuilding)
+						{
+							if (helper::unit_is_factory(unit))
+							{
+								right_click_order = 2;
+							}
+						}
+					}
+					error_case = right_click_order;
+				}
+				if (unit->status & UnitStatus::IsHallucination)
+				{
+					if (error_case == 4 || error_case == 5)
+					{
+						error_case = 1;
+					}
+				}
+
+				switch (error_case)
+				{
+				case 0:
+					break;
+				case 1:
+					goto LABEL_21;
+				case 3:
+					if (!target)
+					{
+						break;
+					}
+					if (target->id >= 0xC2u && target->id <= 0xC7u)
+					{
+						break;
+					}
+					if (units_dat::BaseProperty[target->id] & UnitProperty::NeutralAccessories)
+					{
+						break;
+					}
+
+					if (helper::unit_can_attack_target(target, unit, 1))
+					{
+						if (helper::is_unit_target_out_of_max_range(unit, target))
+						{
+							text_id = 888;
+						}
+						else
+						{
+							if (!helper::is_unit_target_inside_min_range(unit, target))
+							{
+								return 1;
+							}
+							text_id = 889;
+						}
+					}
+					else
+					{
+						text_id = 879;
+					}
+					goto LABEL_38;
+				case 4:
+				case 5:
+					if (!target)
+					{
+						return 1;
+					}
+					if (units_dat::BaseProperty[target->id] & UnitProperty::NeutralAccessories)
+					{
+						return 1;
+					}
+					if (target->id == UnitId::ResourceVespeneGeyser)
+					{
+						sfx_id = unit->getRace() + 1;
+						text_id = unit->getRace()  + 893;
+					}
+					else
+					{
+					LABEL_21:
+						if (!target)
+						{
+							return 1;
+						}
+						if (!helper::is_unit_enemy(*activePortraitUnit, target))
+						{
+							return 1;
+						}
+						if (units_dat::BaseProperty[target->id] & UnitProperty::NeutralAccessories)
+						{
+							return 1;
+						}
+						if (helper::unit_can_attack_target(target, unit, 1))
+						{
+							return 1;
+						}
+						text_id = 879;
+					LABEL_38:
+						sfx_id = unit->getRace() + 138;
+					}
+					break;
+				default:
+					return 1;
+				}
+			}
+			selected_units = selected_units_2 - 1;
+			--selected_units_2;
+		} while (selected_units_2 >= clientSelectionGroup->unit);
+		if (sfx_id != -1)
+		{
+			if (sfx_id)
+			{
+				if (optionsList->sfx)
+				{
+					s32 sfx_volume = sfx_dat::Volume[sfx_id];
+					u32 max_volume = 99;
+					if (sfx_volume >= 99)
+					{
+						if (sfx_volume >= 0)
+						{
+							if (sfx_volume >= 99)
+							{
+								max_volume = sfx_dat::Volume[sfx_id];
+							}
+						}
+						else
+						{
+							max_volume = 0;
+						}
+					}
+					if (*use_quiet_sounds)
+					{
+						max_volume /= 5;
+					}
+					if (max_volume > 10)
+					{
+						helper::play_transmission_from_location(sfx_id, max_volume, 0, 0);
+					}
+				}
+			}
+		}
+		if (text_id != -1)
+		{
+			u32 text_id_zeroed = text_id - 1;
+			if (text_id)
+			{
+				const char* text_string = "";
+				if (text_id_zeroed >= *statTxtTbl)
+				{
+					goto LABEL_58;
+				}
+				text_string = (char*)*statTxtTbl + (*statTxtTbl)[text_id_zeroed + 1];
+				if (text_string)
+				{
+				LABEL_58:
+					if (*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+					{
+						strncpy(draw_out_text_left, text_string, 0xDAu);
+						text_bytes[12] = 4;
+						*unit_stat_update_timer = GetTickCount() + 7000;
+						helper::update_text_display(12);
+					}
+					return 0;
+				}
+			}
+		}
+		return 0;
+	}
 }
