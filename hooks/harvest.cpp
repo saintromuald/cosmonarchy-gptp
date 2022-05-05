@@ -196,7 +196,8 @@ namespace hooks
 					{
 						if (!node || node->id != UnitId::ResourceVespeneGeyser) {
 							helper::turnUnit(unit, worker_direction);
-							helper::move_unit(unit, pos.x, pos.y);
+							// Disable teleportation (worker will appear at the position it entered)
+							//helper::move_unit(unit, pos.x, pos.y);
 							helper::show_and_enable_unit(unit);
 						}
 						if (node)
@@ -215,6 +216,7 @@ namespace hooks
 						}
 						else if (unit->orderQueueHead->orderId == OrderId::Harvest4)
 						{
+							// Fix Harvest4 order freeze during Vespene Geyser mining
 							// May cause issues if this is actually used for something important.
 							// By the time units have Harvest4 when harvesting from geysers, they no longer have a resource target. We could check for resource link instead...
 							unit->orderQueueHead->orderId = resource_return_order;
