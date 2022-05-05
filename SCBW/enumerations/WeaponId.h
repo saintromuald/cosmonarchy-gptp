@@ -238,6 +238,6 @@ namespace WeaponId {
 		QuaziliskAcridBarbs					= 102,	// Quazilisk weapon
 		AlmaksaliskPiercingSpines			= 110,	// Almaksalisk weapon
 		KalkaliskViscousAcid				= 117,	// Kalkalisk weapon
-		AkistrokorEnthrallingAssault		= 127,	// Akistrokor ability targeting
+		AkistrokorBlissfulEmbrace			= 127,	// Akistrokor ability targeting
 	};
 }

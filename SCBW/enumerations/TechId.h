@@ -25,12 +25,12 @@ namespace TechId {
 
 	// Protoss
 		StarSovereignTheGriefOfAllGods	= 29, // Feedback
-		SovrolethConjoiningRoot			= 33, // Unused Tech 33
+	//	SovrolethConjoiningRoot			= 33, // Unused Tech 33
 		DemiurgeGodsMadeFlesh			= 42, // Unused Tech 42
 
 	// Zerg
 		MatralethEnsnaringBrood			= 13, // Spawn Broodlings
-		AkistrokorEnthrallingAssault	= 35, // Unused Tech 35
+		AkistrokorBlissfulEmbrace		= 35, // Unused Tech 35
 
 	// techdata.dat is not yet extended
 	//	ChasmalColonySwitch				= 47,

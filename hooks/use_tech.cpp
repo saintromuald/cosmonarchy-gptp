@@ -254,8 +254,7 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::PaladinSkyfall, 0, 0);
 			} break;
-			case TechId::AkistrokorEnthrallingAssault:
-			case TechId::SovrolethConjoiningRoot:
+			case TechId::AkistrokorBlissfulEmbrace:
 			{
 				helper::issueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
 			} break;

@@ -523,10 +523,6 @@ namespace hooks
 					{
 						break;
 					}
-					if (target->id >= 0xC2u && target->id <= 0xC7u)
-					{
-						break;
-					}
 					if (units_dat::BaseProperty[target->id] & UnitProperty::NeutralAccessories)
 					{
 						break;

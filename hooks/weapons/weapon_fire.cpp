@@ -429,9 +429,9 @@ namespace hooks
 			scbw::doDeconstructionDamage(unit, weaponId);
 		}
 
-		// Akistrokor - Enthralling Assault ability
-		// Sovroleth - Conjoining Root
-		if (weaponId == WeaponId::AkistrokorEnthrallingAssault && unit->orderTarget.unit != nullptr)
+		// Akistrokor - Blissful Embrace ability
+		// TODO: Overhaul ability, remove possible Sovroleth remnants
+		if (weaponId == WeaponId::AkistrokorBlissfulEmbrace && unit->orderTarget.unit != nullptr)
 		{
 			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
 			if (targetExt->units[UnitAttachedTarget])
