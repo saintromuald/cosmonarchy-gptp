@@ -141,7 +141,7 @@ namespace helper
 
 	// For AI_AddUnitAI
 	BuildingAi* AI_CreateBuildingAi(BuildingAiArray** buildingAI);
-	void order_computer(Unit* unit, u8 orderId);
+	void issue_order_targeting_nothing(Unit* unit, u8 orderId);
 	Unit* setSecondaryOrder(Unit* result, char orderId);
 	void AI_MakeGuard(s32 playerId, Unit* unit);
 	bool unit_is_active_resource_depot(Unit* unit);
@@ -1205,4 +1205,10 @@ namespace helper
 	u32 AI_get_vespene_type(Unit* node, s32 player_id);													// 004326E0
 	void AI_resource_need_split(u8* out_gas_percentage, u32 player, u8* out_mineral_percentage);		// 004475B0
 	u32 AI_add_town_spending_request(u32 player, u32 priority, u32 unit_id, void* param);				// 00448400
+
+	u32 get_closest_base_from_startloc(u32 player_id, u32 x, u32 y);									// 00443A20
+	Unit* get_resource_area_gas(u32 resarea, Unit** gas_1, Unit** gas_2, Unit** gas_3);					// 00444460
+	Unit* get_resource_area_mineral(u32 resarea);														// 004445E0
+	u32 get_optimal_mineral_workers(u32 resarea, u32 player);											// 004439B0
+	void AI_get_old_peons(AiTown* town, u32 count);														// 004355C0
 }

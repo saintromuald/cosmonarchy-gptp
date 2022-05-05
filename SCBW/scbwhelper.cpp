@@ -1292,7 +1292,7 @@ namespace helper
 		return result;
 	}
 
-	void order_computer(Unit* unit, u8 orderId)
+	void issue_order_targeting_nothing(Unit* unit, u8 orderId)
 	{
 		const u32 Func_orderComputerClear = 0x00475310;
 		__asm {
@@ -11270,5 +11270,74 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	u32 get_closest_base_from_startloc(u32 player_id, u32 x, u32 y) {
+		static u32 result;
+		const u32 func_address = 0x00443A20;
+		__asm {
+			PUSHAD
+			PUSH y
+			PUSH x
+			MOV EAX, player_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* get_resource_area_gas(u32 resarea, Unit** gas_1, Unit** gas_2, Unit** gas_3) {
+		static Unit* result;
+		const u32 func_address = 0x00444460;
+		__asm {
+			PUSHAD
+			PUSH gas_3
+			PUSH gas_2
+			PUSH gas_1
+			PUSH resarea
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* get_resource_area_mineral(u32 resarea) {
+		static Unit* result;
+		const u32 func_address = 0x004445E0;
+		__asm {
+			PUSHAD
+			MOV EDX, resarea
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 get_optimal_mineral_workers(u32 resarea, u32 player) {
+		static u32 result;
+		const u32 func_address = 0x004439B0;
+		__asm {
+			PUSHAD
+			MOV ECX, player
+			MOV EAX, resarea
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void AI_get_old_peons(AiTown* town, u32 count) {
+		const u32 func_address = 0x004355C0;
+		__asm {
+			PUSHAD
+			PUSH count
+			PUSH town
+			CALL func_address
+			POPAD
+		}
 	}
 }

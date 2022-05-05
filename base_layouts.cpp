@@ -413,7 +413,7 @@ void tick_base_layouts() {
 	// Init
 	for (u32 i = 0; i < AiTownLimit; ++i) {
 		AiTown* town = &AiTownArray[i];
-		if (town->inited && !town->resareaNotSet && !active_base_layouts[town->resarea]) {
+		if (town->inited && !town->resource_units_not_set && !active_base_layouts[town->resarea]) {
 			BaseLayouts* base_layouts = &resarea_base_layouts[town->player][town->resarea];
 
 			BaseLayouts* mainarea_layouts = &mainarea_base_layouts[town->player];

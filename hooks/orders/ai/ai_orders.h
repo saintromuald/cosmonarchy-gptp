@@ -24,6 +24,7 @@ namespace hooks
 	s32 attack_recent_attacker(Unit* unit);																				// 004770E0
 	u32 AI_get_vespene_type(Unit* unit, u32 index);																		// 004326E0
 	void AI_worker_controller(Unit* worker);																			// 00435210
+	char AI_reassign_worker_resources(AiTown* town);																	// 00435900
 
 	void injectAIOrdersHooks();
 }

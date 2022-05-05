@@ -11,17 +11,17 @@ namespace hooks
 	{
 		s32 iterate = 0;
 		constexpr s32 BuildCountFlag = 0xF8;
-		TownReq* townUnits;
+		TownReq* town_units;
 		if (playerTable[(u8)town->player].type == PlayerType::Computer)
 		{
-			townUnits = town->townUnits;
+			town_units = town->town_units;
 			bool setNeed = false;
-			if (town->townUnits[0].flags_and_count & BuildCountFlag) // if build
+			if (town->town_units[0].flags_and_count & BuildCountFlag) // if build
 			{
 				for (s32 i = 0; i < 100; i++)
 				{
-					++townUnits;
-					if (!(townUnits->flags_and_count & BuildCountFlag)) // if not build
+					++town_units;
+					if (!(town_units->flags_and_count & BuildCountFlag)) // if not build
 					{
 						setNeed = true;
 						iterate = i;
@@ -35,9 +35,9 @@ namespace hooks
 			}
 			if (setNeed)
 			{
-				town->townUnits[iterate].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
-				town->townUnits[iterate].id = id;
-				town->townUnits[iterate].priority = priority;
+				town->town_units[iterate].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
+				town->town_units[iterate].id = id;
+				town->town_units[iterate].priority = priority;
 				// build orders have 0xf8 flag, tech has 0x4, upgrade has 0x2, if needed (player_need) has 0x1
 			}
 		}
@@ -623,7 +623,7 @@ LABEL_36:
 		unitId = unitCopy->id;
 		if (unitId == UnitId::ZergLarva || unitId == UnitId::ZergMutalisk || unitId == UnitId::ZergHydralisk)
 		{
-			helper::order_computer(unitCopy, OrderId::Morph1);
+			helper::issue_order_targeting_nothing(unitCopy, OrderId::Morph1);
 			return 1;
 		}
 		else
@@ -840,8 +840,8 @@ LABEL_36:
 					return 0;
 				}
 
-				u8 worker_count = town->workerCount;
-				if (worker_count < town->workerLimit && worker_count < 0xFu)
+				u8 worker_count = town->worker_count;
+				if (worker_count < town->worker_limit && worker_count < 0xFu)
 				{
 					return worker_count;
 				}

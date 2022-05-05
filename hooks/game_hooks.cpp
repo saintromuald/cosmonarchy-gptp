@@ -1283,7 +1283,7 @@ namespace hooks
 				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, courtesy of DarkenedFantasies.
 				/*
 				if (playerTable[unit->playerId].type == PlayerType::Computer && unit->mainOrderId == OrderId::WatchTarget) {
-					helper::order_computer(unit, OrderId::ComputerAI);
+					helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 				}
 				*/
 			} break;

@@ -117,10 +117,10 @@ namespace hooks
 					AiTown* newUnitTown = newAI->town;
 					if (newUnitTown && newAI->type == AiType::Building) // type check is new
 					{
-						helper::deleteBuildingAI((BuildingAi*)newAI, &newUnitTown->freeBuildings); // moved within nullcheck for sanity
-						if (newUnit == newUnitTown->buildingSCV)
+						helper::deleteBuildingAI((BuildingAi*)newAI, &newUnitTown->free_buildings); // moved within nullcheck for sanity
+						if (newUnit == newUnitTown->building_SCV)
 						{
-							newUnitTown->buildingSCV = nullptr;
+							newUnitTown->building_SCV = nullptr;
 						}
 						if (newUnit == newUnitTown->main_building)
 						{
@@ -164,12 +164,12 @@ namespace hooks
 						if (newUnitAi)
 						{
 							AiTown* newUnitTown = newUnitAi->town;
-							helper::deleteBuildingAI(newUnitAi, &newUnitTown->freeBuildings);
+							helper::deleteBuildingAI(newUnitAi, &newUnitTown->free_buildings);
 							if (newUnitTown)
 							{
-								if (newUnit == newUnitTown->buildingSCV)
+								if (newUnit == newUnitTown->building_SCV)
 								{
-									newUnitTown->buildingSCV = 0;
+									newUnitTown->building_SCV = 0;
 								}
 								if (newUnit == newUnitTown->main_building)
 								{
@@ -224,13 +224,13 @@ namespace hooks
 		void* result = 0;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
-			if (town->freeWorkers) {
-				WorkerAi* ai = town->freeWorkers->first_free_worker;
+			if (town->free_workers) {
+				WorkerAi* ai = town->free_workers->first_free_worker;
 				if (ai)
 				{
 					result = ai;
 					WorkerAi* worker_prev = ai->link.prev;
-					town->freeWorkers->first_free_worker = ai->link.prev;
+					town->free_workers->first_free_worker = ai->link.prev;
 					if (worker_prev) {
 						worker_prev->link.next = 0;
 					}
@@ -250,15 +250,15 @@ namespace hooks
 					ai->reassign_count = 0;
 					unit->worker.targetResource.unit = 0;
 					unit->pAI = ai;
-					++town->workerCount;
+					++town->worker_count;
 
 					if (!town->inited)
 					{
 						town->inited = 1;
 						town->mineral = 0;
-						town->gasBuildings[0] = 0;
-						town->gasBuildings[1] = 0;
-						town->gasBuildings[2] = 0;
+						town->gas_buildings[0] = 0;
+						town->gas_buildings[1] = 0;
+						town->gas_buildings[2] = 0;
 
 						unit->orderTo(OrderId::Move, town->position.x, town->position.y);
 					}
@@ -268,7 +268,7 @@ namespace hooks
 		else if ((units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser) ||
 			unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth)
 		{
-			BuildingAi* ai = helper::AI_CreateBuildingAi(&town->freeBuildings);
+			BuildingAi* ai = helper::AI_CreateBuildingAi(&town->free_buildings);
 			if (ai) {
 				result = ai;
 				ai->type = 3;
@@ -309,9 +309,9 @@ namespace hooks
 				{
 					town->inited = 1;
 					town->mineral = 0;
-					town->gasBuildings[0] = 0;
-					town->gasBuildings[1] = 0;
-					town->gasBuildings[2] = 0;
+					town->gas_buildings[0] = 0;
+					town->gas_buildings[1] = 0;
+					town->gas_buildings[2] = 0;
 				}
 
 				u32 town_hall_id = UnitId::ZergHatchery;
@@ -336,21 +336,21 @@ namespace hooks
 					u32 refinery_id = helper::getPlayerDefaultRefineryUnitType(unit->playerId);
 					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneGeyser)
 					{
-						if (!town->gasBuildings[0])
+						if (!town->gas_buildings[0])
 						{
-							town->gasBuildings[0] = unit;
+							town->gas_buildings[0] = unit;
 						}
-						else if (!town->gasBuildings[1])
+						else if (!town->gas_buildings[1])
 						{
-							town->gasBuildings[1] = unit;
+							town->gas_buildings[1] = unit;
 						}
-						else if (!town->gasBuildings[2])
+						else if (!town->gas_buildings[2])
 						{
-							town->gasBuildings[2] = unit;
+							town->gas_buildings[2] = unit;
 						}
 						if (town->resarea)
 						{
-							town->resareaNotSet = 1;
+							town->resource_units_not_set = 1;
 						}
 					}
 				}
@@ -473,12 +473,12 @@ namespace hooks
 					if (removeBuilding)
 					{
 						removeBuildingTown = removeBuilding->town;
-						helper::deleteBuildingAI(removeBuilding, &removeBuildingTown->freeBuildings);
+						helper::deleteBuildingAI(removeBuilding, &removeBuildingTown->free_buildings);
 						if (removeBuildingTown)
 						{
-							if (result == removeBuildingTown->buildingSCV)
+							if (result == removeBuildingTown->building_SCV)
 							{
-								removeBuildingTown->buildingSCV = 0;
+								removeBuildingTown->building_SCV = 0;
 							}
 							if (result == removeBuildingTown->main_building)
 							{
@@ -644,7 +644,7 @@ namespace hooks
 					town = buildingAIVar->town;
 					if (town)
 					{
-						helper::deleteBuildingAI(buildingAIVar, &town->freeBuildings);
+						helper::deleteBuildingAI(buildingAIVar, &town->free_buildings);
 					}
 				}
 				else if (unitAIVar->type == AiType::Worker && baseProperty & UnitProperty::Worker)
@@ -653,8 +653,8 @@ namespace hooks
 					town = workerAIVar->town;
 					if (town)
 					{
-						helper::deleteWorkerAI(workerAIVar, &town->freeWorkers);
-						town->workerCount -= 1;
+						helper::deleteWorkerAI(workerAIVar, &town->free_workers);
+						town->worker_count -= 1;
 					}
 				}
 				else
@@ -665,9 +665,9 @@ namespace hooks
 
 			if (town)
 			{
-				if (unit == town->buildingSCV)
+				if (unit == town->building_SCV)
 				{
-					town->buildingSCV = nullptr;
+					town->building_SCV = nullptr;
 				}
 				if (unit == town->main_building)
 				{
@@ -717,12 +717,12 @@ namespace hooks
 					{
 						BuildingAi* newBuildingAi = (BuildingAi*)newUnit->pAI;
 						AiTown* newUnitTown = newBuildingAi->town;
-						deleteBuildingAI(newBuildingAi, newUnitTown->freeBuildings);
+						deleteBuildingAI(newBuildingAi, newUnitTown->free_buildings);
 						if (newUnitTown)
 						{
-							if (newUnit == newUnitTown->buildingSCV)
+							if (newUnit == newUnitTown->building_SCV)
 							{
-								newUnitTown->buildingSCV = nullptr;
+								newUnitTown->building_SCV = nullptr;
 							}
 							if (newUnit == newUnitTown->main_building)
 							{
@@ -792,7 +792,7 @@ namespace hooks
 	{
 		if (unit->id == UnitId::ZergLakizilisk && !(unit->status & UnitStatus::Burrowed) && unit->mainOrderId != OrderId::Burrow)
 		{
-			helper::order_computer(unit, OrderId::Burrow);
+			helper::issue_order_targeting_nothing(unit, OrderId::Burrow);
 		}
 	}
 	

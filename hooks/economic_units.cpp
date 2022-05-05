@@ -180,7 +180,7 @@ namespace hooks
 	// This was needed since first free worker is sometimes null.
 	bool HasFreeWorker(AiTown* town, u8 raceId)
 	{
-		WorkerAi* first = town->freeWorkers->first_free_worker;
+		WorkerAi* first = town->free_workers->first_free_worker;
 		if (first)
 		{
 			if (IsValidWorker(*first, raceId))
@@ -188,7 +188,7 @@ namespace hooks
 				return true;
 			}
 		}
-		for (const WorkerAi& worker : town->freeWorkers->worker_ais)
+		for (const WorkerAi& worker : town->free_workers->worker_ais)
 		{
 			if (IsValidWorker(worker, raceId)) return true;
 		}
