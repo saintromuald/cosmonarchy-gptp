@@ -376,7 +376,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) get_ai_refinery_Wrapper() { // 432B90
+	void __declspec(naked) get_ai_refinery_Wrapper() { // 00432B90
 		static Unit* result;
 		static AiTown* town;
 		static u32 gas_state;
@@ -437,6 +437,31 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) AI_auto_harvest_Wrapper() { // 00433B90
+		static Unit* mineral;
+		static Unit* worker;
+		static Unit* gas;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV gas, EAX
+			POP EAX
+			MOV worker, ECX
+			MOV mineral, EAX
+			PUSHAD
+
+		}
+		hooks::AI_auto_harvest(mineral, worker, gas);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 }
 
 namespace hooks
@@ -467,6 +492,7 @@ namespace hooks
 		jmpPatch(get_ai_refinery_Wrapper,					0x00432B90, 0);
 		jmpPatch(AI_worker_controller_Wrapper,				0x00435210, 0);
 		jmpPatch(AI_reassign_worker_resources_Wrapper,		0x00435900, 1);
+		jmpPatch(AI_auto_harvest_Wrapper,					0x00433B90, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

@@ -219,18 +219,18 @@ namespace helper
 	bool unitCanInfest(Unit* unit);																			// 00402750
 	void AI_AttackUnit(Unit* unit);																			// 0043FFD0
 	Unit* findBestAttackTarget(Unit* unit);																	// 00443080
-	bool Ai_TryReturnHome(Unit* unit, u8 unknownByteValue);												// 00462EA0
+	bool Ai_TryReturnHome(Unit* unit, u8 unknownByteValue);													// 00462EA0
 	void function_00465780(Unit* unit);																		// 00465780
-	void removeOrderFromUnitQueue(Unit* unit, Order* order);												// 004742D0
+	Order* remove_order_from_unit_queue(Order* order, Unit* unit);											// 004742D0
 	void prependOrderTargetingUnit(Unit* unit, Unit* target, u8 orderId);									// 00474A70
 	bool isTargetWithinMinMovementRange(Unit* unit, Unit* target, u32 range);								// 004763D0
 	bool function_00476610(Unit* unit, s32 x, s32 y);														// 00476610
 	bool isUnitInWeaponRange(Unit* unit, Unit* target);														// 00476870
 	void getWeaponBeginIscript(Unit* unit, IscriptAnimation::Enum anim);									// 00476ED0
-	void PickNewAttackTargetIfNeeded(Unit* unit);																		// 00477510
+	void PickNewAttackTargetIfNeeded(Unit* unit);															// 00477510
 	void function_00477820(Unit* unit, u8 orderId);															// 00477820
 	bool function_00478370(Unit* unit, u8 orderId);															// 00478370
-	bool Order_AttackUnit_Main(Unit* unit);																		// 00478540
+	bool Order_AttackUnit_Main(Unit* unit);																	// 00478540
 	bool isUnitCritter(Unit* unit);																			// 0047B450
 	void moveToCollide(Unit* unit, Unit* target);														    // 00495400
 
@@ -275,7 +275,7 @@ namespace helper
 	void turnUnit(Unit* a1, char a2);													                    // 00495F20
 	void toIdle(Unit* a1);																                    // 004753A0
 	s32 isUnitMovable(Unit* a1);														                    // 00401DC0
-	void orders_Nothing2(Unit* a1);																			// 00475000
+	void orders_nothing_2(Unit* a1);																			// 00475000
 	bool setMoveTargetXY(s32 a1, s32 a2, Unit* a3);															// 004EB820
 
 	// For burrowGeneric
@@ -463,8 +463,7 @@ namespace helper
 	void AnimCloak(Unit* a1, s32 a2);																									// 0049B5B0
 	void refreshUnitVision(Unit* a1);																									// 004E5F30
 	void initUnitTrapDoodad(Unit* a1);																									// 004E6490
-	Order* removeOrderFromUnitQueue(Order* a1, Unit* a2);																				// 004742D0
-	Order* performAnotherOrder(u8 a1, s32 a2, Unit* a3, s16 a4, Vector32* a5, Unit* a6);												// 004745F0
+	Order* perform_another_order(u8 a1, s32 a2, Unit* a3, s16 a4, Vector32* a5, Unit* a6);												// 004745F0
 	void order(s32 a1, Unit* a2, s8 a3, Vector32* a4, Unit* a5, s32 a6);																// 00474810
 	u32 getUnitStrength(Unit* a1, s32 a2, bool a3);																						// 00431800
 
@@ -1077,7 +1076,7 @@ namespace helper
 	Unit* AI_GetMutaliskForMorph(s32 player);																					// 004375F0
 	s32 AI_GetHighTemplarsForSummon(s32 player, Unit** first, Unit** second);													// 00437410
 	s32 AI_GetDarkTemplarsForSummon(s32 player, Unit** first, Unit** second);													// 00437320
-	void AssignOrderWithTarget(Unit* unit, Unit* target, s32 orderId);															// 004752B0
+	void assign_order_with_target(Unit* unit, Unit* target, s32 orderId);															// 004752B0
 	s16 AI_Reserve(s32 player, s32 someBool);																					// 00447D00
 	AI_Main* AI_PopSpendingRequest(s32 player);																					// 004476D0
 	Unit* AI_GetHydraliskForMorph(s32 player);																					// 00437570

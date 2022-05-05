@@ -24,7 +24,7 @@ namespace hooks
 						!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
 						(unit->orderQueueTail->orderId != OrderId::BuildingLiftoff);
 					if (!bLoopBreak) {
-						helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+						helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 					}
 				}
 				unit->performAnotherOrder(OrderId::BuildingLiftoff, coords.x, coords.y,	nullptr, 0); // 004643D3:
@@ -34,7 +34,7 @@ namespace hooks
 			{
 				while (unit->orderQueueTail != nullptr && unit->orderQueueTail->orderId == OrderId::BuildingLand)
 				{
-					helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+					helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 				}
 				unit->performAnotherOrder(OrderId::BuildingLand, unitTarget.pt.x, unitTarget.pt.y, unitTarget.unit, UnitId::None); // 0046440A:
 			}
@@ -88,7 +88,7 @@ namespace hooks
 							if (unit->orderQueueHead != nullptr &&
 								unit->orderQueueHead->orderId != OrderId::PlaceAddon
 								)
-								helper::removeOrderFromUnitQueue(unit, unit->orderQueueHead);
+								helper::remove_order_from_unit_queue(unit->orderQueueHead, unit);
 
 							unit->orderToIdle();
 
@@ -233,7 +233,7 @@ namespace hooks
 							order = nullptr;
 
 						while (unit->orderQueueTail != order)
-							helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+							helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 
 						//646AF
 						if (unit->orderQueueHead == nullptr)

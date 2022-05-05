@@ -134,7 +134,7 @@ namespace hooks
 						)
 						bNotRemovableOrder = true;
 					else
-						helper::removeOrderFromUnitQueue(outHangarChild, outHangarChild->orderQueueTail);
+						helper::remove_order_from_unit_queue(outHangarChild->orderQueueTail, outHangarChild);
 
 				}
 
@@ -185,7 +185,7 @@ namespace hooks
 					)
 					bNotRemovableOrder = true;
 				else
-					helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+					helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 
 			}
 

@@ -176,11 +176,11 @@ namespace hooks
 					v8 = v7->orderId;
 					if (!orders_dat::CanBeInterrupted[v8] && v8 != -95)
 						break;
-					helper::removeOrderFromUnitQueue(v7, v1);
+					helper::remove_order_from_unit_queue(v7, v1);
 				}
-				helper::performAnotherOrder(OrderId::RescuePassive, 0, v1, 228, 0, 0);
+				helper::perform_another_order(OrderId::RescuePassive, 0, v1, 228, 0, 0);
 			}
-			helper::orders_Nothing2(v1);
+			helper::orders_nothing_2(v1);
 		}
 		else
 		{
@@ -208,7 +208,7 @@ namespace hooks
 			v16 = units_dat::HumanIdleOrder[v13];
 			v1->userActionFlags |= 1u;
 			helper::order(1, v1, v16, 0, 0, 228);
-			helper::orders_Nothing2(v1);
+			helper::orders_nothing_2(v1);
 		}
 		v1->airStrength = helper::getUnitStrength(v1, v13, 0);
 		result = helper::getUnitStrength(v1, v18, 1);

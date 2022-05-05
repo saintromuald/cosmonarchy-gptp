@@ -36,7 +36,7 @@ namespace hooks
 
 					if (!bStopLoop)
 					{
-						helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+						helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 						bStopLoop = (unit->orderQueueTail == nullptr);
 					}
 				}
@@ -262,7 +262,7 @@ namespace hooks
 			}
 			unitVar->userActionFlags |= 1u;
 			helper::order(1, unitVar, idleOrder, 0, 0, 228);
-			helper::orders_Nothing2(unitVar);
+			helper::orders_nothing_2(unitVar);
 			return;
 		}
 		if (!(unitStatus & 0x40) && !helper::AI_UpdateAttackTarget(unitVar, 0, 0, 1))
@@ -315,7 +315,7 @@ namespace hooks
 			{
 				scbw::print("target not within min range");
 				helper::prependOrderTargetingUnit(unitVar, orderTarget, 0x5Eu);
-				helper::orders_Nothing2(orderTarget);
+				helper::orders_nothing_2(orderTarget);
 				if (helper::Ai_AreOnConnectedRegions(unitVar, orderTarget->sprite->position.x, orderTarget->sprite->position.y))
 				{
 					scbw::print("set waypoint");
@@ -581,7 +581,7 @@ namespace hooks
 							if (orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId]
 								|| unit->orderQueueTail->orderId == OrderId::ComputerAI)
 							{
-								helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+								helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 							}
 							else
 							{

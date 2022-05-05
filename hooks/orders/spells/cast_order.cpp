@@ -77,7 +77,7 @@ namespace hooks
 		s32 result;
 		if (caster->orderQueueHead) {
 			caster->userActionFlags |= 1u;
-			helper::orders_Nothing2(caster);
+			helper::orders_nothing_2(caster);
 			result = 0;
 		} else {
 			if (caster->pAI) {
@@ -404,6 +404,6 @@ namespace hooks
 		}
 		unit->userActionFlags |= 1u;
 		unit->order(id, coordX, coordY, nullptr, UnitId::None, true);
-		helper::orders_Nothing2(unit);
+		helper::orders_nothing_2(unit);
 	}
 }

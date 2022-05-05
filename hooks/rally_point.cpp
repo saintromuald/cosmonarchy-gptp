@@ -187,7 +187,7 @@ namespace hooks
             Order* next = result->next;
             if (result->target.unit == dying)
             {
-                helper::removeOrderFromUnitQueue(result, unit);
+                helper::remove_order_from_unit_queue(result, unit);
             }
             result = next;
         }

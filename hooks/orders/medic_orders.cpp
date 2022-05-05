@@ -121,7 +121,7 @@ namespace hooks
 						}
 						else
 						{
-							helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+							helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 							bEndLoop = (unit->orderQueueTail == nullptr);
 						}
 					}

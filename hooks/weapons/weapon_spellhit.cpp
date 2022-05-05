@@ -811,7 +811,7 @@ LABEL_15:
 						if (v1->orderQueueHead)
 						{
 							v1->userActionFlags |= 1u;
-							helper::orders_Nothing2(v1);
+							helper::orders_nothing_2(v1);
 						}
 						else if (v1->pAI)
 						{

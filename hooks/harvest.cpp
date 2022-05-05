@@ -300,7 +300,7 @@ namespace hooks
 			if (unit->orderQueueHead)
 			{
 				unit->userActionFlags |= 1u;
-				helper::orders_Nothing2(unit);
+				helper::orders_nothing_2(unit);
 			}
 			else if (unit->pAI)
 			{

@@ -26,6 +26,7 @@ namespace hooks
 	Unit* get_ai_refinery(AiTown* town, u32 gas_state, u32 index, bool for_harvesting = false);							// 004326E0
 	void AI_worker_controller(Unit* worker);																			// 00435210
 	char AI_reassign_worker_resources(AiTown* town);																	// 00435900
+	void AI_auto_harvest(Unit* mineral, Unit* worker, Unit* gas);														// 00433B90
 
 	void injectAIOrdersHooks();
 }

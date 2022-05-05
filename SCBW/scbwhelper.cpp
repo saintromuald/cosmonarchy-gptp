@@ -2119,16 +2119,19 @@ namespace helper
 		}
 	}
 
-	void removeOrderFromUnitQueue(Unit* unit, Order* order)
+	Order* remove_order_from_unit_queue(Order* order, Unit* unit)
 	{
+		static Order* result;
 		const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
 			MOV EAX, order
 			CALL Func_removeOrderFromUnitQueue
+			MOV result, EAX
 			POPAD
 		}
+		return result;
 	}
 
 	void prependOrderTargetingUnit(Unit* unit, Unit* target, u8 orderId)
@@ -2790,7 +2793,7 @@ namespace helper
 		return result;
 	}
 
-	void orders_Nothing2(Unit* a1)
+	void orders_nothing_2(Unit* a1)
 	{
 		const u32 Func_orders_Nothing2 = 0x00475000;
 		__asm {
@@ -4238,22 +4241,7 @@ namespace helper
 		}
 	}
 
-	Order* removeOrderFromUnitQueue(Order* a1, Unit* a2)
-	{
-		const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
-		static Order* result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_removeOrderFromUnitQueue
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	Order* performAnotherOrder(u8 a1, s32 a2, Unit* a3, s16 a4, Vector32* a5, Unit* a6)
+	Order* perform_another_order(u8 a1, s32 a2, Unit* a3, s16 a4, Vector32* a5, Unit* a6)
 	{
 		const u32 Func_performAnotherOrder = 0x004745F0;
 		static Order* result;
@@ -10217,7 +10205,7 @@ namespace helper
 		return result;
 	}
 
-	void AssignOrderWithTarget(Unit* unit, Unit* target, s32 orderId)
+	void assign_order_with_target(Unit* unit, Unit* target, s32 orderId)
 	{
 		const u32 Func_AssignOrderWithTarget = 0x004752B0;
 		__asm

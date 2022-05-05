@@ -1527,4 +1527,53 @@ LABEL_21:
 		}
 		return target_resource_type;
 	}
+
+	// Hooked as part of the vespene overhaul. -Pr0nogo
+	void AI_auto_harvest(Unit* mineral, Unit* worker, Unit* gas) // 00433B90
+	{
+		if (worker->resourceType & ResourceType::Minerals)
+		{
+			worker->userActionFlags |= 1u;
+			if (worker->mainOrderId)
+			{
+				while (1)
+				{
+					if (!worker->orderQueueTail)
+					{
+						break;
+					}
+					if (!orders_dat::CanBeInterrupted[worker->orderQueueTail->orderId]
+					&&	worker->orderQueueTail->orderId != OrderId::ReturnMinerals)
+					{
+						break;
+					}
+					helper::remove_order_from_unit_queue(worker->orderQueueTail, worker);
+				}
+				helper::perform_another_order(OrderId::ReturnMinerals, 0, worker, 228, 0, 0);
+			}
+			helper::orders_nothing_2(worker);
+		}
+		else if (worker->resourceType & ResourceType::VespeneGas)
+		{
+			helper::issue_order_targeting_nothing(worker, OrderId::ReturnGas);
+		}
+		else
+		{
+			if (!mineral || mineral->id == UnitId::ResourceVespeneGeyser || !(mineral->status & 1))
+			{
+				mineral = gas;
+			}
+			if (mineral)
+			{
+				if (mineral->id != UnitId::ResourceVespeneGeyser)
+				{
+					if (mineral->status & 1)
+					{
+						helper::assign_order_with_target(mineral, worker, OrderId::Harvest1);
+						mineral->building.resource.resourceBelongsToAI = 1;
+					}
+				}
+			}
+		}
+	}
 }
