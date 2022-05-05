@@ -257,7 +257,7 @@ namespace hooks
 					}
 					else // 00477A94:
 					{
-						helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+						helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 					}
 				}
 				jump_to_77CDA = true;

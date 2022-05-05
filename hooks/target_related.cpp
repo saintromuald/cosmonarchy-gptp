@@ -383,7 +383,7 @@ LABEL_42:
 			if (v1->orderQueueHead)
 			{
 				v1->userActionFlags |= 1u;
-				helper::orders_Nothing2(v1);
+				helper::orders_nothing_2(v1);
 			}
 			else if (v1->pAI)
 			{
@@ -772,7 +772,7 @@ LABEL_23:
 				if (v2->orderQueueHead)
 				{
 					v2->userActionFlags |= 1u;
-					helper::orders_Nothing2(v2);
+					helper::orders_nothing_2(v2);
 					result = 0;
 				}
 				else

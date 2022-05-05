@@ -71,7 +71,7 @@ namespace hooks
 					}
 					else
 					{
-						helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+						helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 					}
 				}
 				unit->performAnotherOrder(OrderId::Unburrow, 0, 0, nullptr, UnitId::None);

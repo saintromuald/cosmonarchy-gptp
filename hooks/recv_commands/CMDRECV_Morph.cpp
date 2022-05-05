@@ -71,7 +71,7 @@ namespace hooks
 							if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
 								current_unit->orderQueueTail->orderId == OrderId::Morph1
 								)
-								helper::removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
+								helper::remove_order_from_unit_queue(current_unit->orderQueueTail, current_unit);
 							else
 								bKeepLooping = false;
 					}

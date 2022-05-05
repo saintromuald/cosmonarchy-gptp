@@ -505,8 +505,8 @@ LABEL_36:
 			case UnitId::ProtossArchon:
 				if (helper::AI_GetHighTemplarsForSummon(player, &unit, &dummy))
 				{
-					helper::AssignOrderWithTarget(dummy, unit, OrderId::WarpingArchon);
-					helper::AssignOrderWithTarget(unit, dummy, OrderId::WarpingArchon);
+					helper::assign_order_with_target(dummy, unit, OrderId::WarpingArchon);
+					helper::assign_order_with_target(unit, dummy, OrderId::WarpingArchon);
 					helper::AI_Reserve(player, 1);
 					helper::AI_PopSpendingRequest(player);
 					return 0;
@@ -514,8 +514,8 @@ LABEL_36:
 			case UnitId::ProtossMindTyrant:
 				if (helper::AI_GetDarkTemplarsForSummon(player, &dummy, &unit))
 				{
-					helper::AssignOrderWithTarget(dummy, unit, OrderId::WarpingDarkArchon);
-					helper::AssignOrderWithTarget(unit, dummy, OrderId::WarpingDarkArchon);
+					helper::assign_order_with_target(dummy, unit, OrderId::WarpingDarkArchon);
+					helper::assign_order_with_target(unit, dummy, OrderId::WarpingDarkArchon);
 					helper::AI_Reserve(player, 1);
 					helper::AI_PopSpendingRequest(player);
 					return 0;

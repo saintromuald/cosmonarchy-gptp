@@ -119,7 +119,7 @@ namespace hooks
 					// original code used the actual function instead of hardcoding
 					while (unitInfested->orderQueueHead != nullptr)
 					{
-						helper::removeOrderFromUnitQueue(unitInfested, unitInfested->orderQueueHead);
+						helper::remove_order_from_unit_queue(unitInfested->orderQueueHead, unitInfested);
 					}
 
 					if (unitInfested->status & UnitStatus::GroundedBuilding)
