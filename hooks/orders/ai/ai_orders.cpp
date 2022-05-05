@@ -1196,10 +1196,9 @@ LABEL_21:
 								{
 									goto exit;
 								}
-								Unit* ai_refinery = town_gas_2;
-								if (ai_refinery)
+								if (town_gas_2)
 								{
-									helper::AI_auto_harvest(ai_refinery, worker, town->mineral);
+									helper::AI_auto_harvest(town_gas_2, worker, town->mineral);
 									return;
 								}
 								goto exit;
@@ -1216,7 +1215,7 @@ LABEL_21:
 							}
 							town_gas_2 = town->gasBuildings[1];
 							u32 type = helper::AI_get_vespene_type(town->gasBuildings[1], town->player);
-							if (town_gas_2 || type == 3) {
+							if (town_gas_2 && type == 3) {
 								++gas_iterator;
 							}
 							if (!town_gas_2 || type != 3 || gas_iterator != 2)
@@ -1231,24 +1230,19 @@ LABEL_21:
 								{
 									goto exit;
 								}
-								Unit* ai_refinery_2 = town_gas_2;
-								if (ai_refinery_2)
+								if (town_gas_2)
 								{
-									helper::AI_auto_harvest(ai_refinery_2, worker, town->mineral);
+									helper::AI_auto_harvest(town_gas_2, worker, town->mineral);
 									return;
 								}
 								goto exit;
 							}
 						}
+						if (town_gas_2)
 						{
-							Unit* ai_refinery = town_gas_2;
-							if (ai_refinery)
-							{
-								helper::AI_auto_harvest(ai_refinery, worker, town->mineral);
-								return;
-							}
+							helper::AI_auto_harvest(town_gas_2, worker, town->mineral);
+							return;
 						}
-
 					exit:
 						Unit* ai_refinery = helper::get_AI_refinery(town, 3, 1);
 						if (!ai_refinery)
