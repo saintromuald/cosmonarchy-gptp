@@ -174,7 +174,7 @@ namespace hooks
 
 				//recalculate position and update effect on
 				//surroundings?
-				helper::function_0046A560(unit);
+				helper::end_collision_tracking(unit);
 
 				//toggle pathing-related stuff to prepare
 				//to no longer use pathing
@@ -187,7 +187,7 @@ namespace hooks
 				//maybe update orders targetting the unit,
 				//set repulse for units in surroundings,and 
 				//some others things?			
-				helper::function_0046A5A0(unit);
+				helper::start_collision_tracking(unit);
 
 				//maybe the landing unit would get excluded from multi-units selection
 				//if that could happen in normal Starcraft gameplay?That may be what
@@ -313,7 +313,7 @@ namespace hooks
 
 			//update globally known position and may
 			//remove repulse tile if no longer needed
-			helper::function_0046A560(unit);
+			helper::end_collision_tracking(unit);
 
 			//disable GroundedBuilding status and
 			//prepare to enable pathing?
@@ -326,7 +326,7 @@ namespace hooks
 			//maybe update orders targetting the unit,
 			//set repulse for units in surroundings,and 
 			//some others things?
-			helper::function_0046A5A0(unit);
+			helper::start_collision_tracking(unit);
 
 			if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
 				unit->sprite->images.tail->flags |= CImage_Flags::DontUpdate;
