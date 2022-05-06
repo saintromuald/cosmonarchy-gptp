@@ -4631,15 +4631,15 @@ namespace helper
 
 	// for ordersStayInRange
 
-	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, s32 a4)
+	void prependOrderTargetingGround(__int8 order_id, __int16 x, __int16 y, Unit* unit)
 	{
 		const u32 Func_prependOrderTargetingGround = 0x00474A20;
 		__asm {
 			PUSHAD
-			PUSH a4
-			MOVZX CX, a3
-			MOVZX DX, a2
-			MOVZX AL, a1
+			PUSH unit
+			MOVZX CX, y
+			MOVZX DX, x
+			MOVZX AL, order_id
 			CALL Func_prependOrderTargetingGround
 			POPAD
 		}

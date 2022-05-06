@@ -510,7 +510,7 @@ namespace helper
 	void unknownOrdersFunc(s32 a1, __int16 a2, __int16 a3);
 
 	// for ordersStayInRange
-	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, s32 a4);
+	void prependOrderTargetingGround(__int8 order_id, __int16 x, __int16 y, Unit* unit);
 	s32 ordersHoldPositionSuicidal(Unit* a1);
 	s32 getDirectionFromPoints(s32 a1, s32 a2, s32 a3, s32 a4);
 	Vector32 setResourceTarget(Unit* a1);

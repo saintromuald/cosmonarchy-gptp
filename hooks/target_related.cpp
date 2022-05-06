@@ -276,7 +276,7 @@ LABEL_22:
 			if (!v3)
 			{
 				if (!(v1->status & 0x8000000) && !v1->pAI)
-					helper::prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, (s32)v1);
+					helper::prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, v1);
 				helper::toIdle(v1);
 				return;
 			}
@@ -792,7 +792,7 @@ LABEL_23:
 			{
 				if ( !v2->pAI )
 				{
-					helper::prependOrderTargetingGround(6u, v11->sprite->position.x, v11->sprite->position.y, (int)v2);
+					helper::prependOrderTargetingGround(6u, v11->sprite->position.x, v11->sprite->position.y, v2);
 				}
 				helper::toIdle(v2);
 				result = 0;
