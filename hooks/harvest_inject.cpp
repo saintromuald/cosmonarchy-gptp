@@ -1,107 +1,126 @@
 #include "harvest.h"
 #include "../hook_tools.h"
 
-void __declspec(naked) transferResourceToWorkerWrapper() // 004696D0
-{
-	static Unit* worker;
-	static Unit* resource;
-	__asm
+namespace {
+	void __declspec(naked) transferResourceToWorkerWrapper() // 004696D0
 	{
-		PUSH EBP
-		MOV EBP, ESP
-		MOV worker, ECX
-		MOV resource, EAX
-		PUSHAD
+		static Unit* worker;
+		static Unit* resource;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			MOV worker, ECX
+			MOV resource, EAX
+			PUSHAD
+		}
+		hooks::transferResourceToWorkerHook(worker, resource);
+		__asm
+		{
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN
+		}
 	}
-	hooks::transferResourceToWorkerHook(worker, resource);
-	__asm
+
+	void __declspec(naked) unit_is_geyser_ex_Wrapper() // 00468930
 	{
-		POPAD
-		MOV ESP, EBP
-		POP EBP
-		RETN
+		static Unit* resource_node;
+		static Unit* worker;
+		static bool result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV worker, EAX
+			POP EAX
+			MOV resource_node, ECX
+			PUSHAD
+		}
+		result = hooks::unit_is_geyser_ex(resource_node, worker);
+		__asm {
+			POPAD
+			MOV AL, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
 	}
-}
 
-void __declspec(naked) unit_is_geyser_ex_Wrapper() // 00468930
-{
-	static Unit* resource_node;
-	static Unit* worker;
-	static bool result;
-	__asm {
-		PUSH EBP
-		MOV EBP, ESP
-		MOV EAX, [EBP + 0x08]
-		MOV worker, EAX
-		POP EAX
-		MOV resource_node, ECX
-		PUSHAD
+	void __declspec(naked) order_enter_exit_gas_Wrapper() // 00469980
+	{
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::order_enter_exit_gas(unit);
+		__asm {
+			POPAD
+			RETN
+		}
 	}
-	result = hooks::unit_is_geyser_ex(resource_node, worker);
-	__asm {
-		POPAD
-		MOV AL, result
-		MOV ESP, EBP
-		POP EBP
-		RETN 0x4
-	}
-}
 
-void __declspec(naked) order_enter_exit_gas_Wrapper() // 00469980
-{
-	static Unit* unit;
-	__asm {
-		MOV unit, EAX
-		PUSHAD
+	void __declspec(naked) CanHarvestGas_Wrapper() { // 00469000
+		static const u32 jmp_address = 0x004690B0;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::CanHarvestGas(unit);
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
 	}
-	hooks::order_enter_exit_gas(unit);
-	__asm {
-		POPAD
-		RETN
-	}
-}
 
-void __declspec(naked) CanHarvestGas_Wrapper() { // 00469000
-	static const u32 jmp_address = 0x004690B0;
-	static Unit* unit;
-	__asm {
-		MOV unit, EAX
-		PUSHAD
+	void __declspec(naked) order_acquire_generic_right_click_harvest_proc_Wrapper() { // 004557C0
+		static u32 result;
+		static Unit* node;
+		static Unit* worker;
+		__asm {
+			MOV node, EDI
+			MOV worker, ESI
+			PUSHAD
+		}
+		result = hooks::order_acquire_generic_right_click_harvest_proc(node, worker);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
 	}
-	hooks::CanHarvestGas(unit);
-	__asm {
-		POPAD
-		JMP jmp_address
-	}
-}
 
-void __declspec(naked) order_acquire_generic_right_click_harvest_proc_Wrapper() { // 004557C0
-	static u32 result;
-	static Unit* node;
-	static Unit* worker;
-	__asm {
-		MOV node, EDI
-		MOV worker, ESI
-		PUSHAD
+	void __declspec(naked) orders_harvest4_Wrapper() { // 00468ED0
+		static Unit* worker;
+		__asm {
+			MOV worker, EAX
+			PUSHAD
+		}
+		hooks::orders_harvest4(worker);
+		__asm {
+			POPAD
+			RETN
+		}
 	}
-	result = hooks::order_acquire_generic_right_click_harvest_proc(node, worker);
-	__asm {
-		POPAD
-		MOV EAX, result
-		RETN
-	}
-}
 
-void __declspec(naked) orders_harvest4_Wrapper() { // 00468ED0
-	static Unit* worker;
-	__asm {
-		MOV worker, EAX
-		PUSHAD
-	}
-	hooks::orders_harvest4(worker);
-	__asm {
-		POPAD
-		RETN
+	void __declspec(naked) begin_harvest_Wrapper() { // 00468C70
+		static s32 result;
+		static Unit* worker;
+		static Unit* node;
+		__asm {
+			MOV node, EDI
+			MOV worker, EAX
+			PUSHAD
+		}
+		result = hooks::begin_harvest(worker, node);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
 	}
 }
 
@@ -115,5 +134,6 @@ namespace hooks
 		jmpPatch(CanHarvestGas_Wrapper,										0x00469000, 0);
 		jmpPatch(order_acquire_generic_right_click_harvest_proc_Wrapper,	0x004557C0, 2);
 		jmpPatch(orders_harvest4_Wrapper,									0x00468ED0, 1);
+		jmpPatch(begin_harvest_Wrapper,										0x00468C70, 4);
 	}
 }

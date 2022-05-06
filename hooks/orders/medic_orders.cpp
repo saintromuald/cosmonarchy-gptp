@@ -238,7 +238,7 @@ namespace hooks
 						if (unit->orderQueueHead == nullptr
 							|| unit->orderQueueHead->orderId != OrderId::MedicHeal2)
 						{
-							helper::orderImmediate(unit, OrderId::MedicHeal2);
+							helper::order_immediate(unit, OrderId::MedicHeal2);
 						}
 					}
 

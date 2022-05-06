@@ -12,6 +12,7 @@ namespace hooks
 	void CanHarvestGas(Unit* unit);													// 00469000
 	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker);	// 004557C0
 	void orders_harvest4(Unit* worker);												// 00468ED0
+	s32 begin_harvest(Unit* worker, Unit* node);									// 00468CAA
 
 	void injectHarvestResource();
 }

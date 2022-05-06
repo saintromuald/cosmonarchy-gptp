@@ -74,7 +74,7 @@ namespace hooks
 				}
 
 				// 0046573E:
-				helper::prependOrderTargetingUnit(unit, target, newOrderId);
+				helper::prepend_order_targeting_unit(unit, target, newOrderId);
 				prepareForNextOrder(unit);
 
 				// restore the "disabled" and "holding position" status if they were lost
@@ -148,7 +148,7 @@ namespace hooks
 					}
 				}
 				// 00465A21:
-				helper::prependOrderTargetingUnit(unit, target, newOrderId);
+				helper::prepend_order_targeting_unit(unit, target, newOrderId);
 				prepareForNextOrder(unit);
 
 				// restore the "disabled" and "holding position" status if they were lost

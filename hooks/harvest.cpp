@@ -377,4 +377,42 @@ namespace hooks
 		}
 		helper::actUnitReturnToIdle(worker);
 	}
+
+	// Hooked as part of the vespene overhaul. -Pr0nogo
+	s32 begin_harvest(Unit* worker, Unit* node) // 00468CAA
+	{
+		if (node->building.resource.gatherQueueCount)
+		{
+			return 0;
+		}
+		node->building.resource.gatherQueueCount = 1;
+		worker->worker.isCarryingSomething = 1;
+		worker->worker.harvestTarget = node;
+
+		u8 harvest_order_id = OrderId::HarvestGas3;
+		if (worker->mainOrderId != OrderId::HarvestGas2)
+		{
+			helper::order_immediate(worker, OrderId::Harvest3);
+			harvest_order_id = OrderId::MiningMinerals;
+		}
+		helper::prepend_order_targeting_unit(node, worker, harvest_order_id);
+
+		if (worker->orderQueueHead)
+		{
+			worker->userActionFlags |= 1u;
+			helper::orders_nothing_2(worker);
+		}
+		else
+		{
+			if (worker->pAI)
+			{
+				helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
+			}
+			else
+			{
+				helper::issue_order_targeting_nothing(worker, units_dat::ReturnToIdleOrder[worker->id]);
+			}
+		}
+		return 1;
+	}
 }

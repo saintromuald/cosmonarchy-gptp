@@ -188,7 +188,7 @@ namespace hooks
 				if (unit->isTargetWithinMinRange(targetUnit, (2 * unit->current_speed2) / 256))
 				{
 					unit->status &= ~UnitStatus::IsNormal; //unset the flag
-					helper::orderImmediate(unit, OrderId::ResetCollision1);
+					helper::order_immediate(unit, OrderId::ResetCollision1);
 				}
 			}
 
@@ -387,7 +387,7 @@ namespace hooks
 				if (unit->isTargetWithinMinRange(targetUnit, (2 * unit->current_speed2) / 256))
 				{
 					unit->status &= ~UnitStatus::IsNormal; //unset the flag
-					helper::orderImmediate(unit, OrderId::ResetCollision1);
+					helper::order_immediate(unit, OrderId::ResetCollision1);
 				}
 			}
 

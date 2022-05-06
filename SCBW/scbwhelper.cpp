@@ -2134,7 +2134,7 @@ namespace helper
 		return result;
 	}
 
-	void prependOrderTargetingUnit(Unit* unit, Unit* target, u8 orderId)
+	void prepend_order_targeting_unit(Unit* unit, Unit* target, u8 orderId)
 	{
 		const u32 Func_prependOrderTargetingUnit = 0x00474A70;
 		__asm {
@@ -4394,7 +4394,7 @@ namespace helper
 		return result;
 	}
 
-	void orderImmediate(Unit* unit, u8 order)
+	void order_immediate(Unit* unit, u8 order)
 	{
 		u32 Func_OrderImmediate = 0x00474B40;
 		__asm {

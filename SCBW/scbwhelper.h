@@ -222,7 +222,7 @@ namespace helper
 	bool Ai_TryReturnHome(Unit* unit, u8 unknownByteValue);													// 00462EA0
 	void function_00465780(Unit* unit);																		// 00465780
 	Order* remove_order_from_unit_queue(Order* order, Unit* unit);											// 004742D0
-	void prependOrderTargetingUnit(Unit* unit, Unit* target, u8 orderId);									// 00474A70
+	void prepend_order_targeting_unit(Unit* unit, Unit* target, u8 orderId);									// 00474A70
 	bool isTargetWithinMinMovementRange(Unit* unit, Unit* target, u32 range);								// 004763D0
 	bool function_00476610(Unit* unit, s32 x, s32 y);														// 00476610
 	bool isUnitInWeaponRange(Unit* unit, Unit* target);														// 00476870
@@ -480,7 +480,7 @@ namespace helper
 	//// merge_units
 	bool advanceRemainingBuildTime(Unit* unit);																							// 00466940
 	u8 function_0046A820(Unit* unit);																									// 0046A820
-	void orderImmediate(Unit* unit, u8 order);																							// 00474B40
+	void order_immediate(Unit* unit, u8 order);																							// 00474B40
 	void playMorphingCompleteSound(Unit* unit);																							// 0048F440
 	void mergeStatusIntoUnit_Sub493180(Unit* unit_dst, Unit* unit_src);																	// 00493180
 	void animDecloak(Unit* unit, u32 soundId);			 																				// 0049B440

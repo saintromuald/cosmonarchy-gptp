@@ -76,7 +76,7 @@ namespace hooks
 					unit->orderQueueHead == nullptr ||
 					unit->orderQueueHead->orderId != OrderId::MedicHeal2
 					) 	//6413D
-					helper::orderImmediate(unit, OrderId::MedicHeal2); //return to idle after heal
+					helper::order_immediate(unit, OrderId::MedicHeal2); //return to idle after heal
 
 			}
 

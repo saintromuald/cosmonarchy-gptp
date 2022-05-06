@@ -15,7 +15,7 @@ namespace hooks
 		if (unitToLoad != nullptr
 			&& scbw::canBeEnteredBy(unit, unitToLoad))
 		{
-			helper::prependOrderTargetingUnit(unit, unitToLoad, OrderId::Pickup2);
+			helper::prepend_order_targeting_unit(unit, unitToLoad, OrderId::Pickup2);
 			prepareForNextOrder(unit);
 		}
 		else if (unit->pAI != nullptr)
@@ -133,7 +133,7 @@ namespace hooks
 								}
 								else
 								{
-									helper::prependOrderTargetingUnit(unit, unitToLoad, OrderId::Pickup1);
+									helper::prepend_order_targeting_unit(unit, unitToLoad, OrderId::Pickup1);
 									prepareForNextOrder(unit);
 								}
 							}
@@ -231,7 +231,7 @@ namespace hooks
 						}
 						if (!bStopAll)
 						{
-							helper::orderImmediate(unit, OrderId::Unload);
+							helper::order_immediate(unit, OrderId::Unload);
 							prepareForNextOrder(unit);
 						}
 					}
@@ -314,7 +314,7 @@ namespace hooks
 			else
 			{
 				scbw::print("target not within min range");
-				helper::prependOrderTargetingUnit(unitVar, orderTarget, 0x5Eu);
+				helper::prepend_order_targeting_unit(unitVar, orderTarget, 0x5Eu);
 				helper::orders_nothing_2(orderTarget);
 				if (helper::Ai_AreOnConnectedRegions(unitVar, orderTarget->sprite->position.x, orderTarget->sprite->position.y))
 				{
@@ -404,7 +404,7 @@ namespace hooks
 						}
 						else
 						{ // 004E7C94
-							helper::prependOrderTargetingUnit(target, unit, OrderId::Pickup2);
+							helper::prepend_order_targeting_unit(target, unit, OrderId::Pickup2);
 							prepareForNextOrder(target);
 							if (helper::Ai_AreOnConnectedRegions(unit, target->sprite->position.x, target->sprite->position.y) != 0)
 							{
@@ -434,7 +434,7 @@ namespace hooks
 			{
 				if (target->status & UnitStatus::IsBuilding)
 				{
-					helper::prependOrderTargetingUnit(target, unit, OrderId::Pickup2);
+					helper::prepend_order_targeting_unit(target, unit, OrderId::Pickup2);
 					prepareForNextOrder(target);
 				}
 				unit->mainOrderState = 1;
