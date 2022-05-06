@@ -342,8 +342,8 @@ namespace helper
 	void disconnectFromAddOn(Unit* unit);																							// 00464930
 	void function_00469EC0(Unit* unit, s32 x, s32 y);																				// 00469EC0
 	void SetBuildingTileFlag(Unit* unit, s32 x, s32 y);																				// 00469F60
-	void function_0046A560(Unit* unit);																								// 0046A560
-	void function_0046A5A0(Unit* unit);																								// 0046A5A0
+	void end_collision_tracking(Unit* unit);																								// 0046A560
+	void start_collision_tracking(Unit* unit);																								// 0046A5A0
 	void force_order_done(Unit* unit);																							// 00475420
 	bool function_0047DF90(Unit* unit);																								// 0047DF90
 	void placebuildingProc();																										// 0048E6E0

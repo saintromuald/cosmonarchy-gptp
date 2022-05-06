@@ -3373,35 +3373,35 @@ namespace helper
 		}
 	}
 
-	void function_0046A560(Unit* unit)
+	void end_collision_tracking(Unit* unit)
 	{
-		const u32 Func_Sub46A560 = 0x0046A560;
+		const u32 Func_end_collision_tracking = 0x0046A560;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub46A560
+			CALL Func_end_collision_tracking
 			POPAD
 		}
 	}
 
-	void function_0046A5A0(Unit* unit)
+	void start_collision_tracking(Unit* unit)
 	{
-		const u32 Func_Sub46A5A0 = 0x0046A5A0;
+		const u32 Func_start_collision_tracking = 0x0046A5A0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub46A5A0
+			CALL Func_start_collision_tracking
 			POPAD
 		}
 	}
 
 	void force_order_done(Unit* unit)
 	{
-		const u32 Func_ActUnitReturnToIdle = 0x00475420;
+		const u32 Func_force_order_done = 0x00475420;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_ActUnitReturnToIdle
+			CALL Func_force_order_done
 			POPAD
 		}
 	}
