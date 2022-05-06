@@ -2,7 +2,7 @@
 
 namespace hooks
 {
-	s32 InitPlacementBoxPos(s32 unused, Point16* placement) // 0048D660
+	s32 init_placement_box_pos(s32 unused, Point16* placement) // 0048D660
 	{
         u16 x = placement->x;
         u16 y = placement->y;
@@ -29,7 +29,7 @@ namespace hooks
         return 1;
 	}
 
-    u8 DrawPlacementBox(Point16 ecx0) // 0048DDC0
+    u8 draw_placement_box(Point16 ecx0) // 0048DDC0
     {
         u8 result;
         Point16 v4;
@@ -71,7 +71,7 @@ namespace hooks
         return result;
     }
 
-    s32 updatePlacementStateForPlacementBox() // 0048DCE0
+    s32 update_placement_state_for_placement_box() // 0048DCE0
     {
         if (*activePortraitUnit == nullptr)
         {
@@ -97,7 +97,7 @@ namespace hooks
 	// Hooked to enable unit mover for human players - Pr0nogo
 
 
-    s32 isTileBlockedBy(Unit** unit_array, Unit* builder, s32 x_tile, s32 y_tile, s8 dont_ignore_reacting, s8 also_invisible) // 00473300
+    s32 is_tile_blocked_by(Unit** unit_array, Unit* builder, s32 x_tile, s32 y_tile, s8 dont_ignore_reacting, s8 also_invisible) // 00473300
     {
         return 0;
         for (Unit** it = unit_array; *it; ++it)
@@ -139,96 +139,4 @@ namespace hooks
         }
         return 0;
     }
-
-    /*
-    s32 updateBuildingPlacementState_Units(s32 y_tile, Unit* builder, s32 x_tile, u8 player, u16 unit_id, s32 size_wh, s32 placement_state_entry, char dont_ignore_reacting, char also_invisible, s32 without_vision) // 00473720
-    {
-        s32* active_tile_handle = &activeTileHandle[x_tile + y_tile * mapTileSize.width];
-        s32 result;
-        if (playerTable[player].type == PlayerType::Human)
-        {
-            result = 1 << player;
-        }
-        else
-        {
-            result = 0;
-        }
-
-        Box16 position = {};
-        position.x = (x_tile * 32) - units_dat::BuildingDimensions[unit_id].x / 2;
-        position.y = (y_tile * 32) - units_dat::BuildingDimensions[unit_id].y / 2;
-        a1 = v14 - units_dat::UnitBounds[unit_id].x;
-        v27 = v13 - units_dat::UnitBounds[unit_id].y;
-        v15 = v13 + units_dat::UnitBounds[unit_id].h;
-        LOWORD(v28) = v14 + units_dat::UnitBounds[unit_id].w;
-        HIWORD(v28) = v15;
-        Unit** units_in_bounds = helper::getAllUnitsInBounds(&a1);
-        v30 = 0;
-        playera = v11;
-        if (SHIWORD(size_wh) > 0)
-        {
-            v16 = size_wh;
-            v17 = 0;
-            v18 = 4 * (mapTileWidth - size_wh);
-            v28 = 4 * (mapTileWidth - size_wh);
-            do
-            {
-                v31 = 0;
-                v19 = v10;
-                if (v16 > 0)
-                {
-                    v20 = 6 * (v17 + 8 * placement_state_entry);
-                    unit_ida = v20;
-                    v21 = 0;
-                    do
-                    {
-                        result_2 = 0;
-                        if (!buildingPlacementState[v20 + v21] && (without_vision || !(v32 & *active_tile_handle)))
-                        {
-                            if (*active_tile_handle & 0x8000000 && doesBuildingBlock(builder, x_tile, y_tile))
-                            {
-                                result_2 = 4;
-                            }
-                            else
-                            {
-                                is_tile_blocked_by_var = isTileBlockedBy(
-                                    units_in_bounds,
-                                    builder,
-                                    v19,
-                                    playera,
-                                    dont_ignore_reacting,
-                                    also_invisible);
-                                if (is_tile_blocked_by_var)
-                                {
-                                    result_2 = is_tile_blocked_by_var;
-                                }
-                            }
-                            if (result_1 <= result_2)
-                            {
-                                result_1 = result_2;
-                            }
-                            v20 = unit_ida;
-                            buildingPlacementState[unit_ida + v21] = result_2;
-                        }
-                        ++active_tile_handle;
-                        v21 = ++v31;
-                        v16 = size_wh;
-                        ++v19;
-                    } while (v31 < size_wh);
-                    v10 = x_tile;
-                    v18 = v28;
-                }
-                active_tile_handle = (active_tile_handle + v18);
-                v17 = v30 + 1;
-                v30 = v17;
-                ++playera;
-                v17 = v17;
-            } while (v17 < SHIWORD(size_wh));
-        }
-        v24 = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
-        result = result_1;
-        tempUnitsListCurrentArrayCount = v24;
-        return result;
-    }
-    */
 }

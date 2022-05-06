@@ -15,7 +15,7 @@ namespace
 			MOV placement, EDX
 			PUSHAD
 		}
-		result = hooks::InitPlacementBoxPos(unused, placement);
+		result = hooks::init_placement_box_pos(unused, placement);
 		__asm
 		{
 			POPAD
@@ -34,7 +34,7 @@ namespace
 			MOV ecx0, ECX
 			PUSHAD
 		}
-		result = hooks::DrawPlacementBox(ecx0);
+		result = hooks::draw_placement_box(ecx0);
 		__asm
 		{
 			POPAD
@@ -50,7 +50,7 @@ namespace
 		{
 			PUSHAD
 		}
-		result = hooks::updatePlacementStateForPlacementBox();
+		result = hooks::update_placement_state_for_placement_box();
 		__asm
 		{
 			POPAD
@@ -134,7 +134,7 @@ namespace
 			MOV unitArray, EAX
 			PUSHAD
 		}
-		result = hooks::isTileBlockedBy(unitArray, builder, x_tile, y_tile, dontIgnoreReacting, alsoInvisible);
+		result = hooks::is_tile_blocked_by(unitArray, builder, x_tile, y_tile, dontIgnoreReacting, alsoInvisible);
 		__asm {
 			POPAD
 			MOV EAX, result

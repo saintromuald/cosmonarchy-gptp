@@ -56,7 +56,7 @@ namespace hooks
 							s32 quartTotalHP = self->getTotalHitPointsPlusShields() / 4;
 							if (self->getCurrentLifeInGame() < quartTotalHP)
 							{
-								helper::AI_CancelStructure(self); // originally unused variable v8
+								helper::AI_cancel_structure(self); // originally unused variable v8
 								return;
 							}
 						}

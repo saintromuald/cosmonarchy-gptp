@@ -148,7 +148,7 @@ namespace helper
 	u32 getPlayerDefaultRefineryUnitType(u32 playerId);
 
 	// for AI_UnitWasHit // some of these should probably be methods in api/etc
-	char AI_CancelStructure(Unit* structure);
+	char AI_cancel_structure(Unit* structure);
 	Unit* AI_GetActualTarget(Unit* attacker, Unit* target);
 	Unit* checkArbiterCloakingRange(Unit* unit, u16 id);
 	void AI_OrderUnitCloaking(Unit* unit);
@@ -213,7 +213,7 @@ namespace helper
 	void AI_FinishRegionAccessibility(char* regionData);
 	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
 		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
-	char AI_CancelStructure(Unit* structure);
+	char AI_cancel_structure(Unit* structure);
 
 	bool unitCantSeeCloakedTarget(Unit* unit, Unit* target);												// 00401D60
 	bool unitCanInfest(Unit* unit);																			// 00402750
@@ -317,10 +317,10 @@ namespace helper
 
 	// For updatePlacementState_Units
 	bool doesBuildingBlock(Unit* unit, s32 xTile, s32 yTile);												// 00473410
-	s32 isTileBlockedBy(Unit** array, Unit* builder, s32 xTile, s32 yTile,									// 00473300
+	s32 is_tile_blocked_by(Unit** array, Unit* builder, s32 xTile, s32 yTile,									// 00473300
 		char bDontIgnoreReacting, char bAlsoInvisible);
 
-	// For updatePlacementStateForPlacementBox
+	// For update_placement_state_for_placement_box
 	s32 canBuildOnTileLocation(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType,				// 00473FB0
 		s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision);
 	

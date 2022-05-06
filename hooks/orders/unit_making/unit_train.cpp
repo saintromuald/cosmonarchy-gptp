@@ -211,7 +211,7 @@ namespace hooks
 							u8 counter = 4;
 							if (unit->currentBuildUnit != nullptr)
 							{
-								helper::AI_CancelStructure(unit->currentBuildUnit);
+								helper::AI_cancel_structure(unit->currentBuildUnit);
 							}
 							else if (!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
 							{
