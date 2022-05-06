@@ -98,17 +98,17 @@ namespace hooks
 			}
 			if (resourceAmount > 0)
 			{
-				if (worker->resourceType & 3)
-				{ // Is carrying a mineral / gas
-				// Identical to function @ 0x004F3900
-				// Remove powerup shadows (mineral chunk shadow, psi emitter shadow, etc.)
+				if (worker->resourceType & ResourceType::Either) // Is carrying a mineral / gas
+				{
+					// Identical to function @ 0x004F3900
+					// Remove powerup shadows (mineral chunk shadow, psi emitter shadow, etc.)
 					worker->sprite->removeOverlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
-					worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2); // Remove powerup graphics
-					worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis); // Remove Uraj / Khalis
-					worker->resourceType = 0;
+					worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2);
+					worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis);
+					worker->resourceType = ResourceType::None;
 				}
 
-				// AI cheat
+				// Resource return multipliers
 				switch (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency))
 				{
 					case 0:
@@ -117,17 +117,17 @@ namespace hooks
 					} break;
 					case 1:
 					{
-						// 125% - Protoss
+						// 125% - Default AI cheat
 						resourceAmount += (resourceAmount / 4);
 					} break;
 					case 2:
 					{
-						// 133% - Terran
+						// 133%
 						resourceAmount += (resourceAmount / 3);
 					} break;
 					case 3:
 					{
-						// 150% - Zerg
+						// 150%
 						resourceAmount += (resourceAmount / 2);
 					} break;
 					case 4:
@@ -183,7 +183,7 @@ namespace hooks
 		Unit* node = unit->orderTarget.unit;
 		if (unit->sprite->flags & SpriteFlags::Hidden || node
 			&& unit_is_geyser_ex(node, unit)
-			&& (unit->resourceType == 0 || unit->resourceType & 3))
+			&& (unit->resourceType == ResourceType::None || unit->resourceType & ResourceType::Either))
 		{
 			helper::set_gathering_flags(unit);
 			if (unit->mainOrderState)
@@ -203,7 +203,7 @@ namespace hooks
 							helper::finished_mining(unit, unit->worker.harvestTarget);
 						}
 						helper::delete_order(unit, OrderId::ResetCollision2);
-						u8 resource_return_order = unit->resourceType & 1 ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
+						u8 resource_return_order = unit->resourceType & ResourceType::VespeneGas ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
 						if (!unit->orderQueueHead)
 						{
 							helper::append_order_targeting_ground(resource_return_order, unit, {});
@@ -271,7 +271,7 @@ namespace hooks
 		if (node
 			&& node->status & UnitStatus::Completed
 			&& valid_structure
-			&& (unit->resourceType == 0 || unit->resourceType & 3))
+			&& (unit->resourceType == ResourceType::None || unit->resourceType & ResourceType::Either))
 		{
 			if (node->id == UnitId::ResourceVespeneGeyser && unit->mainOrderState == 2) {
 				unit->mainOrderState = 0;
@@ -322,7 +322,7 @@ namespace hooks
 			if (unit_is_geyser_ex(node, worker) || node_id == UnitId::ResourceVespeneGeyser)
 			{
 				worker_resource_type = worker->resourceType;
-				if (!worker_resource_type || worker_resource_type & ResourceType::None)
+				if (!worker_resource_type || worker_resource_type & ResourceType::Either)
 				{
 					result = OrderId::HarvestGas1;
 				}
@@ -356,7 +356,7 @@ namespace hooks
 		else
 		{
 			worker_resource_type = worker->resourceType;
-			if (!worker_resource_type || worker_resource_type & ResourceType::None)
+			if (!worker_resource_type || worker_resource_type & ResourceType::Either)
 			{
 				result = OrderId::MoveToMinerals;
 			}

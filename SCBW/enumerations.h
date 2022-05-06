@@ -771,9 +771,10 @@ namespace ResourceType
 {
 	enum Enum
 	{
+		None = 0,
 		VespeneGas = 1,
 		Minerals = 2,
-		None = 3
+		Either = 3 // Guessed from context
 	};
 }
 
