@@ -48,6 +48,7 @@ namespace {
 		}
 	}
 
+
 	void __declspec(naked) order_enter_exit_gas_Wrapper() // 00469980
 	{
 		static Unit* unit;
@@ -134,6 +135,6 @@ namespace hooks
 		jmpPatch(CanHarvestGas_Wrapper,										0x00469000, 0);
 		jmpPatch(order_acquire_generic_right_click_harvest_proc_Wrapper,	0x004557C0, 2);
 		jmpPatch(orders_harvest4_Wrapper,									0x00468ED0, 1);
-		jmpPatch(begin_harvest_Wrapper,										0x00468C70, 4);
+		jmpPatch(begin_harvest_Wrapper, 0x00468C70, 4);
 	}
 }

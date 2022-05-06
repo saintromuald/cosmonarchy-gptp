@@ -774,7 +774,7 @@ namespace ResourceType
 		None = 0,
 		VespeneGas = 1,
 		Minerals = 2,
-		Either = 3 // Guessed from context
+		Either = 3,
 	};
 }
 

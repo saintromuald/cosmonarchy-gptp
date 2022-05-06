@@ -11009,6 +11009,68 @@ namespace helper
 		return result;
 	}
 
+	// Replaces original functionality
+	bool unit_is_factory(Unit* unit) { // 0047B2E0
+		return units_dat::GroupFlags[unit->id].isFactory;
+	}
+
+	bool is_unit_target_inside_min_range(Unit* unit, Unit* target) {
+		static bool result;
+		const u32 func_address = 0x004764D0;
+		__asm {
+			PUSHAD
+			MOV ESI, target
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	bool is_unit_enemy(Unit* unit, Unit* target) {
+		static bool result;
+		const u32 func_address = 0x0047B910;
+		__asm {
+			PUSHAD
+			MOV ECX, target
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	u32 play_transmission_from_location(u32 sfx_id, u32 volume, u32 misc, Unit* unit) {
+		static u32 result;
+		const u32 func_address = 0x004BC270;
+		__asm {
+			PUSHAD
+			PUSH unit
+			PUSH misc
+			PUSH volume
+			PUSH sfx_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 update_text_display(s32 update_case) {
+		static s32 result;
+		const u32 func_address = 0x0048CB80;
+		__asm {
+			PUSHAD
+			MOV EAX, update_case
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 	void set_gathering_flags(Unit* unit) {
 		const u32 func_address = 0x00468AA0;
 		__asm {
@@ -11327,67 +11389,5 @@ namespace helper
 			CALL func_address
 			POPAD
 		}
-	}
-
-	// Replaces original functionality
-	bool unit_is_factory(Unit* unit) { // 0047B2E0
-		return units_dat::GroupFlags[unit->id].isFactory;
-	}
-
-	bool is_unit_target_inside_min_range(Unit* unit, Unit* target) {
-		static bool result;
-		const u32 func_address = 0x004764D0;
-		__asm {
-			PUSHAD
-			MOV ESI, target
-			MOV EAX, unit
-			CALL func_address
-			MOV result, AL
-			POPAD
-		}
-		return result;
-	}
-
-	bool is_unit_enemy(Unit* unit, Unit* target) {
-		static bool result;
-		const u32 func_address = 0x0047B910;
-		__asm {
-			PUSHAD
-			MOV ECX, target
-			MOV EAX, unit
-			CALL func_address
-			MOV result, AL
-			POPAD
-		}
-		return result;
-	}
-
-	u32 play_transmission_from_location(u32 sfx_id, u32 volume, u32 misc, Unit* unit) {
-		static u32 result;
-		const u32 func_address = 0x004BC270;
-		__asm {
-			PUSHAD
-			PUSH unit
-			PUSH misc
-			PUSH volume
-			PUSH sfx_id
-			CALL func_address
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	s32 update_text_display(s32 update_case) {
-		static s32 result;
-		const u32 func_address = 0x0048CB80;
-		__asm {
-			PUSHAD
-			MOV EAX, update_case
-			
-			MOV result, EAX
-			POPAD
-		}
-		return result;
 	}
 }
