@@ -23,7 +23,7 @@ namespace hooks
 					if (unit->orderQueueHead == nullptr)
 						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
 
-					helper::actUnitReturnToIdle(unit);
+					helper::force_order_done(unit);
 					helper::changeUnitButtonSet(unit, unit->id);
 					scbw::refreshConsole();
 

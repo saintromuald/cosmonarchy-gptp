@@ -3395,7 +3395,7 @@ namespace helper
 		}
 	}
 
-	void actUnitReturnToIdle(Unit* unit)
+	void force_order_done(Unit* unit)
 	{
 		const u32 Func_ActUnitReturnToIdle = 0x00475420;
 		__asm {

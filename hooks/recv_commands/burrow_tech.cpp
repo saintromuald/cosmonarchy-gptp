@@ -78,7 +78,7 @@ namespace hooks
 			}
 			// 004E9846
 			prepareForNextOrder(unit);
-			helper::actUnitReturnToIdle(unit);
+			helper::force_order_done(unit);
 		}
 	}
 }

@@ -344,7 +344,7 @@ namespace helper
 	void SetBuildingTileFlag(Unit* unit, s32 x, s32 y);																				// 00469F60
 	void function_0046A560(Unit* unit);																								// 0046A560
 	void function_0046A5A0(Unit* unit);																								// 0046A5A0
-	void actUnitReturnToIdle(Unit* unit);																							// 00475420
+	void force_order_done(Unit* unit);																							// 00475420
 	bool function_0047DF90(Unit* unit);																								// 0047DF90
 	void placebuildingProc();																										// 0048E6E0
 	void playBuildingLandSound(Unit* unit);																							// 0048F5A0
@@ -393,7 +393,7 @@ namespace helper
 	char unkSpreadCreep(s32 a1, s32 a2, s16 a3);																						// 00414680
 
 	//// burrow_tech
-	void actUnitReturnToIdle(Unit* unit);																								// 00475420
+	void force_order_done(Unit* unit);																								// 00475420
 	void TargetedOrderCopy(Unit* unit, u32 unitId, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5);						// 004754F0
 	void function_004E97C0(Unit* unit);																								// 004E97C0
 

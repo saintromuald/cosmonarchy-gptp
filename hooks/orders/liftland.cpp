@@ -257,7 +257,7 @@ namespace hooks
 				//attempt at giving order?
 				helper::function_00463640(unit);
 
-				helper::actUnitReturnToIdle(unit);
+				helper::force_order_done(unit);
 
 				addon = helper::connectAddonCheck(unit);
 				if (addon != nullptr)
@@ -363,7 +363,7 @@ namespace hooks
 			if (unit->orderQueueHead == nullptr)
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
 
-			helper::actUnitReturnToIdle(unit);
+			helper::force_order_done(unit);
 
 		}
 	}

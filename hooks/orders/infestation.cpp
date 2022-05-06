@@ -155,7 +155,7 @@ namespace hooks
 		}
 		if (!bStopFunction)
 		{
-			helper::actUnitReturnToIdle(unitInfested);
+			helper::force_order_done(unitInfested);
 		}
 	}
 
@@ -218,7 +218,7 @@ namespace hooks
 
 		if (bReturnToIdle)
 		{
-			helper::actUnitReturnToIdle(unitInfesting);
+			helper::force_order_done(unitInfesting);
 		}
 		else if (!bStopFunction)
 		{ // EA33F
@@ -247,12 +247,12 @@ namespace hooks
 				//EA39E
 				if (unitInfesting->orderQueueHead != nullptr)
 				{
-					helper::actUnitReturnToIdle(unitInfesting);
+					helper::force_order_done(unitInfesting);
 				}
 				else
 				{
 					unitInfesting->order(units_dat::ReturnToIdleOrder[unitInfesting->id], 0, 0, nullptr, UnitId::None, false);
-					helper::actUnitReturnToIdle(unitInfesting);
+					helper::force_order_done(unitInfesting);
 				}
 			}
 		}

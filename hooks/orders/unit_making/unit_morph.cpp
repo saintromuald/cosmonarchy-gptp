@@ -88,7 +88,7 @@ namespace hooks
 					}
 				}
 			}
-			helper::actUnitReturnToIdle(unit);
+			helper::force_order_done(unit);
 			unit->connectedUnit = nullptr;
 		}
 	}

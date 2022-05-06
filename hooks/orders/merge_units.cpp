@@ -116,7 +116,7 @@ namespace hooks
 
 				helper::playMorphingCompleteSound(unit);
 				unit->order(units_dat::HumanIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
-				helper::actUnitReturnToIdle(unit);
+				helper::force_order_done(unit);
 				if (unit->id == UnitId::ProtossAugur)
 				{
 					unit->status |= UnitStatus::Completed;

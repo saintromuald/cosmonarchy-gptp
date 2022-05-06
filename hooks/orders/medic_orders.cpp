@@ -16,7 +16,7 @@ namespace hooks
 				current_image = current_image->link.next;
 			}
 		}
-		helper::actUnitReturnToIdle(unit);
+		helper::force_order_done(unit);
 	}
 
 	void orders_HealMove(Unit* unit)

@@ -139,7 +139,7 @@ namespace hooks
 					if (!(unit->orderQueueHead->orderId == OrderId::WatchTarget))
 					{
 						unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
-						helper::actUnitReturnToIdle(unit);
+						helper::force_order_done(unit);
 						helper::orderReturnToIdle(unit->subunit);
 						bStopThere = true;
 					}
