@@ -5753,11 +5753,11 @@ namespace helper
 		}
 	}
 
-	void unknownSpecialOrder(Unit* unit, Order* order, u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId)
+	void insert_order_before(Unit* unit, Order* order, u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId)
 	{
-		const u32 Func_unknownSpecialOrder = 0x00474540;
 		static Point16 pos;
 		pos.x = x; pos.y = y;
+		const u32 Func_insert_order_before = 0x00474540;
 		__asm {
 			PUSHAD
 			PUSH target
@@ -5766,7 +5766,7 @@ namespace helper
 			MOVZX EDX, targetUnitId
 			MOV ESI, unit
 			MOV EDI, order
-			CALL Func_unknownSpecialOrder
+			CALL Func_insert_order_before
 			POPAD
 		}
 	}
@@ -11075,11 +11075,11 @@ namespace helper
 		return result;
 	}
 
-	void append_order_targeting_ground(u8 order_id, Unit* unit, Point16 pos) {
+	void order_targeting_nothing(u8 order_id, Unit* unit, u32 stop_previous_orders) {
 		const u32 func_address = 0x00474D60;
 		__asm {
 			PUSHAD
-			PUSH pos
+			PUSH stop_previous_orders
 			MOV CL, order_id
 			MOV EDX, unit
 			CALL func_address

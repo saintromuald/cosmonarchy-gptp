@@ -173,7 +173,7 @@ namespace hooks
 		{
 			if (unit->orderQueueHead != nullptr)
 			{
-				helper::unknownSpecialOrder(unit, unit->orderQueueHead, OrderId::Unload, 0, 0, nullptr, UnitId::None);
+				helper::insert_order_before(unit, unit->orderQueueHead, OrderId::Unload, 0, 0, nullptr, UnitId::None);
 				prepareForNextOrder(unit);
 			}
 			else

@@ -632,7 +632,7 @@ namespace helper
 	//// stopholdpos_orders
 	Unit* MedicHeal_TargetAcquire(Unit* medic);																						// 004422A0
 	u32 doMedicHeal(Unit* unit, Unit* target);																						// 00463C40
-	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2);															// 00476FC0
+	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2);														// 00476FC0
 	b32 function_004770E0(Unit* unit);																								// 004770E0
 
 	//// medic_orders
@@ -646,7 +646,7 @@ namespace helper
 	//// load_unload_orders
 	b32 Ai_AreOnConnectedRegions(Unit* unit, s32 x, s32 y);																			// 00438E70
 	void function_0043DF30(Unit* unit);																								// 0043DF30
-	void unknownSpecialOrder(Unit* unit, Order* order, u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId);					// 00474540
+	void insert_order_before(Unit* unit, Order* order, u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId);					// 00474540
 	void _doOrder(Unit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
 	b32 Ai_UpdateAttackTarget(Unit* unit, u32 unk1, u32 unk2, u32 unk3);															// 00477160
 	Unit* getLoadedUnitFromIndex(Unit* transport, s32 index);																		// 004E6C40
@@ -1157,43 +1157,43 @@ namespace helper
 	// For ai_train_defensive_military
 	u32 ai_region_train_attack_force(AiRegion* region); // 0043E670
 	u32 ai_defend_region(AiRegion* military_region, s32 defense_region, s32 against_air, s32 region_strength); // 0043F100
-	s32 AI_AddBaseUnitSpendingRequest(s32 final_unit_id, s8 player_id, AiRegion* region, u8 priority); // 004484A0
+	s32 AI_AddBaseUnitSpendingRequest(s32 final_unit_id, s8 player_id, AiRegion* region, u8 priority);	// 004484A0
 
 	bool unit_has_power(u32 id, u32 x, u32 y, u32 player);
 
 	void playSoundGlobal(u32 id); // 004BC2C0
-	VectorHead* play_sound_from_file(const char* filename, char* unused); // 004BC490
+	VectorHead* play_sound_from_file(const char* filename, char* unused);								// 004BC490
 
 	b32 sub_43B6D0(u32 a1, Unit* unit, u32 a3);
 	b32 Ai_IsAttackPrepareRegion(AiRegion* region);
 
-	u32 Ai_CountUnitsInTown(AiTown* town, u32 unit_id, bool finished);						// 00433210 Aka AI_WaitBuild
+	u32 Ai_CountUnitsInTown(AiTown* town, u32 unit_id, bool finished);									// 00433210 Aka AI_WaitBuild
 
-	u32 LoadScenarioSingle(char* title, u32 unused, char* error, char* player, u32 speed);	// 004A8590
-	u32 get_ground_height_at_px(s32 y, s32 x);												// 004BD0F0
-	s32 is_AI_target_related(Unit* attacker, Unit* target);									// 004A1140
-	s32 get_threat_level(Unit* attacker, Unit* target);										// 00442160
-	u32 add_unit_to_possible_targets(s32 threat_level, Unit* unit);							// 00440160
+	u32 LoadScenarioSingle(char* title, u32 unused, char* error, char* player, u32 speed);				// 004A8590
+	u32 get_ground_height_at_px(s32 y, s32 x);															// 004BD0F0
+	s32 is_AI_target_related(Unit* attacker, Unit* target);												// 004A1140
+	s32 get_threat_level(Unit* attacker, Unit* target);													// 00442160
+	u32 add_unit_to_possible_targets(s32 threat_level, Unit* unit);										// 00440160
 
-	void enable_doodad_state(Unit* unit);													// 0047BA00
-	void disable_doodad_state(Unit* unit);													// 0047B960
-	char unfreeze_unit(Unit* unit);															// 004F62D0
-	s32 dialog_set_progress_bar_value(BinDlg* dialog, s16 index, s16 value);				// 00457200
+	void enable_doodad_state(Unit* unit);																// 0047BA00
+	void disable_doodad_state(Unit* unit);																// 0047B960
+	char unfreeze_unit(Unit* unit);																		// 004F62D0
+	s32 dialog_set_progress_bar_value(BinDlg* dialog, s16 index, s16 value);							// 00457200
 
-	bool unit_can_attack_target(Unit* target, Unit* attacker, s32 check_duration);			// 00476730
+	bool unit_can_attack_target(Unit* target, Unit* attacker, s32 check_duration);						// 00476730
 
 	// For vespene rework in harvest.cpp
-	void set_gathering_flags(Unit* unit);															// 00468AA0
-	bool get_gas_exit_point(Unit* worker, Unit* resource_node, Point16* position, s32* direction);	// 00468B00
-	void move_unit(Unit* unit, s16 x, s16 y);														// 004EB9F0
-	Unit* finished_mining(Unit* worker, Unit* resource_node);										// 00468E40
-	Order* delete_order(Unit* unit, u8 order_id);													// 00474400
-	void append_order_targeting_ground(u8 order_id, Unit* unit, Point16 pos);						// 00474D60
-	void hide_unit_partial(Unit* unit, s32 hide_unit);												// 00493CA0
+	void set_gathering_flags(Unit* unit);																// 00468AA0
+	bool get_gas_exit_point(Unit* worker, Unit* resource_node, Point16* position, s32* direction);		// 00468B00
+	void move_unit(Unit* unit, s16 x, s16 y);															// 004EB9F0
+	Unit* finished_mining(Unit* worker, Unit* resource_node);											// 00468E40
+	Order* delete_order(Unit* unit, u8 order_id);														// 00474400
+	void order_targeting_nothing(u8 order_id, Unit* unit, u32 stop_previous_orders);					// 00474D60
+	void hide_unit_partial(Unit* unit, s32 hide_unit);													// 00493CA0
 
-	void Order_BeginHarvest(Unit* node, Unit* worker);												// 00468D10
-	Unit* RemoveHarvesters(Unit* node);																// 00468770
-	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);									// 004686D0
+	void Order_BeginHarvest(Unit* node, Unit* worker);													// 00468D10
+	Unit* RemoveHarvesters(Unit* node);																	// 00468770
+	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);										// 004686D0
 
 	s32 AI_SCV_repair_controller(Unit* unit, AiTown* town);												// 00433C70
 	s32 AI_try_progress_spending_queue_worker(AiTown* town, Unit* unit);								// 004348C0

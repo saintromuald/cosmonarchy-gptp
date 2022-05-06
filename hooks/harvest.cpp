@@ -206,7 +206,7 @@ namespace hooks
 						u8 resource_return_order = unit->resourceType & ResourceType::VespeneGas ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
 						if (!unit->orderQueueHead)
 						{
-							helper::append_order_targeting_ground(resource_return_order, unit, {});
+							helper::order_targeting_nothing(resource_return_order, unit, 0);
 						}
 						else if (unit->orderQueueHead->orderId == OrderId::Harvest4)
 						{
