@@ -334,23 +334,23 @@ namespace helper
 	void setUnitPathing(Unit* unit, u8 unkPathRelated);																				// 00401360
 	bool isUnitPositions2Equal(Unit* unit);																							// 00402160
 	Unit* connectAddonCheck(Unit* unit);																							// 004404A0
-	void function_00463470(Unit* unit);																								// 00463470
-	void function_004634E0(Unit* unit);																								// 004634E0
-	void function_00463640(Unit* unit);																								// 00463640
+	void modify_building_grounded_status(Unit* unit);																								// 00463470
+	void toggle_pathing_related(Unit* unit);																								// 004634E0
+	void flying_building_lift_if_still_blocked(Unit* unit);																			// 00463640
 	void completeAddon(Unit* unit, Unit* addon);																					// 00463D50
-	void function_00464300(Unit* unit);																								// 00464300
+	void crush_immobile_units(Unit* unit);																							// 00464300
 	void disconnectFromAddOn(Unit* unit);																							// 00464930
-	void function_00469EC0(Unit* unit, s32 x, s32 y);																				// 00469EC0
+	void clear_building_from_tile_flag(Unit* unit, s32 x, s32 y);																				// 00469EC0
 	void SetBuildingTileFlag(Unit* unit, s32 x, s32 y);																				// 00469F60
-	void end_collision_tracking(Unit* unit);																								// 0046A560
-	void start_collision_tracking(Unit* unit);																								// 0046A5A0
-	void force_order_done(Unit* unit);																							// 00475420
-	bool function_0047DF90(Unit* unit);																								// 0047DF90
+	void end_collision_tracking(Unit* unit);																						// 0046A560
+	void start_collision_tracking(Unit* unit);																						// 0046A5A0
+	void force_order_done(Unit* unit);																								// 00475420
+	bool update_creep_disappearance(Unit* unit);																								// 0047DF90
 	void placebuildingProc();																										// 0048E6E0
 	void playBuildingLandSound(Unit* unit);																							// 0048F5A0
 	void SetUnitMovementSpeed(Unit* unit, u32 newSpeed);																			// 004951C0
-	void function_00498150(Sprite* sprite, u8 newVerticalOffset);																	// 00498150
-	void function_004997E0(Sprite* sprite);																							// 004997E0
+	void set_shadow_y(Sprite* sprite, u8 newVerticalOffset);																	// 00498150
+	void create_landing_dust(Sprite* sprite);																						// 004997E0
 	void function_004C3B40(Unit* unit);																								// 004C3B40
 
 	//// create_init_units

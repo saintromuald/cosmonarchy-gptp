@@ -3280,7 +3280,7 @@ namespace helper
 		return found_addon;
 	}
 
-	void function_00463470(Unit* unit)
+	void modify_building_grounded_status(Unit* unit)
 	{
 		const u32 Func_Sub463470 = 0x00463470;
 		__asm {
@@ -3291,7 +3291,7 @@ namespace helper
 		}
 	}
 
-	void function_004634E0(Unit* unit)
+	void toggle_pathing_related(Unit* unit)
 	{
 		const u32 Func_Sub4634E0 = 0x004634E0;
 		__asm {
@@ -3302,13 +3302,13 @@ namespace helper
 		}
 	}
 
-	void function_00463640(Unit* unit)
+	void flying_building_lift_if_still_blocked(Unit* unit)
 	{
-		const u32 Func_Sub463640 = 0x00463640;
+		const u32 Func_flying_building_lift_if_still_blocked = 0x00463640;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub463640
+			CALL Func_flying_building_lift_if_still_blocked
 			POPAD
 		}
 	}
@@ -3325,7 +3325,7 @@ namespace helper
 		}
 	}
 
-	void function_00464300(Unit* unit)
+	void crush_immobile_units(Unit* unit)
 	{
 		const u32 Func_Sub464300 = 0x00464300;
 		__asm {
@@ -3347,7 +3347,7 @@ namespace helper
 		}
 	}
 
-	void function_00469EC0(Unit* unit, s32 x, s32 y)
+	void clear_building_from_tile_flag(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_Sub469EC0 = 0x00469EC0;
 		__asm {
@@ -3406,7 +3406,7 @@ namespace helper
 		}
 	}
 
-	bool function_0047DF90(Unit* unit)
+	bool update_creep_disappearance(Unit* unit)
 	{
 		const u32 Func_Sub47DF90 = 0x0047DF90;
 		b32 pre_return_value;
@@ -3453,7 +3453,7 @@ namespace helper
 		}
 	}
 
-	void function_00498150(Sprite* sprite, u8 newVerticalOffset)
+	void set_shadow_y(Sprite* sprite, u8 newVerticalOffset)
 	{
 		const u32 Func_Sub498150 = 0x00498150;
 		__asm {
@@ -3465,7 +3465,7 @@ namespace helper
 		}
 	}
 
-	void function_004997E0(Sprite* sprite)
+	void create_landing_dust(Sprite* sprite)
 	{
 		const u32 Func_Sub4997E0 = 0x004997E0;
 		__asm {
