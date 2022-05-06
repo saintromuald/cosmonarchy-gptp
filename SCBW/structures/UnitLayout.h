@@ -206,7 +206,6 @@ enum ExtValueId
 	ValueMindControlOriginalPlayer,
 	ValueChasmalColonyArteries,		// unused
 	ValueAdaptiveAmitosis,			// unused
-	ValueEnthrallingTalons,
 	ValueInfestedByAkistrokor,
 	ValuePreMorphEnergy,
 	ValueGodsMadeFleshCast,
@@ -239,6 +238,9 @@ enum ExtValueId
 	ValueIsZombified,
 	ValueIsSelfReviving,
 	ValueTalosAnimationTimer,
+	ValueBlissfulEmbraceChannel,
+	ValueBlissfulEmbraceOriginalPlayer,
+	ValueBlissfulEmbraceOriginalHealth,
 
 	ValueAI_KitingSignal,
 	ValueAI_BunkerCustom,
@@ -261,7 +263,6 @@ enum ExtTimerId
 	TimerCausticDischargeSpeed,
 	TimerIonFieldSpeed,
 	TimerReconstitutionCooldown,
-	TimerEnthrallingAssaultHeal,
 	TimerBindingGrip,
 	TimerGodsMadeFlesh,
 	TimerControlledDemolition,
@@ -333,15 +334,14 @@ enum ExtUnitId
 	UnitParasiteSource,
 	UnitHallucinationPointer,
 	UnitDecaySavant,
-	UnitAttachedTarget,
 	UnitMindController,
 	UnitWyvernTargetLock,
 	UnitDirgeSource,
 	UnitBunkerLockOn,
-	UnitLastHitAkistrokor,
 	UnitEmpressSource,
 	UnitAnthelionGravityWellSource,
 	UnitTurretParentLink,
+	UnitBlissfulEmbrace,
 
 	UnitCount,
 };
@@ -358,7 +358,6 @@ enum ExtUnitVectorId
 	UnitVectorCaptivatingClaws,
 	UnitVectorPhaseLink,
 	UnitVectorPhaseLinkClarions,
-	UnitVectorAttachedSource,
 	UnitVectorWorshipersDemiurge,
 	UnitVectorCrucibles,
 	UnitVectorMindControlling,

@@ -410,7 +410,7 @@ namespace hooks
 
 	void tickUnit(Unit* unit)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 		TacticalAi(unit, unitExt);
 
 		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::SharedStriga) && unit->orderSignal & 0x20)
@@ -437,7 +437,7 @@ namespace hooks
 					Unit* target = unit->orderTarget.unit;
 					if (target) {
 						if (unit->isTargetWithinMinRange(target, unit->getMaxWeaponRange(unit->getGroundWeapon()))) {
-							UnitExt* targetExt = globals.GetUnitExt(target);
+							UnitExt* targetExt = globals.get_unit_ext(target);
 							targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
 							
 							targetExt->salvage_time += 1;
@@ -709,7 +709,7 @@ namespace hooks
 						if (n(picked_unit))
 						{
 							// Apply Lazarus Agent
-							UnitExt* pickedUnitExt = globals.GetUnitExt(picked_unit);
+							UnitExt* pickedUnitExt = globals.get_unit_ext(picked_unit);
 							pickedUnitExt->values[ValueLazarusAgent] += 1;
 							pickedUnitExt->values[ValueLazarusAgentApostleSrc] = (u32)unit; // TODO: port as a unit
 							picked_unit->sprite->createTopOverlay(ImageId::LazarusAgentCast);
@@ -1016,7 +1016,7 @@ namespace hooks
 						{
 							target->removeOverlay(ImageId::EnsnaringBroodOverlay);
 						}
-						UnitExt* targetExt = globals.GetUnitExt(target);
+						UnitExt* targetExt = globals.get_unit_ext(target);
 						targetExt->timers[TimerEnsnaringBrood] = 12 * 24;
 						target->sprite->createTopOverlay(ImageId::EnsnaringBroodOverlay);
 					});
@@ -1126,7 +1126,7 @@ namespace hooks
 						unit->getY() + radius
 					).forEachInMatch(match, [&](Unit* target)
 						{
-							UnitExt* targetExt = globals.GetUnitExt(target);
+							UnitExt* targetExt = globals.get_unit_ext(target);
 							targetExt->timers[TimerAnticthonRevive] = 2;
 						});
 				}
@@ -1146,7 +1146,7 @@ namespace hooks
 					u32 dist = scbw::getDistanceFast(unit->position, target->position);
 					if (dist <= weapons_dat::OuterSplashRadius[WeaponId::AnthelionEventHorizon])
 					{
-						UnitExt* targetExt = globals.GetUnitExt(target);
+						UnitExt* targetExt = globals.get_unit_ext(target);
 						if (!(units_dat::BaseProperty[target->id] & UnitProperty::Building)
 							&& targetExt->timers[TimerAnthelionGravityWell])
 						{
@@ -1230,7 +1230,7 @@ namespace hooks
 				{
 					if ((!scbw::isAlliedTo(unit->playerId, target->playerId)))
 					{
-						UnitExt* targetExt = globals.GetUnitExt(target);
+						UnitExt* targetExt = globals.get_unit_ext(target);
 						if (!targetExt->timers[TimerObservanceDebuff])
 						{
 							unitExt->timers[TimerObservanceOverlay] = 2;
@@ -1264,7 +1264,7 @@ namespace hooks
 						{
 							return;
 						}
-						UnitExt* targetExt = globals.GetUnitExt(target);
+						UnitExt* targetExt = globals.get_unit_ext(target);
 						targetExt->values[ValueHasSublimeShepherd] = 1;
 					});
 			} break;
@@ -1518,56 +1518,48 @@ namespace hooks
 			unitExt->values[ValuePetrificationStacks] = 0;
 		}
 
-		// Attachment - Clear
-		if (scbw::get_generic_rust_value(unit, RustId::CancelAttachment))
+		// Akistrokor - Blissful Embrace ability
+		if (unit->mainOrderId == OrderId::BlissfulEmbrace)
 		{
-			scbw::set_generic_rust_value(unit, RustId::CancelAttachment, 0);
-			if (Unit* target = unitExt->units[UnitAttachedTarget])
-			{
-				UnitExt* targetExt = globals.GetUnitExt(target);
+			Unit* target = unit->orderTarget.unit;
+			if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && unit->playerId != target->playerId) {
+				UnitExt* targetExt = globals.get_unit_ext(target);
+				if (helper::isUnitInWeaponRange(unit, target)) {
+					if (unitExt->values[ValueBlissfulEmbraceChannel] < 48) {
+						unitExt->values[ValueBlissfulEmbraceChannel] += 100;
+					} else {
+						helper::force_order_done(unit);
+						unitExt->values[ValueBlissfulEmbraceChannel] = 0;
+						if (!targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
+							targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = target->playerId + 1;
+						}
+						target->giveTo(unit->playerId);
+						targetExt->values[ValueBlissfulEmbraceOriginalHealth] = target->hitPoints;
 
-				if (targetExt->values[ValueEnthrallingTalons])
-				{
-					// Akistrokor
-					targetExt->values[ValueEnthrallingTalons] = 0;
+						// Make this a sprite
+						u32 image_id = ImageId::ZergAirDeathExplosion_Small;
+						if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay) {
+							image_id = ImageId::ZergBuildingExplosion;
+						} else if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay) {
+							image_id = ImageId::ZergAirDeathExplosion_Large;
+						}
+						target->sprite->createOverlay(image_id);
+
+						u32 offset = scbw::getOverlayOffset(target->id);
+						if (!target->getOverlay(ImageId::InfestedCommandCenterOverlay + offset)) {
+							target->sprite->createTopOverlay(ImageId::InfestedCommandCenterOverlay + offset);
+						}
+					}
 				}
-
-				// Generic
-				auto& vec = targetExt->unitVectors[UnitVectorAttachedSource];
-				vec.erase(std::remove(vec.begin(), vec.end(), unit), vec.end());
-			}
-
-			// Generic
-			unitExt->units[UnitAttachedTarget] = nullptr;
-
-			if (unit->pAI != nullptr)
-			{
-				unit->orderComputer(OrderId::ComputerAI);
 			}
 			else
 			{
-				unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+				helper::force_order_done(unit);
 			}
-
-			// Fix unit
-			scbw::moveUnit(unit, unit->getX(), unit->getY());
 		}
-
-		// Attachment - Generic behavior
-		if (Unit* target = unitExt->units[UnitAttachedTarget])
+		else
 		{
-			UnitExt* targetExt = globals.GetUnitExt(target);
-			scbw::moveUnitForce(unit, target->getX(), target->getY());
-			unit->currentDirection1 = target->currentDirection1;
-
-			// Akistrokor - Attack Animation
-			if (unit->id == UnitId::ZergAkistrokor)
-			{
-				if (unit->mainOrderId != OrderId::AttackUnit || unit->orderTarget.unit != target)
-				{
-					unit->orderTo(OrderId::AttackUnit, target);
-				}
-			}
+			unitExt->values[ValueBlissfulEmbraceChannel] = 0;
 		}
 
 		// Reviving
@@ -1672,7 +1664,7 @@ namespace hooks
 					{
 						continue;
 					}
-					UnitExt* seraphExt = globals.GetUnitExt(seraph);
+					UnitExt* seraphExt = globals.get_unit_ext(seraph);
 					if (seraphExt->timers[TimerObservanceOverlay] == 0)
 					{
 						seraph->sprite->createOverlay(ImageId::SeraphRedOverlay);
@@ -1855,7 +1847,7 @@ namespace hooks
 			for (u32 i = 0; i < arr.size; i++)
 			{
 				Unit* target = arr.units[i];
-				UnitExt* targetExt = globals.GetUnitExt(target);
+				UnitExt* targetExt = globals.get_unit_ext(target);
 				auto& vec = targetExt->unitVectors[UnitVectorCrucibles];
 				if (std::find(vec.begin(), vec.end(), unit) == vec.end())
 				{

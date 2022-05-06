@@ -386,7 +386,7 @@ namespace hooks
 
 	const char* getArmorTooltipString(Unit* unit)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
@@ -403,13 +403,6 @@ namespace hooks
 		bonusArmor -= std::min(unitExt->values[ValueControlledOpposition], (u32)baseArmor);
 		bonusArmor -= unitExt->values[ValueArmorReduce];
 		bonusArmor -= unitExt->values[ValueObservanceRend];
-		for (Unit* unit : unitExt->unitVectors[UnitVectorAttachedSource])
-		{
-			if (unit->id == UnitId::ZergSovroleth)
-			{
-				bonusArmor += 0.5;
-			}
-		}
 
 		const u8 transportSpace = units_dat::SpaceRequired[unit->id];
 		const s32 sightRange = units_dat::SightRange[unit->id];
@@ -561,7 +554,7 @@ namespace hooks
 		addStatus(statuses, "Making Gods from Flesh", unitExt->values[ValueGodsMadeFleshActive] > 0, 1);
 		addStatus(statuses, "Adaptive Amitosis", unitExt->values[ValueAdaptiveAmitosis] > 0, 1);
 		addStatus(statuses, "Infested", unitExt->values[ValueInfestedByAkistrokor] > 0, 1);
-		addStatus(statuses, "Enthralling Assault", unitExt->values[ValueEnthrallingTalons] > 0, 1);
+		addStatus(statuses, "Blissful Embrace", unitExt->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
 		addStatus(statuses, "Kelvin Munitions", unitExt->values[ValueKelvinMunitionsSlow] > 0, 1);
 		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
 

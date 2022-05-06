@@ -2,6 +2,7 @@
 #include "building_making\building_modifier.h"
 #include <SCBW/api.h>
 #include "SCBW\UnitFinder.h"
+#include "globals.h"
 
 namespace hooks
 {
@@ -203,10 +204,10 @@ namespace hooks
 			// return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
 			// Replace UnitId::ZergHive with unit->id if giving specific buildings different creep bounding rectangles in getCreepRegion
 			result_00414680 = helper::spreadCreep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
-			if (unit->id == UnitId::ZergInfestedCommandCenter)
-			{
-				result_00414680 = 0;
-			}
+			//if (unit->id == UnitId::ZergInfestedCommandCenter)
+			//{
+			//	result_00414680 = 0;
+			//}
 			if (unit->id == 180 && result_00414680 != 0)
 			{
 				u32 current_tile_x = unit->sprite->position.x / 32;

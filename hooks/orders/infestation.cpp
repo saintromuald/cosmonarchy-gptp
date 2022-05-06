@@ -72,7 +72,7 @@ namespace hooks
 					// this is the same as calling 0047B2E0 unitIsFactoryUnit like original code but faster
 					if (unitInfested->isFactory())
 					{
-						UnitExt* unitInfestedExt = globals.GetUnitExt(unitInfested);
+						UnitExt* unitInfestedExt = globals.get_unit_ext(unitInfested);
 						unitInfested->rally.unit = unitInfested;
 					}
 

@@ -131,7 +131,7 @@ namespace hooks
 			}
 			else
 			{
-				UnitExt* unitExt = globals.GetUnitExt(unit);
+				UnitExt* unitExt = globals.get_unit_ext(unit);
 				if (unitExt->values[ValueInfestedByAkistrokor] || unitExt->units[UnitMindController])
 				{
 					helper::AI_TrainingSimpleMilitary(unit, unit);

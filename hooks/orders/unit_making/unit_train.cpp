@@ -110,7 +110,7 @@ namespace hooks
 	// generic unit training function
 	void orderTrain(Unit* unit)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 		if (!(unit->status & UnitStatus::DoodadStatesThing)
 			&& !(unit->isFrozen()))
 		{
@@ -149,7 +149,7 @@ namespace hooks
 				Unit* builtUnit = unit->currentBuildUnit;
 				if (builtUnit != nullptr)
 				{
-					UnitExt* builtUnitExt = globals.GetUnitExt(builtUnit);
+					UnitExt* builtUnitExt = globals.get_unit_ext(builtUnit);
 					u32 hpGain = helper::getHPGainForRepair(builtUnit);
 					bool extraBuild = false;
 					if (builtUnitExt->values[ValueCrucible] == 0)

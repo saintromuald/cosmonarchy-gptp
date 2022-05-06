@@ -329,7 +329,7 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 	}
 
 	// Value splitting simulacra more
-	UnitExt* targetExt = globals.GetUnitExt(target);
+	UnitExt* targetExt = globals.get_unit_ext(target);
 	if (targetExt->timers[TimerSimulacrumClone]) {
 		cost -= 5;
 	}
@@ -407,7 +407,7 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 
 static inline bool CanKite(Unit* unit)
 {
-	UnitExt* unitExt = globals.GetUnitExt(unit);
+	UnitExt* unitExt = globals.get_unit_ext(unit);
 
 	return unit->hasWeapon()
 		&& !unit->isFrozen()
@@ -545,7 +545,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 		{
 			localGroup.forEach([&](Unit* localUnit)
 			{
-				UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+				UnitExt* localUnitExt = globals.get_unit_ext(localUnit);
 
 				if (localUnitExt->timers[TimerAI_KitingLeashTimer] == 1)
 				{
@@ -637,7 +637,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 			{
 				localGroup.forEach([&](Unit* localUnit)
 				{
-					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+					UnitExt* localUnitExt = globals.get_unit_ext(localUnit);
 					sync += localUnitExt->values[ValueAI_KitingSignal];
 				});
 				sync >>= 8;
@@ -652,7 +652,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 				{			
 					localGroup.forEach([&](Unit* localUnit)
 					{
-						UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+						UnitExt* localUnitExt = globals.get_unit_ext(localUnit);
 						localUnitExt->timers[TimerAI_KitingCooldown] = 8;
 						localUnitExt->timers[TimerAI_KitingLeashTimer] = 0;
 						localUnitExt->values[ValueAI_KitingSignal] = 0;
@@ -668,7 +668,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 
 				localGroup.forEach([&](Unit* localUnit)
 				{
-					UnitExt* localUnitExt = globals.GetUnitExt(localUnit);
+					UnitExt* localUnitExt = globals.get_unit_ext(localUnit);
 
 					if (!localUnitExt->values[ValueAI_KitingSignal]
 						&& localUnit->id != UnitId::ProtossAccantor
@@ -890,7 +890,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 				s32 count = 0;
 				cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
 				{
-					UnitExt* uExt = globals.GetUnitExt(u);
+					UnitExt* uExt = globals.get_unit_ext(u);
 					if (uExt->values[ValueLazarusAgent] != 1)
 					{
 						count++;
@@ -922,7 +922,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
 			if (unit->orderTarget.unit)
 			{
-				UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
+				UnitExt* targetExt = globals.get_unit_ext(unit->orderTarget.unit);
 				furiaDamagePotential += (f32)targetExt->values[ValueDirgeStacks] * MadrigalDirgeDamage;
 			}
 			f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, WeaponId::MadrigalImperiosoMissiles);
@@ -985,7 +985,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 					s32 count = 0;
 					cosmonarchyFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally | Flags::CanAttackOrCast, {}, [&](Unit* u)
 					{
-						UnitExt* uExt = globals.GetUnitExt(u);
+						UnitExt* uExt = globals.get_unit_ext(u);
 						if (!uExt->values[TimerEnsnaringBrood])
 						{
 							count++;
@@ -1101,7 +1101,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 				u32 inCombatCount = 0;
 				for (Unit* worshiper : vec)
 				{
-					UnitExt* worshiperExt = globals.GetUnitExt(worshiper);
+					UnitExt* worshiperExt = globals.get_unit_ext(worshiper);
 					if (worshiperExt->damageDealtTimer < 4 * 24
 						|| worshiperExt->damageReceiveTimer < 4 * 24)
 					{
@@ -1124,76 +1124,6 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
 			}
 		}
-		else if ((unit->id == UnitId::ZergAkistrokor || unit->id == UnitId::ZergSovroleth) && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
-		{
-			if (!unitExt->units[UnitAttachedTarget])
-			{
-				const u32 radius = 32 * 10;
-				scbw::UnitFinder finder(
-					unit->getX() - radius,
-					unit->getY() - radius,
-					unit->getX() + radius,
-					unit->getY() + radius
-				);
-
-				Unit* target = nullptr;
-				if (unit->id == UnitId::ZergAkistrokor)
-				{
-					auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
-					target = finder.getBest([&](Unit* local) -> u32
-					{
-						if (!match(local))
-						{
-							return -1;
-						}
-						UnitExt* localExt = globals.GetUnitExt(local);
-						if (localExt->units[UnitAttachedTarget])
-						{
-							return -2;
-						}
-						return scbw::getDistanceFast(unit->position, local->position);
-					});
-				}
-				else if (unit->id == UnitId::ZergSovroleth)
-				{
-					auto match = cosmonarchyFinderMatch(unit, Flags::Ally | Flags::NotSelf | Flags::NoBuilding | Flags::CanAttackOrCast, {});
-					target = finder.getBest([&](Unit* local) -> u32
-					{
-						if (!match(local))
-						{
-							return -1;
-						}
-						UnitExt* localExt = globals.GetUnitExt(local);
-						if (localExt->units[UnitAttachedTarget])
-						{
-							return -1;
-						}
-						return unit->getCurrentLifeInGame();
-					});
-				}
-
-				if (target)
-				{
-					unit->orderTo(OrderId::CTFCOP1, target);
-					unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
-					unitExt->timers[TimerAI_KitingCooldown] = 5 * 24;
-				}
-				else
-				{
-					unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
-				}
-			}
-			else
-			{
-				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
-			}
-
-		}
-
-
-
-
-
 
 		/*	
 		else if (unit->id == UnitId::TerranPaladin) {

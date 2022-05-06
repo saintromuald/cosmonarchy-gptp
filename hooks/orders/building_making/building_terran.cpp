@@ -251,7 +251,7 @@ namespace hooks
 			if (jump_to_switch_1)
 			{
 				u32 hpGain = builtUnit->buildRepairHpGain * modifier.multiplier;
-				UnitExt* unitExt = globals.GetUnitExt(builtUnit);
+				UnitExt* unitExt = globals.get_unit_ext(builtUnit);
 				if (*CHEAT_STATE & CheatFlags::OperationCwal)
 				{
 					hpGain *= 16;

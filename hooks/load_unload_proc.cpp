@@ -166,7 +166,7 @@ namespace hooks
 
 		if (transport->playerId == 11)
 		{
-			UnitExt* unitExt = globals.GetUnitExt(transport);
+			UnitExt* unitExt = globals.get_unit_ext(transport);
 			unitExt->values[ValueIsNeutralBunker] = 1;
 			transport->giveTo(cargo_unit->playerId);
 		}		
@@ -336,7 +336,7 @@ namespace hooks
 						unit->orderComputer(OrderId::ComputerAI);
 					}
 
-					UnitExt* transportExt = globals.GetUnitExt(transport);
+					UnitExt* transportExt = globals.get_unit_ext(transport);
 					if (transportExt->values[ValueIsNeutralBunker])
 					{
 						if (!transport->getFirstLoadedUnit())

@@ -17,7 +17,7 @@ namespace hooks
 
 	void updateUnitEnergy(Unit* unit)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		// was hardcoded instead of function calling in original code
 		if (unit->isValidCaster()
@@ -113,7 +113,7 @@ namespace hooks
 	/// Identical to function @ 0x004EC290
 	void updateUnitStateHook(Unit* unit)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		// Timers
 		if (unit->mainOrderTimer)
@@ -138,7 +138,7 @@ namespace hooks
 			&& unitExt->units[UnitWyvernTargetLock])
 		{
 			Unit* target = unitExt->units[UnitWyvernTargetLock];
-			UnitExt* targetExt = globals.GetUnitExt(target);
+			UnitExt* targetExt = globals.get_unit_ext(target);
 			if (targetExt->timers[TimerOwnerChangedRecently]
 				&& scbw::isAlliedTo(unit->playerId, target->playerId))
 			{
@@ -482,12 +482,6 @@ namespace hooks
 					}
 				}
 
-				// Akistrokor - Enthralling Assault HP regeneration
-				if (unitExt->timers[TimerEnthrallingAssaultHeal] > 0)
-				{
-					tickHeal += AkistrokorEnthrallingAssaultHeal;
-				}
-
 				if (tickHeal)
 				{
 					unit->heal(tickHeal);
@@ -673,7 +667,7 @@ namespace hooks
 		}
 		if (v7)
 		{
-			UnitExt* unitExt = globals.GetUnitExt(v7);
+			UnitExt* unitExt = globals.get_unit_ext(v7);
 			do
 			{
 				helper::updateVisibility(v7);

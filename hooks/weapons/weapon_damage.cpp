@@ -108,7 +108,7 @@ namespace hooks
 
 	void weaponDamage_root(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = globals.GetUnitExt(data.target);
+		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
 		// The unit must neither be already dead nor invincible
 		if (data.target == nullptr || data.target->hitPoints == 0 || data.target->status & UnitStatus::Invincible)
@@ -240,15 +240,6 @@ namespace hooks
 				}
 			}
 
-			// Sovroleth Armor Bonus
-			for (Unit* unit : targetExt->unitVectors[UnitVectorAttachedSource])
-			{
-				if (unit->id == UnitId::ZergSovroleth)
-				{
-					armorTotal += 128;
-				}
-			}
-
 			// Autocrat Controlled Opposition
 			if (targetExt->values[ValueControlledOpposition])
 			{
@@ -332,7 +323,7 @@ namespace hooks
 
 	static void weaponDamage_damageModifiers(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = globals.GetUnitExt(data.target);
+		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
 		// Allied Invincibility Frames
 		if (targetExt->timers[TimerAlliedInvFrames])
@@ -356,7 +347,7 @@ namespace hooks
 			{
 				if (data.attacker)
 				{
-					UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
+					UnitExt* attackerExt = globals.get_unit_ext(data.attacker);
 					if (attackerExt->values[ValueAmitosis] == 1)
 					{
 						data.finalDamage /= 2;
@@ -429,24 +420,14 @@ namespace hooks
 
 	static void weaponDamage_behaviors(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = globals.GetUnitExt(data.target);
+		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
 		if (data.attacker != nullptr)
 		{
-			UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
+			UnitExt* attackerExt = globals.get_unit_ext(data.attacker);
 
 			// Ignore dark swarm!
 			// START
-
-			// Akistrokor - Last hit tracking
-			if (targetExt->values[ValueEnthrallingTalons] > 0)
-			{
-				auto& vec = targetExt->unitVectors[UnitVectorAttachedSource];
-				if (std::find(vec.begin(), vec.end(), data.attacker) != vec.end())
-				{
-					targetExt->units[UnitLastHitAkistrokor] = data.attacker;
-				}
-			}
 
 			// Cabalist - Decloak, Silent Kill
 			if (data.attacker->id == UnitId::ProtossCabalist)
@@ -468,7 +449,7 @@ namespace hooks
 				{
 					haluAttacker = data.attacker->interceptor.parent;
 				}
-				UnitExt* haluAttackerExt = globals.GetUnitExt(haluAttacker);
+				UnitExt* haluAttackerExt = globals.get_unit_ext(haluAttacker);
 				if (haluAttackerExt->units[UnitHallucinationPointer] == nullptr
 					&& !(haluAttacker->status & UnitStatus::IsHallucination))
 				{
@@ -574,7 +555,7 @@ namespace hooks
 					Unit* overlayUnit = data.target;
 					if (data.target->subunit != nullptr)
 					{
-						targetExt = globals.GetUnitExt(data.target->subunit);
+						targetExt = globals.get_unit_ext(data.target->subunit);
 						overlayUnit = data.target->subunit;
 					}
 					overlayUnit->sprite->createTopOverlay(overlay, 0, 0, 0);
@@ -656,7 +637,7 @@ namespace hooks
 							s32 overlayOffset = scbw::getOverlayOffset(data.target->id);
 							if (data.target->subunit != nullptr)
 							{
-								UnitExt* subunitExt = globals.GetUnitExt(data.target->subunit);
+								UnitExt* subunitExt = globals.get_unit_ext(data.target->subunit);
 								subunitExt->values[ValueDeconstruction]++;
 								subunitExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
 								if (!data.target->subunit->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
@@ -877,7 +858,7 @@ namespace hooks
 
 	static void weaponDamage_fatal(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = globals.GetUnitExt(data.target);
+		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
 		switch (data.weaponId)
 		{
@@ -955,7 +936,7 @@ namespace hooks
 					data.target->getY() + radius
 				).forEach([&](Unit* unit)
 				{
-					UnitExt* unitExt = globals.GetUnitExt(unit);
+					UnitExt* unitExt = globals.get_unit_ext(unit);
 					u32 dist = scbw::getDistanceFast(data.target->position, unit->position);
 					if (unit->id == UnitId::SharedAnticthon && (dist <= 4 * 32 || (dist <= 8 * 32 && unitExt->timers[TimerAnticthonFailureMode])))
 					{
@@ -978,34 +959,24 @@ namespace hooks
 			globals.initRevive(data.target->position.x, data.target->position.y, data.target->playerId, data.target->id, data.target->energy, hp, town);
 		}
 
-		// Akistrokor - Enthralling Assault
-		if (targetExt->values[ValueEnthrallingTalons] > 0)
-		{
-			// Preserve unit and start healing
+		if (targetExt->values[ValueBlissfulEmbraceOriginalPlayer] && units_dat::BaseProperty[data.target->id] & UnitProperty::Building) {
+			data.target->giveTo(targetExt->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
+			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
+
 			data.finalDamage = 0;
-			data.target->setHp(256);
-			targetExt->timers[TimerEnthrallingAssaultHeal] = 24 * 10;
+			data.target->setHp(targetExt->values[ValueBlissfulEmbraceOriginalHealth]);
 
-			// Prevent killing the unit from own attacks
-			targetExt->values[ValueAlliedInvPlayer] = data.attacker->playerId;
-			targetExt->timers[TimerAlliedInvFrames] = 24;
-
-			// Transfer unit ownership
-			Unit* unit = targetExt->units[UnitLastHitAkistrokor];
-			if (unit)
-			{
-				data.target->giveTo(unit->playerId);
+			// Make this a sprite
+			u32 image_id = ImageId::ZergAirDeathExplosion_Small;
+			if (units_dat::BaseProperty[data.target->id] & UnitProperty::LargeOverlay) {
+				image_id = ImageId::ZergBuildingExplosion;
+			} else if (units_dat::BaseProperty[data.target->id] & UnitProperty::MediumOverlay) {
+				image_id = ImageId::ZergAirDeathExplosion_Large;
 			}
+			data.target->sprite->createOverlay(image_id);
 
-			// Cancel the attachment
-			auto& vec = targetExt->unitVectors[UnitVectorAttachedSource];
-			for (Unit* source : vec)
-			{
-				if (source->id == UnitId::ZergAkistrokor)
-				{
-					scbw::set_generic_rust_value(source, RustId::CancelAttachment, 1);
-				}
-			}
+			u32 offset = scbw::getOverlayOffset(data.target->id);
+			data.target->removeOverlay(ImageId::InfestedCommandCenterOverlay + offset);
 		}
 
 		switch (data.target->id)
@@ -1083,7 +1054,7 @@ namespace hooks
 
 		if (data.attacker != nullptr)
 		{
-			UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
+			UnitExt* attackerExt = globals.get_unit_ext(data.attacker);
 			switch (data.weaponId)
 			{
 				case WeaponId::AlkajeliskPlasmidSpores:
@@ -1146,7 +1117,7 @@ namespace hooks
 
 	u16 GetSporesOverlayId(Unit* target)
 	{
-		UnitExt* targetExt = globals.GetUnitExt(target);
+		UnitExt* targetExt = globals.get_unit_ext(target);
 		auto stacks = targetExt->values[ValueCorrosiveTouchStacks];
 		auto overlayMultiplier = 0;
 		if (stacks > 18)
@@ -1181,7 +1152,7 @@ namespace hooks
 		Image* image;
 		Sprite* spriteFinal;
 
-		UnitExt* targetExt = globals.GetUnitExt(target);
+		UnitExt* targetExt = globals.get_unit_ext(target);
 		targetExt->values[ValueCorrosiveTouchStacks]++;
 		image = target->getOverlay(GetSporesOverlayId(target));
 		if (image)

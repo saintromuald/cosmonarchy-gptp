@@ -12,7 +12,7 @@ namespace hooks
 	/// @return	the modified cooldown value.
 	u32 getModifiedWeaponCooldownHook(Unit* unit, u8 weaponId)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 		u32 cooldown = weapons_dat::Cooldown[weaponId];
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)

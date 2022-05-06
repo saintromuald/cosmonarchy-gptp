@@ -307,7 +307,7 @@ namespace hooks
 				helper::disconnectFromAddOn(unit);
 
 			if (unit->isFactory()) {
-				UnitExt* unitExt = globals.GetUnitExt(unit);
+				UnitExt* unitExt = globals.get_unit_ext(unit);
 				unit->rally.unit = unit;
 			}
 

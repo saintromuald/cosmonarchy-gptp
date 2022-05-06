@@ -122,7 +122,7 @@ struct Globals
 	std::unordered_map<Unit*, std::vector<Unit*>> lurkerSpineHits;
 	UnitExt unitExt[UNIT_ARRAY_LENGTH];
 
-	inline UnitExt* GetUnitExt(Unit* unit)
+	inline UnitExt* get_unit_ext(Unit* unit)
 	{
 		assert(unit);
 		return &unitExt[unit->getIndex()];

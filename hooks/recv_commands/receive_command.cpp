@@ -193,7 +193,7 @@ namespace hooks
 										if (target == nullptr)
 											target = current_unit;
 
-										UnitExt* current_unitExt = globals.GetUnitExt(current_unit);
+										UnitExt* current_unitExt = globals.get_unit_ext(current_unit);
 										current_unit->rally.unit = target;
 										current_unit->rally.pt.x = target->sprite->position.x;
 										current_unit->rally.pt.y = target->sprite->position.y;
@@ -209,7 +209,7 @@ namespace hooks
 
 										loop_to_9ac0d = false;
 
-										UnitExt* current_unitExt = globals.GetUnitExt(current_unit);
+										UnitExt* current_unitExt = globals.get_unit_ext(current_unit);
 										current_unit->rally.unit = nullptr;
 										current_unit->rally.pt.x = x;
 										current_unit->rally.pt.y = y;

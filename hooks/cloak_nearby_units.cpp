@@ -43,7 +43,7 @@ namespace hooks
 		current_unit = *unitsInAreaOfEffect;
 		while (current_unit != nullptr)
 		{
-			UnitExt* unitExt = globals.GetUnitExt(current_unit);
+			UnitExt* unitExt = globals.get_unit_ext(current_unit);
 
 			if (current_unit != cloaker																	// Don't cloak self
 				&& !(units_dat::BaseProperty[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items

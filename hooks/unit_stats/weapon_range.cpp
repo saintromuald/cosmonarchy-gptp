@@ -9,7 +9,7 @@ namespace hooks
 	// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
 	u8 getSeekRangeHook(Unit* unit, Unit* target) // seek range is measured in tiles, unfortunately
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		u8 bonusAmount = 0;
 		switch (unit->id)
@@ -33,7 +33,7 @@ namespace hooks
 		// Stellar Enforcement - Magister behavior
 		if (unit->orderTarget.unit)
 		{
-			UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
+			UnitExt* orderUnitExt = globals.get_unit_ext(unit->orderTarget.unit);
 
 			if (orderUnitExt->values[ValueStellarEnforcement])
 			{
@@ -61,7 +61,7 @@ namespace hooks
 	// Note: Weapon ranges are measured in pixels.
 	u32 getMaxWeaponRangeHook(Unit* unit, u8 weaponId, Unit* target)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		u32 bonusAmount = 0;
 		// Give bonus range to units inside Bunkers
@@ -95,7 +95,7 @@ namespace hooks
 		if (unit->orderTarget.unit
 			&& weapons_dat::MaxRange[weaponId] > 32)
 		{
-			UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
+			UnitExt* orderUnitExt = globals.get_unit_ext(unit->orderTarget.unit);
 			if (orderUnitExt->values[ValueStellarEnforcement])
 			{
 				bonusAmount += 64;

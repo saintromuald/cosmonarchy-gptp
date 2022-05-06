@@ -397,6 +397,6 @@ enum Enum {
 	KhaydarinEclipse        = 155,  // CTF COP 2                | Exemplar/Clarion switch				| unused
 
 	// Zerg
-	EssenceDrain            = 154,  // Idle CTF COP             | Gorgoleth energy drain ability		| unused
+	BlissfulEmbrace         = 154,  // Idle CTF COP             | Gorgoleth energy drain ability		| unused
 	};
 }

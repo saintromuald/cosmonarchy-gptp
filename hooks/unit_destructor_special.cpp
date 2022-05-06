@@ -49,7 +49,7 @@ void augurProc(Unit* augur, s32 radius) {
 
 void augurSacrifice(Unit* augur, s32 radius)
 {
-	UnitExt* targetExt = globals.GetUnitExt(augur);
+	UnitExt* targetExt = globals.get_unit_ext(augur);
 	if (targetExt->values[ValueAugurSafetyCheck] == 0)
 	{
 		targetExt->values[ValueAugurSafetyCheck] = 1;
@@ -141,7 +141,7 @@ void freeResourceContainer(Unit* resource)
 
 void unitDestructorSpecialHook(Unit* unit)
 {
-	UnitExt* unitExt = globals.GetUnitExt(unit);
+	UnitExt* unitExt = globals.get_unit_ext(unit);
 	unit->resetSupplyProvided();
 
 	if (!(unit->userActionFlags & 4) && // for silent remove
@@ -256,7 +256,7 @@ void unitDestructorSpecialHook(Unit* unit)
 					unit->getY() + range
 				).forEach([&](Unit* target)
 					{
-						UnitExt* targetExt = globals.GetUnitExt(target);
+						UnitExt* targetExt = globals.get_unit_ext(target);
 						if (!scbw::isAlliedTo(unit->playerId, target->playerId))
 						{
 							return;
@@ -266,7 +266,7 @@ void unitDestructorSpecialHook(Unit* unit)
 						
 						if (target->subunit != nullptr)
 						{
-							UnitExt* subunitExt = globals.GetUnitExt(target->subunit);
+							UnitExt* subunitExt = globals.get_unit_ext(target->subunit);
 							subunitExt->values[ValueTerminalSurge]++;
 						}
 					});
@@ -333,15 +333,6 @@ void unitDestructorSpecialHook(Unit* unit)
 		}
 	}
 
-	// Sovroleth - die on host death
-	for (Unit* attached : unitExt->unitVectors[UnitVectorAttachedSource])
-	{
-		if (attached->id == UnitId::ZergSovroleth)
-		{
-			attached->damageHp(attached->hitPoints);
-		}
-	}
-
 	{ // Spellcaster - restore energy on ally kill
 		UnitArray unit_array = UnitSearchRadial(unit->position, 11 * 32);
 		UnitArrayFilter(&unit_array, unit, FilterEnemy | FilterSpellcaster);
@@ -372,7 +363,7 @@ void unitDestructorSpecialHook(Unit* unit)
 			{
 				if (scbw::isAlliedTo(i, target->playerId))
 				{
-					UnitExt* targetExt = globals.GetUnitExt(target);
+					UnitExt* targetExt = globals.get_unit_ext(target);
 					targetExt->timers[TimerNathrokorBuff] = NathrokorAdrenalFrenzyTimer;
 					targetExt->values[ValueNathrokorBuffStacks] += stacks;
 					target->updateSpeed();

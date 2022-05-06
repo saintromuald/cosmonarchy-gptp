@@ -676,7 +676,7 @@ namespace hooks
 
 					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched)
 					{
-						UnitExt* unitExt = globals.GetUnitExt((*activePortraitUnit));
+						UnitExt* unitExt = globals.get_unit_ext((*activePortraitUnit));
 						// Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
 						if (current_button->reqVar == TechId::ControlledDemolition)
 						{
@@ -1518,17 +1518,8 @@ namespace hooks
 							}
 							else if ((*activePortraitUnit)->id == UnitId::TerranWyvern)
 							{
-								UnitExt* activeExt = globals.GetUnitExt(*activePortraitUnit);
+								UnitExt* activeExt = globals.get_unit_ext(*activePortraitUnit);
 								if (activeExt->values[ValueWyvernLandGrabOn])
-								{
-									canCancel = true;
-								}
-							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergAkistrokor
-								|| (*activePortraitUnit)->id == UnitId::ZergSovroleth)
-							{
-								UnitExt* activeExt = globals.GetUnitExt(*activePortraitUnit);
-								if (activeExt->units[UnitAttachedTarget])
 								{
 									canCancel = true;
 								}

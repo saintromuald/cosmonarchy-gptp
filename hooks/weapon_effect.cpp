@@ -82,7 +82,7 @@ namespace hooks
 			return;
 		if (bullet->sourceUnit != nullptr && bullet->sourceUnit->sprite != nullptr)
 		{
-			UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+			UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->sourceUnit);
 
 			if (bullet->sourceUnit->isBlind)
 			{
@@ -191,7 +191,7 @@ namespace hooks
 			{
 				if (bullet->sourceUnit)
 				{
-					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+					UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->sourceUnit);
 
 					const f64 splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
 					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
@@ -221,7 +221,7 @@ namespace hooks
 			{
 				if (bullet->sourceUnit)
 				{
-					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+					UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->sourceUnit);
 
 					const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
 					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
@@ -251,7 +251,7 @@ namespace hooks
 			{
 				if (bullet->sourceUnit)
 				{
-					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+					UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->sourceUnit);
 
 					const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
 					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
@@ -306,7 +306,7 @@ namespace hooks
 				bool lurkerOverride = false;
 				if (bullet->sourceUnit)
 				{
-					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+					UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->sourceUnit);
 					if ((Unit*)bulletSourceExt->values[ValueLurkerPickTarget] == target)
 					{
 						lurkerOverride = true;
@@ -430,7 +430,7 @@ namespace hooks
 			&& target->sprite)
 		{
 			// Searing Acid - Geszithalor behavior
-			UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+			UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->sourceUnit);
 			auto X = bulletSourceExt->lastBulletLaunchPos.x;
 			auto Y = bulletSourceExt->lastBulletLaunchPos.y;
 			divisor = scbw::getDistanceFast(X, Y, target->getX(), target->getY()) / (32 * 3);

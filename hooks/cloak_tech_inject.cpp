@@ -84,7 +84,7 @@ namespace
 	//equivalent to 00491B30 ApplyCloakingOrder, not injected
 	void applyCloakingOrderHook(Unit* unit)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 		if (unit->status & UnitStatus::RequiresDetection)
 		{
 			return;

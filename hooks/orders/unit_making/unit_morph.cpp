@@ -117,7 +117,7 @@ namespace hooks
 
 	void orders_Morph1(Unit* unit)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		if (unit->mainOrderState == 0)
 		{

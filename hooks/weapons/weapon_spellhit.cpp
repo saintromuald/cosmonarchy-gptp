@@ -120,10 +120,10 @@ namespace hooks
 		{
 			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(target->id);
 			Unit* overlayUnit = target;
-			UnitExt* targetExt = globals.GetUnitExt(target);
+			UnitExt* targetExt = globals.get_unit_ext(target);
 			if (target->subunit != nullptr)
 			{
-				targetExt = globals.GetUnitExt(target->subunit);
+				targetExt = globals.get_unit_ext(target->subunit);
 				overlayUnit = target->subunit;
 			}
 			overlayUnit->sprite->createTopOverlay(overlay, 0, 0, 0);
@@ -230,7 +230,7 @@ namespace hooks
 
 	void MeleeAttackHit(Unit* attacker)
 	{
-		UnitExt* attackerExt = globals.GetUnitExt(attacker);
+		UnitExt* attackerExt = globals.get_unit_ext(attacker);
 		Unit* target = attacker->orderTarget.unit;
 		if (target != nullptr)
 		{
@@ -551,7 +551,7 @@ namespace hooks
 
 				// create the broodling
 				created_broodling = helper::createUnit(UnitId::ZergRilirokor, pos.x, pos.y, attacker->playerId);
-				UnitExt* broodlingExt = globals.GetUnitExt(created_broodling);
+				UnitExt* broodlingExt = globals.get_unit_ext(created_broodling);
 				broodlingExt->units[UnitBroodlingMother] = attacker;
 
 				if (created_broodling == nullptr)
@@ -599,7 +599,7 @@ namespace hooks
 		helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
 		if (attacker != nullptr)
 		{
-			UnitExt* attackerExt = globals.GetUnitExt(attacker);
+			UnitExt* attackerExt = globals.get_unit_ext(attacker);
 			u32 range = 64;
 			scbw::UnitFinder(
 				x - range,

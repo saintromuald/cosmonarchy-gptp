@@ -58,7 +58,7 @@ namespace hooks
 					{
 						if (unit->connectedUnit)
 						{
-							UnitExt* bunkerExt = globals.GetUnitExt(unit->connectedUnit);
+							UnitExt* bunkerExt = globals.get_unit_ext(unit->connectedUnit);
 							Unit* target = bunkerExt->units[UnitBunkerLockOn];
 							if (target && unit->canAttackTarget(target) && isWithinAttackRange(unit, target))
 							{

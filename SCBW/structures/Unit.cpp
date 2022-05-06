@@ -604,7 +604,7 @@ void Unit::damageWithCustom(
 void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction,
 	bool ignoreDmg128Overflow)
 {
-	UnitExt* unitExt = globals.GetUnitExt(this);
+	UnitExt* unitExt = globals.get_unit_ext(this);
 	auto damage = dmg;
 	s32 shieldReduceAmount = 0;
 	if (unitExt->timers[TimerGodsMadeFlesh])
@@ -654,11 +654,11 @@ void Unit::damageHp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify
 
 	if (attacker)
 	{
-		UnitExt* attackerExt = globals.GetUnitExt(attacker);
+		UnitExt* attackerExt = globals.get_unit_ext(attacker);
 		attackerExt->damageDealtTimer = 0;
 	}
 
-	UnitExt* unitExt = globals.GetUnitExt(this);
+	UnitExt* unitExt = globals.get_unit_ext(this);
 	unitExt->damageReceiveTimer = 0;
 
 	__asm {
@@ -794,7 +794,7 @@ void Unit::removeAcidSpores()
 /// May underflow if alone
 void Unit::spendUnitEnergy(u32 energySpent)
 {
-	UnitExt* unitExt = globals.GetUnitExt(this);
+	UnitExt* unitExt = globals.get_unit_ext(this);
 	if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 	{
 		if (this->energy > energySpent)
@@ -1420,7 +1420,7 @@ bool Unit::giveTo(u8 playerId)
 			this->orderToIdle();
 		}
 
-		UnitExt* unitExt = globals.GetUnitExt(this);
+		UnitExt* unitExt = globals.get_unit_ext(this);
 		unitExt->timers[TimerOwnerChangedRecently] = 2;
 		return true;
 	}
@@ -1462,7 +1462,7 @@ void Unit::updateSpeed()
 
 u32 Unit::getSupplyProvided() // overwrites previous supply provided
 {
-	UnitExt* unitExt = globals.GetUnitExt(this);
+	UnitExt* unitExt = globals.get_unit_ext(this);
 	if (unitExt->values[ValueSupplyProvidedSet])
 	{
 		if (unitExt->values[ValueSupplyProvidedId] == id) {
@@ -1497,7 +1497,7 @@ u32 Unit::getSupplyProvided() // overwrites previous supply provided
 
 void Unit::setSupplyProvided(u8 amount) // overwrites previous supply provided
 {
-	UnitExt* unitExt = globals.GetUnitExt(this);
+	UnitExt* unitExt = globals.get_unit_ext(this);
 	raceSupply[RaceId::Terran].provided[playerId] -= getSupplyProvided();
 	raceSupply[RaceId::Terran].provided[playerId] += amount;
 	unitExt->values[ValueSupplyProvidedSet] = 1;
@@ -1507,7 +1507,7 @@ void Unit::setSupplyProvided(u8 amount) // overwrites previous supply provided
 
 void Unit::resetSupplyProvided() // overwrites previous supply provided
 {
-	UnitExt* unitExt = globals.GetUnitExt(this);
+	UnitExt* unitExt = globals.get_unit_ext(this);
 	setSupplyProvided(units_dat::SupplyProvided[id]);
 	unitExt->values[ValueSupplyProvidedSet] = 0;
 	unitExt->values[ValueSupplyProvidedId] = 0;

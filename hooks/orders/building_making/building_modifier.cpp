@@ -8,7 +8,7 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder) {
 		return modifier;
 	}
 
-	UnitExt* buildingExt = globals.GetUnitExt(building);
+	UnitExt* buildingExt = globals.get_unit_ext(building);
 	modifier.multiplier *= 1 + 0.05 * buildingExt->unitVectors[UnitVectorCrucibles].size();
 
 	if (builder && builder->id == UnitId::TerranTalos) {

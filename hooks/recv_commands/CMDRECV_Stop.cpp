@@ -305,7 +305,7 @@ namespace hooks
 
 			if (current_unit->id == UnitId::TerranWyvern)
 			{
-				UnitExt* unitExt = globals.GetUnitExt(current_unit);
+				UnitExt* unitExt = globals.get_unit_ext(current_unit);
 				unitExt->units[UnitWyvernTargetLock] = nullptr;
 			}
 							

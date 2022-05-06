@@ -1336,7 +1336,7 @@ namespace scbw
 
 	void decloakProc(Unit* unit)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 		if (isDecloakable(unit))
 		{
 			if (unitExt->timers[TimerDecloak] == 0)
@@ -1461,7 +1461,7 @@ namespace scbw
 
 	void applyNewHallucination(Unit* unit, u8 playerId, u32 time)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		// Sounds
 		if (!unitExt->timers[TimerHallucinating])
@@ -1892,10 +1892,10 @@ namespace scbw
 			return;
 		}
 
-		UnitExt* sourceExt = globals.GetUnitExt(source);
+		UnitExt* sourceExt = globals.get_unit_ext(source);
 		sourceExt->unitVectors[UnitVectorMindControlling].push_back(target);
 
-		UnitExt* targetExt = globals.GetUnitExt(target);
+		UnitExt* targetExt = globals.get_unit_ext(target);
 		targetExt->units[UnitMindController] = source;
 
 		if (!targetExt->values[ValueMindControlOriginalPlayer])
@@ -1930,13 +1930,13 @@ namespace scbw
 			return;
 		}
 
-		UnitExt* targetExt = globals.GetUnitExt(target);
+		UnitExt* targetExt = globals.get_unit_ext(target);
 		Unit* mindController = targetExt->units[UnitMindController];
 		targetExt->units[UnitMindController] = nullptr;
 
 		if (mindController)
 		{
-			UnitExt* mindControllerExt = globals.GetUnitExt(mindController);
+			UnitExt* mindControllerExt = globals.get_unit_ext(mindController);
 			auto& vec = mindControllerExt->unitVectors[UnitVectorMindControlling];
 			vec.erase(std::remove(vec.begin(), vec.end(), target), vec.end());
 		}

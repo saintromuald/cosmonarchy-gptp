@@ -142,7 +142,7 @@ namespace hooks
 		{
 			return;
 		}
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 		u8 weaponId = wId;
 		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId];
 		// Retrieve the spawning position for the bullet.
@@ -428,29 +428,6 @@ namespace hooks
 		{
 			scbw::doDeconstructionDamage(unit, weaponId);
 		}
-
-		// Akistrokor - Blissful Embrace ability
-		// TODO: Overhaul ability, remove possible Sovroleth remnants
-		if (weaponId == WeaponId::AkistrokorBlissfulEmbrace && unit->orderTarget.unit != nullptr)
-		{
-			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
-			if (targetExt->units[UnitAttachedTarget])
-			{
-				return;
-			}
-
-			unitExt->units[UnitAttachedTarget] = unit->orderTarget.unit;
-			auto& sourceUnits = targetExt->unitVectors[UnitVectorAttachedSource];
-			if (std::find(sourceUnits.begin(), sourceUnits.end(), unit) == sourceUnits.end())
-			{
-				sourceUnits.push_back(unit);
-			}
-
-			if (unit->id == UnitId::ZergAkistrokor)
-			{
-				targetExt->values[ValueEnthrallingTalons] = 1;
-			}
-		}
 	}
 
 	void progressBulletFlight(Bullet* bullet)
@@ -524,7 +501,7 @@ namespace hooks
 		{
 			Unit* targ = bullet->attackTarget.unit;
 
-			UnitExt* unitExt = globals.GetUnitExt(bullet->sourceUnit);
+			UnitExt* unitExt = globals.get_unit_ext(bullet->sourceUnit);
 			const u32 distFromSource = scbw::getDistanceFast(bullet->position, unitExt->lastBulletLaunchPos);
 			const u32 distFromTarget = scbw::getDistanceFast(bullet->position, targ->position);
 
@@ -765,7 +742,7 @@ namespace hooks
 					hooks::WeaponBulletHit(bullet, collisionTarget, 1);
 
 					// Claymore - Kelvin Munitions - Slow pierced targets
-					UnitExt* collisionTargetExt = globals.GetUnitExt(collisionTarget);
+					UnitExt* collisionTargetExt = globals.get_unit_ext(collisionTarget);
 					if (!collisionTargetExt->values[ValueKelvinMunitionsSlow])
 					{
 						collisionTargetExt->values[ValueKelvinMunitionsSlow] = 1;

@@ -97,11 +97,11 @@ namespace hooks
 
 	void updateStatusEffects(Unit* unit)
 	{
-		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		if (unit->subunit != nullptr)
 		{
-			UnitExt* subunitExt = globals.GetUnitExt(unit->subunit);
+			UnitExt* subunitExt = globals.get_unit_ext(unit->subunit);
 			subunitExt->units[UnitTurretParentLink] = unit;
 		}
 
@@ -211,7 +211,7 @@ namespace hooks
 				if (scbw::isAlliedTo(target->playerId, unit->playerId)
 					&& (target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon))
 				{
-					UnitExt* targetExt = globals.GetUnitExt(target);
+					UnitExt* targetExt = globals.get_unit_ext(target);
 					targetExt->timers[TimerSireEggBoost] = 24;
 				}
 			});

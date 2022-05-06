@@ -13,7 +13,7 @@ namespace hooks
 	{
 		// Do nothing if the rally target is the factory itself or the rally target position is 0
         if (factory) {
-            UnitExt* factoryExt = globals.GetUnitExt(factory);
+            UnitExt* factoryExt = globals.get_unit_ext(factory);
             if (factory->isFactory()
                 && factory->rally.unit != factory
                 && factory->rally.pt.x != 0)
@@ -34,7 +34,7 @@ namespace hooks
 	// Called when the player sets the rally point on the ground.
 	void setRallyPosition(Unit* unit, u16 x, u16 y)
 	{
-        UnitExt* unitExt = globals.GetUnitExt(unit);
+        UnitExt* unitExt = globals.get_unit_ext(unit);
         unit->rally.unit = nullptr;
         unit->rally.pt.x = x;
         unit->rally.pt.y = y;
@@ -48,7 +48,7 @@ namespace hooks
             target = unit;
         }
 
-        UnitExt* unitExt = globals.GetUnitExt(unit);
+        UnitExt* unitExt = globals.get_unit_ext(unit);
         unit->rally.unit = target;
         unit->rally.pt.x = target->getX();
         unit->rally.pt.y = target->getY();
@@ -166,7 +166,7 @@ namespace hooks
         }
         if (unit->isFactory())
         {
-            UnitExt* unitExt = globals.GetUnitExt(unit);
+            UnitExt* unitExt = globals.get_unit_ext(unit);
             if (unit->rally.unit == dying)
             {
                 unit->rally.unit = 0;
@@ -258,7 +258,7 @@ namespace hooks
                             rallyTarget = unit;
                         }
 
-                        UnitExt* unitExt = globals.GetUnitExt(unit);
+                        UnitExt* unitExt = globals.get_unit_ext(unit);
                         unit->rally.unit = rallyTarget;
                         unit->rally.pt.x = rallyTarget->sprite->position.x;
                         unit->rally.pt.y = rallyTarget->sprite->position.y;
@@ -270,7 +270,7 @@ namespace hooks
                     {
                         if (unit->isFactory())
                         {
-                            UnitExt* unitExt = globals.GetUnitExt(unit);
+                            UnitExt* unitExt = globals.get_unit_ext(unit);
                             unit->rally.unit = 0;
                             unit->rally.pt.x = x;
                             unit->rally.pt.y = y;
