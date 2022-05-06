@@ -202,6 +202,7 @@ namespace hooks
 						{
 							helper::finished_mining(unit, unit->worker.harvestTarget);
 						}
+						helper::delete_order(unit, OrderId::HarvestInterrupt);
 						helper::delete_order(unit, OrderId::ResetCollision2);
 						u8 resource_return_order = unit->resourceType & ResourceType::VespeneGas ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
 						if (!unit->orderQueueHead)
@@ -216,7 +217,7 @@ namespace hooks
 							unit->orderQueueHead->orderId = resource_return_order;
 						}
 						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::ResetCollision2);
-						helper::actUnitReturnToIdle(unit);
+						helper::force_order_done(unit);
 					}
 					else
 					{
@@ -247,7 +248,7 @@ namespace hooks
 				unit->nextTargetWaypoint.x = target_pos_x;
 				unit->nextTargetWaypoint.y = target_pos_y;
 			}
-			helper::actUnitReturnToIdle(unit);
+			helper::force_order_done(unit);
 			if (unit->worker.resourceCarryAmount)
 			{
 				helper::finished_mining(unit, unit->worker.harvestTarget);
@@ -375,7 +376,7 @@ namespace hooks
 		{
 			worker = helper::remove_from_current_harvesters(worker, worker->worker.harvestTarget);
 		}
-		helper::actUnitReturnToIdle(worker);
+		helper::force_order_done(worker);
 	}
 
 	// Hooked as part of the vespene overhaul. -Pr0nogo
@@ -394,7 +395,7 @@ namespace hooks
 		{
 			harvest_order_id = OrderId::MiningMinerals;
 		}
-		helper::order_immediate(worker, OrderId::Harvest3);
+		helper::order_immediate(worker, OrderId::HarvestInterrupt);
 		helper::prepend_order_targeting_unit(worker, node, harvest_order_id);
 
 		if (worker->orderQueueHead)

@@ -180,7 +180,7 @@ enum Enum {
 					* Default Requirements: Unit must be a Worker (has harvest orders). */
 	MiningMinerals         = 0x57, /**< Harvesting minerals. Runs iscript to spawn weapon.
 					* Default Requirements: Unused. */
-	Harvest3               = 0x58, /**< Harvesting minerals is interrupted.
+	HarvestInterrupt       = 0x58, /**< Harvesting minerals is interrupted.
 					* Default Requirements: Unused. */
 	Harvest4               = 0x59, /**< Unknown harvest command.
 					* Default Requirements: Unused. */
