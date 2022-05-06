@@ -563,4 +563,5 @@ namespace scbw
 	AiRegion* get_ai_region(u32 player, Point16 position);
 	void ask_for_ai_help(Unit* victim, Unit* attacker);
 	bool unit_id_is_gas_structure(u16 unit_id, bool ignore_geysers = false);
+	bool unit_id_is_smaller_building(u16 unit_id);
 }

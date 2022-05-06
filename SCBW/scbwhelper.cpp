@@ -1362,14 +1362,14 @@ namespace helper
 	// for AI_UnitWasHit
 	// some of these should probably be methods in api/etc
 
-	char AI_CancelStructure(Unit* structure)
+	char AI_cancel_structure(Unit* structure)
 	{
-		const u32 Func_AI_CancelStructure = 0x00468280;
+		const u32 Func_AI_cancel_structure = 0x00468280;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, structure
-			CALL Func_AI_CancelStructure
+			CALL Func_AI_cancel_structure
 			MOV result, EAX
 			POPAD
 		}
@@ -3169,7 +3169,7 @@ namespace helper
 		return rValue;
 	}
 
-	// For updatePlacementStateForPlacementBox
+	// For update_placement_state_for_placement_box
 
 	s32 canBuildOnTileLocation(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision)
 	{
@@ -8079,7 +8079,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	s32 isTileBlockedBy(Unit** array, Unit* builder, s32 xTile, s32 yTile, char bDontIgnoreReacting, char bAlsoInvisible) {
+	s32 is_tile_blocked_by(Unit** array, Unit* builder, s32 xTile, s32 yTile, char bDontIgnoreReacting, char bAlsoInvisible) {
 		const u32 Func_isTileBlockedBy = 0x00473300;
 		static s32 result;
 		__asm {

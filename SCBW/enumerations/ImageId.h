@@ -1102,6 +1102,9 @@ enum Enum {
 	ResourceBoostOverlay_Small					= 1484,
 	ResourceBoostOverlay_Medium					= 1485,
 	ResourceBoostOverlay_Large					= 1486,
+	InfestedOverlay_Small						= 1487,
+	InfestedOverlay_Medium						= 1488,
+	InfestedOverlay_Large						= 1489,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,

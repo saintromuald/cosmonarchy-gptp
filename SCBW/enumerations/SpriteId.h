@@ -771,6 +771,8 @@ namespace SpriteId
 		IzirokorCorpse = 763,
 		EntropyGauntletsOverlay = 764,
 		FragmentaryExplosion = 765,
+		ZergAirExplosionLarge = 766,
+		ZergAirExplosionSmall = 767,
 
 		// CORPSE \\
 

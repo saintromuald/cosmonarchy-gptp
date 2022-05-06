@@ -2102,4 +2102,20 @@ namespace scbw
 			return unit_id == UnitId::TerranReservoir || unit_id == UnitId::ProtossAquifer || unit_id == UnitId::ZergExcisant || unit_id == UnitId::ResourceVespeneGeyser;
 		}
 	}
+
+	bool unit_id_is_smaller_building(u16 unit_id) {
+		return units_dat::BaseProperty[unit_id] & UnitProperty::Addon
+			|| unit_id == UnitId::TerranSupplyDepot
+			|| unit_id == UnitId::TerranWatchdog
+			|| unit_id == UnitId::TerranBunker
+			|| unit_id == UnitId::ProtossPylon
+			|| unit_id == UnitId::ProtossPhotonCannon
+			|| unit_id == UnitId::ProtossShieldBattery
+			|| unit_id == UnitId::ProtossPennant
+			|| unit_id == UnitId::ZergCreepColony
+			|| unit_id == UnitId::ZergSunkenColony
+			|| unit_id == UnitId::ZergSporeColony
+			|| unit_id == UnitId::ZergLarvalColony
+			|| unit_id == UnitId::ZergNydusCanal;
+	}
 }
