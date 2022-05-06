@@ -392,10 +392,10 @@ namespace hooks
 		u8 harvest_order_id = OrderId::HarvestGas3;
 		if (worker->mainOrderId != OrderId::HarvestGas2)
 		{
-			helper::order_immediate(worker, OrderId::Harvest3);
 			harvest_order_id = OrderId::MiningMinerals;
 		}
-		helper::prepend_order_targeting_unit(node, worker, harvest_order_id);
+		helper::order_immediate(worker, OrderId::Harvest3);
+		helper::prepend_order_targeting_unit(worker, node, harvest_order_id);
 
 		if (worker->orderQueueHead)
 		{
