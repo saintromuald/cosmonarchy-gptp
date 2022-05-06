@@ -1093,7 +1093,7 @@ LABEL_21:
 	}
 
 	Unit* get_ai_refinery(AiTown* town, u32 gas_state, u32 index, bool for_harvesting) { // 00432B90
-
+		// This is stupid, but changing or even cleaning it seems to break AI having more than 1 refinery, might be undefined behavior. Please fix
 		Unit* gas_building = town->gas_buildings[0];
 		u32 counter = 0;
 		if (gas_building && AI_get_vespene_type(town->gas_buildings[0], town->player, for_harvesting) == gas_state && (counter = 1, index == 1)
