@@ -975,8 +975,14 @@ namespace hooks
 			}
 			data.target->sprite->createOverlay(image_id);
 
-			u32 offset = scbw::getOverlayOffset(data.target->id);
-			data.target->removeOverlay(ImageId::InfestedCommandCenterOverlay + offset);
+			// Create busy overlays for buildings only
+			if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building) {
+				u32 image_id = ImageId::InfestedOverlay_Large;
+				if (scbw::unit_id_is_smaller_building(data.target->id)) {
+					image_id = ImageId::InfestedOverlay_Small;
+				}
+				data.target->removeOverlay(image_id);
+			}
 		}
 
 		switch (data.target->id)
