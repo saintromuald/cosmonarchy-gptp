@@ -1093,10 +1093,21 @@ LABEL_21:
 	}
 
 	Unit* get_ai_refinery(AiTown* town, u32 gas_state, u32 index, bool for_harvesting) { // 00432B90
-		if (town->gas_buildings[index - 1] && AI_get_vespene_type(town->gas_buildings[index - 1], town->player, for_harvesting) == gas_state)
+
+		Unit* gas_building = town->gas_buildings[0];
+		u32 counter = 0;
+		if (gas_building && AI_get_vespene_type(town->gas_buildings[0], town->player, for_harvesting) == gas_state && (counter = 1, index == 1)
+			|| (gas_building = town->gas_buildings[1]) != 0 && AI_get_vespene_type(town->gas_buildings[1], town->player, for_harvesting) == gas_state && (++counter, counter == index)
+			|| (gas_building = town->gas_buildings[2]) != 0 && AI_get_vespene_type(town->gas_buildings[2], town->player, for_harvesting) == gas_state && counter + 1 == index)
 		{
-			return town->gas_buildings[index - 1];
+			return gas_building;
 		}
+
+		//if (town->gas_buildings[index - 1] && AI_get_vespene_type(town->gas_buildings[index - 1], town->player, for_harvesting) == gas_state)
+		//{
+		//	return town->gas_buildings[index - 1];
+		//}
+
 		return 0;
 	}
 
