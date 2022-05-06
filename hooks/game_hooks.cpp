@@ -1518,6 +1518,13 @@ namespace hooks
 			unitExt->values[ValuePetrificationStacks] = 0;
 		}
 
+		// Blissful Embrace - Creep Spread
+		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] &&
+			units_dat::BaseProperty[unit->id] & UnitProperty::Building &&
+			*elapsedTimeFrames % 15 == 0) {
+			helper::spreadCreep(UnitId::ZergHive, unit->position.x, unit->position.y);
+		}
+
 		// Akistrokor - Blissful Embrace ability
 		if (unit->mainOrderId == OrderId::BlissfulEmbrace)
 		{
@@ -1544,6 +1551,10 @@ namespace hooks
 							image_id = ImageId::ZergAirDeathExplosion_Large;
 						}
 						target->sprite->createOverlay(image_id);
+
+						if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
+							helper::updateCreepDisappearance(target->sprite, UnitId::ZergHive, target->getX(), target->getY());
+						}
 
 						u32 offset = scbw::getOverlayOffset(target->id);
 						if (!target->getOverlay(ImageId::InfestedCommandCenterOverlay + offset)) {
