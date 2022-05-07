@@ -241,6 +241,9 @@ enum ExtValueId
 	ValueBlissfulEmbraceChannel,
 	ValueBlissfulEmbraceOriginalPlayer,
 	ValueBlissfulEmbraceOriginalHealth,
+	ValueAIWorkerChosenForExpansion,
+	ValueAIWorkerChosenX,
+	ValueAIWorkerChosenY,
 
 	ValueAI_KitingSignal,
 	ValueAI_BunkerCustom,

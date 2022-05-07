@@ -3,6 +3,7 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 #include "logger.h"
+#include "globals.h"
 
 namespace hooks
 {
@@ -260,7 +261,10 @@ namespace hooks
 						town->gas_buildings[1] = 0;
 						town->gas_buildings[2] = 0;
 
-						unit->orderTo(OrderId::Move, town->position.x, town->position.y);
+						UnitExt* unitExt = globals.get_unit_ext(unit);
+						unitExt->values[ValueAIWorkerChosenForExpansion] = 1;
+						unitExt->values[ValueAIWorkerChosenX] = town->position.x;
+						unitExt->values[ValueAIWorkerChosenY] = town->position.y;
 					}
 				}
 			}
