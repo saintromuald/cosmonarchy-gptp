@@ -35,4 +35,5 @@ struct BaseLayouts {
 	u32 request_count[UnitId::Count]; // First used to set wait_build_start_count, then used to track request counts
 };
 
+b32 is_tech_unitid(u32 unit_id);
 void tick_base_layouts();

@@ -1529,7 +1529,8 @@ namespace hooks
 		if (unit->mainOrderId == OrderId::BlissfulEmbrace)
 		{
 			Unit* target = unit->orderTarget.unit;
-			if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && unit->playerId != target->playerId) {
+			if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
+				&& !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->playerId != target->playerId) {
 				UnitExt* targetExt = globals.get_unit_ext(target);
 				if (helper::isUnitInWeaponRange(unit, target)) {
 					if (unitExt->values[ValueBlissfulEmbraceChannel] < 48) {
@@ -1553,7 +1554,7 @@ namespace hooks
 						target->sprite->createOverlay(image_id);
 
 						if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
-							helper::updateCreepDisappearance(target->sprite, UnitId::ZergHive, target->getX(), target->getY());
+							//helper::modifyCreepState(target->position.x / 32, target->position.y / 32, (helper::CreepChange*)0x00413AA0, 1);
 						}
 
 						// Create busy overlays for buildings only
