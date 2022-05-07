@@ -6,6 +6,7 @@
 #include "globals.h"
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/weapons/weapon_damage.h"
+#include "base_layouts.h"
 
 /* DONE
 Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby,
@@ -821,6 +822,76 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 	}
 }
 
+static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
+	f32 cost = 0;
+
+	// Value big boys more
+	switch (target->id) {
+		case UnitId::ProtossAnthelion: {
+			cost -= 50;
+		} break;
+		case UnitId::SharedAnticthon:
+		case UnitId::SharedEmpress:
+		case UnitId::ProtossDemiurge:
+		case UnitId::ProtossClarion: {
+			cost -= 25;
+		} break;
+	}
+
+	if (target->id == UnitId::ProtossAccantor)
+	{
+		cost -= (weapons_dat::DamageAmount[WeaponId::Scarab] /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
+			* 1.5; // aoe multiplier
+	}
+	else if (target->id == UnitId::ProtossSolarion)
+	{
+		cost -= (weapons_dat::DamageAmount[WeaponId::PulseCannon] /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
+			* (target->carrier.inHangarCount + target->carrier.outHangarCount)
+			* 1.5; // additional bias to encourage targeting solarions more
+	}
+	else
+	{
+		u32 weaponId = 0;
+		if (source->status & UnitStatus::InAir)
+		{
+			weaponId = target->getAirWeapon();
+		}
+		else
+		{
+			weaponId = target->getGroundWeapon();
+		}
+		f32 multiplier = weapons_dat::InnerSplashRadius[weaponId] ? 1.5 : 1;
+		cost -= hooks::getCurrentDPS(target, weaponId) * multiplier;
+	}
+
+	// Value attacking units with smaller pathing cost more
+	s32 dist = (s32)scbw::getDistanceFast(source->position, target->position) - GetMaxRange(source->id);
+	if (dist > 0)
+	{
+		cost += dist / 32.0;
+	}
+
+	// Value attacking strategically important targets
+	if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot)
+	{
+		cost -= 50;
+	}
+	if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+	{
+		cost -= 50;
+	}
+	if (units_dat::GroupFlags[target->id].isFactory)
+	{
+		cost -= 50;
+	}
+	if (is_tech_unitid(target->id))
+	{
+		cost -= 50;
+	}
+
+	return cost;
+}
+
 void TacticalAi(Unit* unit, UnitExt* unitExt)
 {
 	if (unit->id == UnitId::TerranBunker
@@ -1122,6 +1193,27 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			else
 			{
 				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			}
+		}
+		else if (unit->id == UnitId::ZergAkistrokor && unit->mainOrderId != OrderId::BlissfulEmbrace) {
+			UnitArray targets = UnitSearchRadial(unit->position, 10 * 32);
+			UnitArrayFilter(&targets, unit, FilterEnemy);
+
+			f32 min_cost = FLT_MAX;
+			Unit* best_target = 0;
+			for (u32 i = 0; i < targets.size; ++i) {
+				Unit* target = targets.units[i];
+				if (target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed) {
+					f32 cost = get_blissful_embrace_target_cost(unit, target);
+					if (cost < min_cost) {
+						min_cost = cost;
+						best_target = target;
+					}
+				}
+			}
+
+			if (best_target) {
+				unit->orderTo(OrderId::BlissfulEmbrace, best_target);
 			}
 		}
 

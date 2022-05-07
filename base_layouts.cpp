@@ -135,7 +135,7 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 	}
 }
 
-static b32 is_tech_unitid(u32 unit_id) {
+b32 is_tech_unitid(u32 unit_id) {
 	if (!units_dat::GroupFlags[unit_id].isBuilding) {
 		return false;
 	}

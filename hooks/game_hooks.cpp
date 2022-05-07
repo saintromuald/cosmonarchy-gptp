@@ -1529,7 +1529,7 @@ namespace hooks
 		if (unit->mainOrderId == OrderId::BlissfulEmbrace)
 		{
 			Unit* target = unit->orderTarget.unit;
-			if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && unit->playerId != target->playerId) {
+			if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed && unit->playerId != target->playerId) {
 				UnitExt* targetExt = globals.get_unit_ext(target);
 				if (helper::isUnitInWeaponRange(unit, target)) {
 					if (unitExt->values[ValueBlissfulEmbraceChannel] < 48) {
