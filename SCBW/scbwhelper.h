@@ -385,7 +385,10 @@ namespace helper
 
 	// TODO: add helpers for these functions
 	// for applyCreepAtLocationFromUnitType
-	s32 modifyCreepState(s32 x_tile, s32 y_tile, s32(__stdcall* creepChange)(s32, s32, s32, s32, s32), void* param);				// 00413FA0
+	
+	typedef s32 __stdcall CreepChange(s32, s32, s32, s32, s32);
+
+	s32 modifyCreepState(s32 x_tile, s32 y_tile, CreepChange* creepChange, u32 param);												// 00413FA0
 	s32 runCreepRandomizer(s16* originalTile, s32 creepTileBorders, s32* outCreepStatus, s16* currentTile, s32 unused);				// 004140A0 // "note possible desync"
 	s32 unkCreepBorders(s32 a1, s32 a2);																							// 006D0C78
 	u32 forEachAdjacentTile(s32(__stdcall* callback)(s32, s32, s32, s32, void*), void* param, s32 x_tile, s32 y_tile);				// 00413B30

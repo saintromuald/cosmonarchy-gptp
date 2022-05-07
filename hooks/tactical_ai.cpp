@@ -1203,7 +1203,8 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			Unit* best_target = 0;
 			for (u32 i = 0; i < targets.size; ++i) {
 				Unit* target = targets.units[i];
-				if (target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed) {
+				if (target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
+					&& !(units_dat::BaseProperty[target->id] & UnitProperty::Addon)) {
 					f32 cost = get_blissful_embrace_target_cost(unit, target);
 					if (cost < min_cost) {
 						min_cost = cost;

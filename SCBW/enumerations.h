@@ -260,7 +260,7 @@ namespace UnitProperty
 		MediumOverlay = 0x02000000, //Used to determine overlay for various spells and effects
 		LargeOverlay = 0x04000000, //Used to determine overlay for various spells and effects
 		AutoAttackAndMove = 0x08000000,
-		Attack = 0x10000000, /**< Can attack */
+		Attack = 0x10000000, /**< Can attack */	
 		Invincible = 0x20000000,
 		Mechanical = 0x40000000,
 		ProducesUnits = 0x80000000, /**< It can produce units directly (making buildings doesn't count) */

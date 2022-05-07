@@ -3395,6 +3395,23 @@ namespace helper
 		}
 	}
 
+	s32 modifyCreepState(s32 x_tile, s32 y_tile, CreepChange* creepChange, u32 param)
+	{
+		const u32 func_address = 0x00413FA0;
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH param
+			PUSH creepChange
+			PUSH y_tile
+			PUSH x_tile
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 	void force_order_done(Unit* unit)
 	{
 		const u32 Func_force_order_done = 0x00475420;
