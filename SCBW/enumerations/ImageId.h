@@ -1110,6 +1110,8 @@ enum Enum {
 	Worship_Small								= 1492,
 	Worship_Medium								= 1493,
 	Worship_Large								= 1494,
+	ControlledDemolition						= 1495,
+	EmergencyDetonation							= 1496,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,

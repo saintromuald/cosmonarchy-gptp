@@ -1905,31 +1905,39 @@ namespace hooks
 			}
 		}
 
-		// Emergency Detonation - initial cast
-		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation)
-			&& !unitExt->timers[TimerEmergencyDetonation]
-			&& !unitExt->timers[TimerControlledDemolition])
-		{
-			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
-			unitExt->timers[TimerEmergencyDetonation] = EmergencyDetonationTimer;
-			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
-//			unit->sprite->createOverlay(ImageId::EmergencyDemolitionOverlay_Small + overlayOffset);
-		}
-
 		// Controlled Demolition - initial cast
 		if (scbw::get_generic_rust_value(unit, RustId::CastControlledDemolition)
 			&& !unitExt->timers[TimerEmergencyDetonation] && !unitExt->timers[TimerControlledDemolition])
 		{
 			scbw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
 			unitExt->timers[TimerControlledDemolition] = ControlledDemolitionTimer;
-			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
-//			unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
+			unit->sprite->createOverlay(ImageId::ControlledDemolition);
+		}
+
+		if (unitExt->timers[TimerControlledDemolition] == 7) {
+			Image* overlay = unit->getOverlay(ImageId::ControlledDemolition);
+			overlay->playIscriptAnim(IscriptAnimation::Death);
 		}
 
 		// Controlled Demolition - destroy structure
 		if (unitExt->timers[TimerControlledDemolition] == 1)
 		{
 			unit->damageHp(unit->hitPoints, unit, unit->playerId, false);
+		}
+
+		// Emergency Detonation - initial cast
+		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation))
+		{
+			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
+			unitExt->timers[TimerEmergencyDetonation] = (u32)(0.5 * unitExt->timers[TimerControlledDemolition]);
+			unitExt->timers[TimerControlledDemolition] = 0;
+			unit->sprite->removeOverlay(ImageId::ControlledDemolition);
+			unit->sprite->createTopOverlay(ImageId::EmergencyDetonation);
+		}
+
+		if (unitExt->timers[TimerEmergencyDetonation] == 7) {
+			Image* overlay = unit->getOverlay(ImageId::EmergencyDetonation);
+			overlay->playIscriptAnim(IscriptAnimation::Death);
 		}
 
 		// Emergency Detonation - destroy structure
@@ -1953,27 +1961,14 @@ namespace hooks
 			unit->damageHp(unit->hitPoints, unit, unit->playerId, false);
 		}
 
-		// Emergency Detonation - initial cast
-		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation))
-		{
-			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
-			unitExt->timers[TimerEmergencyDetonation] = (u32)(0.5 * unitExt->timers[TimerControlledDemolition]);
-			unitExt->timers[TimerControlledDemolition] = 0;
-			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
-//			unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
-		}
-
 		// Demiurge - Gods Made Flesh - return units to original owner
 		if (unitExt->values[ValueWorshipStack]
 			&& unitExt->units[UnitMindController] == nullptr)
 		{
 			helper::playSoundFromSource(SoundId::DemiurgeWorship01, unit, 1, 0);
-			u32 overlayId = ImageId::MindControlHit_Small + scbw::getOverlayOffset(unit->id);
-			unit->sprite->createTopOverlay(overlayId, 0, 0, 0);
-
+			unit->sprite->createTopOverlay(ImageId::Worship_Small + scbw::getOverlayOffset(unit->id), 0, 0, 0);
 			unitExt->values[ValueWorshipStack] = 0;
 			unitExt->timers[TimerGodsMadeFlesh] = 0;
-
 			scbw::recede_mind_control(unit);
 		}
 
