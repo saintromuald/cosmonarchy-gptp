@@ -286,7 +286,7 @@ enum ExtTimerId
 	TimerHallucinating,
 	TimerPetrification,
 	TimerDecloak,
-	TimerMineralSpecialRegen,
+	TimerResourceBoostedRegen,
 	TimerAdrenal,
 	TimerParasiteArm,
 	TimerSwitchModeGimmick,

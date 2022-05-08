@@ -146,17 +146,23 @@ namespace hooks
 				|| unit->id == UnitId::ProtossPennant))
 		{
 			u32 radius;
-			if (unit->id == UnitId::TerranQuarry)
-			{
-				radius = 320;
-			}
-			else if (unit->id == UnitId::ZergIroleth)
-			{
-				radius = 224;
-			}
-			else if (unit->id == UnitId::ProtossPennant)
-			{
-				radius = 160;
+			switch (unit->id) {
+				case UnitId::TerranQuarry:
+				{
+					radius = 320;
+				} break;
+				case UnitId::ZergIroleth:
+				{
+					radius = 224;
+				} break;
+				case UnitId::ProtossPennant:
+				{
+					radius = 160;
+				} break;
+				default:
+				{
+					radius = 0;
+				} break;
 			}
 
 			scbw::UnitFinder(
@@ -176,12 +182,15 @@ namespace hooks
 				}
 				if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
 				{
-					unitExt->timers[TimerMineralSpecialRegen] = 24;
+					unitExt->timers[TimerResourceBoostedRegen] = 24;
 					u32 underlay = ImageId::ResourceBoostOverlay_Small + scbw::getOverlayOffset(target->id);
 					if (!target->sprite->getOverlay(underlay)) {
-						if (scbw::unit_id_is_gas_structure(target->id)) {
+						if (scbw::unit_id_is_gas_structure(target->id))
+						{
 							target->sprite->createUnderlay(underlay, -5, 2);
-						} else {
+						}
+						else
+						{
 							target->sprite->createUnderlay(underlay);
 						}
 					}
