@@ -1226,4 +1226,6 @@ namespace helper
 
 	typedef char __cdecl updateSelectedUnitData_Func();
 	extern updateSelectedUnitData_Func* updateSelectedUnitData;
+
+	void update_hud_info();																				// 004D93F0
 }

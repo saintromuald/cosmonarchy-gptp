@@ -11410,4 +11410,13 @@ namespace helper
 
 	BTNSACT_ChangeButtons_Func* BTNSACT_ChangeButtons = (BTNSACT_ChangeButtons_Func*) 0x00459AF0;
 	updateSelectedUnitData_Func* updateSelectedUnitData = (updateSelectedUnitData_Func*) 0x004C38B0;
+
+	void update_hud_info() {
+		const u32 func_address = 0x004d93f0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
 }
