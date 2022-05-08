@@ -1886,8 +1886,8 @@ namespace scbw
 	void mind_control(Unit* source, Unit* target)
 	{
 		if (!source
-			|| !target
-			|| source->playerId == target->playerId)
+		||  !target
+		||   source->playerId == target->playerId)
 		{
 			return;
 		}
@@ -1903,6 +1903,7 @@ namespace scbw
 			targetExt->values[ValueMindControlOriginalPlayer] = target->playerId + 1;
 		}
 
+		u32 overlay = ImageId::MindControlHit_Small + scbw::getOverlayOffset(target->id);
 		if (source->id == UnitId::ProtossDemiurge)
 		{
 			// Demiurge - Gods Made Flesh - apply effect to linked units
@@ -1910,10 +1911,11 @@ namespace scbw
 			{
 				targetExt->timers[TimerGodsMadeFlesh] = 3;
 			}
+			overlay = ImageId::Worship_Small + scbw::getOverlayOffset(target->id);
 		}
 
 		target->giveTo(source->playerId);
-		target->sprite->createTopOverlay(ImageId::MindControlHit_Small + scbw::getOverlayOffset(target->id), 0, 0, 0);
+		target->sprite->createTopOverlay(overlay, 0, 0, 0);
 
 		auto& vec = targetExt->unitVectors[UnitVectorMindControlling];
 		for (Unit* unit : vec)

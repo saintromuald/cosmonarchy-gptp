@@ -1107,6 +1107,9 @@ enum Enum {
 	InfestedOverlay_Large						= 1489,
 	GasRaw										= 1490,
 	GasRaw2										= 1491,
+	Worship_Small								= 1492,
+	Worship_Medium								= 1493,
+	Worship_Large								= 1494,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,
