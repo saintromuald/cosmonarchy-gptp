@@ -7560,13 +7560,13 @@ namespace helper
 		}
 	}
 
-	void function_459770()
+	void refresh_button_tooltip()
 	{
-		const u32 Func_Sub_459770 = 0x00459770;
+		const u32 Func_refresh_button_tooltip = 0x00459770;
 		__asm
 		{
 			PUSHAD
-			CALL Func_Sub_459770
+			CALL Func_refresh_button_tooltip
 			POPAD
 		}
 	}

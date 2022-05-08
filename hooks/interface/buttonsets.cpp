@@ -154,17 +154,16 @@ BUTTON_SET* getCustomButtonSet()
 	static BUTTON_SET customButtonSet;
 	static BUTTON customButtonsArray[50];
 
-	// since it's a copy of the marine set, it would have the same amount of buttons
+	// Since it's a copy of the marine set, it would have the same amount of buttons
 	customButtonSet.buttonsInSet = buttonSetTable[UnitId::TerranMaverick].buttonsInSet;
 
 	// connectedUnit should usually be init at 0xFFFF.Almost unused (maybe not fully implemented).
 	customButtonSet.connectedUnit = 0xFFFF;
 
-	// this should always be like this since the array is static
+	// This should always be like this since the array is static
 	customButtonSet.firstButton = &customButtonsArray[0];
 
-	// For each button in the array until reaching the amount of buttonsInSet, copy the data for
-	// each member of the button structure from the marine to the custom set.
+	// For each button in the array until reaching the amount of buttonsInSet, copy the data for each member of the button structure from the marine to the custom set.
 	for (u32 i = 0; i < customButtonSet.buttonsInSet; i++)
 	{
 		customButtonsArray[i].actFunc = buttonSetTable[UnitId::TerranMaverick].firstButton[i].actFunc;
@@ -423,9 +422,8 @@ namespace hooks
 		return &(buttonSetTable[index]);
 	}
 
-	// 004599A0
 	// Main updateButtonSet function because it call updateButtonSet() and others
-	void updateCurrentButtonset()
+	void updateCurrentButtonset() // 004599A0
 	{
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
 		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
@@ -462,10 +460,8 @@ namespace hooks
 			}
 		}
 		CX_Holder = *BUTTONSET_SPECIAL_BUTTONSETID;
-		// 004599D3
 		if (*BUTTONSET_SPECIAL_BUTTONSETID == UnitId::Buttons_Blank)
 		{
-			// 004599DF
 			CX_Holder = *BUTTONSET_CURRENT_BUTTONSETID;
 			if (*BUTTONSET_CURRENT_BUTTONSETID == UnitId::Buttons_Blank)
 			{
@@ -482,7 +478,6 @@ namespace hooks
 
 		if (!jumpTo59A38)
 		{
-			// 004599F8
 			if (*BUTTONSET_PORTRAIT_BUTTONSETID == CX_Holder)
 			{
 				jumpTo59A38 = true;
@@ -494,11 +489,8 @@ namespace hooks
 			}
 			if (!jumpTo59A38)
 			{
-				// 00459A12:
-				// draw buttons
 				helper::updateCommandCard();
-				// refresh popup text over button
-				helper::function_459770();
+				helper::refresh_button_tooltip();
 				jumpTo59A9F = (*activePortraitUnit == nullptr);
 				if (!jumpTo59A9F)
 				{
@@ -521,11 +513,8 @@ namespace hooks
 		{
 			if (*bCanUpdateCurrentButtonSet)
 			{
-				// 00459A12:
-				// draw buttons
 				helper::updateCommandCard();
-				// refresh popup text over button
-				helper::function_459770();
+				helper::refresh_button_tooltip();
 				jumpTo59A9F = (*activePortraitUnit == nullptr);
 				if (!jumpTo59A9F)
 				{

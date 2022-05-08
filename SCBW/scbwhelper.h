@@ -872,7 +872,7 @@ namespace helper
 	void enableControl(BinDlg* dialog);																	// 00418E00
 	void replayStatBtns(BinDlg* dialog);																// 00427A80
 	void updateCommandCard();																			// 004591D0
-	void function_459770();																				// 00459770
+	void refresh_button_tooltip();																				// 00459770
 	void BINDLG_BlitSurface(BinDlg* dialog);															// 004C35F0
 	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);
 	s32 req_check(u32 reqFunc, u16 reqVar, u32 playerId, Unit* unit);
