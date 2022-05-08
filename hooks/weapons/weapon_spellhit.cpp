@@ -414,23 +414,29 @@ namespace hooks
 			&& helper::getSpellStatString(target, TechId::Consume, attacker->playerId) == 0) // returning a value != 0 means there was an error
 		{
 			helper::incrementUnitDeathScores(target, attacker->playerId);
-			u32 power = target->hitPoints;
-			target->remove();
 			if (!(target->status & UnitStatus::IsHallucination))
 			{
-				u32 energyMax = attacker->getMaxEnergy();
-				u32 diff = energyMax - attacker->energy;
-				if (power > diff)
-				{
-					attacker->energy = energyMax;
-					power -= diff;
-					attacker->setHp(attacker->hitPoints + power);
-				}
-				else
-				{
-					attacker->energy += power;
+				UnitArray units = UnitSearchRadial(attacker->position, 3 * 32);
+				UnitArrayFilter(&units, attacker, FilterAlly | FilterIncludingSelf);
+				for (u32 i = 0; i < units.size; ++i) {
+					Unit* unit = units.units[i];
+
+					u32 power = target->hitPoints;
+					u32 energyMax = unit->getMaxEnergy();
+					u32 diff = energyMax - unit->energy;
+					if (power > diff)
+					{
+						unit->energy = energyMax;
+						power -= diff;
+						unit->healOverflow(power, attacker);
+					}
+					else
+					{
+						unit->healEnergy(power, attacker);
+					}
 				}
 			}
+			target->remove();
 		}
 	}
 

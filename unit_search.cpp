@@ -400,7 +400,7 @@ bool UnitFlagMatch(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> 
 			return false;
 		}
 	}
-	if (allowed_unit_ids.find(unit->id) == allowed_unit_ids.end())
+	if (allowed_unit_ids.size() && allowed_unit_ids.find(unit->id) == allowed_unit_ids.end())
 	{
 		return false;
 	}
