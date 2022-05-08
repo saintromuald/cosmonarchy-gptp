@@ -233,6 +233,7 @@ namespace WeaponId {
 		KeskathalorScreamingVenom2			= 58,	// Keskathalor weapon 2 (doesn't spawn Caustic Discharge field)
 		RililiskSwarmingSpores				= 81,	// Rililisk weapon
 		LiiraliskHollowedSpores				= 85,	// Liiralisk weapon
+		AkistrokorHarryingTalons			= 87,	// Akistrokor weapon
 		SovrolethSpores						= 92,	// Sovroleth weapon
 		KonviliskSowingSpines				= 95,	// Konvilisk weapon
 		QuaziliskAcridBarbs					= 102,	// Quazilisk weapon
