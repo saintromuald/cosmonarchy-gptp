@@ -329,7 +329,10 @@ namespace hooks
 	void drawUnitKillsString(BinDlg* dialog) // 00425DD0
 	{
 		Unit* unit = *activePortraitUnit;
-		helper::addTextToDialog(dialog, -21, playerNameList->player[unit->playerId].force_name);
+
+		static char buffer[256] = {};
+		strcpy_s(buffer, playerNameList->player[unit->playerId].force_name);
+		helper::addTextToDialog(dialog, -21, buffer);
 
 		/*
 		if (unit->id == UnitId::ZergSkryling

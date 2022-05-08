@@ -302,7 +302,6 @@ enum ExtTimerId
 	TimerAuralAssaultBlind,
 	TimerTarasqueSecondaryWeaponCooldown,
 	TimerAnticthonRevive,
-	TimerAnticthonFailureMode,
 	TimerAnthelionGravityWell,
 	TimerAnthelionEndlessEclipse,
 	TimerAnthelionAttackCooldown,
@@ -413,7 +412,6 @@ namespace RustId
 		CastEnthrallingAssault,
 		CastControlledDemolition,
 		CastEmergencyDetonation,
-		CastFailureMode,
 		CastSalvage,
 
 		CancelMindControl,

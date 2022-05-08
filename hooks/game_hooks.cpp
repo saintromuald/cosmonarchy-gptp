@@ -1092,31 +1092,9 @@ namespace hooks
 			} break;
 			case UnitId::SharedAnticthon:
 			{
-				// Failure Mode Cast
-				if (scbw::get_generic_rust_value(unit, RustId::CastFailureMode) == 1)
-				{
-					scbw::set_generic_rust_value(unit, RustId::CastFailureMode, 0);
-					if (!unitExt->timers[TimerAnticthonFailureMode])
-					{
-						unitExt->timers[TimerAnticthonFailureMode] = 30 * 24 + 1;
-					}
-				}
-
-				// Failure Mode End
-				if (unitExt->timers[TimerAnticthonFailureMode] == 1)
-				{
-					unit->heal(5 * 256 * unitExt->values[ValueAnticthonStacks], unit);
-					unitExt->values[ValueAnticthonStacks] = 0;
-				}
-
 				// Revive Status
 				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar;
 				u32 radius = 4 * 32;
-				if (unitExt->timers[TimerAnticthonFailureMode]) 
-				{
-					radius = 8 * 32;
-					flags &= ~Flags::Ally;
-				}
 				if (!unitExt->values[ValueReviveStarted])
 				{
 					auto match = cosmonarchyFinderMatch(unit, flags, {});

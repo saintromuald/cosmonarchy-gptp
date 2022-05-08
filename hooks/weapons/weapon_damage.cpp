@@ -938,9 +938,9 @@ namespace hooks
 				{
 					UnitExt* unitExt = globals.get_unit_ext(unit);
 					u32 dist = scbw::getDistanceFast(data.target->position, unit->position);
-					if (unit->id == UnitId::SharedAnticthon && (dist <= 4 * 32 || (dist <= 8 * 32 && unitExt->timers[TimerAnticthonFailureMode])))
+					if (unit->id == UnitId::SharedAnticthon && dist <= 4 * 32)
 					{
-						if (unitExt->timers[TimerAnticthonFailureMode] || scbw::isAlliedTo(data.target->playerId, unit->playerId))
+						if (scbw::isAlliedTo(data.target->playerId, unit->playerId))
 						{
 							hp += (1 + unitExt->values[ValueAnticthonStacks]) * 256;
 							unitExt->values[ValueAnticthonStacks]++;

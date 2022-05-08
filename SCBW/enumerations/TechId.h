@@ -6,7 +6,7 @@ namespace TechId {
 
 	// Shared
 		TargetGround					= 17, // Ensnare
-		AnticthonFailureMode			= 23, // Archon Warp
+		UnusedAnticthonFailureMode		= 23, // Archon Warp
 		CancelNewAbility				= 26, // Unused Tech 26 | used for: Land Grab, Mind Control, Enthralling Assault, Conjoining Root
 		LuminaryAuralAssault			= 30, // Optical Flare
 
