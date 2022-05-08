@@ -1450,10 +1450,10 @@ namespace hooks
 		// Larva Selection
 		u32 larva_value = scbw::get_generic_rust_value(unit, RustId::SelectLarvaType);
 		if (larva_value) {
-			u32 id = 205 + larva_value;
+			scbw::set_generic_rust_value(unit, RustId::SelectLarvaType, 0);
 			BTNSACT_SelectLarva();
 			if ((*activePortraitUnit)->id == UnitId::ZergLarva) {
-				helper::BTNSACT_ChangeButtons(id);
+				helper::BTNSACT_ChangeButtons(205 + larva_value);
 			}
 		}
 
