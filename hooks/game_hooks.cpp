@@ -1540,9 +1540,9 @@ namespace hooks
 						unitExt->values[ValueBlissfulEmbraceChannel] = 0;
 						if (!targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
 							targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = target->playerId + 1;
+							targetExt->values[ValueBlissfulEmbraceOriginalHealth] = target->hitPoints;
 						}
 						target->giveTo(unit->playerId);
-						targetExt->values[ValueBlissfulEmbraceOriginalHealth] = target->hitPoints;
 
 						// Make this a sprite
 						u32 image_id = ImageId::ZergAirDeathExplosion_Small;
