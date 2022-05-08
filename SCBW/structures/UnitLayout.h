@@ -189,7 +189,6 @@ enum ExtValueId
 	ValueClarionSFX,
 	ValueWraithLaserPos,
 	ValueHierophantOverlay,
-	ValueExecutingLanifectMoveOrder,
 	ValueEnsnaringBroodAbility,
 	ValuePetrificationStacks,
 	ValueIonCannonProjectilePos,
