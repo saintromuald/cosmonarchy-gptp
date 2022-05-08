@@ -23,6 +23,15 @@ namespace hooks
 		return false;
 	}
 
+	void remove_powerup_image_overlay(Unit* worker) // 004F3900
+	{
+		worker->sprite->removeOverlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
+		worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2);
+		worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis);
+		worker->sprite->removeOverlay(ImageId::GasRaw, ImageId::GasRaw2);
+		worker->resourceType = ResourceType::None;
+	}
+
 	u8 harvestResourceFrom(Unit* resource, bool isMineral)
 	{
 		u8 return_value;
@@ -97,14 +106,9 @@ namespace hooks
 			}
 			if (resourceAmount > 0)
 			{
-				if (worker->resourceType & ResourceType::Either) // Is carrying a mineral / gas
+				if (worker->resourceType & ResourceType::Either)
 				{
-					// Identical to function @ 0x004F3900
-					// Remove powerup shadows (mineral chunk shadow, psi emitter shadow, etc.)
-					worker->sprite->removeOverlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
-					worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2);
-					worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis);
-					worker->resourceType = ResourceType::None;
+					helper::remove_powerup_image_overlay(worker);
 				}
 
 				// Resource return multipliers

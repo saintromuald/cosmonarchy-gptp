@@ -11419,4 +11419,14 @@ namespace helper
 			POPAD
 		}
 	}
+
+	void remove_powerup_image_overlay(Unit* worker) {
+		const u32 func_address = 0x004F3900;
+		__asm {
+			PUSHAD
+			MOV EAX, worker
+			CALL func_address
+			POPAD
+		}
+	}
 }
