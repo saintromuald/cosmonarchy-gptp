@@ -11407,4 +11407,6 @@ namespace helper
 			POPAD
 		}
 	}
+
+	BTNSACT_ChangeButtons_Func* BTNSACT_ChangeButtons = (BTNSACT_ChangeButtons_Func*) 0x00459AF0;
 }

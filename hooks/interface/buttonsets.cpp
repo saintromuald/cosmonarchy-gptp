@@ -700,6 +700,18 @@ namespace hooks
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 						}
+						else if (current_button->reqVar == TechId::LarvalSubmenuSelectSwarm)							
+						{
+							current_button_state = BUTTON_STATE::Enabled;
+						}
+						else if (current_button->reqVar == TechId::LarvalSubmenuSelectAssault)							
+						{
+							current_button_state = BUTTON_STATE::Enabled;
+						}
+						else if (current_button->reqVar == TechId::LarvalSubmenuSelectControl)							
+						{
+							current_button_state = BUTTON_STATE::Enabled;
+						}
 					}
 
 					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding)

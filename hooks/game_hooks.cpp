@@ -26,6 +26,7 @@
 #include "trigger_system.h"
 #include "base_layouts.h"
 #include "token_parser.h"
+#include "hooks/interface/select_larva.h"
 
 const u32 hyperTrigger = 0x006509A0;
 
@@ -1443,6 +1444,16 @@ namespace hooks
 			if (!scbw::moveUnitImproved(unit, finalPos.x, finalPos.y))
 			{
 				unitExt->timers[TimerStrigaRepulsion] = 0;
+			}
+		}
+
+		// Larva Selection
+		u32 larva_value = scbw::get_generic_rust_value(unit, RustId::SelectLarvaType);
+		if (larva_value) {
+			u32 id = 205 + larva_value;
+			BTNSACT_SelectLarva();
+			if ((*activePortraitUnit)->id == UnitId::ZergLarva) {
+				helper::BTNSACT_ChangeButtons(id);
 			}
 		}
 

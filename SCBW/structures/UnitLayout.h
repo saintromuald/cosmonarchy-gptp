@@ -425,6 +425,8 @@ namespace RustId
 		ToggleDisruptionField,
 		ToggleTempoChange,
 
+		SelectLarvaType,
+
 		DisruptionWebDamage,
 		DirgeAttacker,
 	};

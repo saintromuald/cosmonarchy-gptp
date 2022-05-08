@@ -1220,4 +1220,7 @@ namespace helper
 	bool is_unit_enemy(Unit* unit, Unit* target);														// 0047B910
 	u32 play_transmission_from_location(u32 sfx_id, u32 volume, u32 misc, Unit* unit);					// 004BC270
 	s32 update_text_display(s32 update_case);															// 0048CB80
+
+	typedef void __fastcall BTNSACT_ChangeButtons_Func(s16 id);
+	extern BTNSACT_ChangeButtons_Func* BTNSACT_ChangeButtons;
 }

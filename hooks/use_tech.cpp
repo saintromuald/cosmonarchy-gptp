@@ -289,6 +289,39 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::TalosSalvage, 0, 0);
 			} break;
+			case TechId::LarvalSubmenuSelectSwarm:
+			{
+				s32 action = 1;
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				buf[0] = 0x99;
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = RustId::SelectLarvaType;
+				helper::QueueGameCommand(buf, 0xc);
+			} break;
+			case TechId::LarvalSubmenuSelectAssault:
+			{
+				s32 action = 2;
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				buf[0] = 0x99;
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = RustId::SelectLarvaType;
+				helper::QueueGameCommand(buf, 0xc);
+			} break;
+			case TechId::LarvalSubmenuSelectControl:
+			{
+				s32 action = 3;
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				buf[0] = 0x99;
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = RustId::SelectLarvaType;
+				helper::QueueGameCommand(buf, 0xc);
+			} break;
 			default:
 			{
 			}
