@@ -1624,7 +1624,7 @@ namespace scbw
 		return unitExt->unitVectors[UnitVectorPhaseLinkClarions].size();
 	}
 
-	void phaseLinkDamage(Unit* unit, s32 damage, hooks::WeaponDamageData& data)
+	void linkDamage(Unit* unit, s32 damage, hooks::WeaponDamageData& data)
 	{
 		hooks::WeaponDamageData newData = {
 			damage,
@@ -1651,7 +1651,7 @@ namespace scbw
 		s32 damage = data.finalDamage;
 		if (links.size() == 0 || unit->shields < 256)
 		{
-			phaseLinkDamage(unit, damage, data);
+			linkDamage(unit, damage, data);
 		}
 		else
 		{
@@ -1659,31 +1659,30 @@ namespace scbw
 			{
 				return linkUnit->shields < 256;
 			}), links.end());
-			if (!links.size())
+			if (links.size())
 			{
-				return;
+				s32 divided = damage / links.size();
+				auto it = std::find(links.begin(), links.end(), unit);
+				if (it != links.end())
+				{
+					links.erase(it);
+				}
+				Unit* damageOriginUnit = data.attacker;
+				if (!damageOriginUnit)
+				{
+					damageOriginUnit = unit;
+				}
+				s8 oldDirection = data.direction;
+				for (Unit* linkUnit : links)
+				{
+					s32 unitDamage = std::min(divided, linkUnit->shields);
+					damage -= unitDamage;
+					data.direction = scbw::getAngle(damageOriginUnit->getX(), damageOriginUnit->getY(), linkUnit->getX(), linkUnit->getY());
+					linkDamage(linkUnit, unitDamage, data);
+				}
+				data.direction = oldDirection;
 			}
-			s32 divided = damage / links.size();
-			auto it = std::find(links.begin(), links.end(), unit);
-			if (it != links.end())
-			{
-				links.erase(it);
-			}
-			s8 oldDirection = data.direction;
-			Unit* damageOriginUnit = data.attacker;
-			if (!damageOriginUnit)
-			{
-				damageOriginUnit = unit;
-			}
-			for (Unit* linkUnit : links)
-			{
-				s32 unitDamage = std::min(divided, linkUnit->shields);
-				damage -= unitDamage;
-				data.direction = scbw::getAngle(damageOriginUnit->getX(), damageOriginUnit->getY(), linkUnit->getX(), linkUnit->getY());
-				phaseLinkDamage(linkUnit, unitDamage, data);
-			}
-			data.direction = oldDirection;
-			phaseLinkDamage(unit, damage, data);
+			linkDamage(unit, damage, data);
 		}
 	}
 
@@ -1704,5 +1703,16 @@ namespace scbw
 			links.insert(link.begin(), link.end());
 		}
 		return std::vector<Unit*>(links.begin(), links.end());
+	}
+
+	void spreadSovrolethDamage(hooks::WeaponDamageData& data)
+	{
+		Unit* unit = data.target;
+		UnitArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
+		s32 damage = data.finalDamage / (sovroleths.size + 1);
+		for (u32 i = 0; i < sovroleths.size; ++i) {
+			linkDamage(sovroleths.units[i], damage, data);
+		}
+		linkDamage(unit, damage, data);
 	}
 }

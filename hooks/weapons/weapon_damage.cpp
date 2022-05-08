@@ -141,12 +141,17 @@ namespace hooks
 			}
 		}
 
-		if (!data.dontProcPhaseLink) // damage from phase link was already calculated
+		if (!data.dontProcLinkDamage) // damage from links was already calculated
 		{
 			weaponDamage_damageModifiers(data);
 		}
 
-		if (!data.dontProcPhaseLink && scbw::hasClarionLinks(data.target))
+		if (!data.dontProcLinkDamage && data.target->id == UnitId::ZergSovroleth)
+		{
+			data.finalDamage /= 2;
+			scbw::spreadSovrolethDamage(data);
+		}
+		else if (!data.dontProcLinkDamage && scbw::hasClarionLinks(data.target))
 		{
 			data.finalDamage /= 2;
 			scbw::spreadClarionDamage(data);
@@ -273,7 +278,7 @@ namespace hooks
 		}
 
 		// Olympian Mythical Might - execute enemies below 10% HP
-		if (!data.dontProcPhaseLink && (data.weaponId == WeaponId::OlympianMountainGun || data.weaponId == WeaponId::OlympianTitansFist))
+		if (!data.dontProcLinkDamage && (data.weaponId == WeaponId::OlympianMountainGun || data.weaponId == WeaponId::OlympianTitansFist))
 		{
 			if (data.target->hitPoints < data.target->getMaxHpRaw() * 0.1)
 			{

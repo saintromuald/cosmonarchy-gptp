@@ -28,19 +28,23 @@ namespace hooks
 			Point16 pos;
 
 			unit->orderSignal &= ~4;
-			bool vorvaling = false;
+			bool no_two_units = false;
 			auto origin = unit->eggOrigin;
-			if (origin == UnitId::ZergZethrokor)
+			UnitExt* unitExt = globals.get_unit_ext(unit);
+			if (origin == UnitId::ZergZethrokor || unitExt->values[ValueDontBirthTwo])
 			{
-				vorvaling = true;
+				no_two_units = true;
 			}
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg
 				|| unit->previousUnitType == UnitId::ZergCocoon)
 			{
 				bTwinEggOrCocoon = false;
 			}
+			if (unitExt->values[ValueDontBirthTwo]) {
+				bTwinEggOrCocoon = true;
+			}
 			Unit* unit2 = nullptr;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !vorvaling)
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units)
 			{
 				unit2 = helper::zergDualBirth(unit); // zerg dual birth
 				if (unit2)

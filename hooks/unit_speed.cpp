@@ -29,6 +29,12 @@ namespace hooks
 			}
 		}
 
+		// Sovroleth - Writhing Web
+		if (unit->id == UnitId::ZergSovroleth) {
+			UnitArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
+			speed *= pow(0.95, sovroleths.size);
+		}
+
 		// Crucible Aura
 		speed /= 1 + 0.05 * unitExt->unitVectors[UnitVectorCrucibles].size();
 

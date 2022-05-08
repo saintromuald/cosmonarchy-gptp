@@ -241,10 +241,11 @@ enum ExtValueId
 	ValueBlissfulEmbraceChannel,
 	ValueBlissfulEmbraceOriginalPlayer,
 	ValueBlissfulEmbraceOriginalHealth,
-	ValueAIWorkerChosenForExpansion,
-	ValueAIWorkerChosenX,
-	ValueAIWorkerChosenY,
+	ValueDontBirthTwo,
 
+	ValueAI_WorkerChosenForExpansion,
+	ValueAI_WorkerChosenX,
+	ValueAI_WorkerChosenY,
 	ValueAI_KitingSignal,
 	ValueAI_BunkerCustom,
 
@@ -311,6 +312,7 @@ enum ExtTimerId
 	TimerMagnetarAttraction,
 	TimerSalvageStunTimer,
 	TimerCreepMorphOverlay,
+	TimerCorpseCocoonHatch,
 	
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

@@ -47,8 +47,17 @@ namespace hooks
 			bonusAmount = 0;
 		}
 
+		f32 scale = 1;
+		scale += 0.02 * unitExt->values[ValueAnticthonStacks];
+
+		// Sovroleth - Writhing Web
+		if (unit->id == UnitId::ZergSovroleth) {
+			UnitArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
+			scale +=  0.05 * sovroleths.size;
+		}
+
 		// Compile variable for use in height advantage calculations
-		u32 seekRange = units_dat::SeekRange[unit->id] + bonusAmount;
+		u32 seekRange = units_dat::SeekRange[unit->id] * scale + bonusAmount;
 
 		// Height advantage
 		seekRange += scbw::get_cliff_advantage(unit, target, 0) * 2;
@@ -102,12 +111,20 @@ namespace hooks
 			}
 		}
 
+		f32 scale = 1;
+
 		// Anticthon - Passive
-		bonusAmount += weapons_dat::MaxRange[weaponId] * 0.02 * unitExt->values[ValueAnticthonStacks];
+		scale += 0.02 * unitExt->values[ValueAnticthonStacks];
+
+		// Sovroleth - Writhing Web
+		if (unit->id == UnitId::ZergSovroleth) {
+			UnitArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
+			scale +=  0.05 * sovroleths.size;
+		}
 
 		// Height advantage
 		bonusAmount += scbw::get_cliff_advantage(unit, target, weaponId) * 32;
 
-		return weapons_dat::MaxRange[weaponId] + bonusAmount;
+		return weapons_dat::MaxRange[weaponId] * scale + bonusAmount;
 	}
 }

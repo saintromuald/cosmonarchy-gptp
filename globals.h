@@ -197,4 +197,5 @@ namespace scbw
 	bool hasClarionLinks(Unit* unit);
 	std::vector<Unit*> getClarionLinks(Unit* unit);
 	void spreadClarionDamage(hooks::WeaponDamageData& data);
+	void spreadSovrolethDamage(hooks::WeaponDamageData& data);
 }

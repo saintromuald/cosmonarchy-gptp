@@ -553,6 +553,28 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::ZergSovroleth:
+			{
+				// Update Speed
+				unit->updateSpeed();
+
+				// Corpse Cocoon
+				std::vector<Thingy*> corpses = CorpseFinder::findCorpses(unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom());
+				for (Thingy* corpse : corpses) {
+					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
+						corpse->sprite->flags |= SpriteFlags::Flag04;
+						corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
+						Unit* egg = scbw::createUnitInGame(UnitId::ZergEgg, unit->playerId, unit->position.x, unit->position.y, unit);
+						if (egg) {
+							egg->sprite->playIscriptAnim(IscriptAnimation::Walking, true);
+							egg->buildQueue[egg->buildQueueSlot] = UnitId::ZergSovroleth;
+
+							UnitExt* eggExt = globals.get_unit_ext(egg);
+							eggExt->timers[TimerCorpseCocoonHatch] = 2 * 24;
+						}
+					}
+				}
+			} break;
 			case UnitId::ZergEgg:
 			case UnitId::ZergCocoon:
 			case UnitId::ZergQuazilisk:
@@ -570,6 +592,20 @@ namespace hooks
 						&& !unit->getOverlay(ImageId::CreepMorphOverlay)) {
 						unit->sprite->createUnderlay(ImageId::CreepMorphOverlay, 0, 2);
 					}
+				}
+
+				if (unitExt->timers[TimerCorpseCocoonHatch] == 1 + 19) {
+					unit->playIscriptAnim(IscriptAnimation::GndAttkInit);
+				}
+				if (unitExt->timers[TimerCorpseCocoonHatch] == 1) {
+					helper::replaceUnitWithType(unit, UnitId::ZergSovroleth);
+
+					helper::playMorphingCompleteSound(unit);
+					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+					helper::initBuilding(unit, 1);
+					unit->playIscriptAnim(IscriptAnimation::SpecialState1);
+					unitExt->values[ValueDontBirthTwo] = true;
+					unit->orderComputer(OrderId::ZergBirth);
 				}
 			} break;
 			case UnitId::ProtossStarSovereign:
@@ -1958,11 +1994,11 @@ namespace hooks
 			}
 		}
 
-		if (unitExt->values[ValueAIWorkerChosenForExpansion] && unit->resourceType == ResourceType::None) {
-			unit->orderTo(OrderId::Move, unitExt->values[ValueAIWorkerChosenX], unitExt->values[ValueAIWorkerChosenY]);
-			unitExt->values[ValueAIWorkerChosenForExpansion] = 0;
-			unitExt->values[ValueAIWorkerChosenX] = 0;
-			unitExt->values[ValueAIWorkerChosenY] = 0;
+		if (unitExt->values[ValueAI_WorkerChosenForExpansion] && unit->resourceType == ResourceType::None) {
+			unit->orderTo(OrderId::Move, unitExt->values[ValueAI_WorkerChosenX], unitExt->values[ValueAI_WorkerChosenY]);
+			unitExt->values[ValueAI_WorkerChosenForExpansion] = 0;
+			unitExt->values[ValueAI_WorkerChosenX] = 0;
+			unitExt->values[ValueAI_WorkerChosenY] = 0;
 		}
 	}
 
