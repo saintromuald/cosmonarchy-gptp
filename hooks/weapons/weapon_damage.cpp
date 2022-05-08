@@ -360,6 +360,24 @@ namespace hooks
 					}
 				}
 			} break;
+			case WeaponId::AkistrokorHarryingTalons:
+			{
+				if (data.attacker) {
+					u32 infested_count = 0;
+
+					UnitArray units = UnitSearchRadial(data.attacker->position, 8 * 32);
+					UnitArrayFilter(&units, data.attacker, FilterAlly);
+					for (u32 i = 0; i < units.size; ++i) {
+						Unit* unit = units.units[i];
+						UnitExt* unitExt = globals.get_unit_ext(unit);
+						if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
+							infested_count++;
+						}
+					}
+
+					data.finalDamage += 4 * 256;
+				}
+			} break;
 		}
 
 		// Observance Armor Rend
