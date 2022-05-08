@@ -2,6 +2,21 @@
 #include "../hook_tools.h"
 
 namespace {
+	void __declspec(naked) remove_powerup_image_overlay_Wrapper() // 004F3900
+	{
+		static Unit* worker;
+		__asm
+		{
+			MOV worker, EAX
+			PUSHAD
+		}
+		hooks::remove_powerup_image_overlay(worker);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
 	void __declspec(naked) transferResourceToWorkerWrapper() // 004696D0
 	{
 		static Unit* worker;
@@ -129,6 +144,7 @@ namespace hooks
 {
 	void injectHarvestResource()
 	{
+		jmpPatch(remove_powerup_image_overlay_Wrapper,						0x004F3900, 2);
 		jmpPatch(transferResourceToWorkerWrapper,							0x004696D0, 0);
 		jmpPatch(unit_is_geyser_ex_Wrapper,									0x00468930, 5);
 		jmpPatch(order_enter_exit_gas_Wrapper,								0x00469980, 1);

@@ -1228,4 +1228,6 @@ namespace helper
 	extern updateSelectedUnitData_Func* updateSelectedUnitData;
 
 	void update_hud_info();																				// 004D93F0
+
+	void remove_powerup_image_overlay(Unit* worker);													// 004F3900
 }

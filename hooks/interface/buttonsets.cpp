@@ -1420,6 +1420,11 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
+							else if ((*activePortraitUnit)->id == UnitId::ZergAkistrokor &&  // Akistrokor Devouring Instinct passive
+								current_button->iconID == IconId::SuicideScourge)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 							else if ((*activePortraitUnit)->id == UnitId::ZergSovroleth &&  // Sovroleth Writhing Web passive
 								current_button->iconID == IconId::Ensnare)
 							{
