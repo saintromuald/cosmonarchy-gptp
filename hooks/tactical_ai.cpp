@@ -1072,60 +1072,58 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 		}
 		else if (unit->id == UnitId::ProtossLanifect)
 		{
-			auto web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
-			if (unitExt->values[ValueExecutingLanifectMoveOrder] != 0)
-			{
-				if (unit->mainOrderId != OrderId::Move)
-				{
-					unitExt->values[ValueExecutingLanifectMoveOrder] = 0;
+			u32 web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
+			u32 lanifects = 0;
+			u32 webs = 0;
+			cosmonarchyFinderLoop(unit, unit->position, AILanifectSeekRange, Flags::Own, {}, [&](Unit* target) {
+				if (target->id == UnitId::ProtossLanifect) {
+					lanifects += 1;
+					if (scbw::get_generic_rust_value(target, RustId::ToggleDisruptionField)) {
+						webs += 1;
+					}
 				}
-			}
-			u32 webs = cosmonarchyUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
-			u32 allies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::CanAttackOrCast | Flags::NotWorker, {});
-			u32 enemies = cosmonarchyUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::CanAttackOrCast | Flags::NotWorker, {});
-			f64 percentage = (f64)(unit->hitPoints + unit->shields) / (f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256.0);
-			if (web_state == 0)
+			});
+
+			u32 allies = cosmonarchyUnitCount(unit, unit->position, AILanifectSeekRange, Flags::IncludingSelf | Flags::Ally, {});
+			u32 enemies = cosmonarchyUnitCount(unit, unit->position, AILanifectSeekRange, Flags::Enemy, {});
+			u32 threshold = std::min(std::min(ceilf(enemies / 4), ceilf(lanifects / 4)), ceilf(allies / 2));
+			if (web_state || webs < threshold)
 			{
-				if (webs == 0
-					&& percentage >= AICorsairLifePercentage
-					&& allies >= AIWebAllyMinCount
-					&& enemies >= AIWebEnemyMinCount)
-				{
-					Unit* mostSignificant = nullptr;
-					auto maxSignificance = 0;
-					cosmonarchyFinderLoop(unit, unit->sprite->position, 128, Flags::Enemy, {}, [&](Unit* u)
-					{
-						auto significance = cosmonarchyUnitCount(u, u->position, AICorsairEnemySeekRange / 2,
-							Flags::NotSelf | Flags::Ally, {});
-						if (significance > maxSignificance)
-						{
-							maxSignificance = significance;
-							mostSignificant = u;
+				Unit* best_target = 0;
+				s32 max_score = INT_MIN;
+				cosmonarchyFinderLoop(unit, unit->position, AILanifectSeekRange, Flags::Enemy, {}, [&](Unit* target) {
+					bool valid = true;
+					cosmonarchyFinderLoop(unit, target->position, AILanifectCheckRange / 2, Flags::Own, {}, [&](Unit* dweb) {
+						if (scbw::get_generic_rust_value(dweb, RustId::ToggleDisruptionField)) {
+							valid = false;
 						}
 					});
-					if (mostSignificant != nullptr)
-					{
-						unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
-						scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 1);
-						unitExt->timers[TimerAI_DisruptionField] = AIWebTimer;
-						unitExt->timers[TimerAI_KitingCooldown] = 5 * 24;
-					}
-				}
-			}
-			else
-			{
-				if (!(allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount))
-				{
-					if (unitExt->timers[TimerAI_DisruptionField] == 0)
-					{
-						scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
-						unitExt->values[ValueExecutingLanifectMoveOrder] = 0;
-						if (unit->mainOrderId == OrderId::Move)
-						{
-							unit->orderTo(OrderId::Stop);
+					if (valid) {
+						s32 score = cosmonarchyUnitCount(unit, target->position, AILanifectCheckRange, Flags::Enemy, {});
+						score -= cosmonarchyUnitCount(unit, target->position, AILanifectCheckRange, Flags::Ally, {});
+						score -= scbw::getDistanceFast(unit->position, target->position) / 128;
+						if (score > max_score) {
+							max_score = score;
+							best_target = target;
 						}
 					}
+				});
+				if (best_target) {
+					unit->orderTo(OrderId::Move, best_target->position.x, best_target->position.y);
+					scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 1);
+					unitExt->timers[TimerAI_DisruptionField] = AIWebTimer;
+					unitExt->timers[TimerAI_KitingCooldown] = AIWebTimer;
 				}
+			}
+
+			if (web_state && webs > threshold)
+			{
+				scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
+				if (unit->mainOrderId == OrderId::Move)
+				{
+					unit->orderToIdle();
+				}
+				unitExt->timers[TimerAI_KitingCooldown] = 0;
 			}
 		}
 		else if (unit->id == UnitId::ProtossStarSovereign && unitExt->timers[TimerAI_GriefOfAllGods] == 0)

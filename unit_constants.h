@@ -105,14 +105,9 @@ const s32 MindTyrantMaelstromTimer = 16; // 5 seconds
 const s32 GodsMadeFleshEnergyDrain = 100;
 
 // Lanifect
-const s32 AIWebSeekRange = 96;
-const s32 AICorsairAllySeekRange = 12 * 32;
-const s32 AICorsairEnemySeekRange = 4 * 32;
-const f64 AICorsairLifePercentage = 0.5;
-const s32 AIWebMinEnergy = 30;
-const s32 AIWebAllyMinCount = 3;
-const s32 AIWebEnemyMinCount = 2;
-const s32 AIWebTimer = 3 * 24;
+const s32 AILanifectCheckRange = 3 * 32;
+const s32 AILanifectSeekRange = 8 * 32;
+const s32 AIWebTimer = 1 * 24;
 
 // Didact
 const s32 DidactStasisFieldTimer = 35; // roughly 12 seconds
