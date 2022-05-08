@@ -1451,10 +1451,12 @@ namespace hooks
 		u32 larva_value = scbw::get_generic_rust_value(unit, RustId::SelectLarvaType);
 		if (larva_value) {
 			scbw::set_generic_rust_value(unit, RustId::SelectLarvaType, 0);
-			BTNSACT_SelectLarva();
-			helper::update_hud_info();
-			if (*activePortraitUnit && (*activePortraitUnit)->id == UnitId::ZergLarva) {
-				helper::BTNSACT_ChangeButtons(205 + larva_value);
+			if (unit->playerId == *LOCAL_NATION_ID) {
+				BTNSACT_SelectLarva();
+				helper::update_hud_info();
+				if (*activePortraitUnit && (*activePortraitUnit)->id == UnitId::ZergLarva) {
+					helper::BTNSACT_ChangeButtons(205 + larva_value);
+				}
 			}
 		}
 
