@@ -19,7 +19,7 @@ namespace hooks
 		f64 speed = 1;
 		// Set additives based on status effects and movespeed upgrades
 		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
-		s32 decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
+		s32 decrease = (unit->ensnareTimer ? 1 : 0);
 
 		if (decrease > 0)
 		{

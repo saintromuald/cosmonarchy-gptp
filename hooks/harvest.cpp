@@ -46,9 +46,9 @@ namespace hooks
 				}
 			}
 			else if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED
-					&& isGasContainer(resource->id))
+			&&		 isGasContainer(resource->id))
 			{
-				scbw::showErrorMessageWithSfx(resource->playerId, 875, 20); // Gas depleted message and sound
+				//scbw::showErrorMessageWithSfx(resource->playerId, 875, 20); // Gas depleted message and sound
 			}
 			return_value = RESOURCE_HARVESTED;
 		}
@@ -61,7 +61,6 @@ namespace hooks
 		bool isMineral = false;
 		bool bEndThere = false;
 
-		// TODO: Add depleted mineral chunk to worker
 		if (resource->id >= UnitId::ResourceMineralField &&
 			resource->id <= UnitId::ResourceMineralFieldType3)
 		{
@@ -82,7 +81,7 @@ namespace hooks
 		}
 		else if (resource->id == UnitId::ResourceVespeneGeyser)
 		{
-			chunkImageId = ImageId::ZergGasSacType1;
+			chunkImageId = ImageId::GasRaw;
 		}
 		else
 		{
@@ -94,7 +93,7 @@ namespace hooks
 			u8 resourceAmount = harvestResourceFrom(resource, isMineral);
 			if (resourceAmount < RESOURCE_HARVESTED)
 			{
-				chunkImageId += 1;	// Use depleted (smaller) chunk image
+				chunkImageId += 1;	// Use depleted resource image
 			}
 			if (resourceAmount > 0)
 			{

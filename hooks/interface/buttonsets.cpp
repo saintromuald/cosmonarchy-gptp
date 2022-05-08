@@ -1420,6 +1420,16 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
+							else if ((*activePortraitUnit)->id == UnitId::ZergSovroleth &&  // Sovroleth Writhing Web passive
+								current_button->iconID == IconId::Ensnare)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
+							else if ((*activePortraitUnit)->id == UnitId::ZergSovroleth &&  // Sovroleth Corpse Cocoon passive
+								current_button->iconID == IconId::SubterraneanTentacle)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 							else if ((*activePortraitUnit)->id == UnitId::ZergIroleth &&  // Iroleth Endomorphic Accelerant passive
 								current_button->iconID == IconId::ZergBasicBuildings)
 							{

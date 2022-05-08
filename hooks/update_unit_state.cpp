@@ -330,7 +330,7 @@ namespace hooks
 				if (unit->unusedTimer > 0)
 				{
 					unit->_unknown_0x066 = 72;
-					if (unitExt->timers[TimerMineralSpecialRegen])
+					if (unitExt->timers[TimerResourceBoostedRegen])
 					{
 						unit->_unknown_0x066 = 36;
 					}
@@ -338,7 +338,7 @@ namespace hooks
 				else
 				{
 					unit->_unknown_0x066 = 36;
-					if (unitExt->timers[TimerMineralSpecialRegen])
+					if (unitExt->timers[TimerResourceBoostedRegen])
 					{
 						unit->_unknown_0x066 = 18;
 					}
@@ -346,13 +346,14 @@ namespace hooks
 
 				// Actual resource regeneration
 				bool update_image = true;
-				if (unit->building.resource.resourceAmount < 9999
-					&& (unit->id == UnitId::ResourceVespeneGeyser || unitExt->timers[TimerMineralSpecialRegen]))
+				if (unit->building.resource.resourceAmount < 7500
+				&& (unit->id == UnitId::ResourceVespeneGeyser
+				|| (scbw::unit_id_is_gas_structure(unit->id, true) && unitExt->timers[TimerResourceBoostedRegen])))
 				{
 					unit->building.resource.resourceAmount++;
 					scbw::refreshConsole();
 				}
-				else if (unit->building.resource.resourceAmount < 9999)
+				else if (unit->building.resource.resourceAmount < 2500)
 				{
 					unit->building.resource.resourceAmount++;
 					if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3)
