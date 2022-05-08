@@ -1965,6 +1965,13 @@ namespace hooks
 				unit->removeOverlay(overlay);
 			}
 		}
+
+		if (unitExt->values[ValueAIWorkerChosenForExpansion] && unit->resourceType == ResourceType::None) {
+			unit->orderTo(OrderId::Move, unitExt->values[ValueAIWorkerChosenX], unitExt->values[ValueAIWorkerChosenY]);
+			unitExt->values[ValueAIWorkerChosenForExpansion] = 0;
+			unitExt->values[ValueAIWorkerChosenX] = 0;
+			unitExt->values[ValueAIWorkerChosenY] = 0;
+		}
 	}
 
 	bool gameOn()
