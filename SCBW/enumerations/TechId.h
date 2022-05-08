@@ -3,8 +3,6 @@
 namespace TechId {
 	enum Enum {
 		// Cosmonarchy \\
-	
-	//	UnusedTech38					= 38, // Unused Tech 38
 
 	// Shared
 		TargetGround					= 17, // Ensnare
@@ -29,7 +27,9 @@ namespace TechId {
 
 	// Zerg
 		MatralethEnsnaringBrood			= 13, // Spawn Broodlings
-		LarvalSubmenuSelect				= 33, // Unused Tech 33
+		LarvalSubmenuSelectControl		= 28, // Dark Archon Meld
+		LarvalSubmenuSelectSwarm		= 33, // Unused Tech 33
+		LarvalSubmenuSelectAssault		= 38, // Unused Tech 38
 		AkistrokorBlissfulEmbrace		= 35, // Unused Tech 35
 
 	// techdata.dat is not yet extended
