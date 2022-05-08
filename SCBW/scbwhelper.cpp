@@ -11409,4 +11409,5 @@ namespace helper
 	}
 
 	BTNSACT_ChangeButtons_Func* BTNSACT_ChangeButtons = (BTNSACT_ChangeButtons_Func*) 0x00459AF0;
+	updateSelectedUnitData_Func* updateSelectedUnitData = (updateSelectedUnitData_Func*) 0x004C38B0;
 }

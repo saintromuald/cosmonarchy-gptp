@@ -1223,4 +1223,7 @@ namespace helper
 
 	typedef void __fastcall BTNSACT_ChangeButtons_Func(s16 id);
 	extern BTNSACT_ChangeButtons_Func* BTNSACT_ChangeButtons;
+
+	typedef char __cdecl updateSelectedUnitData_Func();
+	extern updateSelectedUnitData_Func* updateSelectedUnitData;
 }

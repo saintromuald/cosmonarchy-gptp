@@ -248,6 +248,8 @@ enum ExtValueId
 	ValueAI_KitingSignal,
 	ValueAI_BunkerCustom,
 
+	ValueSetCommandCard,
+
 	ValueCount,
 };
 

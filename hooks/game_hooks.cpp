@@ -1447,13 +1447,23 @@ namespace hooks
 			}
 		}
 
+		// Set Command Card
+		if (unitExt->values[ValueSetCommandCard]) {
+			if (unit == *activePortraitUnit) {
+				helper::BTNSACT_ChangeButtons(unitExt->values[ValueSetCommandCard]);
+			}
+			unitExt->values[ValueSetCommandCard] = 0;
+		}
+
 		// Larva Selection
 		u32 larva_value = scbw::get_generic_rust_value(unit, RustId::SelectLarvaType);
 		if (larva_value) {
 			scbw::set_generic_rust_value(unit, RustId::SelectLarvaType, 0);
 			BTNSACT_SelectLarva();
-			if ((*activePortraitUnit)->id == UnitId::ZergLarva) {
-				helper::BTNSACT_ChangeButtons(205 + larva_value);
+			helper::updateSelectedUnitData(); // Required to update *activePortraitUnit
+			if (*activePortraitUnit && (*activePortraitUnit)->id == UnitId::ZergLarva) {
+				UnitExt* activeExt = globals.get_unit_ext(*activePortraitUnit);
+				activeExt->values[ValueSetCommandCard] = 205 + larva_value; // This has to be a two step process, because BW is stupid
 			}
 		}
 
