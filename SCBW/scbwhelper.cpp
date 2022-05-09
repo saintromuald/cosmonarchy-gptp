@@ -11478,8 +11478,8 @@ namespace helper
 		__asm {
 			PUSHAD
 			MOV EDX, unit_id
-			PUSH x
 			PUSH y
+			PUSH x
 			MOV EAX, completed
 			MOV ECX, rect
 			CALL func_address
