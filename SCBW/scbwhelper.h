@@ -1231,7 +1231,14 @@ namespace helper
 
 	void remove_powerup_image_overlay(Unit* worker);														// 004F3900
 
-	void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, u32 tile_x, u32 tile_y);	// 0x00472E50
+	void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, u32 tile_x, u32 tile_y);	// 00472E50
 	void set_map_tile_flags(u32 flags, u32 tile_width, u32 tile_height, u32 tile_x, u32 tile_y);			// 00472EB0
 	void set_creep(u32 tile_x, u32 tile_y, u32 tile_width, u32 tile_height, b32 skip_border);				// 0045CD50
+
+	s32 GetCreepSpreadArea(u32 unit_id, u32 x, u32 y, b32 completed, Box32* rect);							// 00413DB0
+
+	typedef s32 ClipCreepAreaInBounds_Callback(u32, u32, u32, u32, u32, u32, u32);
+	s32 ClipCreepAreaInBounds(u32 tile_x, u32 tile_y, ClipCreepAreaInBounds_Callback* callback);			// 00413D10
+
+	s32 MarkCreepToDisappear(u32 tile_x, u32 tile_y);														// 0047DD60
 }

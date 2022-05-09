@@ -15,6 +15,7 @@ namespace hooks
 	bool runCreepRandomizer(u16* tileBackup, u8* creepOverlayVal, u32* retval, u16* tile, u32 arg); // 004140A0
 //	char applyCreepAtLocationFromUnitType(s16 a1, s32 a2, s32 a3);									// 004148F0
 	u32 BTNSCOND_ZergBuildingRally(u32 unused, u32 player, Unit* unit);								// 00429740
+	s32 UpdateCreepDisappearanceUnit(Unit* unit);													// 0047DD60
 
 	void injectLarvaCreepSpawnHooks();
 }

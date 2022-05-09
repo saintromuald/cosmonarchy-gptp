@@ -11471,4 +11471,51 @@ namespace helper
 			POPAD
 		}
 	}
+
+	s32 GetCreepSpreadArea(u32 unit_id, u32 x, u32 y, b32 completed, Box32* rect) {
+		static s32 result;
+		const u32 func_address = 0x00413DB0;
+		__asm {
+			PUSHAD
+			MOV EDX, unit_id
+			PUSH x
+			PUSH y
+			MOV EAX, completed
+			MOV ECX, rect
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 ClipCreepAreaInBounds(u32 tile_x, u32 tile_y, ClipCreepAreaInBounds_Callback* callback) {
+		static s32 result;
+		const u32 func_address = 0x00413D10;
+		__asm {
+			PUSHAD
+			PUSH callback
+			MOV EDI, tile_y
+			MOV EBX, tile_x
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 MarkCreepToDisappear(u32 tile_x, u32 tile_y) {
+		static s32 result;
+		const u32 func_address = 0x0047DD60;
+		__asm {
+			PUSHAD
+			MOV EBX, tile_y
+			PUSH tile_x
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 }

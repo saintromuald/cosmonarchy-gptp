@@ -60,20 +60,20 @@ namespace hooks
 			return 0;
 		}
 
-		if (!target->pAI) {
-			return 1;
-		}
-
 		// Separate check for AI-controlled units
-		if (target->mainOrderId == OrderId::RechargeShields1 || target->mainOrderId == OrderId::Pickup4) {
+		if (target->pAI) {
+			if (target->mainOrderId == OrderId::RechargeShields1 || target->mainOrderId == OrderId::Pickup4) {
+				return 0;
+			}
+
+			if (target->orderQueueHead && target->orderQueueHead->orderId == OrderId::RechargeShields1) {
+				return 1;
+			}
+
 			return 0;
 		}
 
-		if (target->orderQueueHead && target->orderQueueHead->orderId == OrderId::RechargeShields1) {
-			return 1;
-		}
-
-		return 0;
+		return 1;
 	}
 
 	// The order process run by a unit when recharging shields

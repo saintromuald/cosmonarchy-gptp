@@ -295,6 +295,32 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) UpdateCreepDisappearanceUnit_Wrapper() // 0047DF90
+	{
+		static Unit* unit;
+		static u32 result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::UpdateCreepDisappearanceUnit(unit);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
+
+
 }
 
 namespace hooks
@@ -318,6 +344,7 @@ namespace hooks
 		jmpPatch(getCreepRegion_Wrapper, 0x00413DB0);
 		jmpPatch(spreadsCreep_Wrapper, 0x00413870);
 		jmpPatch(runCreepRandomizer_Wrapper, 0x004140A0);
+		jmpPatch(UpdateCreepDisappearanceUnit_Wrapper, 0x0047DF90, 0);
 
 		jmpPatch(bugWrapper, 0x0047DCCA); // attempt to fix Bug
 

@@ -200,7 +200,7 @@ namespace hooks
 				helper::updateUnitStatsFinishBuilding(building);
 				helper::updateUnitStrength(building);
 				// relate to building placement / taking room around?
-				helper::stopCreepDisappearingAtBuilding(building);
+				;
 				current_image = building->sprite->images.head;
 				while (current_image != nullptr)
 				{

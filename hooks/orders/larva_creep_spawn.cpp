@@ -520,4 +520,55 @@ namespace hooks
 		return result;
 	}
 	*/
+
+	s32 UpdateCreepDisappearanceUnit(Unit* unit)
+	{
+		Box32 rect = {};
+		bool does_spread = helper::GetCreepSpreadArea(unit->id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &rect);
+		u32 top_creep_px = 32 * rect.top - unit->position.y + 16;
+		u32 tile_flags = unit->id == UnitId::ZergExcisant ? 0x10000000 : 402653184;
+		if (rect.top > rect.bottom)
+		{
+		exit:
+			*dying_unit_creep_disappearance_count = 0;
+			return 1;
+		}
+		else
+		{
+			u32 rect_top = rect.top;
+			u32 rect_left = rect.left;
+			u32 pos_x = 0;
+			for (u32 i = 32 * rect.left; ; i = 32 * rect.left)
+			{
+				pos_x = i - unit->position.x + 16;
+				if (rect_left <= rect.right)
+				{
+					break;
+				}
+			calculate_and_maybe_exit:
+				++rect_top;
+				top_creep_px += 32;
+				if (rect_top > rect.bottom)
+				{
+					goto exit;
+				}
+			}
+			while (((*current_tiles)[rect_left + rect_top * *map_creep_width] & 0x7FF0) != 16
+				|| does_spread && 100 * pos_x * pos_x + (top_creep_px * top_creep_px << 8) > 10240000
+				|| tile_flags & (*activeTileHandle)[rect_left + rect_top * mapTileSize->width]
+				|| helper::ClipCreepAreaInBounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
+				|| helper::MarkCreepToDisappear(rect_left, rect_top))
+			{
+				++rect_left;
+				pos_x += 32;
+				if (rect_left > rect.right)
+				{
+					rect_left = rect.left;
+					goto calculate_and_maybe_exit;
+				}
+			}
+			return 0;
+		}
+		return 0;
+	}
 }
