@@ -526,10 +526,9 @@ namespace hooks
 		Box32 rect = {};
 		bool does_spread = helper::GetCreepSpreadArea(unit->id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &rect);
 		u32 top_creep_px = 32 * rect.top - unit->position.y + 16;
-		u32 tile_flags = unit->id == UnitId::ZergExcisant ? 0x10000000 : 402653184;
+		u32 tile_flags = unit->id == UnitId::ZergExcisant ? 0x10000000 : 0x18000000;
 		if (rect.top > rect.bottom)
 		{
-		exit:
 			*dying_unit_creep_disappearance_count = 0;
 			return 1;
 		}
@@ -545,12 +544,12 @@ namespace hooks
 				{
 					break;
 				}
-			calculate_and_maybe_exit:
 				++rect_top;
 				top_creep_px += 32;
 				if (rect_top > rect.bottom)
 				{
-					goto exit;
+					*dying_unit_creep_disappearance_count = 0;
+					return 1;
 				}
 			}
 			while (((*current_tiles)[rect_left + rect_top * *map_creep_width] & 0x7FF0) != 16
@@ -564,7 +563,13 @@ namespace hooks
 				if (rect_left > rect.right)
 				{
 					rect_left = rect.left;
-					goto calculate_and_maybe_exit;
+					++rect_top;
+					top_creep_px += 32;
+					if (rect_top > rect.bottom)
+					{
+						*dying_unit_creep_disappearance_count = 0;
+						return 1;
+					}
 				}
 			}
 			return 0;

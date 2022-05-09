@@ -954,7 +954,7 @@ SCBW_DATA(u32*, ai_update_cooldown, 0x0059CC94);
 // For UpdateCreepDisappearanceUnit
 SCBW_DATA(u32*, map_creep_width, 0x006D0F08);
 SCBW_DATA(u32*, dying_unit_creep_disappearance_count, 0x00658AE4);
-SCBW_DATA(u16**, current_tiles, 0x006D0E84);
+SCBW_DATA(u32**, current_tiles, 0x006D0E84);
 
 //////////////////////////////////////////////////////////////// @}
 
