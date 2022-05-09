@@ -286,7 +286,7 @@ namespace helper
 	void refundBuildingCost(u16 unitId, u8 playerId);														// 002CE70
 	void updateBuildingsAI(Unit* unit);																		// 0033FE0
 	bool isValidMorph(u16 buildingId);																		// 005CC60
-	void updateNewUnitVision(u32 id, s32 x, s32 y);															// 005CE90
+	void SpreadInitialCreep(u32 id, s32 x, s32 y);															// 005CE90
 	void zergPlaceBuildingCntd(Unit* unit);																	// 005D410
 	void stopCreepDisappearingAtBuilding(Unit* unit);												        // 007D770
 	void updateCreepDisappearance(Sprite* sprite, u32 unitId, s32 x, s32 y);								// 007DE40
@@ -1227,7 +1227,11 @@ namespace helper
 	typedef char __cdecl updateSelectedUnitData_Func();
 	extern updateSelectedUnitData_Func* updateSelectedUnitData;
 
-	void update_hud_info();																				// 004D93F0
+	void update_hud_info();																					// 004D93F0
 
-	void remove_powerup_image_overlay(Unit* worker);													// 004F3900
+	void remove_powerup_image_overlay(Unit* worker);														// 004F3900
+
+	void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, u32 tile_x, u32 tile_y);	// 0x00472E50
+	void set_map_tile_flags(u32 flags, u32 tile_width, u32 tile_height, u32 tile_x, u32 tile_y);			// 00472EB0
+	void set_creep(u32 tile_x, u32 tile_y, u32 tile_width, u32 tile_height, b32 skip_border);				// 0045CD50
 }

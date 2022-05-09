@@ -2913,7 +2913,7 @@ namespace helper
 		return result;
 	}
 
-	void updateNewUnitVision(u32 id, s32 x, s32 y)
+	void SpreadInitialCreep(u32 id, s32 x, s32 y)
 	{
 		const u32 Func_updateNewUnitVision = 0x0045CE90;
 		__asm {
@@ -11425,6 +11425,48 @@ namespace helper
 		__asm {
 			PUSHAD
 			MOV EAX, worker
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void clear_tile_flags_from_area(u32 flags, u32 tile_x, u32 tile_y, u32 tile_width, u32 tile_height) {
+		const u32 func_address = 0x00472E50;
+		__asm {
+			PUSHAD
+			PUSH tile_y
+			PUSH tile_x
+			MOV ECX, tile_height
+			MOV EDI, tile_width
+			MOV EAX, flags
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void set_map_tile_flags(u32 flags, u32 tile_x, u32 tile_y, u32 tile_width, u32 tile_height) {
+		const u32 func_address = 0x00472EB0;
+		__asm {
+			PUSHAD
+			PUSH tile_y
+			PUSH tile_x
+			MOV EDX, tile_height
+			MOV EDI, tile_width
+			MOV ESI, flags
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void set_creep(u32 tile_x, u32 tile_y, u32 tile_width, u32 tile_height, b32 skip_border) {
+		const u32 func_address = 0x0045CD50;
+		__asm {
+			PUSHAD
+			PUSH skip_border
+			PUSH tile_height
+			PUSH tile_width
+			PUSH tile_y
+			PUSH tile_x
 			CALL func_address
 			POPAD
 		}

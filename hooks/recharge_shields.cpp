@@ -45,50 +45,39 @@ void rechargeShieldsProc(Unit* target, Unit* battery)
 namespace hooks
 {
 
-	/// Decides whether the @p target can recharge shields from the @p battery.
-	b32 unitCanRechargeShieldsHook(Unit* target, Unit* battery)
-	{
-
-		b32 result;
-
+	// Decides whether the @p target can recharge shields from the @p battery.
+	b32 unitCanRechargeShieldsHook(Unit* target, Unit* battery) {
 		//Check target conditions
-		if (!scbw::isAlliedTo(target->playerId, battery->playerId)					//Is not owned by the player (NEW: or the player's allies)
-			|| !(units_dat::ShieldsEnabled[target->id])								//Does not have shields
-			|| !(target->status & UnitStatus::Completed)							//Is incomplete?
-//			|| !(target->status & UnitStatus::IsBuilding)							//Is building (like archon build self)?
-//			|| target->status & UnitStatus::GroundedBuilding						//Is a building
-//			|| target->getRace() != RaceId::Protoss									//Check target race
-|| target->shields >= (units_dat::MaxShieldPoints[target->id] * 256)	//Already has max shields
-|| !(battery->status & UnitStatus::Completed)
-|| battery->energy == 0
-|| battery->isFrozen()
-|| helper::isHangarUnit(target)
-)
-result = 0;
-		else
-			if (target->pAI == nullptr)
-				result = 1;
-			else
-			{ //Separate check for AI-controlled units
-				if (target->mainOrderId == OrderId::RechargeShields1 || target->mainOrderId == OrderId::Pickup4)
-					result = 0;
-				else
-					if (target->orderQueueHead != nullptr && target->orderQueueHead->orderId == OrderId::RechargeShields1)
-						result = 0;
-					else
-						result = 1;
-			}
+		if (!scbw::isAlliedTo(target->playerId, battery->playerId)			 // Is not owned by the player (NEW: or the player's allies)
+		|| !(units_dat::ShieldsEnabled[target->id])						     // Does not have shields
+		|| !(target->status & UnitStatus::Completed)						 // Is incomplete?
+	//	|| !(target->status & UnitStatus::IsBuilding)						 // Is building (like archon build self)?
+	//	|| target->status & UnitStatus::GroundedBuilding					 // Is a building
+	//	|| target->getRace() != RaceId::Protoss							     // Check target race
+		|| target->shields >= (units_dat::MaxShieldPoints[target->id] * 256) // Already has max shields
+		|| !(battery->status & UnitStatus::Completed) || !battery->energy
+		|| battery->isFrozen() || helper::isHangarUnit(target)) {
+			return 0;
+		}
 
-		return result;
+		if (!target->pAI) {
+			return 1;
+		}
 
+		// Separate check for AI-controlled units
+		if (target->mainOrderId == OrderId::RechargeShields1 || target->mainOrderId == OrderId::Pickup4) {
+			return 0;
+		}
+
+		if (target->orderQueueHead && target->orderQueueHead->orderId == OrderId::RechargeShields1) {
+			return 1;
+		}
+
+		return 0;
 	}
 
-	;
-
-
-
-	//The order process run by a unit when recharging shields
-	//Identical to orders_RechargeShields1 @ 00493DD0
+	// The order process run by a unit when recharging shields
+	// Identical to orders_RechargeShields1 @ 00493DD0
 	void orderRechargeShieldsHook(Unit* unit)
 	{
 

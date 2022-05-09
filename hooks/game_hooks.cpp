@@ -1581,8 +1581,21 @@ namespace hooks
 						}
 						target->sprite->createOverlay(image_id);
 
+						// Spread initial creep
 						if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
-							//helper::modifyCreepState(target->position.x / 32, target->position.y / 32, (helper::CreepChange*)0x00413AA0, 1);
+							u32 w = units_dat::BuildingDimensions[target->id].x / 32;
+							u32 h = units_dat::BuildingDimensions[target->id].y / 32;
+							u32 x = target->position.x / 32 - w / 2;
+							u32 y = target->position.y / 32 - h / 2;
+
+							x -= 1;
+							y -= 1;
+							w += 2;
+							h += 2;
+
+							helper::clear_tile_flags_from_area(0x80000000, x, y, w, h);
+							helper::set_creep(x, y, w, h, false);
+							helper::set_map_tile_flags(0x80000000, x, y, w, h);
 						}
 
 						// Create busy overlays for buildings only

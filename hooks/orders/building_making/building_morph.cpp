@@ -207,7 +207,7 @@ namespace hooks
 					current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
 					current_image = current_image->link.next;
 				}
-				helper::updateNewUnitVision(buildingId, building->sprite->position.x, building->sprite->position.y);
+				helper::SpreadInitialCreep(buildingId, building->sprite->position.x, building->sprite->position.y);
 			}
 		}
 
