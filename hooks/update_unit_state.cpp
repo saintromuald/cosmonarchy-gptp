@@ -449,7 +449,7 @@ namespace hooks
 			}
 
 			// HP regeneration
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP
+			if ((units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP || unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 				&& unit->hitPoints > 0
 				&& unit->hitPoints / 256 != unit->getMaxHpInGame()
 				&& unitExt->damageReceiveTimer > 2 * 24)
@@ -528,7 +528,7 @@ namespace hooks
 			}
 
 			// Terran building burn-down
-			if (!bStopHere)
+			if (!bStopHere && !unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 			{
 				if (unit->getRace() == RaceId::Terran)
 				{

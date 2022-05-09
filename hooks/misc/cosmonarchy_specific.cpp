@@ -114,6 +114,7 @@ namespace hooks
 		}
 		return true;
 	}
+
 	void createDamageOverlay(Sprite* sprite)
 	{
 		if (sprite->mainGraphic == nullptr)
