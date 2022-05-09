@@ -1010,9 +1010,13 @@ enum Enum {
 
 	// Cosmonarchy \\
 
+	CentaurMissile								= 1030,
 	ParasiteOverlay								= 1031,
+	AzazelEngine								= 1032,
+	MadrigalShadow								= 1033,
+	CentaurMuzzleFlash							= 1034,
 	HallucinationOverlay						= 1035,
-	TreasurySupplyOverlay						= 1060,
+	CrucibleKhaydarinChargeOverlay				= 1060,
 	Cowardice_Small								= 1061,
 	Cowardice_Medium							= 1062,
 	Cowardice_Large								= 1063,
@@ -1112,6 +1116,10 @@ enum Enum {
 	Worship_Large								= 1494,
 	ControlledDemolition						= 1495,
 	EmergencyDetonation							= 1496,
+	MadrigalDeath								= 1497,
+	PenumbraDeathPrimary						= 1498,
+	TarasqueMuzzleFlash							= 1499,
+	BlackjackCorpse								= 1500,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,

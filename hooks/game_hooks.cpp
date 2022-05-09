@@ -143,6 +143,7 @@ struct CorpseFinder
 					case SpriteId::Corpse_Apostle:
 					case SpriteId::Corpse_Aspirant:
 					case SpriteId::Corpse_Bactalisk:
+					case SpriteId::Corpse_Blackjack:
 					case SpriteId::Corpse_Broodling:
 					case SpriteId::Corpse_Cleric:
 					case SpriteId::Corpse_Dracadin:
@@ -152,6 +153,7 @@ struct CorpseFinder
 					case SpriteId::Corpse_Harakan:
 					case SpriteId::Corpse_Hydralisk:
 					case SpriteId::Corpse_Isthrathaleth:
+					case SpriteId::Corpse_Izirokor:
 					case SpriteId::Corpse_Konvilisk:
 					case SpriteId::Corpse_Lakizilisk:
 					case SpriteId::Corpse_Larva:
@@ -1891,7 +1893,7 @@ namespace hooks
 				Unit* target = *it;
 				if (scbw::getDistanceFast(unit->position, target->position) > 8 * 32)
 				{
-					target->removeOverlay(ImageId::TreasurySupplyOverlay);
+					target->removeOverlay(ImageId::CrucibleKhaydarinChargeOverlay);
 					crucibles.erase(it);
 					--it;
 				}
@@ -1912,8 +1914,8 @@ namespace hooks
 				{
 					vec.push_back(unit);
 				}
-				if (!target->getOverlay(ImageId::TreasurySupplyOverlay)) {
-					target->sprite->createUnderlay(ImageId::TreasurySupplyOverlay, 0, 0, 0);
+				if (!target->getOverlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
+					target->sprite->createUnderlay(ImageId::CrucibleKhaydarinChargeOverlay, 0, 0, 0);
 				}
 			}
 		}
