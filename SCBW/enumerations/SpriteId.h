@@ -775,37 +775,39 @@ namespace SpriteId
 		ZergAirExplosionSmall = 767,
 
 		// CORPSE \\
+			
+		Corpse_Aspirant				= 685,
 
-		Corpse_Eidolon = 230,
-		Corpse_Maverick = 236,
-		Corpse_Cleric = 490,
-		Corpse_Apostle = 565,
-		Corpse_Harakan = 615,
-		Corpse_Aspirant = 685,
+		Corpse_Eidolon				= 230,
+		Corpse_Maverick				= 236,
+		Corpse_Cleric				= 490,
+		Corpse_Apostle				= 565,
+		Corpse_Harakan				= 615,
+		Corpse_Blackjack			= 1500,
 
-		Corpse_TerranBuildingSmall = 273,
-		Corpse_TerranBuildingLarge = 274,
+		Corpse_TerranBuildingSmall	= 273,
+		Corpse_TerranBuildingLarge	= 274,
 
-		Corpse_Dracadin = 192,
-		Corpse_Scribe = 691,
+		Corpse_Dracadin				= 192,
+		Corpse_Scribe				= 691,
 
 		Corpse_ProtossBuildingSmall = 223,
 		Corpse_ProtossBuildingLarge = 224,
 
-		Corpse_Broodling = 134,
-		Corpse_Isthrathaleth = 139,
-		Corpse_Droleth = 141,
-		Corpse_Egg = 143,
-		Corpse_Hydralisk = 147,
-		Corpse_Larva = 150,
-		Corpse_Ultrakor = 158,
-		Corpse_Zergling = 160,
-		Corpse_Lakizilisk = 484,
-		Corpse_Bactalisk = 617,
-		Corpse_Konvilisk = 689,
-		Corpse_Izirokor = 763,
+		Corpse_Broodling			= 134,
+		Corpse_Isthrathaleth		= 139,
+		Corpse_Droleth				= 141,
+		Corpse_Egg					= 143,
+		Corpse_Hydralisk			= 147,
+		Corpse_Larva				= 150,
+		Corpse_Ultrakor				= 158,
+		Corpse_Zergling				= 160,
+		Corpse_Lakizilisk			= 484,
+		Corpse_Bactalisk			= 617,
+		Corpse_Konvilisk			= 689,
+		Corpse_Izirokor				= 763,
 
-		Corpse_ZergBuildingSmall = 186,
-		Corpse_ZergBuildingLarge = 187,
+		Corpse_ZergBuildingSmall	= 186,
+		Corpse_ZergBuildingLarge	= 187,
 	};
 }
