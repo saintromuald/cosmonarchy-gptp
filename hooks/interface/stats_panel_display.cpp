@@ -14,7 +14,7 @@ namespace hooks
 		{
 			dialog = dialog->parent;
 		}
-		auto childDialog = dialog->childrenDlg;
+		auto childDialog = dialog->children_dialog;
 		bool jump = false;
 		if (childDialog)
 		{
@@ -273,9 +273,9 @@ namespace hooks
 		{
 			current_dialog = dialog->parent;
 		}
-		if (current_dialog->childrenDlg != nullptr)
+		if (current_dialog->children_dialog != nullptr)
 		{
-			current_dialog = current_dialog->childrenDlg;
+			current_dialog = current_dialog->children_dialog;
 			while (current_dialog != nullptr && current_dialog->index != index + 9)
 			{
 				current_dialog = current_dialog->next;
@@ -342,7 +342,7 @@ namespace hooks
 			&& !*IS_IN_REPLAY)
 		{
 			BinDlg* actual_dialog = dialog->controlType ? dialog->parent : dialog;
-			BinDlg* child = actual_dialog->childrenDlg;
+			BinDlg* child = actual_dialog->children_dialog;
 			while (child && child->index != 65515)
 			{
 				child = child->next;
@@ -499,7 +499,7 @@ namespace hooks
 		{
 			v3 = *(BinDlg**)&v3->parent;
 		}
-		v4 = *(BinDlg**)&v3->childrenDlg;
+		v4 = *(BinDlg**)&v3->children_dialog;
 		if (v4)
 		{
 			while (v4->index != buttonRelated + 9)
@@ -580,7 +580,7 @@ LABEL_6:
 		{
 			v3 = v3->parent;
 		}
-		v6 = v3->childrenDlg;
+		v6 = v3->children_dialog;
 		if (v6)
 		{
 			while (v6->index != buttonRelated + 9)

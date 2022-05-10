@@ -248,7 +248,7 @@ namespace hooks
 						buf[2] = interceptors;
 						buf[3] = *ACTIVE_PLAYER_ID;
 						memcpy(&buf[4], &builtUnit, 4);
-						helper::QueueGameCommand(buf, 0xc);
+						helper::queue_game_command(buf, 0xc);
 					}
 					scbw::refreshConsole();
 					unit->currentBuildUnit = nullptr;

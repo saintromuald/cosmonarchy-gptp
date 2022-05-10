@@ -7,7 +7,7 @@ namespace hooks
 
 	const s32 MIN_HITPOINTS_FOR_STIMPACKS = 2560;
 
-	// Equivalent to original code, only doubt is QueueGameCommand
+	// Equivalent to original code, only doubt is queue_game_command
 	// Local answer when using stimpacks (check units of selection,
 	// and can just display an error message without notifying others
 	// players of the attempt if no unit can do the stimpack action)
@@ -31,7 +31,7 @@ namespace hooks
 		if (bFoundUnitAbleToStimpack)
 		{
 			static u8 opcode[] = {0x36};	// packet opcode for stimpack is 0x36, no others args
-			helper::QueueGameCommand(&opcode[0], 1);
+			helper::queue_game_command(&opcode[0], 1);
 		}
 		else
 		{

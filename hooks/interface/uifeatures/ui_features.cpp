@@ -105,7 +105,7 @@ namespace hooks
 		return false;
 	}
 
-	u8 QueueGameCommand(const void* a1, u32 a2)
+	u8 queue_game_command(const void* a1, u32 a2)
 	{
 		u32 v2; // eax
 		u32 len; // ebx

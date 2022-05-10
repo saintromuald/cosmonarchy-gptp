@@ -596,8 +596,8 @@ struct BinDlg
 	};
 
 	union {
-		/*0x42*/  void* childrenSmk;
-		/*0x42*/  BinDlg* childrenDlg;
+		/*0x42*/  void*			children_smk;
+		/*0x42*/  BinDlg*		children_dialog;
 	};
 
 	union {

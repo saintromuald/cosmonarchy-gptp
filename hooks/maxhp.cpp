@@ -138,7 +138,7 @@ LABEL_19:
 		{
 			if (v1->controlType)
 				v1 = *(BinDlg**)&v1->parent;
-			v6 = *(BinDlg**)&v1->childrenDlg;
+			v6 = *(BinDlg**)&v1->children_dialog;
 			if (v6)
 			{
 				while (v6->index != 9)
@@ -320,7 +320,7 @@ LABEL_26:
 			{
 				if (v1->controlType)
 					v1 = *(BinDlg**)&v1->parent;
-				v19 = *(BinDlg**)&v1->childrenDlg;
+				v19 = *(BinDlg**)&v1->children_dialog;
 				if (v19)
 				{
 					while (v19->index != 9)

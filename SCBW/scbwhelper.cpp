@@ -7392,7 +7392,7 @@ namespace helper
 		}
 	}
 
-	void QueueGameCommand(u8* params, u32 param_length)
+	void queue_game_command(u8* params, u32 param_length)
 	{
 		const u32 Func_QueueGameCommand = 0x00485BD0;
 		__asm {
@@ -11518,4 +11518,44 @@ namespace helper
 		return result;
 	}
 
+	void* process_options_change(BinDlg* control) {
+		static void* result;
+		const u32 func_address = 0x004C9780;
+		__asm {
+			PUSHAD
+			PUSH control
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void load_dialog(char* filename, void* function) {
+		const u32 func_address = 0x004F57A0;
+		__asm {
+			PUSHAD
+			MOV EDX, function
+			MOV ECX, filename
+			CALL func_address
+			POPAD
+		}
+	}
+
+	BinDlg** destroy_dialog(BinDlg* control) {
+		static BinDlg** result;
+		const u32 func_address = 0x00419EA0;
+		__asm {
+			PUSHAD
+			MOV ESI, control
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+	/*
+	main_menu_options_custom_interact_func* main_menu_options_custom_interact = (main_menu_options_custom_interact_func*)0x004CA0A0;
+	game_menu_dialog_interact_func* game_menu_dialog_interact = (game_menu_dialog_interact_func*)0x004CA24;
+	*/
 }

@@ -83,7 +83,7 @@ namespace hooks
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastEnsnaringBrood;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::Parasite:
 			{
@@ -133,7 +133,7 @@ namespace hooks
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastGodsMadeFlesh;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::CancelNewAbility:
 			{
@@ -146,7 +146,7 @@ namespace hooks
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
 					buf[4] = RustId::CancelMindControl;
-					helper::QueueGameCommand(buf, 0xc);
+					helper::queue_game_command(buf, 0xc);
 				}
 				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranWyvern)
 				{
@@ -157,7 +157,7 @@ namespace hooks
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
 					buf[4] = RustId::CancelLandGrab;
-					helper::QueueGameCommand(buf, 0xc);
+					helper::queue_game_command(buf, 0xc);
 				}
 				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergAkistrokor
 					|| playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergSovroleth)
@@ -169,7 +169,7 @@ namespace hooks
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
 					buf[4] = RustId::CancelAttachment;
-					helper::QueueGameCommand(buf, 0xc);
+					helper::queue_game_command(buf, 0xc);
 				}
 			} break;
 			case TechId::ControlledDemolition:
@@ -180,7 +180,7 @@ namespace hooks
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastControlledDemolition;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::EmergencyDetonation:
 			{
@@ -190,7 +190,7 @@ namespace hooks
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastEmergencyDetonation;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::StarSovereignTheGriefOfAllGods:
 			{
@@ -199,7 +199,7 @@ namespace hooks
 				buf[0] = 0x99;
 				buf[1] = NewGameCommand::IssueCTFCop2;
 				buf[2] = *ACTIVE_PLAYER_ID;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::ApostleLazarusAgent:
 			{
@@ -209,7 +209,7 @@ namespace hooks
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastLazarusAgent;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::SavantOnhitToggle:
 			{
@@ -223,7 +223,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::ToggleSavantOnhit;
-				helper::QueueGameCommand(buf, 0xC);
+				helper::queue_game_command(buf, 0xC);
 			} break;
 			case TechId::MadrigalTempoChange:
 			{
@@ -238,7 +238,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::ToggleTempoChange;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::PaladinSkyfall:
 			{
@@ -261,7 +261,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::ToggleDisruptionField;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::MindControl:
 			{
@@ -288,7 +288,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::SelectLarvaType;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::LarvalSubmenuSelectAssault:
 			{
@@ -299,7 +299,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::SelectLarvaType;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::LarvalSubmenuSelectControl:
 			{
@@ -310,7 +310,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::SelectLarvaType;
-				helper::QueueGameCommand(buf, 0xc);
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			default:
 			{

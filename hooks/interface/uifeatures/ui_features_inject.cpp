@@ -28,7 +28,7 @@ namespace
 			MOV a2, EDX
 			PUSHAD
 		}
-		result = hooks::QueueGameCommand(a1, a2);
+		result = hooks::queue_game_command(a1, a2);
 		_asm {
 			MOVZX EAX, result
 			POPAD

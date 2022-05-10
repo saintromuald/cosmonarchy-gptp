@@ -855,7 +855,7 @@ namespace helper
 	bool addPsiFieldSprite(Unit* unit);
 
 	// stim_packs
-	void QueueGameCommand(u8* params, u32 param_length);
+	void queue_game_command(u8* params, u32 param_length);
 
 	// misc
 	Thingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 playerId);
@@ -1241,4 +1241,15 @@ namespace helper
 	s32 ClipCreepAreaInBounds(u32 tile_x, u32 tile_y, ClipCreepAreaInBounds_Callback* callback);			// 00413D10
 
 	s32 MarkCreepToDisappear(u32 tile_x, u32 tile_y);														// 0047DD60
+
+	void* process_options_change(BinDlg* control);															// 004C9780
+	void load_dialog(char* filename, void* function);														// 004F57A0
+	BinDlg** destroy_dialog(BinDlg* control);																// 00419EA0
+	/*
+	typedef void main_menu_options_custom_interact_func(BinDlg* control);
+	extern main_menu_options_custom_interact_func* main_menu_options_custom_interact;
+
+	typedef bool __fastcall game_menu_dialog_interact_func(BinDlg* control, dlgEvent dlg_event);
+	extern game_menu_dialog_interact_func* game_menu_dialog_interact;
+	*/
 }

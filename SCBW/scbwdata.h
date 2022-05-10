@@ -9,7 +9,7 @@
 #include "scbwhelper.h"
 #pragma pack(1)
 
-#define SCBW_DATA(type, name, offset) type const name = (type)offset;
+#define SCBW_DATA(type, name, offset) type name = (type)offset;
 //
 /// @name Linked list nodes
 //////////////////////////////////////////////////////////////// @{
@@ -231,65 +231,65 @@ SCBW_DATA(const u32*, playerExploredVisions, 0x0057EEB8);
 SCBW_DATA(s32*, subTwoCheckTwo, 0x004EE0F0);
 
 // For getResponseSfx
-SCBW_DATA(u32*, selectionSoundCounter, 0x00640548);
-SCBW_DATA(u32*, lastRandSFX, 0x006D5BE0);
+SCBW_DATA(u32*, selectionSoundCounter,			0x00640548);
+SCBW_DATA(u32*, lastRandSFX,					0x006D5BE0);
 
 // For loadRaceUI
-SCBW_DATA(u8*, consoleIndex, 0x0057F1E2);
-SCBW_DATA(u16*, currentMusicId, 0x0057F1DE);
-SCBW_DATA(const char*, xCampaignFirstMission, 0x005122C0);
-SCBW_DATA(const char*, campaignFirstMission, 0x005122BC);
-SCBW_DATA(u32*, consoleRaceSpecific, 0x0051A3B4);
+SCBW_DATA(u8*, consoleIndex,					0x0057F1E2);
+SCBW_DATA(u16*, currentMusicId,					0x0057F1DE);
+SCBW_DATA(const char*, xCampaignFirstMission,	0x005122C0);
+SCBW_DATA(const char*, campaignFirstMission,	0x005122BC);
+SCBW_DATA(u32*, consoleRaceSpecific,			0x0051A3B4);
 
 // For loadGameCreate
-SCBW_DATA(u32*, isHost, 0x00596888);
-SCBW_DATA(u8*, outOfGame, 0x006D5A10);
-SCBW_DATA(const u32*, scMainState, 0x00596904);
-SCBW_DATA(u8*, gameActive, 0x006D11EC);
-SCBW_DATA(u16*, nextSCMainState, 0x0051CE90);
-SCBW_DATA(u32*, replayEndFrame, 0x006D0F31);
+SCBW_DATA(u32*, isHost,					0x00596888);
+SCBW_DATA(u8*, outOfGame,				0x006D5A10);
+SCBW_DATA(const u32*, scMainState,		0x00596904);
+SCBW_DATA(u8*, gameActive,				0x006D11EC);
+SCBW_DATA(u16*, nextSCMainState,		0x0051CE90);
+SCBW_DATA(u32*, replayEndFrame,			0x006D0F31);
 
 // For levelCheatCreate
-SCBW_DATA(u32*, levelCheatUnlocked, 0x006D11C0);
-SCBW_DATA(const char*, playerName, 0x0057EEB5);
+SCBW_DATA(u32*, levelCheatUnlocked,		0x006D11C0);
+SCBW_DATA(const char*, playerName,		0x0057EEB5);
 
 // For update_placement_state_for_placement_box
-SCBW_DATA(u8*, placingPlayer, 0x0064088C);
-SCBW_DATA(u16*, placeBuildingX, 0x00640890);
-SCBW_DATA(u16*, placeBuildingY, 0x00640892);
-SCBW_DATA(u32*, isPlacingAddon, 0x00640884);
-SCBW_DATA(u16*, placeBuildingUnitType, 0x0064088A);
-SCBW_DATA(u32*, placeBuildBaseType, 0x00640888);
+SCBW_DATA(u8*, placingPlayer,			0x0064088C);
+SCBW_DATA(u16*, placeBuildingX,			0x00640890);
+SCBW_DATA(u16*, placeBuildingY,			0x00640892);
+SCBW_DATA(u32*, isPlacingAddon,			0x00640884);
+SCBW_DATA(u16*, placeBuildingUnitType,	0x0064088A);
+SCBW_DATA(u32*, placeBuildBaseType,		0x00640888);
 
-SCBW_DATA(u16*, moveToTileX, 0x0057F1D0);
-SCBW_DATA(u16*, moveToTileY, 0x0057F1D2);
-SCBW_DATA(u32*, moveToX, 0x0062848C);
-SCBW_DATA(u32*, moveToY, 0x006284A8);
+SCBW_DATA(u16*, moveToTileX,			0x0057F1D0);
+SCBW_DATA(u16*, moveToTileY,			0x0057F1D2);
+SCBW_DATA(u32*, moveToX,				0x0062848C);
+SCBW_DATA(u32*, moveToY,				0x006284A8);
 
 // For incrementUnitScoresEx
-SCBW_DATA(u32*, factoriesOwned, 0x005820B4); // Array of 12
-SCBW_DATA(u32*, unitsProduced, 0x00581E14); // Array of 12
-SCBW_DATA(u32*, structuresBuilt, 0x00581F64); // Array of 12
-SCBW_DATA(u32*, unitScore, 0x00581ED4); // Array of 12
-SCBW_DATA(u32*, buildingScore, 0x00582024); // Array of 12
-SCBW_DATA(u32*, unitsOwned, 0x00581E44); // Array of 12
-SCBW_DATA(u32*, buildingsOwned, 0x00582024); // Array of 12
+SCBW_DATA(u32*, factoriesOwned,			0x005820B4); // Array of 12
+SCBW_DATA(u32*, unitsProduced,			0x00581E14); // Array of 12
+SCBW_DATA(u32*, structuresBuilt,		0x00581F64); // Array of 12
+SCBW_DATA(u32*, unitScore,				0x00581ED4); // Array of 12
+SCBW_DATA(u32*, buildingScore,			0x00582024); // Array of 12
+SCBW_DATA(u32*, unitsOwned,				0x00581E44); // Array of 12
+SCBW_DATA(u32*, buildingsOwned,			0x00582024); // Array of 12
 
 // For incrementUnitScores
-SCBW_DATA(u32*, factoriesProducedOwnedTotal, 0x00582084); // Array of 12
-SCBW_DATA(u32*, structuresProducedOwnedTotal, 0x00581F34); // Array of 12
-SCBW_DATA(u32*, unitsProducedOwnedTotal, 0x00581DE4); // Array of 12
+SCBW_DATA(u32*, factoriesProducedOwnedTotal,	0x00582084); // Array of 12
+SCBW_DATA(u32*, structuresProducedOwnedTotal,	0x00581F34); // Array of 12
+SCBW_DATA(u32*, unitsProducedOwnedTotal,		0x00581DE4); // Array of 12
 
 // For refreshScreen
-SCBW_DATA(u32*, placeBuildingMessageId, 0x00640958);
-SCBW_DATA(u16*, placeBuildingUnitId, 0x0064088A);
+SCBW_DATA(u32*, placeBuildingMessageId,			0x00640958);
+SCBW_DATA(u16*, placeBuildingUnitId,			0x0064088A);
 
 // For targetedOrder
-SCBW_DATA(u32*, COrderCount, 0x00641698);
+SCBW_DATA(u32*, COrderCount,					0x00641698);
 
 // For createUpgradeLevelTooltip
-SCBW_DATA(u16*, upgradeLevelTooltip, 0x0068C1CC);
-SCBW_DATA(u16**, statTxtBuffer, 0x006D1238);
+SCBW_DATA(u16*, upgradeLevelTooltip,			0x0068C1CC);
+SCBW_DATA(u16**, statTxtBuffer,					0x006D1238);
 
 
 struct BufferStr {
@@ -297,49 +297,49 @@ struct BufferStr {
 };
 
 // For drawUnitInfo
-SCBW_DATA(u16*, suppliesAvailableTemp,	0x006CA93C);
-SCBW_DATA(u8*, statusScreenFunc,		0x0068C1E5);
-SCBW_DATA(BufferStr*, struct_Char,		0x006CA9F8);
+SCBW_DATA(u16*, suppliesAvailableTemp,			0x006CA93C);
+SCBW_DATA(u8*, statusScreenFunc,				0x0068C1E5);
+SCBW_DATA(BufferStr*, struct_Char,				0x006CA9F8);
 
 // For drawSupplyUnitInfo
-SCBW_DATA(BufferStr*, struct_Char2,		0x006CAB08);
-SCBW_DATA(char*, unkString_Char,		0x006CA668);
+SCBW_DATA(BufferStr*, struct_Char2,				0x006CAB08);
+SCBW_DATA(char*, unkString_Char,				0x006CA668);
 
 // For drawWireframeShield
-SCBW_DATA(char*, charBuffer, 0x0068C208);
-SCBW_DATA(char*, byteShieldStr, 0x0068C20A); // count of 22
-SCBW_DATA(u8*, wireframeConstants, 0x00515280); // count of 40
-SCBW_DATA(char*, imgDrawPaletteIndex, 0x0050CEC1); // count of 256
-SCBW_DATA(u8*, off_50CE81, 0x0050CE81);
-SCBW_DATA(u8*, off_50CE82, 0x0050CE82);
+SCBW_DATA(char*, charBuffer,					0x0068C208);
+SCBW_DATA(char*, byteShieldStr,					0x0068C20A); // count of 22
+SCBW_DATA(u8*, wireframeConstants,				0x00515280); // count of 40
+SCBW_DATA(char*, imgDrawPaletteIndex,			0x0050CEC1); // count of 256
+SCBW_DATA(u8*, off_50CE81,						0x0050CE81);
+SCBW_DATA(u8*, off_50CE82,						0x0050CE82);
 
 // For drawBuildingInfo
-SCBW_DATA(s32*, selectionGroupHP, 0x006CA94C);
-SCBW_DATA(s16*, userInterfaceEnergy, 0x006CAC0C);
-SCBW_DATA(s32*, userInterfaceShields, 0x006CA9EC);
-SCBW_DATA(char*, redrawTransportUI, 0x006CA9F0);
+SCBW_DATA(s32*, selectionGroupHP,				0x006CA94C);
+SCBW_DATA(s16*, userInterfaceEnergy,			0x006CAC0C);
+SCBW_DATA(s32*, userInterfaceShields,			0x006CA9EC);
+SCBW_DATA(char*, redrawTransportUI,				0x006CA9F0);
 
 // For AI_EMPShieldRequirementsProc
-SCBW_DATA(s32*, tempHPShields, 0x00695798);
-SCBW_DATA(s32*, tempWeapon, 0x00695604);
+SCBW_DATA(s32*, tempHPShields,					0x00695798);
+SCBW_DATA(s32*, tempWeapon,						0x00695604);
 
 // For drawImageHPBar
-SCBW_DATA(unk_61*, struct_5140C4, 0x005140C4);
-SCBW_DATA(unk_61*, struct_5140D8, 0x005140D8);
-SCBW_DATA(unk_62*, struct_5140E8, 0x005140E8);
+SCBW_DATA(unk_61*, struct_5140C4,				0x005140C4);
+SCBW_DATA(unk_61*, struct_5140D8,				0x005140D8);
+SCBW_DATA(unk_62*, struct_5140E8,				0x005140E8);
 
 // For getUnitBulletDamage
-SCBW_DATA(char*, upgradesLevelSC, 0x0058D2B0);
-SCBW_DATA(char*, upgradesLevelBW, 0x0058F2FE);
+SCBW_DATA(char*, upgradesLevelSC,				0x0058D2B0);
+SCBW_DATA(char*, upgradesLevelBW,				0x0058F2FE);
 
 // For findNextBounceTargetProc
-SCBW_DATA(Unit**, bulletBounceMissileSource, 0x0064EECC);
-SCBW_DATA(Unit**, bulletBounceMissileTarget, 0x0064EED0);
-SCBW_DATA(Unit**, bulletBounceMissileNext, 0x0064EED4);
+SCBW_DATA(Unit**, bulletBounceMissileSource,	0x0064EECC);
+SCBW_DATA(Unit**, bulletBounceMissileTarget,	0x0064EED0);
+SCBW_DATA(Unit**, bulletBounceMissileNext,		0x0064EED4);
 
 // For setUnderDisruptionWeb
-SCBW_DATA(void**, unkArray_59CB64, 0x0059CB64);	// size of 252
-SCBW_DATA(Unit*, unitReference, 0x0059CB58);
+SCBW_DATA(void**, unkArray_59CB64,			0x0059CB64);	// size of 252
+SCBW_DATA(Unit*, unitReference,				0x0059CB58);
 
 // For startGame
 SCBW_DATA(s8*, gameState,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
@@ -394,17 +394,17 @@ SCBW_DATA(s32*,	ctrlUnderMouse,				0x0068C1E8);
 SCBW_DATA(s32*,	ctrlUnderMouseValue,		0x0068C1EC); // void* in Neiv's list
 
 // For updateUnits
-SCBW_DATA(s32*,	interceptorFocusedThisFrame,		0x006957D0);
-SCBW_DATA(s8*,	isTargeting,						0x00641694);
-SCBW_DATA(s32*,	orderTimerReassignCount,			0x0059CCA4);
-SCBW_DATA(s32*,	secondaryOrderTimerReassignCount,	0x006283E8);
-SCBW_DATA(Unit**,	activeIscriptEntity,			0x006D11F4);
-SCBW_DATA(Bullet**,	activeIscriptBullet,			0x006D11F8);
-SCBW_DATA(Unit**,	activeIscriptUnit,				0x006D11FC);
-SCBW_DATA(Unit**,	firstDyingUnit,					0x0062842C);
-SCBW_DATA(Unit**,	lurkerSplashList,				0x0064DEC8); // sizeof 400
-SCBW_DATA(s32*,	lurkerSplashListIndex,				0x0064EEC8);
-SCBW_DATA(s32*,	lastBulletIndex,					0x0064DEA8);
+SCBW_DATA(s32*,		interceptorFocusedThisFrame,		0x006957D0);
+SCBW_DATA(s8*,		isTargeting,						0x00641694);
+SCBW_DATA(s32*,		orderTimerReassignCount,			0x0059CCA4);
+SCBW_DATA(s32*,		secondaryOrderTimerReassignCount,	0x006283E8);
+SCBW_DATA(Unit**,	activeIscriptEntity,				0x006D11F4);
+SCBW_DATA(Bullet**,	activeIscriptBullet,				0x006D11F8);
+SCBW_DATA(Unit**,	activeIscriptUnit,					0x006D11FC);
+SCBW_DATA(Unit**,	firstDyingUnit,						0x0062842C);
+SCBW_DATA(Unit**,	lurkerSplashList,					0x0064DEC8); // sizeof 400
+SCBW_DATA(s32*,		lurkerSplashListIndex,				0x0064EEC8);
+SCBW_DATA(s32*,		lastBulletIndex,					0x0064DEA8);
 
 // For orderAllowed
 SCBW_DATA(s32*,	lastInternalError,					0x0066FF60);
@@ -485,7 +485,7 @@ SCBW_DATA(u8*,		unit_iterator_pos,				0x006284B6);
 SCBW_DATA(u8*,		byte_68C300,					0x0068C300);
 SCBW_DATA(u32**,	activeTileHandle,				0x006D1260);
 
-SCBW_DATA(void**, GetRightClickOrderArray, 0x005153FC);
+SCBW_DATA(void**,	GetRightClickOrderArray,		0x005153FC);
 
 // For prepare_unit_move_custom
 SCBW_DATA(BinDlg*,	portrait,						0x0068AC98);
@@ -494,9 +494,9 @@ SCBW_DATA(BinDlg*,	portrait,						0x0068AC98);
 SCBW_DATA(FogMask*,	fog_of_war_mask,				0x00657AA0);
 
 // For score screen player name overrides, from DarkenedFantasies
-SCBW_DATA(const StringTbl*,	network_table_DF,	0x006D1220);
-SCBW_DATA(ColorTable*,		colorTable,			0x0058F442);
-SCBW_DATA(PlayerNames*,		playerNameList,		0x0059B3D8);
+SCBW_DATA(const StringTbl*,	network_table_DF,		0x006D1220);
+SCBW_DATA(ColorTable*,		colorTable,				0x0058F442);
+SCBW_DATA(PlayerNames*,		playerNameList,			0x0059B3D8);
 
 // For soundThread
 /*
@@ -534,6 +534,13 @@ SCBW_DATA(u32*,		use_quiet_sounds,			0x0064086C);
 SCBW_DATA(char*,	draw_out_text_left,			0x00641598);
 SCBW_DATA(char*,	text_bytes,					0x00641674); // sizeof 13
 SCBW_DATA(s32*,		unit_stat_update_timer,		0x00640B54);
+
+// For CMDACT_game_speed
+SCBW_DATA(s32*,		last_control_index,			0x006D051C);
+SCBW_DATA(s32*,		cpu_throttle,				0x006D5C00);
+SCBW_DATA(s32*,		temp_cpu_throttle,			0x00655C3C);
+SCBW_DATA(char*,	bin_interact,				0x006D1224);
+SCBW_DATA(void*,	last_bindlg_menu_function,	0x006D1234);
 
 //////////////////////////////////////////////////////////////// @}
 
@@ -633,7 +640,6 @@ namespace sfx_dat {
 	SCBW_DATA(u16*,	PortraitDuration,	sfxDat[3].address);	// 0068CD38
 	SCBW_DATA(u8*,	Volume,				sfxDat[4].address);	// 0068C448
 }
-
 
 /*
 namespace weapons_dat {

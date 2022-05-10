@@ -16,7 +16,7 @@ namespace hooks
         }
 
         BinDlg* objectiveDlg = nullptr;
-        BinDlg* childDlg = readyRoomVar->childrenDlg;
+        BinDlg* childDlg = readyRoomVar->children_dialog;
         if (childDlg)
         {
             while (childDlg->index != -11)
