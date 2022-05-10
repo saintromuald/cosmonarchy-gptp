@@ -69,7 +69,7 @@ namespace hooks
 			LABEL_7:
 				child = 0;
 			}
-			if (!(child->flags & 2))
+			if (child && !(child->flags & 2))
 			{
 				char min_value = child->scrollDialog0x36.scrollMinValue;
 				u8 game_command = 15;
