@@ -11554,8 +11554,7 @@ namespace helper
 		}
 		return result;
 	}
-	/*
+
 	main_menu_options_custom_interact_func* main_menu_options_custom_interact = (main_menu_options_custom_interact_func*)0x004CA0A0;
 	game_menu_dialog_interact_func* game_menu_dialog_interact = (game_menu_dialog_interact_func*)0x004CA24;
-	*/
 }

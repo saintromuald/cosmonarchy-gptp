@@ -81,12 +81,12 @@ namespace hooks
 			*cpu_throttle = *temp_cpu_throttle;
 		}
 		helper::process_options_change(control_var);
-		char interacting_bin = *bin_interact-- - 1;
+		char interacting_bin = (*bin_interact)-- - 1;
 		if (*bin_interact)
 		{
 			*bin_interact = interacting_bin - 1;
-			//last_bindlg_menu_function = helper::main_menu_options_custom_interact;
-			//helper::load_dialog("rez\\options.bin", helper::game_menu_dialog_interact);
+			*last_bindlg_menu_function = helper::main_menu_options_custom_interact;
+			helper::load_dialog("rez\\options.bin", helper::game_menu_dialog_interact);
 		}
 		else
 		{

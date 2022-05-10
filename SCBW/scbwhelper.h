@@ -1245,11 +1245,10 @@ namespace helper
 	void* process_options_change(BinDlg* control);															// 004C9780
 	void load_dialog(char* filename, void* function);														// 004F57A0
 	BinDlg** destroy_dialog(BinDlg* control);																// 00419EA0
-	/*
+
 	typedef void main_menu_options_custom_interact_func(BinDlg* control);
 	extern main_menu_options_custom_interact_func* main_menu_options_custom_interact;
 
 	typedef bool __fastcall game_menu_dialog_interact_func(BinDlg* control, dlgEvent dlg_event);
 	extern game_menu_dialog_interact_func* game_menu_dialog_interact;
-	*/
 }

@@ -9,7 +9,7 @@
 #include "scbwhelper.h"
 #pragma pack(1)
 
-#define SCBW_DATA(type, name, offset) type name = (type)offset;
+#define SCBW_DATA(type, name, offset) type const name = (type)offset;
 //
 /// @name Linked list nodes
 //////////////////////////////////////////////////////////////// @{
@@ -540,7 +540,7 @@ SCBW_DATA(s32*,		last_control_index,			0x006D051C);
 SCBW_DATA(s32*,		cpu_throttle,				0x006D5C00);
 SCBW_DATA(s32*,		temp_cpu_throttle,			0x00655C3C);
 SCBW_DATA(char*,	bin_interact,				0x006D1224);
-SCBW_DATA(void*,	last_bindlg_menu_function,	0x006D1234);
+SCBW_DATA(void**,	last_bindlg_menu_function,	0x006D1234);
 
 //////////////////////////////////////////////////////////////// @}
 
