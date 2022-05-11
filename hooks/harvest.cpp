@@ -29,7 +29,6 @@ namespace hooks
 		worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2);
 		worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis);
 		worker->sprite->removeOverlay(ImageId::GasRaw, ImageId::GasRaw2);
-		worker->resourceType = ResourceType::None;
 	}
 
 	u8 harvestResourceFrom(Unit* resource, bool isMineral)
@@ -109,6 +108,7 @@ namespace hooks
 				if (worker->resourceType & ResourceType::Either)
 				{
 					helper::remove_powerup_image_overlay(worker);
+					worker->resourceType = ResourceType::None;
 				}
 
 				// Resource return multipliers

@@ -222,7 +222,7 @@ namespace hooks
 		if (unit->id == UnitId::ProtossAccantor)
 		{
 			Unit* scarab = unit->carrier.inHangarChild;
-			while (scarab != nullptr)
+			while (scarab)
 			{
 				if (scarab->id == UnitId::ProtossPlasmaShell)
 				{
@@ -235,9 +235,9 @@ namespace hooks
 		// Add mining status, decrease the regeneration rate
 		if (unit->mainOrderId == OrderId::MiningMinerals)
 		{
-			if (unit->orderTarget.unit != nullptr)
+			if (unit->orderTarget.unit)
 			{
-				unit->orderTarget.unit->cmbw_resource_regen_mining_delay = 180;
+				unit->orderTarget.unit->cmbw_resource_regen_mining_delay = 5 * 24;
 			}
 		}
 
