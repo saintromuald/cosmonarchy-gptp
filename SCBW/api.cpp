@@ -2146,11 +2146,6 @@ namespace scbw
 		u32 x = unit->position.x / 32 - w / 2;
 		u32 y = unit->position.y / 32 - h / 2;
 
-		x -= 1;
-		y -= 1;
-		w += 2;
-		h += 2;
-
 		helper::clear_tile_flags_from_area(0x8000000, x, y, w, h);
 		helper::set_creep(x, y, w, h, false);
 		helper::set_map_tile_flags(0x8000000, x, y, w, h);
