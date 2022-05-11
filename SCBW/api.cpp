@@ -2143,7 +2143,7 @@ namespace scbw
 		helper::set_map_tile_flags(0x80000000, x, y, w, h);
 	}
 
-	void stop_custom_creep_disappearing(Unit* unit)
+	static void stop_custom_creep_disappearing(Unit* unit)
 	{
 		Box32 rect = {};
 		bool spreads_creep = helper::GetCreepSpreadArea(UnitId::ZergHive, unit->position.x, unit->position.y, true, &rect);
