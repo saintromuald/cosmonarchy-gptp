@@ -963,7 +963,20 @@ namespace hooks
 		}
 
 		if (targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
+			// Update creep
 			scbw::update_custom_creep_disappearance(data.target);
+
+			// Remove connected larva
+			UnitArray larvae = UnitSearchRadial(data.target->position, 4 * 32);
+			UnitArrayFilter(&larvae, data.target, 0, {UnitId::ZergLarva});
+			for (u32 i = 0; i < larvae.size; ++i) {
+				Unit* larva = larvae.units[i];
+				if (larva->connectedUnit == data.target) {
+					larva->connectedUnit = 0;
+				}
+			}
+
+			// Recede control
 			data.target->giveTo(targetExt->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
 			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
 
@@ -985,6 +998,9 @@ namespace hooks
 				infested_image_id = ImageId::InfestedOverlay_Small;
 			}
 			data.target->removeOverlay(infested_image_id);
+
+			// Play Sound
+			helper::playSoundFromSource(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
 		}
 
 		switch (data.target->id)
