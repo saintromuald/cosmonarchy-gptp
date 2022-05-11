@@ -1518,21 +1518,7 @@ namespace hooks
 						if (current_button->actVar == TechId::CancelNewAbility)
 						{
 							bool canCancel = false;
-							if ((*activePortraitUnit)->id == UnitId::ProtossMindTyrant)
-							{
-								for (s32 i = 0; i < 12; i++)
-								{
-									Unit* selU = clientSelectionGroup->unit[i];
-									if (selU != nullptr && selU->id == UnitId::ProtossMindTyrant)
-									{
-										if (scbw::get_aise_value(selU, nullptr, AiseId::SumMindControlCost, 0, 0) > 0)
-										{
-											canCancel = true;
-										}
-									}
-								}
-							}
-							else if ((*activePortraitUnit)->id == UnitId::TerranWyvern)
+							if ((*activePortraitUnit)->id == UnitId::TerranWyvern)
 							{
 								UnitExt* activeExt = globals.get_unit_ext(*activePortraitUnit);
 								if (activeExt->values[ValueWyvernLandGrabOn])

@@ -1885,9 +1885,7 @@ namespace scbw
 
 	void mind_control(Unit* source, Unit* target)
 	{
-		if (!source
-		||  !target
-		||   source->playerId == target->playerId)
+		if (!source || !target || source->playerId == target->playerId)
 		{
 			return;
 		}
@@ -1914,6 +1912,11 @@ namespace scbw
 			overlay = ImageId::Worship_Small + scbw::getOverlayOffset(target->id);
 		}
 
+		if (source->id == UnitId::ProtossMindTyrant) {
+			targetExt->units[UnitMindTyrantSource] = source;
+			targetExt->timers[TimerMindTyrantRecede] = 5 * 24;
+		}
+
 		target->giveTo(source->playerId);
 		target->sprite->createTopOverlay(overlay, 0, 0, 0);
 
@@ -1934,7 +1937,7 @@ namespace scbw
 
 		UnitExt* targetExt = globals.get_unit_ext(target);
 		Unit* mindController = targetExt->units[UnitMindController];
-		targetExt->units[UnitMindController] = nullptr;
+		targetExt->units[UnitMindController] = 0;
 
 		if (mindController)
 		{
@@ -1948,6 +1951,7 @@ namespace scbw
 
 		targetExt->values[ValueWorshipStack] = 0;
 		targetExt->timers[TimerGodsMadeFlesh] = 0;
+		targetExt->units[UnitMindTyrantSource] = 0;
 	}
 
 	bool isZergProduction(u16 unitId)
@@ -2174,5 +2178,21 @@ namespace scbw
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			helper::update_creep_disappearance_unit_id(UnitId::ZergHive, unit->position.x, unit->position.y, true);
 		}
+	}
+
+	u32 get_akistrokor_bonus_damage(Unit* unit) {
+		u32 infested_count = 0;
+
+		UnitArray units = UnitSearchRadial(unit->position, 8 * 32);
+		UnitArrayFilter(&units, unit, FilterAlly);
+		for (u32 i = 0; i < units.size; ++i) {
+			Unit* unit = units.units[i];
+			UnitExt* unitExt = globals.get_unit_ext(unit);
+			if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
+				infested_count++;
+			}
+		}
+
+		return infested_count * 4 * 256;
 	}
 }

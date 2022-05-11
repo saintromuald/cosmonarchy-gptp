@@ -1,5 +1,6 @@
 #include "recall_spell.h"
 #include <SCBW/api.h>
+#include "globals.h"
 
 namespace hooks
 {
@@ -67,7 +68,7 @@ namespace hooks
 							target->subunit->sprite->createTopOverlay(overlayId, 0, 0, 0);
 						else
 							target->sprite->createTopOverlay(overlayId, 0, 0, 0);
-						scbw::sendGPTP_aise_cmd(unit, target, GptpId::SetMindControlLink, 0, 0, 0);
+
 						helper::MindControlHit(unit, target);
 						//scbw::print("Set...");
 

@@ -46,15 +46,6 @@ namespace hooks
 			{
 				unit->spendUnitEnergy(GodsMadeFleshEnergyDrain);
 			}
-			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0)
-			{
-				auto sum = scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) / 2;
-				unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
-				if (unit->energy == 0)
-				{
-					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
-				}
-			}
 			else
 			{ // 004EB526
 				if (unit == nullptr)

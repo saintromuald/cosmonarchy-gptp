@@ -363,19 +363,7 @@ namespace hooks
 			case WeaponId::AkistrokorHarryingTalons:
 			{
 				if (data.attacker) {
-					u32 infested_count = 0;
-
-					UnitArray units = UnitSearchRadial(data.attacker->position, 8 * 32);
-					UnitArrayFilter(&units, data.attacker, FilterAlly);
-					for (u32 i = 0; i < units.size; ++i) {
-						Unit* unit = units.units[i];
-						UnitExt* unitExt = globals.get_unit_ext(unit);
-						if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
-							infested_count++;
-						}
-					}
-
-					data.finalDamage += 4 * 256;
+					data.finalDamage += scbw::get_akistrokor_bonus_damage(data.attacker);
 				}
 			} break;
 		}
@@ -631,8 +619,6 @@ namespace hooks
 							}
 
 							targetExt->values[ValueWorshipStack] = 1;
-							scbw::mind_control(data.attacker, data.target);
-
 							helper::playSoundFromSource(SoundId::DemiurgeWorship01, data.target, 1, 0);
 							scbw::mind_control(data.attacker, data.target);
 						}

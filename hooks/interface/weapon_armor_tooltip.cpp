@@ -78,6 +78,9 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 	u8 damageType = weapons_dat::DamageType[weaponId];
 	u32 baseDamage = weapons_dat::DamageAmount[weaponId];
 	u32 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
+	if (unit->id == UnitId::ZergAkistrokor) {
+		bonusDamage += scbw::get_akistrokor_bonus_damage(unit) / 256;
+	}
 
 	f32 minRange = weapons_dat::MinRange[weaponId] / 32.0;
 	f32 range = weapons_dat::MaxRange[weaponId] / 32.0;
@@ -542,7 +545,6 @@ namespace hooks
 		addStatus(statuses, "Khaydarin Charge", unitExt->unitVectors[UnitVectorCrucibles].size(), 0);
 
 		// Aise Value - Gimmicked
-		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster
 		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
 		addStatus(statuses, "Tempo Down", scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1, 1);
 		addStatus(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);

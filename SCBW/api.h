@@ -569,4 +569,6 @@ namespace scbw
 	void spawn_custom_creep(Unit* unit);
 	void spread_custom_creep(Unit* unit);
 	void update_custom_creep_disappearance(Unit* unit);
+
+	u32 get_akistrokor_bonus_damage(Unit* unit);
 }

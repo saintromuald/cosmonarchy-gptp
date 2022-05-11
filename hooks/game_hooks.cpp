@@ -1078,7 +1078,7 @@ namespace hooks
 				// Rescind Mind Control
 				if (scbw::get_generic_rust_value(unit, RustId::CancelMindControl) == 1)
 				{
-					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
+					// remove the cancel?
 					scbw::set_generic_rust_value(unit, RustId::CancelMindControl, 0);
 				}
 			} break;
@@ -1304,6 +1304,40 @@ namespace hooks
 				}
 				*/
 			} break;
+		}
+
+		// Mind Control Recede
+		if (unitExt->units[UnitMindTyrantSource]) {
+			f32 distance = scbw::getDistanceFast(unit->position, unitExt->units[UnitMindTyrantSource]->position);
+			if (distance <= 8 * 32) {
+				if (unitExt->timers[TimerMindTyrantRecede] <= 4 * 24) {
+					if (unit->status & UnitStatus::Disabled) {
+						unit->unfreeze();
+					}
+					unit->removeOverlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+				}
+				unitExt->timers[TimerMindTyrantRecede] = 5 * 24;
+			}
+		}
+		if (unitExt->timers[TimerMindTyrantRecede]) {
+			if (unitExt->timers[TimerMindTyrantRecede] <= 4 * 24) {
+				if (!(unit->status & UnitStatus::Disabled)) {
+					unit->freeze();
+				}
+				u32 offset = scbw::getOverlayOffset(unit->id);
+				if (!unit->getOverlay(ImageId::MaelstromOverlay_Small + offset)) {
+					unit->sprite->createTopOverlay(ImageId::MaelstromOverlay_Small + offset);
+				}
+			}
+			if (unitExt->timers[TimerMindTyrantRecede] == 1) {
+				if (unit->status & UnitStatus::Disabled) {
+					unit->unfreeze();
+				}
+				unit->removeOverlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+
+				scbw::recede_mind_control(unit);
+				unitExt->units[UnitMindTyrantSource] = 0;
+			}
 		}
 
 		// Fix animation bug with acceleration movement flag
