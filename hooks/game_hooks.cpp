@@ -1555,9 +1555,8 @@ namespace hooks
 		}
 
 		// Blissful Embrace - Creep Spread
-		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] &&
-			units_dat::BaseProperty[unit->id] & UnitProperty::Building &&
-			*elapsedTimeFrames % 15 == 0) {
+		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] && *elapsedTimeFrames % 15 == 0 &&
+			units_dat::BaseProperty[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::InAir)) {
 			helper::spreadCreep(UnitId::ZergHive, unit->position.x, unit->position.y);
 		}
 
