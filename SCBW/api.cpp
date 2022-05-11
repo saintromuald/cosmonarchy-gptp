@@ -2042,6 +2042,15 @@ namespace scbw
 		unit_deaths[unit_id].player[player] = 1;
 	}
 
+	Box32 unit_area(Unit* unit) {
+		Box32 area = {};
+		area.w = units_dat::BuildingDimensions[unit->id].x;
+		area.h = units_dat::BuildingDimensions[unit->id].y;
+		area.x = unit->position.x - area.w / 2;
+		area.y = unit->position.y - area.h / 2;
+		return area;
+	}
+
 	void clear_creep(Box32 area) {
 		for (u32 x = 0; x < area.w / 32; ++x) {
 			for (u32 y = 0; y < area.h / 32; ++y) {
@@ -2142,9 +2151,9 @@ namespace scbw
 		w += 2;
 		h += 2;
 
-		helper::clear_tile_flags_from_area(0x80000000, x, y, w, h);
+		helper::clear_tile_flags_from_area(0x8000000, x, y, w, h);
 		helper::set_creep(x, y, w, h, false);
-		helper::set_map_tile_flags(0x80000000, x, y, w, h);
+		helper::set_map_tile_flags(0x8000000, x, y, w, h);
 	}
 
 	static void stop_custom_creep_disappearing(Unit* unit)

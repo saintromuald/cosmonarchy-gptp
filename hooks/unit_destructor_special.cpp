@@ -148,14 +148,10 @@ void unitDestructorSpecialHook(Unit* unit)
 		unit->status & UnitStatus::Completed && 
 	   (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
 		unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
-		units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding))
+		units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) ||
+		unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 	{
-		Box32 area = {};
-		area.w = units_dat::BuildingDimensions[unit->id].x;
-		area.h = units_dat::BuildingDimensions[unit->id].y;
-		area.x = unit->position.x - area.w / 2;
-		area.y = unit->position.y - area.h / 2;
-		scbw::clear_creep(area);
+		scbw::clear_creep(scbw::unit_area(unit));
 	}
 
 	// These do not require the unit to be completed

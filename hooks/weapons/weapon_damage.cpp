@@ -966,6 +966,11 @@ namespace hooks
 			// Update creep
 			scbw::update_custom_creep_disappearance(data.target);
 
+			// Remove creep from beneath
+			if (!helper::spreadsCreep(data.target->id, false)) {
+				scbw::clear_creep(scbw::unit_area(data.target));
+			}
+
 			// Remove connected larva
 			UnitArray larvae = UnitSearchRadial(data.target->position, 4 * 32);
 			UnitArrayFilter(&larvae, data.target, 0, {UnitId::ZergLarva});
