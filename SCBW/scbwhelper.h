@@ -430,18 +430,18 @@ namespace helper
 	s32 parseRequirementOpcodes(Unit* unit, u32 orderId, u32 playerId, u32 address, u32 req_offset);								// 0046D610
 
 	//// give_unit
-	void ApplySpeedUpgradeFromUnitType(Unit* unit);																					// 00454370
+	void apply_speed_upgrade_from_unit_type(Unit* unit);																					// 00454370
 	void giveAI(Unit* unit);																										// 00463040
-	void recheckAttacks(Unit* unit);																								// 00476D30
+	void recheck_attacks(Unit* unit);																								// 00476D30
 	void incrementUnitScores(Unit* unit, s32 unkScore);																				// 00488BF0
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);																				// 004A1E50
 	void CreateUnitSelection(Unit* unit, u32 selectionIndex);																		// 004E6180
 	void DestroyUnitSelection(Unit* unit);																							// 004E6290
-	void function_004F3B70(Unit* powerup);																							// 004F3B70
+	void drop_powerup(Unit* powerup);																							// 004F3B70
 
 	//// cast_order
 	u32 getUpgradedWpnCooldown(Unit* unit, u8 weaponId);																			// 00475DC0
-	bool function_00476640(Unit* unit, u32 weaponId);																				// 00476640
+	bool is_ready_to_attack(Unit* unit, u32 weaponId);																				// 00476640
 	u32 get_statTxt_Str_0(Unit* unit, u32 playerId, char* message);																	// 0048EF30
 	bool canCastSpell_0(Unit* unit);																								// 00492140
 	u32 OrderedSpell_ProgressMoving(Unit* unit, b32 wasMainOrderStateZero);															// 00492620

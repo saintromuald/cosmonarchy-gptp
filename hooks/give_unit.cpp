@@ -75,7 +75,7 @@ namespace hooks
 				unit->status &= ~UnitStatus::Completed;
 			}
 
-			helper::recheckAttacks(unit);
+			helper::recheck_attacks(unit);
 			scbw::refreshConsole();
 			if (units_dat::GroupFlags[unit->id].isZerg != 1
 				&& units_dat::GroupFlags[unit->id].isProtoss != 1
@@ -90,7 +90,7 @@ namespace hooks
 				giveUnit(unit->subunit, playerId, bCountAsCompleted);
 			}
 
-			helper::ApplySpeedUpgradeFromUnitType(unit);
+			helper::apply_speed_upgrade_from_unit_type(unit);
 
 			/* -- Disabled since Flag ID is used in Cosmonarchy
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker
@@ -99,7 +99,7 @@ namespace hooks
 			{
 				if ((unit->worker.powerup)->playerId == playerId || playerId >= 8)
 				{
-					helper::function_004F3B70(unit->worker.powerup); //return the flag to initial position?
+					helper::drop_powerup(unit->worker.powerup); //return the flag to initial position?
 				}
 			}
 			*/

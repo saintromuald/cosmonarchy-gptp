@@ -16,7 +16,7 @@ namespace hooks
 {
 
 	//This hook function is called when creating a new unit.
-	//Equivalent to ApplySpeedUpgradeFromUnitType @ 00454370
+	//Equivalent to apply_speed_upgrade_from_unit_type @ 00454370
 	void applyUpgradeFlagsToNewUnitHook(Unit* unit)
 	{
 
