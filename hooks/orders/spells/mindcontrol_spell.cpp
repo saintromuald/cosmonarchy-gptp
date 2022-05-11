@@ -6,6 +6,7 @@ namespace hooks
 {
 	void ordersCastMindControl(Unit* unit)
 	{
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 		Unit* target = unit->orderTarget.unit;
 		if (target == nullptr)
 		{
@@ -39,6 +40,16 @@ namespace hooks
 				// Corresponding error message is "Invalid Target"
 				if (helper::spellOrder(unit, TechId::MindControl, &techEnergyCost, unit->getSightRange(true) * 32, 0x052E))
 				{
+					// Channel
+					if (!unit->mainOrderState) {
+						unit->playIscriptAnim(IscriptAnimation::Unused2);
+						unit->mainOrderState = 1;
+						unit->mainOrderTimer = 24;
+					}
+					if (!unit->mainOrderTimer) {
+						return;
+					}
+
 					if (target->status & UnitStatus::IsHallucination)
 					{
 						target->remove();
@@ -63,6 +74,11 @@ namespace hooks
 					}
 					helper::playSoundFromSource(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 					unit->orderToIdle();
+				}
+				else
+				{
+					// Reset timer if target out of range
+					unit->mainOrderState = 0;
 				}
 			}
 		}
