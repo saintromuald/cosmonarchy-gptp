@@ -74,7 +74,5 @@ namespace hooks
 		jmpPatch(getAttackPriorityWrapper,			0x00442160, 3);
 		jmpPatch(findBestAttackTargetWrapper,		0x00443080, 1);
 		jmpPatch(findRandomAttackTargetWrapper,		0x00442FC0, 1);
-
-		jmpPatch((void*)0x0043BC1B,                 0x0043BB51, 1); // Disable guards from being added to attack waves
 	}
 }
