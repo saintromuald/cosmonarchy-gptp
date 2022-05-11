@@ -472,22 +472,22 @@ namespace hooks
 								|| unitExt->values[ValueTalosAnimationTimer] % 128 == 0) {
 								Point16 pos = target->sprite->position;
 								switch (scbw::random() % 4) {
-									case 1:
+									case 0:
 									{
 										pos.x -= units_dat::UnitBounds[target->id].left * 0.75;
 										pos.y -= units_dat::UnitBounds[target->id].top * 0.75;
 									} break;
-									case 2:
+									case 1:
 									{
 										pos.x += units_dat::UnitBounds[target->id].right * 0.75;
 										pos.y -= units_dat::UnitBounds[target->id].top * 0.75;
 									} break;
-									case 3:
+									case 2:
 									{
 										pos.x -= units_dat::UnitBounds[target->id].left * 0.75;
 										pos.y += units_dat::UnitBounds[target->id].bottom * 0.75;
 									} break;
-									case 4:
+									case 3:
 									{
 										pos.x += units_dat::UnitBounds[target->id].right * 0.75;
 										pos.y += units_dat::UnitBounds[target->id].bottom * 0.75;
@@ -1589,9 +1589,18 @@ namespace hooks
 		}
 
 		// Blissful Embrace - Creep Spread
-		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] && *elapsedTimeFrames % 15 == 0 &&
-			units_dat::BaseProperty[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::InAir)) {
-			scbw::spread_custom_creep(unit);
+		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
+			UnitArray akistrokors = UnitSearchRadial(unit->position, 6 * 32);
+			UnitArrayFilter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
+			unit->hitPoints += akistrokors.size * 256.0 / 24.0;
+
+			if (!units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) {
+				helper::secondaryOrder_SpawningLarva(unit);
+			}
+
+			if (*elapsedTimeFrames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreadsCreep(unit->id, false)) {
+				scbw::spread_custom_creep(unit);
+			}
 		}
 
 		// Akistrokor - Blissful Embrace ability
@@ -1599,13 +1608,13 @@ namespace hooks
 		{
 			Unit* target = unit->orderTarget.unit;
 			if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
-				&& !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->playerId != target->playerId) {
+				&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->playerId != target->playerId) {
 				UnitExt* targetExt = globals.get_unit_ext(target);
 				if (helper::isUnitInWeaponRange(unit, target)) {
-					if (unitExt->values[ValueBlissfulEmbraceChannel] < 48) {
-						unitExt->values[ValueBlissfulEmbraceChannel] += 100;
-					} else {
+					if (unit->orderSignal & 2) {
+						unit->orderSignal &= ~2;
 						helper::force_order_done(unit);
+
 						unitExt->values[ValueBlissfulEmbraceChannel] = 0;
 						if (!targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
 							targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = target->playerId + 1;
@@ -1613,29 +1622,25 @@ namespace hooks
 						}
 						target->giveTo(unit->playerId);
 
-						// Make this a sprite
-						u32 image_id = ImageId::ZergAirDeathExplosion_Small;
+						// Spawn overlay  TODO: Make this a sprite
+						u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
 						if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay) {
-							image_id = ImageId::ZergBuildingExplosion;
+							effect_image_id = ImageId::ZergBuildingExplosion;
 						} else if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay) {
-							image_id = ImageId::ZergAirDeathExplosion_Large;
+							effect_image_id = ImageId::ZergAirDeathExplosion_Large;
 						}
-						target->sprite->createOverlay(image_id);
+						target->sprite->createOverlay(effect_image_id);
 
 						// Spread initial creep
-						if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
-							scbw::spawn_custom_creep(target);
-						}
+						scbw::spawn_custom_creep(target);
 
 						// Create busy overlays for buildings only
-						if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
-							u32 image_id = ImageId::InfestedOverlay_Large;
-							if (scbw::unit_id_is_smaller_building(target->id)) {
-								image_id = ImageId::InfestedOverlay_Small;
-							}
-							if (!target->getOverlay(image_id)) {
-								target->sprite->createTopOverlay(image_id);
-							}
+						u32 infested_image_id = ImageId::InfestedOverlay_Large;
+						if (scbw::unit_id_is_smaller_building(target->id)) {
+							infested_image_id = ImageId::InfestedOverlay_Small;
+						}
+						if (!target->getOverlay(infested_image_id)) {
+							target->sprite->createTopOverlay(infested_image_id);
 						}
 					}
 				}

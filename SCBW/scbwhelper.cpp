@@ -11586,4 +11586,14 @@ namespace helper
 		}
 		return result;
 	}
+
+	void secondaryOrder_SpawningLarva(Unit* unit) {
+		const u32 func_address = 0x004EA780;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }
