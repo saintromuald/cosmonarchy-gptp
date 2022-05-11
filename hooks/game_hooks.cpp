@@ -1155,11 +1155,10 @@ namespace hooks
 						unit->getY() - radius,
 						unit->getX() + radius,
 						unit->getY() + radius
-					).forEachInMatch(match, [&](Unit* target)
-						{
-							UnitExt* targetExt = globals.get_unit_ext(target);
-							targetExt->timers[TimerAnticthonRevive] = 2;
-						});
+					).forEachInMatch(match, [&](Unit* target) {
+						UnitExt* targetExt = globals.get_unit_ext(target);
+						targetExt->timers[TimerAnticthonRevive] = 2;
+					});
 				}
 			} break;
 			case UnitId::ProtossAnthelion:
@@ -1691,27 +1690,7 @@ namespace hooks
 			unitExt->timers[TimerReviveFlagClearMin] = 0;
 			unitExt->timers[TimerReviveFlagClearMax] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
-
-			if (playerTable[unit->playerId].type == PlayerType::Computer)
-			{
-				if (units_dat::BaseProperty[unit->id] & (UnitProperty::Worker | UnitProperty::Building)
-					|| scbw::unitIdIsZergSupply(unit->id))
-				{
-					AiTown* town = (AiTown*)unitExt->values[ValueReviveTownPointer];
-					if (town)
-					{
-						helper::AI_AddWorkerStructureAI(unit, town);
-					}
-					else
-					{
-						unit->remove();
-					}
-				}
-				else
-				{
-					hooks::AI_TrainingSimpleMilitary(unit, unit);
-				}
-			}
+			helper::giveAI(unit);
 		}
 
 		// Alaszileth - Dermal Accelerant

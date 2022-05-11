@@ -825,44 +825,18 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	f32 cost = 0;
 
-	// Value big boys more
-	switch (target->id) {
-		case UnitId::ProtossAnthelion: {
-			cost -= 50;
-		} break;
-		case UnitId::SharedAnticthon:
-		case UnitId::SharedEmpress:
-		case UnitId::ProtossDemiurge:
-		case UnitId::ProtossClarion: {
-			cost -= 25;
-		} break;
-	}
-
-	if (target->id == UnitId::ProtossAccantor)
+	// Value attacking units with higher dps
+	u32 weaponId = 0;
+	if (source->status & UnitStatus::InAir)
 	{
-		cost -= (weapons_dat::DamageAmount[WeaponId::Scarab] /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
-			* 1.5; // aoe multiplier
-	}
-	else if (target->id == UnitId::ProtossSolarion)
-	{
-		cost -= (weapons_dat::DamageAmount[WeaponId::PulseCannon] /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
-			* (target->carrier.inHangarCount + target->carrier.outHangarCount)
-			* 1.5; // additional bias to encourage targeting solarions more
+		weaponId = target->getAirWeapon();
 	}
 	else
 	{
-		u32 weaponId = 0;
-		if (source->status & UnitStatus::InAir)
-		{
-			weaponId = target->getAirWeapon();
-		}
-		else
-		{
-			weaponId = target->getGroundWeapon();
-		}
-		f32 multiplier = weapons_dat::InnerSplashRadius[weaponId] ? 1.5 : 1;
-		cost -= hooks::getCurrentDPS(target, weaponId) * multiplier;
+		weaponId = target->getGroundWeapon();
 	}
+	f32 multiplier = weapons_dat::InnerSplashRadius[weaponId] ? 1.5 : 1;
+	cost -= hooks::getCurrentDPS(target, weaponId) * multiplier;
 
 	// Value attacking units with smaller pathing cost more
 	s32 dist = (s32)scbw::getDistanceFast(source->position, target->position) - GetMaxRange(source->id);
@@ -873,10 +847,6 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 
 	// Value attacking strategically important targets
 	if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot)
-	{
-		cost -= 50;
-	}
-	if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
 	{
 		cost -= 50;
 	}
@@ -1202,7 +1172,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			for (u32 i = 0; i < targets.size; ++i) {
 				Unit* target = targets.units[i];
 				if (target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
-					&& !(units_dat::BaseProperty[target->id] & UnitProperty::Addon)) {
+					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon)) {
 					f32 cost = get_blissful_embrace_target_cost(unit, target);
 					if (cost < min_cost) {
 						min_cost = cost;
