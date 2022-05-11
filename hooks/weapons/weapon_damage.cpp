@@ -360,12 +360,6 @@ namespace hooks
 					}
 				}
 			} break;
-			case WeaponId::AkistrokorHarryingTalons:
-			{
-				if (data.attacker) {
-					data.finalDamage += scbw::get_akistrokor_bonus_damage(data.attacker);
-				}
-			} break;
 		}
 
 		// Observance Armor Rend
@@ -968,7 +962,7 @@ namespace hooks
 			globals.initRevive(data.target->position.x, data.target->position.y, data.target->playerId, data.target->id, data.target->energy, hp, town);
 		}
 
-		if (targetExt->values[ValueBlissfulEmbraceOriginalPlayer] && units_dat::BaseProperty[data.target->id] & UnitProperty::Building) {
+		if (targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			scbw::update_custom_creep_disappearance(data.target);
 			data.target->giveTo(targetExt->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
 			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
@@ -977,22 +971,20 @@ namespace hooks
 			data.target->setHp(targetExt->values[ValueBlissfulEmbraceOriginalHealth]);
 
 			// Make this a sprite
-			u32 image_id = ImageId::ZergAirDeathExplosion_Small;
+			u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
 			if (units_dat::BaseProperty[data.target->id] & UnitProperty::LargeOverlay) {
-				image_id = ImageId::ZergBuildingExplosion;
+				effect_image_id = ImageId::ZergBuildingExplosion;
 			} else if (units_dat::BaseProperty[data.target->id] & UnitProperty::MediumOverlay) {
-				image_id = ImageId::ZergAirDeathExplosion_Large;
+				effect_image_id = ImageId::ZergAirDeathExplosion_Large;
 			}
-			data.target->sprite->createOverlay(image_id);
+			data.target->sprite->createOverlay(effect_image_id);
 
 			// Create busy overlays for buildings only
-			if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building) {
-				u32 image_id = ImageId::InfestedOverlay_Large;
-				if (scbw::unit_id_is_smaller_building(data.target->id)) {
-					image_id = ImageId::InfestedOverlay_Small;
-				}
-				data.target->removeOverlay(image_id);
+			u32 infested_image_id = ImageId::InfestedOverlay_Large;
+			if (scbw::unit_id_is_smaller_building(data.target->id)) {
+				infested_image_id = ImageId::InfestedOverlay_Small;
 			}
+			data.target->removeOverlay(infested_image_id);
 		}
 
 		switch (data.target->id)

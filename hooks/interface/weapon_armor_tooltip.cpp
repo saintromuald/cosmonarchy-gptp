@@ -78,9 +78,6 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 	u8 damageType = weapons_dat::DamageType[weaponId];
 	u32 baseDamage = weapons_dat::DamageAmount[weaponId];
 	u32 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
-	if (unit->id == UnitId::ZergAkistrokor) {
-		bonusDamage += scbw::get_akistrokor_bonus_damage(unit) / 256;
-	}
 
 	f32 minRange = weapons_dat::MinRange[weaponId] / 32.0;
 	f32 range = weapons_dat::MaxRange[weaponId] / 32.0;

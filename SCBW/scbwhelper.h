@@ -1254,4 +1254,6 @@ namespace helper
 	extern game_menu_dialog_interact_func* game_menu_dialog_interact;
 
 	u32 stop_creep_disappearing(u32 x_tile, u32 y_tile);													// 0047D540
+
+	void secondaryOrder_SpawningLarva(Unit* unit);															// 004EA780
 }
