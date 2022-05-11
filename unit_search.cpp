@@ -345,7 +345,7 @@ bool UnitFlagMatch(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> 
 	}
 	if (flags & FilterPowered)
 	{
-		if (unit->status & UnitStatus::DoodadStatesThing)
+		if (unit->status & UnitStatus::Frozen)
 		{
 			return false;
 		}

@@ -35,7 +35,7 @@ namespace hooks
 		s16 unitType; // ax
 
 		unitFlags = pUnit->status;
-		if (!(unitFlags & UnitStatus::DoodadStatesThing) && pUnit->lockdownTimer == 0 && pUnit->stasisTimer == 0
+		if (!(unitFlags & UnitStatus::Frozen) && pUnit->lockdownTimer == 0 && pUnit->stasisTimer == 0
 			&& pUnit->maelstromTimer == 0)
 		{
 			pUnit->status = unitFlags | UnitStatus::Disabled;

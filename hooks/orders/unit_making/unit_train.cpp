@@ -111,7 +111,7 @@ namespace hooks
 	void orderTrain(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		if (!(unit->status & UnitStatus::DoodadStatesThing)
+		if (!(unit->status & UnitStatus::Frozen)
 			&& !(unit->isFrozen()))
 		{
 			bool jump_to_685D8 = false;

@@ -250,7 +250,7 @@ namespace hooks
 		{
 			Unit* transport = unit->connectedUnit;
 			if ((transport->mainOrderTimer == 0 || transport->status & UnitStatus::GroundedBuilding)
-				&& !(transport->status & UnitStatus::DoodadStatesThing)
+				&& !(transport->status & UnitStatus::Frozen)
 				&& transport->lockdownTimer == 0
 				&& transport->stasisTimer == 0
 				&& transport->maelstromTimer == 0)

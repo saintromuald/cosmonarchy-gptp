@@ -27,6 +27,7 @@
 #include "base_layouts.h"
 #include "token_parser.h"
 #include "hooks/interface/select_larva.h"
+#include "math_utils.h"
 
 const u32 hyperTrigger = 0x006509A0;
 
@@ -443,29 +444,42 @@ namespace hooks
 							UnitExt* targetExt = globals.get_unit_ext(target);
 							targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
 							
+							u32 time = units_dat::TimeCost[target->id] / 2;
 							targetExt->salvage_time += 1;
 							
-							targetExt->salvage_minerals += (f32)units_dat::MineralCost[target->id] / units_dat::TimeCost[target->id];
+							targetExt->salvage_minerals += (f32)units_dat::MineralCost[target->id] / time;
 							while (targetExt->salvage_minerals > 1) {
 								targetExt->salvage_minerals -= 1;
 								resources->minerals[unit->playerId] += 1;
 							}
 							
-							targetExt->salvage_gas += (f32)units_dat::GasCost[target->id] / units_dat::TimeCost[target->id];
+							targetExt->salvage_gas += (f32)units_dat::GasCost[target->id] / time;
 							while (targetExt->salvage_gas > 1) {
 								targetExt->salvage_gas -= 1;
 								resources->gas[unit->playerId] += 1;
 							}
 							
-							if (targetExt->salvage_time >= units_dat::TimeCost[target->id]) {
+							if (targetExt->salvage_time >= time) {
 								resources->minerals[unit->playerId] += ceilf(targetExt->salvage_minerals);
 								resources->gas[unit->playerId] += ceilf(targetExt->salvage_gas);
 								target->remove();
 							}
 
 							if (!(unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving)
-								&& unitExt->values[ValueTalosAnimationTimer] % 12 == 0) {
-								target->sprite->createTopOverlay(ImageId::SalvagePeriodicZap);
+								&& unitExt->timers[TimerTalosAnimationSubtimer] == 0) {
+
+								u32 width  = units_dat::BuildingDimensions[target->id].x * 0.75;
+								u32 height = units_dat::BuildingDimensions[target->id].y * 0.75;
+
+								s32 x_offset = scbw::random() % width  - width  / 2;
+								s32 y_offset = scbw::random() % height - height / 2;
+
+								x_offset = MathUtils::clamp(x_offset, -127, 128);
+								y_offset = MathUtils::clamp(y_offset, -127, 128);
+
+								target->sprite->createTopOverlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
+
+								unitExt->timers[TimerTalosAnimationSubtimer] = scbw::randBetween(3, 7);
 							}
 
 							if (unitExt->values[ValueTalosAnimationTimer] == 0
@@ -1311,7 +1325,7 @@ namespace hooks
 			f32 distance = scbw::getDistanceFast(unit->position, unitExt->units[UnitMindTyrantSource]->position);
 			if (distance <= 8 * 32) {
 				if (unitExt->timers[TimerMindTyrantRecede] <= 4 * 24) {
-					if (unit->status & UnitStatus::Disabled) {
+					if (unit->status & UnitStatus::Frozen) {
 						unit->unfreeze();
 					}
 					unit->removeOverlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
@@ -1321,7 +1335,7 @@ namespace hooks
 		}
 		if (unitExt->timers[TimerMindTyrantRecede]) {
 			if (unitExt->timers[TimerMindTyrantRecede] <= 4 * 24) {
-				if (!(unit->status & UnitStatus::Disabled)) {
+				if (!(unit->status & UnitStatus::Frozen)) {
 					unit->freeze();
 				}
 				u32 offset = scbw::getOverlayOffset(unit->id);
@@ -1330,7 +1344,7 @@ namespace hooks
 				}
 			}
 			if (unitExt->timers[TimerMindTyrantRecede] == 1) {
-				if (unit->status & UnitStatus::Disabled) {
+				if (unit->status & UnitStatus::Frozen) {
 					unit->unfreeze();
 				}
 				unit->removeOverlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);

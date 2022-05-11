@@ -13,7 +13,7 @@ namespace hooks
 		return (
 			units_dat::BaseProperty[unit->id] & UnitProperty::Detector &&
 			unit->status & UnitStatus::Completed &&
-			!(unit->status & UnitStatus::DoodadStatesThing) &&
+			!(unit->status & UnitStatus::Frozen) &&
 			unit->lockdownTimer == 0 &&
 			unit->stasisTimer == 0 &&
 			unit->maelstromTimer == 0 &&

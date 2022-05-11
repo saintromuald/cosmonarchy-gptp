@@ -229,7 +229,7 @@ namespace hooks
 					current_image = current_image->link.next;
 				}
 
-				if (building->status & UnitStatus::DoodadStatesThing)
+				if (building->status & UnitStatus::Frozen)
 				{
 					Image* current_image = building->sprite->images.head;
 					while (current_image != nullptr)

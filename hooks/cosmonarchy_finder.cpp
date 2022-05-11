@@ -107,7 +107,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 
 		}
 		if (context & Flags::Powered)
 		{
-			if (unit->status & UnitStatus::DoodadStatesThing)
+			if (unit->status & UnitStatus::Frozen)
 			{
 				return false;
 			}

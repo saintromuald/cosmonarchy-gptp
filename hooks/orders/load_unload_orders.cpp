@@ -612,7 +612,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (transport->status & UnitStatus::DoodadStatesThing)
+		if (transport->status & UnitStatus::Frozen)
 		{
 			return 0;
 		}

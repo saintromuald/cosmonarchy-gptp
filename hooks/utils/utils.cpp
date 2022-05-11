@@ -71,7 +71,7 @@ namespace hooks
 		bool return_value;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building
 			|| units_dat::BaseProperty[unit->id] & UnitProperty::NeutralAccessories
-			|| unit->status & UnitStatus::DoodadStatesThing
+			|| unit->status & UnitStatus::Frozen
 			|| unit->id == UnitId::TerranSpiderMine
 			|| unit->id == UnitId::TerranLobotomyMine
 			|| unit->id == UnitId::Spell_DarkSwarm

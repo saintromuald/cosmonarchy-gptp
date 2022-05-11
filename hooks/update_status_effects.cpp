@@ -182,7 +182,8 @@ namespace hooks
 				}
 				if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
 				{
-					unitExt->timers[TimerResourceBoostedRegen] = 24;
+					UnitExt* targetExt = globals.get_unit_ext(target);
+					targetExt->timers[TimerResourceBoostedRegen] = 24;
 					u32 underlay = ImageId::ResourceBoostOverlay_Small + scbw::getOverlayOffset(target->id);
 					if (!target->sprite->getOverlay(underlay)) {
 						if (scbw::unit_id_is_gas_structure(target->id))

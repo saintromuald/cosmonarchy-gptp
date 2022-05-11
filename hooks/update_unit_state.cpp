@@ -237,7 +237,7 @@ namespace hooks
 		{
 			if (unit->orderTarget.unit != nullptr)
 			{
-				unit->orderTarget.unit->unusedTimer = 180;
+				unit->orderTarget.unit->cmbw_resource_regen_mining_delay = 180;
 			}
 		}
 
@@ -306,52 +306,39 @@ namespace hooks
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::ResourceContainer)
 		{
 			// Decrement resource regen timers
-			if (unit->unusedTimer > 0)
+			if (unit->cmbw_resource_regen_mining_delay > 0)
 			{
-				unit->unusedTimer--;
+				unit->cmbw_resource_regen_mining_delay--;
 			}
-
-			if (unit->_unknown_0x066 > 0)
+			else if (unit->cmbw_resource_regen_cooldown > 0)
 			{
-				unit->_unknown_0x066--;
+				unit->cmbw_resource_regen_cooldown--;
 			}
 			else
 			{
 				// Set regen timers
-				if (unit->unusedTimer > 0)
+				unit->cmbw_resource_regen_cooldown = 36;
+				if (unitExt->timers[TimerResourceBoostedRegen])
 				{
-					unit->_unknown_0x066 = 72;
-					if (unitExt->timers[TimerResourceBoostedRegen])
-					{
-						unit->_unknown_0x066 = 36;
-					}
-				}
-				else
-				{
-					unit->_unknown_0x066 = 36;
-					if (unitExt->timers[TimerResourceBoostedRegen])
-					{
-						unit->_unknown_0x066 = 18;
-					}
+					unit->cmbw_resource_regen_cooldown = 18;
 				}
 
 				// Actual resource regeneration
 				bool update_image = true;
-				if (unit->building.resource.resourceAmount < 7500
-				&& (unit->id == UnitId::ResourceVespeneGeyser
-				|| (scbw::unit_id_is_gas_structure(unit->id, true) && unitExt->timers[TimerResourceBoostedRegen])))
+				if (unit->id == UnitId::ResourceVespeneGeyser || (scbw::unit_id_is_gas_structure(unit->id, true) && unitExt->timers[TimerResourceBoostedRegen]))
 				{
-					unit->building.resource.resourceAmount++;
-					scbw::refreshConsole();
-				}
-				else if (unit->building.resource.resourceAmount < 2500)
-				{
-					unit->building.resource.resourceAmount++;
-					if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3)
-					{
-						helper::updateMineralPatchImage(unit);
+					if (unit->building.resource.resourceAmount < 7500) {
+						unit->building.resource.resourceAmount++;
+						scbw::refreshConsole();
 					}
-					scbw::refreshConsole();
+				}
+				else if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3)
+				{
+					if (unit->building.resource.resourceAmount < 2500) {
+						unit->building.resource.resourceAmount++;
+						helper::updateMineralPatchImage(unit);
+						scbw::refreshConsole();
+					}
 				}
 			}
 		}

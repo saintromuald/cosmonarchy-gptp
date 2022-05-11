@@ -356,7 +356,7 @@ bool Unit::isFrozen() const
 {
 	assert(this);
 	return
-		this->status & UnitStatus::DoodadStatesThing
+		this->status & UnitStatus::Frozen
 		|| this->lockdownTimer
 		|| this->stasisTimer
 		|| this->maelstromTimer;

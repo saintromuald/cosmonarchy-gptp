@@ -313,6 +313,7 @@ enum ExtTimerId
 	TimerCreepMorphOverlay,
 	TimerCorpseCocoonHatch,
 	TimerMindTyrantRecede,
+	TimerTalosAnimationSubtimer,
 	
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -545,7 +546,7 @@ struct UnitLayout
 														// BW shows this value/256
 
 	/*0x064*/ u16       id;								// Unit ID in units.dat
-	/*0x066*/ u8		_unknown_0x066;					// Cosmonarchy - mineral regen cooldown
+	/*0x066*/ u8		cmbw_resource_regen_cooldown;	// Cosmonarchy - mineral regen cooldown
 			  u8		_unknown_0x067;					// Cosmonarchy - warp relay warp in
 	/*0x068*/ Link<Unit> player_link;
 	/*0x070*/ Unit*		subunit;
@@ -710,7 +711,7 @@ struct UnitLayout
 	/*0x122*/ u8        cycleCounter;					// counts/cycles up from 0 to 7 (inclusive). See also 0x85.
 	/*0x123*/ u8        isBlind;						// is bool in BWAPI
 	/*0x124*/ u8        maelstromTimer;
-	/*0x125*/ u8        unusedTimer;					// Used on resources for regeneration delay - Cosmonarchy
+	/*0x125*/ u8        cmbw_resource_regen_mining_delay; // Used on resources for regeneration delay - Cosmonarchy
 	/*0x126*/ u8        corrosiveSporeCountUnused;		// replaced with generic_value
 	/*0x127*/ u8        corrosiveSporeTimeUnused[9];	// replaced with generic_timer
 	/*0x130*/ u16       offsetIndex3by3;				// Cycles between 0-12 for each bullet fired by this unit (if it uses a "Attack 3x3 area" weapon)
