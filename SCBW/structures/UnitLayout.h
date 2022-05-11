@@ -205,7 +205,6 @@ enum ExtValueId
 	ValueMindControlOriginalPlayer,
 	ValueChasmalColonyArteries,		// unused
 	ValueAdaptiveAmitosis,			// unused
-	ValueInfestedByAkistrokor,
 	ValuePreMorphEnergy,
 	ValueGodsMadeFleshCast,
 	ValueGodsMadeFleshActive,
@@ -388,7 +387,7 @@ struct UnitExt
 	Vector32f				repulsionVector;
 	Point16					lastBulletLaunchPos;
 	Point16					aiKitingOrigin;
-// Target					rally;
+//	Target					rally;
 
 	f32						building_tick_progress;
 	f32						building_tick_last_progress;

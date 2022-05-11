@@ -1256,4 +1256,6 @@ namespace helper
 	u32 stop_creep_disappearing(u32 x_tile, u32 y_tile);													// 0047D540
 
 	void secondaryOrder_SpawningLarva(Unit* unit);															// 004EA780
+
+	AiTown* create_ai_town(u32 player, u32 x, u32 y);														// 00432020
 }

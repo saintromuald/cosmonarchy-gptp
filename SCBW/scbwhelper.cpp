@@ -11596,4 +11596,19 @@ namespace helper
 			POPAD
 		}
 	}
+
+	AiTown* create_ai_town(u32 player, u32 x, u32 y) {
+		static AiTown* result;
+		const u32 func_address = 0x00432020;
+		__asm {
+			PUSHAD
+			PUSH y
+			PUSH x
+			MOV EBX, player
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

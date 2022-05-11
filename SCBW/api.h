@@ -562,6 +562,7 @@ namespace scbw
 	Box32 unit_area(Unit* unit);
 	void clear_creep(Box32 area);
 	u32 get_closest_resarea(Point16 position);
+	AiTown* get_closest_town(u32 player, Point16 position);
 	AiRegion* get_ai_region(u32 player, Point16 position);
 	void ask_for_ai_help(Unit* victim, Unit* attacker);
 	bool unit_id_is_gas_structure(u16 unit_id, bool ignore_geysers = false);

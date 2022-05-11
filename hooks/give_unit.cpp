@@ -110,9 +110,9 @@ namespace hooks
 	void giveAI(Unit* unit) // 00463040
 	{
 		s32 player = unit->playerId;
-		if (player < 8 && playerTable[player].type == PlayerType::Computer)
+		if (player < 8)
 		{
-			if (unit->id == UnitId::TerranCleric)
+			if (playerTable[player].type == PlayerType::Computer && unit->id == UnitId::TerranCleric)
 			{
 				Unit* freeMedic = AIScriptController[player].mainMedic;				
 				if (freeMedic == nullptr)
@@ -123,16 +123,20 @@ namespace hooks
 
 			if (units_dat::ComputerAIInternal[unit->id] & 2) // "Non-military"
 			{
-				AiTown* firstTown = AiActiveTownArray[player].first;
-				if (firstTown)
-				{
-					helper::AI_AddWorkerStructureAI(unit, firstTown);
+				// Originally used AiActiveTownArray[player].first
+
+				AiTown* town = scbw::get_closest_town(player, unit->position);
+				if (town) {
+					if (scbw::unitIdIsTownCenter(unit->id) && town->resarea != scbw::get_closest_resarea(unit->position)) {
+						town = helper::create_ai_town(player, unit->position.x, unit->position.y);
+					}
+					helper::AI_AddWorkerStructureAI(unit, town);
 				}
 			}
 			else
 			{
 				UnitExt* unitExt = globals.get_unit_ext(unit);
-				if (unitExt->values[ValueInfestedByAkistrokor] || unitExt->units[UnitMindController])
+				if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] || unitExt->units[UnitMindController])
 				{
 					helper::AI_TrainingSimpleMilitary(unit, unit);
 				}

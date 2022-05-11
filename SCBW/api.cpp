@@ -2075,6 +2075,22 @@ namespace scbw
 		}
 		return best_resarea;
 	}
+	
+	AiTown* get_closest_town(u32 player, Point16 position) {
+		u32 min_distance = UINT32_MAX;
+		AiTown* best_town = 0;
+		for (AiTown* town = AiActiveTownArray[player].first; town; town = town->link.prev) {
+			if (!town->inited) {
+				continue;
+			}
+			u32 distance = scbw::getDistanceFast(position, town->position);
+			if (distance < min_distance) {
+				min_distance = distance;
+				best_town = town;
+			}
+		}
+		return best_town;
+	}
 
 	AiRegion* get_ai_region(u32 player, Point16 position) {
 		return &AiRegionCaptains[player][helper::SAI_GetRegionIdFromPxEx(position.x, position.y)];
