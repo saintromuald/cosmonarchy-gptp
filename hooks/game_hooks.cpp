@@ -1548,6 +1548,12 @@ namespace hooks
 			unitExt->values[ValuePetrificationStacks] = 0;
 		}
 
+		// Solarion - Auto Train
+		if (unit->id == UnitId::ProtossSolarion) {
+			unit->buildQueue[unit->buildQueueSlot] = UnitId::ProtossSteward;
+			unit->setSecondaryOrder(OrderId::TrainFighter);
+		}
+
 		// Blissful Embrace - Creep Spread
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] &&
 			units_dat::BaseProperty[unit->id] & UnitProperty::Building &&
