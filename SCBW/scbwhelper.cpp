@@ -3980,38 +3980,38 @@ namespace helper
 		return return_value;
 	}
 
-	void ApplySpeedUpgradeFromUnitType(Unit* unit)
+	void apply_speed_upgrade_from_unit_type(Unit* unit)
 	{
-		const u32 Func_ApplySpeedUpgradeFromUnitType = 0x00454370;
+		const u32 Func_apply_speed_upgrade_from_unit_type = 0x00454370;
 		__asm
 		{
 			PUSHAD
 			MOV ESI, unit
-			CALL Func_ApplySpeedUpgradeFromUnitType
+			CALL Func_apply_speed_upgrade_from_unit_type
 			POPAD
 		}
 	}
 
 	void giveAI(Unit* unit)
 	{
-		const u32 Func_Sub463040 = 0x00463040;
+		const u32 Func_give_AI = 0x00463040;
 		__asm
 		{
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub463040
+			CALL Func_give_AI
 			POPAD
 		}
 	}
 
-	void recheckAttacks(Unit* unit)
+	void recheck_attacks(Unit* unit)
 	{
-		const u32 Func_Sub476D30 = 0x00476D30;
+		const u32 Func_recheck_attacks = 0x00476D30;
 		__asm
 		{
 			PUSHAD
 			MOV EDI, unit
-			CALL Func_Sub476D30
+			CALL Func_recheck_attacks
 			POPAD
 		}
 	}
@@ -4064,13 +4064,13 @@ namespace helper
 		}
 	}
 
-	void function_004F3B70(Unit* powerup)
+	void drop_powerup(Unit* powerup)
 	{
-		const u32 Func_Sub4F3B70 = 0x004F3B70;
+		const u32 Func_drop_powerup = 0x004F3B70;
 		__asm {
 			PUSHAD
 			PUSH powerup
-			CALL Func_Sub4F3B70
+			CALL Func_drop_powerup
 			POPAD
 		}
 	}
@@ -4090,15 +4090,15 @@ namespace helper
 		return return_value;
 	}
 
-	bool function_00476640(Unit* unit, u32 weaponId)
+	bool is_ready_to_attack(Unit* unit, u32 weaponId)
 	{
-		const u32 Func_Sub476640 = 0x00476640;
+		const u32 Func_is_ready_to_attack = 0x00476640;
 		static b32 pre_result;
 		__asm {
 			PUSHAD
 			PUSH weaponId
 			MOV EAX, unit
-			CALL Func_Sub476640
+			CALL Func_is_ready_to_attack
 			MOV pre_result, EAX
 			POPAD
 		}
