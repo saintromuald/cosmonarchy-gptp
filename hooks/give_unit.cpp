@@ -110,9 +110,9 @@ namespace hooks
 	void giveAI(Unit* unit) // 00463040
 	{
 		s32 player = unit->playerId;
-		if (player < 8)
+		if (player < 8 && playerTable[player].type == PlayerType::Computer)
 		{
-			if (playerTable[player].type == PlayerType::Computer && unit->id == UnitId::TerranCleric)
+			if (unit->id == UnitId::TerranCleric)
 			{
 				Unit* freeMedic = AIScriptController[player].mainMedic;				
 				if (freeMedic == nullptr)
