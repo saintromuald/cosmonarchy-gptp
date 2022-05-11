@@ -345,7 +345,8 @@ namespace helper
 	void end_collision_tracking(Unit* unit);																						// 0046A560
 	void start_collision_tracking(Unit* unit);																						// 0046A5A0
 	void force_order_done(Unit* unit);																								// 00475420
-	bool update_creep_disappearance(Unit* unit);																					// 0047DF90
+	bool update_creep_disappearance_unit(Unit* unit);																				// 0047DF90
+	void update_creep_disappearance_unit_id(u32 unit_id, u32 x, u32 y, b32 completed);												// 0047DE40
 	void placebuildingProc();																										// 0048E6E0
 	void playBuildingLandSound(Unit* unit);																							// 0048F5A0
 	void SetUnitMovementSpeed(Unit* unit, u32 newSpeed);																			// 004951C0
@@ -1251,4 +1252,6 @@ namespace helper
 
 	typedef bool __fastcall game_menu_dialog_interact_func(BinDlg* control, dlgEvent dlg_event);
 	extern game_menu_dialog_interact_func* game_menu_dialog_interact;
+
+	u32 stop_creep_disappearing(u32 x_tile, u32 y_tile);													// 0047D540
 }

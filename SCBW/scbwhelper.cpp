@@ -3423,7 +3423,7 @@ namespace helper
 		}
 	}
 
-	bool update_creep_disappearance(Unit* unit)
+	bool update_creep_disappearance_unit(Unit* unit)
 	{
 		const u32 Func_Sub47DF90 = 0x0047DF90;
 		b32 pre_return_value;
@@ -3432,9 +3432,24 @@ namespace helper
 			PUSH unit
 			CALL Func_Sub47DF90
 			MOV pre_return_value, EAX
-			POPAD		}
+			POPAD
+		}
 
 		return (pre_return_value != 0);
+	}
+
+	void update_creep_disappearance_unit_id(u32 unit_id, u32 x, u32 y, b32 completed)
+	{
+		const u32 func_address = 0x0047DE40;
+		__asm {
+			PUSHAD
+			MOV EAX, completed
+			MOV ECX, y
+			MOV EDX, x
+			PUSH unit_id
+			CALL func_address
+			POPAD
+		}
 	}
 
 	void placebuildingProc()
@@ -11557,4 +11572,18 @@ namespace helper
 
 	main_menu_options_custom_interact_func* main_menu_options_custom_interact = (main_menu_options_custom_interact_func*)0x004CA0A0;
 	game_menu_dialog_interact_func* game_menu_dialog_interact = (game_menu_dialog_interact_func*)0x004CA24;
+
+	u32 stop_creep_disappearing(u32 x_tile, u32 y_tile) {
+		static u32 result;
+		const u32 func_address = 0x0047D540;
+		__asm {
+			PUSHAD
+			MOV EDI, y_tile
+			MOV EBX, x_tile
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

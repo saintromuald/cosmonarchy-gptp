@@ -474,6 +474,9 @@ void unitDestructorSpecialHook(Unit* unit)
 		// add finder later to trace plague flag
 	}
 
+	// Update Custom Creep Disappearance
+	scbw::update_custom_creep_disappearance(unit);
+
 	// Globals memory management
 	globals.remove_unit_from_pariah_table(unit, false);
 	globals.unitDeathHook(unit);

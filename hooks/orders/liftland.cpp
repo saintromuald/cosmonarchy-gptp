@@ -190,6 +190,11 @@ namespace hooks
 				helper::flying_building_lift_if_still_blocked(unit);
 				helper::force_order_done(unit);
 
+				UnitExt* unitExt = globals.get_unit_ext(unit);
+				if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
+					scbw::spawn_custom_creep(unit);
+				}
+
 				Unit* addon = helper::connectAddonCheck(unit);
 				if (addon != nullptr)
 				{
@@ -246,8 +251,9 @@ namespace hooks
 
 			if (unit->id == UnitId::ZergInfestedCommandCenter)
 			{
-				helper::update_creep_disappearance(unit);
+				helper::update_creep_disappearance_unit(unit);
 			}
+			scbw::update_custom_creep_disappearance(unit);
 
 			if (*IS_PLACING_BUILDING)
 			{

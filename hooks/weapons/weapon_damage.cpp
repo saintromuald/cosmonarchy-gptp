@@ -983,6 +983,7 @@ namespace hooks
 		}
 
 		if (targetExt->values[ValueBlissfulEmbraceOriginalPlayer] && units_dat::BaseProperty[data.target->id] & UnitProperty::Building) {
+			scbw::update_custom_creep_disappearance(data.target);
 			data.target->giveTo(targetExt->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
 			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
 

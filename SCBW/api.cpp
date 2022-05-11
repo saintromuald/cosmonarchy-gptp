@@ -2126,4 +2126,53 @@ namespace scbw
 		UnitArrayFilter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth});
 		return sovroleths;
 	}
+
+	void spawn_custom_creep(Unit* unit) {
+		u32 w = units_dat::BuildingDimensions[unit->id].x / 32;
+		u32 h = units_dat::BuildingDimensions[unit->id].y / 32;
+		u32 x = unit->position.x / 32 - w / 2;
+		u32 y = unit->position.y / 32 - h / 2;
+
+		x -= 1;
+		y -= 1;
+		w += 2;
+		h += 2;
+
+		helper::clear_tile_flags_from_area(0x80000000, x, y, w, h);
+		helper::set_creep(x, y, w, h, false);
+		helper::set_map_tile_flags(0x80000000, x, y, w, h);
+	}
+
+	void stop_custom_creep_disappearing(Unit* unit)
+	{
+		Box32 rect = {};
+		bool spreads_creep = helper::GetCreepSpreadArea(UnitId::ZergHive, unit->position.x, unit->position.y, true, &rect);
+		if (rect.top > rect.bottom) {
+			return;
+		}
+
+		for (u32 y_tile = rect.top; y_tile <= rect.bottom; ++y_tile) {
+			for (u32 x_tile = rect.left; x_tile <= rect.right; ++x_tile) {
+				if ((*activeTileHandle)[x_tile + y_tile * mapTileSize->width] & 0x10000000) {
+					u32 x = x_tile * 32 - unit->position.x + 16;
+					u32 y = y_tile * 32 - unit->position.y + 16;
+					if (!spreads_creep || 100 * x * x + (y * y << 8) <= 10240000) {
+						helper::stop_creep_disappearing(x_tile, y_tile);
+					}
+				}
+			}
+		}
+	}
+
+	void spread_custom_creep(Unit* unit) {
+		scbw::stop_custom_creep_disappearing(unit);
+		helper::spreadCreep(UnitId::ZergHive, unit->position.x, unit->position.y);
+	}
+
+	void update_custom_creep_disappearance(Unit* unit) {
+		UnitExt* unitExt = globals.get_unit_ext(unit);
+		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
+			helper::update_creep_disappearance_unit_id(UnitId::ZergHive, unit->position.x, unit->position.y, true);
+		}
+	}
 }

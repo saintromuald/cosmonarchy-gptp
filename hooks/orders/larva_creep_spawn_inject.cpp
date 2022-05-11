@@ -344,7 +344,7 @@ namespace hooks
 		jmpPatch(getCreepRegion_Wrapper, 0x00413DB0);
 		jmpPatch(spreadsCreep_Wrapper, 0x00413870);
 		jmpPatch(runCreepRandomizer_Wrapper, 0x004140A0);
-		jmpPatch(UpdateCreepDisappearanceUnit_Wrapper, 0x0047DF90, 0);
+//		jmpPatch(UpdateCreepDisappearanceUnit_Wrapper, 0x0047DF90, 0); // broken
 
 		jmpPatch(bugWrapper, 0x0047DCCA); // attempt to fix Bug
 

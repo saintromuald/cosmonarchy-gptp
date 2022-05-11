@@ -1557,7 +1557,7 @@ namespace hooks
 		// Blissful Embrace - Creep Spread
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] && *elapsedTimeFrames % 15 == 0 &&
 			units_dat::BaseProperty[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::InAir)) {
-			helper::spreadCreep(UnitId::ZergHive, unit->position.x, unit->position.y);
+			scbw::spread_custom_creep(unit);
 		}
 
 		// Akistrokor - Blissful Embrace ability
@@ -1590,19 +1590,7 @@ namespace hooks
 
 						// Spread initial creep
 						if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
-							u32 w = units_dat::BuildingDimensions[target->id].x / 32;
-							u32 h = units_dat::BuildingDimensions[target->id].y / 32;
-							u32 x = target->position.x / 32 - w / 2;
-							u32 y = target->position.y / 32 - h / 2;
-
-							x -= 1;
-							y -= 1;
-							w += 2;
-							h += 2;
-
-							helper::clear_tile_flags_from_area(0x80000000, x, y, w, h);
-							helper::set_creep(x, y, w, h, false);
-							helper::set_map_tile_flags(0x80000000, x, y, w, h);
+							scbw::spawn_custom_creep(target);
 						}
 
 						// Create busy overlays for buildings only

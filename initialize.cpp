@@ -495,7 +495,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectMergeUnitsHooks();
 
 	hooks::injectLarvaCreepSpawnHooks();
-//	hooks::injectLiftLandHooks();
+	hooks::injectLiftLandHooks();
 //	hooks::injectAttackOrdersHooks();
 //	hooks::injectStopHoldPosOrdersHooks();
 	hooks::injectRecallSpellHooks();
