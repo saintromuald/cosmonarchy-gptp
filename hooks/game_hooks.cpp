@@ -472,22 +472,22 @@ namespace hooks
 								|| unitExt->values[ValueTalosAnimationTimer] % 128 == 0) {
 								Point16 pos = target->sprite->position;
 								switch (scbw::random() % 4) {
-									case 1:
+									case 0:
 									{
 										pos.x -= units_dat::UnitBounds[target->id].left * 0.75;
 										pos.y -= units_dat::UnitBounds[target->id].top * 0.75;
 									} break;
-									case 2:
+									case 1:
 									{
 										pos.x += units_dat::UnitBounds[target->id].right * 0.75;
 										pos.y -= units_dat::UnitBounds[target->id].top * 0.75;
 									} break;
-									case 3:
+									case 2:
 									{
 										pos.x -= units_dat::UnitBounds[target->id].left * 0.75;
 										pos.y += units_dat::UnitBounds[target->id].bottom * 0.75;
 									} break;
-									case 4:
+									case 3:
 									{
 										pos.x += units_dat::UnitBounds[target->id].right * 0.75;
 										pos.y += units_dat::UnitBounds[target->id].bottom * 0.75;
