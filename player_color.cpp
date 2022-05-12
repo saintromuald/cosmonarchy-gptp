@@ -224,7 +224,7 @@ static void update_player_name(u32 player) {
 			}
 		}
 	}
-	strcpy_s(playerNameList->player[player].player_name, "Computer");
+	strcpy_s(playerNameList->player[player].player_name, "Computer"); // this seems to crash sometimes for unknown reasons
 }
 
 void load_player_names() {

@@ -8383,7 +8383,7 @@ namespace helper
 		__asm
 		{
 			PUSHAD
-			MOV EAX, result
+			MOV EAX, unit
 			CALL Func_CListPushBackHiddenUnitEntry
 			MOV result, EAX
 			POPAD
