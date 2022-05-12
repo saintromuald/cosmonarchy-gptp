@@ -720,59 +720,133 @@ LABEL_18:
 		return scbw::setInGameLoopState(0);
 	}
 
-	Unit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId)  // 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
+	// 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
+	// Now used to set starting energy to 100 - Veeq7
+	Unit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId) 
 	{
-		Unit* result;
-		s32* pointer;
-
-		u32 randomSeed;
+		u32 randomNumber = 0;
 		if (*IS_IN_GAME_LOOP)
 		{
 			++randomCounts[14];
 			*lastRandomNumber = 0x15A4E35 * *lastRandomNumber + 1;
 			++(*randomCountsTotal);
-			randomSeed = (*lastRandomNumber >> 16) & 0x7FFF;
+			randomNumber = (*lastRandomNumber >> 16) & 0x7FFF;
 		}
-		else
-		{
-			randomSeed = 0;
+		Unit* unit = helper::unitConstructor(x, y, unitType, playerId, randomNumber);
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster) {
+			unit->energy = 100 * 256; // New starting amount (morphs handled in post transform unit wrapper)
 		}
-		Unit* unitConstructorResult = helper::unitConstructor(x, y, unitType, playerId, randomSeed);
-		Unit* unitConstructorResult2 = unitConstructorResult;
-		if (!unitConstructorResult)
+		if (!unit)
 		{
 			return 0;
 		}
-		if (unitConstructorResult->status & UnitStatus::GroundedBuilding)
+		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-			helper::CListPushBackUsedUnitEntry(unitConstructorResult);
+			helper::CListPushBackUsedUnitEntry(unit);
 		}
 		else
 		{
-			helper::CListPushBackHiddenUnitEntry(unitConstructorResult);
+			helper::CListPushBackHiddenUnitEntry(unit);
 		}
-		if (unitType > UnitId::Spell_DisruptionWeb
-			|| units_dat::SubUnit[unitType] == UnitId::None)
+
+		if (unitType > UnitId::Spell_DisruptionWeb || units_dat::SubUnit[unitType] == UnitId::None)
 		{
-			unitConstructorResult2->subunit = 0;
-			result = unitConstructorResult2;
+			unit->subunit = 0;
+			return unit;
 		}
-		else
+
+		Unit* subunit = helper::unitConstructor(x, y, units_dat::SubUnit[unitType], playerId, randomNumber);
+		if (!subunit)
 		{
-			Unit* unitConstructorResult3 = helper::unitConstructor(x, y, units_dat::SubUnit[unitType], playerId, randomSeed);
-			Unit* unitConstructorResult4 = unitConstructorResult3;
-			if (!unitConstructorResult3)
+			helper::unitDestructor(unit);
+			return 0;
+		}
+
+		unit->subunit = subunit;
+		subunit->subunit = unit;
+		u32 attack_frame = 0;
+		helper::getImageAttackFrame(&attack_frame, unit->sprite, 0, 2u);
+		helper::setSpriteMainImageOffset(subunit->sprite, attack_frame, randomNumber);
+		return unit;
+	}
+
+	// 0049F170 - Hooked to set starting energy to 100 - Veeq7
+	void TransformUnit_Main(Unit* unit, u32 unit_id)
+	{
+		u32 hp = unit->hitPoints;
+		u32 order_type = unit->mainOrderId;
+		u32 order_state = unit->mainOrderState;
+		Target order_target = unit->orderTarget;
+		unit->previousUnitType = unit->id;
+		unit->previousHp = hp / 256;
+		if (hp < 256)
+		{
+			unit->previousHp = 1;
+		}
+		Sprite* sprite = unit->sprite;
+		u32 player_id = sprite->playerId;
+		u32 x = sprite->position.x;
+		u32 y = sprite->position.y;
+		if (sprite->images.head)
+		{
+			helper::SpriteDestructor(sprite);
+			unit->sprite = 0;
+		}
+		if ( unit->path )
+		{
+			helper::reAssignPath(unit);
+		}
+		helper::InitializeUnit(unit, y, unit_id, x, unit->playerId);
+		unit->status = unit->status & ~UnitStatus::Frozen;
+		u32 max_hp = units_dat::MaxHitPoints[unit->previousUnitType] / 256;
+		u32 final_hp = 1;
+		if (max_hp)
+		{
+			final_hp = hp / 256;
+		}
+		unit->hitPoints = final_hp * 256;
+		if (!unit->hitPoints)
+		{
+			unit->hitPoints = 1;
+		}
+		unit->airStrength = helper::getUnitStrength(unit, max_hp, false);
+		unit->groundStrength = helper::getUnitStrength(unit, max_hp, true);
+		unit->status &= ~(UnitStatus::CanNotReceiveOrders | UnitStatus::NoBrkCodeStart);
+		if (!orders_dat::CanBeInterrupted[order_type]) {
+			unit->status |= UnitStatus::CanNotReceiveOrders;
+		}
+		if (sprite->playerId != player_id )
+		{
+			sprite->playerId = player_id;
+			for (Image* image = sprite->images.head; image; image->link.next)
 			{
-				helper::unitDestructor(unitConstructorResult2);
-				return 0;
+				image->flags |= ImageFlags::Redraw;
 			}
-			unitConstructorResult2->subunit = unitConstructorResult3;
-			unitConstructorResult3->subunit = unitConstructorResult2;
-			helper::getImageAttackFrame(pointer, unitConstructorResult2->sprite, 0, 2u);
-			helper::setSpriteMainImageOffset(unitConstructorResult4->sprite, *pointer, randomSeed);
-			result = unitConstructorResult2;
 		}
-		return result;
+		if (unit->status & UnitStatus::GroundedBuilding)
+		{
+			unit->buildQueue[unit->buildQueueSlot] = 228;
+		}
+		unit->mainOrderId = order_type;
+		unit->mainOrderState = order_state;
+		unit->orderTarget = order_target;
+		u32 temp_unit_id = unit_id;
+		if (!(unit->status & UnitStatus::Completed))
+		{
+			temp_unit_id = 228;
+		}
+
+		if (!(unit->status & UnitStatus::Frozen) && !unit->lockdownTimer && !unit->stasisTimer && !unit->maelstromTimer
+			|| units_dat::BaseProperty[(unsigned __int16)unit->id] & 1
+			|| temp_unit_id == 228 )
+		{
+			unit->currentButtonSet = temp_unit_id;
+		}
+		*forceButtonRefresh = 1;
+		portraitRedraw[0] = 1;
+		*statusScreenRedraw = 1;
+		*ctrlUnderMouse = 0;
+		*ctrlUnderMouseValue = 0;
 	}
 
 	// Hooked to add nullcheck - Pr0nogo

@@ -46,7 +46,7 @@ namespace hooks
 						unit->mainOrderState = 1;
 						unit->mainOrderTimer = 24;
 					}
-					if (!unit->mainOrderTimer) {
+					if (unit->mainOrderTimer) {
 						return;
 					}
 

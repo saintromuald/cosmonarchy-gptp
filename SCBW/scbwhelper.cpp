@@ -6382,7 +6382,7 @@ namespace helper
 		{
 			if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
 			{
-				current_image->flags |= CImage_Flags::Redraw;
+				current_image->flags |= ImageFlags::Redraw;
 			}
 		}
 	}
@@ -7672,9 +7672,9 @@ namespace helper
 		worker->resourceType = isMineral ? 2 : 1;
 
 		Image* chunkImage = worker->sprite->createOverlay(chunkImageId);
-		if (chunkImage && !(chunkImage->flags & CImage_Flags::Flag07))
+		if (chunkImage && !(chunkImage->flags & ImageFlags::Flag07))
 		{
-			chunkImage->flags |= CImage_Flags::Flag07;
+			chunkImage->flags |= ImageFlags::Flag07;
 			updateImagePositionOffset(chunkImage);
 		}
 
@@ -8406,14 +8406,14 @@ namespace helper
 		return result;
 	}
 
-	void* getImageAttackFrame(void* resultArg, Sprite* sprite, s32 index, u8 playerId)
+	void* getImageAttackFrame(void* resultArg, Sprite* sprite, s32 index, u32 overlay_type)
 	{
 		const u32 Func_getImageAttackFrame = 0x00401DF0;
 		static void* result;
 		__asm
 		{
 			PUSHAD
-			PUSH playerId
+			PUSH overlay_type
 			MOV EDI, index
 			MOV ECX, sprite
 			MOV EAX, resultArg

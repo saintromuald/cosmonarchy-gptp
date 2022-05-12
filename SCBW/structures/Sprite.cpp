@@ -109,7 +109,7 @@ void Sprite::setPosition(u16 x, u16 y)
 
 	for (Image* i = this->images.head; i; i = i->link.next)
 	{
-		i->flags |= CImage_Flags::Redraw;
+		i->flags |= ImageFlags::Redraw;
 	}
 }
 

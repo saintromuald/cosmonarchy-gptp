@@ -1515,7 +1515,7 @@ namespace scbw
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType, unit->sprite->mainGraphic->id));
 		u8 frameDirection = unit->sprite->mainGraphic->direction;
 		Point8 offset = loFile->getOffset(frameDirection + (17 * frameset_offset), rotate);
-		if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored)
+		if (unit->sprite->mainGraphic->flags & ImageFlags::Mirrored)
 		{
 			offset.x = -offset.x;
 		}

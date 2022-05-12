@@ -150,7 +150,7 @@ namespace hooks
 				Image* current_image = building->sprite->images.head;
 				while (current_image != nullptr)
 				{
-					if (current_image->flags & CImage_Flags::Flag04)
+					if (current_image->flags & ImageFlags::Flag04)
 					{
 						const u32* u32_006D1200 = (u32*)0x006D1200;
 						current_image->animation = IscriptAnimation::SpecialState1;
@@ -190,7 +190,7 @@ namespace hooks
 				current_image = building->sprite->images.head;
 				while (current_image != nullptr)
 				{
-					if (current_image->flags & CImage_Flags::Flag04)
+					if (current_image->flags & ImageFlags::Flag04)
 					{
 						const u32* u32_006D1200 = (u32*)0x006D1200;
 						current_image->animation = IscriptAnimation::WarpIn;
@@ -217,7 +217,7 @@ namespace hooks
 				current_image = building->sprite->images.head; // DF: Copied over from state 2.
 				while (current_image != nullptr) // DF: Copied over from state 2.
 				{
-					if (current_image->flags & CImage_Flags::Flag04)
+					if (current_image->flags & ImageFlags::Flag04)
 					{
 						const u32* u32_006D1200 = (u32*)0x006D1200;
 						current_image->animation = IscriptAnimation::WarpIn;
@@ -234,7 +234,7 @@ namespace hooks
 					Image* current_image = building->sprite->images.head;
 					while (current_image != nullptr)
 					{
-						if (current_image->flags & CImage_Flags::Flag04)
+						if (current_image->flags & ImageFlags::Flag04)
 						{
 							const u32* u32_006D1200 = (u32*)0x006D1200;
 							current_image->animation = IscriptAnimation::Disable;

@@ -369,7 +369,7 @@ namespace hooks
 				if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW &&
 					unit->sprite->images.tail->verticalOffset != 7)
 				{
-					unit->sprite->images.tail->flags |= CImage_Flags::Redraw;
+					unit->sprite->images.tail->flags |= ImageFlags::Redraw;
 					unit->sprite->images.tail->verticalOffset = 7;
 				}
 

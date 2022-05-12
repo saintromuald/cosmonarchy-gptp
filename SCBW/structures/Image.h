@@ -42,7 +42,7 @@ namespace PaletteType
 
 //note: the flag number is chosen according to the value used in 
 //<< flag operations, that's why it start with 0.
-namespace CImage_Flags
+namespace ImageFlags
 {
 	enum Enum : u16
 	{

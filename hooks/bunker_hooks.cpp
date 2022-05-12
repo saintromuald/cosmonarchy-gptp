@@ -112,7 +112,7 @@ namespace hooks
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
 		Point8 offset = loFile->getOffset(bunkerImage->frameIndex, frameDirection);
 
-		if (bunkerImage->flags & CImage_Flags::Mirrored) // Is inverted
+		if (bunkerImage->flags & ImageFlags::Mirrored) // Is inverted
 		{
 			offset.x = -offset.x;
 		}

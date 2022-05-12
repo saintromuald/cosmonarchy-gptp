@@ -849,7 +849,7 @@ namespace helper
 	Unit* CListPushBackUsedUnitEntry(Unit* unit);														// 0049DCA0
 	Unit* CListPushBackHiddenUnitEntry(Unit* unit);														// 0049DCE0
 	Sprite* unitDestructor(Unit* unit);																	// 004A0990
-	void* getImageAttackFrame(void* resultArg, Sprite* sprite, s32 index, u8 playerId);					// 00401DF0
+	void* getImageAttackFrame(void* resultArg, Sprite* sprite, s32 index, u32 overlay_type);			// 00401DF0
 	void setSpriteMainImageOffset(Sprite* sprite, char x, char y);										// 00401E40
 
 	//// psi_field_util

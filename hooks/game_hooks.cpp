@@ -652,7 +652,7 @@ namespace hooks
 								unit->sprite->mainGraphic->id));
 							u8 frameDirection = unit->sprite->mainGraphic->direction;
 							Point8 offset = loFile->getOffset(frameDirection, 5 - arc);
-							if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored)
+							if (unit->sprite->mainGraphic->flags & ImageFlags::Mirrored)
 							{
 								offset.x = -offset.x;
 							}

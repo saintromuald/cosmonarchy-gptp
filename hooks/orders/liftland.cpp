@@ -94,7 +94,7 @@ namespace hooks
 
 					if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
 					{
-						unit->sprite->images.tail->flags |= CImage_Flags::DontUpdate;
+						unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 					}
 
 					unit->status |= UnitStatus::CanNotReceiveOrders;
@@ -146,7 +146,7 @@ namespace hooks
 				helper::set_shadow_y(unit->sprite, 0);
 				if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
 				{
-					unit->sprite->images.tail->flags &= ~CImage_Flags::DontUpdate;
+					unit->sprite->images.tail->flags &= ~ImageFlags::DontUpdate;
 				}
 				helper::create_landing_dust(unit->sprite);
 				scbw::refreshConsole();
@@ -238,7 +238,7 @@ namespace hooks
 
 			if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
 			{
-				unit->sprite->images.tail->flags |= CImage_Flags::DontUpdate;
+				unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 			}
 
 			scbw::refreshConsole();

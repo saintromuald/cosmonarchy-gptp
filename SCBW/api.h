@@ -469,7 +469,7 @@ namespace scbw
 			u16 frameIndex = frameset + image->direction;
 			if (image->frameIndex != frameIndex)
 			{
-				image->flags |= CImage_Flags::Redraw;	//Order the game to redraw the image
+				image->flags |= ImageFlags::Redraw;	//Order the game to redraw the image
 				image->frameIndex = frameIndex;
 			}
 		}

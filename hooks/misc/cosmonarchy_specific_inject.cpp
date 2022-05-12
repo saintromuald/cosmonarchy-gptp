@@ -681,16 +681,16 @@ namespace hooks
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0xC]
-			MOV playerId, EAX
 			MOV EAX, [EBP + 0x08]
 			MOV y, EAX
+			MOV EAX, [EBP + 0xC]
+			MOV playerId, EAX
 			POP EAX
 			MOV x, EAX
 			MOV unitType, CX
 			PUSHAD
 		}
-		hooks::createUnit(unitType, x, y, playerId);
+		result = hooks::createUnit(unitType, x, y, playerId);
 		__asm
 		{
 			POPAD
@@ -742,7 +742,7 @@ namespace hooks
 
 		// Hook patches!
 //      jmpPatch(gameLoop_Wrapper, 0x004D94B0, 3);
-//		jmpPatch(createUnit_Wrapper, 0x004A09D0, 1);
+		jmpPatch(createUnit_Wrapper, 0x004A09D0, 1);
 		jmpPatch(ignoreIscriptGoToIdle_Wrapper, 0x00476550, 1);
 	}
 }
