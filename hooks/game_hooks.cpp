@@ -1106,7 +1106,7 @@ namespace hooks
 					unitExt->values[ValueGodsMadeFleshActive] = 1;
 					helper::playSoundFromSource(scbw::randBetween(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
 				}
-				// Demiurge - Gods Made Flesh - remove effect from caster
+				// Demiurge - Gods Made Flesh - apply link
 				if (unitExt->values[ValueGodsMadeFleshActive])
 				{
 					for (Unit* target : unitExt->unitVectors[UnitVectorWorshipersDemiurge]) {
