@@ -1622,53 +1622,13 @@ namespace hooks
 			Unit* target = unit->orderTarget.unit;
 			if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
 				&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->playerId != target->playerId) {
-				UnitExt* targetExt = globals.get_unit_ext(target);
 				if (helper::isUnitInWeaponRange(unit, target)) {
 					if (unit->orderSignal & 2) {
 						unit->orderSignal &= ~2;
 						helper::force_order_done(unit);
 
-						// Obtain control
 						unitExt->values[ValueBlissfulEmbraceChannel] = 0;
-						if (!targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
-							targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = target->playerId + 1;
-							targetExt->values[ValueBlissfulEmbraceOriginalHealth] = target->hitPoints;
-						}
-						target->giveTo(unit->playerId);
-
-						// Spread initial creep
-						scbw::spawn_custom_creep(target);
-
-						// Remove connected larva
-						UnitArray larvae = UnitSearchRadial(target->position, 4 * 32);
-						UnitArrayFilter(&larvae, target, 0, {UnitId::ZergLarva});
-						for (u32 i = 0; i < larvae.size; ++i) {
-							Unit* larva = larvae.units[i];
-							if (larva->connectedUnit == target) {
-								larva->connectedUnit = 0;
-							}
-						}
-
-						// Spawn overlay  TODO: Make this a sprite
-						u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-						if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay) {
-							effect_image_id = ImageId::ZergBuildingExplosion;
-						} else if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay) {
-							effect_image_id = ImageId::ZergAirDeathExplosion_Large;
-						}
-						target->sprite->createOverlay(effect_image_id);
-
-						// Create busy overlays for buildings only
-						u32 infested_image_id = ImageId::InfestedOverlay_Large;
-						if (scbw::unit_id_is_smaller_building(target->id)) {
-							infested_image_id = ImageId::InfestedOverlay_Small;
-						}
-						if (!target->getOverlay(infested_image_id)) {
-							target->sprite->createTopOverlay(infested_image_id);
-						}
-
-						// Play Sound
-						helper::playSoundFromSource(SoundId::Zerg_Bldg_ZBldgDth_WAV, target, true, 0);
+						scbw::blissful_embrace(target, unit->playerId);
 					}
 				}
 			}

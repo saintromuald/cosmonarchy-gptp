@@ -2200,6 +2200,51 @@ namespace scbw
 		}
 	}
 
+	void blissful_embrace(Unit* unit, u32 player) {
+		UnitExt* targetExt = globals.get_unit_ext(unit);
+
+		// Obtain control
+		if (!targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
+			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = unit->playerId + 1;
+			targetExt->values[ValueBlissfulEmbraceOriginalHealth] = unit->hitPoints;
+		}
+		unit->giveTo(player);
+
+		// Spread initial creep
+		scbw::spawn_custom_creep(unit);
+
+		// Remove connected larva
+		UnitArray larvae = UnitSearchRadial(unit->position, 4 * 32);
+		UnitArrayFilter(&larvae, unit, 0, {UnitId::ZergLarva});
+		for (u32 i = 0; i < larvae.size; ++i) {
+			Unit* larva = larvae.units[i];
+			if (larva->connectedUnit == unit) {
+				larva->connectedUnit = 0;
+			}
+		}
+
+		// Spawn infested overlay
+		u32 infested_image_id = ImageId::InfestedOverlay_Large;
+		if (scbw::unit_id_is_smaller_building(unit->id)) {
+			infested_image_id = ImageId::InfestedOverlay_Small;
+		}
+		if (!unit->getOverlay(infested_image_id)) {
+			unit->sprite->createTopOverlay(infested_image_id);
+		}
+
+		// Spawn effect overlay  TODO: Make this a sprite
+		u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay) {
+			effect_image_id = ImageId::ZergBuildingExplosion;
+		} else if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay) {
+			effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+		}
+		unit->sprite->createOverlay(effect_image_id);
+
+		// Play Sound
+		helper::playSoundFromSource(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
+	}
+
 	b32 is_tech_unitid(u32 unit_id) {
 		if (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) {
 			switch (unit_id) {

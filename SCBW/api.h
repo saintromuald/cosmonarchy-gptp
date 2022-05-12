@@ -572,6 +572,7 @@ namespace scbw
 	void spawn_custom_creep(Unit* unit);
 	void spread_custom_creep(Unit* unit);
 	void update_custom_creep_disappearance(Unit* unit);
+	void blissful_embrace(Unit* target, u32 player);
 	
 	b32 is_tech_unitid(u32 unit_id);
 }
