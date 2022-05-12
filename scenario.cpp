@@ -1278,25 +1278,6 @@ void init_fraud_units() {
 	}
 }
 
-void run_ai(u32 player, Point16 pos, s32 name) {
-	Box32 area;
-	area.left = pos.x - 2 * 32;
-	area.right = pos.x + 2 * 32;
-	area.top = pos.y - 1.5 * 32;
-	area.bottom = pos.y + 1.5 * 32;
-	s32 is_bw;
-	s32 block = helper::parseAIScriptName(name, &is_bw);
-	if (block) {
-		AiScript* ai_script = helper::AI_RunAIScript(&area, player, block, is_bw);
-		if (ai_script) {
-			ai_script->flags &= 0x3;
-			ai_script->flags |= scbw::get_closest_resarea(pos) << 3;
-		}
-	} else {
-		scbw::printf("scenario.cpp, run_ai: Invalid AI block!");
-	}
-}
-
 bool fraud_share_alliance(u32 a, u32 b) {
 	u32* alliance = 0;
 	for (u32 i = 0; i < ARRAY_SIZE(fraud_alliances); ++i) {
@@ -1533,11 +1514,11 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 
 				startPositions[player] = spawn_location->pos;
 				if (race == RaceId::Terran) {
-					run_ai(player, spawn_location->pos, 'xCMT');
+					scbw::run_ai(player, spawn_location->pos, 'xCMT');
 				} else if (race == RaceId::Protoss) {
-					run_ai(player, spawn_location->pos, 'xCMP');
+					scbw::run_ai(player, spawn_location->pos, 'xCMP');
 				} else if (race == RaceId::Zerg) {
-					run_ai(player, spawn_location->pos, 'xCMZ');
+					scbw::run_ai(player, spawn_location->pos, 'xCMZ');
 				}
 
 				if (spawn_townhall) {
