@@ -126,10 +126,10 @@ namespace hooks
 				// Originally used AiActiveTownArray[player].first
 
 				AiTown* town = scbw::get_closest_town(player, unit->position);
+				if (scbw::unitIdIsTownCenter(unit->id) && (!town || town->resarea != scbw::get_closest_resarea(unit->position))) {
+					town = helper::create_ai_town(player, unit->position.x, unit->position.y);
+				}
 				if (town) {
-					if (scbw::unitIdIsTownCenter(unit->id) && town->resarea != scbw::get_closest_resarea(unit->position)) {
-						town = helper::create_ai_town(player, unit->position.x, unit->position.y);
-					}
 					helper::AI_AddWorkerStructureAI(unit, town);
 				}
 			}
