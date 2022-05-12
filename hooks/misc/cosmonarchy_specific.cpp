@@ -825,23 +825,24 @@ LABEL_18:
 		}
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-			unit->buildQueue[unit->buildQueueSlot] = 228;
+			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 		}
 		unit->mainOrderId = order_type;
 		unit->mainOrderState = order_state;
 		unit->orderTarget = order_target;
+
 		u32 temp_unit_id = unit_id;
 		if (!(unit->status & UnitStatus::Completed))
 		{
-			temp_unit_id = 228;
+			temp_unit_id = UnitId::None;
 		}
-
 		if (!(unit->status & UnitStatus::Frozen) && !unit->lockdownTimer && !unit->stasisTimer && !unit->maelstromTimer
 			|| units_dat::BaseProperty[(unsigned __int16)unit->id] & 1
-			|| temp_unit_id == 228 )
+			|| temp_unit_id == UnitId::None)
 		{
 			unit->currentButtonSet = temp_unit_id;
 		}
+
 		*forceButtonRefresh = 1;
 		portraitRedraw[0] = 1;
 		*statusScreenRedraw = 1;
