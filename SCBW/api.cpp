@@ -2320,7 +2320,7 @@ namespace scbw
 		return false;
 	}
 
-	void run_ai(u32 player, Box32 area, s32 name) {
+	AiScript* run_ai(u32 player, Box32 area, s32 name) {
 		s32 is_bw = 0;
 		s32 block = helper::parseAIScriptName(name, &is_bw);
 		if (block) {
@@ -2333,17 +2333,18 @@ namespace scbw
 				ai_script->flags &= 0x3;
 				ai_script->flags |= scbw::get_closest_resarea(center) << 3;
 			}
+			return ai_script;
 		} else {
 			scbw::printf("scenario.cpp, run_ai: Invalid AI block!");
 		}
 	}
 
-	void run_ai(u32 player, Point16 pos, s32 name) {
+	AiScript* run_ai(u32 player, Point16 pos, s32 name) {
 		Box32 area = {};
 		area.left = pos.x - 2 * 32;
 		area.right = pos.x + 2 * 32;
 		area.top = pos.y - 1.5 * 32;
 		area.bottom = pos.y + 1.5 * 32;
-		run_ai(player, area, name);
+		return run_ai(player, area, name);
 	}
 }

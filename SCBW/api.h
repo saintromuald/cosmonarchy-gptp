@@ -574,8 +574,8 @@ namespace scbw
 	void update_custom_creep_disappearance(Unit* unit);
 	void blissful_embrace(Unit* target, u32 player);
 
-	void run_ai(u32 player, Box32 area, s32 name);
-	void run_ai(u32 player, Point16 pos, s32 name);
+	AiScript* run_ai(u32 player, Box32 area, s32 name);
+	AiScript* run_ai(u32 player, Point16 pos, s32 name);
 	
 	b32 is_tech_unitid(u32 unit_id);
 }

@@ -430,14 +430,14 @@ namespace helper
 	s32 parseRequirementOpcodes(Unit* unit, u32 orderId, u32 playerId, u32 address, u32 req_offset);								// 0046D610
 
 	//// give_unit
-	void apply_speed_upgrade_from_unit_type(Unit* unit);																					// 00454370
+	void apply_speed_upgrade_from_unit_type(Unit* unit);																			// 00454370
 	void giveAI(Unit* unit);																										// 00463040
 	void recheck_attacks(Unit* unit);																								// 00476D30
 	void incrementUnitScores(Unit* unit, s32 unkScore);																				// 00488BF0
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);																				// 004A1E50
 	void CreateUnitSelection(Unit* unit, u32 selectionIndex);																		// 004E6180
 	void DestroyUnitSelection(Unit* unit);																							// 004E6290
-	void drop_powerup(Unit* powerup);																							// 004F3B70
+	void drop_powerup(Unit* powerup);																								// 004F3B70
 
 	//// cast_order
 	u32 getUpgradedWpnCooldown(Unit* unit, u8 weaponId);																			// 00475DC0
