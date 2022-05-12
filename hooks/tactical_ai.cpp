@@ -379,7 +379,8 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 	else if (target->id == UnitId::ProtossPylon
 		|| units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
 		|| units_dat::BaseProperty[target->id] & UnitProperty::Worker
-		|| units_dat::GroupFlags[target->id].isFactory)
+		|| units_dat::GroupFlags[target->id].isFactory
+		|| scbw::is_tech_unitid(target->id))
 	{
 		cost -= 25;
 	}
