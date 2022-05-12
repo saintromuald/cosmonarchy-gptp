@@ -135,35 +135,6 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 	}
 }
 
-b32 is_tech_unitid(u32 unit_id) {
-	if (!units_dat::GroupFlags[unit_id].isBuilding) {
-		return false;
-	}
-	if (units_dat::GroupFlags[unit_id].isFactory) {
-		return false;
-	}
-	if (units_dat::BaseProperty[unit_id] & UnitProperty::Attack) {
-		return false;
-	}
-	if (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) {
-		return false;
-	}
-	if (scbw::unitIdIsResource(unit_id, true)) {
-		return false;
-	}
-	if (unit_id == UnitId::TerranSupplyDepot || unit_id == UnitId::TerranBunker || unit_id == UnitId::TerranTreasury) {
-		return false;
-	}
-	if (unit_id == UnitId::ProtossPylon || unit_id == UnitId::ProtossShieldBattery ||
-		unit_id == UnitId::ProtossCrucible || unit_id == UnitId::ProtossPennant) {
-		return false;
-	}
-	if (unit_id == UnitId::ZergCreepColony || unit_id == UnitId::ZergNydusCanal) {
-		return false;
-	}
-	return true;
-}
-
 static u32 get_unit_class(u32 unit_id) {
 	if (unit_id == UnitId::ProtossPylon || !(units_dat::BaseProperty[unit_id] & UnitProperty::Building)) {
 		return 3;
@@ -171,7 +142,7 @@ static u32 get_unit_class(u32 unit_id) {
 	if (unit_id == UnitId::ZergCreepColony || unit_id == UnitId::ZergLarvalColony || unit_id == UnitId::ZergSunkenColony || unit_id == UnitId::ZergSporeColony) {
 		return 2;
 	}
-	if (units_dat::GroupFlags[unit_id].isFactory || is_tech_unitid(unit_id)) {
+	if (units_dat::GroupFlags[unit_id].isFactory || scbw::is_tech_unitid(unit_id)) {
 		return 1;
 	}
 	return 0;

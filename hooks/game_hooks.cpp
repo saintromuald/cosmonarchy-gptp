@@ -1947,6 +1947,21 @@ namespace hooks
 			for (u32 i = 0; i < arr.size; i++)
 			{
 				Unit* target = arr.units[i];
+				if (scbw::is_tech_unitid(target->id)) {
+					continue;
+				}
+				switch (target->id) {
+					case UnitId::ProtossPylon:
+					case UnitId::ProtossPennant:
+					case UnitId::ProtossCrucible:
+					case UnitId::TerranSupplyDepot:
+					case UnitId::TerranBunker:
+						continue;
+				}
+				if (target->id == UnitId::ZergNydusCanal && target->building.nydusExit) {
+					continue;
+				}
+
 				UnitExt* targetExt = globals.get_unit_ext(target);
 				auto& vec = targetExt->unitVectors[UnitVectorCrucibles];
 				if (std::find(vec.begin(), vec.end(), unit) == vec.end())

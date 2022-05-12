@@ -2199,4 +2199,57 @@ namespace scbw
 			helper::update_creep_disappearance_unit_id(UnitId::ZergHive, unit->position.x, unit->position.y, true);
 		}
 	}
+
+	b32 is_tech_unitid(u32 unit_id) {
+		if (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) {
+			switch (unit_id) {
+				case UnitId::TerranComsatStation:
+				case UnitId::TerranNuclearSilo:
+				case UnitId::TerranQuarry:
+					return false;
+			}
+			return true;
+		}
+
+		switch (unit_id) {
+			// Terran
+			case UnitId::TerranEngineeringBay:
+			case UnitId::TerranScienceFacility:
+
+			// Protoss
+			case UnitId::ProtossCenotaph:
+			case UnitId::ProtossArchonArchives:
+			case UnitId::ProtossAutomatonRegister:
+			case UnitId::ProtossSyntheticSynod:
+			case UnitId::ProtossAstralOmen:
+			case UnitId::ProtossCelestialTribune:
+			case UnitId::ProtossFleetBeacon:
+			case UnitId::ProtossCosmicAltar:
+			case UnitId::ProtossSanctumOfSorrow:
+			case UnitId::ProtossWaywardLure:
+			case UnitId::ProtossMonumentOfSin:
+
+			// Zerg
+			case UnitId::ZergIrolIris:
+			case UnitId::ZergOthstolOviform:
+			case UnitId::ZergAlaszilArbor:
+			case UnitId::ZergQuazrokPool:
+			case UnitId::ZergLiivralPond:
+			case UnitId::ZergHydrokDen:
+			case UnitId::ZergGorgralSwamp:
+			case UnitId::ZergMuthrokSpire:
+			case UnitId::ZergVithrathHaunt:
+			case UnitId::ZergOrbothOmlia:
+			case UnitId::ZergZorkizShroud:
+			case UnitId::ZergUltrokCavern:
+			case UnitId::ZergMatravilNest:
+			case UnitId::ZergAlmakisAntre:
+			case UnitId::ZergSovthrathMound:
+			case UnitId::ZergGeszkathGrotto:
+			case UnitId::ZergAlkajChasm:
+				return true;
+		}
+		return false;
+	}
+
 }

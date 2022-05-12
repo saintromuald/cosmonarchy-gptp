@@ -6,7 +6,6 @@
 #include "globals.h"
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/weapons/weapon_damage.h"
-#include "base_layouts.h"
 
 /* DONE
 Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby,
@@ -846,17 +845,21 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	}
 
 	// Value attacking strategically important targets
-	if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot)
-	{
-		cost -= 50;
-	}
 	if (units_dat::GroupFlags[target->id].isFactory)
 	{
 		cost -= 50;
 	}
-	if (is_tech_unitid(target->id))
+	if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot)
 	{
-		cost -= 50;
+		cost -= 25;
+	}
+	if (scbw::is_tech_unitid(target->id))
+	{
+		cost -= 25;
+	}
+	if (target->id == UnitId::TerranBunker && target->hasLoadedUnit())
+	{
+		cost -= 15;
 	}
 
 	return cost;

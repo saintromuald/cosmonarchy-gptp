@@ -572,4 +572,6 @@ namespace scbw
 	void spawn_custom_creep(Unit* unit);
 	void spread_custom_creep(Unit* unit);
 	void update_custom_creep_disappearance(Unit* unit);
+	
+	b32 is_tech_unitid(u32 unit_id);
 }
