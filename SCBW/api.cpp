@@ -2201,6 +2201,11 @@ namespace scbw
 	}
 
 	void blissful_embrace(Unit* unit, u32 player) {
+		// Sanity Check. Spawning creep wouldn't work properly on units. Spawning creep on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building) || units_dat::BaseProperty[unit->id] & UnitProperty::Addon) {
+			return;
+		}
+
 		UnitExt* targetExt = globals.get_unit_ext(unit);
 
 		// Obtain control
