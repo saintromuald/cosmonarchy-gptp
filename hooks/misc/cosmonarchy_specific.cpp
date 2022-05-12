@@ -770,8 +770,8 @@ LABEL_18:
 		return unit;
 	}
 
-	// 0049F170 - Hooked to set starting energy to 100 - Veeq7
-	void TransformUnit_Main(Unit* unit, u32 unit_id)
+	// Hooked to set starting energy to 100 - Veeq7
+	void transform_unit_main(Unit* unit, u32 unit_id) // 0049F170
 	{
 		u32 hp = unit->hitPoints;
 		u32 order_type = unit->mainOrderId;
@@ -789,14 +789,14 @@ LABEL_18:
 		u32 y = sprite->position.y;
 		if (sprite->images.head)
 		{
-			helper::SpriteDestructor(sprite);
+			helper::sprite_destructor(sprite);
 			unit->sprite = 0;
 		}
 		if ( unit->path )
 		{
-			helper::reAssignPath(unit);
+			helper::reassign_path(unit);
 		}
-		helper::InitializeUnit(unit, y, unit_id, x, unit->playerId);
+		helper::initialize_unit(unit, y, unit_id, x, unit->playerId);
 		unit->status = unit->status & ~UnitStatus::Frozen;
 		u32 max_hp = units_dat::MaxHitPoints[unit->previousUnitType] / 256;
 		u32 final_hp = 1;
