@@ -733,9 +733,7 @@ LABEL_18:
 			randomNumber = (*lastRandomNumber >> 16) & 0x7FFF;
 		}
 		Unit* unit = helper::unitConstructor(x, y, unitType, playerId, randomNumber);
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster) {
-			unit->energy = 100 * 256; // New starting amount (morphs handled in post transform unit wrapper)
-		}
+		unit->energy = 100 * 256; // New starting amount
 		if (!unit)
 		{
 			return 0;
@@ -779,7 +777,7 @@ LABEL_18:
 		Target order_target = unit->orderTarget;
 		unit->previousUnitType = unit->id;
 		unit->previousHp = hp / 256;
-		if (hp < 256)
+		if (!unit->previousHp)
 		{
 			unit->previousHp = 1;
 		}
@@ -792,17 +790,19 @@ LABEL_18:
 			helper::sprite_destructor(sprite);
 			unit->sprite = 0;
 		}
-		if ( unit->path )
+		if (unit->path)
 		{
 			helper::reassign_path(unit);
 		}
 		helper::initialize_unit(unit, y, unit_id, x, unit->playerId);
+		unit->energy = 100 * 256; // New starting amount
 		unit->status = unit->status & ~UnitStatus::Frozen;
+		u32 new_hp = (hp * units_dat::MaxHitPoints[unit->id]) / 256;
 		u32 max_hp = units_dat::MaxHitPoints[unit->previousUnitType] / 256;
 		u32 final_hp = 1;
 		if (max_hp)
 		{
-			final_hp = hp / 256;
+			final_hp = (new_hp / max_hp) / 256;
 		}
 		unit->hitPoints = final_hp * 256;
 		if (!unit->hitPoints)
@@ -820,7 +820,7 @@ LABEL_18:
 			sprite->playerId = player_id;
 			for (Image* image = sprite->images.head; image; image->link.next)
 			{
-				image->flags |= ImageFlags::Redraw;
+				//image->flags |= ImageFlags::Redraw;
 			}
 		}
 		if (unit->status & UnitStatus::GroundedBuilding)
@@ -837,7 +837,7 @@ LABEL_18:
 			temp_unit_id = UnitId::None;
 		}
 		if (!(unit->status & UnitStatus::Frozen) && !unit->lockdownTimer && !unit->stasisTimer && !unit->maelstromTimer
-			|| units_dat::BaseProperty[(unsigned __int16)unit->id] & 1
+			|| units_dat::BaseProperty[unit->id] & UnitProperty::Building
 			|| temp_unit_id == UnitId::None)
 		{
 			unit->currentButtonSet = temp_unit_id;

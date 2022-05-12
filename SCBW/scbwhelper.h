@@ -1261,5 +1261,5 @@ namespace helper
 
 	Sprite* sprite_destructor(Sprite* sprite);																// 00497B40
 	unitPath* reassign_path(Unit* unit);																	// 0042F740
-	u32 initialize_unit(Unit* unit, s32 y, u32 unit_id, s32 x, u8 player_id);								// 0049F206
+	u32 initialize_unit(Unit* unit, u32 y, u32 unit_id, u32 x, u8 player_id);								// 0049F206
 }

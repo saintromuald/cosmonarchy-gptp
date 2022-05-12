@@ -11638,10 +11638,11 @@ namespace helper
 		return result;
 	}
 
-	u32 initialize_unit(Unit* unit, s32 y, u32 unit_id, s32 x, u8 player_id) {
+	u32 initialize_unit(Unit* unit, u32 y, u32 unit_id, u32 x, u8 player_id) {
 		static u32 result;
-		const u32 func_address = 0x0049F206;
+		const u32 func_address = 0x0049ECF0;
 		__asm {
+			PUSHAD
 			PUSH player_id
 			PUSH x
 			PUSH unit_id

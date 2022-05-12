@@ -720,7 +720,7 @@ namespace hooks
 			MOV EAX, 0
 			MOV ESP, EBP
 			POP EBP
-			RETN 8
+			RETN 4
 		}
 	}
 
