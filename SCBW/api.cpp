@@ -1895,37 +1895,47 @@ namespace scbw
 
 		UnitExt* targetExt = globals.get_unit_ext(target);
 		targetExt->units[UnitMindController] = source;
-
 		if (!targetExt->values[ValueMindControlOriginalPlayer])
 		{
 			targetExt->values[ValueMindControlOriginalPlayer] = target->playerId + 1;
 		}
 
-		u32 overlay = ImageId::MindControlHit_Small + scbw::getOverlayOffset(target->id);
-		if (source->id == UnitId::ProtossDemiurge)
+		if (!(source->sprite->flags & SpriteFlags::Hidden)) {
+			u32 overlay = ImageId::MindControlHit_Small + scbw::getOverlayOffset(target->id);
+			if (source->id == UnitId::ProtossDemiurge)
+			{
+				overlay = ImageId::Worship_Small + scbw::getOverlayOffset(target->id);
+			}
+			target->sprite->createTopOverlay(overlay, 0, 0, 0);
+		}
+
+		// Recurse
+		for (u32 i = 0; i < 8; ++i) {
+			Unit* unit = target->getLoadedUnit(i);
+			mind_control(source, unit);
+		}
+		for (Unit* unit : targetExt->unitVectors[UnitVectorMindControlling])
 		{
-			// Demiurge - Gods Made Flesh - apply effect to linked units
+			mind_control(source, unit);
+		}
+		targetExt->unitVectors[UnitVectorMindControlling].clear();
+
+		// Demiurge - Gods Made Flesh - apply effect to linked units
+		if (source->id == UnitId::ProtossDemiurge) {
 			if (sourceExt->values[ValueGodsMadeFleshActive])
 			{
 				targetExt->timers[TimerGodsMadeFlesh] = 3;
 			}
-			overlay = ImageId::Worship_Small + scbw::getOverlayOffset(target->id);
 		}
 
+		// Mind Tyrant - apply recede link
 		if (source->id == UnitId::ProtossMindTyrant) {
 			targetExt->units[UnitMindTyrantSource] = source;
 			targetExt->timers[TimerMindTyrantRecede] = 5 * 24;
 		}
 
+		// Obtain control
 		target->giveTo(source->playerId);
-		target->sprite->createTopOverlay(overlay, 0, 0, 0);
-
-		auto& vec = targetExt->unitVectors[UnitVectorMindControlling];
-		for (Unit* unit : vec)
-		{
-			mind_control(source, unit);
-		}
-		vec.clear();
 	}
 
 	void recede_mind_control(Unit* target)
