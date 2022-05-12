@@ -738,11 +738,13 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 						{
 							if (localUnit->hitPoints < localUnit->getTotalHitPointsPlusShields() * 0.2)
 							{
+								localUnitExt->timers[TimerAI_KitingCooldown] = 24;
 								localUnit->orderTo(OrderId::Move, result.backwardPos.x, result.backwardPos.y);
 								KITE_DEBUG("%s: fall back", localUnit->getName());
 							}
 							else if (distance <= maxRange * 2)
 							{
+								localUnitExt->timers[TimerAI_KitingCooldown] = 24;
 								localUnit->orderTo(OrderId::Move, result.forwardPos.x, result.forwardPos.y);
 								KITE_DEBUG("%s: forward", localUnit->getName());
 							}
