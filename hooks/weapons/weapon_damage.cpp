@@ -117,7 +117,7 @@ namespace hooks
 		}
 
 		// Demiurge - Gods Made Flesh - target is impervious to damage
-		if (targetExt->timers[TimerGodsMadeFlesh] > 0)
+		if (targetExt->timers[TimerGodsMadeFlesh])
 		{
 			data.finalDamage = 0;
 			data.damageType = DamageType::Independent;
@@ -606,14 +606,6 @@ namespace hooks
 							&& data.target->getCurrentHpInGame() <= data.target->getMaxHpInGame() / 2
 							&& data.target->hitPoints > data.finalDamage)
 						{
-							auto& vec = attackerExt->unitVectors[UnitVectorWorshipersDemiurge];
-							if (std::find(vec.begin(), vec.end(), data.target) == vec.end())
-							{
-								vec.push_back(data.target);
-							}
-
-							targetExt->values[ValueWorshipStack] = 1;
-							helper::playSoundFromSource(SoundId::DemiurgeWorship01, data.target, 1, 0);
 							scbw::mind_control(data.attacker, data.target);
 						}
 					} break;

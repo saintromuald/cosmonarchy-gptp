@@ -1101,15 +1101,22 @@ namespace hooks
 				// Demiurge - Gods Made Flesh - initial cast
 				if (scbw::get_generic_rust_value(unit, RustId::CastGodsMadeFlesh) && !unitExt->values[ValueGodsMadeFleshActive])
 				{
-					scbw::decloakProc(unit);
 					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 0);
+					scbw::decloakProc(unit);
 					unitExt->values[ValueGodsMadeFleshActive] = 1;
 					helper::playSoundFromSource(scbw::randBetween(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
 				}
 				// Demiurge - Gods Made Flesh - remove effect from caster
-				if (unitExt->values[ValueGodsMadeFleshActive] && unit->energy == 0)
+				if (unitExt->values[ValueGodsMadeFleshActive])
 				{
-					unitExt->values[ValueGodsMadeFleshActive] = 0;
+					for (Unit* target : unitExt->unitVectors[UnitVectorWorshipersDemiurge]) {
+						UnitExt* targetExt = globals.get_unit_ext(target);
+						targetExt->timers[TimerGodsMadeFlesh] = 3;
+					}
+
+					if (!unit->energy) {
+						unitExt->values[ValueGodsMadeFleshActive] = 0;
+					}
 				}
 			} break;
 			case UnitId::TerranMaverick:
@@ -2002,8 +2009,7 @@ namespace hooks
 		}
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends
-		if (unitExt->timers[TimerGodsMadeFlesh] == 1
-			&& unitExt->units[UnitMindController])
+		if (unitExt->timers[TimerGodsMadeFlesh] == 1 && unitExt->units[UnitMindController])
 		{
 			unit->remove();
 		}
