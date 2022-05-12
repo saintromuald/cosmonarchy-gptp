@@ -1258,4 +1258,8 @@ namespace helper
 	void secondaryOrder_SpawningLarva(Unit* unit);															// 004EA780
 
 	AiTown* create_ai_town(u32 player, u32 x, u32 y);														// 00432020
+
+	Sprite* sprite_destructor(Sprite* sprite);																// 00497B40
+	unitPath* reassign_path(Unit* unit);																	// 0042F740
+	u32 initialize_unit(Unit* unit, s32 y, u32 unit_id, s32 x, u8 player_id);								// 0049F206
 }

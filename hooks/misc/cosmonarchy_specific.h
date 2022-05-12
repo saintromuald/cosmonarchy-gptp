@@ -24,6 +24,7 @@ namespace hooks
 	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, Unit* parent);
 	s32 gameLoop();																					// 004D94B0
 	Unit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId);										// 004A09D0
+	void transform_unit_main(Unit* unit, u32 unit_id);												// 0049F170
 	char ignoreIscriptGoToIdle(Unit* unit);															// 00476550
 }
 

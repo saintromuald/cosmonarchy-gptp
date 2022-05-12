@@ -701,6 +701,29 @@ namespace hooks
 		}
 	}
 
+	void __declspec(naked) transform_unit_main_Wrapper() { // 0049F170
+		static Unit* unit;
+		static u32 unit_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV unit_id, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::transform_unit_main(unit, unit_id);
+		__asm {
+			POPAD
+			MOV EAX, 0
+			MOV ESP, EBP
+			POP EBP
+			RETN 8
+		}
+	}
+
 	void __declspec(naked) ignoreIscriptGoToIdle_Wrapper() // 00476550
 	{
 		static Unit* unit;
@@ -743,6 +766,7 @@ namespace hooks
 		// Hook patches!
 //      jmpPatch(gameLoop_Wrapper, 0x004D94B0, 3);
 		jmpPatch(createUnit_Wrapper, 0x004A09D0, 1);
+		jmpPatch(transform_unit_main_Wrapper, 0x0049F170, 1);
 		jmpPatch(ignoreIscriptGoToIdle_Wrapper, 0x00476550, 1);
 	}
 }

@@ -11611,4 +11611,46 @@ namespace helper
 		}
 		return result;
 	}
+
+	Sprite* sprite_destructor(Sprite* sprite) {
+		static Sprite* result;
+		const u32 func_address = 0x00497B40;
+		__asm {
+			PUSHAD
+			MOV EDI, sprite
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	unitPath* reassign_path(Unit* unit) {
+		static unitPath* result;
+		const u32 func_address = 0x0042F740;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 initialize_unit(Unit* unit, s32 y, u32 unit_id, s32 x, u8 player_id) {
+		static u32 result;
+		const u32 func_address = 0x0049F206;
+		__asm {
+			PUSH player_id
+			PUSH x
+			PUSH unit_id
+			MOV EDX, y
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
