@@ -1189,7 +1189,10 @@ LABEL_21:
 							}
 							town_gas_2 = town->gas_buildings[1];
 							gas_type = AI_get_vespene_type(town->gas_buildings[1], town->player, true);
-							if (!town_gas_2 || gas_type != 3 || (++gas_iterator, gas_iterator != 2))
+							if (town_gas_2 && gas_type == 3) {
+								++gas_iterator;
+							}
+							if (!town_gas_2 || gas_type != 3 || gas_iterator != 2)
 							{
 								town_gas_2 = town->gas_buildings[2];
 								gas_type = AI_get_vespene_type(town->gas_buildings[2], town->player, true);
@@ -1213,21 +1216,21 @@ LABEL_21:
 						{
 							if (town_gas)
 							{
-								if (AI_get_vespene_type(town_gas, town->player) == 3)
+								if (AI_get_vespene_type(town_gas, town->player, true) == 3)
 								{
 									gas_iterator = 1;
 								}
 							}
 							town_gas_2 = town->gas_buildings[1];
-							u32 type = AI_get_vespene_type(town->gas_buildings[1], town->player, true);
-							if (town_gas_2 && type == 3) {
+							u32 gas_type = AI_get_vespene_type(town->gas_buildings[1], town->player, true);
+							if (town_gas_2 && gas_type == 3) {
 								++gas_iterator;
 							}
-							if (!town_gas_2 || type != 3 || gas_iterator != 2)
+							if (!town_gas_2 || gas_type != 3 || gas_iterator != 2)
 							{
 								town_gas_2 = town->gas_buildings[2];
-								type = AI_get_vespene_type(town->gas_buildings[2], town->player, true);
-								if (!town_gas_2 || type != 3)
+								gas_type = AI_get_vespene_type(town->gas_buildings[2], town->player, true);
+								if (!town_gas_2 || gas_type != 3)
 								{
 									goto exit;
 								}
