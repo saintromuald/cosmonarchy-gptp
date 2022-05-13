@@ -1164,6 +1164,7 @@ LABEL_21:
 							}
 							return;
 						}
+
 						if (worker_ai->target_resource == 2)
 						{
 							Unit* ai_refinery = get_ai_refinery(town, 3, 1, true);
@@ -1349,7 +1350,7 @@ LABEL_21:
 	// Hooked as part of the vespene overhaul. -Pr0nogo
 	char AI_reassign_worker_resources(AiTown* town) // 00435900, unused int arg
 	{
-		u8 target_resource_type = 0;
+		u8 result = 0;
 		if (town->inited)
 		{
 			if (!town->resarea)
@@ -1396,26 +1397,25 @@ LABEL_21:
 				}
 				town->worker_limit = new_worker_limit;
 			}
-			u8 mineral_bool = 1;
-			u8 gas_bool = 2;
+			u8 mineral_value = 1;
+			u8 gas_value = 2;
 			if (get_ai_refinery(town, 3, 1, true) || get_ai_refinery(town, 2, 1, true))
 			{
 				if (!town->mineral)
 				{
-					mineral_bool = 2;
+					mineral_value = 2;
 				}
 			}
 			else
 			{
-				gas_bool = 1;
+				gas_value = 1;
 			}
 
 			u32 town_player = town->player;
 			u8 minerals_percentage = 0;
 			u8 gas_percentage = 0;
 			helper::AI_resource_need_split(&gas_percentage, town_player, &minerals_percentage);
-			u32 gas_count_1 = gas_percentage * town->worker_count / 100;
-			u32 gas_count_2 = gas_percentage * town->worker_count / 100;
+			u32 gas_count = gas_percentage * town->worker_count / 100;
 
 			u8 race = playerTable[town_player].race;
 			u16 worker_id = UnitId::None;
@@ -1428,7 +1428,24 @@ LABEL_21:
 				worker_id = race != RaceId::Zerg ? UnitId::ProtossScribe : UnitId::ZergDroleth;
 			}
 			u32 worker_count = unitCountTable[worker_id].player[town_player];
-			if (gas_count_1 <= 4 * baseArray[resarea].geyser_count)
+			u32 geyser_count = 0;
+			u32 max_worker_count = 0;
+			for (u32 i = 0; i < 3; ++i) {
+				Unit* gas = town->gas_buildings[i];
+				if (gas && gas->status & UnitStatus::Completed) {
+					geyser_count += 1;
+					if (gas->id == UnitId::ResourceVespeneGeyser) {
+						max_worker_count += 2;
+					} else {
+						max_worker_count += 4;
+					}
+				}
+			}
+			if (gas_count > max_worker_count)
+			{
+				gas_count = max_worker_count;
+			}
+			else
 			{
 				if (gameGas[town_player] >= 800)
 				{
@@ -1440,48 +1457,62 @@ LABEL_21:
 					{
 						if (worker_count < 10)
 						{
-							if (worker_count < 5 || gas_count_1 >= 1)
+							if (worker_count < 5 || gas_count >= 1)
 							{
 								goto exit;
 							}
-							gas_count_2 = 1;
+							gas_count = 1;
 						}
 						else
 						{
-							if (gas_count_1 >= 2)
+							if (gas_count >= 2)
 							{
 								goto exit;
 							}
-							gas_count_2 = 2;
+							gas_count = 2;
 						}
 					}
 					else
 					{
-						if (gas_count_1 >= 3)
+						if (gas_count >= 3)
 						{
 							goto exit;
 						}
-						gas_count_2 = 3;
+						gas_count = 3;
 					}
 				}
-				else
+				else if (gas_count < 4)
 				{
-					if (gas_count_1 >= 4)
-					{
-						goto exit;
-					}
-					gas_count_2 = 4;
+					gas_count = 4;
 				}
 			}
-			else
-			{
-				gas_count_2 = 4 * baseArray[resarea].geyser_count;
-			}
-			gas_count_1 = gas_count_2;
 		exit:
 			u32 i = 0;
 			for (WorkerAi* town_worker_ai = town->workers; town_worker_ai; town_worker_ai = town_worker_ai->link.prev)
 			{
+				u8* target_resource_type = gas_count ? &gas_value : &mineral_value;
+				u32 max_count = 0;
+				if (*target_resource_type != 1) {
+					while (!max_count) {
+						Unit* gas = town->gas_buildings[*target_resource_type - 2];
+						if (gas && gas->status & UnitStatus::Completed) {
+							if (gas->id == UnitId::ResourceVespeneGeyser) {
+								max_count = 2;
+							} else {
+								max_count = 4;
+							}
+						}
+						if (!max_count) {
+							*target_resource_type += 1;
+							if (*target_resource_type > 4)
+							{
+								*target_resource_type = 1;
+								break;
+							}
+						}
+					}
+				}
+
 				Unit* town_unit = town_worker_ai->parent;
 				u8 unit_order = town_unit->mainOrderId;
 				if (unit_order == OrderId::ConstructingBuilding
@@ -1498,45 +1529,30 @@ LABEL_21:
 					town_worker_ai->last_update_second = *elapsedTimeSeconds;
 					town_worker_ai->reassign_count += 1;
 					helper::AI_get_old_peons(town_worker_ai->town, 1u);
-					gas_count_1 = gas_count_2;
-				}
-				u8 mineral_bool_2 = mineral_bool;
-				u8 gas_bool_2 = gas_bool;
-
-				target_resource_type = mineral_bool;
-				if (gas_count_1)
-				{
-					--gas_count_1;
-					target_resource_type = gas_bool;
-					gas_count_2 = gas_count_1;
 				}
 
-				town_worker_ai->target_resource = target_resource_type;
-				if (target_resource_type != 1 && ++i >= 4)
+				if (gas_count)
 				{
-					i = 0;
-					if (gas_bool == target_resource_type)
+					--gas_count;
+				}
+
+				town_worker_ai->target_resource = *target_resource_type;
+				result = *target_resource_type;
+
+				if (*target_resource_type != 1) {
+					if (i++ >= max_count)
 					{
-						gas_bool_2 = gas_bool + 1;
-						gas_bool = (gas_bool + 1);
-					}
-					if (mineral_bool == target_resource_type)
-					{
-						mineral_bool_2 = mineral_bool + 1;
-						mineral_bool = (mineral_bool + 1);
-					}
-					if (gas_bool_2 > 4)
-					{
-						gas_bool = 2;
-					}
-					if (mineral_bool_2 > 4)
-					{
-						mineral_bool = 2;
+						i = 0;
+						*target_resource_type += 1;
+						if (*target_resource_type > 4)
+						{
+							*target_resource_type = 2;
+						}
 					}
 				}
 			}
 		}
-		return target_resource_type;
+		return result;
 	}
 
 	// Hooked as part of the vespene overhaul. -Pr0nogo
