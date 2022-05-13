@@ -1151,6 +1151,8 @@ namespace SoundId
 
 		// Cosmonarchy \\
 
+		TalosSalvageLoop					= 55,
+
 		WyvernAttack01						= 1118,
 		WyvernAttack02						= 1119,
 		AugurDeath01						= 1235,

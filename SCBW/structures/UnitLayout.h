@@ -313,6 +313,7 @@ enum ExtTimerId
 	TimerCorpseCocoonHatch,
 	TimerMindTyrantRecede,
 	TimerTalosAnimationSubtimer,
+	TimerTalosSoundLoopTimer,
 	
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
