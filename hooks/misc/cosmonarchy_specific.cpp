@@ -764,6 +764,7 @@ LABEL_18:
 		subunit->subunit = unit;
 		u32 attack_frame = 0;
 		helper::getImageAttackFrame(&attack_frame, unit->sprite, 0, 2u);
+		if (!subunit) {} // debug builds will crash without this line, because XD
 		helper::setSpriteMainImageOffset(subunit->sprite, attack_frame, randomNumber);
 		return unit;
 	}
