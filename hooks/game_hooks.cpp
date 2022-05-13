@@ -1446,44 +1446,24 @@ namespace hooks
 			scbw::decloakProc(unit);
 		}
 
-		/*
 		// Play addon work animations when related units are being trained by parent structure
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
+		if (unit->status & UnitStatus::Completed && units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
 		{
-			if (unit->connectedUnit != nullptr
-				&& scbw::isStandardTerranUnit(unit->connectedUnit->buildQueue[unit->connectedUnit->buildQueueSlot]))
+			if (unit->connectedUnit && unit->playerId == unit->connectedUnit->playerId) // ID check is necessary because connectedUnit is NOT cleared when you lift off.
 			{
-				scbw::print("u");
-				scbw::playWorkAnimation(unit);
-			}
-			else
-			{
-				unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle);
-			}
-		}
-		*/
-
-		// Warp Flash overlay: begin 3 seconds before the graphic finishes warping in
-		/*
-		else if (unit->getRace() == RaceId::Protoss
-			&& units_dat::BaseProperty[unit->id] & UnitProperty::Building
-			&& unit->remainingBuildTime == 1) {
-			unit->sprite->createTopOverlay(ImageId::WarpFlashFade);
-		}
-		*/
-
-		// TODO: Fix!!!
-		// Basilisk - Biogenesis
-		/*
-		else if (unit->id == UnitId::ZergBactalisk) {
-			if (unit->status & UnitStatus::Burrowed) {
-				if (!(unit->_padding_0x132 & cosmonarchyFlags1::BasiliskBurrowed)) {
-					unit->_padding_0x132 |= cosmonarchyFlags1::BasiliskBurrowed;
-					spawnCreeper(unit);
+				u16 unit_id = unit->connectedUnit->buildQueue[unit->connectedUnit->buildQueueSlot];
+				if (unit_id != UnitId::None && !scbw::is_standard_terran_unit(unit_id))
+				{
+					{
+						unit->sprite->playIscriptAnim(IscriptAnimation::IsWorking);
+					}
+				}
+				else if (unit->sprite->images.head->animation == IscriptAnimation::IsWorking)
+				{
+					unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 				}
 			}
 		}
-		*/
 
 		// Correct vanilla timers - THIS IS TEMPORARY!
 		if (unit->defensiveMatrixTimer > AzazelDefensiveMatrixTimer)

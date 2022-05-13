@@ -1440,17 +1440,18 @@ namespace scbw
 		}
 	}
 
-	bool isStandardTerranUnit(u16 id)
+	bool is_standard_terran_unit(u16 id)
 	{
 		return id == UnitId::TerranMason
+			|| id == UnitId::TerranTalos
 			|| id == UnitId::TerranMaverick
 			|| id == UnitId::TerranHarakan
 			|| id == UnitId::TerranCyprian
 			|| id == UnitId::TerranVulture
 			|| id == UnitId::TerranCyclops
 			|| id == UnitId::TerranGoliath
-			|| id == UnitId::TerranWraith
 			|| id == UnitId::TerranGorgon
+			|| id == UnitId::TerranWraith
 			|| id == UnitId::TerranTrojan
 			|| id == UnitId::TerranValkyrie
 			|| id == UnitId::TerranBlackjack
