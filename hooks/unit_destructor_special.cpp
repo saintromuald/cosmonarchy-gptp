@@ -132,7 +132,7 @@ void freeResourceContainer(Unit* resource)
 			(worker->worker.harvest_link.next)->worker.harvest_link.prev = worker->worker.harvest_link.prev;
 		}
 		nextWorker = worker->worker.harvest_link.next;
-		worker->worker.harvestTarget = nullptr;
+		worker->worker.harvest_target = nullptr;
 		worker->worker.harvest_link.prev = nullptr;
 		worker->worker.harvest_link.next = nullptr;
 		worker = nextWorker;

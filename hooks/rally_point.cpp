@@ -150,10 +150,10 @@ namespace hooks
             }
             if (unit->worker.repairResourceLossTimer)
             {
-                if (unit->worker.harvestTarget == dying)
+                if (unit->worker.harvest_target == dying)
                 {
                     unit->worker.repairResourceLossTimer = 0;
-                    unit->worker.harvestTarget = 0;
+                    unit->worker.harvest_target = 0;
                 }
             }
         }
