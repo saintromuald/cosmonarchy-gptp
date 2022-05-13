@@ -1809,6 +1809,10 @@ namespace hooks
 			if (!unit->getOverlay(ImageId::SalvageDisableSmall + offset)) {
 				unit->sprite->createTopOverlay(ImageId::SalvageDisableSmall + offset);
 			}
+			if (unitExt->timers[TimerTalosSoundLoopTimer] == 0) {
+				helper::playSoundFromSource(SoundId::TalosSalvageLoop, unit, 1, 0);
+				unitExt->timers[TimerTalosSoundLoopTimer] = 63;
+			}
 		}
 		if (unitExt->timers[TimerSalvageStunTimer] == 1) {
 			unit->unfreeze();
