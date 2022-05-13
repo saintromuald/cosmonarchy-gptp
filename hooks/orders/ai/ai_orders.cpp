@@ -1546,7 +1546,7 @@ LABEL_21:
 						*target_resource_type += 1;
 						if (*target_resource_type > 4)
 						{
-							*target_resource_type = 2;
+							*target_resource_type = 1;
 						}
 					}
 				}
