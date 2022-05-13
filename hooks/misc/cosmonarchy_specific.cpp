@@ -733,11 +733,11 @@ LABEL_18:
 			randomNumber = (*lastRandomNumber >> 16) & 0x7FFF;
 		}
 		Unit* unit = helper::unitConstructor(x, y, unitType, playerId, randomNumber);
-		unit->energy = 100 * 256; // New starting amount
 		if (!unit)
 		{
 			return 0;
 		}
+		unit->energy = 100 * 256; // New starting amount
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			helper::CListPushBackUsedUnitEntry(unit);
