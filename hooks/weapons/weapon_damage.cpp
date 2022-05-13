@@ -659,18 +659,24 @@ namespace hooks
 						u32 target_offset = scbw::getOverlayOffset(data.target->id);
 						if (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
 							// Power Siphon
-							u32 energy = std::min(data.target->energy, (u16)(10 * 256));
-							data.target->energy -= energy;
-							data.attacker->healEnergy(energy);
-							helper::createThingy(SpriteId::Feedback_Hit_Small + target_offset,
-								data.target->position.x, data.target->position.y, data.attackingPlayerId);
+							if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster) {
+								u32 energy = std::min(data.target->energy, (u16)(10 * 256));
+								if (energy) {
+									data.target->energy -= energy;
+									data.attacker->healEnergy(energy);
+									helper::createThingy(SpriteId::Feedback_Hit_Small + target_offset,
+										data.target->position.x, data.target->position.y, data.attackingPlayerId);
+								}
+							}
 						} else {
 							// Entropy Gauntlet
 							u32 energy = std::min(data.attacker->energy, (u16)(10 * 256));
-							data.attacker->energy -= energy;
-							data.finalDamage += energy;
-							helper::createThingy(SpriteId::EntropyGauntletsOverlay,
-								data.attacker->position.x, data.attacker->position.y, data.attackingPlayerId);
+							if (energy) {
+								data.attacker->energy -= energy;
+								data.finalDamage += energy;
+								helper::createThingy(SpriteId::EntropyGauntletsOverlay,
+									data.attacker->position.x, data.attacker->position.y, data.attackingPlayerId);
+							}
 						}
 					} break;
 					case WeaponId::HeraclesJavelinCannons:

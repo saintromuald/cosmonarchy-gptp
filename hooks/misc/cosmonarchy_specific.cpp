@@ -737,7 +737,11 @@ LABEL_18:
 		{
 			return 0;
 		}
-		unit->energy = 100 * 256; // New starting amount
+		if (units_dat::BaseProperty[unitType] & UnitProperty::Spellcaster) {
+			unit->energy = 100 * 256; // New starting amount
+		} else {
+			unit->energy = 0;
+		}
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			helper::CListPushBackUsedUnitEntry(unit);
@@ -796,7 +800,11 @@ LABEL_18:
 			helper::reassign_path(unit);
 		}
 		helper::initialize_unit(unit, y, unit_id, x, unit->playerId);
-		unit->energy = 100 * 256; // New starting amount
+		if (units_dat::BaseProperty[unit_id] & UnitProperty::Spellcaster) {
+			unit->energy = 100 * 256; // New starting amount
+		} else {
+			unit->energy = 0;
+		}
 		unit->status = unit->status & ~UnitStatus::Frozen;
 		u32 new_hp = (hp * units_dat::MaxHitPoints[unit->id]) / 256;
 		u32 max_hp = units_dat::MaxHitPoints[unit->previousUnitType] / 256;

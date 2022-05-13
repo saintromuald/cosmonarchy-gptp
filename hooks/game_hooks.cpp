@@ -28,6 +28,7 @@
 #include "token_parser.h"
 #include "hooks/interface/select_larva.h"
 #include "math_utils.h"
+#include "graphics/Bitmap.h"
 
 const u32 hyperTrigger = 0x006509A0;
 

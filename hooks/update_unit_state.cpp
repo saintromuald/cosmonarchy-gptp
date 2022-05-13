@@ -311,34 +311,36 @@ namespace hooks
 			{
 				unit->cmbw_resource_regen_mining_delay--;
 			}
-			else if (unit->cmbw_resource_regen_cooldown > 0)
-			{
-				unit->cmbw_resource_regen_cooldown--;
-			}
-			else
-			{
-				// Set regen timers
-				unit->cmbw_resource_regen_cooldown = 36;
-				if (unitExt->timers[TimerResourceBoostedRegen])
+			if (!unit->cmbw_resource_regen_mining_delay || unitExt->timers[TimerResourceBoostedRegen]) {
+				if (unit->cmbw_resource_regen_cooldown > 0)
 				{
-					unit->cmbw_resource_regen_cooldown = 18;
+					unit->cmbw_resource_regen_cooldown--;
 				}
-
-				// Actual resource regeneration
-				bool update_image = true;
-				if (unit->id == UnitId::ResourceVespeneGeyser || (scbw::unit_id_is_gas_structure(unit->id, true) && unitExt->timers[TimerResourceBoostedRegen]))
+				else
 				{
-					if (unit->building.resource.resourceAmount < 7500) {
-						unit->building.resource.resourceAmount++;
-						scbw::refreshConsole();
+					// Set regen timers
+					unit->cmbw_resource_regen_cooldown = 36;
+					if (unitExt->timers[TimerResourceBoostedRegen])
+					{
+						unit->cmbw_resource_regen_cooldown = 18;
 					}
-				}
-				else if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3)
-				{
-					if (unit->building.resource.resourceAmount < 2500) {
-						unit->building.resource.resourceAmount++;
-						helper::updateMineralPatchImage(unit);
-						scbw::refreshConsole();
+
+					// Actual resource regeneration
+					bool update_image = true;
+					if (unit->id == UnitId::ResourceVespeneGeyser || (scbw::unit_id_is_gas_structure(unit->id, true) && unitExt->timers[TimerResourceBoostedRegen]))
+					{
+						if (unit->building.resource.resourceAmount < 7500) {
+							unit->building.resource.resourceAmount++;
+							scbw::refreshConsole();
+						}
+					}
+					else if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3)
+					{
+						if (unit->building.resource.resourceAmount < 2500) {
+							unit->building.resource.resourceAmount++;
+							helper::updateMineralPatchImage(unit);
+							scbw::refreshConsole();
+						}
 					}
 				}
 			}

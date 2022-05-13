@@ -184,7 +184,11 @@ namespace hooks
 						}  break;
 					}
 
-					unitExt->values[ValuePreMorphEnergy] = unit->energy;
+					if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster) {
+						unitExt->values[ValuePreMorphEnergy] = unit->energy;
+					} else {
+						unitExt->values[ValuePreMorphEnergy] = 100 * 256; // New starting amount
+					}
 					if (unit->id == UnitId::ProtossCantavis)
 					{
 						helper::replaceUnitWithType(unit, UnitId::ProtossAugur);
@@ -254,7 +258,11 @@ namespace hooks
 			{
 				unit->orderSignal -= 4;
 				helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
-				unit->energy = unitExt->values[ValuePreMorphEnergy];
+				if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster) {
+					unit->energy = unitExt->values[ValuePreMorphEnergy];
+				} else {
+					unit->energy = 0;
+				}
 				if (unit->id == UnitId::ZergDroleth
 					|| unit->id == UnitId::ZergOvileth)
 				{
