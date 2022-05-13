@@ -203,7 +203,7 @@ namespace hooks
 						}
 						if (unit->worker.resourceCarryAmount)
 						{
-							helper::finished_mining(unit, unit->worker.harvestTarget);
+							helper::finished_mining(unit, unit->worker.harvest_target);
 						}
 						helper::delete_order(unit, OrderId::HarvestInterrupt);
 						helper::delete_order(unit, OrderId::ResetCollision2);
@@ -254,7 +254,7 @@ namespace hooks
 			helper::force_order_done(unit);
 			if (unit->worker.resourceCarryAmount)
 			{
-				helper::finished_mining(unit, unit->worker.harvestTarget);
+				helper::finished_mining(unit, unit->worker.harvest_target);
 			}
 		}
 	}
@@ -375,9 +375,9 @@ namespace hooks
 	// Hooked to resolve delay on first-time multi-worker vespene harvesting. -Pr0nogo
 	void orders_harvest4(Unit* worker) // 00468ED0
 	{
-		if (worker->worker.harvestTarget && worker->worker.harvestTarget->id != UnitId::ResourceVespeneGeyser)
+		if (worker->worker.harvest_target && worker->worker.harvest_target->id != UnitId::ResourceVespeneGeyser)
 		{
-			worker = helper::remove_from_current_harvesters(worker, worker->worker.harvestTarget);
+			worker = helper::remove_from_current_harvesters(worker, worker->worker.harvest_target);
 		}
 		helper::force_order_done(worker);
 	}
@@ -391,7 +391,7 @@ namespace hooks
 		}
 		node->building.resource.gatherQueueCount = 1;
 		worker->worker.isCarryingSomething = 1;
-		worker->worker.harvestTarget = node;
+		worker->worker.harvest_target = node;
 
 		u8 harvest_order_id = OrderId::HarvestGas3;
 		if (worker->mainOrderId != OrderId::HarvestGas2)

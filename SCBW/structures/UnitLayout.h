@@ -665,12 +665,12 @@ struct UnitLayout
 		struct
 		{
 			/*0x0C0*/				Unit*		powerup;
-			/*0x0C4*/				Target		targetResource;
+			/*0x0C4*/				Target		targetResource;				// Position, and when moving to harvest
 			/*0x0CC*/				u16			repairResourceLossTimer;
 			/*0x0CE*/				bool		isCarryingSomething;
 			/*0x0CF*/				u8			resourceCarryAmount;
-			/*0x0D0*/				Unit*		harvestTarget;
-			/*0x0D4*/				Link<Unit>	harvest_link;  // When there is a gather conflict
+			/*0x0D0*/				Unit*		harvest_target;				// When waiting or harvesting
+			/*0x0D4*/				Link<Unit>	harvest_link;				// When there is a gather conflict
 		} worker;
 	};
 

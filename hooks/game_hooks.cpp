@@ -1413,6 +1413,20 @@ namespace hooks
 		}
 		*/
 
+		// Play harvesting animations when a worker harvests from a resource
+		// Requires more involved anim/graphics work
+		/*
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		{
+			Unit* harvest_target = unit->worker.harvest_target;
+			// Eventually make it happen for vespene geysers and mineral fields, not just refineries
+			if (harvest_target && scbw::unit_id_is_gas_structure(harvest_target->id, true) && harvest_target->sprite->mainGraphic->animation != IscriptAnimation::IsWorking)
+			{
+				harvest_target->sprite->playIscriptAnim(IscriptAnimation::IsWorking);
+			}
+		}
+		*/
+
 		// Phase Link Overlay
 		if (*elapsedTimeFrames % 10 == 0
 			&& unitExt->unitVectors[UnitVectorPhaseLinkClarions].size())
