@@ -320,14 +320,13 @@ namespace hooks
 				{
 					// Set regen timers
 					unit->cmbw_resource_regen_cooldown = 36;
-					if (unitExt->timers[TimerResourceBoostedRegen])
-					{
-						unit->cmbw_resource_regen_cooldown = 18;
+					if (unitExt->timers[TimerResourceBoostedRegen]) {
+						unit->cmbw_resource_regen_cooldown /= 3;
 					}
 
 					// Actual resource regeneration
 					bool update_image = true;
-					if (unit->id == UnitId::ResourceVespeneGeyser || (scbw::unit_id_is_gas_structure(unit->id, true) && unitExt->timers[TimerResourceBoostedRegen]))
+					if (unit->id == UnitId::ResourceVespeneGeyser || (scbw::unit_id_is_capped_gas_structure(unit->id) && unitExt->timers[TimerResourceBoostedRegen]))
 					{
 						if (unit->building.resource.resourceAmount < 7500) {
 							unit->building.resource.resourceAmount++;
