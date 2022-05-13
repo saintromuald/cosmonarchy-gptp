@@ -860,6 +860,10 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	{
 		cost -= 25;
 	}
+	if (target->id == UnitId::ProtossPylon)
+	{
+		cost -= 25;
+	}
 	if (target->id == UnitId::TerranBunker && target->hasLoadedUnit())
 	{
 		cost -= 15;
