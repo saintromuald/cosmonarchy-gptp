@@ -1440,7 +1440,7 @@ namespace scbw
 		}
 	}
 
-	bool is_standard_terran_unit(u16 id)
+	bool unitid_is_available_without_an_addon(u16 id)
 	{
 		return id == UnitId::TerranMason
 			|| id == UnitId::TerranTalos

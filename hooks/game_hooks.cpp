@@ -1447,21 +1447,16 @@ namespace hooks
 		}
 
 		// Play addon work animations when related units are being trained by parent structure
-		if (unit->status & UnitStatus::Completed && units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->building.addon && unit->building.addon->status & UnitStatus::Completed)
 		{
-			if (unit->connectedUnit && unit->playerId == unit->connectedUnit->playerId) // ID check is necessary because connectedUnit is NOT cleared when you lift off.
+			u16 unit_id = unit->buildQueue[unit->buildQueueSlot];
+			if (unit_id != UnitId::None && !scbw::unitid_is_available_without_an_addon(unit_id))
 			{
-				u16 unit_id = unit->connectedUnit->buildQueue[unit->connectedUnit->buildQueueSlot];
-				if (unit_id != UnitId::None && !scbw::is_standard_terran_unit(unit_id))
-				{
-					{
-						unit->sprite->playIscriptAnim(IscriptAnimation::IsWorking);
-					}
-				}
-				else if (unit->sprite->images.head->animation == IscriptAnimation::IsWorking)
-				{
-					unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle);
-				}
+				unit->building.addon->sprite->playIscriptAnim(IscriptAnimation::IsWorking);
+			}
+			else if (unit->sprite->images.head->animation != IscriptAnimation::WorkingToIdle)
+			{
+				unit->building.addon->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 			}
 		}
 
