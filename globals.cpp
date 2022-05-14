@@ -417,8 +417,8 @@ void Globals::createEffect(u8 effectId, u32 time, Vector32 position, u32 radius,
 
 	if (effect.spriteId >= 0)
 	{
-		Thingy* thingy = scbw::createAndInitThingy(effect.spriteId, effect.position.x, effect.position.y);
-		if (thingy == nullptr)
+		Thingy* thingy = scbw::createAndInitThingy(effect.spriteId, effect.position.x, effect.position.y, player);
+		if (!thingy)
 		{
 			return;
 		}
