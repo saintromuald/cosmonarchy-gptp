@@ -648,6 +648,7 @@ namespace hooks
 			}
 			else
 			{ // loop to ignore the first unused/disabled buttons
+				Unit* unit = *activePortraitUnit;
 				current_button_state = BUTTON_STATE::Invisible;
 				while (current_button_state == BUTTON_STATE::Invisible && (buttons_count < current_buttonset->buttonsInSet))
 				{
@@ -689,17 +690,21 @@ namespace hooks
 								current_button_state = BUTTON_STATE::Enabled;
 							}
 						}
-						else if (current_button->reqVar == TechId::LarvalSubmenuSelectSwarm)							
+						else if (current_button->reqVar == TechId::LarvalSubmenuSelectSwarm || current_button->reqVar == TechId::LarvalSubmenuSelectAssault || current_button->reqVar == TechId::LarvalSubmenuSelectControl)							
 						{
-							current_button_state = BUTTON_STATE::Enabled;
+							if ((units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) || unit->id == UnitId::ZergLarva) {
+								current_button_state = BUTTON_STATE::Enabled;
+							} else {
+								current_button_state = BUTTON_STATE::Invisible;
+							}
 						}
-						else if (current_button->reqVar == TechId::LarvalSubmenuSelectAssault)							
-						{
+					}
+
+					if (current_button->iconID == IconId::Larva) {
+						if ((units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) || unit->id == UnitId::ZergLarva) {
 							current_button_state = BUTTON_STATE::Enabled;
-						}
-						else if (current_button->reqVar == TechId::LarvalSubmenuSelectControl)							
-						{
-							current_button_state = BUTTON_STATE::Enabled;
+						} else {
+							current_button_state = BUTTON_STATE::Invisible;
 						}
 					}
 
