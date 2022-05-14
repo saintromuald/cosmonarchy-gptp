@@ -1120,6 +1120,10 @@ enum Enum {
 	PenumbraDeathPrimary						= 1498,
 	TarasqueMuzzleFlash							= 1499,
 	BlackjackCorpse								= 1500,
+	SovrolethBirthDouble						= 1501,
+	GodsMadeFlesh_Small							= 1502,
+	GodsMadeFlesh_Medium						= 1503,
+	GodsMadeFlesh_Large							= 1504,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,

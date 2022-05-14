@@ -1106,6 +1106,7 @@ namespace hooks
 					scbw::decloakProc(unit);
 					unitExt->values[ValueGodsMadeFleshActive] = 1;
 					helper::playSoundFromSource(scbw::randBetween(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
+					unit->sprite->createTopOverlay(ImageId::GodsMadeFlesh_Small + scbw::getOverlayOffset(unit->id));
 				}
 				// Demiurge - Gods Made Flesh - apply link
 				if (unitExt->values[ValueGodsMadeFleshActive])
@@ -1113,6 +1114,10 @@ namespace hooks
 					for (Unit* target : unitExt->unitVectors[UnitVectorWorshipersDemiurge]) {
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						targetExt->timers[TimerGodsMadeFlesh] = 3;
+						u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::getOverlayOffset(target->id);
+						if (!target->getOverlay(overlay)) {
+							target->sprite->createTopOverlay(overlay);
+						}
 					}
 
 					if (!unit->energy) {
