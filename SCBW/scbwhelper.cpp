@@ -6404,7 +6404,7 @@ namespace helper
 	}
 
 	// hardcoding the larva count function, keeping the return value though it's unused here
-	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit * unit, Box16 * coords)
+	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit* unit, Box16* coords)
 	{
 		const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
 		static u32 return_value;
@@ -6421,7 +6421,7 @@ namespace helper
 	}
 
 	// hardcodes the recall targets selection function
-	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit * unit, Box16 * coords)
+	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit* unit, Box16* coords)
 	{
 		const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
 		static u32 return_value;
@@ -6437,7 +6437,7 @@ namespace helper
 		return return_value;
 	}
 
-	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16 * coords)
+	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords)
 	{
 		const u32 CorrosiveAcidProc_function = 0x004F4670;
 		__asm {
@@ -6450,7 +6450,7 @@ namespace helper
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_Ensnare(Unit * attacker, Box16 * coords)
+	void IterateUnitsAtLocationTargetProc_Ensnare(Unit* attacker, Box16* coords)
 	{
 		const u32 EnsnareProc_function = 0x004F46C0;
 		__asm {
@@ -6463,7 +6463,7 @@ namespace helper
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_Plague(Unit * attacker, Box16 * coords)
+	void IterateUnitsAtLocationTargetProc_Plague(Unit* attacker, Box16* coords)
 	{
 		const u32 PlagueProc_function = 0x004F4AF0;
 		__asm {
@@ -6476,7 +6476,18 @@ namespace helper
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit * attacker, Box16 * coords)
+	void PlagueProc(Unit* unit, Unit* attacker) {
+		const u32 func_address = 0x004F4AF0;
+		__asm {
+			PUSHAD
+			MOV EDX, attacker
+			MOV ECX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords)
 	{
 		const u32 MaelstromProc_function = 0x004F6760;
 		__asm {
@@ -6489,7 +6500,7 @@ namespace helper
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_StasisField(Unit * attacker, Box16 * coords)
+	void IterateUnitsAtLocationTargetProc_StasisField(Unit* attacker, Box16* coords)
 	{
 		const u32 StasisFieldProc_function = 0x004F68D0;
 		__asm {

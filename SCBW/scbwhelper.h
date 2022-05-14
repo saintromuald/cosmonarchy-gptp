@@ -721,6 +721,7 @@ namespace helper
 	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);				    // 004E8280
 	void IterateUnitsAtLocationTargetProc_Ensnare(Unit* attacker, Box16* coords);								// 004E8280
 	void IterateUnitsAtLocationTargetProc_Plague(Unit* attacker, Box16* coords);								// 004E8280
+	void PlagueProc(Unit* unit, Unit* attacker);																// 004F4AF0
 	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords);								// 004E8280
 	void IterateUnitsAtLocationTargetProc_StasisField(Unit* attacker, Box16* coords);							// 004E8280
 	void createEnsnareOverlay(Unit* a1);																		// 004F45E0

@@ -400,10 +400,10 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 	unit->irradiateTimer = time;
 }
 
-void Globals::createEffect(u8 impactId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent)
+void Globals::createEffect(u8 effectId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent)
 {
-	Effect effect;
-	effect.effectId = impactId;
+	Effect effect = {};
+	effect.effectId = effectId;
 	effect.position = position;
 	effect.radius = radius;
 	effect.currentTime = time;
@@ -635,6 +635,33 @@ void Globals::frameHook()
 						ApplyIrradiate(unit, effect->player, 15);
 					});
 				} break;
+				case EffectId::GroundZero:
+				{
+					const u32 delta = effect->maxTime - effect->currentTime;
+					const u32 stage = delta / framePeriod;
+
+					switch (stage)
+					{
+						case 0:
+						{
+							globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+						} break;
+						case 1:
+						case 2:
+						{
+							f32 d = stage * 2 * 32;
+							u32 count = stage * 8;
+
+							Vector32 newPos = effect->position;
+							newPos.x += d;
+							for (u32 j = 0; j < count; ++j)
+							{
+								newPos = scbw::rotate_point(effect->position, newPos, (360.0 / count));
+								globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+							}
+						} break;
+					}
+				} break;
 				case EffectId::DisruptionWeb:
 				{
 					if (!effect->origin)
@@ -662,32 +689,16 @@ void Globals::frameHook()
 						unit->status |= UnitStatus::CanNotAttack;
 					});
 				} break;
-				case EffectId::GroundZero:
+				case EffectId::PlagueField:
 				{
-					const u32 delta = effect->maxTime - effect->currentTime;
-					const u32 stage = delta / framePeriod;
-
-					switch (stage)
-					{
-						case 0:
-						{
-							globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
-						} break;
-						case 1:
-						case 2:
-						{
-							f32 d = stage * 2 * 32;
-							u32 count = stage * 8;
-
-							Vector32 newPos = effect->position;
-							newPos.x += d;
-							for (u32 j = 0; j < count; ++j)
-							{
-								newPos = scbw::rotate_point(effect->position, newPos, (360.0 / count));
-								globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
-							}
-						} break;
-					}
+					scbw::UnitFinder(
+						effect->position.x - 1.5 * 32,
+						effect->position.y - 1 * 32,
+						effect->position.x + 1.5 * 32,
+						effect->position.y + 1 * 32
+					).forEach([&](Unit* unit) {
+						helper::PlagueProc(unit, 0);
+					});
 				} break;
 			}
 		}

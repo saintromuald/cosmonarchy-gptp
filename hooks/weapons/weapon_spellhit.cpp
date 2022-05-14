@@ -597,28 +597,31 @@ namespace hooks
 	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		if (attacker) {
-			u32 range = 64;
-			Box16 coords = {};
-			coords.left   = x - range;
-			coords.top    = y - range;
-			coords.right  = x + range;
-			coords.bottom = y + range;
-			helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
-
-			UnitExt* attackerExt = globals.get_unit_ext(attacker);
-			scbw::UnitFinder(
-				x - range,
-				y - range,
-				x + range,
-				y + range
-			).forEach([&](Unit* unit) {
-				if (attacker && attackerExt->timers[TimerEnsnaringBrood] > 0
-					&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building))
-				{
-					scbw::applyEnsnare(unit);
-				}
-			});
+			globals.createEffect(EffectId::PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::Disruption_Web, 5, attacker->playerId, attacker);
 		}
+		//if (attacker) {
+		//	u32 range = 64;
+		//	Box16 coords = {};
+		//	coords.left   = x - range;
+		//	coords.top    = y - range;
+		//	coords.right  = x + range;
+		//	coords.bottom = y + range;
+		//	helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
+		//
+		//	UnitExt* attackerExt = globals.get_unit_ext(attacker);
+		//	scbw::UnitFinder(
+		//		x - range,
+		//		y - range,
+		//		x + range,
+		//		y + range
+		//	).forEach([&](Unit* unit) {
+		//		if (attacker && attackerExt->timers[TimerEnsnaringBrood] > 0
+		//			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building))
+		//		{
+		//			scbw::applyEnsnare(unit);
+		//		}
+		//	});
+		//}
 	}
 
 	// bullet is not normally part of the function, so if the function is called

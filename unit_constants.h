@@ -143,7 +143,7 @@ const f64 VithriliskCorrosiveTouchArmorReduction = 1 * 256;
 const s32 ZoryusthalethReconstitutionHealing = 5 * 256;
 
 // Isthrathaleth
-const s32 IsthrathalethPlagueTimer = 30;
+const s32 IsthrathalethPlagueTimer = 5 * 3;
 
 // Matraleth
 const s32 DefaultArmParasiteTimer = 2 * 24 + 1;
