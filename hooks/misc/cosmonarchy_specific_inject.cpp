@@ -813,22 +813,3 @@ namespace hooks
 	Line 321514: 004D818F  |.  E8 3CD9F9FF   |CALL 00475AD0
 	Line 344811: 004E8076  |.  E8 55DAF8FF   CALL 00475AD0
 		*/
-
-		//all archon hardcode cases (copied from Overlord):
-		/*
-			memoryPatch(0x004295EB + 3, upperLimit, sizeof upperLimit);//+ //DONE
-			memoryPatch(0x00435E11 + 2, upperLimit, sizeof upperLimit);//+ (ai)
-			memoryPatch(0x00435F4D + 2, upperLimit, sizeof upperLimit);//+
-			memoryPatch(0x00442915 + 3, upperLimit, sizeof upperLimit);
-			memoryPatch(0x00447D37 + 2, upperLimit, sizeof upperLimit);
-			memoryPatch(0x004484B8 + 2, upperLimit, sizeof upperLimit);
-			memoryPatch(0x00455739 + 3, upperLimit, sizeof upperLimit);//+
-			memoryPatch(0x0046DD32 + 3, upperLimit, sizeof upperLimit);//+
-			memoryPatch(0x004C115E + 2, upperLimit, sizeof upperLimit);//+
-			memoryPatch(0x004C134E + 2, upperLimit, sizeof upperLimit);
-			memoryPatch(0x004C153E + 2, upperLimit, sizeof upperLimit);//+
-			memoryPatch(0x004C1763 + 3, upperLimit, sizeof upperLimit);//+
-			memoryPatch(0x004C1DC8 + 2, upperLimit, sizeof upperLimit);//+
-			memoryPatch(0x004C227D + 2, upperLimit, sizeof upperLimit);//+
-			memoryPatch(0x004CC55D + 3, upperLimit, sizeof upperLimit);//+
-		*/
