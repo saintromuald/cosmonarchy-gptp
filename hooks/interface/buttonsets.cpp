@@ -609,6 +609,7 @@ namespace hooks
 			buttonsetId = UnitId::Special_StartLocation;
 		}
 
+
 		BUTTON_SET* const current_buttonset = getButtonSet(buttonsetId);
 		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
 		bool bStopThere = false;
@@ -709,12 +710,10 @@ namespace hooks
 					}
 
 					if (current_button->iconID == IconId::Cancel) {
-						if ((units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory)) {
-							u8 nothing = 0;
-						}
-						else {
+						if (units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) {
+							current_button->position = 6;
+						} else {
 							current_button->position = 9;
-							scbw::refreshConsole();
 						}
 					}
 
