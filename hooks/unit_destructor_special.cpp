@@ -445,29 +445,16 @@ void unitDestructorSpecialHook(Unit* unit)
 	}
 
 	// Metastasis - Plague spreads when a unit dies
-	if ((unit->newFlags1 & NewFlags1::Metastasis) && unit->plagueTimer > 0)
+	if (unit->plagueTimer)
 	{
 		helper::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
-		Box16 coords;
-		coords.left = unit->position.x - 48;
-		coords.bottom = unit->position.y + 48;
-		coords.top = unit->position.y - 48;
-		coords.right = unit->position.x + 48;
-		helper::IterateUnitsAtLocationTargetProc_Plague(unit, &coords);
 		u32 range = 48;
-		scbw::UnitFinder(
-			unit->getX() - range,
-			unit->getY() - range,
-			unit->getX() + range,
-			unit->getY() + range
-		).forEach([&](Unit* target)
-		{
-			if (target->plagueTimer > 0)
-			{
-				target->newFlags1 |= NewFlags1::Metastasis;
-			}
-		});
-		// add finder later to trace plague flag
+		Box16 coords = {};
+		coords.left   = unit->position.x - range;
+		coords.top    = unit->position.y - range;
+		coords.right  = unit->position.x + range;
+		coords.bottom = unit->position.y + range;
+		helper::IterateUnitsAtLocationTargetProc_Plague(unit, &coords);
 	}
 
 	// Update Custom Creep Disappearance

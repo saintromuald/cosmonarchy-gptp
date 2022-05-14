@@ -596,30 +596,23 @@ namespace hooks
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
-		Box16 coords;
-		coords.left = x - 64;
-		coords.bottom = y + 64;
-		coords.top = y - 64;
-		coords.right = x + 64;
-
-		helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
-		if (attacker != nullptr)
-		{
-			UnitExt* attackerExt = globals.get_unit_ext(attacker);
+		if (attacker) {
 			u32 range = 64;
+			Box16 coords = {};
+			coords.left   = x - range;
+			coords.top    = y - range;
+			coords.right  = x + range;
+			coords.bottom = y + range;
+			helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
+
+			UnitExt* attackerExt = globals.get_unit_ext(attacker);
 			scbw::UnitFinder(
 				x - range,
 				y - range,
 				x + range,
 				y + range
-			).forEach([&](Unit* unit)
-			{
-				if (unit->plagueTimer > 0)
-				{
-					unit->newFlags1 |= NewFlags1::Metastasis;
-				}
-				if (attacker != nullptr
-					&& attackerExt->timers[TimerEnsnaringBrood] > 0
+			).forEach([&](Unit* unit) {
+				if (attacker && attackerExt->timers[TimerEnsnaringBrood] > 0
 					&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building))
 				{
 					scbw::applyEnsnare(unit);

@@ -29,11 +29,11 @@ struct Bullet
 	/*0x26*/ u8           unknown_0x26;
 	/*0x27*/ u8           flingyMoveControl;
 	/*0x28*/ Point16      position;
-	/*0x2C*/ Vector32      halt; // (xHalt >> 4) == xHalt
+	/*0x2C*/ Vector32     halt; // (xHalt >> 4) == xHalt
 	/*0x34*/ s32          flingyTopSpeed;
 	/*0x38*/ s32          unknown_0x38; //increasing counter or timer
 	/*0x3C*/ s32          unknown_0x3C; //increasing counter or timer, often the same value as unknown_0x38
-	/*0x40*/ Vector32      current_speed;
+	/*0x40*/ Vector32     current_speed;
 	/*0x48*/ u16          flingyAcceleration;
 	/*0x4A*/ u8           currentDirection;
 	/*0x4B*/ u8           velocityDirection; //seems to always be the same as currentDirection
@@ -58,8 +58,8 @@ struct Bullet
 	/*0x61*/ u8           time_remaining;
 	/*0x62*/ u8           hitFlags;           // 0x01 = miss target; 0x02 = no damage (hallucination)
 	/*0x63*/ u8           remainingBounces;   // Bounce count for mutalisk weapon (official name: ubChain)
-	/*0x64*/ Unit* sourceUnit;
-	/*0x68*/ Unit* nextBounceUnit;     // Next unit for bounce, temporary
+	/*0x64*/ Unit*		  sourceUnit;
+	/*0x68*/ Unit*		  nextBounceUnit;     // Next unit for bounce, temporary
 	/*0x6C*/ u32          cyclicMissileIndex; // some sort of cyclic burst counter (used by valkyries, goliath air attack)
 };
 

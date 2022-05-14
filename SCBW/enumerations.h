@@ -313,8 +313,8 @@ namespace NewFlags1
 	enum Enum : u8
 	{
 		Unused1 = 0x1,
-		RadiationShockwave = 0x2,
-		Metastasis = 0x4,
+		UnusedRadiationShockwave = 0x2,
+		UnusedMetastasis = 0x4,
 	};
 }
 

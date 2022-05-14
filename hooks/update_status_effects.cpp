@@ -319,14 +319,14 @@ namespace hooks
 			}
 		}
 
-		if (unit->plagueTimer != 0)
+		if (unit->plagueTimer)
 		{
 			unit->plagueTimer--;
 
 			if (!(unit->status & UnitStatus::Invincible))
 			{
 				s32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] * 256) / 30;
-				if (unit->plagueTimer == 0)
+				if (!unit->plagueTimer)
 				{
 					damage += (weapons_dat::DamageAmount[WeaponId::Plague] * 256) % 30;
 				}
@@ -336,13 +336,9 @@ namespace hooks
 				}
 			}
 
-			if (unit->plagueTimer == 0)
+			if (!unit->plagueTimer)
 			{
 				unit->removeOverlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
-				if (unit->newFlags1 & NewFlags1::Metastasis)
-				{
-					unit->newFlags1 &= ~NewFlags1::Metastasis;
-				}
 			}
 
 		}
