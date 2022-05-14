@@ -719,26 +719,18 @@ namespace hooks
 			);
 			if (collisionTarget != nullptr)
 			{
-				if (bullet->weaponId == WeaponId::PenumbraErebolShockCannon
-					|| bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
-				{
-					globals.add_bullet_multihit(bullet, collisionTarget);
-				}
-				else if (bullet->weaponId == WeaponId::KalkaliskViscousAcid)
-				{
-					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
-				}
-
 				if (bullet->weaponId == WeaponId::PenumbraErebolShockCannon)
 				{
 					// Penumbra - Shroud Piercer - pierce targets
+					globals.add_bullet_multihit(bullet, collisionTarget);
 					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					hooks::WeaponBulletHit(bullet, collisionTarget, 2);
 				}
 				else if (bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					// Claymore - Kelvin Munitions - pierce targets
-					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					globals.add_bullet_multihit(bullet, collisionTarget);
+					scbw::createAndInitThingy(SpriteId::BurstLasersBlue_Damageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					hooks::WeaponBulletHit(bullet, collisionTarget, 1);
 
 					// Claymore - Kelvin Munitions - Slow pierced targets
@@ -750,6 +742,7 @@ namespace hooks
 				}
 				else if (bullet->weaponId == WeaponId::KalkaliskViscousAcid) {
 					// Kalkalisk behavior
+					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 					auto count = globals.get_multihit_count(bullet);
 					helper::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					collisionTarget->damageWithCustom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
