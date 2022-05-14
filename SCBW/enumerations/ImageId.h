@@ -1124,6 +1124,7 @@ enum Enum {
 	GodsMadeFlesh_Small							= 1502,
 	GodsMadeFlesh_Medium						= 1503,
 	GodsMadeFlesh_Large							= 1504,
+	BurstLasersBlue_Damageless					= 1504,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,

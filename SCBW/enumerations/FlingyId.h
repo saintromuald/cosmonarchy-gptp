@@ -216,7 +216,7 @@ namespace FlingyId
 		Uraj,
 		Khalis,
 
-		// Cosmonarchy \\
+		// Cosmonarchy BW \\
 
 		TerranQuarry = 211,
 		ProtossPennant = 212,
@@ -375,17 +375,18 @@ namespace FlingyId
 		ProtossDemiurge = 365,
 		TerranSiren = 366,
 		SharedCharlatan = 367,
-		CanisterRifleHitBlue = 368,
-		ProtossExemplar = 369,
-		ArcliteShockCannon_Damageless = 370,
-		ProtossHallucinationEffect = 373,
+		CanisterRifleHitBlue					= 368,
+		ProtossExemplar							= 369,
+		ArcliteShockCannon_Damageless			= 370,
+		ProtossHallucinationEffect				= 373,
 
-		NeutronFlareOrange_Damageless = 402,
-		ZergOrbothOmlia = 403,
-		ArcliteShockCannon_Damageless_Silent = 404,
-		TerranMagnetar = 405,
-		ZergIzirokor = 406,
-		IzirokorProjectile = 407,
-		CyclopsFragmentaryExplosion = 408,
+		NeutronFlareOrange_Damageless			= 402,
+		ZergOrbothOmlia							= 403,
+		ArcliteShockCannon_Damageless_Silent	= 404,
+		TerranMagnetar							= 405,
+		ZergIzirokor							= 406,
+		IzirokorProjectile						= 407,
+		CyclopsFragmentaryExplosion				= 408,
+		BurstLasersHitBlue_Damageless			= 409,
 	};
 }

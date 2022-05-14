@@ -525,7 +525,7 @@ namespace SpriteId
 		Khalis = 516,
 		None = 517,
 
-		// HYDRA \\
+		// COSMONARCHY BW \\
 
 		ZergIroleth = 520,
 		ZergMutationPit = 521, // unused
@@ -773,6 +773,8 @@ namespace SpriteId
 		FragmentaryExplosion = 765,
 		ZergAirExplosionLarge = 766,
 		ZergAirExplosionSmall = 767,
+
+		BurstLasersBlue_Damageless	= 768,
 
 		// CORPSE \\
 			
