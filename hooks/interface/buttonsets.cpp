@@ -180,7 +180,7 @@ BUTTON_SET* getCustomButtonSet()
 
 namespace hooks
 {
-	// 00458BC0 
+	// 00458BC0
 	// Called (with a jump) as last instruction of updateButtonSet
 	// Will update the buttonset for the currently selected unit if alone
 	// Handle special case of group orders if multiple units are selected
