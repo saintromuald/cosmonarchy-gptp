@@ -708,6 +708,16 @@ namespace hooks
 						}
 					}
 
+					if (current_button->iconID == IconId::Cancel) {
+						if ((units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory)) {
+							u8 nothing = 0;
+						}
+						else {
+							current_button->position = 9;
+							scbw::refreshConsole();
+						}
+					}
+
 					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding)
 					{
 						if ((*activePortraitUnit)->id == UnitId::TerranBarracks)
