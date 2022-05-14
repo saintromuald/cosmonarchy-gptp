@@ -733,7 +733,7 @@ namespace hooks
 					scbw::createAndInitThingy(SpriteId::BurstLasersBlue_Damageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					hooks::WeaponBulletHit(bullet, collisionTarget, 1);
 
-					// Claymore - Kelvin Munitions - Slow pierced targets
+					// Claymore - Kelvin Munitions - slow pierced targets
 					UnitExt* collisionTargetExt = globals.get_unit_ext(collisionTarget);
 					if (!collisionTargetExt->values[ValueKelvinMunitionsSlow])
 					{
