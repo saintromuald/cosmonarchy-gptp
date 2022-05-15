@@ -522,8 +522,7 @@ struct UnitFinderData
 C_ASSERT(sizeof(UnitFinderData) == 8);
 //static_assert(sizeof(UnitFinderData) == 8, "The size of the UnitFinderData structure is invalid");
 
-// BinDlg is defined in https://code.google.com/p/vgce/source/browse/trunk/docs/Blizzard/Starcraft/BIN%20FORMAT.txt
-// as Dialog Structure
+// BinDlg is defined in https://code.google.com/p/vgce/source/browse/trunk/docs/Blizzard/Starcraft/BIN%20FORMAT.txt as Dialog Structure
 // That structure is variable depending on the content
 
 struct BinDlg
@@ -544,7 +543,7 @@ struct BinDlg
 		/*0x26*/  Unit*		unitUser;
 		/*0x26*/  BinDlg*	dlgUser;
 		/*0x26*/  BUTTON*	buttonUser;
-		StatusScreenState*	statButtonUser; // from iquare
+		StatusScreenState*	statButtonUser; // from Neiv's list
 		/*0x26*/  u32		nonUserValue;
 	};
 
@@ -568,9 +567,9 @@ struct BinDlg
 		struct
 		{
 			/*0x36*/  void*		unkFunc36;				// should be a function
-			/*0x3A*/  u16		scrollMinValue;			// guess to be confirmed if used
-			/*0x3C*/  u16		scrollMaxValue;			// guess to be confirmed if used
-			/*0x3E*/  u16		scrollCurrentValue;		// guess to be confirmed if used
+			/*0x3A*/  u16		scrollMinValue;			// unconfirmed
+			/*0x3C*/  u16		scrollMaxValue;			// unconfirmed
+			/*0x3E*/  u16		scrollCurrentValue;		// unconfirmed
 			/*0x40*/  u16		unk40;					// unverified filler
 		} scrollDialog0x36;								// probably for scrollbar involving dialogs?
 		struct

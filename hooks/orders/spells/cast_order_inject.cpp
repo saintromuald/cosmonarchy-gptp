@@ -48,7 +48,7 @@ namespace
 			MOV defaultOrderString, EAX
 			PUSHAD
 		}
-		result = hooks::spellOrder(defaultOrderString, caster, techId, range, energyCost);
+		result = hooks::spell_order(defaultOrderString, caster, techId, range, energyCost);
 		__asm
 		{
 			POPAD

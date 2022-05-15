@@ -8,7 +8,7 @@ namespace hooks
 	{
 		s32 sightRange = unit->getSightRange(true);
 		u16 techCost;
-		if (helper::spellOrder(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899))
+		if (helper::spell_order(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899))
 		{
 			s32 counter = 1;
 
@@ -61,7 +61,7 @@ namespace hooks
 		if (halUnit)
 		{
 			u16 halTimer = 0;
-			helper::applyHallucinationStats(halUnit);
+			helper::apply_hallucination_stats(halUnit);
 			if (halUnit->status & UnitStatus::IsHallucination)
 			{
 				halTimer = 1350;
@@ -78,7 +78,7 @@ namespace hooks
 			s16 unitType = halUnit->id;
 			if (unitType == UnitId::ProtossAccantor) // Originally also ran for Warbringer ID
 			{
-				helper::hallucinateScarabs(halUnit, source);
+				helper::hallucinate_scarabs(halUnit, source);
 			}
 			if (source->pAI)
 			{

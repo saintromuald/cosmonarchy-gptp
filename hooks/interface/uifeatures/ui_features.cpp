@@ -256,4 +256,6 @@ LABEL_15:
 		scbw::printf("%s", buffer);
 		return helper::CreateTooltip(buffer);
 	}
+
+	// TODO: Hook 004593A0 for time icon/cost on tooltip (and removing supply icon from tooltip)
 }

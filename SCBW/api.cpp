@@ -957,7 +957,7 @@ namespace scbw
 			helper::updateUnitStrength(unit);
 			if (initAI)
 			{
-				helper::AI_TrainingUnit(unit, creator);
+				helper::AI_training_unit(unit, creator);
 			}
 		}
 		return unit;
@@ -1059,12 +1059,12 @@ namespace scbw
 			{
 				return;
 			}
-			hooks::AI_TrainingUnit(unit, creator, true);
+			hooks::AI_training_unit(unit, creator, true);
 			if (creator != nullptr)
 			{
 				if (creator->status & UnitStatus::IsHallucination)
 				{
-					helper::applyHallucinationStats(unit);
+					helper::apply_hallucination_stats(unit);
 					unit->status |= UnitStatus::IsHallucination;
 					unit->removeTimer = 1350;
 					unit->sprite->createOverlay(ImageId::HallucinationDeath3);

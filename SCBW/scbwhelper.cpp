@@ -5351,19 +5351,19 @@ namespace helper
 		return rValue;
 	}
 
-	void orderNewUnitToRally(Unit* unit, Unit* factory)
+	void order_new_unit_to_rally(Unit* unit, Unit* factory)
 	{
-		const u32 Func_Sub466F50 = 0x00466F50;
+		const u32 Func_order_new_unit_to_rally = 0x00466F50;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			MOV ECX, factory
-			CALL Func_Sub466F50
+			CALL Func_order_new_unit_to_rally
 			POPAD
 		}
 	}
 
-	void AI_TrainingUnit(Unit* unit, Unit* creator)
+	void AI_training_unit(Unit* unit, Unit* creator)
 	{
 		const u32 Func_AI_TrainingUnit = 0x004A2830;
 		__asm {
@@ -5376,7 +5376,7 @@ namespace helper
 	}
 
 	// for orders_Hallucination1
-	bool spellOrder(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index)
+	bool spell_order(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index)
 	{
 		const u32 Func_spellOrder = 0x004926D0;
 		static b32 bPreResult;
@@ -5394,7 +5394,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool placeHallucination(Unit* unit)
+	bool place_hallucination(Unit* unit)
 	{
 		const u32 Func_placeHallucination = 0x004F66D0;
 		static b32 bPreResult;
@@ -5410,7 +5410,7 @@ namespace helper
 
 	// for createHallucination
 
-	void applyHallucinationStats(Unit* halUnit)
+	void apply_hallucination_stats(Unit* halUnit)
 	{
 		const u32 Func_applyHallucinationStats = 0x004F6180;
 		__asm {
@@ -5421,7 +5421,7 @@ namespace helper
 		}
 	}
 
-	s32 hallucinateScarabs(Unit* a1, Unit* a2)
+	s32 hallucinate_scarabs(Unit* a1, Unit* a2)
 	{
 		const u32 Func_hallucinateScarabs = 0x004F65B0;
 		static s32 result;
@@ -5436,7 +5436,7 @@ namespace helper
 		return result;
 	}
 
-	void replaceFeedbackSprite(Unit* unit, u32 spriteId)
+	void replace_feedback_sprite(Unit* unit, u32 spriteId)
 	{
 		const u32 Func_replaceFeedbackSprite = 0x004F6350;
 		__asm {
@@ -5448,7 +5448,7 @@ namespace helper
 		}
 	}
 
-	void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target)
+	void AI_unit_was_hit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target)
 	{
 		const u32 Func_Ai_UnitWasHit = 0x0043F320;
 		__asm {
@@ -8235,7 +8235,7 @@ namespace helper
 		return flingy;
 	}
 
-	// For spellOrder
+	// For spell_order
 	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, u16* a7)
 	{
 		const u32 Func_getOrderTargetErrorString = 0x00492020;

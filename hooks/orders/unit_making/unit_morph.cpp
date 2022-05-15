@@ -49,13 +49,13 @@ namespace hooks
 				unit2 = helper::zergDualBirth(unit); // zerg dual birth
 				if (unit2)
 				{
-					helper::AI_TrainingUnit(unit2, unit);
+					helper::AI_training_unit(unit2, unit);
 				}
 			}
 			if (unit->id != UnitId::ZergDroleth
 				&& unit->id != UnitId::ZergOvileth)
 			{
-				helper::AI_TrainingUnit(unit, unit);
+				helper::AI_training_unit(unit, unit);
 			}
 			helper::initBuilding(unit, 0);
 			// update various stuff (set hp, set shield...) not finished on Morph
@@ -85,10 +85,10 @@ namespace hooks
 			{
 				if (unit->eggOrigin == UnitId::ZergLarva)
 				{
-					helper::orderNewUnitToRally(unit, unit->connectedUnit);
+					helper::order_new_unit_to_rally(unit, unit->connectedUnit);
 					if (unit2 != nullptr)
 					{
-						helper::orderNewUnitToRally(unit2, unit->connectedUnit);
+						helper::order_new_unit_to_rally(unit2, unit->connectedUnit);
 					}
 				}
 			}
@@ -266,7 +266,7 @@ namespace hooks
 				if (unit->id == UnitId::ZergDroleth
 					|| unit->id == UnitId::ZergOvileth)
 				{
-					helper::AI_TrainingUnit(unit, unit);
+					helper::AI_training_unit(unit, unit);
 				}
 				helper::playMorphingCompleteSound(unit);
 				unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
@@ -289,7 +289,7 @@ namespace hooks
 					helper::updateUnitStrength(unit);
 					if (unit->id == UnitId::ZergEgg && unit->eggOrigin == UnitId::ZergLarva)
 					{
-						helper::orderNewUnitToRally(unit, unit->connectedUnit);
+						helper::order_new_unit_to_rally(unit, unit->connectedUnit);
 					}
 				}
 			}
