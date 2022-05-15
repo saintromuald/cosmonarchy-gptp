@@ -236,7 +236,6 @@ enum ExtValueId
 	ValueIsZombified,
 	ValueIsSelfReviving,
 	ValueTalosAnimationTimer,
-	ValueBlissfulEmbraceChannel,
 	ValueBlissfulEmbraceOriginalPlayer,
 	ValueBlissfulEmbraceOriginalHealth,
 	ValueDontBirthTwo,

@@ -1619,29 +1619,30 @@ namespace hooks
 		}
 
 		// Akistrokor - Blissful Embrace ability
-		if (unit->mainOrderId == OrderId::BlissfulEmbrace)
-		{
-			Unit* target = unit->orderTarget.unit;
-			if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
-				&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->playerId != target->playerId) {
-				if (helper::isUnitInWeaponRange(unit, target)) {
-					if (unit->orderSignal & 2) {
-						unit->orderSignal &= ~2;
-						helper::force_order_done(unit);
+		if (unit->id == UnitId::ZergAkistrokor) {
+			if (unit->mainOrderId == OrderId::BlissfulEmbrace)
+			{
+				Unit* target = unit->orderTarget.unit;
+				if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
+					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->playerId != target->playerId) {
+					if (helper::isUnitInWeaponRange(unit, target)) {
+						if (unit->orderSignal & 0x2) {
+							unit->orderSignal &= ~0x2;
+							helper::force_order_done(unit);
 
-						unitExt->values[ValueBlissfulEmbraceChannel] = 0;
-						scbw::blissful_embrace(target, unit->playerId);
+							scbw::blissful_embrace(target, unit->playerId);
+						}
 					}
+				}
+				else
+				{
+					helper::force_order_done(unit);
 				}
 			}
 			else
 			{
-				helper::force_order_done(unit);
+				unit->orderSignal &= ~0x2;
 			}
-		}
-		else
-		{
-			unitExt->values[ValueBlissfulEmbraceChannel] = 0;
 		}
 
 		// Reviving
