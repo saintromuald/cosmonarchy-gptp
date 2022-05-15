@@ -384,7 +384,7 @@ namespace hooks
 								// deselection to fail where simple shift+click would
 								// continue to deselect.
 								u32 unitIndex = helper::CUnitToUnitID(local_temp_array_1[0]);
-								if (helper::selectSingleUnitFromID(unitIndex) != 0)
+								if (helper::select_single_unit_from_id(unitIndex) != 0)
 								{
 									bUpdateSelection = false;
 								}
@@ -423,7 +423,7 @@ namespace hooks
 				// In this case, skip the code for a single unit handling
 
 				u32 temp_unit_index = helper::CUnitToUnitID(clicked_unit);
-				if (helper::selectSingleUnitFromID(temp_unit_index) != 0)
+				if (helper::select_single_unit_from_id(temp_unit_index) != 0)
 				{
 					bRecreatedSelectionThroughAltClick = true;
 				}

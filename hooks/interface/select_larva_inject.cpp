@@ -13,7 +13,7 @@ namespace
 			MOV outputList, ESI
 			PUSHAD
 		}
-		larvaeCount = hooks::getLarvaeUnitsFromListHook(unitList, outputList);
+		larvaeCount = hooks::get_larvae_units_from_list(unitList, outputList);
 
 		__asm {
 			POPAD
@@ -29,7 +29,7 @@ namespace
 			MOV EBP, ESP
 			PUSHAD
 		}
-		hooks::BTNSACT_SelectLarva();
+		hooks::BTSNACT_select_larva();
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -43,7 +43,7 @@ namespace hooks
 {
 	void injectSelectLarvaHooks()
 	{
-		jmpPatch(getLarvaeUnitsFromList_Wrapper, 0x00423190, 1);
-		jmpPatch(BTNSACT_SelectLarva_Wrapper, 0x00423930, 1);
+		jmpPatch(getLarvaeUnitsFromList_Wrapper,	0x00423190, 1);
+		jmpPatch(BTNSACT_SelectLarva_Wrapper,		0x00423930, 1);
 	}
 }
