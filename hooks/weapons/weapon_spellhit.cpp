@@ -582,7 +582,7 @@ namespace hooks
 
 					if (attacker->pAI != nullptr)
 					{
-						helper::AI_TrainingUnit(created_broodling, attacker);
+						helper::AI_training_unit(created_broodling, attacker);
 					}
 				}
 			}

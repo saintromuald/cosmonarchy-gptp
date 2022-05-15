@@ -161,24 +161,24 @@ LABEL_8:
 					{
 						if (*COrderCount < 1800)
 						{
-							helper::queueNewOrder((Order*)a5, a1, a4, a3, a7, a8, a2, (Vector32*)a9, (Unit*)a10);
+							helper::queue_new_order((Order*)a5, a1, a4, a3, a7, a8, a2, (Vector32*)a9, (Unit*)a10);
 						}
 						else
 						{
 							u8 v11 = a3->playerId;
 							if (*statTxtTbl > 0x368u)
-								helper::showStatTxtToPlayer(*statTxtTbl + statTxtTbl[873], v11);
+								helper::show_stat_txt_to_player(*statTxtTbl + statTxtTbl[873], v11);
 							else
-								helper::showStatTxtToPlayer((s32)"", v11);
+								helper::show_stat_txt_to_player((s32)"", v11);
 						}
 					}
 					else
 					{
 						u8 v10 = a3->playerId;
 						if (*statTxtTbl > 0x366u)
-							helper::showStatTxtToPlayer(*statTxtTbl + statTxtTbl[871], v10);
+							helper::show_stat_txt_to_player(*statTxtTbl + statTxtTbl[871], v10);
 						else
-							helper::showStatTxtToPlayer((s32)"", v10);
+							helper::show_stat_txt_to_player((s32)"", v10);
 					}
 					break;
 			}
@@ -186,14 +186,14 @@ LABEL_8:
 		else
 		{
 LABEL_15:
-			helper::setOrderTarget(a7, a1, a4, a5, (s32)a3, (Unit*)a8, (u16)a2, (Vector32*)a9, (Unit*)a10);
+			helper::set_order_target(a7, a1, a4, a5, (s32)a3, (Unit*)a8, (u16)a2, (Vector32*)a9, (Unit*)a10);
 		}
 	}
 
 	s32 selectUnits(Unit** a1, s32 a2, u8 a3, s32 a4)
 	{
 		s32 v4 = helper::CUnitToUnitID(*a1);
-		s32 result = helper::selectSingleUnitFromID(v4); // eax
+		s32 result = helper::select_single_unit_from_id(v4); // eax
 
 		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0)
 			result = helper::selectMultipleUnitsFromUnitList(a2, a1, a3, a4);
@@ -256,4 +256,6 @@ LABEL_15:
 		scbw::printf("%s", buffer);
 		return helper::CreateTooltip(buffer);
 	}
+
+	// TODO: Hook 004593A0 for time icon/cost on tooltip (and removing supply icon from tooltip)
 }

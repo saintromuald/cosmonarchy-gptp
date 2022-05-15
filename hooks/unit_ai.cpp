@@ -7,7 +7,7 @@
 
 namespace hooks
 {
-	void AI_TrainingUnit(Unit* result, Unit* parent, b32 preferSimpleMilitary) // 004A2830
+	void AI_training_unit(Unit* result, Unit* parent, b32 preferSimpleMilitary) // 004A2830
 	{
 		if (!result
 			|| playerTable[result->playerId].type != PlayerType::Computer)
@@ -377,7 +377,7 @@ namespace hooks
 				silo->building.silo.nuke = nuke;
 				silo->building.silo.isReady = 1;
 				nuke->connectedUnit = silo;
-				AI_TrainingUnit(nuke, silo);
+				AI_training_unit(nuke, silo);
 			}
 		}
 	}

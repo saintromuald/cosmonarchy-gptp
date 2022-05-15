@@ -446,7 +446,7 @@ namespace helper
 	bool canCastSpell_0(Unit* unit);																								// 00492140
 	u32 OrderedSpell_ProgressMoving(Unit* unit, b32 wasMainOrderStateZero);															// 00492620
 
-	// For spellOrder
+	// For spell_order
 	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, u16* a7);									// 00492020
 	s32 spellOrder_MoveTowardsTarget(Unit* caster, u32 range);																		// 00492450
 
@@ -586,30 +586,30 @@ namespace helper
 	u8 setArchonPathing(Unit* unit);																								// 0046A820
 	bool hasSuppliesForUnit(u32 unitId, u32 playerId, b32 canShowErrorMessage);														// 0042CF70
 	Unit* zergDualBirth(Unit* unit);																							    // 0045D910
-	void orderNewUnitToRally(Unit* unit, Unit* factory);																			// 00466F50
-	void AI_TrainingUnit(Unit* unit, Unit* creator);																				// 004A2830
+	void order_new_unit_to_rally(Unit* unit, Unit* factory);																			// 00466F50
+	void AI_training_unit(Unit* unit, Unit* creator);																				// 004A2830
 	void deleteBuildingAI(BuildingAi* building, BuildingAiArray** buildingList);                                                    // 00404500
 	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray** workerArray);                                                                 // 00404470
 	void deleteAITownIfNeeded(AiTown* town);                                                                                        // 004347E0
 
 	//// hallucination_spell
 	// for orders_Hallucination1
-	bool spellOrder(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index);							// 004926D0
+	bool spell_order(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index);							// 004926D0
 
 	void UnitDestructor(Unit* unit);
-	bool placeHallucination(Unit* unit);																							// 004F66D0
+	bool place_hallucination(Unit* unit);																							// 004F66D0
 
 	// for createHallucination
-	void applyHallucinationStats(Unit* halUnit);																					// 004F6180
-	s32 hallucinateScarabs(Unit* a1, Unit* a2);																						// 004F65B0
+	void apply_hallucination_stats(Unit* halUnit);																					// 004F6180
+	s32 hallucinate_scarabs(Unit* a1, Unit* a2);																						// 004F65B0
 
 	//// feedback_spell
-	void replaceFeedbackSprite(Unit* unit, u32 spriteId);																			// 004F6350
+	void replace_feedback_sprite(Unit* unit, u32 spriteId);																			// 004F6350
 
 	//// weapon_effect
 	bool isUnitDistanceWithin(Unit* target, Bullet* bullet, u32 radius);
 	void doWeaponHit(Unit* target, Unit* attacker, u8 dmgDivisor);
-	void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target);
+	void AI_unit_was_hit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target);
 
 	// for airSplash
 	Unit* findBestUnit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*));														// 004E8830
@@ -759,7 +759,6 @@ namespace helper
 	u32 CUnitToUnitID(Unit* unit);																			    // 0047B1D0
 	bool unit_IsStandardAndMovable(Unit* unit); 																// 0047B770
 	void selectBuildingSFX(Unit* unit);																			// 0048F910
-	b32 selectSingleUnitFromID(u32 unitIndex);															        // 00496D30
 	void CreateNewUnitSelectionsFromList(Unit** unit_list, u32 unit_list_length);							    // 0049AE40
 	void CMDACT_Select(Unit** unit_list, u32 unit_list_length); 											    // 004C0860
 
@@ -803,7 +802,6 @@ namespace helper
 	//// select_larva
 
 	u32 getLarvaeUnitsFromList(Unit** unitList, Unit** outputList);															// 00423190
-	b32 selectSingleUnitFromID(u32 unitIndex);																		        // 00496D30
 	void selectMultipleUnitsFromUnitList(Unit** unitList, u32 unitsCount, b32 unk1, b32 unk2);					            // 0049AEF0
 
 	//// uifeatures
@@ -812,12 +810,12 @@ namespace helper
 	s32 GetColorHandle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
 
 	// For targetedOrder
-	Order* queueNewOrder(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9);				// 00474B90
-	s32 showStatTxtToPlayer(s32 a1, s32 a2);																			    // 0048CF00
-	void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vector32* a8, Unit* a9);		            // 00475470
+	Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9);				// 00474B90
+	s32 show_stat_txt_to_player(s32 a1, s32 a2);																			// 0048CF00
+	void set_order_target(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vector32* a8, Unit* a9);		            // 00475470
 
 	// For selectUnits
-	s32 selectSingleUnitFromID(s32 a1);																					    // 00496D30
+	s32 select_single_unit_from_id(s32 index);																				// 00496D30
 	s32 selectMultipleUnitsFromUnitList(s32 a1, Unit** a2, u8 a3, s32 a4);										            // 0049AEF0
 	s32 SNetGetTurnsInTransit(u32* turns);
 	u8 sendTurn();

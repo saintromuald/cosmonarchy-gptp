@@ -5351,19 +5351,19 @@ namespace helper
 		return rValue;
 	}
 
-	void orderNewUnitToRally(Unit* unit, Unit* factory)
+	void order_new_unit_to_rally(Unit* unit, Unit* factory)
 	{
-		const u32 Func_Sub466F50 = 0x00466F50;
+		const u32 Func_order_new_unit_to_rally = 0x00466F50;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			MOV ECX, factory
-			CALL Func_Sub466F50
+			CALL Func_order_new_unit_to_rally
 			POPAD
 		}
 	}
 
-	void AI_TrainingUnit(Unit* unit, Unit* creator)
+	void AI_training_unit(Unit* unit, Unit* creator)
 	{
 		const u32 Func_AI_TrainingUnit = 0x004A2830;
 		__asm {
@@ -5376,7 +5376,7 @@ namespace helper
 	}
 
 	// for orders_Hallucination1
-	bool spellOrder(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index)
+	bool spell_order(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index)
 	{
 		const u32 Func_spellOrder = 0x004926D0;
 		static b32 bPreResult;
@@ -5394,7 +5394,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool placeHallucination(Unit* unit)
+	bool place_hallucination(Unit* unit)
 	{
 		const u32 Func_placeHallucination = 0x004F66D0;
 		static b32 bPreResult;
@@ -5410,7 +5410,7 @@ namespace helper
 
 	// for createHallucination
 
-	void applyHallucinationStats(Unit* halUnit)
+	void apply_hallucination_stats(Unit* halUnit)
 	{
 		const u32 Func_applyHallucinationStats = 0x004F6180;
 		__asm {
@@ -5421,7 +5421,7 @@ namespace helper
 		}
 	}
 
-	s32 hallucinateScarabs(Unit* a1, Unit* a2)
+	s32 hallucinate_scarabs(Unit* a1, Unit* a2)
 	{
 		const u32 Func_hallucinateScarabs = 0x004F65B0;
 		static s32 result;
@@ -5436,7 +5436,7 @@ namespace helper
 		return result;
 	}
 
-	void replaceFeedbackSprite(Unit* unit, u32 spriteId)
+	void replace_feedback_sprite(Unit* unit, u32 spriteId)
 	{
 		const u32 Func_replaceFeedbackSprite = 0x004F6350;
 		__asm {
@@ -5448,7 +5448,7 @@ namespace helper
 		}
 	}
 
-	void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target)
+	void AI_unit_was_hit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target)
 	{
 		const u32 Func_Ai_UnitWasHit = 0x0043F320;
 		__asm {
@@ -6703,20 +6703,6 @@ namespace helper
 		}
 	}
 
-	b32 selectSingleUnitFromID(u32 unitIndex)
-	{
-		const u32 Func_SelectSingleUnitFromID = 0x00496D30;
-		b32 bReturnedValue;
-		__asm {
-			PUSHAD
-			PUSH unitIndex
-			CALL Func_SelectSingleUnitFromID
-			MOV bReturnedValue, EAX
-			POPAD
-		}
-		return bReturnedValue;
-	}
-
 	void CreateNewUnitSelectionsFromList(Unit** unit_list, u32 unit_list_length)
 	{
 		const u32 Func_CreateNewUnitSelectionsFromList = 0x0049AE40;
@@ -7058,9 +7044,9 @@ namespace helper
 
 	// For targetedOrder
 
-	Order* queueNewOrder(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9)
+	Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9)
 	{
-		const u32 Func_queueNewOrder = 0x00474B90;
+		const u32 Func_queue_new_order = 0x00474B90;
 		static Order* result;
 		__asm {
 			PUSHAD
@@ -7073,31 +7059,31 @@ namespace helper
 			PUSH a6
 			PUSH a5
 			PUSH a4
-			CALL Func_queueNewOrder
+			CALL Func_queue_new_order
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	s32 showStatTxtToPlayer(s32 a1, s32 a2)
+	s32 show_stat_txt_to_player(s32 a1, s32 a2)
 	{
-		const u32 Func_showStatTxtToPlayer = 0x0048CF00;
+		const u32 Func_show_stat_txt_to_player = 0x0048CF00;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
 			MOV ECX, a2
-			CALL Func_showStatTxtToPlayer
+			CALL Func_show_stat_txt_to_player
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vector32* a8, Unit* a9)
+	void set_order_target(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vector32* a8, Unit* a9)
 	{
-		const u32 Func_setOrderTarget = 0x00475470;
+		const u32 Func_set_order_target = 0x00475470;
 		__asm {
 			PUSHAD
 			MOV CL, a1
@@ -7109,21 +7095,21 @@ namespace helper
 			PUSH a7
 			PUSH a6
 			PUSH a5
-			CALL Func_setOrderTarget
+			CALL Func_set_order_target
 			POPAD
 		}
 	}
 
 	// For selectUnits
 
-	s32 selectSingleUnitFromID(s32 a1)
+	s32 select_single_unit_from_id(s32 index)
 	{
-		const u32 Func_selectSingleUnitFromID = 0x00496D30;
+		const u32 Func_select_single_unit_from_id = 0x00496D30;
 		static s32 result;
 		__asm {
 			PUSHAD
-			PUSH a1
-			CALL Func_selectSingleUnitFromID
+			PUSH index
+			CALL Func_select_single_unit_from_id
 			MOV result, EAX
 			POPAD
 		}
@@ -8235,7 +8221,7 @@ namespace helper
 		return flingy;
 	}
 
-	// For spellOrder
+	// For spell_order
 	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, u16* a7)
 	{
 		const u32 Func_getOrderTargetErrorString = 0x00492020;

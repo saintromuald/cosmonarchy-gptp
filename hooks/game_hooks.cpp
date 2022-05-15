@@ -1517,7 +1517,7 @@ namespace hooks
 		if (larva_value) {
 			scbw::set_generic_rust_value(unit, RustId::SelectLarvaType, 0);
 			if (unit->playerId == *LOCAL_NATION_ID) {
-				BTNSACT_SelectLarva();
+				BTSNACT_select_larva();
 				helper::update_hud_info();
 				if (*activePortraitUnit && (*activePortraitUnit)->id == UnitId::ZergLarva) {
 					helper::BTNSACT_ChangeButtons(205 + larva_value);

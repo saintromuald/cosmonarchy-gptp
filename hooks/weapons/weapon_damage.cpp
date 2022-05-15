@@ -468,7 +468,7 @@ namespace hooks
 						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
 						haluAttackerExt->units[UnitHallucinationPointer] = hal_unit;
 
-						if (!helper::placeHallucination(hal_unit))
+						if (!helper::place_hallucination(hal_unit))
 						{
 							helper::UnitDestructor(hal_unit);
 						}

@@ -6,7 +6,7 @@
 namespace hooks
 {
 	// Hooked to change order conditions and actions for custom spells - Pr0nogo
-	s32 spellOrder(s32 defaultOrderString, Unit* caster, u16 techId, s32 range, u16* energyCost) // 004926D0
+	s32 spell_order(s32 defaultOrderString, Unit* caster, u16 techId, s32 range, u16* energyCost) // 004926D0
 	{
 		Unit* orderTarget = caster->orderTarget.unit;
 		u16 meme = (u16)defaultOrderString;

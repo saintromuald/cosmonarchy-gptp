@@ -84,7 +84,7 @@ namespace ButtonActions
 	{
 		Cancel_Infestation = 0x00423180,																// BTNSACT_DoNothing
 		Rally_Point = 0x004244A0,																		// BTNSACT_RallyPoint
-		Select_Larva = 0x00423930,																		// BTNSACT_SelectLarva
+		Select_Larva = 0x00423930,																		// BTSNACT_select_larva
 		Create_Unit = 0x004234B0,																		// CMDACT_Train
 		Cancel_Last = 0x00423490,																		// CMDACT_CancelTrain
 		Tank_Mode = 0x00423470,																			// CMDACT_Unsiege

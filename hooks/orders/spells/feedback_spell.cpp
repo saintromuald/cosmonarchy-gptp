@@ -13,12 +13,12 @@ namespace hooks
 		{
 			u16 techCost;
 			s32 sightRange = unit->getSightRange(true);
-			if (helper::spellOrder(unit, TechId::Feedback, &techCost, sightRange * 32, 0x532)) // Must target units with energy
+			if (helper::spell_order(unit, TechId::Feedback, &techCost, sightRange * 32, 0x532)) // Must target units with energy
 			{
 				if (target->status & UnitStatus::IsHallucination)
 				{
 					u8 overlaySize = scbw::hasOverlay(target);
-					helper::replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
+					helper::replace_feedback_sprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 					unit->spendUnitEnergy(techCost);
 					target->remove();
 					unit->orderToIdle();
@@ -53,7 +53,7 @@ namespace hooks
 						else
 						{ // 004F6E6D
 							u8 overlaySize = scbw::hasOverlay(target);
-							helper::replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
+							helper::replace_feedback_sprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 							unit->orderToIdle();
 						}
 					}
