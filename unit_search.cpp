@@ -9,6 +9,7 @@
 // NOTE: static will init grid to zeros, and limit scope to this file
 // well not really, because unity build, but w/e
 static UnitArray unit_grid[CELL_COUNT][CELL_COUNT];
+static CorpseArray corpse_grid[CELL_COUNT][CELL_COUNT];
 
 // GRID BASED (current):
 // - results in cache misses, because of sparse arrays (fixed size)
@@ -28,13 +29,6 @@ static UnitArray unit_grid[CELL_COUNT][CELL_COUNT];
 // not every finder proc
 // - not sure how imperformant array intersection will be
 
-inline UnitArray UnitArrayDuplicate(UnitArray* array)
-{
-	UnitArray newArray = {};
-	memcpy(&newArray, array, sizeof(UnitArray));
-	return newArray;
-}
-
 inline void UnitArrayAdd(UnitArray* array, Unit* unit)
 {
 	array->units[array->size++] = unit;
@@ -50,6 +44,24 @@ inline void UnitArrayRemove(UnitArray* array, u32 index)
 	for (u32 i = array->size - 1; i >= index; i--)
 	{
 		array->units[i] = array->units[i + 1];
+	}
+}
+
+inline void CorpseArrayAdd(CorpseArray* array, Thingy* corpse)
+{
+	array->corpses[array->size++] = corpse;
+}
+
+inline void CorpseArrayRemoveFast(CorpseArray* array, u32 index)
+{
+	array->corpses[index] = array->corpses[--array->size];
+}
+
+inline void CorpseArrayRemove(CorpseArray* array, u32 index)
+{
+	for (u32 i = array->size - 1; i >= index; i--)
+	{
+		array->corpses[i] = array->corpses[i + 1];
 	}
 }
 
@@ -75,7 +87,6 @@ UnitArray UnitSearchRect(Box32 rect)
 {
 	rect = scbw::clampRect(rect);
 	UnitArray unit_array = {};
-	unit_array.size = 0;
 
 	const u32 x1 = rect.left / CELL_PX_SIZE;
 	const u32 y1 = rect.top / CELL_PX_SIZE;
@@ -120,7 +131,7 @@ UnitArray UnitSearchRect(Box32 rect)
 	return unit_array;
 }
 
-UnitArray UnitSearchSquare(Point16 center, u32 radius)
+inline UnitArray UnitSearchSquare(Point16 center, u32 radius)
 {
 	return UnitSearchRect({
 		center.x - (s32)radius,
@@ -133,7 +144,6 @@ UnitArray UnitSearchSquare(Point16 center, u32 radius)
 UnitArray UnitSearchRadial(Point16 center, u32 radius)
 {
 	UnitArray unit_array = {};
-	unit_array.size = 0;
 
 	Box32 dims =
 	{
@@ -183,6 +193,115 @@ UnitArray UnitSearchRadial(Point16 center, u32 radius)
 	}
 
 	return unit_array;
+}
+
+CorpseArray CorpseSearchRect(Box32 rect) {
+	rect = scbw::clampRect(rect);
+	CorpseArray corpse_array = {};
+
+	const u32 x1 = rect.left / CELL_PX_SIZE;
+	const u32 y1 = rect.top / CELL_PX_SIZE;
+	const u32 x2 = ceil(rect.right / (f32)CELL_PX_SIZE);
+	const u32 y2 = ceil(rect.bottom / (f32)CELL_PX_SIZE);
+
+	for (u32 x = x1; x < x2; x++)
+	{
+		for (u32 y = y1; y < y2; y++)
+		{
+			// check if tile is worth evaluating
+			CorpseArray* current_array = &corpse_grid[x][y];
+			if (current_array->size)
+			{
+				// check if tile is entirely covered by the area
+				const Box32 tile_rect =
+				{
+					x * CELL_PX_SIZE,
+					y * CELL_PX_SIZE,
+					x * CELL_PX_SIZE + CELL_PX_SIZE,
+					y * CELL_PX_SIZE + CELL_PX_SIZE
+				};
+				const bool tileIsFullyCovered = IsRectInRect(tile_rect, rect);
+
+				// check which units are in the area
+				for (u32 i = 0; i < current_array->size; i++)
+				{
+					Thingy* corpse = current_array->corpses[i];
+					if (corpse->sprite->flags & SpriteFlags::Flag04) {
+						continue;
+					}
+					if (!tileIsFullyCovered && !IsPointInRect(corpse->sprite->position, rect))
+					{
+						continue;
+					}
+					CorpseArrayAdd(&corpse_array, corpse);
+				}
+			}
+		}
+	}
+
+	return corpse_array;
+}
+
+inline CorpseArray CorpseSearchSquare(Point16 center, u32 radius) {
+	return CorpseSearchRect({
+		center.x - (s32)radius,
+		center.y - (s32)radius,
+		center.x + (s32)radius,
+		center.y + (s32)radius
+	});
+}
+
+CorpseArray CorpseSearchRadial(Point16 center, u32 radius) {
+	CorpseArray corpse_array = {};
+
+	Box32 dims =
+	{
+		center.x - radius,
+		center.y - radius,
+		center.x + radius,
+		center.y + radius
+	};
+	dims = scbw::clampRect(dims);
+
+	const u32 x1 = dims.left / CELL_PX_SIZE;
+	const u32 y1 = dims.top / CELL_PX_SIZE;
+	const u32 x2 = ceil(dims.right / (f32)CELL_PX_SIZE);
+	const u32 y2 = ceil(dims.bottom / (f32)CELL_PX_SIZE);
+
+	for (u32 x = x1; x < x2; x++)
+	{
+		for (u32 y = y1; y < y2; y++)
+		{
+			// check if tile is worth evaluating
+			CorpseArray* current_array = &corpse_grid[x][y];
+			if (current_array->size)
+			{
+				// check if tile is entirely covered by the area
+				const Point16 tile_center =
+				{
+					x * CELL_PX_SIZE + CELL_PX_SIZE / 2,
+					y * CELL_PX_SIZE + CELL_PX_SIZE / 2
+				};
+				const bool tileIsFullyCovered = scbw::getDistanceFast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
+
+				// check which units are in the area
+				for (u32 i = 0; i < current_array->size; i++)
+				{
+					Thingy* corpse = current_array->corpses[i];
+					if (corpse->sprite->flags & SpriteFlags::Flag04) {
+						continue;
+					}
+					if (!tileIsFullyCovered && scbw::getDistanceFast(center, corpse->sprite->position) > radius)
+					{
+						continue;
+					}
+					CorpseArrayAdd(&corpse_array, corpse);
+				}
+			}
+		}
+	}
+
+	return corpse_array;
 }
 
 void UnitArrayFilter(UnitArray* unit_array, Unit* reference, u32 flags, std::unordered_set<u16> allowed_unit_ids)
@@ -274,9 +393,9 @@ Unit* UnitArrayGetFirst(UnitArray* unit_array, SearchFilterFunc match_func)
 	return nullptr;
 }
 
-void UpdateUnitGrid()
+void UpdateSearchGrid()
 {
-	// Reset
+	// Reset units
 	for (u32 x = 0; x < CELL_COUNT; x++)
 	{
 		for (u32 y = 0; y < CELL_COUNT; y++)
@@ -286,13 +405,67 @@ void UpdateUnitGrid()
 		}
 	}
 
-	// Update
+	// Update units
 	for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 	{
 		u32 x = unit->position.x / 32 / CELL_SIZE;
 		u32 y = unit->position.y / 32 / CELL_SIZE;
 		UnitArray* array = &unit_grid[x][y];
 		UnitArrayAdd(array, unit);
+	}
+
+	// Reset corpses
+	for (u32 x = 0; x < CELL_COUNT; x++)
+	{
+		for (u32 y = 0; y < CELL_COUNT; y++)
+		{
+			CorpseArray* array = &corpse_grid[x][y];
+			array->size = 0;
+		}
+	}
+
+	// Update corpses
+	for (Thingy* thingy = *first_lone_sprite; thingy; thingy = thingy->next)
+	{
+		if (thingy->sprite)
+		{
+			switch (thingy->sprite->spriteId)
+			{
+				case SpriteId::Corpse_Apostle:
+				case SpriteId::Corpse_Aspirant:
+				case SpriteId::Corpse_Bactalisk:
+				case SpriteId::Corpse_Blackjack:
+				case SpriteId::Corpse_Broodling:
+				case SpriteId::Corpse_Cleric:
+				case SpriteId::Corpse_Dracadin:
+				case SpriteId::Corpse_Droleth:
+				case SpriteId::Corpse_Egg:
+				case SpriteId::Corpse_Eidolon:
+				case SpriteId::Corpse_Harakan:
+				case SpriteId::Corpse_Hydralisk:
+				case SpriteId::Corpse_Isthrathaleth:
+				case SpriteId::Corpse_Izirokor:
+				case SpriteId::Corpse_Konvilisk:
+				case SpriteId::Corpse_Lakizilisk:
+				case SpriteId::Corpse_Larva:
+				case SpriteId::Corpse_Maverick:
+				case SpriteId::Corpse_Scribe:
+				case SpriteId::Corpse_Ultrakor:
+				case SpriteId::Corpse_Zergling:
+				case SpriteId::Corpse_TerranBuildingLarge:
+				case SpriteId::Corpse_TerranBuildingSmall:
+				case SpriteId::Corpse_ProtossBuildingLarge:
+				case SpriteId::Corpse_ProtossBuildingSmall:
+				case SpriteId::Corpse_ZergBuildingLarge:
+				case SpriteId::Corpse_ZergBuildingSmall:
+				{
+					u32 x = thingy->sprite->position.x / 32 / CELL_SIZE;
+					u32 y = thingy->sprite->position.y / 32 / CELL_SIZE;
+					CorpseArray* array = &corpse_grid[x][y];
+					CorpseArrayAdd(array, thingy);
+				} break;
+			}
+		}
 	}
 }
 

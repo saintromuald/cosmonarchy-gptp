@@ -89,101 +89,6 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	target->heal(new_heal * 256, shaman);
 }
 
-struct CorpseFinder
-{
-	static bool sortCompareXPos(Thingy* a, Thingy* b)
-	{
-		return a->sprite->position.x > b->sprite->position.x;
-	}
-
-	static bool sortCompareYPos(Thingy* a, Thingy* b)
-	{
-		return a->sprite->position.y > b->sprite->position.y;
-	}
-
-	static bool lowerboundCompareXPos(Thingy* thingy, s32 value)
-	{
-		return thingy->sprite->position.x < value;
-	}
-
-	static bool lowerboundCompareYPos(Thingy* thingy, s32 value)
-	{
-		return thingy->sprite->position.y < value;
-	}
-
-	static std::vector<Thingy*> corpsesX;
-	static std::vector<Thingy*> corpsesY;
-
-	static std::vector<Thingy*> findCorpses(s32 left, s32 top, s32 right, s32 bottom)
-	{
-		auto foundCorpsesXStart = std::lower_bound(corpsesX.begin(), corpsesX.end(), left, lowerboundCompareXPos);
-		auto foundCorpsesXEnd = std::lower_bound(foundCorpsesXStart, corpsesX.end(), right, lowerboundCompareXPos);
-		auto foundCorpsesX = std::vector<Thingy*>(foundCorpsesXStart, foundCorpsesXEnd);
-		std::sort(foundCorpsesX.begin(), foundCorpsesX.end());
-
-		auto foundCorpsesYStart = std::lower_bound(corpsesY.begin(), corpsesY.end(), top, lowerboundCompareYPos);
-		auto foundCorpsesYEnd = std::lower_bound(foundCorpsesYStart, corpsesY.end(), bottom, lowerboundCompareYPos);
-		auto foundCorpsesY = std::vector<Thingy*>(foundCorpsesYStart, foundCorpsesYEnd);
-		std::sort(foundCorpsesY.begin(), foundCorpsesY.end());
-
-		std::vector<Thingy*> foundCorpses(foundCorpsesX.size());
-		auto it = std::set_intersection(foundCorpsesX.begin(), foundCorpsesX.end(), foundCorpsesY.begin(), foundCorpsesY.end(), foundCorpses.begin());
-		foundCorpses.resize(it - foundCorpses.begin());
-		return foundCorpses;
-	}
-
-	static void findCorpses()
-	{
-		corpsesX.clear();
-		corpsesY.clear();
-		for (Thingy* ls = *first_lone_sprite; ls; ls = ls->next)
-		{
-			if (ls->sprite)
-			{
-				switch (ls->sprite->spriteId)
-				{
-					case SpriteId::Corpse_Apostle:
-					case SpriteId::Corpse_Aspirant:
-					case SpriteId::Corpse_Bactalisk:
-					case SpriteId::Corpse_Blackjack:
-					case SpriteId::Corpse_Broodling:
-					case SpriteId::Corpse_Cleric:
-					case SpriteId::Corpse_Dracadin:
-					case SpriteId::Corpse_Droleth:
-					case SpriteId::Corpse_Egg:
-					case SpriteId::Corpse_Eidolon:
-					case SpriteId::Corpse_Harakan:
-					case SpriteId::Corpse_Hydralisk:
-					case SpriteId::Corpse_Isthrathaleth:
-					case SpriteId::Corpse_Izirokor:
-					case SpriteId::Corpse_Konvilisk:
-					case SpriteId::Corpse_Lakizilisk:
-					case SpriteId::Corpse_Larva:
-					case SpriteId::Corpse_Maverick:
-					case SpriteId::Corpse_Scribe:
-					case SpriteId::Corpse_Ultrakor:
-					case SpriteId::Corpse_Zergling:
-					case SpriteId::Corpse_TerranBuildingLarge:
-					case SpriteId::Corpse_TerranBuildingSmall:
-					case SpriteId::Corpse_ProtossBuildingLarge:
-					case SpriteId::Corpse_ProtossBuildingSmall:
-					case SpriteId::Corpse_ZergBuildingLarge:
-					case SpriteId::Corpse_ZergBuildingSmall:
-					{
-						corpsesX.push_back(ls);
-						corpsesY.push_back(ls);
-					} break;
-				}
-			}
-		}
-		std::sort(corpsesX.begin(), corpsesX.end(), sortCompareXPos);
-		std::sort(corpsesY.begin(), corpsesY.end(), sortCompareYPos);
-	}
-};
-
-std::vector<Thingy*> CorpseFinder::corpsesX;
-std::vector<Thingy*> CorpseFinder::corpsesY;
-
 namespace hooks
 {
 	void tickUnit(Unit* unit);
@@ -333,7 +238,7 @@ namespace hooks
 				raceSupply[RaceId::Terran].provided[i] = 60000;
 			}
 
-			UpdateUnitGrid();
+			UpdateSearchGrid();
 
 			scbw::setInGameLoopState(true); // Needed for scbw::random() to work
 			graphics::resetAllGraphics();
@@ -374,9 +279,6 @@ namespace hooks
 					}
 				}
 			}
-
-			// Find corpses
-			CorpseFinder::findCorpses();
 
 			// Loop through all visible units in the game.
 			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
@@ -530,15 +432,11 @@ namespace hooks
 				// Zoryusthaleth - Reconstitution
 				if (unitExt->timers[TimerReconstitutionCooldown] == 0)
 				{
-					auto radius = 160;
-					std::vector<Thingy*> corpseList = CorpseFinder::findCorpses(
-						unit->position.x - radius,
-						unit->position.y - radius,
-						unit->position.x + radius,
-						unit->position.y + radius
-					);
-					for (auto corpse : corpseList)
+					u32 radius = 5 * 32;
+					CorpseArray corpses = CorpseSearchRadial(unit->position, radius);
+					for (u32 i = 0; i < corpses.size; ++i)
 					{
+						Thingy* corpse = corpses.corpses[i];
 						if (unit->energy < 5 * 256)
 						{
 							break;
@@ -548,20 +446,14 @@ namespace hooks
 							continue;
 						}
 						unit->spendUnitEnergy(5 * 256);
-						scbw::UnitFinder(
-							unit->getX() - radius,
-							unit->getY() - radius,
-							unit->getX() + radius,
-							unit->getY() + radius
-						).forEach([&](Unit* target)
-						{
-							if (!(scbw::isAlliedTo(target->playerId, unit->playerId)))
-							{
-								return;
-							}
+
+						UnitArray targets = UnitSearchRadial(unit->position, radius);
+						UnitArrayFilter(&targets, unit, FilterAlly);
+						for (u32 i = 0; i < targets.size; ++i) {
+							Unit* target = targets.units[i];
 							target->heal(ZoryusthalethReconstitutionHealing, unit);
 							//scbw::createAndInitThingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
-						});
+						}
 						scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
 						corpse->sprite->flags |= SpriteFlags::Flag04;
 						corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
@@ -576,12 +468,11 @@ namespace hooks
 				unit->updateSpeed();
 
 				// Corpse Cocoon
-				std::vector<Thingy*> corpses = CorpseFinder::findCorpses(unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom());
-				for (Thingy* corpse : corpses) {
+				CorpseArray corpses = CorpseSearchRect({unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom()});
+				for (u32 i = 0; i < corpses.size; ++i) {
+					Thingy* corpse = corpses.corpses[i];
 					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
-						corpse->sprite->flags |= SpriteFlags::Flag04;
-						corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
-						Unit* egg = scbw::createUnitInGame(UnitId::ZergEgg, unit->playerId, unit->position.x, unit->position.y, unit);
+						Unit* egg = scbw::createUnitInGame(UnitId::ZergEgg, unit->playerId, corpse->sprite->position.x, corpse->sprite->position.y, unit);
 						if (egg) {
 							egg->sprite->playIscriptAnim(IscriptAnimation::Walking, true);
 							egg->buildQueue[egg->buildQueueSlot] = UnitId::ZergSovroleth;
@@ -589,6 +480,8 @@ namespace hooks
 							UnitExt* eggExt = globals.get_unit_ext(egg);
 							eggExt->timers[TimerCorpseCocoonHatch] = 2 * 24;
 						}
+						corpse->sprite->flags |= SpriteFlags::Flag04;
+						corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
 					}
 				}
 			} break;

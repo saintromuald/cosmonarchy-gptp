@@ -41,10 +41,18 @@ struct UnitArray
 	Unit* units[1700];
 };
 
-inline UnitArray UnitArrayDuplicate(UnitArray* array);
+struct CorpseArray {
+	u32 size;
+	Thingy* corpses[1700];
+};
+
 inline void UnitArrayAdd(UnitArray* array, Unit* unit);
 inline void UnitArrayRemoveFast(UnitArray* array, u32 index); // won't preserve order, will swap with last element
 inline void UnitArrayRemove(UnitArray* array, u32 index); // will preserve order
+
+inline void CorpseArrayAdd(CorpseArray* array, Thingy* unit);
+inline void CorpseArrayRemoveFast(CorpseArray* array, u32 index); // won't preserve order, will swap with last element
+inline void CorpseArrayRemove(CorpseArray* array, u32 index); // will preserve order
 
 // NOTES:
 // not a fan of using an STL container, but we already have that dependency in the code base
@@ -53,8 +61,12 @@ inline void UnitArrayRemove(UnitArray* array, u32 index); // will preserve order
 using SearchFilterFunc = std::function<bool(Unit*)>;
 using SearchScoreFunc = std::function<u32(Unit*)>;
 UnitArray UnitSearchRect(Box32 rect);
-UnitArray UnitSearchRadial(Point16 center, u32 radius);
 inline UnitArray UnitSearchSquare(Point16 center, u32 radius);
+UnitArray UnitSearchRadial(Point16 center, u32 radius);
+
+CorpseArray CorpseSearchRect(Box32 rect);
+inline CorpseArray CorpseSearchSquare(Point16 center, u32 radius);
+CorpseArray CorpseSearchRadial(Point16 center, u32 radius);
 
 void UnitArrayFilter(UnitArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, prefer sorting after filter
 void UnitArrayCustomFilter(UnitArray* unit_array, SearchFilterFunc filter); // will break ordering, prefer sorting after filter
@@ -64,7 +76,7 @@ Unit* UnitArrayFindBest(UnitArray* unit_array, SearchScoreFunc score_func = null
 Unit* UnitArrayGetFirst(UnitArray* unit_array, SearchFilterFunc match_func = nullptr); // defaults to no check
 bool UnitFlagMatch(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids);
 
-void UpdateUnitGrid(); // must be done once per frame
+void UpdateSearchGrid(); // must be done once per frame
 
 inline bool IsPointInRect(Point16 point, Box32 rect);
 inline bool IsRectInRect(Box32 inner, Box32 outer);

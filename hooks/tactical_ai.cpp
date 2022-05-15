@@ -881,7 +881,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 
 		UnitArray allies = UnitSearchSquare(unit->position, unit->getSightRange(false) * 32);
 		UnitArraySortByDistance(&allies, unit->position);
-		UnitArray enemies = UnitArrayDuplicate(&allies);
+		UnitArray enemies = allies;
 		UnitArrayFilter(&allies, unit, FilterAlly);
 		UnitArrayFilter(&enemies, unit, unit->playerId == 11 ? 0 : FilterEnemy);
 
