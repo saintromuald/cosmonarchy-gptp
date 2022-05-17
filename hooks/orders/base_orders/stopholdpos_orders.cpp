@@ -9,7 +9,7 @@ namespace hooks
 		if (unit->mainOrderState == 0)
 		{
 			//change move target destination to current position
-			helper::setNextWaypoint(unit);
+			helper::set_resource_target(unit);
 			if (
 				unit->nextTargetWaypoint.x != unit->moveTarget.pt.x ||
 				unit->nextTargetWaypoint.y != unit->moveTarget.pt.y
@@ -103,7 +103,7 @@ namespace hooks
 		Point16 pos;
 
 		//change move target destination to current position
-		helper::setNextWaypoint(unit);
+		helper::set_resource_target(unit);
 
 		if (
 			unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||

@@ -197,7 +197,7 @@ namespace hooks
 			if (scbw::checkUnitCollisionPos(unitInfesting, &unitInfesting->sprite->position, &actualpos))
 			{
 				scbw::setUnitPosition(unitInfesting, actualpos.x, actualpos.y);
-				helper::makeToHoldPosition(unitInfesting);
+				helper::make_to_hold_position(unitInfesting);
 				helper::show_and_enable_unit(unitInfesting);
 
 				if (unitInfesting->orderQueueHead == nullptr)
@@ -237,7 +237,7 @@ namespace hooks
 			if (!bStopFunction)
 			{ // EA377
 				// "move to invalid target" logic...I think
-				helper::setNextWaypoint(unitInfesting);
+				helper::set_resource_target(unitInfesting);
 				if (unitInfesting->moveTarget.pt.x != unitInfesting->nextTargetWaypoint.x
 					|| unitInfesting->moveTarget.pt.y != unitInfesting->nextTargetWaypoint.y)
 				{

@@ -164,7 +164,7 @@ enum Enum {
 					* Default Requirements: Unit must be Hatchery/Lair/Hive. */
 	Harvest1               = 0x4F, /**< Generic move to harvest order.
 					* Default Requirements: Unit must be a Worker (has harvest orders). */
-	Harvest2               = 0x50, /**< Move to harvest shrouded minerals/gas
+	MoveToHarvestObscured  = 0x50, /**< Move to harvest shrouded minerals/gas
 					* Default Requirements: Unit must be a Worker (has harvest orders). */
 	HarvestGas1            = 0x51, /**< Move to harvest gas.
 					* Default Requirements: Unit must be a Worker (has harvest orders). */

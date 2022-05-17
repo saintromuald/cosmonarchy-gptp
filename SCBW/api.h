@@ -312,7 +312,7 @@ namespace scbw
 	/*void set_generic_timer(Unit* u, u32 id, u32 val);
 
 	void add_generic_value(Unit* u, u32 id, s32 val);*/
-	void makeToHoldPosition(Unit* unit);
+	void make_to_hold_position(Unit* unit);
 
 	void sendGPTP_aise_cmd(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
 	/// Checks whether the @p playerId has the @p techId researched.

@@ -57,7 +57,7 @@ namespace hooks
 					helper::setUnitStatTxtErrorMsg((s32) string);
 				}
 			}
-			helper::toIdle(caster);
+			helper::to_idle(caster);
 			return 0;
 		}
 
@@ -236,7 +236,7 @@ namespace hooks
 				// do the actual transmission corresponding to the message
 				helper::get_statTxt_Str_0(unit, unit->playerId, message);
 				// make the unit stop since the order failed
-				helper::setNextWaypoint(unit);
+				helper::set_resource_target(unit);
 				unit->orderToIdle();
 			}
 			else // 0049291A

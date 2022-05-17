@@ -142,7 +142,7 @@ namespace hooks
 		{	//conditions for merge not ok
 
 	 //94838
-			helper::setNextWaypoint(unit);
+			helper::set_resource_target(unit);
 
 			if (
 				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
@@ -209,7 +209,7 @@ namespace hooks
 												//unit unmovable			
 				if (unit->mainOrderState != 0 && unit->getMovableState() == 2)
 				{
-					helper::makeToHoldPosition(unit);
+					helper::make_to_hold_position(unit);
 					unit->orderToIdle();
 				}
 				else
@@ -342,7 +342,7 @@ namespace hooks
 		{	//conditions for merge not ok
 
 	 //94A3F
-			helper::setNextWaypoint(unit);
+			helper::set_resource_target(unit);
 
 			if (
 				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
@@ -408,7 +408,7 @@ namespace hooks
 												//unit unmovable
 				if (unit->mainOrderState != 0 && unit->getMovableState() == 2)
 				{
-					helper::makeToHoldPosition(unit);
+					helper::make_to_hold_position(unit);
 					unit->orderToIdle();
 				}
 				else

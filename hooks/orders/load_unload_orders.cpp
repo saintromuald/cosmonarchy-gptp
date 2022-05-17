@@ -121,7 +121,7 @@ namespace hooks
 							}
 							else
 							{
-								helper::makeToHoldPosition(unit);
+								helper::make_to_hold_position(unit);
 								if (unitToLoad->mainOrderId != OrderId::EnterTransport
 									&& unitToLoad->mainOrderId != OrderId::Pickup4)
 								{
@@ -283,7 +283,7 @@ namespace hooks
 				if (!helper::Ai_FindTransport(unitVar, &unitVar->orderTarget.unit))
 				{
 					scbw::print("toIdle / return");
-					helper::toIdle(unitVar);
+					helper::to_idle(unitVar);
 					return;
 				}
 				orderTarget = *orderTargetOffset;

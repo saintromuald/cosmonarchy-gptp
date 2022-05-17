@@ -15,7 +15,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::moveToTarget(target, unit);
+		result = hooks::move_to_target(target, unit);
 		__asm
 		{
 			POPAD

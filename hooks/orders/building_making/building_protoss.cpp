@@ -41,7 +41,7 @@ namespace hooks
 			}
 			else // 004E4DA9
 			{
-				helper::makeToHoldPosition(unit);
+				helper::make_to_hold_position(unit);
 				unit->mainOrderState = 2;
 			}
 		}
