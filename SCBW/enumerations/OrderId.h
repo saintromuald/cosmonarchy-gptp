@@ -168,7 +168,7 @@ enum Enum {
 					* Default Requirements: Unit must be a Worker (has harvest orders). */
 	HarvestGas1            = 0x51, /**< Move to harvest gas.
 					* Default Requirements: Unit must be a Worker (has harvest orders). */
-	HarvestGas2            = 0x52, /**< Check if it can enter the gas mine(no unit in it).
+	CanEnterGasMine        = 0x52, /**< Check if it can enter the gas mine (no unit in it).
 					* Default Requirements: Unit must be a Worker (has harvest orders). */
 	HarvestGas3            = 0x53, /**< Enter/exit mine, set return order.
 					* Default Requirements: Unused. */
@@ -176,13 +176,13 @@ enum Enum {
 					* Default Requirements: Unit must be a Worker (has harvest orders). */
 	MoveToMinerals         = 0x55, /**< Move to harvest minerals.
 					* Default Requirements: Unit must be a Worker (has harvest orders). */
-	HarvestMinerals2       = 0x56, /**< Can harvest minerals(one unit per field).
+	CanHarvestOre	       = 0x56, /**< Can harvest minerals(one unit per field).
 					* Default Requirements: Unit must be a Worker (has harvest orders). */
 	MiningMinerals         = 0x57, /**< Harvesting minerals. Runs iscript to spawn weapon.
 					* Default Requirements: Unused. */
 	HarvestInterrupt       = 0x58, /**< Harvesting minerals is interrupted.
 					* Default Requirements: Unused. */
-	Harvest4               = 0x59, /**< Unknown harvest command.
+	HarvestFinish          = 0x59, /**< Unknown harvest command.
 					* Default Requirements: Unused. */
 	ReturnMinerals         = 0x5A, /**< Return resources /B Has minerals.
 					* Default Requirements: Unit must be a Worker (has harvest orders). */

@@ -31,7 +31,7 @@ namespace AI
 
 		//Target is a worker inside a gas building
 		if (target->mainOrderId == OrderId::HarvestGas1
-			|| target->mainOrderId == OrderId::HarvestGas2
+			|| target->mainOrderId == OrderId::CanEnterGasMine
 			|| target->mainOrderId == OrderId::HarvestGas3)
 			return false;
 

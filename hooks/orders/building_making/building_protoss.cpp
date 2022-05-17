@@ -124,7 +124,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->orderTo(OrderId::HarvestGas2, target);
+				unit->orderTo(OrderId::CanEnterGasMine, target);
 			}
 			current_image = unit->sprite->images.head;
 			while (current_image != nullptr)

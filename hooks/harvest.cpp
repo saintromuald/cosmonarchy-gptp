@@ -212,11 +212,11 @@ namespace hooks
 						{
 							helper::order_targeting_nothing(resource_return_order, unit, 0);
 						}
-						else if (unit->orderQueueHead->orderId == OrderId::Harvest4)
+						else if (unit->orderQueueHead->orderId == OrderId::HarvestFinish)
 						{
-							// Fix Harvest4 order freeze during Vespene Geyser mining
+							// Fix HarvestFinish order freeze during Vespene Geyser mining
 							// May cause issues if this is actually used for something important.
-							// By the time units have Harvest4 when harvesting from geysers, they no longer have a resource target. We could check for resource link instead...
+							// By the time units have HarvestFinish when harvesting from geysers, they no longer have a resource target. We could check for resource link instead...
 							unit->orderQueueHead->orderId = resource_return_order;
 						}
 						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::ResetCollision2);
@@ -394,7 +394,7 @@ namespace hooks
 		worker->worker.harvest_target = node;
 
 		u8 harvest_order_id = OrderId::HarvestGas3;
-		if (worker->mainOrderId != OrderId::HarvestGas2)
+		if (worker->mainOrderId != OrderId::CanEnterGasMine)
 		{
 			harvest_order_id = OrderId::MiningMinerals;
 		}
@@ -418,5 +418,60 @@ namespace hooks
 			}
 		}
 		return 1;
+	}
+
+	// Hooked to triage issues with the vespene rework. -Pr0nogo
+	Unit* let_next_unit_mine(Unit* worker) // 00468970
+	{
+		Unit* previous_worker;
+		Unit* previous_worker_var;
+		DWORD previous_status;
+		char previous_order_id;
+		Unit* previous_previous_worker;
+		Unit* previous_next_worker;
+
+		previous_worker = worker->worker.harvest_link.prev;
+		previous_worker_var = 0;
+		if (previous_worker)
+		{
+			do
+			{
+				previous_status = previous_worker->status;
+				if (!(previous_status & 0x400) // Replace this whole if with an is_disabled check, or whatever it's called
+				&&   !previous_worker->lockdownTimer
+				&&   !previous_worker->stasisTimer
+				&&   !previous_worker->maelstromTimer)
+				{
+					previous_order_id = previous_worker->mainOrderId;
+					if (previous_order_id == OrderId::CanEnterGasMine || previous_order_id == OrderId::CanHarvestOre)
+					{
+						previous_worker_var = previous_worker;
+					}
+				}
+				previous_worker = previous_worker->worker.harvest_link.next;
+			} while (previous_worker);
+			if (previous_worker_var)
+			{
+				previous_previous_worker = previous_worker_var->worker.harvest_link.prev;
+				if (previous_previous_worker)
+				{
+					previous_previous_worker->worker.harvest_link.next = previous_worker_var->worker.harvest_link.next;
+				}
+				else
+				{
+					worker->worker.harvest_link.prev = previous_worker_var->worker.harvest_link.next;
+				}
+				previous_next_worker = previous_worker_var->worker.harvest_link.next;
+				if (previous_next_worker)
+				{
+					previous_next_worker->worker.harvest_link.prev= previous_worker_var->worker.harvest_link.prev;
+				}
+				previous_worker_var->worker.harvest_link.prev = 0;
+				previous_worker_var->worker.harvest_link.next = 0;
+				previous_worker_var->worker.harvest_target = 0;
+				helper::delete_order(previous_worker_var, OrderId::HarvestFinish);
+			}
+		}
+		return previous_worker_var;
 	}
 }
