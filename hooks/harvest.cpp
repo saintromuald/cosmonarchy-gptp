@@ -473,7 +473,7 @@ namespace hooks
 
 	// Single-case hook of orders_entries to fix order delay on workers harvesting from vespene geysers. -Pr0nogo
 	// Also used for OrderId::Harvest1
-	void orders_entries_move_to_harvest_obscured(Unit* worker) { // 00469503
+	void orders_entries_move_to_harvest_obscured(Unit* worker) { // 00469500
 		if (worker->resourceType && !(worker->resourceType & ResourceType::Either)) {
 			helper::set_resource_target(worker);
 			u32 fixed_x = worker->moveTarget.pt.x;
