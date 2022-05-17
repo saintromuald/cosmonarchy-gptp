@@ -703,13 +703,13 @@ namespace hooks
 
 	void __declspec(naked) transform_unit_main_Wrapper() { // 0049F170
 		static Unit* unit;
-		static u32 unit_id;
+		static u8 unit_id;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV unit_id, EAX
+			MOV unit_id, AL
 			POP EAX
 			MOV unit, EAX
 			PUSHAD
