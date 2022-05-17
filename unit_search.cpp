@@ -354,17 +354,17 @@ void UnitArraySortByDistance(UnitArray* unit_array, Point16 center)
 
 Unit* UnitArrayFindBest(UnitArray* unit_array, SearchScoreFunc score_func)
 {
-	u32 best_score;
-	Unit* best_unit = nullptr;
+	s32 best_score = ScoreInvalidUnit;
+	Unit* best_unit = 0;
 
 	for (u32 i = 0; i < unit_array->size; i++)
 	{
-		Unit* new_unit = unit_array->units[i];
-		u32 new_score = score_func(new_unit);
-		if (!best_unit || new_score > best_score)
+		Unit* unit = unit_array->units[i];
+		s32 score = score_func(unit);
+		if (score > best_score)
 		{
-			best_unit = new_unit;
-			best_score = new_score;
+			best_unit = unit;
+			best_score = score;
 		}
 	}
 

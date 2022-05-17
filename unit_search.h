@@ -35,6 +35,8 @@ enum SearchFilter
 	FilterBuilding			= 1 << 25,
 };
 
+#define ScoreInvalidUnit INT_MIN
+
 struct UnitArray
 {
 	u32 size;
@@ -59,7 +61,7 @@ inline void CorpseArrayRemove(CorpseArray* array, u32 index); // will preserve o
 // also not sure how I would handle variadic argument like that, without refactoring everything that exists in this project
 // optional allowance of lambdas is pretty handy, since most of behaviors need adhoc adjustments
 using SearchFilterFunc = std::function<bool(Unit*)>;
-using SearchScoreFunc = std::function<u32(Unit*)>;
+using SearchScoreFunc = std::function<s32(Unit*)>;
 UnitArray UnitSearchRect(Box32 rect);
 inline UnitArray UnitSearchSquare(Point16 center, u32 radius);
 UnitArray UnitSearchRadial(Point16 center, u32 radius);

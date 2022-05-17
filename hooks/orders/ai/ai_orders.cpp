@@ -1608,8 +1608,23 @@ LABEL_21:
 
 
 	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
-	Unit* AI_find_best_repair_unit(Unit* unit) { // 00443160
-		return unit;
+	Unit* AI_find_best_repair_unit(Unit* to_repair) { // 00443160
+
+		UnitArray workers = UnitSearchRadial(to_repair->position, 64 * 32);
+		UnitArrayFilter(&workers, to_repair, FilterAlly, {UnitId::TerranMason, UnitId::TerranTalos});
+		Unit* best = UnitArrayFindBest(&workers, [=](Unit* worker) {
+			if (!worker->hasPathToUnit(to_repair) ||
+				worker->orderTarget.unit == to_repair ||
+				!helper::isOrderValid(OrderId::Repair1, worker, 0, to_repair, 0)) {
+				return ScoreInvalidUnit;
+			}
+			s32 score = 0;
+			score -= scbw::getDistanceFast(worker->position, to_repair->position);
+			if (worker->id == UnitId::TerranTalos) {
+				score += 1000;
+			}
+		});
+		return best;
 	}
 
 	// Same as above. -Pr0nogo
