@@ -30,6 +30,7 @@ namespace hooks
 	u8 ai_get_build_order_id(Unit* unit);																				// 00434C31
 
 	Unit* AI_find_best_repair_unit(Unit* unit);																			// 00443160
+	s32 AI_SCV_repair_controller(Unit* repairer, AiTown* town);															// 00433C70
 
 	void injectAIOrdersHooks();
 }

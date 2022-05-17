@@ -1625,4 +1625,102 @@ LABEL_21:
 		});
 		return best;
 	}
+
+	// Same as above. -Pr0nogo
+	s32 AI_SCV_repair_controller(Unit* repairer, AiTown* town) // 00433C70
+	{
+		Order* order_tail;
+		unsigned __int8 order_id;
+
+		BuildingAi* building_ai = town->buildings;
+		u32 zero = 0;
+		Unit* repairee = 0;
+		if (!building_ai)
+		{
+			goto LABEL_14;
+		}
+		Unit* potential_repairee = 0;
+		while (1)
+		{
+			potential_repairee = building_ai->parent;
+			if (potential_repairee->connectedUnit || !helper::AI_is_building_safe(potential_repairee))
+			{
+				goto LABEL_10;
+			}
+			if (!(potential_repairee->status & UnitStatus::Completed))
+			{
+				break;
+			}
+			s32 hp_calc = units_dat::MaxHitPoints[potential_repairee->id] >> 8;
+			if (!hp_calc)
+			{
+				hp_calc = (potential_repairee->hitPoints + 255) >> 8;
+				if (!hp_calc)
+				{
+					hp_calc = 1;
+				}
+			}
+			u32 hp_calc_2 = hp_calc - ((potential_repairee->hitPoints + 255) >> 8);
+			if (zero < hp_calc_2)
+			{
+				repairee = potential_repairee;
+				zero = hp_calc_2;
+			}
+		LABEL_10:
+			building_ai = building_ai->link.prev;
+			if (!building_ai)
+			{
+				goto LABEL_13;
+			}
+		}
+		repairee = potential_repairee;
+	LABEL_13:
+		if (!repairee)
+		{
+		LABEL_14:
+			if (!town->building_SCV)
+			{
+				town->building_SCV = repairer;
+			}
+			if (town->building_SCV != repairer)
+			{
+				return 0;
+			}
+			repairee = helper::AI_find_best_repair_unit(repairer);
+			if (!repairee)
+			{
+				return 0;
+			}
+		}
+		repairer->userActionFlags |= 1u;
+		Point16* repairee_pos = 0;
+		if (repairee)
+		{
+			repairee_pos = &repairee->sprite->position; // IDA didn't need &
+		}
+		if (repairer->mainOrderId)
+		{
+			while (1)
+			{
+				order_tail = repairer->orderQueueTail;
+				if (!order_tail)
+				{
+					break;
+				}
+				order_id = order_tail->orderId;
+				if (!orders_dat::CanBeInterrupted[order_id] && order_id != OrderId::Repair1)
+				{
+					break;
+				}
+				helper::remove_order_from_unit_queue(order_tail, repairer);
+			}
+			Vector32* final_pos = {};
+			final_pos->x = repairee_pos->x;
+			final_pos->y = repairee_pos->y;
+			helper::perform_another_order(OrderId::Repair1, 0, repairer, UnitId::None, final_pos, repairee);
+		}
+		helper::orders_nothing_2(repairer);
+		repairee->connectedUnit = repairer;
+		return 1;
+	}
 }
