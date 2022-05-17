@@ -503,7 +503,7 @@ namespace hooks
 					} else if (worker->resourceType & ResourceType::VespeneGas) {
 						helper::issue_order_targeting_nothing(worker, OrderId::ReturnGas);
 					} else {
-						helper::prepend_order_targeting_unit(target, worker, OrderId::CanEnterGasMine);
+						helper::prepend_order_targeting_unit(worker, target, OrderId::CanEnterGasMine);
 						helper::to_idle(worker);
 					}
 					return;
