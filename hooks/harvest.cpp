@@ -274,9 +274,7 @@ namespace hooks
 			&& valid_structure
 			&& (unit->resourceType == ResourceType::None || unit->resourceType & ResourceType::Either))
 		{
-			//if (node->id == UnitId::ResourceVespeneGeyser && unit->mainOrderState == 2) {
-			//	unit->mainOrderState = 0;
-			//}
+			helper::turnUnit(unit, scbw::getAngle(unit->position, node->position));
 			if (!unit->mainOrderState) {
 				helper::Order_BeginHarvest(node, unit);
 			}

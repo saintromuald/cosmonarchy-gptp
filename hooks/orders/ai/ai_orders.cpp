@@ -1590,6 +1590,23 @@ LABEL_21:
 		}
 	}
 
+	u8 ai_get_build_order_id(Unit* unit) { // 00434C31
+		switch (unit->id) {
+			case UnitId::TerranMason:
+			case UnitId::TerranTalos: {
+				return OrderId::BuildTerran;
+			} break;
+			case UnitId::ZergDroleth: {
+				return OrderId::DroneStartBuild;
+			} break;
+			case UnitId::ProtossScribe: {
+				return OrderId::BuildProtoss1;
+			} break;
+		}
+		return OrderId::None;
+	}
+
+
 	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
 	Unit* AI_find_best_repair_unit(Unit* unit) { // 00443160
 		return unit;

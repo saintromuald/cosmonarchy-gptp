@@ -463,6 +463,31 @@ namespace
 		}
 	}
 
+	void __declspec(naked) ai_get_build_order_id_wrapper() { // 00434C31
+		static Unit* unit;
+		static u8 order_id;
+		_asm {
+			MOV unit, EDI
+			PUSHAD
+		}
+		order_id = hooks::ai_get_build_order_id(unit);
+		if (order_id != OrderId::None) {
+			static u32 jmp_address = 0x00434C53;
+			__asm {
+				POPAD
+				MOV AL, order_id
+				JMP jmp_address
+			}
+		} else {
+			static u32 jmp_address = 0x00434C80;
+			__asm {
+				POPAD
+				JMP jmp_address
+			}
+		}
+	}
+
+
 	void __declspec(naked) AI_find_best_repair_unit_wrapper() { // 00443160
 		static Unit* result;
 		static Unit* unit;
@@ -476,7 +501,6 @@ namespace
 			MOV EAX, result
 			RETN
 		}
-
 	}
 }
 
@@ -510,8 +534,12 @@ namespace hooks
 		jmpPatch(AI_reassign_worker_resources_Wrapper,		0x00435900, 1);
 		jmpPatch(AI_auto_harvest_Wrapper,					0x00433B90, 1);
 
+<<<<<<< HEAD
 		jmpPatch(AI_find_best_repair_unit_wrapper,			0x00443160, 1);
 
+=======
+		jmpPatch(ai_get_build_order_id_wrapper,				0x00434C31, 0);
+>>>>>>> f7232e7eca96e35ad2b609bbbfb0b8a3918b8cb2
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}
 }
