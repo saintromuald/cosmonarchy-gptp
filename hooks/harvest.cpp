@@ -441,6 +441,9 @@ namespace hooks
 					final_worker = worker;
 				}
 			}
+			if (worker == worker->worker.harvest_link.next) {
+				break; // This is a bandage fix for harvest_link recursing indefinitely  TODO: Fix the actual cause
+			}
 			worker = worker->worker.harvest_link.next;
 		}
 
