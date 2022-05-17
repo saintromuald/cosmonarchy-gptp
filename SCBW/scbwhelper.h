@@ -1264,4 +1264,6 @@ namespace helper
 
 	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker);												// 00468930
 	void prepend_order(Unit* unit, u8 order_id, Point16 target_pos, Unit* target_unit);						// 00474AF0
+	bool AI_is_building_safe(Unit* building);																// 00438910
+	Unit* AI_find_best_repair_unit(Unit* unit);																// 00443160
 }

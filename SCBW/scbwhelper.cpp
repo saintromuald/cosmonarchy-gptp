@@ -11677,4 +11677,30 @@ namespace helper
 			POPAD
 		}
 	}
+
+	bool AI_is_building_safe(Unit* building) {
+		static bool result;
+		const u32 func_address = 0x00438910;
+		__asm {
+			PUSHAD
+			MOV ESI, building
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* AI_find_best_repair_unit(Unit* unit) {
+		static Unit* result;
+		const u32 func_address = 0x00443160;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
