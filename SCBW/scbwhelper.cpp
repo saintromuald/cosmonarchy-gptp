@@ -4272,7 +4272,7 @@ namespace helper
 		}
 	}
 
-	Order* perform_another_order(u8 a1, s32 a2, Unit* a3, s16 a4, Vector32* a5, Unit* a6)
+	Order* perform_another_order(u8 a1, s32 a2, Unit* a3, s16 a4, Point16 a5, Unit* a6)
 	{
 		const u32 Func_performAnotherOrder = 0x004745F0;
 		static Order* result;

@@ -1568,7 +1568,7 @@ LABEL_21:
 					}
 					helper::remove_order_from_unit_queue(worker->orderQueueTail, worker);
 				}
-				helper::perform_another_order(OrderId::ReturnMinerals, 0, worker, 228, 0, 0);
+				helper::perform_another_order(OrderId::ReturnMinerals, 0, worker, 228, {}, 0);
 			}
 			helper::orders_nothing_2(worker);
 		}
@@ -1608,17 +1608,18 @@ LABEL_21:
 
 
 	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
-	Unit* AI_find_best_repair_unit(Unit* target) { // 00443160
-		UnitArray workers = UnitSearchRadial(target->position, 64 * 32);
-		UnitArrayFilter(&workers, target, FilterAlly, {UnitId::TerranMason, UnitId::TerranTalos});
+	Unit* AI_find_best_repair_unit(Unit* to_repair) { // 00443160
+		UnitArray workers = UnitSearchRadial(to_repair->position, 64 * 32);
+		UnitArrayFilter(&workers, to_repair, FilterAlly, {UnitId::TerranMason, UnitId::TerranTalos});
 		Unit* best = UnitArrayFindBest(&workers, [=](Unit* worker) {
-			if (!worker->hasPathToUnit(target) ||
-				target->orderTarget.unit == worker ||
-				!helper::isOrderValid(OrderId::Repair1, worker, 0, target, 0)) {
+			if (!worker->hasPathToUnit(to_repair) ||
+				to_repair->orderTarget.unit == worker ||
+				scbw::isAlliedTo(worker->playerId, to_repair->playerId) ||
+				!helper::isOrderValid(OrderId::Repair1, worker, 0, to_repair, 0)) {
 				return ScoreInvalidUnit;
 			}
 			s32 score = 0;
-			score -= scbw::getDistanceFast(worker->position, target->position);
+			score -= scbw::getDistanceFast(worker->position, to_repair->position);
 			if (worker->id == UnitId::TerranTalos) {
 				score += 1000;
 			}
@@ -1627,100 +1628,66 @@ LABEL_21:
 	}
 
 	// Same as above. -Pr0nogo
-	s32 AI_SCV_repair_controller(Unit* repairer, AiTown* town) // 00433C70
+	s32 AI_SCV_repair_controller(Unit* worker, AiTown* town) // 00433C70
 	{
-		Order* order_tail;
-		unsigned __int8 order_id;
-
-		BuildingAi* building_ai = town->buildings;
-		u32 zero = 0;
+		u32 best_score = 0;
 		Unit* repairee = 0;
-		if (!building_ai)
+		for (BuildingAi* building_ai = town->buildings; building_ai; building_ai = building_ai->link.prev)
 		{
-			goto LABEL_14;
-		}
-		Unit* potential_repairee = 0;
-		while (1)
-		{
-			potential_repairee = building_ai->parent;
-			if (potential_repairee->connectedUnit || !helper::AI_is_building_safe(potential_repairee))
+			Unit* building = building_ai->parent;
+			if (building->connectedUnit || !helper::AI_is_building_safe(building))
 			{
-				goto LABEL_10;
+				continue;
 			}
-			if (!(potential_repairee->status & UnitStatus::Completed))
+			if (!(building->status & UnitStatus::Completed))
 			{
-				break;
+				continue; // Used to break, but it should actually continue. unless the building list is sorted a particular way, which allows to break early...?
 			}
-			s32 hp_calc = units_dat::MaxHitPoints[potential_repairee->id] >> 8;
-			if (!hp_calc)
+			s32 max_hp = units_dat::MaxHitPoints[building->id] / 256;
+			if (!max_hp)
 			{
-				hp_calc = (potential_repairee->hitPoints + 255) >> 8;
-				if (!hp_calc)
+				max_hp = (building->hitPoints + 255) / 256;
+				if (!max_hp)
 				{
-					hp_calc = 1;
+					max_hp = 1;
 				}
 			}
-			u32 hp_calc_2 = hp_calc - ((potential_repairee->hitPoints + 255) >> 8);
-			if (zero < hp_calc_2)
+			u32 score = max_hp - ((building->hitPoints + 255) / 256);
+			if (best_score < score)
 			{
-				repairee = potential_repairee;
-				zero = hp_calc_2;
-			}
-		LABEL_10:
-			building_ai = building_ai->link.prev;
-			if (!building_ai)
-			{
-				goto LABEL_13;
+				repairee = building;
+				best_score = score;
 			}
 		}
-		repairee = potential_repairee;
-	LABEL_13:
-		if (!repairee)
+		if (!town->buildings || !repairee)
 		{
-		LABEL_14:
-			if (!town->building_SCV)
-			{
-				town->building_SCV = repairer;
+			if (!town->building_SCV) {
+				town->building_SCV = worker;
 			}
-			if (town->building_SCV != repairer)
-			{
+			if (town->building_SCV != worker) {
 				return 0;
 			}
-			repairee = helper::AI_find_best_repair_unit(repairer);
-			if (!repairee)
-			{
+			repairee = helper::AI_find_best_repair_unit(worker); // This writing to repairee seems really wrong
+			if (!repairee) {
 				return 0;
 			}
 		}
-		repairer->userActionFlags |= 1u;
-		Point16* repairee_pos = 0;
-		if (repairee)
-		{
-			repairee_pos = &repairee->sprite->position; // IDA didn't need &
+		worker->userActionFlags |= 1u;
+		Point16 repairee_pos = {}; // Shouldn't we return when nothing to repair?
+		if (repairee) {
+			repairee_pos = repairee->sprite->position;
 		}
-		if (repairer->mainOrderId)
-		{
-			while (1)
-			{
-				order_tail = repairer->orderQueueTail;
-				if (!order_tail)
-				{
+		if (worker->mainOrderId) {
+			for (Order* order_tail = worker->orderQueueTail; order_tail; order_tail = worker->orderQueueTail) {
+				if (!orders_dat::CanBeInterrupted[order_tail->orderId] && order_tail->orderId != OrderId::Repair1) {
 					break;
 				}
-				order_id = order_tail->orderId;
-				if (!orders_dat::CanBeInterrupted[order_id] && order_id != OrderId::Repair1)
-				{
-					break;
-				}
-				helper::remove_order_from_unit_queue(order_tail, repairer);
+				helper::remove_order_from_unit_queue(order_tail, worker);
 			}
-			Vector32* final_pos = {};
-			final_pos->x = repairee_pos->x;
-			final_pos->y = repairee_pos->y;
-			helper::perform_another_order(OrderId::Repair1, 0, repairer, UnitId::None, final_pos, repairee);
+			helper::perform_another_order(OrderId::Repair1, 0, worker, UnitId::None, repairee_pos, repairee);
 		}
-		helper::orders_nothing_2(repairer);
-		repairee->connectedUnit = repairer;
+		helper::orders_nothing_2(worker);
+		repairee->connectedUnit = worker;
 		return 1;
 	}
 }

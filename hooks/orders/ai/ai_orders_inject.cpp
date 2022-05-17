@@ -521,6 +521,8 @@ namespace
 		__asm {
 			POPAD
 			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
 			RETN 0x08
 		}
 	}
@@ -558,7 +560,7 @@ namespace hooks
 		jmpPatch(ai_get_build_order_id_wrapper,				0x00434C31, 0);
 
 		jmpPatch(AI_find_best_repair_unit_wrapper,			0x00443160, 1);
-		jmpPatch(AI_SCV_repair_controller_wrapper,			0x00433C70, 1);
+		//jmpPatch(AI_SCV_repair_controller_wrapper,			0x00433C70, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

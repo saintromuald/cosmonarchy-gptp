@@ -467,7 +467,7 @@ namespace helper
 	void AnimCloak(Unit* a1, s32 a2);																								// 0049B5B0
 	void refreshUnitVision(Unit* a1);																								// 004E5F30
 	void initUnitTrapDoodad(Unit* a1);																								// 004E6490
-	Order* perform_another_order(u8 a1, s32 a2, Unit* a3, s16 a4, Vector32* a5, Unit* a6);											// 004745F0
+	Order* perform_another_order(u8 a1, s32 a2, Unit* a3, s16 a4, Point16 a5, Unit* a6);											// 004745F0
 	void order(s32 a1, Unit* a2, s8 a3, Vector32* a4, Unit* a5, s32 a6);															// 00474810
 	u32 getUnitStrength(Unit* a1, s32 a2, bool a3);																					// 00431800
 

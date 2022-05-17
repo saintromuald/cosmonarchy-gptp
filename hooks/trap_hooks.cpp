@@ -178,7 +178,7 @@ namespace hooks
 						break;
 					helper::remove_order_from_unit_queue(v7, v1);
 				}
-				helper::perform_another_order(OrderId::RescuePassive, 0, v1, 228, 0, 0);
+				helper::perform_another_order(OrderId::RescuePassive, 0, v1, 228, {}, 0);
 			}
 			helper::orders_nothing_2(v1);
 		}
