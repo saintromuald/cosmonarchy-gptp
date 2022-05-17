@@ -164,9 +164,7 @@ namespace hooks
 	{
 		switch (node->id) {
 			case UnitId::ResourceVespeneGeyser: {
-				if (!(node->sprite->flags & SpriteFlags::Hidden)) {
-					return true;
-				}
+				return true;
 			} break;
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
@@ -176,7 +174,6 @@ namespace hooks
 				}
 			} break;
 		}
-
 		return false;
 	}
 
@@ -277,9 +274,9 @@ namespace hooks
 			&& valid_structure
 			&& (unit->resourceType == ResourceType::None || unit->resourceType & ResourceType::Either))
 		{
-			if (node->id == UnitId::ResourceVespeneGeyser && unit->mainOrderState == 2) {
-				unit->mainOrderState = 0;
-			}
+			//if (node->id == UnitId::ResourceVespeneGeyser && unit->mainOrderState == 2) {
+			//	unit->mainOrderState = 0;
+			//}
 			if (!unit->mainOrderState) {
 				helper::Order_BeginHarvest(node, unit);
 			}
@@ -428,6 +425,7 @@ namespace hooks
 			return 0;
 		}
 
+		u32 i = 0;
 		Unit* final_worker = 0;
 		while (worker) {
 			u32 previous_status = worker->status;
@@ -441,10 +439,10 @@ namespace hooks
 					final_worker = worker;
 				}
 			}
-			if (worker == worker->worker.harvest_link.next) {
+			worker = worker->worker.harvest_link.next;
+			if (++i > 100) {
 				break; // This is a bandage fix for harvest_link recursing indefinitely  TODO: Fix the actual cause
 			}
-			worker = worker->worker.harvest_link.next;
 		}
 
 		if (!final_worker)
@@ -453,18 +451,18 @@ namespace hooks
 		}
 
 		Unit* prev = final_worker->worker.harvest_link.prev;
+		Unit* next = final_worker->worker.harvest_link.next;
 		if (prev)
 		{
-			prev->worker.harvest_link.next = final_worker->worker.harvest_link.next;
+			prev->worker.harvest_link.next = next;
 		}
 		else
 		{
 			node->building.resource.nextGatherer = final_worker->worker.harvest_link.next;
 		}
-		Unit* next = final_worker->worker.harvest_link.next;
 		if (next)
 		{
-			next->worker.harvest_link.prev = final_worker->worker.harvest_link.prev;
+			next->worker.harvest_link.prev = prev;
 		}
 		final_worker->worker.harvest_link.prev = 0;
 		final_worker->worker.harvest_link.next = 0;
