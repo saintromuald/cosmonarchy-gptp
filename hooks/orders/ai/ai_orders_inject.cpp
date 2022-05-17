@@ -533,13 +533,9 @@ namespace hooks
 		jmpPatch(AI_worker_controller_Wrapper,				0x00435210, 0);
 		jmpPatch(AI_reassign_worker_resources_Wrapper,		0x00435900, 1);
 		jmpPatch(AI_auto_harvest_Wrapper,					0x00433B90, 1);
-
-<<<<<<< HEAD
 		jmpPatch(AI_find_best_repair_unit_wrapper,			0x00443160, 1);
 
-=======
 		jmpPatch(ai_get_build_order_id_wrapper,				0x00434C31, 0);
->>>>>>> f7232e7eca96e35ad2b609bbbfb0b8a3918b8cb2
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}
 }
