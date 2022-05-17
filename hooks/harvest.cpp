@@ -425,7 +425,7 @@ namespace hooks
 	{
 		Unit* worker = node->building.resource.nextGatherer;
 		if (!worker) {
-			return;
+			return 0;
 		}
 
 		Unit* final_worker = 0;
