@@ -456,7 +456,7 @@ namespace hooks
 		}
 		else
 		{
-			worker->worker.harvest_link.prev = final_worker->worker.harvest_link.next;
+			node->building.resource.nextGatherer = final_worker->worker.harvest_link.next;
 		}
 		Unit* next = final_worker->worker.harvest_link.next;
 		if (next)
