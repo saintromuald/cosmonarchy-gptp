@@ -485,11 +485,9 @@ namespace hooks
 			if (worker->orderQueueHead) {
 				worker->userActionFlags |= 1;
 				helper::orders_nothing_2(worker);
-			}
-			else if (worker->pAI) {
+			} else if (worker->pAI) {
 				helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
-			}
-			else {
+			} else {
 				helper::issue_order_targeting_nothing(worker, units_dat::ReturnToIdleOrder[worker->id]);
 			}
 			return;
@@ -502,11 +500,9 @@ namespace hooks
 				if (target && helper::unit_is_geyser_ex(target, worker)) {
 					if (is_movable == 2) {
 						worker->mainOrderState = 0;
-					}
-					else if (worker->resourceType & ResourceType::VespeneGas) {
+					} else if (worker->resourceType & ResourceType::VespeneGas) {
 						helper::issue_order_targeting_nothing(worker, OrderId::ReturnGas);
-					}
-					else {
+					} else {
 						helper::prepend_order_targeting_unit(target, worker, OrderId::CanEnterGasMine);
 						helper::to_idle(worker);
 					}
@@ -516,8 +512,7 @@ namespace hooks
 				helper::to_idle(worker);
 				return;
 			}
-		}
-		else {
+		} else {
 			if (!target) {
 				helper::make_to_hold_position(worker);
 				helper::to_idle(worker);
@@ -530,8 +525,7 @@ namespace hooks
 					worker->worker.targetResource.unit = worker->orderTarget.unit;
 					worker->mainOrderState = 3;
 				}
-			}
-			else {
+			} else {
 				helper::prepend_order(worker, OrderId::MoveToMinerals, worker->orderTarget.pt, worker->orderTarget.unit);
 				helper::to_idle(worker);
 			}
