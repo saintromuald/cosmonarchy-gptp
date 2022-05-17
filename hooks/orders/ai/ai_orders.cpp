@@ -1589,4 +1589,20 @@ LABEL_21:
 			}
 		}
 	}
+
+	u8 ai_get_build_order_id(Unit* unit) { // 00434C31
+		switch (unit->id) {
+			case UnitId::TerranMason:
+			case UnitId::TerranTalos: {
+				return OrderId::BuildTerran;
+			} break;
+			case UnitId::ZergDroleth: {
+				return OrderId::DroneStartBuild;
+			} break;
+			case UnitId::ProtossScribe: {
+				return OrderId::BuildProtoss1;
+			} break;
+		}
+		return OrderId::None;
+	}
 }
