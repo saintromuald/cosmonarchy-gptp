@@ -1589,4 +1589,9 @@ LABEL_21:
 			}
 		}
 	}
+
+	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
+	Unit* AI_find_best_repair_unit(Unit* unit) { // 00443160
+		return unit;
+	}
 }

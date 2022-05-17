@@ -28,5 +28,7 @@ namespace hooks
 	char AI_reassign_worker_resources(AiTown* town);																	// 00435900
 	void AI_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);													// 00433B90
 
+	Unit* AI_find_best_repair_unit(Unit* unit);																			// 00443160
+
 	void injectAIOrdersHooks();
 }
