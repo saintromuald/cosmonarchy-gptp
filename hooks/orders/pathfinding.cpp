@@ -5,7 +5,7 @@
 namespace hooks
 {
     // Hooked to resolve contextual order issues - Pr0nogo
-    s32 moveToTarget(Unit* target, Unit* unit) // 004EB720
+    s32 move_to_target(Unit* target, Unit* unit) // 004EB720
     {
         Unit* orderTargetUnit = unit->orderTarget.unit;
         if (orderTargetUnit == nullptr

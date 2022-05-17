@@ -470,4 +470,71 @@ namespace hooks
 		helper::delete_order(final_worker, OrderId::HarvestFinish);
 		return final_worker;
 	}
+
+	// Single-case hook of orders_entries to fix order delay on workers harvesting from vespene geysers. -Pr0nogo
+	// Also used for OrderId::Harvest1
+	void orders_entries_move_to_harvest_obscured(Unit* worker) { // 00469503
+		if (worker->resourceType && !(worker->resourceType & ResourceType::Either)) {
+			helper::set_resource_target(worker);
+			u32 fixed_x = worker->moveTarget.pt.x;
+			u32 fixed_y = worker->moveTarget.pt.y;
+			if (fixed_x != worker->nextTargetWaypoint.x || fixed_y != worker->nextTargetWaypoint.y) {
+				worker->nextTargetWaypoint.x = fixed_x;
+				worker->nextTargetWaypoint.y = fixed_y;
+			}
+			if (worker->orderQueueHead) {
+				worker->userActionFlags |= 1;
+				helper::orders_nothing_2(worker);
+			}
+			else if (worker->pAI) {
+				helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
+			}
+			else {
+				helper::issue_order_targeting_nothing(worker, units_dat::ReturnToIdleOrder[worker->id]);
+			}
+			return;
+		}
+		helper::set_gathering_flags(worker);
+		Unit* target = worker->orderTarget.unit;
+		if (worker->mainOrderState) {
+			u32 is_movable = helper::is_unit_movable(worker);
+			if (worker->mainOrderState == 3 && is_movable) {
+				if (target && helper::unit_is_geyser_ex(target, worker)) {
+					if (is_movable == 2) {
+						worker->mainOrderState = 0;
+					}
+					else if (worker->resourceType & ResourceType::VespeneGas) {
+						helper::issue_order_targeting_nothing(worker, OrderId::ReturnGas);
+					}
+					else {
+						helper::prepend_order_targeting_unit(target, worker, OrderId::CanEnterGasMine);
+						helper::to_idle(worker);
+					}
+					return;
+				}
+				helper::make_to_hold_position(worker);
+				helper::to_idle(worker);
+				return;
+			}
+		}
+		else {
+			if (!target) {
+				helper::make_to_hold_position(worker);
+				helper::to_idle(worker);
+				return;
+			}
+			u16 node_id = target->id;
+			if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3) {
+				if (helper::move_to_target(target, worker)) {
+					worker->worker.targetResource.pt = worker->orderTarget.pt;
+					worker->worker.targetResource.unit = worker->orderTarget.unit;
+					worker->mainOrderState = 3;
+				}
+			}
+			else {
+				helper::prepend_order(worker, OrderId::MoveToMinerals, worker->orderTarget.pt, worker->orderTarget.unit);
+				helper::to_idle(worker);
+			}
+		}
+	}
 }

@@ -661,7 +661,7 @@ namespace hooks
 				bool bStopThere = false;
 				if (unit->mainOrderState == 0)
 				{ // 00478965
-					if (helper::moveToTarget(target, unit))
+					if (helper::move_to_target(target, unit))
 					{
 						unit->mainOrderState = 1;
 					}
@@ -691,7 +691,7 @@ namespace hooks
 
 					else
 					{ // 004789CC
-						helper::setNextWaypoint(unit);
+						helper::set_resource_target(unit);
 						if (!unit->isTargetWithinMinRange(target, weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran]))
 						{
 							unit->orderToIdle();
@@ -812,7 +812,7 @@ namespace hooks
 			unit->mainOrderTimer = 0; // used to be 15
 			if (helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y) == helper::SAI_GetRegionIdFromPxEx(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 			{
-				helper::makeToHoldPosition(unit);
+				helper::make_to_hold_position(unit);
 				unit->orderToIdle();
 			}
 			else
@@ -829,7 +829,7 @@ namespace hooks
 					// 00478E91
 					else if (helper::function_00476610(unit, (s32)unit->orderTarget.pt.x, (s32)unit->orderTarget.pt.y))
 						{
-							helper::makeToHoldPosition(unit);
+							helper::make_to_hold_position(unit);
 						}
 				}
 				else

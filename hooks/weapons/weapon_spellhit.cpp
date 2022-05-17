@@ -852,12 +852,12 @@ LABEL_15:
 			{
 				v1->spendUnitEnergy(techdata_dat::EnergyCost[4] * 256);
 			}
-			helper::toIdle(v1);
+			helper::to_idle(v1);
 		}
 		else
 		{
 			helper::displayLastNetErrorForPlayer(v1->playerId);
-			helper::toIdle(v1);
+			helper::to_idle(v1);
 		}
 	}
 

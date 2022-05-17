@@ -139,7 +139,7 @@ namespace hooks
 			s32 direction;
 			bool bEndThere = false;
 
-			helper::setNextWaypoint(unit);
+			helper::set_resource_target(unit);
 
 			if (
 				unit->nextTargetWaypoint.x != unit->position.x ||

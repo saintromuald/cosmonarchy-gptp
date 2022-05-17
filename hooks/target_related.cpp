@@ -277,7 +277,7 @@ LABEL_22:
 			{
 				if (!(v1->status & 0x8000000) && !v1->pAI)
 					helper::prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, v1);
-				helper::toIdle(v1);
+				helper::to_idle(v1);
 				return;
 			}
 			v4 = v1->orderTarget.unit;
@@ -349,7 +349,7 @@ LABEL_62:
 					}
 				}
 			}
-			if (helper::moveToTarget(v1->orderTarget.unit, v1))
+			if (helper::move_to_target(v1->orderTarget.unit, v1))
 			{
 LABEL_64:
 				v1->mainOrderState = 1;
@@ -794,7 +794,7 @@ LABEL_23:
 				{
 					helper::prependOrderTargetingGround(6u, v11->sprite->position.x, v11->sprite->position.y, v2);
 				}
-				helper::toIdle(v2);
+				helper::to_idle(v2);
 				result = 0;
 			}
 			return result;
@@ -874,7 +874,7 @@ LABEL_34:
 					}
 				}
 			}
-			if (!helper::moveToTarget(v2->orderTarget.unit, v2))
+			if (!helper::move_to_target(v2->orderTarget.unit, v2))
 			{
 				return 0;
 			}
@@ -886,7 +886,7 @@ LABEL_76:
 		{
 			if (v2->pAI)
 			{
-				if (helper::isUnreachable(v2->orderTarget.unit, v2) || helper::isUnitMovable(v2) == 2)
+				if (helper::isUnreachable(v2->orderTarget.unit, v2) || helper::is_unit_movable(v2) == 2)
 				{
 					if (helper::AI_UpdateAttackTarget(v2, 0, 1, 0))
 					{
@@ -898,11 +898,11 @@ LABEL_76:
 			else
 			{
 				v23 = v2->status;
-				if (v23 & 0x8000000 && !(v23 & 0xC) && v2->orderTarget.unit->status & 4 || helper::isUnitMovable(v2) == 2)
+				if (v23 & 0x8000000 && !(v23 & 0xC) && v2->orderTarget.unit->status & 4 || helper::is_unit_movable(v2) == 2)
 				{
 LABEL_65:
-					helper::makeToHoldPosition(v2);
-					helper::toIdle(v2);
+					helper::make_to_hold_position(v2);
+					helper::to_idle(v2);
 					return 0;
 				}
 			}

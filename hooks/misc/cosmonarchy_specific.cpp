@@ -574,7 +574,7 @@ LABEL_18:
 			{
 				if (unit->movementFlags & MovementFlags::Accelerating)
 				{
-					scbw::makeToHoldPosition(unit);
+					scbw::make_to_hold_position(unit);
 				}
 				unitExt->values[ValueProtossSwitchOrderState] = 1;
 			}
@@ -620,7 +620,7 @@ LABEL_18:
 		{
 			if (unit->movementFlags & MovementFlags::Accelerating)
 			{
-				scbw::makeToHoldPosition(unit);
+				scbw::make_to_hold_position(unit);
 			}
 			unitExt->values[ValueProtossSwitchOrderState] = 1;
 		}

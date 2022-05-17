@@ -133,7 +133,7 @@ namespace hooks
 						else
 							if (movableState == 1)
 							{ //unit reached destination
-								helper::makeToHoldPosition(unit);
+								helper::make_to_hold_position(unit);
 								unit->mainOrderState = 2;
 							}
 							else

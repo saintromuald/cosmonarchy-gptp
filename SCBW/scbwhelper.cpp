@@ -2351,9 +2351,8 @@ namespace helper
 		return result;
 	}
 
-	// not related with assigning orders, but only with
-	// destinations of orders
-	void makeToHoldPosition(Unit* unit)
+	// Not related with assigning orders, but only with destinations of orders
+	void make_to_hold_position(Unit* unit)
 	{
 		const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 		__asm {
@@ -2364,7 +2363,7 @@ namespace helper
 		}
 	}
 
-	bool moveToTarget(Unit* target, Unit* unit)
+	bool move_to_target(Unit* target, Unit* unit)
 	{
 		const u32 Func_moveToTarget = 0x004EB720;
 		static b32 bPreResult;
@@ -2396,7 +2395,7 @@ namespace helper
 	}
 
 	// Related to path/movement decision
-	void setNextWaypoint(Unit* unit)
+	void set_resource_target(Unit* unit)
 	{
 		const u32 Func_setNextWaypoint = 0x004EB290;
 		__asm
@@ -2768,7 +2767,7 @@ namespace helper
 		}
 	}
 
-	void toIdle(Unit* a1)
+	void to_idle(Unit* a1)
 	{
 		const u32 Func_toIdle = 0x004753A0;
 		__asm {
@@ -2779,7 +2778,7 @@ namespace helper
 		}
 	}
 
-	s32 isUnitMovable(Unit* a1)
+	s32 is_unit_movable(Unit* a1)
 	{
 		const u32 Func_isUnitMovable = 0x00401DC0;
 		static s32 result;
@@ -8144,7 +8143,7 @@ namespace helper
 		return result;
 	}
 
-	// For moveToTarget
+	// For move_to_target
 	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, s32 position_xy)
 	{
 		const u32 Func_isPointAtUnitBorder = 0x0042DA90;
@@ -11650,5 +11649,32 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker) {
+		static bool result;
+		const u32 func_address = 0x00468930;
+		__asm {
+			PUSHAD
+			PUSH worker
+			MOV ECX, resource_node
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void prepend_order(Unit* unit, u8 order_id, Point16 target_pos, Unit* target_unit) {
+		const u32 func_address = 0x00474AF0;
+		__asm {
+			PUSHAD
+			PUSH target_unit
+			PUSH target_pos
+			MOV AL, order_id
+			MOV ECX, unit
+			CALL func_address
+			POPAD
+		}
 	}
 }

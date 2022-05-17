@@ -237,9 +237,9 @@ namespace helper
 	bool isUnitVisible(Unit* unit);																			// 004E5DB0
 	bool isTargetVisible(Unit* unit, Unit* target);															// 004E5E30
 	u8 getRightClickActionOrder(Unit* unit);																// 004E5EA0
-	void setNextWaypoint(Unit* unit);															            // 004EB290
-	void makeToHoldPosition(Unit* unit);																	// 004EB5B0
-	bool moveToTarget(Unit* target, Unit* unit);															// 004EB720
+	void set_resource_target(Unit* unit);															            // 004EB290
+	void make_to_hold_position(Unit* unit);																	// 004EB5B0
+	bool move_to_target(Unit* target, Unit* unit);															// 004EB720
 	bool SetMoveTarget_xy(Unit* unit, s32 x, s32 y);														// 004EB820
 	s32 moveTowards(Unit* unit, Unit* target);																// 004EB900
 	bool changeMovementTargetMoveTarget2(Unit* unit, s32 x, s32 y);											// 004EB9C0
@@ -273,8 +273,8 @@ namespace helper
 	u32 getDistanceFast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
 	s32 orders_HoldPosSuicidal(Unit* a1);												                    // 004EB5B0
 	void turnUnit(Unit* a1, char a2);													                    // 00495F20
-	void toIdle(Unit* a1);																                    // 004753A0
-	s32 isUnitMovable(Unit* a1);														                    // 00401DC0
+	void to_idle(Unit* a1);																                    // 004753A0
+	s32 is_unit_movable(Unit* a1);														                    // 00401DC0
 	void orders_nothing_2(Unit* a1);																			// 00475000
 	bool setMoveTargetXY(s32 a1, s32 a2, Unit* a3);															// 004EB820
 
@@ -1261,4 +1261,7 @@ namespace helper
 	Sprite* sprite_destructor(Sprite* sprite);																// 00497B40
 	unitPath* reassign_path(Unit* unit);																	// 0042F740
 	u32 initialize_unit(Unit* unit, u32 y, u32 unit_id, u32 x, u8 player_id);								// 0049F206
+
+	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker);												// 00468930
+	void prepend_order(Unit* unit, u8 order_id, Point16 target_pos, Unit* target_unit);						// 00474AF0
 }

@@ -73,7 +73,7 @@ namespace hooks
 			{
 				if (unit->movementFlags & MovementFlags::Accelerating)
 				{
-					helper::makeToHoldPosition(unit);
+					helper::make_to_hold_position(unit);
 				}
 				unit->mainOrderState = 1;
 			}

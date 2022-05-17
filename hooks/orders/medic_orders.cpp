@@ -39,7 +39,7 @@ namespace hooks
 				unit->orderTarget.unit = target;
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
-				helper::moveToTarget(target, unit);
+				helper::move_to_target(target, unit);
 				bStopThere = true;
 			}
 			else
@@ -78,7 +78,7 @@ namespace hooks
 						oldPos.y = unit->orderTarget.pt.y;
 						helper::orderInterrupt(unit, unit->orderTarget.unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, OrderId::MedicHeal1);
 
-						helper::moveToTarget(newTarget, unit);
+						helper::move_to_target(newTarget, unit);
 						helper::unitOrderMoveToTargetUnit(unit, newTarget);
 						if (oldTarget != nullptr)
 						{
@@ -132,7 +132,7 @@ namespace hooks
 				unit->orderTarget.unit = target;
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
-				helper::moveToTarget(target, unit);
+				helper::move_to_target(target, unit);
 			}
 			else
 			{ // 004639BD
@@ -171,7 +171,7 @@ namespace hooks
 					helper::unitOrderMoveToTargetUnit(cleric, acquired);
 					if (!cleric->isTargetWithinMinRange(acquired, 30))
 					{
-						helper::moveToTarget(acquired, cleric);
+						helper::move_to_target(acquired, cleric);
 						return 3;
 					}
 					scbw::decloakProc(cleric);
@@ -189,7 +189,7 @@ namespace hooks
 		u32 doMedicHeal_result = helper::doMedicHeal(unit, target);
 		if (doMedicHeal_result == 0)
 		{
-			helper::setNextWaypoint(unit);
+			helper::set_resource_target(unit);
 			if (unit->orderQueueHead != nullptr)
 			{
 				unit->userActionFlags |= 1;
@@ -214,7 +214,7 @@ namespace hooks
 				{
 					if (unit->isTargetWithinMinRange(target, 30))
 					{
-						helper::setNextWaypoint(unit);
+						helper::set_resource_target(unit);
 						unit->mainOrderState = 1;
 					}
 				}

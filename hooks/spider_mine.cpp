@@ -137,7 +137,7 @@ namespace hooks
 			}
 			if (!bEndThere && !bIsCompletelyInRange) // 00463F14
 			{
-				helper::setNextWaypoint(unit);
+				helper::set_resource_target(unit);
 				unit->mainOrderState = 1;
 			}
 
@@ -218,12 +218,12 @@ namespace hooks
 					{
 						helper::displayLastNetErrorForPlayer(v1->playerId);
 					}
-					helper::toIdle(v1);
+					helper::to_idle(v1);
 				}
 				else if (v1->pAI)
 				{
-					if (helper::isUnitMovable(v1))
-						helper::toIdle(v1);
+					if (helper::is_unit_movable(v1))
+						helper::to_idle(v1);
 				}
 			}
 			else if (v1->orderQueueHead)
@@ -245,7 +245,7 @@ namespace hooks
 			target = unit->orderTarget.unit;
 			if (target)
 			{
-				v3 = helper::moveToTarget(target, unit);
+				v3 = helper::move_to_target(target, unit);
 				v4 = target->sprite;
 				v5 = v4->position.y;
 				v6 = v4->position.x;

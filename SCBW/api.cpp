@@ -1700,7 +1700,7 @@ namespace scbw
 		}
 	}
 
-	void makeToHoldPosition(Unit* unit)
+	void make_to_hold_position(Unit* unit)
 	{
 		const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 		__asm

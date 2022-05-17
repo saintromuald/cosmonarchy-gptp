@@ -919,7 +919,7 @@ void Unit::issueQueuedOrderTarget(u8 orderId, Unit* target, bool stopPreviousOrd
 	}
 }
 
-// Logically equivalent to function toIdle @ 0x004753A0
+// Logically equivalent to function to_idle @ 0x004753A0
 void Unit::orderToIdle()
 {
 	assert(this);

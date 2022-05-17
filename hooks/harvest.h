@@ -12,6 +12,7 @@ namespace hooks
 	void orders_harvest4(Unit* worker);												// 00468ED0
 	s32 begin_harvest(Unit* worker, Unit* node);									// 00468CAA
 	Unit* let_next_unit_mine(Unit* worker);											// 00468970
+	void orders_entries_move_to_harvest_obscured(Unit* worker);						// 00469503
 
 	void injectHarvestResource();
 }
