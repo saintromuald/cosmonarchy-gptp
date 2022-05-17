@@ -398,7 +398,7 @@ namespace hooks
 		{
 			harvest_order_id = OrderId::MiningMinerals;
 		}
-		helper::order_immediate(worker, OrderId::HarvestInterrupt);
+		helper::order_immediate(worker, OrderId::HarvestInterrupt); // This needs to be called for harvesting gas too, since it's now interruptable
 		helper::prepend_order_targeting_unit(worker, node, harvest_order_id);
 
 		if (worker->orderQueueHead)
@@ -421,57 +421,52 @@ namespace hooks
 	}
 
 	// Hooked to triage issues with the vespene rework. -Pr0nogo
-	Unit* let_next_unit_mine(Unit* worker) // 00468970
+	Unit* let_next_unit_mine(Unit* node) // 00468970
 	{
-		Unit* previous_worker;
-		Unit* previous_worker_var;
-		DWORD previous_status;
-		char previous_order_id;
-		Unit* previous_previous_worker;
-		Unit* previous_next_worker;
-
-		previous_worker = worker->worker.harvest_link.prev;
-		previous_worker_var = 0;
-		if (previous_worker)
-		{
-			do
-			{
-				previous_status = previous_worker->status;
-				if (!(previous_status & 0x400) // Replace this whole if with an is_disabled check, or whatever it's called
-				&&   !previous_worker->lockdownTimer
-				&&   !previous_worker->stasisTimer
-				&&   !previous_worker->maelstromTimer)
-				{
-					previous_order_id = previous_worker->mainOrderId;
-					if (previous_order_id == OrderId::CanEnterGasMine || previous_order_id == OrderId::CanHarvestOre)
-					{
-						previous_worker_var = previous_worker;
-					}
-				}
-				previous_worker = previous_worker->worker.harvest_link.next;
-			} while (previous_worker);
-			if (previous_worker_var)
-			{
-				previous_previous_worker = previous_worker_var->worker.harvest_link.prev;
-				if (previous_previous_worker)
-				{
-					previous_previous_worker->worker.harvest_link.next = previous_worker_var->worker.harvest_link.next;
-				}
-				else
-				{
-					worker->worker.harvest_link.prev = previous_worker_var->worker.harvest_link.next;
-				}
-				previous_next_worker = previous_worker_var->worker.harvest_link.next;
-				if (previous_next_worker)
-				{
-					previous_next_worker->worker.harvest_link.prev= previous_worker_var->worker.harvest_link.prev;
-				}
-				previous_worker_var->worker.harvest_link.prev = 0;
-				previous_worker_var->worker.harvest_link.next = 0;
-				previous_worker_var->worker.harvest_target = 0;
-				helper::delete_order(previous_worker_var, OrderId::HarvestFinish);
-			}
+		Unit* worker = node->building.resource.nextGatherer;
+		if (!worker) {
+			return;
 		}
-		return previous_worker_var;
+
+		Unit* final_worker = 0;
+		while (worker) {
+			u32 previous_status = worker->status;
+			if (!(previous_status & UnitStatus::Frozen) // TODO: Replace this whole if with API is_disabled check
+			&&  !worker->lockdownTimer
+			&&  !worker->stasisTimer
+			&&  !worker->maelstromTimer)
+			{
+				if (worker->mainOrderId == OrderId::CanEnterGasMine || worker->mainOrderId == OrderId::CanHarvestOre)
+				{
+					final_worker = worker;
+				}
+			}
+			worker = worker->worker.harvest_link.next;
+		}
+
+		if (!final_worker)
+		{
+			return 0;
+		}
+
+		Unit* prev = final_worker->worker.harvest_link.prev;
+		if (prev)
+		{
+			prev->worker.harvest_link.next = final_worker->worker.harvest_link.next;
+		}
+		else
+		{
+			worker->worker.harvest_link.prev = final_worker->worker.harvest_link.next;
+		}
+		Unit* next = final_worker->worker.harvest_link.next;
+		if (next)
+		{
+			next->worker.harvest_link.prev = final_worker->worker.harvest_link.prev;
+		}
+		final_worker->worker.harvest_link.prev = 0;
+		final_worker->worker.harvest_link.next = 0;
+		final_worker->worker.harvest_target = 0;
+		helper::delete_order(final_worker, OrderId::HarvestFinish);
+		return final_worker;
 	}
 }
