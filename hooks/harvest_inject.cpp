@@ -153,6 +153,20 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) orders_entries_move_to_harvest_obscured_Wrapper() { // 00469500
+		static const u32 jmp_address = 0x0046956D;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::orders_entries_move_to_harvest_obscured(unit);
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
+	}
 }
 
 namespace hooks
@@ -168,5 +182,6 @@ namespace hooks
 		jmpPatch(orders_harvest4_Wrapper,									0x00468ED0, 1);
 		jmpPatch(begin_harvest_Wrapper,										0x00468C70, 4);
 		jmpPatch(let_next_unit_mine_Wrapper,								0x00468970, 1);
+		jmpPatch(orders_entries_move_to_harvest_obscured_Wrapper,			0x00469500, 4);
 	}
 }
