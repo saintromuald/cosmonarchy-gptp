@@ -1702,6 +1702,7 @@ LABEL_21:
 				base_id = helper::ai_find_expansion(aiscript->playerId, aiscript->town->resarea, amount);
 				if (base_id) {
 					helper::ai_expand_to(aiscript, base_id, block);
+					scbw::ai_defend(aiscript->playerId, resource_areas->areas[base_id].pos);
 				}
 			}
 		}

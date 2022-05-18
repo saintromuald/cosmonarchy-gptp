@@ -2115,6 +2115,22 @@ namespace scbw
 		return &AiRegionCaptains[player][helper::SAI_GetRegionIdFromPxEx(position.x, position.y)];
 	}
 
+	void ai_defend(u32 player, Point16 position) {
+		AiRegion* region = scbw::get_ai_region(player, position);
+		switch (region->state) {
+			case RegionState::Nothing:
+			case RegionState::EnemySighted:
+			case RegionState::TownRegionLow:
+			case RegionState::TownRegionHigh:
+			case RegionState::Defending:
+			case RegionState::ChaseAway: {
+				helper::AI_AssignMilitary(RegionState::Defending, region);
+				region->defensePriorityAdd = 120;
+				region->defendTimeout = 0;
+			} break;
+		}
+	}
+
 	void ask_for_ai_help(Unit* victim, Unit* attacker) {
 		if (!victim || !attacker) {
 			return;
@@ -2126,19 +2142,7 @@ namespace scbw
 			for (u32 i = 0; i < 8; ++i) {
 				if (playerTable[i].type == PlayerType::Computer && victim->isVisibleTo(i) &&
 					!scbw::isAlliedTo(i, attacker->playerId) && scbw::isAlliedTo(i, victim->playerId)) {
-					AiRegion* region = scbw::get_ai_region(i, attacker->position);
-					switch (region->state) {
-						case RegionState::Nothing:
-						case RegionState::EnemySighted:
-						case RegionState::TownRegionLow:
-						case RegionState::TownRegionHigh:
-						case RegionState::Defending:
-						case RegionState::ChaseAway: {
-							helper::AI_AssignMilitary(RegionState::Defending, region);
-							region->defensePriorityAdd = 120;
-							region->defendTimeout = 0;
-						} break;
-					}
+					scbw::ai_defend(i, attacker->position);
 				}
 			}
 		}

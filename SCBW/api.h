@@ -564,6 +564,7 @@ namespace scbw
 	u32 get_closest_resarea(Point16 position);
 	AiTown* get_closest_town(u32 player, Point16 position);
 	AiRegion* get_ai_region(u32 player, Point16 position);
+	void ai_defend(u32 player, Point16 position);
 	void ask_for_ai_help(Unit* victim, Unit* attacker);
 	bool unit_id_is_capped_gas_structure(u16 unit_id);
 	bool unit_id_is_gas_structure(u16 unit_id);
