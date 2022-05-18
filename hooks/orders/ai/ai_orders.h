@@ -32,5 +32,7 @@ namespace hooks
 	Unit* AI_find_best_repair_unit(Unit* unit);																			// 00443160
 	s32 AI_SCV_repair_controller(Unit* repairer, AiTown* town);															// 00433C70
 
+	void ai_expand(AiScript* aiscript, u32 block, u32 amount);															// 0045B530
+
 	void injectAIOrdersHooks();
 }

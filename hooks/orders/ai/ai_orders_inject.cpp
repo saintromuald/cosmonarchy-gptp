@@ -526,6 +526,31 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) ai_expand_wrapper() { // 0045B530
+		static AiScript* aiscript;
+		static u32 block;
+		static u32 amount;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV block, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV amount, EAX
+			POP EAX
+			MOV aiscript, ESI
+			PUSHAD
+		}
+		hooks::ai_expand(aiscript, block, amount);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
 }
 
 namespace hooks
@@ -561,6 +586,7 @@ namespace hooks
 
 		jmpPatch(AI_find_best_repair_unit_wrapper,			0x00443160, 1);
 		//jmpPatch(AI_SCV_repair_controller_wrapper,			0x00433C70, 1);
+		jmpPatch(ai_expand_wrapper,							0x0045B530, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

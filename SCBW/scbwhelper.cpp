@@ -11703,4 +11703,19 @@ namespace helper
 		}
 		return result;
 	}
+
+	u32 ai_find_expansion(u32 player, u32 resarea, u32 amount) {
+		static u32 result;
+		const u32 func_address = 0x004453E0;
+		__asm {
+			PUSHAD
+			PUSH amount
+			PUSH resarea
+			MOV EAX, player
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

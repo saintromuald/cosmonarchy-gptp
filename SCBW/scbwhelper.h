@@ -4,6 +4,10 @@
 #define NOMINMAX
 #include <windows.h>
 
+#define SCBW_FUNC(address, return_and_convention, name, ...) \
+typedef return_and_convention name##_func(__VA_ARGS__); \
+name##_func* const name = (name##_func*) address;
+
 namespace helper
 {
 	bool HasMoneyCanMake(Unit* builder, u32 unitToBuild);
@@ -1266,4 +1270,8 @@ namespace helper
 	void prepend_order(Unit* unit, u8 order_id, Point16 target_pos, Unit* target_unit);						// 00474AF0
 	bool AI_is_building_safe(Unit* building);																// 00438910
 	Unit* AI_find_best_repair_unit(Unit* unit);																// 00443160
+
+	u32 ai_find_expansion(u32 player, u32 resarea, u32 amount);												// 004453E0
+
+	SCBW_FUNC(0x0045B440, void __stdcall, ai_allies_watch, AiScript* aiscript, u32 resarea, u32 block);
 }

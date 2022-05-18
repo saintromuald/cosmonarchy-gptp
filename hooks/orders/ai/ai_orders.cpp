@@ -1690,4 +1690,14 @@ LABEL_21:
 		repairee->connectedUnit = worker;
 		return 1;
 	}
+
+	// Hooked to remove a ridicilus condition that would stop AI from expanding in late game and to allow base layouts to control expand order
+	void ai_expand(AiScript* aiscript, u32 block, u32 amount) { // 0045B530
+		if (aiscript->town->resarea) {
+			u32 base_id = helper::ai_find_expansion(aiscript->playerId, aiscript->town->resarea, amount);
+			if (base_id) {
+				helper::ai_allies_watch(aiscript, base_id, block);
+			}
+		}
+	}
 }
