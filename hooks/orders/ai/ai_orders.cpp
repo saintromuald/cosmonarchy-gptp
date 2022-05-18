@@ -1695,7 +1695,7 @@ LABEL_21:
 	// Hooked to remove a ridicilus condition that would stop AI from expanding in late game and to allow base layouts to control expand order
 	void ai_expand(AiScript* aiscript, u32 block, u32 amount) { // 0045B530
 		if (aiscript->town->resarea) {
-			u32 base_id = ai_get_next_custom_expo(aiscript->playerId);
+			u32 base_id = ai_get_next_custom_expo(aiscript->town);
 			if (base_id && helper::ai_try_expanding_to(base_id)) {
 				helper::ai_expand_to(aiscript, base_id, block);
 			} else {
