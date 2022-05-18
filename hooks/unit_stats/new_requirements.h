@@ -4,7 +4,7 @@
 namespace hooks
 {
 	s32 createUnitAllowed_Partial(s16 unitId, Unit* unit, s32 playerId);
-	s32 createUnitIdAllowed(s16 unitId, s32 player_id);
+	s32 createUnitIdAllowed(s16 unitId, s32 player_id, bool ignore_creator);
 
 	void injectNewRequirementsHooks();
 }

@@ -79,12 +79,12 @@ static u32 find_unit_merge(u32 unit_id) {
 }
 
 static u32 find_unit_base_merge(u32 unit_id) {
-	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
-		if (unit_id == equivalents[i].to && equivalents[i].merge_requests) {
-			return find_unit_base_merge(equivalents[i].from);
-		}
-	}
-	return unit_id;
+    for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
+        if (unit_id == equivalents[i].to && equivalents[i].merge_requests) {
+            return find_unit_base_merge(equivalents[i].from);
+        }
+    }
+    return unit_id;
 }
 
 static void add_placeholder_by_unit_id(BaseLayouts* base_layouts, Placeholder* placeholder, u32 unit_id) {
@@ -272,33 +272,47 @@ static bool unit_has_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 }
 
 static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder) {
-	u32 unit_id = find_unit_base_merge(placeholder->unit_id);
-
 	AiTown* town = base_layouts->town;
-	if (!hooks::createUnitIdAllowed(unit_id, town->player)) {
+	u32 unit_id = placeholder->unit_id;
+
+	// Check tech availability
+	u32 base_unit_id = find_unit_base_merge(unit_id);
+	if (!hooks::createUnitIdAllowed(base_unit_id, town->player, false) ||
+		(unit_id != base_unit_id && !hooks::createUnitIdAllowed(unit_id, town->player, true))) {
 		return false;
 	}
+
+	// Prevent building non town halls when town hall is missing
 	if (!town->main_building && units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
 		if (unit_id != UnitId::TerranCommandCenter &&
 			unit_id != UnitId::ProtossNexus && 
 			unit_id != UnitId::ZergHatchery) {
+			if (base_layouts->town->resarea == 9) scbw::printf("Town Hall");
 			return false;
 		}
 	}
+
+	// Check gas availability
 	if (units_dat::GasCost[unit_id] > resources->gas[town->player] &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::TerranReservoir) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ProtossAquifer) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ZergExcisant)) {
+		if (base_layouts->town->resarea == 9) scbw::printf("Gas");
 		return false;
 	}
+	
+	// Check placeability
 	if (units_dat::BaseProperty[unit_id] & UnitProperty::CreepBuilding &&
 		!unit_has_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
+		if (base_layouts->town->resarea == 9) scbw::printf("Creep");
 		return false;
 	}
 	if (units_dat::BaseProperty[unit_id] & UnitProperty::RequiredPsi &&
 		!helper::unit_has_power(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
+		if (base_layouts->town->resarea == 9) scbw::printf("Psi");
 		return false;
 	}
+
 	return true;
 }
 
@@ -398,11 +412,10 @@ void tick_base_layouts() {
 						base_layouts->placeholders_requested[j] = true;
 						request_placeholder(base_layouts, placeholder);
 					}
-					u32 base_unit_id = find_unit_base_merge(placeholder->unit_id);
 					if (base_layouts->placeholders_requested[j] &&
 						units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
 						has_down_equivalent(town, placeholder->unit_id) &&
-						number_of_equivalents_up(town, base_unit_id) < placeholder->wait_build_start_count) {
+						number_of_equivalents_up(town, placeholder->unit_id) < placeholder->wait_build_start_count) {
 						// Lock adding new requests until this request is started
 						break;
 					}
