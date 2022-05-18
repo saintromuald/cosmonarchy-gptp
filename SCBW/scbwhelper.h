@@ -1273,5 +1273,7 @@ namespace helper
 
 	u32 ai_find_expansion(u32 player, u32 resarea, u32 amount);												// 004453E0
 
-	SCBW_FUNC(0x0045B440, void __stdcall, ai_allies_watch, AiScript* aiscript, u32 resarea, u32 block);
+	SCBW_FUNC(0x0045B440, void __stdcall, ai_expand_to, AiScript* aiscript, u32 resarea, u32 block);
+
+	b32 ai_try_expanding_to(u32 resarea);																	// 00443A00
 }

@@ -11718,4 +11718,17 @@ namespace helper
 		}
 		return result;
 	}
+
+	b32 ai_try_expanding_to(u32 resarea) {
+		static b32 result;
+		const u32 func_address = 0x00443A00;
+		__asm {
+			PUSHAD
+			MOV EAX, resarea
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

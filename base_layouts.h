@@ -35,4 +35,5 @@ struct BaseLayouts {
 	u32 request_count[UnitId::Count]; // First used to set wait_build_start_count, then used to track request counts
 };
 
+u32 ai_get_next_custom_expo(u32 player);
 void tick_base_layouts();

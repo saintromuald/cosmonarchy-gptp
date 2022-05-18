@@ -343,6 +343,34 @@ static void request_placeholder(BaseLayouts* base_layouts, Placeholder* placehol
 	}
 }
 
+u32 ai_get_next_custom_expo(u32 player) {
+	if (player < 0 || player > 8) {
+		return 0;
+	}
+	u32 best_priority = 0;
+	u32 best_resarea = 0;
+	for (u32 i = 0; i < ResAreaLimit; ++i) {
+		// Check if resarea is available
+		if (resource_areas->areas[i].flags & 3) {
+			continue;
+		}
+
+		// See if it's an optimal expansion
+		BaseLayouts* base_layouts = &resarea_base_layouts[player][i];
+		for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
+			if (!base_layouts->placeholders_requested[j]) {
+				Placeholder* placeholder = &base_layouts->placeholders[j];
+				if (placeholder->should_request && placeholder->priority > best_priority && units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
+					best_priority = placeholder->priority;
+					best_resarea = i;
+					break;
+				}
+			}
+		}
+	}
+	return best_resarea;
+}
+
 void tick_base_layouts() {
 	if (*elapsedTimeFrames == 0) {
 		init_base_layouts();
