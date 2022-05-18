@@ -287,7 +287,6 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 		if (unit_id != UnitId::TerranCommandCenter &&
 			unit_id != UnitId::ProtossNexus && 
 			unit_id != UnitId::ZergHatchery) {
-			if (base_layouts->town->resarea == 9) scbw::printf("Town Hall");
 			return false;
 		}
 	}
@@ -297,19 +296,16 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::TerranReservoir) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ProtossAquifer) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ZergExcisant)) {
-		if (base_layouts->town->resarea == 9) scbw::printf("Gas");
 		return false;
 	}
 	
 	// Check placeability
 	if (units_dat::BaseProperty[unit_id] & UnitProperty::CreepBuilding &&
 		!unit_has_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
-		if (base_layouts->town->resarea == 9) scbw::printf("Creep");
 		return false;
 	}
 	if (units_dat::BaseProperty[unit_id] & UnitProperty::RequiredPsi &&
 		!helper::unit_has_power(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
-		if (base_layouts->town->resarea == 9) scbw::printf("Psi");
 		return false;
 	}
 
