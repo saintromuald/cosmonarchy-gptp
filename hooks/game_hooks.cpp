@@ -292,9 +292,6 @@ namespace hooks
 		{
 			// TODO: update to work with multi building select
 			Unit* selected = *activePortraitUnit;
-#if 1
-			scbw::printf("0x%X", selected->mainOrderId);
-#endif
 
 			if (selected
 				&& selected->id == UnitId::ZergNydusCanal
