@@ -366,16 +366,14 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 		// See if it's an optimal expansion
 		BaseLayouts* base_layouts = &resarea_base_layouts[main_town->player][i];
 		for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
-			if (!base_layouts->placeholders_requested[j]) {
-				Placeholder* placeholder = &base_layouts->placeholders[j];
-				if (placeholder->should_request && units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
-					u32 distance = scbw::getDistanceFast(main_town->position, resource_areas->areas[i].pos);
-					if (placeholder->priority > best_priority || (placeholder->priority == best_priority && distance < best_distance)) {
-						best_priority = placeholder->priority;
-						best_distance = distance;
-						best_resarea = i;
-						break;
-					}
+			Placeholder* placeholder = &base_layouts->placeholders[j];
+			if (placeholder->should_request && units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
+				u32 distance = scbw::getDistanceFast(main_town->position, resource_areas->areas[i].pos);
+				if (placeholder->priority > best_priority || (placeholder->priority == best_priority && distance < best_distance)) {
+					best_priority = placeholder->priority;
+					best_distance = distance;
+					best_resarea = i;
+					break;
 				}
 			}
 		}
