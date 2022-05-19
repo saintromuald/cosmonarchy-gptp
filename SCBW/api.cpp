@@ -2188,9 +2188,9 @@ namespace scbw
 			|| unit_id == UnitId::ZergNydusCanal;
 	}
 
-	UnitArray get_writhing_web_sovroleths(Unit* unit) {
+	inline UnitArray get_writhing_web_sovroleths(Unit* unit) {
 		UnitArray sovroleths = UnitSearchRadial(unit->position, 8 * 32);
-		UnitArrayFilter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth});
+		UnitArrayFilter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth}); 
 		return sovroleths;
 	}
 

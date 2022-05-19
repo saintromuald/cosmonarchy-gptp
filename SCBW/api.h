@@ -571,7 +571,7 @@ namespace scbw
 	bool unit_id_is_capped_gas_structure(u16 unit_id);
 	bool unit_id_is_gas_structure(u16 unit_id);
 	bool unit_id_is_smaller_building(u16 unit_id);
-	UnitArray get_writhing_web_sovroleths(Unit* unit);
+	inline UnitArray get_writhing_web_sovroleths(Unit* unit);
 
 	void spawn_custom_creep(Unit* unit);
 	void spread_custom_creep(Unit* unit);
