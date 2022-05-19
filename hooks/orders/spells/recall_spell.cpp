@@ -121,12 +121,10 @@ namespace hooks
 					Point16 center = {unit->position.x, unit->position.y};
 					Point16 top = center;
 					top.y -= 3 * 32;
-					Thingy* thingy = scbw::createAndInitThingy(SpriteId::Recall_Field, center.x, center.y, unit->playerId, unit->sprite->elevationLevel - 1);
-					if (thingy) thingy->sprite->playIscriptAnim(IscriptAnimation::Walking);
+					scbw::createAndInitThingy(SpriteId::RecallFieldShorter, center.x, center.y, unit->playerId, unit->sprite->elevationLevel - 1);
 					for (u32 i = 0; i < 8; ++i) {
 						Point16 next = scbw::rotate_point(center, top, i * (360 / 8));
-						Thingy* thingy = scbw::createAndInitThingy(SpriteId::Recall_Field, next.x, next.y, unit->playerId, unit->sprite->elevationLevel - 1);
-						if (thingy) thingy->sprite->playIscriptAnim(IscriptAnimation::Walking);
+						scbw::createAndInitThingy(SpriteId::RecallFieldShorter, next.x, next.y, unit->playerId, unit->sprite->elevationLevel - 1);
 					}
 				}
 				unit->orderToIdle();
