@@ -952,7 +952,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	s16 SAI_GetRegionIdFromPxEx(s32 a1, s32 a2)
+	s16 get_region_id(s32 a1, s32 a2)
 	{
 		const u32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
 		static s32 result;

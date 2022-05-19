@@ -357,7 +357,7 @@ SCBW_DATA(s32*, airSplashListCount,			0x0046DEB4);
 SCBW_DATA(s32*, isInGroundSplashProc,		0x0064DEB8);
 
 // For AI_AddMilitary
-SCBW_DATA(pathing**,	SAI_Paths,			0x006D5BFC);
+SCBW_DATA(RegionArray**,SAI_Paths,			0x006D5BFC);
 SCBW_DATA(AiTown*,		AiTownArray,		0x006AA090);
 SCBW_DATA(AiExpandList*,AiActiveTownArray,	0x006AA050); // sizeof 0x64[0x8]
 
@@ -895,6 +895,7 @@ SCBW_DATA(Unit* const*, activePortraitUnit, 0x00597248);
 SCBW_DATA(AI_Main*, AIScriptController, 0x0068FEE8);
 SCBW_DATA(AiRegion* const*, AiRegionCaptains, 0x0069A604);
 SCBW_DATA(u32*, aiSupplyReserved, 0x006CA4BC);
+SCBW_DATA(AiScript*, first_active_aiscript, 0x0068C100);
 
 SCBW_DATA(ResourceAreaArray*, resource_areas, 0x00692688);
 

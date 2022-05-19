@@ -1032,8 +1032,8 @@ LABEL_23:
 					if (v7 != OrderId::Pickup2 && v7 != OrderId::Unload)
 					{
 						if (v7 != OrderId::MoveUnload
-							|| (v8 = helper::SAI_GetRegionIdFromPxEx(v2->orderTarget.pt.x, v2->orderTarget.pt.y),
-								v8 == helper::SAI_GetRegionIdFromPxEx(a1->orderTarget.pt.x, a1->orderTarget.pt.y)))
+							|| (v8 = helper::get_region_id(v2->orderTarget.pt.x, v2->orderTarget.pt.y),
+								v8 == helper::get_region_id(a1->orderTarget.pt.x, a1->orderTarget.pt.y)))
 						{
 							v9 = helper::getUnitDistanceToHalt(v2->sprite->position.y, a1, v2->sprite->position.x);
 							if (v9 < v12)

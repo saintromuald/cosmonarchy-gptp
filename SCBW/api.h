@@ -563,8 +563,10 @@ namespace scbw
 	void clear_creep(Box32 area);
 	u32 get_closest_resarea(Point16 position);
 	AiTown* get_closest_town(u32 player, Point16 position);
-	AiRegion* get_ai_region(u32 player, Point16 position);
-	void ai_defend(u32 player, Point16 position, u32 priority);
+	u32 get_region_id(Point16 position);
+	AiRegion* get_ai_region(u32 player, u32 index);
+	Region* get_region(u32 index);
+	void ai_defend(u32 player, u32 region_id, u32 priority, bool recurse);
 	void ask_for_ai_help(Unit* victim, Unit* attacker);
 	bool unit_id_is_capped_gas_structure(u16 unit_id);
 	bool unit_id_is_gas_structure(u16 unit_id);

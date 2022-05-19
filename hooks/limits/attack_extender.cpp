@@ -91,7 +91,7 @@ namespace hooks
 			attackTarget = helper::AI_PickAttackTarget_NoBuildings(region);
 			if (attackTarget)
 			{
-				targetRegion = &AiRegionCaptains[(u8)region->playerId][helper::SAI_GetRegionIdFromPxEx(
+				targetRegion = &AiRegionCaptains[(u8)region->playerId][helper::get_region_id(
 					attackTarget->sprite->position.x,
 					attackTarget->sprite->position.y)];
 				helper::AI_AssignMilitary(9, targetRegion);

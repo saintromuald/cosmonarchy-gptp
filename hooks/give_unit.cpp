@@ -1,6 +1,7 @@
 #include "give_unit.h"
 #include "globals.h"
 #include <SCBW/api.h>
+#include "base_layouts.h"
 
 namespace hooks
 {
@@ -126,19 +127,17 @@ namespace hooks
 				// Originally used AiActiveTownArray[player].first
 
 				AiTown* town = scbw::get_closest_town(player, unit->position);
-				if (scbw::unitIdIsTownCenter(unit->id) && (!town || town->resarea != scbw::get_closest_resarea(unit->position))) {
-					town = helper::create_ai_town(player, unit->position.x, unit->position.y);
-
-					switch (playerTable[unit->playerId].race) {
-						case RaceId::Terran: {
-							helper::Ai_Build(UnitId::TerranMason, 0, 12, town, 100);
-						} break;
-						case RaceId::Protoss: {
-							helper::Ai_Build(UnitId::ProtossScribe, 0, 12, town, 100);
-						} break;
-						case RaceId::Zerg: {
-							helper::Ai_Build(UnitId::ZergDroleth, 0, 12, town, 100);
-						} break;
+				if (default_ai_expansion_block[player] && scbw::unitIdIsTownCenter(unit->id) && (!town || town->resarea != scbw::get_closest_resarea(unit->position))) {
+					AiScript* aiscript = 0;
+					for (AiScript* it = first_active_aiscript; it; it = it->link.next) {
+						if (it->playerId == player) {
+							aiscript = it;
+							break;
+						}
+					}
+					if (aiscript) {
+						helper::ai_expand_to(aiscript, default_ai_expansion_block[aiscript->playerId], default_ai_expansion_block[aiscript->playerId]);
+						town = scbw::get_closest_town(player, unit->position);
 					}
 				}
 				if (town) {

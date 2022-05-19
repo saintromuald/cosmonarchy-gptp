@@ -810,7 +810,7 @@ namespace hooks
 			&& unit->mainOrderTimer == 0)
 		{ // 00478E0B
 			unit->mainOrderTimer = 0; // used to be 15
-			if (helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y) == helper::SAI_GetRegionIdFromPxEx(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+			if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == helper::get_region_id(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 			{
 				helper::make_to_hold_position(unit);
 				unit->orderToIdle();

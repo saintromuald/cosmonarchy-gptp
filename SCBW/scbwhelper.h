@@ -121,7 +121,7 @@ namespace helper
 
 	// For getRandYesSFX
 	s32 randGetSFXBetween(s32 soundIdMin, s32 soundIdMax);										// 0048E940
-	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);													// 0049C9F0
+	s16 get_region_id(s32 x, s32 y);													// 0049C9F0
 
 	// For AI_TrainUnit
 	char AI_TrainingWorker(Unit* result, Unit* parent);											// 00435700

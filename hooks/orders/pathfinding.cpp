@@ -91,9 +91,9 @@ namespace hooks
         {
             return false;
         }
-        pathing* paths = *SAI_Paths;
-        s32 regionId = helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y) << 6;
-        return paths->regions[helper::SAI_GetRegionIdFromPxEx(x, y)].groupIndex == *(s16*)((char*)&paths->regions[0].groupIndex + regionId);
+        RegionArray* paths = *SAI_Paths;
+        s32 regionId = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) << 6;
+        return paths->regions[helper::get_region_id(x, y)].groupIndex == *(s16*)((char*)&paths->regions[0].groupIndex + regionId);
     }
 
     // Hooked to investigate crashes - Pr0nogo
@@ -104,8 +104,8 @@ namespace hooks
             return false;
         }
         Sprite* patherSprite = pather->sprite;
-        pathing* paths = *SAI_Paths;
-        s32 regionId = helper::SAI_GetRegionIdFromPxEx(target->sprite->position.x, target->sprite->position.y) << 6;
-        return *(s16*)((char*)&paths->regions[0].groupIndex + regionId) == paths->regions[helper::SAI_GetRegionIdFromPxEx(patherSprite->position.x, patherSprite->position.y)].groupIndex;
+        RegionArray* paths = *SAI_Paths;
+        s32 regionId = helper::get_region_id(target->sprite->position.x, target->sprite->position.y) << 6;
+        return *(s16*)((char*)&paths->regions[0].groupIndex + regionId) == paths->regions[helper::get_region_id(patherSprite->position.x, patherSprite->position.y)].groupIndex;
     }    
 }

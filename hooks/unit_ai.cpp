@@ -80,7 +80,7 @@ namespace hooks
 			GPTP::logger << "null sprite of Create Broodling detected!" << '\n';
 		}
 
-		s32 regionId = helper::SAI_GetRegionIdFromPxEx(pX, pY);
+		s32 regionId = helper::get_region_id(pX, pY);
 		AiRegion* playerRegion = AiRegionCaptains[parent->playerId];
 		if (playerRegion == nullptr)
 		{
@@ -147,7 +147,7 @@ namespace hooks
 		{
 			if (newUnit->status & UnitStatus::IsHallucination)
 			{
-				helper::AI_AddMilitary(&AiRegionCaptains[(u8)newUnit->playerId][helper::SAI_GetRegionIdFromPxEx(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
+				helper::AI_AddMilitary(&AiRegionCaptains[(u8)newUnit->playerId][helper::get_region_id(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
 				return;
 			}
 			if (unitId != UnitId::TerranNuclearMissile && unitId != UnitId::ProtossWitness)

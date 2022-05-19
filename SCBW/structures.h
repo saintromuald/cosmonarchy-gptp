@@ -708,7 +708,7 @@ struct Region
 	u8		pathCount;				// 0x06
 	u8		neighborCount;			// 0x07
 	u32		field_8;				// 0x08
-	u32		neighbors;				// 0x0C
+	u16*	neighbors;				// 0x0C
 	u32		regionCenterX;			// 0x10
 	u32		regionCenterY;			// 0x14
 	u16		left;					// 0x18
@@ -718,10 +718,11 @@ struct Region
 	u32		properties;				// 0x20
 	u32		field_24;				// 0x24
 	u32		field_28;				// 0x28
-	u16		localData[14];			// 0x2C
+	u16		localData[10];			// 0x2C
 };
+C_ASSERT(sizeof(Region) == 64);
 
-struct pathing
+struct RegionArray
 {
 	u16 regionCount;
 	u8 _dc2[0x449fa];

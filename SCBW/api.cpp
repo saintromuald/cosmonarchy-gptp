@@ -2111,25 +2111,39 @@ namespace scbw
 		return best_town;
 	}
 
-	AiRegion* get_ai_region(u32 player, Point16 position) {
-		return &AiRegionCaptains[player][helper::SAI_GetRegionIdFromPxEx(position.x, position.y)];
+	u32 get_region_id(Point16 position) {
+		return helper::get_region_id(position.x, position.y);
 	}
 
-	void ai_defend(u32 player, Point16 position, u32 priority) {
-		AiRegion* region = scbw::get_ai_region(player, position);
-		switch (region->state) {
+	AiRegion* get_ai_region(u32 player, u32 index) {
+		return &AiRegionCaptains[player][index];
+	}
+
+	Region* get_region(u32 index) {
+		return &(*SAI_Paths)->regions[index];
+	}
+
+	void ai_defend(u32 player, u32 region_id, u32 priority, bool recurse) {
+		AiRegion* ai_region = scbw::get_ai_region(player, region_id);
+		switch (ai_region->state) {
 			case RegionState::Nothing:
 			case RegionState::EnemySighted:
 			case RegionState::TownRegionLow:
 			case RegionState::TownRegionHigh:
 			case RegionState::Defending:
 			case RegionState::ChaseAway: {
-				helper::AI_AssignMilitary(RegionState::Defending, region);
-				if (region->defensePriorityAdd < priority) {
-					region->defensePriorityAdd = priority;
+				helper::AI_AssignMilitary(RegionState::Defending, ai_region);
+				if (ai_region->defensePriorityAdd < priority) {
+					ai_region->defensePriorityAdd = priority;
 				}
-				region->defendTimeout = 0;
+				ai_region->defendTimeout = 0;
 			} break;
+		}
+		if (recurse) {
+			Region* region = scbw::get_region(region_id);
+			for (u32 i = 0; i < region->neighborCount; ++i) {
+				scbw::ai_defend(player, region->neighbors[i], priority, false);
+			}
 		}
 	}
 
@@ -2144,7 +2158,7 @@ namespace scbw
 			for (u32 i = 0; i < 8; ++i) {
 				if (playerTable[i].type == PlayerType::Computer && victim->isVisibleTo(i) &&
 					!scbw::isAlliedTo(i, attacker->playerId) && scbw::isAlliedTo(i, victim->playerId)) {
-					scbw::ai_defend(i, attacker->position, 120);
+					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 120, true);
 				}
 			}
 		}

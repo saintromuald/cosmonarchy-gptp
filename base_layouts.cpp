@@ -4,6 +4,8 @@
 u32 chk_cache_size;
 CHKUnit chk_cache[ChkCacheLimit];
 
+u32 default_ai_expansion_block[PlayerLimit];
+
 static BaseLayouts mainarea_base_layouts[PlayerLimit];
 static BaseLayouts resarea_base_layouts[PlayerLimit][ResAreaLimit];
 static BaseLayouts* active_base_layouts[ResAreaLimit];
@@ -177,6 +179,7 @@ static void sort_base_layouts(BaseLayouts* base_layouts) {
 }
 
 static void init_base_layouts() {
+	memset(default_ai_expansion_block, 0, sizeof(default_ai_expansion_block));
 	memset(mainarea_base_layouts, 0, sizeof(mainarea_base_layouts));
 	memset(resarea_base_layouts, 0, sizeof(resarea_base_layouts));
 	memset(active_base_layouts, 0, sizeof(active_base_layouts));

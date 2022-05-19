@@ -127,7 +127,7 @@ namespace hooks
 				parentAi9 = 1;
 			}
 LABEL_37:
-			v14 = &AiRegionCaptains[(u8)self->playerId][helper::SAI_GetRegionIdFromPxEx(self->sprite->position.x, self->sprite->position.y)];
+			v14 = &AiRegionCaptains[(u8)self->playerId][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
 			if (!parentAi9)
 			{
 				if (!dont_call_help)
@@ -374,7 +374,7 @@ LABEL_126:
 				{
 					continue;
 				}
-				s16 regionId = helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y);
+				s16 regionId = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
 				AiRegion* region = &AiRegionCaptains[player][regionId];
 				u8 aiType = guardAI->type;
 				if (aiType == 1)
@@ -451,7 +451,7 @@ LABEL_126:
 				}
 				s32 v6 = townUnitSprite->position.x;
 				s32 regionTown6 = townUnitGroundStrength;
-				if (helper::SAI_GetRegionIdFromPxEx(v6, townUnitSprite->position.y) == region->region)
+				if (helper::get_region_id(v6, townUnitSprite->position.y) == region->region)
 				{
 					region->regionAirStrength += townUnitAirStrength;
 					region->regionGroundStrength += regionTown6;
@@ -510,7 +510,7 @@ LABEL_126:
 	// Hooked to change functionality later - Pr0nogo
 	Unit* getClosestEnemyStructure(s32 x, s32 y, s32 playerId) // 004A0F90
 	{
-		s16 regionId = helper::SAI_GetRegionIdFromPxEx(x, y);
+		s16 regionId = helper::get_region_id(x, y);
 		Unit* firstUnit = *firstVisibleUnit;
 		s32 regionOffset = regionId << 6;
 		s32 regionCenterX = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterX + regionOffset);
@@ -562,7 +562,7 @@ LABEL_126:
 		{
 			return 0;
 		}
-		return helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y);
+		return helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
 	}
 
 	bool getBestSCVForRepairProc(Unit* repairman, Unit* repairTarget) // 004402B0
@@ -747,7 +747,7 @@ LABEL_126:
 		{
 			if (unit->mainOrderId)
 			{
-				s16 regionId = helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y);
+				s16 regionId = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
 				AiRegion* playerRegions = AiRegionCaptains[unit->playerId];
 				char regionState = playerRegions[regionId].state;
 				AiRegion* region = &playerRegions[regionId];
@@ -768,8 +768,8 @@ LABEL_126:
 			return 0;
 		}
 
-		u16 regionId = helper::SAI_GetRegionIdFromPxEx(unit2->sprite->position.x, unit2->sprite->position.y);
-		u16 regionId2 = helper::SAI_GetRegionIdFromPxEx(unit1->sprite->position.x, unit1->sprite->position.y);
+		u16 regionId = helper::get_region_id(unit2->sprite->position.x, unit2->sprite->position.y);
+		u16 regionId2 = helper::get_region_id(unit1->sprite->position.x, unit1->sprite->position.y);
 		return helper::AI_RegionsAreConnected(unit2->playerId, regionId2, regionId);
 	}
 
@@ -796,7 +796,7 @@ LABEL_126:
 			if (regionIdsCount)
 			{
 				memset(tileDistances, 99999999, *regionIdsCount);
-				pathing* _paths = *SAI_Paths;
+				RegionArray* _paths = *SAI_Paths;
 				do
 				{
 					u32 regionOffset = regionIds[iterator1] << 6;
@@ -1694,16 +1694,15 @@ LABEL_21:
 
 	// Hooked to remove a ridicilus condition that would stop AI from expanding in late game and to allow base layouts to control expand order
 	void ai_expand(AiScript* aiscript, u32 block, u32 amount) { // 0045B530
+		default_ai_expansion_block[aiscript->playerId] = block;
 		if (aiscript->town->resarea) {
 			u32 base_id = ai_get_next_custom_expo(aiscript->town);
-			if (base_id && helper::ai_try_expanding_to(base_id)) {
-				helper::ai_expand_to(aiscript, base_id, block);
-			} else {
+			if (!base_id || !helper::ai_try_expanding_to(base_id)) {
 				base_id = helper::ai_find_expansion(aiscript->playerId, aiscript->town->resarea, amount);
-				if (base_id) {
-					helper::ai_expand_to(aiscript, base_id, block);
-					scbw::ai_defend(aiscript->playerId, resource_areas->areas[base_id].pos, 115);
-				}
+			}
+			if (base_id) {
+				helper::ai_expand_to(aiscript, base_id, block);
+				scbw::ai_defend(aiscript->playerId, scbw::get_region_id(resource_areas->areas[base_id].pos), 115, true);
 			}
 		}
 	}
