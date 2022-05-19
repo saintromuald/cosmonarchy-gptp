@@ -140,13 +140,15 @@ namespace hooks
 		}
 
 		// Quarry, Iroleth, Pennant resource regeneration aura
-		if (unit->sprite != nullptr && unit->mainOrderId != OrderId::Die
-			&& (unit->id == UnitId::TerranQuarry
-				|| unit->id == UnitId::ZergIroleth
-				|| unit->id == UnitId::ProtossPennant))
+		u32 unit_id = unit->id;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->building.addon) {
+			unit_id = unit->building.addon->id;
+		}
+		if (unit->sprite && unit->mainOrderId != OrderId::Die
+			&& (unit_id == UnitId::TerranQuarry || unit_id == UnitId::ZergIroleth || unit_id == UnitId::ProtossPennant))
 		{
-			u32 radius;
-			switch (unit->id) {
+			u32 radius = 0;
+			switch (unit_id) {
 				case UnitId::TerranQuarry:
 				{
 					radius = 320;
@@ -159,17 +161,13 @@ namespace hooks
 				{
 					radius = 160;
 				} break;
-				default:
-				{
-					radius = 0;
-				} break;
 			}
 
 			scbw::UnitFinder(
-				unit->getX() - radius,
-				unit->getY() - radius,
-				unit->getX() + radius,
-				unit->getY() + radius
+				unit->position.x - radius,
+				unit->position.y - radius,
+				unit->position.x + radius,
+				unit->position.y + radius
 			).forEach([&](Unit* target)
 			{
 				if (unit == target)
