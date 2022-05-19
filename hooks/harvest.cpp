@@ -160,7 +160,7 @@ namespace hooks
 	}
 
 	// Hooked as part of the vespene rework. -Pr0nogo
-	bool unit_is_geyser_ex(Unit* node, Unit* worker) // 00468930
+	bool unit_is_geyser_ex(Unit* node, Unit* worker, bool ignore_completed) // 00468930
 	{
 		switch (node->id) {
 			case UnitId::ResourceVespeneGeyser: {
@@ -169,7 +169,7 @@ namespace hooks
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant: {
-				if (node->status & UnitStatus::Completed && node->playerId == worker->playerId) {
+				if ((ignore_completed || node->status & UnitStatus::Completed) && node->playerId == worker->playerId) {
 					return true;
 				}
 			} break;
@@ -318,7 +318,7 @@ namespace hooks
 		char worker_resource_type;
 		if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3)
 		{
-			if (unit_is_geyser_ex(node, worker) || node_id == UnitId::ResourceVespeneGeyser)
+			if (unit_is_geyser_ex(node, worker, true) || node_id == UnitId::ResourceVespeneGeyser)
 			{
 				worker_resource_type = worker->resourceType;
 				if (!worker_resource_type || worker_resource_type & ResourceType::Either)
@@ -495,6 +495,9 @@ namespace hooks
 		if (worker->mainOrderState) {
 			u32 is_movable = helper::is_unit_movable(worker);
 			if (worker->mainOrderState == 3 && is_movable) {
+				if (!(target->status & UnitStatus::Completed)) {
+					return;
+				}
 				if (target && helper::unit_is_geyser_ex(target, worker)) {
 					if (is_movable == 2) {
 						worker->mainOrderState = 0;
