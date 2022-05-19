@@ -109,7 +109,7 @@ namespace scbw
 	Thingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId, s32 elevationLevel)
 	{
 		Thingy* thingy = helper::createThingy(spriteId, x, y, playerId);
-		if (thingy != nullptr)
+		if (thingy)
 		{
 			thingy->sprite->elevationLevel = elevationLevel;
 			helper::setThingyVisibilityFlags(thingy);
@@ -341,14 +341,25 @@ namespace scbw
 
 	}
 
-	Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees)
-	{
+	Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees) {
 		f64 x1 = point.x - anchor.x;
 		f64 y1 = point.y - anchor.y;
 		auto radians = angle_degrees / 57.296;
 		f64 x2 = x1 * cos(radians) - y1 * sin(radians);
 		f64 y2 = x1 * sin(radians) + y1 * cos(radians);
-		Vector32 product;
+		Point16 product = {};
+		product.x = x2 + anchor.x;
+		product.y = y2 + anchor.y;
+		return product;
+	}
+
+	Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees) {
+		f64 x1 = point.x - anchor.x;
+		f64 y1 = point.y - anchor.y;
+		auto radians = angle_degrees / 57.296;
+		f64 x2 = x1 * cos(radians) - y1 * sin(radians);
+		f64 y2 = x1 * sin(radians) + y1 * cos(radians);
+		Vector32 product = {};
 		product.x = x2 + anchor.x;
 		product.y = y2 + anchor.y;
 		return product;
