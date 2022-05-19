@@ -1513,12 +1513,11 @@ namespace hooks
 
 		// Akistrokor - Blissful Embrace ability
 		if (unit->id == UnitId::ZergAkistrokor) {
-			if (unit->mainOrderId == OrderId::BlissfulEmbrace)
-			{
+			if (unit->mainOrderId == OrderId::BlissfulEmbrace) {
 				Unit* target = unit->orderTarget.unit;
 				if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
 					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->playerId != target->playerId) {
-					if (helper::isUnitInWeaponRange(unit, target)) {
+					if (unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
 						if (unit->orderSignal & 0x2) {
 							unit->orderSignal &= ~0x2;
 							helper::force_order_done(unit);
@@ -1526,14 +1525,10 @@ namespace hooks
 							scbw::blissful_embrace(target, unit->playerId);
 						}
 					}
-				}
-				else
-				{
+				} else {
 					helper::force_order_done(unit);
 				}
-			}
-			else
-			{
+			} else {
 				unit->orderSignal &= ~0x2;
 			}
 		}

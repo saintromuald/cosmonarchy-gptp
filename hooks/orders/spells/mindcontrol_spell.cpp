@@ -45,10 +45,12 @@ namespace hooks
 						unit->playIscriptAnim(IscriptAnimation::Unused2);
 						unit->mainOrderState = 1;
 						unit->mainOrderTimer = 24;
+						unit->status |= UnitStatus::CanNotReceiveOrders;
 					}
 					if (unit->mainOrderTimer) {
 						return;
 					}
+					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 
 					if (target->status & UnitStatus::IsHallucination)
 					{
@@ -57,7 +59,7 @@ namespace hooks
 					else
 					{
 						u32 overlayId = scbw::hasOverlay(target) + ImageId::MindControlHit_Small;
-						if (target->subunit != nullptr)
+						if (target->subunit)
 						{
 							target->subunit->sprite->createTopOverlay(overlayId, 0, 0, 0);
 						}
