@@ -335,7 +335,7 @@ namespace hooks
 					{
 						// 00477B5F:
 						u32 result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxSiegeModeTurret]);
-						if (!helper::isTargetWithinMinMovementRange(current_subunit, target, result_getMaxWpnRange))
+						if (!helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange))
 						{
 							jump_to_77BD7 = true;
 						}
@@ -344,7 +344,7 @@ namespace hooks
 							// 00477B77:
 							result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxTankModeTurret]);
 
-							if (helper::isTargetWithinMinMovementRange(current_subunit, target, result_getMaxWpnRange)
+							if (helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange)
 								|| helper::isUnitCritter(target))
 							{
 								jump_to_77BD7 = true;
@@ -407,7 +407,7 @@ namespace hooks
 									else
 									{
 										// 00477C63:
-										if (helper::isTargetWithinMinMovementRange(current_unit, target, unit->getMaxWeaponRange(current_unit_weaponId)))
+										if (helper::is_target_within_min_movement_range(current_unit, target, unit->getMaxWeaponRange(current_unit_weaponId)))
 										{
 											jump_to_77CA1 = true;
 										}

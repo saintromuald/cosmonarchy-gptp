@@ -590,5 +590,4 @@ namespace hooks
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}
-
 }

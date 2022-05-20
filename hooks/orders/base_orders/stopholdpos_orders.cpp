@@ -268,7 +268,7 @@ namespace hooks
 		//then disable the unit...I think
 		//That's why if it return true, nothing else is done
 		//since has already attacked
-		if (!helper::function_004770E0(unit))
+		if (!helper::attack_recent_attacker(unit))
 		{
 
 			if (unit->mainOrderTimer == 0)
@@ -294,7 +294,7 @@ namespace hooks
 					Unit* target = helper::findBestAttackTarget(unit);
 
 					if (target != nullptr)
-						//attack target I think, also used by function_004770E0
+						//attack target I think, also used by attack_recent_attacker
 						helper::order_to_attack_target(unit, target, 0, 1);
 
 				}

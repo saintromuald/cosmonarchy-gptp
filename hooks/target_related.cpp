@@ -47,7 +47,7 @@ namespace hooks
 		}
 
 		_maxRange = helper::getUnitMaxWeaponRange(_unit, _wpn);
-		ByteOperations::SetLowByte(v8, helper::isTargetWithinMinMovementRange(a2, _maxRange, finalUnit));
+		ByteOperations::SetLowByte(v8, helper::is_target_within_min_movement_range(a2, finalUnit, _maxRange));
 		return v8 == 0;
 	}
 
@@ -124,7 +124,7 @@ namespace hooks
 				return 0;
 		}
 		v8 = helper::getUnitMaxWeaponRange(a2, v5);
-		return helper::isTargetWithinMinMovementRange(v2, v8, v4);
+		return helper::is_target_within_min_movement_range(v2, v4, v8);
 	}
 
 	char canCastOrderedSpellNow(Unit* a1) // 00491DB0
@@ -228,7 +228,7 @@ namespace hooks
 			}
 			if (v6 >= (unsigned __int8)0x82
 				|| (v8 = weapons_dat::MinRange[v6]) != 0 && helper::isTargetWithinMinRange(v5, v8, target)
-				|| (v9 = helper::getUnitMaxWeaponRange(v1, v6), ByteOperations::SetLowByte(v10, (helper::isTargetWithinMinMovementRange(target, v9, v5), !v10))))
+				|| (v9 = helper::getUnitMaxWeaponRange(v1, v6), ByteOperations::SetLowByte(v10, (helper::is_target_within_min_movement_range(target, v5, v9), !v10))))
 			{
 LABEL_23:
 				if (helper::getRightClickActionOrder(v1) == 3)
@@ -305,7 +305,7 @@ LABEL_22:
 				}
 				if (v12 >= (unsigned __int8)0x82
 					|| (v14 = weapons_dat::MinRange[v12]) != 0 && helper::isTargetWithinMinRange(v11, v14, target)
-					|| (v15 = helper::getUnitMaxWeaponRange(v1, v12), ByteOperations::SetLowByte(v16, (helper::isTargetWithinMinMovementRange(target, v15, v11), !v16))))
+					|| (v15 = helper::getUnitMaxWeaponRange(v1, v12), ByteOperations::SetLowByte(v16, (helper::is_target_within_min_movement_range(target, v11, v15), !v16))))
 				{
 LABEL_63:
 					if (!helper::moveTowards(v1->orderTarget.unit, v1))
@@ -343,7 +343,7 @@ LABEL_62:
 					if (!v8 || !helper::isTargetWithinMinRange(v5, v8, target))
 					{
 						v9 = helper::getUnitMaxWeaponRange(v1, v6);
-						ByteOperations::SetLowByte(v10, helper::isTargetWithinMinMovementRange(target, v9, v5));
+						ByteOperations::SetLowByte(v10, helper::is_target_within_min_movement_range(target, v5, v9));
 						if (v10)
 							goto LABEL_64;
 					}
@@ -866,7 +866,7 @@ LABEL_34:
 					if (!v19 || !helper::isTargetWithinMinRange(v16, v19, targeta))
 					{
 						v20 = helper::getUnitMaxWeaponRange(v2, v17);
-						v21 = helper::isTargetWithinMinMovementRange(targeta, v20, v16);
+						v21 = helper::is_target_within_min_movement_range(targeta, v16, v20);
 						if (v21)
 						{
 							goto LABEL_76;
@@ -1010,7 +1010,7 @@ LABEL_65:
 									if (!airWeaponMinRange || !(helper::isTargetWithinMinRange(subunit, airWeaponMinRange, unitTarget)))
 									{
 										s32 airWeaponMaxRange = weapons_dat::MaxRange[airWeapon];
-										if (helper::isTargetWithinMinMovementRange(unitTarget, airWeaponMaxRange, subunit))
+										if (helper::is_target_within_min_movement_range(unitTarget, subunit, airWeaponMaxRange))
 										{
 											if (helper::techUseAllowed(unit, 0, unit->playerId) == 1
 											  && helper::getCurrentHitPointsPlusShields(unitTarget) >= 100)
@@ -1027,5 +1027,60 @@ LABEL_65:
 				}
 			}
 		}
+	}
+
+	// Hooked to add nullcheck. -Pr0nogo
+	s32 return_interceptor_if_cannot_attack(Unit* steward) // 00465810
+	{
+		s32 result = 0;
+		Unit* steward_target = steward->orderTarget.unit;
+		if (steward_target && !(steward_target->status & UnitStatus::Invincible) || helper::attack_recent_attacker(steward))
+		{
+			Unit* solarion = steward->interceptor.parent;
+			steward_target = steward->orderTarget.unit;
+			if (steward_target->sprite) {
+				steward->orderTarget.pt.x = steward_target->sprite->position.x;
+				steward->orderTarget.pt.y = steward_target->sprite->position.y;
+			}
+			if (!solarion)
+			{
+				solarion = steward;
+			}
+			u32 range = helper::get_target_acquisition_range_upgrade(solarion) + 2;
+			if (!solarion || helper::is_target_within_min_movement_range(steward_target, solarion, range * 32))
+			{
+				result = 1;
+			}
+			else
+			{
+				helper::issue_order_targeting_nothing(steward, OrderId::Return);
+				result = 0;
+			}
+		}
+		else
+		{
+			u8 steward_order_id = steward->mainOrderId;
+			steward->userActionFlags |= 1u;
+			if (steward_order_id)
+			{
+				while (1)
+				{
+					Order* order_tail = steward->orderQueueTail;
+					if (!order_tail)
+					{
+						break;
+					}
+					if (!orders_dat::CanBeInterrupted[order_tail->orderId] && order_tail->orderId != OrderId::Return)
+					{
+						break;
+					}
+					helper::remove_order_from_unit_queue(order_tail, steward);
+				}
+				helper::perform_another_order(OrderId::Return, 0, steward, UnitId::None, {}, 0);
+			}
+			helper::orders_nothing_2(steward);
+			result = 0;
+		}
+		return result;
 	}
 }

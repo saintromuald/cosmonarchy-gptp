@@ -2147,7 +2147,7 @@ namespace helper
 		}
 	}
 
-	bool isTargetWithinMinMovementRange(Unit* unit, Unit* target, u32 range)
+	bool is_target_within_min_movement_range(Unit* unit, Unit* target, u32 range)
 	{
 		const u32 Func_isTargetWithinMinMovementRange = 0x004763D0;
 		static b32 bPreResult;
@@ -4272,18 +4272,18 @@ namespace helper
 		}
 	}
 
-	Order* perform_another_order(u8 a1, s32 a2, Unit* a3, s16 a4, Point16 a5, Unit* a6)
+	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, s16 fow_unit_id, Point16 position_xy, Unit* target)
 	{
 		const u32 Func_performAnotherOrder = 0x004745F0;
 		static Order* result;
 		__asm {
 			PUSHAD
-			MOVZX BL, a1
-			MOV EDI, a2
-			MOV ESI, a3
-			MOVZX DX, a4
-			PUSH a5
-			PUSH a6
+			MOVZX BL, order_id
+			MOV EDI, order
+			MOV ESI, unit
+			MOVZX DX, fow_unit_id
+			PUSH position_xy
+			PUSH target
 			CALL Func_performAnotherOrder
 			MOV result, EAX
 			POPAD
@@ -4541,23 +4541,6 @@ namespace helper
 			POPAD
 		}
 		return result;
-	}
-
-	bool isTargetWithinMinMovementRange(Unit* a1, u32 a2, Unit* a3)
-	{
-		const u32 Func_isTargetWithinMinMovementRange = 0x004763D0;
-		static s32 result;
-		static bool result2;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			MOV EDI, a3
-			CALL Func_isTargetWithinMinMovementRange
-			MOV result, EAX
-			POPAD
-		}
-		return result2 = (bool)result;
 	}
 
 	// for isReadyToAttack
@@ -5683,7 +5666,7 @@ namespace helper
 		}
 	}
 
-	b32 function_004770E0(Unit* unit)
+	b32 attack_recent_attacker(Unit* unit)
 	{
 		const u32 Func_Sub4770E0 = 0x004770E0;
 		static b32 return_value;
@@ -5696,7 +5679,6 @@ namespace helper
 		}
 		return (return_value != 0);
 	}
-
 
 	b32 AI_OrderHeal(Unit* unit, Unit* target)
 	{
@@ -11727,6 +11709,19 @@ namespace helper
 			MOV EAX, resarea
 			CALL func_address
 			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char get_target_acquisition_range_upgrade(Unit* unit) {
+		static char result;
+		const u32 func_address = 0x00476000;
+		__asm {
+			PUSHAD
+			MOV EDX, unit
+			CALL func_address
+			MOV result, AL
 			POPAD
 		}
 		return result;

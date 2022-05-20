@@ -226,8 +226,8 @@ namespace helper
 	bool Ai_TryReturnHome(Unit* unit, u8 unknownByteValue);													// 00462EA0
 	void function_00465780(Unit* unit);																		// 00465780
 	Order* remove_order_from_unit_queue(Order* order, Unit* unit);											// 004742D0
-	void prepend_order_targeting_unit(Unit* unit, Unit* target, u8 orderId);									// 00474A70
-	bool isTargetWithinMinMovementRange(Unit* unit, Unit* target, u32 range);								// 004763D0
+	void prepend_order_targeting_unit(Unit* unit, Unit* target, u8 orderId);								// 00474A70
+	bool is_target_within_min_movement_range(Unit* unit, Unit* target, u32 range);							// 004763D0
 	bool function_00476610(Unit* unit, s32 x, s32 y);														// 00476610
 	bool isUnitInWeaponRange(Unit* unit, Unit* target);														// 00476870
 	void getWeaponBeginIscript(Unit* unit, IscriptAnimation::Enum anim);									// 00476ED0
@@ -241,7 +241,7 @@ namespace helper
 	bool isUnitVisible(Unit* unit);																			// 004E5DB0
 	bool isTargetVisible(Unit* unit, Unit* target);															// 004E5E30
 	u8 getRightClickActionOrder(Unit* unit);																// 004E5EA0
-	void set_resource_target(Unit* unit);															            // 004EB290
+	void set_resource_target(Unit* unit);															        // 004EB290
 	void make_to_hold_position(Unit* unit);																	// 004EB5B0
 	bool move_to_target(Unit* target, Unit* unit);															// 004EB720
 	bool SetMoveTarget_xy(Unit* unit, s32 x, s32 y);														// 004EB820
@@ -471,7 +471,7 @@ namespace helper
 	void AnimCloak(Unit* a1, s32 a2);																								// 0049B5B0
 	void refreshUnitVision(Unit* a1);																								// 004E5F30
 	void initUnitTrapDoodad(Unit* a1);																								// 004E6490
-	Order* perform_another_order(u8 a1, s32 a2, Unit* a3, s16 a4, Point16 a5, Unit* a6);											// 004745F0
+	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, s16 fow_unit_id, Point16 position_xy, Unit* target);		// 004745F0
 	void order(s32 a1, Unit* a2, s8 a3, Vector32* a4, Unit* a5, s32 a6);															// 00474810
 	u32 getUnitStrength(Unit* a1, s32 a2, bool a3);																					// 00431800
 
@@ -503,7 +503,6 @@ namespace helper
 
 	// for is_unit_target_out_of_max_range
 	s32 getUnitMaxWeaponRange(Unit* a1, unsigned __int8 a2);
-	bool isTargetWithinMinMovementRange(Unit* a1, u32 a2, Unit* a3);
 
 	// for isReadyToAttack
 	u32 getDistanceToUnit(Unit* a1, Unit* a2);
@@ -641,7 +640,7 @@ namespace helper
 	Unit* MedicHeal_TargetAcquire(Unit* medic);																						// 004422A0
 	u32 doMedicHeal(Unit* unit, Unit* target);																						// 00463C40
 	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2);														// 00476FC0
-	b32 function_004770E0(Unit* unit);																								// 004770E0
+	b32 attack_recent_attacker(Unit* unit);																								// 004770E0
 
 	//// medic_orders
 	b32 AI_OrderHeal(Unit* unit, Unit* target);																						// 00463530
@@ -1276,4 +1275,6 @@ namespace helper
 	SCBW_FUNC(0x0045B440, void __stdcall, ai_expand_to, AiScript* aiscript, u32 resarea, u32 block);
 
 	b32 ai_try_expanding_to(u32 resarea);																	// 00443A00
+
+	char get_target_acquisition_range_upgrade(Unit* unit);													// 00476000
 }
