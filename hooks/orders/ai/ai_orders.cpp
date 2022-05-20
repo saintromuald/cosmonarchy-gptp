@@ -4,6 +4,7 @@
 #include <SCBW/scbwdata.h>
 #include "logger.h"
 #include "base_layouts.h"
+#include "globals.h"
 
 namespace hooks
 {
@@ -1518,13 +1519,14 @@ LABEL_21:
 				//else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 60)
 				//{
 				//	helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
-				//	worker_ai->wait_timer = 0;
+				//	worker_ai->wait_timer = 10;
 				//	worker_ai->last_update_second = *elapsedTimeSeconds;
 				//	worker_ai->reassign_count += 1;
 				//	helper::AI_get_old_peons(worker_ai->town, 1u);
 				//}
 				else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 5)
 				{
+					UnitExt* workerExt = globals.get_unit_ext(worker);
 					if (worker->mainOrderId != OrderId::MiningMinerals
 					&& worker->mainOrderId != OrderId::ReturnMinerals
 					&& worker->mainOrderId != OrderId::HarvestGas3
@@ -1535,11 +1537,12 @@ LABEL_21:
 					&& worker->mainOrderId != OrderId::DroneStartBuild
 					&& worker->mainOrderId != OrderId::DroneBuild
 					&& worker->mainOrderId != OrderId::Pickup4
-					&& !(worker->status & UnitStatus::InTransport)) {
+					&& !(worker->status & UnitStatus::InTransport)
+					&& !workerExt->timers[TimerAI_KitingLeashTimer]) {
 						helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
 						worker_ai->wait_timer = 0;
 						worker_ai->last_update_second = *elapsedTimeSeconds;
-						helper::AI_get_old_peons(worker_ai->town, 1u);
+						helper::AI_get_old_peons(worker_ai->town, 1);
 					}
 				}
 

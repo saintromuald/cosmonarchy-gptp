@@ -427,8 +427,7 @@ static inline bool CanKite(Unit* unit)
 		&& unit->mainOrderId != OrderId::DroneStartBuild
 		&& !unitExt->values[ValueDisruptionFieldOn]
 		&& !(unit->status & UnitStatus::Burrowed)
-		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
-		&& unit->hitPoints > 10 * 256;
+		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
 }
 
 static inline bool UnitCanAttack(Unit* unit)
@@ -512,7 +511,15 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 		|| unit->mainOrderId == OrderId::CarrierFight
 		|| unit->mainOrderId == OrderId::ReaverFight
 		|| unit->mainOrderId == OrderId::Move
-		|| unit->mainOrderId == OrderId::MoveToMinerals;
+		|| unit->mainOrderId == OrderId::MoveToMinerals
+		|| unit->mainOrderId == OrderId::HarvestGas1;
+
+	if (CanKite(unit) && inCombat && unitExt->timers[TimerAI_KitingLeashTimer] == 1)
+	{
+		unitExt->timers[TimerAI_KitingCooldown] = 1 * 24;
+		unit->orderTo(OrderId::Move, unitExt->aiKitingOrigin.x, unitExt->aiKitingOrigin.y);
+		unit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
+	}
 
 	// TODO: find a way to prevent computer return, instead of doing this weak hardcode
 	if (CanKite(unit)
@@ -547,13 +554,6 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 			localGroup.forEach([&](Unit* localUnit)
 			{
 				UnitExt* localUnitExt = globals.get_unit_ext(localUnit);
-
-				if (localUnitExt->timers[TimerAI_KitingLeashTimer] == 1)
-				{
-					localUnitExt->timers[TimerAI_KitingCooldown] = 1 * 24;
-					localUnit->orderTo(OrderId::Move, localUnitExt->aiKitingOrigin.x, localUnitExt->aiKitingOrigin.y);
-					localUnit->issueQueuedOrderTarget(OrderId::ComputerAI, nullptr, false);
-				}
 
 				if (localUnit->mainOrderId == OrderId::AttackUnit
 					|| localUnit->mainOrderId == OrderId::CarrierFight
