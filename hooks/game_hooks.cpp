@@ -1517,7 +1517,7 @@ namespace hooks
 				helper::secondaryOrder_SpawningLarva(unit);
 			}
 
-			if (*elapsedTimeFrames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreadsCreep(unit->id, false)) {
+			if (*elapsedTimeFrames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreadsCreep(unit->id, true)) {
 				scbw::spread_custom_creep(unit);
 			}
 		}

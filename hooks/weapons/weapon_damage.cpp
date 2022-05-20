@@ -965,7 +965,7 @@ namespace hooks
 			scbw::update_custom_creep_disappearance(data.target);
 
 			// Remove creep from beneath
-			if (!helper::spreadsCreep(data.target->id, false)) {
+			if (!helper::spreadsCreep(data.target->id, true)) {
 				scbw::clear_creep(scbw::unit_area(data.target));
 			}
 
