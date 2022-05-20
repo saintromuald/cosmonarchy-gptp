@@ -1481,7 +1481,7 @@ LABEL_21:
 				}
 			}
 			u32 i = 0;
-			for (WorkerAi* town_worker_ai = town->workers; town_worker_ai; town_worker_ai = town_worker_ai->link.prev)
+			for (WorkerAi* worker_ai = town->workers; worker_ai; worker_ai = worker_ai->link.prev)
 			{
 				u8* target_resource_type = gas_count ? &gas_value : &mineral_value;
 				u32 max_count = 0;
@@ -1506,22 +1506,41 @@ LABEL_21:
 					}
 				}
 
-				Unit* town_unit = town_worker_ai->parent;
-				u8 unit_order = town_unit->mainOrderId;
+				Unit* worker = worker_ai->parent;
+				u8 unit_order = worker->mainOrderId;
 				if (unit_order == OrderId::ConstructingBuilding
 					|| unit_order == OrderId::Pickup4
 					|| unit_order == OrderId::DroneBuild
-					|| town_unit->status & UnitStatus::InTransport)
+					|| worker->status & UnitStatus::InTransport)
 				{
-					town_worker_ai->last_update_second = *elapsedTimeSeconds;
+					worker_ai->last_update_second = *elapsedTimeSeconds;
 				}
-				else if (*elapsedTimeSeconds - town_worker_ai->last_update_second >= 60)
+				//else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 60)
+				//{
+				//	helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
+				//	worker_ai->wait_timer = 0;
+				//	worker_ai->last_update_second = *elapsedTimeSeconds;
+				//	worker_ai->reassign_count += 1;
+				//	helper::AI_get_old_peons(worker_ai->town, 1u);
+				//}
+				else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 5)
 				{
-					helper::issue_order_targeting_nothing(town_unit, OrderId::ComputerAI);
-					town_worker_ai->wait_timer = 10;
-					town_worker_ai->last_update_second = *elapsedTimeSeconds;
-					town_worker_ai->reassign_count += 1;
-					helper::AI_get_old_peons(town_worker_ai->town, 1u);
+					if (worker->mainOrderId != OrderId::MiningMinerals
+					&& worker->mainOrderId != OrderId::ReturnMinerals
+					&& worker->mainOrderId != OrderId::HarvestGas3
+					&& worker->mainOrderId != OrderId::ReturnGas
+					&& worker->mainOrderId != OrderId::BuildTerran
+					&& worker->mainOrderId != OrderId::ConstructingBuilding
+					&& worker->mainOrderId != OrderId::BuildProtoss1
+					&& worker->mainOrderId != OrderId::DroneStartBuild
+					&& worker->mainOrderId != OrderId::DroneBuild
+					&& worker->mainOrderId != OrderId::Pickup4
+					&& !(worker->status & UnitStatus::InTransport)) {
+						helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
+						worker_ai->wait_timer = 0;
+						worker_ai->last_update_second = *elapsedTimeSeconds;
+						helper::AI_get_old_peons(worker_ai->town, 1u);
+					}
 				}
 
 				if (gas_count)
@@ -1529,7 +1548,7 @@ LABEL_21:
 					--gas_count;
 				}
 
-				town_worker_ai->target_resource = *target_resource_type;
+				worker_ai->target_resource = *target_resource_type;
 				result = *target_resource_type;
 
 				if (*target_resource_type != 1) {

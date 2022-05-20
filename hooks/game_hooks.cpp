@@ -327,12 +327,14 @@ namespace hooks
 		}
 		//hooks::ShowHealthBar(unit);
 
-		if (unit->mainOrderId == OrderId::ComputerAI && unit->unit_ai) {
-			switch (unit->unit_ai->type) {
-				case AiType::Building:
-				case AiType::Worker: {
-					unit->mainOrderTimer = 0;
-				} break;
+		if (unit->unit_ai) {
+			if (unit->mainOrderId == OrderId::ComputerAI) {
+				switch (unit->unit_ai->type) {
+					case AiType::Building:
+					case AiType::Worker: {
+						unit->mainOrderTimer = 0;
+					} break;
+				}
 			}
 		}
 
