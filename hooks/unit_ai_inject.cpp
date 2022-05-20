@@ -355,6 +355,21 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) create_building_ai_wrapper() { // 004044C0
+		static BuildingAiArray* ai_array;
+		static BuildingAi* result;
+		__asm {
+			MOV ai_array, ESI
+			PUSHAD
+		}
+		result = hooks::create_building_ai(ai_array);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -362,27 +377,28 @@ namespace hooks
 	void injectUnitAIHooks()
 	{
 		jmpPatch(AI_TrainingUnit_Wrapper,					0x004A2830, 2);
-//		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
+	//	jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
 		jmpPatch(AI_TrainingSimpleMilitary_Wrapper,			0x0043E280, 1);
 		jmpPatch(AI_TrainingWorker_Wrapper,					0x00435700, 0);
-//		jmpPatch(AI_TrainingNormal_Wrapper,					0x00435DB0, 0);
+	//	jmpPatch(AI_TrainingNormal_Wrapper,					0x00435DB0, 0);
 		jmpPatch(AI_AddWorkerStructureAI_Wrapper,			0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
-//		jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
+	//	jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
 
-//		jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
-//		jmpPatch(deleteBuildingAI_Wrapper,					0x00404500, 0);
-//		jmpPatch(deleteWorkerAI_nullcheck,					0x00404470, 0);
-//		jmpPatch(deleteBuildingAI_nullcheck,				0x00404500, 0);
+	//	jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);
+	//	jmpPatch(deleteBuildingAI_Wrapper,					0x00404500, 0);
+	//	jmpPatch(deleteWorkerAI_nullcheck,					0x00404470, 0);
+	//	jmpPatch(deleteBuildingAI_nullcheck,				0x00404500, 0);
 		jmpPatch(AI_RemoveUnitAI_Wrapper,					0x004A1E50, 0);
 		jmpPatch(AI_RemoveWorkerOrBuildingAI_Wrapper,		0x00434C90, 0);
-//		jmpPatch(AI_TrainingOverlord_Wrapper,				0x00435770, 1);
+	//	jmpPatch(AI_TrainingOverlord_Wrapper,				0x00435770, 1);
 		jmpPatch(AI_orderLurkerBurrow_Wrapper,				0x0043C230, 3);
+	//	jmpPatch(create_building_ai_wrapper,				0x004044C0,	3);
 
-		// Disable guards from being added to attack waves
-		jmpPatch((void*)0x0043BC1B,                 0x0043BB51, 1); 
+	// Disable guards from being added to attack waves
+		jmpPatch((void*)0x0043BC1B,							0x0043BB51, 1); 
 
-		// Reimplement the above jump patch, if you are hooking this!
-//		jmpPatch(hooks::Ai_FindNearestMilitaryOrGuardAi, 0x0043BAC0, 0);
+	// Reimplement the above jump patch if you are hooking this!
+	//	jmpPatch(hooks::Ai_FindNearestMilitaryOrGuardAi,	0x0043BAC0, 0);
 	}
 }

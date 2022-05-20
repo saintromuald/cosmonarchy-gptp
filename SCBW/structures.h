@@ -761,7 +761,7 @@ C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 
 struct BuildingAi
 {
-	Link<BuildingAi>	link;			// 0x0, 0x4
+	Link<BuildingAi> link;				// 0x0, 0x4
 	u8 type;							// 0x8
 	u8 trainQueueTypes[5];				// 0x9
 	u8 unkE[2];							// 0xE

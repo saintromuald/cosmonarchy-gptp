@@ -896,4 +896,16 @@ namespace hooks
 		}
 		return (UnitAi*)result;
 	}
+
+	BuildingAi* create_building_ai(BuildingAiArray* ai_array) { // 004044C0
+		BuildingAi* result = ai_array->first_free_building;
+		if (!result) {
+			return 0;
+		}
+		else {
+			result->link.next = 0;
+		}
+		result = result->link.next;
+		return result;
+	}
 }

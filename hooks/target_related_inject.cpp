@@ -235,6 +235,7 @@ namespace
 		result = hooks::return_interceptor_if_cannot_attack(steward);
 		__asm {
 			POPAD
+			MOV EAX, result
 			RETN
 		}
 	}
