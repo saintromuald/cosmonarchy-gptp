@@ -127,19 +127,22 @@ namespace hooks
 				// Originally used AiActiveTownArray[player].first
 
 				AiTown* town = scbw::get_closest_town(player, unit->position);
-				if (default_ai_expansion_block[player] && scbw::unitIdIsTownCenter(unit->id) && (!town || town->resarea != scbw::get_closest_resarea(unit->position))) {
-					AiScript* aiscript = 0;
-					for (AiScript* it = first_active_aiscript; it; it = it->link.next) {
-						if (it->playerId == player) {
-							aiscript = it;
-							break;
-						}
-					}
-					if (aiscript) {
-						helper::ai_expand_to(aiscript, default_ai_expansion_block[aiscript->playerId], default_ai_expansion_block[aiscript->playerId]);
-						town = scbw::get_closest_town(player, unit->position);
-					}
-				}
+				//u32 closest_resarea = scbw::get_closest_resarea(unit->position);
+				//if (default_ai_expansion_block[player] && scbw::unitIdIsTownCenter(unit->id) && (!town || town->resarea != closest_resarea)) {
+				//	AiScript* aiscript = 0;
+				//	for (AiScript* it = *first_active_aiscript; it; it = it->link.next) {
+				//		if (it->playerId == player) {
+				//			aiscript = it;
+				//			break;
+				//		}
+				//	}
+				//	if (aiscript) {
+				//		if (helper::ai_try_expanding_to(closest_resarea)) {
+				//			helper::ai_expand_to(aiscript, closest_resarea, default_ai_expansion_block[aiscript->playerId]);
+				//			town = scbw::get_closest_town(player, unit->position);
+				//		}
+				//	}
+				//}
 				if (town) {
 					helper::AI_AddWorkerStructureAI(unit, town);
 				}

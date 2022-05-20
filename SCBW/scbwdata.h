@@ -895,7 +895,7 @@ SCBW_DATA(Unit* const*, activePortraitUnit, 0x00597248);
 SCBW_DATA(AI_Main*, AIScriptController, 0x0068FEE8);
 SCBW_DATA(AiRegion* const*, AiRegionCaptains, 0x0069A604);
 SCBW_DATA(u32*, aiSupplyReserved, 0x006CA4BC);
-SCBW_DATA(AiScript*, first_active_aiscript, 0x0068C100);
+SCBW_DATA(AiScript**, first_active_aiscript, 0x0068C100);
 
 SCBW_DATA(ResourceAreaArray*, resource_areas, 0x00692688);
 
