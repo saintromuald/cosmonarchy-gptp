@@ -11,7 +11,7 @@ namespace hooks
 		if (target == nullptr
 		||	target->hitPoints >= units_dat::MaxHitPoints[target->id]
 		||	target->stasisTimer != 0
-		||	(unit->pAI != nullptr && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
+		||	(unit->unit_ai != nullptr && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
 		||	target->status & UnitStatus::InTransport
 		||  !(target->status & UnitStatus::Completed))
 		{
@@ -226,7 +226,7 @@ namespace hooks
 				else
 				{ //676FE
 					u8 orderId;
-					if (unit->pAI == nullptr)
+					if (unit->unit_ai == nullptr)
 					{
 						orderId = units_dat::ReturnToIdleOrder[unit->id];
 					}

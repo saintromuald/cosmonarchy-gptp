@@ -40,7 +40,7 @@ namespace hooks
                 unit->status &= 0xFFF7FFFF;
                 return 1;
             }
-            else if (unit->pAI && unit->mainOrderId != 96 && helper::AI_PrepareMovingTo(unit, target->sprite->position.x, target->sprite->position.y))
+            else if (unit->unit_ai && unit->mainOrderId != 96 && helper::AI_PrepareMovingTo(unit, target->sprite->position.x, target->sprite->position.y))
             {
                 scbw::print("AI");
                 return 0;

@@ -900,7 +900,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			{
 				Unit* target = allies.units[i];
 
-				if (target->pAI
+				if (target->unit_ai
 					&& helper::canEnterTransport(unit, target)
 					&& !IsMeleeAttacker(target->id)
 					&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
@@ -918,7 +918,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			for (u32 i = 0; i < bunkerCapacity; ++i)
 			{
 				Unit* target = unit->getLoadedUnit(i);
-				if (target && target->pAI)
+				if (target && target->unit_ai)
 				{
 					unit->orderTo(OrderId::Unload);
 				}
@@ -928,7 +928,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 		}
 	}
 
-	if (unit->pAI && !helper::isUnitLoaded(unit) &&
+	if (unit->unit_ai && !helper::isUnitLoaded(unit) &&
 		playerTable[unit->playerId].type != PlayerType::Human &&
 		playerTable[unit->playerId].type != PlayerType::HumanDefeated)
 	{

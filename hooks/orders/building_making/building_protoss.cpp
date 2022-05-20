@@ -7,7 +7,7 @@ namespace hooks
 {
 	void orders_ProbeBuild(Unit* unit)
 	{
-		if (unit->pAI != nullptr)
+		if (unit->unit_ai != nullptr)
 		{
 			unit->status |= UnitStatus::IsGathering;
 		}

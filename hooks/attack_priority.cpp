@@ -200,7 +200,7 @@ namespace hooks
 		}
 
 		// AI units have use default sight range if it is bigger
-		else if (unit->pAI)
+		else if (unit->unit_ai)
 		{
 			seekRange = std::max(seekRange, units_dat::SightRange[unit->id] * 32);
 		}
@@ -301,7 +301,7 @@ Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 	// Prepare for search
 	Unit* bestTarget = targets[priority][0];
 
-	if (attacker->pAI && attacker->id == UnitId::ZergSkryling)
+	if (attacker->unit_ai && attacker->id == UnitId::ZergSkryling)
 	{
 		// AI-controlled Scourges auto-target units with the most HP + shields
 		u32 bestTargetLife = bestTarget->getCurrentLifeInGame();

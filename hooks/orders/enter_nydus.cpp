@@ -46,7 +46,7 @@ namespace hooks
 			else
 			{ // 004EA253
 
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}
@@ -82,7 +82,7 @@ namespace hooks
 			}
 			else
 			{ // 004EA497
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}

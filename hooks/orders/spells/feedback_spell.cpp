@@ -67,7 +67,7 @@ namespace hooks
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
-			else if (unit->pAI != nullptr)
+			else if (unit->unit_ai != nullptr)
 			{
 				unit->orderComputer(OrderId::ComputerAI);
 			}

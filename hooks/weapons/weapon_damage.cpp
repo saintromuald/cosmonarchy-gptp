@@ -126,10 +126,10 @@ namespace hooks
 		// TODO: remove this
 		bool canDamage = true; // debug only!
 		// Ai_ReactToHit crash - null town
-		if (data.target->pAI != nullptr)
+		if (data.target->unit_ai != nullptr)
 		{
 			// Ai_ReactToHit crash - null town
-			WorkerAi* ai = (WorkerAi*)data.target->pAI;
+			WorkerAi* ai = (WorkerAi*)data.target->unit_ai;
 			if (ai->type == 2 || ai->type == 3)
 			{
 				if (ai->town == nullptr)
@@ -950,7 +950,7 @@ namespace hooks
 				});
 			}
 
-			WorkerAi* ai = ((WorkerAi*)data.target->pAI);
+			WorkerAi* ai = ((WorkerAi*)data.target->unit_ai);
 			AiTown* town = nullptr;
 			if (ai)
 			{

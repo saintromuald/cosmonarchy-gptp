@@ -38,10 +38,10 @@ namespace hooks
 		}
 		if (units_dat::BaseProperty[(u16)self->id] & UnitProperty::Building)
 		{
-			if (self->pAI)
+			if (self->unit_ai)
 			{
 				AIScriptController[self->playerId].lastIndividualUpdateTime = *elapsedTimeSeconds;
-				BuildingAi* selfBuildingAi = (BuildingAi*)self->pAI;
+				BuildingAi* selfBuildingAi = (BuildingAi*)self->unit_ai;
 				if (selfBuildingAi)
 				{
 					selfBuildingAi->town->inBattle = 1;
@@ -91,7 +91,7 @@ namespace hooks
 			helper::AI_OrderUnitCloaking(self);
 			helper::AI_OrderLurkerBurrow(self);
 		}
-		UnitAi* selfUnitAi = (UnitAi*)self->pAI;
+		UnitAi* selfUnitAi = (UnitAi*)self->unit_ai;
 		parentAi9 = 0;
 		childAi1 = 0;
 		if (!selfUnitAi)
@@ -136,7 +136,7 @@ LABEL_37:
 				}
 				if (!childAi1)
 				{
-					if (!self->pAI
+					if (!self->unit_ai
 						|| helper::AI_IsUnderAttack(self, 0)
 						|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
 						&& AIScriptController[(u8)self->playerId].AI_Flags.isUseMapSettings)
@@ -238,7 +238,7 @@ LABEL_126:
 													{
 														if (main_target_reactions)
 														{
-															if (self->pAI)
+															if (self->unit_ai)
 															{
 																if (helper::unitCanSeeCloakedTarget(actual_target, self))
 																{
@@ -259,7 +259,7 @@ LABEL_126:
 																}
 																helper::AI_UpdateAttackTarget(self, 0, 1, 0);
 															}
-															else if (self->pAI)
+															else if (self->unit_ai)
 															{
 																if (childAi0 != 159
 //																	|| (parentAi3 = AI_PrepareToFlee(actual_target, self), (s32)parentAi3 == *(s32*)&self->sprite->position)
@@ -367,7 +367,7 @@ LABEL_126:
 				{
 					continue;
 				}
-				GuardAi* guardAI = (GuardAi*)unit->pAI;
+				GuardAi* guardAI = (GuardAi*)unit->unit_ai;
 				if (!guardAI
 				  || helper::unitIsActiveTransport(unit)
 				  || unit->status & UnitStatus::InBuilding && !(AIScriptController[player].AI_Flags.isUseMapSettings))
@@ -379,15 +379,15 @@ LABEL_126:
 				u8 aiType = guardAI->type;
 				if (aiType == 1)
 				{
-					guardAI->parent->pAI = nullptr;
+					guardAI->parent->unit_ai = nullptr;
 					helper::AI_AddMilitary(region, guardAI->parent, 1);
-					guardAI->parent->pAI = nullptr;
+					guardAI->parent->unit_ai = nullptr;
 				}
 				else if (aiType != 4)
 				{
 					continue;
 				}
-				MilitaryAi* unitAI2 = (MilitaryAi*)unit->pAI;
+				MilitaryAi* unitAI2 = (MilitaryAi*)unit->unit_ai;
 				if (unitAI2)
 				{
 					if (unitAI2->type == 4)
@@ -568,7 +568,7 @@ LABEL_126:
 	bool getBestSCVForRepairProc(Unit* repairman, Unit* repairTarget) // 004402B0
 	{
 		bool result = false;
-		WorkerAi* repairmanAI = (WorkerAi*)repairman->pAI;
+		WorkerAi* repairmanAI = (WorkerAi*)repairman->unit_ai;
 		if (repairman->playerId == repairTarget->playerId
 			&& units_dat::BaseProperty[repairman->id] & UnitProperty::Worker
 			&& !(repairman->status & UnitStatus::InTransport)
@@ -596,7 +596,7 @@ LABEL_126:
 		}
 		// new end
 
-		MilitaryAi* unitAI = (MilitaryAi*)unit->pAI;
+		MilitaryAi* unitAI = (MilitaryAi*)unit->unit_ai;
 		if (unitAI == nullptr)
 		{
 			return false;
@@ -705,7 +705,7 @@ LABEL_126:
 	// Hooked because why not - Pr0nogo
 	bool AI_CanMineExtra(Unit* unit) // 00447A70
 	{
-		if (!unit->pAI)
+		if (!unit->unit_ai)
 		{
 			return 0;
 		}
@@ -949,13 +949,13 @@ LABEL_21:
 	// Hooked to nullcheck sprites - Pr0nogo
 	bool AI_CheckMilitaryGrouping(Unit* unit) // 00439550
 	{
-		UnitAi* unitAi = (UnitAi*)unit->pAI;
+		UnitAi* unitAi = (UnitAi*)unit->unit_ai;
 		if (!unitAi || unitAi->type != 4 || units_dat::BaseProperty[unit->id] & 1)
 		{
 			return 1;
 		}
 
-		MilitaryAi* militaryAi = (MilitaryAi*)unit->pAI;
+		MilitaryAi* militaryAi = (MilitaryAi*)unit->unit_ai;
 		if (militaryAi->parent != unit)
 		{
 			return 1;
@@ -1055,7 +1055,7 @@ LABEL_21:
 	s32 attack_recent_attacker(Unit* unit) // 004770E0
 	{
 		Unit* target_unit = unit->autoTargetUnit;
-		if (target_unit && !unit->pAI)
+		if (target_unit && !unit->unit_ai)
 		{
 			u8 target_player = 0;
 			if (target_unit->playerId == 11) // Neutral
@@ -1115,7 +1115,7 @@ LABEL_21:
 	// Hooked to help with AI implementation of the vespene overhaul. -Pr0nogo
 	void AI_worker_controller(Unit* worker) // 00435210
 	{
-		WorkerAi* worker_ai = (WorkerAi*)worker->pAI;
+		WorkerAi* worker_ai = (WorkerAi*)worker->unit_ai;
 		if (worker_ai)
 		{
 			if (worker_ai->wait_timer)

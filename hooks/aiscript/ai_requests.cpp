@@ -397,7 +397,7 @@ LABEL_36:
 			} break;
 		}
 
-		UnitAi* unitAIVar = (UnitAi*)unit->pAI;
+		UnitAi* unitAIVar = (UnitAi*)unit->unit_ai;
 		if (!unitAIVar || unitAIVar->type != AiType::Building)
 		{
 			return 1;
@@ -450,11 +450,11 @@ LABEL_36:
 			}
 			case RequestType_ConstructMorph:
 			{
-				return helper::AI_MorphBehavior(player, unit, unit->pAI);
+				return helper::AI_MorphBehavior(player, unit, unit->unit_ai);
 			}
 			case RequestType_Train:
 			{
-				helper::AI_TrainBehavior(unit, unit->pAI, player);
+				helper::AI_TrainBehavior(unit, unit->unit_ai, player);
 				return 1;
 			} break;
 			case RequestType_Upgrade:
@@ -469,7 +469,7 @@ LABEL_36:
 			} break;
 			case RequestType_PlaceAddon:
 			{
-				helper::AI_ConstructBehavior(unit, unit->pAI, player);
+				helper::AI_ConstructBehavior(unit, unit->unit_ai, player);
 				return 1;
 			} break;
 			case RequestType_MakeDetector:

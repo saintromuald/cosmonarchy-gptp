@@ -37,7 +37,7 @@ namespace hooks
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
-			else if (unit->pAI != nullptr)
+			else if (unit->unit_ai != nullptr)
 			{
 				unit->orderComputer(OrderId::ComputerAI);
 			}
@@ -80,12 +80,12 @@ namespace hooks
 			{
 				helper::hallucinate_scarabs(halUnit, source);
 			}
-			if (source->pAI)
+			if (source->unit_ai)
 			{
 				if (units_dat::BaseProperty[halUnit->id] & (UnitProperty::Worker | UnitProperty::Building)
 					|| scbw::unitIdIsZergSupply(source->id))
 				{
-					WorkerAi* sourceAI = (WorkerAi*)source->pAI;
+					WorkerAi* sourceAI = (WorkerAi*)source->unit_ai;
 					helper::AI_AddWorkerStructureAI(halUnit, sourceAI->town);
 				}
 				else

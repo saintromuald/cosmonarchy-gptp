@@ -17,7 +17,7 @@ namespace hooks
 			}
 			else
 			{
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}

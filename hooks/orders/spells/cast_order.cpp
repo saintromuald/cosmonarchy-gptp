@@ -80,7 +80,7 @@ namespace hooks
 			helper::orders_nothing_2(caster);
 			result = 0;
 		} else {
-			if (caster->pAI) {
+			if (caster->unit_ai) {
 				helper::issue_order_targeting_nothing(caster, 0x9Cu);
 			} else {
 				helper::issue_order_targeting_nothing(caster, units_dat::ReturnToIdleOrder[caster->id]);
@@ -309,7 +309,7 @@ namespace hooks
 							bool bStopHere = false;
 							// in case it was modified by a previous function, relinking
 							target = unit->orderTarget.unit;
-							if (unit->pAI != nullptr && target != nullptr)
+							if (unit->unit_ai != nullptr && target != nullptr)
 							{
 								if (orderWeaponId <= WeaponId::Maelstrom) // Maelstrom is the last spell-related weapon
 								{
@@ -383,7 +383,7 @@ namespace hooks
 									}
 								}
 								unit->mainOrderState = 2;
-								if (unit->pAI != nullptr)
+								if (unit->unit_ai != nullptr)
 								{
 									AIScriptController[unit->playerId].spellcasterTimer = 1;
 								}

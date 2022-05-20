@@ -216,11 +216,11 @@ namespace hooks
 		{
 
 			//since details about pAI structure are unknown, have to use this
-			u8* const pAI_subparameter = (u8*)(((s32)(unit->pAI)) + 8);
+			u8* const pAI_subparameter = (u8*)(((s32)(unit->unit_ai)) + 8);
 
 			unit->mainOrderId = OrderId::ComputerAI;
 
-			if (unit->pAI == nullptr)
+			if (unit->unit_ai == nullptr)
 			{
 
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Hero)

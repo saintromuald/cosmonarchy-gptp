@@ -169,7 +169,7 @@ namespace hooks
 			{
 
 				//9487D
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 					unit->orderComputer(OrderId::ComputerAI);
 				else
 					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
@@ -368,7 +368,7 @@ namespace hooks
 			{
 
 				//94A84
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 					unit->orderComputer(OrderId::ComputerAI);
 				else
 					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);

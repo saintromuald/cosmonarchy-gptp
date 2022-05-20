@@ -220,7 +220,7 @@ namespace hooks
 					}
 					helper::to_idle(v1);
 				}
-				else if (v1->pAI)
+				else if (v1->unit_ai)
 				{
 					if (helper::is_unit_movable(v1))
 						helper::to_idle(v1);
@@ -231,7 +231,7 @@ namespace hooks
 				v1->userActionFlags |= 1u;
 				helper::orders_nothing_2(v1);
 			}
-			else if (v1->pAI)
+			else if (v1->unit_ai)
 			{
 				helper::issue_order_targeting_nothing(v1, 0x9Cu);
 			}

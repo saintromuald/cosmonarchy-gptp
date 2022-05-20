@@ -580,7 +580,7 @@ namespace hooks
 						created_broodling->removeTimer = timerBeforeDisappearance;
 					}
 
-					if (attacker->pAI != nullptr)
+					if (attacker->unit_ai != nullptr)
 					{
 						helper::AI_training_unit(created_broodling, attacker);
 					}
@@ -815,7 +815,7 @@ LABEL_15:
 							v1->userActionFlags |= 1u;
 							helper::orders_nothing_2(v1);
 						}
-						else if (v1->pAI)
+						else if (v1->unit_ai)
 						{
 							helper::issue_order_targeting_nothing(v1, 0x9Cu);
 						}

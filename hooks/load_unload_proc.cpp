@@ -74,9 +74,9 @@ namespace hooks
 		helper::playSoundFromSource(SoundId::Misc_ZOvTra00_wav + unitRaceId, transport, 1, 0);
 		if (cargo_unit->id == UnitId::TerranMason)
 		{
-			if (cargo_unit->pAI != nullptr)
+			if (cargo_unit->unit_ai != nullptr)
 			{
-				u32* pAI_0x14 = (u32*)((u32)cargo_unit->pAI + 0x14);
+				u32* pAI_0x14 = (u32*)((u32)cargo_unit->unit_ai + 0x14);
 				if (*pAI_0x14 == (u32)cargo_unit)
 				{
 					*pAI_0x14 = NULL;
@@ -327,7 +327,7 @@ namespace hooks
 
 					helper::IgnoreAllScriptAndGotoIdle(unit);
 					helper::function_004E7E10(unit, 0);
-					if (unit->pAI == nullptr)
+					if (unit->unit_ai == nullptr)
 					{
 						unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
 					}

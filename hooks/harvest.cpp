@@ -294,7 +294,7 @@ namespace hooks
 				unit->userActionFlags |= 1u;
 				helper::orders_nothing_2(unit);
 			}
-			else if (unit->pAI)
+			else if (unit->unit_ai)
 			{
 				unit->orderComputer(OrderId::ComputerAI);
 			}
@@ -403,7 +403,7 @@ namespace hooks
 		}
 		else
 		{
-			if (worker->pAI)
+			if (worker->unit_ai)
 			{
 				helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
 			}
@@ -483,7 +483,7 @@ namespace hooks
 			if (worker->orderQueueHead) {
 				worker->userActionFlags |= 1;
 				helper::orders_nothing_2(worker);
-			} else if (worker->pAI) {
+			} else if (worker->unit_ai) {
 				helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
 			} else {
 				helper::issue_order_targeting_nothing(worker, units_dat::ReturnToIdleOrder[worker->id]);

@@ -221,10 +221,10 @@ namespace hooks
 							{
 								counter--;
 								unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
-								if (unit->pAI != nullptr && *(u8*)((u32)unit->pAI + 8) == 3)
+								if (unit->unit_ai != nullptr && *(u8*)((u32)unit->unit_ai + 8) == 3)
 								{
-									*(u8*)((u32)unit->pAI + unit->buildQueueSlot + 9) = *(u8*)((u32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
-									*(u32*)((u32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(u32*)((u32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
+									*(u8*)((u32)unit->unit_ai + unit->buildQueueSlot + 9) = *(u8*)((u32)unit->unit_ai + (unit->buildQueueSlot + 1) % 5 + 9);
+									*(u32*)((u32)unit->unit_ai + unit->buildQueueSlot * 4 + 0x18) = *(u32*)((u32)unit->unit_ai + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
 								}
 							} while (counter != 0);
 							unit->buildQueue[(unit->buildQueueSlot + 1) % 5] = UnitId::None;

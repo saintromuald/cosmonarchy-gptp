@@ -849,7 +849,7 @@ s32 Unit::getTotalHitPointsPlusShields()
 s32 Unit::isUnitAINonBuilding()
 {
 	assert(this);
-	UnitAi* ai = (UnitAi*)this->pAI;
+	UnitAi* ai = (UnitAi*)this->unit_ai;
 	MilitaryAi* mai = (MilitaryAi*)ai;
 	s32 result = 1;
 	if (!ai
@@ -931,7 +931,7 @@ void Unit::orderToIdle()
 	}
 	else
 	{
-		if (this->pAI)
+		if (this->unit_ai)
 		{
 			this->orderTo(OrderId::ComputerAI);
 		}

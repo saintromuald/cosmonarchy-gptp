@@ -22,7 +22,7 @@ namespace hooks
 
 				// set mainOrderState depending on the collision state with the connected building			
 				helper::function_004E8DA0(unit_created);
-				if (main_building->pAI != nullptr)
+				if (main_building->unit_ai != nullptr)
 				{
 					helper::AI_TrainingOverlord(unit_created, main_building);
 				}
@@ -143,7 +143,7 @@ namespace hooks
 							// set mainOrderState depending on the collision state with the connected building						
 							helper::function_004E8DA0(new_larva);
 
-							if (unit->pAI != nullptr)
+							if (unit->unit_ai != nullptr)
 							{
 								helper::AI_TrainingOverlord(new_larva, unit);
 							}

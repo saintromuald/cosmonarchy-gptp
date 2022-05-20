@@ -61,7 +61,7 @@ namespace hooks
 		}
 
 		// Separate check for AI-controlled units
-		if (target->pAI) {
+		if (target->unit_ai) {
 			if (target->mainOrderId == OrderId::RechargeShields1 || target->mainOrderId == OrderId::Pickup4) {
 				return 0;
 			}
@@ -97,7 +97,7 @@ namespace hooks
 			}
 			else
 			{
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 					unit->orderComputer(OrderId::ComputerAI);
 				else
 					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);

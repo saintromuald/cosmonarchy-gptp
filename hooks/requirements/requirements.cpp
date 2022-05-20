@@ -186,7 +186,7 @@ namespace hooks
 
 				case RequirementOpcodes::IsNotBurrowed: // Is not burrowed
 				{
-					if ((unit->status & UnitStatus::Burrowed) != 0 && unit->pAI == NULL)
+					if ((unit->status & UnitStatus::Burrowed) != 0 && unit->unit_ai == NULL)
 					{
 						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;

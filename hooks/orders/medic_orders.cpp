@@ -98,7 +98,7 @@ namespace hooks
 	void orders_Medic(Unit* unit)
 	{
 		bool bStopThere = false;
-		if (unit->pAI != nullptr && helper::AI_CastSpellBehaviour(unit, NULL) != 0)
+		if (unit->unit_ai != nullptr && helper::AI_CastSpellBehaviour(unit, NULL) != 0)
 		{
 			bStopThere = true;
 		}
@@ -136,16 +136,16 @@ namespace hooks
 			}
 			else
 			{ // 004639BD
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
-					if (*(u8*)((u32)unit->pAI + 8) != 1)
+					if (*(u8*)((u32)unit->unit_ai + 8) != 1)
 					{
 						unit->orderComputer(OrderId::ComputerAI);
 					}
-					else if (unit->sprite->position.x != *(u16*)((u32)unit->pAI + 0x12)
-						|| unit->sprite->position.y != *(u16*)((u32)unit->pAI + 0x14))
+					else if (unit->sprite->position.x != *(u16*)((u32)unit->unit_ai + 0x12)
+						|| unit->sprite->position.y != *(u16*)((u32)unit->unit_ai + 0x14))
 					{
-						unit->orderTo(OrderId::ComputerReturn, *(u16*)((u32)unit->pAI + 0x12), *(u16*)((u32)unit->pAI + 0x14));
+						unit->orderTo(OrderId::ComputerReturn, *(u16*)((u32)unit->unit_ai + 0x12), *(u16*)((u32)unit->unit_ai + 0x14));
 					}
 				}
 			}
@@ -195,7 +195,7 @@ namespace hooks
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
-			else if (unit->pAI != nullptr)
+			else if (unit->unit_ai != nullptr)
 			{
 				unit->orderComputer(OrderId::ComputerAI);
 			}

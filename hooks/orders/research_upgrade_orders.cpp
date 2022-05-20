@@ -110,7 +110,7 @@ namespace hooks
 			unit->building.upgradeType = UpgradeId::None;
 			unit->building.upgradeLevel = 0;
 
-			if (unit->pAI != nullptr)
+			if (unit->unit_ai != nullptr)
 			{
 
 				unit->userActionFlags |= 1;
@@ -249,7 +249,7 @@ namespace hooks
 
 			unit->building.techType = TechId::None;
 
-			if (unit->pAI != nullptr)
+			if (unit->unit_ai != nullptr)
 			{
 
 				unit->userActionFlags |= 1;

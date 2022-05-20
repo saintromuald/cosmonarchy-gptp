@@ -212,8 +212,8 @@ LABEL_36:
 			}
 			if (!(units_dat::ComputerAIInternal[v10] & 1))
 			{
-				v14 = (UnitAi*)v18->pAI;
-				military = (MilitaryAi*)v18->pAI;
+				v14 = (UnitAi*)v18->unit_ai;
+				military = (MilitaryAi*)v18->unit_ai;
 				if (!v12
 					|| v8 == 0x6A // UNI_FIRST_BLDG
 					|| v8 == UnitId::Special_MatureChrysalis
@@ -409,7 +409,7 @@ LABEL_12:
 								{
 									if (parentTown != 106 && parentTown != 150 && !orders_dat::UseWeaponTargeting[parentTown])
 									{
-										if (childTown->pAI)
+										if (childTown->unit_ai)
 										{
 											v10 = 0;
 											if (i)

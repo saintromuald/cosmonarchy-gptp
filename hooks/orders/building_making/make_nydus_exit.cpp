@@ -39,7 +39,7 @@ namespace hooks
 				nydus_canal->userActionFlags |= 1;
 				prepareForNextOrder(nydus_canal);
 			}
-			else if (nydus_canal->pAI != nullptr)
+			else if (nydus_canal->unit_ai != nullptr)
 			{
 				nydus_canal->orderComputer(OrderId::ComputerAI);
 			}

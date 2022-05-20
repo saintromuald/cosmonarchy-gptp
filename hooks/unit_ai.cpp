@@ -106,13 +106,13 @@ namespace hooks
 	// Hooked to investigate crashes - Pr0nogo
 	void AI_TrainingWorker(Unit* newUnit, Unit* otherUnit) // 00435700
 	{
-		WorkerAi* otherAI = (WorkerAi*)otherUnit->pAI;
+		WorkerAi* otherAI = (WorkerAi*)otherUnit->unit_ai;
 		if (otherAI)
 		{
 			if (otherUnit == newUnit)
 			{
 				helper::AI_RemoveFromTowns(newUnit);
-				WorkerAi* newAI = (WorkerAi*)newUnit->pAI;
+				WorkerAi* newAI = (WorkerAi*)newUnit->unit_ai;
 				if (newAI)
 				{
 					AiTown* newUnitTown = newAI->town;
@@ -128,7 +128,7 @@ namespace hooks
 							newUnitTown->main_building = nullptr;
 						}
 					}
-					newUnit->pAI = nullptr;
+					newUnit->unit_ai = nullptr;
 				}
 			}
 
@@ -152,8 +152,8 @@ namespace hooks
 			}
 			if (unitId != UnitId::TerranNuclearMissile && unitId != UnitId::ProtossWitness)
 			{
-				BuildingAi* parentUnitAi = (BuildingAi*)parentUnit->pAI;
-				BuildingAi* parentUnitAiBackup = (BuildingAi*)parentUnit->pAI;
+				BuildingAi* parentUnitAi = (BuildingAi*)parentUnit->unit_ai;
+				BuildingAi* parentUnitAiBackup = (BuildingAi*)parentUnit->unit_ai;
 				if (parentUnitAi)
 				{
 					s32 queueSlot = 0;
@@ -161,7 +161,7 @@ namespace hooks
 					{
 						queueSlot = 0;
 						helper::AI_RemoveFromTowns(newUnit);
-						BuildingAi* newUnitAi = (BuildingAi*)newUnit->pAI;
+						BuildingAi* newUnitAi = (BuildingAi*)newUnit->unit_ai;
 						if (newUnitAi)
 						{
 							AiTown* newUnitTown = newUnitAi->town;
@@ -178,7 +178,7 @@ namespace hooks
 								}
 							}
 							parentUnitAi = parentUnitAiBackup;
-							newUnit->pAI = 0;
+							newUnit->unit_ai = 0;
 						}
 					}
 					else if (parentUnit->id == unitId)
@@ -199,7 +199,7 @@ namespace hooks
 							region->neededGroundStrength = (u16)newUnit;
 							region->regionAirStrength = regionFullAir;
 							region->fullGroundStrength = regionEnemyAir;
-							newUnit->pAI = (void*)region;
+							newUnit->unit_ai = (UnitAi*)region;
 							return;
 						}
 						parentUnitAi->trainQueueTypes[queueSlot] = 1;
@@ -250,7 +250,7 @@ namespace hooks
 					ai->wait_timer = 0;
 					ai->reassign_count = 0;
 					unit->worker.targetResource.unit = 0;
-					unit->pAI = ai;
+					unit->unit_ai = (UnitAi*)ai;
 					++town->worker_count;
 
 					if (!town->inited)
@@ -288,7 +288,7 @@ namespace hooks
 				ai->trainQueueTypes[2] = 0;
 				ai->trainQueueTypes[3] = 0;
 				ai->trainQueueTypes[4] = 0;
-				unit->pAI = ai;
+				unit->unit_ai = (UnitAi*)ai;
 				if (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair || unit->id == UnitId::ZergHive || unit->id == UnitId::ZergSire)
 				{
 					if (unit->status & UnitStatus::Completed)
@@ -457,7 +457,7 @@ namespace hooks
 
 		if (playerTable[(u8)parent->playerId].type == PlayerType::Computer)
 		{
-			parentAI = (UnitAi*)parent->pAI;
+			parentAI = (UnitAi*)parent->unit_ai;
 			if (parentAI)
 			{
 				if (parentAI->type == 2)
@@ -473,7 +473,7 @@ namespace hooks
 				if (parent == result)
 				{
 					helper::AI_RemoveFromTowns(result);
-					removeBuilding = (BuildingAi*)result->pAI;
+					removeBuilding = (BuildingAi*)result->unit_ai;
 					if (removeBuilding)
 					{
 						removeBuildingTown = removeBuilding->town;
@@ -489,7 +489,7 @@ namespace hooks
 								removeBuildingTown->main_building = 0;
 							}
 						}
-						result->pAI = 0;
+						result->unit_ai = 0;
 					}
 				}
 				helper::AI_AddWorkerStructureAI(result, parentTown);
@@ -558,7 +558,7 @@ namespace hooks
 			}
 		}
 		helper::AI_MedicRemove(unit);
-		unit->pAI = nullptr;
+		unit->unit_ai = nullptr;
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
@@ -630,7 +630,7 @@ namespace hooks
 	s32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI) // 00434C90
 	{
 		helper::AI_RemoveFromTowns(unit);
-		UnitAi* unitAIVar = (UnitAi*)unit->pAI;
+		UnitAi* unitAIVar = (UnitAi*)unit->unit_ai;
 		if (unitAIVar)
 		{
 			u16 unitId = unit->id;
@@ -682,11 +682,11 @@ namespace hooks
 					helper::deleteAITownIfNeeded(town);
 				}
 			}
-			unit->pAI = nullptr;
+			unit->unit_ai = nullptr;
 			return 1;
 		}
 
-		if (unit->pAI)
+		if (unit->unit_ai)
 		{
 			return 1;
 		}
@@ -698,28 +698,28 @@ namespace hooks
 	{
 		if (playerTable[oldUnit->playerId].type == PlayerType::Computer)
 		{
-			UnitAi* oldUnitAI = (UnitAi*)oldUnit->pAI;
+			UnitAi* oldUnitAI = (UnitAi*)oldUnit->unit_ai;
 			if (oldUnitAI)
 			{
 				AiTown* oldUnitTown;
 				if (oldUnitAI->type == AiType::Worker)
 				{
-					WorkerAi* oldWorkerAi = (WorkerAi*)oldUnit->pAI;
+					WorkerAi* oldWorkerAi = (WorkerAi*)oldUnit->unit_ai;
 					oldUnitTown = oldWorkerAi->town;
 				}
 				else
 				{
-					BuildingAi* oldBuildingAi = (BuildingAi*)oldUnit->pAI;
+					BuildingAi* oldBuildingAi = (BuildingAi*)oldUnit->unit_ai;
 					oldUnitTown = oldBuildingAi->town;
 				}
 
 				if (oldUnit == newUnit)
 				{
 					helper::AI_RemoveFromTowns(newUnit);
-					UnitAi* newUnitAI = (UnitAi*)newUnit->pAI;
+					UnitAi* newUnitAI = (UnitAi*)newUnit->unit_ai;
 					if (newUnitAI)
 					{
-						BuildingAi* newBuildingAi = (BuildingAi*)newUnit->pAI;
+						BuildingAi* newBuildingAi = (BuildingAi*)newUnit->unit_ai;
 						AiTown* newUnitTown = newBuildingAi->town;
 						deleteBuildingAI(newBuildingAi, newUnitTown->free_buildings);
 						if (newUnitTown)
@@ -733,7 +733,7 @@ namespace hooks
 								newUnitTown->main_building = nullptr;
 							}
 						}
-						newUnit->pAI = nullptr;
+						newUnit->unit_ai = nullptr;
 					}
 				}
 
@@ -833,7 +833,7 @@ namespace hooks
 				{
 					goto next;
 				}
-				unit_ai = (MilitaryAi*)first_player_unit->pAI;
+				unit_ai = (MilitaryAi*)first_player_unit->unit_ai;
 				if (!unit_ai)
 				{
 					goto next;
@@ -883,7 +883,7 @@ namespace hooks
 						goto next;
 					}
 				}
-				best_ai = (MilitaryAi*)first_player_unit->pAI;
+				best_ai = (MilitaryAi*)first_player_unit->unit_ai;
 				min_distance = distance;
 
 			next:

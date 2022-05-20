@@ -103,7 +103,7 @@ namespace hooks
 
 		sightRange = unit->getSightRange(false) * 32;
 
-		if (unit->pAI != nullptr)
+		if (unit->unit_ai != nullptr)
 		{
 
 			distance = scbw::getDistanceFast(

@@ -24,7 +24,7 @@ namespace hooks
 			else
 			{
 				// 004656B2:
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}
@@ -98,7 +98,7 @@ namespace hooks
 			else
 			{
 				// 00465981
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}
@@ -327,7 +327,7 @@ namespace hooks
 					bool jump_to_77BD7 = false;
 
 					if (unit->id != UnitId::TerranPhalanxTankModeTurret
-						|| current_subunit->pAI == nullptr
+						|| current_subunit->unit_ai == nullptr
 						|| (current_subunit->canUseTech(TechId::TankSiegeMode, unit->playerId) != TRUE)
 						|| !helper::isUnitVisible(unit))
 						jump_to_77BD7 = true;
@@ -476,7 +476,7 @@ namespace hooks
 		Unit* target;
 		bool jump_to_77E48 = false;
 		bool jump_to_77E99 = false;
-		if (unit->pAI != nullptr)
+		if (unit->unit_ai != nullptr)
 		{
 			unit->orderTarget.unit = helper::findBestAttackTarget(unit); // 00477D13
 		}
@@ -591,7 +591,7 @@ namespace hooks
 				prepareForNextOrder(unit);
 			}
 			else
-				if (unit->pAI != nullptr) // 00477E6B
+				if (unit->unit_ai != nullptr) // 00477E6B
 				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}
@@ -617,7 +617,7 @@ namespace hooks
 				helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
 			}
 			else
-				if (unit->pAI == nullptr)
+				if (unit->unit_ai == nullptr)
 				{
 					unit->orderToIdle(); // 00477EC8
 				}
@@ -640,7 +640,7 @@ namespace hooks
 			}
 			else
 			{
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}
@@ -883,7 +883,7 @@ namespace hooks
 			// can be done
 			if (helper::Order_AttackUnit_Main(unit))
 			{ // 00479C16
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
 					helper::AI_AttackUnit(unit);
 				}

@@ -18,7 +18,7 @@ namespace hooks
 			helper::prepend_order_targeting_unit(unit, unitToLoad, OrderId::Pickup2);
 			prepareForNextOrder(unit);
 		}
-		else if (unit->pAI != nullptr)
+		else if (unit->unit_ai != nullptr)
 		{
 			Point16 pos = {0,0};
 			unit->userActionFlags |= 1;
@@ -59,7 +59,7 @@ namespace hooks
 			}
 			else
 			{
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}
@@ -93,7 +93,7 @@ namespace hooks
 			}
 			else
 			{
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}
@@ -105,7 +105,7 @@ namespace hooks
 		}
 		else
 		{ // 004E761F
-			if (unitToLoad->pAI == nullptr
+			if (unitToLoad->unit_ai == nullptr
 				|| unitToLoad->mainOrderId == OrderId::Pickup4)
 			{ // 004E762F
 				if (unit->mainOrderState == 0)
@@ -127,7 +127,7 @@ namespace hooks
 								{
 									unitToLoad->orderTo(OrderId::EnterTransport, unit);
 								}
-								if (unit->pAI != nullptr)
+								if (unit->unit_ai != nullptr)
 								{
 									unit->mainOrderState = 1;
 								}
@@ -191,7 +191,7 @@ namespace hooks
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
-			if (unit->pAI != nullptr)
+			if (unit->unit_ai != nullptr)
 			{
 				u32 groundHeightAtPxPos1 = scbw::getGroundHeightAtPos(unit->sprite->position.x, unit->sprite->position.y);
 				if (groundHeightAtPxPos1 != scbw::getGroundHeightAtPos(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
@@ -305,7 +305,7 @@ namespace hooks
 				scbw::print("target within min range");
 				helper::loadUnitProc(orderTarget, unitVar);
 				helper::issueOrderTargetingGround(orderTarget, OrderId::MoveUnload, unitVar->orderTarget.pt.x, unitVar->orderTarget.pt.y);
-				if (orderTarget->pAI)
+				if (orderTarget->unit_ai)
 				{
 					scbw::print("has AI");
 					helper::_doOrder(orderTarget, OrderId::Move, orderTarget->sprite->position.x, orderTarget->sprite->position.y, 0);
@@ -458,7 +458,7 @@ namespace hooks
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
-			else if (unit->pAI != nullptr)
+			else if (unit->unit_ai != nullptr)
 			{
 				unit->orderComputer(OrderId::ComputerAI);
 			}
@@ -532,7 +532,7 @@ namespace hooks
 				{
 					jump_to_E8195 = true;
 				}
-				else if (unit->pAI == nullptr
+				else if (unit->unit_ai == nullptr
 						|| unit->status & UnitStatus::GroundedBuilding)
 				{
 					jump_to_E81AD = true;
@@ -566,7 +566,7 @@ namespace hooks
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
 				}
-				else if (unit->pAI != nullptr)
+				else if (unit->unit_ai != nullptr)
 				{ // 004E81DE
 					unit->userActionFlags |= 1;
 					if (unit->mainOrderId == OrderId::Die)

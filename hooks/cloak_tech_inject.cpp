@@ -102,7 +102,7 @@ namespace
 				{
 					spend = false;
 				}
-				if (unit->pAI != nullptr)
+				if (unit->unit_ai != nullptr)
 				{
 					unitExt->values[ValueAICloakGimmick] = 1;
 				}
@@ -116,7 +116,7 @@ namespace
 			{
 				unit->setSecondaryOrder(OrderId::Cloak);
 			}
-			else if (unit->pAI != nullptr)
+			else if (unit->unit_ai != nullptr)
 			{
 				unitExt->values[ValueAICloakGimmick] = 0;
 			}

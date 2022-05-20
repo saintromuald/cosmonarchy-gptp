@@ -275,7 +275,7 @@ LABEL_22:
 			ByteOperations::SetLowByte(v3, helper::unitCanAttackTarget(v2, a1, 1));
 			if (!v3)
 			{
-				if (!(v1->status & 0x8000000) && !v1->pAI)
+				if (!(v1->status & 0x8000000) && !v1->unit_ai)
 					helper::prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, v1);
 				helper::to_idle(v1);
 				return;
@@ -385,7 +385,7 @@ LABEL_42:
 				v1->userActionFlags |= 1u;
 				helper::orders_nothing_2(v1);
 			}
-			else if (v1->pAI)
+			else if (v1->unit_ai)
 			{
 				helper::issue_order_targeting_nothing(v1, 0x9Cu);
 			}
@@ -777,7 +777,7 @@ LABEL_23:
 				}
 				else
 				{
-					if (v2->pAI)
+					if (v2->unit_ai)
 					{
 						v2->orderComputer(OrderId::ComputerAI);
 					}
@@ -790,7 +790,7 @@ LABEL_23:
 			}
 			else
 			{
-				if ( !v2->pAI )
+				if ( !v2->unit_ai )
 				{
 					helper::prependOrderTargetingGround(6u, v11->sprite->position.x, v11->sprite->position.y, v2);
 				}
@@ -884,7 +884,7 @@ LABEL_76:
 		}
 		if (helper::is_unit_target_out_of_max_range(v2, v15))
 		{
-			if (v2->pAI)
+			if (v2->unit_ai)
 			{
 				if (helper::isUnreachable(v2->orderTarget.unit, v2) || helper::is_unit_movable(v2) == 2)
 				{

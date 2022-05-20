@@ -816,7 +816,7 @@ LABEL_32:
 		v8 = a1->orderTarget.pt.y;
 		v3 = a1->orderTarget.unit;
 		v9 = a1->orderTarget.pt.x;
-		if (a1->pAI)
+		if (a1->unit_ai)
 		{
 			switch (v1)
 			{

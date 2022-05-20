@@ -313,7 +313,7 @@ namespace hooks
 							unit->userActionFlags |= 1;
 							prepareForNextOrder(unit);
 						}
-						else if (unit->pAI != nullptr) // 00467F6F
+						else if (unit->unit_ai != nullptr) // 00467F6F
 						{
 							unit->orderComputer(OrderId::ComputerAI);
 						}
@@ -372,7 +372,7 @@ namespace hooks
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
 				}
-				else if (unit->pAI != nullptr) // 00467F6F
+				else if (unit->unit_ai != nullptr) // 00467F6F
 				{
 					unit->orderComputer(OrderId::ComputerAI);
 				}
@@ -387,7 +387,7 @@ namespace hooks
 	// Go to build a not yet existing building
 	void orders_SCVBuild(Unit* unit)
 	{
-		if (unit->pAI != nullptr)
+		if (unit->unit_ai != nullptr)
 		{
 			unit->status |= UnitStatus::IsGathering;
 		}

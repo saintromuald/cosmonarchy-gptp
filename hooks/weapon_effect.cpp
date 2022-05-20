@@ -438,7 +438,7 @@ namespace hooks
 
 		if (bullet->hitFlags & 1) // Miss?
 		{
-			if (target->pAI == nullptr)
+			if (target->unit_ai == nullptr)
 			{
 				return;
 			}
