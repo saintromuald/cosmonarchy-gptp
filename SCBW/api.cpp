@@ -1451,7 +1451,7 @@ namespace scbw
 		}
 	}
 
-	bool unitid_is_available_without_an_addon(u16 id)
+	bool unit_id_is_available_without_an_addon(u16 id)
 	{
 		return id == UnitId::TerranMason
 			|| id == UnitId::TerranTalos

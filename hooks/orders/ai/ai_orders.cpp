@@ -1537,6 +1537,7 @@ LABEL_21:
 					&& worker->mainOrderId != OrderId::BuildTerran
 					&& worker->mainOrderId != OrderId::ConstructingBuilding
 					&& worker->mainOrderId != OrderId::BuildProtoss1
+					&& worker->mainOrderId != OrderId::BuildProtoss2
 					&& worker->mainOrderId != OrderId::DroneStartBuild
 					&& worker->mainOrderId != OrderId::DroneLand
 					&& worker->mainOrderId != OrderId::DroneBuild

@@ -424,10 +424,11 @@ static inline bool CanKite(Unit* unit)
 		&& unit->mainOrderId != OrderId::ConstructingBuilding
 		&& unit->mainOrderId != OrderId::BuildProtoss1
 		&& unit->mainOrderId != OrderId::BuildProtoss2
+		&& unit->mainOrderId != OrderId::DroneLand
 		&& unit->mainOrderId != OrderId::DroneStartBuild
+		&& unit->mainOrderId != OrderId::DroneBuild
 		&& !unitExt->values[ValueDisruptionFieldOn]
-		&& !(unit->status & UnitStatus::Burrowed)
-		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
+		&& (unit->id == UnitId::ZergLakizilisk || !(unit->status & UnitStatus::Burrowed));
 }
 
 static inline bool UnitCanAttack(Unit* unit)
@@ -447,24 +448,28 @@ static inline bool UnitCanAttack(Unit* unit)
 
 enum KiterType
 {
-	KiterTargeting,
+	KiterTargetingOnly,
 	KiterMelee,
 	KiterRanged,
 	KiterArtillery,
 	KiterFlagship,
 };
 
-KiterType GetKiterType(u32 unitId)
+KiterType GetKiterType(u32 unit_id)
 {
-	u32 range = GetMaxRange(unitId);
+	u32 range = GetMaxRange(unit_id);
 
-	switch(unitId)
+	if (units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
+		return KiterTargetingOnly;
+	}
+
+	switch(unit_id)
 	{
 		case UnitId::ZergLakizilisk:
 		case UnitId::TerranPhalanxSiegeMode:
 		{
 			// No kiting; Just smart targeting
-			return KiterTargeting;
+			return KiterTargetingOnly;
 		}
 
 		case UnitId::ProtossSolarion:
@@ -490,7 +495,7 @@ KiterType GetKiterType(u32 unitId)
 		}
 	}
 
-	if (IsMeleeAttacker(unitId))
+	if (IsMeleeAttacker(unit_id))
 	{
 		// Minor adjustments, while in melee range
 		return KiterMelee;
@@ -567,7 +572,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 					return;
 				}
 
-				if (GetKiterType(localUnit->id) != KiterTargeting)
+				if (GetKiterType(localUnit->id) != KiterTargetingOnly)
 				{
 					if (units_dat::BaseProperty[localUnit->id] & UnitProperty::Worker)
 					{
@@ -629,7 +634,7 @@ void KitingAi(Unit* unit, UnitExt* unitExt)
 				}
 			});
 		}
-		else if (GetKiterType(unit->id) != KiterTargeting)
+		else if (GetKiterType(unit->id) != KiterTargetingOnly)
 		{
 			u32 sync = 0;
 
