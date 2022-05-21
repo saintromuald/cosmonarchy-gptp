@@ -40,19 +40,16 @@ namespace hooks
 {
 	void doIrradiateDamage(Unit* irradiatedUnit)
 	{
-		//No splash if burrowed
 		if (irradiatedUnit->status & UnitStatus::Burrowed)
 		{
+			// No splash if burrowed
 			irradiateProc(irradiatedUnit, irradiatedUnit);
 		}
-
-		//If inside a transport, damage all units loaded within
 		else if (irradiatedUnit->status & UnitStatus::InTransport)
 		{
-
+			// If inside a transport, damage all units loaded within
 			Unit* transport = irradiatedUnit->connectedUnit;
-
-			if (transport != nullptr)
+			if (transport)
 			{
 				for (s32 i = 0; i < units_dat::SpaceProvided[transport->id]; ++i)
 				{
@@ -63,9 +60,9 @@ namespace hooks
 			}
 
 		}
-		//Find and iterate nearby units
 		else
 		{
+			// Find and iterate nearby units
 			scbw::UnitFinder(
 				irradiatedUnit->getX() - 160,
 				irradiatedUnit->getY() - 160,
@@ -359,7 +356,7 @@ namespace hooks
 			if (!unit->getOverlay(acidOverlayId))
 			{
 				unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
-				if (unit->subunit != nullptr)
+				if (unit->subunit)
 				{
 					unit = unit->subunit;
 				}
@@ -401,7 +398,7 @@ namespace hooks
 								return safetyUnburrowCheck(unit, target);
 							}
 							);
-							if (nearest != nullptr)
+							if (nearest)
 							{
 								canBurrow = false;
 							}

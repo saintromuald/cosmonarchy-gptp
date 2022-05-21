@@ -234,7 +234,8 @@ namespace hooks
 		}
 
 		// Add mining status, decrease the regeneration rate
-		if (unit->mainOrderId == OrderId::MiningMinerals)
+		if (unit->mainOrderId == OrderId::MiningMinerals ||
+			unit->mainOrderId == OrderId::HarvestGas3)
 		{
 			if (unit->orderTarget.unit)
 			{
