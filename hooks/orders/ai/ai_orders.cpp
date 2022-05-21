@@ -1528,8 +1528,10 @@ LABEL_21:
 				{
 					UnitExt* workerExt = globals.get_unit_ext(worker);
 					if (!orders_dat::CanBeInterrupted[worker->mainOrderId]
+					&& worker->mainOrderId != OrderId::CanHarvestOre
 					&& worker->mainOrderId != OrderId::MiningMinerals
 					&& worker->mainOrderId != OrderId::ReturnMinerals
+					&& worker->mainOrderId != OrderId::CanEnterGasMine
 					&& worker->mainOrderId != OrderId::HarvestGas3
 					&& worker->mainOrderId != OrderId::ReturnGas
 					&& worker->mainOrderId != OrderId::BuildTerran
