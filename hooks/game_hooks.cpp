@@ -1823,6 +1823,9 @@ namespace hooks
 					case UnitId::TerranBunker:
 						continue;
 				}
+				if (scbw::unit_id_is_gas_structure(target->id)) {
+					continue;
+				}
 				if (target->id == UnitId::ZergNydusCanal && target->building.nydusExit) {
 					continue;
 				}
