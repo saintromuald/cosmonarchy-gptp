@@ -104,38 +104,45 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	void AI_TrainingWorker(Unit* newUnit, Unit* otherUnit) // 00435700
+	void AI_TrainingWorker(Unit* unit, Unit* parent) // 00435700
 	{
-		WorkerAi* otherAI = (WorkerAi*)otherUnit->unit_ai;
-		if (otherAI)
-		{
-			if (otherUnit == newUnit)
-			{
-				helper::AI_RemoveFromTowns(newUnit);
-				WorkerAi* newAI = (WorkerAi*)newUnit->unit_ai;
-				if (newAI)
-				{
-					AiTown* newUnitTown = newAI->town;
-					if (newUnitTown && newAI->type == AiType::Building) // type check is new
-					{
-						helper::deleteBuildingAI((BuildingAi*)newAI, &newUnitTown->free_buildings); // moved within nullcheck for sanity
-						if (newUnit == newUnitTown->building_SCV)
-						{
-							newUnitTown->building_SCV = nullptr;
-						}
-						if (newUnit == newUnitTown->main_building)
-						{
-							newUnitTown->main_building = nullptr;
-						}
-					}
-					newUnit->unit_ai = nullptr;
-				}
-			}
+		AiTown* town = 0;
+		WorkerAi* parent_ai = (WorkerAi*)parent->unit_ai;
+		if (parent_ai && (parent_ai->type == AiType::Worker || parent_ai->type == AiType::Building)) {
+			town = parent_ai->town;
+		} else {
+			town = scbw::get_closest_town(unit->playerId, unit->position);
+		}
 
-			if (otherAI->town) // new
+		if (unit->unit_ai && unit->unit_ai->type != AiType::Building) {
+			helper::remove_unit_ai(unit, unit->unit_ai); // Sanity removal for cases when workers have military AI for some reason
+		}
+
+		if (parent == unit)
+		{
+			helper::AI_RemoveFromTowns(unit);
+			WorkerAi* unit_ai = (WorkerAi*)unit->unit_ai;
+			if (unit_ai)
 			{
-				helper::AI_AddWorkerStructureAI(newUnit, otherAI->town);
+				AiTown* town = unit_ai->town;
+				if (town && unit_ai->type == AiType::Building) // type check is new
+				{
+					helper::deleteBuildingAI((BuildingAi*)unit_ai, &town->free_buildings); // moved within nullcheck for sanity
+					if (town->building_SCV == unit)
+					{
+						town->building_SCV = 0;
+					}
+					if (town->main_building == unit)
+					{
+						town->main_building = 0;
+					}
+				}
+				unit->unit_ai = 0;
 			}
+		}
+
+		if (town) {
+			helper::AI_AddWorkerStructureAI(unit, town);
 		}
 	}
 

@@ -274,6 +274,12 @@ static bool unit_has_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 	return true;
 }
 
+static bool is_basic_townhall(u32 unit_id) {
+	return unit_id == UnitId::TerranCommandCenter ||
+		unit_id == UnitId::ProtossNexus || 
+		unit_id == UnitId::ZergHatchery;
+}
+
 static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder) {
 	AiTown* town = base_layouts->town;
 	u32 unit_id = placeholder->unit_id;
@@ -286,12 +292,24 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	}
 
 	// Prevent building non town halls when town hall is missing
-	if (!town->main_building && units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
-		if (unit_id != UnitId::TerranCommandCenter &&
-			unit_id != UnitId::ProtossNexus && 
-			unit_id != UnitId::ZergHatchery) {
+	if ((!town->main_building || !(town->main_building->status & UnitStatus::Completed)) && units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
+		// Ignore all non townhalls
+		if (!is_basic_townhall(unit_id)) {
 			return false;
 		}
+
+		// Ignore any town halls that aren't the first town hall
+		for (u32 i = 0; i < base_layouts->placeholders_count; ++i) {
+			Placeholder* other = &base_layouts->placeholders[i];
+			if (other == placeholder) {
+				break;
+			}
+			if (is_basic_townhall(placeholder->unit_id)) {
+				return false;
+			}
+		}
+
+		// TODO: maybe add custom get old peons handling
 	}
 
 	// Check gas availability
