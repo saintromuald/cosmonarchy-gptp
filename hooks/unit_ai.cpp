@@ -226,7 +226,10 @@ namespace hooks
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
 			if (town->free_workers) {
-				WorkerAi* ai = town->free_workers->first_free_worker;
+				WorkerAi* ai = 0;
+				if (town && town->free_workers) {
+					ai = town->free_workers->first_free_worker; // This nullcheck was added
+				}
 				if (ai)
 				{
 					result = ai;

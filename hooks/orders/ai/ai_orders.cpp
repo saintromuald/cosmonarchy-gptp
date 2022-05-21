@@ -1524,10 +1524,11 @@ LABEL_21:
 				//	worker_ai->reassign_count += 1;
 				//	helper::AI_get_old_peons(worker_ai->town, 1u);
 				//}
-				else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 5)
+				else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 2)
 				{
 					UnitExt* workerExt = globals.get_unit_ext(worker);
-					if (worker->mainOrderId != OrderId::MiningMinerals
+					if (!orders_dat::CanBeInterrupted[worker->mainOrderId]
+					&& worker->mainOrderId != OrderId::MiningMinerals
 					&& worker->mainOrderId != OrderId::ReturnMinerals
 					&& worker->mainOrderId != OrderId::HarvestGas3
 					&& worker->mainOrderId != OrderId::ReturnGas
@@ -1535,6 +1536,7 @@ LABEL_21:
 					&& worker->mainOrderId != OrderId::ConstructingBuilding
 					&& worker->mainOrderId != OrderId::BuildProtoss1
 					&& worker->mainOrderId != OrderId::DroneStartBuild
+					&& worker->mainOrderId != OrderId::DroneLand
 					&& worker->mainOrderId != OrderId::DroneBuild
 					&& worker->mainOrderId != OrderId::Pickup4
 					&& !(worker->status & UnitStatus::InTransport)

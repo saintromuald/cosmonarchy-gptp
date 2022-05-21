@@ -343,7 +343,6 @@ static void request_placeholder(BaseLayouts* base_layouts, Placeholder* placehol
 	if (merge != UnitId::None) {
 		Placeholder copy = *placeholder;
 		copy.unit_id = merge;
-		copy.priority += 1;
 		request_placeholder(base_layouts, &copy);
 	}
 

@@ -1563,8 +1563,7 @@ namespace hooks
 			pos.y - radius,
 			pos.x + radius,
 			pos.y + radius
-		).forEach([&](Unit* foundUnit)
-		{
+		).forEach([&](Unit* foundUnit) {
 			if (!(scbw::isAlliedTo(foundUnit->playerId, unit->playerId)))
 			{
 				return;
