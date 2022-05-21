@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	void AI_training_unit(Unit* result, Unit* parent, b32 preferSimpleMilitary = false);							// 004A2830
+	void AI_training_unit(Unit* result, Unit* parent, b32 preferSimpleMilitary = false);						// 004A2830
 	void AI_CreateNuke(Unit* silo, Unit* result);																// 0045B7A0
 	void AI_AddMilitary(AiRegion* region, Unit* unit, b32 alwaysThisRegion);									// 0043DA20
 	void AI_TrainingSimpleMilitary(Unit* result, Unit* parent);													// 0043E280
@@ -19,6 +19,7 @@ namespace hooks
 	void AI_orderLurkerBurrow(Unit* unit);																		// 0043C230
 
 	UnitAi* __stdcall Ai_FindNearestMilitaryOrGuardAi(AiRegion *ai_region, u32 a2, u32 a3, u32 x1, u32 y1, u32 a6); // 0043BAC0
+	BuildingAi* create_building_ai(BuildingAiArray* ai_array);													// 004044C0
 
 	void injectUnitAIHooks();
 }

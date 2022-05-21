@@ -224,6 +224,21 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) return_interceptor_if_cannot_attack_wrapper() { // 00465810
+		static Unit* steward;
+		static s32 result;
+		__asm {
+			MOV steward, EAX
+			PUSHAD
+		}
+		result = hooks::return_interceptor_if_cannot_attack(steward);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -235,16 +250,17 @@ namespace hooks
 //		nops(0x004EB176, 8);
 //		nops(0x004EB316, 2);
 
-//		jmpPatch(genericRightClickUnitProc2_Wrapper,	0x00455E00, 1);
-//		jmpPatch(genericRightClickUnitProc2_Wrapper,	0x004C20C0, 0);
-//		jmpPatch(unitCanSeeCloakedTarget_Wrapper,		0x00401D60, 4);
-//		jmpPatch(isTargetVisible_Wrapper,				0x004E5E30, 4);
-//		jmpPatch(isUnitVisible_Wrapper,					0x004E5DB0, 1);
-		jmpPatch(checkUnitVisibility_Wrapper,			0x00443390, 3);
-//		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
-		jmpPatch(unitCanAttackTarget_Wrapper,			0x00476730, 5);
-//		jmpPatch(orderAttackBehavior_Wrapper,			0x00478540, 0);
-		jmpPatch(AI_AttackUnit_Wrapper,					0x0043FFD0, 1);
+//		jmpPatch(genericRightClickUnitProc2_Wrapper,			0x00455E00, 1);
+//		jmpPatch(genericRightClickUnitProc2_Wrapper,			0x004C20C0, 0);
+//		jmpPatch(unitCanSeeCloakedTarget_Wrapper,				0x00401D60, 4);
+//		jmpPatch(isTargetVisible_Wrapper,						0x004E5E30, 4);
+//		jmpPatch(isUnitVisible_Wrapper,							0x004E5DB0, 1);
+		jmpPatch(checkUnitVisibility_Wrapper,					0x00443390, 3);
+//		jmpPatch(isUnitCloaking_Wrapper,						0x004916E0, 0);
+		jmpPatch(unitCanAttackTarget_Wrapper,					0x00476730, 5);
+//		jmpPatch(orderAttackBehavior_Wrapper,					0x00478540, 0);
+		jmpPatch(AI_AttackUnit_Wrapper,							0x0043FFD0, 1);
+		jmpPatch(return_interceptor_if_cannot_attack_wrapper,	0x00465810, 1);
 	}
 
 	void injectTargetRelatedHooks()

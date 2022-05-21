@@ -1272,6 +1272,11 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
+							else if ((*activePortraitUnit)->id == UnitId::ProtossSolarion &&  // Solarion Robotic Fleet passive
+								current_button->iconID == IconId::Interceptor)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 							else if ((*activePortraitUnit)->id == UnitId::ProtossStarSovereign &&  // Star Sovereign Intervention passive
 								current_button->iconID == IconId::AntimatterMissiles)
 							{
