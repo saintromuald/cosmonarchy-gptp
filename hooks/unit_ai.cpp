@@ -275,7 +275,10 @@ namespace hooks
 		else if ((units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser) ||
 			unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth)
 		{
-			BuildingAi* ai = helper::AI_CreateBuildingAi(&town->free_buildings);
+			BuildingAi* ai = 0;
+			if (town && town->free_buildings) {
+				ai = helper::AI_CreateBuildingAi(&town->free_buildings); // This nullcheck was added
+			}
 			if (ai) {
 				result = ai;
 				ai->type = 3;
