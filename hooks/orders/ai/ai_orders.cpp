@@ -1524,7 +1524,7 @@ LABEL_21:
 				//	worker_ai->reassign_count += 1;
 				//	helper::AI_get_old_peons(worker_ai->town, 1u);
 				//}
-				else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 2)
+				else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 5)
 				{
 					UnitExt* workerExt = globals.get_unit_ext(worker);
 					if (!orders_dat::CanBeInterrupted[worker->mainOrderId]
