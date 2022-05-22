@@ -126,7 +126,11 @@ namespace hooks
 			if ((unit->getMovableState() != 0) && (unit->orderSignal & 0x10))
 			{
 				unit->orderSignal -= 0x10;
-				helper::clear_building_from_tile_flag(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+
+				if (unit->orderTarget.pt.x >= 0 && unit->orderTarget.pt.x < mapTileSize->width * 32 && 
+					unit->orderTarget.pt.y >= 0 && unit->orderTarget.pt.y < mapTileSize->height * 32) { // New sanity check; Attempt on fixing clear tile flags
+					helper::clear_building_from_tile_flag(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				}
 
 				helper::end_collision_tracking(unit); // Recalculate position and update effect on surroundings?
 				helper::toggle_pathing_related(unit); // Toggle pathing-related stuff to prepare to no longer use pathing
