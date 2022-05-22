@@ -240,6 +240,7 @@ enum ExtValueId
 	ValueBlissfulEmbraceOriginalPlayer,
 	ValueBlissfulEmbraceOriginalHealth,
 	ValueDontBirthTwo,
+	ValuePlayingAddonWorkingAnim,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

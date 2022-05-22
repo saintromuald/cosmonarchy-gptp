@@ -542,7 +542,7 @@ namespace scbw
 	bool unitIsTrap(Unit* unit);
 	bool unitIsRangedAttacker(Unit* unit);
 	void playWorkAnimation(Unit* unit);
-	bool unitid_is_available_without_an_addon(u16 id);
+	bool unit_id_is_available_without_an_addon(u16 id);
 	void applyNewHallucination(Unit* unit, u8 playerId, u32 time);
 	bool weaponPiercesTargets(u16 weaponId);
 	void dirgeFuse(Unit* unit, UnitExt* unitExt);

@@ -1374,12 +1374,14 @@ namespace hooks
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->building.addon && unit->building.addon->status & UnitStatus::Completed)
 		{
 			u16 unit_id = unit->buildQueue[unit->buildQueueSlot];
-			if (unit_id != UnitId::None && !scbw::unitid_is_available_without_an_addon(unit_id))
+			if (unit_id != UnitId::None && !scbw::unit_id_is_available_without_an_addon(unit_id))
 			{
+				unitExt->values[ValuePlayingAddonWorkingAnim] = 1;
 				unit->building.addon->sprite->playIscriptAnim(IscriptAnimation::IsWorking);
 			}
-			else if (unit->sprite->images.head->animation != IscriptAnimation::WorkingToIdle)
+			else if (unitExt->values[ValuePlayingAddonWorkingAnim])
 			{
+				unitExt->values[ValuePlayingAddonWorkingAnim] = 0;
 				unit->building.addon->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 			}
 		}
