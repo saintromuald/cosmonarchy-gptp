@@ -114,13 +114,16 @@ namespace hooks
 			town = scbw::get_closest_town(unit->playerId, unit->position);
 		}
 
+		if (parent == unit) {
+			helper::AI_RemoveFromTowns(unit);
+		}
+
 		if (unit->unit_ai && unit->unit_ai->type != AiType::Building) {
 			helper::remove_unit_ai(unit, unit->unit_ai); // Sanity removal for cases when workers have military AI for some reason
 		}
 
 		if (parent == unit)
 		{
-			helper::AI_RemoveFromTowns(unit);
 			WorkerAi* unit_ai = (WorkerAi*)unit->unit_ai;
 			if (unit_ai)
 			{
