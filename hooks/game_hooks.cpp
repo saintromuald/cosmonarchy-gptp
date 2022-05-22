@@ -483,7 +483,7 @@ namespace hooks
 				for (u32 i = 0; i < corpses.size; ++i) {
 					Thingy* corpse = corpses.corpses[i];
 					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
-						Unit* egg = scbw::createUnitInGame(UnitId::ZergEgg, unit->playerId, corpse->sprite->position.x, corpse->sprite->position.y, unit);
+						Unit* egg = scbw::createUnitInGame(UnitId::ZergEgg, unit->playerId, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
 							egg->sprite->playIscriptAnim(IscriptAnimation::Walking, true);
 							egg->buildQueue[egg->buildQueueSlot] = UnitId::ZergSovroleth;
@@ -520,6 +520,7 @@ namespace hooks
 				}
 				if (unitExt->timers[TimerCorpseCocoonHatch] == 1) {
 					helper::replaceUnitWithType(unit, UnitId::ZergSovroleth);
+					helper::giveAi(unit);
 
 					helper::playMorphingCompleteSound(unit);
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
