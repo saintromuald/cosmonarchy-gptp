@@ -1349,6 +1349,30 @@ LABEL_21:
 		}
 	}
 
+	static bool unit_has_order(Unit* unit, u32 order_id) {
+		if (unit->mainOrderId == order_id) {
+			return true;
+		}
+		for (Order* order = unit->orderQueueHead; order; order = order->next) {
+			if (order->orderId == order_id) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	static bool unit_has_uninterruptable_order(Unit* unit) {
+		if (!orders_dat::CanBeInterrupted[unit->mainOrderId]) {
+			return true;
+		}
+		for (Order* order = unit->orderQueueHead; order; order = order->next) {
+			if (!orders_dat::CanBeInterrupted[order->orderId]) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// Hooked as part of the vespene overhaul. -Pr0nogo
 	char AI_reassign_worker_resources(AiTown* town) // 00435900, unused int arg
 	{
@@ -1532,21 +1556,23 @@ LABEL_21:
 				else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 5)
 				{
 					UnitExt* workerExt = globals.get_unit_ext(worker);
-					if (!orders_dat::CanBeInterrupted[worker->mainOrderId]
+					if (!unit_has_uninterruptable_order(worker)
 					&& worker->mainOrderId != OrderId::CanHarvestOre
 					&& worker->mainOrderId != OrderId::MiningMinerals
 					&& worker->mainOrderId != OrderId::ReturnMinerals
 					&& worker->mainOrderId != OrderId::CanEnterGasMine
 					&& worker->mainOrderId != OrderId::HarvestGas3
 					&& worker->mainOrderId != OrderId::ReturnGas
-					&& worker->mainOrderId != OrderId::BuildTerran
-					&& worker->mainOrderId != OrderId::ConstructingBuilding
-					&& worker->mainOrderId != OrderId::BuildProtoss1
-					&& worker->mainOrderId != OrderId::BuildProtoss2
-					&& worker->mainOrderId != OrderId::DroneStartBuild
-					&& worker->mainOrderId != OrderId::DroneLand
-					&& worker->mainOrderId != OrderId::DroneBuild
-					&& worker->mainOrderId != OrderId::Pickup4
+					&& worker->mainOrderId != OrderId::HarvestInterrupt
+					&& worker->mainOrderId != OrderId::HarvestFinish
+					&& !unit_has_order(worker, OrderId::BuildTerran)
+					&& !unit_has_order(worker, OrderId::ConstructingBuilding)
+					&& !unit_has_order(worker, OrderId::BuildProtoss1)
+					&& !unit_has_order(worker, OrderId::BuildProtoss2)
+					&& !unit_has_order(worker, OrderId::DroneStartBuild)
+					&& !unit_has_order(worker, OrderId::DroneLand)
+					&& !unit_has_order(worker, OrderId::DroneBuild)
+					&& !unit_has_order(worker, OrderId::Pickup4)
 					&& !(worker->status & UnitStatus::InTransport)
 					&& !workerExt->timers[TimerAI_KitingLeashTimer]) {
 						helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
