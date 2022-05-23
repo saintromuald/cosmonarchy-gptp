@@ -241,8 +241,8 @@ namespace hooks
 			case UnitId::ProtossClarion:
 			{
 				// Clarion Harmony Drive: gains increased movement speed based on shields
-				f64 fraction = (f64)unit->shields / ((f64)units_dat::MaxShieldPoints[unit->id] * 256);
-				speed *= 1.0 + fraction;
+				f64 fraction = (unit->shields / 256.0) / units_dat::MaxShieldPoints[unit->id];
+				speed *= 1.0 + fraction / 2;
 			} break;
 			case UnitId::TerranBlackjack:
 			{
