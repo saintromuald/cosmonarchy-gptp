@@ -1419,14 +1419,57 @@ LABEL_21:
 			helper::AI_resource_need_split(&gas_percentage, town_player, &minerals_percentage);
 			u32 gas_count = gas_percentage * town->worker_count / 100;
 
-			u8 race = playerTable[town_player].race;
-			u16 worker_id = UnitId::None;
-			switch (race) {
-				case RaceId::Terran:  worker_id = UnitId::TerranMason;   break;
-				case RaceId::Protoss: worker_id = UnitId::ProtossScribe; break;
-				case RaceId::Zerg:    worker_id = UnitId::ZergDroleth;   break;
+			u32 worker_count = 0;
+			switch (playerTable[town_player].race) {
+				case RaceId::Terran: {
+					worker_count += unitCountTable[UnitId::TerranMason].player[town_player];
+					worker_count += unitCountTable[UnitId::TerranTalos].player[town_player];
+				} break;
+				case RaceId::Protoss: {
+					worker_count += unitCountTable[UnitId::ProtossScribe].player[town_player];
+				} break;
+				case RaceId::Zerg: {
+					worker_count += unitCountTable[UnitId::ZergDroleth].player[town_player];
+				} break;
 			}
-			u32 worker_count = unitCountTable[worker_id].player[town_player];
+
+			// Lard special cases
+			if (gameGas[town_player] < 800)
+			{
+				if (worker_count < 20)
+				{
+					if (worker_count < 15)
+					{
+						if (worker_count < 10)
+						{
+							if (worker_count >= 5 && gas_count < 1)
+							{
+								gas_count = 1;
+							}
+						}
+						else
+						{
+							if (gas_count < 2)
+							{
+								gas_count = 2;
+							}
+						}
+					}
+					else
+					{
+						if (gas_count < 3)
+						{
+							gas_count = 3;
+						}
+					}
+				}
+				else if (gas_count < 4)
+				{
+					gas_count = 4;
+				}
+			}
+
+			// New limit
 			u32 geyser_count = 0;
 			u32 max_worker_count = 0;
 			for (u32 i = 0; i < 3; ++i) {
@@ -1444,43 +1487,7 @@ LABEL_21:
 			{
 				gas_count = max_worker_count;
 			}
-			else
-			{
-				if (gameGas[town_player] < 800)
-				{
-					if (worker_count < 20)
-					{
-						if (worker_count < 15)
-						{
-							if (worker_count < 10)
-							{
-								if (worker_count >= 5 && gas_count < 1)
-								{
-									gas_count = 1;
-								}
-							}
-							else
-							{
-								if (gas_count < 2)
-								{
-									gas_count = 2;
-								}
-							}
-						}
-						else
-						{
-							if (gas_count < 3)
-							{
-								gas_count = 3;
-							}
-						}
-					}
-					else if (gas_count < 4)
-					{
-						gas_count = 4;
-					}
-				}
-			}
+
 			u32 i = 0;
 			for (WorkerAi* worker_ai = town->workers; worker_ai; worker_ai = worker_ai->link.prev)
 			{
