@@ -1470,12 +1470,10 @@ LABEL_21:
 			}
 
 			// New limit
-			u32 geyser_count = 0;
 			u32 max_worker_count = 0;
 			for (u32 i = 0; i < 3; ++i) {
 				Unit* gas = town->gas_buildings[i];
 				if (gas && gas->status & UnitStatus::Completed) {
-					geyser_count += 1;
 					if (gas->id == UnitId::ResourceVespeneGeyser) {
 						max_worker_count += 2;
 					} else {
