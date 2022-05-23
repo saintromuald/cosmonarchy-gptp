@@ -525,8 +525,7 @@ namespace hooks
 					helper::playMorphingCompleteSound(unit);
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 					helper::initBuilding(unit, 1);
-					unit->playIscriptAnim(IscriptAnimation::Unused2);
-					unitExt->values[ValueDontBirthTwo] = true;
+					unitExt->values[ValueSpecialSovrolethBirth] = true;
 					unit->orderComputer(OrderId::ZergBirth);
 				}
 			} break;

@@ -495,7 +495,7 @@ namespace hooks
 		if (worker->mainOrderState) {
 			u32 is_movable = helper::is_unit_movable(worker);
 			if (worker->mainOrderState == 3 && is_movable) {
-				if (target && !(target->status & UnitStatus::Completed)) {
+				if (target && !(target->status & UnitStatus::Completed) && !worker->unit_ai) {
 					return;
 				}
 				if (target && helper::unit_is_geyser_ex(target, worker)) {

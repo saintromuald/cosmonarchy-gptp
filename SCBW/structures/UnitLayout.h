@@ -239,7 +239,7 @@ enum ExtValueId
 	ValueTalosAnimationTimer,
 	ValueBlissfulEmbraceOriginalPlayer,
 	ValueBlissfulEmbraceOriginalHealth,
-	ValueDontBirthTwo,
+	ValueSpecialSovrolethBirth,
 	ValuePlayingAddonWorkingAnim,
 
 	ValueAI_WorkerChosenForExpansion,

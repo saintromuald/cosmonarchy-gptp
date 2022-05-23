@@ -13,12 +13,18 @@ namespace hooks
 {
 	void orders_ZergBirth(Unit* unit)
 	{
+		UnitExt* unitExt = globals.get_unit_ext(unit);
 		if (!(unit->orderSignal & 4))
 		{
 			Image* current_image = unit->sprite->mainGraphic;
-			if (current_image->animation != IscriptAnimation::SpecialState1)
+
+			IscriptAnimation::Enum animation = IscriptAnimation::SpecialState1;
+			if (unitExt->values[ValueSpecialSovrolethBirth]) {
+				animation = IscriptAnimation::Unused2;
+			}
+			if (current_image->animation != animation)
 			{
-				current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+				current_image->playIscriptAnim(animation);
 			}
 		}
 
@@ -30,8 +36,7 @@ namespace hooks
 			unit->orderSignal &= ~4;
 			bool no_two_units = false;
 			auto origin = unit->eggOrigin;
-			UnitExt* unitExt = globals.get_unit_ext(unit);
-			if (origin == UnitId::ZergZethrokor || unitExt->values[ValueDontBirthTwo])
+			if (origin == UnitId::ZergZethrokor || unitExt->values[ValueSpecialSovrolethBirth])
 			{
 				no_two_units = true;
 			}
@@ -40,9 +45,10 @@ namespace hooks
 			{
 				bTwinEggOrCocoon = false;
 			}
-			if (unitExt->values[ValueDontBirthTwo]) {
+			if (unitExt->values[ValueSpecialSovrolethBirth]) {
 				bTwinEggOrCocoon = true;
 			}
+			unitExt->values[ValueSpecialSovrolethBirth] = 0;
 			Unit* unit2 = nullptr;
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units)
 			{
