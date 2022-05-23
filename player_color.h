@@ -508,7 +508,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Slow... Fat... Victorious",
 			"StuckInMudDuringWinter.jpeg",
 			"Foreign Dogwalkers",
-			"Somehow, I'm Still Viable!",
+			"Somehow Still Viable!",
 		},
 		// Raider
 		{
@@ -573,7 +573,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		{
 			"Knights of a Realm",
 			"7Gate Saviors",
-			"Pr0fane Naming Convention",
+			"Pr0faneNamingConvention",
 			"UNRELEASED NEMESIS AI",
 			"IskatuMEN!",
 			"The White-Nose Winner",
@@ -584,9 +584,9 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		{
 			"Solawrong!",
 			"Estranged Aviary",
-			"DarkDarkDark By the Way BTW",
+			"DarkDarkDark BTW",
 			"Infinite Bounce Foundation",
-			"With a Side of Fleet Beacon",
+			"Side of Fleet Beacon",
 			"Tiny \"Techrush\" Tony",
 			"Stargate SV7",
 			"Furious Angles",
@@ -600,13 +600,13 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"nullptr",
 			"A Vile Voidspeaker",
 			"Shadowcloak Skullcrusher",
-			"Z A R D O N",
+			"Ancient Artifact",
 		},
 		// General
 		{
 			"F.R.A.U.D.s",
 			"The Fraudclave",
-			"Obscure Childhood Reference #3",
+			"Obscure Reference #3",
 			"Incoherent Ape Noises",
 			"Anime Campaign Protagonist",
 			"NoMoreRoom_InMyBase_HELP",

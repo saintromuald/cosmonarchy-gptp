@@ -293,6 +293,8 @@ namespace hooks
 			// TODO: update to work with multi building select
 			Unit* selected = *activePortraitUnit;
 
+		//	scbw::printf("%u", selected->mainOrderId);
+
 			if (selected
 				&& selected->id == UnitId::ZergNydusCanal
 				&& selected->building.nydusExit
@@ -346,7 +348,7 @@ namespace hooks
 			{
 				// Fixes an issue where geyser would freeze, when upgrading the geyser while a harvester was mining
 				if (!(unit->status & UnitStatus::Completed)) {
-					helper::RemoveHarvesters(unit);
+					helper::remove_harvesters(unit);
 				}
 			} break;
 			case UnitId::TerranTalos:

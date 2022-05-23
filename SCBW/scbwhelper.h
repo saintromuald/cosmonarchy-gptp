@@ -1199,7 +1199,7 @@ namespace helper
 	void hide_unit_partial(Unit* unit, s32 hide_unit);													// 00493CA0
 
 	void Order_BeginHarvest(Unit* node, Unit* worker);													// 00468D10
-	Unit* RemoveHarvesters(Unit* node);																	// 00468770
+	Unit* remove_harvesters(Unit* node);																	// 00468770
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);										// 004686D0
 
 	s32 AI_SCV_repair_controller(Unit* unit, AiTown* town);												// 00433C70
@@ -1278,4 +1278,7 @@ namespace helper
 	b32 ai_try_expanding_to(u32 resarea);																	// 00443A00
 
 	char get_target_acquisition_range_upgrade(Unit* unit);													// 00476000
+
+	Unit* let_next_unit_mine(Unit* worker);																	// 00468970
+	s32 begin_harvest(Unit* worker, Unit* node);															// 00468C70
 }
