@@ -184,6 +184,29 @@ namespace {
 			RETN
 		}
 	}
+	
+	void __declspec(naked) remove_from_current_harvesters_wrapper() { // 004686D0
+		static Unit* result;
+		static Unit* worker;
+		static Unit* node;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x8]
+			MOV node, EAX
+			POP EAX
+			MOV worker, EAX
+			PUSHAD
+		}
+		result = hooks::remove_from_current_harvesters(worker, node);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+		}
+	}
 }
 
 namespace hooks
@@ -201,5 +224,6 @@ namespace hooks
 		jmpPatch(let_next_unit_mine_Wrapper,								0x00468970, 1);
 		jmpPatch(orders_entries_move_to_harvest_obscured_Wrapper,			0x00469500, 4);
 		jmpPatch(remove_references_node_worker_wrapper,						0x00468EF0,	4);
+		jmpPatch(remove_from_current_harvesters_wrapper,					0x004686D0,	4);
 	}
 }

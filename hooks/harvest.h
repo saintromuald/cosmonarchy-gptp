@@ -14,6 +14,7 @@ namespace hooks
 	Unit* let_next_unit_mine(Unit* worker);											// 00468970
 	void orders_entries_move_to_harvest_obscured(Unit* worker);						// 00469500
 	Unit* remove_references_node_worker(Unit* node, Unit* worker);					// 00468EF0
+	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);					// 004686D0
 
 	void injectHarvestResource();
 }

@@ -563,4 +563,23 @@ namespace hooks
 		}
 		return result;
 	}
+
+	// Hooked to investigate obscure linked list crash. -Veeq7
+	Unit* remove_from_current_harvesters(Unit* worker, Unit* node) {
+		scbw::printf("REMOVE!");
+		Unit* prev = worker->worker.harvest_link.prev;
+		Unit* next = worker->worker.harvest_link.next;
+		if (prev) {
+			prev->worker.harvest_link.prev = next;
+		} else {
+			node->building.resource.nextGatherer = next;
+		}
+		if (next) {
+			next->worker.harvest_link.next = prev;
+		}
+		worker->worker.harvest_target = 0;
+		worker->worker.harvest_link.next = 0;
+		worker->worker.harvest_link.prev = 0;
+		return worker;
+	}
 }
