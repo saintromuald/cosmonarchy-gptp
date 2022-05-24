@@ -347,7 +347,7 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 	}
 	else
 	{
-		u32 weaponId = 0;
+		u32 weaponId = WeaponId::None;
 		if (source->status & UnitStatus::InAir)
 		{
 			weaponId = target->getAirWeapon();
