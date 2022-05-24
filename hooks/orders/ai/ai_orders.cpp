@@ -1511,13 +1511,14 @@ LABEL_21:
 			}
 
 			u32 i = 0;
+			u32 max_count = 0;
 			for (WorkerAi* worker_ai = town->workers; worker_ai; worker_ai = worker_ai->link.prev)
 			{
 				u8* target_resource_type = gas_count ? &gas_value : &mineral_value;
-				u32 max_count = 0;
-				if (*target_resource_type != 1) {
-					while (!max_count) {
+				if (!max_count) {
+					while (*target_resource_type != 1) {
 						Unit* gas = town->gas_buildings[*target_resource_type - 2];
+						max_count = 0;
 						if (gas && gas->status & UnitStatus::Completed) {
 							if (gas->id == UnitId::ResourceVespeneGeyser) {
 								max_count = 2;
@@ -1525,7 +1526,9 @@ LABEL_21:
 								max_count = 3;
 							}
 						}
-						if (!max_count) {
+						if (max_count) {
+							break;
+						} else {
 							*target_resource_type += 1;
 							if (*target_resource_type > 4)
 							{
@@ -1594,6 +1597,7 @@ LABEL_21:
 					if (i++ >= max_count)
 					{
 						i = 0;
+						max_count = 0;
 						*target_resource_type += 1;
 						if (*target_resource_type > 4)
 						{
