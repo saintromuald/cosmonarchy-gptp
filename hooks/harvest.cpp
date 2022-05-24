@@ -209,13 +209,6 @@ namespace hooks
 						{
 							helper::order_targeting_nothing(resource_return_order, unit, 0);
 						}
-						else if (unit->orderQueueHead->orderId == OrderId::HarvestFinish)
-						{
-							// Fix HarvestFinish order freeze during Vespene Geyser mining
-							// May cause issues if this is actually used for something important.
-							// By the time units have HarvestFinish when harvesting from geysers, they no longer have a resource target. We could check for resource link instead...
-							unit->orderQueueHead->orderId = resource_return_order;
-						}
 						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::ResetCollision2);
 						helper::force_order_done(unit);
 					}
@@ -385,7 +378,7 @@ namespace hooks
 			return 0;
 		}
 		node->building.resource.gatherQueueCount = 1;
-		worker->worker.isCarryingSomething = 1;
+		worker->worker.is_harvesting = 1;
 		worker->worker.harvest_target = node;
 
 		u8 harvest_order_id = OrderId::HarvestGas3;
