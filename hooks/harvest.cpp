@@ -569,12 +569,12 @@ namespace hooks
 		Unit* prev = worker->worker.harvest_link.prev;
 		Unit* next = worker->worker.harvest_link.next;
 		if (prev) {
-			prev->worker.harvest_link.prev = next;
+			prev->worker.harvest_link.next = next;
 		} else {
 			node->building.resource.nextGatherer = next;
 		}
 		if (next) {
-			next->worker.harvest_link.next = prev;
+			next->worker.harvest_link.prev = prev;
 		}
 		worker->worker.harvest_target = 0;
 		worker->worker.harvest_link.next = 0;
