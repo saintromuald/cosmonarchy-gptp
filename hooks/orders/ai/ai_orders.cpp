@@ -1548,28 +1548,30 @@ LABEL_21:
 				//	worker_ai->reassign_count += 1;
 				//	helper::AI_get_old_peons(worker_ai->town, 1u);
 				//}
-				else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 30)
+				else
 				{
+					u32 timer = 5;
+					if (unit_has_uninterruptable_order(worker)
+						|| worker->mainOrderId == OrderId::CanHarvestOre
+						|| worker->mainOrderId == OrderId::MiningMinerals
+						|| worker->mainOrderId == OrderId::ReturnMinerals
+						|| worker->mainOrderId == OrderId::CanEnterGasMine
+						|| worker->mainOrderId == OrderId::HarvestGas3
+						|| worker->mainOrderId == OrderId::ReturnGas
+						|| worker->mainOrderId == OrderId::HarvestInterrupt
+						|| worker->mainOrderId == OrderId::HarvestFinish
+						|| unit_has_order(worker, OrderId::BuildTerran)
+						|| unit_has_order(worker, OrderId::BuildProtoss1)
+						|| unit_has_order(worker, OrderId::BuildProtoss2)
+						|| unit_has_order(worker, OrderId::DroneStartBuild)
+						|| unit_has_order(worker, OrderId::DroneBuild)) {
+						timer = 30;
+					}
+
 					UnitExt* workerExt = globals.get_unit_ext(worker);
-					if (!unit_has_uninterruptable_order(worker)
-					&& worker->mainOrderId != OrderId::CanHarvestOre
-					&& worker->mainOrderId != OrderId::MiningMinerals
-					&& worker->mainOrderId != OrderId::ReturnMinerals
-					&& worker->mainOrderId != OrderId::CanEnterGasMine
-					&& worker->mainOrderId != OrderId::HarvestGas3
-					&& worker->mainOrderId != OrderId::ReturnGas
-					&& worker->mainOrderId != OrderId::HarvestInterrupt
-					&& worker->mainOrderId != OrderId::HarvestFinish
-					&& !unit_has_order(worker, OrderId::BuildTerran)
-					&& !unit_has_order(worker, OrderId::ConstructingBuilding)
-					&& !unit_has_order(worker, OrderId::BuildProtoss1)
-					&& !unit_has_order(worker, OrderId::BuildProtoss2)
-					&& !unit_has_order(worker, OrderId::DroneStartBuild)
-					&& !unit_has_order(worker, OrderId::DroneLand)
-					&& !unit_has_order(worker, OrderId::DroneBuild)
-					&& !unit_has_order(worker, OrderId::Pickup4)
-					&& !(worker->status & UnitStatus::InTransport)
-					&& !workerExt->timers[TimerAI_KitingLeashTimer]) {
+					if (*elapsedTimeSeconds - worker_ai->last_update_second >= timer
+						&& !workerExt->timers[TimerAI_KitingLeashTimer])
+					{
 						helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
 						worker_ai->wait_timer = 0;
 						worker_ai->last_update_second = *elapsedTimeSeconds;
