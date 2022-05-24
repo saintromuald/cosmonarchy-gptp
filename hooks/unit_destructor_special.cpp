@@ -1,13 +1,10 @@
-//All functions in this file are heavily involved with memory management.
-//Do NOT modify anything unless you really know what you are doing.
+// All functions in this file are heavily involved with memory management.
 
 #include "unit_destructor_special.h"
 #include "../SCBW/api.h"
 #include "../hook_tools.h"
 #include "hooks/weapons/weapon_spellhit.h"
 #include "logger.h"
-//Identical to 00466170  sub_466170
-//Not hooked but used by hooked unitDestructorSpecialHook
 #include <SCBW/UnitFinder.h>
 #include "globals.h"
 
@@ -58,7 +55,9 @@ void augurSacrifice(Unit* augur, s32 radius)
 	}
 }
 
-void killAllHangarUnits(Unit* unit)
+// Identical to 00466170 kill_hangar_units
+// Not hooked but used by hooked unit_destructor_special_cases
+void kill_hangar_units(Unit* unit)
 {
 	u32 random_value;
 	while (unit->carrier.inHangarCount != 0)
@@ -110,9 +109,9 @@ void killAllHangarUnits(Unit* unit)
 	unit->carrier.outHangarChild = nullptr;
 }
 
-// Identical to 00468770 sub_468770
-// Not hooked but used by hooked unitDestructorSpecialHook
-void freeResourceContainer(Unit* resource)
+// Identical to 00468770 remove_harvesters
+// Not hooked but used by hooked unit_destructor_special_cases
+void free_resource_container(Unit* resource)
 {
 	resource->building.resource.gatherQueueCount = 0;
 	Unit* worker = resource->building.resource.nextGatherer;
@@ -139,7 +138,7 @@ void freeResourceContainer(Unit* resource)
 	}
 }
 
-void unitDestructorSpecialHook(Unit* unit)
+void unit_destructor_special_cases(Unit* unit)
 {
 	UnitExt* unitExt = globals.get_unit_ext(unit);
 	unit->resetSupplyProvided();
@@ -270,7 +269,7 @@ void unitDestructorSpecialHook(Unit* unit)
 			case UnitId::ProtossAccantor:
 			case UnitId::ProtossSolarion:
 			{
-				killAllHangarUnits(unit);				
+				kill_hangar_units(unit);				
 			} break;
 			case UnitId::ProtossPlasmaShell:
 			case UnitId::ProtossSteward:
@@ -320,7 +319,7 @@ void unitDestructorSpecialHook(Unit* unit)
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
 			{
-				freeResourceContainer(unit);
+				free_resource_container(unit);
 			} break;
 			case UnitId::ProtossAugur:
 			{
@@ -479,7 +478,7 @@ void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 
 
 //-------- Actual hooking --------//
 
-void __declspec(naked) unitDestructorSpecialWrapper()
+void __declspec(naked) unit_destructor_special_cases_wrapper()
 {
 
 	static Unit* unit;
@@ -489,7 +488,7 @@ void __declspec(naked) unitDestructorSpecialWrapper()
 		PUSHAD
 	}
 
-	unitDestructorSpecialHook(unit);
+	unit_destructor_special_cases(unit);
 
 	__asm {
 		POPAD
@@ -528,11 +527,9 @@ void __declspec(naked) clear_tile_flags_from_area_wrapper() {
 
 namespace hooks
 {
-
 	void injectUnitDestructorSpecial()
 	{
-		jmpPatch(unitDestructorSpecialWrapper, 0x0049F4A0, 2);
+		jmpPatch(unit_destructor_special_cases_wrapper, 0x0049F4A0, 2);
 		jmpPatch(clear_tile_flags_from_area_wrapper, 0x00472E50, 2);
 	}
-
-} //hooks
+}
