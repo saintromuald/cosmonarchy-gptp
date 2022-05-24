@@ -219,14 +219,14 @@ static void update_player_name(u32 player) {
 			u32 random = scbw::randBetween(0, PlayerPesonalityMaxNames - 1);
 			char* name = player_personality_names[race][personality][random];
 			if (is_valid_name(player, name)) {
-				strncpy(playerNameList->player[player].player_name, name, 24);
-				playerNameList->player[player].player_name[25] = 0;
+				strncpy(playerNameList->player[player].player_name, name, 23);
+				playerNameList->player[player].player_name[24] = 0;
 				return;
 			}
 		}
 	}
-	strncpy(playerNameList->player[player].player_name, "Computer", 24);
-	playerNameList->player[player].player_name[25] = 0;
+	strncpy(playerNameList->player[player].player_name, "Computer", 23);
+	playerNameList->player[player].player_name[24] = 0;
 }
 
 void load_player_names() {
