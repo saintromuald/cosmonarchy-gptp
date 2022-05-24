@@ -589,7 +589,7 @@ namespace helper
 	u8 setArchonPathing(Unit* unit);																								// 0046A820
 	bool hasSuppliesForUnit(u32 unitId, u32 playerId, b32 canShowErrorMessage);														// 0042CF70
 	Unit* zergDualBirth(Unit* unit);																							    // 0045D910
-	void order_new_unit_to_rally(Unit* unit, Unit* factory);																			// 00466F50
+	void order_new_unit_to_rally(Unit* unit, Unit* factory);																		// 00466F50
 	void AI_training_unit(Unit* unit, Unit* creator);																				// 004A2830
 	void deleteBuildingAI(BuildingAi* building, BuildingAiArray** buildingList);                                                    // 00404500
 	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray** workerArray);                                                                 // 00404470
@@ -604,7 +604,7 @@ namespace helper
 
 	// for createHallucination
 	void apply_hallucination_stats(Unit* halUnit);																					// 004F6180
-	s32 hallucinate_scarabs(Unit* a1, Unit* a2);																						// 004F65B0
+	s32 hallucinate_scarabs(Unit* a1, Unit* a2);																					// 004F65B0
 
 	//// feedback_spell
 	void replace_feedback_sprite(Unit* unit, u32 spriteId);																			// 004F6350

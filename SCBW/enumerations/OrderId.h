@@ -300,7 +300,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	StasisField            = 0x93, /**< Cast Spell: Stasis Field.
 					* Default Requirements: Unused. */
-	Hallucination1        = 0x94, /**< Hallucination Cast on target.
+	Hallucination1         = 0x94, /**< Hallucination Cast on target.
 					* Default Requirements: Unused. */
 	Hallucination2         = 0x95, /**< Kill Halluciation on spell cast.
 					* Default Requirements: Unused. */

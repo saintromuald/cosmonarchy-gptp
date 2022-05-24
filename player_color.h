@@ -505,7 +505,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"ShiningAwakenings",
 			"The 1%... plus 2",
 			"Downloaded Cars",
-			"Slow... Fat... Victorious",
+			"Slow, Fat, Victorious",
 			"StuckInMudDuringWinter.jpeg",
 			"Foreign Dogwalkers",
 			"Somehow Still Viable!",
