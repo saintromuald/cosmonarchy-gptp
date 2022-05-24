@@ -63,7 +63,7 @@ namespace
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 8
+			RETN 0x8
 		}
 	}
 
@@ -73,8 +73,8 @@ namespace
 		static Unit* otherUnit;
 		__asm
 		{
-			MOV newUnit, EAX
 			MOV otherUnit, ECX
+			MOV newUnit, EAX
 			PUSHAD
 		}
 		hooks::AI_TrainingWorker(newUnit, otherUnit);
@@ -110,15 +110,15 @@ namespace
 		static AiTown* town;
 		__asm
 		{
-			MOV unit, EBX
 			MOV town, EDI
+			MOV unit, EBX
 			PUSHAD
 		}
 		result = hooks::AI_AddWorkerStructureAI(unit, town);
 		__asm
 		{
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			RETN
 		}
 	}
@@ -393,7 +393,7 @@ namespace hooks
 		jmpPatch(AI_RemoveWorkerOrBuildingAI_Wrapper,		0x00434C90, 0);
 	//	jmpPatch(AI_TrainingOverlord_Wrapper,				0x00435770, 1);
 		jmpPatch(AI_orderLurkerBurrow_Wrapper,				0x0043C230, 3);
-		jmpPatch(create_building_ai_wrapper,				0x004044C0,	3);
+	//	jmpPatch(create_building_ai_wrapper,				0x004044C0,	4);
 
 	//	jmpPatch(hooks::Ai_FindNearestMilitaryOrGuardAi,	0x0043BAC0, 0);
 	}
