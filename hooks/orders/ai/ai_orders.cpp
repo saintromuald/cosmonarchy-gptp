@@ -1510,31 +1510,24 @@ LABEL_21:
 				gas_count = max_worker_count;
 			}
 
-			u32 i = 0;
-			u32 max_count = 0;
+			u32 node_worker_count = 0;
 			for (WorkerAi* worker_ai = town->workers; worker_ai; worker_ai = worker_ai->link.prev)
 			{
 				u8* target_resource_type = gas_count ? &gas_value : &mineral_value;
-				if (!max_count) {
-					while (*target_resource_type != 1) {
-						Unit* gas = town->gas_buildings[*target_resource_type - 2];
-						max_count = 0;
-						if (gas && gas->status & UnitStatus::Completed) {
-							if (gas->id == UnitId::ResourceVespeneGeyser) {
-								max_count = 2;
-							} else {
-								max_count = 3;
-							}
-						}
-						if (max_count) {
-							break;
+				while (*target_resource_type != 1 && !node_worker_count) {
+					Unit* gas = town->gas_buildings[*target_resource_type - 2];
+					if (gas && gas->status & UnitStatus::Completed) {
+						if (gas->id == UnitId::ResourceVespeneGeyser) {
+							node_worker_count = 2;
 						} else {
-							*target_resource_type += 1;
-							if (*target_resource_type > 4)
-							{
-								*target_resource_type = 1;
-								break;
-							}
+							node_worker_count = 3;
+						}
+					}
+					if (!node_worker_count) {
+						*target_resource_type += 1;
+						if (*target_resource_type > 4)
+						{
+							*target_resource_type = 1;
 						}
 					}
 				}
@@ -1585,8 +1578,7 @@ LABEL_21:
 					}
 				}
 
-				if (gas_count)
-				{
+				if (gas_count) {
 					--gas_count;
 				}
 
@@ -1594,10 +1586,10 @@ LABEL_21:
 				result = *target_resource_type;
 
 				if (*target_resource_type != 1) {
-					if (i++ >= max_count)
-					{
-						i = 0;
-						max_count = 0;
+					if (node_worker_count) {
+						--node_worker_count;
+					}
+					if (!node_worker_count) {
 						*target_resource_type += 1;
 						if (*target_resource_type > 4)
 						{
