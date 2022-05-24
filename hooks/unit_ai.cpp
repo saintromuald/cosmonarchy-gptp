@@ -242,6 +242,10 @@ namespace hooks
 						scbw::printf("Corrupted free worker AI array!");
 						return result;
 					}
+					if (town->free_workers->first_free_worker <= (void*)0x100000) {
+						scbw::printf("Corrupted first free worker AI!");
+						return result;
+					}
 					ai = town->free_workers->first_free_worker; // This nullcheck was added
 				}
 				if (ai)
