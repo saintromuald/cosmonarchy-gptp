@@ -198,7 +198,7 @@ namespace hooks
 						{
 							hooks::transferResourceToWorkerHook(unit, node);
 						}
-						if (unit->worker.resourceCarryAmount)
+						if (unit->worker.is_harvesting)
 						{
 							helper::finished_mining(unit, unit->worker.harvest_target);
 						}
