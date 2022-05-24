@@ -20,7 +20,7 @@ namespace hooks
 			+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
 		// Crucible Aura
-		cooldown /= 1 + 0.05 * unitExt->unitVectors[UnitVectorCrucibles].size();
+		cooldown /= 1 + 0.1 * unitExt->unitVectors[UnitVectorCrucibles].size();
 
 		// Anticthon - Passive
 		cooldown /= 1 + 0.02 * unitExt->values[ValueAnticthonStacks];

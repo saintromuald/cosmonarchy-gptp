@@ -36,7 +36,7 @@ namespace hooks
 		}
 
 		// Crucible Aura
-		speed /= 1 + 0.05 * unitExt->unitVectors[UnitVectorCrucibles].size();
+		speed /= 1 + 0.1 * unitExt->unitVectors[UnitVectorCrucibles].size();
 
 		// Mind Tyrant Malediction: Apply movespeed slow to non-organic targets
 		if (unitExt->timers[TimerMaledictionSlow] > 1)

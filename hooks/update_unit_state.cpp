@@ -358,7 +358,7 @@ namespace hooks
 			{
 				if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->damageReceiveTimer > 2 * 24)
 				{
-					unit->shields += 11 * (1 + 0.05 * unitExt->unitVectors[UnitVectorCrucibles].size());
+					unit->shields += 11 * (1 + 0.1 * unitExt->unitVectors[UnitVectorCrucibles].size());
 					if (unit->shields > maxShields)
 					{
 						unit->shields = maxShields;
@@ -437,7 +437,7 @@ namespace hooks
 			{
 				s32 regen = 11; // 1 HP per second
 
-				regen *=  1 + 0.05 * unitExt->unitVectors[UnitVectorCrucibles].size();
+				regen *=  1 + 0.1 * unitExt->unitVectors[UnitVectorCrucibles].size();
 				unit->setHp(unit->hitPoints + regen);
 			}
 
