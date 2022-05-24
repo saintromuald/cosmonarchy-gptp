@@ -11549,7 +11549,7 @@ namespace helper
 	}
 
 	main_menu_options_custom_interact_func* main_menu_options_custom_interact = (main_menu_options_custom_interact_func*)0x004CA0A0;
-	game_menu_dialog_interact_func* game_menu_dialog_interact = (game_menu_dialog_interact_func*)0x004CA24;
+	game_menu_dialog_interact_func* game_menu_dialog_interact = (game_menu_dialog_interact_func*)0x004CA240;
 
 	u32 stop_creep_disappearing(u32 x_tile, u32 y_tile) {
 		static u32 result;
