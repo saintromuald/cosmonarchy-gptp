@@ -295,6 +295,10 @@ namespace hooks
 					scbw::printf("Corrupted free building AI array!");
 					return result;
 				}
+				if (town->free_buildings->first_free_building <= (void*)0x100000) {
+					scbw::printf("Corrupted first free building AI!");
+					return result;
+				}
 				ai = helper::AI_CreateBuildingAi(&town->free_buildings); // This nullcheck was added
 			}
 			if (ai) {
