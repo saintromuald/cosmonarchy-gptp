@@ -205,6 +205,7 @@ namespace {
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
+			RETN 0x4
 		}
 	}
 }

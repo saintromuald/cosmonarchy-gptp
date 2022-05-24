@@ -565,7 +565,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate obscure linked list crash. -Veeq7
-	Unit* remove_from_current_harvesters(Unit* worker, Unit* node) {
+	Unit* remove_from_current_harvesters(Unit* worker, Unit* node) { // 004686D0
 		Unit* prev = worker->worker.harvest_link.prev;
 		Unit* next = worker->worker.harvest_link.next;
 		if (prev) {
