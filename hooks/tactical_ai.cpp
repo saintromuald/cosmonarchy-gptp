@@ -412,6 +412,7 @@ static inline bool CanKite(Unit* unit)
 
 	return unit->hasWeapon()
 		&& !unit->isFrozen()
+		&& unit->status & UnitStatus::Completed
 		// Special units
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
