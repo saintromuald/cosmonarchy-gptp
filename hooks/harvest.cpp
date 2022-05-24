@@ -531,9 +531,9 @@ namespace hooks
 	{
 		Unit* result = 0;
 
-		if (worker->worker.repairResourceLossTimer)
+		if (worker->worker.is_harvesting)
 		{
-			worker->worker.repairResourceLossTimer = 0;
+			worker->worker.is_harvesting = 0;
 			worker->worker.harvest_target = 0;
 			if (node)
 			{
@@ -566,7 +566,6 @@ namespace hooks
 
 	// Hooked to investigate obscure linked list crash. -Veeq7
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node) {
-		scbw::printf("REMOVE!");
 		Unit* prev = worker->worker.harvest_link.prev;
 		Unit* next = worker->worker.harvest_link.next;
 		if (prev) {
