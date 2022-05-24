@@ -419,7 +419,6 @@ static inline bool CanKite(Unit* unit)
 		&& unit->id != UnitId::ProtossAccantor // currently disabled
 		&& unit->id != UnitId::TerranNuclearMissile
 		&& unit->id != UnitId::ProtossAnthelion
-		&& unit->id != UnitId::ZergAkistrokor
 		// Other rules
 		&& unit->mainOrderId != OrderId::BuildTerran
 		&& unit->mainOrderId != OrderId::ConstructingBuilding
