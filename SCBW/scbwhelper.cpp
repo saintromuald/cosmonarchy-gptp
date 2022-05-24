@@ -11181,7 +11181,7 @@ namespace helper
 		}
 	}
 
-	Unit* RemoveHarvesters(Unit* node) {
+	Unit* remove_harvesters(Unit* node) {
 		static Unit* result;
 		const u32 func_address = 0x00468770;
 		__asm {
@@ -11722,6 +11722,33 @@ namespace helper
 			MOV EDX, unit
 			CALL func_address
 			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* let_next_unit_mine(Unit* worker) {
+		static Unit* result;
+		const u32 func_address = 0x00468970;
+		__asm {
+			PUSHAD
+			MOV EBX, worker
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 begin_harvest(Unit* worker, Unit* node) {
+		static s32 result;
+		const u32 func_address = 0x00468C70;
+		__asm {
+			PUSHAD
+			MOV EDI, node
+			MOV EAX, worker
+			CALL func_address
+			MOV result, EAX
 			POPAD
 		}
 		return result;

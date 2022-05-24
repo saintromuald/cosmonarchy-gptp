@@ -167,6 +167,23 @@ namespace {
 			JMP jmp_address
 		}
 	}
+
+	void __declspec(naked) remove_references_node_worker_wrapper() { // 00468EF0
+		static Unit* node;
+		static Unit* worker;
+		static Unit* result; // unused
+		__asm {
+			MOV worker, ECX
+			MOV node, EAX
+			PUSHAD
+		}
+		result = hooks::remove_references_node_worker(node, worker);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -183,5 +200,6 @@ namespace hooks
 		jmpPatch(begin_harvest_Wrapper,										0x00468C70, 4);
 		jmpPatch(let_next_unit_mine_Wrapper,								0x00468970, 1);
 		jmpPatch(orders_entries_move_to_harvest_obscured_Wrapper,			0x00469500, 4);
+		jmpPatch(remove_references_node_worker_wrapper,						0x00468EF0,	4);
 	}
 }

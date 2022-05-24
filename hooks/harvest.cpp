@@ -532,4 +532,42 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to investigate obscure linked list crash. -Pr0nogo
+	Unit* remove_references_node_worker(Unit* node, Unit* worker) // 00468EF0
+	{
+		Unit* result = 0;
+
+		if (worker->worker.repairResourceLossTimer)
+		{
+			worker->worker.repairResourceLossTimer = 0;
+			worker->worker.harvest_target = 0;
+			if (node)
+			{
+				--node->building.resource.gatherQueueCount;
+				Unit* next_harvester = helper::let_next_unit_mine(node);
+				if (next_harvester)
+				{
+					return (Unit*)helper::begin_harvest(next_harvester, node);
+				}
+			}
+		}
+		else
+		{
+			Unit* next_gatherer = node->building.resource.nextGatherer;
+			if (next_gatherer)
+			{
+				while (next_gatherer != worker)
+				{
+					next_gatherer = next_gatherer->worker.harvest_link.next;
+					if (!next_gatherer)
+					{
+						return 0;
+					}
+				}
+				result = helper::remove_from_current_harvesters(next_gatherer, node);
+			}
+		}
+		return result;
+	}
 }
