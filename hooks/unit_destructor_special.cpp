@@ -465,6 +465,18 @@ void unitDestructorSpecialHook(Unit* unit)
 	globals.unitDeathHook(unit);
 }
 
+void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 tile_x, s32 tile_y) {
+	for (s32 y = tile_height; y >= 0; --y) {
+		for (s32 x = tile_width; x >= 0; --x) {
+			s32 fx = tile_x + x;
+			s32 fy = tile_y + y;
+			if (fx >= 0 && fx < mapTileSize->width && fy >= 0 && fy < mapTileSize->height) {
+				(*activeTileHandle)[fx + fy * mapTileSize->width] &= ~flags;
+			}
+		}
+	}
+}
+
 //-------- Actual hooking --------//
 
 void __declspec(naked) unitDestructorSpecialWrapper()
@@ -485,12 +497,42 @@ void __declspec(naked) unitDestructorSpecialWrapper()
 	}
 }
 
+void __declspec(naked) clear_tile_flags_from_area_wrapper() {
+	static u32 flags;
+	static u32 tile_width;
+	static u32 tile_height;
+	static s32 tile_x;
+	static s32 tile_y;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x8]
+		MOV tile_x, EAX
+		MOV EAX, [EBP + 0xC]
+		MOV tile_y, EAX
+		POP EAX
+		MOV flags, EAX
+		MOV tile_width, EDI
+		MOV tile_height, ECX
+		PUSHAD
+	}
+	clear_tile_flags_from_area(flags, tile_width, tile_height, tile_x, tile_y);
+	__asm {
+		POPAD
+		MOV ESP, EBP
+		POP EBP
+		RETN 0x8
+	}
+}
+
 namespace hooks
 {
 
 	void injectUnitDestructorSpecial()
 	{
 		jmpPatch(unitDestructorSpecialWrapper, 0x0049F4A0, 2);
+		jmpPatch(clear_tile_flags_from_area_wrapper, 0x00472E50, 2);
 	}
 
 } //hooks
