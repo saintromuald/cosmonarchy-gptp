@@ -144,11 +144,11 @@ void unit_destructor_special_cases(Unit* unit)
 	unit->resetSupplyProvided();
 
 	if (!(unit->userActionFlags & 4) && // for silent remove
-		unit->status & UnitStatus::Completed && 
-	   (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
-		unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
-		units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) ||
-		unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
+		  unit->status & UnitStatus::Completed && 
+	     (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
+		  unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
+		  units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) ||
+		  unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 	{
 		scbw::clear_creep(scbw::unit_area(unit));
 	}
