@@ -1525,8 +1525,7 @@ LABEL_21:
 					}
 					if (!node_worker_count) {
 						*target_resource_type += 1;
-						if (*target_resource_type > 4)
-						{
+						if (*target_resource_type > 4) {
 							*target_resource_type = 1;
 						}
 					}
@@ -1591,8 +1590,7 @@ LABEL_21:
 					}
 					if (!node_worker_count) {
 						*target_resource_type += 1;
-						if (*target_resource_type > 4)
-						{
+						if (*target_resource_type > 4) {
 							*target_resource_type = 1;
 						}
 					}
