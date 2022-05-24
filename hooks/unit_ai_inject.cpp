@@ -382,7 +382,7 @@ namespace hooks
 		jmpPatch(AI_TrainingWorker_Wrapper,					0x00435700, 0);
 	//	jmpPatch(AI_TrainingNormal_Wrapper,					0x00435DB0, 0);
 		jmpPatch(AI_AddWorkerStructureAI_Wrapper,			0x00433DD0, 2);
-		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
+	//	jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
 	//	jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
 
 	//	jmpPatch(deleteWorkerAI_Wrapper,					0x00404470, 0);

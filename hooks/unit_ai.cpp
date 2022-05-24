@@ -238,6 +238,10 @@ namespace hooks
 			if (town->free_workers) {
 				WorkerAi* ai = 0;
 				if (town && town->free_workers) {
+					if (town->free_workers <= (void*)0x100000) {
+						scbw::printf("Corrupted free worker AI array!");
+						return result;
+					}
 					ai = town->free_workers->first_free_worker; // This nullcheck was added
 				}
 				if (ai)
@@ -287,6 +291,10 @@ namespace hooks
 		{
 			BuildingAi* ai = 0;
 			if (town && town->free_buildings) {
+				if (town->free_buildings <= (void*)0x100000) {
+					scbw::printf("Corrupted free building AI array!");
+					return result;
+				}
 				ai = helper::AI_CreateBuildingAi(&town->free_buildings); // This nullcheck was added
 			}
 			if (ai) {
