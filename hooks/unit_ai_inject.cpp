@@ -393,12 +393,8 @@ namespace hooks
 		jmpPatch(AI_RemoveWorkerOrBuildingAI_Wrapper,		0x00434C90, 0);
 	//	jmpPatch(AI_TrainingOverlord_Wrapper,				0x00435770, 1);
 		jmpPatch(AI_orderLurkerBurrow_Wrapper,				0x0043C230, 3);
-	//	jmpPatch(create_building_ai_wrapper,				0x004044C0,	3);
+		jmpPatch(create_building_ai_wrapper,				0x004044C0,	3);
 
-	// Disable guards from being added to attack waves
-		jmpPatch((void*)0x0043BC1B,							0x0043BB51, 1); 
-
-	// Reimplement the above jump patch if you are hooking this!
 	//	jmpPatch(hooks::Ai_FindNearestMilitaryOrGuardAi,	0x0043BAC0, 0);
 	}
 }
