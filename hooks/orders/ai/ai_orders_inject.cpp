@@ -173,7 +173,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_MilitaryShouldWaitForGroup_Wrapper() // 0043AA10
+	void __declspec(naked) AI_military_should_wait_for_group_wrapper() // 0043AA10
 	{
 		static b32 result;
 		static Unit* unit;
@@ -227,7 +227,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_IsBuildingSafe_Wrapper() // 00438910
+	void __declspec(naked) AI_is_building_safe_wrapper() // 00438910
 	{
 		static Unit* unit;
 		static bool result;
@@ -245,7 +245,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_AreOnConnectedRegions_Wrapper() // 00438E10
+	void __declspec(naked) AI_are_on_connected_regions_wrapper() // 00438E10
 	{
 		static Unit* unit1;
 		static Unit* unit2;
@@ -282,7 +282,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::getBunkerPlacementPosition(placementId, regionId);
+		result = hooks::get_bunker_placement_position(placementId, regionId);
 		__asm
 		{
 			POPAD
@@ -316,7 +316,7 @@ namespace
 			MOV unitId, EBX
 			PUSHAD
 		}
-		hooks::AI_GetBuildLocation(unitId, placementData, playerId, desiredPos, maxRange);
+		hooks::ai_get_build_location(unitId, placementData, playerId, desiredPos, maxRange);
 		__asm
 		{
 			POPAD
@@ -326,7 +326,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_CheckMilitaryGrouping_Wrapper() // 00439550
+	void __declspec(naked) AI_check_military_grouping_wrapper() // 00439550
 	{
 		static bool result;
 		static Unit* unit;
@@ -335,7 +335,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::AI_CheckMilitaryGrouping(unit);
+		result = hooks::ai_check_military_grouping(unit);
 		__asm
 		{
 			POPAD
@@ -344,7 +344,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) attack_recent_attacker_Wrapper() { // 004770E0
+	void __declspec(naked) attack_recent_attacker_wrapper() { // 004770E0
 		static s32 result;
 		static Unit* unit;
 		__asm {
@@ -359,13 +359,13 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_getVespeneType_Wrapper() { // 004326E0
+	void __declspec(naked) AI_get_vespene_type_wrapper() { // 004326E0
 		static u32 result;
 		static Unit* unit;
 		static u32 player_id;
 		__asm {
-			MOV unit, EAX
 			MOV player_id, EDX
+			MOV unit, EAX
 			PUSHAD
 		}
 		result = hooks::AI_get_vespene_type(unit, player_id, false);
@@ -376,7 +376,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) get_ai_refinery_Wrapper() { // 00432B90
+	void __declspec(naked) get_ai_refinery_wrapper() { // 00432B90
 		static Unit* result;
 		static AiTown* town;
 		static u32 gas_state;
@@ -385,9 +385,9 @@ namespace
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0x08]
+			MOV EAX, [EBP + 0x8]
 			MOV gas_state, EAX
-			MOV EAX, [EBP + 0x0C]
+			MOV EAX, [EBP + 0xC]
 			MOV index, EAX
 			POP EAX
 			MOV town, ESI
@@ -399,17 +399,17 @@ namespace
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x08
+			RETN 0x8
 		}
 	}
 
-	void __declspec(naked) AI_worker_controller_Wrapper() { // 00435210
+	void __declspec(naked) AI_worker_controller_wrapper() { // 00435210
 		static Unit* worker;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0x08]
+			MOV EAX, [EBP + 0x8]
 			MOV worker, EAX
 			POP EAX
 			PUSHAD
@@ -423,7 +423,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_reassign_worker_resources_Wrapper() { // 00435900
+	void __declspec(naked) AI_reassign_worker_resources_wrapper() { // 00435900
 		static char result;
 		static AiTown* town;
 		__asm {
@@ -438,7 +438,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_auto_harvest_Wrapper() { // 00433B90
+	void __declspec(naked) AI_auto_harvest_wrapper() { // 00433B90
 		static Unit* mineral;
 		static Unit* worker;
 		static Unit* gas;
@@ -446,7 +446,7 @@ namespace
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0x08]
+			MOV EAX, [EBP + 0x8]
 			MOV gas, EAX
 			POP EAX
 			MOV worker, ECX
@@ -510,9 +510,9 @@ namespace
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0x08]
+			MOV EAX, [EBP + 0x8]
 			MOV repairer, EAX
-			MOV EAX, [EBP + 0x0C]
+			MOV EAX, [EBP + 0xC]
 			MOV town, EAX
 			POP EAX
 			PUSHAD
@@ -523,7 +523,7 @@ namespace
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x08
+			RETN 0x8
 		}
 	}
 
@@ -535,9 +535,9 @@ namespace
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0x08]
+			MOV EAX, [EBP + 0x8]
 			MOV block, EAX
-			MOV EAX, [EBP + 0x0C]
+			MOV EAX, [EBP + 0xC]
 			MOV amount, EAX
 			POP EAX
 			MOV aiscript, ESI
@@ -548,7 +548,7 @@ namespace
 			POPAD
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x08
+			RETN 0x8
 		}
 	}
 }
@@ -566,22 +566,23 @@ namespace hooks
 		jmpPatch(getRegionIdFromUnit_Wrapper,				0x0049CB40, 2);
 		jmpPatch(getBestSCVForRepairProc_Wrapper,			0x004402B0, 1);
 
-		jmpPatch(AI_MilitaryShouldWaitForGroup_Wrapper,		0x0043AA10, 5);
+		jmpPatch(AI_military_should_wait_for_group_wrapper,	0x0043AA10, 5);
 //		jmpPatch(deleteAITownIfNeeded_Wrapper,				0x004347E0, 3);
 //		jmpPatch(AI_CanMineExtra_Wrapper,					0x00447A70, 1);
-		jmpPatch(AI_IsBuildingSafe_Wrapper,					0x00438910, 2);
-		jmpPatch(AI_AreOnConnectedRegions_Wrapper,			0x00438E10, 1);
+		jmpPatch(AI_is_building_safe_wrapper,				0x00438910, 2);
+		jmpPatch(AI_are_on_connected_regions_wrapper,		0x00438E10, 1);
 
 //		jmpPatch(getBunkerPlacementPosition_Wrapper,		0x004442E0, 4);
 //		jmpPatch(AI_GetBuildLocation_Wrapper,				0x004461B0, 1);
-		jmpPatch(AI_CheckMilitaryGrouping_Wrapper,			0x00439550, 1);
+		jmpPatch(AI_check_military_grouping_wrapper,		0x00439550, 1);
 		jmpPatch(hooks::AI_remove_different_height,			0x004436C0, 3);
-		jmpPatch(attack_recent_attacker_Wrapper,			0x004770E0, 2);
-		jmpPatch(AI_getVespeneType_Wrapper,					0x004326E0, 2);
-		jmpPatch(get_ai_refinery_Wrapper,					0x00432B90, 0);
-		jmpPatch(AI_worker_controller_Wrapper,				0x00435210, 0);
-		jmpPatch(AI_reassign_worker_resources_Wrapper,		0x00435900, 1);
-		jmpPatch(AI_auto_harvest_Wrapper,					0x00433B90, 1);
+		jmpPatch(attack_recent_attacker_wrapper,			0x004770E0, 2);
+
+		jmpPatch(AI_get_vespene_type_wrapper,				0x004326E0, 2);
+		jmpPatch(get_ai_refinery_wrapper,					0x00432B90, 0);
+		jmpPatch(AI_worker_controller_wrapper,				0x00435210, 0);
+		jmpPatch(AI_reassign_worker_resources_wrapper,		0x00435900, 1);
+		jmpPatch(AI_auto_harvest_wrapper,					0x00433B90, 1);
 		jmpPatch(ai_get_build_order_id_wrapper,				0x00434C31, 0);
 
 		jmpPatch(AI_find_best_repair_unit_wrapper,			0x00443160, 1);
