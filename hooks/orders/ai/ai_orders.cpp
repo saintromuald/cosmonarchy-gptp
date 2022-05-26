@@ -1760,4 +1760,68 @@ LABEL_21:
 			}
 		}
 	}
+
+	u32 __stdcall ai_remove_addon_placements(u16 unit_id, char* placement_data, u32 player, Point16 desired_position) {
+		/*
+		char placement_data_copy[4096] = {};
+		memcpy(placement_data_copy, placement_data, 4096);
+		for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = unit->player_link.next) {
+			if (unit->sprite && unit->mainOrderId) {
+				switch (unit->id) {
+					case UnitId::TerranCommandCenter:
+					case UnitId::TerranFactory:
+					case UnitId::TerranStarport:
+					case UnitId::TerranScienceFacility: {
+						u32 x = unit->sprite->position.x / 32 - desired_position.x / 32 + 34;
+						u32 y = unit->sprite->position.y / 32 - desired_position.y / 32;
+						Box16 box = units_dat::BuildingDimensions[unit_id];
+						u32 some_y_thing = (((box.h & 0x1F) + box.y) >> 5) + 1;
+						u32 y_plus_offset = y + 33;
+						u32 temp = 2;
+						while (temp) {
+							u32 y_plus_offset_temp = y_plus_offset;
+							u32 y_counter = 0;
+							if (some_y_thing)
+							{
+								char* placement_data_pointer = &placement_data[64 * y_plus_offset + x];
+								do {
+									if (x < 0) {
+										break;
+									}
+									if (x >= 64) {
+										break;
+									}
+									if (y_plus_offset_temp >= 0 && y_plus_offset_temp < 64) {
+										*placement_data_pointer = 0;
+									}
+									++y_counter;
+									--y_plus_offset_temp;
+									placement_data_pointer -= 64;
+								} while (y_counter < some_y_thing);
+							}
+							++x;
+							--temp;
+						}
+					} break;
+				}
+			}
+		}
+		char* placement_data_pointer_2 = placement_data;
+		u32 some_counter = 0;
+	loop_start:
+		u32 result = 0;
+		while (!placement_data_pointer_2[result]) {
+			if (++result >= 64) {
+				++some_counter;
+				placement_data_pointer_2 += 64;
+				if (some_counter < 64) {
+					goto loop_start;
+				}
+				memcpy(placement_data, placement_data_copy, 4096);
+				return result;
+			}
+		}
+		return result;
+		*/
+	}
 }
