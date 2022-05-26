@@ -63,7 +63,7 @@ namespace hooks
 		return return_value;
 	}
 
-	void transferResourceToWorkerHook(Unit* worker, Unit* resource) // 004696D0
+	void transfer_resource_to_worker(Unit* worker, Unit* resource) // 004696D0
 	{
 		u32 chunkImageId;
 		bool isMineral = false;
@@ -196,7 +196,7 @@ namespace hooks
 					{
 						if (node)
 						{
-							hooks::transferResourceToWorkerHook(unit, node);
+							hooks::transfer_resource_to_worker(unit, node);
 						}
 						if (unit->worker.is_harvesting)
 						{
@@ -249,7 +249,7 @@ namespace hooks
 		}
 	}
 
-	void CanHarvestGas(Unit* unit) { // 00469000
+	void can_harvest_gas(Unit* unit) { // 00469000
 		Unit* node = unit->orderTarget.unit;
 
 		bool valid_structure = false;

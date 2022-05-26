@@ -16,10 +16,10 @@ namespace hooks
 	bool AI_IsBuildingSafe(Unit* unit);																					// 00438910
 	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2);															// 00438E10
 
-	s32 getBunkerPlacementPosition(u32 placementId, u32* regionId);														// 004442E0
-	void AI_GetBuildLocation(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos, s32 maxRange);			// 004461B0
-	u32 getTurretPlacementPosition(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag);		// 00443AC0
-	bool AI_CheckMilitaryGrouping(Unit* unit);																			// 00439550
+	s32 get_bunker_placement_position(u32 placementId, u32* regionId);														// 004442E0
+	void ai_get_build_location(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos, s32 maxRange);			// 004461B0
+	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag);		// 00443AC0
+	bool ai_check_military_grouping(Unit* unit);																			// 00439550
 	u32 __stdcall AI_remove_different_height(char* placement_data, Point16 desired_pos);								// 004BD0F0
 	s32 attack_recent_attacker(Unit* unit);																				// 004770E0
 	u32 AI_get_vespene_type(Unit* unit, u32 index, bool for_harvesting = false);										// 004326E0

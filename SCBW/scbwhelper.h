@@ -935,7 +935,7 @@ namespace helper
 	void displayErrorMessageIDWithSFX(s32 playerId, s32 messageId, s32 soundId);							// 0048EE30
 
 	// For AIManageBuildingPlacement
-	s32 getBunkerPlacementPosition(s32 placementId, s32* regionId);											// 004442E0
+	s32 get_bunker_placement_position(s32 placementId, s32* regionId);											// 004442E0
 	Unit* getDisabledUnitInRange(s32 owner, Point16 position);												// 00440420
 	void AIGetBuildLocation(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition,				// 004461B0
 		s32 maxRange);
@@ -989,7 +989,7 @@ namespace helper
 
 	// For AI_MilitaryShouldWaitForGroup
 	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2);												// 00438E10
-	bool AI_CheckMilitaryGrouping(Unit* unit);																// 00439550
+	bool ai_check_military_grouping(Unit* unit);																// 00439550
 
 	// For AI_RemoveUnitAI
 	s32 AI_RemoveFromAIStructs(Unit* unit, UnitAi* unitAI);													// 00439D60
@@ -1017,20 +1017,20 @@ namespace helper
 	// For BTNSCOND_ZergBuildingRally
 	u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit);													// 00429520
 
-	// For AI_GetBuildLocation
-	u32 Ai_GetBuildingPlacementData(u32 maxRange, u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);	// 00445D60
-	char* Ai_RemoveUnreachableRegions(char* placementData, Point16 desiredPos);											// 00443900
-	u32 Ai_RemoveDangerousRegions(u32 unitId, char* placementData, u32 placementId, Point16 desiredPos);				// 00443870
-	u32 Ai_RemoveFarAwayTiles(char* placementData, Point16 desiredPos, u32 maxRange);									// 00444E20
-	u32 Ai_RemoveDifferentHeight(char* placementData, Point16 desiredPos);												// 004436C0
-	u32 Ai_PlacementRelatedSomething(u16 unitId, char* placementData, Point16 desiredPos);								// 00443E30
-	void Ai_RemoveTilesIfUnfit(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);						// 00444CE0
-	u32 Ai_RemoveAddonPlaces(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);						// 00443CC0
-	u32 getTurretPlacementPosition(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag);		// 00443AC0
-	u32 getPylonPlacementPosition(char* placementData, u8 playerId, Point16 desiredPos);								// 004448D0
-	u32 getDefaultPlacementPosition(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);					// 004449A0
+	// For ai_get_build_location
+	u32 ai_get_building_placement_data(u32 maxRange, u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);	// 00445D60
+	char* ai_remove_unreachable_regions(char* placementData, Point16 desiredPos);											// 00443900
+	u32 ai_remove_dangerous_regions(u32 unitId, char* placementData, u32 placementId, Point16 desiredPos);				// 00443870
+	u32 ai_remove_far_tiles(char* placementData, Point16 desiredPos, u32 maxRange);									// 00444E20
+	u32 ai_remove_different_height(char* placementData, Point16 desiredPos);												// 004436C0
+	u32 ai_placement_related_something(u16 unitId, char* placementData, Point16 desiredPos);								// 00443E30
+	void ai_remove_unfit_tiles(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);						// 00444CE0
+	u32 ai_remove_addon_places(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);						// 00443CC0
+	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag);		// 00443AC0
+	u32 get_pylon_placement_position(char* placementData, u8 playerId, Point16 desiredPos);								// 004448D0
+	u32 get_default_placement_position(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);					// 004449A0
 
-	// For AI_CheckMilitaryGrouping
+	// For ai_check_military_grouping
 	void getRegionCenter(u16 regionId, s32* out_x, s32* out_y);															// 0049CAA0
 
 	// For ignoreIscriptGoToIdle

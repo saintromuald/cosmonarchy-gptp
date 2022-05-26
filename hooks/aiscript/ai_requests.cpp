@@ -240,7 +240,7 @@ namespace hooks
 //				if (AIScriptController[playerVar].AI_Flags >= 0) // used SLOBYTE, probably checking "creep" asc3 command
 				{
 LABEL_9:
-					if (helper::getBunkerPlacementPosition(playerVar, &ownrId))
+					if (helper::get_bunker_placement_position(playerVar, &ownrId))
 					{
 LABEL_10:
 						v38 = 0;

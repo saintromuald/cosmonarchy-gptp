@@ -8804,7 +8804,7 @@ namespace helper
 	}
 
 	// For AIManageBuildingPlacement
-	s32 getBunkerPlacementPosition(s32 placementId, s32* regionId)
+	s32 get_bunker_placement_position(s32 placementId, s32* regionId)
 	{
 		const u32 Func_getBunkerPlacementPosition = 0x004442E0;
 		static s32 result;
@@ -9269,7 +9269,7 @@ namespace helper
 		return result;
 	}
 
-	bool AI_CheckMilitaryGrouping(Unit* unit)
+	bool ai_check_military_grouping(Unit* unit)
 	{
 		const u32 Func_AI_CheckMilitaryGrouping = 0x00439550;
 		static bool result;
@@ -9502,7 +9502,7 @@ namespace helper
 	}
 
 	// For AI_GetBuildingLocation
-	u32 Ai_GetBuildingPlacementData(u32 maxRange, u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	u32 ai_get_building_placement_data(u32 maxRange, u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
 	{
 		const u32 Func_Ai_GetBuildingPlacementData = 0x00445D60;
 		static u32 result;
@@ -9521,7 +9521,7 @@ namespace helper
 		return result;
 	}
 
-	char* Ai_RemoveUnreachableRegions(char* placementData, Point16 desiredPos)
+	char* ai_remove_unreachable_regions(char* placementData, Point16 desiredPos)
 	{
 		const u32 Func_Ai_RemoveUnreachableRegions = 0x00443900;
 		static char* result;
@@ -9537,7 +9537,7 @@ namespace helper
 		return result;
 	}
 
-	u32 Ai_RemoveDangerousRegions(u32 unitId, char* placementData, u32 placementId, Point16 desiredPos)
+	u32 ai_remove_dangerous_regions(u32 unitId, char* placementData, u32 placementId, Point16 desiredPos)
 	{
 		const u32 Func_Ai_RemoveDangerousRegions = 0x00443870;
 		static u32 result;
@@ -9555,7 +9555,7 @@ namespace helper
 		return result;
 	}
 
-	u32 Ai_RemoveFarAwayTiles(char* placementData, Point16 desiredPos, u32 maxRange)
+	u32 ai_remove_far_tiles(char* placementData, Point16 desiredPos, u32 maxRange)
 	{
 		const u32 Func_Ai_RemoveFarAwayTiles = 0x00444E20;
 		static u32 result;
@@ -9572,7 +9572,7 @@ namespace helper
 		return result;
 	}
 
-	u32 Ai_RemoveDifferentHeight(char* placementData, Point16 desiredPos)
+	u32 ai_remove_different_height(char* placementData, Point16 desiredPos)
 	{
 		const u32 Func_Ai_RemoveDifferentHeight = 0x004436C0;
 		static u32 result;
@@ -9588,7 +9588,7 @@ namespace helper
 		return result;
 	}
 
-	u32 Ai_PlacementRelatedSomething(u16 unitId, char* placementData, Point16 desiredPos)
+	u32 ai_placement_related_something(u16 unitId, char* placementData, Point16 desiredPos)
 	{
 		const u32 Func_Ai_PlacementRelatedSomething = 0x00443E30;
 		static u32 result;
@@ -9605,7 +9605,7 @@ namespace helper
 		return result;
 	}
 
-	void Ai_RemoveTilesIfUnfit(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	void ai_remove_unfit_tiles(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
 	{
 		const u32 Func_Ai_RemoveTilesIfUnfit = 0x00444CE0;
 		__asm
@@ -9620,7 +9620,7 @@ namespace helper
 		}
 	}
 
-	u32 Ai_RemoveAddonPlaces(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	u32 ai_remove_addon_places(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
 	{
 		const u32 Func_Ai_RemoveAddonPlaces = 0x00443CC0;
 		static u32 result;
@@ -9638,7 +9638,7 @@ namespace helper
 		return result;
 	}
 
-	u32 getTurretPlacementPosition(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag)
+	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag)
 	{
 		const u32 Func_getTurretPlacementPosition = 0x00443AC0;
 		static u32 result;
@@ -9657,7 +9657,7 @@ namespace helper
 		return result;
 	}
 
-	u32 getPylonPlacementPosition(char* placementData, u8 playerId, Point16 desiredPos)
+	u32 get_pylon_placement_position(char* placementData, u8 playerId, Point16 desiredPos)
 	{
 		const u32 Func_getPylonPlacementPosition = 0x004448D0;
 		static u32 result;
@@ -9674,7 +9674,7 @@ namespace helper
 		return result;
 	}
 
-	u32 getDefaultPlacementPosition(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	u32 get_default_placement_position(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
 	{
 		const u32 Func_getDefaultPlacementPosition = 0x004449A0;
 		static u32 result;
@@ -9692,7 +9692,7 @@ namespace helper
 		return result;
 	}
 
-	// For AI_CheckMilitaryGrouping
+	// For ai_check_military_grouping
 	void getRegionCenter(u16 regionId, s32* out_x, s32* out_y)
 	{
 		const u32 Func_getRegionCenter = 0x0049CAA0;

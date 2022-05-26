@@ -148,11 +148,11 @@ namespace hooks
             {
                 unit->worker.targetResource.unit = 0;
             }
-            if (unit->worker.repairResourceLossTimer)
+            if (unit->worker.is_harvesting)
             {
                 if (unit->worker.harvest_target == dying)
                 {
-                    unit->worker.repairResourceLossTimer = 0;
+                    unit->worker.is_harvesting = 0;
                     unit->worker.harvest_target = 0;
                 }
             }

@@ -627,7 +627,7 @@ LABEL_126:
 			if (firstUnit != nullptr && firstUnit->sprite != nullptr && firstUnit != unit)
 			{
 				u32 distance = helper::getDistanceFast(firstUnit->sprite->position.x, unit->sprite->position.x, firstUnit->sprite->position.y, unit->sprite->position.y);
-				if (distance <= 0x180 && helper::AI_AreOnConnectedRegions(firstUnit, unit) && !(helper::AI_CheckMilitaryGrouping(firstUnit)) && distance > 0x100)
+				if (distance <= 0x180 && helper::AI_AreOnConnectedRegions(firstUnit, unit) && !(helper::ai_check_military_grouping(firstUnit)) && distance > 0x100)
 				{
 					return 1;
 				}
@@ -775,7 +775,7 @@ LABEL_126:
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	s32 getBunkerPlacementPosition(u32 placementId, u32* regionId) // 004442E0
+	s32 get_bunker_placement_position(u32 placementId, u32* regionId) // 004442E0
 	{
 		u32 region_max = *regionIdsCount;
 		if (!regionIdsCount)
@@ -854,16 +854,16 @@ LABEL_126:
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	void AI_GetBuildLocation(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos, s32 maxRange) // 004461B0
+	void ai_get_build_location(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos, s32 maxRange) // 004461B0
 	{
 		memset(placementData, 0, 0x1000u);
-		helper::Ai_GetBuildingPlacementData(maxRange, unitId, placementData, playerId, desiredPos);
-		helper::Ai_RemoveUnreachableRegions(placementData, desiredPos);
+		helper::ai_get_building_placement_data(maxRange, unitId, placementData, playerId, desiredPos);
+		helper::ai_remove_unreachable_regions(placementData, desiredPos);
 		if (unitId != UnitId::ProtossPylon)
 		{
-			helper::Ai_RemoveDangerousRegions(unitId, placementData, playerId, desiredPos);
+			helper::ai_remove_dangerous_regions(unitId, placementData, playerId, desiredPos);
 		}
-		helper::Ai_RemoveFarAwayTiles(placementData, desiredPos, maxRange);
+		helper::ai_remove_far_tiles(placementData, desiredPos, maxRange);
 		while (2)
 		{
 			u32 iterator1 = 0;
@@ -871,8 +871,8 @@ LABEL_126:
 			{
 				if (placementData[iterator1])
 				{
-					helper::Ai_RemoveDifferentHeight(placementData, desiredPos); // Owned?
-					helper::Ai_PlacementRelatedSomething(unitId, placementData, desiredPos);
+					helper::ai_remove_different_height(placementData, desiredPos); // Owned?
+					helper::ai_placement_related_something(unitId, placementData, desiredPos);
 					if (unitId == UnitId::TerranCommandCenter || unitId == UnitId::ZergHatchery || unitId == UnitId::ProtossNexus)
 					{
 						maxRange = 1;
@@ -880,9 +880,9 @@ LABEL_126:
 					else
 					{
 						maxRange = 0;
-						helper::Ai_RemoveTilesIfUnfit(unitId, placementData, playerId, desiredPos);
+						helper::ai_remove_unfit_tiles(unitId, placementData, playerId, desiredPos);
 					}
-					helper::Ai_RemoveAddonPlaces(unitId, placementData, playerId, desiredPos);
+					helper::ai_remove_addon_places(unitId, placementData, playerId, desiredPos);
 					switch (unitId)
 					{
 						case UnitId::TerranWatchdog:
@@ -892,10 +892,10 @@ LABEL_126:
 						}
 						case UnitId::TerranBunker:
 						{
-							if (!helper::getBunkerPlacementPosition(playerId, &maxRange))
+							if (!helper::get_bunker_placement_position(playerId, &maxRange))
 							{
-LABEL_17:
-								helper::getTurretPlacementPosition(placementData, playerId, desiredPos, unitId, 0);
+					LABEL_17:
+								helper::get_turret_placement_position(placementData, playerId, desiredPos, unitId, 0);
 								return;
 							}
 						}
@@ -906,21 +906,21 @@ LABEL_17:
 								goto LABEL_21;
 							}
 
-							if (!helper::getBunkerPlacementPosition(playerId, &maxRange))
+							if (!helper::get_bunker_placement_position(playerId, &maxRange))
 							{
-LABEL_21:
-								helper::getTurretPlacementPosition(placementData, playerId, desiredPos, unitId, 0);
+					LABEL_21:
+								helper::get_turret_placement_position(placementData, playerId, desiredPos, unitId, 0);
 							}
 						} break;
 						case UnitId::ProtossPylon:
 						{
-							helper::getPylonPlacementPosition(placementData, playerId, desiredPos);
+							helper::get_pylon_placement_position(placementData, playerId, desiredPos);
 						} break;
 						default:
 						{
 							if (!maxRange)
 							{
-								helper::getDefaultPlacementPosition(unitId, placementData, playerId, desiredPos);
+								helper::get_default_placement_position(unitId, placementData, playerId, desiredPos);
 							}
 						} break;
 					}
@@ -941,14 +941,14 @@ LABEL_21:
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	u32 getTurretPlacementPosition(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag) // 00443AC0
+	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag) // 00443AC0
 	{
 		// will do this later
 		return 0;
 	}
 
 	// Hooked to nullcheck sprites - Pr0nogo
-	bool AI_CheckMilitaryGrouping(Unit* unit) // 00439550
+	bool ai_check_military_grouping(Unit* unit) // 00439550
 	{
 		UnitAi* unitAi = (UnitAi*)unit->unit_ai;
 		if (!unitAi || unitAi->type != 4 || units_dat::BaseProperty[unit->id] & 1)
@@ -1049,7 +1049,7 @@ LABEL_21:
 			}
 		}
 		return result;
-	*/
+		*/
 	}
 
 	// Hooked to investigate removing AI ally retaliation. (No cigar!) -Pr0nogo
