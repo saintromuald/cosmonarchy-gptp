@@ -1812,7 +1812,7 @@ LABEL_126:
 					case UnitId::TerranCommandCenter:
 					case UnitId::TerranTreasury:
 					case UnitId::TerranBarracks:
-					case UnitId::TerranFactory:
+					case UnitId::TerranFulcrum:
 					case UnitId::TerranStarport: 
 					case UnitId::TerranScrapyard: 
 					case UnitId::TerranCaptaincy: {

@@ -756,7 +756,7 @@ namespace hooks
 							}
 						}
 
-						else if ((*activePortraitUnit)->id == UnitId::TerranFactory)
+						else if ((*activePortraitUnit)->id == UnitId::TerranFulcrum)
 						{
 							// Factory buttonset handling
 							if (current_button->reqVar == UnitId::TerranCuirass

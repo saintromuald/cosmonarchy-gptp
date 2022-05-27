@@ -67,7 +67,7 @@ namespace hooks {
 					return true;
 				}
 				case UnitId::TerranBarracks:
-				case UnitId::TerranFactory:
+				case UnitId::TerranFulcrum:
 				case UnitId::TerranStarport:
 				case UnitId::TerranScrapyard:
 				case UnitId::TerranEngineeringBay:
@@ -200,7 +200,7 @@ namespace hooks {
 				}
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranFactory))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranFulcrum))
 		{
 			switch (unitId)
 			{
@@ -1132,7 +1132,7 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranBarracks:
-					case UnitId::TerranFactory:
+					case UnitId::TerranFulcrum:
 					case UnitId::TerranStarport:
 					case UnitId::TerranScrapyard:
 					case UnitId::TerranEngineeringBay:
@@ -1323,7 +1323,7 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			} break;
-			case UnitId::TerranFactory:
+			case UnitId::TerranFulcrum:
 			{
 				switch (unitId)
 				{
