@@ -33,7 +33,12 @@ namespace hooks
 	s32 AI_SCV_repair_controller(Unit* repairer, AiTown* town);															// 00433C70
 
 	void ai_expand(AiScript* aiscript, u32 block, u32 amount);															// 0045B530
-	u32 __stdcall ai_remove_addon_placements(u16 unit_id, char* placement_data, u32 player, Point16 desired_position);	// 0045B530
+
+	struct PlacementData {
+		bool tile_valid[64][64];
+	};
+	C_ASSERT(sizeof(PlacementData) == 0x1000);
+	void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position);	// 00443CC0
 
 	void injectAIOrdersHooks();
 }

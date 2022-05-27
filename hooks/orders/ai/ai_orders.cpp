@@ -1716,16 +1716,16 @@ LABEL_126:
 		}
 		if (!town->buildings || !repairee)
 		{
-			if (!town->building_SCV) {
-				town->building_SCV = worker;
-			}
-			if (town->building_SCV != worker) {
-				return 0;
-			}
-			repairee = helper::AI_find_best_repair_unit(worker); // This writing to repairee seems really wrong
-			if (!repairee) {
-				return 0;
-			}
+		if (!town->building_SCV) {
+			town->building_SCV = worker;
+		}
+		if (town->building_SCV != worker) {
+			return 0;
+		}
+		repairee = helper::AI_find_best_repair_unit(worker); // This writing to repairee seems really wrong
+		if (!repairee) {
+			return 0;
+		}
 		}
 		worker->userActionFlags |= 1u;
 		Point16 repairee_pos = {}; // Shouldn't we return when nothing to repair?
@@ -1761,69 +1761,75 @@ LABEL_126:
 		}
 	}
 
-	u32 __stdcall ai_remove_addon_placements(u16 unit_id, char* placement_data, u32 player, Point16 desired_position) {
-		return 0;
+	static bool unit_id_is_stackable_building(u32 unit_id) {
+		switch (unit_id) {
+			case UnitId::ZergCreepColony:
+			case UnitId::ZergSunkenColony:
+			case UnitId::ZergSporeColony:
+			case UnitId::ZergLarvalColony:
+			case UnitId::ZergIrolIris:
+			case UnitId::ZergOrbothOmlia:
+			case UnitId::ZergOthstolOviform:
+			case UnitId::ProtossPylon:
+			case UnitId::ProtossPennant:
+			case UnitId::ProtossShieldBattery:
+			case UnitId::ProtossPhotonCannon:
+			case UnitId::TerranWatchdog:
+			case UnitId::TerranBunker: {
+				return true;
+			} break;
+		}
+		return false;
+	}
 
-		/*
-		char placement_data_copy[4096] = {};
-		memcpy(placement_data_copy, placement_data, 4096);
+	// Hooked to add addon cases for new addon buildings and to reserve space around buildings
+	void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position) {
 		for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = unit->player_link.next) {
-			if (unit->sprite && unit->mainOrderId) {
+			if (unit->sprite && unit->mainOrderId != OrderId::Die && units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+				// Map coordinates to the placement grid
+				s32 unit_x = unit->sprite->position.x / 32 - desired_position.x / 32 + 32;
+				s32 unit_y = unit->sprite->position.y / 32 - desired_position.y / 32 + 32;
+
+				// Dimensions
+				u32 w = units_dat::BuildingDimensions[unit->id].x / 32;
+				u32 h = units_dat::BuildingDimensions[unit->id].y / 32;
+
+				// Go to top left
+				unit_x -= w / 2;
+				unit_y -= h / 2;
+
+				// Add padding on top and left
+				// Stackable buildings don't have padding between each other
+				if (!unit_id_is_stackable_building(unit_id) || !unit_id_is_stackable_building(unit->id)) {
+					unit_x -= 1;
+					unit_y -= 1;
+					w += 1;
+					h += 1;
+				}
+
+				// Handle addons
 				switch (unit->id) {
 					case UnitId::TerranCommandCenter:
+					case UnitId::TerranTreasury:
+					case UnitId::TerranBarracks:
 					case UnitId::TerranFactory:
-					case UnitId::TerranStarport:
-					case UnitId::TerranScienceFacility: {
-						u32 x = unit->sprite->position.x / 32 - desired_position.x / 32 + 34;
-						u32 y = unit->sprite->position.y / 32 - desired_position.y / 32;
-						Box16 box = units_dat::BuildingDimensions[unit_id];
-						u32 some_y_thing = (((box.h & 0x1F) + box.y) >> 5) + 1;
-						u32 y_plus_offset = y + 33;
-						u32 temp = 2;
-						while (temp) {
-							u32 y_plus_offset_temp = y_plus_offset;
-							u32 y_counter = 0;
-							if (some_y_thing)
-							{
-								char* placement_data_pointer = &placement_data[64 * y_plus_offset + x];
-								do {
-									if (x < 0) {
-										break;
-									}
-									if (x >= 64) {
-										break;
-									}
-									if (y_plus_offset_temp >= 0 && y_plus_offset_temp < 64) {
-										*placement_data_pointer = 0;
-									}
-									++y_counter;
-									--y_plus_offset_temp;
-									placement_data_pointer -= 64;
-								} while (y_counter < some_y_thing);
-							}
-							++x;
-							--temp;
-						}
+					case UnitId::TerranStarport: 
+					case UnitId::TerranScrapyard: 
+					case UnitId::TerranCaptaincy: {
+						w += 2;
 					} break;
 				}
-			}
-		}
-		char* placement_data_pointer_2 = placement_data;
-		u32 some_counter = 0;
-	loop_start:
-		u32 result = 0;
-		while (!placement_data_pointer_2[result]) {
-			if (++result >= 64) {
-				++some_counter;
-				placement_data_pointer_2 += 64;
-				if (some_counter < 64) {
-					goto loop_start;
+
+				// Forbid placements
+				for (u32 y = unit_y; y < unit_y + h; ++y) {
+					for (u32 x = unit_x; x < unit_x + w; ++x) {
+						if (x < 0 || x >= 64 || y < 0 || y >= 64) {
+							continue;
+						}
+						placement_data->tile_valid[y][x] = 0;
+					}
 				}
-				memcpy(placement_data, placement_data_copy, 4096);
-				return result;
 			}
 		}
-		return result;
-		*/
 	}
 }

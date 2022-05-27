@@ -588,6 +588,7 @@ namespace hooks
 		jmpPatch(AI_find_best_repair_unit_wrapper,			0x00443160, 1);
 	//	jmpPatch(AI_SCV_repair_controller_wrapper,			0x00433C70, 1);
 		jmpPatch(ai_expand_wrapper,							0x0045B530, 1);
+		jmpPatch(ai_remove_addon_placements,				0x00443CC0, 3);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}
