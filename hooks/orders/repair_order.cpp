@@ -166,14 +166,14 @@ namespace hooks
 					}
 					return 0;
 				}
-				//if (target->hitPoints >= units_dat::MaxHitPoints[target->id])
-				//{
-				//	if (bErrorFlag)
-				//	{
-				//		*(s16*)bErrorFlag = errorStringId;
-				//	}
-				//	return 0;
-				//}
+				if (target->hitPoints >= units_dat::MaxHitPoints[target->id])
+				{
+					if (bErrorFlag)
+					{
+						*(s16*)bErrorFlag = errorStringId;
+					}
+					return 0;
+				}
 				return 1;
 			} break;
 			case OrderId::Harvest1:
