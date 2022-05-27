@@ -13,6 +13,9 @@ namespace hooks
 		||  !(target->status & UnitStatus::Completed)) {
 			unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
 			unit->orderToIdle();
+			if (target && !(target->status & UnitStatus::InTransport)) {
+				target->connectedUnit = 0;
+			}
 			return;
 		}
 
@@ -41,23 +44,23 @@ namespace hooks
 
 				if (helper::orderToMoveToTarget(unit, target)) {
 					helper::unitOrderMoveToTargetUnit(unit, target);
-					unit->mainOrderState = 6; // don't continue directly into this case
+					unit->mainOrderState = 6;
 				}
 				return;
 			} break;
 			case 6: {
-				if (unit->getMovableState() == 0) { // not reached destination
+				if (!unit->getMovableState()) { // not reached destination
 					helper::moveTowards(unit, target); // may cause unit to move or become idle
 					return;
 				}
 				if (!(unit->isTargetWithinMinRange(target, 5))) {
-					unit->mainOrderState = 1; // don't continue directly into this case
+					unit->mainOrderState = 1;
 					return;
 				}
 
 				helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
 				helper::unitOrderMoveToTargetUnit(unit, target);
-				unit->mainOrderState = 7; // don't continue directly into this case
+				unit->mainOrderState = 7;
 			} break;
 			case 7: {
 				if (!(unit->isTargetWithinMinRange(target, 5))) {
@@ -77,12 +80,12 @@ namespace hooks
 						}
 						u8 weapon = unit->getGroundWeapon();
 						if (current_angle <= weapons_dat::AttackAngle[weapon]) {
-							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-							unit->mainOrderState = 8; // don't continue directly into this case
+							unit->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+							unit->mainOrderState = 8;
 						}
 					} else {
-						unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-						unit->mainOrderState = 8; // don't continue directly into this case
+						unit->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+						unit->mainOrderState = 8;
 					}
 				}
 			} break;
@@ -90,13 +93,8 @@ namespace hooks
 				helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
 				helper::unitOrderMoveToTargetUnit(unit, target);
 				if (!unit->isTargetWithinMinRange(target, 5) || target->mainOrderId == OrderId::Liftoff) { 
-					Image* current_image = unit->sprite->images.head;
-					while (current_image != nullptr)
-					{
-						current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
-						current_image = current_image->link.next;
-					}
-					unit->mainOrderState = 1; // don't continue directly into this case
+					unit->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
+					unit->mainOrderState = 1;
 				}
 			} break;
 		}
@@ -107,12 +105,7 @@ namespace hooks
 			do_repair = helper::ord_repair_subtract(unit, target);
 			if (!do_repair)
 			{
-				Image* current_image = unit->sprite->images.head;
-				while (current_image != nullptr)
-				{
-					current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
-					current_image = current_image->link.next;
-				}
+				unit->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 				unit->orderToIdle();
 				return;
 			}
@@ -136,21 +129,8 @@ namespace hooks
 			}
 		}
 
-		Image* current_image = unit->sprite->images.head;
-		while (current_image) {
-			current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
-			current_image = current_image->link.next;
-		}
-		if (unit->orderQueueHead) {
-			unit->userActionFlags |= 1;
-			prepareForNextOrder(unit);
-		} else {
-			u8 orderId = units_dat::ReturnToIdleOrder[unit->id];
-			if (unit->unit_ai) {
-				orderId = OrderId::ComputerAI;
-			}
-			unit->orderComputer(orderId);
-		}
+		unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
+		unit->orderToIdle();
 		if (target && !(target->status & UnitStatus::InTransport)) {
 			target->connectedUnit = 0;
 		}
