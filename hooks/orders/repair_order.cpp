@@ -6,7 +6,7 @@ namespace hooks
 	void orders_Repair1(Unit* unit) { // 004673D0
 		Unit* target = unit->orderTarget.unit;
 		if (!target
-		||	target->hitPoints >= units_dat::MaxHitPoints[target->id]
+		//||	target->hitPoints >= units_dat::MaxHitPoints[target->id]
 		||	target->stasisTimer != 0
 		||	(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
 		||	target->status & UnitStatus::InTransport
@@ -106,7 +106,7 @@ namespace hooks
 			if (!do_repair)
 			{
 				unit->playIscriptAnim(IscriptAnimation::WalkingToIdle);
-				unit->orderToIdle();
+				unit->mainOrderState = 1; //unit->orderToIdle();
 				return;
 			}
 		} else {
@@ -130,7 +130,7 @@ namespace hooks
 		}
 
 		unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
-		unit->orderToIdle();
+		unit->mainOrderState = 1; //unit->orderToIdle();
 		if (target && !(target->status & UnitStatus::InTransport)) {
 			target->connectedUnit = 0;
 		}
@@ -166,14 +166,14 @@ namespace hooks
 					}
 					return 0;
 				}
-				if (target->hitPoints >= units_dat::MaxHitPoints[target->id])
-				{
-					if (bErrorFlag)
-					{
-						*(s16*)bErrorFlag = errorStringId;
-					}
-					return 0;
-				}
+				//if (target->hitPoints >= units_dat::MaxHitPoints[target->id])
+				//{
+				//	if (bErrorFlag)
+				//	{
+				//		*(s16*)bErrorFlag = errorStringId;
+				//	}
+				//	return 0;
+				//}
 				return 1;
 			} break;
 			case OrderId::Harvest1:
