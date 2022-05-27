@@ -1768,8 +1768,8 @@ LABEL_126:
 			case UnitId::ZergSporeColony:
 			case UnitId::ZergLarvalColony:
 			case UnitId::ZergIrolIris:
-			case UnitId::ZergOrbothOmlia:
 			case UnitId::ZergOthstolOviform:
+			case UnitId::ZergAlaszilArbor:
 			case UnitId::ProtossPylon:
 			case UnitId::ProtossPennant:
 			case UnitId::ProtossShieldBattery:
