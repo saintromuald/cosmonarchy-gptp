@@ -1762,6 +1762,8 @@ LABEL_126:
 	}
 
 	u32 __stdcall ai_remove_addon_placements(u16 unit_id, char* placement_data, u32 player, Point16 desired_position) {
+		return 0;
+
 		/*
 		char placement_data_copy[4096] = {};
 		memcpy(placement_data_copy, placement_data, 4096);

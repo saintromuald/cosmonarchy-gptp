@@ -3,245 +3,170 @@
 
 namespace hooks
 {
-	void orders_Repair1(Unit* unit) // 004673D0
-	{
-		bool jump_to_676C4 = false; // handle various early invalid cases
-		bool bEndThere = false;
+	void orders_Repair1(Unit* unit) { // 004673D0
 		Unit* target = unit->orderTarget.unit;
-		if (target == nullptr
+		if (!target
 		||	target->hitPoints >= units_dat::MaxHitPoints[target->id]
 		||	target->stasisTimer != 0
-		||	(unit->unit_ai != nullptr && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
+		||	(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
 		||	target->status & UnitStatus::InTransport
-		||  !(target->status & UnitStatus::Completed))
-		{
+		||  !(target->status & UnitStatus::Completed)) {
 			unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
 			unit->orderToIdle();
-			bEndThere = true;
-			jump_to_676C4 = true; // No
+			return;
 		}
 
-		if (!bEndThere)
-		{
-			bool jump_to_default_switch;
-			if (!jump_to_676C4)
-			{
-				jump_to_default_switch = ((unit->mainOrderState > 8) || (unit->mainOrderState >= 2 && unit->mainOrderState <= 5));
-				if (!jump_to_default_switch && unit->mainOrderState == 0)
-				{
-					s16 unkRepairInfo = 0;
-					u32 repairCostMinerals = 0, repairCostGas = 0;
+		bool jump_to_default_switch = ((unit->mainOrderState > 8) || (unit->mainOrderState >= 2 && unit->mainOrderState <= 5));
+		if (!jump_to_default_switch && unit->mainOrderState == 0) {
+			s16 unkRepairInfo = 0;
+			u32 repairCostMinerals = 0, repairCostGas = 0;
 
-					helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
-					helper::verifyResources(repairCostMinerals, repairCostGas, unit->playerId);
+			helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
+			helper::verifyResources(repairCostMinerals, repairCostGas, unit->playerId);
 
-					unit->worker.repairResourceLossTimer = 0;
-					unit->mainOrderState = 1; // continue directly into this case
-				}
+			unit->worker.repairResourceLossTimer = 0;
+			unit->mainOrderState = 1; // continue directly into this case
+		}
 
-				if (!jump_to_default_switch && unit->mainOrderState == 1)
-				{
-					if (!(target->status & UnitStatus::Completed))
-					{
-						unit->orderTo(OrderId::ConstructingBuilding, target);
-						if (*IS_PLACING_BUILDING)
-						{
-							if (!helper::canStillPlaceBuilding())
-							{
-								helper::refreshLayers3And4();
-								helper::endBuildingPlacement();
-							}
-						}
-						bEndThere = true;
-					}
-					else
-					{
-						if (helper::orderToMoveToTarget(unit, target))
-						{
-							helper::unitOrderMoveToTargetUnit(unit, target);
-							unit->mainOrderState = 6; // don't continue directly into this case
-						}
-						bEndThere = true;
+		if (!jump_to_default_switch && unit->mainOrderState == 1) {
+			if (!(target->status & UnitStatus::Completed)) {
+				unit->orderTo(OrderId::ConstructingBuilding, target);
+				if (*IS_PLACING_BUILDING) {
+					if (!helper::canStillPlaceBuilding()) {
+						helper::refreshLayers3And4();
+						helper::endBuildingPlacement();
 					}
 				}
-
-				if (!bEndThere && !jump_to_default_switch && unit->mainOrderState == 6)
-				{
-					if (unit->getMovableState() == 0)
-					{ // not reached destination
-						helper::moveTowards(unit, target); // may cause unit to move or become idle
-						bEndThere = true;
-					}
-					else
-					{ // reached destination or unmovable
-						if (!(unit->isTargetWithinMinRange(target, 5)))
-						{
-							unit->mainOrderState = 1; // don't continue directly into this case
-							bEndThere = true;
-						}
-						else
-						{
-							helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
-							helper::unitOrderMoveToTargetUnit(unit, target);
-							unit->mainOrderState = 7; // don't continue directly into this case
-							jump_to_default_switch = true;
-						}
-					}
-				}
-
-				if (!bEndThere && !jump_to_default_switch && unit->mainOrderState == 7)
-				{
-					if (!(unit->isTargetWithinMinRange(target, 5)))
-					{
-						unit->mainOrderState = 1;
-						bEndThere = true;
-					}
-					else
-					{
-						helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
-						helper::unitOrderMoveToTargetUnit(unit, target);
-						if (!helper::isUnitPositions2Equal(unit))
-						{
-							s32 angleReturned, currentAngle;
-							u8 weaponId;
-							angleReturned =
-								scbw::getAngle(
-									unit->sprite->position.x,
-									unit->sprite->position.y,
-									unit->nextTargetWaypoint.x,
-									unit->nextTargetWaypoint.y
-								);
-							currentAngle = unit->currentDirection1 - angleReturned;
-							if (currentAngle < 0)
-							{
-								currentAngle += 256;
-							}
-							if (currentAngle > 128)
-							{
-								currentAngle = 256 - currentAngle;
-							}
-							weaponId = unit->getGroundWeapon();
-							if (currentAngle > weapons_dat::AttackAngle[weaponId])
-							{
-								jump_to_default_switch = true;
-							}
-							else
-							{
-								unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-								unit->mainOrderState = 8; // don't continue directly into this case
-								jump_to_default_switch = true;
-							}
-						}
-						else
-						{
-							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-							unit->mainOrderState = 8; // don't continue directly into this case
-							jump_to_default_switch = true;
-						}
-					}
-				}
-
-				if (!bEndThere && !jump_to_default_switch && unit->mainOrderState == 8)
-				{
-					helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
-					helper::unitOrderMoveToTargetUnit(unit, target);
-					if (unit->isTargetWithinMinRange(target, 5) && target->mainOrderId != OrderId::Liftoff)
-					{
-						jump_to_default_switch = true;
-					}
-					else
-					{
-						Image* current_image = unit->sprite->images.head;
-						while (current_image != nullptr)
-						{
-							current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
-							current_image = current_image->link.next;
-						}
-						unit->mainOrderState = 1; // don't continue directly into this case
-						jump_to_default_switch = true;
-					}
-				}
-
-				if (!bEndThere)
-				{ // jump_to_default_switch CASE
-					bool bDoRepair = false;
-					if (unit->worker.repairResourceLossTimer == 0)
-					{
-						unit->worker.repairResourceLossTimer--;
-						bDoRepair = helper::ord_repair_subtract(unit, target);
-						if (!bDoRepair)
-						{
-							Image* current_image = unit->sprite->images.head;
-							while (current_image != nullptr)
-							{
-								current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
-								current_image = current_image->link.next;
-							}
-							unit->orderToIdle();
-							bEndThere = true;
-						}
-					}
-					else
-					{
-						unit->worker.repairResourceLossTimer--;
-						bDoRepair = true;
-					}
-					if (bDoRepair)
-					{ // //67692
-						u32 hpGain = target->buildRepairHpGain;
-						if (*CHEAT_STATE & CheatFlags::OperationCwal)
-						{
-							hpGain *= 16;
-						}
-						// Talos - Advanced repair speed
-						if (unit->id == UnitId::TerranTalos) {
-							hpGain *= 1.5;
-						}
-						target->heal(hpGain, unit);
-						if (target->hitPoints < units_dat::MaxHitPoints[target->id])
-						{
-							bEndThere = true;
-						}
-						else
-						{
-							jump_to_676C4 = true;
-						}
-					}
-				}
+				return;
 			}
 
-			if (!bEndThere)
-			{ //jump_to_676C4 CASE
+			if (helper::orderToMoveToTarget(unit, target)) {
+				helper::unitOrderMoveToTargetUnit(unit, target);
+				unit->mainOrderState = 6; // don't continue directly into this case
+			}
+			return;
+		}
+
+		if (!jump_to_default_switch && unit->mainOrderState == 6) {
+			if (unit->getMovableState() == 0) { // not reached destination
+				helper::moveTowards(unit, target); // may cause unit to move or become idle
+				return;
+			}
+			if (!(unit->isTargetWithinMinRange(target, 5))) {
+				unit->mainOrderState = 1; // don't continue directly into this case
+				return;
+			}
+
+			helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
+			helper::unitOrderMoveToTargetUnit(unit, target);
+			unit->mainOrderState = 7; // don't continue directly into this case
+			jump_to_default_switch = true;
+		}
+
+		if (!jump_to_default_switch && unit->mainOrderState == 7) {
+			if (!(unit->isTargetWithinMinRange(target, 5))) {
+				unit->mainOrderState = 1;
+				return;
+			} else {
+				helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
+				helper::unitOrderMoveToTargetUnit(unit, target);
+				if (!helper::isUnitPositions2Equal(unit)) {
+					s32 angle_delta = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
+					s32 current_angle = unit->currentDirection1 - angle_delta;
+					if (current_angle < 0) {
+						current_angle += 256;
+					}
+					if (current_angle > 128) {
+						current_angle = 256 - current_angle;
+					}
+					u8 weapon = unit->getGroundWeapon();
+					if (current_angle > weapons_dat::AttackAngle[weapon])
+					{
+						jump_to_default_switch = true;
+					}
+					else
+					{
+						unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+						unit->mainOrderState = 8; // don't continue directly into this case
+						jump_to_default_switch = true;
+					}
+				} else {
+					unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+					unit->mainOrderState = 8; // don't continue directly into this case
+					jump_to_default_switch = true;
+				}
+			}
+		}
+
+		if (!jump_to_default_switch && unit->mainOrderState == 8) {
+			helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
+			helper::unitOrderMoveToTargetUnit(unit, target);
+			if (unit->isTargetWithinMinRange(target, 5) && target->mainOrderId != OrderId::Liftoff) {
+				jump_to_default_switch = true;
+			} else {
+				Image* current_image = unit->sprite->images.head;
+				while (current_image != nullptr)
+				{
+					current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
+					current_image = current_image->link.next;
+				}
+				unit->mainOrderState = 1; // don't continue directly into this case
+				jump_to_default_switch = true;
+			}
+		}
+
+		bool do_repair = false;
+		if (unit->worker.repairResourceLossTimer == 0) {
+			unit->worker.repairResourceLossTimer--;
+			do_repair = helper::ord_repair_subtract(unit, target);
+			if (!do_repair)
+			{
 				Image* current_image = unit->sprite->images.head;
 				while (current_image != nullptr)
 				{
 					current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 					current_image = current_image->link.next;
 				}
-				if (unit->orderQueueHead != nullptr)
-				{
-					unit->userActionFlags |= 1;
-					prepareForNextOrder(unit);
-				}
-				else
-				{ //676FE
-					u8 orderId;
-					if (unit->unit_ai == nullptr)
-					{
-						orderId = units_dat::ReturnToIdleOrder[unit->id];
-					}
-					else
-					{
-						orderId = OrderId::ComputerAI;
-					}
-					unit->orderComputer(orderId);
-				}
-				//6771B
-				if (target != nullptr && !(target->status & UnitStatus::InTransport))
-				{
-					target->connectedUnit = nullptr;
-				}
+				unit->orderToIdle();
+				return;
 			}
+		} else {
+			unit->worker.repairResourceLossTimer--;
+			do_repair = true;
+		}
+		if (do_repair) {
+			u32 hpGain = target->buildRepairHpGain;
+			if (*CHEAT_STATE & CheatFlags::OperationCwal) {
+				hpGain *= 16;
+			}
+			// Talos - Advanced repair speed
+			if (unit->id == UnitId::TerranTalos) {
+				hpGain *= 1.5;
+			}
+			target->heal(hpGain, unit);
+
+			if (target->hitPoints < units_dat::MaxHitPoints[target->id]) {
+				return;
+			}
+		}
+
+		Image* current_image = unit->sprite->images.head;
+		while (current_image) {
+			current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
+			current_image = current_image->link.next;
+		}
+		if (unit->orderQueueHead) {
+			unit->userActionFlags |= 1;
+			prepareForNextOrder(unit);
+		} else {
+			u8 orderId = units_dat::ReturnToIdleOrder[unit->id];
+			if (unit->unit_ai) {
+				orderId = OrderId::ComputerAI;
+			}
+			unit->orderComputer(orderId);
+		}
+		if (target && !(target->status & UnitStatus::InTransport)) {
+			target->connectedUnit = 0;
 		}
 	}
 
@@ -275,14 +200,14 @@ namespace hooks
 					}
 					return 0;
 				}
-				if (target->hitPoints >= units_dat::MaxHitPoints[target->id])
-				{
-					if (bErrorFlag)
-					{
-						*(s16*)bErrorFlag = errorStringId;
-					}
-					return 0;
-				}
+				//if (target->hitPoints >= units_dat::MaxHitPoints[target->id])
+				//{
+				//	if (bErrorFlag)
+				//	{
+				//		*(s16*)bErrorFlag = errorStringId;
+				//	}
+				//	return 0;
+				//}
 				return 1;
 			} break;
 			case OrderId::Harvest1:
