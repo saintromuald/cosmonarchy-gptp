@@ -16,103 +16,89 @@ namespace hooks
 			return;
 		}
 
-		bool jump_to_default_switch = ((unit->mainOrderState > 8) || (unit->mainOrderState >= 2 && unit->mainOrderState <= 5));
-		if (!jump_to_default_switch && unit->mainOrderState == 0) {
-			s16 unkRepairInfo = 0;
-			u32 repairCostMinerals = 0, repairCostGas = 0;
+		switch (unit->mainOrderState) {
+			case 0: {
+				s16 unkRepairInfo = 0;
+				u32 repairCostMinerals = 0, repairCostGas = 0;
 
-			helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
-			helper::verifyResources(repairCostMinerals, repairCostGas, unit->playerId);
+				helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
+				helper::verifyResources(repairCostMinerals, repairCostGas, unit->playerId);
 
-			unit->worker.repairResourceLossTimer = 0;
-			unit->mainOrderState = 1; // continue directly into this case
-		}
-
-		if (!jump_to_default_switch && unit->mainOrderState == 1) {
-			if (!(target->status & UnitStatus::Completed)) {
-				unit->orderTo(OrderId::ConstructingBuilding, target);
-				if (*IS_PLACING_BUILDING) {
-					if (!helper::canStillPlaceBuilding()) {
-						helper::refreshLayers3And4();
-						helper::endBuildingPlacement();
+				unit->worker.repairResourceLossTimer = 0;
+				unit->mainOrderState = 1; // continue directly into this case
+			} // fallthrough
+			case 1: {
+				if (!(target->status & UnitStatus::Completed)) {
+					unit->orderTo(OrderId::ConstructingBuilding, target);
+					if (*IS_PLACING_BUILDING) {
+						if (!helper::canStillPlaceBuilding()) {
+							helper::refreshLayers3And4();
+							helper::endBuildingPlacement();
+						}
 					}
+					return;
+				}
+
+				if (helper::orderToMoveToTarget(unit, target)) {
+					helper::unitOrderMoveToTargetUnit(unit, target);
+					unit->mainOrderState = 6; // don't continue directly into this case
 				}
 				return;
-			}
+			} break;
+			case 6: {
+				if (unit->getMovableState() == 0) { // not reached destination
+					helper::moveTowards(unit, target); // may cause unit to move or become idle
+					return;
+				}
+				if (!(unit->isTargetWithinMinRange(target, 5))) {
+					unit->mainOrderState = 1; // don't continue directly into this case
+					return;
+				}
 
-			if (helper::orderToMoveToTarget(unit, target)) {
-				helper::unitOrderMoveToTargetUnit(unit, target);
-				unit->mainOrderState = 6; // don't continue directly into this case
-			}
-			return;
-		}
-
-		if (!jump_to_default_switch && unit->mainOrderState == 6) {
-			if (unit->getMovableState() == 0) { // not reached destination
-				helper::moveTowards(unit, target); // may cause unit to move or become idle
-				return;
-			}
-			if (!(unit->isTargetWithinMinRange(target, 5))) {
-				unit->mainOrderState = 1; // don't continue directly into this case
-				return;
-			}
-
-			helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
-			helper::unitOrderMoveToTargetUnit(unit, target);
-			unit->mainOrderState = 7; // don't continue directly into this case
-			jump_to_default_switch = true;
-		}
-
-		if (!jump_to_default_switch && unit->mainOrderState == 7) {
-			if (!(unit->isTargetWithinMinRange(target, 5))) {
-				unit->mainOrderState = 1;
-				return;
-			} else {
 				helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
 				helper::unitOrderMoveToTargetUnit(unit, target);
-				if (!helper::isUnitPositions2Equal(unit)) {
-					s32 angle_delta = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
-					s32 current_angle = unit->currentDirection1 - angle_delta;
-					if (current_angle < 0) {
-						current_angle += 256;
-					}
-					if (current_angle > 128) {
-						current_angle = 256 - current_angle;
-					}
-					u8 weapon = unit->getGroundWeapon();
-					if (current_angle > weapons_dat::AttackAngle[weapon])
-					{
-						jump_to_default_switch = true;
-					}
-					else
-					{
+				unit->mainOrderState = 7; // don't continue directly into this case
+			} break;
+			case 7: {
+				if (!(unit->isTargetWithinMinRange(target, 5))) {
+					unit->mainOrderState = 1;
+					return;
+				} else {
+					helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
+					helper::unitOrderMoveToTargetUnit(unit, target);
+					if (!helper::isUnitPositions2Equal(unit)) {
+						s32 angle_delta = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
+						s32 current_angle = unit->currentDirection1 - angle_delta;
+						if (current_angle < 0) {
+							current_angle += 256;
+						}
+						if (current_angle > 128) {
+							current_angle = 256 - current_angle;
+						}
+						u8 weapon = unit->getGroundWeapon();
+						if (current_angle <= weapons_dat::AttackAngle[weapon]) {
+							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+							unit->mainOrderState = 8; // don't continue directly into this case
+						}
+					} else {
 						unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 						unit->mainOrderState = 8; // don't continue directly into this case
-						jump_to_default_switch = true;
 					}
-				} else {
-					unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-					unit->mainOrderState = 8; // don't continue directly into this case
-					jump_to_default_switch = true;
 				}
-			}
-		}
-
-		if (!jump_to_default_switch && unit->mainOrderState == 8) {
-			helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
-			helper::unitOrderMoveToTargetUnit(unit, target);
-			if (unit->isTargetWithinMinRange(target, 5) && target->mainOrderId != OrderId::Liftoff) {
-				jump_to_default_switch = true;
-			} else {
-				Image* current_image = unit->sprite->images.head;
-				while (current_image != nullptr)
-				{
-					current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
-					current_image = current_image->link.next;
+			} break;
+			case 8: {
+				helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
+				helper::unitOrderMoveToTargetUnit(unit, target);
+				if (!unit->isTargetWithinMinRange(target, 5) || target->mainOrderId == OrderId::Liftoff) { 
+					Image* current_image = unit->sprite->images.head;
+					while (current_image != nullptr)
+					{
+						current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
+						current_image = current_image->link.next;
+					}
+					unit->mainOrderState = 1; // don't continue directly into this case
 				}
-				unit->mainOrderState = 1; // don't continue directly into this case
-				jump_to_default_switch = true;
-			}
+			} break;
 		}
 
 		bool do_repair = false;
