@@ -1661,7 +1661,6 @@ LABEL_126:
 		return OrderId::None;
 	}
 
-
 	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
 	Unit* AI_find_best_repair_unit(Unit* to_repair) { // 00443160
 		UnitArray workers = UnitSearchRadial(to_repair->position, 64 * 32);
@@ -1782,8 +1781,8 @@ LABEL_126:
 		return false;
 	}
 
-	// Hooked to add addon cases for new addon buildings and to reserve space around buildings
-	void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position) {
+	// Hooked to add addon cases for new addon buildings and to reserve space around buildings. -Veeq7
+	void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position) { // 00443CC0
 		for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = unit->player_link.next) {
 			if (unit->sprite && unit->mainOrderId != OrderId::Die && units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
 				// Map coordinates to the placement grid
