@@ -265,7 +265,7 @@ namespace UnitId
 		/*0x6E*/	TerranReservoir							= 110,
 		/*0x6F*/	TerranBarracks							= 111,
 		/*0x70*/	TerranAcademy							= 112,
-		/*0x71*/	TerranFactory							= 113,
+		/*0x71*/	TerranFulcrum							= 113,
 		/*0x72*/	TerranStarport							= 114,
 		/*0x73*/	TerranControlTower						= 115,
 		/*0x74*/	TerranScienceFacility					= 116,

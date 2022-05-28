@@ -219,7 +219,7 @@ namespace hooks
 			case UnitId::TerranMachineShop:
 			case UnitId::TerranSalvoYard:
 			{
-				unitId = UnitId::TerranFactory;
+				unitId = UnitId::TerranFulcrum;
 			} break;
 			case UnitId::TerranGuildhall:
 			{
