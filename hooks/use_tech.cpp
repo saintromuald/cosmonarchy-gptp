@@ -3,9 +3,24 @@
 #include "SCBW/api.h"
 #include "hook_tools.h"
 #include "SCBW/stat_txt_spec.h"
+#include "hooks/interface/select_larva.h"
 
 namespace hooks
 {
+	enum LarvaType {
+		LarvaType_Swarm,
+		LarvaType_Assault,
+		LarvaType_Control,
+	};
+
+	static void select_larva_type(u32 type) {
+		BTSNACT_select_larva();
+		helper::update_hud_info();
+		if (*activePortraitUnit && (*activePortraitUnit)->id == UnitId::ZergLarva) {
+			helper::BTNSACT_ChangeButtons(206 + type);
+		}
+	}
+
 	void BTNSACT_UseTech(u16 tech, GrpHead* head)
 	{
 		// replacement for proc 00423660
@@ -281,36 +296,15 @@ namespace hooks
 			} break;
 			case TechId::LarvalSubmenuSelectSwarm:
 			{
-				s32 action = 1;
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
-				buf[0] = 0x99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = action;
-				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::SelectLarvaType;
-				helper::queue_game_command(buf, 0xc);
+				select_larva_type(LarvaType_Swarm);
 			} break;
 			case TechId::LarvalSubmenuSelectAssault:
 			{
-				s32 action = 2;
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
-				buf[0] = 0x99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = action;
-				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::SelectLarvaType;
-				helper::queue_game_command(buf, 0xc);
+				select_larva_type(LarvaType_Assault);
 			} break;
 			case TechId::LarvalSubmenuSelectControl:
 			{
-				s32 action = 3;
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
-				buf[0] = 0x99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = action;
-				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::SelectLarvaType;
-				helper::queue_game_command(buf, 0xc);
+				select_larva_type(LarvaType_Control);
 			} break;
 			default:
 			{

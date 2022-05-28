@@ -26,7 +26,6 @@
 #include "trigger_system.h"
 #include "base_layouts.h"
 #include "token_parser.h"
-#include "hooks/interface/select_larva.h"
 #include "math_utils.h"
 #include "graphics/Bitmap.h"
 
@@ -1417,19 +1416,6 @@ namespace hooks
 			if (!scbw::moveUnitImproved(unit, finalPos.x, finalPos.y))
 			{
 				unitExt->timers[TimerStrigaRepulsion] = 0;
-			}
-		}
-
-		// Larva Selection
-		u32 larva_value = scbw::get_generic_rust_value(unit, RustId::SelectLarvaType);
-		if (larva_value) {
-			scbw::set_generic_rust_value(unit, RustId::SelectLarvaType, 0);
-			if (unit->playerId == *LOCAL_NATION_ID) {
-				BTSNACT_select_larva();
-				helper::update_hud_info();
-				if (*activePortraitUnit && (*activePortraitUnit)->id == UnitId::ZergLarva) {
-					helper::BTNSACT_ChangeButtons(205 + larva_value);
-				}
 			}
 		}
 
