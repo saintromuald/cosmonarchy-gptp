@@ -115,7 +115,7 @@ namespace hooks
 			}
 			if (!bStopThere)
 			{
-				unit->sprite->playIscriptAnim(IscriptAnimation::Landing);
+				unit->sprite->play_iscript_animation(IscriptAnimation::Landing);
 				unit->mainOrderState = 3;
 			}
 		}
@@ -137,7 +137,7 @@ namespace hooks
 
 				unit->sprite->elevationLevel = 4;
 				helper::setUnitPathing(unit, 0);
-				scbw::setUnitPosition(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				scbw::set_unit_position(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 				helper::start_collision_tracking(unit); // Maybe update orders targeting the unit, set repulse for units in surroundings, and some other things?
 
@@ -153,7 +153,7 @@ namespace hooks
 					unit->sprite->images.tail->flags &= ~ImageFlags::DontUpdate;
 				}
 				helper::create_landing_dust(unit->sprite);
-				scbw::refreshConsole();
+				scbw::refresh_console();
 				helper::crush_immobile_units(unit);
 
 				if (unit->orderQueueHead != nullptr)
@@ -179,7 +179,7 @@ namespace hooks
 						}
 						if (unit->orderQueueHead == nullptr)
 						{
-							unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+							unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 						}
 					}
 
@@ -211,8 +211,8 @@ namespace hooks
 					// Add the last minute occupation info of landing building to update an ongoing attempt to choose a building or landing location?
 					if (!helper::canStillPlaceBuilding())
 					{
-						helper::refreshLayers3And4();
-						helper::endBuildingPlacement();
+						helper::refresh_layers_3_and_4();
+						helper::end_building_placement();
 					}
 				}
 			}
@@ -245,7 +245,7 @@ namespace hooks
 				unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 			}
 
-			scbw::refreshConsole();
+			scbw::refresh_console();
 			if (unit->sprite->position.x != unit->nextTargetWaypoint.x
 			||	unit->sprite->position.y - 42 != unit->nextTargetWaypoint.y)
 			{

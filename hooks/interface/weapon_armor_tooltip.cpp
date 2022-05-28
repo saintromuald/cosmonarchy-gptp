@@ -608,8 +608,8 @@ namespace hooks
 		}
 		addStatus(statuses, "Adrenal Mark", nathrokorTargetStacks, 0);
 		/* // Can't see armor icons on eggs yet
-		if ((unit->id == UnitId::ZergEgg && !scbw::isLarvalEgg(unit)) || unit->id == UnitId::ZergCocoon) {
-			if (scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep) {
+		if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
+			if (scbw::get_active_tile_at(unit->position.x, unit->position.y).hasCreep) {
 				addStatus(statuses, "Biogenesis");
 			}
 		}

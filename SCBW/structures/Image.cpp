@@ -4,7 +4,7 @@
 #include <SCBW/scbwdata.h>
 #include <cassert>
 
-void Image::playIscriptAnim(IscriptAnimation::Enum animation)
+void Image::play_iscript_animation(IscriptAnimation::Enum animation)
 {
 	assert(this);
 	u32 animation_ = (u8)animation;

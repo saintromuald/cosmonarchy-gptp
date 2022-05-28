@@ -41,16 +41,16 @@ namespace hooks
 			}
 			else if (nydus_canal->unit_ai != nullptr)
 			{
-				nydus_canal->orderComputer(OrderId::ComputerAI);
+				nydus_canal->order_computer(OrderId::ComputerAI);
 			}
 			else
 			{
-				nydus_canal->orderComputer(units_dat::ReturnToIdleOrder[nydus_canal->id]);
+				nydus_canal->order_computer(units_dat::ReturnToIdleOrder[nydus_canal->id]);
 			}
 		}
 		else
 		{ // 0045DCDB
-			Unit* nydusExit = helper::createUnit(UnitId::ZergNydusCanal, nydus_canal->orderTarget.pt.x, nydus_canal->orderTarget.pt.y, nydus_canal->playerId);
+			Unit* nydusExit = helper::create_unit(UnitId::ZergNydusCanal, nydus_canal->orderTarget.pt.x, nydus_canal->orderTarget.pt.y, nydus_canal->playerId);
 			if (nydusExit)
 			{
 				helper::AI_TrainingOverlord(nydusExit, nydus_canal);
@@ -58,21 +58,21 @@ namespace hooks
 			
 			if (nydusExit == nullptr)
 			{
-				helper::displayLastNetErrorForPlayer(nydus_canal->playerId);
+				helper::display_last_network_error_for_player(nydus_canal->playerId);
 			}
 			else if (nydusExit->id != UnitId::ZergNydusCanal)
 			{
 				// TODO: should probably remove, since we are already handling CCMU properly here
 				// we should test first though
-				helper::displayLastNetErrorForPlayer(nydus_canal->playerId);
+				helper::display_last_network_error_for_player(nydus_canal->playerId);
 				nydusExit->remove();
 			}
 			else
 			{
-				helper::initBuilding(nydusExit, 1);
+				helper::init_building(nydusExit, 1);
 				// logically equivalent to a more complex original calculation
 				nydusExit->hitPoints = (10 * units_dat::MaxHitPoints[nydusExit->id]) / 100;
-				nydusExit->orderComputer(OrderId::ZergBuildSelf);
+				nydusExit->order_computer(OrderId::ZergBuildSelf);
 				nydusExit->currentButtonSet = UnitId::Buttons_Blank;
 				helper::stopCreepDisappearingAtBuilding(nydusExit);
 				nydus_canal->building.nydusExit = nydusExit;

@@ -16,7 +16,7 @@ namespace hooks
 				orderId == OrderId::PlaceAddon
 				)
 			{
-				if (builder->canMakeUnit(builtUnitId, *ACTIVE_NATION_ID))
+				if (builder->can_make_unit(builtUnitId, *ACTIVE_NATION_ID))
 					bReturnValue = (helper::OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
 			}
 			else

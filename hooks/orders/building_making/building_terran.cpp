@@ -17,7 +17,7 @@ namespace hooks
 			Image* current_image = building->sprite->images.head;
 			while (current_image != nullptr)
 			{
-				current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+				current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 				current_image = current_image->link.next;
 			}
 			building->mainOrderState = 2;
@@ -32,7 +32,7 @@ namespace hooks
 			Image* current_image = building->sprite->images.head;
 			while (current_image != nullptr)
 			{
-				current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
+				current_image->play_iscript_animation(IscriptAnimation::SpecialState2);
 				current_image = current_image->link.next;
 			}
 			building->mainOrderState = 4;
@@ -46,11 +46,11 @@ namespace hooks
 		}
 		else if (building->mainOrderState == 5)
 		{
-			helper::initBuilding(building, 0);
+			helper::init_building(building, 0);
 			Image* current_image = building->sprite->images.head;
 			while (current_image != nullptr)
 			{
-				current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+				current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				current_image = current_image->link.next;
 			}
 			building->mainOrderState = 6;
@@ -59,7 +59,7 @@ namespace hooks
 		{
 			if (building->hitPoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
 			{
-				building->orderComputer(OrderId::Nothing2);
+				building->order_computer(OrderId::Nothing2);
 			}
 		}
 	}
@@ -81,7 +81,7 @@ namespace hooks
 			}
 			if (unit->mainOrderState == 0)
 			{
-				if (helper::orderToMoveToTarget(unit, builtUnit))
+				if (helper::order_to_move_to_target(unit, builtUnit))
 					unit->mainOrderState = 2;
 			}
 			if (unit->mainOrderState == 2)
@@ -93,7 +93,7 @@ namespace hooks
 				}
 				else if (movableState == MovableState::ReachedDestination)
 				{
-					scbw::refreshConsole();
+					scbw::refresh_console();
 					if (builtUnit->connectedUnit != nullptr &&
 						builtUnit->connectedUnit != unit &&
 						(builtUnit->connectedUnit)->orderTarget.unit == builtUnit)
@@ -139,14 +139,14 @@ namespace hooks
 					y_max = 0;
 				}
 
-				unit->orderTarget.pt.x = helper::RandBetween(x_min, x_max, 9); // DF: Can't tell what effect the third value has on the randomization.
-				unit->orderTarget.pt.y = helper::RandBetween(y_min, y_max, 9);
-				helper::fixTargetLocation(&unit->orderTarget.pt,unit->id);
-				if (helper::unk_terrainCollision2(unit, unit->orderTarget.pt.x - unit->sprite->position.x, unit->orderTarget.pt.y - unit->sprite->position.y) != 0)
+				unit->orderTarget.pt.x = helper::rand_between(x_min, x_max, 9); // DF: Can't tell what effect the third value has on the randomization.
+				unit->orderTarget.pt.y = helper::rand_between(y_min, y_max, 9);
+				helper::fix_target_location(&unit->orderTarget.pt,unit->id);
+				if (helper::unk_terrain_collision_2(unit, unit->orderTarget.pt.x - unit->sprite->position.x, unit->orderTarget.pt.y - unit->sprite->position.y) != 0)
 				{
-					unit->orderTarget.pt.x = helper::RandBetween(x_min, x_max, 9);
-					unit->orderTarget.pt.y = helper::RandBetween(y_min, y_max, 9);
-					helper::fixTargetLocation(&unit->orderTarget.pt, unit->id);
+					unit->orderTarget.pt.x = helper::rand_between(x_min, x_max, 9);
+					unit->orderTarget.pt.y = helper::rand_between(y_min, y_max, 9);
+					helper::fix_target_location(&unit->orderTarget.pt, unit->id);
 				}
 
 				if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
@@ -208,7 +208,7 @@ namespace hooks
 						unit->mainOrderTimer = (rand_value & 63) + 30;
 						while (current_image != nullptr)
 						{
-							current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+							current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 							current_image = current_image->link.next;
 						}
 						unit->mainOrderState = 8;
@@ -222,7 +222,7 @@ namespace hooks
 					unit->mainOrderTimer = (rand_value & 63) + 30;
 					while (current_image != nullptr)
 					{
-						current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+						current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 						current_image = current_image->link.next;
 					}
 					unit->mainOrderState = 8;
@@ -240,7 +240,7 @@ namespace hooks
 					Image* current_image = unit->sprite->images.head;
 					while (current_image != nullptr)
 					{
-						current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
+						current_image->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
 						current_image = current_image->link.next;
 					}
 					unit->mainOrderState = 4;
@@ -271,7 +271,7 @@ namespace hooks
 					bool bEndThere = false;
 					while (current_image != nullptr)
 					{
-						current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
+						current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 						current_image = current_image->link.next;
 					}
 					if (builtUnit != nullptr)
@@ -315,11 +315,11 @@ namespace hooks
 						}
 						else if (unit->unit_ai != nullptr) // 00467F6F
 						{
-							unit->orderComputer(OrderId::ComputerAI);
+							unit->order_computer(OrderId::ComputerAI);
 						}
 						else
 						{
-							unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+							unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 						}
 					}
 				}
@@ -331,7 +331,7 @@ namespace hooks
 			bool bEndThere = false;
 			while (current_image != nullptr)
 			{
-				current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
+				current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
 			if (builtUnit != nullptr)
@@ -374,11 +374,11 @@ namespace hooks
 				}
 				else if (unit->unit_ai != nullptr) // 00467F6F
 				{
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -422,7 +422,7 @@ namespace hooks
 					}
 					else
 					{
-						builtUnit = helper::createUnit(
+						builtUnit = helper::create_unit(
 							unit->buildQueue[unit->buildQueueSlot],
 							unit->orderTarget.pt.x,
 							unit->orderTarget.pt.y,
@@ -433,8 +433,8 @@ namespace hooks
 					if (builtUnit == nullptr)
 					{
 						helper::refundUnitTrainCost(unit_id, unit->playerId);
-						helper::displayLastNetErrorForPlayer(unit->playerId);
-						unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+						helper::display_last_network_error_for_player(unit->playerId);
+						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 					}
 					else // 00468131
 					{
@@ -446,12 +446,12 @@ namespace hooks
 						{
 							if (!helper::canStillPlaceBuilding())
 							{
-								helper::refreshLayers3And4();
-								helper::endBuildingPlacement();
+								helper::refresh_layers_3_and_4();
+								helper::end_building_placement();
 							}
 						}
-						scbw::refreshConsole();
-						builtUnit->orderComputer(OrderId::BuildSelf1);
+						scbw::refresh_console();
+						builtUnit->order_computer(OrderId::BuildSelf1);
 						helper::AI_TrainingOverlord(builtUnit, unit);
 					}
 				}
@@ -464,7 +464,7 @@ namespace hooks
 		else if (unit->mainOrderState == 0) // 00468188
 		{
 			bool bMoveTargetResult;
-			scbw::refreshConsole();
+			scbw::refresh_console();
 			if (unit->orderTarget.unit != nullptr)
 			{
 				unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
@@ -497,7 +497,7 @@ namespace hooks
 			if (helper::initPlacementBoxPos(&mouse_pos))
 			{
 				*placeBuildingMessageId = helper::updatePlacementStateForPlacementBox_Func();
-				helper::refreshLayers3And4();
+				helper::refresh_layers_3_and_4();
 				Point16 buildPoint;
 				buildPoint.x = x;
 				buildPoint.y = y;
@@ -511,7 +511,7 @@ namespace hooks
 					scbw::adjustAddonCoordinates(*placeBuildingUnitId, 0, &addon_point.x, &addon_point.y);
 					helper::unk_buildingPlacementRelated(0, &addon_point);
 				}
-				result = helper::refreshLayers3And4();
+				result = helper::refresh_layers_3_and_4();
 			}
 			else
 			{

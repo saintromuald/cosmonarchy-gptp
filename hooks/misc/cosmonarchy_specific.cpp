@@ -593,7 +593,7 @@ LABEL_18:
 			}
 			else if (order_state == 2)
 			{
-				unit->playIscriptAnim(anim);
+				unit->play_iscript_animation(anim);
 				unitExt->timers[TimerPlanetCrackerChannel] = 121;
 				unitExt->values[ValueProtossSwitchOrderState] = 3;
 			}
@@ -601,7 +601,7 @@ LABEL_18:
 			{
 				if (unitExt->timers[TimerPlanetCrackerChannel] != 0 && unitExt->timers[TimerPlanetCrackerDelay] == 0 && unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell)
 				{
-					unit->playIscriptAnim(anim);
+					unit->play_iscript_animation(anim);
 					unitExt->timers[TimerPlanetCrackerChannel] = 121;
 				}
 				else if (unit->orderSignal & 4)
@@ -628,7 +628,7 @@ LABEL_18:
 		{
 			if (!(unit->movementFlags & MovementFlags::Accelerating))
 			{
-				unit->playIscriptAnim(anim);
+				unit->play_iscript_animation(anim);
 				unitExt->timers[TimerSwitchModeGimmick] = 5;
 				unitExt->values[ValueProtossSwitchOrderState] = 2;
 			}
@@ -722,7 +722,7 @@ LABEL_18:
 
 	// 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
 	// Now used to set starting energy to 100 - Veeq7
-	Unit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId) 
+	Unit* create_unit(u16 unitType, s32 x, s32 y, s32 playerId) 
 	{
 		u32 randomNumber = 0;
 		if (*IS_IN_GAME_LOOP)

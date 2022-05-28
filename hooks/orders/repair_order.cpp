@@ -11,7 +11,7 @@ namespace hooks
 		||	(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
 		||	target->status & UnitStatus::InTransport
 		||  !(target->status & UnitStatus::Completed)) {
-			unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
+			unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 			unit->orderToIdle();
 			if (target && !(target->status & UnitStatus::InTransport)) {
 				target->connectedUnit = 0;
@@ -35,14 +35,14 @@ namespace hooks
 					unit->orderTo(OrderId::ConstructingBuilding, target);
 					if (*IS_PLACING_BUILDING) {
 						if (!helper::canStillPlaceBuilding()) {
-							helper::refreshLayers3And4();
-							helper::endBuildingPlacement();
+							helper::refresh_layers_3_and_4();
+							helper::end_building_placement();
 						}
 					}
 					return;
 				}
 
-				if (helper::orderToMoveToTarget(unit, target)) {
+				if (helper::order_to_move_to_target(unit, target)) {
 					helper::unitOrderMoveToTargetUnit(unit, target);
 					unit->mainOrderState = 6;
 				}
@@ -80,11 +80,11 @@ namespace hooks
 						}
 						u8 weapon = unit->getGroundWeapon();
 						if (current_angle <= weapons_dat::AttackAngle[weapon]) {
-							unit->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+							unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 							unit->mainOrderState = 8;
 						}
 					} else {
-						unit->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+						unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 						unit->mainOrderState = 8;
 					}
 				}
@@ -93,7 +93,7 @@ namespace hooks
 				helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
 				helper::unitOrderMoveToTargetUnit(unit, target);
 				if (!unit->isTargetWithinMinRange(target, 5) || target->mainOrderId == OrderId::Liftoff) { 
-					unit->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
+					unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
 					unit->mainOrderState = 1;
 				}
 			} break;
@@ -105,7 +105,7 @@ namespace hooks
 			do_repair = helper::ord_repair_subtract(unit, target);
 			if (!do_repair)
 			{
-				unit->playIscriptAnim(IscriptAnimation::WalkingToIdle);
+				unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				if (unit->orderQueueHead) {
 					helper::force_order_done(unit);
 				} else {
@@ -133,7 +133,7 @@ namespace hooks
 			}
 		}
 
-		unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
+		unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 		if (unit->orderQueueHead) {
 			helper::force_order_done(unit);
 		} else {

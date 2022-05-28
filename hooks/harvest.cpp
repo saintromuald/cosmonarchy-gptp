@@ -224,7 +224,7 @@ namespace hooks
 				u32 timer = 30;
 				if (node && node->id == UnitId::ResourceVespeneGeyser) {
 					timer = 75;
-					unit->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+					unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				}
 
 				unit->mainOrderState = 5;
@@ -289,11 +289,11 @@ namespace hooks
 			}
 			else if (unit->unit_ai)
 			{
-				unit->orderComputer(OrderId::ComputerAI);
+				unit->order_computer(OrderId::ComputerAI);
 			}
 			else
 			{
-				unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
 	}

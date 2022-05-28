@@ -46,7 +46,7 @@ namespace hooks
 	{
 		Point16 oldPos = { unit->sprite->position.x, unit->sprite->position.y };
 		Point16 newPos = { x, y };
-		helper::fixTargetLocation(&newPos, unit->id);
+		helper::fix_target_location(&newPos, unit->id);
         unit->position.x = newPos.x;
         unit->position.y = newPos.y;
         unit->halt.x = newPos.x << 8;

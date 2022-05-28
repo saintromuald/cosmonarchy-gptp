@@ -23,7 +23,7 @@ namespace hooks
 			helper::incrementUnitScores(unit, -1);
 			if (unit->status & UnitStatus::Completed)
 			{
-				helper::incrementUnitScoresEx(unit, 0, -1);
+				helper::increment_unit_scores_ex(unit, 0, -1);
 			}
 
 			u32 selectionIndex = 0;
@@ -69,7 +69,7 @@ namespace hooks
 			helper::incrementUnitScores(unit, 1);
 			if (unit->status & UnitStatus::Completed)
 			{
-				helper::incrementUnitScoresEx(unit, bCountAsCompleted, 1);
+				helper::increment_unit_scores_ex(unit, bCountAsCompleted, 1);
 			}
 			if (isMorphing)
 			{
@@ -77,7 +77,7 @@ namespace hooks
 			}
 
 			helper::recheck_attacks(unit);
-			scbw::refreshConsole();
+			scbw::refresh_console();
 			if (units_dat::GroupFlags[unit->id].isZerg != 1
 				&& units_dat::GroupFlags[unit->id].isProtoss != 1
 				&& unit->status & UnitStatus::GroundedBuilding)

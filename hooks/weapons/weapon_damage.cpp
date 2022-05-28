@@ -530,7 +530,7 @@ namespace hooks
 						targetExt->values[ValueIsSelfReviving] = 1;
 						data.target->hitPoints = CuirassSelfReviveHP;
 						data.finalDamage = 0;
-						data.target->orderComputer(OrderId::Stop);
+						data.target->order_computer(OrderId::Stop);
 						data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 						helper::playSoundFromSource(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
 					}

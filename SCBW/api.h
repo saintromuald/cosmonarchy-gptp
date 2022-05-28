@@ -15,11 +15,11 @@ namespace scbw
 {
 	bool isAnyMorphMorphResult(u16 id);
 	bool isConventionalUnitMorphResult(u16 id);
-	bool isConventionalUnitMorphSource(u16 id, bool allow_larvae = false, bool allow_high_templar = false);
+	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae = false, bool allow_high_templar = false);
 	bool isZergBuildingMorphResult(u16 id);
 	bool isZergBuildingMorphSource(u16 id);
-	bool isLarvalEgg(Unit* unit);
-	bool isZergEggNew(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
+	bool is_larval_egg(Unit* unit);
+	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
 	bool isZergEgg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
 	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt);
 	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y);
@@ -347,7 +347,7 @@ namespace scbw
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Returns the pointer to the active tile data at (x, y).
-	inline ActiveTile& getActiveTileAt(s32 x, s32 y)
+	inline ActiveTile& get_active_tile_at(s32 x, s32 y)
 	{
 		return (*activeTileArray)[(x / 32) + mapTileSize->width * (y / 32)];
 	}
@@ -405,7 +405,7 @@ namespace scbw
 	/// Moves the unit's position to @p (x, y). If the unit is a ground unit and the
 	/// the target position is on unwalkable terrain, this function moves the unit
 	/// to the nearest walkable tile instead.
-	void setUnitPosition(Unit* unit, u16 x, u16 y);
+	void set_unit_position(Unit* unit, u16 x, u16 y);
 
 	/// Updates pathing data and various information related to the @p unit.
 	/// Details not understood.  See the source for moveUnit().
@@ -423,7 +423,7 @@ namespace scbw
 	///
 	/// @return           The created unit or nullptr if the unit cannot be created.
 	//function used for broodlings and similar stuff
-	Unit* createUnitInGame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator = nullptr, bool initAI = true);
+	Unit* create_unit_ingame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator = nullptr, bool initAI = true);
 	/// Calculates the images.dat overlay adjustment for the given unit.
 	/// This piece of code is used throughout StarCraft.exe for various status
 	/// effects, such as Ensnare, Plague, and Defensive Matrix.
@@ -453,7 +453,7 @@ namespace scbw
 
 		/// Tells StarCraft to refresh the console (current button set, unit portrait,
 		/// and status bar). not completely understood.
-	void refreshConsole();
+	void refresh_console();
 
 	// Moves the camera/screen to the unit
 	void MoveScreenToUnit(Unit* unit, u32 playerId = 8);

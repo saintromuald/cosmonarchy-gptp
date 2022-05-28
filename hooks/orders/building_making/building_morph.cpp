@@ -100,7 +100,7 @@ namespace hooks
 					overlay->free();
 				}
 			}
-			building->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
+			building->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
 			building->mainOrderState = 2;
 			jump_to_5D56C = true;
 		}
@@ -114,7 +114,7 @@ namespace hooks
 		}
 		else if (building->mainOrderState == 3)
 		{ // 0045D603
-			building->sprite->playIscriptAnim(IscriptAnimation::SpecialState2, true);
+			building->sprite->play_iscript_animation(IscriptAnimation::SpecialState2, true);
 			building->mainOrderState = 4;
 			jump_to_5D56C = true;
 
@@ -129,7 +129,7 @@ namespace hooks
 		}
 		else if (building->mainOrderState == 5)
 		{ // 005D62F
-			building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+			building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 			building->mainOrderState = 6;
 			helper::playBuildingCompleteSound(building);
 			jump_to_5D56C = true;
@@ -139,7 +139,7 @@ namespace hooks
 			bool sEnd = false;
 			if (building->orderSignal & 0x1)
 			{
-				building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 				sEnd = true;
 				replaceSpriteImages_copy(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
 				function_004D8500_copy(building->sprite->mainGraphic);
@@ -179,11 +179,11 @@ namespace hooks
 					u32 save_shields = building->shields;
 					// update score
 					building->status |= UnitStatus::Completed;
-					helper::incrementUnitScoresEx(building, -1, 0);
+					helper::increment_unit_scores_ex(building, -1, 0);
 
 					// do the building change
 					building->status -= UnitStatus::Completed;
-					helper::replaceUnitWithType(building, buildingId);
+					helper::replace_unit_with_type(building, buildingId);
 					// newHp = newHpMax - oldHpMax + oldHp
 					hpAfterMorph =
 						units_dat::MaxHitPoints[buildingId] -
@@ -197,14 +197,14 @@ namespace hooks
 					building->remainingBuildTime = 0;
 				}
 				// 0045D6CD
-				helper::updateUnitStatsFinishBuilding(building);
-				helper::updateUnitStrength(building);
+				helper::update_unit_stats_and_finish_building(building);
+				helper::update_unit_strength(building);
 				// relate to building placement / taking room around?
 				;
 				current_image = building->sprite->images.head;
 				while (current_image != nullptr)
 				{
-					current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+					current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 					current_image = current_image->link.next;
 				}
 				helper::SpreadInitialCreep(buildingId, building->sprite->position.x, building->sprite->position.y);
@@ -291,18 +291,18 @@ namespace hooks
 					resources->minerals[unit->playerId] += (units_dat::MineralCost[builtUnitId] * 3) / 4;
 					resources->gas[unit->playerId] += (units_dat::GasCost[builtUnitId] * 3) / 4;
 					unit->status |= UnitStatus::Completed;
-					helper::incrementUnitScoresEx(unit, -1, 0);
+					helper::increment_unit_scores_ex(unit, -1, 0);
 					unit->status -= UnitStatus::Completed;
 					u32 hp = unit->hitPoints;
 					u32 shield = unit->shields;
-					helper::updateUnitStatsFinishBuilding(unit);
-					helper::updateUnitStrength(unit);
+					helper::update_unit_stats_and_finish_building(unit);
+					helper::update_unit_strength(unit);
 					unit->hitPoints = hp;
 					unit->shields = shield;
 					Image* anchor = unit->getOverlay(ImageId::WarpAnchor);
 					if (anchor != nullptr)
 					{
-						anchor->playIscriptAnim(IscriptAnimation::Death);
+						anchor->play_iscript_animation(IscriptAnimation::Death);
 					}
 					else
 					{
@@ -310,11 +310,11 @@ namespace hooks
 						anchor = unit->getOverlay(ImageId::UnusedHeal_Small);
 						if (anchor != nullptr)
 						{
-							anchor->playIscriptAnim(IscriptAnimation::Death);
+							anchor->play_iscript_animation(IscriptAnimation::Death);
 						}
 					}
 					// TODO: Why is this commented?
-					//scbw::refreshConsole();
+					//scbw::refresh_console();
 				}
 				bStopThere = true;
 			}
@@ -333,18 +333,18 @@ namespace hooks
 
 			if (unit->id == UnitId::ZergExcisant)
 			{
-				Unit* drone = helper::createUnit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
+				Unit* drone = helper::create_unit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
 				if (drone == nullptr)
 				{
 					helper::refundUnitTrainCost(UnitId::ZergDroleth, unit->playerId);
-					helper::displayLastNetErrorForPlayer(unit->playerId);
+					helper::display_last_network_error_for_player(unit->playerId);
 					unit->remove();
 					bStopThere = true;
 				}
 				else
 				{ // 0045DB1E
-					helper::updateUnitStatsFinishBuilding(drone);
-					helper::updateUnitStrength(drone);
+					helper::update_unit_stats_and_finish_building(drone);
+					helper::update_unit_strength(drone);
 					drone->setHp(unit->previousHp * 256);
 					unit->remove();
 					bStopThere = true;
@@ -360,11 +360,11 @@ namespace hooks
 					helper::setThingyVisibilityFlags(thingy);
 				}
 				helper::playSoundFromSource(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
-				helper::replaceUnitWithType(unit, UnitId::ZergDroleth);
+				helper::replace_unit_with_type(unit, UnitId::ZergDroleth);
 				// probably AI related
 				helper::updateBuildingsAI(unit);
-				helper::updateUnitStatsFinishBuilding(unit);
-				helper::updateUnitStrength(unit);
+				helper::update_unit_stats_and_finish_building(unit);
+				helper::update_unit_strength(unit);
 
 				if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW &&
 					unit->sprite->images.tail->verticalOffset != 7)
@@ -374,7 +374,7 @@ namespace hooks
 				}
 
 				helper::refreshSpriteData(unit->sprite);
-				unit->orderComputer(OrderId::ResetCollision1);
+				unit->order_computer(OrderId::ResetCollision1);
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
 				unit->setHp(unit->previousHp * 256);
 
@@ -488,7 +488,7 @@ namespace hooks
 		{
 			if (current_image->id != ImageId::StargateOverlay)
 			{
-				current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+				current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 			}
 			current_image = current_image->link.next;
 		}

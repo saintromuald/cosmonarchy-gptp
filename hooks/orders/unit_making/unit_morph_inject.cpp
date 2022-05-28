@@ -33,14 +33,14 @@ namespace
 		*selectionIndexStart = 0;
 		while (Unit* unit = getActivePlayerNextSelection())
 		{
-			if (hooks::unitCanMorphHook(unit, morphUnitId)
+			if (hooks::unit_can_morph(unit, morphUnitId)
 				&& unit->mainOrderId != OrderId::Morph1
 				&& addUnitToBuildQueue(unit, morphUnitId))
 			{
 				unit->orderTo(OrderId::Morph1);
 			}
 		}
-		scbw::refreshConsole();
+		scbw::refresh_console();
 	}
 
 	//-------- BTNSCOND_CanBuildUnit --------//
@@ -48,9 +48,9 @@ namespace
 	s32 __fastcall unitMorphWrapper_BTNSCOND_CanBuildUnit(u16 buildUnitId, s32 playerId, Unit* unit)
 	{
 		if (*clientSelectionCount <= 1
-			|| hooks::getUnitMorphEggTypeHook(unit->id, unit, unit->buildQueue[0]) != UnitId::None)
+			|| hooks::get_unit_morph_egg_id(unit->id, unit, unit->buildQueue[0]) != UnitId::None)
 		{
-			return unit->canMakeUnit(buildUnitId, playerId);
+			return unit->can_make_unit(buildUnitId, playerId);
 		}
 		return 0;
 	}
@@ -67,7 +67,7 @@ namespace
 			MOV EBP, ESP
 			MOV unit, ESI
 		}
-		if (hooks::getUnitMorphEggTypeHook(unit->id, unit, unit->buildQueue[0]) != UnitId::None)
+		if (hooks::get_unit_morph_egg_id(unit->id, unit, unit->buildQueue[0]) != UnitId::None)
 		{
 			__asm
 			{
@@ -101,8 +101,8 @@ namespace
 			MOV unit, ESI
 		}
 		unit->status &= ~(UnitStatus::Completed);
-		morphEggType = hooks::getUnitMorphEggTypeHook(unit->id, unit, unit->buildQueue[0]);
-		assert(scbw::isZergEggNew(unit, true, false, morphEggType));
+		morphEggType = hooks::get_unit_morph_egg_id(unit->id, unit, unit->buildQueue[0]);
+		assert(scbw::is_zerg_egg_new(unit, true, false, morphEggType));
 		__asm
 		{
 			POPAD
@@ -177,7 +177,7 @@ namespace
 		}
 
 		// Don't bother if unit is not morphed yet
-		if (scbw::isConventionalUnitMorphSource(unit->id, false, false))
+		if (scbw::is_conventional_unit_morph_source(unit->id, false, false))
 		{
 			return;
 		}
@@ -201,7 +201,7 @@ namespace
 		else
 		{
 			u16 refundUnitId;
-			if (scbw::isZergEggNew(unit, true, false))
+			if (scbw::is_zerg_egg_new(unit, true, false))
 			{
 				refundUnitId = unit->buildQueue[unit->buildQueueSlot % 5];
 			}
@@ -213,7 +213,7 @@ namespace
 			resources->gas[unit->playerId] += units_dat::GasCost[refundUnitId];
 		}
 
-		u16 cancelChangeUnitId = hooks::getCancelMorphRevertTypeHook(unit);
+		u16 cancelChangeUnitId = hooks::get_cancel_morph_revert_id(unit);
 //		scbw::printf("Revert unit id: %d", cancelChangeUnitId);
 		if (cancelChangeUnitId == UnitId::None)
 		{
@@ -226,7 +226,7 @@ namespace
 					silo->building.silo.nuke = nullptr;
 					silo->mainOrderState = 0;
 				}
-				scbw::refreshConsole();
+				scbw::refresh_console();
 			}
 			unit->remove();
 		}
@@ -248,20 +248,20 @@ namespace
 			if (unit->id == UnitId::ZergZethrokor
 				|| unit->id == UnitId::ZergVorvrokor)
 			{
-				unit->playIscriptAnim(IscriptAnimation::Unused2);
+				unit->play_iscript_animation(IscriptAnimation::Unused2);
 			}
 			else if (unit->id == UnitId::ZergNathrokor)
 			{
-				unit->playIscriptAnim(IscriptAnimation::Unused2);
+				unit->play_iscript_animation(IscriptAnimation::Unused2);
 			}
 			else if (unit->id == UnitId::ZergQuazilisk)
 			{
-				unit->playIscriptAnim(IscriptAnimation::CastSpell);
+				unit->play_iscript_animation(IscriptAnimation::CastSpell);
 				unitExt->timers[TimerQuaziliskCancel] = 4;
 			}
 			else
 			{
-				unit->playIscriptAnim(IscriptAnimation::SpecialState2);
+				unit->play_iscript_animation(IscriptAnimation::SpecialState2);
 			}
 			unit->orderTo(OrderId::ZergBirth);
 		}
@@ -272,7 +272,7 @@ namespace
 	s32 getRemainingBuildTimePctHook(Unit* unit)
 	{
 		u16 unitId = unit->id;
-		if (scbw::isZergEggNew(unit, true, false) || unit->isRemorphingBuilding())
+		if (scbw::is_zerg_egg_new(unit, true, false) || unit->isRemorphingBuilding())
 		{
 			unitId = unit->buildQueue[unit->buildQueueSlot];
 		}
@@ -309,7 +309,7 @@ namespace
 			PUSHAD
 			MOV unit, EDI
 		}
-		yOffset = hooks::getUnitVerticalOffsetOnBirth(unit);
+		yOffset = hooks::get_unit_vertical_offset_on_birth(unit);
 		__asm {
 			POPAD
 			MOVSX EAX, yOffset
@@ -330,7 +330,7 @@ namespace
 			PUSHAD
 			MOV unit, EDI
 		}
-		if (hooks::isRallyableEggUnitHook(unit->previousUnitType))
+		if (hooks::is_rallyable_egg_unit(unit->previousUnitType))
 		{
 			__asm
 			{
@@ -360,7 +360,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_ZergBirth(unit);
+		hooks::orders_zerg_birth(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -376,7 +376,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_Morph1(unit);
+		hooks::orders_morph_1(unit);
 		__asm {
 			POPAD
 			RETN
@@ -392,7 +392,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		if (scbw::isLarvalEgg(unit))
+		if (scbw::is_larval_egg(unit))
 		{
 			__asm {
 				POPAD
@@ -418,7 +418,7 @@ namespace
 			MOV unit, EBX
 			PUSHAD
 		}
-		if (scbw::isLarvalEgg(unit))
+		if (scbw::is_larval_egg(unit))
 		{
 			__asm
 			{
@@ -454,7 +454,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::beginTrain(unit, unit_id, notify_error);
+		result = hooks::begin_train(unit, unit_id, notify_error);
 		__asm
 		{
 			POPAD
@@ -475,7 +475,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		if (scbw::isLarvalEgg(unit))
+		if (scbw::is_larval_egg(unit))
 		{
 			__asm
 			{
@@ -503,7 +503,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		if (scbw::isLarvalEgg(unit))
+		if (scbw::is_larval_egg(unit))
 		{
 			__asm
 			{
@@ -530,12 +530,12 @@ namespace hooks
 		jmpPatch(orders_Morph1Wrapper, 0x0045DEA0, 0);
 		callPatch(unitMorphWrapper_CMDRECV_UnitMorph, 0x00486B50);			// jmp 004C1990  CMDRECV_UnitMorph
 		jmpPatch(unitMorphWrapper_BTNSCOND_CanBuildUnit, 0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
-		jmpPatch(unitMorphWrapper_Orders_Morph1_Check, 0x0045DFB0);			// 0045DEA0  orders_Morph1 within	
-		jmpPatch(unitMorphWrapper_Orders_Morph1_EggType, 0x0045E019);		// 0045DEA0  orders_Morph1 within
+		jmpPatch(unitMorphWrapper_Orders_Morph1_Check, 0x0045DFB0);			// 0045DEA0  orders_morph_1 within	
+		jmpPatch(unitMorphWrapper_Orders_Morph1_EggType, 0x0045E019);		// 0045DEA0  orders_morph_1 within
 		jmpPatch(cancelUnitWrapper, 0x00468280);							// 00468280  AI_cancel_structure EXACT
 		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);				// 004669E0  sub_4669E0 EXACT
-		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);			// 0045DD60  orders_ZergBirth within
-		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);					// 0045DD60  orders_ZergBirth within
+		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);			// 0045DD60  orders_zerg_birth within
+		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);					// 0045DD60  orders_zerg_birth within
 		
 		jmpPatch(beginTrainWrapper, 0x00468200);
 		jmpPatch(detachUnitTask_EggJmpWrapper, 0x00434CD0, 1);

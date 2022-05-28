@@ -26,12 +26,12 @@ namespace hooks
 				// 004656B2:
 				if (unit->unit_ai != nullptr)
 				{
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				}
 				else
 				{
 					// 004656C6
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -100,11 +100,11 @@ namespace hooks
 				// 00465981
 				if (unit->unit_ai != nullptr)
 				{
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				}
 				else // 00465998
 				{
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -351,11 +351,11 @@ namespace hooks
 							}
 							else
 							{ // 00477B9D
-								unit->orderComputer(OrderId::Nothing2);
+								unit->order_computer(OrderId::Nothing2);
 
 								// this orderId is hardcoded, not calculated 
 								unit->orderSimple(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeModeTurret], false);
-								current_subunit->orderComputer(OrderId::SiegeMode);
+								current_subunit->order_computer(OrderId::SiegeMode);
 
 								// this orderId is hardcoded, not calculated
 								current_subunit->issueQueuedOrderTarget(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeMode], target, false);
@@ -435,7 +435,7 @@ namespace hooks
 							}
 							else
 							{
-								unit->orderComputer(OrderId::TurretGuard); // 00477C93
+								unit->order_computer(OrderId::TurretGuard); // 00477C93
 							}
 						}
 
@@ -593,11 +593,11 @@ namespace hooks
 			else
 				if (unit->unit_ai != nullptr) // 00477E6B
 				{
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				}
 				else // 00477E83
 				{
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 		}
 
@@ -642,11 +642,11 @@ namespace hooks
 			{
 				if (unit->unit_ai != nullptr)
 				{
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -703,7 +703,7 @@ namespace hooks
 							Image* current_image = unit->sprite->images.head;
 							while (current_image != nullptr)
 							{
-								current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+								current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 								current_image = current_image->link.next;
 							}
 							// 00478A11
@@ -781,7 +781,7 @@ namespace hooks
 					unit->orderTarget.unit = unit;
 					while (current_image != nullptr)
 					{
-						current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+						current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 						current_image = current_image->link.next;
 					}
 					// 00478B10

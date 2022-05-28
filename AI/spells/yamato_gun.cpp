@@ -22,7 +22,7 @@ namespace AI
 				return true;
 			}
 
-			if (scbw::isZergEggNew(target))
+			if (scbw::is_zerg_egg_new(target))
 			{
 				return false;
 			}

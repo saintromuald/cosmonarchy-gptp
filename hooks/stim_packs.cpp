@@ -47,7 +47,7 @@ namespace hooks
 		if (unit->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS + StimpackOffset
 			&& unit->stimTimer == 0)
 		{
-			helper::playSoundFromSource(helper::RandBetween(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit, 1, 0);
+			helper::playSoundFromSource(helper::rand_between(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit, 1, 0);
 			unit->damageHp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
 			if (unit->stimTimer < 37)
 			{

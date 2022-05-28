@@ -475,7 +475,7 @@ void Globals::frameHook()
 		{
 			if (playerTable[revivingUnit.playerId].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town)
 			{
-				auto revived = scbw::createUnitInGame(revivingUnit.unitId, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
+				auto revived = scbw::create_unit_ingame(revivingUnit.unitId, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
 				if (revived)
 				{
 					UnitExt* revivedExt = globals.get_unit_ext(revived);
@@ -484,7 +484,7 @@ void Globals::frameHook()
 					revived->healOverflow(revivingUnit.hp);
 					revived->energy = revivingUnit.energy;
 					revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
-					revived->playIscriptAnim(IscriptAnimation::Unused1);
+					revived->play_iscript_animation(IscriptAnimation::Unused1);
 					revivedExt->values[ValueReviveStarted] = 1;
 					revivedExt->values[ValueReviveTownPointer] = (u32)revivingUnit.town;
 					revivedExt->timers[TimerReviveFlagClearMin] = 3;
@@ -706,7 +706,7 @@ void Globals::frameHook()
 		{
 			if (effect->thingy && effect->thingy->sprite)
 			{
-				effect->thingy->sprite->playIscriptAnim(IscriptAnimation::Death);
+				effect->thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
 			}
 
 			effects.erase(effects.begin() + i);
@@ -1020,7 +1020,7 @@ namespace scbw
 		}
 
 		//was hardcoded in original code
-		scbw::refreshConsole();
+		scbw::refresh_console();
 	}
 
 	void inheritDebuffs(Unit* parent, Unit* child)
@@ -1239,7 +1239,7 @@ namespace scbw
 		childExt->valueVectors[ValueVectorSignifySourcePlayer] = parentExt->valueVectors[ValueVectorSignifySourcePlayer];
 		scbw::updateSignifyStatus(child, childExt);
 
-		scbw::refreshConsole();
+		scbw::refresh_console();
 	}
 
 	// TODO: update
@@ -1425,7 +1425,7 @@ namespace scbw
 			unitExt->nathrokorTargetStacks[i] = 0;
 		}
 
-		scbw::refreshConsole();
+		scbw::refresh_console();
 	}
 
 	void applyParasite(Unit* unit, u8 playerID, Unit* queen)
@@ -1444,7 +1444,7 @@ namespace scbw
 		}
 		unitExt->units[UnitParasiteSource] = queen; // TODO: remove?
 		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
-		scbw::refreshConsole();
+		scbw::refresh_console();
 	}
 
 	bool isSlowed(Unit* unit)

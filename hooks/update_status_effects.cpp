@@ -115,7 +115,7 @@ namespace hooks
 		// Forcibly unburrow units that collide with buildings
 		if (unit->status & UnitStatus::Burrowed)
 		{
-			auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
+			auto tile = scbw::get_active_tile_at(unit->position.x, unit->position.y);
 			if (tile.currentlyOccupied)
 			{
 				Unit* nearest = scbw::UnitFinder::getNearestTarget(
@@ -278,7 +278,7 @@ namespace hooks
 			{
 				if (!scbw::isAlliedTo(*LOCAL_NATION_ID, unit->playerId))
 				{
-					scbw::refreshConsole();
+					scbw::refresh_console();
 				}
 			}
 		}
@@ -384,7 +384,7 @@ namespace hooks
 						)
 					{
 						bool canBurrow = true;
-						auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
+						auto tile = scbw::get_active_tile_at(unit->position.x, unit->position.y);
 						if (tile.currentlyOccupied)
 						{
 							Unit* nearest = scbw::UnitFinder::getNearestTarget(

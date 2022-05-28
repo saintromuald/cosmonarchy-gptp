@@ -5,7 +5,7 @@
 #include <cassert>
 
 // Functionally identical to playSpriteIscript() (offset 0x00499D00)
-void Sprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurrentScript)
+void Sprite::play_iscript_animation(IscriptAnimation::Enum animation, bool bReplaceCurrentScript)
 {
 	assert(this);
 
@@ -13,7 +13,7 @@ void Sprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurr
 	{
 		for (Image* img = this->images.head; img != nullptr; img = img->link.next)
 		{
-			img->playIscriptAnim(animation);
+			img->play_iscript_animation(animation);
 		}
 	}
 }
@@ -298,7 +298,7 @@ void Sprite::playForOverlay(u32 imageId, u8 anim)
 	{
 		if (image->id == imageId)
 		{
-			image->playIscriptAnim(IscriptAnimation::Death);
+			image->play_iscript_animation(IscriptAnimation::Death);
 			return;
 		}
 	}

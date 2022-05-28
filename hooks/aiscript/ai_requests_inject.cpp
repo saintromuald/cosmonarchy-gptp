@@ -215,6 +215,38 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) ai_request_guard_wrapper() { // 00448630
+		static u32 result;
+		static AiRegion* region;
+		static u32 player_id;
+		__asm {
+			MOV player_id, ECX
+			MOV region, EAX
+			PUSHAD
+		}
+		result = hooks::ai_request_guard(region, player_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_region_train_attack_force_wrapper() { // 0043E670
+		static u32 result;
+		static AiRegion* region;
+		__asm {
+			MOV region, EAX
+			PUSHAD
+		}
+		result = hooks::ai_region_train_attack_force(region);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -229,5 +261,7 @@ namespace hooks
 //		jmpPatch(ai_train_defensive_military_Wrapper,		0x0043F990, 1);
 		jmpPatch(AI_Build_Wrapper,							0x004323D0, 1);
 		jmpPatch(AI_build_gas_building_Wrapper,				0x00433660, 1);
+		jmpPatch(ai_request_guard_wrapper,					0x00448630, 0);
+		jmpPatch(ai_region_train_attack_force_wrapper,		0x0043E670,	4);
 	}
 }

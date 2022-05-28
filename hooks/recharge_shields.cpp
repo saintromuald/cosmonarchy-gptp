@@ -98,9 +98,9 @@ namespace hooks
 			else
 			{
 				if (unit->unit_ai != nullptr)
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				else
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
 		}
@@ -113,7 +113,7 @@ namespace hooks
 				if (unit->mainOrderState == 0)
 				{
 
-					if (helper::orderToMoveToTarget(unit, battery))
+					if (helper::order_to_move_to_target(unit, battery))
 						unit->mainOrderState = 1;
 
 					bStopThere = true;

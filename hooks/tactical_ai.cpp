@@ -1139,7 +1139,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			{
 				unitExt->timers[TimerAI_GriefOfAllGods] = 612;
 				unitExt->timers[TimerAI_KitingCooldown] = 5 * 24;
-				unit->orderComputer(OrderId::KhaydarinEclipse);
+				unit->order_computer(OrderId::KhaydarinEclipse);
 				unit->orderTarget.pt = unit->sprite->position;
 				unit->mainOrderState = 0;
 			}

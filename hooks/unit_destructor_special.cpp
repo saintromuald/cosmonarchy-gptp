@@ -161,7 +161,7 @@ void unit_destructor_special_cases(Unit* unit)
 		{
 			if (unit->building.ghostNukeMissile != nullptr)
 			{
-				(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
+				(unit->building.ghostNukeMissile)->sprite->play_iscript_animation(IscriptAnimation::Death, true);
 				unit->building.ghostNukeMissile = nullptr;
 			}
 		} break;

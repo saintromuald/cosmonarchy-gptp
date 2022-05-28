@@ -61,11 +61,11 @@ namespace hooks
 			{
 				if (unit->unit_ai != nullptr)
 				{
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -95,11 +95,11 @@ namespace hooks
 			{
 				if (unit->unit_ai != nullptr)
 				{
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -117,7 +117,7 @@ namespace hooks
 							unit->mainOrderTimer = 7;
 							if (!unit->isTargetWithinMinRange(unitToLoad, 1))
 							{
-								helper::orderToMoveToTarget(unit, unitToLoad);
+								helper::order_to_move_to_target(unit, unitToLoad);
 							}
 							else
 							{
@@ -460,11 +460,11 @@ namespace hooks
 			}
 			else if (unit->unit_ai != nullptr)
 			{
-				unit->orderComputer(OrderId::ComputerAI);
+				unit->order_computer(OrderId::ComputerAI);
 			}
 			else
 			{
-				unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
 	}

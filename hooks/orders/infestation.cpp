@@ -86,7 +86,7 @@ namespace hooks
 					helper::incrementUnitScores(unitInfested, -1);
 					if (unitInfested->status & UnitStatus::Completed)
 					{
-						helper::incrementUnitScoresEx(unitInfested, 0, -1);
+						helper::increment_unit_scores_ex(unitInfested, 0, -1);
 					}
 
 					// the unit receive the new id (infested id)
@@ -96,7 +96,7 @@ namespace hooks
 					helper::incrementUnitScores(unitInfested, 1);
 					if (unitInfested->status & UnitStatus::Completed)
 					{
-						helper::incrementUnitScoresEx(unitInfested, 0, 1);
+						helper::increment_unit_scores_ex(unitInfested, 0, 1);
 					}
 
 					// I don't really know, advanced internal mechanics, just have to work with it
@@ -113,7 +113,7 @@ namespace hooks
 					unitInfested->secondaryOrderId = OrderId::Nothing2;
 
 					// refund what the unit was producing
-					helper::refundAllQueueSlots(unitInfested);
+					helper::refund_all_queue_slots(unitInfested);
 
 					// clear the orders queue of the unit (hardcoding function @ 0x004744D0)
 					// original code used the actual function instead of hardcoding
@@ -129,7 +129,7 @@ namespace hooks
 						while (current_image != nullptr)
 						{
 							// script 0x14 in asm code
-							current_image->playIscriptAnim(IscriptAnimation::WorkingToIdle);
+							current_image->play_iscript_animation(IscriptAnimation::WorkingToIdle);
 
 							// load next image of the list (or nullptr)
 							current_image = current_image->link.next;
@@ -148,8 +148,8 @@ namespace hooks
 					unitInfested->setHp(units_dat::MaxHitPoints[infestedUnitNewId]);
 
 					// give the proper button set to the unit
-					helper::changeUnitButtonSet(unitInfested, infestedUnitNewId);
-					scbw::refreshConsole();
+					helper::change_unit_buttonset(unitInfested, infestedUnitNewId);
+					scbw::refresh_console();
 				}
 			}
 		}
@@ -196,7 +196,7 @@ namespace hooks
 			// destroyed, then access to unitInfested->sprite->position would cause a crash
 			if (scbw::checkUnitCollisionPos(unitInfesting, &unitInfesting->sprite->position, &actualpos))
 			{
-				scbw::setUnitPosition(unitInfesting, actualpos.x, actualpos.y);
+				scbw::set_unit_position(unitInfesting, actualpos.x, actualpos.y);
 				helper::make_to_hold_position(unitInfesting);
 				helper::show_and_enable_unit(unitInfesting);
 

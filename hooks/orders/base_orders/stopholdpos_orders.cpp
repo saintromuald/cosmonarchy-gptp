@@ -23,7 +23,7 @@ namespace hooks
 			if (unit->subunit != nullptr)
 				unit->subunit->status |= UnitStatus::HoldingPosition;
 			unit->mainOrderState = 1;
-			unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
+			unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 		}
 		//640AF
 
@@ -35,7 +35,7 @@ namespace hooks
 			unit->orderTarget.unit = nullptr;
 
 		if (switchValue == 0 || switchValue == 2 || switchValue == 3) //640CD
-			unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
+			unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 
 		//640D9, continued into for values 0,2,3, and jumped into for values
 		//above 3, thus only switchValue of 1 don't go through it
@@ -68,7 +68,7 @@ namespace hooks
 
 				while (current_image != nullptr)
 				{
-					current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+					current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 					current_image = current_image->link.next;
 				}
 
@@ -210,7 +210,7 @@ namespace hooks
 	void orders_Guard(Unit* unit)
 	{
 
-		unit->mainOrderTimer = (u8)helper::RandBetween(0, 15, 29);
+		unit->mainOrderTimer = (u8)helper::rand_between(0, 15, 29);
 
 		if (playerTable[unit->playerId].type == PlayerType::Computer)
 		{

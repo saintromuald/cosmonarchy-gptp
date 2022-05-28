@@ -19,11 +19,11 @@ namespace hooks
 			{
 				if (unit->unit_ai != nullptr)
 				{
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -42,7 +42,7 @@ namespace hooks
 				{
 					// Channel
 					if (!unit->mainOrderState) {
-						unit->playIscriptAnim(IscriptAnimation::Unused2);
+						unit->play_iscript_animation(IscriptAnimation::Unused2);
 						unit->mainOrderState = 1;
 						unit->mainOrderTimer = 24;
 						unit->status |= UnitStatus::CanNotReceiveOrders;

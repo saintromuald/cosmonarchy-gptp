@@ -77,7 +77,7 @@ namespace hooks
 		}
 		else
 		{
-			unit->sprite->playIscriptAnim(IscriptAnimation::Death, true);
+			unit->sprite->play_iscript_animation(IscriptAnimation::Death, true);
 			helper::_UnitDestructor(unit);
 		}
 	}

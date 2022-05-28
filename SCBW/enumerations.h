@@ -395,7 +395,7 @@ namespace LobbyTextColor
 	};
 };
 
-// For use with scbw::playIscriptAnim()
+// For use with scbw::play_iscript_animation()
 namespace IscriptAnimation
 {
 	enum Enum : u8

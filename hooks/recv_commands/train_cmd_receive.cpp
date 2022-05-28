@@ -29,7 +29,7 @@ namespace hooks
 				}
 			}
 
-			if (current_selection->canMakeUnit(unitToBuild, *ACTIVE_NATION_ID) == 1
+			if (current_selection->can_make_unit(unitToBuild, *ACTIVE_NATION_ID) == 1
 				&& helper::HasMoneyCanMake(current_selection, unitToBuild)) // add unit to build queue if successful
 			{
 				if (current_selection->id == UnitId::ProtossSolarion
@@ -47,7 +47,7 @@ namespace hooks
 			}
 			current_selection = getActivePlayerNextSelection();
 		}
-		scbw::refreshConsole();
+		scbw::refresh_console();
 	}
 
 	// Note: the default function isn't compatible with multiple selection
@@ -59,13 +59,13 @@ namespace hooks
 		if (builder != nullptr && getActivePlayerNextSelection() == nullptr)
 		{
 			// Originally also checked for a lardcoded ID range, disabled for training units with high IDs
-			if (builder->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1)
+			if (builder->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1)
 			{
 				if (helper::HasMoneyCanMake(builder, wUnitType)) // add unit to build queue if successful
 				{
 					builder->setSecondaryOrder(OrderId::Train);
 				}
-				scbw::refreshConsole();
+				scbw::refresh_console();
 			}
 		}
 	}

@@ -906,7 +906,7 @@ namespace hooks
 							current_button_state = BUTTON_STATE::Disabled;
 
 							// SHARED \\
-								
+							
 							if ((*activePortraitUnit)->id == UnitId::SharedCohort &&  // Cohort Servile Vigor passive 
 								current_button->iconID == IconId::TerranInfantryArmor)
 							{
@@ -1141,7 +1141,7 @@ namespace hooks
 							}
 
 							// PROTOSS \\
-								
+							
 							else if ((*activePortraitUnit)->id == UnitId::ProtossClarion &&  // Clarion Phase Link passive
 								current_button->iconID == IconId::RechargeShields)
 							{
@@ -1304,7 +1304,7 @@ namespace hooks
 							}
 
 							// ZERG \\
-								
+							
 							else if ((*activePortraitUnit)->id == UnitId::ZergZethrokor &&  // Zethrokor Adrenal Glands passive
 								current_button->iconID == IconId::AdrenalGlands)
 							{
@@ -1434,49 +1434,44 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergZoryusthaleth &&  // Zoryusthaleth Protective Instincts passive
-								current_button->iconID == IconId::MuscularAugments)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergAkistrokor &&  // Akistrokor Devouring Instinct passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergAkistrokor &&		// Akistrokor Devouring Instinct passive
 								current_button->iconID == IconId::SuicideScourge)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergSovroleth &&  // Sovroleth Writhing Web passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergSovroleth &&		// Sovroleth Writhing Web passive
 								current_button->iconID == IconId::Ensnare)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergSovroleth &&  // Sovroleth Corpse Cocoon passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergSovroleth &&		// Sovroleth Corpse Cocoon passive
 								current_button->iconID == IconId::SubterraneanTentacle)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergIroleth &&  // Iroleth Endomorphic Accelerant passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergIroleth &&		// Iroleth Endomorphic Accelerant passive
 								current_button->iconID == IconId::ZergBasicBuildings)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergAlaszileth &&  // Alaszileth Dermal Accelerant passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergAlaszileth &&		// Alaszileth Dermal Accelerant passive
 								current_button->iconID == IconId::Consume)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if (((*activePortraitUnit)->id == UnitId::ZergLair			// Lair, Hive, Sire Larval Gestation passive
+							else if (((*activePortraitUnit)->id == UnitId::ZergLair				// Lair, Hive, Sire Larval Gestation passive
 								|| (*activePortraitUnit)->id == UnitId::ZergHive
 								|| (*activePortraitUnit)->id == UnitId::ZergSire) &&
 								current_button->iconID == IconId::SuicideScourge)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergSire &&  // Sire Ectomorphic Accelerant passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergSire &&			// Sire Ectomorphic Accelerant passive
 							current_button->iconID == IconId::ZergAdvancedBuildings)
 							{
 							current_button_state = BUTTON_STATE::Enabled;
 							}
-							else if ((*activePortraitUnit)->id == UnitId::ZergLarvalColony &&  // Larval Colony Larval Gestation passive
+							else if ((*activePortraitUnit)->id == UnitId::ZergLarvalColony &&	// Larval Colony Larval Gestation passive
 								current_button->iconID == IconId::MetasynapticNode)
 							{
 								current_button_state = BUTTON_STATE::Enabled;

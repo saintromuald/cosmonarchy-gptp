@@ -52,13 +52,13 @@ namespace scbw
 		previous_pos.x = u->sprite->position.x;
 		previous_pos.y = u->sprite->position.y;
 
-		// identical code to setUnitPosition() but for some reason, is using another function to do exactly the same thing
+		// identical code to set_unit_position() but for some reason, is using another function to do exactly the same thing
 		helper::moveUnit_Duplicate(u, target.x, target.y);
 
 		if (!scbw::checkUnitCollisionPos(u, &(u->sprite->position), &new_pos, nullptr, false, 0))
 		{
 			//collision detected, cancel the movement
-			scbw::setUnitPosition(u, previous_pos.x, previous_pos.y);
+			scbw::set_unit_position(u, previous_pos.x, previous_pos.y);
 		}
 		else
 		{
@@ -71,13 +71,13 @@ namespace scbw
 			{
 				u->orderTarget.unit = nullptr;
 			}
-			scbw::setUnitPosition(u, new_pos.x, new_pos.y);
+			scbw::set_unit_position(u, new_pos.x, new_pos.y);
 			scbw::refreshUnitAfterMove(u);
 
 			// stop some currently active orders
 			if (u->id != UnitId::ZergCocoon && !preserveOrder)
 			{
-				u->orderComputer(units_dat::ReturnToIdleOrder[u->id]);
+				u->order_computer(units_dat::ReturnToIdleOrder[u->id]);
 			}
 
 			// create the Recall animation over the unit
@@ -480,7 +480,7 @@ namespace scbw
 		return get_aise_value(nullptr, nullptr, AiseId::GetUnitData, entry, index);
 	}
 
-	bool isLarvalEgg(Unit* unit)
+	bool is_larval_egg(Unit* unit)
 	{
 		if (unit->id == UnitId::ZergEgg)
 		{
@@ -493,7 +493,7 @@ namespace scbw
 		return false;
 	}
 
-	bool isZergEggNew(Unit* unit, bool allow_larval_eggs, bool allow_larvae, u16 explicit_unit_id)
+	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs, bool allow_larvae, u16 explicit_unit_id)
 	{
 		u16 id = UnitId::None;
 		if (id != NULL)
@@ -597,7 +597,7 @@ namespace scbw
 		return false;
 	}
 
-	bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_templar)
+	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae, bool allow_high_templar)
 	{
 		switch (id)
 		{
@@ -878,18 +878,18 @@ namespace scbw
 		Point16 prevPos = unit->sprite->position;
 
 		// Based on the code for Recall/Nydus Canal/Move Unit trigger
-		setUnitPosition(unit, x, y);
+		set_unit_position(unit, x, y);
 
 		if (checkUnitCollisionPos(unit, &targetPos, &actualPos))
 		{
 			prepareUnitMove(unit);
-			setUnitPosition(unit, actualPos.x, actualPos.y);
+			set_unit_position(unit, actualPos.x, actualPos.y);
 			refreshUnitAfterMove(unit);
 			return true;
 		}
 		else
 		{
-			setUnitPosition(unit, prevPos.x, prevPos.y);
+			set_unit_position(unit, prevPos.x, prevPos.y);
 			return false;
 		}
 	}
@@ -905,8 +905,8 @@ namespace scbw
 	{
 		if (!(unit->status & UnitStatus::InAir))
 		{
-			ActiveTile originalTile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-			ActiveTile finalTile = scbw::getActiveTileAt(x, y);
+			ActiveTile originalTile = scbw::get_active_tile_at(unit->position.x, unit->position.y);
+			ActiveTile finalTile = scbw::get_active_tile_at(x, y);
 
 			if (finalTile.isUnwalkable || originalTile.groundHeight != finalTile.groundHeight)
 			{
@@ -927,7 +927,7 @@ namespace scbw
 		}
 
 		prepare_unit_move_custom(unit);
-		setUnitPosition(unit, x, y);
+		set_unit_position(unit, x, y);
 		refreshUnitAfterMove(unit);
 		return true;
 	}
@@ -949,26 +949,26 @@ namespace scbw
 
 	//-------- Utility functions --------//
 
-	Unit* createUnitInGame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator, bool initAI)
+	Unit* create_unit_ingame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator, bool initAI)
 	{
 		if (*unitCount >= 1700)
 		{
 			return nullptr; // Prevent crashes, move to create unit later. - Veeq7
 		}
 		Point16 pos = {x, y};
-		helper::fixTargetLocation(&pos, unitId);
-		Unit* unit = helper::createUnit(unitId, pos.x, pos.y, playerId);
+		helper::fix_target_location(&pos, unitId);
+		Unit* unit = helper::create_unit(unitId, pos.x, pos.y, playerId);
 		if (unit == nullptr)
 		{
-			helper::displayLastNetErrorForPlayer(playerId);
+			helper::display_last_network_error_for_player(playerId);
 		}
 		else
 		{
-			helper::updateUnitStatsFinishBuilding(unit);
-			helper::updateUnitStrength(unit);
+			helper::update_unit_stats_and_finish_building(unit);
+			helper::update_unit_strength(unit);
 			if (initAI)
 			{
-				helper::AI_training_unit(unit, creator);
+				helper::ai_training_unit(unit, creator);
 			}
 		}
 		return unit;
@@ -1025,7 +1025,7 @@ namespace scbw
 		memset(refreshRegions, 1, 1200);
 	}
 
-	/* /!\ Not working like 004DC550 RandBetween /!\ */
+	/* /!\ Not working like 004DC550 rand_between /!\ */
 	u32 randBetween(u32 min, u32 max)
 	{
 		assert(min <= max);
@@ -1046,7 +1046,7 @@ namespace scbw
 		}
 	}
 
-	void refreshConsole() // 004C36C0
+	void refresh_console() // 004C36C0
 	{
 		static u32* const bCanUpdateCurrentButtonSet = (u32*)0x0068C1B0;
 		static u8* const bCanUpdateSelectedUnitPortrait = (u8*)0x0068AC74;
@@ -1065,7 +1065,7 @@ namespace scbw
 	{
 		for (s32 i = 0; i < count; i++)
 		{
-			Unit* unit = scbw::createUnitInGame(unitId, playerId, x, y, creator, false);
+			Unit* unit = scbw::create_unit_ingame(unitId, playerId, x, y, creator, false);
 			if (unit == nullptr)
 			{
 				return;
@@ -1159,7 +1159,7 @@ namespace scbw
 	{
 		if (!canSpawnBroodling(target)) return 0;
 		bool ground = !(target->status & UnitStatus::InAir);
-		bool onCreep = scbw::getActiveTileAt(target->getX(), target->getY()).hasCreep;
+		bool onCreep = scbw::get_active_tile_at(target->getX(), target->getY()).hasCreep;
 		f64 multiplier = (ground && onCreep) ? 1.5 : 1;
 		return std::ceil(std::max((s32)units_dat::SupplyRequired[target->id], 1) * multiplier);
 	}
@@ -1210,12 +1210,12 @@ namespace scbw
 		{
 			return 0;
 		}
-		s32 source_height = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight / 2;
+		s32 source_height = scbw::get_active_tile_at(unit->position.x, unit->position.y).groundHeight / 2;
 		if (!target_unit)
 		{
 			return source_height * 2;
 		}
-		s32 target_height = scbw::getActiveTileAt(target_unit->position.x, target_unit->position.y).groundHeight / 2;
+		s32 target_height = scbw::get_active_tile_at(target_unit->position.x, target_unit->position.y).groundHeight / 2;
 		return std::max(source_height - target_height, 0) * 2;
 	}
 
@@ -1446,7 +1446,7 @@ namespace scbw
 		unit->secondaryOrderState = 2;
 		while (current_image != nullptr)
 		{
-			current_image->playIscriptAnim(IscriptAnimation::IsWorking);
+			current_image->play_iscript_animation(IscriptAnimation::IsWorking);
 			current_image = current_image->link.next;
 		}
 	}
@@ -1685,7 +1685,7 @@ namespace scbw
 		return result != 0;
 	}
 
-	void setUnitPosition(Unit* unit, u16 x, u16 y)
+	void set_unit_position(Unit* unit, u16 x, u16 y)
 	{
 		const u32 Func_SetUnitPosition = 0x004EB9F0;
 		assert(unit);

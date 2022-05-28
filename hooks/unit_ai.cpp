@@ -325,7 +325,7 @@ namespace hooks
 				{
 					if (unit->status & UnitStatus::Completed)
 					{
-						unit->orderComputer(OrderId::ComputerAI);
+						unit->order_computer(OrderId::ComputerAI);
 						helper::setSecondaryOrder(unit, OrderId::SpreadCreep);
 					}
 				}
@@ -400,10 +400,10 @@ namespace hooks
 	{												// originally had 3 args; last one was unused
 		if (silo->id == UnitId::TerranNuclearSilo && !silo->building.silo.isReady)
 		{
-			Unit* nuke = helper::createUnit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
+			Unit* nuke = helper::create_unit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
 			if (nuke)
 			{
-				helper::updateUnitStatsFinishBuilding(nuke);
+				helper::update_unit_stats_and_finish_building(nuke);
 				helper::updateUnitStrengthAndApplyDefaultOrders(nuke);
 				helper::hideUnit(nuke);
 				silo->building.silo.nuke = nuke;
@@ -673,7 +673,7 @@ namespace hooks
 				if (unitAIVar->type == AiType::Building
 					&& (baseProperty & UnitProperty::Building && unitId != UnitId::ResourceVespeneGeyser
 					|| unitId == UnitId::ZergLarva
-					|| scbw::isLarvalEgg(unit)
+					|| scbw::is_larval_egg(unit)
 					|| scbw::unitIdIsZergSupply(unitId)))
 				{
 					BuildingAi* buildingAIVar = (BuildingAi*)unitAIVar;

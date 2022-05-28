@@ -34,7 +34,7 @@ namespace hooks
 				Image* current_image = unit->sprite->images.head;
 				while (current_image != nullptr)
 				{
-					current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
+					current_image->play_iscript_animation(IscriptAnimation::SpecialState2);
 					current_image = current_image->link.next;
 				}
 				helper::playSubunitIscript(unit, IscriptAnimation::SpecialState2);
@@ -57,7 +57,7 @@ namespace hooks
 				{
 					unitNewId = unit->id;
 				}
-				helper::replaceUnitWithType(unit, unitNewId);
+				helper::replace_unit_with_type(unit, unitNewId);
 				helper::orderReturnToIdle(unit);
 				helper::orderReturnToIdle(unit->subunit);
 			}
@@ -122,7 +122,7 @@ namespace hooks
 					{
 						unitNewId = unit->id;
 					}
-					helper::replaceUnitWithType(unit, unitNewId);
+					helper::replace_unit_with_type(unit, unitNewId);
 					unit->mainOrderState = 3;
 					scbw::decloakProc(unit);
 				}
@@ -138,7 +138,7 @@ namespace hooks
 				{
 					if (!(unit->orderQueueHead->orderId == OrderId::WatchTarget))
 					{
-						unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 						helper::force_order_done(unit);
 						helper::orderReturnToIdle(unit->subunit);
 						bStopThere = true;

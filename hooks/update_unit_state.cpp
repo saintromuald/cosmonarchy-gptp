@@ -302,7 +302,7 @@ namespace hooks
 		if (unit->_padding_0x132 & 0x20 && unit == playersSelections->unit[*ACTIVE_NATION_ID][0])
 		{
 			unit->_padding_0x132 &= ~0x20;
-			scbw::refreshConsole();
+			scbw::refresh_console();
 		}
 
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::ResourceContainer)
@@ -331,7 +331,7 @@ namespace hooks
 					{
 						if (unit->building.resource.resourceAmount < 7500) {
 							unit->building.resource.resourceAmount++;
-							scbw::refreshConsole();
+							scbw::refresh_console();
 						}
 					}
 					else if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3)
@@ -339,7 +339,7 @@ namespace hooks
 						if (unit->building.resource.resourceAmount < 2500) {
 							unit->building.resource.resourceAmount++;
 							helper::updateMineralPatchImage(unit);
-							scbw::refreshConsole();
+							scbw::refresh_console();
 						}
 					}
 				}
@@ -554,8 +554,8 @@ namespace hooks
 		{
 			if (*IS_PLACING_BUILDING)
 			{
-				helper::refreshLayers3And4();
-				helper::endBuildingPlacement();
+				helper::refresh_layers_3_and_4();
+				helper::end_building_placement();
 			}
 			if (*isTargeting)
 			{

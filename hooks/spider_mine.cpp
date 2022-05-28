@@ -58,7 +58,7 @@ namespace hooks
 		{
 			if (unit->groundWeaponCooldown == 0)
 			{
-				unit->sprite->playIscriptAnim(IscriptAnimation::Burrow, true);
+				unit->sprite->play_iscript_animation(IscriptAnimation::Burrow, true);
 				unit->status |= UnitStatus::NoCollide;
 				unit->mainOrderState = 2;
 			}
@@ -84,7 +84,7 @@ namespace hooks
 			if (target != nullptr)
 			{
 				unit->orderTarget.unit = target;
-				unit->sprite->playIscriptAnim(IscriptAnimation::UnBurrow, true);
+				unit->sprite->play_iscript_animation(IscriptAnimation::UnBurrow, true);
 				unit->sprite->flags &= ~SpriteFlags::Burrowed;
 				// might have been some cloaking order before
 				unit->setSecondaryOrder(OrderId::Nothing2);
@@ -155,7 +155,7 @@ namespace hooks
 				}
 				while (current_image != nullptr)
 				{
-					current_image->playIscriptAnim(anim);
+					current_image->play_iscript_animation(anim);
 					current_image = current_image->link.next;
 				}
 				unit->mainOrderState = 6;
@@ -204,19 +204,19 @@ namespace hooks
 					v12 = v1->orderTarget.pt.y;
 					a2.x = v1->orderTarget.pt.x;
 					a2.y = v12;
-					helper::fixTargetLocation(&a2, 0xDu);
-					v13 = helper::createUnit(0xDu, a2.x, a2.y, (unsigned __int8)v1->playerId);
+					helper::fix_target_location(&a2, 0xDu);
+					v13 = helper::create_unit(0xDu, a2.x, a2.y, (unsigned __int8)v1->playerId);
 					v14 = v13;
 					if (v13)
 					{
-						helper::updateUnitStatsFinishBuilding(v13);
+						helper::update_unit_stats_and_finish_building(v13);
 						helper::updateUnitStrengthAndApplyDefaultOrders(v14);
 						helper::turnUnit(v14, v1->currentDirection1);
 						v1->vulture.spiderMineCount -= 1;
 					}
 					else
 					{
-						helper::displayLastNetErrorForPlayer(v1->playerId);
+						helper::display_last_network_error_for_player(v1->playerId);
 					}
 					helper::to_idle(v1);
 				}

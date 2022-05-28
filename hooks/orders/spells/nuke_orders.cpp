@@ -24,12 +24,12 @@ namespace hooks
 						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
 
 					helper::force_order_done(unit);
-					helper::changeUnitButtonSet(unit, unit->id);
-					scbw::refreshConsole();
+					helper::change_unit_buttonset(unit, unit->id);
+					scbw::refresh_console();
 
 					while (current_image != nullptr)
 					{
-						current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
+						current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 						current_image = current_image->link.next;
 					}
 
@@ -40,7 +40,7 @@ namespace hooks
 
 						while (current_image != nullptr)
 						{
-							current_image->playIscriptAnim(IscriptAnimation::Death);
+							current_image->play_iscript_animation(IscriptAnimation::Death);
 							current_image = current_image->link.next;
 						}
 
@@ -61,7 +61,7 @@ namespace hooks
 
 			Thingy* nukeDot;
 
-			unit->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
+			unit->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
 
 			nukeDot = helper::createThingy(
 				SpriteId::Nuke_Target_Dot,
@@ -209,7 +209,7 @@ namespace hooks
 					{
 						unit->currentButtonSet = UnitId::Buttons_CancelNukeStrike;
 					}
-					scbw::refreshConsole();
+					scbw::refresh_console();
 				}
 			}
 		}

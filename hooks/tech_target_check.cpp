@@ -108,7 +108,7 @@ namespace hooks
 					if (units_dat::BaseProperty[target->id] & UnitProperty::Building
 						|| target->playerId != castingPlayerId
 						|| target->getRace() != RaceId::Zerg
-						|| scbw::isZergEggNew(target))
+						|| scbw::is_zerg_egg_new(target))
 					{
 						stringId = 876; // Invalid target.<0>
 					}

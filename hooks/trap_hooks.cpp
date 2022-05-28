@@ -103,7 +103,7 @@ namespace hooks
 			a1->status |= UnitStatus::Completed;
 		}
 
-		helper::incrementUnitScoresEx(v1, 1, 1);
+		helper::increment_unit_scores_ex(v1, 1, 1);
 		if (units_dat::BaseProperty[(u16)v1->id] & UnitProperty::PermanentCloak)
 		{
 			helper::AnimCloak(v1, 273);

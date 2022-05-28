@@ -329,7 +329,7 @@ namespace hooks
 		s32 result;
 		s32 reqType;
 
-		battleTime = AIScriptController[playerId].lastIndividualUpdateTime;
+		battleTime = AIScriptController[playerId].last_individual_update_time;
 		if (!battleTime
 			|| *elapsedTimeSeconds - battleTime >= 0x1E // inBattle flag? just a coincidence?
 			|| ((race = playerTable[playerId].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
@@ -344,12 +344,12 @@ namespace hooks
 				reqType = 2 * (units_dat::BaseProperty[unitId] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
 			}
 			helper::AI_AddCostToNeeds(unitId, playerId, reqType);
-			result = helper::AI_AddSpendingRequest(unitId, playerId, reqType, priority, param);
+			result = helper::ai_add_spending_request(unitId, playerId, reqType, priority, param);
 		}
 		return result;
 	}
 	/*
-	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5) { // 00447980
+	s32 ai_add_spending_request(s16 a1, s32 a2, char a3, char a4, void* a5) { // 00447980
 		char v5; // bl
 		s16 v6; // di
 		s32 v7; // esi

@@ -378,7 +378,7 @@ namespace hooks
 									}
 									while (current_image != nullptr)
 									{
-										current_image->playIscriptAnim(anim);
+										current_image->play_iscript_animation(anim);
 										current_image = current_image->link.next;
 									}
 								}

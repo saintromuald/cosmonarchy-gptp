@@ -83,7 +83,7 @@ namespace hooks
 
 					do
 					{
-						current_image->playIscriptAnim(IscriptAnimation::Init);
+						current_image->play_iscript_animation(IscriptAnimation::Init);
 						current_image = current_image->link.next;
 					}
 					while (current_image != nullptr);
@@ -106,7 +106,7 @@ namespace hooks
 				//pathing related
 				helper::function_0046A820(unit);
 
-				helper::changeUnitButtonSet(unit, unit->id);
+				helper::change_unit_buttonset(unit, unit->id);
 
 				*bCanUpdateCurrentButtonSet = 1;
 				*bCanUpdateSelectedUnitPortrait = 1;
@@ -114,7 +114,7 @@ namespace hooks
 				*someDialogUnknown = nullptr;
 				*someDialogUnknownUser = nullptr;
 
-				helper::playMorphingCompleteSound(unit);
+				helper::play_morphing_complete_sound(unit);
 				unit->order(units_dat::HumanIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
 				helper::force_order_done(unit);
 				if (unit->id == UnitId::ProtossAugur)
@@ -170,9 +170,9 @@ namespace hooks
 
 				//9487D
 				if (unit->unit_ai != nullptr)
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				else
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 
 			}
 
@@ -284,7 +284,7 @@ namespace hooks
 
 				//9479C:
 				helper::mergeStatusIntoUnit_Sub493180(unit, targetUnit);
-				helper::replaceUnitWithType(unit, UnitId::ProtossMindTyrant);
+				helper::replace_unit_with_type(unit, UnitId::ProtossMindTyrant);
 
 				//update stuff related to the beginning of merge process I think
 				helper::animDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
@@ -298,7 +298,7 @@ namespace hooks
 
 					do
 					{
-						current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+						current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 						current_image = current_image->link.next;
 					}
 					while (current_image != nullptr);
@@ -306,8 +306,8 @@ namespace hooks
 				}
 
 				//947E0:
-				helper::changeUnitButtonSet(unit, UnitId::None);
-				scbw::refreshConsole();
+				helper::change_unit_buttonset(unit, UnitId::None);
+				scbw::refresh_console();
 
 				unit->killCount += targetUnit->killCount;
 				unit->energy = 12800;	//50 energy ingame
@@ -319,7 +319,7 @@ namespace hooks
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
 				helper::function_0046A820(unit); ////pathing related
 
-				unit->orderComputer(OrderId::CompletingArchonSummon);
+				unit->order_computer(OrderId::CompletingArchonSummon);
 
 			} //if(distanceBetweenUnits <= 20)
 
@@ -369,9 +369,9 @@ namespace hooks
 
 				//94A84
 				if (unit->unit_ai != nullptr)
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				else
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 
 			}
 
@@ -484,7 +484,7 @@ namespace hooks
 
 				//949BC:
 				helper::mergeStatusIntoUnit_Sub493180(unit, targetUnit);
-				helper::replaceUnitWithType(unit, UnitId::ProtossArchon);
+				helper::replace_unit_with_type(unit, UnitId::ProtossArchon);
 
 				unit->sprite->flags &= ~SpriteFlags::IscriptCode; //disable the flag if set
 
@@ -495,7 +495,7 @@ namespace hooks
 
 					do
 					{
-						current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+						current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 						current_image = current_image->link.next;
 					}
 					while (current_image != nullptr);
@@ -503,8 +503,8 @@ namespace hooks
 				}
 
 				//949F0:
-				helper::changeUnitButtonSet(unit, UnitId::None);
-				scbw::refreshConsole();
+				helper::change_unit_buttonset(unit, UnitId::None);
+				scbw::refresh_console();
 
 				unit->killCount += targetUnit->killCount;
 
@@ -515,7 +515,7 @@ namespace hooks
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
 				helper::function_0046A820(unit); ////pathing related
 
-				unit->orderComputer(OrderId::CompletingArchonSummon);
+				unit->order_computer(OrderId::CompletingArchonSummon);
 			}
 		}
 	}

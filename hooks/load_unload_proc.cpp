@@ -147,12 +147,12 @@ namespace hooks
 				Unit* cargoUnit = transport->getLoadedUnit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: disable cargo units
-//				scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
+//				scbw::set_unit_position(cargoUnit, pos.x, pos.y); // <- does not work
 			}
 		}
 		cargo_unit->status |= UnitStatus::InTransport;
 		helper::hideAndDisableUnit(cargo_unit);
-		cargo_unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
+		cargo_unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 
 		if (transport->id == UnitId::TerranBunker)
 		{
@@ -171,7 +171,7 @@ namespace hooks
 			transport->giveTo(cargo_unit->playerId);
 		}		
 
-		scbw::refreshConsole();
+		scbw::refresh_console();
 		if (transport->status & UnitStatus::GroundedBuilding)
 		{
 			cargo_unit->status = (cargo_unit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
@@ -205,7 +205,7 @@ namespace hooks
 				&& units_dat::BaseProperty[cargo_unit->subunit->id] & UnitProperty::Subunit)
 			{
 				Unit* subUnit = cargo_unit->subunit;
-				scbw::setUnitPosition(subUnit, transport->sprite->position.x, transport->sprite->position.y);
+				scbw::set_unit_position(subUnit, transport->sprite->position.x, transport->sprite->position.y);
 				subUnit->status = (subUnit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
 				if (subUnit->path != nullptr)
 				{
@@ -236,7 +236,7 @@ namespace hooks
 			}
 			else // 004E7B51
 			{
-				scbw::setUnitPosition(cargo_unit, transport->sprite->position.x, transport->sprite->position.y);
+				scbw::set_unit_position(cargo_unit, transport->sprite->position.x, transport->sprite->position.y);
 			}
 		}
 	}
@@ -313,27 +313,27 @@ namespace hooks
 								Unit* cargoUnit = unit->getLoadedUnit(i);
 								if (cargoUnit == nullptr) continue;
 								// TODO: enable and update cargo units and their position
-//								scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
+//								scbw::set_unit_position(cargoUnit, pos.x, pos.y); // <- does not work
 							}
 						}
 					}
 					scbw::decloakProc(unit->connectedUnit);
 					scbw::decloakProc(unit);
-					scbw::setUnitPosition(unit, pos.x, pos.y);
+					scbw::set_unit_position(unit, pos.x, pos.y);
 					if (unit->subunit != nullptr)
 					{
-						scbw::setUnitPosition(unit->subunit, pos.x, pos.y);
+						scbw::set_unit_position(unit->subunit, pos.x, pos.y);
 					}
 
 					helper::IgnoreAllScriptAndGotoIdle(unit);
 					helper::function_004E7E10(unit, 0);
 					if (unit->unit_ai == nullptr)
 					{
-						unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 					}
 					else
 					{
-						unit->orderComputer(OrderId::ComputerAI);
+						unit->order_computer(OrderId::ComputerAI);
 					}
 
 					UnitExt* transportExt = globals.get_unit_ext(transport);
@@ -362,7 +362,7 @@ namespace hooks
 						}
 					}
 
-					scbw::refreshConsole();
+					scbw::refresh_console();
 					return_value = 1;
 					if (transport->status & UnitStatus::GroundedBuilding)
 					{ // 004E806B

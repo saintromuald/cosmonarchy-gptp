@@ -70,17 +70,17 @@ namespace hooks
 
 		// yes, the return value is unused for some reason
 		helper::FindBestUnit(&searchBox, 0x0049D640);
-		created_unit = helper::createUnit(buildingId,
+		created_unit = helper::create_unit(buildingId,
 				((startPositions[playerId].x - (buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2,
 				((startPositions[playerId].y - (buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2,
 				playerId);
 
 		if (created_unit != nullptr)
 		{
-			helper::updateUnitStatsFinishBuilding(created_unit);
+			helper::update_unit_stats_and_finish_building(created_unit);
 			if (helper::show_finished_unit(created_unit) != 0)
 			{
-				helper::updateUnitStrength(created_unit);
+				helper::update_unit_strength(created_unit);
 			}
 			if (helper::spreadsCreep(created_unit->id, 1)
 				|| units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding)
@@ -108,13 +108,13 @@ namespace hooks
 			startX + 10 * 32,
 			startY + 10 * 32
 		);
-		u8 cliffLevel = scbw::getActiveTileAt(startX, startY).groundHeight;
+		u8 cliffLevel = scbw::get_active_tile_at(startX, startY).groundHeight;
 		unitFinder.forEach([&](Unit* unit)
 		{
 			if ((unit->id == UnitId::ResourceMineralField
 				|| unit->id == UnitId::ResourceMineralFieldType2
 				|| unit->id == UnitId::ResourceMineralFieldType3)
-				&& scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight == cliffLevel)
+				&& scbw::get_active_tile_at(unit->position.x, unit->position.y).groundHeight == cliffLevel)
 			{
 				Point16 pos = unit->position;
 				sumX += pos.x - startX;
@@ -249,15 +249,15 @@ namespace hooks
 							if (horizontal) pos.x += unitWidth;
 							else pos.y -= unitHeight;
 
-							created_unit = helper::createUnit(unitId, pos.x, pos.y, playerId);
+							created_unit = helper::create_unit(unitId, pos.x, pos.y, playerId);
 							scbw::teleport(created_unit, pos);
 
 							if (created_unit != nullptr)
 							{
-								helper::updateUnitStatsFinishBuilding(created_unit);
+								helper::update_unit_stats_and_finish_building(created_unit);
 								if (helper::show_finished_unit(created_unit) != 0)
 								{
-									helper::updateUnitStrength(created_unit);
+									helper::update_unit_strength(created_unit);
 								}
 							}
 						}
@@ -293,13 +293,13 @@ namespace hooks
 			overlordStartY = startPositions[playerId].y - (units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1);
 		}
 
-		created_unit = helper::createUnit(UnitId::ZergOvileth, overlordStartX, overlordStartY, playerId);
+		created_unit = helper::create_unit(UnitId::ZergOvileth, overlordStartX, overlordStartY, playerId);
 		if (created_unit != nullptr)
 		{
-			helper::updateUnitStatsFinishBuilding(created_unit);
+			helper::update_unit_stats_and_finish_building(created_unit);
 			if (helper::show_finished_unit(created_unit) != 0)
 			{
-				helper::updateUnitStrength(created_unit);
+				helper::update_unit_strength(created_unit);
 			}
 		}
 	}
@@ -308,12 +308,12 @@ namespace hooks
 		if (units_dat::StarEditAvailFlags[id] & 0x200 && !*IS_BROOD_WAR) {
 			return 0;
 		}
-		Unit* unit = helper::createUnit(id, x, y, player_id);
+		Unit* unit = helper::create_unit(id, x, y, player_id);
 		if (unit) {
 			if (!prevent_creep && (helper::spreadsCreep(unit->id, 1) || units_dat::BaseProperty[id] & UnitProperty::CreepBuilding)) {
 				helper::applyCreepAtLocationFromUnitType(unit->sprite->position.x, unit->sprite->position.y, id);
 			}
-			helper::updateUnitStatsFinishBuilding(unit);
+			helper::update_unit_stats_and_finish_building(unit);
 			if (helper::show_finished_unit(unit)) {
 				helper::updateUnitStrengthAndApplyDefaultOrders(unit);
 				helper::AI_AddGuardAiToUnit(unit);
@@ -331,7 +331,7 @@ namespace hooks
 				helper::orders_SelfDestructing(unit);
 			}
 		} else {
-			helper::displayLastNetErrorForPlayer(player_id);
+			helper::display_last_network_error_for_player(player_id);
 		}
 		return 0;
 	}

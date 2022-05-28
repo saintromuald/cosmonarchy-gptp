@@ -38,7 +38,7 @@ namespace hooks
 				&& unit->playerId == *ACTIVE_NATION_ID)
 			{
 				helper::CancelAddon_Proc(unit);
-				scbw::refreshConsole();
+				scbw::refresh_console();
 			}
 		}
 	}
@@ -54,7 +54,7 @@ namespace hooks
 			&& unit->playerId == *ACTIVE_NATION_ID)
 		{
 			helper::CancelUpgrade_Proc(unit);
-			scbw::refreshConsole();
+			scbw::refresh_console();
 		}
 	}
 
@@ -70,7 +70,7 @@ namespace hooks
 			&& unit->playerId == *ACTIVE_NATION_ID)
 		{
 			helper::CancelResearch_Proc(unit);
-			scbw::refreshConsole();
+			scbw::refresh_console();
 		}
 	}
 
@@ -94,16 +94,16 @@ namespace hooks
 			if (wUnitID == 0xFE)
 			{
 				helper::function_00466E40(unit);
-				scbw::refreshConsole();
+				scbw::refresh_console();
 			}
 			else if (wUnitID == 0xFF)
 			{
-				scbw::refreshConsole();
+				scbw::refresh_console();
 			}
 			else
 			{
 				helper::refundQueueSlot(unit, wUnitID);
-				scbw::refreshConsole();
+				scbw::refresh_console();
 			}
 		}
 	}

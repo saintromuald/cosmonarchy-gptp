@@ -69,14 +69,14 @@ namespace hooks
 						{
 							unit->buildQueueSlot = 0;
 						}
-						scbw::refreshConsole();
+						scbw::refresh_console();
 						unit->currentBuildUnit = nullptr;
 						unit->secondaryOrderState = 0;
 					}
 				}
 				else
 				{
-					scbw::refreshConsole();
+					scbw::refresh_console();
 					unit->currentBuildUnit = nullptr;
 					unit->secondaryOrderState = 0;
 				}
@@ -120,7 +120,7 @@ namespace hooks
 				if (unit->buildQueue[unit->buildQueueSlot] == UnitId::None)
 				{
 					unit->setSecondaryOrder(OrderId::Nothing2);
-					unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle, true);
+					unit->sprite->play_iscript_animation(IscriptAnimation::WorkingToIdle, true);
 				}
 				else
 				{
@@ -177,13 +177,13 @@ namespace hooks
 							if (units_dat::BaseProperty[builtUnit->id] & UnitProperty::TwoUnitsIn1Egg)
 							{
 								count = 2;
-								builtUnits[1] = scbw::createUnitInGame(builtUnit->id, builtUnit->playerId, builtUnit->position.x - 32, builtUnit->position.y, unit, true);
+								builtUnits[1] = scbw::create_unit_ingame(builtUnit->id, builtUnit->playerId, builtUnit->position.x - 32, builtUnit->position.y, unit, true);
 							}
 
 							for (u32 i = 0; i < count; i++)
 							{
 								Unit* newUnit = builtUnits[i];
-								helper::AI_training_unit(newUnit, unit);
+								helper::ai_training_unit(newUnit, unit);
 								if (builtUnit->id == UnitId::TerranNuclearMissile)
 								{
 									helper::hideAndDisableUnit(newUnit);
@@ -250,7 +250,7 @@ namespace hooks
 						memcpy(&buf[4], &builtUnit, 4);
 						helper::queue_game_command(buf, 0xc);
 					}
-					scbw::refreshConsole();
+					scbw::refresh_console();
 					unit->currentBuildUnit = nullptr;
 					unit->secondaryOrderState = 0;
 				}

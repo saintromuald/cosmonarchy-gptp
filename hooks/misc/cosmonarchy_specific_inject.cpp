@@ -690,7 +690,7 @@ namespace hooks
 			MOV unitType, CX
 			PUSHAD
 		}
-		result = hooks::createUnit(unitType, x, y, playerId);
+		result = hooks::create_unit(unitType, x, y, playerId);
 		__asm
 		{
 			POPAD

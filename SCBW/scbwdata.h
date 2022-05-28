@@ -266,7 +266,7 @@ SCBW_DATA(u16*, moveToTileY,			0x0057F1D2);
 SCBW_DATA(u32*, moveToX,				0x0062848C);
 SCBW_DATA(u32*, moveToY,				0x006284A8);
 
-// For incrementUnitScoresEx
+// For increment_unit_scores_ex
 SCBW_DATA(u32*, factoriesOwned,			0x005820B4); // Array of 12
 SCBW_DATA(u32*, unitsProduced,			0x00581E14); // Array of 12
 SCBW_DATA(u32*, structuresBuilt,		0x00581F64); // Array of 12

@@ -78,7 +78,7 @@ namespace hooks
 						}
 						else
 						{
-							builtUnit = helper::createUnit(unit->buildQueue[unit->buildQueueSlot], unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->playerId);
+							builtUnit = helper::create_unit(unit->buildQueue[unit->buildQueueSlot], unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->playerId);
 						}
 
 						u32 unit_id = unit->buildQueue[unit->buildQueueSlot];
@@ -86,7 +86,7 @@ namespace hooks
 						if (builtUnit == nullptr)
 						{
 							helper::refundUnitTrainCost(unit_id, unit->playerId);
-							helper::displayLastNetErrorForPlayer(unit->playerId);
+							helper::display_last_network_error_for_player(unit->playerId);
 							unit->orderToIdle();
 						}
 						else // 004E4E63
@@ -99,7 +99,7 @@ namespace hooks
 							builtUnit->sprite->createTopUnderlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
 							unit->orderTarget.unit = builtUnit;
 							helper::AI_TrainingOverlord(builtUnit, unit);
-							builtUnit->orderComputer(OrderId::BuildSelf2);
+							builtUnit->order_computer(OrderId::BuildSelf2);
 							helper::playSoundFromSource(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
 							unit->mainOrderState = 3;
 						}
@@ -129,7 +129,7 @@ namespace hooks
 			current_image = unit->sprite->images.head;
 			while (current_image != nullptr)
 			{
-				current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
+				current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
 		}
@@ -211,8 +211,8 @@ namespace hooks
 			{
 				Image* current_image; // DF: Copied over from state 2.
 				building->orderSignal &= ~1;
-				helper::updateUnitStatsFinishBuilding(building); // DF: Copying over replaceSpriteImages is not necessary because of this function.
-				helper::updateUnitStrength(building);
+				helper::update_unit_stats_and_finish_building(building); // DF: Copying over replaceSpriteImages is not necessary because of this function.
+				helper::update_unit_strength(building);
 				helper::checkUnstack(building);
 				current_image = building->sprite->images.head; // DF: Copied over from state 2.
 				while (current_image != nullptr) // DF: Copied over from state 2.

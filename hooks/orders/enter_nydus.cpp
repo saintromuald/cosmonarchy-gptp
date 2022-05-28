@@ -31,11 +31,11 @@ namespace hooks
 		aimedPos.x = (nydusCanal->building.nydusExit)->sprite->position.x;
 		aimedPos.y = (nydusCanal->building.nydusExit)->sprite->position.y;
 		scbw::prepareUnitMove(unit, true);
-		scbw::setUnitPosition(unit, aimedPos.x, aimedPos.y);
+		scbw::set_unit_position(unit, aimedPos.x, aimedPos.y);
 		if (scbw::checkUnitCollisionPos(unit, &aimedPos, &finalPos, nullptr, false, 0))
 		{ // 004EA201
 			helper::playSoundFromSource(SoundId::Misc_IntoNydus_wav, nydusCanal, 1, 0);
-			scbw::setUnitPosition(unit, finalPos.x, finalPos.y);
+			scbw::set_unit_position(unit, finalPos.x, finalPos.y);
 			scbw::refreshUnitAfterMove(unit);
 			helper::playSoundFromSource(SoundId::Misc_IntoNydus_wav, nydusCanal->building.nydusExit, 1, 0);
 			if (unit->orderQueueHead != nullptr)
@@ -48,17 +48,17 @@ namespace hooks
 
 				if (unit->unit_ai != nullptr)
 				{
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
 		else
 		{	// collision detected, restore old position
-			scbw::setUnitPosition(unit, oldPos.x, oldPos.y);
+			scbw::set_unit_position(unit, oldPos.x, oldPos.y);
 			scbw::refreshUnitAfterMove(unit);
 		}
 	}
@@ -84,11 +84,11 @@ namespace hooks
 			{ // 004EA497
 				if (unit->unit_ai != nullptr)
 				{
-					unit->orderComputer(OrderId::ComputerAI);
+					unit->order_computer(OrderId::ComputerAI);
 				}
 				else
 				{
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -96,7 +96,7 @@ namespace hooks
 		{ // 004EA428
 			if (unit->mainOrderState == 0)
 			{	// 004EA464
-				if (helper::orderToMoveToTarget(unit, nydusCanal))
+				if (helper::order_to_move_to_target(unit, nydusCanal))
 				{
 					unit->mainOrderState = 1;
 				}

@@ -71,7 +71,7 @@ struct Image
 
 
 	  /// Makes the image play the specified Iscript animation entry.
-	void playIscriptAnim(IscriptAnimation::Enum animation);
+	void play_iscript_animation(IscriptAnimation::Enum animation);
 
 	/// AKA ImageDestructor() @ 0x004D4CE0
 	/// Removes the image from the linked list of valid images. This is different

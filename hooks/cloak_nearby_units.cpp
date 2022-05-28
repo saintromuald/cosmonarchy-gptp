@@ -75,7 +75,7 @@ namespace hooks
 		*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
 		if (needsRefresh)
 		{
-			scbw::refreshConsole();
+			scbw::refresh_console();
 		}
 	}
 }

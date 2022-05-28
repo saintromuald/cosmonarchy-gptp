@@ -513,7 +513,7 @@ void Unit::healShields(s32 shields, Unit* source, bool restore)
 	}
 
 	this->shields = std::min((u32)this->shields + shields, this->getMaxShieldsRaw());
-	helper::updateUnitStrength(this);
+	helper::update_unit_strength(this);
 
 	// If heals to full clear debuffs
 	if (this->shields == this->getMaxShieldsRaw() && restore)
@@ -893,7 +893,7 @@ void Unit::orderTo(u8 orderId, u16 x, u16 y)
 
 //Logically equivalent to function orderComputer_cl @ 0x00475310
 //used in hooks so not doing assert, mind it if used in mods
-void Unit::orderComputer(u8 orderId)
+void Unit::order_computer(u8 orderId)
 {
 	this->userActionFlags |= 0x1;
 	this->order(orderId, 0, 0, nullptr, UnitId::None, true);
@@ -1012,10 +1012,10 @@ Image* Unit::getOverlay(u16 imageId) const
 	return image;
 }
 
-void Unit::playIscriptAnim(IscriptAnimation::Enum animation)
+void Unit::play_iscript_animation(IscriptAnimation::Enum animation)
 {
 	assert(this);
-	this->sprite->playIscriptAnim(animation);
+	this->sprite->play_iscript_animation(animation);
 }
 
 void Unit::removeOverlay(u32 imageIdStart, u32 imageIdEnd)
@@ -1234,7 +1234,7 @@ bool Unit::isTargetWithinMinRange(Unit* target, u32 range)
 //-------- DAT Requirements --------//
 
 const u32 Func_CanMakeUnit = 0x0046E1C0;
-s32 Unit::canMakeUnit(u16 unitId, u8 playerId) const
+s32 Unit::can_make_unit(u16 unitId, u8 playerId) const
 {
 	assert(this);
 	s32 playerId_ = playerId;
@@ -1477,7 +1477,7 @@ u32 Unit::getSupplyProvided() // overwrites previous supply provided
 	}
 
 	u32 supply = units_dat::SupplyProvided[id];
-	if (scbw::isZergEggNew(this, false, false))
+	if (scbw::is_zerg_egg_new(this, false, false))
 	{
 		if (buildQueue[buildQueueSlot % 5] == UnitId::ZergIroleth)
 		{

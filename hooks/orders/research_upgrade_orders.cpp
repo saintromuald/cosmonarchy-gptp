@@ -58,7 +58,7 @@ namespace hooks
 				}
 
 				//5477F
-				scbw::refreshConsole();
+				scbw::refresh_console();
 
 			}
 
@@ -72,7 +72,7 @@ namespace hooks
 
 			while (current_image != nullptr)
 			{
-				current_image->playIscriptAnim(IscriptAnimation::WorkingToIdle);
+				current_image->play_iscript_animation(IscriptAnimation::WorkingToIdle);
 				current_image = current_image->link.next;
 			}
 
@@ -148,7 +148,7 @@ namespace hooks
 					prepareForNextOrder(unit);
 				}
 				else //54896
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 
 			}
 
@@ -196,7 +196,7 @@ namespace hooks
 				else if (*IS_BROOD_WAR)
 					TechBw->isResearched[unit->playerId][unit->building.techType - TechId::Restoration] = 1;
 
-				scbw::refreshConsole();
+				scbw::refresh_console();
 
 			}
 
@@ -211,7 +211,7 @@ namespace hooks
 
 			while (current_image != nullptr)
 			{
-				current_image->playIscriptAnim(IscriptAnimation::WorkingToIdle);
+				current_image->play_iscript_animation(IscriptAnimation::WorkingToIdle);
 				current_image = current_image->link.next;
 			}
 
@@ -285,7 +285,7 @@ namespace hooks
 					prepareForNextOrder(unit);
 				}
 				else
-					unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
 	}

@@ -12,7 +12,7 @@ namespace hooks
 			Image* current_image = unit->sprite->images.head;
 			while (current_image != nullptr)
 			{
-				current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
+				current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
 		}
@@ -35,7 +35,7 @@ namespace hooks
 
 			if (helper::AI_OrderHeal(unit, target) != 0)
 			{
-				unit->orderComputer(OrderId::MedicHeal1);
+				unit->order_computer(OrderId::MedicHeal1);
 				unit->orderTarget.unit = target;
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
@@ -140,7 +140,7 @@ namespace hooks
 				{
 					if (*(u8*)((u32)unit->unit_ai + 8) != 1)
 					{
-						unit->orderComputer(OrderId::ComputerAI);
+						unit->order_computer(OrderId::ComputerAI);
 					}
 					else if (unit->sprite->position.x != *(u16*)((u32)unit->unit_ai + 0x12)
 						|| unit->sprite->position.y != *(u16*)((u32)unit->unit_ai + 0x14))
@@ -197,11 +197,11 @@ namespace hooks
 			}
 			else if (unit->unit_ai != nullptr)
 			{
-				unit->orderComputer(OrderId::ComputerAI);
+				unit->order_computer(OrderId::ComputerAI);
 			}
 			else
 			{
-				unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
 		else // 004641D3
@@ -232,7 +232,7 @@ namespace hooks
 						Image* current_image = unit->sprite->images.head;
 						while (current_image != nullptr)
 						{
-							current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+							current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 							current_image = current_image->link.next;
 						}
 						if (unit->orderQueueHead == nullptr

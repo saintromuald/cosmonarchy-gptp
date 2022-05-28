@@ -1196,7 +1196,7 @@ namespace helper
 	}
 
 	// for AI_CreateNuke
-	Unit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId)
+	Unit* create_unit(s16 unitType, s32 x, s32 y, s32 playerId)
 	{
 		const u32 Func_createUnit = 0x004A09D0;
 		static Unit* result;
@@ -1213,7 +1213,7 @@ namespace helper
 		return result;
 	}
 
-	void updateUnitStatsFinishBuilding(Unit* unit)
+	void update_unit_stats_and_finish_building(Unit* unit)
 	{
 		const u32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
 		__asm {
@@ -1743,8 +1743,7 @@ namespace helper
 	// AI attack wave extender
 
 	// for AI_TrainAttackForce
-
-	s32 AI_AddRegionToMilitary(AiRegion* region, s32 unitId, s32 priority)
+	s32 ai_add_to_region_military(AiRegion* region, s32 unitId, s32 priority)
 	{
 		const u32 Func_AI_AddRegionToMilitary = 0x0043E2E0;
 		static s32 result;
@@ -1760,7 +1759,7 @@ namespace helper
 		return result;
 	}
 
-	u32 AI_FindUnit(u32 unitId, u32 playerId, u32 type)
+	u32 ai_find_unit(u32 unitId, u32 playerId, u32 type)
 	{
 		const u32 Func_AI_FindUnit = 0x00447DC0;
 		static u32 typeXD = type;
@@ -1777,7 +1776,7 @@ namespace helper
 		return result;
 	}
 
-	u32 AI_AddSpendingRequest(u16 unitId, u32 player, u8 type, char priority, void* value)
+	u32 ai_add_spending_request(u16 unitId, u32 player, u8 type, char priority, void* value)
 	{
 		const u32 Func_AI_AddSpendingRequest = 0x00447980;
 		u32 type32 = type;
@@ -2516,7 +2515,7 @@ namespace helper
 		}
 	}
 
-	void displayLastNetErrorForPlayer(u32 playerId)
+	void display_last_network_error_for_player(u32 playerId)
 	{
 		const u32 Func_displayLastNetErrorForPlayer = 0x0049E530;
 		__asm
@@ -2528,7 +2527,7 @@ namespace helper
 		}
 	}
 
-	void updateUnitStrength(Unit* unit)
+	void update_unit_strength(Unit* unit)
 	{
 		const u32 Func_UpdateUnitStrength = 0x0049FA40;
 		__asm
@@ -2962,7 +2961,7 @@ namespace helper
 	}
 
 	//unk1 is ECX, unk2 is pushed value
-	void incrementUnitScoresEx(Unit* building, s32 unk1, s32 unk2)
+	void increment_unit_scores_ex(Unit* building, s32 unk1, s32 unk2)
 	{
 		const u32 Func_incrementUnitScoresEx = 0x00488D50;
 		__asm {
@@ -2997,7 +2996,7 @@ namespace helper
 		}
 	}
 
-	void replaceUnitWithType(Unit* unit, u16 newUnitId)
+	void replace_unit_with_type(Unit* unit, u16 newUnitId)
 	{
 		const u32 Func_ReplaceUnitWithType = 0x0049FED0;
 		u32 newUnitId_ = newUnitId;
@@ -3010,7 +3009,7 @@ namespace helper
 		}
 	}
 
-	void fixTargetLocation(Point16* coords, u32 unitId)
+	void fix_target_location(Point16* coords, u32 unitId)
 	{
 		const u32 Func_fixTargetLocation = 0x00401FA0;
 		__asm {
@@ -3086,7 +3085,7 @@ namespace helper
 		return (pre_return_value != 0);
 	}
 
-	void endBuildingPlacement()
+	void end_building_placement()
 	{
 		const u32 Func_endBuildingPlacement = 0x0048E310;
 		__asm {
@@ -3096,7 +3095,7 @@ namespace helper
 		}
 	}
 
-	u32 RandBetween(u32 min, u32 max, u32 someIndex)
+	u32 rand_between(u32 min, u32 max, u32 someIndex)
 	{
 		const u32 Func_RandBetween = 0x004DC550;
 		static u32 return_value;
@@ -3112,7 +3111,7 @@ namespace helper
 		return return_value;
 	}
 
-	char refreshLayers3And4()
+	char refresh_layers_3_and_4()
 	{
 		const u32 Func_RefreshLayer3And4 = 0x0048D9A0;
 		static s32 result;
@@ -3125,7 +3124,7 @@ namespace helper
 		return (char)result;
 	}
 
-	void initBuilding(Unit* unit, b32 flag)
+	void init_building(Unit* unit, b32 flag)
 	{
 		const u32 Func_initBuilding = 0x004E65E0;
 		__asm {
@@ -3137,7 +3136,7 @@ namespace helper
 		}
 	}
 
-	bool orderToMoveToTarget(Unit* unit, Unit* target)
+	bool order_to_move_to_target(Unit* unit, Unit* target)
 	{
 		const u32 Func__moveToTarget = 0x004EB980;
 		static b32 bPreResult;
@@ -3152,7 +3151,7 @@ namespace helper
 		return bPreResult != 0;
 	}
 
-	b32 unk_terrainCollision2(Unit* unit, s32 x, s32 y)
+	b32 unk_terrain_collision_2(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_unk_terrainCollision2 = 0x004F1870;
 		static b32 rValue;
@@ -4150,7 +4149,7 @@ namespace helper
 		return return_value;
 	}
 
-	void refundAllQueueSlots(Unit* unit)
+	void refund_all_queue_slots(Unit* unit)
 	{
 		const u32 Func_RefundAllQueueSlots = 0x00466E80;
 		__asm {
@@ -4198,7 +4197,7 @@ namespace helper
 		}
 	}
 
-	void changeUnitButtonSet(Unit* unit, u16 buttonSetId)
+	void change_unit_buttonset(Unit* unit, u16 buttonSetId)
 	{
 		const u32 Func_changeUnitButtonSet = 0x004E5D60;
 		__asm {
@@ -4437,7 +4436,7 @@ namespace helper
 		}
 	}
 
-	void playMorphingCompleteSound(Unit* unit)
+	void play_morphing_complete_sound(Unit* unit)
 	{
 		const u32 Func_PlayMorphingCompleteSound = 0x0048F440;
 		__asm {
@@ -5286,7 +5285,7 @@ namespace helper
 		}
 	}
 
-	u8 setArchonPathing(Unit* unit)
+	u8 set_archon_pathing(Unit* unit)
 	{
 		const u32 Func_Sub46A820 = 0x0046A820;
 		static u8 result;
@@ -5300,7 +5299,7 @@ namespace helper
 		return result;
 	}
 
-	bool hasSuppliesForUnit(u32 unitId, u32 playerId, b32 canShowErrorMessage)
+	bool has_supplies_for_unit(u32 unitId, u32 playerId, b32 canShowErrorMessage)
 	{
 		return 1; // Supply was removed
 
@@ -5319,7 +5318,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	Unit* zergDualBirth(Unit* unit)
+	Unit* zerg_dual_birth(Unit* unit)
 	{
 		const u32 Func_zergDualBirth = 0x0045D910;
 		static Unit* rValue;
@@ -5345,7 +5344,7 @@ namespace helper
 		}
 	}
 
-	void AI_training_unit(Unit* unit, Unit* creator)
+	void ai_training_unit(Unit* unit, Unit* creator)
 	{
 		const u32 Func_AI_TrainingUnit = 0x004A2830;
 		__asm {
@@ -6726,7 +6725,7 @@ namespace helper
 				(*firstBurrowedUnit)->burrow_link.prev = unit;
 			}
 			*firstBurrowedUnit = unit;
-			scbw::refreshConsole();
+			scbw::refresh_console();
 		}
 	}
 
@@ -7620,7 +7619,7 @@ namespace helper
 		if (anim != mineralPatch->building.resource.resourceIscript)
 		{
 			mineralPatch->building.resource.resourceIscript = anim;
-			mineralPatch->sprite->playIscriptAnim(anim);
+			mineralPatch->sprite->play_iscript_animation(anim);
 		}
 	}
 
@@ -7657,7 +7656,7 @@ namespace helper
 		}
 
 		worker->worker.resourceCarryAmount = amountCarried;
-		scbw::refreshConsole();
+		scbw::refresh_console();
 	}
 
 	s32 Ai_HasBuildingsNeedingPower(u32 player)
@@ -7740,7 +7739,7 @@ namespace helper
 		return result;
 	}
 
-	// For AI_AddSpendingRequest
+	// For ai_add_spending_request
 	bool isAIAllowedToBuild(s32 a1, s32 a2)
 	{
 		const u32 Func_isAIAllowedToBuild = 0x00447830;
@@ -8319,7 +8318,7 @@ namespace helper
 		return result;
 	}
 
-	// For createUnit
+	// For create_unit
 	Unit* unitConstructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused)
 	{
 		const u32 Func_unitConstructor = 0x004A06C0;
@@ -10781,14 +10780,14 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_AddBaseUnitSpendingRequest(s32 final_unit_id, s8 player_id, AiRegion* region, u8 priority) {
-		static s32 result;
+	u32 ai_add_base_unit_spending_request(u32 final_unit_id, u32 player_id, AiRegion* region, u8 priority) {
+		static u32 result;
 		const u32 func_address = 0x004484A0;
 		__asm {
 			PUSHAD
 			PUSH priority
 			MOV EAX, final_unit_id
-			MOV CL, player_id
+			MOV ECX, player_id
 			MOV ESI, region
 			CALL func_address
 			MOV result, EAX
@@ -11747,6 +11746,22 @@ namespace helper
 			PUSHAD
 			MOV EDI, node
 			MOV EAX, worker
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 get_missing_attack_force_units(AiRegion* region, u32* attack_wave, u32 is_campaign) {
+		static u32 result;
+		const u32 func_address = 0x00438050;
+		is_campaign = false; // Why gimp the AI? -Pr0nogo
+		__asm {
+			PUSHAD
+			PUSH is_campaign
+			PUSH attack_wave
+			PUSH region
 			CALL func_address
 			MOV result, EAX
 			POPAD

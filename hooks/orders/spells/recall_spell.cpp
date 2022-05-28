@@ -19,23 +19,23 @@ namespace hooks
 		previous_pos.x = target->sprite->position.x;
 		previous_pos.y = target->sprite->position.y;
 
-		// Identical code to setUnitPosition() but for some reason, is
+		// Identical code to set_unit_position() but for some reason, is
 		// using another function to do exactly the same thing
 		helper::moveUnit_Duplicate(target, caster->sprite->position.x, caster->sprite->position.y);
 
 		if (!scbw::checkUnitCollisionPos(target, &(caster->sprite->position), &new_pos, nullptr, false, 0)) {
 			// Collision detected, cancel the movement
-			scbw::setUnitPosition(target, previous_pos.x, previous_pos.y);
+			scbw::set_unit_position(target, previous_pos.x, previous_pos.y);
 		} else {
 			// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
 			scbw::prepareUnitMove(target, false);
 			target->orderTarget.unit = nullptr;
-			scbw::setUnitPosition(target, new_pos.x, new_pos.y);
+			scbw::set_unit_position(target, new_pos.x, new_pos.y);
 			scbw::refreshUnitAfterMove(target);
 
 			// Stop some currently active orders
 			if (target->id != UnitId::ZergCocoon) {
-				target->orderComputer(units_dat::ReturnToIdleOrder[target->id]);
+				target->order_computer(units_dat::ReturnToIdleOrder[target->id]);
 			}
 
 			// Create the Recall animation over the unit

@@ -202,7 +202,7 @@ namespace hooks
 				{
 					for (u32 y = 0; y < mapTileSize->height; y++)
 					{
-						ActiveTile& tile = scbw::getActiveTileAt(x * 32, y * 32);
+						ActiveTile& tile = scbw::get_active_tile_at(x * 32, y * 32);
 						tile.exploredFlags &= ~reveal_flag;
 					}
 				}
@@ -264,7 +264,7 @@ namespace hooks
 			bool newShift = GetAsyncKeyState(VK_SHIFT) & 0x1;
 			if (lastShift != newShift)
 			{
-				scbw::refreshConsole();
+				scbw::refresh_console();
 			}
 			lastShift = newShift;
 
@@ -468,7 +468,7 @@ namespace hooks
 						}
 						scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
 						corpse->sprite->flags |= SpriteFlags::Flag04;
-						corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
+						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						unitExt->timers[TimerReconstitutionCooldown] = 1 * 24;
 						break;
 					}
@@ -484,16 +484,16 @@ namespace hooks
 				for (u32 i = 0; i < corpses.size; ++i) {
 					Thingy* corpse = corpses.corpses[i];
 					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
-						Unit* egg = scbw::createUnitInGame(UnitId::ZergEgg, unit->playerId, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
+						Unit* egg = scbw::create_unit_ingame(UnitId::ZergEgg, unit->playerId, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
-							egg->sprite->playIscriptAnim(IscriptAnimation::Walking, true);
+							egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
 							egg->buildQueue[egg->buildQueueSlot] = UnitId::ZergSovroleth;
 
 							UnitExt* eggExt = globals.get_unit_ext(egg);
 							eggExt->timers[TimerCorpseCocoonHatch] = 2 * 24;
 						}
 						corpse->sprite->flags |= SpriteFlags::Flag04;
-						corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
+						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 					}
 				}
 			} break;
@@ -506,28 +506,28 @@ namespace hooks
 				{
 					if (unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell)
 					{
-						unit->playIscriptAnim(IscriptAnimation::CastSpell);
+						unit->play_iscript_animation(IscriptAnimation::CastSpell);
 					}
 				}
-				if ((unit->id == UnitId::ZergEgg && !scbw::isLarvalEgg(unit)) || unit->id == UnitId::ZergCocoon) {
-					if (scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep
+				if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
+					if (scbw::get_active_tile_at(unit->position.x, unit->position.y).hasCreep
 						&& !unit->getOverlay(ImageId::CreepMorphOverlay)) {
 						unit->sprite->createUnderlay(ImageId::CreepMorphOverlay, 0, 2);
 					}
 				}
 
 				if (unitExt->timers[TimerCorpseCocoonHatch] == 1 + 19) {
-					unit->playIscriptAnim(IscriptAnimation::GndAttkInit);
+					unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
 				}
 				if (unitExt->timers[TimerCorpseCocoonHatch] == 1) {
-					helper::replaceUnitWithType(unit, UnitId::ZergSovroleth);
+					helper::replace_unit_with_type(unit, UnitId::ZergSovroleth);
 					helper::giveAi(unit);
 
-					helper::playMorphingCompleteSound(unit);
+					helper::play_morphing_complete_sound(unit);
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-					helper::initBuilding(unit, 1);
+					helper::init_building(unit, 1);
 					unitExt->values[ValueSpecialSovrolethBirth] = true;
-					unit->orderComputer(OrderId::ZergBirth);
+					unit->order_computer(OrderId::ZergBirth);
 				}
 			} break;
 			case UnitId::ProtossStarSovereign:
@@ -727,7 +727,7 @@ namespace hooks
 						unitExt->values[ValueIsSelfReviving] = 0;
 						unit->hitPoints = unit->getMaxHpRaw();
 						scbw::restoreFunc(unit);
-						unit->orderComputer(OrderId::Stop);
+						unit->order_computer(OrderId::Stop);
 						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 						helper::playSoundFromSource(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
 					}
@@ -899,7 +899,7 @@ namespace hooks
 				if (timer == 0)
 				{
 					unitExt->timers[TimerNaniteField] = 24;
-					unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
+					unit->sprite->play_iscript_animation(IscriptAnimation::CastSpell);
 					scbw::UnitFinder(
 						unit->getX() - 128,
 						unit->getY() - 128,
@@ -926,7 +926,7 @@ namespace hooks
 					{
 						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= CentaurMissileDistance)
 						{
-							unit->playIscriptAnim(IscriptAnimation::Unused2);
+							unit->play_iscript_animation(IscriptAnimation::Unused2);
 						}
 					}
 				}
@@ -940,7 +940,7 @@ namespace hooks
 					{
 						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= OlympianMeleeDistance)
 						{
-							unit->playIscriptAnim(IscriptAnimation::SpecialState1);
+							unit->play_iscript_animation(IscriptAnimation::SpecialState1);
 						}
 					}
 				}
@@ -1333,7 +1333,7 @@ namespace hooks
 			// Eventually make it happen for vespene geysers and mineral fields, not just refineries
 			if (harvest_target && scbw::unit_id_is_gas_structure(harvest_target->id, true) && harvest_target->sprite->mainGraphic->animation != IscriptAnimation::IsWorking)
 			{
-				harvest_target->sprite->playIscriptAnim(IscriptAnimation::IsWorking);
+				harvest_target->sprite->play_iscript_animation(IscriptAnimation::IsWorking);
 			}
 		}
 		*/
@@ -1378,12 +1378,12 @@ namespace hooks
 			if (unit_id != UnitId::None && !scbw::unit_id_is_available_without_an_addon(unit_id))
 			{
 				unitExt->values[ValuePlayingAddonWorkingAnim] = 1;
-				unit->building.addon->sprite->playIscriptAnim(IscriptAnimation::IsWorking);
+				unit->building.addon->sprite->play_iscript_animation(IscriptAnimation::IsWorking);
 			}
 			else if (unitExt->values[ValuePlayingAddonWorkingAnim])
 			{
 				unitExt->values[ValuePlayingAddonWorkingAnim] = 0;
-				unit->building.addon->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle);
+				unit->building.addon->sprite->play_iscript_animation(IscriptAnimation::WorkingToIdle);
 			}
 		}
 
@@ -1843,7 +1843,7 @@ namespace hooks
 
 		if (unitExt->timers[TimerControlledDemolition] == 7) {
 			Image* overlay = unit->getOverlay(ImageId::ControlledDemolition);
-			overlay->playIscriptAnim(IscriptAnimation::Death);
+			overlay->play_iscript_animation(IscriptAnimation::Death);
 		}
 
 		// Controlled Demolition - destroy structure
@@ -1864,7 +1864,7 @@ namespace hooks
 
 		if (unitExt->timers[TimerEmergencyDetonation] == 7) {
 			Image* overlay = unit->getOverlay(ImageId::EmergencyDetonation);
-			overlay->playIscriptAnim(IscriptAnimation::Death);
+			overlay->play_iscript_animation(IscriptAnimation::Death);
 		}
 
 		// Emergency Detonation - destroy structure

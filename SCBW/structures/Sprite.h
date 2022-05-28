@@ -27,7 +27,7 @@ struct Sprite
 	// Utility method definitions added by pastelmind
 
 	/// Makes the sprite play the specified Iscript animation entry.
-	void playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurrentScript = true);
+	void play_iscript_animation(IscriptAnimation::Enum animation, bool bReplaceCurrentScript = true);
 
 	/// AKA SpriteDestructor() @ 0x00497B40
 	/// Removes the sprite from the linked list of valid images. This is different

@@ -13,11 +13,11 @@ namespace hooks
 		// look for a location to spawn a larva at
 		if (helper::getLarvaSpawnPos(main_building, &coords))
 		{
-			Unit* unit_created = helper::createUnit(UnitId::ZergLarva, coords.x, coords.y, main_building->playerId);
+			Unit* unit_created = helper::create_unit(UnitId::ZergLarva, coords.x, coords.y, main_building->playerId);
 			if (unit_created != nullptr)
 			{
-				helper::updateUnitStatsFinishBuilding(unit_created);
-				helper::updateUnitStrength(unit_created);
+				helper::update_unit_stats_and_finish_building(unit_created);
+				helper::update_unit_strength(unit_created);
 				unit_created->connectedUnit = main_building;
 
 				// set mainOrderState depending on the collision state with the connected building			
@@ -132,12 +132,12 @@ namespace hooks
 					else
 					{
 						// 004EA830:
-						Unit* new_larva = helper::createUnit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->playerId);
+						Unit* new_larva = helper::create_unit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->playerId);
 						if (new_larva != nullptr)
 						{
 							// update various stats (set hp, set shield...) not finished on CreateUnit
-							helper::updateUnitStatsFinishBuilding(new_larva);
-							helper::updateUnitStrength(new_larva);
+							helper::update_unit_stats_and_finish_building(new_larva);
+							helper::update_unit_strength(new_larva);
 
 							new_larva->connectedUnit = unit;
 							// set mainOrderState depending on the collision state with the connected building						
@@ -250,7 +250,7 @@ namespace hooks
 
 						if (in_range)
 						{
-							ActiveTile a = scbw::getActiveTileAt(i * 32, j * 32);
+							ActiveTile a = scbw::get_active_tile_at(i * 32, j * 32);
 							if (a.hasCreep || a.temporaryCreep || a.creepReceeding)
 							{
 								// why is there nothing here LMAO

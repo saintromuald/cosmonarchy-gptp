@@ -69,11 +69,11 @@ namespace hooks
 			}
 			else if (unit->unit_ai != nullptr)
 			{
-				unit->orderComputer(OrderId::ComputerAI);
+				unit->order_computer(OrderId::ComputerAI);
 			}
 			else
 			{
-				unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
 	}

@@ -217,7 +217,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		hooks::incrementUnitScoresEx(count, unit, updateMorphMergeUnitScore);
+		hooks::increment_unit_scores_ex(count, unit, updateMorphMergeUnitScore);
 		__asm {
 			POPAD
 			MOV ESP, EBP

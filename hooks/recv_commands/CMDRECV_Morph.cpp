@@ -17,13 +17,13 @@ namespace hooks
 			building->id <= 227 &&
 			wUnitType >= UnitId::ZergInfestedCommandCenter &&
 			wUnitType <= 227 &&
-			building->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1 &&
+			building->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1 &&
 			helper::HasMoneyCanMake(building, wUnitType) && //start construction if successful
 			building->mainOrderId != OrderId::Morph2
 			)
 		{
-			building->orderComputer(OrderId::Morph2);
-			scbw::refreshConsole();
+			building->order_computer(OrderId::Morph2);
+			scbw::refresh_console();
 		}
 	}
 
@@ -47,7 +47,7 @@ namespace hooks
 				)
 			{
 
-				bAllowMorph = current_unit->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1;
+				bAllowMorph = current_unit->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1;
 			}
 			else
 			{
@@ -81,6 +81,6 @@ namespace hooks
 			}
 			current_unit = getActivePlayerNextSelection();
 		}
-		scbw::refreshConsole();
+		scbw::refresh_console();
 	}
 }

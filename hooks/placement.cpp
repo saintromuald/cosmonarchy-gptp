@@ -53,7 +53,7 @@ namespace hooks
         if (helper::initPlacementBoxPos(&v6))
         {
             *placeBuildingMessageId = helper::updatePlacementStateForPlacementBox_Func();
-            helper::refreshLayers3And4();
+            helper::refresh_layers_3_and_4();
             helper::unk_buildingPlacementRelated(1, &v6);
             if (*isPlacingAddon)
             {
@@ -61,7 +61,7 @@ namespace hooks
                 v6.y -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
                 helper::unk_buildingPlacementRelated(0, &v6);
             }
-            result = helper::refreshLayers3And4();
+            result = helper::refresh_layers_3_and_4();
         }
         else
         {

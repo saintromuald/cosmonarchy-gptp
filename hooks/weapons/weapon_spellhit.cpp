@@ -172,7 +172,7 @@ namespace hooks
 		}
 
 		// Should stop movements/orders/scripts of the unit, give it the status DoodadStatesThing.
-		// May have an effect on selection. Performs scbw::refreshConsole() code at the end
+		// May have an effect on selection. Performs scbw::refresh_console() code at the end
 		disableUnit(target);
 	}
 
@@ -481,23 +481,23 @@ namespace hooks
 		coords.y = y;
 
 		// adjust location where Dark Swarm will be created if necessary (by modifying coords)
-		helper::fixTargetLocation(&coords, UnitId::Spell_DarkSwarm);
+		helper::fix_target_location(&coords, UnitId::Spell_DarkSwarm);
 
 		// the dark swarm is created for player 11 (neutral), not for the owner
-		dark_swarm_unit = helper::createUnit(UnitId::Spell_DarkSwarm, coords.x, coords.y, 11);
+		dark_swarm_unit = helper::create_unit(UnitId::Spell_DarkSwarm, coords.x, coords.y, 11);
 
 		if (dark_swarm_unit == nullptr)
 		{
-			helper::displayLastNetErrorForPlayer(attackingPlayerId);
+			helper::display_last_network_error_for_player(attackingPlayerId);
 		}
 		else
 		{
 			dark_swarm_unit->status |= UnitStatus::NoCollide;
 			dark_swarm_unit->sprite->elevationLevel = 11;
 
-			// update various stuff (set hp, set shield...) not finished on createUnit
-			helper::updateUnitStatsFinishBuilding(dark_swarm_unit);
-			helper::updateUnitStrength(dark_swarm_unit);
+			// update various stuff (set hp, set shield...) not finished on create_unit
+			helper::update_unit_stats_and_finish_building(dark_swarm_unit);
+			helper::update_unit_strength(dark_swarm_unit);
 			if (dark_swarm_unit->removeTimer == 0
 				|| dark_swarm_unit->removeTimer > 900)
 			{
@@ -510,7 +510,7 @@ namespace hooks
 	void BroodlingHit(Unit* attacker, Unit* target, Bullet* bullet)
 	{
 		u32 broodlings_to_spawn = 3;
-		ActiveTile tile = scbw::getActiveTileAt(bullet->sprite->position.x, bullet->sprite->position.y);
+		ActiveTile tile = scbw::get_active_tile_at(bullet->sprite->position.x, bullet->sprite->position.y);
 		if (tile.hasCreep || tile.creepReceeding)
 		{
 			broodlings_to_spawn = 5;
@@ -553,16 +553,16 @@ namespace hooks
 				pos.y = current_y;
 
 				// adjust the position to welcome the unit...I think
-				helper::fixTargetLocation(&pos, UnitId::ZergRilirokor);
+				helper::fix_target_location(&pos, UnitId::ZergRilirokor);
 
 				// create the broodling
-				created_broodling = helper::createUnit(UnitId::ZergRilirokor, pos.x, pos.y, attacker->playerId);
+				created_broodling = helper::create_unit(UnitId::ZergRilirokor, pos.x, pos.y, attacker->playerId);
 				UnitExt* broodlingExt = globals.get_unit_ext(created_broodling);
 				broodlingExt->units[UnitBroodlingMother] = attacker;
 
 				if (created_broodling == nullptr)
 				{
-					helper::displayLastNetErrorForPlayer(attacker->playerId);
+					helper::display_last_network_error_for_player(attacker->playerId);
 					jump_to_end_of_loop = true;
 				}
 				else
@@ -570,9 +570,9 @@ namespace hooks
 					helper::playSoundFromSource(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling, 1, 0);
 					u32 timerBeforeDisappearance;
 
-					// update various stuff (set hp, set shield...) not finished on createUnit
-					helper::updateUnitStatsFinishBuilding(created_broodling);
-					helper::updateUnitStrength(created_broodling);
+					// update various stuff (set hp, set shield...) not finished on create_unit
+					helper::update_unit_stats_and_finish_building(created_broodling);
+					helper::update_unit_strength(created_broodling);
 					timerBeforeDisappearance = 720;	// 0x708
 					if (created_broodling->removeTimer == 0
 						|| created_broodling->removeTimer > timerBeforeDisappearance)
@@ -582,7 +582,7 @@ namespace hooks
 
 					if (attacker->unit_ai != nullptr)
 					{
-						helper::AI_training_unit(created_broodling, attacker);
+						helper::ai_training_unit(created_broodling, attacker);
 					}
 				}
 			}
@@ -712,19 +712,19 @@ namespace hooks
 		coords.y = y;
 
 		// adjust location where Disruption Web will be created if necessary (by modifying coords)
-		helper::fixTargetLocation(&coords, UnitId::Spell_DisruptionWeb);
-		disruption_web_unit = helper::createUnit(UnitId::Spell_DisruptionWeb, coords.x, coords.y, 11);
+		helper::fix_target_location(&coords, UnitId::Spell_DisruptionWeb);
+		disruption_web_unit = helper::create_unit(UnitId::Spell_DisruptionWeb, coords.x, coords.y, 11);
 		if (disruption_web_unit == nullptr)
 		{
-			helper::displayLastNetErrorForPlayer(attackingPlayerId);
+			helper::display_last_network_error_for_player(attackingPlayerId);
 		}
 		else
 		{
 			disruption_web_unit->status |= UnitStatus::NoCollide;
 			disruption_web_unit->sprite->elevationLevel = 11;
-			// update various stats (set hp, set shield...) not finished on createUnit
-			helper::updateUnitStatsFinishBuilding(disruption_web_unit);
-			helper::updateUnitStrength(disruption_web_unit);
+			// update various stats (set hp, set shield...) not finished on create_unit
+			helper::update_unit_stats_and_finish_building(disruption_web_unit);
+			helper::update_unit_strength(disruption_web_unit);
 			if (disruption_web_unit->removeTimer == 0
 				|| disruption_web_unit->removeTimer > 360)
 			{
@@ -840,13 +840,13 @@ LABEL_15:
 		v9 = v1->orderTarget.pt.x;
 		a2.y = v1->orderTarget.pt.y;
 		a2.x = v9;
-		helper::fixTargetLocation(&a2, UnitId::Spell_ScannerSweep);
-		v10 = helper::createUnit(0x21u, a2.x, a2.y, (u8)v1->playerId);
+		helper::fix_target_location(&a2, UnitId::Spell_ScannerSweep);
+		v10 = helper::create_unit(0x21u, a2.x, a2.y, (u8)v1->playerId);
 		v11 = v10;
 		if (v10)
 		{
-			helper::updateUnitStatsFinishBuilding(v10);
-			helper::updateUnitStrength(v11);
+			helper::update_unit_stats_and_finish_building(v10);
+			helper::update_unit_strength(v11);
 			helper::playSoundFromSource(388, v1, 1, 0);
 			if (!(*CHEAT_STATE & 0x800))
 			{
@@ -856,7 +856,7 @@ LABEL_15:
 		}
 		else
 		{
-			helper::displayLastNetErrorForPlayer(v1->playerId);
+			helper::display_last_network_error_for_player(v1->playerId);
 			helper::to_idle(v1);
 		}
 	}

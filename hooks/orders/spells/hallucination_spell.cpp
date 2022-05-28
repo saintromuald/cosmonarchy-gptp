@@ -39,11 +39,11 @@ namespace hooks
 			}
 			else if (unit->unit_ai != nullptr)
 			{
-				unit->orderComputer(OrderId::ComputerAI);
+				unit->order_computer(OrderId::ComputerAI);
 			}
 			else
 			{
-				unit->orderComputer(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
 	}
@@ -57,7 +57,7 @@ namespace hooks
 		}
 
 		Unit* result = nullptr;
-		Unit* halUnit = helper::createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);
+		Unit* halUnit = helper::create_unit(source->id, source->sprite->position.x, source->sprite->position.y, player);
 		if (halUnit)
 		{
 			u16 halTimer = 0;
@@ -97,7 +97,7 @@ namespace hooks
 		}
 		else
 		{
-			helper::displayLastNetErrorForPlayer(player);
+			helper::display_last_network_error_for_player(player);
 			result = nullptr;
 		}
 		return result;

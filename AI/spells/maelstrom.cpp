@@ -55,7 +55,7 @@ namespace AI
 				return false;
 			}
 			if (isTargetAttackingAlly(target, caster)
-				&& !scbw::isZergEggNew(target, true, true))
+				&& !scbw::is_zerg_egg_new(target, true, true))
 			{
 				const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Maelstrom);
 				if (!isUnderAttack && totalEnemyLife < 250)

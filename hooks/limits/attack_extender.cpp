@@ -28,7 +28,7 @@ namespace hooks
 		result = AI_GetMissingAttackForceUnits(region, v9, AIScriptController[child].AI_Flags.isUseMapSettings);
 		v10 = result;
 		if (AIScriptController[child].AI_Flags.isUseMapSettings
-			|| (childTown = AIScriptController[child].lastIndividualUpdateTime) != 0
+			|| (childTown = AIScriptController[child].last_individual_update_time) != 0
 			&& (v12 = *elapsedTimeSeconds - childTown >= 30, *elapsedTimeSeconds - childTown < 30))
 		{
 			v11 = 60;
@@ -44,12 +44,12 @@ namespace hooks
 			do
 			{
 				parentTown = v9[v6];
-				if (parentTown < UnitId::None && !helper::AI_AddRegionToMilitary(parentAi, parentTown, v11))
+				if (parentTown < UnitId::None && !helper::ai_add_to_region_military(parentAi, parentTown, v11))
 				{
 					v8 = (u8)parentAi->playerId;
 					AIScriptController[v8].AI_Flags.flag_0x40 = 1; // Might be wrong
-					helper::AI_FindUnit(parentTown, v8, 1);
-					helper::AI_AddSpendingRequest(parentTown, v8, 1, 60, parentAi);
+					helper::ai_find_unit(parentTown, v8, 1);
+					helper::ai_add_spending_request(parentTown, v8, 1, 60, parentAi);
 					helper::AI_AddBaseUnitSpendingRequest(parentTown, v8, parentAi, 60);
 					v6 = v12;
 				}

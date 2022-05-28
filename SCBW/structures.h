@@ -913,7 +913,7 @@ struct AI_Main
 	u16 wanted_unit;					/*0220*/
 	u8	dc222;							/*0222*/
 	u8	defense_priority_base;			/*0223*/
-	u32 lastIndividualUpdateTime;		/*0224*/
+	u32 last_individual_update_time;	/*0224*/
 	u32 last_attack_seconds;			/*0228*/
 	u8	strategic_suicide;				/*022C*/
 	u8	spellcasterTimer;				/*022D*/

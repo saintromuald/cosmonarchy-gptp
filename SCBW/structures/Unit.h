@@ -255,7 +255,7 @@ struct Unit : public UnitLayout
 	void orderTo(u8 orderId, u16 x, u16 y);
 
 	//  Issue the @p order to the unit, without a target
-	void orderComputer(u8 orderId);
+	void order_computer(u8 orderId);
 
 	//  Issue the @p order to the unit and specify if previous orders should be stopped
 	void orderSimple(u8 orderId, bool stopPreviousOrders);
@@ -289,7 +289,7 @@ struct Unit : public UnitLayout
 	bool shieldsEnabled() const;
 
 	/// Makes the unit's sprite play the specified Iscript animation entry.
-	void playIscriptAnim(IscriptAnimation::Enum animation);
+	void play_iscript_animation(IscriptAnimation::Enum animation);
 
 	/// Removes the first image overlay with an ID value between @p imageIdStart
 	/// and @p imageIdEnd.
@@ -342,7 +342,7 @@ struct Unit : public UnitLayout
 	///
 	/// If the unit can build / train / morph, returns 1. If the tech needs to be
 	/// researched, returns -1. If the unit cannot use the tech at all, returns 0.
-	s32 canMakeUnit(u16 unitId, u8 playerId) const;
+	s32 can_make_unit(u16 unitId, u8 playerId) const;
 
 	/// Checks the following:
 	///  * If the unit is actually owned by the commanding @p playerId

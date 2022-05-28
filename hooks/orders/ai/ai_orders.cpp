@@ -41,7 +41,7 @@ namespace hooks
 		{
 			if (self->unit_ai)
 			{
-				AIScriptController[self->playerId].lastIndividualUpdateTime = *elapsedTimeSeconds;
+				AIScriptController[self->playerId].last_individual_update_time = *elapsedTimeSeconds;
 				BuildingAi* selfBuildingAi = (BuildingAi*)self->unit_ai;
 				if (selfBuildingAi)
 				{

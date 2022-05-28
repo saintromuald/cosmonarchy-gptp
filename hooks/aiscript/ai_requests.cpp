@@ -78,7 +78,7 @@ namespace hooks
 							s32 targetQueueCostGas = units_dat::GasCost[targetUnitQueue2];
 							AIMineralsReserve[playerIdVar] = targetQueueCostMinerals;
 							AIGasReserve[playerIdVar] = targetQueueCostGas;
-							if (helper::hasSuppliesForUnit(targetUnitQueue, playerId, 1))
+							if (helper::has_supplies_for_unit(targetUnitQueue, playerId, 1))
 							{
 								if (gameMinerals[(u8)playerId] >= (s32)AIMineralsReserve[(u8)playerId])
 								{
@@ -773,7 +773,7 @@ LABEL_36:
 						AIScriptController[player_id].mineralCollection += units_dat::MineralCost[UnitId::ProtossWitness];
 						AIScriptController[player_id].gasCollection += witness_gas_cost;
 						AIScriptController[player_id].supplyCollection += witness_supply_cost;
-						helper::AI_AddSpendingRequest(UnitId::ProtossWitness, player_id, 8, 80, 0);
+						helper::ai_add_spending_request(UnitId::ProtossWitness, player_id, 8, 80, 0);
 						--witness_request_quantity;
 					} while (witness_request_quantity);
 				}
@@ -801,8 +801,8 @@ LABEL_36:
 						AIScriptController[player_id].mineralCollection += units_dat::MineralCost[transport_unit_id_1];
 						AIScriptController[player_id].gasCollection = transport_1_gas_cost + v29;
 						AIScriptController[player_id].supplyCollection += transport_supply_cost;
-						helper::AI_AddSpendingRequest(transport_unit_id_1, player_id, 1, transport_1_priority, v33);
-						helper::AI_AddBaseUnitSpendingRequest(transport_unit_id_2, player_id, v33, transport_1_priority);
+						helper::ai_add_spending_request(transport_unit_id_1, player_id, 1, transport_1_priority, v33);
+						helper::ai_add_base_unit_spending_request(transport_unit_id_2, player_id, v33, transport_1_priority);
 						if (!--transport_1_request_count)
 						{
 							break;
@@ -876,5 +876,57 @@ LABEL_36:
 			result = helper::AI_add_town_spending_request(player, priority, refinery_id, town);
 		}
 		return result;
+	}
+
+	// Hooked to allow AI to train guards while under attack. -Pr0nogo
+	u32 ai_request_guard(AiRegion* region, u32 player_id) // 00448630 - region is probably not region tbh
+	{
+		u32 result = 0;
+		u32 last_update_time = AIScriptController[player_id].last_individual_update_time;
+		if (!last_update_time || *elapsedTimeSeconds - last_update_time >= 30)
+		{
+			s32 region_ground_strength = region->regionGroundStrength;
+			if (region_ground_strength == 30)
+			{
+				region_ground_strength = 5;
+			}
+			helper::ai_find_unit(region_ground_strength, player_id, 1);
+			helper::ai_add_spending_request(region_ground_strength, player_id, 2, 50, region);
+			u32 region_id = helper::get_region_id(region->regionAirStrength, region->fullGroundStrength);
+			result = helper::ai_add_base_unit_spending_request(region_ground_strength, player_id, &AiRegionCaptains[player_id][region_id], 50);
+		}
+		return result;
+	}
+
+	// Hooked to change attack_add priorities. -Pr0nogo
+	u32 ai_region_train_attack_force(AiRegion* region) // 0043E670
+	{
+		u32 attack_wave[63];
+		u32 player_id = region->playerId;
+		u32 missing_attack_force = helper::get_missing_attack_force_units(region, attack_wave, AIScriptController[player_id].AI_Flags.isUseMapSettings);
+		u32 missing_attack_force_swap = missing_attack_force;
+		u32 priority = 80;
+		u32 attack_wave_entry = 0;
+		u32 attack_wave_iterator = 0;
+		if (missing_attack_force)
+		{
+			do
+			{
+				u32 attack_wave_entry_unit_id = attack_wave[attack_wave_entry];
+				if (attack_wave_entry_unit_id < UnitId::None
+					&& !helper::ai_add_to_region_military(region, attack_wave_entry_unit_id, priority))
+				{
+					player_id = region->playerId;
+					AIScriptController[player_id].AI_Flags.flag_0x40 = true;
+					helper::ai_find_unit(attack_wave_entry_unit_id, player_id, 1);
+					helper::ai_add_spending_request(attack_wave_entry_unit_id, player_id, 1, 60, region);
+					helper::ai_add_base_unit_spending_request(attack_wave_entry_unit_id, player_id, region, 60);
+					attack_wave_entry = attack_wave_iterator;
+				}
+				missing_attack_force = missing_attack_force_swap;
+				attack_wave_iterator = ++attack_wave_entry;
+			} while (attack_wave_entry < missing_attack_force_swap);
+		}
+		return missing_attack_force;
 	}
 }
