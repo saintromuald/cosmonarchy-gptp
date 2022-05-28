@@ -254,49 +254,37 @@ namespace hooks
 			unit->nextTargetWaypoint.y = unit->subunit->nextTargetWaypoint.y;
 		}
 
-		function_004774A0(unit);
+		orders_player_guard(unit);
 
 	} //void orders_TurretGuard(Unit* unit)
 
 	;
 
 	//Guard related function, may be a poorly identified official guard order
-	void function_004774A0(Unit* unit)
+	void orders_player_guard(Unit* unit)
 	{
 
-		//if unit->autoTargetUnit != nullptr, attack this target
+		//if unit->autoTargetUnit, attack this target
 		//then disable the unit...I think
 		//That's why if it return true, nothing else is done
 		//since has already attacked
-		if (!helper::attack_recent_attacker(unit))
-		{
-
-			if (unit->mainOrderTimer == 0)
-			{
-
-				unit->mainOrderTimer = 15;
-
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit)
-				{
-					if (
-						unit->subunit->nextTargetWaypoint.x != unit->nextTargetWaypoint.x ||
-						unit->subunit->nextTargetWaypoint.y != unit->nextTargetWaypoint.y
-						)
-					{
+		if (!helper::attack_recent_attacker(unit)) {
+			if (unit->mainOrderTimer == 0) {
+				//unit->mainOrderTimer = 15;
+				if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
+					if (unit->subunit->nextTargetWaypoint.x != unit->nextTargetWaypoint.x ||
+						unit->subunit->nextTargetWaypoint.y != unit->nextTargetWaypoint.y) {
 						unit->nextTargetWaypoint.x = unit->subunit->nextTargetWaypoint.x;
 						unit->nextTargetWaypoint.y = unit->subunit->nextTargetWaypoint.y;
 					}
 				}
 
-				if (unit->getSeekRange() != 0)
-				{
-
+				if (unit->getSeekRange() != 0) {
 					Unit* target = helper::findBestAttackTarget(unit);
-
-					if (target != nullptr)
-						//attack target I think, also used by attack_recent_attacker
-						helper::order_to_attack_target(unit, target, 0, 1);
-
+					if (target) {
+						// attack target I think, also used by attack_recent_attacker
+						helper::order_to_attack_target(unit, target, 1, 0);
+					}
 				}
 			}
 		}

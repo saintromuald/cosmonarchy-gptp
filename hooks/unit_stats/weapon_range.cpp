@@ -60,7 +60,7 @@ namespace hooks
 		u32 seekRange = units_dat::SeekRange[unit->id] * scale + bonusAmount;
 
 		// Height advantage
-		seekRange += scbw::get_cliff_advantage(unit, target, 0) * 2;
+		seekRange += scbw::get_cliff_advantage(unit, target, 0);
 
 		return seekRange;
 	};

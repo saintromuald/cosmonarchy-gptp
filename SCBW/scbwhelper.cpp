@@ -5657,8 +5657,8 @@ namespace helper
 		const u32 func_address = 0x00476FC0;
 		__asm {
 			PUSHAD
-			PUSH unk1
 			PUSH unk2
+			PUSH unk1
 			MOV EAX, target
 			MOV EDI, unit
 			CALL func_address

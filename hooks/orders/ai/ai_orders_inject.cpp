@@ -576,7 +576,7 @@ namespace hooks
 //		jmpPatch(AI_GetBuildLocation_Wrapper,				0x004461B0, 1);
 		jmpPatch(AI_check_military_grouping_wrapper,		0x00439550, 1);
 		jmpPatch(hooks::AI_remove_different_height,			0x004436C0, 3);
-		jmpPatch(attack_recent_attacker_wrapper,			0x004770E0, 2);
+//		jmpPatch(attack_recent_attacker_wrapper,			0x004770E0, 2);
 
 		jmpPatch(AI_get_vespene_type_wrapper,				0x004326E0, 2);
 		jmpPatch(get_ai_refinery_wrapper,					0x00432B90, 0);

@@ -73,7 +73,7 @@ namespace
 
 	;
 
-	void __declspec(naked) function_004774A0_Wrapper()
+	void __declspec(naked) orders_player_guard_wrapper()
 	{
 
 		static Unit* unit;
@@ -83,7 +83,7 @@ namespace
 			PUSHAD
 		}
 
-		hooks::function_004774A0(unit);
+		hooks::orders_player_guard(unit);
 
 		__asm {
 			POPAD
@@ -101,10 +101,10 @@ namespace hooks
 
 	void injectStopHoldPosOrdersHooks()
 	{
-		jmpPatch(orders_MedicHoldPositionWrapper, 0x00464050, 0);
-		jmpPatch(orders_ReaverStopWrapper, 0x004654B0, 1);
-		jmpPatch(orders_GuardWrapper, 0x00475B90, 2);
-		jmpPatch(function_004774A0_Wrapper, 0x004774A0, 3);
+		//jmpPatch(orders_MedicHoldPositionWrapper, 0x00464050, 0);
+		//jmpPatch(orders_ReaverStopWrapper, 0x004654B0, 1);
+		//jmpPatch(orders_GuardWrapper, 0x00475B90, 2);
+		jmpPatch(orders_player_guard_wrapper, 0x004774A0, 3);
 	}
 
 } //hooks

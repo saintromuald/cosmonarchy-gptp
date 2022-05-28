@@ -85,15 +85,6 @@ namespace
 
 		Unit* actualUnit = unit->subunit->isSubunit() ? unit->subunit : unit;
 
-		// Required to make cliff adventage changes work properly (target dependent check)
-		seekRange = hooks::getSeekRangeHook(actualUnit, target) * 32;
-		
-		// Bunker bonus
-		if (unit->status & UnitStatus::InBuilding)
-		{
-			seekRange += 64;
-		}
-
 		// Check if the target is within the seek range
 		if (!(unit->getDistanceToTarget(target) <= seekRange))
 		{
@@ -191,37 +182,37 @@ namespace hooks
 	Unit* findBestAttackTargetHook(Unit* unit)
 	{
 		attackPriorityData.reset();
-		s32 seekRange = unit->getSeekRange() * 32;
+		s32 seek_range = unit->getSeekRange() * 32;
 
 		// Bunker bonus
+		s32 offset = 0;
 		if (unit->status & UnitStatus::InBuilding)
 		{
-			seekRange += 64;
+			offset += 64;
 		}
-
 		// AI units have use default sight range if it is bigger
 		else if (unit->unit_ai)
 		{
-			seekRange = std::max(seekRange, units_dat::SightRange[unit->id] * 32);
+			seek_range = std::max(seek_range, units_dat::SightRange[unit->id] * 32);
 		}
 
-		s32 searchRange = seekRange + 64;
-		u32 minRange = getMinimumRange(unit);
+		s32 search_range = seek_range + offset + 64;
+		u32 min_range = getMinimumRange(unit);
 		if (unit->id == UnitId::TerranCivilian)
 		{
 			if (unit->_padding_0x132 & 0x8)
 			{
-				searchRange = 0;
+				search_range = 0;
 			}
 		}
 		attackTargetFinder.search(
-			unit->getX() - searchRange, unit->getY() - searchRange,
-			unit->getX() + searchRange, unit->getY() + searchRange);
+			unit->getX() - search_range, unit->getY() - search_range,
+			unit->getX() + search_range, unit->getY() + search_range);
 
 		attackTargetFinder.forEach([&](Unit* target)
 		{
-			if (checkAttackableTarget(unit, target, seekRange, minRange))
-			{
+			s32 target_seek_range = hooks::getSeekRangeHook(unit, target) * 32;
+			if (checkAttackableTarget(unit, target, target_seek_range + offset, min_range)) {
 				attackPriorityData.addTarget(target, getAttackPriorityHook(target, unit));
 			}
 		});
@@ -232,23 +223,26 @@ namespace hooks
 	Unit* findRandomAttackTargetHook(Unit* unit)
 	{
 		attackPriorityData.reset();
-		s32 seekRange = unit->getSeekRange() * 32;
+		s32 seek_range = unit->getSeekRange() * 32;
 
 		// Bunker bonus
-		if (unit->status & UnitStatus::InBuilding)
+		u32 offset = 0;
+		if (!unit->unit_ai && unit->status & UnitStatus::InBuilding)
 		{
-			seekRange += 64;
+			offset += 64;
 		}
 
-		s32 searchRange = seekRange + 64;
+		s32 search_range = seek_range + offset + 64;
 		attackTargetFinder.search(
-			unit->getX() - searchRange, unit->getY() - searchRange,
-			unit->getX() + searchRange, unit->getY() + searchRange);
+			unit->getX() - search_range, unit->getY() - search_range,
+			unit->getX() + search_range, unit->getY() + search_range);
 
 		attackTargetFinder.forEach([&](Unit* target)
 		{
-			if (checkAttackableTarget(unit, target, seekRange))
+			s32 target_seek_range = hooks::getSeekRangeHook(unit, target) * 32;
+			if (checkAttackableTarget(unit, target, target_seek_range + offset)) {
 				attackPriorityData.addTarget(target, getAttackPriorityHook(target, unit));
+			}
 		});
 		return attackPriorityData.findRandomTarget();
 	}

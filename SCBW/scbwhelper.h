@@ -640,7 +640,7 @@ namespace helper
 	Unit* MedicHeal_TargetAcquire(Unit* medic);																						// 004422A0
 	u32 doMedicHeal(Unit* unit, Unit* target);																						// 00463C40
 	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2);														// 00476FC0
-	b32 attack_recent_attacker(Unit* unit);																								// 004770E0
+	b32 attack_recent_attacker(Unit* unit);																							// 004770E0
 
 	//// medic_orders
 	b32 AI_OrderHeal(Unit* unit, Unit* target);																						// 00463530

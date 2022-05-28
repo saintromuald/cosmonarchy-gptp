@@ -1056,28 +1056,23 @@ LABEL_126:
 	s32 attack_recent_attacker(Unit* unit) // 004770E0
 	{
 		Unit* target_unit = unit->autoTargetUnit;
-		if (target_unit && !unit->unit_ai)
+		if (!target_unit || unit->unit_ai)
 		{
-			u8 target_player = 0;
-			if (target_unit->playerId == 11) // Neutral
-			{
-				target_player = target_unit->sprite->playerId;
-			}
-			else
-			{
-				target_player = target_unit->playerId;
-			}
-			if (!scbw::isAlliedTo(unit->playerId, target_player))
-			{
-				if (helper::unit_can_attack_target(target_unit, unit, 1))
-				{
-					helper::order_to_attack_target(unit->autoTargetUnit, unit, 1, 0);
-					unit->status |= UnitStatus::Disabled;
-					return 1;
-				}
-			}
-			unit->autoTargetUnit = 0;
+			return 0;
 		}
+
+		u8 target_player = target_unit->playerId;
+		if (target_unit->playerId == 11) { // Neutral
+			target_player = target_unit->sprite->playerId;
+		}
+		if (!scbw::isAlliedTo(unit->playerId, target_player)) {
+			if (helper::unit_can_attack_target(target_unit, unit, 1)) {
+				helper::order_to_attack_target(unit->autoTargetUnit, unit, 1, 0);
+				unit->status |= UnitStatus::Disabled;
+				return 1;
+			}
+		}
+		unit->autoTargetUnit = 0;
 		return 0;
 	}
 
