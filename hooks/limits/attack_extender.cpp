@@ -48,7 +48,7 @@ namespace hooks
 				{
 					v8 = (u8)parentAi->playerId;
 					AIScriptController[v8].AI_Flags.flag_0x40 = 1; // Might be wrong
-					helper::ai_find_unit(parentTown, v8, 1);
+					helper::ai_add_cost_to_needs(parentTown, v8, 1);
 					helper::ai_add_spending_request(parentTown, v8, 1, 60, parentAi);
 					helper::AI_AddBaseUnitSpendingRequest(parentTown, v8, parentAi, 60);
 					v6 = v12;

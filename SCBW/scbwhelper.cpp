@@ -1759,7 +1759,7 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_find_unit(u32 unitId, u32 playerId, u32 type)
+	u32 ai_add_cost_to_needs(u32 unitId, u32 playerId, u32 type)
 	{
 		const u32 Func_AI_FindUnit = 0x00447DC0;
 		static u32 typeXD = type;
@@ -7716,23 +7716,6 @@ namespace helper
 			MOV EAX, byte_data
 			MOV CL, player
 			CALL Func_getSuppliesUsed
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	s32 ai_add_cost_to_needs(s32 a1, s32 a2, s32 a3)
-	{
-		const u32 Func_AI_AddCostToNeeds = 0x00447DC0;
-		static s32 result;
-		__asm
-		{
-			PUSHAD
-			PUSH a3
-			MOV EBX, a2
-			MOV EAX, a1
-			CALL Func_AI_AddCostToNeeds
 			MOV result, EAX
 			POPAD
 		}

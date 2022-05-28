@@ -882,19 +882,19 @@ LABEL_36:
 	void ai_request_guard(GuardAi* guard_ai, u32 player_id) // 00448630
 	{
 		u32 result = 0;
-		u32 priority = 50;
-		u32 last_update_time = AIScriptController[player_id].previous_building_hit_second;
-		if (!last_update_time || *elapsedTimeSeconds - last_update_time >= 30)
+		u32 priority = 70;
+		u32 last_hit = AIScriptController[player_id].previous_building_hit_second;
+		//if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
+		//	return;
+		//}
+		s32 unit_id = guard_ai->unit_id;
+		if (unit_id == UnitId::TerranPhalanxSiegeMode)
 		{
-			s32 unit_id = guard_ai->unit_id;
-			if (unit_id == UnitId::TerranPhalanxSiegeMode)
-			{
-				unit_id = UnitId::TerranPhalanxTankMode;
-			}
-			helper::ai_find_unit(unit_id, player_id, 1);
-			helper::ai_add_spending_request(unit_id, player_id, 2, priority, guard_ai);
-			helper::ai_add_base_unit_spending_request(unit_id, player_id, scbw::get_ai_region(player_id, scbw::get_region_id(guard_ai->home)), priority);
+			unit_id = UnitId::TerranPhalanxTankMode;
 		}
+		helper::ai_add_cost_to_needs(unit_id, player_id, 1);
+		helper::ai_add_spending_request(unit_id, player_id, 2, priority, guard_ai);
+		helper::ai_add_base_unit_spending_request(unit_id, player_id, scbw::get_ai_region(player_id, scbw::get_region_id(guard_ai->home)), priority);
 	}
 
 	// Hooked to change attack_add priorities. -Pr0nogo
@@ -907,7 +907,7 @@ LABEL_36:
 			if (unit_id < UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
 			{
 				AIScriptController[region->playerId].AI_Flags.flag_0x40 = true;
-				helper::ai_find_unit(unit_id, region->playerId, 1);
+				helper::ai_add_cost_to_needs(unit_id, region->playerId, 1);
 				helper::ai_add_spending_request(unit_id, region->playerId, 1, 60, region);
 				helper::ai_add_base_unit_spending_request(unit_id, region->playerId, region, 60);
 			}
@@ -918,9 +918,9 @@ LABEL_36:
 	void ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, AiRegion* region) { // 00448400
 		u32 last_hit = AIScriptController[player].previous_building_hit_second;
 		u32 race = playerTable[player].race;
-		if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
-			return;
-		}
+		//if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
+		//	return;
+		//}
 		u32 type = 4;
 		if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker) {
 			helper::ai_add_cost_to_needs(unit_id, player, type);
