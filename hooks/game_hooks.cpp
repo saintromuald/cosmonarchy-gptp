@@ -132,13 +132,6 @@ namespace hooks
 			hooks::clearActions();
 			globals.reset();
 
-			// Default maps to "semi-explored", from DarkenedFantasies
-			for (s32 i = 0; i < 4092; i++) {
-				if (fog_of_war_mask->unexplored[i] < 5)
-					fog_of_war_mask->unexplored[i] = 5;
-			}
-			scbw::refreshScreen();
-
 			for (s32 i = 0; i < 8; i++)
 			{
 				// Allow score screen player name overrides, from DarkenedFantasies
@@ -173,18 +166,29 @@ namespace hooks
 		}
 		scbw::setInGameLoopState(false);
 
-		if (*elapsedTimeFrames == 2)
-		{
+		if (*elapsedTimeFrames == 2) {
+			u32 local_flags = unit_deaths[UnitId::ResourceVespeneGeyser].player[*LOCAL_NATION_ID];
+			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
+				// Default maps to "semi-explored", from DarkenedFantasies
+				for (s32 i = 0; i < 4092; i++) {
+					if (fog_of_war_mask->unexplored[i] < 5)
+						fog_of_war_mask->unexplored[i] = 5;
+				}
+				scbw::refreshScreen();
+			}
+
+
 			// Check deaths
 			u8 reveal_flag = 0x00;
 			bool do_ping[PLAYABLE_PLAYER_COUNT] = {};
 			for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id)
 			{
-				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id] & VespeneDeaths_Reveal)
+				u32 flags = unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id];
+				if (flags & VespeneDeaths_Reveal)
 				{
 					reveal_flag |= 1 << player_id;
 				}
-				if (unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id] & VespeneDeaths_Ping)
+				if (flags & VespeneDeaths_Ping)
 				{
 					do_ping[player_id] = true;
 				}
