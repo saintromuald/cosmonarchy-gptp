@@ -106,7 +106,11 @@ namespace hooks
 			if (!do_repair)
 			{
 				unit->playIscriptAnim(IscriptAnimation::WalkingToIdle);
-				unit->mainOrderState = 1; //unit->orderToIdle();
+				if (unit->orderQueueHead) {
+					helper::force_order_done(unit);
+				} else {
+					unit->mainOrderState = 1;
+				}
 				return;
 			}
 		} else {
@@ -130,7 +134,11 @@ namespace hooks
 		}
 
 		unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
-		unit->mainOrderState = 1; //unit->orderToIdle();
+		if (unit->orderQueueHead) {
+			helper::force_order_done(unit);
+		} else {
+			unit->mainOrderState = 1;
+		}
 		if (target && !(target->status & UnitStatus::InTransport)) {
 			target->connectedUnit = 0;
 		}
