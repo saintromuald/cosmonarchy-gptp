@@ -329,7 +329,7 @@ namespace hooks
 		s32 result;
 		s32 reqType;
 
-		battleTime = AIScriptController[playerId].last_individual_update_time;
+		battleTime = AIScriptController[playerId].previous_building_hit_second;
 		if (!battleTime
 			|| *elapsedTimeSeconds - battleTime >= 0x1E // inBattle flag? just a coincidence?
 			|| ((race = playerTable[playerId].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
@@ -343,7 +343,7 @@ namespace hooks
 			{
 				reqType = 2 * (units_dat::BaseProperty[unitId] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
 			}
-			helper::AI_AddCostToNeeds(unitId, playerId, reqType);
+			helper::ai_add_cost_to_needs(unitId, playerId, reqType);
 			result = helper::ai_add_spending_request(unitId, playerId, reqType, priority, param);
 		}
 		return result;

@@ -737,7 +737,7 @@ struct GuardAi
 	u8 timesDied;						// 0x9
 	u8 unkA[2];							// 0xA
 	Unit* parent;						// 0xC
-	u16 id;								// 0x10
+	u16 unit_id;								// 0x10
 	Point16 home;						// 0x12
 	Point16 unkPos;						// 0x16
 	u8 unk1A[2];						// 0x1A
@@ -913,7 +913,7 @@ struct AI_Main
 	u16 wanted_unit;					/*0220*/
 	u8	dc222;							/*0222*/
 	u8	defense_priority_base;			/*0223*/
-	u32 last_individual_update_time;	/*0224*/
+	u32 previous_building_hit_second;	/*0224*/
 	u32 last_attack_seconds;			/*0228*/
 	u8	strategic_suicide;				/*022C*/
 	u8	spellcasterTimer;				/*022D*/

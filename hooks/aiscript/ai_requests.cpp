@@ -879,54 +879,58 @@ LABEL_36:
 	}
 
 	// Hooked to allow AI to train guards while under attack. -Pr0nogo
-	u32 ai_request_guard(AiRegion* region, u32 player_id) // 00448630 - region is probably not region tbh
+	void ai_request_guard(GuardAi* guard_ai, u32 player_id) // 00448630
 	{
 		u32 result = 0;
-		u32 last_update_time = AIScriptController[player_id].last_individual_update_time;
+		u32 priority = 50;
+		u32 last_update_time = AIScriptController[player_id].previous_building_hit_second;
 		if (!last_update_time || *elapsedTimeSeconds - last_update_time >= 30)
 		{
-			s32 region_ground_strength = region->regionGroundStrength;
-			if (region_ground_strength == 30)
+			s32 unit_id = guard_ai->unit_id;
+			if (unit_id == UnitId::TerranPhalanxSiegeMode)
 			{
-				region_ground_strength = 5;
+				unit_id = UnitId::TerranPhalanxTankMode;
 			}
-			helper::ai_find_unit(region_ground_strength, player_id, 1);
-			helper::ai_add_spending_request(region_ground_strength, player_id, 2, 50, region);
-			u32 region_id = helper::get_region_id(region->regionAirStrength, region->fullGroundStrength);
-			result = helper::ai_add_base_unit_spending_request(region_ground_strength, player_id, &AiRegionCaptains[player_id][region_id], 50);
+			helper::ai_find_unit(unit_id, player_id, 1);
+			helper::ai_add_spending_request(unit_id, player_id, 2, priority, guard_ai);
+			helper::ai_add_base_unit_spending_request(unit_id, player_id, scbw::get_ai_region(player_id, scbw::get_region_id(guard_ai->home)), priority);
 		}
-		return result;
 	}
 
 	// Hooked to change attack_add priorities. -Pr0nogo
-	u32 ai_region_train_attack_force(AiRegion* region) // 0043E670
-	{
-		u32 attack_wave[63];
-		u32 player_id = region->playerId;
-		u32 missing_attack_force = helper::get_missing_attack_force_units(region, attack_wave, AIScriptController[player_id].AI_Flags.isUseMapSettings);
-		u32 missing_attack_force_swap = missing_attack_force;
+	void ai_region_train_attack_force(AiRegion* region) { // 0043E670
+		u32 attack_wave[63] = {};
 		u32 priority = 80;
-		u32 attack_wave_entry = 0;
-		u32 attack_wave_iterator = 0;
-		if (missing_attack_force)
-		{
-			do
+		u32 missing_attack_force = helper::get_missing_attack_force_units(region, attack_wave, AIScriptController[region->playerId].AI_Flags.isUseMapSettings);
+		for (u32 i = 0; i < missing_attack_force; ++i) {
+			u32 unit_id = attack_wave[i];
+			if (unit_id < UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
 			{
-				u32 attack_wave_entry_unit_id = attack_wave[attack_wave_entry];
-				if (attack_wave_entry_unit_id < UnitId::None
-					&& !helper::ai_add_to_region_military(region, attack_wave_entry_unit_id, priority))
-				{
-					player_id = region->playerId;
-					AIScriptController[player_id].AI_Flags.flag_0x40 = true;
-					helper::ai_find_unit(attack_wave_entry_unit_id, player_id, 1);
-					helper::ai_add_spending_request(attack_wave_entry_unit_id, player_id, 1, 60, region);
-					helper::ai_add_base_unit_spending_request(attack_wave_entry_unit_id, player_id, region, 60);
-					attack_wave_entry = attack_wave_iterator;
-				}
-				missing_attack_force = missing_attack_force_swap;
-				attack_wave_iterator = ++attack_wave_entry;
-			} while (attack_wave_entry < missing_attack_force_swap);
+				AIScriptController[region->playerId].AI_Flags.flag_0x40 = true;
+				helper::ai_find_unit(unit_id, region->playerId, 1);
+				helper::ai_add_spending_request(unit_id, region->playerId, 1, 60, region);
+				helper::ai_add_base_unit_spending_request(unit_id, region->playerId, region, 60);
+			}
 		}
-		return missing_attack_force;
+	}
+
+	// Hooked to allow AI to build while under attack. -Pr0nogo
+	void ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, AiRegion* region) { // 00448400
+		u32 last_hit = AIScriptController[player].previous_building_hit_second;
+		u32 race = playerTable[player].race;
+		if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
+			return;
+		}
+		u32 type = 4;
+		if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker) {
+			helper::ai_add_cost_to_needs(unit_id, player, type);
+		} else {
+			u32 type = 3;
+			if (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) {
+				type = 7;
+			}
+			helper::ai_add_cost_to_needs(unit_id, player, type);
+		}
+		helper::ai_add_spending_request(unit_id, player, type, priority, region);
 	}
 }

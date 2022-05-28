@@ -890,7 +890,7 @@ namespace helper
 	s32 Ai_CountEconomyUnits(u32 player, u32 unit_id);
 	s32 getSuppliesRemaining(u8 player, u16 unit_id);
 	s32 getSuppliesUsed(s32 byte_data, u8 player);
-	s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3);
+	s32 ai_add_cost_to_needs(s32 a1, s32 a2, s32 a3);
 	bool isAIAllowedToBuild(s32 a1, s32 a2);
 	void applyCloakingOrder(Unit* unit);																	// 00491B30
 

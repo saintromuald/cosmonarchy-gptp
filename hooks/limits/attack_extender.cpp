@@ -28,7 +28,7 @@ namespace hooks
 		result = AI_GetMissingAttackForceUnits(region, v9, AIScriptController[child].AI_Flags.isUseMapSettings);
 		v10 = result;
 		if (AIScriptController[child].AI_Flags.isUseMapSettings
-			|| (childTown = AIScriptController[child].last_individual_update_time) != 0
+			|| (childTown = AIScriptController[child].previous_building_hit_second) != 0
 			&& (v12 = *elapsedTimeSeconds - childTown >= 30, *elapsedTimeSeconds - childTown < 30))
 		{
 			v11 = 60;

@@ -7722,7 +7722,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3)
+	s32 ai_add_cost_to_needs(s32 a1, s32 a2, s32 a3)
 	{
 		const u32 Func_AI_AddCostToNeeds = 0x00447DC0;
 		static s32 result;

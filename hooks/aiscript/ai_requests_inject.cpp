@@ -217,34 +217,56 @@ namespace
 	}
 
 	void __declspec(naked) ai_request_guard_wrapper() { // 00448630
-		static u32 result;
-		static AiRegion* region;
+		static GuardAi* guard_ai;
 		static u32 player_id;
 		__asm {
 			MOV player_id, ECX
-			MOV region, EAX
+			MOV guard_ai, EAX
 			PUSHAD
 		}
-		result = hooks::ai_request_guard(region, player_id);
+		hooks::ai_request_guard(guard_ai, player_id);
 		__asm {
 			POPAD
-			MOV EAX, result
 			RETN
 		}
 	}
 
 	void __declspec(naked) ai_region_train_attack_force_wrapper() { // 0043E670
-		static u32 result;
 		static AiRegion* region;
 		__asm {
 			MOV region, EAX
 			PUSHAD
 		}
-		result = hooks::ai_region_train_attack_force(region);
+		hooks::ai_region_train_attack_force(region);
 		__asm {
 			POPAD
-			MOV EAX, result
 			RETN
+		}
+	}
+
+	void __declspec(naked) ai_add_town_spending_request_wrapper() { // 00448400
+		static u32 player;
+		static u32 priority;
+		static u32 unit_id;
+		static AiRegion* region;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x8]
+			MOV region, EAX
+			POP EAX
+			MOV player, EAX
+			MOV priority, EDI
+			MOV unit_id, ESI
+			PUSHAD
+		}
+		hooks::ai_add_town_spending_request(player, priority, unit_id, region);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
 		}
 	}
 }
@@ -261,7 +283,9 @@ namespace hooks
 //		jmpPatch(ai_train_defensive_military_Wrapper,		0x0043F990, 1);
 		jmpPatch(AI_Build_Wrapper,							0x004323D0, 1);
 		jmpPatch(AI_build_gas_building_Wrapper,				0x00433660, 1);
+
 		jmpPatch(ai_request_guard_wrapper,					0x00448630, 0);
 		jmpPatch(ai_region_train_attack_force_wrapper,		0x0043E670,	4);
+		jmpPatch(ai_add_town_spending_request_wrapper,      0x00448400, 0);
 	}
 }
