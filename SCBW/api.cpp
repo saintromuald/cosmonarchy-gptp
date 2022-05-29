@@ -2127,6 +2127,14 @@ namespace scbw
 		return &AiRegionCaptains[player][index];
 	}
 
+	u32 get_ai_region_military_count(AiRegion* region) {
+		u32 count = 0;
+		for (MilitaryAi* military_ai = region->first_military_ai; military_ai; military_ai = military_ai->link.prev) {
+			count += 1;
+		}
+		return count;
+	}
+
 	Region* get_region(u32 index) {
 		return &(*SAI_Paths)->regions[index];
 	}

@@ -1829,6 +1829,34 @@ LABEL_126:
 		}
 	}
 
+	AiRegion* find_better_region(AiRegion* ai_region, u32 recurses) {
+		if (scbw::get_ai_region_military_count(ai_region) < 15) {
+			return ai_region;
+		}
+		if (recurses) {
+			Region* region = scbw::get_region(ai_region->region);
+			for (u32 i = 0; i < region->neighborCount; ++i) {
+				u32 other_id = region->neighbors[i];
+				Region* other_region = scbw::get_region(other_id);
+				if (region->groupIndex == other_region->groupIndex) {
+					AiRegion* new_ai_region = find_better_region(scbw::get_ai_region(ai_region->playerId, other_id), recurses - 1);
+					if (new_ai_region) {
+						return new_ai_region;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+
+	AiRegion* find_better_region(AiRegion* ai_region) {
+		AiRegion* new_ai_region = find_better_region(ai_region, 3);
+		if (new_ai_region) {
+			return new_ai_region;
+		}
+		return ai_region;
+	}
+
 	// Hooked to fix AI pathfinding lag and improve army spread. -Pr0nogo
 	void ai_manage_military_controller(Unit* unit) // 0043D910
 	{
@@ -1841,7 +1869,7 @@ LABEL_126:
 				u16 unit_id = unit->id;
 				if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Building))
 				{
-					AiRegion* ai_region = military_ai->region;
+					AiRegion* ai_region = find_better_region(military_ai->region);
 					if (unit_id && unit_id != UnitId::TerranHarakan || !helper::ai_defender_bunker_behavior(unit, ai_region->region))
 					{
 						if (!helper::ai_cast_spell_behavior(unit, 0) && !helper::ai_update_attack_target(unit, 0, 1, 0))
@@ -1864,24 +1892,15 @@ LABEL_126:
 							}
 
 							Region* region = scbw::get_region(region_id);
-							Point16 center = scbw::get_region_center(region);
-							if (scbw::getDistanceFast(unit->position, center) > 8 * 32) {
-								unit->orderTo(unit->id == UnitId::TerranCleric ? OrderId::HealMove : OrderId::AttackMove, center.x, center.y);
-							}
-
-							/*
 							if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == region_id)
 							{
 								helper::make_to_hold_position(unit);
 							}
 							else
 							{
-								u32 region_x = 0;
-								u32 region_y = 0;
-								helper::get_region_center_from_id(region_id, &region_x, &region_y);
-								helper::ai_order_to_destination(unit, OrderId::AttackMove, region_x, region_y);
+								Point16 center = scbw::get_region_center(region);
+								helper::ai_order_to_destination(unit, OrderId::AttackMove, center.x, center.y);
 							}
-							*/
 						}
 					}
 				}

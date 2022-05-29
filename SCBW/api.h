@@ -566,6 +566,7 @@ namespace scbw
 	AiTown* get_closest_town(u32 player, Point16 position);
 	u32 get_region_id(Point16 position);
 	AiRegion* get_ai_region(u32 player, u32 index);
+	u32 get_ai_region_military_count(AiRegion* region);
 	Region* get_region(u32 index);
 	Point16 get_region_center(Region* region);
 	void ai_defend(u32 player, u32 region_id, u32 priority, bool recurse);
