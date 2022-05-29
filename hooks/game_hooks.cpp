@@ -1238,19 +1238,20 @@ namespace hooks
 			} break;
 			case UnitId::ZergIsthrathaleth:
 			{
-				if (unit->sprite->images.head->animation == IscriptAnimation::Unused2
-					&& !unit->getOverlay(ImageId::PlagueChannelOverlay)) {
-					unit->sprite->createTopOverlay(ImageId::PlagueChannelOverlay); // TODO: Make it use the Isthrathaleth's attack overlay for origin coordinates.
+				if (unit->getOverlay(ImageId::PlagueChannelOverlay)) {
+					if (unit->sprite->images.head->animation != IscriptAnimation::Unused2) {
+						unit->removeOverlay(ImageId::PlagueChannelOverlay);
+					}
 				}
 				else {
-					if (unit->getOverlay(ImageId::PlagueChannelOverlay)) {
-						unit->removeOverlay(ImageId::PlagueChannelOverlay);
+					if (unit->sprite->images.head->animation == IscriptAnimation::Unused2) {
+						unit->sprite->createTopOverlay(ImageId::PlagueChannelOverlay); // TODO: Use the Isthrathaleth's attack overlay for origin coordinates.
 					}
 				}
 			} break;
 		}
 
-		// Mind Control Recede
+		// Mind Control - Rescind
 		if (unitExt->units[UnitMindTyrantSource]) {
 			f32 distance = scbw::getDistanceFast(unit->position, unitExt->units[UnitMindTyrantSource]->position);
 			if (distance <= 8 * 32) {

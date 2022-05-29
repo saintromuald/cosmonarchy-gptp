@@ -1125,11 +1125,12 @@ enum Enum {
 	GodsMadeFlesh_Small							= 1502,
 	GodsMadeFlesh_Medium						= 1503,
 	GodsMadeFlesh_Large							= 1504,
-	BurstLasersImpactBlue_Damageless					= 1505,
+	BurstLasersImpactBlue_Damageless			= 1505,
 	CohortBirth									= 1506,
 	TarasqueBirth								= 1507,
 	PlagueChannelOverlay						= 1508,
 	PlagueField									= 1509,
+	CharlatanBirth								= 1510,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,
