@@ -7,55 +7,28 @@
 
 namespace hooks
 {
-	void AI_training_unit(Unit* result, Unit* parent, b32 preferSimpleMilitary) // 004A2830
-	{
-		if (!result
-			|| playerTable[result->playerId].type != PlayerType::Computer)
-		{
+	void ai_training_unit(Unit* result, Unit* parent) { // 004A2830
+		if (playerTable[result->playerId].type != PlayerType::Computer) {
 			return;
 		}
 
-		b32 isValidParent = parent && result->playerId == parent->playerId;
+		if (result->id == UnitId::TerranCleric && !AIScriptController[result->playerId].mainMedic) {
+			AIScriptController[result->playerId].mainMedic = result;
+		}
 
 		// Worker or Ovileth
-		if (isValidParent)
-		{
-			if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
-			{
-				helper::AI_TrainingWorker(result, parent);
-				return;
-			}
-			if (scbw::unitIdIsZergSupply(result->id))
-			{
-				helper::AI_TrainingOverlord(result, parent); // replace with hook later
-				return;
-			}
-		}
-
-		// Military
-		if (result->id == UnitId::ZergRilirokor
-			|| result->id == UnitId::ZergRililisk
-			|| result->id == UnitId::ProtossArchon
-			|| result->id == UnitId::ProtossMindTyrant
-			|| preferSimpleMilitary)
+		if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
+			helper::AI_TrainingWorker(result, parent);
+		} else if (scbw::unitIdIsZergSupply(result->id)) {
+			helper::AI_TrainingOverlord(result, parent); // replace with hook later
+		} else if (result->id == UnitId::ZergRilirokor
+				|| result->id == UnitId::ZergRililisk
+				|| result->id == UnitId::ProtossArchon
+				|| result->id == UnitId::ProtossMindTyrant) {
 			// archon and mind tyrant should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
-		{
-			hooks::AI_TrainingSimpleMilitary(result, result);
-			return;
-		}
-		
-		// Military or Guard
-		if (isValidParent)
-		{
-			if (result->id == UnitId::TerranCleric)
-			{
-				if (!(AIScriptController[result->playerId].mainMedic))
-				{
-					AIScriptController[result->playerId].mainMedic = result;
-				}
-			}
+			hooks::AI_TrainingSimpleMilitary(result, parent);
+		} else {
 			helper::AI_TrainingNormal(result, parent);
-			return;
 		}
 	}
 
@@ -409,7 +382,7 @@ namespace hooks
 				silo->building.silo.nuke = nuke;
 				silo->building.silo.isReady = 1;
 				nuke->connectedUnit = silo;
-				AI_training_unit(nuke, silo);
+				ai_training_unit(nuke, silo);
 			}
 		}
 	}

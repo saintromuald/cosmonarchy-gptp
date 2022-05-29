@@ -1066,20 +1066,17 @@ namespace scbw
 		for (s32 i = 0; i < count; i++)
 		{
 			Unit* unit = scbw::create_unit_ingame(unitId, playerId, x, y, creator, false);
-			if (unit == nullptr)
+			if (!unit)
 			{
 				return;
 			}
-			hooks::AI_training_unit(unit, creator, true);
-			if (creator != nullptr)
+			helper::give_ai(unit);
+			if (creator && creator->status & UnitStatus::IsHallucination)
 			{
-				if (creator->status & UnitStatus::IsHallucination)
-				{
-					helper::apply_hallucination_stats(unit);
-					unit->status |= UnitStatus::IsHallucination;
-					unit->removeTimer = 1350;
-					unit->sprite->createOverlay(ImageId::HallucinationDeath3);
-				}
+				helper::apply_hallucination_stats(unit);
+				unit->status |= UnitStatus::IsHallucination;
+				unit->removeTimer = 1350;
+				unit->sprite->createOverlay(ImageId::HallucinationDeath3);
 			}
 			switch (unitId)
 			{
@@ -1117,7 +1114,7 @@ namespace scbw
 				}
 				case UnitId::ProtossSimulacrum:
 				{
-					if (creator != nullptr)
+					if (creator)
 					{
 						unit->hitPoints = std::max(256, creator->hitPoints);
 						unit->shields = std::max(256, creator->shields);

@@ -435,7 +435,6 @@ namespace helper
 
 	//// give_unit
 	void apply_speed_upgrade_from_unit_type(Unit* unit);																			// 00454370
-	void giveAI(Unit* unit);																										// 00463040
 	void recheck_attacks(Unit* unit);																								// 00476D30
 	void incrementUnitScores(Unit* unit, s32 unkScore);																				// 00488BF0
 	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);																				// 004A1E50
@@ -988,7 +987,7 @@ namespace helper
 
 	// For AI_MilitaryShouldWaitForGroup
 	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2);												// 00438E10
-	bool ai_check_military_grouping(Unit* unit);																// 00439550
+	bool ai_check_military_grouping(Unit* unit);															// 00439550
 
 	// For AI_RemoveUnitAI
 	s32 AI_RemoveFromAIStructs(Unit* unit, UnitAi* unitAI);													// 00439D60
@@ -996,7 +995,7 @@ namespace helper
 	void AI_MedicRemove(Unit* unit);																		// 004477C0
 
 	// AI utility
-	void giveAi(Unit* unit);
+	void give_ai(Unit* unit);																				// 00463040
 	void AI_TrainingSimpleMilitary(Unit* newUnit, Unit* sourceUnit);										// 0043E280
 
 	// For deleteAITownIfNeeded

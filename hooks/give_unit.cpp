@@ -85,7 +85,7 @@ namespace hooks
 				*canUpdatePoweredStatus = 1;
 			}
 
-			helper::giveAI(unit);
+			helper::give_ai(unit);
 			if (unit->subunit != nullptr && units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
 			{
 				giveUnit(unit->subunit, playerId, bCountAsCompleted);

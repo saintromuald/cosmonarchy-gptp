@@ -3990,14 +3990,14 @@ namespace helper
 		}
 	}
 
-	void giveAI(Unit* unit)
+	void give_ai(Unit* unit)
 	{
-		const u32 Func_give_AI = 0x00463040;
+		const u32 func_address = 0x00463040;
 		__asm
 		{
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_give_AI
+			CALL func_address
 			POPAD
 		}
 	}
@@ -9307,18 +9307,6 @@ namespace helper
 			PUSHAD
 			MOV EDX, unit
 			CALL Func_AI_MedicRemove
-			POPAD
-		}
-	}
-
-	void giveAi(Unit* unit)
-	{
-		const u32 Func_giveAi = 0x00463040;
-		__asm
-		{
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_giveAi
 			POPAD
 		}
 	}

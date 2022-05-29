@@ -3,9 +3,9 @@
 
 namespace hooks
 {
-	void AI_training_unit(Unit* result, Unit* parent, b32 preferSimpleMilitary = false);						// 004A2830
+	void ai_training_unit(Unit* result, Unit* parent);															// 004A2830
 	void AI_CreateNuke(Unit* silo, Unit* result);																// 0045B7A0
-	void AI_AddMilitary(AiRegion* region, Unit* unit, b32 alwaysThisRegion);									// 0043DA20
+	void AI_AddMilitary(AiRegion* region, Unit* unit);															// 0043DA20
 	void AI_TrainingSimpleMilitary(Unit* result, Unit* parent);													// 0043E280
 	void AI_TrainingWorker(Unit* newUnit, Unit* otherUnit);														// 00435700
 	void AI_TrainingNormal(Unit* newUnit, Unit* parentUnit);													// 00435DB0
