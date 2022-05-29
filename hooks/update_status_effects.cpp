@@ -92,7 +92,7 @@ namespace hooks
 		return true;
 	}
 
-	void updateStatusEffects(Unit* unit)
+	void updateStatusEffects(Unit* unit) // 00492F70
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -365,7 +365,7 @@ namespace hooks
 		}
 	}
 
-	void AI_Burrower(Unit* unit)
+	void AI_Burrower(Unit* unit) // 004A1340
 	{
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)
 		{

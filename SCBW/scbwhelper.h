@@ -151,11 +151,11 @@ namespace helper
 	bool unit_is_active_resource_depot(Unit* unit);
 	u32 getPlayerDefaultRefineryUnitType(u32 playerId);
 
-	// for AI_UnitWasHit // some of these should probably be methods in api/etc
+	// for ai_unit_was_hit // some of these should probably be methods in api/etc
 	char AI_cancel_structure(Unit* structure);
 	Unit* AI_GetActualTarget(Unit* attacker, Unit* target);
 	Unit* checkArbiterCloakingRange(Unit* unit, u16 id);
-	void AI_OrderUnitCloaking(Unit* unit);
+	void ai_order_unit_cloaking(Unit* unit);
 	void AI_OrderLurkerBurrow(Unit* unit);
 	bool AI_IsUnderAttack(Unit* unit, s32 flag);
 	bool unitIsActiveTransport(Unit* unit);
@@ -182,7 +182,7 @@ namespace helper
 	s32 AI_GetQueuedCount(Unit* builder, u32 unitId);
 	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);
 
-	// For AI_SendSuicide
+	// For ai_send_suicide
 	bool isThreat(Unit* target, Unit* unit);														// 00476930
 	void prepSuicide(Unit* unit);																	// 0043CD40
 	u32 AI_AttackClear(s32 player);																	// 00439500
@@ -197,7 +197,7 @@ namespace helper
 	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiRegion* region, char priority);
 
 	// for AIRegion_GroupForAttack
-	u32 AI_RecalculateRegionStrength(AiRegion* region);
+	u32 ai_recalculate_region_strength(AiRegion* region);
 	Unit* AI_TargetEnemyInRegion(AiRegion* region);
 	s32 AI_MoveMilitaryToDefend(AiRegion* region);
 	void AI_GetRegionMilitaryTypes(AiRegion* region, s32* hasGroundMilitary,
@@ -592,7 +592,7 @@ namespace helper
 	void ai_training_unit(Unit* unit, Unit* creator);																				// 004A2830
 	void deleteBuildingAI(BuildingAi* building, BuildingAiArray** buildingList);                                                    // 00404500
 	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray** workerArray);                                                                 // 00404470
-	void deleteAITownIfNeeded(AiTown* town);                                                                                        // 004347E0
+	void delete_ai_town_if_needed(AiTown* town);                                                                                        // 004347E0
 
 	//// hallucination_spell
 	// for orders_Hallucination1
@@ -984,8 +984,8 @@ namespace helper
 
 	b32 SBmpLoadImage(const char *filename, void* palette, void* buffer, u32 buffersize, u32* width, u32* height, u32* bpp); // 00410154
 
-	// For AI_MilitaryShouldWaitForGroup
-	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2);												// 00438E10
+	// For ai_military_should_wait_for_group
+	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2);												// 00438E10
 	bool ai_check_military_grouping(Unit* unit);															// 00439550
 
 	// For AI_RemoveUnitAI
@@ -997,8 +997,8 @@ namespace helper
 	void give_ai(Unit* unit);																				// 00463040
 	void AI_TrainingSimpleMilitary(Unit* newUnit, Unit* sourceUnit);										// 0043E280
 
-	// For deleteAITownIfNeeded
-	AiTown* tryBeginDeleteTown(AiTown* town);																// 00434330
+	// For delete_ai_town_if_needed
+	AiTown* try_begin_delete_town(AiTown* town);																// 00434330
 	AiScript* deleteAIScriptsUsingTown(AiTown* town);														// 0045AE20
 
 	// For displayEstablishingShot
@@ -1008,7 +1008,7 @@ namespace helper
 	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);				// 004100C4
 	//bool SFileCloseFile(void* hFile);																		// 004100C4
 
-	// For AI_AreOnConnectedRegions
+	// For ai_are_on_connected_regions
 	bool AI_RegionsAreConnected(u32 playerId, u32 region1, u32 region2);									// 00437E70
 
 	// For BTNSCOND_ZergBuildingRally
@@ -1199,13 +1199,13 @@ namespace helper
 	Unit* remove_harvesters(Unit* node);																	// 00468770
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);										// 004686D0
 
-	s32 AI_SCV_repair_controller(Unit* unit, AiTown* town);												// 00433C70
+	s32 ai_scv_repair_controller(Unit* unit, AiTown* town);												// 00433C70
 	s32 AI_try_progress_spending_queue_worker(AiTown* town, Unit* unit);								// 004348C0
 	bool unit_is_mineral_field(Unit* unit);																// 00468890
-	void AI_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90
+	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90
 	Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, Point16 worker_pos);	// 004432D0
 	Unit* get_AI_refinery(AiTown* town, s32 gas_state, s32 index);										// 00432B90
-	u32 AI_get_vespene_type(Unit* node, s32 player_id);													// 004326E0
+	u32 ai_get_vespene_type(Unit* node, s32 player_id);													// 004326E0
 	void AI_resource_need_split(u8* out_gas_percentage, u32 player, u8* out_mineral_percentage);		// 004475B0
 	u32 AI_add_town_spending_request(u32 player, u32 priority, u32 unit_id, void* param);				// 00448400
 
@@ -1265,7 +1265,7 @@ namespace helper
 	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker);												// 00468930
 	void prepend_order(Unit* unit, u8 order_id, Point16 target_pos, Unit* target_unit);						// 00474AF0
 	bool AI_is_building_safe(Unit* building);																// 00438910
-	Unit* AI_find_best_repair_unit(Unit* unit);																// 00443160
+	Unit* ai_find_best_repair_unit(Unit* unit);																// 00443160
 
 	u32 ai_find_expansion(u32 player, u32 resarea, u32 amount);												// 004453E0
 

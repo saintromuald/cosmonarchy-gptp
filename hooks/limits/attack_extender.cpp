@@ -77,7 +77,7 @@ namespace hooks
 		s32 a4;
 		s32 a2;
 
-		helper::AI_RecalculateRegionStrength(region);
+		helper::ai_recalculate_region_strength(region);
 		helper::AI_TargetEnemyInRegion(region);
 		if (region->captainFlags & 0x20 && helper::AI_MoveMilitaryToDefend(region))
 		{

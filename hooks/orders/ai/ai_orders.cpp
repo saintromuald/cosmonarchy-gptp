@@ -10,7 +10,7 @@ namespace hooks
 {
 	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
 	// TODO: finish and cleanup
-	void AI_UnitWasHit(Unit* self, Unit* attacker, s32 main_target_reactions, s32 dont_call_help) // 0043F320
+	void ai_unit_was_hit(Unit* self, Unit* attacker, s32 main_target_reactions, s32 dont_call_help) // 0043F320
 	{
 		AiRegion* v14;
 		s32 v15;
@@ -89,7 +89,7 @@ namespace hooks
 		}
 		if (main_target_reactions)
 		{
-			helper::AI_OrderUnitCloaking(self);
+			helper::ai_order_unit_cloaking(self);
 			helper::AI_OrderLurkerBurrow(self);
 		}
 		UnitAi* selfUnitAi = (UnitAi*)self->unit_ai;
@@ -303,7 +303,7 @@ LABEL_126:
 	}
 
 	// Hooked to help with AI recloaking units after the cloak rewrite - Pr0nogo
-	void AI_OrderUnitCloaking(Unit* unit) // 0043B970
+	void ai_order_unit_cloaking(Unit* unit) // 0043B970
 	{
 		return;
 		/*
@@ -328,7 +328,7 @@ LABEL_126:
 	}
 
 	// Hooked to improve functionality - Pr0nogo
-	void AI_SendSuicide(char randomSuicide, s32 player) // 0043E050
+	void ai_send_suicide(char randomSuicide, s32 player) // 0043E050
 	{
 		if (randomSuicide)
 		{
@@ -423,7 +423,7 @@ LABEL_126:
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	u32 AI_RecalculateRegionStrength(AiRegion* region) // 0043A390
+	u32 ai_recalculate_region_strength(AiRegion* region) // 0043A390
 	{
 		const u32 Func_CB_AICaptainStrengthIterator = 0x00438F60;
 		MilitaryAi* military_ai = region->first_military_ai;
@@ -566,7 +566,7 @@ LABEL_126:
 		return helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
 	}
 
-	bool getBestSCVForRepairProc(Unit* repairman, Unit* repairTarget) // 004402B0
+	bool get_best_worker_for_repair_proc(Unit* repairman, Unit* repairTarget) // 004402B0
 	{
 		bool result = false;
 		WorkerAi* repairmanAI = (WorkerAi*)repairman->unit_ai;
@@ -584,7 +584,7 @@ LABEL_126:
 	}
 
 	// Hooked to add sprite nullcheck - Pr0nogo
-	b32 AI_MilitaryShouldWaitForGroup(Unit* unit) // 0043AA10
+	b32 ai_military_should_wait_for_group(Unit* unit) // 0043AA10
 	{
 		// new start
 		if (unit == nullptr)
@@ -627,7 +627,7 @@ LABEL_126:
 			if (firstUnit != nullptr && firstUnit->sprite != nullptr && firstUnit != unit)
 			{
 				u32 distance = helper::getDistanceFast(firstUnit->sprite->position.x, unit->sprite->position.x, firstUnit->sprite->position.y, unit->sprite->position.y);
-				if (distance <= 0x180 && helper::AI_AreOnConnectedRegions(firstUnit, unit) && !(helper::ai_check_military_grouping(firstUnit)) && distance > 0x100)
+				if (distance <= 0x180 && helper::ai_are_on_connected_regions(firstUnit, unit) && !(helper::ai_check_military_grouping(firstUnit)) && distance > 0x100)
 				{
 					return 1;
 				}
@@ -644,10 +644,11 @@ LABEL_126:
 		return false;
 	}
 
-	// Hooked to add more functionality - Pr0nogo
-	AiTown* deleteAITownIfNeeded(AiTown* town) // 004347E0
+	// Hooked to add more functionality. - Pr0nogo
+	// TODO: Add a conditional timeout for deleting towns, somewhere.
+	AiTown* delete_ai_town_if_needed(AiTown* town) // 004347E0
 	{
-		AiTown* result = helper::tryBeginDeleteTown(town);
+		AiTown* result = helper::try_begin_delete_town(town);
 		if (result)
 		{
 			helper::deleteAIScriptsUsingTown(town);
@@ -703,8 +704,8 @@ LABEL_126:
 		return result;
 	}
 
-	// Hooked because why not - Pr0nogo
-	bool AI_CanMineExtra(Unit* unit) // 00447A70
+	// Hooked because why not? - Pr0nogo
+	bool ai_can_mine_extra(Unit* unit) // 00447A70
 	{
 		if (!unit->unit_ai)
 		{
@@ -741,7 +742,7 @@ LABEL_126:
 	}
 
 	// Hooked to fix crashes - Pr0nogo
-	bool AI_IsBuildingSafe(Unit* unit) // 00438910
+	bool ai_is_building_safe(Unit* unit) // 00438910
 	{
 		bool result = 0;
 		if (unit != nullptr && unit->sprite != nullptr)
@@ -762,7 +763,7 @@ LABEL_126:
 	}
 
 	// Hooked to fix crashes - Pr0nogo
-	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2) // 00438E10
+	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2) // 00438E10
 	{
 		if (!unit1 || !unit2 || !unit1->sprite || !unit2->sprite)
 		{
@@ -970,7 +971,7 @@ LABEL_126:
 		  || slowestUnitVar == unit
 		  || region->state == 2
 		  || (u16)(&(*SAI_Paths)->regionCount + 32 * (helper::get_region_id_from_unit(region->slowestUnit) + 4392)) < 60u
-		  || !helper::AI_AreOnConnectedRegions(slowestUnitVar, unit)
+		  || !helper::ai_are_on_connected_regions(slowestUnitVar, unit)
 		  || helper::getDistanceFast(region->slowestUnit->sprite->position.x, unit->sprite->position.x, region->slowestUnit->sprite->position.y, unit->sprite->position.y) <= 0x80)
 		{
 			return 1;
@@ -983,7 +984,7 @@ LABEL_126:
 	}
 
 	// Hooked to fix AI height stupidity... or DUMBNESS??? -Pr0nogo
-	u32 __stdcall AI_remove_different_height(char* placement_data, Point16 desired_pos) // 004436C0
+	u32 __stdcall ai_remove_different_height(char* placement_data, Point16 desired_pos) // 004436C0
 	{
 		return 0;
 
@@ -1076,7 +1077,7 @@ LABEL_126:
 		return 0;
 	}
 
-	u32 AI_get_vespene_type(Unit* unit, u32 player_id, bool for_harvesting) { // 004326E0
+	u32 ai_get_vespene_type(Unit* unit, u32 player_id, bool for_harvesting) { // 004326E0
 		if (!unit || !unit->sprite || !unit->mainOrderId) {
 			return 0;
 		}
@@ -1093,14 +1094,14 @@ LABEL_126:
 		// This is stupid, but changing or even cleaning it seems to break AI having more than 1 refinery, might be undefined behavior. Please fix
 		Unit* gas_building = town->gas_buildings[0];
 		u32 counter = 0;
-		if (gas_building && AI_get_vespene_type(town->gas_buildings[0], town->player, for_harvesting) == gas_state && (counter = 1, index == 1)
-			|| (gas_building = town->gas_buildings[1]) != 0 && AI_get_vespene_type(town->gas_buildings[1], town->player, for_harvesting) == gas_state && (++counter, counter == index)
-			|| (gas_building = town->gas_buildings[2]) != 0 && AI_get_vespene_type(town->gas_buildings[2], town->player, for_harvesting) == gas_state && counter + 1 == index)
+		if (gas_building && ai_get_vespene_type(town->gas_buildings[0], town->player, for_harvesting) == gas_state && (counter = 1, index == 1)
+			|| (gas_building = town->gas_buildings[1]) != 0 && ai_get_vespene_type(town->gas_buildings[1], town->player, for_harvesting) == gas_state && (++counter, counter == index)
+			|| (gas_building = town->gas_buildings[2]) != 0 && ai_get_vespene_type(town->gas_buildings[2], town->player, for_harvesting) == gas_state && counter + 1 == index)
 		{
 			return gas_building;
 		}
 
-		//if (town->gas_buildings[index - 1] && AI_get_vespene_type(town->gas_buildings[index - 1], town->player, for_harvesting) == gas_state)
+		//if (town->gas_buildings[index - 1] && ai_get_vespene_type(town->gas_buildings[index - 1], town->player, for_harvesting) == gas_state)
 		//{
 		//	return town->gas_buildings[index - 1];
 		//}
@@ -1109,7 +1110,7 @@ LABEL_126:
 	}
 
 	// Hooked to help with AI implementation of the vespene overhaul. -Pr0nogo
-	void AI_worker_controller(Unit* worker) // 00435210
+	void ai_worker_controller(Unit* worker) // 00435210
 	{
 		WorkerAi* worker_ai = (WorkerAi*)worker->unit_ai;
 		if (worker_ai)
@@ -1123,7 +1124,7 @@ LABEL_126:
 			AiTown* town = worker_ai->town;
 			worker_ai->last_update_second = *elapsedTimeSeconds;
 			GroupFlag group_flags = units_dat::GroupFlags[worker->id];
-			if ((group_flags.isZerg || group_flags.isProtoss || !group_flags.isTerran || !helper::AI_SCV_repair_controller(worker, town))
+			if ((group_flags.isZerg || group_flags.isProtoss || !group_flags.isTerran || !helper::ai_scv_repair_controller(worker, town))
 				&& !helper::AI_try_progress_spending_queue_worker(town, worker))
 			{
 				Unit* main_building = town->main_building;
@@ -1138,7 +1139,7 @@ LABEL_126:
 							Unit* target_resource = worker->worker.targetResource.unit;
 							if (target_resource && helper::unit_is_mineral_field(target_resource))
 							{
-								helper::AI_auto_harvest(target_resource, worker, 0);
+								helper::ai_auto_harvest(target_resource, worker, 0);
 							}
 							else
 							{
@@ -1157,7 +1158,7 @@ LABEL_126:
 								{
 									ai_refinery = get_ai_refinery(town, 2, 1, true);
 								}
-								helper::AI_auto_harvest(town_mineral, worker, ai_refinery);
+								helper::ai_auto_harvest(town_mineral, worker, ai_refinery);
 							}
 							return;
 						}
@@ -1167,7 +1168,7 @@ LABEL_126:
 							Unit* ai_refinery = get_ai_refinery(town, 3, 1, true);
 							if (ai_refinery)
 							{
-								helper::AI_auto_harvest(ai_refinery, worker, town->mineral);
+								helper::ai_auto_harvest(ai_refinery, worker, town->mineral);
 								return;
 							}
 							goto exit;
@@ -1180,20 +1181,20 @@ LABEL_126:
 						{
 							if (town_gas)
 							{
-								if (AI_get_vespene_type(town_gas, town->player, true) == 3)
+								if (ai_get_vespene_type(town_gas, town->player, true) == 3)
 								{
 									gas_iterator = 1;
 								}
 							}
 							town_gas_2 = town->gas_buildings[1];
-							gas_type = AI_get_vespene_type(town->gas_buildings[1], town->player, true);
+							gas_type = ai_get_vespene_type(town->gas_buildings[1], town->player, true);
 							if (town_gas_2 && gas_type == 3) {
 								++gas_iterator;
 							}
 							if (!town_gas_2 || gas_type != 3 || gas_iterator != 2)
 							{
 								town_gas_2 = town->gas_buildings[2];
-								gas_type = AI_get_vespene_type(town->gas_buildings[2], town->player, true);
+								gas_type = ai_get_vespene_type(town->gas_buildings[2], town->player, true);
 								if (!town_gas_2 || gas_type != 3)
 								{
 									goto exit;
@@ -1204,7 +1205,7 @@ LABEL_126:
 								}
 								if (town_gas_2)
 								{
-									helper::AI_auto_harvest(town_gas_2, worker, town->mineral);
+									helper::ai_auto_harvest(town_gas_2, worker, town->mineral);
 									return;
 								}
 								goto exit;
@@ -1214,20 +1215,20 @@ LABEL_126:
 						{
 							if (town_gas)
 							{
-								if (AI_get_vespene_type(town_gas, town->player, true) == 3)
+								if (ai_get_vespene_type(town_gas, town->player, true) == 3)
 								{
 									gas_iterator = 1;
 								}
 							}
 							town_gas_2 = town->gas_buildings[1];
-							u32 gas_type = AI_get_vespene_type(town->gas_buildings[1], town->player, true);
+							u32 gas_type = ai_get_vespene_type(town->gas_buildings[1], town->player, true);
 							if (town_gas_2 && gas_type == 3) {
 								++gas_iterator;
 							}
 							if (!town_gas_2 || gas_type != 3 || gas_iterator != 2)
 							{
 								town_gas_2 = town->gas_buildings[2];
-								gas_type = AI_get_vespene_type(town->gas_buildings[2], town->player, true);
+								gas_type = ai_get_vespene_type(town->gas_buildings[2], town->player, true);
 								if (!town_gas_2 || gas_type != 3)
 								{
 									goto exit;
@@ -1238,7 +1239,7 @@ LABEL_126:
 								}
 								if (town_gas_2)
 								{
-									helper::AI_auto_harvest(town_gas_2, worker, town->mineral);
+									helper::ai_auto_harvest(town_gas_2, worker, town->mineral);
 									return;
 								}
 								goto exit;
@@ -1246,7 +1247,7 @@ LABEL_126:
 						}
 						if (town_gas_2)
 						{
-							helper::AI_auto_harvest(town_gas_2, worker, town->mineral);
+							helper::ai_auto_harvest(town_gas_2, worker, town->mineral);
 							return;
 						}
 					exit:
@@ -1257,17 +1258,17 @@ LABEL_126:
 							u32 gas_iterator_final = 0;
 							if (town_gas_final)
 							{
-								if (AI_get_vespene_type(town_gas_final, town->player, true) == 3)
+								if (ai_get_vespene_type(town_gas_final, town->player, true) == 3)
 								{
 									gas_iterator_final = 1;
 								}
 							}
 							town_gas_final = town->gas_buildings[1];
 							if ((!town_gas_final
-								|| AI_get_vespene_type(town->gas_buildings[1], town->player, true) != 3
+								|| ai_get_vespene_type(town->gas_buildings[1], town->player, true) != 3
 								|| (++gas_iterator_final, gas_iterator_final != 2))
 								&& ((town_gas_final = town->gas_buildings[2]) == 0
-									|| AI_get_vespene_type(town->gas_buildings[2], town->player, true) != 3
+									|| ai_get_vespene_type(town->gas_buildings[2], town->player, true) != 3
 									|| gas_iterator_final != 1)
 								|| (ai_refinery = town_gas_final) == 0)
 							{
@@ -1275,17 +1276,17 @@ LABEL_126:
 								gas_iterator_final = 0;
 								if (town_gas_final)
 								{
-									if (AI_get_vespene_type(town_gas_final, town->player, true) == 3)
+									if (ai_get_vespene_type(town_gas_final, town->player, true) == 3)
 									{
 										gas_iterator_final = 1;
 									}
 								}
 								town_gas_final = town->gas_buildings[1];
 								if ((!town_gas_final
-									|| AI_get_vespene_type(town->gas_buildings[1], town->player, true) != 3
+									|| ai_get_vespene_type(town->gas_buildings[1], town->player, true) != 3
 									|| (++gas_iterator_final, gas_iterator_final != 3))
 									&& ((town_gas_final = town->gas_buildings[2]) == 0
-										|| AI_get_vespene_type(town->gas_buildings[2], town->player, true) != 3
+										|| ai_get_vespene_type(town->gas_buildings[2], town->player, true) != 3
 										|| gas_iterator_final != 2)
 									|| (ai_refinery = town_gas_final) == 0)
 								{
@@ -1296,34 +1297,34 @@ LABEL_126:
 										gas_iterator_final = 0;
 										if (town_gas_final)
 										{
-											if (AI_get_vespene_type(town_gas_final, town->player, true) == 2)
+											if (ai_get_vespene_type(town_gas_final, town->player, true) == 2)
 											{
 												gas_iterator_final = 1;
 											}
 										}
 										town_gas_final = town->gas_buildings[1];
 										if ((!town_gas_final
-											|| AI_get_vespene_type(town->gas_buildings[1], town->player, true) != 2
+											|| ai_get_vespene_type(town->gas_buildings[1], town->player, true) != 2
 											|| (++gas_iterator_final, gas_iterator_final != 2))
 											&& ((town_gas_final = town->gas_buildings[2]) == 0
-												|| AI_get_vespene_type(town->gas_buildings[2], town->player, true) != 2
+												|| ai_get_vespene_type(town->gas_buildings[2], town->player, true) != 2
 												|| gas_iterator_final != 1)
 											|| (ai_refinery = town_gas_final) == 0)
 										{
 											gas_iterator_final = 0;
 											if (town_gas_final)
 											{
-												if (AI_get_vespene_type(town_gas_final, town->player, true) == 2)
+												if (ai_get_vespene_type(town_gas_final, town->player, true) == 2)
 												{
 													gas_iterator_final = 1;
 												}
 											}
 											Unit* town_gas_2_copy_4 = town->gas_buildings[1];
 											if (town_gas_2_copy_4
-												&& AI_get_vespene_type(town->gas_buildings[1], town->player, true) == 2
+												&& ai_get_vespene_type(town->gas_buildings[1], town->player, true) == 2
 												&& (++gas_iterator_final, gas_iterator_final == 3)
 												|| (town_gas_2_copy_4 = town->gas_buildings[2]) != 0
-												&& AI_get_vespene_type(town->gas_buildings[2], town->player, true) == 2
+												&& ai_get_vespene_type(town->gas_buildings[2], town->player, true) == 2
 												&& gas_iterator_final == 2)
 											{
 												ai_refinery = town_gas_2_copy_4;
@@ -1337,7 +1338,7 @@ LABEL_126:
 								}
 							}
 						}
-						helper::AI_auto_harvest(ai_refinery, worker, town->mineral);
+						helper::ai_auto_harvest(ai_refinery, worker, town->mineral);
 					}
 				}
 			}
@@ -1369,7 +1370,7 @@ LABEL_126:
 	}
 
 	// Hooked as part of the vespene overhaul. -Pr0nogo
-	char AI_reassign_worker_resources(AiTown* town) // 00435900, unused int arg
+	char ai_reassign_worker_resources(AiTown* town) // 00435900, unused int arg
 	{
 		u8 result = 0;
 		if (town->inited)
@@ -1598,7 +1599,7 @@ LABEL_126:
 	}
 
 	// Hooked as part of the vespene overhaul. -Pr0nogo
-	void AI_auto_harvest(Unit* resource, Unit* worker, Unit* fallback) // 00433B90
+	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback) // 00433B90
 	{
 		if (worker->resourceType & ResourceType::Minerals)
 		{
@@ -1659,7 +1660,7 @@ LABEL_126:
 	}
 
 	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
-	Unit* AI_find_best_repair_unit(Unit* to_repair) { // 00443160
+	Unit* ai_find_best_repair_unit(Unit* to_repair) { // 00443160
 		UnitArray workers = UnitSearchRadial(to_repair->position, 64 * 32);
 		UnitArrayFilter(&workers, to_repair, FilterAlly, {UnitId::TerranMason, UnitId::TerranTalos});
 		Unit* best = UnitArrayFindBest(&workers, [=](Unit* worker) {
@@ -1679,7 +1680,7 @@ LABEL_126:
 	}
 
 	// Same as above. -Pr0nogo
-	s32 AI_SCV_repair_controller(Unit* worker, AiTown* town) // 00433C70
+	s32 ai_scv_repair_controller(Unit* worker, AiTown* town) // 00433C70
 	{
 		u32 best_score = 0;
 		Unit* repairee = 0;
@@ -1718,7 +1719,7 @@ LABEL_126:
 		if (town->building_SCV != worker) {
 			return 0;
 		}
-		repairee = helper::AI_find_best_repair_unit(worker); // This writing to repairee seems really wrong
+		repairee = helper::ai_find_best_repair_unit(worker); // This writing to repairee seems really wrong
 		if (!repairee) {
 			return 0;
 		}

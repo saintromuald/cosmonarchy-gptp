@@ -23,7 +23,7 @@ namespace
 			MOV self, ECX
 			PUSHAD
 		}
-		hooks::AI_UnitWasHit(self, attacker, mainTargetReactions, dontCallHelp);
+		hooks::ai_unit_was_hit(self, attacker, mainTargetReactions, dontCallHelp);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -39,7 +39,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::AI_OrderUnitCloaking(unit);
+		hooks::ai_order_unit_cloaking(unit);
 		__asm {
 			POPAD
 			RETN
@@ -61,7 +61,7 @@ namespace
 			MOV argType, AL
 			PUSHAD
 		}
-		hooks::AI_SendSuicide(argType, player);
+		hooks::ai_send_suicide(argType, player);
 		__asm
 		{
 			POPAD
@@ -97,7 +97,7 @@ namespace
 			MOV region, ESI
 			PUSHAD
 		}
-		result = hooks::AI_RecalculateRegionStrength(region);
+		result = hooks::ai_recalculate_region_strength(region);
 		__asm
 		{
 			POPAD
@@ -164,7 +164,7 @@ namespace
 			MOV repairman, ECX
 			PUSHAD
 		}
-		result = hooks::getBestSCVForRepairProc(repairman, repairTarget);
+		result = hooks::get_best_worker_for_repair_proc(repairman, repairTarget);
 		__asm
 		{
 			POPAD
@@ -182,7 +182,7 @@ namespace
 			MOV unit, EBX
 			PUSHAD
 		}
-		result = hooks::AI_MilitaryShouldWaitForGroup(unit);
+		result = hooks::ai_military_should_wait_for_group(unit);
 		__asm
 		{
 			POPAD
@@ -200,7 +200,7 @@ namespace
 			MOV town, EAX
 			PUSHAD
 		}
-		result = hooks::deleteAITownIfNeeded(town);
+		result = hooks::delete_ai_town_if_needed(town);
 		__asm
 		{
 			POPAD
@@ -218,7 +218,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::AI_CanMineExtra(unit);
+		result = hooks::ai_can_mine_extra(unit);
 		__asm
 		{
 			POPAD
@@ -236,7 +236,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::AI_IsBuildingSafe(unit);
+		result = hooks::ai_is_building_safe(unit);
 		__asm
 		{
 			POPAD
@@ -256,7 +256,7 @@ namespace
 			MOV unit2, ECX
 			PUSHAD
 		}
-		result = hooks::AI_AreOnConnectedRegions(unit1, unit2);
+		result = hooks::ai_are_on_connected_regions(unit1, unit2);
 		__asm
 		{
 			POPAD
@@ -368,7 +368,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::AI_get_vespene_type(unit, player_id, false);
+		result = hooks::ai_get_vespene_type(unit, player_id, false);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -414,7 +414,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		hooks::AI_worker_controller(worker);
+		hooks::ai_worker_controller(worker);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -430,7 +430,7 @@ namespace
 			MOV town, EAX
 			PUSHAD
 		}
-		result = hooks::AI_reassign_worker_resources(town);
+		result = hooks::ai_reassign_worker_resources(town);
 		__asm {
 			POPAD
 			MOV AL, result
@@ -454,7 +454,7 @@ namespace
 			PUSHAD
 
 		}
-		hooks::AI_auto_harvest(mineral, worker, gas);
+		hooks::ai_auto_harvest(mineral, worker, gas);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -496,7 +496,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::AI_find_best_repair_unit(unit);
+		result = hooks::ai_find_best_repair_unit(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -519,7 +519,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::AI_SCV_repair_controller(repairer, town);
+		result = hooks::ai_scv_repair_controller(repairer, town);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -610,7 +610,7 @@ namespace hooks
 //		jump_patch(getBunkerPlacementPosition_Wrapper,			0x004442E0, 4);
 //		jump_patch(AI_GetBuildLocation_Wrapper,					0x004461B0, 1);
 		jump_patch(AI_check_military_grouping_wrapper,			0x00439550, 1);
-		jump_patch(hooks::AI_remove_different_height,			0x004436C0, 3);
+		jump_patch(hooks::ai_remove_different_height,			0x004436C0, 3);
 //		jump_patch(attack_recent_attacker_wrapper,				0x004770E0, 2);
 
 		jump_patch(AI_get_vespene_type_wrapper,					0x004326E0, 2);

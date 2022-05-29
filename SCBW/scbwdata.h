@@ -474,7 +474,7 @@ SCBW_DATA(char*, kills_buffer,						0x006CAC78);
 // For giveUnitToPlayer
 SCBW_DATA(s32*,	currentTriggerPlayerId,				0x006509B0);
 
-// For deleteAITownIfNeeded
+// For delete_ai_town_if_needed
 SCBW_DATA(ResourceArea*,	baseArray,				0x00692688);
 
 // For get_bunker_placement_position

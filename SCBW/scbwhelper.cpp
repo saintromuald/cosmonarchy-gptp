@@ -1359,7 +1359,7 @@ namespace helper
 		return result;
 	}
 
-	// for AI_UnitWasHit
+	// for ai_unit_was_hit
 	// some of these should probably be methods in api/etc
 
 	char AI_cancel_structure(Unit* structure)
@@ -1406,7 +1406,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_OrderUnitCloaking(Unit* unit)
+	void ai_order_unit_cloaking(Unit* unit)
 	{
 		const u32 Func_AI_OrderUnitCloaking = 0x0043B970;
 		__asm {
@@ -1814,7 +1814,7 @@ namespace helper
 
 	// for AIRegion_GroupForAttack
 
-	u32 AI_RecalculateRegionStrength(AiRegion* region)
+	u32 ai_recalculate_region_strength(AiRegion* region)
 	{
 		const u32 Func_AI_RecalculateRegionStrength = 0x0043A390;
 		static u32 result;
@@ -7750,7 +7750,7 @@ namespace helper
 		}
 	}
 
-	void deleteAITownIfNeeded(AiTown* town)
+	void delete_ai_town_if_needed(AiTown* town)
 	{
 		const u32 Func_DeleteAITownIfNeeded = 0x004347E0;
 		__asm
@@ -7986,7 +7986,7 @@ namespace helper
 		return result;
 	}
 
-	// For AI_OrderUnitCloaking
+	// For ai_order_unit_cloaking
 
 	void applyCloakingOrder(Unit* unit)
 	{
@@ -8516,7 +8516,7 @@ namespace helper
 		}
 	}
 
-	// For AI_SendSuicide
+	// For ai_send_suicide
 	bool isThreat(Unit* target, Unit* unit)
 	{
 		const u32 Func_isThreat = 0x00476930;
@@ -9219,8 +9219,8 @@ namespace helper
 		return result;
 	}
 
-	// For AI_MilitaryShouldWaitForGroup
-	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2)
+	// For ai_military_should_wait_for_group
+	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2)
 	{
 		const u32 Func_AI_AreOnConnectedRegions = 0x00438E10;
 		static bool result;
@@ -9309,8 +9309,8 @@ namespace helper
 		}
 	}
 
-	// For deleteAITownIfNeeded
-	AiTown* tryBeginDeleteTown(AiTown* town)
+	// For delete_ai_town_if_needed
+	AiTown* try_begin_delete_town(AiTown* town)
 	{
 		const u32 Func_tryBeginDeleteTown = 0x00434330;
 		static AiTown* result;
@@ -9420,7 +9420,7 @@ namespace helper
 	//	return (bool)result;
 	//}
 
-	// For AI_AreOnConnectedRegions
+	// For ai_are_on_connected_regions
 	bool AI_RegionsAreConnected(u32 playerId, u32 region1, u32 region2)
 	{
 		const u32 Func_AI_RegionsAreConnected = 0x00437E70;
@@ -10852,7 +10852,7 @@ namespace helper
 		return result;
 	}
 
-	// For AI_remove_different_height
+	// For ai_remove_different_height
 	u32 get_ground_height_at_px(s32 y, s32 x) {
 		static u32 result;
 		const u32 func_address = 0x004BD0F0;
@@ -11163,7 +11163,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_SCV_repair_controller(Unit* unit, AiTown* town) {
+	s32 ai_scv_repair_controller(Unit* unit, AiTown* town) {
 		static s32 result;
 		const u32 func_address = 0x00433C70;
 		__asm {
@@ -11203,7 +11203,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_auto_harvest(Unit* resource, Unit* worker, Unit* fallback) {
+	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback) {
 		const u32 func_address = 0x00433B90;
 		__asm {
 			PUSHAD
@@ -11245,7 +11245,7 @@ namespace helper
 		return result;
 	}
 
-	u32 AI_get_vespene_type(Unit* node, s32 player_id) {
+	u32 ai_get_vespene_type(Unit* node, s32 player_id) {
 		static u32 result;
 		const u32 func_address = 0x004326E0;
 		__asm {
@@ -11628,7 +11628,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* AI_find_best_repair_unit(Unit* unit) {
+	Unit* ai_find_best_repair_unit(Unit* unit) {
 		static Unit* result;
 		const u32 func_address = 0x00443160;
 		__asm {
