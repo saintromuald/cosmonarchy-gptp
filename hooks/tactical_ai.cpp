@@ -428,7 +428,7 @@ static inline bool CanKite(Unit* unit)
 		&& unit->mainOrderId != OrderId::DroneStartBuild
 		&& unit->mainOrderId != OrderId::DroneBuild
 		&& !unitExt->values[ValueDisruptionFieldOn]
-		&& (unit->id == UnitId::ZergLakizilisk || !(unit->status & UnitStatus::Burrowed));
+		&& (/*unit->id == UnitId::ZergLakizilisk || */!(unit->status & UnitStatus::Burrowed));
 }
 
 static inline bool UnitCanAttack(Unit* unit)
