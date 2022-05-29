@@ -574,9 +574,9 @@ namespace hooks
 		// Now handled in global effect
 	//	helper::update_disruption_web_status();
 		Unit* first_dying_unit = *firstDyingUnit;
-		Unit* next_dying_unit = first_dying_unit->link.next;
 		if (*firstDyingUnit)
 		{
+			Unit* next_dying_unit = first_dying_unit->link.next;
 			do
 			{
 				next_dying_unit = first_dying_unit->link.next;
@@ -667,9 +667,9 @@ namespace hooks
 			while (next_visible_unit);
 		}
 		Unit* first_hidden_unit = *firstHiddenUnit;
-		Unit* next_hidden_unit = first_hidden_unit->link.next;
 		if (*firstHiddenUnit)
 		{
+			Unit* next_hidden_unit = first_hidden_unit->link.next;
 			do
 			{
 				next_hidden_unit = first_hidden_unit->link.next;
