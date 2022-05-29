@@ -313,13 +313,6 @@ namespace hooks
 		return true;
 	}
 
-	static void clear_gatherer_queue(Unit* unit) {
-		if (unit) {
-			clear_gatherer_queue(unit->worker.harvest_link.next);
-			unit->worker.harvest_link.next = 0;
-		}
-	}
-
 	void tickUnit(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
