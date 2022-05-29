@@ -921,16 +921,14 @@ LABEL_36:
 		//if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
 		//	return;
 		//}
-		u32 type = 4;
 		if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker) {
+			u32 type = 4;
 			helper::ai_add_cost_to_needs(unit_id, player, type);
+			helper::ai_add_spending_request(unit_id, player, type, priority, region);
 		} else {
-			type = 3;
-			if (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) {
-				type = 7;
-			}
+			u32 type = 2 * (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) | 3;
 			helper::ai_add_cost_to_needs(unit_id, player, type);
+			helper::ai_add_spending_request(unit_id, player, type, priority, region);
 		}
-		helper::ai_add_spending_request(unit_id, player, type, priority, region);
 	}
 }
