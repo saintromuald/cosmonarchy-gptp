@@ -1193,6 +1193,8 @@ namespace SoundId
 		CyclopsPassive04					= 1794,
 
 		SimulacrumCloneStart01				= 1882,
+		CohortDeath01						= 1883,
+		CohortDeath02						= 1884,
 	};
 }
 

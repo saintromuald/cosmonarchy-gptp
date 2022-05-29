@@ -26,7 +26,7 @@ const s32 StimpackTimer = 37;
 const s32 MindControlEnergyGain = 5 * 256;
 
 // Shared
-const s32 AxitriliskShieldLossSFXTimer = 24 * 5 + 1;
+const s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;
 
 // Charlatan
 const s32 CharlatanHallucinationTimer = 3 * 24;

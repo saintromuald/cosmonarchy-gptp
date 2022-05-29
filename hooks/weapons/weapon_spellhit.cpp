@@ -434,6 +434,7 @@ namespace hooks
 					{
 						unit->healEnergy(power, attacker);
 					}
+					unit->sprite->createUnderlay(ImageId::SmallExplosion_Unused);
 				}
 			}
 			target->remove();
