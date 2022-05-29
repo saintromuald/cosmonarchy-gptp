@@ -79,10 +79,10 @@ namespace hooks
 	{
 		if (config.extended_camera_hotkeys)
 		{
-			jump_patch(saveScreenLocation_Wrapper, 0x00484360, 0);
-			jump_patch(recallScreenLocation_Wrapper, 0x00484500, 1);
-			jump_patch(helpMenuCall_Wrapper, 0x00484770, 0);
-			jump_patch(screenLocationSwitchCase_Wrapper, 0x0048478A, 1);
+			jump_patch(saveScreenLocation_Wrapper,			0x00484360, 0);
+			jump_patch(recallScreenLocation_Wrapper,		0x00484500, 1);
+			jump_patch(helpMenuCall_Wrapper,				0x00484770, 0);
+			jump_patch(screenLocationSwitchCase_Wrapper,	0x0048478A, 1);
 		}
 	}
 }

@@ -45,9 +45,7 @@ namespace
 			MOV tile_flags, ECX
 			PUSHAD
 		}
-		//
 		// player id must be moved from somewhere else
-		//
 		tile_flags = hooks::adjustFlags(tile_flags, playerCache);
 		__asm
 		{
@@ -63,7 +61,7 @@ namespace hooks
 {
 	void injectMakeNydusExitHook()
 	{
-		jump_patch(orders_Build5Wrapper,				0x0045DC20, 2);
+		jump_patch(orders_Build5Wrapper,			0x0045DC20, 2);
 //		jump_patch(nydusPlaceExitTileCheckWrapper1,	0x00473156, 1);
 //		jump_patch(nydusPlaceExitTileCheckWrapper2,	0x004731C2, 1);
 	}

@@ -764,10 +764,10 @@ namespace hooks
 		archonHardcodePatches();
 
 		// Hook patches!
-//      jump_patch(gameLoop_Wrapper, 0x004D94B0, 3);
-		jump_patch(createUnit_Wrapper, 0x004A09D0, 1);
-		jump_patch(transform_unit_main_Wrapper, 0x0049F170, 1);
-		jump_patch(ignoreIscriptGoToIdle_Wrapper, 0x00476550, 1);
+//      jump_patch(gameLoop_Wrapper,				0x004D94B0, 3);
+		jump_patch(createUnit_Wrapper,				0x004A09D0, 1);
+		jump_patch(transform_unit_main_Wrapper,		0x0049F170, 1);
+		jump_patch(ignoreIscriptGoToIdle_Wrapper,	0x00476550, 1);
 	}
 }
 

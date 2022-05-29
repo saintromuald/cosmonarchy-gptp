@@ -245,8 +245,7 @@ namespace hooks
 {
 	void injectTargetHooks()
 	{
-		// Removes can not attack status checks from some update functions, it was done by iquare pretty sure
-		// not exactly sure what was the intention. Currently it doesn't seem to do anything
+		// Removes can not attack status checks from some update functions, it was done by iquare - not exactly sure what was the intention. Currently it doesn't seem to do anything. -Veeq7
 //		nops(0x004EB176, 8);
 //		nops(0x004EB316, 2);
 
@@ -254,12 +253,12 @@ namespace hooks
 //		jump_patch(genericRightClickUnitProc2_Wrapper,			0x004C20C0, 0);
 //		jump_patch(unitCanSeeCloakedTarget_Wrapper,				0x00401D60, 4);
 //		jump_patch(isTargetVisible_Wrapper,						0x004E5E30, 4);
-//		jump_patch(isUnitVisible_Wrapper,							0x004E5DB0, 1);
+//		jump_patch(isUnitVisible_Wrapper,						0x004E5DB0, 1);
 		jump_patch(checkUnitVisibility_Wrapper,					0x00443390, 3);
 //		jump_patch(isUnitCloaking_Wrapper,						0x004916E0, 0);
 		jump_patch(unitCanAttackTarget_Wrapper,					0x00476730, 5);
 //		jump_patch(orderAttackBehavior_Wrapper,					0x00478540, 0);
-		jump_patch(AI_AttackUnit_Wrapper,							0x0043FFD0, 1);
+		jump_patch(AI_AttackUnit_Wrapper,						0x0043FFD0, 1);
 		jump_patch(return_interceptor_if_cannot_attack_wrapper,	0x00465810, 1);
 	}
 

@@ -72,7 +72,7 @@ namespace hooks
 	void injectAttackPriorityHooks()
 	{
 		jump_patch(getAttackPriorityWrapper,			0x00442160, 3);
-		jump_patch(findBestAttackTargetWrapper,		0x00443080, 1);
-		jump_patch(findRandomAttackTargetWrapper,		0x00442FC0, 1);
+		jump_patch(findBestAttackTargetWrapper,			0x00443080, 1);
+		jump_patch(findRandomAttackTargetWrapper,	0x00442FC0, 1);
 	}
 }

@@ -36,7 +36,7 @@ namespace hooks
 {
 	void injectTrainCmdRecvHooks()
 	{
-		jump_patch(CMDRECV_TrainFighterWrapper,	0x004C1800, 5);
+		jump_patch(CMDRECV_TrainFighterWrapper,		0x004C1800, 5);
 		jump_patch(CMDRECV_TrainWrapper,			0x004C1C20, 7);
 	}
 }

@@ -529,7 +529,7 @@ namespace hooks
 {
 	void injectUnitDestructorSpecial()
 	{
-		jump_patch(unit_destructor_special_cases_wrapper, 0x0049F4A0, 2);
-		jump_patch(clear_tile_flags_from_area_wrapper, 0x00472E50, 2);
+		jump_patch(unit_destructor_special_cases_wrapper,	0x0049F4A0, 2);
+		jump_patch(clear_tile_flags_from_area_wrapper,		0x00472E50, 2);
 	}
 }

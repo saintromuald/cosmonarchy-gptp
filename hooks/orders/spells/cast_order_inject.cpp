@@ -136,8 +136,8 @@ namespace hooks
 	void injectCastOrderHooks()
 	{
 		jump_patch(orders_Spell_Wrapper,					0x00492850, 1);
-		jump_patch(spellOrder_Wrapper,					0x004926D0, 0);
-		jump_patch(canTargetSpell_Wrapper,				0x00492020, 1);
+		jump_patch(spellOrder_Wrapper,						0x004926D0, 0);
+		jump_patch(canTargetSpell_Wrapper,					0x00492020, 1);
 		jump_patch(issueOrderTargetingGround_Wrapper,		0x00475260, 1);
 	}
 }

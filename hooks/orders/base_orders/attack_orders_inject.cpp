@@ -1,231 +1,164 @@
-//Injector source file for the Attack Orders hook module.
 #include "attack_orders.h"
 #include <hook_tools.h>
 
 namespace
 {
-
 	void __declspec(naked) orders_ReaverAttack1Wrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_ReaverAttack1(unit);
-
 		__asm {
 			POPAD
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_CarrierAttack1Wrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_CarrierAttack1(unit);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_TurretAttackWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_TurretAttack(unit);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_AttackFixedRangeWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_AttackFixedRange(unit);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_SapUnitWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_SapUnit(unit);
-
 		__asm {
 			POPAD
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_SapLocationWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_SapLocation(unit);
-
 		__asm {
 			POPAD
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_AttackMoveEPWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_AttackMoveEP(unit);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_AttackMoveWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			MOV unit, ESI
 			PUSHAD
 		}
-
 		hooks::orders_AttackMove(unit);
-
 		__asm {
 			POPAD
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_AttackUnitWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			MOV unit, ESI
 			PUSHAD
 		}
-
 		hooks::orders_AttackUnit(unit);
 
 		__asm {
 			POPAD
 			RETN
 		}
-
 	}
-
-	;
-
-}//unnamed namespace
+}
 
 namespace hooks
 {
-
 	void injectAttackOrdersHooks()
 	{
-		//jump_patch(orders_ReaverAttack1Wrapper, 0x00465690, 2);
-		//jump_patch(orders_CarrierAttack1Wrapper, 0x00465950, 0);
-		//jump_patch(orders_TurretAttackWrapper, 0x00477980, 1);
-		//jump_patch(orders_AttackFixedRangeWrapper, 0x00477D00, 0);
-		//jump_patch(orders_SapUnitWrapper, 0x004788E0, 2);
-		//jump_patch(orders_SapLocationWrapper, 0x00478A40, 3);
-		jump_patch(orders_AttackMoveEPWrapper, 0x00478DE0, 1);
-		jump_patch(orders_AttackMoveWrapper, 0x00479040, 0);
-		//jump_patch(orders_AttackUnitWrapper, 0x00479BD0, 2);
+		//jump_patch(orders_ReaverAttack1Wrapper,		0x00465690, 2);
+		//jump_patch(orders_CarrierAttack1Wrapper,		0x00465950, 0);
+		//jump_patch(orders_TurretAttackWrapper,		0x00477980, 1);
+		//jump_patch(orders_AttackFixedRangeWrapper,	0x00477D00, 0);
+		//jump_patch(orders_SapUnitWrapper,				0x004788E0, 2);
+		//jump_patch(orders_SapLocationWrapper,			0x00478A40, 3);
+		jump_patch(orders_AttackMoveEPWrapper,			0x00478DE0, 1);
+		jump_patch(orders_AttackMoveWrapper,			0x00479040, 0);
+		//jump_patch(orders_AttackUnitWrapper,			0x00479BD0, 2);
 	}
-
-} //hooks
+}

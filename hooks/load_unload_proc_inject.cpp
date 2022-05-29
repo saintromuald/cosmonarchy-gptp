@@ -3,13 +3,10 @@
 
 namespace
 {
-
 	void __declspec(naked) loadUnitProcWrapper()
 	{
-
 		static Unit* unit;
 		static Unit* unitToLoad;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -17,35 +14,26 @@ namespace
 			MOV unitToLoad, ECX
 			PUSHAD
 		}
-
 		hooks::loadUnitProc(unit, unitToLoad);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) unloadUnitProcWrapper()
 	{
-
 		static Unit* unit;
 		static u32 return_value;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		return_value = hooks::unloadUnitProc(unit);
-
 		__asm {
 			POPAD
 			MOV EAX, return_value
@@ -53,20 +41,14 @@ namespace
 			POP EBP
 			RETN
 		}
-
 	}
-
-	;
-
-} //unnamed namespace
+}
 
 namespace hooks
 {
-
 	void injectLoadUnloadProcHooks()
 	{
-		jump_patch(loadUnitProcWrapper, 0x004E78E0, 0);
-		jump_patch(unloadUnitProcWrapper, 0x004E7F70, 1);
+		jump_patch(loadUnitProcWrapper,		0x004E78E0, 0);
+		jump_patch(unloadUnitProcWrapper,	0x004E7F70, 1);
 	}
-
-} //hooks
+}

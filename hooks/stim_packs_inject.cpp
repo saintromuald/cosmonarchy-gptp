@@ -50,7 +50,7 @@ namespace hooks
 	void injectStimPacksHooks()
 	{
 		jump_patch(CMDACT_StimpackWrapper,	0x004234D0, 4);
-		jump_patch(useStimPacksAIWrapper,		0x004554A0, 5);
+		jump_patch(useStimPacksAIWrapper,	0x004554A0, 5);
 		jump_patch(CMDRECV_StimPackWrapper,	0x004C2F30, 3);
 	}
 }

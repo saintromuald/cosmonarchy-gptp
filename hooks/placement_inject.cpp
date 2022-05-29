@@ -150,7 +150,7 @@ namespace hooks
 	void injectPlacementHooks()
 	{
 		jump_patch(InitPlacementBoxPos_Wrapper,					0x0048D660, 0);
-		jump_patch(DrawPlacementBox_Wrapper,						0x0048DDC0, 4);
+		jump_patch(DrawPlacementBox_Wrapper,					0x0048DDC0, 4);
 //		jump_patch(updatePlacementStateForPlacementBox_Wrapper,	0x0048DCE0, 0);
 //		jump_patch(updateBuildingPlacementState_Units_Wrapper,	0x00473720, 1);
 		jump_patch(isTileBlockedBy_Wrapper,						0x00473300, 0);

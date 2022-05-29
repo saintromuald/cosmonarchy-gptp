@@ -48,7 +48,7 @@ namespace hooks
 {
 	void injectNukeOrdersHooks()
 	{
-		jump_patch(orders_NukeTrackWrapper,	0x00464D10, 2);
+		jump_patch(orders_NukeTrackWrapper,		0x00464D10, 2);
 		jump_patch(orders_NukeGroundWrapper,	0x00479200, 0);
 	}
 }

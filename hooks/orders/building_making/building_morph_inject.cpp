@@ -363,19 +363,19 @@ namespace hooks
 {
 	void injectBuildingMorphHooks()
 	{
-		jump_patch(orders_isMorphingWrapper, 0x0045CD00, 2);
-		jump_patch(orders_ZergBuildSelfWrapper, 0x0045D500, 0);
-		jump_patch(ZergPlaceBuildingWrapper, 0x0045DA40, 1);
-		jump_patch(isRemorphingBuildingWrapper, Func_IsRemorphingBuilding);
-		jump_patch(isMorphedBuildingWrapper_AI_MorphBehavior, 0x0043505F);
-		jump_patch(isMorphedBuildingWrapper_ConsoleWireFrameUpdate, 0x00456911);
-		jump_patch(isMorphedBuildingWrapper_ZergBuildSelf_GetType, 0x0045D505);
-		call_patch(isMorphedBuildingWrapper_ZergBuildSelf_Complete, 0x0045D65D);
-		jump_patch(isMorphedBuildingWrapper_ZergBuildSelf_SetTimer, 0x0045D56C);
-		jump_patch(isMorphedBuildingWrapper_CancelZergBuilding, 0x0045DA4A);
-		jump_patch(getMorphBuildingTypeCountWrapper_AI_GetWaitBuildUnitCount, 0x00433286);
-		jump_patch(getMorphBuildingTypeCountWrapper_AI_GetUnitCount, 0x004334D9);
-		jump_patch(getMorphBuildingTypeCountWrapper_AI_ManageBases, 0x00436439);
-		jump_patch(MorphSpecialStateSetup_Wrapper, 0x0045D2A1);
+		jump_patch(orders_isMorphingWrapper,									0x0045CD00, 2);
+		jump_patch(orders_ZergBuildSelfWrapper,									0x0045D500, 0);
+		jump_patch(ZergPlaceBuildingWrapper,									0x0045DA40, 1);
+		jump_patch(isRemorphingBuildingWrapper,																																															Func_IsRemorphingBuilding);
+		jump_patch(isMorphedBuildingWrapper_AI_MorphBehavior,					0x0043505F);
+		jump_patch(isMorphedBuildingWrapper_ConsoleWireFrameUpdate,				0x00456911);
+		jump_patch(isMorphedBuildingWrapper_ZergBuildSelf_GetType,				0x0045D505);
+		call_patch(isMorphedBuildingWrapper_ZergBuildSelf_Complete,				0x0045D65D);
+		jump_patch(isMorphedBuildingWrapper_ZergBuildSelf_SetTimer,				0x0045D56C);
+		jump_patch(isMorphedBuildingWrapper_CancelZergBuilding,					0x0045DA4A);
+		jump_patch(getMorphBuildingTypeCountWrapper_AI_GetWaitBuildUnitCount,	0x00433286);
+		jump_patch(getMorphBuildingTypeCountWrapper_AI_GetUnitCount,			0x004334D9);
+		jump_patch(getMorphBuildingTypeCountWrapper_AI_ManageBases,				0x00436439);
+		jump_patch(MorphSpecialStateSetup_Wrapper,								0x0045D2A1);
 	}
 }

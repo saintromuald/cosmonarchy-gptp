@@ -1,4 +1,3 @@
-//Injector source file for the Hallucination Spell Order hook module.
 #include "feedback_spell.h"
 #include <hook_tools.h>
 

@@ -64,8 +64,8 @@ namespace hooks
 {
 	void injectDirectSoundSub()
 	{
-//		jump_patch(soundThread_Wrapper,	0x004BC620, 4);
-//		jump_patch(soundInit_Wrapper,		0x004BCB70, 1);
+	//	jump_patch(soundThread_Wrapper,		0x004BC620, 4);
+	//	jump_patch(soundInit_Wrapper,		0x004BCB70, 1);
 	}
 
 	void injectDirectSoundHooks()

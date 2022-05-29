@@ -3,7 +3,6 @@
 
 namespace hooks
 {
-
 	const u32 jmp_34c53 = 0x00434C53;
 	const u32 jmp_4C80_ret = 0x00434C80;
 	void __declspec(naked) Ai_ProgressSpendingQueue_JmpWrapper()
@@ -15,8 +14,8 @@ namespace hooks
 			PUSHAD
 		}
 		result = get_order_from_unit_id(unit_id);
-		if (result == 0)
-		{//default case
+		if (result == 0) //default case
+		{ 
 			__asm {
 				POPAD
 				JMP jmp_4C80_ret
@@ -32,8 +31,7 @@ namespace hooks
 		}
 	}
 
-
-	//probably is going to be hook instead
+	// Probably is going to be hook instead
 	void __declspec(naked) Ai_BuildSupplies_Wrapper()
 	{
 		static AiTown* town;
@@ -55,7 +53,6 @@ namespace hooks
 		}
 	}
 
-	//Ai_GetDefaultWorkerFromRace
 	void __declspec(naked) Ai_GetDefaultWorkerFromRace()
 	{
 		static u32 unit_id;
@@ -104,8 +101,8 @@ namespace hooks
 				JMP jmp_33F7E
 			}
 		}
-
 	}
+
 	const u32 jmp_3660D = 0x0043660D;
 	void __declspec(naked) Ai_UpgradesFinished_JmpWrapper()
 	{
@@ -126,7 +123,6 @@ namespace hooks
 			JMP jmp_3660D
 		}
 	}
-
 
 	const u32 jmp_38f8 = 0x004438F8;
 	const u32 jmp_3889 = 0x00443889;
@@ -152,6 +148,7 @@ namespace hooks
 			}
 		}
 	}
+
 	const u32 jmp_27a = 0x0044627A;
 	const u32 jmp_240 = 0x00446240;
 	void __declspec(naked) Ai_GetBuildLocation_JmpWrapper()
@@ -176,6 +173,7 @@ namespace hooks
 			}
 		}
 	}
+
 	const u32 jmp_920 = 0x00434920;
 	const u32 jmp_c80 = 0x00434C80;
 	void __declspec(naked) Ai_TryProgressSpendingQueue_WorkerJmpWrapper()
@@ -206,8 +204,9 @@ namespace hooks
 			}
 		}
 	}
-	void __declspec(naked) AI_AddTownSpendingRequest_Wrapper()
-	{ // 00448400
+
+	void __declspec(naked) AI_AddTownSpendingRequest_Wrapper() // 00448400
+	{
 		static s32 result;
 		static s32 playerId;
 		static s32 priority;
@@ -234,12 +233,14 @@ namespace hooks
 			RETN 0x4
 		}
 	}
+
 	void injectWorkerHooks()
 	{
 		jump_patch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
 		jump_patch(Ai_BuildSupplies_Wrapper, 0x00433730);
 		jump_patch(Ai_GetDefaultWorkerFromRace, 0x00432130);
 	}
+
 	void injectTownhallHooks()
 	{
 		jump_patch(AddUnitAi_JmpWrapper, 0x00433F60, 4);
@@ -248,10 +249,12 @@ namespace hooks
 		jump_patch(Ai_GetBuildLocation_JmpWrapper, 0x0044622B);
 		jump_patch(AI_AddTownSpendingRequest_Wrapper, 0x00448400, 0);
 	}
+
 	void injectSupplyDepotHooks()
 	{
 		jump_patch(Ai_TryProgressSpendingQueue_WorkerJmpWrapper, 0x00434912, 3);
 	}
+
 	const u32 jmp_00467F24 = 0x00467F24;
 	const u32 jmp_00467F2C = 0x00467F2C;
 	void __declspec(naked) orders_SCVBuild2_Wrapper()
@@ -276,6 +279,7 @@ namespace hooks
 			}
 		}
 	}
+
 	void __declspec(naked) orders_isGeyserTopUnitHookWrapper()
 	{
 		static Unit* unit;
@@ -291,6 +295,7 @@ namespace hooks
 			RETN
 		}
 	}
+
 	const u32 jmp_00468952 = 0x00468952;
 	const u32 jmp_00468966 = 0x00468966;
 	void __declspec(naked) orders_isGeyserTopUnitEx_Wrapper()
@@ -315,6 +320,7 @@ namespace hooks
 			}
 		}
 	}
+
 	void injectGasHooks()
 	{
 		jump_patch(orders_SCVBuild2_Wrapper, 0x00467F12, 1);
@@ -330,14 +336,13 @@ namespace hooks
 		0046894C  |.  66:3D 9500    CMP AX,95
 		00468950  |.  75 14         JNZ SHORT 00468966
 		*/
-
 	}
+
 	void injectEconomicUnitHooks()
 	{
 		injectWorkerHooks();
-		//town hall
 		injectTownhallHooks();
-		//injectSupplyDepotHooks();
+	//	injectSupplyDepotHooks();
 		//besides Ai_SupplyDepot which is part of worker hooks, there's no other hardcode related to supply
 		//add later:
 		//supplies
