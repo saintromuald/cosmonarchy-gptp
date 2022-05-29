@@ -685,7 +685,7 @@ LABEL_42:
 
 		u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[unitWithWeapon->id] : units_dat::GroundWeapon[unitWithWeapon->id];
 
-		if (unit->status & UnitStatus::GroundedBuilding) {
+		if (unit->status & UnitStatus::GroundedBuilding || unit->status & UnitStatus::Burrowed || unit->id == UnitId::TerranPhalanxSiegeMode) {
 			if (!unit->isTargetWithinMinRange(target, hooks::getMaxWeaponRangeHook(unit, weapon, target))) {
 				return false;
 			}
