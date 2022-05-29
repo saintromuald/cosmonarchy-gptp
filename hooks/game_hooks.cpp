@@ -1506,7 +1506,7 @@ namespace hooks
 		}
 
 		// Solarion - Auto Train
-		if (unit->id == UnitId::ProtossSolarion) {
+		if (unit->id == UnitId::ProtossSolarion && unit->carrier.inHangarCount + unit->carrier.outHangarCount < 12) {
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::ProtossSteward;
 			unit->setSecondaryOrder(OrderId::TrainFighter);
 		}
