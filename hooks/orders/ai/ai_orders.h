@@ -27,7 +27,7 @@ namespace hooks
 	void AI_worker_controller(Unit* worker);																			// 00435210
 	char AI_reassign_worker_resources(AiTown* town);																	// 00435900
 	void AI_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);													// 00433B90
-	u8 ai_get_build_order_id(Unit* unit);																				// 00434C31
+	u8 ai_get_build_order_id(Unit* unit, u32 unit_id);																	// 00434C31
 
 	Unit* AI_find_best_repair_unit(Unit* unit);																			// 00443160
 	s32 AI_SCV_repair_controller(Unit* repairer, AiTown* town);															// 00433C70

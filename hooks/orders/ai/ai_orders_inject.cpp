@@ -465,12 +465,14 @@ namespace
 
 	void __declspec(naked) ai_get_build_order_id_wrapper() { // 00434C31
 		static Unit* unit;
+		static u32 unit_id;
 		static u8 order_id;
 		_asm {
+			MOV unit_id, EBX
 			MOV unit, EDI
 			PUSHAD
 		}
-		order_id = hooks::ai_get_build_order_id(unit);
+		order_id = hooks::ai_get_build_order_id(unit, unit_id);
 		if (order_id != OrderId::None) {
 			static u32 jmp_address = 0x00434C53;
 			__asm {

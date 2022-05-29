@@ -1640,18 +1640,20 @@ LABEL_126:
 		}
 	}
 
-	u8 ai_get_build_order_id(Unit* unit) { // 00434C31
-		switch (unit->id) {
-			case UnitId::TerranMason:
-			case UnitId::TerranTalos: {
-				return OrderId::BuildTerran;
-			} break;
-			case UnitId::ZergDroleth: {
-				return OrderId::DroneStartBuild;
-			} break;
-			case UnitId::ProtossScribe: {
-				return OrderId::BuildProtoss1;
-			} break;
+	u8 ai_get_build_order_id(Unit* unit, u32 unit_id) { // 00434C31
+		u32 worker_race = unit->getRace();
+		if (worker_race == Unit::getRace(unit_id)) {
+			switch (worker_race) {
+				case RaceId::Terran: {
+					return OrderId::BuildTerran;
+				} break;
+				case RaceId::Protoss: {
+					return OrderId::BuildProtoss1;
+				} break;
+				case RaceId::Zerg: {
+					return OrderId::DroneStartBuild;
+				} break;
+			}
 		}
 		return OrderId::None;
 	}
