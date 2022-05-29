@@ -230,7 +230,7 @@ namespace helper
 
 	// For drawSupplyUnitInfo
 
-	s32 getSuppliesUsed()
+	s32 get_supplies_used_no_args()
 	{
 		const u32 Func_getSuppliesUsed = 0x00424732;
 		static s32 result;
@@ -7608,7 +7608,7 @@ namespace helper
 		}
 	}
 
-	void updateImagePositionOffset(Image* image)
+	void update_image_position_offset(Image* image)
 	{
 
 		const u32 Func_updateImagePositionOffset = 0x004D5A00;
@@ -7623,28 +7623,24 @@ namespace helper
 	}
 
 	// Identical to function @ 0x004F3AF0
-	void setResourceAmountCarried(Unit* worker, u8 amountCarried, u32 chunkImageId, bool isMineral)
+	void set_resource_amount_carried(Unit* worker, u8 amountCarried, u32 chunkImageId, bool isMineral)
 	{
-
 		if (worker->resourceType != 0)
 		{
 			return;
 		}
-
 		worker->resourceType = isMineral ? 2 : 1;
-
 		Image* chunkImage = worker->sprite->createOverlay(chunkImageId);
 		if (chunkImage && !(chunkImage->flags & ImageFlags::Flag07))
 		{
 			chunkImage->flags |= ImageFlags::Flag07;
-			updateImagePositionOffset(chunkImage);
+			update_image_position_offset(chunkImage);
 		}
-
 		worker->worker.resourceCarryAmount = amountCarried;
 		scbw::refresh_console();
 	}
 
-	s32 Ai_HasBuildingsNeedingPower(u32 player)
+	s32 ai_has_buildings_needing_power(u32 player)
 	{
 		const u32 Func_Ai_HasBuildingsNeedingPower = 0x00433410;
 		static s32 result;
@@ -7659,7 +7655,7 @@ namespace helper
 		return result;
 	}
 
-	s32 Ai_CountEconomyUnits(u32 player, u32 unit_id)
+	s32 ai_count_economy_units(u32 player, u32 unit_id)
 	{
 		const u32 Func_Ai_CountEconomyUnits = 0x00433470;
 		static s32 result;
@@ -7675,7 +7671,7 @@ namespace helper
 		return result;
 	}
 
-	s32 getSuppliesRemaining(u8 player, u16 unit_id)
+	s32 get_supplies_remaining(u8 player, u16 unit_id)
 	{
 		const u32 Func_getSuppliesRemaining = 0x004889D0;
 		static s32 result;
@@ -7691,7 +7687,7 @@ namespace helper
 		return result;
 	}
 
-	s32 getSuppliesUsed(s32 byte_data, u8 player)
+	s32 get_supplies_used(s32 byte_data, u8 player)
 	{
 		const u32 Func_getSuppliesUsed = 0x004888C0;
 		static u32 result;
@@ -7708,7 +7704,7 @@ namespace helper
 	}
 
 	// For ai_add_spending_request
-	bool isAIAllowedToBuild(s32 a1, s32 a2)
+	bool is_ai_allowed_to_build(s32 a1, s32 a2)
 	{
 		const u32 Func_isAIAllowedToBuild = 0x00447830;
 		static s32 result;
@@ -7724,7 +7720,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	void deleteBuildingAI(BuildingAi* building, BuildingAiArray** buildingList)
+	void delete_building_ai(BuildingAi* building, BuildingAiArray** buildingList)
 	{
 		const u32 Func_DeleteBuildingAI = 0x00404500;
 		__asm
@@ -7737,7 +7733,7 @@ namespace helper
 		}
 	}
 
-	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray** workerArray)
+	void delete_worker_ai(WorkerAi* ai, WorkerAiArray** workerArray)
 	{
 		const u32 Func_DeleteWorkerAi = 0x00404470;
 		__asm
@@ -7763,7 +7759,7 @@ namespace helper
 	}
 
 	// For isOrderValid
-	bool unitIsResource(Unit* unit)
+	bool unit_is_resource(Unit* unit)
 	{
 		const u32 Func_unitIsResource = 0x004688E0;
 		static s32 result;
@@ -7778,7 +7774,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	void returnAllInterceptors(Unit* unit)
+	void return_all_interceptors(Unit* unit)
 	{
 		const u32 Func_returnAllInterceptors = 0x004655F0;
 		__asm
@@ -7790,7 +7786,7 @@ namespace helper
 		}
 	}
 
-	char ignoreAllScriptsAndGoToIdle(Unit* unit)
+	char ignore_all_scripts_and_go_to_idle(Unit* unit)
 	{
 		const u32 Func_ignoreAllScriptsAndGoToIdle = 0x00476550;
 		static s32 result;
@@ -7805,7 +7801,7 @@ namespace helper
 		return (char)result;
 	}
 
-	void orders_SelfDestructing(Unit* unit)
+	void orders_self_destructing(Unit* unit)
 	{
 		const u32 Func_orders_SelfDestructing = 0x00475710;
 		__asm
@@ -7817,7 +7813,7 @@ namespace helper
 		}
 	}
 
-	char setMaelstromTimer(Unit* unit, u8 time)
+	char set_maelstrom_timer(Unit* unit, u8 time)
 	{
 		const u32 Func_setMaelstromTimer = 0x004553F0;
 		static s32 result;

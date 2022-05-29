@@ -446,7 +446,7 @@ SCBW_DATA(s32*,	suppliesMax_Terran,					0x00582234);
 SCBW_DATA(s32*,	suppliesAvailable_Zerg,				0x00582144);
 SCBW_DATA(s32*,	suppliesMax_Zerg,					0x005821A4);
 
-// For getSuppliesUsed
+// For get_supplies_used_no_args
 SCBW_DATA(s32*,	suppliesUsed_Protoss,				0x00582294);
 SCBW_DATA(s32*,	suppliesUsed_Terran,				0x00582204);
 SCBW_DATA(s32*,	suppliesUsed_Zerg,					0x00582174);

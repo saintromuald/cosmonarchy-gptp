@@ -102,7 +102,7 @@ namespace hooks
 				AiTown* town = unit_ai->town;
 				if (town && unit_ai->type == AiType::Building) // type check is new
 				{
-					helper::deleteBuildingAI((BuildingAi*)unit_ai, &town->free_buildings); // moved within nullcheck for sanity
+					helper::delete_building_ai((BuildingAi*)unit_ai, &town->free_buildings); // moved within nullcheck for sanity
 					if (town->building_SCV == unit)
 					{
 						town->building_SCV = 0;
@@ -147,7 +147,7 @@ namespace hooks
 						if (newUnitAi)
 						{
 							AiTown* newUnitTown = newUnitAi->town;
-							helper::deleteBuildingAI(newUnitAi, &newUnitTown->free_buildings);
+							helper::delete_building_ai(newUnitAi, &newUnitTown->free_buildings);
 							if (newUnitTown)
 							{
 								if (newUnit == newUnitTown->building_SCV)
@@ -481,7 +481,7 @@ namespace hooks
 					if (removeBuilding)
 					{
 						removeBuildingTown = removeBuilding->town;
-						helper::deleteBuildingAI(removeBuilding, &removeBuildingTown->free_buildings);
+						helper::delete_building_ai(removeBuilding, &removeBuildingTown->free_buildings);
 						if (removeBuildingTown)
 						{
 							if (result == removeBuildingTown->building_SCV)
@@ -566,7 +566,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	void deleteWorkerAI(WorkerAi* workerAi, WorkerAiArray* workerAiArray) // 00404470
+	void delete_worker_ai(WorkerAi* workerAi, WorkerAiArray* workerAiArray) // 00404470
 	{
 		// New
 		if (workerAi == nullptr)
@@ -599,7 +599,7 @@ namespace hooks
 	}
 
 	// Hooked to resolve a crash - Pr0nogo
-	void deleteBuildingAI(BuildingAi* buildingAi, BuildingAiArray* buildingAiArray) // 00404500
+	void delete_building_ai(BuildingAi* buildingAi, BuildingAiArray* buildingAiArray) // 00404500
 	{
 		// New
 		if (buildingAi == nullptr)
@@ -652,7 +652,7 @@ namespace hooks
 					town = buildingAIVar->town;
 					if (town)
 					{
-						helper::deleteBuildingAI(buildingAIVar, &town->free_buildings);
+						helper::delete_building_ai(buildingAIVar, &town->free_buildings);
 					}
 				}
 				else if (unitAIVar->type == AiType::Worker && baseProperty & UnitProperty::Worker)
@@ -661,7 +661,7 @@ namespace hooks
 					town = workerAIVar->town;
 					if (town)
 					{
-						helper::deleteWorkerAI(workerAIVar, &town->free_workers);
+						helper::delete_worker_ai(workerAIVar, &town->free_workers);
 						town->worker_count -= 1;
 					}
 				}
@@ -725,7 +725,7 @@ namespace hooks
 					{
 						BuildingAi* newBuildingAi = (BuildingAi*)newUnit->unit_ai;
 						AiTown* newUnitTown = newBuildingAi->town;
-						deleteBuildingAI(newBuildingAi, newUnitTown->free_buildings);
+						delete_building_ai(newBuildingAi, newUnitTown->free_buildings);
 						if (newUnitTown)
 						{
 							if (newUnit == newUnitTown->building_SCV)

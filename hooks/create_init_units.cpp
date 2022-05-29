@@ -328,7 +328,7 @@ namespace hooks
 				sprintf_s(buffer, 256, text, text2, unit->sprite->position.x, unit->sprite->position.y);
 				helper::UnitPlacementError(buffer, 3);
 				unit->userActionFlags |= 4u;
-				helper::orders_SelfDestructing(unit);
+				helper::orders_self_destructing(unit);
 			}
 		} else {
 			helper::display_last_network_error_for_player(player_id);

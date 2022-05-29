@@ -19,7 +19,7 @@ namespace hooks
         return result;
     }
 
-    s32 getSuppliesRemaining(u8 playerId, u16 unitId) // 004889D0
+    s32 get_supplies_remaining(u8 playerId, u16 unitId) // 004889D0
     {
         u32 supplyAvailable = 0;
         u32 supplyUsed = 0;
@@ -45,7 +45,7 @@ namespace hooks
         return suppliesMax_Terran[playerId];
     }
 
-    s32 getSuppliesUsed(s32 race, u8 playerId) // 004888C0
+    s32 get_supplies_used(s32 race, u8 playerId) // 004888C0
     {
         return suppliesUsed_Terran[playerId];
     }

@@ -116,7 +116,7 @@ namespace hooks
         return result;
     }
 
-    Order* RemoveReferences(Unit* unit, Unit* dying)
+    Order* RemoveReferences(Unit* unit, Unit* dying) // 0049E590
     {
         if (unit->currentBuildUnit == dying)
         {

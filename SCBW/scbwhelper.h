@@ -30,7 +30,7 @@ namespace helper
 	void hideDialog(BinDlg* dialog);
 
 	// For drawSupplyUnitInfo
-	s32 getSuppliesUsed();
+	s32 get_supplies_used_no_args();
 	u32 getSuppliesAvailable(u8 a1, s32 a2);
 	void drawArmor(s32 a1, s32 a2, u16 a3);
 	void unitStatAct_Standard(void* a1);
@@ -590,8 +590,8 @@ namespace helper
 	Unit* zerg_dual_birth(Unit* unit);																							    // 0045D910
 	void order_new_unit_to_rally(Unit* unit, Unit* factory);																		// 00466F50
 	void ai_training_unit(Unit* unit, Unit* creator);																				// 004A2830
-	void deleteBuildingAI(BuildingAi* building, BuildingAiArray** buildingList);                                                    // 00404500
-	void deleteWorkerAI(WorkerAi* ai, WorkerAiArray** workerArray);                                                                 // 00404470
+	void delete_building_ai(BuildingAi* building, BuildingAiArray** buildingList);                                                    // 00404500
+	void delete_worker_ai(WorkerAi* ai, WorkerAiArray** workerArray);                                                                 // 00404470
 	void delete_ai_town_if_needed(AiTown* town);                                                                                        // 004347E0
 
 	//// hallucination_spell
@@ -730,12 +730,12 @@ namespace helper
 	// For createScanner
 	s32 setUnitStatTxtErrorMsg(s32 a1);																		    // 0048CCB0
 	s32 playSoundFromSource(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume);									// 0048ED50
-	void returnAllInterceptors(Unit* unit);																		// 004655F0
-	char ignoreAllScriptsAndGoToIdle(Unit* unit);																// 00476550
+	void return_all_interceptors(Unit* unit);																		// 004655F0
+	char ignore_all_scripts_and_go_to_idle(Unit* unit);																// 00476550
 
 	// For maelstromProc
-	void orders_SelfDestructing(Unit* unit);																	// 00475710
-	char setMaelstromTimer(Unit* unit, u8 time);																// 004553F0
+	void orders_self_destructing(Unit* unit);																	// 00475710
+	char set_maelstrom_timer(Unit* unit, u8 time);																// 004553F0
 
 	// For CBulletDamage
 	s32 _fastcall lurkerSplashProc(Unit* target, Bullet* bullet);												// 0048B680
@@ -830,7 +830,7 @@ namespace helper
 	bool ord_repair_subtract(Unit* worker, Unit* target);																	// 00466FB0
 
 	// For isOrderValid
-	bool unitIsResource(Unit* unit);																						// 004688E0
+	bool unit_is_resource(Unit* unit);																						// 004688E0
 
 	//// cosmonarchy_specific
 	u8 getHangerTrainCount(Unit* unit);
@@ -878,17 +878,17 @@ namespace helper
 	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);
 	s32 req_check(u32 reqFunc, u16 reqVar, u32 playerId, Unit* unit);
 	void updateMineralPatchImage(Unit* mineralPatch);
-	void updateImagePositionOffset(Image* image);
+	void update_image_position_offset(Image* image);
 
 	// Identical to function @ 0x004F3AF0
-	void setResourceAmountCarried(Unit* worker, u8 amountCarried, u32 chunkImageId, bool isMineral);
+	void set_resource_amount_carried(Unit* worker, u8 amountCarried, u32 chunkImageId, bool isMineral);
 
 	// ai misc
-	s32 Ai_HasBuildingsNeedingPower(u32 player);
-	s32 Ai_CountEconomyUnits(u32 player, u32 unit_id);
-	s32 getSuppliesRemaining(u8 player, u16 unit_id);
-	s32 getSuppliesUsed(s32 byte_data, u8 player);
-	bool isAIAllowedToBuild(s32 a1, s32 a2);
+	s32 ai_has_buildings_needing_power(u32 player);
+	s32 ai_count_economy_units(u32 player, u32 unit_id);
+	s32 get_supplies_remaining(u8 player, u16 unit_id);
+	s32 get_supplies_used(s32 byte_data, u8 player);
+	bool is_ai_allowed_to_build(s32 a1, s32 a2);
 	void applyCloakingOrder(Unit* unit);																	// 00491B30
 
 	//// use_tech

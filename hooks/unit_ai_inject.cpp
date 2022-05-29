@@ -179,7 +179,7 @@ namespace
 			MOV workerAiArray, EDX
 			PUSHAD
 		}
-		hooks::deleteWorkerAI(workerAi, *workerAiArray);
+		hooks::delete_worker_ai(workerAi, *workerAiArray);
 		__asm
 		{
 			POPAD
@@ -197,7 +197,7 @@ namespace
 			MOV buildingAiArray, EDX
 			PUSHAD
 		}
-		hooks::deleteBuildingAI(buildingAi, *buildingAiArray);
+		hooks::delete_building_ai(buildingAi, *buildingAiArray);
 		__asm
 		{
 			POPAD

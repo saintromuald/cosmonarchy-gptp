@@ -154,7 +154,7 @@ namespace hooks
 						resourceAmount *= (2 + (1 / 2));
 					}
 				}
-				helper::setResourceAmountCarried(worker, resourceAmount, chunkImageId, isMineral);
+				helper::set_resource_amount_carried(worker, resourceAmount, chunkImageId, isMineral);
 			}
 		}
 	}

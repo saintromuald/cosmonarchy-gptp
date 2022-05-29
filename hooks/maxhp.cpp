@@ -186,7 +186,7 @@ LABEL_26:
 		v2 = *activePortraitUnit;
 		if (IS_IN_REPLAY || (*activePortraitUnit)->player == *LOCAL_NATION_ID)
 		{
-			helper::getSuppliesUsed();
+			helper::get_supplies_used_no_args();
 			if (*statusScreenFunc != 12)
 			{
 				helper::hideOptionalStatusScreenControls(v1);

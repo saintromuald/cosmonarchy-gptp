@@ -1241,7 +1241,7 @@ namespace hooks
 				}
 				bullet->sourceUnit->status |= UnitStatus::IsSelfDestructing;
 				bullet->sourceUnit->userActionFlags |= 0x4;
-				helper::orders_SelfDestructing(bullet->sourceUnit);
+				helper::orders_self_destructing(bullet->sourceUnit);
 				return 1;
 			}
 			case WeaponBehavior::Bounce:

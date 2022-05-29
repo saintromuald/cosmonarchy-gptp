@@ -713,7 +713,7 @@ void Unit::reduce_defensive_matrix_hp(s32 amount)
 
 }
 
-const u32 Func_RemoveUnit = 0x00475710; // AKA orders_SelfDestructing()
+const u32 Func_RemoveUnit = 0x00475710; // AKA orders_self_destructing()
 void Unit::remove()
 {
 	assert(this);
