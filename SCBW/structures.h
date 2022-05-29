@@ -694,13 +694,6 @@ struct AiRegion
 C_ASSERT(sizeof(AiRegion) == 52);
 //static_assert(sizeof(AiRegion) == 52, "The size of the AiRegion structure is invalid");
 
-struct UnitAi
-{
-	Link<UnitAi>	link;				// 0x0, 0x4
-	u8 type;							// 0x8
-};
-C_ASSERT(sizeof(UnitAi) == 9);
-
 struct Region
 {
 	u16		accessibilityFlags;		// 0x00
@@ -778,10 +771,24 @@ struct MilitaryAi
 	u8 type;							// 0x8
 	u8 padding1;						// 0x9
 	u16 padding2;						// 0xA
-	Unit* unit;						// 0xC
+	Unit* unit;							// 0xC
 	AiRegion* region;					// 0x10
 };
 C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14
+
+struct UnitAi
+{
+	union {
+		struct {
+			Link<UnitAi> link;			// 0x0, 0x4
+			u8 type;	                // 0x8
+		};
+		GuardAi guard_ai;
+		WorkerAi worker_ai;
+		BuildingAi building_ai;
+		MilitaryAi military_ai;
+	};
+};
 
 struct WorkerAiArray
 {

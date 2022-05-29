@@ -617,7 +617,7 @@ LABEL_36:
 			}
 			else
 			{
-				helper::AI_AddMilitary((AiRegion*)AIScriptController[player].requests->val, unitCopy, 1);
+				helper::add_military_ai((AiRegion*)AIScriptController[player].requests->val, unitCopy, 1);
 			}
 		}
 

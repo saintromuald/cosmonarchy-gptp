@@ -1263,7 +1263,7 @@ namespace helper
 		}
 	}
 
-	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 always_this_region)
+	void add_military_ai(AiRegion* region, Unit* unit, s32 always_this_region)
 	{
 		const u32 Func_AI_AddMilitary = 0x0043DA20;
 		__asm {
@@ -11709,14 +11709,14 @@ namespace helper
 		return result;
 	}
 
-	u32 get_missing_attack_force_units(AiRegion* region, u32* attack_wave, u32 is_campaign) {
+	u32 get_missing_attack_force_units(AiRegion* ai_region, u32* attack_wave, u32 is_campaign) {
 		static u32 result;
 		const u32 func_address = 0x00438050;
 		__asm {
 			PUSHAD
 			PUSH is_campaign
 			PUSH attack_wave
-			PUSH region
+			PUSH ai_region
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -11738,12 +11738,12 @@ namespace helper
 		return result;
 	}
 
-	bool ai_has_incomplete_military_in_region(AiRegion* region) {
+	bool ai_has_incomplete_military_in_region(AiRegion* ai_region) {
 		static bool result;
 		const u32 func_address = 0x00436EB0;
 		__asm {
 			PUSHAD
-			MOV EAX, region
+			MOV EAX, ai_region
 			CALL func_address
 			MOV result, AL
 			POPAD
@@ -11751,5 +11751,14 @@ namespace helper
 		return result;
 	}
 
-
+	void delete_military_ai(MilitaryAi* military_ai, AiRegion* ai_region) {
+		const u32 func_address = 0x004371D0;
+		__asm {
+			PUSHAD
+			MOV EAX, military_ai
+			MOV EDX, ai_region
+			CALL func_address
+			POPAD
+		}
+	}
 }

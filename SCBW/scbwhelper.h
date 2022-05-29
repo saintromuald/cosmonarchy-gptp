@@ -138,7 +138,7 @@ namespace helper
 
 	// For AI_TrainingBroodling
 	void ai_set_region_type(s32 regionType, AiRegion* region);
-	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 always_this_region);
+	void add_military_ai(AiRegion* region, Unit* unit, s32 always_this_region);
 
 	// For AI_TrainingWorker
 	char AI_AddWorkerStructureAI(Unit* worker, AiTown* town);									// 00433DD0
@@ -1279,7 +1279,9 @@ namespace helper
 	Unit* let_next_unit_mine(Unit* worker);																	// 00468970
 	s32 begin_harvest(Unit* worker, Unit* node);															// 00468C70
 
-	u32 get_missing_attack_force_units(AiRegion* region, u32* attack_wave, u32 is_campaign);				// 00438050
+	u32 get_missing_attack_force_units(AiRegion* ai_region, u32* attack_wave, u32 is_campaign);				// 00438050
 	s32 ai_defender_bunker_behavior(Unit* unit, u16 region_id);												// 0043C480
-	bool ai_has_incomplete_military_in_region(AiRegion* region);											// 00436EB0
+	bool ai_has_incomplete_military_in_region(AiRegion* ai_region);											// 00436EB0
+
+	void delete_military_ai(MilitaryAi* military_ai, AiRegion* ai_region);									// 004371D0
 }

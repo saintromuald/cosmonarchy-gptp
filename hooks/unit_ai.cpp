@@ -71,7 +71,7 @@ namespace hooks
 			{
 				helper::ai_set_region_type(1, region);
 			}
-			helper::AI_AddMilitary(region, result, 1);
+			helper::add_military_ai(region, result, 1);
 		}
 	}
 
@@ -129,7 +129,7 @@ namespace hooks
 		{
 			if (newUnit->status & UnitStatus::IsHallucination)
 			{
-				helper::AI_AddMilitary(&AiRegionCaptains[(u8)newUnit->player][helper::get_region_id(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
+				helper::add_military_ai(&AiRegionCaptains[(u8)newUnit->player][helper::get_region_id(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
 				return;
 			}
 			if (unitId != UnitId::TerranNuclearMissile && unitId != UnitId::ProtossWitness)
@@ -190,7 +190,7 @@ namespace hooks
 					}
 					if (parentUnitAi->trainQueueTypes[queueSlot] == 1)
 					{
-						helper::AI_AddMilitary(region, newUnit, 0);
+						helper::add_military_ai(region, newUnit, 0);
 					}
 					else
 					{

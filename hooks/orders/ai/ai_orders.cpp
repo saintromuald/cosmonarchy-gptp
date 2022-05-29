@@ -381,7 +381,7 @@ LABEL_126:
 				if (aiType == 1)
 				{
 					guardAI->parent->unit_ai = nullptr;
-					helper::AI_AddMilitary(region, guardAI->parent, 1);
+					helper::add_military_ai(region, guardAI->parent, 1);
 					guardAI->parent->unit_ai = nullptr;
 				}
 				else if (aiType != 4)
@@ -404,7 +404,7 @@ LABEL_126:
 				if (regionIndex != 2500)
 				{
 					helper::AI_RemoveUnitAI(unit, nullptr);
-					helper::AI_AddMilitary(region2, unit, 1);
+					helper::add_military_ai(region2, unit, 1);
 					continue;
 				}
 				memset(AIScriptController[player].attackers, 0, sizeof(AIScriptController[player].attackers));
@@ -416,7 +416,7 @@ LABEL_126:
 					regionIndex = (u16)AIScriptController[player].AI_AttackGroup - 1;
 					region2 = &AiRegionCaptains[player][regionIndex];
 					helper::AI_RemoveUnitAI(unit, nullptr);
-					helper::AI_AddMilitary(region2, unit, 1);
+					helper::add_military_ai(region2, unit, 1);
 				}
 			}
 		}
@@ -1864,20 +1864,25 @@ LABEL_126:
 	// Hooked to fix AI pathfinding lag and improve army spread. -Pr0nogo
 	void ai_manage_military_controller(Unit* unit) // 0043D910
 	{
-		UnitAi* unit_ai = unit->unit_ai;
-		MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
-		if (unit_ai)
+		if (unit->unit_ai && unit->unit_ai->type == AiType::Military && unit->unit_ai->military_ai.unit == unit) {
+			MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
+			AiRegion* new_ai_region = find_better_region(military_ai, military_ai->region, 3);
+			if (new_ai_region && military_ai->region != new_ai_region) {
+				helper::delete_military_ai(military_ai, military_ai->region);
+				unit->unit_ai = 0;
+				helper::add_military_ai(new_ai_region, unit, true);
+			}
+		}
+
+		if (unit->unit_ai && unit->unit_ai->type == AiType::Military)
 		{
-			if (unit_ai->type == AiType::Military && military_ai->unit == unit)
+			MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
+			if (military_ai->unit == unit)
 			{
 				u16 unit_id = unit->id;
 				if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Building))
 				{
 					AiRegion* ai_region = military_ai->region;
-					AiRegion* new_ai_region = find_better_region(military_ai, ai_region, 3);
-					if (new_ai_region) {
-						ai_region = new_ai_region;
-					}
 					if (unit_id && unit_id != UnitId::TerranHarakan || !helper::ai_defender_bunker_behavior(unit, ai_region->region))
 					{
 						if (!helper::ai_cast_spell_behavior(unit, 0) && !helper::ai_update_attack_target(unit, 0, 1, 0))
