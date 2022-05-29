@@ -19,7 +19,7 @@ namespace hooks
                 && factory->rally.pt.x != 0)
             {
                 // Following should be allowed only on friendly units
-                if (factory->rally.unit && scbw::isAlliedTo((factory->rally.unit)->playerId, unit->playerId))
+                if (factory->rally.unit && scbw::isAlliedTo((factory->rally.unit)->player, unit->player))
                 {
                     unit->orderTo(OrderId::Follow, factory->rally.unit);
                 }
@@ -65,7 +65,7 @@ namespace hooks
         }
 
         u32 result;
-        if (player == unit->playerId)
+        if (player == unit->player)
         {
             if (unit->isFrozen())
             {

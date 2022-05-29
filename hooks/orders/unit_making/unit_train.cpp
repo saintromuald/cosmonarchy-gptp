@@ -177,7 +177,7 @@ namespace hooks
 							if (units_dat::BaseProperty[builtUnit->id] & UnitProperty::TwoUnitsIn1Egg)
 							{
 								count = 2;
-								builtUnits[1] = scbw::create_unit_ingame(builtUnit->id, builtUnit->playerId, builtUnit->position.x - 32, builtUnit->position.y, unit, true);
+								builtUnits[1] = scbw::create_unit_ingame(builtUnit->id, builtUnit->player, builtUnit->position.x - 32, builtUnit->position.y, unit, true);
 							}
 
 							for (u32 i = 0; i < count; i++)
@@ -215,7 +215,7 @@ namespace hooks
 							}
 							else if (!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
 							{
-								helper::refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5], unit->playerId);
+								helper::refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5], unit->player);
 							}
 							do
 							{

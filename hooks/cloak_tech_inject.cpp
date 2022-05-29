@@ -153,7 +153,7 @@ namespace
 		}
 		if (!(unit->status & UnitStatus::RequiresDetection))
 		{
-			if (unit->canUseTech(hooks::getCloakingTech(unit), unit->playerId) == 1)
+			if (unit->canUseTech(hooks::getCloakingTech(unit), unit->player) == 1)
 			{
 				applyCloakingOrderHook(unit);
 				//applyCloakingOrderFunc(unit);
@@ -224,7 +224,7 @@ namespace
 			}
 		}
 		race = (*activePortraitUnit)->getRace();
-		scbw::showErrorMessageWithSfx((*activePortraitUnit)->playerId, 864 + race, 156 + race);
+		scbw::showErrorMessageWithSfx((*activePortraitUnit)->player, 864 + race, 156 + race);
 		return false;
 	}
 }

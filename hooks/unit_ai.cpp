@@ -8,15 +8,14 @@
 namespace hooks
 {
 	void ai_training_unit(Unit* result, Unit* parent) { // 004A2830
-		if (playerTable[result->playerId].type != PlayerType::Computer) {
+		if (playerTable[result->player].type != PlayerType::Computer) {
 			return;
 		}
 
-		if (result->id == UnitId::TerranCleric && !AIScriptController[result->playerId].mainMedic) {
-			AIScriptController[result->playerId].mainMedic = result;
+		if (result->id == UnitId::TerranCleric && !AIScriptController[result->player].mainMedic) {
+			AIScriptController[result->player].mainMedic = result;
 		}
 
-		// Worker or Ovileth
 		if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
 			helper::AI_TrainingWorker(result, parent);
 		} else if (scbw::unitIdIsZergSupply(result->id)) {
@@ -54,7 +53,7 @@ namespace hooks
 		}
 
 		s32 regionId = helper::get_region_id(pX, pY);
-		AiRegion* playerRegion = AiRegionCaptains[parent->playerId];
+		AiRegion* playerRegion = AiRegionCaptains[parent->player];
 		if (playerRegion == nullptr)
 		{
 			GPTP::logger << "null region in AI_TrainingBroodling!" << '\n';
@@ -70,7 +69,7 @@ namespace hooks
 		{
 			if (playerRegion[regionId].state != RegionState::Nothing)
 			{
-				helper::AI_AssignMilitary(1, region);
+				helper::ai_set_region_type(1, region);
 			}
 			helper::AI_AddMilitary(region, result, 1);
 		}
@@ -84,7 +83,7 @@ namespace hooks
 		if (parent_ai && (parent_ai->type == AiType::Worker || parent_ai->type == AiType::Building)) {
 			town = parent_ai->town;
 		} else {
-			town = scbw::get_closest_town(unit->playerId, unit->position);
+			town = scbw::get_closest_town(unit->player, unit->position);
 		}
 
 		if (parent == unit) {
@@ -130,7 +129,7 @@ namespace hooks
 		{
 			if (newUnit->status & UnitStatus::IsHallucination)
 			{
-				helper::AI_AddMilitary(&AiRegionCaptains[(u8)newUnit->playerId][helper::get_region_id(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
+				helper::AI_AddMilitary(&AiRegionCaptains[(u8)newUnit->player][helper::get_region_id(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
 				return;
 			}
 			if (unitId != UnitId::TerranNuclearMissile && unitId != UnitId::ProtossWitness)
@@ -324,11 +323,11 @@ namespace hooks
 				}
 
 				u32 town_hall_id = UnitId::ZergHatchery;
-				if (playerTable[unit->playerId].race == RaceId::Terran)
+				if (playerTable[unit->player].race == RaceId::Terran)
 				{
 					town_hall_id = UnitId::TerranCommandCenter;
 				}
-				else if (playerTable[unit->playerId].race == RaceId::Protoss)
+				else if (playerTable[unit->player].race == RaceId::Protoss)
 				{
 					town_hall_id = UnitId::ProtossNexus;
 				}
@@ -342,7 +341,7 @@ namespace hooks
 				}
 				else
 				{
-					u32 refinery_id = helper::getPlayerDefaultRefineryUnitType(unit->playerId);
+					u32 refinery_id = helper::getPlayerDefaultRefineryUnitType(unit->player);
 					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneGeyser)
 					{
 						if (!town->gas_buildings[0])
@@ -373,7 +372,7 @@ namespace hooks
 	{												// originally had 3 args; last one was unused
 		if (silo->id == UnitId::TerranNuclearSilo && !silo->building.silo.isReady)
 		{
-			Unit* nuke = helper::create_unit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
+			Unit* nuke = helper::create_unit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->player);
 			if (nuke)
 			{
 				helper::update_unit_stats_and_finish_building(nuke);
@@ -460,7 +459,7 @@ namespace hooks
 		WorkerAi* worker;
 		BuildingAi* building;
 
-		if (playerTable[(u8)parent->playerId].type == PlayerType::Computer)
+		if (playerTable[(u8)parent->player].type == PlayerType::Computer)
 		{
 			parentAI = (UnitAi*)parent->unit_ai;
 			if (parentAI)
@@ -531,14 +530,14 @@ namespace hooks
 						}
 						if (i >= 4)
 						{
-							helper::AI_PrepareGuardAI(result->sprite->position.y, (u8)result->playerId, 1, result->sprite->position.x);
+							helper::AI_PrepareGuardAI(result->sprite->position.y, (u8)result->player, 1, result->sprite->position.x);
 						}
 					}
 				}
 				else
 				{
-					helper::AI_PrepareGuardAI(result->sprite->position.y, (u8)result->playerId, 5, result->sprite->position.x);
-					helper::AI_PrepareGuardAI(result->sprite->position.y, (u8)result->playerId, 1, result->sprite->position.x);
+					helper::AI_PrepareGuardAI(result->sprite->position.y, (u8)result->player, 5, result->sprite->position.x);
+					helper::AI_PrepareGuardAI(result->sprite->position.y, (u8)result->player, 1, result->sprite->position.x);
 				}
 			}
 		}
@@ -701,7 +700,7 @@ namespace hooks
 	// Hooked to investigate unit AI corruption - Pr0nogo
 	void AI_TrainingOverlord(Unit* newUnit, Unit* oldUnit) // 00435770
 	{
-		if (playerTable[oldUnit->playerId].type == PlayerType::Computer)
+		if (playerTable[oldUnit->player].type == PlayerType::Computer)
 		{
 			UnitAi* oldUnitAI = (UnitAi*)oldUnit->unit_ai;
 			if (oldUnitAI)
@@ -783,14 +782,14 @@ namespace hooks
 						}
 						if (i >= 4)
 						{
-							helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->playerId, 1, newUnit->sprite->position.x);
+							helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->player, 1, newUnit->sprite->position.x);
 						}
 					}
 				}
 				else
 				{
-					helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->playerId, 5, newUnit->sprite->position.x);
-					helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->playerId, 1, newUnit->sprite->position.x);
+					helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->player, 5, newUnit->sprite->position.x);
+					helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->player, 1, newUnit->sprite->position.x);
 				}
 			}
 		}
@@ -859,7 +858,7 @@ namespace hooks
 							{
 								if ( (!(first_player_unit->status & UnitStatus::InBuilding)
 									|| a2 != 20
-									&& (AIScriptController[first_player_unit->playerId].AI_Flags.isUseMapSettings
+									&& (AIScriptController[first_player_unit->player].AI_Flags.isUseMapSettings
 										|| helper::Ai_IsAttackPrepareRegion(ai_region)))
 									&& (ai_region->state != 7 && !helper::Ai_IsAttackPrepareRegion(ai_region) || unit_ai_region_id != a6)
 									&& unit_ai_region->defensePriorityAdd < a2 )

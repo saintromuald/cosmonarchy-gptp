@@ -262,7 +262,7 @@ namespace hooks
 						weaponId,
 						damage,
 						attacker,
-						attacker->playerId,
+						attacker->player,
 						attacker->currentDirection1,
 						1);
 				}
@@ -283,7 +283,7 @@ namespace hooks
 					weaponId,
 					damage,
 					attacker,
-					attacker->playerId,
+					attacker->player,
 					attacker->currentDirection1,
 					1);
 			}
@@ -411,9 +411,9 @@ namespace hooks
 
 		if (target != nullptr
 			&& !(target->status & UnitStatus::Invincible)
-			&& helper::getSpellStatString(target, TechId::Consume, attacker->playerId) == 0) // returning a value != 0 means there was an error
+			&& helper::getSpellStatString(target, TechId::Consume, attacker->player) == 0) // returning a value != 0 means there was an error
 		{
-			helper::incrementUnitDeathScores(target, attacker->playerId);
+			helper::incrementUnitDeathScores(target, attacker->player);
 			if (!(target->status & UnitStatus::IsHallucination))
 			{
 				UnitArray units = UnitSearchRadial(attacker->position, 3 * 32);
@@ -556,13 +556,13 @@ namespace hooks
 				helper::fix_target_location(&pos, UnitId::ZergRilirokor);
 
 				// create the broodling
-				created_broodling = helper::create_unit(UnitId::ZergRilirokor, pos.x, pos.y, attacker->playerId);
+				created_broodling = helper::create_unit(UnitId::ZergRilirokor, pos.x, pos.y, attacker->player);
 				UnitExt* broodlingExt = globals.get_unit_ext(created_broodling);
 				broodlingExt->units[UnitBroodlingMother] = attacker;
 
 				if (created_broodling == nullptr)
 				{
-					helper::display_last_network_error_for_player(attacker->playerId);
+					helper::display_last_network_error_for_player(attacker->player);
 					jump_to_end_of_loop = true;
 				}
 				else
@@ -597,7 +597,7 @@ namespace hooks
 	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		if (attacker) {
-			globals.createEffect(EffectId::PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::Disruption_Web, 5, attacker->playerId, attacker);
+			globals.createEffect(EffectId::PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::Disruption_Web, 5, attacker->player, attacker);
 		}
 		//if (attacker) {
 		//	u32 range = 64;
@@ -830,7 +830,7 @@ LABEL_15:
 				{
 					v8 = "";
 				}
-				if ((u8)v1->playerId == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+				if ((u8)v1->player == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
 				{
 					helper::setUnitStatTxtErrorMsg((s32)v8);
 				}
@@ -841,7 +841,7 @@ LABEL_15:
 		a2.y = v1->orderTarget.pt.y;
 		a2.x = v9;
 		helper::fix_target_location(&a2, UnitId::Spell_ScannerSweep);
-		v10 = helper::create_unit(0x21u, a2.x, a2.y, (u8)v1->playerId);
+		v10 = helper::create_unit(0x21u, a2.x, a2.y, (u8)v1->player);
 		v11 = v10;
 		if (v10)
 		{
@@ -856,7 +856,7 @@ LABEL_15:
 		}
 		else
 		{
-			helper::display_last_network_error_for_player(v1->playerId);
+			helper::display_last_network_error_for_player(v1->player);
 			helper::to_idle(v1);
 		}
 	}
@@ -886,7 +886,7 @@ LABEL_15:
 		  || unitId == UnitId::ProtossSteward
 		  || unitId == UnitId::ProtossPlasmaShell
 		  || units_dat::BaseProperty[unitId] & UnitProperty::Addon
-		  || (u8)unit->playerId == playerIdVar)
+		  || (u8)unit->player == playerIdVar)
 		{
 			return 0;
 		}

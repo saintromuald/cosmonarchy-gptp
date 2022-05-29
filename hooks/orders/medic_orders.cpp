@@ -157,7 +157,7 @@ namespace hooks
 
 	u32 doMedicHeal_Func(Unit* cleric, Unit* target) // 00463C40
 	{
-		if (cleric->canUseTech(TechId::Healing, cleric->playerId))
+		if (cleric->canUseTech(TechId::Healing, cleric->player))
 		{
 			if (target && helper::AI_OrderHeal(cleric, target))
 			{
@@ -272,9 +272,9 @@ namespace hooks
 		bool result;
 		if (abilityFlags & UnitProperty::Building
 			|| target->status & UnitStatus::InAir
-			|| !scbw::isAlliedTo(medic->playerId, target->playerId)
-			|| target->playerId >= 8
-			|| medic->playerId >= 8
+			|| !scbw::isAlliedTo(medic->player, target->player)
+			|| target->player >= 8
+			|| medic->player >= 8
 			|| target->hitPoints >= units_dat::MaxHitPoints[type]
 			|| target->isFrozen()
 			|| targetExt->values[TimerReviveFlagClearMax])

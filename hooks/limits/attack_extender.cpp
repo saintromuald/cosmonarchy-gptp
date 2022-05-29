@@ -87,14 +87,14 @@ namespace hooks
 		regionVar = region;
 		if (a2 && (*SAI_Paths)->regions[region->region].accessibilityFlags == 0x1FFD || helper::AI_CanTravelToRegion(region, region))
 		{
-			helper::AI_AssignMilitary(0, region);
+			helper::ai_set_region_type(0, region);
 			attackTarget = helper::AI_PickAttackTarget_NoBuildings(region);
 			if (attackTarget)
 			{
 				targetRegion = &AiRegionCaptains[(u8)region->playerId][helper::get_region_id(
 					attackTarget->sprite->position.x,
 					attackTarget->sprite->position.y)];
-				helper::AI_AssignMilitary(9, targetRegion);
+				helper::ai_set_region_type(9, targetRegion);
 				helper::AI_MoveMilitaryToOtherRegion(targetRegion, region, 0, 0, 1);
 			}
 			else
@@ -110,12 +110,12 @@ LABEL_15:
 			if (regionId)
 			{
 				targetRegion2 = &AiRegionCaptains[(u8)region->playerId][regionId];
-				helper::AI_AssignMilitary(1, targetRegion2);
+				helper::ai_set_region_type(1, targetRegion2);
 				targetRegion3 = targetRegion2;
 				regionVar = region;
 				helper::AI_MoveMilitaryToOtherRegion(targetRegion3, region, 0, 0, 1);
 			}
-			helper::AI_AssignMilitary(0, regionVar);
+			helper::ai_set_region_type(0, regionVar);
 			return;
 		}
 		missingUnits = AI_GetMissingAttackForceUnits(region, attackWave, 1);

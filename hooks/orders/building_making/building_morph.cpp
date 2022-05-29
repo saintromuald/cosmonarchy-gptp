@@ -288,8 +288,8 @@ namespace hooks
 				else
 				{ // ALL of this code is no longer run; previously used for protoss building morphs (e.g. gateway -> principality)
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-					resources->minerals[unit->playerId] += (units_dat::MineralCost[builtUnitId] * 3) / 4;
-					resources->gas[unit->playerId] += (units_dat::GasCost[builtUnitId] * 3) / 4;
+					resources->minerals[unit->player] += (units_dat::MineralCost[builtUnitId] * 3) / 4;
+					resources->gas[unit->player] += (units_dat::GasCost[builtUnitId] * 3) / 4;
 					unit->status |= UnitStatus::Completed;
 					helper::increment_unit_scores_ex(unit, -1, 0);
 					unit->status -= UnitStatus::Completed;
@@ -325,19 +325,19 @@ namespace hooks
 			static u32* const u32_00581E44 = (u32*)0x00581E44;
 			static u32* const u32_00581ED4 = (u32*)0x00581ED4;
 			static u16* const u16_0066345A = (u16*)0x0066345A;
-			helper::refundBuildingCost(unit->id, unit->playerId);
+			helper::refundBuildingCost(unit->id, unit->player);
 
 			// possibly related to scores?
-			u32_00581ED4[unit->playerId] = u32_00581ED4[unit->playerId] - *u16_0066345A;
-			u32_00581E44[unit->playerId] = u32_00581E44[unit->playerId] - 1;
+			u32_00581ED4[unit->player] = u32_00581ED4[unit->player] - *u16_0066345A;
+			u32_00581E44[unit->player] = u32_00581E44[unit->player] - 1;
 
 			if (unit->id == UnitId::ZergExcisant)
 			{
-				Unit* drone = helper::create_unit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
+				Unit* drone = helper::create_unit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->player);
 				if (drone == nullptr)
 				{
-					helper::refundUnitTrainCost(UnitId::ZergDroleth, unit->playerId);
-					helper::display_last_network_error_for_player(unit->playerId);
+					helper::refundUnitTrainCost(UnitId::ZergDroleth, unit->player);
+					helper::display_last_network_error_for_player(unit->player);
 					unit->remove();
 					bStopThere = true;
 				}

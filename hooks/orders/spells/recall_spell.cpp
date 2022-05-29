@@ -72,7 +72,7 @@ namespace hooks
 	// to do the Recall effect.
 	void spells_Recall_ActionOnTargetInRange(Unit* target, Unit* caster) {
 		if (!(target->sprite->flags & SpriteFlags::Hidden) &&
-			(target->playerId == caster->playerId || scbw::isAlliedTo(target->playerId, caster->playerId)) &&
+			(target->player == caster->player || scbw::isAlliedTo(target->player, caster->player)) &&
 			!(units_dat::BaseProperty[target->id] & UnitProperty::Building) &&
 			!(target->status & UnitStatus::Invincible) &&
 			!(target->status & UnitStatus::Burrowed) &&
@@ -121,10 +121,10 @@ namespace hooks
 					Point16 center = {unit->position.x, unit->position.y};
 					Point16 top = center;
 					top.y -= 3 * 32;
-					scbw::createAndInitThingy(SpriteId::RecallFieldShorter, center.x, center.y, unit->playerId, unit->sprite->elevationLevel - 1);
+					scbw::createAndInitThingy(SpriteId::RecallFieldShorter, center.x, center.y, unit->player, unit->sprite->elevationLevel - 1);
 					for (u32 i = 0; i < 8; ++i) {
 						Point16 next = scbw::rotate_point(center, top, i * (360 / 8));
-						scbw::createAndInitThingy(SpriteId::RecallFieldShorter, next.x, next.y, unit->playerId, unit->sprite->elevationLevel - 1);
+						scbw::createAndInitThingy(SpriteId::RecallFieldShorter, next.x, next.y, unit->player, unit->sprite->elevationLevel - 1);
 					}
 				}
 				unit->orderToIdle();
@@ -133,7 +133,7 @@ namespace hooks
 			if (!scbw::isCheatEnabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::EnergyCost[TechId::Recall] * 256) {
 				u8 raceId = unit->getRace();
 				char* message = (char*)statTxtTblNew->getString(864 + raceId);	//"Not enough energy" text
-				if (message && unit->playerId == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID) {
+				if (message && unit->player == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID) {
 					helper::setUnitStatTxtErrorMsg(message);
 				}
 				unit->orderToIdle();
@@ -147,8 +147,8 @@ namespace hooks
 					unit->orderTarget.pt.y = unit->orderTarget.unit->sprite->position.y;
 				}
 
-				scbw::createAndInitThingy(SpriteId::Recall_Field, unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel - 1);
-				scbw::createAndInitThingy(SpriteId::Recall_Field, unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->playerId, unit->sprite->elevationLevel + 1);
+				scbw::createAndInitThingy(SpriteId::Recall_Field, unit->position.x, unit->position.y, unit->player, unit->sprite->elevationLevel - 1);
+				scbw::createAndInitThingy(SpriteId::Recall_Field, unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->player, unit->sprite->elevationLevel + 1);
 
 				u32 random_value = 0;
 				if (*IS_IN_GAME_LOOP) {

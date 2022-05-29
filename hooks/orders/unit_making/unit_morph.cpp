@@ -131,7 +131,7 @@ namespace hooks
 		{
 			if (scbw::is_conventional_unit_morph_source(unit->id, true, true))
 			{
-				if (!helper::has_supplies_for_unit(unit->buildQueue[unit->buildQueueSlot], unit->playerId, 1))
+				if (!helper::has_supplies_for_unit(unit->buildQueue[unit->buildQueueSlot], unit->player, 1))
 				{
 					helper::refund_all_queue_slots(unit);
 					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
@@ -486,14 +486,14 @@ namespace hooks
 			|| unit->id == UnitId::ProtossAccantor
 			|| scbw::is_larval_egg(unit)) // just egg
 		{
-			if (helper::has_supplies_for_unit(unit_id, unit->playerId, notify_error))
+			if (helper::has_supplies_for_unit(unit_id, unit->player, notify_error))
 			{
-				Unit* result = helper::create_unit(unit_id, unit->getX(), unit->getY(), unit->playerId);
+				Unit* result = helper::create_unit(unit_id, unit->getX(), unit->getY(), unit->player);
 				if (result)
 				{
 					return result;
 				}
-				helper::display_last_network_error_for_player(unit->playerId);
+				helper::display_last_network_error_for_player(unit->player);
 			}
 		}
 		return 0;

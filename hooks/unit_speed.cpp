@@ -138,7 +138,7 @@ namespace hooks
 				bool validPlayer = false;
 				for (auto player : unitExt->valueVectors[ValueVectorSignifySourcePlayer])
 				{
-					if (scbw::isAlliedTo(player, enemy->playerId))
+					if (scbw::isAlliedTo(player, enemy->player))
 					{
 						validPlayer = true;
 						break;
@@ -198,7 +198,7 @@ namespace hooks
 					);
 					unitFinder.forEach([&](Unit* target)
 					{
-						if (scbw::isAlliedTo(unit->playerId, target->playerId)
+						if (scbw::isAlliedTo(unit->player, target->player)
 							|| units_dat::BaseProperty[target->id] & UnitProperty::Flyer)
 						{
 							return;
@@ -232,7 +232,7 @@ namespace hooks
 				auto tile = scbw::get_active_tile_at(unit->getX(), unit->getY());
 				if (tile.isUnwalkable || !tile.isWalkable)
 				{
-					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion))
+					if (scbw::getUpgradeLevel(unit->player, UpgradeId::IonPropulsion))
 					{
 						speed *= 0.5;
 					}

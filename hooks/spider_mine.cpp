@@ -193,7 +193,7 @@ namespace hooks
 		v1 = unit;
 		if (unit->mainOrderState)
 		{
-			if (helper::techUseAllowed(unit, 3u, unit->playerId)
+			if (helper::techUseAllowed(unit, 3u, unit->player)
 				&& ((v11 = v1->sprite, v1->moveTarget.pt.x != v11->position.x)
 					|| v1->moveTarget.pt.y != v11->position.y
 					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1))
@@ -205,7 +205,7 @@ namespace hooks
 					a2.x = v1->orderTarget.pt.x;
 					a2.y = v12;
 					helper::fix_target_location(&a2, 0xDu);
-					v13 = helper::create_unit(0xDu, a2.x, a2.y, (unsigned __int8)v1->playerId);
+					v13 = helper::create_unit(0xDu, a2.x, a2.y, (unsigned __int8)v1->player);
 					v14 = v13;
 					if (v13)
 					{
@@ -216,7 +216,7 @@ namespace hooks
 					}
 					else
 					{
-						helper::display_last_network_error_for_player(v1->playerId);
+						helper::display_last_network_error_for_player(v1->player);
 					}
 					helper::to_idle(v1);
 				}

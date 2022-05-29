@@ -108,12 +108,12 @@ namespace hooks
             {
                 if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked))
                 {
-                    if (!(other_unit->visibilityStatus & (1 << builder->playerId)))
+                    if (!(other_unit->visibilityStatus & (1 << builder->player)))
                     {
                         needs_detection = true;
                     }
                 }
-                if (scbw::isAlliedTo(other_unit->playerId, builder->playerId))
+                if (scbw::isAlliedTo(other_unit->player, builder->player))
                 {
                     return 0;
                 }

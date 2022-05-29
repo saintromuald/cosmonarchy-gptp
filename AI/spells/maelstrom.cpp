@@ -11,7 +11,7 @@ namespace AI
 		{
 			bounds = 32 * 9;
 		}
-		else if (isUmsMode(caster->playerId))
+		else if (isUmsMode(caster->player))
 		{
 			bounds = 32 * 64;
 		}

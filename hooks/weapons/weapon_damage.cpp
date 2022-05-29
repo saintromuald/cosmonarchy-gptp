@@ -135,7 +135,7 @@ namespace hooks
 				if (ai->town == nullptr)
 				{
 					scbw::printf("Ai_ReactToHit crash - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
-						data.attacker->id, data.attacker->playerId, data.target->id, data.target->playerId);
+						data.attacker->id, data.attacker->player, data.target->id, data.target->player);
 					canDamage = false;
 				}
 			}
@@ -207,7 +207,7 @@ namespace hooks
 		{
 			if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
 			{
-				s32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
+				s32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->player, UpgradeId::ProtossPlasmaShields) * 256;
 				if (data.finalDamage > plasmaShieldUpg)
 				{
 					data.finalDamage -= plasmaShieldUpg;
@@ -458,11 +458,11 @@ namespace hooks
 				if (haluAttackerExt->units[UnitHallucinationPointer] == nullptr
 					&& !(haluAttacker->status & UnitStatus::IsHallucination))
 				{
-					if (scbw::isAlliedTo(haluAttacker->playerId, data.target->playerId))
+					if (scbw::isAlliedTo(haluAttacker->player, data.target->player))
 					{
 						return;
 					}
-					Unit* hal_unit = helper::createHallucination(haluAttacker, haluAttacker->playerId);
+					Unit* hal_unit = helper::createHallucination(haluAttacker, haluAttacker->player);
 					if (hal_unit != nullptr)
 					{
 						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
@@ -492,7 +492,7 @@ namespace hooks
 				case UnitId::ProtossSimulacrum:
 				{
 					// Autovitality - Simulacrum behavior
-					if (!scbw::isAlliedTo(data.target->playerId, data.attacker->playerId)
+					if (!scbw::isAlliedTo(data.target->player, data.attacker->player)
 						&& !scbw::isUnderDarkSwarm(data.target)
 						&& data.shieldReduceAmount >= data.target->shields
 						&& data.finalDamage
@@ -602,7 +602,7 @@ namespace hooks
 					case WeaponId::DemiurgeGalacticWeaver:
 					{
 						// Demiurge - Worship
-						if (data.target->playerId != data.attacker->playerId
+						if (data.target->player != data.attacker->player
 							&& data.target->getCurrentHpInGame() <= data.target->getMaxHpInGame() / 2
 							&& data.target->hitPoints > data.finalDamage)
 						{
@@ -612,7 +612,7 @@ namespace hooks
 					case WeaponId::KonviliskSowingSpines:
 					{
 						// Fertile Spines - Konvilisk behavior
-						scbw::applyParasite(data.target, data.attacker->playerId, data.attacker);
+						scbw::applyParasite(data.target, data.attacker->player, data.attacker);
 					} break;
 					case WeaponId::GorgonArtificeBattery:
 					{
@@ -628,13 +628,13 @@ namespace hooks
 						if (!scbw::unitIsPacifist(data.target))
 						{
 							targetExt->values[ValueDeconstruction]++;
-							targetExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
+							targetExt->values[ValueDeconstructionPlayer] = data.attacker->player;
 							s32 overlayOffset = scbw::getOverlayOffset(data.target->id);
 							if (data.target->subunit != nullptr)
 							{
 								UnitExt* subunitExt = globals.get_unit_ext(data.target->subunit);
 								subunitExt->values[ValueDeconstruction]++;
-								subunitExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
+								subunitExt->values[ValueDeconstructionPlayer] = data.attacker->player;
 								if (!data.target->subunit->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
 								{
 									data.target->subunit->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
@@ -686,9 +686,9 @@ namespace hooks
 					case WeaponId::CharlatanFerventBlaster:
 					{
 						// Charlatan - Leading the Blind passive
-						if (!scbw::isAlliedTo(data.attacker->playerId, data.target->playerId))
+						if (!scbw::isAlliedTo(data.attacker->player, data.target->player))
 						{
-							scbw::applyNewHallucination(data.target, data.attacker->playerId, CharlatanHallucinationTimer);
+							scbw::applyNewHallucination(data.target, data.attacker->player, CharlatanHallucinationTimer);
 						}
 					} break;
 					case WeaponId::MadrigalImperiosoMissiles:
@@ -721,8 +721,8 @@ namespace hooks
 							data.target->getY() + range
 						).forEach([&](Unit* unit)
 							{
-								if (data.attackingPlayerId != unit->playerId &&
-									!scbw::isAlliedTo(data.attackingPlayerId, unit->playerId))
+								if (data.attackingPlayerId != unit->player &&
+									!scbw::isAlliedTo(data.attackingPlayerId, unit->player))
 								{
 									// Ally Check
 									return;
@@ -773,7 +773,7 @@ namespace hooks
 									{
 										return;
 									}
-									if (scbw::isAlliedTo(data.attacker->playerId, target->playerId))
+									if (scbw::isAlliedTo(data.attacker->player, target->player))
 									{
 										return;
 									}
@@ -941,7 +941,7 @@ namespace hooks
 					u32 dist = scbw::getDistanceFast(data.target->position, unit->position);
 					if (unit->id == UnitId::SharedAnticthon && dist <= 4 * 32)
 					{
-						if (scbw::isAlliedTo(data.target->playerId, unit->playerId))
+						if (scbw::isAlliedTo(data.target->player, unit->player))
 						{
 							hp += (1 + unitExt->values[ValueAnticthonStacks]) * 256;
 							unitExt->values[ValueAnticthonStacks]++;
@@ -957,7 +957,7 @@ namespace hooks
 				town = ai->town;
 			}
 
-			globals.initRevive(data.target->position.x, data.target->position.y, data.target->playerId, data.target->id, data.target->energy, hp, town);
+			globals.initRevive(data.target->position.x, data.target->position.y, data.target->player, data.target->id, data.target->energy, hp, town);
 		}
 
 		if (targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
@@ -1041,11 +1041,11 @@ namespace hooks
 						[&](Unit* unit)
 					{
 						// Don't attack friendly / allied units
-						if (unit->playerId == data.target->playerId)
+						if (unit->player == data.target->player)
 						{
 							return false;
 						}
-						if (scbw::isAlliedTo(data.target->playerId, unit->playerId))
+						if (scbw::isAlliedTo(data.target->player, unit->player))
 						{
 							return false;
 						}
@@ -1057,7 +1057,7 @@ namespace hooks
 						{
 							return false;
 						}
-						if (!unit->isVisibleTo(data.target->playerId)) {
+						if (!unit->isVisibleTo(data.target->player)) {
 							return false;
 						}
 						// TODO: iquare consultation
@@ -1089,7 +1089,7 @@ namespace hooks
 				{
 					// Alkajelisk - Parasite
 					targetExt->values[ValueAlkajeliskParasite] = 1;
-					targetExt->values[ValueAlkajeliskParasitePlayer] = data.attacker->playerId;
+					targetExt->values[ValueAlkajeliskParasitePlayer] = data.attacker->player;
 				} break;
 				case WeaponId::KaiserBlades:
 				{

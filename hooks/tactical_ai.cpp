@@ -888,7 +888,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 		UnitArraySortByDistance(&allies, unit->position);
 		UnitArray enemies = allies;
 		UnitArrayFilter(&allies, unit, FilterAlly);
-		UnitArrayFilter(&enemies, unit, unit->playerId == 11 ? 0 : FilterEnemy);
+		UnitArrayFilter(&enemies, unit, unit->player == 11 ? 0 : FilterEnemy);
 
 		if (enemies.size)
 		{
@@ -934,8 +934,8 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 	}
 
 	if (unit->unit_ai && !helper::isUnitLoaded(unit) &&
-		playerTable[unit->playerId].type != PlayerType::Human &&
-		playerTable[unit->playerId].type != PlayerType::HumanDefeated)
+		playerTable[unit->player].type != PlayerType::Human &&
+		playerTable[unit->player].type != PlayerType::HumanDefeated)
 	{
 		KitingAi(unit, unitExt);
 
@@ -1119,11 +1119,11 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			cosmonarchyFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
 				Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u)
 			{
-				if (!scbw::isAlliedTo(unit->playerId, u->playerId))
+				if (!scbw::isAlliedTo(unit->player, u->player))
 				{
 					enemyUnitsHealth += (u->hitPoints + u->shields) / 256;
 				}
-				if (scbw::isAlliedTo(unit->playerId, u->playerId))
+				if (scbw::isAlliedTo(unit->player, u->player))
 				{
 					if (units_dat::BaseProperty[u->id] & UnitProperty::ResourceDepot)
 					{

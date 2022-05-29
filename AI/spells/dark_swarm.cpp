@@ -85,7 +85,7 @@ namespace AI
 			if (targetOfTarget != nullptr)
 			{
 
-				if (targetOfTarget->playerId < PLAYABLE_PLAYER_COUNT
+				if (targetOfTarget->player < PLAYABLE_PLAYER_COUNT
 					&& !caster->isTargetEnemy(targetOfTarget)
 					&& targetOfTarget->subunit == nullptr
 					&& !(targetOfTarget->status & UnitStatus::InAir))
@@ -156,7 +156,7 @@ namespace AI
 		{
 			bounds = 32 * 9;	/*0x120*/
 		}
-		else if (isUmsMode(caster->playerId))
+		else if (isUmsMode(caster->player))
 		{
 			bounds = 32 * 64;	/*0x800*/
 		}

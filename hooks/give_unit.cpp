@@ -9,7 +9,7 @@ namespace hooks
 	// Changes would affect all those functions and maybe more
 	void giveUnit(Unit* unit, u32 playerId, u32 bCountAsCompleted)
 	{
-		if (unit->playerId != playerId)
+		if (unit->player != playerId)
 		{
 			helper::AI_RemoveUnitAI(unit, 0);
 
@@ -34,22 +34,22 @@ namespace hooks
 				helper::DestroyUnitSelection(unit);
 			}
 
-			if (unit->player_link.prev != nullptr)
+			if (unit->player_link.prev)
 			{
 				(unit->player_link.prev)->player_link.next = unit->player_link.next;
 			}
-			if (unit->player_link.next != nullptr)
+			if (unit->player_link.next)
 			{
 				(unit->player_link.next)->player_link.prev = unit->player_link.prev;
 			}
-			if (unit == firstPlayerUnit->unit[unit->playerId])
+			if (unit == firstPlayerUnit->unit[unit->player])
 			{
-				firstPlayerUnit->unit[unit->playerId] = unit->player_link.next;
+				firstPlayerUnit->unit[unit->player] = unit->player_link.next;
 			}
 
 			unit->player_link.prev = nullptr;
 			unit->player_link.next = nullptr;
-			unit->playerId = playerId;
+			unit->player = playerId;
 
 			// maybe "if" not needed?
 			if (isSelected)
@@ -60,7 +60,7 @@ namespace hooks
 			unit->player_link.prev = nullptr;
 			unit->player_link.next = firstPlayerUnit->unit[playerId];
 
-			if (firstPlayerUnit->unit[playerId] != nullptr)
+			if (firstPlayerUnit->unit[playerId])
 			{
 				(firstPlayerUnit->unit[playerId])->player_link.prev = unit;
 			}
@@ -86,7 +86,7 @@ namespace hooks
 			}
 
 			helper::give_ai(unit);
-			if (unit->subunit != nullptr && units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
+			if (unit->subunit && units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
 			{
 				giveUnit(unit->subunit, playerId, bCountAsCompleted);
 			}
@@ -95,7 +95,7 @@ namespace hooks
 
 			/* -- Disabled since Flag ID is used in Cosmonarchy
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker
-				&& unit->worker.powerup != nullptr
+				&& unit->worker.powerup
 				&& (unit->worker.powerup)->id == UnitId::Powerup_Flag)
 			{
 				if ((unit->worker.powerup)->playerId == playerId || playerId >= 8)
@@ -110,7 +110,7 @@ namespace hooks
 	// Hooked to rule out unit AI type issues - Pr0nogo
 	void giveAI(Unit* unit) // 00463040
 	{
-		s32 player = unit->playerId;
+		s32 player = unit->player;
 		if (player < 8 && playerTable[player].type == PlayerType::Computer)
 		{
 			if (unit->id == UnitId::TerranCleric)

@@ -25,7 +25,7 @@ namespace hooks
 			
 			scbw::decloakProc(unit);
 
-			helper::createBullet(WeaponId::CantavisHallucinationCast, unit, unit->getX(), unit->getY(), unit->playerId, unit->currentDirection1);
+			helper::createBullet(WeaponId::CantavisHallucinationCast, unit, unit->getX(), unit->getY(), unit->player, unit->currentDirection1);
 
 			if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 			{

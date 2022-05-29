@@ -34,9 +34,9 @@ const u32 hyperTrigger = 0x006509A0;
 #include "SCBW\UnitFinder.h"
 void shamanProc(Unit* shaman, u32 heal, Unit* target)
 {
-	if (target->playerId != shaman->playerId)
+	if (target->player != shaman->player)
 	{
-		if (!scbw::isAlliedTo(target->playerId, shaman->playerId))
+		if (!scbw::isAlliedTo(target->player, shaman->player))
 		{
 			return;
 		}
@@ -211,7 +211,7 @@ namespace hooks
 				// Reveal resources
 				for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 				{
-					if (unit->playerId == 11 && units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+					if (unit->player == 11 && units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 					{
 						unit->sprite->visibilityFlags |= reveal_flag;
 					}
@@ -301,7 +301,7 @@ namespace hooks
 			if (selected
 				&& selected->id == UnitId::ZergNydusCanal
 				&& selected->building.nydusExit
-				&& (scbw::isAlliedTo(selected->playerId, *LOCAL_HUMAN_ID) || helper::getDetectingPlayers(selected) & (1 << *LOCAL_HUMAN_ID)))
+				&& (scbw::isAlliedTo(selected->player, *LOCAL_HUMAN_ID) || helper::getDetectingPlayers(selected) & (1 << *LOCAL_HUMAN_ID)))
 			{
 				Unit* exit = selected->building.nydusExit;
 				graphics::drawLine(
@@ -369,18 +369,18 @@ namespace hooks
 							targetExt->salvage_minerals += (f32)units_dat::MineralCost[target->id] / time;
 							while (targetExt->salvage_minerals > 1) {
 								targetExt->salvage_minerals -= 1;
-								resources->minerals[unit->playerId] += 1;
+								resources->minerals[unit->player] += 1;
 							}
 							
 							targetExt->salvage_gas += (f32)units_dat::GasCost[target->id] / time;
 							while (targetExt->salvage_gas > 1) {
 								targetExt->salvage_gas -= 1;
-								resources->gas[unit->playerId] += 1;
+								resources->gas[unit->player] += 1;
 							}
 							
 							if (targetExt->salvage_time >= time) {
-								resources->minerals[unit->playerId] += ceilf(targetExt->salvage_minerals);
-								resources->gas[unit->playerId] += ceilf(targetExt->salvage_gas);
+								resources->minerals[unit->player] += ceilf(targetExt->salvage_minerals);
+								resources->gas[unit->player] += ceilf(targetExt->salvage_gas);
 								target->remove();
 							}
 
@@ -484,7 +484,7 @@ namespace hooks
 				for (u32 i = 0; i < corpses.size; ++i) {
 					Thingy* corpse = corpses.corpses[i];
 					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
-						Unit* egg = scbw::create_unit_ingame(UnitId::ZergEgg, unit->playerId, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
+						Unit* egg = scbw::create_unit_ingame(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
 							egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
 							egg->buildQueue[egg->buildQueueSlot] = UnitId::ZergSovroleth;
@@ -521,7 +521,7 @@ namespace hooks
 				}
 				if (unitExt->timers[TimerCorpseCocoonHatch] == 1) {
 					helper::replace_unit_with_type(unit, UnitId::ZergSovroleth);
-					helper::give_ai(unit);
+					scbw::give_ai_ex(unit, true);
 
 					helper::play_morphing_complete_sound(unit);
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
@@ -573,7 +573,7 @@ namespace hooks
 							unit->orderTarget.unit = nullptr;
 							unit->orderTarget.pt.x = polar_x;
 							unit->orderTarget.pt.y = polar_y;
-							helper::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->playerId,
+							helper::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player,
 								scbw::dir_saturate(unit->currentDirection1, offset_direction));
 							helper::playSoundFromSource(80, unit, 1, 0);
 							unit->orderTarget.unit = target_unit;
@@ -585,11 +585,11 @@ namespace hooks
 				// Star Sovereign - Grief of All Gods
 				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
 				{
-					globals.createEffect(EffectId::StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId, unit, unit);
+					globals.createEffect(EffectId::StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->player, unit, unit);
 				}
 
 				// blast effects
-				u32 player = unit->playerId;
+				u32 player = unit->player;
 				u16 X = unit->position.x;
 				u16 Y = unit->position.y;
 				if (unit->orderSignal & 8)
@@ -685,7 +685,7 @@ namespace hooks
 					if (!unitExt->values[ValueDisruptionFieldOn])
 					{
 						unitExt->values[ValueDisruptionFieldOn] = 1;
-						globals.createEffect(EffectId::DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->playerId, unit, unit);
+						globals.createEffect(EffectId::DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, unit);
 					}
 					else if (unit->isFrozen())
 					{
@@ -841,7 +841,7 @@ namespace hooks
 								{
 									return false;
 								}
-								if (scbw::isAlliedTo(unit->playerId, target->playerId))
+								if (scbw::isAlliedTo(unit->player, target->player))
 								{
 									return false;
 								}
@@ -856,7 +856,7 @@ namespace hooks
 						{
 							unit->orderTarget.unit = targ;
 						}
-						helper::createBullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
+						helper::createBullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->player, unit->currentDirection1);
 					}
 				}
 			} break;
@@ -878,7 +878,7 @@ namespace hooks
 					pos.y = unitExt->values[ValueSpineY];
 					unit->position = pos;
 					unit->sprite->position = pos;
-					scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->playerId, unit, nullptr, spr_position);
+					scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->player, unit, nullptr, spr_position);
 					helper::playSoundFromSource(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
 					unit->position = position;
 					unit->sprite->position = spr_position;
@@ -961,7 +961,7 @@ namespace hooks
 						pos.y + radius
 					).forEach([&](Unit* target)
 					{
-						if (!(scbw::isAlliedTo(target->playerId, unit->playerId)))
+						if (!(scbw::isAlliedTo(target->player, unit->player)))
 						{
 							return;
 						}
@@ -1116,8 +1116,8 @@ namespace hooks
 								divider = 2;
 							}
 
-							target->damageWith(WeaponId::AnthelionEventHorizon, -1, unit, unit->playerId, 0, divider);
-							helper::createThingy(SpriteId::NeutronFlareOrange_Damageless, target->sprite->position.x, target->sprite->position.y, unit->playerId);
+							target->damageWith(WeaponId::AnthelionEventHorizon, -1, unit, unit->player, 0, divider);
+							helper::createThingy(SpriteId::NeutronFlareOrange_Damageless, target->sprite->position.x, target->sprite->position.y, unit->player);
 						}
 					}
 				});
@@ -1152,7 +1152,7 @@ namespace hooks
 						bool teleport = scbw::teleport(unit, unit->moveTarget.pt, 0, true);
 						if (teleport)
 						{
-							scbw::createAndInitThingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->playerId, 11);
+							scbw::createAndInitThingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->player, 11);
 							helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
 							unit->sprite->createTopOverlay(ImageId::AnthelionTeleportArrival, 0, 0, 0);
 						}
@@ -1176,7 +1176,7 @@ namespace hooks
 					unit->getY() + radius
 				).forEachInMatch(match, [&](Unit* target)
 				{
-					if ((!scbw::isAlliedTo(unit->playerId, target->playerId)))
+					if ((!scbw::isAlliedTo(unit->player, target->player)))
 					{
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						if (!targetExt->timers[TimerObservanceDebuff])
@@ -1517,13 +1517,13 @@ namespace hooks
 			if (unit->mainOrderId == OrderId::BlissfulEmbrace) {
 				Unit* target = unit->orderTarget.unit;
 				if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
-					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->playerId != target->playerId) {
+					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->player != target->player) {
 					if (unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
 						if (unit->orderSignal & 0x2) {
 							unit->orderSignal &= ~0x2;
 							helper::force_order_done(unit);
 
-							scbw::blissful_embrace(target, unit->playerId);
+							scbw::blissful_embrace(target, unit->player);
 						}
 					}
 				} else {
@@ -1542,7 +1542,7 @@ namespace hooks
 			unitExt->timers[TimerReviveFlagClearMin] = 0;
 			unitExt->timers[TimerReviveFlagClearMax] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
-			helper::give_ai(unit);
+			scbw::give_ai_ex(unit, true);
 		}
 
 		// Alaszileth - Dermal Accelerant
@@ -1554,7 +1554,7 @@ namespace hooks
 			pos.x + radius,
 			pos.y + radius
 		).forEach([&](Unit* foundUnit) {
-			if (!(scbw::isAlliedTo(foundUnit->playerId, unit->playerId)))
+			if (!(scbw::isAlliedTo(foundUnit->player, unit->player)))
 			{
 				return;
 			}
@@ -1587,8 +1587,8 @@ namespace hooks
 				unit->getY() + range
 			).filter([&](Unit* target)
 			{
-				if (unit->playerId == target->playerId
-					|| scbw::isAlliedTo(unit->playerId, target->playerId)
+				if (unit->player == target->player
+					|| scbw::isAlliedTo(unit->player, target->player)
 					|| target->id != UnitId::TerranSeraph)
 				{
 					return false;
@@ -1764,7 +1764,7 @@ namespace hooks
 		// Autovitality - Simulacrum behavior
 		if (unitExt->timers[TimerSimulacrumClone] == 1)
 		{
-			scbw::createUnitFromAbility(UnitId::ProtossSimulacrum, 1, unit->playerId, unit->position.x, unit->position.y, 0, unit);
+			scbw::createUnitFromAbility(UnitId::ProtossSimulacrum, 1, unit->player, unit->position.x, unit->position.y, 0, unit);
 		}
 
 		// Remove Ensnaring Brood overlay
@@ -1849,7 +1849,7 @@ namespace hooks
 		// Controlled Demolition - destroy structure
 		if (unitExt->timers[TimerControlledDemolition] == 1)
 		{
-			unit->damageHp(unit->hitPoints, unit, unit->playerId, false);
+			unit->damageHp(unit->hitPoints, unit, unit->player, false);
 		}
 
 		// Emergency Detonation - initial cast
@@ -1881,11 +1881,11 @@ namespace hooks
 			{
 				if (scbw::getDistanceFast(unit->position, target->position) <= radius)
 				{
-					target->damageWithCustom(250 * 256, DamageType::Explosive, unit, unit->playerId, 0, 1, false);
+					target->damageWithCustom(250 * 256, DamageType::Explosive, unit, unit->player, 0, 1, false);
 				}
 			});
-			helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->playerId);
-			unit->damageHp(unit->hitPoints, unit, unit->playerId, false);
+			helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->player);
+			unit->damageHp(unit->hitPoints, unit, unit->player, false);
 		}
 
 		// Demiurge - Gods Made Flesh - return units to original owner

@@ -132,7 +132,7 @@ namespace hooks
 			Unit* target = unitExt->units[UnitWyvernTargetLock];
 			UnitExt* targetExt = globals.get_unit_ext(target);
 			if (targetExt->timers[TimerOwnerChangedRecently]
-				&& scbw::isAlliedTo(unit->playerId, target->playerId))
+				&& scbw::isAlliedTo(unit->player, target->player))
 			{
 				unitExt->units[UnitWyvernTargetLock] = nullptr;
 			}
@@ -157,7 +157,7 @@ namespace hooks
 				{
 					u32 sound = scbw::randBetween(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
 					helper::playSoundFromSource(sound, unit, 1, 0);
-					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, nullptr, targ_x, targ_y);
+					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->player, unit, nullptr, targ_x, targ_y);
 					unitExt->timers[TimerWyvernAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
 					seek_unit = false;
 				}
@@ -194,7 +194,7 @@ namespace hooks
 						{
 							return false;
 						}
-						if (scbw::isAlliedTo(unit->playerId, target->playerId))
+						if (scbw::isAlliedTo(unit->player, target->player))
 						{
 							return false;
 						}
@@ -210,7 +210,7 @@ namespace hooks
 				{
 					auto direction = scbw::getAngle(x, y, target->getX(), target->getY());
 					helper::playSoundFromSource(scbw::randBetween(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
-					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, target, target->position);
+					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->player, unit, target, target->position);
 					unitExt->timers[TimerWyvernAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
 				}
 			}
@@ -500,7 +500,7 @@ namespace hooks
 							{
 								damage /= 2;
 							}
-							target->damageWithCustom(damage, DamageType::Explosive, unit, unit->playerId, 0, 1, false);
+							target->damageWithCustom(damage, DamageType::Explosive, unit, unit->player, 0, 1, false);
 						});
 						unit->remove();
 						bStopHere = true;
@@ -605,7 +605,7 @@ namespace hooks
 				{
 					if (*visionUpdated)
 					{
-						v6 = v4->playerId;
+						v6 = v4->player;
 						if (playerTable[v6].type == 2)
 						{ // PLAYER_OCCUPIED
 							helper::revealSightAtLocation(1, playerVision->flags[v6], v4->sprite->position.x, v4->sprite->position.y, (v4->status >> 2) & 1); // is air unit
@@ -795,7 +795,7 @@ LABEL_13:
 		{
 			helper::playSoundFromSource(soundId, unit, 1, 0);
 		}
-		if (!IS_IN_REPLAY && unitVar->playerId == *LOCAL_NATION_ID)
+		if (!IS_IN_REPLAY && unitVar->player == *LOCAL_NATION_ID)
 		{
 			*forceButtonRefresh = 1;
 			portraitRedraw[0] = 1;
@@ -836,7 +836,7 @@ LABEL_13:
 			Sprite* unitSprite = unit->sprite;
 			if (!(unitSprite->flags & 0x20))
 			{
-				helper::refreshSprite(unitSprite, selectionCircleColor[unit->playerId]);
+				helper::refreshSprite(unitSprite, selectionCircleColor[unit->player]);
 			}
 		}
 		updateUnitStateHook(unitVar);

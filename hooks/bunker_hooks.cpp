@@ -77,7 +77,7 @@ namespace hooks
 								unit,
 								[&](Unit* target)
 							{
-								if (scbw::isAlliedTo(unit->playerId, target->playerId)
+								if (scbw::isAlliedTo(unit->player, target->player)
 									|| !unit->canAttackTarget(target)
 									|| !isWithinAttackRange(unit, target))
 								{
@@ -133,7 +133,7 @@ namespace hooks
 		scbw::decloakProc(unitVar->connectedUnit);
 
 		// TODO: Fix effect nonsense with subunits
-		Thingy* bunkerAttackEffect = helper::createThingy(spriteId, offset.x + unitVar->getX(), offset.y + unitVar->getY(), unitVar->playerId);
+		Thingy* bunkerAttackEffect = helper::createThingy(spriteId, offset.x + unitVar->getX(), offset.y + unitVar->getY(), unitVar->player);
 		if (!bunkerAttackEffect)
 		{
 			return;

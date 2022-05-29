@@ -17,7 +17,7 @@ namespace AI
 	bool AI_spellcasterHook(Unit* unit, bool isUnitBeingAttacked)
 	{
 		if (!isUnitBeingAttacked
-			&& AIScriptController[unit->playerId].spellcasterTimer != 0)
+			&& AIScriptController[unit->player].spellcasterTimer != 0)
 		{
 			return false;
 		}
@@ -62,7 +62,7 @@ namespace AI
 				}
 
 				// Launch Nuclear Missile
-				if (isNukeTimerReady(unit->playerId))
+				if (isNukeTimerReady(unit->player))
 				{
 					Unit* silo = getLoadedSilo(unit);
 					if (!silo)
@@ -73,7 +73,7 @@ namespace AI
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connectedUnit = unit;
-						AIScriptController[unit->playerId].AI_LastNukeTime = *elapsedTimeSeconds;
+						AIScriptController[unit->player].AI_LastNukeTime = *elapsedTimeSeconds;
 						return true;
 					}
 				}
@@ -114,7 +114,7 @@ namespace AI
 				}
 
 				// Launch Nuclear Missile
-				if (isNukeTimerReady(unit->playerId))
+				if (isNukeTimerReady(unit->player))
 				{
 					Unit* silo = getLoadedSilo(unit);
 					if (!silo)
@@ -125,7 +125,7 @@ namespace AI
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connectedUnit = unit;
-						AIScriptController[unit->playerId].AI_LastNukeTime = *elapsedTimeSeconds;
+						AIScriptController[unit->player].AI_LastNukeTime = *elapsedTimeSeconds;
 						return true;
 					}
 				}
@@ -271,7 +271,7 @@ namespace AI
 				energyReserve = std::min(energyReserve, unit->getMaxEnergy());
 
 				if ((unit->energy >= energyReserve || scbw::isCheatEnabled(CheatFlags::TheGathering))
-					&& unit->canUseTech(TechId::Maelstrom, unit->playerId) != 1)
+					&& unit->canUseTech(TechId::Maelstrom, unit->player) != 1)
 				{
 					Unit* target = findBestMaelstromTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::CastMaelstrom
@@ -306,7 +306,7 @@ namespace
 		}
 		if (scbw::isCheatEnabled(CheatFlags::TheGathering || unit->energy >= energyCost))
 		{
-			return unit->canUseTech(techId, unit->playerId) == 1;
+			return unit->canUseTech(techId, unit->player) == 1;
 		}
 		return false;
 	}
@@ -351,7 +351,7 @@ namespace
 	Unit* getLoadedSilo(Unit* ghost, b32 checkNukeAvailableForGhost)
 	{
 		Unit* return_value = nullptr;
-		Unit* current_unit = firstPlayerUnit->unit[ghost->playerId];
+		Unit* current_unit = firstPlayerUnit->unit[ghost->player];
 		while (current_unit != nullptr && return_value == nullptr)
 		{
 			if (current_unit->id == UnitId::TerranNuclearSilo

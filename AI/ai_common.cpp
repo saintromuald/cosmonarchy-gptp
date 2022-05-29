@@ -13,11 +13,11 @@ namespace AI
 	{
 
 		//If the target is hidden by the fog-of-war
-		if (!target->sprite->isVisibleTo(attacker->playerId))
+		if (!target->sprite->isVisibleTo(attacker->player))
 			return false;
 
 		//If the target is not detectable
-		if (target->status & 0x300 && !((1 << attacker->playerId) & target->visibilityStatus) && !target->isVisibleTo(attacker->playerId))
+		if (target->status & 0x300 && !((1 << attacker->player) & target->visibilityStatus) && !target->isVisibleTo(attacker->player))
 			return false;
 
 		if (!attacker->isTargetEnemy(target))
@@ -43,7 +43,7 @@ namespace AI
 	{
 		if (Unit* targetOfTarget = target->orderTarget.unit)
 		{
-			if (targetOfTarget->playerId < 8 && !unit->isTargetEnemy(targetOfTarget))
+			if (targetOfTarget->player < 8 && !unit->isTargetEnemy(targetOfTarget))
 				return true;
 		}
 
@@ -80,7 +80,7 @@ namespace AI
 	bool isUnitInUnsafeRegion(Unit* unit)
 	{
 		u16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
-		AiRegion* currentAiRegion = &AiRegionCaptains[unit->playerId][currentRegion];
+		AiRegion* currentAiRegion = &AiRegionCaptains[unit->player][currentRegion];
 		return currentAiRegion->state == 3
 			|| currentAiRegion->airTarget
 			|| currentAiRegion->groundTarget

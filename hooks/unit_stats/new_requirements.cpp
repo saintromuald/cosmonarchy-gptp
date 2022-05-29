@@ -1031,7 +1031,7 @@ namespace hooks {
 			*lastInternalError = InternalErrors::UnknownError16;
 			return TECH_HIDDEN;
 		}
-		if (player_id != unit->playerId)
+		if (player_id != unit->player)
 		{
 			*lastInternalError = InternalErrors::UnknownError1;
 			return TECH_HIDDEN;
@@ -1046,7 +1046,7 @@ namespace hooks {
 			*lastInternalError = InternalErrors::UnitFrozen;
 			return TECH_HIDDEN;
 		}
-		if (!UnitAvailability->available[unit->playerId][unitId])
+		if (!UnitAvailability->available[unit->player][unitId])
 		{
 			*lastInternalError = InternalErrors::UnknownError2;
 			return TECH_HIDDEN;

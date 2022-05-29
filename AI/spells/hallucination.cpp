@@ -20,7 +20,7 @@ namespace AI
 			caster,
 			[&](Unit* target)
 		{
-			if (target->playerId != caster->playerId)
+			if (target->player != caster->player)
 			{
 				return false;
 			}
@@ -28,7 +28,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (scbw::getTechUseErrorMessage((Unit*)target, caster->playerId, TechId::Hallucination) != 0)
+			if (scbw::getTechUseErrorMessage((Unit*)target, caster->player, TechId::Hallucination) != 0)
 			{
 				return false;
 			}

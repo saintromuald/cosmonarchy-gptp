@@ -135,7 +135,7 @@ namespace hooks
 
 		if (
 			targetUnit == nullptr ||
-			unit->playerId != targetUnit->playerId ||
+			unit->player != targetUnit->player ||
 			targetUnit->mainOrderId != OrderId::WarpingDarkArchon ||
 			targetUnit->orderTarget.unit != unit
 			)
@@ -335,7 +335,7 @@ namespace hooks
 		Unit* targetUnit = unit->orderTarget.unit;
 		if (
 			targetUnit == nullptr ||
-			unit->playerId != targetUnit->playerId ||
+			unit->player != targetUnit->player ||
 			targetUnit->mainOrderId != OrderId::WarpingArchon ||
 			targetUnit->orderTarget.unit != unit
 			)

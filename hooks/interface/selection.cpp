@@ -99,7 +99,7 @@ namespace hooks
 						{
 							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
 						}
-						else if (current_unit->playerId != *LOCAL_NATION_ID)
+						else if (current_unit->player != *LOCAL_NATION_ID)
 						{
 							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
 						}
@@ -109,7 +109,7 @@ namespace hooks
 							if (unit != nullptr)
 							{
 								// all units should belong to the same player (the one owning the clicked unit)
-								if (unit->playerId != current_unit->playerId)
+								if (unit->player != current_unit->player)
 								{
 									dontAddToList = true;
 								}
@@ -276,7 +276,7 @@ namespace hooks
 
 						// This is what make the rally point briefly appear when selecting a building with one. Maybe can do other things?
 						if (sorted_list_length == 1
-							&& clicked_unit->playerId == *ACTIVE_NATION_ID
+							&& clicked_unit->player == *ACTIVE_NATION_ID
 							&& clicked_unit->isFactory())
 						{
 							helper::function_00468670(clicked_unit);
@@ -452,7 +452,7 @@ namespace hooks
 			// this is what make the rally point briefly appear when
 			// selecting a building with one.
 			// maybe can do others things?
-			if (clicked_unit->playerId == *ACTIVE_NATION_ID
+			if (clicked_unit->player == *ACTIVE_NATION_ID
 				&& clicked_unit->isFactory())
 			{
 				helper::function_00468670(clicked_unit);

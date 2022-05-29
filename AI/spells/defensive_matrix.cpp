@@ -36,7 +36,7 @@ namespace AI
 				return false;
 			if (target->status & UnitStatus::Invincible)
 				return false;
-			if (scbw::getTechUseErrorMessage((Unit*)target, caster->playerId, TechId::DefensiveMatrix) != 0)
+			if (scbw::getTechUseErrorMessage((Unit*)target, caster->player, TechId::DefensiveMatrix) != 0)
 				return false;
 			return true;
 		});

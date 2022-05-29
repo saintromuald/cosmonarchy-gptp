@@ -164,11 +164,11 @@ namespace hooks
 			}
 		}
 
-		if (transport->playerId == 11)
+		if (transport->player == 11)
 		{
 			UnitExt* unitExt = globals.get_unit_ext(transport);
 			unitExt->values[ValueIsNeutralBunker] = 1;
-			transport->giveTo(cargo_unit->playerId);
+			transport->giveTo(cargo_unit->player);
 		}		
 
 		scbw::refresh_console();
@@ -350,14 +350,14 @@ namespace hooks
 							for (u32 i = 0; i < 4; ++i)
 							{
 								Unit* cargoUnit = transport->getLoadedUnit(i);
-								if (cargoUnit && cargoUnit->playerId != unit->playerId)
+								if (cargoUnit && cargoUnit->player != unit->player)
 								{
 									isOwnerValid = false;
 								}
 							}
 							if (!isOwnerValid)
 							{
-								transport->giveTo(transport->getFirstLoadedUnit()->playerId);
+								transport->giveTo(transport->getFirstLoadedUnit()->player);
 							}
 						}
 					}

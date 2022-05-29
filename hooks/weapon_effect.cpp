@@ -161,7 +161,7 @@ namespace hooks
 
 			if (splash == SplashType::Enemy)
 			{
-				if (bullet->srcPlayer == target->playerId && target != bullet->attackTarget.unit) continue;
+				if (bullet->srcPlayer == target->player && target != bullet->attackTarget.unit) continue;
 			}
 
 			else if (splash == SplashType::FriendlyNew)
@@ -299,7 +299,7 @@ namespace hooks
 //			if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 			if (splash == SplashType::Enemy)
 			{
-				if (bullet->srcPlayer == target->playerId && target != bullet->attackTarget.unit) continue;
+				if (bullet->srcPlayer == target->player && target != bullet->attackTarget.unit) continue;
 			}
 			else if (splash == SplashType::FriendlyNew)
 			{
@@ -509,7 +509,7 @@ namespace hooks
 			Unit* target = unitsInSplash.getUnit(i);
 
 			weaponIdLoop = bullet->weaponId;
-			if (target != bullet->sourceUnit && (target->playerId != bullet->srcPlayer || target == bullet->attackTarget.unit))
+			if (target != bullet->sourceUnit && (target->player != bullet->srcPlayer || target == bullet->attackTarget.unit))
 			{
 				if (scbw::canWeaponTargetUnit(weaponIdLoop, target, target))
 				{
@@ -602,7 +602,7 @@ namespace hooks
 			bullet->position.y + radius / 2
 		).forEach([&](Unit* unit)
 		{
-			scbw::applyParasite(unit, bullet->sourceUnit->playerId, bullet->sourceUnit);
+			scbw::applyParasite(unit, bullet->sourceUnit->player, bullet->sourceUnit);
 		});
 	}
 

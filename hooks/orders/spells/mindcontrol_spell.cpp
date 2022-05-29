@@ -29,7 +29,7 @@ namespace hooks
 		}
 		else
 		{
-			if (unit->playerId == target->playerId)
+			if (unit->player == target->player)
 			{
 				unit->orderToIdle();
 			}

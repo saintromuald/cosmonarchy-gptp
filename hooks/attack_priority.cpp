@@ -51,7 +51,7 @@ namespace
 		}
 
 		// Don't attack if the target is covered by fog of war.
-		if (!target->sprite->isVisibleTo(unit->playerId))
+		if (!target->sprite->isVisibleTo(unit->player))
 		{
 			return false;
 		}

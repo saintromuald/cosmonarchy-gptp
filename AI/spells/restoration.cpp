@@ -21,7 +21,7 @@ namespace AI
 			[&](Unit* target)
 		{
 
-			if (target->playerId != caster->playerId)
+			if (target->player != caster->player)
 				return false;
 
 			if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
@@ -48,7 +48,7 @@ namespace AI
 		return scbw::UnitFinder::getNearestTarget(caster, [&](Unit* target)
 		{
 
-			if (target->playerId != caster->playerId)
+			if (target->player != caster->player)
 				return false;
 
 			if (!(target->parasiteFlags || target->maelstromTimer))

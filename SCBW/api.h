@@ -281,7 +281,7 @@ namespace scbw
 	inline bool isUnitEnemy(u8 playerId, Unit* unit)
 	{
 		//Identical to function @ 0x0047B740
-		u8 unitOwner = unit->playerId;
+		u8 unitOwner = unit->player;
 		if (unitOwner == 11)
 			unitOwner = unit->sprite->playerId;
 		return 0 == playerAlliance[playerId].flags[unitOwner];
@@ -567,6 +567,7 @@ namespace scbw
 	u32 get_region_id(Point16 position);
 	AiRegion* get_ai_region(u32 player, u32 index);
 	Region* get_region(u32 index);
+	Point16 get_region_center(Region* region);
 	void ai_defend(u32 player, u32 region_id, u32 priority, bool recurse);
 	void ask_for_ai_help(Unit* victim, Unit* attacker);
 	bool unit_id_is_capped_gas_structure(u16 unit_id);
@@ -584,4 +585,6 @@ namespace scbw
 	
 	b32 unit_id_is_tech(u32 unit_id);
 	b32 unit_id_is_tech_tier_structure(u32 unit_id);
+
+	void give_ai_ex(Unit* unit, bool prefer_military);
 }
