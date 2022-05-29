@@ -1876,6 +1876,9 @@ LABEL_126:
 							}
 							else
 							{
+								u32 region_x = 0;
+								u32 region_y = 0;
+								helper::get_region_center_from_id(region_id, &region_x, &region_y);
 								helper::ai_order_to_destination(unit, OrderId::AttackMove, region_x, region_y);
 							}
 							*/
