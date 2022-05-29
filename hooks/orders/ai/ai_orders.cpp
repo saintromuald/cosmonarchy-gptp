@@ -434,7 +434,7 @@ LABEL_126:
 			
 		for (MilitaryAi* i = military_ai; i; i = i->link.prev)
 		{
-			Unit* townWorker = (Unit*)i->parent;
+			Unit* townWorker = (Unit*)i->unit;
 			if (!townWorker)
 			{
 				continue;
@@ -606,7 +606,7 @@ LABEL_126:
 		{
 			return false;
 		}
-		if (unitAI->parent != unit)
+		if (unitAI->unit != unit)
 		{
 			return false;
 		}
@@ -623,7 +623,7 @@ LABEL_126:
 		MilitaryAi* military_ai = unitAI->region->first_military_ai;
 		for (i = military_ai; military_ai; i = military_ai)
 		{
-			Unit* firstUnit = (Unit*)military_ai->parent;
+			Unit* firstUnit = (Unit*)military_ai->unit;
 			if (firstUnit != nullptr && firstUnit->sprite != nullptr && firstUnit != unit)
 			{
 				u32 distance = helper::getDistanceFast(firstUnit->sprite->position.x, unit->sprite->position.x, firstUnit->sprite->position.y, unit->sprite->position.y);
@@ -957,7 +957,7 @@ LABEL_126:
 		}
 
 		MilitaryAi* militaryAi = (MilitaryAi*)unit->unit_ai;
-		if (militaryAi->parent != unit)
+		if (militaryAi->unit != unit)
 		{
 			return 1;
 		}
@@ -1830,7 +1830,7 @@ LABEL_126:
 	}
 
 	AiRegion* find_better_region(MilitaryAi* military_ai, AiRegion* ai_region, u32 recurses) {
-		if (military_ai->region == ai_region || scbw::get_ai_region_military_count(ai_region) < 15) {
+		if (scbw::get_region_id(military_ai->unit->position) == ai_region->region || scbw::get_ai_region_military_count(ai_region) < 15) {
 			return ai_region;
 		}
 		if (recurses) {
@@ -1838,7 +1838,7 @@ LABEL_126:
 			for (u32 i = 0; i < region->neighborCount; ++i) {
 				u32 other_id = region->neighbors[i];
 				Region* other_region = scbw::get_region(other_id);
-				if (region->groupIndex == other_region->groupIndex) {
+				if (military_ai->unit->status & UnitStatus::InAir || region->groupIndex == other_region->groupIndex) {
 					AiRegion* new_ai_region = find_better_region(military_ai, scbw::get_ai_region(ai_region->playerId, other_id), recurses - 1);
 					if (new_ai_region) {
 						return new_ai_region;
@@ -1849,14 +1849,6 @@ LABEL_126:
 		return 0;
 	}
 
-	AiRegion* find_better_region(MilitaryAi* military_ai, AiRegion* ai_region) {
-		AiRegion* new_ai_region = find_better_region(military_ai, ai_region, 3);
-		if (new_ai_region) {
-			return new_ai_region;
-		}
-		return ai_region;
-	}
-
 	// Hooked to fix AI pathfinding lag and improve army spread. -Pr0nogo
 	void ai_manage_military_controller(Unit* unit) // 0043D910
 	{
@@ -1864,12 +1856,16 @@ LABEL_126:
 		MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
 		if (unit_ai)
 		{
-			if (unit_ai->type == AiType::Military && military_ai->parent == unit)
+			if (unit_ai->type == AiType::Military && military_ai->unit == unit)
 			{
 				u16 unit_id = unit->id;
 				if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Building))
 				{
-					AiRegion* ai_region = find_better_region(military_ai, military_ai->region);
+					AiRegion* ai_region = military_ai->region;
+					AiRegion* new_ai_region = find_better_region(military_ai, ai_region, 3);
+					if (new_ai_region) {
+						ai_region = new_ai_region;
+					}
 					if (unit_id && unit_id != UnitId::TerranHarakan || !helper::ai_defender_bunker_behavior(unit, ai_region->region))
 					{
 						if (!helper::ai_cast_spell_behavior(unit, 0) && !helper::ai_update_attack_target(unit, 0, 1, 0))
@@ -1931,19 +1927,19 @@ LABEL_126:
 		}
 		for (MilitaryAi* first_military = region->first_military_ai; first_military; first_military = first_military->link.prev)
 		{
-			Unit* military = first_military->parent;
+			Unit* military = first_military->unit;
 			if (military->status & UnitStatus::InAir)
 			{
 				if (military->flingyTopSpeed < slowest_air_speed)
 				{
 					slowest_air_speed = military->flingyTopSpeed;
-					slowest_air_unit = first_military->parent;
+					slowest_air_unit = first_military->unit;
 				}
 			}
 			else if (military->flingyTopSpeed < slowest_ground_speed)
 			{
 				slowest_ground_speed = military->flingyTopSpeed;
-				slowest_ground_unit = first_military->parent;
+				slowest_ground_unit = first_military->unit;
 			}
 		}
 		if (!slowest_ground_unit)

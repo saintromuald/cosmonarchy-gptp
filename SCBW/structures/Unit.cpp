@@ -854,7 +854,7 @@ s32 Unit::isUnitAINonBuilding()
 	s32 result = 1;
 	if (!ai
 		|| ai->type != 4
-		|| mai->parent != this
+		|| mai->unit != this
 		|| units_dat::BaseProperty[this->id] & UnitProperty::Building)
 	{
 		result = 0;

@@ -778,7 +778,7 @@ struct MilitaryAi
 	u8 type;							// 0x8
 	u8 padding1;						// 0x9
 	u16 padding2;						// 0xA
-	Unit* parent;						// 0xC
+	Unit* unit;						// 0xC
 	AiRegion* region;					// 0x10
 };
 C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14

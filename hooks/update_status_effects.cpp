@@ -367,10 +367,6 @@ namespace hooks
 
 	void AI_Burrower(Unit* unit)
 	{
-		if (unit->id == UnitId::ZergIzirokor) {
-			return; // Fixs a AI unit freeze, TODO: remove when burrow is implemented
-		}
-
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)
 		{
 			if (!(unit->status & UnitStatus::Burrowed) && unit->id != UnitId::ZergDroleth)
