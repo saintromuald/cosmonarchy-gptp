@@ -138,7 +138,7 @@ namespace hooks
 				}
 				else
 				{
-					u16 eggId;
+					u16 eggId = UnitId::None;
 					switch (unit->id)
 					{
 						case UnitId::ZergOvileth:
@@ -251,10 +251,14 @@ namespace hooks
 		else if (unit->mainOrderState == 1)
 		{
 			// advance
-			if (advance_remaining_build_time_custom(unit))
-			{
-				auto anim = IscriptAnimation::SpecialState1;
-				unit->sprite->play_iscript_animation(anim, true);
+			if (unit->id == UnitId::ZergEgg && unit->remainingBuildTime < 19) {
+				unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
+			}
+			if (unit->id == UnitId::ZergCocoon && unit->remainingBuildTime < 12) {
+				unit->play_iscript_animation(IscriptAnimation::SpecialState1);
+				unit->remainingBuildTime = 0;
+			}
+			if (advance_remaining_build_time_custom(unit)) {
 				unit->mainOrderState = 2;
 			}
 		}
