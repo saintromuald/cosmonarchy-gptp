@@ -11,8 +11,8 @@ namespace UnitId
 	//	DarkSwarm											= 202,		// Dark Swarm				- might need mempatches?
 	
 	// Unused
-	//	ZergSkryling										= 47,		// Scourge
 	//	CrashedBattlecruiser								= 126,		// Norad II Crashed Battlecruiser
+	//	ProtossArbiterTribunal								= 170,		// Arbiter Tribunal
 	//	LeftUpperLevelDoor									= 205		// Left Upper Level Door 	- might need mempatches?
 	//	RightUpperLevelDoor									= 206		// Right Upper Level Door	- might need mempatches?
 
@@ -99,6 +99,7 @@ namespace UnitId
 		ProtossAugur										= 102,		// Gerard DuGalle
 		ProtossBarghest										= 104,		// Infested Duran
 		ProtossAnthelion									= 179,		// Cave
+		ProtossArtisan										= 182,		// Mining Platform
 
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1				| Robotic tier 1.5 requirement
@@ -106,7 +107,6 @@ namespace UnitId
 		ProtossRogueGallery									= 161,		// Unused Protoss 2				| Shared production
 		ProtossWaywardLure									= 163,		// Citadel of Adun				| Luminary, Striga, Empress requirement
 		ProtossArgosy										= 168,		// Stasis Chamber				| Advanced Stellar production
-		ProtossStridentStratum								= 182,		// Mining Platform				| Barghest requirement
 		ProtossAstralOmen									= 184,		// Independent Starport			| Exemplar, Gladius requirement
 		ProtossCrucible										= 201,		// Overmind Cocoon				| Structure w/ efficiency aura for production/upgrades
 		ProtossCosmicAltar									= 213,		// Right Wall Flame Trap		| Star Sovereign requirement
@@ -118,6 +118,7 @@ namespace UnitId
 
 	// Zerg-Unit
 		ZergAlmaksalisk										= 29,		// Norad II
+		ZergGosvileth										= 47,		// Scourge
 		ZergAlkajelisk										= 48,		// Torrasque
 		ZergKalkalisk										= 51,		// Infested Kerrigan
 		ZergNathrokor										= 54,		// Devouring One
@@ -322,7 +323,7 @@ namespace UnitId
 		/*0xA7*/	ProtossStargate							= 167,
 		/*0xA8*/	Special_StasisCellPrison				= 168,
 		/*0xA9*/	ProtossFleetBeacon						= 169,
-		/*0xAA*/	ProtossCelestialTribune					= 170,
+		/*0xAA*/	ProtossArbiterTribunal					= 170,
 		/*0xAB*/	ProtossSyntheticSynod					= 171,
 		/*0xAC*/	ProtossShieldBattery					= 172,
 		/*0xAD*/	Special_KhaydarinCrystalForm			= 173,

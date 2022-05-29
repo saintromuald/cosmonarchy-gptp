@@ -2321,7 +2321,6 @@ namespace scbw
 			case UnitId::ProtossAutomatonRegister:
 			case UnitId::ProtossSyntheticSynod:
 			case UnitId::ProtossAstralOmen:
-			case UnitId::ProtossCelestialTribune:
 			case UnitId::ProtossFleetBeacon:
 			case UnitId::ProtossCosmicAltar:
 			case UnitId::ProtossSanctumOfSorrow:

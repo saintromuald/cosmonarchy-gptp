@@ -484,13 +484,14 @@ namespace hooks {
 			switch (unitId)
 			{
 				case UnitId::ProtossMagister:
-				{
-					return true;
-				}
 				case UnitId::ProtossDidact:
 				case UnitId::ProtossEmpyrean:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossCelestialTribune))
+					return true;
+				}
+				case UnitId::ProtossSolarion:
+				{
+					if (player_has_completed_unit_id(player_id, UnitId::ProtossFleetBeacon))
 					{
 						return true;
 					}
@@ -498,13 +499,6 @@ namespace hooks {
 				case UnitId::ProtossStarSovereign:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossCosmicAltar))
-					{
-						return true;
-					}
-				}
-				case UnitId::ProtossSolarion:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossFleetBeacon))
 					{
 						return true;
 					}
@@ -602,14 +596,12 @@ namespace hooks {
 				case UnitId::ProtossAutomatonRegister:
 				case UnitId::ProtossStargate:
 				case UnitId::ProtossAstralOmen:
-				case UnitId::ProtossStridentStratum:
 				case UnitId::ProtossCrucible:
 				case UnitId::ProtossPennant:
 				case UnitId::ProtossGrandLibrary:
 				case UnitId::ProtossRoboticsAuthority:
 				case UnitId::ProtossSyntheticSynod:
 				case UnitId::ProtossArgosy:
-				case UnitId::ProtossCelestialTribune:
 				case UnitId::ProtossProstrationStage:
 				case UnitId::ProtossRogueGallery:
 				case UnitId::ProtossArchonArchives:
@@ -1698,13 +1690,14 @@ namespace hooks {
 				switch (unitId)
 				{
 					case UnitId::ProtossMagister:
-					{
-						return TECH_ACTIVE;
-					}
 					case UnitId::ProtossDidact:
 					case UnitId::ProtossEmpyrean:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossCelestialTribune))
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossSolarion:
+					{
+						if (player_has_completed_unit_id(player_id, UnitId::ProtossFleetBeacon))
 						{
 							return TECH_ACTIVE;
 						}
@@ -1713,14 +1706,6 @@ namespace hooks {
 					case UnitId::ProtossStarSovereign:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ProtossCosmicAltar))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::ProtossSolarion:
-					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossFleetBeacon))
 						{
 							return TECH_ACTIVE;
 						}
@@ -1847,14 +1832,12 @@ namespace hooks {
 					case UnitId::ProtossAutomatonRegister:
 					case UnitId::ProtossStargate:
 					case UnitId::ProtossAstralOmen:
-					case UnitId::ProtossStridentStratum:
 					case UnitId::ProtossCrucible:
 					case UnitId::ProtossPennant:
 					case UnitId::ProtossGrandLibrary:
 					case UnitId::ProtossRoboticsAuthority:
 					case UnitId::ProtossSyntheticSynod:
 					case UnitId::ProtossArgosy:
-					case UnitId::ProtossCelestialTribune:
 					case UnitId::ProtossProstrationStage:
 					case UnitId::ProtossRogueGallery:
 					case UnitId::ProtossArchonArchives:

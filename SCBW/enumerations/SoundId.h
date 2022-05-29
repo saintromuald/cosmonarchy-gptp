@@ -1374,7 +1374,7 @@ namespace DeathSoundId
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossStargate
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//Special_StasisCellPrison
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossFleetBeacon
-		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossCelestialTribune
+		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossArbiterTribunal
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossSyntheticSynod
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossShieldBattery
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//Special_KhaydarinCrystalForm
