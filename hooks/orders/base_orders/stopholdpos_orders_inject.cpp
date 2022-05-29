@@ -101,10 +101,10 @@ namespace hooks
 
 	void injectStopHoldPosOrdersHooks()
 	{
-		//jmpPatch(orders_MedicHoldPositionWrapper, 0x00464050, 0);
-		//jmpPatch(orders_ReaverStopWrapper, 0x004654B0, 1);
-		//jmpPatch(orders_GuardWrapper, 0x00475B90, 2);
-		jmpPatch(orders_player_guard_wrapper, 0x004774A0, 3);
+		//jump_patch(orders_MedicHoldPositionWrapper, 0x00464050, 0);
+		//jump_patch(orders_ReaverStopWrapper, 0x004654B0, 1);
+		//jump_patch(orders_GuardWrapper, 0x00475B90, 2);
+		jump_patch(orders_player_guard_wrapper, 0x004774A0, 3);
 	}
 
 } //hooks

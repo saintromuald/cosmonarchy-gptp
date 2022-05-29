@@ -93,11 +93,11 @@ namespace hooks
 
 	void injectGameHooks()
 	{
-		jmpPatch(onGameStart, Hook_OnGameStart);
-		callPatch(onGameEnd, 0x004EE983);
-		callPatch(nextFrameHook, 0x004D974E);
+		jump_patch(onGameStart, Hook_OnGameStart);
+		call_patch(onGameEnd, 0x004EE983);
+		call_patch(nextFrameHook, 0x004D974E);
 
-		callPatch(nextUiFrameHook, 0x004DE433);
+		call_patch(nextUiFrameHook, 0x004DE433);
 	}
 
 } //hooks

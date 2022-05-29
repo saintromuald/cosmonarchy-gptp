@@ -52,11 +52,11 @@ namespace hooks
 	void injectWireframeHook()
 	{
 
-		//jmpPatch(statdata_UnitWireframeUpdate_FragmentWrapper, 0x00456911, 2);
+		//jump_patch(statdata_UnitWireframeUpdate_FragmentWrapper, 0x00456911, 2);
 		//unused right now, must be updated for new unit ids if used
 
 		//new
-		jmpPatch(wireframeShields_Wrapper, 0x004566B0, 5);
+		jump_patch(wireframeShields_Wrapper, 0x004566B0, 5);
 	}
 
 	;

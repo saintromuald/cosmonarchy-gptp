@@ -935,8 +935,8 @@ void __declspec(naked) Globals_LoadStateWrapper()
 
 void injectGlobalsHooks()
 {
-	jmpPatch(Globals_SaveStateWrapper, 0x004AAF23);
-	jmpPatch(Globals_LoadStateWrapper, 0x004AAE94);
+	jump_patch(Globals_SaveStateWrapper, 0x004AAF23);
+	jump_patch(Globals_LoadStateWrapper, 0x004AAE94);
 	// const u8 retn = 0xc3;
 	// memoryPatch(0x004AAF23 + 5, &retn, 1);
 	// memoryPatch(0x004AAE94 + 5, &retn, 1);

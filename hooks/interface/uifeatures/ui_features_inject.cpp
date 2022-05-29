@@ -155,12 +155,12 @@ namespace hooks
 {
 	void injectUIFeaturesHooks()
 	{
-		jmpPatch(drawUIFeatures_wrapper, 0x0048D0A9, 0);
-//		jmpPatch(targetedOrder_Wrapper, 0x004754F0, 1);
-//		jmpPatch(selectUnits_Wrapper, 0x0046FA00, 1);
-		jmpPatch(QueueGameCommand_wrapper, 0x00485BD0, 4);
+		jump_patch(drawUIFeatures_wrapper, 0x0048D0A9, 0);
+//		jump_patch(targetedOrder_Wrapper, 0x004754F0, 1);
+//		jump_patch(selectUnits_Wrapper, 0x0046FA00, 1);
+		jump_patch(QueueGameCommand_wrapper, 0x00485BD0, 4);
 
-		jmpPatch(checkHotkeyChar_wrapper, 0x004588C0, 3);
-		//jmpPatch(createUpgradeLevelTooltip_wrapper, 0x00459150, 3);
+		jump_patch(checkHotkeyChar_wrapper, 0x004588C0, 3);
+		//jump_patch(createUpgradeLevelTooltip_wrapper, 0x00459150, 3);
 	}
 }

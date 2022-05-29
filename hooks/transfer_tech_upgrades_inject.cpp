@@ -86,8 +86,8 @@ namespace hooks
 
 	void injectTransferTechAndUpgradesHooks()
 	{
-		jmpPatch(transferUnitUpgradesToPlayerWrapper, 0x004E2B50, 1);
-		jmpPatch(transferUnitTechToPlayerWrapper, 0x004E2C00, 1);
+		jump_patch(transferUnitUpgradesToPlayerWrapper, 0x004E2B50, 1);
+		jump_patch(transferUnitTechToPlayerWrapper, 0x004E2C00, 1);
 	}
 
 } //hooks

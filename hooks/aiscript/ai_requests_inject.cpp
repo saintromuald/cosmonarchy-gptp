@@ -303,19 +303,19 @@ namespace hooks
 {
 	void injectAIRequestsHooks()
 	{
-//		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
-		jmpPatch(AI_ProgressBuild_Wrapper,					0x00434480, 1);
-//		jmpPatch(AIManageBuildingPlacement_Wrapper,			0x004465C0, 3);
-		jmpPatch(AI_PerformTask_Wrapper,					0x004361A0, 0);
-//		jmpPatch(AI_PlanDoMergeMorph_Wrapper,				0x00435F10, 1);
-//		jmpPatch(ai_train_defensive_military_Wrapper,		0x0043F990, 1);
-		jmpPatch(AI_Build_Wrapper,							0x004323D0, 1);
-		jmpPatch(AI_build_gas_building_Wrapper,				0x00433660, 1);
+//		jump_patch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
+		jump_patch(AI_ProgressBuild_Wrapper,				0x00434480, 1);
+//		jump_patch(AIManageBuildingPlacement_Wrapper,		0x004465C0, 3);
+		jump_patch(AI_PerformTask_Wrapper,					0x004361A0, 0);
+//		jump_patch(AI_PlanDoMergeMorph_Wrapper,				0x00435F10, 1);
+//		jump_patch(ai_train_defensive_military_Wrapper,		0x0043F990, 1);
+		jump_patch(AI_Build_Wrapper,						0x004323D0, 1);
+		jump_patch(AI_build_gas_building_Wrapper,			0x00433660, 1);
 
-		jmpPatch(ai_request_guard_wrapper,					0x00448630, 0);
-		jmpPatch(ai_region_train_attack_force_wrapper,		0x0043E670,	4);
-		jmpPatch(ai_add_town_spending_request_wrapper,      0x00448400, 0);
+		jump_patch(ai_request_guard_wrapper,				0x00448630, 0);
+		jump_patch(ai_region_train_attack_force_wrapper,	0x0043E670,	4);
+		jump_patch(ai_add_town_spending_request_wrapper,    0x00448400, 0);
 
-		jmpPatch(ai_player_need_priority_wrapper,			0x0045BE1F, 2);
+		jump_patch(ai_player_need_priority_wrapper,			0x0045BE1F, 2);
 	}
 }

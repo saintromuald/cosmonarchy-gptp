@@ -30,6 +30,6 @@ namespace hooks
 {
 	void injectFeedbackSpellHook()
 	{
-		jmpPatch(orders_FeedbackWrapper,	0x004F6D40, 0);
+		jump_patch(orders_FeedbackWrapper,	0x004F6D40, 0);
 	}
 }

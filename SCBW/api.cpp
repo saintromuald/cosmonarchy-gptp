@@ -2106,7 +2106,7 @@ namespace scbw
 	AiTown* get_closest_town(u32 player, Point16 position) {
 		u32 min_distance = UINT32_MAX;
 		AiTown* best_town = 0;
-		for (AiTown* town = AiActiveTownArray[player].first; town; town = town->link.prev) {
+		for (AiTown* town = AiActiveTownArray[player].first; town; town = town->prev) {
 			if (!town->inited) {
 				continue;
 			}

@@ -45,7 +45,7 @@ namespace hooks
 
 	void injectSightRangeHook()
 	{
-		jmpPatch(getSightRangeWrapper, Func_GetSightRange, 4);
+		jump_patch(getSightRangeWrapper, Func_GetSightRange, 4);
 	}
 
 } //hooks

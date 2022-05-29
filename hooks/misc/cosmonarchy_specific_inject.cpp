@@ -67,9 +67,9 @@ namespace hooks
 
 	void flingySpeedPatches() // for madrigals
 	{
-		jmpPatch(getFlingyHaltDistanceHookWrapper, 0x00494F90);
-		jmpPatch(initializeFlingy_96377_JmpWrapper, 0x00496377, 2);
-		jmpPatch(initializeBullet_8BED7_JmpWrapper, 0x0048BED7, 2);
+		jump_patch(getFlingyHaltDistanceHookWrapper, 0x00494F90);
+		jump_patch(initializeFlingy_96377_JmpWrapper, 0x00496377, 2);
+		jump_patch(initializeBullet_8BED7_JmpWrapper, 0x0048BED7, 2);
 	}
 
 	const u32 jmp_004295F8 = 0x004295F8;
@@ -183,21 +183,21 @@ namespace hooks
 
 	void unusedOrderPatches()
 	{
-		jmpPatch(unusedOrderPatchWrapper, 0x004EC70B, 7); // turns unused orders to spell orders
+		jump_patch(unusedOrderPatchWrapper, 0x004EC70B, 7); // turns unused orders to spell orders
 		// later add jump patches to make CTFCop2 and WarpIn useless
 	}
 
 	void archonHardcodePatches() // for augurs
 	{
-		jmpPatch(wrapper_295EB, 0x004295EB, 1);
+		jump_patch(wrapper_295EB, 0x004295EB, 1);
 	}
 
 	void lobotomyMinePatches()
 	{
 
-		jmpPatch(lobotomyMineJmpWrapper, 0x004A066B, 3);  /*
-		jmpPatch(orders_PlaceMine_JmpWrapper, 0x00465126, 0);
-		jmpPatch(orders_PlaceMine_JmpWrapper2, 0x00465145, 0);
+		jump_patch(lobotomyMineJmpWrapper, 0x004A066B, 3);  /*
+		jump_patch(orders_PlaceMine_JmpWrapper, 0x00465126, 0);
+		jump_patch(orders_PlaceMine_JmpWrapper2, 0x00465145, 0);
 		nops(0x00465088, 8); // remove tech requirement for any mines */
 	}
 
@@ -260,8 +260,8 @@ namespace hooks
 
 	void lobotomyMineTargetingPatches()
 	{
-		jmpPatch(getOrderTargetErrorString_JmpWrapper, 0x004920D9);
-		jmpPatch(ShouldStopOrderedSpell_JmpWrapper, 0x004922DC);
+		jump_patch(getOrderTargetErrorString_JmpWrapper, 0x004920D9);
+		jump_patch(ShouldStopOrderedSpell_JmpWrapper, 0x004922DC);
 	}
 
 	void trapJumpWrappers()
@@ -320,7 +320,7 @@ namespace hooks
 
 	void phaseLinkPatches()
 	{
-		jmpPatch(PhaseLinkOrder_Wrapper, 0x004EC629, 2);
+		jump_patch(PhaseLinkOrder_Wrapper, 0x004EC629, 2);
 	}
 
 	void __declspec(naked) canAttackTarget_Tail_Wrapper()
@@ -366,9 +366,9 @@ namespace hooks
 	void clarionWrappers()
 	{
 		// canAttackTarget - end
-		// jmpPatch(canAttackTarget_Tail_Wrapper, 0x0047682C, 1);
+		// jump_patch(canAttackTarget_Tail_Wrapper, 0x0047682C, 1);
 		// tail wrapper disabled, without air weapon it don't have sense anywhere, will be reworked w/ air target functionality
-		jmpPatch(getGroundWeaponHookWrapper, 0x00475AD0);
+		jump_patch(getGroundWeaponHookWrapper, 0x00475AD0);
 	}
 
 	const u32 jmp_skip = 0x00404541;
@@ -427,7 +427,7 @@ namespace hooks
 
 	void createBuildingAiWorkaround()
 	{
-		jmpPatch(createBuildingAiWorkaround_Wrapper, 0x00404533, 1);
+		jump_patch(createBuildingAiWorkaround_Wrapper, 0x00404533, 1);
 	}
 
 	static bool warningOnce00 = false;
@@ -593,10 +593,10 @@ namespace hooks
 	void desyncTesting()
 	{
 		// code from BG
-		jmpPatch(dropDebugging00, Hook_DropDebugging00);
-		jmpPatch(dropDebugging01, Hook_DropDebugging01);
-		jmpPatch(dropDebugging02, Hook_DropDebugging02);
-		jmpPatch(dropDebugging03, Hook_DropDebugging03);
+		jump_patch(dropDebugging00, Hook_DropDebugging00);
+		jump_patch(dropDebugging01, Hook_DropDebugging01);
+		jump_patch(dropDebugging02, Hook_DropDebugging02);
+		jump_patch(dropDebugging03, Hook_DropDebugging03);
 	}
 
 	void __declspec(naked) createDamageOverlay_Wrapper() // 004993C0
@@ -649,8 +649,8 @@ namespace hooks
 
 	void damageOverlayDebug()
 	{
-//		jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
-		jmpPatch(newDamageOverlay_JmpWrapper, 0x004993DB, 3);
+//		jump_patch(createDamageOverlay_Wrapper, 0x004993C0);
+		jump_patch(newDamageOverlay_JmpWrapper, 0x004993DB, 3);
 	}
 
 	void __declspec(naked) gameLoop_Wrapper()
@@ -745,7 +745,7 @@ namespace hooks
 	void injectCosmonarchySpecific()
 	{
 		// must be finished first (and add Firegraft offsets)
-//		jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);
+//		jump_patch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);
 
 		flingySpeedPatches();
 		desyncTesting();
@@ -764,10 +764,10 @@ namespace hooks
 		archonHardcodePatches();
 
 		// Hook patches!
-//      jmpPatch(gameLoop_Wrapper, 0x004D94B0, 3);
-		jmpPatch(createUnit_Wrapper, 0x004A09D0, 1);
-		jmpPatch(transform_unit_main_Wrapper, 0x0049F170, 1);
-		jmpPatch(ignoreIscriptGoToIdle_Wrapper, 0x00476550, 1);
+//      jump_patch(gameLoop_Wrapper, 0x004D94B0, 3);
+		jump_patch(createUnit_Wrapper, 0x004A09D0, 1);
+		jump_patch(transform_unit_main_Wrapper, 0x0049F170, 1);
+		jump_patch(ignoreIscriptGoToIdle_Wrapper, 0x00476550, 1);
 	}
 }
 

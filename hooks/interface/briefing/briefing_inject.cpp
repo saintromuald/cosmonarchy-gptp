@@ -22,6 +22,6 @@ namespace hooks
 {
 	void injectBriefingHooks()
 	{
-//		jmpPatch(updateMissionObjectives_Wrapper, 0x0046CD30, 0);
+//		jump_patch(updateMissionObjectives_Wrapper, 0x0046CD30, 0);
 	}
 }

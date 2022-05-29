@@ -6,7 +6,7 @@ extern const u32 Func_CanDetect;  //Defined in Unit.cpp
 namespace
 {
 
-	//Inject with jmpPatch()
+	//Inject with jump_patch()
 	void __declspec(naked) unitCanDetectWrapper()
 	{
 
@@ -61,8 +61,8 @@ namespace hooks
 
 	void injectDetectorHooks()
 	{
-		jmpPatch(unitCanDetectWrapper, Func_CanDetect);
-		jmpPatch(getCloakedTargetVisibilityWrapper, 0x004408A0, 9);
+		jump_patch(unitCanDetectWrapper, Func_CanDetect);
+		jump_patch(getCloakedTargetVisibilityWrapper, 0x004408A0, 9);
 	}
 
 } //hooks

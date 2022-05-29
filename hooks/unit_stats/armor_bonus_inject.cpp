@@ -28,7 +28,7 @@ namespace hooks
 {
 	void injectArmorBonusHook()
 	{
-		jmpPatch(getArmorBonusWrapper, Func_GetArmorBonus, 1);
+		jump_patch(getArmorBonusWrapper, Func_GetArmorBonus, 1);
 	}
 
 }

@@ -63,8 +63,8 @@ namespace hooks
 {
 	void injectUnitSpeedHooks()
 	{
-		jmpPatch(getModifiedUnitSpeedWrapper,			0x0047B5F0, 2);
-		jmpPatch(getModifiedUnitAccelerationWrapper,	0x0047B8A0, 6);
-		jmpPatch(getModifiedUnitTurnSpeedWrapper,		0x0047B850, 6);
+		jump_patch(getModifiedUnitSpeedWrapper,			0x0047B5F0, 2);
+		jump_patch(getModifiedUnitAccelerationWrapper,	0x0047B8A0, 6);
+		jump_patch(getModifiedUnitTurnSpeedWrapper,		0x0047B850, 6);
 	}
 }

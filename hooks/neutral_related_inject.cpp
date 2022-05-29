@@ -26,6 +26,6 @@ namespace hooks
 {
 	void injectNeutralRelatedHooks()
 	{
-		jmpPatch(unitNotNeutral_Wrapper, 0x004CBE20, 1);
+		jump_patch(unitNotNeutral_Wrapper, 0x004CBE20, 1);
 	}
 }

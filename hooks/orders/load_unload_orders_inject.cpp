@@ -144,13 +144,13 @@ namespace hooks
 {
 	void injectLoadUnloadOrdersHooks()
 	{
-		jmpPatch(orders_Pickup1Wrapper, 0x004E7300, 1);
-		jmpPatch(orders_Pickup3_0Wrapper, 0x004E73B0, 1);
-		jmpPatch(orders_Pickup2Wrapper, 0x004E75D0, 1);
-		jmpPatch(orders_MoveUnloadWrapper, 0x004E7700, 1);
-//		jmpPatch(orders_Pickup4_0Wrapper, 0x004E7B70, 1);
-		jmpPatch(orders_EnterTransportWrapper, 0x004E7CF0, 0);
-		jmpPatch(orders_UnloadWrapper, 0x004E80D0, 1);
-		jmpPatch(canEnterTransport_Wrapper, 0x004E6E00, 1);
+		jump_patch(orders_Pickup1Wrapper, 0x004E7300, 1);
+		jump_patch(orders_Pickup3_0Wrapper, 0x004E73B0, 1);
+		jump_patch(orders_Pickup2Wrapper, 0x004E75D0, 1);
+		jump_patch(orders_MoveUnloadWrapper, 0x004E7700, 1);
+//		jump_patch(orders_Pickup4_0Wrapper, 0x004E7B70, 1);
+		jump_patch(orders_EnterTransportWrapper, 0x004E7CF0, 0);
+		jump_patch(orders_UnloadWrapper, 0x004E80D0, 1);
+		jump_patch(canEnterTransport_Wrapper, 0x004E6E00, 1);
 	}
 }

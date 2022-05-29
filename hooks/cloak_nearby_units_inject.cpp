@@ -25,6 +25,6 @@ namespace hooks
 {
 	void injectCloakNearbyUnits()
 	{
-		jmpPatch(cloakNearbyUnitsWrapper, 0x00491C20, 1);
+		jump_patch(cloakNearbyUnitsWrapper, 0x00491C20, 1);
 	}
 }

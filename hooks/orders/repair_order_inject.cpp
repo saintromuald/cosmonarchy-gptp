@@ -106,9 +106,9 @@ namespace hooks
 {
 	void injectRepairOrderHook()
 	{
-		jmpPatch(orders_Repair1Wrapper,						0x004673D0, 1);
-		jmpPatch(isOrderValid_Wrapper,						0x00474D90, 1);
-//		jmpPatch(orderAllowed_Wrapper,						0x0046DC20, 3); // crashes
-		jmpPatch(show_right_click_error_if_needed_Wrapper,	0x00455A00, 0);
+		jump_patch(orders_Repair1Wrapper,						0x004673D0, 1);
+		jump_patch(isOrderValid_Wrapper,						0x00474D90, 1);
+//		jump_patch(orderAllowed_Wrapper,						0x0046DC20, 3); // crashes
+		jump_patch(show_right_click_error_if_needed_Wrapper,	0x00455A00, 0);
 	}
 }

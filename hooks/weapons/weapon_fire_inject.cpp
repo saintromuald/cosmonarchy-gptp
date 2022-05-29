@@ -254,16 +254,16 @@ namespace hooks
 {
 	void injectWeaponFireHooks()
 	{
-		jmpPatch(fireWeaponWrapper,					Func_FireUnitWeapon, 0);
-		jmpPatch(progressBulletFlight_Wrapper,		0x0048B3B0, 3);
-		jmpPatch(bulletBehaviour_Bounce_Wrapper,	0x0048B2D0, 0);
-		jmpPatch(findNextBounceTargetProc_Wrapper,	0x0048AFD0, 3);
-		jmpPatch(deleteBullet_Wrapper,				0x0048A560, 0);
-		jmpPatch(createBullet_Wrapper,				0x0048C260, 5);
-		jmpPatch(initializeBullet_Wrapper,			0x0048BEC0, 0);
-//		jmpPatch(progressBulletFrames_Wrapper,		0x0048C3D0, 2);
-//		jmpPatch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
-//		jmpPatch(bulletBehaviorReassign_Wrapper,	0x00488D50, 1);
-		jmpPatch(BulletDamage_bulletNullcheck,		0x0048B770, 1);
+		jump_patch(fireWeaponWrapper,					Func_FireUnitWeapon, 0);
+		jump_patch(progressBulletFlight_Wrapper,		0x0048B3B0, 3);
+		jump_patch(bulletBehaviour_Bounce_Wrapper,	0x0048B2D0, 0);
+		jump_patch(findNextBounceTargetProc_Wrapper,	0x0048AFD0, 3);
+		jump_patch(deleteBullet_Wrapper,				0x0048A560, 0);
+		jump_patch(createBullet_Wrapper,				0x0048C260, 5);
+		jump_patch(initializeBullet_Wrapper,			0x0048BEC0, 0);
+//		jump_patch(progressBulletFrames_Wrapper,		0x0048C3D0, 2);
+//		jump_patch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
+//		jump_patch(bulletBehaviorReassign_Wrapper,	0x00488D50, 1);
+		jump_patch(BulletDamage_bulletNullcheck,		0x0048B770, 1);
 	}
 }

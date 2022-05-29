@@ -55,7 +55,7 @@ namespace hooks
 {
 	void injectGiveUnitHook()
 	{
-		//jmpPatch(giveUnit_Wrapper,		0x0049EFA0, 1);
-		jmpPatch(giveAI_Wrapper,		0x00463040,	1);
+		//jump_patch(giveUnit_Wrapper,		0x0049EFA0, 1);
+		jump_patch(giveAI_Wrapper,		0x00463040,	1);
 	}
 }

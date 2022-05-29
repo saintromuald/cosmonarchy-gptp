@@ -122,12 +122,12 @@ namespace hooks
 
 	void injectMedicOrdersHooks()
 	{
-		jmpPatch(orders_MedicHeal2Wrapper,		0x00463740, 1);
-		jmpPatch(orders_HealMoveWrapper,		0x004637B0, 1);
-		jmpPatch(orders_MedicWrapper,			0x00463900, 1);
-		jmpPatch(orders_MedicHeal1Wrapper,		0x00464180, 1);
-		jmpPatch(AI_AcquireHealTarget_Wrapper,	0x00463530, 1);
-		jmpPatch(doMedicHeal_Wrapper,			0x00463C40, 1);
+		jump_patch(orders_MedicHeal2Wrapper,		0x00463740, 1);
+		jump_patch(orders_HealMoveWrapper,		0x004637B0, 1);
+		jump_patch(orders_MedicWrapper,			0x00463900, 1);
+		jump_patch(orders_MedicHeal1Wrapper,		0x00464180, 1);
+		jump_patch(AI_AcquireHealTarget_Wrapper,	0x00463530, 1);
+		jump_patch(doMedicHeal_Wrapper,			0x00463C40, 1);
 	}
 
 } //hooks

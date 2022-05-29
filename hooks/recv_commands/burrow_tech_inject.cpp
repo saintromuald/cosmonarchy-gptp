@@ -79,9 +79,9 @@ namespace hooks
 
 	void injectBurrowTechHooks()
 	{
-		jmpPatch(CMDRECV_UnburrowWrapper, 0x004C1AC0, 3);
-		jmpPatch(CMDRECV_BurrowWrapper, 0x004C1FA0, 6);
-		jmpPatch(Unburrow_ProcWrapper, 0x004E97C0, 1);
+		jump_patch(CMDRECV_UnburrowWrapper, 0x004C1AC0, 3);
+		jump_patch(CMDRECV_BurrowWrapper, 0x004C1FA0, 6);
+		jump_patch(Unburrow_ProcWrapper, 0x004E97C0, 1);
 	}
 
 } //hooks

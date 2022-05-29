@@ -104,8 +104,8 @@ namespace hooks
 					}
 					while (firstWorker);
 				}
-				result = firstTown->link.prev;
-				firstTown = firstTown->link.prev;
+				result = firstTown->prev;
+				firstTown = firstTown->prev;
 			}
 			while (firstTown);
 		}
@@ -637,7 +637,7 @@ LABEL_36:
 	}
 
 	// Hooked to add more transport calls and hopefully improve AI defense logic. -Pr0nogo
-	void ai_train_defensive_military(BYTE player_id) // 0043F990
+	void ai_train_defensive_military(u8 player_id) // 0043F990
 	{
 		u32 region_count;
 		s32 v2;

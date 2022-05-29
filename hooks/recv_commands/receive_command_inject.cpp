@@ -44,6 +44,6 @@ namespace hooks
 {
 	void injectRecvCmdHook()
 	{
-		jmpPatch(receive_commandWrapper, 0x0049AB00, 1);
+		jump_patch(receive_commandWrapper, 0x0049AB00, 1);
 	}
 }

@@ -5,7 +5,7 @@
 namespace
 {
 
-	//Inject with jmpPatch()
+	//Inject with jump_patch()
 	void __declspec(naked) unitCanInfestWrapper()
 	{
 
@@ -28,7 +28,7 @@ namespace
 
 	}
 
-	//Inject with jmpPatch()
+	//Inject with jump_patch()
 	void __declspec(naked) unitCanBeInfestedWrapper()
 	{
 		static Unit* unit;
@@ -46,7 +46,7 @@ namespace
 		}
 	}
 
-	//Inject with jmpPatch()
+	//Inject with jump_patch()
 	void __declspec(naked) unitMorphIntoInfestedOrder()
 	{
 
@@ -69,7 +69,7 @@ namespace
 
 	;
 
-	//Inject with jmpPatch()
+	//Inject with jump_patch()
 	void __declspec(naked) unitInfestOrder()
 	{
 
@@ -99,10 +99,10 @@ namespace hooks
 
 	void injectInfestationHooks()
 	{
-		jmpPatch(unitCanBeInfestedWrapper, 0x00402210);
-		jmpPatch(unitCanInfestWrapper, 0x00402750);
-		jmpPatch(unitInfestOrder, 0x004EA290);
-		jmpPatch(unitMorphIntoInfestedOrder, 0x004EA4C0);
+		jump_patch(unitCanBeInfestedWrapper, 0x00402210);
+		jump_patch(unitCanInfestWrapper, 0x00402750);
+		jump_patch(unitInfestOrder, 0x004EA290);
+		jump_patch(unitMorphIntoInfestedOrder, 0x004EA4C0);
 	}
 
 }

@@ -426,15 +426,15 @@ LABEL_126:
 	u32 AI_RecalculateRegionStrength(AiRegion* region) // 0043A390
 	{
 		const u32 Func_CB_AICaptainStrengthIterator = 0x00438F60;
-		AiTown* regionTown = region->town;
+		MilitaryAi* military_ai = region->first_military_ai;
 		region->regionAirStrength = 0;
 		region->fullAirStrength = 0;
 		region->regionGroundStrength = 0;
 		region->fullGroundStrength = 0;
 			
-		for (AiTown* i = regionTown; i; i = i->link.prev)
+		for (MilitaryAi* i = military_ai; i; i = i->link.prev)
 		{
-			Unit* townWorker = (Unit*)i->workers;
+			Unit* townWorker = (Unit*)i->parent;
 			if (!townWorker)
 			{
 				continue;
@@ -619,11 +619,11 @@ LABEL_126:
 			return false;
 		}
 
-		AiTown* i = nullptr;
-		AiTown* town = unitAI->region->town;
-		for (i = town; town; i = town)
+		MilitaryAi* i = nullptr;
+		MilitaryAi* military_ai = unitAI->region->first_military_ai;
+		for (i = military_ai; military_ai; i = military_ai)
 		{
-			Unit* firstUnit = (Unit*)town->workers;
+			Unit* firstUnit = (Unit*)military_ai->parent;
 			if (firstUnit != nullptr && firstUnit->sprite != nullptr && firstUnit != unit)
 			{
 				u32 distance = helper::getDistanceFast(firstUnit->sprite->position.x, unit->sprite->position.x, firstUnit->sprite->position.y, unit->sprite->position.y);
@@ -631,13 +631,13 @@ LABEL_126:
 				{
 					return 1;
 				}
-				town = i;
+				military_ai = i;
 			}
-			town = town->link.prev;
+			military_ai = military_ai->link.prev;
 		}
 
 		// Not sure if this is correct
-		if (town)
+		if (military_ai)
 		{
 			return true;
 		}
@@ -676,29 +676,29 @@ LABEL_126:
 			AiExpandList* townList = &AiActiveTownArray[player];
 			if (firstTown == town)
 			{
-				townList->first = town->link.prev;
+				townList->first = town->prev;
 			}
 
-			AiTown* nextTown = town->link.next;
+			AiTown* nextTown = town->next;
 			if (nextTown)
 			{
-				nextTown->link.prev = town->link.prev;
+				nextTown->prev = town->prev;
 			}
 
-			if (town->link.prev)
+			if (town->prev)
 			{
-				town->link.prev->link.next = town->link.next;
+				town->prev->next = town->next;
 			}
 
 			result = townList->last;
-			town->link.next = 0;
-			town->link.prev = result[100].link.prev;
-			AiTown* previousTown = result[100].link.prev;
+			town->next = 0;
+			town->prev = result[100].prev;
+			AiTown* previousTown = result[100].prev;
 			if (previousTown)
 			{
-				previousTown->link.next = town;
+				previousTown->next = town;
 			}
-			result[100].link.prev = town;
+			result[100].prev = town;
 		}
 		return result;
 	}
@@ -1877,5 +1877,50 @@ LABEL_126:
 				}
 			}
 		}
+	}
+
+	// Hooked to help AI group mixed speed armies in more intelligent ways. -Pr0nogo
+	void ai_assign_region_to_slowest_unit(AiRegion* region) // 00436F70
+	{
+		Unit* slowest_unit = region->slowestUnit;
+		Unit* slowest_ground_unit = 0;
+		Unit* slowest_air_unit = 0;
+		u32 slowest_ground_speed = 99999999;
+		u32 slowest_air_speed = 99999999;
+		if (slowest_unit)
+		{
+			if (slowest_unit->status & UnitStatus::InAir)
+			{
+				slowest_air_unit = region->slowestUnit;
+				slowest_air_speed = slowest_unit->flingyTopSpeed;
+			}
+			else
+			{
+				slowest_ground_unit = region->slowestUnit;
+				slowest_ground_speed = slowest_unit->flingyTopSpeed;
+			}
+		}
+		for (MilitaryAi* first_military = region->first_military_ai; first_military; first_military = first_military->link.prev)
+		{
+			Unit* military = first_military->parent;
+			if (military->status & UnitStatus::InAir)
+			{
+				if (military->flingyTopSpeed < slowest_air_speed)
+				{
+					slowest_air_speed = military->flingyTopSpeed;
+					slowest_air_unit = first_military->parent;
+				}
+			}
+			else if (military->flingyTopSpeed < slowest_ground_speed)
+			{
+				slowest_ground_speed = military->flingyTopSpeed;
+				slowest_ground_unit = first_military->parent;
+			}
+		}
+		if (!slowest_ground_unit)
+		{
+			slowest_ground_unit = slowest_air_unit;
+		}
+		region->slowestUnit = slowest_ground_unit;
 	}
 }

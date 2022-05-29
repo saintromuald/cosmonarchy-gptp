@@ -81,7 +81,7 @@ namespace hooks
 {
 	void injectTrapHooks()
 	{
-		jmpPatch(unitIsInstallationAsset_Wrapper, 0x00401430, 3);
-		jmpPatch(unitIsFloorTrap_Wrapper, 0x0047B070, 3);
+		jump_patch(unitIsInstallationAsset_Wrapper, 0x00401430, 3);
+		jump_patch(unitIsFloorTrap_Wrapper, 0x0047B070, 3);
 	}
 }

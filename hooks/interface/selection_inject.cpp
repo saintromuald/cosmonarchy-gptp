@@ -73,7 +73,7 @@ namespace hooks
 {
 	void injectSelectMod()
 	{
-		jmpPatch(function_0046FB40_Wrapper, 0x0046FB40, 27);
-		jmpPatch(SortAllUnits_Wrapper, 0x0046F0F0, 1);
+		jump_patch(function_0046FB40_Wrapper, 0x0046FB40, 27);
+		jump_patch(SortAllUnits_Wrapper, 0x0046F0F0, 1);
 	}
 }

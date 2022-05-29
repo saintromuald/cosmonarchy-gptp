@@ -236,21 +236,21 @@ namespace hooks
 	}
 	void injectWorkerHooks()
 	{
-		jmpPatch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
-		jmpPatch(Ai_BuildSupplies_Wrapper, 0x00433730);
-		jmpPatch(Ai_GetDefaultWorkerFromRace, 0x00432130);
+		jump_patch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
+		jump_patch(Ai_BuildSupplies_Wrapper, 0x00433730);
+		jump_patch(Ai_GetDefaultWorkerFromRace, 0x00432130);
 	}
 	void injectTownhallHooks()
 	{
-		jmpPatch(AddUnitAi_JmpWrapper, 0x00433F60, 4);
-		jmpPatch(Ai_UpgradesFinished_JmpWrapper, 0x004365F6, 4);
-		jmpPatch(Ai_RemoveDangerousRegions_JmpWrapper, 0x00443876);
-		jmpPatch(Ai_GetBuildLocation_JmpWrapper, 0x0044622B);
-		jmpPatch(AI_AddTownSpendingRequest_Wrapper, 0x00448400, 0);
+		jump_patch(AddUnitAi_JmpWrapper, 0x00433F60, 4);
+		jump_patch(Ai_UpgradesFinished_JmpWrapper, 0x004365F6, 4);
+		jump_patch(Ai_RemoveDangerousRegions_JmpWrapper, 0x00443876);
+		jump_patch(Ai_GetBuildLocation_JmpWrapper, 0x0044622B);
+		jump_patch(AI_AddTownSpendingRequest_Wrapper, 0x00448400, 0);
 	}
 	void injectSupplyDepotHooks()
 	{
-		jmpPatch(Ai_TryProgressSpendingQueue_WorkerJmpWrapper, 0x00434912, 3);
+		jump_patch(Ai_TryProgressSpendingQueue_WorkerJmpWrapper, 0x00434912, 3);
 	}
 	const u32 jmp_00467F24 = 0x00467F24;
 	const u32 jmp_00467F2C = 0x00467F2C;
@@ -317,9 +317,9 @@ namespace hooks
 	}
 	void injectGasHooks()
 	{
-		jmpPatch(orders_SCVBuild2_Wrapper, 0x00467F12, 1);
-		jmpPatch(orders_isGeyserTopUnitHookWrapper, 0x4688b0, 1);
-		jmpPatch(orders_isGeyserTopUnitEx_Wrapper, 0x0046893C, 3);
+		jump_patch(orders_SCVBuild2_Wrapper, 0x00467F12, 1);
+		jump_patch(orders_isGeyserTopUnitHookWrapper, 0x4688b0, 1);
+		jump_patch(orders_isGeyserTopUnitEx_Wrapper, 0x0046893C, 3);
 
 		/*
 		0046893C  |.  66:8B41 64    MOV AX,WORD PTR DS:[ECX+64]

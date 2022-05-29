@@ -67,9 +67,9 @@ namespace hooks
 {
 	void injectSpiderMineHooks()
 	{
-		jmpPatch(findBestTerranMineTarget_Wrapper,	0x00441270, 1);
-		jmpPatch(orders_TerranMine_Wrapper,			0x00463DF0, 2);
-//		jmpPatch(orders_PlaceMine_Wrapper,			0x00464FD0, 1);
-//		jmpPatch(burrowGeneric_Wrapper,				0x004E9A30, 3);
+		jump_patch(findBestTerranMineTarget_Wrapper,	0x00441270, 1);
+		jump_patch(orders_TerranMine_Wrapper,			0x00463DF0, 2);
+//		jump_patch(orders_PlaceMine_Wrapper,			0x00464FD0, 1);
+//		jump_patch(burrowGeneric_Wrapper,				0x004E9A30, 3);
 	}
 }

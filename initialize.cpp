@@ -477,8 +477,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// FaRTy1billion, end
 
 	// allow starting the game alone (singleplayer)
-	jmpPatch((void*)(0x004AEE9E), 0x004AEE83, 2);
-	jmpPatch((void*)(0x004A8222), 0x004A81CA, 0);
+	jump_patch((void*)(0x004AEE9E), 0x004AEE83, 2);
+	jump_patch((void*)(0x004A8222), 0x004A81CA, 0);
 	// allow starting the game alone (multiplayer)
 	const u8 human_slots = 0x01;
 	memoryPatch((void*)(0x004B995B + 2), &human_slots, sizeof(u8)); 

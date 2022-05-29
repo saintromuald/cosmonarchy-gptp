@@ -8,7 +8,7 @@ namespace
 	//function @ 004F42C0, jumped in at the end of this
 	//one, but the hook merge both
 
-	//Inject with jmpPatch()
+	//Inject with jump_patch()
 	void __declspec(naked) updateStatusEffectsWrapper()
 	{
 
@@ -47,9 +47,9 @@ namespace hooks
 
 	void injectUpdateStatusEffects()
 	{
-		jmpPatch(updateStatusEffectsWrapper, 0x00492F70, 5);
+		jump_patch(updateStatusEffectsWrapper, 0x00492F70, 5);
 
-		jmpPatch(AiBurrower_Wrapper, 0x004A1340, 4);
+		jump_patch(AiBurrower_Wrapper, 0x004A1340, 4);
 	}
 
 } //hooks

@@ -875,7 +875,7 @@ namespace hooks
 				}
 				if (AIScriptController[ai_region_1->playerId].AI_Flags.isUseMapSettings)
 				{
-					if (ai_region_1->airTarget == 7)
+					if (ai_region_1->airTarget == (Unit*)7)
 					{
 						goto next;
 					}

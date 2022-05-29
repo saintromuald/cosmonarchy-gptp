@@ -526,23 +526,23 @@ namespace hooks
 {
 	void injectUnitMorphHooks()
 	{
-		jmpPatch(orders_ZergBirthWrapper, 0x0045DD60, 1);
-		jmpPatch(orders_Morph1Wrapper, 0x0045DEA0, 0);
-		callPatch(unitMorphWrapper_CMDRECV_UnitMorph, 0x00486B50);			// jmp 004C1990  CMDRECV_UnitMorph
-		jmpPatch(unitMorphWrapper_BTNSCOND_CanBuildUnit, 0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
-		jmpPatch(unitMorphWrapper_Orders_Morph1_Check, 0x0045DFB0);			// 0045DEA0  orders_morph_1 within	
-		jmpPatch(unitMorphWrapper_Orders_Morph1_EggType, 0x0045E019);		// 0045DEA0  orders_morph_1 within
-		jmpPatch(cancelUnitWrapper, 0x00468280);							// 00468280  AI_cancel_structure EXACT
-		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);				// 004669E0  sub_4669E0 EXACT
-		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);			// 0045DD60  orders_zerg_birth within
-		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);					// 0045DD60  orders_zerg_birth within
+		jump_patch(orders_ZergBirthWrapper, 0x0045DD60, 1);
+		jump_patch(orders_Morph1Wrapper, 0x0045DEA0, 0);
+		call_patch(unitMorphWrapper_CMDRECV_UnitMorph, 0x00486B50);			// jmp 004C1990  CMDRECV_UnitMorph
+		jump_patch(unitMorphWrapper_BTNSCOND_CanBuildUnit, 0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
+		jump_patch(unitMorphWrapper_Orders_Morph1_Check, 0x0045DFB0);			// 0045DEA0  orders_morph_1 within	
+		jump_patch(unitMorphWrapper_Orders_Morph1_EggType, 0x0045E019);		// 0045DEA0  orders_morph_1 within
+		jump_patch(cancelUnitWrapper, 0x00468280);							// 00468280  AI_cancel_structure EXACT
+		jump_patch(getRemainingBuildTimePctWrapper, 0x004669E0);				// 004669E0  sub_4669E0 EXACT
+		jump_patch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);			// 0045DD60  orders_zerg_birth within
+		jump_patch(isRallyableEggUnitWrapper, 0x0045DE57);					// 0045DD60  orders_zerg_birth within
 		
-		jmpPatch(beginTrainWrapper, 0x00468200);
-		jmpPatch(detachUnitTask_EggJmpWrapper, 0x00434CD0, 1);
-		jmpPatch(prepSuicide_EggJmpWrapper, 0x0043D20C, 1);
+		jump_patch(beginTrainWrapper, 0x00468200);
+		jump_patch(detachUnitTask_EggJmpWrapper, 0x00434CD0, 1);
+		jump_patch(prepSuicide_EggJmpWrapper, 0x0043D20C, 1);
 		// has unfinished disabled bugged hook in aise
 
-		jmpPatch(deleteBuildingWorkerAiEggJmpWrapper, 0x00434CD0, 1);
-		jmpPatch(addUnitAiEggJmpWrapper, 0x00433E64, 1);
+		jump_patch(deleteBuildingWorkerAiEggJmpWrapper, 0x00434CD0, 1);
+		jump_patch(addUnitAiEggJmpWrapper, 0x00433E64, 1);
 	}
 }

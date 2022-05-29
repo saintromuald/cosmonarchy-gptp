@@ -92,11 +92,11 @@ namespace hooks
 {
 	void injectUpdateUnitState()
 	{
-		jmpPatch(updateUnitEnergy,						0x004EB4B0, 0);
-		jmpPatch(updateUnitStateWrapper,				0x004EC290, 1);
-		jmpPatch(updateUnits_Wrapper,					0x004ED000, 5);
-//		jmpPatch(updateBurrowingCloakingUnits_Wrapper,	0x00492EB0, 3);
-//		jmpPatch(doCloak_Wrapper,						0x0049B440, 5);
-		jmpPatch(progressUnitFrame_Wrapper,				0x004ECF70, 3);
+		jump_patch(updateUnitEnergy,						0x004EB4B0, 0);
+		jump_patch(updateUnitStateWrapper,				0x004EC290, 1);
+		jump_patch(updateUnits_Wrapper,					0x004ED000, 5);
+//		jump_patch(updateBurrowingCloakingUnits_Wrapper,	0x00492EB0, 3);
+//		jump_patch(doCloak_Wrapper,						0x0049B440, 5);
+		jump_patch(progressUnitFrame_Wrapper,				0x004ECF70, 3);
 	}
 }

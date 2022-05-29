@@ -90,9 +90,9 @@ namespace hooks
 
 	void injectRecallSpellHooks()
 	{
-		jmpPatch(spells_Recall_ActionOnValidTargetForRecallWrapper, 0x004942D0, 1);
-		jmpPatch(spells_Recall_ActionOnTargetInRangeWrapper, 0x00494400, 3);
-		jmpPatch(orders_RecallWrapper, 0x00494470, 1);
+		jump_patch(spells_Recall_ActionOnValidTargetForRecallWrapper, 0x004942D0, 1);
+		jump_patch(spells_Recall_ActionOnTargetInRangeWrapper, 0x00494400, 3);
+		jump_patch(orders_RecallWrapper, 0x00494470, 1);
 	}
 
 } //hooks

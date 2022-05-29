@@ -170,10 +170,10 @@ namespace hooks
 
 	void injectPsiFieldHooks()
 	{
-		jmpPatch(showAllPsiFieldsOnSelectWrapper, 0x004E6224, 0);
-		jmpPatch(hideAllPsiFieldsOnUnselectWrapper, 0x004E62BE, 0);
-		jmpPatch(packUnitData_PsiProvider, 0x004E3935, 0);
-		jmpPatch(unpackUnitData_PsiProvider, 0x004E3182, 0);
+		jump_patch(showAllPsiFieldsOnSelectWrapper, 0x004E6224, 0);
+		jump_patch(hideAllPsiFieldsOnUnselectWrapper, 0x004E62BE, 0);
+		jump_patch(packUnitData_PsiProvider, 0x004E3935, 0);
+		jump_patch(unpackUnitData_PsiProvider, 0x004E3182, 0);
 	}
 
 } //hooks

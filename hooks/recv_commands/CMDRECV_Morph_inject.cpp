@@ -61,8 +61,8 @@ namespace hooks
 
 	void injectCMDRECV_MorphHooks()
 	{
-		jmpPatch(CMDRECV_BuildingMorphWrapper, 0x004C1910, 7);
-		jmpPatch(CMDRECV_UnitMorphWrapper, 0x004C1990, 3);
+		jump_patch(CMDRECV_BuildingMorphWrapper, 0x004C1910, 7);
+		jump_patch(CMDRECV_UnitMorphWrapper, 0x004C1990, 3);
 	}
 
 } //hooks

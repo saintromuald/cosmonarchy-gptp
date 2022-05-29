@@ -43,7 +43,7 @@ namespace hooks
 {
 	void injectSelectLarvaHooks()
 	{
-		jmpPatch(getLarvaeUnitsFromList_Wrapper,	0x00423190, 1);
-		jmpPatch(BTNSACT_SelectLarva_Wrapper,		0x00423930, 1);
+		jump_patch(getLarvaeUnitsFromList_Wrapper,	0x00423190, 1);
+		jump_patch(BTNSACT_SelectLarva_Wrapper,		0x00423930, 1);
 	}
 }

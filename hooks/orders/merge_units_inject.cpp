@@ -110,10 +110,10 @@ namespace hooks
 
 	void injectMergeUnitsHooks()
 	{
-		jmpPatch(templarMergePartnerWrapper, 0x004BFA80, 1);
-		jmpPatch(orders_CompletingArchonSummonWrapper, 0x00493B10, 1);
-		jmpPatch(orders_WarpingDarkArchonWrapper, 0x00494690, 2);
-		jmpPatch(orders_WarpingArchonWrapper, 0x004948B0, 2);
+		jump_patch(templarMergePartnerWrapper, 0x004BFA80, 1);
+		jump_patch(orders_CompletingArchonSummonWrapper, 0x00493B10, 1);
+		jump_patch(orders_WarpingDarkArchonWrapper, 0x00494690, 2);
+		jump_patch(orders_WarpingArchonWrapper, 0x004948B0, 2);
 	}
 
 }
