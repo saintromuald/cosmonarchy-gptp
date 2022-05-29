@@ -1168,7 +1168,7 @@ namespace helper
 		}
 	}
 
-	void AI_OrderToDestination(Unit* unit, s32 orderId, s32 x, s32 y)
+	void ai_order_to_destination(Unit* unit, s32 orderId, s32 x, s32 y)
 	{
 		const u32 Func_AI_OrderToDestination = 0x0043D5D0;
 		__asm
@@ -1183,7 +1183,7 @@ namespace helper
 		}
 	}
 
-	void AI_AssignCaptainToSlowestUnit(AiRegion* region)
+	void ai_assign_region_to_slowest_unit(AiRegion* region)
 	{
 		const u32 Func_AI_AssignCaptainToSlowestUnit = 0x00436F70;
 		__asm
@@ -1502,7 +1502,7 @@ namespace helper
 		return result;
 	}
 
-	s16 getRegionIdFromUnit(Unit* unit)
+	s16 get_region_id_from_unit(Unit* unit)
 	{
 		const u32 Func_getRegionIdFromUnit = 0x0049CB40;
 		static s32 result;
@@ -1561,7 +1561,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	bool AI_CastSpellBehavior(Unit* unit, bool isAggro)
+	bool ai_cast_spell_behavior(Unit* unit, bool isAggro)
 	{
 		const u32 Func_AI_CastSpellBehavior = 0x004A13C0;
 		static u32 result;
@@ -1664,7 +1664,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	s32 AI_UpdateAttackTarget(Unit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach)
+	s32 ai_update_attack_target(Unit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach)
 	{
 		const u32 Func_AI_UpdateAttackTarget = 0x00477160;
 		static s32 result;
@@ -5723,21 +5723,6 @@ namespace helper
 		}
 	}
 
-	b32 AI_CastSpellBehaviour(Unit* unit, u32 unknown)
-	{
-		const u32 Func_AI_CastSpellBehaviour = 0x004A13C0;
-		static b32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			PUSH unknown
-			CALL Func_AI_CastSpellBehaviour
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
 	b32 Ai_AreOnConnectedRegions(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_Ai_AreOnConnectedRegions = 0x00438E70;
@@ -9663,7 +9648,7 @@ namespace helper
 	}
 
 	// For ai_check_military_grouping
-	void getRegionCenter(u16 regionId, s32* out_x, s32* out_y)
+	void get_region_center_from_id_2(u16 regionId, s32* out_x, s32* out_y)
 	{
 		const u32 Func_getRegionCenter = 0x0049CAA0;
 		__asm
@@ -11738,4 +11723,33 @@ namespace helper
 		}
 		return result;
 	}
+
+	s32 ai_defender_bunker_behavior(Unit* unit, u16 region_id) {
+		static s32 result;
+		const u32 func_address = 0x0043C480;
+		__asm {
+			PUSHAD
+			MOV AX, region_id
+			MOV ECX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool ai_has_incomplete_military_in_region(AiRegion* region) {
+		static bool result;
+		const u32 func_address = 0x00436EB0;
+		__asm {
+			PUSHAD
+			MOV EAX, region
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+
 }

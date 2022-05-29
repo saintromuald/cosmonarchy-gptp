@@ -389,7 +389,7 @@ LABEL_36:
 			} break;
 			case UnitId::TerranComsatStation:
 			{
-				helper::AI_CastSpellBehaviour(unit, 0);
+				helper::ai_cast_spell_behavior(unit, 0);
 			} break;
 			case UnitId::TerranNuclearSilo:
 			{

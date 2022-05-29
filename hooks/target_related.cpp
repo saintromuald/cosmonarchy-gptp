@@ -888,7 +888,7 @@ LABEL_76:
 			{
 				if (helper::isUnreachable(v2->orderTarget.unit, v2) || helper::is_unit_movable(v2) == 2)
 				{
-					if (helper::AI_UpdateAttackTarget(v2, 0, 1, 0))
+					if (helper::ai_update_attack_target(v2, 0, 1, 0))
 					{
 						return 0;
 					}

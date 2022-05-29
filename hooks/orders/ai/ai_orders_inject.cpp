@@ -144,7 +144,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::getRegionIdFromUnit(unit);
+		result = hooks::get_region_id_from_unit(unit);
 		__asm
 		{
 			POPAD
@@ -553,6 +553,19 @@ namespace
 			RETN 0x8
 		}
 	}
+
+	void __declspec(naked) ai_manage_military_controller_wrapper() { // 0043D910
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::ai_manage_military_controller(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -591,6 +604,7 @@ namespace hooks
 	//	jmpPatch(AI_SCV_repair_controller_wrapper,			0x00433C70, 1);
 		jmpPatch(ai_expand_wrapper,							0x0045B530, 1);
 		jmpPatch(ai_remove_addon_placements,				0x00443CC0, 3);
+		jmpPatch(ai_manage_military_controller_wrapper,		0x0043D910, 1);
 
 		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
 	}

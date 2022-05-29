@@ -98,7 +98,7 @@ namespace hooks
 	void orders_Medic(Unit* unit)
 	{
 		bool bStopThere = false;
-		if (unit->unit_ai != nullptr && helper::AI_CastSpellBehaviour(unit, NULL) != 0)
+		if (unit->unit_ai != nullptr && helper::ai_cast_spell_behavior(unit, NULL) != 0)
 		{
 			bStopThere = true;
 		}
