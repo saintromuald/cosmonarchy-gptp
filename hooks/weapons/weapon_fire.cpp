@@ -1322,7 +1322,7 @@ namespace hooks
 			bulletSprite = bulletVar->sprite;
 			if (bulletSprite)
 			{
-				helper::spriteToIscriptLoop(bulletSprite);
+				helper::sprite_to_iscript_loop(bulletSprite);
 				if (!bulletVar->sprite->images.head)
 				{
 					bulletVar->sprite = 0;

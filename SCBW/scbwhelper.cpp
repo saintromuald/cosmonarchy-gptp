@@ -6853,7 +6853,7 @@ namespace helper
 		}
 	}
 
-	void progressUnitFrame(Unit* unit)
+	void progress_unit_dying_frame(Unit* unit)
 	{
 		const u32 Func_progressUnitFrame = 0x004ECF70;
 		__asm {
@@ -8422,8 +8422,8 @@ namespace helper
 		return result;
 	}
 
-	// For progressUnitFrame
-	char refreshSprite(Sprite* sprite, s32 spriteId)
+	// For progress_unit_dying_frame
+	char refresh_sprite(Sprite* sprite, s32 spriteId)
 	{
 		const u32 Func_refreshSprite = 0x004EBBD0;
 		static char result;
@@ -8451,7 +8451,7 @@ namespace helper
 		}
 	}
 
-	void progressOrder(Unit* unit)
+	void progress_order(Unit* unit)
 	{
 		const u32 Func_progressOrder = 0x004EC4D0;
 		__asm
@@ -8463,7 +8463,7 @@ namespace helper
 		}
 	}
 
-	void performSecondaryOrders(Unit* result, s32 unused)
+	void perform_secondary_orders(Unit* result, s32 unused)
 	{
 		const u32 Func_performSecondaryOrders = 0x004EC170;
 		__asm
@@ -8476,7 +8476,7 @@ namespace helper
 		}
 	}
 
-	void spriteToIscriptLoop(Sprite* sprite)
+	void sprite_to_iscript_loop(Sprite* sprite)
 	{
 		const u32 Func_spriteToIscriptLoop = 0x00497920;
 		__asm

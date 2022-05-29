@@ -780,7 +780,7 @@ namespace helper
 	void updateVisibility(Unit* unit);																						// 004EBE10
 	void progressActiveUnitFrame(Unit* unit);																				// 004EBC30
 	void checkUnitVisibility(Unit* unit);																					// 00443390
-	void progressUnitFrame(Unit* unit);																						// 004ECF70
+	void progress_unit_dying_frame(Unit* unit);																						// 004ECF70
 	void unitUpdate(Unit* unit);																							// 004EC420
 	void updateUnitPower();																									// 00493790
 
@@ -793,12 +793,12 @@ namespace helper
 	void showImagesHiddenByCloak(Sprite* sprite);																			// 00498170
 	void updateSpriteImagesForCloak(Sprite* sprite);																		// 00498A90
 
-	// For progressUnitFrame
-	char refreshSprite(Sprite* sprite, s32 spriteId);																		// 004EBBD0
+	// For progress_unit_dying_frame
+	char refresh_sprite(Sprite* sprite, s32 spriteId);																		// 004EBBD0
 	void updateUnitTimers(Unit* unit);																						// 004EC290
-	void progressOrder(Unit* unit);																							// 004EC4D0
-	void performSecondaryOrders(Unit* result, s32 unused);																	// 004ECF70
-	void spriteToIscriptLoop(Sprite* sprite);																				// 00497920
+	void progress_order(Unit* unit);																							// 004EC4D0
+	void perform_secondary_orders(Unit* result, s32 unused);																	// 004ECF70
+	void sprite_to_iscript_loop(Sprite* sprite);																				// 00497920
 
 	//// select_larva
 
