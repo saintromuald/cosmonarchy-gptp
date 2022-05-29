@@ -127,8 +127,8 @@ namespace helper
 	char AI_TrainingWorker(Unit* result, Unit* parent);											// 00435700
 	void AI_TrainingOverlord(Unit* result, Unit* parent);										// 00435770
 	void AI_TrainingNormal(Unit* result, Unit* parent);											// 00435DB0
-	void AI_OrderToDestination(Unit* unit, s32 orderId, s32 x, s32 y);							// 0043D5D0
-	void AI_AssignCaptainToSlowestUnit(AiRegion* region);										// 00436F70
+	void ai_order_to_destination(Unit* unit, s32 orderId, s32 x, s32 y);							// 0043D5D0
+	void ai_assign_region_to_slowest_unit(AiRegion* region);										// 00436F70
 
 	// For AI_CreateNuke
 	Unit* create_unit(s16 unitType, s32 x, s32 y, s32 playerId);
@@ -163,18 +163,18 @@ namespace helper
 	s32 AI_TryReturnHome(Unit* unit, s32 dontIssueOrder);
 	s32 AI_TransportAction(Unit* unit);
 	s32 AI_AskForHelp(Unit* self, Unit* attacker, s32 onlyNearbyGuards);
-	s16 getRegionIdFromUnit(Unit* unit);
+	s16 get_region_id_from_unit(Unit* unit);
 	s32 getEnemyAirStrengthInRegion(u16 regionId, s32 player);
 	s32 getEnemyStrengthInRegion(u16 regionId, s32 player, s32 includeAir);
 	bool unitIsPerformingUnbreakableCode(Unit* unit);
-	bool AI_CastSpellBehavior(Unit* unit, bool isAggro);
+	bool ai_cast_spell_behavior(Unit* unit, bool isAggro);
 	s32 AI_Flee(Unit* unit, Unit* enemy);
 	bool unitHasGroundPath(Unit* unit, s16 x, s16 y);
 	bool AI_HasNoDefenseBuild(s32 player);
 	bool unitCanSeeCloakedTarget(Unit* target, Unit* unit);
 	void AI_RespondToCloakedThreat(Unit* threat, Unit* unit);
 	bool unitCanAttackTarget(Unit* target, Unit* unit, s32 checkDetection);
-	s32 AI_UpdateAttackTarget(Unit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach);
+	s32 ai_update_attack_target(Unit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach);
 	__int64 AI_PrepareToFlee(Unit* enemy, Unit* unit);
 
 	// for AI_IterateBuildingAI
@@ -648,7 +648,6 @@ namespace helper
 	void function_474940(Unit* unit, Unit* target, u8 orderId);																		// 00474940
 	void orderInterrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 orderId);														// 00474C30
 	void unitOrderMoveToTargetUnit(Unit* unit, Unit* target);																		// 00479FE0
-	b32 AI_CastSpellBehaviour(Unit* unit, u32 unknown);																				// 004A13C0
 
 	//// load_unload_orders
 	b32 Ai_AreOnConnectedRegions(Unit* unit, s32 x, s32 y);																			// 00438E70
@@ -1017,29 +1016,29 @@ namespace helper
 	u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit);													// 00429520
 
 	// For ai_get_build_location
-	u32 ai_get_building_placement_data(u32 maxRange, u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);	// 00445D60
-	char* ai_remove_unreachable_regions(char* placementData, Point16 desiredPos);											// 00443900
-	u32 ai_remove_dangerous_regions(u32 unitId, char* placementData, u32 placementId, Point16 desiredPos);				// 00443870
-	u32 ai_remove_far_tiles(char* placementData, Point16 desiredPos, u32 maxRange);									// 00444E20
-	u32 ai_remove_different_height(char* placementData, Point16 desiredPos);												// 004436C0
-	u32 ai_placement_related_something(u16 unitId, char* placementData, Point16 desiredPos);								// 00443E30
-	void ai_remove_unfit_tiles(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);						// 00444CE0
-	u32 ai_remove_addon_places(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);						// 00443CC0
-	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag);		// 00443AC0
-	u32 get_pylon_placement_position(char* placementData, u8 playerId, Point16 desiredPos);								// 004448D0
-	u32 get_default_placement_position(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);					// 004449A0
+	u32 ai_get_building_placement_data(u32 maxRange, u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);		// 00445D60
+	char* ai_remove_unreachable_regions(char* placementData, Point16 desiredPos);												// 00443900
+	u32 ai_remove_dangerous_regions(u32 unitId, char* placementData, u32 placementId, Point16 desiredPos);						// 00443870
+	u32 ai_remove_far_tiles(char* placementData, Point16 desiredPos, u32 maxRange);												// 00444E20
+	u32 ai_remove_different_height(char* placementData, Point16 desiredPos);													// 004436C0
+	u32 ai_placement_related_something(u16 unitId, char* placementData, Point16 desiredPos);									// 00443E30
+	void ai_remove_unfit_tiles(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);								// 00444CE0
+	u32 ai_remove_addon_places(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);								// 00443CC0
+	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag);			// 00443AC0
+	u32 get_pylon_placement_position(char* placementData, u8 playerId, Point16 desiredPos);										// 004448D0
+	u32 get_default_placement_position(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);						// 004449A0
 
 	// For ai_check_military_grouping
-	void getRegionCenter(u16 regionId, s32* out_x, s32* out_y);															// 0049CAA0
+	void get_region_center_from_id_2(u16 regionId, s32* out_x, s32* out_y);														// 0049CAA0
 
 	// For ignoreIscriptGoToIdle
-	void playIdleIscript(Sprite* sprite);																				// 00497880
+	void playIdleIscript(Sprite* sprite);																						// 00497880
 
 	// For issueOrderTargetingGround
-	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6);											// 00447810
+	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6);													// 00447810
 
 	// For unit_destructor_special
-	s32 removeCreepAtUnit(s32 left, s32 top, s16 unit_id);															    // 00414560
+	s32 removeCreepAtUnit(s32 left, s32 top, s16 unit_id);																		// 00414560
 
 	//// For direct_sound
 
@@ -1282,4 +1281,6 @@ namespace helper
 	s32 begin_harvest(Unit* worker, Unit* node);															// 00468C70
 
 	u32 get_missing_attack_force_units(AiRegion* region, u32* attack_wave, u32 is_campaign);				// 00438050
+	s32 ai_defender_bunker_behavior(Unit* unit, u16 region_id);												// 0043C480
+	bool ai_has_incomplete_military_in_region(AiRegion* region);											// 00436EB0
 }

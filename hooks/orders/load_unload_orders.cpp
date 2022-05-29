@@ -265,7 +265,7 @@ namespace hooks
 			helper::orders_nothing_2(unitVar);
 			return;
 		}
-		if (!(unitStatus & 0x40) && !helper::AI_UpdateAttackTarget(unitVar, 0, 0, 1))
+		if (!(unitStatus & 0x40) && !helper::ai_update_attack_target(unitVar, 0, 0, 1))
 		{
 			scbw::print("orderTarget");
 			Unit* orderTarget = unitVar->orderTarget.unit;

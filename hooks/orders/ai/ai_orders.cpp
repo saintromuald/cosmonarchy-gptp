@@ -144,7 +144,7 @@ LABEL_37:
 					{
 						childAi2 = 0;
 					}
-					selfRegion = &AiRegionCaptains[(u8)self->playerId][helper::getRegionIdFromUnit(actual_target)];
+					selfRegion = &AiRegionCaptains[(u8)self->playerId][helper::get_region_id_from_unit(actual_target)];
 					if (childAi2)
 					{
 						v18 = v14->state;
@@ -188,7 +188,7 @@ LABEL_37:
 						if (self->id || child1 != OrderId::EnterTransport)
 						{
 							childAi4 = helper::unitIsPerformingUnbreakableCode(self);
-							if (childAi4 || !helper::AI_CastSpellBehavior(self, main_target_reactions))
+							if (childAi4 || !helper::ai_cast_spell_behavior(self, main_target_reactions))
 							{
 								if (child1 != OrderId::RechargeShields1 && child1 != OrderId::Move)
 								{
@@ -258,7 +258,7 @@ LABEL_126:
 																{
 																	parentAi6->autoTargetUnit = actual_target;
 																}
-																helper::AI_UpdateAttackTarget(self, 0, 1, 0);
+																helper::ai_update_attack_target(self, 0, 1, 0);
 															}
 															else if (self->unit_ai)
 															{
@@ -557,7 +557,7 @@ LABEL_126:
 		return result;
 	}	
 
-	s16 getRegionIdFromUnit(Unit* unit) // 0049CB40
+	s16 get_region_id_from_unit(Unit* unit) // 0049CB40
 	{
 		if (unit == nullptr || unit->sprite == nullptr)
 		{
@@ -969,7 +969,7 @@ LABEL_126:
 		  || slowestUnitVar->status & UnitStatus::InTransport
 		  || slowestUnitVar == unit
 		  || region->state == 2
-		  || (u16)(&(*SAI_Paths)->regionCount + 32 * (helper::getRegionIdFromUnit(region->slowestUnit) + 4392)) < 60u
+		  || (u16)(&(*SAI_Paths)->regionCount + 32 * (helper::get_region_id_from_unit(region->slowestUnit) + 4392)) < 60u
 		  || !helper::AI_AreOnConnectedRegions(slowestUnitVar, unit)
 		  || helper::getDistanceFast(region->slowestUnit->sprite->position.x, unit->sprite->position.x, region->slowestUnit->sprite->position.y, unit->sprite->position.y) <= 0x80)
 		{
@@ -978,7 +978,7 @@ LABEL_126:
 
 		s32 x2;
 		s32 y2;
-		helper::getRegionCenter(region->region, &x2, &y2);
+		helper::get_region_center_from_id_2(region->region, &x2, &y2);
 		return helper::getDistanceFast(unit->sprite->position.x, x2, unit->sprite->position.y, y2) <= 0x180;
 	}
 
@@ -1823,6 +1823,56 @@ LABEL_126:
 							continue;
 						}
 						placement_data->tile_valid[y][x] = 0;
+					}
+				}
+			}
+		}
+	}
+
+	// Hooked to fix AI pathfinding lag and improve army spread. -Pr0nogo
+	void ai_manage_military_controller(Unit* unit) // 0043D910
+	{
+		UnitAi* unit_ai = unit->unit_ai;
+		MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
+		if (unit_ai)
+		{
+			if (unit_ai->type == AiType::Military && military_ai->parent == unit)
+			{
+				u16 unit_id = unit->id;
+				if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Building))
+				{
+					AiRegion* ai_region = military_ai->region;
+					if (unit_id && unit_id != UnitId::TerranHarakan || !helper::ai_defender_bunker_behavior(unit, ai_region->region))
+					{
+						if (!helper::ai_cast_spell_behavior(unit, 0) && !helper::ai_update_attack_target(unit, 0, 1, 0))
+						{
+							s32 region_id = ai_region->region;
+							if (ai_region->state == 1)
+							{
+								if (!ai_region->slowestUnit)
+								{
+									helper::ai_assign_region_to_slowest_unit(ai_region);
+								}
+								Unit* slowest_unit = ai_region->slowestUnit;
+								if (slowest_unit)
+								{
+									if (helper::ai_has_incomplete_military_in_region(ai_region))
+									{
+										region_id = helper::get_region_id_from_unit(slowest_unit);
+									}
+								}
+							}
+							if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == region_id)
+							{
+								helper::make_to_hold_position(unit);
+							}
+							else
+							{
+								s32 region_center = 0;
+								helper::get_region_center_from_id_2(region_id, &region_center, &region_id);
+								helper::ai_order_to_destination(unit, OrderId::AttackMove, region_center, region_id);
+							}
+						}
 					}
 				}
 			}

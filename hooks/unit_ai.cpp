@@ -458,11 +458,11 @@ namespace hooks
 				}
 
 				unit->pAI = medicAI;
-				helper::AI_OrderToDestination(unit, unit->id != UnitId::TerranCleric ? 157 : 177,
+				helper::ai_order_to_destination(unit, unit->id != UnitId::TerranCleric ? 157 : 177,
 					SAI_Paths->regions[(u16)region->region].rgnCenterX >> 8, SAI_Paths->regions[(u16)region->region].rgnCenterY >> 8);
 				if (region->state == 8 || region->state == 9 || region->state == 1 || region->state == 2)
 				{
-					helper::AI_AssignCaptainToSlowestUnit(region);
+					helper::ai_assign_region_to_slowest_unit(region);
 				}
 			}
 		}

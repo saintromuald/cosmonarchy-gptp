@@ -12,7 +12,7 @@ namespace hooks
 	void AI_SendSuicide(char argType, s32 player);																		// 0043E050
 	u32 AI_RecalculateRegionStrength(AiRegion* region);																	// 0043A390
 	Unit* getClosestEnemyStructure(s32 x, s32 y, s32 playerId);															// 004A0F90
-	s16 getRegionIdFromUnit(Unit* unit);																				// 0049CB40
+	s16 get_region_id_from_unit(Unit* unit);																				// 0049CB40
 	bool AI_IsBuildingSafe(Unit* unit);																					// 00438910
 	bool AI_AreOnConnectedRegions(Unit* unit1, Unit* unit2);															// 00438E10
 
@@ -39,6 +39,7 @@ namespace hooks
 	};
 	C_ASSERT(sizeof(PlacementData) == 0x1000);
 	void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position);	// 00443CC0
+	void ai_manage_military_controller(Unit* unit);																		// 0043D910
 
 	void injectAIOrdersHooks();
 }
