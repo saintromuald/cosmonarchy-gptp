@@ -246,6 +246,7 @@ enum ExtValueId
 	ValueAI_WorkerChosenX,
 	ValueAI_WorkerChosenY,
 	ValueAI_KitingSignal,
+	ValueAI_TargetingSignal,
 	ValueAI_BunkerCustom,
 
 	ValueCount,

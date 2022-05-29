@@ -145,6 +145,7 @@ namespace hooks
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		u8 weaponId = wId;
 		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId];
+		unitExt->values[ValueAI_TargetingSignal] = 0;
 		// Retrieve the spawning position for the bullet.
 		s32 x, y;
 		u8 behavior = weapons_dat::Behavior[weaponId];
