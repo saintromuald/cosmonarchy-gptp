@@ -33,7 +33,7 @@ namespace hooks
 		s32 childAi2;
 		s32 childAi4;
 
-		if (playerTable[self->playerId].type != PlayerType::Computer || self->playerId >= 8u)
+		if (playerTable[self->player].type != PlayerType::Computer || self->player >= 8u)
 		{
 			return;
 		}
@@ -41,7 +41,7 @@ namespace hooks
 		{
 			if (self->unit_ai)
 			{
-				AIScriptController[self->playerId].previous_building_hit_second = *elapsedTimeSeconds;
+				AIScriptController[self->player].previous_building_hit_second = *elapsedTimeSeconds;
 				BuildingAi* selfBuildingAi = (BuildingAi*)self->unit_ai;
 				if (selfBuildingAi)
 				{
@@ -106,7 +106,7 @@ namespace hooks
 			{
 				if (self->isUnitAINonBuilding())
 				{
-					helper::AI_AssignMilitary(2, selfMilitaryAi->region);
+					helper::ai_set_region_type(2, selfMilitaryAi->region);
 				}
 			}
 			childAi1 = helper::AI_IsUnderAttack(self, 0);
@@ -123,12 +123,12 @@ namespace hooks
 		}
 		if (helper::AI_TryReturnHome(self, 0) || !helper::AI_TransportAction(self))
 		{
-			if (AIScriptController[(u8)self->playerId].AI_Flags.isUseMapSettings)
+			if (AIScriptController[(u8)self->player].AI_Flags.isUseMapSettings)
 			{
 				parentAi9 = 1;
 			}
 LABEL_37:
-			v14 = &AiRegionCaptains[(u8)self->playerId][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
+			v14 = &AiRegionCaptains[(u8)self->player][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
 			if (!parentAi9)
 			{
 				if (!dont_call_help)
@@ -140,28 +140,28 @@ LABEL_37:
 					if (!self->unit_ai
 						|| helper::AI_IsUnderAttack(self, 0)
 						|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
-						&& AIScriptController[(u8)self->playerId].AI_Flags.isUseMapSettings)
+						&& AIScriptController[(u8)self->player].AI_Flags.isUseMapSettings)
 					{
 						childAi2 = 0;
 					}
-					selfRegion = &AiRegionCaptains[(u8)self->playerId][helper::get_region_id_from_unit(actual_target)];
+					selfRegion = &AiRegionCaptains[(u8)self->player][helper::get_region_id_from_unit(actual_target)];
 					if (childAi2)
 					{
 						v18 = v14->state;
 						if (v18 == 5 || v18 == 4)
 						{
-							helper::AI_AssignMilitary(6, v14);
+							helper::ai_set_region_type(6, v14);
 						}
 						if (v14->state)
 						{
 							if (!selfRegion->state && *elapsedTimeSeconds > 60)
-								helper::AI_AssignMilitary(5, selfRegion);
+								helper::ai_set_region_type(5, selfRegion);
 						}
 					}
 					if (!dont_call_help)
 					{
-						selfRegion->enemyAirStrength = helper::getEnemyAirStrengthInRegion(selfRegion->region, (u8)self->playerId);
-						selfRegion->enemyGroundStrength = helper::getEnemyStrengthInRegion(selfRegion->region, (u8)self->playerId, 0);
+						selfRegion->enemyAirStrength = helper::getEnemyAirStrengthInRegion(selfRegion->region, (u8)self->player);
+						selfRegion->enemyGroundStrength = helper::getEnemyStrengthInRegion(selfRegion->region, (u8)self->player, 0);
 						v19 = selfRegion->neededAirStrength;
 						if (v19 > v14->neededAirStrength)
 						{
@@ -201,7 +201,7 @@ LABEL_37:
 										|| !helper::AI_TransportAction(self))
 									{
 										if (actual_target && actual_target->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
-											|| AIScriptController[(u8)self->playerId].AI_Flags.isUseMapSettings
+											|| AIScriptController[(u8)self->player].AI_Flags.isUseMapSettings
 											|| ((child5 = 3 * self->getTotalHitPointsPlusShields() / 4, self->getCurrentLifeInGame() > child5)
 												|| child3 != UnitId::ProtossDidact && child3 != UnitId::TerranWraith && child3 != UnitId::ZergMutalisk
 												|| !helper::AI_TransportAction(self))
@@ -535,7 +535,7 @@ LABEL_126:
 					{
 						if (firstUnit->status & UnitStatus::GroundedBuilding)
 						{
-							firstUnitPlayer = firstUnit->playerId;
+							firstUnitPlayer = firstUnit->player;
 							if (firstUnitPlayer == 11)
 								firstUnitPlayer = firstSprite->playerId;
 							if (!scbw::isAlliedTo(playerId, firstUnitPlayer))
@@ -570,7 +570,7 @@ LABEL_126:
 	{
 		bool result = false;
 		WorkerAi* repairmanAI = (WorkerAi*)repairman->unit_ai;
-		if (repairman->playerId == repairTarget->playerId
+		if (repairman->player == repairTarget->player
 			&& units_dat::BaseProperty[repairman->id] & UnitProperty::Worker
 			&& !(repairman->status & UnitStatus::InTransport)
 			&& !(repairman->status & UnitStatus::InBuilding) // new
@@ -710,7 +710,7 @@ LABEL_126:
 		{
 			return 0;
 		}
-		s32 player = (u8)unit->playerId;
+		s32 player = (u8)unit->player;
 		if (AIScriptController[player].difficulty != 2)
 		{
 			return 0;
@@ -749,7 +749,7 @@ LABEL_126:
 			if (unit->mainOrderId)
 			{
 				s16 regionId = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
-				AiRegion* playerRegions = AiRegionCaptains[unit->playerId];
+				AiRegion* playerRegions = AiRegionCaptains[unit->player];
 				char regionState = playerRegions[regionId].state;
 				AiRegion* region = &playerRegions[regionId];
 				if (regionState != RegionState::EnemySighted && !region->airTarget && !region->groundTarget && !(region->captainFlags & 0x20))
@@ -771,7 +771,7 @@ LABEL_126:
 
 		u16 regionId = helper::get_region_id(unit2->sprite->position.x, unit2->sprite->position.y);
 		u16 regionId2 = helper::get_region_id(unit1->sprite->position.x, unit1->sprite->position.y);
-		return helper::AI_RegionsAreConnected(unit2->playerId, regionId2, regionId);
+		return helper::AI_RegionsAreConnected(unit2->player, regionId2, regionId);
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
@@ -976,9 +976,9 @@ LABEL_126:
 			return 1;
 		}
 
-		s32 x2;
-		s32 y2;
-		helper::get_region_center_from_id_2(region->region, &x2, &y2);
+		u32 x2 = 0;
+		u32 y2 = 0;
+		helper::get_region_center_from_id(region->region, &x2, &y2);
 		return helper::getDistanceFast(unit->sprite->position.x, x2, unit->sprite->position.y, y2) <= 0x180;
 	}
 
@@ -1061,11 +1061,11 @@ LABEL_126:
 			return 0;
 		}
 
-		u8 target_player = target_unit->playerId;
-		if (target_unit->playerId == 11) { // Neutral
+		u8 target_player = target_unit->player;
+		if (target_unit->player == 11) { // Neutral
 			target_player = target_unit->sprite->playerId;
 		}
-		if (!scbw::isAlliedTo(unit->playerId, target_player)) {
+		if (!scbw::isAlliedTo(unit->player, target_player)) {
 			if (helper::unit_can_attack_target(target_unit, unit, 1)) {
 				helper::order_to_attack_target(unit->autoTargetUnit, unit, 1, 0);
 				unit->status |= UnitStatus::Disabled;
@@ -1665,7 +1665,7 @@ LABEL_126:
 		Unit* best = UnitArrayFindBest(&workers, [=](Unit* worker) {
 			if (!worker->hasPathToUnit(to_repair) ||
 				to_repair->orderTarget.unit == worker ||
-				scbw::isAlliedTo(worker->playerId, to_repair->playerId) ||
+				scbw::isAlliedTo(worker->player, to_repair->player) ||
 				!helper::isOrderValid(OrderId::Repair1, worker, 0, to_repair, 0)) {
 				return ScoreInvalidUnit;
 			}
@@ -1847,7 +1847,7 @@ LABEL_126:
 						if (!helper::ai_cast_spell_behavior(unit, 0) && !helper::ai_update_attack_target(unit, 0, 1, 0))
 						{
 							s32 region_id = ai_region->region;
-							if (ai_region->state == 1)
+							if (ai_region->state == RegionState::ContinueAttackHere)
 							{
 								if (!ai_region->slowestUnit)
 								{
@@ -1862,16 +1862,23 @@ LABEL_126:
 									}
 								}
 							}
+
+							Region* region = scbw::get_region(region_id);
+							Point16 center = scbw::get_region_center(region);
+							if (scbw::getDistanceFast(unit->position, center) > 8 * 32) {
+								unit->orderTo(unit->id == UnitId::TerranCleric ? OrderId::HealMove : OrderId::AttackMove, center.x, center.y);
+							}
+
+							/*
 							if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == region_id)
 							{
 								helper::make_to_hold_position(unit);
 							}
 							else
 							{
-								s32 region_center = 0;
-								helper::get_region_center_from_id_2(region_id, &region_center, &region_id);
-								helper::ai_order_to_destination(unit, OrderId::AttackMove, region_center, region_id);
+								helper::ai_order_to_destination(unit, OrderId::AttackMove, region_x, region_y);
 							}
+							*/
 						}
 					}
 				}

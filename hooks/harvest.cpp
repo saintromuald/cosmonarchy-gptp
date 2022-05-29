@@ -112,7 +112,7 @@ namespace hooks
 				}
 
 				// Resource return multipliers
-				switch (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency))
+				switch (scbw::getUpgradeLevel(worker->player, UpgradeId::MiningEfficiency))
 				{
 					case 0:
 					case 99:
@@ -169,7 +169,7 @@ namespace hooks
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant: {
-				if ((ignore_completed || node->status & UnitStatus::Completed) && node->playerId == worker->playerId) {
+				if ((ignore_completed || node->status & UnitStatus::Completed) && node->player == worker->player) {
 					return true;
 				}
 			} break;
@@ -257,7 +257,7 @@ namespace hooks
 			if (node->id == UnitId::ResourceVespeneGeyser) {
 				valid_structure = true;
 			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant)
-				&& node->playerId == unit->playerId) {
+				&& node->player == unit->player) {
 				valid_structure = true;
 			}
 		}
@@ -325,7 +325,7 @@ namespace hooks
 			}
 			else
 			{
-				if (!helper::unit_is_active_resource_depot(node) || node->playerId != worker->playerId)
+				if (!helper::unit_is_active_resource_depot(node) || node->player != worker->player)
 				{
 					result = OrderId::None;
 					return result;

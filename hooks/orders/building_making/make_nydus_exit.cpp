@@ -31,7 +31,7 @@ namespace hooks
 		y /= 32;
 
 		// check if the nydus exit can be placed
-		if (helper::canBuildOnTileLocation(nydus_canal, nydus_canal->playerId, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0))
+		if (helper::canBuildOnTileLocation(nydus_canal, nydus_canal->player, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0))
 		{
 			helper::playWorkerErrorSound(nydus_canal, 0x358); // "You can't build there"
 			if (nydus_canal->orderQueueHead != nullptr)
@@ -50,7 +50,7 @@ namespace hooks
 		}
 		else
 		{ // 0045DCDB
-			Unit* nydusExit = helper::create_unit(UnitId::ZergNydusCanal, nydus_canal->orderTarget.pt.x, nydus_canal->orderTarget.pt.y, nydus_canal->playerId);
+			Unit* nydusExit = helper::create_unit(UnitId::ZergNydusCanal, nydus_canal->orderTarget.pt.x, nydus_canal->orderTarget.pt.y, nydus_canal->player);
 			if (nydusExit)
 			{
 				helper::AI_TrainingOverlord(nydusExit, nydus_canal);
@@ -58,13 +58,13 @@ namespace hooks
 			
 			if (nydusExit == nullptr)
 			{
-				helper::display_last_network_error_for_player(nydus_canal->playerId);
+				helper::display_last_network_error_for_player(nydus_canal->player);
 			}
 			else if (nydusExit->id != UnitId::ZergNydusCanal)
 			{
 				// TODO: should probably remove, since we are already handling CCMU properly here
 				// we should test first though
-				helper::display_last_network_error_for_player(nydus_canal->playerId);
+				helper::display_last_network_error_for_player(nydus_canal->player);
 				nydusExit->remove();
 			}
 			else

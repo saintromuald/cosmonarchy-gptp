@@ -213,7 +213,7 @@ namespace hooks
 				{
 					return;
 				}
-				if (scbw::isAlliedTo(target->playerId, unit->playerId)
+				if (scbw::isAlliedTo(target->player, unit->player)
 					&& (target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon))
 				{
 					UnitExt* targetExt = globals.get_unit_ext(target);
@@ -276,7 +276,7 @@ namespace hooks
 		{
 			if (unit->isValidCaster())
 			{
-				if (!scbw::isAlliedTo(*LOCAL_NATION_ID, unit->playerId))
+				if (!scbw::isAlliedTo(*LOCAL_NATION_ID, unit->player))
 				{
 					scbw::refresh_console();
 				}

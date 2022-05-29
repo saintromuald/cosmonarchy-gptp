@@ -61,7 +61,7 @@ namespace hooks
 		u32 index = 0;
 
 		if (!(activeUnit->status & UnitStatus::IsHallucination)
-			|| (!*IS_IN_REPLAY && activeUnit->playerId != *LOCAL_NATION_ID))
+			|| (!*IS_IN_REPLAY && activeUnit->player != *LOCAL_NATION_ID))
 		{
 			bool bNoAirWeaponDisplay;
 			u32 airWeapon;
@@ -299,10 +299,10 @@ namespace hooks
 			return 0;
 		}
 
-		if (unit->playerId == 11) {
+		if (unit->player == 11) {
 			return "";
 		} else {
-			return playerNameList->player[unit->playerId].player_name;
+			return playerNameList->player[unit->player].player_name;
 		}
 
 		/*
@@ -331,7 +331,7 @@ namespace hooks
 		Unit* unit = *activePortraitUnit;
 
 		static char buffer[256] = {};
-		strcpy_s(buffer, playerNameList->player[unit->playerId].force_name);
+		strcpy_s(buffer, playerNameList->player[unit->player].force_name);
 		helper::addTextToDialog(dialog, -21, buffer);
 
 		/*
@@ -391,7 +391,7 @@ namespace hooks
 		{
 			goto LABEL_35;
 		}
-		if (!IS_IN_REPLAY && activeUnit->playerId != *LOCAL_NATION_ID)
+		if (!IS_IN_REPLAY && activeUnit->player != *LOCAL_NATION_ID)
 		{
 			goto LABEL_6;
 		}
@@ -565,7 +565,7 @@ LABEL_6:
 		s16 v10;
 
 		v3 = dialog;
-		v4 = (*activePortraitUnit)->playerId;
+		v4 = (*activePortraitUnit)->player;
 		if (weapons_dat::DamageUpgrade[weaponId] >= 0x2Eu)
 		{
 //			v5 = *upgradesLevelBW[v4][weapons_dat::DamageUpgrade[weaponId]];

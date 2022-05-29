@@ -1508,7 +1508,7 @@ namespace scbw
 				return;
 			}
 		}
-		hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->playerId, 0, 1);
+		hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->player, 0, 1);
 		if (playSound)
 		{
 			helper::playSoundFromSource(1372, unit, 1, 0);
@@ -1538,7 +1538,7 @@ namespace scbw
 		unitExt->values[valueId] = rotate;
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
-		Bullet* bullet = helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
+		Bullet* bullet = helper::createBullet(weaponId, unit, X, Y, unit->player, scbw::getAngle(X, Y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
 		if (bullet && unitExt->values[valueId] < fake_amount)
 		{
 			bullet->hitFlags |= 0x1;
@@ -1592,7 +1592,7 @@ namespace scbw
 			unit->getY() + radius
 		).filter([&](Unit* target)
 		{
-			if (!scbw::isAlliedTo(unit->playerId, target->playerId))
+			if (!scbw::isAlliedTo(unit->player, target->player))
 			{
 				return false;
 			}

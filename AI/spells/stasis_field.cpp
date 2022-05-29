@@ -11,7 +11,7 @@ namespace AI
 		s32 bounds;
 		if (isUnderAttack)
 			bounds = 32 * 9;
-		else if (isUmsMode(caster->playerId))
+		else if (isUmsMode(caster->player))
 			bounds = 32 * 64;
 		else
 			bounds = 32 * 32;
@@ -38,7 +38,7 @@ namespace AI
 			if (!targetOfTarget)
 				return false;
 
-			if (targetOfTarget->playerId >= 8)
+			if (targetOfTarget->player >= 8)
 				return false;
 
 			if (caster->isTargetEnemy(targetOfTarget))

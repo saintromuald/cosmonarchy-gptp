@@ -286,7 +286,7 @@ namespace hooks
 								|| builtUnit->id == UnitId::ProtossAquifer
 								|| builtUnit->id == UnitId::ZergExcisant)
 							{
-								if (builtUnit->playerId == unit->playerId)
+								if (builtUnit->player == unit->player)
 								{
 									jump_to_67F3C = true;
 								}
@@ -345,7 +345,7 @@ namespace hooks
 						|| builtUnit->id == UnitId::ProtossAquifer
 						|| builtUnit->id == UnitId::ZergExcisant)
 					{
-						if (builtUnit->playerId == unit->playerId)
+						if (builtUnit->player == unit->player)
 						{
 							jump_to_67F3C = true;
 						}
@@ -426,14 +426,14 @@ namespace hooks
 							unit->buildQueue[unit->buildQueueSlot],
 							unit->orderTarget.pt.x,
 							unit->orderTarget.pt.y,
-							unit->playerId);
+							unit->player);
 					}
 					u32 unit_id = unit->buildQueue[unit->buildQueueSlot];
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 					if (builtUnit == nullptr)
 					{
-						helper::refundUnitTrainCost(unit_id, unit->playerId);
-						helper::display_last_network_error_for_player(unit->playerId);
+						helper::refundUnitTrainCost(unit_id, unit->player);
+						helper::display_last_network_error_for_player(unit->player);
 						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 					}
 					else // 00468131

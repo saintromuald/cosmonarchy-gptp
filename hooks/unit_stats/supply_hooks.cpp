@@ -156,7 +156,7 @@ namespace hooks
                 {
                     activeUnit = clientSelectionGroup->unit[0];
                 }
-                activePlayer = activeUnit->playerId;
+                activePlayer = activeUnit->player;
                 if (activePlayer != 11)
                 {
                     activePlayer = activePlayer;
@@ -237,8 +237,8 @@ namespace hooks
     {
         Unit* activeUnit = *activePortraitUnit;
         GroupFlag groupFlags = units_dat::GroupFlags[activeUnit->id];
-        *suppliesAvailableTemp = getSuppliesAvailable(activeUnit->playerId, RaceId::Terran);
-        u8 playerId = activeUnit->playerId;
+        *suppliesAvailableTemp = getSuppliesAvailable(activeUnit->player, RaceId::Terran);
+        u8 playerId = activeUnit->player;
         s32 result = suppliesUsed_Terran[playerId];
         *suppliesUsedTemp = suppliesUsed_Terran[playerId];
         return result;
@@ -246,12 +246,12 @@ namespace hooks
 
     bool redrawSupplyInfo() // 00425230 // Guessed name
     {
-        if (!IS_IN_REPLAY && (u8)(*activePortraitUnit)->playerId != *LOCAL_NATION_ID)
+        if (!IS_IN_REPLAY && (u8)(*activePortraitUnit)->player != *LOCAL_NATION_ID)
         {
             return helper::unitStatCond_Standard();
         }
 
-        u8 activePlayer = (*activePortraitUnit)->playerId;
+        u8 activePlayer = (*activePortraitUnit)->player;
         GroupFlag groupFlags = units_dat::GroupFlags[(u16)(*activePortraitUnit)->id];
         char race = RaceId::Terran;
 
@@ -268,7 +268,7 @@ namespace hooks
 
 	void drawSupplyUnitStatus(BinDlg* dialog) {
 		Unit* unit = *activePortraitUnit;
-		if (*IS_IN_REPLAY || unit->playerId == *LOCAL_NATION_ID) {
+		if (*IS_IN_REPLAY || unit->player == *LOCAL_NATION_ID) {
 			getSuppliesTemp();
 			if (*statusScreenFunc != 12) {
 				helper::hideOptionalStatusScreenControls(dialog);
@@ -358,7 +358,7 @@ namespace hooks
         {
             return;
         }
-        allUnitCountTable[unit->id].player[unit->playerId] += count;
+        allUnitCountTable[unit->id].player[unit->player] += count;
         GroupFlag groupFlag = units_dat::GroupFlags[(u16)unit->id];
         
         if (unit->getRace() == RaceId::Zerg)
@@ -370,12 +370,12 @@ namespace hooks
                 supply = units_dat::SupplyRequired[unit->id];
                 if (!(units_dat::BaseProperty[unit->id] & 0x400) || unit->status & 1)
                 {
-                    raceSupply[RaceId::Terran].used[unit->playerId] += count * supply;
+                    raceSupply[RaceId::Terran].used[unit->player] += count * supply;
                 }
                 else
                 {
                     supply *= 2;
-                    raceSupply[RaceId::Terran].used[unit->playerId] += count * supply;
+                    raceSupply[RaceId::Terran].used[unit->player] += count * supply;
                 }
             }
             else
@@ -387,34 +387,34 @@ namespace hooks
                     supply *= 2;
                 }
 
-                raceSupply[RaceId::Terran].used[unit->playerId] += count * supply;
+                raceSupply[RaceId::Terran].used[unit->player] += count * supply;
             }
         }
         else
         {
-            raceSupply[RaceId::Terran].used[unit->playerId] += count * units_dat::SupplyRequired[unit->id];
+            raceSupply[RaceId::Terran].used[unit->player] += count * units_dat::SupplyRequired[unit->id];
         }
 
         if (groupFlag.isFactory)
         {
-            factoriesProducedOwnedTotal[unit->playerId] += count;
+            factoriesProducedOwnedTotal[unit->player] += count;
         }
         if (groupFlag.isMen)
         {
-            unitsProducedOwnedTotal[unit->playerId] += count;
+            unitsProducedOwnedTotal[unit->player] += count;
         }
         if (groupFlag.isBuilding)
         {
-            structuresProducedOwnedTotal[unit->playerId] += count;
+            structuresProducedOwnedTotal[unit->player] += count;
         }
         if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
         {
-            unitsProducedOwnedTotal[unit->playerId] += count;
+            unitsProducedOwnedTotal[unit->player] += count;
         }
 
-        if (allUnitCountTable[unit->id].player[unit->playerId] < 0)
+        if (allUnitCountTable[unit->id].player[unit->player] < 0)
         {
-            allUnitCountTable[unit->id].player[unit->playerId] = 0;
+            allUnitCountTable[unit->id].player[unit->player] = 0;
         }
     }
 
@@ -430,9 +430,9 @@ namespace hooks
         {
             return;
         }
-        auto player = unit->playerId;
+        auto player = unit->player;
         auto unit_id = unit->id;
-        completed_unit_counts[unit->id].player[unit->playerId] += count;
+        completed_unit_counts[unit->id].player[unit->player] += count;
 
         s32 race = unit->getRace();
         s32 supply = unit->getSupplyProvided();
@@ -442,15 +442,15 @@ namespace hooks
         }
         if (units_dat::GroupFlags[unit_id].isFactory)
         {
-            factoriesOwned[unit->playerId] += count;
+            factoriesOwned[unit->player] += count;
         }
         if (units_dat::GroupFlags[unit_id].isBuilding)
         {
-            buildingsOwned[unit->playerId] += count;
+            buildingsOwned[unit->player] += count;
         }
         if (units_dat::GroupFlags[unit_id].isMen)
         {
-            unitsProduced[unit->playerId] += count;
+            unitsProduced[unit->player] += count;
         }
         if (increment_scores != 0)
         {
@@ -458,22 +458,22 @@ namespace hooks
             {
                 if (!scbw::isAnyMorphMorphResult(unit_id))
                 {
-                    unitsOwned[unit->playerId] += count;
+                    unitsOwned[unit->player] += count;
                 }
-                unitScore[unit->playerId] += count;
+                unitScore[unit->player] += count;
             }
             else if (units_dat::GroupFlags[unit_id].isBuilding)
             {
                 if (!scbw::isZergBuildingMorphResult(unit_id))
                 {
-                    buildingsOwned[unit->playerId] += count;
+                    buildingsOwned[unit->player] += count;
                 }
-                buildingScore[unit->playerId] += count * units_dat::BuildScore[unit_id];
+                buildingScore[unit->player] += count * units_dat::BuildScore[unit_id];
             }
         }
-        if (completed_unit_counts[unit_id].player[unit->playerId] < 0)
+        if (completed_unit_counts[unit_id].player[unit->player] < 0)
         {
-            completed_unit_counts[unit_id].player[unit->playerId] = 0;
+            completed_unit_counts[unit_id].player[unit->player] = 0;
         }
     }
 

@@ -33,7 +33,7 @@ namespace hooks
 			)
 		{
 
-			u8 visibilityFlags = (1 << detector->playerId);
+			u8 visibilityFlags = (1 << detector->player);
 			//only continue if the target sprite is visible (else it's
 			//not a cloaking issue that hide the unit)
 			if (target->sprite->visibilityFlags & visibilityFlags)
@@ -52,7 +52,7 @@ namespace hooks
 					//update visionFlags for current target eval
 					param->visionFlags |=
 						detector->parasiteFlags |					// detector's parasites player owner flags (8 bits)
-						playerVision->flags[detector->playerId] |	// default visibility (32 bits)
+						playerVision->flags[detector->player] |	// default visibility (32 bits)
 						visibilityFlags								// detector's player flag (8 bits)
 						;
 				}

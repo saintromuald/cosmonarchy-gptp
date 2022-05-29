@@ -13,7 +13,7 @@ namespace hooks
 		// look for a location to spawn a larva at
 		if (helper::getLarvaSpawnPos(main_building, &coords))
 		{
-			Unit* unit_created = helper::create_unit(UnitId::ZergLarva, coords.x, coords.y, main_building->playerId);
+			Unit* unit_created = helper::create_unit(UnitId::ZergLarva, coords.x, coords.y, main_building->player);
 			if (unit_created != nullptr)
 			{
 				helper::update_unit_stats_and_finish_building(unit_created);
@@ -68,7 +68,7 @@ namespace hooks
 		if (unit->status & UnitStatus::IsHallucination) {
 			return;
 		}
-		if (unit->orderQueueTimer == 0 && unit->playerId != 11)
+		if (unit->orderQueueTimer == 0 && unit->player != 11)
 		{
 			// 004EA79E
 			*larvaCounter = 0;
@@ -132,7 +132,7 @@ namespace hooks
 					else
 					{
 						// 004EA830:
-						Unit* new_larva = helper::create_unit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->playerId);
+						Unit* new_larva = helper::create_unit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->player);
 						if (new_larva != nullptr)
 						{
 							// update various stats (set hp, set shield...) not finished on CreateUnit

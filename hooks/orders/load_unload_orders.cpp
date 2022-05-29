@@ -246,7 +246,7 @@ namespace hooks
 	{
 		scbw::print("hello");
 		Unit* unitVar = unit;
-		bool bIsNeutral = unit->playerId == 11;
+		bool bIsNeutral = unit->player == 11;
 		char unitStatus = unit->status;
 		if (bIsNeutral)
 		{
@@ -624,7 +624,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (!(scbw::isAlliedTo(transport->playerId, unit->playerId)))
+		if (!(scbw::isAlliedTo(transport->player, unit->player)))
 		{
 			return 0;
 		}

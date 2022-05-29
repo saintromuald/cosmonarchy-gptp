@@ -50,7 +50,7 @@ namespace hooks
 		result_function_00473FB0 =
 			helper::canBuildOnTileLocation(
 				builder,
-				builder->playerId,
+				builder->player,
 				x,
 				y,
 				builtUnitId,
@@ -105,7 +105,7 @@ namespace hooks
 		result_function_00473FB0 =
 			helper::canBuildOnTileLocation(
 				builder,
-				builder->playerId,
+				builder->player,
 				x,
 				y,
 				builtUnitId,
@@ -162,7 +162,7 @@ namespace hooks
 			result_function_00473FB0 =
 				helper::canBuildOnTileLocation(
 					builder,
-					builder->playerId,
+					builder->player,
 					addonPlaceX,
 					addonPlaceY,
 					builder->id,

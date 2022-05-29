@@ -15,7 +15,7 @@ namespace hooks
 			MOV unit, ECX
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -34,7 +34,7 @@ namespace hooks
 			MOV unit, EDX
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -53,7 +53,7 @@ namespace hooks
 			MOV unit, ECX
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -72,7 +72,7 @@ namespace hooks
 			MOV unit, EDX
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -91,7 +91,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -110,7 +110,7 @@ namespace hooks
 			MOV unit, EAX
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -129,7 +129,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -148,7 +148,7 @@ namespace hooks
 			MOV unit, EDI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -167,7 +167,7 @@ namespace hooks
 			MOV unit, ECX
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -186,7 +186,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -205,7 +205,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EDX, hp
@@ -224,7 +224,7 @@ namespace hooks
 			MOV unit, EBX
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EDI, hp
@@ -243,7 +243,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -262,7 +262,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -281,7 +281,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -300,7 +300,7 @@ namespace hooks
 			MOV unit, EDI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV ECX, hp
@@ -319,7 +319,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -338,7 +338,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -357,7 +357,7 @@ namespace hooks
 			MOV unit, EAX
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EDX, hp
@@ -376,7 +376,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -395,7 +395,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV ECX, hp
@@ -414,7 +414,7 @@ namespace hooks
 			MOV unit, EDI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EDX, hp
@@ -433,7 +433,7 @@ namespace hooks
 			MOV unit, EDI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV ECX, hp
@@ -452,7 +452,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV ECX, hp
@@ -471,7 +471,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EDI, hp
@@ -490,7 +490,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -509,7 +509,7 @@ namespace hooks
 			MOV unit, EDI
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId);
+		hp = maxhp(id, unit->player);
 		__asm {
 			POPAD
 			MOV ECX, hp

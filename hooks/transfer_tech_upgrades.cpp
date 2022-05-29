@@ -152,9 +152,9 @@ namespace hooks
 
 							//check if tech is researched by unit for transfer
 							if (techId >= TechId::Restoration)
-								bIsResearched = TechBw->isResearched[sourceUnit->playerId][techId - TechId::Restoration];
+								bIsResearched = TechBw->isResearched[sourceUnit->player][techId - TechId::Restoration];
 							else
-								bIsResearched = TechSc->isResearched[sourceUnit->playerId][techId];
+								bIsResearched = TechSc->isResearched[sourceUnit->player][techId];
 
 							//probably research the tech of unit if not already researched by player
 							//if return false, stop checking techs and TechTransferData
@@ -222,9 +222,9 @@ namespace hooks
 
 							//check level of upgrade of by unit for transfer
 							if (upgradeId >= UpgradeId::PrismaticShield)
-								sourceUpgradeLevel = UpgradesBw->currentLevel[sourceUnit->playerId][upgradeId - UpgradeId::PrismaticShield];
+								sourceUpgradeLevel = UpgradesBw->currentLevel[sourceUnit->player][upgradeId - UpgradeId::PrismaticShield];
 							else
-								sourceUpgradeLevel = UpgradesSc->currentLevel[sourceUnit->playerId][upgradeId];
+								sourceUpgradeLevel = UpgradesSc->currentLevel[sourceUnit->player][upgradeId];
 
 							//probably increase the upgrade level of player until reaching same point as sourceUnit
 							//if return false, stop checking upgrades and UpgradeTransferData

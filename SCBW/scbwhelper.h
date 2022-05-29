@@ -137,7 +137,7 @@ namespace helper
 	void hideUnit(Unit* unit);
 
 	// For AI_TrainingBroodling
-	void AI_AssignMilitary(s32 regionType, AiRegion* region);
+	void ai_set_region_type(s32 regionType, AiRegion* region);
 	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 always_this_region);
 
 	// For AI_TrainingWorker
@@ -1028,7 +1028,7 @@ namespace helper
 	u32 get_default_placement_position(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos);						// 004449A0
 
 	// For ai_check_military_grouping
-	void get_region_center_from_id_2(u16 regionId, s32* out_x, s32* out_y);														// 0049CAA0
+	void get_region_center_from_id(u16 regionId, u32* out_x, u32* out_y);														// 0049CAA0
 
 	// For ignoreIscriptGoToIdle
 	void playIdleIscript(Sprite* sprite);																						// 00497880

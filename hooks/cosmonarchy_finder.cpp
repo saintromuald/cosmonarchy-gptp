@@ -149,15 +149,15 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 
 					return false;
 				}
 			}
-			if (context & Flags::Own && unit->playerId != center->playerId)
+			if (context & Flags::Own && unit->player != center->player)
 			{
 				return false;
 			}
-			if (scbw::isAlliedTo(unit->playerId, center->playerId) && context & Flags::Enemy)
+			if (scbw::isAlliedTo(unit->player, center->player) && context & Flags::Enemy)
 			{
 				return false;
 			}
-			if (!scbw::isAlliedTo(unit->playerId, center->playerId) && context & Flags::Ally)
+			if (!scbw::isAlliedTo(unit->player, center->player) && context & Flags::Ally)
 			{
 				return false;
 			}

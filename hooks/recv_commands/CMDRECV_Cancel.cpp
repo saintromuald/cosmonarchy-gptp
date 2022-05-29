@@ -35,7 +35,7 @@ namespace hooks
 			if (addon != nullptr
 				&& !(addon->status & UnitStatus::Completed)
 				&& unit->status & UnitStatus::Completed
-				&& unit->playerId == *ACTIVE_NATION_ID)
+				&& unit->player == *ACTIVE_NATION_ID)
 			{
 				helper::CancelAddon_Proc(unit);
 				scbw::refresh_console();
@@ -51,7 +51,7 @@ namespace hooks
 		if (unit != nullptr
 			&& getActivePlayerNextSelection() == nullptr
 			&& unit->status & UnitStatus::Completed
-			&& unit->playerId == *ACTIVE_NATION_ID)
+			&& unit->player == *ACTIVE_NATION_ID)
 		{
 			helper::CancelUpgrade_Proc(unit);
 			scbw::refresh_console();
@@ -67,7 +67,7 @@ namespace hooks
 			&& getActivePlayerNextSelection() == nullptr
 			&& units_dat::BaseProperty[unit->id] & UnitProperty::Building
 			&& unit->status & UnitStatus::Completed
-			&& unit->playerId == *ACTIVE_NATION_ID)
+			&& unit->player == *ACTIVE_NATION_ID)
 		{
 			helper::CancelResearch_Proc(unit);
 			scbw::refresh_console();
@@ -89,7 +89,7 @@ namespace hooks
 			&& unit->id != UnitId::ZergMuthrokSpire
 			&& unit->id != UnitId::ZergCreepColony
 			&& unit->status & UnitStatus::Completed
-			&& unit->playerId == *ACTIVE_NATION_ID)
+			&& unit->player == *ACTIVE_NATION_ID)
 		{
 			if (wUnitID == 0xFE)
 			{
@@ -114,7 +114,7 @@ namespace hooks
 		Unit* current_unit = getActivePlayerNextSelection();
 		while (current_unit != nullptr)
 		{
-			if (current_unit->playerId == *ACTIVE_NATION_ID)
+			if (current_unit->player == *ACTIVE_NATION_ID)
 			{
 				helper::AI_cancel_structure(current_unit);
 			}
@@ -141,7 +141,7 @@ namespace hooks
 
 		if (unit != nullptr
 			&& getActivePlayerNextSelection() == nullptr
-			&& unit->playerId == *ACTIVE_NATION_ID)
+			&& unit->player == *ACTIVE_NATION_ID)
 		{
 			helper::AI_cancel_structure(unit);
 		}

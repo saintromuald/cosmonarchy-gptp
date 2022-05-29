@@ -39,7 +39,7 @@ void hideAllPsiFields()
 void showAllPsiFieldsOnSelect(Unit* unit)
 {
 
-	if (!scbw::isInReplay() && unit->playerId == *LOCAL_NATION_ID)
+	if (!scbw::isInReplay() && unit->player == *LOCAL_NATION_ID)
 	{
 		if ((unit->status & UnitStatus::Completed) && hooks::isReadyToMakePsiField(unit))
 		{
@@ -53,7 +53,7 @@ void showAllPsiFieldsOnSelect(Unit* unit)
 void hideAllPsiFieldsOnUnselect(Unit* unit)
 {
 
-	if (!scbw::isInReplay() && unit->playerId == *LOCAL_NATION_ID)
+	if (!scbw::isInReplay() && unit->player == *LOCAL_NATION_ID)
 	{
 		if ((unit->status & UnitStatus::Completed) && hooks::isReadyToMakePsiField(unit))
 		{

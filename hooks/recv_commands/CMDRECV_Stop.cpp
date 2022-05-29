@@ -26,7 +26,7 @@ namespace hooks
 			if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0xFFFF)
 				helper::parseOrdersDatReqs();
 
-			if (current_unit->playerId != *ACTIVE_NATION_ID)
+			if (current_unit->player != *ACTIVE_NATION_ID)
 				*u32_0066FF60 = 0x01;
 			else
 				if (!(current_unit->status & UnitStatus::Completed))
@@ -134,7 +134,7 @@ namespace hooks
 			if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0xFFFF)
 				helper::parseOrdersDatReqs();
 
-			if (current_unit->playerId != *ACTIVE_NATION_ID)
+			if (current_unit->player != *ACTIVE_NATION_ID)
 				*u32_0066FF60 = 0x01;
 			else
 				if (!(current_unit->status & UnitStatus::Completed))
@@ -244,7 +244,7 @@ namespace hooks
 				helper::parseOrdersDatReqs();
 			}
 
-			if (current_unit->playerId != *ACTIVE_NATION_ID)
+			if (current_unit->player != *ACTIVE_NATION_ID)
 			{
 				*u32_0066FF60 = 0x01;
 			}

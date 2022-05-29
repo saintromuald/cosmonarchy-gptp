@@ -165,7 +165,7 @@ LABEL_8:
 						}
 						else
 						{
-							u8 v11 = a3->playerId;
+							u8 v11 = a3->player;
 							if (*statTxtTbl > 0x368u)
 								helper::show_stat_txt_to_player(*statTxtTbl + statTxtTbl[873], v11);
 							else
@@ -174,7 +174,7 @@ LABEL_8:
 					}
 					else
 					{
-						u8 v10 = a3->playerId;
+						u8 v10 = a3->player;
 						if (*statTxtTbl > 0x366u)
 							helper::show_stat_txt_to_player(*statTxtTbl + statTxtTbl[871], v10);
 						else

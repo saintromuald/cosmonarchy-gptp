@@ -424,7 +424,7 @@ LABEL_42:
 			return OrderId::Move;
 		if (unit->id != UnitId::ZergMatraleth
 			|| targetVar->status & UnitStatus::Invincible
-			|| helper::getUnitAbilityErrorStatString(targetVar, unit->playerId, 12) != 0)
+			|| helper::getUnitAbilityErrorStatString(targetVar, unit->player, 12) != 0)
 		{
 			result = (u8)(unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
 		}
@@ -487,21 +487,21 @@ LABEL_42:
 
 	u32 unitCanSeeCloakedTargetHook(Unit* target, Unit* unit) // 00401D60, hooked for cloak rewrite - Pr0nogo
 	{
-		return target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
+		return target->status & 0x300 && !((1 << unit->player) & target->visibilityStatus);
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
 	u32 isTargetVisibleHook(Unit* target, Unit* unit) // 004E5E30
 	{
 		s32 playerUnit;
-		playerUnit = 1 << unit->playerId;
+		playerUnit = 1 << unit->player;
 		if (!target)
 		{
 			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibilityFlags);
 		}
 
 		u32 result;
-		if (target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus))
+		if (target->status & 0x300 && !((1 << unit->player) & target->visibilityStatus))
 		{
 			result = (u8)(playerUnit & target->sprite->visibilityFlags);
 		}
@@ -520,7 +520,7 @@ LABEL_42:
 		u32 result;
 
 		target = unit->orderTarget.unit;
-		playerUnit = 1 << unit->playerId;
+		playerUnit = 1 << unit->player;
 		if (!target)
 		{
 			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibilityFlags);
@@ -972,7 +972,7 @@ LABEL_65:
 							unitTarget = unit->orderTarget.unit;
 							if (!unitTarget)
 							{
-								if (helper::techUseAllowed(unit, 0, unit->playerId) == 1
+								if (helper::techUseAllowed(unit, 0, unit->player) == 1
 								  && helper::getCurrentHitPointsPlusShields(unitTarget) >= 100)
 								{
 									helper::stimpackProc(unit);
@@ -1012,7 +1012,7 @@ LABEL_65:
 										s32 airWeaponMaxRange = weapons_dat::MaxRange[airWeapon];
 										if (helper::is_target_within_min_movement_range(unitTarget, subunit, airWeaponMaxRange))
 										{
-											if (helper::techUseAllowed(unit, 0, unit->playerId) == 1
+											if (helper::techUseAllowed(unit, 0, unit->player) == 1
 											  && helper::getCurrentHitPointsPlusShields(unitTarget) >= 100)
 											{
 												helper::stimpackProc(unit);

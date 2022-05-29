@@ -25,7 +25,7 @@ namespace hooks
 				u32 repairCostMinerals = 0, repairCostGas = 0;
 
 				helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
-				helper::verifyResources(repairCostMinerals, repairCostGas, unit->playerId);
+				helper::verifyResources(repairCostMinerals, repairCostGas, unit->player);
 
 				unit->worker.repairResourceLossTimer = 0;
 				unit->mainOrderState = 1; // continue directly into this case
@@ -215,7 +215,7 @@ namespace hooks
 					return 0;
 				}
 				errorStringId = 896;
-				if (unit->playerId != target->playerId && scbw::unit_id_is_capped_gas_structure(target->id))
+				if (unit->player != target->player && scbw::unit_id_is_capped_gas_structure(target->id))
 				{
 					if (bErrorFlag)
 					{
@@ -228,7 +228,7 @@ namespace hooks
 			case OrderId::Pickup2:
 			{
 				errorStringId = 890;
-				if (!target || unit->playerId != target->playerId)
+				if (!target || unit->player != target->player)
 				{
 					if (bErrorFlag)
 					{
@@ -256,7 +256,7 @@ namespace hooks
 				{
 					return 1;
 				}
-				if (!helper::techUseAllowed(unit, TechId::Healing, unit->playerId))
+				if (!helper::techUseAllowed(unit, TechId::Healing, unit->player))
 				{
 					return 0;
 				}
@@ -293,7 +293,7 @@ namespace hooks
 			{
 				helper::parseOrdersDatReqs();
 			}
-			if (player == unit->playerId)
+			if (player == unit->player)
 			{
 				if (orderId == OrderId::RallyPoint1 || orderId == OrderId::RallyPoint2 || unit->status & UnitStatus::Completed)
 				{

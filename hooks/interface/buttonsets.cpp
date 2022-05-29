@@ -1559,7 +1559,7 @@ namespace hooks
 			// 00459278
 			if (!bStopThere && !jumpto5934E)
 			{
-				jumpto5933C = (!*IS_IN_REPLAY) && (*activePortraitUnit != nullptr) && ((*activePortraitUnit)->playerId != *LOCAL_NATION_ID);
+				jumpto5933C = (!*IS_IN_REPLAY) && (*activePortraitUnit != nullptr) && ((*activePortraitUnit)->player != *LOCAL_NATION_ID);
 				if (!jumpto5933C)
 				{
 					// 0045929A

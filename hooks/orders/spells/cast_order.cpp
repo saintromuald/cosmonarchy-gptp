@@ -38,7 +38,7 @@ namespace hooks
 			}
 
 			GroupFlag casterGroupFlags = units_dat::GroupFlags[caster->id];
-			char casterPlayer = caster->playerId;
+			char casterPlayer = caster->player;
 			u8 casterRace;
 			if (casterGroupFlags.isZerg)
 			{
@@ -72,7 +72,7 @@ namespace hooks
 		} else {
 			finalString = 0;
 		}
-		helper::get_statTxt_Str_0(caster, (u8) caster->playerId, finalString);
+		helper::get_statTxt_Str_0(caster, (u8) caster->player, finalString);
 
 		s32 result;
 		if (caster->orderQueueHead) {
@@ -121,7 +121,7 @@ namespace hooks
 						LABEL_20:
 							if (fowUnitId == UnitId::None)
 							{
-								errorStatString = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->playerId, techId);
+								errorStatString = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->player, techId);
 							}
 							else
 							{
@@ -234,7 +234,7 @@ namespace hooks
 			{
 				char* message = (char*)statTxtTblNew->getString(876); // Invalid target
 				// do the actual transmission corresponding to the message
-				helper::get_statTxt_Str_0(unit, unit->playerId, message);
+				helper::get_statTxt_Str_0(unit, unit->player, message);
 				// make the unit stop since the order failed
 				helper::set_resource_target(unit);
 				unit->orderToIdle();
@@ -260,7 +260,7 @@ namespace hooks
 					if (message != nullptr)
 					{
 						// display an error message only for the owner of the unit
-						if (*LOCAL_NATION_ID == unit->playerId
+						if (*LOCAL_NATION_ID == unit->player
 						&&	*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
 						{
 							helper::setUnitStatTxtErrorMsg(message);
@@ -385,7 +385,7 @@ namespace hooks
 								unit->mainOrderState = 2;
 								if (unit->unit_ai != nullptr)
 								{
-									AIScriptController[unit->playerId].spellcasterTimer = 1;
+									AIScriptController[unit->player].spellcasterTimer = 1;
 								}
 							}
 						}

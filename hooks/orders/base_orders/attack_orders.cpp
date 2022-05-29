@@ -328,7 +328,7 @@ namespace hooks
 
 					if (unit->id != UnitId::TerranPhalanxTankModeTurret
 						|| current_subunit->unit_ai == nullptr
-						|| (current_subunit->canUseTech(TechId::TankSiegeMode, unit->playerId) != TRUE)
+						|| (current_subunit->canUseTech(TechId::TankSiegeMode, unit->player) != TRUE)
 						|| !helper::isUnitVisible(unit))
 						jump_to_77BD7 = true;
 					else
@@ -869,7 +869,7 @@ namespace hooks
 
 	void orders_AttackUnit(Unit* unit)
 	{
-		if (playerTable[unit->playerId].type != PlayerType::Computer
+		if (playerTable[unit->player].type != PlayerType::Computer
 			|| (unit->orderTarget.unit != nullptr && units_dat::BaseProperty[(unit->orderTarget.unit)->id] & UnitProperty::Building)
 			|| !helper::Ai_TryReturnHome(unit, 0))
 		{ // 00479C05

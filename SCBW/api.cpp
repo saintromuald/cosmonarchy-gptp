@@ -224,7 +224,7 @@ namespace scbw
 		{
 			return false;
 		}
-		if (tf.playerOwned && target->playerId != attacker->playerId)
+		if (tf.playerOwned && target->player != attacker->player)
 		{
 			return false;
 		}
@@ -1070,7 +1070,7 @@ namespace scbw
 			{
 				return;
 			}
-			helper::give_ai(unit);
+			scbw::give_ai_ex(unit, true);
 			if (creator && creator->status & UnitStatus::IsHallucination)
 			{
 				helper::apply_hallucination_stats(unit);
@@ -1100,7 +1100,7 @@ namespace scbw
 						{
 							return;
 						}
-						if (!scbw::isAlliedTo(unit->playerId, target->playerId))
+						if (!scbw::isAlliedTo(unit->player, target->player))
 						{
 							return;
 						}
@@ -1141,7 +1141,7 @@ namespace scbw
 		unit->orderTarget.unit = nullptr;
 		unit->orderTarget.pt.x = polar_x;
 		unit->orderTarget.pt.y = polar_y;
-		helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+		helper::createBullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
 		unit->orderTarget.unit = target_unit;
 		unit->orderTarget.pt = target_pos;
 	}
@@ -1292,7 +1292,7 @@ namespace scbw
 	{
 		s32 upgType = getUpgradeType(unit);
 		s32 baseDamage = weapons_dat::DamageAmount[weaponId];
-		f64 bonusDamage = (f64)weapons_dat::DamageBonus[weaponId] * (f64)scbw::getUpgradeLevel(unit->playerId, upgType);
+		f64 bonusDamage = (f64)weapons_dat::DamageBonus[weaponId] * (f64)scbw::getUpgradeLevel(unit->player, upgType);
 		f64 finalDamage = baseDamage;
 		if (bonusDamage)
 		{
@@ -1871,7 +1871,7 @@ namespace scbw
 			unit->getY() + radius
 		).forEachInMatch(match, [&](Unit* target)
 		{
-			if (scbw::isAlliedTo(target->playerId, unit->playerId))
+			if (scbw::isAlliedTo(target->player, unit->player))
 			{
 				allyCount++;
 			}
@@ -1894,7 +1894,7 @@ namespace scbw
 
 	void mind_control(Unit* source, Unit* target)
 	{
-		if (!source || !target || source->playerId == target->playerId)
+		if (!source || !target || source->player == target->player)
 		{
 			return;
 		}
@@ -1906,7 +1906,7 @@ namespace scbw
 		targetExt->units[UnitMindController] = source;
 		if (!targetExt->values[ValueMindControlOriginalPlayer])
 		{
-			targetExt->values[ValueMindControlOriginalPlayer] = target->playerId + 1;
+			targetExt->values[ValueMindControlOriginalPlayer] = target->player + 1;
 		}
 
 		// Recurse
@@ -1938,7 +1938,7 @@ namespace scbw
 		}
 
 		// Obtain control
-		target->giveTo(source->playerId);
+		target->giveTo(source->player);
 
 		// Audio Visuals
 		if (!(source->sprite->flags & SpriteFlags::Hidden)) {
@@ -2131,6 +2131,13 @@ namespace scbw
 		return &(*SAI_Paths)->regions[index];
 	}
 
+	Point16 get_region_center(Region* region) {
+		Point16 center = {};
+		center.x = region->regionCenterX >> 8;
+		center.y = region->regionCenterY >> 8;
+		return center;
+	}
+
 	void ai_defend(u32 player, u32 region_id, u32 priority, bool recurse) {
 		AiRegion* ai_region = scbw::get_ai_region(player, region_id);
 		switch (ai_region->state) {
@@ -2140,7 +2147,7 @@ namespace scbw
 			case RegionState::TownRegionHigh:
 			case RegionState::Defending:
 			case RegionState::ChaseAway: {
-				helper::AI_AssignMilitary(RegionState::Defending, ai_region);
+				helper::ai_set_region_type(RegionState::Defending, ai_region);
 				if (ai_region->defensePriorityAdd < priority) {
 					ai_region->defensePriorityAdd = priority;
 				}
@@ -2165,7 +2172,7 @@ namespace scbw
 		if (allied_structures.size) {
 			for (u32 i = 0; i < 8; ++i) {
 				if (playerTable[i].type == PlayerType::Computer && victim->isVisibleTo(i) &&
-					!scbw::isAlliedTo(i, attacker->playerId) && scbw::isAlliedTo(i, victim->playerId)) {
+					!scbw::isAlliedTo(i, attacker->player) && scbw::isAlliedTo(i, victim->player)) {
 					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 120, true);
 				}
 			}
@@ -2256,7 +2263,7 @@ namespace scbw
 
 		// Obtain control
 		if (!targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = unit->playerId + 1;
+			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = unit->player + 1;
 			targetExt->values[ValueBlissfulEmbraceOriginalHealth] = unit->hitPoints;
 		}
 		unit->giveTo(player);
@@ -2388,5 +2395,19 @@ namespace scbw
 		area.top = pos.y - 1.5 * 32;
 		area.bottom = pos.y + 1.5 * 32;
 		return run_ai(player, area, name);
+	}
+
+	void give_ai_ex(Unit* unit, bool prefer_military) {
+		if (!unit || playerTable[unit->player].type != PlayerType::Computer) {
+			return;
+		}
+		if (!prefer_military || units_dat::ComputerAIInternal[unit->id] & 2) {
+			helper::give_ai(unit);
+		} else {
+			if (unit->id == UnitId::TerranCleric && !AIScriptController[unit->player].mainMedic) {
+				AIScriptController[unit->player].mainMedic = unit;
+			}
+			helper::AI_TrainingSimpleMilitary(unit, unit);
+		}
 	}
 }

@@ -161,7 +161,7 @@ namespace hooks
 			v1->visibilityStatus = 0x80000000;
 			ByteOperations::SetLowByte(v1->secondaryOrderTimer, 0);
 		}*/
-		v5 = playerTable[(u8)v1->playerId].type;
+		v5 = playerTable[(u8)v1->player].type;
 		if (v5 == 3)
 		{ // Rescue Passive
 			v6 = v1->mainOrderId;

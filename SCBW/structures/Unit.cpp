@@ -643,7 +643,7 @@ void Unit::damageHp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify
 
 	// Logging
 	auto targetId = this->id;
-	auto targetPlayerId = this->playerId;
+	auto targetPlayerId = this->player;
 	if (attacker != nullptr)
 	{
 		GPTP::logger << "damageHp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
@@ -1060,10 +1060,10 @@ graphics::ColorId Unit::getFactionColor(Unit* unit)
 			return_value = unit->sprite->playerId;
 		else
 			// note: using player color for spriteless units (if that exist)
-			return_value = unit->playerId;
+			return_value = unit->player;
 
 		//for normal players, apply colors switching
-		if (unit->playerId < PLAYABLE_PLAYER_COUNT)
+		if (unit->player < PLAYABLE_PLAYER_COUNT)
 		{
 
 			// get the proper playerId in multiplayer game (don't break campaigns/UMS)
@@ -1114,7 +1114,7 @@ graphics::ColorId Unit::getColor(Unit* unit)
 			return_value = unit->sprite->playerId;
 		else
 			// note: using player color for spriteless units (if that exist)
-			return_value = unit->playerId;
+			return_value = unit->player;
 
 		if (return_value < PLAYABLE_PLAYER_COUNT)
 		{
@@ -1347,13 +1347,13 @@ u8 Unit::getLastOwnerId() const
 {
 	assert(this);
 	assert(this->sprite);
-	if (this->playerId == 11) // The owner has left the game
+	if (this->player == 11) // The owner has left the game
 	{
 		return this->sprite->playerId;
 	}
 	else
 	{
-		return this->playerId;
+		return this->player;
 	}
 }
 
@@ -1438,7 +1438,7 @@ bool Unit::isDead() const
 bool Unit::isTargetEnemy(Unit* target) const
 {
 	assert(this);
-	return scbw::isUnitEnemy(this->playerId, target);
+	return scbw::isUnitEnemy(this->player, target);
 }
 
 bool Unit::isVisibleTo(u8 playerId) const
@@ -1468,8 +1468,8 @@ u32 Unit::getSupplyProvided() // overwrites previous supply provided
 		if (unitExt->values[ValueSupplyProvidedId] == id) {
 			return unitExt->values[ValueSupplyProvided];
 		} else {
-			raceSupply[RaceId::Terran].provided[playerId] -= unitExt->values[ValueSupplyProvided];
-			raceSupply[RaceId::Terran].provided[playerId] += units_dat::SupplyProvided[unitExt->values[ValueSupplyProvidedId]];
+			raceSupply[RaceId::Terran].provided[player] -= unitExt->values[ValueSupplyProvided];
+			raceSupply[RaceId::Terran].provided[player] += units_dat::SupplyProvided[unitExt->values[ValueSupplyProvidedId]];
 			unitExt->values[ValueSupplyProvidedSet] = 0;
 			unitExt->values[ValueSupplyProvidedId] = 0;
 			unitExt->values[ValueSupplyProvided] = 0;
@@ -1498,8 +1498,8 @@ u32 Unit::getSupplyProvided() // overwrites previous supply provided
 void Unit::setSupplyProvided(u8 amount) // overwrites previous supply provided
 {
 	UnitExt* unitExt = globals.get_unit_ext(this);
-	raceSupply[RaceId::Terran].provided[playerId] -= getSupplyProvided();
-	raceSupply[RaceId::Terran].provided[playerId] += amount;
+	raceSupply[RaceId::Terran].provided[player] -= getSupplyProvided();
+	raceSupply[RaceId::Terran].provided[player] += amount;
 	unitExt->values[ValueSupplyProvidedSet] = 1;
 	unitExt->values[ValueSupplyProvidedId] = id;
 	unitExt->values[ValueSupplyProvided] = amount;

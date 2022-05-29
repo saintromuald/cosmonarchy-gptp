@@ -78,15 +78,15 @@ namespace hooks
 						}
 						else
 						{
-							builtUnit = helper::create_unit(unit->buildQueue[unit->buildQueueSlot], unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->playerId);
+							builtUnit = helper::create_unit(unit->buildQueue[unit->buildQueueSlot], unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->player);
 						}
 
 						u32 unit_id = unit->buildQueue[unit->buildQueueSlot];
 						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 						if (builtUnit == nullptr)
 						{
-							helper::refundUnitTrainCost(unit_id, unit->playerId);
-							helper::display_last_network_error_for_player(unit->playerId);
+							helper::refundUnitTrainCost(unit_id, unit->player);
+							helper::display_last_network_error_for_player(unit->player);
 							unit->orderToIdle();
 						}
 						else // 004E4E63

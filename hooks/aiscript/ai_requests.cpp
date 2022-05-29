@@ -158,7 +158,7 @@ namespace hooks
 		_tileX.x = tryPosition.x / 32;
 		__tileX.x = tryPosition.x / 32;
 		builderVar = builder;
-		playerVar = (u8)builder->playerId;
+		playerVar = (u8)builder->player;
 		_tileX.y = (*(s32*)&tryPosition >> 16) / 32;
 		__tileX.y = _tileX.y;
 		v7 = units_dat::BaseProperty[(u16)unitId];
@@ -269,7 +269,7 @@ LABEL_10:
 			{
 			} break;
 		}
-		v18 = (u8)builderVar->playerId;
+		v18 = (u8)builderVar->player;
 		*AIBuilderUnknown = builderVar;
 		v32 = (u16)unitId;
 		helper::AIGetBuildLocation((u16)unitId, (char*)a1, v18, tryPosition, areaTiles);
@@ -403,7 +403,7 @@ LABEL_36:
 			return 1;
 		}
 
-		s32 player = unit->playerId;
+		s32 player = unit->player;
 		s32 someBool = 0;
 		if (gameMinerals[player] > 1500 && gameGas[player] > 1500)
 		{

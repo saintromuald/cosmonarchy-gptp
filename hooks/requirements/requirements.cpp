@@ -72,7 +72,7 @@ namespace hooks
 				case RequirementOpcodes::IsTransport:
 				{
 					if (unit->status & UnitStatus::IsHallucination) break;
-					if (unit->id == UnitId::ZergOvileth && UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] == 0) break;
+					if (unit->id == UnitId::ZergOvileth && UpgradesSc->currentLevel[unit->player][UpgradeId::VentralSacs] == 0) break;
 					if (units_dat::SpaceProvided[unit->id] == 0) break;
 					success++;
 				}
@@ -454,7 +454,7 @@ namespace hooks
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (playerID != parentUnit->playerId)
+		if (playerID != parentUnit->player)
 		{
 			*lastInternalError = InternalErrors::UnknownError1;
 			//DebugOut(">Return NotAllowed");
@@ -472,7 +472,7 @@ namespace hooks
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (!UnitAvailability->available[parentUnit->playerId][parentUnit->id])
+		if (!UnitAvailability->available[parentUnit->player][parentUnit->id])
 		{
 			*lastInternalError = InternalErrors::UnknownError2;
 			//DebugOut(">Return NotAllowed");
@@ -533,7 +533,7 @@ LABEL_18_ENTER_MAIN_BODY:
 					////DebugOut("  current unit is = %d", nextOpcodeUnitId);
 					// Weirdly, nextOpcodeUnitId is sometimes still the old opcode value - but only while debugging (or when there's 
 					// an OR statement?) this is causing access violation reading completed_unit_counts. Work around this for now by checking unit Ids
-					if (Player::numberOfCompletedUnitsOfType(parentUnit->playerId, nextOpcodeUnitId) > 0)
+					if (Player::numberOfCompletedUnitsOfType(parentUnit->player, nextOpcodeUnitId) > 0)
 					{
 						v27 = 0;
 					}
@@ -794,7 +794,7 @@ LABEL_87:
 				{
 					//DebugOut("IsResearched (%d):", currentOpcode);
 					v10 = requirementsTable[opcodeIndex++];
-					if (scbw::hasTechResearched(parentUnit->playerId, v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
+					if (scbw::hasTechResearched(parentUnit->player, v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
 					{
 						*lastInternalError = InternalErrors::UnknownError9;
 						//DebugOut(">Return Gray");

@@ -21,11 +21,11 @@ void augurProc(Unit* augur, s32 radius) {
 			{
 				return false;
 			}
-			if (unit->playerId == augur->playerId)
+			if (unit->player == augur->player)
 			{
 				return false;
 			}
-			if (scbw::isAlliedTo(unit->playerId, augur->playerId))
+			if (scbw::isAlliedTo(unit->player, augur->player))
 			{
 				return false;
 			}
@@ -35,12 +35,12 @@ void augurProc(Unit* augur, s32 radius) {
 			}
 			return true;
 		});
-	Thingy* thingy = helper::createThingy(SpriteId::AugurDeathExplosion, augur->getX(), augur->getY(), augur->playerId);
+	Thingy* thingy = helper::createThingy(SpriteId::AugurDeathExplosion, augur->getX(), augur->getY(), augur->player);
 	helper::playSoundFromSource(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
 	if (target)
 	{
 		augur->orderTarget.unit = target;
-		helper::createBullet(WeaponId::AugurFinalHour, augur, augur->getX(), augur->getY(), augur->playerId, scbw::getAngle(augur->getX(), augur->getY(), target->getX(), target->getY()));
+		helper::createBullet(WeaponId::AugurFinalHour, augur, augur->getX(), augur->getY(), augur->player, scbw::getAngle(augur->getX(), augur->getY(), target->getX(), target->getY()));
 	}
 }
 
@@ -233,7 +233,7 @@ void unit_destructor_special_cases(Unit* unit)
 		{
 			case UnitId::SharedAspirant:
 			{
-				globals.createEffect(EffectId::Criticality, 10 * 24, { unit->getX(), unit->getY() }, 2 * 32, SpriteId::Criticality, 5, unit->playerId, unit);
+				globals.createEffect(EffectId::Criticality, 10 * 24, { unit->getX(), unit->getY() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
 			} break;
 			case UnitId::ProtossClarion:
 			{
@@ -252,7 +252,7 @@ void unit_destructor_special_cases(Unit* unit)
 				).forEach([&](Unit* target)
 					{
 						UnitExt* targetExt = globals.get_unit_ext(target);
-						if (!scbw::isAlliedTo(unit->playerId, target->playerId))
+						if (!scbw::isAlliedTo(unit->player, target->player))
 						{
 							return;
 						}
@@ -356,7 +356,7 @@ void unit_destructor_special_cases(Unit* unit)
 				unit->getY() + radius
 			).forEach([&](Unit* target)
 			{
-				if (scbw::isAlliedTo(i, target->playerId))
+				if (scbw::isAlliedTo(i, target->player))
 				{
 					UnitExt* targetExt = globals.get_unit_ext(target);
 					targetExt->timers[TimerNathrokorBuff] = NathrokorAdrenalFrenzyTimer;
@@ -395,7 +395,7 @@ void unit_destructor_special_cases(Unit* unit)
 	if (unit->id == UnitId::TerranNuclearSilo && unit->building.silo.isReady && !unitExt->timers[ControlledDemolitionTimer])
 	{
 		scbw::createAndInitThingy(SpriteId::Nuke_Hit, unit->getX(), unit->getY(), 11, 12);
-		helper::createBullet(WeaponId::NuclearMissile, unit, unit->getX(), unit->getY(), unit->playerId, 0);
+		helper::createBullet(WeaponId::NuclearMissile, unit, unit->getX(), unit->getY(), unit->player, 0);
 	}
 
 	// Apostle Last Breath behavior
@@ -416,7 +416,7 @@ void unit_destructor_special_cases(Unit* unit)
 			{
 				return;
 			}
-			if (!scbw::isAlliedTo(unit->playerId, target->playerId))
+			if (!scbw::isAlliedTo(unit->player, target->player))
 			{
 				return;
 			}
@@ -446,7 +446,7 @@ void unit_destructor_special_cases(Unit* unit)
 	// Metastasis - Plague spreads when a unit dies
 	if (unit->plagueTimer)
 	{
-		helper::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
+		helper::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->currentDirection1);
 		u32 range = 48;
 		Box16 coords = {};
 		coords.left   = unit->position.x - range;

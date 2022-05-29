@@ -39,7 +39,7 @@ namespace hooks
 					}
 				} break;
 				case TechId::MindControl: {
-					if (target->playerId == castingPlayerId)
+					if (target->player == castingPlayerId)
 					{
 						stringId = 1327; // Must target enemy units<0>
 					}
@@ -71,7 +71,7 @@ namespace hooks
 					{
 						stringId = 877; // Unable to target structure.<0>
 					}
-					else if (scbw::isAlliedTo(target->playerId, castingPlayerId) || target->playerId == castingPlayerId)
+					else if (scbw::isAlliedTo(target->player, castingPlayerId) || target->player == castingPlayerId)
 					{
 						stringId = 1327; // Must target enemy units<0>
 					}
@@ -106,7 +106,7 @@ namespace hooks
 				} break;
 				case TechId::Consume: {
 					if (units_dat::BaseProperty[target->id] & UnitProperty::Building
-						|| target->playerId != castingPlayerId
+						|| target->player != castingPlayerId
 						|| target->getRace() != RaceId::Zerg
 						|| scbw::is_zerg_egg_new(target))
 					{
@@ -119,7 +119,7 @@ namespace hooks
 				} break;
 				case TechId::TalosSalvage: {
 					if (!target
-						|| !scbw::isAlliedTo(target->playerId, castingPlayerId)
+						|| !scbw::isAlliedTo(target->player, castingPlayerId)
 						|| !(target->status & UnitStatus::Completed)) {
 						stringId = 876; // Invalid target.<0>
 					}

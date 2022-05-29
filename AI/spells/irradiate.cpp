@@ -40,7 +40,7 @@ namespace AI
 				return true;
 			}
 
-			if (isUnderAttack || !isUmsMode(caster->playerId))
+			if (isUnderAttack || !isUmsMode(caster->player))
 			{
 				return true;
 			}

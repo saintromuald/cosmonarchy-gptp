@@ -23,9 +23,9 @@ namespace hooks
 				u8 upgradeLevel;
 
 				if (unit->building.upgradeType >= UpgradeId::PrismaticShield)
-					upgradeLevel = UpgradesBw->currentLevel[unit->playerId][unit->building.upgradeType - UpgradeId::PrismaticShield];
+					upgradeLevel = UpgradesBw->currentLevel[unit->player][unit->building.upgradeType - UpgradeId::PrismaticShield];
 				else
-					upgradeLevel = UpgradesSc->currentLevel[unit->playerId][unit->building.upgradeType];
+					upgradeLevel = UpgradesSc->currentLevel[unit->player][unit->building.upgradeType];
 
 				if (upgradeLevel < unit->building.upgradeLevel &&
 					!(*CHEAT_STATE & CheatFlags::OperationCwal))
@@ -42,16 +42,16 @@ namespace hooks
 				helper::playUpgradeCompleteSound();
 
 				if (unit->building.upgradeType >= UpgradeId::PrismaticShield)
-					upgradeLevel = UpgradesBw->currentLevel[unit->playerId][unit->building.upgradeType - UpgradeId::PrismaticShield];
+					upgradeLevel = UpgradesBw->currentLevel[unit->player][unit->building.upgradeType - UpgradeId::PrismaticShield];
 				else
-					upgradeLevel = UpgradesSc->currentLevel[unit->playerId][unit->building.upgradeType];
+					upgradeLevel = UpgradesSc->currentLevel[unit->player][unit->building.upgradeType];
 
 				if (upgradeLevel < unit->building.upgradeLevel)
 				{
 
 					if (helper::isUnitUpgradeAvailable(unit))
 					{
-						helper::setUpgradeLevel(unit->playerId, unit->building.upgradeType, unit->building.upgradeLevel);
+						helper::setUpgradeLevel(unit->player, unit->building.upgradeType, unit->building.upgradeLevel);
 						helper::ApplySpeedUpgradeFromUpgradeType(unit, unit->building.upgradeType);
 					}
 
@@ -174,9 +174,9 @@ namespace hooks
 				u8 bIsResearched;
 
 				if (unit->building.techType < TechId::Restoration)
-					bIsResearched = TechSc->isResearched[unit->playerId][unit->building.techType];
+					bIsResearched = TechSc->isResearched[unit->player][unit->building.techType];
 				else
-					bIsResearched = TechBw->isResearched[unit->playerId][unit->building.techType - TechId::Restoration];
+					bIsResearched = TechBw->isResearched[unit->player][unit->building.techType - TechId::Restoration];
 
 				if (bIsResearched == 0 &&
 					!(*CHEAT_STATE & CheatFlags::OperationCwal)
@@ -192,9 +192,9 @@ namespace hooks
 				helper::playResearchCompleteSound();
 
 				if (unit->building.techType < TechId::Restoration)
-					TechSc->isResearched[unit->playerId][unit->building.techType] = 1;
+					TechSc->isResearched[unit->player][unit->building.techType] = 1;
 				else if (*IS_BROOD_WAR)
-					TechBw->isResearched[unit->playerId][unit->building.techType - TechId::Restoration] = 1;
+					TechBw->isResearched[unit->player][unit->building.techType - TechId::Restoration] = 1;
 
 				scbw::refresh_console();
 

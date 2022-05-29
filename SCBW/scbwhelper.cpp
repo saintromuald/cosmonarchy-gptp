@@ -1251,14 +1251,14 @@ namespace helper
 
 	// for AI_TrainingBroodling
 
-	void AI_AssignMilitary(s32 regionType, AiRegion* region)
+	void ai_set_region_type(s32 regionType, AiRegion* region)
 	{
-		const u32 Func_AI_AssignMilitary = 0x004390A0;
+		const u32 func_address = 0x004390A0;
 		__asm {
 			PUSHAD
 			MOV EBX, regionType
 			MOV ESI, region
-			CALL Func_AI_AssignMilitary
+			CALL func_address
 			POPAD
 		}
 	}
@@ -4971,7 +4971,7 @@ namespace helper
 				else
 					if (
 						unit->id == UnitId::ZergOvileth &&
-						UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] == 0
+						UpgradesSc->currentLevel[unit->player][UpgradeId::VentralSacs] == 0
 						)
 						return_value = false;
 					else
@@ -6526,7 +6526,7 @@ namespace helper
 	bool unitIsOwnedByCurrentPlayer(Unit* unit)
 	{
 		bool return_value;
-		if (*IS_IN_REPLAY != 0 || unit->playerId != *LOCAL_NATION_ID)
+		if (*IS_IN_REPLAY != 0 || unit->player != *LOCAL_NATION_ID)
 		{
 			return_value = false;
 		}
@@ -9648,7 +9648,7 @@ namespace helper
 	}
 
 	// For ai_check_military_grouping
-	void get_region_center_from_id_2(u16 regionId, s32* out_x, s32* out_y)
+	void get_region_center_from_id(u16 regionId, u32* out_x, u32* out_y)
 	{
 		const u32 Func_getRegionCenter = 0x0049CAA0;
 		__asm

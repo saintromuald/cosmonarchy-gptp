@@ -80,7 +80,7 @@ namespace hooks
 					infestedUnitNewId = units_dat::InfestedUnitPartial[unitInfested->id - UnitId::TerranCommandCenter];
 
 					// update number of kills/casualties for endgame score
-					helper::incrementUnitDeathScores(unitInfested, unitInfesting->playerId);
+					helper::incrementUnitDeathScores(unitInfested, unitInfesting->player);
 
 					// effect unknown, don't seem to affect score screen at endgame
 					helper::incrementUnitScores(unitInfested, -1);
@@ -100,8 +100,8 @@ namespace hooks
 					}
 
 					// I don't really know, advanced internal mechanics, just have to work with it
-					helper::GiveUnitHelper(unitInfested, unitInfesting->playerId, 1);
-					helper::initializeEmptyUnitsLinkedListRef(unitInfested, unitInfesting->playerId);
+					helper::GiveUnitHelper(unitInfested, unitInfesting->player, 1);
+					helper::initializeEmptyUnitsLinkedListRef(unitInfested, unitInfesting->player);
 
 					// Related to infestation process, don't use unitInfested->setSecondaryOrder
 					// because here it is supposed to perform all actions even if 

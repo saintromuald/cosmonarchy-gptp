@@ -28,10 +28,10 @@ namespace AI
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			if (isUmsMode(caster->playerId) && target->parasiteFlags)
+			if (isUmsMode(caster->player) && target->parasiteFlags)
 				return false;
 
-			if (target->parasiteFlags & (1 << caster->playerId))
+			if (target->parasiteFlags & (1 << caster->player))
 				return false;
 
 			if (!scbw::canWeaponTargetUnit(WeaponId::Parasite, target, caster))
@@ -41,7 +41,7 @@ namespace AI
 				return true;
 
 			if (!(target->status & UnitStatus::IsHallucination)
-				&& (target->id != UnitId::ZergOvileth || scbw::getUpgradeLevel(target->playerId, UpgradeId::VentralSacs))
+				&& (target->id != UnitId::ZergOvileth || scbw::getUpgradeLevel(target->player, UpgradeId::VentralSacs))
 				&& units_dat::SpaceProvided[target->id] > 0)
 				return true;
 

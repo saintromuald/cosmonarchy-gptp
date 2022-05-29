@@ -67,7 +67,7 @@ namespace hooks
 				SpriteId::Nuke_Target_Dot,
 				(unit->connectedUnit)->orderTarget.pt.x,
 				(unit->connectedUnit)->orderTarget.pt.y,
-				unit->playerId
+				unit->player
 			);
 
 			unit->building.ghostNukeMissile = (Unit*)nukeDot;
@@ -166,7 +166,7 @@ namespace hooks
 			{
 
 				bool bLoopEnd = false;
-				Unit* current_unit = firstPlayerUnit->unit[unit->playerId];
+				Unit* current_unit = firstPlayerUnit->unit[unit->player];
 
 				while (!bLoopEnd)
 				{

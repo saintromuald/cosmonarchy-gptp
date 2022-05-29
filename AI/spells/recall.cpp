@@ -14,7 +14,7 @@ namespace AI
 		return scbw::UnitFinder::getNearestTarget(caster,
 			[&](Unit* target)
 		{
-			if (target->playerId != caster->playerId && !scbw::isAlliedTo(target->playerId, caster->playerId))
+			if (target->player != caster->player && !scbw::isAlliedTo(target->player, caster->player))
 			{
 				return false;
 			}

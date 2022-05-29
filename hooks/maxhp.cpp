@@ -184,7 +184,7 @@ LABEL_26:
 
 		v1 = (BinDlg*)a1;
 		v2 = *activePortraitUnit;
-		if (IS_IN_REPLAY || (*activePortraitUnit)->playerId == *LOCAL_NATION_ID)
+		if (IS_IN_REPLAY || (*activePortraitUnit)->player == *LOCAL_NATION_ID)
 		{
 			helper::getSuppliesUsed();
 			if (*statusScreenFunc != 12)
@@ -207,7 +207,7 @@ LABEL_26:
 			{
 				v21 = (v3.isTerran) != 0 ? RaceId::Terran : RaceId::Neutral;
 			}
-			v4 = v2->playerId;
+			v4 = v2->player;
 			if (v21)
 			{ // !RACE_Zerg
 				if (v21 == RaceId::Terran)
@@ -272,9 +272,9 @@ LABEL_26:
 				v12 = "";
 			}
 			ByteOperations::SetLowByte(v11, v21);
-			v13 = helper::getSuppliesAvailable((*activePortraitUnit)->playerId, v11);
+			v13 = helper::getSuppliesAvailable((*activePortraitUnit)->player, v11);
 			sprintf_s(unkString_Char, 260, "%s %d", v12, (v13 + 1) / 2);
-			v22 = (*activePortraitUnit)->playerId;
+			v22 = (*activePortraitUnit)->player;
 			v14 = units_dat::GroupFlags[helper::getLastQueueSlotType((*activePortraitUnit))];
 			s32 race = (*activePortraitUnit)->getRace();
 			if (v14.isZerg)
@@ -358,8 +358,8 @@ LABEL_55:
 		result = 0;
 		if (a1 != a2)
 		{
-			v2 = a2->playerId;
-			v3 = a1->playerId == 11 ? a1->sprite->playerId : a1->playerId;
+			v2 = a2->player;
+			v3 = a1->player == 11 ? a1->sprite->playerId : a1->player;
 			if (!scbw::isAlliedTo(v2, v3))
 			{
 				ByteOperations::SetLowByte(v4, helper::AI_UnitCanAttack(a1));
@@ -453,7 +453,7 @@ LABEL_55:
 		bool result; // eax
 
 		result = 0;
-		if (a1->playerId == a2->playerId)
+		if (a1->player == a2->player)
 		{
 			if (helper::canWeaponTargetUnit(WeaponId::Restoration, a1, a2))
 			{
@@ -513,7 +513,7 @@ LABEL_55:
 				if (a2)
 				{
 					helper::unitWasHit(v5, a2, a3 != WeaponId::Irradiate);
-					if (a3 != WeaponId::Irradiate && v5->playerId != a2->playerId)
+					if (a3 != WeaponId::Irradiate && v5->player != a2->player)
 						helper::doAttackNotifyEvent(v5);
 				}
 				if (units_dat::ShieldsEnabled[(u16)v5->id])
@@ -899,7 +899,7 @@ LABEL_23:
 							{
 								if (!v3 || v3->status & 0x4000000)
 									goto LABEL_17;
-								v7 = (u16)helper::getTargetUnitAbilityErrorStatString(v3, a1->playerId, v6) == 0;
+								v7 = (u16)helper::getTargetUnitAbilityErrorStatString(v3, a1->player, v6) == 0;
 							}
 							if (!v7)
 								goto LABEL_17;
@@ -998,7 +998,7 @@ LABEL_23:
 		u32 v12; // [esp+Ch] [ebp-8h]
 
 		*(s32*)a2 = 0;
-		v2 = firstPlayerUnit->unit[(u8)a1->playerId];
+		v2 = firstPlayerUnit->unit[(u8)a1->player];
 		v11 = 0;
 		v12 = 99999999;
 		if (!v2)

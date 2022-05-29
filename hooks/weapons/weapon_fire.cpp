@@ -27,7 +27,7 @@ static bool madrigalFuriaMatch(Unit* madrigal, Unit* unit)
 	{
 		return false;
 	}
-	if (scbw::isAlliedTo(madrigal->playerId, unit->playerId))
+	if (scbw::isAlliedTo(madrigal->player, unit->player))
 	{
 		return false;
 	}
@@ -44,7 +44,7 @@ static bool alkajSporeMatch(Bullet* bullet, Unit* unit)
 	{
 		return false;
 	}
-	if (scbw::isAlliedTo(bullet->srcPlayer, unit->playerId))
+	if (scbw::isAlliedTo(bullet->srcPlayer, unit->player))
 	{
 		return false;
 	}
@@ -76,7 +76,7 @@ namespace hooks
 			posY = attacker->getY();
 		}
 		auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
-		helper::createBullet(weaponId, attacker, posX, posY, attacker->playerId, newAngle);
+		helper::createBullet(weaponId, attacker, posX, posY, attacker->player, newAngle);
 		if (attackerExt->values[ValueDeconstruction])
 		{
 			scbw::doDeconstructionDamage(attacker, weaponId, false);
@@ -111,7 +111,7 @@ namespace hooks
 			{
 				if (target == attacker
 					|| targets.find(target) != targets.end()
-					|| scbw::isAlliedTo(attacker->playerId, target->playerId)
+					|| scbw::isAlliedTo(attacker->player, target->player)
 					|| !attacker->canAttackTarget(target)
 					|| !filter(target)
 					|| (targets.size() >= maxTargets && maxTargets > 0))
@@ -312,7 +312,7 @@ namespace hooks
 						auto rotate = unitExt->values[ValueSalamanderAtkPos];
 						if (rotate == 1)
 						{
-							helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+							helper::createBullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
 						}
 						else
 						{
@@ -343,7 +343,7 @@ namespace hooks
 						).forEach([&](Unit* pickedUnit) {
 							if (!(pickedUnit->status & UnitStatus::Completed)
 								|| unit == pickedUnit
-								|| scbw::isAlliedTo(pickedUnit->playerId, unit->playerId)
+								|| scbw::isAlliedTo(pickedUnit->player, unit->player)
 								|| scbw::getDistanceFast(unit->position, pickedUnit->position) > radius)
 							{
 								return;
@@ -373,7 +373,7 @@ namespace hooks
 					} break;
 					default:
 					{
-						helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+						helper::createBullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
 					} break;
 				}
 			}
@@ -398,7 +398,7 @@ namespace hooks
 					{
 						return false;
 					}
-					if (scbw::isAlliedTo(unit->playerId, target->playerId))
+					if (scbw::isAlliedTo(unit->player, target->player))
 						return false;
 					return scbw::canWeaponTargetUnit(weaponId, target, unit);
 				});
@@ -577,7 +577,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::isAlliedTo(bullet->srcPlayer, unit->playerId))
+				if (scbw::isAlliedTo(bullet->srcPlayer, unit->player))
 				{
 					return false;
 				}
@@ -621,7 +621,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::isAlliedTo(bullet->srcPlayer, unit->playerId))
+				if (scbw::isAlliedTo(bullet->srcPlayer, unit->player))
 				{
 					return false;
 				}
@@ -689,7 +689,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::isAlliedTo(bullet->srcPlayer, unit->playerId))
+				if (scbw::isAlliedTo(bullet->srcPlayer, unit->player))
 				{
 					return false;
 				}
@@ -923,13 +923,13 @@ namespace hooks
 		}
 
 		s32 unitStatus = _pIterator->status;
-		if (unitStatus & 0x300 && !((1 << pSrc->playerId) & _pIterator->visibilityStatus))
+		if (unitStatus & 0x300 && !((1 << pSrc->player) & _pIterator->visibilityStatus))
 		{
 			return 0;
 		}
 
-		s8 playerId = _pIterator->playerId == 11 ? _pIterator->sprite->playerId : _pIterator->playerId;
-		if (playerAlliance[(u8)pSrc->playerId].flags[playerId] || *bulletBounceMissileTarget == _pIterator)
+		s8 playerId = _pIterator->player == 11 ? _pIterator->sprite->playerId : _pIterator->player;
+		if (playerAlliance[(u8)pSrc->player].flags[playerId] || *bulletBounceMissileTarget == _pIterator)
 		{
 			return 0;
 		}

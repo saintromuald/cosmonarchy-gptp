@@ -199,7 +199,7 @@ namespace hooks
 			*lastError = 16;
 			return 0;
 		}
-		if (playerId != unit->playerId)
+		if (playerId != unit->player)
 		{
 			*lastError = 1;
 			return 0;
@@ -214,7 +214,7 @@ namespace hooks
 			*lastError = 10;
 			return 0;
 		}
-		if (!UnitAvailability->available[unit->playerId][unit->id])
+		if (!UnitAvailability->available[unit->player][unit->id])
 		{
 			*lastError = 2;
 			return 0;
@@ -799,7 +799,7 @@ LABEL_18:
 		{
 			helper::reassign_path(unit);
 		}
-		helper::initialize_unit(unit, y, unit_id, x, unit->playerId);
+		helper::initialize_unit(unit, y, unit_id, x, unit->player);
 		if (units_dat::BaseProperty[unit_id] & UnitProperty::Spellcaster) {
 			unit->energy = 100 * 256; // New starting amount
 		} else {

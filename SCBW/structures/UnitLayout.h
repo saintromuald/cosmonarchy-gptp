@@ -512,7 +512,7 @@ struct UnitLayout
 	/*0x04A*/ u8        currentDirection2;				// ?
 	/*0x04B*/ u8        velocityDirection2;				// pathing related, BWAPI has more info
 
-	/*0x04C*/ u8        playerId;						// Id of player controlling the unit
+	/*0x04C*/ u8        player;						// Id of player controlling the unit
 	/*0x04D*/ u8        mainOrderId;
 	/*0x04E*/ u8        mainOrderState;					// Used by various orders
 														// < Additional order info (mostly unknown, wander property investigated so far) // officially "ubActionState"
