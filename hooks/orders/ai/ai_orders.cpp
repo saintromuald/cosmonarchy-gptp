@@ -1829,8 +1829,8 @@ LABEL_126:
 		}
 	}
 
-	AiRegion* find_better_region(AiRegion* ai_region, u32 recurses) {
-		if (scbw::get_ai_region_military_count(ai_region) < 15) {
+	AiRegion* find_better_region(MilitaryAi* military_ai, AiRegion* ai_region, u32 recurses) {
+		if (military_ai->region == ai_region || scbw::get_ai_region_military_count(ai_region) < 15) {
 			return ai_region;
 		}
 		if (recurses) {
@@ -1839,7 +1839,7 @@ LABEL_126:
 				u32 other_id = region->neighbors[i];
 				Region* other_region = scbw::get_region(other_id);
 				if (region->groupIndex == other_region->groupIndex) {
-					AiRegion* new_ai_region = find_better_region(scbw::get_ai_region(ai_region->playerId, other_id), recurses - 1);
+					AiRegion* new_ai_region = find_better_region(military_ai, scbw::get_ai_region(ai_region->playerId, other_id), recurses - 1);
 					if (new_ai_region) {
 						return new_ai_region;
 					}
@@ -1849,8 +1849,8 @@ LABEL_126:
 		return 0;
 	}
 
-	AiRegion* find_better_region(AiRegion* ai_region) {
-		AiRegion* new_ai_region = find_better_region(ai_region, 3);
+	AiRegion* find_better_region(MilitaryAi* military_ai, AiRegion* ai_region) {
+		AiRegion* new_ai_region = find_better_region(military_ai, ai_region, 3);
 		if (new_ai_region) {
 			return new_ai_region;
 		}
@@ -1869,7 +1869,7 @@ LABEL_126:
 				u16 unit_id = unit->id;
 				if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Building))
 				{
-					AiRegion* ai_region = find_better_region(military_ai->region);
+					AiRegion* ai_region = find_better_region(military_ai, military_ai->region);
 					if (unit_id && unit_id != UnitId::TerranHarakan || !helper::ai_defender_bunker_behavior(unit, ai_region->region))
 					{
 						if (!helper::ai_cast_spell_behavior(unit, 0) && !helper::ai_update_attack_target(unit, 0, 1, 0))
