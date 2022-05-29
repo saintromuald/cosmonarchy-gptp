@@ -253,6 +253,7 @@ namespace hooks
 			// advance
 			if (unit->id == UnitId::ZergEgg && unit->remainingBuildTime < 19) {
 				unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
+				unit->remainingBuildTime = 0;
 			}
 			if (unit->id == UnitId::ZergCocoon && unit->remainingBuildTime < 12) {
 				unit->play_iscript_animation(IscriptAnimation::SpecialState1);
