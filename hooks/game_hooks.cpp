@@ -1228,16 +1228,30 @@ namespace hooks
 			} break;
 			case UnitId::TerranPhalanxSiegeMode:
 			{
-				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, courtesy of DarkenedFantasies.
+				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, originally from DarkenedFantasies.
+				// TODO: Find a solution that works, the code below does not. -Pr0nogo
 				/*
 				if (playerTable[unit->playerId].type == PlayerType::Computer && unit->mainOrderId == OrderId::WatchTarget) {
 					helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 				}
 				*/
 			} break;
+			case UnitId::ZergIsthrathaleth:
+			{
+				if (unit->getOverlay(ImageId::PlagueChannelOverlay)) {
+					if (unit->sprite->images.head->animation != IscriptAnimation::Unused2) {
+						unit->removeOverlay(ImageId::PlagueChannelOverlay);
+					}
+				}
+				else {
+					if (unit->sprite->images.head->animation == IscriptAnimation::Unused2) {
+						unit->sprite->createTopOverlay(ImageId::PlagueChannelOverlay); // TODO: Use the Isthrathaleth's attack overlay for origin coordinates.
+					}
+				}
+			} break;
 		}
 
-		// Mind Control Recede
+		// Mind Control - Rescind
 		if (unitExt->units[UnitMindTyrantSource]) {
 			f32 distance = scbw::getDistanceFast(unit->position, unitExt->units[UnitMindTyrantSource]->position);
 			if (distance <= 8 * 32) {

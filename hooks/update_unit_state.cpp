@@ -103,7 +103,7 @@ namespace hooks
 
 	/// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
 	/// Identical to function @ 0x004EC290
-	void updateUnitStateHook(Unit* unit)
+	void update_unit_state(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -680,7 +680,7 @@ namespace hooks
 				v12 = v11->link.next;
 				*activeIscriptEntity = v11;
 				*activeIscriptUnit = v11;
-				progressUnitFrame(v11);
+				progress_unit_dying_frame(v11);
 				v11 = v12;
 			}
 			while (v12);
@@ -720,7 +720,7 @@ namespace hooks
 				v17 = v16->link.next;
 				*activeIscriptEntity = v16;
 				*activeIscriptUnit = v16;
-				progressUnitFrame(v16);
+				progress_unit_dying_frame(v16);
 				v16 = v17;
 			}
 			while (v17);
@@ -823,45 +823,40 @@ LABEL_13:
 	}
 
 	// Hooked to add nullcheck - Pr0nogo
-	void progressUnitFrame(Unit* unit) // 004ECF70
+	void progress_unit_dying_frame(Unit* unit) // 004ECF70
 	{
-		if (unit == nullptr)
+		if (!unit)
 		{
 			return;
 		}
-
 		Unit* unitVar = unit;
 		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) && unit->sprite)
 		{
-			Sprite* unitSprite = unit->sprite;
-			if (!(unitSprite->flags & 0x20))
+			if (!(unit->sprite->flags & 0x20))
 			{
-				helper::refreshSprite(unitSprite, selectionCircleColor[unit->player]);
+				helper::refresh_sprite(unit->sprite, selectionCircleColor[unit->player]);
 			}
 		}
-		updateUnitStateHook(unitVar);
-		helper::progressOrder(unitVar);
-		s32 unused = 0;
-		helper::performSecondaryOrders(unitVar, unused);
+		update_unit_state(unit);
+		helper::progress_order(unit);
+		helper::perform_secondary_orders(unit, unit->player); // ECX at the time of calling this function
 
-		Unit* unitSubunit = unitVar->subunit;
-		if (unitSubunit)
+		if (unit->subunit)
 		{
-			if (!(units_dat::BaseProperty[unitVar->id] & UnitProperty::Subunit))
+			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit))
 			{
-				*activeIscriptUnit = unitVar->subunit;
-				progressUnitFrame(unitSubunit);
-				*activeIscriptUnit = unitVar;
+				*activeIscriptUnit = unit->subunit;
+				progress_unit_dying_frame(unit->subunit);
+				*activeIscriptUnit = unit;
 			}
 		}
 
-		Sprite* unitSprite2 = unitVar->sprite;
-		if (unitSprite2 != nullptr)
+		if (unit->sprite)
 		{
-			helper::spriteToIscriptLoop(unitSprite2);
-			if (!unitVar->sprite->images.head)
+			helper::sprite_to_iscript_loop(unit->sprite);
+			if (!unit->sprite->images.head)
 			{
-				unitVar->sprite = 0;
+				unit->sprite = 0;
 			}
 		}
 	}

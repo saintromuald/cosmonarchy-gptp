@@ -730,7 +730,7 @@ namespace hooks
 				{
 					// Claymore - Kelvin Munitions - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
-					scbw::createAndInitThingy(SpriteId::BurstLasersBlue_Damageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					scbw::createAndInitThingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					hooks::WeaponBulletHit(bullet, collisionTarget, 1);
 
 					// Claymore - Kelvin Munitions - slow pierced targets
@@ -1322,7 +1322,7 @@ namespace hooks
 			bulletSprite = bulletVar->sprite;
 			if (bulletSprite)
 			{
-				helper::spriteToIscriptLoop(bulletSprite);
+				helper::sprite_to_iscript_loop(bulletSprite);
 				if (!bulletVar->sprite->images.head)
 				{
 					bulletVar->sprite = 0;

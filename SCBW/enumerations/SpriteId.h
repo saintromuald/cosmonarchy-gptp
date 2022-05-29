@@ -773,8 +773,12 @@ namespace SpriteId
 		FragmentaryExplosion = 765,
 		ZergAirExplosionLarge = 766,
 		ZergAirExplosionSmall = 767,
-
-		BurstLasersBlue_Damageless	= 768,
+		InfestedOverlaySmall = 768,
+		InfestedOverlayMedium = 769, // No difference between medium and large currently
+		InfestedOverlayLarge = 770,
+		BlackjackCorpse = 771,
+		BurstLasersImpactBlue_Damageless = 772,
+		PlagueField = 773,
 
 		// CORPSE \\
 			

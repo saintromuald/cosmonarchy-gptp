@@ -416,7 +416,7 @@ SCBW_DATA(s16*, larvaCounter,						0x0067D3F8);
 // For updateBuildingPlacementState_Units
 SCBW_DATA(s8*, buildingPlacementState,				0x006408F8);
 
-// For progressUnitFrame
+// For progress_unit_dying_frame
 SCBW_DATA(s8*, selectionCircleColor,				0x00581D6A);
 
 // For initializeBulet
@@ -474,7 +474,7 @@ SCBW_DATA(char*, kills_buffer,						0x006CAC78);
 // For giveUnitToPlayer
 SCBW_DATA(s32*,	currentTriggerPlayerId,				0x006509B0);
 
-// For deleteAITownIfNeeded
+// For delete_ai_town_if_needed
 SCBW_DATA(ResourceArea*,	baseArray,				0x00692688);
 
 // For get_bunker_placement_position

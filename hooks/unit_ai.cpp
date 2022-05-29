@@ -683,7 +683,7 @@ namespace hooks
 				}
 				if (!unitAI)
 				{
-					helper::deleteAITownIfNeeded(town);
+					helper::delete_ai_town_if_needed(town);
 				}
 			}
 			unit->unit_ai = nullptr;

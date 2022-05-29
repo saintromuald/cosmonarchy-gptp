@@ -499,6 +499,7 @@ namespace hooks
 						&& targetExt->timers[TimerSimulacrumClone] == 0)
 					{
 						targetExt->timers[TimerSimulacrumClone] = 4 * 24;
+						helper::playSoundFromSource(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
 					}
 				} break;
 				case UnitId::SharedStriga:

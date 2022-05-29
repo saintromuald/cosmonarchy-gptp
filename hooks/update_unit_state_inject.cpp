@@ -24,7 +24,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::updateUnitStateHook(unit);
+		hooks::update_unit_state(unit);
 		__asm {
 			POPAD
 			RETN
@@ -79,7 +79,7 @@ namespace
 			MOV unit, ECX
 			PUSHAD
 		}
-		hooks::progressUnitFrame(unit);
+		hooks::progress_unit_dying_frame(unit);
 		__asm
 		{
 			POPAD

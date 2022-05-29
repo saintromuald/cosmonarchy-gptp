@@ -6,7 +6,7 @@ namespace AI
 	Unit* findBestRecallTarget(Unit* caster, bool isUnderAttack)
 	{
 
-		if (isUnitInUnsafeRegion(caster))
+		if (unit_is_in_unsafe_region(caster))
 		{
 			return nullptr;
 		}
