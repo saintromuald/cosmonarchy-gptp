@@ -908,8 +908,8 @@ LABEL_36:
 			{
 				AIScriptController[region->playerId].AI_Flags.flag_0x40 = true;
 				helper::ai_add_cost_to_needs(unit_id, region->playerId, 1);
-				helper::ai_add_spending_request(unit_id, region->playerId, 1, 60, region);
-				helper::ai_add_base_unit_spending_request(unit_id, region->playerId, region, 60);
+				helper::ai_add_spending_request(unit_id, region->playerId, 1, priority, region);
+				helper::ai_add_base_unit_spending_request(unit_id, region->playerId, region, priority);
 			}
 		}
 	}
