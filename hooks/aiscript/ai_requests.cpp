@@ -925,7 +925,7 @@ LABEL_36:
 		if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker) {
 			helper::ai_add_cost_to_needs(unit_id, player, type);
 		} else {
-			u32 type = 3;
+			type = 3;
 			if (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) {
 				type = 7;
 			}

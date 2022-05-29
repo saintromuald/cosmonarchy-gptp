@@ -825,10 +825,6 @@ LABEL_13:
 	// Hooked to add nullcheck - Pr0nogo
 	void progress_unit_dying_frame(Unit* unit) // 004ECF70
 	{
-		if (!unit)
-		{
-			return;
-		}
 		Unit* unitVar = unit;
 		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) && unit->sprite)
 		{
