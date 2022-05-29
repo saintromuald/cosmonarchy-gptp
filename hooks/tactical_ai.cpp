@@ -103,10 +103,10 @@ static u32 get_max_range(u32 unitId)
 	}
 
 	u32 ground_weapon = units_dat::GroundWeapon[unitId];
-	u32 ground_range = ground_weapon != weapon_id::None ? weapons_dat::MaxRange[ground_weapon] : 0;
+	u32 ground_range = ground_weapon != WeaponId::None ? weapons_dat::MaxRange[ground_weapon] : 0;
 
 	u32 air_weapon = units_dat::AirWeapon[unitId];
-	u32 air_range = air_weapon != weapon_id::None ? weapons_dat::MaxRange[air_weapon] : 0;
+	u32 air_range = air_weapon != WeaponId::None ? weapons_dat::MaxRange[air_weapon] : 0;
 
 	return std::max(ground_range, air_range);
 }
@@ -248,14 +248,14 @@ static u8 get_max_weapon_cooldown(Unit* unit)
 
 	u32 ground_weapon = unit->getGroundWeapon();
 	u32 ground_cooldown = 0;
-	if (ground_weapon != weapon_id::None)
+	if (ground_weapon != WeaponId::None)
 	{
 		ground_cooldown = hooks::getModifiedWeaponCooldownHook(unit, ground_weapon);
 	}
 
 	u32 air_weapon = unit->getAirWeapon();
 	u32 air_cooldown = 0;
-	if (air_weapon != weapon_id::None)
+	if (air_weapon != WeaponId::None)
 	{
 		air_cooldown = hooks::getModifiedWeaponCooldownHook(unit, air_weapon);
 	}
@@ -335,18 +335,18 @@ static s32 get_target_cost(Unit* source, Unit* target)
 
 	if (target->id == UnitId::ProtossAccantor)
 	{
-		cost -= (weapons_dat::DamageAmount[weapon_id::Scarab] /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
+		cost -= (weapons_dat::DamageAmount[WeaponId::Scarab] /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
 			* 1.5; // aoe multiplier
 	}
 	else if (target->id == UnitId::ProtossSolarion)
 	{
-		cost -= (weapons_dat::DamageAmount[weapon_id::PulseCannon] /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
+		cost -= (weapons_dat::DamageAmount[WeaponId::PulseCannon] /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
 			* (target->carrier.inHangarCount + target->carrier.outHangarCount)
 			* 1.5; // additional bias to encourage targeting solarions more
 	}
 	else
 	{
-		u32 weapon_id = weapon_id::None;
+		u32 weapon_id = WeaponId::None;
 		if (source->status & UnitStatus::InAir)
 		{
 			weapon_id = target->getAirWeapon();
@@ -975,14 +975,14 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 		}
 		else if (unit->id == UnitId::TerranMadrigal)
 		{
-			f32 furiaDamagePotential = hooks::getCurrentDPS(unit, weapon_id::MadrigalFuriaMissiles);
+			f32 furiaDamagePotential = hooks::getCurrentDPS(unit, WeaponId::MadrigalFuriaMissiles);
 			furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
 			if (unit->orderTarget.unit)
 			{
 				UnitExt* target_ext = globals.get_unit_ext(unit->orderTarget.unit);
 				furiaDamagePotential += (f32)target_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage;
 			}
-			f32 dirgeDamagePotential = (weapons_dat::DamageAmount[weapon_id::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, weapon_id::MadrigalImperiosoMissiles);
+			f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, WeaponId::MadrigalImperiosoMissiles);
 
 			if (furiaDamagePotential > dirgeDamagePotential)
 			{
@@ -997,7 +997,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 		{
 			if (unit->mainOrderId != OrderId::CastParasite && unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0)
 			{
-				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[weapon_id::Parasite],
+				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
 					Flags::NotSelf, {}, [&](Unit* u)
 				{
 					std::vector<std::pair<Unit*, u32>> group;
@@ -1010,7 +1010,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 							priority /= 4;
 						}
 						auto weapon = u->getGroundWeapon();
-						if (weapon != weapon_id::None)
+						if (weapon != WeaponId::None)
 						{
 							if (weapons_dat::MaxRange[weapon] >= 64)
 							{
