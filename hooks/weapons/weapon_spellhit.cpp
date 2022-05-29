@@ -597,7 +597,7 @@ namespace hooks
 	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		if (attacker) {
-			globals.createEffect(EffectId::PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::Disruption_Web, 5, attacker->player, attacker);
+			globals.createEffect(EffectId::PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::PlagueField, 5, attacker->player, attacker);
 		}
 		//if (attacker) {
 		//	u32 range = 64;

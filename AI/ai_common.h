@@ -18,7 +18,7 @@ namespace AI
 
 	/// Determines if the @p unit is within a region that is not commanded by its
 	/// controlling AI. Details are not really understood.
-	bool isUnitInUnsafeRegion(Unit* unit);
+	bool unit_is_in_unsafe_region(Unit* unit);
 
 	s32 getTotalEnemyLifeInArea(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId);
 	s32 getTotalAllyLifeInArea(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId);

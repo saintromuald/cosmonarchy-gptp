@@ -1228,12 +1228,25 @@ namespace hooks
 			} break;
 			case UnitId::TerranPhalanxSiegeMode:
 			{
-				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, courtesy of DarkenedFantasies.
+				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, originally from DarkenedFantasies.
+				// TODO: Find a solution that works, the code below does not. -Pr0nogo
 				/*
 				if (playerTable[unit->playerId].type == PlayerType::Computer && unit->mainOrderId == OrderId::WatchTarget) {
 					helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 				}
 				*/
+			} break;
+			case UnitId::ZergIsthrathaleth:
+			{
+				if (unit->sprite->images.head->animation == IscriptAnimation::Unused2
+					&& !unit->getOverlay(ImageId::PlagueChannelOverlay)) {
+					unit->sprite->createTopOverlay(ImageId::PlagueChannelOverlay); // TODO: Make it use the Isthrathaleth's attack overlay for origin coordinates.
+				}
+				else {
+					if (unit->getOverlay(ImageId::PlagueChannelOverlay)) {
+						unit->removeOverlay(ImageId::PlagueChannelOverlay);
+					}
+				}
 			} break;
 		}
 
