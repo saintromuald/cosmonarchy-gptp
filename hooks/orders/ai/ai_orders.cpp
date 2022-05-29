@@ -1779,6 +1779,21 @@ LABEL_126:
 		return false;
 	}
 
+	static bool unit_id_has_addon(u32 unit_id) {
+		switch (unit_id) {
+			case UnitId::TerranCommandCenter:
+			case UnitId::TerranTreasury:
+			case UnitId::TerranBarracks:
+			case UnitId::TerranFulcrum:
+			case UnitId::TerranStarport: 
+			case UnitId::TerranScrapyard: 
+			case UnitId::TerranCaptaincy: {
+				return true;
+			} break;
+		}
+		return false;
+	}
+
 	// Hooked to add addon cases for new addon buildings and to reserve space around buildings. -Veeq7
 	void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position) { // 00443CC0
 		for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = unit->player_link.next) {
@@ -1792,8 +1807,8 @@ LABEL_126:
 				u32 h = units_dat::BuildingDimensions[unit->id].y / 32;
 
 				// Go to top left
-				unit_x -= w / 2;
-				unit_y -= h / 2;
+				unit_x -= (w + 1) / 2;
+				unit_y -= (h + 1) / 2;
 
 				// Add padding on top and left
 				// Stackable buildings don't have padding between each other
@@ -1805,16 +1820,12 @@ LABEL_126:
 				}
 
 				// Handle addons
-				switch (unit->id) {
-					case UnitId::TerranCommandCenter:
-					case UnitId::TerranTreasury:
-					case UnitId::TerranBarracks:
-					case UnitId::TerranFulcrum:
-					case UnitId::TerranStarport: 
-					case UnitId::TerranScrapyard: 
-					case UnitId::TerranCaptaincy: {
-						w += 2;
-					} break;
+				if (unit_id_has_addon(unit->id)) {
+					w += 2;
+				}
+				if (unit_id_has_addon(unit_id)) {
+					unit_x -= 2;
+					w += 2;
 				}
 
 				// Forbid placements
