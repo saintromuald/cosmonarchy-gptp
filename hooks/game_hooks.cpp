@@ -1802,7 +1802,7 @@ namespace hooks
 			for (u32 i = 0; i < arr.size; i++)
 			{
 				Unit* target = arr.units[i];
-				if (scbw::is_tech_unitid(target->id)) {
+				if (scbw::unit_id_is_tech(target->id)) {
 					continue;
 				}
 				switch (target->id) {

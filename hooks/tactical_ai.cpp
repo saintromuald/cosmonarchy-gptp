@@ -380,7 +380,7 @@ static inline s32 GetTargetCost(Unit* source, Unit* target)
 		|| units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
 		|| units_dat::BaseProperty[target->id] & UnitProperty::Worker
 		|| units_dat::GroupFlags[target->id].isFactory
-		|| scbw::is_tech_unitid(target->id))
+		|| scbw::unit_id_is_tech(target->id))
 	{
 		cost -= 25;
 	}
@@ -861,7 +861,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	{
 		cost -= 25;
 	}
-	if (scbw::is_tech_unitid(target->id))
+	if (scbw::unit_id_is_tech(target->id))
 	{
 		cost -= 25;
 	}

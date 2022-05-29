@@ -269,6 +269,34 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	static u32 ai_player_need_priority(u32 unit_id) {
+		if (scbw::unit_id_is_tech_tier_structure(unit_id)) {
+			return 120;
+		}
+		if (scbw::unit_id_is_tech(unit_id)) {
+			return 100;
+		}
+		return 80;
+	}
+
+
+	void __declspec(naked) ai_player_need_priority_wrapper() { // 0045BE1F
+		static const u32 jmp_address = 0x0045BE26;
+		static u32 priority;
+		static u32 unit_id;
+		__asm {
+			MOV unit_id, ECX
+			PUSHAD
+		}
+		priority = ai_player_need_priority(unit_id);
+		_asm {
+			POPAD
+			PUSH priority
+			MOV EDX, 1
+			JMP jmp_address
+		}
+	}
 }
 
 namespace hooks
@@ -287,5 +315,7 @@ namespace hooks
 		jmpPatch(ai_request_guard_wrapper,					0x00448630, 0);
 		jmpPatch(ai_region_train_attack_force_wrapper,		0x0043E670,	4);
 		jmpPatch(ai_add_town_spending_request_wrapper,      0x00448400, 0);
+
+		jmpPatch(ai_player_need_priority_wrapper,			0x0045BE1F, 2);
 	}
 }

@@ -144,7 +144,7 @@ static u32 get_unit_class(u32 unit_id) {
 	if (unit_id == UnitId::ZergCreepColony || unit_id == UnitId::ZergLarvalColony || unit_id == UnitId::ZergSunkenColony || unit_id == UnitId::ZergSporeColony) {
 		return 2;
 	}
-	if (units_dat::GroupFlags[unit_id].isFactory || scbw::is_tech_unitid(unit_id)) {
+	if (units_dat::GroupFlags[unit_id].isFactory || scbw::unit_id_is_tech(unit_id)) {
 		return 1;
 	}
 	return 0;

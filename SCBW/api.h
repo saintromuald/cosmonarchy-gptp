@@ -582,5 +582,6 @@ namespace scbw
 	AiScript* run_ai(u32 player, Box32 area, s32 name);
 	AiScript* run_ai(u32 player, Point16 pos, s32 name);
 	
-	b32 is_tech_unitid(u32 unit_id);
+	b32 unit_id_is_tech(u32 unit_id);
+	b32 unit_id_is_tech_tier_structure(u32 unit_id);
 }

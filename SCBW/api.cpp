@@ -2299,7 +2299,7 @@ namespace scbw
 		helper::playSoundFromSource(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
 	}
 
-	b32 is_tech_unitid(u32 unit_id) {
+	b32 unit_id_is_tech(u32 unit_id) {
 		if (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) {
 			switch (unit_id) {
 				case UnitId::TerranComsatStation:
@@ -2346,6 +2346,21 @@ namespace scbw
 			case UnitId::ZergSovthrathMound:
 			case UnitId::ZergGeszkathGrotto:
 			case UnitId::ZergAlkajChasm:
+				return true;
+		}
+		return false;
+	}
+
+	b32 unit_id_is_tech_tier_structure(u32 unit_id) {
+		switch (unit_id) {
+			// Terran
+			case UnitId::TerranEngineeringBay:
+			case UnitId::TerranScienceFacility:
+
+			// Zerg
+			case UnitId::ZergIrolIris:
+			case UnitId::ZergOthstolOviform:
+			case UnitId::ZergAlaszilArbor:
 				return true;
 		}
 		return false;
