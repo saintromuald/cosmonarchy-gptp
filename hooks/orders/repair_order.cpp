@@ -201,7 +201,7 @@ namespace hooks
 
 					return 1;
 				}
-				if (!helper::unitIsResource(target))
+				if (!helper::unit_is_resource(target))
 				{
 					return 0;
 				}

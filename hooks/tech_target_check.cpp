@@ -29,7 +29,7 @@ namespace hooks
 					{
 						stringId = 877; // Unable to target structure.<0>
 					}
-					else if (!target->isValidCaster())
+					else if (!target->is_valid_caster())
 					{
 						stringId = 1330; // Must target units with energy.<0>
 					}
@@ -71,7 +71,7 @@ namespace hooks
 					{
 						stringId = 877; // Unable to target structure.<0>
 					}
-					else if (scbw::isAlliedTo(target->player, castingPlayerId) || target->player == castingPlayerId)
+					else if (scbw::is_allied_to(target->player, castingPlayerId) || target->player == castingPlayerId)
 					{
 						stringId = 1327; // Must target enemy units<0>
 					}
@@ -119,7 +119,7 @@ namespace hooks
 				} break;
 				case TechId::TalosSalvage: {
 					if (!target
-						|| !scbw::isAlliedTo(target->player, castingPlayerId)
+						|| !scbw::is_allied_to(target->player, castingPlayerId)
 						|| !(target->status & UnitStatus::Completed)) {
 						stringId = 876; // Invalid target.<0>
 					}

@@ -34,10 +34,10 @@ namespace hooks
 		if (bSpeedUpgrade == 1)
 		{
 			unit->status |= UnitStatus::SpeedUpgrade;
-			unit->updateSpeed();
+			unit->update_speed();
 		}
 
-		unit->updateSpeed();
+		unit->update_speed();
 
 	}
 

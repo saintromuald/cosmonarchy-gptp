@@ -279,29 +279,29 @@ namespace hooks
 		u8 townHallSupply;
 		u32 supplyUnit = get_supply_structure_from_race(race, player);
 
-		supplyRemaining = helper::getSuppliesRemaining(player, workerUnit);
+		supplyRemaining = helper::get_supplies_remaining(player, workerUnit);
 
 		if (race == RaceId::Protoss)
 		{
-			if (helper::Ai_HasBuildingsNeedingPower(player))
+			if (helper::ai_has_buildings_needing_power(player))
 			{
 				return true;
 			}
 		}
 		if (supplyRemaining < 13)
 		{
-			supplyUsedCompare = helper::getSuppliesUsed(race, player) + 13;
+			supplyUsedCompare = helper::get_supplies_used(race, player) + 13;
 			townHallSupply = units_dat::SupplyProvided[get_townhall_from_race(race)];
 			if (supplyUsedCompare > townHallSupply)
 			{
 				checkEcoUnits = (supplyUsedCompare - townHallSupply) / units_dat::SupplyProvided[supplyUnit];
 				//farms_timing on, compare ecounits required vs ecounits count
-				if (!(AIScriptController[player].AI_Flags.isFarmsNotimingOn) && (checkEcoUnits + 1 > helper::Ai_CountEconomyUnits(player, supplyUnit)))
+				if (!(AIScriptController[player].AI_Flags.isFarmsNotimingOn) && (checkEcoUnits + 1 > helper::ai_count_economy_units(player, supplyUnit)))
 				{
 					return true;
 				}
 				//if max supply, and current supply units (including those under construction) will not satisfy requirement
-				if ((!supplyRemaining) && helper::Ai_CountEconomyUnits(player, supplyUnit) * units_dat::SupplyProvided[supplyUnit] + townHallSupply <= helper::getSuppliesUsed(race, player))
+				if ((!supplyRemaining) && helper::ai_count_economy_units(player, supplyUnit) * units_dat::SupplyProvided[supplyUnit] + townHallSupply <= helper::get_supplies_used(race, player))
 				{
 					return true;
 				}
@@ -370,7 +370,7 @@ namespace hooks
 		case 2:
 		case 4:
 		case 8:
-			result = isAIAllowedToBuild(a2, a1);
+			result = is_ai_allowed_to_build(a2, a1);
 			if (!result)
 				goto LABEL_3;
 			break;

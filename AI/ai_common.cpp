@@ -186,7 +186,7 @@ namespace AI
 			Unit* target = unitStatTotalFinder.getUnit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
 				caster->isTargetEnemy(target) &&
-				target->isValidCaster())
+				target->is_valid_caster())
 			{
 				totalEnemyEnergy += (&target->energy)[1]; // unitPointer+0xA3 in original code
 			}

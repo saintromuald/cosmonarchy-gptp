@@ -191,7 +191,7 @@ namespace hooks
 				d_matrix_reduceAmount = data.target->defensiveMatrixHp;
 			}
 			data.finalDamage -= d_matrix_reduceAmount;
-			data.target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
+			data.target->reduce_defensive_matrix_hp(d_matrix_reduceAmount);
 		}
 
 		// Cliff Advantage - Armor | Disabled 10 Jan 2022
@@ -333,7 +333,7 @@ namespace hooks
 		// Allied Invincibility Frames
 		if (targetExt->timers[TimerAlliedInvFrames])
 		{
-			if (scbw::isAlliedTo(data.attackingPlayerId, targetExt->values[ValueAlliedInvPlayer]))
+			if (scbw::is_allied_to(data.attackingPlayerId, targetExt->values[ValueAlliedInvPlayer]))
 			{
 				data.finalDamage = 0;
 			}
@@ -458,7 +458,7 @@ namespace hooks
 				if (haluAttackerExt->units[UnitHallucinationPointer] == nullptr
 					&& !(haluAttacker->status & UnitStatus::IsHallucination))
 				{
-					if (scbw::isAlliedTo(haluAttacker->player, data.target->player))
+					if (scbw::is_allied_to(haluAttacker->player, data.target->player))
 					{
 						return;
 					}
@@ -492,7 +492,7 @@ namespace hooks
 				case UnitId::ProtossSimulacrum:
 				{
 					// Autovitality - Simulacrum behavior
-					if (!scbw::isAlliedTo(data.target->player, data.attacker->player)
+					if (!scbw::is_allied_to(data.target->player, data.attacker->player)
 						&& !scbw::isUnderDarkSwarm(data.target)
 						&& data.shieldReduceAmount >= data.target->shields
 						&& data.finalDamage
@@ -557,7 +557,7 @@ namespace hooks
 				case WeaponId::LuminaryAuralAssault:
 				{
 					// Aural Assault - Luminary ability
-					u32 overlay = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(data.target->id);
+					u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(data.target->id);
 					Unit* overlayUnit = data.target;
 					if (data.target->subunit != nullptr)
 					{
@@ -630,7 +630,7 @@ namespace hooks
 						{
 							targetExt->values[ValueDeconstruction]++;
 							targetExt->values[ValueDeconstructionPlayer] = data.attacker->player;
-							s32 overlayOffset = scbw::getOverlayOffset(data.target->id);
+							s32 overlayOffset = scbw::get_overlay_offset(data.target->id);
 							if (data.target->subunit != nullptr)
 							{
 								UnitExt* subunitExt = globals.get_unit_ext(data.target->subunit);
@@ -657,7 +657,7 @@ namespace hooks
 					} break;
 					case WeaponId::SavantDiscoidRailgun:
 					{
-						u32 target_offset = scbw::getOverlayOffset(data.target->id);
+						u32 target_offset = scbw::get_overlay_offset(data.target->id);
 						if (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
 							// Power Siphon
 							if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster) {
@@ -687,7 +687,7 @@ namespace hooks
 					case WeaponId::CharlatanFerventBlaster:
 					{
 						// Charlatan - Leading the Blind passive
-						if (!scbw::isAlliedTo(data.attacker->player, data.target->player))
+						if (!scbw::is_allied_to(data.attacker->player, data.target->player))
 						{
 							scbw::applyNewHallucination(data.target, data.attacker->player, CharlatanHallucinationTimer);
 						}
@@ -723,7 +723,7 @@ namespace hooks
 						).forEach([&](Unit* unit)
 							{
 								if (data.attackingPlayerId != unit->player &&
-									!scbw::isAlliedTo(data.attackingPlayerId, unit->player))
+									!scbw::is_allied_to(data.attackingPlayerId, unit->player))
 								{
 									// Ally Check
 									return;
@@ -774,7 +774,7 @@ namespace hooks
 									{
 										return;
 									}
-									if (scbw::isAlliedTo(data.attacker->player, target->player))
+									if (scbw::is_allied_to(data.attacker->player, target->player))
 									{
 										return;
 									}
@@ -919,7 +919,7 @@ namespace hooks
 			targetExt->values[ValueIsZombified] = 1;
 			targetExt->values[ValueAlliedInvPlayer] = targetExt->values[ValueEmpressSourcePlayer];
 			targetExt->timers[TimerAlliedInvFrames] = 24;
-			data.target->sprite->createOverlay(ImageId::MindControlHit_Small + scbw::getOverlayOffset(data.target->id));
+			data.target->sprite->createOverlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(data.target->id));
 			helper::playSoundFromSource(scbw::randBetween(SoundId::EmpressZombify01, SoundId::EmpressZombify03), data.target, 1, 0);
 		}
 
@@ -942,7 +942,7 @@ namespace hooks
 					u32 dist = scbw::getDistanceFast(data.target->position, unit->position);
 					if (unit->id == UnitId::SharedAnticthon && dist <= 4 * 32)
 					{
-						if (scbw::isAlliedTo(data.target->player, unit->player))
+						if (scbw::is_allied_to(data.target->player, unit->player))
 						{
 							hp += (1 + unitExt->values[ValueAnticthonStacks]) * 256;
 							unitExt->values[ValueAnticthonStacks]++;
@@ -1046,7 +1046,7 @@ namespace hooks
 						{
 							return false;
 						}
-						if (scbw::isAlliedTo(data.target->player, unit->player))
+						if (scbw::is_allied_to(data.target->player, unit->player))
 						{
 							return false;
 						}
@@ -1096,7 +1096,7 @@ namespace hooks
 				{
 					// Kaiser Rampage - Ultralisk behavior
 					attackerExt->timers[TimerKaiserRampage] = 1 + (2 * 24);
-					data.attacker->updateSpeed();
+					data.attacker->update_speed();
 				} break;
 			}
 
@@ -1140,10 +1140,10 @@ namespace hooks
 		}
 		// Apply effect
 		unit->ensnareTimer = 37;
-		unit->updateSpeed();
+		unit->update_speed();
 	}
 
-	u16 GetSporesOverlayId(Unit* target)
+	u16 get_spores_overlay_id(Unit* target)
 	{
 		UnitExt* targetExt = globals.get_unit_ext(target);
 		auto stacks = targetExt->values[ValueCorrosiveTouchStacks];
@@ -1160,7 +1160,7 @@ namespace hooks
 		{
 			overlayMultiplier++;
 		}
-		return overlayMultiplier + 4 * scbw::getOverlayOffset(target->id) + ImageId::AcidSpores_1_Overlay_Small;
+		return overlayMultiplier + 4 * scbw::get_overlay_offset(target->id) + ImageId::AcidSpores_1_Overlay_Small;
 	}
 
 	// TODO: Refactor
@@ -1182,7 +1182,7 @@ namespace hooks
 
 		UnitExt* targetExt = globals.get_unit_ext(target);
 		targetExt->values[ValueCorrosiveTouchStacks]++;
-		image = target->getOverlay(GetSporesOverlayId(target));
+		image = target->getOverlay(get_spores_overlay_id(target));
 		if (image)
 		{
 			overlay = image->id;

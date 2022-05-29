@@ -12,15 +12,13 @@
 
 namespace hooks
 {
-	/// This function regenerates energy for spellcasters and drains energy for cloaking units.
-	/// Equivalent to function sub_4EB4B0 @ 0x004EB4B0
-
-	void updateUnitEnergy(Unit* unit)
+	// This function regenerates energy for spellcasters and drains energy for cloaking units.
+	void update_unit_energy(Unit* unit) // 004EB4B0
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		// was hardcoded instead of function calling in original code
-		if (unit->isValidCaster()
+		if (unit->is_valid_caster()
 			&& (unit->status & UnitStatus::Completed))
 		{
 			bool bStopHere = false;
@@ -47,7 +45,7 @@ namespace hooks
 				unit->spendUnitEnergy(GodsMadeFleshEnergyDrain);
 			}
 			else
-			{ // 004EB526
+			{
 				if (unit == nullptr)
 				{
 					return;
@@ -93,7 +91,7 @@ namespace hooks
 		}
 	}
 
-	static bool wyvernCanFireAt(Unit* unit, Unit* target)
+	static bool wyvern_can_fire_at(Unit* unit, Unit* target)
 	{
 		const u32 unitOffset = std::max(unit->getRight() - unit->getLeft(), unit->getBottom() - unit->getTop()) + 32;
 		return scbw::canWeaponTargetUnit(WeaponId::WyvernJacksonCannon, target, unit)
@@ -101,9 +99,8 @@ namespace hooks
 			&& unit->canAttackTarget(target);
 	}
 
-	/// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
-	/// Identical to function @ 0x004EC290
-	void update_unit_state(Unit* unit)
+	// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
+	void update_unit_state(Unit* unit) // 004EC290
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -132,7 +129,7 @@ namespace hooks
 			Unit* target = unitExt->units[UnitWyvernTargetLock];
 			UnitExt* targetExt = globals.get_unit_ext(target);
 			if (targetExt->timers[TimerOwnerChangedRecently]
-				&& scbw::isAlliedTo(unit->player, target->player))
+				&& scbw::is_allied_to(unit->player, target->player))
 			{
 				unitExt->units[UnitWyvernTargetLock] = nullptr;
 			}
@@ -175,13 +172,13 @@ namespace hooks
 					&& unit->mainOrderId != OrderId::WyvernLandGrab)
 				{
 					Unit* newTarget = unit->orderTarget.unit;
-					if (wyvernCanFireAt(unit, newTarget))
+					if (wyvern_can_fire_at(unit, newTarget))
 					{
 						unitExt->units[UnitWyvernTargetLock] = newTarget;
 					}
 				}
 				Unit* target = unitExt->units[UnitWyvernTargetLock];
-				if (!target || !wyvernCanFireAt(unit, target))
+				if (!target || !wyvern_can_fire_at(unit, target))
 				{
 					target = scbw::UnitFinder::getNearestTarget(
 						unit->getX() - range,
@@ -194,11 +191,11 @@ namespace hooks
 						{
 							return false;
 						}
-						if (scbw::isAlliedTo(unit->player, target->player))
+						if (scbw::is_allied_to(unit->player, target->player))
 						{
 							return false;
 						}
-						if (!wyvernCanFireAt(unit, target))
+						if (!wyvern_can_fire_at(unit, target))
 						{
 							return false;
 						}
@@ -247,14 +244,14 @@ namespace hooks
 		if (unit->_padding_0x132 & 0x10)
 		{
 			unit->_padding_0x132 &= ~0x10;
-			unit->updateSpeed();
+			unit->update_speed();
 		}
 
 		// Cowardice / Malice overlays
 		if (unit->_unknown_0x08C & 0x1)
 		{
 			unit->_unknown_0x08C &= ~0x1;
-			u32 overlayImageId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
+			u32 overlayImageId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
 			{
 				unit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
@@ -264,7 +261,7 @@ namespace hooks
 
 		if (unitExt->values[ValueHierophantOverlay] == 1)
 		{
-			auto overlayId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
+			auto overlayId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 			auto overlay = unit->getOverlay(overlayId);
 			if (scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 1)
 			{
@@ -272,7 +269,7 @@ namespace hooks
 				{
 					unit->removeOverlay(overlayId);
 				}
-				u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
+				u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
 				if (!unit->getOverlay(maliceId))
 				{
 					unit->sprite->createTopOverlay(maliceId, 0, 0, 0);
@@ -285,8 +282,8 @@ namespace hooks
 		if (unit->_unknown_0x08C & 0x2)
 		{
 			unit->_unknown_0x08C &= ~0x2;
-			u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
-			u32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
+			u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
+			u32 cowardiceId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 			unitExt->values[ValueHierophantOverlay] = 0;
 			if (unit->getOverlay(maliceId))
 			{
@@ -408,7 +405,7 @@ namespace hooks
 			}
 
 			// update unit energy (energy regen/drain)
-			updateUnitEnergy(unit);
+			update_unit_energy(unit);
 
 			if (unit->recentOrderTimer != 0)
 			{
@@ -500,7 +497,7 @@ namespace hooks
 							{
 								damage /= 2;
 							}
-							target->damageWithCustom(damage, DamageType::Explosive, unit, unit->player, 0, 1, false);
+							target->damage_with_custom(damage, DamageType::Explosive, unit, unit->player, 0, 1, false);
 						});
 						unit->remove();
 						bStopHere = true;
@@ -527,30 +524,10 @@ namespace hooks
 	};
 
 	// Hooked to help with the cloak rewrite - Pr0nogo
-	void updateUnits() // 004ED000
+	void update_units() // 004ED000
 	{
-		s32 v0;
-		Unit* v1;
-		char v2;
-		char i;
-		Unit* v4;
-		Unit* v5;
-		s32 v6;
-		Unit* v7;
-		Unit* v8;
-		Unit* v9;
-		char v10;
-		Unit* v11;
-		Unit* v12;
-		Unit* v13;
-		Unit* v14;
-		s32 v15;
-		Unit* v16;
-		Unit* v17;
-
 		*interceptorFocusedThisFrame = 0;
-		v0 = helper::isSelectedUnitGroupEnabled();
-		if (v0)
+		if (helper::is_selected_unit_group_enabled())
 		{
 			if (*IS_PLACING_BUILDING)
 			{
@@ -559,178 +536,184 @@ namespace hooks
 			}
 			if (*isTargeting)
 			{
-				helper::cancelTargetOrder();
+				helper::cancel_target_order();
 			}
 		}
-		v1 = *firstVisibleUnit;
+		Unit* first_visible_unit = *firstVisibleUnit;
 		if (!--(*orderTimerReassignCount))
 		{
-			v2 = 0;
+			char visible_timer = 0;
 			if (*firstVisibleUnit)
 			{
 				do
 				{
-					v1->orderQueueTimer = v2++;
-					if (v2 == 8)
-						v2 = 0;
-					v1 = v1->link.next;
+					first_visible_unit->orderQueueTimer = visible_timer++;
+					if (visible_timer == 8)
+					{
+						visible_timer = 0;
+					}
+					first_visible_unit = first_visible_unit->link.next;
 				}
-				while (v1);
-				v1 = *firstVisibleUnit;
+				while (first_visible_unit);
+				first_visible_unit = *firstVisibleUnit;
 			}
 			*orderTimerReassignCount = 150;
 		}
 		if (!--(*secondaryOrderTimerReassignCount))
 		{
-			for (i = 0; v1; v1 = v1->link.next)
+			for (char i = 0; first_visible_unit; first_visible_unit = first_visible_unit->link.next)
 			{
-				v1->secondaryOrderTimer = i++;
+				first_visible_unit->secondaryOrderTimer = i++;
 				if (i == 30)
+				{
 					i = 0;
+				}
 			}
 			*secondaryOrderTimerReassignCount = 300;
 		}
 		// Now handled in global effect
-		//helper::updateDisruptionWebStatus();
-		v4 = *firstDyingUnit;
+	//	helper::update_disruption_web_status();
+		Unit* first_dying_unit = *firstDyingUnit;
+		Unit* next_dying_unit = first_dying_unit->link.next;
 		if (*firstDyingUnit)
 		{
 			do
 			{
-				v5 = v4->link.next;
-				*activeIscriptEntity = v4;
-				*activeIscriptUnit = v4;
-				helper::progressDyingUnitFrame(v4);
-				if (v4->sprite)
+				next_dying_unit = first_dying_unit->link.next;
+				*activeIscriptEntity = first_dying_unit;
+				*activeIscriptUnit = first_dying_unit;
+				helper::progress_dying_unit_frame(first_dying_unit);
+				if (first_dying_unit->sprite)
 				{
 					if (*visionUpdated)
 					{
-						v6 = v4->player;
-						if (playerTable[v6].type == 2)
-						{ // PLAYER_OCCUPIED
-							helper::revealSightAtLocation(1, playerVision->flags[v6], v4->sprite->position.x, v4->sprite->position.y, (v4->status >> 2) & 1); // is air unit
+						if (playerTable[first_dying_unit->player].type == 2) // PLAYER_OCCUPIED
+						{
+							helper::reveal_sight_at_location(1, playerVision->flags[first_dying_unit->player], first_dying_unit->sprite->position.x, first_dying_unit->sprite->position.y, (first_dying_unit->status >> 2) & 1); // is air unit
 						}
 					}
-					helper::updateVisibility(v4);
+					helper::update_visibility(first_dying_unit);
 				}
-				v4 = v5;
+				first_dying_unit = next_dying_unit;
 			}
-			while (v5);
+			while (next_dying_unit);
 		}
-		v7 = *firstVisibleUnit;
+		first_visible_unit = *firstVisibleUnit;
 		if (*firstVisibleUnit)
 		{
 			do
 			{
-				*activeIscriptEntity = v7;
-				*activeIscriptUnit = v7;
-				helper::progressActiveUnitFrame(v7);
-				v7 = v7->link.next;
+				*activeIscriptEntity = first_visible_unit;
+				*activeIscriptUnit = first_visible_unit;
+				helper::progress_active_unit_frame(first_visible_unit);
+				first_visible_unit = first_visible_unit->link.next;
 			}
-			while (v7);
-			v7 = *firstVisibleUnit;
+			while (first_visible_unit);
+			first_visible_unit = *firstVisibleUnit;
 		}
+		Unit* first_scanner_sweep = *firstScannerSweep;
 		if (*visionUpdated)
 		{
-			v8 = *firstScannerSweep;
 			if (*firstScannerSweep)
 			{
+				Unit* next_scanner_sweep = first_scanner_sweep->link.next;
 				do
 				{
-					v9 = v8->link.next;
-					*activeIscriptEntity = v8;
-					*activeIscriptUnit = v8;
-					helper::refreshUnitVision(v8);
-					v8 = v9;
+					next_scanner_sweep = first_scanner_sweep->link.next;
+					*activeIscriptEntity = first_scanner_sweep;
+					*activeIscriptUnit = first_scanner_sweep;
+					helper::refresh_unit_vision(first_scanner_sweep);
+					first_scanner_sweep = next_scanner_sweep;
 				}
-				while (v9);
-				v7 = *firstVisibleUnit;
+				while (next_scanner_sweep);
+				first_visible_unit = *firstVisibleUnit;
 			}
 		}
-		if (v7)
+		if (first_visible_unit)
 		{
-			UnitExt* unitExt = globals.get_unit_ext(v7);
+			UnitExt* unitExt = globals.get_unit_ext(first_visible_unit);
 			do
 			{
-				helper::updateVisibility(v7);
-				if (v7->status & 0x300 && unitExt->timers[TimerDecloak] == 0)
+				helper::update_visibility(first_visible_unit);
+				if (first_visible_unit->status & 0x300 && unitExt->timers[TimerDecloak] == 0)
 				{
-					v10 = v7->secondaryOrderTimer;
-					v7->isCloaked = 0;
-					if (v10)
+					first_visible_unit->isCloaked = 0;
+					if (first_visible_unit->secondaryOrderTimer)
 					{
-						v7->secondaryOrderTimer = v10 - 1;
+						first_visible_unit->secondaryOrderTimer = first_visible_unit->secondaryOrderTimer - 1;
 					}
 					else
 					{
-						helper::checkUnitVisibility(v7);
-						v7->secondaryOrderTimer = 30;
+						helper::check_unit_visibility(first_visible_unit);
+						first_visible_unit->secondaryOrderTimer = 30;
 					}
 				}
-				v7 = v7->link.next;
+				first_visible_unit = first_visible_unit->link.next;
 			}
-			while (v7);
-			v7 = *firstVisibleUnit;
+			while (first_visible_unit);
+			first_visible_unit = *firstVisibleUnit;
 		}
-		v11 = v7;
-		if (v7)
+		if (first_visible_unit)
 		{
+			Unit* next_visible_unit = first_visible_unit->link.next;
 			do
 			{
-				v12 = v11->link.next;
-				*activeIscriptEntity = v11;
-				*activeIscriptUnit = v11;
-				progress_unit_dying_frame(v11);
-				v11 = v12;
+				next_visible_unit = first_visible_unit->link.next;
+				*activeIscriptEntity = first_visible_unit;
+				*activeIscriptUnit = first_visible_unit;
+				helper::progress_unit_frame(first_visible_unit);
+				first_visible_unit = next_visible_unit;
 			}
-			while (v12);
+			while (next_visible_unit);
 		}
-		v13 = *firstHiddenUnit;
+		Unit* first_hidden_unit = *firstHiddenUnit;
+		Unit* next_hidden_unit = first_hidden_unit->link.next;
 		if (*firstHiddenUnit)
 		{
 			do
 			{
-				v14 = v13->link.next;
-				if (v13->status & 0x300)
+				next_hidden_unit = first_hidden_unit->link.next;
+				if (first_hidden_unit->status & 0x300)
 				{
-					v13->isCloaked = 0;
+					first_hidden_unit->isCloaked = 0;
 				}
-				*activeIscriptEntity = v13;
-				*activeIscriptUnit = v13;
-				helper::unitUpdate(v13);
-				v13 = v14;
+				*activeIscriptEntity = first_hidden_unit;
+				*activeIscriptUnit = first_hidden_unit;
+				helper::unit_update(first_hidden_unit);
+				first_hidden_unit = next_hidden_unit;
 			}
-			while (v14);
+			while (next_hidden_unit);
 		}
-		updateBurrowingCloakingUnits();
-		helper::updateUnitPower();
-		v15 = (*lurkerSplashListIndex)++ + 1;
+		helper::update_burrowing_cloaking_units();
+		helper::update_unit_power();
+		s32 lurker_splash_index = (*lurkerSplashListIndex)++ + 1;
 		if (*lurkerSplashListIndex == 32)
 		{
-			v15 = 0;
+			lurker_splash_index = 0;
 			*lurkerSplashListIndex = 0;
 		}
-		memset(&lurkerSplashList[32 * v15], 0, 0x80u);
-		v16 = *firstScannerSweep;
+		memset(&lurkerSplashList[32 * lurker_splash_index], 0, 0x80u);
 		*lastBulletIndex = 0;
+		first_scanner_sweep = *firstScannerSweep;
 		if (*firstScannerSweep)
 		{
+			Unit* next_scanner_sweep_2 = first_scanner_sweep->link.next;
 			do
 			{
-				v17 = v16->link.next;
-				*activeIscriptEntity = v16;
-				*activeIscriptUnit = v16;
-				progress_unit_dying_frame(v16);
-				v16 = v17;
+				next_scanner_sweep_2 = first_scanner_sweep->link.next;
+				*activeIscriptEntity = first_scanner_sweep;
+				*activeIscriptUnit = first_scanner_sweep;
+				helper::progress_unit_frame(first_scanner_sweep);
+				first_scanner_sweep = next_scanner_sweep_2;
 			}
-			while (v17);
+			while (next_scanner_sweep_2);
 		}
 		*activeIscriptEntity = 0;
 		*activeIscriptUnit = 0;
 	}
 
 	// Hooked to help with the cloak rewrite - Pr0nogo
-	void updateBurrowingCloakingUnits() // 00492EB0
+	void update_burrowing_cloaking_units() // 00492EB0
 	{
 		Unit* v0;
 		s32 v1;
@@ -748,7 +731,7 @@ namespace hooks
 				v2 = v0->burrow_link.next;
 				if (helper::isUnitCloaking(v0))
 				{
-					doCloak(v0, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+					do_cloak(v0, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 				}
 				else
 				{
@@ -788,7 +771,7 @@ LABEL_13:
 	}
 
 	// Hooked for cloak rewrite animations - Pr0nogo
-	void doCloak(Unit* unit, s32 soundId) // 0049B440
+	void do_cloak(Unit* unit, s32 soundId) // 0049B440
 	{
 		Unit* unitVar = unit;
 		if (!(unit->status & UnitStatus::Burrowed))
@@ -823,7 +806,7 @@ LABEL_13:
 	}
 
 	// Hooked to add nullcheck - Pr0nogo
-	void progress_unit_dying_frame(Unit* unit) // 004ECF70
+	void progress_unit_frame(Unit* unit) // 004ECF70
 	{
 		Unit* unitVar = unit;
 		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) && unit->sprite)
@@ -842,11 +825,10 @@ LABEL_13:
 			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit))
 			{
 				*activeIscriptUnit = unit->subunit;
-				progress_unit_dying_frame(unit->subunit);
+				progress_unit_frame(unit->subunit);
 				*activeIscriptUnit = unit;
 			}
 		}
-
 		if (unit->sprite)
 		{
 			helper::sprite_to_iscript_loop(unit->sprite);

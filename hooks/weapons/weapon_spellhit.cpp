@@ -64,7 +64,7 @@ namespace hooks
 		}
 		if (unitId == UnitId::ProtossSolarion)
 		{
-			helper::returnAllInterceptors(unit);
+			helper::return_all_interceptors(unit);
 		}
 		u8 orderId = unit->mainOrderId;
 		if (orderId == OrderId::Repair1 || orderId == OrderId::DroneLand)
@@ -76,7 +76,7 @@ namespace hooks
 			unit->orderTarget.unit = 0;
 		}
 		char result;
-		result = helper::ignoreAllScriptsAndGoToIdle(unit);
+		result = helper::ignore_all_scripts_and_go_to_idle(unit);
 		Sprite* sprite = unit->sprite;
 		if (sprite->flags & 8)
 		{
@@ -118,7 +118,7 @@ namespace hooks
 			bullet->position.y + radius
 		).forEach([&](Unit* target)
 		{
-			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(target->id);
+			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(target->id);
 			Unit* overlayUnit = target;
 			UnitExt* targetExt = globals.get_unit_ext(target);
 			if (target->subunit != nullptr)
@@ -152,7 +152,7 @@ namespace hooks
 		// add lockdown overlay if no ongoing lockdown already
 		if (target->lockdownTimer == 0)
 		{
-			u32 overlayImageId = ImageId::LockdownField_Small + scbw::getOverlayOffset(target->id);
+			u32 overlayImageId = ImageId::LockdownField_Small + scbw::get_overlay_offset(target->id);
 			Unit* overlayTargetUnit;
 			if (target->subunit != nullptr)
 			{
@@ -656,7 +656,7 @@ namespace hooks
 		s32 unitStatus = target->status;
 		if (unitStatus & UnitStatus::IsHallucination)
 		{
-			helper::orders_SelfDestructing(target);
+			helper::orders_self_destructing(target);
 		}
 		else
 		{
@@ -665,7 +665,7 @@ namespace hooks
 				s32 unitProperty = units_dat::BaseProperty[target->id];
 				if (!(unitStatus & UnitStatus::Burrowed))
 				{
-					helper::setMaelstromTimer(target, MindTyrantMaelstromTimer);
+					helper::set_maelstrom_timer(target, MindTyrantMaelstromTimer);
 				}
 			}
 		}
@@ -750,7 +750,7 @@ namespace hooks
 			{
 				finalUnit = unit;
 			}
-			u16 overlayImageId = ImageId::StasisField_Small + scbw::getOverlayOffset(unit->id);
+			u16 overlayImageId = ImageId::StasisField_Small + scbw::get_overlay_offset(unit->id);
 			unit->sprite->createOverlay(overlayImageId, 0, 0, 0);
 			unit->status |= UnitStatus::Invincible; // remove
 		}

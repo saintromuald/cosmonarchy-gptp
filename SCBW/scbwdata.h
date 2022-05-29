@@ -393,7 +393,7 @@ SCBW_DATA(s8*,	statusScreenRedraw,			0x0068C1F8);
 SCBW_DATA(s32*,	ctrlUnderMouse,				0x0068C1E8);
 SCBW_DATA(s32*,	ctrlUnderMouseValue,		0x0068C1EC); // void* in Neiv's list
 
-// For updateUnits
+// For update_units
 SCBW_DATA(s32*,		interceptorFocusedThisFrame,		0x006957D0);
 SCBW_DATA(s8*,		isTargeting,						0x00641694);
 SCBW_DATA(s32*,		orderTimerReassignCount,			0x0059CCA4);
@@ -416,7 +416,7 @@ SCBW_DATA(s16*, larvaCounter,						0x0067D3F8);
 // For updateBuildingPlacementState_Units
 SCBW_DATA(s8*, buildingPlacementState,				0x006408F8);
 
-// For progress_unit_dying_frame
+// For progress_unit_frame
 SCBW_DATA(s8*, selectionCircleColor,				0x00581D6A);
 
 // For initializeBulet
@@ -446,7 +446,7 @@ SCBW_DATA(s32*,	suppliesMax_Terran,					0x00582234);
 SCBW_DATA(s32*,	suppliesAvailable_Zerg,				0x00582144);
 SCBW_DATA(s32*,	suppliesMax_Zerg,					0x005821A4);
 
-// For getSuppliesUsed
+// For get_supplies_used_no_args
 SCBW_DATA(s32*,	suppliesUsed_Protoss,				0x00582294);
 SCBW_DATA(s32*,	suppliesUsed_Terran,				0x00582204);
 SCBW_DATA(s32*,	suppliesUsed_Zerg,					0x00582174);
@@ -887,7 +887,7 @@ template <typename T>
 struct PlayerFlags {
 	T flags[PLAYER_COUNT];
 };
-SCBW_DATA(PlayerFlags<u8>*, playerAlliance, 0x0058D634);  //See scbw::isAlliedTo()
+SCBW_DATA(PlayerFlags<u8>*, playerAlliance, 0x0058D634);  //See scbw::is_allied_to()
 SCBW_DATA(PlayerFlags<u32>*, playerVision, 0x0057F1EC);
 
 SCBW_DATA(Unit* const*, activePortraitUnit, 0x00597248);

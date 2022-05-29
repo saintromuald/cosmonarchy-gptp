@@ -538,7 +538,7 @@ LABEL_126:
 							firstUnitPlayer = firstUnit->player;
 							if (firstUnitPlayer == 11)
 								firstUnitPlayer = firstSprite->playerId;
-							if (!scbw::isAlliedTo(playerId, firstUnitPlayer))
+							if (!scbw::is_allied_to(playerId, firstUnitPlayer))
 							{
 								fastDistance = helper::getDistanceFast(regionCenterX >> 8, firstUnit->sprite->position.x, regionCenterY >> 8, firstUnit->sprite->position.y);
 								if (fastDistance < maxDistance)
@@ -1066,7 +1066,7 @@ LABEL_126:
 		if (target_unit->player == 11) { // Neutral
 			target_player = target_unit->sprite->playerId;
 		}
-		if (!scbw::isAlliedTo(unit->player, target_player)) {
+		if (!scbw::is_allied_to(unit->player, target_player)) {
 			if (helper::unit_can_attack_target(target_unit, unit, 1)) {
 				helper::order_to_attack_target(unit->autoTargetUnit, unit, 1, 0);
 				unit->status |= UnitStatus::Disabled;
@@ -1666,7 +1666,7 @@ LABEL_126:
 		Unit* best = UnitArrayFindBest(&workers, [=](Unit* worker) {
 			if (!worker->hasPathToUnit(to_repair) ||
 				to_repair->orderTarget.unit == worker ||
-				scbw::isAlliedTo(worker->player, to_repair->player) ||
+				scbw::is_allied_to(worker->player, to_repair->player) ||
 				!helper::isOrderValid(OrderId::Repair1, worker, 0, to_repair, 0)) {
 				return ScoreInvalidUnit;
 			}

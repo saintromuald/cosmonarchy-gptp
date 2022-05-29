@@ -14,7 +14,7 @@ namespace
 			PUSHAD
 		}
 
-		hooks::updateStatusEffects(unit);
+		hooks::update_status_effects(unit);
 
 		__asm {
 			POPAD
@@ -29,7 +29,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::AI_Burrower(unit);
+		hooks::ai_burrower(unit);
 		__asm {
 			POPAD
 			RETN

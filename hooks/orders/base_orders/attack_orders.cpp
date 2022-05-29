@@ -718,7 +718,7 @@ namespace hooks
 					if (unit->orderSignal & 1)
 					{
 						unit->status |= UnitStatus::IsSelfDestructing;
-						unit->remove(); // orders_SelfDestructing
+						unit->remove(); // orders_self_destructing
 					}
 				}
 			}
@@ -796,7 +796,7 @@ namespace hooks
 			if (unit->orderSignal & 1)
 			{
 				unit->status |= UnitStatus::IsSelfDestructing;
-				unit->remove(); //orders_SelfDestructing
+				unit->remove(); //orders_self_destructing
 			}
 		}
 	}

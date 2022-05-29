@@ -141,7 +141,7 @@ struct Unit : public UnitLayout
 	bool isFactory() const;
 
 	/// Checks if the unit is a spellcaster (has energy) and not a hallucination.
-	bool isValidCaster() const;
+	bool is_valid_caster() const;
 
 	/// Checks if the unit is at move destination (0), or if the unit is
 	/// unmovable (2) or not (1)
@@ -195,7 +195,7 @@ struct Unit : public UnitLayout
 		u8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
 	);
 
-	void Unit::damageWithCustom(
+	void Unit::damage_with_custom(
 		s32 damage,
 		u8 damageType,
 		Unit* attacker,
@@ -216,7 +216,7 @@ struct Unit : public UnitLayout
 
 
 	/// Reduces Defensive Matrix by @p amount, removing it if possible.
-	void reduceDefensiveMatrixHp(s32 amount);
+	void reduce_defensive_matrix_hp(s32 amount);
 
 	/// Immediately kills the unit. To silently remove the unit, use:
 	///   unit->userActionFlags |= 0x4;
@@ -224,10 +224,10 @@ struct Unit : public UnitLayout
 	void remove();
 
 	/// Removes the Lockdown effect from the unit.
-	void removeLockdown();
+	void remove_lockdown();
 
 	/// Removes the Maelstrom effect from the unit.
-	void removeMaelstrom();
+	void remove_maelstrom();
 
 	/// Freezes the unit
 	void freeze();
@@ -422,7 +422,7 @@ struct Unit : public UnitLayout
 
 	/// Updates the unit's actual speed. This function should be called after
 	/// changing any properties and status effects that affect movement speed.
-	void updateSpeed();
+	void update_speed();
 
 	/// For Wyvern Land Grab
 	u8 getSpellCountdown() const;

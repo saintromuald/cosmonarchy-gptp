@@ -35,7 +35,7 @@ namespace
 			MOV playerId, BL
 			PUSHAD
 		}
-		result = hooks::getSuppliesRemaining(playerId, unitId);
+		result = hooks::get_supplies_remaining(playerId, unitId);
 		__asm
 		{
 			POPAD
@@ -75,7 +75,7 @@ namespace
 			MOV race, EAX
 			PUSHAD
 		}
-		result = hooks::getSuppliesUsed(race, playerId);
+		result = hooks::get_supplies_used(race, playerId);
 		__asm
 		{
 			POPAD

@@ -72,7 +72,7 @@ namespace hooks
 	// to do the Recall effect.
 	void spells_Recall_ActionOnTargetInRange(Unit* target, Unit* caster) {
 		if (!(target->sprite->flags & SpriteFlags::Hidden) &&
-			(target->player == caster->player || scbw::isAlliedTo(target->player, caster->player)) &&
+			(target->player == caster->player || scbw::is_allied_to(target->player, caster->player)) &&
 			!(units_dat::BaseProperty[target->id] & UnitProperty::Building) &&
 			!(target->status & UnitStatus::Invincible) &&
 			!(target->status & UnitStatus::Burrowed) &&

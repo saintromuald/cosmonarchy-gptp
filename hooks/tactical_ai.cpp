@@ -1121,11 +1121,11 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			cosmonarchyFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
 				Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u)
 			{
-				if (!scbw::isAlliedTo(unit->player, u->player))
+				if (!scbw::is_allied_to(unit->player, u->player))
 				{
 					enemyUnitsHealth += (u->hitPoints + u->shields) / 256;
 				}
-				if (scbw::isAlliedTo(unit->player, u->player))
+				if (scbw::is_allied_to(unit->player, u->player))
 				{
 					if (units_dat::BaseProperty[u->id] & UnitProperty::ResourceDepot)
 					{

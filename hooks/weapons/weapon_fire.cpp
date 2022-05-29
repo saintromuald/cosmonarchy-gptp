@@ -27,7 +27,7 @@ static bool madrigalFuriaMatch(Unit* madrigal, Unit* unit)
 	{
 		return false;
 	}
-	if (scbw::isAlliedTo(madrigal->player, unit->player))
+	if (scbw::is_allied_to(madrigal->player, unit->player))
 	{
 		return false;
 	}
@@ -44,7 +44,7 @@ static bool alkajSporeMatch(Bullet* bullet, Unit* unit)
 	{
 		return false;
 	}
-	if (scbw::isAlliedTo(bullet->srcPlayer, unit->player))
+	if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
 	{
 		return false;
 	}
@@ -111,7 +111,7 @@ namespace hooks
 			{
 				if (target == attacker
 					|| targets.find(target) != targets.end()
-					|| scbw::isAlliedTo(attacker->player, target->player)
+					|| scbw::is_allied_to(attacker->player, target->player)
 					|| !attacker->canAttackTarget(target)
 					|| !filter(target)
 					|| (targets.size() >= maxTargets && maxTargets > 0))
@@ -344,7 +344,7 @@ namespace hooks
 						).forEach([&](Unit* pickedUnit) {
 							if (!(pickedUnit->status & UnitStatus::Completed)
 								|| unit == pickedUnit
-								|| scbw::isAlliedTo(pickedUnit->player, unit->player)
+								|| scbw::is_allied_to(pickedUnit->player, unit->player)
 								|| scbw::getDistanceFast(unit->position, pickedUnit->position) > radius)
 							{
 								return;
@@ -399,7 +399,7 @@ namespace hooks
 					{
 						return false;
 					}
-					if (scbw::isAlliedTo(unit->player, target->player))
+					if (scbw::is_allied_to(unit->player, target->player))
 						return false;
 					return scbw::canWeaponTargetUnit(weaponId, target, unit);
 				});
@@ -578,7 +578,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::isAlliedTo(bullet->srcPlayer, unit->player))
+				if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
 				{
 					return false;
 				}
@@ -622,7 +622,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::isAlliedTo(bullet->srcPlayer, unit->player))
+				if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
 				{
 					return false;
 				}
@@ -690,7 +690,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::isAlliedTo(bullet->srcPlayer, unit->player))
+				if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
 				{
 					return false;
 				}
@@ -746,7 +746,7 @@ namespace hooks
 					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 					auto count = globals.get_multihit_count(bullet);
 					helper::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-					collisionTarget->damageWithCustom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
+					collisionTarget->damage_with_custom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
 						weapons_dat::DamageType[WeaponId::KalkaliskViscousAcid],
 						bullet->sourceUnit, bullet->srcPlayer, 0, 1, false);
 
@@ -1241,7 +1241,7 @@ namespace hooks
 				}
 				bullet->sourceUnit->status |= UnitStatus::IsSelfDestructing;
 				bullet->sourceUnit->userActionFlags |= 0x4;
-				helper::orders_SelfDestructing(bullet->sourceUnit);
+				helper::orders_self_destructing(bullet->sourceUnit);
 				return 1;
 			}
 			case WeaponBehavior::Bounce:

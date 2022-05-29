@@ -581,7 +581,7 @@ LABEL_36:
 			return 0;
 		}
 
-		if (helper::isAIAllowedToBuild(player, nextBuildType))
+		if (helper::is_ai_allowed_to_build(player, nextBuildType))
 		{
 			helper::AI_Reserve(player, 0);
 			helper::AI_PopSpendingRequest(player);

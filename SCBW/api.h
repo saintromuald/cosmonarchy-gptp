@@ -265,7 +265,7 @@ namespace scbw
 
 	/// Checks whether @p playerB is recognized by @p playerA as an ally.
 	/// Warning: The opposite may not necessarily be true!
-	inline bool isAlliedTo(u8 playerA, u8 playerB)
+	inline bool is_allied_to(u8 playerA, u8 playerB)
 	{
 		return 0 != playerAlliance[playerA].flags[playerB];
 	}
@@ -529,7 +529,7 @@ namespace scbw
 	bool isEnabled(Unit* unit);
 	bool isDebuffed(Unit* unit);
 	s32 getUpgradeType(Unit* unit);
-	s32 getOverlayOffset(u16 unitId, bool xlargeAllowed = false);
+	s32 get_overlay_offset(u16 unitId, bool xlargeAllowed = false);
 	s32 getFinalDamage(Unit* unit, u16 weaponId);
 	bool unitIsPacifist(Unit* unit);
 	bool orderIsSpell(s32 orderId);

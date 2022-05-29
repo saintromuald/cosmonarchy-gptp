@@ -134,13 +134,13 @@ namespace hooks
 				if (v11)
 					v11->link.prev = v1;
 				v10->link.next = v1;
-				helper::refreshUnitVision(v1);
+				helper::refresh_unit_vision(v1);
 			}
 			else
 			{
 				*lastScannerSweep = v1;
 				*firstScannerSweep = v1;
-				helper::refreshUnitVision(v1);
+				helper::refresh_unit_vision(v1);
 			}
 		}
 		else if (v1->sprite->flags & 0x20)

@@ -383,7 +383,7 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 	//if not already irradiated and not burrowed, add the irradiate overlay
 	if (unit->irradiateTimer == 0 && !(unit->status & UnitStatus::Burrowed))
 	{
-		u32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::getOverlayOffset(unit->id);
+		u32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::get_overlay_offset(unit->id);
 		Unit* unitWithOverlay;
 		if (unit->subunit != nullptr)
 		{
@@ -529,7 +529,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						unit->damageWithCustom(2500 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
+						unit->damage_with_custom(2500 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
 					});
 				} break;
 				case EffectId::SalamanderFire:
@@ -540,7 +540,7 @@ void Globals::frameHook()
 					for (u32 j = 0; j < unit_array.size; j++)
 					{
 						Unit* target = unit_array.units[j];
-						target->damageWithCustom(20 * damageMultiplier, DamageType::Concussive, effect->source, effect->player, 0, 1, true);
+						target->damage_with_custom(20 * damageMultiplier, DamageType::Concussive, effect->source, effect->player, 0, 1, true);
 					}
 				} break;
 				case EffectId::Criticality:
@@ -573,7 +573,7 @@ void Globals::frameHook()
 							return;
 						}
 						UnitExt* unitExt = globals.get_unit_ext(unit);
-						unit->damageWithCustom(30 * damageMultiplier, DamageType::Impact, effect->source, effect->player, 0, 1, true);
+						unit->damage_with_custom(30 * damageMultiplier, DamageType::Impact, effect->source, effect->player, 0, 1, true);
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 				} break;
@@ -591,7 +591,7 @@ void Globals::frameHook()
 							return;
 						}
 						UnitExt* unitExt = globals.get_unit_ext(unit);
-						unit->damageWithCustom(100 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
+						unit->damage_with_custom(100 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
 						unitExt->timers[TimerIonFieldSpeed] = 2 * 24 + 1;
 					});
 				} break;
@@ -956,7 +956,7 @@ namespace scbw
 		{
 			unit->ensnareTimer = MatralethEnsnareTimer;
 			// specific update following ensnare removal
-			unit->updateSpeed();
+			unit->update_speed();
 		}
 
 		// Refresh Plague
@@ -1032,7 +1032,7 @@ namespace scbw
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
 		// Get overlay info
-		s32 overlayOffset = getOverlayOffset(child->id);
+		s32 overlayOffset = get_overlay_offset(child->id);
 
 		// Inherit Ensnare
 		if (parent->ensnareTimer != 0)
@@ -1042,7 +1042,7 @@ namespace scbw
 			{
 				child->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayOffset);
 			}
-			child->updateSpeed();
+			child->update_speed();
 		}
 
 		// Inherit Plague
@@ -1275,7 +1275,7 @@ namespace scbw
 		{
 			overlayTargetUnit = unit->subunit;
 		}
-		u32 overlayImageId = ImageId::RestorationHit_Small + scbw::getOverlayOffset(unit->id);;
+		u32 overlayImageId = ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id);;
 		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 
 		// remove status effects and corresponding overlays
@@ -1298,7 +1298,7 @@ namespace scbw
 			unit->removeOverlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 			unit->ensnareTimer = 0;
 			//specific update following ensnare removal
-			unit->updateSpeed();
+			unit->update_speed();
 		}
 
 		// Remove Plague
@@ -1360,7 +1360,7 @@ namespace scbw
 		if (unitExt->values[ValueEntropyGauntlets])
 		{
 			unitExt->values[ValueEntropyGauntlets] = 0;
-			u32 overlayOffset = scbw::getOverlayOffset(unit->id);
+			u32 overlayOffset = scbw::get_overlay_offset(unit->id);
 			u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - overlayOffset;
 			if (unit->subunit != nullptr)
 			{
@@ -1382,10 +1382,10 @@ namespace scbw
 		unitExt->values[ValueEmpressPassiveStacks] = 0;
 
 		// Remove Lockdown
-		unit->removeLockdown();
+		unit->remove_lockdown();
 
 		// Remove Maelstrom
-		unit->removeMaelstrom();
+		unit->remove_maelstrom();
 
 		// Remove Devourer Corrosive Spores
 		unit->removeAcidSpores();
@@ -1592,7 +1592,7 @@ namespace scbw
 			unit->getY() + radius
 		).filter([&](Unit* target)
 		{
-			if (!scbw::isAlliedTo(unit->player, target->player))
+			if (!scbw::is_allied_to(unit->player, target->player))
 			{
 				return false;
 			}

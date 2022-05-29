@@ -45,7 +45,7 @@ namespace AI
 				&& units_dat::SpaceProvided[target->id] > 0)
 				return true;
 
-			if (target->isValidCaster())
+			if (target->is_valid_caster())
 				return true;
 
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Worker)

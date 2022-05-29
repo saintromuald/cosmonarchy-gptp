@@ -25,7 +25,7 @@ void augurProc(Unit* augur, s32 radius) {
 			{
 				return false;
 			}
-			if (scbw::isAlliedTo(unit->player, augur->player))
+			if (scbw::is_allied_to(unit->player, augur->player))
 			{
 				return false;
 			}
@@ -252,12 +252,12 @@ void unit_destructor_special_cases(Unit* unit)
 				).forEach([&](Unit* target)
 					{
 						UnitExt* targetExt = globals.get_unit_ext(target);
-						if (!scbw::isAlliedTo(unit->player, target->player))
+						if (!scbw::is_allied_to(unit->player, target->player))
 						{
 							return;
 						}
 						targetExt->values[ValueTerminalSurge]++;
-						target->updateSpeed();
+						target->update_speed();
 						
 						if (target->subunit != nullptr)
 						{
@@ -356,12 +356,12 @@ void unit_destructor_special_cases(Unit* unit)
 				unit->getY() + radius
 			).forEach([&](Unit* target)
 			{
-				if (scbw::isAlliedTo(i, target->player))
+				if (scbw::is_allied_to(i, target->player))
 				{
 					UnitExt* targetExt = globals.get_unit_ext(target);
 					targetExt->timers[TimerNathrokorBuff] = NathrokorAdrenalFrenzyTimer;
 					targetExt->values[ValueNathrokorBuffStacks] += stacks;
-					target->updateSpeed();
+					target->update_speed();
 				}
 			});
 		}
@@ -416,7 +416,7 @@ void unit_destructor_special_cases(Unit* unit)
 			{
 				return;
 			}
-			if (!scbw::isAlliedTo(unit->player, target->player))
+			if (!scbw::is_allied_to(unit->player, target->player))
 			{
 				return;
 			}

@@ -77,7 +77,7 @@ namespace hooks
 								unit,
 								[&](Unit* target)
 							{
-								if (scbw::isAlliedTo(unit->player, target->player)
+								if (scbw::is_allied_to(unit->player, target->player)
 									|| !unit->canAttackTarget(target)
 									|| !isWithinAttackRange(unit, target))
 								{

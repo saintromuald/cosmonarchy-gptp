@@ -186,7 +186,7 @@ LABEL_26:
 		v2 = *activePortraitUnit;
 		if (IS_IN_REPLAY || (*activePortraitUnit)->player == *LOCAL_NATION_ID)
 		{
-			helper::getSuppliesUsed();
+			helper::get_supplies_used_no_args();
 			if (*statusScreenFunc != 12)
 			{
 				helper::hideOptionalStatusScreenControls(v1);
@@ -360,7 +360,7 @@ LABEL_55:
 		{
 			v2 = a2->player;
 			v3 = a1->player == 11 ? a1->sprite->playerId : a1->player;
-			if (!scbw::isAlliedTo(v2, v3))
+			if (!scbw::is_allied_to(v2, v3))
 			{
 				ByteOperations::SetLowByte(v4, helper::AI_UnitCanAttack(a1));
 				if (v4)

@@ -624,7 +624,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (!(scbw::isAlliedTo(transport->player, unit->player)))
+		if (!(scbw::is_allied_to(transport->player, unit->player)))
 		{
 			return 0;
 		}
