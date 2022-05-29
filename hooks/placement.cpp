@@ -113,7 +113,7 @@ namespace hooks
                         needs_detection = true;
                     }
                 }
-                if (scbw::isAlliedTo(other_unit->player, builder->player))
+                if (scbw::is_allied_to(other_unit->player, builder->player))
                 {
                     return 0;
                 }

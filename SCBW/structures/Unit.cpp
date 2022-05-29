@@ -392,7 +392,7 @@ bool Unit::isFactory() const
 }
 
 //Identical to function @ 0x00401210
-bool Unit::isValidCaster() const
+bool Unit::is_valid_caster() const
 {
 	assert(this);
 	return units_dat::BaseProperty[this->id] & UnitProperty::Spellcaster
@@ -577,7 +577,7 @@ void Unit::damageWith(u8 weaponId, s32 damage, Unit* attacker, u8 attackingPlaye
 	}
 }
 
-void Unit::damageWithCustom(
+void Unit::damage_with_custom(
 	s32 damage,
 	u8 damageType,
 	Unit* attacker,
@@ -674,7 +674,7 @@ void Unit::damageHp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify
 }
 
 // Logically equivalent to function @ 0x00454ED0
-void Unit::reduceDefensiveMatrixHp(s32 amount)
+void Unit::reduce_defensive_matrix_hp(s32 amount)
 {
 	assert(this);
 	if (this->defensiveMatrixHp > amount)
@@ -727,7 +727,7 @@ void Unit::remove()
 }
 
 const u32 Func_RemoveLockdown = 0x00454D90;
-void Unit::removeLockdown()
+void Unit::remove_lockdown()
 {
 	assert(this);
 	__asm
@@ -740,7 +740,7 @@ void Unit::removeLockdown()
 }
 
 const u32 Func_RemoveMaelstrom = 0x00454D20;
-void Unit::removeMaelstrom()
+void Unit::remove_maelstrom()
 {
 	assert(this);
 	__asm
@@ -1448,7 +1448,7 @@ bool Unit::isVisibleTo(u8 playerId) const
 }
 
 const u32 Func_UpdateSpeed = 0x00454310;
-void Unit::updateSpeed()
+void Unit::update_speed()
 {
 	assert(this);
 

@@ -3,21 +3,21 @@
 
 namespace
 {
-	void __declspec(naked) updateUnitEnergyWrapper() // 004EB4B0
+	void __declspec(naked) update_unit_energy_wrapper() // 004EB4B0
 	{
 		static Unit* unit;
 		__asm {
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::updateUnitEnergy(unit);
+		hooks::update_unit_energy(unit);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) updateUnitStateWrapper() // 004EC290
+	void __declspec(naked) update_unit_state_wrapper() // 004EC290
 	{
 		static Unit* unit;
 		__asm {
@@ -31,12 +31,12 @@ namespace
 		}
 	}
 
-	void __declspec(naked) updateUnits_Wrapper() // 004ED000
+	void __declspec(naked) update_units_wrapper() // 004ED000
 	{
 		__asm {
 			PUSHAD
 		}
-		hooks::updateUnits();
+		hooks::update_units();
 		__asm {
 			POPAD
 			RETN
@@ -48,7 +48,7 @@ namespace
 		__asm {
 			PUSHAD
 		}
-		hooks::updateBurrowingCloakingUnits();
+		hooks::update_burrowing_cloaking_units();
 		__asm {
 			POPAD
 			RETN
@@ -64,14 +64,14 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::doCloak(unit, soundId);
+		hooks::do_cloak(unit, soundId);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) progressUnitFrame_Wrapper() // 004ECF70
+	void __declspec(naked) progress_unit_frame_wrapper() // 004ECF70
 	{
 		static Unit* unit;
 		__asm
@@ -79,7 +79,7 @@ namespace
 			MOV unit, ECX
 			PUSHAD
 		}
-		hooks::progress_unit_dying_frame(unit);
+		hooks::progress_unit_frame(unit);
 		__asm
 		{
 			POPAD
@@ -92,11 +92,11 @@ namespace hooks
 {
 	void injectUpdateUnitState()
 	{
-		jump_patch(updateUnitEnergy,						0x004EB4B0, 0);
-		jump_patch(updateUnitStateWrapper,					0x004EC290, 1);
-		jump_patch(updateUnits_Wrapper,						0x004ED000, 5);
+		jump_patch(update_unit_energy_wrapper,				0x004EB4B0, 0);
+		jump_patch(update_unit_state_wrapper,				0x004EC290, 1);
+		jump_patch(update_units_wrapper,					0x004ED000, 5);
 	//	jump_patch(updateBurrowingCloakingUnits_Wrapper,	0x00492EB0, 3);
 	//	jump_patch(doCloak_Wrapper,							0x0049B440, 5);
-		jump_patch(progressUnitFrame_Wrapper,				0x004ECF70, 3);
+		jump_patch(progress_unit_frame_wrapper,				0x004ECF70, 3);
 	}
 }

@@ -5,7 +5,7 @@
 #include "hooks/weapons/weapon_damage.h"
 #include "globals.h"
 
-void irradiateProc(Unit* unit, Unit* target)
+void irradiate_proc(Unit* unit, Unit* target)
 {
 	if (!unit)
 	{
@@ -32,18 +32,18 @@ void irradiateProc(Unit* unit, Unit* target)
 				//scbw::print("Add additional damage");
 			}
 		}
-		target->damageWithCustom(50.0 * 256.0 / 15.5, DamageType::Concussive, unit->irradiatedBy, unit->irradiatePlayerId, 0, 1, true);
+		target->damage_with_custom(50.0 * 256.0 / 15.5, DamageType::Concussive, unit->irradiatedBy, unit->irradiatePlayerId, 0, 1, true);
 	}
 }
 	
 namespace hooks
 {
-	void doIrradiateDamage(Unit* irradiatedUnit)
+	void do_irradiate_damage(Unit* irradiatedUnit)
 	{
 		if (irradiatedUnit->status & UnitStatus::Burrowed)
 		{
 			// No splash if burrowed
-			irradiateProc(irradiatedUnit, irradiatedUnit);
+			irradiate_proc(irradiatedUnit, irradiatedUnit);
 		}
 		else if (irradiatedUnit->status & UnitStatus::InTransport)
 		{
@@ -55,7 +55,7 @@ namespace hooks
 				{
 					Unit* loadedUnit = transport->getLoadedUnit(i);
 					if (loadedUnit)
-						irradiateProc(irradiatedUnit, loadedUnit);
+						irradiate_proc(irradiatedUnit, loadedUnit);
 				}
 			}
 
@@ -70,12 +70,12 @@ namespace hooks
 				irradiatedUnit->getY() + 160
 			).forEach([&](Unit* target)
 			{
-				irradiateProc(irradiatedUnit, target);
+				irradiate_proc(irradiatedUnit, target);
 			});
 		}
 	}
 
-	static bool safetyUnburrowCheck(Unit* unit, Unit* target)
+	static bool safety_unburrow_check(Unit* unit, Unit* target)
 	{
 		if (!(target->status & UnitStatus::GroundedBuilding))
 		{
@@ -92,7 +92,7 @@ namespace hooks
 		return true;
 	}
 
-	void updateStatusEffects(Unit* unit) // 00492F70
+	void update_status_effects(Unit* unit) // 00492F70
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -125,7 +125,7 @@ namespace hooks
 					unit->getBottom() + 32,
 					unit, [&](Unit* target)
 				{
-					return safetyUnburrowCheck(unit, target);
+					return safety_unburrow_check(unit, target);
 				});
 				bool canBurrowAfter = false;
 				// from Ai_Burrowable
@@ -179,7 +179,7 @@ namespace hooks
 				{
 					UnitExt* targetExt = globals.get_unit_ext(target);
 					targetExt->timers[TimerResourceBoostedRegen] = 24;
-					u32 underlay = ImageId::ResourceBoostOverlay_Small + scbw::getOverlayOffset(target->id);
+					u32 underlay = ImageId::ResourceBoostOverlay_Small + scbw::get_overlay_offset(target->id);
 					if (!target->sprite->getOverlay(underlay)) {
 						if (scbw::unit_id_is_gas_structure(target->id))
 						{
@@ -213,7 +213,7 @@ namespace hooks
 				{
 					return;
 				}
-				if (scbw::isAlliedTo(target->player, unit->player)
+				if (scbw::is_allied_to(target->player, unit->player)
 					&& (target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon))
 				{
 					UnitExt* targetExt = globals.get_unit_ext(target);
@@ -229,7 +229,7 @@ namespace hooks
 			{
 				if (unitExt->values[ValueSomaticImplants] == 1)
 				{
-					unit->updateSpeed();
+					unit->update_speed();
 					unitExt->values[ValueSomaticImplants] = 0;
 				}
 			}
@@ -240,14 +240,14 @@ namespace hooks
 			unit->stimTimer--;
 			if (unit->stimTimer == 0)
 			{
-				unit->updateSpeed();
+				unit->update_speed();
 			}
 		}
 
 		// Why are we updating Vorvaling/Ovileth speed every frame?
 		if (unit->id == UnitId::ZergVorvrokor || unit->id == UnitId::ZergOvileth)
 		{
-			unit->updateSpeed();
+			unit->update_speed();
 		}
 
 		// Decrement Ensnare timer (and remove effect if 0)
@@ -257,7 +257,7 @@ namespace hooks
 			if (unit->ensnareTimer == 0)
 			{
 				unit->removeOverlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
-				unit->updateSpeed();
+				unit->update_speed();
 			}
 		}
 
@@ -267,16 +267,16 @@ namespace hooks
 			unit->defensiveMatrixTimer--;
 			if (unit->defensiveMatrixTimer == 0)
 			{
-				unit->reduceDefensiveMatrixHp(unit->defensiveMatrixHp);
+				unit->reduce_defensive_matrix_hp(unit->defensiveMatrixHp);
 			}
 		}
 
 		// Redraw console/UI elements
 		if (unit == *activePortraitUnit)
 		{
-			if (unit->isValidCaster())
+			if (unit->is_valid_caster())
 			{
-				if (!scbw::isAlliedTo(*LOCAL_NATION_ID, unit->player))
+				if (!scbw::is_allied_to(*LOCAL_NATION_ID, unit->player))
 				{
 					scbw::refresh_console();
 				}
@@ -287,7 +287,7 @@ namespace hooks
 		if (unit->irradiateTimer != 0)
 		{
 			unit->irradiateTimer--;
-			doIrradiateDamage(unit);
+			do_irradiate_damage(unit);
 			if (unit->irradiateTimer == 0)
 			{
 				unit->removeOverlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
@@ -301,7 +301,7 @@ namespace hooks
 			unit->lockdownTimer--;
 			if (unit->lockdownTimer == 0)
 			{
-				unit->removeLockdown();
+				unit->remove_lockdown();
 			}
 		}
 
@@ -310,7 +310,7 @@ namespace hooks
 			unit->maelstromTimer--;
 			if (unit->maelstromTimer == 0)
 			{
-				unit->removeMaelstrom();
+				unit->remove_maelstrom();
 			}
 		}
 
@@ -352,7 +352,7 @@ namespace hooks
 		if (unitExt->values[ValueCorrosiveTouchStacks] != 0)
 		{
 			// Calculate the appropriate overlay ID
-			u32 acidOverlayId = GetSporesOverlayId(unit);
+			u32 acidOverlayId = get_spores_overlay_id(unit);
 			if (!unit->getOverlay(acidOverlayId))
 			{
 				unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
@@ -365,7 +365,7 @@ namespace hooks
 		}
 	}
 
-	void AI_Burrower(Unit* unit) // 004A1340
+	void ai_burrower(Unit* unit) // 004A1340
 	{
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)
 		{
@@ -391,7 +391,7 @@ namespace hooks
 								unit,
 								[&](Unit* target)
 							{
-								return safetyUnburrowCheck(unit, target);
+								return safety_unburrow_check(unit, target);
 							}
 							);
 							if (nearest)

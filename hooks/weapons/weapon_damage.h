@@ -45,7 +45,7 @@ namespace hooks {
 	void weaponDamage_root(WeaponDamageData& data);
 
 	void applyEnsnare(Unit* a1);
-	u16 GetSporesOverlayId(Unit* target);
+	u16 get_spores_overlay_id(Unit* target);
 	s32 ApplySpores_hook(Unit* target); // 004F4480
 
 	void injectWeaponDamageHook();

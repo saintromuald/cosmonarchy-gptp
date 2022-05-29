@@ -247,7 +247,7 @@ namespace hooks
 		//enable everything in aise/gptp
 		//test/
 		/*
-		jump_patch(flingyWrapper1, 0x00454317, 2);//updateSpeed
+		jump_patch(flingyWrapper1, 0x00454317, 2);//update_speed
 		jump_patch(flingyWrapper2, 0x00463A71, 2);//unk1
 //		jump_patch(flingyWrapper3, 0x004683C6, 2);//CancelUnit, wrapper must be enabled only if unit morph hooks are disabled
 //		jump_patch(flingyWrapper4, 0x0047B854, 2); // calculate turn speed, wrapper must be enabled only if speed hooks are disabled

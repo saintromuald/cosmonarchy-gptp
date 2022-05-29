@@ -4249,7 +4249,7 @@ namespace helper
 		}
 	}
 
-	void refreshUnitVision(Unit* a1)
+	void refresh_unit_vision(Unit* a1)
 	{
 		const u32 Func_refreshUnitVision = 0x004E5F30;
 		__asm {
@@ -4821,7 +4821,7 @@ namespace helper
 		}
 	}
 
-	// For checkUnitVisibility
+	// For check_unit_visibility
 
 	u32 getDetectingPlayers(Unit* unit)
 	{
@@ -6753,9 +6753,9 @@ namespace helper
 		}
 	}
 
-	// For updateUnits
+	// For update_units
 
-	bool isSelectedUnitGroupEnabled()
+	bool is_selected_unit_group_enabled()
 	{
 		const u32 Func_isSelectedUnitGroupEnabled = 0x0049A2C0;
 		static s32 result;
@@ -6768,7 +6768,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	void cancelTargetOrder()
+	void cancel_target_order()
 	{
 		const u32 Func_cancelTargetOrder = 0x0048CA10;
 		__asm {
@@ -6778,7 +6778,7 @@ namespace helper
 		}
 	}
 
-	s32 updateDisruptionWebStatus()
+	s32 update_disruption_web_status()
 	{
 		const u32 Func_UpdateDisruptionWebStatus = 0x004EB2F0;
 		static s32 result;
@@ -6791,7 +6791,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* progressDyingUnitFrame(Unit* unit)
+	Unit* progress_dying_unit_frame(Unit* unit)
 	{
 		const u32 Func_progressDyingUnitFrame = 0x004EB5E0;
 		static Unit* result;
@@ -6805,7 +6805,7 @@ namespace helper
 		return result;
 	}
 
-	void revealSightAtLocation(s32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit)
+	void reveal_sight_at_location(s32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit)
 	{
 		const u32 Func_revealSightAtLocation = 0x004806F0;
 		__asm {
@@ -6820,7 +6820,7 @@ namespace helper
 		}
 	}
 
-	void updateVisibility(Unit* unit)
+	void update_visibility(Unit* unit)
 	{
 		const u32 Func_updateVisibility = 0x004EBE10;
 		__asm {
@@ -6831,7 +6831,7 @@ namespace helper
 		}
 	}
 
-	void progressActiveUnitFrame(Unit* unit)
+	void progress_active_unit_frame(Unit* unit)
 	{
 		const u32 Func_progressActiveUnitFrame = 0x004EBC30;
 		__asm {
@@ -6842,7 +6842,7 @@ namespace helper
 		}
 	}
 
-	void checkUnitVisibility(Unit* unit)
+	void check_unit_visibility(Unit* unit)
 	{
 		const u32 Func_checkUnitVisibility = 0x00443390;
 		__asm {
@@ -6853,7 +6853,7 @@ namespace helper
 		}
 	}
 
-	void progress_unit_dying_frame(Unit* unit)
+	void progress_unit_frame(Unit* unit)
 	{
 		const u32 Func_progressUnitFrame = 0x004ECF70;
 		__asm {
@@ -6864,7 +6864,7 @@ namespace helper
 		}
 	}
 
-	void unitUpdate(Unit* unit)
+	void unit_update(Unit* unit)
 	{
 		const u32 Func_unitUpdate = 0x004EC420;
 		__asm {
@@ -6875,7 +6875,7 @@ namespace helper
 		}
 	}
 
-	void updateUnitPower()
+	void update_unit_power()
 	{
 		const u32 Func_updateUnitPower = 0x00493790;
 		__asm {
@@ -6885,7 +6885,7 @@ namespace helper
 		}
 	}
 
-	// For updateBurrowingCloakingUnits
+	// For update_burrowing_cloaking_units
 
 	s32 isUnitCloaking(Unit* unit)
 	{
@@ -6913,7 +6913,7 @@ namespace helper
 		}
 	}
 
-	// For doCloak
+	// For do_cloak
 
 	void updateSpriteFlagOnPalette(Sprite* sprite)
 	{
@@ -7278,7 +7278,7 @@ namespace helper
 		return result;
 	}
 
-	void updateUnits()
+	void update_units()
 	{
 		const u32 Func_updateUnits = 0x004ED000;
 		__asm {
@@ -8422,7 +8422,7 @@ namespace helper
 		return result;
 	}
 
-	// For progress_unit_dying_frame
+	// For progress_unit_frame
 	char refresh_sprite(Sprite* sprite, s32 spriteId)
 	{
 		const u32 Func_refreshSprite = 0x004EBBD0;
@@ -11751,5 +11751,12 @@ namespace helper
 		return result;
 	}
 
-
+	void update_burrowing_cloaking_units() {
+		const u32 func_address = 0x00492EB0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
 }

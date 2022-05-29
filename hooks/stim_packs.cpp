@@ -52,7 +52,7 @@ namespace hooks
 			if (unit->stimTimer < 37)
 			{
 				unit->stimTimer = 37;
-				unit->updateSpeed();
+				unit->update_speed();
 			}
 		}
 	}
@@ -92,7 +92,7 @@ namespace hooks
 				if (activePlayerCurrentSelection->stimTimer < 37)
 				{
 					activePlayerCurrentSelection->stimTimer = 37;
-					activePlayerCurrentSelection->updateSpeed();
+					activePlayerCurrentSelection->update_speed();
 				}
 			}
 			activePlayerCurrentSelection = getActivePlayerNextSelection();

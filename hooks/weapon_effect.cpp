@@ -411,7 +411,7 @@ namespace hooks
 				return;
 			}
 
-			target->damageWithCustom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count) * 256,
+			target->damage_with_custom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count) * 256,
 				weapons_dat::DamageType[WeaponId::KalkaliskViscousAcid],
 				bullet->sourceUnit, bullet->srcPlayer, 0, 1, false);
 

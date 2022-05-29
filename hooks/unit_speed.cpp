@@ -138,7 +138,7 @@ namespace hooks
 				bool validPlayer = false;
 				for (auto player : unitExt->valueVectors[ValueVectorSignifySourcePlayer])
 				{
-					if (scbw::isAlliedTo(player, enemy->player))
+					if (scbw::is_allied_to(player, enemy->player))
 					{
 						validPlayer = true;
 						break;
@@ -198,7 +198,7 @@ namespace hooks
 					);
 					unitFinder.forEach([&](Unit* target)
 					{
-						if (scbw::isAlliedTo(unit->player, target->player)
+						if (scbw::is_allied_to(unit->player, target->player)
 							|| units_dat::BaseProperty[target->id] & UnitProperty::Flyer)
 						{
 							return;

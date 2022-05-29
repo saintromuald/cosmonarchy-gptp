@@ -118,7 +118,7 @@ namespace hooks
 			bullet->position.y + radius
 		).forEach([&](Unit* target)
 		{
-			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(target->id);
+			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(target->id);
 			Unit* overlayUnit = target;
 			UnitExt* targetExt = globals.get_unit_ext(target);
 			if (target->subunit != nullptr)
@@ -152,7 +152,7 @@ namespace hooks
 		// add lockdown overlay if no ongoing lockdown already
 		if (target->lockdownTimer == 0)
 		{
-			u32 overlayImageId = ImageId::LockdownField_Small + scbw::getOverlayOffset(target->id);
+			u32 overlayImageId = ImageId::LockdownField_Small + scbw::get_overlay_offset(target->id);
 			Unit* overlayTargetUnit;
 			if (target->subunit != nullptr)
 			{
@@ -750,7 +750,7 @@ namespace hooks
 			{
 				finalUnit = unit;
 			}
-			u16 overlayImageId = ImageId::StasisField_Small + scbw::getOverlayOffset(unit->id);
+			u16 overlayImageId = ImageId::StasisField_Small + scbw::get_overlay_offset(unit->id);
 			unit->sprite->createOverlay(overlayImageId, 0, 0, 0);
 			unit->status |= UnitStatus::Invincible; // remove
 		}

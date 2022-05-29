@@ -1100,7 +1100,7 @@ namespace scbw
 						{
 							return;
 						}
-						if (!scbw::isAlliedTo(unit->player, target->player))
+						if (!scbw::is_allied_to(unit->player, target->player))
 						{
 							return;
 						}
@@ -1228,12 +1228,12 @@ namespace scbw
 			}
 
 			// Create overlay
-			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + scbw::getOverlayOffset(unit->id));
+			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
 		}
 
 		// Apply effect
 		unit->ensnareTimer = 37;
-		unit->updateSpeed();
+		unit->update_speed();
 	}
 
 	bool isEnabled(Unit* unit)
@@ -1270,7 +1270,7 @@ namespace scbw
 		return upgType;
 	}
 
-	s32 getOverlayOffset(u16 unitId, bool xlargeAllowed)
+	s32 get_overlay_offset(u16 unitId, bool xlargeAllowed)
 	{
 		u32 overlayOffset = 0;
 		if (xlargeAllowed && scbw::unitIdUsesXlargeOverlays(unitId))
@@ -1824,17 +1824,17 @@ namespace scbw
 		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::IncludingSelf, {}),
 			[&unitExt](Unit* target)
 		{
-			target->damageWithCustom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
+			target->damage_with_custom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
 		});
 		unitExt->values[ValueDirgeStacks] = 0;
 	}
 
 	void updateSignifyStatus(Unit* unit, UnitExt* unitExt)
 	{
-		unit->updateSpeed();
+		unit->update_speed();
 
-		const u32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
-		const u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
+		const u32 cowardiceId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
+		const u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
 
 		if (unitExt->values[ValueSignifyStacks] == 0)
 		{
@@ -1871,7 +1871,7 @@ namespace scbw
 			unit->getY() + radius
 		).forEachInMatch(match, [&](Unit* target)
 		{
-			if (scbw::isAlliedTo(target->player, unit->player))
+			if (scbw::is_allied_to(target->player, unit->player))
 			{
 				allyCount++;
 			}
@@ -1942,7 +1942,7 @@ namespace scbw
 
 		// Audio Visuals
 		if (!(source->sprite->flags & SpriteFlags::Hidden)) {
-			u32 offset = scbw::getOverlayOffset(target->id);
+			u32 offset = scbw::get_overlay_offset(target->id);
 			if (source->id == UnitId::ProtossDemiurge)
 			{
 				target->sprite->createTopOverlay(ImageId::Worship_Small + offset, 0, 0, 0);
@@ -2180,7 +2180,7 @@ namespace scbw
 		if (allied_structures.size) {
 			for (u32 i = 0; i < 8; ++i) {
 				if (playerTable[i].type == PlayerType::Computer && victim->isVisibleTo(i) &&
-					!scbw::isAlliedTo(i, attacker->player) && scbw::isAlliedTo(i, victim->player)) {
+					!scbw::is_allied_to(i, attacker->player) && scbw::is_allied_to(i, victim->player)) {
 					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 120, true);
 				}
 			}

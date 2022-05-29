@@ -28,7 +28,7 @@ namespace AI
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			if (!target->isValidCaster())
+			if (!target->is_valid_caster())
 				return false;
 
 			if (target->status & UnitStatus::GroundedBuilding)

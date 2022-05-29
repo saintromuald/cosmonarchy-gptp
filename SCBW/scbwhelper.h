@@ -468,7 +468,7 @@ namespace helper
 	//// trap_hooks
 	// For updateUnitStrengthAndApplyDefaultOrders
 	void AnimCloak(Unit* a1, s32 a2);																								// 0049B5B0
-	void refreshUnitVision(Unit* a1);																								// 004E5F30
+	void refresh_unit_vision(Unit* a1);																								// 004E5F30
 	void initUnitTrapDoodad(Unit* a1);																								// 004E6490
 	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, s16 fow_unit_id, Point16 position_xy, Unit* target);		// 004745F0
 	void order(s32 a1, Unit* a2, s8 a3, Vector32* a4, Unit* a5, s32 a6);															// 00474810
@@ -533,7 +533,7 @@ namespace helper
 	s32 orderAllowed(Unit* a1, u16 a2, s32 a3);																						// 0046DC20
 	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
 
-	// for checkUnitVisibility
+	// for check_unit_visibility
 	u32 getDetectingPlayers(Unit* unit);																							// 00441130
 	u32 iteratePlayerUnitsSomething(u32 aResult, Unit* unit);																		// 0049E8A0
 	void makeSpriteVisible(Sprite* sprite);																							// 00497ED0
@@ -770,35 +770,35 @@ namespace helper
 	bool unitHpIsInRedZone(Unit* unit);																			// 004022C0
 	void RestoreAllUnitStats(Unit* unit);						                                                // 00492F70 (hooked by hooks\update_status_effects.cpp)
 
-	// For updateUnits
-	bool isSelectedUnitGroupEnabled();																						// 0049A2C0
-	char refresh_layers_3_and_4();																								// 0048D9A0
-	void cancelTargetOrder();																								// 0048CA10
-	s32 updateDisruptionWebStatus();																						// 004EB2F0
-	Unit* progressDyingUnitFrame(Unit* unit);																				// 004EB5E0
-	void revealSightAtLocation(s32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit);					        // 004806F0
-	void updateVisibility(Unit* unit);																						// 004EBE10
-	void progressActiveUnitFrame(Unit* unit);																				// 004EBC30
-	void checkUnitVisibility(Unit* unit);																					// 00443390
-	void progress_unit_dying_frame(Unit* unit);																						// 004ECF70
-	void unitUpdate(Unit* unit);																							// 004EC420
-	void updateUnitPower();																									// 00493790
+	// For update_units
+	bool is_selected_unit_group_enabled();																					// 0049A2C0
+	char refresh_layers_3_and_4();																							// 0048D9A0
+	void cancel_target_order();																								// 0048CA10
+	s32 update_disruption_web_status();																						// 004EB2F0
+	Unit* progress_dying_unit_frame(Unit* unit);																			// 004EB5E0
+	void reveal_sight_at_location(s32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit);					    // 004806F0
+	void update_visibility(Unit* unit);																						// 004EBE10
+	void progress_active_unit_frame(Unit* unit);																			// 004EBC30
+	void check_unit_visibility(Unit* unit);																					// 00443390
+	void progress_unit_frame(Unit* unit);																					// 004ECF70
+	void unit_update(Unit* unit);																							// 004EC420
+	void update_unit_power();																								// 00493790
 
-	// For updateBurrowingCloakingUnits
+	// For update_burrowing_cloaking_units
 	s32 isUnitCloaking(Unit* unit);																							// 004916E0
 	void playSoundFromDirect(Unit* unit, s32 soundId);																	    // 0049B5B0
 
-	// For doCloak
+	// For do_cloak
 	void updateSpriteFlagOnPalette(Sprite* sprite);																			// 00497E80
 	void showImagesHiddenByCloak(Sprite* sprite);																			// 00498170
 	void updateSpriteImagesForCloak(Sprite* sprite);																		// 00498A90
 
-	// For progress_unit_dying_frame
+	// For progress_unit_frame
 	char refresh_sprite(Sprite* sprite, s32 spriteId);																		// 004EBBD0
 	void updateUnitTimers(Unit* unit);																						// 004EC290
-	void progress_order(Unit* unit);																							// 004EC4D0
-	void perform_secondary_orders(Unit* result, s32 unused);																	// 004ECF70
-	void sprite_to_iscript_loop(Sprite* sprite);																				// 00497920
+	void progress_order(Unit* unit);																						// 004EC4D0
+	void perform_secondary_orders(Unit* result, s32 unused);																// 004ECF70
+	void sprite_to_iscript_loop(Sprite* sprite);																			// 00497920
 
 	//// select_larva
 
@@ -839,7 +839,7 @@ namespace helper
 	void AI_Loop();
 	s32 updateActiveTileInfo();
 	s32 removeFOWCheat();
-	void updateUnits();
+	void update_units();
 	s32 imageDrawingBulletDrawing();
 	void updateImages();
 	void updateThingys();
@@ -1282,4 +1282,6 @@ namespace helper
 	u32 get_missing_attack_force_units(AiRegion* region, u32* attack_wave, u32 is_campaign);				// 00438050
 	s32 ai_defender_bunker_behavior(Unit* unit, u16 region_id);												// 0043C480
 	bool ai_has_incomplete_military_in_region(AiRegion* region);											// 00436EB0
+
+	void update_burrowing_cloaking_units();																	// 00492EB0
 }

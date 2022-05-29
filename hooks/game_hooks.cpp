@@ -36,7 +36,7 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 {
 	if (target->player != shaman->player)
 	{
-		if (!scbw::isAlliedTo(target->player, shaman->player))
+		if (!scbw::is_allied_to(target->player, shaman->player))
 		{
 			return;
 		}
@@ -223,7 +223,7 @@ namespace hooks
 				if (do_ping[target])
 				{
 					u32 color = 0; // red
-					if (scbw::isAlliedTo(*LOCAL_NATION_ID, target))
+					if (scbw::is_allied_to(*LOCAL_NATION_ID, target))
 					{
 						color = 8; // green
 					}
@@ -301,7 +301,7 @@ namespace hooks
 			if (selected
 				&& selected->id == UnitId::ZergNydusCanal
 				&& selected->building.nydusExit
-				&& (scbw::isAlliedTo(selected->player, *LOCAL_HUMAN_ID) || helper::getDetectingPlayers(selected) & (1 << *LOCAL_HUMAN_ID)))
+				&& (scbw::is_allied_to(selected->player, *LOCAL_HUMAN_ID) || helper::getDetectingPlayers(selected) & (1 << *LOCAL_HUMAN_ID)))
 			{
 				Unit* exit = selected->building.nydusExit;
 				graphics::drawLine(
@@ -477,7 +477,7 @@ namespace hooks
 			case UnitId::ZergSovroleth:
 			{
 				// Update Speed
-				unit->updateSpeed();
+				unit->update_speed();
 
 				// Corpse Cocoon
 				CorpseArray corpses = CorpseSearchRect({unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom()});
@@ -841,7 +841,7 @@ namespace hooks
 								{
 									return false;
 								}
-								if (scbw::isAlliedTo(unit->player, target->player))
+								if (scbw::is_allied_to(unit->player, target->player))
 								{
 									return false;
 								}
@@ -961,7 +961,7 @@ namespace hooks
 						pos.y + radius
 					).forEach([&](Unit* target)
 					{
-						if (!(scbw::isAlliedTo(target->player, unit->player)))
+						if (!(scbw::is_allied_to(target->player, unit->player)))
 						{
 							return;
 						}
@@ -985,7 +985,7 @@ namespace hooks
 			case UnitId::ProtossClarion:
 			{
 				// Clarion Harmony Drive
-				unit->updateSpeed();
+				unit->update_speed();
 
 				// Clarion Phase Link
 				if (scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 0)
@@ -1011,7 +1011,7 @@ namespace hooks
 					scbw::decloakProc(unit);
 					unitExt->values[ValueGodsMadeFleshActive] = 1;
 					helper::playSoundFromSource(scbw::randBetween(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
-					unit->sprite->createTopOverlay(ImageId::GodsMadeFlesh_Small + scbw::getOverlayOffset(unit->id));
+					unit->sprite->createTopOverlay(ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(unit->id));
 				}
 				// Demiurge - Gods Made Flesh - apply link
 				if (unitExt->values[ValueGodsMadeFleshActive])
@@ -1019,7 +1019,7 @@ namespace hooks
 					for (Unit* target : unitExt->unitVectors[UnitVectorWorshipersDemiurge]) {
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						targetExt->timers[TimerGodsMadeFlesh] = 3;
-						u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::getOverlayOffset(target->id);
+						u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(target->id);
 						if (!target->getOverlay(overlay)) {
 							target->sprite->createTopOverlay(overlay);
 						}
@@ -1176,7 +1176,7 @@ namespace hooks
 					unit->getY() + radius
 				).forEachInMatch(match, [&](Unit* target)
 				{
-					if ((!scbw::isAlliedTo(unit->player, target->player)))
+					if ((!scbw::is_allied_to(unit->player, target->player)))
 					{
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						if (!targetExt->timers[TimerObservanceDebuff])
@@ -1186,7 +1186,7 @@ namespace hooks
 							targetExt->timers[TimerObservancePeriod] = 5 * 24 + 1;
 							if (targetExt->values[ValueObservanceRend] == 0)
 							{
-								s32 overlay = ImageId::ObservanceOverlaySmall - scbw::getOverlayOffset(target->id);
+								s32 overlay = ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(target->id);
 								target->sprite->createOverlay(overlay);
 							}
 							targetExt->values[ValueObservanceRend] += 1;
@@ -1269,7 +1269,7 @@ namespace hooks
 				if (!(unit->status & UnitStatus::Frozen)) {
 					unit->freeze();
 				}
-				u32 offset = scbw::getOverlayOffset(unit->id);
+				u32 offset = scbw::get_overlay_offset(unit->id);
 				if (!unit->getOverlay(ImageId::MaelstromOverlay_Small + offset)) {
 					unit->sprite->createTopOverlay(ImageId::MaelstromOverlay_Small + offset);
 				}
@@ -1319,13 +1319,13 @@ namespace hooks
 		}
 
 		// Azazel - Sublime Shepherd overlay
-		if (unitExt->values[ValueSublimeShepherd] && !unit->getOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::getOverlayOffset(unit->id)))
+		if (unitExt->values[ValueSublimeShepherd] && !unit->getOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)))
 		{
-			unit->sprite->createTopOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::getOverlayOffset(unit->id));
+			unit->sprite->createTopOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
 		}
-		else if (unit->getOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::getOverlayOffset(unit->id)) && !unitExt->values[ValueSublimeShepherd])
+		else if (unit->getOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)) && !unitExt->values[ValueSublimeShepherd])
 		{
-			unit->sprite->removeOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::getOverlayOffset(unit->id));
+			unit->sprite->removeOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
 		}
 
 		// Fix target clearing bug
@@ -1356,7 +1356,7 @@ namespace hooks
 		if (*elapsedTimeFrames % 10 == 0
 			&& unitExt->unitVectors[UnitVectorPhaseLinkClarions].size())
 		{
-			unit->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(unit->id), 0, 0, 0);
+			unit->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
 		}
 
 		// Disruption Web Clear
@@ -1495,7 +1495,7 @@ namespace hooks
 					unit->getY() + radius
 				).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::NotSelf, {}), [&](Unit* target)
 				{
-					target->damageWithCustom(5 * 256, DamageType::Explosive, nullptr, 0, 0, 1, false);
+					target->damage_with_custom(5 * 256, DamageType::Explosive, nullptr, 0, 0, 1, false);
 				});
 			}
 		}
@@ -1568,7 +1568,7 @@ namespace hooks
 			pos.x + radius,
 			pos.y + radius
 		).forEach([&](Unit* foundUnit) {
-			if (!(scbw::isAlliedTo(foundUnit->player, unit->player)))
+			if (!(scbw::is_allied_to(foundUnit->player, unit->player)))
 			{
 				return;
 			}
@@ -1583,7 +1583,7 @@ namespace hooks
 			unitExt->timers[TimerAlaszilethRegenBoost] = 2;
 
 			// Create overlay
-			s32 overlay = ImageId::DermalAccelerantSmall + scbw::getOverlayOffset(unit->id, true);
+			s32 overlay = ImageId::DermalAccelerantSmall + scbw::get_overlay_offset(unit->id, true);
 			if (!unit->getOverlay(overlay))
 			{
 				unit->sprite->createTopOverlay(overlay);
@@ -1602,7 +1602,7 @@ namespace hooks
 			).filter([&](Unit* target)
 			{
 				if (unit->player == target->player
-					|| scbw::isAlliedTo(unit->player, target->player)
+					|| scbw::is_allied_to(unit->player, target->player)
 					|| target->id != UnitId::TerranSeraph)
 				{
 					return false;
@@ -1700,7 +1700,7 @@ namespace hooks
 		// Luminary - Wax Wings Clear
 		if (unitExt->timers[TimerWaxWingsDebuff] == 1)
 		{
-			unit->updateSpeed();
+			unit->update_speed();
 		}
 
 		// Luminary - Aural Assault
@@ -1728,7 +1728,7 @@ namespace hooks
 		if (unitExt->timers[TimerSalvageStunTimer] > 1) {
 			unit->freeze();
 
-			u32 offset = scbw::getOverlayOffset(unit->id);
+			u32 offset = scbw::get_overlay_offset(unit->id);
 			if (!unit->getOverlay(ImageId::SalvageDisableSmall + offset)) {
 				unit->sprite->createTopOverlay(ImageId::SalvageDisableSmall + offset);
 			}
@@ -1740,7 +1740,7 @@ namespace hooks
 		if (unitExt->timers[TimerSalvageStunTimer] == 1) {
 			unit->unfreeze();
 
-			u32 offset = scbw::getOverlayOffset(unit->id);
+			u32 offset = scbw::get_overlay_offset(unit->id);
 			if (unit->getOverlay(ImageId::SalvageDisableSmall + offset)) {
 				unit->sprite->removeOverlay(ImageId::SalvageDisableSmall + offset);
 			}
@@ -1756,7 +1756,7 @@ namespace hooks
 			else
 			{
 				unit->visibilityStatus = 0xff;
-				helper::updateVisibility(unit); // didact cloak needs special handling
+				helper::update_visibility(unit); // didact cloak needs special handling
 			}
 		}
 
@@ -1772,7 +1772,7 @@ namespace hooks
 		{
 			unitExt->timers[TimerNathrokorBuff] = 0;
 			unitExt->values[ValueNathrokorBuffStacks] = 0;
-			unit->updateSpeed();
+			unit->update_speed();
 		}
 
 		// Autovitality - Simulacrum behavior
@@ -1895,7 +1895,7 @@ namespace hooks
 			{
 				if (scbw::getDistanceFast(unit->position, target->position) <= radius)
 				{
-					target->damageWithCustom(250 * 256, DamageType::Explosive, unit, unit->player, 0, 1, false);
+					target->damage_with_custom(250 * 256, DamageType::Explosive, unit, unit->player, 0, 1, false);
 				}
 			});
 			helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->player);
@@ -1907,7 +1907,7 @@ namespace hooks
 			&& unitExt->units[UnitMindController] == nullptr)
 		{
 			helper::playSoundFromSource(SoundId::DemiurgeWorship01, unit, 1, 0);
-			unit->sprite->createTopOverlay(ImageId::Worship_Small + scbw::getOverlayOffset(unit->id), 0, 0, 0);
+			unit->sprite->createTopOverlay(ImageId::Worship_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
 			unitExt->values[ValueWorshipStack] = 0;
 			unitExt->timers[TimerGodsMadeFlesh] = 0;
 			scbw::recede_mind_control(unit);
@@ -1922,7 +1922,7 @@ namespace hooks
 		// Alaszileth - Dermal Accelerant - remove overlays
 		if (unitExt->timers[TimerAlaszilethRegenBoost] == 0)
 		{
-			s32 overlay = ImageId::DermalAccelerantSmall + scbw::getOverlayOffset(unit->id, true);
+			s32 overlay = ImageId::DermalAccelerantSmall + scbw::get_overlay_offset(unit->id, true);
 			if (unit->getOverlay(overlay))
 			{
 				unit->removeOverlay(overlay);

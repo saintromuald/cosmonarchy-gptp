@@ -19,7 +19,7 @@ namespace hooks
                 && factory->rally.pt.x != 0)
             {
                 // Following should be allowed only on friendly units
-                if (factory->rally.unit && scbw::isAlliedTo((factory->rally.unit)->player, unit->player))
+                if (factory->rally.unit && scbw::is_allied_to((factory->rally.unit)->player, unit->player))
                 {
                     unit->orderTo(OrderId::Follow, factory->rally.unit);
                 }

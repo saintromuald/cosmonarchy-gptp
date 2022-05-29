@@ -48,7 +48,7 @@ namespace hooks
 	// Decides whether the @p target can recharge shields from the @p battery.
 	b32 unitCanRechargeShieldsHook(Unit* target, Unit* battery) {
 		//Check target conditions
-		if (!scbw::isAlliedTo(target->player, battery->player)			 // Is not owned by the player (NEW: or the player's allies)
+		if (!scbw::is_allied_to(target->player, battery->player)			 // Is not owned by the player (NEW: or the player's allies)
 		|| !(units_dat::ShieldsEnabled[target->id])						     // Does not have shields
 		|| !(target->status & UnitStatus::Completed)						 // Is incomplete?
 	//	|| !(target->status & UnitStatus::IsBuilding)						 // Is building (like archon build self)?

@@ -564,11 +564,11 @@ bool UnitFlagMatch(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> 
 		{
 			return false;
 		}
-		if (scbw::isAlliedTo(unit->player, center->player) && flags & FilterEnemy)
+		if (scbw::is_allied_to(unit->player, center->player) && flags & FilterEnemy)
 		{
 			return false;
 		}
-		if (!scbw::isAlliedTo(unit->player, center->player) && flags & FilterAlly)
+		if (!scbw::is_allied_to(unit->player, center->player) && flags & FilterAlly)
 		{
 			return false;
 		}

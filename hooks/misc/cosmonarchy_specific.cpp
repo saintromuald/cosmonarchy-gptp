@@ -651,7 +651,7 @@ LABEL_18:
 						scbw::clearClarionLinks(unit);
 					}
 				}
-				unit->updateSpeed();
+				unit->update_speed();
 				unit->orderToIdle(); // do next queued order
 			}
 		}
@@ -707,7 +707,7 @@ LABEL_18:
 		sw.Stop();
 		tileLoop = sw.ElapsedMilliseconds();
 		sw.Start();
-		helper::updateUnits();
+		helper::update_units();
 		sw.Stop();
 		sw.Start();
 		unitLoop = sw.ElapsedMilliseconds();

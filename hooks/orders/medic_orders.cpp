@@ -272,7 +272,7 @@ namespace hooks
 		bool result;
 		if (abilityFlags & UnitProperty::Building
 			|| target->status & UnitStatus::InAir
-			|| !scbw::isAlliedTo(medic->player, target->player)
+			|| !scbw::is_allied_to(medic->player, target->player)
 			|| target->player >= 8
 			|| medic->player >= 8
 			|| target->hitPoints >= units_dat::MaxHitPoints[type]
