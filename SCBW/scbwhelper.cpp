@@ -11739,7 +11739,6 @@ namespace helper
 	u32 get_missing_attack_force_units(AiRegion* region, u32* attack_wave, u32 is_campaign) {
 		static u32 result;
 		const u32 func_address = 0x00438050;
-		is_campaign = false; // Why gimp the AI? -Pr0nogo
 		__asm {
 			PUSHAD
 			PUSH is_campaign

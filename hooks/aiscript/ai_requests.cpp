@@ -901,8 +901,8 @@ LABEL_36:
 	void ai_region_train_attack_force(AiRegion* region) { // 0043E670
 		u32 attack_wave[63] = {};
 		u32 priority = 80;
-		u32 missing_attack_force = helper::get_missing_attack_force_units(region, attack_wave, AIScriptController[region->playerId].AI_Flags.isUseMapSettings);
-		for (u32 i = 0; i < missing_attack_force; ++i) {
+		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be AIScriptController[region->playerId].AI_Flags.isUseMapSettings, we use melee for now, but we should invesitage it
+		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
 			if (unit_id < UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
 			{
