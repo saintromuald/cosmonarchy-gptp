@@ -2,7 +2,7 @@
 #include "siege_transform.h"
 #include <hook_tools.h>
 
-//Inject with jmpPatch()
+//Inject with jump_patch()
 void __declspec(naked) unitTransformIntoTankModeOrder()
 {
 
@@ -23,7 +23,7 @@ void __declspec(naked) unitTransformIntoTankModeOrder()
 
 }
 
-//Inject with jmpPatch()
+//Inject with jump_patch()
 void __declspec(naked) unitTransformIntoSiegeModeOrder()
 {
 
@@ -49,8 +49,8 @@ namespace hooks
 
 	void injectSiegeTransformHooks()
 	{
-		jmpPatch(unitTransformIntoTankModeOrder, 0x00464AE0, 1);
-		jmpPatch(unitTransformIntoSiegeModeOrder, 0x00464BD0, 1);
+		jump_patch(unitTransformIntoTankModeOrder, 0x00464AE0, 1);
+		jump_patch(unitTransformIntoSiegeModeOrder, 0x00464BD0, 1);
 	}
 
 }

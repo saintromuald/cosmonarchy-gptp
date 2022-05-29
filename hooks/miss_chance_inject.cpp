@@ -28,7 +28,7 @@ namespace hooks
 	void injectMissChanceHooks()
 	{
 		// remove miss change from height disadvantage
-		jmpPatch(canHitTargetCheck_Wrapper, 0x004765B0, 1);
+		jump_patch(canHitTargetCheck_Wrapper, 0x004765B0, 1);
 
 		// remove miss chance for non-projectile attacks
 		memoryPatch(0x0048C0C7, (u8)0x90);

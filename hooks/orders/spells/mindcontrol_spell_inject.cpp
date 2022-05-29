@@ -28,6 +28,6 @@ namespace hooks
 {
 	void injectMindControlSpellHook()
 	{
-		jmpPatch(orders_CastMindControlWrapper,		0x004F6950, 0);
+		jump_patch(orders_CastMindControlWrapper,		0x004F6950, 0);
 	}
 }

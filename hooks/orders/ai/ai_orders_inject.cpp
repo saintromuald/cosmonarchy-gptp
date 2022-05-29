@@ -566,46 +566,67 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) ai_assign_region_to_slowest_unit_wrapper() { // 00436F70
+		static AiRegion* region;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x8]
+			MOV region, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::ai_assign_region_to_slowest_unit(region);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectAIOrdersHooks()
 	{
-//		jmpPatch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);
+//		jump_patch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);
 
-		jmpPatch(AI_OrderUnitCloaking_Wrapper,				0x0043B970, 1);
-		jmpPatch(AI_SendSuicide_Wrapper,					0x0043E050, 1);
-		jmpPatch(AI_RecalculateRegionStrength_Wrapper,		0x0043A390, 1);
-		jmpPatch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
-		jmpPatch(getRegionIdFromUnit_Wrapper,				0x0049CB40, 2);
-		jmpPatch(getBestSCVForRepairProc_Wrapper,			0x004402B0, 1);
+		jump_patch(AI_OrderUnitCloaking_Wrapper,				0x0043B970, 1);
+		jump_patch(AI_SendSuicide_Wrapper,						0x0043E050, 1);
+		jump_patch(AI_RecalculateRegionStrength_Wrapper,		0x0043A390, 1);
+		jump_patch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
+		jump_patch(getRegionIdFromUnit_Wrapper,					0x0049CB40, 2);
+		jump_patch(getBestSCVForRepairProc_Wrapper,				0x004402B0, 1);
 
-		jmpPatch(AI_military_should_wait_for_group_wrapper,	0x0043AA10, 5);
-//		jmpPatch(deleteAITownIfNeeded_Wrapper,				0x004347E0, 3);
-//		jmpPatch(AI_CanMineExtra_Wrapper,					0x00447A70, 1);
-		jmpPatch(AI_is_building_safe_wrapper,				0x00438910, 2);
-		jmpPatch(AI_are_on_connected_regions_wrapper,		0x00438E10, 1);
+		jump_patch(AI_military_should_wait_for_group_wrapper,	0x0043AA10, 5);
+//		jump_patch(deleteAITownIfNeeded_Wrapper,				0x004347E0, 3);
+//		jump_patch(AI_CanMineExtra_Wrapper,						0x00447A70, 1);
+		jump_patch(AI_is_building_safe_wrapper,					0x00438910, 2);
+		jump_patch(AI_are_on_connected_regions_wrapper,			0x00438E10, 1);
 
-//		jmpPatch(getBunkerPlacementPosition_Wrapper,		0x004442E0, 4);
-//		jmpPatch(AI_GetBuildLocation_Wrapper,				0x004461B0, 1);
-		jmpPatch(AI_check_military_grouping_wrapper,		0x00439550, 1);
-		jmpPatch(hooks::AI_remove_different_height,			0x004436C0, 3);
-//		jmpPatch(attack_recent_attacker_wrapper,			0x004770E0, 2);
+//		jump_patch(getBunkerPlacementPosition_Wrapper,			0x004442E0, 4);
+//		jump_patch(AI_GetBuildLocation_Wrapper,					0x004461B0, 1);
+		jump_patch(AI_check_military_grouping_wrapper,			0x00439550, 1);
+		jump_patch(hooks::AI_remove_different_height,			0x004436C0, 3);
+//		jump_patch(attack_recent_attacker_wrapper,				0x004770E0, 2);
 
-		jmpPatch(AI_get_vespene_type_wrapper,				0x004326E0, 2);
-		jmpPatch(get_ai_refinery_wrapper,					0x00432B90, 0);
-		jmpPatch(AI_worker_controller_wrapper,				0x00435210, 0);
-		jmpPatch(AI_reassign_worker_resources_wrapper,		0x00435900, 1);
-		jmpPatch(AI_auto_harvest_wrapper,					0x00433B90, 1);
-		jmpPatch(ai_get_build_order_id_wrapper,				0x00434C31, 0);
+		jump_patch(AI_get_vespene_type_wrapper,					0x004326E0, 2);
+		jump_patch(get_ai_refinery_wrapper,						0x00432B90, 0);
+		jump_patch(AI_worker_controller_wrapper,				0x00435210, 0);
+		jump_patch(AI_reassign_worker_resources_wrapper,		0x00435900, 1);
+		jump_patch(AI_auto_harvest_wrapper,						0x00433B90, 1);
+		jump_patch(ai_get_build_order_id_wrapper,				0x00434C31, 0);
 
-		jmpPatch(AI_find_best_repair_unit_wrapper,			0x00443160, 1);
-	//	jmpPatch(AI_SCV_repair_controller_wrapper,			0x00433C70, 1);
-		jmpPatch(ai_expand_wrapper,							0x0045B530, 1);
-		jmpPatch(ai_remove_addon_placements,				0x00443CC0, 3);
-		jmpPatch(ai_manage_military_controller_wrapper,		0x0043D910, 1);
+		jump_patch(AI_find_best_repair_unit_wrapper,			0x00443160, 1);
+	//	jump_patch(AI_SCV_repair_controller_wrapper,			0x00433C70, 1);
+		jump_patch(ai_expand_wrapper,							0x0045B530, 1);
+		jump_patch(ai_remove_addon_placements,					0x00443CC0, 3);
+		jump_patch(ai_manage_military_controller_wrapper,		0x0043D910, 1);
+		jump_patch(ai_assign_region_to_slowest_unit_wrapper,	0x00436F70, 2);
 
-		callPatch(AI_ReactToHit_TownNullCheck,				0x0043F388, 5);
+		call_patch(AI_ReactToHit_TownNullCheck,					0x0043F388, 5);
 	}
 }

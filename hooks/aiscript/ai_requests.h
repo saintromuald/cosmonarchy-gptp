@@ -8,7 +8,7 @@ namespace hooks
 	s32 AIManageBuildingPlacement(Unit* builder, u32 unitId, Point16 tryPosition, Point16* outPosition, s32 areaTiles);
 	char AI_PerformTask(Unit* unit);																			// 004361A0
 	char AI_PlanDoMergeMorph(s32 player, Unit* unit, s32 boolSomething);										// 00435F10
-	void ai_train_defensive_military(BYTE player_id);															// 0043F990
+	void ai_train_defensive_military(u8 player_id);																// 0043F990
 	void AI_Build(u32 unit_id, bool need, u32 count, AiTown* town, u8 priority);								// 004323D0
 	char AI_build_gas_building(AiTown* town);																	// 00433660
 	void ai_request_guard(GuardAi* guard_ai, u32 player_id);													// 00448630

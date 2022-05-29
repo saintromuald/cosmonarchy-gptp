@@ -759,22 +759,22 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 							wrapJumpAddressAfter[currentWrapPatch] = patch_list[i + 2] + 0x2;
 							wrapComparison[currentWrapPatch] = patch_list[i + 1];
 							if (vars[0] == Reg::_ECX && patch_list[i + 3] == Jmp::JA) {
-								jmpPatch(ecx_callset,address);
+								jump_patch(ecx_callset,address);
 							}
 							if (vars[0] == Reg::_ECX && patch_list[i + 3] == Jmp::JBE) {
-								jmpPatch(ecx_jbe_callset, address);
+								jump_patch(ecx_jbe_callset, address);
 							}
 /*							if (vars[0] == Reg::_EDX && patch_list[i + 3] == Jmp::JA) {
-								jmpPatch(edx_callset, address);
+								jump_patch(edx_callset, address);
 							}
 							if (vars[0] == Reg::_EDX && patch_list[i + 3] == Jmp::JBE) {
-								jmpPatch(edx_jbe_callset, address);
+								jump_patch(edx_jbe_callset, address);
 							}
 							if (vars[0] == Reg::_EAX) {
-								jmpPatch(eax_callset, address);
+								jump_patch(eax_callset, address);
 							}
 							if (vars[0] == Reg::_ESI) {
-								jmpPatch(esi_callset, address);
+								jump_patch(esi_callset, address);
 							}
 							currentWrapPatch++;*/
 						}

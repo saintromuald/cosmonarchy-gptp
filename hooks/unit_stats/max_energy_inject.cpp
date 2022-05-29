@@ -6,7 +6,7 @@ extern const u32 Func_GetMaxEnergy; //Defined in Unit.cpp
 namespace
 {
 
-	//Inject with jmpPatch()
+	//Inject with jump_patch()
 	void __declspec(naked) getUnitMaxEnergyWrapper()
 	{
 
@@ -35,7 +35,7 @@ namespace hooks
 
 	void injectUnitMaxEnergyHook()
 	{
-		jmpPatch(getUnitMaxEnergyWrapper, Func_GetMaxEnergy, 7);
+		jump_patch(getUnitMaxEnergyWrapper, Func_GetMaxEnergy, 7);
 	}
 
 } //hooks

@@ -214,17 +214,17 @@ namespace hooks
 {
 	void injectHarvestResource()
 	{
-		jmpPatch(remove_powerup_image_overlay_wrapper,						0x004F3900, 2);
-		jmpPatch(transfer_resource_to_worker_wrapper,						0x004696D0, 0);
-		jmpPatch(unit_is_geyser_ex_wrapper,									0x00468930, 5);
-		jmpPatch(order_enter_exit_gas_wrapper,								0x00469980, 1);
-		jmpPatch(can_harvest_gas_wrapper,									0x00469000, 1);
-		jmpPatch(order_acquire_generic_right_click_harvest_proc_wrapper,	0x004557C0, 2);
-		jmpPatch(orders_harvest4_wrapper,									0x00468ED0, 1);
-		jmpPatch(begin_harvest_wrapper,										0x00468C70, 4);
-		jmpPatch(let_next_unit_mine_wrapper,								0x00468970, 1);
-		jmpPatch(orders_entries_move_to_harvest_obscured_wrapper,			0x00469500, 4);
-		jmpPatch(remove_references_node_worker_wrapper,						0x00468EF0,	4);
-		jmpPatch(remove_from_current_harvesters_wrapper,					0x004686D0,	4);
+		jump_patch(remove_powerup_image_overlay_wrapper,						0x004F3900, 2);
+		jump_patch(transfer_resource_to_worker_wrapper,						0x004696D0, 0);
+		jump_patch(unit_is_geyser_ex_wrapper,									0x00468930, 5);
+		jump_patch(order_enter_exit_gas_wrapper,								0x00469980, 1);
+		jump_patch(can_harvest_gas_wrapper,									0x00469000, 1);
+		jump_patch(order_acquire_generic_right_click_harvest_proc_wrapper,	0x004557C0, 2);
+		jump_patch(orders_harvest4_wrapper,									0x00468ED0, 1);
+		jump_patch(begin_harvest_wrapper,										0x00468C70, 4);
+		jump_patch(let_next_unit_mine_wrapper,								0x00468970, 1);
+		jump_patch(orders_entries_move_to_harvest_obscured_wrapper,			0x00469500, 4);
+		jump_patch(remove_references_node_worker_wrapper,						0x00468EF0,	4);
+		jump_patch(remove_from_current_harvesters_wrapper,					0x004686D0,	4);
 	}
 }

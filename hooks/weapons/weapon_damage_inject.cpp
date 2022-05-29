@@ -75,8 +75,8 @@ namespace hooks
 {
 	void injectWeaponDamageHook()
 	{
-		jmpPatch(weaponDamageWrapper,				0x00479930, 1);
-		jmpPatch(applyEnsnare_Wrapper,				0x004F45E0, 2);
-		jmpPatch(updateCorrosiveSpores_Wrapper,		0x004F4480, 1);
+		jump_patch(weaponDamageWrapper,				0x00479930, 1);
+		jump_patch(applyEnsnare_Wrapper,				0x004F45E0, 2);
+		jump_patch(updateCorrosiveSpores_Wrapper,		0x004F4480, 1);
 	}
 }

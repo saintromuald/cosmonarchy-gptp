@@ -78,9 +78,9 @@ namespace hooks
 
 	void injectCMDRECV_StopHooks()
 	{
-		jmpPatch(CMDRECV_ReaverStopWrapper, 0x004C1240, 1);
-		jmpPatch(CMDRECV_CarrierStopWrapper, 0x004C1430, 1);
-		jmpPatch(CMDRECV_StopWrapper, 0x004C2190, 3);
+		jump_patch(CMDRECV_ReaverStopWrapper, 0x004C1240, 1);
+		jump_patch(CMDRECV_CarrierStopWrapper, 0x004C1430, 1);
+		jump_patch(CMDRECV_StopWrapper, 0x004C2190, 3);
 	}
 
 } //hooks

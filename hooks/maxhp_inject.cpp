@@ -881,71 +881,71 @@ namespace hooks
 
 	void injectMaxHpHooks()
 	{
-		//		jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
-		//		jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);
-		//		jmpPatch(drawSupplyUnitInfo_Wrapper, 0x00427540, 1);
-		//		jmpPatch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
-		//		jmpPatch(drawBuildingInfo_Wrapper, 0x00427890, 3);
-		//		jmpPatch(calcUnitStrength_Wrapper, 0x00431270, 5);
-		//		jmpPatch(getUnitStrength_Wrapper, 0x00431800, 0);
-		//		jmpPatch(AI_RestorationRequirementsProc_Wrapper, 0x004407E0, 1);
-		//		jmpPatch(AI_EMPShieldRequirementsProc_Wrapper, 0x004413D0, 1);
-		//		jmpPatch(attackOverlayAndNotify_Wrapper, 0x00479730, 1);
-		//		jmpPatch(drawImageHPBar_0_Wrapper, 0x0047A820, 1);
-		//		jmpPatch(setBuildShieldGain_Wrapper, 0x0047B6A0, 0);
-		//		jmpPatch(getUnitBulletDamage_Wrapper, 0x0048ACD0, 1);
-		//		jmpPatch(canCastSpell_Wrapper, 0x00492140, 1);
-		//		jmpPatch(modifyUnitShields_Wrapper, 0x004C5A20, 2);
-		//		jmpPatch(compileHealthBar_Wrapper, 0x004D6010, 1);
-		//		jmpPatch(AI_FindTransport_Wrapper, 0x004E6EF0, 1);
-		//		jmpPatch(mapDataTransfer_Wrapper, 0x004EAFE0, 1);
+		//		jump_patch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
+		//		jump_patch(drawUnitInfo_Wrapper, 0x00426190, 3);
+		//		jump_patch(drawSupplyUnitInfo_Wrapper, 0x00427540, 1);
+		//		jump_patch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
+		//		jump_patch(drawBuildingInfo_Wrapper, 0x00427890, 3);
+		//		jump_patch(calcUnitStrength_Wrapper, 0x00431270, 5);
+		//		jump_patch(getUnitStrength_Wrapper, 0x00431800, 0);
+		//		jump_patch(AI_RestorationRequirementsProc_Wrapper, 0x004407E0, 1);
+		//		jump_patch(AI_EMPShieldRequirementsProc_Wrapper, 0x004413D0, 1);
+		//		jump_patch(attackOverlayAndNotify_Wrapper, 0x00479730, 1);
+		//		jump_patch(drawImageHPBar_0_Wrapper, 0x0047A820, 1);
+		//		jump_patch(setBuildShieldGain_Wrapper, 0x0047B6A0, 0);
+		//		jump_patch(getUnitBulletDamage_Wrapper, 0x0048ACD0, 1);
+		//		jump_patch(canCastSpell_Wrapper, 0x00492140, 1);
+		//		jump_patch(modifyUnitShields_Wrapper, 0x004C5A20, 2);
+		//		jump_patch(compileHealthBar_Wrapper, 0x004D6010, 1);
+		//		jump_patch(AI_FindTransport_Wrapper, 0x004E6EF0, 1);
+		//		jump_patch(mapDataTransfer_Wrapper, 0x004EAFE0, 1);
 
 				//required for Heatshield
-				/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done
-				jmpPatch(isOnYellowHealthWrapper, 0x00402274, 2);//done
-				jmpPatch(isOnBurningHealthWrapper, 0x004022C4, 2);//done
-				jmpPatch(getMaxHealthWrapper, 0x0040272A, 2);//done
-				jmpPatch(ssDrawHpEnergyWrapper, 0x004263F0, 2);//done
-				jmpPatch(calculateBaseStrengthWrapper, 0x0043128A, 2);//done, registers may be wrong
-				jmpPatch(aiRepairSomethingWrapper, 0x00433CB3, 2);//done
-				jmpPatch(aiStimIfNeededWrapper, 0x00440030, 2);//done
-				jmpPatch(unkWireRandomDraw56730_Wrapper, 0x00456734, 2);//done
-				jmpPatch(unkWireRandomDraw567C0_Wrapper, 0x004567E7, 2);//done
-				jmpPatch(startZergBuildingWrapper, 0x0045D392, 2);//MUL DWORD PTR DS:[EDX*4+662350]
+				/*jump_patch(getMaxHpWrapper, 0x00401404, 2);//done
+				jump_patch(isOnYellowHealthWrapper, 0x00402274, 2);//done
+				jump_patch(isOnBurningHealthWrapper, 0x004022C4, 2);//done
+				jump_patch(getMaxHealthWrapper, 0x0040272A, 2);//done
+				jump_patch(ssDrawHpEnergyWrapper, 0x004263F0, 2);//done
+				jump_patch(calculateBaseStrengthWrapper, 0x0043128A, 2);//done, registers may be wrong
+				jump_patch(aiRepairSomethingWrapper, 0x00433CB3, 2);//done
+				jump_patch(aiStimIfNeededWrapper, 0x00440030, 2);//done
+				jump_patch(unkWireRandomDraw56730_Wrapper, 0x00456734, 2);//done
+				jump_patch(unkWireRandomDraw567C0_Wrapper, 0x004567E7, 2);//done
+				jump_patch(startZergBuildingWrapper, 0x0045D392, 2);//MUL DWORD PTR DS:[EDX*4+662350]
 				//add changes in building_morph, building morph hooks are required (0045D6A7, 0045D6A0)
 				//add changes to nydus hooks nydus hooks are required (orders_Build5)
-				jmpPatch(Ai_TryReturnHomeWrapper, 0x00462EEA, 2);////CMP EDX,DWORD PTR DS:[EAX*4+662350], wrapper is not be enough, hook may be needed
-				jmpPatch(Ai_OrderHealWrapper, 0x00463584, 1);////CMP EAX,DWORD PTR DS:[EDI+662350], wrapper is not be enough, hook may be needed
-				jmpPatch(doMedicWrapper, 0x00463CC8, 2);////done
-				jmpPatch(getRepairInfoWrapper, 0x00466D6C, 2);////done
-				jmpPatch(setHpWrapper, 0x0046734A, 2);////done
+				jump_patch(Ai_TryReturnHomeWrapper, 0x00462EEA, 2);////CMP EDX,DWORD PTR DS:[EAX*4+662350], wrapper is not be enough, hook may be needed
+				jump_patch(Ai_OrderHealWrapper, 0x00463584, 1);////CMP EAX,DWORD PTR DS:[EDI+662350], wrapper is not be enough, hook may be needed
+				jump_patch(doMedicWrapper, 0x00463CC8, 2);////done
+				jump_patch(getRepairInfoWrapper, 0x00466D6C, 2);////done
+				jump_patch(setHpWrapper, 0x0046734A, 2);////done
 				//add changes to order_repair hook, it is requirement (0x004673ED, 004676BB)
 				//add changes to orders_TerranBuildSelf, it is required (0x00467781, 0x004677C2, 0x0046780C, 0046785E)
-				jmpPatch(createGeyserUnitWrapper, 0x0046797E, 2);//MUL DWORD PTR DS:[ECX*4+662350]
-				jmpPatch(canTargetOrderWrapper, 0x00474DF8, 1);//CMP EDX,DWORD PTR DS:[EAX+662350], hook may be required
-				jmpPatch(canTargetOrderWrapper, 0x00474E56, 1);//CMP ECX,DWORD PTR DS:[EAX+662350], hook may be required
-				jmpPatch(DrawImage_HpBar_Wrapper, 0x0047A877, 2);////done
-				jmpPatch(DrawImage_HpBar_Wrapper2, 0x0047A906, 2);////done
-				jmpPatch(DrawImage_HpBar_Wrapper3, 0x0047A877, 2);////duplicate address?
-				jmpPatch(DrawImage_HpBar_Wrapper4, 0x0047A906, 2);////duplicate address?
-				jmpPatch(setBuildHpWrapper, 0x0047B195, 2);////done
-				jmpPatch(orderFollowWrapper, 0x0047C80D, 2);////done
-				jmpPatch(getUnitBulletDamageWrapper, 0x0048AD3D, 2);////done
-				jmpPatch(showFinishedUnitWrapper, 0x0049ECBF, 2);////done
-				jmpPatch(transformUnit_Main_Wrapper, 0x0049F228, 2);////done
-				jmpPatch(transformUnit_Main_Wrapper2, 0x0049F23B, 2);////done
-				jmpPatch(unk_ai_subunit_Destructor_Wrapper, 0x004A0197, 2);////done
-				jmpPatch(updateUnitStatsFinishBuilding_Wrapper, 0x004A0203, 2);////done
-				jmpPatch(initializeUnitBase_Wrapper, 0x004A0521, 0);////MUL DWORD PTR DS:[ECX*4+662350]
-				jmpPatch(modifyUnitHp_Wrapper, 0x004C7B7D, 2);////done
-				jmpPatch(unk_ccc4e_Wrapper, 0x004CCC4E, 3);////IMUL ECX,DWORD PTR DS:[EAX*4+662350]
-				jmpPatch(editUnitFlags_Wrapper, 0x004CD493, 3);////IMUL ECX,DWORD PTR DS:[EAX*4+662350]
-				jmpPatch(updateUnitDamageOverlay_Wrapper, 0x004E6096, 2);//done
-				jmpPatch(ai_findTransport_Wrapper, 0x004E6F88, 2);//done
+				jump_patch(createGeyserUnitWrapper, 0x0046797E, 2);//MUL DWORD PTR DS:[ECX*4+662350]
+				jump_patch(canTargetOrderWrapper, 0x00474DF8, 1);//CMP EDX,DWORD PTR DS:[EAX+662350], hook may be required
+				jump_patch(canTargetOrderWrapper, 0x00474E56, 1);//CMP ECX,DWORD PTR DS:[EAX+662350], hook may be required
+				jump_patch(DrawImage_HpBar_Wrapper, 0x0047A877, 2);////done
+				jump_patch(DrawImage_HpBar_Wrapper2, 0x0047A906, 2);////done
+				jump_patch(DrawImage_HpBar_Wrapper3, 0x0047A877, 2);////duplicate address?
+				jump_patch(DrawImage_HpBar_Wrapper4, 0x0047A906, 2);////duplicate address?
+				jump_patch(setBuildHpWrapper, 0x0047B195, 2);////done
+				jump_patch(orderFollowWrapper, 0x0047C80D, 2);////done
+				jump_patch(getUnitBulletDamageWrapper, 0x0048AD3D, 2);////done
+				jump_patch(showFinishedUnitWrapper, 0x0049ECBF, 2);////done
+				jump_patch(transformUnit_Main_Wrapper, 0x0049F228, 2);////done
+				jump_patch(transformUnit_Main_Wrapper2, 0x0049F23B, 2);////done
+				jump_patch(unk_ai_subunit_Destructor_Wrapper, 0x004A0197, 2);////done
+				jump_patch(updateUnitStatsFinishBuilding_Wrapper, 0x004A0203, 2);////done
+				jump_patch(initializeUnitBase_Wrapper, 0x004A0521, 0);////MUL DWORD PTR DS:[ECX*4+662350]
+				jump_patch(modifyUnitHp_Wrapper, 0x004C7B7D, 2);////done
+				jump_patch(unk_ccc4e_Wrapper, 0x004CCC4E, 3);////IMUL ECX,DWORD PTR DS:[EAX*4+662350]
+				jump_patch(editUnitFlags_Wrapper, 0x004CD493, 3);////IMUL ECX,DWORD PTR DS:[EAX*4+662350]
+				jump_patch(updateUnitDamageOverlay_Wrapper, 0x004E6096, 2);//done
+				jump_patch(ai_findTransport_Wrapper, 0x004E6F88, 2);//done
 				//infestation hooks required, 0x004EA624 (morph into infested)
-				jmpPatch(unk_ebdc8_Wrapper, 0x004EBDC8, 1);//CMP EDX,DWORD PTR DS:[ECX+662350], hook may be required
+				jump_patch(unk_ebdc8_Wrapper, 0x004EBDC8, 1);//CMP EDX,DWORD PTR DS:[ECX+662350], hook may be required
 				//update unitState hook must be enabled (0x004EC37C)
-				jmpPatch(ConvertToHallucination_Wrapper, 0x004F61E7, 2);//done
+				jump_patch(ConvertToHallucination_Wrapper, 0x004F61E7, 2);//done
 				*/
 
 

@@ -232,7 +232,7 @@ namespace hooks
 				}
 			}
 		}
-		while (aiTown = aiTown->link.next);
+		while (aiTown = aiTown->next);
 		//scbw::printString("Can't find eligible town for supply building!");
 		return nullptr; // couldn't find anything
 	}

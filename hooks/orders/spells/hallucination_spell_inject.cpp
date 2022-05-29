@@ -55,8 +55,8 @@ namespace hooks
 
 	void injectHallucinationSpellHook()
 	{
-		jmpPatch(orders_Hallucination1Wrapper, 0x004F6C40, 0);
-		jmpPatch(createHallucination_Wrapper, 0x004F6B90, 2);
+		jump_patch(orders_Hallucination1Wrapper, 0x004F6C40, 0);
+		jump_patch(createHallucination_Wrapper, 0x004F6B90, 2);
 	}
 
 } //hooks

@@ -73,8 +73,8 @@ namespace hooks
 {
 	void injectEnterNydusHooks()
 	{
-		jmpPatch(canEnterNydusCanalWrapper,			0x004E8C20, 2);
-		jmpPatch(enterNydusCanal_EffectWrapper,		0x004EA180, 1);
-		jmpPatch(orders_EnterNydusCanalWrapper,		0x004EA3E0, 0);
+		jump_patch(canEnterNydusCanalWrapper,			0x004E8C20, 2);
+		jump_patch(enterNydusCanal_EffectWrapper,		0x004EA180, 1);
+		jump_patch(orders_EnterNydusCanalWrapper,		0x004EA3E0, 0);
 	}
 }

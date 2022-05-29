@@ -156,27 +156,27 @@ namespace hooks
 
 	void injectButtonSetHooks()
 	{
-		jmpPatch(getButtonSetPatch_For_Sub4591D0, Func_Sub_4591ED, 2);
-		jmpPatch(updateButtonSetExWrapper, 0x00458BC0, 1);
-		jmpPatch(updateButtonSet_Sub458D50Wrapper, 0x00458D50, 2);
-		jmpPatch(updateButtonSetWrapper, 0x00458DE0);
-		jmpPatch(function_4591D0Wrapper, 0x004591D0, 1);
-		jmpPatch(updateCurrentButtonsetWrapper, 0x004599A0, 6);
-		jmpPatch(statbtn_BIN_CustomCtrlIDWrapper, 0x00459AD0, 2);
+		jump_patch(getButtonSetPatch_For_Sub4591D0, Func_Sub_4591ED, 2);
+		jump_patch(updateButtonSetExWrapper, 0x00458BC0, 1);
+		jump_patch(updateButtonSet_Sub458D50Wrapper, 0x00458D50, 2);
+		jump_patch(updateButtonSetWrapper, 0x00458DE0);
+		jump_patch(function_4591D0Wrapper, 0x004591D0, 1);
+		jump_patch(updateCurrentButtonsetWrapper, 0x004599A0, 6);
+		jump_patch(statbtn_BIN_CustomCtrlIDWrapper, 0x00459AD0, 2);
 
 		// for escalations
-		callPatch(get_stattxt_string_Wrapper, 0x00459411);
-		callPatch(get_stattxt_string_Wrapper, 0x0045947E);
-		callPatch(get_stattxt_string_Wrapper, 0x00425C28);
-		callPatch(get_stattxt_string_Wrapper, 0x00457729);
-		callPatch(get_stattxt_string_Wrapper, 0x00457791);
-		callPatch(get_stattxt_string_Wrapper, 0x00457805);
-		callPatch(get_stattxt_string_Wrapper, 0x0045786D);
-		callPatch(get_stattxt_string_Wrapper, 0x004578C9);
-		callPatch(get_stattxt_string_Wrapper, 0x004588E1);
-		callPatch(get_stattxt_string_Wrapper, 0x0049276F);
-		callPatch(get_stattxt_string_Wrapper, 0x0049298B);
-		callPatch(get_stattxt_string_Wrapper, 0x004BE56A);
-		callPatch(get_stattxt_string_Wrapper, 0x0045947E);
+		call_patch(get_stattxt_string_Wrapper, 0x00459411);
+		call_patch(get_stattxt_string_Wrapper, 0x0045947E);
+		call_patch(get_stattxt_string_Wrapper, 0x00425C28);
+		call_patch(get_stattxt_string_Wrapper, 0x00457729);
+		call_patch(get_stattxt_string_Wrapper, 0x00457791);
+		call_patch(get_stattxt_string_Wrapper, 0x00457805);
+		call_patch(get_stattxt_string_Wrapper, 0x0045786D);
+		call_patch(get_stattxt_string_Wrapper, 0x004578C9);
+		call_patch(get_stattxt_string_Wrapper, 0x004588E1);
+		call_patch(get_stattxt_string_Wrapper, 0x0049276F);
+		call_patch(get_stattxt_string_Wrapper, 0x0049298B);
+		call_patch(get_stattxt_string_Wrapper, 0x004BE56A);
+		call_patch(get_stattxt_string_Wrapper, 0x0045947E);
 	}
 }

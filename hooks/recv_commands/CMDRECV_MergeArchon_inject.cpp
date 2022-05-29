@@ -56,8 +56,8 @@ namespace hooks
 
 	void injectCMDRECV_MergeArchonHooks()
 	{
-		jmpPatch(CMDRECV_MergeDarkArchonWrapper, 0x004C0CD0, 1);
-		jmpPatch(CMDRECV_MergeArchonWrapper, 0x004C0E90, 1);
+		jump_patch(CMDRECV_MergeDarkArchonWrapper, 0x004C0CD0, 1);
+		jump_patch(CMDRECV_MergeArchonWrapper, 0x004C0E90, 1);
 	}
 
 } //hooks

@@ -50,7 +50,7 @@ namespace hooks
 {
 	void injectWeaponRangeHooks()
 	{
-		jmpPatch(getSeekRangeWrapper,					0x00476000, 3);
-		jmpPatch(getMaxWeaponRangeWrapper,				0x00475870, 1);
+		jump_patch(getSeekRangeWrapper,					0x00476000, 3);
+		jump_patch(getMaxWeaponRangeWrapper,				0x00475870, 1);
 	}
 }

@@ -53,8 +53,8 @@ namespace {
 namespace hooks {
 
 	void injectCreategameHooks() {
-		jmpPatch(singleplayerMeleeCreate_Wrapper, 0x004EE110, 1);
-		jmpPatch(loadGameCreate_Wrapper, 0x004EE520, 1);
-		jmpPatch(levelCheatCreate_Wrapper, 0x004EE5B0, 1);
+		jump_patch(singleplayerMeleeCreate_Wrapper, 0x004EE110, 1);
+		jump_patch(loadGameCreate_Wrapper, 0x004EE520, 1);
+		jump_patch(levelCheatCreate_Wrapper, 0x004EE5B0, 1);
 	}
 }*/

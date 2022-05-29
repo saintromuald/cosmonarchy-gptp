@@ -49,7 +49,7 @@ namespace hooks
 {
 	void injectApplyUpgradeFlags()
 	{
-		jmpPatch(applyUpgradeFlagsToNewUnitWrapper,			0x00454370, 2);
-		jmpPatch(applyUpgradeFlagsToExistingUnitsWrapper,	0x00454540, 2);
+		jump_patch(applyUpgradeFlagsToNewUnitWrapper,			0x00454370, 2);
+		jump_patch(applyUpgradeFlagsToExistingUnitsWrapper,	0x00454540, 2);
 	}
 }

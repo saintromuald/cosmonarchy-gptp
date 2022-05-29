@@ -122,11 +122,11 @@ namespace hooks
 {
 	void injectCreateInitUnitsHooks()
 	{
-		jmpPatch(CreateInitialMeleeBuildingsWrapper, 0x0049D7C0, 1);
-		jmpPatch(CreateInitialMeleeUnitsWrapper, 0x0049DA40, 1);
-		jmpPatch(CreateInitialOverlordWrapper, 0x0049D6C0, 3);
+		jump_patch(CreateInitialMeleeBuildingsWrapper, 0x0049D7C0, 1);
+		jump_patch(CreateInitialMeleeUnitsWrapper, 0x0049DA40, 1);
+		jump_patch(CreateInitialOverlordWrapper, 0x0049D6C0, 3);
 
-		jmpPatch(CreateUnitXY_Wrapper, 0x004CD360, 4);
-		jmpPatch(CreatePreplacedUnit_Wrapper, 0x004CD740, 3);
+		jump_patch(CreateUnitXY_Wrapper, 0x004CD360, 4);
+		jump_patch(CreatePreplacedUnit_Wrapper, 0x004CD740, 3);
 	}
 }

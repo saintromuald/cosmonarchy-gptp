@@ -50,7 +50,7 @@ namespace hooks
 
 	void __declspec(naked) FakeUnitFlingyIdState_Wrapper()
 	{
-		//		jmpPatch(FakeUnitFlingyIdState_Wrapper, 0x004AAF23);
+		//		jump_patch(FakeUnitFlingyIdState_Wrapper, 0x004AAF23);
 		static u32 flingyId;
 		static u32 index;
 		__asm {
@@ -162,9 +162,9 @@ namespace hooks
 
 	void insaneFlingyIdExtender()
 	{
-		jmpPatch(FakeUnitFlingyIdState_Wrapper, 0x004AAFE3);
-		jmpPatch(psychosisFlingyId_Wrapper, 0x004AB045);
-		jmpPatch(madnessSetFlingyId_Wrapper, 0x004AB147);
+		jump_patch(FakeUnitFlingyIdState_Wrapper, 0x004AAFE3);
+		jump_patch(psychosisFlingyId_Wrapper, 0x004AB045);
+		jump_patch(madnessSetFlingyId_Wrapper, 0x004AB147);
 
 		std::vector<u8> eax_eax = {0x8b, 0x04, 0x85};
 		dumbCodeInject(0x00454317, fakeExtFlingyIds, eax_eax, 0); // +
@@ -183,7 +183,7 @@ namespace hooks
 		dumbCodeInject(0x0048DA8A, fakeExtFlingyIds, ecx_eax, 0);
 
 		//building visibility
-//		jmpPatch(buildingVisionSyncHook_Wrapper, 0x00497110);
+//		jump_patch(buildingVisionSyncHook_Wrapper, 0x00497110);
 
 		dumbCodeInject(0x00497148, fakeExtFlingyIds, edx_eax, 0);
 		dumbCodeInject(0x0049716F, fakeExtFlingyIds + 1, edx_eax, 0);
@@ -447,24 +447,24 @@ namespace hooks
 
 	void newAttackExtender()
 	{
-		jmpPatch(GetAttackUnit_Wrapper, 0x004171E5); // null int3 bytes
-		jmpPatch(GetAttackLength_Wrapper, 0x00417268); // null int3 bytes
-		jmpPatch(SetAttackUnit_Wrapper, 0x00417207); // null int3 bytes
+		jump_patch(GetAttackUnit_Wrapper, 0x004171E5); // null int3 bytes
+		jump_patch(GetAttackLength_Wrapper, 0x00417268); // null int3 bytes
+		jump_patch(SetAttackUnit_Wrapper, 0x00417207); // null int3 bytes
 
 		u32 attackSize = (ATTACK_LIMIT * 4) + 8;
 		memoryPatch(0x0043E673 + 2, attackSize);
 		memoryPatch(0x0043EEC3 + 2, attackSize);
-		jmpPatch(AI_GetMissingAttackForceUnits_JmpWrapper, 0x0043805B, 5);
+		jump_patch(AI_GetMissingAttackForceUnits_JmpWrapper, 0x0043805B, 5);
 
 		//AI_AddToAttack
-		jmpPatch(AI_AddToAttack_JmpWrapper1, 0x0044724F, 3);
-		jmpPatch(AI_AddToAttack_JmpWrapper2, 0x0044727B, 2);
-		jmpPatch(AI_AttackManager_JmpWrapper, 0x0043AC54, 2);
-		jmpPatch(AI_HasUnitsForAttackForce_JmpWrapper, 0x00437F2B, 1);
-		jmpPatch(AI_RemoveFromAttack_Wrapper, 0x00447040, 0);
-		jmpPatch(AI_SendSuicide_JmpWrapper, 0x0043E1EE, 1);
-		jmpPatch(AI_Unk1_JmpWrapper, 0x0044816E, 0); // most likely do not execute
-		jmpPatch(AI_Unk2_Wrapper, 0x00447220, 0); // most likely do not execute
+		jump_patch(AI_AddToAttack_JmpWrapper1, 0x0044724F, 3);
+		jump_patch(AI_AddToAttack_JmpWrapper2, 0x0044727B, 2);
+		jump_patch(AI_AttackManager_JmpWrapper, 0x0043AC54, 2);
+		jump_patch(AI_HasUnitsForAttackForce_JmpWrapper, 0x00437F2B, 1);
+		jump_patch(AI_RemoveFromAttack_Wrapper, 0x00447040, 0);
+		jump_patch(AI_SendSuicide_JmpWrapper, 0x0043E1EE, 1);
+		jump_patch(AI_Unk1_JmpWrapper, 0x0044816E, 0); // most likely do not execute
+		jump_patch(AI_Unk2_Wrapper, 0x00447220, 0); // most likely do not execute
 	}
 
 	void injectLimitHooks()
@@ -479,7 +479,7 @@ namespace hooks
 
 //		newAttackExtender(); // if extended attack config option is not enabled in aise, will cause aise crashes
 
-		jmpPatch(preInitDataWrapper, 0x004DAF31);
+		jump_patch(preInitDataWrapper, 0x004DAF31);
 		/*
 		auto str = scbw::readSamaseFile("samase\\sfx_ext.txt");
 		GPTP::logger << "Read Test Len: " << str.size() << '\n';

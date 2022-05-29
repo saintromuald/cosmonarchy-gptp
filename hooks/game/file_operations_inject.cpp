@@ -45,8 +45,8 @@ namespace hooks
 
 	void injectFileOperationsHooks()
 	{
-		jmpPatch(openMapFile_Wrapper, 0x0045A290, 4);
-		jmpPatch(loadMap_Wrapper, 0x004BF520, 4);
+		jump_patch(openMapFile_Wrapper, 0x0045A290, 4);
+		jump_patch(loadMap_Wrapper, 0x004BF520, 4);
 	}
 
 } //hooks

@@ -334,21 +334,21 @@ namespace hooks
 		u8 func_e[25] = {0x89,0xF6,0x8D,0xBC,0x27,0x00,0x00,0x00,0x00,0x8B,0xD8,0x8B,0xC1,0x8B,0xD3,0xE8,0   ,0   ,0   ,0   ,0x8B,0xC3,0x85,0xD2,0x74};
 		u8 func_f[15] = {0x8B,0xD1,0xE8,0   ,0   ,0   ,0   ,0x33,0xC0,0x85,0xD2,0x0F,0x94,0xC0,0xC3};
 
-		jmpPatch(function_0049D660_Wrapper, 0x0049D660, 1);
-		jmpPatch(function_004E8C80_Wrapper, 0x004E8C80);
-		jmpPatch(secondaryOrd_SpawningLarva_Wrapper, 0x004EA780, 1);
-		jmpPatch(secondaryOrd_SpreadCreepSpawningLarva_Wrapper, 0x004EA880, 3);
+		jump_patch(function_0049D660_Wrapper, 0x0049D660, 1);
+		jump_patch(function_004E8C80_Wrapper, 0x004E8C80);
+		jump_patch(secondaryOrd_SpawningLarva_Wrapper, 0x004EA780, 1);
+		jump_patch(secondaryOrd_SpreadCreepSpawningLarva_Wrapper, 0x004EA880, 3);
 
-//		jmpPatch(spreadCreep_Wrapper, 0x00414680); // not really useful
+//		jump_patch(spreadCreep_Wrapper, 0x00414680); // not really useful
 
-		jmpPatch(getCreepRegion_Wrapper, 0x00413DB0);
-		jmpPatch(spreadsCreep_Wrapper, 0x00413870);
-		jmpPatch(runCreepRandomizer_Wrapper, 0x004140A0);
-//		jmpPatch(UpdateCreepDisappearanceUnit_Wrapper, 0x0047DF90, 0); // broken
+		jump_patch(getCreepRegion_Wrapper, 0x00413DB0);
+		jump_patch(spreadsCreep_Wrapper, 0x00413870);
+		jump_patch(runCreepRandomizer_Wrapper, 0x004140A0);
+//		jump_patch(UpdateCreepDisappearanceUnit_Wrapper, 0x0047DF90, 0); // broken
 
-		jmpPatch(bugWrapper, 0x0047DCCA); // attempt to fix Bug
+		jump_patch(bugWrapper, 0x0047DCCA); // attempt to fix Bug
 
-//		jmpPatch(BTNSCOND_ZergBuildingRally_Wrapper, 0x00429740, 2);
+//		jump_patch(BTNSCOND_ZergBuildingRally_Wrapper, 0x00429740, 2);
 		
 		const u32 offs_a = 0x004147A4;
 		const u32 offs_b = 0x004145E7;

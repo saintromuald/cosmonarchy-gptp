@@ -584,29 +584,29 @@ namespace hooks
 {
     void injectWpnSpellHitHooks()
     {
-        jmpPatch(IrradiateHitWrapper, 0x00454E00, 4);
-        jmpPatch(OpticalFlareHitWrapper, 0x00455170, 1);
-        jmpPatch(RestoreHitWrapper, 0x00455230, 6);
-        jmpPatch(LockdownHitWrapper, 0x00455380, 4);
-        jmpPatch(WeaponBulletHitWrapper, 0x00479AE0, 1);
-        jmpPatch(MeleeAttackHitWrapper, 0x00479B40, 0);
-        jmpPatch(EMPShockwaveHitWrapper, 0x00492BA0, 1);
-        jmpPatch(CorrosiveAcidHitWrapper, 0x004F4770, 1);
-        jmpPatch(ConsumeHitWrapper, 0x004F47B0, 0);
-        jmpPatch(EnsnareHitWrapper, 0x004F4830, 1);
-        jmpPatch(DarkSwarmHitWrapper, 0x004F48A0, 2);
-        jmpPatch(BroodlingHitWrapper, 0x004F4940, 1);
-        jmpPatch(PlagueHitWrapper, 0x004F4B30, 1);
-        jmpPatch(MaelstromHitWrapper, 0x004F6850, 1);
-        jmpPatch(MindControlHitWrapper, 0x004F6910, 8);
-        jmpPatch(StasisFieldHitWrapper, 0x004F6A80, 1);
-        jmpPatch(DisruptionWebHitWrapper, 0x004F6AF0, 2);
-        jmpPatch(ensnareProcWrapper, 0x004F46C0, 1);
-        jmpPatch(createScannerWrapper, 0x00464E40, 0);
-        jmpPatch(stasisFieldOverlayWrapper, 0x004F67B0, 4);
-        jmpPatch(disableUnit_Wrapper, 0x00492CC0, 2);
-        jmpPatch(maelstromProc_Wrapper, 0x004F6760, 3);
-//      jmpPatch(iterateUnitsAtLocationTargetProc_Wrapper, 0x004F6760, 0);
-//		jmpPatch(giveUnitToPlayer_Wrapper, 0x004C8040, 2);
+        jump_patch(IrradiateHitWrapper, 0x00454E00, 4);
+        jump_patch(OpticalFlareHitWrapper, 0x00455170, 1);
+        jump_patch(RestoreHitWrapper, 0x00455230, 6);
+        jump_patch(LockdownHitWrapper, 0x00455380, 4);
+        jump_patch(WeaponBulletHitWrapper, 0x00479AE0, 1);
+        jump_patch(MeleeAttackHitWrapper, 0x00479B40, 0);
+        jump_patch(EMPShockwaveHitWrapper, 0x00492BA0, 1);
+        jump_patch(CorrosiveAcidHitWrapper, 0x004F4770, 1);
+        jump_patch(ConsumeHitWrapper, 0x004F47B0, 0);
+        jump_patch(EnsnareHitWrapper, 0x004F4830, 1);
+        jump_patch(DarkSwarmHitWrapper, 0x004F48A0, 2);
+        jump_patch(BroodlingHitWrapper, 0x004F4940, 1);
+        jump_patch(PlagueHitWrapper, 0x004F4B30, 1);
+        jump_patch(MaelstromHitWrapper, 0x004F6850, 1);
+        jump_patch(MindControlHitWrapper, 0x004F6910, 8);
+        jump_patch(StasisFieldHitWrapper, 0x004F6A80, 1);
+        jump_patch(DisruptionWebHitWrapper, 0x004F6AF0, 2);
+        jump_patch(ensnareProcWrapper, 0x004F46C0, 1);
+        jump_patch(createScannerWrapper, 0x00464E40, 0);
+        jump_patch(stasisFieldOverlayWrapper, 0x004F67B0, 4);
+        jump_patch(disableUnit_Wrapper, 0x00492CC0, 2);
+        jump_patch(maelstromProc_Wrapper, 0x004F6760, 3);
+//      jump_patch(iterateUnitsAtLocationTargetProc_Wrapper, 0x004F6760, 0);
+//		jump_patch(giveUnitToPlayer_Wrapper, 0x004C8040, 2);
     }
 }

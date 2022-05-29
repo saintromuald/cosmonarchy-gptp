@@ -65,8 +65,8 @@ namespace hooks
 
 	void injectLoadUnloadProcHooks()
 	{
-		jmpPatch(loadUnitProcWrapper, 0x004E78E0, 0);
-		jmpPatch(unloadUnitProcWrapper, 0x004E7F70, 1);
+		jump_patch(loadUnitProcWrapper, 0x004E78E0, 0);
+		jump_patch(unloadUnitProcWrapper, 0x004E7F70, 1);
 	}
 
 } //hooks

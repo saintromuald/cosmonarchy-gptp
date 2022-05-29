@@ -59,7 +59,7 @@ namespace hooks
 {
 	void injectUseTechHooks()
 	{
-		jmpPatch(UseTechWrapper,				0x00423F70);
-		jmpPatch(UpgradeIdComparison_Wrapper,	0x0046D5B8);
+		jump_patch(UseTechWrapper,				0x00423F70);
+		jump_patch(UpgradeIdComparison_Wrapper,	0x0046D5B8);
 	}
 }

@@ -71,7 +71,7 @@ namespace hooks
 {
 	void injectRequirementHooks()
 	{
-		jmpPatch(getParseRequirementOpcodesWrapper, 0x0046D610, 0);
-		jmpPatch(getUnitCreateAllowedWrapper, 0x0046E1C0, 0);
+		jump_patch(getParseRequirementOpcodesWrapper, 0x0046D610, 0);
+		jump_patch(getUnitCreateAllowedWrapper, 0x0046E1C0, 0);
 	}
 }

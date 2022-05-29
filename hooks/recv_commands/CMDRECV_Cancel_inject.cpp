@@ -134,13 +134,13 @@ namespace hooks
 
 	void injectCMDRECV_CancelHooks()
 	{
-		jmpPatch(CMDRECV_CancelNukeWrapper, 0x004BFCD0, 4);
-		jmpPatch(CMDRECV_CancelAddonWrapper, 0x004BFF30, 3);
-		jmpPatch(CMDRECV_CancelUpgradeWrapper, 0x004BFFC0, 3);
-		jmpPatch(CMDRECV_CancelResearchWrapper, 0x004C0070, 3);
-		jmpPatch(CMDRECV_CancelTrainWrapper, 0x004C0100, 6);
-		jmpPatch(CMDRECV_CancelUnitMorphWrapper, 0x004C2EC0, 2);
-		jmpPatch(CMDRECV_CancelConstructionWrapper, 0x004C2EF0, 3);
+		jump_patch(CMDRECV_CancelNukeWrapper, 0x004BFCD0, 4);
+		jump_patch(CMDRECV_CancelAddonWrapper, 0x004BFF30, 3);
+		jump_patch(CMDRECV_CancelUpgradeWrapper, 0x004BFFC0, 3);
+		jump_patch(CMDRECV_CancelResearchWrapper, 0x004C0070, 3);
+		jump_patch(CMDRECV_CancelTrainWrapper, 0x004C0100, 6);
+		jump_patch(CMDRECV_CancelUnitMorphWrapper, 0x004C2EC0, 2);
+		jump_patch(CMDRECV_CancelConstructionWrapper, 0x004C2EF0, 3);
 	}
 
 } //hooks

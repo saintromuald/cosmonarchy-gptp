@@ -62,8 +62,8 @@ namespace hooks
 
 	void injectCMDRECV_SiegeTankHooks()
 	{
-		jmpPatch(CMDRECV_SiegeWrapper, 0x004C1E80, 6);
-		jmpPatch(CMDRECV_UnsiegeWrapper, 0x004C1F10, 6);
+		jump_patch(CMDRECV_SiegeWrapper, 0x004C1E80, 6);
+		jump_patch(CMDRECV_UnsiegeWrapper, 0x004C1F10, 6);
 	}
 
 } //hooks

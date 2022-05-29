@@ -28,6 +28,6 @@ namespace hooks
 {
 	void injectWeaponCooldownHook()
 	{
-		jmpPatch(getModifiedWeaponCooldownWrapper, 0x00475DC0, 2);
+		jump_patch(getModifiedWeaponCooldownWrapper, 0x00475DC0, 2);
 	}
 }

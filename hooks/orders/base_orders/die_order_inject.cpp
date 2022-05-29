@@ -29,6 +29,6 @@ namespace hooks
 {
 	void injectDieOrderHook()
 	{
-		jmpPatch(orders_DieWrapper,		0x00479480, 2);
+		jump_patch(orders_DieWrapper,		0x00479480, 2);
 	}
 }

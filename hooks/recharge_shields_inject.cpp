@@ -27,7 +27,7 @@ namespace
 
 	}
 
-	//Inject with callPatch
+	//Inject with call_patch
 	void __declspec(naked) orderRechargeShieldsWrapper()
 	{
 
@@ -54,8 +54,8 @@ namespace hooks
 
 	void injectRechargeShieldsHooks()
 	{
-		jmpPatch(unitCanRechargeShieldsWrapper, 0x00493520, 1);
-		//jmpPatch(orderRechargeShieldsWrapper,	0x00493DD0, 1);
+		jump_patch(unitCanRechargeShieldsWrapper, 0x00493520, 1);
+		//jump_patch(orderRechargeShieldsWrapper,	0x00493DD0, 1);
 	}
 
 } //hooks

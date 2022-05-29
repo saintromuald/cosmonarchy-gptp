@@ -112,9 +112,9 @@ namespace hooks
 {
 	void injectPathfindingHooks()
 	{
-//		jmpPatch(moveToTarget_Wrapper,			0x004EB720, 0);
-//		jmpPatch(getActiveTileFlag_Wrapper,		0x00472F80, 1);
-		jmpPatch(unitHasPathToDest_Wrapper,		0x0049CB60, 1);
-		jmpPatch(unitHasPathToUnit_Wrapper,		0x0049CBB0, 0);
+//		jump_patch(moveToTarget_Wrapper,			0x004EB720, 0);
+//		jump_patch(getActiveTileFlag_Wrapper,		0x00472F80, 1);
+		jump_patch(unitHasPathToDest_Wrapper,		0x0049CB60, 1);
+		jump_patch(unitHasPathToUnit_Wrapper,		0x0049CBB0, 0);
 	}
 }

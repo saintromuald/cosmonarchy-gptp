@@ -33,6 +33,6 @@ namespace hooks
 {
 	void injectTechTargetCheckHooks()
 	{
-		jmpPatch(getTechUseErrorMessageWrapper, Func_GetTechUseErrorMessage, 4);
+		jump_patch(getTechUseErrorMessageWrapper, Func_GetTechUseErrorMessage, 4);
 	}
 }

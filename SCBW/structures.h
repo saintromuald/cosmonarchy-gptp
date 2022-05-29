@@ -662,32 +662,33 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 //-------- AI related stuff --------//
 
 struct AiTown;
-struct MilitaryAiArray; // declaring this here to avoid compiler errors
+struct MilitaryAi;
+struct MilitaryAiArray; // fuck you visual studio
 struct AiRegion
 {
-	/*00*/  u16 region;
-	/*02*/  u16 targetRegion;
-	/*04*/  u8  playerId;
-	/*05*/  u8  state;
-	/*06*/  u8  defensePriorityAdd;
-	/*07*/  u8  defendTimeout;
-	/*08*/  u8  captainFlags;
-	/*09*/  u8  unknown_0x9;
-	/*0A*/  u16 groundUnitCount;
-	/*0C*/  u16 neededGroundStrength;
-	/*0E*/  u16 neededAirStrength;
-	/*10*/  u16 regionGroundStrength;
-	/*12*/  u16 regionAirStrength;
-	/*14*/  u16 fullGroundStrength;
-	/*16*/  u16 fullAirStrength;
-	/*18*/  u16 enemyAirStrength;
-	/*1A*/  u16 enemyGroundStrength;
-	/*1C*/  u32 airTarget;
-	/*20*/  u32 groundTarget;
-	/*24*/  Unit* slowestUnit;
-	/*28*/  Unit* followTarget;
-	/*2C*/  MilitaryAiArray* military;
-	/*30*/  AiTown* town;
+	/*0x00*/  u16 region;
+	/*0x02*/  u16 targetRegion;
+	/*0x04*/  u8  playerId;
+	/*0x05*/  u8  state;
+	/*0x06*/  u8  defensePriorityAdd;
+	/*0x07*/  u8  defendTimeout;
+	/*0x08*/  u8  captainFlags;
+	/*0x09*/  u8  unknown_0x9;
+	/*0x0A*/  u16 groundUnitCount;
+	/*0x0C*/  u16 neededGroundStrength;
+	/*0x0E*/  u16 neededAirStrength;
+	/*0x10*/  u16 regionGroundStrength;
+	/*0x12*/  u16 regionAirStrength;
+	/*0x14*/  u16 fullGroundStrength;
+	/*0x16*/  u16 fullAirStrength;
+	/*0x18*/  u16 enemyAirStrength;
+	/*0x1A*/  u16 enemyGroundStrength;
+	/*0x1C*/  Unit* airTarget;
+	/*0x20*/  Unit* groundTarget;
+	/*0x24*/  Unit* slowestUnit;
+	/*0x28*/  Unit* followTarget;
+	/*0x2C*/  MilitaryAiArray* military;
+	/*0x30*/  MilitaryAi* first_military_ai;
 };
 
 C_ASSERT(sizeof(AiRegion) == 52);
@@ -833,7 +834,8 @@ struct TownReq
 
 struct AiTown
 {
-	Link<AiTown> link;							//	0x0 and 0x4
+	AiTown* prev;								//	0x0
+	AiTown* next;								//	0x4
 	WorkerAiArray* free_workers;				//	0x8
 	WorkerAi* workers;							//	0xC
 	BuildingAiArray* free_buildings;			//	0x10

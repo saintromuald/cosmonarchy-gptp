@@ -45,7 +45,7 @@ namespace hooks
 
 	void injectSfxHooks()
 	{
-		jmpPatch(getResponseSfx_Wrapper, 0x0048EA20, 1);
-		jmpPatch(getRandYesSFX_Wrapper, 0x0048EAB0, 0);
+		jump_patch(getResponseSfx_Wrapper, 0x0048EA20, 1);
+		jump_patch(getRandYesSFX_Wrapper, 0x0048EAB0, 0);
 	}
 }

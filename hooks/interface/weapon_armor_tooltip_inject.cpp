@@ -55,6 +55,6 @@ namespace hooks
 {
 	void injectUnitTooltipHook()
 	{
-		callPatch(&statdatalUserInteractWrapper, 0x00457D4B);
+		call_patch(&statdatalUserInteractWrapper, 0x00457D4B);
 	}
 }

@@ -39,6 +39,6 @@ namespace hooks
 {
 	void injectSpellcasterAI()
 	{
-		jmpPatch(AI_spellcasterWrapper, 0x004A13C0, 2);
+		jump_patch(AI_spellcasterWrapper, 0x004A13C0, 2);
 	}
 }
