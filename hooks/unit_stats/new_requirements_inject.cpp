@@ -22,9 +22,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-
 		result = hooks::createUnitAllowed_Partial(unitId, unit, playerId);
-
 		__asm
 		{
 			POPAD

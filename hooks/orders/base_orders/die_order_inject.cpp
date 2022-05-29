@@ -1,4 +1,3 @@
-//Injector source file for the Attack Orders hook module.
 #include "die_order.h"
 #include <hook_tools.h>
 
@@ -29,6 +28,6 @@ namespace hooks
 {
 	void injectDieOrderHook()
 	{
-		jump_patch(orders_DieWrapper,		0x00479480, 2);
+		jump_patch(orders_DieWrapper,	0x00479480, 2);
 	}
 }

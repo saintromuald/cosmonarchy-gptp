@@ -3,12 +3,7 @@
 
 namespace
 {
-
-	//note: acid spores management is normally done in
-	//function @ 004F42C0, jumped in at the end of this
-	//one, but the hook merge both
-
-	//Inject with jump_patch()
+	// note: acid spores management is normally done in function @ 004F42C0, jumped in at the end of this one, but the hook merge both
 	void __declspec(naked) updateStatusEffectsWrapper()
 	{
 
@@ -40,16 +35,13 @@ namespace
 			RETN
 		}
 	}
-} //unnamed namespace
+}
 
 namespace hooks
 {
-
 	void injectUpdateStatusEffects()
 	{
-		jump_patch(updateStatusEffectsWrapper, 0x00492F70, 5);
-
-		jump_patch(AiBurrower_Wrapper, 0x004A1340, 4);
+		jump_patch(updateStatusEffectsWrapper,	0x00492F70, 5);
+		jump_patch(AiBurrower_Wrapper,			0x004A1340, 4);
 	}
-
-} //hooks
+}

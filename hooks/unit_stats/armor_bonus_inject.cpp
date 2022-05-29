@@ -1,7 +1,7 @@
 #include "armor_bonus.h"
 #include <hook_tools.h>
 
-extern const u32 Func_GetArmorBonus;	// Defined in Unit.cpp
+extern const u32 Func_GetArmorBonus; // Defined in fuck you visual studio.cpp
 
 namespace
 {

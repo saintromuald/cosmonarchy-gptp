@@ -3,7 +3,6 @@
 
 namespace
 {
-
 	void __declspec(naked) openMapFile_Wrapper()
 	{
 		static s32 a1; // needs documentation
@@ -37,16 +36,13 @@ namespace
 			RETN
 		}
 	}
-
-}//unnamed namespace
+}
 
 namespace hooks
 {
-
 	void injectFileOperationsHooks()
 	{
 		jump_patch(openMapFile_Wrapper, 0x0045A290, 4);
-		jump_patch(loadMap_Wrapper, 0x004BF520, 4);
+		jump_patch(loadMap_Wrapper,		0x004BF520, 4);
 	}
-
-} //hooks
+}

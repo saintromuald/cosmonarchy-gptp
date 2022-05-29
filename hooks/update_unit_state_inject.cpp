@@ -93,10 +93,10 @@ namespace hooks
 	void injectUpdateUnitState()
 	{
 		jump_patch(updateUnitEnergy,						0x004EB4B0, 0);
-		jump_patch(updateUnitStateWrapper,				0x004EC290, 1);
-		jump_patch(updateUnits_Wrapper,					0x004ED000, 5);
-//		jump_patch(updateBurrowingCloakingUnits_Wrapper,	0x00492EB0, 3);
-//		jump_patch(doCloak_Wrapper,						0x0049B440, 5);
+		jump_patch(updateUnitStateWrapper,					0x004EC290, 1);
+		jump_patch(updateUnits_Wrapper,						0x004ED000, 5);
+	//	jump_patch(updateBurrowingCloakingUnits_Wrapper,	0x00492EB0, 3);
+	//	jump_patch(doCloak_Wrapper,							0x0049B440, 5);
 		jump_patch(progressUnitFrame_Wrapper,				0x004ECF70, 3);
 	}
 }

@@ -4,8 +4,8 @@
 
 namespace
 {
-	void __declspec(naked) unitNotNeutral_Wrapper()
-	{ // 004CBE20
+	void __declspec(naked) unitNotNeutral_Wrapper() // 004CBE20
+	{
 		static CHKUnit* unit;
 		static bool result;
 

@@ -1,16 +1,12 @@
-//Injector source file for the Recall Spell Order hook module.
 #include "recall_spell.h"
 #include <hook_tools.h>
 
 namespace
 {
-
 	void __declspec(naked) spells_Recall_ActionOnValidTargetForRecallWrapper()
 	{
-
 		static Unit* target;
 		static Unit* caster;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -19,49 +15,35 @@ namespace
 			MOV target, EBX
 			PUSHAD
 		}
-
 		hooks::spells_Recall_ActionOnValidTargetForRecall(target, caster);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) spells_Recall_ActionOnTargetInRangeWrapper()
 	{
-
 		static Unit* target;
 		static Unit* caster;
-
 		__asm {
 			MOV target, ECX
 			MOV caster, EDX
 			PUSHAD
 		}
-
 		hooks::spells_Recall_ActionOnTargetInRange(target, caster);
-
 		__asm {
 			POPAD
-			XOR EAX, EAX //EAX is cleared regardless of the result, keeping it for safety
+			XOR EAX, EAX // EAX is cleared regardless of the result, keeping it for safety
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_RecallWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -69,30 +51,22 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_Recall(unit);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
 		}
-
 	}
-
-	;
-
-}//unnamed namespace
+}
 
 namespace hooks
 {
-
 	void injectRecallSpellHooks()
 	{
-		jump_patch(spells_Recall_ActionOnValidTargetForRecallWrapper, 0x004942D0, 1);
-		jump_patch(spells_Recall_ActionOnTargetInRangeWrapper, 0x00494400, 3);
-		jump_patch(orders_RecallWrapper, 0x00494470, 1);
+		jump_patch(spells_Recall_ActionOnValidTargetForRecallWrapper,	0x004942D0, 1);
+		jump_patch(spells_Recall_ActionOnTargetInRangeWrapper,			0x00494400, 3);
+		jump_patch(orders_RecallWrapper,								0x00494470, 1);
 	}
-
-} //hooks
+}

@@ -7,9 +7,6 @@ u8* PORTDAT_TalkingSMKChange;
 u8* PORTDAT_IdleUnknown1;
 u8* PORTDAT_TalkingUnknown1;
 
-
-
-
 namespace hooks
 {
 	void injectBulletLimits() {}

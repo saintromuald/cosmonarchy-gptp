@@ -1,10 +1,8 @@
-//Injector source file for the Hallucination Spell Order hook module.
 #include "hallucination_spell.h"
 #include <hook_tools.h>
 
 namespace
 {
-
 	void __declspec(naked) orders_Hallucination1Wrapper()
 	{
 		static Unit* unit;
@@ -47,16 +45,13 @@ namespace
 			RETN 4
 		}
 	}
-
-}//unnamed namespace
+}
 
 namespace hooks
 {
-
 	void injectHallucinationSpellHook()
 	{
-		jump_patch(orders_Hallucination1Wrapper, 0x004F6C40, 0);
-		jump_patch(createHallucination_Wrapper, 0x004F6B90, 2);
+		jump_patch(orders_Hallucination1Wrapper,	0x004F6C40, 0);
+		jump_patch(createHallucination_Wrapper,		0x004F6B90, 2);
 	}
-
-} //hooks
+}

@@ -119,8 +119,8 @@ namespace
 
 	void placementSimpleWrappers()
 	{
-		jump_patch(updatePlacementSimpleWrapper, 0x0048DD42, 2);
-		jump_patch(updatePlacementSimpleWrapper2, 0x0048DD61, 2);
+		jump_patch(updatePlacementSimpleWrapper,	0x0048DD42, 2);
+		jump_patch(updatePlacementSimpleWrapper2,	0x0048DD61, 2);
 	}
 }
 
@@ -128,11 +128,11 @@ namespace hooks
 {
 	void injectBuildingTerranHook()
 	{
-		jump_patch(orders_TerranBuildSelfWrapper,				0x00467760, 2);
+		jump_patch(orders_TerranBuildSelfWrapper,			0x00467760, 2);
 		jump_patch(orders_SCVBuild2Wrapper,					0x00467A70, 1);
 		jump_patch(orders_SCVBuildWrapper,					0x00467FD0, 0);
-//		placementSimpleWrappers();							// causes insane bug
+//		placementSimpleWrappers(); // causes insane bug
 
-//		jump_patch(refreshScreen_Wrapper,						0x0048DDC0, 4);
+//		jump_patch(refreshScreen_Wrapper,					0x0048DDC0, 4);
 	}
 }

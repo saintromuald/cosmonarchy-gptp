@@ -36,8 +36,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) getUnitRankString_Wrapper()
-	{ // 0042F370
+	void __declspec(naked) getUnitRankString_Wrapper() // 0042F370
+	{
 		static Unit* a1;
 		static char* result;
 		__asm {
@@ -52,8 +52,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) drawUnitKillsString_Wrapper()
-	{ // 00425DD0
+	void __declspec(naked) drawUnitKillsString_Wrapper() // 00425DD0
+	{
 		static BinDlg* dialog;
 		__asm {
 			MOV dialog, EBX
@@ -66,8 +66,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) statsArmorLevel_Wrapper()
-	{ // 00425600
+	void __declspec(naked) statsArmorLevel_Wrapper() // 00425600
+	{
 		static BinDlg* dialog;
 		static s32 unused;
 		static u16 buttonRelated;
@@ -88,8 +88,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) statsWeaponLevel_Wrapper()
-	{ // 00425790
+	void __declspec(naked) statsWeaponLevel_Wrapper() // 00425790
+	{
 		static BinDlg* dialog;
 		static u16 buttonRelated;
 		static u8 weaponId;
@@ -134,11 +134,11 @@ namespace hooks
 	void injectStatsPanelDisplayHook()
 	{
 		jump_patch(stats_panel_display_Wrapper,	0x00426C60, 1);
-		jump_patch(getUnitRankString_Wrapper,		0x0042F370, 2);
+		jump_patch(getUnitRankString_Wrapper,	0x0042F370, 2);
 		jump_patch(drawUnitKillsString_Wrapper,	0x00425DD0, 2);
-//		jump_patch(drawBuildingInfo_Wrapper,		0x00427890, 3);
-//		jump_patch(statsArmorLevel_Wrapper,		0x00425600, 1);
-//		jump_patch(statsWeaponLevel_Wrapper,		0x00425790, 1);
+	//	jump_patch(drawBuildingInfo_Wrapper,	0x00427890, 3);
+	//	jump_patch(statsArmorLevel_Wrapper,		0x00425600, 1);
+	//	jump_patch(statsWeaponLevel_Wrapper,	0x00425790, 1);
 		jump_patch(getUnitName_Wrapper,			0x0047B5A0, 2);
 	}
 }

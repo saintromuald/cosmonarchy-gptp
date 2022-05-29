@@ -231,16 +231,15 @@ namespace
 
 namespace hooks
 {
-
 	void injectCloakingTechHooks()
 	{
 //		jump_patch(cloakingTechWrapper_IsCloaked,       0x00429210, 1);
 //		jump_patch(cloakingTechWrapper_CanCloak,        0x004292C0, 1);
-		jump_patch(cloakingTechWrapper_CMDRECV_Cloak, 0x004C0720, 3);
-		jump_patch(cloakingTechWrapper_AI_cloakUnit, 0x0043B970, 1);
-//	  jump_patch(cloakingTech_ApplyCloakingOrder, 0x00491B30, 5);
-//	  jump_patch(cloakingTechWrapper_CMDRECV_Decloak, 0x004C0660, 3);
-//	  jump_patch(getCloakingTechWrapper,              0x00491A50, 3);
+		jump_patch(cloakingTechWrapper_CMDRECV_Cloak,	0x004C0720, 3);
+		jump_patch(cloakingTechWrapper_AI_cloakUnit,	0x0043B970, 1);
+//		jump_patch(cloakingTech_ApplyCloakingOrder,		0x00491B30, 5);
+//		jump_patch(cloakingTechWrapper_CMDRECV_Decloak, 0x004C0660, 3);
+//		jump_patch(getCloakingTechWrapper,              0x00491A50, 3);
 //		jump_patch(currentUnitSelectionCanCloakWrapper, 0x00423540, 1);
 	}
 }

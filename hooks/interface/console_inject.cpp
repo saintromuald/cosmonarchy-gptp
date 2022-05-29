@@ -3,8 +3,8 @@
 
 namespace
 {
-	void __declspec(naked) loadRaceUI_Wrapper()
-	{ // 004EE2D0
+	void __declspec(naked) loadRaceUI_Wrapper() // 004EE2D0
+	{
 		static s32 result;
 		__asm {
 			PUSHAD
@@ -17,10 +17,9 @@ namespace
 		}
 	}
 
-	void __declspec(naked) setTextStr_Wrapper()
-	{ // 004263E0
+	void __declspec(naked) setTextStr_Wrapper() // 004263E0
+	{
 		static BinDlg* a1;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -42,7 +41,6 @@ namespace
 
 namespace hooks
 {
-
 	void injectConsoleHooks()
 	{
 		jump_patch(loadRaceUI_Wrapper, 0x004EE2D0, 3);

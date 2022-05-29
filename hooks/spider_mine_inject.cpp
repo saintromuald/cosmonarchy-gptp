@@ -31,7 +31,6 @@ namespace
 			POPAD
 			RETN
 		}
-
 	}
 
 	void __declspec(naked) orders_PlaceMine_Wrapper() // 00464FD0
@@ -69,7 +68,7 @@ namespace hooks
 	{
 		jump_patch(findBestTerranMineTarget_Wrapper,	0x00441270, 1);
 		jump_patch(orders_TerranMine_Wrapper,			0x00463DF0, 2);
-//		jump_patch(orders_PlaceMine_Wrapper,			0x00464FD0, 1);
-//		jump_patch(burrowGeneric_Wrapper,				0x004E9A30, 3);
+	//	jump_patch(orders_PlaceMine_Wrapper,			0x00464FD0, 1);
+	//	jump_patch(burrowGeneric_Wrapper,				0x004E9A30, 3);
 	}
 }

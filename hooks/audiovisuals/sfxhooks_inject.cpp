@@ -4,9 +4,8 @@
 
 namespace
 {
-
-	void __declspec(naked) getResponseSfx_Wrapper()
-	{ // 0048EA20
+	void __declspec(naked) getResponseSfx_Wrapper() // 0048EA20
+	{
 		static s32 a1;
 		static s32 a2;
 		static s32 result;
@@ -23,8 +22,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) getRandYesSFX_Wrapper()
-	{ // 0048EAB0
+	void __declspec(naked) getRandYesSFX_Wrapper() // 0048EAB0
+	{
 		static s32 a1;
 		static s32 result;
 		__asm {
@@ -42,10 +41,9 @@ namespace
 
 namespace hooks
 {
-
 	void injectSfxHooks()
 	{
-		jump_patch(getResponseSfx_Wrapper, 0x0048EA20, 1);
-		jump_patch(getRandYesSFX_Wrapper, 0x0048EAB0, 0);
+		jump_patch(getResponseSfx_Wrapper,	0x0048EA20, 1);
+		jump_patch(getRandYesSFX_Wrapper,	0x0048EAB0, 0);
 	}
 }

@@ -2,9 +2,8 @@
 #include <hook_tools.h>
 
 namespace
-{
-	// 0x0049D660
-	void __declspec(naked) function_0049D660_Wrapper()
+{	
+	void __declspec(naked) function_0049D660_Wrapper() // 0x0049D660
 	{
 		static Unit* main_building;
 		__asm
@@ -25,8 +24,7 @@ namespace
 		}
 	}
 
-	// 0x004E8C80
-	void __declspec(naked) function_004E8C80_Wrapper()
+	void __declspec(naked) function_004E8C80_Wrapper() // 0x004E8C80
 	{
 		static Unit* main_building;
 		static Unit* unit;
@@ -57,9 +55,8 @@ namespace
 			}
 		}
 	}
-
-	// 0x004EA780
-	void __declspec(naked) secondaryOrd_SpawningLarva_Wrapper()
+		
+	void __declspec(naked) secondaryOrd_SpawningLarva_Wrapper() // 0x004EA780
 	{
 		static Unit* unit;
 		__asm
@@ -80,8 +77,7 @@ namespace
 		}
 	}
 
-	// 0x004EA880
-	void __declspec(naked) secondaryOrd_SpreadCreepSpawningLarva_Wrapper()
+	void __declspec(naked) secondaryOrd_SpreadCreepSpawningLarva_Wrapper() // 0x004EA880
 	{
 		static Unit* unit;
 		__asm
@@ -97,9 +93,8 @@ namespace
 		}
 	}
 
-	// 0x00414680
 	/*
-	void __declspec(naked) spreadCreep_Wrapper()
+	void __declspec(naked) spreadCreep_Wrapper() // 0x00414680
 	{
 		u8 spreadCreep(u16 unitId, s32 x, s32 y);
 
@@ -125,8 +120,7 @@ namespace
 	}
 	*/
 
-	// 0x00413DB0
-	void __declspec(naked) getCreepRegion_Wrapper()
+	void __declspec(naked) getCreepRegion_Wrapper() // 0x00413DB0
 	{
 		static Box32* rect;
 		static u16 unitId;
@@ -157,8 +151,7 @@ namespace
 		}
 	}
 
-	// 0x00413870
-	void __declspec(naked) spreadsCreep_Wrapper()
+	void __declspec(naked) spreadsCreep_Wrapper() // 0x00413870
 	{
 		static u16 unitId;
 		static u32 isComplete;
@@ -182,8 +175,7 @@ namespace
 		}
 	}
 
-	// 0x004140A0
-	void __declspec(naked) runCreepRandomizer_Wrapper()
+	void __declspec(naked) runCreepRandomizer_Wrapper() // 0x004140A0
 	{
 		static u16* tileBackup;
 		static u8* creepOverlay;

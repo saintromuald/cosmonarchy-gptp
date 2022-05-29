@@ -1,45 +1,35 @@
 #include "detector.h"
 #include "../hook_tools.h"
 
-extern const u32 Func_CanDetect;  //Defined in Unit.cpp
+extern const u32 Func_CanDetect; // Defined in Unit.cpp
 
 namespace
 {
-
-	//Inject with jump_patch()
 	void __declspec(naked) unitCanDetectWrapper()
 	{
-
 		static Unit* unit;
 		static u32 result;
-
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		result = hooks::unitCanDetectHook(unit) ? 1 : 0;
-
 		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
-
 	}
 
 	void __declspec(naked) getCloakedTargetVisibilityWrapper()
 	{
-
 		static DetectorCheckParam* param;
 		static Unit* detector;
-
 		__asm {
 			MOV detector, ECX
 			MOV param, EDX
 			PUSHAD
 		}
-
 		hooks::getCloakedTargetVisibility(detector, param);
 
 		__asm {
@@ -47,22 +37,15 @@ namespace
 			XOR EAX, EAX
 			RETN
 		}
-
-		//changes of param are not moved in something in
-		//this asm bloc because it was a pointer directly
-		//on Starcraft data from the start
-
+		// Changes of param are not moved in something in this asm bloc because it was a pointer directly on Starcraft data from the start
 	}
-
-} //unnamed namespace
+}
 
 namespace hooks
 {
-
 	void injectDetectorHooks()
 	{
-		jump_patch(unitCanDetectWrapper, Func_CanDetect);
-		jump_patch(getCloakedTargetVisibilityWrapper, 0x004408A0, 9);
+		jump_patch(unitCanDetectWrapper,				Func_CanDetect);
+		jump_patch(getCloakedTargetVisibilityWrapper,	0x004408A0, 9);
 	}
-
-} //hooks
+}

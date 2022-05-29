@@ -92,9 +92,9 @@ namespace hooks
 
 	void injectBtnsCondHook()
 	{
-		jump_patch(BTNSCOND_NoNydusExit_Wrapper, 0x00428340, 1);
-		jump_patch(BTNSCOND_Movement_Wrapper, 0x004283C0, 0);
-		jump_patch(BTNSCOND_HasScarabs_Wrapper, 0x004286A0, 0);
+		jump_patch(BTNSCOND_NoNydusExit_Wrapper,	0x00428340, 1);
+		jump_patch(BTNSCOND_Movement_Wrapper,		0x004283C0, 0);
+		jump_patch(BTNSCOND_HasScarabs_Wrapper,		0x004286A0, 0);
 	}
 
 }

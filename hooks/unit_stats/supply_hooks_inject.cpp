@@ -239,15 +239,15 @@ namespace hooks
 
 		jump_patch(getSuppliesAvailable_Wrapper,	0x00488900, 1);
 		jump_patch(getSuppliesRemaining_Wrapper,	0x004889D0, 1);
-		jump_patch(getSuppliesMax_Wrapper,		0x00488990, 4);
-		jump_patch(getSuppliesUsed_Wrapper,		0x004888C0, 1);
+		jump_patch(getSuppliesMax_Wrapper,			0x00488990, 4);
+		jump_patch(getSuppliesUsed_Wrapper,			0x004888C0, 1);
 		jump_patch(initializeUnitCounts_Wrapper,	0x00488F90, 0);
 		jump_patch(StatRes_MainProc_Wrapper,		0x004E5640, 4);
-		jump_patch(getSuppliesTemp_Wrapper,		0x004246D0, 1);
+		jump_patch(getSuppliesTemp_Wrapper,			0x004246D0, 1);
 		jump_patch(redrawSupplyInfo_Wrapper,		0x00425230, 4);
 		jump_patch(drawSupplyUnitStatus_Wrapper,	0x00427540, 1); // Currently broken, supply used in unit status display won't show properly for zerg and protoss units
 		jump_patch(hasSuppliesForUnitWrapper,		0x0042CF70);
-		jump_patch(incrementUnitScores_Wrapper,	0x00488BF0, 2);
+		jump_patch(incrementUnitScores_Wrapper,		0x00488BF0, 2);
 		jump_patch(incrementUnitScoresEx_Wrapper,	0x00488D50, 1);
 	}
 }

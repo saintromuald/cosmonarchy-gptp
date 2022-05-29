@@ -27,6 +27,6 @@ namespace hooks
 {
 	void injectHpBarsHooks()
 	{
-		//jump_patch(compileHealthBar_Wrapper, 0x004D6010, 2);
+	//	jump_patch(compileHealthBar_Wrapper, 0x004D6010, 2);
 	}
 }

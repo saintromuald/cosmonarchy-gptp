@@ -24,6 +24,6 @@ namespace hooks
 {
 	void injectBuildTimeHooks()
 	{
-		jump_patch(decrementRemainingBuildTime_Wrapper, 0x00466940, 1);
+		jump_patch(decrementRemainingBuildTime_Wrapper,							0x00466940, 1);
 	}
 }
