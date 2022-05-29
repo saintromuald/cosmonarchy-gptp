@@ -5,8 +5,6 @@
 
 namespace
 {
-
-	//-------- Draw hook taken from BWAPI --------//
 	bool wantRefresh = false;
 	void __stdcall DrawHook(graphics::Bitmap* surface, Bounds* bounds)
 	{
@@ -37,17 +35,16 @@ namespace
 		//    wantRefresh = true;
 		//}
 		if (graphics::drawAllShapes() > 0)
+		{
 			wantRefresh = true;
+		}
 	}
-
-} //unnamed namespace
+}
 
 namespace hooks
 {
-
 	void injectDrawHook()
 	{
 		memoryPatch(0x004BD68D, &DrawHook);
 	}
-
-} //hooks
+}
