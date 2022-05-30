@@ -1436,7 +1436,7 @@ LABEL_37:
 			u32 town_player = town->player;
 			u8 minerals_percentage = 0;
 			u8 gas_percentage = 0;
-			helper::AI_resource_need_split(&gas_percentage, town_player, &minerals_percentage);
+			helper::ai_resource_need_split(&gas_percentage, town_player, &minerals_percentage);
 			u32 gas_count = gas_percentage * town->worker_count / 100;
 
 			u32 worker_count = 0;

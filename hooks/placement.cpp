@@ -84,8 +84,8 @@ namespace hooks
         u16 addon_y = (*placeBuildingY - units_dat::AddonPlacement[2 * *placeBuildingUnitType - 211].y / 32);
         scbw::adjustAddonCoordinates(source, target, &addon_x, &addon_y);
 
-        s32 can_build = helper::canBuildOnTileLocation(*activePortraitUnit, *placingPlayer, *placeBuildingX, *placeBuildingY, *placeBuildingUnitType, 1, 1, 0, 0);
-        s32 result = helper::canBuildOnTileLocation(*activePortraitUnit, *placingPlayer, addon_x, addon_y, *placeBuildBaseType, 0, 1, 0, 0);
+        s32 can_build = helper::can_build_on_tile_location(*activePortraitUnit, *placingPlayer, *placeBuildingX, *placeBuildingY, *placeBuildingUnitType, 1, 1, 0, 0);
+        s32 result = helper::can_build_on_tile_location(*activePortraitUnit, *placingPlayer, addon_x, addon_y, *placeBuildBaseType, 0, 1, 0, 0);
         // ^ this call might be needed, even if the result isn't returned, untested
         if (!*isPlacingAddon || can_build)
         {

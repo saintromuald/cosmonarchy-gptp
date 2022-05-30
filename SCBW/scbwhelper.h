@@ -10,7 +10,7 @@ name##_func* const name = (name##_func*) address;
 
 namespace helper
 {
-	bool HasMoneyCanMake(Unit* builder, u32 unitToBuild);
+	bool has_money_can_make(Unit* builder, u32 unitToBuild);
 
 	// For loadRaceUI
 	void getRaceSoundList(s8 a1);
@@ -123,7 +123,7 @@ namespace helper
 	s32 randGetSFXBetween(s32 soundIdMin, s32 soundIdMax);										// 0048E940
 	s16 get_region_id(s32 x, s32 y);															// 0049C9F0
 
-	// For AI_TrainUnit
+	// For ai_train_unit
 	char ai_training_worker(Unit* result, Unit* parent);											// 00435700
 	void ai_training_overlord(Unit* result, Unit* parent);										// 00435770
 	void ai_training_normal(Unit* result, Unit* parent);											// 00435DB0
@@ -325,7 +325,7 @@ namespace helper
 		char bDontIgnoreReacting, char bAlsoInvisible);
 
 	// For update_placement_state_for_placement_box
-	s32 canBuildOnTileLocation(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType,				// 00473FB0
+	s32 can_build_on_tile_location(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType,				// 00473FB0
 		s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision);
 	
 	// For refreshScreen
@@ -833,7 +833,7 @@ namespace helper
 
 	//// cosmonarchy_specific
 	u8 getHangerTrainCount(Unit* unit);
-	bool unitIsTrainingOrMorphing(Unit* unit);
+	bool unit_is_training_or_morphing(Unit* unit);
 	u8 initializeRandomizerInfo();
 	void AI_Loop();
 	s32 updateActiveTileInfo();
@@ -927,15 +927,15 @@ namespace helper
 	void appearOnTarget(Bullet* bullet, s16 x, s16 y);														// 004955C0
 	Bullet* attackFlyToTarget(Bullet* bullet, s32 x, s32 y);												// 00494B70
 
-	// For AI_ProgressBuild
-	void displayErrorMessageIDWithSFX(s32 playerId, s32 messageId, s32 soundId);							// 0048EE30
+	// For ai_progress_build
+	void display_error_message_id_with_sfx(s32 playerId, s32 messageId, s32 soundId);							// 0048EE30
 
-	// For AIManageBuildingPlacement
+	// For ai_manage_building_placement
 	s32 get_bunker_placement_position(s32 placementId, s32* regionId);											// 004442E0
-	Unit* getDisabledUnitInRange(s32 owner, Point16 position);												// 00440420
-	void AIGetBuildLocation(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition,				// 004461B0
+	Unit* get_disabled_unit_in_range(s32 owner, Point16 position);												// 00440420
+	void ai_get_build_location(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition,				// 004461B0
 		s32 maxRange);
-	void AIPlacementDataSomething(s8* placementData, Point16 tryPosition);									// 00443610
+	void ai_placement_data_something(s8* placementData, Point16 tryPosition);									// 00443610
 	u32 getTileDistance(s32 x, s32 y, s32 x2, s32 y2);														// 00444100
 
 	// For initializeUnitCounts
@@ -979,7 +979,7 @@ namespace helper
 	AiRegion* getAiRegionInfoFromUnitLoc(Unit* unit);														// 00438BF0
 	void add_guard_ai_to_unit(Unit* unit);																	// 00462960
 
-	s8 createUnitAllowed(u16 unitId, Unit* unit, s32 playerID);												// 0046E1C0
+	s8 create_unit_allowed(u16 unitId, Unit* unit, s32 playerID);												// 0046E1C0
 
 	b32 SBmpLoadImage(const char *filename, void* palette, void* buffer, u32 buffersize, u32* width, u32* height, u32* bpp); // 00410154
 
@@ -1063,31 +1063,31 @@ namespace helper
 
 	//// For ai_requests
 
-	// For AI_PerformTask
-	void AI_OverlordBehavior(Unit* unit);																						// 00434DF0
-	void AI_NukeSiloBehavior(Unit* unit);																						// 00434D50
-	bool AI_UnitConstructionBehavior(s32 playerId, Unit* unit, s32 someBool);													// 00433890
-	char AI_PlanDoMergeMorph(s32 playerId, Unit* unit, s32 someBool);															// 00435F10
-	s32 AI_MorphBehavior(s32 player, Unit* unit, void* unit_ai);																// 00434FF0
-	void AI_TrainBehavior(Unit* unit, void* unit_ai, s32 player);																// 00434720
-	void AI_UpgradeBehavior(Unit* unit, s32 player);																			// 00434670
-	s32 AI_ResearchBehavior(Unit* unit, s32 player);																			// 0043462F - return value unused
-	char AI_ConstructBehavior(Unit* unit, void* unit_ai, s32 player);															// 00434E70
-	s32 AI_MakeDetectorBehavior(Unit* unit, s32 player);																		// 00435130
+	// For ai_perform_task
+	void ai_overlord_behavior(Unit* unit);																						// 00434DF0
+	void ai_nuke_silo_behavior(Unit* unit);																						// 00434D50
+	bool ai_unit_construction_behavior(s32 playerId, Unit* unit, s32 someBool);													// 00433890
+	char ai_plan_do_merge_morph(s32 playerId, Unit* unit, s32 someBool);															// 00435F10
+	s32 ai_morph_behavior(s32 player, Unit* unit, void* unit_ai);																// 00434FF0
+	void ai_train_behavior(Unit* unit, void* unit_ai, s32 player);																// 00434720
+	void ai_upgrade_behavior(Unit* unit, s32 player);																			// 00434670
+	s32 ai_research_behavior(Unit* unit, s32 player);																			// 0043462F - return value unused
+	char ai_construct_behavior(Unit* unit, void* unit_ai, s32 player);															// 00434E70
+	s32 ai_make_detectors_behavior(Unit* unit, s32 player);																		// 00435130
 
-	// For AI_PlanDoMergeMorph
-	Unit* AI_GetMutaliskForMorph(s32 player);																					// 004375F0
-	s32 AI_GetHighTemplarsForSummon(s32 player, Unit** first, Unit** second);													// 00437410
-	s32 AI_GetDarkTemplarsForSummon(s32 player, Unit** first, Unit** second);													// 00437320
+	// For ai_plan_do_merge_morph
+	Unit* ai_get_mutalisk_for_morph(s32 player);																					// 004375F0
+	s32 ai_get_high_templar_for_summon(s32 player, Unit** first, Unit** second);													// 00437410
+	s32 ai_get_dark_templar_for_summon(s32 player, Unit** first, Unit** second);													// 00437320
 	void assign_order_with_target(Unit* unit, Unit* target, s32 orderId);														// 004752B0
-	s16 AI_Reserve(s32 player, s32 someBool);																					// 00447D00
-	AI_Main* AI_PopSpendingRequest(s32 player);																					// 004476D0
+	s16 ai_reserve(s32 player, s32 someBool);																					// 00447D00
+	AI_Main* ai_pop_spending_request(s32 player);																					// 004476D0
 	Unit* AI_GetHydraliskForMorph(s32 player);																					// 00437570
-	s32 isUnitTypeRaceUnitRace(u16 unitId, Unit* unit);																			// 00432480
+	s32 is_unit_id_race_equal_to_unit_race(u16 unitId, Unit* unit);																			// 00432480
 	bool hasResourcesForUnit(u16 unitId, s32 player);																			// 004487B0
-	char AI_PerformTask(Unit* unit);																							// 004361A0
-	s32 AI_GetRequestedBuildType(s32 player);																					// 00447590
-	bool AI_TrainUnit(Unit* unit, u16 unitId, char requestId, void* value);														// 004672F0
+	char ai_perform_task(Unit* unit);																							// 004361A0
+	s32 ai_get_request_build_type(s32 player);																					// 00447590
+	bool ai_train_unit(Unit* unit, u16 unitId, char requestId, void* value);														// 004672F0
 	
 	// For scenario.cpp
 	Unit* AI_CreateUnit(u32 unit_id, s32 player, s32 x, s32 y);																	// 004A0AD0
@@ -1147,7 +1147,7 @@ namespace helper
 	void UnitPlacementError(const char *a1, char a2);
 
 	void Ai_Build(u32 unit_id, b32 only_if_needed, u32 count, AiTown* town, u32 priority);						// 004323D0
-	void Ai_AddBuildRequest(AiTown* town, s32 method, s32 count, s32 id, s32 priority, b32 only_if_needed);		// 00431F90
+	void ai_add_build_request(AiTown* town, s32 method, s32 count, s32 id, s32 priority, b32 only_if_needed);		// 00431F90
 
 	// For HandleWindowMessages
 	char check_last_file_error();																				// 004D28D0
@@ -1201,10 +1201,10 @@ namespace helper
 	bool unit_is_mineral_field(Unit* unit);																// 00468890
 	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90
 	Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, Point16 worker_pos);	// 004432D0
-	Unit* get_AI_refinery(AiTown* town, s32 gas_state, s32 index);										// 00432B90
+	Unit* get_ai_refinery(AiTown* town, s32 gas_state, s32 index);										// 00432B90
 	u32 ai_get_vespene_type(Unit* node, s32 player_id);													// 004326E0
-	void AI_resource_need_split(u8* out_gas_percentage, u32 player, u8* out_mineral_percentage);		// 004475B0
-	u32 AI_add_town_spending_request(u32 player, u32 priority, u32 unit_id, void* param);				// 00448400
+	void ai_resource_need_split(u8* out_gas_percentage, u32 player, u8* out_mineral_percentage);		// 004475B0
+	u32 ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, void* param);				// 00448400
 
 	u32 get_closest_base_from_startloc(u32 player_id, u32 x, u32 y);									// 00443A20
 	Unit* get_resource_area_gas(u32 resarea, Unit** gas_1, Unit** gas_2, Unit** gas_3);					// 00444460

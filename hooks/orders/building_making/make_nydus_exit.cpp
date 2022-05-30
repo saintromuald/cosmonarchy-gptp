@@ -31,7 +31,7 @@ namespace hooks
 		y /= 32;
 
 		// check if the nydus exit can be placed
-		if (helper::canBuildOnTileLocation(nydus_canal, nydus_canal->player, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0))
+		if (helper::can_build_on_tile_location(nydus_canal, nydus_canal->player, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0))
 		{
 			helper::playWorkerErrorSound(nydus_canal, 0x358); // "You can't build there"
 			if (nydus_canal->orderQueueHead != nullptr)

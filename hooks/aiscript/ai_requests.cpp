@@ -7,7 +7,7 @@
 namespace hooks
 {
 	// Don't know what this was hooked for; tidied May 2021 - Pr0nogo
-	void AI_BuildTechUpgrade(AiTown* town, char method, char amount, s16 id, char priority, bool need) // 00431F90
+	void ai_build_tech_upgrade(AiTown* town, char method, char amount, s16 id, char priority, bool need) // 00431F90
 	{
 		s32 iterate = 0;
 		constexpr s32 BuildCountFlag = 0xF8;
@@ -44,7 +44,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	AiTown* AI_ProgressBuild(s32 playerId, s32* minerals, s32* gas) // 00434480
+	AiTown* ai_progress_build(s32 playerId, s32* minerals, s32* gas) // 00434480
 	{
 		AiTown* result = AiActiveTownArray[playerId].first;
 		AiTown* firstTown = AiActiveTownArray[playerId].first;
@@ -90,13 +90,13 @@ namespace hooks
 									else
 									{
 										consoleVar = consoleIndex;
-										helper::displayErrorMessageIDWithSFX((u8)playerId, 851, *consoleVar + 150);
+										helper::display_error_message_id_with_sfx((u8)playerId, 851, *consoleVar + 150);
 									}
 								}
 								else
 								{
 									consoleVar = consoleIndex;
-									helper::displayErrorMessageIDWithSFX((u8)playerId, 850, *consoleVar + 147);
+									helper::display_error_message_id_with_sfx((u8)playerId, 850, *consoleVar + 147);
 								}
 							}
 						}
@@ -114,7 +114,7 @@ namespace hooks
 
 	// We all know what this is for - Pr0nogo
 	// TODO: Finish and clean up
-	s32 AIManageBuildingPlacement(Unit* builder, u32 unitId, Point16 tryPosition, Point16* outPosition, s32 areaTiles) // 004465C0 - 3 nops
+	s32 ai_manage_building_placement(Unit* builder, u32 unitId, Point16 tryPosition, Point16* outPosition, s32 areaTiles) // 004465C0 - 3 nops
 	{
 		s32 playerVar;
 		Unit* builderVar;
@@ -176,7 +176,7 @@ namespace hooks
 			v35 = (s16*)((char*)&units_dat::MaxHitPoints[(u16)unitId + 122] + 2);
 			v41 = *v35 / 32 + v9;
 			v40 = v8;
-			if (!helper::canBuildOnTileLocation(builderVar, ownrId, *(s32*)&v40, v41, unitId, 0, 0, 1, 0))
+			if (!helper::can_build_on_tile_location(builderVar, ownrId, *(s32*)&v40, v41, unitId, 0, 0, 1, 0))
 			{
 				v12 = *(s16*)v36 / -32 + v8;
 				v41 = *v35 / -32 + v41;
@@ -239,17 +239,17 @@ namespace hooks
 			{
 //				if (AIScriptController[playerVar].AI_Flags >= 0) // used SLOBYTE, probably checking "creep" asc3 command
 				{
-LABEL_9:
+			LABEL_9:
 					if (helper::get_bunker_placement_position(playerVar, &ownrId))
 					{
-LABEL_10:
+			LABEL_10:
 						v38 = 0;
 					}
 				}
 			} break;
 			case UnitId::ProtossPylon:
 			{
-				disabledUnitVar = helper::getDisabledUnitInRange(playerVar, tryPosition);
+				disabledUnitVar = helper::get_disabled_unit_in_range(playerVar, tryPosition);
 				disabledUnitArray[9] = disabledUnitVar;
 				if (disabledUnitVar)
 				{
@@ -272,11 +272,11 @@ LABEL_10:
 		v18 = (u8)builderVar->player;
 		*AIBuilderUnknown = builderVar;
 		v32 = (u16)unitId;
-		helper::AIGetBuildLocation((u16)unitId, (char*)a1, v18, tryPosition, areaTiles);
+		helper::ai_get_build_location((u16)unitId, (char*)a1, v18, tryPosition, areaTiles);
 		*AIBuilderUnknown = 0;
 		if (v38)
 		{
-			helper::AIPlacementDataSomething(a1, tryPosition);
+			helper::ai_placement_data_something(a1, tryPosition);
 		}
 		unitTypea = __tileX;
 		if (ownrId != 2500)
@@ -359,7 +359,7 @@ LABEL_10:
 			return 0;
 		}
 		v26 = v40;
-LABEL_36:
+	LABEL_36:
 		v28 = v32;
 		outPosition->x = 32 * v26 + units_dat::BuildingDimensions[v32].x / 2;
 		outPosition->y = 32 * v41 + units_dat::BuildingDimensions[v28].y / 2;
@@ -379,13 +379,13 @@ LABEL_36:
 		RequestType_MakeDetector = 8,
 	};
 
-	char AI_PerformTask(Unit* unit) // 004361A0 -- hooked to fix AI Archon training -- Pr0nogo
+	char ai_perform_task(Unit* unit) // 004361A0 -- hooked to fix AI Archon training -- Pr0nogo
 	{
 		switch (unit->id)
 		{
 			case UnitId::ZergOvileth:
 			{
-				helper::AI_OverlordBehavior(unit);
+				helper::ai_overlord_behavior(unit);
 			} break;
 			case UnitId::TerranComsatStation:
 			{
@@ -393,7 +393,7 @@ LABEL_36:
 			} break;
 			case UnitId::TerranNuclearSilo:
 			{
-				helper::AI_NukeSiloBehavior(unit);
+				helper::ai_nuke_silo_behavior(unit);
 			} break;
 		}
 
@@ -407,9 +407,9 @@ LABEL_36:
 		s32 someBool = 0;
 		if (gameMinerals[player] > 1500 && gameGas[player] > 1500)
 		{
-			if (!helper::unitIsTrainingOrMorphing(unit))
+			if (!helper::unit_is_training_or_morphing(unit))
 			{
-				if (helper::AI_UnitConstructionBehavior(player, unit, 160))
+				if (helper::ai_unit_construction_behavior(player, unit, 160))
 				{
 					someBool = 1;
 				}
@@ -436,51 +436,51 @@ LABEL_36:
 		{
 			case RequestType_UnitMake:
 			{
-				if (!helper::AI_UnitConstructionBehavior(player, unit, 50))
+				if (!helper::ai_unit_construction_behavior(player, unit, 50))
 				{
 					return 1;
 				}
 				someBool = 1;
-				return helper::AI_PlanDoMergeMorph(player, unit, someBool);
+				return helper::ai_plan_do_merge_morph(player, unit, someBool);
 			}
 			case RequestType_UnitMergeMorph1:
 			case RequestType_UnitMergeMorph2:
 			{
-				return helper::AI_PlanDoMergeMorph(player, unit, someBool);
+				return helper::ai_plan_do_merge_morph(player, unit, someBool);
 			}
 			case RequestType_ConstructMorph:
 			{
-				return helper::AI_MorphBehavior(player, unit, unit->unit_ai);
+				return helper::ai_morph_behavior(player, unit, unit->unit_ai);
 			}
 			case RequestType_Train:
 			{
-				helper::AI_TrainBehavior(unit, unit->unit_ai, player);
+				helper::ai_train_behavior(unit, unit->unit_ai, player);
 				return 1;
 			} break;
 			case RequestType_Upgrade:
 			{
-				helper::AI_UpgradeBehavior(unit, player);
+				helper::ai_upgrade_behavior(unit, player);
 				return 1;
 			} break;
 			case RequestType_Research:
 			{
-				helper::AI_ResearchBehavior(unit, player);
+				helper::ai_research_behavior(unit, player);
 				return 1;
 			} break;
 			case RequestType_PlaceAddon:
 			{
-				helper::AI_ConstructBehavior(unit, unit->unit_ai, player);
+				helper::ai_construct_behavior(unit, unit->unit_ai, player);
 				return 1;
 			} break;
 			case RequestType_MakeDetector:
 			{
-				return helper::AI_MakeDetectorBehavior(unit, player);
+				return helper::ai_make_detectors_behavior(unit, player);
 			} break;
 		}
 		return 1;
 	}
 
-	char AI_PlanDoMergeMorph(s32 player, Unit* unit, s32 boolSomething) // 00435F10
+	char ai_plan_do_merge_morph(s32 player, Unit* unit, s32 boolSomething) // 00435F10
 	{
 		bool error;
 		AiTown* mainTown2;
@@ -497,47 +497,47 @@ LABEL_36:
 		{
 			case UnitId::ZergGeszithalor:
 			case UnitId::ZergVithrilisk:
-				unitCopy = helper::AI_GetMutaliskForMorph(player);
+				unitCopy = helper::ai_get_mutalisk_for_morph(player);
 				if (!unitCopy)
 				{
-					helper::AI_Reserve(player, 0);
-					helper::AI_PopSpendingRequest(player);
+					helper::ai_reserve(player, 0);
+					helper::ai_pop_spending_request(player);
 					return 0;
 				}
 				break;
 			case UnitId::ProtossArchon:
-				if (helper::AI_GetHighTemplarsForSummon(player, &unit, &dummy))
+				if (helper::ai_get_high_templar_for_summon(player, &unit, &dummy))
 				{
 					helper::assign_order_with_target(dummy, unit, OrderId::WarpingArchon);
 					helper::assign_order_with_target(unit, dummy, OrderId::WarpingArchon);
-					helper::AI_Reserve(player, 1);
-					helper::AI_PopSpendingRequest(player);
+					helper::ai_reserve(player, 1);
+					helper::ai_pop_spending_request(player);
 					return 0;
 				}
 			case UnitId::ProtossMindTyrant:
-				if (helper::AI_GetDarkTemplarsForSummon(player, &dummy, &unit))
+				if (helper::ai_get_dark_templar_for_summon(player, &dummy, &unit))
 				{
 					helper::assign_order_with_target(dummy, unit, OrderId::WarpingDarkArchon);
 					helper::assign_order_with_target(unit, dummy, OrderId::WarpingDarkArchon);
-					helper::AI_Reserve(player, 1);
-					helper::AI_PopSpendingRequest(player);
+					helper::ai_reserve(player, 1);
+					helper::ai_pop_spending_request(player);
 					return 0;
 				}
-				helper::AI_Reserve(player, 0);
-				helper::AI_PopSpendingRequest(player);
+				helper::ai_reserve(player, 0);
+				helper::ai_pop_spending_request(player);
 				return 0;
 			case UnitId::ZergLakizilisk:
 				unitCopy = helper::AI_GetHydraliskForMorph(player);
 				if (!unitCopy)
 				{
-					helper::AI_Reserve(player, 0);
-					helper::AI_PopSpendingRequest(player);
+					helper::ai_reserve(player, 0);
+					helper::ai_pop_spending_request(player);
 					return 0;
 				}
 				break;
 		}
 
-		if (!helper::isUnitTypeRaceUnitRace(nextBuildType, unitCopy) || helper::createUnitAllowed(nextBuildType, unitCopy, player) != 1)
+		if (!helper::is_unit_id_race_equal_to_unit_race(nextBuildType, unitCopy) || helper::create_unit_allowed(nextBuildType, unitCopy, player) != 1)
 		{
 			if (*lastInternalError == 2
 			  || *lastInternalError == 23
@@ -545,22 +545,22 @@ LABEL_36:
 			  || *lastInternalError == 8
 			  || *lastInternalError == 7)
 			{
-				helper::AI_Reserve(player, 0);
-				helper::AI_PopSpendingRequest(player);
+				helper::ai_reserve(player, 0);
+				helper::ai_pop_spending_request(player);
 				if (!boolSomething)
 				{
-					helper::AI_PerformTask(unit);
+					helper::ai_perform_task(unit);
 				}
 				return 0;
 			}
 			error = *lastInternalError == 13;
 			if (error)
 			{
-				helper::AI_Reserve(player, 0);
-				helper::AI_PopSpendingRequest(player);
+				helper::ai_reserve(player, 0);
+				helper::ai_pop_spending_request(player);
 				if (!boolSomething)
 				{
-					helper::AI_PerformTask(unit);
+					helper::ai_perform_task(unit);
 				}
 				return 0;
 			}
@@ -571,11 +571,11 @@ LABEL_36:
 			error = (AIScriptController[player].AI_Flags.isUseMapSettings) == 0;
 			if (error)
 			{
-				helper::AI_Reserve(player, 0);
-				helper::AI_PopSpendingRequest(player);
+				helper::ai_reserve(player, 0);
+				helper::ai_pop_spending_request(player);
 				if (!boolSomething)
 				{
-					helper::AI_PerformTask(unit);
+					helper::ai_perform_task(unit);
 				}
 			}
 			return 0;
@@ -583,27 +583,27 @@ LABEL_36:
 
 		if (helper::is_ai_allowed_to_build(player, nextBuildType))
 		{
-			helper::AI_Reserve(player, 0);
-			helper::AI_PopSpendingRequest(player);
+			helper::ai_reserve(player, 0);
+			helper::ai_pop_spending_request(player);
 			return 0;
 		}
 
 		if (unit == unitCopy)
 		{
-			requestedBuildId = helper::AI_GetRequestedBuildType(player);
-			if (!helper::AI_TrainUnit(unitCopy, nextBuildType, requestedBuildId, AIScriptController[player].requests->val))
+			requestedBuildId = helper::ai_get_request_build_type(player);
+			if (!helper::ai_train_unit(unitCopy, nextBuildType, requestedBuildId, AIScriptController[player].requests->val))
 			{
 				return 0;
 			}
 		}
 		else
 		{
-			if (!helper::HasMoneyCanMake(unitCopy, nextBuildType))
+			if (!helper::has_money_can_make(unitCopy, nextBuildType))
 			{
 				return 0;
 			}
 			helper::remove_unit_ai(unitCopy, 0);
-			if (helper::AI_GetRequestedBuildType(player) == 2)
+			if (helper::ai_get_request_build_type(player) == 2)
 			{
 				/*
 				BuildingAi* unitAI = (BuildingAi*)AIScriptController[player].requests->val;
@@ -621,8 +621,8 @@ LABEL_36:
 			}
 		}
 
-		helper::AI_Reserve(player, 1);
-		helper::AI_PopSpendingRequest(player);
+		helper::ai_reserve(player, 1);
+		helper::ai_pop_spending_request(player);
 		unitId = unitCopy->id;
 		if (unitId == UnitId::ZergLarva || unitId == UnitId::ZergMutalisk || unitId == UnitId::ZergHydralisk)
 		{
@@ -814,30 +814,30 @@ LABEL_36:
 		}
 	}
 	
-	void AI_Build(u32 unit_id, bool need, u32 count, AiTown* town, u8 priority) // 004323D0
+	void ai_build(u32 unit_id, bool need, u32 count, AiTown* town, u8 priority) // 004323D0
 	{
 		if (count <= 30 && unit_id < UnitId::None)
 		{
-			helper::Ai_AddBuildRequest(town, 0, count, unit_id, priority, need);
+			helper::ai_add_build_request(town, 0, count, unit_id, priority, need);
 		}
 	}
 
 	// Hooked to improve logic. -Pr0nogo
-	char AI_build_gas_building(AiTown* town) // 00433660
+	char ai_build_refinery(AiTown* town) // 00433660
 	{
 		char result = 0;
 		u32 player = town->player;
 		u8 mineral_percent;
 		u8 gas_percent;
-		helper::AI_resource_need_split(&gas_percent, player, &mineral_percent);
+		helper::ai_resource_need_split(&gas_percent, player, &mineral_percent);
 		if (gas_percent || town->mineral)
 		{
 			Unit* refinery;
 			u32 priority;
-			if (helper::get_AI_refinery(town, 3, 1))
+			if (helper::get_ai_refinery(town, 3, 1))
 			{
 				priority = 80;
-				refinery = helper::get_AI_refinery(town, 1, 1);
+				refinery = helper::get_ai_refinery(town, 1, 1);
 				if (!refinery)
 				{
 					return 0;
@@ -856,7 +856,7 @@ LABEL_36:
 			}
 			else
 			{
-				refinery = helper::get_AI_refinery(town, 1, 1);
+				refinery = helper::get_ai_refinery(town, 1, 1);
 				if (!refinery)
 				{
 					return 0;
@@ -873,7 +873,7 @@ LABEL_36:
 			{
 				refinery_id = UnitId::ProtossAquifer;
 			}
-			result = helper::AI_add_town_spending_request(player, priority, refinery_id, town);
+			result = helper::ai_add_town_spending_request(player, priority, refinery_id, town);
 		}
 		return result;
 	}

@@ -68,7 +68,7 @@ namespace hooks
 				x /= 32; y /= 32;
 
 				// Check for units occupying the landing zone before the final vertical movement started?
-				u32 return_00473FB0 = helper::canBuildOnTileLocation(unit, unit->player, x, y, unit->id, 0, 0, 1, 0);
+				u32 return_00473FB0 = helper::can_build_on_tile_location(unit, unit->player, x, y, unit->id, 0, 0, 1, 0);
 
 				if (return_00473FB0 != 0)
 				{

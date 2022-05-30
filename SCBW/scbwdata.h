@@ -424,7 +424,7 @@ SCBW_DATA(Unit**, lastBulletCreator,				0x0064DEB0);
 SCBW_DATA(s32*, launchSpinRandom,					0x0064DEC0);
 SCBW_DATA(Point16*, attackCurve,					0x00513650);
 
-// For AI_ProgressBuild
+// For ai_progress_build
 SCBW_DATA(s32*,	gameMinerals,						0x0057F0F0);
 SCBW_DATA(s32*,	gameGas,							0x0057F120);
 SCBW_DATA(s32*, AIMineralsReserve,					0x006CA51C);
@@ -434,7 +434,7 @@ SCBW_DATA(s32*, AIGasReserve,						0x006CA4EC);
 SCBW_DATA(BinDlg**, readyRoomDialog,				0x0066FF6C);
 SCBW_DATA(s32*, missionObjectivesStringIndex,		0x0058D6C4);
 
-// For AIManageBuildingPlacement
+// For ai_manage_building_placement
 SCBW_DATA(Unit**, disabledUnitArray,				0x00692660);
 SCBW_DATA(Unit**, AIBuilderUnknown,					0x006D5DCC);
 

@@ -30,7 +30,7 @@ namespace hooks
 			}
 
 			if (current_selection->can_make_unit(unitToBuild, *ACTIVE_NATION_ID) == 1
-				&& helper::HasMoneyCanMake(current_selection, unitToBuild)) // add unit to build queue if successful
+				&& helper::has_money_can_make(current_selection, unitToBuild)) // add unit to build queue if successful
 			{
 				if (current_selection->id == UnitId::ProtossSolarion
 					|| current_selection->id == UnitId::ProtossAccantor)
@@ -61,7 +61,7 @@ namespace hooks
 			// Originally also checked for a lardcoded ID range, disabled for training units with high IDs
 			if (builder->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1)
 			{
-				if (helper::HasMoneyCanMake(builder, wUnitType)) // add unit to build queue if successful
+				if (helper::has_money_can_make(builder, wUnitType)) // add unit to build queue if successful
 				{
 					builder->set_secondary_order(OrderId::Train);
 				}

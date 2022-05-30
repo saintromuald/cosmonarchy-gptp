@@ -102,7 +102,7 @@ namespace hooks
 
 				case RequirementOpcodes::IsNotTrainingOrMorphing:
 				{
-					if (unit->unitIsTrainingOrMorphing() || unit->building.techType != TechId::None)
+					if (unit->unit_is_training_or_morphing() || unit->building.techType != TechId::None)
 					{
 						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
@@ -606,7 +606,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotTrainingOrMorphing:
 				{
 					//DebugOut("IsNotTrainingOrMorphing (%d):", currentOpcode);
-					if (parentUnit->unitIsTrainingOrMorphing() || parentUnit->building.upgradeType != TechId::None || parentUnit->building.techType != UpgradeId::None)
+					if (parentUnit->unit_is_training_or_morphing() || parentUnit->building.upgradeType != TechId::None || parentUnit->building.techType != UpgradeId::None)
 					{
 						//DebugOut(">False");
 						goto LABEL_87;

@@ -24,7 +24,7 @@ namespace helper
 		return (sx ^ SETS(y2)) & (sx ^ SETS(x - y2));
 	}
 
-	bool HasMoneyCanMake(Unit* builder, u32 unitToBuild)
+	bool has_money_can_make(Unit* builder, u32 unitToBuild)
 	{
 		const u32 Func_HasMoneyCanMake = 0x00467250;
 		static b32 bPreResult;
@@ -1125,7 +1125,7 @@ namespace helper
 		return result;
 	}
 
-	// for AI_TrainUnit
+	// for ai_train_unit
 	char ai_training_worker(Unit* result, Unit* parent)
 	{
 		const u32 Func_AI_TrainingWorker = 0x00435700;
@@ -3153,7 +3153,7 @@ namespace helper
 
 	// For update_placement_state_for_placement_box
 
-	s32 canBuildOnTileLocation(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision)
+	s32 can_build_on_tile_location(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision)
 	{
 		const u32 Func_canBuildOnTileLocation = 0x00473FB0;
 		static s32 result;
@@ -7188,7 +7188,7 @@ namespace helper
 		}
 	}
 
-	bool unitIsTrainingOrMorphing(Unit* unit)
+	bool unit_is_training_or_morphing(Unit* unit)
 	{
 		const u32 Func_unitIsTrainingOrMorphing = 0x00401500;
 		static u32 result;
@@ -8724,7 +8724,7 @@ namespace helper
 		return result;
 	}
 
-	void displayErrorMessageIDWithSFX(s32 playerId, s32 messageId, s32 soundId)
+	void display_error_message_id_with_sfx(s32 playerId, s32 messageId, s32 soundId)
 	{
 		const u32 Func_displayErrorMessageIDWithSFX = 0x0048EE30;
 		__asm
@@ -8738,7 +8738,7 @@ namespace helper
 		}
 	}
 
-	// For AIManageBuildingPlacement
+	// For ai_manage_building_placement
 	s32 get_bunker_placement_position(s32 placementId, s32* regionId)
 	{
 		const u32 Func_getBunkerPlacementPosition = 0x004442E0;
@@ -8755,7 +8755,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* getDisabledUnitInRange(s32 owner, Point16 position)
+	Unit* get_disabled_unit_in_range(s32 owner, Point16 position)
 	{
 		const u32 Func_getDisabledUnitInRange = 0x00440420;
 		static Unit* result;
@@ -8771,7 +8771,7 @@ namespace helper
 		return result;
 	}
 
-	void AIGetBuildLocation(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition, s32 maxRange)
+	void ai_get_build_location(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition, s32 maxRange)
 	{
 		const u32 Func_AIGetBuildLocation = 0x004461B0;
 		__asm
@@ -8787,7 +8787,7 @@ namespace helper
 		}
 	}
 
-	void AIPlacementDataSomething(s8* placementData, Point16 tryPosition)
+	void ai_placement_data_something(s8* placementData, Point16 tryPosition)
 	{
 		const u32 Func_AIPlacementDataSomething = 0x00443610;
 		__asm
@@ -9149,7 +9149,7 @@ namespace helper
 		}
 	}
 
-	s8 createUnitAllowed(u16 unitId, Unit* unit, s32 playerID)
+	s8 create_unit_allowed(u16 unitId, Unit* unit, s32 playerID)
 	{
 		const u32 Func_createUnitAllowed = 0x0046E1C0;
 		static s8 result;
@@ -9935,8 +9935,8 @@ namespace helper
 	}
 	*/
 	
-	// For AI_PerformTask
-	void AI_OverlordBehavior(Unit* unit)
+	// For ai_perform_task
+	void ai_overlord_behavior(Unit* unit)
 	{
 		const u32 Func_AI_OverlordBehavior = 0x00434DF0;
 		__asm
@@ -9948,7 +9948,7 @@ namespace helper
 		}
 	}
 
-	void AI_NukeSiloBehavior(Unit* unit)
+	void ai_nuke_silo_behavior(Unit* unit)
 	{
 		const u32 Func_AI_NukeSiloBehavior = 0x00434D50;
 		__asm
@@ -9960,7 +9960,7 @@ namespace helper
 		}
 	}
 
-	bool AI_UnitConstructionBehavior(s32 playerId, Unit* unit, s32 someBool)
+	bool ai_unit_construction_behavior(s32 playerId, Unit* unit, s32 someBool)
 	{
 		static s32 result;
 		const u32 Func_AI_UnitConstructionBehavior = 0x00433890;
@@ -9977,7 +9977,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	char AI_PlanDoMergeMorph(s32 playerId, Unit* unit, s32 someBool)
+	char ai_plan_do_merge_morph(s32 playerId, Unit* unit, s32 someBool)
 	{
 		static s32 result;
 		const u32 Func_AI_PlanDoMergeMorph = 0x00435F10;
@@ -9994,7 +9994,7 @@ namespace helper
 		return (char)result;
 	}
 
-	s32 AI_MorphBehavior(s32 player, Unit* unit, void* unit_ai)
+	s32 ai_morph_behavior(s32 player, Unit* unit, void* unit_ai)
 	{
 		static s32 result;
 		const u32 Func_AI_MorphBehavior = 0x00434FF0;
@@ -10011,7 +10011,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_TrainBehavior(Unit* unit, void* unit_ai, s32 player)
+	void ai_train_behavior(Unit* unit, void* unit_ai, s32 player)
 	{
 		const u32 Func_AI_TrainBehavior = 0x00434720;
 		__asm
@@ -10025,7 +10025,7 @@ namespace helper
 		}
 	}
 
-	void AI_UpgradeBehavior(Unit* unit, s32 player)
+	void ai_upgrade_behavior(Unit* unit, s32 player)
 	{
 		const u32 Func_AI_UpgradeBehavior = 0x00434670;
 		__asm
@@ -10038,7 +10038,7 @@ namespace helper
 		}
 	}
 
-	s32 AI_ResearchBehavior(Unit* unit, s32 player) // return value unused
+	s32 ai_research_behavior(Unit* unit, s32 player) // return value unused
 	{
 		static s32 result;
 		const u32 Func_AI_ResearchBehavior = 0x0043462F;
@@ -10054,7 +10054,7 @@ namespace helper
 		return result;
 	}
 
-	char AI_ConstructBehavior(Unit* unit, void* unit_ai, s32 player)
+	char ai_construct_behavior(Unit* unit, void* unit_ai, s32 player)
 	{
 		static s32 result;
 		const u32 Func_AI_ConstructBehavior = 0x00434E70;
@@ -10071,7 +10071,7 @@ namespace helper
 		return (char)result;
 	}
 
-	s32 AI_MakeDetectorBehavior(Unit* unit, s32 player)
+	s32 ai_make_detectors_behavior(Unit* unit, s32 player)
 	{
 		static s32 result;
 		const u32 Func_AI_MakeDetectorBehavior = 0x00435130;
@@ -10087,9 +10087,9 @@ namespace helper
 		return result;
 	}
 
-	// For AI_PlanDoMergeMorph
+	// For ai_plan_do_merge_morph
 
-	Unit* AI_GetMutaliskForMorph(s32 player)
+	Unit* ai_get_mutalisk_for_morph(s32 player)
 	{
 		static Unit* result;
 		const u32 Func_AI_GetMutaliskForMorph = 0x004375F0;
@@ -10104,7 +10104,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_GetHighTemplarsForSummon(s32 player, Unit** first, Unit** second)
+	s32 ai_get_high_templar_for_summon(s32 player, Unit** first, Unit** second)
 	{
 		static s32 result;
 		const u32 Func_AI_GetHighTemplarsForSummon = 0x00437410;
@@ -10121,7 +10121,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_GetDarkTemplarsForSummon(s32 player, Unit** first, Unit** second)
+	s32 ai_get_dark_templar_for_summon(s32 player, Unit** first, Unit** second)
 	{
 		static s32 result;
 		const u32 Func_AI_GetDarkTemplarsForSummon = 0x00437320;
@@ -10152,7 +10152,7 @@ namespace helper
 		}
 	}
 
-	s16 AI_Reserve(s32 player, s32 someBool)
+	s16 ai_reserve(s32 player, s32 someBool)
 	{
 		static s16 result;
 		const u32 Func_AI_Reserve = 0x00447D00;
@@ -10168,7 +10168,7 @@ namespace helper
 		return result;
 	}
 
-	AI_Main* AI_PopSpendingRequest(s32 player)
+	AI_Main* ai_pop_spending_request(s32 player)
 	{
 		static AI_Main* result;
 		const u32 Func_AI_PopSpendingRequest = 0x004476D0;
@@ -10198,7 +10198,7 @@ namespace helper
 		return result;
 	}
 
-	s32 isUnitTypeRaceUnitRace(u16 unitId, Unit* unit)
+	s32 is_unit_id_race_equal_to_unit_race(u16 unitId, Unit* unit)
 	{
 		static s32 result;
 		const u32 Func_isUnitTypeRaceUnitRace = 0x00432480;
@@ -10230,7 +10230,7 @@ namespace helper
 		return result;
 	}
 
-	char AI_PerformTask(Unit* unit)
+	char ai_perform_task(Unit* unit)
 	{
 		static char result;
 		const u32 Func_AI_PerformTask = 0x004361A0;
@@ -10245,7 +10245,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_GetRequestedBuildType(s32 player)
+	s32 ai_get_request_build_type(s32 player)
 	{
 		static s32 result;
 		const u32 Func_AI_GetRequestedBuildType = 0x00447590;
@@ -10260,7 +10260,7 @@ namespace helper
 		return result;
 	}
 
-	bool AI_TrainUnit(Unit* unit, u16 unitId, char requestId, void* value)
+	bool ai_train_unit(Unit* unit, u16 unitId, char requestId, void* value)
 	{
 		static bool result;
 		const u32 Func_AI_TrainUnit = 0x004672F0;
@@ -10659,7 +10659,7 @@ namespace helper
 		}
 	}
 
-	void Ai_AddBuildRequest(AiTown* town, s32 method, s32 count, s32 id, s32 priority, b32 only_if_needed) { // 00431F90
+	void ai_add_build_request(AiTown* town, s32 method, s32 count, s32 id, s32 priority, b32 only_if_needed) { // 00431F90
 		const u32 func_address = 0x00431F90;
 		__asm {
 			PUSHAD
@@ -11198,7 +11198,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* get_AI_refinery(AiTown* town, s32 gas_state, s32 index) {
+	Unit* get_ai_refinery(AiTown* town, s32 gas_state, s32 index) {
 		static Unit* result;
 		const u32 func_address = 0x00432B90;
 		__asm {
@@ -11227,7 +11227,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_resource_need_split(u8* out_gas_percentage, u32 player, u8* out_mineral_percentage) {
+	void ai_resource_need_split(u8* out_gas_percentage, u32 player, u8* out_mineral_percentage) {
 		const u32 func_address = 0x004475B0;
 		__asm {
 			PUSHAD
@@ -11239,7 +11239,7 @@ namespace helper
 		}
 	}
 
-	u32 AI_add_town_spending_request(u32 player, u32 priority, u32 unit_id, void* param) {
+	u32 ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, void* param) {
 		static u32 result;
 		const u32 func_address = 0x00448400;
 		__asm {

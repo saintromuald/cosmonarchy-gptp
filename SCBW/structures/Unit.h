@@ -455,7 +455,7 @@ struct Unit : public UnitLayout
 	bool isCarrier();
 
 	/// Returns whether the unit is currently constructing a Protoss building
-	bool unitIsTrainingOrMorphing();
+	bool unit_is_training_or_morphing();
 
 	/// Returns whether the unit is currently constructing a Protoss building
 	bool isQueueSlotActive(int slot);

@@ -48,7 +48,7 @@ namespace hooks
 		builder = getActivePlayerNextSelection();
 
 		result_function_00473FB0 =
-			helper::canBuildOnTileLocation(
+			helper::can_build_on_tile_location(
 				builder,
 				builder->player,
 				x,
@@ -103,7 +103,7 @@ namespace hooks
 		builder = getActivePlayerNextSelection();
 
 		result_function_00473FB0 =
-			helper::canBuildOnTileLocation(
+			helper::can_build_on_tile_location(
 				builder,
 				builder->player,
 				x,
@@ -160,7 +160,7 @@ namespace hooks
 			addonPlaceY = y - addonPlaceY;
 
 			result_function_00473FB0 =
-				helper::canBuildOnTileLocation(
+				helper::can_build_on_tile_location(
 					builder,
 					builder->player,
 					addonPlaceX,

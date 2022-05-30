@@ -311,7 +311,7 @@ LABEL_18:
 						v11 = v9 + 1;
 						goto LABEL_72;
 					case ReqOpcode::IsNotBusyBuilding:
-						if (unitIsTrainingOrMorphing(unit) || unit->building.upgradeType != TechId::None ||
+						if (unit_is_training_or_morphing(unit) || unit->building.upgradeType != TechId::None ||
 							unit->building.techType != UpgradeId::None)
 							goto LABEL_87;
 						++v28;

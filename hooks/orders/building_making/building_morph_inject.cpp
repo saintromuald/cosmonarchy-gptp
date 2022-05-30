@@ -88,7 +88,7 @@ namespace
 		}
 	}
 
-	//-------- AI_MorphBehavior() --------//
+	//-------- ai_morph_behavior() --------//
 
 	const u32 Hook_AI_MorphBehavior_IsMorphedBuildingYes = 0x0043508B;
 	void __declspec(naked) isMorphedBuildingWrapper_AI_MorphBehavior()

@@ -18,7 +18,7 @@ namespace hooks
 			wUnitType >= UnitId::ZergInfestedCommandCenter &&
 			wUnitType <= 227 &&
 			building->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1 &&
-			helper::HasMoneyCanMake(building, wUnitType) && //start construction if successful
+			helper::has_money_can_make(building, wUnitType) && //start construction if successful
 			building->mainOrderId != OrderId::Morph2
 			)
 		{
@@ -56,7 +56,7 @@ namespace hooks
 			if (
 				bAllowMorph &&
 				current_unit->mainOrderId != OrderId::Morph1 &&
-				helper::HasMoneyCanMake(current_unit, wUnitType) // start construction if successful
+				helper::has_money_can_make(current_unit, wUnitType) // start construction if successful
 				)
 			{
 				current_unit->userActionFlags |= 1;

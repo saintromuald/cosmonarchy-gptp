@@ -30,7 +30,7 @@ namespace
 			MOV town, ESI
 			PUSHAD
 		}
-		hooks::AI_BuildTechUpgrade(town, method, amount, id, priority, need);
+		hooks::ai_build_tech_upgrade(town, method, amount, id, priority, need);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -59,7 +59,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::AI_ProgressBuild(player, minerals, gas);
+		result = hooks::ai_progress_build(player, minerals, gas);
 		__asm
 		{
 			POPAD
@@ -95,7 +95,7 @@ namespace
 			MOV builder, ECX
 			PUSHAD
 		}
-		result = hooks::AIManageBuildingPlacement(builder, unitId, tryPosition, outPosition, areaTiles);
+		result = hooks::ai_manage_building_placement(builder, unitId, tryPosition, outPosition, areaTiles);
 		__asm
 		{
 			POPAD
@@ -115,7 +115,7 @@ namespace
 			MOV unit, ECX
 			PUSHAD
 		}
-		result = hooks::AI_PerformTask(unit);
+		result = hooks::ai_perform_task(unit);
 		__asm
 		{
 			POPAD
@@ -144,7 +144,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::AI_PlanDoMergeMorph(player, unit, boolSomething);
+		result = hooks::ai_plan_do_merge_morph(player, unit, boolSomething);
 		__asm
 		{
 			POPAD
@@ -194,7 +194,7 @@ namespace
 			MOV unit_id, ECX
 			PUSHAD
 		}
-		hooks::AI_Build(unit_id, need, count, town, priority);
+		hooks::ai_build(unit_id, need, count, town, priority);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -209,7 +209,7 @@ namespace
 			MOV town, EAX
 			PUSHAD
 		}
-		hooks::AI_build_gas_building(town);
+		hooks::ai_build_refinery(town);
 		__asm {
 			POPAD
 			RETN

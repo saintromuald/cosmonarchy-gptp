@@ -1590,7 +1590,7 @@ bool Unit::isCarrier()
 	return (bool)result;
 }
 
-bool Unit::unitIsTrainingOrMorphing()
+bool Unit::unit_is_training_or_morphing()
 {
 	assert(this);
 	const u32 Func_unitIsTrainingOrMorphing = 0x00401500;
