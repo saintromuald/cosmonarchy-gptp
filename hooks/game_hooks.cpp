@@ -1526,7 +1526,7 @@ namespace hooks
 				if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
 					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->player != target->player) {
 					UnitExt* target_ext = globals.get_unit_ext(target);
-					target_ext->timers[TimerAI_AvoidTargeting] = 2;
+					target_ext->timers[TimerAI_AvoidTargeting] = 2; // This is not really solid for FFA scenarios, but a more complete solution would be way harder to do
 					if (unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
 						if (unit->orderSignal & 0x2) {
 							unit->orderSignal &= ~0x2;

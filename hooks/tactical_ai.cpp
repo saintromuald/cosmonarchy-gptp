@@ -229,7 +229,7 @@ static u8 get_current_weapon_cooldown(Unit* unit)
 {
 	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 	{
-		if (unit->mainOrderTimer == 0)
+		if (unit->mainOrderTimer == 0 && (unit->carrier.inHangarCount || (*elapsedTimeFrames) % 24 == 0))
 		{
 			return 0;
 		}
@@ -405,74 +405,6 @@ static s32 get_target_cost(Unit* source, Unit* target)
 	return cost;
 }
 
-static bool unit_could_kite(Unit* unit)
-{
-	UnitExt* unit_ext = globals.get_unit_ext(unit);
-	bool in_combat = unit_ext->damageReceiveTimer < 4 * 24
-		|| unit_ext->damageDealtTimer < 4 * 24
-		|| unit->mainOrderId == OrderId::Patrol
-		|| unit->mainOrderId == OrderId::AttackMove
-		|| unit->mainOrderId == OrderId::AttackMoveComputer
-		|| unit->mainOrderId == OrderId::AttackUnit
-		|| unit->mainOrderId == OrderId::CarrierFight
-		|| unit->mainOrderId == OrderId::ReaverFight
-		|| unit->mainOrderId == OrderId::Move
-		|| unit->mainOrderId == OrderId::MoveToMinerals
-		|| unit->mainOrderId == OrderId::HarvestGas1
-		|| unit->mainOrderId == OrderId::ComputerAI
-		|| unit->mainOrderId == OrderId::ComputerReturn;
-
-	if (unit->id == UnitId::ZergLakizilisk) {
-		if (!(unit->status & UnitStatus::Burrowed)) {
-			return false;
-		}
-	} else {
-		if (unit->status & UnitStatus::Burrowed) {
-			return false;
-		}
-	}
-
-	return in_combat
-		&& unit->hasWeapon()
-		&& !unit->isFrozen()
-		&& unit->status & UnitStatus::Completed
-		&& !(unit->movementFlags & MovementFlags::StartingAttack)	
-		// Special units
-		&& unit->id != UnitId::ProtossSteward
-		&& unit->id != UnitId::ProtossPlasmaShell
-		&& unit->id != UnitId::ProtossAccantor // currently disabled
-		&& unit->id != UnitId::TerranNuclearMissile
-		&& unit->id != UnitId::ProtossAnthelion
-		// Other rules
-		&& unit->mainOrderId != OrderId::BuildTerran
-		&& unit->mainOrderId != OrderId::ConstructingBuilding
-		&& unit->mainOrderId != OrderId::BuildProtoss1
-		&& unit->mainOrderId != OrderId::BuildProtoss2
-		&& unit->mainOrderId != OrderId::DroneLand
-		&& unit->mainOrderId != OrderId::DroneStartBuild
-		&& unit->mainOrderId != OrderId::DroneBuild
-		&& !unit_ext->values[ValueDisruptionFieldOn];
-}
-
-static bool unit_can_kite(Unit* unit) {
-	// ComputerReturn was patched away, still keeping the unreliable hardcode just in case
-	UnitExt* unit_ext = globals.get_unit_ext(unit);
-	return (unit_ext->timers[TimerAI_KitingCooldown] == 0 || unit->mainOrderId == OrderId::ComputerReturn);
-}
-
-static bool unit_kiting_can_attack(Unit* unit)
-{
-	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
-	{
-		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
-	}
-	if (unit->movementFlags & MovementFlags::Accelerating || unit->flingyTurnSpeed < 35)
-	{
-		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
-	}
-	return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.25;
-}
-
 enum KiterType
 {
 	KiterType_TargetingOnly,
@@ -484,9 +416,10 @@ enum KiterType
 	KiterType_Count,
 };
 
-KiterType get_kiter_type(u32 unit_id)
+static KiterType get_kiter_type(u32 unit_id)
 {
 	if (units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
+		// No kiting; Just smart targeting
 		return KiterType_TargetingOnly;
 	}
 
@@ -531,6 +464,74 @@ KiterType get_kiter_type(u32 unit_id)
 	return KiterType_Ranged;
 }
 
+static bool unit_could_kite(Unit* unit)
+{
+	UnitExt* unit_ext = globals.get_unit_ext(unit);
+	bool in_combat = unit_ext->damageReceiveTimer < 4 * 24
+		|| unit_ext->damageDealtTimer < 4 * 24
+		|| unit->mainOrderId == OrderId::Patrol
+		|| unit->mainOrderId == OrderId::AttackMove
+		|| unit->mainOrderId == OrderId::AttackMoveComputer
+		|| unit->mainOrderId == OrderId::AttackUnit
+		|| unit->mainOrderId == OrderId::CarrierFight
+		|| unit->mainOrderId == OrderId::ReaverFight
+		|| unit->mainOrderId == OrderId::Move
+		|| unit->mainOrderId == OrderId::MoveToMinerals
+		|| unit->mainOrderId == OrderId::HarvestGas1
+		|| unit->mainOrderId == OrderId::ComputerAI
+		|| unit->mainOrderId == OrderId::ComputerReturn;
+
+	if (unit->id == UnitId::ZergLakizilisk) {
+		if (!(unit->status & UnitStatus::Burrowed)) {
+			return false;
+		}
+	} else {
+		if (unit->status & UnitStatus::Burrowed) {
+			return false;
+		}
+	}
+
+	return in_combat
+		&& unit->hasWeapon()
+		&& !unit->isFrozen()
+		&& unit->status & UnitStatus::Completed
+		&& !(unit->movementFlags & MovementFlags::StartingAttack)	
+		// Special units
+		&& unit->id != UnitId::ProtossSteward
+		&& unit->id != UnitId::ProtossPlasmaShell
+		//&& unit->id != UnitId::ProtossAccantor // currently disabled
+		&& unit->id != UnitId::TerranNuclearMissile
+		&& unit->id != UnitId::ProtossAnthelion
+		// Other rules
+		&& unit->mainOrderId != OrderId::BuildTerran
+		&& unit->mainOrderId != OrderId::ConstructingBuilding
+		&& unit->mainOrderId != OrderId::BuildProtoss1
+		&& unit->mainOrderId != OrderId::BuildProtoss2
+		&& unit->mainOrderId != OrderId::DroneLand
+		&& unit->mainOrderId != OrderId::DroneStartBuild
+		&& unit->mainOrderId != OrderId::DroneBuild
+		&& !unit_ext->values[ValueDisruptionFieldOn];
+}
+
+static bool unit_can_kite(Unit* unit) {
+	// ComputerReturn was patched away, still keeping the unreliable hardcode just in case
+	UnitExt* unit_ext = globals.get_unit_ext(unit);
+	return get_kiter_type(unit->id) != KiterType_TargetingOnly && (unit_ext->timers[TimerAI_KitingCooldown] == 0 || unit->mainOrderId == OrderId::ComputerReturn);
+}
+
+static bool unit_kiting_can_attack(Unit* unit)
+{
+	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
+	{
+		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
+	}
+	if (unit->movementFlags & MovementFlags::Accelerating || unit->flingyTurnSpeed < 35)
+	{
+		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
+	}
+	return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.25;
+}
+
 void kiting_ai(Unit* unit, UnitExt* unit_ext)
 {
 	// Kiting AI
@@ -546,7 +547,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 		u32 hostile_group_radius = 6 * 32;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
-			hostile_group_radius = 4 * 32;
+			hostile_group_radius = 2 * 32;
 		}
 
 		scbw::UnitFinder local_group(
@@ -625,9 +626,9 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					else
 					{
 						local_unit->orderTo(OrderId::AttackUnit, best_target);
+						local_unit_ext->values[ValueAI_PreventTargeting] = 1;
 					}
 					local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
-					local_unit_ext->values[ValueAI_PreventTargeting] = 1;
 				}
 				else
 				{
@@ -638,7 +639,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 				}
 			});
 		}
-		else if (unit_can_kite(unit) && get_kiter_type(unit->id) != KiterType_TargetingOnly)
+		else if (unit_can_kite(unit))
 		{
 			u32 sync = 0;
 			if (unit->id != UnitId::ProtossSolarion && unit->id != UnitId::ProtossAccantor)
@@ -691,9 +692,9 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 						return;
 					}
 
-					if (unit->id == UnitId::ProtossSolarion)
+					if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 					{
-						local_unit_ext->timers[TimerAI_KitingCooldown] = 12;
+						local_unit_ext->timers[TimerAI_KitingCooldown] = 5 * 24;
 					}
 					else if (unit->movementFlags & MovementFlags::Accelerating || unit->flingyTurnSpeed < 35)
 					{
