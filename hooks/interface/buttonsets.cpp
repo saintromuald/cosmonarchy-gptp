@@ -1491,7 +1491,7 @@ namespace hooks
 							for (int i = 0; i < 8; ++i)
 							{								
 								Unit* bunkerUnit = (*activePortraitUnit)->getLoadedUnit(i);
-								if (bunkerUnit && scbw::unitIsRangedAttacker(bunkerUnit))
+								if (bunkerUnit && scbw::unit_is_ranged_attacker(bunkerUnit))
 								{
 									loaded++;
 								}

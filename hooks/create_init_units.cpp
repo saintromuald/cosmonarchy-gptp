@@ -315,8 +315,8 @@ namespace hooks
 			}
 			helper::update_unit_stats_and_finish_building(unit);
 			if (helper::show_finished_unit(unit)) {
-				helper::updateUnitStrengthAndApplyDefaultOrders(unit);
-				helper::AI_AddGuardAiToUnit(unit);
+				helper::update_unit_strength_and_apply_default_orders(unit);
+				helper::add_guard_ai_to_unit(unit);
 				return unit;
 			} else {
 				const char* text  = "";

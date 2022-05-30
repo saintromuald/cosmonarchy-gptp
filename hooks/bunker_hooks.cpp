@@ -29,7 +29,7 @@ namespace hooks
 	// Checks whether the unit can attack from inside a bunker.
 	void unitAttackFromInsideBunkerHook(Unit* unit)
 	{
-		if (scbw::unitIsRangedAttacker(unit))
+		if (scbw::unit_is_ranged_attacker(unit))
 		{
 			b32 resultApplyCooldown;
 			unit->status |= UnitStatus::HoldingPosition;

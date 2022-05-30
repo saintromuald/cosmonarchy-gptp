@@ -51,7 +51,7 @@ namespace AI
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Worker)
 				return true;
 
-			if (target->getCurrentLifeInGame() >= 300)
+			if (target->get_current_life_ingame() >= 300)
 				return true;
 
 			return false;

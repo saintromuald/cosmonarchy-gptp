@@ -281,7 +281,7 @@ namespace hooks
 			// original code was hardcoded instead of using isValidMorph
 			if (helper::isValidMorph(builtUnitId))
 			{
-				if (unit->getRace() == RaceId::Zerg)
+				if (unit->get_race() == RaceId::Zerg)
 				{
 					helper::zergPlaceBuildingCntd(unit);
 				}
@@ -359,7 +359,7 @@ namespace hooks
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
 					helper::setThingyVisibilityFlags(thingy);
 				}
-				helper::playSoundFromSource(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
+				helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
 				helper::replace_unit_with_type(unit, UnitId::ZergDroleth);
 				// probably AI related
 				helper::updateBuildingsAI(unit);

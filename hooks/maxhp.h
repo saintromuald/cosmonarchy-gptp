@@ -5,7 +5,7 @@ namespace hooks
 	void injectMaxHpHooks();
 	u32 maxhp(s32 id, s32 playerId);
 	u32 maxshields(s32 id, s32 playerId);
-	u32 getTotalHitPointsPlusShields(Unit* a1);
+	u32 get_total_hp_plus_shields(Unit* a1);
 	void drawUnitInfo(BinDlg* a1);
 	void drawSupplyUnitInfo(s32 a1);																		// 00427540
 	bool AI_TargetEnemyProc(Unit* a1, Unit* a2);															// 00440A20

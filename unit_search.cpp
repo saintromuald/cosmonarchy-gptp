@@ -173,7 +173,7 @@ UnitArray UnitSearchRadial(Point16 center, u32 radius)
 					x * CELL_PX_SIZE + CELL_PX_SIZE / 2,
 					y * CELL_PX_SIZE + CELL_PX_SIZE / 2
 				};
-				const bool tileIsFullyCovered = scbw::getDistanceFast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
+				const bool tileIsFullyCovered = scbw::get_distance_fast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
 
 				// check which units are in the area
 				for (u32 i = 0; i < current_array->size; i++)
@@ -182,7 +182,7 @@ UnitArray UnitSearchRadial(Point16 center, u32 radius)
 					if (unit->isDead()) {
 						continue;
 					}
-					if (!tileIsFullyCovered && scbw::getDistanceFast(center, unit->position) > radius)
+					if (!tileIsFullyCovered && scbw::get_distance_fast(center, unit->position) > radius)
 					{
 						continue;
 					}
@@ -282,7 +282,7 @@ CorpseArray CorpseSearchRadial(Point16 center, u32 radius) {
 					x * CELL_PX_SIZE + CELL_PX_SIZE / 2,
 					y * CELL_PX_SIZE + CELL_PX_SIZE / 2
 				};
-				const bool tileIsFullyCovered = scbw::getDistanceFast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
+				const bool tileIsFullyCovered = scbw::get_distance_fast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
 
 				// check which units are in the area
 				for (u32 i = 0; i < current_array->size; i++)
@@ -291,7 +291,7 @@ CorpseArray CorpseSearchRadial(Point16 center, u32 radius) {
 					if (corpse->sprite->flags & SpriteFlags::Flag04) {
 						continue;
 					}
-					if (!tileIsFullyCovered && scbw::getDistanceFast(center, corpse->sprite->position) > radius)
+					if (!tileIsFullyCovered && scbw::get_distance_fast(center, corpse->sprite->position) > radius)
 					{
 						continue;
 					}
@@ -343,7 +343,7 @@ void UnitArraySort(UnitArray* unit_array, SearchScoreFunc score_func)
 static Point16 TempCenter;
 static s32 DistanceCompareFunc(void const* a, void const* b)
 {
-	return scbw::getDistanceFast(TempCenter, ((Unit*)a)->position) > scbw::getDistanceFast(TempCenter, ((Unit*)b)->position);	
+	return scbw::get_distance_fast(TempCenter, ((Unit*)a)->position) > scbw::get_distance_fast(TempCenter, ((Unit*)b)->position);	
 }
 
 void UnitArraySortByDistance(UnitArray* unit_array, Point16 center)

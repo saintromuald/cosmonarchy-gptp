@@ -35,7 +35,7 @@ namespace hooks
 						target->damageWith(WeaponId::Feedback, target->energy, unit, unit->player, 1, 1);
 						target->energy = 0;
 						unit->spendUnitEnergy(techCost);
-						helper::playSoundFromSource(SoundId::Protoss_Darchon_feedback_wav, target, 1, 0);
+						helper::play_sound_from_unit(SoundId::Protoss_Darchon_feedback_wav, target, 1, 0);
 
 						if (!target->isDead())
 						{

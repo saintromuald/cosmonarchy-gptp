@@ -602,7 +602,7 @@ LABEL_36:
 			{
 				return 0;
 			}
-			helper::AI_RemoveUnitAI(unitCopy, 0);
+			helper::remove_unit_ai(unitCopy, 0);
 			if (helper::AI_GetRequestedBuildType(player) == 2)
 			{
 				/*
@@ -631,7 +631,7 @@ LABEL_36:
 		}
 		else
 		{
-			helper::setSecondaryOrder(unitCopy, OrderId::Train);
+			helper::set_secondary_order(unitCopy, OrderId::Train);
 			return 1;
 		}
 	}

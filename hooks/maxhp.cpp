@@ -57,7 +57,7 @@ namespace hooks
 		return result;
 	}
 
-	u32 getTotalHitPointsPlusShields(Unit* a1)
+	u32 get_total_hp_plus_shields(Unit* a1)
 	{ // 00402710
 		s32 v1; // eax
 		s32 v2; // ecx
@@ -276,7 +276,7 @@ LABEL_26:
 			sprintf_s(unkString_Char, 260, "%s %d", v12, (v13 + 1) / 2);
 			v22 = (*activePortraitUnit)->player;
 			v14 = units_dat::GroupFlags[helper::getLastQueueSlotType((*activePortraitUnit))];
-			s32 race = (*activePortraitUnit)->getRace();
+			s32 race = (*activePortraitUnit)->get_race();
 			if (v14.isZerg)
 			{
 				v15 = raceSupply[RaceId::Zerg].max[v22];
@@ -430,7 +430,7 @@ LABEL_55:
 			return 0;
 		if (a1->status & UnitStatus::IsHallucination)
 		{
-			v5 = getTotalHitPointsPlusShields(a1);
+			v5 = get_total_hp_plus_shields(a1);
 			if (helper::getCurrentHitPointsPlusShields(v3) < v5)
 				return 0;
 		}

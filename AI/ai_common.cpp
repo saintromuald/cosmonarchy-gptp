@@ -122,12 +122,12 @@ namespace AI
 					if (units_dat::BaseProperty[target->id] & UnitProperty::Organic &&
 						target->maelstromTimer == 0)
 					{
-						totalEnemyLife += target->getCurrentLifeInGame();
+						totalEnemyLife += target->get_current_life_ingame();
 					}
 				}
 				else
 				{
-					totalEnemyLife += target->getCurrentLifeInGame();
+					totalEnemyLife += target->get_current_life_ingame();
 				}
 			}
 		}
@@ -148,7 +148,7 @@ namespace AI
 				scbw::canWeaponTargetUnit(weaponId, target, caster) &&
 				!caster->isTargetEnemy(target))
 			{
-				totalAllyLife += target->getCurrentLifeInGame();
+				totalAllyLife += target->get_current_life_ingame();
 			}
 		}
 		return totalAllyLife;
@@ -212,7 +212,7 @@ namespace AI
 				if ((units_dat::BaseProperty[target->id] & UnitProperty::Worker) ||
 					(!(target->status & UnitStatus::IsBuilding)))
 				{
-					totalNukeTargetValue += target->getCurrentLifeInGame();
+					totalNukeTargetValue += target->get_current_life_ingame();
 				}
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
 				{

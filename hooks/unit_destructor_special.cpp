@@ -36,7 +36,7 @@ void augurProc(Unit* augur, s32 radius) {
 			return true;
 		});
 	Thingy* thingy = helper::createThingy(SpriteId::AugurDeathExplosion, augur->getX(), augur->getY(), augur->player);
-	helper::playSoundFromSource(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
+	helper::play_sound_from_unit(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
 	if (target)
 	{
 		augur->orderTarget.unit = target;
@@ -335,7 +335,7 @@ void unit_destructor_special_cases(Unit* unit)
 		for (u32 i = 0; i < unit_array.size; ++i)
 		{
 			Unit* caster = unit_array.units[i];
-			if (scbw::getDistanceFast(unit->position, caster->position) <= caster->getSightRange() * 32)
+			if (scbw::get_distance_fast(unit->position, caster->position) <= caster->getSightRange() * 32)
 			{
 				caster->healEnergy(5 * 256);
 			}

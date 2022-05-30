@@ -21,7 +21,7 @@ namespace hooks
 			{
 				if (techId == TechId::Hallucination && !orderTarget) {
 					Point16 target_pos = caster->orderTarget.pt;
-					if (scbw::getDistanceFast(caster->position, target_pos) > range) {
+					if (scbw::get_distance_fast(caster->position, target_pos) > range) {
 						helper::setMoveTargetXY(target_pos.x, target_pos.y, caster);
 						return 0;
 					}
@@ -255,7 +255,7 @@ namespace hooks
 				if (!(*CHEAT_STATE & CheatFlags::TheGathering) &&
 					unit->energy < spellCost)
 				{
-					u8 raceId = unit->getRace();
+					u8 raceId = unit->get_race();
 					char* message = (char*)statTxtTblNew->getString(864 + raceId); // Not enough energy
 					if (message != nullptr)
 					{

@@ -31,7 +31,7 @@ namespace hooks
 				{
 					if (unit->secondaryOrderId == OrderId::Cloak)
 					{
-						unit->setSecondaryOrder(OrderId::Nothing2); // Supposedly, immediately decloaks the unit.
+						unit->set_secondary_order(OrderId::Nothing2); // Supposedly, immediately decloaks the unit.
 					}
 					bStopHere = true;
 				}
@@ -95,7 +95,7 @@ namespace hooks
 	{
 		const u32 unitOffset = std::max(unit->getRight() - unit->getLeft(), unit->getBottom() - unit->getTop()) + 32;
 		return scbw::canWeaponTargetUnit(WeaponId::WyvernJacksonCannon, target, unit)
-			&& scbw::getDistanceFast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon] + unitOffset
+			&& scbw::get_distance_fast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon] + unitOffset
 			&& unit->canAttackTarget(target);
 	}
 
@@ -150,10 +150,10 @@ namespace hooks
 				auto targ_x = unitExt->values[ValueWyvernLandGrabX];
 				auto targ_y = unitExt->values[ValueWyvernLandGrabY];
 				auto direction = scbw::getAngle(x, y, targ_x, targ_y);
-				if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
+				if (scbw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
 				{
 					u32 sound = scbw::randBetween(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
-					helper::playSoundFromSource(sound, unit, 1, 0);
+					helper::play_sound_from_unit(sound, unit, 1, 0);
 					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->player, unit, nullptr, targ_x, targ_y);
 					unitExt->timers[TimerWyvernAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
 					seek_unit = false;
@@ -206,7 +206,7 @@ namespace hooks
 				if (target)
 				{
 					auto direction = scbw::getAngle(x, y, target->getX(), target->getY());
-					helper::playSoundFromSource(scbw::randBetween(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
+					helper::play_sound_from_unit(scbw::randBetween(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
 					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->player, unit, target, target->position);
 					unitExt->timers[TimerWyvernAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
 				}
@@ -472,7 +472,7 @@ namespace hooks
 			{
 				if (unitExt->values[ValueLastOrdersInit] == 1)
 				{
-					auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
+					auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y,
 						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					if (distance < 32)
 					{
@@ -487,7 +487,7 @@ namespace hooks
 							unit->getY() + radius
 						).forEachInMatch(match, [&](Unit* target)
 						{
-							u32 dist = scbw::getDistanceFast(unit->position, target->position);
+							u32 dist = scbw::get_distance_fast(unit->position, target->position);
 							u32 damage = 20 * 256;
 							if (dist > 48)
 							{
@@ -508,7 +508,7 @@ namespace hooks
 			// Terran building burn-down
 			if (!bStopHere && !unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 			{
-				if (unit->getRace() == RaceId::Terran)
+				if (unit->get_race() == RaceId::Terran)
 				{
 					if (unit->status & UnitStatus::GroundedBuilding
 						|| units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding)
@@ -729,7 +729,7 @@ namespace hooks
 			while (1)
 			{
 				v2 = v0->burrow_link.next;
-				if (helper::isUnitCloaking(v0))
+				if (helper::is_unit_cloaking(v0))
 				{
 					do_cloak(v0, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 				}
@@ -749,10 +749,10 @@ namespace hooks
 					v5 = v0->status;
 					if (v5 & 0x100)
 						goto LABEL_13;
-					helper::playSoundFromDirect(v0, 273);
+					helper::play_sound_from_direction(v0, 273);
 				}
 				v1 = 1;
-LABEL_13:
+		LABEL_13:
 				v0 = v2;
 				if (!v2)
 				{
@@ -776,7 +776,7 @@ LABEL_13:
 		Unit* unitVar = unit;
 		if (!(unit->status & UnitStatus::Burrowed))
 		{
-			helper::playSoundFromSource(soundId, unit, 1, 0);
+			helper::play_sound_from_unit(soundId, unit, 1, 0);
 		}
 		if (!IS_IN_REPLAY && unitVar->player == *LOCAL_NATION_ID)
 		{
@@ -788,18 +788,18 @@ LABEL_13:
 		}
 		if (unitVar->status & UnitStatus::Burrowed)
 		{
-			helper::updateSpriteFlagOnPalette(unitVar->sprite);
-			helper::showImagesHiddenByCloak(unitVar->sprite);
+			helper::update_sprite_flag_on_palette(unitVar->sprite);
+			helper::show_images_hidden_by_cloak(unitVar->sprite);
 			unitVar->status &= 0xFFFFFCFF;
 		}
 		else
 		{
-			helper::updateSpriteImagesForCloak(unitVar->sprite);
+			helper::update_sprite_images_for_cloak(unitVar->sprite);
 			unitVar->status = unitVar->status & 0xFFFFFEFF | UnitStatus::Cloaked;
 			Unit* unitSubunit = unitVar->subunit;
 			if (unitSubunit)
 			{
-				helper::updateSpriteImagesForCloak(unitSubunit->sprite);
+				helper::update_sprite_images_for_cloak(unitSubunit->sprite);
 				unitSubunit->status = unitSubunit->status & 0xFFFFFEFF | UnitStatus::Cloaked;
 			}
 		}

@@ -103,7 +103,7 @@ namespace hooks
 					helper::GiveUnitHelper(unitInfested, unitInfesting->player, 1);
 					helper::initializeEmptyUnitsLinkedListRef(unitInfested, unitInfesting->player);
 
-					// Related to infestation process, don't use unitInfested->setSecondaryOrder
+					// Related to infestation process, don't use unitInfested->set_secondary_order
 					// because here it is supposed to perform all actions even if 
 					// unitInfested->secondaryOrderId == OrderId::Nothing2 beforehand
 					unitInfested->secondaryOrderPos.y = 0;

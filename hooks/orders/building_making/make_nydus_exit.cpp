@@ -53,7 +53,7 @@ namespace hooks
 			Unit* nydusExit = helper::create_unit(UnitId::ZergNydusCanal, nydus_canal->orderTarget.pt.x, nydus_canal->orderTarget.pt.y, nydus_canal->player);
 			if (nydusExit)
 			{
-				helper::AI_TrainingOverlord(nydusExit, nydus_canal);
+				helper::ai_training_overlord(nydusExit, nydus_canal);
 			}
 			
 			if (nydusExit == nullptr)

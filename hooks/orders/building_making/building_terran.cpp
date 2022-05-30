@@ -452,7 +452,7 @@ namespace hooks
 						}
 						scbw::refresh_console();
 						builtUnit->order_computer(OrderId::BuildSelf1);
-						helper::AI_TrainingOverlord(builtUnit, unit);
+						helper::ai_training_overlord(builtUnit, unit);
 					}
 				}
 				else

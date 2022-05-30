@@ -120,7 +120,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::AI_AttackManager(player, x, y, alwaysOverwriteLastAttack, allowFallbackAirOnly);
+		result = hooks::ai_attack_manager(player, x, y, alwaysOverwriteLastAttack, allowFallbackAirOnly);
 		__asm
 		{
 			POPAD

@@ -37,7 +37,7 @@ namespace AI
 			if (target->canDetect())
 				return true;
 
-			if (target->getCurrentLifeInGame() > 80)
+			if (target->get_current_life_ingame() > 80)
 				return true;
 
 			return false;

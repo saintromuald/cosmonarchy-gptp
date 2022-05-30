@@ -194,7 +194,7 @@ namespace hooks
 
 			//946F3
 			distanceBetweenUnits =
-				scbw::getDistanceFast(
+				scbw::get_distance_fast(
 					unit->sprite->position.x,
 					unit->sprite->position.y,
 					targetUnit->sprite->position.x,
@@ -393,7 +393,7 @@ namespace hooks
 
 			//94913
 			distanceBetweenUnits =
-				scbw::getDistanceFast(
+				scbw::get_distance_fast(
 					unit->sprite->position.x,
 					unit->sprite->position.y,
 					targetUnit->sprite->position.x,

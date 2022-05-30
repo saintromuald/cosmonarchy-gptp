@@ -24,7 +24,7 @@ namespace hooks
 				helper::function_004E8DA0(unit_created);
 				if (main_building->unit_ai != nullptr)
 				{
-					helper::AI_TrainingOverlord(unit_created, main_building);
+					helper::ai_training_overlord(unit_created, main_building);
 				}
 			}
 		}
@@ -145,7 +145,7 @@ namespace hooks
 
 							if (unit->unit_ai != nullptr)
 							{
-								helper::AI_TrainingOverlord(new_larva, unit);
+								helper::ai_training_overlord(new_larva, unit);
 							}
 						}
 					}

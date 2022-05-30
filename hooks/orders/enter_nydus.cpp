@@ -34,10 +34,10 @@ namespace hooks
 		scbw::set_unit_position(unit, aimedPos.x, aimedPos.y);
 		if (scbw::checkUnitCollisionPos(unit, &aimedPos, &finalPos, nullptr, false, 0))
 		{ // 004EA201
-			helper::playSoundFromSource(SoundId::Misc_IntoNydus_wav, nydusCanal, 1, 0);
+			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydusCanal, 1, 0);
 			scbw::set_unit_position(unit, finalPos.x, finalPos.y);
 			scbw::refreshUnitAfterMove(unit);
-			helper::playSoundFromSource(SoundId::Misc_IntoNydus_wav, nydusCanal->building.nydusExit, 1, 0);
+			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydusCanal->building.nydusExit, 1, 0);
 			if (unit->orderQueueHead != nullptr)
 			{
 				unit->userActionFlags |= 1;

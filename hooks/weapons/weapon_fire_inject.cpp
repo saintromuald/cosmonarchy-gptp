@@ -246,6 +246,21 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) get_weapon_iscript_init_wrapper() { // 00476ED0
+		static Unit* unit;
+		static char iscript_anim;
+		__asm {
+			MOV iscript_anim, DL
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::get_weapon_iscript_init(unit, iscript_anim);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 extern const u32 Func_FireUnitWeapon;
@@ -265,5 +280,6 @@ namespace hooks
 	//	jump_patch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
 	//	jump_patch(bulletBehaviorReassign_Wrapper,		0x00488D50, 1);
 		jump_patch(BulletDamage_bulletNullcheck,		0x0048B770, 1);
+		jump_patch(get_weapon_iscript_init_wrapper,		0x00476ED0, 2);
 	}
 }

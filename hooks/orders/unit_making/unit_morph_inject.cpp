@@ -183,14 +183,14 @@ namespace
 		}
 
 		// Don't bother if unit has finished morphing
-		if (scbw::isConventionalUnitMorphResult(unit->id))
+		if (scbw::is_conventional_unit_morph_result(unit->id))
 		{
 			return;
 		}
 
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-			if (unit->getRace() == RaceId::Zerg)
+			if (unit->get_race() == RaceId::Zerg)
 			{
 				cancelZergBuilding(unit);
 				return;
@@ -532,7 +532,7 @@ namespace hooks
 		jump_patch(unitMorphWrapper_BTNSCOND_CanBuildUnit,	0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
 		jump_patch(unitMorphWrapper_Orders_Morph1_Check,	0x0045DFB0);		// 0045DEA0  orders_morph_1 within	
 		jump_patch(unitMorphWrapper_Orders_Morph1_EggType,	0x0045E019);		// 0045DEA0  orders_morph_1 within
-		jump_patch(cancelUnitWrapper,						0x00468280);		// 00468280  AI_cancel_structure EXACT
+		jump_patch(cancelUnitWrapper,						0x00468280);		// 00468280  ai_cancel_structure EXACT
 		jump_patch(getRemainingBuildTimePctWrapper,			0x004669E0);		// 004669E0  sub_4669E0 EXACT
 		jump_patch(getUnitVerticalOffsetOnBirthWrapper,		0x0045DE00);		// 0045DD60  orders_zerg_birth within
 		jump_patch(isRallyableEggUnitWrapper,				0x0045DE57);		// 0045DD60  orders_zerg_birth within

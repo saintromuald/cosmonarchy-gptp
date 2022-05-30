@@ -53,7 +53,7 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	{
 		return;
 	}
-	u32 dist = scbw::getDistanceFast(target->position, shaman->position);
+	u32 dist = scbw::get_distance_fast(target->position, shaman->position);
 	if (dist > 128) {
 		return;
 	}
@@ -568,7 +568,7 @@ namespace hooks
 							unit->orderTarget.pt.y = polar_y;
 							helper::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player,
 								scbw::dir_saturate(unit->currentDirection1, offset_direction));
-							helper::playSoundFromSource(80, unit, 1, 0);
+							helper::play_sound_from_unit(80, unit, 1, 0);
 							unit->orderTarget.unit = target_unit;
 							unit->orderTarget.pt = target_pos;
 						}
@@ -665,7 +665,7 @@ namespace hooks
 							pickedUnitExt->values[ValueLazarusAgent] += 1;
 							pickedUnitExt->values[ValueLazarusAgentApostleSrc] = (u32)unit; // TODO: port as a unit
 							picked_unit->sprite->createTopOverlay(ImageId::LazarusAgentCast);
-//							helper::playSoundFromSource(SoundId::LazarusAgentCast, unit);
+//							helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit);
 						}
 					}
 				}
@@ -722,7 +722,7 @@ namespace hooks
 						scbw::restoreFunc(unit);
 						unit->order_computer(OrderId::Stop);
 						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
-						helper::playSoundFromSource(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
+						helper::play_sound_from_unit(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
 					}
 					else
 					{
@@ -804,7 +804,7 @@ namespace hooks
 
 						auto column = missile / 4;
 						auto row = missile % 4;
-						auto distance = scbw::getDistanceFast(unit->getX(), unit->getY(), tgt_x, tgt_y);
+						auto distance = scbw::get_distance_fast(unit->getX(), unit->getY(), tgt_x, tgt_y);
 						auto angle = scbw::bw_angle_to_normal(scbw::getAngle(unit->getX(), unit->getY(), tgt_x, tgt_y));
 						Vector32 rotation_pt = Vector32{ 0,0 };
 						rotation_pt.x += 16 + (row - 2) * 32;
@@ -858,7 +858,7 @@ namespace hooks
 				// Lakizilisk - play sound on attack, hardcoded here to facilitate a different sound on return
 				if (unit->orderSignal & 0x20) {
 					unit->orderSignal &= ~0x20;
-					helper::playSoundFromSource(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
+					helper::play_sound_from_unit(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
 				}
 				// Lakizilisk - Seismic Spines
 				if (unit->sprite != nullptr && unit->mainOrderId != OrderId::Die
@@ -872,7 +872,7 @@ namespace hooks
 					unit->position = pos;
 					unit->sprite->position = pos;
 					scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->player, unit, nullptr, spr_position);
-					helper::playSoundFromSource(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
+					helper::play_sound_from_unit(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
 					unit->position = position;
 					unit->sprite->position = spr_position;
 					auto spineCount = 0;
@@ -1003,7 +1003,7 @@ namespace hooks
 					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 0);
 					scbw::decloakProc(unit);
 					unitExt->values[ValueGodsMadeFleshActive] = 1;
-					helper::playSoundFromSource(scbw::randBetween(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
+					helper::play_sound_from_unit(scbw::randBetween(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
 					unit->sprite->createTopOverlay(ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(unit->id));
 				}
 				// Demiurge - Gods Made Flesh - apply link
@@ -1084,7 +1084,7 @@ namespace hooks
 					unit->getY() + attackRadius
 				).forEachInMatch(match, [&](Unit* target)
 				{
-					u32 dist = scbw::getDistanceFast(unit->position, target->position);
+					u32 dist = scbw::get_distance_fast(unit->position, target->position);
 					if (dist <= weapons_dat::OuterSplashRadius[WeaponId::AnthelionEventHorizon])
 					{
 						UnitExt* targetExt = globals.get_unit_ext(target);
@@ -1118,7 +1118,7 @@ namespace hooks
 				{
 					unitExt->timers[TimerAnthelionAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::AnthelionEventHorizon);
 					unit->sprite->createUnderlay(ImageId::OpticalFlareHit_Large);
-					helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire04), unit, 1, 0);
+					helper::play_sound_from_unit(scbw::randBetween(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire04), unit, 1, 0);
 				}
 
 				if (unit->mainOrderId == OrderId::Follow || unit->mainOrderId == OrderId::AttackUnit)
@@ -1132,7 +1132,7 @@ namespace hooks
 					{
 						if (unitExt->timers[TimerAnthelionEndlessEclipse] > 1)
 						{
-							helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02), unit, 1, 0);
+							helper::play_sound_from_unit(scbw::randBetween(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02), unit, 1, 0);
 						}
 						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 					}
@@ -1146,7 +1146,7 @@ namespace hooks
 						if (teleport)
 						{
 							scbw::createAndInitThingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->player, 11);
-							helper::playSoundFromSource(scbw::randBetween(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
+							helper::play_sound_from_unit(scbw::randBetween(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
 							unit->sprite->createTopOverlay(ImageId::AnthelionTeleportArrival, 0, 0, 0);
 						}
 					}
@@ -1216,7 +1216,7 @@ namespace hooks
 					&& !unitExt->timers[TimerAxitriliskShieldLossSFX])
 				{
 					unitExt->timers[TimerAxitriliskShieldLossSFX] = AxitriliskShieldLossSFXTimer;
-					helper::playSoundFromSource(scbw::randBetween(SoundId::AxitriliskShieldLoss01, SoundId::AxitriliskShieldLoss03), unit, 1, 0);
+					helper::play_sound_from_unit(scbw::randBetween(SoundId::AxitriliskShieldLoss01, SoundId::AxitriliskShieldLoss03), unit, 1, 0);
 				}
 			} break;
 			case UnitId::TerranPhalanxSiegeMode:
@@ -1246,7 +1246,7 @@ namespace hooks
 
 		// Mind Control - Rescind
 		if (unitExt->units[UnitMindTyrantSource]) {
-			f32 distance = scbw::getDistanceFast(unit->position, unitExt->units[UnitMindTyrantSource]->position);
+			f32 distance = scbw::get_distance_fast(unit->position, unitExt->units[UnitMindTyrantSource]->position);
 			if (distance <= 8 * 32) {
 				if (unitExt->timers[TimerMindTyrantRecede] <= 4 * 24) {
 					if (unit->status & UnitStatus::Frozen) {
@@ -1479,7 +1479,7 @@ namespace hooks
 			{
 				// Todo: make thingy
 				helper::createThingy(SpriteId::FragmentaryExplosion, unit->getX(), unit->getY(), 11);
-				helper::playSoundFromSource(scbw::randBetween(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
+				helper::play_sound_from_unit(scbw::randBetween(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
 				const u32 radius = 1.5 * 32;
 				scbw::UnitFinder(
 					unit->getX() - radius,
@@ -1501,7 +1501,7 @@ namespace hooks
 		// Solarion - Auto Train
 		if (unit->id == UnitId::ProtossSolarion && unit->carrier.inHangarCount + unit->carrier.outHangarCount < 12) {
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::ProtossSteward;
-			unit->setSecondaryOrder(OrderId::TrainFighter);
+			unit->set_secondary_order(OrderId::TrainFighter);
 		}
 
 		// Blissful Embrace - Creep Spread
@@ -1726,7 +1726,7 @@ namespace hooks
 				unit->sprite->createTopOverlay(ImageId::SalvageDisableSmall + offset);
 			}
 			if (unitExt->timers[TimerTalosSoundLoopTimer] == 0) {
-				helper::playSoundFromSource(SoundId::TalosSalvageLoop, unit, 1, 0);
+				helper::play_sound_from_unit(SoundId::TalosSalvageLoop, unit, 1, 0);
 				unitExt->timers[TimerTalosSoundLoopTimer] = 63;
 			}
 		}
@@ -1792,7 +1792,7 @@ namespace hooks
 			for (auto it = crucibles.begin(); it != crucibles.end(); ++it)
 			{
 				Unit* target = *it;
-				if (scbw::getDistanceFast(unit->position, target->position) > 8 * 32)
+				if (scbw::get_distance_fast(unit->position, target->position) > 8 * 32)
 				{
 					target->removeOverlay(ImageId::CrucibleKhaydarinChargeOverlay);
 					crucibles.erase(it);
@@ -1886,7 +1886,7 @@ namespace hooks
 				unit->getY() + radius
 			).forEachInMatch(match, [&](Unit* target)
 			{
-				if (scbw::getDistanceFast(unit->position, target->position) <= radius)
+				if (scbw::get_distance_fast(unit->position, target->position) <= radius)
 				{
 					target->damage_with_custom(250 * 256, DamageType::Explosive, unit, unit->player, 0, 1, false);
 				}
@@ -1899,7 +1899,7 @@ namespace hooks
 		if (unitExt->values[ValueWorshipStack]
 			&& unitExt->units[UnitMindController] == nullptr)
 		{
-			helper::playSoundFromSource(SoundId::DemiurgeWorship01, unit, 1, 0);
+			helper::play_sound_from_unit(SoundId::DemiurgeWorship01, unit, 1, 0);
 			unit->sprite->createTopOverlay(ImageId::Worship_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
 			unitExt->values[ValueWorshipStack] = 0;
 			unitExt->timers[TimerGodsMadeFlesh] = 0;

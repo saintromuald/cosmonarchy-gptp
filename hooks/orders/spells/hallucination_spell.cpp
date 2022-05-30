@@ -83,10 +83,10 @@ namespace hooks
 			if (source->unit_ai)
 			{
 				if (units_dat::BaseProperty[halUnit->id] & (UnitProperty::Worker | UnitProperty::Building)
-					|| scbw::unitIdIsZergSupply(source->id))
+					|| scbw::unit_id_is_zerg_supply(source->id))
 				{
 					WorkerAi* sourceAI = (WorkerAi*)source->unit_ai;
-					helper::AI_AddWorkerStructureAI(halUnit, sourceAI->town);
+					helper::add_worker_structure_ai(halUnit, sourceAI->town);
 				}
 				else
 				{

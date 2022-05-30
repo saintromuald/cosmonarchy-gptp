@@ -107,7 +107,7 @@ namespace hooks
 				case TechId::Consume: {
 					if (units_dat::BaseProperty[target->id] & UnitProperty::Building
 						|| target->player != castingPlayerId
-						|| target->getRace() != RaceId::Zerg
+						|| target->get_race() != RaceId::Zerg
 						|| scbw::is_zerg_egg_new(target))
 					{
 						stringId = 876; // Invalid target.<0>

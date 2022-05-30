@@ -27,7 +27,7 @@ namespace AI
 			if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
 				return false;
 
-			if (target->getCurrentLifeInGame() <= 60)
+			if (target->get_current_life_ingame() <= 60)
 				return false;
 
 			if (scbw::isDebuffed(target))

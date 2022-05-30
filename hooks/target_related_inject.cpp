@@ -175,7 +175,7 @@ namespace
 			POP EBP
 			PUSHAD
 		}
-		result = hooks::unitCanAttackTarget(target, unit, a3);
+		result = hooks::unit_can_attack_target(target, unit, a3);
 		__asm
 		{
 			POPAD

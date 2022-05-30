@@ -63,7 +63,7 @@ namespace hooks
 			{
 				if (helper::HasMoneyCanMake(builder, wUnitType)) // add unit to build queue if successful
 				{
-					builder->setSecondaryOrder(OrderId::Train);
+					builder->set_secondary_order(OrderId::Train);
 				}
 				scbw::refresh_console();
 			}

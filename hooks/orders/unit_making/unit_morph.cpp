@@ -445,7 +445,7 @@ namespace hooks
 	u16 get_cancel_morph_revert_id(Unit* eggUnit)
 	{
 		auto source = eggUnit->eggOrigin;
-		if (eggUnit->getRace() == RaceId::Zerg
+		if (eggUnit->get_race() == RaceId::Zerg
 			&& eggUnit->id != UnitId::ZergInfestedTerran)
 		{
 			if (!(units_dat::BaseProperty[eggUnit->id] & UnitProperty::Building)

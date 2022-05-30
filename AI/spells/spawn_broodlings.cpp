@@ -36,7 +36,7 @@ namespace AI
 				return false;
 			}
 
-			if (!isUnderAttack && target->getCurrentLifeInGame() < 100)
+			if (!isUnderAttack && target->get_current_life_ingame() < 100)
 			{
 				return false;
 			}

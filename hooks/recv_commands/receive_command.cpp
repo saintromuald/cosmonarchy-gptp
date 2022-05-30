@@ -157,7 +157,7 @@ namespace hooks
 											loop_to_9ac0d = false;
 										}
 										else
-											if (current_unit->subunit->isSubunit())
+											if (current_unit->subunit->is_subunit())
 											{
 
 												if (unitParam != nullptr)

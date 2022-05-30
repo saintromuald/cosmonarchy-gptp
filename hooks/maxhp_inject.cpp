@@ -525,7 +525,7 @@ namespace hooks
 			MOV a1, EDX
 			PUSHAD
 		}
-		result = hooks::getTotalHitPointsPlusShields(a1);
+		result = hooks::get_total_hp_plus_shields(a1);
 		__asm {
 			POPAD
 			MOV EAX, result

@@ -110,7 +110,7 @@ namespace hooks
 
 		scbw::print("fire");
 		const u32 radius = 2 * 32;
-		helper::playSoundFromSource(SoundId::Terran_Medic_Miopia1_wav, (Unit*)bullet, 1, 0);
+		helper::play_sound_from_unit(SoundId::Terran_Medic_Miopia1_wav, (Unit*)bullet, 1, 0);
 		scbw::UnitFinder(
 			bullet->position.x - radius,
 			bullet->position.y - radius,
@@ -569,7 +569,7 @@ namespace hooks
 				}
 				else
 				{ // 004F4A26
-					helper::playSoundFromSource(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling, 1, 0);
+					helper::play_sound_from_unit(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling, 1, 0);
 					u32 timerBeforeDisappearance;
 
 					// update various stuff (set hp, set shield...) not finished on create_unit
@@ -636,7 +636,7 @@ namespace hooks
 			maelstrom_effect_sprite->sprite->elevationLevel = 17;
 			helper::setThingyVisibilityFlags(maelstrom_effect_sprite);
 		}
-		helper::playSoundFromSource(SoundId::Protoss_Darchon_Parahit_wav, attacker, 1, 0);
+		helper::play_sound_from_unit(SoundId::Protoss_Darchon_Parahit_wav, attacker, 1, 0);
 
 		const u32 radius = 48;
 		scbw::UnitFinder(
@@ -849,7 +849,7 @@ LABEL_15:
 		{
 			helper::update_unit_stats_and_finish_building(v10);
 			helper::update_unit_strength(v11);
-			helper::playSoundFromSource(388, v1, 1, 0);
+			helper::play_sound_from_unit(388, v1, 1, 0);
 			if (!(*CHEAT_STATE & 0x800))
 			{
 				v1->spendUnitEnergy(techdata_dat::EnergyCost[4] * 256);
@@ -902,7 +902,7 @@ LABEL_15:
 		}
 		helper::giveAllUnitPropertiesToPlayer(unit, playerIdVar);
 		const u32 giveUnitsProc = 0x004C7CE0;
-		if (helper::unitIsActiveTransport(unit))
+		if (helper::unit_is_active_transport(unit))
 		{
 			helper::iterateLoadedUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))giveUnitsProc, playerIdVar);
 		}

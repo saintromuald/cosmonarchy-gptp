@@ -53,7 +53,7 @@ namespace hooks
 		|| !(target->status & UnitStatus::Completed)						 // Is incomplete?
 	//	|| !(target->status & UnitStatus::IsBuilding)						 // Is building (like archon build self)?
 	//	|| target->status & UnitStatus::GroundedBuilding					 // Is a building
-	//	|| target->getRace() != RaceId::Protoss							     // Check target race
+	//	|| target->get_race() != RaceId::Protoss							     // Check target race
 		|| target->shields >= (units_dat::MaxShieldPoints[target->id] * 256) // Already has max shields
 		|| !(battery->status & UnitStatus::Completed) || !battery->energy
 		|| battery->isFrozen() || helper::isHangarUnit(target)) {
@@ -150,7 +150,7 @@ namespace hooks
 					u8 overlaysCounter;
 
 					if (battery->secondaryOrderId != OrderId::ShieldBattery)
-						battery->setSecondaryOrder(OrderId::ShieldBattery);
+						battery->set_secondary_order(OrderId::ShieldBattery);
 
 					overlaysCounter = helper::hasOverlay(unit);
 					unit->sprite->createOverlay(ImageId::RechargeShields_Small + overlaysCounter, 0, 0, 0);

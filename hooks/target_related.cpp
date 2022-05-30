@@ -166,7 +166,7 @@ namespace hooks
 				v7 = v1->orderTarget.pt.x;
 				v8 = helper::getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
 				v9 = (helper::getFlingyHaltDistance((s32)v1) >> 8) + v8;
-				v2 = v9 >= helper::getDistanceFast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
+				v2 = v9 >= helper::get_distance_fast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
 			}
 		}
 		return v2;
@@ -192,7 +192,7 @@ namespace hooks
 		{
 			goto LABEL_22;
 		}
-		ByteOperations::SetLowByte(v3, helper::unitCanAttackTarget(v2, a1, 1));
+		ByteOperations::SetLowByte(v3, helper::unit_can_attack_target(v2, a1, 1));
 		if (!v3)
 		{
 			goto LABEL_22;
@@ -272,7 +272,7 @@ LABEL_22:
 		{
 			a1->orderTarget.pt.x = v2->sprite->position.x;
 			a1->orderTarget.pt.y = v2->sprite->position.y;
-			ByteOperations::SetLowByte(v3, helper::unitCanAttackTarget(v2, a1, 1));
+			ByteOperations::SetLowByte(v3, helper::unit_can_attack_target(v2, a1, 1));
 			if (!v3)
 			{
 				if (!(v1->status & 0x8000000) && !v1->unit_ai)
@@ -416,9 +416,9 @@ LABEL_42:
 				return OrderId::Rightclickaction;
 			return OrderId::Move;
 		}
-		if (helper::unitIsActiveTransport(unit) && helper::isOrderValid(OrderId::Pickup2, unit, 0, targetVar, 0))
+		if (helper::unit_is_active_transport(unit) && helper::isOrderValid(OrderId::Pickup2, unit, 0, targetVar, 0))
 			return OrderId::Pickup2;
-		if (helper::unitIsActiveTransport(targetVar) && helper::canEnterTransport(targetVar, unit))
+		if (helper::unit_is_active_transport(targetVar) && helper::canEnterTransport(targetVar, unit))
 			return OrderId::EnterTransport;
 		if (targetVar->status & UnitStatus::Burrowed)
 			return OrderId::Move;
@@ -634,14 +634,14 @@ LABEL_42:
 		return 1;
 	}
 
-	bool unitCanAttackTarget(Unit* target, Unit* unit, int checkVisibility)
+	bool unit_can_attack_target(Unit* target, Unit* unit, int checkVisibility)
 	{
 		if (unit->isFrozen()
 			|| !target
 			|| !target->sprite // new
 			|| target->status & UnitStatus::Invincible
 			|| target->sprite->flags & SpriteFlags::Hidden
-			|| checkVisibility && helper::unitCanSeeCloakedTarget(target, unit))
+			|| checkVisibility && helper::unit_can_see_cloaked_target(target, unit))
 		{
 			return 0;
 		}
@@ -744,7 +744,7 @@ LABEL_42:
 		{
 			goto LABEL_23;
 		}
-		if (helper::unitCanSeeCloakedTarget(v1, v2))
+		if (helper::unit_can_see_cloaked_target(v1, v2))
 		{
 			goto LABEL_23;
 		}
@@ -967,7 +967,7 @@ LABEL_65:
 					}
 					if ((unit->hitPoints + 255) >> 8 >= unitHP / 2)
 					{
-						if (unitCanAttackTarget(unit, unitTarget, 1))
+						if (unit_can_attack_target(unit, unitTarget, 1))
 						{
 							unitTarget = unit->orderTarget.unit;
 							if (!unitTarget)

@@ -552,7 +552,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
 						{
 							return;
 						}
@@ -568,7 +568,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
 						{
 							return;
 						}
@@ -586,7 +586,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
 						{
 							return;
 						}
@@ -604,7 +604,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
 						{
 							return;
 						}
@@ -628,7 +628,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
 						{
 							return;
 						}
@@ -1511,7 +1511,7 @@ namespace scbw
 		hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->player, 0, 1);
 		if (playSound)
 		{
-			helper::playSoundFromSource(1372, unit, 1, 0);
+			helper::play_sound_from_unit(1372, unit, 1, 0);
 		}
 	}
 
@@ -1608,7 +1608,7 @@ namespace scbw
 			{
 				return false;
 			}
-			if (scbw::getDistanceFast(target->getX(), target->getY(), unit->getX(), unit->getY()) > radius)
+			if (scbw::get_distance_fast(target->getX(), target->getY(), unit->getX(), unit->getY()) > radius)
 			{
 				return false;
 			}

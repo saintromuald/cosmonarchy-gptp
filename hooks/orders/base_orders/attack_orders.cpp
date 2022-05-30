@@ -195,7 +195,7 @@ namespace hooks
 		else
 		{
 			// 00477A04
-			if ((unit->subunit)->isSubunit())
+			if ((unit->subunit)->is_subunit())
 			{
 				current_unit = unit->subunit;
 			}
@@ -371,7 +371,7 @@ namespace hooks
 						{
 							if (helper::isTargetVisible(unit, target))
 							{
-								if ((unit->subunit)->isSubunit())
+								if ((unit->subunit)->is_subunit())
 								{
 									current_unit = unit->subunit;
 								}
@@ -508,7 +508,7 @@ namespace hooks
 			Unit* current_unit;
 			bool jump_to_77DEF = false;
 			// 00477DB4:
-			if (unit->subunit->isSubunit()) // check if is not null AND is a subunit
+			if (unit->subunit->is_subunit()) // check if is not null AND is a subunit
 			{
 				current_unit = unit->subunit;
 			}
@@ -756,7 +756,7 @@ namespace hooks
 				if (unit->status & UnitStatus::Unmovable)
 				{ // 00478AB8
 					u32 distance =
-						scbw::getDistanceFast(
+						scbw::get_distance_fast(
 							unit->orderTarget.pt.x * 256,
 							unit->orderTarget.pt.y * 256,
 							unit->halt.x,

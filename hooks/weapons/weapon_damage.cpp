@@ -282,7 +282,7 @@ namespace hooks
 		{
 			if (data.target->hitPoints < data.target->getMaxHpRaw() * 0.1)
 			{
-				helper::playSoundFromSource(SoundId::OlympianMythicalMight01, data.target, 1, 0);
+				helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
 				data.finalDamage = data.target->hitPoints;
 			}
 		}
@@ -499,7 +499,7 @@ namespace hooks
 						&& targetExt->timers[TimerSimulacrumClone] == 0)
 					{
 						targetExt->timers[TimerSimulacrumClone] = 4 * 24;
-						helper::playSoundFromSource(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
+						helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
 					}
 				} break;
 				case UnitId::SharedStriga:
@@ -508,7 +508,7 @@ namespace hooks
 					if (!(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building)
 						&& !scbw::isUnderDarkSwarm(data.target))
 					{
-						const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
+						const u32 dist = scbw::get_distance_fast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 						if (dist < 2 * 32)
 						{
 							const u32 displacementTime = 5;
@@ -533,7 +533,7 @@ namespace hooks
 						data.finalDamage = 0;
 						data.target->order_computer(OrderId::Stop);
 						data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
-						helper::playSoundFromSource(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
+						helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
 					}
 				} break;
 			}
@@ -809,7 +809,7 @@ namespace hooks
 								&& data.target->mainOrderId != OrderId::Liftoff
 								&& data.target->mainOrderId != OrderId::BuildingLand))
 						{
-							const u32 dist = scbw::getDistanceFast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
+							const u32 dist = scbw::get_distance_fast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 							const u32 displacementTime = 5;
 							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
 							Vector32f displacement = scbw::getNormalizedVector(diff);
@@ -920,7 +920,7 @@ namespace hooks
 			targetExt->values[ValueAlliedInvPlayer] = targetExt->values[ValueEmpressSourcePlayer];
 			targetExt->timers[TimerAlliedInvFrames] = 24;
 			data.target->sprite->createOverlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(data.target->id));
-			helper::playSoundFromSource(scbw::randBetween(SoundId::EmpressZombify01, SoundId::EmpressZombify03), data.target, 1, 0);
+			helper::play_sound_from_unit(scbw::randBetween(SoundId::EmpressZombify01, SoundId::EmpressZombify03), data.target, 1, 0);
 		}
 
 		// Apostle, Anticthon - Revive
@@ -939,7 +939,7 @@ namespace hooks
 				).forEach([&](Unit* unit)
 				{
 					UnitExt* unitExt = globals.get_unit_ext(unit);
-					u32 dist = scbw::getDistanceFast(data.target->position, unit->position);
+					u32 dist = scbw::get_distance_fast(data.target->position, unit->position);
 					if (unit->id == UnitId::SharedAnticthon && dist <= 4 * 32)
 					{
 						if (scbw::is_allied_to(data.target->player, unit->player))
@@ -1004,7 +1004,7 @@ namespace hooks
 			data.target->removeOverlay(infested_image_id);
 
 			// Play Sound
-			helper::playSoundFromSource(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
+			helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
 		}
 
 		switch (data.target->id)
@@ -1063,7 +1063,7 @@ namespace hooks
 						}
 						// TODO: iquare consultation
 						// Is this needed? Seems like it's already guaranteed
-						if (scbw::getDistanceFast(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 288)
+						if (scbw::get_distance_fast(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 288)
 						{
 							return false;
 						}

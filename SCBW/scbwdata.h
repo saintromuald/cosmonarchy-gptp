@@ -158,7 +158,7 @@ struct SupplyData {
 	u32 used[PLAYER_COUNT];
 	u32 max[PLAYER_COUNT];
 };
-SCBW_DATA(SupplyData*, raceSupply, 0x00582144);  //Array; Use Unit::getRace() to get the index.
+SCBW_DATA(SupplyData*, raceSupply, 0x00582144);  //Array; Use Unit::get_race() to get the index.
 
 SCBW_DATA(const u32*, elapsedTimeFrames, 0x0057F23C);  //Elapsed game time in frames
 SCBW_DATA(const u32*, CountdownTimer, 0x0058D6F4);  //Countdown Timer (in seconds) (From BWAPI Offsets.h)
@@ -356,7 +356,7 @@ SCBW_DATA(Unit**, airSplashList,			0x0064EEE0);	// size of 1700
 SCBW_DATA(s32*, airSplashListCount,			0x0046DEB4);
 SCBW_DATA(s32*, isInGroundSplashProc,		0x0064DEB8);
 
-// For AI_AddMilitary
+// For ai_add_military
 SCBW_DATA(RegionArray**,SAI_Paths,			0x006D5BFC);
 SCBW_DATA(AiTown*,		AiTownArray,		0x006AA090);
 SCBW_DATA(AiExpandList*,AiActiveTownArray,	0x006AA050); // sizeof 0x64[0x8]

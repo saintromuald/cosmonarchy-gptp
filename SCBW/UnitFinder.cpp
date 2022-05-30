@@ -149,7 +149,7 @@ namespace scbw
 		UnitFinderCallbackMatchInterface match, Unit* sourceUnit)
 	{
 
-		s32 bestDistance = scbw::getDistanceFast(0, 0,
+		s32 bestDistance = scbw::get_distance_fast(0, 0,
 			std::max(x - boundsLeft, boundsRight - x),
 			std::max(y - boundsTop, boundsBottom - y));
 
@@ -172,7 +172,7 @@ namespace scbw
 					{
 						if (unit != sourceUnit && match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -200,7 +200,7 @@ namespace scbw
 					{
 						if (unit != sourceUnit && match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -228,7 +228,7 @@ namespace scbw
 					{
 						if (unit != sourceUnit && match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -256,7 +256,7 @@ namespace scbw
 					{
 						if (unit != sourceUnit && match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -297,7 +297,7 @@ namespace scbw
 		UnitFinderCallbackMatchInterface match, Bullet* sourceBullet)
 	{
 
-		s32 bestDistance = scbw::getDistanceFast(0, 0,
+		s32 bestDistance = scbw::get_distance_fast(0, 0,
 			std::max(x - boundsLeft, boundsRight - x),
 			std::max(y - boundsTop, boundsBottom - y));
 
@@ -320,7 +320,7 @@ namespace scbw
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -348,7 +348,7 @@ namespace scbw
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -376,7 +376,7 @@ namespace scbw
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -404,7 +404,7 @@ namespace scbw
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -442,7 +442,7 @@ namespace scbw
 		UnitFinderCallbackMatchInterface match, Vector32 sourcePosition)
 	{
 
-		s32 bestDistance = scbw::getDistanceFast(0, 0,
+		s32 bestDistance = scbw::get_distance_fast(0, 0,
 			std::max(x - boundsLeft, boundsRight - x),
 			std::max(y - boundsTop, boundsBottom - y));
 
@@ -465,7 +465,7 @@ namespace scbw
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -493,7 +493,7 @@ namespace scbw
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -521,7 +521,7 @@ namespace scbw
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -549,7 +549,7 @@ namespace scbw
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;

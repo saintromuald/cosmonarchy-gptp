@@ -567,7 +567,7 @@ namespace hooks
 		// 0043AFD4  |>  3C 82         |CMP AL,82
 		patchWeaponDat(1, 0x0043AFD4, PatchMaxWeaponCompare);
 
-		// void __usercall prepSuicide(CUNIT *eax0@<eax>) // 0043CD40
+		// void __usercall prepare_suicide(CUNIT *eax0@<eax>) // 0043CD40
 		// 0043CFAA   .  80FA 82       CMP DL,82
 		// 0043CFB9   .  3C 82         CMP AL,82
 		patchWeaponDat(2, 0x0043CFAA, PatchMaxWeaponCompare);
@@ -635,7 +635,7 @@ namespace hooks
 		// 0047651E  |>  3C 82         CMP AL,82
 		patchWeaponDat(1, 0x0047651E, PatchMaxWeaponCompare);
 
-		// bool __userpurge unitCanAttackTarget@<al>(CUNIT *target@<ebx>, CUNIT *unit@<esi>, int a3) // 00476730
+		// bool __userpurge unit_can_attack_target@<al>(CUNIT *target@<ebx>, CUNIT *unit@<esi>, int a3) // 00476730
 		// 0047683E  |.  80FA 82       CMP DL,82
 		// 00476854  |.  3C 82         CMP AL,82
 		patchWeaponDat(2, 0x0047683E, PatchMaxWeaponCompare);

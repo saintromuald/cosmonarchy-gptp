@@ -168,7 +168,7 @@ static s32 compare_base_layout(void* context, const void* a, const void* b) {
 	s32 cost_diff = get_unit_cost(pa->unit_id) - get_unit_cost(pb->unit_id);
 	if (cost_diff) return cost_diff;
 
-	s32 pos_diff = scbw::getDistanceFast(pa->position, base_layouts->resarea_pos) - scbw::getDistanceFast(pb->position, base_layouts->resarea_pos);
+	s32 pos_diff = scbw::get_distance_fast(pa->position, base_layouts->resarea_pos) - scbw::get_distance_fast(pb->position, base_layouts->resarea_pos);
 	if (pos_diff) return pos_diff;
 
 	return 0;
@@ -388,7 +388,7 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 		for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
 			Placeholder* placeholder = &base_layouts->placeholders[j];
 			if (placeholder->should_request && units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
-				u32 distance = scbw::getDistanceFast(main_town->position, resource_areas->areas[i].pos);
+				u32 distance = scbw::get_distance_fast(main_town->position, resource_areas->areas[i].pos);
 				if (placeholder->priority > best_priority || (placeholder->priority == best_priority && distance < best_distance)) {
 					best_priority = placeholder->priority;
 					best_distance = distance;

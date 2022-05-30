@@ -32,7 +32,7 @@ namespace
 			MOV result, EAX
 			PUSHAD
 		}
-		hooks::AI_CreateNuke(silo, result);
+		hooks::ai_create_nuke(silo, result);
 		__asm
 		{
 			POPAD
@@ -77,7 +77,7 @@ namespace
 			MOV newUnit, EAX
 			PUSHAD
 		}
-		hooks::AI_TrainingWorker(newUnit, otherUnit);
+		hooks::ai_training_worker(newUnit, otherUnit);
 		__asm
 		{
 			POPAD
@@ -95,7 +95,7 @@ namespace
 			MOV newUnit, EAX
 			PUSHAD
 		}
-		hooks::AI_TrainingNormal(newUnit, parentUnit);
+		hooks::ai_training_normal(newUnit, parentUnit);
 		__asm
 		{
 			POPAD
@@ -114,7 +114,7 @@ namespace
 			MOV unit, EBX
 			PUSHAD
 		}
-		result = hooks::AI_AddWorkerStructureAI(unit, town);
+		result = hooks::add_worker_structure_ai(unit, town);
 		__asm
 		{
 			POPAD
@@ -162,7 +162,7 @@ namespace
 			MOV parent, ECX
 			PUSHAD
 		}
-		hooks::AI_IterateBuildingAI(result, parent);
+		hooks::iterate_building_ai(result, parent);
 		__asm {
 			POPAD
 			RETN
@@ -287,7 +287,7 @@ namespace
 			MOV unit, ECX
 			PUSHAD
 		}
-		hooks::AI_RemoveUnitAI(unit, unitAI);
+		hooks::remove_unit_ai(unit, unitAI);
 		__asm
 		{
 			POPAD
@@ -311,7 +311,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		result = hooks::AI_RemoveWorkerOrBuildingAI(unit, unitAI);
+		result = hooks::remove_worker_or_building_ai(unit, unitAI);
 		__asm
 		{
 			POPAD
@@ -332,7 +332,7 @@ namespace
 			MOV oldUnit, ECX
 			PUSHAD
 		}
-		hooks::AI_TrainingOverlord(newUnit, oldUnit);
+		hooks::ai_training_overlord(newUnit, oldUnit);
 		__asm
 		{
 			POPAD
@@ -348,7 +348,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::AI_orderLurkerBurrow(unit);
+		hooks::ai_order_lurker_burrow(unit);
 		__asm
 		{
 			POPAD
@@ -395,6 +395,6 @@ namespace hooks
 		jump_patch(AI_orderLurkerBurrow_Wrapper,			0x0043C230, 3);
 	//	jump_patch(create_building_ai_wrapper,				0x004044C0,	4);
 
-	//	jump_patch(hooks::Ai_FindNearestMilitaryOrGuardAi,	0x0043BAC0, 0);
+	//	jump_patch(hooks::find_nearest_military_or_guard_ai,	0x0043BAC0, 0);
 	}
 }

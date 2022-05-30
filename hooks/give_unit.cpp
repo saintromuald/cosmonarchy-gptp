@@ -11,7 +11,7 @@ namespace hooks
 	{
 		if (unit->player != playerId)
 		{
-			helper::AI_RemoveUnitAI(unit, 0);
+			helper::remove_unit_ai(unit, 0);
 
 			bool isMorphing = false;
 			if (unit->isRemorphingBuilding())
@@ -144,7 +144,7 @@ namespace hooks
 				//	}
 				//}
 				if (town) {
-					helper::AI_AddWorkerStructureAI(unit, town);
+					helper::add_worker_structure_ai(unit, town);
 				}
 			}
 			else
@@ -156,7 +156,7 @@ namespace hooks
 				}
 				else
 				{
-					helper::AI_AddGuardAiToUnit(unit);
+					helper::add_guard_ai_to_unit(unit);
 				}
 			}
 		}

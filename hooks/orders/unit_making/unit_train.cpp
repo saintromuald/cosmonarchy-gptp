@@ -119,7 +119,7 @@ namespace hooks
 			{
 				if (unit->buildQueue[unit->buildQueueSlot] == UnitId::None)
 				{
-					unit->setSecondaryOrder(OrderId::Nothing2);
+					unit->set_secondary_order(OrderId::Nothing2);
 					unit->sprite->play_iscript_animation(IscriptAnimation::WorkingToIdle, true);
 				}
 				else
@@ -211,7 +211,7 @@ namespace hooks
 							u8 counter = 4;
 							if (unit->currentBuildUnit != nullptr)
 							{
-								helper::AI_cancel_structure(unit->currentBuildUnit);
+								helper::ai_cancel_structure(unit->currentBuildUnit);
 							}
 							else if (!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
 							{

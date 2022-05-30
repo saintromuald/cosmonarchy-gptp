@@ -37,7 +37,7 @@ namespace AI
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
 				return false;
 
-			if (target->energy / 256u >= target->getCurrentLifeInGame())
+			if (target->energy / 256u >= target->get_current_life_ingame())
 				return true;
 
 			return false;

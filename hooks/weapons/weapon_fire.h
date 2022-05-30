@@ -17,6 +17,7 @@ namespace hooks
 	s32 initializeBullet(char playerId, Unit* parent, s16 y, Bullet* bullet, s32 weaponId, s32 x, s32 angle);	// 0048BEC0
 	void progressBulletFrames();																				// 0048C3D0
 	void bulletBehaviorReassign(Bullet* bullet);																// 0048BD50
+	void get_weapon_iscript_init(Unit* unit, char iscript_anim);												// 00476ED0
 
 	void injectWeaponFireHooks();
 }

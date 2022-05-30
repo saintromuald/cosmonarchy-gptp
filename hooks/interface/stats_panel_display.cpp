@@ -407,7 +407,7 @@ namespace hooks
 			helper::drawNukeSiloInfo(dialog);
 			goto LABEL_32;
 		}
-		if (helper::unitIsActiveTransport(activeUnit))
+		if (helper::unit_is_active_transport(activeUnit))
 		{
 			scbw::print("unitIsActiveTransport");
 			goto LABEL_6;

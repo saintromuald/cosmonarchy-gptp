@@ -565,7 +565,7 @@ FraudSpawnLocation* get_closest_spawn(Point16 pos) {
 	f32 lowest_distance = 999999999;
 
 	for (FraudSpawnLocation& loc : fraud_spawn.spawns) {
-		f32 distance = scbw::getDistanceFast(loc.pos, pos);
+		f32 distance = scbw::get_distance_fast(loc.pos, pos);
 		if (distance < lowest_distance) {
 			closest_loc = &loc;
 			lowest_distance = distance;
@@ -580,7 +580,7 @@ FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point16 pos) 
 	f32 lowest_distance = 999999999;
 
 	for (FraudSpawnSource& loc : location->sources) {
-		f32 distance = scbw::getDistanceFast(loc.pos, pos);
+		f32 distance = scbw::get_distance_fast(loc.pos, pos);
 		if (distance < lowest_distance) {
 			closest_loc = &loc;
 			lowest_distance = distance;

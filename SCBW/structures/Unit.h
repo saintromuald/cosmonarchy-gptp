@@ -55,7 +55,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the amount of HP + shields displayed in game. If the unit does not
 	/// have shields enabled, this returns the amount of HP displayed.
-	u32 getCurrentLifeInGame() const;
+	u32 get_current_life_ingame() const;
 
 	/// Returns the unit's ground weapon ID. If the unit is an unburrowed Lurker,
 	/// returns WeaponId::None instead.
@@ -100,11 +100,11 @@ struct Unit : public UnitLayout
 
 	/// Returns the race of the current unit.
 	/// @return   RaceId::Terran, Zerg, Protoss, or Neutral.
-	RaceId::Enum getRace() const;
+	RaceId::Enum get_race() const;
 
 	/// Returns the race of the unit with @p unitId.
 	/// @return   RaceId::Terran, Zerg, Protoss, or Neutral.
-	static RaceId::Enum getRace(u16 unitId);
+	static RaceId::Enum get_race(u16 unitId);
 
 	/// Returns the unit's seek range (AKA target acquisition range) in matrices.
 	/// This is affected by the Weapon Range hook module.
@@ -134,7 +134,7 @@ struct Unit : public UnitLayout
 
 	/// Checks if the current unit is a subunit (i.e. not nullptr and has the
 	/// UnitProperty::Subunit flag set).
-	bool isSubunit() const;
+	bool is_subunit() const;
 
 	/// Checks if the current unit is a factory (i.e. not nullptr and has the
 	/// flag isFactory from GroupFlags set).
@@ -273,7 +273,7 @@ struct Unit : public UnitLayout
 	void performAnotherOrder(u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk = NULL);
 
 	/// Used by several hooks, details not completely understood.
-	void setSecondaryOrder(u8 orderId);
+	void set_secondary_order(u8 orderId);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -317,7 +317,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the distance between this unit and the @p target, taking unit
 	/// collision size in units.dat into account.
-	/// Internally, this function uses scbw::getDistanceFast().
+	/// Internally, this function uses scbw::get_distance_fast().
 	u32 getDistanceToTarget(Unit* target) const;
 
 	/// Checks whether this unit can reach the target position. This checks only
@@ -433,8 +433,8 @@ struct Unit : public UnitLayout
 	void setSupplyProvided(u8 amount);
 	void resetSupplyProvided();
 
-	s32 getTotalHitPointsPlusShields();
-	s32 isUnitAINonBuilding();
+	s32 get_total_hp_plus_shields();
+	s32 is_unit_ai_non_building();
 
 	/// Returns whether the unit is currently constructing a Protoss building
 	bool isAttemptingProtossBuild();

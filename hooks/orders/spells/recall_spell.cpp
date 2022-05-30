@@ -113,9 +113,9 @@ namespace hooks
 					// The compiler may make it back like the original anyway.
 
 					if ((helper::RandomizeShort(0x12) & 1) == 0) {
-						helper::playSoundFromSource(SoundId::Protoss_ARBITER_PAbFol02_WAV, unit, 1, 0);
+						helper::play_sound_from_unit(SoundId::Protoss_ARBITER_PAbFol02_WAV, unit, 1, 0);
 					} else {
-						helper::playSoundFromSource(SoundId::Protoss_ARBITER_PAbFol03_WAV, unit, 1, 0);
+						helper::play_sound_from_unit(SoundId::Protoss_ARBITER_PAbFol03_WAV, unit, 1, 0);
 					}
 
 					Point16 center = {unit->position.x, unit->position.y};
@@ -131,7 +131,7 @@ namespace hooks
 			}
 		} else {
 			if (!scbw::isCheatEnabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::EnergyCost[TechId::Recall] * 256) {
-				u8 raceId = unit->getRace();
+				u8 raceId = unit->get_race();
 				char* message = (char*)statTxtTblNew->getString(864 + raceId);	//"Not enough energy" text
 				if (message && unit->player == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID) {
 					helper::setUnitStatTxtErrorMsg(message);

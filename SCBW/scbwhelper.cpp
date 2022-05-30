@@ -348,9 +348,9 @@ namespace helper
 		}
 	}
 
-	// Equivalent to code unitIsActiveTransport @ 0x004E6BA0
+	// Equivalent to code unit_is_active_transport @ 0x004E6BA0
 	// Modified to remove Ovileth checks as they are no longer tied to upgrades in HYDRA
-	bool unitIsActiveTransport(Unit* unit)
+	bool unit_is_active_transport(Unit* unit)
 	{
 		bool result = false;
 		if (!(unit->status & UnitStatus::IsHallucination))
@@ -1126,7 +1126,7 @@ namespace helper
 	}
 
 	// for AI_TrainUnit
-	char AI_TrainingWorker(Unit* result, Unit* parent)
+	char ai_training_worker(Unit* result, Unit* parent)
 	{
 		const u32 Func_AI_TrainingWorker = 0x00435700;
 		static char resultFunc;
@@ -1142,7 +1142,7 @@ namespace helper
 		return resultFunc;
 	}
 
-	void AI_TrainingOverlord(Unit* result, Unit* parent)
+	void ai_training_overlord(Unit* result, Unit* parent)
 	{
 		const u32 Func_AI_TrainingOverlord = 0x00435770;
 		__asm
@@ -1155,7 +1155,7 @@ namespace helper
 		}
 	}
 
-	void AI_TrainingNormal(Unit* result, Unit* parent)
+	void ai_training_normal(Unit* result, Unit* parent)
 	{
 		const u32 Func_AI_TrainingNormal = 0x00435DB0;
 		__asm
@@ -1195,7 +1195,7 @@ namespace helper
 		}
 	}
 
-	// for AI_CreateNuke
+	// for ai_create_nuke
 	Unit* create_unit(s16 unitType, s32 x, s32 y, s32 playerId)
 	{
 		const u32 Func_createUnit = 0x004A09D0;
@@ -1224,7 +1224,7 @@ namespace helper
 		}
 	}
 
-	u32 updateUnitStrengthAndApplyDefaultOrders(Unit* unit)
+	u32 update_unit_strength_and_apply_default_orders(Unit* unit)
 	{
 		const u32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
 		static u32 result;
@@ -1278,7 +1278,7 @@ namespace helper
 
 	// for AI_AddUnitAI
 
-	BuildingAi* AI_CreateBuildingAi(BuildingAiArray** buildingAI)
+	BuildingAi* create_building_ai(BuildingAiArray** buildingAI)
 	{
 		const u32 Func_AI_CreateBuildingAi = 0x004044C0;
 		static BuildingAi* result;
@@ -1304,7 +1304,7 @@ namespace helper
 		}
 	}
 
-	Unit* setSecondaryOrder(Unit* result, char orderId)
+	Unit* set_secondary_order(Unit* result, char orderId)
 	{
 		const u32 Func_setSecondaryOrder = 0x004743D0;
 		static Unit* result2;
@@ -1319,7 +1319,7 @@ namespace helper
 		return result2;
 	}
 
-	void AI_MakeGuard(s32 playerId, Unit* unit)
+	void ai_make_guard(s32 playerId, Unit* unit)
 	{
 		const u32 Func_AI_MakeGuard = 0x0043A010;
 		__asm {
@@ -1345,7 +1345,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	u32 getPlayerDefaultRefineryUnitType(u32 playerId)
+	u32 get_default_refinery_type(u32 playerId)
 	{
 		const u32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
 		static u32 result;
@@ -1362,7 +1362,7 @@ namespace helper
 	// for ai_unit_was_hit
 	// some of these should probably be methods in api/etc
 
-	char AI_cancel_structure(Unit* structure)
+	char ai_cancel_structure(Unit* structure)
 	{
 		const u32 Func_AI_cancel_structure = 0x00468280;
 		static u32 result;
@@ -1376,7 +1376,7 @@ namespace helper
 		return (char)result;
 	}
 
-	Unit* AI_GetActualTarget(Unit* attacker, Unit* target)
+	Unit* ai_get_actual_target(Unit* attacker, Unit* target)
 	{
 		const u32 Func_AI_GetActualTarget = 0x0043AD60;
 		static Unit* result;
@@ -1391,7 +1391,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* checkArbiterCloakingRange(Unit* unit, u16 id)
+	Unit* check_arbiter_cloaking_range(Unit* unit, u16 id)
 	{
 		const u32 Func_checkArbiterCloakingRange = 0x004410C0;
 		static Unit* result;
@@ -1417,7 +1417,7 @@ namespace helper
 		}
 	}
 
-	void AI_OrderLurkerBurrow(Unit* unit)
+	void ai_order_lurker_burrow(Unit* unit)
 	{
 		const u32 Func_AI_OrderLurkerBurrow = 0x0043C230;
 		__asm {
@@ -1428,7 +1428,7 @@ namespace helper
 		}
 	}
 
-	bool AI_IsUnderAttack(Unit* unit, s32 flag)
+	bool ai_is_under_attack(Unit* unit, s32 flag)
 	{
 		const u32 Func_AI_IsUnderAttack = 0x00436E70;
 		static u32 result;
@@ -1443,7 +1443,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	s32 isUnitLoaded(Unit* unit)
+	s32 is_unit_loaded(Unit* unit)
 	{
 		const u32 Func_isUnitLoaded = 0x004E7110;
 		static s32 result;
@@ -1457,7 +1457,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_TryReturnHome(Unit* unit, s32 dontIssueOrder)
+	s32 ai_try_return_home(Unit* unit, s32 dontIssueOrder)
 	{
 		const u32 Func_AI_TryReturnHome = 0x00462EA0;
 		static s32 result;
@@ -1472,7 +1472,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_TransportAction(Unit* unit)
+	s32 ai_transport_action(Unit* unit)
 	{
 		const u32 Func_AI_TransportAction = 0x0043DB50;
 		static s32 result;
@@ -1486,7 +1486,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_AskForHelp(Unit* self, Unit* attacker, s32 onlyNearbyGuards)
+	s32 ai_ask_for_help(Unit* self, Unit* attacker, s32 onlyNearbyGuards)
 	{
 		const u32 Func_AI_AskForHelp = 0x0043ADA0;
 		static s32 result;
@@ -1516,7 +1516,7 @@ namespace helper
 		return (s16)result;
 	}
 
-	s32 getEnemyAirStrengthInRegion(u16 regionId, s32 player)
+	s32 get_enemy_air_strength_in_region(u16 regionId, s32 player)
 	{
 		const u32 Func_getEnemyAirStrengthInRegion = 0x00431D00;
 		static s32 result;
@@ -1531,7 +1531,7 @@ namespace helper
 		return result;
 	}
 
-	s32 getEnemyStrengthInRegion(u16 regionId, s32 player, s32 includeAir)
+	s32 get_enemy_strength_in_region(u16 regionId, s32 player, s32 includeAir)
 	{
 		const u32 Func_getEnemyStrengthInRegion = 0x004318E0;
 		static s32 result;
@@ -1547,7 +1547,7 @@ namespace helper
 		return result;
 	}
 
-	bool unitIsPerformingUnbreakableCode(Unit* unit)
+	bool unit_is_performing_unbreakable_code(Unit* unit)
 	{
 		const u32 Func_unitIsPerformingUnbreakableCode = 0x00402310;
 		static u32 result;
@@ -1576,7 +1576,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	s32 AI_Flee(Unit* unit, Unit* enemy)
+	s32 ai_flee(Unit* unit, Unit* enemy)
 	{
 		const u32 Func_AI_Flee = 0x0043E400;
 		static s32 result;
@@ -1591,7 +1591,7 @@ namespace helper
 		return result;
 	}
 
-	bool unitHasGroundPath(Unit* unit, s16 x, s16 y)
+	bool unit_has_ground_path(Unit* unit, s16 x, s16 y)
 	{
 		const u32 Func_unitHasGroundPath = 0x0042FA00;
 		static u32 result;
@@ -1607,7 +1607,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	bool AI_HasNoDefenseBuild(s32 player)
+	bool ai_has_no_defense_build(s32 player)
 	{
 		const u32 Func_AI_HasNoDefenseBuild = 0x00447370;
 		static u32 result;
@@ -1621,7 +1621,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	bool unitCanSeeCloakedTarget(Unit* target, Unit* unit)
+	bool unit_can_see_cloaked_target(Unit* target, Unit* unit)
 	{
 		const u32 Func_unitCanSeeCloakedTarget = 0x00401D60;
 		static u32 result;
@@ -1636,7 +1636,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	void AI_RespondToCloakedThreat(Unit* threat, Unit* unit)
+	void ai_respond_to_cloaked_threat(Unit* threat, Unit* unit)
 	{
 		const u32 Func_AI_RespondToCloakedThreat = 0x0043C580;
 		__asm {
@@ -1646,22 +1646,6 @@ namespace helper
 			CALL Func_AI_RespondToCloakedThreat
 			POPAD
 		}
-	}
-
-	bool unitCanAttackTarget(Unit* target, Unit* unit, s32 checkDetection)
-	{
-		const u32 Func_unitCanAttackTarget = 0x00476730;
-		static u32 result;
-		__asm {
-			PUSHAD
-			PUSH checkDetection
-			MOV ESI, unit
-			MOV EBX, target
-			CALL Func_unitCanAttackTarget
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
 	}
 
 	s32 ai_update_attack_target(Unit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach)
@@ -1695,9 +1679,9 @@ namespace helper
 		}
 	}
 
-	// for AI_IterateBuildingAI
+	// for iterate_building_ai
 
-	u16 AI_RemoveFromTowns(Unit* worker)
+	u16 ai_remove_from_towns(Unit* worker)
 	{
 		const u32 Func_AI_RemoveFromTowns = 0x00432760;
 		static u16 result;
@@ -1711,7 +1695,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_GetQueuedCount(Unit* builder, u32 unitId)
+	s32 ai_get_queued_count(Unit* builder, u32 unitId)
 	{
 		const u32 Func_AI_GetQueuedCount = 0x00466B70;
 		static s32 result;
@@ -1726,7 +1710,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x)
+	void prepare_guard_ai(u16 y, u32 player, u16 unitId, u16 x)
 	{
 		const u32 Func_AI_PrepareGuardAI = 0x00462670;
 		__asm {
@@ -1961,7 +1945,7 @@ namespace helper
 		return result;
 	}
 
-	// for AI_AttackManager
+	// for ai_attack_manager
 
 	u16 PopulateRegionsWithOwn(char* regionData, u32 player)
 	{
@@ -2723,7 +2707,7 @@ namespace helper
 		return result;
 	}
 
-	u32 getDistanceFast(s32 a1, s32 a2, s32 a3, s32 a4)
+	u32 get_distance_fast(s32 a1, s32 a2, s32 a3, s32 a4)
 	{
 		const u32 Func_getDistanceFast = 0x0040C360;
 		static u32 result;
@@ -4027,18 +4011,6 @@ namespace helper
 		}
 	}
 
-	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI)
-	{
-		const u32 Func_AI_RemoveUnitAI = 0x004A1E50;
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EDX, unitAI
-			CALL Func_AI_RemoveUnitAI
-			POPAD
-		}
-	}
-
 	void CreateUnitSelection(Unit* unit, u32 selectionIndex)
 	{
 		const u32 Func_CreateUnitSelection = 0x004E6180;
@@ -4235,7 +4207,7 @@ namespace helper
 		return result != 0;
 	}
 
-	// For updateUnitStrengthAndApplyDefaultOrders
+	// For update_unit_strength_and_apply_default_orders
 
 	void AnimCloak(Unit* a1, s32 a2)
 	{
@@ -6505,7 +6477,7 @@ namespace helper
 		return result;
 	}
 
-	s32 playSoundFromSource(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume)
+	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume)
 	{
 		const u32 Func_playSoundFromSource = 0x0048ED50;
 		static s32 result;
@@ -6887,7 +6859,7 @@ namespace helper
 
 	// For update_burrowing_cloaking_units
 
-	s32 isUnitCloaking(Unit* unit)
+	s32 is_unit_cloaking(Unit* unit)
 	{
 		const u32 Func_isUnitCloaking = 0x004916E0;
 		static s32 result;
@@ -6901,7 +6873,7 @@ namespace helper
 		return result;
 	}
 
-	void playSoundFromDirect(Unit* unit, s32 soundId)
+	void play_sound_from_direction(Unit* unit, s32 soundId)
 	{
 		const u32 Func_playSoundFromDirect = 0x0049B5B0;
 		__asm {
@@ -6915,7 +6887,7 @@ namespace helper
 
 	// For do_cloak
 
-	void updateSpriteFlagOnPalette(Sprite* sprite)
+	void update_sprite_flag_on_palette(Sprite* sprite)
 	{
 		const u32 Func_updateSpriteFlagOnPalette = 0x00497E80;
 		__asm {
@@ -6926,7 +6898,7 @@ namespace helper
 		}
 	}
 
-	void showImagesHiddenByCloak(Sprite* sprite)
+	void show_images_hidden_by_cloak(Sprite* sprite)
 	{
 		const u32 Func_showImagesHiddenByCloak = 0x00498170;
 		__asm {
@@ -6937,7 +6909,7 @@ namespace helper
 		}
 	}
 
-	void updateSpriteImagesForCloak(Sprite* sprite)
+	void update_sprite_images_for_cloak(Sprite* sprite)
 	{
 		const u32 Func_updateSpriteImagesForCloak = 0x00498A90;
 		__asm {
@@ -8379,8 +8351,8 @@ namespace helper
 		}
 	}
 
-	// For AI_TrainingWorker
-	char AI_AddWorkerStructureAI(Unit* worker, AiTown* town)
+	// For ai_training_worker
+	char add_worker_structure_ai(Unit* worker, AiTown* town)
 	{
 		const u32 Func_AI_AddWorkerStructureAI = 0x00433DD0;
 		static char result;
@@ -8513,7 +8485,7 @@ namespace helper
 	}
 
 	// For ai_send_suicide
-	bool isThreat(Unit* target, Unit* unit)
+	bool is_threat(Unit* target, Unit* unit)
 	{
 		const u32 Func_isThreat = 0x00476930;
 		static bool result;
@@ -8529,7 +8501,7 @@ namespace helper
 		return result;
 	}
 
-	void prepSuicide(Unit* unit)
+	void prepare_suicide(Unit* unit)
 	{
 		const u32 Func_prepSuicide = 0x0043CD40;
 		__asm
@@ -8541,7 +8513,7 @@ namespace helper
 		}
 	}
 
-	u32 AI_AttackClear(s32 player)
+	u32 ai_attack_clear(s32 player)
 	{
 		const u32 Func_AI_AttackClear = 0x00439500;
 		static u32 result;
@@ -8556,7 +8528,7 @@ namespace helper
 		return result;
 	}
 
-	bool AI_AttackManager(s32 player, s32 x, s32 y, s32 bOverrideLastAttack, s32 bFallbackAirOnly)
+	bool ai_attack_manager(s32 player, s32 x, s32 y, s32 bOverrideLastAttack, s32 bFallbackAirOnly)
 	{
 		const u32 Func_AI_AttackManager = 0x0043ABB0;
 		static bool result;
@@ -9149,7 +9121,7 @@ namespace helper
 		return result;
 	}
 	
-	// For AI_TrainingNormal
+	// For ai_training_normal
 	AiRegion* getAiRegionInfoFromUnitLoc(Unit* unit)
 	{
 		const u32 Func_getAiRegionInfoFromUnitLoc = 0x00438BF0;
@@ -9165,7 +9137,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_AddGuardAiToUnit(Unit* unit)
+	void add_guard_ai_to_unit(Unit* unit)
 	{
 		const u32 Func_AI_AddGuardAiToUnit = 0x00462960;
 		__asm
@@ -9247,8 +9219,8 @@ namespace helper
 		return result;
 	}
 
-	// For AI_RemoveUnitAI
-	s32 AI_RemoveFromAIStructs(Unit* unit, UnitAi* unitAI)
+	// For remove_unit_ai
+	s32 remove_from_ai_structs(Unit* unit, UnitAi* unitAI)
 	{
 		const u32 Func_AI_RemoveFromAIStructs = 0x00439D60;
 		static s32 result;
@@ -9264,7 +9236,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI)
+	s32 remove_worker_or_building_ai(Unit* unit, UnitAi* unitAI)
 	{
 		const u32 Func_AI_RemoveWorkerOrBuildingAI = 0x00434C90;
 		static s32 result;
@@ -9280,7 +9252,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_MedicRemove(Unit* unit)
+	void ai_remove_medic(Unit* unit)
 	{
 		const u32 Func_AI_MedicRemove = 0x004477C0;
 		__asm
@@ -9321,7 +9293,7 @@ namespace helper
 		return result;
 	}
 
-	AiScript* deleteAIScriptsUsingTown(AiTown* town)
+	AiScript* delete_aiscripts_using_town(AiTown* town)
 	{
 		const u32 Func_deleteAIScriptsUsingTown = 0x0045AE20;
 		static AiScript* result;
@@ -9417,7 +9389,7 @@ namespace helper
 	//}
 
 	// For ai_are_on_connected_regions
-	bool AI_RegionsAreConnected(u32 playerId, u32 region1, u32 region2)
+	bool ai_regions_are_connected(u32 playerId, u32 region1, u32 region2)
 	{
 		const u32 Func_AI_RegionsAreConnected = 0x00437E70;
 		static bool result;
@@ -10788,7 +10760,7 @@ namespace helper
 		return result;
 	}
 
-	b32 sub_43B6D0(u32 a1, Unit* unit, u32 a3) {
+	b32 is_valid_for(u32 a1, Unit* unit, u32 a3) {
 		static b32 result;
 		const u32 func_address = 0x0043B6D0;
 		__asm {
@@ -10803,7 +10775,7 @@ namespace helper
 		return result;
 	}
 
-	b32 Ai_IsAttackPrepareRegion(AiRegion* region) {
+	b32 region_is_for_attack_prepare(AiRegion* region) {
 		static b32 result;
 		const u32 func_address = 0x004369F0;
 		__asm {
@@ -11765,5 +11737,20 @@ namespace helper
 			CALL func_address
 			POPAD
 		}
+	}
+
+	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 flag_or_timer, char iscript_anim) {
+		static s32 result;
+		const u32 func_address = 0x00476C90;
+		__asm {
+			PUSH iscript_anim
+			MOV EDI, flag_or_timer
+			MOV BL, weapon_id
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

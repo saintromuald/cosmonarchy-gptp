@@ -277,7 +277,7 @@ namespace hooks
 			}
 
             /*
-			u32 race = unit->getRace();
+			u32 race = unit->get_race();
 			u32 supply_used = suppliesUsed_Terran[unit->playerId];
 
 			u32 supply_used_string_id = race + 820;
@@ -361,7 +361,7 @@ namespace hooks
         allUnitCountTable[unit->id].player[unit->player] += count;
         GroupFlag groupFlag = units_dat::GroupFlags[(u16)unit->id];
         
-        if (unit->getRace() == RaceId::Zerg)
+        if (unit->get_race() == RaceId::Zerg)
         {
             u8 supply;
             // zerg special handling
@@ -434,7 +434,7 @@ namespace hooks
         auto unit_id = unit->id;
         completed_unit_counts[unit->id].player[unit->player] += count;
 
-        s32 race = unit->getRace();
+        s32 race = unit->get_race();
         s32 supply = unit->getSupplyProvided();
         if (race <= RaceId::Protoss)
         {

@@ -263,7 +263,7 @@ namespace scbw
 	// Improved code from BWAPI's include/BWAPI/Position.h: getApproxDistance()
 	// Logically same as function @ 0x0040C360
 	// x1 = ECX;x2 = EDX;y1 = [EBP+08];y2 = [EBP+0C];
-	u32 getDistanceFast(s32 x1, s32 y1, s32 x2, s32 y2)
+	u32 get_distance_fast(s32 x1, s32 y1, s32 x2, s32 y2)
 	{
 		s32 dMax = abs(x1 - x2), dMin = abs(y1 - y2);
 		if (dMax < dMin)
@@ -550,7 +550,7 @@ namespace scbw
 		return false;
 	}
 
-	bool isConventionalUnitMorphResult(u16 id)
+	bool is_conventional_unit_morph_result(u16 id)
 	{
 		switch (id)
 		{
@@ -579,7 +579,7 @@ namespace scbw
 
 	bool isAnyMorphMorphResult(u16 id)
 	{
-		if (isConventionalUnitMorphResult(id))
+		if (is_conventional_unit_morph_result(id))
 		{
 			return true;
 		}
@@ -1083,7 +1083,7 @@ namespace scbw
 				case UnitId::ZergRilirokor:
 				case UnitId::ZergRililisk:
 				{
-					helper::playSoundFromSource(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
+					helper::play_sound_from_unit(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
 					if (unit->removeTimer == 0 || unit->removeTimer > removeTimer)
 					{
 						unit->removeTimer = removeTimer;
@@ -1120,7 +1120,7 @@ namespace scbw
 						unit->shields = std::max(256, creator->shields);
 						scbw::inheritDebuffs(creator, unit);
 					}
-					helper::playSoundFromSource(SoundId::Simulacrum_Clone_01, unit, 1, 0);
+					helper::play_sound_from_unit(SoundId::Simulacrum_Clone_01, unit, 1, 0);
 				}
 			}
 		}
@@ -1130,7 +1130,7 @@ namespace scbw
 	{
 		auto target_unit = unit->orderTarget.unit;
 		auto target_pos = unit->orderTarget.pt;
-		auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y);
+		auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y);
 		distance += offset;
 		if (distance < 0)
 		{
@@ -1250,7 +1250,7 @@ namespace scbw
 
 	s32 getUpgradeType(Unit* unit)
 	{
-		s32 race = unit->getRace();
+		s32 race = unit->get_race();
 		f64 upgType;
 		switch (race)
 		{
@@ -1310,7 +1310,7 @@ namespace scbw
 
 	// Identical to function OrderIsSpell @ 00436930 -- Pr0nogo
 	// We should update the lardcode for Cosmonarchy
-	bool orderIsSpell(s32 orderId)
+	bool order_is_spell(s32 orderId)
 	{
 		return orderId == OrderId::Plague
 			|| orderId == OrderId::DarkSwarm
@@ -1357,7 +1357,7 @@ namespace scbw
 				unitExt->timers[TimerDecloak] = 48 + 1;
 			}
 		}
-		if (unit->isSubunit() && unit->subunit)
+		if (unit->is_subunit() && unit->subunit)
 		{
 			decloakProc(unit->subunit);
 		}
@@ -1380,7 +1380,7 @@ namespace scbw
 		return (unit->id == UnitId::TerranSpiderMine || unit->id == UnitId::TerranLobotomyMine);
 	}
 
-	bool unitIsRangedAttacker(Unit* unit)
+	bool unit_is_ranged_attacker(Unit* unit)
 	{
 		u16 id = unit->id;
 		// Would be nice to somehow avoid ID hardcode
@@ -1475,11 +1475,11 @@ namespace scbw
 		// Sounds
 		if (!unitExt->timers[TimerHallucinating])
 		{
-			helper::playSoundFromSource(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit, 1, 0);
+			helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit, 1, 0);
 		}
 		else
 		{
-			helper::playSoundFromSource(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit, 1, 0);
+			helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit, 1, 0);
 		}
 
 		// Overlays
@@ -1884,7 +1884,7 @@ namespace scbw
 		return allyCount < enemyCount;
 	}
 
-	bool unitIdIsZergSupply(u16 unitId)
+	bool unit_id_is_zerg_supply(u16 unitId)
 	{
 		return (unitId == UnitId::ZergOvileth
 			|| unitId == UnitId::ZergIroleth
@@ -1946,7 +1946,7 @@ namespace scbw
 			if (source->id == UnitId::ProtossDemiurge)
 			{
 				target->sprite->createTopOverlay(ImageId::Worship_Small + offset, 0, 0, 0);
-				helper::playSoundFromSource(SoundId::DemiurgeWorship01, target, 1, 0);
+				helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
 			}
 			else if (source->id == UnitId::ProtossMindTyrant)
 			{
@@ -2094,7 +2094,7 @@ namespace scbw
 		u32 best_resarea = 0;
 		for (u32 i = 0; i < ResAreaLimit; ++i) {
 			ResourceArea* resarea = &resource_areas->areas[i];
-			u32 distance = scbw::getDistanceFast(position, resarea->pos);
+			u32 distance = scbw::get_distance_fast(position, resarea->pos);
 			if (distance < min_distance) {
 				min_distance = distance;
 				best_resarea = i;
@@ -2110,7 +2110,7 @@ namespace scbw
 			if (!town->inited) {
 				continue;
 			}
-			u32 distance = scbw::getDistanceFast(position, town->position);
+			u32 distance = scbw::get_distance_fast(position, town->position);
 			if (distance < min_distance) {
 				min_distance = distance;
 				best_town = town;
@@ -2308,7 +2308,7 @@ namespace scbw
 		unit->sprite->createOverlay(effect_image_id);
 
 		// Play Sound
-		helper::playSoundFromSource(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
+		helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
 	}
 
 	b32 unit_id_is_tech(u32 unit_id) {

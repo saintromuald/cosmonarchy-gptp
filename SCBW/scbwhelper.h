@@ -43,7 +43,7 @@ namespace helper
 	Unit* genericStatusUpdateDrawnValues();
 	void drawProgressBar(BinDlg* a1);
 	void drawNukeSiloInfo(BinDlg* a1);
-	bool unitIsActiveTransport(Unit* a1);
+	bool unit_is_active_transport(Unit* a1);
 	bool isQueueSlotActive(Unit* unit, s32 slot);
 	void drawTrainingProgress(BinDlg* dialog);					// 004268D0
 	bool isConstructingAddon(const Unit* a1);
@@ -124,69 +124,69 @@ namespace helper
 	s16 get_region_id(s32 x, s32 y);															// 0049C9F0
 
 	// For AI_TrainUnit
-	char AI_TrainingWorker(Unit* result, Unit* parent);											// 00435700
-	void AI_TrainingOverlord(Unit* result, Unit* parent);										// 00435770
-	void AI_TrainingNormal(Unit* result, Unit* parent);											// 00435DB0
+	char ai_training_worker(Unit* result, Unit* parent);											// 00435700
+	void ai_training_overlord(Unit* result, Unit* parent);										// 00435770
+	void ai_training_normal(Unit* result, Unit* parent);											// 00435DB0
 	void ai_order_to_destination(Unit* unit, s32 orderId, s32 x, s32 y);							// 0043D5D0
 	void ai_assign_region_to_slowest_unit(AiRegion* region);										// 00436F70
 
-	// For AI_CreateNuke
+	// For ai_create_nuke
 	Unit* create_unit(s16 unitType, s32 x, s32 y, s32 playerId);
 	void update_unit_stats_and_finish_building(Unit* unit);
-	u32 updateUnitStrengthAndApplyDefaultOrders(Unit* unit);
+	u32 update_unit_strength_and_apply_default_orders(Unit* unit);
 	void hideUnit(Unit* unit);
 
 	// For AI_TrainingBroodling
 	void ai_set_region_type(s32 regionType, AiRegion* region);
 	void add_military_ai(AiRegion* region, Unit* unit, s32 always_this_region);
 
-	// For AI_TrainingWorker
-	char AI_AddWorkerStructureAI(Unit* worker, AiTown* town);									// 00433DD0
+	// For ai_training_worker
+	char add_worker_structure_ai(Unit* worker, AiTown* town);									// 00433DD0
 
 	// For AI_AddUnitAI
-	BuildingAi* AI_CreateBuildingAi(BuildingAiArray** buildingAI);
+	BuildingAi* create_building_ai(BuildingAiArray** buildingAI);
 	void issue_order_targeting_nothing(Unit* unit, u8 orderId);
-	Unit* setSecondaryOrder(Unit* result, char orderId);
-	void AI_MakeGuard(s32 playerId, Unit* unit);
+	Unit* set_secondary_order(Unit* result, char orderId);
+	void ai_make_guard(s32 playerId, Unit* unit);
 	bool unit_is_active_resource_depot(Unit* unit);
-	u32 getPlayerDefaultRefineryUnitType(u32 playerId);
+	u32 get_default_refinery_type(u32 playerId);
 
 	// for ai_unit_was_hit // some of these should probably be methods in api/etc
-	char AI_cancel_structure(Unit* structure);
-	Unit* AI_GetActualTarget(Unit* attacker, Unit* target);
-	Unit* checkArbiterCloakingRange(Unit* unit, u16 id);
+	char ai_cancel_structure(Unit* structure);
+	Unit* ai_get_actual_target(Unit* attacker, Unit* target);
+	Unit* check_arbiter_cloaking_range(Unit* unit, u16 id);
 	void ai_order_unit_cloaking(Unit* unit);
-	void AI_OrderLurkerBurrow(Unit* unit);
-	bool AI_IsUnderAttack(Unit* unit, s32 flag);
-	bool unitIsActiveTransport(Unit* unit);
-	s32 isUnitLoaded(Unit* unit);
-	s32 AI_TryReturnHome(Unit* unit, s32 dontIssueOrder);
-	s32 AI_TransportAction(Unit* unit);
-	s32 AI_AskForHelp(Unit* self, Unit* attacker, s32 onlyNearbyGuards);
+	void ai_order_lurker_burrow(Unit* unit);
+	bool ai_is_under_attack(Unit* unit, s32 flag);
+	bool unit_is_active_transport(Unit* unit);
+	s32 is_unit_loaded(Unit* unit);
+	s32 ai_try_return_home(Unit* unit, s32 dontIssueOrder);
+	s32 ai_transport_action(Unit* unit);
+	s32 ai_ask_for_help(Unit* self, Unit* attacker, s32 onlyNearbyGuards);
 	s16 get_region_id_from_unit(Unit* unit);
-	s32 getEnemyAirStrengthInRegion(u16 regionId, s32 player);
-	s32 getEnemyStrengthInRegion(u16 regionId, s32 player, s32 includeAir);
-	bool unitIsPerformingUnbreakableCode(Unit* unit);
+	s32 get_enemy_air_strength_in_region(u16 regionId, s32 player);
+	s32 get_enemy_strength_in_region(u16 regionId, s32 player, s32 includeAir);
+	bool unit_is_performing_unbreakable_code(Unit* unit);
 	bool ai_cast_spell_behavior(Unit* unit, bool isAggro);
-	s32 AI_Flee(Unit* unit, Unit* enemy);
-	bool unitHasGroundPath(Unit* unit, s16 x, s16 y);
-	bool AI_HasNoDefenseBuild(s32 player);
-	bool unitCanSeeCloakedTarget(Unit* target, Unit* unit);
-	void AI_RespondToCloakedThreat(Unit* threat, Unit* unit);
-	bool unitCanAttackTarget(Unit* target, Unit* unit, s32 checkDetection);
+	s32 ai_flee(Unit* unit, Unit* enemy);
+	bool unit_has_ground_path(Unit* unit, s16 x, s16 y);
+	bool ai_has_no_defense_build(s32 player);
+	bool unit_can_see_cloaked_target(Unit* target, Unit* unit);
+	void ai_respond_to_cloaked_threat(Unit* threat, Unit* unit);
+	bool unit_can_attack_target(Unit* target, Unit* unit, s32 checkDetection);
 	s32 ai_update_attack_target(Unit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach);
 	__int64 AI_PrepareToFlee(Unit* enemy, Unit* unit);
 
-	// for AI_IterateBuildingAI
-	u16 AI_RemoveFromTowns(Unit* worker);
-	s32 AI_GetQueuedCount(Unit* builder, u32 unitId);
-	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);
+	// for iterate_building_ai
+	u16 ai_remove_from_towns(Unit* worker);
+	s32 ai_get_queued_count(Unit* builder, u32 unitId);
+	void prepare_guard_ai(u16 y, u32 player, u16 unitId, u16 x);
 
 	// For ai_send_suicide
-	bool isThreat(Unit* target, Unit* unit);														// 00476930
-	void prepSuicide(Unit* unit);																	// 0043CD40
-	u32 AI_AttackClear(s32 player);																	// 00439500
-	bool AI_AttackManager(s32 player, s32 x, s32 y, s32 bOverrideLastAttack, s32 bFallbackAirOnly); // 0043ABB0
+	bool is_threat(Unit* target, Unit* unit);														// 00476930
+	void prepare_suicide(Unit* unit);																	// 0043CD40
+	u32 ai_attack_clear(s32 player);																	// 00439500
+	bool ai_attack_manager(s32 player, s32 x, s32 y, s32 bOverrideLastAttack, s32 bFallbackAirOnly); // 0043ABB0
 
 	// Attack extender
 
@@ -210,14 +210,14 @@ namespace helper
 	u32 AI_AttackTimerDecrement(u32 player);
 	s32 AI_HasForcesMovingToAttack(u32 player);
 
-	// for AI_AttackManager
+	// for ai_attack_manager
 	u16 PopulateRegionsWithOwn(char* regionData, u32 player);
 	void PopulateRegionsWithEnemy(u32 player, char* regionData);
 	s32 AI_GetNeighborRegionTypes(char* regionData);
 	void AI_FinishRegionAccessibility(char* regionData);
 	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
 		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
-	char AI_cancel_structure(Unit* structure);
+	char ai_cancel_structure(Unit* structure);
 
 	bool unitCantSeeCloakedTarget(Unit* unit, Unit* target);												// 00401D60
 	bool unitCanInfest(Unit* unit);																			// 00402750
@@ -274,7 +274,7 @@ namespace helper
 
 	// For orders_PlaceMine
 	s32 techUseAllowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
-	u32 getDistanceFast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
+	u32 get_distance_fast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
 	s32 orders_HoldPosSuicidal(Unit* a1);												                    // 004EB5B0
 	void turnUnit(Unit* a1, char a2);													                    // 00495F20
 	void to_idle(Unit* a1);																                    // 004753A0
@@ -368,7 +368,7 @@ namespace helper
 	//// larva_creep_spawn
 	Unit* getUnitPointer();
 	u8 spreadCreep(u32 unitId, s32 x, s32 y);																						// 00414680
-	void AI_TrainingOverlord(Unit* main_building, Unit* larva);																		// 00435770
+	void ai_training_overlord(Unit* main_building, Unit* larva);																		// 00435770
 	void update_unit_strength(Unit* unit);																							// 0049FA40
 	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit* unit, Box16* coords);														// 004E8280
 	void function_004E8DA0(Unit* unit);																								// 004E8DA0
@@ -437,7 +437,6 @@ namespace helper
 	void apply_speed_upgrade_from_unit_type(Unit* unit);																			// 00454370
 	void recheck_attacks(Unit* unit);																								// 00476D30
 	void incrementUnitScores(Unit* unit, s32 unkScore);																				// 00488BF0
-	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI);																				// 004A1E50
 	void CreateUnitSelection(Unit* unit, u32 selectionIndex);																		// 004E6180
 	void DestroyUnitSelection(Unit* unit);																							// 004E6290
 	void drop_powerup(Unit* powerup);																								// 004F3B70
@@ -466,7 +465,7 @@ namespace helper
 	bool isInfestableUnit(Unit* unit);																								// 00402210
 
 	//// trap_hooks
-	// For updateUnitStrengthAndApplyDefaultOrders
+	// For update_unit_strength_and_apply_default_orders
 	void AnimCloak(Unit* a1, s32 a2);																								// 0049B5B0
 	void refresh_unit_vision(Unit* a1);																								// 004E5F30
 	void initUnitTrapDoodad(Unit* a1);																								// 004E6490
@@ -729,7 +728,7 @@ namespace helper
 
 	// For createScanner
 	s32 setUnitStatTxtErrorMsg(s32 a1);																		    // 0048CCB0
-	s32 playSoundFromSource(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume);									// 0048ED50
+	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume);									// 0048ED50
 	void return_all_interceptors(Unit* unit);																		// 004655F0
 	char ignore_all_scripts_and_go_to_idle(Unit* unit);																// 00476550
 
@@ -785,13 +784,13 @@ namespace helper
 	void update_unit_power();																								// 00493790
 
 	// For update_burrowing_cloaking_units
-	s32 isUnitCloaking(Unit* unit);																							// 004916E0
-	void playSoundFromDirect(Unit* unit, s32 soundId);																	    // 0049B5B0
+	s32 is_unit_cloaking(Unit* unit);																							// 004916E0
+	void play_sound_from_direction(Unit* unit, s32 soundId);																	    // 0049B5B0
 
 	// For do_cloak
-	void updateSpriteFlagOnPalette(Sprite* sprite);																			// 00497E80
-	void showImagesHiddenByCloak(Sprite* sprite);																			// 00498170
-	void updateSpriteImagesForCloak(Sprite* sprite);																		// 00498A90
+	void update_sprite_flag_on_palette(Sprite* sprite);																			// 00497E80
+	void show_images_hidden_by_cloak(Sprite* sprite);																			// 00498170
+	void update_sprite_images_for_cloak(Sprite* sprite);																		// 00498A90
 
 	// For progress_unit_frame
 	char refresh_sprite(Sprite* sprite, s32 spriteId);																		// 004EBBD0
@@ -976,9 +975,9 @@ namespace helper
 	void playSpriteIscript(Sprite* sprite, char scriptId, s32 bPlay);										// 00499D00
 	Bullet* assignWeaponData(Bullet* bullet, char behaviorType);											// 0048AA80
 
-	// For AI_TrainingNormal
+	// For ai_training_normal
 	AiRegion* getAiRegionInfoFromUnitLoc(Unit* unit);														// 00438BF0
-	void AI_AddGuardAiToUnit(Unit* unit);																	// 00462960
+	void add_guard_ai_to_unit(Unit* unit);																	// 00462960
 
 	s8 createUnitAllowed(u16 unitId, Unit* unit, s32 playerID);												// 0046E1C0
 
@@ -988,10 +987,10 @@ namespace helper
 	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2);												// 00438E10
 	bool ai_check_military_grouping(Unit* unit);															// 00439550
 
-	// For AI_RemoveUnitAI
-	s32 AI_RemoveFromAIStructs(Unit* unit, UnitAi* unitAI);													// 00439D60
-	s32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI);											// 00434C90
-	void AI_MedicRemove(Unit* unit);																		// 004477C0
+	// For remove_unit_ai
+	s32 remove_from_ai_structs(Unit* unit, UnitAi* unitAI);													// 00439D60
+	s32 remove_worker_or_building_ai(Unit* unit, UnitAi* unitAI);											// 00434C90
+	void ai_remove_medic(Unit* unit);																		// 004477C0
 
 	// AI utility
 	void give_ai(Unit* unit);																				// 00463040
@@ -999,7 +998,7 @@ namespace helper
 
 	// For delete_ai_town_if_needed
 	AiTown* try_begin_delete_town(AiTown* town);																// 00434330
-	AiScript* deleteAIScriptsUsingTown(AiTown* town);														// 0045AE20
+	AiScript* delete_aiscripts_using_town(AiTown* town);														// 0045AE20
 
 	// For displayEstablishingShot
 	void* loadInitCreditsBIN(char* a1);																		// 004D8DF0
@@ -1009,7 +1008,7 @@ namespace helper
 	//bool SFileCloseFile(void* hFile);																		// 004100C4
 
 	// For ai_are_on_connected_regions
-	bool AI_RegionsAreConnected(u32 playerId, u32 region1, u32 region2);									// 00437E70
+	bool ai_regions_are_connected(u32 playerId, u32 region1, u32 region2);									// 00437E70
 
 	// For BTNSCOND_ZergBuildingRally
 	u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit);													// 00429520
@@ -1168,8 +1167,8 @@ namespace helper
 	void playSoundGlobal(u32 id);																		// 004BC2C0
 	VectorHead* play_sound_from_file(const char* filename, char* unused);								// 004BC490
 
-	b32 sub_43B6D0(u32 a1, Unit* unit, u32 a3);
-	b32 Ai_IsAttackPrepareRegion(AiRegion* region);
+	b32 is_valid_for(u32 a1, Unit* unit, u32 a3);
+	b32 region_is_for_attack_prepare(AiRegion* region);
 
 	u32 Ai_CountUnitsInTown(AiTown* town, u32 unit_id, bool finished);									// 00433210 Aka AI_WaitBuild
 
@@ -1183,8 +1182,6 @@ namespace helper
 	void disable_doodad_state(Unit* unit);																// 0047B960
 	char unfreeze_unit(Unit* unit);																		// 004F62D0
 	s32 dialog_set_progress_bar_value(BinDlg* dialog, s16 index, s16 value);							// 00457200
-
-	bool unit_can_attack_target(Unit* target, Unit* attacker, s32 check_duration);						// 00476730
 
 	// For vespene rework in harvest.cpp
 	void set_gathering_flags(Unit* unit);																// 00468AA0
@@ -1289,4 +1286,5 @@ namespace helper
 	bool ai_has_incomplete_military_in_region(AiRegion* region);											// 00436EB0
 
 	void update_burrowing_cloaking_units();																	// 00492EB0
+	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 flag_or_timer, char iscript_anim);					// 00476C90
 }

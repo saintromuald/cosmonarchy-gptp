@@ -87,7 +87,7 @@ namespace hooks
 				unit->sprite->play_iscript_animation(IscriptAnimation::UnBurrow, true);
 				unit->sprite->flags &= ~SpriteFlags::Burrowed;
 				// might have been some cloaking order before
-				unit->setSecondaryOrder(OrderId::Nothing2);
+				unit->set_secondary_order(OrderId::Nothing2);
 				unit->mainOrderState = 4;
 			}
 		}
@@ -198,7 +198,7 @@ namespace hooks
 					|| v1->moveTarget.pt.y != v11->position.y
 					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1))
 			{
-				if ((helper::getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400)
+				if ((helper::get_distance_fast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400)
 				{
 					helper::orders_HoldPosSuicidal(v1);
 					v12 = v1->orderTarget.pt.y;
@@ -210,7 +210,7 @@ namespace hooks
 					if (v13)
 					{
 						helper::update_unit_stats_and_finish_building(v13);
-						helper::updateUnitStrengthAndApplyDefaultOrders(v14);
+						helper::update_unit_strength_and_apply_default_orders(v14);
 						helper::turnUnit(v14, v1->currentDirection1);
 						v1->vulture.spiderMineCount -= 1;
 					}

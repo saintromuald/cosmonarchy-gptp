@@ -11,7 +11,7 @@ namespace hooks
 	void ai_order_unit_cloaking(Unit* unit);																				// 0043B970
 	void ai_send_suicide(char argType, s32 player);																		// 0043E050
 	u32 ai_recalculate_region_strength(AiRegion* region);																	// 0043A390
-	Unit* getClosestEnemyStructure(s32 x, s32 y, s32 playerId);															// 004A0F90
+	Unit* get_closest_enemy_structure(s32 x, s32 y, s32 playerId);															// 004A0F90
 	s16 get_region_id_from_unit(Unit* unit);																				// 0049CB40
 	bool ai_is_building_safe(Unit* unit);																					// 00438910
 	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2);															// 00438E10

@@ -15,7 +15,7 @@ namespace hooks
 	void checkUnitVisibilityHook(Unit* unit);															// 00443390
 	s32 isUnitCloakingHook(Unit* unit);																	// 004916E0
 	void updateUnitVisibility(Unit* unit);																// Extracted part of check_unit_visibility
-	bool unitCanAttackTarget(Unit* target, Unit* unit, int checkVisibility);							// 00476730
+	bool unit_can_attack_target(Unit* target, Unit* unit, int checkVisibility);							// 00476730
 	s32 orderAttackBehavior(Unit *a1);																	// 00478540
 	void AI_AttackUnit(Unit* unit);																		// 0043FFD0
 	s32 return_interceptor_if_cannot_attack(Unit* steward);												// 00465810

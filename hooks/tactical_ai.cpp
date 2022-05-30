@@ -271,7 +271,7 @@ static u32 get_distance_to_target(Unit* source)
 		return get_max_range(source->id);
 	}
 
-	return scbw::getDistanceFast(source->position, target->position);
+	return scbw::get_distance_fast(source->position, target->position);
 }
 
 static bool is_channeling(Unit* unit) {
@@ -299,7 +299,7 @@ static bool is_channeling(Unit* unit) {
 static s32 get_target_cost(Unit* source, Unit* target)
 {
 	// Value attacking wounded units first
-	s32 cost = target->getCurrentLifeInGame() / 10;
+	s32 cost = target->get_current_life_ingame() / 10;
 
 	// Value attacking more threatning units first
 	if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster
@@ -360,7 +360,7 @@ static s32 get_target_cost(Unit* source, Unit* target)
 	}
 
 	// Value attacking units with smaller pathing cost more
-	s32 dist = (s32)scbw::getDistanceFast(source->position, target->position) - get_max_range(source->id);
+	s32 dist = (s32)scbw::get_distance_fast(source->position, target->position) - get_max_range(source->id);
 	if (dist > 0)
 	{
 		cost += dist / 32.0;
@@ -744,7 +744,7 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 					{
 						case KiterType_Melee:
 						{
-							if (local_unit->hitPoints < local_unit->getTotalHitPointsPlusShields() * 0.2)
+							if (local_unit->hitPoints < local_unit->get_total_hp_plus_shields() * 0.2)
 							{
 								local_unit_ext->timers[TimerAI_KitingCooldown] = 24;
 								local_unit->orderTo(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
@@ -766,7 +766,7 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 						} break;
 						case KiterType_Ranged:
 						{
-							if ((local_unit->hitPoints < local_unit->getTotalHitPointsPlusShields() * 0.2
+							if ((local_unit->hitPoints < local_unit->get_total_hp_plus_shields() * 0.2
 								|| local_group_value * confidence_factor < result.biases[result.forward_index]
 								|| distance <= max_range * 0.5)
 								&& !target_has_min_range)
@@ -810,7 +810,7 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 						} break;
 						case KiterType_Flagship:
 						{
-							if (local_unit->hitPoints < local_unit->getTotalHitPointsPlusShields() * 0.2
+							if (local_unit->hitPoints < local_unit->get_total_hp_plus_shields() * 0.2
 								|| local_group_value * confidence_factor < result.biases[result.forward_index])
 							{
 								local_unit->orderTo(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
@@ -848,7 +848,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	cost -= hooks::getCurrentDPS(target, weapon_id) * multiplier;
 
 	// Value attacking units with smaller pathing cost more
-	s32 dist = (s32)scbw::getDistanceFast(source->position, target->position) - get_max_range(source->id);
+	s32 dist = (s32)scbw::get_distance_fast(source->position, target->position) - get_max_range(source->id);
 	if (dist > 0)
 	{
 		cost += dist / 32.0;
@@ -935,7 +935,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 		}
 	}
 
-	if (unit->unit_ai && !helper::isUnitLoaded(unit) &&
+	if (unit->unit_ai && !helper::is_unit_loaded(unit) &&
 		playerTable[unit->player].type != PlayerType::Human &&
 		playerTable[unit->player].type != PlayerType::HumanDefeated)
 	{
@@ -1088,7 +1088,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 					if (valid) {
 						s32 score = cosmonarchyUnitCount(unit, target->position, AILanifectCheckRange, Flags::Enemy, {});
 						score -= cosmonarchyUnitCount(unit, target->position, AILanifectCheckRange, Flags::Ally, {});
-						score -= scbw::getDistanceFast(unit->position, target->position) / 128;
+						score -= scbw::get_distance_fast(unit->position, target->position) / 128;
 						if (score > max_score) {
 							max_score = score;
 							best_target = target;
@@ -1222,7 +1222,7 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 						Point16 source = unit->position;
 						Point16 target = u->position;
 
-						auto distance = scbw::getDistanceFast(source.x, source.y, target.x, target.y);
+						auto distance = scbw::get_distance_fast(source.x, source.y, target.x, target.y);
 						if (distance >= 64) {
 							f64 fraction = (distance - 64) / distance;
 							u16 resultX, resultY;

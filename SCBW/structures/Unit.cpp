@@ -40,7 +40,7 @@ u32 Unit::getCurrentShieldsInGame() const
 }
 
 //Identical to function @ 0x004026D0
-u32 Unit::getCurrentLifeInGame() const
+u32 Unit::get_current_life_ingame() const
 {
 	assert(this);
 	if (units_dat::ShieldsEnabled[this->id])
@@ -232,14 +232,14 @@ const char* Unit::getName(u16 unitId)
 	}
 }
 
-RaceId::Enum Unit::getRace() const
+RaceId::Enum Unit::get_race() const
 {
 	assert(this);
-	return getRace(this->id);
+	return get_race(this->id);
 }
 
 //Based on function at 0x0047B150
-RaceId::Enum Unit::getRace(u16 unitId)
+RaceId::Enum Unit::get_race(u16 unitId)
 {
 	assert(unitId < UNIT_TYPE_COUNT);
 
@@ -380,7 +380,7 @@ bool Unit::isRemorphingBuilding() const
 }
 
 //Identical to function @ 0x00401D40
-bool Unit::isSubunit() const
+bool Unit::is_subunit() const
 {
 	return (this && units_dat::BaseProperty[this->id] & UnitProperty::Subunit);
 }
@@ -823,8 +823,8 @@ void Unit::addUnitEnergy(u32 energy, u32 energyMax)
 	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
 }
 
-// Identical to getTotalHitPointsPlusShields @ 00402710
-s32 Unit::getTotalHitPointsPlusShields()
+// Identical to get_total_hp_plus_shields @ 00402710
+s32 Unit::get_total_hp_plus_shields()
 {
 	assert(this);
 	s32 id = this->id;
@@ -846,7 +846,7 @@ s32 Unit::getTotalHitPointsPlusShields()
 }
 
 // Identical to isAIControllerNotABuilding @ 004381D0
-s32 Unit::isUnitAINonBuilding()
+s32 Unit::is_unit_ai_non_building()
 {
 	assert(this);
 	UnitAi* ai = (UnitAi*)this->unit_ai;
@@ -986,7 +986,7 @@ void Unit::performAnotherOrder(u8 orderId, s16 x, s16 y, Unit* target, u16 targe
 }
 
 //Identical to @ 0x004743D0
-void Unit::setSecondaryOrder(u8 orderId)
+void Unit::set_secondary_order(u8 orderId)
 {
 	assert(this);
 	if (this->secondaryOrderId == orderId)
@@ -1151,7 +1151,7 @@ u32 Unit::getDistanceToTarget(Unit* target) const
 
 	Unit* unit = (Unit*)this;
 
-	if (this->isSubunit())
+	if (this->is_subunit())
 		unit = this->subunit; // Current unit is a turret, so use it's base instead
 
 	s32 dx = unit->getLeft() - target->getRight() - 1;
@@ -1170,7 +1170,7 @@ u32 Unit::getDistanceToTarget(Unit* target) const
 			dy = 0;
 	}
 
-	return scbw::getDistanceFast(0, 0, dx, dy);
+	return scbw::get_distance_fast(0, 0, dx, dy);
 }
 
 const u32 Func_HasPathToPos = 0x0049CB60; //AKA unitHasPathToDest()

@@ -217,7 +217,7 @@ namespace hooks
 				{
 					unitExt->values[ValueNemeanReactorsStack]++;
 					unitExt->timers[TimerNemeanReactors] = 49;
-					helper::playSoundFromSource(1372, unit, 1, 0);
+					helper::play_sound_from_unit(1372, unit, 1, 0);
 				}
 
 				// Madcap - Maverick Feeders passive
@@ -280,7 +280,7 @@ namespace hooks
 								unitExt->values[ValuePhobosDischarge] = 1;
 								unit->groundWeaponCooldown = getModifiedWeaponCooldownHook(unit, WeaponId::PhobosArgosLaserBatteries);
 								unit->airWeaponCooldown = getModifiedWeaponCooldownHook(unit, WeaponId::PhobosArgosLaserBatteries);
-								helper::playSoundFromSource(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
+								helper::play_sound_from_unit(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
 								unit->sprite->createOverlay(ImageId::OpticalFlareHit_Large);
 							}
 						}
@@ -345,7 +345,7 @@ namespace hooks
 							if (!(pickedUnit->status & UnitStatus::Completed)
 								|| unit == pickedUnit
 								|| scbw::is_allied_to(pickedUnit->player, unit->player)
-								|| scbw::getDistanceFast(unit->position, pickedUnit->position) > radius)
+								|| scbw::get_distance_fast(unit->position, pickedUnit->position) > radius)
 							{
 								return;
 							}
@@ -353,7 +353,7 @@ namespace hooks
 							count += 1;
 						});
 						if (count) {
-							helper::playSoundFromSource(SoundId::SirenTertiaryEyesCast01, unit, 1, 0);
+							helper::play_sound_from_unit(SoundId::SirenTertiaryEyesCast01, unit, 1, 0);
 						}
 
 						// Tertiary Eyes - Siren
@@ -503,8 +503,8 @@ namespace hooks
 			Unit* targ = bullet->attackTarget.unit;
 
 			UnitExt* unitExt = globals.get_unit_ext(bullet->sourceUnit);
-			const u32 distFromSource = scbw::getDistanceFast(bullet->position, unitExt->lastBulletLaunchPos);
-			const u32 distFromTarget = scbw::getDistanceFast(bullet->position, targ->position);
+			const u32 distFromSource = scbw::get_distance_fast(bullet->position, unitExt->lastBulletLaunchPos);
+			const u32 distFromTarget = scbw::get_distance_fast(bullet->position, targ->position);
 
 			if (distFromSource > 5 * 32
 				&& distFromTarget < 3 * 32)
@@ -541,7 +541,7 @@ namespace hooks
 							bullet->sourceUnit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
 						if (newBullet)
 						{
-							helper::playSoundFromSource(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
+							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
 							newBullet->position = bullet->position;
 							globals.add_multihit_empty_bullet(newBullet, 1);
 						}
@@ -877,7 +877,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (helper::unitCanSeeCloakedTarget(pIterator, (*bulletBounceMissileSource)))
+		if (helper::unit_can_see_cloaked_target(pIterator, (*bulletBounceMissileSource)))
 		{
 			return 0;
 		}
@@ -1250,7 +1250,7 @@ namespace hooks
 				{
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						const u32 dist = scbw::getDistanceFast(bullet->sourceUnit->position, bullet->attackTarget.pt);
+						const u32 dist = scbw::get_distance_fast(bullet->sourceUnit->position, bullet->attackTarget.pt);
 						if (dist >= 6 * 32)
 						{
 							bullet->remainingBounces = 2;
@@ -1492,6 +1492,30 @@ namespace hooks
 				}
 			}
 			break;
+		}
+	}
+
+	// Hooked to help with kiting AI. -Pr0nogo
+	void get_weapon_iscript_init(Unit* unit, char iscript_anim) // 00476ED0
+	{
+		*lastBulletCreator = 0;
+		if ((unit->status & UnitStatus::CanNotAttack) == 0)
+		{
+			if (unit->orderTarget.unit && unit->orderTarget.unit->status & UnitStatus::InAir)
+			{
+				helper::use_weapon_iscript(unit, units_dat::AirWeapon[unit->id], 2, iscript_anim + 1);
+			}
+			else
+			{
+				if (unit->id != UnitId::ZergLakizilisk || unit->status & UnitStatus::Burrowed)
+				{
+					helper::use_weapon_iscript(unit, units_dat::GroundWeapon[unit->id], 1, iscript_anim);
+				}
+				else
+				{
+					helper::use_weapon_iscript(unit, WeaponId::None, 1, iscript_anim);
+				}
+			}
 		}
 	}
 }

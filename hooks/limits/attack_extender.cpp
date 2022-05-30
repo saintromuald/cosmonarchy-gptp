@@ -304,7 +304,7 @@ LABEL_8:
 	}
 
 	//	0x0043ABB0 => ai_attack_to_hook(u32,i32,i32,bool,bool)->u32;
-	bool AI_AttackManager(u32 player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack, u32 allowFallbackAirOnly) // 0043ABB0
+	bool ai_attack_manager(u32 player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack, u32 allowFallbackAirOnly) // 0043ABB0
 	{
 		u16 attackWave;
 		u16* attackWave2;

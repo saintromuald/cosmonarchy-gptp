@@ -111,10 +111,10 @@ namespace
 					unit->spendUnitEnergy(energyCost);
 				}
 			}
-			//original code is hardcoded instead of using a function like setSecondaryOrder
+			//original code is hardcoded instead of using a function like set_secondary_order
 			if (unit->secondaryOrderId != OrderId::Cloak)
 			{
-				unit->setSecondaryOrder(OrderId::Cloak);
+				unit->set_secondary_order(OrderId::Cloak);
 			}
 			else if (unit->unit_ai != nullptr)
 			{
@@ -172,7 +172,7 @@ namespace
 		while (Unit* unit = getActivePlayerNextSelection())
 		{
 			if (unit->canUseTech(hooks::getCloakingTech(unit), *ACTIVE_NATION_ID) == 1)
-				unit->setSecondaryOrder(OrderId::Decloak);
+				unit->set_secondary_order(OrderId::Decloak);
 		}
 	}
 
@@ -223,7 +223,7 @@ namespace
 				}
 			}
 		}
-		race = (*activePortraitUnit)->getRace();
+		race = (*activePortraitUnit)->get_race();
 		scbw::showErrorMessageWithSfx((*activePortraitUnit)->player, 864 + race, 156 + race);
 		return false;
 	}

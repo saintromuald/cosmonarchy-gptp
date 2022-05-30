@@ -124,7 +124,7 @@ namespace
 			MOV x, EAX
 			PUSHAD
 		}
-		result = hooks::getClosestEnemyStructure(x, y, playerId);
+		result = hooks::get_closest_enemy_structure(x, y, playerId);
 		__asm
 		{
 			POPAD

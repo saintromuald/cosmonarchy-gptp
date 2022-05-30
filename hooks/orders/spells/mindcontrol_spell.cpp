@@ -74,7 +74,7 @@ namespace hooks
 					{
 						unit->spendUnitEnergy(techEnergyCost);
 					}
-					helper::playSoundFromSource(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
+					helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 					unit->orderToIdle();
 				}
 				else

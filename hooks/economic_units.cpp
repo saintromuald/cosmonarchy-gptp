@@ -164,14 +164,14 @@ namespace hooks
 	{
 		if (!town) return RaceId::Neutral;
 		if (!town->main_building) return RaceId::Neutral; // can't tell from main town, might want to check from buildings maybe
-		return town->main_building->getRace();
+		return town->main_building->get_race();
 	}
 
 	// Checks if worker is valid (exists && correct race)
 	bool IsValidWorker(const WorkerAi& worker, u8 raceId)
 	{
 		if (!worker.parent) return false;
-		if (worker.parent->getRace() != raceId) return false;
+		if (worker.parent->get_race() != raceId) return false;
 		return true;
 	}
 

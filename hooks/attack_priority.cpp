@@ -83,7 +83,7 @@ namespace
 			}
 		}
 
-		Unit* actualUnit = unit->subunit->isSubunit() ? unit->subunit : unit;
+		Unit* actualUnit = unit->subunit->is_subunit() ? unit->subunit : unit;
 
 		// Check if the target is within the seek range
 		if (!(unit->getDistanceToTarget(target) <= seekRange))
@@ -298,12 +298,12 @@ Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 	if (attacker->unit_ai && attacker->id == UnitId::ZergSkryling)
 	{
 		// AI-controlled Scourges auto-target units with the most HP + shields
-		u32 bestTargetLife = bestTarget->getCurrentLifeInGame();
+		u32 bestTargetLife = bestTarget->get_current_life_ingame();
 
 		for (u32 i = 1; i < targetCounts[priority]; ++i)
 		{
 			Unit* currentTarget = targets[priority][i];
-			const u32 currentTargetLife = currentTarget->getCurrentLifeInGame();
+			const u32 currentTargetLife = currentTarget->get_current_life_ingame();
 
 			if (currentTargetLife > bestTargetLife)
 			{
@@ -315,14 +315,14 @@ Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 	else
 	{
 		// Find the nearest target (don't use unit box sizes)
-		u32 bestTargetDistance = scbw::getDistanceFast(
+		u32 bestTargetDistance = scbw::get_distance_fast(
 			attacker->getX(), attacker->getY(),
 			bestTarget->getX(), bestTarget->getY());
 
 		for (u32 i = 1; i < targetCounts[priority]; ++i)
 		{
 			Unit* currentTarget = targets[priority][i];
-			const u32 currentTargetDistance = scbw::getDistanceFast(
+			const u32 currentTargetDistance = scbw::get_distance_fast(
 				attacker->getX(), attacker->getY(),
 				currentTarget->getX(), currentTarget->getY());
 

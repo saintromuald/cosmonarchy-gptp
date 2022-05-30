@@ -71,7 +71,7 @@ namespace hooks
 
 		scbw::decloakProc(transport);
 		scbw::decloakProc(cargo_unit);
-		helper::playSoundFromSource(SoundId::Misc_ZOvTra00_wav + unitRaceId, transport, 1, 0);
+		helper::play_sound_from_unit(SoundId::Misc_ZOvTra00_wav + unitRaceId, transport, 1, 0);
 		if (cargo_unit->id == UnitId::TerranMason)
 		{
 			if (cargo_unit->unit_ai != nullptr)
@@ -262,7 +262,7 @@ namespace hooks
 				{
 					if (transport->id == UnitId::TerranTrojan)
 					{
-						if (transport->getCurrentLifeInGame() <= (transport->getMaxHpInGame() * 0.5))
+						if (transport->get_current_life_ingame() <= (transport->getMaxHpInGame() * 0.5))
 						{
 							transport->mainOrderTimer = 7;
 						}

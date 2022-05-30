@@ -612,10 +612,10 @@ struct UnitLayout
 
 		struct
 		{
-			/*0x0C0*/     Unit* parent;
-			/*0x0C4*/     Link<Unit> hangar_link;
-			/*0x0CC*/     bool    isOutsideHangar;
-		} interceptor;  // also applies to scarab
+			/*0x0C0*/     Unit*			parent;
+			/*0x0C4*/     Link<Unit>	hangar_link;
+			/*0x0CC*/     bool			isOutsideHangar;
+		} interceptor; // also applies to scarab
 
 		struct
 		{

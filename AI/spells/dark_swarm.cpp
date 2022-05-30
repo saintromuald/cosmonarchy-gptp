@@ -97,7 +97,7 @@ namespace AI
 					{
 						u8 targetGroundWeapon;
 
-						if (target->subunit->isSubunit())
+						if (target->subunit->is_subunit())
 						{
 							target = target->subunit;
 						}

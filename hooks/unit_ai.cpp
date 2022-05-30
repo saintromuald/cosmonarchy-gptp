@@ -17,9 +17,9 @@ namespace hooks
 		}
 
 		if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
-			helper::AI_TrainingWorker(result, parent);
-		} else if (scbw::unitIdIsZergSupply(result->id)) {
-			helper::AI_TrainingOverlord(result, parent); // replace with hook later
+			helper::ai_training_worker(result, parent);
+		} else if (scbw::unit_id_is_zerg_supply(result->id)) {
+			helper::ai_training_overlord(result, parent); // replace with hook later
 		} else if (result->id == UnitId::ZergRilirokor
 				|| result->id == UnitId::ZergRililisk
 				|| result->id == UnitId::ProtossArchon
@@ -27,7 +27,7 @@ namespace hooks
 			// archon and mind tyrant should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
 			hooks::AI_TrainingSimpleMilitary(result, parent);
 		} else {
-			helper::AI_TrainingNormal(result, parent);
+			helper::ai_training_normal(result, parent);
 		}
 	}
 
@@ -76,7 +76,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	void AI_TrainingWorker(Unit* unit, Unit* parent) // 00435700
+	void ai_training_worker(Unit* unit, Unit* parent) // 00435700
 	{
 		AiTown* town = 0;
 		WorkerAi* parent_ai = (WorkerAi*)parent->unit_ai;
@@ -87,7 +87,7 @@ namespace hooks
 		}
 
 		if (parent == unit) {
-			helper::AI_RemoveFromTowns(unit);
+			helper::ai_remove_from_towns(unit);
 		}
 
 		if (unit->unit_ai && unit->unit_ai->type != AiType::Building) {
@@ -117,15 +117,15 @@ namespace hooks
 		}
 
 		if (town) {
-			helper::AI_AddWorkerStructureAI(unit, town);
+			helper::add_worker_structure_ai(unit, town);
 		}
 	}
 
 	// Hooked to investigate crashes and remove Archon hardcode - Pr0nogo
-	void AI_TrainingNormal(Unit* newUnit, Unit* parentUnit) // 00435DB0
+	void ai_training_normal(Unit* newUnit, Unit* parentUnit) // 00435DB0
 	{
 		s16 unitId = newUnit->id;
-		if (!scbw::isConventionalUnitMorphResult(unitId))
+		if (!scbw::is_conventional_unit_morph_result(unitId))
 		{
 			if (newUnit->status & UnitStatus::IsHallucination)
 			{
@@ -142,7 +142,7 @@ namespace hooks
 					if (parentUnit == newUnit)
 					{
 						queueSlot = 0;
-						helper::AI_RemoveFromTowns(newUnit);
+						helper::ai_remove_from_towns(newUnit);
 						BuildingAi* newUnitAi = (BuildingAi*)newUnit->unit_ai;
 						if (newUnitAi)
 						{
@@ -194,7 +194,7 @@ namespace hooks
 					}
 					else
 					{
-						helper::AI_AddGuardAiToUnit(newUnit);
+						helper::add_guard_ai_to_unit(newUnit);
 					}
 				}
 			}
@@ -202,7 +202,7 @@ namespace hooks
 	}
 
 	// Hooked because iquare told me to - Pr0nogo
-	void* AI_AddWorkerStructureAI(Unit* unit, AiTown* town) // 00433DD0
+	void* add_worker_structure_ai(Unit* unit, AiTown* town) // 00433DD0
 	{
 		void* result = 0;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
@@ -275,7 +275,7 @@ namespace hooks
 					scbw::printf("Corrupted first free building AI!");
 					return result;
 				}
-				ai = helper::AI_CreateBuildingAi(&town->free_buildings); // This nullcheck was added
+				ai = helper::create_building_ai(&town->free_buildings); // This nullcheck was added
 			}
 			if (ai) {
 				result = ai;
@@ -298,7 +298,7 @@ namespace hooks
 					if (unit->status & UnitStatus::Completed)
 					{
 						unit->order_computer(OrderId::ComputerAI);
-						helper::setSecondaryOrder(unit, OrderId::SpreadCreep);
+						helper::set_secondary_order(unit, OrderId::SpreadCreep);
 					}
 				}
 				if (!(AIScriptController[town->player].AI_Flags.isUseMapSettings)
@@ -311,7 +311,7 @@ namespace hooks
 					&& unit->id != UnitId::ProtossPylon
 					&& unit->id != UnitId::ProtossPhotonCannon)
 				{
-					helper::AI_MakeGuard(town->player, unit);
+					helper::ai_make_guard(town->player, unit);
 				}
 				if (!town->inited)
 				{
@@ -341,7 +341,7 @@ namespace hooks
 				}
 				else
 				{
-					u32 refinery_id = helper::getPlayerDefaultRefineryUnitType(unit->player);
+					u32 refinery_id = helper::get_default_refinery_type(unit->player);
 					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneGeyser)
 					{
 						if (!town->gas_buildings[0])
@@ -368,7 +368,7 @@ namespace hooks
 	}
 
 	// Hooked to rule out AI crashes - Pr0nogo
-	void AI_CreateNuke(Unit* silo, Unit* result)	// 0045B7A0
+	void ai_create_nuke(Unit* silo, Unit* result)	// 0045B7A0
 	{												// originally had 3 args; last one was unused
 		if (silo->id == UnitId::TerranNuclearSilo && !silo->building.silo.isReady)
 		{
@@ -376,7 +376,7 @@ namespace hooks
 			if (nuke)
 			{
 				helper::update_unit_stats_and_finish_building(nuke);
-				helper::updateUnitStrengthAndApplyDefaultOrders(nuke);
+				helper::update_unit_strength_and_apply_default_orders(nuke);
 				helper::hideUnit(nuke);
 				silo->building.silo.nuke = nuke;
 				silo->building.silo.isReady = 1;
@@ -388,7 +388,7 @@ namespace hooks
 
 
 	// Hooked to add functionality - Pr0nogo
-	void AI_AddMilitary(AiRegion* region, Unit* unit, s32 alwaysThisRegion) // 0043DA20
+	void ai_add_military(AiRegion* region, Unit* unit, s32 alwaysThisRegion) // 0043DA20
 	{
 		// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
 		// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
@@ -443,7 +443,7 @@ namespace hooks
 
 	// Hooked to change guard assignments for structures based on AI personality -- Pr0nogo
 	// TODO: Cleanup and make changes
-	void AI_IterateBuildingAI(Unit* result, Unit* parent) // 00435770
+	void iterate_building_ai(Unit* result, Unit* parent) // 00435770
 	{
 		UnitAi* parentAI;
 		AiTown* parentTown;
@@ -476,7 +476,7 @@ namespace hooks
 				}
 				if (parent == result)
 				{
-					helper::AI_RemoveFromTowns(result);
+					helper::ai_remove_from_towns(result);
 					removeBuilding = (BuildingAi*)result->unit_ai;
 					if (removeBuilding)
 					{
@@ -496,7 +496,7 @@ namespace hooks
 						result->unit_ai = 0;
 					}
 				}
-				helper::AI_AddWorkerStructureAI(result, parentTown);
+				helper::add_worker_structure_ai(result, parentTown);
 				if (result->id != UnitId::TerranBunker || *elapsedTimeSeconds <= 60)
 				{
 					if (result->id == UnitId::TerranWatchdog)
@@ -511,7 +511,7 @@ namespace hooks
 							}
 							else
 							{
-								queueCount = helper::AI_GetQueuedCount(workerTarget, UnitId::TerranWatchdog);
+								queueCount = helper::ai_get_queued_count(workerTarget, UnitId::TerranWatchdog);
 							}
 //							workerUnit = *(u32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
 						}
@@ -524,30 +524,30 @@ namespace hooks
 							}
 							else
 							{
-								queueCount2 = helper::AI_GetQueuedCount(builderUnit, UnitId::TerranWatchdog);
+								queueCount2 = helper::ai_get_queued_count(builderUnit, UnitId::TerranWatchdog);
 							}
 							j = j->link.prev;
 						}
 						if (i >= 4)
 						{
-							helper::AI_PrepareGuardAI(result->sprite->position.y, (u8)result->player, 1, result->sprite->position.x);
+							helper::prepare_guard_ai(result->sprite->position.y, (u8)result->player, 1, result->sprite->position.x);
 						}
 					}
 				}
 				else
 				{
-					helper::AI_PrepareGuardAI(result->sprite->position.y, (u8)result->player, 5, result->sprite->position.x);
-					helper::AI_PrepareGuardAI(result->sprite->position.y, (u8)result->player, 1, result->sprite->position.x);
+					helper::prepare_guard_ai(result->sprite->position.y, (u8)result->player, 5, result->sprite->position.x);
+					helper::prepare_guard_ai(result->sprite->position.y, (u8)result->player, 1, result->sprite->position.x);
 				}
 			}
 		}
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	void AI_RemoveUnitAI(Unit* unit, UnitAi* unitAI) // 004A1E50
+	void remove_unit_ai(Unit* unit, UnitAi* unitAI) // 004A1E50
 	{
-		helper::AI_RemoveFromAIStructs(unit, unitAI);
-		helper::AI_RemoveWorkerOrBuildingAI(unit, nullptr);
+		helper::remove_from_ai_structs(unit, unitAI);
+		helper::remove_worker_or_building_ai(unit, nullptr);
 		if (unitAI != nullptr)
 		{
 			if (unitAI->type == AiType::Guard)
@@ -561,7 +561,7 @@ namespace hooks
 				}
 			}
 		}
-		helper::AI_MedicRemove(unit);
+		helper::ai_remove_medic(unit);
 		unit->unit_ai = nullptr;
 	}
 
@@ -631,9 +631,9 @@ namespace hooks
 	}
 
 	// Hooked to add type check - Pr0nogo
-	s32 AI_RemoveWorkerOrBuildingAI(Unit* unit, UnitAi* unitAI) // 00434C90
+	s32 remove_worker_or_building_ai(Unit* unit, UnitAi* unitAI) // 00434C90
 	{
-		helper::AI_RemoveFromTowns(unit);
+		helper::ai_remove_from_towns(unit);
 		UnitAi* unitAIVar = (UnitAi*)unit->unit_ai;
 		if (unitAIVar)
 		{
@@ -646,7 +646,7 @@ namespace hooks
 					&& (baseProperty & UnitProperty::Building && unitId != UnitId::ResourceVespeneGeyser
 					|| unitId == UnitId::ZergLarva
 					|| scbw::is_larval_egg(unit)
-					|| scbw::unitIdIsZergSupply(unitId)))
+					|| scbw::unit_id_is_zerg_supply(unitId)))
 				{
 					BuildingAi* buildingAIVar = (BuildingAi*)unitAIVar;
 					town = buildingAIVar->town;
@@ -698,7 +698,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate unit AI corruption - Pr0nogo
-	void AI_TrainingOverlord(Unit* newUnit, Unit* oldUnit) // 00435770
+	void ai_training_overlord(Unit* newUnit, Unit* oldUnit) // 00435770
 	{
 		if (playerTable[oldUnit->player].type == PlayerType::Computer)
 		{
@@ -719,7 +719,7 @@ namespace hooks
 
 				if (oldUnit == newUnit)
 				{
-					helper::AI_RemoveFromTowns(newUnit);
+					helper::ai_remove_from_towns(newUnit);
 					UnitAi* newUnitAI = (UnitAi*)newUnit->unit_ai;
 					if (newUnitAI)
 					{
@@ -741,7 +741,7 @@ namespace hooks
 					}
 				}
 
-				helper::AI_AddWorkerStructureAI(newUnit, oldUnitTown);
+				helper::add_worker_structure_ai(newUnit, oldUnitTown);
 				u16 newUnitId = newUnit->id;
 				if (newUnitId != UnitId::TerranBunker || *elapsedTimeSeconds <= 60)
 				{
@@ -760,7 +760,7 @@ namespace hooks
 							}
 							else
 							{
-								queuedCount = helper::AI_GetQueuedCount(oldFirstTownMoveTarget, UnitId::TerranWatchdog);
+								queuedCount = helper::ai_get_queued_count(oldFirstTownMoveTarget, UnitId::TerranWatchdog);
 							}
 							oldFirstTownUnit = oldFirstTownUnit->link.prev;
 						}
@@ -776,27 +776,27 @@ namespace hooks
 							}
 							else
 							{
-								queuedCount2 = helper::AI_GetQueuedCount(iterateUnit, UnitId::TerranWatchdog);
+								queuedCount2 = helper::ai_get_queued_count(iterateUnit, UnitId::TerranWatchdog);
 							}
 							j = j->link.prev;
 						}
 						if (i >= 4)
 						{
-							helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->player, 1, newUnit->sprite->position.x);
+							helper::prepare_guard_ai(newUnit->sprite->position.y, newUnit->player, 1, newUnit->sprite->position.x);
 						}
 					}
 				}
 				else
 				{
-					helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->player, 5, newUnit->sprite->position.x);
-					helper::AI_PrepareGuardAI(newUnit->sprite->position.y, newUnit->player, 1, newUnit->sprite->position.x);
+					helper::prepare_guard_ai(newUnit->sprite->position.y, newUnit->player, 5, newUnit->sprite->position.x);
+					helper::prepare_guard_ai(newUnit->sprite->position.y, newUnit->player, 1, newUnit->sprite->position.x);
 				}
 			}
 		}
 	}
 
 	// Hooked in case we need it for Lakizilisk tactical AI
-	void AI_orderLurkerBurrow(Unit* unit) // 0043C230
+	void ai_order_lurker_burrow(Unit* unit) // 0043C230
 	{
 		if (unit->id == UnitId::ZergLakizilisk && !(unit->status & UnitStatus::Burrowed) && unit->mainOrderId != OrderId::Burrow)
 		{
@@ -804,7 +804,7 @@ namespace hooks
 		}
 	}
 	
-	UnitAi* __stdcall Ai_FindNearestMilitaryOrGuardAi(AiRegion *ai_region, u32 a2, u32 a3, u32 x1, u32 y1, u32 a6)
+	UnitAi* __stdcall find_nearest_military_or_guard_ai(AiRegion *ai_region, u32 a2, u32 a3, u32 x1, u32 y1, u32 a6)
 	{
 		MilitaryAi *result; // eax
 		AiRegion *ai_region_1; // edi
@@ -828,11 +828,11 @@ namespace hooks
 		{
 			while (1)
 			{
-				if (!helper::sub_43B6D0(a3, first_player_unit, 0))
+				if (!helper::is_valid_for(a3, first_player_unit, 0))
 				{
 					goto next;
 				}
-				distance = scbw::getDistanceFast(x1, first_player_unit->sprite->position.x, y1, first_player_unit->sprite->position.y);
+				distance = scbw::get_distance_fast(x1, first_player_unit->sprite->position.x, y1, first_player_unit->sprite->position.y);
 				if ( distance >= min_distance )
 				{
 					goto next;
@@ -859,8 +859,8 @@ namespace hooks
 								if ( (!(first_player_unit->status & UnitStatus::InBuilding)
 									|| a2 != 20
 									&& (AIScriptController[first_player_unit->player].AI_Flags.isUseMapSettings
-										|| helper::Ai_IsAttackPrepareRegion(ai_region)))
-									&& (ai_region->state != 7 && !helper::Ai_IsAttackPrepareRegion(ai_region) || unit_ai_region_id != a6)
+										|| helper::region_is_for_attack_prepare(ai_region)))
+									&& (ai_region->state != 7 && !helper::region_is_for_attack_prepare(ai_region) || unit_ai_region_id != a6)
 									&& unit_ai_region->defensePriorityAdd < a2 )
 								{
 									best_ai = unit_ai;

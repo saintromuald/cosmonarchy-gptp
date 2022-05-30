@@ -14,7 +14,7 @@
 namespace scbw
 {
 	bool isAnyMorphMorphResult(u16 id);
-	bool isConventionalUnitMorphResult(u16 id);
+	bool is_conventional_unit_morph_result(u16 id);
 	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae = false, bool allow_high_templar = false);
 	bool isZergBuildingMorphResult(u16 id);
 	bool isZergBuildingMorphSource(u16 id);
@@ -112,11 +112,11 @@ namespace scbw
 	/// StarCraft's internal function used to quickly calculate distances between
 	/// two points (x1, y1) and (x2, y2).
 	/// Warning: This function is inaccurate for long distances.
-	u32 getDistanceFast(s32 x1, s32 y1, s32 x2, s32 y2);
+	u32 get_distance_fast(s32 x1, s32 y1, s32 x2, s32 y2);
 
-	inline u32 getDistanceFast(Point16 p1, Point16 p2)
+	inline u32 get_distance_fast(Point16 p1, Point16 p2)
 	{
-		return getDistanceFast(p1.x, p1.y, p2.x, p2.y);
+		return get_distance_fast(p1.x, p1.y, p2.x, p2.y);
 	}
 
 	/// Distance, but in a square instead of circle (max of x dist and y dist)
@@ -532,7 +532,7 @@ namespace scbw
 	s32 get_overlay_offset(u16 unitId, bool xlargeAllowed = false);
 	s32 getFinalDamage(Unit* unit, u16 weaponId);
 	bool unitIsPacifist(Unit* unit);
-	bool orderIsSpell(s32 orderId);
+	bool order_is_spell(s32 orderId);
 	bool canBeParasited(Unit* unit);
 	void applyParasite(Unit* unit, u8 playerID, Unit* queen);
 	void createShieldOverlay(Unit* unit, u32 attackDirection);
@@ -540,7 +540,7 @@ namespace scbw
 	bool isDecloakable(Unit* unit);
 	bool unitCanNuke(Unit* unit);
 	bool unitIsTrap(Unit* unit);
-	bool unitIsRangedAttacker(Unit* unit);
+	bool unit_is_ranged_attacker(Unit* unit);
 	void playWorkAnimation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);
 	void applyNewHallucination(Unit* unit, u8 playerId, u32 time);
@@ -548,7 +548,7 @@ namespace scbw
 	void dirgeFuse(Unit* unit, UnitExt* unitExt);
 	void updateSignifyStatus(Unit* unit, UnitExt* unitExt);
 	bool isUnitIsolated(Unit* unit);
-	bool unitIdIsZergSupply(u16 unitId);
+	bool unit_id_is_zerg_supply(u16 unitId);
 	void mind_control(Unit* source, Unit* target);
 	void recede_mind_control(Unit* target);
 	bool isZergProduction(u16 unitId);

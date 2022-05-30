@@ -27,7 +27,7 @@ namespace AI
 				return false;
 			}
 
-			const s32 targetLife = target->getCurrentLifeInGame();
+			const s32 targetLife = target->get_current_life_ingame();
 			if (200 <= targetLife && targetLife <= 450
 				&& !(units_dat::BaseProperty[target->id] & UnitProperty::Hero))
 			{

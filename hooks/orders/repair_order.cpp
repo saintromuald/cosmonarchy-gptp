@@ -190,7 +190,7 @@ namespace hooks
 				{
 					return 1;
 				}
-				errorStringId = unit->getRace() + 893;
+				errorStringId = unit->get_race() + 893;
 				if (target->id == UnitId::ResourceVespeneGeyser)
 				{
 					//if (bErrorFlag)
@@ -416,7 +416,7 @@ namespace hooks
 						return 1;
 					}
 					text_id = 879;
-					sfx_id = unit->getRace() + 138;
+					sfx_id = unit->get_race() + 138;
 				case RightClickActions::NoMove_NormalAttack:
 					if (!target)
 					{
@@ -446,7 +446,7 @@ namespace hooks
 					{
 						text_id = 879;
 					}
-					sfx_id = unit->getRace() + 138;
+					sfx_id = unit->get_race() + 138;
 				case RightClickActions::Harvest:
 				case RightClickActions::HarvestAndRepair:
 					if (!target)
@@ -459,8 +459,8 @@ namespace hooks
 					}
 					if (target->id == UnitId::ResourceVespeneGeyser)
 					{
-						//sfx_id = unit->getRace() + 1;
-						//text_id = unit->getRace()  + 893;
+						//sfx_id = unit->get_race() + 1;
+						//text_id = unit->get_race()  + 893;
 					}
 					else
 					{
@@ -477,7 +477,7 @@ namespace hooks
 							return 1;
 						}
 						text_id = 879;
-						sfx_id = unit->getRace() + 138;
+						sfx_id = unit->get_race() + 138;
 					}
 					break;
 				default:

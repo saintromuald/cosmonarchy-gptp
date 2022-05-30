@@ -116,7 +116,7 @@ namespace hooks
 		{
 			if (current_unit->player == *ACTIVE_NATION_ID)
 			{
-				helper::AI_cancel_structure(current_unit);
+				helper::ai_cancel_structure(current_unit);
 			}
 			current_unit = getActivePlayerNextSelection();
 		}
@@ -143,7 +143,7 @@ namespace hooks
 			&& getActivePlayerNextSelection() == nullptr
 			&& unit->player == *ACTIVE_NATION_ID)
 		{
-			helper::AI_cancel_structure(unit);
+			helper::ai_cancel_structure(unit);
 		}
 	}
 }

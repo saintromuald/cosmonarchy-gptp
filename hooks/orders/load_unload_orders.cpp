@@ -167,7 +167,7 @@ namespace hooks
 		}
 
 		// 004E7739
-		distance = scbw::getDistanceFast(unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256, unit->halt.x, unit->halt.y);
+		distance = scbw::get_distance_fast(unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256, unit->halt.x, unit->halt.y);
 		distance &= 0xFFFFFF00;
 		if (distance <= 0x1000)
 		{
@@ -196,7 +196,7 @@ namespace hooks
 				u32 groundHeightAtPxPos1 = scbw::getGroundHeightAtPos(unit->sprite->position.x, unit->sprite->position.y);
 				if (groundHeightAtPxPos1 != scbw::getGroundHeightAtPos(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 				{
-					distance = scbw::getDistanceFast(unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256, unit->halt.x, unit->halt.y);
+					distance = scbw::get_distance_fast(unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256, unit->halt.x, unit->halt.y);
 					distance &= 0xFFFFFF00;
 					if (distance <= 0xCA000
 						&& helper::Ai_AreOnConnectedRegions(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0
@@ -272,7 +272,7 @@ namespace hooks
 			Unit** orderTargetOffset = &unitVar->orderTarget.unit;
 			if (orderTarget)
 			{
-				if (!helper::unitIsActiveTransport(orderTarget) || orderTarget->orderTarget.unit != unitVar)
+				if (!helper::unit_is_active_transport(orderTarget) || orderTarget->orderTarget.unit != unitVar)
 				{
 					scbw::print("goto label16");
 					goto LABEL_16;
@@ -365,7 +365,7 @@ namespace hooks
 				if (!jump_to_E7C2B)
 				{ // 004E7C1B
 					if (target != nullptr
-						&& (!helper::unitIsActiveTransport(target) || target->orderTarget.unit != unit))
+						&& (!helper::unit_is_active_transport(target) || target->orderTarget.unit != unit))
 					{
 						jump_to_E7C37 = true;
 					}

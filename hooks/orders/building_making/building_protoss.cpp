@@ -22,7 +22,7 @@ namespace hooks
 		else if (unit->mainOrderState == 1)
 		{
 			u32 distance, distance_wanted;
-			distance = scbw::getDistanceFast(unit->halt.x, unit->halt.y, unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256);
+			distance = scbw::get_distance_fast(unit->halt.x, unit->halt.y, unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256);
 			if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ProtossAquifer)
 			{
 				distance_wanted = 88;
@@ -98,9 +98,9 @@ namespace hooks
 							}
 							builtUnit->sprite->createTopUnderlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
 							unit->orderTarget.unit = builtUnit;
-							helper::AI_TrainingOverlord(builtUnit, unit);
+							helper::ai_training_overlord(builtUnit, unit);
 							builtUnit->order_computer(OrderId::BuildSelf2);
-							helper::playSoundFromSource(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
+							helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
 							unit->mainOrderState = 3;
 						}
 					}
@@ -161,7 +161,7 @@ namespace hooks
 					}
 					current_image = current_image->link.next;
 				}
-				helper::playSoundFromSource(SoundId::Protoss_SHUTTLE_pshBld03_wav, building, 1, 0);
+				helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld03_wav, building, 1, 0);
 				building->mainOrderState = 1;
 				jump_to_E50EE = true;
 			}
