@@ -26,7 +26,7 @@ void Image::free()
 	assert(this);
 
 	if (!(screenLayers->game.hasBeenRefreshed))
-		scbw::refreshScreen(this->screenPosition.x,
+		scbw::refresh_screen(this->screenPosition.x,
 			this->screenPosition.y,
 			this->screenPosition.x + this->grpSize.right,
 			this->screenPosition.y + this->grpSize.bottom

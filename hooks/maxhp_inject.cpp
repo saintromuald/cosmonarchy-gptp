@@ -554,7 +554,7 @@ namespace hooks
 			MOV a1, EAX
 			PUSHAD
 		}
-		hooks::drawSupplyUnitInfo(a1);
+		hooks::draw_supply_unit_info(a1);
 		__asm {
 			POPAD
 			RETN
@@ -920,7 +920,7 @@ namespace hooks
 				jump_patch(getRepairInfoWrapper, 0x00466D6C, 2);////done
 				jump_patch(setHpWrapper, 0x0046734A, 2);////done
 				//add changes to order_repair hook, it is requirement (0x004673ED, 004676BB)
-				//add changes to orders_TerranBuildSelf, it is required (0x00467781, 0x004677C2, 0x0046780C, 0046785E)
+				//add changes to orders_terran_build_self, it is required (0x00467781, 0x004677C2, 0x0046780C, 0046785E)
 				jump_patch(createGeyserUnitWrapper, 0x0046797E, 2);//MUL DWORD PTR DS:[ECX*4+662350]
 				jump_patch(canTargetOrderWrapper, 0x00474DF8, 1);//CMP EDX,DWORD PTR DS:[EAX+662350], hook may be required
 				jump_patch(canTargetOrderWrapper, 0x00474E56, 1);//CMP ECX,DWORD PTR DS:[EAX+662350], hook may be required

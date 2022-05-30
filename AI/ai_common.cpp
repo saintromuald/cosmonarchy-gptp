@@ -7,7 +7,7 @@
 
 namespace AI
 {
-	// Equivalent to 00440E30 AI_TargetUnitIsWorthHitting
+	// Equivalent to 00440E30 ai_target_unit_is_worth_hitting
 	bool isTargetWorthHitting(Unit* target, Unit* attacker)
 	{
 		// If the target is hidden by the fog-of-war
@@ -84,7 +84,7 @@ namespace AI
 
 	//-------- Get total unit stats in area --------//
 
-	// 00440A60  unitShieldsClumpInAreaAccumulatorProc
+	// 00440A60  unit_shields_clump_in_area_accumulator_proc
 	// 00440AC0  unitEnergyClumpInAreaAccumulatorProc
 	// 00440B20  getEnemyClumpValueProc
 	// 00440CF0  AIEnemyOrganicUnitHPAccumulatorProc
@@ -107,7 +107,7 @@ namespace AI
 			Unit* target = unitStatTotalFinder.getUnit(i);
 			if ((target != caster) &&
 				!(target->status & UnitStatus::Invincible) &&
-				scbw::canWeaponTargetUnit(weaponId, target, caster) &&
+				scbw::can_weapon_target_unit(weaponId, target, caster) &&
 				caster->isTargetEnemy(target))
 			{
 				// specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
@@ -145,7 +145,7 @@ namespace AI
 		{
 			Unit* target = unitStatTotalFinder.getUnit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
-				scbw::canWeaponTargetUnit(weaponId, target, caster) &&
+				scbw::can_weapon_target_unit(weaponId, target, caster) &&
 				!caster->isTargetEnemy(target))
 			{
 				totalAllyLife += target->get_current_life_ingame();
@@ -154,7 +154,7 @@ namespace AI
 		return totalAllyLife;
 	}
 
-	// Loop content based on unitShieldsClumpInAreaAccumulatorProc @ 0x00440A60
+	// Loop content based on unit_shields_clump_in_area_accumulator_proc @ 0x00440A60
 	// 0x00695798 would contains totalEnemyShields
 	s32 getTotalEnemyShieldsInArea(s32 x, s32 y, s32 searchBounds, Unit* caster)
 	{

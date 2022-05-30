@@ -1115,7 +1115,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 				scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
 				if (unit->mainOrderId == OrderId::Move)
 				{
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				unitExt->timers[TimerAI_KitingCooldown] = 0;
 			}

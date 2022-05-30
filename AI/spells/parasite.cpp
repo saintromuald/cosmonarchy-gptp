@@ -34,7 +34,7 @@ namespace AI
 			if (target->parasiteFlags & (1 << caster->player))
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Parasite, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Parasite, target, caster))
 				return false;
 
 			if (target->canDetect())

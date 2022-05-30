@@ -43,7 +43,7 @@ namespace AI
 				return false;
 			}
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Lockdown, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Lockdown, target, caster))
 			{
 				return false;
 			}

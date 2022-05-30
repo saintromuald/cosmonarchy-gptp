@@ -94,7 +94,7 @@ namespace hooks
 	static bool wyvern_can_fire_at(Unit* unit, Unit* target)
 	{
 		const u32 unitOffset = std::max(unit->getRight() - unit->getLeft(), unit->getBottom() - unit->getTop()) + 32;
-		return scbw::canWeaponTargetUnit(WeaponId::WyvernJacksonCannon, target, unit)
+		return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
 			&& scbw::get_distance_fast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon] + unitOffset
 			&& unit->canAttackTarget(target);
 	}

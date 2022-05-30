@@ -35,7 +35,7 @@ namespace AI
 				return true;
 			}
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Irradiate, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Irradiate, target, caster))
 			{
 				return true;
 			}

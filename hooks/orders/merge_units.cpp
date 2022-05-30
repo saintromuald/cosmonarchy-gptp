@@ -207,10 +207,10 @@ namespace hooks
 				//94724
 
 												//unit unmovable			
-				if (unit->mainOrderState != 0 && unit->getMovableState() == 2)
+				if (unit->mainOrderState != 0 && unit->get_movable_state() == 2)
 				{
 					helper::make_to_hold_position(unit);
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				else
 				{
@@ -276,7 +276,7 @@ namespace hooks
 
 					} //if(distanceBetweenUnits <= 19)
 
-				} //if(unit->mainOrderState == 0 || unit->getMovableState() != 2)
+				} //if(unit->mainOrderState == 0 || unit->get_movable_state() != 2)
 
 			} //if(distanceBetweenUnits > 20)
 			else
@@ -406,10 +406,10 @@ namespace hooks
 				//94944
 
 												//unit unmovable
-				if (unit->mainOrderState != 0 && unit->getMovableState() == 2)
+				if (unit->mainOrderState != 0 && unit->get_movable_state() == 2)
 				{
 					helper::make_to_hold_position(unit);
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				else
 				{
@@ -476,7 +476,7 @@ namespace hooks
 
 					} //if(distanceBetweenUnits <= 19)
 
-				} //if(unit->mainOrderState == 0 || unit->getMovableState() != 2)
+				} //if(unit->mainOrderState == 0 || unit->get_movable_state() != 2)
 
 			} //if(distanceBetweenUnits > 20)
 			else

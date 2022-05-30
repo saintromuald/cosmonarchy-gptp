@@ -202,7 +202,7 @@ namespace hooks
 
 				if (unitInfesting->orderQueueHead == nullptr)
 				{
-					unitInfesting->orderSimple(units_dat::ReturnToIdleOrder[unitInfesting->id], false);
+					unitInfesting->order_simple(units_dat::ReturnToIdleOrder[unitInfesting->id], false);
 					bReturnToIdle = true;
 				}
 				else

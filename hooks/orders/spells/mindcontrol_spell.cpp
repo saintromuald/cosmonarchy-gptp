@@ -31,7 +31,7 @@ namespace hooks
 		{
 			if (unit->player == target->player)
 			{
-				unit->orderToIdle();
+				unit->order_to_idle();
 			}
 			else
 			{
@@ -68,14 +68,14 @@ namespace hooks
 							target->sprite->createTopOverlay(overlayId, 0, 0, 0);
 						}
 						helper::MindControlHit(unit, target);
-						target->orderToIdle();
+						target->order_to_idle();
 					}
 					if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 					{
 						unit->spendUnitEnergy(techEnergyCost);
 					}
 					helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				else
 				{

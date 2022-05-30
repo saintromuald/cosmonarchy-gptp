@@ -23,7 +23,7 @@ namespace hooks
 			else
 			{
 				bStopThere = true;
-				unit->orderToIdle();
+				unit->order_to_idle();
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->orderToIdle();
+				unit->order_to_idle();
 				bStopThere = true;
 			}
 		}

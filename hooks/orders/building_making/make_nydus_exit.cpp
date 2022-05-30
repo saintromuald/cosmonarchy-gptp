@@ -78,7 +78,7 @@ namespace hooks
 				nydus_canal->building.nydusExit = nydusExit;
 				nydusExit->building.nydusExit = nydus_canal;
 			}
-			nydus_canal->orderToIdle();
+			nydus_canal->order_to_idle();
 		}
 	}
 

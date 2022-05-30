@@ -173,7 +173,7 @@ namespace hooks
 					if (fog_of_war_mask->unexplored[i] < 5)
 						fog_of_war_mask->unexplored[i] = 5;
 				}
-				scbw::refreshScreen();
+				scbw::refresh_screen();
 			}
 
 
@@ -257,7 +257,7 @@ namespace hooks
 			}
 
 			hooks::handleScreenHotkeys();
-			scbw::refreshScreen();
+			scbw::refresh_screen();
 
 			// Needed for extended tooltips
 			static bool lastShift = 0;
@@ -1327,7 +1327,7 @@ namespace hooks
 			&& !(unit->orderTarget.unit->visibilityStatus & (1 << unit->playerId)))
 		{
 			scbw::print("lard");
-			unit->orderToIdle();
+			unit->order_to_idle();
 		}
 		*/
 

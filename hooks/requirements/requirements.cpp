@@ -478,7 +478,7 @@ namespace hooks
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (parentUnit->isQueueSlotActive(4))
+		if (parentUnit->is_queue_slot_active(4))
 		{
 LABEL_86_ERROR_3_RETURN_0:
 			*lastInternalError = InternalErrors::UnknownError3;
@@ -618,7 +618,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotConstructingAddon:
 				{
 					//DebugOut("IsNotConstructingAddon (%d):", currentOpcode);
-					if (parentUnit->isConstructingAddon() || parentUnit->isAttemptingProtossBuild())
+					if (parentUnit->is_constructing_addon() || parentUnit->is_attempting_protoss_build())
 					{
 						//DebugOut(">False");
 						goto LABEL_87;

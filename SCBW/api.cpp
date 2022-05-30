@@ -183,7 +183,7 @@ namespace scbw
 	//-------- Unit checks --------//
 
 	// Identical to function @ 0x00475CE0
-	bool canWeaponTargetUnit(u8 weaponId, Unit* target, Unit* attacker)
+	bool can_weapon_target_unit(u8 weaponId, Unit* target, Unit* attacker)
 	{
 		if (weaponId >= WEAPON_TYPE_COUNT)
 		{
@@ -466,7 +466,7 @@ namespace scbw
 	{
 		return get_aise_value(nullptr, nullptr, AiseId::GetFlingyData, entry, index);
 	}
-	u32 getSpriteData(u32 entry, u32 index)
+	u32 get_sprite_data(u32 entry, u32 index)
 	{
 		return get_aise_value(nullptr, nullptr, AiseId::GetSpriteData, entry, index);
 	}
@@ -847,7 +847,7 @@ namespace scbw
 			UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PrismaticShield] = level;
 	}
 
-	void adjustAddonX(u16 addonId, u16 sourceId, u16* x)
+	void adjust_addon_x(u16 addonId, u16 sourceId, u16* x)
 	{
 		if (addonId == UnitId::TerranQuarry)
 		{
@@ -855,7 +855,7 @@ namespace scbw
 		}
 	}
 
-	void adjustAddonY(u16 addonId, u16 sourceId, u16* y)
+	void adjust_addon_y(u16 addonId, u16 sourceId, u16* y)
 	{
 		if (addonId == UnitId::TerranQuarry)
 		{
@@ -863,10 +863,10 @@ namespace scbw
 		}
 	}
 
-	void adjustAddonCoordinates(u16 addonId, u16 sourceId, u16* x, u16* y)
+	void adjust_addon_coordinates(u16 addonId, u16 sourceId, u16* x, u16* y)
 	{
-		adjustAddonX(addonId, sourceId, x);
-		adjustAddonY(addonId, sourceId, y);
+		adjust_addon_x(addonId, sourceId, x);
+		adjust_addon_y(addonId, sourceId, y);
 	}
 
 	//-------- Moving Units --------//
@@ -990,7 +990,7 @@ namespace scbw
 		}
 	}
 
-	void refreshScreen(s32 left, s32 top, s32 right, s32 bottom)
+	void refresh_screen(s32 left, s32 top, s32 right, s32 bottom)
 	{
 
 		left >>= 4; right = (right + 15) >> 4;
@@ -1020,7 +1020,7 @@ namespace scbw
 		}
 	}
 
-	void refreshScreen()
+	void refresh_screen()
 	{
 		memset(refreshRegions, 1, 1200);
 	}
@@ -1032,7 +1032,7 @@ namespace scbw
 		return min + ((max - min + 1) * random() >> 15);
 	}
 
-	// Similar to 004DC4A0 RandomizeShort, but doesn't update the RNG and doesn't use a parameter among possible differences.
+	// Similar to 004DC4A0 randomize_short, but doesn't update the RNG and doesn't use a parameter among possible differences.
 	u16 random()
 	{
 		if (*IS_IN_GAME_LOOP)
@@ -1331,7 +1331,7 @@ namespace scbw
 
 	// Creates the Plasma Shield flickering effect.
 	// Identical to function @ 0x004E6140
-	void createShieldOverlay(Unit* unit, u32 attackDirection)
+	void create_shield_overlay(Unit* unit, u32 attackDirection)
 	{
 		//const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr, unit->sprite->mainGraphic->id));
@@ -1542,7 +1542,7 @@ namespace scbw
 		return errorMessage;
 	}
 
-	u16 getLastQueueSlotType(Unit* a1)
+	u16 get_last_queue_slot_id(Unit* a1)
 	{
 		const u32 Func_getLastQueueSlotType = 0x0047B270;
 		static s32 result;
@@ -1606,7 +1606,7 @@ namespace scbw
 		}
 	}
 
-	void hideDialog(BinDlg* dialog)
+	void hide_dialog(BinDlg* dialog)
 	{
 		const u32 Func_HideDialog = 0x00418700;
 		__asm

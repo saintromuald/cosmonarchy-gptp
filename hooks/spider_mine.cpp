@@ -129,7 +129,7 @@ namespace hooks
 					{
 						bIsCompletelyInRange = true; // jump to 00463F22
 					}
-					else if (unit->getMovableState() != 2) // unit not unmovable
+					else if (unit->get_movable_state() != 2) // unit not unmovable
 					{
 						bEndThere = true;
 					}

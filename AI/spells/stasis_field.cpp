@@ -28,7 +28,7 @@ namespace AI
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::StasisField, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::StasisField, target, caster))
 				return false;
 
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)

@@ -40,7 +40,7 @@ namespace hooks
 
 		return unitId;
 	}
-	u16 getLastQueueSlotType(Unit* unit)
+	u16 get_last_queue_slot_id(Unit* unit)
 	{
 		u16 unitId;
 		if (unit->status & UnitStatus::Completed)
@@ -60,7 +60,7 @@ namespace hooks
 		u8 al = 0;
 		if (units_dat::ShieldsEnabled[unit->id])
 		{
-			auto lastSlot = scbw::getLastQueueSlotType(unit);
+			auto lastSlot = scbw::get_last_queue_slot_id(unit);
 			u32 maxShields = units_dat::MaxShieldPoints[lastSlot];
 			if (lastSlot == unit->id)
 			{

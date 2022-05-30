@@ -401,7 +401,7 @@ namespace hooks
 					}
 					if (scbw::is_allied_to(unit->player, target->player))
 						return false;
-					return scbw::canWeaponTargetUnit(weaponId, target, unit);
+					return scbw::can_weapon_target_unit(weaponId, target, unit);
 				});
 				if (a != nullptr)
 				{
@@ -1148,7 +1148,7 @@ namespace hooks
 			}
 			else
 			{
-				launchSpinVariance = helper::RandomizeShort(0) & 1;
+				launchSpinVariance = helper::randomize_short(0) & 1;
 			}
 
 			*launchSpinRandom = launchSpinVariance;

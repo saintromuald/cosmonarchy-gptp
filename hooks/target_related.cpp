@@ -364,7 +364,7 @@ LABEL_42:
 						v20 = -128;
 					if (abs(v20) >= 32)
 					{
-						helper::setSecondaryWaypoint(v1, v19, v18);
+						helper::set_secondary_waypoint(v1, v19, v18);
 					}
 				}
 				return;
@@ -973,7 +973,7 @@ LABEL_65:
 							if (!unitTarget)
 							{
 								if (helper::techUseAllowed(unit, 0, unit->player) == 1
-								  && helper::getCurrentHitPointsPlusShields(unitTarget) >= 100)
+								  && helper::get_current_hp_plus_shields(unitTarget) >= 100)
 								{
 									helper::stimpackProc(unit);
 								}
@@ -1013,7 +1013,7 @@ LABEL_65:
 										if (helper::is_target_within_min_movement_range(unitTarget, subunit, airWeaponMaxRange))
 										{
 											if (helper::techUseAllowed(unit, 0, unit->player) == 1
-											  && helper::getCurrentHitPointsPlusShields(unitTarget) >= 100)
+											  && helper::get_current_hp_plus_shields(unitTarget) >= 100)
 											{
 												helper::stimpackProc(unit);
 											}

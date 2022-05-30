@@ -170,7 +170,7 @@ namespace hooks
 			}
 
 			// Can the unit be targeted?
-			if (!scbw::canWeaponTargetUnit(bullet->weaponId, target, target)) continue;
+			if (!scbw::can_weapon_target_unit(bullet->weaponId, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
 			s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponId];
@@ -320,7 +320,7 @@ namespace hooks
 			}
 
 			// Can the unit be targetted?
-			if (!scbw::canWeaponTargetUnit(bullet->weaponId, target, target)) continue;
+			if (!scbw::can_weapon_target_unit(bullet->weaponId, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
 			if (!helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponId]))
@@ -511,7 +511,7 @@ namespace hooks
 			weaponIdLoop = bullet->weaponId;
 			if (target != bullet->sourceUnit && (target->player != bullet->srcPlayer || target == bullet->attackTarget.unit))
 			{
-				if (scbw::canWeaponTargetUnit(weaponIdLoop, target, target))
+				if (scbw::can_weapon_target_unit(weaponIdLoop, target, target))
 				{
 					if (helper::isUnitDistanceWithin(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop]))
 					{
@@ -553,7 +553,7 @@ namespace hooks
 			}
 			else
 			{
-				list = helper::RandomizeShort(58) % *airSplashListCount;
+				list = helper::randomize_short(58) % *airSplashListCount;
 			}
 			if (globals.extended_unit_table)
 			{

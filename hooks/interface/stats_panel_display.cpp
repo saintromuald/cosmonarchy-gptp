@@ -67,7 +67,7 @@ namespace hooks
 			u32 airWeapon;
 			u8 airWeaponMainUnit;
 			u8 airWeaponSubunit;
-			u16 unitId = helper::getLastQueueSlotType(activeUnit);
+			u16 unitId = helper::get_last_queue_slot_id(activeUnit);
 			if (units_dat::ArmorUpgrade[unitId] != UpgradeId::GlobalUpgrade60)
 			{
 				helper::StatsArmorLevel(dialog, index);
@@ -256,7 +256,7 @@ namespace hooks
 					index++;
 				}
 			}
-			unitId = helper::getLastQueueSlotType(activeUnit);
+			unitId = helper::get_last_queue_slot_id(activeUnit);
 			if (unitId == UnitId::TerranNuclearSilo)
 			{
 				helper::StatsNukesCount(dialog, index);
@@ -282,7 +282,7 @@ namespace hooks
 			}
 			while (index < 4 && current_dialog != nullptr)
 			{
-				helper::hideDialog(current_dialog);
+				helper::hide_dialog(current_dialog);
 				current_dialog = current_dialog->next;
 				index++;
 			}
@@ -332,7 +332,7 @@ namespace hooks
 
 		static char buffer[256] = {};
 		strcpy_s(buffer, playerNameList->player[unit->player].force_name);
-		helper::addTextToDialog(dialog, -21, buffer);
+		helper::add_text_to_dialog(dialog, -21, buffer);
 
 		/*
 		if (unit->id == UnitId::ZergSkryling
@@ -348,7 +348,7 @@ namespace hooks
 				child = child->next;
 			}
 			if (child) {
-				helper::hideDialog(child);
+				helper::hide_dialog(child);
 			}
 		}
 		else
@@ -361,12 +361,12 @@ namespace hooks
 					text = (char *)*statTxtBuffer + (*statTxtBuffer)[764];
 				}
 				sprintf_s(kills_buffer, 260, "%s %d", text, unit->killCount);
-				helper::addTextToDialog(dialog, -21, kills_buffer);
+				helper::add_text_to_dialog(dialog, -21, kills_buffer);
 			}
 			else
 			{
-				BinDlg* other = helper::getControlFromIndex(dialog, -21);
-				helper::hideDialog(other);
+				BinDlg* other = helper::get_control_from_index(dialog, -21);
+				helper::hide_dialog(other);
 			}
 		}
 		*/
@@ -397,14 +397,14 @@ namespace hooks
 		}
 		if (!(activeUnit->status & UnitStatus::Completed))
 		{
-			scbw::print("drawProgressBar");
-			helper::drawProgressBar(dialog);
+			scbw::print("draw_progress_bar");
+			helper::draw_progress_bar(dialog);
 			goto LABEL_32;
 		}
 		if (unitId == UnitId::TerranNuclearSilo)
 		{
-			scbw::print("drawNukeSiloInfo");
-			helper::drawNukeSiloInfo(dialog);
+			scbw::print("draw_nuke_silo_info");
+			helper::draw_nuke_silo_info(dialog);
 			goto LABEL_32;
 		}
 		if (helper::unit_is_active_transport(activeUnit))
@@ -412,45 +412,45 @@ namespace hooks
 			scbw::print("unitIsActiveTransport");
 			goto LABEL_6;
 		}
-		if (helper::isQueueSlotActive(activeUnit, 0))
+		if (helper::is_queue_slot_active(activeUnit, 0))
 		{
-			scbw::print("drawTrainingProgress");
-			helper::drawTrainingProgress(dialog);
+			scbw::print("draw_training_progress");
+			helper::draw_training_progress(dialog);
 			goto LABEL_32;
 		}
-		if (helper::isConstructingAddon(activeUnit) || helper::isAttemptingProtossBuild(activeUnit))
+		if (helper::is_constructing_addon(activeUnit) || helper::is_attempting_protoss_build(activeUnit))
 		{
-			scbw::print("drawAddonProgress");
-			helper::drawAddonProgress(dialog);
+			scbw::print("draw_addon_progress");
+			helper::draw_addon_progress(dialog);
 			goto LABEL_32;
 		}
 		if (activeUnit->building.techType != 44)
 		{
-			scbw::print("drawTechProgress");
-			helper::drawTechProgress(dialog);
+			scbw::print("draw_tech_progress");
+			helper::draw_tech_progress(dialog);
 			goto LABEL_32;
 		}
 		if (activeUnit->building.upgradeType != 61)
 		{
-			scbw::print("drawUpgradeProgress");
-			helper::drawUpgradeProgress(dialog);
+			scbw::print("draw_upgrade_progress");
+			helper::draw_upgrade_progress(dialog);
 			goto LABEL_32;
 		}
 		if (units_dat::SupplyProvided[unitId])
 		{
-			scbw::print("drawSupplyUnitInfo");
-			helper::drawSupplyUnitInfo(dialog);
+			scbw::print("draw_supply_unit_info");
+			helper::draw_supply_unit_info(dialog);
 			goto LABEL_32;
 		}
-		if (helper::unitIsGeyser(activeUnit))
+		if (helper::unit_is_geyser(activeUnit))
 		{
 		LABEL_35:
-			scbw::print("drawGasQuantity");
-			helper::drawGasQuantity(dialog);
+			scbw::print("draw_gas_quantity");
+			helper::draw_gas_quantity(dialog);
 			goto LABEL_32;
 		}
-		if (units_dat::AirWeapon[helper::getLastQueueSlotType(activeUnit)] == -126
-			&& units_dat::GroundWeapon[helper::getLastQueueSlotType(activeUnit)] == -126
+		if (units_dat::AirWeapon[helper::get_last_queue_slot_id(activeUnit)] == -126
+			&& units_dat::GroundWeapon[helper::get_last_queue_slot_id(activeUnit)] == -126
 			&& units_dat::AirWeapon[activeUnit->id]
 			&& units_dat::GroundWeapon[activeUnit->id]
 			&& !units_dat::ShieldsEnabled[unitId])
@@ -458,23 +458,23 @@ namespace hooks
 		LABEL_6:
 			if (*statusScreenFunc != 4)
 			{
-				helper::hideOptionalStatusScreenControls(dialog);
+				helper::hide_optional_status_screen_controls(dialog);
 				*statusScreenFunc = 4;
 			}
 			goto LABEL_32;
 		}
 		if (*statusScreenFunc != 3)
 		{
-			helper::hideOptionalStatusScreenControls(dialog);
-			helper::showControlGroup(dialog, -20, 12);
+			helper::hide_optional_status_screen_controls(dialog);
+			helper::show_control_group(dialog, -20, 12);
 			*statusScreenFunc = 3;
 		}
-		helper::drawDisplayButtons(dialog);
-		helper::hideDialog(helper::getControlFromIndex(dialog, -21));
+		helper::draw_display_buttons(dialog);
+		helper::hide_dialog(helper::get_control_from_index(dialog, -21));
 	LABEL_32:
-		helper::setTextStr(dialog);
-		helper::setUnitStatusStrText(dialog);
-		helper::addTextToDialog(dialog, -5, getUnitName(*activePortraitUnit));
+		helper::set_text_string(dialog);
+		helper::set_unit_status_string_text(dialog);
+		helper::add_text_to_dialog(dialog, -5, getUnitName(*activePortraitUnit));
 	}
 
 	// Hooked to draw new values to icons -- Pr0nogo
@@ -621,11 +621,11 @@ LABEL_9:
 		if (unit->status & UnitStatus::Completed
 			|| !scbw::isZergBuildingMorphResult(queue)) // Fixes lardcode
 		{
-			return helper::getUnitNameStatString(unit->id);
+			return helper::get_unit_name_stat_string(unit->id);
 		}
 		else
 		{
-			return helper::getUnitNameStatString(queue);
+			return helper::get_unit_name_stat_string(queue);
 		}
 	}
 }

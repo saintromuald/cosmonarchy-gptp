@@ -32,7 +32,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (!scbw::canWeaponTargetUnit(WeaponId::Maelstrom, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Maelstrom, target, caster))
 			{
 				return false;
 			}

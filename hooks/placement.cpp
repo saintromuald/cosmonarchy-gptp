@@ -31,42 +31,37 @@ namespace hooks
 
     u8 draw_placement_box(Point16 ecx0) // 0048DDC0
     {
-        u8 result;
-        Point16 v4;
-        Point16 v6;
-        s16 v5;
-
-        v6 = ecx0;
-        result = *IS_PLACING_BUILDING;
-        if (!*IS_PLACING_BUILDING)
+        Point16 placement_box = ecx0;
+        u8 result = *IS_PLACING_BUILDING;
+        if (!result)
         {
             return result;
         }
         ecx0.x = mouse->y;
-        v6.x = mouse->x;
-        v6.y = mouse->y;
+        placement_box.x = mouse->x;
+        placement_box.y = mouse->y;
         Point16 dims = units_dat::BuildingDimensions[*placeBuildingUnitType];
-        v6.x -= dims.x / 2;
-        v6.y -= dims.y / 2;
-        v6.x += 24;
-        v6.y += 24;
-        if (helper::initPlacementBoxPos(&v6))
+        placement_box.x -= dims.x / 2;
+        placement_box.y -= dims.y / 2;
+        placement_box.x += 24;
+        placement_box.y += 24;
+        if (helper::init_placement_box_pos(&placement_box))
         {
-            *placeBuildingMessageId = helper::updatePlacementStateForPlacementBox_Func();
+            *placeBuildingMessageId = helper::update_placement_state_for_placement_box();
             helper::refresh_layers_3_and_4();
-            helper::unk_buildingPlacementRelated(1, &v6);
+            helper::unk_building_placement_related(1, &placement_box);
             if (*isPlacingAddon)
             {
-                v6.x -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-                v6.y -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
-                helper::unk_buildingPlacementRelated(0, &v6);
+                placement_box.x -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+                placement_box.y -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+                helper::unk_building_placement_related(0, &placement_box);
             }
             result = helper::refresh_layers_3_and_4();
         }
         else
         {
-            helper::unk_buildingPlacementRelatedMouse(0, 1);
-            result = helper::unk_buildingPlacementRelatedMouse(0, 0);
+            helper::unk_building_placement_related_mouse(0, 1);
+            result = helper::unk_building_placement_related_mouse(0, 0);
         }
         return result;
     }
@@ -82,7 +77,7 @@ namespace hooks
         u32 target = *placeBuildingUnitType;
         u16 addon_x = (*placeBuildingX - units_dat::AddonPlacement[2 * *placeBuildingUnitType - 212].x / 32);
         u16 addon_y = (*placeBuildingY - units_dat::AddonPlacement[2 * *placeBuildingUnitType - 211].y / 32);
-        scbw::adjustAddonCoordinates(source, target, &addon_x, &addon_y);
+        scbw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
 
         s32 can_build = helper::can_build_on_tile_location(*activePortraitUnit, *placingPlayer, *placeBuildingX, *placeBuildingY, *placeBuildingUnitType, 1, 1, 0, 0);
         s32 result = helper::can_build_on_tile_location(*activePortraitUnit, *placingPlayer, addon_x, addon_y, *placeBuildBaseType, 0, 1, 0, 0);
@@ -94,9 +89,7 @@ namespace hooks
         return result;
     }
 
-	// Hooked to enable unit mover for human players - Pr0nogo
-
-
+	// Hooked to enable unit mover for human players. - Pr0nogo
     s32 is_tile_blocked_by(Unit** unit_array, Unit* builder, s32 x_tile, s32 y_tile, s8 dont_ignore_reacting, s8 also_invisible) // 00473300
     {
         return 0;
@@ -139,4 +132,95 @@ namespace hooks
         }
         return 0;
     }
+
+    // Same as above. -Pr0nogo
+    s32 update_building_placement_state_units(s32 y_tile, Unit* builder, s32 x_tile, u8 player, u16 unit_id, Point16 size_wh, s32 placement_state_entry, char dont_ignore_reacting, char also_invisible, s32 without_vision) { // 00473720
+        u32 player_shifted = 0;
+        if (playerTable[player].type == 2)
+        {
+            player_shifted = 1 << player;
+        }
+
+        // This section is a mess
+        u16 x_tile_var = x_tile;
+        u16 y_tile_var = y_tile;
+        Point16 x_dims = {};
+        x_dims.x = units_dat::BuildingDimensions[unit_id].x;
+        u32 x_bounds = 32 * x_tile + ((x_dims.x - x_dims.y) >> 1);
+        x_dims.y = 32 * y_tile_var + units_dat::BuildingDimensions[unit_id].y / 2;
+        Box16 bounds = {};
+        bounds.x = x_bounds - units_dat::UnitBounds[unit_id].x;
+        u16 x_minus_y = x_dims.x - units_dat::UnitBounds[unit_id].y; // unused?
+        u16 x_plus_h = x_dims.x + units_dat::UnitBounds[unit_id].h;
+        Box16 bounds_2 = {};
+        bounds_2.x = x_bounds + units_dat::UnitBounds[unit_id].w;
+        bounds_2.y = x_plus_h;
+        Unit** units_in_bounds = helper::get_all_units_in_bounds(&bounds); // no bounds.y?
+
+        u32* active_tile_handle = activeTileHandle[x_tile + y_tile * mapTileSize->width];
+        u8 result_1 = 0;
+        if (size_wh.y > 0)
+        {
+            u32 size_wh_iterated = size_wh.x;
+            u32 secondary_iterator = 0;
+            u32 tile_op_1 = 4 * (mapTileSize->width - size_wh.x);
+            u32 tile_op_2 = 4 * (mapTileSize->width - size_wh.x);
+
+            u32 x_tile_iterated = x_tile_var;
+            u32 y_tile_iterated = y_tile_var;
+            u32 primary_iterator = 0;
+            u32 tertiary_iterator = 0;
+            do
+            {
+                tertiary_iterator = 0;
+                x_tile_iterated = x_tile_var;
+                if (size_wh_iterated > 0)
+                {
+                    u32 cucked_ida_math = 6 * (secondary_iterator + 8 * placement_state_entry);
+                    u32 cucked_ida_math_2 = cucked_ida_math;
+                    u32 times_iterated = 0;
+                    u8 result_2 = 0;
+                    do
+                    {
+                        result_2 = 0;
+                        if (!buildingPlacementState[cucked_ida_math + times_iterated]
+                            && (without_vision || !(player_shifted & *active_tile_handle)))
+                        {
+                            if (*active_tile_handle & 0x8000000 && helper::does_building_block(builder, x_tile_iterated, y_tile_iterated))
+                            {
+                                result_2 = 4;
+                            }
+                            else
+                            {
+                                if (helper::is_tile_blocked_by(units_in_bounds, builder, x_tile_iterated, y_tile_iterated, dont_ignore_reacting, also_invisible))
+                                {
+                                    result_2 = 1; // originally took result of is_tile_blocked_by
+                                }
+                            }
+                            if (result_1 <= result_2)
+                            {
+                                result_1 = result_2;
+                            }
+                            cucked_ida_math = cucked_ida_math_2;
+                            buildingPlacementState[cucked_ida_math_2 + times_iterated] = result_2;
+                        }
+                        ++active_tile_handle;
+                        times_iterated = ++tertiary_iterator;
+                        size_wh_iterated = size_wh.x;
+                        ++x_tile_iterated;
+                    } while (tertiary_iterator < size_wh.x);
+                    x_tile_var = x_tile;
+                    tile_op_1 = tile_op_2;
+                }
+                active_tile_handle = (active_tile_handle + tile_op_1);
+                secondary_iterator = primary_iterator + 1;
+                primary_iterator = secondary_iterator;
+                ++y_tile_iterated;
+                secondary_iterator = secondary_iterator;
+            } while (secondary_iterator < size_wh.y);
+        }
+        *tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
+        return result_1;
+    }
+
 }

@@ -31,7 +31,7 @@ namespace AI
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::PsiStorm, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::PsiStorm, target, caster))
 				return false;
 
 			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);

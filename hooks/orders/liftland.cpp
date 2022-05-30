@@ -44,12 +44,12 @@ namespace hooks
 		else if (unit->mainOrderState == 0)
 		{
 			// Plan vertical movement toward ground
-			helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y - unit->sprite->images.tail->verticalOffset);
+			helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y - unit->sprite->images.tail->verticalOffset);
 			unit->mainOrderState = 1;
 		}
 		else if (unit->mainOrderState == 1)
 		{
-			if (unit->getMovableState() != 0)
+			if (unit->get_movable_state() != 0)
 			{
 				s32 x = units_dat::BuildingDimensions[unit->id].x;
 				s32 y = units_dat::BuildingDimensions[unit->id].y;
@@ -80,7 +80,7 @@ namespace hooks
 					{
 						helper::remove_order_from_unit_queue(unit->orderQueueHead, unit);
 					}
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				else
 				{
@@ -90,7 +90,7 @@ namespace hooks
 					unit->building.landingTimer = 1;
 
 					// Plan movement again after latest updates
-					helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 					if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
 					{
@@ -109,7 +109,7 @@ namespace hooks
 		else if (unit->mainOrderState == 2)
 		{
 			bool bStopThere = false;
-			if (!helper::isUnitPositions2Equal(unit))
+			if (!helper::is_unit_positions_2_equal(unit))
 			{
 				bStopThere = ((unit->velocityDirection1 - scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y)) != 0);
 			}
@@ -123,7 +123,7 @@ namespace hooks
 		// There's no "else" here, mainOrderState = 2 can continue directly into mainOrderState = 3 if mainOrderState was updated
 		if (unit->mainOrderState == 3)
 		{
-			if ((unit->getMovableState() != 0) && (unit->orderSignal & 0x10))
+			if ((unit->get_movable_state() != 0) && (unit->orderSignal & 0x10))
 			{
 				unit->orderSignal -= 0x10;
 
@@ -209,7 +209,7 @@ namespace hooks
 					helper::placebuildingProc();
 
 					// Add the last minute occupation info of landing building to update an ongoing attempt to choose a building or landing location?
-					if (!helper::canStillPlaceBuilding())
+					if (!helper::can_still_place_building())
 					{
 						helper::refresh_layers_3_and_4();
 						helper::end_building_placement();

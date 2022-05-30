@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) InitPlacementBoxPos_Wrapper()
+	void __declspec(naked) init_palcement_box_pos_wrapper()
 	{
 		static s32 unused;
 		static Point16* placement;
@@ -24,7 +24,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) DrawPlacementBox_Wrapper()
+	void __declspec(naked) draw_placement_box_wrapper()
 	{
 		static Point16 ecx0;
 		static u8 result;
@@ -43,7 +43,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) updatePlacementStateForPlacementBox_Wrapper() // 0048DCE0
+	void __declspec(naked) update_placement_state_for_placement_box_wrapper() // 0048DCE0
 	{
 		static s32 result;
 		__asm
@@ -59,19 +59,19 @@ namespace
 		}
 	}
 
-	void __declspec(naked) updateBuildingPlacementState_Units_Wrapper() // 00473720
+	void __declspec(naked) update_building_placement_state_units_wrapper() // 00473720
 	{
 		static s32 result;
-		static s32 yTile;
+		static s32 y_tile;
 		static Unit* builder;
-		static s32 xTile;
+		static s32 x_tile;
 		static u8 player;
-		static u16 unitId;
-		static s32 sizeWidthHeight;
-		static s32 placementStateEntry;
-		static char bDontIgnoreReacting;
-		static char bAlsoInvisible;
-		static s32 withoutVision;
+		static u16 unit_id;
+		static Point16 size_wh;
+		static s32 placement_state_entry;
+		static char dont_ignore_reacting;
+		static char also_invisible;
+		static s32 without_vision;
 		__asm
 		{
 			PUSH EBP
@@ -80,26 +80,26 @@ namespace
 			MOV EAX, [EBP + 0x08]
 			MOV builder, EAX
 			MOV EAX, [EBP + 0x0C]
-			MOV xTile, EAX
+			MOV x_tile, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV player, AL
 			MOV EAX, [EBP + 0x14]
-			MOV unitId, AX
+			MOV unit_id, AX
 			MOV EAX, [EBP + 0x18]
-			MOV sizeWidthHeight, EAX
+			MOV size_wh, EAX
 			MOV EAX, [EBP + 0x1C]
-			MOV placementStateEntry, EAX
+			MOV placement_state_entry, EAX
 			MOV EAX, [EBP + 0x20]
-			MOV bDontIgnoreReacting, AL
+			MOV dont_ignore_reacting, AL
 			MOV EAX, [EBP + 0x24]
-			MOV bAlsoInvisible, AL
+			MOV also_invisible, AL
 			MOV EAX, [EBP + 0x28]
-			MOV withoutVision, EAX
+			MOV without_vision, EAX
 			POP EAX
-			MOV yTile, EAX
+			MOV y_tile, EAX
 			PUSHAD
 		}
-		hooks::updateBuildingPlacementState_Units(yTile, builder, xTile, player, unitId, sizeWidthHeight, placementStateEntry, bDontIgnoreReacting, bAlsoInvisible, withoutVision);
+		hooks::update_building_placement_state_units(y_tile, builder, x_tile, player, unit_id, size_wh, placement_state_entry, dont_ignore_reacting, also_invisible, without_vision);
 		__asm
 		{
 			POPAD
@@ -108,7 +108,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) isTileBlockedBy_Wrapper() { // 00473300
+	void __declspec(naked) is_tile_blocked_by_wrapper() { // 00473300
 		static s32 result;
 		static Unit** unitArray;
 		static Unit* builder;
@@ -149,10 +149,10 @@ namespace hooks
 {
 	void injectPlacementHooks()
 	{
-		jump_patch(InitPlacementBoxPos_Wrapper,					0x0048D660, 0);
-		jump_patch(DrawPlacementBox_Wrapper,					0x0048DDC0, 4);
-//		jump_patch(updatePlacementStateForPlacementBox_Wrapper,	0x0048DCE0, 0);
-//		jump_patch(updateBuildingPlacementState_Units_Wrapper,	0x00473720, 1);
-		jump_patch(isTileBlockedBy_Wrapper,						0x00473300, 0);
+		jump_patch(init_palcement_box_pos_wrapper,						0x0048D660, 0);
+		jump_patch(draw_placement_box_wrapper,							0x0048DDC0, 4);
+//		jump_patch(update_placement_state_for_placement_box_wrapper,	0x0048DCE0, 0);
+		jump_patch(is_tile_blocked_by_wrapper,							0x00473300, 0);
+//		jump_patch(update_building_placement_state_units_wrapper,		0x00473720, 1);
 	}
 }

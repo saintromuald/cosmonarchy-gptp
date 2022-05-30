@@ -24,7 +24,7 @@ namespace AI
 			if (target->player != caster->player)
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Restoration, target, caster))
 				return false;
 
 			if (target->get_current_life_ingame() <= 60)
@@ -54,7 +54,7 @@ namespace AI
 			if (!(target->parasiteFlags || target->maelstromTimer))
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Restoration, target, caster))
 				return false;
 
 			return true;

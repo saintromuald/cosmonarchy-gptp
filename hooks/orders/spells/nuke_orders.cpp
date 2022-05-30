@@ -21,7 +21,7 @@ namespace hooks
 					Image* current_image = unit->sprite->images.head;
 
 					if (unit->orderQueueHead == nullptr)
-						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
+						unit->order_simple(units_dat::ReturnToIdleOrder[unit->id], false);
 
 					helper::force_order_done(unit);
 					helper::change_unit_buttonset(unit, unit->id);
@@ -130,7 +130,7 @@ namespace hooks
 		{
 
 			if (unit->recentOrderTimer == 0)
-				helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 		}
 		else
@@ -184,7 +184,7 @@ namespace hooks
 				}
 				if (current_unit == nullptr)
 				{
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				else
 				{ // 00479333

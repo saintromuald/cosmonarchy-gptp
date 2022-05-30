@@ -8,7 +8,7 @@
 namespace hooks
 {
     // Until further notice, these hooks are all for the shared supply rewrite - Pr0nogo
-    u32 getSuppliesAvailable(u8 playerId, s32 race) // 00488900
+    u32 get_supplies_available(u8 playerId, s32 race) // 00488900
     {
         u32 result = suppliesMax_Terran[playerId];
         u32 suppliesAvailable = suppliesAvailable_Terran[playerId];
@@ -176,7 +176,7 @@ namespace hooks
                     {
                         break;
                     }
-                    helper::hideDialog(dialogVar);
+                    helper::hide_dialog(dialogVar);
                 }
                 return;
             }
@@ -222,7 +222,7 @@ namespace hooks
                 {
                     break;
                 }
-                helper::hideDialog(v17);
+                helper::hide_dialog(v17);
                 v17 = v17->next;
             }
             while (v17);
@@ -237,7 +237,7 @@ namespace hooks
     {
         Unit* activeUnit = *activePortraitUnit;
         GroupFlag groupFlags = units_dat::GroupFlags[activeUnit->id];
-        *suppliesAvailableTemp = getSuppliesAvailable(activeUnit->player, RaceId::Terran);
+        *suppliesAvailableTemp = get_supplies_available(activeUnit->player, RaceId::Terran);
         u8 playerId = activeUnit->player;
         s32 result = suppliesUsed_Terran[playerId];
         *suppliesUsedTemp = suppliesUsed_Terran[playerId];
@@ -255,7 +255,7 @@ namespace hooks
         GroupFlag groupFlags = units_dat::GroupFlags[(u16)(*activePortraitUnit)->id];
         char race = RaceId::Terran;
 
-        if ((u16)suppliesAvailableTemp == getSuppliesAvailable(activePlayer, race))
+        if ((u16)suppliesAvailableTemp == get_supplies_available(activePlayer, race))
         {
             s32 suppliesVar = suppliesUsed_Terran[activePlayer];
             if ((u16)suppliesUsedTemp == suppliesVar)
@@ -271,8 +271,8 @@ namespace hooks
 		if (*IS_IN_REPLAY || unit->player == *LOCAL_NATION_ID) {
 			getSuppliesTemp();
 			if (*statusScreenFunc != 12) {
-				helper::hideOptionalStatusScreenControls(dialog);
-				helper::showControlGroup(dialog, -10, -13);
+				helper::hide_optional_status_screen_controls(dialog);
+				helper::show_control_group(dialog, -10, -13);
 				*statusScreenFunc = 12;
 			}
 
@@ -300,7 +300,7 @@ namespace hooks
 			} else {
 				supply_provided_string = "";
 			}
-			u32 last_queue_slot_type = helper::getLastQueueSlotType(unit);
+			u32 last_queue_slot_type = helper::get_last_queue_slot_id(unit);
 			sprintf_s(supply_provided_buffer, 260, "%s %d", supply_provided_string, (units_dat::SupplyProvided[last_queue_slot_type] + 1) / 2);
 			
             u32 supply_available_string_id = race + 66353;
@@ -312,7 +312,7 @@ namespace hooks
 			} else {
 				supply_available_string = "";
 			}
-			u32 supply_available = getSuppliesAvailable(unit->playerId, race);
+			u32 supply_available = get_supplies_available(unit->playerId, race);
 			sprintf_s(supply_available_buffer, 260, "%s %d", supply_available_string, (supply_available + 1) / 2);
 
             u32 supply_max = suppliesMax_Terran[unit->playerId];
@@ -327,24 +327,24 @@ namespace hooks
 			}
 			sprintf_s(supply_max_buffer, 260, "%s %d", supply_max_string, (supply_max + 1) >> 1);
 
-			helper::addTextToDialog(dialog, -10, supply_used_buffer);
-			helper::addTextToDialog(dialog, -11, supply_provided_buffer);
-			helper::addTextToDialog(dialog, -12, supply_available_buffer);
-			helper::addTextToDialog(dialog, -13, supply_max_buffer);
+			helper::add_text_to_dialog(dialog, -10, supply_used_buffer);
+			helper::add_text_to_dialog(dialog, -11, supply_provided_buffer);
+			helper::add_text_to_dialog(dialog, -12, supply_available_buffer);
+			helper::add_text_to_dialog(dialog, -13, supply_max_buffer);
             */
 
             BinDlg* child = dialog->controlType ? dialog->parent->children_dialog : dialog->children_dialog;
             while (child) {
-                helper::hideDialog(child);
+                helper::hide_dialog(child);
                 child = child->next;
             }
 
             helper::drawArmor(dialog, unit->id, 0);
 			if (units_dat::ShieldsEnabled[unit->id]) {
-				helper::drawShieldUpgrade(dialog, 1);
+				helper::draw_shield_upgrade(dialog, 1);
 			}
 		} else {
-			helper::unitStatAct_Standard(dialog);
+			helper::unit_stat_act_standard(dialog);
 		}
 	}
 

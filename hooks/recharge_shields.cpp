@@ -123,7 +123,7 @@ namespace hooks
 					if (unit->mainOrderState == 1)
 					{
 
-						u32 movableState = unit->getMovableState();
+						u32 movableState = unit->get_movable_state();
 
 						if (movableState == 0)
 						{ //not reached destination
@@ -138,7 +138,7 @@ namespace hooks
 							}
 							else
 							{ //probably movableState == 2 == unit unmovable
-								unit->orderToIdle();
+								unit->order_to_idle();
 								bStopThere = true;
 							}
 
@@ -180,7 +180,7 @@ namespace hooks
 						if (battery->orderTarget.unit == unit)
 							battery->orderTarget.unit = nullptr;
 
-						unit->orderToIdle();
+						unit->order_to_idle();
 
 					}
 

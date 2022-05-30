@@ -403,7 +403,7 @@ bool Unit::is_valid_caster() const
 //Returns:	0 - Unit has not reached destination
 //					1 - Unit has reached destination
 //					2 - Unit cannot move
-u32 Unit::getMovableState()
+u32 Unit::get_movable_state()
 {
 	if (this->moveTarget.pt != this->sprite->position)
 		return 0;
@@ -864,35 +864,36 @@ s32 Unit::is_unit_ai_non_building()
 
 //-------- Unit orders --------//
 
-//Logically equivalent to function @ 0x004752B0
-//ESI = this
-//EAX = target
-//[ebp+08] = orderId
+// Logically equivalent to function @ 0x004752B0
+// ESI = this
+// EAX = target
+// [ebp+08] = orderId
 void Unit::orderTo(u8 orderId, Unit* target)
 {
 	assert(this);
-
 	this->userActionFlags |= 0x1;
 	if (target)
+	{
 		this->order(orderId, target->getX(), target->getY(), target, UnitId::None, true);
+	}
 	else
+	{
 		this->order(orderId, 0, 0, target, UnitId::None, true);
-
+	}
 	prepareForNextOrder(this);
 }
 
-//Logically equivalent to function @ 0x00475260
+// Logically equivalent to function @ 0x00475260
 void Unit::orderTo(u8 orderId, u16 x, u16 y)
 {
 	assert(this);
-
 	this->userActionFlags |= 0x1;
 	this->order(orderId, x, y, nullptr, UnitId::None, true);
 	prepareForNextOrder(this);
 }
 
-//Logically equivalent to function orderComputer_cl @ 0x00475310
-//used in hooks so not doing assert, mind it if used in mods
+// Logically equivalent to function orderComputer_cl @ 0x00475310
+// used in hooks so not doing assert, mind it if used in mods
 void Unit::order_computer(u8 orderId)
 {
 	this->userActionFlags |= 0x1;
@@ -901,7 +902,7 @@ void Unit::order_computer(u8 orderId)
 }
 
 // Equivalent to 00474D60 __order function
-void Unit::orderSimple(u8 orderId, bool stopPreviousOrders)
+void Unit::order_simple(u8 orderId, bool stopPreviousOrders)
 {
 	this->order(orderId, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
 }
@@ -920,7 +921,7 @@ void Unit::issueQueuedOrderTarget(u8 orderId, Unit* target, bool stopPreviousOrd
 }
 
 // Logically equivalent to function to_idle @ 0x004753A0
-void Unit::orderToIdle()
+void Unit::order_to_idle()
 {
 	assert(this);
 
@@ -1417,7 +1418,7 @@ bool Unit::giveTo(u8 playerId)
 			&& this->id != UnitId::ZergEgg
 			&& this->id != UnitId::ZergLarva)
 		{
-			this->orderToIdle();
+			this->order_to_idle();
 		}
 
 		UnitExt* unitExt = globals.get_unit_ext(this);
@@ -1514,7 +1515,7 @@ void Unit::resetSupplyProvided() // overwrites previous supply provided
 	unitExt->values[ValueSupplyProvided] = 0;
 }
 
-bool Unit::isAttemptingProtossBuild()
+bool Unit::is_attempting_protoss_build()
 {
 	assert(this);
 	return this->mainOrderId == OrderId::BuildProtoss1
@@ -1523,7 +1524,7 @@ bool Unit::isAttemptingProtossBuild()
 		&& !(this->orderTarget.unit->status & UnitStatus::Completed);
 }
 
-bool Unit::isConstructingAddon()
+bool Unit::is_constructing_addon()
 {
 	assert(this);
 	return this->secondaryOrderId == OrderId::BuildAddon
@@ -1605,7 +1606,7 @@ bool Unit::unit_is_training_or_morphing()
 	return (bool)result;
 }
 
-bool Unit::isQueueSlotActive(int slot)
+bool Unit::is_queue_slot_active(int slot)
 {
 	assert(this);
 	return this->buildQueue[(slot + (unsigned __int8)this->buildQueueSlot) % 5] <= (unsigned __int16)UnitId::Spell_DisruptionWeb;

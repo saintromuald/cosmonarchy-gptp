@@ -13,27 +13,25 @@ namespace helper
 	bool has_money_can_make(Unit* builder, u32 unitToBuild);
 
 	// For loadRaceUI
-	void getRaceSoundList(s8 a1);
-	s32 dialogGrpConstruct(s32 a1, s32 a2, s32 a3, s32(__fastcall* a4)(s32, s32, s32, s32));
-	void loadGraphic(s8 a1, s32 a2, s32 a3, s8 a4, s32 a5);
+	void get_race_sound_list(s8 a1);
+	s32 dialog_grp_construct(s32 a1, s32 a2, s32 a3, s32(__fastcall* a4)(s32, s32, s32, s32));
+	void load_graphic(s8 a1, s32 a2, s32 a3, s8 a4, s32 a5);
 
-	s32 randFunc();
-	bool unitHPbelow33_percent(Unit* a1);
-	bool unitHPbetween33_66_percent(s32 a1, Unit* a2);
-	s32 getMaxHP(Unit* a1);
-	u16 getLastQueueSlotType(Unit* unit);
-	void addTextToDialog(BinDlg* dialog, s16 index, const char* text);
-	void drawEnergy(BinDlg* a1);
-	void hideOptionalStatusScreenControls(BinDlg* a1);
-	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId);
-	void drawShieldUpgrade(s32 a1, u16 a2);
-	void hideDialog(BinDlg* dialog);
+	s32 rand_func();
+	bool unit_hp_below_33_percent(Unit* a1);
+	bool unit_hp_between_33_66_percent(s32 a1, Unit* a2);
+	s32 get_max_hp(Unit* a1);
+	u16 get_last_queue_slot_id(Unit* unit);
+	void add_text_to_dialog(BinDlg* dialog, s16 index, const char* text);
+	void draw_energy(BinDlg* a1);
+	void hide_optional_status_screen_controls(BinDlg* a1);
+	void show_control_group(BinDlg* dialog, s16 firstId, s16 lastId);
+	void hide_dialog(BinDlg* dialog);
 
-	// For drawSupplyUnitInfo
+	// For draw_supply_unit_info
 	s32 get_supplies_used_no_args();
-	u32 getSuppliesAvailable(u8 a1, s32 a2);
-	void drawArmor(s32 a1, s32 a2, u16 a3);
-	void unitStatAct_Standard(void* a1);
+	u32 get_supplies_available(u8 a1, s32 a2);
+	void unit_stat_act_standard(void* a1);
 
 	// For AI_TargetEnemyProc
 	bool ai_unit_can_attack(Unit* a1);
@@ -41,46 +39,46 @@ namespace helper
 	// For drawBuildingInfo
 	s32 ui_needs_redraw();
 	Unit* generic_status_update_drawn_values();
-	void drawProgressBar(BinDlg* a1);
-	void drawNukeSiloInfo(BinDlg* a1);
+	void draw_progress_bar(BinDlg* a1);
+	void draw_nuke_silo_info(BinDlg* a1);
 	bool unit_is_active_transport(Unit* a1);
-	bool isQueueSlotActive(Unit* unit, s32 slot);
-	void drawTrainingProgress(BinDlg* dialog);					// 004268D0
-	bool isConstructingAddon(const Unit* a1);
-	bool isAttemptingProtossBuild(Unit* a1);
-	void drawAddonProgress(BinDlg* a1);
-	void drawTechProgress(BinDlg* a1);
-	void drawUpgradeProgress(BinDlg* a1);
-	bool unitIsGeyser(Unit* a1);
-	void drawGasQuantity(BinDlg* a1);
-	s8 unitGetGroundWeapon(Unit* a1);
-	void drawDisplayButtons(BinDlg* a1);
-	BinDlg* getControlFromIndex(BinDlg* a1, s16 a2);
-	void setTextStr(BinDlg* a1);
-	void setUnitStatusStrText(BinDlg* a1);
-	s32 unitGetName(Unit* a1);
-	void drawSupplyUnitInfo(BinDlg* dialog); // 00427540
+	bool is_queue_slot_active(Unit* unit, s32 slot);
+	void draw_training_progress(BinDlg* dialog);					// 004268D0
+	bool is_constructing_addon(const Unit* a1);
+	bool is_attempting_protoss_build(Unit* a1);
+	void draw_addon_progress(BinDlg* a1);
+	void draw_tech_progress(BinDlg* a1);
+	void draw_upgrade_progress(BinDlg* a1);
+	bool unit_is_geyser(Unit* a1);
+	void draw_gas_quantity(BinDlg* a1);
+	s8 get_unit_ground_weapon(Unit* a1);
+	void draw_display_buttons(BinDlg* a1);
+	BinDlg* get_control_from_index(BinDlg* a1, s16 a2);
+	void set_text_string(BinDlg* a1);
+	void set_unit_status_string_text(BinDlg* a1);
+	s32 get_unit_name(Unit* a1);
+	void draw_supply_unit_info(BinDlg* dialog);						// 00427540
 
 	// For getUnitName
-	const char* getUnitNameStatString(u16 unitId); // 0047B090
+	const char* get_unit_name_stat_string(u16 unitId); // 0047B090
 
 	// For getUnitStrength
-	s32 getCurrentHitPointsPlusShields(Unit* a1);
-	s32 getBaseStrength(s32 a1, Unit* a2);
-	s32 getMaxHP(Unit* a1);
+	s32 get_current_hp_plus_shields(Unit* a1);
+	s32 get_base_strength(s32 a1, Unit* a2);
+	s32 get_max_hp(Unit* a1);
 
 	// For AI_RestorationRequirementsProc
-	s32 canWeaponTargetUnit(u8 a1, Unit* a2, Unit* a3);
+	s32 can_weapon_target_unit(u8 a1, Unit* a2, Unit* a3);
 
 	// For AI_EMPShieldRequirementsProc
-	s32 AI_TargetUnitIsWorthHitting(Unit* a1, Unit* a2);
-	s32 createSplashWeaponProc(s16 a1, s16 a2, s16 a3, s32(__fastcall* a4)(s32, s32), s32 a5);
-	s32 unitShieldsClumpInAreaAccumulatorProc(Unit* a1, Unit* a2);
+	s32 ai_target_unit_is_worth_hitting(Unit* a1, Unit* a2);
+	s32 create_splash_weapon_proc(s16 a1, s16 a2, s16 a3, s32(__fastcall* a4)(s32, s32), s32 a5);
+	s32 unit_shields_clump_in_area_accumulator_proc(Unit* a1, Unit* a2);
 
 	// For hallucinationHit
-	void unitWasHit(Unit* a1, Unit* a2, s32 a3);
-	void doAttackNotifyEvent(Unit* a1);
-	Image* createShieldOverlay(s32 a1, Unit* a2);
+	void unit_was_hit(Unit* a1, Unit* a2, s32 a3);
+	void do_attack_notify_event(Unit* a1);
+	Image* create_shield_overlay(s32 a1, Unit* a2);
 
 	// For drawImageHPBar
 
@@ -244,25 +242,25 @@ namespace helper
 	void set_resource_target(Unit* unit);															        // 004EB290
 	void make_to_hold_position(Unit* unit);																	// 004EB5B0
 	bool move_to_target(Unit* target, Unit* unit);															// 004EB720
-	bool SetMoveTarget_xy(Unit* unit, s32 x, s32 y);														// 004EB820
+	bool set_move_target_xy(Unit* unit, s32 x, s32 y);														// 004EB820
 	s32 moveTowards(Unit* unit, Unit* target);																// 004EB900
-	bool changeMovementTargetMoveTarget2(Unit* unit, s32 x, s32 y);											// 004EB9C0
+	bool change_movement_target_move_target_2(Unit* unit, s32 x, s32 y);											// 004EB9C0
 
-	bool isDistanceGreaterThanHaltDistance(Unit* unit, s32 x, s32 y, u32 distance);							// 00401240
-	void checkUnstack(Unit* unit);												                            // 0042D9A0
-	bool beginBuilding(Unit* unit);																			// 00467030
-	Unit* beginGasBuilding(Unit* unit, u32 unitId);															// 004678A0
+	bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance);							// 00401240
+	void check_unstack(Unit* unit);												                            // 0042D9A0
+	bool begin_building(Unit* unit);																			// 00467030
+	Unit* begin_gas_building(Unit* unit, u32 unitId);															// 004678A0
 	void addOverlayBelowMain(Sprite* sprite, u32 imageId, u32 x_offset, u32 y_offset, u32 direction);		// 00498D70
-	void replaceSpriteImages(Sprite* sprite, u32 imageId, u32 imageDirection);								// 00499BB0
+	void replace_sprite_images(Sprite* sprite, u32 imageId, u32 imageDirection);								// 00499BB0
 	void display_last_network_error_for_player(u32 playerId);										                // 0049E530
 	void update_unit_strength(Unit* unit);												                    // 0049FA40
-	void iscript_OpcodeCases(Image* image, u32 offset_, u32 unk1, u32 unk2);								// 004D74C0
-	void switchToWarpTexture(Image* image);																	// 004D8500
+	void iscript_opcode_cases(Image* image, u32 offset_, u32 unk1, u32 unk2);								// 004D74C0
+	void switch_to_warp_texture(Image* image);																	// 004D8500
 	bool setThingyVisibilityFlags(Thingy* thingy);									                        // 004878F0
 	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);		    								// 00488210
 	void setUnitStatTxtErrorMsg(char* message);										                        // 0048CCB0
 	void playSoundAtPos(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2);										// 0048EC10
-	u32 RandomizeShort(u32 unknown_index);																	// 004DC4A0
+	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
 	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit* unit, Box16* coords);							// 004E8280
 	void moveUnit_Duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
 
@@ -295,32 +293,32 @@ namespace helper
 	void stopCreepDisappearingAtBuilding(Unit* unit);												        // 007D770
 	void updateCreepDisappearance(Sprite* sprite, u32 unitId, s32 x, s32 y);								// 007DE40
 	void increment_unit_scores_ex(Unit* building, s32 unk1, s32 unk2);											// 0088D50
-	void playBuildingCompleteSound(Unit* building);															// 008F310
+	void play_building_completed_sound(Unit* building);															// 008F310
 	void refreshSpriteData(Sprite* sprite);																	// 00983A0
 	void display_last_network_error_for_player(u32 playerId);									                    // 009E530
 	void replace_unit_with_type(Unit* unit, u16 newUnitId);													// 009FED0
 
 	//// building_terran
-	bool isDistanceGreaterThanHaltDistance(Unit* unit, s32 x, s32 y, u32 distance);							// 00401240
+	bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance);							// 00401240
 	void fix_target_location(Point16* coords, u32 unitId);								                    // 00401FA0
-	bool isUnitPositions2Equal(Unit* unit);																	// 00402160
-	b32 ProgressBuild(Unit* unit, u32 hpGain, b32 showHidden);												// 004679A0
+	bool is_unit_positions_2_equal(Unit* unit);																	// 00402160
+	b32 progress_build(Unit* unit, u32 hpGain, b32 showHidden);												// 004679A0
 	void prepend_order_targeting_nothing(Unit* unit, Order* order, u8 orderId);								// 00474760
-	void addOrderTargetingNothing(Unit* unit, Order* order, u8 orderId);									// 004749A0
-	bool canStillPlaceBuilding();														                    // 0048DDA0
+	void add_order_targeting_nothing(Unit* unit, Order* order, u8 orderId);									// 004749A0
+	bool can_still_place_building();														                    // 0048DDA0
 	void end_building_placement();															                // 0048E310
-	void playBuildingCompleteSound(Unit* building);															// 0048F310
-	void setSecondaryWaypoint(Unit* unit, s32 x, s32 y);									                // 00494BB0
+	void play_building_completed_sound(Unit* building);															// 0048F310
+	void set_secondary_waypoint(Unit* unit, s32 x, s32 y);									                // 00494BB0
 	void display_last_network_error_for_player(u32 playerId);									                    // 0049E530
-	u32 RandomizeShort(u32 unknown_index);																	// 004DC4A0
+	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
 	u32 rand_between(u32 min, u32 max, u32 someIndex);														// 004DC550
 	void init_building(Unit* unit, b32 flag);																// 004E65E0
-	bool SetMoveTarget_xy(Unit* unit, s32 x, s32 y);									                    // 004EB820
+	bool set_move_target_xy(Unit* unit, s32 x, s32 y);									                    // 004EB820
 	bool order_to_move_to_target(Unit* unit, Unit* target);														// 004EB980
 	b32 unk_terrain_collision_2(Unit* unit, s32 x, s32 y);													// 004F1870
 
 	// For updatePlacementState_Units
-	bool doesBuildingBlock(Unit* unit, s32 xTile, s32 yTile);												// 00473410
+	bool does_building_block(Unit* unit, s32 xTile, s32 yTile);												// 00473410
 	s32 is_tile_blocked_by(Unit** array, Unit* builder, s32 xTile, s32 yTile,									// 00473300
 		char bDontIgnoreReacting, char bAlsoInvisible);
 
@@ -328,15 +326,15 @@ namespace helper
 	s32 can_build_on_tile_location(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType,				// 00473FB0
 		s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision);
 	
-	// For refreshScreen
-	s32 updatePlacementStateForPlacementBox_Func();															// 0048DCE0
-	s32 unk_buildingPlacementRelated(s32 a1, Point16* a2);													// 0048D7F0
-	s32 initPlacementBoxPos(Point16* in_out);																// 0048D660
-	char unk_buildingPlacementRelatedMouse(s32 a1, s32 a2);													// 0048D7B0
+	// For refresh_screen
+	s32 update_placement_state_for_placement_box();															// 0048DCE0
+	s32 unk_building_placement_related(s32 a1, Point16* a2);													// 0048D7F0
+	s32 init_placement_box_pos(Point16* in_out);																// 0048D660
+	char unk_building_placement_related_mouse(s32 a1, s32 a2);													// 0048D7B0
 
 	//// liftland
 	void setUnitPathing(Unit* unit, u8 unkPathRelated);																				// 00401360
-	bool isUnitPositions2Equal(Unit* unit);																							// 00402160
+	bool is_unit_positions_2_equal(Unit* unit);																							// 00402160
 	Unit* connectAddonCheck(Unit* unit);																							// 004404A0
 	void modify_building_grounded_status(Unit* unit);																				// 00463470
 	void toggle_pathing_related(Unit* unit);																						// 004634E0
@@ -669,7 +667,7 @@ namespace helper
 
 	//// unit_train
 	u32 getHPGainForRepair(Unit* unit);																								// 00402C40
-	void refundUnitTrainCost(u32 unitId, u8 playerId);																				// 0042CEC0
+	void refund_unit_train_cost(u32 unitId, u8 playerId);																				// 0042CEC0
 	void function_00432430(Unit* unit, u32 buildQueueSlot);																			// 00432430
 	void addHangarUnit(Unit* main_unit, Unit* added_unit);																			// 00466300
 	Unit* attemptTrainHatchUnit(Unit* trainer, u32 builtUnitID, u32 flag);															// 00468200
@@ -677,7 +675,7 @@ namespace helper
 	//// weapon_fire
 	// For progressBulletFlight
 	void progressBulletMovement(Bullet* a1);																						// 0048B250
-	void doMissileDmg(Bullet* bullet);																								// 0048B770
+	void do_missile_damage(Bullet* bullet);																								// 0048B770
 
 	// For bulletBehavior_Bounce
 	Bullet* changeMovePos(Bullet* a1, s32 a2, s32 a3);																				// 00495240
@@ -708,14 +706,14 @@ namespace helper
 	*/
 
 	//// wpnspellhit
-	bool function_0042D810(s32 x, s32 y, u32 unitId);														    // 0042D810
-	Unit** getAllUnitsInBounds(Box16* coords);																	// 0042FF80
-	void incrementUnitKillCount(Unit* unit);																	// 004759C0
-	u32 getUnitDamageBonus(Unit* unit, u8 weaponId);														    // 00475EC0
-	void attackOverlayAndNotify(Unit* attacker, Unit* target, u32 weaponType, u32 direction);			        // 00479730
+	bool can_unit_id_fit_at_xy(s32 x, s32 y, u32 unitId);														    // 0042D810
+	Unit** get_all_units_in_bounds(Box16* coords);																	// 0042FF80
+	void increment_unit_kill_count(Unit* unit);																	// 004759C0
+	u32 get_unit_damage_bonus(Unit* unit, u8 weaponId);														    // 00475EC0
+	void attack_overlay_and_notify(Unit* attacker, Unit* target, u32 weaponType, u32 direction);			        // 00479730
 	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);												// 00488210
-	u32 GetUnitBulletDamage(Bullet* bullet, Unit* target);														// 0048ACD0
-	u32 getSpellStatString(Unit* target, u32 techId, u8 playerId);									            // 00491E80
+	u32 get_unit_bullet_damage(Bullet* bullet, Unit* target);														// 0048ACD0
+	u32 get_spell_stat_string(Unit* target, u32 techId, u8 playerId);									            // 00491E80
 	void disableUnitFunc(Unit* unit);																			// 00492CC0 (hooked in weapon_spellhit)
 	void setAllImageGroupFlagsPal11(Sprite* sprite);															// 00497430
 	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);				    // 004E8280
@@ -949,7 +947,7 @@ namespace helper
 	bool unitStatCond_Standard();																			// 00424980
 
 	// For drawSupplyUnitStatus
-	void drawShieldUpgrade(BinDlg* dialog, u16 statusScreenIndex);											// 00425510
+	void draw_shield_upgrade(BinDlg* dialog, u16 statusScreenIndex);											// 00425510
 	void drawArmor(BinDlg* dialog, s32 unitId, u16 statusScreenIndex);										// 00425600
 
 	// For progressBulletFrame

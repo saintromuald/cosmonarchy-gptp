@@ -106,13 +106,13 @@ namespace hooks
 
 				if (*bAtLeast1UnitWasRecalled != 0) {
 
-					// Original code added (RandomizeShort(0x12) & 1) to the base sound
+					// Original code added (randomize_short(0x12) & 1) to the base sound
 					// id Protoss_ARBITER_PAbFol02_WAV then called the playSound function
 					// using that value, but since there are only 2 sounds, it's easier to 
 					// see what sound is used that way.
 					// The compiler may make it back like the original anyway.
 
-					if ((helper::RandomizeShort(0x12) & 1) == 0) {
+					if ((helper::randomize_short(0x12) & 1) == 0) {
 						helper::play_sound_from_unit(SoundId::Protoss_ARBITER_PAbFol02_WAV, unit, 1, 0);
 					} else {
 						helper::play_sound_from_unit(SoundId::Protoss_ARBITER_PAbFol03_WAV, unit, 1, 0);
@@ -127,7 +127,7 @@ namespace hooks
 						scbw::createAndInitThingy(SpriteId::RecallFieldShorter, next.x, next.y, unit->player, unit->sprite->elevationLevel - 1);
 					}
 				}
-				unit->orderToIdle();
+				unit->order_to_idle();
 			}
 		} else {
 			if (!scbw::isCheatEnabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::EnergyCost[TechId::Recall] * 256) {
@@ -136,7 +136,7 @@ namespace hooks
 				if (message && unit->player == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID) {
 					helper::setUnitStatTxtErrorMsg(message);
 				}
-				unit->orderToIdle();
+				unit->order_to_idle();
 			} else {
 				if (!scbw::isCheatEnabled(CheatFlags::TheGathering)) {
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::Recall] * 256);

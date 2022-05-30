@@ -135,7 +135,7 @@ namespace
 	}
 
 	const u32 Func_ReplaceSpriteImages = 0x00499BB0;
-	void replaceSpriteImages(Sprite* sprite, u16 imageId, u8 imageDirection)
+	void replace_sprite_images(Sprite* sprite, u16 imageId, u8 imageDirection)
 	{
 
 		static u32 imageId_;
@@ -237,13 +237,13 @@ namespace
 			unit->remainingBuildTime = 0;
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 			
-//			replaceSpriteImages(unit->sprite, sprites_dat::ImageId[flingy_dat::SpriteID[units_dat::Graphic[unit->previousUnitType]]], 0);			
+//			replace_sprite_images(unit->sprite, sprites_dat::ImageId[flingy_dat::SpriteID[units_dat::Graphic[unit->previousUnitType]]], 0);			
 //			auto index = units_dat::Graphic[unit->previousUnitType];
 			auto index = scbw::getUnitData(UnitsDatEntries::Flingy, unit->previousUnitType);
-//			replaceSpriteImages(unit->sprite, sprites_dat::ImageId[scbw::getFlingyData(FlingyDatEntries::SpriteId, index)], 0);
+//			replace_sprite_images(unit->sprite, sprites_dat::ImageId[scbw::getFlingyData(FlingyDatEntries::SpriteId, index)], 0);
 			auto fl_sId = scbw::getFlingyData(FlingyDatEntries::SpriteId, index);
-//			scbw::getSpriteData(SpritesDatEntries::ImageId,building->sprite->spriteId),
-			replaceSpriteImages(unit->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, fl_sId), 0);
+//			scbw::get_sprite_data(SpritesDatEntries::ImageId,building->sprite->spriteId),
+			replace_sprite_images(unit->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;
 			if (unit->id == UnitId::ZergZethrokor
 				|| unit->id == UnitId::ZergVorvrokor)

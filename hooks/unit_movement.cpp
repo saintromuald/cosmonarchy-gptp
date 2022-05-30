@@ -56,7 +56,7 @@ namespace hooks
         {
             if (unit->mainOrderId)
             {
-                helper::SetMoveTarget_xy(unit, newPos.x, newPos.y);
+                helper::set_move_target_xy(unit, newPos.x, newPos.y);
                 if (newPos.x != unit->nextTargetWaypoint.x || newPos.y != unit->nextTargetWaypoint.y)
                 {
                     unit->nextTargetWaypoint.x = newPos.x;
@@ -69,7 +69,7 @@ namespace hooks
             helper::updateUnitSortingInfo(newPos.x - oldPos.x, unit, newPos.y - oldPos.y);
             if (!ignoreCollision && !(unit->sprite->flags & SpriteFlags::Hidden))
             {
-                helper::checkUnstack(unit);
+                helper::check_unstack(unit);
             }
         }
 	}

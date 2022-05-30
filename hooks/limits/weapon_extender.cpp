@@ -515,7 +515,7 @@ namespace hooks
 		patchWeaponDat(4, 0x00425840, PatchIcon);
 
 		// // Weapon checks
-		// void __stdcall drawDisplayButtons(int a2) // 00426C60
+		// void __stdcall draw_display_buttons(int a2) // 00426C60
 		// 00426CFC  |.  80FB 82       CMP BL,82
 		// 00426D16  |>  80F9 82       CMP CL,82
 		// 00426D30  |>  80FB 82       CMP BL,82
@@ -623,7 +623,7 @@ namespace hooks
 		// 00475CC2  |.  3C 82         CMP AL,82
 		patchWeaponDat(1, 0x00475CC2, PatchMaxWeaponCompare);
 
-		// int __userpurge canWeaponTargetUnit@<eax>(unsigned __int8 wpnType@<al>, CUNIT *target@<edx>, CUNIT *a3) // 00475CE0
+		// int __userpurge can_weapon_target_unit@<eax>(unsigned __int8 wpnType@<al>, CUNIT *target@<edx>, CUNIT *a3) // 00475CE0
 		// 00475CE3  |.  3C 82         CMP AL,82
 		patchWeaponDat(1, 0x00475CE3, PatchMaxWeaponCompare);
 

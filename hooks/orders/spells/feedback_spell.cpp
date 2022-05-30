@@ -21,14 +21,14 @@ namespace hooks
 					helper::replace_feedback_sprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 					unit->spendUnitEnergy(techCost);
 					target->remove();
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				else
 				{ // 004F6DE3
 
 					if (target->energy <= 0)
 					{
-						unit->orderToIdle();
+						unit->order_to_idle();
 					}
 					else
 					{
@@ -48,13 +48,13 @@ namespace hooks
 							{
 								target->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
 							}
-							unit->orderToIdle();
+							unit->order_to_idle();
 						}
 						else
 						{ // 004F6E6D
 							u8 overlaySize = scbw::hasOverlay(target);
 							helper::replace_feedback_sprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
-							unit->orderToIdle();
+							unit->order_to_idle();
 						}
 					}
 				}

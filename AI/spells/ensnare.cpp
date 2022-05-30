@@ -27,7 +27,7 @@ namespace AI
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Ensnare, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Ensnare, target, caster))
 				return false;
 
 			if (target->ensnareTimer)

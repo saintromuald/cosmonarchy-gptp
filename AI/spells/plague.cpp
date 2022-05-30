@@ -27,7 +27,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (!scbw::canWeaponTargetUnit(WeaponId::Plague, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Plague, target, caster))
 			{
 				return false;
 			}

@@ -13,7 +13,7 @@ namespace hooks
 	// Hooked to allow for replacing proc functions - Pr0nogo
 	Unit* iterateUnitsAtLocationTargetProc(Box16* location, Unit*(__fastcall* proc)(Unit*, Unit*), Unit* unit) // 004E8280
 	{
-		Unit** unitsInBounds = helper::getAllUnitsInBounds(location);
+		Unit** unitsInBounds = helper::get_all_units_in_bounds(location);
 		Unit** unitsInBounds2 = unitsInBounds;
 		Unit* aUnitInBound;
 		if (proc || (aUnitInBound = *unitsInBounds) == 0)
@@ -178,7 +178,7 @@ namespace hooks
 
 	void WeaponBulletHit(Bullet* bullet, Unit* target, u32 damageDivisor)
 	{
-		u32 base_damage = helper::GetUnitBulletDamage(bullet, target);
+		u32 base_damage = helper::get_unit_bullet_damage(bullet, target);
 		if (bullet->hitFlags & 2)
 		{
 			if (bullet->sourceUnit != nullptr)
@@ -187,7 +187,7 @@ namespace hooks
 			}
 			else
 			{
-				helper::attackOverlayAndNotify(bullet->sourceUnit, target, bullet->weaponId, bullet->direction1); // no damage, but still ask for retaliation
+				helper::attack_overlay_and_notify(bullet->sourceUnit, target, bullet->weaponId, bullet->direction1); // no damage, but still ask for retaliation
 			}
 		}
 		else
@@ -253,7 +253,7 @@ namespace hooks
 			{
 				if (attacker != nullptr)
 				{
-					u32 damage = helper::getUnitDamageBonus(attacker, weaponId);
+					u32 damage = helper::get_unit_damage_bonus(attacker, weaponId);
 					damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 					if (attackerExt->values[ValueDeconstruction])
 					{
@@ -269,12 +269,12 @@ namespace hooks
 				}
 				else
 				{
-					helper::attackOverlayAndNotify(attacker, target, weaponId, attacker->currentDirection1); // no damage, but still ask for retaliation
+					helper::attack_overlay_and_notify(attacker, target, weaponId, attacker->currentDirection1); // no damage, but still ask for retaliation
 				}
 			}
 			else
 			{
-				u32 damage = helper::getUnitDamageBonus(attacker, weaponId);
+				u32 damage = helper::get_unit_damage_bonus(attacker, weaponId);
 				damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 				if (attackerExt->values[ValueDeconstruction])
 				{
@@ -342,7 +342,7 @@ namespace hooks
 		}
 
 		// find all units in area of effect and pick the first
-		unitsInAreaOfEffect = helper::getAllUnitsInBounds(&area_of_effect);
+		unitsInAreaOfEffect = helper::get_all_units_in_bounds(&area_of_effect);
 		current_unit = *unitsInAreaOfEffect;
 		while (current_unit != nullptr)
 		{
@@ -367,7 +367,7 @@ namespace hooks
 			unitsInAreaOfEffect++; // go on next unit of the list (or null)
 			current_unit = *unitsInAreaOfEffect;
 		}
-		// reload the previous temporary unit list from before the call to getAllUnitsInBounds
+		// reload the previous temporary unit list from before the call to get_all_units_in_bounds
 		*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
 		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
 	}
@@ -412,7 +412,7 @@ namespace hooks
 
 		if (target != nullptr
 			&& !(target->status & UnitStatus::Invincible)
-			&& helper::getSpellStatString(target, TechId::Consume, attacker->player) == 0) // returning a value != 0 means there was an error
+			&& helper::get_spell_stat_string(target, TechId::Consume, attacker->player) == 0) // returning a value != 0 means there was an error
 		{
 			helper::incrementUnitDeathScores(target, attacker->player);
 			if (!(target->status & UnitStatus::IsHallucination))
@@ -523,7 +523,7 @@ namespace hooks
 		{
 			bool jump_to_end_of_loop = false; // 004F4A82
 			// check various conditions before attempting to create a broodling
-			if (helper::function_0042D810(current_x, current_y, UnitId::ZergRilirokor))
+			if (helper::can_unit_id_fit_at_xy(current_x, current_y, UnitId::ZergRilirokor))
 			{
 				Point16 inPos, outPos;
 				Box16 moveArea;
@@ -892,7 +892,7 @@ LABEL_15:
 		{
 			return 0;
 		}
-		if (helper::unitIsGeyser(unit))
+		if (helper::unit_is_geyser(unit))
 		{
 			Unit* hiddenMiner = helper::getHiddenMiner(unit);
 			if (hiddenMiner)
@@ -917,7 +917,7 @@ LABEL_15:
 			{
 				helper::giveAllUnitPropertiesToPlayer(connectedUnit, playerIdVar);
 			}
-			if (helper::isConstructingAddon(unit))
+			if (helper::is_constructing_addon(unit))
 			{
 				Unit* creatingUnit = helper::getCreatingUnit(unit);
 				helper::giveAllUnitPropertiesToPlayer(creatingUnit, playerIdVar);

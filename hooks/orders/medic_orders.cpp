@@ -53,7 +53,7 @@ namespace hooks
 		{ // 00463817
 			if (unit->recentOrderTimer == 0)
 			{
-				if (!helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+				if (!helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 				{
 					bStopThere = true;
 				}
@@ -64,7 +64,7 @@ namespace hooks
 			{
 				if (unit->moveTarget.pt.x == unit->sprite->position.x && unit->moveTarget.pt.y == unit->sprite->position.y)
 				{
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				else if (unit->mainOrderTimer == 0)
 				{
@@ -210,7 +210,7 @@ namespace hooks
 			{
 				if (target != nullptr
 					&& helper::moveTowards(unit, target) != 0
-					&& unit->getMovableState() != 2) // unit not unmovable
+					&& unit->get_movable_state() != 2) // unit not unmovable
 				{
 					if (unit->isTargetWithinMinRange(target, 30))
 					{
@@ -220,7 +220,7 @@ namespace hooks
 				}
 				else // 00464216
 				{
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 			}
 			else // 0046421E

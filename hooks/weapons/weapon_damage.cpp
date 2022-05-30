@@ -318,7 +318,7 @@ namespace hooks
 
 		if (shield_overlay)
 		{
-			scbw::createShieldOverlay(data.target, data.direction);
+			scbw::create_shield_overlay(data.target, data.direction);
 		}
 
 		// Update unit strength data
