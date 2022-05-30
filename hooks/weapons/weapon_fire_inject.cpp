@@ -280,6 +280,6 @@ namespace hooks
 	//	jump_patch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
 	//	jump_patch(bulletBehaviorReassign_Wrapper,		0x00488D50, 1);
 		jump_patch(BulletDamage_bulletNullcheck,		0x0048B770, 1);
-		jump_patch(get_weapon_iscript_init_wrapper,		0x00476ED0, 2);
+	//	jump_patch(get_weapon_iscript_init_wrapper,		0x00476ED0, 2);
 	}
 }

@@ -246,7 +246,7 @@ enum ExtValueId
 	ValueAI_WorkerChosenX,
 	ValueAI_WorkerChosenY,
 	ValueAI_KitingSignal,
-	ValueAI_TargetingSignal,
+	ValueAI_PreventTargeting,
 	ValueAI_BunkerCustom,
 
 	ValueCount,
@@ -330,7 +330,7 @@ enum ExtTimerId
 
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
 	TimerAI_KitingCooldown,
-	TimerAI_KitingLeashTimer,
+	TimerAI_KitingLeash,
 
 	TimerAI_AvoidTargeting,
 	

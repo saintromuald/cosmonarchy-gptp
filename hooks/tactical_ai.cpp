@@ -405,13 +405,26 @@ static s32 get_target_cost(Unit* source, Unit* target)
 	return cost;
 }
 
-static bool unit_can_kite(Unit* unit)
+static bool unit_could_kite(Unit* unit)
 {
-	UnitExt* unitExt = globals.get_unit_ext(unit);
+	UnitExt* unit_ext = globals.get_unit_ext(unit);
+	bool in_combat = unit_ext->damageReceiveTimer < 4 * 24
+		|| unit_ext->damageDealtTimer < 4 * 24
+		|| unit->mainOrderId == OrderId::Patrol
+		|| unit->mainOrderId == OrderId::AttackMove
+		|| unit->mainOrderId == OrderId::AttackMoveComputer
+		|| unit->mainOrderId == OrderId::AttackUnit
+		|| unit->mainOrderId == OrderId::CarrierFight
+		|| unit->mainOrderId == OrderId::ReaverFight
+		|| unit->mainOrderId == OrderId::Move
+		|| unit->mainOrderId == OrderId::MoveToMinerals
+		|| unit->mainOrderId == OrderId::HarvestGas1;
 
-	return unit->hasWeapon()
+	return in_combat
+		&& unit->hasWeapon()
 		&& !unit->isFrozen()
 		&& unit->status & UnitStatus::Completed
+		&& !(unit->movementFlags & MovementFlags::StartingAttack)	
 		// Special units
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
@@ -426,23 +439,27 @@ static bool unit_can_kite(Unit* unit)
 		&& unit->mainOrderId != OrderId::DroneLand
 		&& unit->mainOrderId != OrderId::DroneStartBuild
 		&& unit->mainOrderId != OrderId::DroneBuild
-		&& !unitExt->values[ValueDisruptionFieldOn]
+		&& !unit_ext->values[ValueDisruptionFieldOn]
 		&& (unit->id == UnitId::ZergLakizilisk || !(unit->status & UnitStatus::Burrowed));
+}
+
+static bool unit_can_kite(Unit* unit) {
+	// ComputerReturn was patched away, still keeping the unreliable hardcode just in case
+	UnitExt* unit_ext = globals.get_unit_ext(unit);
+	return (unit_ext->timers[TimerAI_KitingCooldown] == 0 || unit->mainOrderId == OrderId::ComputerReturn);
 }
 
 static bool unit_kiting_can_attack(Unit* unit)
 {
-	if (unit->id == UnitId::ProtossSolarion
-		|| unit->id == UnitId::ProtossAccantor)
+	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 	{
 		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
 	}
-	if (unit->movementFlags & MovementFlags::Accelerating
-		|| unit->flingyTurnSpeed < 35)
+	if (unit->movementFlags & MovementFlags::Accelerating || unit->flingyTurnSpeed < 35)
 	{
 		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
 	}
-	return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.5;
+	return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.25;
 }
 
 enum KiterType
@@ -458,8 +475,6 @@ enum KiterType
 
 KiterType get_kiter_type(u32 unit_id)
 {
-	u32 range = get_max_range(unit_id);
-
 	if (units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
 		return KiterType_TargetingOnly;
 	}
@@ -505,46 +520,23 @@ KiterType get_kiter_type(u32 unit_id)
 	return KiterType_Ranged;
 }
 
-void kiting_ai(Unit* unit, UnitExt* unitExt)
+void kiting_ai(Unit* unit, UnitExt* unit_ext)
 {
 	// Kiting AI
-	bool in_combat = unitExt->damageReceiveTimer < 4 * 24
-		|| unitExt->damageDealtTimer < 4 * 24
-		|| unit->mainOrderId == OrderId::Patrol
-		|| unit->mainOrderId == OrderId::AttackMove
-		|| unit->mainOrderId == OrderId::AttackMoveComputer
-		|| unit->mainOrderId == OrderId::AttackUnit
-		|| unit->mainOrderId == OrderId::CarrierFight
-		|| unit->mainOrderId == OrderId::ReaverFight
-		|| unit->mainOrderId == OrderId::Move
-		|| unit->mainOrderId == OrderId::MoveToMinerals
-		|| unit->mainOrderId == OrderId::HarvestGas1;
-
-	if (unit_can_kite(unit) && in_combat && unitExt->timers[TimerAI_KitingLeashTimer] == 1)
+	if (unit_could_kite(unit) && unit_ext->timers[TimerAI_KitingLeash] == 1)
 	{
-		unitExt->timers[TimerAI_KitingCooldown] = 1 * 24;
-		unit->orderTo(OrderId::Move, unitExt->aiKitingOrigin.x, unitExt->aiKitingOrigin.y);
+		unit_ext->timers[TimerAI_KitingCooldown] = 1 * 24;
+		unit->orderTo(OrderId::Move, unit_ext->aiKitingOrigin.x, unit_ext->aiKitingOrigin.y);
 		unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
 	}
 
-	// TODO: find a way to prevent computer return, instead of doing this weak hardcode
-	if (unit_can_kite(unit)
-		&& in_combat
-		&& (unitExt->timers[TimerAI_KitingCooldown] == 0
-			|| unit->mainOrderId == OrderId::ComputerReturn))
+	if (unit_could_kite(unit))
 	{
 		u32 hostile_group_radius = 4 * 32;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
 			hostile_group_radius = 32;
 		}
-
-		// TODO:
-		// - replace unit finder with unit search
-		// - calcuate for advantage using a search, instead of local value and forward value
-		// - reconsider and revisit strafing and crowd scoring
-		// - try removing local group id reliance,
-		//		not sure if it's feasible in bw, as it would need to be much more complex
 
 		scbw::UnitFinder local_group(
 			unit->getX() - LocalGroupRadius,
@@ -553,7 +545,7 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 			unit->getY() + LocalGroupRadius
 		);
 		local_group.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
-		local_group.filter([&](Unit* target){ return unit_can_kite(target); });
+		local_group.filter([&](Unit* local_unit){ return unit_could_kite(local_unit); });
 
 		if (unit_kiting_can_attack(unit))
 		{
@@ -565,7 +557,7 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 				}
 
 				UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
-				if (local_unit_ext->values[ValueAI_TargetingSignal])
+				if (local_unit_ext->values[ValueAI_PreventTargeting])
 				{
 					return;
 				}
@@ -574,11 +566,11 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 				{
 					if (units_dat::BaseProperty[local_unit->id] & UnitProperty::Worker)
 					{
-						local_unit_ext->timers[TimerAI_KitingLeashTimer] = 4 * 24;
+						local_unit_ext->timers[TimerAI_KitingLeash] = 4 * 24;
 					}
 					else
 					{
-						local_unit_ext->timers[TimerAI_KitingLeashTimer] = 24 * 24;
+						local_unit_ext->timers[TimerAI_KitingLeash] = 24 * 24;
 					}
 					local_unit_ext->aiKitingOrigin = local_unit->position;
 				}
@@ -597,9 +589,7 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 					}
 
 					UnitExt* target_ext = globals.get_unit_ext(target);
-					if (!target_ext->timers[TimerAI_AvoidTargeting] &&
-						unit->canAttackTarget(target, true) &&
-						target->isVisibleTo(unit->player)) {
+					if (!target_ext->timers[TimerAI_AvoidTargeting] && unit->canAttackTarget(target, true) && target->isVisibleTo(unit->player)) {
 						s32 cost = get_target_cost(local_unit, target);
 						if (cost < best_cost)
 						{
@@ -626,35 +616,29 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 						local_unit->orderTo(OrderId::AttackUnit, best_target);
 					}
 					local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
-					local_unit_ext->values[ValueAI_TargetingSignal] = 1;
+					local_unit_ext->values[ValueAI_PreventTargeting] = 1;
 				}
 				else
 				{
-					if (local_unit->mainOrderId == OrderId::AttackUnit ||
-						local_unit->mainOrderId == OrderId::CarrierFight ||
-						local_unit->mainOrderId == OrderId::ReaverFight) {
-						local_unit->orderToIdle();
-					}
 					local_unit_ext->timers[TimerAI_KitingCooldown] = 8;
-					local_unit_ext->timers[TimerAI_KitingLeashTimer] = 0;
+					local_unit_ext->timers[TimerAI_KitingLeash] = 0;
 					local_unit_ext->values[ValueAI_KitingSignal] = 0;
-					local_unit_ext->values[ValueAI_TargetingSignal] = 0;
+					local_unit_ext->values[ValueAI_PreventTargeting] = 0;
 				}
 			});
 		}
-		else if (get_kiter_type(unit->id) != KiterType_TargetingOnly)
+		else if (unit_can_kite(unit) && get_kiter_type(unit->id) != KiterType_TargetingOnly)
 		{
 			u32 sync = 0;
-
-			if (unit->id != UnitId::ProtossSolarion
-				&& unit->id != UnitId::ProtossAccantor)
+			if (unit->id != UnitId::ProtossSolarion && unit->id != UnitId::ProtossAccantor)
 			{
 				local_group.forEach([&](Unit* local_unit)
 				{
 					UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
-					sync += local_unit_ext->values[ValueAI_KitingSignal];
+					if (local_unit_ext->values[ValueAI_KitingSignal] >= 256) {
+						sync += 1;
+					}
 				});
-				sync >>= 8;
 			}
 
 			if (sync >= local_group.unitCount * 1
@@ -668,9 +652,9 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 					{
 						UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
 						local_unit_ext->timers[TimerAI_KitingCooldown] = 8;
-						local_unit_ext->timers[TimerAI_KitingLeashTimer] = 0;
+						local_unit_ext->timers[TimerAI_KitingLeash] = 0;
 						local_unit_ext->values[ValueAI_KitingSignal] = 0;
-						local_unit_ext->values[ValueAI_TargetingSignal] = 0;
+						local_unit_ext->values[ValueAI_PreventTargeting] = 0;
 					});
 					return;
 				}
@@ -685,10 +669,14 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 				{
 					UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
 
-					if (!local_unit_ext->values[ValueAI_KitingSignal]
+					if (local_unit_ext->values[ValueAI_KitingSignal] < 256
 						&& local_unit->id != UnitId::ProtossAccantor
 						&& local_unit->id != UnitId::ProtossSolarion)
 					{
+						return;
+					}
+
+					if (!unit_can_kite(local_unit)) {
 						return;
 					}
 
@@ -696,8 +684,7 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 					{
 						local_unit_ext->timers[TimerAI_KitingCooldown] = 12;
 					}
-					else if (unit->movementFlags & MovementFlags::Accelerating
-						|| unit->flingyTurnSpeed < 35)
+					else if (unit->movementFlags & MovementFlags::Accelerating || unit->flingyTurnSpeed < 35)
 					{
 						local_unit_ext->timers[TimerAI_KitingCooldown] = 2;
 					}
@@ -705,9 +692,9 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 					{
 						local_unit_ext->timers[TimerAI_KitingCooldown] = 6;
 					}
-					local_unit_ext->timers[TimerAI_KitingLeashTimer] = 0;
+					local_unit_ext->timers[TimerAI_KitingLeash] = 0;
 					local_unit_ext->values[ValueAI_KitingSignal] = 0;
-					local_unit_ext->values[ValueAI_TargetingSignal] = 0;
+					local_unit_ext->values[ValueAI_PreventTargeting] = 0;
 
 					bool target_has_min_range = false;
 					if (local_unit->orderTarget.unit)
@@ -725,7 +712,7 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 							{
 								context = context->subunit;
 							}
-							u32 weapon_id;
+							u32 weapon_id = WeaponId::None;
 							if (local_unit->status & UnitStatus::InAir)
 							{
 								weapon_id = context->getAirWeapon();
@@ -887,7 +874,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	return cost;
 }
 
-void TacticalAi(Unit* unit, UnitExt* unitExt)
+void tactical_ai(Unit* unit, UnitExt* unitExt)
 {
 	if (unit->id == UnitId::TerranBunker
 		&& !unitExt->timers[TimerAI_GenericAbilityCooldown])

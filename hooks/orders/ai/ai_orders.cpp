@@ -1566,7 +1566,7 @@ LABEL_37:
 
 					UnitExt* workerExt = globals.get_unit_ext(worker);
 					if (*elapsedTimeSeconds - worker_ai->last_update_second >= timer
-						&& !workerExt->timers[TimerAI_KitingLeashTimer])
+						&& !workerExt->timers[TimerAI_KitingLeash])
 					{
 						helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
 						worker_ai->wait_timer = 0;
@@ -2091,5 +2091,10 @@ LABEL_37:
 			}
 			goto LABEL_9;
 		}
+	}
+
+	// Hooked to remove computer return bullshit and improve kiting. -Veeq7
+	u32 ai_try_return_home(Unit* unit, u32 dont_issue_order) {
+		return 0;
 	}
 }

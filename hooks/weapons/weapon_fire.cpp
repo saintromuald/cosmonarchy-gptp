@@ -144,8 +144,8 @@ namespace hooks
 		}
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		u8 weaponId = wId;
-		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId];
-		unitExt->values[ValueAI_TargetingSignal] = 0;
+		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId] + 1;
+		unitExt->values[ValueAI_PreventTargeting] = 0;
 		// Retrieve the spawning position for the bullet.
 		s32 x, y;
 		u8 behavior = weapons_dat::Behavior[weaponId];
@@ -1496,11 +1496,13 @@ namespace hooks
 	}
 
 	// Hooked to help with kiting AI. -Pr0nogo
+	// Ended up useless sadly, as it calls way more often than I anticipated. Replaced with starting attack check from movement flags -Veeq7
 	void get_weapon_iscript_init(Unit* unit, char iscript_anim) // 00476ED0
 	{
 		*lastBulletCreator = 0;
-		if ((unit->status & UnitStatus::CanNotAttack) == 0)
+		if (!(unit->status & UnitStatus::CanNotAttack))
 		{
+			UnitExt* unit_ext = globals.get_unit_ext(unit);
 			if (unit->orderTarget.unit && unit->orderTarget.unit->status & UnitStatus::InAir)
 			{
 				helper::use_weapon_iscript(unit, units_dat::AirWeapon[unit->id], 2, iscript_anim + 1);

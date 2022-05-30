@@ -246,8 +246,8 @@ namespace hooks
 			{
 				weaponId = WeaponId::None;
 			}
-			attackerExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId];
-			attackerExt->values[ValueAI_TargetingSignal] = 0;
+			attackerExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId] + 1;
+			attackerExt->values[ValueAI_PreventTargeting] = 0;
 
 			if (attacker->status & UnitStatus::IsHallucination)
 			{

@@ -296,7 +296,7 @@ namespace hooks
 			// TODO: update to work with multi building select
 			Unit* selected = *activePortraitUnit;
 
-		//	scbw::printf("%u", selected->mainOrderId);
+			// scbw::printf("%u", selected->mainOrderId);
 
 			if (selected
 				&& selected->id == UnitId::ZergNydusCanal
@@ -316,7 +316,7 @@ namespace hooks
 	void tickUnit(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		TacticalAi(unit, unitExt);
+		tactical_ai(unit, unitExt);
 
 		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::SharedStriga) && unit->orderSignal & 0x20)
 		{

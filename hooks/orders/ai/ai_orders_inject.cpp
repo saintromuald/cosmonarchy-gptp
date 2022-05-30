@@ -586,6 +586,30 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) ai_try_return_home_wrapper() { // 00462EA0
+		static u32 result;
+		static Unit* unit;
+		static u32 dont_issue_order;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x8]
+			MOV dont_issue_order, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::ai_try_return_home(unit, dont_issue_order);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 }
 
 namespace hooks
@@ -626,6 +650,8 @@ namespace hooks
 		jump_patch(ai_remove_addon_placements,					0x00443CC0, 3);
 		jump_patch(ai_manage_military_controller_wrapper,		0x0043D910, 1);
 		jump_patch(ai_assign_region_to_slowest_unit_wrapper,	0x00436F70, 2);
+
+		jump_patch(ai_try_return_home_wrapper,					0x00462EA0, 1);
 
 		call_patch(AI_ReactToHit_TownNullCheck,					0x0043F388, 5);
 	}

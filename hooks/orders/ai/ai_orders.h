@@ -43,5 +43,7 @@ namespace hooks
 	void ai_assign_region_to_slowest_unit(AiRegion* region);															// 00436F70
 	void ai_respond_to_cloaked_threat(Unit* victim, Unit* threat);														// 0043C580
 
+	u32 ai_try_return_home(Unit* unit, u32 dont_issue_order);															// 00462EA0
+
 	void injectAIOrdersHooks();
 }
