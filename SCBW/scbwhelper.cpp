@@ -284,7 +284,7 @@ namespace helper
 
 	// For AI_TargetEnemyProc
 
-	bool AI_UnitCanAttack(Unit* a1)
+	bool ai_unit_can_attack(Unit* a1)
 	{
 		const u32 Func_AI_UnitCanAttack = 0x00476180;
 		static s32 result;
@@ -300,7 +300,7 @@ namespace helper
 
 	// For drawBuildingInfo
 
-	s32 needRedrawUI()
+	s32 ui_needs_redraw()
 	{
 		const u32 Func_needRedrawUI = 0x00424A10;
 		static s32 result;
@@ -313,7 +313,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* genericStatusUpdateDrawnValues()
+	Unit* generic_status_update_drawn_values()
 	{
 		const u32 Func_genericStatusUpdateDrawnValues = 0x004248F0;
 		static Unit* result;

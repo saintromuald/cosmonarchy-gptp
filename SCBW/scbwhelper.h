@@ -36,11 +36,11 @@ namespace helper
 	void unitStatAct_Standard(void* a1);
 
 	// For AI_TargetEnemyProc
-	bool AI_UnitCanAttack(Unit* a1);
+	bool ai_unit_can_attack(Unit* a1);
 
 	// For drawBuildingInfo
-	s32 needRedrawUI();
-	Unit* genericStatusUpdateDrawnValues();
+	s32 ui_needs_redraw();
+	Unit* generic_status_update_drawn_values();
 	void drawProgressBar(BinDlg* a1);
 	void drawNukeSiloInfo(BinDlg* a1);
 	bool unit_is_active_transport(Unit* a1);

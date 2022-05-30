@@ -233,8 +233,8 @@ LABEL_37:
 												if (self->orderTarget.unit != actual_target)  // Responding with worker
 												{
 													if (!(units_dat::BaseProperty[(u16)self->id] & UnitProperty::Worker)
-//														|| (child9 = actual_target->id, units_dat::BaseProperty[child9] & UnitProperty::Worker)
-														|| !scbw::unit_is_ranged_attacker(actual_target) // previously only checked for Zergling id
+														|| (units_dat::BaseProperty[actual_target->id] & UnitProperty::Worker)
+														|| !scbw::unit_is_ranged_attacker(actual_target) // previously only checked for Zethrokor id
 														|| helper::ai_has_no_defense_build((u8)self->id))
 													{
 														if (main_target_reactions)
@@ -263,7 +263,7 @@ LABEL_37:
 															else if (self->unit_ai)
 															{
 																if (childAi0 != 159
-//																	|| (parentAi3 = AI_PrepareToFlee(actual_target, self), (s32)parentAi3 == *(s32*)&self->sprite->position)
+//																	|| (parentAi3 = ai_prepare_to_flee(actual_target, self), (s32)parentAi3 == *(s32*)&self->sprite->position)
 																	)
 																{
 																	if (main_target_reactions)
@@ -280,7 +280,7 @@ LABEL_37:
 																}
 																else
 																{
-//																	orderInterrupt(self, 6u, (Point32*)parentAi3, (Unit*)HIDWORD(parentAi3)); // point32 was dwPosition, I think that's the same thing
+//																	order_interrupt(self, 6u, (Point32*)parentAi3, (Unit*)HIDWORD(parentAi3)); // point32 was dwPosition, I think that's the same thing
 																}
 															}
 														}
@@ -1964,5 +1964,132 @@ LABEL_37:
 			slowest_ground_unit = slowest_air_unit;
 		}
 		region->slowestUnit = slowest_ground_unit;
+	}
+
+	// Hooked to improve behavior. -Pr0nogo
+	void ai_respond_to_cloaked_threat(Unit* victim, Unit* threat) // 0043C580
+	{
+		if (victim->unit_ai)
+		{
+			AIScriptController[victim->player].AI_Flags.isSecureFinished;
+			UnitAi* victim_ai = victim->unit_ai;
+			AiRegion* victim_region = 0;
+			if (victim_ai->type == AiType::Military)
+			{
+				MilitaryAi* military_ai = (MilitaryAi*)victim_ai;
+				victim_region = military_ai->region;
+			}
+			else
+			{
+				if (victim_ai->type != AiType::Guard)
+				{
+				LABEL_9:
+					Unit* first_player_unit = *firstPlayerUnit[victim->player].unit;
+					Unit* unit_to_order_1 = 0;
+					u32 max_distance = 9999999;
+					Unit* first_player_unit_2 = *firstPlayerUnit[victim->player].unit;
+					if (first_player_unit)
+					{
+						do
+						{
+							if (first_player_unit->sprite)
+							{
+								u8 first_order_id = first_player_unit->mainOrderId;
+								if (first_order_id)
+								{
+									switch (first_player_unit->id)
+									{
+									case UnitId::TerranSeraph:
+									case UnitId::ProtossWitness:
+										goto LABEL_22;
+									case UnitId::ZergOvileth:
+									case UnitId::ZergIroleth:
+										if (helper::is_unit_loaded(first_player_unit))
+										{
+											break;
+										}
+									LABEL_22:
+										if (!first_player_unit->isBlind
+											&& (first_order_id == OrderId::ComputerAI
+												|| first_order_id == OrderId::ComputerReturn
+												|| first_order_id == OrderId::GuardPost
+												|| first_order_id == OrderId::AIPatrol))
+										{
+											u32 distance = helper::get_distance_fast(victim->sprite->position.x, first_player_unit->sprite->position.x, victim->sprite->position.y, first_player_unit->sprite->position.y);
+											if (distance < max_distance)
+											{
+												unit_to_order_1 = first_player_unit;
+												max_distance = distance;
+											}
+										}
+										break;
+									case UnitId::TerranComsatStation:
+										if (!(first_player_unit->status & UnitStatus::Completed))
+										{
+											break;
+										}
+										if (victim->id != UnitId::TerranBunker || !helper::is_unit_loaded(victim))
+										{
+											if (!helper::ai_unit_can_attack(victim) || units_dat::BaseProperty[victim->id] & UnitProperty::Worker)
+											{
+												break;
+											}
+										}
+										if (first_player_unit->energy >= techdata_dat::EnergyCost[TechId::ScannerSweep] * 256
+											|| first_player_unit->mainOrderId == OrderId::PlaceScanner) // originally orderid -117...?
+										{
+											break;
+										}
+										helper::assign_order_with_target(threat, first_player_unit, OrderId::PlaceScanner);
+										return;
+									default:
+										break;
+									}
+								}
+							}
+							first_player_unit = first_player_unit->player_link.next;
+							first_player_unit_2 = first_player_unit;
+						} while (first_player_unit);
+						if (unit_to_order_1)
+						{
+							Point16 victim_pos = {};
+							victim_pos.x = victim->sprite->position.x;
+							victim_pos.y = victim->sprite->position.y;
+							unit_to_order_1->userActionFlags |= 1u;
+							if (unit_to_order_1->mainOrderId)
+							{
+								while (1)
+								{
+									Order* tail_order_1 = unit_to_order_1->orderQueueTail;
+									if (!tail_order_1)
+									{
+										break;
+									}
+									if (!orders_dat::CanBeInterrupted[tail_order_1->orderId] && tail_order_1->orderId != -93)
+									{
+										break;
+									}
+									helper::remove_order_from_unit_queue(tail_order_1, unit_to_order_1);
+								}
+								helper::perform_another_order(OrderId::ComputerReturn, 0, unit_to_order_1, UnitId::None, victim_pos, 0);// Computer Return
+							}
+							helper::orders_nothing_2(unit_to_order_1);
+						}
+					}
+					return;
+				}
+				BuildingAi* building_ai = (BuildingAi*)victim_ai;
+				victim_region = &AiRegionCaptains[victim->player][helper::get_region_id(building_ai->parent->position.x, building_ai->parent->position.y)]; // WRONG... or is it?
+			}
+			if (victim_region)
+			{
+				if (victim_region->followTarget)
+				{
+					helper::assign_order_with_target(victim, victim_region->followTarget, OrderId::AIPatrol);
+					return;
+				}
+			}
+			goto LABEL_9;
+		}
 	}
 }

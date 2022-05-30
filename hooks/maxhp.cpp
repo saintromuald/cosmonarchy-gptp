@@ -362,7 +362,7 @@ LABEL_55:
 			v3 = a1->player == 11 ? a1->sprite->playerId : a1->player;
 			if (!scbw::is_allied_to(v2, v3))
 			{
-				ByteOperations::SetLowByte(v4, helper::AI_UnitCanAttack(a1));
+				ByteOperations::SetLowByte(v4, helper::ai_unit_can_attack(a1));
 				if (v4)
 					result = 1;
 			}

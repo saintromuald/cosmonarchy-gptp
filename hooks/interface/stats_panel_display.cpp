@@ -353,7 +353,7 @@ namespace hooks
 		}
 		else
 		{
-			if (helper::AI_UnitCanAttack(unit) || unit->killCount)
+			if (helper::ai_unit_can_attack(unit) || unit->killCount)
 			{
 				char* text = "";
 				if (**statTxtBuffer > 0x2FBu)
@@ -381,8 +381,8 @@ namespace hooks
 		s32 shields = (*activePortraitUnit)->shields >> 8;
 		*userInterfaceEnergy = (*activePortraitUnit)->energy;
 		*userInterfaceShields = shields;
-		*redrawTransportUI = helper::needRedrawUI();
-		helper::genericStatusUpdateDrawnValues();
+		*redrawTransportUI = helper::ui_needs_redraw();
+		helper::generic_status_update_drawn_values();
 		s32 unitId = activeUnit->id;
 		if (unitId == UnitId::ResourceMineralField 
 			|| unitId == UnitId::ResourceMineralFieldType2

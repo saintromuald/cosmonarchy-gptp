@@ -884,9 +884,11 @@ namespace hooks
 		u32 result = 0;
 		u32 priority = 70;
 		u32 last_hit = AIScriptController[player_id].previous_building_hit_second;
-		//if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
-		//	return;
-		//}
+		/*
+		if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
+			return;
+		}
+		*/
 		s32 unit_id = guard_ai->unit_id;
 		if (unit_id == UnitId::TerranPhalanxSiegeMode)
 		{
@@ -901,7 +903,7 @@ namespace hooks
 	void ai_region_train_attack_force(AiRegion* region) { // 0043E670
 		u32 attack_wave[63] = {};
 		u32 priority = 80;
-		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be AIScriptController[region->playerId].AI_Flags.isUseMapSettings, we use melee for now, but we should invesitage it
+		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be AIScriptController[region->playerId].AI_Flags.isUseMapSettings. We use melee for now, but we should invesitage it. -Veeq7
 		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
 			if (unit_id < UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
@@ -918,9 +920,11 @@ namespace hooks
 	void ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, AiRegion* region) { // 00448400
 		u32 last_hit = AIScriptController[player].previous_building_hit_second;
 		u32 race = playerTable[player].race;
-		//if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
-		//	return;
-		//}
+		/*
+		if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
+			return;
+		}
+		*/
 		if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker) {
 			u32 type = 4;
 			helper::ai_add_cost_to_needs(unit_id, player, type);

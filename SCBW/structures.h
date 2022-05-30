@@ -731,7 +731,7 @@ struct GuardAi
 	u8 timesDied;						// 0x9
 	u8 unkA[2];							// 0xA
 	Unit* parent;						// 0xC
-	u16 unit_id;								// 0x10
+	u16 unit_id;						// 0x10
 	Point16 home;						// 0x12
 	Point16 unkPos;						// 0x16
 	u8 unk1A[2];						// 0x1A
