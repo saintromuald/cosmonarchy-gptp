@@ -529,7 +529,7 @@ static bool unit_kiting_can_attack(Unit* unit)
 	{
 		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
 	}
-	return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.25;
+	return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.5;
 }
 
 void kiting_ai(Unit* unit, UnitExt* unit_ext)
