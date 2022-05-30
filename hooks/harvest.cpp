@@ -432,7 +432,7 @@ namespace hooks
 			}
 			worker = worker->worker.harvest_link.next;
 			if (++i > 100) {
-				break; // This is a bandage fix for harvest_link recursing indefinitely  TODO: Fix the actual cause
+				break; // This is a bandage fix for harvest_link recursing indefinitely. TODO: Fix the actual cause.
 			}
 		}
 
