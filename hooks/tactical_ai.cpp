@@ -418,7 +418,19 @@ static bool unit_could_kite(Unit* unit)
 		|| unit->mainOrderId == OrderId::ReaverFight
 		|| unit->mainOrderId == OrderId::Move
 		|| unit->mainOrderId == OrderId::MoveToMinerals
-		|| unit->mainOrderId == OrderId::HarvestGas1;
+		|| unit->mainOrderId == OrderId::HarvestGas1
+		|| unit->mainOrderId == OrderId::ComputerAI
+		|| unit->mainOrderId == OrderId::ComputerReturn;
+
+	if (unit->id == UnitId::ZergLakizilisk) {
+		if (!(unit->status & UnitStatus::Burrowed)) {
+			return false;
+		}
+	} else {
+		if (unit->status & UnitStatus::Burrowed) {
+			return false;
+		}
+	}
 
 	return in_combat
 		&& unit->hasWeapon()
@@ -439,8 +451,7 @@ static bool unit_could_kite(Unit* unit)
 		&& unit->mainOrderId != OrderId::DroneLand
 		&& unit->mainOrderId != OrderId::DroneStartBuild
 		&& unit->mainOrderId != OrderId::DroneBuild
-		&& !unit_ext->values[ValueDisruptionFieldOn]
-		&& (unit->id == UnitId::ZergLakizilisk || !(unit->status & UnitStatus::Burrowed));
+		&& !unit_ext->values[ValueDisruptionFieldOn];
 }
 
 static bool unit_can_kite(Unit* unit) {
@@ -532,10 +543,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 
 	if (unit_could_kite(unit))
 	{
-		u32 hostile_group_radius = 4 * 32;
+		u32 hostile_group_radius = 6 * 32;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
-			hostile_group_radius = 32;
+			hostile_group_radius = 4 * 32;
 		}
 
 		scbw::UnitFinder local_group(
@@ -579,10 +590,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 				Unit* best_target = 0;
 				s32 best_cost = INT_MAX;
 				scbw::UnitFinder(
-					local_unit->getX() - hostile_group_radius * 4,
-					local_unit->getY() - hostile_group_radius * 4,
-					local_unit->getX() + hostile_group_radius * 4,
-					local_unit->getY() + hostile_group_radius * 4
+					local_unit->getX() - hostile_group_radius * 2,
+					local_unit->getY() - hostile_group_radius * 2,
+					local_unit->getX() + hostile_group_radius * 2,
+					local_unit->getY() + hostile_group_radius * 2
 				).forEach([&](Unit* target) {
 					if (!target_match(target) || !local_unit->canAttackTarget(target, true)) {
 						return;
