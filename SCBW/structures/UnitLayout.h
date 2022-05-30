@@ -316,7 +316,7 @@ enum ExtTimerId
 	TimerMindTyrantRecede,
 	TimerTalosAnimationSubtimer,
 	TimerTalosSoundLoopTimer,
-	
+
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
@@ -328,9 +328,11 @@ enum ExtTimerId
 	TimerAI_MadrigalTempoChangeTimer,
 	TimerAI_EnsnaringBrood,	
 
+	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
 	TimerAI_KitingCooldown,
 	TimerAI_KitingLeashTimer,
-	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
+
+	TimerAI_AvoidTargeting,
 	
 	TimerCount,
 };
