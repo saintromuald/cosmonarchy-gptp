@@ -11743,6 +11743,7 @@ namespace helper
 		static s32 result;
 		const u32 func_address = 0x00476C90;
 		__asm {
+			PUSHAD
 			PUSH iscript_anim
 			MOV EDI, flag_or_timer
 			MOV BL, weapon_id
