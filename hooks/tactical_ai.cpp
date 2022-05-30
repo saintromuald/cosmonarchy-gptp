@@ -559,13 +559,13 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 		{
 			local_group.forEach([&](Unit* local_unit)
 			{
-				UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
-				if (local_unit_ext->values[ValueAI_TargetingSignal])
+				if (!unit_kiting_can_attack(local_unit))
 				{
 					return;
 				}
 
-				if (!unit_kiting_can_attack(local_unit))
+				UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
+				if (local_unit_ext->values[ValueAI_TargetingSignal])
 				{
 					return;
 				}
@@ -583,50 +583,58 @@ void kiting_ai(Unit* unit, UnitExt* unitExt)
 					local_unit_ext->aiKitingOrigin = local_unit->position;
 				}
 
-				auto targetMatch = cosmonarchyFinderMatch(local_unit, Flags::Enemy, {});
-				Unit* target_unit = 0;
-				s32 target_cost = 0;
+				auto target_match = cosmonarchyFinderMatch(local_unit, Flags::Enemy, {});
+				Unit* best_target = 0;
+				s32 best_cost = INT_MAX;
 				scbw::UnitFinder(
 					local_unit->getX() - hostile_group_radius * 4,
 					local_unit->getY() - hostile_group_radius * 4,
 					local_unit->getX() + hostile_group_radius * 4,
 					local_unit->getY() + hostile_group_radius * 4
-				).forEach([&](Unit* hostileUnit)
-				{
-					if (!targetMatch(hostileUnit) || !local_unit->canAttackTarget(hostileUnit, true))
-					{
+				).forEach([&](Unit* target) {
+					if (!target_match(target) || !local_unit->canAttackTarget(target, true)) {
 						return;
 					}
 
-					s32 newTargetCost = get_target_cost(local_unit, hostileUnit);
-					if (!target_unit || newTargetCost < target_cost)
-					{
-						target_unit = hostileUnit;
-						target_cost = newTargetCost;
+					UnitExt* target_ext = globals.get_unit_ext(target);
+					if (!target_ext->timers[TimerAI_AvoidTargeting] &&
+						unit->canAttackTarget(target, true) &&
+						target->isVisibleTo(unit->player)) {
+						s32 cost = get_target_cost(local_unit, target);
+						if (cost < best_cost)
+						{
+							best_target = target;
+							best_cost = cost;
+						}
 					}
 				});
 
-				if (target_unit && unit->canAttackTarget(target_unit, true))
+				if (best_target)
 				{
 					local_unit_ext->timers[TimerAI_KitingCooldown] = 2;
 					KITE_DEBUG("%s: attack", local_unit->getName());
 					if (local_unit->id == UnitId::ProtossSolarion)
 					{
-						local_unit->orderTo(OrderId::CarrierFight, target_unit);
+						local_unit->orderTo(OrderId::CarrierFight, best_target);
 					}
 					else if (local_unit->id == UnitId::ProtossAccantor)
 					{	
-						local_unit->orderTo(OrderId::ReaverFight, target_unit);
+						local_unit->orderTo(OrderId::ReaverFight, best_target);
 					}
 					else
 					{
-						local_unit->orderTo(OrderId::AttackUnit, target_unit);
+						local_unit->orderTo(OrderId::AttackUnit, best_target);
 					}
 					local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
 					local_unit_ext->values[ValueAI_TargetingSignal] = 1;
 				}
 				else
 				{
+					if (local_unit->mainOrderId == OrderId::AttackUnit ||
+						local_unit->mainOrderId == OrderId::CarrierFight ||
+						local_unit->mainOrderId == OrderId::ReaverFight) {
+						local_unit->orderToIdle();
+					}
 					local_unit_ext->timers[TimerAI_KitingCooldown] = 8;
 					local_unit_ext->timers[TimerAI_KitingLeashTimer] = 0;
 					local_unit_ext->values[ValueAI_KitingSignal] = 0;
@@ -1181,8 +1189,8 @@ void TacticalAi(Unit* unit, UnitExt* unitExt)
 			}
 		}
 		else if (unit->id == UnitId::ZergAkistrokor && unit->mainOrderId != OrderId::BlissfulEmbrace) {
-			UnitArray targets = UnitSearchRadial(unit->position, 10 * 32);
-			UnitArrayFilter(&targets, unit, FilterEnemy);
+			UnitArray targets = UnitSearchRadial(unit->position, 512 * 32);
+			UnitArrayFilter(&targets, unit, FilterEnemy | FilterBuilding);
 
 			f32 min_cost = FLT_MAX;
 			Unit* best_target = 0;

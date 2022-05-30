@@ -1525,6 +1525,8 @@ namespace hooks
 				Unit* target = unit->orderTarget.unit;
 				if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
 					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->player != target->player) {
+					UnitExt* target_ext = globals.get_unit_ext(target);
+					target_ext->timers[TimerAI_AvoidTargeting] = 2;
 					if (unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
 						if (unit->orderSignal & 0x2) {
 							unit->orderSignal &= ~0x2;
