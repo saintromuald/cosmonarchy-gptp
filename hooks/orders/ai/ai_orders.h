@@ -3,17 +3,17 @@
 
 namespace hooks
 {
-	void ai_unit_was_hit(Unit* self, Unit* attacker, s32 mainTargetReactions, s32 dontCallHelp);							// 0043F320
-	bool get_best_worker_for_repair_proc(Unit* repairman, Unit* repairTarget);													// 004402B0
-	b32 ai_military_should_wait_for_group(Unit* unit);																		// 0043AA10
-	AiTown* delete_ai_town_if_needed(AiTown* town);																			// 004347E0
+	void ai_unit_was_hit(Unit* self, Unit* attacker, s32 mainTargetReactions, s32 dontCallHelp);						// 0043F320
+	bool get_best_worker_for_repair_proc(Unit* repairman, Unit* repairTarget);											// 004402B0
+	b32 ai_military_should_wait_for_group(Unit* unit);																	// 0043AA10
+	AiTown* delete_ai_town_if_needed(AiTown* town);																		// 004347E0
 	bool ai_can_mine_extra(Unit* unit);																					// 00447A70
-	void ai_order_unit_cloaking(Unit* unit);																				// 0043B970
+	void ai_order_unit_cloaking(Unit* unit);																			// 0043B970
 	void ai_send_suicide(char argType, s32 player);																		// 0043E050
-	u32 ai_recalculate_region_strength(AiRegion* region);																	// 0043A390
-	Unit* get_closest_enemy_structure(s32 x, s32 y, s32 playerId);															// 004A0F90
-	s16 get_region_id_from_unit(Unit* unit);																				// 0049CB40
-	bool ai_is_building_safe(Unit* unit);																					// 00438910
+	u32 ai_recalculate_region_strength(AiRegion* region);																// 0043A390
+	Unit* get_closest_enemy_structure(s32 x, s32 y, s32 playerId);														// 004A0F90
+	s16 get_region_id_from_unit(Unit* unit);																			// 0049CB40
+	bool ai_is_building_safe(Unit* unit);																				// 00438910
 	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2);															// 00438E10
 
 	s32 get_bunker_placement_position(u32 placementId, u32* regionId);													// 004442E0
