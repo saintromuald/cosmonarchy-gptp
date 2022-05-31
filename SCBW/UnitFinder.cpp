@@ -166,13 +166,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(left->unitIndex);
 
-				if (boundsLeft <= unit->getX())
+				if (boundsLeft <= unit->get_x())
 				{
-					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom)
+					if (boundsTop <= unit->get_y() && unit->get_y() < boundsBottom)
 					{
 						if (unit != sourceUnit && match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -194,13 +194,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(right->unitIndex);
 
-				if (unit->getX() < boundsRight)
+				if (unit->get_x() < boundsRight)
 				{
-					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom)
+					if (boundsTop <= unit->get_y() && unit->get_y() < boundsBottom)
 					{
 						if (unit != sourceUnit && match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -222,13 +222,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(top->unitIndex);
 
-				if (boundsTop <= unit->getY())
+				if (boundsTop <= unit->get_y())
 				{
-					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight)
+					if (boundsLeft <= unit->get_x() && unit->get_x() < boundsRight)
 					{
 						if (unit != sourceUnit && match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -250,13 +250,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(bottom->unitIndex);
 
-				if (unit->getY() < boundsBottom)
+				if (unit->get_y() < boundsBottom)
 				{
-					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight)
+					if (boundsLeft <= unit->get_x() && unit->get_x() < boundsRight)
 					{
 						if (unit != sourceUnit && match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -314,13 +314,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(left->unitIndex);
 
-				if (boundsLeft <= unit->getX())
+				if (boundsLeft <= unit->get_x())
 				{
-					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom)
+					if (boundsTop <= unit->get_y() && unit->get_y() < boundsBottom)
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -342,13 +342,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(right->unitIndex);
 
-				if (unit->getX() < boundsRight)
+				if (unit->get_x() < boundsRight)
 				{
-					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom)
+					if (boundsTop <= unit->get_y() && unit->get_y() < boundsBottom)
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -370,13 +370,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(top->unitIndex);
 
-				if (boundsTop <= unit->getY())
+				if (boundsTop <= unit->get_y())
 				{
-					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight)
+					if (boundsLeft <= unit->get_x() && unit->get_x() < boundsRight)
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -398,13 +398,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(bottom->unitIndex);
 
-				if (unit->getY() < boundsBottom)
+				if (unit->get_y() < boundsBottom)
 				{
-					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight)
+					if (boundsLeft <= unit->get_x() && unit->get_x() < boundsRight)
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -459,13 +459,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(left->unitIndex);
 
-				if (boundsLeft <= unit->getX())
+				if (boundsLeft <= unit->get_x())
 				{
-					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom)
+					if (boundsTop <= unit->get_y() && unit->get_y() < boundsBottom)
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -487,13 +487,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(right->unitIndex);
 
-				if (unit->getX() < boundsRight)
+				if (unit->get_x() < boundsRight)
 				{
-					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom)
+					if (boundsTop <= unit->get_y() && unit->get_y() < boundsBottom)
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -515,13 +515,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(top->unitIndex);
 
-				if (boundsTop <= unit->getY())
+				if (boundsTop <= unit->get_y())
 				{
-					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight)
+					if (boundsLeft <= unit->get_x() && unit->get_x() < boundsRight)
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -543,13 +543,13 @@ namespace scbw
 			{
 				Unit* unit = Unit::getFromIndex(bottom->unitIndex);
 
-				if (unit->getY() < boundsBottom)
+				if (unit->get_y() < boundsBottom)
 				{
-					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight)
+					if (boundsLeft <= unit->get_x() && unit->get_x() < boundsRight)
 					{
 						if (match(unit))
 						{
-							s32 distance = scbw::get_distance_fast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
 							{
 								bestDistance = distance;
@@ -589,10 +589,10 @@ namespace scbw
 		if (sourceUnit->sprite->flags & SpriteFlags::Hidden)
 		{
 			UnitFinderData temp;
-			temp.position = sourceUnit->getX();
+			temp.position = sourceUnit->get_x();
 			searchRight = std::lower_bound(getStartX(), getEndX(), temp);
 			searchLeft = searchRight - 1;
-			temp.position = sourceUnit->getY();
+			temp.position = sourceUnit->get_y();
 			searchBottom = std::lower_bound(getStartY(), getEndY(), temp);
 			searchTop = searchBottom - 1;
 		}
@@ -604,7 +604,7 @@ namespace scbw
 			searchBottom = getStartY() + sourceUnit->finderIndex.top + 1;
 		}
 
-		return getNearest(sourceUnit->getX(), sourceUnit->getY(),
+		return getNearest(sourceUnit->get_x(), sourceUnit->get_y(),
 			left, top, right, bottom,
 			searchLeft, searchTop, searchRight, searchBottom,
 			match, sourceUnit);

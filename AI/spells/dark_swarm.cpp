@@ -21,8 +21,8 @@ namespace AI
 				|| (*offset_0x005873F0 == 0)
 				|| !scbw::isUnderDarkSwarm(target))
 			{
-				s32 targetX = target->getX();
-				s32 targetY = target->getY();
+				s32 targetX = target->get_x();
+				s32 targetY = target->get_y();
 
 				if (targetX < 0)
 				{
@@ -59,7 +59,7 @@ namespace AI
 		}
 		else
 		{
-			if (scbw::getGroundHeightAtPos(attacker->getX(), attacker->getY()) >= scbw::getGroundHeightAtPos(target->getX(), target->getY()))
+			if (scbw::getGroundHeightAtPos(attacker->get_x(), attacker->get_y()) >= scbw::getGroundHeightAtPos(target->get_x(), target->get_y()))
 			{
 				returnValue = isUnderDarkSwarmStatus;
 			}
@@ -166,10 +166,10 @@ namespace AI
 		}
 		// Based on AI_BestUnit @ 0x004E8740 and canHitUnit @ 0x00441870
 		Unit* result = scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
 			caster,
 			[&](Unit* target)
 		{

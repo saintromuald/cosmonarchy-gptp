@@ -192,12 +192,12 @@ namespace hooks
 					current_unit->building.silo.nuke = nullptr;
 					current_unit->building.silo.isReady = false;
 					helper::play_sound_from_unit(SoundId::Terran_GHOST_TGhLas00_wav, unit, 1, 0);
-					nuke->orderTo(OrderId::NukeLaunch, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					nuke->order_to(OrderId::NukeLaunch, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					nuke->connectedUnit = unit;
 					helper::setAllOverlayDirectionsGeneric(nuke, 0);
 					helper::show_and_enable_unit(nuke);
 					unit->connectedUnit = nuke;
-					unit->orderTo(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
+					unit->order_to(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
 					if (unit->isFrozen())
 					{ // 004793C4
 						if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)

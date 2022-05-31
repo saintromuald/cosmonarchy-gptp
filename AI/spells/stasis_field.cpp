@@ -17,10 +17,10 @@ namespace AI
 			bounds = 32 * 32;
 
 		return scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
 			caster,
 			[&](Unit* target)
 		{
@@ -44,11 +44,11 @@ namespace AI
 			if (caster->isTargetEnemy(targetOfTarget))
 				return false;
 
-			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::StasisField);
+			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::StasisField);
 			if (!isUnderAttack && totalEnemyLife < 250)
 				return false;
 
-			const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::StasisField);
+			const s32 totalAllyLife = getTotalAllyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::StasisField);
 			if (totalAllyLife * 2 >= totalEnemyLife)
 				return false;
 

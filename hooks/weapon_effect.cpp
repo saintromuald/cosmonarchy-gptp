@@ -433,7 +433,7 @@ namespace hooks
 			UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->sourceUnit);
 			auto X = bulletSourceExt->lastBulletLaunchPos.x;
 			auto Y = bulletSourceExt->lastBulletLaunchPos.y;
-			divisor = scbw::get_distance_fast(X, Y, target->getX(), target->getY()) / (32 * 3);
+			divisor = scbw::get_distance_fast(X, Y, target->get_x(), target->get_y()) / (32 * 3);
 		}
 
 		if (bullet->hitFlags & 1) // Miss?

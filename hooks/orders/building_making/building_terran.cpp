@@ -293,7 +293,7 @@ namespace hooks
 						}
 						if (jump_to_67F3C)
 						{
-							unit->orderTo(OrderId::Harvest1, builtUnit);
+							unit->order_to(OrderId::Harvest1, builtUnit);
 							bEndThere = true;
 						}
 					}
@@ -352,7 +352,7 @@ namespace hooks
 				}
 				if (jump_to_67F3C)
 				{
-					unit->orderTo(OrderId::Harvest1, builtUnit);
+					unit->order_to(OrderId::Harvest1, builtUnit);
 					bEndThere = true;
 				}
 			}

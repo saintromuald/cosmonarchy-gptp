@@ -538,7 +538,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 	if (unit_could_kite(unit) && unit_ext->timers[TimerAI_KitingLeash] == 1)
 	{
 		unit_ext->timers[TimerAI_KitingCooldown] = 1 * 24;
-		unit->orderTo(OrderId::Move, unit_ext->aiKitingOrigin.x, unit_ext->aiKitingOrigin.y);
+		unit->order_to(OrderId::Move, unit_ext->aiKitingOrigin.x, unit_ext->aiKitingOrigin.y);
 		unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
 	}
 
@@ -551,10 +551,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 		}
 
 		scbw::UnitFinder local_group(
-			unit->getX() - LocalGroupRadius,
-			unit->getY() - LocalGroupRadius,
-			unit->getX() + LocalGroupRadius,
-			unit->getY() + LocalGroupRadius
+			unit->get_x() - LocalGroupRadius,
+			unit->get_y() - LocalGroupRadius,
+			unit->get_x() + LocalGroupRadius,
+			unit->get_y() + LocalGroupRadius
 		);
 		local_group.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
 		local_group.filter([&](Unit* local_unit){ return unit_could_kite(local_unit); });
@@ -591,10 +591,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 				Unit* best_target = 0;
 				s32 best_cost = INT_MAX;
 				scbw::UnitFinder(
-					local_unit->getX() - hostile_group_radius * 2,
-					local_unit->getY() - hostile_group_radius * 2,
-					local_unit->getX() + hostile_group_radius * 2,
-					local_unit->getY() + hostile_group_radius * 2
+					local_unit->get_x() - hostile_group_radius * 2,
+					local_unit->get_y() - hostile_group_radius * 2,
+					local_unit->get_x() + hostile_group_radius * 2,
+					local_unit->get_y() + hostile_group_radius * 2
 				).forEach([&](Unit* target) {
 					if (!target_match(target) || !local_unit->canAttackTarget(target, true)) {
 						return;
@@ -617,15 +617,15 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					KITE_DEBUG("%s: attack", local_unit->getName());
 					if (local_unit->id == UnitId::ProtossSolarion)
 					{
-						local_unit->orderTo(OrderId::CarrierFight, best_target);
+						local_unit->order_to(OrderId::CarrierFight, best_target);
 					}
 					else if (local_unit->id == UnitId::ProtossAccantor)
 					{	
-						local_unit->orderTo(OrderId::ReaverFight, best_target);
+						local_unit->order_to(OrderId::ReaverFight, best_target);
 					}
 					else
 					{
-						local_unit->orderTo(OrderId::AttackUnit, best_target);
+						local_unit->order_to(OrderId::AttackUnit, best_target);
 						local_unit_ext->values[ValueAI_PreventTargeting] = 1;
 					}
 					local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
@@ -754,19 +754,19 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 							if (local_unit->hitPoints < local_unit->get_total_hp_plus_shields() * 0.2)
 							{
 								local_unit_ext->timers[TimerAI_KitingCooldown] = 24;
-								local_unit->orderTo(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
+								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 								KITE_DEBUG("%s: fall back", local_unit->getName());
 							}
 							else if (distance <= max_range * 2)
 							{
 								local_unit_ext->timers[TimerAI_KitingCooldown] = 24;
-								local_unit->orderTo(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
+								local_unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 								KITE_DEBUG("%s: forward", local_unit->getName());
 							}
 							else if (crowd_score > 9 && distance <= max_range * 4)
 							{
 								local_unit_ext->timers[TimerAI_KitingCooldown] = 24;
-								local_unit->orderTo(OrderId::Move, result.strafe_pos.x, result.strafe_pos.y);
+								local_unit->order_to(OrderId::Move, result.strafe_pos.x, result.strafe_pos.y);
 								KITE_DEBUG("%s: strafe", local_unit->getName());
 							}
 							local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
@@ -778,7 +778,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 								|| distance <= max_range * 0.5)
 								&& !target_has_min_range)
 							{
-								local_unit->orderTo(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
+								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 								KITE_DEBUG("%s: fall back", local_unit->getName());
 							}
 							else if (distance > max_range * 1.5
@@ -786,17 +786,17 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 								|| (distance > max_range * 0.75 && local_group_value > result.biases[result.forward_index] * confidence_factor)
 								|| target_has_min_range)
 							{
-								local_unit->orderTo(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
+								local_unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 								KITE_DEBUG("%s: forward", local_unit->getName());
 							}
 							else if (crowd_score > 9)
 							{
-								local_unit->orderTo(OrderId::Move, result.strafe_pos.x, result.strafe_pos.y);
+								local_unit->order_to(OrderId::Move, result.strafe_pos.x, result.strafe_pos.y);
 								KITE_DEBUG("%s: strafe", local_unit->getName());
 							}
 							else if (local_group_value <= result.biases[result.forward_index] * confidence_factor)
 							{
-								local_unit->orderTo(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
+								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 								KITE_DEBUG("%s: backward", local_unit->getName());
 							}
 							local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
@@ -805,12 +805,12 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 						{
 							if (distance > max_range * 1.5)
 							{
-								local_unit->orderTo(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
+								local_unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 								KITE_DEBUG("%s: forward", local_unit->getName());
 							}
 							else if (distance < max_range * 1.25)
 							{
-								local_unit->orderTo(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
+								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 								KITE_DEBUG("%s: backward", local_unit->getName());
 							}
 							local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
@@ -820,13 +820,13 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 							if (local_unit->hitPoints < local_unit->get_total_hp_plus_shields() * 0.2
 								|| local_group_value * confidence_factor < result.biases[result.forward_index])
 							{
-								local_unit->orderTo(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
+								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 								KITE_DEBUG("%s: fall back", local_unit->getName());
 							}
 							else if (distance > max_range * 1.5
 								|| (distance > max_range * 0.75 && local_group_value > result.biases[result.forward_index] * confidence_factor))
 							{
-								local_unit->orderTo(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
+								local_unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 								KITE_DEBUG("%s: forward", local_unit->getName());
 							}
 							local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
@@ -919,7 +919,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 					&& !is_melee_attacker(target->id)
 					&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
 				{
-					target->orderTo(OrderId::EnterTransport, unit);
+					target->order_to(OrderId::EnterTransport, unit);
 					counter += units_dat::SpaceRequired[target->id];
 				}
 			}
@@ -934,7 +934,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 				Unit* target = unit->getLoadedUnit(i);
 				if (target && target->unit_ai)
 				{
-					unit->orderTo(OrderId::Unload);
+					unit->order_to(OrderId::Unload);
 				}
 			}
 			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
@@ -1035,7 +1035,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 					supply /= 2;
 					if (supply >= 5)
 					{
-						unit->orderTo(OrderId::CastParasite, group[0].first);
+						unit->order_to(OrderId::CastParasite, group[0].first);
 						unitExt->timers[TimerAI_Parasite] = MatralethAIParasiteTimer;
 						return;
 					}
@@ -1103,7 +1103,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 					}
 				});
 				if (best_target) {
-					unit->orderTo(OrderId::Move, best_target->position.x, best_target->position.y);
+					unit->order_to(OrderId::Move, best_target->position.x, best_target->position.y);
 					scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 1);
 					unitExt->timers[TimerAI_DisruptionField] = AIWebTimer;
 					unitExt->timers[TimerAI_KitingCooldown] = AIWebTimer;
@@ -1206,7 +1206,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 			}
 
 			if (best_target) {
-				unit->orderTo(OrderId::BlissfulEmbrace, best_target);
+				unit->order_to(OrderId::BlissfulEmbrace, best_target);
 			}
 		}
 
@@ -1235,7 +1235,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 							u16 resultX, resultY;
 							resultX = MathUtils::lerp(fraction, source.x, target.x, false);
 							resultY = MathUtils::lerp(fraction, source.y, target.y, false);
-							unit->orderTo(OrderId::Skyfall, u->position.x, u->position.y);
+							unit->order_to(OrderId::Skyfall, u->position.x, u->position.y);
 							scbw::set_generic_timer(unit, RustId::AI_PaladinTimer, 50);
 						}
 					}

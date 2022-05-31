@@ -228,7 +228,7 @@ namespace hooks
 				&& unitInfested->mainOrderId != OrderId::InfestMine1)
 			{
 				helper::hideAndDisableUnit(unitInfesting);								// hide the infesting unit
-				unitInfested->orderTo(OrderId::InfestMine1, unitInfesting);				// order the target to be infested, giving it the infesting unit as order target
+				unitInfested->order_to(OrderId::InfestMine1, unitInfesting);				// order the target to be infested, giving it the infesting unit as order target
 				unitInfesting->mainOrderState = 3;
 				unitInfesting->remainingBuildTime = 60;									// timer before reappearing
 				bStopFunction = true;

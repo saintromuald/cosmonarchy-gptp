@@ -19,7 +19,7 @@ namespace AI
 			if (!caster->isTargetEnemy(target))
 				return false;
 
-			const s32 totalEnemyClumpValue = getTotalEnemyNukeValueInArea(target->getX(), target->getY(), 192, caster);
+			const s32 totalEnemyClumpValue = getTotalEnemyNukeValueInArea(target->get_x(), target->get_y(), 192, caster);
 			if (totalEnemyClumpValue >= 800)
 				return true;
 

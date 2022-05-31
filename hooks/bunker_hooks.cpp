@@ -70,10 +70,10 @@ namespace hooks
 						{
 							const u32 radius = std::max(unit->getMaxWeaponRange(unit->getGroundWeapon()), unit->getMaxWeaponRange(unit->getAirWeapon()));
 							unit->orderTarget.unit = scbw::UnitFinder::getNearestTarget(
-								unit->getX() - radius,
-								unit->getY() - radius,
-								unit->getX() + radius,
-								unit->getY() + radius,
+								unit->get_x() - radius,
+								unit->get_y() - radius,
+								unit->get_x() + radius,
+								unit->get_y() + radius,
 								unit,
 								[&](Unit* target)
 							{
@@ -133,7 +133,7 @@ namespace hooks
 		scbw::decloakProc(unitVar->connectedUnit);
 
 		// TODO: Fix effect nonsense with subunits
-		Thingy* bunkerAttackEffect = helper::createThingy(spriteId, offset.x + unitVar->getX(), offset.y + unitVar->getY(), unitVar->player);
+		Thingy* bunkerAttackEffect = helper::createThingy(spriteId, offset.x + unitVar->get_x(), offset.y + unitVar->get_y(), unitVar->player);
 		if (!bunkerAttackEffect)
 		{
 			return;

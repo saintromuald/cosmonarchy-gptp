@@ -67,15 +67,15 @@ namespace hooks
 		s32 posY;
 		if (weapons_dat::Behavior[weaponId] & WeaponBehavior::AppearOnTargetUnit)
 		{
-			posX = target->getX();
-			posY = target->getY();
+			posX = target->get_x();
+			posY = target->get_y();
 		}
 		else
 		{
-			posX = attacker->getX();
-			posY = attacker->getY();
+			posX = attacker->get_x();
+			posY = attacker->get_y();
 		}
-		auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
+		auto newAngle = scbw::getAngle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
 		helper::createBullet(weaponId, attacker, posX, posY, attacker->player, newAngle);
 		if (attackerExt->values[ValueDeconstruction])
 		{
@@ -102,10 +102,10 @@ namespace hooks
 			u32 range = hooks::getMaxWeaponRangeHook(attacker, weaponId, 0);
 			auto filter = cosmonarchyFinderMatch(attacker, flags, {});
 			Unit* newTarget = scbw::UnitFinder::getNearestTarget(
-				attacker->getX() - range,
-				attacker->getY() - range,
-				attacker->getX() + range,
-				attacker->getY() + range,
+				attacker->get_x() - range,
+				attacker->get_y() - range,
+				attacker->get_x() + range,
+				attacker->get_y() + range,
 				attacker,
 				[&](Unit* target)
 			{
@@ -170,8 +170,8 @@ namespace hooks
 		{
 			s32 forwardOffset = weapons_dat::ForwardOffset[weaponId];
 
-			x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
-			y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
+			x = unit->get_x() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
+			y = unit->get_y() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
 				- weapons_dat::VerticalOffset[weaponId];
 		}
 
@@ -190,9 +190,9 @@ namespace hooks
 			{
 				unitExt->timers[TimerLurkerETA] = 17;
 				auto range = weapons_dat::MaxRange[weaponId] + 16;
-				s32 angle = scbw::getAngle(unit->getX(), unit->getY(), unit->orderTarget.unit->getX(), unit->orderTarget.unit->getY());
-				s32 targ_x = unit->getX() + scbw::getPolarX(range, angle);
-				s32 targ_y = unit->getY() + scbw::getPolarY(range, angle);
+				s32 angle = scbw::getAngle(unit->get_x(), unit->get_y(), unit->orderTarget.unit->get_x(), unit->orderTarget.unit->get_y());
+				s32 targ_x = unit->get_x() + scbw::getPolarX(range, angle);
+				s32 targ_y = unit->get_y() + scbw::getPolarY(range, angle);
 				unitExt->values[ValueSpineX] = targ_x;
 				unitExt->values[ValueSpineY] = targ_y;
 				if (unit->orderTarget.unit != nullptr)
@@ -385,10 +385,10 @@ namespace hooks
 			{
 				auto range = weapons_dat::MaxRange[weaponId];
 				auto a = scbw::UnitFinder::getNearestTarget(
-					unit->getX() - range,
-					unit->getY() - range,
-					unit->getX() + range,
-					unit->getY() + range,
+					unit->get_x() - range,
+					unit->get_y() - range,
+					unit->get_x() + range,
+					unit->get_y() + range,
 					unit, [&](Unit* target)
 				{
 					if (target == unit)
@@ -536,7 +536,7 @@ namespace hooks
 							continue;
 						}
 						bullet->sourceUnit->orderTarget.unit = target;
-						auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y, target->getX(), target->getY());
+						auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
 						auto newBullet = helper::createBullet(WeaponId::ArchitectDispersiveSalvo,
 							bullet->sourceUnit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
 						if (newBullet)

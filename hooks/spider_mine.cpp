@@ -18,8 +18,8 @@ namespace hooks
 		range = 32 * mine->getSeekRange();
 		return
 			scbw::UnitFinder::getNearestTarget(
-				mine->getX() - range, mine->getY() - range,
-				mine->getX() + range, mine->getY() + range,
+				mine->get_x() - range, mine->get_y() - range,
+				mine->get_x() + range, mine->get_y() + range,
 				mine, [&](Unit* target)
 		{
 			// Don't attack friendly or allied units

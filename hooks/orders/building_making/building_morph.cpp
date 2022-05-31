@@ -333,7 +333,7 @@ namespace hooks
 
 			if (unit->id == UnitId::ZergExcisant)
 			{
-				Unit* drone = helper::create_unit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->player);
+				Unit* drone = helper::create_unit(UnitId::ZergDroleth, unit->get_x(), unit->get_y(), unit->player);
 				if (drone == nullptr)
 				{
 					helper::refund_unit_train_cost(UnitId::ZergDroleth, unit->player);
@@ -353,7 +353,7 @@ namespace hooks
 
 			if (!bStopThere)
 			{ // 0045DB45
-				Thingy* thingy = helper::createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->getX(), unit->getY(), 0);
+				Thingy* thingy = helper::createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
 				if (thingy != nullptr)
 				{
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
@@ -378,7 +378,7 @@ namespace hooks
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
 				unit->setHp(unit->previousHp * 256);
 
-				helper::updateCreepDisappearance(unit->sprite, unit->id, unit->getX(), unit->getY());
+				helper::updateCreepDisappearance(unit->sprite, unit->id, unit->get_x(), unit->get_y());
 			}
 		}
 	}

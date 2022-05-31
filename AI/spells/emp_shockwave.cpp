@@ -17,10 +17,10 @@ namespace AI
 			bounds = 32 * 64;
 
 		Unit* result = scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
 			caster,
 			[&](Unit* target)
 		{
@@ -33,7 +33,7 @@ namespace AI
 			if (!scbw::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))
 				return false;
 
-			const s32 totalEnemyShields = getTotalEnemyShieldsInArea(target->getX(), target->getY(), 160, caster);
+			const s32 totalEnemyShields = getTotalEnemyShieldsInArea(target->get_x(), target->get_y(), 160, caster);
 			if (totalEnemyShields >= 200)
 				return true;
 
@@ -44,10 +44,10 @@ namespace AI
 			return result;
 
 		return scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
 			caster,
 			[&](Unit* target)
 		{
@@ -60,7 +60,7 @@ namespace AI
 			if (!scbw::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))
 				return false;
 
-			const s32 totalEnemyEnergy = getTotalEnemyEnergyInArea(target->getX(), target->getY(), 160, caster);
+			const s32 totalEnemyEnergy = getTotalEnemyEnergyInArea(target->get_x(), target->get_y(), 160, caster);
 			if (totalEnemyEnergy >= 200)
 				return true;
 

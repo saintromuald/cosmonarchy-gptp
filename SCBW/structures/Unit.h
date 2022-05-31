@@ -153,9 +153,9 @@ struct Unit : public UnitLayout
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Returns the X position of the unit's sprite on the map.
-	u16 getX() const;
+	u16 get_x() const;
 	/// Returns the Y position of the unit's sprite on the map.
-	u16 getY() const;
+	u16 get_y() const;
 
 	/// Returns the X position of the tile that the unit's sprite is on.
 	u16 getTileX() const;
@@ -249,10 +249,10 @@ struct Unit : public UnitLayout
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Issue the @p order to the unit, using the given @p target unit.
-	void orderTo(u8 orderId, Unit* target = nullptr);
+	void order_to(u8 orderId, Unit* target = nullptr);
 
 	/// Issue the @p order to the unit, using the given position as the target.
-	void orderTo(u8 orderId, u16 x, u16 y);
+	void order_to(u8 orderId, u16 x, u16 y);
 
 	//  Issue the @p order to the unit, without a target
 	void order_computer(u8 orderId);

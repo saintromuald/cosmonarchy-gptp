@@ -94,7 +94,7 @@ namespace
 		// If the unit can't turn around, check if the target is within the attack angle.
 		if (!(actualUnit->status & UnitStatus::CanTurnAroundToAttack))
 		{
-			if (!isTargetPosWithinAttackAngle(target->getX(), target->getY(),
+			if (!isTargetPosWithinAttackAngle(target->get_x(), target->get_y(),
 				actualUnit, units_dat::GroundWeapon[actualUnit->id]))
 			{
 				return false;
@@ -206,8 +206,8 @@ namespace hooks
 			}
 		}
 		attackTargetFinder.search(
-			unit->getX() - search_range, unit->getY() - search_range,
-			unit->getX() + search_range, unit->getY() + search_range);
+			unit->get_x() - search_range, unit->get_y() - search_range,
+			unit->get_x() + search_range, unit->get_y() + search_range);
 
 		attackTargetFinder.forEach([&](Unit* target)
 		{
@@ -234,8 +234,8 @@ namespace hooks
 
 		s32 search_range = seek_range + offset + 64;
 		attackTargetFinder.search(
-			unit->getX() - search_range, unit->getY() - search_range,
-			unit->getX() + search_range, unit->getY() + search_range);
+			unit->get_x() - search_range, unit->get_y() - search_range,
+			unit->get_x() + search_range, unit->get_y() + search_range);
 
 		attackTargetFinder.forEach([&](Unit* target)
 		{
@@ -316,15 +316,15 @@ Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 	{
 		// Find the nearest target (don't use unit box sizes)
 		u32 bestTargetDistance = scbw::get_distance_fast(
-			attacker->getX(), attacker->getY(),
-			bestTarget->getX(), bestTarget->getY());
+			attacker->get_x(), attacker->get_y(),
+			bestTarget->get_x(), bestTarget->get_y());
 
 		for (u32 i = 1; i < targetCounts[priority]; ++i)
 		{
 			Unit* currentTarget = targets[priority][i];
 			const u32 currentTargetDistance = scbw::get_distance_fast(
-				attacker->getX(), attacker->getY(),
-				currentTarget->getX(), currentTarget->getY());
+				attacker->get_x(), attacker->get_y(),
+				currentTarget->get_x(), currentTarget->get_y());
 
 			if (currentTargetDistance < bestTargetDistance)
 			{
@@ -366,7 +366,7 @@ namespace
 	{
 		assert(unit);
 
-		s32 angle = scbw::getAngle(unit->getX(), unit->getY(), x, y);
+		s32 angle = scbw::getAngle(unit->get_x(), unit->get_y(), x, y);
 
 		if (unit->id == UnitId::ZergLakizilisk)
 		{

@@ -32,7 +32,7 @@ namespace hooks
 			} // fallthrough
 			case 1: {
 				if (!(target->status & UnitStatus::Completed)) {
-					unit->orderTo(OrderId::ConstructingBuilding, target);
+					unit->order_to(OrderId::ConstructingBuilding, target);
 					if (*IS_PLACING_BUILDING) {
 						if (!helper::can_still_place_building()) {
 							helper::refresh_layers_3_and_4();

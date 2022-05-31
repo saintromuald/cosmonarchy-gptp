@@ -253,12 +253,12 @@ namespace graphics
 					pos += fntChr->pixelOffset(i);
 
 					// x offset
-					s32 newX = Xoffset + (fntChr->getX() + pos % fntChr->getWidth());
+					s32 newX = Xoffset + (fntChr->get_x() + pos % fntChr->getWidth());
 					if (newX >= this->getWidth()) break;
 					if (newX < 0) continue;
 
 					// y offset
-					s32 newY = Yoffset + (fntChr->getY() + pos / fntChr->getWidth());
+					s32 newY = Yoffset + (fntChr->get_y() + pos / fntChr->getWidth());
 					if (newY >= this->getHeight()) break;
 					if (newY < 0) continue;
 

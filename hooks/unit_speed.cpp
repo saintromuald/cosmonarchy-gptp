@@ -81,7 +81,7 @@ namespace hooks
 		{
 			auto r = 10 * 32;
 			auto n = cosmonarchyFinderMatch(unit, Flags::Ally | Flags::FrontalArc, {UnitId::ZergZoryusthaleth});
-			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
+			scbw::UnitFinder unitsInFinder(unit->get_x() - r, unit->get_y() - r,
 				unit->position.x + r, unit->position.y + r);
 			bool accelerate = false;
 			for (s32 i = 0; i < unitsInFinder.getUnitCount(); i++)
@@ -124,10 +124,10 @@ namespace hooks
 
 			const u32 radius = 6 * 32;
 			Unit* enemyUnit = scbw::UnitFinder::getNearestTarget(
-				unit->getX() - radius,
-				unit->getY() - radius,
-				unit->getX() + radius,
-				unit->getY() + radius,
+				unit->get_x() - radius,
+				unit->get_y() - radius,
+				unit->get_x() + radius,
+				unit->get_y() + radius,
 				unit,
 				[&](Unit* enemy)
 			{
@@ -191,10 +191,10 @@ namespace hooks
 				{
 					u32 range = unit->getSightRange(false) * 32;
 					scbw::UnitFinder unitFinder(
-						unit->getX() - range,
-						unit->getY() - range,
-						unit->getX() + range,
-						unit->getY() + range
+						unit->get_x() - range,
+						unit->get_y() - range,
+						unit->get_x() + range,
+						unit->get_y() + range
 					);
 					unitFinder.forEach([&](Unit* target)
 					{
@@ -229,7 +229,7 @@ namespace hooks
 			case UnitId::TerranVulture:
 			{
 				// Vulture Ion Propulsion: reduce movespeed, gains hover-mover status
-				auto tile = scbw::get_active_tile_at(unit->getX(), unit->getY());
+				auto tile = scbw::get_active_tile_at(unit->get_x(), unit->get_y());
 				if (tile.isUnwalkable || !tile.isWalkable)
 				{
 					if (scbw::getUpgradeLevel(unit->player, UpgradeId::IonPropulsion))

@@ -37,7 +37,7 @@ namespace
 				&& unit->mainOrderId != OrderId::Morph1
 				&& addUnitToBuildQueue(unit, morphUnitId))
 			{
-				unit->orderTo(OrderId::Morph1);
+				unit->order_to(OrderId::Morph1);
 			}
 		}
 		scbw::refresh_console();
@@ -263,7 +263,7 @@ namespace
 			{
 				unit->play_iscript_animation(IscriptAnimation::SpecialState2);
 			}
-			unit->orderTo(OrderId::ZergBirth);
+			unit->order_to(OrderId::ZergBirth);
 		}
 	}
 

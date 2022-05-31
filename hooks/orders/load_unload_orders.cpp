@@ -73,7 +73,7 @@ namespace hooks
 		{ // 004E73F4
 			if (scbw::canBeEnteredBy(unit, unitToLoad))
 			{
-				unitToLoad->orderTo(OrderId::EnterTransport, unit);
+				unitToLoad->order_to(OrderId::EnterTransport, unit);
 			}
 			unit->order_to_idle();
 		}
@@ -125,7 +125,7 @@ namespace hooks
 								if (unitToLoad->mainOrderId != OrderId::EnterTransport
 									&& unitToLoad->mainOrderId != OrderId::Pickup4)
 								{
-									unitToLoad->orderTo(OrderId::EnterTransport, unit);
+									unitToLoad->order_to(OrderId::EnterTransport, unit);
 								}
 								if (unit->unit_ai != nullptr)
 								{
@@ -396,7 +396,7 @@ namespace hooks
 						if (unit->isTargetWithinMinRange(target, 1))
 						{ // 004E7C52
 							helper::loadUnitProc(target, unit);
-							target->orderTo(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+							target->order_to(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 							if (target->pAI != nullptr)
 							{
 								helper::_doOrder(target, OrderId::Move, target->sprite->position.x, target->sprite->position.y, false);

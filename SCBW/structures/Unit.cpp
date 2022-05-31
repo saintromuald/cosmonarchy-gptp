@@ -415,14 +415,14 @@ u32 Unit::get_movable_state()
 
 //-------- Positions and dimensions --------//
 
-u16 Unit::getX() const
+u16 Unit::get_x() const
 {
 	assert(this);
 	assert(this->sprite);
 	return this->sprite->position.x;
 };
 
-u16 Unit::getY() const
+u16 Unit::get_y() const
 {
 	assert(this);
 	assert(this->sprite);
@@ -432,37 +432,37 @@ u16 Unit::getY() const
 u16 Unit::getTileX() const
 {
 	assert(this);
-	return this->getX() / 32;
+	return this->get_x() / 32;
 };
 
 u16 Unit::getTileY() const
 {
 	assert(this);
-	return this->getY() / 32;
+	return this->get_y() / 32;
 };
 
 s16 Unit::getLeft() const
 {
 	assert(this);
-	return this->getX() - units_dat::UnitBounds[this->id].left;
+	return this->get_x() - units_dat::UnitBounds[this->id].left;
 }
 
 s16 Unit::getRight() const
 {
 	assert(this);
-	return this->getX() + units_dat::UnitBounds[this->id].right;
+	return this->get_x() + units_dat::UnitBounds[this->id].right;
 }
 
 s16 Unit::getTop() const
 {
 	assert(this);
-	return this->getY() - units_dat::UnitBounds[this->id].top;
+	return this->get_y() - units_dat::UnitBounds[this->id].top;
 }
 
 s16 Unit::getBottom() const
 {
 	assert(this);
-	return this->getY() + units_dat::UnitBounds[this->id].bottom;
+	return this->get_y() + units_dat::UnitBounds[this->id].bottom;
 }
 
 //-------- Modifying unit state --------//
@@ -868,13 +868,13 @@ s32 Unit::is_unit_ai_non_building()
 // ESI = this
 // EAX = target
 // [ebp+08] = orderId
-void Unit::orderTo(u8 orderId, Unit* target)
+void Unit::order_to(u8 orderId, Unit* target)
 {
 	assert(this);
 	this->userActionFlags |= 0x1;
 	if (target)
 	{
-		this->order(orderId, target->getX(), target->getY(), target, UnitId::None, true);
+		this->order(orderId, target->get_x(), target->get_y(), target, UnitId::None, true);
 	}
 	else
 	{
@@ -884,7 +884,7 @@ void Unit::orderTo(u8 orderId, Unit* target)
 }
 
 // Logically equivalent to function @ 0x00475260
-void Unit::orderTo(u8 orderId, u16 x, u16 y)
+void Unit::order_to(u8 orderId, u16 x, u16 y)
 {
 	assert(this);
 	this->userActionFlags |= 0x1;
@@ -934,11 +934,11 @@ void Unit::order_to_idle()
 	{
 		if (this->unit_ai)
 		{
-			this->orderTo(OrderId::ComputerAI);
+			this->order_to(OrderId::ComputerAI);
 		}
 		else
 		{
-			this->orderTo(units_dat::ReturnToIdleOrder[this->id]);
+			this->order_to(units_dat::ReturnToIdleOrder[this->id]);
 		}
 	}
 }

@@ -1090,10 +1090,10 @@ namespace scbw
 					}
 					u32 range = 6 * 32;
 					scbw::UnitFinder(
-						unit->getX() - range,
-						unit->getY() - range,
-						unit->getX() + range,
-						unit->getY() + range
+						unit->get_x() - range,
+						unit->get_y() - range,
+						unit->get_x() + range,
+						unit->get_y() + range
 					).forEach([&](Unit* target)
 					{
 						if (target->id != UnitId::ZergMatraleth)
@@ -1136,8 +1136,8 @@ namespace scbw
 		{
 			distance = 0;
 		}
-		auto polar_x = unit->getX() + scbw::getPolarX(distance, unit->currentDirection1);
-		auto polar_y = unit->getY() + scbw::getPolarY(distance, unit->currentDirection1);
+		auto polar_x = unit->get_x() + scbw::getPolarX(distance, unit->currentDirection1);
+		auto polar_y = unit->get_y() + scbw::getPolarY(distance, unit->currentDirection1);
 		unit->orderTarget.unit = nullptr;
 		unit->orderTarget.pt.x = polar_x;
 		unit->orderTarget.pt.y = polar_y;
@@ -1156,7 +1156,7 @@ namespace scbw
 	{
 		if (!canSpawnBroodling(target)) return 0;
 		bool ground = !(target->status & UnitStatus::InAir);
-		bool onCreep = scbw::get_active_tile_at(target->getX(), target->getY()).hasCreep;
+		bool onCreep = scbw::get_active_tile_at(target->get_x(), target->get_y()).hasCreep;
 		f64 multiplier = (ground && onCreep) ? 1.5 : 1;
 		return std::ceil(std::max((s32)units_dat::SupplyRequired[target->id], 1) * multiplier);
 	}
@@ -1817,10 +1817,10 @@ namespace scbw
 		unit->sprite->createTopOverlay(ImageId::ArcliteShockCannon_Damageless);
 		const u32 radius = 2 * 32;
 		scbw::UnitFinder(
-			unit->getX() - radius,
-			unit->getY() - radius,
-			unit->getX() + radius,
-			unit->getY() + radius
+			unit->get_x() - radius,
+			unit->get_y() - radius,
+			unit->get_x() + radius,
+			unit->get_y() + radius
 		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::IncludingSelf, {}),
 			[&unitExt](Unit* target)
 		{
@@ -1865,10 +1865,10 @@ namespace scbw
 		auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf, {});
 		const u32 radius = 5 * 32;
 		scbw::UnitFinder(
-			unit->getX() - radius,
-			unit->getY() - radius,
-			unit->getX() + radius,
-			unit->getY() + radius
+			unit->get_x() - radius,
+			unit->get_y() - radius,
+			unit->get_x() + radius,
+			unit->get_y() + radius
 		).forEachInMatch(match, [&](Unit* target)
 		{
 			if (scbw::is_allied_to(target->player, unit->player))

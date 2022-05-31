@@ -73,7 +73,7 @@ namespace AI
 	//Based on code @ 0x00440BB0 (not a real independant function)
 	bool unit_is_in_unsafe_region(Unit* unit)
 	{
-		u16 currentRegion = get_region_at_position_exact(unit->getX(), unit->getY());
+		u16 currentRegion = get_region_at_position_exact(unit->get_x(), unit->get_y());
 		AiRegion* currentAiRegion = &AiRegionCaptains[unit->player][currentRegion];
 		return currentAiRegion->state == 3
 			|| currentAiRegion->airTarget

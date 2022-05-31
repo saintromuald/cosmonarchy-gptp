@@ -141,8 +141,8 @@ namespace hooks
 		{
 			auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
 			s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
-			auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
-			auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
+			auto x = unit->get_x() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
+			auto y = unit->get_y() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
 
 			bool seek_unit = true;
 			if (unitExt->values[ValueWyvernLandGrabOn] == 1)
@@ -181,10 +181,10 @@ namespace hooks
 				if (!target || !wyvern_can_fire_at(unit, target))
 				{
 					target = scbw::UnitFinder::getNearestTarget(
-						unit->getX() - range,
-						unit->getY() - range,
-						unit->getX() + range,
-						unit->getY() + range,
+						unit->get_x() - range,
+						unit->get_y() - range,
+						unit->get_x() + range,
+						unit->get_y() + range,
 						unit, [&](Unit* target)
 					{
 						if (target == unit)
@@ -205,7 +205,7 @@ namespace hooks
 				
 				if (target)
 				{
-					auto direction = scbw::getAngle(x, y, target->getX(), target->getY());
+					auto direction = scbw::getAngle(x, y, target->get_x(), target->get_y());
 					helper::play_sound_from_unit(scbw::randBetween(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
 					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->player, unit, target, target->position);
 					unitExt->timers[TimerWyvernAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
@@ -481,10 +481,10 @@ namespace hooks
 						auto match = cosmonarchyFinderMatch(unit, Flags::NoAir | Flags::Enemy, {});
 						const u32 radius = 64;
 						scbw::UnitFinder(
-							unit->getX() - radius,
-							unit->getY() - radius,
-							unit->getX() + radius,
-							unit->getY() + radius
+							unit->get_x() - radius,
+							unit->get_y() - radius,
+							unit->get_x() + radius,
+							unit->get_y() + radius
 						).forEachInMatch(match, [&](Unit* target)
 						{
 							u32 dist = scbw::get_distance_fast(unit->position, target->position);

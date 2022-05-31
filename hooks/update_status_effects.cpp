@@ -64,10 +64,10 @@ namespace hooks
 		{
 			// Find and iterate nearby units
 			scbw::UnitFinder(
-				irradiatedUnit->getX() - 160,
-				irradiatedUnit->getY() - 160,
-				irradiatedUnit->getX() + 160,
-				irradiatedUnit->getY() + 160
+				irradiatedUnit->get_x() - 160,
+				irradiatedUnit->get_y() - 160,
+				irradiatedUnit->get_x() + 160,
+				irradiatedUnit->get_y() + 160
 			).forEach([&](Unit* target)
 			{
 				irradiate_proc(irradiatedUnit, target);
@@ -199,10 +199,10 @@ namespace hooks
 		{
 			u32 radius = 224;
 			scbw::UnitFinder(
-				unit->getX() - radius,
-				unit->getY() - radius,
-				unit->getX() + radius,
-				unit->getY() + radius
+				unit->get_x() - radius,
+				unit->get_y() - radius,
+				unit->get_x() + radius,
+				unit->get_y() + radius
 			).forEach([&](Unit* target)
 			{
 				if (unit == target)

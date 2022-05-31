@@ -46,8 +46,8 @@ namespace hooks
 					hallucination_smoke =
 						helper::createThingy(
 							SpriteId::Hallucination_Death1,
-							unit->getX(),
-							unit->getY(),
+							unit->get_x(),
+							unit->get_y(),
 							0
 						);
 

@@ -320,7 +320,7 @@ namespace
 		}
 		if (unit->mainOrderId != orderId)
 		{
-			unit->orderTo(orderId, target);
+			unit->order_to(orderId, target);
 			target->aiActionFlags |= aiActionFlag;
 		}
 		return true;

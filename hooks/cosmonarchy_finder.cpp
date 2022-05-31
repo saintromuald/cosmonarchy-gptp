@@ -3,10 +3,10 @@
 
 bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 {
-	scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r, unit->getX() + r, unit->getY() + r);
+	scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
 	auto a = scbw::UnitFinder::getNearestTarget(
-		unit->getX() - r, unit->getY() - r,
-		unit->getX() + r, unit->getY() + r,
+		unit->get_x() - r, unit->get_y() - r,
+		unit->get_x() + r, unit->get_y() + r,
 		unit, cosmonarchyFinderMatch(unit, context, allowedIds)
 	);
 	return a != nullptr;
@@ -30,12 +30,12 @@ u32 cosmonarchyUnitCount(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vect
 }
 Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 {
-	scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r, unit->getX() + r, unit->getY() + r);
+	scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
 	auto a = scbw::UnitFinder::getNearestTarget(
-		unit->getX() - r,
-		unit->getY() - r,
-		unit->getX() + r,
-		unit->getY() + r,
+		unit->get_x() - r,
+		unit->get_y() - r,
+		unit->get_x() + r,
+		unit->get_y() + r,
 		unit,
 		cosmonarchyFinderMatch(unit, context, allowedIds)
 	);

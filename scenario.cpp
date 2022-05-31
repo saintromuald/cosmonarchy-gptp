@@ -1743,7 +1743,7 @@ void tick_scenario() {
 
 			if (sequence->temp_townhall && *elapsedTimeFrames > 1) {
 				Unit* unit = sequence->temp_townhall;
-				helper::SetBuildingTileFlag(unit, unit->getX(), unit->getY());
+				helper::SetBuildingTileFlag(unit, unit->get_x(), unit->get_y());
 				sequence->temp_townhall = 0;
 			}
 
@@ -1769,7 +1769,7 @@ void tick_scenario() {
 							if (unit) {
 								helper::give_ai(unit);
 								if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Worker)) {
-									unit->orderTo(OrderId::AttackMove, rally.x, rally.y);
+									unit->order_to(OrderId::AttackMove, rally.x, rally.y);
 								}
 
 								sequence->unit_timer = 24 * 0.3;
