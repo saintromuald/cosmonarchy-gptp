@@ -333,6 +333,16 @@ static s32 get_target_cost(Unit* source, Unit* target)
 		cost -= 5;
 	}
 
+	// Value hallucinating enemies more
+	if (target_ext->timers[TimerHallucinating]) {
+		cost -= 25;
+	}
+
+	// Value detected hallucinated enemies less
+	if (helper::getDetectingPlayers(target) & 1 << target->player && target->status & UnitStatus::IsHallucination) {
+		cost += 25;
+	}
+
 	if (target->id == UnitId::ProtossAccantor)
 	{
 		cost -= (weapons_dat::DamageAmount[WeaponId::Scarab] /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
