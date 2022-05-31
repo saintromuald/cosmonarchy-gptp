@@ -464,7 +464,7 @@ union ActiveTile
 			u8 unknown2 : 1;				// 0x00080000 Unused?
 			u8 has_doodad_cover : 1;		// 0x00100000 Set when a doodad cover (trees) occupies the area
 			u8 unknown3 : 1;				// 0x00200000 Unused?
-			u8 hasCreep : 1;				// 0x00400000 Set when creep occupies the area
+			u8 has_creep : 1;				// 0x00400000 Set when creep occupies the area
 			u8 always_unbuildable : 1;		// 0x00800000 always unbuildable, like water
 	/*03*/  u8 ground_height : 3;			// 0x07000000 ground height; 1 for low ground, 2 for middle ground and 4 for high ground
 			u8 currently_occupied : 1;		// 0x08000000 unbuildable but can be made buildable

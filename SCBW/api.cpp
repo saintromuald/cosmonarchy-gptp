@@ -1156,7 +1156,7 @@ namespace scbw
 	{
 		if (!canSpawnBroodling(target)) return 0;
 		bool ground = !(target->status & UnitStatus::InAir);
-		bool onCreep = scbw::get_stupid_reference_to_active_tile_at(target->get_x(), target->get_y()).hasCreep;
+		bool onCreep = scbw::get_stupid_reference_to_active_tile_at(target->get_x(), target->get_y()).has_creep;
 		f64 multiplier = (ground && onCreep) ? 1.5 : 1;
 		return std::ceil(std::max((s32)units_dat::SupplyRequired[target->id], 1) * multiplier);
 	}
@@ -2417,5 +2417,16 @@ namespace scbw
 			}
 			helper::AI_TrainingSimpleMilitary(unit, unit);
 		}
+	}
+
+	bool unit_is_spreading_creep(Unit* unit) {
+		UnitExt* unit_ext = globals.get_unit_ext(unit);
+		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+			return true;
+		}
+		if (helper::spreads_creep(unit->id, 0)) {
+			return true;
+		}
+		return false;
 	}
 }
