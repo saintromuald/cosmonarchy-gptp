@@ -126,66 +126,36 @@ namespace hooks
     }
 
     // Hooked to allow building on allied creep. -Pr0nogo
-    int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size_wh, u32 placement_state_entry, u32 check_vision, u32 check_vision_2) // 00473010
+    int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) // 00473010
     {
-        if (size_wh.y <= 0)
-        {
-            return 0;
+        u32 player_bit = 0;
+        if (playerTable[player].type == PlayerType::Human) {
+            player_bit = 1 << player;
         }
 
-        u32 player_shifted = 0;
-        u32 player_shifted_2 = 0;
-        if (playerTable[player].type == PlayerType::Human)
-        {
-            player_shifted = 1 << (player + 8);
-            player_shifted_2 = 1 << player;
-        }
+        u8 result = 0;
+        for (u32 y = 0; y < size.y; ++y) {
+            for (u32 x = 0; x < size.x; ++x) {
+                ActiveTile* tile = scbw::get_active_tile_at_tile(x_tile + x, y_tile + y);
 
-        u32 active_tile_pointer = (*activeTileHandle[x_tile + mapTileSize->width * y_tile]);
-        u32 iterator = 0;
-        u32 times_iterated = 0;
-        u32 x_iterated = size_wh.x;
-        u32 tile_width_mathed = 4 * (mapTileSize->width - size_wh.x);
-        u32 times_iterated_2 = 0;
-        u8 ten_five_or_zero = 0;
-        char ten_five_or_zero_2 = 0;
-        u32 index = 0;
-        u32 cuckomath = 0;
-        do
-        {
-            times_iterated_2 = 0;
-            if (x_iterated > 0)
-            {
-                cuckomath = 6 * (times_iterated + 8 * placement_state_entry);
-                do
-                {
-                    u32 active_tile_handle = active_tile_pointer;
-                    ten_five_or_zero_2 = 0;
-                    if (active_tile_pointer & player_shifted)
-                    {
-                        ten_five_or_zero_2 = 10;
-                        ten_five_or_zero = 10;
+                char state = 0;
+                if (tile->explored_flags & player_bit) {
+                    state  = 10;
+                    result = 10;
+                }
+                bool creep = !tile->hasCreep;
+                if (check_temporary_creep) {
+                    creep  = !tile->temporary_creep;
+                }
+                if ((check_temporary_creep || check_creep || !(tile->visibility_flags & player_bit)) && creep) {
+                    state = 5;
+                    if (result < 5) {
+                        result = 5;
                     }
-                    if ((check_vision_2 || check_vision || !(active_tile_handle & player_shifted_2))
-                        && !(active_tile_handle & (check_vision ? 0x40000000 : 0x400000)))
-                    {
-                        ten_five_or_zero_2 = 5;
-                        if (ten_five_or_zero <= 5u)
-                        {
-                            ten_five_or_zero = 5;
-                        }
-                    }
-                    x_iterated = size_wh.x;
-                    buildingPlacementState[cuckomath + index] = ten_five_or_zero_2;
-                    ++active_tile_pointer;
-                    index = times_iterated_2 + 1;
-                    times_iterated_2 = index;
-                    index = index;
-                } while (index < size_wh.x);
+                }
+                buildingPlacementState[6 * (y + 8 * placement_state_entry) + x] = state;
             }
-            times_iterated = ++iterator;
-            active_tile_pointer = (active_tile_pointer + tile_width_mathed);
-        } while (iterator < size_wh.y);
-        return ten_five_or_zero;
+        }
+        return result;
     }
 }

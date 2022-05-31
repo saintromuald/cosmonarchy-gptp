@@ -470,7 +470,7 @@ void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 
 			s32 fx = tile_x + x;
 			s32 fy = tile_y + y;
 			if (fx >= 0 && fx < mapTileSize->width && fy >= 0 && fy < mapTileSize->height) {
-				(*activeTileHandle)[fx + fy * mapTileSize->width] &= ~flags;
+				(*activeTileArrayInt)[fx + fy * mapTileSize->width] &= ~flags;
 			}
 		}
 	}

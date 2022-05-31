@@ -229,8 +229,8 @@ namespace hooks
 			case UnitId::TerranVulture:
 			{
 				// Vulture Ion Propulsion: reduce movespeed, gains hover-mover status
-				auto tile = scbw::get_active_tile_at(unit->get_x(), unit->get_y());
-				if (tile.isUnwalkable || !tile.isWalkable)
+				auto tile = scbw::get_stupid_reference_to_active_tile_at(unit->get_x(), unit->get_y());
+				if (tile.is_unwalkable || !tile.is_walkable)
 				{
 					if (scbw::getUpgradeLevel(unit->player, UpgradeId::IonPropulsion))
 					{

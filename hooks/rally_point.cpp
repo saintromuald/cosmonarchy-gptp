@@ -207,7 +207,7 @@ namespace hooks
         else if (fow_unit_id != UnitId::None)
         {
             u32 tileId = x / 32 + mapTileSize->width * (y / 32);
-            if (!((1 << *ACTIVE_NATION_ID) & (*activeTileHandle)[tileId]))
+            if (!((1 << *ACTIVE_NATION_ID) & (*activeTileArrayInt)[tileId]))
             {
                 target = helper::find_fow_unit(y, x, fow_unit_id);
                 fow_unit_id = UnitId::None;

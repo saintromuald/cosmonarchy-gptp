@@ -905,10 +905,10 @@ namespace scbw
 	{
 		if (!(unit->status & UnitStatus::InAir))
 		{
-			ActiveTile originalTile = scbw::get_active_tile_at(unit->position.x, unit->position.y);
-			ActiveTile finalTile = scbw::get_active_tile_at(x, y);
+			ActiveTile originalTile = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y);
+			ActiveTile finalTile = scbw::get_stupid_reference_to_active_tile_at(x, y);
 
-			if (finalTile.isUnwalkable || originalTile.groundHeight != finalTile.groundHeight)
+			if (finalTile.is_unwalkable || originalTile.ground_height != finalTile.ground_height)
 			{
 				return false;
 			}
@@ -1156,7 +1156,7 @@ namespace scbw
 	{
 		if (!canSpawnBroodling(target)) return 0;
 		bool ground = !(target->status & UnitStatus::InAir);
-		bool onCreep = scbw::get_active_tile_at(target->get_x(), target->get_y()).hasCreep;
+		bool onCreep = scbw::get_stupid_reference_to_active_tile_at(target->get_x(), target->get_y()).hasCreep;
 		f64 multiplier = (ground && onCreep) ? 1.5 : 1;
 		return std::ceil(std::max((s32)units_dat::SupplyRequired[target->id], 1) * multiplier);
 	}
@@ -1207,12 +1207,12 @@ namespace scbw
 		{
 			return 0;
 		}
-		s32 source_height = scbw::get_active_tile_at(unit->position.x, unit->position.y).groundHeight / 2;
+		s32 source_height = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).ground_height / 2;
 		if (!target_unit)
 		{
 			return source_height * 2;
 		}
-		s32 target_height = scbw::get_active_tile_at(target_unit->position.x, target_unit->position.y).groundHeight / 2;
+		s32 target_height = scbw::get_stupid_reference_to_active_tile_at(target_unit->position.x, target_unit->position.y).ground_height / 2;
 		return std::max(source_height - target_height, 0) * 2;
 	}
 
@@ -2238,7 +2238,7 @@ namespace scbw
 
 		for (u32 y_tile = rect.top; y_tile <= rect.bottom; ++y_tile) {
 			for (u32 x_tile = rect.left; x_tile <= rect.right; ++x_tile) {
-				if ((*activeTileHandle)[x_tile + y_tile * mapTileSize->width] & 0x10000000) {
+				if ((*activeTileArrayInt)[x_tile + y_tile * mapTileSize->width] & 0x10000000) {
 					u32 x = x_tile * 32 - unit->position.x + 16;
 					u32 y = y_tile * 32 - unit->position.y + 16;
 					if (!spreads_creep || 100 * x * x + (y * y << 8) <= 10240000) {

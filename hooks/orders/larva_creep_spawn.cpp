@@ -250,15 +250,15 @@ namespace hooks
 
 						if (in_range)
 						{
-							ActiveTile a = scbw::get_active_tile_at(i * 32, j * 32);
-							if (a.hasCreep || a.temporaryCreep || a.creepReceeding)
+							ActiveTile a = scbw::get_stupid_reference_to_active_tile_at(i * 32, j * 32);
+							if (a.hasCreep || a.temporary_creep || a.creep_receeding)
 							{
 								// why is there nothing here LMAO
 							}
 							else
 							{
 								// can spread
-								if (!a.alwaysUnbuildable && a.isWalkable)
+								if (!a.always_unbuildable && a.is_walkable)
 								{
 
 									mustspread = 1;
@@ -553,7 +553,7 @@ namespace hooks
 			}
 			while (((*current_tiles)[rect_left + rect_top * *map_creep_width] & 0x7FF0) != 16
 				|| does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
-				|| tile_flags & (*activeTileHandle)[rect_left + rect_top * mapTileSize->width]
+				|| tile_flags & (*activeTileArrayInt)[rect_left + rect_top * mapTileSize->width]
 				|| helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
 				|| helper::mark_creep_to_disappear(rect_left, rect_top))
 			{

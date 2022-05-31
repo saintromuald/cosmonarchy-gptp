@@ -266,7 +266,7 @@ static bool unit_has_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 	area.y = y - area.h / 2;
 	for (u32 xx = 0; xx < area.w / 32; ++xx) {
 		for (u32 yy = 0; yy < area.h / 32; ++yy) {
-			if (!scbw::get_active_tile_at(area.x + xx * 32, area.y + yy * 32).hasCreep) {
+			if (!scbw::get_stupid_reference_to_active_tile_at(area.x + xx * 32, area.y + yy * 32).hasCreep) {
 				return false;
 			}
 		}

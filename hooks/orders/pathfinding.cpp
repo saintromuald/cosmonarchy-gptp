@@ -80,7 +80,7 @@ namespace hooks
     // Hooked because the helper is fucked - Pr0nogo
     b32 getActiveTileFlag(s16 y, s16 x, s32 includedFlags, s32 excludedFlags) // 00472F80
     {
-        ActiveTile tile = scbw::get_active_tile_at(x, y);
+        ActiveTile tile = scbw::get_stupid_reference_to_active_tile_at(x, y);
         return tile.value & includedFlags && !(tile.value & excludedFlags);
     }
 

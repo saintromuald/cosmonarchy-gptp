@@ -33,7 +33,7 @@ namespace AI
 					targetY += 31;
 				}
 
-				if (scbw::get_active_tile_at(targetX, targetY).hasDoodadCover)
+				if (scbw::get_stupid_reference_to_active_tile_at(targetX, targetY).has_doodad_cover)
 				{
 					isUnderDarkSwarmStatus = OrderId::DarkSwarm; /*0x77*/
 				}

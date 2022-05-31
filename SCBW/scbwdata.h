@@ -483,7 +483,8 @@ SCBW_DATA(u16*,		regionIds,						0x0069262C);
 
 SCBW_DATA(u8*,		unit_iterator_pos,				0x006284B6);
 SCBW_DATA(u8*,		byte_68C300,					0x0068C300);
-SCBW_DATA(u32**,	activeTileHandle,				0x006D1260);
+
+SCBW_DATA(u32**,	activeTileArrayInt,				0x006D1260);
 
 SCBW_DATA(void**,	GetRightClickOrderArray,		0x005153FC);
 

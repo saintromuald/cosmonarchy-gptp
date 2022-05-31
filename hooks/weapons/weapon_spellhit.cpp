@@ -512,8 +512,8 @@ namespace hooks
 	void BroodlingHit(Unit* attacker, Unit* target, Bullet* bullet)
 	{
 		u32 broodlings_to_spawn = 3;
-		ActiveTile tile = scbw::get_active_tile_at(bullet->sprite->position.x, bullet->sprite->position.y);
-		if (tile.hasCreep || tile.creepReceeding)
+		ActiveTile tile = scbw::get_stupid_reference_to_active_tile_at(bullet->sprite->position.x, bullet->sprite->position.y);
+		if (tile.hasCreep || tile.creep_receeding)
 		{
 			broodlings_to_spawn = 5;
 		}
