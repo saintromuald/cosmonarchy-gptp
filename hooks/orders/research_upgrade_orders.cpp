@@ -51,7 +51,7 @@ namespace hooks
 
 					if (helper::isUnitUpgradeAvailable(unit))
 					{
-						helper::setUpgradeLevel(unit->player, unit->building.upgradeType, unit->building.upgradeLevel);
+						helper::set_upgrade_level(unit->player, unit->building.upgradeType, unit->building.upgradeLevel);
 						helper::ApplySpeedUpgradeFromUpgradeType(unit, unit->building.upgradeType);
 					}
 

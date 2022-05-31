@@ -34,7 +34,7 @@ void rechargeShieldsProc(Unit* target, Unit* battery)
 	target->healShields(shieldGain, battery);
 
 	if (!scbw::isCheatEnabled(CheatFlags::TheGathering))
-		battery->spendUnitEnergy(energySpent);
+		battery->spend_unit_energy(energySpent);
 
 }
 
@@ -56,7 +56,7 @@ namespace hooks
 	//	|| target->get_race() != RaceId::Protoss							     // Check target race
 		|| target->shields >= (units_dat::MaxShieldPoints[target->id] * 256) // Already has max shields
 		|| !(battery->status & UnitStatus::Completed) || !battery->energy
-		|| battery->isFrozen() || helper::isHangarUnit(target)) {
+		|| battery->is_frozen() || helper::isHangarUnit(target)) {
 			return 0;
 		}
 
@@ -86,8 +86,8 @@ namespace hooks
 		Unit* battery = unit->orderTarget.unit;
 
 		//Skip if the Shield Battery does not exist, has no energy, or is disabled
-		//isFrozen code was hardcoded rather than function call in original code
-		if (battery == nullptr || battery->energy == 0 || battery->isFrozen())
+		//is_frozen code was hardcoded rather than function call in original code
+		if (battery == nullptr || battery->energy == 0 || battery->is_frozen())
 		{
 
 			if (unit->orderQueueHead == nullptr)
@@ -153,7 +153,7 @@ namespace hooks
 						battery->set_secondary_order(OrderId::ShieldBattery);
 
 					overlaysCounter = helper::hasOverlay(unit);
-					unit->sprite->createOverlay(ImageId::RechargeShields_Small + overlaysCounter, 0, 0, 0);
+					unit->sprite->create_overlay(ImageId::RechargeShields_Small + overlaysCounter, 0, 0, 0);
 
 					//the order is correct, see OrderId.h description
 					helper::insertFirstOrder(unit, OrderId::Harvest5);

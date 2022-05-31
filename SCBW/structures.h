@@ -429,7 +429,7 @@ struct LO_Header
 	u32 frameOffsets[1];
 
 
-	Point8 getOffset(s32 frameNum, s32 overlayNum) const {
+	Point8 get_offset(s32 frameNum, s32 overlayNum) const {
 		return ((Point8*)(this->frameOffsets[frameNum] + (u32)this))[overlayNum];
 	}
 };

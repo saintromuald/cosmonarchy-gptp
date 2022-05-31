@@ -149,13 +149,13 @@ struct Globals
 	}
 	void refreshDebuggingInfo();
 	void reset();
-	void frameHook();
+	void frame_hook();
 	void unitDeathHook(Unit* unit);
 	void remove_unit_from_pariah_table(Unit* unit, bool sourceOnly);
 	bool was_hit_by_pariah(Unit* source, Unit* target);
 
 	void register_pariah_hit(Unit* source, Unit* target);
-	void createEffect(u8 effectId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent = nullptr);
+	void create_effect(u8 effectId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent = nullptr);
 	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
 	bool multihit_bullet_is_set(Bullet* bullet);
 	u32 get_multihit_count(Bullet* bullet);
@@ -188,7 +188,7 @@ namespace scbw
 	void refreshDebuffs(Unit* unit);
 	void inheritDebuffs(Unit* parent, Unit* child);
 	bool isDebuffed(Unit* unit);
-	void restoreFunc(Unit* unit);
+	void restore_func(Unit* unit);
 	void applyParasite(Unit* unit, u8 playerID, Unit* queen);
 	void doDeconstructionDamage(Unit* unit, u16 weaponId, bool playSound = true);
 	Unit** getSourceQueens(Unit* unit);

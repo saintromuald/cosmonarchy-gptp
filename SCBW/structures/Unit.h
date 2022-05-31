@@ -47,7 +47,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the amount of HP displayed in-game. This is equal to
 	/// (this->hitPoints + 255) / 256.
-	u32 getCurrentHpInGame() const;
+	u32 get_current_hp_ingame() const;
 
 	/// Returns the amount of shield points displayed in-game. This is equal to
 	/// unit->shields / 256.
@@ -59,7 +59,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the unit's ground weapon ID. If the unit is an unburrowed Lurker,
 	/// returns WeaponId::None instead.
-	u8 getGroundWeapon() const;
+	u8 get_ground_weapon() const;
 
 	/// Returns the unit's air weapon ID. This is identical to reading the value
 	/// from units_dat::AirWeapon[unit->id].
@@ -78,8 +78,8 @@ struct Unit : public UnitLayout
 
 	/// Returns the maximum HP amount displayed in-game. This is equal to
 	/// units_dat::MaxHitPoints[unit->id] >> 8 (minimum value is 1).
-	u32 getMaxHpInGame() const;
-	u32 getMaxHpRaw() const;
+	u32 get_max_hp_ingame() const;
+	u32 get_max_hp_raw() const;
 
 	u32 getMaxShieldsInGame() const;
 	u32 getMaxShieldsRaw() const;
@@ -88,7 +88,7 @@ struct Unit : public UnitLayout
 	/// Returns the maximum range of a weapon in pixels. The weapon is assumed to
 	/// be attached to this unit for calculating upgrade effects.
 	/// This is affected by the Weapon Range hook module.
-	u32 getMaxWeaponRange(u8 weaponId) const;
+	u32 get_max_weapon_range(u8 weaponId) const;
 
 	/// Retrieves the in-game name of this unit. In UMS maps, this returns custom
 	/// names (if they exist).
@@ -108,7 +108,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the unit's seek range (AKA target acquisition range) in matrices.
 	/// This is affected by the Weapon Range hook module.
-	u8 getSeekRange() const;
+	u8 get_seek_range() const;
 
 	/// Returns the sight range of this unit (with upgrades).
 	/// If @p isForSpellCasting is true, also factors in status effects.
@@ -126,7 +126,7 @@ struct Unit : public UnitLayout
 	bool hasWeapon() const;
 
 	/// Checks if the unit is unpowered / lockdowned / stasised / maelstromed.
-	bool isFrozen() const;
+	bool is_frozen() const;
 
 	/// Check if the unit is a remorphing building (i.e. is a Lair, Hive,
 	/// Greater Spire, Sunken or Spore Colony under construction).
@@ -186,7 +186,7 @@ struct Unit : public UnitLayout
 	void healEnergy(s32 energy, Unit* source = nullptr);
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.
-	void damageWith(
+	void damage_with(
 		u8 weaponId,              ///< weapons.dat ID to use.
 		s32 damage = -1,			 ///< Amount of damage dealt to this unit. -1 = inherit from weaponId
 		Unit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
@@ -206,7 +206,7 @@ struct Unit : public UnitLayout
 	);
 
 	/// Deals damage directly to unit HP, killing it if possible.
-	void damageHp(s32 damage, Unit* attacker = nullptr,
+	void damage_hp(s32 damage, Unit* attacker = nullptr,
 		s32 attackingPlayer = -1, bool notify = true);
 
 	/// Deals damage to shields and hp
@@ -239,7 +239,7 @@ struct Unit : public UnitLayout
 	void removeAcidSpores();
 
 	/// Spend an amount of energy, if no THE GATHERING cheat.
-	void spendUnitEnergy(u32 energy);
+	void spend_unit_energy(u32 energy);
 	void addUnitEnergy(u32 energy);
 	void addUnitEnergy(u32 energy, u32 max);
 
@@ -278,7 +278,7 @@ struct Unit : public UnitLayout
 	//////////////////////////////////////////////////////////////// @}
 
 	/// @name Graphics and Animations
-	/// Note: See Sprite::createOverlay() and Sprite::createTopOverlay() for
+	/// Note: See Sprite::create_overlay() and Sprite::create_top_overlay() for
 	///       creating image overlays.
 	//////////////////////////////////////////////////////////////// @{
 

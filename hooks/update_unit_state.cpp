@@ -37,12 +37,12 @@ namespace hooks
 				}
 				if (!bStopHere) // the function prevents energy consumption if THE GATHERING is enabled
 				{
-					unit->spendUnitEnergy(cloakingEnergyCost);
+					unit->spend_unit_energy(cloakingEnergyCost);
 				}
 			}
 			else if (unitExt->values[ValueGodsMadeFleshActive])
 			{
-				unit->spendUnitEnergy(GodsMadeFleshEnergyDrain);
+				unit->spend_unit_energy(GodsMadeFleshEnergyDrain);
 			}
 			else
 			{
@@ -70,7 +70,7 @@ namespace hooks
 						unit->energy = 0;
 						unitExt->values[ValuePhobosDischarge] = 0;
 					} else {
-						unit->spendUnitEnergy(drain);
+						unit->spend_unit_energy(drain);
 					}
 				}
 				else if (unit->energy == maxEnergy)
@@ -141,21 +141,21 @@ namespace hooks
 		{
 			auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
 			s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
-			auto x = unit->get_x() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
-			auto y = unit->get_y() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
+			auto x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->currentDirection1);
+			auto y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->currentDirection1);
 
 			bool seek_unit = true;
 			if (unitExt->values[ValueWyvernLandGrabOn] == 1)
 			{
 				auto targ_x = unitExt->values[ValueWyvernLandGrabX];
 				auto targ_y = unitExt->values[ValueWyvernLandGrabY];
-				auto direction = scbw::getAngle(x, y, targ_x, targ_y);
+				auto direction = scbw::get_angle(x, y, targ_x, targ_y);
 				if (scbw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
 				{
-					u32 sound = scbw::randBetween(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
+					u32 sound = scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
 					helper::play_sound_from_unit(sound, unit, 1, 0);
-					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->player, unit, nullptr, targ_x, targ_y);
-					unitExt->timers[TimerWyvernAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
+					scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, unit->player, unit, nullptr, targ_x, targ_y);
+					unitExt->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 					seek_unit = false;
 				}
 				else
@@ -205,10 +205,10 @@ namespace hooks
 				
 				if (target)
 				{
-					auto direction = scbw::getAngle(x, y, target->get_x(), target->get_y());
-					helper::play_sound_from_unit(scbw::randBetween(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
-					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->player, unit, target, target->position);
-					unitExt->timers[TimerWyvernAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
+					auto direction = scbw::get_angle(x, y, target->get_x(), target->get_y());
+					helper::play_sound_from_unit(scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
+					scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, unit->player, unit, target, target->position);
+					unitExt->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 				}
 			}
 		}
@@ -254,7 +254,7 @@ namespace hooks
 			u32 overlayImageId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 			if (!unit->get_overlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
 			{
-				unit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
+				unit->sprite->create_top_overlay(overlayImageId, 0, 0, 0);
 				unitExt->values[ValueHierophantOverlay] = 1;
 			}
 		}
@@ -272,7 +272,7 @@ namespace hooks
 				u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
 				if (!unit->get_overlay(maliceId))
 				{
-					unit->sprite->createTopOverlay(maliceId, 0, 0, 0);
+					unit->sprite->create_top_overlay(maliceId, 0, 0, 0);
 				}
 				unitExt->values[ValueHierophantOverlay] = 0;
 			}
@@ -423,13 +423,13 @@ namespace hooks
 			// Cleanse debuffs on initial Defensive Matrix application
 			if (unit->defensiveMatrixTimer == 168)
 			{
-				scbw::restoreFunc(unit);
+				scbw::restore_func(unit);
 			}
 
 			// HP regeneration
 			if ((units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP || unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 				&& unit->hitPoints > 0
-				&& unit->hitPoints / 256 != unit->getMaxHpInGame()
+				&& unit->hitPoints / 256 != unit->get_max_hp_ingame()
 				&& unitExt->damageReceiveTimer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
@@ -451,7 +451,7 @@ namespace hooks
 				if (unit->defensiveMatrixHp != 0)
 				{
 					if (unit->hitPoints > 0
-						&& unit->hitPoints / 256 != unit->getMaxHpInGame())
+						&& unit->hitPoints / 256 != unit->get_max_hp_ingame())
 					{
 						auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
 						if (caster < 8)
@@ -515,7 +515,7 @@ namespace hooks
 					{
 						if (helper::unitHpIsInRedZone(unit))
 						{
-							unit->damageHp(20, nullptr, unit->lastAttackingPlayer, true);
+							unit->damage_hp(20, nullptr, unit->lastAttackingPlayer, true);
 						}
 					}
 				}

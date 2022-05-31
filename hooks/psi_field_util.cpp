@@ -118,7 +118,7 @@ void hideAllPsiFields();
 
 namespace hooks
 {
-	void updatePsiFieldProviders()
+	void update_psi_field_providers()
 	{
 		for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 		{

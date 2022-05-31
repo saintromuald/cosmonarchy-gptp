@@ -111,7 +111,7 @@ namespace hooks
 			bool bStopThere = false;
 			if (!helper::is_unit_positions_2_equal(unit))
 			{
-				bStopThere = ((unit->velocityDirection1 - scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y)) != 0);
+				bStopThere = ((unit->velocityDirection1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y)) != 0);
 			}
 			if (!bStopThere)
 			{

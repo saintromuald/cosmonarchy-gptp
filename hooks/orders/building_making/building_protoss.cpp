@@ -93,7 +93,7 @@ namespace hooks
 							helper::replace_sprite_images(builtUnit->sprite, ImageId::WarpAnchor, 0);
 							if (isBuildingAssimilator)
 							{
-								builtUnit->sprite->createUnderlay(ImageId::VespeneGeyser, 0, 0, 0);
+								builtUnit->sprite->create_underlay(ImageId::VespeneGeyser, 0, 0, 0);
 							}
 							builtUnit->sprite->createTopUnderlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
 							unit->orderTarget.unit = builtUnit;

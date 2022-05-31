@@ -352,7 +352,7 @@ static void init_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder
 	}
 
 	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
-		scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetBaseLayout, base_layouts->town->player, 0, 0);
+		scbw::send_gptp_aise_command((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetBaseLayout, base_layouts->town->player, 0, 0);
 	}
 }
 
@@ -369,7 +369,7 @@ static void request_placeholder(BaseLayouts* base_layouts, Placeholder* placehol
 	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
 		helper::ai_build(placeholder->unit_id, false, count, base_layouts->town, placeholder->priority);
 	} else {
-		scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetGuard, base_layouts->town->player, 0, 0);
+		scbw::send_gptp_aise_command((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetGuard, base_layouts->town->player, 0, 0);
 	}
 }
 

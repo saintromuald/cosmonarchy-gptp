@@ -133,7 +133,7 @@ namespace
 			MOV weaponId, ECX
 			PUSHAD
 		}
-		result = hooks::createBullet(weaponId, parent, x, y, playerId, angle);
+		result = hooks::create_bullet(weaponId, parent, x, y, playerId, angle);
 		__asm
 		{
 			POPAD

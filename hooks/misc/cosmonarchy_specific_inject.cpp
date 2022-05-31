@@ -355,7 +355,7 @@ namespace hooks
 			MOV unit, ECX
 			PUSHAD
 		}
-		result = unit->getGroundWeapon();
+		result = unit->get_ground_weapon();
 		__asm {
 			POPAD
 			MOV EAX, result

@@ -165,7 +165,7 @@ namespace
 			MOV isComplete, EAX
 			PUSHAD
 		}
-		result = hooks::spreadsCreep(unitId, isComplete);
+		result = hooks::spreads_creep(unitId, isComplete);
 		__asm
 		{
 			POPAD

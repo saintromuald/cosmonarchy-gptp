@@ -21,11 +21,11 @@ namespace scbw
 	bool is_larval_egg(Unit* unit);
 	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
 	bool isZergEgg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt);
-	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y);
+	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt);
+	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y);
 	std::string readSamaseFile(char* name);
 	bool teleport(Unit* u, Point16 target, u16 spriteAnimation = 0, bool preserveOrder = false);
-	Thingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId = 11, s32 elevationLevel = 11);
+	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 playerId = 11, s32 elevationLevel = 11);
 	Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees);
 	Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees);
 
@@ -96,16 +96,16 @@ namespace scbw
 
 	/// Calculates the angle (in binary radians) of the arrow that starts at
 	/// (xStart, yStart) and ends at (xEnd, yEnd).
-	s32 getAngle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd);
+	s32 get_angle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd);
 
-	inline s32 getAngle(Point16 start, Point16 end)
+	inline s32 get_angle(Point16 start, Point16 end)
 	{
-		return getAngle(start.x, start.y, end.x, end.y);
+		return get_angle(start.x, start.y, end.x, end.y);
 	}
 
-	inline s32 getAngle(Vector32 start, Vector32 end)
+	inline s32 get_angle(Vector32 start, Vector32 end)
 	{
-		return getAngle(start.x, start.y, end.x, end.y);
+		return get_angle(start.x, start.y, end.x, end.y);
 	}
 
 	inline f64 bw_angle_to_normal(s32 bw_angle);
@@ -124,13 +124,13 @@ namespace scbw
 
 	/// Calculates the X Cartesian coordinate from the given polar coordinates
 	/// (distance, angle), using StarCraft's internal data.
-	inline s32 getPolarX(s32 distance, u8 angle);
+	inline s32 get_polar_x(s32 distance, u8 angle);
 
 	/// Calculates the Y Cartesian coordinate from the given polar coordinates
 	/// (distance, angle), using StarCraft's internal data.
-	inline s32 getPolarY(s32 distance, u8 angle);
+	inline s32 get_polar_y(s32 distance, u8 angle);
 
-	inline Point16 clampPoint(Point16 point)
+	inline Point16 clamp_point(Point16 point)
 	{
 		if (point.x < 0)
 		{
@@ -194,7 +194,7 @@ namespace scbw
 		return rect;
 	}
 
-	inline Vector32 getVectorBetweenPoints(Point16 source, Point16 target)
+	inline Vector32 get_vector_between_points(Point16 source, Point16 target)
 	{
 		Vector32 diff = { target.x, target.y };
 		diff.x -= source.x;
@@ -202,7 +202,7 @@ namespace scbw
 		return diff;
 	}
 
-	inline Vector32f getNormalizedVector(Vector32 vector)
+	inline Vector32f get_normalized_vector(Vector32 vector)
 	{
 		f32 dist = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 		return { vector.x / dist, vector.y / dist };
@@ -213,12 +213,12 @@ namespace scbw
 		return a.x * b.x + a.y * b.y;
 	}
 
-	inline f32 getVectorDistance(Vector32 vector)
+	inline f32 get_vector_distance(Vector32 vector)
 	{
 		return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	}
 
-	inline f32 getVectorDistance(Vector32f vector)
+	inline f32 get_vector_distance(Vector32f vector)
 	{
 		return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	}
@@ -247,7 +247,7 @@ namespace scbw
 	}
 
 	/// Checks whether the game is paused.
-	inline bool isGamePaused()
+	inline bool is_game_paused()
 	{
 		return (*IS_GAME_PAUSED) != 0;
 	}
@@ -315,7 +315,7 @@ namespace scbw
 	void add_generic_value(Unit* u, u32 id, s32 val);*/
 	void make_to_hold_position(Unit* unit);
 
-	void sendGPTP_aise_cmd(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
+	void send_gptp_aise_command(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
 	/// Checks whether the @p playerId has the @p techId researched.
 	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
 	bool hasTechResearched(u8 playerId, u16 techId);
@@ -339,7 +339,7 @@ namespace scbw
 
 	/// Sets the player's upgrade level of @p upgradeId. Note that this uses
 	/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.
-	void setUpgradeLevel(u8 playerId, u8 upgradeId, u8 level);
+	void set_upgrade_level(u8 playerId, u8 upgradeId, u8 level);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -385,7 +385,7 @@ namespace scbw
 	// cancels if the unit would end up on invalid terrain / collision,
 	// fixes bug 1,
 	// useful for small movements like repulsion or pulling
-	bool moveUnitImproved(Unit* unit, s16 x, s16 y);
+	bool move_unit_improved(Unit* unit, s16 x, s16 y);
 
 	/// Removes various references to the @p unit.
 	/// Details not understood. See the source for moveUnit().
@@ -439,7 +439,7 @@ namespace scbw
 	/// identical to the function used internally by StarCraft, and is guaranteed to
 	/// generate the same sequence in a replay.
 	/// NOTE: The RNG has a maximum range of 0 - 32767.
-	u32 randBetween(u32 min, u32 max);
+	u32 rand_between(u32 min, u32 max);
 
 	/// Generates a pseudorandom number between 0 and 32767, inclusive. This is
 	/// identical to the function used internally by StarCraft, and is guaranteed to
@@ -499,8 +499,8 @@ namespace scbw
 	}
 
 	/// Sets or clears the "is currently inside the game loop" property.
-	/// This must be called in nextFrame() to use scbw::random() there.
-	inline bool setInGameLoopState(bool newState)
+	/// This must be called in next_frame() to use scbw::random() there.
+	inline bool set_ingame_loop_state(bool newState)
 	{
 		//Identical to function @ 0x004DC540
 		b32 previousState = *IS_IN_GAME_LOOP;
@@ -513,7 +513,7 @@ namespace scbw
 	void rangeModifiedFire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset);
 	bool canSpawnBroodling(Unit* target);
 	s32 getBroodlingCountFromSupply(Unit* target);
-	void createUnitFromAbility(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, Unit* creator = nullptr);
+	void create_unit_from_ability(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, Unit* creator = nullptr);
 	Unit** getSourceQueens(Unit* unit);
 	u16 get_last_queue_slot_id(Unit* a1);
 	s32 dir_saturate(s32 direction, s32 value);
@@ -522,7 +522,7 @@ namespace scbw
 	void setOffsetToParentSpecialOverlay(Image* image);
 	bool isSlowed(Unit* unit);
 	void hideAndDisableUnit(Unit* unit);
-	void restoreFunc(Unit* unit);
+	void restore_func(Unit* unit);
 	void refreshDebuffs(Unit* unit);
 	void inheritDebuffs(Unit* parent, Unit* child);
 	void applyEnsnare(Unit* unit);
@@ -536,8 +536,8 @@ namespace scbw
 	bool canBeParasited(Unit* unit);
 	void applyParasite(Unit* unit, u8 playerID, Unit* queen);
 	void create_shield_overlay(Unit* unit, u32 attackDirection);
-	void decloakProc(Unit* unit);
-	bool isDecloakable(Unit* unit);
+	void decloak_proc(Unit* unit);
+	bool is_decloakable(Unit* unit);
 	bool unitCanNuke(Unit* unit);
 	bool unitIsTrap(Unit* unit);
 	bool unit_is_ranged_attacker(Unit* unit);
@@ -545,9 +545,9 @@ namespace scbw
 	bool unit_id_is_available_without_an_addon(u16 id);
 	void applyNewHallucination(Unit* unit, u8 playerId, u32 time);
 	bool weaponPiercesTargets(u16 weaponId);
-	void dirgeFuse(Unit* unit, UnitExt* unitExt);
-	void updateSignifyStatus(Unit* unit, UnitExt* unitExt);
-	bool isUnitIsolated(Unit* unit);
+	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
+	void update_signify_status(Unit* unit, UnitExt* unitExt);
+	bool is_unit_isolated(Unit* unit);
 	bool unit_id_is_zerg_supply(u16 unitId);
 	void mind_control(Unit* source, Unit* target);
 	void recede_mind_control(Unit* target);
@@ -557,7 +557,7 @@ namespace scbw
 	bool transportIsFull(Unit* transport);
 	bool transportIsEmpty(Unit* transport);
 	bool unitIdUsesXlargeOverlays(u16 unitId);
-	bool unitIdIsResource(u16 unit_id, bool count_gas_structures);
+	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures);
 
 	void set_cmbw_ai_preference(u16 unit_id, u32 player);
 	Box32 unit_area(Unit* unit);

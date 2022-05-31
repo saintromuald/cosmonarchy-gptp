@@ -86,7 +86,7 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 
 	std::string damageModifiers = "";
 	f64 attackCd = (f64)weapons_dat::Cooldown[weaponId] / 24;
-	f64 attackCdModifier = ((f64)hooks::getModifiedWeaponCooldownHook(unit, weaponId) / 24) - attackCd;
+	f64 attackCdModifier = ((f64)hooks::get_modified_weapon_cooldown(unit, weaponId) / 24) - attackCd;
 
 	s32 splashInner = weapons_dat::InnerSplashRadius[weaponId];
 	s32 splashMedium = weapons_dat::MediumSplashRadius[weaponId];

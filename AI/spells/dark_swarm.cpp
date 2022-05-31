@@ -91,7 +91,7 @@ namespace AI
 					&& !(targetOfTarget->status & UnitStatus::InAir))
 				{
 
-					u8 totGroundWeapon = targetOfTarget->getGroundWeapon();
+					u8 totGroundWeapon = targetOfTarget->get_ground_weapon();
 
 					if (totGroundWeapon != WeaponId::None && weapons_dat::Behavior[totGroundWeapon] == WeaponBehavior::AppearOnAttacker)
 					{
@@ -102,7 +102,7 @@ namespace AI
 							target = target->subunit;
 						}
 
-						targetGroundWeapon = target->getGroundWeapon();
+						targetGroundWeapon = target->get_ground_weapon();
 						if (targetGroundWeapon != WeaponId::None)
 						{
 							u8 weapon_behavior = weapons_dat::Behavior[targetGroundWeapon];

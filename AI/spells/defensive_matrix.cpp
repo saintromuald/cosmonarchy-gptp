@@ -32,7 +32,7 @@ namespace AI
 				return false;
 			if (target->status & UnitStatus::RequiresDetection)
 				return false;
-			if (target->getMaxHpInGame() < 100 || target->getCurrentHpInGame() > 75)
+			if (target->get_max_hp_ingame() < 100 || target->get_current_hp_ingame() > 75)
 				return false;
 			if (target->status & UnitStatus::Invincible)
 				return false;

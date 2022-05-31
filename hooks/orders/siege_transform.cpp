@@ -17,7 +17,7 @@ namespace hooks
 					helper::unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
 					helper::playSubunitIscript(unit, IscriptAnimation::SpecialState1);
 					unit->mainOrderState = 2;
-					scbw::decloakProc(unit);
+					scbw::decloak_proc(unit);
 				}
 			}
 			else
@@ -124,7 +124,7 @@ namespace hooks
 					}
 					helper::replace_unit_with_type(unit, unitNewId);
 					unit->mainOrderState = 3;
-					scbw::decloakProc(unit);
+					scbw::decloak_proc(unit);
 				}
 			}
 		}

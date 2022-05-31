@@ -137,7 +137,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 
 		{
 			if (context & Flags::FrontalArc)
 			{
-				u16 angle = scbw::getAngle(center->position.x, center->position.y,
+				u16 angle = scbw::get_angle(center->position.x, center->position.y,
 					unit->position.x, unit->position.y);
 				u16 unit_angle = center->velocityDirection1;
 				s32 arc = (f64)45 / 1.40625;

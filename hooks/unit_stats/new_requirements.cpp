@@ -1041,7 +1041,7 @@ namespace hooks {
 			*lastInternalError = InternalErrors::UnknownError20;
 			return TECH_HIDDEN;
 		}
-		if (unit->isFrozen())
+		if (unit->is_frozen())
 		{
 			*lastInternalError = InternalErrors::UnitFrozen;
 			return TECH_HIDDEN;

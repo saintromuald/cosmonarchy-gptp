@@ -112,7 +112,7 @@ namespace hooks
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		if (!(unit->status & UnitStatus::Frozen)
-			&& !(unit->isFrozen()))
+			&& !(unit->is_frozen()))
 		{
 			bool jump_to_685D8 = false;
 			if (unit->secondaryOrderState <= 1)

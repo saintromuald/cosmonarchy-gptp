@@ -393,14 +393,14 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 		{
 			unitWithOverlay = unit;
 		}
-		unitWithOverlay->sprite->createTopOverlay(irradiateImageId, 0, 0, 0);
+		unitWithOverlay->sprite->create_top_overlay(irradiateImageId, 0, 0, 0);
 	}
 	unit->irradiatedBy = nullptr;
 	unit->irradiatePlayerId = player;
 	unit->irradiateTimer = time;
 }
 
-void Globals::createEffect(u8 effectId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent)
+void Globals::create_effect(u8 effectId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent)
 {
 	Effect effect = {};
 	effect.effectId = effectId;
@@ -417,7 +417,7 @@ void Globals::createEffect(u8 effectId, u32 time, Vector32 position, u32 radius,
 
 	if (effect.spriteId >= 0)
 	{
-		Thingy* thingy = scbw::createAndInitThingy(effect.spriteId, effect.position.x, effect.position.y, player);
+		Thingy* thingy = scbw::create_and_init_thingy(effect.spriteId, effect.position.x, effect.position.y, player);
 		if (!thingy)
 		{
 			return;
@@ -427,7 +427,7 @@ void Globals::createEffect(u8 effectId, u32 time, Vector32 position, u32 radius,
 	effects.push_back(effect);
 }
 
-void Globals::frameHook()
+void Globals::frame_hook()
 {
 	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{
@@ -534,7 +534,7 @@ void Globals::frameHook()
 				} break;
 				case EffectId::SalamanderFire:
 				{
-					UnitArray unit_array = UnitSearchRadial({(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
+					UnitArray unit_array = unit_search_radial({(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
 					UnitArrayFilter(&unit_array, nullptr, FilterNoAir);
 
 					for (u32 j = 0; j < unit_array.size; j++)
@@ -644,7 +644,7 @@ void Globals::frameHook()
 					{
 						case 0:
 						{
-							globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+							globals.create_effect(EffectId::Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 						} break;
 						case 1:
 						case 2:
@@ -657,7 +657,7 @@ void Globals::frameHook()
 							for (u32 j = 0; j < count; ++j)
 							{
 								newPos = scbw::rotate_point(effect->position, newPos, (360.0 / count));
-								globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+								globals.create_effect(EffectId::Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 							}
 						} break;
 					}
@@ -1040,7 +1040,7 @@ namespace scbw
 			child->ensnareTimer = parent->ensnareTimer;
 			if (!(child->sprite->get_overlay(ImageId::EnsnareOverlay_Small + overlayOffset)))
 			{
-				child->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayOffset);
+				child->sprite->create_overlay(ImageId::EnsnareOverlay_Small + overlayOffset);
 			}
 			child->update_speed();
 		}
@@ -1051,7 +1051,7 @@ namespace scbw
 			child->plagueTimer = parent->plagueTimer;
 			if (!(child->sprite->get_overlay(ImageId::PlagueOverlay_Small + overlayOffset)))
 			{
-				child->sprite->createOverlay(ImageId::PlagueOverlay_Small + overlayOffset);
+				child->sprite->create_overlay(ImageId::PlagueOverlay_Small + overlayOffset);
 			}
 		}
 
@@ -1151,7 +1151,7 @@ namespace scbw
 			}
 			if (!sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset))
 			{
-				sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
+				sprite->create_overlay(ImageId::DeconstructionSmall + overlayOffset);
 			}
 		}
 
@@ -1161,7 +1161,7 @@ namespace scbw
 			childExt->values[ValueEntropyGauntlets] = parentExt->values[ValueEntropyGauntlets];
 			if (!(child->sprite->get_overlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset)))
 			{
-				child->sprite->createOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset);
+				child->sprite->create_overlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset);
 			}
 		}
 
@@ -1237,7 +1237,7 @@ namespace scbw
 		childExt->timers[TimerSignify] = parentExt->timers[TimerSignify];
 		childExt->values[ValueSignifyStacks] = parentExt->values[ValueSignifyStacks];
 		childExt->valueVectors[ValueVectorSignifySourcePlayer] = parentExt->valueVectors[ValueVectorSignifySourcePlayer];
-		scbw::updateSignifyStatus(child, childExt);
+		scbw::update_signify_status(child, childExt);
 
 		scbw::refresh_console();
 	}
@@ -1266,7 +1266,7 @@ namespace scbw
 			|| unit->isBlind;
 	}
 
-	void restoreFunc(Unit* unit)
+	void restore_func(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -1276,7 +1276,7 @@ namespace scbw
 			overlayTargetUnit = unit->subunit;
 		}
 		u32 overlayImageId = ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id);;
-		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
+		(overlayTargetUnit->sprite)->create_top_overlay(overlayImageId, 0, 0, 0);
 
 		// remove status effects and corresponding overlays
 
@@ -1417,7 +1417,7 @@ namespace scbw
 		unitExt->timers[TimerSignify] = 0;
 		unitExt->values[ValueSignifyStacks] = 0;
 		unitExt->valueVectors[ValueVectorSignifySourcePlayer] = {};
-		scbw::updateSignifyStatus(unit, unitExt);
+		scbw::update_signify_status(unit, unitExt);
 
 		// Remove Nathrokor attack stacks
 		for (u32 i = 0; i < 8; i++)
@@ -1440,7 +1440,7 @@ namespace scbw
 		if (unit->parasiteFlags != playerFlag)
 		{ // <- Prevent restarting arm period
 			unitExt->timers[TimerParasiteArm] = DefaultArmParasiteTimer;
-			unit->sprite->createOverlay(ImageId::ParasiteOverlay, 0, 0, 0);
+			unit->sprite->create_overlay(ImageId::ParasiteOverlay, 0, 0, 0);
 		}
 		unitExt->units[UnitParasiteSource] = queen; // TODO: remove?
 		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
@@ -1525,7 +1525,7 @@ namespace scbw
 		auto rotate = unitExt->values[valueId];
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType, unit->sprite->mainGraphic->id));
 		u8 frameDirection = unit->sprite->mainGraphic->direction;
-		Point8 offset = loFile->getOffset(frameDirection + (17 * frameset_offset), rotate);
+		Point8 offset = loFile->get_offset(frameDirection + (17 * frameset_offset), rotate);
 		if (unit->sprite->mainGraphic->flags & ImageFlags::Mirrored)
 		{
 			offset.x = -offset.x;
@@ -1538,7 +1538,7 @@ namespace scbw
 		unitExt->values[valueId] = rotate;
 		auto X = unit->get_x() + offset.x;
 		auto Y = unit->get_y() + offset.y;
-		Bullet* bullet = helper::createBullet(weaponId, unit, X, Y, unit->player, scbw::getAngle(X, Y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
+		Bullet* bullet = helper::create_bullet(weaponId, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
 		if (bullet && unitExt->values[valueId] < fake_amount)
 		{
 			bullet->hitFlags |= 0x1;
@@ -1688,7 +1688,7 @@ namespace scbw
 				{
 					s32 unitDamage = std::min(divided, linkUnit->shields);
 					damage -= unitDamage;
-					data.direction = scbw::getAngle(damageOriginUnit->get_x(), damageOriginUnit->get_y(), linkUnit->get_x(), linkUnit->get_y());
+					data.direction = scbw::get_angle(damageOriginUnit->get_x(), damageOriginUnit->get_y(), linkUnit->get_x(), linkUnit->get_y());
 					linkDamage(linkUnit, unitDamage, data);
 				}
 				data.direction = oldDirection;

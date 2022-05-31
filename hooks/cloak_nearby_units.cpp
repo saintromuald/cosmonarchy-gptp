@@ -16,7 +16,7 @@ namespace hooks
 		Unit* current_unit;
 
 		// Use the unit's air weapon range
-		u32 cloakRadius = cloaker->getMaxWeaponRange(cloaker->getAirWeapon());
+		u32 cloakRadius = cloaker->get_max_weapon_range(cloaker->getAirWeapon());
 		area_of_effect.left = cloaker->sprite->position.x - cloakRadius;
 		area_of_effect.right = cloaker->sprite->position.x + cloakRadius;
 		area_of_effect.top = cloaker->sprite->position.y - cloakRadius;
@@ -56,7 +56,7 @@ namespace hooks
 				&& scbw::is_allied_to(current_unit->player, cloaker->player)							// Only cloak allied units
 				&& current_unit->player != 11															// Don't cloak neutral units
 				&& cloaker->is_target_within_min_range(current_unit, cloakRadius)							// Check again if unit in range of cloaking
-				&& !current_unit->isFrozen())
+				&& !current_unit->is_frozen())
 			{
 				if (!unitExt->timers[TimerDecloak])
 				{

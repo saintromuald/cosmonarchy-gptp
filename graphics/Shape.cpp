@@ -154,7 +154,7 @@ namespace graphics
 				break;
 
 			case LINE:
-				gameScreenBuffer->drawLine(p1.x, p1.y, p2.x, p2.y, this->color);
+				gameScreenBuffer->draw_line(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			case BOX:

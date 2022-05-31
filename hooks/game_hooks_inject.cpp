@@ -15,7 +15,7 @@ bool isGameOn = false;
 		__asm PUSHAD;
 		{
 			isGameOn = true;
-			hooks::gameOn();
+			hooks::game_on();
 			GPTP::logger.startGame();
 		}
 		__asm {
@@ -33,7 +33,7 @@ bool isGameOn = false;
 		__asm PUSHAD;
 		{
 			isGameOn = false;
-			hooks::gameEnd();
+			hooks::game_end();
 			GPTP::logger.endGame();
 		}
 		__asm {
@@ -52,10 +52,10 @@ bool isGameOn = false;
 			MOV EBP, ESP
 		}
 		{
-			hooks::nextFrame();
+			hooks::next_frame();
 		}
 
-		if (scbw::isGamePaused())
+		if (scbw::is_game_paused())
 		{
 			__asm {
 				POPAD
@@ -78,7 +78,7 @@ bool isGameOn = false;
 			PUSHAD
 			MOV EBP, ESP
 		}
-		hooks::nextUiFrame();
+		hooks::next_ui_frame();
 		__asm {
 			POPAD
 			MOV EDI, 4 // original line

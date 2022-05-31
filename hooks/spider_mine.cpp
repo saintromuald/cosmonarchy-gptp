@@ -15,7 +15,7 @@ namespace hooks
 		{
 			return nullptr;
 		}
-		range = 32 * mine->getSeekRange();
+		range = 32 * mine->get_seek_range();
 		return
 			scbw::UnitFinder::getNearestTarget(
 				mine->get_x() - range, mine->get_y() - range,
@@ -266,7 +266,7 @@ namespace hooks
 			{
 				v8 = unit->orderTarget.pt.y;
 				v9 = unit->orderTarget.pt.x;
-				ByteOperations::SetLowByte(v10, helper::setMoveTargetXY(v9, v8, unit));
+				ByteOperations::SetLowByte(v10, helper::set_move_target_xy(v9, v8, unit));
 				if (v9 != v1->nextTargetWaypoint.x || v8 != v1->nextTargetWaypoint.y)
 				{
 					v1->nextTargetWaypoint.x = v9;

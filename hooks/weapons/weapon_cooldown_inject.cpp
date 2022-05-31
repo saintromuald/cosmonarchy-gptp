@@ -14,7 +14,7 @@ namespace
 			MOV weaponId, AL
 			PUSHAD
 		}
-		cooldown = hooks::getModifiedWeaponCooldownHook(unit, weaponId);
+		cooldown = hooks::get_modified_weapon_cooldown(unit, weaponId);
 		__asm
 		{
 			POPAD

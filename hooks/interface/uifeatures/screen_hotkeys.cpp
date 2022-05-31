@@ -11,7 +11,7 @@ namespace
 
 namespace hooks
 {
-	void initializeScreenLocations()
+	void initalize_screen_locations()
 	{
 		for (Point16& point : screen_hotkeys)
 		{
@@ -59,7 +59,7 @@ namespace hooks
 		return true;
 	}
 
-	void handleScreenHotkeys()
+	void handle_screen_hotkeys()
 	{ // a hacky workaround, checked every frame
 		for (s32 i = 0; i < 8; i++)
 		{

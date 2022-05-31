@@ -525,7 +525,7 @@ FraudSpawnLocation* get_random_spawn() {
 		return 0;
 	}
 
-	u32 offset = scbw::randBetween(0, count - 1);
+	u32 offset = scbw::rand_between(0, count - 1);
 	u32 best_cost = 1000;
 	u32 best_location = offset;
 	for (u32 i = 0; i < count; ++i) {
@@ -543,7 +543,7 @@ FraudSpawnLocation* get_random_spawn() {
 		}
 
 		u32 cost = 0;
-		UnitArray unit_array = UnitSearchRadial(fraud_spawn.spawns[location].pos, 12 * 32);
+		UnitArray unit_array = unit_search_radial(fraud_spawn.spawns[location].pos, 12 * 32);
 		if (unit_array.size) {
 			cost += 1;
 		}
@@ -1387,8 +1387,8 @@ u32 get_next_fraud(u32 player, u32 fraud_class) {
 		}
 
 		u32 next_fraud = 0;
-		if (race_count && scbw::randBetween(0, race_count + random_count - 1) < race_count) {
-			u32 index = scbw::randBetween(1, race_count);
+		if (race_count && scbw::rand_between(0, race_count + random_count - 1) < race_count) {
+			u32 index = scbw::rand_between(1, race_count);
 			for (u32 i = race_first; i <= race_last; ++i) {
 				if (!fraud_spawn.used[i]) {
 					--index;
@@ -1399,7 +1399,7 @@ u32 get_next_fraud(u32 player, u32 fraud_class) {
 				}
 			}
 		} else if (random_count) {
-			u32 index = scbw::randBetween(1, random_count);
+			u32 index = scbw::rand_between(1, random_count);
 			for (u32 i = random_first; i <= random_last; ++i) {
 				if (!fraud_spawn.used[i]) {
 					--index;
@@ -1510,7 +1510,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					resource_upgrade = 3;
 				}
 				resource_upgrade += fraud_class - 1;
-				scbw::setUpgradeLevel(player, UpgradeId::MiningEfficiency, resource_upgrade);
+				scbw::set_upgrade_level(player, UpgradeId::MiningEfficiency, resource_upgrade);
 
 				startPositions[player] = spawn_location->pos;
 				if (race == RaceId::Terran) {
@@ -1587,7 +1587,7 @@ void init_scenario() {
 		fraud_spawn.hero_spawn_counter = -1 - fraud_spawn.initial_spawn_count;
 		fraud_spawn.super_spawn_counter = -4 - fraud_spawn.initial_spawn_count;
 
-		u32 offset = scbw::randBetween(0, 5);
+		u32 offset = scbw::rand_between(0, 5);
 		for (u32 j = 0; j < fraud_spawn.initial_spawn_count; ++j) {
 			u32 player = (j + offset) % 6 + 1;
 			place_fraud(player, FraudClass_Fraud, true);
@@ -1696,7 +1696,7 @@ void tick_scenario() {
 			fraud_spawn.timer = 0;
 		}
 		if (!fraud_spawn.timer) {
-			u32 offset = scbw::randBetween(0, 5);
+			u32 offset = scbw::rand_between(0, 5);
 			for (u32 j = 0; j < 6; ++j) {
 				u32 player = (j + offset) % 6 + 1;
 				FraudSpawnSequence* sequence = &fraud_spawn.sequence[player-1];
@@ -1704,9 +1704,9 @@ void tick_scenario() {
 					u32 fraud_class = FraudClass_None;
 					if (fraud_spawn.used_count < god_spawn_breakpoint) {
 						fraud_class = FraudClass_Fraud;
-						if (get_next_fraud(player, FraudClass_Hero) && (s32)scbw::randBetween(0, 99) < fraud_spawn.hero_spawn_counter * 33) {
+						if (get_next_fraud(player, FraudClass_Hero) && (s32)scbw::rand_between(0, 99) < fraud_spawn.hero_spawn_counter * 33) {
 							fraud_class = FraudClass_Hero;
-						} else if (get_next_fraud(player, FraudClass_Super) && (s32)scbw::randBetween(0, 99) < fraud_spawn.super_spawn_counter * 20) {
+						} else if (get_next_fraud(player, FraudClass_Super) && (s32)scbw::rand_between(0, 99) < fraud_spawn.super_spawn_counter * 20) {
 							fraud_class = FraudClass_Super;
 						}
 					} else if (fraud_spawn.used_type_count[FraudClass_God]) {
@@ -1734,7 +1734,7 @@ void tick_scenario() {
 			if (fraud_spawn.used_type_count[FraudClass_God] < 2) {
 				fraud_spawn.timer = 0;
 			}
-			u32 player = scbw::randBetween(1, 6);
+			u32 player = scbw::rand_between(1, 6);
 			place_fraud(player, FraudClass_God, true);
 		}
 

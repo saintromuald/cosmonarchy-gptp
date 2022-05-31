@@ -257,7 +257,7 @@ namespace helper
 	void iscript_opcode_cases(Image* image, u32 offset_, u32 unk1, u32 unk2);								// 004D74C0
 	void switch_to_warp_texture(Image* image);																	// 004D8500
 	bool setThingyVisibilityFlags(Thingy* thingy);									                        // 004878F0
-	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);		    								// 00488210
+	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 playerId);		    								// 00488210
 	void setUnitStatTxtErrorMsg(char* message);										                        // 0048CCB0
 	void playSoundAtPos(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2);										// 0048EC10
 	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
@@ -278,7 +278,7 @@ namespace helper
 	void to_idle(Unit* a1);																                    // 004753A0
 	s32 is_unit_movable(Unit* a1);														                    // 00401DC0
 	void orders_nothing_2(Unit* a1);																			// 00475000
-	bool setMoveTargetXY(s32 a1, s32 a2, Unit* a3);															// 004EB820
+	bool set_move_target_xy(s32 a1, s32 a2, Unit* a3);															// 004EB820
 
 	// For burrowGeneric
 	void toggleUnitPath(Unit* unit);									                                    // 004E42A0
@@ -357,7 +357,7 @@ namespace helper
 	void function_004C3B40(Unit* unit);																								// 004C3B40
 
 	//// create_init_units
-	b32 spreadsCreep(u32 unitId, b32 defaultReturn);																				// 00413870
+	b32 spreads_creep(u32 unitId, b32 defaultReturn);																				// 00413870
 	void applyCreepAtLocationFromUnitType(s32 x, s32 y, u32 unitId);																// 004148F0
 	void CreateBuildingLarva(Unit* main_building);																					// 0049D660
 	b32 show_finished_unit(Unit* unit);																								// 0049EC30
@@ -464,7 +464,7 @@ namespace helper
 
 	//// trap_hooks
 	// For update_unit_strength_and_apply_default_orders
-	void AnimCloak(Unit* a1, s32 a2);																								// 0049B5B0
+	void anim_cloak(Unit* a1, s32 a2);																								// 0049B5B0
 	void refresh_unit_vision(Unit* a1);																								// 004E5F30
 	void initUnitTrapDoodad(Unit* a1);																								// 004E6490
 	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, s16 fow_unit_id, Point16 position_xy, Unit* target);		// 004745F0
@@ -479,7 +479,7 @@ namespace helper
 	void ApplySpeedUpgradeFromUpgradeType(Unit* unit, u8 upgradeType);																// 00454540
 	void playUpgradeCompleteSound();																								// 0048F070
 	void playResearchCompleteSound();																								// 0048F150
-	void setUpgradeLevel(u32 playerId, u32 upgradeType, u8 upgradeLevel);															// 004CE770
+	void set_upgrade_level(u32 playerId, u32 upgradeType, u8 upgradeLevel);															// 004CE770
 
 	//// merge_units
 	bool advanceRemainingBuildTime(Unit* unit);																						// 00466940
@@ -531,7 +531,7 @@ namespace helper
 	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
 
 	// for check_unit_visibility
-	u32 getDetectingPlayers(Unit* unit);																							// 00441130
+	u32 get_detecting_players(Unit* unit);																							// 00441130
 	u32 iteratePlayerUnitsSomething(u32 aResult, Unit* unit);																		// 0049E8A0
 	void makeSpriteVisible(Sprite* sprite);																							// 00497ED0
 	s32 updateBuildingLandUnitSelection(u32 unused, Unit* selection);																// 004C3B40
@@ -576,7 +576,7 @@ namespace helper
 
 	//// api
 	void ApplySpores(Unit* unit);
-	Bullet* createBullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
+	Bullet* create_bullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor);
 	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);																// 004CD360
 	Flingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y);																	// 00496460
@@ -692,7 +692,7 @@ namespace helper
 	// For findNextBounceTarget
 	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);								// 004E8280
 
-	// For createBullet
+	// For create_bullet
 	s32 initializeBullet(char playerId, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle);					// 0048BEC0
 
 	// For writeBullets
@@ -711,7 +711,7 @@ namespace helper
 	void increment_unit_kill_count(Unit* unit);																	// 004759C0
 	u32 get_unit_damage_bonus(Unit* unit, u8 weaponId);														    // 00475EC0
 	void attack_overlay_and_notify(Unit* attacker, Unit* target, u32 weaponType, u32 direction);			        // 00479730
-	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);												// 00488210
+	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 playerId);												// 00488210
 	u32 get_unit_bullet_damage(Bullet* bullet, Unit* target);														// 0048ACD0
 	u32 get_spell_stat_string(Unit* target, u32 techId, u8 playerId);									            // 00491E80
 	void disableUnitFunc(Unit* unit);																			// 00492CC0 (hooked in weapon_spellhit)

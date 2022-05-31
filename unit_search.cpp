@@ -141,7 +141,7 @@ inline UnitArray UnitSearchSquare(Point16 center, u32 radius)
 	});
 }
 
-UnitArray UnitSearchRadial(Point16 center, u32 radius)
+UnitArray unit_search_radial(Point16 center, u32 radius)
 {
 	UnitArray unit_array = {};
 
@@ -251,7 +251,7 @@ inline CorpseArray CorpseSearchSquare(Point16 center, u32 radius) {
 	});
 }
 
-CorpseArray CorpseSearchRadial(Point16 center, u32 radius) {
+CorpseArray corpse_search_radial(Point16 center, u32 radius) {
 	CorpseArray corpse_array = {};
 
 	Box32 dims =
@@ -393,7 +393,7 @@ Unit* UnitArrayGetFirst(UnitArray* unit_array, SearchFilterFunc match_func)
 	return nullptr;
 }
 
-void UpdateSearchGrid()
+void update_search_grid()
 {
 	// Reset units
 	for (u32 x = 0; x < CELL_COUNT; x++)
@@ -548,7 +548,7 @@ bool UnitFlagMatch(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> 
 	{
 		if (flags & FilterFrontalArc)
 		{
-			u16 angle = scbw::getAngle(center->position.x, center->position.y,
+			u16 angle = scbw::get_angle(center->position.x, center->position.y,
 				unit->position.x, unit->position.y);
 			u16 unit_angle = center->velocityDirection1;
 			s32 arc = (f64)45 / 1.40625;

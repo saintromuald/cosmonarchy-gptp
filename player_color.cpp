@@ -216,7 +216,7 @@ static void update_player_name(u32 player) {
 	u32 count = get_name_count(race, personality);
 	if (count) {
 		for (u32 tries = 0; tries < 20; ++tries) {
-			u32 random = scbw::randBetween(0, PlayerPesonalityMaxNames - 1);
+			u32 random = scbw::rand_between(0, PlayerPesonalityMaxNames - 1);
 			char* name = player_personality_names[race][personality][random];
 			if (is_valid_name(player, name)) {
 				strncpy(playerNameList->player[player].player_name, name, 24);

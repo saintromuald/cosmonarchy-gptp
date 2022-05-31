@@ -63,7 +63,7 @@ namespace hooks
 
 			unit->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
 
-			nukeDot = helper::createThingy(
+			nukeDot = helper::create_thingy(
 				SpriteId::Nuke_Target_Dot,
 				(unit->connectedUnit)->orderTarget.pt.x,
 				(unit->connectedUnit)->orderTarget.pt.y,
@@ -79,7 +79,7 @@ namespace hooks
 			}
 
 			unit->mainOrderState = 6;
-			scbw::decloakProc(unit);
+			scbw::decloak_proc(unit);
 
 		}
 
@@ -149,7 +149,7 @@ namespace hooks
 
 				direction =
 					unit->currentDirection1 -
-					scbw::getAngle(
+					scbw::get_angle(
 						unit->sprite->position.x,
 						unit->sprite->position.y,
 						unit->nextTargetWaypoint.x,
@@ -198,7 +198,7 @@ namespace hooks
 					helper::show_and_enable_unit(nuke);
 					unit->connectedUnit = nuke;
 					unit->order_to(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
-					if (unit->isFrozen())
+					if (unit->is_frozen())
 					{ // 004793C4
 						if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 						{

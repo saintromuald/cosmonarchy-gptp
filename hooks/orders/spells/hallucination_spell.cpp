@@ -23,13 +23,13 @@ namespace hooks
 				hit = {pt.x, pt.y};
 			}
 			
-			scbw::decloakProc(unit);
+			scbw::decloak_proc(unit);
 
-			helper::createBullet(WeaponId::CantavisHallucinationCast, unit, unit->get_x(), unit->get_y(), unit->player, unit->currentDirection1);
+			helper::create_bullet(WeaponId::CantavisHallucinationCast, unit, unit->get_x(), unit->get_y(), unit->player, unit->currentDirection1);
 
 			if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 			{
-				unit->spendUnitEnergy(techCost);
+				unit->spend_unit_energy(techCost);
 			}
 
 			if (unit->orderQueueHead != nullptr)

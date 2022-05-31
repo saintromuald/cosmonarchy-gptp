@@ -567,7 +567,7 @@ LABEL_42:
 	// Hooked to help with cloak rewrite - Pr0nogo
 	void checkUnitVisibilityHook(Unit* unit) // 00443390
 	{
-		u32 detectingPlayers = helper::getDetectingPlayers(unit);
+		u32 detectingPlayers = helper::get_detecting_players(unit);
 		if (unit->visibilityStatus != detectingPlayers)
 		{
 			if (unit->visibilityStatus == 0x80000000)
@@ -636,7 +636,7 @@ LABEL_42:
 
 	bool unit_can_attack_target(Unit* target, Unit* unit, int checkVisibility)
 	{
-		if (unit->isFrozen()
+		if (unit->is_frozen()
 			|| !target
 			|| !target->sprite // new
 			|| target->status & UnitStatus::Invincible
@@ -727,7 +727,7 @@ LABEL_42:
 		v2 = unit;
 		v3 = unit->status;
 		v1 = v2->orderTarget.unit;
-		if (unit->isFrozen())
+		if (unit->is_frozen())
 		{
 			goto LABEL_23;
 		}

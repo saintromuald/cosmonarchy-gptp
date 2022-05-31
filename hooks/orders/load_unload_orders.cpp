@@ -616,7 +616,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (transport->isFrozen())
+		if (transport->is_frozen())
 		{
 			return 0;
 		}

@@ -62,7 +62,7 @@ namespace hooks
 		totalActions++;
 	}
 
-	void clearActions() // Called on map start
+	void clear_actions() // Called on map start
 	{
 		//actions.clear();
 		totalActions = 0;

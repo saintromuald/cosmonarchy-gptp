@@ -19,5 +19,5 @@ namespace hooks
 
 	void drawUIFeatures();
 	void registerAction();
-	void clearActions();
+	void clear_actions();
 }

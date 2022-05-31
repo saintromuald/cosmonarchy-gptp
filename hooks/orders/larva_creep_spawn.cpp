@@ -314,7 +314,7 @@ namespace hooks
 		const static s32 maxCreepAreaRight = 320; // 10 tiles
 		const static s32 maxCreepAreaUp = 200; // 6.25 tiles
 		const static s32 maxCreepAreaDown = 200; // 6.25 tiles
-		if (spreadsCreep(unitId, defRetVal))
+		if (spreads_creep(unitId, defRetVal))
 		{
 			rect->left = (x - maxCreepAreaLeft) / 32;
 			rect->right = (x + maxCreepAreaRight) / 32;
@@ -365,7 +365,7 @@ namespace hooks
 
 	// Determines which unit IDs are a creep source (i.e. spreads creap, not just requires it)
 	// Base buildings built by a drone return the value of "isComplete", which is an argument that is true if the unit status flag has "Completed" set -- the building only spawns creep once it has been built
-	bool spreadsCreep(u16 unitId, bool isComplete)
+	bool spreads_creep(u16 unitId, bool isComplete)
 	{
 		switch (unitId)
 		{

@@ -21,8 +21,8 @@ namespace hooks
 		}
 		else
 		{
-			return !attacker->is_target_within_min_range(target, weapons_dat::MinRange[attacker->getGroundWeapon()])
-				&& attacker->is_target_within_min_range(target, weapons_dat::MaxRange[attacker->getGroundWeapon()]);
+			return !attacker->is_target_within_min_range(target, weapons_dat::MinRange[attacker->get_ground_weapon()])
+				&& attacker->is_target_within_min_range(target, weapons_dat::MaxRange[attacker->get_ground_weapon()]);
 		}
 	}
 
@@ -68,7 +68,7 @@ namespace hooks
 
 						if (!target || !unit->canAttackTarget(target) || !isWithinAttackRange(unit, target))
 						{
-							const u32 radius = std::max(unit->getMaxWeaponRange(unit->getGroundWeapon()), unit->getMaxWeaponRange(unit->getAirWeapon()));
+							const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->getAirWeapon()));
 							unit->orderTarget.unit = scbw::UnitFinder::getNearestTarget(
 								unit->get_x() - radius,
 								unit->get_y() - radius,
@@ -110,7 +110,7 @@ namespace hooks
 		Image* bunkerImage = unitVar->connectedUnit->sprite->mainGraphic;
 		u8 frameDirection = (unitVar->currentDirection1 + 16) / 32 % 8;
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
-		Point8 offset = loFile->getOffset(bunkerImage->frameIndex, frameDirection);
+		Point8 offset = loFile->get_offset(bunkerImage->frameIndex, frameDirection);
 
 		if (bunkerImage->flags & ImageFlags::Mirrored) // Is inverted
 		{
@@ -130,10 +130,10 @@ namespace hooks
 			spriteId = 377; // Bunker attack overlay
 		}
 
-		scbw::decloakProc(unitVar->connectedUnit);
+		scbw::decloak_proc(unitVar->connectedUnit);
 
 		// TODO: Fix effect nonsense with subunits
-		Thingy* bunkerAttackEffect = helper::createThingy(spriteId, offset.x + unitVar->get_x(), offset.y + unitVar->get_y(), unitVar->player);
+		Thingy* bunkerAttackEffect = helper::create_thingy(spriteId, offset.x + unitVar->get_x(), offset.y + unitVar->get_y(), unitVar->player);
 		if (!bunkerAttackEffect)
 		{
 			return;

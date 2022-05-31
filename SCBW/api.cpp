@@ -17,7 +17,7 @@
 
 namespace scbw
 {
-	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt)
+	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt)
 	{
 		auto target_unit = source->orderTarget.unit;
 		auto target_pos = source->orderTarget.pt;
@@ -32,17 +32,17 @@ namespace scbw
 		{
 			source->orderTarget.pt = target_pt;
 		}
-		helper::createBullet(weaponId, source, source->sprite->position.x, source->sprite->position.y, playerId,
-			getAngle(source->position.x, source->position.y, source->orderTarget.pt.x, source->orderTarget.pt.y));
+		helper::create_bullet(weaponId, source, source->sprite->position.x, source->sprite->position.y, playerId,
+			get_angle(source->position.x, source->position.y, source->orderTarget.pt.x, source->orderTarget.pt.y));
 		source->orderTarget.unit = target_unit;
 		source->orderTarget.pt = target_pos;
 	}
-	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y)
+	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y)
 	{
 		Point16 tgt;
 		tgt.x = x;
 		tgt.y = y;
-		artificalBulletFrom(weaponId, playerId, source, target, tgt);
+		artificial_bullet_from(weaponId, playerId, source, target, tgt);
 	}
 
 	bool teleport(Unit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
@@ -83,7 +83,7 @@ namespace scbw
 			// create the Recall animation over the unit
 			if (spriteAnimation)
 			{
-				recall_effect_sprite = helper::createThingy(spriteAnimation, new_pos.x, new_pos.y, 0);
+				recall_effect_sprite = helper::create_thingy(spriteAnimation, new_pos.x, new_pos.y, 0);
 				if (recall_effect_sprite != nullptr)
 				{
 					recall_effect_sprite->sprite->elevationLevel = u->sprite->elevationLevel + 1;
@@ -106,9 +106,9 @@ namespace scbw
 		return result;
 	}
 
-	Thingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId, s32 elevationLevel)
+	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 playerId, s32 elevationLevel)
 	{
-		Thingy* thingy = helper::createThingy(spriteId, x, y, playerId);
+		Thingy* thingy = helper::create_thingy(spriteId, x, y, playerId);
 		if (thingy)
 		{
 			thingy->sprite->elevationLevel = elevationLevel;
@@ -321,7 +321,7 @@ namespace scbw
 
 	// Identical to function @ 0x00495300
 	//					EDX		[EBP+08]	ECX			EAX
-	s32 getAngle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd)
+	s32 get_angle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd)
 	{
 
 		s32 dx = xEnd - xStart, dy = yEnd - yStart;
@@ -371,12 +371,12 @@ namespace scbw
 		return angle;
 	}
 
-	s32 getPolarX(s32 distance, u8 angle)
+	s32 get_polar_x(s32 distance, u8 angle)
 	{
 		return distance * angleDistance[angle].x >> 8;
 	}
 
-	s32 getPolarY(s32 distance, u8 angle)
+	s32 get_polar_y(s32 distance, u8 angle)
 	{
 		return distance * angleDistance[angle].y >> 8;
 	}
@@ -445,7 +445,7 @@ namespace scbw
 	}
 
 	const u32 Func_DoWeaponDamage = 0x00479930;
-	void sendGPTP_aise_cmd(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3)
+	void send_gptp_aise_command(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3)
 	{
 		_asm
 		{
@@ -720,12 +720,12 @@ namespace scbw
 
 	void set_generic_rust_unit(Unit* unit, u32 id, Unit* targ)
 	{
-		scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
+		scbw::send_gptp_aise_command(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
 	}
 
 	void set_generic_variable(u32 id, s32 val)
 	{
-		scbw::sendGPTP_aise_cmd(nullptr, nullptr, GptpId::SetGenericVariable, id, val, 0);
+		scbw::send_gptp_aise_command(nullptr, nullptr, GptpId::SetGenericVariable, id, val, 0);
 	}
 
 	u32 get_generic_rust_value(Unit* u, u32 val)
@@ -735,12 +735,12 @@ namespace scbw
 
 	void set_generic_rust_value(Unit* u, u32 id, u32 val)
 	{
-		scbw::sendGPTP_aise_cmd(u, nullptr, GptpId::SetGenericValue, id, val, 0);
+		scbw::send_gptp_aise_command(u, nullptr, GptpId::SetGenericValue, id, val, 0);
 	}
 
 	void setSpriteData(u32 entry, u32 index, u32 value)
 	{
-		return sendGPTP_aise_cmd(nullptr, nullptr, GptpId::SetSpriteData, entry, index, value);
+		return send_gptp_aise_command(nullptr, nullptr, GptpId::SetSpriteData, entry, index, value);
 	}
 
 	const u32 Func_CanTargetSpell = 0x00492020;
@@ -837,7 +837,7 @@ namespace scbw
 		}
 	}
 
-	void setUpgradeLevel(u8 playerId, u8 upgradeId, u8 level)
+	void set_upgrade_level(u8 playerId, u8 upgradeId, u8 level)
 	{
 		assert(playerId < PLAYER_COUNT);
 		assert(upgradeId < UpgradeId::None);
@@ -901,7 +901,7 @@ namespace scbw
 		return true;
 	}
 
-	bool moveUnitImproved(Unit* unit, s16 x, s16 y)
+	bool move_unit_improved(Unit* unit, s16 x, s16 y)
 	{
 		if (!(unit->status & UnitStatus::InAir))
 		{
@@ -1026,7 +1026,7 @@ namespace scbw
 	}
 
 	/* /!\ Not working like 004DC550 rand_between /!\ */
-	u32 randBetween(u32 min, u32 max)
+	u32 rand_between(u32 min, u32 max)
 	{
 		assert(min <= max);
 		return min + ((max - min + 1) * random() >> 15);
@@ -1061,7 +1061,7 @@ namespace scbw
 		*someDialogUnknownUser = nullptr;
 	}
 
-	void createUnitFromAbility(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer, Unit* creator)
+	void create_unit_from_ability(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer, Unit* creator)
 	{
 		for (s32 i = 0; i < count; i++)
 		{
@@ -1076,7 +1076,7 @@ namespace scbw
 				helper::apply_hallucination_stats(unit);
 				unit->status |= UnitStatus::IsHallucination;
 				unit->removeTimer = 1350;
-				unit->sprite->createOverlay(ImageId::HallucinationDeath3);
+				unit->sprite->create_overlay(ImageId::HallucinationDeath3);
 			}
 			switch (unitId)
 			{
@@ -1107,7 +1107,7 @@ namespace scbw
 						if (target->energy < 200 * 256)
 						{
 							target->energy = std::min((u16)(target->energy + (u16)5 * (u16)256), target->getMaxEnergy());
-							target->sprite->createUnderlay(425);
+							target->sprite->create_underlay(425);
 						}
 					});
 					break;
@@ -1136,12 +1136,12 @@ namespace scbw
 		{
 			distance = 0;
 		}
-		auto polar_x = unit->get_x() + scbw::getPolarX(distance, unit->currentDirection1);
-		auto polar_y = unit->get_y() + scbw::getPolarY(distance, unit->currentDirection1);
+		auto polar_x = unit->get_x() + scbw::get_polar_x(distance, unit->currentDirection1);
+		auto polar_y = unit->get_y() + scbw::get_polar_y(distance, unit->currentDirection1);
 		unit->orderTarget.unit = nullptr;
 		unit->orderTarget.pt.x = polar_x;
 		unit->orderTarget.pt.y = polar_y;
-		helper::createBullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
+		helper::create_bullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
 		unit->orderTarget.unit = target_unit;
 		unit->orderTarget.pt = target_pos;
 	}
@@ -1228,7 +1228,7 @@ namespace scbw
 			}
 
 			// Create overlay
-			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
+			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
 		}
 
 		// Apply effect
@@ -1337,15 +1337,15 @@ namespace scbw
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr, unit->sprite->mainGraphic->id));
 		u32 frameAngle = (attackDirection - 124) / 8 % 32;
 
-		Point8 offset = shield_lo->getOffset(unit->sprite->mainGraphic->direction, frameAngle);
+		Point8 offset = shield_lo->get_offset(unit->sprite->mainGraphic->direction, frameAngle);
 
-		unit->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
+		unit->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
 	}
 
-	void decloakProc(Unit* unit)
+	void decloak_proc(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		if (isDecloakable(unit))
+		if (is_decloakable(unit))
 		{
 			if (unitExt->timers[TimerDecloak] == 0)
 			{
@@ -1359,11 +1359,11 @@ namespace scbw
 		}
 		if (unit->is_subunit() && unit->subunit)
 		{
-			decloakProc(unit->subunit);
+			decloak_proc(unit->subunit);
 		}
 	}
 
-	bool isDecloakable(Unit* unit)
+	bool is_decloakable(Unit* unit)
 	{
 		return (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
 			&& !(unit->status & UnitStatus::Burrowed);
@@ -1485,11 +1485,11 @@ namespace scbw
 		// Overlays
 		if (unit->subunit != nullptr)
 		{
-			unit->subunit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
+			unit->subunit->sprite->create_overlay(ImageId::HallucinationHit, 0, 0, 0);
 		}
 		else
 		{
-			unit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
+			unit->sprite->create_overlay(ImageId::HallucinationHit, 0, 0, 0);
 		}
 		
 		// Value
@@ -1812,9 +1812,9 @@ namespace scbw
 		}
 	}
 
-	void dirgeFuse(Unit* unit, UnitExt* unitExt)
+	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt)
 	{
-		unit->sprite->createTopOverlay(ImageId::ArcliteShockCannon_Damageless);
+		unit->sprite->create_top_overlay(ImageId::ArcliteShockCannon_Damageless);
 		const u32 radius = 2 * 32;
 		scbw::UnitFinder(
 			unit->get_x() - radius,
@@ -1829,7 +1829,7 @@ namespace scbw
 		unitExt->values[ValueDirgeStacks] = 0;
 	}
 
-	void updateSignifyStatus(Unit* unit, UnitExt* unitExt)
+	void update_signify_status(Unit* unit, UnitExt* unitExt)
 	{
 		unit->update_speed();
 
@@ -1847,17 +1847,17 @@ namespace scbw
 		{
 			if (unitExt->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardiceId))
 			{
-				unit->sprite->createTopOverlay(cowardiceId);
+				unit->sprite->create_top_overlay(cowardiceId);
 			}
 			else if (unitExt->values[ValueSignifyStacks] >= 5 && !unit->get_overlay(maliceId))
 			{
 				unit->remove_overlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
-				unit->sprite->createTopOverlay(maliceId);
+				unit->sprite->create_top_overlay(maliceId);
 			}
 		}
 	}
 
-	bool isUnitIsolated(Unit* unit)
+	bool is_unit_isolated(Unit* unit)
 	{
 		u32 allyCount = 0;
 		u32 enemyCount = 0;
@@ -1945,12 +1945,12 @@ namespace scbw
 			u32 offset = scbw::get_overlay_offset(target->id);
 			if (source->id == UnitId::ProtossDemiurge)
 			{
-				target->sprite->createTopOverlay(ImageId::Worship_Small + offset, 0, 0, 0);
+				target->sprite->create_top_overlay(ImageId::Worship_Small + offset, 0, 0, 0);
 				helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
 			}
 			else if (source->id == UnitId::ProtossMindTyrant)
 			{
-				target->sprite->createTopOverlay(ImageId::MindControlHit_Small + offset, 0, 0, 0);
+				target->sprite->create_top_overlay(ImageId::MindControlHit_Small + offset, 0, 0, 0);
 			}
 		}
 	}
@@ -2044,7 +2044,7 @@ namespace scbw
 			|| unitId == UnitId::ProtossStarSovereign;
 	}
 
-	bool unitIdIsResource(u16 unit_id, bool count_gas_structures)
+	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures)
 	{
 		if (count_gas_structures)
 		{
@@ -2175,7 +2175,7 @@ namespace scbw
 			return;
 		}
 
-		UnitArray allied_structures = UnitSearchRadial(victim->position, 40 * 32);
+		UnitArray allied_structures = unit_search_radial(victim->position, 40 * 32);
 		UnitArrayFilter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
 		if (allied_structures.size) {
 			for (u32 i = 0; i < 8; ++i) {
@@ -2212,7 +2212,7 @@ namespace scbw
 	}
 
 	inline UnitArray get_writhing_web_sovroleths(Unit* unit) {
-		UnitArray sovroleths = UnitSearchRadial(unit->position, 8 * 32);
+		UnitArray sovroleths = unit_search_radial(unit->position, 8 * 32);
 		UnitArrayFilter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth}); 
 		return sovroleths;
 	}
@@ -2280,7 +2280,7 @@ namespace scbw
 		scbw::spawn_custom_creep(unit);
 
 		// Remove connected larva
-		UnitArray larvae = UnitSearchRadial(unit->position, 4 * 32);
+		UnitArray larvae = unit_search_radial(unit->position, 4 * 32);
 		UnitArrayFilter(&larvae, unit, 0, {UnitId::ZergLarva});
 		for (u32 i = 0; i < larvae.size; ++i) {
 			Unit* larva = larvae.units[i];
@@ -2295,7 +2295,7 @@ namespace scbw
 			infested_image_id = ImageId::InfestedOverlay_Small;
 		}
 		if (!unit->get_overlay(infested_image_id)) {
-			unit->sprite->createTopOverlay(infested_image_id);
+			unit->sprite->create_top_overlay(infested_image_id);
 		}
 
 		// Spawn effect overlay  TODO: Make this a sprite
@@ -2305,7 +2305,7 @@ namespace scbw
 		} else if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay) {
 			effect_image_id = ImageId::ZergAirDeathExplosion_Large;
 		}
-		unit->sprite->createOverlay(effect_image_id);
+		unit->sprite->create_overlay(effect_image_id);
 
 		// Play Sound
 		helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);

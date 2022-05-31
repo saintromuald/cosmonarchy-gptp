@@ -15,7 +15,7 @@ namespace graphics
 		u16 getHeight() const;
 
 		void drawDot(s32 x, s32 y, ColorId color);
-		void drawLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color);
+		void draw_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color);
 		void drawBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
 		void drawFilledBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
 		void drawCircle(s32 x, s32 y, s32 radius, ColorId color);

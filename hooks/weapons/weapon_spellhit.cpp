@@ -96,7 +96,7 @@ namespace hooks
 
 	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId)
 	{
-		globals.createEffect(EffectId::Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId, attacker);
+		globals.create_effect(EffectId::Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId, attacker);
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
@@ -126,7 +126,7 @@ namespace hooks
 				targetExt = globals.get_unit_ext(target->subunit);
 				overlayUnit = target->subunit;
 			}
-			overlayUnit->sprite->createTopOverlay(overlay, 0, 0, 0);
+			overlayUnit->sprite->create_top_overlay(overlay, 0, 0, 0);
 			targetExt->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
 		});
 	}
@@ -141,7 +141,7 @@ namespace hooks
 		else
 		{
 			// create impact overlay
-			scbw::restoreFunc(target);
+			scbw::restore_func(target);
 		}
 	}
 
@@ -162,7 +162,7 @@ namespace hooks
 			{
 				overlayTargetUnit = target;
 			}
-			(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
+			(overlayTargetUnit->sprite)->create_top_overlay(overlayImageId, 0, 0, 0);
 		}
 
 		// this, added to the fact that target->lockdownTimer is set to 0 before this function, probably prevents lockdown to reset the duration of a previous lock
@@ -183,7 +183,7 @@ namespace hooks
 		{
 			if (bullet->sourceUnit != nullptr)
 			{
-				target->damageWith(bullet->weaponId, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damageDivisor);
+				target->damage_with(bullet->weaponId, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damageDivisor);
 			}
 			else
 			{
@@ -192,7 +192,7 @@ namespace hooks
 		}
 		else
 		{
-			target->damageWith(bullet->weaponId, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damageDivisor);
+			target->damage_with(bullet->weaponId, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damageDivisor);
 		}
 	}
 
@@ -259,7 +259,7 @@ namespace hooks
 					{
 						scbw::doDeconstructionDamage(attacker, weaponId);
 					}
-					target->damageWith(
+					target->damage_with(
 						weaponId,
 						damage,
 						attacker,
@@ -280,7 +280,7 @@ namespace hooks
 				{
 					scbw::doDeconstructionDamage(attacker, weaponId);
 				}
-				target->damageWith(
+				target->damage_with(
 					weaponId,
 					damage,
 					attacker,
@@ -293,7 +293,7 @@ namespace hooks
 			// Cabalist uses silent strike, so the check has to be in weapon damage
 			if (attacker->id != UnitId::ProtossCabalist)
 			{
-				scbw::decloakProc(attacker);
+				scbw::decloak_proc(attacker);
 			}
 		}
 	}
@@ -304,7 +304,7 @@ namespace hooks
 	//		x and y from bullet->sprite->position
 	void EMPShockwaveHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
-		Thingy* emp_sprite = helper::createThingy(371, x, y, 0);
+		Thingy* emp_sprite = helper::create_thingy(371, x, y, 0);
 		if (emp_sprite != nullptr)
 		{
 			emp_sprite->sprite->elevationLevel = 19; // 0x13
@@ -417,7 +417,7 @@ namespace hooks
 			helper::incrementUnitDeathScores(target, attacker->player);
 			if (!(target->status & UnitStatus::IsHallucination))
 			{
-				UnitArray units = UnitSearchRadial(attacker->position, 3 * 32);
+				UnitArray units = unit_search_radial(attacker->position, 3 * 32);
 				UnitArrayFilter(&units, attacker, FilterAlly | FilterIncludingSelf);
 				for (u32 i = 0; i < units.size; ++i) {
 					Unit* unit = units.units[i];
@@ -435,7 +435,7 @@ namespace hooks
 					{
 						unit->healEnergy(power, attacker);
 					}
-					unit->sprite->createUnderlay(ImageId::SmallExplosion_Unused);
+					unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 				}
 			}
 			target->remove();
@@ -446,7 +446,7 @@ namespace hooks
 	// in an unexpected way, it may not contain the correct value.
 	void EnsnareHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
-		Thingy* ensnare_effect_sprite = helper::createThingy(SpriteId::Ensnare, x, y, 0);
+		Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::Ensnare, x, y, 0);
 		if (ensnare_effect_sprite != nullptr)
 		{
 			ensnare_effect_sprite->sprite->elevationLevel = 19; // 0x13
@@ -599,7 +599,7 @@ namespace hooks
 	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		if (attacker) {
-			globals.createEffect(EffectId::PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::PlagueField, 5, attacker->player, attacker);
+			globals.create_effect(EffectId::PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::PlagueField, 5, attacker->player, attacker);
 		}
 		//if (attacker) {
 		//	u32 range = 64;
@@ -630,7 +630,7 @@ namespace hooks
 	// in an unexpected way, it may not contain the correct value.
 	void MaelstromHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
-		Thingy* maelstrom_effect_sprite = helper::createThingy(SpriteId::Maelstrom_Hit, x, y, 0);
+		Thingy* maelstrom_effect_sprite = helper::create_thingy(SpriteId::Maelstrom_Hit, x, y, 0);
 		if (maelstrom_effect_sprite != nullptr)
 		{
 			maelstrom_effect_sprite->sprite->elevationLevel = 17;
@@ -675,7 +675,7 @@ namespace hooks
 	// no bullet because this function is called in another context without bullet
 	void MindControlHitHook(Unit* attacker, Unit* target)
 	{
-		scbw::decloakProc(attacker);
+		scbw::decloak_proc(attacker);
 		if (target->status & UnitStatus::IsHallucination)
 		{
 			target->remove();
@@ -690,7 +690,7 @@ namespace hooks
 	// in an unexpected way, it may not contain the correct value.
 	void StasisFieldHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
-		Thingy* stasisfield_effect_sprite = helper::createThingy(SpriteId::Stasis_Field_Hit, x, y, 0);
+		Thingy* stasisfield_effect_sprite = helper::create_thingy(SpriteId::Stasis_Field_Hit, x, y, 0);
 		if (stasisfield_effect_sprite != nullptr)
 		{
 			stasisfield_effect_sprite->sprite->elevationLevel = 17; // 0x11
@@ -751,7 +751,7 @@ namespace hooks
 				finalUnit = unit;
 			}
 			u16 overlayImageId = ImageId::StasisField_Small + scbw::get_overlay_offset(unit->id);
-			unit->sprite->createOverlay(overlayImageId, 0, 0, 0);
+			unit->sprite->create_overlay(overlayImageId, 0, 0, 0);
 			unit->status |= UnitStatus::Invincible; // remove
 		}
 		u8 finalTimer = unit->stasisTimer;
@@ -852,7 +852,7 @@ LABEL_15:
 			helper::play_sound_from_unit(388, v1, 1, 0);
 			if (!(*CHEAT_STATE & 0x800))
 			{
-				v1->spendUnitEnergy(techdata_dat::EnergyCost[4] * 256);
+				v1->spend_unit_energy(techdata_dat::EnergyCost[4] * 256);
 			}
 			helper::to_idle(v1);
 		}

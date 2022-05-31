@@ -19,8 +19,8 @@ namespace hooks
 		returnValue = false;
 		if (returnValue)
 		{
-			unitMaxHp = unit->getMaxHpInGame();
-			unitHpTest = unit->getCurrentHpInGame();
+			unitMaxHp = unit->get_max_hp_ingame();
+			unitHpTest = unit->get_current_hp_ingame();
 			// if HP/maxHP higher or equal than 50%, not damaged enough
 			if (((100 * unitHpTest) / unitMaxHp) >= 50)
 			{
@@ -143,7 +143,7 @@ namespace hooks
 
 					if (infestationOverlayId < ImageId::None)
 					{
-						unitInfested->sprite->createOverlay(infestationOverlayId);
+						unitInfested->sprite->create_overlay(infestationOverlayId);
 					}
 					unitInfested->setHp(units_dat::MaxHitPoints[infestedUnitNewId]);
 

@@ -75,15 +75,15 @@ namespace hooks
 			posX = attacker->get_x();
 			posY = attacker->get_y();
 		}
-		auto newAngle = scbw::getAngle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
-		helper::createBullet(weaponId, attacker, posX, posY, attacker->player, newAngle);
+		auto newAngle = scbw::get_angle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
+		helper::create_bullet(weaponId, attacker, posX, posY, attacker->player, newAngle);
 		if (attackerExt->values[ValueDeconstruction])
 		{
 			scbw::doDeconstructionDamage(attacker, weaponId, false);
 		}
 	}
 
-	bool fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags, bool ignoreMain)
+	bool fire_multiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags, bool ignoreMain)
 	{
 		bool fired = false;
 		std::unordered_set<Unit*> targets;
@@ -170,8 +170,8 @@ namespace hooks
 		{
 			s32 forwardOffset = weapons_dat::ForwardOffset[weaponId];
 
-			x = unit->get_x() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
-			y = unit->get_y() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
+			x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->currentDirection1);
+			y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->currentDirection1)
 				- weapons_dat::VerticalOffset[weaponId];
 		}
 
@@ -180,7 +180,7 @@ namespace hooks
 		// It is a melee unit, so this check is just a failsafe
 		if (unit->id != UnitId::ProtossCabalist)
 		{
-			scbw::decloakProc(unit);
+			scbw::decloak_proc(unit);
 		}
 
 		if (weapons_dat::FlingyId[weaponId] != 0)
@@ -190,9 +190,9 @@ namespace hooks
 			{
 				unitExt->timers[TimerLurkerETA] = 17;
 				auto range = weapons_dat::MaxRange[weaponId] + 16;
-				s32 angle = scbw::getAngle(unit->get_x(), unit->get_y(), unit->orderTarget.unit->get_x(), unit->orderTarget.unit->get_y());
-				s32 targ_x = unit->get_x() + scbw::getPolarX(range, angle);
-				s32 targ_y = unit->get_y() + scbw::getPolarY(range, angle);
+				s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), unit->orderTarget.unit->get_x(), unit->orderTarget.unit->get_y());
+				s32 targ_x = unit->get_x() + scbw::get_polar_x(range, angle);
+				s32 targ_y = unit->get_y() + scbw::get_polar_y(range, angle);
 				unitExt->values[ValueSpineX] = targ_x;
 				unitExt->values[ValueSpineY] = targ_y;
 				if (unit->orderTarget.unit != nullptr)
@@ -278,10 +278,10 @@ namespace hooks
 							if (unit->energy == unit->getMaxEnergy())
 							{
 								unitExt->values[ValuePhobosDischarge] = 1;
-								unit->groundWeaponCooldown = getModifiedWeaponCooldownHook(unit, WeaponId::PhobosArgosLaserBatteries);
-								unit->airWeaponCooldown = getModifiedWeaponCooldownHook(unit, WeaponId::PhobosArgosLaserBatteries);
+								unit->groundWeaponCooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
+								unit->airWeaponCooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
 								helper::play_sound_from_unit(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
-								unit->sprite->createOverlay(ImageId::OpticalFlareHit_Large);
+								unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
 							}
 						}
 						scbw::setMissileSourcePos(unit, weaponId, ValuePhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
@@ -313,7 +313,7 @@ namespace hooks
 						auto rotate = unitExt->values[ValueSalamanderAtkPos];
 						if (rotate == 1)
 						{
-							helper::createBullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
+							helper::create_bullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
 						}
 						else
 						{
@@ -329,7 +329,7 @@ namespace hooks
 					case WeaponId::MinotaurAsterionLaserBattery:
 					{
 						// Monoceros Targeting - Minotaur
-						fireMultiple(unit, unitExt, weaponId, 5, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, unitExt, weaponId, 5, Flags::Enemy | Flags::FrontalArc);
 					} break;
 					case WeaponId::SirenCharybdalRifle:
 					{
@@ -357,24 +357,24 @@ namespace hooks
 						}
 
 						// Tertiary Eyes - Siren
-						fireMultiple(unit, unitExt, weaponId, 1 + count, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, unitExt, weaponId, 1 + count, Flags::Enemy | Flags::FrontalArc);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles:
 					{
 						// Madrigal Furia Salvo
 						if (unit->orderTarget.unit != nullptr)
 						{
-							fireMultiple(unit, unitExt, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy);
+							fire_multiple(unit, unitExt, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy);
 						}
 					} break;
 					case WeaponId::IzirokorEnergizedBioplasma:
 					{
 						// Crushing Tide - Izirokor
-						fireMultiple(unit, unitExt, weaponId, 3, Flags::Enemy);
+						fire_multiple(unit, unitExt, weaponId, 3, Flags::Enemy);
 					} break;
 					default:
 					{
-						helper::createBullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
+						helper::create_bullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
 					} break;
 				}
 			}
@@ -536,8 +536,8 @@ namespace hooks
 							continue;
 						}
 						bullet->sourceUnit->orderTarget.unit = target;
-						auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
-						auto newBullet = helper::createBullet(WeaponId::ArchitectDispersiveSalvo,
+						auto newAngle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
+						auto newBullet = helper::create_bullet(WeaponId::ArchitectDispersiveSalvo,
 							bullet->sourceUnit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
 						if (newBullet)
 						{
@@ -724,14 +724,14 @@ namespace hooks
 				{
 					// Penumbra - Shroud Piercer - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
-					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					hooks::WeaponBulletHit(bullet, collisionTarget, 2);
 				}
 				else if (bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					// Claymore - Kelvin Munitions - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
-					scbw::createAndInitThingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					hooks::WeaponBulletHit(bullet, collisionTarget, 1);
 
 					// Claymore - Kelvin Munitions - slow pierced targets
@@ -745,7 +745,7 @@ namespace hooks
 					// Kalkalisk behavior
 					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 					auto count = globals.get_multihit_count(bullet);
-					helper::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					collisionTarget->damage_with_custom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
 						weapons_dat::DamageType[WeaponId::KalkaliskViscousAcid],
 						bullet->sourceUnit, bullet->srcPlayer, 0, 1, false);
@@ -1036,7 +1036,7 @@ namespace hooks
 	}
 
 	// Hooked to stop Valkyries from being cucked by lardcode - Pr0nogo
-	Bullet* createBullet(s32 weaponId, Unit* parent, s32 x, s16 y, char playerId, s32 angle) // 0048C260
+	Bullet* create_bullet(s32 weaponId, Unit* parent, s32 x, s16 y, char playerId, s32 angle) // 0048C260
 	{
 		Bullet* pBullet;
 		s32 parentStatus;

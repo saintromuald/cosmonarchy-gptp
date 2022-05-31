@@ -40,11 +40,11 @@ struct Sprite
 	void setPosition(u16 x, u16 y);
 
 	/// Creates an image overlay over the main image of this sprite.
-	Image* createOverlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0);
-	Image* createUnderlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0);
+	Image* create_overlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0);
+	Image* create_underlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0);
 
 	/// Creates an image overlay on top of all other images of this sprite.
-	Image* createTopOverlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0);
+	Image* create_top_overlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0);
 	Image* createTopUnderlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0);
 
 	void playForOverlay(u32 imageId, u8 anim);

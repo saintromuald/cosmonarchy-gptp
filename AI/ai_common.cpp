@@ -113,7 +113,7 @@ namespace AI
 				// specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
 				if (weaponId == WeaponId::Plague)
 				{
-					totalEnemyLife += target->getCurrentHpInGame();
+					totalEnemyLife += target->get_current_hp_ingame();
 				}
 				else
 				// specific to AIEnemyOrganicUnitHPAccumulatorProc @ 0x00440CF0 - used only by Maelstrom

@@ -171,7 +171,7 @@ namespace hooks
 					s32 angle;
 					helper::set_resource_target(unit);
 					helper::set_secondary_waypoint(unit, (unit->orderTarget.unit)->sprite->position.x, (unit->orderTarget.unit)->sprite->position.y);
-					angle = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
+					angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
 					unit->orderTarget.pt.x = (angleDistance[angle].x * 20) / 256 + unit->sprite->position.x;
 					unit->orderTarget.pt.y = (angleDistance[angle].y * 20) / 256 + unit->sprite->position.y;
 					unit->mainOrderState = 7;
@@ -182,13 +182,13 @@ namespace hooks
 			{
 				if (!helper::is_unit_positions_2_equal(unit))
 				{
-					s32 angle = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
+					s32 angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
 					angle = unit->currentDirection1 - angle;
 					if (angle < 0)
 					{
 						angle += 256;
 					}
-					if (angle > weapons_dat::AttackAngle[unit->getGroundWeapon()])
+					if (angle > weapons_dat::AttackAngle[unit->get_ground_weapon()])
 					{
 						jump_to_switch_1 = true;
 					}

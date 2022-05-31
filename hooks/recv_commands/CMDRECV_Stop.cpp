@@ -32,7 +32,7 @@ namespace hooks
 				if (!(current_unit->status & UnitStatus::Completed))
 					*u32_0066FF60 = 0x14;
 				else
-					if (current_unit->isFrozen())
+					if (current_unit->is_frozen())
 					{
 						*u32_0066FF60 = 0x0A;
 					}
@@ -140,7 +140,7 @@ namespace hooks
 				if (!(current_unit->status & UnitStatus::Completed))
 					*u32_0066FF60 = 0x14;
 				else
-					if (current_unit->isFrozen())
+					if (current_unit->is_frozen())
 					{
 						*u32_0066FF60 = 0x0A;
 					}
@@ -252,7 +252,7 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x14;
 			}
-			else if (current_unit->isFrozen())
+			else if (current_unit->is_frozen())
 			{
 				*u32_0066FF60 = 0x0A;
 			}

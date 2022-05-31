@@ -35,12 +35,12 @@ void augurProc(Unit* augur, s32 radius) {
 			}
 			return true;
 		});
-	Thingy* thingy = helper::createThingy(SpriteId::AugurDeathExplosion, augur->get_x(), augur->get_y(), augur->player);
-	helper::play_sound_from_unit(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
+	Thingy* thingy = helper::create_thingy(SpriteId::AugurDeathExplosion, augur->get_x(), augur->get_y(), augur->player);
+	helper::play_sound_from_unit(scbw::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
 	if (target)
 	{
 		augur->orderTarget.unit = target;
-		helper::createBullet(WeaponId::AugurFinalHour, augur, augur->get_x(), augur->get_y(), augur->player, scbw::getAngle(augur->get_x(), augur->get_y(), target->get_x(), target->get_y()));
+		helper::create_bullet(WeaponId::AugurFinalHour, augur, augur->get_x(), augur->get_y(), augur->player, scbw::get_angle(augur->get_x(), augur->get_y(), target->get_x(), target->get_y()));
 	}
 }
 
@@ -233,7 +233,7 @@ void unit_destructor_special_cases(Unit* unit)
 		{
 			case UnitId::SharedAspirant:
 			{
-				globals.createEffect(EffectId::Criticality, 10 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
+				globals.create_effect(EffectId::Criticality, 10 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
 			} break;
 			case UnitId::ProtossClarion:
 			{
@@ -329,7 +329,7 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	{ // Spellcaster - restore energy on ally kill
-		UnitArray unit_array = UnitSearchRadial(unit->position, 11 * 32);
+		UnitArray unit_array = unit_search_radial(unit->position, 11 * 32);
 		UnitArrayFilter(&unit_array, unit, FilterEnemy | FilterSpellcaster);
 
 		for (u32 i = 0; i < unit_array.size; ++i)
@@ -372,7 +372,7 @@ void unit_destructor_special_cases(Unit* unit)
 	{
 		unit->orderTarget.pt.x = unit->position.x + 1;
 		unit->orderTarget.pt.y = unit->position.y;
-		auto bullet = helper::createBullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unitExt->values[ValueAlkajeliskParasitePlayer], 0);
+		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unitExt->values[ValueAlkajeliskParasitePlayer], 0);
 		if (bullet != nullptr)
 		{
 			bullet->time_remaining = 255;
@@ -382,20 +382,20 @@ void unit_destructor_special_cases(Unit* unit)
 	// Madrigal - Dirge
 	if (unitExt->timers[TimerDirgeFuse])
 	{
-		scbw::dirgeFuse(unit, unitExt);
+		scbw::madrigal_dirge_fuse(unit, unitExt);
 	}
 
 	// Apostle Lazarus Agent - imply revive
 	if (unitExt->values[ValueLazarusAgent] || unitExt->timers[TimerAnticthonRevive])
 	{
-		scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
+		scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
 	}
 
 	// Nuclear Silo - death
 	if (unit->id == UnitId::TerranNuclearSilo && unit->building.silo.isReady && !unitExt->timers[ControlledDemolitionTimer])
 	{
-		scbw::createAndInitThingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
-		helper::createBullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);
+		scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
+		helper::create_bullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);
 	}
 
 	// Apostle Last Breath behavior
@@ -421,7 +421,7 @@ void unit_destructor_special_cases(Unit* unit)
 				return;
 			}
 			target->healEnergy(ApostleLastBreathEnergyGain);
-			target->sprite->createUnderlay(ImageId::SmallExplosion_Unused);
+			target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 		});
 	}
 
@@ -438,7 +438,7 @@ void unit_destructor_special_cases(Unit* unit)
 		{
 			if (unit->parasiteFlags & (1 << player) && unitExt->timers[TimerParasiteArm] <= 1)
 			{
-				scbw::createUnitFromAbility(type, supplyCount, player, unit->position.x, unit->position.y, 720);
+				scbw::create_unit_from_ability(type, supplyCount, player, unit->position.x, unit->position.y, 720);
 			}
 		}
 	}
@@ -446,7 +446,7 @@ void unit_destructor_special_cases(Unit* unit)
 	// Metastasis - Plague spreads when a unit dies
 	if (unit->plagueTimer)
 	{
-		helper::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->currentDirection1);
+		helper::create_bullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->currentDirection1);
 		u32 range = 48;
 		Box16 coords = {};
 		coords.left   = unit->position.x - range;

@@ -27,7 +27,7 @@ bool Unit::canDetect() const
 	return result != 0;
 }
 
-u32 Unit::getCurrentHpInGame() const
+u32 Unit::get_current_hp_ingame() const
 {
 	assert(this);
 	return (this->hitPoints + 255) >> 8;
@@ -44,9 +44,9 @@ u32 Unit::get_current_life_ingame() const
 {
 	assert(this);
 	if (units_dat::ShieldsEnabled[this->id])
-		return getCurrentHpInGame() + getCurrentShieldsInGame();
+		return get_current_hp_ingame() + getCurrentShieldsInGame();
 	else
-		return getCurrentHpInGame();
+		return get_current_hp_ingame();
 }
 
 s32 Unit::maxShields() const
@@ -62,7 +62,7 @@ bool Unit::shieldsEnabled() const
 }
 
 //Identical to function @ 0x00475AD0
-u8 Unit::getGroundWeapon() const
+u8 Unit::get_ground_weapon() const
 {
 	assert(this);
 	if (this->id == UnitId::ZergLakizilisk && !(this->status & UnitStatus::Burrowed))
@@ -123,14 +123,14 @@ u16 Unit::getMaxEnergy() const
 }
 
 //Similar to function @ 0x00401400
-u32 Unit::getMaxHpInGame() const
+u32 Unit::get_max_hp_ingame() const
 {
 	assert(this);
 
 	u32 maxHp = units_dat::MaxHitPoints[this->id];
 	if (maxHp == 0)
 	{
-		maxHp = this->getCurrentHpInGame();
+		maxHp = this->get_current_hp_ingame();
 		if (maxHp == 0)
 		{
 			maxHp = 1;
@@ -164,7 +164,7 @@ u32 Unit::getMaxShieldsInGame() const
 	return maxShields;
 }
 
-u32 Unit::getMaxHpRaw() const
+u32 Unit::get_max_hp_raw() const
 {
 	assert(this);
 	return units_dat::MaxHitPoints[this->id];
@@ -187,7 +187,7 @@ u8 Unit::getSpellCountdown() const
 }
 
 extern const u32 Func_GetMaxWeaponRange = 0x00475870;
-u32 Unit::getMaxWeaponRange(u8 weaponId) const
+u32 Unit::get_max_weapon_range(u8 weaponId) const
 {
 	assert(this);
 
@@ -262,7 +262,7 @@ RaceId::Enum Unit::get_race(u16 unitId)
 }
 
 extern const u32 Func_GetSeekRange = 0x00476000;
-u8 Unit::getSeekRange() const
+u8 Unit::get_seek_range() const
 {
 	assert(this);
 
@@ -319,7 +319,7 @@ bool Unit::hasWeapon() const
 {
 	assert(this);
 
-	if (this->getGroundWeapon() != WeaponId::None
+	if (this->get_ground_weapon() != WeaponId::None
 		|| this->getAirWeapon() != WeaponId::None)
 		return true;
 
@@ -341,7 +341,7 @@ bool Unit::hasWeapon() const
 
 	if (this->subunit)
 	{
-		if (this->subunit->getGroundWeapon() != WeaponId::None
+		if (this->subunit->get_ground_weapon() != WeaponId::None
 			|| this->subunit->getAirWeapon() != WeaponId::None)
 		{
 			return true;
@@ -352,7 +352,7 @@ bool Unit::hasWeapon() const
 }
 
 //Identical to function @ 0x004020B0
-bool Unit::isFrozen() const
+bool Unit::is_frozen() const
 {
 	assert(this);
 	return
@@ -484,7 +484,7 @@ void Unit::setHp(s32 hitPoints)
 void Unit::heal(s32 hitPoints, Unit* source, bool restore)
 {
 	assert(this);
-	if (this->hitPoints == this->getMaxHpRaw()) // If unit is fully healed already, skip healing
+	if (this->hitPoints == this->get_max_hp_raw()) // If unit is fully healed already, skip healing
 	{
 		return;
 	}
@@ -495,12 +495,12 @@ void Unit::heal(s32 hitPoints, Unit* source, bool restore)
 		hitPoints *= 2;
 	}
 
-	setHp(std::min((u32)this->hitPoints + hitPoints, this->getMaxHpRaw()));
+	setHp(std::min((u32)this->hitPoints + hitPoints, this->get_max_hp_raw()));
 
 	// If the unit is fully healed after this, clear any debuffs
-	if (this->hitPoints == this->getMaxHpRaw() && restore)
+	if (this->hitPoints == this->get_max_hp_raw() && restore)
 	{
-		scbw::restoreFunc(this);
+		scbw::restore_func(this);
 	}
 }
 
@@ -518,14 +518,14 @@ void Unit::healShields(s32 shields, Unit* source, bool restore)
 	// If heals to full clear debuffs
 	if (this->shields == this->getMaxShieldsRaw() && restore)
 	{
-		scbw::restoreFunc(this);
+		scbw::restore_func(this);
 	}
 }
 
 void Unit::healOverflow(s32 amount, Unit* source, bool restore)
 {
 	heal(amount, source, restore);
-	s32 shields = this->hitPoints + amount - getMaxHpRaw();
+	s32 shields = this->hitPoints + amount - get_max_hp_raw();
 	if (shields > 0)
 	{
 		healShields(shields, source, restore);
@@ -553,7 +553,7 @@ void Unit::healEnergy(s32 energy, Unit* source)
 }
 
 const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
-void Unit::damageWith(u8 weaponId, s32 damage, Unit* attacker, u8 attackingPlayer, s8 direction, u8 damageDivisor)
+void Unit::damage_with(u8 weaponId, s32 damage, Unit* attacker, u8 attackingPlayer, s8 direction, u8 damageDivisor)
 {
 	assert(this);
 	assert(weaponId < WEAPON_TYPE_COUNT);
@@ -630,14 +630,14 @@ void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool noti
 			this->sprite->mainGraphic->id));
 
 		u32 frameAngle = (direction - 124) / 8 % 32;
-		Point8 offset = shield_lo->getOffset(this->sprite->mainGraphic->direction, frameAngle);
-		this->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
+		Point8 offset = shield_lo->get_offset(this->sprite->mainGraphic->direction, frameAngle);
+		this->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
 	}
-	damageHp(damage, attacker, attackingPlayer, notify);
+	damage_hp(damage, attacker, attackingPlayer, notify);
 }
 
 const u32 Func_DamageUnitHp = 0x004797B0;
-void Unit::damageHp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify)
+void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify)
 {
 	assert(this);
 
@@ -646,7 +646,7 @@ void Unit::damageHp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify
 	auto targetPlayerId = this->player;
 	if (attacker != nullptr)
 	{
-		GPTP::logger << "damageHp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
+		GPTP::logger << "damage_hp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
 			<< "), target (" << targetId << "), targetPlayerId (" << targetPlayerId << "))" << std::endl;
 	}
 
@@ -708,7 +708,7 @@ void Unit::reduce_defensive_matrix_hp(s32 amount)
 	{
 		Unit* unit = this->subunit ? this->subunit : this;
 		// getUnitOverlayAdjustment code was hardcoded into function in original code)
-		unit->sprite->createTopOverlay(scbw::getUnitOverlayAdjustment(unit) + ImageId::DefensiveMatrixHit_Small);
+		unit->sprite->create_top_overlay(scbw::getUnitOverlayAdjustment(unit) + ImageId::DefensiveMatrixHit_Small);
 	}
 
 }
@@ -792,7 +792,7 @@ void Unit::removeAcidSpores()
 
 /// Identical to Unit__SpendEnergy @ 0x00491460
 /// May underflow if alone
-void Unit::spendUnitEnergy(u32 energySpent)
+void Unit::spend_unit_energy(u32 energySpent)
 {
 	UnitExt* unitExt = globals.get_unit_ext(this);
 	if (!(*CHEAT_STATE & CheatFlags::TheGathering))

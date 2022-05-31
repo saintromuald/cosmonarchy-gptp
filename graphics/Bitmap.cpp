@@ -288,7 +288,7 @@ namespace graphics
 		this->drawDotUnsafe(x, y, color);
 	}
 
-	void Bitmap::drawLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color)
+	void Bitmap::draw_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color)
 	{
 		//If horizontal
 		if (y1 == y2)

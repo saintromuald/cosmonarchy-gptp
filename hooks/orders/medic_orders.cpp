@@ -174,7 +174,7 @@ namespace hooks
 						helper::move_to_target(acquired, cleric);
 						return 3;
 					}
-					scbw::decloakProc(cleric);
+					scbw::decloak_proc(cleric);
 					target->heal(ClericHealValue, cleric);
 					return 1;
 				}
@@ -276,7 +276,7 @@ namespace hooks
 			|| target->player >= 8
 			|| medic->player >= 8
 			|| target->hitPoints >= units_dat::MaxHitPoints[type]
-			|| target->isFrozen()
+			|| target->is_frozen()
 			|| targetExt->values[TimerReviveFlagClearMax])
 		{
 			return 0;

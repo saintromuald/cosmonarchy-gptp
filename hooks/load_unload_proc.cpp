@@ -69,8 +69,8 @@ namespace hooks
 			unitRaceId = RaceId::Neutral;
 		}
 
-		scbw::decloakProc(transport);
-		scbw::decloakProc(cargo_unit);
+		scbw::decloak_proc(transport);
+		scbw::decloak_proc(cargo_unit);
 		helper::play_sound_from_unit(SoundId::Misc_ZOvTra00_wav + unitRaceId, transport, 1, 0);
 		if (cargo_unit->id == UnitId::TerranMason)
 		{
@@ -262,7 +262,7 @@ namespace hooks
 				{
 					if (transport->id == UnitId::TerranTrojan)
 					{
-						if (transport->get_current_life_ingame() <= (transport->getMaxHpInGame() * 0.5))
+						if (transport->get_current_life_ingame() <= (transport->get_max_hp_ingame() * 0.5))
 						{
 							transport->mainOrderTimer = 7;
 						}
@@ -317,8 +317,8 @@ namespace hooks
 							}
 						}
 					}
-					scbw::decloakProc(unit->connectedUnit);
-					scbw::decloakProc(unit);
+					scbw::decloak_proc(unit->connectedUnit);
+					scbw::decloak_proc(unit);
 					scbw::set_unit_position(unit, pos.x, pos.y);
 					if (unit->subunit != nullptr)
 					{
@@ -368,7 +368,7 @@ namespace hooks
 					{ // 004E806B
 						if (unit->id != UnitId::ProtossAccantor)
 						{
-							u8 weaponId = unit->getGroundWeapon();
+							u8 weaponId = unit->get_ground_weapon();
 							if (weaponId != WeaponId::None)
 							{
 								unit->groundWeaponCooldown = helper::getUpgradedWpnCooldown(unit, weaponId);

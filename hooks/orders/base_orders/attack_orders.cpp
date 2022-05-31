@@ -184,7 +184,7 @@ namespace hooks
 		}
 
 		// 004779AE:
-		if (unit->isFrozen()
+		if (unit->is_frozen()
 			|| target == nullptr
 			|| target->status & UnitStatus::Invincible
 			|| target->sprite->flags & SpriteFlags::Hidden
@@ -294,7 +294,7 @@ namespace hooks
 				}
 				else
 				{
-					current_unit_weaponId = current_unit->getGroundWeapon();		// 00477AE6
+					current_unit_weaponId = current_unit->get_ground_weapon();		// 00477AE6
 				}
 				if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 				{
@@ -334,7 +334,7 @@ namespace hooks
 					else
 					{
 						// 00477B5F:
-						u32 result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxSiegeModeTurret]);
+						u32 result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::GroundWeapon[UnitId::TerranPhalanxSiegeModeTurret]);
 						if (!helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange))
 						{
 							jump_to_77BD7 = true;
@@ -342,7 +342,7 @@ namespace hooks
 						else
 						{
 							// 00477B77:
-							result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxTankModeTurret]);
+							result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::GroundWeapon[UnitId::TerranPhalanxTankModeTurret]);
 
 							if (helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange)
 								|| helper::isUnitCritter(target))
@@ -387,7 +387,7 @@ namespace hooks
 								}
 								else
 								{
-									current_unit_weaponId = current_unit->getGroundWeapon(); // include the lurker special case so it's ok
+									current_unit_weaponId = current_unit->get_ground_weapon(); // include the lurker special case so it's ok
 								}
 								if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 								{
@@ -407,7 +407,7 @@ namespace hooks
 									else
 									{
 										// 00477C63:
-										if (helper::is_target_within_min_movement_range(current_unit, target, unit->getMaxWeaponRange(current_unit_weaponId)))
+										if (helper::is_target_within_min_movement_range(current_unit, target, unit->get_max_weapon_range(current_unit_weaponId)))
 										{
 											jump_to_77CA1 = true;
 										}
@@ -495,7 +495,7 @@ namespace hooks
 			unit->orderTarget.pt.y = target->sprite->position.y;
 		}
 		// 00477D42:
-		if (unit->isFrozen()
+		if (unit->is_frozen()
 			|| target == nullptr
 			|| target->status & UnitStatus::Invincible
 			|| target->sprite->flags & SpriteFlags::Hidden
@@ -564,7 +564,7 @@ namespace hooks
 					}
 					else
 					{
-						currentWeaponId = current_unit->getGroundWeapon();
+						currentWeaponId = current_unit->get_ground_weapon();
 					}
 					if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 					{

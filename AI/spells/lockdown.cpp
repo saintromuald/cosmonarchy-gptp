@@ -48,7 +48,7 @@ namespace AI
 				return false;
 			}
 
-			if (target->isFrozen())
+			if (target->is_frozen())
 			{
 				return false;
 			}

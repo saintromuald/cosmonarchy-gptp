@@ -39,7 +39,7 @@ namespace hooks
 			}
 
 			// Create the Recall animation over the unit
-			//Thingy* recall_effect_sprite = helper::createThingy(SpriteId::Recall_Field, new_pos.x, new_pos.y, 0);
+			//Thingy* recall_effect_sprite = helper::create_thingy(SpriteId::Recall_Field, new_pos.x, new_pos.y, 0);
 			//if (recall_effect_sprite)
 			//{
 			//	recall_effect_sprite->sprite->elevationLevel = target->sprite->elevationLevel + 1;
@@ -121,10 +121,10 @@ namespace hooks
 					Point16 center = {unit->position.x, unit->position.y};
 					Point16 top = center;
 					top.y -= 3 * 32;
-					scbw::createAndInitThingy(SpriteId::RecallFieldShorter, center.x, center.y, unit->player, unit->sprite->elevationLevel - 1);
+					scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, center.x, center.y, unit->player, unit->sprite->elevationLevel - 1);
 					for (u32 i = 0; i < 8; ++i) {
 						Point16 next = scbw::rotate_point(center, top, i * (360 / 8));
-						scbw::createAndInitThingy(SpriteId::RecallFieldShorter, next.x, next.y, unit->player, unit->sprite->elevationLevel - 1);
+						scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, next.x, next.y, unit->player, unit->sprite->elevationLevel - 1);
 					}
 				}
 				unit->order_to_idle();
@@ -139,7 +139,7 @@ namespace hooks
 				unit->order_to_idle();
 			} else {
 				if (!scbw::isCheatEnabled(CheatFlags::TheGathering)) {
-					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::Recall] * 256);
+					unit->spend_unit_energy(techdata_dat::EnergyCost[TechId::Recall] * 256);
 				}
 
 				if (unit->orderTarget.unit) {
@@ -147,8 +147,8 @@ namespace hooks
 					unit->orderTarget.pt.y = unit->orderTarget.unit->sprite->position.y;
 				}
 
-				scbw::createAndInitThingy(SpriteId::Recall_Field, unit->position.x, unit->position.y, unit->player, unit->sprite->elevationLevel - 1);
-				scbw::createAndInitThingy(SpriteId::Recall_Field, unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->player, unit->sprite->elevationLevel + 1);
+				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->position.x, unit->position.y, unit->player, unit->sprite->elevationLevel - 1);
+				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->player, unit->sprite->elevationLevel + 1);
 
 				u32 random_value = 0;
 				if (*IS_IN_GAME_LOOP) {
@@ -178,7 +178,7 @@ namespace hooks
 				helper::playSoundAtPos(sound_id_source, unit->position.x, unit->position.y, 1, 0);
 				helper::playSoundAtPos(sound_id_target, unit->orderTarget.pt.x, unit->orderTarget.pt.y, 1, 0);
 
-				scbw::decloakProc(unit);
+				scbw::decloak_proc(unit);
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 				unit->mainOrderTimer = 3 * 24; // used to be 22
 				unit->mainOrderState = 1;

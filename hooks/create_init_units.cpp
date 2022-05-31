@@ -82,7 +82,7 @@ namespace hooks
 			{
 				helper::update_unit_strength(created_unit);
 			}
-			if (helper::spreadsCreep(created_unit->id, 1)
+			if (helper::spreads_creep(created_unit->id, 1)
 				|| units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding)
 			{
 				helper::applyCreepAtLocationFromUnitType(created_unit->sprite->position.x, created_unit->sprite->position.y, created_unit->id);
@@ -310,7 +310,7 @@ namespace hooks
 		}
 		Unit* unit = helper::create_unit(id, x, y, player_id);
 		if (unit) {
-			if (!prevent_creep && (helper::spreadsCreep(unit->id, 1) || units_dat::BaseProperty[id] & UnitProperty::CreepBuilding)) {
+			if (!prevent_creep && (helper::spreads_creep(unit->id, 1) || units_dat::BaseProperty[id] & UnitProperty::CreepBuilding)) {
 				helper::applyCreepAtLocationFromUnitType(unit->sprite->position.x, unit->sprite->position.y, id);
 			}
 			helper::update_unit_stats_and_finish_building(unit);
@@ -349,7 +349,7 @@ namespace hooks
 					&& unit->id != UnitId::ResourceMineralFieldType2
 					&& unit->id != UnitId::ResourceMineralFieldType3
 					&& unit->id != UnitId::ResourceVespeneGeyser) {
-					unit->hitPoints = unit->getMaxHpRaw();
+					unit->hitPoints = unit->get_max_hp_raw();
 					unit->shields = unit->getMaxShieldsRaw();
 					unit->energy = unit->getMaxEnergy();
 

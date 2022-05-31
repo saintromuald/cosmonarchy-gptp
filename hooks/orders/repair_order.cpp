@@ -70,7 +70,7 @@ namespace hooks
 					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 					helper::unitOrderMoveToTargetUnit(unit, target);
 					if (!helper::is_unit_positions_2_equal(unit)) {
-						s32 angle_delta = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
+						s32 angle_delta = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
 						s32 current_angle = unit->currentDirection1 - angle_delta;
 						if (current_angle < 0) {
 							current_angle += 256;
@@ -78,7 +78,7 @@ namespace hooks
 						if (current_angle > 128) {
 							current_angle = 256 - current_angle;
 						}
-						u8 weapon = unit->getGroundWeapon();
+						u8 weapon = unit->get_ground_weapon();
 						if (current_angle <= weapons_dat::AttackAngle[weapon]) {
 							unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 							unit->mainOrderState = 8;
@@ -297,7 +297,7 @@ namespace hooks
 			{
 				if (orderId == OrderId::RallyPoint1 || orderId == OrderId::RallyPoint2 || unit->status & UnitStatus::Completed)
 				{
-					if (unit->isFrozen())
+					if (unit->is_frozen())
 					{
 						*lastInternalError = 10;
 						result = 0;

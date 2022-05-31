@@ -220,7 +220,7 @@ namespace hooks
 			}
 			else
 			{
-				helper::turnUnit(unit, scbw::getAngle(unit->position, node->position));
+				helper::turnUnit(unit, scbw::get_angle(unit->position, node->position));
 				u32 timer = 30;
 				if (node && node->id == UnitId::ResourceVespeneGeyser) {
 					timer = 75;
@@ -267,7 +267,7 @@ namespace hooks
 			&& valid_structure
 			&& (unit->resourceType == ResourceType::None || unit->resourceType & ResourceType::Either))
 		{
-			helper::turnUnit(unit, scbw::getAngle(unit->position, node->position));
+			helper::turnUnit(unit, scbw::get_angle(unit->position, node->position));
 			if (!unit->mainOrderState) {
 				helper::Order_BeginHarvest(node, unit);
 			}

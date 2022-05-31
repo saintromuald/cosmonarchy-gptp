@@ -10,7 +10,7 @@ namespace hooks
 
 	/// Calculates the unit's weapon cooldown, factoring in upgrades and status effects.
 	/// @return	the modified cooldown value.
-	u32 getModifiedWeaponCooldownHook(Unit* unit, u8 weaponId)
+	u32 get_modified_weapon_cooldown(Unit* unit, u8 weaponId)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		u32 cooldown = weapons_dat::Cooldown[weaponId];
@@ -46,7 +46,7 @@ namespace hooks
 		else if (unit->id == UnitId::TerranBlackjack)
 		{
 			const u32 health = unit->hitPoints / 256;
-			const u32 maxHealth = unit->getMaxHpInGame();
+			const u32 maxHealth = unit->get_max_hp_ingame();
 			const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 			cooldown /= multiplier;
 		}
@@ -122,7 +122,7 @@ namespace hooks
 
 	f32 getWeaponCooldownFloat(Unit* unit, u8 weaponId)
 	{
-		return getModifiedWeaponCooldownHook(unit, weaponId) / 24.0f;
+		return get_modified_weapon_cooldown(unit, weaponId) / 24.0f;
 	}
 
 	f32 getCurrentDPS(Unit* unit, u8 weaponId)

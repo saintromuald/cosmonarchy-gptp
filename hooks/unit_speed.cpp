@@ -149,8 +149,8 @@ namespace hooks
 					return false;
 				}
 
-				Vector32 diff = scbw::getVectorBetweenPoints(enemy->position, unit->position);
-				Vector32f target = scbw::getNormalizedVector(diff);
+				Vector32 diff = scbw::get_vector_between_points(enemy->position, unit->position);
+				Vector32f target = scbw::get_normalized_vector(diff);
 				f32 dot = scbw::getDotProduct(dir, target);
 
 				if (dot < 0)
@@ -203,7 +203,7 @@ namespace hooks
 						{
 							return;
 						}
-						u16 angle = scbw::getAngle(unit->position.x, unit->position.y,
+						u16 angle = scbw::get_angle(unit->position.x, unit->position.y,
 							target->position.x, target->position.y);
 						u16 unit_angle = unit->velocityDirection1;
 						s32 arc = (f64)60 / 1.40625;
@@ -248,7 +248,7 @@ namespace hooks
 			{
 				// Blackjack Wear and Tear: reduce movement speed based on missing health
 				const u32 health = unit->hitPoints / 256;
-				const u32 maxHealth = unit->getMaxHpInGame();
+				const u32 maxHealth = unit->get_max_hp_ingame();
 				const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 				speed *= multiplier;
 			} break;

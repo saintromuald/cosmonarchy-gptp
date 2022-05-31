@@ -210,17 +210,17 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius)
 		result.forward_pos = unit->position;
 		result.forward_pos.x += KiteOffsets[result.forward_index].x * MoveRadius;
 		result.forward_pos.y += KiteOffsets[result.forward_index].y * MoveRadius;
-		result.forward_pos = scbw::clampPoint(result.forward_pos);
+		result.forward_pos = scbw::clamp_point(result.forward_pos);
 
 		result.backward_pos = unit->position;
 		result.backward_pos.x += KiteOffsets[result.backward_index].x * MoveRadius;
 		result.backward_pos.y += KiteOffsets[result.backward_index].y * MoveRadius;
-		result.backward_pos = scbw::clampPoint(result.backward_pos);
+		result.backward_pos = scbw::clamp_point(result.backward_pos);
 
 		result.strafe_pos = unit->position;
 		result.strafe_pos.x += KiteOffsets[result.strafe_index].x * MoveRadius;
 		result.strafe_pos.y += KiteOffsets[result.strafe_index].y * MoveRadius;
-		result.strafe_pos = scbw::clampPoint(result.strafe_pos);
+		result.strafe_pos = scbw::clamp_point(result.strafe_pos);
 	}
 	return result;
 }
@@ -246,18 +246,18 @@ static u8 get_max_weapon_cooldown(Unit* unit)
 		return 1;
 	}
 
-	u32 ground_weapon = unit->getGroundWeapon();
+	u32 ground_weapon = unit->get_ground_weapon();
 	u32 ground_cooldown = 0;
 	if (ground_weapon != WeaponId::None)
 	{
-		ground_cooldown = hooks::getModifiedWeaponCooldownHook(unit, ground_weapon);
+		ground_cooldown = hooks::get_modified_weapon_cooldown(unit, ground_weapon);
 	}
 
 	u32 air_weapon = unit->getAirWeapon();
 	u32 air_cooldown = 0;
 	if (air_weapon != WeaponId::None)
 	{
-		air_cooldown = hooks::getModifiedWeaponCooldownHook(unit, air_weapon);
+		air_cooldown = hooks::get_modified_weapon_cooldown(unit, air_weapon);
 	}
 
 	return std::max(ground_cooldown, air_cooldown);
@@ -339,7 +339,7 @@ static s32 get_target_cost(Unit* source, Unit* target)
 	}
 
 	// Value detected hallucinated enemies less
-	if (helper::getDetectingPlayers(target) & 1 << target->player && target->status & UnitStatus::IsHallucination) {
+	if (helper::get_detecting_players(target) & 1 << target->player && target->status & UnitStatus::IsHallucination) {
 		cost += 25;
 	}
 
@@ -363,7 +363,7 @@ static s32 get_target_cost(Unit* source, Unit* target)
 		}
 		else
 		{
-			weapon_id = target->getGroundWeapon();
+			weapon_id = target->get_ground_weapon();
 		}
 		f32 multiplier = weapons_dat::InnerSplashRadius[weapon_id] ? 1.5 : 1;
 		cost -= hooks::getCurrentDPS(target, weapon_id) * multiplier;
@@ -402,7 +402,7 @@ static s32 get_target_cost(Unit* source, Unit* target)
 		}
 		else
 		{
-			weapon_id = source->getGroundWeapon();
+			weapon_id = source->get_ground_weapon();
 		}
 
 		// Value dark swarm immune units way less
@@ -503,7 +503,7 @@ static bool unit_could_kite(Unit* unit)
 
 	return in_combat
 		&& unit->hasWeapon()
-		&& !unit->isFrozen()
+		&& !unit->is_frozen()
 		&& unit->status & UnitStatus::Completed
 		&& !(unit->movementFlags & MovementFlags::StartingAttack)	
 		// Special units
@@ -741,7 +741,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 							}
 							else
 							{
-								weapon_id = context->getGroundWeapon();
+								weapon_id = context->get_ground_weapon();
 							}
 							target_has_min_range = weapons_dat::MinRange[weapon_id]
 								|| weapons_dat::ExplosionType[weapon_id] == WeaponEffect::SplashRadial;
@@ -859,7 +859,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	}
 	else
 	{
-		weapon_id = target->getGroundWeapon();
+		weapon_id = target->get_ground_weapon();
 	}
 	f32 multiplier = weapons_dat::InnerSplashRadius[weapon_id] ? 1.5 : 1;
 	cost -= hooks::getCurrentDPS(target, weapon_id) * multiplier;
@@ -1027,7 +1027,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 						{
 							priority /= 4;
 						}
-						auto weapon = u->getGroundWeapon();
+						auto weapon = u->get_ground_weapon();
 						if (weapon != WeaponId::None)
 						{
 							if (weapons_dat::MaxRange[weapon] >= 64)
@@ -1198,14 +1198,14 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 			}
 		}
 		else if (unit->id == UnitId::ZergAkistrokor && unit->mainOrderId != OrderId::BlissfulEmbrace) {
-			UnitArray targets = UnitSearchRadial(unit->position, 512 * 32);
+			UnitArray targets = unit_search_radial(unit->position, 512 * 32);
 			UnitArrayFilter(&targets, unit, FilterEnemy | FilterBuilding);
 
 			f32 min_cost = FLT_MAX;
 			Unit* best_target = 0;
 			for (u32 i = 0; i < targets.size; ++i) {
 				Unit* target = targets.units[i];
-				if (target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
+				if (target->hitPoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
 					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon)) {
 					f32 cost = get_blissful_embrace_target_cost(unit, target);
 					if (cost < min_cost) {

@@ -16,7 +16,7 @@ namespace graphics
 	s32 shapeCount = 0;
 	s32 stringCount = 0;
 
-	void resetAllGraphics()
+	void reset_all_graphics()
 	{
 		shapeCount = 0;
 		stringCount = 0;
@@ -50,7 +50,7 @@ namespace graphics
 		shapes[shapeCount++].setDot(x, y, color, ct);
 	}
 
-	void drawLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct)
+	void draw_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct)
 	{
 		if (shapeCount >= MAX_SHAPES)
 		{

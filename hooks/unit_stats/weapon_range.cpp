@@ -5,7 +5,7 @@
 namespace hooks
 {
 	// Returns the modified seek range (AKA target acquisition range) for the unit.
-	// This hook affects the behavior of Unit::getSeekRange().
+	// This hook affects the behavior of Unit::get_seek_range().
 	// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
 	u8 getSeekRangeHook(Unit* unit, Unit* target) // seek range is measured in tiles, unfortunately
 	{
@@ -42,7 +42,7 @@ namespace hooks
 		}
 
 		// Ignore bonus range for melee units
-		if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32)
+		if (weapons_dat::MaxRange[unit->get_ground_weapon()] <= 32)
 		{
 			bonusAmount = 0;
 		}
@@ -66,7 +66,7 @@ namespace hooks
 	};
 
 	// Returns the modified max range for the weapon, which is assumed to be attached to the given unit.
-	// This hook affects the behavior of Unit::getMaxWeaponRange().
+	// This hook affects the behavior of Unit::get_max_weapon_range().
 	// Note: Weapon ranges are measured in pixels.
 	u32 getMaxWeaponRangeHook(Unit* unit, u8 weaponId, Unit* target)
 	{

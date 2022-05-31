@@ -106,7 +106,7 @@ namespace hooks
 		helper::increment_unit_scores_ex(v1, 1, 1);
 		if (units_dat::BaseProperty[(u16)v1->id] & UnitProperty::PermanentCloak)
 		{
-			helper::AnimCloak(v1, 273);
+			helper::anim_cloak(v1, 273);
 		}
 
 		v3 = v1->id;

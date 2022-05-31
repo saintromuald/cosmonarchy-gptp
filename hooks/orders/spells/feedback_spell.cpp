@@ -19,7 +19,7 @@ namespace hooks
 				{
 					u8 overlaySize = scbw::hasOverlay(target);
 					helper::replace_feedback_sprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
-					unit->spendUnitEnergy(techCost);
+					unit->spend_unit_energy(techCost);
 					target->remove();
 					unit->order_to_idle();
 				}
@@ -32,9 +32,9 @@ namespace hooks
 					}
 					else
 					{
-						target->damageWith(WeaponId::Feedback, target->energy, unit, unit->player, 1, 1);
+						target->damage_with(WeaponId::Feedback, target->energy, unit, unit->player, 1, 1);
 						target->energy = 0;
-						unit->spendUnitEnergy(techCost);
+						unit->spend_unit_energy(techCost);
 						helper::play_sound_from_unit(SoundId::Protoss_Darchon_feedback_wav, target, 1, 0);
 
 						if (!target->isDead())
@@ -42,11 +42,11 @@ namespace hooks
 							u8 overlaySize = scbw::hasOverlay(target);
 							if (target->subunit != nullptr)
 							{
-								target->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
+								target->subunit->sprite->create_top_overlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
 							}
 							else
 							{
-								target->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
+								target->sprite->create_top_overlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
 							}
 							unit->order_to_idle();
 						}

@@ -306,7 +306,7 @@ namespace hooks
 					}
 					else
 					{
-						unit->sprite->createTopOverlay(ImageId::UnusedHeal_Small);
+						unit->sprite->create_top_overlay(ImageId::UnusedHeal_Small);
 						anchor = unit->get_overlay(ImageId::UnusedHeal_Small);
 						if (anchor != nullptr)
 						{
@@ -353,7 +353,7 @@ namespace hooks
 
 			if (!bStopThere)
 			{ // 0045DB45
-				Thingy* thingy = helper::createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
+				Thingy* thingy = helper::create_thingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
 				if (thingy != nullptr)
 				{
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;

@@ -183,11 +183,11 @@ namespace hooks
 					if (!target->sprite->get_overlay(underlay)) {
 						if (scbw::unit_id_is_gas_structure(target->id))
 						{
-							target->sprite->createUnderlay(underlay, -5, 2);
+							target->sprite->create_underlay(underlay, -5, 2);
 						}
 						else
 						{
-							target->sprite->createUnderlay(underlay);
+							target->sprite->create_underlay(underlay);
 						}
 					}
 				}
@@ -327,7 +327,7 @@ namespace hooks
 				}
 				if (damage > 0)
 				{
-					unit->damageWith(WeaponId::Plague, damage);
+					unit->damage_with(WeaponId::Plague, damage);
 				}
 			}
 
@@ -360,7 +360,7 @@ namespace hooks
 				{
 					unit = unit->subunit;
 				}
-				unit->sprite->createTopOverlay(acidOverlayId);
+				unit->sprite->create_top_overlay(acidOverlayId);
 			}
 		}
 	}
@@ -402,7 +402,7 @@ namespace hooks
 						if (canBurrow)
 						{
 							if (unit->id != UnitId::ZergLakizilisk) {
-								UnitArray array = UnitSearchRadial(unit->position, 10 * 32);
+								UnitArray array = unit_search_radial(unit->position, 10 * 32);
 								UnitArrayFilter(&array, unit, FilterAlly | FilterBuilding);
 								if (array.size) {
 									return; // Disable idle burrowing close to infrastructure

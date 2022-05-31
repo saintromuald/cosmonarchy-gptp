@@ -1203,7 +1203,7 @@ namespace DeathSoundId
 	// Based on IScript.bin playsnd in death sequence
 	// First and last id
 	// Can be used with this kind of format:
-	//	u16 rand_value = scbw::randBetween(DeathSoundId::deathSoundIdList[unit->id][0], DeathSoundId::deathSoundIdList[unit->id][1]);
+	//	u16 rand_value = scbw::rand_between(DeathSoundId::deathSoundIdList[unit->id][0], DeathSoundId::deathSoundIdList[unit->id][1]);
 	//	scbw::playSound(rand_value);
 	const u16 deathSoundIdList[UnitId::None + 1][2] = {
 

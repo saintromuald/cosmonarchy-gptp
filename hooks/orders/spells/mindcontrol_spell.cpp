@@ -61,18 +61,18 @@ namespace hooks
 						u32 overlayId = scbw::hasOverlay(target) + ImageId::MindControlHit_Small;
 						if (target->subunit)
 						{
-							target->subunit->sprite->createTopOverlay(overlayId, 0, 0, 0);
+							target->subunit->sprite->create_top_overlay(overlayId, 0, 0, 0);
 						}
 						else
 						{
-							target->sprite->createTopOverlay(overlayId, 0, 0, 0);
+							target->sprite->create_top_overlay(overlayId, 0, 0, 0);
 						}
 						helper::MindControlHit(unit, target);
 						target->order_to_idle();
 					}
 					if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 					{
-						unit->spendUnitEnergy(techEnergyCost);
+						unit->spend_unit_energy(techEnergyCost);
 					}
 					helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 					unit->order_to_idle();

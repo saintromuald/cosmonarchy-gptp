@@ -141,8 +141,8 @@ namespace hooks
 						return; 
 					}
 				}
-				Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);
-				sprite->createTopOverlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
+				Point8 offset = overlay->get_offset(sprite->mainGraphic->frameIndex, variation);
+				sprite->create_top_overlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
 			}
 		}
 		std::array<s32, 22> results;
@@ -153,7 +153,7 @@ namespace hooks
 		}
 		for (s32 i = 0; i < 22; i++)
 		{
-			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, i);
+			Point8 offset = overlay->get_offset(sprite->mainGraphic->frameIndex, i);
 			if (offset.x == 127 && offset.y == 127)
 			{
 				continue;
@@ -176,9 +176,9 @@ namespace hooks
 		}
 		if (result_pos != results.begin())
 		{
-			s32 variation = results[scbw::randBetween(0, result_pos - results.begin() - 1)];
-			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);
-			sprite->createTopOverlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
+			s32 variation = results[scbw::rand_between(0, result_pos - results.begin() - 1)];
+			Point8 offset = overlay->get_offset(sprite->mainGraphic->frameIndex, variation);
+			sprite->create_top_overlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 		}
 	}
 
@@ -209,7 +209,7 @@ namespace hooks
 			*lastError = 20;
 			return 0;
 		}
-		if (unit->isFrozen())
+		if (unit->is_frozen())
 		{
 			*lastError = 10;
 			return 0;
@@ -567,7 +567,7 @@ LABEL_18:
 		u32 status = 0;
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell;
 
-		scbw::decloakProc(unit);
+		scbw::decloak_proc(unit);
 		if (unit->id == UnitId::ProtossStarSovereign)
 		{
 			if (order_state == 0)
@@ -672,7 +672,7 @@ LABEL_18:
 		}
 		else
 		{
-			if (source->getGroundWeapon() != WeaponId::None)
+			if (source->get_ground_weapon() != WeaponId::None)
 			{
 				return true;
 			}
@@ -687,7 +687,7 @@ LABEL_18:
 		sw.Start();
 		f64 aiLoop, unitLoop, imageThingyLoop, tileLoop;
 
-		scbw::setInGameLoopState(1);
+		scbw::set_ingame_loop_state(1);
 		helper::initializeRandomizerInfo();
 		helper::AI_Loop();
 		aiLoop = sw.ElapsedMilliseconds();
@@ -717,7 +717,7 @@ LABEL_18:
 		sw.Stop();
 		imageThingyLoop = sw.ElapsedMilliseconds();
 		GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
-		return scbw::setInGameLoopState(0);
+		return scbw::set_ingame_loop_state(0);
 	}
 
 	// 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo

@@ -48,7 +48,7 @@ namespace hooks
 			&& unit->stimTimer == 0)
 		{
 			helper::play_sound_from_unit(helper::rand_between(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit, 1, 0);
-			unit->damageHp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
+			unit->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
 			if (unit->stimTimer < 37)
 			{
 				unit->stimTimer = 37;
@@ -88,7 +88,7 @@ namespace hooks
 				// if used random, should give a value between 0 and 1
 				random_value = (random_value + random_value) / 32768;
 				helper::play_sound_from_unit(SoundId::Terran_MARINE_TMaSti00_WAV + random_value, activePlayerCurrentSelection, 1, 0);
-				activePlayerCurrentSelection->damageHp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
+				activePlayerCurrentSelection->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
 				if (activePlayerCurrentSelection->stimTimer < 37)
 				{
 					activePlayerCurrentSelection->stimTimer = 37;

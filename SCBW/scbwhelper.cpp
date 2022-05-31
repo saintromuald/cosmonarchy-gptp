@@ -2539,7 +2539,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId)
+	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 playerId)
 	{
 		const u32 Func_CreateThingy = 0x00488210;
 		static Thingy* thingy;
@@ -2760,7 +2760,7 @@ namespace helper
 		}
 	}
 
-	bool setMoveTargetXY(s32 a1, s32 a2, Unit* a3)
+	bool set_move_target_xy(s32 a1, s32 a2, Unit* a3)
 	{
 		const u32 Func_setMoveTargetXY = 0x004EB820;
 		static s32 result;
@@ -3475,7 +3475,7 @@ namespace helper
 		}
 	}
 
-	b32 spreadsCreep(u32 unitId, b32 defaultReturn)
+	b32 spreads_creep(u32 unitId, b32 defaultReturn)
 	{
 		const u32 Func_spreadsCreep = 0x00413870;
 		b32 bReturnValue;
@@ -4183,7 +4183,7 @@ namespace helper
 
 	// For update_unit_strength_and_apply_default_orders
 
-	void AnimCloak(Unit* a1, s32 a2)
+	void anim_cloak(Unit* a1, s32 a2)
 	{
 		const u32 Func_AnimCloak = 0x0049B5B0;
 		__asm {
@@ -4326,7 +4326,7 @@ namespace helper
 		}
 	}
 
-	void setUpgradeLevel(u32 playerId, u32 upgradeType, u8 upgradeLevel)
+	void set_upgrade_level(u32 playerId, u32 upgradeType, u8 upgradeLevel)
 	{
 		const u32 Func_setUpgradeLevel = 0x004CE770;
 		__asm {
@@ -4769,7 +4769,7 @@ namespace helper
 
 	// For check_unit_visibility
 
-	u32 getDetectingPlayers(Unit* unit)
+	u32 get_detecting_players(Unit* unit)
 	{
 		const u32 Func_getDetectingPlayers = 0x00441130;
 		static u32 result;
@@ -5206,7 +5206,7 @@ namespace helper
 		}
 	}
 
-	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damageWith if it does
+	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damage_with if it does
 	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor)
 	{
 		const u32 Helper_WeaponBulletShot = 0x00479AE0;
@@ -5950,7 +5950,7 @@ namespace helper
 		return builtUnit;
 	}
 
-	Bullet* createBullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction)
+	Bullet* create_bullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction)
 	{
 		const u32 Helper_CreateBullet = 0x0048C260;
 		static u32 new_attackingPlayer;
@@ -7576,7 +7576,7 @@ namespace helper
 			return;
 		}
 		worker->resourceType = isMineral ? 2 : 1;
-		Image* chunkImage = worker->sprite->createOverlay(chunkImageId);
+		Image* chunkImage = worker->sprite->create_overlay(chunkImageId);
 		if (chunkImage && !(chunkImage->flags & ImageFlags::Flag07))
 		{
 			chunkImage->flags |= ImageFlags::Flag07;
@@ -8342,7 +8342,7 @@ namespace helper
 		return result;
 	}
 
-	// For createBullet
+	// For create_bullet
 	s32 initializeBullet(char playerId, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle)
 	{
 		const u32 Func_initializeBullet = 0x0048BEC0;

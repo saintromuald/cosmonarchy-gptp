@@ -48,7 +48,7 @@ namespace hooks
 	static void weaponDamage_behaviors(WeaponDamageData& data);
 	static void weaponDamage_fatal(WeaponDamageData& data);
 
-	/// Hooks into the Unit::damageWith() function.
+	/// Hooks into the Unit::damage_with() function.
 	void weaponDamageHook(
 		s32 damage,
 		Unit* target,
@@ -231,7 +231,7 @@ namespace hooks
 				armorTotal += scbw::get_aise_value(data.target, nullptr, AiseId::GetShepherds, 0, 0) * 256;
 				if (data.target->id == UnitId::TerranMinotaur)
 				{
-					u16 angle = scbw::getAngle(data.target->position.x, data.target->position.y,
+					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y,
 						data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocityDirection1;
 					s32 arc = (f64)45 / 1.40625; // 90 degrees
@@ -280,7 +280,7 @@ namespace hooks
 		// Olympian Mythical Might - execute enemies below 10% HP
 		if (!data.dontProcLinkDamage && (data.weaponId == WeaponId::OlympianMountainGun || data.weaponId == WeaponId::OlympianTitansFist))
 		{
-			if (data.target->hitPoints < data.target->getMaxHpRaw() * 0.1)
+			if (data.target->hitPoints < data.target->get_max_hp_raw() * 0.1)
 			{
 				helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
 				data.finalDamage = data.target->hitPoints;
@@ -300,7 +300,7 @@ namespace hooks
 		// Deal damage, except for Independent damage, which always deals 0
 		if (data.damageType != DamageType::Independent && data.target->hitPoints != 0 && data.target->defensiveMatrixHp == 0 && canDamage )
 		{
-			data.target->damageHp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
+			data.target->damage_hp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		}
 
 		// New AI defense logic
@@ -408,7 +408,7 @@ namespace hooks
 			case WeaponId::QuaziliskAcridBarbs:
 			{
 				// Quazilisk - Melting Points
-				f32 missingFactor = 1 - ((f32)data.target->hitPoints / data.target->getMaxHpRaw());
+				f32 missingFactor = 1 - ((f32)data.target->hitPoints / data.target->get_max_hp_raw());
 				f32 damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
 				data.finalDamage += damageIncrease * HealthMultiplier;
 			} break;
@@ -438,7 +438,7 @@ namespace hooks
 			if (data.attacker->id == UnitId::ProtossCabalist)
 			{
 				if (data.finalDamage < data.target->hitPoints) {
-					scbw::decloakProc(data.attacker);
+					scbw::decloak_proc(data.attacker);
 				} else if (targetExt->timers[TimerDecloak] > 1) {
 					targetExt->timers[TimerDecloak] = 1;
 				}
@@ -465,7 +465,7 @@ namespace hooks
 					Unit* hal_unit = helper::createHallucination(haluAttacker, haluAttacker->player);
 					if (hal_unit != nullptr)
 					{
-						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
+						hal_unit->sprite->create_overlay(ImageId::HallucinationDeath3);
 						haluAttackerExt->units[UnitHallucinationPointer] = hal_unit;
 
 						if (!helper::place_hallucination(hal_unit))
@@ -512,8 +512,8 @@ namespace hooks
 						if (dist < 2 * 32)
 						{
 							const u32 displacementTime = 5;
-							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
-							Vector32f displacement = scbw::getNormalizedVector(diff);
+							Vector32 diff = scbw::get_vector_between_points(data.target->sprite->position, data.attacker->sprite->position);
+							Vector32f displacement = scbw::get_normalized_vector(diff);
 							displacement.x *= 1 * 32.0 / displacementTime;
 							displacement.y *= 1 * 32.0 / displacementTime;
 
@@ -564,7 +564,7 @@ namespace hooks
 						targetExt = globals.get_unit_ext(data.target->subunit);
 						overlayUnit = data.target->subunit;
 					}
-					overlayUnit->sprite->createTopOverlay(overlay, 0, 0, 0);
+					overlayUnit->sprite->create_top_overlay(overlay, 0, 0, 0);
 					targetExt->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
 				} break;
 				case WeaponId::VorvalingClaws:
@@ -604,7 +604,7 @@ namespace hooks
 					{
 						// Demiurge - Worship
 						if (data.target->player != data.attacker->player
-							&& data.target->getCurrentHpInGame() <= data.target->getMaxHpInGame() / 2
+							&& data.target->get_current_hp_ingame() <= data.target->get_max_hp_ingame() / 2
 							&& data.target->hitPoints > data.finalDamage)
 						{
 							scbw::mind_control(data.attacker, data.target);
@@ -638,14 +638,14 @@ namespace hooks
 								subunitExt->values[ValueDeconstructionPlayer] = data.attacker->player;
 								if (!data.target->subunit->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset))
 								{
-									data.target->subunit->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
+									data.target->subunit->sprite->create_overlay(ImageId::DeconstructionSmall + overlayOffset);
 								}
 							}
 							else
 							{
 								if (!data.target->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset))
 								{
-									data.target->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
+									data.target->sprite->create_overlay(ImageId::DeconstructionSmall + overlayOffset);
 								}
 							}
 						}
@@ -665,7 +665,7 @@ namespace hooks
 								if (energy) {
 									data.target->energy -= energy;
 									data.attacker->healEnergy(energy);
-									helper::createThingy(SpriteId::Feedback_Hit_Small + target_offset,
+									helper::create_thingy(SpriteId::Feedback_Hit_Small + target_offset,
 										data.target->position.x, data.target->position.y, data.attackingPlayerId);
 								}
 							}
@@ -675,7 +675,7 @@ namespace hooks
 							if (energy) {
 								data.attacker->energy -= energy;
 								data.finalDamage += energy;
-								helper::createThingy(SpriteId::EntropyGauntletsOverlay,
+								helper::create_thingy(SpriteId::EntropyGauntletsOverlay,
 									data.attacker->position.x, data.attacker->position.y, data.attackingPlayerId);
 							}
 						}
@@ -709,7 +709,7 @@ namespace hooks
 						{
 							vec.push_back(data.attackingPlayerId);
 						}
-						scbw::updateSignifyStatus(data.target, targetExt);
+						scbw::update_signify_status(data.target, targetExt);
 					} break;
 					case WeaponId::EcclesiastAstralBlaster:
 					{
@@ -779,7 +779,7 @@ namespace hooks
 										return;
 									}
 									helper::ApplySpores(target);
-									Thingy* thingy = helper::createThingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
+									Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
 									if (thingy != nullptr)
 									{
 										thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
@@ -811,8 +811,8 @@ namespace hooks
 						{
 							const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 							const u32 displacementTime = 5;
-							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
-							Vector32f displacement = scbw::getNormalizedVector(diff);
+							Vector32 diff = scbw::get_vector_between_points(data.target->sprite->position, data.attacker->sprite->position);
+							Vector32f displacement = scbw::get_normalized_vector(diff);
 							displacement.x *= 2 * 32.0 / displacementTime;
 							displacement.y *= 2 * 32.0 / displacementTime;
 							targetExt->timers[TimerMagnetarAttraction] = displacementTime;
@@ -838,7 +838,7 @@ namespace hooks
 			{
 				// Eternal Service - Amaranth behavior
 				const s32 hp = data.attacker->hitPoints / 256;
-				const s32 maxHp = data.attacker->getMaxHpInGame();
+				const s32 maxHp = data.attacker->get_max_hp_ingame();
 				u32 shieldsHeal = damageDealt * MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
 				data.attacker->healShields(shieldsHeal, data.attacker);
 			} break;
@@ -850,8 +850,8 @@ namespace hooks
 				u32 lifeHeal = damageDealt * MathUtils::map(shields, 0, maxShields, 1.0, 0.0, true);
 				data.attacker->heal(lifeHeal, data.attacker);
 
-				const s32 hp = data.attacker->getCurrentHpInGame();
-				const s32 maxHp = data.attacker->getMaxHpInGame();
+				const s32 hp = data.attacker->get_current_hp_ingame();
+				const s32 maxHp = data.attacker->get_max_hp_ingame();
 				u32 shieldsHeal = damageDealt * MathUtils::map(hp, 0, maxHp, 1.0, 0.0, true);
 				data.attacker->healShields(shieldsHeal, data.attacker);
 			} break;
@@ -886,7 +886,7 @@ namespace hooks
 						{
 							return;
 						}
-						if (unit->isFrozen())
+						if (unit->is_frozen())
 						{
 							return;
 						}
@@ -919,8 +919,8 @@ namespace hooks
 			targetExt->values[ValueIsZombified] = 1;
 			targetExt->values[ValueAlliedInvPlayer] = targetExt->values[ValueEmpressSourcePlayer];
 			targetExt->timers[TimerAlliedInvFrames] = 24;
-			data.target->sprite->createOverlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(data.target->id));
-			helper::play_sound_from_unit(scbw::randBetween(SoundId::EmpressZombify01, SoundId::EmpressZombify03), data.target, 1, 0);
+			data.target->sprite->create_overlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(data.target->id));
+			helper::play_sound_from_unit(scbw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03), data.target, 1, 0);
 		}
 
 		// Apostle, Anticthon - Revive
@@ -966,12 +966,12 @@ namespace hooks
 			scbw::update_custom_creep_disappearance(data.target);
 
 			// Remove creep from beneath
-			if (!helper::spreadsCreep(data.target->id, true)) {
+			if (!helper::spreads_creep(data.target->id, true)) {
 				scbw::clear_creep(scbw::unit_area(data.target));
 			}
 
 			// Remove connected larva
-			UnitArray larvae = UnitSearchRadial(data.target->position, 4 * 32);
+			UnitArray larvae = unit_search_radial(data.target->position, 4 * 32);
 			UnitArrayFilter(&larvae, data.target, 0, {UnitId::ZergLarva});
 			for (u32 i = 0; i < larvae.size; ++i) {
 				Unit* larva = larvae.units[i];
@@ -994,7 +994,7 @@ namespace hooks
 			} else if (units_dat::BaseProperty[data.target->id] & UnitProperty::MediumOverlay) {
 				effect_image_id = ImageId::ZergAirDeathExplosion_Large;
 			}
-			data.target->sprite->createOverlay(effect_image_id);
+			data.target->sprite->create_overlay(effect_image_id);
 
 			// Create busy overlays for buildings only
 			u32 infested_image_id = ImageId::InfestedOverlay_Large;
@@ -1105,7 +1105,7 @@ namespace hooks
 			{
 				Unit* mindController = attackerExt->units[UnitMindController];
 				mindController->addUnitEnergy(MindControlEnergyGain);
-				mindController->sprite->createUnderlay(ImageId::SmallExplosion_Unused);
+				mindController->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
 		}
 	}
@@ -1136,7 +1136,7 @@ namespace hooks
 				victim = unit->subunit;
 			}
 			// Create overlay
-			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayPadding);
+			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + overlayPadding);
 		}
 		// Apply effect
 		unit->ensnareTimer = 37;
@@ -1197,7 +1197,7 @@ namespace hooks
 				targetFinal = target;
 			}
 			spriteFinal = targetFinal->sprite;
-			spriteFinal->createOverlay(v6, 0, 0, 0);
+			spriteFinal->create_overlay(v6, 0, 0, 0);
 		}
 
 		result_sub_1 = 0;

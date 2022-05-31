@@ -13,9 +13,9 @@ namespace hooks {
 bool isReadyToMakePsiField(Unit* unit);
 bool canMakePsiField(u16 unitId);
 
-/// This function must be called once per frame in nextFrame().
+/// This function must be called once per frame in next_frame().
 /// This uses canMakePsiField() and isReadyToMakePsiField() internally.
-void updatePsiFieldProviders();
+void update_psi_field_providers();
 
 //Call this in initialize.h.
 void injectPsiFieldHooks();

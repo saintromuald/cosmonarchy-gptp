@@ -44,14 +44,14 @@ enum CoordType {
 
 /// Resets all previous graphics and clears error messages. This should be
 /// called every frame in game_hooks.cpp.
-void resetAllGraphics();
+void reset_all_graphics();
 
 void drawText(s32 x, s32 y, const std::string& str,
               FontSize fontSize = FONT_MEDIUM, CoordType ct = ON_SCREEN);
 
 void drawDot(s32 x, s32 y, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
+void draw_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
 
 void drawBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 

@@ -22,13 +22,13 @@ namespace hooks
 				if (techId == TechId::Hallucination && !orderTarget) {
 					Point16 target_pos = caster->orderTarget.pt;
 					if (scbw::get_distance_fast(caster->position, target_pos) > range) {
-						helper::setMoveTargetXY(target_pos.x, target_pos.y, caster);
+						helper::set_move_target_xy(target_pos.x, target_pos.y, caster);
 						return 0;
 					}
-					helper::setMoveTargetXY(caster->position.x, caster->position.y, caster);
+					helper::set_move_target_xy(caster->position.x, caster->position.y, caster);
 
 					if (!helper::isAngleInAttackAngle(target_pos.y, target_pos.x, caster, TechId::Hallucination)) {
-						helper::turnUnit(caster, scbw::getAngle(caster->position, target_pos));
+						helper::turnUnit(caster, scbw::get_angle(caster->position, target_pos));
 						return 0;
 					}
 
@@ -339,7 +339,7 @@ namespace hooks
 										{
 											analyzed_target_status |= target->isBlind;
 										}
-										if (switch_value == 0 && unit->isFrozen())
+										if (switch_value == 0 && unit->is_frozen())
 										{
 											analyzed_target_status |= 1;
 										}
@@ -356,7 +356,7 @@ namespace hooks
 							{
 								u8 cooldown;
 								u32 random_value;
-								unit->spendUnitEnergy(spellCost);
+								unit->spend_unit_energy(spellCost);
 
 								cooldown = helper::getUpgradedWpnCooldown(unit, orderWeaponId);
 								unit->spellCooldown = cooldown;

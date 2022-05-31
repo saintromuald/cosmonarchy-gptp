@@ -182,7 +182,7 @@ namespace hooks
 	Unit* findBestAttackTargetHook(Unit* unit)
 	{
 		attackPriorityData.reset();
-		s32 seek_range = unit->getSeekRange() * 32;
+		s32 seek_range = unit->get_seek_range() * 32;
 
 		// Bunker bonus
 		s32 offset = 0;
@@ -223,7 +223,7 @@ namespace hooks
 	Unit* findRandomAttackTargetHook(Unit* unit)
 	{
 		attackPriorityData.reset();
-		s32 seek_range = unit->getSeekRange() * 32;
+		s32 seek_range = unit->get_seek_range() * 32;
 
 		// Bunker bonus
 		u32 offset = 0;
@@ -366,7 +366,7 @@ namespace
 	{
 		assert(unit);
 
-		s32 angle = scbw::getAngle(unit->get_x(), unit->get_y(), x, y);
+		s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), x, y);
 
 		if (unit->id == UnitId::ZergLakizilisk)
 		{
@@ -407,10 +407,10 @@ namespace
 		{
 			return 0;
 		}
-		u8 groundWeapon = unit->getGroundWeapon();
+		u8 groundWeapon = unit->get_ground_weapon();
 		if (groundWeapon == WeaponId::None && unit->subunit)
 		{
-			groundWeapon = unit->subunit->getGroundWeapon();
+			groundWeapon = unit->subunit->get_ground_weapon();
 		}
 
 		u8 airWeapon = unit->getAirWeapon();

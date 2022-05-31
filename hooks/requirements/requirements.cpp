@@ -466,7 +466,7 @@ namespace hooks
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (parentUnit->isFrozen())
+		if (parentUnit->is_frozen())
 		{
 			*lastInternalError = InternalErrors::UnitFrozen;
 			//DebugOut(">Return NotAllowed");

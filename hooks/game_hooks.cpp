@@ -32,7 +32,7 @@
 const u32 hyperTrigger = 0x006509A0;
 
 #include "SCBW\UnitFinder.h"
-void shamanProc(Unit* shaman, u32 heal, Unit* target)
+void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target)
 {
 	if (target->player != shaman->player)
 	{
@@ -59,7 +59,7 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 	}
 
 	bool reqHeal = false;
-	if (target->getCurrentHpInGame() < target->getMaxHpInGame())
+	if (target->get_current_hp_ingame() < target->get_max_hp_ingame())
 	{
 		reqHeal = true;
 		u32 overlayImageId = ImageId::ShamanNaniteField;
@@ -72,7 +72,7 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 		{
 			tgt = target;
 		}
-		(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
+		(tgt->sprite)->create_top_overlay(overlayImageId, 0, 0, 0);
 	}
 
 	u32 new_heal = heal;
@@ -90,14 +90,11 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 
 namespace hooks
 {
-	void tickUnit(Unit* unit);
-
+	void tick_unit(Unit* unit);
 	static bool game_inited;
-
-	void nextUiFrame() {
+	void next_ui_frame() {
 		if (!game_inited) {
 			game_inited = true;
-
 			/*
 			Parser parser = {};
 			parser.at = ...;
@@ -109,37 +106,28 @@ namespace hooks
 			}
 			*/
 		}
-
 		tick_trigger_system(false);
 	}
 
 	/// This hook is called every frame
-	bool nextFrame()
+	bool next_frame()
 	{
 		tick_trigger_system(true);
 		tick_base_layouts();
-
 		// This block is executed once every game
 		if (*elapsedTimeFrames == 0)
 		{
 #ifdef CM_DEBUG
-			helper::playSoundGlobal(SoundId::Misc_Buzz_wav_1);
+			helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
 #endif
-
-			hooks::initializeScreenLocations();
-			hooks::clearActions();
+			hooks::initalize_screen_locations();
+			hooks::clear_actions();
 			globals.reset();
 
 			for (s32 i = 0; i < 8; i++)
 			{
-				// Allow score screen player name overrides, from DarkenedFantasies
-				//if (colorTable->playerColorId[i] > 11)
-				//{
-				//	strcpy_s(playerNameList->playerName[i], sizeof(playerNameList->playerName[i]), network_table_DF->getString(colorTable->playerColorId[i] + 157));
-				//}
-				// Set AI-required upgrades
-				scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);
+				scbw::set_upgrade_level(i, UpgradeId::VentralSacs, 1); // Zerg AI may require this to function properly
 			}
 		}
 
@@ -156,14 +144,14 @@ namespace hooks
 		}
 
 		// Map Features
-		scbw::setInGameLoopState(true);
+		scbw::set_ingame_loop_state(true);
 		if (*elapsedTimeFrames == 1) {
 			load_player_colors();
 		}
 		if (*elapsedTimeFrames == 0 || *elapsedTimeFrames == 24) {
 			load_player_names();
 		}
-		scbw::setInGameLoopState(false);
+		scbw::set_ingame_loop_state(false);
 
 		if (*elapsedTimeFrames == 2) {
 			u32 local_flags = unit_deaths[UnitId::ResourceVespeneGeyser].player[*LOCAL_NATION_ID];
@@ -175,7 +163,6 @@ namespace hooks
 				}
 				scbw::refresh_screen();
 			}
-
 
 			// Check deaths
 			u8 reveal_flag = 0x00;
@@ -234,18 +221,17 @@ namespace hooks
 		}
 
 		optionsList->speed = 6; // Lock game speed at fastest
-		if (!scbw::isGamePaused()) // If the game is not paused
+		if (!scbw::is_game_paused()) // If the game is not paused
 		{
 			*ai_update_cooldown = 0;
 			for (u32 i = 0; i < 8; ++i) {
 				raceSupply[RaceId::Terran].provided[i] = 60000;
 			}
 
-			UpdateSearchGrid();
-
-			scbw::setInGameLoopState(true); // Needed for scbw::random() to work
-			graphics::resetAllGraphics();
-			hooks::updatePsiFieldProviders();
+			update_search_grid();
+			scbw::set_ingame_loop_state(true); // Needed for scbw::random() to work
+			graphics::reset_all_graphics();
+			hooks::update_psi_field_providers();
 			*(s32*)hyperTrigger = 0; // Single frame hypertriggers
 
 			// Scenario Features
@@ -256,7 +242,7 @@ namespace hooks
 				tick_scenario();
 			}
 
-			hooks::handleScreenHotkeys();
+			hooks::handle_screen_hotkeys();
 			scbw::refresh_screen();
 
 			// Needed for extended tooltips
@@ -268,7 +254,7 @@ namespace hooks
 			}
 			lastShift = newShift;
 
-			globals.frameHook();
+			globals.frame_hook();
 
 			// Loop through bullets
 			for (Bullet* bullet = *firstBullet; bullet; bullet = bullet->next)
@@ -286,9 +272,9 @@ namespace hooks
 			// Loop through all visible units in the game.
 			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 			{
-				tickUnit(unit);
+				tick_unit(unit);
 			}
-			scbw::setInGameLoopState(false);
+			scbw::set_ingame_loop_state(false);
 		}
 
 		if (*activePortraitUnit)
@@ -301,19 +287,16 @@ namespace hooks
 			if (selected
 				&& selected->id == UnitId::ZergNydusCanal
 				&& selected->building.nydusExit
-				&& (scbw::is_allied_to(selected->player, *LOCAL_HUMAN_ID) || helper::getDetectingPlayers(selected) & (1 << *LOCAL_HUMAN_ID)))
+				&& (scbw::is_allied_to(selected->player, *LOCAL_HUMAN_ID) || helper::get_detecting_players(selected) & (1 << *LOCAL_HUMAN_ID)))
 			{
 				Unit* exit = selected->building.nydusExit;
-				graphics::drawLine(
-					selected->get_x(), selected->get_y(),
-					exit->get_x(), exit->get_y(),
-					graphics::GREEN, graphics::ON_MAP);
+				graphics::draw_line(selected->get_x(), selected->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
 			}
 		}
 		return true;
 	}
 
-	void tickUnit(Unit* unit)
+	void tick_unit(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		tactical_ai(unit, unitExt);
@@ -352,7 +335,7 @@ namespace hooks
 				if (unit->mainOrderId == OrderId::TalosSalvage) {
 					Unit* target = unit->orderTarget.unit;
 					if (target) {
-						if (unit->is_target_within_min_range(target, unit->getMaxWeaponRange(unit->getGroundWeapon()))) {
+						if (unit->is_target_within_min_range(target, unit->get_max_weapon_range(unit->get_ground_weapon()))) {
 							UnitExt* targetExt = globals.get_unit_ext(target);
 							targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
 							
@@ -389,13 +372,12 @@ namespace hooks
 								x_offset = MathUtils::clamp(x_offset, -127, 128);
 								y_offset = MathUtils::clamp(y_offset, -127, 128);
 
-								target->sprite->createTopOverlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
-
-								unitExt->timers[TimerTalosAnimationSubtimer] = scbw::randBetween(3, 7);
+								target->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
+								unitExt->timers[TimerTalosAnimationSubtimer] = scbw::rand_between(3, 7);
 							}
 
 							if (unitExt->values[ValueTalosAnimationTimer] == 0
-								|| unitExt->values[ValueTalosAnimationTimer] % 128 == 0) {
+							||  unitExt->values[ValueTalosAnimationTimer] % 128 == 0) {
 								Point16 pos = target->sprite->position;
 								switch (scbw::random() % 4) {
 									case 0: {
@@ -414,11 +396,9 @@ namespace hooks
 										pos.x += units_dat::UnitBounds[target->id].right * 0.75;
 										pos.y += units_dat::UnitBounds[target->id].bottom * 0.75;
 									} break;
-								}
-								
-								helper::setMoveTargetXY(pos.x, pos.y, unit);
+								}							
+								helper::set_move_target_xy(pos.x, pos.y, unit);
 							}
-
 							unitExt->values[ValueTalosAnimationTimer] += 1;
 						} else {
 							unitExt->values[ValueTalosAnimationTimer] = 0;
@@ -430,7 +410,7 @@ namespace hooks
 			{
 				// Zoryusthaleth - Swarming Omen
 				if (!unitExt->timers[TimerSwarmingOmen]
-					&& unit->getCurrentHpInGame() < unit->getMaxHpInGame() / 2)
+					&& unit->get_current_hp_ingame() < unit->get_max_hp_ingame() / 2)
 				{
 					unitExt->timers[TimerSwarmingOmen] = 15 * 24;
 				}
@@ -438,7 +418,7 @@ namespace hooks
 				if (unitExt->timers[TimerReconstitutionCooldown] == 0)
 				{
 					u32 radius = 5 * 32;
-					CorpseArray corpses = CorpseSearchRadial(unit->position, radius);
+					CorpseArray corpses = corpse_search_radial(unit->position, radius);
 					for (u32 i = 0; i < corpses.size; ++i)
 					{
 						Thingy* corpse = corpses.corpses[i];
@@ -450,16 +430,16 @@ namespace hooks
 						{
 							continue;
 						}
-						unit->spendUnitEnergy(5 * 256);
+						unit->spend_unit_energy(5 * 256);
 
-						UnitArray targets = UnitSearchRadial(unit->position, radius);
+						UnitArray targets = unit_search_radial(unit->position, radius);
 						UnitArrayFilter(&targets, unit, FilterAlly);
 						for (u32 i = 0; i < targets.size; ++i) {
 							Unit* target = targets.units[i];
 							target->heal(ZoryusthalethReconstitutionHealing, unit);
-							//scbw::createAndInitThingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
+							//scbw::create_and_init_thingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 						}
-						scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
+						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
 						corpse->sprite->flags |= SpriteFlags::Flag04;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						unitExt->timers[TimerReconstitutionCooldown] = 1 * 24;
@@ -505,7 +485,7 @@ namespace hooks
 				if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
 					if (scbw::get_active_tile_at(unit->position.x, unit->position.y).hasCreep
 						&& !unit->get_overlay(ImageId::CreepMorphOverlay)) {
-						unit->sprite->createUnderlay(ImageId::CreepMorphOverlay, 0, 2);
+						unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 					}
 				}
 
@@ -550,7 +530,7 @@ namespace hooks
 							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
 								unit->sprite->mainGraphic->id));
 							u8 frameDirection = unit->sprite->mainGraphic->direction;
-							Point8 offset = loFile->getOffset(frameDirection, 5 - arc);
+							Point8 offset = loFile->get_offset(frameDirection, 5 - arc);
 							if (unit->sprite->mainGraphic->flags & ImageFlags::Mirrored)
 							{
 								offset.x = -offset.x;
@@ -561,13 +541,12 @@ namespace hooks
 							auto target_pos = unit->orderTarget.pt;
 							auto offset_direction = -40 + arc * 16;
 							auto maxRange = weapons_dat::MaxRange[WeaponId::StarSovereignInterventionMissiles];
-							auto polar_x = unit->get_x() + scbw::getPolarX(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
-							auto polar_y = unit->get_y() + scbw::getPolarY(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
+							auto polar_x = unit->get_x() + scbw::get_polar_x(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
+							auto polar_y = unit->get_y() + scbw::get_polar_y(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
 							unit->orderTarget.unit = nullptr;
 							unit->orderTarget.pt.x = polar_x;
 							unit->orderTarget.pt.y = polar_y;
-							helper::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player,
-								scbw::dir_saturate(unit->currentDirection1, offset_direction));
+							helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player, scbw::dir_saturate(unit->currentDirection1, offset_direction));
 							helper::play_sound_from_unit(80, unit, 1, 0);
 							unit->orderTarget.unit = target_unit;
 							unit->orderTarget.pt = target_pos;
@@ -578,7 +557,7 @@ namespace hooks
 				// Star Sovereign - Grief of All Gods
 				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
 				{
-					globals.createEffect(EffectId::StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->player, unit, unit);
+					globals.create_effect(EffectId::StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->player, unit, unit);
 				}
 
 				// blast effects
@@ -588,54 +567,54 @@ namespace hooks
 				if (unit->orderSignal & 8)
 				{
 					unit->orderSignal &= ~8;
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y + 32, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y + 32, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y - 32, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y - 32, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y + 32, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y + 32, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y - 32, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y - 32, player);
 				}
 				else if (unit->orderSignal & 16)
 				{
 					unit->orderSignal &= ~16;
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 80, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 80, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 80, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y - 80, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 80, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 80, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 80, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 80, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 0, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 0, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y - 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 0, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 0, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y + 80, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 80, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 80, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 80, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 80, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y - 80, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 80, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 80, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 80, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 80, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 0, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 0, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y - 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 0, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 0, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y + 80, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 80, player);
 				}
 				else if (unit->orderSignal & 32)
 				{
 					unit->orderSignal &= ~32;
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y + 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y + 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y - 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y - 144, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y - 0, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y - 0, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y - 208, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 208, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 208, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 208, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 208, player);
-					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 208, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y + 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y + 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y - 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y - 144, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y - 0, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y - 0, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y - 208, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 208, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 208, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 208, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 208, player);
+					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 208, player);
 				}
 				else if (unit->orderSignal & 64)
 				{
@@ -647,10 +626,10 @@ namespace hooks
 				// Apostle - Lazarus Agent cast
 				if (scbw::get_generic_rust_value(unit, RustId::CastLazarusAgent) == 1)
 				{
-					scbw::decloakProc(unit);
+					scbw::decloak_proc(unit);
 					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 0);
 					// Cast Lazarus Agent						
-					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::ApostleLazarusAgent] * 256);
+					unit->spend_unit_energy(techdata_dat::EnergyCost[TechId::ApostleLazarusAgent] * 256);
 					auto r = 4 * 32;
 					auto n = cosmonarchyFinderMatch(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar, {});
 					scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r,
@@ -664,8 +643,8 @@ namespace hooks
 							UnitExt* pickedUnitExt = globals.get_unit_ext(picked_unit);
 							pickedUnitExt->values[ValueLazarusAgent] += 1;
 							pickedUnitExt->values[ValueLazarusAgentApostleSrc] = (u32)unit; // TODO: port as a unit
-							picked_unit->sprite->createTopOverlay(ImageId::LazarusAgentCast);
-//							helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit);
+							picked_unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+						//	helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit);
 						}
 					}
 				}
@@ -678,13 +657,13 @@ namespace hooks
 					if (!unitExt->values[ValueDisruptionFieldOn])
 					{
 						unitExt->values[ValueDisruptionFieldOn] = 1;
-						globals.createEffect(EffectId::DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, unit);
+						globals.create_effect(EffectId::DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, unit);
 					}
-					else if (unit->isFrozen())
+					else if (unit->is_frozen())
 					{
 						scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
 					}
-					scbw::decloakProc(unit);
+					scbw::decloak_proc(unit);
 				}
 				else
 				{
@@ -715,11 +694,11 @@ namespace hooks
 			{
 				if (unitExt->values[ValueIsSelfReviving])
 				{
-					if (unit->hitPoints + CuirassSelfHeal >= unit->getMaxHpRaw())
+					if (unit->hitPoints + CuirassSelfHeal >= unit->get_max_hp_raw())
 					{
 						unitExt->values[ValueIsSelfReviving] = 0;
-						unit->hitPoints = unit->getMaxHpRaw();
-						scbw::restoreFunc(unit);
+						unit->hitPoints = unit->get_max_hp_raw();
+						scbw::restore_func(unit);
 						unit->order_computer(OrderId::Stop);
 						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 						helper::play_sound_from_unit(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
@@ -729,7 +708,7 @@ namespace hooks
 						unit->heal(CuirassSelfHeal);
 						if (!unit->sprite->get_overlay(ImageId::StonewallProtocolOverlay))
 						{
-							unit->sprite->createTopOverlay(ImageId::StonewallProtocolOverlay, -3, -8);
+							unit->sprite->create_top_overlay(ImageId::StonewallProtocolOverlay, -3, -8);
 						}
 					}
 				}
@@ -759,12 +738,12 @@ namespace hooks
 					}
 					else if (unit->id == UnitId::SharedStriga)
 					{
-						if (distance > 3.5 * 32 && distance <= 5 * 32 && scbw::isUnitIsolated(target))
+						if (distance > 3.5 * 32 && distance <= 5 * 32 && scbw::is_unit_isolated(target))
 						{
 							doTeleport = true;
 							imageId = ImageId::LegionnaireTeleportEffect;
-							Vector32 diff = scbw::getVectorBetweenPoints(target->sprite->position, unit->sprite->position);
-							Vector32f displacement = scbw::getNormalizedVector(diff);
+							Vector32 diff = scbw::get_vector_between_points(target->sprite->position, unit->sprite->position);
+							Vector32f displacement = scbw::get_normalized_vector(diff);
 							displacement.x *= 3 * 32;
 							displacement.y *= 3 * 32;
 							position = target->position;
@@ -775,11 +754,11 @@ namespace hooks
 
 					if (doTeleport)
 					{
-						position = scbw::clampPoint(position);
+						position = scbw::clamp_point(position);
 						bool teleport = scbw::teleport(unit, position, 0, true);
 						if (!unit->get_overlay(imageId) && teleport)
 						{
-							unit->sprite->createTopOverlay(imageId);
+							unit->sprite->create_top_overlay(imageId);
 						}
 					}
 				}
@@ -788,7 +767,7 @@ namespace hooks
 			{
 				// Paladin - Skyfall
 				if (unitExt->timers[TimerSkyfall] == 1
-					&& !unit->isFrozen())
+					&& !unit->is_frozen())
 				{
 					u8 missile = unitExt->values[ValueSkyfallStacks];
 					unitExt->values[ValueSkyfallStacks]++;
@@ -805,7 +784,7 @@ namespace hooks
 						auto column = missile / 4;
 						auto row = missile % 4;
 						auto distance = scbw::get_distance_fast(unit->get_x(), unit->get_y(), tgt_x, tgt_y);
-						auto angle = scbw::bw_angle_to_normal(scbw::getAngle(unit->get_x(), unit->get_y(), tgt_x, tgt_y));
+						auto angle = scbw::bw_angle_to_normal(scbw::get_angle(unit->get_x(), unit->get_y(), tgt_x, tgt_y));
 						Vector32 rotation_pt = Vector32{ 0,0 };
 						rotation_pt.x += 16 + (row - 2) * 32;
 						rotation_pt.y -= (column - 2) * 32;
@@ -815,8 +794,8 @@ namespace hooks
 						missile_target.y = tgt_y + product.y;
 
 						s32 forwardOffset = weapons_dat::ForwardOffset[10];
-						auto source_x = unit->get_x() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
-						auto source_y = unit->get_y() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
+						auto source_x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->currentDirection1);
+						auto source_y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->currentDirection1)
 							- weapons_dat::VerticalOffset[10];
 						unit->orderTarget.unit = nullptr;
 						unit->orderTarget.pt = missile_target;
@@ -849,7 +828,7 @@ namespace hooks
 						{
 							unit->orderTarget.unit = targ;
 						}
-						helper::createBullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->player, unit->currentDirection1);
+						helper::create_bullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->player, unit->currentDirection1);
 					}
 				}
 			} break;
@@ -871,7 +850,7 @@ namespace hooks
 					pos.y = unitExt->values[ValueSpineY];
 					unit->position = pos;
 					unit->sprite->position = pos;
-					scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->player, unit, nullptr, spr_position);
+					scbw::artificial_bullet_from(WeaponId::SubterraneanSpines, unit->player, unit, nullptr, spr_position);
 					helper::play_sound_from_unit(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
 					unit->position = position;
 					unit->sprite->position = spr_position;
@@ -882,7 +861,7 @@ namespace hooks
 			case UnitId::TerranShaman:
 			{
 				// Shaman - Nanite Field
-				if (unit->isFrozen() || unitExt->values[ValueReviveStarted])
+				if (unit->is_frozen() || unitExt->values[ValueReviveStarted])
 				{
 					break;
 				}
@@ -900,7 +879,7 @@ namespace hooks
 						unit->get_y() + 128
 					).forEach([&](Unit* target)
 						{
-							shamanProc(unit, ShamanHeal, target);
+							shaman_nanite_field_proc(unit, ShamanHeal, target);
 						});
 				}
 			} break;
@@ -943,7 +922,7 @@ namespace hooks
 				// Matraleth - Ensnaring Brood
 				if (scbw::get_generic_rust_value(unit, RustId::CastEnsnaringBrood) == 1)
 				{
-					scbw::decloakProc(unit);
+					scbw::decloak_proc(unit);
 					Point16 pos = unit->position;
 					s32 radius = 6 * 32;
 					scbw::set_generic_rust_value(unit, RustId::CastEnsnaringBrood, 0);
@@ -970,9 +949,9 @@ namespace hooks
 						}
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						targetExt->timers[TimerEnsnaringBrood] = 12 * 24;
-						target->sprite->createTopOverlay(ImageId::EnsnaringBroodOverlay);
+						target->sprite->create_top_overlay(ImageId::EnsnaringBroodOverlay);
 					});
-					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::MatralethEnsnaringBrood] * 256);
+					unit->spend_unit_energy(techdata_dat::EnergyCost[TechId::MatralethEnsnaringBrood] * 256);
 				}
 			} break;
 			case UnitId::ProtossClarion:
@@ -983,7 +962,7 @@ namespace hooks
 				// Clarion Phase Link
 				if (scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 0)
 				{
-					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);
+					scbw::send_gptp_aise_command(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 				}
 			} break;
 			case UnitId::ProtossMindTyrant:
@@ -1001,10 +980,10 @@ namespace hooks
 				if (scbw::get_generic_rust_value(unit, RustId::CastGodsMadeFlesh) && !unitExt->values[ValueGodsMadeFleshActive])
 				{
 					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 0);
-					scbw::decloakProc(unit);
+					scbw::decloak_proc(unit);
 					unitExt->values[ValueGodsMadeFleshActive] = 1;
-					helper::play_sound_from_unit(scbw::randBetween(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
-					unit->sprite->createTopOverlay(ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(unit->id));
+					helper::play_sound_from_unit(scbw::rand_between(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
+					unit->sprite->create_top_overlay(ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(unit->id));
 				}
 				// Demiurge - Gods Made Flesh - apply link
 				if (unitExt->values[ValueGodsMadeFleshActive])
@@ -1014,7 +993,7 @@ namespace hooks
 						targetExt->timers[TimerGodsMadeFlesh] = 3;
 						u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(target->id);
 						if (!target->get_overlay(overlay)) {
-							target->sprite->createTopOverlay(overlay);
+							target->sprite->create_top_overlay(overlay);
 						}
 					}
 
@@ -1028,7 +1007,7 @@ namespace hooks
 				// Decloak on Stimpack activation
 				if (unit->stimTimer == StimpackTimer)
 				{
-					scbw::decloakProc(unit);
+					scbw::decloak_proc(unit);
 				}
 			} break;
 			case UnitId::TerranWyvern:
@@ -1043,7 +1022,7 @@ namespace hooks
 			{
 				if (unitExt->timers[TimerTarasqueSecondaryWeaponCooldown] == 0)
 				{
-					if (fireMultiple(unit, unitExt, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, true))
+					if (fire_multiple(unit, unitExt, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, true))
 					{
 						unitExt->timers[TimerTarasqueSecondaryWeaponCooldown] = weapons_dat::Cooldown[WeaponId::TarasqueAcceleratedPlasmid];
 					}
@@ -1108,17 +1087,16 @@ namespace hooks
 							{
 								divider = 2;
 							}
-
-							target->damageWith(WeaponId::AnthelionEventHorizon, -1, unit, unit->player, 0, divider);
-							helper::createThingy(SpriteId::NeutronFlareOrange_Damageless, target->sprite->position.x, target->sprite->position.y, unit->player);
+							target->damage_with(WeaponId::AnthelionEventHorizon, -1, unit, unit->player, 0, divider);
+							helper::create_thingy(SpriteId::NeutronFlareOrange_Damageless, target->sprite->position.x, target->sprite->position.y, unit->player);
 						}
 					}
 				});
 				if (attacked)
 				{
-					unitExt->timers[TimerAnthelionAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::AnthelionEventHorizon);
-					unit->sprite->createUnderlay(ImageId::OpticalFlareHit_Large);
-					helper::play_sound_from_unit(scbw::randBetween(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire04), unit, 1, 0);
+					unitExt->timers[TimerAnthelionAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::AnthelionEventHorizon);
+					unit->sprite->create_underlay(ImageId::OpticalFlareHit_Large);
+					helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire04), unit, 1, 0);
 				}
 
 				if (unit->mainOrderId == OrderId::Follow || unit->mainOrderId == OrderId::AttackUnit)
@@ -1132,7 +1110,7 @@ namespace hooks
 					{
 						if (unitExt->timers[TimerAnthelionEndlessEclipse] > 1)
 						{
-							helper::play_sound_from_unit(scbw::randBetween(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02), unit, 1, 0);
+							helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02), unit, 1, 0);
 						}
 						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 					}
@@ -1145,9 +1123,9 @@ namespace hooks
 						bool teleport = scbw::teleport(unit, unit->moveTarget.pt, 0, true);
 						if (teleport)
 						{
-							scbw::createAndInitThingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->player, 11);
-							helper::play_sound_from_unit(scbw::randBetween(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
-							unit->sprite->createTopOverlay(ImageId::AnthelionTeleportArrival, 0, 0, 0);
+							scbw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->player, 11);
+							helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
+							unit->sprite->create_top_overlay(ImageId::AnthelionTeleportArrival, 0, 0, 0);
 						}
 					}
 				}
@@ -1180,7 +1158,7 @@ namespace hooks
 							if (targetExt->values[ValueObservanceRend] == 0)
 							{
 								s32 overlay = ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(target->id);
-								target->sprite->createOverlay(overlay);
+								target->sprite->create_overlay(overlay);
 							}
 							targetExt->values[ValueObservanceRend] += 1;
 						}
@@ -1201,7 +1179,7 @@ namespace hooks
 						{
 							return;
 						}
-						if (scbw::unitIdIsResource(target->id, false))
+						if (scbw::unit_id_is_resource_node(target->id, false))
 						{
 							return;
 						}
@@ -1216,7 +1194,7 @@ namespace hooks
 					&& !unitExt->timers[TimerAxitriliskShieldLossSFX])
 				{
 					unitExt->timers[TimerAxitriliskShieldLossSFX] = AxitriliskShieldLossSFXTimer;
-					helper::play_sound_from_unit(scbw::randBetween(SoundId::AxitriliskShieldLoss01, SoundId::AxitriliskShieldLoss03), unit, 1, 0);
+					helper::play_sound_from_unit(scbw::rand_between(SoundId::AxitriliskShieldLoss01, SoundId::AxitriliskShieldLoss03), unit, 1, 0);
 				}
 			} break;
 			case UnitId::TerranPhalanxSiegeMode:
@@ -1238,7 +1216,7 @@ namespace hooks
 				}
 				else {
 					if (unit->sprite->images.head->animation == IscriptAnimation::Unused2) {
-						unit->sprite->createTopOverlay(ImageId::PlagueChannelOverlay); // TODO: Use the Isthrathaleth's attack overlay for origin coordinates.
+						unit->sprite->create_top_overlay(ImageId::PlagueChannelOverlay); // TODO: Use the Isthrathaleth's attack overlay for origin coordinates.
 					}
 				}
 			} break;
@@ -1264,7 +1242,7 @@ namespace hooks
 				}
 				u32 offset = scbw::get_overlay_offset(unit->id);
 				if (!unit->get_overlay(ImageId::MaelstromOverlay_Small + offset)) {
-					unit->sprite->createTopOverlay(ImageId::MaelstromOverlay_Small + offset);
+					unit->sprite->create_top_overlay(ImageId::MaelstromOverlay_Small + offset);
 				}
 			}
 			if (unitExt->timers[TimerMindTyrantRecede] == 1) {
@@ -1314,7 +1292,7 @@ namespace hooks
 		// Azazel - Sublime Shepherd overlay
 		if (unitExt->values[ValueSublimeShepherd] && !unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)))
 		{
-			unit->sprite->createTopOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
+			unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
 		}
 		else if (unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)) && !unitExt->values[ValueSublimeShepherd])
 		{
@@ -1349,7 +1327,7 @@ namespace hooks
 		if (*elapsedTimeFrames % 10 == 0
 			&& unitExt->unitVectors[UnitVectorPhaseLinkClarions].size())
 		{
-			unit->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
+			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
 		}
 
 		// Disruption Web Clear
@@ -1361,7 +1339,7 @@ namespace hooks
 		// Madrigal - Dirge
 		if (unitExt->timers[TimerDirgeFuse] == 1)
 		{
-			scbw::dirgeFuse(unit, unitExt);
+			scbw::madrigal_dirge_fuse(unit, unitExt);
 		}
 
 		// Hierophant Signify Reset
@@ -1369,13 +1347,13 @@ namespace hooks
 		{
 			unitExt->values[ValueSignifyStacks] = 0;
 			unitExt->valueVectors[ValueVectorSignifySourcePlayer].clear();
-			scbw::updateSignifyStatus(unit, unitExt);
+			scbw::update_signify_status(unit, unitExt);
 		}
 
 		// Decloak on stun
-		if (unit->isFrozen() || unitExt->timers[TimerStrigaRepulsion] || unitExt->timers[TimerAnthelionGravityWell])
+		if (unit->is_frozen() || unitExt->timers[TimerStrigaRepulsion] || unitExt->timers[TimerAnthelionGravityWell])
 		{
-			scbw::decloakProc(unit);
+			scbw::decloak_proc(unit);
 		}
 
 		// Play addon work animations when related units are being trained by parent structure
@@ -1418,9 +1396,9 @@ namespace hooks
 			Point16 finalPos = unit->position;
 			finalPos.x += unitExt->repulsionVector.x;
 			finalPos.y += unitExt->repulsionVector.y;
-			finalPos = scbw::clampPoint(finalPos);
+			finalPos = scbw::clamp_point(finalPos);
 
-			if (!scbw::moveUnitImproved(unit, finalPos.x, finalPos.y))
+			if (!scbw::move_unit_improved(unit, finalPos.x, finalPos.y))
 			{
 				unitExt->timers[TimerStrigaRepulsion] = 0;
 			}
@@ -1434,9 +1412,9 @@ namespace hooks
 			Point16 finalPos = unit->position;
 			finalPos.x += unitExt->repulsionVector.x;
 			finalPos.y += unitExt->repulsionVector.y;
-			finalPos = scbw::clampPoint(finalPos);
+			finalPos = scbw::clamp_point(finalPos);
 
-			if (!scbw::moveUnitImproved(unit, finalPos.x, finalPos.y))
+			if (!scbw::move_unit_improved(unit, finalPos.x, finalPos.y))
 			{
 				unitExt->timers[TimerMagnetarAttraction] = 0;
 			}
@@ -1448,27 +1426,27 @@ namespace hooks
 			Point16 targetPos = unitExt->units[UnitAnthelionGravityWellSource]->position;
 			if (unit->position != targetPos)
 			{
-				Vector32 diff = scbw::getVectorBetweenPoints(unit->position, targetPos);
+				Vector32 diff = scbw::get_vector_between_points(unit->position, targetPos);
 
-				if (scbw::getVectorDistance(diff) < 2)
+				if (scbw::get_vector_distance(diff) < 2)
 				{
-					scbw::moveUnitImproved(unit, targetPos.x, targetPos.y);
+					scbw::move_unit_improved(unit, targetPos.x, targetPos.y);
 				}
 				else
 				{
-					Vector32f displacement = scbw::getNormalizedVector(diff);
+					Vector32f displacement = scbw::get_normalized_vector(diff);
 					displacement.x *= 2;
 					displacement.y *= 2;
 
 					Point16 finalPos = unit->position;
 					finalPos.x += displacement.x;
 					finalPos.y += displacement.y;
-					finalPos = scbw::clampPoint(finalPos);
+					finalPos = scbw::clamp_point(finalPos);
 
-					scbw::moveUnitImproved(unit, finalPos.x, finalPos.y);
+					scbw::move_unit_improved(unit, finalPos.x, finalPos.y);
 				}
 			}
-			s32 angle = scbw::getAngle(unit->position, targetPos);
+			s32 angle = scbw::get_angle(unit->position, targetPos);
 			unit->currentDirection1 = angle;
 		}
 
@@ -1478,8 +1456,8 @@ namespace hooks
 			if (fuse_timer == 1)
 			{
 				// Todo: make thingy
-				helper::createThingy(SpriteId::FragmentaryExplosion, unit->get_x(), unit->get_y(), 11);
-				helper::play_sound_from_unit(scbw::randBetween(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
+				helper::create_thingy(SpriteId::FragmentaryExplosion, unit->get_x(), unit->get_y(), 11);
+				helper::play_sound_from_unit(scbw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
 				const u32 radius = 1.5 * 32;
 				scbw::UnitFinder(
 					unit->get_x() - radius,
@@ -1506,7 +1484,7 @@ namespace hooks
 
 		// Blissful Embrace - Creep Spread
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			UnitArray akistrokors = UnitSearchRadial(unit->position, 6 * 32);
+			UnitArray akistrokors = unit_search_radial(unit->position, 6 * 32);
 			UnitArrayFilter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
 			unit->hitPoints += akistrokors.size * 256.0 / 24.0;
 
@@ -1514,7 +1492,7 @@ namespace hooks
 				helper::secondary_order_spawning_larva(unit);
 			}
 
-			if (*elapsedTimeFrames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreadsCreep(unit->id, true)) {
+			if (*elapsedTimeFrames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreads_creep(unit->id, true)) {
 				scbw::spread_custom_creep(unit);
 			}
 		}
@@ -1523,7 +1501,7 @@ namespace hooks
 		if (unit->id == UnitId::ZergAkistrokor) {
 			if (unit->mainOrderId == OrderId::BlissfulEmbrace) {
 				Unit* target = unit->orderTarget.unit;
-				if (target && target->hitPoints <= target->getMaxHpRaw() / 2 && target->status & UnitStatus::Completed
+				if (target && target->hitPoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
 					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->player != target->player) {
 					UnitExt* target_ext = globals.get_unit_ext(target);
 					target_ext->timers[TimerAI_AvoidTargeting] = 2; // This is not really solid for FFA scenarios, but a more complete solution would be way harder to do
@@ -1531,7 +1509,6 @@ namespace hooks
 						if (unit->orderSignal & 0x2) {
 							unit->orderSignal &= ~0x2;
 							helper::force_order_done(unit);
-
 							scbw::blissful_embrace(target, unit->player);
 						}
 					}
@@ -1571,7 +1548,7 @@ namespace hooks
 			{
 				return;
 			}
-			if (scbw::unitIdIsResource(unit->id, false))
+			if (scbw::unit_id_is_resource_node(unit->id, false))
 			{
 				return;
 			}
@@ -1581,7 +1558,7 @@ namespace hooks
 			s32 overlay = ImageId::DermalAccelerantSmall + scbw::get_overlay_offset(unit->id, true);
 			if (!unit->get_overlay(overlay))
 			{
-				unit->sprite->createTopOverlay(overlay);
+				unit->sprite->create_top_overlay(overlay);
 			}
 		});
 
@@ -1627,7 +1604,7 @@ namespace hooks
 					UnitExt* seraphExt = globals.get_unit_ext(seraph);
 					if (seraphExt->timers[TimerObservanceOverlay] == 0)
 					{
-						seraph->sprite->createOverlay(ImageId::SeraphRedOverlay);
+						seraph->sprite->create_overlay(ImageId::SeraphRedOverlay);
 						seraphExt->timers[TimerObservanceOverlay] = 18;
 					}
 				}
@@ -1688,7 +1665,7 @@ namespace hooks
 				{
 					sprite = unit->sprite;
 				}
-				sprite->createOverlay(ImageId::HallucinationOverlay, 0, 0, 0);
+				sprite->create_overlay(ImageId::HallucinationOverlay, 0, 0, 0);
 			}
 		}
 
@@ -1704,7 +1681,7 @@ namespace hooks
 			if (unit->mainOrderId != OrderId::AttackUnit)
 			{
 				auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf, {});
-				const u32 radius = unit->getSeekRange() * 32;
+				const u32 radius = unit->get_seek_range() * 32;
 				Unit* target = scbw::UnitFinder::getNearestTarget(
 					unit->get_x() - radius,
 					unit->get_y() - radius,
@@ -1725,7 +1702,7 @@ namespace hooks
 
 			u32 offset = scbw::get_overlay_offset(unit->id);
 			if (!unit->get_overlay(ImageId::SalvageDisableSmall + offset)) {
-				unit->sprite->createTopOverlay(ImageId::SalvageDisableSmall + offset);
+				unit->sprite->create_top_overlay(ImageId::SalvageDisableSmall + offset);
 			}
 			if (unitExt->timers[TimerTalosSoundLoopTimer] == 0) {
 				helper::play_sound_from_unit(SoundId::TalosSalvageLoop, unit, 1, 0);
@@ -1744,9 +1721,9 @@ namespace hooks
 		// Cloaked units recloak after 2 seconds of being out of combat
 		if (unitExt->timers[TimerDecloak] == 1)
 		{
-			if (scbw::isDecloakable(unit) && units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak)
+			if (scbw::is_decloakable(unit) && units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak)
 			{
-				helper::AnimCloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
+				helper::anim_cloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
 			}
 			else
 			{
@@ -1773,7 +1750,7 @@ namespace hooks
 		// Autovitality - Simulacrum behavior
 		if (unitExt->timers[TimerSimulacrumClone] == 1)
 		{
-			scbw::createUnitFromAbility(UnitId::ProtossSimulacrum, 1, unit->player, unit->position.x, unit->position.y, 0, unit);
+			scbw::create_unit_from_ability(UnitId::ProtossSimulacrum, 1, unit->player, unit->position.x, unit->position.y, 0, unit);
 		}
 
 		// Remove Ensnaring Brood overlay
@@ -1806,7 +1783,7 @@ namespace hooks
 		// Crucible - Khaydarin Charge stacks
 		if (unit->id == UnitId::ProtossCrucible && unit->status & UnitStatus::Completed)
 		{
-			UnitArray arr = UnitSearchRadial(unit->position, 8 * 32);
+			UnitArray arr = unit_search_radial(unit->position, 8 * 32);
 			UnitArrayFilter(&arr, unit, FilterAlly | FilterBuilding);
 			for (u32 i = 0; i < arr.size; i++)
 			{
@@ -1820,7 +1797,9 @@ namespace hooks
 					case UnitId::ProtossCrucible:
 					case UnitId::TerranSupplyDepot:
 					case UnitId::TerranBunker:
+					{
 						continue;
+					}
 				}
 				if (scbw::unit_id_is_gas_structure(target->id)) {
 					continue;
@@ -1836,7 +1815,7 @@ namespace hooks
 					vec.push_back(unit);
 				}
 				if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
-					target->sprite->createUnderlay(ImageId::CrucibleKhaydarinChargeOverlay, 0, 0, 0);
+					target->sprite->create_underlay(ImageId::CrucibleKhaydarinChargeOverlay, 0, 0, 0);
 				}
 			}
 		}
@@ -1847,7 +1826,7 @@ namespace hooks
 		{
 			scbw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
 			unitExt->timers[TimerControlledDemolition] = ControlledDemolitionTimer;
-			unit->sprite->createOverlay(ImageId::ControlledDemolition);
+			unit->sprite->create_overlay(ImageId::ControlledDemolition);
 		}
 
 		if (unitExt->timers[TimerControlledDemolition] == 7) {
@@ -1858,7 +1837,7 @@ namespace hooks
 		// Controlled Demolition - destroy structure
 		if (unitExt->timers[TimerControlledDemolition] == 1)
 		{
-			unit->damageHp(unit->hitPoints, unit, unit->player, false);
+			unit->damage_hp(unit->hitPoints, unit, unit->player, false);
 		}
 
 		// Emergency Detonation - initial cast
@@ -1868,7 +1847,7 @@ namespace hooks
 			unitExt->timers[TimerEmergencyDetonation] = (u32)(0.5 * unitExt->timers[TimerControlledDemolition]);
 			unitExt->timers[TimerControlledDemolition] = 0;
 			unit->sprite->remove_overlay(ImageId::ControlledDemolition);
-			unit->sprite->createTopOverlay(ImageId::EmergencyDetonation);
+			unit->sprite->create_top_overlay(ImageId::EmergencyDetonation);
 		}
 
 		if (unitExt->timers[TimerEmergencyDetonation] == 7) {
@@ -1893,8 +1872,8 @@ namespace hooks
 					target->damage_with_custom(250 * 256, DamageType::Explosive, unit, unit->player, 0, 1, false);
 				}
 			});
-			helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->player);
-			unit->damageHp(unit->hitPoints, unit, unit->player, false);
+			helper::create_thingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->player);
+			unit->damage_hp(unit->hitPoints, unit, unit->player, false);
 		}
 
 		// Demiurge - Gods Made Flesh - return units to original owner
@@ -1902,7 +1881,7 @@ namespace hooks
 			&& unitExt->units[UnitMindController] == nullptr)
 		{
 			helper::play_sound_from_unit(SoundId::DemiurgeWorship01, unit, 1, 0);
-			unit->sprite->createTopOverlay(ImageId::Worship_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
+			unit->sprite->create_top_overlay(ImageId::Worship_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
 			unitExt->values[ValueWorshipStack] = 0;
 			unitExt->timers[TimerGodsMadeFlesh] = 0;
 			scbw::recede_mind_control(unit);
@@ -1932,14 +1911,14 @@ namespace hooks
 		}
 	}
 
-	bool gameOn()
+	bool game_on()
 	{
 		chk_cache_size = 0;
-		setMaxSightRange<20>();
+		set_max_sight_range<20>();
 		return true;
 	}
 
-	bool gameEnd()
+	bool game_end()
 	{
 		end_scenario();
 		return true;

@@ -64,11 +64,11 @@ using SearchFilterFunc = std::function<bool(Unit*)>;
 using SearchScoreFunc = std::function<s32(Unit*)>;
 UnitArray UnitSearchRect(Box32 rect);
 inline UnitArray UnitSearchSquare(Point16 center, u32 radius);
-UnitArray UnitSearchRadial(Point16 center, u32 radius);
+UnitArray unit_search_radial(Point16 center, u32 radius);
 
 CorpseArray CorpseSearchRect(Box32 rect);
 inline CorpseArray CorpseSearchSquare(Point16 center, u32 radius);
-CorpseArray CorpseSearchRadial(Point16 center, u32 radius);
+CorpseArray corpse_search_radial(Point16 center, u32 radius);
 
 void UnitArrayFilter(UnitArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, prefer sorting after filter
 void UnitArrayCustomFilter(UnitArray* unit_array, SearchFilterFunc filter); // will break ordering, prefer sorting after filter
@@ -78,7 +78,7 @@ Unit* UnitArrayFindBest(UnitArray* unit_array, SearchScoreFunc score_func = null
 Unit* UnitArrayGetFirst(UnitArray* unit_array, SearchFilterFunc match_func = nullptr); // defaults to no check
 bool UnitFlagMatch(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids);
 
-void UpdateSearchGrid(); // must be done once per frame
+void update_search_grid(); // must be done once per frame
 
 inline bool IsPointInRect(Point16 point, Box32 rect);
 inline bool IsRectInRect(Box32 inner, Box32 outer);

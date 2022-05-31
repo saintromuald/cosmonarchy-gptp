@@ -145,7 +145,7 @@ void updateImageDirection(Image* image, u32 direction)
 //-------- Create overlay --------//
 
 // Identical to function @ 0x00498E00
-Image* Sprite::createOverlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
+Image* Sprite::create_overlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -173,7 +173,7 @@ Image* Sprite::createOverlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
 	return overlay;
 }
 
-Image* Sprite::createUnderlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
+Image* Sprite::create_underlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -202,7 +202,7 @@ Image* Sprite::createUnderlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction
 }
 
 // Identical to function @ 0x00498EA0
-Image* Sprite::createTopOverlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
+Image* Sprite::create_top_overlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)

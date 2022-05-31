@@ -67,7 +67,7 @@ namespace hooks
         u32 result;
         if (player == unit->player)
         {
-            if (unit->isFrozen())
+            if (unit->is_frozen())
             {
                 *lastInternalError = 10;
                 result = 0;
