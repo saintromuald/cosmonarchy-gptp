@@ -154,7 +154,7 @@ namespace hooks
 					bool extraBuild = false;
 					if (builtUnitExt->values[ValueCrucible] == 0)
 					{
-						for (Unit* unit : unitExt->unitVectors[UnitVectorCrucibles])
+						for (Unit* unit : unitExt->unit_vectors[UnitVectorCrucibles])
 						{
 							builtUnitExt->values[ValueCrucible] = 18; // 6 is ~115%, 18 should be ~105%
 							helper::progress_build(builtUnit, hpGain, TRUE);

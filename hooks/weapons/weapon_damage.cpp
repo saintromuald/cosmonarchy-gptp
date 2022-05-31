@@ -518,7 +518,7 @@ namespace hooks
 							displacement.y *= 1 * 32.0 / displacementTime;
 
 							attackerExt->timers[TimerStrigaRepulsion] = displacementTime;
-							attackerExt->repulsionVector = displacement;
+							attackerExt->repulsion_vector = displacement;
 						}
 					}
 				} break;
@@ -598,7 +598,7 @@ namespace hooks
 					case WeaponId::NathrokorPlasmidBreath:
 					{
 						// Nathrokor - Adrenal Frenzy
-						targetExt->nathrokorTargetStacks[data.attackingPlayerId]++;
+						targetExt->nathrokor_target_stacks[data.attackingPlayerId]++;
 					} break;
 					case WeaponId::DemiurgeGalacticWeaver:
 					{
@@ -704,7 +704,7 @@ namespace hooks
 					{
 						targetExt->values[ValueSignifyStacks]++;
 						targetExt->timers[TimerSignify] = 3 * 24 + 1;
-						auto& vec = targetExt->valueVectors[ValueVectorSignifySourcePlayer];
+						auto& vec = targetExt->value_vectors[ValueVectorSignifySourcePlayer];
 						if (std::find(vec.begin(), vec.end(), data.attackingPlayerId) == vec.end())
 						{
 							vec.push_back(data.attackingPlayerId);
@@ -791,7 +791,7 @@ namespace hooks
 					case WeaponId::CyclopsFlakCannons:
 					{
 						// Cyclops - Flak Cannons
-						targetExt->timerVectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
+						targetExt->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
@@ -816,7 +816,7 @@ namespace hooks
 							displacement.x *= 2 * 32.0 / displacementTime;
 							displacement.y *= 2 * 32.0 / displacementTime;
 							targetExt->timers[TimerMagnetarAttraction] = displacementTime;
-							targetExt->repulsionVector = displacement;
+							targetExt->repulsion_vector = displacement;
 						}
 					} break;
 				}

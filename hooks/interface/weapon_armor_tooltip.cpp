@@ -536,10 +536,10 @@ namespace hooks
 		addStatus(statuses, "Controlled Opposition", unitExt->values[ValueControlledOpposition], 0);
 		addStatus(statuses, "Anodyne Annex", unitExt->values[ValueEmpressPassiveStacks], 0);
 		addStatus(statuses, "Counter-Proposal", unitExt->values[ValueAnticthonStacks], 0);
-		addStatus(statuses, "Fragmentary Shells", unitExt->timerVectors[TimerVectorCyclopsFuse].size(), 0);
+		addStatus(statuses, "Fragmentary Shells", unitExt->timer_vectors[TimerVectorCyclopsFuse].size(), 0);
 		addStatus(statuses, "Energy Decay", unitExt->values[ValueEntropyGauntlets], 0);
 		addStatus(statuses, "Deconstructing", unitExt->values[ValueDeconstruction], 0);
-		addStatus(statuses, "Khaydarin Charge", unitExt->unitVectors[UnitVectorCrucibles].size(), 0);
+		addStatus(statuses, "Khaydarin Charge", unitExt->unit_vectors[UnitVectorCrucibles].size(), 0);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
@@ -604,7 +604,7 @@ namespace hooks
 		u32 nathrokorTargetStacks = 0;
 		for (int i = 0; i < 8; i++)
 		{
-			nathrokorTargetStacks += unitExt->nathrokorTargetStacks[i];
+			nathrokorTargetStacks += unitExt->nathrokor_target_stacks[i];
 		}
 		addStatus(statuses, "Adrenal Mark", nathrokorTargetStacks, 0);
 		/* // Can't see armor icons on eggs yet

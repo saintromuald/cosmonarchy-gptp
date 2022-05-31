@@ -477,8 +477,8 @@ static KiterType get_kiter_type(u32 unit_id)
 static bool unit_could_kite(Unit* unit)
 {
 	UnitExt* unit_ext = globals.get_unit_ext(unit);
-	bool in_combat = unit_ext->damageReceiveTimer < 4 * 24
-		|| unit_ext->damageDealtTimer < 4 * 24
+	bool in_combat = unit_ext->damage_receive_timer < 4 * 24
+		|| unit_ext->damage_dealt_timer < 4 * 24
 		|| unit->mainOrderId == OrderId::Patrol
 		|| unit->mainOrderId == OrderId::AttackMove
 		|| unit->mainOrderId == OrderId::AttackMoveComputer
@@ -548,7 +548,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 	if (unit_could_kite(unit) && unit_ext->timers[TimerAI_KitingLeash] == 1)
 	{
 		unit_ext->timers[TimerAI_KitingCooldown] = 1 * 24;
-		unit->order_to(OrderId::Move, unit_ext->aiKitingOrigin.x, unit_ext->aiKitingOrigin.y);
+		unit->order_to(OrderId::Move, unit_ext->ai_kiting_origin.x, unit_ext->ai_kiting_origin.y);
 		unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 	}
 
@@ -594,7 +594,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					{
 						local_unit_ext->timers[TimerAI_KitingLeash] = 24 * 24;
 					}
-					local_unit_ext->aiKitingOrigin = local_unit->position;
+					local_unit_ext->ai_kiting_origin = local_unit->position;
 				}
 
 				auto target_match = cosmonarchyFinderMatch(local_unit, Flags::Enemy, {});
@@ -611,7 +611,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					}
 
 					UnitExt* target_ext = globals.get_unit_ext(target);
-					if (!target_ext->timers[TimerAI_AvoidTargeting] && unit->canAttackTarget(target, true) && target->isVisibleTo(unit->player)) {
+					if (!target_ext->ai_timer_avoid_targeting[unit->player] && unit->canAttackTarget(target, true) && target->isVisibleTo(unit->player)) {
 						s32 cost = get_target_cost(local_unit, target);
 						if (cost < best_cost)
 						{
@@ -625,20 +625,19 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 				{
 					local_unit_ext->timers[TimerAI_KitingCooldown] = 2;
 					KITE_DEBUG("%s: attack", local_unit->getName());
-					if (local_unit->id == UnitId::ProtossSolarion)
-					{
-						local_unit->order_to(OrderId::CarrierFight, best_target);
-					}
-					else if (local_unit->id == UnitId::ProtossAccantor)
-					{	
-						local_unit->order_to(OrderId::ReaverFight, best_target);
-					}
-					else
-					{
-						local_unit->order_to(OrderId::AttackUnit, best_target);
+
+					u32 attack_order_id = OrderId::AttackUnit;
+					if (local_unit->id == UnitId::ProtossSolarion) {
+						attack_order_id = OrderId::CarrierFight;
+					} else if (local_unit->id == UnitId::ProtossAccantor) {	
+						attack_order_id = OrderId::ReaverFight;
+					} else {
 						local_unit_ext->values[ValueAI_PreventTargeting] = 1;
 					}
-					local_unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
+					if (local_unit->mainOrderId != attack_order_id || local_unit->orderTarget.unit != best_target) {
+						local_unit->order_to(attack_order_id, best_target);
+						local_unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
+					}
 				}
 				else
 				{
@@ -1168,15 +1167,14 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 
 			if (unit->energy >= 50 * 256)
 			{
-				auto& vec = unitExt->unitVectors[UnitVectorWorshipersDemiurge];
+				auto& vec = unitExt->unit_vectors[UnitVectorWorshipersDemiurge];
 
 				u32 totalCount = vec.size();
 				u32 inCombatCount = 0;
 				for (Unit* worshiper : vec)
 				{
 					UnitExt* worshiperExt = globals.get_unit_ext(worshiper);
-					if (worshiperExt->damageDealtTimer < 4 * 24
-						|| worshiperExt->damageReceiveTimer < 4 * 24)
+					if (worshiperExt->damage_dealt_timer < 4 * 24 || worshiperExt->damage_receive_timer < 4 * 24)
 					{
 						inCombatCount++;
 					}

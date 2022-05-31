@@ -345,7 +345,7 @@ void unit_destructor_special_cases(Unit* unit)
 	// Nathrokor - Adrenal Frenzy
 	for (u32 i = 0; i < 8; i++)
 	{
-		u32 stacks = unitExt->nathrokorTargetStacks[i];
+		u32 stacks = unitExt->nathrokor_target_stacks[i];
 		if (stacks)
 		{
 			const u32 radius = 3 * 32;

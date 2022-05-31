@@ -1,11 +1,10 @@
-//All-in-one include file
-//Structs by poiuy_qwert, A_of_s_t, ravenwolf and pastelmind.
-//Special thanks to Heinermann
+// All-in-one include file
+// Structs by poiuy_qwert, A_of_s_t, ravenwolf and pastelmind.
+// Special thanks to Heinermann
 
 #pragma once
 #include "types.h"
 
-#define PlayerLimit 8
 #define AiTownLimit 100
 #define ResAreaLimit 250
 

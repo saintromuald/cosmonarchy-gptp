@@ -353,9 +353,9 @@ namespace hooks
 			}
 			else
 			{
-				if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->damageReceiveTimer > 2 * 24)
+				if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->damage_receive_timer > 2 * 24)
 				{
-					unit->shields += 11 * (1 + 0.1 * unitExt->unitVectors[UnitVectorCrucibles].size());
+					unit->shields += 11 * (1 + 0.1 * unitExt->unit_vectors[UnitVectorCrucibles].size());
 					if (unit->shields > maxShields)
 					{
 						unit->shields = maxShields;
@@ -430,11 +430,11 @@ namespace hooks
 			if ((units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP || unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 				&& unit->hitPoints > 0
 				&& unit->hitPoints / 256 != unit->get_max_hp_ingame()
-				&& unitExt->damageReceiveTimer > 2 * 24)
+				&& unitExt->damage_receive_timer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
 
-				regen *=  1 + 0.1 * unitExt->unitVectors[UnitVectorCrucibles].size();
+				regen *=  1 + 0.1 * unitExt->unit_vectors[UnitVectorCrucibles].size();
 				unit->setHp(unit->hitPoints + regen);
 			}
 

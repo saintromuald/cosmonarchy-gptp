@@ -431,8 +431,8 @@ namespace hooks
 		{
 			// Searing Acid - Geszithalor behavior
 			UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->sourceUnit);
-			auto X = bulletSourceExt->lastBulletLaunchPos.x;
-			auto Y = bulletSourceExt->lastBulletLaunchPos.y;
+			auto X = bulletSourceExt->last_bullet_launch_position.x;
+			auto Y = bulletSourceExt->last_bullet_launch_position.y;
 			divisor = scbw::get_distance_fast(X, Y, target->get_x(), target->get_y()) / (32 * 3);
 		}
 
