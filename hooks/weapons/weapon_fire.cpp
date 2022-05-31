@@ -228,7 +228,7 @@ namespace hooks
 				}
 
 				// Track launch position
-				unitExt->lastBulletLaunchPos = unit->position;
+				unitExt->last_bullet_launch_position = unit->position;
 
 				switch (weaponId)
 				{
@@ -503,7 +503,7 @@ namespace hooks
 			Unit* targ = bullet->attackTarget.unit;
 
 			UnitExt* unitExt = globals.get_unit_ext(bullet->sourceUnit);
-			const u32 distFromSource = scbw::get_distance_fast(bullet->position, unitExt->lastBulletLaunchPos);
+			const u32 distFromSource = scbw::get_distance_fast(bullet->position, unitExt->last_bullet_launch_position);
 			const u32 distFromTarget = scbw::get_distance_fast(bullet->position, targ->position);
 
 			if (distFromSource > 5 * 32

@@ -1900,7 +1900,7 @@ namespace scbw
 		}
 
 		UnitExt* sourceExt = globals.get_unit_ext(source);
-		sourceExt->unitVectors[UnitVectorMindControlling].push_back(target);
+		sourceExt->unit_vectors[UnitVectorMindControlling].push_back(target);
 
 		UnitExt* targetExt = globals.get_unit_ext(target);
 		targetExt->units[UnitMindController] = source;
@@ -1914,15 +1914,15 @@ namespace scbw
 			Unit* unit = target->getLoadedUnit(i);
 			mind_control(source, unit);
 		}
-		for (Unit* unit : targetExt->unitVectors[UnitVectorMindControlling])
+		for (Unit* unit : targetExt->unit_vectors[UnitVectorMindControlling])
 		{
 			mind_control(source, unit);
 		}
-		targetExt->unitVectors[UnitVectorMindControlling].clear();
+		targetExt->unit_vectors[UnitVectorMindControlling].clear();
 
 		// Demiurge - apply behavior
 		if (source->id == UnitId::ProtossDemiurge) {
-			auto& vec = sourceExt->unitVectors[UnitVectorWorshipersDemiurge];
+			auto& vec = sourceExt->unit_vectors[UnitVectorWorshipersDemiurge];
 			if (std::find(vec.begin(), vec.end(), target) == vec.end())
 			{
 				vec.push_back(target);
@@ -1969,7 +1969,7 @@ namespace scbw
 		if (mindController)
 		{
 			UnitExt* mindControllerExt = globals.get_unit_ext(mindController);
-			auto& vec = mindControllerExt->unitVectors[UnitVectorMindControlling];
+			auto& vec = mindControllerExt->unit_vectors[UnitVectorMindControlling];
 			vec.erase(std::remove(vec.begin(), vec.end(), target), vec.end());
 		}
 

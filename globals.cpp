@@ -109,12 +109,12 @@ void Globals::aise_save()
 
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
-		stream.write(reinterpret_cast<char*>(&unitExt[i].damageReceiveTimer), sizeof(unitExt[i].damageReceiveTimer));
+		stream.write(reinterpret_cast<char*>(&unitExt[i].damage_receive_timer), sizeof(unitExt[i].damage_receive_timer));
 		stream.write(reinterpret_cast<char*>(&unitExt[i].values), sizeof(unitExt[i].values));
 		stream.write(reinterpret_cast<char*>(&unitExt[i].timers), sizeof(unitExt[i].timers));
 		stream.write(reinterpret_cast<char*>(&unitExt[i].units), sizeof(unitExt[i].units));
 
-		for (auto vec : unitExt[i].valueVectors)
+		for (auto vec : unitExt[i].value_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.write(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -124,7 +124,7 @@ void Globals::aise_save()
 			}
 		}
 
-		for (auto vec : unitExt[i].timerVectors)
+		for (auto vec : unitExt[i].timer_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.write(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -134,7 +134,7 @@ void Globals::aise_save()
 			}
 		}
 
-		for (auto vec : unitExt[i].unitVectors)
+		for (auto vec : unitExt[i].unit_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.write(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -263,12 +263,12 @@ void Globals::aise_load(const char* ptr, u32 len)
 
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
-		stream.read(reinterpret_cast<char*>(&unitExt[i].damageReceiveTimer), sizeof(unitExt[i].damageReceiveTimer));
+		stream.read(reinterpret_cast<char*>(&unitExt[i].damage_receive_timer), sizeof(unitExt[i].damage_receive_timer));
 		stream.read(reinterpret_cast<char*>(&unitExt[i].values), sizeof(unitExt[i].values));
 		stream.read(reinterpret_cast<char*>(&unitExt[i].timers), sizeof(unitExt[i].timers));
 		stream.read(reinterpret_cast<char*>(&unitExt[i].units), sizeof(unitExt[i].units));
 
-		for (auto vec : unitExt[i].valueVectors)
+		for (auto vec : unitExt[i].value_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -278,7 +278,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 			}
 		}
 
-		for (auto vec : unitExt[i].timerVectors)
+		for (auto vec : unitExt[i].timer_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -288,7 +288,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 			}
 		}
 
-		for (auto vec : unitExt[i].unitVectors)
+		for (auto vec : unitExt[i].unit_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -305,8 +305,8 @@ static void ClearUnitExt(int index)
 	globals.unitExt[index] = {};
 	// this should set combat timer to highest u32,
 	// meaning every unit will start being out of combat
-	globals.unitExt[index].damageReceiveTimer = -1;
-	globals.unitExt[index].damageDealtTimer = -1;
+	globals.unitExt[index].damage_receive_timer = -1;
+	globals.unitExt[index].damage_dealt_timer = -1;
 }
 
 void Globals::reset()
@@ -338,7 +338,7 @@ void Globals::unitDeathHook(Unit* unit)
 
 		for (u32 i = 0; i < UnitVectorCount; ++i)
 		{
-			auto& vec = ext->unitVectors[i];
+			auto& vec = ext->unit_vectors[i];
 			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](Unit* vecUnit)
 			{
 				return vecUnit == unit;
@@ -432,13 +432,18 @@ void Globals::frame_hook()
 	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{
 		UnitExt* ext = &unitExt[j];
-		if (ext->damageReceiveTimer != -1) // don't increment past max value of u32
+		if (ext->damage_receive_timer != -1) // don't increment past max value of u32
 		{
-			++ext->damageReceiveTimer;
+			++ext->damage_receive_timer;
 		}
-		if (ext->damageDealtTimer != -1) // don't increment past max value of u32
+		if (ext->damage_dealt_timer != -1) // don't increment past max value of u32
 		{
-			++ext->damageDealtTimer;
+			++ext->damage_dealt_timer;
+		}
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			if (ext->ai_timer_avoid_targeting[i]) {
+				ext->ai_timer_avoid_targeting[i] -= 1;
+			}
 		}
 		for (u32 i = 0; i < TimerCount; ++i)
 		{
@@ -449,17 +454,17 @@ void Globals::frame_hook()
 		}
 		for (u32 i = 0; i < TimerVectorCount; ++i)
 		{
-			for (auto& timer : ext->timerVectors[i])
+			for (auto& timer : ext->timer_vectors[i])
 			{
 				if (timer > 0)
 				{
 					timer--;
 				}
 			}
-			ext->timerVectors[i].erase(std::remove_if(ext->timerVectors[i].begin(), ext->timerVectors[i].end(), [&](u32& timer)
+			ext->timer_vectors[i].erase(std::remove_if(ext->timer_vectors[i].begin(), ext->timer_vectors[i].end(), [&](u32& timer)
 			{
 				return timer == 0;
-			}), ext->timerVectors[i].end());
+			}), ext->timer_vectors[i].end());
 		}
 	}
 
@@ -1091,7 +1096,7 @@ namespace scbw
 		if (auto timer = parentExt->timers[TimerCaptivatingClaws])
 		{
 			childExt->timers[TimerCaptivatingClaws] = timer;
-			parentExt->unitVectors[UnitVectorCaptivatingClaws] = childExt->unitVectors[UnitVectorCaptivatingClaws];
+			parentExt->unit_vectors[UnitVectorCaptivatingClaws] = childExt->unit_vectors[UnitVectorCaptivatingClaws];
 		}
 
 		// Inherit Lobotomy Mine slow
@@ -1236,7 +1241,7 @@ namespace scbw
 		// Inherit Hierophant Signify
 		childExt->timers[TimerSignify] = parentExt->timers[TimerSignify];
 		childExt->values[ValueSignifyStacks] = parentExt->values[ValueSignifyStacks];
-		childExt->valueVectors[ValueVectorSignifySourcePlayer] = parentExt->valueVectors[ValueVectorSignifySourcePlayer];
+		childExt->value_vectors[ValueVectorSignifySourcePlayer] = parentExt->value_vectors[ValueVectorSignifySourcePlayer];
 		scbw::update_signify_status(child, childExt);
 
 		scbw::refresh_console();
@@ -1347,7 +1352,7 @@ namespace scbw
 		if (unitExt->timers[TimerCaptivatingClaws])
 		{
 			unitExt->timers[TimerCaptivatingClaws] = 1;
-			unitExt->unitVectors[UnitVectorCaptivatingClaws] = {};
+			unitExt->unit_vectors[UnitVectorCaptivatingClaws] = {};
 		}
 
 		// Remove Lobotomy Mine slow
@@ -1416,13 +1421,13 @@ namespace scbw
 		// Remove Hierophant Signify
 		unitExt->timers[TimerSignify] = 0;
 		unitExt->values[ValueSignifyStacks] = 0;
-		unitExt->valueVectors[ValueVectorSignifySourcePlayer] = {};
+		unitExt->value_vectors[ValueVectorSignifySourcePlayer] = {};
 		scbw::update_signify_status(unit, unitExt);
 
 		// Remove Nathrokor attack stacks
 		for (u32 i = 0; i < 8; i++)
 		{
-			unitExt->nathrokorTargetStacks[i] = 0;
+			unitExt->nathrokor_target_stacks[i] = 0;
 		}
 
 		scbw::refresh_console();
@@ -1563,11 +1568,11 @@ namespace scbw
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
-		auto& vec = unitExt->unitVectors[UnitVectorPhaseLink];
+		auto& vec = unitExt->unit_vectors[UnitVectorPhaseLink];
 		for (Unit* vecUnit : vec)
 		{
 			UnitExt* vecUnitExt = globals.get_unit_ext(vecUnit);
-			auto& clarions = vecUnitExt->unitVectors[UnitVectorPhaseLinkClarions];
+			auto& clarions = vecUnitExt->unit_vectors[UnitVectorPhaseLinkClarions];
 			clarions.erase(std::remove_if(clarions.begin(), clarions.end(),
 			[&](Unit* target)
 			{
@@ -1575,13 +1580,13 @@ namespace scbw
 			}), clarions.end());
 		}
 		vec.clear();
-		unitExt->unitVectors[UnitVectorPhaseLinkClarions].clear();
+		unitExt->unit_vectors[UnitVectorPhaseLinkClarions].clear();
 	}
 
 	void placeClarionLinks(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		auto& link = unitExt->unitVectors[UnitVectorPhaseLink];
+		auto& link = unitExt->unit_vectors[UnitVectorPhaseLink];
 
 		clearClarionLinks(unit);
 		const s32 radius = 3 * 32;
@@ -1621,7 +1626,7 @@ namespace scbw
 			}
 
 			UnitExt* targetExt = globals.get_unit_ext(target);
-			auto& vec = targetExt->unitVectors[UnitVectorPhaseLinkClarions];
+			auto& vec = targetExt->unit_vectors[UnitVectorPhaseLinkClarions];
 			it = std::find(vec.begin(), vec.end(), unit);
 			if (it == vec.end()) {
 				vec.push_back(unit);
@@ -1632,7 +1637,7 @@ namespace scbw
 	bool hasClarionLinks(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		return unitExt->unitVectors[UnitVectorPhaseLinkClarions].size();
+		return unitExt->unit_vectors[UnitVectorPhaseLinkClarions].size();
 	}
 
 	void linkDamage(Unit* unit, s32 damage, hooks::WeaponDamageData& data)
@@ -1702,7 +1707,7 @@ namespace scbw
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		std::unordered_set<Unit*> links = {};
-		auto& clarions = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
+		auto& clarions = unitExt->unit_vectors[UnitVectorPhaseLinkClarions];
 		for (Unit* clarion : clarions)
 		{
 			if (!clarion)
@@ -1710,7 +1715,7 @@ namespace scbw
 				continue;
 			}
 			UnitExt* clarionExt = globals.get_unit_ext(clarion);
-			auto link = clarionExt->unitVectors[UnitVectorPhaseLink];
+			auto link = clarionExt->unit_vectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
 		return std::vector<Unit*>(links.begin(), links.end());

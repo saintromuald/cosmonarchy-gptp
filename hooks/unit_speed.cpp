@@ -36,7 +36,7 @@ namespace hooks
 		}
 
 		// Crucible Aura
-		speed /= 1 + 0.1 * unitExt->unitVectors[UnitVectorCrucibles].size();
+		speed /= 1 + 0.1 * unitExt->unit_vectors[UnitVectorCrucibles].size();
 
 		// Mind Tyrant Malediction: Apply movespeed slow to non-organic targets
 		if (unitExt->timers[TimerMaledictionSlow] > 1)
@@ -136,7 +136,7 @@ namespace hooks
 					return false;
 				}
 				bool validPlayer = false;
-				for (auto player : unitExt->valueVectors[ValueVectorSignifySourcePlayer])
+				for (auto player : unitExt->value_vectors[ValueVectorSignifySourcePlayer])
 				{
 					if (scbw::is_allied_to(player, enemy->player))
 					{

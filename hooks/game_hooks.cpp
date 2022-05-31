@@ -988,7 +988,7 @@ namespace hooks
 				// Demiurge - Gods Made Flesh - apply link
 				if (unitExt->values[ValueGodsMadeFleshActive])
 				{
-					for (Unit* target : unitExt->unitVectors[UnitVectorWorshipersDemiurge]) {
+					for (Unit* target : unitExt->unit_vectors[UnitVectorWorshipersDemiurge]) {
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						targetExt->timers[TimerGodsMadeFlesh] = 3;
 						u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(target->id);
@@ -1106,7 +1106,7 @@ namespace hooks
 
 				if (unit->mainOrderId == OrderId::Move)
 				{
-					if (unitExt->anthelionLastMoveTarget != unit->moveTarget.pt)
+					if (unitExt->anthelion_last_move_target != unit->moveTarget.pt)
 					{
 						if (unitExt->timers[TimerAnthelionEndlessEclipse] > 1)
 						{
@@ -1114,7 +1114,7 @@ namespace hooks
 						}
 						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 					}
-					unitExt->anthelionLastMoveTarget = unit->moveTarget.pt;
+					unitExt->anthelion_last_move_target = unit->moveTarget.pt;
 					s16 oldX = unit->sprite->position.x;
 					s16 oldY = unit->sprite->position.y;
 
@@ -1325,7 +1325,7 @@ namespace hooks
 
 		// Phase Link Overlay
 		if (*elapsedTimeFrames % 10 == 0
-			&& unitExt->unitVectors[UnitVectorPhaseLinkClarions].size())
+			&& unitExt->unit_vectors[UnitVectorPhaseLinkClarions].size())
 		{
 			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
 		}
@@ -1346,7 +1346,7 @@ namespace hooks
 		if (unitExt->timers[TimerSignify] == 1)
 		{
 			unitExt->values[ValueSignifyStacks] = 0;
-			unitExt->valueVectors[ValueVectorSignifySourcePlayer].clear();
+			unitExt->value_vectors[ValueVectorSignifySourcePlayer].clear();
 			scbw::update_signify_status(unit, unitExt);
 		}
 
@@ -1394,8 +1394,8 @@ namespace hooks
 		if (unitExt->timers[TimerStrigaRepulsion])
 		{
 			Point16 finalPos = unit->position;
-			finalPos.x += unitExt->repulsionVector.x;
-			finalPos.y += unitExt->repulsionVector.y;
+			finalPos.x += unitExt->repulsion_vector.x;
+			finalPos.y += unitExt->repulsion_vector.y;
 			finalPos = scbw::clamp_point(finalPos);
 
 			if (!scbw::move_unit_improved(unit, finalPos.x, finalPos.y))
@@ -1410,8 +1410,8 @@ namespace hooks
 		if (unitExt->timers[TimerMagnetarAttraction])
 		{
 			Point16 finalPos = unit->position;
-			finalPos.x += unitExt->repulsionVector.x;
-			finalPos.y += unitExt->repulsionVector.y;
+			finalPos.x += unitExt->repulsion_vector.x;
+			finalPos.y += unitExt->repulsion_vector.y;
 			finalPos = scbw::clamp_point(finalPos);
 
 			if (!scbw::move_unit_improved(unit, finalPos.x, finalPos.y))
@@ -1451,7 +1451,7 @@ namespace hooks
 		}
 
 		// Cyclops - Flak Cannon Fuse
-		for (u32 fuse_timer : unitExt->timerVectors[TimerVectorCyclopsFuse])
+		for (u32 fuse_timer : unitExt->timer_vectors[TimerVectorCyclopsFuse])
 		{
 			if (fuse_timer == 1)
 			{
@@ -1504,7 +1504,12 @@ namespace hooks
 				if (target && target->hitPoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
 					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->player != target->player) {
 					UnitExt* target_ext = globals.get_unit_ext(target);
-					target_ext->timers[TimerAI_AvoidTargeting] = 2; // This is not really solid for FFA scenarios, but a more complete solution would be way harder to do
+
+					for (u32 i = 0; i < 8; ++i) {
+						if (scbw::is_allied_to(i, unit->player)) {
+							target_ext->ai_timer_avoid_targeting[i] = 2;
+						}
+					}
 					if (unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
 						if (unit->orderSignal & 0x2) {
 							unit->orderSignal &= ~0x2;
@@ -1631,7 +1636,7 @@ namespace hooks
 		// Vorvaling - Captivating Claws
 		if (unitExt->timers[TimerCaptivatingClaws] == 1)
 		{
-			unitExt->unitVectors[UnitVectorCaptivatingClaws] = {};
+			unitExt->unit_vectors[UnitVectorCaptivatingClaws] = {};
 		}
 
 		// Game Rule -  Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
@@ -1767,7 +1772,7 @@ namespace hooks
 
 		// Crucible Stacks Clear
 		{
-			auto& crucibles = unitExt->unitVectors[UnitVectorCrucibles];
+			auto& crucibles = unitExt->unit_vectors[UnitVectorCrucibles];
 			for (auto it = crucibles.begin(); it != crucibles.end(); ++it)
 			{
 				Unit* target = *it;
@@ -1809,7 +1814,7 @@ namespace hooks
 				}
 
 				UnitExt* targetExt = globals.get_unit_ext(target);
-				auto& vec = targetExt->unitVectors[UnitVectorCrucibles];
+				auto& vec = targetExt->unit_vectors[UnitVectorCrucibles];
 				if (std::find(vec.begin(), vec.end(), unit) == vec.end())
 				{
 					vec.push_back(unit);

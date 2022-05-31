@@ -655,11 +655,11 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	if (attacker)
 	{
 		UnitExt* attackerExt = globals.get_unit_ext(attacker);
-		attackerExt->damageDealtTimer = 0;
+		attackerExt->damage_dealt_timer = 0;
 	}
 
 	UnitExt* unitExt = globals.get_unit_ext(this);
-	unitExt->damageReceiveTimer = 0;
+	unitExt->damage_receive_timer = 0;
 
 	__asm {
 		PUSHAD

@@ -10,6 +10,8 @@
 
 #pragma pack(1)
 
+#define PlayerLimit 8
+
 struct Image;
 struct Sprite;
 struct Order;
@@ -331,8 +333,6 @@ enum ExtTimerId
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
 	TimerAI_KitingCooldown,
 	TimerAI_KitingLeash,
-
-	TimerAI_AvoidTargeting,
 	
 	TimerCount,
 };
@@ -377,21 +377,21 @@ enum ExtUnitVectorId
 
 enum ExtTimerVectorId
 {
-	TimerVectorPhaseRushTimerArray, // unused, was size 8
 	TimerVectorCyclopsFuse,
+	TimerVectorCorrupted, // last slot is always corrupted on some builds, fuck you visual studio
 
 	TimerVectorCount,
 };
 
 struct UnitExt
 {
-	u32						damageReceiveTimer;
-	u32						damageDealtTimer;
-	u32						nathrokorTargetStacks[8];
-	Point16					anthelionLastMoveTarget;
-	Vector32f				repulsionVector;
-	Point16					lastBulletLaunchPos;
-	Point16					aiKitingOrigin;
+	u32						damage_receive_timer;
+	u32						damage_dealt_timer;
+	u32						nathrokor_target_stacks[PlayerLimit];
+	Point16					anthelion_last_move_target;
+	Vector32f				repulsion_vector;
+	Point16					last_bullet_launch_position;
+	Point16					ai_kiting_origin;
 //	Target					rally;
 
 	f32						building_tick_progress;
@@ -402,12 +402,14 @@ struct UnitExt
 	f32						salvage_minerals;
 	f32						salvage_gas;
 
+	u32						ai_timer_avoid_targeting[PlayerLimit];
+
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
 	Unit*					units[UnitCount];
-	std::vector<u32>		valueVectors[ValueVectorCount];
-	std::vector<Unit*>		unitVectors[UnitVectorCount];
-	std::vector<u32>		timerVectors[TimerVectorCount];
+	std::vector<u32>		value_vectors[ValueVectorCount];
+	std::vector<Unit*>		unit_vectors[UnitVectorCount];
+	std::vector<u32>		timer_vectors[TimerVectorCount];
 };
 
 namespace RustId
