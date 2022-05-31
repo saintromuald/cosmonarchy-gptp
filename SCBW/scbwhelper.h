@@ -1285,4 +1285,6 @@ namespace helper
 
 	void update_burrowing_cloaking_units();																	// 00492EB0
 	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 flag_or_timer, char iscript_anim);					// 00476C90
+
+	bool place_building_resource_restriction_check(u32 check_vision, u16 tile_x, u16 tile_y);				// 00473990
 }
