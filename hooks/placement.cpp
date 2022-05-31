@@ -1,4 +1,5 @@
 #include "placement.h"
+#include "data_ext.h"
 
 namespace hooks
 {
@@ -128,9 +129,9 @@ namespace hooks
     // Hooked to allow building on allied creep. -Pr0nogo
     int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) // 00473010
     {
-        u32 player_bit = 0;
+        u32 human_only_player_bit = 0;
         if (playerTable[player].type == PlayerType::Human) {
-            player_bit = 1 << player;
+            human_only_player_bit = 1 << player;
         }
 
         u8 result = 0;
@@ -139,7 +140,7 @@ namespace hooks
                 ActiveTile* tile = scbw::get_active_tile_at_tile(x_tile + x, y_tile + y);
 
                 char state = 0;
-                if (tile->explored_flags & player_bit) {
+                if (tile->explored_flags & human_only_player_bit) {
                     state  = 10;
                     result = 10;
                 }
@@ -147,7 +148,7 @@ namespace hooks
                 if (check_temporary_creep) {
                     creep  = !tile->temporary_creep;
                 }
-                if ((check_temporary_creep || check_creep || !(tile->visibility_flags & player_bit)) && creep) {
+                if ((check_temporary_creep || check_creep || !(tile->visibility_flags & human_only_player_bit)) && creep) {
                     state = 5;
                     if (result < 5) {
                         result = 5;
@@ -162,74 +163,47 @@ namespace hooks
     // Same as above. -Pr0nogo
     u32 update_building_placement_state_map_tile_flags(u16 unit_id, u32 tile_x, u32 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) // 00473A10
     {
-        if (size.y <= 0)
-        {
-            return 0;
+        u32 human_only_player_bit = 0;
+        if (playerTable[player].type == PlayerType::Human) {
+            human_only_player_bit = 1 << player;
         }
 
-        s32 visibility_flags = 0;
-        s32 explored_flags = 0;
-        if (playerTable[player].type == PlayerType::Human)
-        {
-            explored_flags = 1 << (player + 8);
-            visibility_flags = 1 << player;
-        }
-        ActiveTile* tile = scbw::get_active_tile_at_tile(tile_x, tile_y);
-        u32 some_bit = 0x20800000; // cliff_edge, always_unbuildable
-        bool check_for_creep = false;
-        if (!(units_dat::GroupFlags[unit_id].isZerg))
-        {
-            some_bit = (check_creep != 0 ? 0x40000000 : 0x400000) | 0x20800000; // not handled by the else if @ line 205
-            check_for_creep = true;
-        }
-
-        u8 state_1 = 0;
-        u32 y_it = 0;
-        u32 size_it = size.x;
-        u16 x_it = 0;
-        u8 temp_state_1 = 0;
-        u32 index = 0;
-        do
-        {
-            x_it = 0;
-            if (size_it > 0)
-            {
-                index = 6 * (y_it + 8 * placement_state_entry);
-                do
-                {
-                    temp_state_1 = 0;
-                    if (tile->explored_flags)
-                    {
-                        temp_state_1 = 10;
-                    }
-                    else if (!check_creep && tile->visibility_flags
-                        || !check_for_creep && (tile->always_unbuildable || tile->cliff_edge) // also needs creep check
-                        || tile < 0) // originally also checked for if the unit id was any racial beacon
-                    {
-                        if (units_dat::BaseProperty[unit_id] & UnitProperty::ResourceDepot)
-                        {
-                            if (helper::place_building_resource_restriction_check(check_creep, x_it + tile_x, y_it + tile_y))
-                            {
-                                temp_state_1 = 2;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        temp_state_1 = 4;
-                    }
-                    ++tile;
-                    buildingPlacementState[x_it++ + index] = temp_state_1;
-                    if (state_1 <= temp_state_1)
-                    {
-                        state_1 = temp_state_1;
-                    }
-                    size_it = size.x;
-                } while (x_it < size.x);
+        u32 allied_bits = 0;
+        for (u32 i = 0; i < PlayerLimit; ++i) {
+            if (scbw::is_allied_to(i, player)) {
+                allied_bits |= 1 << i;
             }
-            ++y_it;
-            tile += mapTileSize->width - size_it;
-        } while (y_it < size.y);
-        return state_1;
+        }
+
+        u8 result = 0;
+        for (u32 y = 0; y < size.y; ++y) {
+            for (u32 x = 0; x < size.x; ++x) {
+                ActiveTile* tile = scbw::get_active_tile_at_tile(tile_x + x, tile_y + y);
+                TileExt* tile_ext = get_tile_ext_at_tile(tile_x + x, tile_y + y);
+
+                u32 flags = 0x20800000; // cliff_edge, always_unbuildable
+                if (!units_dat::GroupFlags[unit_id].isZerg && !(tile_ext->creep_owners & allied_bits)) {
+                    flags |= check_creep ? 0x40000000 : 0x400000;
+                }
+
+                u8 state = 0;
+                if (tile->explored_flags & human_only_player_bit) {
+                    state = 10;
+                } else if (!check_creep && tile->visibility_flags & human_only_player_bit
+                || !(tile->value & flags)
+                || tile->value < 0) { // originally also checked for if the unit id was any racial beacon
+                    if (units_dat::BaseProperty[unit_id] & UnitProperty::ResourceDepot && helper::place_building_resource_restriction_check(check_creep, x + tile_x, y + tile_y)) {
+                        state = 2;
+                    }
+                } else {
+                    state = 4;
+                }
+                buildingPlacementState[6 * (y + 8 * placement_state_entry) + x] = state;
+                if (result < state) {
+                    result = state;
+                }
+            }
+        }
+        return result;
     }
 }

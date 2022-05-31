@@ -1,5 +1,6 @@
 #include "larva_creep_spawn.h"
 #include <hook_tools.h>
+#include <SCBW/scbwdata.h>
 
 namespace
 {	
@@ -312,7 +313,34 @@ namespace
 		}
 	}
 
+	void __declspec(naked) should_disappear_creep_unit_wrapper() {
+		static const u32 jmp_address = 0x0047DFC1 + 5;
+		static u32 result;
+		__asm {
+			PUSHAD
+		}
+		result = 1;
+		__asm {
+			POPAD
+			CMP result, 1
+			JMP jmp_address
+		}
+	}
 
+	void __declspec(naked) should_disappear_creep_unit_id_wrapper() {
+		static const u32 jmp_address = 0x0047DE61 + 5;
+		static u32 result;
+		static u32 unit_id;
+		__asm {
+			PUSHAD
+		}
+		result = 1;
+		__asm {
+			POPAD
+			CMP result, 1
+			JMP jmp_address
+		}
+	}
 }
 
 namespace hooks
@@ -351,22 +379,31 @@ namespace hooks
 
 		// Insert function offset
 		*(u32*)(&func_a[22]) = (u32)(&inCreepArea_Call) - (offs_a + 22 + 4);
-		memoryPatch(offs_a, func_a, 31);
+		memory_patch(offs_a, func_a, 31);
 
 		*(u32*)(&func_bcd[18]) = (u32)(&inCreepArea_Call) - (offs_b + 18 + 4);
-		memoryPatch(offs_b, func_bcd, 25);
+		memory_patch(offs_b, func_bcd, 25);
 
 		*(u32*)(&func_bcd[18]) = (u32)(&inCreepArea_Call) - (offs_d + 18 + 4);
-		memoryPatch(offs_d, func_bcd, 25);
+		memory_patch(offs_d, func_bcd, 25);
 
 		func_bcd[16] = 0xD6;
 		*(u32*)(&func_bcd[18]) = (u32)(&inCreepArea_Call) - (offs_c + 18 + 4);
-		memoryPatch(offs_c, func_bcd, 25);
+		memory_patch(offs_c, func_bcd, 25);
 
 		*(u32*)(&func_e[16]) = (u32)(&inCreepArea_Call) - (offs_e + 16 + 4);
-		memoryPatch(offs_e, func_e, 25);
+		memory_patch(offs_e, func_e, 25);
 
 		*(u32*)(&func_f[3]) = (u32)(&inCreepArea_Call) - (offs_f + 3 + 4);
-		memoryPatch(offs_f, func_f, sizeof(func_f));
+		memory_patch(offs_f, func_f, sizeof(func_f));
+
+		// Allow spreading underneath structures
+		u32 zero = 0;
+		memory_patch(0x00414777 + 3, zero);
+		memory_patch(0x00414780 + 2, zero);
+		memory_patch(0x004149B5 + 3, zero);
+		memory_patch(0x0045CE07 + 3, zero);
+		jump_patch(should_disappear_creep_unit_wrapper,    0x0047DFC1, 0);
+		jump_patch(should_disappear_creep_unit_id_wrapper, 0x0047DE61, 0);
 	}
 }

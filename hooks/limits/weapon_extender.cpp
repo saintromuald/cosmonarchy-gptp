@@ -145,16 +145,16 @@ static inline void patchWeaponDat(u32 opcodeSize, u32 address, u32 patchType)
 	if (patchType == PatchMaxWeaponCompare)
 	{
 		const u8 noneWeaponId = MAX_WEAPONS - 1;
-		memoryPatch(address + opcodeSize, noneWeaponId);
+		memory_patch(address + opcodeSize, noneWeaponId);
 	}
 	else if (patchType == PatchMaxWeaponLoad)
 	{
 		const u32 maxWeapons = MAX_WEAPONS;
-		memoryPatch(address + opcodeSize, maxWeapons);
+		memory_patch(address + opcodeSize, maxWeapons);
 	}
 	else
 	{
-		memoryPatch(address + opcodeSize, patches[patchType]);
+		memory_patch(address + opcodeSize, patches[patchType]);
 	}
 }
 

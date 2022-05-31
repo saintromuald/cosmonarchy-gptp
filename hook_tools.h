@@ -54,19 +54,19 @@ inline void call_patch(const void* target, DWORD position, u32 nops = 0)
 
 /// Patches the specified address with the given data using memcpy().
 template <typename T>
-void memoryPatch(const u32 address, const T& data)
+void memory_patch(const u32 address, const T& data)
 {
-	memoryPatch(address, (u8*)&data, sizeof(T));
+	memory_patch(address, (u8*)&data, sizeof(T));
 }
 
 /// Inject an array of bytes, using the given size.
-void memoryPatch(void* const address, const u8* data, const size_t size);
-inline void memoryPatch(const u32 address, const u8* data, const size_t size)
+void memory_patch(void* const address, const u8* data, const size_t size);
+inline void memory_patch(const u32 address, const u8* data, const size_t size)
 {
-	memoryPatch((void*)address, data, size);
+	memory_patch((void*)address, data, size);
 }
 
-void wrapperPatch(const u8* code, u32 len, const u32 position, u32 nops = 0);
+void wrapper_patch(const u8* code, u32 len, const u32 position, u32 nops = 0);
 
 struct ByteWrapperMemory
 {

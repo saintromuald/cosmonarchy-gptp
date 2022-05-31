@@ -286,7 +286,7 @@ namespace hooks
 		u8 maxID = ARRAY_SIZE(WeaponEffects_SwitchTable) - 1;
 		u8 data[4];
 		*(u32*)data = (u32)WeaponEffects_SwitchTable;
-		memoryPatch(Addr_WeaponsDatEffectCount, maxID);
-		memoryPatch(Addr_WeaponsDatEffectSwitch, data, 4); // load pointer to address table
+		memory_patch(Addr_WeaponsDatEffectCount, maxID);
+		memory_patch(Addr_WeaponsDatEffectSwitch, data, 4); // load pointer to address table
 	}
 }

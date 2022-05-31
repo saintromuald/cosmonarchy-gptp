@@ -2419,14 +2419,14 @@ namespace scbw
 		}
 	}
 
-	bool unit_is_spreading_creep(Unit* unit) {
+	u32 unit_get_creep_spreader_id(Unit* unit) {
 		UnitExt* unit_ext = globals.get_unit_ext(unit);
+		if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
+			return unit->id;
+		}
 		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			return true;
+			return UnitId::ZergHatchery;
 		}
-		if (helper::spreads_creep(unit->id, 0)) {
-			return true;
-		}
-		return false;
+		return unit->id;
 	}
 }

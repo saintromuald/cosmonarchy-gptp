@@ -31,10 +31,10 @@ namespace hooks
 		jump_patch(canHitTargetCheck_Wrapper, 0x004765B0, 1);
 
 		// remove miss chance for non-projectile attacks
-		memoryPatch(0x0048C0C7, (u8)0x90);
-		memoryPatch(0x0048C0C7 + 1, (u8)0xE9);
+		memory_patch(0x0048C0C7, (u8)0x90);
+		memory_patch(0x0048C0C7 + 1, (u8)0xE9);
 
 		// remove miss chance for projectile attacks
-		memoryPatch(0x0048C1DB, (u8)0xEB);
+		memory_patch(0x0048C1DB, (u8)0xEB);
 	}
 }

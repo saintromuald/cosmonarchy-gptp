@@ -235,7 +235,7 @@ namespace hooks
 		u8 data[] = {
 			0x33, 0xC0 // xor eax, eax
 		};
-		memoryPatch(0x004E53FC, data, sizeof(data));
+		memory_patch(0x004E53FC, data, sizeof(data));
 
 		jump_patch(getSuppliesAvailable_Wrapper,	0x00488900, 1);
 		jump_patch(getSuppliesRemaining_Wrapper,	0x004889D0, 1);

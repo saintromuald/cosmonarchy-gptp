@@ -45,6 +45,6 @@ namespace hooks
 {
 	void injectDrawHook()
 	{
-		memoryPatch(0x004BD68D, &DrawHook);
+		memory_patch(0x004BD68D, &DrawHook);
 	}
 }

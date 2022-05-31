@@ -597,5 +597,5 @@ namespace scbw
 
 	void give_ai_ex(Unit* unit, bool prefer_military);
 
-	bool unit_is_spreading_creep(Unit* unit);
+	u32 unit_get_creep_spreader_id(Unit* unit);
 }

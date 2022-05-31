@@ -30,11 +30,11 @@ void CCMUExtender::extend()
 	//	const u32 table_end = table_start + 336*NEW_ARRAY_LENGTH;
 	const u32 table_end = table_start + 336 * UNIT_ARRAY_LENGTH;
 	globals.extended_unit_table = 1;
-	memoryPatch(0x00402FD2 + 2, index_start);
-	memoryPatch(0x0042FEE5 + 1, lim_ext);
-	memoryPatch(0x0042FEF1 + 1, lim_ext);
-	memoryPatch(0x004EABC4 + 3, table_start + 0x64);//unit Id of first unit
-	memoryPatch(0x00430082 + 2, index_start + 0x148);//unit sorting
+	memory_patch(0x00402FD2 + 2, index_start);
+	memory_patch(0x0042FEE5 + 1, lim_ext);
+	memory_patch(0x0042FEF1 + 1, lim_ext);
+	memory_patch(0x004EABC4 + 3, table_start + 0x64);//unit Id of first unit
+	memory_patch(0x00430082 + 2, index_start + 0x148);//unit sorting
 	//orderingX
 	//orderingY
 	uplink(orderingXlist(), orderingXstart);
@@ -42,15 +42,15 @@ void CCMUExtender::extend()
 	uplink(orderingXlist_off4(), orderingXstart + 0x4);
 	uplink(orderingYlist_off4(), orderingYstart + 0x4);
 	uplink(orderingY_min18endlist(), orderingYstart + (UNIT_ARRAY_LENGTH * 16) - 0x18);
-	memoryPatch(0x00430651 + 3, orderingXstart + 0xc);
-	memoryPatch(0x0046A0A6 + 3, orderingXstart + 0xc);
-	memoryPatch(0x0046A0F6 + 3, orderingXstart + 0xc);
-	memoryPatch(0x00430721 + 3, orderingYstart - 0x4);
-	memoryPatch(0x0046A289 + 3, orderingYstart - 0x4);
-	memoryPatch(0x0046A2C9 + 3, orderingYstart - 0x4);
-	memoryPatch(0x00430801 + 3, orderingYstart + 0xc);
-	memoryPatch(0x0046A1D9 + 3, orderingYstart + 0xc);
-	memoryPatch(0x0046A229 + 3, orderingYstart + 0xc);
+	memory_patch(0x00430651 + 3, orderingXstart + 0xc);
+	memory_patch(0x0046A0A6 + 3, orderingXstart + 0xc);
+	memory_patch(0x0046A0F6 + 3, orderingXstart + 0xc);
+	memory_patch(0x00430721 + 3, orderingYstart - 0x4);
+	memory_patch(0x0046A289 + 3, orderingYstart - 0x4);
+	memory_patch(0x0046A2C9 + 3, orderingYstart - 0x4);
+	memory_patch(0x00430801 + 3, orderingYstart + 0xc);
+	memory_patch(0x0046A1D9 + 3, orderingYstart + 0xc);
+	memory_patch(0x0046A229 + 3, orderingYstart + 0xc);
 
 	//	have nothing to do with units, this is larva integers, must not be extended at all
 	//	memoryPatch(0x004E8C9D + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
@@ -58,32 +58,32 @@ void CCMUExtender::extend()
 	//	memoryPatch(0x004EA7D4 + 2, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
 	//	memoryPatch(0x004EA7E8 + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
 
-	memoryPatch(0x0042FEA9 + 3, position_search_units_start);
-	memoryPatch(0x0042FEF6 + 1, position_search_units_start);
-	memoryPatch(0x0042FF9C + 3, position_search_units_start);
-	memoryPatch(0x004300B9 + 1, position_search_units_start);
-	memoryPatch(0x004301A9 + 3, position_search_units_start);
-	memoryPatch(0x004301CA + 2, position_search_units_start);
-	memoryPatch(0x004304AE + 2, position_search_units_start);
-	memoryPatch(0x00430503 + 3, position_search_units_start);
-	memoryPatch(0x0043087B + 1, position_search_units_start);
-	memoryPatch(0x004308B8 + 3, position_search_units_start);
-	memoryPatch(0x00430ADB + 1, position_search_units_start);
+	memory_patch(0x0042FEA9 + 3, position_search_units_start);
+	memory_patch(0x0042FEF6 + 1, position_search_units_start);
+	memory_patch(0x0042FF9C + 3, position_search_units_start);
+	memory_patch(0x004300B9 + 1, position_search_units_start);
+	memory_patch(0x004301A9 + 3, position_search_units_start);
+	memory_patch(0x004301CA + 2, position_search_units_start);
+	memory_patch(0x004304AE + 2, position_search_units_start);
+	memory_patch(0x00430503 + 3, position_search_units_start);
+	memory_patch(0x0043087B + 1, position_search_units_start);
+	memory_patch(0x004308B8 + 3, position_search_units_start);
+	memory_patch(0x00430ADB + 1, position_search_units_start);
 	//
-	memoryPatch(0x0042FEEA + 1, position_search_temp_start);
-	memoryPatch(0x0043006A + 3, position_search_temp_start);
-	memoryPatch(0x00430075 + 3, position_search_temp_start);
-	memoryPatch(0x004309F7 + 3, position_search_temp_start);
-	memoryPatch(0x00430A04 + 3, position_search_temp_start);
-	memoryPatch(0x00430A64 + 3, position_search_temp_start);
-	memoryPatch(0x00430A6E + 3, position_search_temp_start);
-	memoryPatch(0x00430A97 + 3, position_search_temp_start);
-	memoryPatch(0x004309F7 + 3, position_search_temp_start);
-	memoryPatch(0x00430AC5 + 3, position_search_temp_start);
+	memory_patch(0x0042FEEA + 1, position_search_temp_start);
+	memory_patch(0x0043006A + 3, position_search_temp_start);
+	memory_patch(0x00430075 + 3, position_search_temp_start);
+	memory_patch(0x004309F7 + 3, position_search_temp_start);
+	memory_patch(0x00430A04 + 3, position_search_temp_start);
+	memory_patch(0x00430A64 + 3, position_search_temp_start);
+	memory_patch(0x00430A6E + 3, position_search_temp_start);
+	memory_patch(0x00430A97 + 3, position_search_temp_start);
+	memory_patch(0x004309F7 + 3, position_search_temp_start);
+	memory_patch(0x00430AC5 + 3, position_search_temp_start);
 	//004309B5
-	memoryPatch(0x0048B1AF + 2, air_splashes_start);
-	memoryPatch(0x0048B1C7 + 3, air_splashes_start);
-	memoryPatch(0x0048B1AF + 2, air_splashes_start);
+	memory_patch(0x0048B1AF + 2, air_splashes_start);
+	memory_patch(0x0048B1C7 + 3, air_splashes_start);
+	memory_patch(0x0048B1AF + 2, air_splashes_start);
 	//
 	uplink(get_size_list(), UNIT_ARRAY_LENGTH);
 	uplink(table_start_list(), table_start);

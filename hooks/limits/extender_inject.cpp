@@ -152,10 +152,10 @@ namespace hooks
 
 	void dumbCodeInject(u32 address, u32* ids, std::vector<u8> code, u32 nop)
 	{
-		memoryPatch(address + code.size(), ids);
+		memory_patch(address + code.size(), ids);
 		for (s32 i = 0; i < code.size(); i++)
 		{
-			memoryPatch(address + i, code[i]);
+			memory_patch(address + i, code[i]);
 		}
 		nops(address + code.size() + 4, nop);
 	}
@@ -452,8 +452,8 @@ namespace hooks
 		jump_patch(SetAttackUnit_Wrapper, 0x00417207); // null int3 bytes
 
 		u32 attackSize = (ATTACK_LIMIT * 4) + 8;
-		memoryPatch(0x0043E673 + 2, attackSize);
-		memoryPatch(0x0043EEC3 + 2, attackSize);
+		memory_patch(0x0043E673 + 2, attackSize);
+		memory_patch(0x0043EEC3 + 2, attackSize);
 		jump_patch(AI_GetMissingAttackForceUnits_JmpWrapper, 0x0043805B, 5);
 
 		//AI_AddToAttack

@@ -564,7 +564,7 @@ namespace hooks
 	{
 		for (s32 i = 0; i < patch.size(); i++)
 		{
-			memoryPatch(address + i, patch[i]);
+			memory_patch(address + i, patch[i]);
 		}
 	}
 
@@ -974,9 +974,9 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 			memoryPatch(ptr_list[i], (u32)&extendedTbl);
 		}*/
 		patchTblList();
-		memoryPatch(0x004C3A6A + 1, &tblNew);
-		memoryPatch(0x004C3A2E + 1, &tblNew);
-		memoryPatch(0x004C3AF4 + 1, &tblNew);
+		memory_patch(0x004C3A6A + 1, &tblNew);
+		memory_patch(0x004C3A2E + 1, &tblNew);
+		memory_patch(0x004C3AF4 + 1, &tblNew);
 
 		/*
 

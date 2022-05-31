@@ -12,7 +12,7 @@ void call_patch(const void* target, void* position, const u32 nops)
 	*(u32*)(&data[1]) = address;
 	for (u32 i = 0; i < nops; ++i)
 		data[5 + i] = 0x90; //NOP instruction
-	memoryPatch(position, data, 5 + nops);
+	memory_patch(position, data, 5 + nops);
 	delete[] data;
 }
 
@@ -21,7 +21,7 @@ void nops(const u32 address, u32 number)
 	u8 nop = 0x90;
 	for (s32 i = 0; i < number; i++)
 	{
-		memoryPatch((void*)(address + i), &nop, sizeof(u8));
+		memory_patch((void*)(address + i), &nop, sizeof(u8));
 	}
 }
 
@@ -35,11 +35,11 @@ void jump_patch(const void* target, void* position, u32 nops)
 	*(s32*)(&data[1]) = address;
 	for (u32 i = 0; i < nops; ++i)
 		data[5 + i] = 0x90; //NOP instruction
-	memoryPatch(position, data, 5 + nops);
+	memory_patch(position, data, 5 + nops);
 	delete[] data;
 }
 
-void wrapperPatch(const u8* code, u32 len, const u32 address, u32 nop)
+void wrapper_patch(const u8* code, u32 len, const u32 address, u32 nop)
 {
 	//function address
 	auto exe = wrapperMemory.exec_alloc(len);
@@ -52,12 +52,12 @@ void wrapperPatch(const u8* code, u32 len, const u32 address, u32 nop)
 		exe[i] = code[i];
 	}
 	u32 diff = (u32)exe - (address + 0x5);
-	memoryPatch(address + 0x1, diff);
-	memoryPatch(address, (u8)0xe8);
+	memory_patch(address + 0x1, diff);
+	memory_patch(address, (u8)0xe8);
 }
 
 //Inject an array of bytes, using the given length.
-void memoryPatch(void* const address, const u8* data, const size_t size)
+void memory_patch(void* const address, const u8* data, const size_t size)
 {
 	DWORD oldProt = 0;
 	VirtualProtect(address, size, PAGE_EXECUTE_READWRITE, &oldProt);

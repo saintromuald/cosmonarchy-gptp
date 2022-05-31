@@ -180,24 +180,24 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	*/
 
 	// quick drop timeout -- Veeq7
-	memoryPatch(0x004A345D + 2, (u32)0);
+	memory_patch(0x004A345D + 2, (u32)0);
 
 	// iquare, start
 	// disable powerup hardcode
 	// FLAG id only
 	const u8 maxunsigned_2[5] = {0xff, 0xff};
-	memoryPatch(0x0044095D + 4, maxunsigned_2, 2);	// flag
-	memoryPatch(0x0045FE5C + 1, maxunsigned_2, 2);	// flag
-	memoryPatch(0x00460902 + 1, maxunsigned_2, 2);	// flag
-	memoryPatch(0x0049F145 + 4, maxunsigned_2, 2);	// flag
-	memoryPatch(0x004E4153 + 4, maxunsigned_2, 2);	// flag
-	memoryPatch(0x004E416E + 4, maxunsigned_2, 2);	// flag
+	memory_patch(0x0044095D + 4, maxunsigned_2, 2);	// flag
+	memory_patch(0x0045FE5C + 1, maxunsigned_2, 2);	// flag
+	memory_patch(0x00460902 + 1, maxunsigned_2, 2);	// flag
+	memory_patch(0x0049F145 + 4, maxunsigned_2, 2);	// flag
+	memory_patch(0x004E4153 + 4, maxunsigned_2, 2);	// flag
+	memory_patch(0x004E416E + 4, maxunsigned_2, 2);	// flag
 //	memoryPatch(0x004E426B + 1, maxunsigned_2, 2); // ctf create flag, this code doesn't run at all because CTF are spell orders now
-	memoryPatch(0x004E5F68 + 3, maxunsigned_2, 2);
-	memoryPatch(0x004E70E4 + 4, maxunsigned_2, 2);
-	memoryPatch(0x004F3A9C + 4, maxunsigned_2, 2);
-	memoryPatch(0x004F3C26 + 4, maxunsigned_2, 2);
-	memoryPatch(0x004F3CD5 + 4, maxunsigned_2, 2);
+	memory_patch(0x004E5F68 + 3, maxunsigned_2, 2);
+	memory_patch(0x004E70E4 + 4, maxunsigned_2, 2);
+	memory_patch(0x004F3A9C + 4, maxunsigned_2, 2);
+	memory_patch(0x004F3C26 + 4, maxunsigned_2, 2);
+	memory_patch(0x004F3CD5 + 4, maxunsigned_2, 2);
 
 	const u8 none = 0xE4;
 	// TODO: hook parent function and make AI assign different units based on personality
@@ -205,52 +205,52 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	memoryPatch(0x0043583F + 1, &none, sizeof(u8)); // disable AI placing units near missile turrets
 
 	// matriarch - pazuzu id hardcode
-	memoryPatch(0x0040275A + 2, &none, sizeof(u8));
-	memoryPatch(0x0043CF74 + 2, &none, sizeof(u8));
-	memoryPatch(0x00455E49 + 3, &none, sizeof(u8));
-	memoryPatch(0x00455EC7 + 3, &none, sizeof(u8));
-	memoryPatch(0x00475B68 + 2, &none, sizeof(u8));
-	memoryPatch(0x004C210A + 2, &none, sizeof(u8));
+	memory_patch(0x0040275A + 2, &none, sizeof(u8));
+	memory_patch(0x0043CF74 + 2, &none, sizeof(u8));
+	memory_patch(0x00455E49 + 3, &none, sizeof(u8));
+	memory_patch(0x00455EC7 + 3, &none, sizeof(u8));
+	memory_patch(0x00475B68 + 2, &none, sizeof(u8));
+	memory_patch(0x004C210A + 2, &none, sizeof(u8));
 
 	// rhynadon id hardcode
-	memoryPatch(0x0042E352 + 1, &none, sizeof(u8));
-	memoryPatch(0x00431574 + 2, &none, sizeof(u8));
-	memoryPatch(0x00431B37 + 2, &none, sizeof(u8));
-	memoryPatch(0x00437E0B + 2, &none, sizeof(u8));
-	memoryPatch(0x00437E3A + 2, &none, sizeof(u8));
-	memoryPatch(0x0047B454 + 2, &none, sizeof(u8));
-	memoryPatch(0x0047B7C9 + 2, &none, sizeof(u8));
-	memoryPatch(0x004CBE49 + 2, &none, sizeof(u8));
+	memory_patch(0x0042E352 + 1, &none, sizeof(u8));
+	memory_patch(0x00431574 + 2, &none, sizeof(u8));
+	memory_patch(0x00431B37 + 2, &none, sizeof(u8));
+	memory_patch(0x00437E0B + 2, &none, sizeof(u8));
+	memory_patch(0x00437E3A + 2, &none, sizeof(u8));
+	memory_patch(0x0047B454 + 2, &none, sizeof(u8));
+	memory_patch(0x0047B7C9 + 2, &none, sizeof(u8));
+	memory_patch(0x004CBE49 + 2, &none, sizeof(u8));
 
 	// flag beacon id hardcode
 	const u8 jmp = 0xEB;
 	const u8 min = 0x00;
-	memoryPatch(0x0042F134 + 2, &none, sizeof(u8));
-	memoryPatch(0x0042F13A, &jmp, 1); // JA
-	memoryPatch(0x0043A602 + 2, &none, sizeof(u8));
+	memory_patch(0x0042F134 + 2, &none, sizeof(u8));
+	memory_patch(0x0042F13A, &jmp, 1); // JA
+	memory_patch(0x0043A602 + 2, &none, sizeof(u8));
 //	memoryPatch(0x0043A609 + 2, &none, sizeof(u8));
-	memoryPatch(0x004558A3 + 2, &none, sizeof(u8));
+	memory_patch(0x004558A3 + 2, &none, sizeof(u8));
 //	memoryPatch(0x004558A9 + 2, &none, sizeof(u8));
-	memoryPatch(0x00455940 + 2, &none, sizeof(u8));
+	memory_patch(0x00455940 + 2, &none, sizeof(u8));
 //	memoryPatch(0x00455946 + 2, &none, sizeof(u8));
-	memoryPatch(0x00455AF2 + 2, &none, sizeof(u8));
+	memory_patch(0x00455AF2 + 2, &none, sizeof(u8));
 //	memoryPatch(0x00455AF8 + 2, &none, sizeof(u8));
-	memoryPatch(0x00473A16 + 2, &none, sizeof(u8));
+	memory_patch(0x00473A16 + 2, &none, sizeof(u8));
 //	memoryPatch(0x00473A1C + 2, &none, sizeof(u8));
-	memoryPatch(0x00473BD6 + 2, &none, sizeof(u8));
+	memory_patch(0x00473BD6 + 2, &none, sizeof(u8));
 //	memoryPatch(0x00473BE3 + 2, &none, sizeof(u8));
-	memoryPatch(0x0047B2C4 + 2, &none, sizeof(u8));
+	memory_patch(0x0047B2C4 + 2, &none, sizeof(u8));
 //	memoryPatch(0x0047B2CA + 2, &none, sizeof(u8));
-	memoryPatch(0x004E3DC4 + 2, &none, sizeof(u8));
-	memoryPatch(0x004E3DCA, &jmp, 1); // JA
+	memory_patch(0x004E3DC4 + 2, &none, sizeof(u8));
+	memory_patch(0x004E3DCA, &jmp, 1); // JA
 	const u8 moveaxpatch[5] = {0xb8,  0x00, 0x00, 0x00, 0x00};
-	memoryPatch((void*)0x00487C93, moveaxpatch, sizeof(moveaxpatch)); // disable unit selectable check in placement function
+	memory_patch((void*)0x00487C93, moveaxpatch, sizeof(moveaxpatch)); // disable unit selectable check in placement function
 
 	// disable terran structure building transport condition
 	const u8 fourth = 0x3;
-	memoryPatch(0x004E6E7A + 1, &fourth, sizeof(u8));
+	memory_patch(0x004E6E7A + 1, &fourth, sizeof(u8));
 	const u8 jnz = 0x75;
-	memoryPatch(0x004E6E7C, &jnz, sizeof(u8));
+	memory_patch(0x004E6E7C, &jnz, sizeof(u8));
 
 //	hooks::injectEconomicUnitHooks();
 	// test for globals
@@ -282,13 +282,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memoryPatch(0x0048B0A6, &jmp, 1);
 	*/
 
-	memoryPatch(0x00477AB7 + 4, &none, 1);
-	memoryPatch(0x0043CF89 + 2, &none, 1);
-	memoryPatch(0x0047681B + 4, &none, 1);
-	memoryPatch(0x00476E67 + 2, &none, 1);
-	memoryPatch(0x00477E09 + 4, &none, 1);
-	memoryPatch(0x00478613 + 4, &none, 1);
-	memoryPatch(0x0048B0A1 + 4, &none, 1);
+	memory_patch(0x00477AB7 + 4, &none, 1);
+	memory_patch(0x0043CF89 + 2, &none, 1);
+	memory_patch(0x0047681B + 4, &none, 1);
+	memory_patch(0x00476E67 + 2, &none, 1);
+	memory_patch(0x00477E09 + 4, &none, 1);
+	memory_patch(0x00478613 + 4, &none, 1);
+	memory_patch(0x0048B0A1 + 4, &none, 1);
 
 	// town hall code
 	// worker code
@@ -308,96 +308,96 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// nops(0x0048EAB0, 5);
 
 	// bengalaas id hardcode
-	memoryPatch(0x0043157A + 2, patchLastUnit, 1);
-	memoryPatch(0x00431B3D + 2, patchLastUnit, 1);
-	memoryPatch(0x00437E11 + 2, patchLastUnit, 1);
-	memoryPatch(0x00437E40 + 2, patchLastUnit, 1);
-	memoryPatch(0x0047B45A + 2, patchLastUnit, 1);
-	memoryPatch(0x0047B7CF + 2, patchLastUnit, 1);
-	memoryPatch(0x004CBE4E + 2, patchLastUnit, 1);
+	memory_patch(0x0043157A + 2, patchLastUnit, 1);
+	memory_patch(0x00431B3D + 2, patchLastUnit, 1);
+	memory_patch(0x00437E11 + 2, patchLastUnit, 1);
+	memory_patch(0x00437E40 + 2, patchLastUnit, 1);
+	memory_patch(0x0047B45A + 2, patchLastUnit, 1);
+	memory_patch(0x0047B7CF + 2, patchLastUnit, 1);
+	memory_patch(0x004CBE4E + 2, patchLastUnit, 1);
 
 	// scantid id hardcode
-	memoryPatch(0x0043158C + 2, patchLastUnit, 1);
-	memoryPatch(0x00431B4F + 2, patchLastUnit, 1);
-	memoryPatch(0x00437E23 + 2, patchLastUnit, 1);
-	memoryPatch(0x00437E52 + 2, patchLastUnit, 1);
-	memoryPatch(0x0047B46C + 2, patchLastUnit, 1);
-	memoryPatch(0x0047B7E1 + 2, patchLastUnit, 1);
-	memoryPatch(0x004CBE58 + 2, patchLastUnit, 1);
+	memory_patch(0x0043158C + 2, patchLastUnit, 1);
+	memory_patch(0x00431B4F + 2, patchLastUnit, 1);
+	memory_patch(0x00437E23 + 2, patchLastUnit, 1);
+	memory_patch(0x00437E52 + 2, patchLastUnit, 1);
+	memory_patch(0x0047B46C + 2, patchLastUnit, 1);
+	memory_patch(0x0047B7E1 + 2, patchLastUnit, 1);
+	memory_patch(0x004CBE58 + 2, patchLastUnit, 1);
 
 	// ragnasaur id hardcode
-	memoryPatch(0x00431580 + 2, patchLastUnit, 1);
-	memoryPatch(0x00431B43 + 2, patchLastUnit, 1);
-	memoryPatch(0x00437E17 + 2, patchLastUnit, 1);
-	memoryPatch(0x00437E46 + 2, patchLastUnit, 1);
-	memoryPatch(0x0047B460 + 2, patchLastUnit, 1);
-	memoryPatch(0x0047B7D5 + 2, patchLastUnit, 1);
-	memoryPatch(0x004CBE53 + 2, patchLastUnit, 1);
+	memory_patch(0x00431580 + 2, patchLastUnit, 1);
+	memory_patch(0x00431B43 + 2, patchLastUnit, 1);
+	memory_patch(0x00437E17 + 2, patchLastUnit, 1);
+	memory_patch(0x00437E46 + 2, patchLastUnit, 1);
+	memory_patch(0x0047B460 + 2, patchLastUnit, 1);
+	memory_patch(0x0047B7D5 + 2, patchLastUnit, 1);
+	memory_patch(0x004CBE53 + 2, patchLastUnit, 1);
 
 	// kakaru id hardcode
-	memoryPatch(0x00431586 + 2, patchLastUnit, 1);
-	memoryPatch(0x00431B49 + 2, patchLastUnit, 1);
-	memoryPatch(0x00437E1D + 2, patchLastUnit, 1);
-	memoryPatch(0x00437E4C + 2, patchLastUnit, 1);
-	memoryPatch(0x0047B466 + 2, patchLastUnit, 1);
-	memoryPatch(0x0047B7DB + 2, patchLastUnit, 1);
-	memoryPatch(0x0047C425 + 4, patchLastUnit, 1);
-	memoryPatch(0x0047C476 + 4, patchLastUnit, 1);
-	memoryPatch(0x004CBE5D + 2, patchLastUnit, 1);
+	memory_patch(0x00431586 + 2, patchLastUnit, 1);
+	memory_patch(0x00431B49 + 2, patchLastUnit, 1);
+	memory_patch(0x00437E1D + 2, patchLastUnit, 1);
+	memory_patch(0x00437E4C + 2, patchLastUnit, 1);
+	memory_patch(0x0047B466 + 2, patchLastUnit, 1);
+	memory_patch(0x0047B7DB + 2, patchLastUnit, 1);
+	memory_patch(0x0047C425 + 4, patchLastUnit, 1);
+	memory_patch(0x0047C476 + 4, patchLastUnit, 1);
+	memory_patch(0x004CBE5D + 2, patchLastUnit, 1);
 
 	// ursadon id hardcode
-	memoryPatch(0x00431592 + 2, patchLastUnit, 1);
-	memoryPatch(0x00431B55 + 2, patchLastUnit, 1);
-	memoryPatch(0x00437E29 + 2, patchLastUnit, 1);
-	memoryPatch(0x00437E58 + 2, patchLastUnit, 1);
-	memoryPatch(0x0047B472 + 2, patchLastUnit, 1);
-	memoryPatch(0x0047B7E7 + 2, patchLastUnit, 1);
-	memoryPatch(0x004CBE62 + 2, patchLastUnit, 1);
+	memory_patch(0x00431592 + 2, patchLastUnit, 1);
+	memory_patch(0x00431B55 + 2, patchLastUnit, 1);
+	memory_patch(0x00437E29 + 2, patchLastUnit, 1);
+	memory_patch(0x00437E58 + 2, patchLastUnit, 1);
+	memory_patch(0x0047B472 + 2, patchLastUnit, 1);
+	memory_patch(0x0047B7E7 + 2, patchLastUnit, 1);
+	memory_patch(0x004CBE62 + 2, patchLastUnit, 1);
 
 	// warbringer id hardcode
-	memoryPatch(0x004F6C1C + 2, patchLastUnit, 1);
-	memoryPatch(0x004F6578 + 2, patchLastUnit, 1);
-	memoryPatch(0x004F656B + 2, patchLastUnit, 1);
-	memoryPatch(0x004E36EA + 2, patchLastUnit, 1);
-	memoryPatch(0x004E3029 + 3, patchLastUnit, 1);
-	memoryPatch(0x004CD28C + 2, patchLastUnit, 1);
-	memoryPatch(0x004C8ADE + 3, patchLastUnit, 1);
-	memoryPatch(0x004C8A94 + 2, patchLastUnit, 1);
-	memoryPatch(0x004C8A5F + 2, patchLastUnit, 1);
-	memoryPatch(0x004C20FA + 2, patchLastUnit, 1);
-	memoryPatch(0x004C189C + 2, patchLastUnit, 1);
-	memoryPatch(0x004C1859 + 2, patchLastUnit, 1);
-	memoryPatch(0x004C1836 + 2, patchLastUnit, 1);
-	memoryPatch(0x0049F4B9 + 2, patchLastUnit, 1);
-	memoryPatch(0x0047CA8C + 2, patchLastUnit, 1);
-	memoryPatch(0x004761D5 + 2, patchLastUnit, 1);
-	memoryPatch(0x00475CAB + 2, patchLastUnit, 1);
-	memoryPatch(0x00475B59 + 2, patchLastUnit, 1);
-	memoryPatch(0x00468222 + 2, patchLastUnit, 1);
-	memoryPatch(0x004668A5 + 2, patchLastUnit, 1);
-	memoryPatch(0x004667A9 + 2, patchLastUnit, 1);
-	memoryPatch(0x00466764 + 2, patchLastUnit, 1);
-	memoryPatch(0x004659FD + 2, patchLastUnit, 1);
-	memoryPatch(0x0046571A + 2, patchLastUnit, 1);
-	memoryPatch(0x00465466 + 2, patchLastUnit, 1);
-	memoryPatch(0x00465412 + 2, patchLastUnit, 1);
-	memoryPatch(0x004653A7 + 3, patchLastUnit, 1);
-	memoryPatch(0x0046536A + 2, patchLastUnit, 1);
-	memoryPatch(0x0046534B + 2, patchLastUnit, 1);
-	memoryPatch(0x004608D9 + 2, patchLastUnit, 1);
-	memoryPatch(0x0045FEBD + 2, patchLastUnit, 1);
-	memoryPatch(0x0045FE98 + 2, patchLastUnit, 1);
-	memoryPatch(0x004407B5 + 2, patchLastUnit, 1);
-	memoryPatch(0x0043CF4D + 2, patchLastUnit, 1);
-	memoryPatch(0x004286B5 + 3, patchLastUnit, 1);
-	memoryPatch(0x00426E4A + 2, patchLastUnit, 1);
-	memoryPatch(0x004254D2 + 2, patchLastUnit, 1);
-	memoryPatch(0x0042549C + 2, patchLastUnit, 1);
-	memoryPatch(0x004253E6 + 2, patchLastUnit, 1);
-	memoryPatch(0x0042491E + 3, patchLastUnit, 1);
-	memoryPatch(0x004247C4 + 3, patchLastUnit, 1);
-	memoryPatch(0x004014C6 + 2, patchLastUnit, 1);
-	memoryPatch(0x0040149A + 2, patchLastUnit, 1);
+	memory_patch(0x004F6C1C + 2, patchLastUnit, 1);
+	memory_patch(0x004F6578 + 2, patchLastUnit, 1);
+	memory_patch(0x004F656B + 2, patchLastUnit, 1);
+	memory_patch(0x004E36EA + 2, patchLastUnit, 1);
+	memory_patch(0x004E3029 + 3, patchLastUnit, 1);
+	memory_patch(0x004CD28C + 2, patchLastUnit, 1);
+	memory_patch(0x004C8ADE + 3, patchLastUnit, 1);
+	memory_patch(0x004C8A94 + 2, patchLastUnit, 1);
+	memory_patch(0x004C8A5F + 2, patchLastUnit, 1);
+	memory_patch(0x004C20FA + 2, patchLastUnit, 1);
+	memory_patch(0x004C189C + 2, patchLastUnit, 1);
+	memory_patch(0x004C1859 + 2, patchLastUnit, 1);
+	memory_patch(0x004C1836 + 2, patchLastUnit, 1);
+	memory_patch(0x0049F4B9 + 2, patchLastUnit, 1);
+	memory_patch(0x0047CA8C + 2, patchLastUnit, 1);
+	memory_patch(0x004761D5 + 2, patchLastUnit, 1);
+	memory_patch(0x00475CAB + 2, patchLastUnit, 1);
+	memory_patch(0x00475B59 + 2, patchLastUnit, 1);
+	memory_patch(0x00468222 + 2, patchLastUnit, 1);
+	memory_patch(0x004668A5 + 2, patchLastUnit, 1);
+	memory_patch(0x004667A9 + 2, patchLastUnit, 1);
+	memory_patch(0x00466764 + 2, patchLastUnit, 1);
+	memory_patch(0x004659FD + 2, patchLastUnit, 1);
+	memory_patch(0x0046571A + 2, patchLastUnit, 1);
+	memory_patch(0x00465466 + 2, patchLastUnit, 1);
+	memory_patch(0x00465412 + 2, patchLastUnit, 1);
+	memory_patch(0x004653A7 + 3, patchLastUnit, 1);
+	memory_patch(0x0046536A + 2, patchLastUnit, 1);
+	memory_patch(0x0046534B + 2, patchLastUnit, 1);
+	memory_patch(0x004608D9 + 2, patchLastUnit, 1);
+	memory_patch(0x0045FEBD + 2, patchLastUnit, 1);
+	memory_patch(0x0045FE98 + 2, patchLastUnit, 1);
+	memory_patch(0x004407B5 + 2, patchLastUnit, 1);
+	memory_patch(0x0043CF4D + 2, patchLastUnit, 1);
+	memory_patch(0x004286B5 + 3, patchLastUnit, 1);
+	memory_patch(0x00426E4A + 2, patchLastUnit, 1);
+	memory_patch(0x004254D2 + 2, patchLastUnit, 1);
+	memory_patch(0x0042549C + 2, patchLastUnit, 1);
+	memory_patch(0x004253E6 + 2, patchLastUnit, 1);
+	memory_patch(0x0042491E + 3, patchLastUnit, 1);
+	memory_patch(0x004247C4 + 3, patchLastUnit, 1);
+	memory_patch(0x004014C6 + 2, patchLastUnit, 1);
+	memory_patch(0x0040149A + 2, patchLastUnit, 1);
 
 	// dark archon - energy of controlled dark archons is no longer set to 0
 //	memoryPatch(0x004F6938 + 4, patchLastUnit, 1);
@@ -407,14 +407,14 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// This code is a replacement for the code above
 	u8 p8a = {0x8a};
 	u8 ff = {0xff};
-	memoryPatch(0x00497764 + 3, &p8a, sizeof(u8));
-	memoryPatch(0x00497784 + 3, &ff, sizeof(u8)); // disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
+	memory_patch(0x00497764 + 3, &p8a, sizeof(u8));
+	memory_patch(0x00497784 + 3, &ff, sizeof(u8)); // disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
 
 	// CTF orders
 	u8 patchCTF1[] = {0xE9, 0xCC, 0x02, 0x00, 0x00};
-	memoryPatch(0x004EC80A, patchCTF1, sizeof patchCTF1); // CTFCOPInit - wyvern?
+	memory_patch(0x004EC80A, patchCTF1, sizeof patchCTF1); // CTFCOPInit - wyvern?
 	u8 patchCTF2[] = {0xE9, 0xC2, 0x02, 0x00, 0x00};
-	memoryPatch(0x004EC814, patchCTF2, sizeof patchCTF2); // CTFCOP1 - essence drain
+	memory_patch(0x004EC814, patchCTF2, sizeof patchCTF2); // CTFCOP1 - essence drain
 	// iquare, end
 
 	// FaRTy1billion, start
@@ -426,9 +426,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	for (; i <= 64; i++) swtab[i] = 0;
 	for (; i <= 128; i++) swtab[i] = 1;
 	for (; i <= 192; i++) swtab[i] = 2;
-	memoryPatch((void*)(0x004A4424 + 2), &b74, sizeof(u8));
-	memoryPatch((void*)0x004A4584, swtab, sizeof(swtab));
-	memoryPatch((void*)0x004A441B, nop3, sizeof(nop3));
+	memory_patch((void*)(0x004A4424 + 2), &b74, sizeof(u8));
+	memory_patch((void*)0x004A4584, swtab, sizeof(swtab));
+	memory_patch((void*)0x004A441B, nop3, sizeof(nop3));
 
 	// allow display of extended tile groups
 	const u8 nop = 0x90;
@@ -438,42 +438,42 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	const u8 b00 = 0x00; // easy workaround
 	const u8 b01 = 0x01;
 
-	memoryPatch((void*)(0x0047E347 + 3), &b0F, sizeof(u8));
-	memoryPatch((void*)(0x0047E38F + 2), &b0F, sizeof(u8));
-	memoryPatch((void*)(0x0049C563 + 3), &b0F, sizeof(u8));
-	memoryPatch((void*)(0x0049C6AC + 3), &b0F, sizeof(u8));
-	memoryPatch((void*)(0x004BCEE0 + 2), &b0F, sizeof(u8));
-	memoryPatch((void*)(0x004BD13F + 3), &b0F, sizeof(u8));
-	memoryPatch((void*)(0x0049C595 + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x0049C6DA + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x0047E347 + 3), &b0F, sizeof(u8));
+	memory_patch((void*)(0x0047E38F + 2), &b0F, sizeof(u8));
+	memory_patch((void*)(0x0049C563 + 3), &b0F, sizeof(u8));
+	memory_patch((void*)(0x0049C6AC + 3), &b0F, sizeof(u8));
+	memory_patch((void*)(0x004BCEE0 + 2), &b0F, sizeof(u8));
+	memory_patch((void*)(0x004BD13F + 3), &b0F, sizeof(u8));
+	memory_patch((void*)(0x0049C595 + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x0049C6DA + 3), &bFF, sizeof(u8));
 
-	memoryPatch((void*)0x0047E3BA, nop6, sizeof(nop6));
-	memoryPatch((void*)0x0049C580, nop6, sizeof(nop6));
-	memoryPatch((void*)0x0049C6C9, nop6, sizeof(nop6));
-	memoryPatch((void*)0x004BCF1E, nop6, sizeof(nop6));
+	memory_patch((void*)0x0047E3BA, nop6, sizeof(nop6));
+	memory_patch((void*)0x0049C580, nop6, sizeof(nop6));
+	memory_patch((void*)0x0049C6C9, nop6, sizeof(nop6));
+	memory_patch((void*)0x004BCF1E, nop6, sizeof(nop6));
 
 	// allow building on extended tile groups
-	memoryPatch((void*)(0x004BCF34 + 4), &b00, sizeof(u8));
-	memoryPatch((void*)(0x00413F38 + 2), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x00413F8D + 2), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x00414210 + 2), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x00414252 + 2), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x004142C5 + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x004142EF + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x00414326 + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x0041435A + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x00414390 + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x004143C6 + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x004143F2 + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x0041441A + 2), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x00414467 + 2), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x004145D5 + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x00414720 + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x00414882 + 2), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x0047D75A + 2), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x0047DC99 + 2), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x0047DED5 + 3), &bFF, sizeof(u8));
-	memoryPatch((void*)(0x0047E045 + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x004BCF34 + 4), &b00, sizeof(u8));
+	memory_patch((void*)(0x00413F38 + 2), &bFF, sizeof(u8));
+	memory_patch((void*)(0x00413F8D + 2), &bFF, sizeof(u8));
+	memory_patch((void*)(0x00414210 + 2), &bFF, sizeof(u8));
+	memory_patch((void*)(0x00414252 + 2), &bFF, sizeof(u8));
+	memory_patch((void*)(0x004142C5 + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x004142EF + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x00414326 + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x0041435A + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x00414390 + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x004143C6 + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x004143F2 + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x0041441A + 2), &bFF, sizeof(u8));
+	memory_patch((void*)(0x00414467 + 2), &bFF, sizeof(u8));
+	memory_patch((void*)(0x004145D5 + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x00414720 + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x00414882 + 2), &bFF, sizeof(u8));
+	memory_patch((void*)(0x0047D75A + 2), &bFF, sizeof(u8));
+	memory_patch((void*)(0x0047DC99 + 2), &bFF, sizeof(u8));
+	memory_patch((void*)(0x0047DED5 + 3), &bFF, sizeof(u8));
+	memory_patch((void*)(0x0047E045 + 3), &bFF, sizeof(u8));
 	// FaRTy1billion, end
 
 	// allow starting the game alone (singleplayer)
@@ -481,8 +481,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	jump_patch((void*)(0x004A8222), 0x004A81CA, 0);
 	// allow starting the game alone (multiplayer)
 	const u8 human_slots = 0x01;
-	memoryPatch((void*)(0x004B995B + 2), &human_slots, sizeof(u8)); 
-	memoryPatch((void*)(0x004B9988 + 2), &human_slots, sizeof(u8));
+	memory_patch((void*)(0x004B995B + 2), &human_slots, sizeof(u8)); 
+	memory_patch((void*)(0x004B9988 + 2), &human_slots, sizeof(u8));
 
 	// injection
 	hooks::injectGameHooks();
