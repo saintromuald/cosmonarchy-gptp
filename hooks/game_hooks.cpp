@@ -1837,7 +1837,7 @@ namespace hooks
 		// Controlled Demolition - destroy structure
 		if (unitExt->timers[TimerControlledDemolition] == 1)
 		{
-			unit->damage_hp(unit->hitPoints, unit, unit->player, false);
+			unit->remove();
 		}
 
 		// Emergency Detonation - initial cast
@@ -1873,7 +1873,7 @@ namespace hooks
 				}
 			});
 			helper::create_thingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->player);
-			unit->damage_hp(unit->hitPoints, unit, unit->player, false);
+			unit->remove();
 		}
 
 		// Demiurge - Gods Made Flesh - return units to original owner
