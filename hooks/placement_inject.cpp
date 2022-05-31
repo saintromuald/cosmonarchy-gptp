@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) init_palcement_box_pos_wrapper()
+	void __declspec(naked) init_placement_box_pos_wrapper()
 	{
 		static s32 unused;
 		static Point16* placement;
@@ -178,7 +178,7 @@ namespace hooks
 {
 	void injectPlacementHooks()
 	{
-		jump_patch(init_palcement_box_pos_wrapper,							0x0048D660, 0);
+		jump_patch(init_placement_box_pos_wrapper,							0x0048D660, 0);
 		jump_patch(draw_placement_box_wrapper,								0x0048DDC0, 4);
 //		jump_patch(update_placement_state_for_placement_box_wrapper,		0x0048DCE0, 0);
 		jump_patch(is_tile_blocked_by_wrapper,								0x00473300, 0);
