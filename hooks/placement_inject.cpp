@@ -94,6 +94,45 @@ namespace
 			RETN 0x14
 		}
 	}
+
+	void __declspec(naked) update_creep_building_placement_state_wrapper() { // 00473010
+		static u32 result;
+		static u8 player;
+		static u16 x_tile;
+		static u16 y_tile;
+		static Point16 size_wh;
+		static u32 placement_state_entry;
+		static u32 check_vision;
+		static u32 check_vision_2;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV x_tile, AX
+			MOV EAX, [EBP + 0x0C]
+			MOV y_tile, AX
+			MOV EAX, [EBP + 0x10]
+			MOV size_wh, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV placement_state_entry, EAX
+			MOV EAX, [EBP + 0x18]
+			MOV check_vision, EAX
+			MOV EAX, [EBP + 0x1C]
+			MOV check_vision_2, EAX
+			POP EAX
+			MOV player, AL
+			PUSHAD
+		}
+		result = hooks::update_creep_building_placement_state(player, x_tile, y_tile, size_wh, placement_state_entry, check_vision, check_vision_2);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x18
+		}
+	}
 }
 
 namespace hooks
@@ -104,5 +143,6 @@ namespace hooks
 		jump_patch(draw_placement_box_wrapper,							0x0048DDC0, 4);
 //		jump_patch(update_placement_state_for_placement_box_wrapper,	0x0048DCE0, 0);
 		jump_patch(is_tile_blocked_by_wrapper,							0x00473300, 0);
+		jump_patch(update_creep_building_placement_state_wrapper,		0x00473010, 0);
 	}
 }
