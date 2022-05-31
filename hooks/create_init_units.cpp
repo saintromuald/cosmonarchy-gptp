@@ -326,7 +326,7 @@ namespace hooks
 				const char* text2 = helper::get_unit_name_stat_string(unit->id);
 				char buffer[256] = {};
 				sprintf_s(buffer, 256, text, text2, unit->sprite->position.x, unit->sprite->position.y);
-				helper::UnitPlacementError(buffer, 3);
+				helper::unit_placement_error(buffer, 3);
 				unit->userActionFlags |= 4u;
 				helper::orders_self_destructing(unit);
 			}
@@ -344,7 +344,7 @@ namespace hooks
 		if (!(flags & ChkUnitFlags_Hallucinated)) {
 			Unit* unit = CreateUnitXY(chkunit->playerId, chkunit->unit_id, chkunit->x, chkunit->y, false);
 			if (unit) {
-				helper::editUnitFlags(unit, &chkunit->validStateFlags);
+				helper::edit_unit_flags(unit, &chkunit->validStateFlags);
 				if (unit->id != UnitId::ResourceMineralField
 					&& unit->id != UnitId::ResourceMineralFieldType2
 					&& unit->id != UnitId::ResourceMineralFieldType3

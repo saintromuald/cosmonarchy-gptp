@@ -1088,19 +1088,19 @@ namespace helper
 	bool ai_train_unit(Unit* unit, u16 unitId, char requestId, void* value);														// 004672F0
 	
 	// For scenario.cpp
-	Unit* AI_CreateUnit(u32 unit_id, s32 player, s32 x, s32 y);																	// 004A0AD0
-	s32 parseAIScriptName(s32 name, s32* is_bw);																				// 0045AEF0
-	AiScript* AI_RunAIScript(Box32* area, u32 player, u32 block, u32 is_bw);													// 0045B170
-	AiScript* AI_Stop(AiScript* ai_script);																						// 00403380
+	Unit* ai_create_unit(u32 unit_id, s32 player, s32 x, s32 y);																	// 004A0AD0
+	s32 parse_aiscript_name(s32 name, s32* is_bw);																				// 0045AEF0
+	AiScript* run_aiscript(Box32* area, u32 player, u32 block, u32 is_bw);													// 0045B170
+	AiScript* ai_stop(AiScript* ai_script);																						// 00403380
 
-	AiTown* AiScript_StartTown(u32 x, u32 y, u32 resarea, u32 player);															// 00434220
-	AiTown* AiScript_StartAreaTown(Box32* area, u32 resarea, u32 player);														// 00434060
+	AiTown* aiscript_start_town(u32 x, u32 y, u32 resarea, u32 player);															// 00434220
+	AiTown* aiscript_start_areatown(Box32* area, u32 resarea, u32 player);														// 00434060
 
 	typedef s32 __cdecl VictoryFunc();
 	extern VictoryFunc* Victory;
 
-	void DisplayTextMessage(char* text, u32 color, u32 ticks, b32 from_trigger);
-	u32 GetTextDisplayTime(char* text);
+	void display_text_message(char* text, u32 color, u32 ticks, b32 from_trigger);
+	u32 get_text_display_time(char* text);
 
 	// For prepare_unit_move_custom
 	s32 sort_unit(Unit* unit);																									// 0046A300
@@ -1132,19 +1132,19 @@ namespace helper
 	extern playNextMusic_Func* playNextMusic;
 	extern stopMusic_Func* stopMusic;
 
-	void PrepareFormationMovement(MovementGroup* a1, char a2);													// 0049A8C0
-	Unit* FindFowUnit(__int16 ax0, __int16 a2, unsigned __int16 a3);											// 00487FD0
-	void TargetedOrder_Unit(Unit* a1, Unit* a2, int a3, char a4);												// 004756E0
-	void TargetedOrder_Ground(int a1, int a2, Unit* a3, int a4, int a5, int a6);								// 004756B0
-	Unit* GetNextCommandedUnit();																				// 0049A850
-	void GetFormationMovementTarget(Unit *a1, MovementGroup* a2);												// 0049A500
+	void prepare_formation_movement(MovementGroup* a1, char a2);													// 0049A8C0
+	Unit* find_fow_unit(__int16 ax0, __int16 a2, unsigned __int16 a3);											// 00487FD0
+	void targeted_order_unit(Unit* a1, Unit* a2, int a3, char a4);												// 004756E0
+	void targeted_order_ground(int a1, int a2, Unit* a3, int a4, int a5, int a6);								// 004756B0
+	Unit* get_next_commanded_unit();																				// 0049A850
+	void get_formation_movement_target(Unit *a1, MovementGroup* a2);												// 0049A500
 
-	u8 GetRightClickOrder(u32 type, Unit* unit, s32 x, s32 y, Unit** target, s32 unit_id);
+	u8 get_right_click_order(u32 type, Unit* unit, s32 x, s32 y, Unit** target, s32 unit_id);
 
-	void editUnitFlags(Unit* unit, u16* flags);																	// 004CD480
-	void UnitPlacementError(const char *a1, char a2);
+	void edit_unit_flags(Unit* unit, u16* flags);																	// 004CD480
+	void unit_placement_error(const char *a1, char a2);
 
-	void Ai_Build(u32 unit_id, b32 only_if_needed, u32 count, AiTown* town, u32 priority);						// 004323D0
+	void ai_build(u32 unit_id, b32 only_if_needed, u32 count, AiTown* town, u32 priority);						// 004323D0
 	void ai_add_build_request(AiTown* town, s32 method, s32 count, s32 id, s32 priority, b32 only_if_needed);		// 00431F90
 
 	// For HandleWindowMessages
@@ -1162,17 +1162,17 @@ namespace helper
 
 	bool unit_has_power(u32 id, u32 x, u32 y, u32 player);
 
-	void playSoundGlobal(u32 id);																		// 004BC2C0
+	void play_sound_global(u32 id);																		// 004BC2C0
 	VectorHead* play_sound_from_file(const char* filename, char* unused);								// 004BC490
 
 	b32 is_valid_for(u32 a1, Unit* unit, u32 a3);
 	b32 region_is_for_attack_prepare(AiRegion* region);
 
-	u32 Ai_CountUnitsInTown(AiTown* town, u32 unit_id, bool finished);									// 00433210 Aka AI_WaitBuild
+	u32 ai_count_units_in_town(AiTown* town, u32 unit_id, bool finished);									// 00433210 Aka AI_WaitBuild
 
-	u32 LoadScenarioSingle(char* title, u32 unused, char* error, char* player, u32 speed);				// 004A8590
+	u32 load_scenario_singleplayer(char* title, u32 unused, char* error, char* player, u32 speed);				// 004A8590
 	u32 get_ground_height_at_px(s32 y, s32 x);															// 004BD0F0
-	s32 is_AI_target_related(Unit* attacker, Unit* target);												// 004A1140
+	s32 is_ai_target_related(Unit* attacker, Unit* target);												// 004A1140
 	s32 get_threat_level(Unit* attacker, Unit* target);													// 00442160
 	u32 add_unit_to_possible_targets(s32 threat_level, Unit* unit);										// 00440160
 
@@ -1195,7 +1195,7 @@ namespace helper
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);										// 004686D0
 
 	s32 ai_scv_repair_controller(Unit* unit, AiTown* town);												// 00433C70
-	s32 AI_try_progress_spending_queue_worker(AiTown* town, Unit* unit);								// 004348C0
+	s32 ai_try_progress_spending_queue_worker(AiTown* town, Unit* unit);								// 004348C0
 	bool unit_is_mineral_field(Unit* unit);																// 00468890
 	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90
 	Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, Point16 worker_pos);	// 004432D0
@@ -1208,7 +1208,7 @@ namespace helper
 	Unit* get_resource_area_gas(u32 resarea, Unit** gas_1, Unit** gas_2, Unit** gas_3);					// 00444460
 	Unit* get_resource_area_mineral(u32 resarea);														// 004445E0
 	u32 get_optimal_mineral_workers(u32 resarea, u32 player);											// 004439B0
-	void AI_get_old_peons(AiTown* town, u32 count);														// 004355C0
+	void ai_get_old_peons(AiTown* town, u32 count);														// 004355C0
 
 	bool unit_is_factory(Unit* unit);																	// 0047B2E0
 	bool is_unit_target_inside_min_range(Unit* unit, Unit* target);										// 004764D0
@@ -1230,12 +1230,12 @@ namespace helper
 	void set_map_tile_flags(u32 flags, u32 tile_width, u32 tile_height, u32 tile_x, u32 tile_y);			// 00472EB0
 	void set_creep(u32 tile_x, u32 tile_y, u32 tile_width, u32 tile_height, b32 skip_border);				// 0045CD50
 
-	s32 GetCreepSpreadArea(u32 unit_id, u32 x, u32 y, b32 completed, Box32* rect);							// 00413DB0
+	s32 get_creep_spread_area(u32 unit_id, u32 x, u32 y, b32 completed, Box32* rect);							// 00413DB0
 
 	typedef s32 ClipCreepAreaInBounds_Callback(u32, u32, u32, u32, u32, u32, u32);
-	s32 ClipCreepAreaInBounds(u32 tile_x, u32 tile_y, ClipCreepAreaInBounds_Callback* callback);			// 00413D10
+	s32 clip_creep_area_in_bounds(u32 tile_x, u32 tile_y, ClipCreepAreaInBounds_Callback* callback);			// 00413D10
 
-	s32 MarkCreepToDisappear(u32 tile_x, u32 tile_y);														// 0047DD60
+	s32 mark_creep_to_disappear(u32 tile_x, u32 tile_y);														// 0047DD60
 
 	void* process_options_change(BinDlg* control);															// 004C9780
 	void load_dialog(char* filename, void* function);														// 004F57A0
@@ -1249,7 +1249,7 @@ namespace helper
 
 	u32 stop_creep_disappearing(u32 x_tile, u32 y_tile);													// 0047D540
 
-	void secondaryOrder_SpawningLarva(Unit* unit);															// 004EA780
+	void secondary_order_spawning_larva(Unit* unit);															// 004EA780
 
 	AiTown* create_ai_town(u32 player, u32 x, u32 y);														// 00432020
 
@@ -1259,7 +1259,7 @@ namespace helper
 
 	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker);												// 00468930
 	void prepend_order(Unit* unit, u8 order_id, Point16 target_pos, Unit* target_unit);						// 00474AF0
-	bool AI_is_building_safe(Unit* building);																// 00438910
+	bool ai_is_building_safe(Unit* building);																// 00438910
 	Unit* ai_find_best_repair_unit(Unit* unit);																// 00443160
 
 	u32 ai_find_expansion(u32 player, u32 resarea, u32 amount);												// 004453E0

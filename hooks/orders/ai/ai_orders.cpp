@@ -1125,7 +1125,7 @@ LABEL_37:
 			worker_ai->last_update_second = *elapsedTimeSeconds;
 			GroupFlag group_flags = units_dat::GroupFlags[worker->id];
 			if ((group_flags.isZerg || group_flags.isProtoss || !group_flags.isTerran || !helper::ai_scv_repair_controller(worker, town))
-				&& !helper::AI_try_progress_spending_queue_worker(town, worker))
+				&& !helper::ai_try_progress_spending_queue_worker(town, worker))
 			{
 				Unit* main_building = town->main_building;
 				if (main_building)
@@ -1542,7 +1542,7 @@ LABEL_37:
 				//	worker_ai->wait_timer = 10;
 				//	worker_ai->last_update_second = *elapsedTimeSeconds;
 				//	worker_ai->reassign_count += 1;
-				//	helper::AI_get_old_peons(worker_ai->town, 1u);
+				//	helper::ai_get_old_peons(worker_ai->town, 1u);
 				//}
 				else
 				{
@@ -1571,7 +1571,7 @@ LABEL_37:
 						helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
 						worker_ai->wait_timer = 0;
 						worker_ai->last_update_second = *elapsedTimeSeconds;
-						helper::AI_get_old_peons(worker_ai->town, 1);
+						helper::ai_get_old_peons(worker_ai->town, 1);
 					}
 				}
 
@@ -1687,7 +1687,7 @@ LABEL_37:
 		for (BuildingAi* building_ai = town->buildings; building_ai; building_ai = building_ai->link.prev)
 		{
 			Unit* building = building_ai->parent;
-			if (building->connectedUnit || !helper::AI_is_building_safe(building))
+			if (building->connectedUnit || !helper::ai_is_building_safe(building))
 			{
 				continue;
 			}

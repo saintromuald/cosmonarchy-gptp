@@ -59,7 +59,6 @@ namespace hooks
 				{
 					distance_wanted = 70;
 				}
-
 				if (!helper::is_distance_greater_than_halt_distance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, distance_wanted))
 				{
 					if (unit->get_movable_state() != 0)
@@ -110,7 +109,6 @@ namespace hooks
 					}
 				}
 			}
-
 		}
 		else if (unit->mainOrderState == 3)
 		{

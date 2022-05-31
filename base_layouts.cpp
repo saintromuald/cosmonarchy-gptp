@@ -238,13 +238,13 @@ static void init_base_layouts() {
 static u32 has_down_equivalent(AiTown* town, u32 unit_id) {
 	Equivalent equivalent = find_unit_equivalent_down(unit_id);
 	if (equivalent.to != UnitId::None) {
-		return helper::Ai_CountUnitsInTown(town, equivalent.to, false);
+		return helper::ai_count_units_in_town(town, equivalent.to, false);
 	}
 	return true;
 }
 
 static u32 number_of_equivalents_up(AiTown* town, u32 unit_id) {
-	u32 i = helper::Ai_CountUnitsInTown(town, unit_id, false);
+	u32 i = helper::ai_count_units_in_town(town, unit_id, false);
 	if (unit_id == UnitId::ZergCreepColony) {
 		i += number_of_equivalents_up(town, UnitId::ZergSunkenColony);
 		i += number_of_equivalents_up(town, UnitId::ZergSporeColony);
@@ -367,7 +367,7 @@ static void request_placeholder(BaseLayouts* base_layouts, Placeholder* placehol
 	u32 count = ++base_layouts->request_count[placeholder->unit_id];
 	placeholder->wait_build_start_count = count;
 	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
-		helper::Ai_Build(placeholder->unit_id, false, count, base_layouts->town, placeholder->priority);
+		helper::ai_build(placeholder->unit_id, false, count, base_layouts->town, placeholder->priority);
 	} else {
 		scbw::sendGPTP_aise_cmd((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetGuard, base_layouts->town->player, 0, 0);
 	}

@@ -199,7 +199,7 @@ namespace hooks
         MovementGroup movement_group = {};
         movement_group.pos.x = x;
         movement_group.pos.y = y;
-        helper::PrepareFormationMovement(&movement_group, 1);
+        helper::prepare_formation_movement(&movement_group, 1);
         if (target)
         {
             fow_unit_id = UnitId::None;
@@ -209,12 +209,12 @@ namespace hooks
             u32 tileId = x / 32 + mapTileSize->width * (y / 32);
             if (!((1 << *ACTIVE_NATION_ID) & (*activeTileHandle)[tileId]))
             {
-                target = helper::FindFowUnit(y, x, fow_unit_id);
+                target = helper::find_fow_unit(y, x, fow_unit_id);
                 fow_unit_id = UnitId::None;
             }
         }
         *unit_iterator_pos = 0;
-        Unit* result = helper::GetNextCommandedUnit();
+        Unit* result = helper::get_next_commanded_unit();
         u8 order_type;
         for (Unit* unit = result; result; unit = result)
         {
@@ -245,7 +245,7 @@ namespace hooks
                 }
             }
             byte_68C300[0] = OrderId::Nothing2;
-            u8 rightOrder = helper::GetRightClickOrder(order_type, unit, x, y, &target, fow_unit_id);
+            u8 rightOrder = helper::get_right_click_order(order_type, unit, x, y, &target, fow_unit_id);
             if (rightOrder != OrderId::Nothing2)
             {
                 if (rightOrder == OrderId::RallyPoint1)
@@ -283,7 +283,7 @@ namespace hooks
                             Unit* subunit = unit->subunit;
                             if (subunit)
                             {
-                                helper::TargetedOrder_Unit(target, unit->subunit, queued != 0, units_dat::AttackUnitOrder[subunit->id]);
+                                helper::targeted_order_unit(target, unit->subunit, queued != 0, units_dat::AttackUnitOrder[subunit->id]);
                             }
                             rightOrder = units_dat::AttackUnitOrder[unit->id];
                         }
@@ -291,10 +291,10 @@ namespace hooks
                         {
                             if (target)
                             {
-                                helper::TargetedOrder_Unit(target, unit, queued != 0, rightOrder);
+                                helper::targeted_order_unit(target, unit, queued != 0, rightOrder);
                                 if (byte_68C300[0] != OrderId::Nothing2)
                                 {
-                                    helper::TargetedOrder_Unit(target, unit, queued != 0, byte_68C300[0]);
+                                    helper::targeted_order_unit(target, unit, queued != 0, byte_68C300[0]);
                                 }
                             }
                             else
@@ -303,7 +303,7 @@ namespace hooks
                                 movement_group.pos.y = y;
                                 if (fow_unit_id == UnitId::None)
                                 {
-                                    helper::GetFormationMovementTarget(unit, &movement_group);
+                                    helper::get_formation_movement_target(unit, &movement_group);
                                 }
                                 else
                                 {
@@ -312,10 +312,10 @@ namespace hooks
 
                                 u16 target_x = movement_group.current_unit_target.x;
                                 u16 target_y = movement_group.current_unit_target.y;
-                                helper::TargetedOrder_Ground(rightOrder, fow_unit_id, unit, queued != 0, target_x, target_y);
+                                helper::targeted_order_ground(rightOrder, fow_unit_id, unit, queued != 0, target_x, target_y);
                                 if (byte_68C300[0] != OrderId::Nothing2)
                                 {
-                                    helper::TargetedOrder_Ground(byte_68C300[0], fow_unit_id, unit, queued != 0, target_x, target_y);
+                                    helper::targeted_order_ground(byte_68C300[0], fow_unit_id, unit, queued != 0, target_x, target_y);
                                 }
                             }
                             unit->userActionFlags |= 2u;
@@ -323,7 +323,7 @@ namespace hooks
                     }
                 }
             }
-            result = helper::GetNextCommandedUnit();
+            result = helper::get_next_commanded_unit();
         }
         return 0;
     }

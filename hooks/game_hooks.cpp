@@ -104,7 +104,7 @@ namespace hooks
 			while (parser_get_word(&parser)) {
 				if (parser_eq(&parser, "-map")) {
 					Token token = parser_get_string(&parser);
-					helper::LoadScenarioSingle(token.data, 0, "Some Error Message", "Player Name", 6);
+					helper::load_scenario_singleplayer(token.data, 0, "Some Error Message", "Player Name", 6);
 				}
 			}
 			*/
@@ -1511,7 +1511,7 @@ namespace hooks
 			unit->hitPoints += akistrokors.size * 256.0 / 24.0;
 
 			if (!units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) {
-				helper::secondaryOrder_SpawningLarva(unit);
+				helper::secondary_order_spawning_larva(unit);
 			}
 
 			if (*elapsedTimeFrames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreadsCreep(unit->id, true)) {

@@ -10252,7 +10252,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* AI_CreateUnit(u32 unit_id, s32 player, s32 x, s32 y) {
+	Unit* ai_create_unit(u32 unit_id, s32 player, s32 x, s32 y) {
 		static Unit* result;
 		const u32 Func_AI_CreateUnit = 0x004A0AD0;
 		__asm
@@ -10269,7 +10269,7 @@ namespace helper
 		return result;
 	}
 
-	s32 parseAIScriptName(s32 name, s32* is_bw) {
+	s32 parse_aiscript_name(s32 name, s32* is_bw) {
 		static s32 result;
 		const u32 Func_parseAIScriptName = 0x0045B170;
 		__asm
@@ -10284,7 +10284,7 @@ namespace helper
 		return result;
 	}
 
-	AiScript* AI_RunAIScript(Box32* area, u32 player, u32 block, u32 is_bw) {
+	AiScript* run_aiscript(Box32* area, u32 player, u32 block, u32 is_bw) {
 		static AiScript* result;
 		const u32 Func_AI_RunAIScript = 0x0045AEF0;
 		__asm
@@ -10302,7 +10302,7 @@ namespace helper
 	}
 
 	// not functional!
-	AiScript* AI_Stop(AiScript* ai_script) {
+	AiScript* ai_stop(AiScript* ai_script) {
 		static AiScript* result;
 		const u32 Func_AI_Stop = 0x00403380;
 		const void* Var_AI_thread_end = (void*)0x0068C0FC;
@@ -10318,7 +10318,7 @@ namespace helper
 		return result;
 	}
 
-	AiTown* AiScript_StartTown(u32 x, u32 y, u32 resarea, u32 player) {
+	AiTown* aiscript_start_town(u32 x, u32 y, u32 resarea, u32 player) {
 		static AiTown* result;
 		const u32 Func_AiScript_StartTown = 0x00434220;
 		__asm
@@ -10335,7 +10335,7 @@ namespace helper
 		return result;
 	}
 
-	AiTown* AiScript_StartAreaTown(Box32* area, u32 resarea, u32 player) {
+	AiTown* aiscript_start_areatown(Box32* area, u32 resarea, u32 player) {
 		static AiTown* result;
 		const u32 Func_AiScript_StartAreaTown = 0x00434060;
 		__asm
@@ -10353,7 +10353,7 @@ namespace helper
 
 	VictoryFunc* Victory = (VictoryFunc*)0x4C5310;
 
-	void DisplayTextMessage(char* text, u32 color, u32 ticks, b32 from_trigger) {
+	void display_text_message(char* text, u32 color, u32 ticks, b32 from_trigger) {
 		const u32 Func_DisplayTextMessage = 0x0048CD30;
 		__asm
 		{
@@ -10367,7 +10367,7 @@ namespace helper
 		}
 	}
 
-	u32 GetTextDisplayTime(char* text) {
+	u32 get_text_display_time(char* text) {
 		static u32 result;
 		const u32 Func_GetTextDisplayTime = 0x004C51D0;
 		__asm
@@ -10432,7 +10432,7 @@ namespace helper
 	playNextMusic_Func* playNextMusic = (playNextMusic_Func*) 0x004A6250;
 	stopMusic_Func* stopMusic         = (stopMusic_Func*)     0x004A5F50;
 
-	void PrepareFormationMovement(MovementGroup* a1, char a2) { // 49A8C0
+	void prepare_formation_movement(MovementGroup* a1, char a2) { // 0049A8C0
 		const u32 func_address = 0x0049A8C0;
 		__asm {
 			PUSHAD
@@ -10443,7 +10443,7 @@ namespace helper
 		}
 	}
 
-	Unit* FindFowUnit(__int16 ax0, __int16 a2, unsigned __int16 a3) { // 487FD0
+	Unit* find_fow_unit(__int16 ax0, __int16 a2, unsigned __int16 a3) { // 00487FD0
 		static Unit* result;
 		const u32 func_address = 0x00487FD0;
 		__asm {
@@ -10458,7 +10458,7 @@ namespace helper
 		return result;
 	}
 
-	void TargetedOrder_Unit(Unit* a1, Unit* a2, int a3, char a4) { // 4756E0
+	void targeted_order_unit(Unit* a1, Unit* a2, int a3, char a4) { // 004756E0
 		const u32 func_address = 0x004756E0;
 		__asm {
 			PUSHAD
@@ -10471,7 +10471,7 @@ namespace helper
 		}
 	}
 
-	void TargetedOrder_Ground(int a1, int a2, Unit* a3, int a4, int a5, int a6) { // 4756B0
+	void targeted_order_ground(int a1, int a2, Unit* a3, int a4, int a5, int a6) { // 004756B0
 		const u32 func_address = 0x004756B0;
 		__asm {
 			PUSHAD
@@ -10486,7 +10486,7 @@ namespace helper
 		}
 	}
 
-	Unit* GetNextCommandedUnit() { // 49A850
+	Unit* get_next_commanded_unit() { // 0049A850
 		static Unit* result;
 		const u32 func_address = 0x0049A850;
 		__asm {
@@ -10498,7 +10498,7 @@ namespace helper
 		return result;
 	}
 
-	void GetFormationMovementTarget(Unit *a1, MovementGroup* a2) { // 49A500
+	void get_formation_movement_target(Unit *a1, MovementGroup* a2) { // 0049A500
 		const u32 func_address = 0x0049A500;
 		__asm {
 			PUSHAD
@@ -10509,7 +10509,7 @@ namespace helper
 		}
 	}
 
-	u8 GetRightClickOrder(u32 index, Unit* unit, s32 x, s32 y, Unit** target, s32 unit_id) {
+	u8 get_right_click_order(u32 index, Unit* unit, s32 x, s32 y, Unit** target, s32 unit_id) {
 		static u8 result;
 		void* function = GetRightClickOrderArray[index];
 		__asm {
@@ -10526,7 +10526,7 @@ namespace helper
 		return result;
 	}
 
-	void editUnitFlags(Unit* unit, u16* flags) {
+	void edit_unit_flags(Unit* unit, u16* flags) {
 		const u32 func_address = 0x004CD480;
 		__asm {
 			PUSHAD
@@ -10537,7 +10537,7 @@ namespace helper
 		}
 	}
 
-	void UnitPlacementError(const char *a1, char a2) {
+	void unit_placement_error(const char *a1, char a2) {
 		const u32 func_address = 0x0048D140;
 		__asm {
 			PUSHAD
@@ -10619,7 +10619,7 @@ namespace helper
 		}
 	}
 
-	void Ai_Build(u32 unit_id, b32 only_if_needed, u32 count, AiTown* town, u32 priority) { // 004323D0
+	void ai_build(u32 unit_id, b32 only_if_needed, u32 count, AiTown* town, u32 priority) { // 004323D0
 		const u32 func_address = 0x004323D0;
 		__asm {
 			PUSHAD
@@ -10710,7 +10710,7 @@ namespace helper
 		return result;
 	}
 
-	void playSoundGlobal(u32 id) {
+	void play_sound_global(u32 id) {
 		const u32 func_address = 0x004BC2C0;
 		__asm {
 			PUSHAD
@@ -10762,7 +10762,7 @@ namespace helper
 		return result;
 	}
 
-	u32 Ai_CountUnitsInTown(AiTown* town, u32 unit_id, bool finished) {
+	u32 ai_count_units_in_town(AiTown* town, u32 unit_id, bool finished) {
 		static u32 result;
 		const u32 func_address = 0x00433210;
 		__asm {
@@ -10777,7 +10777,7 @@ namespace helper
 		return result;
 	}
 
-	u32 LoadScenarioSingle(char* title, u32 unused, char* error, char* player, u32 speed) {
+	u32 load_scenario_singleplayer(char* title, u32 unused, char* error, char* player, u32 speed) {
 		static u32 result;
 		const u32 func_address = 0x004A8590;
 		__asm {
@@ -10810,7 +10810,7 @@ namespace helper
 	}
 
 	// For get_standard_attack_target
-	s32 is_AI_target_related(Unit* attacker, Unit* target) {
+	s32 is_ai_target_related(Unit* attacker, Unit* target) {
 		static s32 result;
 		const u32 func_address = 0x004A1140;
 		__asm {
@@ -11118,7 +11118,8 @@ namespace helper
 		}
 		return result;
 	}
-	s32 AI_try_progress_spending_queue_worker(AiTown* town, Unit* unit) {
+
+	s32 ai_try_progress_spending_queue_worker(AiTown* town, Unit* unit) {
 		static s32 result;
 		const u32 func_address = 0x004348C0;
 		__asm {
@@ -11287,7 +11288,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_get_old_peons(AiTown* town, u32 count) {
+	void ai_get_old_peons(AiTown* town, u32 count) {
 		const u32 func_address = 0x004355C0;
 		__asm {
 			PUSHAD
@@ -11362,7 +11363,7 @@ namespace helper
 		}
 	}
 
-	s32 GetCreepSpreadArea(u32 unit_id, u32 x, u32 y, b32 completed, Box32* rect) {
+	s32 get_creep_spread_area(u32 unit_id, u32 x, u32 y, b32 completed, Box32* rect) {
 		static s32 result;
 		const u32 func_address = 0x00413DB0;
 		__asm {
@@ -11379,7 +11380,7 @@ namespace helper
 		return result;
 	}
 
-	s32 ClipCreepAreaInBounds(u32 tile_x, u32 tile_y, ClipCreepAreaInBounds_Callback* callback) {
+	s32 clip_creep_area_in_bounds(u32 tile_x, u32 tile_y, ClipCreepAreaInBounds_Callback* callback) {
 		static s32 result;
 		const u32 func_address = 0x00413D10;
 		__asm {
@@ -11394,7 +11395,7 @@ namespace helper
 		return result;
 	}
 
-	s32 MarkCreepToDisappear(u32 tile_x, u32 tile_y) {
+	s32 mark_creep_to_disappear(u32 tile_x, u32 tile_y) {
 		static s32 result;
 		const u32 func_address = 0x0047DD60;
 		__asm {
@@ -11462,7 +11463,7 @@ namespace helper
 		return result;
 	}
 
-	void secondaryOrder_SpawningLarva(Unit* unit) {
+	void secondary_order_spawning_larva(Unit* unit) {
 		const u32 func_address = 0x004EA780;
 		__asm {
 			PUSHAD
@@ -11557,7 +11558,7 @@ namespace helper
 		}
 	}
 
-	bool AI_is_building_safe(Unit* building) {
+	bool ai_is_building_safe(Unit* building) {
 		static bool result;
 		const u32 func_address = 0x00438910;
 		__asm {

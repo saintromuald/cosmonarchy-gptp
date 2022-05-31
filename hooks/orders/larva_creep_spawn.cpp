@@ -524,7 +524,7 @@ namespace hooks
 	s32 UpdateCreepDisappearanceUnit(Unit* unit)
 	{
 		Box32 rect = {};
-		bool does_spread = helper::GetCreepSpreadArea(unit->id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &rect);
+		bool does_spread = helper::get_creep_spread_area(unit->id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &rect);
 		u32 pos_x = 32 * rect.left - unit->position.x + 16;
 		u32 pos_y = 32 * rect.top - unit->position.y + 16;
 		u32 tile_flags = unit->id == UnitId::ZergExcisant ? 0x10000000 : 0x18000000;
@@ -554,8 +554,8 @@ namespace hooks
 			while (((*current_tiles)[rect_left + rect_top * *map_creep_width] & 0x7FF0) != 16
 				|| does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
 				|| tile_flags & (*activeTileHandle)[rect_left + rect_top * mapTileSize->width]
-				|| helper::ClipCreepAreaInBounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
-				|| helper::MarkCreepToDisappear(rect_left, rect_top))
+				|| helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
+				|| helper::mark_creep_to_disappear(rect_left, rect_top))
 			{
 				++rect_left;
 				pos_x += 32;

@@ -2231,7 +2231,7 @@ namespace scbw
 	static void stop_custom_creep_disappearing(Unit* unit)
 	{
 		Box32 rect = {};
-		bool spreads_creep = helper::GetCreepSpreadArea(UnitId::ZergHive, unit->position.x, unit->position.y, true, &rect);
+		bool spreads_creep = helper::get_creep_spread_area(UnitId::ZergHive, unit->position.x, unit->position.y, true, &rect);
 		if (rect.top > rect.bottom) {
 			return;
 		}
@@ -2379,9 +2379,9 @@ namespace scbw
 
 	AiScript* run_ai(u32 player, Box32 area, s32 name) {
 		s32 is_bw = 0;
-		s32 block = helper::parseAIScriptName(name, &is_bw);
+		s32 block = helper::parse_aiscript_name(name, &is_bw);
 		if (block) {
-			AiScript* ai_script = helper::AI_RunAIScript(&area, player, block, is_bw);
+			AiScript* ai_script = helper::run_aiscript(&area, player, block, is_bw);
 			if (ai_script) {
 				Point16 center = {};
 				center.x = area.x + area.w / 2;

@@ -1319,7 +1319,7 @@ void messagef(char* format, ...) {
 	vsprintf_s(buffer, sizeof(buffer), format, va);
 	va_end(va);
 	
-	helper::DisplayTextMessage(buffer, 2, GetTickCount() + helper::GetTextDisplayTime(buffer), 1);
+	helper::display_text_message(buffer, 2, GetTickCount() + helper::get_text_display_time(buffer), 1);
 }
 
 u32 get_next_fraud(u32 player, u32 fraud_class) {
