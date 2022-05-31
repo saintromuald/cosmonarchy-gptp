@@ -92,41 +92,33 @@ namespace hooks
 	// Hooked to enable unit mover for human players. - Pr0nogo
     s32 is_tile_blocked_by(Unit** unit_array, Unit* builder, s32 x_tile, s32 y_tile, s8 dont_ignore_reacting, s8 also_invisible) // 00473300
     {
-        return 0;
-        for (Unit** it = unit_array; *it; ++it)
-        {
+        for (Unit** it = unit_array; *it; ++it) {
             Unit* other_unit = *it;
             bool needs_detection = false;
-            if (builder)
-            {
-                if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked))
-                {
-                    if (!(other_unit->visibilityStatus & (1 << builder->player)))
-                    {
+            if (builder) {
+                if (scbw::is_allied_to(other_unit->player, builder->player)) {
+                    continue;
+                }
+                if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {
+                    if (!(other_unit->visibilityStatus & (1 << builder->player))) {
                         needs_detection = true;
                     }
                 }
-                if (scbw::is_allied_to(other_unit->player, builder->player))
-                {
-                    return 0;
-                }
             }
             if ((!dont_ignore_reacting && other_unit->status & UnitStatus::IsBuilding)
-                || (needs_detection && !also_invisible)
-                || other_unit == builder
-                || other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir)
-                || other_unit->id == UnitId::Spell_DarkSwarm
-                || other_unit->id == UnitId::Spell_DisruptionWeb
-                || other_unit->sprite->flags & SpriteFlags::Hidden)
-            {
+             || (needs_detection && !also_invisible)
+             || other_unit == builder
+             || other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir)
+             || other_unit->id == UnitId::Spell_DarkSwarm
+             || other_unit->id == UnitId::Spell_DisruptionWeb
+             || other_unit->sprite->flags & SpriteFlags::Hidden) {
                 continue;
             }
 
-            if (unitOrderingX[other_unit->finderIndex.left].position < 32 * x_tile + 32
-                && unitOrderingX[other_unit->finderIndex.right].position > 32 * x_tile
-                && unitOrderingY[other_unit->finderIndex.top].position < 32 * y_tile + 32
-                && unitOrderingY[other_unit->finderIndex.bottom].position > 32 * y_tile)
-            {
+            if (unitOrderingX[other_unit->finderIndex.left  ].position < 32 * x_tile + 32
+             && unitOrderingX[other_unit->finderIndex.right ].position > 32 * x_tile
+             && unitOrderingY[other_unit->finderIndex.top   ].position < 32 * y_tile + 32
+             && unitOrderingY[other_unit->finderIndex.bottom].position > 32 * y_tile) {
                 return needs_detection != 0 ? 1 : 4;
             }
         }
