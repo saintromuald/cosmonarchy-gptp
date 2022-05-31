@@ -513,7 +513,7 @@ namespace hooks
 	{
 		u32 broodlings_to_spawn = 3;
 		ActiveTile tile = scbw::get_stupid_reference_to_active_tile_at(bullet->sprite->position.x, bullet->sprite->position.y);
-		if (tile.hasCreep || tile.creep_receeding)
+		if (tile.has_creep || tile.creep_receeding)
 		{
 			broodlings_to_spawn = 5;
 		}

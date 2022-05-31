@@ -596,4 +596,6 @@ namespace scbw
 	b32 unit_id_is_tech_tier_structure(u32 unit_id);
 
 	void give_ai_ex(Unit* unit, bool prefer_military);
+
+	bool unit_is_spreading_creep(Unit* unit);
 }

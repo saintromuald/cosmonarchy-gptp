@@ -28,6 +28,7 @@
 #include "token_parser.h"
 #include "math_utils.h"
 #include "graphics/Bitmap.h"
+#include "data_ext.h"
 
 const u32 hyperTrigger = 0x006509A0;
 
@@ -124,6 +125,7 @@ namespace hooks
 			hooks::initalize_screen_locations();
 			hooks::clear_actions();
 			globals.reset();
+			reset_ext_variables();
 
 			for (s32 i = 0; i < 8; i++)
 			{
@@ -158,8 +160,9 @@ namespace hooks
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
 				for (s32 i = 0; i < 4092; i++) {
-					if (fog_of_war_mask->unexplored[i] < 5)
+					if (fog_of_war_mask->unexplored[i] < 5) {
 						fog_of_war_mask->unexplored[i] = 5;
+					}
 				}
 				scbw::refresh_screen();
 			}
@@ -255,6 +258,7 @@ namespace hooks
 			lastShift = newShift;
 
 			globals.frame_hook();
+			update_ext_variables();
 
 			// Loop through bullets
 			for (Bullet* bullet = *firstBullet; bullet; bullet = bullet->next)
@@ -300,6 +304,22 @@ namespace hooks
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		tactical_ai(unit, unitExt);
+
+		if (scbw::unit_is_spreading_creep(unit)) {
+			Box32 creep_area = {};
+			if (helper::get_creep_spread_area(UnitId::ZergHatchery, unit->position.x, unit->position.y, true, &creep_area)) {
+				for (u32 x = creep_area.left; x < creep_area.right; ++x) {
+					for (u32 y = creep_area.top; y < creep_area.bottom; ++y) {
+						// TODO: add a distance check, so this only applies in the original elipsis
+						ActiveTile* tile = scbw::get_active_tile_at_tile(x, y);
+						if (tile->has_creep || tile->temporary_creep) {
+							TileExt* tile_ext = get_tile_ext_at_tile(x, y);
+							tile_ext->creep_owners |= 1 << unit->player;
+						}
+					}
+				}
+			}
+		}
 
 		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::SharedStriga) && unit->orderSignal & 0x20)
 		{
@@ -483,7 +503,7 @@ namespace hooks
 					}
 				}
 				if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
-					if (scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).hasCreep
+					if (scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).has_creep
 						&& !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 						unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 					}

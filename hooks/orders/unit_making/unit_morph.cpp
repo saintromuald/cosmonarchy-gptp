@@ -113,7 +113,7 @@ namespace hooks
 		}
 
 		if (!scbw::is_larval_egg(unit) &&
-			scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).hasCreep) {
+			scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).has_creep) {
 			unit->remainingBuildTime -= 1;
 		}
 

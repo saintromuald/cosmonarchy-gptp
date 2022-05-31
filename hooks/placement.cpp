@@ -143,7 +143,7 @@ namespace hooks
                     state  = 10;
                     result = 10;
                 }
-                bool creep = !tile->hasCreep;
+                bool creep = !tile->has_creep;
                 if (check_temporary_creep) {
                     creep  = !tile->temporary_creep;
                 }

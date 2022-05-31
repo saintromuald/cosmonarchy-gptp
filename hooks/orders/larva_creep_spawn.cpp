@@ -251,7 +251,7 @@ namespace hooks
 						if (in_range)
 						{
 							ActiveTile a = scbw::get_stupid_reference_to_active_tile_at(i * 32, j * 32);
-							if (a.hasCreep || a.temporary_creep || a.creep_receeding)
+							if (a.has_creep || a.temporary_creep || a.creep_receeding)
 							{
 								// why is there nothing here LMAO
 							}
