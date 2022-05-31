@@ -309,13 +309,17 @@ namespace hooks
 			u32 creep_spreader_id = scbw::unit_get_creep_spreader_id(unit);
 			Box32 creep_area = {};
 			helper::get_creep_spread_area(creep_spreader_id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &creep_area);
+
 			for (u32 y = creep_area.top; y <= creep_area.bottom; ++y) {
 				for (u32 x = creep_area.left; x <= creep_area.right; ++x) {
-					// TODO: add a distance check, so this only applies in the original elipsis
-					ActiveTile* tile = scbw::get_active_tile_at_tile(x, y);
-					if (tile->has_creep || tile->temporary_creep) {
-						TileExt* tile_ext = get_tile_ext_at_tile(x, y);
-						tile_ext->creep_owners |= 1 << unit->player;
+					s32 delta_x = unit->position.x - (x * 32 + 16);
+					s32 delta_y = unit->position.y - (y * 32 + 16);
+					if (delta_x * delta_x * 100 + delta_y * delta_y * 256 <= 10240000) {
+						ActiveTile* tile = scbw::get_active_tile_at_tile(x, y);
+						if (tile->has_creep || tile->temporary_creep) {
+							TileExt* tile_ext = get_tile_ext_at_tile(x, y);
+							tile_ext->creep_owners |= 1 << unit->player;
+						}
 					}
 				}
 			}
