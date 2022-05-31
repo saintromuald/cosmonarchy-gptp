@@ -11729,4 +11729,19 @@ namespace helper
 		}
 		return result;
 	}
+
+	bool place_building_resource_restriction_check(u32 check_vision, u16 tile_x, u16 tile_y) {
+		static bool result;
+		const u32 func_address = 0x00473990;
+		__asm {
+			PUSHAD
+			MOV CX, tile_y
+			MOV DX, tile_x
+			MOV EAX, check_vision
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

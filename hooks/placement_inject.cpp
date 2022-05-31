@@ -133,16 +133,56 @@ namespace
 			RETN 0x18
 		}
 	}
+
+	void __declspec(naked) update_building_placement_state_map_tile_flags_wrapper() { // 00473A10
+		static u32 result;
+		static u16 unit_id;
+		static u32 tile_x;
+		static u32 tile_y;
+		static u8 player;
+		static Point16 size_wh;
+		static u32 placement_state_entry;
+		static u32 check_creep;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV tile_x, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV tile_y, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV player, AL
+			MOV EAX, [EBP + 0x14]
+			MOV size_wh, EAX
+			MOV EAX, [EBP + 0x18]
+			MOV placement_state_entry, EAX
+			MOV EAX, [EBP + 0x1C]
+			MOV check_creep, EAX
+			POP EAX
+			MOV unit_id, AX
+			PUSHAD
+		}
+		result = hooks::update_building_placement_state_map_tile_flags(unit_id, tile_x, tile_y, player, size_wh, placement_state_entry, check_creep);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x18
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectPlacementHooks()
 	{
-		jump_patch(init_palcement_box_pos_wrapper,						0x0048D660, 0);
-		jump_patch(draw_placement_box_wrapper,							0x0048DDC0, 4);
-//		jump_patch(update_placement_state_for_placement_box_wrapper,	0x0048DCE0, 0);
-		jump_patch(is_tile_blocked_by_wrapper,							0x00473300, 0);
-		jump_patch(update_creep_building_placement_state_wrapper,		0x00473010, 0);
+		jump_patch(init_palcement_box_pos_wrapper,							0x0048D660, 0);
+		jump_patch(draw_placement_box_wrapper,								0x0048DDC0, 4);
+//		jump_patch(update_placement_state_for_placement_box_wrapper,		0x0048DCE0, 0);
+		jump_patch(is_tile_blocked_by_wrapper,								0x00473300, 0);
+		jump_patch(update_creep_building_placement_state_wrapper,			0x00473010, 1);
+		jump_patch(update_building_placement_state_map_tile_flags_wrapper,	0x00473A10, 1);
 	}
 }

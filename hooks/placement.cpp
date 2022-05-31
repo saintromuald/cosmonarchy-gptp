@@ -158,4 +158,78 @@ namespace hooks
         }
         return result;
     }
+
+    // Same as above. -Pr0nogo
+    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u32 tile_x, u32 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) // 00473A10
+    {
+        if (size.y <= 0)
+        {
+            return 0;
+        }
+
+        s32 visibility_flags = 0;
+        s32 explored_flags = 0;
+        if (playerTable[player].type == PlayerType::Human)
+        {
+            explored_flags = 1 << (player + 8);
+            visibility_flags = 1 << player;
+        }
+        ActiveTile* tile = scbw::get_active_tile_at_tile(tile_x, tile_y);
+        u32 some_bit = 0x20800000; // cliff_edge, always_unbuildable
+        bool check_for_creep = false;
+        if (!(units_dat::GroupFlags[unit_id].isZerg))
+        {
+            some_bit = (check_creep != 0 ? 0x40000000 : 0x400000) | 0x20800000; // not handled by the else if @ line 205
+            check_for_creep = true;
+        }
+
+        u8 state_1 = 0;
+        u32 y_it = 0;
+        u32 size_it = size.x;
+        u16 x_it = 0;
+        u8 temp_state_1 = 0;
+        u32 index = 0;
+        do
+        {
+            x_it = 0;
+            if (size_it > 0)
+            {
+                index = 6 * (y_it + 8 * placement_state_entry);
+                do
+                {
+                    temp_state_1 = 0;
+                    if (tile->explored_flags)
+                    {
+                        temp_state_1 = 10;
+                    }
+                    else if (!check_creep && tile->visibility_flags
+                        || !check_for_creep && (tile->always_unbuildable || tile->cliff_edge) // also needs creep check
+                        || tile < 0) // originally also checked for if the unit id was any racial beacon
+                    {
+                        if (units_dat::BaseProperty[unit_id] & UnitProperty::ResourceDepot)
+                        {
+                            if (helper::place_building_resource_restriction_check(check_creep, x_it + tile_x, y_it + tile_y))
+                            {
+                                temp_state_1 = 2;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        temp_state_1 = 4;
+                    }
+                    ++tile;
+                    buildingPlacementState[x_it++ + index] = temp_state_1;
+                    if (state_1 <= temp_state_1)
+                    {
+                        state_1 = temp_state_1;
+                    }
+                    size_it = size.x;
+                } while (x_it < size.x);
+            }
+            ++y_it;
+            tile += mapTileSize->width - size_it;
+        } while (y_it < size.y);
+        return state_1;
+    }
 }
