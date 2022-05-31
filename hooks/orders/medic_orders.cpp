@@ -125,7 +125,7 @@ namespace hooks
 							bEndLoop = (unit->orderQueueTail == nullptr);
 						}
 					}
-					unit->performAnotherOrder(OrderId::MedicHeal1, 0, 0, nullptr, UnitId::None);
+					unit->perform_another_order(OrderId::MedicHeal1, 0, 0, nullptr, UnitId::None);
 				}
 				// 00463991
 				prepareForNextOrder(unit);
@@ -169,7 +169,7 @@ namespace hooks
 				if (acquired)
 				{
 					helper::unitOrderMoveToTargetUnit(cleric, acquired);
-					if (!cleric->isTargetWithinMinRange(acquired, 30))
+					if (!cleric->is_target_within_min_range(acquired, 30))
 					{
 						helper::move_to_target(acquired, cleric);
 						return 3;
@@ -212,7 +212,7 @@ namespace hooks
 					&& helper::moveTowards(unit, target) != 0
 					&& unit->get_movable_state() != 2) // unit not unmovable
 				{
-					if (unit->isTargetWithinMinRange(target, 30))
+					if (unit->is_target_within_min_range(target, 30))
 					{
 						helper::set_resource_target(unit);
 						unit->mainOrderState = 1;

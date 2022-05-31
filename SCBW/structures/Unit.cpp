@@ -686,7 +686,7 @@ void Unit::reduce_defensive_matrix_hp(s32 amount)
 		Image* current_image;
 		this->defensiveMatrixHp = 0;
 		this->defensiveMatrixTimer = 0;
-		this->removeOverlay(ImageId::DefensiveMatrixFront_Small, ImageId::DefensiveMatrixFront_Large);
+		this->remove_overlay(ImageId::DefensiveMatrixFront_Small, ImageId::DefensiveMatrixFront_Large);
 		current_image = this->sprite->images.head;
 
 		while (current_image != nullptr)
@@ -907,8 +907,8 @@ void Unit::order_simple(u8 orderId, bool stopPreviousOrders)
 	this->order(orderId, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
 }
 
-// Equivalent to 00474D10 issueQueuedOrderTarget function
-void Unit::issueQueuedOrderTarget(u8 orderId, Unit* target, bool stopPreviousOrders)
+// Equivalent to 00474D10 issue_queued_order_target function
+void Unit::issue_queued_order_target(u8 orderId, Unit* target, bool stopPreviousOrders)
 {
 	if (target == nullptr)
 	{
@@ -966,7 +966,7 @@ void Unit::order(u8 orderId, u16 x, u16 y, Unit* target, u16 targetUnitId, bool 
 }
 
 const u32 Func_PerformAnotherOrder = 0x004745F0;
-void Unit::performAnotherOrder(u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk)
+void Unit::perform_another_order(u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk)
 {
 
 	static Point16 pos;
@@ -1002,13 +1002,13 @@ void Unit::set_secondary_order(u8 orderId)
 //-------- Graphics and animations --------//
 
 //Similar to function @ 0x004E5C90
-Image* Unit::getOverlay(u16 imageId) const
+Image* Unit::get_overlay(u16 imageId) const
 {
 	assert(this);
 
-	Image* image = this->sprite->getOverlay(imageId);
+	Image* image = this->sprite->get_overlay(imageId);
 	if (!image && this->subunit)
-		image = this->subunit->sprite->getOverlay(imageId);
+		image = this->subunit->sprite->get_overlay(imageId);
 
 	return image;
 }
@@ -1019,107 +1019,104 @@ void Unit::play_iscript_animation(IscriptAnimation::Enum animation)
 	this->sprite->play_iscript_animation(animation);
 }
 
-void Unit::removeOverlay(u32 imageIdStart, u32 imageIdEnd)
+void Unit::remove_overlay(u32 imageIdStart, u32 imageIdEnd)
 {
 	assert(this);
-
-	this->sprite->removeOverlay(imageIdStart, imageIdEnd);
+	this->sprite->remove_overlay(imageIdStart, imageIdEnd);
 	if (this->subunit)
-		this->subunit->sprite->removeOverlay(imageIdStart, imageIdEnd);
+	{
+		this->subunit->sprite->remove_overlay(imageIdStart, imageIdEnd);
+	}
 }
 
-void Unit::removeOverlay(u32 imageId)
+void Unit::remove_overlay(u32 imageId)
 {
 	assert(this);
-
-	this->sprite->removeOverlay(imageId);
+	this->sprite->remove_overlay(imageId);
 	if (this->subunit)
-		this->subunit->sprite->removeOverlay(imageId);
+	{
+		this->subunit->sprite->remove_overlay(imageId);
+	}
 }
 
 // ----------------------------------------------------------------------------//
 // Return the proper ColorId to use an unit color with graphics function
 // ----------------------------------------------------------------------------//
 
-graphics::ColorId Unit::getFactionColor()
+graphics::ColorId Unit::get_faction_color()
 {
 	assert(this);
-	return getFactionColor(this);
+	return get_faction_color(this);
 }
 
-graphics::ColorId Unit::getFactionColor(Unit* unit)
+graphics::ColorId Unit::get_faction_color(Unit* unit)
 {
-
-	//store a playerId until the end where it will properly store a ColorId
+	// store a playerId until the end where it will properly store a ColorId
 	graphics::ColorId return_value;
-
 	if (unit != nullptr)
 	{
-
 		if (unit->sprite != nullptr)
+		{
 			// note: using the sprite playerId to preserve recruitable units color
 			return_value = unit->sprite->playerId;
+		}
 		else
+		{
 			// note: using player color for spriteless units (if that exist)
 			return_value = unit->player;
-
-		//for normal players, apply colors switching
+		}
+		// for normal players, apply colors switching
 		if (unit->player < PLAYABLE_PLAYER_COUNT)
 		{
-
 			// get the proper playerId in multiplayer game (don't break campaigns/UMS)
 			return_value = factionsColorsOrdering[return_value];
-
-			//fix BROWN to GREEN color swap in Desert map
+			// fix BROWN to GREEN color swap in Desert map
 			if (*CURRENT_TILESET == TilesetType::Desert && return_value == 5)
+			{
 				return_value = 8;
-
-			//fix WHITE to GREEN color swap in Ice map
+			}
+			// fix WHITE to GREEN color swap in Ice map
 			if (*CURRENT_TILESET == TilesetType::Ice && return_value == 6)
+			{
 				return_value = 8;
-
+			}
 		}
-
-		if (return_value < PLAYER_COUNT)
+		if (return_value < PLAYER_COUNT) {
 			return_value = graphics::standardColors[return_value];
-		else
+		}
+		else {
 			return_value = graphics::BLACK; // will return 0/black if abnormal playerId
-
+		}
 	}
-	else
+	else {
 		return_value = graphics::BLACK; // will return 0/black if null pointer is the argument
-
+	}
 	return return_value;
-
 }
 
-graphics::ColorId Unit::getColor()
+graphics::ColorId Unit::get_color()
 {
 	assert(this);
-	return getColor(this);
+	return get_color(this);
 }
 
-graphics::ColorId Unit::getColor(Unit* unit)
+graphics::ColorId Unit::get_color(Unit* unit)
 {
-
-	//getColourID internal function
+	// getColourID internal function
 	const u32 Func_getColourID = 0x0049B0E0;
-
 	graphics::ColorId return_value;
-
 	if (unit != nullptr)
 	{
-
-		if (unit->sprite != nullptr)
+		if (unit->sprite != nullptr) {
 			// note: using the sprite playerId to preserve recruitable units color
 			return_value = unit->sprite->playerId;
-		else
+		}
+		else {
 			// note: using player color for spriteless units (if that exist)
 			return_value = unit->player;
-
+		}
 		if (return_value < PLAYABLE_PLAYER_COUNT)
 		{
-
 			__asm {
 				PUSHAD
 				MOV AL, return_value
@@ -1127,34 +1124,28 @@ graphics::ColorId Unit::getColor(Unit* unit)
 				MOV return_value, AL
 				POPAD
 			}
-
 			return_value = playerMinimapColors[return_value];
-
 		}
-		else
+		else {
 			return_value = graphics::BLACK; // will return 0/black if abnormal playerId
-
+		}
 	}
-	else
+	else {
 		return_value = graphics::BLACK; // will return 0/black if unit is nullptr
-
+	}
 	return return_value;
-
 }
 
 //-------- Distances and terrain --------//
 
-u32 Unit::getDistanceToTarget(Unit* target) const
+u32 Unit::get_distance_to_target(Unit* target) const
 {
-
 	assert(this);
 	assert(target);
-
 	Unit* unit = (Unit*)this;
-
-	if (this->is_subunit())
+	if (this->is_subunit()) {
 		unit = this->subunit; // Current unit is a turret, so use it's base instead
-
+	}
 	s32 dx = unit->getLeft() - target->getRight() - 1;
 	if (dx < 0)
 	{
@@ -1162,7 +1153,6 @@ u32 Unit::getDistanceToTarget(Unit* target) const
 		if (dx < 0)
 			dx = 0;
 	}
-
 	s32 dy = unit->getTop() - target->getBottom() - 1;
 	if (dy < 0)
 	{
@@ -1170,16 +1160,14 @@ u32 Unit::getDistanceToTarget(Unit* target) const
 		if (dy < 0)
 			dy = 0;
 	}
-
 	return scbw::get_distance_fast(0, 0, dx, dy);
 }
 
 const u32 Func_HasPathToPos = 0x0049CB60; //AKA unitHasPathToDest()
-bool Unit::hasPathToPos(u32 x, u32 y) const
+bool Unit::has_path_to_pos(u32 x, u32 y) const
 {
 	assert(this);
 	u32 result;
-
 	__asm {
 		PUSHAD
 		PUSH y
@@ -1189,17 +1177,15 @@ bool Unit::hasPathToPos(u32 x, u32 y) const
 		MOV result, EAX
 		POPAD
 	}
-
 	return result != 0;
 }
 
 const u32 Func_HasPathToTarget = 0x0049CBB0; //AKA unitHasPathToUnit()
-bool Unit::hasPathToUnit(Unit* target) const
+bool Unit::has_path_to_unit(Unit* target) const
 {
 	assert(this);
 	assert(target);
 	u32 result;
-
 	__asm {
 		PUSHAD
 		MOV EAX, this
@@ -1208,16 +1194,13 @@ bool Unit::hasPathToUnit(Unit* target) const
 		MOV result, EAX
 		POPAD
 	}
-
 	return result != 0;
 }
 
 const u32 Func_IsTargetWithinMinRange = 0x00430F10;
-bool Unit::isTargetWithinMinRange(Unit* target, u32 range)
+bool Unit::is_target_within_min_range(Unit* target, u32 range)
 {
-
 	static b32 bPreResult;
-
 	__asm {
 		PUSHAD
 		PUSH target
@@ -1227,9 +1210,7 @@ bool Unit::isTargetWithinMinRange(Unit* target, u32 range)
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
 //-------- DAT Requirements --------//
@@ -1240,7 +1221,6 @@ s32 Unit::can_make_unit(u16 unitId, u8 playerId) const
 	assert(this);
 	s32 playerId_ = playerId;
 	static s32 result;
-
 	__asm {
 		PUSHAD
 		PUSH playerId_
@@ -1250,7 +1230,6 @@ s32 Unit::can_make_unit(u16 unitId, u8 playerId) const
 		MOV result, EAX
 		POPAD
 	}
-
 	return result;
 }
 

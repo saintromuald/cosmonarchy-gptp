@@ -127,7 +127,7 @@ namespace hooks
 
 						if (movableState == 0)
 						{ //not reached destination
-							if (!unit->isTargetWithinMinRange(battery, BATTERY_RANGE))
+							if (!unit->is_target_within_min_range(battery, BATTERY_RANGE))
 								bStopThere = true;
 						}
 						else

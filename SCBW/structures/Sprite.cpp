@@ -261,7 +261,7 @@ Image* Sprite::createTopUnderlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direct
 //-------- Remove overlay --------//
 
 //Based on function @ 0x004E5CF0
-void Sprite::removeOverlay(u32 imageIdStart, u32 imageIdEnd)
+void Sprite::remove_overlay(u32 imageIdStart, u32 imageIdEnd)
 {
 	assert(this);
 	assert(imageIdStart <= imageIdEnd);
@@ -276,7 +276,7 @@ void Sprite::removeOverlay(u32 imageIdStart, u32 imageIdEnd)
 	}
 }
 
-void Sprite::removeOverlay(u32 imageId)
+void Sprite::remove_overlay(u32 imageId)
 {
 	assert(this);
 
@@ -307,7 +307,7 @@ void Sprite::playForOverlay(u32 imageId, u8 anim)
 //-------- Get overlay --------//
 
 //Identical to function @ 0x00497460
-Image* Sprite::getOverlay(u16 imageId) const
+Image* Sprite::get_overlay(u16 imageId) const
 {
 	assert(this);
 

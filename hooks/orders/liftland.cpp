@@ -28,7 +28,7 @@ namespace hooks
 						helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 					}
 				}
-				unit->performAnotherOrder(OrderId::BuildingLiftoff, coords.x, coords.y,	nullptr, 0);
+				unit->perform_another_order(OrderId::BuildingLiftoff, coords.x, coords.y,	nullptr, 0);
 			}
 			prepareForNextOrder(unit);
 			if (unit->mainOrderId != OrderId::Die)
@@ -37,7 +37,7 @@ namespace hooks
 				{
 					helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 				}
-				unit->performAnotherOrder(OrderId::BuildingLand, unitTarget.pt.x, unitTarget.pt.y, unitTarget.unit, UnitId::None);
+				unit->perform_another_order(OrderId::BuildingLand, unitTarget.pt.x, unitTarget.pt.y, unitTarget.unit, UnitId::None);
 			}
 			unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
 		}

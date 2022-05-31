@@ -120,7 +120,7 @@ namespace hooks
 		v7 = weapons_dat::MinRange[v5];
 		if (v7)
 		{
-			if (helper::isTargetWithinMinRange(v4, v7, v2))
+			if (helper::is_target_within_min_range(v4, v7, v2))
 				return 0;
 		}
 		v8 = helper::getUnitMaxWeaponRange(a2, v5);
@@ -158,7 +158,7 @@ namespace hooks
 						LABEL_14:
 					v4 += helper::getFlingyHaltDistance((s32)v1) >> 8;
 				}
-				//ByteOperations::SetLowByte((UINT32)v2, (UINT8)isTargetWithinMinRange(v1, v4, v3)); // Needs fixing
+				//ByteOperations::SetLowByte((UINT32)v2, (UINT8)is_target_within_min_range(v1, v4, v3)); // Needs fixing
 			}
 			else
 			{
@@ -227,7 +227,7 @@ namespace hooks
 				}
 			}
 			if (v6 >= (unsigned __int8)0x82
-				|| (v8 = weapons_dat::MinRange[v6]) != 0 && helper::isTargetWithinMinRange(v5, v8, target)
+				|| (v8 = weapons_dat::MinRange[v6]) != 0 && helper::is_target_within_min_range(v5, v8, target)
 				|| (v9 = helper::getUnitMaxWeaponRange(v1, v6), ByteOperations::SetLowByte(v10, (helper::is_target_within_min_movement_range(target, v5, v9), !v10))))
 			{
 LABEL_23:
@@ -304,7 +304,7 @@ LABEL_22:
 						v12 = 0x82;
 				}
 				if (v12 >= (unsigned __int8)0x82
-					|| (v14 = weapons_dat::MinRange[v12]) != 0 && helper::isTargetWithinMinRange(v11, v14, target)
+					|| (v14 = weapons_dat::MinRange[v12]) != 0 && helper::is_target_within_min_range(v11, v14, target)
 					|| (v15 = helper::getUnitMaxWeaponRange(v1, v12), ByteOperations::SetLowByte(v16, (helper::is_target_within_min_movement_range(target, v11, v15), !v16))))
 				{
 LABEL_63:
@@ -340,7 +340,7 @@ LABEL_62:
 				if (v6 < (unsigned __int8)0x82)
 				{
 					v8 = weapons_dat::MinRange[v6];
-					if (!v8 || !helper::isTargetWithinMinRange(v5, v8, target))
+					if (!v8 || !helper::is_target_within_min_range(v5, v8, target))
 					{
 						v9 = helper::getUnitMaxWeaponRange(v1, v6);
 						ByteOperations::SetLowByte(v10, helper::is_target_within_min_movement_range(target, v5, v9));
@@ -686,7 +686,7 @@ LABEL_42:
 		u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[unitWithWeapon->id] : units_dat::GroundWeapon[unitWithWeapon->id];
 
 		if (unit->status & UnitStatus::GroundedBuilding || unit->status & UnitStatus::Burrowed || unit->id == UnitId::TerranPhalanxSiegeMode) {
-			if (!unit->isTargetWithinMinRange(target, hooks::getMaxWeaponRangeHook(unit, weapon, target))) {
+			if (!unit->is_target_within_min_range(target, hooks::getMaxWeaponRangeHook(unit, weapon, target))) {
 				return false;
 			}
 		}
@@ -863,7 +863,7 @@ LABEL_34:
 				if (v17 < WeaponId::None)
 				{
 					v19 = weapons_dat::MinRange[v17];
-					if (!v19 || !helper::isTargetWithinMinRange(v16, v19, targeta))
+					if (!v19 || !helper::is_target_within_min_range(v16, v19, targeta))
 					{
 						v20 = helper::getUnitMaxWeaponRange(v2, v17);
 						v21 = helper::is_target_within_min_movement_range(targeta, v16, v20);
@@ -1007,7 +1007,7 @@ LABEL_65:
 								if (airWeapon < WeaponId::None)
 								{
 									u32 airWeaponMinRange = weapons_dat::MinRange[airWeapon];
-									if (!airWeaponMinRange || !(helper::isTargetWithinMinRange(subunit, airWeaponMinRange, unitTarget)))
+									if (!airWeaponMinRange || !(helper::is_target_within_min_range(subunit, airWeaponMinRange, unitTarget)))
 									{
 										s32 airWeaponMaxRange = weapons_dat::MaxRange[airWeapon];
 										if (helper::is_target_within_min_movement_range(unitTarget, subunit, airWeaponMaxRange))

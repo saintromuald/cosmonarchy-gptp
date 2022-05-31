@@ -74,7 +74,7 @@ namespace hooks
 						helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
 					}
 				}
-				unit->performAnotherOrder(OrderId::Unburrow, 0, 0, nullptr, UnitId::None);
+				unit->perform_another_order(OrderId::Unburrow, 0, 0, nullptr, UnitId::None);
 			}
 			// 004E9846
 			prepareForNextOrder(unit);

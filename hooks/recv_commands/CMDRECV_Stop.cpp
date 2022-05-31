@@ -100,7 +100,7 @@ namespace hooks
 
 														}
 
-														current_unit->performAnotherOrder(OrderId::ReaverStop, 0, 0, nullptr, UnitId::None, 0);
+														current_unit->perform_another_order(OrderId::ReaverStop, 0, 0, nullptr, UnitId::None, 0);
 
 													}
 
@@ -208,7 +208,7 @@ namespace hooks
 
 														}
 
-														current_unit->performAnotherOrder(OrderId::CarrierStop, 0, 0, nullptr, UnitId::None, 0);
+														current_unit->perform_another_order(OrderId::CarrierStop, 0, 0, nullptr, UnitId::None, 0);
 
 													}
 

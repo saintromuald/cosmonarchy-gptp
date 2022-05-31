@@ -77,7 +77,7 @@ namespace
 		// Check if the target is within the minimum weapon range
 		if (minRange != 0)
 		{
-			if (unit->getDistanceToTarget(target) <= minRange)
+			if (unit->get_distance_to_target(target) <= minRange)
 			{
 				return false;
 			}
@@ -86,7 +86,7 @@ namespace
 		Unit* actualUnit = unit->subunit->is_subunit() ? unit->subunit : unit;
 
 		// Check if the target is within the seek range
-		if (!(unit->getDistanceToTarget(target) <= seekRange))
+		if (!(unit->get_distance_to_target(target) <= seekRange))
 		{
 			return false;
 		}

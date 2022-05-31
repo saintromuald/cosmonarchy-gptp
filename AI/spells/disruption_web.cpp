@@ -54,7 +54,7 @@ namespace AI
 				return false;
 			}
 			if (!(target->status & UnitStatus::InAir)
-				&& caster->getDistanceToTarget(target) <= 32 * 8)
+				&& caster->get_distance_to_target(target) <= 32 * 8)
 			{
 				return true;
 			}

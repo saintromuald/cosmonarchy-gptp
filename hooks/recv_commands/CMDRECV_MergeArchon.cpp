@@ -77,7 +77,7 @@ namespace hooks
 
 							}
 
-							templar_stored->performAnotherOrder(
+							templar_stored->perform_another_order(
 								OrderId::WarpingDarkArchon,
 								templar_merge_partner->sprite->position.x,
 								templar_merge_partner->sprite->position.y,
@@ -114,7 +114,7 @@ namespace hooks
 
 							}
 
-							templar_merge_partner->performAnotherOrder(
+							templar_merge_partner->perform_another_order(
 								OrderId::WarpingDarkArchon,
 								templar_stored->sprite->position.x,
 								templar_stored->sprite->position.y,
@@ -217,7 +217,7 @@ namespace hooks
 
 							}
 
-							templar_stored->performAnotherOrder(
+							templar_stored->perform_another_order(
 								OrderId::WarpingArchon,
 								templar_merge_partner->sprite->position.x,
 								templar_merge_partner->sprite->position.y,
@@ -254,7 +254,7 @@ namespace hooks
 
 							}
 
-							templar_merge_partner->performAnotherOrder(
+							templar_merge_partner->perform_another_order(
 								OrderId::WarpingArchon,
 								templar_stored->sprite->position.x,
 								templar_stored->sprite->position.y,

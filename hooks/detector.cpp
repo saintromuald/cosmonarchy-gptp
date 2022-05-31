@@ -47,7 +47,7 @@ namespace hooks
 				{
 					detectionRange = 32 * detector->getSightRange(false);
 				}
-				if (detector->isTargetWithinMinRange(target, detectionRange))
+				if (detector->is_target_within_min_range(target, detectionRange))
 				{
 					//update visionFlags for current target eval
 					param->visionFlags |=

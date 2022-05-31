@@ -352,7 +352,7 @@ namespace hooks
 				if (unit->mainOrderId == OrderId::TalosSalvage) {
 					Unit* target = unit->orderTarget.unit;
 					if (target) {
-						if (unit->isTargetWithinMinRange(target, unit->getMaxWeaponRange(unit->getGroundWeapon()))) {
+						if (unit->is_target_within_min_range(target, unit->getMaxWeaponRange(unit->getGroundWeapon()))) {
 							UnitExt* targetExt = globals.get_unit_ext(target);
 							targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
 							
@@ -504,7 +504,7 @@ namespace hooks
 				}
 				if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
 					if (scbw::get_active_tile_at(unit->position.x, unit->position.y).hasCreep
-						&& !unit->getOverlay(ImageId::CreepMorphOverlay)) {
+						&& !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 						unit->sprite->createUnderlay(ImageId::CreepMorphOverlay, 0, 2);
 					}
 				}
@@ -727,7 +727,7 @@ namespace hooks
 					else
 					{
 						unit->heal(CuirassSelfHeal);
-						if (!unit->sprite->getOverlay(ImageId::StonewallProtocolOverlay))
+						if (!unit->sprite->get_overlay(ImageId::StonewallProtocolOverlay))
 						{
 							unit->sprite->createTopOverlay(ImageId::StonewallProtocolOverlay, -3, -8);
 						}
@@ -743,7 +743,7 @@ namespace hooks
 					&& (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::AttackUnit))
 				{
 					Unit* target = unit->orderTarget.unit;
-					u32 distance = unit->getDistanceToTarget(target);
+					u32 distance = unit->get_distance_to_target(target);
 					bool doTeleport = false;
 					u32 imageId;
 					Point16 position;
@@ -777,7 +777,7 @@ namespace hooks
 					{
 						position = scbw::clampPoint(position);
 						bool teleport = scbw::teleport(unit, position, 0, true);
-						if (!unit->getOverlay(imageId) && teleport)
+						if (!unit->get_overlay(imageId) && teleport)
 						{
 							unit->sprite->createTopOverlay(imageId);
 						}
@@ -917,7 +917,7 @@ namespace hooks
 					unit->orderSignal &= ~0x20;
 					if (unit->orderTarget.unit != nullptr)
 					{
-						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= CentaurMissileDistance)
+						if (unit->get_distance_to_target(unit->orderTarget.unit) <= CentaurMissileDistance)
 						{
 							unit->play_iscript_animation(IscriptAnimation::Unused2);
 						}
@@ -931,7 +931,7 @@ namespace hooks
 					unit->orderSignal &= ~0x20;
 					if (unit->orderTarget.unit != nullptr && !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
 					{
-						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= OlympianMeleeDistance)
+						if (unit->get_distance_to_target(unit->orderTarget.unit) <= OlympianMeleeDistance)
 						{
 							unit->play_iscript_animation(IscriptAnimation::SpecialState1);
 						}
@@ -964,9 +964,9 @@ namespace hooks
 							return;
 						}
 						// Overlays
-						if (target->getOverlay(ImageId::EnsnaringBroodOverlay))
+						if (target->get_overlay(ImageId::EnsnaringBroodOverlay))
 						{
-							target->removeOverlay(ImageId::EnsnaringBroodOverlay);
+							target->remove_overlay(ImageId::EnsnaringBroodOverlay);
 						}
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						targetExt->timers[TimerEnsnaringBrood] = 12 * 24;
@@ -1013,7 +1013,7 @@ namespace hooks
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						targetExt->timers[TimerGodsMadeFlesh] = 3;
 						u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(target->id);
-						if (!target->getOverlay(overlay)) {
+						if (!target->get_overlay(overlay)) {
 							target->sprite->createTopOverlay(overlay);
 						}
 					}
@@ -1231,9 +1231,9 @@ namespace hooks
 			} break;
 			case UnitId::ZergIsthrathaleth:
 			{
-				if (unit->getOverlay(ImageId::PlagueChannelOverlay)) {
+				if (unit->get_overlay(ImageId::PlagueChannelOverlay)) {
 					if (unit->sprite->images.head->animation != IscriptAnimation::Unused2) {
-						unit->removeOverlay(ImageId::PlagueChannelOverlay);
+						unit->remove_overlay(ImageId::PlagueChannelOverlay);
 					}
 				}
 				else {
@@ -1252,7 +1252,7 @@ namespace hooks
 					if (unit->status & UnitStatus::Frozen) {
 						unit->unfreeze();
 					}
-					unit->removeOverlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+					unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
 				}
 				unitExt->timers[TimerMindTyrantRecede] = 5 * 24;
 			}
@@ -1263,7 +1263,7 @@ namespace hooks
 					unit->freeze();
 				}
 				u32 offset = scbw::get_overlay_offset(unit->id);
-				if (!unit->getOverlay(ImageId::MaelstromOverlay_Small + offset)) {
+				if (!unit->get_overlay(ImageId::MaelstromOverlay_Small + offset)) {
 					unit->sprite->createTopOverlay(ImageId::MaelstromOverlay_Small + offset);
 				}
 			}
@@ -1271,7 +1271,7 @@ namespace hooks
 				if (unit->status & UnitStatus::Frozen) {
 					unit->unfreeze();
 				}
-				unit->removeOverlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+				unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
 
 				scbw::recede_mind_control(unit);
 				unitExt->units[UnitMindTyrantSource] = 0;
@@ -1312,13 +1312,13 @@ namespace hooks
 		}
 
 		// Azazel - Sublime Shepherd overlay
-		if (unitExt->values[ValueSublimeShepherd] && !unit->getOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)))
+		if (unitExt->values[ValueSublimeShepherd] && !unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)))
 		{
 			unit->sprite->createTopOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
 		}
-		else if (unit->getOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)) && !unitExt->values[ValueSublimeShepherd])
+		else if (unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)) && !unitExt->values[ValueSublimeShepherd])
 		{
-			unit->sprite->removeOverlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
+			unit->sprite->remove_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
 		}
 
 		// Fix target clearing bug
@@ -1579,7 +1579,7 @@ namespace hooks
 
 			// Create overlay
 			s32 overlay = ImageId::DermalAccelerantSmall + scbw::get_overlay_offset(unit->id, true);
-			if (!unit->getOverlay(overlay))
+			if (!unit->get_overlay(overlay))
 			{
 				unit->sprite->createTopOverlay(overlay);
 			}
@@ -1635,14 +1635,14 @@ namespace hooks
 		}
 		else if (unitExt->timers[TimerObservanceDebuff] == 1)
 		{
-			unit->sprite->removeOverlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
+			unit->sprite->remove_overlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
 		}
 
 		// Vithrilisk - Corrosive Touch Clear
 		if (unitExt->timers[TimerCorrosiveTouch] == 1)
 		{
 			unitExt->values[ValueCorrosiveTouchStacks] = 0;
-			unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
+			unit->remove_overlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 		}
 
 		// Zergling - Adrenal Glands
@@ -1724,7 +1724,7 @@ namespace hooks
 			unit->freeze();
 
 			u32 offset = scbw::get_overlay_offset(unit->id);
-			if (!unit->getOverlay(ImageId::SalvageDisableSmall + offset)) {
+			if (!unit->get_overlay(ImageId::SalvageDisableSmall + offset)) {
 				unit->sprite->createTopOverlay(ImageId::SalvageDisableSmall + offset);
 			}
 			if (unitExt->timers[TimerTalosSoundLoopTimer] == 0) {
@@ -1736,8 +1736,8 @@ namespace hooks
 			unit->unfreeze();
 
 			u32 offset = scbw::get_overlay_offset(unit->id);
-			if (unit->getOverlay(ImageId::SalvageDisableSmall + offset)) {
-				unit->sprite->removeOverlay(ImageId::SalvageDisableSmall + offset);
+			if (unit->get_overlay(ImageId::SalvageDisableSmall + offset)) {
+				unit->sprite->remove_overlay(ImageId::SalvageDisableSmall + offset);
 			}
 		}
 
@@ -1779,13 +1779,13 @@ namespace hooks
 		// Remove Ensnaring Brood overlay
 		if (unitExt->timers[TimerEnsnaringBrood] == 1)
 		{
-			unit->removeOverlay(ImageId::EnsnaringBroodOverlay);
+			unit->remove_overlay(ImageId::EnsnaringBroodOverlay);
 		}
 
 		// Remove Swarming Omen overlay
 		if (unitExt->timers[TimerSwarmingOmen] == 1)
 		{
-			// unit->removeOverlay();
+			// unit->remove_overlay();
 		}
 
 		// Crucible Stacks Clear
@@ -1796,7 +1796,7 @@ namespace hooks
 				Unit* target = *it;
 				if (scbw::get_distance_fast(unit->position, target->position) > 8 * 32)
 				{
-					target->removeOverlay(ImageId::CrucibleKhaydarinChargeOverlay);
+					target->remove_overlay(ImageId::CrucibleKhaydarinChargeOverlay);
 					crucibles.erase(it);
 					--it;
 				}
@@ -1835,7 +1835,7 @@ namespace hooks
 				{
 					vec.push_back(unit);
 				}
-				if (!target->getOverlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
+				if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
 					target->sprite->createUnderlay(ImageId::CrucibleKhaydarinChargeOverlay, 0, 0, 0);
 				}
 			}
@@ -1851,7 +1851,7 @@ namespace hooks
 		}
 
 		if (unitExt->timers[TimerControlledDemolition] == 7) {
-			Image* overlay = unit->getOverlay(ImageId::ControlledDemolition);
+			Image* overlay = unit->get_overlay(ImageId::ControlledDemolition);
 			overlay->play_iscript_animation(IscriptAnimation::Death);
 		}
 
@@ -1867,12 +1867,12 @@ namespace hooks
 			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
 			unitExt->timers[TimerEmergencyDetonation] = (u32)(0.5 * unitExt->timers[TimerControlledDemolition]);
 			unitExt->timers[TimerControlledDemolition] = 0;
-			unit->sprite->removeOverlay(ImageId::ControlledDemolition);
+			unit->sprite->remove_overlay(ImageId::ControlledDemolition);
 			unit->sprite->createTopOverlay(ImageId::EmergencyDetonation);
 		}
 
 		if (unitExt->timers[TimerEmergencyDetonation] == 7) {
-			Image* overlay = unit->getOverlay(ImageId::EmergencyDetonation);
+			Image* overlay = unit->get_overlay(ImageId::EmergencyDetonation);
 			overlay->play_iscript_animation(IscriptAnimation::Death);
 		}
 
@@ -1918,9 +1918,9 @@ namespace hooks
 		if (unitExt->timers[TimerAlaszilethRegenBoost] == 0)
 		{
 			s32 overlay = ImageId::DermalAccelerantSmall + scbw::get_overlay_offset(unit->id, true);
-			if (unit->getOverlay(overlay))
+			if (unit->get_overlay(overlay))
 			{
-				unit->removeOverlay(overlay);
+				unit->remove_overlay(overlay);
 			}
 		}
 

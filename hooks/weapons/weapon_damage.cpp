@@ -636,14 +636,14 @@ namespace hooks
 								UnitExt* subunitExt = globals.get_unit_ext(data.target->subunit);
 								subunitExt->values[ValueDeconstruction]++;
 								subunitExt->values[ValueDeconstructionPlayer] = data.attacker->player;
-								if (!data.target->subunit->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
+								if (!data.target->subunit->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset))
 								{
 									data.target->subunit->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
 								}
 							}
 							else
 							{
-								if (!data.target->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
+								if (!data.target->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset))
 								{
 									data.target->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
 								}
@@ -1001,7 +1001,7 @@ namespace hooks
 			if (scbw::unit_id_is_smaller_building(data.target->id)) {
 				infested_image_id = ImageId::InfestedOverlay_Small;
 			}
-			data.target->removeOverlay(infested_image_id);
+			data.target->remove_overlay(infested_image_id);
 
 			// Play Sound
 			helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
@@ -1182,14 +1182,14 @@ namespace hooks
 
 		UnitExt* targetExt = globals.get_unit_ext(target);
 		targetExt->values[ValueCorrosiveTouchStacks]++;
-		image = target->getOverlay(get_spores_overlay_id(target));
+		image = target->get_overlay(get_spores_overlay_id(target));
 		if (image)
 		{
 			overlay = image->id;
 		}
 		if (!overlay)
 		{
-			target->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
+			target->remove_overlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 			v6 = helper::getCorrosiveSporesImage(target);
 			targetFinal = target->subunit;
 			if (!targetFinal)

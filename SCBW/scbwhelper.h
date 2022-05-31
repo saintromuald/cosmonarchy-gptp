@@ -506,7 +506,7 @@ namespace helper
 	bool isAngleInAttackAngle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4);
 
 	// for canCastOrderedSpellNow
-	bool isTargetWithinMinRange(Unit* unit, u32 minRange, Unit* target);
+	bool is_target_within_min_range(Unit* unit, u32 minRange, Unit* target);
 	s32 getFlingyHaltDistance(s32 a1);
 
 	// for ordersWatchTarget

@@ -132,9 +132,9 @@ namespace hooks
 		{
 			if (unit->id == 158 || unit->id == 161)
 			{
-				if (unit->getOverlay(ImageId::WarpAnchor))
+				if (unit->get_overlay(ImageId::WarpAnchor))
 				{
-					unit->removeOverlay(ImageId::WarpAnchor);
+					unit->remove_overlay(ImageId::WarpAnchor);
 				}
 			}
 		}

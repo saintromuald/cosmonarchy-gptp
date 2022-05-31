@@ -25,10 +25,10 @@ namespace hooks
 
 	void remove_powerup_image_overlay(Unit* worker) // 004F3900
 	{
-		worker->sprite->removeOverlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
-		worker->sprite->removeOverlay(ImageId::Flag, ImageId::TerranGasTankType2);
-		worker->sprite->removeOverlay(ImageId::Uraj, ImageId::Khalis);
-		worker->sprite->removeOverlay(ImageId::GasRaw, ImageId::GasRaw2);
+		worker->sprite->remove_overlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
+		worker->sprite->remove_overlay(ImageId::Flag, ImageId::TerranGasTankType2);
+		worker->sprite->remove_overlay(ImageId::Uraj, ImageId::Khalis);
+		worker->sprite->remove_overlay(ImageId::GasRaw, ImageId::GasRaw2);
 	}
 
 	u8 harvestResourceFrom(Unit* resource, bool isMineral)

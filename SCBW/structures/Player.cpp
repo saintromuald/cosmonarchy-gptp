@@ -8,13 +8,13 @@
 // Return the proper ColorId to use a player color with graphics function
 // ----------------------------------------------------------------------------//
 
-graphics::ColorId Player::getColor()
+graphics::ColorId Player::get_color()
 {
 	assert(this);
 	return playerMinimapColors[(u8)this->id];
 }
 
-graphics::ColorId Player::getColor(u8 playerId)
+graphics::ColorId Player::get_color(u8 playerId)
 {
 	if (playerId < PLAYER_COUNT)
 	{
@@ -26,13 +26,13 @@ graphics::ColorId Player::getColor(u8 playerId)
 	}
 }
 
-graphics::ColorId Player::getFactionColor()
+graphics::ColorId Player::get_faction_color()
 {
 	assert(this);
-	return getFactionColor(this->id);
+	return get_faction_color(this->id);
 }
 
-graphics::ColorId Player::getFactionColor(u8 playerId)
+graphics::ColorId Player::get_faction_color(u8 playerId)
 {
 	// store a playerId until the end where it will properly store a ColorId
 	graphics::ColorId return_value;

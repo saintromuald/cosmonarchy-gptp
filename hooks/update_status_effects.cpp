@@ -20,7 +20,7 @@ void irradiate_proc(Unit* unit, Unit* target)
 
 	//Check if the unit is within distance, or is inside the same transport
 	if (unit->status & UnitStatus::InTransport
-		|| unit->getDistanceToTarget(target) <= 32)
+		|| unit->get_distance_to_target(target) <= 32)
 	{
 		// const s32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
 		s32 damage = (125 * 256) / 24;
@@ -180,7 +180,7 @@ namespace hooks
 					UnitExt* targetExt = globals.get_unit_ext(target);
 					targetExt->timers[TimerResourceBoostedRegen] = 24;
 					u32 underlay = ImageId::ResourceBoostOverlay_Small + scbw::get_overlay_offset(target->id);
-					if (!target->sprite->getOverlay(underlay)) {
+					if (!target->sprite->get_overlay(underlay)) {
 						if (scbw::unit_id_is_gas_structure(target->id))
 						{
 							target->sprite->createUnderlay(underlay, -5, 2);
@@ -256,7 +256,7 @@ namespace hooks
 			unit->ensnareTimer--;
 			if (unit->ensnareTimer == 0)
 			{
-				unit->removeOverlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
+				unit->remove_overlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 				unit->update_speed();
 			}
 		}
@@ -290,7 +290,7 @@ namespace hooks
 			do_irradiate_damage(unit);
 			if (unit->irradiateTimer == 0)
 			{
-				unit->removeOverlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
+				unit->remove_overlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
 				unit->irradiatedBy = nullptr;
 				unit->irradiatePlayerId = 8;
 			}
@@ -333,7 +333,7 @@ namespace hooks
 
 			if (!unit->plagueTimer)
 			{
-				unit->removeOverlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
+				unit->remove_overlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
 			}
 
 		}
@@ -353,9 +353,9 @@ namespace hooks
 		{
 			// Calculate the appropriate overlay ID
 			u32 acidOverlayId = get_spores_overlay_id(unit);
-			if (!unit->getOverlay(acidOverlayId))
+			if (!unit->get_overlay(acidOverlayId))
 			{
-				unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
+				unit->remove_overlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 				if (unit->subunit)
 				{
 					unit = unit->subunit;

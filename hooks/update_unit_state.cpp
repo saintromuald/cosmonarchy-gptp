@@ -252,7 +252,7 @@ namespace hooks
 		{
 			unit->_unknown_0x08C &= ~0x1;
 			u32 overlayImageId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
+			if (!unit->get_overlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
 			{
 				unit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
 				unitExt->values[ValueHierophantOverlay] = 1;
@@ -262,15 +262,15 @@ namespace hooks
 		if (unitExt->values[ValueHierophantOverlay] == 1)
 		{
 			auto overlayId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-			auto overlay = unit->getOverlay(overlayId);
+			auto overlay = unit->get_overlay(overlayId);
 			if (scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 1)
 			{
-				if (unit->getOverlay(overlayId))
+				if (unit->get_overlay(overlayId))
 				{
-					unit->removeOverlay(overlayId);
+					unit->remove_overlay(overlayId);
 				}
 				u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
-				if (!unit->getOverlay(maliceId))
+				if (!unit->get_overlay(maliceId))
 				{
 					unit->sprite->createTopOverlay(maliceId, 0, 0, 0);
 				}
@@ -285,13 +285,13 @@ namespace hooks
 			u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
 			u32 cowardiceId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 			unitExt->values[ValueHierophantOverlay] = 0;
-			if (unit->getOverlay(maliceId))
+			if (unit->get_overlay(maliceId))
 			{
-				unit->removeOverlay(maliceId);
+				unit->remove_overlay(maliceId);
 			}
-			if (unit->getOverlay(cowardiceId))
+			if (unit->get_overlay(cowardiceId))
 			{
-				unit->removeOverlay(cowardiceId);
+				unit->remove_overlay(cowardiceId);
 			}
 		}
 

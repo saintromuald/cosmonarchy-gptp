@@ -1838,20 +1838,20 @@ namespace scbw
 
 		if (unitExt->values[ValueSignifyStacks] == 0)
 		{
-			unit->removeOverlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
-			unit->removeOverlay(ImageId::Malice_Small, ImageId::Malice_Large);
+			unit->remove_overlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
+			unit->remove_overlay(ImageId::Malice_Small, ImageId::Malice_Large);
 		}
 		else if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 			|| units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding
 			|| unit->hasWeapon())
 		{
-			if (unitExt->values[ValueSignifyStacks] < 5 && !unit->getOverlay(cowardiceId))
+			if (unitExt->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardiceId))
 			{
 				unit->sprite->createTopOverlay(cowardiceId);
 			}
-			else if (unitExt->values[ValueSignifyStacks] >= 5 && !unit->getOverlay(maliceId))
+			else if (unitExt->values[ValueSignifyStacks] >= 5 && !unit->get_overlay(maliceId))
 			{
-				unit->removeOverlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
+				unit->remove_overlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
 				unit->sprite->createTopOverlay(maliceId);
 			}
 		}
@@ -2294,7 +2294,7 @@ namespace scbw
 		if (scbw::unit_id_is_smaller_building(unit->id)) {
 			infested_image_id = ImageId::InfestedOverlay_Small;
 		}
-		if (!unit->getOverlay(infested_image_id)) {
+		if (!unit->get_overlay(infested_image_id)) {
 			unit->sprite->createTopOverlay(infested_image_id);
 		}
 

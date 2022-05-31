@@ -75,7 +75,7 @@ namespace hooks
 							else
 								bKeepLooping = false;
 					}
-					current_unit->performAnotherOrder(OrderId::Morph1, 0, 0, nullptr, UnitId::None, 0);
+					current_unit->perform_another_order(OrderId::Morph1, 0, 0, nullptr, UnitId::None, 0);
 				}
 				prepareForNextOrder(current_unit);
 			}

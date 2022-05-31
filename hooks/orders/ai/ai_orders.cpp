@@ -1664,7 +1664,7 @@ LABEL_37:
 		UnitArray workers = UnitSearchRadial(to_repair->position, 64 * 32);
 		UnitArrayFilter(&workers, to_repair, FilterAlly, {UnitId::TerranMason, UnitId::TerranTalos});
 		Unit* best = UnitArrayFindBest(&workers, [=](Unit* worker) {
-			if (!worker->hasPathToUnit(to_repair) ||
+			if (!worker->has_path_to_unit(to_repair) ||
 				to_repair->orderTarget.unit == worker ||
 				scbw::is_allied_to(worker->player, to_repair->player) ||
 				!helper::isOrderValid(OrderId::Repair1, worker, 0, to_repair, 0)) {

@@ -53,7 +53,7 @@ namespace hooks
 					helper::moveTowards(unit, target); // may cause unit to move or become idle
 					return;
 				}
-				if (!(unit->isTargetWithinMinRange(target, 5))) {
+				if (!(unit->is_target_within_min_range(target, 5))) {
 					unit->mainOrderState = 1;
 					return;
 				}
@@ -63,7 +63,7 @@ namespace hooks
 				unit->mainOrderState = 7;
 			} break;
 			case 7: {
-				if (!(unit->isTargetWithinMinRange(target, 5))) {
+				if (!(unit->is_target_within_min_range(target, 5))) {
 					unit->mainOrderState = 1;
 					return;
 				} else {
@@ -92,7 +92,7 @@ namespace hooks
 			case 8: {
 				helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 				helper::unitOrderMoveToTargetUnit(unit, target);
-				if (!unit->isTargetWithinMinRange(target, 5) || target->mainOrderId == OrderId::Liftoff) { 
+				if (!unit->is_target_within_min_range(target, 5) || target->mainOrderId == OrderId::Liftoff) { 
 					unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
 					unit->mainOrderState = 1;
 				}

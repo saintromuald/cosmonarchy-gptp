@@ -261,7 +261,7 @@ struct Unit : public UnitLayout
 	void order_simple(u8 orderId, bool stopPreviousOrders);
 
 	//  Issue the @p order to the unit, using the given @p target unit and specify if previous orders should be stopped
-	void issueQueuedOrderTarget(u8 orderId, Unit* target, bool stopPreviousOrders);
+	void issue_queued_order_target(u8 orderId, Unit* target, bool stopPreviousOrders);
 
 	/// Causes the unit to become idle.
 	void order_to_idle();
@@ -270,7 +270,7 @@ struct Unit : public UnitLayout
 	void order(u8 orderId, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders);
 
 	/// Probably add the @p order to the orders queue
-	void performAnotherOrder(u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk = NULL);
+	void perform_another_order(u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk = NULL);
 
 	/// Used by several hooks, details not completely understood.
 	void set_secondary_order(u8 orderId);
@@ -284,7 +284,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the overlay image of this unit's sprite (or its subunit's sprite)
 	/// that matches the @p imageId. If the image cannot be found, returns nullptr.
-	Image* getOverlay(u16 imageId) const;
+	Image* get_overlay(u16 imageId) const;
 	s32 maxShields() const;
 	bool shieldsEnabled() const;
 
@@ -293,22 +293,22 @@ struct Unit : public UnitLayout
 
 	/// Removes the first image overlay with an ID value between @p imageIdStart
 	/// and @p imageIdEnd.
-	void removeOverlay(u32 imageIdStart, u32 imageIdEnd);
+	void remove_overlay(u32 imageIdStart, u32 imageIdEnd);
 
 	/// Removes the first image overlay with the given image ID.
-	void removeOverlay(u32 imageId);
+	void remove_overlay(u32 imageId);
 
 	/// Get the faction (brood,tribe,squad...) color of current unit
-	graphics::ColorId getFactionColor();
+	graphics::ColorId get_faction_color();
 
 	/// Get the faction (brood,tribe,squad...) color of an unit
-	static graphics::ColorId getFactionColor(Unit* unit);
+	static graphics::ColorId get_faction_color(Unit* unit);
 
 	/// Get the (possibly non-standard) color of current unit
-	graphics::ColorId getColor();
+	graphics::ColorId get_color();
 
 	/// Get the (possibly non-standard) color of an unit
-	static graphics::ColorId getColor(Unit* unit);
+	static graphics::ColorId get_color(Unit* unit);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -318,18 +318,18 @@ struct Unit : public UnitLayout
 	/// Returns the distance between this unit and the @p target, taking unit
 	/// collision size in units.dat into account.
 	/// Internally, this function uses scbw::get_distance_fast().
-	u32 getDistanceToTarget(Unit* target) const;
+	u32 get_distance_to_target(Unit* target) const;
 
 	/// Checks whether this unit can reach the target position. This checks only
 	/// for terrain, and does not consider obstacles (units and buildings).
-	bool hasPathToPos(u32 x, u32 y) const;
+	bool has_path_to_pos(u32 x, u32 y) const;
 
 	/// Checks whether this unit can reach the @p target unit. This checks only
 	/// for terrain, and does not consider obstacles (units and buildings).
-	bool hasPathToUnit(Unit* target) const;
+	bool has_path_to_unit(Unit* target) const;
 
 	///  Checks whether the @p target unit is within the @p range from the unit.
-	bool isTargetWithinMinRange(Unit* target, u32 range);
+	bool is_target_within_min_range(Unit* target, u32 range);
 
 	//////////////////////////////////////////////////////////////// @}
 

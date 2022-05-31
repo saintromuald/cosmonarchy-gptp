@@ -847,8 +847,8 @@ static DrawGameProc const oldDrawGameProc = (DrawGameProc)0x004BD580;
 
 
 //Array used in multiplayer to randomize factions
-//used by unit.getFactionColor() and
-//player.getFactionColor()
+//used by unit.get_faction_color() and
+//player.get_faction_color()
 //Max index is PLAYABLE_PLAYER_COUNT-1
 SCBW_DATA(s32*, factionsColorsOrdering, 0x0057F21C);
 

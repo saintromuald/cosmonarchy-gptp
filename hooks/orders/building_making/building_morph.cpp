@@ -94,7 +94,7 @@ namespace hooks
 		{ // 0045D5AE
 			if (building->id == UnitId::ZergExcisant)
 			{
-				Image* overlay = building->sprite->getOverlay(ImageId::VespeneGeyser2);
+				Image* overlay = building->sprite->get_overlay(ImageId::VespeneGeyser2);
 				if (overlay != nullptr)
 				{
 					overlay->free();
@@ -299,7 +299,7 @@ namespace hooks
 					helper::update_unit_strength(unit);
 					unit->hitPoints = hp;
 					unit->shields = shield;
-					Image* anchor = unit->getOverlay(ImageId::WarpAnchor);
+					Image* anchor = unit->get_overlay(ImageId::WarpAnchor);
 					if (anchor != nullptr)
 					{
 						anchor->play_iscript_animation(IscriptAnimation::Death);
@@ -307,7 +307,7 @@ namespace hooks
 					else
 					{
 						unit->sprite->createTopOverlay(ImageId::UnusedHeal_Small);
-						anchor = unit->getOverlay(ImageId::UnusedHeal_Small);
+						anchor = unit->get_overlay(ImageId::UnusedHeal_Small);
 						if (anchor != nullptr)
 						{
 							anchor->play_iscript_animation(IscriptAnimation::Death);

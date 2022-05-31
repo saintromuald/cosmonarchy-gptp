@@ -120,12 +120,12 @@ namespace hooks
 			helper::unburrowGeneric(unit); // related to movement, similar to function_004E9A30
 			if (unit->orderTarget.unit != nullptr)
 			{
-				if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineSeekRange))
+				if (unit->is_target_within_min_range(unit->orderTarget.unit, MineSeekRange))
 				{
 					// probably trigger movement/acceleration of unit
 					// toward the target
 					helper::moveToCollide(unit, unit->orderTarget.unit);
-					if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineDetonateRange))
+					if (unit->is_target_within_min_range(unit->orderTarget.unit, MineDetonateRange))
 					{
 						bIsCompletelyInRange = true; // jump to 00463F22
 					}

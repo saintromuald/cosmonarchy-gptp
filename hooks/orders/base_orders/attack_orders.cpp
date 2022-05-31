@@ -218,7 +218,7 @@ namespace hooks
 			{
 				jump_to_77A45 = true;
 			}
-			else if (unit->hasPathToUnit(target))
+			else if (unit->has_path_to_unit(target))
 			{
 				jump_to_77AFE = true;
 			}
@@ -358,7 +358,7 @@ namespace hooks
 								current_subunit->order_computer(OrderId::SiegeMode);
 
 								// this orderId is hardcoded, not calculated
-								current_subunit->issueQueuedOrderTarget(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeMode], target, false);
+								current_subunit->issue_queued_order_target(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeMode], target, false);
 							}
 						}
 					}
@@ -400,7 +400,7 @@ namespace hooks
 								}
 								else
 									if (weapons_dat::MinRange[current_unit_weaponId] != 0
-										&& current_unit->isTargetWithinMinRange(target, weapons_dat::MinRange[current_unit_weaponId]))
+										&& current_unit->is_target_within_min_range(target, weapons_dat::MinRange[current_unit_weaponId]))
 									{
 										jump_to_77C78 = true;
 									}
@@ -463,7 +463,7 @@ namespace hooks
 			jump_to_77AFE = false;
 			if (jump_to_77CDA)
 			{
-				unit->performAnotherOrder(OrderId::TurretGuard, 0, 0, nullptr, UnitId::None);
+				unit->perform_another_order(OrderId::TurretGuard, 0, 0, nullptr, UnitId::None);
 				prepareForNextOrder(unit);
 			}
 			jump_to_77CDA = false;
@@ -533,7 +533,7 @@ namespace hooks
 						jump_to_77E48 = true;
 					}
 					else
-						if (unit->hasPathToUnit(target))
+						if (unit->has_path_to_unit(target))
 						{
 							jump_to_77E99 = true;
 						}
@@ -673,10 +673,10 @@ namespace hooks
 
 				if (!bStopThere && unit->mainOrderState == 1)
 				{ // 00478975
-					if (!unit->isTargetWithinMinRange(target, 4)
+					if (!unit->is_target_within_min_range(target, 4)
 						&& unit->get_movable_state() != 2)
 					{ // 00478998
-						if (unit->isTargetWithinMinRange(target, 256)
+						if (unit->is_target_within_min_range(target, 256)
 							&& target->movementFlags & MovementFlags::Accelerating)							
 						{
 							// maybe trigger the acceleration of the infested terran, or something else related to distances?
@@ -692,7 +692,7 @@ namespace hooks
 					else
 					{ // 004789CC
 						helper::set_resource_target(unit);
-						if (!unit->isTargetWithinMinRange(target, weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran]))
+						if (!unit->is_target_within_min_range(target, weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran]))
 						{
 							unit->order_to_idle();
 							bStopThere = true;

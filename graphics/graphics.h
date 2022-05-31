@@ -24,7 +24,7 @@ const ColorId CYAN    = 128;  //Neutral player color			(0x80)
 const ColorId BLACK   = 0;	  //								(0x00)
 const ColorId GREY    = 74;	  //								(0x4A)
 
-/// For use with getFactionColor() functions, max index is PLAYER_COUNT-1
+/// For use with get_faction_color() functions, max index is PLAYER_COUNT-1
 const static ColorId standardColors[] = { RED , BLUE, TEAL, PURPLE, ORANGE, BROWN, WHITE, YELLOW, GREEN, CYAN, BLACK, GREY };
 
 //Font sizes accepted by graphics::drawTextOnScreen() and drawTextOnMap().

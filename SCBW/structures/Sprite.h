@@ -50,14 +50,14 @@ struct Sprite
 	void playForOverlay(u32 imageId, u8 anim);
 	/// Removes the first image overlay with an ID value between @p imageIdStart
 	/// and @p imageIdEnd.
-	void removeOverlay(u32 imageIdStart, u32 imageIdEnd);
+	void remove_overlay(u32 imageIdStart, u32 imageIdEnd);
 
 	/// Removes the first image overlay with the given image ID.
-	void removeOverlay(u32 imageId);
+	void remove_overlay(u32 imageId);
 
 	/// Returns the overlay image of this sprite that has the given @p imageId.
 	/// If the image cannot be found, returns nullptr.
-	Image* getOverlay(u16 imageId) const;
+	Image* get_overlay(u16 imageId) const;
 
 	/// Checks whether this sprite is visible to @p playerId (i.e. not covered by
 	/// the fog of war). This does NOT check detectability.

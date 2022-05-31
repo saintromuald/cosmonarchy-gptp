@@ -4541,7 +4541,7 @@ namespace helper
 
 	// for canCastOrderedSpellNow
 
-	bool isTargetWithinMinRange(Unit* unit, u32 minRange, Unit* target)
+	bool is_target_within_min_range(Unit* unit, u32 minRange, Unit* target)
 	{
 		const u32 Func_isTargetWithinMinRange = 0x00430F10;
 		static s32 result;

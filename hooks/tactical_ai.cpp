@@ -539,7 +539,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 	{
 		unit_ext->timers[TimerAI_KitingCooldown] = 1 * 24;
 		unit->order_to(OrderId::Move, unit_ext->aiKitingOrigin.x, unit_ext->aiKitingOrigin.y);
-		unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
+		unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 	}
 
 	if (unit_could_kite(unit))
@@ -628,7 +628,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 						local_unit->order_to(OrderId::AttackUnit, best_target);
 						local_unit_ext->values[ValueAI_PreventTargeting] = 1;
 					}
-					local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
+					local_unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 				}
 				else
 				{
@@ -769,7 +769,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 								local_unit->order_to(OrderId::Move, result.strafe_pos.x, result.strafe_pos.y);
 								KITE_DEBUG("%s: strafe", local_unit->getName());
 							}
-							local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
+							local_unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 						} break;
 						case KiterType_Ranged:
 						{
@@ -799,7 +799,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 								KITE_DEBUG("%s: backward", local_unit->getName());
 							}
-							local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
+							local_unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 						} break;
 						case KiterType_Artillery:
 						{
@@ -813,7 +813,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 								KITE_DEBUG("%s: backward", local_unit->getName());
 							}
-							local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
+							local_unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 						} break;
 						case KiterType_Flagship:
 						{
@@ -829,7 +829,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 								local_unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 								KITE_DEBUG("%s: forward", local_unit->getName());
 							}
-							local_unit->issueQueuedOrderTarget(OrderId::ComputerAI, 0, false);
+							local_unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 						} break;
 					}
 				});

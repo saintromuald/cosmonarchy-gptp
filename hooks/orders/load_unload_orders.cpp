@@ -40,7 +40,7 @@ namespace hooks
 						bStopLoop = (unit->orderQueueTail == nullptr);
 					}
 				}
-				unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
+				unit->perform_another_order(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
 			}
 			prepareForNextOrder(unit);
 		}
@@ -115,7 +115,7 @@ namespace hooks
 						if (unit->mainOrderTimer == 0)
 						{
 							unit->mainOrderTimer = 7;
-							if (!unit->isTargetWithinMinRange(unitToLoad, 1))
+							if (!unit->is_target_within_min_range(unitToLoad, 1))
 							{
 								helper::order_to_move_to_target(unit, unitToLoad);
 							}
@@ -178,7 +178,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->performAnotherOrder(OrderId::Unload, 0, 0, nullptr, UnitId::None);
+				unit->perform_another_order(OrderId::Unload, 0, 0, nullptr, UnitId::None);
 				prepareForNextOrder(unit);
 			}
 		}
@@ -300,7 +300,7 @@ namespace hooks
 				*orderTargetOffset = 0;
 				return;
 			}
-			if (helper::isTargetWithinMinRange(unitVar, 1u, orderTarget))
+			if (helper::is_target_within_min_range(unitVar, 1u, orderTarget))
 			{
 				scbw::print("target within min range");
 				helper::loadUnitProc(orderTarget, unitVar);
@@ -393,7 +393,7 @@ namespace hooks
 				{
 					if (target != nullptr)
 					{
-						if (unit->isTargetWithinMinRange(target, 1))
+						if (unit->is_target_within_min_range(target, 1))
 						{ // 004E7C52
 							helper::loadUnitProc(target, unit);
 							target->order_to(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
@@ -446,7 +446,7 @@ namespace hooks
 				unit->nextTargetWaypoint.y = target->sprite->position.y;
 			}
 			helper::moveTowards(unit, target);
-			if (unit->isTargetWithinMinRange(target, 1))
+			if (unit->is_target_within_min_range(target, 1))
 			{
 				helper::loadUnitProc(target, unit);
 			}
@@ -592,7 +592,7 @@ namespace hooks
 								bEndLoop = (unit->orderQueueTail == nullptr);
 							}
 						}
-						unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
+						unit->perform_another_order(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
 						prepareForNextOrder(unit);
 					}
 				}

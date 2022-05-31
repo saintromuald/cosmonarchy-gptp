@@ -139,7 +139,7 @@ namespace hooks
 				}
 
 				//65539
-				outHangarChild->performAnotherOrder(
+				outHangarChild->perform_another_order(
 					OrderId::SelfDestrucing,
 					0,
 					0,
@@ -190,7 +190,7 @@ namespace hooks
 			}
 
 			//655C3
-			unit->performAnotherOrder(
+			unit->perform_another_order(
 				OrderId::Reaver,
 				pos.x,
 				pos.y,

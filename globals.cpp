@@ -1038,7 +1038,7 @@ namespace scbw
 		if (parent->ensnareTimer != 0)
 		{
 			child->ensnareTimer = parent->ensnareTimer;
-			if (!(child->sprite->getOverlay(ImageId::EnsnareOverlay_Small + overlayOffset)))
+			if (!(child->sprite->get_overlay(ImageId::EnsnareOverlay_Small + overlayOffset)))
 			{
 				child->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayOffset);
 			}
@@ -1049,7 +1049,7 @@ namespace scbw
 		if (parent->plagueTimer != 0)
 		{
 			child->plagueTimer = parent->plagueTimer;
-			if (!(child->sprite->getOverlay(ImageId::PlagueOverlay_Small + overlayOffset)))
+			if (!(child->sprite->get_overlay(ImageId::PlagueOverlay_Small + overlayOffset)))
 			{
 				child->sprite->createOverlay(ImageId::PlagueOverlay_Small + overlayOffset);
 			}
@@ -1149,7 +1149,7 @@ namespace scbw
 				subunitExt->values[ValueDeconstruction] = parentExt->values[ValueDeconstruction];
 				sprite = child->subunit->sprite;
 			}
-			if (!sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))
+			if (!sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset))
 			{
 				sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
 			}
@@ -1159,7 +1159,7 @@ namespace scbw
 		if (parentExt->values[ValueEntropyGauntlets])
 		{
 			childExt->values[ValueEntropyGauntlets] = parentExt->values[ValueEntropyGauntlets];
-			if (!(child->sprite->getOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset)))
+			if (!(child->sprite->get_overlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset)))
 			{
 				child->sprite->createOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset);
 			}
@@ -1284,7 +1284,7 @@ namespace scbw
 		if (unitExt->timers[TimerParasiteArm])
 		{
 			unitExt->timers[TimerParasiteArm] = 0;
-			unit->removeOverlay(ImageId::ParasiteOverlay);
+			unit->remove_overlay(ImageId::ParasiteOverlay);
 		}
 		unitExt->units[UnitParasiteSource] = nullptr;
 
@@ -1295,7 +1295,7 @@ namespace scbw
 		// Remove Ensnare
 		if (unit->ensnareTimer != 0)
 		{
-			unit->removeOverlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
+			unit->remove_overlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 			unit->ensnareTimer = 0;
 			//specific update following ensnare removal
 			unit->update_speed();
@@ -1304,14 +1304,14 @@ namespace scbw
 		// Remove Plague
 		if (unit->plagueTimer != 0)
 		{
-			unit->removeOverlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
+			unit->remove_overlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
 			unit->plagueTimer = 0;
 		}
 
 		// Remove Irradiate
 		if (unit->irradiateTimer != 0)
 		{
-			unit->removeOverlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
+			unit->remove_overlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
 			unit->irradiateTimer = 0;
 
 			//specific updates following irradiate removal
@@ -1364,11 +1364,11 @@ namespace scbw
 			u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - overlayOffset;
 			if (unit->subunit != nullptr)
 			{
-				unit->subunit->sprite->removeOverlay(overlayImageId);
+				unit->subunit->sprite->remove_overlay(overlayImageId);
 			}
 			else
 			{
-				unit->sprite->removeOverlay(overlayImageId);
+				unit->sprite->remove_overlay(overlayImageId);
 			}
 		}
 
@@ -1392,12 +1392,12 @@ namespace scbw
 
 		// Remove Deconstruction
 		unitExt->values[ValueDeconstruction] = 0;
-		unit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
+		unit->remove_overlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		if (unit->subunit)
 		{
 			UnitExt* subunitExt = globals.get_unit_ext(unit->subunit);
 			subunitExt->values[ValueDeconstruction] = 0;
-			unit->subunit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
+			unit->subunit->remove_overlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		}
 
 		// Remove Kelvin Munitions
