@@ -358,7 +358,7 @@ namespace hooks
 		return false;
 	}
 
-	// Determines which unit IDs are a creep source (i.e. spreads creap, not just requires it)
+	// Determines which unit IDs are a creep source (i.e. spreads creep, not just requires it)
 	// Base buildings built by a drone return the value of "isComplete", which is an argument that is true if the unit status flag has "Completed" set -- the building only spawns creep once it has been built
 	bool spreads_creep(u16 unitId, bool isComplete)
 	{
