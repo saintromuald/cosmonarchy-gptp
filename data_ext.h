@@ -4,6 +4,7 @@
 // TODO: move unit ext here
 
 struct TileExt {
+	u8 creep_generators;
 	u8 creep_owners;
 };
 
