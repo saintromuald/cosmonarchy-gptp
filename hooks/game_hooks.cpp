@@ -173,7 +173,7 @@ namespace hooks
 					if (fog_of_war_mask->unexplored[i] < 5)
 						fog_of_war_mask->unexplored[i] = 5;
 				}
-				scbw::refreshScreen();
+				scbw::refresh_screen();
 			}
 
 
@@ -257,7 +257,7 @@ namespace hooks
 			}
 
 			hooks::handleScreenHotkeys();
-			scbw::refreshScreen();
+			scbw::refresh_screen();
 
 			// Needed for extended tooltips
 			static bool lastShift = 0;
@@ -305,8 +305,8 @@ namespace hooks
 			{
 				Unit* exit = selected->building.nydusExit;
 				graphics::drawLine(
-					selected->getX(), selected->getY(),
-					exit->getX(), exit->getY(),
+					selected->get_x(), selected->get_y(),
+					exit->get_x(), exit->get_y(),
 					graphics::GREEN, graphics::ON_MAP);
 			}
 		}
@@ -530,7 +530,7 @@ namespace hooks
 				{
 					auto r = 5 * 32;
 					auto n = cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::FrontalArc, {});
-					scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
+					scbw::UnitFinder unitsInFinder(unit->get_x() - r, unit->get_y() - r,
 						unit->position.x + r, unit->position.y + r);
 					bool enemiesDetected = false;
 					for (s32 i = 0; i < unitsInFinder.getUnitCount(); i++)
@@ -555,14 +555,14 @@ namespace hooks
 							{
 								offset.x = -offset.x;
 							}
-							auto X = unit->getX() + offset.x;
-							auto Y = unit->getY() + offset.y;
+							auto X = unit->get_x() + offset.x;
+							auto Y = unit->get_y() + offset.y;
 							auto target_unit = unit->orderTarget.unit;
 							auto target_pos = unit->orderTarget.pt;
 							auto offset_direction = -40 + arc * 16;
 							auto maxRange = weapons_dat::MaxRange[WeaponId::StarSovereignInterventionMissiles];
-							auto polar_x = unit->getX() + scbw::getPolarX(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
-							auto polar_y = unit->getY() + scbw::getPolarY(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
+							auto polar_x = unit->get_x() + scbw::getPolarX(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
+							auto polar_y = unit->get_y() + scbw::getPolarY(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
 							unit->orderTarget.unit = nullptr;
 							unit->orderTarget.pt.x = polar_x;
 							unit->orderTarget.pt.y = polar_y;
@@ -653,7 +653,7 @@ namespace hooks
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::ApostleLazarusAgent] * 256);
 					auto r = 4 * 32;
 					auto n = cosmonarchyFinderMatch(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar, {});
-					scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r,
+					scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r,
 						unit->position.x + r, unit->position.y + r);
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 					{
@@ -804,8 +804,8 @@ namespace hooks
 
 						auto column = missile / 4;
 						auto row = missile % 4;
-						auto distance = scbw::get_distance_fast(unit->getX(), unit->getY(), tgt_x, tgt_y);
-						auto angle = scbw::bw_angle_to_normal(scbw::getAngle(unit->getX(), unit->getY(), tgt_x, tgt_y));
+						auto distance = scbw::get_distance_fast(unit->get_x(), unit->get_y(), tgt_x, tgt_y);
+						auto angle = scbw::bw_angle_to_normal(scbw::getAngle(unit->get_x(), unit->get_y(), tgt_x, tgt_y));
 						Vector32 rotation_pt = Vector32{ 0,0 };
 						rotation_pt.x += 16 + (row - 2) * 32;
 						rotation_pt.y -= (column - 2) * 32;
@@ -815,8 +815,8 @@ namespace hooks
 						missile_target.y = tgt_y + product.y;
 
 						s32 forwardOffset = weapons_dat::ForwardOffset[10];
-						auto source_x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
-						auto source_y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
+						auto source_x = unit->get_x() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
+						auto source_y = unit->get_y() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
 							- weapons_dat::VerticalOffset[10];
 						unit->orderTarget.unit = nullptr;
 						unit->orderTarget.pt = missile_target;
@@ -894,10 +894,10 @@ namespace hooks
 					unitExt->timers[TimerNaniteField] = 24;
 					unit->sprite->play_iscript_animation(IscriptAnimation::CastSpell);
 					scbw::UnitFinder(
-						unit->getX() - 128,
-						unit->getY() - 128,
-						unit->getX() + 128,
-						unit->getY() + 128
+						unit->get_x() - 128,
+						unit->get_y() - 128,
+						unit->get_x() + 128,
+						unit->get_y() + 128
 					).forEach([&](Unit* target)
 						{
 							shamanProc(unit, ShamanHeal, target);
@@ -1062,10 +1062,10 @@ namespace hooks
 				{
 					auto match = cosmonarchyFinderMatch(unit, flags, {});
 					scbw::UnitFinder(
-						unit->getX() - radius,
-						unit->getY() - radius,
-						unit->getX() + radius,
-						unit->getY() + radius
+						unit->get_x() - radius,
+						unit->get_y() - radius,
+						unit->get_x() + radius,
+						unit->get_y() + radius
 					).forEachInMatch(match, [&](Unit* target) {
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						targetExt->timers[TimerAnticthonRevive] = 2;
@@ -1078,10 +1078,10 @@ namespace hooks
 				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
 				bool attacked = false;
 				scbw::UnitFinder(
-					unit->getX() - attackRadius,
-					unit->getY() - attackRadius,
-					unit->getX() + attackRadius,
-					unit->getY() + attackRadius
+					unit->get_x() - attackRadius,
+					unit->get_y() - attackRadius,
+					unit->get_x() + attackRadius,
+					unit->get_y() + attackRadius
 				).forEachInMatch(match, [&](Unit* target)
 				{
 					u32 dist = scbw::get_distance_fast(unit->position, target->position);
@@ -1123,7 +1123,7 @@ namespace hooks
 
 				if (unit->mainOrderId == OrderId::Follow || unit->mainOrderId == OrderId::AttackUnit)
 				{
-					unit->orderTo(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					unit->order_to(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 				}
 
 				if (unit->mainOrderId == OrderId::Move)
@@ -1163,10 +1163,10 @@ namespace hooks
 				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
 				bool attacked = false;
 				scbw::UnitFinder(
-					unit->getX() - radius,
-					unit->getY() - radius,
-					unit->getX() + radius,
-					unit->getY() + radius
+					unit->get_x() - radius,
+					unit->get_y() - radius,
+					unit->get_x() + radius,
+					unit->get_y() + radius
 				).forEachInMatch(match, [&](Unit* target)
 				{
 					if ((!scbw::is_allied_to(unit->player, target->player)))
@@ -1191,10 +1191,10 @@ namespace hooks
 			{
 				// Tag nearby units for Sublime Shepherd
 				scbw::UnitFinder(
-					unit->getX() - 128,
-					unit->getY() - 128,
-					unit->getX() + 128,
-					unit->getY() + 128
+					unit->get_x() - 128,
+					unit->get_y() - 128,
+					unit->get_x() + 128,
+					unit->get_y() + 128
 				).forEach([&](Unit* target)
 					{
 						if (target == unit)
@@ -1293,10 +1293,10 @@ namespace hooks
 		{
 			unitExt->values[ValueHasSublimeShepherd] = 0;
 			scbw::UnitFinder(
-				unit->getX() - 128,
-				unit->getY() - 128,
-				unit->getX() + 128,
-				unit->getY() + 128
+				unit->get_x() - 128,
+				unit->get_y() - 128,
+				unit->get_x() + 128,
+				unit->get_y() + 128
 			).forEach([&](Unit* target)
 				{
 					if (target == unit)
@@ -1327,7 +1327,7 @@ namespace hooks
 			&& !(unit->orderTarget.unit->visibilityStatus & (1 << unit->playerId)))
 		{
 			scbw::print("lard");
-			unit->orderToIdle();
+			unit->order_to_idle();
 		}
 		*/
 
@@ -1478,14 +1478,14 @@ namespace hooks
 			if (fuse_timer == 1)
 			{
 				// Todo: make thingy
-				helper::createThingy(SpriteId::FragmentaryExplosion, unit->getX(), unit->getY(), 11);
+				helper::createThingy(SpriteId::FragmentaryExplosion, unit->get_x(), unit->get_y(), 11);
 				helper::play_sound_from_unit(scbw::randBetween(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
 				const u32 radius = 1.5 * 32;
 				scbw::UnitFinder(
-					unit->getX() - radius,
-					unit->getY() - radius,
-					unit->getX() + radius,
-					unit->getY() + radius
+					unit->get_x() - radius,
+					unit->get_y() - radius,
+					unit->get_x() + radius,
+					unit->get_y() + radius
 				).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::NotSelf, {}), [&](Unit* target)
 				{
 					target->damage_with_custom(5 * 256, DamageType::Explosive, nullptr, 0, 0, 1, false);
@@ -1590,10 +1590,10 @@ namespace hooks
 		{
 			const auto range = 6 * 32;
 			auto seraphs = scbw::UnitFinder(
-				unit->getX() - range,
-				unit->getY() - range,
-				unit->getX() + range,
-				unit->getY() + range
+				unit->get_x() - range,
+				unit->get_y() - range,
+				unit->get_x() + range,
+				unit->get_y() + range
 			).filter([&](Unit* target)
 			{
 				if (unit->player == target->player
@@ -1706,15 +1706,15 @@ namespace hooks
 				auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf, {});
 				const u32 radius = unit->getSeekRange() * 32;
 				Unit* target = scbw::UnitFinder::getNearestTarget(
-					unit->getX() - radius,
-					unit->getY() - radius,
-					unit->getX() + radius,
-					unit->getY() + radius,
+					unit->get_x() - radius,
+					unit->get_y() - radius,
+					unit->get_x() + radius,
+					unit->get_y() + radius,
 					unit, match
 				);
 				if (target)
 				{
-					unit->orderTo(OrderId::AttackUnit, target);
+					unit->order_to(OrderId::AttackUnit, target);
 				}
 			}
 		}
@@ -1882,10 +1882,10 @@ namespace hooks
 			auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf, {});
 			const u32 radius = 3 * 32;
 			scbw::UnitFinder(
-				unit->getX() - radius,
-				unit->getY() - radius,
-				unit->getX() + radius,
-				unit->getY() + radius
+				unit->get_x() - radius,
+				unit->get_y() - radius,
+				unit->get_x() + radius,
+				unit->get_y() + radius
 			).forEachInMatch(match, [&](Unit* target)
 			{
 				if (scbw::get_distance_fast(unit->position, target->position) <= radius)
@@ -1925,7 +1925,7 @@ namespace hooks
 		}
 
 		if (unitExt->values[ValueAI_WorkerChosenForExpansion] && unit->resourceType == ResourceType::None) {
-			unit->orderTo(OrderId::Move, unitExt->values[ValueAI_WorkerChosenX], unitExt->values[ValueAI_WorkerChosenY]);
+			unit->order_to(OrderId::Move, unitExt->values[ValueAI_WorkerChosenX], unitExt->values[ValueAI_WorkerChosenY]);
 			unitExt->values[ValueAI_WorkerChosenForExpansion] = 0;
 			unitExt->values[ValueAI_WorkerChosenX] = 0;
 			unitExt->values[ValueAI_WorkerChosenY] = 0;

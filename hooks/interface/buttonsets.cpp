@@ -1641,7 +1641,7 @@ namespace hooks
 			if (!bStopThere && !jumpto5934E)
 			{
 				// 0045933C
-				scbw::hideDialog(current_dialog);
+				scbw::hide_dialog(current_dialog);
 				current_dialog->graphic = 0xFFFF;
 				current_dialog->buttonUser = nullptr;
 			}

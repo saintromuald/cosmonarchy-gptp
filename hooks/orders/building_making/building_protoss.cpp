@@ -14,7 +14,7 @@ namespace hooks
 
 		if (unit->mainOrderState == 0)
 		{
-			if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+			if (helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 			{
 				unit->mainOrderState = 1;
 			}
@@ -34,9 +34,9 @@ namespace hooks
 
 			if (distance / 256 > distance_wanted)
 			{
-				if (unit->getMovableState() != 0)
+				if (unit->get_movable_state() != 0)
 				{
-					helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 				}
 			}
 			else // 004E4DA9
@@ -60,21 +60,21 @@ namespace hooks
 					distance_wanted = 70;
 				}
 
-				if (!helper::isDistanceGreaterThanHaltDistance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, distance_wanted))
+				if (!helper::is_distance_greater_than_halt_distance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, distance_wanted))
 				{
-					if (unit->getMovableState() != 0)
+					if (unit->get_movable_state() != 0)
 					{
-						helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+						helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					}
 				}
 				else
 				{
-					if (helper::beginBuilding(unit))
+					if (helper::begin_building(unit))
 					{
 						Unit* builtUnit;
 						if (isBuildingAssimilator)
 						{
-							builtUnit = helper::beginGasBuilding(unit, UnitId::ProtossAquifer);
+							builtUnit = helper::begin_gas_building(unit, UnitId::ProtossAquifer);
 						}
 						else
 						{
@@ -85,13 +85,13 @@ namespace hooks
 						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 						if (builtUnit == nullptr)
 						{
-							helper::refundUnitTrainCost(unit_id, unit->player);
+							helper::refund_unit_train_cost(unit_id, unit->player);
 							helper::display_last_network_error_for_player(unit->player);
-							unit->orderToIdle();
+							unit->order_to_idle();
 						}
 						else // 004E4E63
 						{
-							helper::replaceSpriteImages(builtUnit->sprite, ImageId::WarpAnchor, 0);
+							helper::replace_sprite_images(builtUnit->sprite, ImageId::WarpAnchor, 0);
 							if (isBuildingAssimilator)
 							{
 								builtUnit->sprite->createUnderlay(ImageId::VespeneGeyser, 0, 0, 0);
@@ -106,7 +106,7 @@ namespace hooks
 					}
 					else
 					{
-						unit->orderToIdle();
+						unit->order_to_idle();
 					}
 				}
 			}
@@ -120,11 +120,11 @@ namespace hooks
 				|| target->id != UnitId::ProtossAquifer
 				|| unit->orderQueueHead != nullptr)
 			{
-				unit->orderToIdle();
+				unit->order_to_idle();
 			}
 			else
 			{
-				unit->orderTo(OrderId::CanEnterGasMine, target);
+				unit->order_to(OrderId::CanEnterGasMine, target);
 			}
 			current_image = unit->sprite->images.head;
 			while (current_image != nullptr)
@@ -136,7 +136,7 @@ namespace hooks
 	}
 
 	// Protoss self-building
-	void orders_BuildSelf2(Unit* building)
+	void orders_build_self_2(Unit* building)
 	{
 		bool jump_to_E50EE = false;
 		if (building->mainOrderState > 3)
@@ -157,7 +157,7 @@ namespace hooks
 						current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x22);
 						current_image->wait = 0;
 						current_image->unknown14 = 0;
-						helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
 					}
 					current_image = current_image->link.next;
 				}
@@ -175,8 +175,8 @@ namespace hooks
 			if (building->orderSignal & 1)
 			{
 				building->orderSignal &= ~1;
-				helper::replaceSpriteImages(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
-				helper::switchToWarpTexture(building->sprite->mainGraphic);
+				helper::replace_sprite_images(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
+				helper::switch_to_warp_texture(building->sprite->mainGraphic);
 				building->mainOrderState = 3; // DF: Skip state 2 as it's now redundant.
 			}
 		}
@@ -186,7 +186,7 @@ namespace hooks
 			{
 				Image* current_image;
 				building->orderSignal &= ~1;
-				helper::replaceSpriteImages(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
+				helper::replace_sprite_images(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
 				current_image = building->sprite->images.head;
 				while (current_image != nullptr)
 				{
@@ -197,7 +197,7 @@ namespace hooks
 						current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
 						current_image->wait = 0;
 						current_image->unknown14 = 0;
-						helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
 					}
 					current_image = current_image->link.next;
 				}
@@ -211,9 +211,9 @@ namespace hooks
 			{
 				Image* current_image; // DF: Copied over from state 2.
 				building->orderSignal &= ~1;
-				helper::update_unit_stats_and_finish_building(building); // DF: Copying over replaceSpriteImages is not necessary because of this function.
+				helper::update_unit_stats_and_finish_building(building); // DF: Copying over replace_sprite_images is not necessary because of this function.
 				helper::update_unit_strength(building);
-				helper::checkUnstack(building);
+				helper::check_unstack(building);
 				current_image = building->sprite->images.head; // DF: Copied over from state 2.
 				while (current_image != nullptr) // DF: Copied over from state 2.
 				{
@@ -224,7 +224,7 @@ namespace hooks
 						current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
 						current_image->wait = 0;
 						current_image->unknown14 = 0;
-						helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
 					}
 					current_image = current_image->link.next;
 				}
@@ -241,7 +241,7 @@ namespace hooks
 							current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x38);
 							current_image->wait = 0;
 							current_image->unknown14 = 0;
-							helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+							helper::iscript_opcode_cases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
 						}
 						current_image = current_image->link.next;
 					}

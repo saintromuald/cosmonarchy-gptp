@@ -104,7 +104,7 @@ namespace hooks
 			else
 				if (unit->mainOrderState == 1)
 				{ // 004EA43B
-					u8 movableState = unit->getMovableState();
+					u8 movableState = unit->get_movable_state();
 					if (movableState == 1)	// reached destination
 					{
 						unit->mainOrderState = 2;
@@ -112,7 +112,7 @@ namespace hooks
 					else
 						if (movableState != 0)	// (value is probably 2 == unmovable)
 						{
-							unit->orderToIdle();
+							unit->order_to_idle();
 						}
 				}
 			if (unit->mainOrderState == 2) // 004EA458

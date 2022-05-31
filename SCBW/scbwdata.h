@@ -280,7 +280,7 @@ SCBW_DATA(u32*, factoriesProducedOwnedTotal,	0x00582084); // Array of 12
 SCBW_DATA(u32*, structuresProducedOwnedTotal,	0x00581F34); // Array of 12
 SCBW_DATA(u32*, unitsProducedOwnedTotal,		0x00581DE4); // Array of 12
 
-// For refreshScreen
+// For refresh_screen
 SCBW_DATA(u32*, placeBuildingMessageId,			0x00640958);
 SCBW_DATA(u16*, placeBuildingUnitId,			0x0064088A);
 
@@ -301,7 +301,7 @@ SCBW_DATA(u16*, suppliesAvailableTemp,			0x006CA93C);
 SCBW_DATA(u8*, statusScreenFunc,				0x0068C1E5);
 SCBW_DATA(BufferStr*, struct_Char,				0x006CA9F8);
 
-// For drawSupplyUnitInfo
+// For draw_supply_unit_info
 SCBW_DATA(BufferStr*, struct_Char2,				0x006CAB08);
 SCBW_DATA(char*, unkString_Char,				0x006CA668);
 
@@ -413,7 +413,7 @@ SCBW_DATA(s16*, ordersRequirementTree,				0x00514CF8);
 // For larva_creep_spawn
 SCBW_DATA(s16*, larvaCounter,						0x0067D3F8);
 
-// For updateBuildingPlacementState_Units
+// For update_building_placement_state_units
 SCBW_DATA(s8*, buildingPlacementState,				0x006408F8);
 
 // For progress_unit_frame
@@ -438,7 +438,7 @@ SCBW_DATA(s32*, missionObjectivesStringIndex,		0x0058D6C4);
 SCBW_DATA(Unit**, disabledUnitArray,				0x00692660);
 SCBW_DATA(Unit**, AIBuilderUnknown,					0x006D5DCC);
 
-// For getSuppliesAvailable
+// For get_supplies_available
 SCBW_DATA(s32*,	suppliesAvailable_Protoss,			0x00582264);
 SCBW_DATA(s32*,	suppliesMax_Protoss,				0x005822C4);
 SCBW_DATA(s32*,	suppliesAvailable_Terran,			0x005821D4);

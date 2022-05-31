@@ -493,7 +493,7 @@ namespace hooks
 		{
 			if (helper::has_supplies_for_unit(unit_id, unit->player, notify_error))
 			{
-				Unit* result = helper::create_unit(unit_id, unit->getX(), unit->getY(), unit->player);
+				Unit* result = helper::create_unit(unit_id, unit->get_x(), unit->get_y(), unit->player);
 				if (result)
 				{
 					return result;

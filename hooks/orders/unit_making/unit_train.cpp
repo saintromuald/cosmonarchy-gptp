@@ -11,7 +11,7 @@
 
 namespace hooks
 {
-	s32 isQueueSlotActive(Unit* unit, u32 slot)
+	s32 is_queue_slot_active(Unit* unit, u32 slot)
 	{
 		return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] < UnitId::None;
 	}
@@ -58,7 +58,7 @@ namespace hooks
 				if (builtUnit != nullptr)
 				{
 					hpGain = helper::getHPGainForRepair(builtUnit);
-					helper::ProgressBuild(builtUnit, hpGain, FALSE);
+					helper::progress_build(builtUnit, hpGain, FALSE);
 					if (builtUnit->status & UnitStatus::Completed)
 					{
 						helper::addHangarUnit(unit, builtUnit);
@@ -157,7 +157,7 @@ namespace hooks
 						for (Unit* unit : unitExt->unitVectors[UnitVectorCrucibles])
 						{
 							builtUnitExt->values[ValueCrucible] = 18; // 6 is ~115%, 18 should be ~105%
-							helper::ProgressBuild(builtUnit, hpGain, TRUE);
+							helper::progress_build(builtUnit, hpGain, TRUE);
 							if (builtUnit->status & UnitStatus::Completed)
 							{
 								extraBuild = true;
@@ -168,7 +168,7 @@ namespace hooks
 					{
 						builtUnitExt->values[ValueCrucible]--;
 					}
-					if (extraBuild || helper::ProgressBuild(builtUnit, hpGain, TRUE))
+					if (extraBuild || helper::progress_build(builtUnit, hpGain, TRUE))
 					{
 						if (builtUnit->status & UnitStatus::Completed)
 						{
@@ -215,7 +215,7 @@ namespace hooks
 							}
 							else if (!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
 							{
-								helper::refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5], unit->player);
+								helper::refund_unit_train_cost(unit->buildQueue[unit->buildQueueSlot % 5], unit->player);
 							}
 							do
 							{

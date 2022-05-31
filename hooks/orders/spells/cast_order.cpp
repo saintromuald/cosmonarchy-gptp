@@ -210,7 +210,7 @@ namespace hooks
 			if (unit->orderSignal & 2)
 			{
 				unit->orderSignal -= 2;
-				unit->orderToIdle();
+				unit->order_to_idle();
 			}
 			else // 00492886
 			{
@@ -237,7 +237,7 @@ namespace hooks
 				helper::get_statTxt_Str_0(unit, unit->player, message);
 				// make the unit stop since the order failed
 				helper::set_resource_target(unit);
-				unit->orderToIdle();
+				unit->order_to_idle();
 			}
 			else // 0049291A
 			{
@@ -266,7 +266,7 @@ namespace hooks
 							helper::setUnitStatTxtErrorMsg(message);
 						}
 					}
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				else // 004929C2
 				{
@@ -292,9 +292,9 @@ namespace hooks
 					}
 					if (result_00492620 == 0)
 					{
-						if (unit->getMovableState() == 2) // unmovable
+						if (unit->get_movable_state() == 2) // unmovable
 						{
-							unit->orderToIdle();
+							unit->order_to_idle();
 						}
 					}
 					else // 00492A01
@@ -304,7 +304,7 @@ namespace hooks
 						&&	gcd_condition // new
 						&&	helper::is_ready_to_attack(unit, orderWeaponId) // is ready to fire weapon (angle,range...) maybe?
 						&&	!(unit->movementFlags & MovementFlags::Accelerating)
-						&&	unit->getMovableState() != 0)
+						&&	unit->get_movable_state() != 0)
 						{ // 00492A38
 							bool bStopHere = false;
 							// in case it was modified by a previous function, relinking
@@ -345,7 +345,7 @@ namespace hooks
 										}
 										if (analyzed_target_status != 0)
 										{
-											unit->orderToIdle();
+											unit->order_to_idle();
 											bStopHere = true;
 										}
 									}

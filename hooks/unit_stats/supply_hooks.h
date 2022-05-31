@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	u32 getSuppliesAvailable(u8 playerId, s32 race);								// 00488900
+	u32 get_supplies_available(u8 playerId, s32 race);								// 00488900
 	s32 get_supplies_remaining(u8 playerId, u16 unitId);								// 004889D0
 	s32 getSuppliesMax(u16 unitId, u8 playerId);									// 00488990
 	s32 get_supplies_used(s32 race, u8 playerId);										// 004888C0

@@ -102,14 +102,14 @@ namespace graphics
 		return 0;
 	}
 
-	s32 FontChar::getX() const
+	s32 FontChar::get_x() const
 	{
 		if (this != nullptr)
 			return this->x;
 		return 0;
 	}
 
-	s32 FontChar::getY() const
+	s32 FontChar::get_y() const
 	{
 		if (this != nullptr)
 			return this->y;

@@ -17,10 +17,10 @@ namespace AI
 			bounds = 32 * 64;
 
 		return scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
 			caster,
 			[&](Unit* target)
 		{
@@ -34,7 +34,7 @@ namespace AI
 			if (target->parasiteFlags & (1 << caster->player))
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Parasite, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Parasite, target, caster))
 				return false;
 
 			if (target->canDetect())

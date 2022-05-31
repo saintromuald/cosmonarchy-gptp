@@ -10,10 +10,10 @@
 
 void augurProc(Unit* augur, s32 radius) {
 	Unit* target = scbw::UnitFinder::getNearestTarget(
-		augur->getX() - radius,
-		augur->getY() - radius,
-		augur->getX() + radius,
-		augur->getY() + radius,
+		augur->get_x() - radius,
+		augur->get_y() - radius,
+		augur->get_x() + radius,
+		augur->get_y() + radius,
 		augur, [&](Unit* unit)
 		{
 			// Don't attack friendly / allied units
@@ -35,12 +35,12 @@ void augurProc(Unit* augur, s32 radius) {
 			}
 			return true;
 		});
-	Thingy* thingy = helper::createThingy(SpriteId::AugurDeathExplosion, augur->getX(), augur->getY(), augur->player);
+	Thingy* thingy = helper::createThingy(SpriteId::AugurDeathExplosion, augur->get_x(), augur->get_y(), augur->player);
 	helper::play_sound_from_unit(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
 	if (target)
 	{
 		augur->orderTarget.unit = target;
-		helper::createBullet(WeaponId::AugurFinalHour, augur, augur->getX(), augur->getY(), augur->player, scbw::getAngle(augur->getX(), augur->getY(), target->getX(), target->getY()));
+		helper::createBullet(WeaponId::AugurFinalHour, augur, augur->get_x(), augur->get_y(), augur->player, scbw::getAngle(augur->get_x(), augur->get_y(), target->get_x(), target->get_y()));
 	}
 }
 
@@ -233,7 +233,7 @@ void unit_destructor_special_cases(Unit* unit)
 		{
 			case UnitId::SharedAspirant:
 			{
-				globals.createEffect(EffectId::Criticality, 10 * 24, { unit->getX(), unit->getY() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
+				globals.createEffect(EffectId::Criticality, 10 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
 			} break;
 			case UnitId::ProtossClarion:
 			{
@@ -245,10 +245,10 @@ void unit_destructor_special_cases(Unit* unit)
 				// Terminal Surge
 				u32 range = 5 * 32;
 				scbw::UnitFinder(
-					unit->getX() - range,
-					unit->getY() - range,
-					unit->getX() + range,
-					unit->getY() + range
+					unit->get_x() - range,
+					unit->get_y() - range,
+					unit->get_x() + range,
+					unit->get_y() + range
 				).forEach([&](Unit* target)
 					{
 						UnitExt* targetExt = globals.get_unit_ext(target);
@@ -350,10 +350,10 @@ void unit_destructor_special_cases(Unit* unit)
 		{
 			const u32 radius = 3 * 32;
 			scbw::UnitFinder(
-				unit->getX() - radius,
-				unit->getY() - radius,
-				unit->getX() + radius,
-				unit->getY() + radius
+				unit->get_x() - radius,
+				unit->get_y() - radius,
+				unit->get_x() + radius,
+				unit->get_y() + radius
 			).forEach([&](Unit* target)
 			{
 				if (scbw::is_allied_to(i, target->player))
@@ -394,18 +394,18 @@ void unit_destructor_special_cases(Unit* unit)
 	// Nuclear Silo - death
 	if (unit->id == UnitId::TerranNuclearSilo && unit->building.silo.isReady && !unitExt->timers[ControlledDemolitionTimer])
 	{
-		scbw::createAndInitThingy(SpriteId::Nuke_Hit, unit->getX(), unit->getY(), 11, 12);
-		helper::createBullet(WeaponId::NuclearMissile, unit, unit->getX(), unit->getY(), unit->player, 0);
+		scbw::createAndInitThingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
+		helper::createBullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);
 	}
 
 	// Apostle Last Breath behavior
 	{
 		u32 range = 4 * 32;
 		scbw::UnitFinder(
-			unit->getX() - range,
-			unit->getY() - range,
-			unit->getX() + range,
-			unit->getY() + range
+			unit->get_x() - range,
+			unit->get_y() - range,
+			unit->get_x() + range,
+			unit->get_y() + range
 		).forEach([&](Unit* target)
 		{
 			if (target->id != UnitId::TerranApostle)

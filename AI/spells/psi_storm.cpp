@@ -20,10 +20,10 @@ namespace AI
 
 
 		return scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
 			caster,
 			[&](Unit* target)
 		{
@@ -31,14 +31,14 @@ namespace AI
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::PsiStorm, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::PsiStorm, target, caster))
 				return false;
 
-			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);
+			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::PsiStorm);
 			if (!isUnderAttack && totalEnemyLife < 250)
 				return false;
 
-			const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);
+			const s32 totalAllyLife = getTotalAllyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::PsiStorm);
 			if (totalAllyLife * 2 >= totalEnemyLife)
 				return false;
 

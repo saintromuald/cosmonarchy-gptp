@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	// used in itself, completeAddon, beginGasBuilding, GiveAllUnitPropertiesToPlayerAndMakeIdle, removeSubunitOrGasContainer, AI_CreateUnit, orders_RescuePassive, orders_InfestMine1
+	// used in itself, completeAddon, begin_gas_building, GiveAllUnitPropertiesToPlayerAndMakeIdle, removeSubunitOrGasContainer, AI_CreateUnit, orders_RescuePassive, orders_InfestMine1
 	// Changes would affect all those functions and maybe more
 	void giveUnit(Unit* unit, u32 playerId, u32 bCountAsCompleted)
 	{

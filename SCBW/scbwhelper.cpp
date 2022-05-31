@@ -41,7 +41,7 @@ namespace helper
 
 	// For loadRaceUI
 
-	void getRaceSoundList(s8 a1)
+	void get_race_sound_list(s8 a1)
 	{
 		const u32 Func_getRaceSoundList = 0x0048FB40;
 		__asm {
@@ -52,7 +52,7 @@ namespace helper
 		}
 	}
 
-	s32 dialogGrpConstruct(s32 a1, s32 a2, s32 a3, s32(__fastcall* a4)(s32, s32, s32, s32))
+	s32 dialog_grp_construct(s32 a1, s32 a2, s32 a3, s32(__fastcall* a4)(s32, s32, s32, s32))
 	{
 		const u32 Func_dialogGrpConstruct = 0x004197B0;
 		static s32 result;
@@ -69,7 +69,7 @@ namespace helper
 		return result;
 	}
 
-	void loadGraphic(s8 a1, s32 a2, s32 a3, s8 a4, s32 a5)
+	void load_graphic(s8 a1, s32 a2, s32 a3, s8 a4, s32 a5)
 	{
 		const u32 Func_loadGraphic = 0x004D2B30;
 		__asm {
@@ -84,7 +84,7 @@ namespace helper
 		}
 	}
 
-	s32 randFunc()
+	s32 rand_func()
 	{
 		const u32 Func_randFunc = 0x0040C7BD;
 		static s32 result;
@@ -97,7 +97,7 @@ namespace helper
 		return result;
 	}
 
-	bool unitHPbelow33_percent(Unit* a1)
+	bool unit_hp_below_33_percent(Unit* a1)
 	{
 		const u32 Func_unitHPBelow33Percent = 0x004022C0;
 		static s32 result;
@@ -111,7 +111,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	bool unitHPbetween33_66_percent(s32 a1, Unit* a2)
+	bool unit_hp_between_33_66_percent(s32 a1, Unit* a2)
 	{
 		const u32 Func_unitHPBetween33_66Percent = 0x00402270;
 		static s32 result;
@@ -127,7 +127,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	s32 getMaxHP(Unit* a1)
+	s32 get_max_hp(Unit* a1)
 	{
 		const u32 Func_getMaxHP = 0x00401400;
 		static s32 result;
@@ -141,7 +141,7 @@ namespace helper
 		return result;
 	}
 
-	u16 getLastQueueSlotType(Unit* unit)
+	u16 get_last_queue_slot_id(Unit* unit)
 	{
 		const u32 Func_getLastQueueSlotType = 0x0047B270;
 		static s32 result;
@@ -155,7 +155,7 @@ namespace helper
 		return (u16)result;
 	}
 
-	void addTextToDialog(BinDlg* dialog, s16 index, const char* text)
+	void add_text_to_dialog(BinDlg* dialog, s16 index, const char* text)
 	{
 		const u32 Func_addTextToDialog = 0x004258B0;
 		static s32 _a3 = (s32)text;
@@ -169,7 +169,7 @@ namespace helper
 		}
 	}
 
-	void drawEnergy(BinDlg* a1)
+	void draw_energy(BinDlg* a1)
 	{
 		const u32 Func_drawEnergy = 0x00425A30;
 		__asm {
@@ -180,7 +180,7 @@ namespace helper
 		}
 	}
 
-	void hideOptionalStatusScreenControls(BinDlg* a1)
+	void hide_optional_status_screen_controls(BinDlg* a1)
 	{
 		const u32 Func_hideOptionalStatusScreenControls = 0x00457310;
 		__asm {
@@ -191,7 +191,7 @@ namespace helper
 		}
 	}
 
-	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId)
+	void show_control_group(BinDlg* dialog, s16 firstId, s16 lastId)
 	{
 		const u32 Func_showControlGroup = 0x00457250;
 		s32 lastIdArg = lastId;
@@ -205,19 +205,7 @@ namespace helper
 		}
 	}
 
-	void drawShieldUpgrade(s32 a1, u16 a2)
-	{
-		const u32 Func_drawShieldUpgrade = 0x00425510;
-		__asm {
-			PUSHAD
-			PUSH a2
-			MOV EAX, a1
-			CALL Func_drawShieldUpgrade
-			POPAD
-		}
-	}
-
-	void hideDialog(BinDlg* dialog)
+	void hide_dialog(BinDlg* dialog)
 	{
 		const u32 Func_hideDialog = 0x00418700;
 		__asm {
@@ -228,8 +216,7 @@ namespace helper
 		}
 	}
 
-	// For drawSupplyUnitInfo
-
+	// For draw_supply_unit_info
 	s32 get_supplies_used_no_args()
 	{
 		const u32 Func_getSuppliesUsed = 0x00424732;
@@ -243,7 +230,7 @@ namespace helper
 		return result;
 	}
 
-	u32 getSuppliesAvailable(u8 a1, s32 a2)
+	u32 get_supplies_available(u8 a1, s32 a2)
 	{
 		const u32 Func_getSuppliesAvailable = 0x00488900;
 		static u32 result;
@@ -258,20 +245,7 @@ namespace helper
 		return result;
 	}
 
-	void drawArmor(s32 a1, s32 a2, u16 a3)
-	{
-		const u32 Func_drawArmor = 0x00425600;
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOV EAX, a1
-			MOV EDX, a2
-			CALL Func_drawArmor
-			POPAD
-		}
-	}
-
-	void unitStatAct_Standard(void* a1)
+	void unit_stat_act_standard(void* a1)
 	{
 		const u32 Func_unitStatAct_Standard = 0x00426F50;
 		__asm {
@@ -326,7 +300,7 @@ namespace helper
 		return result;
 	}
 
-	void drawProgressBar(BinDlg* a1)
+	void draw_progress_bar(BinDlg* a1)
 	{
 		const u32 Func_drawProgressBar = 0x004260C0;
 		__asm {
@@ -337,7 +311,7 @@ namespace helper
 		}
 	}
 
-	void drawNukeSiloInfo(BinDlg* a1)
+	void draw_nuke_silo_info(BinDlg* a1)
 	{
 		const u32 Func_drawNukeSiloInfo = 0x00426FF0;
 		__asm {
@@ -360,7 +334,7 @@ namespace helper
 		return result;
 	}
 
-	bool isQueueSlotActive(Unit* unit, s32 slot)
+	bool is_queue_slot_active(Unit* unit, s32 slot)
 	{
 		const u32 Func_isQueueSlotActive = 0x00401E70;
 		static s32 result;
@@ -375,7 +349,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	void drawTrainingProgress(BinDlg* dialog)
+	void draw_training_progress(BinDlg* dialog)
 	{
 		const u32 Func_drawTrainingProgress = 0x004268D0;
 		__asm {
@@ -386,7 +360,7 @@ namespace helper
 		}
 	}
 
-	bool isConstructingAddon(const Unit* a1)
+	bool is_constructing_addon(const Unit* a1)
 	{
 		const u32 Func_isConstructingAddon = 0x004E66B0;
 		static s32 result;
@@ -400,7 +374,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	bool isAttemptingProtossBuild(Unit* a1)
+	bool is_attempting_protoss_build(Unit* a1)
 	{
 		const u32 Func_isAttemptingProtossBuild = 0x004E4C40;
 		static s32 result;
@@ -414,7 +388,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	void drawAddonProgress(BinDlg* a1)
+	void draw_addon_progress(BinDlg* a1)
 	{
 		const u32 Func_drawAddonProgress = 0x00425F30;
 		__asm {
@@ -425,7 +399,7 @@ namespace helper
 		}
 	}
 
-	void drawTechProgress(BinDlg* a1)
+	void draw_tech_progress(BinDlg* a1)
 	{
 		const u32 Func_drawTechProgress = 0x004266F0;
 		__asm {
@@ -436,7 +410,7 @@ namespace helper
 		}
 	}
 
-	void drawUpgradeProgress(BinDlg* a1)
+	void draw_upgrade_progress(BinDlg* a1)
 	{
 		const u32 Func_drawUpgradeProgress = 0x00426500;
 		__asm {
@@ -447,7 +421,7 @@ namespace helper
 		}
 	}
 
-	bool unitIsGeyser(Unit* a1)
+	bool unit_is_geyser(Unit* a1)
 	{
 		const u32 Func_unitIsGeyser = 0x004688B0;
 		static s32 result;
@@ -461,7 +435,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	void drawGasQuantity(BinDlg* a1)
+	void draw_gas_quantity(BinDlg* a1)
 	{
 		const u32 Func_drawGasQuantity = 0x00426190;
 		__asm {
@@ -472,7 +446,7 @@ namespace helper
 		}
 	}
 
-	s8 unitGetGroundWeapon(Unit* a1)
+	s8 get_unit_ground_weapon(Unit* a1)
 	{
 		const u32 Func_unitGetGroundWeapon = 0x00475AD0;
 		static s32 result;
@@ -486,7 +460,7 @@ namespace helper
 		return (s8)result;
 	}
 
-	void drawDisplayButtons(BinDlg* a1)
+	void draw_display_buttons(BinDlg* a1)
 	{
 		const u32 Func_drawDisplayButtons = 0x00426C60;
 		__asm {
@@ -497,7 +471,7 @@ namespace helper
 		}
 	}
 
-	BinDlg* getControlFromIndex(BinDlg* a1, s16 a2)
+	BinDlg* get_control_from_index(BinDlg* a1, s16 a2)
 	{
 		const u32 Func_getControlFromIndex = 0x00418080;
 		static BinDlg* result;
@@ -512,7 +486,7 @@ namespace helper
 		return result;
 	}
 
-	void setTextStr(BinDlg* a1)
+	void set_text_string(BinDlg* a1)
 	{
 		const u32 Func_setTextStr = 0x004263E0;
 		__asm {
@@ -523,7 +497,7 @@ namespace helper
 		}
 	}
 
-	void setUnitStatusStrText(BinDlg* a1)
+	void set_unit_status_string_text(BinDlg* a1)
 	{
 		const u32 Func_setUnitStatusStrText = 0x00425B50;
 		__asm {
@@ -534,7 +508,7 @@ namespace helper
 		}
 	}
 
-	s32 unitGetName(Unit* a1)
+	s32 get_unit_name(Unit* a1)
 	{
 		const u32 Func_unitGetName = 0x0047B5A0;
 		static s32 result;
@@ -550,7 +524,7 @@ namespace helper
 
 	// For getUnitStrength
 
-	s32 getCurrentHitPointsPlusShields(Unit* a1)
+	s32 get_current_hp_plus_shields(Unit* a1)
 	{
 		const u32 Func_getCurrentHitPointsPlusShields = 0x004026D0;
 		static s32 result;
@@ -564,7 +538,7 @@ namespace helper
 		return result;
 	}
 
-	s32 getBaseStrength(s32 a1, Unit* a2)
+	s32 get_base_strength(s32 a1, Unit* a2)
 	{
 		const u32 Func_getBaseStrength = 0x004316D0;
 		static s32 result;
@@ -581,7 +555,7 @@ namespace helper
 
 	// For AI_RestorationRequirementsProc
 
-	s32 canWeaponTargetUnit(u8 a1, Unit* a2, Unit* a3)
+	s32 can_weapon_target_unit(u8 a1, Unit* a2, Unit* a3)
 	{
 		const u32 Func_canWeaponTargetUnit = 0x00475CE0;
 		static s32 result;
@@ -599,7 +573,7 @@ namespace helper
 
 	// For AI_EMPShieldRequirementsProc
 
-	s32 AI_TargetUnitIsWorthHitting(Unit* a1, Unit* a2)
+	s32 ai_target_unit_is_worth_hitting(Unit* a1, Unit* a2)
 	{
 		const u32 Func_AI_TargetUnitIsWorthHitting = 0x00440E30;
 		static s32 result;
@@ -614,7 +588,7 @@ namespace helper
 		return result;
 	}
 
-	s32 createSplashWeaponProc(s16 a1, s16 a2, s16 a3, s32(__fastcall* a4)(s32, s32), s32 a5)
+	s32 create_splash_weapon_proc(s16 a1, s16 a2, s16 a3, s32(__fastcall* a4)(s32, s32), s32 a5)
 	{
 		const u32 Func_createSplashWeaponProc = 0x004E82E0;
 		static s32 result;
@@ -632,7 +606,7 @@ namespace helper
 		return result;
 	}
 
-	s32 unitShieldsClumpInAreaAccumulatorProc(Unit* a1, Unit* a2)
+	s32 unit_shields_clump_in_area_accumulator_proc(Unit* a1, Unit* a2)
 	{
 		const u32 Func_unitShieldsClumpInAreaAccumulatorProc = 0x00440A60;
 		static s32 result;
@@ -649,7 +623,7 @@ namespace helper
 
 	// For hallucinationHit
 
-	void unitWasHit(Unit* a1, Unit* a2, s32 a3)
+	void unit_was_hit(Unit* a1, Unit* a2, s32 a3)
 	{
 		const u32 Func_unitWasHit = 0x004795D0;
 		__asm {
@@ -662,7 +636,7 @@ namespace helper
 		}
 	}
 
-	void doAttackNotifyEvent(Unit* a1)
+	void do_attack_notify_event(Unit* a1)
 	{
 		const u32 Func_doAttackNotifyEvent = 0x0048F230;
 		__asm {
@@ -673,7 +647,7 @@ namespace helper
 		}
 	}
 
-	Image* createShieldOverlay(s32 a1, Unit* a2)
+	Image* create_shield_overlay(s32 a1, Unit* a2)
 	{
 		const u32 Func_createShieldOverlay = 0x004E6140;
 		static Image* result;
@@ -2361,7 +2335,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool SetMoveTarget_xy(Unit* unit, s32 x, s32 y)
+	bool set_move_target_xy(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_SetMoveTarget_xy = 0x004EB820;
 		static b32 bPreResult;
@@ -2390,7 +2364,7 @@ namespace helper
 		}
 	}
 
-	bool changeMovementTargetMoveTarget2(Unit* unit, s32 x, s32 y)
+	bool change_movement_target_move_target_2(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_changeMovementTargetMoveTarget2 = 0x004EB9C0;
 		static b32 bPreResult;
@@ -2407,7 +2381,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool isDistanceGreaterThanHaltDistance(Unit* unit, s32 x, s32 y, u32 distance)
+	bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance)
 	{
 		const u32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
 		static b32 bPreResult;
@@ -2425,7 +2399,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	void checkUnstack(Unit* unit)
+	void check_unstack(Unit* unit)
 	{
 		const u32 Func_checkUnstack = 0x0042D9A0;
 		__asm
@@ -2437,7 +2411,7 @@ namespace helper
 		}
 	}
 
-	bool beginBuilding(Unit* unit)
+	bool begin_building(Unit* unit)
 	{
 		const u32 Func_beginBuilding = 0x00467030;
 		static b32 bPreResult;
@@ -2452,7 +2426,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	Unit* beginGasBuilding(Unit* unit, u32 unitId)
+	Unit* begin_gas_building(Unit* unit, u32 unitId)
 	{
 		const u32 Func_beginGasBuilding = 0x004678A0;
 		static Unit* newUnit;
@@ -2485,7 +2459,7 @@ namespace helper
 		}
 	}
 
-	void replaceSpriteImages(Sprite* sprite, u32 imageId, u32 imageDirection)
+	void replace_sprite_images(Sprite* sprite, u32 imageId, u32 imageDirection)
 	{
 		const u32 Func_Sub499BB0 = 0x00499BB0;
 		__asm
@@ -2523,7 +2497,7 @@ namespace helper
 		}
 	}
 
-	void iscript_OpcodeCases(Image* image, u32 offset_, u32 unk1, u32 unk2)
+	void iscript_opcode_cases(Image* image, u32 offset_, u32 unk1, u32 unk2)
 	{
 		const u32 Func_iscript_OpcodeCases = 0x004D74C0;
 		__asm
@@ -2538,7 +2512,7 @@ namespace helper
 		}
 	}
 
-	void switchToWarpTexture(Image* image)
+	void switch_to_warp_texture(Image* image)
 	{
 		const u32 Func_switchToWarpTexture = 0x004D8500;
 		__asm
@@ -2601,7 +2575,7 @@ namespace helper
 		}
 	}
 
-	u32 RandomizeShort(u32 unknown_index)
+	u32 randomize_short(u32 unknown_index)
 	{
 		const u32 Func_RandomizeShort = 0x004DC4A0;
 		static u32 return_value;
@@ -2958,7 +2932,7 @@ namespace helper
 		}
 	}
 
-	void playBuildingCompleteSound(Unit* building)
+	void play_building_completed_sound(Unit* building)
 	{
 		const u32 Func_PlayBuildingCompleteSound = 0x0048F310;
 		__asm {
@@ -3006,14 +2980,14 @@ namespace helper
 	}
 
 	// Equivalent to function @ 0x00402160
-	bool isUnitPositions2Equal(Unit* unit)
+	bool is_unit_positions_2_equal(Unit* unit)
 	{
 		return (unit->nextTargetWaypoint.x == unit->position.x && unit->nextTargetWaypoint.y == unit->position.y);
 	}
 
 	// if canBeAborted is TRUE, the unit can be aborted because there's
 	// no room around the constructing building
-	b32 ProgressBuild(Unit* unit, u32 hpGain, b32 showHidden)
+	b32 progress_build(Unit* unit, u32 hpGain, b32 showHidden)
 	{
 		const u32 Func_buildingAddon = 0x004679A0;
 		static b32 bResult;
@@ -3043,7 +3017,7 @@ namespace helper
 		}
 	}
 
-	void addOrderTargetingNothing(Unit* unit, Order* order, u8 orderId)
+	void add_order_targeting_nothing(Unit* unit, Order* order, u8 orderId)
 	{
 		const u32 Func_addOrderTargetingNothing = 0x004749A0;
 		__asm {
@@ -3056,7 +3030,7 @@ namespace helper
 		}
 	}
 
-	bool canStillPlaceBuilding()
+	bool can_still_place_building()
 	{
 		const u32 Func_canStillPlaceBuilding = 0x0048DDA0;
 		b32 pre_return_value;
@@ -3176,9 +3150,9 @@ namespace helper
 		return result;
 	}
 
-	// For refreshScreen
+	// For refresh_screen
 
-	s32 updatePlacementStateForPlacementBox_Func()
+	s32 update_placement_state_for_placement_box()
 	{
 		const u32 Func_updatePlacementStateForPlacementBox = 0x0048DCE0;
 		static s32 result;
@@ -3191,7 +3165,7 @@ namespace helper
 		return result;
 	}
 
-	s32 unk_buildingPlacementRelated(s32 a1, Point16* a2)
+	s32 unk_building_placement_related(s32 a1, Point16* a2)
 	{
 		const u32 Func_unk_buildingPlacementRelated = 0x0048D7F0;
 		static s32 result;
@@ -3206,7 +3180,7 @@ namespace helper
 		return result;
 	}
 
-	s32 initPlacementBoxPos(Point16* in_out)
+	s32 init_placement_box_pos(Point16* in_out)
 	{
 		const u32 Func_initPlacementBoxPos = 0x0048D660;
 		static s32 result;
@@ -3221,7 +3195,7 @@ namespace helper
 		return result;
 	}
 
-	char unk_buildingPlacementRelatedMouse(s32 a1, s32 a2)
+	char unk_building_placement_related_mouse(s32 a1, s32 a2)
 	{
 		const u32 Func_unk_buildingPlacementRelatedMouse = 0x0048D7B0;
 		static s32 result;
@@ -4676,7 +4650,7 @@ namespace helper
 		return result;
 	}
 	
-	void setSecondaryWaypoint(Unit* unit, s32 x, s32 y)
+	void set_secondary_waypoint(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_setSecondaryWaypoint = 0x00494BB0;
 		static Unit* result;
@@ -5924,7 +5898,7 @@ namespace helper
 		}
 	}
 
-	void refundUnitTrainCost(u32 unitId, u8 playerId)
+	void refund_unit_train_cost(u32 unitId, u8 playerId)
 	{
 		const u32 Func_refundUnitTrainCost = 0x0042CEC0;
 		__asm {
@@ -6177,7 +6151,7 @@ namespace helper
 
 	//for progressBullet
 
-	void doMissileDmg(Bullet* bullet)
+	void do_missile_damage(Bullet* bullet)
 	{
 		const u32 func_doMissileDmg = 0x0048B770;
 		__asm {
@@ -6188,7 +6162,7 @@ namespace helper
 		}
 	}
 
-	bool function_0042D810(s32 x, s32 y, u32 unitId)
+	bool can_unit_id_fit_at_xy(s32 x, s32 y, u32 unitId)
 	{
 		const u32 Func_Sub42D810 = 0x0042D810;
 		static b32 bPreReturnValue;
@@ -6204,7 +6178,7 @@ namespace helper
 		return (bPreReturnValue != 0);
 	}
 
-	Unit** getAllUnitsInBounds(Box16* coords)
+	Unit** get_all_units_in_bounds(Box16* coords)
 	{
 		const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
 		static Unit** units_in_bounds;
@@ -6218,7 +6192,7 @@ namespace helper
 		return units_in_bounds;
 	}
 
-	u32 getUnitDamageBonus(Unit* unit, u8 weaponId)
+	u32 get_unit_damage_bonus(Unit* unit, u8 weaponId)
 	{
 		const u32 Func_getUnitDamageBonus = 0x00475EC0;
 		static u32 damageBonus;
@@ -6233,8 +6207,8 @@ namespace helper
 		return damageBonus;
 	}
 
-	//identical to incrementUnitKillCount @ 0x004759C0
-	void incrementUnitKillCount(Unit* unit)
+	// identical to increment_unit_kill_count @ 0x004759C0
+	void increment_unit_kill_count(Unit* unit)
 	{
 		Unit* temp_unit = unit;
 		if (temp_unit->killCount < 255)
@@ -6254,7 +6228,7 @@ namespace helper
 		}
 	}
 
-	void attackOverlayAndNotify(Unit* attacker, Unit* target, u32 weaponType, u32 direction)
+	void attack_overlay_and_notify(Unit* attacker, Unit* target, u32 weaponType, u32 direction)
 	{
 		const u32 Func_attackOverlayAndNotify = 0x00479730;
 		__asm {
@@ -6268,7 +6242,7 @@ namespace helper
 		}
 	}
 
-	u32 GetUnitBulletDamage(Bullet* bullet, Unit* target)
+	u32 get_unit_bullet_damage(Bullet* bullet, Unit* target)
 	{
 		const u32 Func_GetUnitBulletDamage = 0x0048ACD0;
 		static u32 return_value;
@@ -6283,7 +6257,7 @@ namespace helper
 		return return_value;
 	}
 
-	u32 getSpellStatString(Unit* target, u32 techId, u8 playerId)
+	u32 get_spell_stat_string(Unit* target, u32 techId, u8 playerId)
 	{
 		const u32 Func_getSpellStatString = 0x00491E80;
 		static u32 return_value;
@@ -7984,7 +7958,7 @@ namespace helper
 	}
 
 	// For drawBuildingInfo
-	void drawSupplyUnitInfo(BinDlg* dialog) {
+	void draw_supply_unit_info(BinDlg* dialog) {
 		const u32 Func_drawSupplyUnitInfo = 0x00427540;
 		__asm {
 			PUSHAD
@@ -7995,7 +7969,7 @@ namespace helper
 	}
 
 	// For getUnitName
-	const char* getUnitNameStatString(u16 unitId) {
+	const char* get_unit_name_stat_string(u16 unitId) {
 		const u32 Func_getUnitNameStatString = 0x0047B090;
 		static const char* result;
 		__asm {
@@ -8008,8 +7982,8 @@ namespace helper
 		return result;
 	}
 
-	// For updateBuildingPlacementState_Units
-	bool doesBuildingBlock(Unit* unit, s32 xTile, s32 yTile) {
+	// For update_building_placement_state_units
+	bool does_building_block(Unit* unit, s32 xTile, s32 yTile) {
 		const u32 Func_doesBuildingBlock = 0x00473410;
 		static s32 result;
 		__asm {
@@ -8889,7 +8863,7 @@ namespace helper
 	}
 
 	// For drawSupplyUnitStatus
-	void drawShieldUpgrade(BinDlg* dialog, u16 statusScreenIndex)
+	void draw_shield_upgrade(BinDlg* dialog, u16 statusScreenIndex)
 	{
 		const u32 Func_drawShieldUpgrade = 0x00425510;
 		u32 statusScreenIndexArg = statusScreenIndex;

@@ -46,7 +46,7 @@ namespace
 			MOV slot, EDX
 			PUSHAD
 		}
-		result = hooks::isQueueSlotActive(unit, slot);
+		result = hooks::is_queue_slot_active(unit, slot);
 		__asm
 		{
 			POPAD

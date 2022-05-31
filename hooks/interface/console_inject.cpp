@@ -29,7 +29,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		hooks::setTextStr(a1);
+		hooks::set_text_string(a1);
 		_asm {
 			POPAD
 			MOV ESP, EBP

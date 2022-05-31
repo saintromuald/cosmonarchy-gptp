@@ -21,10 +21,10 @@ namespace AI
 		}
 
 		return scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
 			caster,
 			[&](Unit* target)
 		{
@@ -32,7 +32,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (!scbw::canWeaponTargetUnit(WeaponId::Maelstrom, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Maelstrom, target, caster))
 			{
 				return false;
 			}
@@ -57,12 +57,12 @@ namespace AI
 			if (isTargetAttackingAlly(target, caster)
 				&& !scbw::is_zerg_egg_new(target, true, true))
 			{
-				const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Maelstrom);
+				const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::Maelstrom);
 				if (!isUnderAttack && totalEnemyLife < 250)
 				{
 					return false;
 				}
-				const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Maelstrom);
+				const s32 totalAllyLife = getTotalAllyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::Maelstrom);
 				if (totalAllyLife * 2 >= totalEnemyLife)
 				{
 					return false;

@@ -21,11 +21,11 @@ namespace hooks
                 // Following should be allowed only on friendly units
                 if (factory->rally.unit && scbw::is_allied_to((factory->rally.unit)->player, unit->player))
                 {
-                    unit->orderTo(OrderId::Follow, factory->rally.unit);
+                    unit->order_to(OrderId::Follow, factory->rally.unit);
                 }
                 else
                 {
-                    unit->orderTo(OrderId::Move, factory->rally.pt.x, factory->rally.pt.y);
+                    unit->order_to(OrderId::Move, factory->rally.pt.x, factory->rally.pt.y);
                 }
             }
         }
@@ -50,8 +50,8 @@ namespace hooks
 
         UnitExt* unitExt = globals.get_unit_ext(unit);
         unit->rally.unit = target;
-        unit->rally.pt.x = target->getX();
-        unit->rally.pt.y = target->getY();
+        unit->rally.pt.x = target->get_x();
+        unit->rally.pt.y = target->get_y();
 	}
 
     // Hooked to allow rally for morphing Larval Colonies - Pr0nogo

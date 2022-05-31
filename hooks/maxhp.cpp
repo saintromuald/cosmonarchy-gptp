@@ -26,7 +26,7 @@
 	Line 73606: 00431865  |.  8A86 B0476600 MOV AL,BYTE PTR DS:[ESI+6647B0] -- 0x00431800 -- getUnitStrength -- HOOKED
 	Line 95686: 00440800   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004407E0 -- AI_RestorationRequirementsProc -- HOOKED
 	Line 96913: 004413E7   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004413D0 -- AI_EMPShieldRequirementsProc -- HOOKED
-	Line 180864: 00479777  |.  8A82 B0476600 MOV AL,BYTE PTR DS:[EDX+6647B0] -- 0x00479730 -- attackOverlayAndNotify -- HOOKED
+	Line 180864: 00479777  |.  8A82 B0476600 MOV AL,BYTE PTR DS:[EDX+6647B0] -- 0x00479730 -- attack_overlay_and_notify -- HOOKED
 	Line 182607: 0047A841  |.  8A8F B0476600 MOV CL,BYTE PTR DS:[EDI+6647B0] -- 0x0047A820 -- DrawImage_HpBar -- HOOKED
 	Line 184040: 0047B6A5  |.  8A87 B0476600 MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x0047B6A0 -- setBuildShieldGain -- HOOKED, dysfunctional
 	Line 206949: 0048AD35  |.  8A81 B0476600 MOV AL,BYTE PTR DS:[ECX+6647B0] -- 0x0048ACD0 -- getUnitBulletDamage -- HOOKED, compiler errors
@@ -93,13 +93,13 @@ namespace hooks
 		*suppliesAvailableTemp = (*activePortraitUnit)->building.resource.resourceAmount;
 		if (*statusScreenFunc != 15)
 		{
-			helper::hideOptionalStatusScreenControls(a1);
-			helper::showControlGroup(v1, -10, -13);
+			helper::hide_optional_status_screen_controls(a1);
+			helper::show_control_group(v1, -10, -13);
 			*statusScreenFunc = 15;
 		}
-		helper::addTextToDialog(v1, -10, 0);
-		helper::addTextToDialog(v1, -12, 0);
-		helper::addTextToDialog(v1, -13, 0);
+		helper::add_text_to_dialog(v1, -10, 0);
+		helper::add_text_to_dialog(v1, -12, 0);
+		helper::add_text_to_dialog(v1, -13, 0);
 		v2 = (*activePortraitUnit)->id;
 		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u)
 		{
@@ -129,10 +129,10 @@ LABEL_14:
 			v5 = "";
 		v8 = (BufferStr*)v5;
 LABEL_19:
-		helper::addTextToDialog(v1, -11, (const char*)v8);
+		helper::add_text_to_dialog(v1, -11, (const char*)v8);
 		if (units_dat::ShieldsEnabled[(*activePortraitUnit)->id])
 		{
-			helper::drawShieldUpgrade((s32)v1, 0);
+			helper::draw_shield_upgrade(v1, 0);
 		}
 		else
 		{
@@ -153,11 +153,11 @@ LABEL_19:
 LABEL_26:
 				v6 = 0;
 			}
-			helper::hideDialog(v6);
+			helper::hide_dialog(v6);
 		}
 	}
 
-	void drawSupplyUnitInfo(s32 a1)
+	void draw_supply_unit_info(s32 a1)
 	{ // 00427540
 		BinDlg* v1; // ebx
 		Unit* v2; // esi
@@ -189,8 +189,8 @@ LABEL_26:
 			helper::get_supplies_used_no_args();
 			if (*statusScreenFunc != 12)
 			{
-				helper::hideOptionalStatusScreenControls(v1);
-				helper::showControlGroup(v1, -10, -13);
+				helper::hide_optional_status_screen_controls(v1);
+				helper::show_control_group(v1, -10, -13);
 				v2 = *activePortraitUnit;
 				*statusScreenFunc = 12;
 			}
@@ -255,7 +255,7 @@ LABEL_26:
 			{
 				v9 = "";
 			}
-			v10 = helper::getLastQueueSlotType((*activePortraitUnit));
+			v10 = helper::get_last_queue_slot_id((*activePortraitUnit));
 			sprintf_s("", 260, "%s %d", v9, (units_dat::SupplyProvided[v10] + 1) / 2);
 			v11 = v20 + 66353;
 			if (v21 == -818)
@@ -272,10 +272,10 @@ LABEL_26:
 				v12 = "";
 			}
 			ByteOperations::SetLowByte(v11, v21);
-			v13 = helper::getSuppliesAvailable((*activePortraitUnit)->player, v11);
+			v13 = helper::get_supplies_available((*activePortraitUnit)->player, v11);
 			sprintf_s(unkString_Char, 260, "%s %d", v12, (v13 + 1) / 2);
 			v22 = (*activePortraitUnit)->player;
-			v14 = units_dat::GroupFlags[helper::getLastQueueSlotType((*activePortraitUnit))];
+			v14 = units_dat::GroupFlags[helper::get_last_queue_slot_id((*activePortraitUnit))];
 			s32 race = (*activePortraitUnit)->get_race();
 			if (v14.isZerg)
 			{
@@ -307,14 +307,14 @@ LABEL_26:
 				v17 = "";
 			}
 			sprintf_s(struct_Char2->buf, 260, "%s %d", v17, (u32)(v15 + 1) >> 1);
-			helper::addTextToDialog(v1, -10, (const char*)struct_Char);
-			helper::addTextToDialog(v1, -11, "");
-			helper::addTextToDialog(v1, -12, (const char*)unkString_Char);
-			helper::addTextToDialog(v1, -13, (const char*)struct_Char2);
+			helper::add_text_to_dialog(v1, -10, (const char*)struct_Char);
+			helper::add_text_to_dialog(v1, -11, "");
+			helper::add_text_to_dialog(v1, -12, (const char*)unkString_Char);
+			helper::add_text_to_dialog(v1, -13, (const char*)struct_Char2);
 			v18 = (*activePortraitUnit)->id;
 			if (units_dat::ShieldsEnabled[v18])
 			{
-				helper::drawShieldUpgrade((s32)v1, 0);
+				helper::draw_shield_upgrade(v1, 0);
 			}
 			else if (v18 != UnitId::ZergOvileth && v18 != UnitId::Hero_Yggdrasill)
 			{
@@ -335,16 +335,16 @@ LABEL_26:
 LABEL_55:
 					v19 = 0;
 				}
-				helper::hideDialog(v19);
+				helper::hide_dialog(v19);
 			}
 			else
 			{
-				helper::drawArmor((s32)v1, v18, 0);
+				helper::drawArmor(v1, v18, 0);
 			}
 		}
 		else
 		{
-			helper::unitStatAct_Standard((void*)a1);
+			helper::unit_stat_act_standard((void*)a1);
 		}
 	}
 
@@ -431,16 +431,16 @@ LABEL_55:
 		if (a1->status & UnitStatus::IsHallucination)
 		{
 			v5 = get_total_hp_plus_shields(a1);
-			if (helper::getCurrentHitPointsPlusShields(v3) < v5)
+			if (helper::get_current_hp_plus_shields(v3) < v5)
 				return 0;
 		}
-		v7 = helper::getBaseStrength(a3, v3);
-		groundAir = helper::getCurrentHitPointsPlusShields(v3);
+		v7 = helper::get_base_strength(a3, v3);
+		groundAir = helper::get_current_hp_plus_shields(v3);
 		if (units_dat::ShieldsEnabled[v4])
 			v8 = units_dat::MaxShieldPoints[v4];
 		else
 			v8 = 0;
-		v9 = v8 + helper::getMaxHP(v3);
+		v9 = v8 + helper::get_max_hp(v3);
 		if (!v9)
 			v9 = 1;
 		return v7 * groundAir / v9;
@@ -455,7 +455,7 @@ LABEL_55:
 		result = 0;
 		if (a1->player == a2->player)
 		{
-			if (helper::canWeaponTargetUnit(WeaponId::Restoration, a1, a2))
+			if (helper::can_weapon_target_unit(WeaponId::Restoration, a1, a2))
 			{
 				v3 = units_dat::ShieldsEnabled[(u16)v2->id] ? v2->shields >> 8 : 0;
 				if (v3 + ((v2->hitPoints + 255) >> 8) > 60
@@ -478,9 +478,9 @@ LABEL_55:
 
 		v2 = a1;
 		v3 = a2;
-		if (!helper::AI_TargetUnitIsWorthHitting(a1, a2)
+		if (!helper::ai_target_unit_is_worth_hitting(a1, a2)
 			|| !units_dat::ShieldsEnabled[(u16)v2->id]
-			|| !helper::canWeaponTargetUnit(WeaponId::EMP_Shockwave, v2, v3))
+			|| !helper::can_weapon_target_unit(WeaponId::EMP_Shockwave, v2, v3))
 		{
 			return 0;
 		}
@@ -489,11 +489,11 @@ LABEL_55:
 		spriteX = v5->position.x;
 		*tempHPShields = 0;
 		*tempWeapon = WeaponId::EMP_Shockwave;
-		helper::createSplashWeaponProc(
+		helper::create_splash_weapon_proc(
 			160,
 			spriteX,
 			v6,
-			(s32(__fastcall*)(s32, s32))helper::unitShieldsClumpInAreaAccumulatorProc,
+			(s32(__fastcall*)(s32, s32))helper::unit_shields_clump_in_area_accumulator_proc,
 			(s32)v3);
 		return *tempHPShields >= 200;
 	}
@@ -512,9 +512,9 @@ LABEL_55:
 			{
 				if (a2)
 				{
-					helper::unitWasHit(v5, a2, a3 != WeaponId::Irradiate);
+					helper::unit_was_hit(v5, a2, a3 != WeaponId::Irradiate);
 					if (a3 != WeaponId::Irradiate && v5->player != a2->player)
-						helper::doAttackNotifyEvent(v5);
+						helper::do_attack_notify_event(v5);
 				}
 				if (units_dat::ShieldsEnabled[(u16)v5->id])
 				{
@@ -523,7 +523,7 @@ LABEL_55:
 						*v4 = a3;
 						if (weapons_dat::DamageType[a3])
 						{
-							returnValue = (char)helper::createShieldOverlay(a4, v5);
+							returnValue = (char)helper::create_shield_overlay(a4, v5);
 						}
 					}
 				}
@@ -868,7 +868,7 @@ LABEL_17:
 LABEL_23:
 			if (orders_dat::UseWeaponTargeting[v2])
 			{
-				if (!helper::canWeaponTargetUnit(v10, v3, a1))
+				if (!helper::can_weapon_target_unit(v10, v3, a1))
 					return 1;
 			}
 			else

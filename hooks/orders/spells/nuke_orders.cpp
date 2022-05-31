@@ -21,7 +21,7 @@ namespace hooks
 					Image* current_image = unit->sprite->images.head;
 
 					if (unit->orderQueueHead == nullptr)
-						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
+						unit->order_simple(units_dat::ReturnToIdleOrder[unit->id], false);
 
 					helper::force_order_done(unit);
 					helper::change_unit_buttonset(unit, unit->id);
@@ -130,7 +130,7 @@ namespace hooks
 		{
 
 			if (unit->recentOrderTimer == 0)
-				helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 		}
 		else
@@ -184,7 +184,7 @@ namespace hooks
 				}
 				if (current_unit == nullptr)
 				{
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				else
 				{ // 00479333
@@ -192,12 +192,12 @@ namespace hooks
 					current_unit->building.silo.nuke = nullptr;
 					current_unit->building.silo.isReady = false;
 					helper::play_sound_from_unit(SoundId::Terran_GHOST_TGhLas00_wav, unit, 1, 0);
-					nuke->orderTo(OrderId::NukeLaunch, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					nuke->order_to(OrderId::NukeLaunch, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					nuke->connectedUnit = unit;
 					helper::setAllOverlayDirectionsGeneric(nuke, 0);
 					helper::show_and_enable_unit(nuke);
 					unit->connectedUnit = nuke;
-					unit->orderTo(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
+					unit->order_to(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
 					if (unit->isFrozen())
 					{ // 004793C4
 						if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)

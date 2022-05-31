@@ -15,35 +15,35 @@ namespace hooks
 		s32 v4; // edx
 		u8 conrace; // cl
 
-		helper::getRaceSoundList(1);
+		helper::get_race_sound_list(1);
 		if (consoleIndex)
 		{
 			if (*consoleIndex == 1)
 			{
-				helper::dialogGrpConstruct(
+				helper::dialog_grp_construct(
 					178,
 					(s32)"Starcraft\\SWAR\\lang\\game.cpp",
 					(s32)"dlgs\\terran.grp",
-					(s32(__fastcall*)(s32, s32, s32, s32))helper::loadGraphic);
+					(s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
 				*currentMusicId = 4;
 			}
 			else if (*consoleIndex == 2)
 			{
-				helper::dialogGrpConstruct(
+				helper::dialog_grp_construct(
 					183,
 					(s32)"Starcraft\\SWAR\\lang\\game.cpp",
 					(s32)"dlgs\\protoss.grp",
-					(s32(__fastcall*)(s32, s32, s32, s32))helper::loadGraphic);
+					(s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
 				*currentMusicId = 7;
 			}
 		}
 		else
 		{
-			helper::dialogGrpConstruct(
+			helper::dialog_grp_construct(
 				173,
 				(s32)"Starcraft\\SWAR\\lang\\game.cpp",
 				(s32)"dlgs\\zerg.grp",
-				(s32(__fastcall*)(s32, s32, s32, s32))helper::loadGraphic);
+				(s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
 			*currentMusicId = 1;
 		}
 		v0 = *campaignIndex;
@@ -65,7 +65,7 @@ namespace hooks
 		v1 = *consoleRaceSpecific;
 		if (*consoleRaceSpecific == -1)
 		{
-			v2 = helper::randFunc();
+			v2 = helper::rand_func();
 			v3 = v2;
 			v0 = v2 / 3;
 			v1 = v3 % 3;
@@ -81,7 +81,7 @@ namespace hooks
 		return v0;
 	}
 
-	void setTextStr(BinDlg* a1)
+	void set_text_string(BinDlg* a1)
 	{ // 004263E0
 		Unit* v1; // esi
 		u16 v2; // edi
@@ -105,25 +105,25 @@ namespace hooks
 		}
 		else
 		{
-			if (helper::unitHPbelow33_percent(*activePortraitUnit))
+			if (helper::unit_hp_below_33_percent(*activePortraitUnit))
 				v5 = 6;
 			else
-				v5 = helper::unitHPbetween33_66_percent(v4, v1) != 0 ? 3 : 7;
+				v5 = helper::unit_hp_between_33_66_percent(v4, v1) != 0 ? 3 : 7;
 			if (units_dat::ShieldsEnabled[v2])
 			{
-				v7 = helper::getMaxHP(v1);
+				v7 = helper::get_max_hp(v1);
 				v8 = (v1->hitPoints + 255) >> 8;
-				v9 = helper::getLastQueueSlotType(v1);
+				v9 = helper::get_last_queue_slot_id(v1);
 				sprintf_s("", 32, "%d/%d %c%d/%d", v1->shields >> 8, units_dat::MaxShieldPoints[v9], v5, v8, v7);
 			}
 			else
 			{
-				v6 = helper::getMaxHP(v1);
+				v6 = helper::get_max_hp(v1);
 				sprintf_s("", 32, "%c%d/%d", v5, (v1->hitPoints + 255) >> 8, v6);
 			}
 			v10 = "";
 		}
-		helper::addTextToDialog(a1, -7, v10);
-		helper::drawEnergy(a1);
+		helper::add_text_to_dialog(a1, -7, v10);
+		helper::draw_energy(a1);
 	}
 }

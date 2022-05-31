@@ -552,7 +552,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
 							return;
 						}
@@ -568,7 +568,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
 							return;
 						}
@@ -586,7 +586,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
 							return;
 						}
@@ -604,7 +604,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
 							return;
 						}
@@ -628,7 +628,7 @@ void Globals::frameHook()
 						effect->position.y + effect->radius
 					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->getX(), unit->getY()) > effect->radius)
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
 							return;
 						}
@@ -1536,8 +1536,8 @@ namespace scbw
 			rotate = 0;
 		}
 		unitExt->values[valueId] = rotate;
-		auto X = unit->getX() + offset.x;
-		auto Y = unit->getY() + offset.y;
+		auto X = unit->get_x() + offset.x;
+		auto Y = unit->get_y() + offset.y;
 		Bullet* bullet = helper::createBullet(weaponId, unit, X, Y, unit->player, scbw::getAngle(X, Y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
 		if (bullet && unitExt->values[valueId] < fake_amount)
 		{
@@ -1586,10 +1586,10 @@ namespace scbw
 		clearClarionLinks(unit);
 		const s32 radius = 3 * 32;
 		scbw::UnitFinder(
-			unit->getX() - radius,
-			unit->getY() - radius,
-			unit->getX() + radius,
-			unit->getY() + radius
+			unit->get_x() - radius,
+			unit->get_y() - radius,
+			unit->get_x() + radius,
+			unit->get_y() + radius
 		).filter([&](Unit* target)
 		{
 			if (!scbw::is_allied_to(unit->player, target->player))
@@ -1608,7 +1608,7 @@ namespace scbw
 			{
 				return false;
 			}
-			if (scbw::get_distance_fast(target->getX(), target->getY(), unit->getX(), unit->getY()) > radius)
+			if (scbw::get_distance_fast(target->get_x(), target->get_y(), unit->get_x(), unit->get_y()) > radius)
 			{
 				return false;
 			}
@@ -1688,7 +1688,7 @@ namespace scbw
 				{
 					s32 unitDamage = std::min(divided, linkUnit->shields);
 					damage -= unitDamage;
-					data.direction = scbw::getAngle(damageOriginUnit->getX(), damageOriginUnit->getY(), linkUnit->getX(), linkUnit->getY());
+					data.direction = scbw::getAngle(damageOriginUnit->get_x(), damageOriginUnit->get_y(), linkUnit->get_x(), linkUnit->get_y());
 					linkDamage(linkUnit, unitDamage, data);
 				}
 				data.direction = oldDirection;

@@ -3,7 +3,7 @@
 #include "SCBW/api.h"
 namespace
 {
-	void __declspec(naked) orders_TerranBuildSelfWrapper()
+	void __declspec(naked) orders_terran_build_self_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -11,7 +11,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_TerranBuildSelf(unit);
+		hooks::orders_terran_build_self(unit);
 		__asm
 		{
 			POPAD
@@ -19,7 +19,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_SCVBuild2Wrapper()
+	void __declspec(naked) orders_scv_build_2_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -29,7 +29,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_SCVBuild2(unit);
+		hooks::orders_scv_build_2(unit);
 		__asm
 		{
 			POPAD
@@ -39,7 +39,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_SCVBuildWrapper()
+	void __declspec(naked) orders_scv_build_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -52,7 +52,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		hooks::orders_SCVBuild(unit);
+		hooks::orders_scv_build(unit);
 		__asm
 		{
 			POPAD
@@ -61,7 +61,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) refreshScreen_Wrapper() // 0048DDC0
+	void __declspec(naked) refresh_screen_wrapper() // 0048DDC0
 	{
 		static s32 ecx0;
 		static char result;
@@ -70,7 +70,7 @@ namespace
 			MOV ecx0, ECX
 			PUSHAD
 		}
-		result = hooks::refreshScreen(ecx0);
+		result = hooks::refresh_screen(ecx0);
 		__asm
 		{
 			POPAD
@@ -80,7 +80,7 @@ namespace
 	}
 
 	const u32 updatePlacementWrapperJmp1 = 0x0048DD49;
-	void __declspec(naked) updatePlacementSimpleWrapper()
+	void __declspec(naked) update_placement_simple_wrapper()
 	{
 		static u16 addonOffsetY;
 		__asm
@@ -89,7 +89,7 @@ namespace
 			MOV addonOffsetY, AX
 			PUSHAD
 		}
-		scbw::adjustAddonY(*placeBuildingUnitType, *placeBuildBaseType, &addonOffsetY);
+		scbw::adjust_addon_y(*placeBuildingUnitType, *placeBuildBaseType, &addonOffsetY);
 		__asm
 		{
 			POPAD
@@ -99,7 +99,7 @@ namespace
 	}
 
 	const u32 updatePlacementWrapperJmp2 = 0x0048DD68;
-	void __declspec(naked) updatePlacementSimpleWrapper2()
+	void __declspec(naked) update_placement_simple_wrapper_2()
 	{
 		static u16 addonOffsetX;
 		__asm
@@ -108,7 +108,7 @@ namespace
 			MOV addonOffsetX, AX
 			PUSHAD
 		}
-		scbw::adjustAddonX(*placeBuildingUnitType, *placeBuildBaseType, &addonOffsetX);
+		scbw::adjust_addon_x(*placeBuildingUnitType, *placeBuildBaseType, &addonOffsetX);
 		__asm
 		{
 			POPAD
@@ -119,8 +119,8 @@ namespace
 
 	void placementSimpleWrappers()
 	{
-		jump_patch(updatePlacementSimpleWrapper,	0x0048DD42, 2);
-		jump_patch(updatePlacementSimpleWrapper2,	0x0048DD61, 2);
+		jump_patch(update_placement_simple_wrapper,		0x0048DD42, 2);
+		jump_patch(update_placement_simple_wrapper_2,	0x0048DD61, 2);
 	}
 }
 
@@ -128,11 +128,11 @@ namespace hooks
 {
 	void injectBuildingTerranHook()
 	{
-		jump_patch(orders_TerranBuildSelfWrapper,			0x00467760, 2);
-		jump_patch(orders_SCVBuild2Wrapper,					0x00467A70, 1);
-		jump_patch(orders_SCVBuildWrapper,					0x00467FD0, 0);
+		jump_patch(orders_terran_build_self_wrapper,			0x00467760, 2);
+		jump_patch(orders_scv_build_2_wrapper,					0x00467A70, 1);
+		jump_patch(orders_scv_build_wrapper,					0x00467FD0, 0);
 //		placementSimpleWrappers(); // causes insane bug
 
-//		jump_patch(refreshScreen_Wrapper,					0x0048DDC0, 4);
+//		jump_patch(refresh_screen_wrapper,					0x0048DDC0, 4);
 	}
 }

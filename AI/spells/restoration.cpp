@@ -13,10 +13,10 @@ namespace AI
 		s32 bounds = 32 * 32;
 
 		return scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
 			caster,
 			[&](Unit* target)
 		{
@@ -24,7 +24,7 @@ namespace AI
 			if (target->player != caster->player)
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Restoration, target, caster))
 				return false;
 
 			if (target->get_current_life_ingame() <= 60)
@@ -54,7 +54,7 @@ namespace AI
 			if (!(target->parasiteFlags || target->maelstromTimer))
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Restoration, target, caster))
 				return false;
 
 			return true;

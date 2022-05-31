@@ -12,7 +12,7 @@ namespace hooks
 		||	target->status & UnitStatus::InTransport
 		||  !(target->status & UnitStatus::Completed)) {
 			unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
-			unit->orderToIdle();
+			unit->order_to_idle();
 			if (target && !(target->status & UnitStatus::InTransport)) {
 				target->connectedUnit = 0;
 			}
@@ -32,9 +32,9 @@ namespace hooks
 			} // fallthrough
 			case 1: {
 				if (!(target->status & UnitStatus::Completed)) {
-					unit->orderTo(OrderId::ConstructingBuilding, target);
+					unit->order_to(OrderId::ConstructingBuilding, target);
 					if (*IS_PLACING_BUILDING) {
-						if (!helper::canStillPlaceBuilding()) {
+						if (!helper::can_still_place_building()) {
 							helper::refresh_layers_3_and_4();
 							helper::end_building_placement();
 						}
@@ -49,7 +49,7 @@ namespace hooks
 				return;
 			} break;
 			case 6: {
-				if (!unit->getMovableState()) { // not reached destination
+				if (!unit->get_movable_state()) { // not reached destination
 					helper::moveTowards(unit, target); // may cause unit to move or become idle
 					return;
 				}
@@ -58,7 +58,7 @@ namespace hooks
 					return;
 				}
 
-				helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
+				helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 				helper::unitOrderMoveToTargetUnit(unit, target);
 				unit->mainOrderState = 7;
 			} break;
@@ -67,9 +67,9 @@ namespace hooks
 					unit->mainOrderState = 1;
 					return;
 				} else {
-					helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
+					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 					helper::unitOrderMoveToTargetUnit(unit, target);
-					if (!helper::isUnitPositions2Equal(unit)) {
+					if (!helper::is_unit_positions_2_equal(unit)) {
 						s32 angle_delta = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
 						s32 current_angle = unit->currentDirection1 - angle_delta;
 						if (current_angle < 0) {
@@ -90,7 +90,7 @@ namespace hooks
 				}
 			} break;
 			case 8: {
-				helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
+				helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 				helper::unitOrderMoveToTargetUnit(unit, target);
 				if (!unit->isTargetWithinMinRange(target, 5) || target->mainOrderId == OrderId::Liftoff) { 
 					unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);

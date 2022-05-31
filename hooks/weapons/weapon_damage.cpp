@@ -318,7 +318,7 @@ namespace hooks
 
 		if (shield_overlay)
 		{
-			scbw::createShieldOverlay(data.target, data.direction);
+			scbw::create_shield_overlay(data.target, data.direction);
 		}
 
 		// Update unit strength data
@@ -508,7 +508,7 @@ namespace hooks
 					if (!(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building)
 						&& !scbw::isUnderDarkSwarm(data.target))
 					{
-						const u32 dist = scbw::get_distance_fast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
+						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32)
 						{
 							const u32 displacementTime = 5;
@@ -716,10 +716,10 @@ namespace hooks
 						// Astral Blessing - Ecclesiast behavior
 						const s32 range = 64;
 						scbw::UnitFinder(
-							data.target->getX() - range,
-							data.target->getY() - range,
-							data.target->getX() + range,
-							data.target->getY() + range
+							data.target->get_x() - range,
+							data.target->get_y() - range,
+							data.target->get_x() + range,
+							data.target->get_y() + range
 						).forEach([&](Unit* unit)
 							{
 								if (data.attackingPlayerId != unit->player &&
@@ -760,10 +760,10 @@ namespace hooks
 						{
 							s32 range = 160;
 							scbw::UnitFinder(
-								data.target->getX() - 96,
-								data.target->getY() - 96,
-								data.target->getX() + 96,
-								data.target->getY() + 96
+								data.target->get_x() - 96,
+								data.target->get_y() - 96,
+								data.target->get_x() + 96,
+								data.target->get_y() + 96
 							).forEach([&](Unit* target)
 								{
 									if (target->status & UnitStatus::Burrowed)
@@ -779,7 +779,7 @@ namespace hooks
 										return;
 									}
 									helper::ApplySpores(target);
-									Thingy* thingy = helper::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
+									Thingy* thingy = helper::createThingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
 									if (thingy != nullptr)
 									{
 										thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
@@ -809,7 +809,7 @@ namespace hooks
 								&& data.target->mainOrderId != OrderId::Liftoff
 								&& data.target->mainOrderId != OrderId::BuildingLand))
 						{
-							const u32 dist = scbw::get_distance_fast(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
+							const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 							const u32 displacementTime = 5;
 							Vector32 diff = scbw::getVectorBetweenPoints(data.target->sprite->position, data.attacker->sprite->position);
 							Vector32f displacement = scbw::getNormalizedVector(diff);
@@ -876,10 +876,10 @@ namespace hooks
 				if (data.attacker != nullptr && (data.attacker->status & UnitStatus::IsHallucination))
 				{
 					scbw::UnitFinder(
-						data.target->getX() - 288,
-						data.target->getY() - 288,
-						data.target->getX() + 288,
-						data.target->getY() + 288
+						data.target->get_x() - 288,
+						data.target->get_y() - 288,
+						data.target->get_x() + 288,
+						data.target->get_y() + 288
 					).forEach([&](Unit* unit)
 					{
 						if (unit->id != UnitId::ProtossCantavis)
@@ -932,10 +932,10 @@ namespace hooks
 			{
 				const u32 radius = 8 * 32;
 				scbw::UnitFinder(
-					data.target->getX() - radius,
-					data.target->getY() - radius,
-					data.target->getX() + radius,
-					data.target->getY() + radius
+					data.target->get_x() - radius,
+					data.target->get_y() - radius,
+					data.target->get_x() + radius,
+					data.target->get_y() + radius
 				).forEach([&](Unit* unit)
 				{
 					UnitExt* unitExt = globals.get_unit_ext(unit);
@@ -1013,10 +1013,10 @@ namespace hooks
 			{
 				// Archon - Astral Aegis
 				scbw::UnitFinder(
-					data.target->getX() - 96,
-					data.target->getY() - 96,
-					data.target->getX() + 96,
-					data.target->getY() + 96
+					data.target->get_x() - 96,
+					data.target->get_y() - 96,
+					data.target->get_x() + 96,
+					data.target->get_y() + 96
 				).forEach([&](Unit* unit)
 				{
 					if (!units_dat::ShieldsEnabled[unit->id])
@@ -1034,10 +1034,10 @@ namespace hooks
 				{
 					targetExt->values[ValueLastOrdersInit] = 1;
 					Unit* nearest = scbw::UnitFinder(
-						data.target->getX() - 288,
-						data.target->getY() - 288,
-						data.target->getX() + 288,
-						data.target->getY() + 288
+						data.target->get_x() - 288,
+						data.target->get_y() - 288,
+						data.target->get_x() + 288,
+						data.target->get_y() + 288
 					).getNearestTarget(data.target,
 						[&](Unit* unit)
 					{
@@ -1073,7 +1073,7 @@ namespace hooks
 					{
 						data.finalDamage = 0;
 						data.target->setHp(units_dat::MaxHitPoints[data.target->id] / 2);
-						data.target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
+						data.target->order_to(OrderId::Move, nearest->position.x, nearest->position.y);
 						data.target->status |= UnitStatus::CanNotReceiveOrders;
 					}
 				}

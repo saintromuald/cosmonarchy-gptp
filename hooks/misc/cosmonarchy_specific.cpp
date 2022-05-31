@@ -65,7 +65,7 @@ void parseUnitDatReqs()
 //	return result;
 }
 
-bool isAttemptingProtossBuild(const Unit* probe)
+bool is_attempting_protoss_build(const Unit* probe)
 {
 	return probe->mainOrderId == OrderId::BuildProtoss1
 		&& probe->status & UnitStatus::GroundedBuilding
@@ -219,7 +219,7 @@ namespace hooks
 			*lastError = 2;
 			return 0;
 		}
-		if (hooks::isQueueSlotActive(unit, 4))
+		if (hooks::is_queue_slot_active(unit, 4))
 		{//if build queue is full
 LABEL_86:
 			*lastError = 3;
@@ -318,10 +318,10 @@ LABEL_18:
 						goto LABEL_73;
 					case ReqOpcode::IsNotConstructingAddon:
 					{
-						auto v13 = isConstructingAddon(unit);
+						auto v13 = is_constructing_addon(unit);
 						if (v13)
 							goto LABEL_87;
-						auto v15 = isAttemptingProtossBuild(unit);
+						auto v15 = is_attempting_protoss_build(unit);
 						if (v15)
 							goto LABEL_87;
 						v11 = v14 + 1;
@@ -610,7 +610,7 @@ LABEL_18:
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->status &= ~UnitStatus::CanNotAttack;
 					unitExt->values[ValueProtossSwitchOrderState] = 0;
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 			}
 			return;
@@ -652,7 +652,7 @@ LABEL_18:
 					}
 				}
 				unit->update_speed();
-				unit->orderToIdle(); // do next queued order
+				unit->order_to_idle(); // do next queued order
 			}
 		}
 	}

@@ -19,15 +19,15 @@ namespace AI
 			bounds = 32 * 32;
 
 		return scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds, caster->getY() - bounds,
-			caster->getX() + bounds, caster->getY() + bounds,
+			caster->get_x() - bounds, caster->get_y() - bounds,
+			caster->get_x() + bounds, caster->get_y() + bounds,
 			caster,
 			[&](Unit* target)
 		{
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Ensnare, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Ensnare, target, caster))
 				return false;
 
 			if (target->ensnareTimer)
@@ -39,11 +39,11 @@ namespace AI
 			if (!isTargetAttackingAlly(target, caster))
 				return false;
 
-			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Ensnare);
+			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::Ensnare);
 			if (!isUnderAttack && totalEnemyLife < 250)
 				return false;
 
-			const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Ensnare);
+			const s32 totalAllyLife = getTotalAllyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::Ensnare);
 			if (totalAllyLife * 2 >= totalEnemyLife)
 				return false;
 

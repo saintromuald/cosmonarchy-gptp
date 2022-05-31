@@ -1051,7 +1051,7 @@ namespace hooks {
 			*lastInternalError = InternalErrors::UnknownError2;
 			return TECH_HIDDEN;
 		}
-		if (unit->isQueueSlotActive(4))
+		if (unit->is_queue_slot_active(4))
 		{
 			*lastInternalError = InternalErrors::UnknownError3;
 			return TECH_HIDDEN;
@@ -1089,7 +1089,7 @@ namespace hooks {
 		TierUnlocked[RaceId::Protoss][Tier3] = true;
 		TierUnlocked[RaceId::Protoss][Tier4] = true;
 
-		if (helper::isConstructingAddon(unit))
+		if (helper::is_constructing_addon(unit))
 		{
 			return TECH_HIDDEN;
 		}

@@ -7,7 +7,7 @@ namespace hooks
 	u32 maxshields(s32 id, s32 playerId);
 	u32 get_total_hp_plus_shields(Unit* a1);
 	void drawUnitInfo(BinDlg* a1);
-	void drawSupplyUnitInfo(s32 a1);																		// 00427540
+	void draw_supply_unit_info(s32 a1);																		// 00427540
 	bool AI_TargetEnemyProc(Unit* a1, Unit* a2);															// 00440A20
 	s32 calcUnitStrength(s32 a1, u8 a2);																	// 00431270
 	u32 getUnitStrengthHook(Unit* a1, s32 a2, bool a3);													// 0043183F

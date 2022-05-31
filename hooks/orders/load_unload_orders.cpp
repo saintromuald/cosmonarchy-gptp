@@ -73,9 +73,9 @@ namespace hooks
 		{ // 004E73F4
 			if (scbw::canBeEnteredBy(unit, unitToLoad))
 			{
-				unitToLoad->orderTo(OrderId::EnterTransport, unit);
+				unitToLoad->order_to(OrderId::EnterTransport, unit);
 			}
-			unit->orderToIdle();
+			unit->order_to_idle();
 		}
 	}
 
@@ -125,7 +125,7 @@ namespace hooks
 								if (unitToLoad->mainOrderId != OrderId::EnterTransport
 									&& unitToLoad->mainOrderId != OrderId::Pickup4)
 								{
-									unitToLoad->orderTo(OrderId::EnterTransport, unit);
+									unitToLoad->order_to(OrderId::EnterTransport, unit);
 								}
 								if (unit->unit_ai != nullptr)
 								{
@@ -141,13 +141,13 @@ namespace hooks
 					}
 					else
 					{
-						unit->orderToIdle();
+						unit->order_to_idle();
 					}
 				}
 			}
 			else // 004E7642
 			{
-				unit->orderToIdle();
+				unit->order_to_idle();
 			}
 		}
 	}
@@ -184,7 +184,7 @@ namespace hooks
 		}
 		else
 		{ // 004E77B4
-			helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+			helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 			if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
 				|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
 			{
@@ -205,7 +205,7 @@ namespace hooks
 						s32 index = 0;
 						bool bStopLoop = false;
 						bool bStopAll = false;
-						bool bIsDistanceGreaterThanHaltDistance = helper::isDistanceGreaterThanHaltDistance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, 512);
+						bool bIsDistanceGreaterThanHaltDistance = helper::is_distance_greater_than_halt_distance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, 512);
 						Point16 pos = {0,0}; // unsure about this start value
 						while (!bStopLoop)
 						{
@@ -319,7 +319,7 @@ namespace hooks
 				if (helper::Ai_AreOnConnectedRegions(unitVar, orderTarget->sprite->position.x, orderTarget->sprite->position.y))
 				{
 					scbw::print("set waypoint");
-					helper::setSecondaryWaypoint(unitVar, orderTarget->sprite->position.x, orderTarget->sprite->position.y);
+					helper::set_secondary_waypoint(unitVar, orderTarget->sprite->position.x, orderTarget->sprite->position.y);
 					helper::moveTowards(orderTarget, unitVar);
 				}
 			}
@@ -351,7 +351,7 @@ namespace hooks
 			{
 				if (helper::Ai_FindTransport(unit, &target) == 0)
 				{
-					unit->orderToIdle();
+					unit->order_to_idle();
 					bEndThere = true;
 				}
 				else
@@ -396,7 +396,7 @@ namespace hooks
 						if (unit->isTargetWithinMinRange(target, 1))
 						{ // 004E7C52
 							helper::loadUnitProc(target, unit);
-							target->orderTo(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+							target->order_to(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 							if (target->pAI != nullptr)
 							{
 								helper::_doOrder(target, OrderId::Move, target->sprite->position.x, target->sprite->position.y, false);
@@ -408,7 +408,7 @@ namespace hooks
 							prepareForNextOrder(target);
 							if (helper::Ai_AreOnConnectedRegions(unit, target->sprite->position.x, target->sprite->position.y) != 0)
 							{
-								helper::setSecondaryWaypoint(unit, target->sprite->position.x, target->sprite->position.y);
+								helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 								helper::moveTowards(unit, target);
 							}
 						}

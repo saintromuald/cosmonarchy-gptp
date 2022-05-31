@@ -11,7 +11,7 @@ namespace
 		if (wantRefresh)
 		{
 			wantRefresh = false;
-			scbw::refreshScreen();
+			scbw::refresh_screen();
 		}
 		/*
 		if (deathTable[0].player[11] == 1) {

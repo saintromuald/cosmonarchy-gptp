@@ -15,7 +15,7 @@ namespace
 			MOV playerId, AL
 			PUSHAD
 		}
-		result = hooks::getSuppliesAvailable(playerId, race);
+		result = hooks::get_supplies_available(playerId, race);
 		__asm
 		{
 			POPAD

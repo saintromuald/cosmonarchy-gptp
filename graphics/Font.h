@@ -10,8 +10,8 @@ namespace graphics {
 struct FontChar {
       s32 getWidth() const;
     s32 getHeight() const;
-    s32 getX() const;
-    s32 getY() const;
+    s32 get_x() const;
+    s32 get_y() const;
     s32 colorMask(s32 index) const;
     s32 pixelOffset(s32 index) const;
 

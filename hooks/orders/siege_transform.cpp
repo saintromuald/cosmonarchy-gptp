@@ -13,7 +13,7 @@ namespace hooks
 			{
 				if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart))
 				{
-					unit->subunit->orderTo(OrderId::Nothing3, unit);
+					unit->subunit->order_to(OrderId::Nothing3, unit);
 					helper::unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
 					helper::playSubunitIscript(unit, IscriptAnimation::SpecialState1);
 					unit->mainOrderState = 2;
@@ -23,7 +23,7 @@ namespace hooks
 			else
 			{
 				bStopThere = true;
-				unit->orderToIdle();
+				unit->order_to_idle();
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->orderToIdle();
+				unit->order_to_idle();
 				bStopThere = true;
 			}
 		}
@@ -93,7 +93,7 @@ namespace hooks
 					if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart))
 					{
 						helper::unitSetRetreatPoint(unit, units_dat::StartDirection[unit->id]);
-						unit->subunit->orderTo(OrderId::Nothing3, unit);
+						unit->subunit->order_to(OrderId::Nothing3, unit);
 						helper::unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
 						helper::playSubunitIscript(unit, IscriptAnimation::SpecialState1);
 						unit->mainOrderState = 2;

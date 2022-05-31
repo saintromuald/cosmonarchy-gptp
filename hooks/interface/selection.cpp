@@ -262,10 +262,10 @@ namespace hooks
 					local_temp_box16_structure.top = *MoveToY;
 					local_temp_box16_structure.right = *MoveToX + 640;
 					local_temp_box16_structure.bottom = *MoveToY + 400;
-					units_in_bounds = helper::getAllUnitsInBounds(&local_temp_box16_structure);
+					units_in_bounds = helper::get_all_units_in_bounds(&local_temp_box16_structure);
 					sorted_list_length = SortAllUnits(clicked_unit, local_temp_array_1, units_in_bounds);
 
-					// reload the previous temporary unit list from before the call to getAllUnitsInBounds
+					// reload the previous temporary unit list from before the call to get_all_units_in_bounds
 					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
 					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
 
@@ -310,10 +310,10 @@ namespace hooks
 					}
 
 					// locate surrounding units for selection
-					units_in_bounds = helper::getAllUnitsInBounds(&local_temp_box16_structure);
+					units_in_bounds = helper::get_all_units_in_bounds(&local_temp_box16_structure);
 					sorted_list_length = SortAllUnits(clicked_unit, local_temp_array_1, units_in_bounds);
 
-					// reload the previous temporary unit list from before the call to getAllUnitsInBounds
+					// reload the previous temporary unit list from before the call to get_all_units_in_bounds
 					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
 					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
 

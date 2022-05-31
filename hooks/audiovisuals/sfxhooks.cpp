@@ -42,7 +42,7 @@ namespace hooks
 		}
 		else
 		{
-			rand = whatStart + (helper::randFunc() >> 8) % (whatEnd - whatStart + 1);
+			rand = whatStart + (helper::rand_func() >> 8) % (whatEnd - whatStart + 1);
 			if (rand == *lastRandSFX && ++rand > whatEnd)
 				rand = whatStart;
 			*lastRandSFX = rand;

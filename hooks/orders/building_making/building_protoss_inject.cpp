@@ -29,7 +29,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_BuildSelf2(unit);
+		hooks::orders_build_self_2(unit);
 		__asm
 		{
 			POPAD

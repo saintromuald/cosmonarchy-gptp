@@ -48,7 +48,7 @@ namespace hooks
 		coords.left = (*activePortraitUnit)->sprite->position.x - 128;
 		coords.top = (*activePortraitUnit)->sprite->position.y - 128;
 
-		units_in_bounds = helper::getAllUnitsInBounds(&coords);
+		units_in_bounds = helper::get_all_units_in_bounds(&coords);
 
 		larvaeCount = get_larvae_units_from_list(units_in_bounds, new_selection);
 

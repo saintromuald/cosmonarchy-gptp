@@ -323,7 +323,7 @@ namespace hooks
 				if ( *networkTable > 0x11u ) {
 					text = (char *)networkTable + networkTable[18];
 				}
-				const char* text2 = helper::getUnitNameStatString(unit->id);
+				const char* text2 = helper::get_unit_name_stat_string(unit->id);
 				char buffer[256] = {};
 				sprintf_s(buffer, 256, text, text2, unit->sprite->position.x, unit->sprite->position.y);
 				helper::UnitPlacementError(buffer, 3);

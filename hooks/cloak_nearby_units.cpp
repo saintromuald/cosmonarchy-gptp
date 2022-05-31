@@ -39,7 +39,7 @@ namespace hooks
 			area_of_effect.bottom = *maxBoxBottomValue;
 		}
 
-		unitsInAreaOfEffect = helper::getAllUnitsInBounds(&area_of_effect);
+		unitsInAreaOfEffect = helper::get_all_units_in_bounds(&area_of_effect);
 		current_unit = *unitsInAreaOfEffect;
 		while (current_unit != nullptr)
 		{

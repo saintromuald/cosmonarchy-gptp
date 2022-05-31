@@ -17,10 +17,10 @@ namespace AI
 			bounds = 32 * 64;
 
 		return scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
 			caster,
 			[&](Unit* target)
 		{
@@ -35,7 +35,7 @@ namespace AI
 				return true;
 			}
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Irradiate, target, caster))
+			if (!scbw::can_weapon_target_unit(WeaponId::Irradiate, target, caster))
 			{
 				return true;
 			}

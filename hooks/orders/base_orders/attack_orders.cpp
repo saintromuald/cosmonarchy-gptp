@@ -40,7 +40,7 @@ namespace hooks
 			// 004656D8:
 			if (!unit->canAttackTarget(target, true))
 			{
-				unit->orderTo(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				unit->order_to(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 			}
 			else
 			{
@@ -113,7 +113,7 @@ namespace hooks
 			// 004659AD:
 			if (!unit->canAttackTarget(target, true))
 			{
-				unit->orderTo(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				unit->order_to(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 			}
 			else
 			{
@@ -354,7 +354,7 @@ namespace hooks
 								unit->order_computer(OrderId::Nothing2);
 
 								// this orderId is hardcoded, not calculated 
-								unit->orderSimple(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeModeTurret], false);
+								unit->order_simple(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeModeTurret], false);
 								current_subunit->order_computer(OrderId::SiegeMode);
 
 								// this orderId is hardcoded, not calculated
@@ -619,11 +619,11 @@ namespace hooks
 			else
 				if (unit->unit_ai == nullptr)
 				{
-					unit->orderToIdle(); // 00477EC8
+					unit->order_to_idle(); // 00477EC8
 				}
 				else
 				{
-					unit->orderTo(OrderId::AttackMove, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					unit->order_to(OrderId::AttackMove, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 				}
 		}
 	}
@@ -654,7 +654,7 @@ namespace hooks
 		{ // 00478928
 			if (!unit->canAttackTarget(target, true))
 			{
-				unit->orderTo(OrderId::Move, target->sprite->position.x, target->sprite->position.y);
+				unit->order_to(OrderId::Move, target->sprite->position.x, target->sprite->position.y);
 			}
 			else
 			{ // 0047894D
@@ -674,7 +674,7 @@ namespace hooks
 				if (!bStopThere && unit->mainOrderState == 1)
 				{ // 00478975
 					if (!unit->isTargetWithinMinRange(target, 4)
-						&& unit->getMovableState() != 2)
+						&& unit->get_movable_state() != 2)
 					{ // 00478998
 						if (unit->isTargetWithinMinRange(target, 256)
 							&& target->movementFlags & MovementFlags::Accelerating)							
@@ -694,7 +694,7 @@ namespace hooks
 						helper::set_resource_target(unit);
 						if (!unit->isTargetWithinMinRange(target, weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran]))
 						{
-							unit->orderToIdle();
+							unit->order_to_idle();
 							bStopThere = true;
 						}
 						else
@@ -730,7 +730,7 @@ namespace hooks
 		bool bStopThere = false;
 		if (unit->mainOrderState == 0)
 		{ // 00478A5C
-			bStopThere = !helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+			bStopThere = !helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 			if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
 				|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
 			{
@@ -763,7 +763,7 @@ namespace hooks
 							unit->halt.y);
 					if ((distance / 256) > weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran])
 					{
-						unit->orderToIdle();
+						unit->order_to_idle();
 						bStopThere = true;
 					}
 				}
@@ -813,16 +813,16 @@ namespace hooks
 			if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == helper::get_region_id(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 			{
 				helper::make_to_hold_position(unit);
-				unit->orderToIdle();
+				unit->order_to_idle();
 			}
 			else
 			{ // 00478E65
 				bool jump_to_78EAE = false;
-				if (unit->getMovableState() != 0
+				if (unit->get_movable_state() != 0
 					&& (unit->orderTarget.pt.x != unit->sprite->position.x || unit->orderTarget.pt.y != unit->sprite->position.y))
 				{ // 00478E80
 
-					if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+					if (helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 					{
 						jump_to_78EAE = true;
 					}
@@ -862,7 +862,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->orderToIdle();
+				unit->order_to_idle();
 			}
 		}
 	}

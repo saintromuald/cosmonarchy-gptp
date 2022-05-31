@@ -53,7 +53,7 @@ namespace scbw
 
 	void disableDialog(BinDlg* dialog);															//18640
 	void showDialog(BinDlg* dialog);															//186A0
-	void hideDialog(BinDlg* dialog);															//18700
+	void hide_dialog(BinDlg* dialog);															//18700
 	void updateDialog(BinDlg* dialog);															//1C400
 	/// @name Unit checks
 	//////////////////////////////////////////////////////////////// @{
@@ -76,7 +76,7 @@ namespace scbw
 	/// @param  target    If nullptr is passed, the function checks whether the
 	///                   weapon can target a position on the ground. If @p target
 	///                   is invincible, the function returns false.
-	bool canWeaponTargetUnit(u8 weaponId, Unit* target = nullptr,
+	bool can_weapon_target_unit(u8 weaponId, Unit* target = nullptr,
 		Unit* attacker = nullptr);
 
 	/// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
@@ -294,7 +294,7 @@ namespace scbw
 	s32 getSupplyRemaining(u8 playerId, u8 raceId);
 	u32 getFlingyData(u32 entry, u32 index);
 
-	u32 getSpriteData(u32 entry, u32 index);
+	u32 get_sprite_data(u32 entry, u32 index);
 	u32 getImageData(u32 entry, u32 index);
 	u32 getUnitData(u32 entry, u32 index);
 	//Unit* get_generic_unit(Unit* unit, u32 id);
@@ -322,9 +322,9 @@ namespace scbw
 
 	/// Adjusts x,y addon coordinates of quarry and similar unit ids
 
-	void adjustAddonX(u16 addonId, u16 sourceId, u16* x);
-	void adjustAddonY(u16 addonId, u16 sourceId, u16* y);
-	void adjustAddonCoordinates(u16 addonId, u16 sourceId, u16* x, u16* y);
+	void adjust_addon_x(u16 addonId, u16 sourceId, u16* x);
+	void adjust_addon_y(u16 addonId, u16 sourceId, u16* y);
+	void adjust_addon_coordinates(u16 addonId, u16 sourceId, u16* x, u16* y);
 
 	u8 getUpgradeMaxLevel(u8 playerId, u8 upgradeId);
 	bool hasTechAvailable(u8 playerId, u16 techId);
@@ -430,10 +430,10 @@ namespace scbw
 	u32 getUnitOverlayAdjustment(Unit* const unit);
 
 	/// Refreshes the screen position within the given rectangle area in pixels.
-	void refreshScreen(s32 left, s32 top, s32 right, s32 bottom);
+	void refresh_screen(s32 left, s32 top, s32 right, s32 bottom);
 
 	/// Refreshes the entire screen.
-	void refreshScreen();
+	void refresh_screen();
 
 	/// Generates a pseudorandom number between min and max, inclusive. This is
 	/// identical to the function used internally by StarCraft, and is guaranteed to
@@ -515,7 +515,7 @@ namespace scbw
 	s32 getBroodlingCountFromSupply(Unit* target);
 	void createUnitFromAbility(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, Unit* creator = nullptr);
 	Unit** getSourceQueens(Unit* unit);
-	u16 getLastQueueSlotType(Unit* a1);
+	u16 get_last_queue_slot_id(Unit* a1);
 	s32 dir_saturate(s32 direction, s32 value);
 	bool can_use_cliff_advantage(Unit* unit, u8 weapon);
 	s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon);
@@ -535,7 +535,7 @@ namespace scbw
 	bool order_is_spell(s32 orderId);
 	bool canBeParasited(Unit* unit);
 	void applyParasite(Unit* unit, u8 playerID, Unit* queen);
-	void createShieldOverlay(Unit* unit, u32 attackDirection);
+	void create_shield_overlay(Unit* unit, u32 attackDirection);
 	void decloakProc(Unit* unit);
 	bool isDecloakable(Unit* unit);
 	bool unitCanNuke(Unit* unit);

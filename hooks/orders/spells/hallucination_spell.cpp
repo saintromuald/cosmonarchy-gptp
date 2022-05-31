@@ -15,7 +15,7 @@ namespace hooks
 			Vector32 hit;
 			if (Unit* target = unit->orderTarget.unit)
 			{
-				hit = {target->getX(), target->getY()};
+				hit = {target->get_x(), target->get_y()};
 			}
 			else
 			{
@@ -25,7 +25,7 @@ namespace hooks
 			
 			scbw::decloakProc(unit);
 
-			helper::createBullet(WeaponId::CantavisHallucinationCast, unit, unit->getX(), unit->getY(), unit->player, unit->currentDirection1);
+			helper::createBullet(WeaponId::CantavisHallucinationCast, unit, unit->get_x(), unit->get_y(), unit->player, unit->currentDirection1);
 
 			if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 			{

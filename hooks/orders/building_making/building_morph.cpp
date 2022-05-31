@@ -131,7 +131,7 @@ namespace hooks
 		{ // 005D62F
 			building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 			building->mainOrderState = 6;
-			helper::playBuildingCompleteSound(building);
+			helper::play_building_completed_sound(building);
 			jump_to_5D56C = true;
 
 			// TODO: Cleanup
@@ -141,7 +141,7 @@ namespace hooks
 			{
 				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 				sEnd = true;
-				replaceSpriteImages_copy(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
+				replaceSpriteImages_copy(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
 				function_004D8500_copy(building->sprite->mainGraphic);
 			}
 
@@ -149,7 +149,7 @@ namespace hooks
 			{
 				building->orderSignal |= 4;
 				building->mainOrderState = 6;
-				playBuildingCompleteSound(building);
+				play_building_completed_sound(building);
 			}
 			jump_to_5D56C = true;
 			*/
@@ -333,10 +333,10 @@ namespace hooks
 
 			if (unit->id == UnitId::ZergExcisant)
 			{
-				Unit* drone = helper::create_unit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->player);
+				Unit* drone = helper::create_unit(UnitId::ZergDroleth, unit->get_x(), unit->get_y(), unit->player);
 				if (drone == nullptr)
 				{
-					helper::refundUnitTrainCost(UnitId::ZergDroleth, unit->player);
+					helper::refund_unit_train_cost(UnitId::ZergDroleth, unit->player);
 					helper::display_last_network_error_for_player(unit->player);
 					unit->remove();
 					bStopThere = true;
@@ -353,7 +353,7 @@ namespace hooks
 
 			if (!bStopThere)
 			{ // 0045DB45
-				Thingy* thingy = helper::createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->getX(), unit->getY(), 0);
+				Thingy* thingy = helper::createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
 				if (thingy != nullptr)
 				{
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
@@ -378,7 +378,7 @@ namespace hooks
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
 				unit->setHp(unit->previousHp * 256);
 
-				helper::updateCreepDisappearance(unit->sprite, unit->id, unit->getX(), unit->getY());
+				helper::updateCreepDisappearance(unit->sprite, unit->id, unit->get_x(), unit->get_y());
 			}
 		}
 	}

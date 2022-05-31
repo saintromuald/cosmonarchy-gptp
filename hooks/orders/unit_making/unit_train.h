@@ -9,6 +9,6 @@ namespace hooks
 	b32 _stdcall ButtonIsTraining(Unit* unit);		// 00428530
 
 	void injectUnitTrainHooks();
-	s32 isQueueSlotActive(Unit* unit, u32 slot);
+	s32 is_queue_slot_active(Unit* unit, u32 slot);
 	char getMaxHangerSpace(Unit* unit);				// 004653D0
 }

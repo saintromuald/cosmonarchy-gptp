@@ -145,7 +145,7 @@ struct Unit : public UnitLayout
 
 	/// Checks if the unit is at move destination (0), or if the unit is
 	/// unmovable (2) or not (1)
-	u32 getMovableState();
+	u32 get_movable_state();
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -153,9 +153,9 @@ struct Unit : public UnitLayout
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Returns the X position of the unit's sprite on the map.
-	u16 getX() const;
+	u16 get_x() const;
 	/// Returns the Y position of the unit's sprite on the map.
-	u16 getY() const;
+	u16 get_y() const;
 
 	/// Returns the X position of the tile that the unit's sprite is on.
 	u16 getTileX() const;
@@ -249,22 +249,22 @@ struct Unit : public UnitLayout
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Issue the @p order to the unit, using the given @p target unit.
-	void orderTo(u8 orderId, Unit* target = nullptr);
+	void order_to(u8 orderId, Unit* target = nullptr);
 
 	/// Issue the @p order to the unit, using the given position as the target.
-	void orderTo(u8 orderId, u16 x, u16 y);
+	void order_to(u8 orderId, u16 x, u16 y);
 
 	//  Issue the @p order to the unit, without a target
 	void order_computer(u8 orderId);
 
 	//  Issue the @p order to the unit and specify if previous orders should be stopped
-	void orderSimple(u8 orderId, bool stopPreviousOrders);
+	void order_simple(u8 orderId, bool stopPreviousOrders);
 
 	//  Issue the @p order to the unit, using the given @p target unit and specify if previous orders should be stopped
 	void issueQueuedOrderTarget(u8 orderId, Unit* target, bool stopPreviousOrders);
 
 	/// Causes the unit to become idle.
-	void orderToIdle();
+	void order_to_idle();
 
 	/// Issues a new order to the unit.
 	void order(u8 orderId, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders);
@@ -437,10 +437,10 @@ struct Unit : public UnitLayout
 	s32 is_unit_ai_non_building();
 
 	/// Returns whether the unit is currently constructing a Protoss building
-	bool isAttemptingProtossBuild();
+	bool is_attempting_protoss_build();
 
 	/// Returns whether the unit is currently constructing an addon
-	bool isConstructingAddon();
+	bool is_constructing_addon();
 
 	/// Returns the number of hangar units currently being trained by the unit
 	u8 getHangarTrainCount();
@@ -458,7 +458,7 @@ struct Unit : public UnitLayout
 	bool unit_is_training_or_morphing();
 
 	/// Returns whether the unit is currently constructing a Protoss building
-	bool isQueueSlotActive(int slot);
+	bool is_queue_slot_active(int slot);
 
 	// Returns the right click action for the given unit
 	u8 getRightClickActionOrder();

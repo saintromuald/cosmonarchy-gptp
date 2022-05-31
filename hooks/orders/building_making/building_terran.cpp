@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	void orders_TerranBuildSelf(Unit* building)
+	void orders_terran_build_self(Unit* building)
 	{
 		if (building->mainOrderState == 0)
 		{
@@ -65,7 +65,7 @@ namespace hooks
 	}
 
 	// Go to build on an existing building
-	void orders_SCVBuild2(Unit* unit)
+	void orders_scv_build_2(Unit* unit)
 	{
 		Unit* builtUnit = unit->orderTarget.unit;
 
@@ -86,10 +86,10 @@ namespace hooks
 			}
 			if (unit->mainOrderState == 2)
 			{
-				u32 movableState = unit->getMovableState();
+				u32 movableState = unit->get_movable_state();
 				if (movableState == MovableState::UnmovableAtDestination)
 				{
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 				else if (movableState == MovableState::ReachedDestination)
 				{
@@ -98,15 +98,15 @@ namespace hooks
 						builtUnit->connectedUnit != unit &&
 						(builtUnit->connectedUnit)->orderTarget.unit == builtUnit)
 					{
-						unit->orderToIdle(); // another SCV is already on the job
+						unit->order_to_idle(); // another SCV is already on the job
 					}
 					else // 00467AF9
 					{
 						builtUnit->connectedUnit = unit;
 						unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
 						unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
-						unit->orderSimple(OrderId::ResetCollision1, false);
-						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
+						unit->order_simple(OrderId::ResetCollision1, false);
+						unit->order_simple(units_dat::ReturnToIdleOrder[unit->id], false);
 						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
 						//    the randomized orderTarget is very near the same spot the SCV resumed construction, but I think the helper::TerrainCollision_? condition in State 4 should handle it.
 						//if (helper::ChangeMovementTargetMoveTarget2(unit, builtUnit->sprite->position.x, builtUnit->sprite->position.y))
@@ -116,7 +116,7 @@ namespace hooks
 			}
 			else if (unit->mainOrderState == 3)
 			{
-				if (unit->getMovableState() != MovableState::NotReachedDestination)
+				if (unit->get_movable_state() != MovableState::NotReachedDestination)
 				{
 					unit->mainOrderState = 4;
 				}
@@ -149,7 +149,7 @@ namespace hooks
 					helper::fix_target_location(&unit->orderTarget.pt, unit->id);
 				}
 
-				if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
+				if (helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
 				{
 					unit->mainOrderState = 5;
 					jump_to_switch_1 = true;
@@ -162,11 +162,7 @@ namespace hooks
 			}
 			else if (unit->mainOrderState == 6)
 			{
-				if (!helper::isDistanceGreaterThanHaltDistance(
-					unit,
-					unit->orderTarget.pt.x,
-					unit->orderTarget.pt.y,
-					20))
+				if (!helper::is_distance_greater_than_halt_distance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, 20))
 				{
 					jump_to_switch_1 = true;
 				}
@@ -174,7 +170,7 @@ namespace hooks
 				{
 					s32 angle;
 					helper::set_resource_target(unit);
-					helper::setSecondaryWaypoint(unit, (unit->orderTarget.unit)->sprite->position.x, (unit->orderTarget.unit)->sprite->position.y);
+					helper::set_secondary_waypoint(unit, (unit->orderTarget.unit)->sprite->position.x, (unit->orderTarget.unit)->sprite->position.y);
 					angle = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
 					unit->orderTarget.pt.x = (angleDistance[angle].x * 20) / 256 + unit->sprite->position.x;
 					unit->orderTarget.pt.y = (angleDistance[angle].y * 20) / 256 + unit->sprite->position.y;
@@ -184,14 +180,9 @@ namespace hooks
 			}
 			else if (unit->mainOrderState == 7)
 			{
-				if (!helper::isUnitPositions2Equal(unit))
+				if (!helper::is_unit_positions_2_equal(unit))
 				{
-					s32 angle = scbw::getAngle(
-						unit->sprite->position.x,
-						unit->sprite->position.y,
-						unit->nextTargetWaypoint.x,
-						unit->nextTargetWaypoint.y
-					);
+					s32 angle = scbw::getAngle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
 					angle = unit->currentDirection1 - angle;
 					if (angle < 0)
 					{
@@ -203,7 +194,7 @@ namespace hooks
 					}
 					else // 00467E4A
 					{
-						u8 rand_value = helper::RandomizeShort(10);
+						u8 rand_value = helper::randomize_short(10);
 						Image* current_image = unit->sprite->images.head;
 						unit->mainOrderTimer = (rand_value & 63) + 30;
 						while (current_image != nullptr)
@@ -217,7 +208,7 @@ namespace hooks
 				}
 				else
 				{
-					u8 rand_value = helper::RandomizeShort(10);
+					u8 rand_value = helper::randomize_short(10);
 					Image* current_image = unit->sprite->images.head;
 					unit->mainOrderTimer = (rand_value & 63) + 30;
 					while (current_image != nullptr)
@@ -256,7 +247,7 @@ namespace hooks
 				{
 					hpGain *= 16;
 				}
-				helper::ProgressBuild(builtUnit, hpGain, false);
+				helper::progress_build(builtUnit, hpGain, false);
 				if (modifier.decrease)
 				{
 					builtUnit->remainingBuildTime -= modifier.decrease;
@@ -278,7 +269,7 @@ namespace hooks
 					{
 						bool jump_to_67F3C = false;
 						builtUnit->connectedUnit = nullptr;
-						helper::playBuildingCompleteSound(unit);
+						helper::play_building_completed_sound(unit);
 
 						if (builtUnit->status & UnitStatus::Completed)
 						{
@@ -302,7 +293,7 @@ namespace hooks
 						}
 						if (jump_to_67F3C)
 						{
-							unit->orderTo(OrderId::Harvest1, builtUnit);
+							unit->order_to(OrderId::Harvest1, builtUnit);
 							bEndThere = true;
 						}
 					}
@@ -338,7 +329,7 @@ namespace hooks
 			{
 				bool jump_to_67F3C = false;
 				builtUnit->connectedUnit = nullptr;
-				helper::playBuildingCompleteSound(builtUnit);
+				helper::play_building_completed_sound(builtUnit);
 				if (builtUnit->status & UnitStatus::Completed)
 				{
 					if (builtUnit->id == UnitId::TerranReservoir
@@ -361,7 +352,7 @@ namespace hooks
 				}
 				if (jump_to_67F3C)
 				{
-					unit->orderTo(OrderId::Harvest1, builtUnit);
+					unit->order_to(OrderId::Harvest1, builtUnit);
 					bEndThere = true;
 				}
 			}
@@ -385,7 +376,7 @@ namespace hooks
 	}
 
 	// Go to build a not yet existing building
-	void orders_SCVBuild(Unit* unit)
+	void orders_scv_build(Unit* unit)
 	{
 		if (unit->unit_ai != nullptr)
 		{
@@ -397,20 +388,16 @@ namespace hooks
 				unit->sprite->position.y == unit->moveTarget.pt.y)
 			{
 				if (!(unit->status & UnitStatus::Unmovable)
-					&& helper::isDistanceGreaterThanHaltDistance(
-						unit,
-						unit->orderTarget.pt.x,
-						unit->orderTarget.pt.y,
-						128)
-					&& helper::beginBuilding(unit))
+					&& helper::is_distance_greater_than_halt_distance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, 128)
+					&& helper::begin_building(unit))
 				{
 					Unit* builtUnit;
 					unit->status &= ~UnitStatus::IsNormal;
 					unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
 					if (unit->orderQueueHead == nullptr) // 004680A5
 					{
-						helper::addOrderTargetingNothing(unit, nullptr, OrderId::ResetCollision1);
-						helper::addOrderTargetingNothing(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
+						helper::add_order_targeting_nothing(unit, nullptr, OrderId::ResetCollision1);
+						helper::add_order_targeting_nothing(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
 					}
 					else
 					{
@@ -418,7 +405,7 @@ namespace hooks
 					}
 					if (unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranReservoir)
 					{
-						builtUnit = helper::beginGasBuilding(unit, UnitId::TerranReservoir);
+						builtUnit = helper::begin_gas_building(unit, UnitId::TerranReservoir);
 					}
 					else
 					{
@@ -432,7 +419,7 @@ namespace hooks
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 					if (builtUnit == nullptr)
 					{
-						helper::refundUnitTrainCost(unit_id, unit->player);
+						helper::refund_unit_train_cost(unit_id, unit->player);
 						helper::display_last_network_error_for_player(unit->player);
 						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 					}
@@ -444,7 +431,7 @@ namespace hooks
 						unit->orderTarget.unit = builtUnit;
 						if (*IS_PLACING_BUILDING)
 						{
-							if (!helper::canStillPlaceBuilding())
+							if (!helper::can_still_place_building())
 							{
 								helper::refresh_layers_3_and_4();
 								helper::end_building_placement();
@@ -457,7 +444,7 @@ namespace hooks
 				}
 				else
 				{
-					unit->orderToIdle();
+					unit->order_to_idle();
 				}
 			}
 		}
@@ -470,7 +457,7 @@ namespace hooks
 				unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 				unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
 			}
-			bMoveTargetResult = helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+			bMoveTargetResult = helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 			if ((unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
 				&& !(unit->orderTarget.pt.x == 0 && unit->orderTarget.pt.y == 0))
@@ -485,7 +472,7 @@ namespace hooks
 		}
 	}
 
-	char refreshScreen(s32 ecx0) // 0048DDC0
+	char refresh_screen(s32 ecx0) // 0048DDC0
 	{
 		auto v6 = ecx0;
 		auto result = *IS_PLACING_BUILDING;
@@ -494,29 +481,29 @@ namespace hooks
 			auto y = mouse->y;
 			auto x = mouse->x;
 			auto mouse_pos = Point16{(u16)mouse->x, (u16)mouse->y};
-			if (helper::initPlacementBoxPos(&mouse_pos))
+			if (helper::init_placement_box_pos(&mouse_pos))
 			{
-				*placeBuildingMessageId = helper::updatePlacementStateForPlacementBox_Func();
+				*placeBuildingMessageId = helper::update_placement_state_for_placement_box();
 				helper::refresh_layers_3_and_4();
 				Point16 buildPoint;
 				buildPoint.x = x;
 				buildPoint.y = y;
-				helper::unk_buildingPlacementRelated(1, &buildPoint);
+				helper::unk_building_placement_related(1, &buildPoint);
 				if (*isPlacingAddon)
 				{
 					auto v4 = *placeBuildingUnitId - UnitId::TerranCommandCenter;
 					Point16 addon_point;
 					addon_point.x = units_dat::AddonPlacement[v4].x;
 					addon_point.y = units_dat::AddonPlacement[v4].y;
-					scbw::adjustAddonCoordinates(*placeBuildingUnitId, 0, &addon_point.x, &addon_point.y);
-					helper::unk_buildingPlacementRelated(0, &addon_point);
+					scbw::adjust_addon_coordinates(*placeBuildingUnitId, 0, &addon_point.x, &addon_point.y);
+					helper::unk_building_placement_related(0, &addon_point);
 				}
 				result = helper::refresh_layers_3_and_4();
 			}
 			else
 			{
-				helper::unk_buildingPlacementRelatedMouse(0, 1);
-				result = helper::unk_buildingPlacementRelatedMouse(0, 0);
+				helper::unk_building_placement_related_mouse(0, 1);
+				result = helper::unk_building_placement_related_mouse(0, 0);
 			}
 		}
 		return result;
