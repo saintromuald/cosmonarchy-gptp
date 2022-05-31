@@ -307,7 +307,7 @@ namespace hooks
 
 		if (scbw::unit_is_spreading_creep(unit)) {
 			Box32 creep_area = {};
-			if (helper::get_creep_spread_area(UnitId::ZergHatchery, unit->position.x, unit->position.y, true, &creep_area)) {
+			if (helper::get_creep_spread_area(UnitId::ZergHatchery, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &creep_area)) {
 				for (u32 x = creep_area.left; x < creep_area.right; ++x) {
 					for (u32 y = creep_area.top; y < creep_area.bottom; ++y) {
 						// TODO: add a distance check, so this only applies in the original elipsis
