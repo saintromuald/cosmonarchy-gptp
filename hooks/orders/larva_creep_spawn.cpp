@@ -204,10 +204,6 @@ namespace hooks
 			// return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
 			// Replace UnitId::ZergHive with unit->id if giving specific buildings different creep bounding rectangles in getCreepRegion
 			result_00414680 = helper::spreadCreep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
-			//if (unit->id == UnitId::ZergInfestedCommandCenter)
-			//{
-			//	result_00414680 = 0;
-			//}
 			if (unit->id == 180 && result_00414680 != 0)
 			{
 				u32 current_tile_x = unit->sprite->position.x / 32;
@@ -281,7 +277,6 @@ namespace hooks
 					|| unit->id == UnitId::ZergLair
 					|| unit->id == UnitId::ZergHive
 					|| unit->id == UnitId::ZergSire
-					|| (unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
 					|| unit->id == UnitId::ZergLarvalColony;
 
 				u8 orderId;
@@ -371,7 +366,6 @@ namespace hooks
 		{
 			case UnitId::ZergHatchery:
 			case UnitId::ZergCreepColony:
-			case UnitId::ZergInfestedCommandCenter:
 			{
 				return isComplete;
 			}
