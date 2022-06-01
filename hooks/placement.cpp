@@ -126,8 +126,6 @@ namespace hooks
         return 0;
     }
 
-    
-
     // Hooked to allow building on allied creep. -Pr0nogo
     int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) // 00473010
     {
