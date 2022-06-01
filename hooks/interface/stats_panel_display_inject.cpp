@@ -237,6 +237,6 @@ namespace hooks
 	//	jump_patch(reset_tooltip_info_wrapper_1,	0x004593B0, 0);
 	//	jump_patch(reset_tooltip_info_wrapper_2,	0x004597D5, 0);
 	//	jump_patch(set_tooltip_info_unit_wrapper,	0x00458800, 2);
-		jump_patch(draw_tooltip_with_icon_wrapper,	0x00458EF0, 1);
+	//	jump_patch(draw_tooltip_with_icon_wrapper,	0x00458EF0, 1);
 	}
 }
