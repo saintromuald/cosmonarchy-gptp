@@ -128,7 +128,7 @@ namespace hooks
 		}
 
 		// Units that are not important
-		if (scbw::isZergEgg(target->id))
+		if (scbw::is_zerg_egg(target->id))
 		{
 			return 5;
 		}

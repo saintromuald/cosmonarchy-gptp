@@ -12,7 +12,7 @@
 
 namespace hooks
 {
-	bool isMorphing(Unit* building)
+	bool is_morphing(Unit* building)
 	{
 		bool bIsMorphing;
 		if (!(building->status & UnitStatus::Completed))
@@ -27,7 +27,7 @@ namespace hooks
 		return bIsMorphing;
 	}
 
-	void orders_ZergBuildSelf(Unit* building)
+	void orders_zerg_build_self(Unit* building)
 	{
 		BuildingModifier modifier = get_building_modifier(building, 0);
 
@@ -272,7 +272,7 @@ namespace hooks
 		}
 	}
 
-	void ZergPlaceBuilding(Unit* unit)
+	void zerg_place_building(Unit* unit)
 	{
 		bool bStopThere = false;
 		if (!(unit->status & UnitStatus::Completed))
@@ -387,14 +387,14 @@ namespace hooks
 // from unhooked
 namespace
 {
-	s32 BuildingHelper::getNumberOfUnitType(const Unit* unit, u16 unitId, bool ignoreIncomplete);
+	s32 BuildingHelper::get_unit_id_count(const Unit* unit, u16 unitId, bool ignoreIncomplete);
 }
 
 namespace hooks
 {
 	// Checks if @p unitId is a building that can be morphed from another building.
 	// Note: This hook affects the behavior of Unit::isRemorphingBuilding().
-	bool isMorphedBuildingHook(u16 unitId)
+	bool is_morphed_building(u16 unitId)
 	{
 		//Default StarCraft behavior
 		if (scbw::isZergBuildingMorphResult(unitId))
@@ -406,82 +406,82 @@ namespace hooks
 
 	// Determines the number of units which have @p unitId and are being built by the
 	// @p unit. This hook is used by StarCraft's AI for counting units and buildings.
-	s32 getMorphBuildingTypeCountHook(const Unit* unit, u16 unitId, bool ignoreIncomplete)
+	s32 get_morph_building_id_count(const Unit* unit, u16 unitId, bool ignoreIncomplete)
 	{
-		s32 unitCount = BuildingHelper::getNumberOfUnitType(unit, unitId, ignoreIncomplete);
+		s32 unitCount = BuildingHelper::get_unit_id_count(unit, unitId, ignoreIncomplete);
 
 		switch (unitId)
 		{
 			case UnitId::ZergHatchery:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLair, ignoreIncomplete);
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLair, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergHive, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSire, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergLair:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergHive, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSire, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergHive:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSire, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergCreepColony:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSporeColony, ignoreIncomplete);
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSporeColony, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergIrolIris:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlaszilArbor, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergAlaszilArbor, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergOthstolOviform:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlaszilArbor, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergAlaszilArbor, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergQuazrokPool:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLiivralPond, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLiivralPond, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergHydrokDen:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGorgralSwamp, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGorgralSwamp, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergMuthrokSpire:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVithrathHaunt, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergVithrathHaunt, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergMatravilNest:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakisAntre, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergAlmakisAntre, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergGeszkathGrotto:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergZorkizShroud:
 			{
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergUltrokCavern, ignoreIncomplete); 
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergUltrokCavern, ignoreIncomplete); 
 			} break;
 		}
 		return unitCount;
 	}
 
-	void SetSpecialState1(Sprite* sprite)
+	void set_special_state_1(Sprite* sprite)
 	{
 		Image* current_image = sprite->images.head;
 		while (current_image != nullptr)

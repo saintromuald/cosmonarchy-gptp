@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	void orders_ProbeBuild(Unit* unit)
+	void orders_probe_build(Unit* unit)
 	{
 		if (unit->unit_ai != nullptr)
 		{

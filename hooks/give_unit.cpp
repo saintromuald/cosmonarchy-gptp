@@ -13,11 +13,11 @@ namespace hooks
 		{
 			helper::remove_unit_ai(unit, 0);
 
-			bool isMorphing = false;
+			bool is_morphing = false;
 			if (unit->isRemorphingBuilding())
 			{
 				unit->status |= UnitStatus::Completed;
-				isMorphing = true;
+				is_morphing = true;
 			}
 
 			helper::incrementUnitScores(unit, -1);
@@ -71,7 +71,7 @@ namespace hooks
 			{
 				helper::increment_unit_scores_ex(unit, bCountAsCompleted, 1);
 			}
-			if (isMorphing)
+			if (is_morphing)
 			{
 				unit->status &= ~UnitStatus::Completed;
 			}

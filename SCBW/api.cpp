@@ -527,7 +527,7 @@ namespace scbw
 		return false;
 	}
 
-	bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae)
+	bool is_zerg_egg(u16 id, bool allow_normal_eggs, bool allow_larvae)
 	{
 		switch (id)
 		{

@@ -20,7 +20,7 @@ namespace scbw
 	bool isZergBuildingMorphSource(u16 id);
 	bool is_larval_egg(Unit* unit);
 	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
-	bool isZergEgg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
+	bool is_zerg_egg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
 	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt);
 	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y);
 	std::string readSamaseFile(char* name);

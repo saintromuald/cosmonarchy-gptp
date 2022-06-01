@@ -15,7 +15,7 @@ namespace
 			MOV building, EAX
 			PUSHAD
 		}
-		result = hooks::isMorphing(building) ? 1 : 0;
+		result = hooks::is_morphing(building) ? 1 : 0;
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -30,7 +30,7 @@ namespace
 			MOV building, EAX
 			PUSHAD
 		}
-		hooks::orders_ZergBuildSelf(building);
+		hooks::orders_zerg_build_self(building);
 		__asm {
 			POPAD
 			RETN
@@ -47,7 +47,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::ZergPlaceBuilding(unit);
+		hooks::zerg_place_building(unit);
 		__asm {
 			POPAD
 			MOv ESP, EBp
@@ -70,7 +70,7 @@ namespace
 			MOV unit, EAX
 		}
 		if (!(unit->status & UnitStatus::Completed)
-			&& hooks::isMorphedBuildingHook(unit->buildQueue[unit->buildQueueSlot]))
+			&& hooks::is_morphed_building(unit->buildQueue[unit->buildQueueSlot]))
 		{
 			__asm {
 				POPAD
@@ -99,7 +99,7 @@ namespace
 			MOV EBP, ESP
 			MOV buildUnitId, DI
 		}
-		if (hooks::isMorphedBuildingHook(buildUnitId))
+		if (hooks::is_morphed_building(buildUnitId))
 		{
 			__asm {
 				POPAD
@@ -133,7 +133,7 @@ namespace
 		}
 		buildUnitId = unit->buildQueue[unit->buildQueueSlot];
 		if (unit->status & UnitStatus::Completed
-			|| !hooks::isMorphedBuildingHook(buildUnitId))
+			|| !hooks::is_morphed_building(buildUnitId))
 		{
 			buildUnitId = unit->id;
 		}
@@ -144,7 +144,7 @@ namespace
 		}
 	}
 
-	//-------- orders_ZergBuildSelf() --------//
+	//-------- orders_zerg_build_self() --------//
 
 	const u32 Hook_isMorphedBuilding_ZergBuildSelf_GetTypeBack = 0x0045D53F;
 	void __declspec(naked) isMorphedBuildingWrapper_ZergBuildSelf_GetType()
@@ -157,7 +157,7 @@ namespace
 			MOV unit, EDI
 		}
 		buildUnitId = unit->buildQueue[unit->buildQueueSlot];
-		if (!hooks::isMorphedBuildingHook(buildUnitId))
+		if (!hooks::is_morphed_building(buildUnitId))
 		{
 			buildUnitId = unit->id;
 		}
@@ -176,7 +176,7 @@ namespace
 			MOV EBP, ESP
 			MOV unitId, AX
 		}
-		if (hooks::isMorphedBuildingHook(unitId))
+		if (hooks::is_morphed_building(unitId))
 		{
 			__asm {
 				POPAD
@@ -205,7 +205,7 @@ namespace
 			else
 				unit->remainingBuildTime--;
 		}
-		if (!hooks::isMorphedBuildingHook(unitId))
+		if (!hooks::is_morphed_building(unitId))
 		{
 			u32 hpGain = unit->buildRepairHpGain;
 			if (isOperationCwalEnabled)
@@ -247,7 +247,7 @@ namespace
 			MOV unit, EBX
 		}
 		if (!(unit->status & UnitStatus::Completed)
-			&& hooks::isMorphedBuildingHook(unit->buildQueue[unit->buildQueueSlot]))
+			&& hooks::is_morphed_building(unit->buildQueue[unit->buildQueueSlot]))
 		{
 			//scbw::print("Morph detected");
 			__asm {
@@ -286,7 +286,7 @@ namespace
 			MOV unitId, DI
 			MOV unit, ESI
 		}
-		unitCount = hooks::getMorphBuildingTypeCountHook(unit, unitId, ignoreIncomplete != 0);
+		unitCount = hooks::get_morph_building_id_count(unit, unitId, ignoreIncomplete != 0);
 		__asm {
 			POPAD
 			MOV EAX, unitCount
@@ -309,7 +309,7 @@ namespace
 			MOV unit, ESI
 			MOV unitCount, EBX
 		}
-		unitCount += hooks::getMorphBuildingTypeCountHook(unit, unitId, false);
+		unitCount += hooks::get_morph_building_id_count(unit, unitId, false);
 		__asm {
 			POPAD
 			MOV EBX, unitCount
@@ -329,7 +329,7 @@ namespace
 			PUSHAD
 			MOV sprite, ECX
 		}
-		hooks::SetSpecialState1(sprite);
+		hooks::set_special_state_1(sprite);
 		__asm {
 			POPAD
 			JMP Hook_MorphSpecialStateContinue
@@ -349,7 +349,7 @@ namespace
 			MOV unit, ESI
 			MOV unitCount, EBX
 		}
-		unitCount += hooks::getMorphBuildingTypeCountHook(unit, unitId, false);
+		unitCount += hooks::get_morph_building_id_count(unit, unitId, false);
 		__asm {
 			POPAD
 			MOV EBX, unitCount
