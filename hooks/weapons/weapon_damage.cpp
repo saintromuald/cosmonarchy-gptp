@@ -1058,7 +1058,7 @@ namespace hooks
 						{
 							return false;
 						}
-						if (!unit->isVisibleTo(data.target->player)) {
+						if (!unit->is_visible_to(data.target->player)) {
 							return false;
 						}
 						// TODO: iquare consultation

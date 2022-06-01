@@ -16,7 +16,7 @@ namespace AI
 			return false;
 		}
 		// If the target is not detectable
-		if (target->status & 0x300 && !((1 << attacker->player) & target->visibilityStatus) && !target->isVisibleTo(attacker->player))
+		if (target->status & 0x300 && !((1 << attacker->player) & target->visibilityStatus) && !target->is_visible_to(attacker->player))
 		{
 			return false;
 		}

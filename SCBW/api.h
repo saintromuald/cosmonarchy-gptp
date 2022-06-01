@@ -270,7 +270,7 @@ namespace scbw
 		return 0 != playerAlliance[playerA].flags[playerB];
 	}
 
-	inline bool isVisionAlliedTo(u8 playerA, u8 playerB)
+	inline bool is_vision_allied_to(u8 playerA, u8 playerB)
 	{
 		return 0 != playerVision[playerA].flags[playerB];
 	}

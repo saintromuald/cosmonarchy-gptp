@@ -2179,7 +2179,7 @@ namespace scbw
 		UnitArrayFilter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
 		if (allied_structures.size) {
 			for (u32 i = 0; i < 8; ++i) {
-				if (playerTable[i].type == PlayerType::Computer && victim->isVisibleTo(i) &&
+				if (playerTable[i].type == PlayerType::Computer && victim->is_visible_to(i) &&
 					!scbw::is_allied_to(i, attacker->player) && scbw::is_allied_to(i, victim->player)) {
 					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 120, true);
 				}

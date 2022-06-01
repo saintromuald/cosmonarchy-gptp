@@ -327,7 +327,7 @@ namespace SpriteId
 		Cursor_Marker = 318,
 		Egg_Spawn = 319,
 		High_Templar_Glow = 320,
-		Psi_Field_Right_Upper = 321,
+		PsiFieldRightUpper = 321,
 		Burrowing_Dust = 322,
 		Building_Landing_Dust_Type1 = 323,
 		Building_Landing_Dust_Type2 = 324,
