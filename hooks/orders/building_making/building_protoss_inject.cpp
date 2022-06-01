@@ -11,7 +11,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::orders_ProbeBuild(unit);
+		hooks::orders_probe_build(unit);
 		__asm
 		{
 			POPAD

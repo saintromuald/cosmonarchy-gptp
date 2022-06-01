@@ -5,7 +5,7 @@ namespace BuildingHelper
 {
 	// Check if @p unit is warping in a Protoss building.
 	// Identical to function @ 0x004E4C40
-	bool isWarpingInProtossBuilding(const Unit* probe)
+	bool is_warping_in_protoss_building(const Unit* probe)
 	{
 		return probe->mainOrderId == OrderId::BuildProtoss1
 			&& probe->status & UnitStatus::GroundedBuilding
@@ -16,12 +16,12 @@ namespace BuildingHelper
 	// Check if @p building is in the process of constructing an add-on.
 	// Return the building or add-on that the @p unit is constructing.
 	// Identical to function @ 0x00466A30
-	Unit* getConstructRepairTarget(const Unit* unit)
+	Unit* get_construct_repair_target(const Unit* unit)
 	{
 		if (unit->mainOrderId == OrderId::BuildTerran
 			|| unit->mainOrderId == OrderId::Repair1
 			|| unit->mainOrderId == OrderId::ConstructingBuilding
-			|| isWarpingInProtossBuilding(unit))
+			|| is_warping_in_protoss_building(unit))
 		{
 			return unit->orderTarget.unit;
 		}
@@ -35,11 +35,11 @@ namespace BuildingHelper
 	}
 
 	// Identical to function @ 0x00466B70
-	s32 getNumberOfUnitTypeInBuildQueue(const Unit* unit, u16 unitId)
+	s32 get_unit_id_count_in_build_queue(const Unit* unit, u16 unitId)
 	{
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
-			if (getConstructRepairTarget(unit) == nullptr
+			if (get_construct_repair_target(unit) == nullptr
 				&& unit->buildQueue[unit->buildQueueSlot % 5] == unitId
 				&& (unit->mainOrderId == OrderId::BuildTerran
 					|| unit->mainOrderId == OrderId::BuildProtoss1
@@ -55,7 +55,7 @@ namespace BuildingHelper
 			}
 		}
 
-		if (scbw::isZergEgg(unit->id, true, false)
+		if (scbw::is_zerg_egg(unit->id, true, false)
 			|| unit->mainOrderId == OrderId::Morph2
 			|| unit->mainOrderId == OrderId::ZergBuildSelf)
 			return (unit->buildQueue[unit->buildQueueSlot % 5] == unitId) ? 1 : 0;
@@ -69,7 +69,7 @@ namespace BuildingHelper
 		return unitCount;
 	}
 
-	s32 getNumberOfUnitType(const Unit* unit, u16 unitId, bool ignoreIncomplete)
+	s32 get_unit_id_count(const Unit* unit, u16 unitId, bool ignoreIncomplete)
 	{
 		if (!ignoreIncomplete || unit->status & UnitStatus::Completed)
 		{
@@ -79,7 +79,7 @@ namespace BuildingHelper
 			}
 			if (!ignoreIncomplete)
 			{
-				return getNumberOfUnitTypeInBuildQueue(unit, unitId);
+				return get_unit_id_count_in_build_queue(unit, unitId);
 			}
 		}
 		return 0;

@@ -131,8 +131,8 @@ namespace hooks
 		jump_patch(orders_terran_build_self_wrapper,			0x00467760, 2);
 		jump_patch(orders_scv_build_2_wrapper,					0x00467A70, 1);
 		jump_patch(orders_scv_build_wrapper,					0x00467FD0, 0);
-//		placementSimpleWrappers(); // causes insane bug
+//		jump_patch(refresh_screen_wrapper,						0x0048DDC0, 4);
 
-//		jump_patch(refresh_screen_wrapper,					0x0048DDC0, 4);
+//		placementSimpleWrappers(); // bugged
 	}
 }
