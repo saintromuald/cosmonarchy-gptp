@@ -547,7 +547,7 @@ FraudSpawnLocation* get_random_spawn() {
 		if (unit_array.size) {
 			cost += 1;
 		}
-		UnitArrayFilter(&unit_array, 0, FilterBuilding);
+		unit_search_filter(&unit_array, 0, FilterBuilding);
 		if (unit_array.size) {
 			cost += 1;
 		}

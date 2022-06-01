@@ -243,6 +243,7 @@ enum ExtValueId
 	ValueBlissfulEmbraceOriginalHealth,
 	ValueSpecialSovrolethBirth,
 	ValuePlayingAddonWorkingAnim,
+	ValueTyrannyPlayer,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -315,7 +316,7 @@ enum ExtTimerId
 	TimerSalvageStunTimer,
 	TimerCreepMorphOverlay,
 	TimerCorpseCocoonHatch,
-	TimerMindTyrantRecede,
+	TimerTyrannyRecede,
 	TimerTalosAnimationSubtimer,
 	TimerTalosSoundLoopTimer,
 
@@ -351,7 +352,6 @@ enum ExtUnitId
 	UnitAnthelionGravityWellSource,
 	UnitTurretParentLink,
 	UnitBlissfulEmbrace,
-	UnitMindTyrantSource,
 
 	UnitCount,
 };

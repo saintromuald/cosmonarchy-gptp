@@ -418,7 +418,7 @@ namespace hooks
 			if (!(target->status & UnitStatus::IsHallucination))
 			{
 				UnitArray units = unit_search_radial(attacker->position, 3 * 32);
-				UnitArrayFilter(&units, attacker, FilterAlly | FilterIncludingSelf);
+				unit_search_filter(&units, attacker, FilterAlly | FilterIncludingSelf);
 				for (u32 i = 0; i < units.size; ++i) {
 					Unit* unit = units.units[i];
 

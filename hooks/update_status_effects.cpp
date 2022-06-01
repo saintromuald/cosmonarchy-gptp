@@ -403,7 +403,7 @@ namespace hooks
 						{
 							if (unit->id != UnitId::ZergLakizilisk) {
 								UnitArray array = unit_search_radial(unit->position, 10 * 32);
-								UnitArrayFilter(&array, unit, FilterAlly | FilterBuilding);
+								unit_search_filter(&array, unit, FilterAlly | FilterBuilding);
 								if (array.size) {
 									return; // Disable idle burrowing close to infrastructure
 								}

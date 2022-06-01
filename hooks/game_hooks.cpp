@@ -457,7 +457,7 @@ namespace hooks
 						unit->spend_unit_energy(5 * 256);
 
 						UnitArray targets = unit_search_radial(unit->position, radius);
-						UnitArrayFilter(&targets, unit, FilterAlly);
+						unit_search_filter(&targets, unit, FilterAlly);
 						for (u32 i = 0; i < targets.size; ++i) {
 							Unit* target = targets.units[i];
 							target->heal(ZoryusthalethReconstitutionHealing, unit);
@@ -477,7 +477,7 @@ namespace hooks
 				unit->update_speed();
 
 				// Corpse Cocoon
-				CorpseArray corpses = CorpseSearchRect({unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom()});
+				CorpseArray corpses = corpse_search_rect({unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom()});
 				for (u32 i = 0; i < corpses.size; ++i) {
 					Thingy* corpse = corpses.corpses[i];
 					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
@@ -1237,19 +1237,26 @@ namespace hooks
 			} break;
 		}
 
-		// Mind Control - Rescind
-		if (unitExt->units[UnitMindTyrantSource]) {
-			f32 distance = scbw::get_distance_fast(unit->position, unitExt->units[UnitMindTyrantSource]->position);
-			if (distance <= 8 * 32) {
-				if (unitExt->timers[TimerMindTyrantRecede] <= 4 * 24) {
-					if (unit->status & UnitStatus::Frozen) {
-						unit->unfreeze();
-					}
-					unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+		// Tyranny - Rescind
+		if (unitExt->values[ValueTyrannyPlayer]) {
+
+			UnitArray mind_tyrants = unit_search_radial(unit->position, 8 * 32);
+			unit_search_filter(&mind_tyrants, unit, 0, {UnitId::ProtossMindTyrant});
+			unit_search_custom_filter(&mind_tyrants, [=](Unit* mind_tyrant) {
+				if (scbw::is_allied_to(mind_tyrant->player, unitExt->values[ValueTyrannyPlayer] - 1)) {
+					return true;
 				}
-				unitExt->timers[TimerMindTyrantRecede] = 5 * 24;
+				return false;
+			});
+
+			if (mind_tyrants.size) {
+				if (unit->status & UnitStatus::Frozen) {
+					unit->unfreeze();
+				}
+				unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+				unitExt->timers[TimerTyrannyRecede] = 5 * 24;
 			}
-			if (unitExt->timers[TimerMindTyrantRecede] <= 4 * 24) {
+			if (unitExt->timers[TimerTyrannyRecede] <= 4 * 24) {
 				if (!(unit->status & UnitStatus::Frozen)) {
 					unit->freeze();
 				}
@@ -1258,15 +1265,14 @@ namespace hooks
 					unit->sprite->create_top_overlay(ImageId::MaelstromOverlay_Small + offset);
 				}
 			}
-		}
-		if ((unitExt->units[UnitMindTyrantSource] && !unitExt->timers[TimerMindTyrantRecede]) || (!unitExt->units[UnitMindTyrantSource] && unitExt->timers[TimerMindTyrantRecede])) {
-			if (unit->status & UnitStatus::Frozen) {
-				unit->unfreeze();
+			if (!unitExt->timers[TimerTyrannyRecede]) {
+				if (unit->status & UnitStatus::Frozen) {
+					unit->unfreeze();
+				}
+				unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+				scbw::recede_mind_control(unit);
+				unitExt->values[ValueTyrannyPlayer] = 0;
 			}
-			unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
-
-			scbw::recede_mind_control(unit);
-			unitExt->units[UnitMindTyrantSource] = 0;
 		}
 
 		// Fix animation bug with acceleration movement flag
@@ -1498,7 +1504,7 @@ namespace hooks
 		// Blissful Embrace - Creep Spread
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			UnitArray akistrokors = unit_search_radial(unit->position, 6 * 32);
-			UnitArrayFilter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
+			unit_search_filter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
 			unit->hitPoints += akistrokors.size * 256.0 / 24.0;
 
 			if (!units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) {
@@ -1802,7 +1808,7 @@ namespace hooks
 		if (unit->id == UnitId::ProtossCrucible && unit->status & UnitStatus::Completed)
 		{
 			UnitArray arr = unit_search_radial(unit->position, 8 * 32);
-			UnitArrayFilter(&arr, unit, FilterAlly | FilterBuilding);
+			unit_search_filter(&arr, unit, FilterAlly | FilterBuilding);
 			for (u32 i = 0; i < arr.size; i++)
 			{
 				Unit* target = arr.units[i];

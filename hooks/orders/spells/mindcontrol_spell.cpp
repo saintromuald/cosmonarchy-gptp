@@ -8,16 +8,18 @@ namespace hooks
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		Unit* target = unit->orderTarget.unit;
-		if (target == nullptr)
+		if (!target)
 		{
-			if (unit->orderQueueHead != nullptr)
+			if (unit->orderQueueHead)
 			{
+				unit->status &= ~UnitStatus::CanNotReceiveOrders;
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
 			{
-				if (unit->unit_ai != nullptr)
+				unit->status &= ~UnitStatus::CanNotReceiveOrders;
+				if (unit->unit_ai)
 				{
 					unit->order_computer(OrderId::ComputerAI);
 				}
@@ -31,6 +33,7 @@ namespace hooks
 		{
 			if (unit->player == target->player)
 			{
+				unit->status &= ~UnitStatus::CanNotReceiveOrders;
 				unit->order_to_idle();
 			}
 			else

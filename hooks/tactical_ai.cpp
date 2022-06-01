@@ -902,11 +902,11 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 	{
 		const u32 bunker_capacity = units_dat::SpaceProvided[unit->id];
 
-		UnitArray allies = UnitSearchSquare(unit->position, unit->getSightRange(false) * 32);
-		UnitArraySortByDistance(&allies, unit->position);
+		UnitArray allies = unit_search_square(unit->position, unit->getSightRange(false) * 32);
+		unit_search_sort_by_distance(&allies, unit->position);
 		UnitArray enemies = allies;
-		UnitArrayFilter(&allies, unit, FilterAlly);
-		UnitArrayFilter(&enemies, unit, unit->player == 11 ? 0 : FilterEnemy);
+		unit_search_filter(&allies, unit, FilterAlly);
+		unit_search_filter(&enemies, unit, unit->player == 11 ? 0 : FilterEnemy);
 
 		if (enemies.size)
 		{
@@ -1197,7 +1197,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 		}
 		else if (unit->id == UnitId::ZergAkistrokor && unit->mainOrderId != OrderId::BlissfulEmbrace) {
 			UnitArray targets = unit_search_radial(unit->position, 512 * 32);
-			UnitArrayFilter(&targets, unit, FilterEnemy | FilterBuilding);
+			unit_search_filter(&targets, unit, FilterEnemy | FilterBuilding);
 
 			f32 min_cost = FLT_MAX;
 			Unit* best_target = 0;

@@ -1933,8 +1933,8 @@ namespace scbw
 
 		// Mind Tyrant - apply behavior
 		if (source->id == UnitId::ProtossMindTyrant) {
-			targetExt->units[UnitMindTyrantSource] = source;
-			targetExt->timers[TimerMindTyrantRecede] = 5 * 24;
+			targetExt->values[ValueTyrannyPlayer] = source->player + 1;
+			targetExt->timers[TimerTyrannyRecede] = 5 * 24;
 		}
 
 		// Obtain control
@@ -1978,7 +1978,7 @@ namespace scbw
 
 		targetExt->values[ValueWorshipStack] = 0;
 		targetExt->timers[TimerGodsMadeFlesh] = 0;
-		targetExt->units[UnitMindTyrantSource] = 0;
+		targetExt->values[ValueTyrannyPlayer] = 0;
 	}
 
 	bool isZergProduction(u16 unitId)
@@ -2176,7 +2176,7 @@ namespace scbw
 		}
 
 		UnitArray allied_structures = unit_search_radial(victim->position, 40 * 32);
-		UnitArrayFilter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
+		unit_search_filter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
 		if (allied_structures.size) {
 			for (u32 i = 0; i < 8; ++i) {
 				if (playerTable[i].type == PlayerType::Computer && victim->is_visible_to(i) &&
@@ -2213,7 +2213,7 @@ namespace scbw
 
 	inline UnitArray get_writhing_web_sovroleths(Unit* unit) {
 		UnitArray sovroleths = unit_search_radial(unit->position, 8 * 32);
-		UnitArrayFilter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth}); 
+		unit_search_filter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth}); 
 		return sovroleths;
 	}
 
@@ -2281,7 +2281,7 @@ namespace scbw
 
 		// Remove connected larva
 		UnitArray larvae = unit_search_radial(unit->position, 4 * 32);
-		UnitArrayFilter(&larvae, unit, 0, {UnitId::ZergLarva});
+		unit_search_filter(&larvae, unit, 0, {UnitId::ZergLarva});
 		for (u32 i = 0; i < larvae.size; ++i) {
 			Unit* larva = larvae.units[i];
 			if (larva->connectedUnit == unit) {
