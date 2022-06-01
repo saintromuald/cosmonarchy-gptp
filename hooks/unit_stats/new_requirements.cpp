@@ -372,6 +372,16 @@ namespace hooks {
 				return true;
 			}
 		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossNexus))
+		{
+			if (unitId == UnitId::ProtossArtisan)
+			{
+				if (player_has_completed_unit_id(player_id, UnitId::ProtossForge))
+				{
+					return true;
+				}
+			}
+		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossForge))
 		{
 			if (unitId == UnitId::ProtossScribe
@@ -580,7 +590,7 @@ namespace hooks {
 		}
 
 		// Structures
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe) || player_has_completed_unit_id(player_id, UnitId::ProtossArtisan))
 		{
 			switch (unitId)
 			{
@@ -840,6 +850,16 @@ namespace hooks {
 				}
 			}
 		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergDroleth))
+		{
+			if (unitId == UnitId::ZergGosvileth)
+			{
+				if (TierUnlocked[RaceId::Zerg][Tier3])
+				{
+					return true;
+				}
+			}
+		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOthstoleth))
 		{
 			if (unitId == UnitId::ZergAlaszileth)
@@ -862,7 +882,7 @@ namespace hooks {
 		}
 
 		// Structures
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergDroleth))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergDroleth) || player_has_completed_unit_id(player_id, UnitId::ZergGosvileth))
 		{
 			switch (unitId)
 			{
@@ -1565,6 +1585,14 @@ namespace hooks {
 				{
 					return TECH_ACTIVE;
 				}
+				if (unitId == UnitId::ProtossArtisan)
+				{
+					if (player_has_completed_unit_id(player_id, UnitId::ProtossForge))
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_LOCKED;
+				}
 				return TECH_HIDDEN;
 			}
 			case UnitId::ProtossForge:
@@ -1817,6 +1845,7 @@ namespace hooks {
 
 			// Structures
 			case UnitId::ProtossScribe:
+			case UnitId::ProtossArtisan:
 			{
 				switch (unitId)
 				{
@@ -2140,6 +2169,7 @@ namespace hooks {
 
 			// Structures
 			case UnitId::ZergDroleth:
+			case UnitId::ZergGosvileth:
 			{
 				switch (unitId)
 				{
@@ -2176,6 +2206,14 @@ namespace hooks {
 					case UnitId::ZergNydusCanal:
 					case UnitId::ZergGeszkathGrotto:
 					case UnitId::ZergSovthrathMound:
+					{
+						if (TierUnlocked[RaceId::Zerg][Tier3])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::ZergGosvileth:
 					{
 						if (TierUnlocked[RaceId::Zerg][Tier3])
 						{

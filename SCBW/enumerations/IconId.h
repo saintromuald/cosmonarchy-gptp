@@ -264,7 +264,7 @@ namespace IconId
 		/*0102*/	ZergAdvancedBuildings,
 		/*0103*/	Burrow,
 		/*0104*/	Unburrow,
-		/*0105*/	Ventral_Sacs,
+		/*0105*/	VentralSacs,
 		/*0106*/	Antennae,
 		/*0107*/	MetabolicBoost,
 		/*0108*/	AdrenalGlands,

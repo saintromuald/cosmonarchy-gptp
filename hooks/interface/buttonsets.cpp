@@ -1142,13 +1142,8 @@ namespace hooks
 
 							// PROTOSS \\
 							
-							else if ((*activePortraitUnit)->id == UnitId::ProtossClarion &&  // Clarion Phase Link passive
-								current_button->iconID == IconId::RechargeShields)
-							{
-								current_button_state = BUTTON_STATE::Enabled;
-							}
-							else if ((*activePortraitUnit)->id == UnitId::ProtossClarion &&  // Clarion Harmony Drive passive
-								current_button->iconID == IconId::GraviticDrive)
+							else if ((*activePortraitUnit)->id == UnitId::ProtossArtisan &&  // Artisan Concordance Field passive
+								current_button->iconID == IconId::KhaydarinCore)
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
@@ -1237,6 +1232,11 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Enabled;
 							}
+							else if ((*activePortraitUnit)->id == UnitId::ProtossClarion &&  // Clarion Phase Link passive
+							current_button->iconID == IconId::RechargeShields)
+							{
+							current_button_state = BUTTON_STATE::Enabled;
+							}
 							else if ((*activePortraitUnit)->id == UnitId::ProtossArchitect &&  // Architect Reactive Payload passive 
 								current_button->iconID == IconId::AntimatterMissiles)
 							{
@@ -1305,6 +1305,11 @@ namespace hooks
 
 							// ZERG \\
 							
+							else if ((*activePortraitUnit)->id == UnitId::ZergGosvileth &&  // Gosvileth Plethoral Gestation passive
+								current_button->iconID == IconId::VentralSacs)
+							{
+								current_button_state = BUTTON_STATE::Enabled;
+							}
 							else if ((*activePortraitUnit)->id == UnitId::ZergZethrokor &&  // Zethrokor Adrenal Glands passive
 								current_button->iconID == IconId::AdrenalGlands)
 							{
