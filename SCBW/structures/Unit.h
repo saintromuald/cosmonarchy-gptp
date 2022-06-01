@@ -418,7 +418,7 @@ struct Unit : public UnitLayout
 
 	/// Checks whether this unit can be seen by @playerId (i.e. not covered by the
 	/// fog-of-war and is detectable).
-	bool isVisibleTo(u8 playerId) const;
+	bool is_visible_to(u8 playerId) const;
 
 	/// Updates the unit's actual speed. This function should be called after
 	/// changing any properties and status effects that affect movement speed.

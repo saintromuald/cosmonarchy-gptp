@@ -1421,7 +1421,7 @@ bool Unit::isTargetEnemy(Unit* target) const
 	return scbw::isUnitEnemy(this->player, target);
 }
 
-bool Unit::isVisibleTo(u8 playerId) const
+bool Unit::is_visible_to(u8 playerId) const
 {
 	assert(this);
 	return (this->visibilityStatus & (1 << playerId)) != 0;

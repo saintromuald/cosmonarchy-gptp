@@ -13,7 +13,7 @@ namespace AI
 		{
 
 			if ((target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection))
-				&& !target->isVisibleTo(caster->player))
+				&& !target->is_visible_to(caster->player))
 				return false;
 
 			if (!caster->isTargetEnemy(target))
