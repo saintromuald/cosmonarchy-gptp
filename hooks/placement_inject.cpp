@@ -137,8 +137,8 @@ namespace
 	void __declspec(naked) update_building_placement_state_map_tile_flags_wrapper() { // 00473A10
 		static u32 result;
 		static u16 unit_id;
-		static u32 tile_x;
-		static u32 tile_y;
+		static u16 tile_x;
+		static u16 tile_y;
 		static u8 player;
 		static Point16 size_wh;
 		static u32 placement_state_entry;
@@ -148,9 +148,9 @@ namespace
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV tile_x, EAX
+			MOV tile_x, AX
 			MOV EAX, [EBP + 0x0C]
-			MOV tile_y, EAX
+			MOV tile_y, AX
 			MOV EAX, [EBP + 0x10]
 			MOV player, AL
 			MOV EAX, [EBP + 0x14]

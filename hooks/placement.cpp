@@ -163,7 +163,7 @@ namespace hooks
     }
 
     // Same as above. -Pr0nogo
-    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u32 tile_x, u32 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) // 00473A10
+    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) // 00473A10
     {
         u32 human_only_player_bit = 0;
         if (playerTable[player].type == PlayerType::Human) {
@@ -204,7 +204,7 @@ namespace hooks
                 } else {
                     state = 4;
                 }
-                buildingPlacementState[6 * (y + 8 * placement_state_entry) + x] = state;
+                buildingPlacementState[6 * (y + (8 * placement_state_entry)) + x] = state;
                 if (result < state) {
                     result = state;
                 }
