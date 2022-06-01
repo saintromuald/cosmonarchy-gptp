@@ -1295,6 +1295,7 @@ namespace helper
 	void refresh_all_visible_images_at_screen_position(Sprite* sprite, u8 vision_filter);					// 00497480
 
 	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply); // 00458800
+
 	s32 bw_print_icon(Box16* area, Box16* dims, u16 right, u16 bottom);										// 0041D090
 	u32 bw_print_xy(char* dest, s32 width, s32 height);														// 004202B0
 
