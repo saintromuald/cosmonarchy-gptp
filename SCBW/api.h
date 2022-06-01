@@ -51,10 +51,10 @@ namespace scbw
 
 	u8 hasOverlay(Unit* unit);
 
-	void disableDialog(BinDlg* dialog);															//18640
-	void showDialog(BinDlg* dialog);															//186A0
+	void disable_dialog(BinDlg* dialog);															//18640
+	void show_dialog(BinDlg* dialog);															//186A0
 	void hide_dialog(BinDlg* dialog);															//18700
-	void updateDialog(BinDlg* dialog);															//1C400
+	void update_dialog(BinDlg* dialog);															//1C400
 	/// @name Unit checks
 	//////////////////////////////////////////////////////////////// @{
 
@@ -547,7 +547,7 @@ namespace scbw
 	void decloak_proc(Unit* unit);
 	bool is_decloakable(Unit* unit);
 	bool unitCanNuke(Unit* unit);
-	bool unitIsTrap(Unit* unit);
+	bool unit_is_trap(Unit* unit);
 	bool unit_is_ranged_attacker(Unit* unit);
 	void playWorkAnimation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);

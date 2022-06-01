@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	bool StatLobotomyMineCount(BinDlg* dialog, u32 index)
+	bool stat_lobotomy_mine_count(BinDlg* dialog, u32 index)
 	{
 		auto activeUnit = *activePortraitUnit;
 		// Originally had code for research, removed
@@ -32,8 +32,8 @@ namespace hooks
 		{
 			childDialog = nullptr;
 		}
-		scbw::showDialog(childDialog);
-		scbw::disableDialog(childDialog);
+		scbw::show_dialog(childDialog);
+		scbw::disable_dialog(childDialog);
 		auto statData = childDialog->statButtonUser;
 		auto v7 = *cmdicons_grp;
 		childDialog->graphic = UnitId::TerranLobotomyMine - 1; // or set icon id
@@ -48,7 +48,7 @@ namespace hooks
 		if (!(v8 & 1))
 		{
 			childDialog->flags = v8 | 1;
-			scbw::updateDialog(childDialog);
+			scbw::update_dialog(childDialog);
 		}
 		return 1;
 	}
@@ -236,14 +236,14 @@ namespace hooks
 
 			// 00426E31
 			if (activeUnit->id == UnitId::ProtossSolarion
-				|| activeUnit->id == UnitId::ProtossAccantor)
-			{ // Originally had hardcode for Gantrithor and Warbringer
+				|| activeUnit->id == UnitId::ProtossAccantor) // Originally had hardcode for Gantrithor and Warbringer
+			{
 				helper::StatHangerCount(dialog, index);
 				index++;
 			}
 
-			if (activeUnit->id == UnitId::TerranVulture)
-			{ // Originally also had hardcode for Raynor Vulture
+			if (activeUnit->id == UnitId::TerranVulture) // Originally also had hardcode for Raynor Vulture
+			{
 				if (helper::StatSpidermineCount(dialog, index))
 				{
 					index++;
@@ -251,7 +251,7 @@ namespace hooks
 			}
 			if (activeUnit->id == UnitId::TerranEidolon)
 			{
-				if (StatLobotomyMineCount(dialog, index))
+				if (stat_lobotomy_mine_count(dialog, index))
 				{
 					index++;
 				}
@@ -290,18 +290,19 @@ namespace hooks
 	}
 
 	// Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
-	char* getUnitRankString(Unit* unit) // 0042F370
+	char* get_unit_rank_string(Unit* unit) // 0042F370
 	{
 		u16 unitId = unit->id;
-		if (units_dat::BaseProperty[unitId] & UnitProperty::NeutralAccessories
-			|| scbw::unitIsTrap(unit))
+		if (units_dat::BaseProperty[unitId] & UnitProperty::NeutralAccessories)
+		//	|| scbw::unit_is_trap(unit))
 		{
 			return 0;
 		}
 
 		if (unit->player == 11) {
 			return "";
-		} else {
+		}
+		else {
 			return playerNameList->player[unit->player].player_name;
 		}
 
@@ -326,7 +327,7 @@ namespace hooks
 		*/
 	}
 
-	void drawUnitKillsString(BinDlg* dialog) // 00425DD0
+	void draw_unit_kills_string(BinDlg* dialog) // 00425DD0
 	{
 		Unit* unit = *activePortraitUnit;
 
@@ -373,8 +374,8 @@ namespace hooks
 	}
 
 	// TODO: Fix progress bar drawing during addon construction, unit training
-	// Hooked to draw armor icons to buildings - Pr0nogo
-	void drawBuildingInfo(BinDlg* dialog) // 00427890
+	// Hooked to draw armor icons to buildings. - Pr0nogo
+	void draw_building_info(BinDlg* dialog) // 00427890
 	{
 		Unit* activeUnit = *activePortraitUnit;
 		selectionGroupHP[0] = (*activePortraitUnit)->hitPoints;
@@ -477,9 +478,9 @@ namespace hooks
 		helper::add_text_to_dialog(dialog, -5, getUnitName(*activePortraitUnit));
 	}
 
-	// Hooked to draw new values to icons -- Pr0nogo
-	void statsArmorLevel(BinDlg* dialog, s32 unused, u16 buttonRelated)
-	{ // 00425600
+	// Hooked to draw new values to icons. -- Pr0nogo
+	void stats_armor_level(BinDlg* dialog, s32 unused, u16 buttonRelated) // 00425600
+	{
 		BinDlg* v3;
 		BinDlg* v4;
 		void* v5;
@@ -511,17 +512,17 @@ namespace hooks
 		}
 		else
 		{
-LABEL_6:
+	LABEL_6:
 			v4 = 0;
 		}
-		helper::showDialog(v4);
-		helper::disableDialog(v4);
+		helper::show_dialog(v4);
+		helper::disable_dialog(v4);
 		v5 = cmdicons_grp;
 		v6 = *v4->user;
 		v7 = *activePortraitUnit;
 		v4->graphic = 12;
 		// TODO: Fix compiler error
-//		*(s32*)v6 = v5;
+	//	*(s32*)v6 = v5;
 		if (v7->status & UnitStatus::Completed
 			|| (v8 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
 		{
@@ -548,13 +549,13 @@ LABEL_6:
 		if (!(v12 & UnitStatus::Completed))
 		{
 			v4->flags = v12 | UnitStatus::Completed;
-			helper::updateDialog(v4);
+			helper::update_dialog(v4);
 		}
 		*unkUpgradeCount += v13;
 	}
 
-	void statsWeaponLevel(BinDlg* dialog, u16 buttonRelated, u8 weaponId)
-	{ // 00425790
+	void statsWeaponLevel(BinDlg* dialog, u16 buttonRelated, u8 weaponId) // 00425790
+	{
 		BinDlg* v3;
 		s32 v4;
 		u8 v5;
@@ -587,20 +588,22 @@ LABEL_6:
 			{
 				v6 = v6->next;
 				if (!v6)
+				{
 					goto LABEL_9;
+				}
 			}
 		}
 		else
 		{
-LABEL_9:
+	LABEL_9:
 			v6 = 0;
 		}
-		helper::showDialog(v6);
-		helper::disableDialog(v6);
-		//		v7 = v6->user;
+		helper::show_dialog(v6);
+		helper::disable_dialog(v6);
+	//	v7 = v6->user;
 		v8 = cmdicons_grp;
 		v6->graphic = 12;
-		//		*(s32*)v7 = v8;
+	//	*(s32*)v7 = v8;
 		*(s16*)(v7 + 4) = weapons_dat::Icon[weaponId];
 		*(s16*)(v7 + 6) = 0;
 		*(s16*)(v7 + 8) = weaponId;
@@ -609,12 +612,12 @@ LABEL_9:
 		if (!(v9 & 1))
 		{
 			v6->flags = v9 | 1;
-			helper::updateDialog(v6);
+			helper::update_dialog(v6);
 		}
 		*unkUpgradeCount += v10;
 	}
 
-	// Hooked to change the name of new building morphs - Pr0nogo
+	// Hooked to change the name of new building morphs. - Pr0nogo
 	const char* getUnitName(Unit* unit)
 	{
 		u16 queue = unit->buildQueue[unit->buildQueueSlot];

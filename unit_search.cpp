@@ -532,7 +532,7 @@ bool UnitFlagMatch(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> 
 	}
 	if (flags & FilterNoTrap)
 	{
-		if (scbw::unitIsTrap(unit))
+		if (scbw::unit_is_trap(unit))
 		{
 			return false;
 		}

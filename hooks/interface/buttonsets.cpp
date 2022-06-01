@@ -362,7 +362,7 @@ namespace hooks
 			if (!(currentButtonDlg->flags & BinDlgFlags::Unknown0))
 			{
 				currentButtonDlg->flags |= BinDlgFlags::Unknown0;
-				scbw::updateDialog(currentButtonDlg);
+				scbw::update_dialog(currentButtonDlg);
 			}
 			*BUTTONSET_MAINBUTTONGRAPHIC = usedButtonIcon;
 		}
@@ -1591,7 +1591,7 @@ namespace hooks
 							if (!(current_dialog->flags & BinDlgFlags::Unknown0))
 							{
 								current_dialog->flags |= BinDlgFlags::Unknown0;
-								scbw::updateDialog(current_dialog);
+								scbw::update_dialog(current_dialog);
 							}
 							stack_placeholder.not_allocated = 0;
 							stack_placeholder.not_allocated_2 = 0;
@@ -1606,10 +1606,10 @@ namespace hooks
 							current_button_state = stack_placeholder.buttonState;
 						}
 						// 0045930B
-						scbw::showDialog(current_dialog);
+						scbw::show_dialog(current_dialog);
 						if (current_button_state == BUTTON_STATE::Disabled)
 						{
-							scbw::disableDialog(current_dialog);
+							scbw::disable_dialog(current_dialog);
 							// 0045931C
 							if (*unknown_0066FF60 == 0x15)
 							{

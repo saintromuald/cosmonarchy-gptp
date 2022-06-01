@@ -67,12 +67,12 @@ LABEL_6:
         else
         {
             objectiveDlg->pszText = (char*)objectiveText;
-            helper::showDialog(objectiveDlg);
+            helper::show_dialog(objectiveDlg);
             s32 objectiveDlgFlags = objectiveDlg->flags;
             if (!(objectiveDlgFlags & 1))
             {
                 objectiveDlg->flags = objectiveDlgFlags | 1;
-                helper::updateDialog(objectiveDlg);
+                helper::update_dialog(objectiveDlg);
             }
         }
 	}

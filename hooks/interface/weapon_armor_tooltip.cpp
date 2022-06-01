@@ -19,28 +19,27 @@ char buffer[256];
 u8 getDamageFactorForTooltip(u8 weaponId, Unit* unit)
 {
 	if (weaponId == WeaponId::CohortGaussPistols
-		|| weaponId == WeaponId::FlameThrower
-		|| weaponId == WeaponId::PazuzuJupiterDriver
-		|| weaponId == WeaponId::PsiBlades
-		|| weaponId == WeaponId::LegionnairePsiSabers
-		|| weaponId == WeaponId::AmaranthPsiCleaver
-		|| weaponId == WeaponId::GolemBloodlessAssault
-		|| weaponId == WeaponId::PariahIconoclastBlades
-		|| weaponId == WeaponId::StarSovereignCelestialCannon
-		|| weaponId == WeaponId::LiiraliskHollowedSpores
-		|| weaponId == WeaponId::BactaliskCorrosiveAcid
-		|| weaponId == WeaponId::AlmaksaliskPiercingSpines
-		|| weaponId == WeaponId::KeskathalorScreamingVenom
-		)
+	||  weaponId == WeaponId::FlameThrower
+	||  weaponId == WeaponId::PazuzuJupiterDriver
+	||  weaponId == WeaponId::PsiBlades
+	||  weaponId == WeaponId::LegionnairePsiSabers
+	||  weaponId == WeaponId::AmaranthPsiCleaver
+	||  weaponId == WeaponId::GolemBloodlessAssault
+	||  weaponId == WeaponId::PariahIconoclastBlades
+	||  weaponId == WeaponId::StarSovereignCelestialCannon
+	||  weaponId == WeaponId::LiiraliskHollowedSpores
+	||  weaponId == WeaponId::BactaliskCorrosiveAcid
+	||  weaponId == WeaponId::AlmaksaliskPiercingSpines
+	||  weaponId == WeaponId::KeskathalorScreamingVenom)
 	{
 		return 2;
 	}
 	return weapons_dat::DamageFactor[weaponId];
 }
 
-//Returns the C-string for the tooltip text of the unit's weapon icon.
-//This function is used for weapon icons and special icons.
-//Precondition: @p entryStrIndex is a stat_txt.tbl string index.
+// Returns the C-string for the tooltip text of the unit's weapon icon.
+// This function is used for weapon icons and special icons.
+// Precondition: @p entryStrIndex is a stat_txt.tbl string index.
 #include "SCBW/stat_txt_spec.h"
 #include <iomanip>
 
@@ -304,7 +303,6 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 
 namespace hooks
 {
-
 	// Returns the C-string for the tooltip text of the unit's weapon icon.
 	const char* getWeaponTooltipString(u8 weaponId, Unit* unit)
 	{
@@ -618,8 +616,8 @@ namespace hooks
 		std::string status = formatStringVector(statuses);
 
 		// TODO Statuses
-		//	mind control on target, last orders
-		//	color code source player if possible
+		// mind control on target, last orders
+		// color code source player if possible
 
 		std::vector<std::string> flags;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
@@ -725,9 +723,7 @@ namespace hooks
 		return buffer;
 	}
 
-	// Returns the C-string for the tooltip text of the Interceptor icon (Carriers),
-	// Scarab icon (Reavers), Nuclear Missile icon (Nuclear Silos), and Spider Mine
-	// icon (Vultures).
+	// Returns the C-string for the tooltip text of the Interceptor icon (Carriers), Scarab icon (Reavers), Nuclear Missile icon (Nuclear Silos), and Spider Mine icon (Vultures).
 	const char* getSpecialTooltipString(u16 iconUnitId, Unit* unit)
 	{
 		if (iconUnitId == UnitId::ProtossSteward)

@@ -29,7 +29,7 @@ namespace
 			MOV dialog, ECX
 			PUSHAD
 		}
-		hooks::drawBuildingInfo(dialog);
+		hooks::draw_building_info(dialog);
 		__asm {
 			POPAD
 			RETN
@@ -44,7 +44,7 @@ namespace
 			MOV a1, ESI
 			PUSHAD
 		}
-		result = hooks::getUnitRankString(a1);
+		result = hooks::get_unit_rank_string(a1);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -59,7 +59,7 @@ namespace
 			MOV dialog, EBX
 			PUSHAD
 		}
-		hooks::drawUnitKillsString(dialog);
+		hooks::draw_unit_kills_string(dialog);
 		__asm {
 			POPAD
 			RETN
@@ -81,7 +81,7 @@ namespace
 			MOV dialog, EAX
 			PUSHAD
 		}
-		hooks::statsArmorLevel(dialog, unused, buttonRelated);
+		hooks::stats_armor_level(dialog, unused, buttonRelated);
 		__asm {
 			POPAD
 			RETN
