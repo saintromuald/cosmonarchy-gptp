@@ -524,7 +524,7 @@ namespace hooks
 		// TODO: Fix compiler error
 	//	*(s32*)v6 = v5;
 		if (v7->status & UnitStatus::Completed
-			|| (v8 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
+			|| (v8 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::is_zerg_building_morph_result(v8)))
 		{
 			v9 = v7->id;
 		}
@@ -535,7 +535,7 @@ namespace hooks
 		*(s16*)(v6 + 4) = upgrades_dat::UpgradeIcon[(u8)units_dat::ArmorUpgrade[v9]];
 		*(s16*)(v6 + 6) = UnitStatus::Completed;
 		if (v7->status & UnitStatus::Completed
-			|| (v10 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
+			|| (v10 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::is_zerg_building_morph_result(v8)))
 		{
 			v11 = v7->id;
 		}
@@ -622,7 +622,7 @@ namespace hooks
 	{
 		u16 queue = unit->buildQueue[unit->buildQueueSlot];
 		if (unit->status & UnitStatus::Completed
-			|| !scbw::isZergBuildingMorphResult(queue)) // Fixes lardcode
+			|| !scbw::is_zerg_building_morph_result(queue)) // Fixes lardcode
 		{
 			return helper::get_unit_name_stat_string(unit->id);
 		}

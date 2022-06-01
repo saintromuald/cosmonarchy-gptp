@@ -456,7 +456,7 @@ namespace hooks
         {
             if (units_dat::GroupFlags[unit_id].isMen)
             {
-                if (!scbw::isAnyMorphMorphResult(unit_id))
+                if (!scbw::is_any_morph_result(unit_id))
                 {
                     unitsOwned[unit->player] += count;
                 }
@@ -464,7 +464,7 @@ namespace hooks
             }
             else if (units_dat::GroupFlags[unit_id].isBuilding)
             {
-                if (!scbw::isZergBuildingMorphResult(unit_id))
+                if (!scbw::is_zerg_building_morph_result(unit_id))
                 {
                     buildingsOwned[unit->player] += count;
                 }

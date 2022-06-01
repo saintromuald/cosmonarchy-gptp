@@ -160,6 +160,7 @@ namespace hooks
 					switch (unit->id)
 					{
 						case UnitId::ZergLarva:
+						case UnitId::ZergDroleth:
 						case UnitId::ZergZethrokor:
 						case UnitId::ZergQuazilisk:
 						case UnitId::ZergHydralisk:

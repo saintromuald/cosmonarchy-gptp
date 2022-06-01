@@ -2858,7 +2858,7 @@ namespace helper
 	bool isValidMorph(u16 buildingId)
 	{
 		bool result;
-		if (scbw::isZergBuildingMorphResult(buildingId))
+		if (scbw::is_zerg_building_morph_result(buildingId))
 		{
 			result = true;
 		}

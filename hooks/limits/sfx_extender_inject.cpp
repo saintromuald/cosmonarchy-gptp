@@ -21,7 +21,7 @@ namespace hooks
 	void sfxExtenderGetCount()
 	{
 		globals.extended_sfx = 1;
-	//	auto sfx_data = scbw::readSamaseFile("arr\\sfxdata.dat");
+	//	auto sfx_data = scbw::read_samase_file("arr\\sfxdata.dat");
 	}
 	void newSfxExtender()
 	{

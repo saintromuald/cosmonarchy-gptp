@@ -46,7 +46,7 @@ std::string to_lowercase(std::string line)
 #include <logger.h>
 s32 Extender::get_file_entry_count(char* name, u32 entries)
 {
-	//	std::string str = scbw::readSamaseFile(name);
+	//	std::string str = scbw::read_samase_file(name);
 	const char* data = nullptr;
 	u32 len = 0;
 	auto data_ptr = &data;
@@ -128,7 +128,7 @@ bool last_char(std::string s, char c)
 }
 void Extender::parse_set(char* name, u32 default_max_limit, u32 entries)
 {
-	//std::string str = scbw::readSamaseFile(name);
+	//std::string str = scbw::read_samase_file(name);
 
 
 

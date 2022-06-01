@@ -48,7 +48,7 @@ namespace hooks
 		else
 		{
 			unitId = unit->buildQueue[unit->buildQueueSlot];
-			if (!(scbw::isZergBuildingMorphResult))
+			if (!(scbw::is_zerg_building_morph_result))
 				unitId = unit->id;
 		}
 		return unitId;

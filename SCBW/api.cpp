@@ -554,6 +554,7 @@ namespace scbw
 	{
 		switch (id)
 		{
+			case UnitId::ZergGosvileth:
 			case UnitId::ZergIroleth:
 			case UnitId::ZergAlaszileth:
 			case UnitId::ZergVorvrokor:
@@ -577,7 +578,7 @@ namespace scbw
 		return false;
 	}
 
-	bool isAnyMorphMorphResult(u16 id)
+	bool is_any_morph_result(u16 id)
 	{
 		if (is_conventional_unit_morph_result(id))
 		{
@@ -601,6 +602,7 @@ namespace scbw
 	{
 		switch (id)
 		{
+			case UnitId::ZergDroleth:
 			case UnitId::ZergOvileth:
 			case UnitId::ZergOthstoleth:
 			case UnitId::ZergZethrokor:
@@ -631,7 +633,7 @@ namespace scbw
 		return false;
 	}
 
-	bool isZergBuildingMorphResult(u16 id)
+	bool is_zerg_building_morph_result(u16 id)
 	{
 		switch (id)
 		{
@@ -659,7 +661,7 @@ namespace scbw
 		return false;
 	}
 
-	bool isZergBuildingMorphSource(u16 id)
+	bool is_zerg_building_morph_source(u16 id)
 	{
 		switch (id)
 		{
@@ -686,7 +688,7 @@ namespace scbw
 		return false;
 	}
 
-	std::string readSamaseFile(char* name)
+	std::string read_samase_file(char* name)
 	{
 		const char* data = nullptr;
 		u32 len = 0;

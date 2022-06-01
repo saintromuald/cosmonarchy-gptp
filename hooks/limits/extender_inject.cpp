@@ -481,7 +481,7 @@ namespace hooks
 
 		jump_patch(preInitDataWrapper, 0x004DAF31);
 		/*
-		auto str = scbw::readSamaseFile("samase\\sfx_ext.txt");
+		auto str = scbw::read_samase_file("samase\\sfx_ext.txt");
 		GPTP::logger << "Read Test Len: " << str.size() << '\n';
 		*/
 	}

@@ -38,7 +38,7 @@ namespace hooks
 		bool jump_to_5D720 = false;
 		buildingId = building->buildQueue[building->buildQueueSlot];
 
-		if (!scbw::isZergBuildingMorphResult(buildingId))
+		if (!scbw::is_zerg_building_morph_result(buildingId))
 		{
 			buildingId = building->id;
 		}
@@ -260,7 +260,7 @@ namespace hooks
 		if (jump_to_5D720)
 		{
 			jump_to_5D720 = false;
-			if (!scbw::isZergBuildingMorphResult(buildingId))
+			if (!scbw::is_zerg_building_morph_result(buildingId))
 			{
 				s32 hpGain = building->buildRepairHpGain * modifier.multiplier;
 				if (scbw::isCheatEnabled(CheatFlags::OperationCwal))
@@ -397,7 +397,7 @@ namespace hooks
 	bool is_morphed_building(u16 unitId)
 	{
 		//Default StarCraft behavior
-		if (scbw::isZergBuildingMorphResult(unitId))
+		if (scbw::is_zerg_building_morph_result(unitId))
 		{
 			return true;
 		}

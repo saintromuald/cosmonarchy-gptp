@@ -13,17 +13,17 @@
 
 namespace scbw
 {
-	bool isAnyMorphMorphResult(u16 id);
+	bool is_any_morph_result(u16 id);
 	bool is_conventional_unit_morph_result(u16 id);
 	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae = false, bool allow_high_templar = false);
-	bool isZergBuildingMorphResult(u16 id);
-	bool isZergBuildingMorphSource(u16 id);
+	bool is_zerg_building_morph_result(u16 id);
+	bool is_zerg_building_morph_source(u16 id);
 	bool is_larval_egg(Unit* unit);
 	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
 	bool is_zerg_egg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
 	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt);
 	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y);
-	std::string readSamaseFile(char* name);
+	std::string read_samase_file(char* name);
 	bool teleport(Unit* u, Point16 target, u16 spriteAnimation = 0, bool preserveOrder = false);
 	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 playerId = 11, s32 elevationLevel = 11);
 	Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees);
