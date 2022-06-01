@@ -145,7 +145,7 @@ namespace hooks
 							{
 								// 0046F203
 								// 0x0046F208 (use of SELECTION_ARRAY_LENGTH)
-								if (current_index_in_unit_list >= SELECTION_ARRAY_LENGTH) //action when unit_list is full
+								if (current_index_in_unit_list >= SELECTION_ARRAY_LENGTH) // action when unit_list is full
 								{
 									helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
 								}
@@ -202,15 +202,15 @@ namespace hooks
 			else
 			{
 				// 0046F264
-				if (!unit)
+				if (unit)
 				{
 					unit_list[0] = unit;
-					current_index_in_unit_list = 1; //return 1 (the clicked unit alone)
+					current_index_in_unit_list = 1; // return 1 (the clicked unit alone)
 				}
 				else
 				{
 					unit_list[0] = backup_current_unit;
-					current_index_in_unit_list = 1; //return 1 (an unit preserved by bKeepForEmptyListCase)
+					current_index_in_unit_list = 1; // return 1 (an unit preserved by bKeepForEmptyListCase)
 				}
 			}
 		}
@@ -365,7 +365,7 @@ namespace hooks
 
 						// decrease it so it's equal to the index of last element
 						arrayIndex--;
-						//each element is 4 bytes, multiply it by the number of elements after the one to remove
+						// each element is 4 bytes, multiply it by the number of elements after the one to remove
 						memcpy_size = (arrayIndex - clicked_unit->sprite->selectionIndex) * 4;
 
 						// Copy the elements on the right of the one to delete one step left to overwrite the one to delete
