@@ -670,7 +670,7 @@ namespace hooks
 		u32 gas_cost = units_dat::GasCost[unit_id];
 		u32 time_cost = units_dat::TimeCost[unit_id] / 24;
 
-		helper::set_default_tooltip_info(mineral_cost, gas_cost, 0, 0, 0, 0, 0, 0);
+		helper::set_tooltip_info(mineral_cost, gas_cost, 0, 0, 0, 0, 0, 0);
 		tooltip_time_cost = time_cost;
 	}
 }
