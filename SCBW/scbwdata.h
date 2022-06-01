@@ -318,7 +318,7 @@ SCBW_DATA(char*, imgDrawPaletteIndex,			0x0050CEC1); // count of 256
 SCBW_DATA(u8*, off_50CE81,						0x0050CE81);
 SCBW_DATA(u8*, off_50CE82,						0x0050CE82);
 
-// For drawBuildingInfo
+// For draw_building_info
 SCBW_DATA(s32*, selectionGroupHP,				0x006CA94C);
 SCBW_DATA(s16*, userInterfaceEnergy,			0x006CAC0C);
 SCBW_DATA(s32*, userInterfaceShields,			0x006CA9EC);
@@ -387,7 +387,7 @@ SCBW_DATA(s8*, visionUpdated,				0x0051CE9C);
 // X405: For displayEstablishing Shot
 SCBW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
 
-// For statsWeaponLevel / statsArmorLevel
+// For statsWeaponLevel / stats_armor_level
 SCBW_DATA(s16*, unkUpgradeCount,			0x006CA940);
 
 // For isUnitCloaked

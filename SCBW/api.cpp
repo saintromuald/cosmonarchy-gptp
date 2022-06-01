@@ -1375,7 +1375,7 @@ namespace scbw
 		return (unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph);
 	}
 
-	bool unitIsTrap(Unit* unit)
+	bool unit_is_trap(Unit* unit)
 	{
 		return (unit->id == UnitId::TerranSpiderMine || unit->id == UnitId::TerranLobotomyMine);
 	}
@@ -1582,7 +1582,7 @@ namespace scbw
 		return height;
 	}
 
-	void disableDialog(BinDlg* dialog)
+	void disable_dialog(BinDlg* dialog)
 	{
 		const u32 Func_DisableDialog = 0x00418640;
 		__asm
@@ -1594,7 +1594,7 @@ namespace scbw
 		}
 	}
 
-	void showDialog(BinDlg* dialog)
+	void show_dialog(BinDlg* dialog)
 	{
 		const u32 Func_ShowDialog = 0x004186A0;
 		__asm
@@ -1630,7 +1630,7 @@ namespace scbw
 		}
 	}
 
-	void updateDialog(BinDlg* dialog)
+	void update_dialog(BinDlg* dialog)
 	{
 		const u32 Func_UpdateDialog = 0x0041C400;
 		__asm

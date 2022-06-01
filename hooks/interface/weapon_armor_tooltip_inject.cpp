@@ -50,7 +50,6 @@ namespace
 	}
 }
 
-
 namespace hooks
 {
 	void injectUnitTooltipHook()

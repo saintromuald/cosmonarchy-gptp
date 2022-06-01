@@ -36,7 +36,7 @@ namespace helper
 	// For AI_TargetEnemyProc
 	bool ai_unit_can_attack(Unit* a1);
 
-	// For drawBuildingInfo
+	// For draw_building_info
 	s32 ui_needs_redraw();
 	Unit* generic_status_update_drawn_values();
 	void draw_progress_bar(BinDlg* a1);
@@ -559,15 +559,15 @@ namespace helper
 	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId);																	// 00425790
 	bool StatSpidermineCount(BinDlg* dialog, u32 index);																			// 00426300
 
-	// For getUnitRankString and checkHotkeyChar
+	// For get_unit_rank_string and checkHotkeyChar
 	__int8 unitGetRace(Unit* a1);																									// 0047B150
 	char* getStatTxtString(u16 a1);																									// 004C36F0
 
-	// For statsWeaponLevel / statsArmorLevel
+	// For statsWeaponLevel / stats_armor_level
 	char getArmorCount(Unit* unit, s32 a2);																							// 00453FC0
-	void showDialog(BinDlg* dialog);																								// 004186A0
-	s32 disableDialog(BinDlg* dialog);																								// 00418640
-	void updateDialog(BinDlg* dialog);																								// 0041C400
+	void show_dialog(BinDlg* dialog);																								// 004186A0
+	s32 disable_dialog(BinDlg* dialog);																								// 00418640
+	void update_dialog(BinDlg* dialog);																								// 0041C400
 
 	//// bunker_hooks
 	Unit* findRandomAttackTarget(Unit* unit);																						// 00442FC0

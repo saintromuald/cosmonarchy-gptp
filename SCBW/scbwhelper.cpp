@@ -272,7 +272,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	// For drawBuildingInfo
+	// For draw_building_info
 
 	s32 ui_needs_redraw()
 	{
@@ -5070,7 +5070,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	// For getUnitRankString
+	// For get_unit_rank_string
 
 	__int8 unitGetRace(Unit* a1)
 	{
@@ -5100,7 +5100,7 @@ namespace helper
 		return (char*)result;
 	}
 
-	// For statsWeaponLevel / statsArmorLevel
+	// For statsWeaponLevel / stats_armor_level
 
 	char getArmorCount(Unit* unit, s32 unused)
 	{
@@ -5117,7 +5117,7 @@ namespace helper
 		return (char)result;
 	}
 
-	void showDialog(BinDlg* dialog)
+	void show_dialog(BinDlg* dialog)
 	{
 		const u32 Func_showDialog = 0x004186A0;
 		__asm {
@@ -5128,7 +5128,7 @@ namespace helper
 		}
 	}
 
-	s32 disableDialog(BinDlg* dialog)
+	s32 disable_dialog(BinDlg* dialog)
 	{
 		const u32 Func_disableDialog = 0x00418640;
 		static s32 result;
@@ -5142,7 +5142,7 @@ namespace helper
 		return result;
 	}
 
-	void updateDialog(BinDlg* dialog)
+	void update_dialog(BinDlg* dialog)
 	{
 		const u32 Func_updateDialog = 0x0041C400;
 		__asm {
@@ -7957,7 +7957,7 @@ namespace helper
 		return result;
 	}
 
-	// For drawBuildingInfo
+	// For draw_building_info
 	void draw_supply_unit_info(BinDlg* dialog) {
 		const u32 Func_drawSupplyUnitInfo = 0x00427540;
 		__asm {
