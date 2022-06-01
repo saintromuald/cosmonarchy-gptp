@@ -113,7 +113,7 @@ namespace hooks
 		}
 		if ( !campaignIndex )
 		{
-		sStrCopy(&source, CurrentMapFileName, 0x104u);
+		sStrCopy(&source, current_map_filename, 0x104u);
 		if ( !readMapData((s32)&v21, &source, (s32 *)&v21, 0) )
 		{
 			if ( !outOfGame )

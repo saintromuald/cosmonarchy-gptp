@@ -23,7 +23,7 @@ namespace hooks {
 		{
 			return false;
 		}
-		if (!UnitAvailability->available[player_id][unitId])
+		if (!unit_availability->available[player_id][unitId])
 		{
 			return false;
 		}
@@ -1046,7 +1046,7 @@ namespace hooks {
 			*lastInternalError = InternalErrors::UnitFrozen;
 			return TECH_HIDDEN;
 		}
-		if (!UnitAvailability->available[unit->player][unitId])
+		if (!unit_availability->available[unit->player][unitId])
 		{
 			*lastInternalError = InternalErrors::UnknownError2;
 			return TECH_HIDDEN;

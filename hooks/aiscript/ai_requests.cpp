@@ -89,13 +89,13 @@ namespace hooks
 									}
 									else
 									{
-										consoleVar = consoleIndex;
+										consoleVar = console_index;
 										helper::display_error_message_id_with_sfx((u8)playerId, 851, *consoleVar + 150);
 									}
 								}
 								else
 								{
-									consoleVar = consoleIndex;
+									consoleVar = console_index;
 									helper::display_error_message_id_with_sfx((u8)playerId, 850, *consoleVar + 147);
 								}
 							}

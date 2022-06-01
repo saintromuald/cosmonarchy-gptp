@@ -214,7 +214,7 @@ namespace hooks
 			*lastError = 10;
 			return 0;
 		}
-		if (!UnitAvailability->available[unit->player][unit->id])
+		if (!unit_availability->available[unit->player][unit->id])
 		{
 			*lastError = 2;
 			return 0;

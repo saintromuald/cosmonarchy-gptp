@@ -67,10 +67,9 @@ namespace ImageFlags
 
 struct Image
 {
-	//Utility method definitions added by pastelmind
+	// Utility method definitions added by pastelmind
 
-
-	  /// Makes the image play the specified Iscript animation entry.
+	/// Makes the image play the specified Iscript animation entry.
 	void play_iscript_animation(IscriptAnimation::Enum animation);
 
 	/// AKA ImageDestructor() @ 0x004D4CE0

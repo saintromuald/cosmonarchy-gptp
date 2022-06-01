@@ -475,7 +475,7 @@ namespace hooks
 	LABEL_32:
 		helper::set_text_string(dialog);
 		helper::set_unit_status_string_text(dialog);
-		helper::add_text_to_dialog(dialog, -5, getUnitName(*activePortraitUnit));
+		helper::add_text_to_dialog(dialog, -5, get_unit_name(*activePortraitUnit));
 	}
 
 	// Hooked to draw new values to icons. -- Pr0nogo
@@ -554,7 +554,7 @@ namespace hooks
 		*unkUpgradeCount += v13;
 	}
 
-	void statsWeaponLevel(BinDlg* dialog, u16 buttonRelated, u8 weaponId) // 00425790
+	void stats_weapon_level(BinDlg* dialog, u16 buttonRelated, u8 weaponId) // 00425790
 	{
 		BinDlg* v3;
 		s32 v4;
@@ -618,7 +618,7 @@ namespace hooks
 	}
 
 	// Hooked to change the name of new building morphs. - Pr0nogo
-	const char* getUnitName(Unit* unit)
+	const char* get_unit_name(Unit* unit)
 	{
 		u16 queue = unit->buildQueue[unit->buildQueueSlot];
 		if (unit->status & UnitStatus::Completed
@@ -634,7 +634,7 @@ namespace hooks
 
 	static u32 tooltip_time_cost;
 
-	// 00459360 004593B0 004597D5 - Hooked to add time costs to tooltip info
+	// 00459360 004593B0 004597D5 - Hooked to add time costs to tooltip info. -Veeq7
 	void __cdecl reset_tooltip_info() {
 		helper::refreshSelectionScreen();
 
@@ -650,7 +650,7 @@ namespace hooks
 		tooltip_time_cost = 0;
 	}
 
-	// 00458800 - Hooked to add time costs to tooltip info
+	// 00458800 - Same as above. -Veeq7
 	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply) {
 		*tooltip_ore_cost = mineral_cost;	
 		*tooltip_gas_cost = gas_cost;
@@ -664,7 +664,7 @@ namespace hooks
 		tooltip_time_cost = 0;
 	}
 
-	// 00459531 - Hooked to add time costs to tooltip info
+	// 00459531 - Same as above. -Veeq7
 	void set_tooltip_info_unit(u32 unit_id) {
 		u32 mineral_cost = units_dat::MineralCost[unit_id];
 		u32 gas_cost = units_dat::GasCost[unit_id];
@@ -672,5 +672,69 @@ namespace hooks
 
 		helper::set_tooltip_info(mineral_cost, gas_cost, 0, 0, 0, 0, 0, 0);
 		tooltip_time_cost = time_cost;
+	}
+
+	// Same as above. -Pr0nogo
+	void draw_tooltip_with_icon(Box16* area) // 00458EF0
+	{
+		Box16 result = {};
+		s32 right_dim = 2;
+		Box16 frame_dims = {};
+		s32 field_index = 0;
+		u32 x_max = 2;
+		GrpHead* stat_icon_offset = 0;
+		u32 iterations = 0;
+		char dest;
+		bool draw = false;
+		do
+		{
+			if (*(&tooltip_ore_cost + field_index))
+			{
+				u8 stat_icon = grp_stat_res_icon_mapping[field_index];
+				if (stat_icon == 1)
+				{
+					stat_icon = *console_index + 1;
+				}
+				if (stat_icon >= icons_grp->frameCount)
+				{
+					stat_icon = 0;
+				}
+				u16 frame_bottom = icons_grp->frames[stat_icon].width;
+				u16 frame_right = icons_grp->frames[stat_icon].height;
+				u32 frame_offset = icons_grp->frames[stat_icon].data_offset;
+				frame_dims.top = frame_bottom;
+				if (frame_offset < 0)
+				{
+					frame_offset &= 0x7FFFFFFFu;
+					frame_right += 256;
+				}
+				stat_icon_offset = (icons_grp + frame_offset);
+				Box16 frame_area = {};
+				u16 uninitialized = 0;
+				u16 frame_right_minus = frame_right - 1;
+				u16 bottom_dim = area->bottom;
+				u16 frame_bottom_var = frame_bottom;
+				frame_dims.bottom = frame_right;
+				u16 frame_right_var = frame_right;
+				u16 y_min_minus = frame_dims.top - 1;
+				helper::bw_print_icon(&frame_area, &frame_dims, right_dim, bottom_dim);
+				sprintf_s(&dest, 16, "%d", *(&tooltip_ore_cost + field_index));
+				helper::bw_print_xy(&dest, frame_right + x_max + 2, area->bottom);
+				field_index = iterations;
+				x_max = required_area->right;
+				draw = 1;
+				right_dim = required_area->right;
+			}
+			iterations = ++field_index;
+		} while (field_index < 8);
+		if (draw)
+		{
+			if (right_dim > area->right)
+			{
+				area->right = right_dim;
+			}
+			area->bottom += frame_dims.top + 1;
+		}
+		return;
 	}
 }

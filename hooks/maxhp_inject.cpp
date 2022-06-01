@@ -885,7 +885,7 @@ namespace hooks
 		//		jump_patch(drawUnitInfo_Wrapper, 0x00426190, 3);
 		//		jump_patch(drawSupplyUnitInfo_Wrapper, 0x00427540, 1);
 		//		jump_patch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
-		//		jump_patch(drawBuildingInfo_Wrapper, 0x00427890, 3);
+		//		jump_patch(draw_building_info_wrapper, 0x00427890, 3);
 		//		jump_patch(calcUnitStrength_Wrapper, 0x00431270, 5);
 		//		jump_patch(getUnitStrength_Wrapper, 0x00431800, 0);
 		//		jump_patch(AI_RestorationRequirementsProc_Wrapper, 0x004407E0, 1);

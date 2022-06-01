@@ -59,7 +59,7 @@ namespace helper
 	s32 get_unit_name(Unit* a1);
 	void draw_supply_unit_info(BinDlg* dialog);						// 00427540
 
-	// For getUnitName
+	// For get_unit_name
 	const char* get_unit_name_stat_string(u16 unitId); // 0047B090
 
 	// For getUnitStrength
@@ -563,7 +563,7 @@ namespace helper
 	__int8 unitGetRace(Unit* a1);																									// 0047B150
 	char* getStatTxtString(u16 a1);																									// 004C36F0
 
-	// For statsWeaponLevel / stats_armor_level
+	// For stats_weapon_level / stats_armor_level
 	char getArmorCount(Unit* unit, s32 a2);																							// 00453FC0
 	void show_dialog(BinDlg* dialog);																								// 004186A0
 	s32 disable_dialog(BinDlg* dialog);																								// 00418640
@@ -1295,4 +1295,7 @@ namespace helper
 	void refresh_all_visible_images_at_screen_position(Sprite* sprite, u8 vision_filter);					// 00497480
 
 	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply); // 00458800
+
+	s32 bw_print_icon(Box16* area, Box16* dims, u16 right, u16 bottom);										// 0041D090
+	u32 bw_print_xy(char* dest, s32 width, s32 height);														// 004202B0
 }

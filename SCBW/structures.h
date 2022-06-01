@@ -232,7 +232,7 @@ struct UNITSCORES_I
 {
 	u32        player[12];
 };
-//Based on http://code.google.com/p/bwapi/source/browse/branches/bwapi4/bwapi/BWAPI/Source/BW/Image.h
+// Based on http://code.google.com/p/bwapi/source/browse/branches/bwapi4/bwapi/BWAPI/Source/BW/Image.h
 
 struct TEXT
 {
@@ -283,7 +283,7 @@ struct DOODAD
 	/*10*/  u16 doodatWidth;
 	/*12*/  u16 _3;
 	/*14*/  u16 miniTile[16]; /** MegaTile References (VF4/VX4) */
-};	//size 34
+}; // size 34
 
 struct Thingy
 {
@@ -351,30 +351,30 @@ struct BUTTON
 
 struct StatusScreenState
 {
-	GrpHead* button_grp;
-	u16 grp_frame;//0x4
-	u16 type;//0x6
-	u8 id;//0x8	
+	GrpHead* button_grp;	// 0x0
+	u16 grp_frame;			// 0x4
+	u16 type;				// 0x6
+	u8 id;					// 0x8	
 };
 
 struct BUTTON_SET
 {
-	u32     buttonsInSet;
-	BUTTON* firstButton;
-	u32     connectedUnit;
+	u32			buttonsInSet;
+	BUTTON*		firstButton;
+	u32			connectedUnit;
 };
 
 //---- Taken from triggers.h ----//
 struct CONDITION
 {
-	u32        location;
-	u32        player;
-	u32        number;
-	u16        unit;
-	u8        comparison;
-	u8        condition;
-	u8        type;
-	u8        flags;
+	u32			location;
+	u32			player;
+	u32			number;
+	u16			unit;
+	u8			comparison;
+	u8			condition;
+	u8			type;
+	u8			flags;
 };
 
 typedef b32(__fastcall* ConditionPointer)(CONDITION*);
@@ -388,11 +388,10 @@ struct ACTION
 	u32        player;
 	u32        number;
 	u16        unit;
-	u8        action;
-	u8        number2;
-	u8        flags;
+	u8         action;
+	u8         number2;
+	u8         flags;
 };
-
 typedef b32(__fastcall* ActionPointer)(ACTION*);
 
 //GRP frame header
@@ -402,9 +401,8 @@ struct GrpFrame
 	s8  y;
 	s8  width;
 	s8  height;
-	u32 dataOffset;	//might be u16* (but as a pointer, would still fit in u32)
+	u32 data_offset; // might be u16* (but as a pointer, would still fit in u32)
 };
-
 C_ASSERT(sizeof(GrpFrame) == 8);
 //static_assert(sizeof(GrpFrame) == 8, "The size of the GrpFrame structure is invalid");
 
@@ -420,7 +418,7 @@ struct GrpHead
 C_ASSERT(sizeof(GrpHead) == 14);
 //static_assert(sizeof(GrpHead) == 14, "The size of the GrpHead structure is invalid");
 
-//LO* file header
+// LO* file header
 struct LO_Header
 {
 	u32 frameCount;
@@ -436,8 +434,7 @@ struct LO_Header
 C_ASSERT(sizeof(LO_Header) == 12);
 //static_assert(sizeof(LO_Header) == 12, "The size of the LO_Header structure is invalid");
 
-
-//Image Remapping Data
+// Image Remapping Data
 struct ColorShiftData
 {
 	u32 index;
@@ -450,7 +447,7 @@ C_ASSERT(sizeof(ColorShiftData) == 20);
 
 //-------- Flag structures --------//
 
-//Based on BWAPI's Offsets.h
+// Based on BWAPI's Offsets.h
 union ActiveTile
 {
 	u32 value;
@@ -474,7 +471,6 @@ union ActiveTile
 			u8 unknown4 : 1;				// 0x80000000 Unused?
 	};
 };
-
 C_ASSERT(sizeof(ActiveTile) == 4);
 
 struct GroupFlag
@@ -488,7 +484,6 @@ struct GroupFlag
 	u8 isIndependent : 1;	/*0x40*/
 	u8 isNeutral : 1;		/*0x80*/
 };
-
 C_ASSERT(sizeof(GroupFlag) == 1);
 
 struct TargetFlag
@@ -503,7 +498,6 @@ struct TargetFlag
 	u16 orgOrMech : 1;
 	u16 playerOwned : 1;
 };
-
 C_ASSERT(sizeof(TargetFlag) == 2);
 //static_assert(sizeof(TargetFlag) == 2, "The size of the TargetFlag structure is invalid");
 
@@ -973,7 +967,7 @@ struct ResourceAreaArray {
 	u32 frames_till_update;
 };
 
-// From BWAPI Offsets.h, used in scbwdata.h by UnitAvailability
+// From BWAPI Offsets.h, used in scbwdata.h by unit_availability
 struct _uavail
 {
 	u8 available[PLAYER_COUNT][UNIT_TYPE_COUNT];

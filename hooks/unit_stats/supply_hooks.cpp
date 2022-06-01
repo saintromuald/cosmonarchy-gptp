@@ -210,7 +210,7 @@ namespace hooks
             dialogVar = dialogVar->next;
         }
 
-        helper::printStatResInfo(dialogVar, *consoleIndex + 1, (char**)unknown_68C22C, (char*)gameGas[*LOCAL_NATION_ID], replay_switch_something);
+        helper::printStatResInfo(dialogVar, *console_index + 1, (char**)unknown_68C22C, (char*)gameGas[*LOCAL_NATION_ID], replay_switch_something);
         BinDlg* v18 = dialogVar->next;
         helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)gameMinerals[*LOCAL_NATION_ID], replay_switch_something);
         BinDlg* v17 = v18->next;

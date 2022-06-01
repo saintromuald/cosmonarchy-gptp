@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) stats_panel_display_Wrapper()
+	void __declspec(naked) stats_panel_display_wrapper()
 	{
 		static BinDlg* dialog;
 		__asm {
@@ -22,7 +22,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) drawBuildingInfo_Wrapper()
+	void __declspec(naked) draw_building_info_wrapper()
 	{
 		static BinDlg* dialog;
 		__asm {
@@ -36,7 +36,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) getUnitRankString_Wrapper() // 0042F370
+	void __declspec(naked) get_unit_rank_string_wrapper() // 0042F370
 	{
 		static Unit* a1;
 		static char* result;
@@ -52,7 +52,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) drawUnitKillsString_Wrapper() // 00425DD0
+	void __declspec(naked) draw_unit_kills_string_wrapper() // 00425DD0
 	{
 		static BinDlg* dialog;
 		__asm {
@@ -66,7 +66,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) statsArmorLevel_Wrapper() // 00425600
+	void __declspec(naked) stats_armor_level_wrapper() // 00425600
 	{
 		static BinDlg* dialog;
 		static s32 unused;
@@ -88,7 +88,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) statsWeaponLevel_Wrapper() // 00425790
+	void __declspec(naked) stats_weapon_level_wrapper() // 00425790
 	{
 		static BinDlg* dialog;
 		static u16 buttonRelated;
@@ -104,14 +104,14 @@ namespace
 			MOV dialog, EAX
 			PUSHAD
 		}
-		hooks::statsWeaponLevel(dialog, buttonRelated, weaponId);
+		hooks::stats_weapon_level(dialog, buttonRelated, weaponId);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) getUnitName_Wrapper() // 0047B5A0
+	void __declspec(naked) get_unit_name_wrapper() // 0047B5A0
 	{
 		static const char* result;
 		static Unit* unit;
@@ -119,7 +119,7 @@ namespace
 			MOV unit, ECX
 			PUSHAD
 		}
-		result = hooks::getUnitName(unit);
+		result = hooks::get_unit_name(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -201,22 +201,42 @@ namespace
 			RETN 0x10
 		}
 	}
+
+	void __declspec(naked) draw_tooltip_with_icon_wrapper() { // 00458EF0
+		static Box16* area;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV area, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::draw_tooltip_with_icon(area);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectStatsPanelDisplayHook()
 	{
-		jump_patch(stats_panel_display_Wrapper,		0x00426C60, 1);
-		jump_patch(getUnitRankString_Wrapper,		0x0042F370, 2);
-		jump_patch(drawUnitKillsString_Wrapper,		0x00425DD0, 2);
-	//	jump_patch(drawBuildingInfo_Wrapper,		0x00427890, 3);
-	//	jump_patch(statsArmorLevel_Wrapper,			0x00425600, 1);
-	//	jump_patch(statsWeaponLevel_Wrapper,		0x00425790, 1);
-		jump_patch(getUnitName_Wrapper,				0x0047B5A0, 2);
+		jump_patch(stats_panel_display_wrapper,		0x00426C60, 1);
+		jump_patch(get_unit_rank_string_wrapper,	0x0042F370, 2);
+		jump_patch(draw_unit_kills_string_wrapper,	0x00425DD0, 2);
+	//	jump_patch(draw_building_info_wrapper,		0x00427890, 3);
+	//	jump_patch(stats_armor_level_wrapper,		0x00425600, 1);
+	//	jump_patch(stats_weapon_level_wrapper,		0x00425790, 1);
+		jump_patch(get_unit_name_wrapper,			0x0047B5A0, 2);
 	//	jump_patch(reset_tooltip_info,				0x00459360, 0);
 	//	jump_patch(reset_tooltip_info_wrapper_1,	0x004593B0, 0);
 	//	jump_patch(reset_tooltip_info_wrapper_2,	0x004597D5, 0);
 	//	jump_patch(set_tooltip_info_unit_wrapper,	0x00458800, 2);
+		jump_patch(draw_tooltip_with_icon_wrapper,	0x00458EF0, 1);
 	}
 }
