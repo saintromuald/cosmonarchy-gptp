@@ -127,18 +127,32 @@ namespace
 		}
 	}
 
+	void __declspec(naked) set_tooltip_info_unit_wrapper() { // 00459531
+		static const u32 jmp_address = 0x00459635;
+		static u32 unit_id;
+		__asm {
+			MOV unit_id, EAX
+			PUSHAD
+		}
+		hooks::set_tooltip_info_unit(unit_id);
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectStatsPanelDisplayHook()
 	{
-		jump_patch(stats_panel_display_Wrapper,	0x00426C60, 1);
-		jump_patch(getUnitRankString_Wrapper,	0x0042F370, 2);
-		jump_patch(drawUnitKillsString_Wrapper,	0x00425DD0, 2);
-	//	jump_patch(drawBuildingInfo_Wrapper,	0x00427890, 3);
-	//	jump_patch(statsArmorLevel_Wrapper,		0x00425600, 1);
-	//	jump_patch(statsWeaponLevel_Wrapper,	0x00425790, 1);
-		jump_patch(getUnitName_Wrapper,			0x0047B5A0, 2);
+		jump_patch(stats_panel_display_Wrapper,		0x00426C60, 1);
+		jump_patch(getUnitRankString_Wrapper,		0x0042F370, 2);
+		jump_patch(drawUnitKillsString_Wrapper,		0x00425DD0, 2);
+	//	jump_patch(drawBuildingInfo_Wrapper,		0x00427890, 3);
+	//	jump_patch(statsArmorLevel_Wrapper,			0x00425600, 1);
+	//	jump_patch(statsWeaponLevel_Wrapper,		0x00425790, 1);
+		jump_patch(getUnitName_Wrapper,				0x0047B5A0, 2);
+		jump_patch(set_tooltip_info_unit_wrapper,	0x00459531, 2);
 	}
 }

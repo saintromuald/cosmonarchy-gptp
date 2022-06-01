@@ -301,6 +301,10 @@ namespace hooks
 		if (data.damageType != DamageType::Independent && data.target->hitPoints != 0 && data.target->defensiveMatrixHp == 0 && canDamage )
 		{
 			data.target->damage_hp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
+		
+			if (!data.target->hitPoints) {
+				helper::do_attack_notify_event(data.target);
+			}
 		}
 
 		// New AI defense logic

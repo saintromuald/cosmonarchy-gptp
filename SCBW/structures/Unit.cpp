@@ -644,7 +644,7 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	// Logging
 	auto targetId = this->id;
 	auto targetPlayerId = this->player;
-	if (attacker != nullptr)
+	if (attacker)
 	{
 		GPTP::logger << "damage_hp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
 			<< "), target (" << targetId << "), targetPlayerId (" << targetPlayerId << "))" << std::endl;

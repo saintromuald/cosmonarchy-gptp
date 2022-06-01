@@ -77,7 +77,7 @@ namespace helper
 
 	// For hallucinationHit
 	void unit_was_hit(Unit* a1, Unit* a2, s32 a3);
-	void do_attack_notify_event(Unit* a1);
+	void do_attack_notify_event(Unit* unit);
 	Image* create_shield_overlay(s32 a1, Unit* a2);
 
 	// For drawImageHPBar
@@ -1293,4 +1293,6 @@ namespace helper
 	Sprite* create_sprite(u32 sprite_id, u32 x, u32 y, u32 player);											// 004990F0
 
 	void refresh_all_visible_images_at_screen_position(Sprite* sprite, u8 vision_filter);					// 00497480
+
+	void set_default_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply); // 00458800
 }

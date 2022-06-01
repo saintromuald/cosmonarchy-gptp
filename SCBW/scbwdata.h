@@ -180,6 +180,15 @@ SCBW_DATA(u32*, sgdwBytesInCmdQueue, 0x00654AA0);
 SCBW_DATA(const char*, TurnBuffer, 0x00654880);
 ////possible values were 0057F1DC and [00596828]
 
+SCBW_DATA(u16*, tooltip_ore_cost,		0x0068C1D0);
+SCBW_DATA(u16*, tooltip_gas_cost,		0x0068C1D0);
+SCBW_DATA(u16*, tooltip_p_energy_cost,	0x0068C1D4);
+SCBW_DATA(u16*, tooltip_t_energy_cost,	0x0068C1D6);
+SCBW_DATA(u16*, tooltip_z_energy_cost,	0x0068C1D8);
+SCBW_DATA(u16*, tooltip_p_supply_cost,	0x0068C1FA);
+SCBW_DATA(u16*, tooltip_t_supply_cost,	0x0068C1FC);
+SCBW_DATA(u16*, tooltip_z_supply_cost,	0x0068C1FE);
+
 // Added from BWAPI Offsets.h, but made const since it would not be safe to modify those
 SCBW_DATA(char*, CurrentMapFileName, 0x0057FD3C);
 SCBW_DATA(const char*, CurrentMapName, 0x0057FE40);
