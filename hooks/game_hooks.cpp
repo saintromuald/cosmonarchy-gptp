@@ -989,15 +989,6 @@ namespace hooks
 					scbw::send_gptp_aise_command(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 				}
 			} break;
-			case UnitId::ProtossMindTyrant:
-			{
-				// Rescind Mind Control
-				if (scbw::get_generic_rust_value(unit, RustId::CancelMindControl) == 1)
-				{
-					// remove the cancel?
-					scbw::set_generic_rust_value(unit, RustId::CancelMindControl, 0);
-				}
-			} break;
 			case UnitId::ProtossDemiurge:
 			{
 				// Demiurge - Gods Made Flesh - initial cast
@@ -1258,8 +1249,6 @@ namespace hooks
 				}
 				unitExt->timers[TimerMindTyrantRecede] = 5 * 24;
 			}
-		}
-		if (unitExt->timers[TimerMindTyrantRecede]) {
 			if (unitExt->timers[TimerMindTyrantRecede] <= 4 * 24) {
 				if (!(unit->status & UnitStatus::Frozen)) {
 					unit->freeze();
@@ -1269,15 +1258,15 @@ namespace hooks
 					unit->sprite->create_top_overlay(ImageId::MaelstromOverlay_Small + offset);
 				}
 			}
-			if (unitExt->timers[TimerMindTyrantRecede] == 1) {
-				if (unit->status & UnitStatus::Frozen) {
-					unit->unfreeze();
-				}
-				unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
-
-				scbw::recede_mind_control(unit);
-				unitExt->units[UnitMindTyrantSource] = 0;
+		}
+		if ((unitExt->units[UnitMindTyrantSource] && !unitExt->timers[TimerMindTyrantRecede]) || (!unitExt->units[UnitMindTyrantSource] && unitExt->timers[TimerMindTyrantRecede])) {
+			if (unit->status & UnitStatus::Frozen) {
+				unit->unfreeze();
 			}
+			unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+
+			scbw::recede_mind_control(unit);
+			unitExt->units[UnitMindTyrantSource] = 0;
 		}
 
 		// Fix animation bug with acceleration movement flag

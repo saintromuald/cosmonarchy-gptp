@@ -140,6 +140,67 @@ namespace
 			JMP jmp_address
 		}
 	}
+
+	void __declspec(naked) reset_tooltip_info_wrapper_1() { // 004593B0
+		static const u32 jmp_address = 0x004593ED;
+		__asm {
+			PUSHAD
+		}
+		hooks::reset_tooltip_info();
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
+	}
+
+	void __declspec(naked) reset_tooltip_info_wrapper_2() { // 004597D5
+		static const u32 jmp_address = 0x00459819;
+		__asm {
+			PUSHAD
+		}
+		hooks::reset_tooltip_info();
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
+	}
+
+	void __declspec(naked) set_tooltip_info_wrapper() { // 00458800
+		static u32 mineral_cost;
+		static u32 gas_cost;
+		static u32 p_energy;
+		static u32 t_energy;
+		static u32 z_energy;
+		static u32 p_supply;
+		static u32 t_supply;
+		static u32 z_supply;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x04]
+			MOV t_energy, EAX
+			MOV EAX, [EBP + 0x08]
+			MOV z_energy, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV p_supply, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV t_supply, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV z_supply, EAX
+			POP EAX
+			MOV mineral_cost, EAX
+			MOV gas_cost, ECX
+			MOV p_energy, EDX
+			PUSHAD
+		}
+		hooks::set_tooltip_info(mineral_cost, gas_cost, p_energy, t_energy, z_energy, p_supply, t_supply, z_supply);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x10
+		}
+	}
 }
 
 namespace hooks
@@ -153,6 +214,9 @@ namespace hooks
 	//	jump_patch(statsArmorLevel_Wrapper,			0x00425600, 1);
 	//	jump_patch(statsWeaponLevel_Wrapper,		0x00425790, 1);
 		jump_patch(getUnitName_Wrapper,				0x0047B5A0, 2);
-		jump_patch(set_tooltip_info_unit_wrapper,	0x00459531, 2);
+	//	jump_patch(reset_tooltip_info,				0x00459360, 0);
+	//	jump_patch(reset_tooltip_info_wrapper_1,	0x004593B0, 0);
+	//	jump_patch(reset_tooltip_info_wrapper_2,	0x004597D5, 0);
+	//	jump_patch(set_tooltip_info_unit_wrapper,	0x00458800, 2);
 	}
 }

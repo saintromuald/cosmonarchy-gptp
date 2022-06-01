@@ -1294,5 +1294,5 @@ namespace helper
 
 	void refresh_all_visible_images_at_screen_position(Sprite* sprite, u8 vision_filter);					// 00497480
 
-	void set_default_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply); // 00458800
+	void set_default_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply); // 00458800
 }

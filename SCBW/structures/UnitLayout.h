@@ -424,7 +424,6 @@ namespace RustId
 		CastEmergencyDetonation,
 		CastSalvage,
 
-		CancelMindControl,
 		CancelLandGrab,
 		CancelAttachment,
 

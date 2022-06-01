@@ -152,18 +152,7 @@ namespace hooks
 			} break;
 			case TechId::CancelNewAbility:
 			{
-				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossMindTyrant)
-				{
-					s32 action = 1;
-					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0};
-					buf[0] = 0x99;
-					buf[1] = NewGameCommand::GenericSwitchAbility;
-					buf[2] = action;
-					buf[3] = *ACTIVE_PLAYER_ID;
-					buf[4] = RustId::CancelMindControl;
-					helper::queue_game_command(buf, 0xc);
-				}
-				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranWyvern)
+				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranWyvern)
 				{
 					s32 action = 1;
 					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0};

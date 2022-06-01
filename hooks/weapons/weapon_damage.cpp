@@ -173,9 +173,9 @@ namespace hooks
 		}
 
 		// Minimum amount of damage that can be dealt
-		if (data.finalDamage < 128)
+		if (data.finalDamage < 256)
 		{
-			data.finalDamage = 128;
+			data.finalDamage = 256;
 		}
 
 		// Reduce Defensive Matrix
@@ -288,7 +288,7 @@ namespace hooks
 		}
 
 		weaponDamage_behaviors(data);
-		if (data.attacker != nullptr)
+		if (data.attacker)
 		{
 			weaponDamage_lifesteal(data);
 		}
