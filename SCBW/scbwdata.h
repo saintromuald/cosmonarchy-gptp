@@ -18,16 +18,21 @@
 SCBW_DATA(Unit**, firstVisibleUnit, 0x00628430);
 /// Includes units in transports/bunkers, worker inside gas buildings, nukes in
 /// silos, queens inside command centers, and units in production.
-SCBW_DATA(Unit**,		firstHiddenUnit,		0x006283EC);
-SCBW_DATA(Unit**,		lastHiddenUnit,			0x00628428);
-SCBW_DATA(Unit**,		firstScannerSweep,		0x006283F4);
-SCBW_DATA(Unit**,		lastScannerSweep,		0x00628434);
-SCBW_DATA(Unit**,		firstPsiFieldProvider,	0x0063FF54);
-SCBW_DATA(Bullet**,		firstBullet,			0x0064DEC4);
-SCBW_DATA(Bullet**,		lastBullet,				0x0064DEAC);
-SCBW_DATA(Bullet**,		firstFreeBullet,		0x0064EED8);
-SCBW_DATA(Bullet**,		lastFreeBullet,			0x0064EEDC);
-SCBW_DATA(u32*,			bulletCount,			0x0064DEBC);
+SCBW_DATA(Unit**,		first_hidden_unit,			0x006283EC);
+SCBW_DATA(Unit**,		last_hidden_unit,			0x00628428);
+SCBW_DATA(Unit**,		first_scanner_sweep,		0x006283F4);
+SCBW_DATA(Unit**,		last_scanner_sweep,			0x00628434);
+SCBW_DATA(Unit**,		first_psi_field_provider,	0x0063FF54);
+SCBW_DATA(u32*,			psi_field_grp_width,		0x0063FF4C);
+SCBW_DATA(u32*,			psi_field_grp_height,		0x0063FF58);
+SCBW_DATA(u8**,			psi_field_mask,				0x006D5BD8);
+SCBW_DATA(u32*,			psi_unknown,				0x0063FF48);
+SCBW_DATA(u32*,			psi_vision_filter,			0x0057F0B0);
+SCBW_DATA(Bullet**,		first_bullet,				0x0064DEC4);
+SCBW_DATA(Bullet**,		last_bullet,				0x0064DEAC);
+SCBW_DATA(Bullet**,		first_free_bullet,			0x0064EED8);
+SCBW_DATA(Bullet**,		last_free_bullet,			0x0064EEDC);
+SCBW_DATA(u32*,			bullet_count,				0x0064DEBC);
 
 struct Units12 {
 	Unit* unit[12];

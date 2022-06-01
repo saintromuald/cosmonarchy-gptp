@@ -11744,4 +11744,31 @@ namespace helper
 		}
 		return result;
 	}
+
+	Sprite* create_sprite(u32 sprite_id, u32 x, u32 y, u32 player) {
+		static Sprite* result;
+		const u32 func_address = 0x004990F0;
+		__asm {
+			PUSHAD
+			PUSH player
+			PUSH x
+			MOV EDI, y
+			PUSH sprite_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void refresh_all_visible_images_at_screen_position(Sprite* sprite, u8 vision_filter) {
+		const u32 func_address = 0x00497480;
+		__asm {
+			PUSHAD
+			PUSH vision_filter
+			MOV EBX, sprite
+			CALL func_address
+			POPAD
+		}
+	}
 }

@@ -611,19 +611,19 @@ namespace hooks
 			while (first_visible_unit);
 			first_visible_unit = *firstVisibleUnit;
 		}
-		Unit* first_scanner_sweep = *firstScannerSweep;
+		Unit* scanner_sweep = *first_scanner_sweep;
 		if (*visionUpdated)
 		{
-			if (*firstScannerSweep)
+			if (scanner_sweep)
 			{
-				Unit* next_scanner_sweep = first_scanner_sweep->link.next;
+				Unit* next_scanner_sweep = scanner_sweep->link.next;
 				do
 				{
-					next_scanner_sweep = first_scanner_sweep->link.next;
-					*activeIscriptEntity = first_scanner_sweep;
-					*activeIscriptUnit = first_scanner_sweep;
-					helper::refresh_unit_vision(first_scanner_sweep);
-					first_scanner_sweep = next_scanner_sweep;
+					next_scanner_sweep = scanner_sweep->link.next;
+					*activeIscriptEntity = scanner_sweep;
+					*activeIscriptUnit = scanner_sweep;
+					helper::refresh_unit_vision(scanner_sweep);
+					scanner_sweep = next_scanner_sweep;
 				}
 				while (next_scanner_sweep);
 				first_visible_unit = *firstVisibleUnit;
@@ -666,21 +666,21 @@ namespace hooks
 			}
 			while (next_visible_unit);
 		}
-		Unit* first_hidden_unit = *firstHiddenUnit;
-		if (*firstHiddenUnit)
+		Unit* hidden_unit = *first_hidden_unit;
+		if (hidden_unit)
 		{
-			Unit* next_hidden_unit = first_hidden_unit->link.next;
+			Unit* next_hidden_unit = hidden_unit->link.next;
 			do
 			{
-				next_hidden_unit = first_hidden_unit->link.next;
-				if (first_hidden_unit->status & 0x300)
+				next_hidden_unit = hidden_unit->link.next;
+				if (hidden_unit->status & 0x300)
 				{
-					first_hidden_unit->isCloaked = 0;
+					hidden_unit->isCloaked = 0;
 				}
-				*activeIscriptEntity = first_hidden_unit;
-				*activeIscriptUnit = first_hidden_unit;
-				helper::unit_update(first_hidden_unit);
-				first_hidden_unit = next_hidden_unit;
+				*activeIscriptEntity = hidden_unit;
+				*activeIscriptUnit = hidden_unit;
+				helper::unit_update(hidden_unit);
+				hidden_unit = next_hidden_unit;
 			}
 			while (next_hidden_unit);
 		}
@@ -694,17 +694,17 @@ namespace hooks
 		}
 		memset(&lurkerSplashList[32 * lurker_splash_index], 0, 0x80u);
 		*lastBulletIndex = 0;
-		first_scanner_sweep = *firstScannerSweep;
-		if (*firstScannerSweep)
+		scanner_sweep = *first_scanner_sweep;
+		if (scanner_sweep)
 		{
-			Unit* next_scanner_sweep_2 = first_scanner_sweep->link.next;
+			Unit* next_scanner_sweep_2 = scanner_sweep->link.next;
 			do
 			{
-				next_scanner_sweep_2 = first_scanner_sweep->link.next;
-				*activeIscriptEntity = first_scanner_sweep;
-				*activeIscriptUnit = first_scanner_sweep;
-				helper::progress_unit_frame(first_scanner_sweep);
-				first_scanner_sweep = next_scanner_sweep_2;
+				next_scanner_sweep_2 = scanner_sweep->link.next;
+				*activeIscriptEntity = scanner_sweep;
+				*activeIscriptUnit = scanner_sweep;
+				helper::progress_unit_frame(scanner_sweep);
+				scanner_sweep = next_scanner_sweep_2;
 			}
 			while (next_scanner_sweep_2);
 		}

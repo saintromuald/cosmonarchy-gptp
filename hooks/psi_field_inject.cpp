@@ -4,8 +4,7 @@
 
 //-------- Unit selection hooks --------//
 
-void showAllPsiFields()
-{
+void show_all_psi_fields() {
 	static const u32 Func_showAllPsiFields = 0x00493640;
 	__asm {
 		PUSHAD
@@ -14,8 +13,7 @@ void showAllPsiFields()
 	}
 }
 
-void hideAllPsiFields()
-{
+void hide_all_psi_fields() {
 	static const u32 Func_hideAllPsiFields = 0x00494100;
 	__asm {
 		PUSHAD
@@ -25,37 +23,30 @@ void hideAllPsiFields()
 }
 
 // If @p unit is a psi provider, make all psi field graphics visible.
-void showAllPsiFieldsOnSelect(Unit* unit)
-{
-	if (!scbw::isInReplay() && unit->player == *LOCAL_NATION_ID)
-	{
-		if ((unit->status & UnitStatus::Completed) && hooks::isReadyToMakePsiField(unit))
-		{
-			showAllPsiFields();
+void show_all_psi_fields_on_select(Unit* unit) {
+	if (!scbw::isInReplay() && scbw::is_allied_to(unit->player, *LOCAL_NATION_ID)) {
+		if ((unit->status & UnitStatus::Completed) && hooks::is_ready_to_make_psi_field(unit)) {
+			show_all_psi_fields();
 		}
 	}
 }
 
 // If @p unit is a psi provider, make all psi field graphics invisible.
-void hideAllPsiFieldsOnUnselect(Unit* unit)
-{
-	if (!scbw::isInReplay() && unit->player == *LOCAL_NATION_ID)
-	{
-		if ((unit->status & UnitStatus::Completed) && hooks::isReadyToMakePsiField(unit))
-		{
-			hideAllPsiFields();
+void hide_all_psi_fields_on_unselect(Unit* unit) {
+	if (!scbw::isInReplay() && scbw::is_allied_to(unit->player, *LOCAL_NATION_ID)) {
+		if ((unit->status & UnitStatus::Completed) && hooks::is_ready_to_make_psi_field(unit)) {
+			hide_all_psi_fields();
 		}
 	}
 }
 
-void __declspec(naked) showAllPsiFieldsOnSelectWrapper() // 0x004E6224
-{
+void __declspec(naked) show_all_psi_fields_on_select_wrapper() { // 0x004E6224
 	static Unit* unit;
 	__asm {
 		MOV unit, EDI
 		PUSHAD
 	}
-	showAllPsiFieldsOnSelect(unit);
+	show_all_psi_fields_on_select(unit);
 	__asm {
 		POPAD
 		POP EDI
@@ -67,14 +58,13 @@ void __declspec(naked) showAllPsiFieldsOnSelectWrapper() // 0x004E6224
 	}
 }
 
-void __declspec(naked) hideAllPsiFieldsOnUnselectWrapper() // 0x004E62BE
-{
+void __declspec(naked) hide_all_psi_fields_on_unselect_wrapper() { // 0x004E62BE
 	static Unit* unit;
 	__asm {
 		MOV unit, ESI
 		PUSHAD
 	}
-	hideAllPsiFieldsOnUnselect(unit);
+	hide_all_psi_fields_on_unselect(unit);
 	__asm {
 		POPAD
 		POP EDI	// used to be in first asm block
@@ -85,56 +75,101 @@ void __declspec(naked) hideAllPsiFieldsOnUnselectWrapper() // 0x004E62BE
 
 //-------- Save & load game hooks --------//
 
-void __declspec(naked) packUnitData_PsiProvider() // 0x004E3935
-{
-	static const u32 packUnitData_PsiProvider_Return = 0x004E3961;
+void __declspec(naked) pack_unit_data_psi_provider() { // 004E3935
+	static const u32 jmp_address = 0x004E3961;
 	static Unit* unit;
-	static u16 unitId;
+	static u16 unit_id;
 	__asm {
-		MOV unitId, CX
+		MOV unit_id, CX
 		MOV unit, ESI
 		PUSHAD
 	}
-	if (hooks::canMakePsiField(unitId))
-	{
-		if (unit->building.pylonAura != nullptr)
-			*((u32*)&unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(Sprite) + 1;
-	}
-	__asm {
-		POPAD
-		JMP packUnitData_PsiProvider_Return
-	}
-}
-
-void __declspec(naked) unpackUnitData_PsiProvider() //0x004E3182
-{
-	static const u32 unpackUnitData_PsiProvider_Return = 0x004E31A3;
-	static Unit* unit;
-	static u16 unitId;
-	__asm {
-		MOV unitId, CX
-		MOV unit, ESI
-		PUSHAD
-	}
-	if (hooks::canMakePsiField(unitId)) {
-		if (unit->building.pylonAura != nullptr)
-		{
-			unit->building.pylonAura = &spriteTable[(s32)unit->building.pylonAura];
+	if (hooks::can_make_psi_field(unit_id)) {
+		if (unit->building.pylon_aura) {
+			*((u32*)&unit->building.pylon_aura) = (unit->building.pylon_aura - spriteTable) / sizeof(Sprite) + 1;
 		}
 	}
 	__asm {
 		POPAD
-		JMP unpackUnitData_PsiProvider_Return
+		JMP jmp_address
+	}
+}
+
+void __declspec(naked) unpack_unit_data_psi_provider() { // 004E3182
+	static const u32 jmp_address = 0x004E31A3;
+	static Unit* unit;
+	static u16 unit_id;
+	__asm {
+		MOV unit_id, CX
+		MOV unit, ESI
+		PUSHAD
+	}
+	if (hooks::can_make_psi_field(unit_id)) {
+		if (unit->building.pylon_aura) {
+			unit->building.pylon_aura = &spriteTable[(s32)unit->building.pylon_aura];
+		}
+	}
+	__asm {
+		POPAD
+		JMP jmp_address
+	}
+}
+
+void __declspec(naked) unit_has_power_wrapper() { // 004936B0
+	static u32 result;
+	static u16 unit_id;
+	static u32 x;
+	static u32 y;
+	static u32 player;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x8]
+		MOV x, EAX
+		MOV EAX, [EBP + 0xC]
+		MOV y, EAX
+		MOV EAX, [EBP + 0x10]
+		MOV player, EAX
+		POP EAX
+		MOV unit_id, AX
+		PUSHAD
+	}
+	result = hooks::unit_has_power(unit_id, x, y, player);
+	__asm {
+		POPAD
+		MOV EAX, result
+		MOV ESP, EBP
+		POP EBP
+		RETN 0xC
+	}
+}
+
+void __declspec(naked) show_power_sprite_wrapper() { // 00493BF0
+	static u32 result;
+	static Unit* unit;
+	__asm {
+		MOV unit, ECX
+		PUSHAD
+	}
+	result = hooks::show_power_sprite(unit);
+	__asm {
+		POPAD
+		MOV EAX, result
+		RETN
 	}
 }
 
 namespace hooks
 {
-	void injectPsiFieldHooks()
+	void inject_psi_field_hooks()
 	{
-		jump_patch(showAllPsiFieldsOnSelectWrapper,		0x004E6224, 0);
-		jump_patch(hideAllPsiFieldsOnUnselectWrapper,	0x004E62BE, 0);
-		jump_patch(packUnitData_PsiProvider,			0x004E3935, 0);
-		jump_patch(unpackUnitData_PsiProvider,			0x004E3182, 0);
+		jump_patch(show_all_psi_fields_on_select_wrapper,		0x004E6224, 0);
+		jump_patch(hide_all_psi_fields_on_unselect_wrapper,		0x004E62BE, 0);
+	//	jump_patch(pack_unit_data_psi_provider,					0x004E3935, 0);
+	//	jump_patch(unpack_unit_data_psi_provider,				0x004E3182, 0);
+		jump_patch(unit_has_power_wrapper,						0x004936B0, 1);
+		jump_patch(show_power_sprite_wrapper,					0x00493BF0, 1);
+		jump_patch(create_pylon_aura,							0x00493640, 2);
 	}
 }

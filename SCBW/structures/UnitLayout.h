@@ -653,7 +653,7 @@ struct UnitLayout
 				} resource; // When the unit is resource container
 				/*0x0D0*/			Unit*	nydusExit;				// connected nydus canal
 				/*0x0D0*/			Unit*	ghostNukeMissile;		// confirmed to be Unit* and not Sprite*
-				/*0x0D0*/			Sprite*	pylonAura;
+				/*0x0D0*/			Sprite*	pylon_aura;
 				struct
 				{
 					/*0x0D0*/		Unit*	nuke;					// attached nuke

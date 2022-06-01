@@ -54,17 +54,17 @@ void addPsiField(Unit* unit)
 	{
 		return;
 	}
-	if (*firstPsiFieldProvider == unit || unit->psi_link.next || unit->psi_link.prev)
+	if (*first_psi_field_provider == unit || unit->psi_link.next || unit->psi_link.prev)
 	{
 		return;
 	}
 	unit->psi_link.prev = nullptr;
-	unit->psi_link.next = *firstPsiFieldProvider;
-	if (*firstPsiFieldProvider)
+	unit->psi_link.next = *first_psi_field_provider;
+	if (*first_psi_field_provider)
 	{
-		(*firstPsiFieldProvider)->psi_link.prev = unit;
+		(*first_psi_field_provider)->psi_link.prev = unit;
 	}
-	*firstPsiFieldProvider = unit;
+	*first_psi_field_provider = unit;
 	helper::addPsiFieldSprite(unit);
 	*canUpdatePoweredStatus = true;
 }
@@ -77,8 +77,8 @@ void removeFromPsiProviderList(Unit* psiProvider)
 	if (psiProvider->psi_link.next)
 		psiProvider->psi_link.next->psi_link.prev = psiProvider->psi_link.prev;
 
-	if (psiProvider == *firstPsiFieldProvider)
-		*firstPsiFieldProvider = psiProvider->psi_link.next;
+	if (psiProvider == *first_psi_field_provider)
+		*first_psi_field_provider = psiProvider->psi_link.next;
 
 	psiProvider->psi_link.prev = nullptr;
 	psiProvider->psi_link.next = nullptr;
@@ -87,10 +87,10 @@ void removeFromPsiProviderList(Unit* psiProvider)
 // Removes @p unit from the psi provider list and destroys the psi field sprite.
 void removePsiField(Unit* unit)
 {
-	if (unit->building.pylonAura)
+	if (unit->building.pylon_aura)
 	{
-		unit->building.pylonAura->free();
-		unit->building.pylonAura = nullptr;
+		unit->building.pylon_aura->free();
+		unit->building.pylon_aura = nullptr;
 		*canUpdatePoweredStatus = true;   // Might work?
 	}
 	removeFromPsiProviderList(unit);
@@ -99,12 +99,12 @@ void removePsiField(Unit* unit)
 // Synchronizes the unit's psi field sprite position with the unit.
 void updatePsiFieldPosition(Unit* unit)
 {
-	if (!unit || !unit->sprite || !unit->building.pylonAura)
+	if (!unit || !unit->sprite || !unit->building.pylon_aura)
 	{
 		return;
 	}
 
-	Sprite* psiField = unit->building.pylonAura;
+	Sprite* psiField = unit->building.pylon_aura;
 	if (unit->sprite->position != psiField->position)
 	{
 		psiField->setPosition(unit->get_x(), unit->get_y());
@@ -114,7 +114,7 @@ void updatePsiFieldPosition(Unit* unit)
 }
 
 // Defined in psi_field_inject.cpp
-void hideAllPsiFields();
+void hide_all_psi_fields();
 
 namespace hooks
 {
@@ -122,13 +122,13 @@ namespace hooks
 	{
 		for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 		{
-			if (hooks::canMakePsiField(unit->id))
+			if (hooks::can_make_psi_field(unit->id))
 			{
 				assert(isValidPsiProviderType(unit->id));
 
 				if (unit->status & UnitStatus::Completed)
 				{
-					if (hooks::isReadyToMakePsiField(unit))
+					if (hooks::is_ready_to_make_psi_field(unit))
 					{
 						addPsiField(unit);
 						updatePsiFieldPosition(unit);
@@ -148,12 +148,12 @@ namespace hooks
 			{
 				selUnit = clientSelectionGroup->unit[i];
 
-				if (selUnit != nullptr && hooks::isReadyToMakePsiField(selUnit))
+				if (selUnit != nullptr && hooks::is_ready_to_make_psi_field(selUnit))
 				{
 					return;
 				}
 			}
-			hideAllPsiFields();
+			hide_all_psi_fields();
 		}
 	}
 }

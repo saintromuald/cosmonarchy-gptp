@@ -261,7 +261,7 @@ namespace hooks
 			update_ext_variables();
 
 			// Loop through bullets
-			for (Bullet* bullet = *firstBullet; bullet; bullet = bullet->next)
+			for (Bullet* bullet = *first_bullet; bullet; bullet = bullet->next)
 			{
 				if (bullet->weaponId == WeaponId::KalkaliskViscousAcid)
 				{

@@ -1267,6 +1267,7 @@ namespace helper
 	SCBW_FUNC(0x0045B440, void __stdcall, ai_expand_to, AiScript* aiscript, u32 resarea, u32 block);
 	SCBW_FUNC(0x004A1E50, void __fastcall, remove_unit_ai, Unit* unit, UnitAi* unit_ai);
 	SCBW_FUNC(0x00487B00, Thingy* __stdcall, find_blocking_fow_resource, u32 x, u32 y, u32 radius);
+	SCBW_FUNC(0x00493640, void __cdecl, create_pylon_aura);
 
 	b32 ai_try_expanding_to(u32 resarea);																	// 00443A00
 
@@ -1288,4 +1289,8 @@ namespace helper
 	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 flag_or_timer, char iscript_anim);					// 00476C90
 
 	bool place_building_resource_restriction_check(u32 check_vision, u16 tile_x, u16 tile_y);				// 00473990
+
+	Sprite* create_sprite(u32 sprite_id, u32 x, u32 y, u32 player);											// 004990F0
+
+	void refresh_all_visible_images_at_screen_position(Sprite* sprite, u8 vision_filter);					// 00497480
 }

@@ -988,13 +988,13 @@ namespace hooks
 	{
 		if (!bullet->sprite)
 		{
-			if (*firstBullet == bullet)
+			if (*first_bullet == bullet)
 			{
-				*firstBullet = bullet->next;
+				*first_bullet = bullet->next;
 			}
-			if (*lastBullet == bullet)
+			if (*last_bullet == bullet)
 			{
-				*lastBullet = bullet->previous;
+				*last_bullet = bullet->previous;
 			}
 			if (bullet->previous)
 			{
@@ -1007,14 +1007,14 @@ namespace hooks
 			}
 			bullet->previous = 0;
 			bullet->next = 0;
-			Bullet* nextBounce = *firstFreeBullet;
-			if (*firstFreeBullet)
+			Bullet* nextBounce = *first_free_bullet;
+			if (*first_free_bullet)
 			{
-				if (*lastFreeBullet == *firstFreeBullet)
+				if (*last_free_bullet == *first_free_bullet)
 				{
-					*lastFreeBullet = bullet;
+					*last_free_bullet = bullet;
 				}
-				bullet->previous = *firstFreeBullet;
+				bullet->previous = *first_free_bullet;
 				bullet->next = nextBounce->next;
 				Bullet* target = nextBounce->next;
 				if (target)
@@ -1022,13 +1022,13 @@ namespace hooks
 					target->previous = bullet;
 				}
 				nextBounce->next = bullet;
-				*bulletCount -= 1;
+				*bullet_count -= 1;
 			}
 			else
 			{
-				*lastFreeBullet = bullet;
-				*firstFreeBullet = bullet;
-				*bulletCount -= 1;
+				*last_free_bullet = bullet;
+				*first_free_bullet = bullet;
+				*bullet_count -= 1;
 			}
 			globals.remove_multihit_bullet(bullet);
 		}
@@ -1045,8 +1045,8 @@ namespace hooks
 		Bullet* firstBulletVar;
 		Bullet* nextBulletVar;
 
-		pBullet = *firstFreeBullet;
-		if (!*firstFreeBullet)
+		pBullet = *first_free_bullet;
+		if (!*first_free_bullet)
 		{
 			return 0;
 		}
@@ -1055,21 +1055,21 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (!*firstFreeBullet)
+		if (!*first_free_bullet)
 		{
 			return 0;
 		}
-		if (!hooks::initializeBullet(playerId, parent, y, *firstFreeBullet, weaponId, x, angle))
+		if (!hooks::initializeBullet(playerId, parent, y, *first_free_bullet, weaponId, x, angle))
 		{
 			return 0;
 		}
-		if (*firstFreeBullet == pBullet)
+		if (*first_free_bullet == pBullet)
 		{
-			*firstFreeBullet = pBullet->next;
+			*first_free_bullet = pBullet->next;
 		}
-		if (*lastFreeBullet == pBullet)
+		if (*last_free_bullet == pBullet)
 		{
-			*lastFreeBullet = pBullet->previous;
+			*last_free_bullet = pBullet->previous;
 		}
 		if (pBullet->previous)
 		{
@@ -1082,14 +1082,14 @@ namespace hooks
 		}
 		pBullet->previous = 0;
 		pBullet->next = 0;
-		firstBulletVar = *firstBullet;
-		if (*firstBullet)
+		firstBulletVar = *first_bullet;
+		if (*first_bullet)
 		{
-			if (*lastBullet == *firstBullet)
+			if (*last_bullet == *first_bullet)
 			{
-				*lastBullet = pBullet;
+				*last_bullet = pBullet;
 			}
-			pBullet->previous = *firstBullet;
+			pBullet->previous = *first_bullet;
 			pBullet->next = firstBulletVar->next;
 			nextBulletVar = firstBulletVar->next;
 			if (nextBulletVar)
@@ -1097,14 +1097,14 @@ namespace hooks
 				nextBulletVar->previous = pBullet;
 			}
 			firstBulletVar->next = pBullet;
-			++*bulletCount;
+			++*bullet_count;
 			result = pBullet;
 		}
 		else
 		{
-			++*bulletCount;
-			*lastBullet = pBullet;
-			*firstBullet = pBullet;
+			++*bullet_count;
+			*last_bullet = pBullet;
+			*first_bullet = pBullet;
 			result = pBullet;
 		}
 		return result;
@@ -1310,10 +1310,10 @@ namespace hooks
 	// Hooked to investigate weaponsdat extender crashes - Pr0nogo
 	void progressBulletFrames() // 0048C3D0
 	{
-		Bullet* bulletVar = *firstBullet;
+		Bullet* bulletVar = *first_bullet;
 		Sprite* bulletSprite = nullptr;
 		s32 bulletBehavior = 0;
-		Bullet* nextBullet = *firstBullet;
+		Bullet* nextBullet = *first_bullet;
 		while (nextBullet)
 		{
 			nextBullet = bulletVar->next;

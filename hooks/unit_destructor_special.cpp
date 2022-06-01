@@ -185,10 +185,10 @@ void unit_destructor_special_cases(Unit* unit)
 		{
 			// code from hooks::removePsiField(Unit* unit)
 			// copied because the content is hardcoded here
-			if (unit->building.pylonAura != nullptr)
+			if (unit->building.pylon_aura != nullptr)
 			{
-				unit->building.pylonAura->free();	// should be equivalent to SpriteDestructor @ 00497B40
-				unit->building.pylonAura = nullptr;
+				unit->building.pylon_aura->free();	// should be equivalent to SpriteDestructor @ 00497B40
+				unit->building.pylon_aura = nullptr;
 			}
 
 			// begin hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
@@ -201,9 +201,9 @@ void unit_destructor_special_cases(Unit* unit)
 				(unit->psi_link.next)->psi_link.prev = unit->psi_link.prev;
 			}
 
-			if (unit == *firstPsiFieldProvider)
+			if (unit == *first_psi_field_provider)
 			{
-				*firstPsiFieldProvider = unit->psi_link.next;
+				*first_psi_field_provider = unit->psi_link.next;
 			}
 			unit->psi_link.prev = nullptr;
 			unit->psi_link.next = nullptr;

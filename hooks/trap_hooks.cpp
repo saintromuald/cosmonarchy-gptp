@@ -112,10 +112,10 @@ namespace hooks
 		v3 = v1->id;
 		if (v3 == UnitId::Spell_ScannerSweep || v3 == UnitId::Special_MapRevealer)
 		{
-			if (*firstHiddenUnit == v1)
-				*firstHiddenUnit = v1->link.next;
-			if (*lastHiddenUnit == v1)
-				*lastHiddenUnit = v1->link.prev;
+			if (*first_hidden_unit == v1)
+				*first_hidden_unit = v1->link.next;
+			if (*last_hidden_unit == v1)
+				*last_hidden_unit = v1->link.prev;
 			if (v1->link.prev)
 				v1->link.prev->link.next = v1->link.next;
 			v9 = v1->link.next;
@@ -123,12 +123,12 @@ namespace hooks
 				v9->link.prev = v1->link.prev;
 			v1->link.prev = 0;
 			v1->link.next = 0;
-			v10 = *firstScannerSweep;
-			if (firstScannerSweep)
+			v10 = *first_scanner_sweep;
+			if (first_scanner_sweep)
 			{
-				if (*lastScannerSweep == *firstScannerSweep)
-					*lastScannerSweep = v1;
-				v1->link.prev = *firstScannerSweep;
+				if (*last_scanner_sweep == *first_scanner_sweep)
+					*last_scanner_sweep = v1;
+				v1->link.prev = *first_scanner_sweep;
 				v1->link.next = v10->link.next;
 				v11 = v10->link.next;
 				if (v11)
@@ -138,8 +138,8 @@ namespace hooks
 			}
 			else
 			{
-				*lastScannerSweep = v1;
-				*firstScannerSweep = v1;
+				*last_scanner_sweep = v1;
+				*first_scanner_sweep = v1;
 				helper::refresh_unit_vision(v1);
 			}
 		}
