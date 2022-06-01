@@ -4,7 +4,7 @@
 extern const u32 Func_DoWeaponDamage; // Defined in Unit.cpp
 namespace
 {
-	void __declspec(naked) weaponDamageWrapper()
+	void __declspec(naked) weapon_damage_wrapper()
 	{
 		static Unit* target;
 		static Unit* attacker;
@@ -40,21 +40,21 @@ namespace
 		}
 	}
 
-	void __declspec(naked) applyEnsnare_Wrapper()
+	void __declspec(naked) apply_ensnare_wrapper()
 	{
 		static Unit* a1;
 		__asm {
 			MOV a1, EDI
 			PUSHAD
 		}
-		hooks::applyEnsnare(a1);
+		hooks::apply_ensnare(a1);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) updateCorrosiveSpores_Wrapper() // 004F4480
+	void __declspec(naked) update_corrosive_spores_wrapper() // 004F4480
 	{
 		static Unit* target;
 		static u32 result;
@@ -62,11 +62,30 @@ namespace
 			MOV target, EBX
 			PUSHAD
 		}
-		result = hooks::ApplySpores_hook(target);
+		result = hooks::apply_spores_hook(target);
 		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
+		}
+	}
+
+	void __declspec(naked) unit_attack_notify_wrapper() { // 0048F230
+		static Unit* unit;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::unit_attack_notify(unit);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
 		}
 	}
 }
@@ -75,8 +94,9 @@ namespace hooks
 {
 	void injectWeaponDamageHook()
 	{
-		jump_patch(weaponDamageWrapper,				0x00479930, 1);
-		jump_patch(applyEnsnare_Wrapper,			0x004F45E0, 2);
-		jump_patch(updateCorrosiveSpores_Wrapper,	0x004F4480, 1);
+		jump_patch(weapon_damage_wrapper,				0x00479930, 1);
+		jump_patch(apply_ensnare_wrapper,				0x004F45E0, 2);
+		jump_patch(update_corrosive_spores_wrapper,		0x004F4480, 1);
+	//	jump_patch(unit_attack_notify_wrapper,			0x0048F230, 3);
 	}
 }

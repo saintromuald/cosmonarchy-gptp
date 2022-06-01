@@ -636,7 +636,7 @@ namespace helper
 		}
 	}
 
-	void do_attack_notify_event(Unit* a1)
+	void unit_attack_notify(Unit* a1)
 	{
 		const u32 Func_doAttackNotifyEvent = 0x0048F230;
 		__asm {
@@ -11818,5 +11818,45 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	bool unit_is_in_notify_range(Unit* unit) {
+		static bool result;
+		const u32 func_address = 0x004E5AD0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	u32 reset_all_unit_attack_notify_timers_in_range(Unit* unit) {
+		static u32 result;
+		const u32 func_address = 0x0048EAE0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void do_unit_event_notification(Unit* unit, char event_type, u32 timer, bool ping, u32 message_id) {
+		const u32 func_address = 0x0045EFE0;
+		__asm {
+			PUSHAD
+			PUSH message_id
+			PUSH ping
+			MOV EDI, timer
+			MOV BL, event_type
+			MOV unit, EAX
+			call func_address
+			POPAD
+		}
 	}
 }

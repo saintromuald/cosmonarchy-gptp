@@ -1216,7 +1216,7 @@ namespace scbw
 		return std::max(source_height - target_height, 0) * 2;
 	}
 
-	void applyEnsnare(Unit* unit)
+	void apply_ensnare(Unit* unit)
 	{ // 004F45E0
 		if (!(unit->ensnareTimer)
 			&& !(unit->status & UnitStatus::Burrowed))

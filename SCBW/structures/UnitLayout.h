@@ -564,8 +564,8 @@ struct UnitLayout
 	/*0x086*/ u8        _unknown_0x086;
 	/*0x087*/ u8        attackNotifyTimer;				// Prevent "Your forces are under attack." on every attack
 	/*0x088*/ u16       previousUnitType;				// Also used by zerg buildings while morphing
-	/*0x08A*/ u8        lastEventTimer;					// Countdown that stops being recent when it hits 0
-	/*0x08B*/ u8        lastEventColor;					// 17 = was completed (train, morph), 174 = was attacked
+	/*0x08A*/ u8        last_event_timer;				// Countdown that stops being recent when it hits 0
+	/*0x08B*/ u8        last_event_color;				// 17 = was completed (train, morph), 174 = was attacked
 	/*0x08C*/ u16       _unknown_0x08C;					// Cosmonarchy BW
 														// 0x1 - Hierophant Detect Add Maelstrom Overlay
 														// 0x2 - Hierophant Detect Remove Maelstrom Overlay

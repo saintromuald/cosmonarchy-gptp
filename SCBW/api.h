@@ -533,7 +533,7 @@ namespace scbw
 	void restore_func(Unit* unit);
 	void refreshDebuffs(Unit* unit);
 	void inheritDebuffs(Unit* parent, Unit* child);
-	void applyEnsnare(Unit* unit);
+	void apply_ensnare(Unit* unit);
 	bool isEnabled(Unit* unit);
 	bool isDebuffed(Unit* unit);
 	s32 getUpgradeType(Unit* unit);

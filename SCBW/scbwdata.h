@@ -236,7 +236,7 @@ SCBW_DATA(const u8*, unkVictoryVariable, 0x00581D66);
 SCBW_DATA(const u32*, saveLoadSuccess, 0x006D5A68);
 SCBW_DATA(u32*, elapstedTimeModifier, 0x006D5BCC);
 SCBW_DATA(const u32*, savedElapsedSeconds, 0x0057F240);
-SCBW_DATA(		Options*, optionsList, 0x006CDFD4);
+SCBW_DATA(		Options*, options_list, 0x006CDFD4);
 SCBW_DATA(const ReplayData*, replayData, 0x00596BBC);
 SCBW_DATA(const u32*, replayVisions, 0x006D0F18);
 SCBW_DATA(const u32*, playerVisions, 0x0057F0B0);
@@ -983,6 +983,11 @@ SCBW_DATA(u32**, current_tiles, 0x006D0E84);
 SCBW_DATA(char*,	grp_stat_res_icon_mapping,	0x00515228); // sizeof 8
 SCBW_DATA(GrpHead*,	icons_grp,					0x0068C238);
 SCBW_DATA(Box16*,	required_area,				0x006CE0D8);
+
+// For do_attack_notify_unit
+SCBW_DATA(char*,	palette_index_reference,	0x006CEB20); // sizeof at least 20
+SCBW_DATA(u32*,		notify_cooldown,			0x00640870);
+SCBW_DATA(void*,	sound_duration,				0x006D1278); // struct_18 in IDA
 
 //////////////////////////////////////////////////////////////// @}
 

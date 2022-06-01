@@ -620,7 +620,7 @@ namespace hooks
 		//		if (attacker && attackerExt->timers[TimerEnsnaringBrood] > 0
 		//			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building))
 		//		{
-		//			scbw::applyEnsnare(unit);
+		//			scbw::apply_ensnare(unit);
 		//		}
 		//	});
 		//}

@@ -223,7 +223,7 @@ namespace hooks
 			}
 		}
 
-		optionsList->speed = 6; // Lock game speed at fastest
+		options_list->speed = 6; // Lock game speed at fastest
 		if (!scbw::is_game_paused()) // If the game is not paused
 		{
 			*ai_update_cooldown = 0;

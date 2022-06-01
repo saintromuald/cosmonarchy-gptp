@@ -514,7 +514,7 @@ LABEL_55:
 				{
 					helper::unit_was_hit(v5, a2, a3 != WeaponId::Irradiate);
 					if (a3 != WeaponId::Irradiate && v5->player != a2->player)
-						helper::do_attack_notify_event(v5);
+						helper::unit_attack_notify(v5);
 				}
 				if (units_dat::ShieldsEnabled[(u16)v5->id])
 				{

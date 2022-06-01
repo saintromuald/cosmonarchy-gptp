@@ -303,7 +303,7 @@ namespace hooks
 			data.target->damage_hp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
 			if (!data.target->hitPoints) {
-				helper::do_attack_notify_event(data.target);
+				helper::unit_attack_notify(data.target);
 			}
 		}
 
@@ -488,7 +488,7 @@ namespace hooks
 				&& !(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
 				&& !scbw::isUnderDarkSwarm(data.target))
 			{
-				applyEnsnare(data.target);
+				apply_ensnare(data.target);
 			}
 
 			switch (data.target->id)
@@ -1114,7 +1114,7 @@ namespace hooks
 		}
 	}
 
-	void applyEnsnare(Unit* unit) // 004F45E0
+	void apply_ensnare(Unit* unit) // 004F45E0
 	{
 		s32 baseProperty;
 		u8 overlayPadding;
@@ -1169,7 +1169,7 @@ namespace hooks
 
 	// TODO: Refactor
 	// Hooked to change Corrosive Spores timer - Pr0nogo
-	s32 ApplySpores_hook(Unit* target) // 004F4480
+	s32 apply_spores_hook(Unit* target) // 004F4480
 	{
 		u8 sporeCount;
 		u32 overlayMultiplier;
@@ -1210,5 +1210,31 @@ namespace hooks
 
 		targetExt->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
 		return result;
+	}
+
+	// Hooked to fix one-shots never notifying. -Pr0nogo
+	void unit_attack_notify(Unit* unit) // 0048F230
+	{
+		if (!IS_IN_REPLAY && unit->player == *LOCAL_NATION_ID)
+		{
+			unit->last_event_color = palette_index_reference[20];
+			bool cooldown = *notify_cooldown == 0;
+			unit->last_event_timer = 20;
+			if (cooldown)
+			{
+				if (helper::unit_is_in_notify_range(unit))
+				{
+					if (!unit->attackNotifyTimer)
+					{
+						helper::reset_all_unit_attack_notify_timers_in_range(unit);
+						*notify_cooldown = 100;
+						bool unit_is_grounded_building = (unit->status & UnitStatus::GroundedBuilding) != 0;
+						u32 sound_id = *console_index + (unit_is_grounded_building ? -0xFFFFFF8B : 120);
+						helper::play_sound_from_unit(sound_id, 0, options_list->flags & 1, 0);
+					//	helper::do_unit_event_notification(unit, 16, sfx_dat::PortraitDuration[sound_id] + 1000 * (*&sound_duration[sound_id].anonymous_0 / 0x3E8u), 1, sound_id);
+					}
+				}
+			}
+		}
 	}
 }
