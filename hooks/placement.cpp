@@ -120,7 +120,7 @@ namespace hooks
              && unitOrderingX[other_unit->finderIndex.right ].position > 32 * x_tile
              && unitOrderingY[other_unit->finderIndex.top   ].position < 32 * y_tile + 32
              && unitOrderingY[other_unit->finderIndex.bottom].position > 32 * y_tile) {
-                return needs_detection != 0 ? 1 : 4;
+                return needs_detection ? 1 : 4;
             }
         }
         return 0;

@@ -14,10 +14,10 @@ namespace hooks
 		bool bStopBigLoop = false;
 		bool bKeepForEmptyListCase = false;
 		bool dontAddToList = false;
-		backup_current_unit = nullptr;
+		backup_current_unit = 0;
 
 		// if unit not null, become first entry of unit_list
-		if (unit != nullptr)
+		if (unit)
 		{
 			unit_list[0] = unit;
 			current_index_in_unit_list = 1;
@@ -29,7 +29,7 @@ namespace hooks
 
 		// work with the first unit from units_in_bounds
 		current_unit = *units_in_bounds;
-		if (current_unit == nullptr)
+		if (!current_unit)
 		{
 			bStopBigLoop = true;
 		}
@@ -39,7 +39,7 @@ namespace hooks
 			{
 				// if current_unit==unit, then it's already in
 				// unit_list
-				if (current_unit->subunit != nullptr)
+				if (current_unit->subunit)
 				{
 					// if what got selected is the turret or another subunit, swap
 					// the unit and the subunit as current_unit
@@ -106,7 +106,7 @@ namespace hooks
 						else
 						{
 							// 0046F1C5
-							if (unit != nullptr)
+							if (unit)
 							{
 								// all units should belong to the same player (the one owning the clicked unit)
 								if (unit->player != current_unit->player)
@@ -145,7 +145,7 @@ namespace hooks
 							{
 								// 0046F203
 								// 0x0046F208 (use of SELECTION_ARRAY_LENGTH)
-								if (current_index_in_unit_list >= SELECTION_ARRAY_LENGTH) //action when unit_list is full
+								if (current_index_in_unit_list >= SELECTION_ARRAY_LENGTH) // action when unit_list is full
 								{
 									helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
 								}
@@ -175,7 +175,7 @@ namespace hooks
 			dontAddToList = false;
 
 			// continue until current_unit is nullptr
-			if (current_unit == nullptr)
+			if (!current_unit)
 			{
 				bStopBigLoop = true;
 			}
@@ -185,10 +185,10 @@ namespace hooks
 		if (current_index_in_unit_list == 0)
 		{
 			// if current_index_in_unit_list == 0, the list is empty and cannot be used, so another solution is found here
-			if (backup_current_unit == nullptr)
+			if (!backup_current_unit)
 			{
 				// 0046F24E
-				if (unit == nullptr)
+				if (!unit)
 				{
 					current_index_in_unit_list = 0; // return 0 (no list)
 				}
@@ -202,15 +202,15 @@ namespace hooks
 			else
 			{
 				// 0046F264
-				if (unit != nullptr)
+				if (unit)
 				{
 					unit_list[0] = unit;
-					current_index_in_unit_list = 1; //return 1 (the clicked unit alone)
+					current_index_in_unit_list = 1; // return 1 (the clicked unit alone)
 				}
 				else
 				{
 					unit_list[0] = backup_current_unit;
-					current_index_in_unit_list = 1; //return 1 (an unit preserved by bKeepForEmptyListCase)
+					current_index_in_unit_list = 1; // return 1 (an unit preserved by bKeepForEmptyListCase)
 				}
 			}
 		}
@@ -239,11 +239,11 @@ namespace hooks
 
 		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 		{
-			local_temp_array_1[i] = nullptr;
+			local_temp_array_1[i] = 0;
 		}
 
 		if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit
-			|| (*IS_HOLDING_SHIFT && (activePlayerSelection->unit[0] != nullptr)))
+			|| (*IS_HOLDING_SHIFT && activePlayerSelection->unit[0]))
 		{
 			if (!*IS_HOLDING_SHIFT)
 			{
@@ -333,7 +333,7 @@ namespace hooks
 					// Shift + click while there's an existing selection (because hold on CTRL case was already dealt with so there's an existing selection at this point) add/remove unit from selection
 					s32 arrayIndex;
 					// copy the existing selection into the local array
-					for (arrayIndex = 0; arrayIndex < SELECTION_ARRAY_LENGTH && activePlayerSelection->unit[arrayIndex] != nullptr; arrayIndex++)
+					for (arrayIndex = 0; arrayIndex < SELECTION_ARRAY_LENGTH && activePlayerSelection->unit[arrayIndex]; arrayIndex++)
 					{
 						local_temp_array_1[arrayIndex] = activePlayerSelection->unit[arrayIndex];
 					}
@@ -365,14 +365,14 @@ namespace hooks
 
 						// decrease it so it's equal to the index of last element
 						arrayIndex--;
-						//each element is 4 bytes, multiply it by the number of elements after the one to remove
+						// each element is 4 bytes, multiply it by the number of elements after the one to remove
 						memcpy_size = (arrayIndex - clicked_unit->sprite->selectionIndex) * 4;
 
 						// Copy the elements on the right of the one to delete one step left to overwrite the one to delete
 						helper::SC_memcpy_0((u32)&local_temp_array_1[clicked_unit->sprite->selectionIndex], (u32)&local_temp_array_1[clicked_unit->sprite->selectionIndex + 1], memcpy_size);
 
 						// either erase the element to delete or one that was repeated after memcpy
-						local_temp_array_1[arrayIndex] = nullptr;
+						local_temp_array_1[arrayIndex] = 0;
 
 						if (arrayIndex == 1)
 						{
@@ -399,8 +399,8 @@ namespace hooks
 							helper::CMDACT_Select(local_temp_array_1, arrayIndex);
 
 							// tell the GUI to update stuff
-							*someDialogUnknown = nullptr;
-							*someDialogUnknownUser = nullptr;
+							*someDialogUnknown = 0;
+							*someDialogUnknownUser = 0;
 							*bCanUpdateSelectedUnitData = 1;
 							*bCanUpdateCurrentButtonSet = 1;
 							*bCanUpdateSelectedUnitPortrait = 1;
@@ -444,8 +444,8 @@ namespace hooks
 				*bCanUpdateCurrentButtonSet = 1;
 				*bCanUpdateSelectedUnitPortrait = 1;
 				*bCanUpdateStatDataDialog = 1;
-				*someDialogUnknown = nullptr;
-				*someDialogUnknownUser = nullptr;
+				*someDialogUnknown = 0;
+				*someDialogUnknownUser = 0;
 			}
 
 			// 0046FC2C

@@ -17,6 +17,7 @@ namespace hooks
 		return can_make_psi_field(unit->id);
 	}
 
+    // Conditions on which the power field should be showed
     bool unit_can_show_power_for(Unit* unit, u32 player) {
         if (!scbw::is_allied_to(unit->player, player)) {
             return false;
