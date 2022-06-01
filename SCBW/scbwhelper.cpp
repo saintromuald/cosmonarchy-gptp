@@ -623,14 +623,14 @@ namespace helper
 
 	// For hallucinationHit
 
-	void unit_was_hit(Unit* target, Unit* attacker, s32 show_attacker)
+	void unit_was_hit(Unit* a1, Unit* a2, s32 a3)
 	{
 		const u32 Func_unitWasHit = 0x004795D0;
 		__asm {
 			PUSHAD
-			PUSH show_attacker
-			PUSH attacker
-			MOV EBX, target
+			PUSH a3
+			PUSH a2
+			MOV EBX, a1
 			CALL Func_unitWasHit
 			POPAD
 		}
@@ -3186,7 +3186,7 @@ namespace helper
 		static s32 result;
 		__asm {
 			PUSHAD
-//			MOV ECX, target
+//			MOV ECX, a1
 			MOV EDX, in_out
 			CALL Func_initPlacementBoxPos
 			MOV result, EAX
@@ -5100,7 +5100,7 @@ namespace helper
 		return (char*)result;
 	}
 
-	// For statsWeaponLevel / stats_armor_level
+	// For stats_weapon_level / stats_armor_level
 
 	char getArmorCount(Unit* unit, s32 unused)
 	{
@@ -6093,7 +6093,7 @@ namespace helper
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EAX, target
+			MOV EAX, a1
 			CALL Func_unitIsCarrier
 			MOV result, EAX
 			POPAD
@@ -6110,7 +6110,7 @@ namespace helper
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EAX, target
+			MOV EAX, a1
 			CALL Func_unitIsReaver
 			MOV result, EAX
 			POPAD
@@ -7968,7 +7968,7 @@ namespace helper
 		}
 	}
 
-	// For getUnitName
+	// For get_unit_name
 	const char* get_unit_name_stat_string(u16 unitId) {
 		const u32 Func_getUnitNameStatString = 0x0047B090;
 		static const char* result;
@@ -9674,7 +9674,7 @@ namespace helper
 
 	/*
 	// For soundThread
-	void fastFileRead(s32 target, s32 attacker, char* show_attacker, s32 fileName, s32 buffer, s32 bytesRead, char* logFileName, s32 logLine)
+	void fastFileRead(s32 a1, s32 a2, char* a3, s32 fileName, s32 buffer, s32 bytesRead, char* logFileName, s32 logLine)
 	{
 		const u32 Func_fastFileRead = 0x004D2D10;
 		__asm
@@ -9685,24 +9685,24 @@ namespace helper
 			PUSH bytesRead
 			PUSH buffer
 			PUSH fileName
-			MOV EDI, show_attacker
-			MOV ECX, attacker
-			MOV EAX, target
+			MOV EDI, a3
+			MOV ECX, a2
+			MOV EAX, a1
 			CALL Func_fastFileRead
 			POPAD
 		}
 	}
 
-	s32 parseWaveFile(s32 target, s32 attacker, s32 show_attacker)
+	s32 parseWaveFile(s32 a1, s32 a2, s32 a3)
 	{
 		static s32 result;
 		const u32 Func_parseWaveFile = 0x004BBD80;
 		__asm
 		{
 			PUSHAD
-			MOV ESI, show_attacker
-			MOV EDI, attacker
-			MOV ECX, target
+			MOV ESI, a3
+			MOV EDI, a2
+			MOV ECX, a1
 			CALL Func_parseWaveFile
 			MOV result, EAX
 			POPAD
@@ -9728,14 +9728,14 @@ namespace helper
 		return (bool)result;
 	}
 
-	u32 getSoundDuration(s32 target)
+	u32 getSoundDuration(s32 a1)
 	{
 		static u32 result;
 		const u32 Func_getSoundDuration = 0x004BB890;
 		__asm
 		{
 			PUSHAD
-			MOV ESI, target
+			MOV ESI, a1
 			CALL Func_getSoundDuration
 			MOV result, EAX
 			POPAD
@@ -9755,14 +9755,14 @@ namespace helper
 		}
 	}
 
-	s32 dSoundCreate(s32 target)
+	s32 dSoundCreate(s32 a1)
 	{
 		static s32 result;
 		const u32 Func_dSoundCreate = 0x004BB640;
 		__asm
 		{
 			PUSHAD
-			MOV ESI, target
+			MOV ESI, a1
 			CALL Func_dSoundCreate
 			MOV result, EAX
 			POPAD
@@ -9770,15 +9770,15 @@ namespace helper
 		return result;
 	}
 
-	s32 setCoopLevel(s32 target, s32 attacker)
+	s32 setCoopLevel(s32 a1, s32 a2)
 	{
 		static s32 result;
 		const u32 Func_setCoopLevel = 0x004BB600;
 		__asm
 		{
 			PUSHAD
-			MOV EDI, target
-			MOV ESI, attacker
+			MOV EDI, a1
+			MOV ESI, a2
 			CALL Func_setCoopLevel
 			MOV result, EAX
 			POPAD
@@ -9786,14 +9786,14 @@ namespace helper
 		return result;
 	}
 
-	s32 createSoundBuffer(s32 target)
+	s32 createSoundBuffer(s32 a1)
 	{
 		static s32 result;
 		const u32 Func_createSoundBuffer = 0x004BB5A0;
 		__asm
 		{
 			PUSHAD
-			MOV ESI, target
+			MOV ESI, a1
 			CALL Func_createSoundBuffer
 			MOV result, EAX
 			POPAD
@@ -9870,7 +9870,7 @@ namespace helper
 		}
 	}
 
-	s32 sRegLoadValue(char keyName, char valueName, char show_attacker, char value)
+	s32 sRegLoadValue(char keyName, char valueName, char a3, char value)
 	{
 		static s32 result;
 		const u32 Func_sRegLoadValue = 0x00410076;
@@ -9878,7 +9878,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH value
-			PUSH show_attacker
+			PUSH a3
 			PUSH valueName
 			PUSH keyName
 			CALL Func_sRegLoadValue
@@ -11772,7 +11772,7 @@ namespace helper
 		}
 	}
 
-	void set_default_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply) {
+	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply) {
 		const u32 func_address = 0x00458800;
 		__asm {
 			PUSHAD
@@ -11787,5 +11787,36 @@ namespace helper
 			CALL func_address
 			POPAD
 		}
+	}
+
+	s32 bw_print_icon(Box16* area, Box16* dims, u16 right, u16 bottom) {
+		static s32 result;
+		const u32 func_address = 0x0041D090;
+		__asm {
+			PUSHAD
+			PUSH bottom
+			PUSH right
+			MOV EDI, dims
+			MOV EAX, area
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 bw_print_xy(char* dest, s32 width, s32 height) {
+		static u32 result;
+		const u32 func_address = 0x004202B0;
+		__asm {
+			PUSHAD
+			PUSH height
+			MOV ESI, width
+			MOV EAX, dest
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

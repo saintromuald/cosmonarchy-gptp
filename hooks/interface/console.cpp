@@ -16,25 +16,25 @@ namespace hooks
 		u8 conrace; // cl
 
 		helper::get_race_sound_list(1);
-		if (consoleIndex)
+		if (console_index)
 		{
-			if (*consoleIndex == 1)
+			if (*console_index == 1)
 			{
 				helper::dialog_grp_construct(
 					178,
 					(s32)"Starcraft\\SWAR\\lang\\game.cpp",
 					(s32)"dlgs\\terran.grp",
 					(s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
-				*currentMusicId = 4;
+				*current_music_id = 4;
 			}
-			else if (*consoleIndex == 2)
+			else if (*console_index == 2)
 			{
 				helper::dialog_grp_construct(
 					183,
 					(s32)"Starcraft\\SWAR\\lang\\game.cpp",
 					(s32)"dlgs\\protoss.grp",
 					(s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
-				*currentMusicId = 7;
+				*current_music_id = 7;
 			}
 		}
 		else
@@ -44,26 +44,26 @@ namespace hooks
 				(s32)"Starcraft\\SWAR\\lang\\game.cpp",
 				(s32)"dlgs\\zerg.grp",
 				(s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
-			*currentMusicId = 1;
+			*current_music_id = 1;
 		}
 		v0 = *campaignIndex;
 		if (campaignIndex)
 		{
 			if (*campaignIndex > (u16)0x1F)
 			{
-				conrace = xCampaignFirstMission[*consoleIndex];
+				conrace = xCampaignFirstMission[*console_index];
 			}
 			else
 			{
-				conrace = campaignFirstMission[*consoleIndex];
+				conrace = campaignFirstMission[*console_index];
 			}
 			v0 = (*campaignIndex - conrace) / 3;
 			v4 = (*campaignIndex - conrace) % 3;
-			*currentMusicId += v4;
+			*current_music_id += v4;
 			return v0;
 		}
-		v1 = *consoleRaceSpecific;
-		if (*consoleRaceSpecific == -1)
+		v1 = *console_race_specific;
+		if (*console_race_specific == -1)
 		{
 			v2 = helper::rand_func();
 			v3 = v2;
@@ -71,13 +71,13 @@ namespace hooks
 			v1 = v3 % 3;
 		}
 		v4 = v1 + 1;
-		*consoleRaceSpecific = v4;
+		*console_race_specific = v4;
 		if (v4 < 3)
 		{
-			*currentMusicId += v4;
+			*current_music_id += v4;
 			return v0;
 		}
-		*consoleRaceSpecific = 0;
+		*console_race_specific = 0;
 		return v0;
 	}
 

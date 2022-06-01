@@ -137,7 +137,7 @@ namespace hooks
 		{
 			for (u32 i = 0; i < 16; ++i)
 			{
-				Ping* ping = PingArray + i;
+				Ping* ping = ping_array + i;
 				if (ping->timer < 8)
 				{
 					ping->timer++;

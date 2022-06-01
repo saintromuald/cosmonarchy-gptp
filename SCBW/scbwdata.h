@@ -180,6 +180,7 @@ SCBW_DATA(u32*, sgdwBytesInCmdQueue, 0x00654AA0);
 SCBW_DATA(const char*, TurnBuffer, 0x00654880);
 ////possible values were 0057F1DC and [00596828]
 
+// For reset_tooltip_info, set_tooltip_info, set_tooltip_info_unit, etc
 SCBW_DATA(u16*, tooltip_ore_cost,		0x0068C1D0);
 SCBW_DATA(u16*, tooltip_gas_cost,		0x0068C1D0);
 SCBW_DATA(u16*, tooltip_p_energy_cost,	0x0068C1D4);
@@ -190,12 +191,12 @@ SCBW_DATA(u16*, tooltip_t_supply_cost,	0x0068C1FC);
 SCBW_DATA(u16*, tooltip_z_supply_cost,	0x0068C1FE);
 
 // Added from BWAPI Offsets.h, but made const since it would not be safe to modify those
-SCBW_DATA(char*, CurrentMapFileName, 0x0057FD3C);
-SCBW_DATA(const char*, CurrentMapName, 0x0057FE40);
-SCBW_DATA(const _uavail*, UnitAvailability, 0x0057F27C);
+SCBW_DATA(char*, current_map_filename,			0x0057FD3C);
+SCBW_DATA(const char*, current_map_name,		0x0057FE40);
+SCBW_DATA(const _uavail*, unit_availability,	0x0057F27C);
 
 // Ping Data
-SCBW_DATA(Ping*, PingArray, 0x0059C1B8); // 16
+SCBW_DATA(Ping*, ping_array, 0x0059C1B8); // 16
 
 // Added by Pr0nogo
 // For raceDropdown
@@ -249,11 +250,11 @@ SCBW_DATA(u32*, selectionSoundCounter,			0x00640548);
 SCBW_DATA(u32*, lastRandSFX,					0x006D5BE0);
 
 // For loadRaceUI
-SCBW_DATA(u8*, consoleIndex,					0x0057F1E2);
-SCBW_DATA(u16*, currentMusicId,					0x0057F1DE);
+SCBW_DATA(u8*, console_index,					0x0057F1E2);
+SCBW_DATA(u16*, current_music_id,				0x0057F1DE);
 SCBW_DATA(const char*, xCampaignFirstMission,	0x005122C0);
 SCBW_DATA(const char*, campaignFirstMission,	0x005122BC);
-SCBW_DATA(u32*, consoleRaceSpecific,			0x0051A3B4);
+SCBW_DATA(u32*, console_race_specific,			0x0051A3B4);
 
 // For loadGameCreate
 SCBW_DATA(u32*, isHost,					0x00596888);
@@ -381,8 +382,8 @@ SCBW_DATA(s32*, orderType4Position,			0x006D5C20);
 SCBW_DATA(s32*, orderType4Target,			0x006D5C24);
 
 // For openMapFile
-SCBW_DATA(char*, mapsFolder,				0x0066FC08);
-SCBW_DATA(s32*, dword_5994DC,				0x005994DC);
+SCBW_DATA(char*,	mapsFolder,				0x0066FC08);
+SCBW_DATA(s32*,		dword_5994DC,			0x005994DC);
 
 // For loadMap
 SCBW_DATA(scenarioFormat*, stru_500574,		0x00500574);
@@ -396,16 +397,16 @@ SCBW_DATA(s8*, visionUpdated,				0x0051CE9C);
 // X405: For displayEstablishing Shot
 SCBW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
 
-// For statsWeaponLevel / stats_armor_level
+// For stats_weapon_level / stats_armor_level
 SCBW_DATA(s16*, unkUpgradeCount,			0x006CA940);
 
 // For isUnitCloaked
-SCBW_DATA(Unit**,	firstInvisibleUnit,		0x0063FF5C);
-SCBW_DATA(s32*,	forceButtonRefresh,			0x0068C1B0);
-SCBW_DATA(s8*,	portraitRedraw,				0x0068AC74); // sizeof 4
-SCBW_DATA(s8*,	statusScreenRedraw,			0x0068C1F8);
-SCBW_DATA(s32*,	ctrlUnderMouse,				0x0068C1E8);
-SCBW_DATA(s32*,	ctrlUnderMouseValue,		0x0068C1EC); // void* in Neiv's list
+SCBW_DATA(Unit**,	firstInvisibleUnit,			0x0063FF5C);
+SCBW_DATA(s32*,		forceButtonRefresh,			0x0068C1B0);
+SCBW_DATA(s8*,		portraitRedraw,				0x0068AC74); // sizeof 4
+SCBW_DATA(s8*,		statusScreenRedraw,			0x0068C1F8);
+SCBW_DATA(s32*,		ctrlUnderMouse,				0x0068C1E8);
+SCBW_DATA(s32*,		ctrlUnderMouseValue,		0x0068C1EC); // void* in Neiv's list
 
 // For update_units
 SCBW_DATA(s32*,		interceptorFocusedThisFrame,		0x006957D0);
@@ -977,6 +978,11 @@ SCBW_DATA(u32*, ai_update_cooldown, 0x0059CC94);
 SCBW_DATA(u32*, map_creep_width, 0x006D0F08);
 SCBW_DATA(u32*, dying_unit_creep_disappearance_count, 0x00658AE4);
 SCBW_DATA(u32**, current_tiles, 0x006D0E84);
+
+// For draw_tooltip_with_icon
+SCBW_DATA(char*,	grp_stat_res_icon_mapping,	0x00515228); // sizeof 8
+SCBW_DATA(GrpHead*,	icons_grp,					0x0068C238);
+SCBW_DATA(Box16*,	required_area,				0x006CE0D8);
 
 //////////////////////////////////////////////////////////////// @}
 

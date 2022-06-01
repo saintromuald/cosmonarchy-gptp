@@ -472,7 +472,7 @@ namespace hooks
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (!UnitAvailability->available[parentUnit->player][parentUnit->id])
+		if (!unit_availability->available[parentUnit->player][parentUnit->id])
 		{
 			*lastInternalError = InternalErrors::UnknownError2;
 			//DebugOut(">Return NotAllowed");
