@@ -16,7 +16,6 @@ namespace hooks
 		if (!(unit->orderSignal & 4))
 		{
 			Image* current_image = unit->sprite->mainGraphic;
-
 			IscriptAnimation::Enum animation = IscriptAnimation::SpecialState1;
 			if (unitExt->values[ValueSpecialSovrolethBirth]) {
 				animation = IscriptAnimation::Unused2;
@@ -30,8 +29,7 @@ namespace hooks
 		if (unit->orderSignal & 4)
 		{
 			bool bTwinEggOrCocoon = true;
-			Point16 pos;
-
+			Point16 pos = {};
 			unit->orderSignal &= ~4;
 			bool no_two_units = false;
 			auto origin = unit->egg_origin;
@@ -70,9 +68,9 @@ namespace hooks
 			helper::init_building(unit, 0);
 			helper::update_unit_stats_and_finish_building(unit);
 			helper::update_unit_strength(unit);
+
 			pos.x = unit->sprite->position.x;
 			pos.y = unit->sprite->position.y;
-
 			if (bTwinEggOrCocoon)
 			{
 				if (units_dat::MovementFlags[unit->id] == MovementFlags::HoverUnit)
@@ -110,18 +108,15 @@ namespace hooks
 		if (!unit->remainingBuildTime) {
 			return 1;
 		}
-
 		if (*CHEAT_STATE & CheatFlags::OperationCwal) {
 			unit->remainingBuildTime -= 16;
 		} else {
 			unit->remainingBuildTime -= 1;
 		}
-
 		if (!scbw::is_larval_egg(unit) &&
 			scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).has_creep) {
 			unit->remainingBuildTime -= 1;
 		}
-
 		if (unit->remainingBuildTime < 0) {
 			unit->remainingBuildTime = 0;
 		}
@@ -131,7 +126,6 @@ namespace hooks
 	void orders_morph_1(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-
 		if (unit->mainOrderState == 0)
 		{
 			if (scbw::is_conventional_unit_morph_source(unit->id, true, true))
@@ -193,10 +187,11 @@ namespace hooks
 							}
 						}  break;
 					}
-
-					if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster) {
+					if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)
+					{
 						unitExt->values[ValuePreMorphEnergy] = unit->energy;
-					} else {
+					} else
+					{
 						unitExt->values[ValuePreMorphEnergy] = 100 * 256; // New starting amount
 					}
 					if (unit->id == UnitId::ProtossCantavis)
@@ -222,9 +217,8 @@ namespace hooks
 					}
 					else
 					{
-						unit->egg_origin = unit->id;
-						// morph into egg from source unit
-						helper::replace_unit_with_type(unit, eggId);
+						unit->egg_origin = unit->id;						
+						helper::replace_unit_with_type(unit, eggId); // morph into egg from source unit
 					}
 					helper::change_unit_buttonset(unit, unit->id);
 					
@@ -256,16 +250,18 @@ namespace hooks
 		}
 		else if (unit->mainOrderState == 1)
 		{
-			// advance
-			if (unit->id == UnitId::ZergEgg && unit->remainingBuildTime < 19) {
+			if (unit->id == UnitId::ZergEgg && unit->remainingBuildTime < 19)
+			{
 				unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
 				unit->remainingBuildTime = 0;
 			}
-			if (unit->id == UnitId::ZergCocoon && unit->remainingBuildTime < 12) {
+			if (unit->id == UnitId::ZergCocoon && unit->remainingBuildTime < 12)
+			{
 				unit->play_iscript_animation(IscriptAnimation::SpecialState1);
 				unit->remainingBuildTime = 0;
 			}
-			if (advance_remaining_build_time_custom(unit)) {
+			if (advance_remaining_build_time_custom(unit))
+			{
 				unit->mainOrderState = 2;
 			}
 		}
@@ -304,7 +300,7 @@ namespace hooks
 					}
 					unit->order_computer(OrderId::ZergBirth);
 				}
-				else // 0045DF60
+				else
 				{
 					helper::update_unit_stats_and_finish_building(unit);
 					helper::update_unit_strength(unit);
@@ -319,7 +315,6 @@ namespace hooks
 
 	bool unit_can_morph(Unit* unit, u16 morphUnitId)
 	{
-		// Default StarCraft behavior
 		if (unit->id == UnitId::ZergDroleth)
 		{
 			if (morphUnitId == UnitId::ZergGosvileth)
@@ -430,7 +425,7 @@ namespace hooks
 
 	bool is_rallyable_egg_unit(u16 unitId)
 	{
-		if (scbw::is_zerg_egg_new(nullptr, false, false, unitId))
+		if (scbw::is_zerg_egg_new(0, false, false, unitId))
 		{
 			return false;
 		}
@@ -451,20 +446,18 @@ namespace hooks
 		return UnitId::None;
 	}
 
-	// Determine the type (unit ID) of the unit to revert to when cancelling an @p eggUnit while it is morphing.
-	u16 get_cancel_morph_revert_id(Unit* eggUnit)
+	// Determine the type (unit ID) of the unit to revert to when cancelling an @p egg_unit while it is morphing.
+	u16 get_cancel_morph_revert_id(Unit* egg_unit)
 	{
-		auto source = eggUnit->egg_origin;
-		if (eggUnit->get_race() == RaceId::Zerg
-			&& eggUnit->id != UnitId::ZergInfestedTerran)
+		auto source = egg_unit->egg_origin;
+		if (egg_unit->get_race() == RaceId::Zerg)
 		{
-			if (!(units_dat::BaseProperty[eggUnit->id] & UnitProperty::Building)
-				&& source != UnitId::ZergLarva)
+			if (!(units_dat::BaseProperty[egg_unit->id] & UnitProperty::Building))
 			{
 				return source;
 			}
 		}
-		return UnitId::None; // Default (no revert for larvae)
+		return UnitId::None;
 	}
 
 	// Determines the vertical (Y) offset by which the @p unit will be shifted to when it finishes morphing.
