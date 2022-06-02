@@ -232,6 +232,7 @@ namespace
 		{
 			change_unit_type(unit, cancelChangeUnitId);
 			unit->energy = unitExt->values[ValuePreMorphEnergy];
+			unitExt->units[UnitMorphConnectedUnit] = unit->connectedUnit;
 			unit->remainingBuildTime = 0;
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 			

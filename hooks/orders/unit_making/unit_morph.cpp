@@ -93,14 +93,14 @@ namespace hooks
 				if (unit->egg_origin == UnitId::ZergLarva)
 				{
 					helper::order_new_unit_to_rally(unit, unit->connectedUnit);
-					if (unit2 != nullptr)
+					if (unit2)
 					{
 						helper::order_new_unit_to_rally(unit2, unit->connectedUnit);
 					}
 				}
 			}
 			helper::force_order_done(unit);
-			unit->connectedUnit = nullptr;
+			unit->connectedUnit = unitExt->units[UnitMorphConnectedUnit];
 		}
 	}
 
@@ -217,7 +217,8 @@ namespace hooks
 					}
 					else
 					{
-						unit->egg_origin = unit->id;						
+						unit->egg_origin = unit->id;		
+						unitExt->units[UnitMorphConnectedUnit] = 0;
 						helper::replace_unit_with_type(unit, eggId); // morph into egg from source unit
 					}
 					helper::change_unit_buttonset(unit, unit->id);

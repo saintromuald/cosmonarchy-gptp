@@ -352,6 +352,7 @@ enum ExtUnitId
 	UnitAnthelionGravityWellSource,
 	UnitTurretParentLink,
 	UnitBlissfulEmbrace,
+	UnitMorphConnectedUnit,
 
 	UnitCount,
 };
