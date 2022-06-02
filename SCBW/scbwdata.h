@@ -932,11 +932,11 @@ SCBW_DATA(b32*, IS_PLACING_BUILDING, 0x00640880);
 //-------- Tech levels --------//
 
 struct _scTechs {
-	u8 isEnabled[PLAYER_COUNT][24];		//0x0058CE24
+	u8 is_enabled[PLAYER_COUNT][24];		//0x0058CE24
 	u8 isResearched[PLAYER_COUNT][24];	//0x0058CF44
 };
 struct _bwTechs {
-	u8 isEnabled[PLAYER_COUNT][20];		//0x0058F050
+	u8 is_enabled[PLAYER_COUNT][20];		//0x0058F050
 	u8 isResearched[PLAYER_COUNT][20];	//0x0058F140
 };
 

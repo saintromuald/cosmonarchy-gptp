@@ -30,13 +30,13 @@ namespace hooks
 		}
 		aimedPos.x = (nydusCanal->building.nydusExit)->sprite->position.x;
 		aimedPos.y = (nydusCanal->building.nydusExit)->sprite->position.y;
-		scbw::prepareUnitMove(unit, true);
+		scbw::prepare_unit_move(unit, true);
 		scbw::set_unit_position(unit, aimedPos.x, aimedPos.y);
-		if (scbw::checkUnitCollisionPos(unit, &aimedPos, &finalPos, nullptr, false, 0))
+		if (scbw::check_unit_collision_pos(unit, &aimedPos, &finalPos, nullptr, false, 0))
 		{ // 004EA201
 			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydusCanal, 1, 0);
 			scbw::set_unit_position(unit, finalPos.x, finalPos.y);
-			scbw::refreshUnitAfterMove(unit);
+			scbw::refresh_unit_after_move(unit);
 			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydusCanal->building.nydusExit, 1, 0);
 			if (unit->orderQueueHead != nullptr)
 			{
@@ -59,7 +59,7 @@ namespace hooks
 		else
 		{	// collision detected, restore old position
 			scbw::set_unit_position(unit, oldPos.x, oldPos.y);
-			scbw::refreshUnitAfterMove(unit);
+			scbw::refresh_unit_after_move(unit);
 		}
 	}
 

@@ -61,7 +61,7 @@ namespace hooks
 					}
 					else
 					{
-						u32 overlayId = scbw::hasOverlay(target) + ImageId::MindControlHit_Small;
+						u32 overlayId = scbw::has_overlay(target) + ImageId::MindControlHit_Small;
 						if (target->subunit)
 						{
 							target->subunit->sprite->create_top_overlay(overlayId, 0, 0, 0);

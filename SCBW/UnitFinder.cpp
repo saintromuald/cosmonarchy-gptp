@@ -115,7 +115,7 @@ namespace scbw
 			{
 				// If height is small, check unit bounds
 				if (!isHeightExtended
-					|| Unit::getFromIndex(py->unitIndex)->getTop() < bottom)
+					|| Unit::getFromIndex(py->unitIndex)->get_top() < bottom)
 					unitFilter[py->unitIndex] = 1;
 			}
 		}
@@ -128,7 +128,7 @@ namespace scbw
 			{
 				// If width is small, check unit bounds
 				if (!isWidthExtended
-					|| Unit::getFromIndex(px->unitIndex)->getLeft() < right)
+					|| Unit::getFromIndex(px->unitIndex)->get_left() < right)
 				{
 					Unit* unit = Unit::getFromIndex(px->unitIndex);
 					if (unit)
@@ -683,7 +683,7 @@ namespace scbw
 		return *this;
 	}
 
-	void UnitFinder::forEach(scbw::UnitFinderCallbackProcInterface callback) const
+	void UnitFinder::for_each(scbw::UnitFinderCallbackProcInterface callback) const
 	{
 		for (s32 i = 0; i < this->getUnitCount(); ++i)
 		{

@@ -123,7 +123,7 @@ struct Unit : public UnitLayout
 	/// * The unit has a weapon, or
 	/// * The unit's subunit has a weapon, or
 	/// * If the unit is a loaded Carrier/Reaver.
-	bool hasWeapon() const;
+	bool has_weapon() const;
 
 	/// Checks if the unit is unpowered / lockdowned / stasised / maelstromed.
 	bool is_frozen() const;
@@ -163,13 +163,13 @@ struct Unit : public UnitLayout
 	u16 getTileY() const;
 
 	/// Returns the position of the left edge of the unit's collision box.
-	s16 getLeft() const;
+	s16 get_left() const;
 	/// Returns the position of the right edge of the unit's collision box.
-	s16 getRight() const;
+	s16 get_right() const;
 	/// Returns the position of the top edge of the unit's collision box.
-	s16 getTop() const;
+	s16 get_top() const;
 	/// Returns the position of the bottom edge of the unit's collision box.
-	s16 getBottom() const;
+	s16 get_bottom() const;
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -406,7 +406,7 @@ struct Unit : public UnitLayout
 	/// Transfers ownership of this unit to @p playerId. This function is
 	/// identical to Mind Control and the "Give Units To Player" trigger action.
 	/// @return   true if successful, false otherwise.
-	bool giveTo(u8 playerId);
+	bool give_to(u8 playerId);
 
 	/// Checks if the unit has an associated sprite and is not running the
 	/// OrderId::Die order.

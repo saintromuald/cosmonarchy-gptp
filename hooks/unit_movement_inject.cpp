@@ -34,7 +34,7 @@ namespace
 			MOV y, CX
 			PUSHAD
 		}
-		hooks::MoveUnit(unit, x, y, false);
+		hooks::move_unit(unit, x, y, false);
 		__asm
 		{
 			POPAD

@@ -2778,7 +2778,7 @@ namespace helper
 
 	// For burrowGeneric
 
-	void toggleUnitPath(Unit* unit)
+	void toggle_unit_path(Unit* unit)
 	{
 		const u32 Func_toggleUnitPath = 0x004E42A0;
 		__asm {
@@ -3734,7 +3734,7 @@ namespace helper
 		}
 	}
 
-	void hideAndDisableUnit(Unit* unit)
+	void hide_and_disable_unit(Unit* unit)
 	{
 		const u32 Func_unitDeathSomething_0 = 0x004E6340;
 		__asm
@@ -5528,7 +5528,7 @@ namespace helper
 	}
 
 	/// Return the count of overlays
-	u8 hasOverlay(Unit* unit)
+	u8 has_overlay(Unit* unit)
 	{
 		const u32 Func_hasOverlay = 0x0047B720;
 		static u8 result;
@@ -7434,7 +7434,7 @@ namespace helper
 		return return_value;
 	}
 
-	void registerUserDialogAction(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray)
+	void register_user_dialog_action(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray)
 	{
 		const u32 Func_registerUserDialogAction = 0x00418100;
 		__asm
@@ -7448,7 +7448,7 @@ namespace helper
 		}
 	}
 
-	void enableControl(BinDlg* dialog)
+	void enable_control(BinDlg* dialog)
 	{
 		const u32 Func_enableControl = 0x00418E00;
 		__asm
@@ -7460,7 +7460,7 @@ namespace helper
 		}
 	}
 
-	void replayStatBtns(BinDlg* dialog)
+	void replay_stat_buttons(BinDlg* dialog)
 	{
 		const u32 Func_ReplayStatBtns = 0x00427A80;
 		__asm
@@ -7472,7 +7472,7 @@ namespace helper
 		}
 	}
 
-	void updateCommandCard()
+	void update_command_card()
 	{
 		const u32 Func_updateCommandCard = 0x004591D0;
 		__asm

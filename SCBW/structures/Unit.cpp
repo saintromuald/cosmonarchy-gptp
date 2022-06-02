@@ -315,7 +315,7 @@ bool Unit::hasEnergy(u32 energy) const
 }
 
 //Identical to function Unit__SpendEnergy @ 0x00476180
-bool Unit::hasWeapon() const
+bool Unit::has_weapon() const
 {
 	assert(this);
 
@@ -441,25 +441,25 @@ u16 Unit::getTileY() const
 	return this->get_y() / 32;
 };
 
-s16 Unit::getLeft() const
+s16 Unit::get_left() const
 {
 	assert(this);
 	return this->get_x() - units_dat::UnitBounds[this->id].left;
 }
 
-s16 Unit::getRight() const
+s16 Unit::get_right() const
 {
 	assert(this);
 	return this->get_x() + units_dat::UnitBounds[this->id].right;
 }
 
-s16 Unit::getTop() const
+s16 Unit::get_top() const
 {
 	assert(this);
 	return this->get_y() - units_dat::UnitBounds[this->id].top;
 }
 
-s16 Unit::getBottom() const
+s16 Unit::get_bottom() const
 {
 	assert(this);
 	return this->get_y() + units_dat::UnitBounds[this->id].bottom;
@@ -707,8 +707,8 @@ void Unit::reduce_defensive_matrix_hp(s32 amount)
 	if (this->defensiveMatrixTimer != 0 && !(this->status & UnitStatus::Burrowed))
 	{
 		Unit* unit = this->subunit ? this->subunit : this;
-		// getUnitOverlayAdjustment code was hardcoded into function in original code)
-		unit->sprite->create_top_overlay(scbw::getUnitOverlayAdjustment(unit) + ImageId::DefensiveMatrixHit_Small);
+		// get_unit_overlay_adjustment code was hardcoded into function in original code)
+		unit->sprite->create_top_overlay(scbw::get_unit_overlay_adjustment(unit) + ImageId::DefensiveMatrixHit_Small);
 	}
 
 }
@@ -1146,17 +1146,17 @@ u32 Unit::get_distance_to_target(Unit* target) const
 	if (this->is_subunit()) {
 		unit = this->subunit; // Current unit is a turret, so use it's base instead
 	}
-	s32 dx = unit->getLeft() - target->getRight() - 1;
+	s32 dx = unit->get_left() - target->get_right() - 1;
 	if (dx < 0)
 	{
-		dx = target->getLeft() - unit->getRight() - 1;
+		dx = target->get_left() - unit->get_right() - 1;
 		if (dx < 0)
 			dx = 0;
 	}
-	s32 dy = unit->getTop() - target->getBottom() - 1;
+	s32 dy = unit->get_top() - target->get_bottom() - 1;
 	if (dy < 0)
 	{
-		dy = target->getTop() - unit->getBottom() - 1;
+		dy = target->get_top() - unit->get_bottom() - 1;
 		if (dy < 0)
 			dy = 0;
 	}
@@ -1386,7 +1386,7 @@ namespace
 	GiveUnitToPlayerFunc const giveUnitToPlayer = (GiveUnitToPlayerFunc)0x004C8040;
 }
 
-bool Unit::giveTo(u8 playerId)
+bool Unit::give_to(u8 playerId)
 {
 	assert(this);
 	assert(playerId < 12);

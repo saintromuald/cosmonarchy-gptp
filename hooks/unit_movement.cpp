@@ -42,7 +42,7 @@ namespace hooks
 		return 1;
 	}
 
-	void MoveUnit(Unit* unit, s16 x, s16 y, bool ignoreCollision)
+	void move_unit(Unit* unit, s16 x, s16 y, bool ignoreCollision)
 	{
 		Point16 oldPos = { unit->sprite->position.x, unit->sprite->position.y };
 		Point16 newPos = { x, y };

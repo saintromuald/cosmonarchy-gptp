@@ -281,7 +281,7 @@ namespace helper
 	bool set_move_target_xy(s32 a1, s32 a2, Unit* a3);															// 004EB820
 
 	// For burrowGeneric
-	void toggleUnitPath(Unit* unit);									                                    // 004E42A0
+	void toggle_unit_path(Unit* unit);									                                    // 004E42A0
 	char switchSpriteId(Sprite* sprite, s32 spriteId);														// 00499860
 
 	//// building_morph
@@ -408,7 +408,7 @@ namespace helper
 	void function_00497480(Sprite* thingySprite, u32 visibility_flags);																// 00497480
 	void _UnitDestructor(Unit* unit);																								// 004A0740
 	void UnitDestructor(Unit* unit);																								// 004A0990
-	void hideAndDisableUnit(Unit* unit);																							// 004E6340
+	void hide_and_disable_unit(Unit* unit);																							// 004E6340
 
 	//// CMDRECV_Cancel
 	void CancelResearch_Proc(Unit* unit);																							// 00453E30
@@ -629,7 +629,7 @@ namespace helper
 
 	//// recharge_shields
 	void insertFirstOrder(Unit* unit, u8 orderId);																					// 004749D0
-	u8 hasOverlay(Unit* unit);																										// 0047B720
+	u8 has_overlay(Unit* unit);																										// 0047B720
 	bool isHangarUnit(Unit* unit);
 
 	//// stopholdpos_orders
@@ -866,10 +866,10 @@ namespace helper
 	void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);			                    // 00416090
 	void removeFromSelections(Unit* unit);																// 0049A7F0
 	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);
-	void registerUserDialogAction(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray);	    // 00418100
-	void enableControl(BinDlg* dialog);																	// 00418E00
-	void replayStatBtns(BinDlg* dialog);																// 00427A80
-	void updateCommandCard();																			// 004591D0
+	void register_user_dialog_action(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray);	    // 00418100
+	void enable_control(BinDlg* dialog);																	// 00418E00
+	void replay_stat_buttons(BinDlg* dialog);																// 00427A80
+	void update_command_card();																			// 004591D0
 	void refresh_button_tooltip();																				// 00459770
 	void BINDLG_BlitSurface(BinDlg* dialog);															// 004C35F0
 	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);

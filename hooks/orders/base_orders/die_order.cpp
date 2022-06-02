@@ -9,7 +9,7 @@ namespace hooks
 		bool jump_to_795AB = false;
 		if (unit->userActionFlags & 4)
 		{
-			helper::hideAndDisableUnit(unit);
+			helper::hide_and_disable_unit(unit);
 		}
 
 		if (unit->subunit != nullptr)
@@ -62,7 +62,7 @@ namespace hooks
 
 		if (!jump_to_795AB)
 		{//79566
-			helper::hideAndDisableUnit(unit);
+			helper::hide_and_disable_unit(unit);
 			if (unit->subunit != nullptr)
 			{
 				if (units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)

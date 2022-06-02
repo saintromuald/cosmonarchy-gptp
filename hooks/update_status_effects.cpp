@@ -68,7 +68,7 @@ namespace hooks
 				irradiatedUnit->get_y() - 160,
 				irradiatedUnit->get_x() + 160,
 				irradiatedUnit->get_y() + 160
-			).forEach([&](Unit* target)
+			).for_each([&](Unit* target)
 			{
 				irradiate_proc(irradiatedUnit, target);
 			});
@@ -119,10 +119,10 @@ namespace hooks
 			if (tile.currently_occupied)
 			{
 				Unit* nearest = scbw::UnitFinder::getNearestTarget(
-					unit->getLeft() - 32,
-					unit->getTop() - 32,
-					unit->getRight() + 32,
-					unit->getBottom() + 32,
+					unit->get_left() - 32,
+					unit->get_top() - 32,
+					unit->get_right() + 32,
+					unit->get_bottom() + 32,
 					unit, [&](Unit* target)
 				{
 					return safety_unburrow_check(unit, target);
@@ -165,7 +165,7 @@ namespace hooks
 				unit->position.y - radius,
 				unit->position.x + radius,
 				unit->position.y + radius
-			).forEach([&](Unit* target)
+			).for_each([&](Unit* target)
 			{
 				if (unit == target)
 				{
@@ -203,7 +203,7 @@ namespace hooks
 				unit->get_y() - radius,
 				unit->get_x() + radius,
 				unit->get_y() + radius
-			).forEach([&](Unit* target)
+			).for_each([&](Unit* target)
 			{
 				if (unit == target)
 				{
@@ -384,10 +384,10 @@ namespace hooks
 						if (tile.currently_occupied)
 						{
 							Unit* nearest = scbw::UnitFinder::getNearestTarget(
-								unit->getLeft() - 32,
-								unit->getTop() - 32,
-								unit->getRight() + 32,
-								unit->getBottom() + 32,
+								unit->get_left() - 32,
+								unit->get_top() - 32,
+								unit->get_right() + 32,
+								unit->get_bottom() + 32,
 								unit,
 								[&](Unit* target)
 							{

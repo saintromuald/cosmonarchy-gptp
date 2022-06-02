@@ -1555,7 +1555,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					}
 				}
 
-				scbw::minimapPing(spawn_location->pos.x, spawn_location->pos.y, 0, *LOCAL_NATION_ID);
+				scbw::minimap_ping(spawn_location->pos.x, spawn_location->pos.y, 0, *LOCAL_NATION_ID);
 				playerVision->flags[player] |= 1 << 0;
 				if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
 					playerVision->flags[player] |= 1 << 7;

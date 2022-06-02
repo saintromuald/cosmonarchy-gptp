@@ -601,11 +601,11 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16
 	{
 		return false;
 	}
-	if (!(scbw::isEnabled(unit)) && flags & FilterEnabled)
+	if (!(scbw::is_enabled(unit)) && flags & FilterEnabled)
 	{
 		return false;
 	}
-	if (flags & FilterCanAttackOrCast && !unit->hasWeapon() && !(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster))
+	if (flags & FilterCanAttackOrCast && !unit->has_weapon() && !(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster))
 	{
 		return false;
 	}

@@ -224,7 +224,7 @@ namespace
 			}
 		}
 		race = (*activePortraitUnit)->get_race();
-		scbw::showErrorMessageWithSfx((*activePortraitUnit)->player, 864 + race, 156 + race);
+		scbw::show_error_message_with_sfx((*activePortraitUnit)->player, 864 + race, 156 + race);
 		return false;
 	}
 }

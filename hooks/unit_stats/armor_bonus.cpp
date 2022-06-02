@@ -14,7 +14,7 @@ namespace hooks
 			armorUpg += unitExt->values[ValueSublimeShepherd];
 		}
 
-		return armorUpg + scbw::getUpgradeLevel(unit->player, units_dat::ArmorUpgrade[unit->id]);
+		return armorUpg + scbw::get_upgrade_level(unit->player, units_dat::ArmorUpgrade[unit->id]);
 	}
 
 }

@@ -17,7 +17,7 @@ namespace hooks
 			{
 				if (target->status & UnitStatus::IsHallucination)
 				{
-					u8 overlaySize = scbw::hasOverlay(target);
+					u8 overlaySize = scbw::has_overlay(target);
 					helper::replace_feedback_sprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 					unit->spend_unit_energy(techCost);
 					target->remove();
@@ -39,7 +39,7 @@ namespace hooks
 
 						if (!target->isDead())
 						{
-							u8 overlaySize = scbw::hasOverlay(target);
+							u8 overlaySize = scbw::has_overlay(target);
 							if (target->subunit != nullptr)
 							{
 								target->subunit->sprite->create_top_overlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
@@ -52,7 +52,7 @@ namespace hooks
 						}
 						else
 						{ // 004F6E6D
-							u8 overlaySize = scbw::hasOverlay(target);
+							u8 overlaySize = scbw::has_overlay(target);
 							helper::replace_feedback_sprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 							unit->order_to_idle();
 						}

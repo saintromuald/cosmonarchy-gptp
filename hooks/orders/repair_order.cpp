@@ -311,7 +311,7 @@ namespace hooks
 					{
 						unitId = unit->id;
 						if (unitId == UnitId::TerranMason && unit->mainOrderId == OrderId::ConstructingBuilding && orderId != 1
-							|| (scbw::unitCanNuke(unit) && unit->mainOrderId == OrderId::NukeTrack)
+							|| (scbw::unit_can_nuke(unit) && unit->mainOrderId == OrderId::NukeTrack)
 							|| unitId == UnitId::ProtossArchon && unit->mainOrderId == OrderId::CompletingArchonSummon
 							|| unitId == UnitId::ProtossMindTyrant && unit->mainOrderId == OrderId::CompletingArchonSummon)
 						{

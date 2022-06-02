@@ -56,7 +56,7 @@ namespace hooks
 			else if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED
 			&&		 isGasContainer(resource->id))
 			{
-				//scbw::showErrorMessageWithSfx(resource->playerId, 875, 20); // Gas depleted message and sound
+				//scbw::show_error_message_with_sfx(resource->playerId, 875, 20); // Gas depleted message and sound
 			}
 			return_value = RESOURCE_HARVESTED;
 		}
@@ -112,7 +112,7 @@ namespace hooks
 				}
 
 				// Resource return multipliers
-				switch (scbw::getUpgradeLevel(worker->player, UpgradeId::MiningEfficiency))
+				switch (scbw::get_upgrade_level(worker->player, UpgradeId::MiningEfficiency))
 				{
 					case 0:
 					case 99:

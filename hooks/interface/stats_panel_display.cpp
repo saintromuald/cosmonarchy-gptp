@@ -313,7 +313,7 @@ namespace hooks
 			|| !units_dat::MapStringId[unitId])
 		{
 			if (helper::unitGetRace(unit) == RaceId::Terran
-				&& !scbw::unitIdIsShared(unit->id))
+				&& !scbw::unit_id_is_shared(unit->id))
 			{
 				return helper::getStatTxtString((unit->rankIncrease + units_dat::Rank[unitId]) + 1302);
 			}

@@ -151,7 +151,7 @@ namespace hooks
 			}
 		}
 		cargo_unit->status |= UnitStatus::InTransport;
-		helper::hideAndDisableUnit(cargo_unit);
+		helper::hide_and_disable_unit(cargo_unit);
 		cargo_unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 
 		if (transport->id == UnitId::TerranBunker)
@@ -168,7 +168,7 @@ namespace hooks
 		{
 			UnitExt* unitExt = globals.get_unit_ext(transport);
 			unitExt->values[ValueIsNeutralBunker] = 1;
-			transport->giveTo(cargo_unit->player);
+			transport->give_to(cargo_unit->player);
 		}		
 
 		scbw::refresh_console();
@@ -341,7 +341,7 @@ namespace hooks
 					{
 						if (!transport->getFirstLoadedUnit())
 						{
-							transport->giveTo(11);
+							transport->give_to(11);
 							transport->sprite->playerId = 11;
 						}
 						else
@@ -357,7 +357,7 @@ namespace hooks
 							}
 							if (!isOwnerValid)
 							{
-								transport->giveTo(transport->getFirstLoadedUnit()->player);
+								transport->give_to(transport->getFirstLoadedUnit()->player);
 							}
 						}
 					}

@@ -438,8 +438,8 @@ namespace hooks
 
 	u32 BTNSCOND_ZergBuildingRally(u32 unused, u32 player, Unit* unit) // 00429740
 	{
-		if (scbw::isZergProduction(unit->id)
-			|| scbw::isZergProduction(unit->buildQueue[unit->buildQueueSlot]))
+		if (scbw::is_zerg_production(unit->id)
+			|| scbw::is_zerg_production(unit->buildQueue[unit->buildQueueSlot]))
 		{
 			return helper::BTNSCOND_Rally(unused, player, unit);
 		}

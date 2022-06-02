@@ -317,7 +317,7 @@ namespace hooks
 						}
 						else
 						{
-							scbw::rangeModifiedFire(weaponId, unit, x, y, 32 - 32 * rotate);
+							scbw::range_modified_fire(weaponId, unit, x, y, 32 - 32 * rotate);
 						}
 						rotate++;
 						if (rotate > 2)
@@ -341,7 +341,7 @@ namespace hooks
 							unit->position.y - radius,
 							unit->position.x + radius,
 							unit->position.y + radius
-						).forEach([&](Unit* pickedUnit) {
+						).for_each([&](Unit* pickedUnit) {
 							if (!(pickedUnit->status & UnitStatus::Completed)
 								|| unit == pickedUnit
 								|| scbw::is_allied_to(pickedUnit->player, unit->player)
@@ -583,19 +583,19 @@ namespace hooks
 					return false;
 				}
 				auto box = units_dat::UnitBounds[unit->id];
-				if (bullet->position.x < unit->getLeft())
+				if (bullet->position.x < unit->get_left())
 				{
 					return false;
 				}
-				if (bullet->position.x > unit->getRight())
+				if (bullet->position.x > unit->get_right())
 				{
 					return false;
 				}
-				if (bullet->position.y < unit->getTop())
+				if (bullet->position.y < unit->get_top())
 				{
 					return false;
 				}
-				if (bullet->position.y > unit->getBottom())
+				if (bullet->position.y > unit->get_bottom())
 				{
 					return false;
 				}
@@ -627,19 +627,19 @@ namespace hooks
 					return false;
 				}
 				auto box = units_dat::UnitBounds[unit->id];
-				if (bullet->position.x < unit->getLeft())
+				if (bullet->position.x < unit->get_left())
 				{
 					return false;
 				}
-				if (bullet->position.x > unit->getRight())
+				if (bullet->position.x > unit->get_right())
 				{
 					return false;
 				}
-				if (bullet->position.y < unit->getTop())
+				if (bullet->position.y < unit->get_top())
 				{
 					return false;
 				}
-				if (bullet->position.y > unit->getBottom())
+				if (bullet->position.y > unit->get_bottom())
 				{
 					return false;
 				}
@@ -654,7 +654,7 @@ namespace hooks
 		}
 
 		// for missiles hitting targets mid-flight
-		else if (scbw::weaponPiercesTargets(bullet->weaponId))
+		else if (scbw::weapon_pierces_targets(bullet->weaponId))
 		{
 			u32 range = 0;
 			switch (bullet->weaponId)
@@ -695,19 +695,19 @@ namespace hooks
 					return false;
 				}
 				auto box = units_dat::UnitBounds[unit->id];
-				if (bullet->position.x < unit->getLeft())
+				if (bullet->position.x < unit->get_left())
 				{
 					return false;
 				}
-				if (bullet->position.x > unit->getRight())
+				if (bullet->position.x > unit->get_right())
 				{
 					return false;
 				}
-				if (bullet->position.y < unit->getTop())
+				if (bullet->position.y < unit->get_top())
 				{
 					return false;
 				}
-				if (bullet->position.y > unit->getBottom())
+				if (bullet->position.y > unit->get_bottom())
 				{
 					return false;
 				}

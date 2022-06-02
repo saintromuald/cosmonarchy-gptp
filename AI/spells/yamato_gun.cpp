@@ -12,7 +12,7 @@ namespace AI
 				return false;
 			}
 
-			if ((target->status & UnitStatus::GroundedBuilding) && target->hasWeapon())
+			if ((target->status & UnitStatus::GroundedBuilding) && target->has_weapon())
 			{
 				return true;
 			}

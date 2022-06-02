@@ -59,7 +59,7 @@ namespace AI
 		}
 		else
 		{
-			if (scbw::getGroundHeightAtPos(attacker->get_x(), attacker->get_y()) >= scbw::getGroundHeightAtPos(target->get_x(), target->get_y()))
+			if (scbw::get_ground_height_at_pos(attacker->get_x(), attacker->get_y()) >= scbw::get_ground_height_at_pos(target->get_x(), target->get_y()))
 			{
 				returnValue = isUnderDarkSwarmStatus;
 			}

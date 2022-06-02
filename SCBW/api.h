@@ -45,11 +45,11 @@ namespace scbw
 	/// @param  playerId  ID of the player who receives the message.
 	/// @param  statTxtId ID of the error message string in stat_txt.tbl
 	/// @param  sfxId     ID of the sound file in sfxdata.dat.
-	void showErrorMessageWithSfx(u32 playerId, u32 statTxtId, u32 sfxId);
+	void show_error_message_with_sfx(u32 playerId, u32 statTxtId, u32 sfxId);
 
 	//////////////////////////////////////////////////////////////// @}
 
-	u8 hasOverlay(Unit* unit);
+	u8 has_overlay(Unit* unit);
 
 	void disable_dialog(BinDlg* dialog);															//18640
 	void show_dialog(BinDlg* dialog);															//186A0
@@ -67,7 +67,7 @@ namespace scbw
 	/// status effects. Note that this function is affected by the EXE edits
 	/// "change bunker size check to organic flag check" and
 	/// "remove bunker size check" in FireGraft.
-	bool canBeEnteredBy(Unit* transport, Unit* unit);
+	bool can_be_entered_by(Unit* transport, Unit* unit);
 
 	/// Checks weapons.dat targeting flags to see if the @p target can be hit by the
 	/// @p weapon.
@@ -87,7 +87,7 @@ namespace scbw
 	//Checks if the @p target can be targeted by player @p castingPlayer with
 	//tech/spell @p techId
 	//If yes, return 0, else return error message id in stat_txt.tbl to use
-	u16 getTechUseErrorMessage(Unit* target, u8 castingPlayer, u16 techId);
+	u16 get_tech_user_error_message(Unit* target, u8 castingPlayer, u16 techId);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -326,7 +326,7 @@ namespace scbw
 	void adjust_addon_y(u16 addonId, u16 sourceId, u16* y);
 	void adjust_addon_coordinates(u16 addonId, u16 sourceId, u16* x, u16* y);
 
-	u8 getUpgradeMaxLevel(u8 playerId, u8 upgradeId);
+	u8 get_upgrade_max_level(u8 playerId, u8 upgradeId);
 	bool hasTechAvailable(u8 playerId, u16 techId);
 	//u32 techUseAllowed(Unit* unit, u16 techId, u32 playerId);
 	/// Sets the player's tech research state for @p techId to @p isResearched.
@@ -335,7 +335,7 @@ namespace scbw
 
 	/// Returns the player's upgrade level of @p upgradeId. Note that this uses
 	/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.
-	u8 getUpgradeLevel(u8 playerId, u8 upgradeId);
+	u8 get_upgrade_level(u8 playerId, u8 upgradeId);
 
 	/// Sets the player's upgrade level of @p upgradeId. Note that this uses
 	/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.
@@ -367,7 +367,7 @@ namespace scbw
 
 	/// Returns the elevation of the tile at (x, y). 0 for low terrain, 1 for
 	/// medium, and 2 for high terrain.
-	u32 getGroundHeightAtPos(s32 x, s32 y);
+	u32 get_ground_height_at_pos(s32 x, s32 y);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -383,12 +383,12 @@ namespace scbw
 	// 1. moving slightly will try to correct collision with itself, resulting in incorrect movement
 	// 2. moving onto a ground unit stunlocks it
 	// 3. moving onto an air unit makes it move slightly
-	bool moveUnit(Unit* unit, s16 x, s16 y);
+	bool move_unit(Unit* unit, s16 x, s16 y);
 
 	// forces the move without any corrections,
 	// fixes bug 1 and 2,
 	// useful for attachment
-	bool moveUnitForce(Unit* unit, s16 x, s16 y);
+	bool move_unit_force(Unit* unit, s16 x, s16 y);
 
 	// cancels if the unit would end up on invalid terrain / collision,
 	// fixes bug 1,
@@ -396,8 +396,8 @@ namespace scbw
 	bool move_unit_improved(Unit* unit, s16 x, s16 y);
 
 	/// Removes various references to the @p unit.
-	/// Details not understood. See the source for moveUnit().
-	void prepareUnitMove(Unit* unit, bool hideUnit = false);
+	/// Details not understood. See the source for move_unit().
+	void prepare_unit_move(Unit* unit, bool hideUnit = false);
 
 	// 
 	void prepare_unit_move_custom(Unit* unit);
@@ -408,7 +408,7 @@ namespace scbw
 	///
 	/// @return True if the unit does not collide with other units, or can be moved
 	///         to a nearby non-colliding position.
-	bool checkUnitCollisionPos(Unit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea = nullptr, bool hideErrorMsg = false, u32 someFlag = 0);
+	bool check_unit_collision_pos(Unit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea = nullptr, bool hideErrorMsg = false, u32 someFlag = 0);
 
 	/// Moves the unit's position to @p (x, y). If the unit is a ground unit and the
 	/// the target position is on unwalkable terrain, this function moves the unit
@@ -416,8 +416,8 @@ namespace scbw
 	void set_unit_position(Unit* unit, u16 x, u16 y);
 
 	/// Updates pathing data and various information related to the @p unit.
-	/// Details not understood.  See the source for moveUnit().
-	void refreshUnitAfterMove(Unit* unit);
+	/// Details not understood.  See the source for move_unit().
+	void refresh_unit_after_move(Unit* unit);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -435,7 +435,7 @@ namespace scbw
 	/// Calculates the images.dat overlay adjustment for the given unit.
 	/// This piece of code is used throughout StarCraft.exe for various status
 	/// effects, such as Ensnare, Plague, and Defensive Matrix.
-	u32 getUnitOverlayAdjustment(Unit* const unit);
+	u32 get_unit_overlay_adjustment(Unit* const unit);
 
 	/// Refreshes the screen position within the given rectangle area in pixels.
 	void refresh_screen(s32 left, s32 top, s32 right, s32 bottom);
@@ -464,10 +464,10 @@ namespace scbw
 	void refresh_console();
 
 	// Moves the camera/screen to the unit
-	void MoveScreenToUnit(Unit* unit, u32 playerId = 8);
+	void move_screen_to_unit(Unit* unit, u32 playerId = 8);
 
 	// Creates a minimap ping at x,y (relative pos)
-	void minimapPing(u32 x, u32 y, s32 color, u32 playerId = 8);
+	void minimap_ping(u32 x, u32 y, s32 color, u32 playerId = 8);
 
 	// Functionally identical to the [playfram] opcode in iscript.bin.
 	inline void playFrame(Image* image, u16 frameset)
@@ -518,53 +518,53 @@ namespace scbw
 
 	//////////////////////////////////////////////////////////////// @}
 
-	void rangeModifiedFire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset);
-	bool canSpawnBroodling(Unit* target);
-	s32 getBroodlingCountFromSupply(Unit* target);
+	void range_modified_fire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset);
+	bool can_spawn_broodling(Unit* target);
+	s32 get_broodling_count_from_supply(Unit* target);
 	void create_unit_from_ability(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, Unit* creator = nullptr);
 	Unit** getSourceQueens(Unit* unit);
 	u16 get_last_queue_slot_id(Unit* a1);
 	s32 dir_saturate(s32 direction, s32 value);
 	bool can_use_cliff_advantage(Unit* unit, u8 weapon);
 	s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon);
-	void setOffsetToParentSpecialOverlay(Image* image);
+	void set_offset_to_parent_special_overlay(Image* image);
 	bool isSlowed(Unit* unit);
-	void hideAndDisableUnit(Unit* unit);
+	void hide_and_disable_unit(Unit* unit);
 	void restore_func(Unit* unit);
 	void refreshDebuffs(Unit* unit);
-	void inheritDebuffs(Unit* parent, Unit* child);
+	void inherit_debuffs(Unit* parent, Unit* child);
 	void apply_ensnare(Unit* unit);
-	bool isEnabled(Unit* unit);
+	bool is_enabled(Unit* unit);
 	bool isDebuffed(Unit* unit);
-	s32 getUpgradeType(Unit* unit);
+	s32 get_upgrade_type(Unit* unit);
 	s32 get_overlay_offset(u16 unitId, bool xlargeAllowed = false);
-	s32 getFinalDamage(Unit* unit, u16 weaponId);
-	bool unitIsPacifist(Unit* unit);
+	s32 get_final_damage(Unit* unit, u16 weaponId);
+	bool unit_id_is_pacifist(Unit* unit);
 	bool order_is_spell(s32 orderId);
-	bool canBeParasited(Unit* unit);
+	bool can_be_parasited(Unit* unit);
 	void applyParasite(Unit* unit, u8 playerID, Unit* queen);
 	void create_shield_overlay(Unit* unit, u32 attackDirection);
 	void decloak_proc(Unit* unit);
 	bool is_decloakable(Unit* unit);
-	bool unitCanNuke(Unit* unit);
+	bool unit_can_nuke(Unit* unit);
 	bool unit_is_trap(Unit* unit);
 	bool unit_is_ranged_attacker(Unit* unit);
-	void playWorkAnimation(Unit* unit);
+	void play_work_animation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);
-	void applyNewHallucination(Unit* unit, u8 playerId, u32 time);
-	bool weaponPiercesTargets(u16 weaponId);
+	void apply_new_hallucination(Unit* unit, u8 playerId, u32 time);
+	bool weapon_pierces_targets(u16 weaponId);
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
 	void update_signify_status(Unit* unit, UnitExt* unitExt);
 	bool is_unit_isolated(Unit* unit);
 	bool unit_id_is_zerg_supply(u16 unitId);
 	void mind_control(Unit* source, Unit* target);
 	void recede_mind_control(Unit* target);
-	bool isZergProduction(u16 unitId);
-	bool unitIdIsTownCenter(u16 unitId);
-	bool unitIdIsShared(u16 unitId);
-	bool transportIsFull(Unit* transport);
-	bool transportIsEmpty(Unit* transport);
-	bool unitIdUsesXlargeOverlays(u16 unitId);
+	bool is_zerg_production(u16 unitId);
+	bool unit_id_is_town_center(u16 unitId);
+	bool unit_id_is_shared(u16 unitId);
+	bool transport_is_full(Unit* transport);
+	bool transport_is_empty(Unit* transport);
+	bool unit_id_uses_xlarge_overlays(u16 unitId);
 	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures);
 
 	void set_cmbw_ai_preference(u16 unit_id, u32 player);

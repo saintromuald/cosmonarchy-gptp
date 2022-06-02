@@ -109,7 +109,7 @@ namespace hooks
 			startY + 10 * 32
 		);
 		u8 cliffLevel = scbw::get_stupid_reference_to_active_tile_at(startX, startY).ground_height;
-		unitFinder.forEach([&](Unit* unit)
+		unitFinder.for_each([&](Unit* unit)
 		{
 			if ((unit->id == UnitId::ResourceMineralField
 				|| unit->id == UnitId::ResourceMineralFieldType2

@@ -198,11 +198,11 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchyFinderMatch(Unit* center, u32 
 		{
 			return false;
 		}
-		if (!(scbw::isEnabled(unit)) && context & Flags::Enabled)
+		if (!(scbw::is_enabled(unit)) && context & Flags::Enabled)
 		{
 			return false;
 		}
-		if (context & Flags::CanAttackOrCast && !unit->hasWeapon() && !(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster))
+		if (context & Flags::CanAttackOrCast && !unit->has_weapon() && !(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster))
 		{
 			return false;
 		}

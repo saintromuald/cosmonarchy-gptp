@@ -152,7 +152,7 @@ namespace hooks
 					if (battery->secondaryOrderId != OrderId::ShieldBattery)
 						battery->set_secondary_order(OrderId::ShieldBattery);
 
-					overlaysCounter = helper::hasOverlay(unit);
+					overlaysCounter = helper::has_overlay(unit);
 					unit->sprite->create_overlay(ImageId::RechargeShields_Small + overlaysCounter, 0, 0, 0);
 
 					//the order is correct, see OrderId.h description

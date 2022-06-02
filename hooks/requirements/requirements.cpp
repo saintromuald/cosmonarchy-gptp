@@ -251,7 +251,7 @@ namespace hooks
 
 				case RequirementOpcodes::HasWeapon:
 				{
-					if (unit->hasWeapon() == false)
+					if (unit->has_weapon() == false)
 					{
 						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
@@ -337,7 +337,7 @@ namespace hooks
 
 				case RequirementOpcodes::UpgradeLv1Requires:
 				{
-					switch (scbw::getUpgradeLevel(playerId, id))
+					switch (scbw::get_upgrade_level(playerId, id))
 					{
 						default:
 						{

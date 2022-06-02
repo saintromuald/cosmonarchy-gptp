@@ -502,7 +502,7 @@ static bool unit_could_kite(Unit* unit)
 	}
 
 	return in_combat
-		&& unit->hasWeapon()
+		&& unit->has_weapon()
 		&& !unit->is_frozen()
 		&& unit->status & UnitStatus::Completed
 		&& !(unit->movementFlags & MovementFlags::StartingAttack)	
@@ -571,7 +571,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 
 		if (unit_kiting_can_attack(unit))
 		{
-			local_group.forEach([&](Unit* local_unit)
+			local_group.for_each([&](Unit* local_unit)
 			{
 				if (!unit_kiting_can_attack(local_unit))
 				{
@@ -605,7 +605,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					local_unit->get_y() - hostile_group_radius * 2,
 					local_unit->get_x() + hostile_group_radius * 2,
 					local_unit->get_y() + hostile_group_radius * 2
-				).forEach([&](Unit* target) {
+				).for_each([&](Unit* target) {
 					if (!target_match(target) || !local_unit->canAttackTarget(target, true)) {
 						return;
 					}
@@ -653,7 +653,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 			u32 sync = 0;
 			if (unit->id != UnitId::ProtossSolarion && unit->id != UnitId::ProtossAccantor)
 			{
-				local_group.forEach([&](Unit* local_unit)
+				local_group.for_each([&](Unit* local_unit)
 				{
 					UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
 					if (local_unit_ext->values[ValueAI_KitingSignal] >= 256) {
@@ -669,7 +669,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 				KitePositions result = get_kite_positions(unit, hostile_group_radius);
 				if (!result.enemies_found)
 				{			
-					local_group.forEach([&](Unit* local_unit)
+					local_group.for_each([&](Unit* local_unit)
 					{
 						UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
 						local_unit_ext->timers[TimerAI_KitingCooldown] = 8;
@@ -686,7 +686,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					crowd_score = cosmonarchyUnitCount(unit, unit->position, CrowdCalcRadius, Flags::Ally | Flags::NotSelf | Flags::NoAir, {});
 				}
 
-				local_group.forEach([&](Unit* local_unit)
+				local_group.for_each([&](Unit* local_unit)
 				{
 					UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
 
@@ -748,7 +748,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					}
 
 					u32 local_group_value = 0;
-					local_group.forEach([&](Unit* local_unit)
+					local_group.for_each([&](Unit* local_unit)
 					{
 						local_group_value += std::max(local_unit->groundStrength, local_unit->airStrength);
 					});

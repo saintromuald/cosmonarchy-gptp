@@ -50,7 +50,7 @@ namespace hooks
 		}
 		helper::setResourceTarget(unit);
 		s16 unitId = unit->id;
-		if (scbw::unitCanNuke(unit))
+		if (scbw::unit_can_nuke(unit))
 		{
 			Unit* nuke = unit->connectedUnit;
 			if (nuke)
@@ -116,7 +116,7 @@ namespace hooks
 			bullet->position.y - radius,
 			bullet->position.x + radius,
 			bullet->position.y + radius
-		).forEach([&](Unit* target)
+		).for_each([&](Unit* target)
 		{
 			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(target->id);
 			Unit* overlayUnit = target;
@@ -198,11 +198,11 @@ namespace hooks
 
 	u16 GetUnitWidth(Unit* unit)
 	{
-		return unit->getRight() - unit->getLeft();
+		return unit->get_right() - unit->get_left();
 	}
 	u16 GetUnitHeight(Unit* unit)
 	{
-		return unit->getBottom() - unit->getTop();
+		return unit->get_bottom() - unit->get_top();
 	}
 
 	bool IsInRange(Unit* source, Unit* target, u32 range)
@@ -537,7 +537,7 @@ namespace hooks
 
 				// if impossible to avoid a collision even within moveArea,
 				// skip the broodling creation code for the current position
-				jump_to_end_of_loop = !scbw::checkUnitCollisionPos(attacker, &inPos, &outPos, &moveArea, false, 0);
+				jump_to_end_of_loop = !scbw::check_unit_collision_pos(attacker, &inPos, &outPos, &moveArea, false, 0);
 
 				if (!jump_to_end_of_loop)
 				{
@@ -616,7 +616,7 @@ namespace hooks
 		//		y - range,
 		//		x + range,
 		//		y + range
-		//	).forEach([&](Unit* unit) {
+		//	).for_each([&](Unit* unit) {
 		//		if (attacker && attackerExt->timers[TimerEnsnaringBrood] > 0
 		//			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building))
 		//		{
@@ -644,7 +644,7 @@ namespace hooks
 			y - radius,
 			x + radius,
 			y + radius
-		).forEach([attacker](Unit* unit)
+		).for_each([attacker](Unit* unit)
 		{
 			maelstromProc(unit, attacker);
 		});

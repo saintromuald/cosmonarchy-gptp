@@ -504,7 +504,7 @@ namespace hooks
         {
             if (canShowErrorMessage)
             {
-                scbw::showErrorMessageWithSfx(playerId, 847 + raceId, 1 + raceId);
+                scbw::show_error_message_with_sfx(playerId, 847 + raceId, 1 + raceId);
             }
             return false;
         }
@@ -513,7 +513,7 @@ namespace hooks
         {
             if (canShowErrorMessage)
             {
-                scbw::showErrorMessageWithSfx(playerId, 844 + raceId, 153 + raceId);
+                scbw::show_error_message_with_sfx(playerId, 844 + raceId, 153 + raceId);
             }
             return false;
         }

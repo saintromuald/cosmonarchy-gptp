@@ -249,7 +249,7 @@ void unit_destructor_special_cases(Unit* unit)
 					unit->get_y() - range,
 					unit->get_x() + range,
 					unit->get_y() + range
-				).forEach([&](Unit* target)
+				).for_each([&](Unit* target)
 					{
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						if (!scbw::is_allied_to(unit->player, target->player))
@@ -354,7 +354,7 @@ void unit_destructor_special_cases(Unit* unit)
 				unit->get_y() - radius,
 				unit->get_x() + radius,
 				unit->get_y() + radius
-			).forEach([&](Unit* target)
+			).for_each([&](Unit* target)
 			{
 				if (scbw::is_allied_to(i, target->player))
 				{
@@ -406,7 +406,7 @@ void unit_destructor_special_cases(Unit* unit)
 			unit->get_y() - range,
 			unit->get_x() + range,
 			unit->get_y() + range
-		).forEach([&](Unit* target)
+		).for_each([&](Unit* target)
 		{
 			if (target->id != UnitId::TerranApostle)
 			{
@@ -428,7 +428,7 @@ void unit_destructor_special_cases(Unit* unit)
 	// Parasite - spawn broodlings on death
 	if (unit->parasiteFlags != 0)
 	{
-		u32 supplyCount = scbw::getBroodlingCountFromSupply(unit);
+		u32 supplyCount = scbw::get_broodling_count_from_supply(unit);
 		u16 type = UnitId::ZergRilirokor;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Flyer)
 		{

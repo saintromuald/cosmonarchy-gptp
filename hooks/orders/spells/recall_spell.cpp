@@ -23,15 +23,15 @@ namespace hooks
 		// using another function to do exactly the same thing
 		helper::moveUnit_Duplicate(target, caster->sprite->position.x, caster->sprite->position.y);
 
-		if (!scbw::checkUnitCollisionPos(target, &(caster->sprite->position), &new_pos, nullptr, false, 0)) {
+		if (!scbw::check_unit_collision_pos(target, &(caster->sprite->position), &new_pos, nullptr, false, 0)) {
 			// Collision detected, cancel the movement
 			scbw::set_unit_position(target, previous_pos.x, previous_pos.y);
 		} else {
 			// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
-			scbw::prepareUnitMove(target, false);
+			scbw::prepare_unit_move(target, false);
 			target->orderTarget.unit = nullptr;
 			scbw::set_unit_position(target, new_pos.x, new_pos.y);
-			scbw::refreshUnitAfterMove(target);
+			scbw::refresh_unit_after_move(target);
 
 			// Stop some currently active orders
 			if (target->id != UnitId::ZergCocoon) {

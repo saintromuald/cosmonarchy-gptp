@@ -489,7 +489,7 @@ namespace hooks
 			}
 			if (!jumpTo59A38)
 			{
-				helper::updateCommandCard();
+				helper::update_command_card();
 				helper::refresh_button_tooltip();
 				jumpTo59A9F = (*activePortraitUnit == nullptr);
 				if (!jumpTo59A9F)
@@ -513,7 +513,7 @@ namespace hooks
 		{
 			if (*bCanUpdateCurrentButtonSet)
 			{
-				helper::updateCommandCard();
+				helper::update_command_card();
 				helper::refresh_button_tooltip();
 				jumpTo59A9F = (*activePortraitUnit == nullptr);
 				if (!jumpTo59A9F)
@@ -589,7 +589,7 @@ namespace hooks
 		{
 			if (*IS_IN_REPLAY)
 			{
-				helper::replayStatBtns(*BUTTONSET_DIALOG);
+				helper::replay_stat_buttons(*BUTTONSET_DIALOG);
 			}
 			// 00459AB3
 			*bCanUpdateCurrentButtonSet = 0;
@@ -1631,7 +1631,7 @@ namespace hooks
 						// 00459331
 						if (!jumpto59336 && !jumpto5934E)
 						{
-							helper::enableControl(current_dialog);
+							helper::enable_control(current_dialog);
 						}
 						if (!jumpto5934E)
 						{
@@ -1679,7 +1679,7 @@ namespace hooks
 	// May need a special case using the original array adress and size when in replay if modified
 	void statbtn_BIN_CustomCtrlID(BinDlg* dialog)
 	{
-		helper::registerUserDialogAction(dialog, (u32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
+		helper::register_user_dialog_action(dialog, (u32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
 		helper::BINDLG_BlitSurface(dialog);
 	}
 }

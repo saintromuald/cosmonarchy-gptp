@@ -13,7 +13,7 @@ namespace hooks
 	{
 		Unit* unitToLoad = unit->orderTarget.unit;
 		if (unitToLoad != nullptr
-			&& scbw::canBeEnteredBy(unit, unitToLoad))
+			&& scbw::can_be_entered_by(unit, unitToLoad))
 		{
 			helper::prepend_order_targeting_unit(unit, unitToLoad, OrderId::Pickup2);
 			prepareForNextOrder(unit);
@@ -71,7 +71,7 @@ namespace hooks
 		}
 		else
 		{ // 004E73F4
-			if (scbw::canBeEnteredBy(unit, unitToLoad))
+			if (scbw::can_be_entered_by(unit, unitToLoad))
 			{
 				unitToLoad->order_to(OrderId::EnterTransport, unit);
 			}
@@ -110,7 +110,7 @@ namespace hooks
 			{ // 004E762F
 				if (unit->mainOrderState == 0)
 				{
-					if (scbw::canBeEnteredBy(unit, unitToLoad))
+					if (scbw::can_be_entered_by(unit, unitToLoad))
 					{
 						if (unit->mainOrderTimer == 0)
 						{
@@ -193,8 +193,8 @@ namespace hooks
 			}
 			if (unit->unit_ai != nullptr)
 			{
-				u32 groundHeightAtPxPos1 = scbw::getGroundHeightAtPos(unit->sprite->position.x, unit->sprite->position.y);
-				if (groundHeightAtPxPos1 != scbw::getGroundHeightAtPos(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+				u32 groundHeightAtPxPos1 = scbw::get_ground_height_at_pos(unit->sprite->position.x, unit->sprite->position.y);
+				if (groundHeightAtPxPos1 != scbw::get_ground_height_at_pos(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 				{
 					distance = scbw::get_distance_fast(unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256, unit->halt.x, unit->halt.y);
 					distance &= 0xFFFFFF00;
@@ -376,7 +376,7 @@ namespace hooks
 				}
 				if (jump_to_E7C2B)
 				{
-					if (scbw::canBeEnteredBy(target, unit))
+					if (scbw::can_be_entered_by(target, unit))
 					{
 						jump_to_E7C44 = true;
 					}
@@ -426,7 +426,7 @@ namespace hooks
 		if (target != nullptr
 			&& !(target->status & UnitStatus::IsHallucination)
 			&& units_dat::SpaceProvided[target->id] != 0
-			&& scbw::canBeEnteredBy(target, unit))
+			&& scbw::can_be_entered_by(target, unit))
 		{ // 004E7D51
 
 			if (unit->mainOrderState == 0
@@ -628,7 +628,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (scbw::transportIsFull(transport))
+		if (scbw::transport_is_full(transport))
 		{
 			return 0;
 		}

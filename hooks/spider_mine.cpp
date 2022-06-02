@@ -284,7 +284,7 @@ namespace hooks
 	char burrowGeneric(Unit* unit)
 	{ // 004E9A30
 		Unit* unitVar = unit;
-		helper::toggleUnitPath(unit);
+		helper::toggle_unit_path(unit);
 
 		Sprite* unitSprite = unitVar->sprite;
 		char unitPathing = unitVar->pathingFlags;

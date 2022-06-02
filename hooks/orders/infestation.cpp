@@ -194,7 +194,7 @@ namespace hooks
 			// using unitInfesting->sprite->position because the queen and command center are
 			// indeed at the same location, and more importantly, if the infested unit got
 			// destroyed, then access to unitInfested->sprite->position would cause a crash
-			if (scbw::checkUnitCollisionPos(unitInfesting, &unitInfesting->sprite->position, &actualpos))
+			if (scbw::check_unit_collision_pos(unitInfesting, &unitInfesting->sprite->position, &actualpos))
 			{
 				scbw::set_unit_position(unitInfesting, actualpos.x, actualpos.y);
 				helper::make_to_hold_position(unitInfesting);
@@ -227,7 +227,7 @@ namespace hooks
 				&& isInfestableUnitHook(unitInfested)
 				&& unitInfested->mainOrderId != OrderId::InfestMine1)
 			{
-				helper::hideAndDisableUnit(unitInfesting);								// hide the infesting unit
+				helper::hide_and_disable_unit(unitInfesting);								// hide the infesting unit
 				unitInfested->order_to(OrderId::InfestMine1, unitInfesting);				// order the target to be infested, giving it the infesting unit as order target
 				unitInfesting->mainOrderState = 3;
 				unitInfesting->remainingBuildTime = 60;									// timer before reappearing

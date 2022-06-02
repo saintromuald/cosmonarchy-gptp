@@ -81,7 +81,7 @@ namespace hooks
             {
                 u16 unitId = unit->id;
                 if (unitId == UnitId::TerranMason && unit->mainOrderId == OrderId::ConstructingBuilding
-                  || scbw::unitCanNuke(unit) && unit->mainOrderId == OrderId::NukeTrack
+                  || scbw::unit_can_nuke(unit) && unit->mainOrderId == OrderId::NukeTrack
                   || unitId == UnitId::ProtossAugur && unit->mainOrderId == OrderId::CompletingArchonSummon)
                 {
                     *lastInternalError = 8;

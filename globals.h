@@ -186,7 +186,7 @@ namespace scbw
 	Bullet* setMissileSourcePos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0, u32 fake_amount = 0);
 	bool isSlowed(Unit* unit);
 	void refreshDebuffs(Unit* unit);
-	void inheritDebuffs(Unit* parent, Unit* child);
+	void inherit_debuffs(Unit* parent, Unit* child);
 	bool isDebuffed(Unit* unit);
 	void restore_func(Unit* unit);
 	void applyParasite(Unit* unit, u8 playerID, Unit* queen);

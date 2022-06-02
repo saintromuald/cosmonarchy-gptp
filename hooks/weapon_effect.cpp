@@ -31,7 +31,7 @@ namespace hooks
 		if (dsw != nullptr)
 		{
 			u32 damage = (weapons_dat::DamageAmount[weaponId] * 256) +
-				(weapons_dat::DamageBonus[weaponId] * 256 * scbw::getUpgradeLevel(bullet->srcPlayer, weapons_dat::DamageUpgrade[weaponId]));
+				(weapons_dat::DamageBonus[weaponId] * 256 * scbw::get_upgrade_level(bullet->srcPlayer, weapons_dat::DamageUpgrade[weaponId]));
 			if (bullet->hitFlags & 2)
 			{
 				damage /= 2;
@@ -600,7 +600,7 @@ namespace hooks
 			bullet->position.y - radius / 2,
 			bullet->position.x + radius / 2,
 			bullet->position.y + radius / 2
-		).forEach([&](Unit* unit)
+		).for_each([&](Unit* unit)
 		{
 			scbw::applyParasite(unit, bullet->sourceUnit->player, bullet->sourceUnit);
 		});

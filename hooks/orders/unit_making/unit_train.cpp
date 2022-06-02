@@ -140,7 +140,7 @@ namespace hooks
 					}
 					else
 					{
-						scbw::playWorkAnimation(unit);
+						scbw::play_work_animation(unit);
 					}
 				}
 			}
@@ -186,7 +186,7 @@ namespace hooks
 								helper::ai_training_unit(newUnit, unit);
 								if (builtUnit->id == UnitId::TerranNuclearMissile)
 								{
-									helper::hideAndDisableUnit(newUnit);
+									helper::hide_and_disable_unit(newUnit);
 								}
 								else
 								{

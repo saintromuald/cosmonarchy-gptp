@@ -616,7 +616,7 @@ void Globals::frame_hook()
 						UnitExt* unitExt = globals.get_unit_ext(unit);
 						if (!unitExt->timers[TimerHallucinating])
 						{
-							scbw::applyNewHallucination(unit, effect->player, effect->currentTime);
+							scbw::apply_new_hallucination(unit, effect->player, effect->currentTime);
 						}
 						else
 						{
@@ -701,7 +701,7 @@ void Globals::frame_hook()
 						effect->position.y - 1 * 32,
 						effect->position.x + 1.5 * 32,
 						effect->position.y + 1 * 32
-					).forEach([&](Unit* unit) {
+					).for_each([&](Unit* unit) {
 						helper::PlagueProc(unit, 0);
 					});
 				} break;
@@ -1028,7 +1028,7 @@ namespace scbw
 		scbw::refresh_console();
 	}
 
-	void inheritDebuffs(Unit* parent, Unit* child)
+	void inherit_debuffs(Unit* parent, Unit* child)
 	{
 		UnitExt* parentExt = globals.get_unit_ext(parent);
 		UnitExt* childExt = globals.get_unit_ext(child);
@@ -1437,7 +1437,7 @@ namespace scbw
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
-		if (!scbw::canBeParasited(unit))
+		if (!scbw::can_be_parasited(unit))
 		{
 			return;
 		}
@@ -1618,7 +1618,7 @@ namespace scbw
 				return false;
 			}
 			return true;
-		}).forEach([&](Unit* target)
+		}).for_each([&](Unit* target)
 		{
 			auto it = std::find(link.begin(), link.end(), target);
 			if (it == link.end()) {

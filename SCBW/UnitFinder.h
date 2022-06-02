@@ -32,7 +32,7 @@ namespace scbw {
 		/// Iterates through all units found, calling callback.proc() once for each
 		/// unit.
 		UnitFinder& filter(UnitFinderCallbackMatchInterface callback);
-		void forEach(UnitFinderCallbackProcInterface callback) const;
+		void for_each(UnitFinderCallbackProcInterface callback) const;
 
 		template<typename Func>
 		void forEachInMatch(UnitFinderCallbackMatchInterface callback, Func f) {

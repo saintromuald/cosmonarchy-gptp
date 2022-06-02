@@ -218,7 +218,7 @@ namespace hooks
 						color = 8; // green
 					}
 
-					scbw::minimapPing(startPositions[target].x, startPositions[target].y, color, *LOCAL_NATION_ID);
+					scbw::minimap_ping(startPositions[target].x, startPositions[target].y, color, *LOCAL_NATION_ID);
 				}
 			}
 		}
@@ -477,7 +477,7 @@ namespace hooks
 				unit->update_speed();
 
 				// Corpse Cocoon
-				CorpseArray corpses = corpse_search_rect({unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom()});
+				CorpseArray corpses = corpse_search_rect({unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom()});
 				for (u32 i = 0; i < corpses.size; ++i) {
 					Thingy* corpse = corpses.corpses[i];
 					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
@@ -901,7 +901,7 @@ namespace hooks
 						unit->get_y() - 128,
 						unit->get_x() + 128,
 						unit->get_y() + 128
-					).forEach([&](Unit* target)
+					).for_each([&](Unit* target)
 						{
 							shaman_nanite_field_proc(unit, ShamanHeal, target);
 						});
@@ -955,7 +955,7 @@ namespace hooks
 						pos.y - radius,
 						pos.x + radius,
 						pos.y + radius
-					).forEach([&](Unit* target)
+					).for_each([&](Unit* target)
 					{
 						if (!(scbw::is_allied_to(target->player, unit->player)))
 						{
@@ -1188,7 +1188,7 @@ namespace hooks
 					unit->get_y() - 128,
 					unit->get_x() + 128,
 					unit->get_y() + 128
-				).forEach([&](Unit* target)
+				).for_each([&](Unit* target)
 					{
 						if (target == unit)
 						{
@@ -1294,7 +1294,7 @@ namespace hooks
 				unit->get_y() - 128,
 				unit->get_x() + 128,
 				unit->get_y() + 128
-			).forEach([&](Unit* target)
+			).for_each([&](Unit* target)
 				{
 					if (target == unit)
 					{
@@ -1563,7 +1563,7 @@ namespace hooks
 			pos.y - radius,
 			pos.x + radius,
 			pos.y + radius
-		).forEach([&](Unit* foundUnit) {
+		).for_each([&](Unit* foundUnit) {
 			if (!(scbw::is_allied_to(foundUnit->player, unit->player)))
 			{
 				return;

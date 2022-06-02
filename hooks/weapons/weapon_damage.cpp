@@ -207,7 +207,7 @@ namespace hooks
 		{
 			if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
 			{
-				s32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->player, UpgradeId::ProtossPlasmaShields) * 256;
+				s32 plasmaShieldUpg = scbw::get_upgrade_level(data.target->player, UpgradeId::ProtossPlasmaShields) * 256;
 				if (data.finalDamage > plasmaShieldUpg)
 				{
 					data.finalDamage -= plasmaShieldUpg;
@@ -630,7 +630,7 @@ namespace hooks
 					case WeaponId::PazuzuJupiterDriver:
 					{
 						// Deconstruction - Pazuzu behavior - apply stack
-						if (!scbw::unitIsPacifist(data.target))
+						if (!scbw::unit_id_is_pacifist(data.target))
 						{
 							targetExt->values[ValueDeconstruction]++;
 							targetExt->values[ValueDeconstructionPlayer] = data.attacker->player;
@@ -693,7 +693,7 @@ namespace hooks
 						// Charlatan - Leading the Blind passive
 						if (!scbw::is_allied_to(data.attacker->player, data.target->player))
 						{
-							scbw::applyNewHallucination(data.target, data.attacker->player, CharlatanHallucinationTimer);
+							scbw::apply_new_hallucination(data.target, data.attacker->player, CharlatanHallucinationTimer);
 						}
 					} break;
 					case WeaponId::MadrigalImperiosoMissiles:
@@ -724,7 +724,7 @@ namespace hooks
 							data.target->get_y() - range,
 							data.target->get_x() + range,
 							data.target->get_y() + range
-						).forEach([&](Unit* unit)
+						).for_each([&](Unit* unit)
 							{
 								if (data.attackingPlayerId != unit->player &&
 									!scbw::is_allied_to(data.attackingPlayerId, unit->player))
@@ -768,7 +768,7 @@ namespace hooks
 								data.target->get_y() - 96,
 								data.target->get_x() + 96,
 								data.target->get_y() + 96
-							).forEach([&](Unit* target)
+							).for_each([&](Unit* target)
 								{
 									if (target->status & UnitStatus::Burrowed)
 									{
@@ -884,7 +884,7 @@ namespace hooks
 						data.target->get_y() - 288,
 						data.target->get_x() + 288,
 						data.target->get_y() + 288
-					).forEach([&](Unit* unit)
+					).for_each([&](Unit* unit)
 					{
 						if (unit->id != UnitId::ProtossCantavis)
 						{
@@ -918,7 +918,7 @@ namespace hooks
 			data.target->shields = 0;
 			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 256 * 2.5, targetExt->units[UnitEmpressSource]);
 			data.target->removeTimer = 1 + targetExt->values[ValueEmpressPassiveStacks] * 24 * 0.25;
-			data.target->giveTo(targetExt->values[ValueEmpressSourcePlayer]);
+			data.target->give_to(targetExt->values[ValueEmpressSourcePlayer]);
 			targetExt->values[ValueEmpressPassiveStacks] = 0;
 			targetExt->values[ValueIsZombified] = 1;
 			targetExt->values[ValueAlliedInvPlayer] = targetExt->values[ValueEmpressSourcePlayer];
@@ -940,7 +940,7 @@ namespace hooks
 					data.target->get_y() - radius,
 					data.target->get_x() + radius,
 					data.target->get_y() + radius
-				).forEach([&](Unit* unit)
+				).for_each([&](Unit* unit)
 				{
 					UnitExt* unitExt = globals.get_unit_ext(unit);
 					u32 dist = scbw::get_distance_fast(data.target->position, unit->position);
@@ -985,7 +985,7 @@ namespace hooks
 			}
 
 			// Recede control
-			data.target->giveTo(targetExt->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
+			data.target->give_to(targetExt->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
 			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
 
 			data.finalDamage = 0;
@@ -1021,7 +1021,7 @@ namespace hooks
 					data.target->get_y() - 96,
 					data.target->get_x() + 96,
 					data.target->get_y() + 96
-				).forEach([&](Unit* unit)
+				).for_each([&](Unit* unit)
 				{
 					if (!units_dat::ShieldsEnabled[unit->id])
 					{

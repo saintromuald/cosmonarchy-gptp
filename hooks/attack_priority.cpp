@@ -149,7 +149,7 @@ namespace hooks
 		}
 
 		//Active combat units
-		else if (actualTarget->hasWeapon())
+		else if (actualTarget->has_weapon())
 		{
 			attackPriority = 2;
 		}
@@ -209,7 +209,7 @@ namespace hooks
 			unit->get_x() - search_range, unit->get_y() - search_range,
 			unit->get_x() + search_range, unit->get_y() + search_range);
 
-		attackTargetFinder.forEach([&](Unit* target)
+		attackTargetFinder.for_each([&](Unit* target)
 		{
 			s32 target_seek_range = hooks::getSeekRangeHook(unit, target) * 32;
 			if (checkAttackableTarget(unit, target, target_seek_range + offset, min_range)) {
@@ -237,7 +237,7 @@ namespace hooks
 			unit->get_x() - search_range, unit->get_y() - search_range,
 			unit->get_x() + search_range, unit->get_y() + search_range);
 
-		attackTargetFinder.forEach([&](Unit* target)
+		attackTargetFinder.for_each([&](Unit* target)
 		{
 			s32 target_seek_range = hooks::getSeekRangeHook(unit, target) * 32;
 			if (checkAttackableTarget(unit, target, target_seek_range + offset)) {

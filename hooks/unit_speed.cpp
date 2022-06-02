@@ -196,7 +196,7 @@ namespace hooks
 						unit->get_x() + range,
 						unit->get_y() + range
 					);
-					unitFinder.forEach([&](Unit* target)
+					unitFinder.for_each([&](Unit* target)
 					{
 						if (scbw::is_allied_to(unit->player, target->player)
 							|| units_dat::BaseProperty[target->id] & UnitProperty::Flyer)
@@ -232,7 +232,7 @@ namespace hooks
 				auto tile = scbw::get_stupid_reference_to_active_tile_at(unit->get_x(), unit->get_y());
 				if (tile.is_unwalkable || !tile.is_walkable)
 				{
-					if (scbw::getUpgradeLevel(unit->player, UpgradeId::IonPropulsion))
+					if (scbw::get_upgrade_level(unit->player, UpgradeId::IonPropulsion))
 					{
 						speed *= 0.5;
 					}

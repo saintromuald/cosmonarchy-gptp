@@ -73,7 +73,7 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 	const char* typeName = "";
 
 	u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
-	u8 upgradeLevel = scbw::getUpgradeLevel(unit->player, weapons_dat::DamageUpgrade[weaponId]);
+	u8 upgradeLevel = scbw::get_upgrade_level(unit->player, weapons_dat::DamageUpgrade[weaponId]);
 	u8 damageType = weapons_dat::DamageType[weaponId];
 	u32 baseDamage = weapons_dat::DamageAmount[weaponId];
 	u32 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
@@ -712,7 +712,7 @@ namespace hooks
 		const char* shieldUpgradeName = statTxtTblNew->getString(labelId);
 		const char* shieldStr = statTxtTblNew->getString(779); // "Shields:"
 
-		u8 shieldUpgradeLevel = scbw::getUpgradeLevel(unit->player, UpgradeId::ProtossPlasmaShields);
+		u8 shieldUpgradeLevel = scbw::get_upgrade_level(unit->player, UpgradeId::ProtossPlasmaShields);
 
 		std::string text = "\004" + std::string(shieldUpgradeName) + "\002";
 		text += "\n" + std::string(shieldStr) + " 0";
