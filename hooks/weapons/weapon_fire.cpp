@@ -1319,7 +1319,7 @@ namespace hooks
 			nextBullet = bulletVar->next;
 			*activeIscriptEntity = (Unit*)bulletVar;
 			*activeIscriptBullet = bulletVar;
-			helper::setThingyVisibilityFlags((Thingy*)bulletVar);
+			helper::set_thingy_visibility_flags((Thingy*)bulletVar);
 			bulletSprite = bulletVar->sprite;
 			if (bulletSprite)
 			{

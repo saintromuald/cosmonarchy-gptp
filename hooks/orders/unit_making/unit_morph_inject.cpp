@@ -239,9 +239,9 @@ namespace
 			
 //			replace_sprite_images(unit->sprite, sprites_dat::ImageId[flingy_dat::SpriteID[units_dat::Graphic[unit->previousUnitType]]], 0);			
 //			auto index = units_dat::Graphic[unit->previousUnitType];
-			auto index = scbw::getUnitData(UnitsDatEntries::Flingy, unit->previousUnitType);
-//			replace_sprite_images(unit->sprite, sprites_dat::ImageId[scbw::getFlingyData(FlingyDatEntries::SpriteId, index)], 0);
-			auto fl_sId = scbw::getFlingyData(FlingyDatEntries::SpriteId, index);
+			auto index = scbw::get_unit_data(UnitsDatEntries::Flingy, unit->previousUnitType);
+//			replace_sprite_images(unit->sprite, sprites_dat::ImageId[scbw::get_flingy_data(FlingyDatEntries::SpriteId, index)], 0);
+			auto fl_sId = scbw::get_flingy_data(FlingyDatEntries::SpriteId, index);
 //			scbw::get_sprite_data(SpritesDatEntries::ImageId,building->sprite->spriteId),
 			replace_sprite_images(unit->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;

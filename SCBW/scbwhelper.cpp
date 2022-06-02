@@ -2524,7 +2524,7 @@ namespace helper
 		}
 	}
 
-	bool setThingyVisibilityFlags(Thingy* thingy)
+	bool set_thingy_visibility_flags(Thingy* thingy)
 	{
 		const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
 		static b32 bPreResult;
@@ -2602,7 +2602,7 @@ namespace helper
 		}
 	}
 
-	void moveUnit_Duplicate(Unit* unit, s32 x, s32 y)
+	void move_unit_duplicate(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_moveUnit_Duplicate = 0x004EBAE0;
 		__asm
@@ -9238,7 +9238,7 @@ namespace helper
 		}
 	}
 
-	void AI_TrainingSimpleMilitary(Unit* newUnit, Unit* sourceUnit)
+	void ai_training_simple_military(Unit* newUnit, Unit* sourceUnit)
 	{
 		const u32 Func_AI_TrainingSimpleMilitary = 0x0043E280;
 		__asm

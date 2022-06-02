@@ -55,10 +55,10 @@ void Image::initializeData(Sprite* parent, u16 imageId, s8 x, s8 y)
 	this->id = imageId;
 
 	//	this->grpOffset = imageGrpGraphics[imageId];
-	this->grpOffset = reinterpret_cast<GrpHead*>(scbw::getImageData(ImagesDatEntries::ImagePtr, imageId));
+	this->grpOffset = reinterpret_cast<GrpHead*>(scbw::get_image_data(ImagesDatEntries::ImagePtr, imageId));
 	//	this->flags = ((images_dat::IsTurnable[imageId] & 1) << 3) | ((images_dat::IsClickable[imageId] & 1) << 5);
-	this->flags = ((scbw::getImageData(ImagesDatEntries::Turnable, imageId) & 1) << 3) |
-		((scbw::getImageData(ImagesDatEntries::Clickable, imageId) & 1) << 5);
+	this->flags = ((scbw::get_image_data(ImagesDatEntries::Turnable, imageId) & 1) << 3) |
+		((scbw::get_image_data(ImagesDatEntries::Clickable, imageId) & 1) << 5);
 	this->frameSet = 0;
 	this->direction = 0;
 	this->frameIndex = 0;
@@ -80,10 +80,10 @@ void Image::initializeData(Sprite* parent, u16 imageId, s8 x, s8 y)
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_EFFECT)
 		this->coloringData = colorShift[images_dat::Remapping[imageId]].data;*/
 
-	if (scbw::getImageData(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_PLAYER_SIDE)
+	if (scbw::get_image_data(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_PLAYER_SIDE)
 		*(u32*)(&this->coloringData) = parent->playerId;
-	if (scbw::getImageData(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_EFFECT)
-		this->coloringData = colorShift[scbw::getImageData(ImagesDatEntries::DrawRemap, imageId)].data;
+	if (scbw::get_image_data(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_EFFECT)
+		this->coloringData = colorShift[scbw::get_image_data(ImagesDatEntries::DrawRemap, imageId)].data;
 }
 
 

@@ -33,7 +33,7 @@ void rechargeShieldsProc(Unit* target, Unit* battery)
 
 	target->healShields(shieldGain, battery);
 
-	if (!scbw::isCheatEnabled(CheatFlags::TheGathering))
+	if (!scbw::is_cheat_enabled(CheatFlags::TheGathering))
 		battery->spend_unit_energy(energySpent);
 
 }

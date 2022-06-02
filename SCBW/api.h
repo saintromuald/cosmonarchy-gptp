@@ -81,9 +81,9 @@ namespace scbw
 
 	/// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
 	/// unit is a ground unit or a building.
-	bool isUnderDarkSwarm(Unit* unit);
-	Unit* getDarkSwarmFromUnit(Unit* unit);
-	Unit* getDarkSwarmFromPosition(u16 x, u16 y, u16 radius);
+	bool is_under_dark_swarm(Unit* unit);
+	Unit* get_dark_swarm_unit(Unit* unit);
+	Unit* get_dark_swarm_from_position(u16 x, u16 y, u16 radius);
 	//Checks if the @p target can be targeted by player @p castingPlayer with
 	//tech/spell @p techId
 	//If yes, return 0, else return error message id in stat_txt.tbl to use
@@ -120,7 +120,7 @@ namespace scbw
 	}
 
 	/// Distance, but in a square instead of circle (max of x dist and y dist)
-	inline u32 getDistanceSquare(s32 x1, s32 y1, s32 x2, s32 y2);
+	inline u32 get_distance_square(s32 x1, s32 y1, s32 x2, s32 y2);
 
 	/// Calculates the X Cartesian coordinate from the given polar coordinates
 	/// (distance, angle), using StarCraft's internal data.
@@ -241,7 +241,7 @@ namespace scbw
 	}
 
 	/// Checks whether the given cheat flag is enabled.
-	inline bool isCheatEnabled(u32 cheatFlag)
+	inline bool is_cheat_enabled(u32 cheatFlag)
 	{
 		return ((*CHEAT_STATE) & cheatFlag) != 0;
 	}
@@ -291,16 +291,16 @@ namespace scbw
 	/// Returns the amount of remaining supply (total available - total used) for
 	/// the @p playerId, using @p raceId to determine the appropriate race to use.
 	/// This is affected by the "Food For Thought" cheat flag.
-	s32 getSupplyRemaining(u8 playerId, u8 raceId);
-	u32 getFlingyData(u32 entry, u32 index);
+	s32 get_supply_remaining(u8 playerId, u8 raceId);
+	u32 get_flingy_data(u32 entry, u32 index);
 
 	u32 get_sprite_data(u32 entry, u32 index);
-	u32 getImageData(u32 entry, u32 index);
-	u32 getUnitData(u32 entry, u32 index);
+	u32 get_image_data(u32 entry, u32 index);
+	u32 get_unit_data(u32 entry, u32 index);
 	//Unit* get_generic_unit(Unit* unit, u32 id);
 	u32 get_generic_rust_value(Unit* u, u32 val);
 	//u32 get_generic_value(Unit* u, u32 val);
-	void setSpriteData(u32 entry, u32 index, u32 value);
+	void set_sprite_data(u32 entry, u32 index, u32 value);
 	s32 get_generic_variable(u32 val);
 	//u32 get_generic_timer(Unit* u, u32 val);
 	u32 get_aise_value(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2);
@@ -318,7 +318,7 @@ namespace scbw
 	void send_gptp_aise_command(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
 	/// Checks whether the @p playerId has the @p techId researched.
 	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
-	bool hasTechResearched(u8 playerId, u16 techId);
+	bool has_tech_researched(u8 playerId, u16 techId);
 
 	/// Adjusts x,y addon coordinates of quarry and similar unit ids
 
@@ -327,11 +327,11 @@ namespace scbw
 	void adjust_addon_coordinates(u16 addonId, u16 sourceId, u16* x, u16* y);
 
 	u8 get_upgrade_max_level(u8 playerId, u8 upgradeId);
-	bool hasTechAvailable(u8 playerId, u16 techId);
+	bool has_tech_available(u8 playerId, u16 techId);
 	//u32 techUseAllowed(Unit* unit, u16 techId, u32 playerId);
 	/// Sets the player's tech research state for @p techId to @p isResearched.
 	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
-	void setTechResearchState(u8 playerId, u16 techId, bool isResearched);
+	void set_tech_research_state(u8 playerId, u16 techId, bool isResearched);
 
 	/// Returns the player's upgrade level of @p upgradeId. Note that this uses
 	/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.

@@ -152,7 +152,7 @@ namespace hooks
 				UnitExt* unitExt = globals.get_unit_ext(unit);
 				if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] || unitExt->units[UnitMindController])
 				{
-					helper::AI_TrainingSimpleMilitary(unit, unit);
+					helper::ai_training_simple_military(unit, unit);
 				}
 				else
 				{

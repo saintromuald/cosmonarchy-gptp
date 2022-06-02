@@ -126,8 +126,8 @@ namespace hooks
 				if (units_dat::StarEditAvailFlags[i] & 0x1)
 				{
 					auto flingy_id = fakeExtFlingyIds[i];
-					auto sprite_id = scbw::getFlingyData(FlingyDatEntries::SpriteId, flingy_id);
-					scbw::setSpriteData(SpritesDatEntries::IncludeInVision, sprite_id, 1);
+					auto sprite_id = scbw::get_flingy_data(FlingyDatEntries::SpriteId, flingy_id);
+					scbw::set_sprite_data(SpritesDatEntries::IncludeInVision, sprite_id, 1);
 				}
 			}
 			i++;

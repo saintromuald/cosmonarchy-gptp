@@ -27,7 +27,7 @@ namespace hooks
 {
 	void darkSwarmDamage(u16 x, u16 y, u16 r, Bullet* bullet, u32 weaponId)
 	{
-		Unit* dsw = scbw::getDarkSwarmFromPosition(x, y, r);
+		Unit* dsw = scbw::get_dark_swarm_from_position(x, y, r);
 		if (dsw != nullptr)
 		{
 			u32 damage = (weapons_dat::DamageAmount[weaponId] * 256) +

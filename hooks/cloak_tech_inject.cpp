@@ -93,9 +93,9 @@ namespace
 		// original code is hardcoded instead of using a function like getCloakingTech
 		const u16 energyCost = techdata_dat::EnergyCost[hooks::getCloakingTech(unit)] * 256;
 
-		if (scbw::isCheatEnabled(CheatFlags::TheGathering) || unit->energy >= energyCost)
+		if (scbw::is_cheat_enabled(CheatFlags::TheGathering) || unit->energy >= energyCost)
 		{
-			if (!scbw::isCheatEnabled(CheatFlags::TheGathering))
+			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering))
 			{
 				bool spend = true;
 				if (unitExt->values[ValueAICloakGimmick] == 1)
@@ -216,7 +216,7 @@ namespace
 			Unit* unit = clientSelectionGroup->unit[i];
 			if (unit != nullptr)
 			{
-				if (scbw::isCheatEnabled(CheatFlags::TheGathering)
+				if (scbw::is_cheat_enabled(CheatFlags::TheGathering)
 					|| unit->energy >= techdata_dat::EnergyCost[hooks::getCloakingTech(unit)] * 256)
 				{
 					return true;

@@ -21,7 +21,7 @@ namespace hooks
 
 		// Identical code to set_unit_position() but for some reason, is
 		// using another function to do exactly the same thing
-		helper::moveUnit_Duplicate(target, caster->sprite->position.x, caster->sprite->position.y);
+		helper::move_unit_duplicate(target, caster->sprite->position.x, caster->sprite->position.y);
 
 		if (!scbw::check_unit_collision_pos(target, &(caster->sprite->position), &new_pos, nullptr, false, 0)) {
 			// Collision detected, cancel the movement
@@ -43,7 +43,7 @@ namespace hooks
 			//if (recall_effect_sprite)
 			//{
 			//	recall_effect_sprite->sprite->elevationLevel = target->sprite->elevationLevel + 1;
-			//	helper::setThingyVisibilityFlags(recall_effect_sprite);
+			//	helper::set_thingy_visibility_flags(recall_effect_sprite);
 			//}
 
 			// Disconnect a nuke from a ghost using it
@@ -130,7 +130,7 @@ namespace hooks
 				unit->order_to_idle();
 			}
 		} else {
-			if (!scbw::isCheatEnabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::EnergyCost[TechId::Recall] * 256) {
+			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::EnergyCost[TechId::Recall] * 256) {
 				u8 raceId = unit->get_race();
 				char* message = (char*)statTxtTblNew->getString(864 + raceId);	//"Not enough energy" text
 				if (message && unit->player == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID) {
@@ -138,7 +138,7 @@ namespace hooks
 				}
 				unit->order_to_idle();
 			} else {
-				if (!scbw::isCheatEnabled(CheatFlags::TheGathering)) {
+				if (!scbw::is_cheat_enabled(CheatFlags::TheGathering)) {
 					unit->spend_unit_energy(techdata_dat::EnergyCost[TechId::Recall] * 256);
 				}
 

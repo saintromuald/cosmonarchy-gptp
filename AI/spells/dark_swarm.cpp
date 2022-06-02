@@ -9,7 +9,7 @@ namespace AI
 		const u32* offset_0x005873F0 = (u32*)0x005873F0;
 		u8 isUnderDarkSwarmStatus;
 
-		// code equivalent to isUnderDarkSwarm @ 0x00476210, a function different from scbw::isUnderDarkSwarm(target) that just seek a nearby 
+		// code equivalent to is_under_dark_swarm @ 0x00476210, a function different from scbw::is_under_dark_swarm(target) that just seek a nearby 
 		// Dark Swarm active spell and is used in here.
 
 		if (target->status & UnitStatus::InAir)
@@ -19,7 +19,7 @@ namespace AI
 		else
 			if ((units_dat::BaseProperty[target->id] & UnitProperty::Building)
 				|| (*offset_0x005873F0 == 0)
-				|| !scbw::isUnderDarkSwarm(target))
+				|| !scbw::is_under_dark_swarm(target))
 			{
 				s32 targetX = target->get_x();
 				s32 targetY = target->get_y();

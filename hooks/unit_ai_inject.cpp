@@ -56,7 +56,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		hooks::AI_TrainingSimpleMilitary(result, parent);
+		hooks::ai_training_simple_military(result, parent);
 		__asm
 		{
 			POPAD

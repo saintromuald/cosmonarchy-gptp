@@ -1528,7 +1528,7 @@ namespace scbw
 		}
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		auto rotate = unitExt->values[valueId];
-		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType, unit->sprite->mainGraphic->id));
+		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(overlayType, unit->sprite->mainGraphic->id));
 		u8 frameDirection = unit->sprite->mainGraphic->direction;
 		Point8 offset = loFile->get_offset(frameDirection + (17 * frameset_offset), rotate);
 		if (unit->sprite->mainGraphic->flags & ImageFlags::Mirrored)

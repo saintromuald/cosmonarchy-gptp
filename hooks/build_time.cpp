@@ -14,7 +14,7 @@ namespace hooks
 			return 1;
 		}
 		u16 multiplier = 1;
-		if (scbw::isCheatEnabled(CheatFlags::OperationCwal))
+		if (scbw::is_cheat_enabled(CheatFlags::OperationCwal))
 		{
 			multiplier = 16;
 		}

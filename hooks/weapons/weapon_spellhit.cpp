@@ -308,7 +308,7 @@ namespace hooks
 		if (emp_sprite != nullptr)
 		{
 			emp_sprite->sprite->elevationLevel = 19; // 0x13
-			helper::setThingyVisibilityFlags(emp_sprite);
+			helper::set_thingy_visibility_flags(emp_sprite);
 		}
 		static u16* const maxBoxRightValue = (u16*)0x00628450;	// should usually be mapTileSize->width * 32
 		static u16* const maxBoxBottomValue = (u16*)0x006284B4;	// should usually be mapTileSize->height * 32
@@ -450,7 +450,7 @@ namespace hooks
 		if (ensnare_effect_sprite != nullptr)
 		{
 			ensnare_effect_sprite->sprite->elevationLevel = 19; // 0x13
-			helper::setThingyVisibilityFlags(ensnare_effect_sprite);
+			helper::set_thingy_visibility_flags(ensnare_effect_sprite);
 		}
 		Box16 coords;
 		coords.top = y - 64;
@@ -634,7 +634,7 @@ namespace hooks
 		if (maelstrom_effect_sprite != nullptr)
 		{
 			maelstrom_effect_sprite->sprite->elevationLevel = 17;
-			helper::setThingyVisibilityFlags(maelstrom_effect_sprite);
+			helper::set_thingy_visibility_flags(maelstrom_effect_sprite);
 		}
 		helper::play_sound_from_unit(SoundId::Protoss_Darchon_Parahit_wav, attacker, 1, 0);
 
@@ -694,7 +694,7 @@ namespace hooks
 		if (stasisfield_effect_sprite != nullptr)
 		{
 			stasisfield_effect_sprite->sprite->elevationLevel = 17; // 0x11
-			helper::setThingyVisibilityFlags(stasisfield_effect_sprite);
+			helper::set_thingy_visibility_flags(stasisfield_effect_sprite);
 		}
 		Box16 coords;
 		coords.top = y - 48;

@@ -90,7 +90,7 @@ namespace hooks
 				}
 				else
 				{
-					helper::AI_TrainingSimpleMilitary(halUnit, halUnit);
+					helper::ai_training_simple_military(halUnit, halUnit);
 				}
 			}
 			result = halUnit;

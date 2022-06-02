@@ -248,7 +248,7 @@ namespace hooks
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Terran);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, scbw::getSupplyRemaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
+					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
 				}
 			}
 			if (checkSupplyNeed(player, RaceId::Protoss))
@@ -256,7 +256,7 @@ namespace hooks
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Protoss);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, scbw::getSupplyRemaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
+					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
 				}
 			}
 			if (checkSupplyNeed(player, RaceId::Zerg))
@@ -264,7 +264,7 @@ namespace hooks
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Zerg);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, scbw::getSupplyRemaining(player, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player), (void*)town);
+					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player), (void*)town);
 				}
 			}
 		}

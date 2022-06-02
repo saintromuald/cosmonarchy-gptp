@@ -256,13 +256,13 @@ namespace helper
 	void update_unit_strength(Unit* unit);												                    // 0049FA40
 	void iscript_opcode_cases(Image* image, u32 offset_, u32 unk1, u32 unk2);								// 004D74C0
 	void switch_to_warp_texture(Image* image);																	// 004D8500
-	bool setThingyVisibilityFlags(Thingy* thingy);									                        // 004878F0
+	bool set_thingy_visibility_flags(Thingy* thingy);									                        // 004878F0
 	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 playerId);		    								// 00488210
 	void setUnitStatTxtErrorMsg(char* message);										                        // 0048CCB0
 	void playSoundAtPos(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2);										// 0048EC10
 	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
 	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit* unit, Box16* coords);							// 004E8280
-	void moveUnit_Duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
+	void move_unit_duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
 
 	//// spider_mine
 	Unit* SpiderMine_AcquireTarget(Unit* spiderMine);									                    // 00441270
@@ -992,7 +992,7 @@ namespace helper
 
 	// AI utility
 	void give_ai(Unit* unit);																				// 00463040
-	void AI_TrainingSimpleMilitary(Unit* newUnit, Unit* sourceUnit);										// 0043E280
+	void ai_training_simple_military(Unit* newUnit, Unit* sourceUnit);										// 0043E280
 
 	// For delete_ai_town_if_needed
 	AiTown* try_begin_delete_town(AiTown* town);																// 00434330

@@ -75,7 +75,7 @@ namespace hooks
 			if (nukeDot != nullptr)
 			{
 				nukeDot->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-				helper::setThingyVisibilityFlags(nukeDot);
+				helper::set_thingy_visibility_flags(nukeDot);
 			}
 
 			unit->mainOrderState = 6;

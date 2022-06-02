@@ -25,14 +25,14 @@ namespace hooks
 				|| result->id == UnitId::ProtossArchon
 				|| result->id == UnitId::ProtossMindTyrant) {
 			// archon and mind tyrant should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
-			hooks::AI_TrainingSimpleMilitary(result, parent);
+			hooks::ai_training_simple_military(result, parent);
 		} else {
 			helper::ai_training_normal(result, parent);
 		}
 	}
 
 	// Hooked to add region null check - Pr0nogo
-	void AI_TrainingSimpleMilitary(Unit* result, Unit* parent) // 0043E280
+	void ai_training_simple_military(Unit* result, Unit* parent) // 0043E280
 	{
 		if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
 		{

@@ -73,7 +73,7 @@ namespace hooks
 			{
 				jump_to_5D720 = true;
 			}
-			else if (!scbw::isCheatEnabled(CheatFlags::OperationCwal))
+			else if (!scbw::is_cheat_enabled(CheatFlags::OperationCwal))
 			{
 				jump_to_5D718 = true;
 			}
@@ -218,7 +218,7 @@ namespace hooks
 			{
 				jump_to_5D720 = true;
 			}
-			else if (!scbw::isCheatEnabled(CheatFlags::OperationCwal))
+			else if (!scbw::is_cheat_enabled(CheatFlags::OperationCwal))
 			{
 				jump_to_5D718 = true;
 			}
@@ -263,7 +263,7 @@ namespace hooks
 			if (!scbw::is_zerg_building_morph_result(buildingId))
 			{
 				s32 hpGain = building->buildRepairHpGain * modifier.multiplier;
-				if (scbw::isCheatEnabled(CheatFlags::OperationCwal))
+				if (scbw::is_cheat_enabled(CheatFlags::OperationCwal))
 				{
 					hpGain *= OPCWAL_PROGRESS_INCREASE;
 				}
@@ -357,7 +357,7 @@ namespace hooks
 				if (thingy != nullptr)
 				{
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-					helper::setThingyVisibilityFlags(thingy);
+					helper::set_thingy_visibility_flags(thingy);
 				}
 				helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
 				helper::replace_unit_with_type(unit, UnitId::ZergDroleth);

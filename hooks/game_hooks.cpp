@@ -551,7 +551,7 @@ namespace hooks
 						unitExt->timers[TimerStarSovereignInterventionMissiles] = weapons_dat::Cooldown[WeaponId::StarSovereignInterventionMissiles];
 						for (s32 arc = 0; arc < 6; arc++)
 						{
-							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
+							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlaySpecialPtr,
 								unit->sprite->mainGraphic->id));
 							u8 frameDirection = unit->sprite->mainGraphic->direction;
 							Point8 offset = loFile->get_offset(frameDirection, 5 - arc);

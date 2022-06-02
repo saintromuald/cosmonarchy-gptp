@@ -28,7 +28,7 @@ namespace
 #include "SCBW\UnitFinder.h"
 
 bool darkswarm_blocks_damage(Unit* target, u32 weaponId, u32 damageDivisor) {
-	return scbw::isUnderDarkSwarm(target)
+	return scbw::is_under_dark_swarm(target)
 		&& weapons_dat::MaxRange[weaponId] > 32
 		&& (damageDivisor == 1 || weaponId == WeaponId::AcidSpore)
 		&& weaponId != WeaponId::FlameThrower
@@ -486,7 +486,7 @@ namespace hooks
 			// Ensnaring Brood - Queen enchantment ability
 			if (attackerExt->timers[TimerEnsnaringBrood] > 0
 				&& !(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
-				&& !scbw::isUnderDarkSwarm(data.target))
+				&& !scbw::is_under_dark_swarm(data.target))
 			{
 				apply_ensnare(data.target);
 			}
@@ -497,7 +497,7 @@ namespace hooks
 				{
 					// Autovitality - Simulacrum behavior
 					if (!scbw::is_allied_to(data.target->player, data.attacker->player)
-						&& !scbw::isUnderDarkSwarm(data.target)
+						&& !scbw::is_under_dark_swarm(data.target)
 						&& data.shieldReduceAmount >= data.target->shields
 						&& data.finalDamage
 						&& targetExt->timers[TimerSimulacrumClone] == 0)
@@ -510,7 +510,7 @@ namespace hooks
 				{
 					// Striga - Fleeting Focus
 					if (!(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building)
-						&& !scbw::isUnderDarkSwarm(data.target))
+						&& !scbw::is_under_dark_swarm(data.target))
 					{
 						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32)
@@ -588,7 +588,7 @@ namespace hooks
 				} break;
 			}
 
-			if (!scbw::isUnderDarkSwarm(data.target))
+			if (!scbw::is_under_dark_swarm(data.target))
 			{
 				switch (data.weaponId)
 				{
@@ -787,7 +787,7 @@ namespace hooks
 									if (thingy != nullptr)
 									{
 										thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
-										helper::setThingyVisibilityFlags(thingy);
+										helper::set_thingy_visibility_flags(thingy);
 									}
 								});
 						}

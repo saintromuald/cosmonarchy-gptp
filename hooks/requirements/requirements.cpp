@@ -85,7 +85,7 @@ namespace hooks
 						success++;
 						break;
 					}
-					if (scbw::hasTechResearched(playerId, id) == false && scbw::isCheatEnabled(CheatFlags::MedievalMan) == false)
+					if (scbw::has_tech_researched(playerId, id) == false && scbw::is_cheat_enabled(CheatFlags::MedievalMan) == false)
 					{
 						break;
 					}
@@ -794,7 +794,7 @@ LABEL_87:
 				{
 					//DebugOut("IsResearched (%d):", currentOpcode);
 					v10 = requirementsTable[opcodeIndex++];
-					if (scbw::hasTechResearched(parentUnit->player, v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
+					if (scbw::has_tech_researched(parentUnit->player, v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
 					{
 						*lastInternalError = InternalErrors::UnknownError9;
 						//DebugOut(">Return Gray");

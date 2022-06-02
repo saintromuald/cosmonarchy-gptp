@@ -509,7 +509,7 @@ namespace hooks
             return false;
         }
         // Supply limit exceeded
-        if (supplyCost > scbw::getSupplyRemaining(playerId, RaceId::Terran))
+        if (supplyCost > scbw::get_supply_remaining(playerId, RaceId::Terran))
         {
             if (canShowErrorMessage)
             {

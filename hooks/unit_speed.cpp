@@ -342,13 +342,13 @@ namespace hooks
 	/// Logically equivalent to getModifiedUnitAcceleration @ 0047B8A0 
 	u32 getModifiedUnitAccelerationHook(Unit* unit)
 	{
-		return std::max(scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
+		return std::max(scbw::get_flingy_data(FlingyDatEntries::Acceleration, scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
 	}
 
 	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
 	u32 getModifiedUnitTurnSpeedHook(Unit* unit)
 	{
-		return std::max(scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
+		return std::max(scbw::get_flingy_data(FlingyDatEntries::TurnRadius, scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
 	}
 
 } //hooks

@@ -208,7 +208,7 @@ namespace hooks
 			MOV unitId, EBX
 			PUSHAD
 		}
-		flingyId = scbw::getUnitData(UnitsDatEntries::Flingy, unitId);
+		flingyId = scbw::get_unit_data(UnitsDatEntries::Flingy, unitId);
 		__asm {
 			POPAD
 			MOV EAX, flingyId

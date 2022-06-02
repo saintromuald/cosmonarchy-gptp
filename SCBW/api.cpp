@@ -53,7 +53,7 @@ namespace scbw
 		previous_pos.y = u->sprite->position.y;
 
 		// identical code to set_unit_position() but for some reason, is using another function to do exactly the same thing
-		helper::moveUnit_Duplicate(u, target.x, target.y);
+		helper::move_unit_duplicate(u, target.x, target.y);
 
 		if (!scbw::check_unit_collision_pos(u, &(u->sprite->position), &new_pos, nullptr, false, 0))
 		{
@@ -87,7 +87,7 @@ namespace scbw
 				if (recall_effect_sprite != nullptr)
 				{
 					recall_effect_sprite->sprite->elevationLevel = u->sprite->elevationLevel + 1;
-					helper::setThingyVisibilityFlags(recall_effect_sprite);
+					helper::set_thingy_visibility_flags(recall_effect_sprite);
 				}
 
 			}
@@ -112,7 +112,7 @@ namespace scbw
 		if (thingy)
 		{
 			thingy->sprite->elevationLevel = elevationLevel;
-			helper::setThingyVisibilityFlags(thingy);
+			helper::set_thingy_visibility_flags(thingy);
 		}
 		return thingy;
 	}
@@ -231,30 +231,30 @@ namespace scbw
 		return true;
 	}
 
-	bool isUnderDarkSwarm(Unit* unit)
+	bool is_under_dark_swarm(Unit* unit)
 	{
-		return !(unit->status & UnitStatus::InAir) && getDarkSwarmFromUnit(unit) != nullptr;
+		return !(unit->status & UnitStatus::InAir) && get_dark_swarm_unit(unit) != nullptr;
 	}
 
-	bool IsDarkSwarm(Unit* unit)
+	bool is_dark_swarm(Unit* unit)
 	{
 		return unit->id == UnitId::Spell_DarkSwarm;
 	}
 
-	Unit* getDarkSwarmFromUnit(Unit* unit)
+	Unit* get_dark_swarm_unit(Unit* unit)
 	{
 		static UnitFinder darkSwarmFinder;
 		darkSwarmFinder.search(unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom());
 
-		Unit* darkSwarm = darkSwarmFinder.getFirst(IsDarkSwarm);
+		Unit* darkSwarm = darkSwarmFinder.getFirst(is_dark_swarm);
 		return darkSwarm;
 	}
 
-	Unit* getDarkSwarmFromPosition(u16 x, u16 y, u16 radius)
+	Unit* get_dark_swarm_from_position(u16 x, u16 y, u16 radius)
 	{
 		UnitFinder darkSwarmFinder;
 		darkSwarmFinder.search(x - radius, y - radius, x + radius, y + radius);
-		Unit* darkSwarm = darkSwarmFinder.getFirst(IsDarkSwarm);
+		Unit* darkSwarm = darkSwarmFinder.getFirst(is_dark_swarm);
 		return darkSwarm;
 	}
 
@@ -277,13 +277,13 @@ namespace scbw
 		return (dMin * 3 >> 3) + (dMin * 3 >> 8) + dMax - (dMax >> 4) - (dMax >> 6);
 	}
 
-	u32 getDistanceSquare(s32 x1, s32 y1, s32 x2, s32 y2)
+	u32 get_distance_square(s32 x1, s32 y1, s32 x2, s32 y2)
 	{
 		return std::max(abs(x1 - x2), abs(y1 - y2));
 	}
 
 	// Identical to function @ 0x00494C10
-	s32 arctangent(s32 slope)
+	s32 arc_tangent(s32 slope)
 	{
 		const u32 tangentTable[] = {
 				 7,	 13,	 19,	 26,	 32,	 38,	 45,	 51,
@@ -323,22 +323,22 @@ namespace scbw
 	//					EDX		[EBP+08]	ECX			EAX
 	s32 get_angle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd)
 	{
-
 		s32 dx = xEnd - xStart, dy = yEnd - yStart;
-
 		if (dx == 0)
-			return dy > 0 ? 128 : 0;
+		{
+			return dy > 0 ? 128 : 0;		
+		}
 
-		s32 angle = arctangent((dy << 8) / dx);
-
+		s32 angle = arc_tangent((dy << 8) / dx);
 		if (dx < 0)
 		{
 			angle += 192;
 			return angle == 256 ? 0 : angle;
 		}
 		else
+		{
 			return angle + 64;
-
+		}
 	}
 
 	Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees) {
@@ -383,13 +383,13 @@ namespace scbw
 
 	//-------- Player information --------//
 
-	s32 getSupplyRemaining(u8 playerId, u8 raceId)
+	s32 get_supply_remaining(u8 playerId, u8 raceId)
 	{
 		assert(raceId <= 2);
 		assert(playerId < PLAYER_COUNT);
 
 		s32 supplyProvided;
-		if (isCheatEnabled(CheatFlags::FoodForThought))
+		if (is_cheat_enabled(CheatFlags::FoodForThought))
 		{
 			supplyProvided = raceSupply[RaceId::Terran].max[playerId];
 		}
@@ -398,10 +398,9 @@ namespace scbw
 			supplyProvided = std::min(raceSupply[RaceId::Terran].max[playerId], raceSupply[RaceId::Terran].provided[playerId]);
 		}
 		return supplyProvided - raceSupply[RaceId::Terran].used[playerId];
-
 	}
 
-	bool hasTechResearched(u8 playerId, u16 techId)
+	bool has_tech_researched(u8 playerId, u16 techId)
 	{
 		assert(playerId < PLAYER_COUNT);
 		assert(techId < TechId::None);
@@ -415,7 +414,7 @@ namespace scbw
 		}
 	}
 
-	bool hasTechAvailable(u8 playerId, u16 techId)
+	bool has_tech_available(u8 playerId, u16 techId)
 	{
 		assert(playerId < PLAYER_COUNT);
 		assert(techId < TechId::None);
@@ -429,7 +428,7 @@ namespace scbw
 		}
 	}
 
-	void setTechResearchState(u8 playerId, u16 techId, bool isResearched)
+	void set_tech_research_state(u8 playerId, u16 techId, bool isResearched)
 	{
 		assert(playerId < PLAYER_COUNT);
 		assert(techId < TechId::None);
@@ -462,7 +461,7 @@ namespace scbw
 		}
 	}
 
-	u32 getFlingyData(u32 entry, u32 index)
+	u32 get_flingy_data(u32 entry, u32 index)
 	{
 		return get_aise_value(nullptr, nullptr, AiseId::GetFlingyData, entry, index);
 	}
@@ -471,11 +470,11 @@ namespace scbw
 		return get_aise_value(nullptr, nullptr, AiseId::GetSpriteData, entry, index);
 	}
 
-	u32 getImageData(u32 entry, u32 index)
+	u32 get_image_data(u32 entry, u32 index)
 	{
 		return get_aise_value(nullptr, nullptr, AiseId::GetImageData, entry, index);
 	}
-	u32 getUnitData(u32 entry, u32 index)
+	u32 get_unit_data(u32 entry, u32 index)
 	{
 		return get_aise_value(nullptr, nullptr, AiseId::GetUnitData, entry, index);
 	}
@@ -740,7 +739,7 @@ namespace scbw
 		scbw::send_gptp_aise_command(u, nullptr, GptpId::SetGenericValue, id, val, 0);
 	}
 
-	void setSpriteData(u32 entry, u32 index, u32 value)
+	void set_sprite_data(u32 entry, u32 index, u32 value)
 	{
 		return send_gptp_aise_command(nullptr, nullptr, GptpId::SetSpriteData, entry, index, value);
 	}
@@ -1332,7 +1331,7 @@ namespace scbw
 	void create_shield_overlay(Unit* unit, u32 attackDirection)
 	{
 		//const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
-		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr, unit->sprite->mainGraphic->id));
+		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayShieldPtr, unit->sprite->mainGraphic->id));
 		u32 frameAngle = (attackDirection - 124) / 8 % 32;
 
 		Point8 offset = shield_lo->get_offset(unit->sprite->mainGraphic->direction, frameAngle);
@@ -2413,7 +2412,7 @@ namespace scbw
 			if (unit->id == UnitId::TerranCleric && !AIScriptController[unit->player].mainMedic) {
 				AIScriptController[unit->player].mainMedic = unit;
 			}
-			helper::AI_TrainingSimpleMilitary(unit, unit);
+			helper::ai_training_simple_military(unit, unit);
 		}
 	}
 

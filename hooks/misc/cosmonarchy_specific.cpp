@@ -83,7 +83,7 @@ namespace hooks
 		{
 			return false;
 		}
-		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
+		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
 		if (overlay == nullptr)
 		{
 			return false;
@@ -121,7 +121,7 @@ namespace hooks
 		{
 			return;
 		}
-		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
+		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
 		if (overlay == nullptr)
 		{
 			return; // return if there's no overlay defined
@@ -430,7 +430,7 @@ LABEL_18:
 						goto LABEL_72;
 					case ReqOpcode::TechIsResearched:
 						auto v10 = reqTable[v7++];
-						if (scbw::hasTechResearched(unit->playerId,v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
+						if (scbw::has_tech_researched(unit->playerId,v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
 						{
 							*lastError = 9;
 							return -1;
@@ -459,13 +459,13 @@ LABEL_18:
 
 	u32 realTopSpeed(Flingy* flingy, u32 flingyId)
 	{
-		u32 speed = scbw::getFlingyData(FlingyDatEntries::TopSpeed, flingyId);
+		u32 speed = scbw::get_flingy_data(FlingyDatEntries::TopSpeed, flingyId);
 		return speed;
 	}
 
 	u16 realAcceleration(Flingy* flingy, u32 flingyId)
 	{
-		u16 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, flingyId);
+		u16 acceleration = scbw::get_flingy_data(FlingyDatEntries::Acceleration, flingyId);
 		return acceleration;
 	}
 
@@ -503,7 +503,7 @@ LABEL_18:
 		}
 		else
 		{
-			return scbw::getFlingyData(FlingyDatEntries::HaltDistance, flingy_id);
+			return scbw::get_flingy_data(FlingyDatEntries::HaltDistance, flingy_id);
 		}
 	}
 
