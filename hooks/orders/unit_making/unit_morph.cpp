@@ -1,5 +1,5 @@
 #include <SCBW/api.h>
-//copied from unhooked
+// copied from unhooked
 #include <SCBW/scbwdata.h>
 #include <SCBW/enumerations/TechId.h>
 #include <cassert>
