@@ -46,7 +46,7 @@ namespace hooks
 			return 0;
 		}
 
-		_maxRange = helper::getUnitMaxWeaponRange(_unit, _wpn);
+		_maxRange = helper::get_unit_max_weapon_range(_unit, _wpn);
 		ByteOperations::SetLowByte(v8, helper::is_target_within_min_movement_range(a2, finalUnit, _maxRange));
 		return v8 == 0;
 	}
@@ -70,7 +70,7 @@ namespace hooks
 			v5 = helper::distanceFromDboxCorner(a1, a1->orderTarget.pt.x, a1->orderTarget.pt.y);
 		v7 = v5;
 		v6 = weapons_dat::MinRange[a2];
-		if (v6 && v7 < v6 || v7 > helper::getUnitMaxWeaponRange(v2, a2) || v2->pathingFlags & 2)
+		if (v6 && v7 < v6 || v7 > helper::get_unit_max_weapon_range(v2, a2) || v2->pathingFlags & 2)
 			return 0;
 		v8 = v2->nextTargetWaypoint.x;
 		if ((v8 != v2->position.x || v2->nextTargetWaypoint.y != v2->position.y)
@@ -123,7 +123,7 @@ namespace hooks
 			if (helper::is_target_within_min_range(v4, v7, v2))
 				return 0;
 		}
-		v8 = helper::getUnitMaxWeaponRange(a2, v5);
+		v8 = helper::get_unit_max_weapon_range(a2, v5);
 		return helper::is_target_within_min_movement_range(v2, v4, v8);
 	}
 
@@ -146,7 +146,7 @@ namespace hooks
 			v3 = v1->orderTarget.unit;
 			if (v3)
 			{
-				v4 = helper::getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
+				v4 = helper::get_unit_max_weapon_range(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
 				if (v1->movementFlags & 2)
 				{
 					if (!(v3->movementFlags & 2))
@@ -164,7 +164,7 @@ namespace hooks
 			{
 				v6 = v1->orderTarget.pt.y;
 				v7 = v1->orderTarget.pt.x;
-				v8 = helper::getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
+				v8 = helper::get_unit_max_weapon_range(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
 				v9 = (helper::getFlingyHaltDistance((s32)v1) >> 8) + v8;
 				v2 = v9 >= helper::get_distance_fast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
 			}
@@ -228,7 +228,7 @@ namespace hooks
 			}
 			if (v6 >= (unsigned __int8)0x82
 				|| (v8 = weapons_dat::MinRange[v6]) != 0 && helper::is_target_within_min_range(v5, v8, target)
-				|| (v9 = helper::getUnitMaxWeaponRange(v1, v6), ByteOperations::SetLowByte(v10, (helper::is_target_within_min_movement_range(target, v5, v9), !v10))))
+				|| (v9 = helper::get_unit_max_weapon_range(v1, v6), ByteOperations::SetLowByte(v10, (helper::is_target_within_min_movement_range(target, v5, v9), !v10))))
 			{
 LABEL_23:
 				if (helper::getRightClickActionOrder(v1) == 3)
@@ -305,7 +305,7 @@ LABEL_22:
 				}
 				if (v12 >= (unsigned __int8)0x82
 					|| (v14 = weapons_dat::MinRange[v12]) != 0 && helper::is_target_within_min_range(v11, v14, target)
-					|| (v15 = helper::getUnitMaxWeaponRange(v1, v12), ByteOperations::SetLowByte(v16, (helper::is_target_within_min_movement_range(target, v11, v15), !v16))))
+					|| (v15 = helper::get_unit_max_weapon_range(v1, v12), ByteOperations::SetLowByte(v16, (helper::is_target_within_min_movement_range(target, v11, v15), !v16))))
 				{
 LABEL_63:
 					if (!helper::moveTowards(v1->orderTarget.unit, v1))
@@ -342,7 +342,7 @@ LABEL_62:
 					v8 = weapons_dat::MinRange[v6];
 					if (!v8 || !helper::is_target_within_min_range(v5, v8, target))
 					{
-						v9 = helper::getUnitMaxWeaponRange(v1, v6);
+						v9 = helper::get_unit_max_weapon_range(v1, v6);
 						ByteOperations::SetLowByte(v10, helper::is_target_within_min_movement_range(target, v5, v9));
 						if (v10)
 							goto LABEL_64;
@@ -865,7 +865,7 @@ LABEL_34:
 					v19 = weapons_dat::MinRange[v17];
 					if (!v19 || !helper::is_target_within_min_range(v16, v19, targeta))
 					{
-						v20 = helper::getUnitMaxWeaponRange(v2, v17);
+						v20 = helper::get_unit_max_weapon_range(v2, v17);
 						v21 = helper::is_target_within_min_movement_range(targeta, v16, v20);
 						if (v21)
 						{

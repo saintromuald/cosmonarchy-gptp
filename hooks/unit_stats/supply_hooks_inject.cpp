@@ -191,7 +191,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::incrementUnitScores(unit, count);
+		hooks::increment_unit_scores(unit, count);
 		__asm {
 			POPAD
 			MOV EAX, 0

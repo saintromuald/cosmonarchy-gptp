@@ -61,7 +61,7 @@ namespace hooks
         *lastInternalError = 0;
         if (orders_dat::RequirementsOffset[OrderId::RallyPoint2] == -1)
         {
-            helper::parseOrdersDatReqs();
+            helper::parse_orders_dat_requirements();
         }
 
         u32 result;
@@ -98,7 +98,7 @@ namespace hooks
                         }
                         else
                         {
-                            result = helper::parseRequirementOpcodes(unit, OrderId::RallyPoint2, player, (u32)ordersRequirementTree, orders_dat::RequirementsOffset[OrderId::RallyPoint2]);
+                            result = helper::parse_requirement_opcodes(unit, OrderId::RallyPoint2, player, (u32)ordersRequirementTree, orders_dat::RequirementsOffset[OrderId::RallyPoint2]);
                         }
                     }
                     else
@@ -287,7 +287,7 @@ namespace hooks
                             }
                             rightOrder = units_dat::AttackUnitOrder[unit->id];
                         }
-                        if (helper::OrderAllowed(unit, rightOrder, *ACTIVE_NATION_ID) == 1)
+                        if (helper::order_is_allowed(unit, rightOrder, *ACTIVE_NATION_ID) == 1)
                         {
                             if (target)
                             {

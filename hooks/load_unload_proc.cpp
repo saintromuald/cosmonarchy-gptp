@@ -371,12 +371,12 @@ namespace hooks
 							u8 weaponId = unit->get_ground_weapon();
 							if (weaponId != WeaponId::None)
 							{
-								unit->groundWeaponCooldown = helper::getUpgradedWpnCooldown(unit, weaponId);
+								unit->groundWeaponCooldown = helper::get_upgraded_weapon_cooldown(unit, weaponId);
 							}
 							weaponId = unit->getAirWeapon();
 							if (weaponId != WeaponId::None)
 							{
-								unit->airWeaponCooldown = helper::getUpgradedWpnCooldown(unit, weaponId);
+								unit->airWeaponCooldown = helper::get_upgraded_weapon_cooldown(unit, weaponId);
 							}
 							unit->spellCooldown = 30;
 						}

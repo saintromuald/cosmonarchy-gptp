@@ -818,8 +818,8 @@ LABEL_18:
 		{
 			unit->hitPoints = 1;
 		}
-		unit->airStrength = helper::getUnitStrength(unit, max_hp, false);
-		unit->groundStrength = helper::getUnitStrength(unit, max_hp, true);
+		unit->airStrength = helper::get_unit_strength(unit, max_hp, false);
+		unit->groundStrength = helper::get_unit_strength(unit, max_hp, true);
 		unit->status &= ~(UnitStatus::CanNotReceiveOrders | UnitStatus::NoBrkCodeStart);
 		if (!orders_dat::CanBeInterrupted[order_type]) {
 			unit->status |= UnitStatus::CanNotReceiveOrders;

@@ -95,7 +95,7 @@ namespace hooks
 				} break;
 				case TechId::Infestation:
 				{
-					if (!helper::isInfestableUnit(target))
+					if (!helper::is_infestable_unit(target))
 					{
 						stringId = 870;	// Must target severely damaged Terran Command Center.<0>
 					}

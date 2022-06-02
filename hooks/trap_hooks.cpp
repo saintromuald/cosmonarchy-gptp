@@ -94,9 +94,9 @@ namespace hooks
 		v2 = units_dat::BaseProperty[(u16)a1->id];
 		if (v2 & UnitProperty::TwoUnitsIn1Egg)
 		{
-			helper::incrementUnitScores(a1, -1);
+			helper::increment_unit_scores(a1, -1);
 			v1->status |= UnitStatus::Completed;
-			helper::incrementUnitScores(v1, 1);
+			helper::increment_unit_scores(v1, 1);
 		}
 		else
 		{
@@ -147,7 +147,7 @@ namespace hooks
 		{
 			if (v3 != UnitId::ProtossSteward && v3 != UnitId::ProtossPlasmaShell)
 			{
-				helper::initUnitTrapDoodad(v1);
+				helper::init_unit_trap_doodad(v1);
 			}
 		}
 		v4 = v1->id;/*
@@ -210,8 +210,8 @@ namespace hooks
 			helper::order(1, v1, v16, 0, 0, 228);
 			helper::orders_nothing_2(v1);
 		}
-		v1->airStrength = helper::getUnitStrength(v1, v13, 0);
-		result = helper::getUnitStrength(v1, v18, 1);
+		v1->airStrength = helper::get_unit_strength(v1, v13, 0);
+		result = helper::get_unit_strength(v1, v18, 1);
 		v1->groundStrength = result;
 		return result;
 	}

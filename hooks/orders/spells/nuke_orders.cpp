@@ -49,7 +49,7 @@ namespace hooks
 					}
 
 					//64DD6
-					helper::function_0043DB50(unit);
+					helper::ai_return_to_nearest_base_forced(unit);
 
 				}
 
@@ -114,7 +114,7 @@ namespace hooks
 			);
 
 			if (distance / 256 <= sightRange * 3)
-				helper::AI_orderUnitCloaking(unit);
+				helper::ai_order_unit_cloaking(unit);
 
 		}
 
@@ -194,7 +194,7 @@ namespace hooks
 					helper::play_sound_from_unit(SoundId::Terran_GHOST_TGhLas00_wav, unit, 1, 0);
 					nuke->order_to(OrderId::NukeLaunch, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					nuke->connectedUnit = unit;
-					helper::setAllOverlayDirectionsGeneric(nuke, 0);
+					helper::set_all_overlay_directions_generic(nuke, 0);
 					helper::show_and_enable_unit(nuke);
 					unit->connectedUnit = nuke;
 					unit->order_to(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);

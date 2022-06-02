@@ -20,7 +20,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		nearestPartner = hooks::templarMergePartner(unit, units_list, units_list_length);
+		nearestPartner = hooks::templar_merge_partner(unit, units_list, units_list_length);
 		__asm {
 			POPAD
 			MOV EAX, nearestPartner

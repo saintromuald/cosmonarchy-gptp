@@ -834,7 +834,7 @@ LABEL_71_SUM_VALUES:
 		}
 	}
 
-	s32 parseRequirementOpcodes(Unit* unit, u32 datReqOffset, u16 id, u32 player, u16* datReqBase) // 0046D610
+	s32 parse_requirement_opcodes(Unit* unit, u32 datReqOffset, u16 id, u32 player, u16* datReqBase) // 0046D610
 	{
 		if (datReqBase == requirements::orders && customRequirements::getOrderRequirementOverrides()[id] != 0)
 		{

@@ -39,7 +39,7 @@ namespace hooks
 
 				u8 upgradeLevel;
 
-				helper::playUpgradeCompleteSound();
+				helper::play_upgrade_complete_sound();
 
 				if (unit->building.upgradeType >= UpgradeId::PrismaticShield)
 					upgradeLevel = UpgradesBw->currentLevel[unit->player][unit->building.upgradeType - UpgradeId::PrismaticShield];
@@ -49,10 +49,10 @@ namespace hooks
 				if (upgradeLevel < unit->building.upgradeLevel)
 				{
 
-					if (helper::isUnitUpgradeAvailable(unit))
+					if (helper::is_unit_upgrade_available(unit))
 					{
 						helper::set_upgrade_level(unit->player, unit->building.upgradeType, unit->building.upgradeLevel);
-						helper::ApplySpeedUpgradeFromUpgradeType(unit, unit->building.upgradeType);
+						helper::apply_speed_upgrade_from_upgrade_id(unit, unit->building.upgradeType);
 					}
 
 				}
@@ -189,7 +189,7 @@ namespace hooks
 			if (!bStopThere)
 			{
 
-				helper::playResearchCompleteSound();
+				helper::play_research_complete_sound();
 
 				if (unit->building.techType < TechId::Restoration)
 					TechSc->isResearched[unit->player][unit->building.techType] = 1;

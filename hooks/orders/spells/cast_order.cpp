@@ -72,7 +72,7 @@ namespace hooks
 		} else {
 			finalString = 0;
 		}
-		helper::get_statTxt_Str_0(caster, (u8) caster->player, finalString);
+		helper::get_stat_txt_string(caster, (u8) caster->player, finalString);
 
 		s32 result;
 		if (caster->orderQueueHead) {
@@ -230,11 +230,11 @@ namespace hooks
 		}
 		else // 004928CF
 		{
-			if (!helper::canCastSpell_0(unit))
+			if (!helper::can_cast_spell(unit))
 			{
 				char* message = (char*)statTxtTblNew->getString(876); // Invalid target
 				// do the actual transmission corresponding to the message
-				helper::get_statTxt_Str_0(unit, unit->player, message);
+				helper::get_stat_txt_string(unit, unit->player, message);
 				// make the unit stop since the order failed
 				helper::set_resource_target(unit);
 				unit->order_to_idle();
@@ -274,11 +274,11 @@ namespace hooks
 					// may initiate movement from unit depending on mainOrderState
 					if (unit->mainOrderState == 0)
 					{
-						result_00492620 = helper::OrderedSpell_ProgressMoving(unit, 1);
+						result_00492620 = helper::ordered_spell_progress_moving(unit, 1);
 					}
 					else
 					{
-						result_00492620 = helper::OrderedSpell_ProgressMoving(unit, 0);
+						result_00492620 = helper::ordered_spell_progress_moving(unit, 0);
 					}
 
 					if (unit->mainOrderState == 0)
@@ -358,7 +358,7 @@ namespace hooks
 								u32 random_value;
 								unit->spend_unit_energy(spellCost);
 
-								cooldown = helper::getUpgradedWpnCooldown(unit, orderWeaponId);
+								cooldown = helper::get_upgraded_weapon_cooldown(unit, orderWeaponId);
 								unit->spellCooldown = cooldown;
 								if (unit->id == UnitId::TerranWyvern)
 								{

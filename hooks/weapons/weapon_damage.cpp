@@ -326,8 +326,8 @@ namespace hooks
 		}
 
 		// Update unit strength data
-		data.target->airStrength = helper::getUnitStrength(data.target, false);
-		data.target->groundStrength = helper::getUnitStrength(data.target, true);
+		data.target->airStrength = helper::get_unit_strength(data.target, false);
+		data.target->groundStrength = helper::get_unit_strength(data.target, true);
 	}
 
 	static void weaponDamage_damageModifiers(WeaponDamageData& data)

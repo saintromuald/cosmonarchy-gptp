@@ -348,7 +348,7 @@ namespace hooks
 		}
 	}
 
-    void incrementUnitScores(Unit* unit, s32 count) // 00488BF0
+    void increment_unit_scores(Unit* unit, s32 count) // 00488BF0
     {
         if (unit->status & UnitStatus::IsHallucination)
         {

@@ -26,7 +26,7 @@ namespace
 			MOV datReqBase, EAX
 			PUSHAD
 		}
-		result = hooks::parseRequirementOpcodes(unit, datReqOffset, techID, playerId, datReqBase);
+		result = hooks::parse_requirement_opcodes(unit, datReqOffset, techID, playerId, datReqBase);
 		__asm
 		{
 			POPAD
