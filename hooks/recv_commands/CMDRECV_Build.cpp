@@ -17,7 +17,7 @@ namespace hooks
 				)
 			{
 				if (builder->can_make_unit(builtUnitId, *ACTIVE_NATION_ID))
-					bReturnValue = (helper::OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
+					bReturnValue = (helper::order_is_allowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
 			}
 			else
 				if (
@@ -26,13 +26,13 @@ namespace hooks
 					)
 				{
 					if (builder->id == builtUnitId)
-						bReturnValue = (helper::OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
+						bReturnValue = (helper::order_is_allowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
 				}
 				else
 					if (orderId == OrderId::CTFCOP2)
 					{	//Create flag beacon
 						if (*elapsedTimeSeconds <= 600 && builder->id == builtUnitId)
-							bReturnValue = (helper::OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
+							bReturnValue = (helper::order_is_allowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
 					}
 		}
 		return bReturnValue;
@@ -60,7 +60,7 @@ namespace hooks
 				0
 			);
 
-		if (helper::placeBuildingMsg(result_function_00473FB0))
+		if (helper::place_building_message(result_function_00473FB0))
 		{
 
 			s32 DimensionX, DimensionY;
@@ -174,7 +174,7 @@ namespace hooks
 
 		}
 
-		if (helper::placeBuildingMsg(result_function_00473FB0))
+		if (helper::place_building_message(result_function_00473FB0))
 		{
 
 			s32 DimensionX, DimensionY;
@@ -226,9 +226,9 @@ namespace hooks
 				if (
 					x < mapTileSize->width &&
 					y < mapTileSize->height &&
-					helper::CMDRECV_PlaceBuildingAllowedHelper(builder, orderId, builtUnitId)
+					helper::CMDRECV_place_building_allowed(builder, orderId, builtUnitId)
 					)
-					helper::cmdRECV_PlaceBuilding(x, y, orderId, builtUnitId);
+					helper::CMDRECV_place_building(x, y, orderId, builtUnitId);
 			}
 		}
 	}

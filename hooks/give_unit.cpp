@@ -20,7 +20,7 @@ namespace hooks
 				is_morphing = true;
 			}
 
-			helper::incrementUnitScores(unit, -1);
+			helper::increment_unit_scores(unit, -1);
 			if (unit->status & UnitStatus::Completed)
 			{
 				helper::increment_unit_scores_ex(unit, 0, -1);
@@ -31,7 +31,7 @@ namespace hooks
 			if (isSelected)
 			{
 				selectionIndex = unit->sprite->selectionIndex;
-				helper::DestroyUnitSelection(unit);
+				helper::destroy_unit_selection(unit);
 			}
 
 			if (unit->player_link.prev)
@@ -54,7 +54,7 @@ namespace hooks
 			// maybe "if" not needed?
 			if (isSelected)
 			{
-				helper::CreateUnitSelection(unit, selectionIndex);
+				helper::create_unit_selection(unit, selectionIndex);
 			}
 
 			unit->player_link.prev = nullptr;
@@ -66,7 +66,7 @@ namespace hooks
 			}
 
 			firstPlayerUnit->unit[playerId] = unit;
-			helper::incrementUnitScores(unit, 1);
+			helper::increment_unit_scores(unit, 1);
 			if (unit->status & UnitStatus::Completed)
 			{
 				helper::increment_unit_scores_ex(unit, bCountAsCompleted, 1);

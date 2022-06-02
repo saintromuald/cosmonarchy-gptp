@@ -43,7 +43,7 @@ namespace hooks
 
 	//This function is called when an upgrade is finished, or when transferring a
 	//unit's ownership from one player to another (via triggers or Mind Control).
-	//Should be equivalent or identical to ApplySpeedUpgradeFromUpgradeType @ 00454540
+	//Should be equivalent or identical to apply_speed_upgrade_from_upgrade_id @ 00454540
 	void applyUpgradeFlagsToExistingUnitsHook(Unit* unit, u8 upgradeId)
 	{
 

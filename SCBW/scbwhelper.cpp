@@ -522,7 +522,7 @@ namespace helper
 		return result;
 	}
 
-	// For getUnitStrength
+	// For get_unit_strength
 
 	s32 get_current_hp_plus_shields(Unit* a1)
 	{
@@ -1378,17 +1378,6 @@ namespace helper
 			POPAD
 		}
 		return result;
-	}
-
-	void ai_order_unit_cloaking(Unit* unit)
-	{
-		const u32 Func_AI_OrderUnitCloaking = 0x0043B970;
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_AI_OrderUnitCloaking
-			POPAD
-		}
 	}
 
 	void ai_order_lurker_burrow(Unit* unit)
@@ -3758,7 +3747,7 @@ namespace helper
 		}
 	}
 
-	void CancelUpgrade_Proc(Unit* unit)
+	void cancel_upgrade_proc(Unit* unit)
 	{
 		const u32 Func_Sub454280 = 0x00454280;
 		__asm
@@ -3770,7 +3759,7 @@ namespace helper
 		}
 	}
 
-	void refundQueueSlot(Unit* unit, u16 slot)
+	void refund_queue_slot(Unit* unit, u16 slot)
 	{
 		const u32 Func_refundQueueSlot = 0x00466A70;
 		__asm
@@ -3783,7 +3772,7 @@ namespace helper
 		}
 	}
 
-	void function_00466E40(Unit* unit)
+	void cancel_last_training(Unit* unit)
 	{
 		const u32 Func_Sub466E40 = 0x00466E40;
 		__asm
@@ -3795,7 +3784,7 @@ namespace helper
 		}
 	}
 
-	void CancelAddon_Proc(Unit* unit)
+	void cancel_addon_proc(Unit* unit)
 	{
 		const u32 Func_Sub4E66E0 = 0x004E66E0;
 		__asm
@@ -3807,7 +3796,7 @@ namespace helper
 		}
 	}
 
-	b32 OrderAllowed(Unit* unit, u16 order, u32 nationID)
+	b32 order_is_allowed(Unit* unit, u16 order, u32 nationID)
 	{
 		const u32 Func_OrderAllowed = 0x0046DC20;
 		static b32 bResult;
@@ -3824,7 +3813,7 @@ namespace helper
 		return bResult;
 	}
 
-	bool placeBuildingMsg(u32 result_function_473FB0)
+	bool place_building_message(u32 result_function_473FB0)
 	{
 		const u32 Func_placeBuildingMsg = 0x0048D930;
 		static b32 bPreResult;
@@ -3839,7 +3828,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool CMDRECV_PlaceBuildingAllowedHelper(Unit* unit, u8 orderId, u16 builtUnitId)
+	bool CMDRECV_place_building_allowed(Unit* unit, u8 orderId, u16 builtUnitId)
 	{
 		const u32 Func_CMDRECV_PlaceBuildingAllowed = 0x0048DBD0;
 		static b32 bPreResult;
@@ -3873,7 +3862,7 @@ namespace helper
 		}
 	}
 
-	void cmdRECV_PlaceBuilding(s16 x, s16 y, u8 orderId, u16 builtUnitId)
+	void CMDRECV_place_building(s16 x, s16 y, u8 orderId, u16 builtUnitId)
 	{
 		const u32 Func_cmdRECV_PlaceBuilding = 0x0048E190;
 		static Point16 pos;
@@ -3889,7 +3878,7 @@ namespace helper
 		}
 	}
 
-	Unit* templarMergePartner(Unit* unit, Unit** units_list, u32 units_list_length)
+	Unit* templar_merge_partner(Unit* unit, Unit** units_list, u32 units_list_length)
 	{
 		const u32 Func_templarMergePartner = 0x004BFA80;
 		static Unit* return_value;
@@ -3906,7 +3895,7 @@ namespace helper
 		return return_value;
 	}
 
-	void parseOrdersDatReqs()
+	void parse_orders_dat_requirements()
 	{
 		const u32 Func_parseOrdersDatReqs = 0x0046D450;
 		__asm
@@ -3917,7 +3906,7 @@ namespace helper
 		}
 	}
 
-	s32 parseRequirementOpcodes(Unit* unit, u32 orderId, u32 playerId, u32 address, u32 req_offset)
+	s32 parse_requirement_opcodes(Unit* unit, u32 orderId, u32 playerId, u32 address, u32 req_offset)
 	{
 		const u32 Func_parseRequirementOpcodes = 0x0046D610;
 		static s32 return_value;
@@ -3972,7 +3961,7 @@ namespace helper
 		}
 	}
 
-	void incrementUnitScores(Unit* unit, s32 unkScore)
+	void increment_unit_scores(Unit* unit, s32 unkScore)
 	{
 		const u32 Func_incrementUnitScores = 0x00488BF0;
 		__asm
@@ -3985,7 +3974,7 @@ namespace helper
 		}
 	}
 
-	void CreateUnitSelection(Unit* unit, u32 selectionIndex)
+	void create_unit_selection(Unit* unit, u32 selectionIndex)
 	{
 		const u32 Func_CreateUnitSelection = 0x004E6180;
 		__asm {
@@ -3997,7 +3986,7 @@ namespace helper
 		}
 	}
 
-	void DestroyUnitSelection(Unit* unit)
+	void destroy_unit_selection(Unit* unit)
 	{
 		const u32 Func_DestroyUnitSelection = 0x004E6290;
 		__asm {
@@ -4019,7 +4008,7 @@ namespace helper
 		}
 	}
 
-	u32 getUpgradedWpnCooldown(Unit* unit, u8 weaponId)
+	u32 get_upgraded_weapon_cooldown(Unit* unit, u8 weaponId)
 	{
 		const u32 Func_getUpgradedWpnCooldown = 0x00475DC0;
 		static u32 return_value;
@@ -4049,7 +4038,7 @@ namespace helper
 		return (pre_result != 0);
 	}
 
-	u32 get_statTxt_Str_0(Unit* unit, u32 playerId, char* message)
+	u32 get_stat_txt_string(Unit* unit, u32 playerId, char* message)
 	{
 		const u32 Func_get_statTxt_Str_0 = 0x0048EF30;
 		static u32 return_value;
@@ -4065,7 +4054,7 @@ namespace helper
 		return return_value;
 	}
 
-	bool canCastSpell_0(Unit* unit)
+	bool can_cast_spell(Unit* unit)
 	{
 		const u32 Func_canCastSpell_0 = 0x00492140;
 		static b32 bPreResult;
@@ -4076,11 +4065,11 @@ namespace helper
 			MOV bPreResult, EAX
 			POPAD
 		}
-		//0 means "can cast spell"
+		// 0 means "can cast spell"
 		return (bPreResult == 0);
 	}
 
-	u32 OrderedSpell_ProgressMoving(Unit* unit, b32 wasMainOrderStateZero)
+	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero)
 	{
 		const u32 Func_Sub492620 = 0x00492620;
 		static u32 return_value;
@@ -4106,7 +4095,7 @@ namespace helper
 		}
 	}
 
-	void incrementUnitDeathScores(Unit* unit, u8 player)
+	void increment_unit_death_scores(Unit* unit, u8 player)
 	{
 		const u32 Func_IncrementUnitDeathScores = 0x00488AF0;
 		__asm {
@@ -4118,7 +4107,7 @@ namespace helper
 		}
 	}
 
-	void initializeEmptyUnitsLinkedListRef(Unit* unit, u8 playerId)
+	void initialize_empty_unit_linked_list_references(Unit* unit, u8 playerId)
 	{
 		const u32 Func_initializeEmptyUnitsLinkedListRef = 0x0049E4E0;
 		__asm {
@@ -4130,7 +4119,7 @@ namespace helper
 		}
 	}
 
-	void GiveUnitHelper(Unit* unit, u32 playerId, s32 unkScore)
+	void give_unit_helper(Unit* unit, u32 playerId, s32 unkScore)
 	{
 		const u32 Func_GiveUnitHelper = 0x0049EFA0;
 		__asm {
@@ -4167,7 +4156,7 @@ namespace helper
 		}
 	}
 
-	bool isInfestableUnit(Unit* unit)
+	bool is_infestable_unit(Unit* unit)
 	{
 		const u32 Func_IsInfestable = 0x00402210;
 		static b32 result;
@@ -4182,7 +4171,6 @@ namespace helper
 	}
 
 	// For update_unit_strength_and_apply_default_orders
-
 	void anim_cloak(Unit* a1, s32 a2)
 	{
 		const u32 Func_AnimCloak = 0x0049B5B0;
@@ -4206,7 +4194,7 @@ namespace helper
 		}
 	}
 
-	void initUnitTrapDoodad(Unit* a1)
+	void init_unit_trap_doodad(Unit* a1)
 	{
 		const u32 Func_initUnitTrapDoodad = 0x004E6490;
 		__asm {
@@ -4252,7 +4240,7 @@ namespace helper
 		}
 	}
 
-	u32 getUnitStrength(Unit* a1, s32 a2, bool a3)
+	u32 get_unit_strength(Unit* a1, s32 a2, bool a3)
 	{
 		const u32 Func_getUnitStrength = 0x00431800;
 		static u32 result;
@@ -4268,7 +4256,7 @@ namespace helper
 		return result;
 	}
 
-	void playWorkerErrorSound(Unit* unit, u32 errorTextIndex)
+	void play_worker_error_sound(Unit* unit, u32 errorTextIndex)
 	{
 		const u32 Func_PlayWorkerErrorSound = 0x0048F6C0;
 		__asm {
@@ -4280,7 +4268,7 @@ namespace helper
 		}
 	}
 
-	bool isUnitUpgradeAvailable(Unit* unit)
+	bool is_unit_upgrade_available(Unit* unit)
 	{
 		const u32 Func_isUnitUpgradeAvailable = 0x004033D0;
 		static b32 bPreResult;
@@ -4294,7 +4282,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	void ApplySpeedUpgradeFromUpgradeType(Unit* unit, u8 upgradeType)
+	void apply_speed_upgrade_from_upgrade_id(Unit* unit, u8 upgradeType)
 	{
 		const u32 Func_ApplySpeedUpgradeFromUpgradeType = 0x00454540;
 		__asm {
@@ -4306,7 +4294,7 @@ namespace helper
 		}
 	}
 
-	void playUpgradeCompleteSound()
+	void play_upgrade_complete_sound()
 	{
 		const u32 Func_playUpgradeCompleteSound = 0x0048F070;
 		__asm {
@@ -4316,7 +4304,7 @@ namespace helper
 		}
 	}
 
-	void playResearchCompleteSound()
+	void play_research_complete_sound()
 	{
 		const u32 Func_playResearchCompleteSound = 0x0048F150;
 		__asm {
@@ -4340,7 +4328,7 @@ namespace helper
 	}
 
 	// return true if remainingBuildTime was 0 when called, remainingBuildTime change affected by cheating
-	bool advanceRemainingBuildTime(Unit* unit)
+	bool advance_remaining_build_time(Unit* unit)
 	{
 		u32 Func_advanceRemainingBuildTime = 0x00466940;
 		static b32 bTimeWasZero;
@@ -4355,7 +4343,7 @@ namespace helper
 	}
 
 	// return value may be useless since it's the exact value of pathingFlags
-	u8 function_0046A820(Unit* unit)
+	u8 delete_pathing(Unit* unit)
 	{
 		u32 Func_Sub46A820 = 0x0046A820;
 		static u8 result;
@@ -4394,7 +4382,7 @@ namespace helper
 	}
 
 	// get status (defensiveMatrixHp to acidSporeTime) of unit_src and give it to unit_dst
-	void mergeStatusIntoUnit_Sub493180(Unit* unit_dst, Unit* unit_src)
+	void merge_status_into_unit(Unit* unit_dst, Unit* unit_src)
 	{
 		const u32 Func_Sub493180 = 0x00493180;
 		__asm {
@@ -4406,7 +4394,7 @@ namespace helper
 		}
 	}
 
-	void animDecloak(Unit* unit, u32 soundId)
+	void anim_decloak(Unit* unit, u32 soundId)
 	{
 		const u32 Func_animDecloak = 0x0049B440;
 		__asm {
@@ -4419,7 +4407,7 @@ namespace helper
 	}
 
 	// return true if waiting for recentOrderTimer to reach 0 or if setMoveTarget_xy returned true
-	bool delayedSetMoveTarget_xy_Sub4EB960(Unit* unit, u16 x, u16 y)
+	bool delayed_set_move_target_xy(Unit* unit, u16 x, u16 y)
 	{
 		const u32 Func_Sub4EB960 = 0x004EB960;
 		b32 bPreResult;
@@ -4435,7 +4423,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	void setAllOverlayDirectionsGeneric(Unit* unit, u32 unk)
+	void set_all_overlay_directions_generic(Unit* unit, u32 unk)
 	{
 		const u32 Func_setAllOverlayDirectionsGeneric = 0x00401140;
 		__asm {
@@ -4448,7 +4436,7 @@ namespace helper
 
 	}
 
-	void AI_orderUnitCloaking(Unit* unit)
+	void ai_order_unit_cloaking(Unit* unit)
 	{
 		const u32 Func_AI_orderUnitCloaking = 0x0043B970;
 		__asm {
@@ -4459,7 +4447,7 @@ namespace helper
 		}
 	}
 
-	u32 function_0043DB50(Unit* unit)
+	u32 ai_return_to_nearest_base_forced(Unit* unit)
 	{
 		const u32 Func_Sub43DB50 = 0x0043DB50;
 		static u32 return_value;
@@ -4473,7 +4461,7 @@ namespace helper
 		return return_value;
 	}
 
-	s32 getUnitMaxWeaponRange(Unit* a1, unsigned __int8 a2)
+	s32 get_unit_max_weapon_range(Unit* a1, unsigned __int8 a2)
 	{
 		const u32 Func_getUnitMaxWeaponRange = 0x00475870;
 		static s32 result;
@@ -5466,7 +5454,7 @@ namespace helper
 	}
 
 	//Somehow related to AI stuff; details unknown.
-	u16 getUnitStrength(Unit* unit, bool useGroundStrength)
+	u16 get_unit_strength(Unit* unit, bool useGroundStrength)
 	{
 		const u32 Helper_GetUnitStrength = 0x00431800;
 		static u16 strength;
@@ -7929,7 +7917,6 @@ namespace helper
 	}
 
 	// For ai_order_unit_cloaking
-
 	void applyCloakingOrder(Unit* unit)
 	{
 		const u32 Func_applyCloakingOrder = 0x00491B30;

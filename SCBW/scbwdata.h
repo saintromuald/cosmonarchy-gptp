@@ -290,7 +290,7 @@ SCBW_DATA(u32*, buildingScore,			0x00582024); // Array of 12
 SCBW_DATA(u32*, unitsOwned,				0x00581E44); // Array of 12
 SCBW_DATA(u32*, buildingsOwned,			0x00582024); // Array of 12
 
-// For incrementUnitScores
+// For increment_unit_scores
 SCBW_DATA(u32*, factoriesProducedOwnedTotal,	0x00582084); // Array of 12
 SCBW_DATA(u32*, structuresProducedOwnedTotal,	0x00581F34); // Array of 12
 SCBW_DATA(u32*, unitsProducedOwnedTotal,		0x00581DE4); // Array of 12

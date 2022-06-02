@@ -12,7 +12,7 @@
 namespace hooks
 {
 	//equivalent to 0x004BFA80, but not identical
-	Unit* templarMergePartner(Unit* unit, Unit** units_list, u32 units_list_length)
+	Unit* templar_merge_partner(Unit* unit, Unit** units_list, u32 units_list_length)
 	{
 		Unit* nearest_unit = nullptr;	//was ebp-04
 		u32 best_distance = MAXINT32;
@@ -71,7 +71,7 @@ namespace hooks
 		{
 
 			//93BB2
-			if (helper::advanceRemainingBuildTime(unit))
+			if (helper::advance_remaining_build_time(unit))
 			{
 
 				unit->sprite->flags &= ~SpriteFlags::IscriptCode;	//unset that flag
@@ -104,7 +104,7 @@ namespace hooks
 				unit->status |= UnitStatus::IsBuilding;
 
 				//pathing related
-				helper::function_0046A820(unit);
+				helper::delete_pathing(unit);
 
 				helper::change_unit_buttonset(unit, unit->id);
 
@@ -220,7 +220,7 @@ namespace hooks
 					unit->mainOrderState = 1;
 
 					if (distanceBetweenUnits > 19)
-						helper::delayedSetMoveTarget_xy_Sub4EB960(
+						helper::delayed_set_move_target_xy(
 							unit,
 							targetUnit->sprite->position.x,
 							targetUnit->sprite->position.y
@@ -272,7 +272,7 @@ namespace hooks
 						else
 							y = (u16)y;
 
-						helper::delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
+						helper::delayed_set_move_target_xy(unit, x, y);
 
 					} //if(distanceBetweenUnits <= 19)
 
@@ -283,11 +283,11 @@ namespace hooks
 			{
 
 				//9479C:
-				helper::mergeStatusIntoUnit_Sub493180(unit, targetUnit);
+				helper::merge_status_into_unit(unit, targetUnit);
 				helper::replace_unit_with_type(unit, UnitId::ProtossMindTyrant);
 
 				//update stuff related to the beginning of merge process I think
-				helper::animDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+				helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 
 				unit->sprite->flags &= ~SpriteFlags::IscriptCode; //disable the flag if set
 
@@ -317,7 +317,7 @@ namespace hooks
 				targetUnit->remove();
 
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
-				helper::function_0046A820(unit); ////pathing related
+				helper::delete_pathing(unit); ////pathing related
 
 				unit->order_computer(OrderId::CompletingArchonSummon);
 
@@ -419,7 +419,7 @@ namespace hooks
 					unit->mainOrderState = 1;
 
 					if (distanceBetweenUnits > 10)
-						helper::delayedSetMoveTarget_xy_Sub4EB960(
+						helper::delayed_set_move_target_xy(
 							unit,
 							targetUnit->sprite->position.x,
 							targetUnit->sprite->position.y
@@ -472,7 +472,7 @@ namespace hooks
 						else
 							y = (u16)y;
 
-						helper::delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
+						helper::delayed_set_move_target_xy(unit, x, y);
 
 					} //if(distanceBetweenUnits <= 19)
 
@@ -483,7 +483,7 @@ namespace hooks
 			{
 
 				//949BC:
-				helper::mergeStatusIntoUnit_Sub493180(unit, targetUnit);
+				helper::merge_status_into_unit(unit, targetUnit);
 				helper::replace_unit_with_type(unit, UnitId::ProtossArchon);
 
 				unit->sprite->flags &= ~SpriteFlags::IscriptCode; //disable the flag if set
@@ -513,7 +513,7 @@ namespace hooks
 				targetUnit->remove();
 
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
-				helper::function_0046A820(unit); ////pathing related
+				helper::delete_pathing(unit); ////pathing related
 
 				unit->order_computer(OrderId::CompletingArchonSummon);
 			}

@@ -50,7 +50,7 @@ namespace hooks
 				if (templar_stored != nullptr)
 				{
 
-					templar_merge_partner = helper::templarMergePartner(templar_stored, templars_stored_iterator, templars_stored_count);
+					templar_merge_partner = helper::templar_merge_partner(templar_stored, templars_stored_iterator, templars_stored_count);
 
 					if (templar_merge_partner != nullptr)
 					{
@@ -190,7 +190,7 @@ namespace hooks
 				if (templar_stored != nullptr)
 				{
 
-					templar_merge_partner = helper::templarMergePartner(templar_stored, templars_stored_iterator, templars_stored_count);
+					templar_merge_partner = helper::templar_merge_partner(templar_stored, templars_stored_iterator, templars_stored_count);
 
 					if (templar_merge_partner != nullptr)
 					{

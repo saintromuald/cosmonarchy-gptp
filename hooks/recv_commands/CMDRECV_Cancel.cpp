@@ -37,7 +37,7 @@ namespace hooks
 				&& unit->status & UnitStatus::Completed
 				&& unit->player == *ACTIVE_NATION_ID)
 			{
-				helper::CancelAddon_Proc(unit);
+				helper::cancel_addon_proc(unit);
 				scbw::refresh_console();
 			}
 		}
@@ -53,7 +53,7 @@ namespace hooks
 			&& unit->status & UnitStatus::Completed
 			&& unit->player == *ACTIVE_NATION_ID)
 		{
-			helper::CancelUpgrade_Proc(unit);
+			helper::cancel_upgrade_proc(unit);
 			scbw::refresh_console();
 		}
 	}
@@ -93,7 +93,7 @@ namespace hooks
 		{
 			if (wUnitID == 0xFE)
 			{
-				helper::function_00466E40(unit);
+				helper::cancel_last_training(unit);
 				scbw::refresh_console();
 			}
 			else if (wUnitID == 0xFF)
@@ -102,7 +102,7 @@ namespace hooks
 			}
 			else
 			{
-				helper::refundQueueSlot(unit, wUnitID);
+				helper::refund_queue_slot(unit, wUnitID);
 				scbw::refresh_console();
 			}
 		}

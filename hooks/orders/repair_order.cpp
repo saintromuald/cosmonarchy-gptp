@@ -291,7 +291,7 @@ namespace hooks
 		{
 			if (orders_dat::RequirementsOffset[orderId] == -1)
 			{
-				helper::parseOrdersDatReqs();
+				helper::parse_orders_dat_requirements();
 			}
 			if (player == unit->player)
 			{
@@ -322,7 +322,7 @@ namespace hooks
 						{
 							if (orders_dat::RequirementsOffset[orderId])
 							{
-								result = helper::parseRequirementOpcodes(unit,
+								result = helper::parse_requirement_opcodes(unit,
 									orderId,
 									player,
 									orders_dat::RequirementsOffset[orderId],

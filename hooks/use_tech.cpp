@@ -60,7 +60,7 @@ namespace hooks
 			{
 				char* message = (char*)statTxtTblNew->getString(864);
 				Unit* portrait_unit = playersSelections->unit[*ACTIVE_NATION_ID][0];
-				helper::get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->player, message);
+				helper::get_stat_txt_string(*activePortraitUnit, (*activePortraitUnit)->player, message);
 				return;
 			}
 		}

@@ -414,7 +414,7 @@ namespace hooks
 			&& !(target->status & UnitStatus::Invincible)
 			&& helper::get_spell_stat_string(target, TechId::Consume, attacker->player) == 0) // returning a value != 0 means there was an error
 		{
-			helper::incrementUnitDeathScores(target, attacker->player);
+			helper::increment_unit_death_scores(target, attacker->player);
 			if (!(target->status & UnitStatus::IsHallucination))
 			{
 				UnitArray units = unit_search_radial(attacker->position, 3 * 32);
