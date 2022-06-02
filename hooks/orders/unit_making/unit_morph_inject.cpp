@@ -117,7 +117,7 @@ namespace
 	CancelZergBuildingFunc cancelZergBuilding = (CancelZergBuildingFunc)0x0045DA40;
 
 	const u32 Func_ChangeUnitType = 0x0049FED0;
-	void changeUnitType(Unit* unit, u16 newUnitId)
+	void change_unit_type(Unit* unit, u16 newUnitId)
 	{
 
 		static u32 newUnitId_ = newUnitId;
@@ -157,11 +157,11 @@ namespace
 
 	//-------- cancelUnit --------//
 
-	void __fastcall cancelUnitWrapper(Unit* unit)
+	void __fastcall cancel_unit_wrapper(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
-		if (unit->isDead())
+		if (unit->is_dead())
 		{
 			return;
 		}
@@ -214,10 +214,8 @@ namespace
 		}
 
 		u16 cancelChangeUnitId = hooks::get_cancel_morph_revert_id(unit);
-//		scbw::printf("Revert unit id: %d", cancelChangeUnitId);
 		if (cancelChangeUnitId == UnitId::None)
 		{
-//			scbw::print("Remove the unit");
 			if (unit->id == UnitId::TerranNuclearMissile)
 			{
 				Unit* silo = unit->connectedUnit;
@@ -232,7 +230,7 @@ namespace
 		}
 		else
 		{
-			changeUnitType(unit, cancelChangeUnitId);
+			change_unit_type(unit, cancelChangeUnitId);
 			unit->energy = unitExt->values[ValuePreMorphEnergy];
 			unit->remainingBuildTime = 0;
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
@@ -246,11 +244,8 @@ namespace
 			replace_sprite_images(unit->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;
 			if (unit->id == UnitId::ZergZethrokor
-				|| unit->id == UnitId::ZergVorvrokor)
-			{
-				unit->play_iscript_animation(IscriptAnimation::Unused2);
-			}
-			else if (unit->id == UnitId::ZergNathrokor)
+			||  unit->id == UnitId::ZergVorvrokor
+			||  unit->id == UnitId::ZergNathrokor)
 			{
 				unit->play_iscript_animation(IscriptAnimation::Unused2);
 			}
@@ -532,7 +527,7 @@ namespace hooks
 		jump_patch(unitMorphWrapper_BTNSCOND_CanBuildUnit,	0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
 		jump_patch(unitMorphWrapper_Orders_Morph1_Check,	0x0045DFB0);		// 0045DEA0  orders_morph_1 within	
 		jump_patch(unitMorphWrapper_Orders_Morph1_EggType,	0x0045E019);		// 0045DEA0  orders_morph_1 within
-		jump_patch(cancelUnitWrapper,						0x00468280);		// 00468280  ai_cancel_structure EXACT
+		jump_patch(cancel_unit_wrapper,						0x00468280);		// 00468280  ai_cancel_structure EXACT
 		jump_patch(getRemainingBuildTimePctWrapper,			0x004669E0);		// 004669E0  sub_4669E0 EXACT
 		jump_patch(getUnitVerticalOffsetOnBirthWrapper,		0x0045DE00);		// 0045DD60  orders_zerg_birth within
 		jump_patch(isRallyableEggUnitWrapper,				0x0045DE57);		// 0045DD60  orders_zerg_birth within

@@ -34,8 +34,9 @@ namespace hooks
 
 			unit->orderSignal &= ~4;
 			bool no_two_units = false;
-			auto origin = unit->eggOrigin;
-			if (origin == UnitId::ZergZethrokor || unitExt->values[ValueSpecialSovrolethBirth])
+			auto origin = unit->egg_origin;
+			if (units_dat::BaseProperty[origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
+			||  unitExt->values[ValueSpecialSovrolethBirth])
 			{
 				no_two_units = true;
 			}
@@ -51,14 +52,18 @@ namespace hooks
 			Unit* unit2 = nullptr;
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units)
 			{
-				unit2 = helper::zerg_dual_birth(unit); // zerg dual birth
+				unit2 = helper::zerg_dual_birth(unit);
 				if (unit2)
 				{
 					helper::ai_training_unit(unit2, unit);
 				}
 			}
 			if (unit->id != UnitId::ZergDroleth
-				&& unit->id != UnitId::ZergOvileth)
+			&&  unit->id != UnitId::ZergGosvileth
+			&&  unit->id != UnitId::ZergOvileth
+			&&  unit->id != UnitId::ZergIroleth
+			&&  unit->id != UnitId::ZergOthstoleth
+			&&  unit->id != UnitId::ZergAlaszileth)
 			{
 				helper::ai_training_unit(unit, unit);
 			}
@@ -87,7 +92,7 @@ namespace hooks
 			}
 			if (!scbw::is_zerg_egg_new(unit, true, false, unit->previousUnitType))
 			{
-				if (unit->eggOrigin == UnitId::ZergLarva)
+				if (unit->egg_origin == UnitId::ZergLarva)
 				{
 					helper::order_new_unit_to_rally(unit, unit->connectedUnit);
 					if (unit2 != nullptr)
@@ -217,7 +222,7 @@ namespace hooks
 					}
 					else
 					{
-						unit->eggOrigin = unit->id;
+						unit->egg_origin = unit->id;
 						// morph into egg from source unit
 						helper::replace_unit_with_type(unit, eggId);
 					}
@@ -225,7 +230,7 @@ namespace hooks
 					
 					unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 					unit->mainOrderState = 1;
-					auto origin = unit->eggOrigin;
+					auto origin = unit->egg_origin;
 					IscriptAnimation::Enum animation = IscriptAnimation::Unused1;
 					if (origin == UnitId::ZergZethrokor
 						|| origin == UnitId::ZergNathrokor)
@@ -276,7 +281,11 @@ namespace hooks
 					unit->energy = 0;
 				}
 				if (unit->id == UnitId::ZergDroleth
-					|| unit->id == UnitId::ZergOvileth)
+				||  unit->id == UnitId::ZergGosvileth
+				||  unit->id == UnitId::ZergOvileth
+				||  unit->id == UnitId::ZergIroleth
+				||  unit->id == UnitId::ZergOthstoleth
+				||  unit->id == UnitId::ZergAlaszileth)
 				{
 					helper::ai_training_unit(unit, unit);
 				}
@@ -299,7 +308,7 @@ namespace hooks
 				{
 					helper::update_unit_stats_and_finish_building(unit);
 					helper::update_unit_strength(unit);
-					if (unit->id == UnitId::ZergEgg && unit->eggOrigin == UnitId::ZergLarva)
+					if (unit->id == UnitId::ZergEgg && unit->egg_origin == UnitId::ZergLarva)
 					{
 						helper::order_new_unit_to_rally(unit, unit->connectedUnit);
 					}
@@ -311,6 +320,13 @@ namespace hooks
 	bool unit_can_morph(Unit* unit, u16 morphUnitId)
 	{
 		// Default StarCraft behavior
+		if (unit->id == UnitId::ZergDroleth)
+		{
+			if (morphUnitId == UnitId::ZergGosvileth)
+			{
+				return true;
+			}
+		}
 		if (unit->id == UnitId::ZergZethrokor)
 		{
 			if (morphUnitId == UnitId::ZergVorvrokor)
@@ -388,13 +404,6 @@ namespace hooks
 				return true;
 			}
 		}
-		else if (unit->id == UnitId::ZergIroleth)
-		{
-			if (morphUnitId == UnitId::ZergOthstoleth)
-			{
-				return true;
-			}
-		}
 		else if (unit->id == UnitId::ZergOthstoleth)
 		{
 			if (morphUnitId == UnitId::ZergAlaszileth)
@@ -445,7 +454,7 @@ namespace hooks
 	// Determine the type (unit ID) of the unit to revert to when cancelling an @p eggUnit while it is morphing.
 	u16 get_cancel_morph_revert_id(Unit* eggUnit)
 	{
-		auto source = eggUnit->eggOrigin;
+		auto source = eggUnit->egg_origin;
 		if (eggUnit->get_race() == RaceId::Zerg
 			&& eggUnit->id != UnitId::ZergInfestedTerran)
 		{

@@ -16,12 +16,12 @@ namespace scbw
 		this->search(left, top, right, bottom);
 	}
 
-	s32 UnitFinder::getUnitCount() const
+	s32 UnitFinder::get_unit_count() const
 	{
 		return this->unitCount;
 	}
 
-	s32 UnitFinder::getUnitCount(UnitFinderCallbackMatchInterface callback) const
+	s32 UnitFinder::get_unit_count(UnitFinderCallbackMatchInterface callback) const
 	{
 		s32 count = 0;
 		for (Unit* unit : units)
@@ -31,7 +31,7 @@ namespace scbw
 		return count;
 	}
 
-	Unit* UnitFinder::getUnit(s32 index) const
+	Unit* UnitFinder::get_unit(s32 index) const
 	{
 		if (0 <= index && index <= this->unitCount)
 			return this->units[index];
@@ -658,9 +658,9 @@ namespace scbw
 	s32 UnitFinder::getMatchUnitCount(UnitFinderCallbackMatchInterface callback)
 	{
 		s32 count = 0;
-		for (s32 i = 0; i < this->getUnitCount(); ++i)
+		for (s32 i = 0; i < this->get_unit_count(); ++i)
 		{
-			if (callback(this->getUnit(i)))
+			if (callback(this->get_unit(i)))
 			{
 				count++;
 			}
@@ -671,9 +671,9 @@ namespace scbw
 	UnitFinder& UnitFinder::filter(scbw::UnitFinderCallbackMatchInterface callback)
 	{
 		s32 newUnitCount = 0;
-		for (s32 i = 0; i < this->getUnitCount(); ++i)
+		for (s32 i = 0; i < this->get_unit_count(); ++i)
 		{
-			Unit* unit = this->getUnit(i);
+			Unit* unit = this->get_unit(i);
 			if (callback(unit))
 			{
 				units[newUnitCount++] = unit;
@@ -685,18 +685,18 @@ namespace scbw
 
 	void UnitFinder::for_each(scbw::UnitFinderCallbackProcInterface callback) const
 	{
-		for (s32 i = 0; i < this->getUnitCount(); ++i)
+		for (s32 i = 0; i < this->get_unit_count(); ++i)
 		{
-			callback(this->getUnit(i));
+			callback(this->get_unit(i));
 		}
 	}
 
 	std::vector<Unit*> UnitFinder::getAllUnits()
 	{
 		std::vector<Unit*> vec;
-		for (s32 i = 0; i < this->getUnitCount(); ++i)
+		for (s32 i = 0; i < this->get_unit_count(); ++i)
 		{
-			vec.push_back(this->getUnit(i));
+			vec.push_back(this->get_unit(i));
 		}
 		return vec;
 	}
@@ -704,9 +704,9 @@ namespace scbw
 	Unit* UnitFinder::getFirst(UnitFinderCallbackMatchInterface callback) const
 	{
 
-		for (s32 i = 0; i < this->getUnitCount(); ++i)
-			if (callback(this->getUnit(i)))
-				return this->getUnit(i);
+		for (s32 i = 0; i < this->get_unit_count(); ++i)
+			if (callback(this->get_unit(i)))
+				return this->get_unit(i);
 
 		return nullptr;
 
@@ -718,14 +718,14 @@ namespace scbw
 		s32 bestScore = -1;
 		Unit* bestUnit = nullptr;
 
-		for (s32 i = 0; i < this->getUnitCount(); ++i)
+		for (s32 i = 0; i < this->get_unit_count(); ++i)
 		{
 
-			const s32 score = callback(this->getUnit(i));
+			const s32 score = callback(this->get_unit(i));
 
 			if (score > bestScore)
 			{
-				bestUnit = this->getUnit(i);
+				bestUnit = this->get_unit(i);
 				bestScore = score;
 			}
 

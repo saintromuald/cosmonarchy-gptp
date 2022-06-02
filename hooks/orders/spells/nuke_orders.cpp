@@ -101,7 +101,7 @@ namespace hooks
 			unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 		}
 
-		sightRange = unit->getSightRange(false) * 32;
+		sightRange = unit->get_sight_range(false) * 32;
 
 		if (unit->unit_ai != nullptr)
 		{

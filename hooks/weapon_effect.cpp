@@ -145,9 +145,9 @@ namespace hooks
 		{
 			helper::weaponBulletShot(guaranteedHit, bullet, 1);
 		}
-		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
 		{
-			Unit* target = unitsInSplash.getUnit(i);
+			Unit* target = unitsInSplash.get_unit(i);
 			if (hasGuaranteedHitUnit && target == guaranteedHit)
 			{ // skips target check if hasGuaranteedHitUnit is unset, just for little bit of performance
 				continue; // guaranteed hit unit was already damaged before splash!
@@ -288,9 +288,9 @@ namespace hooks
 		// Get units within the outer splash radius
 		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 
-		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
 		{
-			Unit* target = unitsInSplash.getUnit(i);
+			Unit* target = unitsInSplash.get_unit(i);
 
 			// Units can't splash themselves
 			if (target == bullet->sourceUnit) continue;
@@ -501,12 +501,12 @@ namespace hooks
 		darkSwarmDamage(x, y, r, bullet, weaponId);
 
 		s32 result;
-		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
 		{
 			// airSplashProc
 			s8 weaponIdLoop;
 			s32 listCount;
-			Unit* target = unitsInSplash.getUnit(i);
+			Unit* target = unitsInSplash.get_unit(i);
 
 			weaponIdLoop = bullet->weaponId;
 			if (target != bullet->sourceUnit && (target->player != bullet->srcPlayer || target == bullet->attackTarget.unit))
@@ -624,10 +624,10 @@ namespace hooks
 		y = bullet->sprite->position.y;
 		r = weapons_dat::OuterSplashRadius[WeaponId::LobotomyMineExplosion];
 		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
-		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
 		{
-			Unit* target = unitsInSplash.getUnit(i);
-			if (!target->isDead()
+			Unit* target = unitsInSplash.get_unit(i);
+			if (!target->is_dead()
 				&& !units_dat::GroupFlags[target->id].isBuilding
 				&& !(units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
 				&& target->id != UnitId::TerranSpiderMine

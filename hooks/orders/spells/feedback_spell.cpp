@@ -12,7 +12,7 @@ namespace hooks
 			&& !(target->status & UnitStatus::IsHallucination))
 		{
 			u16 techCost;
-			s32 sightRange = unit->getSightRange(true);
+			s32 sightRange = unit->get_sight_range(true);
 			if (helper::spell_order(unit, TechId::Feedback, &techCost, sightRange * 32, 0x532)) // Must target units with energy
 			{
 				if (target->status & UnitStatus::IsHallucination)
@@ -37,7 +37,7 @@ namespace hooks
 						unit->spend_unit_energy(techCost);
 						helper::play_sound_from_unit(SoundId::Protoss_Darchon_feedback_wav, target, 1, 0);
 
-						if (!target->isDead())
+						if (!target->is_dead())
 						{
 							u8 overlaySize = scbw::has_overlay(target);
 							if (target->subunit != nullptr)

@@ -102,9 +102,9 @@ namespace AI
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
 		s32 totalEnemyLife = 0;
-		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
+		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
-			Unit* target = unitStatTotalFinder.getUnit(i);
+			Unit* target = unitStatTotalFinder.get_unit(i);
 			if ((target != caster) &&
 				!(target->status & UnitStatus::Invincible) &&
 				scbw::can_weapon_target_unit(weaponId, target, caster) &&
@@ -141,9 +141,9 @@ namespace AI
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
 		s32 totalAllyLife = 0;
-		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
+		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
-			Unit* target = unitStatTotalFinder.getUnit(i);
+			Unit* target = unitStatTotalFinder.get_unit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
 				scbw::can_weapon_target_unit(weaponId, target, caster) &&
 				!caster->isTargetEnemy(target))
@@ -161,9 +161,9 @@ namespace AI
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
 		s32 totalEnemyShields = 0;
-		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
+		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
-			Unit* target = unitStatTotalFinder.getUnit(i);
+			Unit* target = unitStatTotalFinder.get_unit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
 				caster->isTargetEnemy(target) &&
 				units_dat::ShieldsEnabled[target->id])
@@ -181,9 +181,9 @@ namespace AI
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
 		s32 totalEnemyEnergy = 0;
-		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
+		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
-			Unit* target = unitStatTotalFinder.getUnit(i);
+			Unit* target = unitStatTotalFinder.get_unit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
 				caster->isTargetEnemy(target) &&
 				target->is_valid_caster())
@@ -203,9 +203,9 @@ namespace AI
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
 		s32 totalNukeTargetValue = 0;
-		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount() && totalNukeTargetValue < 800; ++i)
+		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count() && totalNukeTargetValue < 800; ++i)
 		{
-			Unit* target = unitStatTotalFinder.getUnit(i);
+			Unit* target = unitStatTotalFinder.get_unit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
 				caster->isTargetEnemy(target))
 			{

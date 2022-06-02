@@ -478,7 +478,7 @@ namespace hooks
 					{
 						unit->status |= UnitStatus::Invincible;
 
-						auto match = cosmonarchyFinderMatch(unit, Flags::NoAir | Flags::Enemy, {});
+						auto match = cosmonarchy_finder_match(unit, Flags::NoAir | Flags::Enemy, {});
 						const u32 radius = 64;
 						scbw::UnitFinder(
 							unit->get_x() - radius,

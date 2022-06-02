@@ -280,7 +280,7 @@ u8 Unit::get_seek_range() const
 }
 
 extern const u32 Func_GetSightRange = 0x004E5B40;
-u32 Unit::getSightRange(bool isForSpellCasting) const
+u32 Unit::get_sight_range(bool isForSpellCasting) const
 {
 	assert(this);
 
@@ -1408,7 +1408,7 @@ bool Unit::give_to(u8 playerId)
 }
 
 // Identical to function @ 00475A50
-bool Unit::isDead() const
+bool Unit::is_dead() const
 {
 	assert(this);
 	return (!this->sprite) || (this->mainOrderId == OrderId::Die);

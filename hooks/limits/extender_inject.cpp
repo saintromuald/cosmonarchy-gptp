@@ -306,7 +306,7 @@ namespace hooks
 		static u32 playerMul;
 		static u32 player;
 		static u32 index;
-		static u32 getUnit;
+		static u32 get_unit;
 		__asm {
 			MOV playerMul, EDX
 			MOV index, EAX
@@ -314,11 +314,11 @@ namespace hooks
 		}
 		assert(index < ATTACK_LIMIT);
 		player = playerMul / (sizeof(AI_Main) / 2);
-		//		getUnit = AIScriptController[player].attackers[index];
-		getUnit = globals.attackers.attacks[player][index];
+		//		get_unit = AIScriptController[player].attackers[index];
+		get_unit = globals.attackers.attacks[player][index];
 		__asm {
 			POPAD
-			MOV ECX, getUnit
+			MOV ECX, get_unit
 			JMP AIAddAttackTo_LastJmp
 		}
 	}

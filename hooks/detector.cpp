@@ -45,7 +45,7 @@ namespace hooks
 				}
 				else
 				{
-					detectionRange = 32 * detector->getSightRange(false);
+					detectionRange = 32 * detector->get_sight_range(false);
 				}
 				if (detector->is_target_within_min_range(target, detectionRange))
 				{

@@ -12,7 +12,7 @@
 
 namespace hooks
 {
-	f64 getSpeedMultiplier(Unit* unit)
+	f64 get_speed_multiplier(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -66,9 +66,9 @@ namespace hooks
 		}
 
 		// Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
-		if (captivatingClawsGetTimer(unit) > 0)
+		if (captivating_claws_get_timer(unit) > 0)
 		{
-			speed *= 1 - 0.25 * captivatingClawsGetStacks(unit);
+			speed *= 1 - 0.25 * captivating_claws_get_stacks(unit);
 		}
 
 		// Keskathalor Caustic Discharge: Speed Buff
@@ -80,13 +80,13 @@ namespace hooks
 		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
 		{
 			auto r = 10 * 32;
-			auto n = cosmonarchyFinderMatch(unit, Flags::Ally | Flags::FrontalArc, {UnitId::ZergZoryusthaleth});
+			auto n = cosmonarchy_finder_match(unit, Flags::Ally | Flags::FrontalArc, {UnitId::ZergZoryusthaleth});
 			scbw::UnitFinder unitsInFinder(unit->get_x() - r, unit->get_y() - r,
 				unit->position.x + r, unit->position.y + r);
 			bool accelerate = false;
-			for (s32 i = 0; i < unitsInFinder.getUnitCount(); i++)
+			for (s32 i = 0; i < unitsInFinder.get_unit_count(); i++)
 			{
-				auto picked_unit = unitsInFinder.getUnit(i);
+				auto picked_unit = unitsInFinder.get_unit(i);
 				if (n(picked_unit))
 				{
 					UnitExt* pickedExt = globals.get_unit_ext(picked_unit);
@@ -119,7 +119,7 @@ namespace hooks
 		// Hierophant Signify: Cowardice
 		if (unitExt->values[ValueSignifyStacks])
 		{
-			auto match = cosmonarchyFinderMatch(unit, 0, {});
+			auto match = cosmonarchy_finder_match(unit, 0, {});
 			Vector32f dir = scbw::getUnitDirectionVector(unit);
 
 			const u32 radius = 6 * 32;
@@ -189,7 +189,7 @@ namespace hooks
 				// Vorvaling Adrenal Surge: gains f64 movespeed when moving towards enemies
 				if (unit->id == UnitId::ZergVorvrokor)
 				{
-					u32 range = unit->getSightRange(false) * 32;
+					u32 range = unit->get_sight_range(false) * 32;
 					scbw::UnitFinder unitFinder(
 						unit->get_x() - range,
 						unit->get_y() - range,
@@ -304,7 +304,7 @@ namespace hooks
 	}
 
 	/// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
-	u32 getModifiedUnitSpeedHook(Unit* unit, u32 baseSpeed)
+	u32 get_modified_unit_speed(Unit* unit, u32 baseSpeed)
 	{
 		if (unit == nullptr)
 		{
@@ -335,20 +335,16 @@ namespace hooks
 				}
 			}
 		}
-
-		return baseSpeed * getSpeedMultiplier(unit);
+		return baseSpeed * get_speed_multiplier(unit);
 	}
 
-	/// Logically equivalent to getModifiedUnitAcceleration @ 0047B8A0 
-	u32 getModifiedUnitAccelerationHook(Unit* unit)
+	u32 get_modified_unit_acceleration(Unit* unit)
 	{
-		return std::max(scbw::get_flingy_data(FlingyDatEntries::Acceleration, scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
+		return std::max(scbw::get_flingy_data(FlingyDatEntries::Acceleration, scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id)) * get_speed_multiplier(unit), 1.0);
 	}
 
-	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
-	u32 getModifiedUnitTurnSpeedHook(Unit* unit)
+	u32 get_modified_unit_turn_speed(Unit* unit)
 	{
-		return std::max(scbw::get_flingy_data(FlingyDatEntries::TurnRadius, scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
+		return std::max(scbw::get_flingy_data(FlingyDatEntries::TurnRadius, scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id)) * get_speed_multiplier(unit), 1.0);
 	}
-
-} //hooks
+}

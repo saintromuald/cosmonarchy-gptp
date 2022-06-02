@@ -133,7 +133,7 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius)
 			search_pos.y - hostile_group_radius,
 			search_pos.x + hostile_group_radius,
 			search_pos.y + hostile_group_radius
-		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
+		).forEachInMatch(cosmonarchy_finder_match(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
 			[&](Unit* hostileUnit)
 		{
 			u32 strength = 0;
@@ -566,7 +566,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 			unit->get_x() + LocalGroupRadius,
 			unit->get_y() + LocalGroupRadius
 		);
-		local_group.filter(cosmonarchyFinderMatch(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
+		local_group.filter(cosmonarchy_finder_match(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
 		local_group.filter([&](Unit* local_unit){ return unit_could_kite(local_unit); });
 
 		if (unit_kiting_can_attack(unit))
@@ -597,7 +597,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					local_unit_ext->ai_kiting_origin = local_unit->position;
 				}
 
-				auto target_match = cosmonarchyFinderMatch(local_unit, Flags::Enemy, {});
+				auto target_match = cosmonarchy_finder_match(local_unit, Flags::Enemy, {});
 				Unit* best_target = 0;
 				s32 best_cost = INT_MAX;
 				scbw::UnitFinder(
@@ -902,7 +902,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 	{
 		const u32 bunker_capacity = units_dat::SpaceProvided[unit->id];
 
-		UnitArray allies = unit_search_square(unit->position, unit->getSightRange(false) * 32);
+		UnitArray allies = unit_search_square(unit->position, unit->get_sight_range(false) * 32);
 		unit_search_sort_by_distance(&allies, unit->position);
 		UnitArray enemies = allies;
 		unit_search_filter(&allies, unit, FilterAlly);

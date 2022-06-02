@@ -574,7 +574,7 @@ namespace hooks
 				case WeaponId::VorvalingClaws:
 				{
 					// Captivating Claws - Vorvaling behavior
-					captivatingClawsApply(data.attacker, data.target);
+					captivating_claws_apply(data.attacker, data.target);
 				} break;
 				case WeaponId::GorgrokorSerratedCleavers:
 				{

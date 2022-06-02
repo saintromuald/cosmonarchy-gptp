@@ -441,12 +441,12 @@ namespace hooks
 		std::string movementSpeed = ss.str();
 		ss.str("");
 
-		s32 accel = hooks::getModifiedUnitAccelerationHook(unit);
+		s32 accel = hooks::get_modified_unit_acceleration(unit);
 		ss << accel;
 		std::string acceleration = ss.str();
 		ss.str("");
 
-		ss << hooks::getModifiedUnitTurnSpeedHook(unit);
+		ss << hooks::get_modified_unit_turn_speed(unit);
 		std::string turnRate = ss.str();
 		ss.str("");
 
@@ -465,8 +465,8 @@ namespace hooks
 		// Aise Timer + Value
 		addStatus(statuses, "Adrenal Glands", unitExt->values[ValueAdrenalStacks], 4,
 			unitExt->timers[TimerAdrenal], TimerType::Aise);
-		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), 4,
-			captivatingClawsGetTimer(unit), TimerType::Aise);
+		addStatus(statuses, "Captivating Claws", captivating_claws_get_stacks(unit), 4,
+			captivating_claws_get_timer(unit), TimerType::Aise);
 		addStatus(statuses, "Swarming Omen Aura", unitExt->values[ValueSwarmingOmenAbility], 1,
 			unitExt->timers[TimerSwarmingOmen], TimerType::Aise);
 		addStatus(statuses, "Observance", unitExt->values[ValueObservanceRend], 0,

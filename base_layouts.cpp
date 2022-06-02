@@ -36,8 +36,9 @@ static Equivalent equivalents[] = {
 	{UnitId::ZergCreepColony, UnitId::ZergSporeColony, 0, true},
 	{UnitId::ZergCreepColony, UnitId::ZergLarvalColony, 0, true},
 
-	{UnitId::ZergOthstoleth, UnitId::ZergAlaszileth},
+	{UnitId::ZergDroleth, UnitId::ZergGosvileth},
 	{UnitId::ZergOvileth, UnitId::ZergIroleth},
+	{UnitId::ZergOthstoleth, UnitId::ZergAlaszileth},
 
 	{UnitId::ZergZethrokor, UnitId::ZergVorvrokor},
 	{UnitId::ZergQuazilisk, UnitId::ZergLiiralisk},

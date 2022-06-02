@@ -6,7 +6,7 @@ namespace hooks
 {
 	void orders_Hallucination1(Unit* unit)
 	{
-		s32 sightRange = unit->getSightRange(true);
+		s32 sightRange = unit->get_sight_range(true);
 		u16 techCost;
 		if (helper::spell_order(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899))
 		{

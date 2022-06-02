@@ -532,7 +532,7 @@ void Globals::frame_hook()
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damage_with_custom(2500 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
 					});
@@ -555,7 +555,7 @@ void Globals::frame_hook()
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
@@ -571,7 +571,7 @@ void Globals::frame_hook()
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
@@ -589,7 +589,7 @@ void Globals::frame_hook()
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).forEachInMatch(cosmonarchyFinderMatch(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
@@ -607,7 +607,7 @@ void Globals::frame_hook()
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit)
 					{
 						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
@@ -631,7 +631,7 @@ void Globals::frame_hook()
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit)
 					{
 						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
@@ -687,7 +687,7 @@ void Globals::frame_hook()
 						effect->position.y - 40,
 						effect->position.x + 60,
 						effect->position.y + 40
-					).forEachInMatch(cosmonarchyFinderMatch(nullptr, 0, {}), [&](Unit* unit)
+					).forEachInMatch(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.get_unit_ext(unit);
 						unitExt->timers[TimerUnderDisruptionWeb] = 8;
@@ -1261,7 +1261,7 @@ namespace scbw
 			|| unitExt->values[ValueArmorReduce]
 			|| unitExt->values[ValueKelvinMunitionsSlow]
 			|| unitExt->values[ValueSignifyStacks]
-			|| captivatingClawsGetTimer(unit) > 0
+			|| captivating_claws_get_timer(unit) > 0
 			|| unit->irradiateTimer != 0
 			|| unit->ensnareTimer != 0
 			|| unit->lockdownTimer != 0

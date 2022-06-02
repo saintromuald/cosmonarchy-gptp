@@ -335,7 +335,7 @@ void unit_destructor_special_cases(Unit* unit)
 		for (u32 i = 0; i < unit_array.size; ++i)
 		{
 			Unit* caster = unit_array.units[i];
-			if (scbw::get_distance_fast(unit->position, caster->position) <= caster->getSightRange() * 32)
+			if (scbw::get_distance_fast(unit->position, caster->position) <= caster->get_sight_range() * 32)
 			{
 				caster->healEnergy(5 * 256);
 			}

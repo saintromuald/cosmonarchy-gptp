@@ -512,7 +512,6 @@ namespace hooks
 						unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 					}
 				}
-
 				if (unitExt->timers[TimerCorpseCocoonHatch] == 1 + 19) {
 					unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
 				}
@@ -533,13 +532,13 @@ namespace hooks
 				if (unitExt->timers[TimerStarSovereignInterventionMissiles] == 0)
 				{
 					auto r = 5 * 32;
-					auto n = cosmonarchyFinderMatch(unit, Flags::Enemy | Flags::FrontalArc, {});
+					auto n = cosmonarchy_finder_match(unit, Flags::Enemy | Flags::FrontalArc, {});
 					scbw::UnitFinder unitsInFinder(unit->get_x() - r, unit->get_y() - r,
 						unit->position.x + r, unit->position.y + r);
 					bool enemiesDetected = false;
-					for (s32 i = 0; i < unitsInFinder.getUnitCount(); i++)
+					for (s32 i = 0; i < unitsInFinder.get_unit_count(); i++)
 					{
-						auto picked_unit = unitsInFinder.getUnit(i);
+						auto picked_unit = unitsInFinder.get_unit(i);
 						if (n(picked_unit))
 						{
 							enemiesDetected = true;
@@ -655,12 +654,12 @@ namespace hooks
 					// Cast Lazarus Agent						
 					unit->spend_unit_energy(techdata_dat::EnergyCost[TechId::ApostleLazarusAgent] * 256);
 					auto r = 4 * 32;
-					auto n = cosmonarchyFinderMatch(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar, {});
+					auto n = cosmonarchy_finder_match(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar, {});
 					scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r,
 						unit->position.x + r, unit->position.y + r);
-					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+					for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
 					{
-						auto picked_unit = unitsInSplash.getUnit(i);
+						auto picked_unit = unitsInSplash.get_unit(i);
 						if (n(picked_unit))
 						{
 							// Apply Lazarus Agent
@@ -1054,7 +1053,7 @@ namespace hooks
 				u32 radius = 4 * 32;
 				if (!unitExt->values[ValueReviveStarted])
 				{
-					auto match = cosmonarchyFinderMatch(unit, flags, {});
+					auto match = cosmonarchy_finder_match(unit, flags, {});
 					scbw::UnitFinder(
 						unit->get_x() - radius,
 						unit->get_y() - radius,
@@ -1069,7 +1068,7 @@ namespace hooks
 			case UnitId::ProtossAnthelion:
 			{
 				u32 attackRadius = 10 * 32;
-				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
+				auto match = cosmonarchy_finder_match(unit, Flags::Enemy, {});
 				bool attacked = false;
 				scbw::UnitFinder(
 					unit->get_x() - attackRadius,
@@ -1153,7 +1152,7 @@ namespace hooks
 			{
 				// Observance - Seraph ability
 				u32 radius = 6 * 32;
-				auto match = cosmonarchyFinderMatch(unit, Flags::Enemy, {});
+				auto match = cosmonarchy_finder_match(unit, Flags::Enemy, {});
 				bool attacked = false;
 				scbw::UnitFinder(
 					unit->get_x() - radius,
@@ -1483,7 +1482,7 @@ namespace hooks
 					unit->get_y() - radius,
 					unit->get_x() + radius,
 					unit->get_y() + radius
-				).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::NotSelf, {}), [&](Unit* target)
+				).forEachInMatch(cosmonarchy_finder_match(unit, Flags::NotSelf, {}), [&](Unit* target)
 				{
 					target->damage_with_custom(5 * 256, DamageType::Explosive, nullptr, 0, 0, 1, false);
 				});
@@ -1704,7 +1703,7 @@ namespace hooks
 		{
 			if (unit->mainOrderId != OrderId::AttackUnit)
 			{
-				auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf, {});
+				auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
 				const u32 radius = unit->get_seek_range() * 32;
 				Unit* target = scbw::UnitFinder::getNearestTarget(
 					unit->get_x() - radius,
@@ -1882,7 +1881,7 @@ namespace hooks
 		// Emergency Detonation - destroy structure
 		if (unitExt->timers[TimerEmergencyDetonation] == 1)
 		{
-			auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf, {});
+			auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
 			const u32 radius = 3 * 32;
 			scbw::UnitFinder(
 				unit->get_x() - radius,

@@ -13,7 +13,7 @@ namespace
 			MOV speed, EAX
 			PUSHAD
 		}
-		speed = hooks::getModifiedUnitSpeedHook(unit, speed);
+		speed = hooks::get_modified_unit_speed(unit, speed);
 		__asm
 		{
 			POPAD
@@ -31,7 +31,7 @@ namespace
 			MOV unit, ECX
 			PUSHAD
 		}
-		acceleration = hooks::getModifiedUnitAccelerationHook(unit);
+		acceleration = hooks::get_modified_unit_acceleration(unit);
 		__asm
 		{
 			POPAD
@@ -49,7 +49,7 @@ namespace
 			MOV unit, ECX
 			PUSHAD
 		}
-		turnSpeed = hooks::getModifiedUnitTurnSpeedHook(unit);
+		turnSpeed = hooks::get_modified_unit_turn_speed(unit);
 		__asm
 		{
 			POPAD

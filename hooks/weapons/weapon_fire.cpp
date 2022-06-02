@@ -100,7 +100,7 @@ namespace hooks
 		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
 		{
 			u32 range = hooks::getMaxWeaponRangeHook(attacker, weaponId, 0);
-			auto filter = cosmonarchyFinderMatch(attacker, flags, {});
+			auto filter = cosmonarchy_finder_match(attacker, flags, {});
 			Unit* newTarget = scbw::UnitFinder::getNearestTarget(
 				attacker->get_x() - range,
 				attacker->get_y() - range,
@@ -520,9 +520,9 @@ namespace hooks
 					scbw::UnitFinder unitsInSplash(bullet->position.x - r, bullet->position.y - r,
 						bullet->position.x + r, bullet->position.y + r);
 					globals.add_multihit_empty_bullet(bullet, 1);
-					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+					for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
 					{
-						Unit* target = unitsInSplash.getUnit(i);
+						Unit* target = unitsInSplash.get_unit(i);
 						if (target == nullptr)
 						{
 							continue;

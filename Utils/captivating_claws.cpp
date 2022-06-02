@@ -2,19 +2,19 @@
 #include "globals.h"
 #include <algorithm>
 
-u32 captivatingClawsGetStacks(Unit* target)
+u32 captivating_claws_get_stacks(Unit* target)
 {
 	UnitExt* targetExt = globals.get_unit_ext(target);
 	return std::min(targetExt->unit_vectors[UnitVectorCaptivatingClaws].size(), (u32)4);
 }
 
-u32 captivatingClawsGetTimer(Unit* target)
+u32 captivating_claws_get_timer(Unit* target)
 {
 	UnitExt* targetExt = globals.get_unit_ext(target);
 	return targetExt->timers[TimerCaptivatingClaws];
 }
 
-void captivatingClawsApply(Unit* source, Unit* target)
+void captivating_claws_apply(Unit* source, Unit* target)
 {
 	UnitExt* targetExt = globals.get_unit_ext(target);
 	targetExt->timers[TimerCaptivatingClaws] = 1 * 24 + 1;

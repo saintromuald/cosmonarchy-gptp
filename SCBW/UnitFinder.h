@@ -36,9 +36,9 @@ namespace scbw {
 
 		template<typename Func>
 		void forEachInMatch(UnitFinderCallbackMatchInterface callback, Func f) {
-			for (s32 i = 0; i < this->getUnitCount(); ++i) {
-				if (callback(this->getUnit(i))) {
-					f(this->getUnit(i));
+			for (s32 i = 0; i < this->get_unit_count(); ++i) {
+				if (callback(this->get_unit(i))) {
+					f(this->get_unit(i));
 				}
 			}
 		}
@@ -57,11 +57,11 @@ namespace scbw {
 
 		/// Returns the number of units found by UnitFinder::search() call.
 		/// If no searches have been conducted, returns 0.
-		s32 getUnitCount() const;
-		s32 UnitFinder::getUnitCount(UnitFinderCallbackMatchInterface matchInterface) const;
+		s32 get_unit_count() const;
+		s32 UnitFinder::get_unit_count(UnitFinderCallbackMatchInterface matchInterface) const;
 
 		/// Returns the unit at the given index. Invalid index returns nullptr instead.
-		Unit* getUnit(s32 index) const;
+		Unit* get_unit(s32 index) const;
 
 		/// Searches the area given by (@p left, @p top, @p right, @p bottom),
 		/// returning the nearest unit to @p sourceUnit for which match(unit)

@@ -15,7 +15,7 @@ namespace hooks
 			u16 techEnergyCost = 0;
 			// Energy cost is initialized in this function
 			// Corresponding error message is "Invalid Target"
-			if (helper::spell_order(unit, TechId::MindControl, &techEnergyCost, unit->getSightRange(true) * 32, 0x052E)) {
+			if (helper::spell_order(unit, TechId::MindControl, &techEnergyCost, unit->get_sight_range(true) * 32, 0x052E)) {
 				// Channel
 				if (!unit->mainOrderState) {
 					unit->play_iscript_animation(IscriptAnimation::Unused2);

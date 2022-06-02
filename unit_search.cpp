@@ -115,7 +115,7 @@ UnitArray unit_search_rect(Box32 rect)
 				for (u32 i = 0; i < current_array->size; i++)
 				{
 					Unit* unit = current_array->units[i];
-					if (unit->isDead()) {
+					if (unit->is_dead()) {
 						continue;
 					}
 					if (!tileIsFullyCovered && !is_point_in_rect(unit->position, rect))
@@ -179,7 +179,7 @@ UnitArray unit_search_radial(Point16 center, u32 radius)
 				for (u32 i = 0; i < current_array->size; i++)
 				{
 					Unit* unit = current_array->units[i];
-					if (unit->isDead()) {
+					if (unit->is_dead()) {
 						continue;
 					}
 					if (!tileIsFullyCovered && scbw::get_distance_fast(center, unit->position) > radius)

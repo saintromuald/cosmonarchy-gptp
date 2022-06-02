@@ -534,7 +534,7 @@ struct UnitLayout
 															0x20 - Bactalisk attack (unused)
 														*/
 	/*0x050*/ u16       orderUnitType;
-	/*0x052*/ u8		eggOrigin;						// was _unknown_0x052
+	/*0x052*/ u8		egg_origin;						// was _unknown_0x052
 	/*0x053*/ u8		newFlags2;						// split from _unknown_0x052
 														// 0x1  - unused
 														// 0x2	- unused

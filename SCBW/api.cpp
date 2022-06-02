@@ -57,7 +57,7 @@ namespace scbw
 
 		if (!scbw::check_unit_collision_pos(u, &(u->sprite->position), &new_pos, nullptr, false, 0))
 		{
-			//collision detected, cancel the movement
+			// collision detected, cancel the movement
 			scbw::set_unit_position(u, previous_pos.x, previous_pos.y);
 		}
 		else
@@ -483,7 +483,7 @@ namespace scbw
 	{
 		if (unit->id == UnitId::ZergEgg)
 		{
-			u8 origin = unit->eggOrigin;
+			u8 origin = unit->egg_origin;
 			if (origin == UnitId::ZergLarva)
 			{
 				return true;
@@ -507,7 +507,7 @@ namespace scbw
 		{
 			case UnitId::ZergEgg:
 			{
-				if (unit && !allow_larval_eggs && unit->eggOrigin == UnitId::ZergLarva)
+				if (unit && !allow_larval_eggs && unit->egg_origin == UnitId::ZergLarva)
 				{
 					return false;
 				}
@@ -919,7 +919,7 @@ namespace scbw
 				unit->get_top(),
 				unit->get_right(),
 				unit->get_bottom()
-			).getFirst(cosmonarchyFinderMatch(unit, Flags::NotSelf | Flags::NoAir, {}));
+			).getFirst(cosmonarchy_finder_match(unit, Flags::NotSelf | Flags::NoAir, {}));
 
 			if (collision)
 			{
@@ -1818,7 +1818,7 @@ namespace scbw
 			unit->get_y() - radius,
 			unit->get_x() + radius,
 			unit->get_y() + radius
-		).forEachInMatch(cosmonarchyFinderMatch(unit, Flags::IncludingSelf, {}),
+		).forEachInMatch(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}),
 			[&unitExt](Unit* target)
 		{
 			target->damage_with_custom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
@@ -1859,7 +1859,7 @@ namespace scbw
 		u32 allyCount = 0;
 		u32 enemyCount = 0;
 
-		auto match = cosmonarchyFinderMatch(unit, Flags::NotSelf, {});
+		auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
 		const u32 radius = 5 * 32;
 		scbw::UnitFinder(
 			unit->get_x() - radius,

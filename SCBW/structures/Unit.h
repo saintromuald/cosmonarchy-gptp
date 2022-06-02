@@ -112,7 +112,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the sight range of this unit (with upgrades).
 	/// If @p isForSpellCasting is true, also factors in status effects.
-	u32 getSightRange(bool isForSpellCasting = false) const;
+	u32 get_sight_range(bool isForSpellCasting = false) const;
 
 	///Return true if:
 	/// * THE GATHERING cheat is enabled or
@@ -410,7 +410,7 @@ struct Unit : public UnitLayout
 
 	/// Checks if the unit has an associated sprite and is not running the
 	/// OrderId::Die order.
-	bool isDead() const;
+	bool is_dead() const;
 
 	/// Checks whether the @p target unit is an enemy of this unit.
 	/// Internally, this calls scbw::isUnitEnemy().
