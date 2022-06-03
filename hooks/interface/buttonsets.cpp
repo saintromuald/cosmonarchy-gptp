@@ -1607,7 +1607,7 @@ namespace hooks
 							stack_placeholder.mouseX = mouse->x;
 							stack_placeholder.buttonState = current_button_state;
 							stack_placeholder.buttonset = current_buttonset;
-							helper::fxnInteract(current_dialog, (u32)&stack_placeholder);
+							helper::fxn_interact(current_dialog, (u32)&stack_placeholder);
 							current_button_state = stack_placeholder.buttonState;
 						}
 						// 0045930B

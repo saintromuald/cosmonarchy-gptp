@@ -405,8 +405,8 @@ SCBW_DATA(Unit**,	firstInvisibleUnit,			0x0063FF5C);
 SCBW_DATA(s32*,		forceButtonRefresh,			0x0068C1B0);
 SCBW_DATA(s8*,		portraitRedraw,				0x0068AC74); // sizeof 4
 SCBW_DATA(s8*,		statusScreenRedraw,			0x0068C1F8);
-SCBW_DATA(s32*,		ctrlUnderMouse,				0x0068C1E8);
-SCBW_DATA(s32*,		ctrlUnderMouseValue,		0x0068C1EC); // void* in Neiv's list
+SCBW_DATA(BinDlg**,	control_under_mouse,		0x0068C1E8);
+SCBW_DATA(BinDlg**,	control_under_mouse_value,	0x0068C1EC); // void* in Neiv's list
 
 // For update_units
 SCBW_DATA(s32*,		interceptorFocusedThisFrame,		0x006957D0);

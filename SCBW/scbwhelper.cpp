@@ -4706,7 +4706,7 @@ namespace helper
 
 	// for CMDRECV_HoldPosition
 
-	Unit* getActivePlayerFirstSelection()
+	Unit* get_active_player_first_selection()
 	{
 		const u32 Func_getActivePlayerFirstSelection = 0x0049A850;
 		static Unit* result;
@@ -7359,7 +7359,7 @@ namespace helper
 		}
 	}
 
-	void* SMemAlloc(u32 amount, u32 unkFilename, u32 unkLine, u32 defaultValue)
+	void* SMemAlloc(u32 amount, char* unkFilename, u32 unkLine, u32 defaultValue)
 	{
 		const u32 Func_SMemAlloc = 0x0041006A;
 		static void* pointer_on_allocated_memory;
@@ -7377,7 +7377,7 @@ namespace helper
 	}
 
 	// Likely to call SMemAlloc!
-	void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3)
+	void set_callback_timer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3)
 	{
 		const u32 Func_SetCallbackTimer = 0x00416090;
 		__asm
@@ -7392,7 +7392,7 @@ namespace helper
 		}
 	}
 
-	void removeFromSelections(Unit* unit)
+	void remove_from_selections(Unit* unit)
 	{
 		const u32 Func_removeFromSelections = 0x0049A7F0;
 		__asm
@@ -7404,18 +7404,18 @@ namespace helper
 		}
 	}
 
-	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset)
+	u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset)
 	{
 		static u32 return_value;
-		static u32 fxnInteract;
-		fxnInteract = (u32)dialog->fxnInteract;
+		static u32 fxn_interact;
+		fxn_interact = (u32)dialog->fxn_interact;
 		__asm
 		{
 			PUSHAD
 			MOV ESI, dialog // possibly useless, but just in case
 			MOV ECX, dialog
 			MOV EDX, data_struct_offset
-			CALL fxnInteract
+			CALL fxn_interact
 			MOV return_value, EAX
 			POPAD
 		}
@@ -8417,7 +8417,7 @@ namespace helper
 		}
 	}
 
-	s16 CreateTooltip(char* text)
+	s16 create_tooltip(char* text)
 	{
 		const u32 Func_CreateTooltip = 0x004591A6;
 		static s16 result;
@@ -8432,7 +8432,7 @@ namespace helper
 		return result;
 	}
 
-	char refreshSelectionScreen()
+	char refresh_selection_screen()
 	{
 		const u32 Func_refreshSelectionScreen = 0x00481480;
 		static char result;
@@ -9695,10 +9695,11 @@ namespace helper
 		}
 		return result;
 	}
+	*/
 
 	bool SMemFree(void* location, char* logFileName, s32 logLine, char defaultValue)
 	{
-		static s32 result;
+		static bool result;
 		const u32 Func_SMemFree = 0x00410070;
 		__asm
 		{
@@ -9708,12 +9709,13 @@ namespace helper
 			PUSH logFileName
 			PUSH location
 			CALL Func_SMemFree
-			MOV result, EAX
+			MOV result, AL
 			POPAD
 		}
-		return (bool)result;
+		return result;
 	}
 
+	/*
 	u32 getSoundDuration(s32 a1)
 	{
 		static u32 result;
@@ -10571,7 +10573,7 @@ namespace helper
 		}
 	}
 
-	s32 send_input_to_all_dialogs(dlgEvent* dlg_event) {
+	s32 send_input_to_all_dialogs(DialogEvent* dlg_event) {
 		static s32 result;
 		const u32 func_address = 0x00419FD0;
 		__asm {
@@ -11844,5 +11846,47 @@ namespace helper
 			call func_address
 			POPAD
 		}
+	}
+
+	s32 stat_data_unit_wireframe_select_update(BinDlg* dialog, Event* event_arg) {
+		static s32 result;
+		const u32 func_address = 0x00456F50;
+		__asm {
+			PUSHAD
+			MOV EDX, event_arg
+			MOV ECX, dialog
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char status_screen_update_tooltip_mouse_held(BinDlg* dialog, Event* dialog_event) {
+		static char result;
+		const u32 func_address = 0x00457DE0;
+		__asm {
+			PUSHAD
+			PUSH dialog_event
+			MOV ESI, dialog
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	u32 status_screen_button(BinDlg* dialog_1, BinDlg* dialog_2) {
+		static u32 result;
+		const u32 func_address = 0x00458220;
+		__asm {
+			PUSHAD
+			MOV EDX, dialog_2
+			MOV ECX, dialog_1
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

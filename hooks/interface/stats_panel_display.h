@@ -15,6 +15,7 @@ namespace hooks
 	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply);	// 00458800
 	void set_tooltip_info_unit(u32 unit_id);                                                                                                    // 00459531
 	void draw_tooltip_with_icon(Box16* area);																									// 00458EF0
+	s32 stat_data_unit_wireframe_selection(BinDlg* dialog, Event* event_arg);																	// 004583E0
 
 	void injectStatsPanelDisplayHook();
 }

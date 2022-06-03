@@ -15,7 +15,7 @@ namespace
 			MOV dlgFunc, EAX
 			PUSHAD
 		}
-		hooks::InitializeDialog(dialog, dlgFunc);
+		hooks::initialize_dialog(dialog, dlgFunc);
 		__asm
 		{
 			POPAD
@@ -34,7 +34,7 @@ namespace
 			MOV unit, ECX
 			PUSHAD
 		}
-		if (hooks::unit_IsStandardAndMovableHook(unit))
+		if (hooks::unit_is_standard_and_movable(unit))
 		{
 			result = 1;
 		}
@@ -54,7 +54,7 @@ namespace
 	{
 		static Unit* unit;
 		__asm PUSHAD
-		unit = hooks::getActivePlayerFirstSelection();
+		unit = hooks::get_active_player_first_selection();
 		__asm
 		{
 			POPAD

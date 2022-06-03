@@ -234,13 +234,13 @@ LABEL_15:
 		{
 			if (text)
 			{
-				return helper::CreateTooltip(text);
+				return helper::create_tooltip(text);
 			}
-			return helper::refreshSelectionScreen();
+			return helper::refresh_selection_screen();
 		}
 		if (!text)
 		{
-			return helper::refreshSelectionScreen();
+			return helper::refresh_selection_screen();
 		}
 		const char* description;
 		if (**statTxtBuffer > 794u)
@@ -254,7 +254,7 @@ LABEL_15:
 		char buffer[128];
 		sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)*upgradeLevelTooltip);
 		scbw::printf("%s", buffer);
-		return helper::CreateTooltip(buffer);
+		return helper::create_tooltip(buffer);
 	}
 
 	// TODO: Hook 004593A0 for time icon/cost on tooltip (and removing supply icon from tooltip)

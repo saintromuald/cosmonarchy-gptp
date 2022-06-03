@@ -525,7 +525,7 @@ namespace helper
 	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80
 
 	// for CMDRECV_HoldPosition
-	Unit* getActivePlayerFirstSelection();																							// 0049A850
+	Unit* get_active_player_first_selection();																							// 0049A850
 	s32 orderAllowed(Unit* a1, u16 a2, s32 a3);																						// 0046DC20
 	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
 
@@ -861,17 +861,17 @@ namespace helper
 	Image* CreateHealthBar(s32 a1, Sprite* a2);
 	void RemoveHPBar(Image* a1);
 	void refund_all_queue_slots(Unit* unit);
-	void* SMemAlloc(u32 amount, u32 unkFilename, u32 unkLine, u32 defaultValue);	                    // 0041006A (based on Storm.dll definition)
-	void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);			                    // 00416090
-	void removeFromSelections(Unit* unit);																// 0049A7F0
-	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);
-	void register_user_dialog_action(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray);	    // 00418100
-	void enable_control(BinDlg* dialog);																	// 00418E00
-	void replay_stat_buttons(BinDlg* dialog);																// 00427A80
+	void* SMemAlloc(u32 amount, char* unkFilename, u32 unkLine, u32 defaultValue);	                    // 0041006A (based on Storm.dll definition)
+	void set_callback_timer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);			                    // 00416090
+	void remove_from_selections(Unit* unit);																// 0049A7F0
+	u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
+	void register_user_dialog_action(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray);	// 00418100
+	void enable_control(BinDlg* dialog);																// 00418E00
+	void replay_stat_buttons(BinDlg* dialog);															// 00427A80
 	void update_command_card();																			// 004591D0
-	void refresh_button_tooltip();																				// 00459770
+	void refresh_button_tooltip();																		// 00459770
 	void BINDLG_BlitSurface(BinDlg* dialog);															// 004C35F0
-	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);
+	u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
 	s32 req_check(u32 reqFunc, u16 reqVar, u32 playerId, Unit* unit);
 	void updateMineralPatchImage(Unit* mineralPatch);
 	void update_image_position_offset(Image* image);
@@ -902,8 +902,8 @@ namespace helper
 	s32 moveForMeleeRange(Unit* target, Unit* unit);
 
 	// For createUpgradeLevelTooltip
-	s16 CreateTooltip(char* text);																			// 004591A6
-	char refreshSelectionScreen();																			// 00481480
+	s16 create_tooltip(char* text);																			// 004591A6
+	char refresh_selection_screen();																			// 00481480
 
 	// lobby.cpp
 	
@@ -1150,7 +1150,7 @@ namespace helper
 	char check_last_file_error();																				// 004D28D0
 	s32 has_messages_waiting(void* tag_msg, s32 b_something);													// 004D1650
 	void send_mouse_move_event(void* fast_call_func);															// 004D1AE0
-	s32 send_input_to_all_dialogs(dlgEvent* dlg_event);															// 00419FD0
+	s32 send_input_to_all_dialogs(DialogEvent* dlg_event);															// 00419FD0
 	VectorHead* play_briefing_wav_begin();																		// 004BBE50
 	void iterate_timers();																						// 00415DC0
 
@@ -1243,7 +1243,7 @@ namespace helper
 	typedef void main_menu_options_custom_interact_func(BinDlg* control);
 	extern main_menu_options_custom_interact_func* main_menu_options_custom_interact;
 
-	typedef bool __fastcall game_menu_dialog_interact_func(BinDlg* control, dlgEvent dlg_event);
+	typedef bool __fastcall game_menu_dialog_interact_func(BinDlg* control, DialogEvent dlg_event);
 	extern game_menu_dialog_interact_func* game_menu_dialog_interact;
 
 	u32 stop_creep_disappearing(u32 x_tile, u32 y_tile);													// 0047D540
@@ -1301,4 +1301,8 @@ namespace helper
 	bool unit_is_in_notify_range(Unit* unit);																// 004E5AD0
 	u32 reset_all_unit_attack_notify_timers_in_range(Unit* unit);											// 0048EAE0
 	void do_unit_event_notification(Unit* unit, char event_type, u32 timer, bool ping, u32 message_id);		// 0045EFE0
+
+	s32 stat_data_unit_wireframe_select_update(BinDlg* dialog, Event* event_arg);							// 00456F50
+	char status_screen_update_tooltip_mouse_held(BinDlg* dialog, Event* dialog_event);						// 00457DE0
+	u32 status_screen_button(BinDlg* dialog_1, BinDlg* dialog_2);											// 00458220
 }

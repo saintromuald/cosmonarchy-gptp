@@ -231,23 +231,41 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) stat_data_unit_wireframe_selection_wrapper() { // 004583E0
+		static u32 result;
+		static BinDlg* dialog;
+		static Event* event_arg;
+		__asm {
+			MOV event_arg, EDX
+			MOV dialog, ECX
+			PUSHAD
+		}
+		result = hooks::stat_data_unit_wireframe_selection(dialog, event_arg);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectStatsPanelDisplayHook()
 	{
-		jump_patch(stats_panel_display_wrapper,		0x00426C60, 1);
-		jump_patch(get_unit_rank_string_wrapper,	0x0042F370, 2);
-		jump_patch(draw_unit_kills_string_wrapper,	0x00425DD0, 2);
-	//	jump_patch(draw_building_info_wrapper,		0x00427890, 3);
-	//	jump_patch(stats_armor_level_wrapper,		0x00425600, 1);
-	//	jump_patch(stats_weapon_level_wrapper,		0x00425790, 1);
-		jump_patch(get_unit_name_wrapper,			0x0047B5A0, 2);
-	//	jump_patch(reset_tooltip_info_wrapper_1,	0x00459360, 0);
-	//	jump_patch(reset_tooltip_info_wrapper_2,	0x004593B0, 0);
-	//	jump_patch(reset_tooltip_info_wrapper_3,	0x004597D5, 0);
-	//	jump_patch(set_tooltip_info_unit_wrapper,	0x00458800, 2);
-	//	jump_patch(draw_tooltip_with_icon_wrapper,	0x00458EF0, 1);
+		jump_patch(stats_panel_display_wrapper,					0x00426C60, 1);
+		jump_patch(get_unit_rank_string_wrapper,				0x0042F370, 2);
+		jump_patch(draw_unit_kills_string_wrapper,				0x00425DD0, 2);
+	//	jump_patch(draw_building_info_wrapper,					0x00427890, 3);
+	//	jump_patch(stats_armor_level_wrapper,					0x00425600, 1);
+	//	jump_patch(stats_weapon_level_wrapper,					0x00425790, 1);
+		jump_patch(get_unit_name_wrapper,						0x0047B5A0, 2);
+	//	jump_patch(reset_tooltip_info_wrapper_1,				0x00459360, 0);
+	//	jump_patch(reset_tooltip_info_wrapper_2,				0x004593B0, 0);
+	//	jump_patch(reset_tooltip_info_wrapper_3,				0x004597D5, 0);
+	//	jump_patch(set_tooltip_info_unit_wrapper,				0x00458800, 2);
+	//	jump_patch(draw_tooltip_with_icon_wrapper,				0x00458EF0, 1);
+	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,	0x004583E0, 3);
 	}
 }

@@ -443,7 +443,7 @@ LABEL_42:
 		u8 orderId;
 
 		*((s8*)&mapHeightPixels + 2) = 0;
-		result = helper::getActivePlayerFirstSelection();
+		result = helper::get_active_player_first_selection();
 		for (i = result; result; i = result)
 		{
 			unitId = i->id;
@@ -480,7 +480,7 @@ LABEL_42:
 			{
 				helper::targetedOrder(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
 			}
-			result = helper::getActivePlayerFirstSelection();
+			result = helper::get_active_player_first_selection();
 		}
 		return result;
 	}
@@ -628,8 +628,8 @@ LABEL_42:
 			*forceButtonRefresh = 1;
 			portraitRedraw[0] = (s8)1;
 			*statusScreenRedraw = 1;
-			*ctrlUnderMouse = 0;
-			*ctrlUnderMouseValue = 0;
+			*control_under_mouse = 0;
+			*control_under_mouse_value = 0;
 		}
 		return 1;
 	}

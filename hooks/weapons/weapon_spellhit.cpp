@@ -86,8 +86,8 @@ namespace hooks
 			}
 		}
 		unit->currentButtonSet = 228;
-		*ctrlUnderMouse = 0;
-		*ctrlUnderMouseValue = 0;
+		*control_under_mouse = 0;
+		*control_under_mouse_value = 0;
 		*forceButtonRefresh = 1;
 		portraitRedraw[0] = 1;
 		*statusScreenRedraw = 1;

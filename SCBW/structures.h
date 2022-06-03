@@ -108,7 +108,7 @@ struct wStringMap
 	u16		index;				// 0x2
 };
 
-struct dlgEvent
+struct DialogEvent
 {
 	u32		user;				// 0x0
 	u16		field_4;			// 0x4
@@ -540,7 +540,7 @@ struct BinDlg
 		/*0x26*/  u32		nonUserValue;
 	};
 
-	/*0x2A*/  void*			fxnInteract;
+	/*0x2A*/  void*			fxn_interact;
 	/*0x2E*/  void*			fxnUpdate;
 	/*0x32*/  BinDlg*		parent;
 
@@ -1067,6 +1067,15 @@ struct MovementGroup {
 	s16 sqrt_2_times_unit_area_sum;
 	s16 unit_area_sum;
 	s32 flags;
+};
+
+struct Event {
+	u32 extended_command_type;
+	u32 ext_param;
+	u32 value;
+	u16 type;
+	u16 x_pos;
+	u16 y_pos;
 };
 
 #pragma pack()

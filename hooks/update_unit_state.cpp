@@ -761,8 +761,8 @@ namespace hooks
 						*forceButtonRefresh = 1;
 						portraitRedraw[0] = 1;
 						*statusScreenRedraw = 1;
-						*ctrlUnderMouse = 0;
-						*ctrlUnderMouseValue = 0;
+						*control_under_mouse = 0;
+						*control_under_mouse_value = 0;
 					}
 					return;
 				}
@@ -783,8 +783,8 @@ namespace hooks
 			*forceButtonRefresh = 1;
 			portraitRedraw[0] = 1;
 			*statusScreenRedraw = 1;
-			*ctrlUnderMouse = 0;
-			*ctrlUnderMouseValue = 0;
+			*control_under_mouse = 0;
+			*control_under_mouse_value = 0;
 		}
 		if (unitVar->status & UnitStatus::Burrowed)
 		{

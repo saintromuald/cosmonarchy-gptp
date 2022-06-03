@@ -855,8 +855,8 @@ LABEL_18:
 		*forceButtonRefresh = 1;
 		portraitRedraw[0] = 1;
 		*statusScreenRedraw = 1;
-		*ctrlUnderMouse = 0;
-		*ctrlUnderMouseValue = 0;
+		*control_under_mouse = 0;
+		*control_under_mouse_value = 0;
 	}
 
 	// Hooked to add nullcheck - Pr0nogo
