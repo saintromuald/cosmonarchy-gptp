@@ -527,21 +527,21 @@ struct BinDlg
 	/*0x18*/  u32		flags;			// use BinDlgFlags::Enum
 	/*0x1C*/  u32		unk_1c;
 	/*0x20*/  u16		index;
-	/*0x22*/  u16		controlType;	// use DialogControlTypes::Enum
+	/*0x22*/  u16		control_type;	// use DialogControlTypes::Enum
 	/*0x24*/  u16		graphic;
 
 	union
 	{
 		/*0x26*/  u32*		user;
-		/*0x26*/  Unit*		unitUser;
-		/*0x26*/  BinDlg*	dlgUser;
-		/*0x26*/  BUTTON*	buttonUser;
-		StatusScreenState*	statButtonUser; // from Neiv's list
-		/*0x26*/  u32		nonUserValue;
+		/*0x26*/  Unit*		unit_user;
+		/*0x26*/  BinDlg*	dialog_user;
+		/*0x26*/  BUTTON*	button_user;
+		StatusScreenState*	stat_button_user; // from Neiv's list
+		/*0x26*/  u32		non_user_value;
 	};
 
 	/*0x2A*/  void*			fxn_interact;
-	/*0x2E*/  void*			fxnUpdate;
+	/*0x2E*/  void*			fxn_update;
 	/*0x32*/  BinDlg*		parent;
 
 	union {

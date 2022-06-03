@@ -10,7 +10,7 @@ namespace hooks
 		auto activeUnit = *activePortraitUnit;
 		// Originally had code for research, removed
 		sprintf_s(statusscreen_infobtn[index], 8, "%d ", activeUnit->mine_carrier.mine_count);
-		if (dialog->controlType)
+		if (dialog->control_type)
 		{
 			dialog = dialog->parent;
 		}
@@ -34,7 +34,7 @@ namespace hooks
 		}
 		scbw::show_dialog(childDialog);
 		scbw::disable_dialog(childDialog);
-		auto statData = childDialog->statButtonUser;
+		auto statData = childDialog->stat_button_user;
 		auto v7 = *cmdicons_grp;
 		childDialog->graphic = UnitId::TerranLobotomyMine - 1; // or set icon id
 		statData->button_grp = v7;
@@ -265,7 +265,7 @@ namespace hooks
 		}
 
 		// 00426E96
-		if (dialog->controlType == DialogControlTypes::DialogBoxDC)
+		if (dialog->control_type == DialogControlTypes::DialogBoxDC)
 		{
 			current_dialog = dialog;
 		}
@@ -342,7 +342,7 @@ namespace hooks
 			&& unit->playerId == *LOCAL_NATION_ID
 			&& !*IS_IN_REPLAY)
 		{
-			BinDlg* actual_dialog = dialog->controlType ? dialog->parent : dialog;
+			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
 			BinDlg* child = actual_dialog->children_dialog;
 			while (child && child->index != 65515)
 			{
@@ -496,7 +496,7 @@ namespace hooks
 		v3 = dialog;
 		v13 = helper::getArmorCount(*activePortraitUnit, unused);
 		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v13);
-		if (v3->controlType)
+		if (v3->control_type)
 		{
 			v3 = *(BinDlg**)&v3->parent;
 		}
@@ -577,7 +577,7 @@ namespace hooks
 		}
 		v10 = v5;
 		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v5);
-		if (v3->controlType)
+		if (v3->control_type)
 		{
 			v3 = v3->parent;
 		}
@@ -738,7 +738,7 @@ namespace hooks
 		return;
 	}
 
-	// Hooked to help with tooltip debugging. -Pr0nogo
+	// Hooked by accident. -Pr0nogo
 	s32 stat_data_unit_wireframe_selection(BinDlg* dialog, Event* event) { // 004583E0
 		BinDlg* dialog_var = dialog;
 		if (event->type == 3) {
@@ -746,7 +746,7 @@ namespace hooks
 		} else if (event->type == 14) {
 			switch (event->extended_command_type) {
 				case 0: {
-					dialog->fxnUpdate = helper::stat_data_unit_wireframe_select_update;
+					dialog->fxn_update = helper::stat_data_unit_wireframe_select_update;
 					dialog->graphic = 0;
 					dialog->user = (u32*)helper::SMemAlloc(8, "Starcraft\\SWAR\\lang\\statdata.cpp", 775, 0);
 				} break;
@@ -777,7 +777,52 @@ namespace hooks
 				} break;
 			}
 		}
+		return generic_interact_functions[dialog_var->control_type](dialog, event);
+	}
 
-		return generic_interact_functions[dialog_var->controlType](dialog, event);
+	// Hooked to help with tooltip debugging. -Pr0nogo
+	void stat_data_unit_wireframe_select_update(BinDlg* dialog, int unused_1, int unused_2) // 00456F50
+	{
+		BinDlg* dialog_var = dialog;
+		Unit* dialog_unit = dialog->unit_user;
+		Unit* unit_var = dialog_unit;
+		if (dialog_unit->status & UnitStatus::IsHallucination)
+		{
+			dialog->graphic = 31;
+		}
+		else if (units_dat::BaseProperty[unit_var->id] & 0x40)
+		{
+			dialog->graphic = 19;
+		}
+		else
+		{
+			dialog->graphic = unit_var->parasite_flags != 0 ? 25 : 13;
+		}
+		helper::status_screen_draw_stat_button_border(dialog);
+		helper::status_screen_wireframe_coloring_related(unit_var);
+		helper::status_screen_wireframe_shield_related(0, unit_var); // originally passed unused var as first arg
+		helper::status_screen_wireframe_hp_related(unit_var);
+	//	u16 dialog_unit_something = dialog_unit[2];
+		/*
+		if (dialog_unit_something >= (*off_68C1FC & 0x7FFF))
+		{
+			dialog_unit_something = 0;
+		}
+		u32 wtf = *(off_68C1FC + 8 * dialog_unit_something + 6);
+		char* wtf_2 = off_68C1FC + *(off_68C1FC + 8 * dialog_unit_something + 10);
+		*/
+		Box32 rect = {};
+	//	SetRect(&rect, 0, 0, BYTE2(wtf), wtf >> 24);
+	//	helper::image_render_fxn_0(dialog_var->Xmin + (dialog_var->Xmax - BYTE2(wtf) - dialog_var->Xmin + 1) / 2, dialog_var->Ymin + (dialog_var->Ymax - HIBYTE(wtf) - dialog_var->Ymin + 1) / 2, &wtf, &rect, 0);
+		imgDrawPaletteIndex[208] = -48;
+		imgDrawPaletteIndex[209] = -47;
+		imgDrawPaletteIndex[210] = -46;
+		imgDrawPaletteIndex[211] = -45;
+		imgDrawPaletteIndex[192] = -64;
+		imgDrawPaletteIndex[193] = -63;
+		imgDrawPaletteIndex[216] = -40;
+		imgDrawPaletteIndex[217] = -39;
+		imgDrawPaletteIndex[218] = -38;
+		imgDrawPaletteIndex[219] = -37;
 	}
 }

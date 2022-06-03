@@ -136,7 +136,7 @@ LABEL_19:
 		}
 		else
 		{
-			if (v1->controlType)
+			if (v1->control_type)
 				v1 = *(BinDlg**)&v1->parent;
 			v6 = *(BinDlg**)&v1->children_dialog;
 			if (v6)
@@ -318,7 +318,7 @@ LABEL_26:
 			}
 			else if (v18 != UnitId::ZergOvileth && v18 != UnitId::Hero_Yggdrasill)
 			{
-				if (v1->controlType)
+				if (v1->control_type)
 					v1 = *(BinDlg**)&v1->parent;
 				v19 = *(BinDlg**)&v1->children_dialog;
 				if (v19)
@@ -826,7 +826,7 @@ LABEL_32:
 						goto LABEL_23;
 					goto LABEL_17;
 				case OrderId::CastParasite:
-					if (v3 && !v3->parasiteFlags)
+					if (v3 && !v3->parasite_flags)
 						goto LABEL_23;
 					result = 1;
 					break;

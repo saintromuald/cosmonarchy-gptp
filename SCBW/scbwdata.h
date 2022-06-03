@@ -993,6 +993,9 @@ SCBW_DATA(char*,	palette_index_reference,	0x006CEB20); // sizeof at least 20
 SCBW_DATA(u32*,		notify_cooldown,			0x00640870);
 SCBW_DATA(void*,	sound_duration,				0x006D1278); // struct_18 in IDA
 
+// For stat_data_unit_wireframe_select_update
+SCBW_DATA(void**,	off_68C1FC,					0x0068C1FC);
+
 //////////////////////////////////////////////////////////////// @}
 
 #undef SCBW_DATA

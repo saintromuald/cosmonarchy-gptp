@@ -325,7 +325,7 @@ namespace hooks
 										u32 analyzed_target_status = target->irradiateTimer;
 										if (switch_value == 2)
 										{
-											analyzed_target_status |= target->parasiteFlags;
+											analyzed_target_status |= target->parasite_flags;
 										}
 										if (switch_value == 3)
 										{

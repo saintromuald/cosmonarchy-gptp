@@ -587,7 +587,7 @@ namespace hooks
 		addStatus(statuses, "Timed Life", -1, 1, unit->removeTimer, TimerType::RemoveTimer);
 
 		// Vanilla Value
-		addStatus(statuses, "Parasited", unit->parasiteFlags != 0, 1);
+		addStatus(statuses, "Parasited", unit->parasite_flags != 0, 1);
 		addStatus(statuses, "Blinded", unit->isBlind != 0, 1);
 		addStatus(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::BaseProperty[unit->id] & UnitProperty::Building, 1);
 		addStatus(statuses, "Cannot Attack", unitExt->timers[TimerUnderDisruptionWeb] > 0, 1);

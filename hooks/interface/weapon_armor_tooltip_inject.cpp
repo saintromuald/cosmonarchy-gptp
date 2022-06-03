@@ -8,7 +8,7 @@ namespace
 	void createContextHelpFromDialog(BinDlg* dialog, const char* text)
 	{
 		u32 x = dialog->bounds.right, y = dialog->bounds.bottom;
-		if (dialog->controlType != 0)
+		if (dialog->control_type != 0)
 		{
 			x += dialog->parent->bounds.left;
 			y += dialog->parent->bounds.top;

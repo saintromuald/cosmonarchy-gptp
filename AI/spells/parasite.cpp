@@ -28,10 +28,10 @@ namespace AI
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			if (isUmsMode(caster->player) && target->parasiteFlags)
+			if (isUmsMode(caster->player) && target->parasite_flags)
 				return false;
 
-			if (target->parasiteFlags & (1 << caster->player))
+			if (target->parasite_flags & (1 << caster->player))
 				return false;
 
 			if (!scbw::can_weapon_target_unit(WeaponId::Parasite, target, caster))

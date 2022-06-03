@@ -11889,4 +11889,53 @@ namespace helper
 		}
 		return result;
 	}
+
+	void status_screen_draw_stat_button_border(BinDlg* dialog) {
+		const u32 func_address = 0x00456D30;
+		__asm {
+			PUSHAD
+			MOV EDI, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+	u32 status_screen_wireframe_coloring_related(Unit* unit) {
+		static u32 result;
+		const u32 func_address = 0x004567C0;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char status_screen_wireframe_shield_related(u32 unused, Unit* unit) {
+		static char result;
+		const u32 func_address = 0x004566B0;
+		__asm {
+			PUSHAD
+			MOV ECX, unused
+			MOV EDX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	u32 status_screen_wireframe_hp_related(Unit* unit) {
+		static u32 result;
+		const u32 func_address = 0x00456730;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

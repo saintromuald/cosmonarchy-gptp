@@ -48,7 +48,7 @@ namespace hooks
 		BinDlg* control_var = control;
 		if (*last_control_index == -2)
 		{
-			if (control->controlType)
+			if (control->control_type)
 			{
 				control = control->parent;
 			}

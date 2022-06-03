@@ -122,7 +122,7 @@ namespace hooks
 
     void StatRes_MainProc(BinDlg* dialog) // 004E5640
     {
-        if (dialog->controlType)
+        if (dialog->control_type)
         {
             dialog = dialog->parent;
         }
@@ -333,7 +333,7 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -13, supply_max_buffer);
             */
 
-            BinDlg* child = dialog->controlType ? dialog->parent->children_dialog : dialog->children_dialog;
+            BinDlg* child = dialog->control_type ? dialog->parent->children_dialog : dialog->children_dialog;
             while (child) {
                 helper::hide_dialog(child);
                 child = child->next;

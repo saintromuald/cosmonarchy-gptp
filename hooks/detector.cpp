@@ -51,7 +51,7 @@ namespace hooks
 				{
 					//update visionFlags for current target eval
 					param->visionFlags |=
-						detector->parasiteFlags |					// detector's parasites player owner flags (8 bits)
+						detector->parasite_flags |					// detector's parasites player owner flags (8 bits)
 						playerVision->flags[detector->player] |	// default visibility (32 bits)
 						visibilityFlags								// detector's player flag (8 bits)
 						;

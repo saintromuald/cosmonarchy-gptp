@@ -1305,4 +1305,9 @@ namespace helper
 	s32 stat_data_unit_wireframe_select_update(BinDlg* dialog, Event* event_arg);							// 00456F50
 	char status_screen_update_tooltip_mouse_held(BinDlg* dialog, Event* dialog_event);						// 00457DE0
 	u32 status_screen_button(BinDlg* dialog_1, BinDlg* dialog_2);											// 00458220
+
+	void status_screen_draw_stat_button_border(BinDlg* dialog);												// 00456D30
+	u32 status_screen_wireframe_coloring_related(Unit* unit);												// 004567C0
+	char status_screen_wireframe_shield_related(u32 unused, Unit* unit);									// 004566B0
+	u32 status_screen_wireframe_hp_related(Unit* unit);														// 00456730
 }

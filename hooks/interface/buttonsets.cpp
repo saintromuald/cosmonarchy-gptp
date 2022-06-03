@@ -622,7 +622,7 @@ namespace hooks
 		current_button = current_buttonset->firstButton;
 		current_button_state = BUTTON_STATE::Invisible;
 
-		if (current_dialog->controlType != DialogControlTypes::DialogBoxDC)
+		if (current_dialog->control_type != DialogControlTypes::DialogBoxDC)
 		{
 			current_dialog = current_dialog->parent;
 		}
@@ -1576,7 +1576,7 @@ namespace hooks
 					else
 					{
 						// 004592B5
-						current_dialog->buttonUser = current_button;
+						current_dialog->button_user = current_button;
 						if (current_dialog->graphic != current_button->iconID)
 						{
 							// 004592C2
@@ -1648,7 +1648,7 @@ namespace hooks
 				// 0045933C
 				scbw::hide_dialog(current_dialog);
 				current_dialog->graphic = 0xFFFF;
-				current_dialog->buttonUser = nullptr;
+				current_dialog->button_user = nullptr;
 			}
 			// 0045934E
 			current_dialog = current_dialog->next;

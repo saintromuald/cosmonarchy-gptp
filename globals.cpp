@@ -1266,7 +1266,7 @@ namespace scbw
 			|| unit->lockdownTimer != 0
 			|| unit->maelstromTimer != 0
 			|| unit->plagueTimer != 0
-			|| unit->parasiteFlags
+			|| unit->parasite_flags
 			|| unit->isBlind;
 	}
 
@@ -1293,7 +1293,7 @@ namespace scbw
 		unitExt->units[UnitParasiteSource] = nullptr;
 
 		// Remove default flags
-		unit->parasiteFlags = 0;
+		unit->parasite_flags = 0;
 		unit->isBlind = 0;
 
 		// Remove Ensnare
@@ -1441,13 +1441,13 @@ namespace scbw
 			return;
 		}
 		s32 playerFlag = 1 << playerID;
-		if (unit->parasiteFlags != playerFlag)
+		if (unit->parasite_flags != playerFlag)
 		{ // <- Prevent restarting arm period
 			unitExt->timers[TimerParasiteArm] = DefaultArmParasiteTimer;
 			unit->sprite->create_overlay(ImageId::ParasiteOverlay, 0, 0, 0);
 		}
 		unitExt->units[UnitParasiteSource] = queen; // TODO: remove?
-		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
+		unit->parasite_flags = playerFlag; // Parasite now overwrites other player's parasite
 		scbw::refresh_console();
 	}
 

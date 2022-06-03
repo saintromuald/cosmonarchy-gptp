@@ -10,7 +10,7 @@ namespace hooks
 	void updateMissionObjectives() // 0046CD30 | doesn't work currently due to null check late in the function
 	{
         BinDlg* readyRoomVar = *readyRoomDialog;
-        if ((*readyRoomDialog)->controlType)
+        if ((*readyRoomDialog)->control_type)
         {
             readyRoomVar = (*readyRoomDialog)->parent;
         }

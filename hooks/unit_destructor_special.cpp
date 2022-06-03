@@ -426,7 +426,7 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Parasite - spawn broodlings on death
-	if (unit->parasiteFlags != 0)
+	if (unit->parasite_flags != 0)
 	{
 		u32 supplyCount = scbw::get_broodling_count_from_supply(unit);
 		u16 type = UnitId::ZergRilirokor;
@@ -436,7 +436,7 @@ void unit_destructor_special_cases(Unit* unit)
 		}
 		for (u32 player = 0; player < PLAYER_COUNT; player++)
 		{
-			if (unit->parasiteFlags & (1 << player) && unitExt->timers[TimerParasiteArm] <= 1)
+			if (unit->parasite_flags & (1 << player) && unitExt->timers[TimerParasiteArm] <= 1)
 			{
 				scbw::create_unit_from_ability(type, supplyCount, player, unit->position.x, unit->position.y, 720);
 			}
