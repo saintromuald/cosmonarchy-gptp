@@ -4,17 +4,17 @@
 namespace hooks
 {
 	void orders_Repair1(Unit* unit) { // 004673D0
-		Unit* target = unit->orderTarget.unit;
+		Unit* target = unit->order_target.unit;
 		if (!target
 		//||	target->hitpoints >= units_dat::MaxHitPoints[target->id]
 		||	target->stasisTimer != 0
-		||	(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
+		||	(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->order_target.unit != unit)
 		||	target->status & UnitStatus::InTransport
 		||  !(target->status & UnitStatus::Completed)) {
 			unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 			unit->order_to_idle();
 			if (target && !(target->status & UnitStatus::InTransport)) {
-				target->connectedUnit = 0;
+				target->connected_unit = 0;
 			}
 			return;
 		}
@@ -27,7 +27,7 @@ namespace hooks
 				helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
 				helper::verifyResources(repairCostMinerals, repairCostGas, unit->player);
 
-				unit->worker.repairResourceLossTimer = 0;
+				unit->worker.repair_resource_loss_timer = 0;
 				unit->main_order_state = 1; // continue directly into this case
 			} // fallthrough
 			case 1: {
@@ -100,13 +100,13 @@ namespace hooks
 		}
 
 		bool do_repair = false;
-		if (unit->worker.repairResourceLossTimer == 0) {
-			unit->worker.repairResourceLossTimer--;
+		if (unit->worker.repair_resource_loss_timer == 0) {
+			unit->worker.repair_resource_loss_timer--;
 			do_repair = helper::ord_repair_subtract(unit, target);
 			if (!do_repair)
 			{
 				unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
-				if (unit->orderQueueHead) {
+				if (unit->order_queue_head) {
 					helper::force_order_done(unit);
 				} else {
 					unit->main_order_state = 1;
@@ -114,11 +114,11 @@ namespace hooks
 				return;
 			}
 		} else {
-			unit->worker.repairResourceLossTimer--;
+			unit->worker.repair_resource_loss_timer--;
 			do_repair = true;
 		}
 		if (do_repair) {
-			u32 hpGain = target->buildRepairHpGain;
+			u32 hpGain = target->build_repair_hp_gain;
 			if (*CHEAT_STATE & CheatFlags::OperationCwal) {
 				hpGain *= 16;
 			}
@@ -134,13 +134,13 @@ namespace hooks
 		}
 
 		unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
-		if (unit->orderQueueHead) {
+		if (unit->order_queue_head) {
 			helper::force_order_done(unit);
 		} else {
 			unit->main_order_state = 1;
 		}
 		if (target && !(target->status & UnitStatus::InTransport)) {
-			target->connectedUnit = 0;
+			target->connected_unit = 0;
 		}
 	}
 
@@ -284,7 +284,7 @@ namespace hooks
 	s32 orderAllowed(Unit* unit, u16 orderId, s32 player) // 0046DC20
 	{
 		s32 result = 0;
-		s16 unitId;
+		s16 unit_id;
 
 		*lastInternalError = 0;
 		if (orderId < OrderId::None)
@@ -309,11 +309,11 @@ namespace hooks
 					}
 					else
 					{
-						unitId = unit->id;
-						if (unitId == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding && orderId != 1
+						unit_id = unit->id;
+						if (unit_id == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding && orderId != 1
 							|| (scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
-							|| unitId == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
-							|| unitId == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
+							|| unit_id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
+							|| unit_id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
 						{
 							*lastInternalError = 8;
 							result = 0;

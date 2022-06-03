@@ -157,7 +157,7 @@ LABEL_8:
 				case 175:
 					goto LABEL_15;
 				default:
-					if (a3->orderQueueCount < 8u)
+					if (a3->order_queue_count < 8u)
 					{
 						if (*COrderCount < 1800)
 						{

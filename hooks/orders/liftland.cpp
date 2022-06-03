@@ -7,25 +7,25 @@ namespace hooks
 	void orders_BuildingLand(Unit* unit) // 00464360
 	{
 		Target unitTarget;
-		unitTarget.unit = unit->orderTarget.unit;
-		unitTarget.pt = unit->orderTarget.pt;
+		unitTarget.unit = unit->order_target.unit;
+		unitTarget.pt = unit->order_target.pt;
 		Point16 coords;
 		coords.x = 0;
 		coords.y = 0;
 
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-			unit->userActionFlags |= 1;
+			unit->user_action_flags |= 1;
 			if (unit->main_order_id != OrderId::Die)
 			{
 				bool bLoopBreak = false;
-				while (unit->orderQueueTail != nullptr && !bLoopBreak)
+				while (unit->order_queue_tail != nullptr && !bLoopBreak)
 				{
 					bLoopBreak =
-						!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
-						(unit->orderQueueTail->orderId != OrderId::BuildingLiftoff);
+						!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId] &&
+						(unit->order_queue_tail->orderId != OrderId::BuildingLiftoff);
 					if (!bLoopBreak) {
-						helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
+						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 					}
 				}
 				unit->perform_another_order(OrderId::BuildingLiftoff, coords.x, coords.y,	nullptr, 0);
@@ -33,9 +33,9 @@ namespace hooks
 			prepareForNextOrder(unit);
 			if (unit->main_order_id != OrderId::Die)
 			{
-				while (unit->orderQueueTail != nullptr && unit->orderQueueTail->orderId == OrderId::BuildingLand)
+				while (unit->order_queue_tail != nullptr && unit->order_queue_tail->orderId == OrderId::BuildingLand)
 				{
-					helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
+					helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 				}
 				unit->perform_another_order(OrderId::BuildingLand, unitTarget.pt.x, unitTarget.pt.y, unitTarget.unit, UnitId::None);
 			}
@@ -44,7 +44,7 @@ namespace hooks
 		else if (unit->main_order_state == 0)
 		{
 			// Plan vertical movement toward ground
-			helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y - unit->sprite->images.tail->verticalOffset);
+			helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y - unit->sprite->images.tail->verticalOffset);
 			unit->main_order_state = 1;
 		}
 		else if (unit->main_order_state == 1)
@@ -59,8 +59,8 @@ namespace hooks
 				}
 
 				x /= 2; y /= 2;
-				x = unit->orderTarget.pt.x - x;
-				y = unit->orderTarget.pt.y - y;
+				x = unit->order_target.pt.x - x;
+				y = unit->order_target.pt.y - y;
 				if (x < 0)
 				{
 					x += 31; if (y < 0) y += 31;
@@ -75,22 +75,22 @@ namespace hooks
 					// Probably play "landing sequence interrupted"
 					helper::playBuildingLandSound(unit);
 
-					if (unit->orderQueueHead != nullptr
-					&&	unit->orderQueueHead->orderId != OrderId::PlaceAddon)
+					if (unit->order_queue_head != nullptr
+					&&	unit->order_queue_head->orderId != OrderId::PlaceAddon)
 					{
-						helper::remove_order_from_unit_queue(unit->orderQueueHead, unit);
+						helper::remove_order_from_unit_queue(unit->order_queue_head, unit);
 					}
 					unit->order_to_idle();
 				}
 				else
 				{
 					// Use a AddFogMask() function after some coordinates calculations
-					helper::SetBuildingTileFlag(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					helper::SetBuildingTileFlag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
-					unit->building.landingTimer = 1;
+					unit->building.landing_timer = 1;
 
 					// Plan movement again after latest updates
-					helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
 					if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
 					{
@@ -127,9 +127,9 @@ namespace hooks
 			{
 				unit->order_signal -= 0x10;
 
-				if (unit->orderTarget.pt.x >= 0 && unit->orderTarget.pt.x < mapTileSize->width * 32 && 
-					unit->orderTarget.pt.y >= 0 && unit->orderTarget.pt.y < mapTileSize->height * 32) { // New sanity check; Attempt on fixing clear tile flags
-					helper::clear_building_from_tile_flag(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				if (unit->order_target.pt.x >= 0 && unit->order_target.pt.x < mapTileSize->width * 32 && 
+					unit->order_target.pt.y >= 0 && unit->order_target.pt.y < mapTileSize->height * 32) { // New sanity check; Attempt on fixing clear tile flags
+					helper::clear_building_from_tile_flag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 				}
 
 				helper::end_collision_tracking(unit); // Recalculate position and update effect on surroundings?
@@ -137,7 +137,7 @@ namespace hooks
 
 				unit->sprite->elevationLevel = 4;
 				helper::setUnitPathing(unit, 0);
-				scbw::set_unit_position(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				scbw::set_unit_position(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
 				helper::start_collision_tracking(unit); // Maybe update orders targeting the unit, set repulse for units in surroundings, and some other things?
 
@@ -156,28 +156,28 @@ namespace hooks
 				scbw::refresh_console();
 				helper::crush_immobile_units(unit);
 
-				if (unit->orderQueueHead != nullptr)
+				if (unit->order_queue_head != nullptr)
 				{
 					bool bGotMoveOrder;
-					if (unit->orderQueueHead->orderId == OrderId::Move
-					||	unit->orderQueueHead->orderId == OrderId::Follow)
+					if (unit->order_queue_head->orderId == OrderId::Move
+					||	unit->order_queue_head->orderId == OrderId::Follow)
 					{
 						bGotMoveOrder = true;
 					}
 					else
 					{
 						bGotMoveOrder = false;
-						Order* order = unit->orderQueueHead;
+						Order* order = unit->order_queue_head;
 						if (order->orderId != OrderId::PlaceAddon)
 						{
 							order = nullptr;
 						}
 
-						while (unit->orderQueueTail != order)
+						while (unit->order_queue_tail != order)
 						{
-							helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
+							helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 						}
-						if (unit->orderQueueHead == nullptr)
+						if (unit->order_queue_head == nullptr)
 						{
 							unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 						}
@@ -186,7 +186,7 @@ namespace hooks
 					if (bGotMoveOrder)
 					{
 						// This causes the landed building to immediately take off again to execute the queued move/follow order
-						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::BuildingLiftoff);
+						helper::prepend_order_targeting_nothing(unit, unit->order_queue_head, OrderId::BuildingLiftoff);
 					}						
 				}
 				// Some units iterations, idle orders affectations, and unknown order assignment?
@@ -267,7 +267,7 @@ namespace hooks
 		}
 		else
 		{
-			if (unit->orderQueueHead == nullptr)
+			if (unit->order_queue_head == nullptr)
 			{
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
 			}

@@ -9,7 +9,7 @@ namespace hooks
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
-		if (!unit->remainingBuildTime)
+		if (!unit->remaining_build_time)
 		{
 			return 1;
 		}
@@ -22,7 +22,7 @@ namespace hooks
 		{
 			multiplier *= 2;
 		}
-		unit->remainingBuildTime -= std::min(multiplier, unit->remainingBuildTime);
+		unit->remaining_build_time -= std::min(multiplier, unit->remaining_build_time);
 		return 0;
 	}
 }

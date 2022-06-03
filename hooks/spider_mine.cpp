@@ -50,13 +50,13 @@ namespace hooks
 	{
 		if (unit->main_order_state == 0)
 		{
-			unit->groundWeaponCooldown = MineBurrowTime;
+			unit->ground_weapon_cooldown = MineBurrowTime;
 			unit->main_order_state = 1;
 		}
 
 		if (unit->main_order_state == 1)
 		{
-			if (unit->groundWeaponCooldown == 0)
+			if (unit->ground_weapon_cooldown == 0)
 			{
 				unit->sprite->play_iscript_animation(IscriptAnimation::Burrow, true);
 				unit->status |= UnitStatus::NoCollide;
@@ -83,7 +83,7 @@ namespace hooks
 
 			if (target != nullptr)
 			{
-				unit->orderTarget.unit = target;
+				unit->order_target.unit = target;
 				unit->sprite->play_iscript_animation(IscriptAnimation::UnBurrow, true);
 				unit->sprite->flags &= ~SpriteFlags::Burrowed;
 				// might have been some cloaking order before
@@ -98,10 +98,10 @@ namespace hooks
 			{
 				unit->sprite->elevationLevel = units_dat::Elevation[unit->id];
 				unit->status &= ~UnitStatus::NoCollide;
-				if (unit->orderTarget.unit != nullptr)
+				if (unit->order_target.unit != nullptr)
 				{
 					// probably trigger movement/acceleration of unit toward the target
-					helper::moveToCollide(unit, unit->orderTarget.unit);
+					helper::moveToCollide(unit, unit->order_target.unit);
 
 					unit->main_order_state = 5;
 				}
@@ -118,14 +118,14 @@ namespace hooks
 			bool bIsCompletelyInRange = false;
 			bool bEndThere = false;
 			helper::unburrowGeneric(unit); // related to movement, similar to function_004E9A30
-			if (unit->orderTarget.unit != nullptr)
+			if (unit->order_target.unit != nullptr)
 			{
-				if (unit->is_target_within_min_range(unit->orderTarget.unit, MineSeekRange))
+				if (unit->is_target_within_min_range(unit->order_target.unit, MineSeekRange))
 				{
 					// probably trigger movement/acceleration of unit
 					// toward the target
-					helper::moveToCollide(unit, unit->orderTarget.unit);
-					if (unit->is_target_within_min_range(unit->orderTarget.unit, MineDetonateRange))
+					helper::moveToCollide(unit, unit->order_target.unit);
+					if (unit->is_target_within_min_range(unit->order_target.unit, MineDetonateRange))
 					{
 						bIsCompletelyInRange = true; // jump to 00463F22
 					}
@@ -144,9 +144,9 @@ namespace hooks
 			if (bIsCompletelyInRange) // 00463F22
 			{
 				Image* current_image;
-				unit->orderTarget.unit = nullptr;
-				unit->orderTarget.pt.x = unit->sprite->position.x;
-				unit->orderTarget.pt.y = unit->sprite->position.y;
+				unit->order_target.unit = nullptr;
+				unit->order_target.pt.x = unit->sprite->position.x;
+				unit->order_target.pt.y = unit->sprite->position.y;
 				current_image = unit->sprite->images.head;
 				IscriptAnimation::Enum anim = IscriptAnimation::SpecialState1;
 				if (unit->id == UnitId::TerranLobotomyMine)
@@ -198,11 +198,11 @@ namespace hooks
 					|| v1->move_target.pt.y != v11->position.y
 					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1))
 			{
-				if ((helper::get_distance_fast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400)
+				if ((helper::get_distance_fast(v1->halt.x, v1->order_target.pt.x << 8, v1->halt.y, v1->order_target.pt.y << 8) & 0xFFFFFF00) <= 0x1400)
 				{
 					helper::orders_HoldPosSuicidal(v1);
-					v12 = v1->orderTarget.pt.y;
-					a2.x = v1->orderTarget.pt.x;
+					v12 = v1->order_target.pt.y;
+					a2.x = v1->order_target.pt.x;
 					a2.y = v12;
 					helper::fix_target_location(&a2, 0xDu);
 					v13 = helper::create_unit(0xDu, a2.x, a2.y, (unsigned __int8)v1->player);
@@ -212,7 +212,7 @@ namespace hooks
 						helper::update_unit_stats_and_finish_building(v13);
 						helper::update_unit_strength_and_apply_default_orders(v14);
 						helper::turnUnit(v14, v1->current_direction_1);
-						v1->vulture.spiderMineCount -= 1;
+						v1->mine_carrier.mine_count -= 1;
 					}
 					else
 					{
@@ -226,9 +226,9 @@ namespace hooks
 						helper::to_idle(v1);
 				}
 			}
-			else if (v1->orderQueueHead)
+			else if (v1->order_queue_head)
 			{
-				v1->userActionFlags |= 1u;
+				v1->user_action_flags |= 1u;
 				helper::orders_nothing_2(v1);
 			}
 			else if (v1->unit_ai)
@@ -242,7 +242,7 @@ namespace hooks
 		}
 		else
 		{
-			target = unit->orderTarget.unit;
+			target = unit->order_target.unit;
 			if (target)
 			{
 				v3 = helper::move_to_target(target, unit);
@@ -256,16 +256,16 @@ namespace hooks
 				}
 				if (v3)
 				{
-					v7 = v1->orderTarget.unit;
-					v1->orderTarget.pt.x = v7->sprite->position.x;
-					v1->orderTarget.pt.y = v7->sprite->position.y;
+					v7 = v1->order_target.unit;
+					v1->order_target.pt.x = v7->sprite->position.x;
+					v1->order_target.pt.y = v7->sprite->position.y;
 					v1->main_order_state = 1;
 				}
 			}
 			else
 			{
-				v8 = unit->orderTarget.pt.y;
-				v9 = unit->orderTarget.pt.x;
+				v8 = unit->order_target.pt.y;
+				v9 = unit->order_target.pt.x;
 				ByteOperations::SetLowByte(v10, helper::set_move_target_xy(v9, v8, unit));
 				if (v9 != v1->next_target_waypoint.x || v8 != v1->next_target_waypoint.y)
 				{
@@ -288,7 +288,7 @@ namespace hooks
 
 		Sprite* unitSprite = unitVar->sprite;
 		char unitPathing = unitVar->pathingFlags;
-		unitVar->movementState = 0;
+		unitVar->movement_state = 0;
 		unitVar->pathingFlags = (unitPathing ^ (unitSprite->elevationLevel < 12u)) & 1 ^ unitPathing;
 		unitVar->status |= UnitStatus::CloakingForFree | UnitStatus::Burrowed;
 		unitSprite->flags |= 0x40u; // image is hidden

@@ -210,7 +210,7 @@ namespace hooks
 		static s32 result;
 		static s32 playerId;
 		static s32 priority;
-		static s32 unitId;
+		static s32 unit_id;
 		static void* param;
 		__asm {
 			PUSH EBP
@@ -219,12 +219,12 @@ namespace hooks
 			MOV EAX, [EBP + 0x08]
 			MOV param, EAX
 			POP EAX
-			MOV unitId, ESI
+			MOV unit_id, ESI
 			MOV priority, EDI
 			MOV playerId, EAX
 			PUSHAD
 		}
-		result = hooks::AI_AddTownSpendingRequest(playerId, priority, unitId, param);
+		result = hooks::AI_AddTownSpendingRequest(playerId, priority, unit_id, param);
 		__asm {
 			POPAD
 			MOV EAX, result

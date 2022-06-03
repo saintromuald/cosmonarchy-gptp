@@ -63,11 +63,11 @@ namespace hooks
 		v2 = a1;
 		if (a1->movement_flags & 8)
 			return 0;
-		v4 = a1->orderTarget.unit;
+		v4 = a1->order_target.unit;
 		if (v4)
 			v5 = helper::getDistanceToUnit(a1, v4);
 		else
-			v5 = helper::distanceFromDboxCorner(a1, a1->orderTarget.pt.x, a1->orderTarget.pt.y);
+			v5 = helper::distanceFromDboxCorner(a1, a1->order_target.pt.x, a1->order_target.pt.y);
 		v7 = v5;
 		v6 = weapons_dat::MinRange[a2];
 		if (v6 && v7 < v6 || v7 > helper::get_unit_max_weapon_range(v2, a2) || v2->pathingFlags & 2)
@@ -76,7 +76,7 @@ namespace hooks
 		if ((v8 != v2->position.x || v2->next_target_waypoint.y != v2->position.y)
 			&& !helper::isAngleInAttackAngle(v2->next_target_waypoint.y, v8, v2, a2))
 		{
-			v2->orderQueueTimer = 0;
+			v2->order_queue_timer = 0;
 			return 0;
 		}
 		return 1;
@@ -94,7 +94,7 @@ namespace hooks
 		v2 = a1;
 		if (!a1)
 		{
-			v2 = a2->orderTarget.unit;
+			v2 = a2->order_target.unit;
 			if (!v2)
 				return 1;
 		}
@@ -143,7 +143,7 @@ namespace hooks
 		v2 = isUnitVisibleHook(a1);
 		if (v2)
 		{
-			v3 = v1->orderTarget.unit;
+			v3 = v1->order_target.unit;
 			if (v3)
 			{
 				v4 = helper::get_unit_max_weapon_range(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->main_order_id]);
@@ -162,8 +162,8 @@ namespace hooks
 			}
 			else
 			{
-				v6 = v1->orderTarget.pt.y;
-				v7 = v1->orderTarget.pt.x;
+				v6 = v1->order_target.pt.y;
+				v7 = v1->order_target.pt.x;
 				v8 = helper::get_unit_max_weapon_range(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->main_order_id]);
 				v9 = (helper::getFlingyHaltDistance((s32)v1) >> 8) + v8;
 				v2 = v9 >= helper::get_distance_fast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
@@ -187,7 +187,7 @@ namespace hooks
 		Unit* target; // [esp+Ch] [ebp-4h]
 
 		v1 = a1;
-		v2 = a1->orderTarget.unit;
+		v2 = a1->order_target.unit;
 		if (!v2)
 		{
 			goto LABEL_22;
@@ -197,8 +197,8 @@ namespace hooks
 		{
 			goto LABEL_22;
 		}
-		v4 = v1->orderTarget.unit;
-		target = v1->orderTarget.unit;
+		v4 = v1->order_target.unit;
+		target = v1->order_target.unit;
 		if (v4)
 		{
 			if (!isTargetVisibleHook(v4, v1))
@@ -234,7 +234,7 @@ LABEL_23:
 				if (helper::getRightClickActionOrder(v1) == 3)
 LABEL_22:
 				{
-					helper::unknownOrdersFunc((s32)v1, v1->orderTarget.pt.x, v1->orderTarget.pt.y);
+					helper::unknownOrdersFunc((s32)v1, v1->order_target.pt.x, v1->order_target.pt.y);
 				}
 			}
 		}
@@ -267,21 +267,21 @@ LABEL_22:
 		Unit* target; // [esp+8h] [ebp-4h]
 
 		v1 = a1;
-		v2 = a1->orderTarget.unit;
+		v2 = a1->order_target.unit;
 		if (v2)
 		{
-			a1->orderTarget.pt.x = v2->sprite->position.x;
-			a1->orderTarget.pt.y = v2->sprite->position.y;
+			a1->order_target.pt.x = v2->sprite->position.x;
+			a1->order_target.pt.y = v2->sprite->position.y;
 			ByteOperations::SetLowByte(v3, helper::unit_can_attack_target(v2, a1, 1));
 			if (!v3)
 			{
 				if (!(v1->status & 0x8000000) && !v1->unit_ai)
-					helper::prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, v1);
+					helper::prependOrderTargetingGround(6u, v1->order_target.pt.x, v1->order_target.pt.y, v1);
 				helper::to_idle(v1);
 				return;
 			}
-			v4 = v1->orderTarget.unit;
-			target = v1->orderTarget.unit;
+			v4 = v1->order_target.unit;
+			target = v1->order_target.unit;
 			if (v1->main_order_state)
 			{
 				if (!v4)
@@ -308,7 +308,7 @@ LABEL_22:
 					|| (v15 = helper::get_unit_max_weapon_range(v1, v12), ByteOperations::SetLowByte(v16, (helper::is_target_within_min_movement_range(target, v11, v15), !v16))))
 				{
 LABEL_63:
-					if (!helper::moveTowards(v1->orderTarget.unit, v1))
+					if (!helper::moveTowards(v1->order_target.unit, v1))
 						return;
 				}
 				else
@@ -349,7 +349,7 @@ LABEL_62:
 					}
 				}
 			}
-			if (helper::move_to_target(v1->orderTarget.unit, v1))
+			if (helper::move_to_target(v1->order_target.unit, v1))
 			{
 LABEL_64:
 				v1->main_order_state = 1;
@@ -357,8 +357,8 @@ LABEL_42:
 				v17 = v1->id;
 				if ((v17 == 3 || v17 == 17) && !(v1->movement_flags & 2))
 				{
-					v18 = v1->orderTarget.pt.y;
-					v19 = v1->orderTarget.pt.x;
+					v18 = v1->order_target.pt.y;
+					v19 = v1->order_target.pt.x;
 					v20 = helper::getDirectionFromPoints(v18, v1->sprite->position.x, v19, v1->sprite->position.y) - v1->current_direction_1;
 					if (v20 >= 128 || v20 <= -128)
 						v20 = -128;
@@ -380,9 +380,9 @@ LABEL_42:
 				v1->next_target_waypoint.x = v21;
 				v1->next_target_waypoint.y = v22;
 			}
-			if (v1->orderQueueHead)
+			if (v1->order_queue_head)
 			{
-				v1->userActionFlags |= 1u;
+				v1->user_action_flags |= 1u;
 				helper::orders_nothing_2(v1);
 			}
 			else if (v1->unit_ai)
@@ -439,23 +439,23 @@ LABEL_42:
 	{
 		Unit* result;
 		Unit* i;
-		s16 unitId;
+		s16 unit_id;
 		u8 orderId;
 
 		*((s8*)&mapHeightPixels + 2) = 0;
 		result = helper::get_active_player_first_selection();
 		for (i = result; result; i = result)
 		{
-			unitId = i->id;
-			if (unitId != UnitId::ProtossSolarion)
+			unit_id = i->id;
+			if (unit_id != UnitId::ProtossSolarion)
 			{
-				if (unitId != UnitId::ProtossAccantor)
+				if (unit_id != UnitId::ProtossAccantor)
 				{
-					if (unitId != UnitId::ZergMatraleth)
+					if (unit_id != UnitId::ZergMatraleth)
 					{
-						if (unitId != UnitId::ZergSkryling && unitId != UnitId::ZergInfestedTerran)
+						if (unit_id != UnitId::ZergSkryling && unit_id != UnitId::ZergInfestedTerran)
 						{
-							orderId = unitId != UnitId::TerranCleric ? 107 : 178;
+							orderId = unit_id != UnitId::TerranCleric ? 107 : 178;
 						}
 						else
 						{
@@ -497,7 +497,7 @@ LABEL_42:
 		playerUnit = 1 << unit->player;
 		if (!target)
 		{
-			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibility_flags);
+			return playerUnit & ~(activeTileArray[unit->order_target.pt.x / 32 + mapTileSize->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
 		u32 result;
@@ -519,11 +519,11 @@ LABEL_42:
 		s32 playerUnit;
 		u32 result;
 
-		target = unit->orderTarget.unit;
+		target = unit->order_target.unit;
 		playerUnit = 1 << unit->player;
 		if (!target)
 		{
-			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibility_flags);
+			return playerUnit & ~(activeTileArray[unit->order_target.pt.x / 32 + mapTileSize->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
 		if (unit->status & 0x300)
@@ -593,7 +593,7 @@ LABEL_42:
 	// Hooked to complete the cloak rewrite - Pr0nogo
 	s32 isUnitCloakingHook(Unit* unit) // 004916E0
 	{
-		if (unit->isCloaked)
+		if (unit->is_cloaked)
 		{
 			return 0;
 		}
@@ -726,7 +726,7 @@ LABEL_42:
 
 		v2 = unit;
 		v3 = unit->status;
-		v1 = v2->orderTarget.unit;
+		v1 = v2->order_target.unit;
 		if (unit->is_frozen())
 		{
 			goto LABEL_23;
@@ -765,13 +765,13 @@ LABEL_42:
 				goto LABEL_22;
 			}
 LABEL_23:
-			v11 = v2->orderTarget.unit;
+			v11 = v2->order_target.unit;
 			if ( !v11 || v2->status & UnitStatus::HoldingPosition )
 			{
 				helper::setResourceTarget(v2);
-				if (v2->orderQueueHead)
+				if (v2->order_queue_head)
 				{
-					v2->userActionFlags |= 1u;
+					v2->user_action_flags |= 1u;
 					helper::orders_nothing_2(v2);
 					result = 0;
 				}
@@ -820,11 +820,11 @@ LABEL_22:
 			goto LABEL_23;
 		}
 LABEL_34:
-		v15 = v2->orderTarget.unit;
+		v15 = v2->order_target.unit;
 		v14 = v15->sprite->position.x;
-		v2->orderTarget.pt.x = v14;
+		v2->order_target.pt.x = v14;
 		v13 = v15->sprite->position.y;
-		v2->orderTarget.pt.y = v13;
+		v2->order_target.pt.y = v13;
 		targeta = v15;
 		if (v14 != v2->next_target_waypoint.x || v13 != v2->next_target_waypoint.y)
 		{
@@ -874,7 +874,7 @@ LABEL_34:
 					}
 				}
 			}
-			if (!helper::move_to_target(v2->orderTarget.unit, v2))
+			if (!helper::move_to_target(v2->order_target.unit, v2))
 			{
 				return 0;
 			}
@@ -886,7 +886,7 @@ LABEL_76:
 		{
 			if (v2->unit_ai)
 			{
-				if (helper::isUnreachable(v2->orderTarget.unit, v2) || helper::is_unit_movable(v2) == 2)
+				if (helper::isUnreachable(v2->order_target.unit, v2) || helper::is_unit_movable(v2) == 2)
 				{
 					if (helper::ai_update_attack_target(v2, 0, 1, 0))
 					{
@@ -898,7 +898,7 @@ LABEL_76:
 			else
 			{
 				v23 = v2->status;
-				if (v23 & 0x8000000 && !(v23 & 0xC) && v2->orderTarget.unit->status & 4 || helper::is_unit_movable(v2) == 2)
+				if (v23 & 0x8000000 && !(v23 & 0xC) && v2->order_target.unit->status & 4 || helper::is_unit_movable(v2) == 2)
 				{
 LABEL_65:
 					helper::make_to_hold_position(v2);
@@ -907,7 +907,7 @@ LABEL_65:
 				}
 			}
 			v25 = helper::hasGroundWeaponGraphic(v2) == 0;
-			v24 = v2->orderTarget.unit;
+			v24 = v2->order_target.unit;
 			if (!v25)
 			{
 				helper::moveTowards(v2, v24);
@@ -918,7 +918,7 @@ LABEL_65:
 		}
 		if (v2->id == UnitId::ZergSkryling)
 		{
-			helper::moveForMeleeRange(v2->orderTarget.unit, v2);
+			helper::moveForMeleeRange(v2->order_target.unit, v2);
 		}
 		else
 		{
@@ -935,10 +935,10 @@ LABEL_65:
 			return;
 		}
 
-		u16 unitId = unit->id;
-		if (!unitId || unitId == 32)
+		u16 unit_id = unit->id;
+		if (!unit_id || unit_id == 32)
 		{
-			Unit* unitTarget = unit->orderTarget.unit;
+			Unit* unitTarget = unit->order_target.unit;
 			if (unitTarget)
 			{
 				s32 cooldownVar = 0;
@@ -956,7 +956,7 @@ LABEL_65:
 				}
 				if (cooldownVar <= 0)
 				{
-					s32 unitHP = units_dat::MaxHitPoints[unitId] >> 8;
+					s32 unitHP = units_dat::MaxHitPoints[unit_id] >> 8;
 					if (!unitHP)
 					{
 						unitHP = (unit->hitpoints + 255) >> 8;
@@ -969,7 +969,7 @@ LABEL_65:
 					{
 						if (unit_can_attack_target(unit, unitTarget, 1))
 						{
-							unitTarget = unit->orderTarget.unit;
+							unitTarget = unit->order_target.unit;
 							if (!unitTarget)
 							{
 								if (helper::techUseAllowed(unit, 0, unit->player) == 1
@@ -1030,42 +1030,42 @@ LABEL_65:
 	}
 
 	// Hooked to add nullcheck. -Pr0nogo
-	s32 return_interceptor_if_cannot_attack(Unit* steward) // 00465810
+	s32 return_interceptor_if_cannot_attack(Unit* hangar_unit) // 00465810
 	{
 		s32 result = 0;
-		Unit* steward_target = steward->orderTarget.unit;
-		if (steward_target && !(steward_target->status & UnitStatus::Invincible) || helper::attack_recent_attacker(steward))
+		Unit* steward_target = hangar_unit->order_target.unit;
+		if (steward_target && !(steward_target->status & UnitStatus::Invincible) || helper::attack_recent_attacker(hangar_unit))
 		{
-			Unit* solarion = steward->interceptor.parent;
-			steward_target = steward->orderTarget.unit;
+			Unit* unit_with_hangar = hangar_unit->hangar_unit.parent;
+			steward_target = hangar_unit->order_target.unit;
 			if (steward_target->sprite) {
-				steward->orderTarget.pt.x = steward_target->sprite->position.x;
-				steward->orderTarget.pt.y = steward_target->sprite->position.y;
+				hangar_unit->order_target.pt.x = steward_target->sprite->position.x;
+				hangar_unit->order_target.pt.y = steward_target->sprite->position.y;
 			}
-			if (!solarion)
+			if (!unit_with_hangar)
 			{
-				solarion = steward;
+				unit_with_hangar = hangar_unit;
 			}
-			u32 range = helper::get_target_acquisition_range_upgrade(solarion) + 2;
-			if (!solarion || helper::is_target_within_min_movement_range(steward_target, solarion, range * 32))
+			u32 range = helper::get_target_acquisition_range_upgrade(unit_with_hangar) + 2;
+			if (!unit_with_hangar || helper::is_target_within_min_movement_range(steward_target, unit_with_hangar, range * 32))
 			{
 				result = 1;
 			}
 			else
 			{
-				helper::issue_order_targeting_nothing(steward, OrderId::Return);
+				helper::issue_order_targeting_nothing(hangar_unit, OrderId::Return);
 				result = 0;
 			}
 		}
 		else
 		{
-			u8 steward_order_id = steward->main_order_id;
-			steward->userActionFlags |= 1u;
+			u8 steward_order_id = hangar_unit->main_order_id;
+			hangar_unit->user_action_flags |= 1u;
 			if (steward_order_id)
 			{
 				while (1)
 				{
-					Order* order_tail = steward->orderQueueTail;
+					Order* order_tail = hangar_unit->order_queue_tail;
 					if (!order_tail)
 					{
 						break;
@@ -1074,11 +1074,11 @@ LABEL_65:
 					{
 						break;
 					}
-					helper::remove_order_from_unit_queue(order_tail, steward);
+					helper::remove_order_from_unit_queue(order_tail, hangar_unit);
 				}
-				helper::perform_another_order(OrderId::Return, 0, steward, UnitId::None, {}, 0);
+				helper::perform_another_order(OrderId::Return, 0, hangar_unit, UnitId::None, {}, 0);
 			}
-			helper::orders_nothing_2(steward);
+			helper::orders_nothing_2(hangar_unit);
 			result = 0;
 		}
 		return result;

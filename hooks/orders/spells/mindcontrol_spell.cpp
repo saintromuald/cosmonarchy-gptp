@@ -7,7 +7,7 @@ namespace hooks
 	void ordersCastMindControl(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		Unit* target = unit->orderTarget.unit;
+		Unit* target = unit->order_target.unit;
 		if (!target || unit->player == target->player) {
 			unit->status &= ~UnitStatus::CanNotReceiveOrders;
 			unit->order_to_idle();
@@ -20,10 +20,10 @@ namespace hooks
 				if (!unit->main_order_state) {
 					unit->play_iscript_animation(IscriptAnimation::Unused2);
 					unit->main_order_state = 1;
-					unit->mainOrderTimer = 24;
+					unit->main_order_timer = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 				}
-				if (unit->mainOrderTimer) {
+				if (unit->main_order_timer) {
 					return;
 				}
 				unit->status &= ~UnitStatus::CanNotReceiveOrders;

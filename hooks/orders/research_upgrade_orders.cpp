@@ -11,23 +11,23 @@ namespace hooks
 		Image* current_image;
 
 		if (unit->status & UnitStatus::GroundedBuilding &&
-			unit->building.upgradeType != UpgradeId::None
+			unit->building.upgrade_id != UpgradeId::None
 			)
 		{
 
-			unit->building.upgradeResearchTime--;
+			unit->building.upgrade_research_time--;
 
-			if (unit->building.upgradeResearchTime != 0xFFFF)
+			if (unit->building.upgrade_research_time != 0xFFFF)
 			{
 
-				u8 upgradeLevel;
+				u8 upgrade_level;
 
-				if (unit->building.upgradeType >= UpgradeId::PrismaticShield)
-					upgradeLevel = UpgradesBw->currentLevel[unit->player][unit->building.upgradeType - UpgradeId::PrismaticShield];
+				if (unit->building.upgrade_id >= UpgradeId::PrismaticShield)
+					upgrade_level = UpgradesBw->currentLevel[unit->player][unit->building.upgrade_id - UpgradeId::PrismaticShield];
 				else
-					upgradeLevel = UpgradesSc->currentLevel[unit->player][unit->building.upgradeType];
+					upgrade_level = UpgradesSc->currentLevel[unit->player][unit->building.upgrade_id];
 
-				if (upgradeLevel < unit->building.upgradeLevel &&
+				if (upgrade_level < unit->building.upgrade_level &&
 					!(*CHEAT_STATE & CheatFlags::OperationCwal))
 					bStopThere = true;
 
@@ -37,22 +37,22 @@ namespace hooks
 			if (!bStopThere)
 			{
 
-				u8 upgradeLevel;
+				u8 upgrade_level;
 
 				helper::play_upgrade_complete_sound();
 
-				if (unit->building.upgradeType >= UpgradeId::PrismaticShield)
-					upgradeLevel = UpgradesBw->currentLevel[unit->player][unit->building.upgradeType - UpgradeId::PrismaticShield];
+				if (unit->building.upgrade_id >= UpgradeId::PrismaticShield)
+					upgrade_level = UpgradesBw->currentLevel[unit->player][unit->building.upgrade_id - UpgradeId::PrismaticShield];
 				else
-					upgradeLevel = UpgradesSc->currentLevel[unit->player][unit->building.upgradeType];
+					upgrade_level = UpgradesSc->currentLevel[unit->player][unit->building.upgrade_id];
 
-				if (upgradeLevel < unit->building.upgradeLevel)
+				if (upgrade_level < unit->building.upgrade_level)
 				{
 
 					if (helper::is_unit_upgrade_available(unit))
 					{
-						helper::set_upgrade_level(unit->player, unit->building.upgradeType, unit->building.upgradeLevel);
-						helper::apply_speed_upgrade_from_upgrade_id(unit, unit->building.upgradeType);
+						helper::set_upgrade_level(unit->player, unit->building.upgrade_id, unit->building.upgrade_level);
+						helper::apply_speed_upgrade_from_upgrade_id(unit, unit->building.upgrade_id);
 					}
 
 				}
@@ -82,12 +82,12 @@ namespace hooks
 				PUSHAD
 
 				MOV ESI, unit
-				MOVZX ECX, byte ptr[ESI + 0xC9]	//unit->building.upgradeType
+				MOVZX ECX, byte ptr[ESI + 0xC9]	//unit->building.upgrade_id
 				MOVZX EAX, byte ptr[ESI + 0x4C]	//unit->playerId
 				MOV EDX, ECX
 				SHR EDX, 0x3
 				AND ECX, 0x80000007
-				LEA EAX, [EDX + EAX * 0x8 + 0x0058F3E0] //EAX = &(UpgradesBw->currentLevel[unit->playerId][unit->building.upgradeType CONVERTED?])
+				LEA EAX, [EDX + EAX * 0x8 + 0x0058F3E0] //EAX = &(UpgradesBw->currentLevel[unit->playerId][unit->building.upgrade_id CONVERTED?])
 				JNS lbl547E7
 
 				DEC ECX
@@ -107,28 +107,28 @@ namespace hooks
 
 			}
 
-			unit->building.upgradeType = UpgradeId::None;
-			unit->building.upgradeLevel = 0;
+			unit->building.upgrade_id = UpgradeId::None;
+			unit->building.upgrade_level = 0;
 
 			if (unit->unit_ai != nullptr)
 			{
 
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 
 				if (unit->main_order_id != OrderId::Die)
 				{
 
-					bool bStopLoop = (unit->orderQueueTail == nullptr);
+					bool bStopLoop = (unit->order_queue_tail == nullptr);
 
 					while (!bStopLoop)
 					{
 
-						if (!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
-							unit->orderQueueTail->orderId != OrderId::ComputerAI
+						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId] &&
+							unit->order_queue_tail->orderId != OrderId::ComputerAI
 							)
 							bStopLoop = true;
 						else
-							helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
+							helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 
 					}
 
@@ -142,9 +142,9 @@ namespace hooks
 			else
 			{ //54875
 
-				if (unit->orderQueueHead != nullptr)
+				if (unit->order_queue_head != nullptr)
 				{
-					unit->userActionFlags |= 1;
+					unit->user_action_flags |= 1;
 					prepareForNextOrder(unit);
 				}
 				else //54896
@@ -163,20 +163,20 @@ namespace hooks
 
 		bool bStopThere = false;
 
-		if (unit->building.techType != TechId::None)
+		if (unit->building.tech_id != TechId::None)
 		{
 
-			unit->building.upgradeResearchTime--;
+			unit->building.upgrade_research_time--;
 
-			if (unit->building.upgradeResearchTime != 0xFFFF)
+			if (unit->building.upgrade_research_time != 0xFFFF)
 			{
 
 				u8 bIsResearched;
 
-				if (unit->building.techType < TechId::Restoration)
-					bIsResearched = TechSc->isResearched[unit->player][unit->building.techType];
+				if (unit->building.tech_id < TechId::Restoration)
+					bIsResearched = TechSc->isResearched[unit->player][unit->building.tech_id];
 				else
-					bIsResearched = TechBw->isResearched[unit->player][unit->building.techType - TechId::Restoration];
+					bIsResearched = TechBw->isResearched[unit->player][unit->building.tech_id - TechId::Restoration];
 
 				if (bIsResearched == 0 &&
 					!(*CHEAT_STATE & CheatFlags::OperationCwal)
@@ -191,10 +191,10 @@ namespace hooks
 
 				helper::play_research_complete_sound();
 
-				if (unit->building.techType < TechId::Restoration)
-					TechSc->isResearched[unit->player][unit->building.techType] = 1;
+				if (unit->building.tech_id < TechId::Restoration)
+					TechSc->isResearched[unit->player][unit->building.tech_id] = 1;
 				else if (*IS_BROOD_WAR)
-					TechBw->isResearched[unit->player][unit->building.techType - TechId::Restoration] = 1;
+					TechBw->isResearched[unit->player][unit->building.tech_id - TechId::Restoration] = 1;
 
 				scbw::refresh_console();
 
@@ -221,13 +221,13 @@ namespace hooks
 				PUSHAD
 
 				MOV ESI, unit
-				MOVZX ECX, byte ptr[ESI + 0xC8] //unit->building.techType
+				MOVZX ECX, byte ptr[ESI + 0xC8] //unit->building.tech_id
 				MOVZX EAX, byte ptr[ESI + 0x4C] //unit->playerId
 				MOV EDX, ECX
 				SHR EDX, 0x3
 				AND ECX, 0x80000007
 				LEA EAX, [EAX + EAX * 0x2]
-				LEA EAX, [EDX + EAX * 0x2 + 0x0058F230] //EAX = &(TechBw->isResearched[unit->playerId][unit->building.techType CONVERTED?])
+				LEA EAX, [EDX + EAX * 0x2 + 0x0058F230] //EAX = &(TechBw->isResearched[unit->playerId][unit->building.tech_id CONVERTED?])
 				JNS lbl549C7
 
 				DEC ECX
@@ -247,26 +247,26 @@ namespace hooks
 
 			}
 
-			unit->building.techType = TechId::None;
+			unit->building.tech_id = TechId::None;
 
 			if (unit->unit_ai != nullptr)
 			{
 
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 
 				if (unit->main_order_id != OrderId::Die)
 				{
 
-					bool bStopLoop = (unit->orderQueueTail == nullptr);
+					bool bStopLoop = (unit->order_queue_tail == nullptr);
 
 					while (!bStopLoop)
 					{
-						if (!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
-							unit->orderQueueTail->orderId != OrderId::ComputerAI
+						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId] &&
+							unit->order_queue_tail->orderId != OrderId::ComputerAI
 							)
 							bStopLoop = true;
 						else
-							helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
+							helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 					}
 
 					unit->perform_another_order(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
@@ -279,9 +279,9 @@ namespace hooks
 			else
 			{ //54A47
 
-				if (unit->orderQueueHead != nullptr)
+				if (unit->order_queue_head != nullptr)
 				{
-					unit->userActionFlags |= 1;
+					unit->user_action_flags |= 1;
 					prepareForNextOrder(unit);
 				}
 				else

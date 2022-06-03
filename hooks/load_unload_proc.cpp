@@ -29,16 +29,16 @@ namespace hooks
 		{
 			for (;;)
 			{
-				u32* loadedUnitOffset = (u32*)&transport->loadedUnit[counter];
+				u32* loadedUnitOffset = (u32*)&transport->loaded_unit[counter];
 				if (*loadedUnitOffset == 0 ||
-					unitTable_0059CB64[transport->loadedUnit[counter].index].link.prev == nullptr)
+					unitTable_0059CB64[transport->loaded_unit[counter].index].link.prev == nullptr)
 				{
 					break;
 				}
 
-				Unit* current_loaded_unit = (Unit*)&(unitTable_0059CB58[transport->loadedUnit[counter].index]);
+				Unit* current_loaded_unit = (Unit*)&(unitTable_0059CB58[transport->loaded_unit[counter].index]);
 				if ((current_loaded_unit->main_order_id == OrderId::Die && current_loaded_unit->main_order_state == 1) ||
-					current_loaded_unit->targetOrderSpecial != transport->loadedUnit[counter].unitId)
+					current_loaded_unit->target_order_special != transport->loaded_unit[counter].unit_id)
 				{
 					break;
 				}
@@ -107,7 +107,7 @@ namespace hooks
 			POPAD
 		}
 
-		cargo_unit->connectedUnit = transport;
+		cargo_unit->connected_unit = transport;
 
 		/*
 		s32 unit_array_length = UNIT_ARRAY_LENGTH;
@@ -119,13 +119,13 @@ namespace hooks
 
 		if (loaded_index < UNIT_ARRAY_LENGTH)
 		{
-			transport->loadedUnit[counter].index = loaded_index;
-			transport->loadedUnit[counter].unitId = cargo_unit->targetOrderSpecial;
+			transport->loaded_unit[counter].index = loaded_index;
+			transport->loaded_unit[counter].unit_id = cargo_unit->target_order_special;
 		}
 		else
 		{
-			transport->loadedUnit[counter].index = 0;
-			transport->loadedUnit[counter].unitId = 0;
+			transport->loaded_unit[counter].index = 0;
+			transport->loaded_unit[counter].unit_id = 0;
 		}
 
 		// TODO: revisit those, seems like it should be cargo_unit
@@ -192,7 +192,7 @@ namespace hooks
 			}
 
 			// 004E7A81
-			cargo_unit->movementState = 0;
+			cargo_unit->movement_state = 0;
 			if (cargo_unit->sprite->elevationLevel < 12)
 			{
 				cargo_unit->pathingFlags |= 1;
@@ -224,7 +224,7 @@ namespace hooks
 				}
 
 				// 004E7B25
-				subUnit->movementState = 0;
+				subUnit->movement_state = 0;
 				if (subUnit->sprite->elevationLevel < 12)
 				{
 					subUnit->pathingFlags |= 1;
@@ -241,15 +241,15 @@ namespace hooks
 		}
 	}
 
-	// the transported unit is "unit", the transport is accessed through unit->connectedUnit
+	// the transported unit is "unit", the transport is accessed through unit->connected_unit
 	// Has a boolean return value
 	b32 unloadUnitProc(Unit* unit)
 	{
 		b32 return_value = 0;
-		if (unit->connectedUnit != nullptr)
+		if (unit->connected_unit != nullptr)
 		{
-			Unit* transport = unit->connectedUnit;
-			if ((transport->mainOrderTimer == 0 || transport->status & UnitStatus::GroundedBuilding)
+			Unit* transport = unit->connected_unit;
+			if ((transport->main_order_timer == 0 || transport->status & UnitStatus::GroundedBuilding)
 				&& !(transport->status & UnitStatus::Frozen)
 				&& transport->lockdownTimer == 0
 				&& transport->stasisTimer == 0
@@ -264,16 +264,16 @@ namespace hooks
 					{
 						if (transport->get_current_life_ingame() <= (transport->get_max_hp_ingame() * 0.5))
 						{
-							transport->mainOrderTimer = 7;
+							transport->main_order_timer = 7;
 						}
 						else
 						{
-							transport->mainOrderTimer = 10;
+							transport->main_order_timer = 10;
 						}
 					}
 					else
 					{
-						transport->mainOrderTimer = 15;
+						transport->main_order_timer = 15;
 					}
 
 					if ((unit->status & UnitStatus::IsBuilding) == 0)
@@ -317,7 +317,7 @@ namespace hooks
 							}
 						}
 					}
-					scbw::decloak_proc(unit->connectedUnit);
+					scbw::decloak_proc(unit->connected_unit);
 					scbw::decloak_proc(unit);
 					scbw::set_unit_position(unit, pos.x, pos.y);
 					if (unit->subunit != nullptr)
@@ -371,18 +371,18 @@ namespace hooks
 							u8 weaponId = unit->get_ground_weapon();
 							if (weaponId != WeaponId::None)
 							{
-								unit->groundWeaponCooldown = helper::get_upgraded_weapon_cooldown(unit, weaponId);
+								unit->ground_weapon_cooldown = helper::get_upgraded_weapon_cooldown(unit, weaponId);
 							}
 							weaponId = unit->getAirWeapon();
 							if (weaponId != WeaponId::None)
 							{
-								unit->airWeaponCooldown = helper::get_upgraded_weapon_cooldown(unit, weaponId);
+								unit->air_weapon_cooldown = helper::get_upgraded_weapon_cooldown(unit, weaponId);
 							}
-							unit->spellCooldown = 30;
+							unit->spell_cooldown = 30;
 						}
 						else
 						{
-							unit->mainOrderTimer = 30;
+							unit->main_order_timer = 30;
 						}
 					}
 				}

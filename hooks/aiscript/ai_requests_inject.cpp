@@ -73,7 +73,7 @@ namespace
 	void __declspec(naked) AIManageBuildingPlacement_Wrapper() // 004465C0
 	{
 		static Unit* builder;
-		static u32 unitId;
+		static u32 unit_id;
 		static Point16 tryPosition;
 		static Point16* outPosition;
 		static s32 areaTiles;
@@ -84,7 +84,7 @@ namespace
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV unitId, EAX
+			MOV unit_id, EAX
 			MOV EAX, [EBP + 0x0C]
 			MOV tryPosition, EAX
 			MOV EAX, [EBP + 0x10]
@@ -95,7 +95,7 @@ namespace
 			MOV builder, ECX
 			PUSHAD
 		}
-		result = hooks::ai_manage_building_placement(builder, unitId, tryPosition, outPosition, areaTiles);
+		result = hooks::ai_manage_building_placement(builder, unit_id, tryPosition, outPosition, areaTiles);
 		__asm
 		{
 			POPAD

@@ -295,7 +295,7 @@ namespace
 
 	void __declspec(naked) AI_GetBuildLocation_Wrapper() // 004461B0
 	{
-		static u32 unitId;
+		static u32 unit_id;
 		static char* placementData;
 		static u32 playerId;
 		static Point16 desiredPos;
@@ -313,10 +313,10 @@ namespace
 			MOV maxRange, EAX
 			POP EAX
 			MOV placementData, ESI
-			MOV unitId, EBX
+			MOV unit_id, EBX
 			PUSHAD
 		}
-		hooks::ai_get_build_location(unitId, placementData, playerId, desiredPos, maxRange);
+		hooks::ai_get_build_location(unit_id, placementData, playerId, desiredPos, maxRange);
 		__asm
 		{
 			POPAD

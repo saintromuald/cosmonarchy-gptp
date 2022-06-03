@@ -124,15 +124,15 @@ namespace hooks
 	// Hooked to investigate crashes and remove Archon hardcode - Pr0nogo
 	void ai_training_normal(Unit* newUnit, Unit* parentUnit) // 00435DB0
 	{
-		s16 unitId = newUnit->id;
-		if (!scbw::is_conventional_unit_morph_result(unitId))
+		s16 unit_id = newUnit->id;
+		if (!scbw::is_conventional_unit_morph_result(unit_id))
 		{
 			if (newUnit->status & UnitStatus::IsHallucination)
 			{
 				helper::add_military_ai(&AiRegionCaptains[(u8)newUnit->player][helper::get_region_id(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
 				return;
 			}
-			if (unitId != UnitId::TerranNuclearMissile && unitId != UnitId::ProtossWitness)
+			if (unit_id != UnitId::TerranNuclearMissile && unit_id != UnitId::ProtossWitness)
 			{
 				BuildingAi* parentUnitAi = (BuildingAi*)parentUnit->unit_ai;
 				BuildingAi* parentUnitAiBackup = (BuildingAi*)parentUnit->unit_ai;
@@ -163,13 +163,13 @@ namespace hooks
 							newUnit->unit_ai = 0;
 						}
 					}
-					else if (parentUnit->id == unitId)
+					else if (parentUnit->id == unit_id)
 					{
 						queueSlot = 0;
 					}
 					else
 					{
-						queueSlot = (u8)parentUnit->buildQueueSlot;
+						queueSlot = (u8)parentUnit->build_queue_slot;
 					}
 					AiRegion* region = (AiRegion*)parentUnitAi->trainQueueValues[queueSlot];
 					if (parentUnitAi->trainQueueTypes[queueSlot] == 2)
@@ -242,7 +242,7 @@ namespace hooks
 					ai->last_update_second = *elapsedTimeSeconds;
 					ai->wait_timer = 0;
 					ai->reassign_count = 0;
-					unit->worker.targetResource.unit = 0;
+					unit->worker.target_resource.unit = 0;
 					unit->unit_ai = (UnitAi*)ai;
 					++town->worker_count;
 
@@ -370,7 +370,7 @@ namespace hooks
 	// Hooked to rule out AI crashes - Pr0nogo
 	void ai_create_nuke(Unit* silo, Unit* result)	// 0045B7A0
 	{												// originally had 3 args; last one was unused
-		if (silo->id == UnitId::TerranNuclearSilo && !silo->building.silo.isReady)
+		if (silo->id == UnitId::TerranNuclearSilo && !silo->building.silo.is_ready)
 		{
 			Unit* nuke = helper::create_unit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->player);
 			if (nuke)
@@ -379,8 +379,8 @@ namespace hooks
 				helper::update_unit_strength_and_apply_default_orders(nuke);
 				helper::hideUnit(nuke);
 				silo->building.silo.nuke = nuke;
-				silo->building.silo.isReady = 1;
-				nuke->connectedUnit = silo;
+				silo->building.silo.is_ready = 1;
+				nuke->connected_unit = silo;
 				ai_training_unit(nuke, silo);
 			}
 		}
@@ -637,16 +637,16 @@ namespace hooks
 		UnitAi* unitAIVar = (UnitAi*)unit->unit_ai;
 		if (unitAIVar)
 		{
-			u16 unitId = unit->id;
-			u32 baseProperty = units_dat::BaseProperty[unitId];
+			u16 unit_id = unit->id;
+			u32 baseProperty = units_dat::BaseProperty[unit_id];
 			AiTown* town = nullptr;
 			if (!unitAI)
 			{
 				if (unitAIVar->type == AiType::Building
-					&& (baseProperty & UnitProperty::Building && unitId != UnitId::ResourceVespeneGeyser
-					|| unitId == UnitId::ZergLarva
+					&& (baseProperty & UnitProperty::Building && unit_id != UnitId::ResourceVespeneGeyser
+					|| unit_id == UnitId::ZergLarva
 					|| scbw::is_larval_egg(unit)
-					|| scbw::unit_id_is_zerg_supply(unitId)))
+					|| scbw::unit_id_is_zerg_supply(unit_id)))
 				{
 					BuildingAi* buildingAIVar = (BuildingAi*)unitAIVar;
 					town = buildingAIVar->town;

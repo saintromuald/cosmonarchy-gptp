@@ -55,7 +55,7 @@ namespace hooks
 					if (templar_merge_partner != nullptr)
 					{
 
-						templar_stored->userActionFlags |= 1;
+						templar_stored->user_action_flags |= 1;
 
 						if (templar_stored->main_order_id != OrderId::Die)
 						{
@@ -65,13 +65,13 @@ namespace hooks
 							while (bKeepLooping)
 							{
 
-								if (templar_stored->orderQueueTail == nullptr)
+								if (templar_stored->order_queue_tail == nullptr)
 									bKeepLooping = false;
 								else
-									if (orders_dat::CanBeInterrupted[templar_stored->orderQueueTail->orderId] ||
-										templar_stored->orderQueueTail->orderId == OrderId::WarpingDarkArchon
+									if (orders_dat::CanBeInterrupted[templar_stored->order_queue_tail->orderId] ||
+										templar_stored->order_queue_tail->orderId == OrderId::WarpingDarkArchon
 										)
-										helper::remove_order_from_unit_queue(templar_stored->orderQueueTail, templar_stored);
+										helper::remove_order_from_unit_queue(templar_stored->order_queue_tail, templar_stored);
 									else
 										bKeepLooping = false;
 
@@ -92,7 +92,7 @@ namespace hooks
 
 						prepareForNextOrder(templar_stored);
 
-						templar_merge_partner->userActionFlags |= 1;
+						templar_merge_partner->user_action_flags |= 1;
 
 						if (templar_merge_partner->main_order_id != OrderId::Die)
 						{
@@ -102,13 +102,13 @@ namespace hooks
 							while (bKeepLooping)
 							{
 
-								if (templar_merge_partner->orderQueueTail == nullptr)
+								if (templar_merge_partner->order_queue_tail == nullptr)
 									bKeepLooping = false;
 								else
-									if (orders_dat::CanBeInterrupted[templar_merge_partner->orderQueueTail->orderId] ||
-										templar_merge_partner->orderQueueTail->orderId == OrderId::WarpingDarkArchon
+									if (orders_dat::CanBeInterrupted[templar_merge_partner->order_queue_tail->orderId] ||
+										templar_merge_partner->order_queue_tail->orderId == OrderId::WarpingDarkArchon
 										)
-										helper::remove_order_from_unit_queue(templar_merge_partner->orderQueueTail, templar_merge_partner);
+										helper::remove_order_from_unit_queue(templar_merge_partner->order_queue_tail, templar_merge_partner);
 									else
 										bKeepLooping = false;
 
@@ -195,7 +195,7 @@ namespace hooks
 					if (templar_merge_partner != nullptr)
 					{
 
-						templar_stored->userActionFlags |= 1;
+						templar_stored->user_action_flags |= 1;
 
 						if (templar_stored->main_order_id != OrderId::Die)
 						{
@@ -205,13 +205,13 @@ namespace hooks
 							while (bKeepLooping)
 							{
 
-								if (templar_stored->orderQueueTail == nullptr)
+								if (templar_stored->order_queue_tail == nullptr)
 									bKeepLooping = false;
 								else
-									if (orders_dat::CanBeInterrupted[templar_stored->orderQueueTail->orderId] ||
-										templar_stored->orderQueueTail->orderId == OrderId::WarpingArchon
+									if (orders_dat::CanBeInterrupted[templar_stored->order_queue_tail->orderId] ||
+										templar_stored->order_queue_tail->orderId == OrderId::WarpingArchon
 										)
-										helper::remove_order_from_unit_queue(templar_stored->orderQueueTail, templar_stored);
+										helper::remove_order_from_unit_queue(templar_stored->order_queue_tail, templar_stored);
 									else
 										bKeepLooping = false;
 
@@ -232,7 +232,7 @@ namespace hooks
 
 						prepareForNextOrder(templar_stored);
 
-						templar_merge_partner->userActionFlags |= 1;
+						templar_merge_partner->user_action_flags |= 1;
 
 						if (templar_merge_partner->main_order_id != OrderId::Die)
 						{
@@ -242,13 +242,13 @@ namespace hooks
 							while (bKeepLooping)
 							{
 
-								if (templar_merge_partner->orderQueueTail == nullptr)
+								if (templar_merge_partner->order_queue_tail == nullptr)
 									bKeepLooping = false;
 								else
-									if (orders_dat::CanBeInterrupted[templar_merge_partner->orderQueueTail->orderId] ||
-										templar_merge_partner->orderQueueTail->orderId == OrderId::WarpingArchon
+									if (orders_dat::CanBeInterrupted[templar_merge_partner->order_queue_tail->orderId] ||
+										templar_merge_partner->order_queue_tail->orderId == OrderId::WarpingArchon
 										)
-										helper::remove_order_from_unit_queue(templar_merge_partner->orderQueueTail, templar_merge_partner);
+										helper::remove_order_from_unit_queue(templar_merge_partner->order_queue_tail, templar_merge_partner);
 									else
 										bKeepLooping = false;
 

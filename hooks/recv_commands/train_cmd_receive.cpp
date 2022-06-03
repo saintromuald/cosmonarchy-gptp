@@ -37,7 +37,7 @@ namespace hooks
 				{
 					if (current_selection->secondaryOrderState != 2)
 					{
-						current_selection->secondaryOrderId = OrderId::TrainFighter;
+						current_selection->secondary_order_id = OrderId::TrainFighter;
 						current_selection->secondaryOrderPos.y = 0;
 						current_selection->secondaryOrderPos.x = 0;
 						current_selection->currentBuildUnit = nullptr;

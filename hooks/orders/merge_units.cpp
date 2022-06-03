@@ -131,13 +131,13 @@ namespace hooks
 	void orders_WarpingDarkArchon(Unit* unit)
 	{
 
-		Unit* targetUnit = unit->orderTarget.unit;
+		Unit* targetUnit = unit->order_target.unit;
 
 		if (
 			targetUnit == nullptr ||
 			unit->player != targetUnit->player ||
 			targetUnit->main_order_id != OrderId::WarpingDarkArchon ||
-			targetUnit->orderTarget.unit != unit
+			targetUnit->order_target.unit != unit
 			)
 		{	//conditions for merge not ok
 
@@ -156,12 +156,12 @@ namespace hooks
 
 			//9485F
 
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
 
 				//94866
 
-				unit->userActionFlags |= 1;	//set flag
+				unit->user_action_flags |= 1;	//set flag
 				prepareForNextOrder(unit);
 
 			}
@@ -309,11 +309,11 @@ namespace hooks
 				helper::change_unit_buttonset(unit, UnitId::None);
 				scbw::refresh_console();
 
-				unit->killCount += targetUnit->killCount;
+				unit->kill_count += targetUnit->kill_count;
 				unit->energy = 12800;	//50 energy ingame
 
 				//remove the 2nd unit of the merge process
-				targetUnit->userActionFlags |= 4;
+				targetUnit->user_action_flags |= 4;
 				targetUnit->remove();
 
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
@@ -332,12 +332,12 @@ namespace hooks
 	void orders_WarpingArchon(Unit* unit)
 	{
 
-		Unit* targetUnit = unit->orderTarget.unit;
+		Unit* targetUnit = unit->order_target.unit;
 		if (
 			targetUnit == nullptr ||
 			unit->player != targetUnit->player ||
 			targetUnit->main_order_id != OrderId::WarpingArchon ||
-			targetUnit->orderTarget.unit != unit
+			targetUnit->order_target.unit != unit
 			)
 		{	//conditions for merge not ok
 
@@ -356,11 +356,11 @@ namespace hooks
 
 			//94A66
 
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
 
 				//94866
-				unit->userActionFlags |= 1;	//set flag
+				unit->user_action_flags |= 1;	//set flag
 				prepareForNextOrder(unit);
 
 			}
@@ -506,10 +506,10 @@ namespace hooks
 				helper::change_unit_buttonset(unit, UnitId::None);
 				scbw::refresh_console();
 
-				unit->killCount += targetUnit->killCount;
+				unit->kill_count += targetUnit->kill_count;
 
 				//remove the 2nd unit of the merge process
-				targetUnit->userActionFlags |= 4;
+				targetUnit->user_action_flags |= 4;
 				targetUnit->remove();
 
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set

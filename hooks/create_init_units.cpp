@@ -230,11 +230,11 @@ namespace hooks
 
 				if (startingUnits == 1 || startingUnits == 2)
 				{
-					u8 unitId = GetRaceWorker(*raceIdOffset);
+					u8 unit_id = GetRaceWorker(*raceIdOffset);
 					u8 townhallId = GetRaceTownhall(*raceIdOffset);
 					Unit* created_unit;
 
-					if (unitId != UnitId::None)
+					if (unit_id != UnitId::None)
 					{
 						Point16 startPos = startPositions[playerId];
 						bool horizontal = true;
@@ -243,13 +243,13 @@ namespace hooks
 						for (s32 i = 0; i < 6; i++)
 						{
 							const s32 correctionOffset = 1;
-							const s32 unitWidth = units_dat::UnitBounds[unitId].left + units_dat::UnitBounds[unitId].right + correctionOffset;
-							const s32 unitHeight = units_dat::UnitBounds[unitId].bottom + units_dat::UnitBounds[unitId].top + correctionOffset;
+							const s32 unitWidth = units_dat::UnitBounds[unit_id].left + units_dat::UnitBounds[unit_id].right + correctionOffset;
+							const s32 unitHeight = units_dat::UnitBounds[unit_id].bottom + units_dat::UnitBounds[unit_id].top + correctionOffset;
 
 							if (horizontal) pos.x += unitWidth;
 							else pos.y -= unitHeight;
 
-							created_unit = helper::create_unit(unitId, pos.x, pos.y, playerId);
+							created_unit = helper::create_unit(unit_id, pos.x, pos.y, playerId);
 							scbw::teleport(created_unit, pos);
 
 							if (created_unit != nullptr)
@@ -327,7 +327,7 @@ namespace hooks
 				char buffer[256] = {};
 				sprintf_s(buffer, 256, text, text2, unit->sprite->position.x, unit->sprite->position.y);
 				helper::unit_placement_error(buffer, 3);
-				unit->userActionFlags |= 4u;
+				unit->user_action_flags |= 4u;
 				helper::orders_self_destructing(unit);
 			}
 		} else {

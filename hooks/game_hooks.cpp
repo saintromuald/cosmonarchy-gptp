@@ -290,10 +290,10 @@ namespace hooks
 
 			if (selected
 				&& selected->id == UnitId::ZergNydusCanal
-				&& selected->building.nydusExit
+				&& selected->building.nydus_exit
 				&& (scbw::is_allied_to(selected->player, *LOCAL_HUMAN_ID) || helper::get_detecting_players(selected) & (1 << *LOCAL_HUMAN_ID)))
 			{
-				Unit* exit = selected->building.nydusExit;
+				Unit* exit = selected->building.nydus_exit;
 				graphics::draw_line(selected->get_x(), selected->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
 			}
 		}
@@ -337,7 +337,7 @@ namespace hooks
 				switch (unit->unit_ai->type) {
 					case AiType::Building:
 					case AiType::Worker: {
-						unit->mainOrderTimer = 0;
+						unit->main_order_timer = 0;
 					} break;
 				}
 			}
@@ -357,7 +357,7 @@ namespace hooks
 			case UnitId::TerranTalos:
 			{
 				if (unit->main_order_id == OrderId::TalosSalvage) {
-					Unit* target = unit->orderTarget.unit;
+					Unit* target = unit->order_target.unit;
 					if (target) {
 						if (unit->is_target_within_min_range(target, unit->get_max_weapon_range(unit->get_ground_weapon()))) {
 							UnitExt* targetExt = globals.get_unit_ext(target);
@@ -484,7 +484,7 @@ namespace hooks
 						Unit* egg = scbw::create_unit_ingame(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
 							egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
-							egg->buildQueue[egg->buildQueueSlot] = UnitId::ZergSovroleth;
+							egg->build_queue[egg->build_queue_slot] = UnitId::ZergSovroleth;
 
 							UnitExt* eggExt = globals.get_unit_ext(egg);
 							eggExt->timers[TimerCorpseCocoonHatch] = 2 * 24;
@@ -519,7 +519,7 @@ namespace hooks
 					helper::replace_unit_with_type(unit, UnitId::ZergSovroleth);
 					scbw::give_ai_ex(unit, true);
 					helper::play_morphing_complete_sound(unit);
-					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+					unit->build_queue[unit->build_queue_slot] = UnitId::None;
 					helper::init_building(unit, 1);
 					unitExt->values[ValueSpecialSovrolethBirth] = true;
 					unit->order_computer(OrderId::ZergBirth);
@@ -558,19 +558,19 @@ namespace hooks
 							}
 							auto X = unit->get_x() + offset.x;
 							auto Y = unit->get_y() + offset.y;
-							auto target_unit = unit->orderTarget.unit;
-							auto target_pos = unit->orderTarget.pt;
+							auto target_unit = unit->order_target.unit;
+							auto target_pos = unit->order_target.pt;
 							auto offset_direction = -40 + arc * 16;
 							auto maxRange = weapons_dat::MaxRange[WeaponId::StarSovereignInterventionMissiles];
 							auto polar_x = unit->get_x() + scbw::get_polar_x(maxRange, scbw::dir_saturate(unit->current_direction_1, offset_direction));
 							auto polar_y = unit->get_y() + scbw::get_polar_y(maxRange, scbw::dir_saturate(unit->current_direction_1, offset_direction));
-							unit->orderTarget.unit = nullptr;
-							unit->orderTarget.pt.x = polar_x;
-							unit->orderTarget.pt.y = polar_y;
+							unit->order_target.unit = nullptr;
+							unit->order_target.pt.x = polar_x;
+							unit->order_target.pt.y = polar_y;
 							helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player, scbw::dir_saturate(unit->current_direction_1, offset_direction));
 							helper::play_sound_from_unit(80, unit, 1, 0);
-							unit->orderTarget.unit = target_unit;
-							unit->orderTarget.pt = target_pos;
+							unit->order_target.unit = target_unit;
+							unit->order_target.pt = target_pos;
 						}
 					}
 				}
@@ -738,10 +738,10 @@ namespace hooks
 			{
 				// Striga - Transient Travels
 				// Legionnaire - Blade Vortex
-				if (unit->orderTarget.unit != nullptr
+				if (unit->order_target.unit != nullptr
 					&& (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit))
 				{
-					Unit* target = unit->orderTarget.unit;
+					Unit* target = unit->order_target.unit;
 					u32 distance = unit->get_distance_to_target(target);
 					bool doTeleport = false;
 					u32 imageId;
@@ -815,8 +815,8 @@ namespace hooks
 						s32 forwardOffset = weapons_dat::ForwardOffset[10];
 						auto source_x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
 						auto source_y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1) - weapons_dat::VerticalOffset[10];
-						unit->orderTarget.unit = nullptr;
-						unit->orderTarget.pt = missile_target;
+						unit->order_target.unit = nullptr;
+						unit->order_target.pt = missile_target;
 						auto range = 64;
 
 						auto targ = scbw::UnitFinder::get_nearest_target(
@@ -844,7 +844,7 @@ namespace hooks
 						);
 						if (targ != nullptr)
 						{
-							unit->orderTarget.unit = targ;
+							unit->order_target.unit = targ;
 						}
 						helper::create_bullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->player, unit->current_direction_1);
 					}
@@ -911,9 +911,9 @@ namespace hooks
 				if (unit->order_signal & 0x20)
 				{
 					unit->order_signal &= ~0x20;
-					if (unit->orderTarget.unit != nullptr)
+					if (unit->order_target.unit != nullptr)
 					{
-						if (unit->get_distance_to_target(unit->orderTarget.unit) <= CentaurMissileDistance)
+						if (unit->get_distance_to_target(unit->order_target.unit) <= CentaurMissileDistance)
 						{
 							unit->play_iscript_animation(IscriptAnimation::Unused2);
 						}
@@ -925,9 +925,9 @@ namespace hooks
 				if (unit->order_signal & 0x20)
 				{
 					unit->order_signal &= ~0x20;
-					if (unit->orderTarget.unit != nullptr && !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
+					if (unit->order_target.unit != nullptr && !(units_dat::BaseProperty[unit->order_target.unit->id] & UnitProperty::Flyer))
 					{
-						if (unit->get_distance_to_target(unit->orderTarget.unit) <= OlympianMeleeDistance)
+						if (unit->get_distance_to_target(unit->order_target.unit) <= OlympianMeleeDistance)
 						{
 							unit->play_iscript_animation(IscriptAnimation::SpecialState1);
 						}
@@ -1105,7 +1105,7 @@ namespace hooks
 
 				if (unit->main_order_id == OrderId::Follow || unit->main_order_id == OrderId::AttackUnit)
 				{
-					unit->order_to(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
 				}
 
 				if (unit->main_order_id == OrderId::Move)
@@ -1309,8 +1309,8 @@ namespace hooks
 
 		// Fix target clearing bug
 		/*
-		if (unit->orderTarget.unit
-			&& !(unit->orderTarget.unit->visibilityStatus & (1 << unit->playerId)))
+		if (unit->order_target.unit
+			&& !(unit->order_target.unit->visibilityStatus & (1 << unit->playerId)))
 		{
 			scbw::print("lard");
 			unit->order_to_idle();
@@ -1367,7 +1367,7 @@ namespace hooks
 		// Play addon work animations when related units are being trained by parent structure
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->building.addon && unit->building.addon->status & UnitStatus::Completed)
 		{
-			u16 unit_id = unit->buildQueue[unit->buildQueueSlot];
+			u16 unit_id = unit->build_queue[unit->build_queue_slot];
 			if (unit_id != UnitId::None && !scbw::unit_id_is_available_without_an_addon(unit_id))
 			{
 				unitExt->values[ValuePlayingAddonWorkingAnim] = 1;
@@ -1485,8 +1485,8 @@ namespace hooks
 		}
 
 		// Solarion - Auto Train
-		if (unit->id == UnitId::ProtossSolarion && unit->carrier.inHangarCount + unit->carrier.outHangarCount < 12) {
-			unit->buildQueue[unit->buildQueueSlot] = UnitId::ProtossSteward;
+		if (unit->id == UnitId::ProtossSolarion && unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count < 12) {
+			unit->build_queue[unit->build_queue_slot] = UnitId::ProtossSteward;
 			unit->set_secondary_order(OrderId::TrainFighter);
 		}
 
@@ -1508,7 +1508,7 @@ namespace hooks
 		// Akistrokor - Blissful Embrace ability
 		if (unit->id == UnitId::ZergAkistrokor) {
 			if (unit->main_order_id == OrderId::BlissfulEmbrace) {
-				Unit* target = unit->orderTarget.unit;
+				Unit* target = unit->order_target.unit;
 				if (target && target->hitpoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
 					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->player != target->player) {
 					UnitExt* target_ext = globals.get_unit_ext(target);
@@ -1817,7 +1817,7 @@ namespace hooks
 				if (scbw::unit_id_is_gas_structure(target->id)) {
 					continue;
 				}
-				if (target->id == UnitId::ZergNydusCanal && target->building.nydusExit) {
+				if (target->id == UnitId::ZergNydusCanal && target->building.nydus_exit) {
 					continue;
 				}
 

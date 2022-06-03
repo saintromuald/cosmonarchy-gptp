@@ -5,7 +5,7 @@ namespace AI
 {
 	Unit* findBestLockdownTarget(Unit* caster, bool isUnderAttack)
 	{
-		if (caster->vulture.spiderMineCount == 0)
+		if (caster->mine_carrier.mine_count == 0)
 		{
 			return false;
 		}
@@ -24,7 +24,7 @@ namespace AI
 			bounds = 32 * 32;
 		}
 
-		if (caster->vulture.spiderMineCount == 0)
+		if (caster->mine_carrier.mine_count == 0)
 		{
 			return nullptr;
 		}

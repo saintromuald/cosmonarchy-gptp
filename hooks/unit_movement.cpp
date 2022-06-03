@@ -38,7 +38,7 @@ namespace hooks
 				return 0;
 			}
 		}
-		unit->movementState = 9; // At rest
+		unit->movement_state = 9; // At rest
 		return 1;
 	}
 

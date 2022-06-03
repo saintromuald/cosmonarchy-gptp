@@ -7,15 +7,15 @@ namespace
 	{
 		static const u32 JUMPBACK_POINT_WIREFRAME = 0x00456955;
 		static Unit* unit;
-		static u16 unitId;
+		static u16 unit_id;
 		__asm {
 			MOV unit, ESI
 			PUSHAD
 		}
-		unitId = hooks::statdata_UnitWireframeUpdate_Fragment(unit);
+		unit_id = hooks::statdata_UnitWireframeUpdate_Fragment(unit);
 		__asm {
 			POPAD
-			MOVZX ECX, unitId
+			MOVZX ECX, unit_id
 			JMP JUMPBACK_POINT_WIREFRAME
 		}
 	}

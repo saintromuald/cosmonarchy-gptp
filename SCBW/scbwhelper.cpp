@@ -1658,14 +1658,14 @@ namespace helper
 		return result;
 	}
 
-	s32 ai_get_queued_count(Unit* builder, u32 unitId)
+	s32 ai_get_queued_count(Unit* builder, u32 unit_id)
 	{
 		const u32 Func_AI_GetQueuedCount = 0x00466B70;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, builder
-			MOV EDI, unitId
+			MOV EDI, unit_id
 			CALL Func_AI_GetQueuedCount
 			MOV result, EAX
 			POPAD
@@ -1673,13 +1673,13 @@ namespace helper
 		return result;
 	}
 
-	void prepare_guard_ai(u16 y, u32 player, u16 unitId, u16 x)
+	void prepare_guard_ai(u16 y, u32 player, u16 unit_id, u16 x)
 	{
 		const u32 Func_AI_PrepareGuardAI = 0x00462670;
 		__asm {
 			PUSHAD
 			PUSH x
-			PUSH unitId
+			PUSH unit_id
 			MOV ESI, player
 			MOVZX DI, y
 			CALL Func_AI_PrepareGuardAI
@@ -1690,14 +1690,14 @@ namespace helper
 	// AI attack wave extender
 
 	// for AI_TrainAttackForce
-	s32 ai_add_to_region_military(AiRegion* region, s32 unitId, s32 priority)
+	s32 ai_add_to_region_military(AiRegion* region, s32 unit_id, s32 priority)
 	{
 		const u32 Func_AI_AddRegionToMilitary = 0x0043E2E0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH priority
-			PUSH unitId
+			PUSH unit_id
 			MOV EAX, region
 			CALL Func_AI_AddRegionToMilitary
 			MOV result, EAX
@@ -1706,7 +1706,7 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_add_cost_to_needs(u32 unitId, u32 playerId, u32 type)
+	u32 ai_add_cost_to_needs(u32 unit_id, u32 playerId, u32 type)
 	{
 		const u32 Func_AI_FindUnit = 0x00447DC0;
 		static u32 typeXD = type;
@@ -1715,7 +1715,7 @@ namespace helper
 			PUSHAD
 			PUSH typeXD
 			MOV EBX, playerId
-			MOV EAX, unitId
+			MOV EAX, unit_id
 			CALL Func_AI_FindUnit
 			MOV result, EAX
 			POPAD
@@ -1723,7 +1723,7 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_add_spending_request(u16 unitId, u32 player, u8 type, char priority, void* value)
+	u32 ai_add_spending_request(u16 unit_id, u32 player, u8 type, char priority, void* value)
 	{
 		const u32 Func_AI_AddSpendingRequest = 0x00447980;
 		u32 type32 = type;
@@ -1734,7 +1734,7 @@ namespace helper
 			PUSH priority
 			MOV ECX, type32
 			MOV EDX, player
-			MOV AX, unitId
+			MOV AX, unit_id
 			CALL Func_AI_AddSpendingRequest
 			MOV result, EAX
 			POPAD
@@ -1742,7 +1742,7 @@ namespace helper
 		return result;
 	}
 
-	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiRegion* region, char priority)
+	u32 AI_AddBaseUnitSpendingRequest(u32 unit_id, u32 player, AiRegion* region, char priority)
 	{
 		const u32 Func_AI_AddBaseUnitSpendingRequest = 0x004484A0;
 		static u32 result;
@@ -1751,7 +1751,7 @@ namespace helper
 			PUSH priority
 			MOV ESI, region
 			MOV ECX, player
-			MOV EAX, unitId
+			MOV EAX, unit_id
 			CALL Func_AI_AddBaseUnitSpendingRequest
 			MOV result, EAX
 			POPAD
@@ -2415,7 +2415,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	Unit* begin_gas_building(Unit* unit, u32 unitId)
+	Unit* begin_gas_building(Unit* unit, u32 unit_id)
 	{
 		const u32 Func_beginGasBuilding = 0x004678A0;
 		static Unit* newUnit;
@@ -2423,7 +2423,7 @@ namespace helper
 		{
 			PUSHAD
 			MOV EAX, unit
-			PUSH unitId
+			PUSH unit_id
 			CALL Func_beginGasBuilding
 			MOV newUnit, EAX
 			POPAD
@@ -2820,12 +2820,12 @@ namespace helper
 		}
 	}
 
-	void refundBuildingCost(u16 unitId, u8 playerId)
+	void refundBuildingCost(u16 unit_id, u8 playerId)
 	{
 		const u32 Func_refundBuildingCost = 0x0042CE70;
 		__asm {
 			PUSHAD
-			MOV AX, unitId
+			MOV AX, unit_id
 			MOV CL, playerId
 			CALL Func_refundBuildingCost
 			POPAD
@@ -2893,7 +2893,7 @@ namespace helper
 		}
 	}
 
-	void updateCreepDisappearance(Sprite* sprite, u32 unitId, s32 x, s32 y)
+	void updateCreepDisappearance(Sprite* sprite, u32 unit_id, s32 x, s32 y)
 	{
 		const u32 Func_updateCreepDisappearance = 0x0047DE40;
 		__asm {
@@ -2901,7 +2901,7 @@ namespace helper
 			MOV ECX, y
 			MOV EDX, x
 			MOV ESI, sprite
-			PUSH unitId
+			PUSH unit_id
 			CALL Func_updateCreepDisappearance
 			POPAD
 		}
@@ -2956,12 +2956,12 @@ namespace helper
 		}
 	}
 
-	void fix_target_location(Point16* coords, u32 unitId)
+	void fix_target_location(Point16* coords, u32 unit_id)
 	{
 		const u32 Func_fixTargetLocation = 0x00401FA0;
 		__asm {
 			PUSHAD
-			MOV EAX, unitId
+			MOV EAX, unit_id
 			MOV EDX, coords
 			CALL Func_fixTargetLocation
 			POPAD
@@ -3464,13 +3464,13 @@ namespace helper
 		}
 	}
 
-	b32 spreads_creep(u32 unitId, b32 defaultReturn)
+	b32 spreads_creep(u32 unit_id, b32 defaultReturn)
 	{
 		const u32 Func_spreadsCreep = 0x00413870;
 		b32 bReturnValue;
 		__asm {
 			PUSHAD
-			MOV EAX, unitId
+			MOV EAX, unit_id
 			PUSH defaultReturn
 			CALL Func_spreadsCreep
 			MOV bReturnValue, EAX
@@ -3479,14 +3479,14 @@ namespace helper
 		return bReturnValue;
 	}
 
-	void applyCreepAtLocationFromUnitType(s32 x, s32 y, u32 unitId)
+	void applyCreepAtLocationFromUnitType(s32 x, s32 y, u32 unit_id)
 	{
 		const u32 Func_applyCreepAtLocationFromUnitType = 0x004148F0;
 		__asm {
 			PUSHAD
 			PUSH y
 			PUSH x
-			PUSH unitId
+			PUSH unit_id
 			CALL Func_applyCreepAtLocationFromUnitType
 			POPAD
 		}
@@ -3551,7 +3551,7 @@ namespace helper
 		return unit;
 	}
 
-	u8 spreadCreep(u32 unitId, s32 x, s32 y)
+	u8 spreadCreep(u32 unit_id, s32 x, s32 y)
 	{
 		const u32 Func_Sub414680 = 0x00414680;
 		static u8 return_value;
@@ -3559,7 +3559,7 @@ namespace helper
 			PUSHAD
 			MOV ECX, x
 			MOV EAX, y
-			MOV EDX, unitId
+			MOV EDX, unit_id
 			CALL Func_Sub414680
 			MOV return_value, AL
 			POPAD
@@ -3652,7 +3652,7 @@ namespace helper
 
 	// Note: this function was made from what was seen in this case of use, some things are hardcoded because it's hard to tell what is used or not.
 	// Basically, used elsewhere, the function would be implemented differently
-	void TargetedOrderCopy(Unit* unit, u32 unitId, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5)
+	void TargetedOrderCopy(Unit* unit, u32 unit_id, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5)
 	{
 		const u32 Func_TargetedOrderCopy = 0x004754F0;
 		__asm
@@ -3660,7 +3660,7 @@ namespace helper
 			PUSHAD
 			MOV EAX, 0
 			MOV EDX, 0
-			MOV EBX, unitId
+			MOV EBX, unit_id
 			MOV ESI, unit
 			PUSH unk1
 			PUSH unk2
@@ -4282,12 +4282,12 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	void apply_speed_upgrade_from_upgrade_id(Unit* unit, u8 upgradeType)
+	void apply_speed_upgrade_from_upgrade_id(Unit* unit, u8 upgrade_id)
 	{
 		const u32 Func_ApplySpeedUpgradeFromUpgradeType = 0x00454540;
 		__asm {
 			PUSHAD
-			MOV AL, upgradeType
+			MOV AL, upgrade_id
 			PUSH unit
 			CALL Func_ApplySpeedUpgradeFromUpgradeType
 			POPAD
@@ -4314,20 +4314,20 @@ namespace helper
 		}
 	}
 
-	void set_upgrade_level(u32 playerId, u32 upgradeType, u8 upgradeLevel)
+	void set_upgrade_level(u32 playerId, u32 upgrade_id, u8 upgrade_level)
 	{
 		const u32 Func_setUpgradeLevel = 0x004CE770;
 		__asm {
 			PUSHAD
-			MOV DL, upgradeLevel
-			MOV ECX, upgradeType
+			MOV DL, upgrade_level
+			MOV ECX, upgrade_id
 			MOV EAX, playerId
 			CALL Func_setUpgradeLevel
 			POPAD
 		}
 	}
 
-	// return true if remainingBuildTime was 0 when called, remainingBuildTime change affected by cheating
+	// return true if remaining_build_time was 0 when called, remaining_build_time change affected by cheating
 	bool advance_remaining_build_time(Unit* unit)
 	{
 		u32 Func_advanceRemainingBuildTime = 0x00466940;
@@ -5233,7 +5233,7 @@ namespace helper
 		return result;
 	}
 
-	bool has_supplies_for_unit(u32 unitId, u32 playerId, b32 canShowErrorMessage)
+	bool has_supplies_for_unit(u32 unit_id, u32 playerId, b32 canShowErrorMessage)
 	{
 		return 1; // Supply was removed
 
@@ -5243,7 +5243,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH canShowErrorMessage
-			PUSH unitId
+			PUSH unit_id
 			PUSH playerId
 			CALL Func_hasSuppliesForUnit
 			MOV bPreResult, EAX
@@ -5878,33 +5878,33 @@ namespace helper
 	{
 		if (*CHEAT_STATE & CheatFlags::OperationCwal)
 		{
-			return unit->buildRepairHpGain * 16;
+			return unit->build_repair_hp_gain * 16;
 		}
 		else
 		{
-			return unit->buildRepairHpGain;
+			return unit->build_repair_hp_gain;
 		}
 	}
 
-	void refund_unit_train_cost(u32 unitId, u8 playerId)
+	void refund_unit_train_cost(u32 unit_id, u8 playerId)
 	{
 		const u32 Func_refundUnitTrainCost = 0x0042CEC0;
 		__asm {
 			PUSHAD
-			MOV ECX, unitId
+			MOV ECX, unit_id
 			MOV AL, playerId
 			CALL Func_refundUnitTrainCost
 			POPAD
 		}
 	}
 
-	void function_00432430(Unit* unit, u32 buildQueueSlot)
+	void function_00432430(Unit* unit, u32 build_queue_slot)
 	{
 		const u32 Func_Sub432430 = 0x00432430;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			MOV ECX, buildQueueSlot
+			MOV ECX, build_queue_slot
 			CALL Func_Sub432430
 			POPAD
 		}
@@ -6150,7 +6150,7 @@ namespace helper
 		}
 	}
 
-	bool can_unit_id_fit_at_xy(s32 x, s32 y, u32 unitId)
+	bool can_unit_id_fit_at_xy(s32 x, s32 y, u32 unit_id)
 	{
 		const u32 Func_Sub42D810 = 0x0042D810;
 		static b32 bPreReturnValue;
@@ -6158,7 +6158,7 @@ namespace helper
 			PUSHAD
 			MOV EAX, x
 			MOV EDI, y
-			MOV EBX, unitId
+			MOV EBX, unit_id
 			CALL Func_Sub42D810
 			MOV bPreReturnValue, EAX
 			POPAD
@@ -6199,19 +6199,19 @@ namespace helper
 	void increment_unit_kill_count(Unit* unit)
 	{
 		Unit* temp_unit = unit;
-		if (temp_unit->killCount < 255)
+		if (temp_unit->kill_count < 255)
 		{
-			temp_unit->killCount++;
+			temp_unit->kill_count++;
 		}
 		while (
 			temp_unit->id == UnitId::ProtossSteward &&
-			temp_unit->interceptor.parent != nullptr
+			temp_unit->hangar_unit.parent != nullptr
 			)
 		{
-			temp_unit = temp_unit->interceptor.parent;
-			if (temp_unit->killCount < 255)
+			temp_unit = temp_unit->hangar_unit.parent;
+			if (temp_unit->kill_count < 255)
 			{
-				temp_unit->killCount++;
+				temp_unit->kill_count++;
 			}
 		}
 	}
@@ -6502,14 +6502,14 @@ namespace helper
 		}
 	}
 
-	bool unit_isUnselectable(u16 unitId)
+	bool unit_isUnselectable(u16 unit_id)
 	{
 		const u32 Func_Unit_isUnselectable = 0x0046ED80;
 		b32 bHalfReturnValue;
 		__asm {
 			PUSHAD
 			XOR EBX, EBX
-			MOV BX, unitId
+			MOV BX, unit_id
 			MOV EAX, EBX
 			CALL Func_Unit_isUnselectable
 			MOV bHalfReturnValue, EAX
@@ -6630,9 +6630,9 @@ namespace helper
 	void secondaryOrder_Cloak(Unit* unit)
 	{
 		static Unit** const firstBurrowedUnit = (Unit**)0x0063FF5C;
-		unit->isCloaked++;
+		unit->is_cloaked++;
 		if (
-			unit->isCloaked == 1 &&
+			unit->is_cloaked == 1 &&
 			!(unit->status & UnitStatus::RequiresDetection) &&
 			unit->burrow_link.next == nullptr
 			)
@@ -7090,7 +7090,7 @@ namespace helper
 		return result;
 	}
 
-	// unkRepairInfo may be related to unit->worker.repairResourceLossTimer
+	// unkRepairInfo may be related to unit->worker.repair_resource_loss_timer
 	void getRepairInfo(Unit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo)
 	{
 		const u32 Func_getRepairInfo = 0x00466D10;
@@ -7514,19 +7514,19 @@ namespace helper
 	void updateMineralPatchImage(Unit* mineralPatch)
 	{
 		IscriptAnimation::Enum anim;
-		if (mineralPatch->building.resource.resourceAmount >= 750)
+		if (mineralPatch->building.resource.resource_amount >= 750)
 		{
 			anim = IscriptAnimation::WorkingToIdle;
 		}
-		else if (mineralPatch->building.resource.resourceAmount >= 500)
+		else if (mineralPatch->building.resource.resource_amount >= 500)
 		{
 			anim = IscriptAnimation::AlmostBuilt;
 		}
-		else if (mineralPatch->building.resource.resourceAmount >= 250)
+		else if (mineralPatch->building.resource.resource_amount >= 250)
 		{
 			anim = IscriptAnimation::SpecialState2;
 		}
-		else if (mineralPatch->building.resource.resourceAmount >= 50)
+		else if (mineralPatch->building.resource.resource_amount >= 50)
 		{
 			anim = IscriptAnimation::SpecialState1;
 		}
@@ -7535,9 +7535,9 @@ namespace helper
 			anim = IscriptAnimation::Landing;
 		}
 
-		if (anim != mineralPatch->building.resource.resourceIscript)
+		if (anim != mineralPatch->building.resource.resource_iscript)
 		{
-			mineralPatch->building.resource.resourceIscript = anim;
+			mineralPatch->building.resource.resource_iscript = anim;
 			mineralPatch->sprite->play_iscript_animation(anim);
 		}
 	}
@@ -7570,7 +7570,7 @@ namespace helper
 			chunkImage->flags |= ImageFlags::Flag07;
 			update_image_position_offset(chunkImage);
 		}
-		worker->worker.resourceCarryAmount = amountCarried;
+		worker->worker.resource_carry_amount = amountCarried;
 		scbw::refresh_console();
 	}
 
@@ -7956,12 +7956,12 @@ namespace helper
 	}
 
 	// For get_unit_name
-	const char* get_unit_name_stat_string(u16 unitId) {
+	const char* get_unit_name_stat_string(u16 unit_id) {
 		const u32 Func_getUnitNameStatString = 0x0047B090;
 		static const char* result;
 		__asm {
 			PUSHAD
-			MOVZX CX, unitId
+			MOVZX CX, unit_id
 			CALL Func_getUnitNameStatString
 			MOV result, EAX
 			POPAD
@@ -8136,14 +8136,14 @@ namespace helper
 		return result;
 	}
 
-	s16 canTargetSpellOnFOWUnit(s32 techId, s16 unitId)
+	s16 canTargetSpellOnFOWUnit(s32 techId, s16 unit_id)
 	{
 		const u32 Func_canTargetSpellOnFOWUnit = 0x004914B0;
 		static s32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH unitId
+			PUSH unit_id
 			MOV EAX, techId
 			CALL Func_canTargetSpellOnFOWUnit
 			MOV result, EAX
@@ -8731,7 +8731,7 @@ namespace helper
 		return result;
 	}
 
-	void ai_get_build_location(s32 unitId, char* placementData, s32 playerId, Point16 tryPosition, s32 maxRange)
+	void ai_get_build_location(s32 unit_id, char* placementData, s32 playerId, Point16 tryPosition, s32 maxRange)
 	{
 		const u32 Func_AIGetBuildLocation = 0x004461B0;
 		__asm
@@ -8741,7 +8741,7 @@ namespace helper
 			PUSH tryPosition
 			PUSH playerId
 			MOV ESI, placementData
-			MOV EBX, unitId
+			MOV EBX, unit_id
 			CALL Func_AIGetBuildLocation
 			POPAD
 		}
@@ -8863,7 +8863,7 @@ namespace helper
 		}
 	}
 
-	void drawArmor(BinDlg* dialog, s32 unitId, u16 statusScreenIndex)
+	void drawArmor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex)
 	{
 		const u32 Func_drawArmor = 0x00425600;
 		u32 statusScreenIndexArg = statusScreenIndex;
@@ -8871,7 +8871,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH statusScreenIndexArg
-			MOV EDX, unitId
+			MOV EDX, unit_id
 			MOV EAX, dialog
 			CALL Func_drawArmor
 			POPAD
@@ -9109,7 +9109,7 @@ namespace helper
 		}
 	}
 
-	s8 create_unit_allowed(u16 unitId, Unit* unit, s32 playerID)
+	s8 create_unit_allowed(u16 unit_id, Unit* unit, s32 playerID)
 	{
 		const u32 Func_createUnitAllowed = 0x0046E1C0;
 		static s8 result;
@@ -9118,7 +9118,7 @@ namespace helper
 			PUSHAD
 			PUSH playerID
 			MOV ESI, unit
-			MOV AX, unitId
+			MOV AX, unit_id
 			CALL Func_createUnitAllowed
 			MOV result, AL
 			POPAD
@@ -9385,7 +9385,7 @@ namespace helper
 	}
 
 	// For AI_GetBuildingLocation
-	u32 ai_get_building_placement_data(u32 maxRange, u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	u32 ai_get_building_placement_data(u32 maxRange, u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos)
 	{
 		const u32 Func_Ai_GetBuildingPlacementData = 0x00445D60;
 		static u32 result;
@@ -9395,7 +9395,7 @@ namespace helper
 			PUSH desiredPos
 			PUSH playerId
 			PUSH placementData
-			PUSH unitId
+			PUSH unit_id
 			MOV EAX, maxRange
 			CALL Func_Ai_GetBuildingPlacementData
 			MOV result, EAX
@@ -9420,7 +9420,7 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_remove_dangerous_regions(u32 unitId, char* placementData, u32 placementId, Point16 desiredPos)
+	u32 ai_remove_dangerous_regions(u32 unit_id, char* placementData, u32 placementId, Point16 desiredPos)
 	{
 		const u32 Func_Ai_RemoveDangerousRegions = 0x00443870;
 		static u32 result;
@@ -9430,7 +9430,7 @@ namespace helper
 			PUSH desiredPos
 			PUSH placementId
 			MOV ECX, placementData
-			MOV EAX, unitId
+			MOV EAX, unit_id
 			CALL Func_Ai_RemoveDangerousRegions
 			MOV result, EAX
 			POPAD
@@ -9471,7 +9471,7 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_placement_related_something(u16 unitId, char* placementData, Point16 desiredPos)
+	u32 ai_placement_related_something(u16 unit_id, char* placementData, Point16 desiredPos)
 	{
 		const u32 Func_Ai_PlacementRelatedSomething = 0x00443E30;
 		static u32 result;
@@ -9480,7 +9480,7 @@ namespace helper
 			PUSHAD
 			PUSH desiredPos
 			PUSH placementData
-			PUSH unitId
+			PUSH unit_id
 			CALL Func_Ai_PlacementRelatedSomething
 			MOV result, EAX
 			POPAD
@@ -9488,7 +9488,7 @@ namespace helper
 		return result;
 	}
 
-	void ai_remove_unfit_tiles(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	void ai_remove_unfit_tiles(u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos)
 	{
 		const u32 Func_Ai_RemoveTilesIfUnfit = 0x00444CE0;
 		__asm
@@ -9497,13 +9497,13 @@ namespace helper
 			PUSH desiredPos
 			PUSH playerId
 			PUSH placementData
-			MOV ECX, unitId
+			MOV ECX, unit_id
 			CALL Func_Ai_RemoveTilesIfUnfit
 			POPAD
 		}
 	}
 
-	u32 ai_remove_addon_places(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	u32 ai_remove_addon_places(u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos)
 	{
 		const u32 Func_Ai_RemoveAddonPlaces = 0x00443CC0;
 		static u32 result;
@@ -9513,7 +9513,7 @@ namespace helper
 			PUSH desiredPos
 			PUSH playerId
 			PUSH placementData
-			PUSH unitId
+			PUSH unit_id
 			CALL Func_Ai_RemoveAddonPlaces
 			MOV result, EAX
 			POPAD
@@ -9521,7 +9521,7 @@ namespace helper
 		return result;
 	}
 
-	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag)
+	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unit_id, u32 unkFlag)
 	{
 		const u32 Func_getTurretPlacementPosition = 0x00443AC0;
 		static u32 result;
@@ -9529,7 +9529,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH unkFlag
-			PUSH unitId
+			PUSH unit_id
 			PUSH desiredPos
 			PUSH playerId
 			PUSH placementData
@@ -9557,7 +9557,7 @@ namespace helper
 		return result;
 	}
 
-	u32 get_default_placement_position(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos)
+	u32 get_default_placement_position(u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos)
 	{
 		const u32 Func_getDefaultPlacementPosition = 0x004449A0;
 		static u32 result;
@@ -9567,7 +9567,7 @@ namespace helper
 			PUSH desiredPos
 			PUSH playerId
 			PUSH placementData
-			MOV ECX, unitId
+			MOV ECX, unit_id
 			CALL Func_getDefaultPlacementPosition
 			MOV result, EAX
 			POPAD
@@ -10160,7 +10160,7 @@ namespace helper
 		return result;
 	}
 
-	s32 is_unit_id_race_equal_to_unit_race(u16 unitId, Unit* unit)
+	s32 is_unit_id_race_equal_to_unit_race(u16 unit_id, Unit* unit)
 	{
 		static s32 result;
 		const u32 Func_isUnitTypeRaceUnitRace = 0x00432480;
@@ -10168,7 +10168,7 @@ namespace helper
 		{
 			PUSHAD
 			MOV ECX, unit
-			MOV AX, unitId
+			MOV AX, unit_id
 			CALL Func_isUnitTypeRaceUnitRace
 			MOV result, EAX
 			POPAD
@@ -10176,7 +10176,7 @@ namespace helper
 		return result;
 	}
 
-	bool hasResourcesForUnit(u16 unitId, s32 player)
+	bool hasResourcesForUnit(u16 unit_id, s32 player)
 	{
 		static bool result;
 		const u32 Func_hasResourcesForUnit = 0x004487B0;
@@ -10184,7 +10184,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH player
-			MOV CX, unitId
+			MOV CX, unit_id
 			CALL Func_hasResourcesForUnit
 			MOV result, AL
 			POPAD
@@ -10222,7 +10222,7 @@ namespace helper
 		return result;
 	}
 
-	bool ai_train_unit(Unit* unit, u16 unitId, char requestId, void* value)
+	bool ai_train_unit(Unit* unit, u16 unit_id, char requestId, void* value)
 	{
 		static bool result;
 		const u32 Func_AI_TrainUnit = 0x004672F0;
@@ -10231,7 +10231,7 @@ namespace helper
 			PUSHAD
 			PUSH value
 			PUSH requestId
-			PUSH unitId
+			PUSH unit_id
 			MOV EAX, unit
 			CALL Func_AI_TrainUnit
 			MOV result, AL

@@ -9,7 +9,7 @@ namespace hooks
 	{
 		auto activeUnit = *activePortraitUnit;
 		// Originally had code for research, removed
-		sprintf_s(statusscreen_infobtn[index], 8, "%d ", activeUnit->vulture.spiderMineCount);
+		sprintf_s(statusscreen_infobtn[index], 8, "%d ", activeUnit->mine_carrier.mine_count);
 		if (dialog->controlType)
 		{
 			dialog = dialog->parent;
@@ -67,8 +67,8 @@ namespace hooks
 			u32 airWeapon;
 			u8 airWeaponMainUnit;
 			u8 airWeaponSubunit;
-			u16 unitId = helper::get_last_queue_slot_id(activeUnit);
-			if (units_dat::ArmorUpgrade[unitId] != UpgradeId::GlobalUpgrade60)
+			u16 unit_id = helper::get_last_queue_slot_id(activeUnit);
+			if (units_dat::ArmorUpgrade[unit_id] != UpgradeId::GlobalUpgrade60)
 			{
 				helper::StatsArmorLevel(dialog, index);
 				index++;
@@ -256,8 +256,8 @@ namespace hooks
 					index++;
 				}
 			}
-			unitId = helper::get_last_queue_slot_id(activeUnit);
-			if (unitId == UnitId::TerranNuclearSilo)
+			unit_id = helper::get_last_queue_slot_id(activeUnit);
+			if (unit_id == UnitId::TerranNuclearSilo)
 			{
 				helper::StatsNukesCount(dialog, index);
 				index++;
@@ -292,8 +292,8 @@ namespace hooks
 	// Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
 	char* get_unit_rank_string(Unit* unit) // 0042F370
 	{
-		u16 unitId = unit->id;
-		if (units_dat::BaseProperty[unitId] & UnitProperty::NeutralAccessories)
+		u16 unit_id = unit->id;
+		if (units_dat::BaseProperty[unit_id] & UnitProperty::NeutralAccessories)
 		//	|| scbw::unit_is_trap(unit))
 		{
 			return 0;
@@ -308,14 +308,14 @@ namespace hooks
 
 		/*
 		// Originally had Gantrithor - Tassadar hardcode here
-		if (unitId != UnitId::TerranMinotaur
-			|| !(units_dat::BaseProperty[unitId] & UnitProperty::Hero)
-			|| !units_dat::MapStringId[unitId])
+		if (unit_id != UnitId::TerranMinotaur
+			|| !(units_dat::BaseProperty[unit_id] & UnitProperty::Hero)
+			|| !units_dat::MapStringId[unit_id])
 		{
 			if (helper::unitGetRace(unit) == RaceId::Terran
 				&& !scbw::unit_id_is_shared(unit->id))
 			{
-				return helper::getStatTxtString((unit->rankIncrease + units_dat::Rank[unitId]) + 1302);
+				return helper::getStatTxtString((unit->rank_increase + units_dat::Rank[unit_id]) + 1302);
 			}
 			return 0;
 		}
@@ -354,14 +354,14 @@ namespace hooks
 		}
 		else
 		{
-			if (helper::ai_unit_can_attack(unit) || unit->killCount)
+			if (helper::ai_unit_can_attack(unit) || unit->kill_count)
 			{
 				char* text = "";
 				if (**statTxtBuffer > 0x2FBu)
 				{
 					text = (char *)*statTxtBuffer + (*statTxtBuffer)[764];
 				}
-				sprintf_s(kills_buffer, 260, "%s %d", text, unit->killCount);
+				sprintf_s(kills_buffer, 260, "%s %d", text, unit->kill_count);
 				helper::add_text_to_dialog(dialog, -21, kills_buffer);
 			}
 			else
@@ -384,11 +384,11 @@ namespace hooks
 		*userInterfaceShields = shields;
 		*redrawTransportUI = helper::ui_needs_redraw();
 		helper::generic_status_update_drawn_values();
-		s32 unitId = activeUnit->id;
-		if (unitId == UnitId::ResourceMineralField 
-			|| unitId == UnitId::ResourceMineralFieldType2
-			|| unitId == UnitId::ResourceMineralFieldType3
-			|| unitId == UnitId::ResourceVespeneGeyser)
+		s32 unit_id = activeUnit->id;
+		if (unit_id == UnitId::ResourceMineralField 
+			|| unit_id == UnitId::ResourceMineralFieldType2
+			|| unit_id == UnitId::ResourceMineralFieldType3
+			|| unit_id == UnitId::ResourceVespeneGeyser)
 		{
 			goto LABEL_35;
 		}
@@ -402,7 +402,7 @@ namespace hooks
 			helper::draw_progress_bar(dialog);
 			goto LABEL_32;
 		}
-		if (unitId == UnitId::TerranNuclearSilo)
+		if (unit_id == UnitId::TerranNuclearSilo)
 		{
 			scbw::print("draw_nuke_silo_info");
 			helper::draw_nuke_silo_info(dialog);
@@ -425,19 +425,19 @@ namespace hooks
 			helper::draw_addon_progress(dialog);
 			goto LABEL_32;
 		}
-		if (activeUnit->building.techType != 44)
+		if (activeUnit->building.tech_id != 44)
 		{
 			scbw::print("draw_tech_progress");
 			helper::draw_tech_progress(dialog);
 			goto LABEL_32;
 		}
-		if (activeUnit->building.upgradeType != 61)
+		if (activeUnit->building.upgrade_id != 61)
 		{
 			scbw::print("draw_upgrade_progress");
 			helper::draw_upgrade_progress(dialog);
 			goto LABEL_32;
 		}
-		if (units_dat::SupplyProvided[unitId])
+		if (units_dat::SupplyProvided[unit_id])
 		{
 			scbw::print("draw_supply_unit_info");
 			helper::draw_supply_unit_info(dialog);
@@ -454,7 +454,7 @@ namespace hooks
 			&& units_dat::GroundWeapon[helper::get_last_queue_slot_id(activeUnit)] == -126
 			&& units_dat::AirWeapon[activeUnit->id]
 			&& units_dat::GroundWeapon[activeUnit->id]
-			&& !units_dat::ShieldsEnabled[unitId])
+			&& !units_dat::ShieldsEnabled[unit_id])
 		{
 		LABEL_6:
 			if (*statusScreenFunc != 4)
@@ -524,24 +524,24 @@ namespace hooks
 		// TODO: Fix compiler error
 	//	*(s32*)v6 = v5;
 		if (v7->status & UnitStatus::Completed
-			|| (v8 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::is_zerg_building_morph_result(v8)))
+			|| (v8 = v7->build_queue[(u8)v7->build_queue_slot], !scbw::is_zerg_building_morph_result(v8)))
 		{
 			v9 = v7->id;
 		}
 		else
 		{
-			v9 = v7->buildQueue[(u8)v7->buildQueueSlot];
+			v9 = v7->build_queue[(u8)v7->build_queue_slot];
 		}
 		*(s16*)(v6 + 4) = upgrades_dat::UpgradeIcon[(u8)units_dat::ArmorUpgrade[v9]];
 		*(s16*)(v6 + 6) = UnitStatus::Completed;
 		if (v7->status & UnitStatus::Completed
-			|| (v10 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::is_zerg_building_morph_result(v8)))
+			|| (v10 = v7->build_queue[(u8)v7->build_queue_slot], !scbw::is_zerg_building_morph_result(v8)))
 		{
 			v11 = v7->id;
 		}
 		else
 		{
-			v11 = v7->buildQueue[(u8)v7->buildQueueSlot];
+			v11 = v7->build_queue[(u8)v7->build_queue_slot];
 		}
 		*(s16*)(v6 + 8) = (u8)units_dat::ArmorUpgrade[v11];
 		v4->pszText = statusscreen_infobtn[buttonRelated];
@@ -620,7 +620,7 @@ namespace hooks
 	// Hooked to change the name of new building morphs. - Pr0nogo
 	const char* get_unit_name(Unit* unit)
 	{
-		u16 queue = unit->buildQueue[unit->buildQueueSlot];
+		u16 queue = unit->build_queue[unit->build_queue_slot];
 		if (unit->status & UnitStatus::Completed
 			|| !scbw::is_zerg_building_morph_result(queue)) // Fixes lardcode
 		{

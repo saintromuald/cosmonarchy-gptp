@@ -7,7 +7,7 @@ namespace hooks
     // Hooked to resolve contextual order issues - Pr0nogo
     s32 move_to_target(Unit* target, Unit* unit) // 004EB720
     {
-        Unit* orderTargetUnit = unit->orderTarget.unit;
+        Unit* orderTargetUnit = unit->order_target.unit;
         if (orderTargetUnit == nullptr
             || target == nullptr
             || unit == nullptr)
@@ -16,8 +16,8 @@ namespace hooks
         }
 
         Sprite* orderTargetSprite = orderTargetUnit->sprite;
-        s16 orderTargetX = unit->orderTarget.pt.x;
-        s16 orderTargetY = unit->orderTarget.pt.y;
+        s16 orderTargetX = unit->order_target.pt.x;
+        s16 orderTargetY = unit->order_target.pt.y;
         s32 result;
 
         if (target != nullptr) // todo: probably remove this, since target is already null checked
@@ -34,7 +34,7 @@ namespace hooks
                 unit->status &= 0xFFF7FFFF;
                 return 1;
             }
-            else if (helper::isPointAtUnitBorder(orderTargetY, orderTargetUnit, unit, *(s32*)&unit->orderTarget))
+            else if (helper::isPointAtUnitBorder(orderTargetY, orderTargetUnit, unit, *(s32*)&unit->order_target))
             {
                 scbw::print("isPointAtUnitBorder == true");
                 unit->status &= 0xFFF7FFFF;
@@ -55,17 +55,17 @@ namespace hooks
         Sprite* targetSprite = target->sprite;
         s16 targetSpriteX = targetSprite->position.x;
         s16 targetSpriteY = targetSprite->position.y;
-        if (targetSpriteX != unit->orderTarget.pt.x || targetSpriteY != unit->orderTarget.pt.y || target != unit->orderTarget.unit)
+        if (targetSpriteX != unit->order_target.pt.x || targetSpriteY != unit->order_target.pt.y || target != unit->order_target.unit)
         {
-            unit->orderTarget.pt.y = targetSpriteY;
-            unit->orderTarget.pt.x = targetSpriteX;
+            unit->order_target.pt.y = targetSpriteY;
+            unit->order_target.pt.x = targetSpriteX;
             char movementFlagsVar = unit->movement_flags & 0xFB;
-            Point16 targetPoint = unit->orderTarget.pt;
-            unit->orderTarget.unit = target;
+            Point16 targetPoint = unit->order_target.pt;
+            unit->order_target.unit = target;
             unit->movement_flags = movementFlagsVar | 1;
             unit->next_target_waypoint = targetPoint;
         }
-        Order* unitOrder = unit->orderQueueHead;
+        Order* unitOrder = unit->order_queue_head;
         unit->recentOrderTimer = 15;
         unit->status = unit->status & 0xFFF7FFFF;
         if (!unitOrder || orders_dat::ButtonIcon[unitOrder->orderId])

@@ -49,20 +49,20 @@ namespace hooks
 			subunit->status |= UnitStatus::Disabled;
 		}
 		helper::setResourceTarget(unit);
-		s16 unitId = unit->id;
+		s16 unit_id = unit->id;
 		if (scbw::unit_can_nuke(unit))
 		{
-			Unit* nuke = unit->connectedUnit;
+			Unit* nuke = unit->connected_unit;
 			if (nuke)
 			{
 				if (nuke->id == UnitId::TerranNuclearMissile)
 				{
-					unit->connectedUnit = 0;
-					nuke->connectedUnit = 0;
+					unit->connected_unit = 0;
+					nuke->connected_unit = 0;
 				}
 			}
 		}
-		if (unitId == UnitId::ProtossSolarion)
+		if (unit_id == UnitId::ProtossSolarion)
 		{
 			helper::return_all_interceptors(unit);
 		}
@@ -73,7 +73,7 @@ namespace hooks
 		}
 		if (!orders_dat::DisablingKeepsTarget[orderId])
 		{
-			unit->orderTarget.unit = 0;
+			unit->order_target.unit = 0;
 		}
 		char result;
 		result = helper::ignore_all_scripts_and_go_to_idle(unit);
@@ -85,7 +85,7 @@ namespace hooks
 				result = helper::updateBuildingLandUnitSelection(*(u32*)sprite, unit);
 			}
 		}
-		unit->currentButtonSet = 228;
+		unit->current_button_set = 228;
 		*control_under_mouse = 0;
 		*control_under_mouse_value = 0;
 		*forceButtonRefresh = 1;
@@ -231,7 +231,7 @@ namespace hooks
 	void MeleeAttackHit(Unit* attacker)
 	{
 		UnitExt* attackerExt = globals.get_unit_ext(attacker);
-		Unit* target = attacker->orderTarget.unit;
+		Unit* target = attacker->order_target.unit;
 		if (target != nullptr)
 		{
 			u8 weaponId;
@@ -812,9 +812,9 @@ namespace hooks
 					if (!v8)
 					{
 LABEL_15:
-						if (v1->orderQueueHead)
+						if (v1->order_queue_head)
 						{
-							v1->userActionFlags |= 1u;
+							v1->user_action_flags |= 1u;
 							helper::orders_nothing_2(v1);
 						}
 						else if (v1->unit_ai)
@@ -839,8 +839,8 @@ LABEL_15:
 				goto LABEL_15;
 			}
 		}
-		v9 = v1->orderTarget.pt.x;
-		a2.y = v1->orderTarget.pt.y;
+		v9 = v1->order_target.pt.x;
+		a2.y = v1->order_target.pt.y;
 		a2.x = v9;
 		helper::fix_target_location(&a2, UnitId::Spell_ScannerSweep);
 		v10 = helper::create_unit(0x21u, a2.x, a2.y, (u8)v1->player);
@@ -880,14 +880,14 @@ LABEL_15:
 		{
 			return 0;
 		}
-		s16 unitId = unit->id;
-		if (unitId == UnitId::ResourceMineralField
-		  || unitId == UnitId::ResourceMineralFieldType2
-		  || unitId == UnitId::ResourceMineralFieldType3
-		  || unitId == UnitId::ResourceVespeneGeyser
-		  || unitId == UnitId::ProtossSteward
-		  || unitId == UnitId::ProtossPlasmaShell
-		  || units_dat::BaseProperty[unitId] & UnitProperty::Addon
+		s16 unit_id = unit->id;
+		if (unit_id == UnitId::ResourceMineralField
+		  || unit_id == UnitId::ResourceMineralFieldType2
+		  || unit_id == UnitId::ResourceMineralFieldType3
+		  || unit_id == UnitId::ResourceVespeneGeyser
+		  || unit_id == UnitId::ProtossSteward
+		  || unit_id == UnitId::ProtossPlasmaShell
+		  || units_dat::BaseProperty[unit_id] & UnitProperty::Addon
 		  || (u8)unit->player == playerIdVar)
 		{
 			return 0;
@@ -912,10 +912,10 @@ LABEL_15:
 		}
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-			Unit* connectedUnit = unit->building.addon;
-			if (connectedUnit)
+			Unit* connected_unit = unit->building.addon;
+			if (connected_unit)
 			{
-				helper::giveAllUnitPropertiesToPlayer(connectedUnit, playerIdVar);
+				helper::giveAllUnitPropertiesToPlayer(connected_unit, playerIdVar);
 			}
 			if (helper::is_constructing_addon(unit))
 			{
@@ -924,10 +924,10 @@ LABEL_15:
 			}
 			if (unit->id == UnitId::ZergNydusCanal)
 			{
-				Unit* nydusExit = unit->building.nydusExit;
-				if (nydusExit)
+				Unit* nydus_exit = unit->building.nydus_exit;
+				if (nydus_exit)
 				{
-					helper::giveAllUnitPropertiesToPlayer(nydusExit, playerIdVar);
+					helper::giveAllUnitPropertiesToPlayer(nydus_exit, playerIdVar);
 				}
 			}
 		}

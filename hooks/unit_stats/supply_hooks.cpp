@@ -19,11 +19,11 @@ namespace hooks
         return result;
     }
 
-    s32 get_supplies_remaining(u8 playerId, u16 unitId) // 004889D0
+    s32 get_supplies_remaining(u8 playerId, u16 unit_id) // 004889D0
     {
         u32 supplyAvailable = 0;
         u32 supplyUsed = 0;
-        if (hooks::getSuppliesMax(unitId, playerId) >= suppliesAvailable_Terran[playerId])
+        if (hooks::getSuppliesMax(unit_id, playerId) >= suppliesAvailable_Terran[playerId])
         {
             supplyUsed = suppliesUsed_Terran[playerId];
             supplyAvailable = suppliesAvailable_Terran[playerId];
@@ -31,7 +31,7 @@ namespace hooks
         else
         {
             supplyUsed = suppliesUsed_Terran[playerId];
-            supplyAvailable = hooks::getSuppliesMax(unitId, playerId);
+            supplyAvailable = hooks::getSuppliesMax(unit_id, playerId);
         }
         if (*CHEAT_STATE & 0x20000)
         {
@@ -40,7 +40,7 @@ namespace hooks
         return supplyAvailable - supplyUsed;
     }
 
-    s32 getSuppliesMax(u16 unitId, u8 playerId) // 00488990
+    s32 getSuppliesMax(u16 unit_id, u8 playerId) // 00488990
     {
         return suppliesMax_Terran[playerId];
     }
@@ -380,7 +380,7 @@ namespace hooks
             }
             else
             {
-                s32 queueUnit = unit->buildQueue[unit->buildQueueSlot];
+                s32 queueUnit = unit->build_queue[unit->build_queue_slot];
                 supply = units_dat::SupplyRequired[queueUnit];
                 if (units_dat::BaseProperty[queueUnit] & UnitProperty::TwoUnitsIn1Egg)
                 {
@@ -477,23 +477,23 @@ namespace hooks
         }
     }
 
-    // Check if @p playerId has enough supplies to build @p unitId.
-    bool hasSuppliesForUnitHook(u8 playerId, u16 unitId, bool canShowErrorMessage)
+    // Check if @p playerId has enough supplies to build @p unit_id.
+    bool hasSuppliesForUnitHook(u8 playerId, u16 unit_id, bool canShowErrorMessage)
     {
         // Default StarCraft behavior
-        s32 supplyCost = units_dat::SupplyRequired[unitId];
-        if (units_dat::BaseProperty[unitId] & UnitProperty::TwoUnitsIn1Egg)
+        s32 supplyCost = units_dat::SupplyRequired[unit_id];
+        if (units_dat::BaseProperty[unit_id] & UnitProperty::TwoUnitsIn1Egg)
         {
             supplyCost *= 2;
         }
-        if (unitId == UnitId::ZergLakizilisk)
+        if (unit_id == UnitId::ZergLakizilisk)
         {
             supplyCost -= units_dat::SupplyRequired[UnitId::ZergHydralisk];
         }
 
         aiSupplyReserved[playerId] = supplyCost;
         // No supply cost check needed
-        if (supplyCost == 0 || units_dat::BaseProperty[unitId] & UnitProperty::MorphFromOtherUnit)
+        if (supplyCost == 0 || units_dat::BaseProperty[unit_id] & UnitProperty::MorphFromOtherUnit)
         {
             return true;
         }

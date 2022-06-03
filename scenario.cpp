@@ -603,7 +603,7 @@ void init_fraud_spawns() {
 				scbw::printf("Spawn cap reached (" STR(FraudSpawnCap) ")");
 			}
 
-			unit->userActionFlags |= 4; // silent remove
+			unit->user_action_flags |= 4; // silent remove
 			unit->remove();
 		}
 	}
@@ -619,7 +619,7 @@ void init_fraud_spawns() {
 				}
 			}
 
-			unit->userActionFlags |= 4; // silent remove
+			unit->user_action_flags |= 4; // silent remove
 			unit->remove();
 		}
 	}
@@ -638,7 +638,7 @@ void init_fraud_spawns() {
 				}
 			}
 
-			unit->userActionFlags |= 4; // silent remove
+			unit->user_action_flags |= 4; // silent remove
 			unit->remove();
 		}
 	}
@@ -1532,7 +1532,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					Point16 pos = fraud_spawn.sequence[player-1].location->pos;
 					Unit* augur = scbw::create_unit_ingame(UnitId::ProtossAugur, player, pos.x, pos.y);
 					if (augur) {
-						augur->userActionFlags |= 4;
+						augur->user_action_flags |= 4;
 						augurSacrifice(augur, 10 * 32);
 					}
 
@@ -1762,7 +1762,7 @@ void tick_scenario() {
 
 							Unit* augur = scbw::create_unit_ingame(UnitId::ProtossAugur, i, source_pos.x, source_pos.y);
 							if (augur) {
-								augur->userActionFlags |= 4;
+								augur->user_action_flags |= 4;
 								augurSacrifice(augur, 10 * 32);
 							}
 							Unit* unit = scbw::create_unit_ingame(unit_id, i, source_pos.x, source_pos.y);

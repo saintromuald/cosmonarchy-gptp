@@ -94,17 +94,17 @@ struct Unit : public UnitLayout
 	/// names (if they exist).
 	const char* getName() const;
 
-	/// Retrieves the in-game name of the unit with @p unitId. In UMS maps, this
+	/// Retrieves the in-game name of the unit with @p unit_id. In UMS maps, this
 	/// returns custom unit names (if they exist).
-	static const char* getName(u16 unitId);
+	static const char* getName(u16 unit_id);
 
 	/// Returns the race of the current unit.
 	/// @return   RaceId::Terran, Zerg, Protoss, or Neutral.
 	RaceId::Enum get_race() const;
 
-	/// Returns the race of the unit with @p unitId.
+	/// Returns the race of the unit with @p unit_id.
 	/// @return   RaceId::Terran, Zerg, Protoss, or Neutral.
-	static RaceId::Enum get_race(u16 unitId);
+	static RaceId::Enum get_race(u16 unit_id);
 
 	/// Returns the unit's seek range (AKA target acquisition range) in matrices.
 	/// This is affected by the Weapon Range hook module.
@@ -219,7 +219,7 @@ struct Unit : public UnitLayout
 	void reduce_defensive_matrix_hp(s32 amount);
 
 	/// Immediately kills the unit. To silently remove the unit, use:
-	///   unit->userActionFlags |= 0x4;
+	///   unit->user_action_flags |= 0x4;
 	///   unit->remove();
 	void remove();
 
@@ -336,13 +336,13 @@ struct Unit : public UnitLayout
 	/// @name DAT Requirements
 	//////////////////////////////////////////////////////////////// @{
 
-	/// Checks if the @p unit can build / train / morph into @p unitId. This checks:
+	/// Checks if the @p unit can build / train / morph into @p unit_id. This checks:
 	/// * If the unit is actually owned by the commanding @p playerId
 	/// * Whether the unit is stunned / disabled.
 	///
 	/// If the unit can build / train / morph, returns 1. If the tech needs to be
 	/// researched, returns -1. If the unit cannot use the tech at all, returns 0.
-	s32 can_make_unit(u16 unitId, u8 playerId) const;
+	s32 can_make_unit(u16 unit_id, u8 playerId) const;
 
 	/// Checks the following:
 	///  * If the unit is actually owned by the commanding @p playerId
@@ -373,7 +373,7 @@ struct Unit : public UnitLayout
 	bool canAttackTarget(Unit* target, bool checkVisibility = true) const;
 
 	/// Makes the unit use the specified weapon to attack its current target unit
-	/// stored in the Unit::orderTarget.unit member. This does not affect the
+	/// stored in the Unit::order_target.unit member. This does not affect the
 	/// unit's weapon cooldown. The spawned weapon sprite obeys the weapon
 	/// behavior properties in weapons.dat.
 	/// Note: This function is affected by the Fire Weapon hook module.

@@ -181,9 +181,9 @@ u8 Unit::getSpellCountdown() const
 	assert(this);
 	if (this->id == UnitId::TerranWyvern)
 	{
-		return this->groundWeaponCooldown;
+		return this->ground_weapon_cooldown;
 	}
-	return this->spellCooldown;
+	return this->spell_cooldown;
 }
 
 extern const u32 Func_GetMaxWeaponRange = 0x00475870;
@@ -218,17 +218,17 @@ const char* Unit::getName() const
 }
 #include "SCBW/stat_txt_spec.h"
 //Based on function @ 0x0047B090
-const char* Unit::getName(u16 unitId)
+const char* Unit::getName(u16 unit_id)
 {
-	assert(unitId < UNIT_TYPE_COUNT);
+	assert(unit_id < UNIT_TYPE_COUNT);
 
-	if (units_dat::MapStringId[unitId])
+	if (units_dat::MapStringId[unit_id])
 	{
-		return mapStringTbl->getString(units_dat::MapStringId[unitId]);
+		return mapStringTbl->getString(units_dat::MapStringId[unit_id]);
 	}
 	else
 	{
-		return statTxtTblNew->getString(unitId + 1);
+		return statTxtTblNew->getString(unit_id + 1);
 	}
 }
 
@@ -239,19 +239,19 @@ RaceId::Enum Unit::get_race() const
 }
 
 //Based on function at 0x0047B150
-RaceId::Enum Unit::get_race(u16 unitId)
+RaceId::Enum Unit::get_race(u16 unit_id)
 {
-	assert(unitId < UNIT_TYPE_COUNT);
+	assert(unit_id < UNIT_TYPE_COUNT);
 
-	if (units_dat::GroupFlags[unitId].isZerg)
+	if (units_dat::GroupFlags[unit_id].isZerg)
 	{
 		return RaceId::Zerg;
 	}
-	else if (units_dat::GroupFlags[unitId].isProtoss)
+	else if (units_dat::GroupFlags[unit_id].isProtoss)
 	{
 		return RaceId::Protoss;
 	}
-	else if (units_dat::GroupFlags[unitId].isTerran)
+	else if (units_dat::GroupFlags[unit_id].isTerran)
 	{
 		return RaceId::Terran;
 	}
@@ -325,7 +325,7 @@ bool Unit::has_weapon() const
 
 	if (this->id == UnitId::ProtossSolarion)
 	{
-		if ((this->carrier.inHangarCount + this->carrier.outHangarCount) > 0)
+		if ((this->unit_with_hangar.in_hangar_count + this->unit_with_hangar.out_hangar_count) > 0)
 		{
 			return true;
 		}
@@ -333,7 +333,7 @@ bool Unit::has_weapon() const
 
 	if (this->id == UnitId::ProtossAccantor)
 	{
-		if (this->carrier.inHangarCount > 0)
+		if (this->unit_with_hangar.in_hangar_count > 0)
 		{
 			return true;
 		}
@@ -871,7 +871,7 @@ s32 Unit::is_unit_ai_non_building()
 void Unit::order_to(u8 orderId, Unit* target)
 {
 	assert(this);
-	this->userActionFlags |= 0x1;
+	this->user_action_flags |= 0x1;
 	if (target)
 	{
 		this->order(orderId, target->get_x(), target->get_y(), target, UnitId::None, true);
@@ -887,7 +887,7 @@ void Unit::order_to(u8 orderId, Unit* target)
 void Unit::order_to(u8 orderId, u16 x, u16 y)
 {
 	assert(this);
-	this->userActionFlags |= 0x1;
+	this->user_action_flags |= 0x1;
 	this->order(orderId, x, y, nullptr, UnitId::None, true);
 	prepareForNextOrder(this);
 }
@@ -896,7 +896,7 @@ void Unit::order_to(u8 orderId, u16 x, u16 y)
 // used in hooks so not doing assert, mind it if used in mods
 void Unit::order_computer(u8 orderId)
 {
-	this->userActionFlags |= 0x1;
+	this->user_action_flags |= 0x1;
 	this->order(orderId, 0, 0, nullptr, UnitId::None, true);
 	prepareForNextOrder(this);
 }
@@ -925,9 +925,9 @@ void Unit::order_to_idle()
 {
 	assert(this);
 
-	if (this->orderQueueHead)
+	if (this->order_queue_head)
 	{
-		this->userActionFlags |= 1;
+		this->user_action_flags |= 1;
 		prepareForNextOrder(this);
 	}
 	else
@@ -990,9 +990,9 @@ void Unit::perform_another_order(u8 orderId, s16 x, s16 y, Unit* target, u16 tar
 void Unit::set_secondary_order(u8 orderId)
 {
 	assert(this);
-	if (this->secondaryOrderId == orderId)
+	if (this->secondary_order_id == orderId)
 		return;
-	this->secondaryOrderId = orderId;
+	this->secondary_order_id = orderId;
 	this->secondaryOrderPos.x = 0;
 	this->secondaryOrderPos.y = 0;
 	this->currentBuildUnit = nullptr;
@@ -1216,7 +1216,7 @@ bool Unit::is_target_within_min_range(Unit* target, u32 range)
 //-------- DAT Requirements --------//
 
 const u32 Func_CanMakeUnit = 0x0046E1C0;
-s32 Unit::can_make_unit(u16 unitId, u8 playerId) const
+s32 Unit::can_make_unit(u16 unit_id, u8 playerId) const
 {
 	assert(this);
 	s32 playerId_ = playerId;
@@ -1224,7 +1224,7 @@ s32 Unit::can_make_unit(u16 unitId, u8 playerId) const
 	__asm {
 		PUSHAD
 		PUSH playerId_
-		MOV AX, unitId
+		MOV AX, unit_id
 		MOV ESI, this
 		CALL Func_CanMakeUnit
 		MOV result, EAX
@@ -1341,12 +1341,12 @@ Unit* Unit::getLoadedUnit(s32 index) const
 {
 	assert(0 <= index && index < 8);
 
-	Unit* loadedUnit = Unit::getFromIndex(this->loadedUnit[index].index);
-	if (loadedUnit && loadedUnit->sprite
-		&& !(loadedUnit->main_order_id == OrderId::Die && loadedUnit->main_order_state == 1)
-		&& loadedUnit->targetOrderSpecial == this->loadedUnit[index].unitId)
+	Unit* loaded_unit = Unit::getFromIndex(this->loaded_unit[index].index);
+	if (loaded_unit && loaded_unit->sprite
+		&& !(loaded_unit->main_order_id == OrderId::Die && loaded_unit->main_order_state == 1)
+		&& loaded_unit->target_order_special == this->loaded_unit[index].unit_id)
 	{
-		return loadedUnit;
+		return loaded_unit;
 	}
 	return nullptr;
 }
@@ -1459,15 +1459,15 @@ u32 Unit::getSupplyProvided() // overwrites previous supply provided
 	u32 supply = units_dat::SupplyProvided[id];
 	if (scbw::is_zerg_egg_new(this, false, false))
 	{
-		if (buildQueue[buildQueueSlot % 5] == UnitId::ZergIroleth)
+		if (build_queue[build_queue_slot % 5] == UnitId::ZergIroleth)
 		{
 			supply = units_dat::SupplyProvided[UnitId::ZergOvileth];
 		}
-		if (buildQueue[buildQueueSlot % 5] == UnitId::ZergOthstoleth)
+		if (build_queue[build_queue_slot % 5] == UnitId::ZergOthstoleth)
 		{
 			supply = units_dat::SupplyProvided[UnitId::ZergIroleth];
 		}
-		if (buildQueue[buildQueueSlot % 5] == UnitId::ZergAlaszileth)
+		if (build_queue[build_queue_slot % 5] == UnitId::ZergAlaszileth)
 		{
 			supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth];
 		}
@@ -1499,14 +1499,14 @@ bool Unit::is_attempting_protoss_build()
 	assert(this);
 	return this->main_order_id == OrderId::BuildProtoss1
 		&& this->status & UnitStatus::GroundedBuilding
-		&& this->orderTarget.unit != NULL
-		&& !(this->orderTarget.unit->status & UnitStatus::Completed);
+		&& this->order_target.unit != NULL
+		&& !(this->order_target.unit->status & UnitStatus::Completed);
 }
 
 bool Unit::is_constructing_addon()
 {
 	assert(this);
-	return this->secondaryOrderId == OrderId::BuildAddon
+	return this->secondary_order_id == OrderId::BuildAddon
 		&& this->status & UnitStatus::GroundedBuilding
 		&& this->currentBuildUnit != NULL
 		&& !(this->currentBuildUnit->status & UnitStatus::Completed);
@@ -1588,7 +1588,7 @@ bool Unit::unit_is_training_or_morphing()
 bool Unit::is_queue_slot_active(int slot)
 {
 	assert(this);
-	return this->buildQueue[(slot + (unsigned __int8)this->buildQueueSlot) % 5] <= (unsigned __int16)UnitId::Spell_DisruptionWeb;
+	return this->build_queue[(slot + (unsigned __int8)this->build_queue_slot) % 5] <= (unsigned __int16)UnitId::Spell_DisruptionWeb;
 }
 
 u8 Unit::getRightClickActionOrder()

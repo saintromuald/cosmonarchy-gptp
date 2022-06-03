@@ -501,7 +501,7 @@ struct UnitLayout
 															the direction they are facing faster than then can change the direction they are moving.
 														*/
 	/*0x024*/ u16       flingy_id;
-	/*0x026*/ u8        new_flags_1;					// Enum::NewFlags1
+	/*0x026*/ u8        new_flags_1;					// Enum NewFlags1 | was unused
 	/*0x027*/ u8        flingy_movement_type;
 	/*0x028*/ Point16   position;						// Current position of the unit
 	/*0x02C*/ Vector32  halt;
@@ -531,146 +531,141 @@ struct UnitLayout
 															0x20 - Bactalisk attack (unused)
 														*/
 	/*0x050*/ u16       order_unit_id;
-	/*0x052*/ u8		egg_origin;						// was _unknown_0x052
-	/*0x053*/ u8		newFlags2;						// split from _unknown_0x052
-														// 0x1  - unused
-														// 0x2	- unused
-														// 0x4	- unused
-	/*0x054*/ u8        mainOrderTimer;					// A timer for orders, example: time left before minerals are harvested
-	/*0x055*/ u8        groundWeaponCooldown;
-	/*0x056*/ u8        airWeaponCooldown;
-	/*0x057*/ u8        spellCooldown;
-	/*0x058*/ Target    orderTarget;					// officially called ActionFocus
+	/*0x052*/ u8		egg_origin;						// was unused
+	/*0x053*/ u8		new_flags_2;					// Enum NewFlags2 | was unused
+	/*0x054*/ u8        main_order_timer;				// A timer for orders, example: time left before minerals are harvested
+	/*0x055*/ u8        ground_weapon_cooldown;
+	/*0x056*/ u8        air_weapon_cooldown;
+	/*0x057*/ u8        spell_cooldown;
+	/*0x058*/ Target    order_target;					// officially called ActionFocus
 
 	/*0x060*/ s32       shields;						// Although BWAPI says this is unsigned, StarCraft.exe uses signed comparisons for this value
 														// BW shows this value/256
 
 	/*0x064*/ u16       id;								// Unit ID in units.dat
-	/*0x066*/ u8		cmbw_resource_regen_cooldown;	// Cosmonarchy - mineral regen cooldown
-			  u8		_unknown_0x067;					// Cosmonarchy - warp relay warp in
+	/*0x066*/ u8		cmbw_resource_regen_cooldown;	// Cosmonarchy BW - mineral regen cooldown
+			  u8		unused_67;						// unused
 	/*0x068*/ Link<Unit> player_link;
 	/*0x070*/ Unit*		subunit;
-	/*0x074*/ Order*	orderQueueHead;
-	/*0x078*/ Order*	orderQueueTail;
-	/*0x07C*/ Unit*		autoTargetUnit;					// The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
-	/*0x080*/ Unit*		connectedUnit;					// larva store a reference to the structure who created it
+	/*0x074*/ Order*	order_queue_head;
+	/*0x078*/ Order*	order_queue_tail;
+	/*0x07C*/ Unit*		auto_target_unit;				// The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
+	/*0x080*/ Unit*		connected_unit;					// larva store a reference to the structure who created it
 														// units inside transports store a reference to the transport
 														// addons store a reference to its parent building (but not the other way around)
-	/*0x084*/ u8        orderQueueCount;
-	/*0x085*/ u8        orderQueueTimer;				// Cycles down from from 8 to 0 (inclusive). See also 0x122.
-	/*0x086*/ u8        _unknown_0x086;
-	/*0x087*/ u8        attackNotifyTimer;				// Prevent "Your forces are under attack." on every attack
-	/*0x088*/ u16       previousUnitType;				// Also used by zerg buildings while morphing
+	/*0x084*/ u8        order_queue_count;
+	/*0x085*/ u8        order_queue_timer;				// Cycles down from from 8 to 0 (inclusive). See also 0x122.
+	/*0x086*/ u8        unused_86;
+	/*0x087*/ u8        attack_notify_timer;			// Prevent "Your forces are under attack." on every attack
+	/*0x088*/ u16       previous_unit_type;				// Also used by zerg buildings while morphing
 	/*0x08A*/ u8        last_event_timer;				// Countdown that stops being recent when it hits 0
 	/*0x08B*/ u8        last_event_color;				// 17 = was completed (train, morph), 174 = was attacked
-	/*0x08C*/ u16       _unknown_0x08C;					// Cosmonarchy BW
+	/*0x08C*/ u16       unused_8c;						// Cosmonarchy BW
 														// 0x1 - Hierophant Detect Add Maelstrom Overlay
 														// 0x2 - Hierophant Detect Remove Maelstrom Overlay
 
-	/*0x08E*/ u8        rankIncrease;					// Adds this value to the unit's base rank
-	/*0x08F*/ u8        killCount;
+	/*0x08E*/ u8        rank_increase;					// Adds this value to the unit's base rank
+	/*0x08F*/ u8        kill_count;
 
 
-	/*0x090*/ u8        lastAttackingPlayer;			// the player that last attacked this unit
-	/*0x091*/ u8        secondaryOrderTimer;
-	/*0x092*/ u8        aiActionFlags;					// Used internally by the AI
-	/*0x093*/ u8        userActionFlags;				// some flags that change when the user interacts with the unit
+	/*0x090*/ u8        last_attacking_player;			// the player that last attacked this unit
+	/*0x091*/ u8        secondary_order_timer;
+	/*0x092*/ u8        ai_action_flags;				// Used internally by the AI
+	/*0x093*/ u8        user_action_flags;				// some flags that change when the user interacts with the unit
 														// 2 = issued an order, 3 = interrupted an order, 4 = hide self before death (self-destruct?)
-	/*0x094*/ u16       currentButtonSet;				// The u16 is a guess, used to be u8
-	/*0x096*/ u8        isCloaked;
-	/*0x097*/ u8        movementState;					// A value based on conditions related to pathing, see BWAPI Path.h or UnitMovement.cs for info
-	/*0x098*/ u16       buildQueue[5];					// Also train queue for buildings and carrier/reaver (stores the unitid) / zerg eggs stores the id of the morphing unit in queue[0]
-														// Note that it doesn't begin with index 0, but with #buildQueueSlot index.
+	/*0x094*/ u16       current_button_set;				// The u16 is a guess, used to be u8
+	/*0x096*/ u8        is_cloaked;
+	/*0x097*/ u8        movement_state;					// A value based on conditions related to pathing, see BWAPI Path.h or UnitMovement.cs for info
+	/*0x098*/ u16       build_queue[5];					// Also train queue for buildings and unit_with_hangar/reaver (stores the unitid) / zerg eggs stores the id of the morphing unit in queue[0]
+														// Note that it doesn't begin with index 0, but with #build_queue_slot index.
 	/*0x0A2*/ u16       energy;							// Energy Points // officially "xwMagic"
-	/*0x0A4*/ u8        buildQueueSlot;					// Index of active unit in #buildQueue.
-	/*0x0A5*/ u8        targetOrderSpecial;				// A byte used to determine the target ID for the unit (found in units in transports)
-	/*0x0A6*/ u8        secondaryOrderId;				// (Build addon verified) @todo verify (Cloak, Build, ExpandCreep suggested by EUDDB)
-	/*0x0A7*/ u8        buildingOverlayState;			// 0 means the building has the largest amount of fire/blood
-	/*0x0A8*/ u16       buildRepairHpGain;				// Also HP amount increased per frame when a unit/building its constructed/repaired
-	/*0x0AA*/ u16       shieldGain;						// Shield gain on construction
-	/*0x0AC*/ u16       remainingBuildTime;				// Remaining bulding time; also used by powerups (flags) as the timer for returning to their original location.
-	/*0x0AE*/ u16       previousHp;						// The HP of the unit before it changed (example Drone->Hatchery, the Drone's HP will be stored here)
+	/*0x0A4*/ u8        build_queue_slot;				// Index of active unit in build_queue.
+	/*0x0A5*/ u8        target_order_special;			// A byte used to determine the target ID for the unit (found in units in transports)
+	/*0x0A6*/ u8        secondary_order_id;				// (Build addon verified) @todo verify (Cloak, Build, ExpandCreep suggested by EUDDB)
+	/*0x0A7*/ u8        damage_overlay_state;			// 0 means the building has the largest amount of fire/blood
+	/*0x0A8*/ u16       build_repair_hp_gain;			// Also HP amount increased per frame when a unit/building its constructed/repaired
+	/*0x0AA*/ u16       shield_gain;					// Shield gain on construction
+	/*0x0AC*/ u16       remaining_build_time;			// Remaining bulding time; also used by powerups (flags) as the timer for returning to their original location.
+	/*0x0AE*/ u16       previous_hitpoints;				// The HP of the unit before it changed (example Drone->Hatchery, the Drone's HP will be stored here)
 	/*0x0B0*/ struct
 	{
-		u16 index : 11;									// 1-based index in the unit table.
-		u16 unitId : 5;
-	} loadedUnit[8];									// officially called "uwTransport[8]"
+		u16 index   : 11;								// 1-based index in the unit table.
+		u16 unit_id : 5;
+	} loaded_unit[8];									// officially called "uwTransport[8]"
 	/*0x0C0*/ union
 	{
 		struct
 		{
-			/*0x0C0*/     u8 spiderMineCount;			// Used for Eidolon Lobotomy Mines
-		} vulture;
-
+			/*0x0C0*/     u8 mine_count;				// Used for Eidolon Lobotomy Mines
+		} mine_carrier;
 		struct
 		{
-			/*0x0C0*/     Unit* inHangarChild;			// First child inside the hangar
-			/*0x0C4*/     Unit* outHangarChild;			// First child outside the hangar
-			/*0x0C8*/     u8    inHangarCount;			// Number inside the hangar
-			/*0x0C9*/     u8    outHangarCount;			// Number outside the hangar
-		} carrier; // also applies to reaver
-
+			/*0x0C0*/     Unit* in_hangar_child;		// First child inside the hangar
+			/*0x0C4*/     Unit* out_hangar_child;		// First child outside the hangar
+			/*0x0C8*/     u8    in_hangar_count;		// Number inside the hangar
+			/*0x0C9*/     u8    out_hangar_count;		// Number outside the hangar
+		} unit_with_hangar;		// Accantor, Solarion
 		struct
 		{
 			/*0x0C0*/     Unit*			parent;
 			/*0x0C4*/     Link<Unit>	hangar_link;
-			/*0x0CC*/     bool			isOutsideHangar;
-		} interceptor; // also applies to scarab
+			/*0x0CC*/     bool			is_outside_hangar;
+		} hangar_unit;			// Plasma Shell, Steward
 
 		struct
 		{
 			/*0x0C0*/     u32 _unknown_00;
 			/*0x0C4*/     u32 _unknown_04;
-			/*0x0C8*/     u32 flagSpawnFrame;			// flag beacons, the frame that the flag will spawn
+			/*0x0C8*/     u32 flag_spawn_frame;			// flag beacons, the frame that the flag will spawn
 		} beacon;
 
 		struct
 		{
 			/*0x0C0*/     Unit*		addon;
-			/*0x0C4*/     u16		addonBuildType;
-			/*0x0C6*/     u16		upgradeResearchTime;
-			/*0x0C8*/     u8		techType;
-			/*0x0C9*/     u8		upgradeType;
-			/*0x0CA*/     u8		larvaTimer;
-			/*0x0CB*/     u8		landingTimer;
-			/*0x0CC*/     u8		creepTimer;
-			/*0x0CD*/     u8		upgradeLevel;
+			/*0x0C4*/     u16		addon_build_type;
+			/*0x0C6*/     u16		upgrade_research_time;
+			/*0x0C8*/     u8		tech_id;
+			/*0x0C9*/     u8		upgrade_id;
+			/*0x0CA*/     u8		larva_timer;
+			/*0x0CB*/     u8		landing_timer;
+			/*0x0CC*/     u8		creep_timer;
+			/*0x0CD*/     u8		upgrade_level;
 			/*0x0CE*/     u16		_padding_0E;
 			/*0x0D0*/     union
 			{
 				struct
 				{
-					/*0x0D0*/		u16     resourceAmount;
-					/*0x0D2*/		u8      resourceIscript;
-					/*0x0D3*/		u8      gatherQueueCount;
-					/*0x0D4*/		Unit*	nextGatherer;			// pointer to the next worker unit waiting in line to gather
-					/*0x0D8*/		u8      resourceGroup;
-					/*0x0D9*/		u8      resourceBelongsToAI;
+					/*0x0D0*/		u16     resource_amount;
+					/*0x0D2*/		u8      resource_iscript;
+					/*0x0D3*/		u8      gather_queue_count;
+					/*0x0D4*/		Unit*	next_gatherer;			// pointer to the next worker unit waiting in line to gather
+					/*0x0D8*/		u8      resource_group;
+					/*0x0D9*/		u8      resource_belongs_to_ai;
 				} resource; // When the unit is resource container
-				/*0x0D0*/			Unit*	nydusExit;				// connected nydus canal
-				/*0x0D0*/			Unit*	ghostNukeMissile;		// confirmed to be Unit* and not Sprite*
+				/*0x0D0*/			Unit*	nydus_exit;				// connected nydus canal
+				/*0x0D0*/			Unit*	nuke_missile;			// confirmed to be Unit* and not Sprite*
 				/*0x0D0*/			Sprite*	pylon_aura;
 				struct
 				{
 					/*0x0D0*/		Unit*	nuke;					// attached nuke
-					/*0x0D4*/		bool	isReady;
+					/*0x0D4*/		bool	is_ready;
 				} silo;
-				/*0x0D0*/			Box16	larvaSpawnZone;			// Not game coordinates, but "activity values".
+				/*0x0D0*/			Box16	larva_spawn_zone;		// Not game coordinates, but "activity values".
 																	// Increased by 25 every time worker returns resources to the side unless over 100, and all
 																	// sides are decreased by 1 at the same time. Larvas spawn at the side with smallest value.
-				/*0x0D0*/			Point16	powerupOrigin;
+				/*0x0D0*/			Point16	powerup_origin;
 			};
 		} building;
 
 		struct
 		{
 			/*0x0C0*/				Unit*		powerup;
-			/*0x0C4*/				Target		targetResource;				// Position, and when moving to harvest
-			/*0x0CC*/				u16			repairResourceLossTimer;
+			/*0x0C4*/				Target		target_resource;	// Position, and when moving to harvest
+			/*0x0CC*/				u16			repair_resource_loss_timer;
 			/*0x0CE*/				bool		is_harvesting;
-			/*0x0CF*/				u8			resourceCarryAmount;
-			/*0x0D0*/				Unit*		harvest_target;				// When waiting or harvesting
-			/*0x0D4*/				Link<Unit>	harvest_link;				// When there is a gather conflict
+			/*0x0CF*/				u8			resource_carry_amount;
+			/*0x0D0*/				Unit*		harvest_target;		// When waiting or harvesting
+			/*0x0D4*/				Link<Unit>	harvest_link;		// When there is a gather conflict
 		} worker;
 	};
 

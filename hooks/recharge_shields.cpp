@@ -11,27 +11,27 @@ void rechargeShieldsProc(Unit* target, Unit* battery)
 
 	const s32 maxShields = units_dat::MaxShieldPoints[target->id] * 256;
 
-	s32 shieldGain = 1280, energySpent = 640;
+	s32 shield_gain = 1280, energySpent = 640;
 
-	if (maxShields - target->shields < shieldGain)
+	if (maxShields - target->shields < shield_gain)
 	{
 
-		shieldGain = maxShields - target->shields;
+		shield_gain = maxShields - target->shields;
 
-		if (shieldGain < 0)
-			shieldGain++;
+		if (shield_gain < 0)
+			shield_gain++;
 
-		energySpent = shieldGain / 2;
+		energySpent = shield_gain / 2;
 
 	}
 
 	if (energySpent > battery->energy)
 	{
 		energySpent = battery->energy;
-		shieldGain = energySpent * 2;
+		shield_gain = energySpent * 2;
 	}
 
-	target->healShields(shieldGain, battery);
+	target->healShields(shield_gain, battery);
 
 	if (!scbw::is_cheat_enabled(CheatFlags::TheGathering))
 		battery->spend_unit_energy(energySpent);
@@ -66,7 +66,7 @@ namespace hooks
 				return 0;
 			}
 
-			if (target->orderQueueHead && target->orderQueueHead->orderId == OrderId::RechargeShields1) {
+			if (target->order_queue_head && target->order_queue_head->orderId == OrderId::RechargeShields1) {
 				return 1;
 			}
 
@@ -83,16 +83,16 @@ namespace hooks
 
 		const s32 BATTERY_RANGE = 0x80; //(128)
 
-		Unit* battery = unit->orderTarget.unit;
+		Unit* battery = unit->order_target.unit;
 
 		//Skip if the Shield Battery does not exist, has no energy, or is disabled
 		//is_frozen code was hardcoded rather than function call in original code
 		if (battery == nullptr || battery->energy == 0 || battery->is_frozen())
 		{
 
-			if (unit->orderQueueHead == nullptr)
+			if (unit->order_queue_head == nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
@@ -149,7 +149,7 @@ namespace hooks
 
 					u8 overlaysCounter;
 
-					if (battery->secondaryOrderId != OrderId::ShieldBattery)
+					if (battery->secondary_order_id != OrderId::ShieldBattery)
 						battery->set_secondary_order(OrderId::ShieldBattery);
 
 					overlaysCounter = helper::has_overlay(unit);
@@ -165,8 +165,8 @@ namespace hooks
 				if (!bStopThere && unit->main_order_state == 3)
 				{
 
-					if (battery->orderTarget.unit == nullptr)
-						battery->orderTarget.unit = unit;
+					if (battery->order_target.unit == nullptr)
+						battery->order_target.unit = unit;
 
 					//do 1 recharge action? (increase unit shield, decrease battery energy)
 					rechargeShieldsProc(unit, battery);
@@ -177,8 +177,8 @@ namespace hooks
 						)
 					{
 
-						if (battery->orderTarget.unit == unit)
-							battery->orderTarget.unit = nullptr;
+						if (battery->order_target.unit == unit)
+							battery->order_target.unit = nullptr;
 
 						unit->order_to_idle();
 

@@ -37,7 +37,7 @@ namespace hooks
 		bool bStopFunction = false;
 		u16 infestedUnitNewId;
 		u16 infestationOverlayId;
-		Unit* unitInfesting = unitInfested->orderTarget.unit;
+		Unit* unitInfesting = unitInfested->order_target.unit;
 		bErrorReturnToIdle = (unitInfesting == nullptr || !isInfestableUnitHook(unitInfested));
 
 		if (!bErrorReturnToIdle)
@@ -45,23 +45,23 @@ namespace hooks
 			if (unitInfested->main_order_state == 0)
 			{
 				//init timer
-				unitInfested->remainingBuildTime = 3;
+				unitInfested->remaining_build_time = 3;
 				unitInfested->main_order_state = 2;
 				bStopFunction = true;
 			}
 
 			if (!bStopFunction)
 			{
-				if (unitInfested->remainingBuildTime != 0)
+				if (unitInfested->remaining_build_time != 0)
 				{
 					// advancing timer
-					unitInfested->remainingBuildTime--;
+					unitInfested->remaining_build_time--;
 					bStopFunction = true;
 				}
 				else
 				{
 					// will become 0xffff, this is used by internal functions
-					unitInfested->remainingBuildTime--;
+					unitInfested->remaining_build_time--;
 
 					// disconnect terran buildings from their add-on
 					if (unitInfested->building.addon != nullptr)
@@ -105,21 +105,21 @@ namespace hooks
 
 					// Related to infestation process, don't use unitInfested->set_secondary_order
 					// because here it is supposed to perform all actions even if 
-					// unitInfested->secondaryOrderId == OrderId::Nothing2 beforehand
+					// unitInfested->secondary_order_id == OrderId::Nothing2 beforehand
 					unitInfested->secondaryOrderPos.y = 0;
 					unitInfested->secondaryOrderPos.x = 0;
 					unitInfested->currentBuildUnit = nullptr;
 					unitInfested->secondaryOrderState = 0;
-					unitInfested->secondaryOrderId = OrderId::Nothing2;
+					unitInfested->secondary_order_id = OrderId::Nothing2;
 
 					// refund what the unit was producing
 					helper::refund_all_queue_slots(unitInfested);
 
 					// clear the orders queue of the unit (hardcoding function @ 0x004744D0)
 					// original code used the actual function instead of hardcoding
-					while (unitInfested->orderQueueHead != nullptr)
+					while (unitInfested->order_queue_head != nullptr)
 					{
-						helper::remove_order_from_unit_queue(unitInfested->orderQueueHead, unitInfested);
+						helper::remove_order_from_unit_queue(unitInfested->order_queue_head, unitInfested);
 					}
 
 					if (unitInfested->status & UnitStatus::GroundedBuilding)
@@ -162,7 +162,7 @@ namespace hooks
 	// Based on and replace 004EA290 orders_InfestMine4
 	void orderInfestTarget(Unit* unitInfesting)
 	{
-		Unit* unitInfested = unitInfesting->orderTarget.unit;
+		Unit* unitInfested = unitInfesting->order_target.unit;
 		bool bBuildTimeReachedZero = false;
 		bool bStopFunction = false;
 		bool bReturnToIdle = false;
@@ -171,9 +171,9 @@ namespace hooks
 		if (unitInfesting->main_order_state == 3)
 		{
 			//infesting in progress, dealing with timer			
-			if (unitInfesting->remainingBuildTime != 0)
+			if (unitInfesting->remaining_build_time != 0)
 			{
-				unitInfesting->remainingBuildTime--;
+				unitInfesting->remaining_build_time--;
 				bStopFunction = true;
 			}
 			else
@@ -200,7 +200,7 @@ namespace hooks
 				helper::make_to_hold_position(unitInfesting);
 				helper::show_and_enable_unit(unitInfesting);
 
-				if (unitInfesting->orderQueueHead == nullptr)
+				if (unitInfesting->order_queue_head == nullptr)
 				{
 					unitInfesting->order_simple(units_dat::ReturnToIdleOrder[unitInfesting->id], false);
 					bReturnToIdle = true;
@@ -230,7 +230,7 @@ namespace hooks
 				helper::hide_and_disable_unit(unitInfesting);								// hide the infesting unit
 				unitInfested->order_to(OrderId::InfestMine1, unitInfesting);				// order the target to be infested, giving it the infesting unit as order target
 				unitInfesting->main_order_state = 3;
-				unitInfesting->remainingBuildTime = 60;									// timer before reappearing
+				unitInfesting->remaining_build_time = 60;									// timer before reappearing
 				bStopFunction = true;
 			}
 
@@ -245,7 +245,7 @@ namespace hooks
 					unitInfesting->next_target_waypoint.y = unitInfesting->move_target.pt.y;
 				}
 				//EA39E
-				if (unitInfesting->orderQueueHead != nullptr)
+				if (unitInfesting->order_queue_head != nullptr)
 				{
 					helper::force_order_done(unitInfesting);
 				}

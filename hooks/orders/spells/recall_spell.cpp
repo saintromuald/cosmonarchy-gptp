@@ -29,7 +29,7 @@ namespace hooks
 		} else {
 			// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
 			scbw::prepare_unit_move(target, false);
-			target->orderTarget.unit = nullptr;
+			target->order_target.unit = nullptr;
 			scbw::set_unit_position(target, new_pos.x, new_pos.y);
 			scbw::refresh_unit_after_move(target);
 
@@ -53,9 +53,9 @@ namespace hooks
 				target->id == UnitId::Hero_SamirDuran ||
 				target->id == UnitId::Hero_InfestedDuran) {
 
-				if (target->connectedUnit && target->connectedUnit->id == UnitId::TerranNuclearMissile) {
-					target->connectedUnit->connectedUnit = nullptr;
-					target->connectedUnit = nullptr;
+				if (target->connected_unit && target->connected_unit->id == UnitId::TerranNuclearMissile) {
+					target->connected_unit->connected_unit = nullptr;
+					target->connected_unit = nullptr;
 				}
 
 			}
@@ -90,14 +90,14 @@ namespace hooks
 		// Unit has started casting Recall (== went through the other condition)
 		if (unit->main_order_state == 1) {
 			// Execute the recall effect when timer reach 0
-			if (unit->mainOrderTimer == 0) {
+			if (unit->main_order_timer == 0) {
 				unit->status &= ~UnitStatus::CanNotReceiveOrders;
 				Box16 spell_location;
 
-				spell_location.left = unit->orderTarget.pt.x - 64;
-				spell_location.top = unit->orderTarget.pt.y - 64;
-				spell_location.right = unit->orderTarget.pt.x + 64;
-				spell_location.bottom = unit->orderTarget.pt.y + 64;
+				spell_location.left = unit->order_target.pt.x - 64;
+				spell_location.top = unit->order_target.pt.y - 64;
+				spell_location.right = unit->order_target.pt.x + 64;
+				spell_location.bottom = unit->order_target.pt.y + 64;
 
 				*bAtLeast1UnitWasRecalled = 0;
 
@@ -142,13 +142,13 @@ namespace hooks
 					unit->spend_unit_energy(techdata_dat::EnergyCost[TechId::Recall] * 256);
 				}
 
-				if (unit->orderTarget.unit) {
-					unit->orderTarget.pt.x = unit->orderTarget.unit->sprite->position.x;
-					unit->orderTarget.pt.y = unit->orderTarget.unit->sprite->position.y;
+				if (unit->order_target.unit) {
+					unit->order_target.pt.x = unit->order_target.unit->sprite->position.x;
+					unit->order_target.pt.y = unit->order_target.unit->sprite->position.y;
 				}
 
 				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->position.x, unit->position.y, unit->player, unit->sprite->elevationLevel - 1);
-				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->player, unit->sprite->elevationLevel + 1);
+				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevationLevel + 1);
 
 				u32 random_value = 0;
 				if (*IS_IN_GAME_LOOP) {
@@ -176,11 +176,11 @@ namespace hooks
 					sound_id_target = SoundId::Protoss_ARBITER_PAbFol00_WAV;
 				}
 				helper::playSoundAtPos(sound_id_source, unit->position.x, unit->position.y, 1, 0);
-				helper::playSoundAtPos(sound_id_target, unit->orderTarget.pt.x, unit->orderTarget.pt.y, 1, 0);
+				helper::playSoundAtPos(sound_id_target, unit->order_target.pt.x, unit->order_target.pt.y, 1, 0);
 
 				scbw::decloak_proc(unit);
 				unit->status |= UnitStatus::CanNotReceiveOrders;
-				unit->mainOrderTimer = 3 * 24; // used to be 22
+				unit->main_order_timer = 3 * 24; // used to be 22
 				unit->main_order_state = 1;
 			}
 		}

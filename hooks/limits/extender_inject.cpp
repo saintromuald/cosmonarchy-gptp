@@ -18,15 +18,15 @@ namespace hooks
 
 	void AI_RemoveFromAttack(s32 unitId_, u32 player)
 	{
-		s32 unitId = unitId_;
-		if (unitId == UnitId::TerranPhalanxSiegeMode)
+		s32 unit_id = unitId_;
+		if (unit_id == UnitId::TerranPhalanxSiegeMode)
 		{
-			unitId = UnitId::TerranPhalanxTankMode;
+			unit_id = UnitId::TerranPhalanxTankMode;
 		}
-		unitId++;
+		unit_id++;
 		for (s32 i = 0; i < ATTACK_LIMIT; i++)
 		{
-			if (globals.attackers.attacks[player][i] == unitId)
+			if (globals.attackers.attacks[player][i] == unit_id)
 			{
 				globals.attackers.attacks[player][i] = UnitId::None + 1;
 				return;
@@ -200,7 +200,7 @@ namespace hooks
 
 	void __declspec(naked) GetAttackUnit_Wrapper()
 	{
-		static u32 unitId;
+		static u32 unit_id;
 		static u32 playerId;
 		static u32 index;
 		__asm {
@@ -210,11 +210,11 @@ namespace hooks
 		}
 		assert(playerId < 8);
 		assert(index < ATTACK_LIMIT);
-		//		unitId = AIScriptController[playerId].attackers[index]; // is actually "unitId+1"
-		unitId = globals.attackers.attacks[playerId][index];
+		//		unit_id = AIScriptController[playerId].attackers[index]; // is actually "unit_id+1"
+		unit_id = globals.attackers.attacks[playerId][index];
 		__asm {
 			POPAD
-			MOV EAX, unitId
+			MOV EAX, unit_id
 			RETN
 		}
 	}
@@ -233,19 +233,19 @@ namespace hooks
 
 	void __declspec(naked) SetAttackUnit_Wrapper()
 	{
-		static u32 unitId;
+		static u32 unit_id;
 		static u32 index;
 		static u32 playerId;
 		__asm {
-			MOV unitId, ECX
+			MOV unit_id, ECX
 			MOV index, EBX
 			MOV playerId, EDX
 			PUSHAD
 		}
 		assert(playerId < 8);
 		assert(index < ATTACK_LIMIT);//change later
-//		AIScriptController[playerId].attackers[index] = unitId;//is actually "unitId+1"
-		globals.attackers.attacks[playerId][index] = unitId;
+//		AIScriptController[playerId].attackers[index] = unit_id;//is actually "unit_id+1"
+		globals.attackers.attacks[playerId][index] = unit_id;
 		__asm {
 			POPAD
 			RETN
@@ -329,7 +329,7 @@ namespace hooks
 		static u32 offset;
 		static u32 playerId;
 		static u32 arrayOffset;
-		static u16 unitId;
+		static u16 unit_id;
 		__asm {
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
@@ -338,14 +338,14 @@ namespace hooks
 			PUSHAD
 		}
 		/*
-		unitId = AIScriptController[playerId].attackers[0];
+		unit_id = AIScriptController[playerId].attackers[0];
 		arrayOffset = reinterpret_cast<u32>(AIScriptController[playerId].attackers);
 		*/
-		unitId = globals.attackers.attacks[playerId][0];
+		unit_id = globals.attackers.attacks[playerId][0];
 		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[playerId][0]);
 		__asm {
 			POPAD
-			MOV AX, unitId
+			MOV AX, unit_id
 			MOV ECX, arrayOffset
 			JMP AIAttackManager_Jmp
 		}
@@ -371,14 +371,14 @@ namespace hooks
 
 	void __declspec(naked) AI_RemoveFromAttack_Wrapper()
 	{ // 00447040
-		static u32 unitId;
+		static u32 unit_id;
 		static u32 player;
 		__asm {
-			MOV unitId, EAX
+			MOV unit_id, EAX
 			MOV player, EDX
 			PUSHAD
 		}
-		hooks::AI_RemoveFromAttack(unitId, player);
+		hooks::AI_RemoveFromAttack(unit_id, player);
 		__asm {
 			POPAD
 			RETN

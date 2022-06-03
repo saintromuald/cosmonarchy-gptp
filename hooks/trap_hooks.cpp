@@ -63,7 +63,7 @@ namespace hooks
 			|| (s16)unitFlags == UnitId::Special_RightWallFlameTrap) {
 			pUnit->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
 				pUnit->visibilityStatus = 0x80000000;
-				ByteOperations::SetLowByte(pUnit->secondaryOrderTimer, 0);
+				ByteOperations::SetLowByte(pUnit->secondary_order_timer, 0);
 			}*/
 		}
 		return unitFlags;
@@ -159,18 +159,18 @@ namespace hooks
 		|| v4 == UnitId::Special_RightWallFlameTrap) {
 			v1->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
 			v1->visibilityStatus = 0x80000000;
-			ByteOperations::SetLowByte(v1->secondaryOrderTimer, 0);
+			ByteOperations::SetLowByte(v1->secondary_order_timer, 0);
 		}*/
 		v5 = playerTable[(u8)v1->player].type;
 		if (v5 == 3)
 		{ // Rescue Passive
 			v6 = v1->main_order_id;
-			v1->userActionFlags |= 1u;
+			v1->user_action_flags |= 1u;
 			if (v6)
 			{
 				while (1)
 				{
-					v7 = v1->orderQueueTail;
+					v7 = v1->order_queue_tail;
 					if (!v7)
 						break;
 					v8 = v7->orderId;
@@ -203,10 +203,10 @@ namespace hooks
 		if (v14 & UnitProperty::NeutralAccessories)
 		{
 			v15 = v1->sprite;
-			v1->building.powerupOrigin.x = v15->position.x;
-			v1->building.powerupOrigin.y = v15->position.y;
+			v1->building.powerup_origin.x = v15->position.x;
+			v1->building.powerup_origin.y = v15->position.y;
 			v16 = units_dat::HumanIdleOrder[v13];
-			v1->userActionFlags |= 1u;
+			v1->user_action_flags |= 1u;
 			helper::order(1, v1, v16, 0, 0, 228);
 			helper::orders_nothing_2(v1);
 		}

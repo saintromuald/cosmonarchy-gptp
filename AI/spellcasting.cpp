@@ -32,7 +32,7 @@ namespace AI
 				{
 					Unit* target = findBestYamatoGunTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::FireYamatoGun1
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -47,11 +47,11 @@ namespace AI
 			{
 				// Lobotomy Mine
 				if (canCastSpellOrder(unit, TechId::Lockdown, OrderId::MagnaPulse)
-					&& unit->vulture.spiderMineCount > 0)
+					&& unit->mine_carrier.mine_count > 0)
 				{
 					Unit* target = findBestLockdownTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::MagnaPulse
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -72,7 +72,7 @@ namespace AI
 					Unit* target = findBestNukeLaunchTarget(unit, isUnitBeingAttacked);
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
-						silo->building.silo.nuke->connectedUnit = unit;
+						silo->building.silo.nuke->connected_unit = unit;
 						AIScriptController[unit->player].AI_LastNukeTime = *elapsedTimeSeconds;
 						return true;
 					}
@@ -85,7 +85,7 @@ namespace AI
 				{
 					Unit* target = findBestDefensiveMatrixTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::DefensiveMatrix
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -102,7 +102,7 @@ namespace AI
 				{
 					Unit* target = findBestIrradiateTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::Irradiate
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -124,7 +124,7 @@ namespace AI
 					Unit* target = findBestNukeLaunchTarget(unit, isUnitBeingAttacked);
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
-						silo->building.silo.nuke->connectedUnit = unit;
+						silo->building.silo.nuke->connected_unit = unit;
 						AIScriptController[unit->player].AI_LastNukeTime = *elapsedTimeSeconds;
 						return true;
 					}
@@ -140,7 +140,7 @@ namespace AI
 						Unit* target = findBestParasiteTarget(unit, isUnitBeingAttacked);
 
 						if (unit->main_order_id == OrderId::CastParasite
-							&& unit->orderTarget.unit == target)
+							&& unit->order_target.unit == target)
 						{
 							return false;
 						}
@@ -160,7 +160,7 @@ namespace AI
 					Unit* target = findBestPlagueTarget(unit, isUnitBeingAttacked);
 
 					if (unit->main_order_id == OrderId::Plague
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 						return false;
 
 					if (aiCastSpellOrder(unit, target, OrderId::Plague))
@@ -173,7 +173,7 @@ namespace AI
 				{
 					Unit* target = findBestDarkSwarmTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::DarkSwarm
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -190,7 +190,7 @@ namespace AI
 				{
 					Unit* target = findBestPsiStormTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::PsiStorm
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -206,7 +206,7 @@ namespace AI
 				{
 					Unit* target = findBestHallucinationTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::Hallucination1
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -223,7 +223,7 @@ namespace AI
 				{
 					Unit* target = findBestStasisFieldTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::StasisField
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -238,7 +238,7 @@ namespace AI
 				{
 					Unit* target = findBestRecallTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::Teleport
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -255,7 +255,7 @@ namespace AI
 				{
 					Unit* target = findBestMindControlTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::CastMindControl
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -275,7 +275,7 @@ namespace AI
 				{
 					Unit* target = findBestMaelstromTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::CastMaelstrom
-						&& unit->orderTarget.unit == target)
+						&& unit->order_target.unit == target)
 					{
 						return false;
 					}
@@ -300,7 +300,7 @@ namespace
 		{
 			energyCost = techdata_dat::EnergyCost[orders_dat::TechUsed[orderId]] * 256;
 		}
-		if (techId == TechId::Lockdown && unit->vulture.spiderMineCount == 0)
+		if (techId == TechId::Lockdown && unit->mine_carrier.mine_count == 0)
 		{
 			return false;
 		}
@@ -314,14 +314,14 @@ namespace
 	// Logically equivalent to function @ 0x004A1290
 	bool aiCastSpellOrder(Unit* unit, Unit* target, u8 orderId, u8 aiActionFlag)
 	{
-		if (!target || target->aiActionFlags & aiActionFlag)
+		if (!target || target->ai_action_flags & aiActionFlag)
 		{
 			return false;
 		}
 		if (unit->main_order_id != orderId)
 		{
 			unit->order_to(orderId, target);
-			target->aiActionFlags |= aiActionFlag;
+			target->ai_action_flags |= aiActionFlag;
 		}
 		return true;
 	}
@@ -355,14 +355,14 @@ namespace
 		while (current_unit != nullptr && return_value == nullptr)
 		{
 			if (current_unit->id == UnitId::TerranNuclearSilo
-				&& current_unit->building.silo.isReady)
+				&& current_unit->building.silo.is_ready)
 			{
 				if (!checkNukeAvailableForGhost)
 				{
 					Unit* nuke = current_unit->building.silo.nuke;
-					if (nuke->connectedUnit == nullptr
-						|| nuke->connectedUnit == ghost
-						|| nuke->connectedUnit->id == UnitId::TerranNuclearSilo)
+					if (nuke->connected_unit == nullptr
+						|| nuke->connected_unit == ghost
+						|| nuke->connected_unit->id == UnitId::TerranNuclearSilo)
 					{
 						return_value = current_unit;
 					}
@@ -381,11 +381,11 @@ namespace
 		for (Unit* unit = firstPlayerUnit->unit[ghost->playerId];
 		     unit; unit = unit->player_link.next)
 		{
-		  if (unit->id == UnitId::nuclear_silo && unit->building.silo.isReady) {
+		  if (unit->id == UnitId::nuclear_silo && unit->building.silo.is_ready) {
 		    Unit* nuke = unit->building.silo.nuke;
-		    if (!nuke->connectedUnit
-		        || nuke->connectedUnit == ghost
-		        || nuke->connectedUnit->id == UnitId::nuclear_silo)
+		    if (!nuke->connected_unit
+		        || nuke->connected_unit == ghost
+		        || nuke->connected_unit->id == UnitId::nuclear_silo)
 		      return unit;
 		  }
 		}

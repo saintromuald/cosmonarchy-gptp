@@ -19,7 +19,7 @@ namespace AI
 				return false;
 			}
 
-			if (!target->orderTarget.unit)
+			if (!target->order_target.unit)
 			{
 				return false;
 			}

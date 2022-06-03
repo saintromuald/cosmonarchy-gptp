@@ -7,7 +7,7 @@ namespace
 	{
 		bool runOriginal;
 		static s32 result;
-		static s16 unitId;
+		static s16 unit_id;
 		static Unit* unit;
 		static s32 playerId;
 		__asm
@@ -18,11 +18,11 @@ namespace
 			MOV EAX, [EBP + 0x08]
 			MOV playerId, EAX
 			POP EAX
-			MOV unitId, AX
+			MOV unit_id, AX
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::createUnitAllowed_Partial(unitId, unit, playerId);
+		result = hooks::createUnitAllowed_Partial(unit_id, unit, playerId);
 		__asm
 		{
 			POPAD

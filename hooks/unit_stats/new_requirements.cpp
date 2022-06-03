@@ -16,14 +16,14 @@ namespace hooks {
 		return Player::numberOfCompletedUnitsOfType(player_id, unit_id);
 	}
 
-	s32 createUnitIdAllowed(s16 unitId, s32 player_id, bool ignore_creator)
+	s32 createUnitIdAllowed(s16 unit_id, s32 player_id, bool ignore_creator)
 	{
 		*lastInternalError = InternalErrors::UnknownError0;
-		if (unitId >= UnitId::None)
+		if (unit_id >= UnitId::None)
 		{
 			return false;
 		}
-		if (!unit_availability->available[player_id][unitId])
+		if (!unit_availability->available[player_id][unit_id])
 		{
 			return false;
 		}
@@ -57,7 +57,7 @@ namespace hooks {
 		// TERRAN
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMason) || player_has_completed_unit_id(player_id, UnitId::TerranTalos))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranCommandCenter:
 				case UnitId::TerranReservoir:
@@ -99,7 +99,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandCenter))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranMason:
 				case UnitId::TerranComsatStation:
@@ -125,7 +125,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranNuclearSilo))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranNuclearMissile:
 				{
@@ -135,7 +135,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranQuarry))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranMason:
 				{
@@ -145,7 +145,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranTreasury))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranComsatStation:
 				{
@@ -163,7 +163,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranBarracks))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranMedbay:
 				{
@@ -202,7 +202,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranFulcrum))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranMachineShop:
 				case UnitId::TerranSalvoYard:
@@ -238,7 +238,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranStarport))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranMunitionsBay:
 				case UnitId::TerranControlTower:
@@ -275,7 +275,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranScrapyard))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranBioticBase:
 				case UnitId::TerranTinkerersTower:
@@ -312,7 +312,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCaptaincy))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranGuildhall:
 				{
@@ -339,7 +339,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranIronFoundry))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranPazuzu:
 				case UnitId::TerranClaymore:
@@ -351,7 +351,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranNaniteAssembly))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::TerranCentaur:
 				case UnitId::TerranMinotaur:
@@ -367,14 +367,14 @@ namespace hooks {
 		// Units
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossNexus))
 		{
-			if (unitId == UnitId::ProtossScribe)
+			if (unit_id == UnitId::ProtossScribe)
 			{
 				return true;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossNexus))
 		{
-			if (unitId == UnitId::ProtossArtisan)
+			if (unit_id == UnitId::ProtossArtisan)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ProtossForge))
 				{
@@ -384,16 +384,16 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossForge))
 		{
-			if (unitId == UnitId::ProtossScribe
-				|| unitId == UnitId::ProtossEnvoy
-				|| unitId == UnitId::ProtossWitness)
+			if (unit_id == UnitId::ProtossScribe
+				|| unit_id == UnitId::ProtossEnvoy
+				|| unit_id == UnitId::ProtossWitness)
 			{
 				return true;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGateway))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ProtossZealot:
 				case UnitId::ProtossDracadin:
@@ -413,7 +413,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGrandLibrary))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ProtossCantavis:
 				case UnitId::ProtossAmaranth:
@@ -432,7 +432,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossRoboticsFacility))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ProtossVassal:
 				case UnitId::ProtossSimulacrum:
@@ -452,7 +452,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossRoboticsAuthority))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ProtossAccantor:
 				case UnitId::ProtossArchitect:
@@ -471,7 +471,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossStargate))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ProtossAurora:
 				case UnitId::ProtossPanoptus:
@@ -491,7 +491,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossArgosy))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ProtossMagister:
 				case UnitId::ProtossDidact:
@@ -517,7 +517,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossProstrationStage))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ProtossCabalist:
 				case UnitId::ProtossBarghest:
@@ -543,7 +543,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossRogueGallery))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::SharedAspirant:
 				case UnitId::SharedCharlatan:
@@ -566,7 +566,7 @@ namespace hooks {
 		// Morphs and subunits
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossCantavis))
 		{
-			if (unitId == UnitId::ProtossAugur)
+			if (unit_id == UnitId::ProtossAugur)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ProtossArchonArchives))
 				{
@@ -576,14 +576,14 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAccantor))
 		{
-			if (unitId == UnitId::ProtossPlasmaShell)
+			if (unit_id == UnitId::ProtossPlasmaShell)
 			{
 				return true;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossSolarion))
 		{
-			if (unitId == UnitId::ProtossSteward)
+			if (unit_id == UnitId::ProtossSteward)
 			{
 				return true;
 			}
@@ -592,7 +592,7 @@ namespace hooks {
 		// Structures
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe) || player_has_completed_unit_id(player_id, UnitId::ProtossArtisan))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ProtossNexus:
 				case UnitId::ProtossPylon:
@@ -630,7 +630,7 @@ namespace hooks {
 		// Units
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergLarva))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ZergDroleth:
 				case UnitId::ZergOvileth:
@@ -752,7 +752,7 @@ namespace hooks {
 		// Morphs
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOvileth))
 		{
-			if (unitId == UnitId::ZergIroleth)
+			if (unit_id == UnitId::ZergIroleth)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier2])
 				{
@@ -762,7 +762,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZethrokor))
 		{
-			if (unitId == UnitId::ZergVorvrokor)
+			if (unit_id == UnitId::ZergVorvrokor)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergLiivralPond))
 				{
@@ -772,7 +772,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergQuazilisk))
 		{
-			if (unitId == UnitId::ZergLiiralisk)
+			if (unit_id == UnitId::ZergLiiralisk)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergLiivralPond))
 				{
@@ -782,7 +782,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHydralisk))
 		{
-			if (unitId == UnitId::ZergBactalisk)
+			if (unit_id == UnitId::ZergBactalisk)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergGorgralSwamp))
 				{
@@ -792,7 +792,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSkithrokor))
 		{
-			if (unitId == UnitId::ZergGorgrokor)
+			if (unit_id == UnitId::ZergGorgrokor)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergGorgralSwamp))
 				{
@@ -802,7 +802,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMutalisk))
 		{
-			if (unitId == UnitId::ZergVithrilisk)
+			if (unit_id == UnitId::ZergVithrilisk)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergVithrathHaunt))
 				{
@@ -812,7 +812,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergNathrokor))
 		{
-			if (unitId == UnitId::ZergKalkalisk)
+			if (unit_id == UnitId::ZergKalkalisk)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergVithrathHaunt))
 				{
@@ -822,7 +822,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZoryusthaleth))
 		{
-			if (unitId == UnitId::ZergUltrokor)
+			if (unit_id == UnitId::ZergUltrokor)
 			{
 				if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergUltrokCavern))
 				{
@@ -832,7 +832,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMatraleth))
 		{
-			if (unitId == UnitId::ZergAkistrokor)
+			if (unit_id == UnitId::ZergAkistrokor)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre))
 				{
@@ -842,7 +842,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergKonvilisk))
 		{
-			if (unitId == UnitId::ZergAlmaksalisk)
+			if (unit_id == UnitId::ZergAlmaksalisk)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre))
 				{
@@ -852,7 +852,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergDroleth))
 		{
-			if (unitId == UnitId::ZergGosvileth)
+			if (unit_id == UnitId::ZergGosvileth)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier3])
 				{
@@ -862,7 +862,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOthstoleth))
 		{
-			if (unitId == UnitId::ZergAlaszileth)
+			if (unit_id == UnitId::ZergAlaszileth)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier4])
 				{
@@ -872,7 +872,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergKeskathalor))
 		{
-			if (unitId == UnitId::ZergAlkajelisk)
+			if (unit_id == UnitId::ZergAlkajelisk)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergAlkajChasm))
 				{
@@ -884,7 +884,7 @@ namespace hooks {
 		// Structures
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergDroleth) || player_has_completed_unit_id(player_id, UnitId::ZergGosvileth))
 		{
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ZergHatchery:
 				case UnitId::ZergCreepColony:
@@ -929,16 +929,16 @@ namespace hooks {
 		// Structure morphs
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergCreepColony))
 		{
-			if (unitId == UnitId::ZergSunkenColony
-				|| unitId == UnitId::ZergSporeColony
-				|| unitId == UnitId::ZergLarvalColony)
+			if (unit_id == UnitId::ZergSunkenColony
+				|| unit_id == UnitId::ZergSporeColony
+				|| unit_id == UnitId::ZergLarvalColony)
 			{
 				return true;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHatchery))
 		{
-			if (unitId == UnitId::ZergLair)
+			if (unit_id == UnitId::ZergLair)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier2])
 				{
@@ -948,7 +948,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergQuazrokPool))
 		{
-			if (unitId == UnitId::ZergLiivralPond)
+			if (unit_id == UnitId::ZergLiivralPond)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier2])
 				{
@@ -958,7 +958,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHydrokDen))
 		{
-			if (unitId == UnitId::ZergGorgralSwamp)
+			if (unit_id == UnitId::ZergGorgralSwamp)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier2])
 				{
@@ -968,7 +968,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMuthrokSpire))
 		{
-			if (unitId == UnitId::ZergVithrathHaunt)
+			if (unit_id == UnitId::ZergVithrathHaunt)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier2])
 				{
@@ -978,14 +978,14 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergIrolIris))
 		{
-			if (unitId == UnitId::ZergOthstolOviform)
+			if (unit_id == UnitId::ZergOthstolOviform)
 			{
 				return true;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergLair))
 		{
-			if (unitId == UnitId::ZergHive)
+			if (unit_id == UnitId::ZergHive)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier3])
 				{
@@ -995,7 +995,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMatravilNest))
 		{
-			if (unitId == UnitId::ZergAlmakisAntre)
+			if (unit_id == UnitId::ZergAlmakisAntre)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier3])
 				{
@@ -1005,7 +1005,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud))
 		{
-			if (unitId == UnitId::ZergUltrokCavern)
+			if (unit_id == UnitId::ZergUltrokCavern)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier3])
 				{
@@ -1015,7 +1015,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHive))
 		{
-			if (unitId == UnitId::ZergSire)
+			if (unit_id == UnitId::ZergSire)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier4])
 				{
@@ -1025,14 +1025,14 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform))
 		{
-			if (unitId == UnitId::ZergAlaszilArbor)
+			if (unit_id == UnitId::ZergAlaszilArbor)
 			{
 				return true;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergGeszkathGrotto))
 		{
-			if (unitId == UnitId::ZergAlkajChasm)
+			if (unit_id == UnitId::ZergAlkajChasm)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier4])
 				{
@@ -1043,10 +1043,10 @@ namespace hooks {
 		return false;
 	}
 
-	s32 createUnitAllowed_Partial(s16 unitId, Unit* unit, s32 player_id)
+	s32 createUnitAllowed_Partial(s16 unit_id, Unit* unit, s32 player_id)
 	{
 		*lastInternalError = InternalErrors::UnknownError0;
-		if (unitId >= UnitId::None)
+		if (unit_id >= UnitId::None)
 		{
 			*lastInternalError = InternalErrors::UnknownError16;
 			return TECH_HIDDEN;
@@ -1066,7 +1066,7 @@ namespace hooks {
 			*lastInternalError = InternalErrors::UnitFrozen;
 			return TECH_HIDDEN;
 		}
-		if (!unit_availability->available[unit->player][unitId])
+		if (!unit_availability->available[unit->player][unit_id])
 		{
 			*lastInternalError = InternalErrors::UnknownError2;
 			return TECH_HIDDEN;
@@ -1122,7 +1122,7 @@ namespace hooks {
 			addonId = unit->building.addon->id;
 		}
 		bool inAir = unit->status & UnitStatus::InAir;
-		bool isTraining = unit->buildQueue[unit->buildQueueSlot] != UnitId::None;
+		bool isTraining = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 
 		switch (unit->id)
 		{
@@ -1134,7 +1134,7 @@ namespace hooks {
 					return TECH_HIDDEN;
 				}
 
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranCommandCenter:
 					case UnitId::TerranReservoir:
@@ -1179,7 +1179,7 @@ namespace hooks {
 			}
 			case UnitId::TerranCommandCenter:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranMason:
 					{
@@ -1224,11 +1224,11 @@ namespace hooks {
 			} break;
 			case UnitId::TerranNuclearSilo:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranNuclearMissile:
 					{
-						if (!unit->building.silo.nuke && unit->buildQueue[unit->buildQueueSlot] == UnitId::None)
+						if (!unit->building.silo.nuke && unit->build_queue[unit->build_queue_slot] == UnitId::None)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1237,7 +1237,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranQuarry:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranMason:
 					{
@@ -1247,7 +1247,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranTreasury:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranComsatStation:
 					{
@@ -1274,7 +1274,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranBarracks:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranMedbay:
 					{
@@ -1337,7 +1337,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranFulcrum:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranMachineShop:
 					case UnitId::TerranSalvoYard:
@@ -1392,7 +1392,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranStarport:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranMunitionsBay:
 					case UnitId::TerranControlTower:
@@ -1448,7 +1448,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranScrapyard:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranBioticBase:
 					case UnitId::TerranTinkerersTower:
@@ -1504,7 +1504,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranCaptaincy:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranGuildhall:
 					{
@@ -1545,7 +1545,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranIronFoundry:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranPazuzu:
 					case UnitId::TerranClaymore:
@@ -1561,7 +1561,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranNaniteAssembly:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::TerranCentaur:
 					case UnitId::TerranMinotaur:
@@ -1581,11 +1581,11 @@ namespace hooks {
 			// Units
 			case UnitId::ProtossNexus:
 			{
-				if (unitId == UnitId::ProtossScribe)
+				if (unit_id == UnitId::ProtossScribe)
 				{
 					return TECH_ACTIVE;
 				}
-				if (unitId == UnitId::ProtossArtisan)
+				if (unit_id == UnitId::ProtossArtisan)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossForge))
 					{
@@ -1597,9 +1597,9 @@ namespace hooks {
 			}
 			case UnitId::ProtossForge:
 			{
-				if (unitId == UnitId::ProtossScribe
-					|| unitId == UnitId::ProtossEnvoy
-					|| unitId == UnitId::ProtossWitness)
+				if (unit_id == UnitId::ProtossScribe
+					|| unit_id == UnitId::ProtossEnvoy
+					|| unit_id == UnitId::ProtossWitness)
 				{
 					return TECH_ACTIVE;
 				}
@@ -1607,7 +1607,7 @@ namespace hooks {
 			}
 			case UnitId::ProtossGateway:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::ProtossZealot:
 					case UnitId::ProtossDracadin:
@@ -1629,7 +1629,7 @@ namespace hooks {
 			}
 			case UnitId::ProtossGrandLibrary:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::ProtossCantavis:
 					case UnitId::ProtossAmaranth:
@@ -1650,7 +1650,7 @@ namespace hooks {
 			}
 			case UnitId::ProtossRoboticsFacility:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::ProtossVassal:
 					case UnitId::ProtossSimulacrum:
@@ -1672,7 +1672,7 @@ namespace hooks {
 			}
 			case UnitId::ProtossRoboticsAuthority:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::ProtossAccantor:
 					case UnitId::ProtossArchitect:
@@ -1693,7 +1693,7 @@ namespace hooks {
 			}
 			case UnitId::ProtossStargate:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::ProtossAurora:
 					case UnitId::ProtossPanoptus:
@@ -1715,7 +1715,7 @@ namespace hooks {
 			}
 			case UnitId::ProtossArgosy:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::ProtossMagister:
 					case UnitId::ProtossDidact:
@@ -1744,7 +1744,7 @@ namespace hooks {
 			}
 			case UnitId::ProtossProstrationStage:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::ProtossCabalist:
 					case UnitId::ProtossBarghest:
@@ -1773,7 +1773,7 @@ namespace hooks {
 			}
 			case UnitId::ProtossRogueGallery:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::SharedAspirant:
 					case UnitId::SharedCharlatan:
@@ -1798,7 +1798,7 @@ namespace hooks {
 			// Morphs and subunits
 			case UnitId::ProtossCantavis:
 			{
-				if (unitId == UnitId::ProtossAugur)
+				if (unit_id == UnitId::ProtossAugur)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossArchonArchives))
 					{
@@ -1810,12 +1810,12 @@ namespace hooks {
 			}
 			case UnitId::ProtossAccantor:
 			{
-				if (unitId == UnitId::ProtossPlasmaShell)
+				if (unit_id == UnitId::ProtossPlasmaShell)
 				{
-					u32 shellCount = unit->carrier.inHangarCount + unit->carrier.outHangarCount;
+					u32 shellCount = unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count;
 					for (u32 i = 0; i < 5; ++i)
 					{
-						shellCount += unit->buildQueue[i] != UnitId::None;
+						shellCount += unit->build_queue[i] != UnitId::None;
 					}
 					if (shellCount >= 5)
 					{
@@ -1827,12 +1827,12 @@ namespace hooks {
 			}
 			case UnitId::ProtossSolarion:
 			{
-				if (unitId == UnitId::ProtossSteward)
+				if (unit_id == UnitId::ProtossSteward)
 				{
-					u32 stewardCount = unit->carrier.inHangarCount + unit->carrier.outHangarCount;
+					u32 stewardCount = unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count;
 					for (u32 i = 0; i < 5; ++i)
 					{
-						stewardCount += unit->buildQueue[i] != UnitId::None;
+						stewardCount += unit->build_queue[i] != UnitId::None;
 					}
 					if (stewardCount >= 12)
 					{
@@ -1847,7 +1847,7 @@ namespace hooks {
 			case UnitId::ProtossScribe:
 			case UnitId::ProtossArtisan:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::ProtossNexus:
 					case UnitId::ProtossPylon:
@@ -1886,7 +1886,7 @@ namespace hooks {
 			// Units
 			case UnitId::ZergLarva:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::ZergDroleth:
 					case UnitId::ZergOvileth:
@@ -2022,7 +2022,7 @@ namespace hooks {
 			// Morphs
 			case UnitId::ZergOvileth:
 			{
-				if (unitId == UnitId::ZergIroleth)
+				if (unit_id == UnitId::ZergIroleth)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2]
 						&& scbw::transport_is_empty(unit))
@@ -2035,7 +2035,7 @@ namespace hooks {
 			}
 			case UnitId::ZergZethrokor:
 			{
-				if (unitId == UnitId::ZergVorvrokor)
+				if (unit_id == UnitId::ZergVorvrokor)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergLiivralPond))
 					{
@@ -2047,7 +2047,7 @@ namespace hooks {
 			}
 			case UnitId::ZergQuazilisk:
 			{
-				if (unitId == UnitId::ZergLiiralisk)
+				if (unit_id == UnitId::ZergLiiralisk)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergLiivralPond))
 					{
@@ -2059,7 +2059,7 @@ namespace hooks {
 			}
 			case UnitId::ZergHydralisk:
 			{
-				if (unitId == UnitId::ZergBactalisk)
+				if (unit_id == UnitId::ZergBactalisk)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergGorgralSwamp))
 					{
@@ -2071,7 +2071,7 @@ namespace hooks {
 			}
 			case UnitId::ZergSkithrokor:
 			{
-				if (unitId == UnitId::ZergGorgrokor)
+				if (unit_id == UnitId::ZergGorgrokor)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergGorgralSwamp))
 					{
@@ -2083,7 +2083,7 @@ namespace hooks {
 			}
 			case UnitId::ZergMutalisk:
 			{
-				if (unitId == UnitId::ZergVithrilisk)
+				if (unit_id == UnitId::ZergVithrilisk)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergVithrathHaunt))
 					{
@@ -2095,7 +2095,7 @@ namespace hooks {
 			}
 			case UnitId::ZergNathrokor:
 			{
-				if (unitId == UnitId::ZergKalkalisk)
+				if (unit_id == UnitId::ZergKalkalisk)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergVithrathHaunt))
 					{
@@ -2107,7 +2107,7 @@ namespace hooks {
 			}
 			case UnitId::ZergZoryusthaleth:
 			{
-				if (unitId == UnitId::ZergUltrokor)
+				if (unit_id == UnitId::ZergUltrokor)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergUltrokCavern))
 					{
@@ -2119,7 +2119,7 @@ namespace hooks {
 			}
 			case UnitId::ZergMatraleth:
 			{
-				if (unitId == UnitId::ZergAkistrokor)
+				if (unit_id == UnitId::ZergAkistrokor)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre))
 					{
@@ -2131,7 +2131,7 @@ namespace hooks {
 			}
 			case UnitId::ZergKonvilisk:
 			{
-				if (unitId == UnitId::ZergAlmaksalisk)
+				if (unit_id == UnitId::ZergAlmaksalisk)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre))
 					{
@@ -2143,7 +2143,7 @@ namespace hooks {
 			}
 			case UnitId::ZergOthstoleth:
 			{
-				if (unitId == UnitId::ZergAlaszileth)
+				if (unit_id == UnitId::ZergAlaszileth)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier4]
 						&& scbw::transport_is_empty(unit))
@@ -2156,7 +2156,7 @@ namespace hooks {
 			}
 			case UnitId::ZergKeskathalor:
 			{
-				if (unitId == UnitId::ZergAlkajelisk)
+				if (unit_id == UnitId::ZergAlkajelisk)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergAlkajChasm))
 					{
@@ -2171,7 +2171,7 @@ namespace hooks {
 			case UnitId::ZergDroleth:
 			case UnitId::ZergGosvileth:
 			{
-				switch (unitId)
+				switch (unit_id)
 				{
 					case UnitId::ZergHatchery:
 					case UnitId::ZergCreepColony:
@@ -2228,9 +2228,9 @@ namespace hooks {
 			// Structure morphs
 			case UnitId::ZergCreepColony:
 			{
-				if (unitId == UnitId::ZergSunkenColony
-					|| unitId == UnitId::ZergSporeColony
-					|| unitId == UnitId::ZergLarvalColony)
+				if (unit_id == UnitId::ZergSunkenColony
+					|| unit_id == UnitId::ZergSporeColony
+					|| unit_id == UnitId::ZergLarvalColony)
 				{
 					return TECH_ACTIVE;
 				}
@@ -2238,7 +2238,7 @@ namespace hooks {
 			}
 			case UnitId::ZergHatchery:
 			{
-				if (unitId == UnitId::ZergLair)
+				if (unit_id == UnitId::ZergLair)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{
@@ -2250,7 +2250,7 @@ namespace hooks {
 			}
 			case UnitId::ZergQuazrokPool:
 			{
-				if (unitId == UnitId::ZergLiivralPond)
+				if (unit_id == UnitId::ZergLiivralPond)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{
@@ -2262,7 +2262,7 @@ namespace hooks {
 			}
 			case UnitId::ZergHydrokDen:
 			{
-				if (unitId == UnitId::ZergGorgralSwamp)
+				if (unit_id == UnitId::ZergGorgralSwamp)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{
@@ -2274,7 +2274,7 @@ namespace hooks {
 			}
 			case UnitId::ZergMuthrokSpire:
 			{
-				if (unitId == UnitId::ZergVithrathHaunt)
+				if (unit_id == UnitId::ZergVithrathHaunt)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{
@@ -2286,7 +2286,7 @@ namespace hooks {
 			}
 			case UnitId::ZergIrolIris:
 			{
-				if (unitId == UnitId::ZergOthstolOviform)
+				if (unit_id == UnitId::ZergOthstolOviform)
 				{
 					return TECH_ACTIVE;
 				}
@@ -2294,7 +2294,7 @@ namespace hooks {
 			}
 			case UnitId::ZergLair:
 			{
-				if (unitId == UnitId::ZergHive)
+				if (unit_id == UnitId::ZergHive)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier3])
 					{
@@ -2306,7 +2306,7 @@ namespace hooks {
 			}
 			case UnitId::ZergMatravilNest:
 			{
-				if (unitId == UnitId::ZergAlmakisAntre)
+				if (unit_id == UnitId::ZergAlmakisAntre)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier3])
 					{
@@ -2318,7 +2318,7 @@ namespace hooks {
 			}
 			case UnitId::ZergZorkizShroud:
 			{
-				if (unitId == UnitId::ZergUltrokCavern)
+				if (unit_id == UnitId::ZergUltrokCavern)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier3])
 					{
@@ -2330,7 +2330,7 @@ namespace hooks {
 			}
 			case UnitId::ZergHive:
 			{
-				if (unitId == UnitId::ZergSire)
+				if (unit_id == UnitId::ZergSire)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier4])
 					{
@@ -2342,7 +2342,7 @@ namespace hooks {
 			}
 			case UnitId::ZergOthstolOviform:
 			{
-				if (unitId == UnitId::ZergAlaszilArbor)
+				if (unit_id == UnitId::ZergAlaszilArbor)
 				{
 					return TECH_ACTIVE;
 				}
@@ -2350,7 +2350,7 @@ namespace hooks {
 			}
 			case UnitId::ZergGeszkathGrotto:
 			{
-				if (unitId == UnitId::ZergAlkajChasm)
+				if (unit_id == UnitId::ZergAlkajChasm)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier4])
 					{

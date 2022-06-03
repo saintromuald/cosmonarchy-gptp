@@ -59,19 +59,19 @@ namespace hooks
 				helper::has_money_can_make(current_unit, wUnitType) // start construction if successful
 				)
 			{
-				current_unit->userActionFlags |= 1;
+				current_unit->user_action_flags |= 1;
 				if (current_unit->main_order_id != OrderId::Die)
 				{
 					bool bKeepLooping = true;
 					while (bKeepLooping)
 					{
-						if (current_unit->orderQueueTail == nullptr)
+						if (current_unit->order_queue_tail == nullptr)
 							bKeepLooping = false;
 						else
-							if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
-								current_unit->orderQueueTail->orderId == OrderId::Morph1
+							if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->orderId] ||
+								current_unit->order_queue_tail->orderId == OrderId::Morph1
 								)
-								helper::remove_order_from_unit_queue(current_unit->orderQueueTail, current_unit);
+								helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
 							else
 								bKeepLooping = false;
 					}

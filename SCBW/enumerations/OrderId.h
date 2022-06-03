@@ -104,7 +104,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	Follow                 = 0x31, /**< Move to/with unit or building. Causes units to load into transports or enter nydus canal or recharge shields.
 					* Default Requirements: Unit is able to move. Allow on hallucinated units. */
-	Carrier                = 0x32, /**< Idle command for the carrier.
+	Carrier                = 0x32, /**< Idle command for the unit_with_hangar.
 					* Default Requirements: Unit must be Carrier/Gantrithor. Allow on hallucinated units. */
 	CarrierIgnore1         = 0x33, /**< Carrier move command. Ignores enemies
 					* Default Requirements: Unit must be Carrier/Gantrithor or Reaver/Warbringer. Allow on hallucinated units. */
@@ -130,7 +130,7 @@ enum Enum {
 					* Default Requirements: Unit must be Reaver/Warbringer. Allow on hallucinated units. */
 	ReaverHold             = 0x3E, /**< Reaver hold position.
 					* Default Requirements: Unit must be Reaver/Warbringer. Allow on hallucinated units. */
-	TrainFighter           = 0x3F, /**< Training subunit(scarab, interceptor). Causes all interceptors within a carrier to be healed when not attacking.
+	TrainFighter           = 0x3F, /**< Training subunit(scarab, hangar_unit). Causes all interceptors within a unit_with_hangar to be healed when not attacking.
 					* Default Requirements: Unused. */
 	StrafeUnit1            = 0x40, /**< Interceptor move and attack.
 					* Default Requirements: Unit must be Protoss Interceptor. Allow on hallucinated units. */

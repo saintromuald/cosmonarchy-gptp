@@ -78,7 +78,7 @@ namespace hooks
 												) == 1)
 												{
 
-													current_unit->userActionFlags |= 1;
+													current_unit->user_action_flags |= 1;
 
 													if (current_unit->main_order_id != OrderId::Die)
 													{
@@ -88,13 +88,13 @@ namespace hooks
 														while (bContinueLoop)
 														{
 
-															if (current_unit->orderQueueTail == nullptr)
+															if (current_unit->order_queue_tail == nullptr)
 																bContinueLoop = false;
 															else
-																if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
-																	current_unit->orderQueueTail->orderId == OrderId::ReaverStop
+																if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->orderId] ||
+																	current_unit->order_queue_tail->orderId == OrderId::ReaverStop
 																	)
-																	helper::remove_order_from_unit_queue(current_unit->orderQueueTail, current_unit);
+																	helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
 																else
 																	bContinueLoop = false;
 
@@ -186,7 +186,7 @@ namespace hooks
 												) == 1)
 												{
 
-													current_unit->userActionFlags |= 1;
+													current_unit->user_action_flags |= 1;
 
 													if (current_unit->main_order_id != OrderId::Die)
 													{
@@ -196,13 +196,13 @@ namespace hooks
 														while (bContinueLoop)
 														{
 
-															if (current_unit->orderQueueTail == nullptr)
+															if (current_unit->order_queue_tail == nullptr)
 																bContinueLoop = false;
 															else
-																if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
-																	current_unit->orderQueueTail->orderId == OrderId::CarrierStop
+																if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->orderId] ||
+																	current_unit->order_queue_tail->orderId == OrderId::CarrierStop
 																	)
-																	helper::remove_order_from_unit_queue(current_unit->orderQueueTail, current_unit);
+																	helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
 																else
 																	bContinueLoop = false;
 

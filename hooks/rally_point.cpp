@@ -79,10 +79,10 @@ namespace hooks
             }
             else
             {
-                u16 unitId = unit->id;
-                if (unitId == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding
+                u16 unit_id = unit->id;
+                if (unit_id == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding
                   || scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
-                  || unitId == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
+                  || unit_id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
                 {
                     *lastInternalError = 8;
                     result = 0;
@@ -92,7 +92,7 @@ namespace hooks
                     result = orders_dat::RequirementsOffset[OrderId::RallyPoint2];
                     if (orders_dat::RequirementsOffset[OrderId::RallyPoint2])
                     {
-                        if (unit->id == UnitId::ZergCreepColony && unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergLarvalColony) // lame
+                        if (unit->id == UnitId::ZergCreepColony && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvalColony) // lame
                         {
                             result = 1;
                         }
@@ -122,21 +122,21 @@ namespace hooks
         {
             unit->currentBuildUnit = 0;
         }
-        if (unit->orderTarget.unit == dying)
+        if (unit->order_target.unit == dying)
         {
-            unit->orderTarget.unit = 0;
+            unit->order_target.unit = 0;
         }
         if (unit->move_target.unit == dying)
         {
             unit->move_target.unit = 0;
         }
-        if (unit->autoTargetUnit == dying)
+        if (unit->auto_target_unit == dying)
         {
-            unit->autoTargetUnit = 0;
+            unit->auto_target_unit = 0;
         }
-        if (unit->connectedUnit == dying)
+        if (unit->connected_unit == dying)
         {
-            unit->connectedUnit = 0;
+            unit->connected_unit = 0;
         }
         if (unit->irradiatedBy == dying)
         {
@@ -144,9 +144,9 @@ namespace hooks
         }
         if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
         {
-            if (unit->worker.targetResource.unit == dying)
+            if (unit->worker.target_resource.unit == dying)
             {
-                unit->worker.targetResource.unit = 0;
+                unit->worker.target_resource.unit = 0;
             }
             if (unit->worker.is_harvesting)
             {
@@ -181,7 +181,7 @@ namespace hooks
                 RemoveReferences(unit->subunit, dying);
             }
         }
-        Order* result = unit->orderQueueHead;
+        Order* result = unit->order_queue_head;
         while (result)
         {
             Order* next = result->next;
@@ -318,7 +318,7 @@ namespace hooks
                                     helper::targeted_order_ground(byte_68C300[0], fow_unit_id, unit, queued != 0, target_x, target_y);
                                 }
                             }
-                            unit->userActionFlags |= 2u;
+                            unit->user_action_flags |= 2u;
                         }
                     }
                 }

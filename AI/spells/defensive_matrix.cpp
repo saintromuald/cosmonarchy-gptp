@@ -28,7 +28,7 @@ namespace AI
 				return false;
 			if (caster->isTargetEnemy(target))
 				return false;
-			if (!target->orderTarget.unit)  //Ignore idle units?
+			if (!target->order_target.unit)  //Ignore idle units?
 				return false;
 			if (target->status & UnitStatus::RequiresDetection)
 				return false;

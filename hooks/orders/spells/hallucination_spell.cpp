@@ -13,13 +13,13 @@ namespace hooks
 			s32 counter = 1;
 
 			Vector32 hit;
-			if (Unit* target = unit->orderTarget.unit)
+			if (Unit* target = unit->order_target.unit)
 			{
 				hit = {target->get_x(), target->get_y()};
 			}
 			else
 			{
-				Point16 pt = unit->orderTarget.pt;
+				Point16 pt = unit->order_target.pt;
 				hit = {pt.x, pt.y};
 			}
 			
@@ -32,9 +32,9 @@ namespace hooks
 				unit->spend_unit_energy(techCost);
 			}
 
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else if (unit->unit_ai != nullptr)

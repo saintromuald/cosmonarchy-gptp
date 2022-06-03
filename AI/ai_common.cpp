@@ -36,7 +36,7 @@ namespace AI
 
 	bool isTargetAttackingAlly(Unit* target, Unit* unit)
 	{
-		if (Unit* targetOfTarget = target->orderTarget.unit)
+		if (Unit* targetOfTarget = target->order_target.unit)
 		{
 			if (targetOfTarget->player < 8 && !unit->isTargetEnemy(targetOfTarget))
 			{

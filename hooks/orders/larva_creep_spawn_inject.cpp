@@ -97,21 +97,21 @@ namespace
 	/*
 	void __declspec(naked) spreadCreep_Wrapper() // 0x00414680
 	{
-		u8 spreadCreep(u16 unitId, s32 x, s32 y);
+		u8 spreadCreep(u16 unit_id, s32 x, s32 y);
 
-		static u16 unitId;
+		static u16 unit_id;
 		static s32 x;
 		static s32 y;
 		static u8 result;
 
 		__asm
 		{
-		MOV unitId, DX
+		MOV unit_id, DX
 		MOV x, ECX
 		MOV y, EAX
 		PUSHAD
 		}
-		result = hooks::spreadCreep(unitId, x, y);
+		result = hooks::spreadCreep(unit_id, x, y);
 		__asm
 		{
 		POPAD
@@ -124,7 +124,7 @@ namespace
 	void __declspec(naked) getCreepRegion_Wrapper() // 0x00413DB0
 	{
 		static Box32* rect;
-		static u16 unitId;
+		static u16 unit_id;
 		static s32 x;
 		static s32 y;
 		static u32 isComplete;
@@ -134,7 +134,7 @@ namespace
 			PUSH EBP
 			MOV EBP, ESP
 			MOV rect, ECX
-			MOV unitId, DX
+			MOV unit_id, DX
 			MOV isComplete, EAX
 			MOV EAX, [EBP + 0x08]
 			MOV x, EAX
@@ -142,7 +142,7 @@ namespace
 			MOV y, EAX
 			PUSHAD
 		}
-		result = hooks::getCreepRegion(rect, unitId, x, y, isComplete);
+		result = hooks::getCreepRegion(rect, unit_id, x, y, isComplete);
 		__asm
 		{
 			POPAD
@@ -154,19 +154,19 @@ namespace
 
 	void __declspec(naked) spreadsCreep_Wrapper() // 0x00413870
 	{
-		static u16 unitId;
+		static u16 unit_id;
 		static u32 isComplete;
 		static u32 result;
 		__asm
 		{
 			PUSH EBP
 			MOV EBP, ESP
-			MOV unitId, AX
+			MOV unit_id, AX
 			MOV EAX, [EBP + 0x08]
 			MOV isComplete, EAX
 			PUSHAD
 		}
-		result = hooks::spreads_creep(unitId, isComplete);
+		result = hooks::spreads_creep(unit_id, isComplete);
 		__asm
 		{
 			POPAD

@@ -7,10 +7,10 @@ namespace hooks
 	// changing identical tests in order function is useless since the unit won't even use that function)
 	bool canEnterNydusCanal(Unit* unit, Unit* nydusCanal)
 	{
-		Unit* const nydusExit = nydusCanal->building.nydusExit;
+		Unit* const nydus_exit = nydusCanal->building.nydus_exit;
 		return (nydusCanal->status & UnitStatus::Completed)
-			&& nydusExit != nullptr
-			&& (nydusExit->status & UnitStatus::Completed)
+			&& nydus_exit != nullptr
+			&& (nydus_exit->status & UnitStatus::Completed)
 			&& (unit->player == nydusCanal->player
 				|| scbw::is_allied_to(unit->player, nydusCanal->player))
 			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Flyer);
@@ -22,14 +22,14 @@ namespace hooks
 		Point16 oldPos, aimedPos, finalPos;
 		oldPos.x = unit->sprite->position.x;
 		oldPos.y = unit->sprite->position.y;
-		if (nydusCanal->building.nydusExit->sprite == nullptr)
+		if (nydusCanal->building.nydus_exit->sprite == nullptr)
 		{
 			//scbw::print("null sprite of nydus exit!");
-			nydusCanal->building.nydusExit = nullptr;
+			nydusCanal->building.nydus_exit = nullptr;
 			return;
 		}
-		aimedPos.x = (nydusCanal->building.nydusExit)->sprite->position.x;
-		aimedPos.y = (nydusCanal->building.nydusExit)->sprite->position.y;
+		aimedPos.x = (nydusCanal->building.nydus_exit)->sprite->position.x;
+		aimedPos.y = (nydusCanal->building.nydus_exit)->sprite->position.y;
 		scbw::prepare_unit_move(unit, true);
 		scbw::set_unit_position(unit, aimedPos.x, aimedPos.y);
 		if (scbw::check_unit_collision_pos(unit, &aimedPos, &finalPos, nullptr, false, 0))
@@ -37,10 +37,10 @@ namespace hooks
 			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydusCanal, 1, 0);
 			scbw::set_unit_position(unit, finalPos.x, finalPos.y);
 			scbw::refresh_unit_after_move(unit);
-			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydusCanal->building.nydusExit, 1, 0);
-			if (unit->orderQueueHead != nullptr)
+			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydusCanal->building.nydus_exit, 1, 0);
+			if (unit->order_queue_head != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
@@ -66,18 +66,18 @@ namespace hooks
 	void orders_EnterNydusCanal(Unit* unit)
 	{
 		Unit* nydusCanal;
-		nydusCanal = unit->orderTarget.unit;
+		nydusCanal = unit->order_target.unit;
 		// same tests as canEnterNydusCanal but left hardcoded like the original code
 		if (nydusCanal == nullptr
 			|| !(nydusCanal->status & UnitStatus::Completed)
-			|| nydusCanal->building.nydusExit == nullptr
-			|| !((nydusCanal->building.nydusExit)->status & UnitStatus::Completed)
+			|| nydusCanal->building.nydus_exit == nullptr
+			|| !((nydusCanal->building.nydus_exit)->status & UnitStatus::Completed)
 			|| (!scbw::is_allied_to(unit->player, nydusCanal->player))
 			|| units_dat::BaseProperty[unit->id] & UnitProperty::Flyer)
 		{ // 004EA478
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else

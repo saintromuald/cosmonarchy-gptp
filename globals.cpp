@@ -66,7 +66,7 @@ void Globals::aise_save()
 		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].position.x), sizeof(revivingUnits[i].position.x));
 		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].position.y), sizeof(revivingUnits[i].position.y));
 		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].timer), sizeof(revivingUnits[i].timer));
-		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].unitId), sizeof(revivingUnits[i].unitId));
+		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].unit_id), sizeof(revivingUnits[i].unit_id));
 	}
 
 	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
@@ -217,7 +217,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 		stream.read(reinterpret_cast<char*>(&agent.position.x), sizeof(agent.position.x));
 		stream.read(reinterpret_cast<char*>(&agent.position.y), sizeof(agent.position.y));
 		stream.read(reinterpret_cast<char*>(&agent.timer), sizeof(agent.timer));
-		stream.read(reinterpret_cast<char*>(&agent.unitId), sizeof(agent.unitId));
+		stream.read(reinterpret_cast<char*>(&agent.unit_id), sizeof(agent.unit_id));
 		revivingUnits.push_back(agent);
 	}
 
@@ -480,7 +480,7 @@ void Globals::frame_hook()
 		{
 			if (playerTable[revivingUnit.playerId].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town)
 			{
-				auto revived = scbw::create_unit_ingame(revivingUnit.unitId, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
+				auto revived = scbw::create_unit_ingame(revivingUnit.unit_id, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
 				if (revived)
 				{
 					UnitExt* revivedExt = globals.get_unit_ext(revived);
@@ -860,17 +860,17 @@ void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 	multihitBullets.push_back(gb);
 }
 
-void Globals::initRevive(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 hp, AiTown* town)
+void Globals::initRevive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town)
 {
 	RevivingUnit revivingUnit = {};
 	revivingUnit.playerId = player;
 	revivingUnit.position.x = x;
 	revivingUnit.position.y = y;
 	revivingUnit.timer = 48;
-	revivingUnit.unitId = unitId;
+	revivingUnit.unit_id = unit_id;
 	revivingUnit.energy = energy;
 	revivingUnit.hp = hp;
-	if (units_dat::BaseProperty[unitId] & (UnitProperty::Worker | UnitProperty::Building) || unitId == UnitId::ZergOvileth)
+	if (units_dat::BaseProperty[unit_id] & (UnitProperty::Worker | UnitProperty::Building) || unit_id == UnitId::ZergOvileth)
 	{
 		revivingUnit.town = town;
 	}
@@ -1521,7 +1521,7 @@ namespace scbw
 
 	Bullet* setMissileSourcePos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset, u32 fake_amount)
 	{
-		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr)
+		if (unit->sprite == nullptr || unit->order_target.unit == nullptr)
 		{
 			return nullptr;
 		}
@@ -1542,7 +1542,7 @@ namespace scbw
 		unitExt->values[valueId] = rotate;
 		auto X = unit->get_x() + offset.x;
 		auto Y = unit->get_y() + offset.y;
-		Bullet* bullet = helper::create_bullet(weaponId, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
+		Bullet* bullet = helper::create_bullet(weaponId, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
 		if (bullet && unitExt->values[valueId] < fake_amount)
 		{
 			bullet->hitFlags |= 0x1;

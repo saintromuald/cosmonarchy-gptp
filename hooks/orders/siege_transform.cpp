@@ -134,9 +134,9 @@ namespace hooks
 			if (unit->order_signal & 1)
 			{
 				unit->order_signal -= 1;
-				if (unit->orderQueueHead != nullptr)
+				if (unit->order_queue_head != nullptr)
 				{
-					if (!(unit->orderQueueHead->orderId == OrderId::WatchTarget))
+					if (!(unit->order_queue_head->orderId == OrderId::WatchTarget))
 					{
 						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 						helper::force_order_done(unit);

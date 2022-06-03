@@ -18,7 +18,7 @@ namespace hooks
 			{
 				helper::update_unit_stats_and_finish_building(unit_created);
 				helper::update_unit_strength(unit_created);
-				unit_created->connectedUnit = main_building;
+				unit_created->connected_unit = main_building;
 
 				// set main_order_state depending on the collision state with the connected building			
 				helper::function_004E8DA0(unit_created);
@@ -45,7 +45,7 @@ namespace hooks
 				bReturnValue = false;
 			}
 			else
-				if (unit->connectedUnit != main_building)
+				if (unit->connected_unit != main_building)
 				{
 					bReturnValue = false;
 				}
@@ -68,7 +68,7 @@ namespace hooks
 		if (unit->status & UnitStatus::IsHallucination) {
 			return;
 		}
-		if (unit->orderQueueTimer == 0 && unit->player != 11)
+		if (unit->order_queue_timer == 0 && unit->player != 11)
 		{
 			// 004EA79E
 			*larvaCounter = 0;
@@ -82,52 +82,52 @@ namespace hooks
 			helper::IterateUnitsAtLocationTargetProc_LarvaCount(unit, &coords);
 			if (*larvaCounter < 3 && !(unit->status & UnitStatus::InAir))
 			{
-				if (unit->building.larvaTimer != 0)
+				if (unit->building.larva_timer != 0)
 				{
-					unit->building.larvaTimer--;
+					unit->building.larva_timer--;
 
 					BuildingModifier modifier = get_building_modifier(unit, 0);
 					if (modifier.decrease)
 					{
-						if (unit->building.larvaTimer > modifier.decrease)
+						if (unit->building.larva_timer > modifier.decrease)
 						{
-							unit->building.larvaTimer -= modifier.decrease;
+							unit->building.larva_timer -= modifier.decrease;
 						}
 						else
 						{
-							unit->building.larvaTimer = 0;
+							unit->building.larva_timer = 0;
 						}
 					}
 				}
 
-				if (unit->building.larvaTimer == 0)
+				if (unit->building.larva_timer == 0)
 				{
 					// 004EA80E:
-					unit->building.larvaTimer = LarvaSpawnRateHatchery;
+					unit->building.larva_timer = LarvaSpawnRateHatchery;
 					if (unit->id == UnitId::ZergLarvalColony)
 					{
-						unit->building.larvaTimer = LarvaSpawnRateHatchery / LarvaFactorLarvalColony;
+						unit->building.larva_timer = LarvaSpawnRateHatchery / LarvaFactorLarvalColony;
 					}
 					if (unit->id == UnitId::ZergLair && unit->main_order_id != OrderId::Morph2
 						|| unit->id == UnitId::ZergHive && unit->main_order_id == OrderId::Morph2)
 					{
-						unit->building.larvaTimer = LarvaSpawnRateHatchery * LarvaFactorLair;
+						unit->building.larva_timer = LarvaSpawnRateHatchery * LarvaFactorLair;
 					}
 					else if (unit->id == UnitId::ZergHive && unit->main_order_id != OrderId::Morph2
 						|| unit->id == UnitId::ZergSire && unit->main_order_id == OrderId::Morph2)
 					{
-						unit->building.larvaTimer = LarvaSpawnRateHatchery * LarvaFactorHive;
+						unit->building.larva_timer = LarvaSpawnRateHatchery * LarvaFactorHive;
 					}
 					else if (unit->id == UnitId::ZergSire && unit->main_order_id != OrderId::Morph2)
 					{
-						unit->building.larvaTimer = LarvaSpawnRateHatchery * LarvaFactorSire;
+						unit->building.larva_timer = LarvaSpawnRateHatchery * LarvaFactorSire;
 					}
 
 					// if failed to find a spawn point for larva set the timer before retry to 3
 					Vector32 coords_2;
 					if (!helper::getLarvaSpawnPos(unit, &coords_2))
 					{
-						unit->building.larvaTimer = 3;
+						unit->building.larva_timer = 3;
 					}
 					else
 					{
@@ -139,7 +139,7 @@ namespace hooks
 							helper::update_unit_stats_and_finish_building(new_larva);
 							helper::update_unit_strength(new_larva);
 
-							new_larva->connectedUnit = unit;
+							new_larva->connected_unit = unit;
 							// set main_order_state depending on the collision state with the connected building						
 							helper::function_004E8DA0(new_larva);
 
@@ -164,28 +164,28 @@ namespace hooks
 		{
 			secondaryOrd_SpawningLarva(unit);
 		}
-		if (unit->building.creepTimer != 0)
+		if (unit->building.creep_timer != 0)
 		{
-			if (unit->building.creepTimer >= 2)
+			if (unit->building.creep_timer >= 2)
 			{
-				unit->building.creepTimer -= 2;
+				unit->building.creep_timer -= 2;
 
 				BuildingModifier modifier = get_building_modifier(unit, 0);
 				if (modifier.decrease)
 				{
-					if (unit->building.creepTimer > modifier.decrease)
+					if (unit->building.creep_timer > modifier.decrease)
 					{
-						unit->building.creepTimer -= modifier.decrease;
+						unit->building.creep_timer -= modifier.decrease;
 					}
 					else
 					{
-						unit->building.creepTimer = 0;
+						unit->building.creep_timer = 0;
 					}
 				}
 			}
 			else
 			{
-				unit->building.creepTimer = 0;
+				unit->building.creep_timer = 0;
 			}
 
 		}
@@ -194,10 +194,10 @@ namespace hooks
 			// 004EA8B6:
 			u8 result_00414680;
 
-			unit->building.creepTimer = 15;
+			unit->building.creep_timer = 15;
 			if (unit->id == 180)
 			{
-				unit->building.creepTimer = 10;
+				unit->building.creep_timer = 10;
 			}
 
 			// look for a place to spawn creep on
@@ -288,9 +288,9 @@ namespace hooks
 				{
 					orderId = OrderId::Nothing2;
 				}
-				if (unit->secondaryOrderId != orderId)
+				if (unit->secondary_order_id != orderId)
 				{
-					unit->secondaryOrderId = orderId;
+					unit->secondary_order_id = orderId;
 					unit->secondaryOrderPos.y = 0;
 					unit->secondaryOrderPos.x = 0;
 					unit->currentBuildUnit = nullptr;
@@ -302,14 +302,14 @@ namespace hooks
 
 	// Returns the bounding rectangle (in tiles) of the maximum extent of creep around a source or the building footprint of a non-source creep building.
 	// Return value is if the building is a creep source (spreads creep) or not
-	bool getCreepRegion(Box32* rect, u16 unitId, s32 x, s32 y, bool defRetVal)
+	bool getCreepRegion(Box32* rect, u16 unit_id, s32 x, s32 y, bool defRetVal)
 	{
 		// Default maximum bounding size
 		const static s32 maxCreepAreaLeft = 320; // 10 tiles
 		const static s32 maxCreepAreaRight = 320; // 10 tiles
 		const static s32 maxCreepAreaUp = 200; // 6.25 tiles
 		const static s32 maxCreepAreaDown = 200; // 6.25 tiles
-		if (spreads_creep(unitId, defRetVal))
+		if (spreads_creep(unit_id, defRetVal))
 		{
 			rect->left = (x - maxCreepAreaLeft) / 32;
 			rect->right = (x + maxCreepAreaRight) / 32;
@@ -333,8 +333,8 @@ namespace hooks
 			}
 			return true;
 		}
-		s32 w = units_dat::BuildingDimensions[unitId].x / 32;
-		s32 h = units_dat::BuildingDimensions[unitId].y / 32;
+		s32 w = units_dat::BuildingDimensions[unit_id].x / 32;
+		s32 h = units_dat::BuildingDimensions[unit_id].y / 32;
 		rect->left = x / 32 - w / 2;
 		rect->top = y / 32 - h / 2;
 		rect->right = rect->left + w - 1;
@@ -360,9 +360,9 @@ namespace hooks
 
 	// Determines which unit IDs are a creep source (i.e. spreads creep, not just requires it)
 	// Base buildings built by a drone return the value of "isComplete", which is an argument that is true if the unit status flag has "Completed" set -- the building only spawns creep once it has been built
-	bool spreads_creep(u16 unitId, bool isComplete)
+	bool spreads_creep(u16 unit_id, bool isComplete)
 	{
-		switch (unitId)
+		switch (unit_id)
 		{
 			case UnitId::ZergHatchery:
 			case UnitId::ZergCreepColony:
@@ -439,7 +439,7 @@ namespace hooks
 	u32 BTNSCOND_ZergBuildingRally(u32 unused, u32 player, Unit* unit) // 00429740
 	{
 		if (scbw::is_zerg_production(unit->id)
-			|| scbw::is_zerg_production(unit->buildQueue[unit->buildQueueSlot]))
+			|| scbw::is_zerg_production(unit->build_queue[unit->build_queue_slot]))
 		{
 			return helper::BTNSCOND_Rally(unused, player, unit);
 		}

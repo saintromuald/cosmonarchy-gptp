@@ -48,14 +48,14 @@ namespace hooks
 		else if (irradiatedUnit->status & UnitStatus::InTransport)
 		{
 			// If inside a transport, damage all units loaded within
-			Unit* transport = irradiatedUnit->connectedUnit;
+			Unit* transport = irradiatedUnit->connected_unit;
 			if (transport)
 			{
 				for (s32 i = 0; i < units_dat::SpaceProvided[transport->id]; ++i)
 				{
-					Unit* loadedUnit = transport->getLoadedUnit(i);
-					if (loadedUnit)
-						irradiate_proc(irradiatedUnit, loadedUnit);
+					Unit* loaded_unit = transport->getLoadedUnit(i);
+					if (loaded_unit)
+						irradiate_proc(irradiatedUnit, loaded_unit);
 				}
 			}
 

@@ -204,7 +204,7 @@ LABEL_36:
 				}
 				if (v10 == UnitId::ZergEgg || v10 == UnitId::ZergCocoon)
 				{
-					v10 = (u16)v18->buildQueue[(u8)v18->buildQueueSlot];
+					v10 = (u16)v18->build_queue[(u8)v18->build_queue_slot];
 					v13 = units_dat::BaseProperty[v10];
 					if (v13 & 0x400)
 						v11 = 2;
@@ -254,7 +254,7 @@ LABEL_35:
 	}
 
 	//	0x00447230 => ai_add_to_attackforce(@edi u32,@eax u32,@ecx u32);
-	void AI_AddToAttack(u32 result, u32 player, u32 unitId) // 00447230
+	void AI_AddToAttack(u32 result, u32 player, u32 unit_id) // 00447230
 	{
 		u32 counter;
 		u32 index;
@@ -263,7 +263,7 @@ LABEL_35:
 		u16* atkFinal;
 
 		counter = result;
-		if (player < 8 && result < 63 && unitId < UnitId::None)
+		if (player < 8 && result < 63 && unit_id < UnitId::None)
 		{
 			plOffset = 628 * player;
 			index = 0;
@@ -293,7 +293,7 @@ LABEL_8:
 						{
 							break;
 						}
-						*atkFinal = unitId + 1;
+						*atkFinal = unit_id + 1;
 						++index;
 						++atkFinal;
 					}
@@ -456,13 +456,13 @@ LABEL_22:
 	}
 
 	// I guess this was supposed to be hooked, but wasn't - Pr0nogo
-	void AI_RemoveFromAttack(s32 unitId, s32 player) // 00447040
+	void AI_RemoveFromAttack(s32 unit_id, s32 player) // 00447040
 	{
-		if (unitId == UnitId::TerranPhalanxSiegeMode)
+		if (unit_id == UnitId::TerranPhalanxSiegeMode)
 		{
-			unitId = UnitId::TerranPhalanxTankMode;
+			unit_id = UnitId::TerranPhalanxTankMode;
 		}
-		u32 v2 = unitId + 1;
+		u32 v2 = unit_id + 1;
 		u32 v3 = 0;
 		u16* v4 = AIScriptController[player].attackers;
 		while (*v4 != v2)

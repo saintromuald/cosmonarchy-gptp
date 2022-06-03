@@ -19,23 +19,23 @@ namespace scbw
 {
 	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt)
 	{
-		auto target_unit = source->orderTarget.unit;
-		auto target_pos = source->orderTarget.pt;
-		source->orderTarget.unit = target;
-		source->orderTarget.pt = target_pt;
+		auto target_unit = source->order_target.unit;
+		auto target_pos = source->order_target.pt;
+		source->order_target.unit = target;
+		source->order_target.pt = target_pt;
 		Point16 pick;
 		if (target != nullptr && target_unit != nullptr)
 		{
-			source->orderTarget.pt = target_unit->sprite->position;
+			source->order_target.pt = target_unit->sprite->position;
 		}
 		else
 		{
-			source->orderTarget.pt = target_pt;
+			source->order_target.pt = target_pt;
 		}
 		helper::create_bullet(weaponId, source, source->sprite->position.x, source->sprite->position.y, playerId,
-			get_angle(source->position.x, source->position.y, source->orderTarget.pt.x, source->orderTarget.pt.y));
-		source->orderTarget.unit = target_unit;
-		source->orderTarget.pt = target_pos;
+			get_angle(source->position.x, source->position.y, source->order_target.pt.x, source->order_target.pt.y));
+		source->order_target.unit = target_unit;
+		source->order_target.pt = target_pos;
 	}
 	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y)
 	{
@@ -69,7 +69,7 @@ namespace scbw
 			scbw::prepare_unit_move(u, false);
 			if (!preserveOrder)
 			{
-				u->orderTarget.unit = nullptr;
+				u->order_target.unit = nullptr;
 			}
 			scbw::set_unit_position(u, new_pos.x, new_pos.y);
 			scbw::refresh_unit_after_move(u);
@@ -95,11 +95,11 @@ namespace scbw
 			// disconnect a nuke from a unit using it
 			if (scbw::unit_can_nuke(u))
 			{
-				if (u->connectedUnit != nullptr
-					&& u->connectedUnit->id == UnitId::TerranNuclearMissile)
+				if (u->connected_unit != nullptr
+					&& u->connected_unit->id == UnitId::TerranNuclearMissile)
 				{
-					u->connectedUnit->connectedUnit = nullptr;
-					u->connectedUnit = nullptr;
+					u->connected_unit->connected_unit = nullptr;
+					u->connected_unit = nullptr;
 				}
 			}
 		}
@@ -944,21 +944,21 @@ namespace scbw
 
 		helper::toggle_unit_path(unit);
 		char pathing_flags = unit->pathingFlags;
-		unit->movementState = 0;
+		unit->movement_state = 0;
 		unit->pathingFlags = (pathing_flags ^ (unit->sprite->elevationLevel < 12)) & 1 ^ pathing_flags;
 	}
 
 	//-------- Utility functions --------//
 
-	Unit* create_unit_ingame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator, bool initAI)
+	Unit* create_unit_ingame(u16 unit_id, u8 playerId, u32 x, u32 y, Unit* creator, bool initAI)
 	{
 		if (*unitCount >= 1700)
 		{
 			return nullptr; // Prevent crashes, move to create unit later. - Veeq7
 		}
 		Point16 pos = {x, y};
-		helper::fix_target_location(&pos, unitId);
-		Unit* unit = helper::create_unit(unitId, pos.x, pos.y, playerId);
+		helper::fix_target_location(&pos, unit_id);
+		Unit* unit = helper::create_unit(unit_id, pos.x, pos.y, playerId);
 		if (unit == nullptr)
 		{
 			helper::display_last_network_error_for_player(playerId);
@@ -1062,11 +1062,11 @@ namespace scbw
 		*someDialogUnknownUser = nullptr;
 	}
 
-	void create_unit_from_ability(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer, Unit* creator)
+	void create_unit_from_ability(s32 unit_id, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer, Unit* creator)
 	{
 		for (s32 i = 0; i < count; i++)
 		{
-			Unit* unit = scbw::create_unit_ingame(unitId, playerId, x, y, creator, false);
+			Unit* unit = scbw::create_unit_ingame(unit_id, playerId, x, y, creator, false);
 			if (!unit)
 			{
 				return;
@@ -1079,7 +1079,7 @@ namespace scbw
 				unit->removeTimer = 1350;
 				unit->sprite->create_overlay(ImageId::HallucinationDeath3);
 			}
-			switch (unitId)
+			switch (unit_id)
 			{
 				case UnitId::ZergRilirokor:
 				case UnitId::ZergRililisk:
@@ -1129,9 +1129,9 @@ namespace scbw
 
 	void range_modified_fire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset)
 	{
-		auto target_unit = unit->orderTarget.unit;
-		auto target_pos = unit->orderTarget.pt;
-		auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y);
+		auto target_unit = unit->order_target.unit;
+		auto target_pos = unit->order_target.pt;
+		auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.unit->position.x, unit->order_target.unit->position.y);
 		distance += offset;
 		if (distance < 0)
 		{
@@ -1139,12 +1139,12 @@ namespace scbw
 		}
 		auto polar_x = unit->get_x() + scbw::get_polar_x(distance, unit->current_direction_1);
 		auto polar_y = unit->get_y() + scbw::get_polar_y(distance, unit->current_direction_1);
-		unit->orderTarget.unit = nullptr;
-		unit->orderTarget.pt.x = polar_x;
-		unit->orderTarget.pt.y = polar_y;
+		unit->order_target.unit = nullptr;
+		unit->order_target.pt.x = polar_x;
+		unit->order_target.pt.y = polar_y;
 		helper::create_bullet(weaponId, unit, x, y, unit->player, unit->current_direction_1);
-		unit->orderTarget.unit = target_unit;
-		unit->orderTarget.pt = target_pos;
+		unit->order_target.unit = target_unit;
+		unit->order_target.pt = target_pos;
 	}
 
 	bool can_spawn_broodling(Unit* target)
@@ -1267,18 +1267,18 @@ namespace scbw
 		return upgType;
 	}
 
-	s32 get_overlay_offset(u16 unitId, bool xlargeAllowed)
+	s32 get_overlay_offset(u16 unit_id, bool xlargeAllowed)
 	{
 		u32 overlayOffset = 0;
-		if (xlargeAllowed && scbw::unit_id_uses_xlarge_overlays(unitId))
+		if (xlargeAllowed && scbw::unit_id_uses_xlarge_overlays(unit_id))
 		{
 			overlayOffset = 3;
 		}
-		else if (units_dat::BaseProperty[unitId] & UnitProperty::MediumOverlay)
+		else if (units_dat::BaseProperty[unit_id] & UnitProperty::MediumOverlay)
 		{
 			overlayOffset = 1;
 		}
-		else if (units_dat::BaseProperty[unitId] & UnitProperty::LargeOverlay)
+		else if (units_dat::BaseProperty[unit_id] & UnitProperty::LargeOverlay)
 		{
 			overlayOffset = 2;
 		}
@@ -1881,12 +1881,12 @@ namespace scbw
 		return allyCount < enemyCount;
 	}
 
-	bool unit_id_is_zerg_supply(u16 unitId)
+	bool unit_id_is_zerg_supply(u16 unit_id)
 	{
-		return (unitId == UnitId::ZergOvileth
-			|| unitId == UnitId::ZergIroleth
-			|| unitId == UnitId::ZergOthstoleth
-			|| unitId == UnitId::ZergAlaszileth);
+		return (unit_id == UnitId::ZergOvileth
+			|| unit_id == UnitId::ZergIroleth
+			|| unit_id == UnitId::ZergOthstoleth
+			|| unit_id == UnitId::ZergAlaszileth);
 	}
 
 	void mind_control(Unit* source, Unit* target)
@@ -1978,67 +1978,67 @@ namespace scbw
 		targetExt->values[ValueTyrannyPlayer] = 0;
 	}
 
-	bool is_zerg_production(u16 unitId)
+	bool is_zerg_production(u16 unit_id)
 	{
-		return unitId == UnitId::ZergHatchery
-			|| unitId == UnitId::ZergLair
-			|| unitId == UnitId::ZergHive
-			|| unitId == UnitId::ZergSire
-			|| unitId == UnitId::ZergLarvalColony;
+		return unit_id == UnitId::ZergHatchery
+			|| unit_id == UnitId::ZergLair
+			|| unit_id == UnitId::ZergHive
+			|| unit_id == UnitId::ZergSire
+			|| unit_id == UnitId::ZergLarvalColony;
 	}
 	
-	bool unit_id_is_town_center(u16 unitId)
+	bool unit_id_is_town_center(u16 unit_id)
 	{
-		return unitId == UnitId::TerranCommandCenter
-			|| unitId == UnitId::ProtossNexus
-			|| unitId == UnitId::ZergHatchery
-			|| unitId == UnitId::ZergLair
-			|| unitId == UnitId::ZergHive
-			|| unitId == UnitId::ZergSire;
+		return unit_id == UnitId::TerranCommandCenter
+			|| unit_id == UnitId::ProtossNexus
+			|| unit_id == UnitId::ZergHatchery
+			|| unit_id == UnitId::ZergLair
+			|| unit_id == UnitId::ZergHive
+			|| unit_id == UnitId::ZergSire;
 	}
 
-	bool unit_id_is_shared(u16 unitId)
+	bool unit_id_is_shared(u16 unit_id)
 	{
-		return unitId == UnitId::SharedAnticthon
-			|| unitId == UnitId::SharedAspirant
-			|| unitId == UnitId::SharedAxitrilisk
-			|| unitId == UnitId::SharedCharlatan
-			|| unitId == UnitId::SharedCohort
-			|| unitId == UnitId::SharedEmpress
-			|| unitId == UnitId::SharedLuminary
-			|| unitId == UnitId::SharedStriga
-			|| unitId == UnitId::SharedTarasque;
+		return unit_id == UnitId::SharedAnticthon
+			|| unit_id == UnitId::SharedAspirant
+			|| unit_id == UnitId::SharedAxitrilisk
+			|| unit_id == UnitId::SharedCharlatan
+			|| unit_id == UnitId::SharedCohort
+			|| unit_id == UnitId::SharedEmpress
+			|| unit_id == UnitId::SharedLuminary
+			|| unit_id == UnitId::SharedStriga
+			|| unit_id == UnitId::SharedTarasque;
 	}
 
 	bool transport_is_full(Unit* transport)
 	{
-		return transport->loadedUnit[0].index
-			&& transport->loadedUnit[1].index
-			&& transport->loadedUnit[2].index
-			&& transport->loadedUnit[3].index
-			&& transport->loadedUnit[4].index
-			&& transport->loadedUnit[5].index
-			&& transport->loadedUnit[6].index
-			&& transport->loadedUnit[7].index;
+		return transport->loaded_unit[0].index
+			&& transport->loaded_unit[1].index
+			&& transport->loaded_unit[2].index
+			&& transport->loaded_unit[3].index
+			&& transport->loaded_unit[4].index
+			&& transport->loaded_unit[5].index
+			&& transport->loaded_unit[6].index
+			&& transport->loaded_unit[7].index;
 	}
 
 	bool transport_is_empty(Unit* transport)
 	{
-		return (!transport->loadedUnit[0].index
-			&& !transport->loadedUnit[1].index
-			&& !transport->loadedUnit[2].index
-			&& !transport->loadedUnit[3].index
-			&& !transport->loadedUnit[4].index
-			&& !transport->loadedUnit[5].index
-			&& !transport->loadedUnit[6].index
-			&& !transport->loadedUnit[7].index);
+		return (!transport->loaded_unit[0].index
+			&& !transport->loaded_unit[1].index
+			&& !transport->loaded_unit[2].index
+			&& !transport->loaded_unit[3].index
+			&& !transport->loaded_unit[4].index
+			&& !transport->loaded_unit[5].index
+			&& !transport->loaded_unit[6].index
+			&& !transport->loaded_unit[7].index);
 	}
 
-	bool unit_id_uses_xlarge_overlays(u16 unitId)
+	bool unit_id_uses_xlarge_overlays(u16 unit_id)
 	{
-		return unitId == UnitId::TerranPenumbra
-			|| unitId == UnitId::TerranPhobos
-			|| unitId == UnitId::ProtossStarSovereign;
+		return unit_id == UnitId::TerranPenumbra
+			|| unit_id == UnitId::TerranPhobos
+			|| unit_id == UnitId::ProtossStarSovereign;
 	}
 
 	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures)
@@ -2281,8 +2281,8 @@ namespace scbw
 		unit_search_filter(&larvae, unit, 0, {UnitId::ZergLarva});
 		for (u32 i = 0; i < larvae.size; ++i) {
 			Unit* larva = larvae.units[i];
-			if (larva->connectedUnit == unit) {
-				larva->connectedUnit = 0;
+			if (larva->connected_unit == unit) {
+				larva->connected_unit = 0;
 			}
 		}
 

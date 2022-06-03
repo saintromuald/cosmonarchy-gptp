@@ -13,7 +13,7 @@ namespace hooks
 {
 	s32 is_queue_slot_active(Unit* unit, u32 slot)
 	{
-		return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] < UnitId::None;
+		return unit->build_queue[(slot + unit->build_queue_slot) % 5] < UnitId::None;
 	}
 
 	void secondaryOrd_TrainFighter(Unit* unit)
@@ -23,7 +23,7 @@ namespace hooks
 		{
 			if (unit->secondaryOrderState == 0 || unit->secondaryOrderState == 1)
 			{
-				if (unit->buildQueue[unit->buildQueueSlot] == UnitId::None)
+				if (unit->build_queue[unit->build_queue_slot] == UnitId::None)
 				{
 					unit->secondaryOrderState = 3;
 					unit->currentBuildUnit = nullptr;
@@ -33,11 +33,11 @@ namespace hooks
 					Unit* builtUnit;
 					if (unit->secondaryOrderState == 0)
 					{
-						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 1);
 					}
 					else
 					{
-						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 0);
 					}
 					unit->currentBuildUnit = builtUnit;
 					if (builtUnit == nullptr)
@@ -46,7 +46,7 @@ namespace hooks
 					}
 					else
 					{
-						builtUnit->interceptor.parent = unit;
+						builtUnit->hangar_unit.parent = unit;
 						unit->secondaryOrderState = 2;
 					}
 				}
@@ -62,12 +62,12 @@ namespace hooks
 					if (builtUnit->status & UnitStatus::Completed)
 					{
 						helper::addHangarUnit(unit, builtUnit);
-						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-						unit->buildQueueSlot++;
+						unit->build_queue[unit->build_queue_slot] = UnitId::None;
+						unit->build_queue_slot++;
 
-						if (unit->buildQueueSlot >= 5)
+						if (unit->build_queue_slot >= 5)
 						{
-							unit->buildQueueSlot = 0;
+							unit->build_queue_slot = 0;
 						}
 						scbw::refresh_console();
 						unit->currentBuildUnit = nullptr;
@@ -89,17 +89,17 @@ namespace hooks
 				}
 				else
 				{
-					Unit* inHangarChild = unit->carrier.inHangarChild;
-					if (inHangarChild != nullptr)
+					Unit* in_hangar_child = unit->unit_with_hangar.in_hangar_child;
+					if (in_hangar_child != nullptr)
 					{
 						s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
-						while (inHangarChild != nullptr && inHangarChild->hitpoints >= hpInterceptor)
+						while (in_hangar_child != nullptr && in_hangar_child->hitpoints >= hpInterceptor)
 						{
-							inHangarChild = inHangarChild->interceptor.hangar_link.next;
+							in_hangar_child = in_hangar_child->hangar_unit.hangar_link.next;
 						}
-						if (inHangarChild != nullptr)
+						if (in_hangar_child != nullptr)
 						{
-							inHangarChild->setHp(inHangarChild->hitpoints + 128);
+							in_hangar_child->setHp(in_hangar_child->hitpoints + 128);
 						}
 					}
 				}
@@ -117,7 +117,7 @@ namespace hooks
 			bool jump_to_685D8 = false;
 			if (unit->secondaryOrderState <= 1)
 			{
-				if (unit->buildQueue[unit->buildQueueSlot] == UnitId::None)
+				if (unit->build_queue[unit->build_queue_slot] == UnitId::None)
 				{
 					unit->set_secondary_order(OrderId::Nothing2);
 					unit->sprite->play_iscript_animation(IscriptAnimation::WorkingToIdle, true);
@@ -127,11 +127,11 @@ namespace hooks
 					Unit* builtUnit;
 					if (unit->secondaryOrderState == 0)
 					{
-						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 1);
 					}
 					else
 					{
-						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 0);
 					}
 					unit->currentBuildUnit = builtUnit;
 					if (builtUnit == nullptr)
@@ -193,16 +193,16 @@ namespace hooks
 									helper::order_new_unit_to_rally(newUnit, unit);
 								}
 							}
-							helper::function_00432430(unit, unit->buildQueueSlot);
-							unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-							unit->buildQueueSlot = (unit->buildQueueSlot + 1) % 5;
+							helper::function_00432430(unit, unit->build_queue_slot);
+							unit->build_queue[unit->build_queue_slot] = UnitId::None;
+							unit->build_queue_slot = (unit->build_queue_slot + 1) % 5;
 							jump_to_685D8 = true;
 						}
 					}
 					else // unit was canceled due to lack of space around the building
 					{
-						u32 queueSlot = unit->buildQueueSlot % 5;
-						if (unit->buildQueue[queueSlot] == UnitId::None)
+						u32 queueSlot = unit->build_queue_slot % 5;
+						if (unit->build_queue[queueSlot] == UnitId::None)
 						{
 							jump_to_685D8 = true;
 						}
@@ -213,21 +213,21 @@ namespace hooks
 							{
 								helper::ai_cancel_structure(unit->currentBuildUnit);
 							}
-							else if (!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
+							else if (!units_dat::BaseProperty[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building)
 							{
-								helper::refund_unit_train_cost(unit->buildQueue[unit->buildQueueSlot % 5], unit->player);
+								helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot % 5], unit->player);
 							}
 							do
 							{
 								counter--;
-								unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
+								unit->build_queue[unit->build_queue_slot] = unit->build_queue[(unit->build_queue_slot + 1) % 5];
 								if (unit->unit_ai != nullptr && *(u8*)((u32)unit->unit_ai + 8) == 3)
 								{
-									*(u8*)((u32)unit->unit_ai + unit->buildQueueSlot + 9) = *(u8*)((u32)unit->unit_ai + (unit->buildQueueSlot + 1) % 5 + 9);
-									*(u32*)((u32)unit->unit_ai + unit->buildQueueSlot * 4 + 0x18) = *(u32*)((u32)unit->unit_ai + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
+									*(u8*)((u32)unit->unit_ai + unit->build_queue_slot + 9) = *(u8*)((u32)unit->unit_ai + (unit->build_queue_slot + 1) % 5 + 9);
+									*(u32*)((u32)unit->unit_ai + unit->build_queue_slot * 4 + 0x18) = *(u32*)((u32)unit->unit_ai + ((unit->build_queue_slot + 1) % 5) * 4 + 0x18);
 								}
 							} while (counter != 0);
-							unit->buildQueue[(unit->buildQueueSlot + 1) % 5] = UnitId::None;
+							unit->build_queue[(unit->build_queue_slot + 1) % 5] = UnitId::None;
 							jump_to_685D8 = true;
 						}
 					}
@@ -284,6 +284,6 @@ namespace hooks
 
 	b32 _stdcall ButtonIsTraining(Unit* unit)
 	{
-		return unit->buildQueue[unit->buildQueueSlot % 5] != UnitId::None;
+		return unit->build_queue[unit->build_queue_slot % 5] != UnitId::None;
 	}
 }

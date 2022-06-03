@@ -11,11 +11,11 @@ namespace hooks
 		Unit* current_unit = getActivePlayerNextSelection();
 		while (current_unit != nullptr)
 		{
-			Unit* nuke = current_unit->connectedUnit;
+			Unit* nuke = current_unit->connected_unit;
 			if (nuke != nullptr && nuke->id == UnitId::TerranNuclearMissile)
 			{
-				current_unit->connectedUnit = nullptr;
-				nuke->connectedUnit = nullptr;
+				current_unit->connected_unit = nullptr;
+				nuke->connected_unit = nullptr;
 			}
 			current_unit = getActivePlayerNextSelection();
 		}
@@ -28,7 +28,7 @@ namespace hooks
 		Unit* unit = getActivePlayerNextSelection();
 		if (unit != nullptr
 			&& getActivePlayerNextSelection() == nullptr
-			&& unit->secondaryOrderId == OrderId::BuildAddon
+			&& unit->secondary_order_id == OrderId::BuildAddon
 			&& unit->status & UnitStatus::GroundedBuilding)
 		{
 			Unit* addon = unit->currentBuildUnit;

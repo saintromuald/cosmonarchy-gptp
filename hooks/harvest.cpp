@@ -6,17 +6,17 @@ namespace hooks
 	const s32 RESOURCE_HARVESTED = 8;
 	// Harvests minerals/gas from the @p resource and returns the amount that a worker should carry.
 	// Identical to sub_469650
-	bool isGasContainer(u16 unitId)
+	bool isGasContainer(u16 unit_id)
 	{
-		if (unitId == UnitId::ProtossAquifer)
+		if (unit_id == UnitId::ProtossAquifer)
 		{
 			return true;
 		}
-		if (unitId == UnitId::TerranReservoir)
+		if (unit_id == UnitId::TerranReservoir)
 		{
 			return true;
 		}
-		if (unitId == UnitId::ZergExcisant)
+		if (unit_id == UnitId::ZergExcisant)
 		{
 			return true;
 		}
@@ -34,26 +34,26 @@ namespace hooks
 	u8 harvestResourceFrom(Unit* resource, bool isMineral)
 	{
 		u8 return_value;
-		if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED)
+		if (resource->building.resource.resource_amount < RESOURCE_HARVESTED)
 		{
-			return_value = std::max((s32)resource->building.resource.resourceAmount, 2);
-			resource->building.resource.resourceAmount = 0;
+			return_value = std::max((s32)resource->building.resource.resource_amount, 2);
+			resource->building.resource.resource_amount = 0;
 		}
 		else
 		{
-			resource->building.resource.resourceAmount -= RESOURCE_HARVESTED;
+			resource->building.resource.resource_amount -= RESOURCE_HARVESTED;
 			if (isMineral)
 			{
-				if (resource->building.resource.resourceAmount > 0)
+				if (resource->building.resource.resource_amount > 0)
 				{
 					helper::updateMineralPatchImage(resource);	// equivalent to setResourceCount @ 00468830 ?
 				}
 				else
 				{
-					resource->building.resource.resourceAmount = 0;
+					resource->building.resource.resource_amount = 0;
 				}
 			}
-			else if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED
+			else if (resource->building.resource.resource_amount < RESOURCE_HARVESTED
 			&&		 isGasContainer(resource->id))
 			{
 				//scbw::show_error_message_with_sfx(resource->playerId, 875, 20); // Gas depleted message and sound
@@ -98,12 +98,12 @@ namespace hooks
 
 		if (!bEndThere)
 		{
-			u8 resourceAmount = harvestResourceFrom(resource, isMineral);
-			if (resourceAmount < RESOURCE_HARVESTED)
+			u8 resource_amount = harvestResourceFrom(resource, isMineral);
+			if (resource_amount < RESOURCE_HARVESTED)
 			{
 				chunkImageId += 1;	// Use depleted resource image
 			}
-			if (resourceAmount > 0)
+			if (resource_amount > 0)
 			{
 				if (worker->resourceType & ResourceType::Either)
 				{
@@ -121,40 +121,40 @@ namespace hooks
 					case 1:
 					{
 						// 125% - Default AI cheat
-						resourceAmount += (resourceAmount / 4);
+						resource_amount += (resource_amount / 4);
 					} break;
 					case 2:
 					{
 						// 133%
-						resourceAmount += (resourceAmount / 3);
+						resource_amount += (resource_amount / 3);
 					} break;
 					case 3:
 					{
 						// 150%
-						resourceAmount += (resourceAmount / 2);
+						resource_amount += (resource_amount / 2);
 					} break;
 					case 4:
 					{
 						// 175%
-						resourceAmount += ((resourceAmount / 4) + (resourceAmount / 4) + (resourceAmount / 4));
+						resource_amount += ((resource_amount / 4) + (resource_amount / 4) + (resource_amount / 4));
 					} break;
 					case 5:
 					{
 						// 200%
-						resourceAmount *= 2;
+						resource_amount *= 2;
 					} break;
 					case 6:
 					{
 						// 225%
-						resourceAmount *= (2 + (1 / 4));
+						resource_amount *= (2 + (1 / 4));
 					} break;
 					default:
 					{
 						// 250%
-						resourceAmount *= (2 + (1 / 2));
+						resource_amount *= (2 + (1 / 2));
 					}
 				}
-				helper::set_resource_amount_carried(worker, resourceAmount, chunkImageId, isMineral);
+				helper::set_resource_amount_carried(worker, resource_amount, chunkImageId, isMineral);
 			}
 		}
 	}
@@ -180,7 +180,7 @@ namespace hooks
 	// Hooked as part of the vespene rework. -Pr0nogo
 	void order_enter_exit_gas(Unit* unit) // 00469980
 	{
-		Unit* node = unit->orderTarget.unit;
+		Unit* node = unit->order_target.unit;
 		if (node && !(node->status & UnitStatus::Completed) && !unit->unit_ai) {
 			if (unit->sprite->main_graphic->animation == IscriptAnimation::AlmostBuilt) {
 				unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
@@ -195,7 +195,7 @@ namespace hooks
 			helper::set_gathering_flags(unit);
 			if (unit->main_order_state)
 			{
-				if (unit->main_order_state == 5 && !unit->mainOrderTimer)
+				if (unit->main_order_state == 5 && !unit->main_order_timer)
 				{
 					s32 worker_direction = unit->current_direction_1;
 					Point16 pos = {};
@@ -212,16 +212,16 @@ namespace hooks
 						helper::delete_order(unit, OrderId::HarvestInterrupt);
 						helper::delete_order(unit, OrderId::ResetCollision2);
 						u8 resource_return_order = unit->resourceType & ResourceType::VespeneGas ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
-						if (!unit->orderQueueHead)
+						if (!unit->order_queue_head)
 						{
 							helper::order_targeting_nothing(resource_return_order, unit, 0);
 						}
-						helper::prepend_order_targeting_nothing(unit, unit->orderQueueHead, OrderId::ResetCollision2);
+						helper::prepend_order_targeting_nothing(unit, unit->order_queue_head, OrderId::ResetCollision2);
 						helper::force_order_done(unit);
 					}
 					else
 					{
-						unit->mainOrderTimer = 18;
+						unit->main_order_timer = 18;
 					}
 				}
 			}
@@ -235,7 +235,7 @@ namespace hooks
 				}
 
 				unit->main_order_state = 5;
-				unit->mainOrderTimer = timer;
+				unit->main_order_timer = timer;
 			}
 		}
 		else
@@ -257,7 +257,7 @@ namespace hooks
 	}
 
 	void can_harvest_gas(Unit* unit) { // 00469000
-		Unit* node = unit->orderTarget.unit;
+		Unit* node = unit->order_target.unit;
 
 		bool valid_structure = false;
 		if (node) {
@@ -282,16 +282,16 @@ namespace hooks
 		else
 		{
 			helper::setResourceTarget(unit);
-			u32 harvest_gas_x = unit->orderTarget.pt.x;
-			u32 harvest_gas_y = unit->orderTarget.pt.y;
+			u32 harvest_gas_x = unit->order_target.pt.x;
+			u32 harvest_gas_y = unit->order_target.pt.y;
 			if (harvest_gas_x != unit->next_target_waypoint.x || harvest_gas_y != unit->next_target_waypoint.y)
 			{
 				unit->next_target_waypoint.x = harvest_gas_x;
 				unit->next_target_waypoint.y = harvest_gas_y;
 			}
-			if (unit->orderQueueHead)
+			if (unit->order_queue_head)
 			{
-				unit->userActionFlags |= 1u;
+				unit->user_action_flags |= 1u;
 				helper::orders_nothing_2(unit);
 			}
 			else if (unit->unit_ai)
@@ -319,7 +319,7 @@ namespace hooks
 		if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3)
 		{
 			bool ignore_completed = true;
-			if (node->id == UnitId::TerranReservoir && !(node->status & UnitStatus::Completed) && (!node->connectedUnit || node->connectedUnit->orderTarget.unit != node)) {
+			if (node->id == UnitId::TerranReservoir && !(node->status & UnitStatus::Completed) && (!node->connected_unit || node->connected_unit->order_target.unit != node)) {
 				ignore_completed = false;
 			}
 
@@ -385,11 +385,11 @@ namespace hooks
 	// Hooked as part of the vespene overhaul. -Pr0nogo
 	s32 begin_harvest(Unit* worker, Unit* node) // 00468CAA
 	{
-		if (node->building.resource.gatherQueueCount)
+		if (node->building.resource.gather_queue_count)
 		{
 			return 0;
 		}
-		node->building.resource.gatherQueueCount = 1;
+		node->building.resource.gather_queue_count = 1;
 		worker->worker.is_harvesting = 1;
 		worker->worker.harvest_target = node;
 
@@ -401,9 +401,9 @@ namespace hooks
 		helper::order_immediate(worker, OrderId::HarvestInterrupt); // This needs to be called for harvesting gas too, since it's now interruptable
 		helper::prepend_order_targeting_unit(worker, node, harvest_order_id);
 
-		if (worker->orderQueueHead)
+		if (worker->order_queue_head)
 		{
-			worker->userActionFlags |= 1u;
+			worker->user_action_flags |= 1u;
 			helper::orders_nothing_2(worker);
 		}
 		else
@@ -423,7 +423,7 @@ namespace hooks
 	// Hooked to triage issues with the vespene rework. -Pr0nogo
 	Unit* let_next_unit_mine(Unit* node) // 00468970
 	{
-		Unit* worker = node->building.resource.nextGatherer;
+		Unit* worker = node->building.resource.next_gatherer;
 		if (!worker) {
 			return 0;
 		}
@@ -461,7 +461,7 @@ namespace hooks
 		}
 		else
 		{
-			node->building.resource.nextGatherer = final_worker->worker.harvest_link.next;
+			node->building.resource.next_gatherer = final_worker->worker.harvest_link.next;
 		}
 		if (next)
 		{
@@ -485,8 +485,8 @@ namespace hooks
 				worker->next_target_waypoint.x = fixed_x;
 				worker->next_target_waypoint.y = fixed_y;
 			}
-			if (worker->orderQueueHead) {
-				worker->userActionFlags |= 1;
+			if (worker->order_queue_head) {
+				worker->user_action_flags |= 1;
 				helper::orders_nothing_2(worker);
 			} else if (worker->unit_ai) {
 				helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
@@ -496,7 +496,7 @@ namespace hooks
 			return;
 		}
 		helper::set_gathering_flags(worker);
-		Unit* target = worker->orderTarget.unit;
+		Unit* target = worker->order_target.unit;
 		if (worker->main_order_state) {
 			u32 is_movable = helper::is_unit_movable(worker);
 			if (worker->main_order_state == 3 && is_movable) {
@@ -530,12 +530,12 @@ namespace hooks
 			u16 node_id = target->id;
 			if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3) {
 				if (helper::move_to_target(target, worker)) {
-					worker->worker.targetResource.pt = worker->orderTarget.pt;
-					worker->worker.targetResource.unit = worker->orderTarget.unit;
+					worker->worker.target_resource.pt = worker->order_target.pt;
+					worker->worker.target_resource.unit = worker->order_target.unit;
 					worker->main_order_state = 3;
 				}
 			} else {
-				helper::prepend_order(worker, OrderId::MoveToMinerals, worker->orderTarget.pt, worker->orderTarget.unit);
+				helper::prepend_order(worker, OrderId::MoveToMinerals, worker->order_target.pt, worker->order_target.unit);
 				helper::to_idle(worker);
 			}
 		}
@@ -552,7 +552,7 @@ namespace hooks
 			worker->worker.harvest_target = 0;
 			if (node)
 			{
-				--node->building.resource.gatherQueueCount;
+				--node->building.resource.gather_queue_count;
 				Unit* next_harvester = helper::let_next_unit_mine(node);
 				if (next_harvester)
 				{
@@ -562,7 +562,7 @@ namespace hooks
 		}
 		else
 		{
-			Unit* next_gatherer = node->building.resource.nextGatherer;
+			Unit* next_gatherer = node->building.resource.next_gatherer;
 			if (next_gatherer)
 			{
 				while (next_gatherer != worker)
@@ -586,7 +586,7 @@ namespace hooks
 		if (prev) {
 			prev->worker.harvest_link.next = next;
 		} else {
-			node->building.resource.nextGatherer = next;
+			node->building.resource.next_gatherer = next;
 		}
 		if (next) {
 			next->worker.harvest_link.prev = prev;

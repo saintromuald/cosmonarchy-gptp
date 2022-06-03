@@ -15,7 +15,7 @@ namespace hooks
 			while (!bStopLoop)
 			{
 				if  (current_unit->id == UnitId::ZergLarva
-				&&	 current_unit->connectedUnit == *activePortraitUnit
+				&&	 current_unit->connected_unit == *activePortraitUnit
 				&&	!(current_unit->sprite->flags & SpriteFlags::Hidden))
 				{
 					output_list[current_index] = current_unit;

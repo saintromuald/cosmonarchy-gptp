@@ -112,7 +112,7 @@ namespace
 				}
 			}
 			//original code is hardcoded instead of using a function like set_secondary_order
-			if (unit->secondaryOrderId != OrderId::Cloak)
+			if (unit->secondary_order_id != OrderId::Cloak)
 			{
 				unit->set_secondary_order(OrderId::Cloak);
 			}

@@ -18,7 +18,7 @@ namespace hooks
 	bool unit_can_attack_target(Unit* target, Unit* unit, int checkVisibility);							// 00476730
 	s32 orderAttackBehavior(Unit *a1);																	// 00478540
 	void AI_AttackUnit(Unit* unit);																		// 0043FFD0
-	s32 return_interceptor_if_cannot_attack(Unit* steward);												// 00465810
+	s32 return_interceptor_if_cannot_attack(Unit* hangar_unit);												// 00465810
 
 	void injectTargetRelatedHooks();
 }

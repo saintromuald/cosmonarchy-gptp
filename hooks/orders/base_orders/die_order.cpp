@@ -7,7 +7,7 @@ namespace hooks
 	void orders_Die(Unit* unit)
 	{
 		bool jump_to_795AB = false;
-		if (unit->userActionFlags & 4)
+		if (unit->user_action_flags & 4)
 		{
 			helper::hide_and_disable_unit(unit);
 		}

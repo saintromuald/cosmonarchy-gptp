@@ -90,7 +90,7 @@ namespace hooks
 		BufferStr* v8; // [esp-8h] [ebp-10h]
 
 		v1 = a1;
-		*suppliesAvailableTemp = (*activePortraitUnit)->building.resource.resourceAmount;
+		*suppliesAvailableTemp = (*activePortraitUnit)->building.resource.resource_amount;
 		if (*statusScreenFunc != 15)
 		{
 			helper::hide_optional_status_screen_controls(a1);
@@ -107,13 +107,13 @@ namespace hooks
 				v3 = (char*)statTxtTbl + statTxtTbl[796];
 			else
 				v3 = "";
-			v7 = (u16)(*activePortraitUnit)->building.resource.resourceAmount;
+			v7 = (u16)(*activePortraitUnit)->building.resource.resource_amount;
 LABEL_14:
 			sprintf_s(struct_Char->buf, 260, "%s %d", v3, v7);
 			v8 = struct_Char;
 			goto LABEL_19;
 		}
-		v4 = (*activePortraitUnit)->building.resource.resourceAmount;
+		v4 = (*activePortraitUnit)->building.resource.resource_amount;
 		if (v4)
 		{
 			if (*statTxtTbl > 0x31Cu)
@@ -724,9 +724,9 @@ LABEL_32:
 				a1->shields = v3;
 				v2 = units_dat::TimeCost[_type];
 				if (!v2
-					|| (v5 = (((u32)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (a1->buildRepairHpGain = v5) == 0))
+					|| (v5 = (((u32)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (a1->build_repair_hp_gain = v5) == 0))
 				{
-					a1->buildRepairHpGain = 1;
+					a1->build_repair_hp_gain = 1;
 				}
 			}
 		}
@@ -813,9 +813,9 @@ LABEL_32:
 		v1 = a1->main_order_id;
 		v2 = v1;
 		v10 = orders_dat::OrderWeaponId[v1];
-		v8 = a1->orderTarget.pt.y;
-		v3 = a1->orderTarget.unit;
-		v9 = a1->orderTarget.pt.x;
+		v8 = a1->order_target.pt.y;
+		v3 = a1->order_target.unit;
+		v9 = a1->order_target.pt.x;
 		if (a1->unit_ai)
 		{
 			switch (v1)
@@ -1014,7 +1014,7 @@ LABEL_23:
 			v5 = v4;
 			if (!units_dat::SpaceProvided[v4] || !(v3 & 1) || !(v3 & 0x20000))
 				goto LABEL_22;
-			if (v2->orderTarget.unit == a1)
+			if (v2->order_target.unit == a1)
 				break;
 			v6 = units_dat::MaxHitPoints[v4] >> 8;
 			if (!v6)
@@ -1032,8 +1032,8 @@ LABEL_23:
 					if (v7 != OrderId::Pickup2 && v7 != OrderId::Unload)
 					{
 						if (v7 != OrderId::MoveUnload
-							|| (v8 = helper::get_region_id(v2->orderTarget.pt.x, v2->orderTarget.pt.y),
-								v8 == helper::get_region_id(a1->orderTarget.pt.x, a1->orderTarget.pt.y)))
+							|| (v8 = helper::get_region_id(v2->order_target.pt.x, v2->order_target.pt.y),
+								v8 == helper::get_region_id(a1->order_target.pt.x, a1->order_target.pt.y)))
 						{
 							v9 = helper::getUnitDistanceToHalt(v2->sprite->position.y, a1, v2->sprite->position.x);
 							if (v9 < v12)

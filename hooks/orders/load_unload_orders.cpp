@@ -11,7 +11,7 @@ namespace hooks
 	// this is the initial pickup order
 	void orders_Pickup1(Unit* unit)
 	{
-		Unit* unitToLoad = unit->orderTarget.unit;
+		Unit* unitToLoad = unit->order_target.unit;
 		if (unitToLoad != nullptr
 			&& scbw::can_be_entered_by(unit, unitToLoad))
 		{
@@ -21,13 +21,13 @@ namespace hooks
 		else if (unit->unit_ai != nullptr)
 		{
 			Point16 pos = {0,0};
-			unit->userActionFlags |= 1;
+			unit->user_action_flags |= 1;
 			if (unit->main_order_id != OrderId::Die)
 			{
-				bool bStopLoop = (unit->orderQueueTail == nullptr);
+				bool bStopLoop = (unit->order_queue_tail == nullptr);
 				while (!bStopLoop)
 				{
-					u8 orderId = (u8)unit->orderQueueTail->orderId;
+					u8 orderId = (u8)unit->order_queue_tail->orderId;
 					if (orders_dat::CanBeInterrupted[orderId] == 0
 						&& orderId != OrderId::ComputerAI)
 					{
@@ -36,8 +36,8 @@ namespace hooks
 
 					if (!bStopLoop)
 					{
-						helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
-						bStopLoop = (unit->orderQueueTail == nullptr);
+						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
+						bStopLoop = (unit->order_queue_tail == nullptr);
 					}
 				}
 				unit->perform_another_order(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
@@ -49,12 +49,12 @@ namespace hooks
 	// unit is a non-mobile transport (bunker)
 	void orders_Pickup3_0(Unit* unit)
 	{
-		Unit* unitToLoad = unit->orderTarget.unit;
+		Unit* unitToLoad = unit->order_target.unit;
 		if (unitToLoad == nullptr)
 		{
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
@@ -83,12 +83,12 @@ namespace hooks
 	// this is used after orders_Pickup1
 	void orders_Pickup2(Unit* unit)
 	{
-		Unit* unitToLoad = unit->orderTarget.unit;
+		Unit* unitToLoad = unit->order_target.unit;
 		if (unitToLoad == nullptr)
 		{
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
@@ -112,9 +112,9 @@ namespace hooks
 				{
 					if (scbw::can_be_entered_by(unit, unitToLoad))
 					{
-						if (unit->mainOrderTimer == 0)
+						if (unit->main_order_timer == 0)
 						{
-							unit->mainOrderTimer = 7;
+							unit->main_order_timer = 7;
 							if (!unit->is_target_within_min_range(unitToLoad, 1))
 							{
 								helper::order_to_move_to_target(unit, unitToLoad);
@@ -158,22 +158,22 @@ namespace hooks
 	{
 		u32 distance;
 		if (unit->main_order_state == 0 &&
-			unit->orderTarget.unit != nullptr)
+			unit->order_target.unit != nullptr)
 		{
 			unit->main_order_state = 1;
-			unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
-			unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
-			unit->orderTarget.unit = nullptr;
+			unit->order_target.pt.x = (unit->order_target.unit)->sprite->position.x;
+			unit->order_target.pt.y = (unit->order_target.unit)->sprite->position.y;
+			unit->order_target.unit = nullptr;
 		}
 
 		// 004E7739
-		distance = scbw::get_distance_fast(unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256, unit->halt.x, unit->halt.y);
+		distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 		distance &= 0xFFFFFF00;
 		if (distance <= 0x1000)
 		{
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
-				helper::insert_order_before(unit, unit->orderQueueHead, OrderId::Unload, 0, 0, nullptr, UnitId::None);
+				helper::insert_order_before(unit, unit->order_queue_head, OrderId::Unload, 0, 0, nullptr, UnitId::None);
 				prepareForNextOrder(unit);
 			}
 			else
@@ -184,28 +184,28 @@ namespace hooks
 		}
 		else
 		{ // 004E77B4
-			helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-			if (unit->orderTarget.pt.x != unit->next_target_waypoint.x
-				|| unit->orderTarget.pt.y != unit->next_target_waypoint.y)
+			helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+			if (unit->order_target.pt.x != unit->next_target_waypoint.x
+				|| unit->order_target.pt.y != unit->next_target_waypoint.y)
 			{
-				unit->next_target_waypoint.x = unit->orderTarget.pt.x;
-				unit->next_target_waypoint.y = unit->orderTarget.pt.y;
+				unit->next_target_waypoint.x = unit->order_target.pt.x;
+				unit->next_target_waypoint.y = unit->order_target.pt.y;
 			}
 			if (unit->unit_ai != nullptr)
 			{
 				u32 groundHeightAtPxPos1 = scbw::get_ground_height_at_pos(unit->sprite->position.x, unit->sprite->position.y);
-				if (groundHeightAtPxPos1 != scbw::get_ground_height_at_pos(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+				if (groundHeightAtPxPos1 != scbw::get_ground_height_at_pos(unit->order_target.pt.x, unit->order_target.pt.y))
 				{
-					distance = scbw::get_distance_fast(unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256, unit->halt.x, unit->halt.y);
+					distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 					distance &= 0xFFFFFF00;
 					if (distance <= 0xCA000
-						&& helper::Ai_AreOnConnectedRegions(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0
+						&& helper::Ai_AreOnConnectedRegions(unit, unit->order_target.pt.x, unit->order_target.pt.y) != 0
 						&& helper::getFirstLoadedWorker(unit) == 0)
 					{
 						s32 index = 0;
 						bool bStopLoop = false;
 						bool bStopAll = false;
-						bool bIsDistanceGreaterThanHaltDistance = helper::is_distance_greater_than_halt_distance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, 512);
+						bool bIsDistanceGreaterThanHaltDistance = helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 512);
 						Point16 pos = {0,0}; // unsure about this start value
 						while (!bStopLoop)
 						{
@@ -260,19 +260,19 @@ namespace hooks
 			{
 				idleOrder = units_dat::ReturnToIdleOrder[(u16)unitVar->id];
 			}
-			unitVar->userActionFlags |= 1u;
+			unitVar->user_action_flags |= 1u;
 			helper::order(1, unitVar, idleOrder, 0, 0, 228);
 			helper::orders_nothing_2(unitVar);
 			return;
 		}
 		if (!(unitStatus & 0x40) && !helper::ai_update_attack_target(unitVar, 0, 0, 1))
 		{
-			scbw::print("orderTarget");
-			Unit* orderTarget = unitVar->orderTarget.unit;
-			Unit** orderTargetOffset = &unitVar->orderTarget.unit;
-			if (orderTarget)
+			scbw::print("order_target");
+			Unit* order_target = unitVar->order_target.unit;
+			Unit** orderTargetOffset = &unitVar->order_target.unit;
+			if (order_target)
 			{
-				if (!helper::unit_is_active_transport(orderTarget) || orderTarget->orderTarget.unit != unitVar)
+				if (!helper::unit_is_active_transport(order_target) || order_target->order_target.unit != unitVar)
 				{
 					scbw::print("goto label16");
 					goto LABEL_16;
@@ -280,47 +280,47 @@ namespace hooks
 			}
 			else
 			{
-				if (!helper::Ai_FindTransport(unitVar, &unitVar->orderTarget.unit))
+				if (!helper::Ai_FindTransport(unitVar, &unitVar->order_target.unit))
 				{
 					scbw::print("toIdle / return");
 					helper::to_idle(unitVar);
 					return;
 				}
-				orderTarget = *orderTargetOffset;
+				order_target = *orderTargetOffset;
 				if (!*orderTargetOffset)
 				{
 					scbw::print("return");
 					return;
 				}
 			}
-			if (!canEnterTransport(orderTarget, unitVar))
+			if (!canEnterTransport(order_target, unitVar))
 			{
 			LABEL_16:
 				scbw::print("can't enter transport");
 				*orderTargetOffset = 0;
 				return;
 			}
-			if (helper::is_target_within_min_range(unitVar, 1u, orderTarget))
+			if (helper::is_target_within_min_range(unitVar, 1u, order_target))
 			{
 				scbw::print("target within min range");
-				helper::loadUnitProc(orderTarget, unitVar);
-				helper::issueOrderTargetingGround(orderTarget, OrderId::MoveUnload, unitVar->orderTarget.pt.x, unitVar->orderTarget.pt.y);
-				if (orderTarget->unit_ai)
+				helper::loadUnitProc(order_target, unitVar);
+				helper::issueOrderTargetingGround(order_target, OrderId::MoveUnload, unitVar->order_target.pt.x, unitVar->order_target.pt.y);
+				if (order_target->unit_ai)
 				{
 					scbw::print("has AI");
-					helper::_doOrder(orderTarget, OrderId::Move, orderTarget->sprite->position.x, orderTarget->sprite->position.y, 0);
+					helper::_doOrder(order_target, OrderId::Move, order_target->sprite->position.x, order_target->sprite->position.y, 0);
 				}
 			}
 			else
 			{
 				scbw::print("target not within min range");
-				helper::prepend_order_targeting_unit(unitVar, orderTarget, 0x5Eu);
-				helper::orders_nothing_2(orderTarget);
-				if (helper::Ai_AreOnConnectedRegions(unitVar, orderTarget->sprite->position.x, orderTarget->sprite->position.y))
+				helper::prepend_order_targeting_unit(unitVar, order_target, 0x5Eu);
+				helper::orders_nothing_2(order_target);
+				if (helper::Ai_AreOnConnectedRegions(unitVar, order_target->sprite->position.x, order_target->sprite->position.y))
 				{
 					scbw::print("set waypoint");
-					helper::set_secondary_waypoint(unitVar, orderTarget->sprite->position.x, orderTarget->sprite->position.y);
-					helper::moveTowards(orderTarget, unitVar);
+					helper::set_secondary_waypoint(unitVar, order_target->sprite->position.x, order_target->sprite->position.y);
+					helper::moveTowards(order_target, unitVar);
 				}
 			}
 		}
@@ -328,7 +328,7 @@ namespace hooks
 		/*
 		if (unit->playerId == 11)
 		{
-			unit->userActionFlags |= 1;
+			unit->user_action_flags |= 1;
 			if (unit->status & UnitStatus::InTransport)
 			{
 				unit->order(OrderId::Nothing2, 0, 0, nullptr, UnitId::None, 1);
@@ -342,7 +342,7 @@ namespace hooks
 		else if (!(unit->status & UnitStatus::InTransport)
 				&& helper::Ai_UpdateAttackTarget(unit, 1, 0, 0) == 0)
 		{ // 004E7BEB
-			Unit* target = unit->orderTarget.unit;
+			Unit* target = unit->order_target.unit;
 			bool jump_to_E7C2B = false;
 			bool jump_to_E7C37 = false;
 			bool jump_to_E7C44 = false;
@@ -365,7 +365,7 @@ namespace hooks
 				if (!jump_to_E7C2B)
 				{ // 004E7C1B
 					if (target != nullptr
-						&& (!helper::unit_is_active_transport(target) || target->orderTarget.unit != unit))
+						&& (!helper::unit_is_active_transport(target) || target->order_target.unit != unit))
 					{
 						jump_to_E7C37 = true;
 					}
@@ -387,7 +387,7 @@ namespace hooks
 				}
 				if (jump_to_E7C37)
 				{
-					unit->orderTarget.unit = nullptr;
+					unit->order_target.unit = nullptr;
 				}
 				if (jump_to_E7C44)
 				{
@@ -396,7 +396,7 @@ namespace hooks
 						if (unit->is_target_within_min_range(target, 1))
 						{ // 004E7C52
 							helper::loadUnitProc(target, unit);
-							target->order_to(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+							target->order_to(OrderId::MoveUnload, unit->order_target.pt.x, unit->order_target.pt.y);
 							if (target->pAI != nullptr)
 							{
 								helper::_doOrder(target, OrderId::Move, target->sprite->position.x, target->sprite->position.y, false);
@@ -422,7 +422,7 @@ namespace hooks
 	// unit is a unit aiming to enter a transport
 	void orders_EnterTransport(Unit* unit)
 	{
-		Unit* target = unit->orderTarget.unit;
+		Unit* target = unit->order_target.unit;
 		if (target != nullptr
 			&& !(target->status & UnitStatus::IsHallucination)
 			&& units_dat::SpaceProvided[target->id] != 0
@@ -453,9 +453,9 @@ namespace hooks
 		}
 		else
 		{
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else if (unit->unit_ai != nullptr)
@@ -480,7 +480,7 @@ namespace hooks
 			unitTable_0059CB64 = (Unit*)(index_start + 12);
 		}
 		if (unit->status & UnitStatus::GroundedBuilding
-			|| unit->mainOrderTimer == 0)
+			|| unit->main_order_timer == 0)
 		{
 			s32 counter = 0;
 			u32 result_E7F70 = 0;
@@ -492,14 +492,14 @@ namespace hooks
 			bool jump_to_E81AD = false;
 			while (!bEndLoop)
 			{
-				loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
+				loadedUnitOffset = (u32*)&unit->loaded_unit[counter];
 				if (*loadedUnitOffset != 0
-					&& unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != nullptr) // sprite check
+					&& unitTable_0059CB64[unit->loaded_unit[counter].index].link.prev != nullptr) // sprite check
 				{
-					Unit* unitToUnload = &(unitTable_0059CB58[unit->loadedUnit[counter].index]);
+					Unit* unitToUnload = &(unitTable_0059CB58[unit->loaded_unit[counter].index]);
 					if (unitToUnload->main_order_id != 0 || unitToUnload->main_order_state != 1)
 					{
-						if (unit->loadedUnit[counter].unitId == unitToUnload->targetOrderSpecial)
+						if (unit->loaded_unit[counter].unit_id == unitToUnload->target_order_special)
 						{
 							bFoundUnitToUnload = true;
 							result_E7F70 = helper::unloadUnitProc(unitToUnload);
@@ -561,27 +561,27 @@ namespace hooks
 			}
 			if (jump_to_E81AD)
 			{
-				if (unit->orderQueueHead != nullptr)
+				if (unit->order_queue_head != nullptr)
 				{
-					unit->userActionFlags |= 1;
+					unit->user_action_flags |= 1;
 					prepareForNextOrder(unit);
 				}
 				else if (unit->unit_ai != nullptr)
 				{ // 004E81DE
-					unit->userActionFlags |= 1;
+					unit->user_action_flags |= 1;
 					if (unit->main_order_id == OrderId::Die)
 					{
 						prepareForNextOrder(unit);
 					}
 					else
 					{
-						bEndLoop = (unit->orderQueueTail == nullptr);
+						bEndLoop = (unit->order_queue_tail == nullptr);
 						while (!bEndLoop)
 						{
-							if (orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId]
-								|| unit->orderQueueTail->orderId == OrderId::ComputerAI)
+							if (orders_dat::CanBeInterrupted[(unit->order_queue_tail)->orderId]
+								|| unit->order_queue_tail->orderId == OrderId::ComputerAI)
 							{
-								helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
+								helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 							}
 							else
 							{
@@ -589,7 +589,7 @@ namespace hooks
 							}
 							if (!bEndLoop)
 							{
-								bEndLoop = (unit->orderQueueTail == nullptr);
+								bEndLoop = (unit->order_queue_tail == nullptr);
 							}
 						}
 						unit->perform_another_order(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
@@ -598,7 +598,7 @@ namespace hooks
 				}
 				else
 				{ // 004E823A
-					unit->userActionFlags |= 1;
+					unit->user_action_flags |= 1;
 					unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, true);
 					prepareForNextOrder(unit);
 				}
@@ -635,15 +635,15 @@ namespace hooks
 		u32 spaceProvided = units_dat::SpaceProvided[transport->id];
 		u32 index = 0;
 		s32 spaceRequired = 0;
-		Unit* loadedUnit;
+		Unit* loaded_unit;
 		if (spaceProvided)
 		{
 			do
 			{
-				loadedUnit = helper::getLoadedUnitFromIndex(transport, index);
-				if (loadedUnit)
+				loaded_unit = helper::getLoadedUnitFromIndex(transport, index);
+				if (loaded_unit)
 				{
-					spaceRequired += units_dat::SpaceRequired[loadedUnit->id];
+					spaceRequired += units_dat::SpaceRequired[loaded_unit->id];
 				}
 				++index;
 			} while (index < spaceProvided);

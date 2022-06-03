@@ -16,7 +16,7 @@ namespace hooks
 
 	s32 BTNSCOND_NoNydusExit(Unit* unit)
 	{
-		return (unit->building.nydusExit == nullptr) ? BUTTON_ENABLED : BUTTON_HIDDEN;
+		return (unit->building.nydus_exit == nullptr) ? BUTTON_ENABLED : BUTTON_HIDDEN;
 	}
 
 	;
@@ -44,7 +44,7 @@ namespace hooks
 		for (s32 i = 0; return_value == BUTTON_DISABLED && i < SELECTION_ARRAY_LENGTH; i++)
 			if (clientSelectionGroup->unit[i] != nullptr &&
 				(clientSelectionGroup->unit[i]->id == UnitId::Hero_Warbringer || clientSelectionGroup->unit[i]->id == UnitId::ProtossAccantor) &&
-				clientSelectionGroup->unit[i]->carrier.inHangarCount != 0
+				clientSelectionGroup->unit[i]->unit_with_hangar.in_hangar_count != 0
 				)
 				return_value = BUTTON_ENABLED;
 

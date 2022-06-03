@@ -5,7 +5,7 @@ namespace hooks
 {
 	void ai_build_tech_upgrade(AiTown* town, char method, char amount, s16 id, char priority, bool need);	        // 00431F90
 	AiTown* ai_progress_build(s32 playerId, s32* minerals, s32* gas);											// 00434480
-	s32 ai_manage_building_placement(Unit* builder, u32 unitId, Point16 tryPosition, Point16* outPosition, s32 areaTiles);
+	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 tryPosition, Point16* outPosition, s32 areaTiles);
 	char ai_perform_task(Unit* unit);																			// 004361A0
 	char ai_plan_do_merge_morph(s32 player, Unit* unit, s32 boolSomething);										// 00435F10
 	void ai_train_defensive_military(u8 player_id);																// 0043F990

@@ -91,29 +91,29 @@ const Vector32f BiasOrigins[KiteZoneCount] =
 	{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
 };
 
-static u32 get_max_range(u32 unitId)
+static u32 get_max_range(u32 unit_id)
 {
-	if (unitId == UnitId::ProtossSolarion)
+	if (unit_id == UnitId::ProtossSolarion)
 	{
 		return 8 * 32;
 	}
-	if (unitId == UnitId::ProtossAccantor)
+	if (unit_id == UnitId::ProtossAccantor)
 	{
 		return 8 * 32;
 	}
 
-	u32 ground_weapon = units_dat::GroundWeapon[unitId];
+	u32 ground_weapon = units_dat::GroundWeapon[unit_id];
 	u32 ground_range = ground_weapon != WeaponId::None ? weapons_dat::MaxRange[ground_weapon] : 0;
 
-	u32 air_weapon = units_dat::AirWeapon[unitId];
+	u32 air_weapon = units_dat::AirWeapon[unit_id];
 	u32 air_range = air_weapon != WeaponId::None ? weapons_dat::MaxRange[air_weapon] : 0;
 
 	return std::max(ground_range, air_range);
 }
 
-static bool is_melee_attacker(u32 unitId)
+static bool is_melee_attacker(u32 unit_id)
 {
-	return get_max_range(unitId) <= 32;
+	return get_max_range(unit_id) <= 32;
 }
 
 static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius)
@@ -229,14 +229,14 @@ static u8 get_current_weapon_cooldown(Unit* unit)
 {
 	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor)
 	{
-		if (unit->mainOrderTimer == 0 && (unit->carrier.inHangarCount || (*elapsedTimeFrames) % 24 == 0))
+		if (unit->main_order_timer == 0 && (unit->unit_with_hangar.in_hangar_count || (*elapsedTimeFrames) % 24 == 0))
 		{
 			return 0;
 		}
 		return 2;
 	}
 
-	return std::max(unit->groundWeaponCooldown, unit->airWeaponCooldown);
+	return std::max(unit->ground_weapon_cooldown, unit->air_weapon_cooldown);
 }
 
 static u8 get_max_weapon_cooldown(Unit* unit)
@@ -265,7 +265,7 @@ static u8 get_max_weapon_cooldown(Unit* unit)
 
 static u32 get_distance_to_target(Unit* source)
 {
-	Unit* target = source->orderTarget.unit;
+	Unit* target = source->order_target.unit;
 	if (!target)
 	{
 		return get_max_range(source->id);
@@ -351,7 +351,7 @@ static s32 get_target_cost(Unit* source, Unit* target)
 	else if (target->id == UnitId::ProtossSolarion)
 	{
 		cost -= (weapons_dat::DamageAmount[WeaponId::PulseCannon] /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
-			* (target->carrier.inHangarCount + target->carrier.outHangarCount)
+			* (target->unit_with_hangar.in_hangar_count + target->unit_with_hangar.out_hangar_count)
 			* 1.5; // additional bias to encourage targeting solarions more
 	}
 	else
@@ -634,7 +634,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					} else {
 						local_unit_ext->values[ValueAI_PreventTargeting] = 1;
 					}
-					if (local_unit->main_order_id != attack_order_id || local_unit->orderTarget.unit != best_target) {
+					if (local_unit->main_order_id != attack_order_id || local_unit->order_target.unit != best_target) {
 						local_unit->order_to(attack_order_id, best_target);
 						local_unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					}
@@ -718,17 +718,17 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					local_unit_ext->values[ValueAI_PreventTargeting] = 0;
 
 					bool target_has_min_range = false;
-					if (local_unit->orderTarget.unit)
+					if (local_unit->order_target.unit)
 					{
-						if (local_unit->orderTarget.unit->id == UnitId::ZergGeszithalor
-							|| local_unit->orderTarget.unit->id == UnitId::ZergBactalisk
-							|| local_unit->orderTarget.unit->id == UnitId::ProtossArchitect)
+						if (local_unit->order_target.unit->id == UnitId::ZergGeszithalor
+							|| local_unit->order_target.unit->id == UnitId::ZergBactalisk
+							|| local_unit->order_target.unit->id == UnitId::ProtossArchitect)
 						{
 							target_has_min_range = true;
 						}
 						else
 						{
-							Unit* context = local_unit->orderTarget.unit;
+							Unit* context = local_unit->order_target.unit;
 							if (context->subunit)
 							{
 								context = context->subunit;
@@ -983,7 +983,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 		}
 		else if (unit->id == UnitId::TerranSavant)
 		{
-			Unit* target = unit->orderTarget.unit;
+			Unit* target = unit->order_target.unit;
 			if (target && target->energy > 5 * 256 && unit->energy < 190 * 256) {
 				scbw::set_generic_rust_value(unit, RustId::ToggleSavantOnhit, 1);
 			} else {
@@ -994,9 +994,9 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 		{
 			f32 furiaDamagePotential = hooks::getCurrentDPS(unit, WeaponId::MadrigalFuriaMissiles);
 			furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
-			if (unit->orderTarget.unit)
+			if (unit->order_target.unit)
 			{
-				UnitExt* target_ext = globals.get_unit_ext(unit->orderTarget.unit);
+				UnitExt* target_ext = globals.get_unit_ext(unit->order_target.unit);
 				furiaDamagePotential += (f32)target_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage;
 			}
 			f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, WeaponId::MadrigalImperiosoMissiles);
@@ -1158,7 +1158,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 				unitExt->timers[TimerAI_GriefOfAllGods] = 612;
 				unitExt->timers[TimerAI_KitingCooldown] = 5 * 24;
 				unit->order_computer(OrderId::KhaydarinEclipse);
-				unit->orderTarget.pt = unit->sprite->position;
+				unit->order_target.pt = unit->sprite->position;
 				unit->main_order_state = 0;
 			}
 		}

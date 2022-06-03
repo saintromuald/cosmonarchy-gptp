@@ -431,7 +431,7 @@ namespace scbw
 	///
 	/// @return           The created unit or nullptr if the unit cannot be created.
 	//function used for broodlings and similar stuff
-	Unit* create_unit_ingame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator = nullptr, bool initAI = true);
+	Unit* create_unit_ingame(u16 unit_id, u8 playerId, u32 x, u32 y, Unit* creator = nullptr, bool initAI = true);
 	/// Calculates the images.dat overlay adjustment for the given unit.
 	/// This piece of code is used throughout StarCraft.exe for various status
 	/// effects, such as Ensnare, Plague, and Defensive Matrix.
@@ -521,7 +521,7 @@ namespace scbw
 	void range_modified_fire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset);
 	bool can_spawn_broodling(Unit* target);
 	s32 get_broodling_count_from_supply(Unit* target);
-	void create_unit_from_ability(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, Unit* creator = nullptr);
+	void create_unit_from_ability(s32 unit_id, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, Unit* creator = nullptr);
 	Unit** getSourceQueens(Unit* unit);
 	u16 get_last_queue_slot_id(Unit* a1);
 	s32 dir_saturate(s32 direction, s32 value);
@@ -537,7 +537,7 @@ namespace scbw
 	bool is_enabled(Unit* unit);
 	bool isDebuffed(Unit* unit);
 	s32 get_upgrade_type(Unit* unit);
-	s32 get_overlay_offset(u16 unitId, bool xlargeAllowed = false);
+	s32 get_overlay_offset(u16 unit_id, bool xlargeAllowed = false);
 	s32 get_final_damage(Unit* unit, u16 weaponId);
 	bool unit_id_is_pacifist(Unit* unit);
 	bool order_is_spell(s32 orderId);
@@ -556,15 +556,15 @@ namespace scbw
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
 	void update_signify_status(Unit* unit, UnitExt* unitExt);
 	bool is_unit_isolated(Unit* unit);
-	bool unit_id_is_zerg_supply(u16 unitId);
+	bool unit_id_is_zerg_supply(u16 unit_id);
 	void mind_control(Unit* source, Unit* target);
 	void recede_mind_control(Unit* target);
-	bool is_zerg_production(u16 unitId);
-	bool unit_id_is_town_center(u16 unitId);
-	bool unit_id_is_shared(u16 unitId);
+	bool is_zerg_production(u16 unit_id);
+	bool unit_id_is_town_center(u16 unit_id);
+	bool unit_id_is_shared(u16 unit_id);
 	bool transport_is_full(Unit* transport);
 	bool transport_is_empty(Unit* transport);
-	bool unit_id_uses_xlarge_overlays(u16 unitId);
+	bool unit_id_uses_xlarge_overlays(u16 unit_id);
 	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures);
 
 	void set_cmbw_ai_preference(u16 unit_id, u32 player);

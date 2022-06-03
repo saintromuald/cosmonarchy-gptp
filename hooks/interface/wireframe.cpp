@@ -14,21 +14,21 @@ namespace hooks
 	u16 statdata_UnitWireframeUpdate_Fragment(Unit* unit)
 	{
 
-		u16 unitId;
+		u16 unit_id;
 		bool bUseCurrentUnitId = true;
 
 		if (!(unit->status & UnitStatus::Completed))
 		{
 
-			unitId = unit->buildQueue[unit->buildQueueSlot];
+			unit_id = unit->build_queue[unit->build_queue_slot];
 
 			if (
-				unitId == UnitId::ZergHive ||
-				unitId == UnitId::ZergLair ||
-				unitId == UnitId::ZergGeszithRoost ||
-				unitId == UnitId::ZergSporeColony ||
-				unitId == UnitId::ZergSunkenColony ||
-				unitId == 191
+				unit_id == UnitId::ZergHive ||
+				unit_id == UnitId::ZergLair ||
+				unit_id == UnitId::ZergGeszithRoost ||
+				unit_id == UnitId::ZergSporeColony ||
+				unit_id == UnitId::ZergSunkenColony ||
+				unit_id == 191
 				)
 				bUseCurrentUnitId = false;
 
@@ -36,22 +36,22 @@ namespace hooks
 
 		//5694F
 		if (bUseCurrentUnitId)
-			unitId = unit->id;
+			unit_id = unit->id;
 
-		return unitId;
+		return unit_id;
 	}
 	u16 get_last_queue_slot_id(Unit* unit)
 	{
-		u16 unitId;
+		u16 unit_id;
 		if (unit->status & UnitStatus::Completed)
-			unitId = unit->id;
+			unit_id = unit->id;
 		else
 		{
-			unitId = unit->buildQueue[unit->buildQueueSlot];
+			unit_id = unit->build_queue[unit->build_queue_slot];
 			if (!(scbw::is_zerg_building_morph_result))
-				unitId = unit->id;
+				unit_id = unit->id;
 		}
-		return unitId;
+		return unit_id;
 	};
 
 	u8 wireframeShields(Unit* unit)

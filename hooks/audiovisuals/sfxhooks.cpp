@@ -6,7 +6,7 @@
 
 namespace hooks
 {
-	s32 getResponseSfx(s32 unitId, s32 a2)
+	s32 getResponseSfx(s32 unit_id, s32 a2)
 	{ // 0048EA20
 		s32 sound = 0;			//v2
 		s32 whatStart;			//v3
@@ -14,13 +14,13 @@ namespace hooks
 		s32 rand;				//v6
 		s32 result;
 
-		if (!(units_dat::GroupFlags[unitId].isBuilding))
-		{		// original check was unitId <= 0x69, now checks for existance of annoyed lines
-			sound = scbw::get_unit_data(UnitsDatEntries::SndPssFirst, unitId);
+		if (!(units_dat::GroupFlags[unit_id].isBuilding))
+		{		// original check was unit_id <= 0x69, now checks for existance of annoyed lines
+			sound = scbw::get_unit_data(UnitsDatEntries::SndPssFirst, unit_id);
 			if ((s16)sound)
 			{
 				sound = (u16)sound;
-				if (a2 <= (u16)scbw::get_unit_data(UnitsDatEntries::SndPssLast, unitId) - (u16)sound + 1)
+				if (a2 <= (u16)scbw::get_unit_data(UnitsDatEntries::SndPssLast, unit_id) - (u16)sound + 1)
 				{
 					if (a2)
 					{
@@ -33,11 +33,11 @@ namespace hooks
 				}
 			}
 		}
-		whatStart = scbw::get_unit_data(UnitsDatEntries::SndWhtFirst, unitId);
-		whatEnd = (u16)scbw::get_unit_data(UnitsDatEntries::SndWhtLast, unitId);
+		whatStart = scbw::get_unit_data(UnitsDatEntries::SndWhtFirst, unit_id);
+		whatEnd = (u16)scbw::get_unit_data(UnitsDatEntries::SndWhtLast, unit_id);
 		if (whatStart == whatEnd)
 		{
-			*lastRandSFX = scbw::get_unit_data(UnitsDatEntries::SndWhtFirst, unitId);
+			*lastRandSFX = scbw::get_unit_data(UnitsDatEntries::SndWhtFirst, unit_id);
 			result = whatStart;
 		}
 		else

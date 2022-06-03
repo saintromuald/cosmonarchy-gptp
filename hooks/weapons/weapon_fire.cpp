@@ -23,7 +23,7 @@ static bool madrigalFuriaMatch(Unit* madrigal, Unit* unit)
 	{
 		return false;
 	}
-	if (unit == madrigal->orderTarget.unit)
+	if (unit == madrigal->order_target.unit)
 	{
 		return false;
 	}
@@ -88,15 +88,15 @@ namespace hooks
 		bool fired = false;
 		std::unordered_set<Unit*> targets;
 		if (!ignoreMain
-			&& attacker->orderTarget.unit
+			&& attacker->order_target.unit
 			&& attacker->main_order_id != OrderId::Follow
 			&& attacker->main_order_id != OrderId::Patrol)
 		{
-			targets.insert(attacker->orderTarget.unit);
-			launchMissile(attacker, attackerExt, attacker->orderTarget.unit, weaponId);
+			targets.insert(attacker->order_target.unit);
+			launchMissile(attacker, attackerExt, attacker->order_target.unit, weaponId);
 			fired = true;
 		}
-		Unit* old = attacker->orderTarget.unit;
+		Unit* old = attacker->order_target.unit;
 		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
 		{
 			u32 range = hooks::getMaxWeaponRangeHook(attacker, weaponId, 0);
@@ -124,12 +124,12 @@ namespace hooks
 			{
 				break;
 			}
-			attacker->orderTarget.unit = newTarget;
+			attacker->order_target.unit = newTarget;
 			launchMissile(attacker, attackerExt, newTarget, weaponId);
 			fired = true;
 			targets.insert(newTarget);
 		}
-		attacker->orderTarget.unit = old;
+		attacker->order_target.unit = old;
 		return fired;
 	}
 
@@ -155,7 +155,7 @@ namespace hooks
 		}
 		if (behavior == WeaponBehavior::AppearOnTargetUnit)
 		{
-			if (unit->orderTarget.unit == nullptr)
+			if (unit->order_target.unit == nullptr)
 			{
 				return;
 			}
@@ -163,8 +163,8 @@ namespace hooks
 		}
 		else if (behavior == WeaponBehavior::AppearOnTargetSite)
 		{
-			x = unit->orderTarget.pt.x;
-			y = unit->orderTarget.pt.y;
+			x = unit->order_target.pt.x;
+			y = unit->order_target.pt.y;
 		}
 		else
 		{
@@ -190,14 +190,14 @@ namespace hooks
 			{
 				unitExt->timers[TimerLurkerETA] = 17;
 				auto range = weapons_dat::MaxRange[weaponId] + 16;
-				s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), unit->orderTarget.unit->get_x(), unit->orderTarget.unit->get_y());
+				s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), unit->order_target.unit->get_x(), unit->order_target.unit->get_y());
 				s32 targ_x = unit->get_x() + scbw::get_polar_x(range, angle);
 				s32 targ_y = unit->get_y() + scbw::get_polar_y(range, angle);
 				unitExt->values[ValueSpineX] = targ_x;
 				unitExt->values[ValueSpineY] = targ_y;
-				if (unit->orderTarget.unit != nullptr)
+				if (unit->order_target.unit != nullptr)
 				{
-					unitExt->values[ValueLurkerPickTarget] = (u32)unit->orderTarget.unit;
+					unitExt->values[ValueLurkerPickTarget] = (u32)unit->order_target.unit;
 				}
 				globals.clear_lakizilisk(unit);
 			}
@@ -278,8 +278,8 @@ namespace hooks
 							if (unit->energy == unit->getMaxEnergy())
 							{
 								unitExt->values[ValuePhobosDischarge] = 1;
-								unit->groundWeaponCooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
-								unit->airWeaponCooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
+								unit->ground_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
+								unit->air_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
 								helper::play_sound_from_unit(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
 								unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
 							}
@@ -362,7 +362,7 @@ namespace hooks
 					case WeaponId::MadrigalFuriaMissiles:
 					{
 						// Madrigal Furia Salvo
-						if (unit->orderTarget.unit != nullptr)
+						if (unit->order_target.unit != nullptr)
 						{
 							fire_multiple(unit, unitExt, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy);
 						}
@@ -380,7 +380,7 @@ namespace hooks
 			}
 
 			// Chasmal Colony - Adaptive Amitosis ability
-			if (unit->orderTarget.unit != nullptr
+			if (unit->order_target.unit != nullptr
 				&& unitExt->values[ValueAdaptiveAmitosis])
 			{
 				auto range = weapons_dat::MaxRange[weaponId];
@@ -395,7 +395,7 @@ namespace hooks
 					{
 						return false;
 					}
-					if (target == unit->orderTarget.unit)
+					if (target == unit->order_target.unit)
 					{
 						return false;
 					}
@@ -405,9 +405,9 @@ namespace hooks
 				});
 				if (a != nullptr)
 				{
-					auto old = unit->orderTarget;
-					unit->orderTarget.unit = a;
-					unit->orderTarget.pt = a->sprite->position;
+					auto old = unit->order_target;
+					unit->order_target.unit = a;
+					unit->order_target.pt = a->sprite->position;
 					unitExt->values[ValueAdaptiveAmitosis] = 1;
 					// TODO: verify that this will work with all weapon types
 					const u32 Iscript_UseWeapon = 0x00479C30;
@@ -419,7 +419,7 @@ namespace hooks
 						CALL Iscript_UseWeapon
 						POPAD
 					}
-					unit->orderTarget = old;
+					unit->order_target = old;
 				}
 			}
 		}
@@ -511,7 +511,7 @@ namespace hooks
 			{
 				if (!globals.multihit_bullet_is_set(bullet))
 				{
-					auto old = bullet->sourceUnit->orderTarget.unit;
+					auto old = bullet->sourceUnit->order_target.unit;
 					auto oldSpritePos = bullet->sourceUnit->sprite->position;
 					auto oldPos = bullet->sourceUnit->position;
 					bullet->sourceUnit->sprite->position = bullet->position;
@@ -535,7 +535,7 @@ namespace hooks
 						{
 							continue;
 						}
-						bullet->sourceUnit->orderTarget.unit = target;
+						bullet->sourceUnit->order_target.unit = target;
 						auto newAngle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
 						auto newBullet = helper::create_bullet(WeaponId::ArchitectDispersiveSalvo,
 							bullet->sourceUnit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
@@ -546,7 +546,7 @@ namespace hooks
 							globals.add_multihit_empty_bullet(newBullet, 1);
 						}
 					};
-					bullet->sourceUnit->orderTarget.unit = old;
+					bullet->sourceUnit->order_target.unit = old;
 					bullet->sourceUnit->position = oldPos;
 					bullet->sourceUnit->sprite->position = oldSpritePos;
 				}
@@ -1171,7 +1171,7 @@ namespace hooks
 		}
 		if (parent->id == UnitId::ProtossPlasmaShell)
 		{
-			bullet->sourceUnit = parent->interceptor.parent;
+			bullet->sourceUnit = parent->hangar_unit.parent;
 		}
 		if (parent->status & UnitStatus::IsHallucination)
 		{
@@ -1179,7 +1179,7 @@ namespace hooks
 		}
 		bullet->nextBounceUnit = nullptr;
 
-		Unit* targetUnit = parent->orderTarget.unit;
+		Unit* targetUnit = parent->order_target.unit;
 		if (targetUnit)
 		{
 			bullet->sprite->elevationLevel = targetUnit->sprite->elevationLevel + 1;
@@ -1191,8 +1191,8 @@ namespace hooks
 		{
 			bullet->sprite->elevationLevel = parent->sprite->elevationLevel + 1;
 			bullet->attackTarget.unit = 0;
-			bullet->attackTarget.pt.x = parent->orderTarget.pt.x;
-			bullet->attackTarget.pt.y = parent->orderTarget.pt.y;
+			bullet->attackTarget.pt.x = parent->order_target.pt.x;
+			bullet->attackTarget.pt.y = parent->order_target.pt.y;
 		}
 
 		switch (weapons_dat::Behavior[weaponId])
@@ -1240,7 +1240,7 @@ namespace hooks
 					return 1;
 				}
 				bullet->sourceUnit->status |= UnitStatus::IsSelfDestructing;
-				bullet->sourceUnit->userActionFlags |= 0x4;
+				bullet->sourceUnit->user_action_flags |= 0x4;
 				helper::orders_self_destructing(bullet->sourceUnit);
 				return 1;
 			}
@@ -1503,7 +1503,7 @@ namespace hooks
 		if (!(unit->status & UnitStatus::CanNotAttack))
 		{
 			UnitExt* unit_ext = globals.get_unit_ext(unit);
-			if (unit->orderTarget.unit && unit->orderTarget.unit->status & UnitStatus::InAir)
+			if (unit->order_target.unit && unit->order_target.unit->status & UnitStatus::InAir)
 			{
 				helper::use_weapon_iscript(unit, units_dat::AirWeapon[unit->id], 2, iscript_anim + 1);
 			}

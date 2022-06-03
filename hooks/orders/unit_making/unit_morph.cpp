@@ -39,7 +39,7 @@ namespace hooks
 				no_two_units = true;
 			}
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg
-				|| unit->previousUnitType == UnitId::ZergCocoon)
+				|| unit->previous_unit_type == UnitId::ZergCocoon)
 			{
 				bTwinEggOrCocoon = false;
 			}
@@ -88,37 +88,37 @@ namespace hooks
 			{
 				scbw::set_unit_position(unit, pos.x, pos.y);
 			}
-			if (!scbw::is_zerg_egg_new(unit, true, false, unit->previousUnitType))
+			if (!scbw::is_zerg_egg_new(unit, true, false, unit->previous_unit_type))
 			{
 				if (unit->egg_origin == UnitId::ZergLarva)
 				{
-					helper::order_new_unit_to_rally(unit, unit->connectedUnit);
+					helper::order_new_unit_to_rally(unit, unit->connected_unit);
 					if (unit2)
 					{
-						helper::order_new_unit_to_rally(unit2, unit->connectedUnit);
+						helper::order_new_unit_to_rally(unit2, unit->connected_unit);
 					}
 				}
 			}
 			helper::force_order_done(unit);
-			unit->connectedUnit = unitExt->units[UnitMorphConnectedUnit];
+			unit->connected_unit = unitExt->units[UnitMorphConnectedUnit];
 		}
 	}
 
 	bool advance_remaining_build_time_custom(Unit* unit) {
-		if (!unit->remainingBuildTime) {
+		if (!unit->remaining_build_time) {
 			return 1;
 		}
 		if (*CHEAT_STATE & CheatFlags::OperationCwal) {
-			unit->remainingBuildTime -= 16;
+			unit->remaining_build_time -= 16;
 		} else {
-			unit->remainingBuildTime -= 1;
+			unit->remaining_build_time -= 1;
 		}
 		if (!scbw::is_larval_egg(unit) &&
 			scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).has_creep) {
-			unit->remainingBuildTime -= 1;
+			unit->remaining_build_time -= 1;
 		}
-		if (unit->remainingBuildTime < 0) {
-			unit->remainingBuildTime = 0;
+		if (unit->remaining_build_time < 0) {
+			unit->remaining_build_time = 0;
 		}
 		return 0;
 	}
@@ -130,7 +130,7 @@ namespace hooks
 		{
 			if (scbw::is_conventional_unit_morph_source(unit->id, true, true))
 			{
-				if (!helper::has_supplies_for_unit(unit->buildQueue[unit->buildQueueSlot], unit->player, 1))
+				if (!helper::has_supplies_for_unit(unit->build_queue[unit->build_queue_slot], unit->player, 1))
 				{
 					helper::refund_all_queue_slots(unit);
 					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
@@ -223,7 +223,7 @@ namespace hooks
 					}
 					helper::change_unit_buttonset(unit, unit->id);
 					
-					unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
+					unit->remaining_build_time = units_dat::TimeCost[unit->build_queue[unit->build_queue_slot]];
 					unit->main_order_state = 1;
 					auto origin = unit->egg_origin;
 					IscriptAnimation::Enum animation = IscriptAnimation::Unused1;
@@ -251,15 +251,15 @@ namespace hooks
 		}
 		else if (unit->main_order_state == 1)
 		{
-			if (unit->id == UnitId::ZergEgg && unit->remainingBuildTime < 19)
+			if (unit->id == UnitId::ZergEgg && unit->remaining_build_time < 19)
 			{
 				unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
-				unit->remainingBuildTime = 0;
+				unit->remaining_build_time = 0;
 			}
-			if (unit->id == UnitId::ZergCocoon && unit->remainingBuildTime < 12)
+			if (unit->id == UnitId::ZergCocoon && unit->remaining_build_time < 12)
 			{
 				unit->play_iscript_animation(IscriptAnimation::SpecialState1);
-				unit->remainingBuildTime = 0;
+				unit->remaining_build_time = 0;
 			}
 			if (advance_remaining_build_time_custom(unit))
 			{
@@ -271,7 +271,7 @@ namespace hooks
 			if (unit->order_signal & 4)
 			{
 				unit->order_signal -= 4;
-				helper::replace_unit_with_type(unit, unit->buildQueue[unit->buildQueueSlot]);
+				helper::replace_unit_with_type(unit, unit->build_queue[unit->build_queue_slot]);
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster) {
 					unit->energy = unitExt->values[ValuePreMorphEnergy];
 				} else {
@@ -287,7 +287,7 @@ namespace hooks
 					helper::ai_training_unit(unit, unit);
 				}
 				helper::play_morphing_complete_sound(unit);
-				unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+				unit->build_queue[unit->build_queue_slot] = UnitId::None;
 				if (units_dat::ConstructionGraphic[unit->id] != 0)
 				{
 					Image* current_image;
@@ -307,7 +307,7 @@ namespace hooks
 					helper::update_unit_strength(unit);
 					if (unit->id == UnitId::ZergEgg && unit->egg_origin == UnitId::ZergLarva)
 					{
-						helper::order_new_unit_to_rally(unit, unit->connectedUnit);
+						helper::order_new_unit_to_rally(unit, unit->connected_unit);
 					}
 				}
 			}
@@ -424,19 +424,19 @@ namespace hooks
 		return false;
 	}
 
-	bool is_rallyable_egg_unit(u16 unitId)
+	bool is_rallyable_egg_unit(u16 unit_id)
 	{
-		if (scbw::is_zerg_egg_new(0, false, false, unitId))
+		if (scbw::is_zerg_egg_new(0, false, false, unit_id))
 		{
 			return false;
 		}
 		return true;
 	}
 
-	// Return the ID of the egg unit to use when morphing @p unitId. If the unit cannot morph, return UnitId::None.
-	u16 get_unit_morph_egg_id(u16 unitId, Unit* unit, u16 resultId)
+	// Return the ID of the egg unit to use when morphing @p unit_id. If the unit cannot morph, return UnitId::None.
+	u16 get_unit_morph_egg_id(u16 unit_id, Unit* unit, u16 resultId)
 	{
-		if (units_dat::BaseProperty[unitId] & UnitProperty::Flyer)
+		if (units_dat::BaseProperty[unit_id] & UnitProperty::Flyer)
 		{
 			return UnitId::ZergCocoon;
 		}
@@ -470,7 +470,7 @@ namespace hooks
 			return 0;
 		}
 		// No offset, since the morphed unit should stay where it is
-		if (unit->previousUnitType == UnitId::ZergCocoon)
+		if (unit->previous_unit_type == UnitId::ZergCocoon)
 		{
 			return 0;
 		}

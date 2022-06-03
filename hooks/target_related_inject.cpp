@@ -226,13 +226,13 @@ namespace
 	}
 
 	void __declspec(naked) return_interceptor_if_cannot_attack_wrapper() { // 00465810
-		static Unit* steward;
+		static Unit* hangar_unit;
 		static s32 result;
 		__asm {
-			MOV steward, EAX
+			MOV hangar_unit, EAX
 			PUSHAD
 		}
-		result = hooks::return_interceptor_if_cannot_attack(steward);
+		result = hooks::return_interceptor_if_cannot_attack(hangar_unit);
 		__asm {
 			POPAD
 			MOV EAX, result

@@ -73,15 +73,15 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 	const char* typeName = "";
 
 	u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
-	u8 upgradeLevel = scbw::get_upgrade_level(unit->player, weapons_dat::DamageUpgrade[weaponId]);
+	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::DamageUpgrade[weaponId]);
 	u8 damageType = weapons_dat::DamageType[weaponId];
 	u32 baseDamage = weapons_dat::DamageAmount[weaponId];
-	u32 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
+	u32 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgrade_level;
 
 	f32 minRange = weapons_dat::MinRange[weaponId] / 32.0;
 	f32 range = weapons_dat::MaxRange[weaponId] / 32.0;
-	f32 bonusRange = hooks::getMaxWeaponRangeHook(unit, weaponId, unit->orderTarget.unit) / 32.0 - range;
-	bonusRange -= scbw::get_cliff_advantage(unit, unit->orderTarget.unit, weaponId);
+	f32 bonusRange = hooks::getMaxWeaponRangeHook(unit, weaponId, unit->order_target.unit) / 32.0 - range;
+	bonusRange -= scbw::get_cliff_advantage(unit, unit->order_target.unit, weaponId);
 
 	std::string damageModifiers = "";
 	f64 attackCd = (f64)weapons_dat::Cooldown[weaponId] / 24;

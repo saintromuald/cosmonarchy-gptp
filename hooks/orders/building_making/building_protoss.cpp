@@ -14,7 +14,7 @@ namespace hooks
 
 		if (unit->main_order_state == 0)
 		{
-			if (helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+			if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
 			{
 				unit->main_order_state = 1;
 			}
@@ -22,8 +22,8 @@ namespace hooks
 		else if (unit->main_order_state == 1)
 		{
 			u32 distance, distance_wanted;
-			distance = scbw::get_distance_fast(unit->halt.x, unit->halt.y, unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256);
-			if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ProtossAquifer)
+			distance = scbw::get_distance_fast(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
+			if (unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer)
 			{
 				distance_wanted = 88;
 			}
@@ -36,7 +36,7 @@ namespace hooks
 			{
 				if (unit->get_movable_state() != 0)
 				{
-					helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 				}
 			}
 			else // 004E4DA9
@@ -50,7 +50,7 @@ namespace hooks
 			if (!(unit->movement_flags & MovementFlags::Accelerating))
 			{
 				u32 distance_wanted;
-				bool isBuildingAssimilator = (unit->buildQueue[unit->buildQueueSlot] == UnitId::ProtossAquifer);
+				bool isBuildingAssimilator = (unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer);
 				if (isBuildingAssimilator)
 				{
 					distance_wanted = 88;
@@ -59,11 +59,11 @@ namespace hooks
 				{
 					distance_wanted = 70;
 				}
-				if (!helper::is_distance_greater_than_halt_distance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, distance_wanted))
+				if (!helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, distance_wanted))
 				{
 					if (unit->get_movable_state() != 0)
 					{
-						helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+						helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 					}
 				}
 				else
@@ -77,11 +77,11 @@ namespace hooks
 						}
 						else
 						{
-							builtUnit = helper::create_unit(unit->buildQueue[unit->buildQueueSlot], unit->orderTarget.pt.x, unit->orderTarget.pt.y, unit->player);
+							builtUnit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
 						}
 
-						u32 unit_id = unit->buildQueue[unit->buildQueueSlot];
-						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+						u32 unit_id = unit->build_queue[unit->build_queue_slot];
+						unit->build_queue[unit->build_queue_slot] = UnitId::None;
 						if (builtUnit == nullptr)
 						{
 							helper::refund_unit_train_cost(unit_id, unit->player);
@@ -96,7 +96,7 @@ namespace hooks
 								builtUnit->sprite->create_underlay(ImageId::VespeneGeyser, 0, 0, 0);
 							}
 							builtUnit->sprite->createTopUnderlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
-							unit->orderTarget.unit = builtUnit;
+							unit->order_target.unit = builtUnit;
 							helper::ai_training_overlord(builtUnit, unit);
 							builtUnit->order_computer(OrderId::BuildSelf2);
 							helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
@@ -112,11 +112,11 @@ namespace hooks
 		}
 		else if (unit->main_order_state == 3)
 		{
-			Unit* target = unit->orderTarget.unit;
+			Unit* target = unit->order_target.unit;
 			Image* current_image;
 			if (target == nullptr
 				|| target->id != UnitId::ProtossAquifer
-				|| unit->orderQueueHead != nullptr)
+				|| unit->order_queue_head != nullptr)
 			{
 				unit->order_to_idle();
 			}
@@ -143,7 +143,7 @@ namespace hooks
 		}
 		else if (building->main_order_state == 0)
 		{
-			if (building->remainingBuildTime == 0)
+			if (building->remaining_build_time == 0)
 			{
 				Image* current_image = building->sprite->images.head;
 				while (current_image != nullptr)
@@ -254,34 +254,34 @@ namespace hooks
 
 		if (jump_to_E50EE)
 		{
-			u32 hpGain, shieldGain;			
+			u32 hpGain, shield_gain;			
 			BuildingModifier modifier = get_building_modifier(building, 0);
-			if (building->remainingBuildTime != 0)
+			if (building->remaining_build_time != 0)
 			{
 				if (*CHEAT_STATE & CheatFlags::OperationCwal)
 				{
-					if (building->remainingBuildTime > 16)
+					if (building->remaining_build_time > 16)
 					{
-						building->remainingBuildTime -= 16;
+						building->remaining_build_time -= 16;
 					}
 					else
 					{
-						building->remainingBuildTime = 0;
+						building->remaining_build_time = 0;
 					}
 				}
 				else
 				{
-					building->remainingBuildTime--;
+					building->remaining_build_time--;
 
 					if (modifier.decrease)
 					{
-						if (building->remainingBuildTime > modifier.decrease)
+						if (building->remaining_build_time > modifier.decrease)
 						{
-							building->remainingBuildTime -= modifier.decrease;
+							building->remaining_build_time -= modifier.decrease;
 						}
 						else
 						{
-							building->remainingBuildTime = 0;
+							building->remaining_build_time = 0;
 						}
 					}
 				}
@@ -289,30 +289,30 @@ namespace hooks
 
 			if (*CHEAT_STATE & CheatFlags::OperationCwal)
 			{
-				hpGain = building->buildRepairHpGain * 16;
+				hpGain = building->build_repair_hp_gain * 16;
 			}
 			else
 			{
-				hpGain = building->buildRepairHpGain * modifier.multiplier;
+				hpGain = building->build_repair_hp_gain * modifier.multiplier;
 			}
 			building->setHp(building->hitpoints + hpGain);
 
 			if (*CHEAT_STATE & CheatFlags::OperationCwal)
 			{
-				shieldGain = building->shieldGain * 16;
+				shield_gain = building->shield_gain * 16;
 			}
 			else
 			{
-				shieldGain = building->shieldGain * modifier.multiplier;
+				shield_gain = building->shield_gain * modifier.multiplier;
 			}
 
-			if (building->shields + shieldGain >= (u32)units_dat::MaxShieldPoints[building->id] * 256)
+			if (building->shields + shield_gain >= (u32)units_dat::MaxShieldPoints[building->id] * 256)
 			{
 				building->shields = units_dat::MaxShieldPoints[building->id] * 256;
 			}
 			else
 			{
-				building->shields += shieldGain;
+				building->shields += shield_gain;
 			}
 		}
 	}

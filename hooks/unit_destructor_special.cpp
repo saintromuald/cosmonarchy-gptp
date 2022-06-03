@@ -39,7 +39,7 @@ void augurProc(Unit* augur, s32 radius) {
 	helper::play_sound_from_unit(scbw::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
 	if (target)
 	{
-		augur->orderTarget.unit = target;
+		augur->order_target.unit = target;
 		helper::create_bullet(WeaponId::AugurFinalHour, augur, augur->get_x(), augur->get_y(), augur->player, scbw::get_angle(augur->get_x(), augur->get_y(), target->get_x(), target->get_y()));
 	}
 }
@@ -60,18 +60,18 @@ void augurSacrifice(Unit* augur, s32 radius)
 void kill_hangar_units(Unit* unit)
 {
 	u32 random_value;
-	while (unit->carrier.inHangarCount != 0)
+	while (unit->unit_with_hangar.in_hangar_count != 0)
 	{
-		Unit* childInside = unit->carrier.inHangarChild;
-		unit->carrier.inHangarChild = childInside->interceptor.hangar_link.prev;
-		childInside->interceptor.parent = nullptr;
+		Unit* childInside = unit->unit_with_hangar.in_hangar_child;
+		unit->unit_with_hangar.in_hangar_child = childInside->hangar_unit.hangar_link.prev;
+		childInside->hangar_unit.parent = nullptr;
 		childInside->remove();
-		unit->carrier.inHangarCount--;
+		unit->unit_with_hangar.in_hangar_count--;
 	}
-	while (unit->carrier.outHangarCount != 0)
+	while (unit->unit_with_hangar.out_hangar_count != 0)
 	{
-		Unit* childOutside = unit->carrier.outHangarChild;
-		childOutside->interceptor.parent = nullptr;
+		Unit* childOutside = unit->unit_with_hangar.out_hangar_child;
+		childOutside->hangar_unit.parent = nullptr;
 		// Kill Stewards only (Plasma Shells will defuse anyway)
 		if (childOutside->id != UnitId::ProtossPlasmaShell)
 		{
@@ -101,20 +101,20 @@ void kill_hangar_units(Unit* unit)
 			}
 		}
 		// 00466239
-		unit->carrier.outHangarChild = childOutside->interceptor.hangar_link.prev;
-		childOutside->interceptor.hangar_link.prev = nullptr;
-		childOutside->interceptor.hangar_link.next = nullptr;
-		unit->carrier.outHangarCount--;
+		unit->unit_with_hangar.out_hangar_child = childOutside->hangar_unit.hangar_link.prev;
+		childOutside->hangar_unit.hangar_link.prev = nullptr;
+		childOutside->hangar_unit.hangar_link.next = nullptr;
+		unit->unit_with_hangar.out_hangar_count--;
 	}
-	unit->carrier.outHangarChild = nullptr;
+	unit->unit_with_hangar.out_hangar_child = nullptr;
 }
 
 // Identical to 00468770 remove_harvesters
 // Not hooked but used by hooked unit_destructor_special_cases
 void free_resource_container(Unit* resource)
 {
-	resource->building.resource.gatherQueueCount = 0;
-	Unit* worker = resource->building.resource.nextGatherer;
+	resource->building.resource.gather_queue_count = 0;
+	Unit* worker = resource->building.resource.next_gatherer;
 	Unit* nextWorker;
 	while (worker != nullptr)
 	{
@@ -124,7 +124,7 @@ void free_resource_container(Unit* resource)
 		}
 		else
 		{
-			resource->building.resource.nextGatherer = worker->worker.harvest_link.next;
+			resource->building.resource.next_gatherer = worker->worker.harvest_link.next;
 		}
 		if (worker->worker.harvest_link.next != nullptr) // untie the next worker from current worker (tie it to previous)
 		{
@@ -143,7 +143,7 @@ void unit_destructor_special_cases(Unit* unit)
 	UnitExt* unitExt = globals.get_unit_ext(unit);
 	unit->resetSupplyProvided();
 
-	if (!(unit->userActionFlags & 4) && // for silent remove
+	if (!(unit->user_action_flags & 4) && // for silent remove
 		  unit->status & UnitStatus::Completed && 
 	     (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
 		  unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
@@ -159,18 +159,18 @@ void unit_destructor_special_cases(Unit* unit)
 		case UnitId::TerranEidolon:
 		case UnitId::TerranSeraph:
 		{
-			if (unit->building.ghostNukeMissile != nullptr)
+			if (unit->building.nuke_missile != nullptr)
 			{
-				(unit->building.ghostNukeMissile)->sprite->play_iscript_animation(IscriptAnimation::Death, true);
-				unit->building.ghostNukeMissile = nullptr;
+				(unit->building.nuke_missile)->sprite->play_iscript_animation(IscriptAnimation::Death, true);
+				unit->building.nuke_missile = nullptr;
 			}
 		} break;
 		case UnitId::TerranNuclearMissile:
 		{
-			if (unit->connectedUnit != nullptr && unit->connectedUnit->id == UnitId::TerranNuclearSilo)
+			if (unit->connected_unit != nullptr && unit->connected_unit->id == UnitId::TerranNuclearSilo)
 			{
-				(unit->connectedUnit)->building.silo.nuke = nullptr;
-				(unit->connectedUnit)->building.silo.isReady = false;
+				(unit->connected_unit)->building.silo.nuke = nullptr;
+				(unit->connected_unit)->building.silo.is_ready = false;
 			}
 		} break;
 		case UnitId::TerranNuclearSilo:
@@ -212,12 +212,12 @@ void unit_destructor_special_cases(Unit* unit)
 		} break;
 		case UnitId::ZergNydusCanal:
 		{
-			Unit* nydusExit = unit->building.nydusExit;
-			if (nydusExit != nullptr)
+			Unit* nydus_exit = unit->building.nydus_exit;
+			if (nydus_exit != nullptr)
 			{
-				unit->building.nydusExit = nullptr;
-				nydusExit->building.nydusExit = nullptr;
-				nydusExit->remove();
+				unit->building.nydus_exit = nullptr;
+				nydus_exit->building.nydus_exit = nullptr;
+				nydus_exit->remove();
 			}
 			break;
 		}
@@ -274,41 +274,41 @@ void unit_destructor_special_cases(Unit* unit)
 			case UnitId::ProtossPlasmaShell:
 			case UnitId::ProtossSteward:
 			{
-				if (unit->interceptor.parent != nullptr)
+				if (unit->hangar_unit.parent != nullptr)
 				{
-					if (unit->interceptor.hangar_link.next != nullptr) // untie the next interceptor/scarab from current interceptor/scarab (tie it to previous)
+					if (unit->hangar_unit.hangar_link.next != nullptr) // untie the next hangar_unit/scarab from current hangar_unit/scarab (tie it to previous)
 					{
-						(unit->interceptor.hangar_link.next)->interceptor.hangar_link.prev = unit->interceptor.hangar_link.prev;
+						(unit->hangar_unit.hangar_link.next)->hangar_unit.hangar_link.prev = unit->hangar_unit.hangar_link.prev;
 					}
 					else
 					{
-						if (unit->interceptor.isOutsideHangar)
+						if (unit->hangar_unit.is_outside_hangar)
 						{
-							unit->interceptor.parent->carrier.outHangarChild = unit->interceptor.hangar_link.prev;
+							unit->hangar_unit.parent->unit_with_hangar.out_hangar_child = unit->hangar_unit.hangar_link.prev;
 						}
 						else
 						{
-							unit->interceptor.parent->carrier.inHangarChild = unit->interceptor.hangar_link.prev;
+							unit->hangar_unit.parent->unit_with_hangar.in_hangar_child = unit->hangar_unit.hangar_link.prev;
 						}
 					}
-					if (unit->interceptor.isOutsideHangar)
+					if (unit->hangar_unit.is_outside_hangar)
 					{
-						unit->interceptor.parent->carrier.outHangarCount--;
+						unit->hangar_unit.parent->unit_with_hangar.out_hangar_count--;
 					}
 					else
 					{
-						unit->interceptor.parent->carrier.inHangarCount--;
+						unit->hangar_unit.parent->unit_with_hangar.in_hangar_count--;
 					}
 
-					if (unit->interceptor.hangar_link.prev != nullptr)  // untie the previous interceptor/scarab from current interceptor/scarab (tie it to next)
+					if (unit->hangar_unit.hangar_link.prev != nullptr)  // untie the previous hangar_unit/scarab from current hangar_unit/scarab (tie it to next)
 					{
-						(unit->interceptor.hangar_link.prev)->interceptor.hangar_link.next = unit->interceptor.hangar_link.next;
+						(unit->hangar_unit.hangar_link.prev)->hangar_unit.hangar_link.next = unit->hangar_unit.hangar_link.next;
 					}
 				}
 				else
 				{
-					unit->interceptor.hangar_link.prev = nullptr;
-					unit->interceptor.hangar_link.next = nullptr;
+					unit->hangar_unit.hangar_link.prev = nullptr;
+					unit->hangar_unit.hangar_link.next = nullptr;
 				}
 			} break;
 			case UnitId::ResourceMineralField:
@@ -370,8 +370,8 @@ void unit_destructor_special_cases(Unit* unit)
 	// Alkajelisk Parasitic Spores behavior
 	if (unitExt->values[ValueAlkajeliskParasite] == 1)
 	{
-		unit->orderTarget.pt.x = unit->position.x + 1;
-		unit->orderTarget.pt.y = unit->position.y;
+		unit->order_target.pt.x = unit->position.x + 1;
+		unit->order_target.pt.y = unit->position.y;
 		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unitExt->values[ValueAlkajeliskParasitePlayer], 0);
 		if (bullet != nullptr)
 		{
@@ -392,7 +392,7 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Nuclear Silo - death
-	if (unit->id == UnitId::TerranNuclearSilo && unit->building.silo.isReady && !unitExt->timers[TimerControlledDemolition])
+	if (unit->id == UnitId::TerranNuclearSilo && unit->building.silo.is_ready && !unitExt->timers[TimerControlledDemolition])
 	{
 		scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
 		helper::create_bullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);

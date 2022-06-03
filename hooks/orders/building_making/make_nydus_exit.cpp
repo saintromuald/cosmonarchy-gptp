@@ -17,8 +17,8 @@ namespace hooks
 		{
 			y++;
 		}
-		x = nydus_canal->orderTarget.pt.x - (x / 2);
-		y = nydus_canal->orderTarget.pt.y - (y / 2);
+		x = nydus_canal->order_target.pt.x - (x / 2);
+		y = nydus_canal->order_target.pt.y - (y / 2);
 		if (x < 0)
 		{
 			x += 31;
@@ -34,9 +34,9 @@ namespace hooks
 		if (helper::can_build_on_tile_location(nydus_canal, nydus_canal->player, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0))
 		{
 			helper::play_worker_error_sound(nydus_canal, 0x358); // "You can't build there"
-			if (nydus_canal->orderQueueHead != nullptr)
+			if (nydus_canal->order_queue_head != nullptr)
 			{
-				nydus_canal->userActionFlags |= 1;
+				nydus_canal->user_action_flags |= 1;
 				prepareForNextOrder(nydus_canal);
 			}
 			else if (nydus_canal->unit_ai != nullptr)
@@ -50,33 +50,33 @@ namespace hooks
 		}
 		else
 		{ // 0045DCDB
-			Unit* nydusExit = helper::create_unit(UnitId::ZergNydusCanal, nydus_canal->orderTarget.pt.x, nydus_canal->orderTarget.pt.y, nydus_canal->player);
-			if (nydusExit)
+			Unit* nydus_exit = helper::create_unit(UnitId::ZergNydusCanal, nydus_canal->order_target.pt.x, nydus_canal->order_target.pt.y, nydus_canal->player);
+			if (nydus_exit)
 			{
-				helper::ai_training_overlord(nydusExit, nydus_canal);
+				helper::ai_training_overlord(nydus_exit, nydus_canal);
 			}
 			
-			if (nydusExit == nullptr)
+			if (nydus_exit == nullptr)
 			{
 				helper::display_last_network_error_for_player(nydus_canal->player);
 			}
-			else if (nydusExit->id != UnitId::ZergNydusCanal)
+			else if (nydus_exit->id != UnitId::ZergNydusCanal)
 			{
 				// TODO: should probably remove, since we are already handling CCMU properly here
 				// we should test first though
 				helper::display_last_network_error_for_player(nydus_canal->player);
-				nydusExit->remove();
+				nydus_exit->remove();
 			}
 			else
 			{
-				helper::init_building(nydusExit, 1);
+				helper::init_building(nydus_exit, 1);
 				// logically equivalent to a more complex original calculation
-				nydusExit->hitpoints = (10 * units_dat::MaxHitPoints[nydusExit->id]) / 100;
-				nydusExit->order_computer(OrderId::ZergBuildSelf);
-				nydusExit->currentButtonSet = UnitId::Buttons_Blank;
-				helper::stopCreepDisappearingAtBuilding(nydusExit);
-				nydus_canal->building.nydusExit = nydusExit;
-				nydusExit->building.nydusExit = nydus_canal;
+				nydus_exit->hitpoints = (10 * units_dat::MaxHitPoints[nydus_exit->id]) / 100;
+				nydus_exit->order_computer(OrderId::ZergBuildSelf);
+				nydus_exit->current_button_set = UnitId::Buttons_Blank;
+				helper::stopCreepDisappearingAtBuilding(nydus_exit);
+				nydus_canal->building.nydus_exit = nydus_exit;
+				nydus_exit->building.nydus_exit = nydus_canal;
 			}
 			nydus_canal->order_to_idle();
 		}

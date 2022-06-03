@@ -13,19 +13,19 @@
 // Checks if the given unit ID can provide psi (for use in assertion)
 // The following unit types cannot make psi fields:
 // worker, factories, resource containers, ghosts, nydus canals, silos, hatcheries, and powerups
-bool isValidPsiProviderType(u16 unitId)
+bool isValidPsiProviderType(u16 unit_id)
 {
-	if (unitId >= UNIT_TYPE_COUNT)
+	if (unit_id >= UNIT_TYPE_COUNT)
 	{
 		return false;
 	}
 	// Uses memory space of Unit::building for other purposes
-	if (units_dat::BaseProperty[unitId] & (UnitProperty::Worker | UnitProperty::ResourceContainer | UnitProperty::NPCOrAccessories))
+	if (units_dat::BaseProperty[unit_id] & (UnitProperty::Worker | UnitProperty::ResourceContainer | UnitProperty::NPCOrAccessories))
 	{
 		return false;
 	}
 	// Unit::rally shares memory space with Unit::psi_link
-	if (units_dat::GroupFlags[unitId].isFactory)
+	if (units_dat::GroupFlags[unit_id].isFactory)
 	{
 		return false;
 	}
@@ -33,12 +33,12 @@ bool isValidPsiProviderType(u16 unitId)
 	// Rally is now in UnitExt to allow factories to provide psi
 
 	// Uses memory space of Unit::building for other purposes
-	if (unitId == UnitId::TerranEidolon
-		|| unitId == UnitId::ZergNydusCanal
-		|| unitId == UnitId::TerranNuclearSilo
-		|| unitId == UnitId::ZergHatchery
-		|| unitId == UnitId::ZergLair
-		|| unitId == UnitId::ZergHive)
+	if (unit_id == UnitId::TerranEidolon
+		|| unit_id == UnitId::ZergNydusCanal
+		|| unit_id == UnitId::TerranNuclearSilo
+		|| unit_id == UnitId::ZergHatchery
+		|| unit_id == UnitId::ZergLair
+		|| unit_id == UnitId::ZergHive)
 	{
 		return false;
 	}

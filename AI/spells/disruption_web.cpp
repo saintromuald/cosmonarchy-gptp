@@ -31,11 +31,11 @@ namespace AI
 			Unit* targetOfTarget;
 			if (target->id == UnitId::TerranBunker && target->hasLoadedUnit())
 			{
-				targetOfTarget = target->getFirstLoadedUnit()->orderTarget.unit;
+				targetOfTarget = target->getFirstLoadedUnit()->order_target.unit;
 			}
 			else
 			{
-				targetOfTarget = target->orderTarget.unit;
+				targetOfTarget = target->order_target.unit;
 			}
 			if (!targetOfTarget || targetOfTarget->player >= 8)
 			{

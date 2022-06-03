@@ -13,14 +13,14 @@ namespace hooks
 			{
 
 				if (
-					unit->connectedUnit == nullptr ||
-					unit->connectedUnit->main_order_state == 5
+					unit->connected_unit == nullptr ||
+					unit->connected_unit->main_order_state == 5
 					)
 				{ //64D3F
 
 					Image* current_image = unit->sprite->images.head;
 
-					if (unit->orderQueueHead == nullptr)
+					if (unit->order_queue_head == nullptr)
 						unit->order_simple(units_dat::ReturnToIdleOrder[unit->id], false);
 
 					helper::force_order_done(unit);
@@ -33,10 +33,10 @@ namespace hooks
 						current_image = current_image->link.next;
 					}
 
-					if (unit->building.ghostNukeMissile != nullptr)
+					if (unit->building.nuke_missile != nullptr)
 					{
 
-						current_image = (unit->building.ghostNukeMissile)->sprite->images.head;
+						current_image = (unit->building.nuke_missile)->sprite->images.head;
 
 						while (current_image != nullptr)
 						{
@@ -44,7 +44,7 @@ namespace hooks
 							current_image = current_image->link.next;
 						}
 
-						unit->building.ghostNukeMissile = nullptr;
+						unit->building.nuke_missile = nullptr;
 
 					}
 
@@ -65,12 +65,12 @@ namespace hooks
 
 			nukeDot = helper::create_thingy(
 				SpriteId::Nuke_Target_Dot,
-				(unit->connectedUnit)->orderTarget.pt.x,
-				(unit->connectedUnit)->orderTarget.pt.y,
+				(unit->connected_unit)->order_target.pt.x,
+				(unit->connected_unit)->order_target.pt.y,
 				unit->player
 			);
 
-			unit->building.ghostNukeMissile = (Unit*)nukeDot;
+			unit->building.nuke_missile = (Unit*)nukeDot;
 
 			if (nukeDot != nullptr)
 			{
@@ -93,12 +93,12 @@ namespace hooks
 		u32 sightRange, distance;
 
 		if (
-			unit->next_target_waypoint.x != unit->orderTarget.pt.x ||
-			unit->next_target_waypoint.y != unit->orderTarget.pt.y
+			unit->next_target_waypoint.x != unit->order_target.pt.x ||
+			unit->next_target_waypoint.y != unit->order_target.pt.y
 			)
 		{
-			unit->next_target_waypoint.x = unit->orderTarget.pt.x;
-			unit->next_target_waypoint.y = unit->orderTarget.pt.y;
+			unit->next_target_waypoint.x = unit->order_target.pt.x;
+			unit->next_target_waypoint.y = unit->order_target.pt.y;
 		}
 
 		sightRange = unit->get_sight_range(false) * 32;
@@ -107,8 +107,8 @@ namespace hooks
 		{
 
 			distance = scbw::get_distance_fast(
-				unit->orderTarget.pt.x * 256,
-				unit->orderTarget.pt.y * 256,
+				unit->order_target.pt.x * 256,
+				unit->order_target.pt.y * 256,
 				unit->halt.x,
 				unit->halt.y
 			);
@@ -120,8 +120,8 @@ namespace hooks
 
 		//79267
 		distance = scbw::get_distance_fast(
-			unit->orderTarget.pt.x * 256,
-			unit->orderTarget.pt.y * 256,
+			unit->order_target.pt.x * 256,
+			unit->order_target.pt.y * 256,
 			unit->halt.x,
 			unit->halt.y
 		);
@@ -130,7 +130,7 @@ namespace hooks
 		{
 
 			if (unit->recentOrderTimer == 0)
-				helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
 		}
 		else
@@ -175,7 +175,7 @@ namespace hooks
 						bLoopEnd = true;
 					else
 						if (current_unit->id == UnitId::TerranNuclearSilo &&
-							current_unit->building.silo.isReady
+							current_unit->building.silo.is_ready
 							)
 							bLoopEnd = true;
 						else
@@ -190,24 +190,24 @@ namespace hooks
 				{ // 00479333
 					Unit* nuke = current_unit->building.silo.nuke;
 					current_unit->building.silo.nuke = nullptr;
-					current_unit->building.silo.isReady = false;
+					current_unit->building.silo.is_ready = false;
 					helper::play_sound_from_unit(SoundId::Terran_GHOST_TGhLas00_wav, unit, 1, 0);
-					nuke->order_to(OrderId::NukeLaunch, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-					nuke->connectedUnit = unit;
+					nuke->order_to(OrderId::NukeLaunch, unit->order_target.pt.x, unit->order_target.pt.y);
+					nuke->connected_unit = unit;
 					helper::set_all_overlay_directions_generic(nuke, 0);
 					helper::show_and_enable_unit(nuke);
-					unit->connectedUnit = nuke;
+					unit->connected_unit = nuke;
 					unit->order_to(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
 					if (unit->is_frozen())
 					{ // 004793C4
 						if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 						{
-							unit->currentButtonSet = UnitId::Buttons_CancelNukeStrike;
+							unit->current_button_set = UnitId::Buttons_CancelNukeStrike;
 						}
 					}
 					else
 					{
-						unit->currentButtonSet = UnitId::Buttons_CancelNukeStrike;
+						unit->current_button_set = UnitId::Buttons_CancelNukeStrike;
 					}
 					scbw::refresh_console();
 				}

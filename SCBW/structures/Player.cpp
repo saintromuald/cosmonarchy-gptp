@@ -73,20 +73,20 @@ graphics::ColorId Player::get_faction_color(u8 playerId)
 	return return_value;
 }
 
-u32 Player::numberOfUnitsOfType(u8 playerId, u16 unitId)
+u32 Player::numberOfUnitsOfType(u8 playerId, u16 unit_id)
 {
-	if (unitId > UNIT_TYPE_COUNT - 1)
+	if (unit_id > UNIT_TYPE_COUNT - 1)
 	{
 		return 0;
 	}
-	return allUnitCountTable[unitId].player[playerId];
+	return allUnitCountTable[unit_id].player[playerId];
 }
 
-u32 Player::numberOfCompletedUnitsOfType(u8 playerId, u16 unitId)
+u32 Player::numberOfCompletedUnitsOfType(u8 playerId, u16 unit_id)
 {
-	if (unitId > UNIT_TYPE_COUNT - 1)
+	if (unit_id > UNIT_TYPE_COUNT - 1)
 	{
 		return 0;
 	}
-	return unitCountTable[unitId].player[playerId];
+	return unitCountTable[unit_id].player[playerId];
 }

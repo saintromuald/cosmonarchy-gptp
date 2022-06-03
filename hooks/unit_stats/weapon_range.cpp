@@ -31,9 +31,9 @@ namespace hooks
 		bonusAmount += unitExt->values[ValueRepententChorus] / 4;
 
 		// Stellar Enforcement - Magister behavior
-		if (unit->orderTarget.unit)
+		if (unit->order_target.unit)
 		{
-			UnitExt* orderUnitExt = globals.get_unit_ext(unit->orderTarget.unit);
+			UnitExt* orderUnitExt = globals.get_unit_ext(unit->order_target.unit);
 
 			if (orderUnitExt->values[ValueStellarEnforcement])
 			{
@@ -101,10 +101,10 @@ namespace hooks
 		}
 
 		// Stellar Enforcement - Magister behavior
-		if (unit->orderTarget.unit
+		if (unit->order_target.unit
 			&& weapons_dat::MaxRange[weaponId] > 32)
 		{
-			UnitExt* orderUnitExt = globals.get_unit_ext(unit->orderTarget.unit);
+			UnitExt* orderUnitExt = globals.get_unit_ext(unit->order_target.unit);
 			if (orderUnitExt->values[ValueStellarEnforcement])
 			{
 				bonusAmount += 64;

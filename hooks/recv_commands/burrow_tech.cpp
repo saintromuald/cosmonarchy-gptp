@@ -58,20 +58,20 @@ namespace hooks
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 			}
 
-			unit->userActionFlags |= 1;
+			unit->user_action_flags |= 1;
 			if (unit->main_order_id != OrderId::Die)
 			{
 				bool bStopLoop = false;
-				while (unit->orderQueueTail != nullptr && !bStopLoop)
+				while (unit->order_queue_tail != nullptr && !bStopLoop)
 				{
-					if (!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId]
-						&& unit->orderQueueTail->orderId != OrderId::Unburrow)
+					if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId]
+						&& unit->order_queue_tail->orderId != OrderId::Unburrow)
 					{
 						bStopLoop = true;
 					}
 					else
 					{
-						helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
+						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 					}
 				}
 				unit->perform_another_order(OrderId::Unburrow, 0, 0, nullptr, UnitId::None);

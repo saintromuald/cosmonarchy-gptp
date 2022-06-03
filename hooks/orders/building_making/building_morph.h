@@ -8,8 +8,8 @@ namespace hooks
 	void zerg_place_building(Unit* drone);						// 0045DA40	
 	
 	// from unhooked
-	bool is_morphed_building(u16 unitId);
-	s32 get_morph_building_id_count(const Unit* unit, u16 unitId, bool ignoreIncomplete);
+	bool is_morphed_building(u16 unit_id);
+	s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignoreIncomplete);
 	void set_special_state_1(Sprite* sprite);
 
 	void injectBuildingMorphHooks();

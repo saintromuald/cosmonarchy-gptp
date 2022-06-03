@@ -70,7 +70,7 @@ namespace
 			MOV unit, EAX
 		}
 		if (!(unit->status & UnitStatus::Completed)
-			&& hooks::is_morphed_building(unit->buildQueue[unit->buildQueueSlot]))
+			&& hooks::is_morphed_building(unit->build_queue[unit->build_queue_slot]))
 		{
 			__asm {
 				POPAD
@@ -131,7 +131,7 @@ namespace
 			MOV EBP, ESP
 			MOV unit, ESI
 		}
-		buildUnitId = unit->buildQueue[unit->buildQueueSlot];
+		buildUnitId = unit->build_queue[unit->build_queue_slot];
 		if (unit->status & UnitStatus::Completed
 			|| !hooks::is_morphed_building(buildUnitId))
 		{
@@ -156,7 +156,7 @@ namespace
 			MOV EBP, ESP
 			MOV unit, EDI
 		}
-		buildUnitId = unit->buildQueue[unit->buildQueueSlot];
+		buildUnitId = unit->build_queue[unit->build_queue_slot];
 		if (!hooks::is_morphed_building(buildUnitId))
 		{
 			buildUnitId = unit->id;
@@ -170,13 +170,13 @@ namespace
 
 	void __declspec(naked) isMorphedBuildingWrapper_ZergBuildSelf_Complete()
 	{
-		static u16 unitId;
+		static u16 unit_id;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
-			MOV unitId, AX
+			MOV unit_id, AX
 		}
-		if (hooks::is_morphed_building(unitId))
+		if (hooks::is_morphed_building(unit_id))
 		{
 			__asm {
 				POPAD
@@ -195,19 +195,19 @@ namespace
 	}
 
 	// This was moved out of the naked function to prevent stack corruption bug
-	void zergBuildSelf_UpdateBuildTimerAndHp(Unit* unit, u16 unitId)
+	void zergBuildSelf_UpdateBuildTimerAndHp(Unit* unit, u16 unit_id)
 	{
 		bool isOperationCwalEnabled = scbw::is_cheat_enabled(CheatFlags::OperationCwal);
-		if (unit->remainingBuildTime)
+		if (unit->remaining_build_time)
 		{
 			if (isOperationCwalEnabled)
-				unit->remainingBuildTime -= std::min<u16>(unit->remainingBuildTime, 16);
+				unit->remaining_build_time -= std::min<u16>(unit->remaining_build_time, 16);
 			else
-				unit->remainingBuildTime--;
+				unit->remaining_build_time--;
 		}
-		if (!hooks::is_morphed_building(unitId))
+		if (!hooks::is_morphed_building(unit_id))
 		{
-			u32 hpGain = unit->buildRepairHpGain;
+			u32 hpGain = unit->build_repair_hp_gain;
 			if (isOperationCwalEnabled)
 				hpGain *= 16;
 			unit->setHp(unit->hitpoints + hpGain);
@@ -217,14 +217,14 @@ namespace
 	void __declspec(naked) isMorphedBuildingWrapper_ZergBuildSelf_SetTimer()
 	{
 		static Unit* unit;
-		static u16 unitId;
+		static u16 unit_id;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit, EDI
-			MOV unitId, BX
+			MOV unit_id, BX
 		}
-		zergBuildSelf_UpdateBuildTimerAndHp(unit, unitId);
+		zergBuildSelf_UpdateBuildTimerAndHp(unit, unit_id);
 		__asm {
 			POPAD
 			POP EDI
@@ -247,7 +247,7 @@ namespace
 			MOV unit, EBX
 		}
 		if (!(unit->status & UnitStatus::Completed)
-			&& hooks::is_morphed_building(unit->buildQueue[unit->buildQueueSlot]))
+			&& hooks::is_morphed_building(unit->build_queue[unit->build_queue_slot]))
 		{
 			//scbw::print("Morph detected");
 			__asm {
@@ -277,16 +277,16 @@ namespace
 	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_GetWaitBuildUnitCount()
 	{
 		static Unit* unit;
-		static u16 unitId;
+		static u16 unit_id;
 		static b32 ignoreIncomplete;
 		static u32 unitCount;
 		__asm {
 			PUSHAD
 			MOV ignoreIncomplete, EDX
-			MOV unitId, DI
+			MOV unit_id, DI
 			MOV unit, ESI
 		}
-		unitCount = hooks::get_morph_building_id_count(unit, unitId, ignoreIncomplete != 0);
+		unitCount = hooks::get_morph_building_id_count(unit, unit_id, ignoreIncomplete != 0);
 		__asm {
 			POPAD
 			MOV EAX, unitCount
@@ -301,15 +301,15 @@ namespace
 	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_GetUnitCount()
 	{
 		static Unit* unit;
-		static u16 unitId;
+		static u16 unit_id;
 		static u32 unitCount;
 		__asm {
 			PUSHAD
-			MOV unitId, DI
+			MOV unit_id, DI
 			MOV unit, ESI
 			MOV unitCount, EBX
 		}
-		unitCount += hooks::get_morph_building_id_count(unit, unitId, false);
+		unitCount += hooks::get_morph_building_id_count(unit, unit_id, false);
 		__asm {
 			POPAD
 			MOV EBX, unitCount
@@ -340,16 +340,16 @@ namespace
 	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_ManageBases()
 	{
 		static Unit* unit;
-		static u16 unitId;
+		static u16 unit_id;
 		static u32 unitCount;
 		__asm {
 			PUSHAD
 			MOV EAX, [EBP - 16]
-			MOV unitId, AX
+			MOV unit_id, AX
 			MOV unit, ESI
 			MOV unitCount, EBX
 		}
-		unitCount += hooks::get_morph_building_id_count(unit, unitId, false);
+		unitCount += hooks::get_morph_building_id_count(unit, unit_id, false);
 		__asm {
 			POPAD
 			MOV EBX, unitCount

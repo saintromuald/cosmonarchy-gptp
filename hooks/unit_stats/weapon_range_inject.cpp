@@ -12,7 +12,7 @@ namespace
 			MOV unit, EDX
 			PUSHAD
 		}
-		seekRange = hooks::getSeekRangeHook(unit, unit->orderTarget.unit);
+		seekRange = hooks::getSeekRangeHook(unit, unit->order_target.unit);
 		__asm
 		{
 			POPAD
@@ -32,7 +32,7 @@ namespace
 			MOV weaponId, BL
 			PUSHAD
 		}
-		maxWeaponRange = hooks::getMaxWeaponRangeHook(unit, weaponId, unit->orderTarget.unit);
+		maxWeaponRange = hooks::getMaxWeaponRangeHook(unit, weaponId, unit->order_target.unit);
 		__asm
 		{
 			POPAD

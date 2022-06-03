@@ -22,7 +22,7 @@ namespace hooks
 
 		b8 bSpeedUpgrade = 0, bCooldownUpgrade = 0;
 
-		/*	if (unit->id == UnitId::vulture) {
+		/*	if (unit->id == UnitId::mine_carrier) {
 				if(scbw::get_upgrade_level(unit->playerId,UpgradeId::IonPropulsion) && unit->sprite!=nullptr){
 					unit->sprite->elevationLevel = 12;
 				}

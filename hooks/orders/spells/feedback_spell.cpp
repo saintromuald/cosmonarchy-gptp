@@ -6,7 +6,7 @@ namespace hooks
 
 	void orders_Feedback(Unit* unit)
 	{
-		Unit* target = unit->orderTarget.unit;
+		Unit* target = unit->order_target.unit;
 		if (target != nullptr
 			&& units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster
 			&& !(target->status & UnitStatus::IsHallucination))
@@ -62,9 +62,9 @@ namespace hooks
 		}
 		else
 		{ // 004F6E92
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else if (unit->unit_ai != nullptr)

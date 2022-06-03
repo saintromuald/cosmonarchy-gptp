@@ -34,7 +34,7 @@ namespace AI
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
 				return false;
 
-			Unit* targetOfTarget = target->orderTarget.unit;
+			Unit* targetOfTarget = target->order_target.unit;
 			if (!targetOfTarget)
 				return false;
 

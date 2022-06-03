@@ -9,7 +9,7 @@ namespace hooks
 {
 	u32 realTopSpeed(Flingy* flingy, u32 flingy_id);
 	u16 realAcceleration(Flingy* flingy, u32 flingy_id);
-	bool is_high_templar_conduit(u16 unitId);
+	bool is_high_templar_conduit(u16 unit_id);
 	u32 weapon_flingy(u32 weaponId, u8 playerId);
 	u32 getFlingyHaltDistanceHook(Flingy* flingy);
 	bool is_unused_order(u8 orderId);

@@ -9,7 +9,7 @@ namespace
 {
 	struct TechTransferData
 	{
-		u16 unitId;
+		u16 unit_id;
 		u16 relatedTech[5]; //Maximum number of tech (use TechId::None to mark a premature end-of-list)
 	};
 	const TechTransferData techTransferData[] = {
@@ -43,7 +43,7 @@ namespace
 
 	struct UpgradeTransferData
 	{
-		u16 unitId;
+		u16 unit_id;
 		u8 relatedUpgrades[4]; //Maximum number of tech (use UpgradeId::None to mark a premature end-of-list)
 	};
 
@@ -130,7 +130,7 @@ namespace hooks
 			for (TechTransferData* data = (TechTransferData*)techDataArrayPosBegin; !bBreakMainLoop && (data != techDataArrayPosEnd); data++)
 			{
 
-				if (sourceUnit->id == data->unitId)
+				if (sourceUnit->id == data->unit_id)
 				{
 
 					bBreakSubLoop = false;
@@ -168,7 +168,7 @@ namespace hooks
 
 					}
 
-				} //if (sourceUnit->id == data->unitId)
+				} //if (sourceUnit->id == data->unit_id)
 
 			} //for (TechTransferData* data = (TechTransferData*)techDataArrayPosBegin; !bBreakMainLoop && (data != techDataArrayPosEnd); data++)
 
@@ -200,7 +200,7 @@ namespace hooks
 			for (UpgradeTransferData* data = (UpgradeTransferData*)upgradeDataArrayPosBegin; !bBreakMainLoop && (data != upgradeDataArrayPosEnd); data++)
 			{
 
-				if (sourceUnit->id == data->unitId)
+				if (sourceUnit->id == data->unit_id)
 				{
 
 					bBreakSubLoop = false;
@@ -238,7 +238,7 @@ namespace hooks
 
 					}
 
-				} //if (sourceUnit->id == data->unitId)
+				} //if (sourceUnit->id == data->unit_id)
 
 			} //for (upgradeTransferData* data = (upgradeTransferData*)upgradeDataArrayPosBegin; !bBreakMainLoop && (data != upgradeDataArrayPosEnd); data++)
 

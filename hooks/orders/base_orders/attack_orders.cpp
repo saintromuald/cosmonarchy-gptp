@@ -12,13 +12,13 @@ namespace hooks
 {
 	void orders_ReaverAttack1(Unit* unit)
 	{
-		Unit* target = unit->orderTarget.unit;
+		Unit* target = unit->order_target.unit;
 		if (target == nullptr)
 		{
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
 				// 004656A2:
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
@@ -40,7 +40,7 @@ namespace hooks
 			// 004656D8:
 			if (!unit->canAttackTarget(target, true))
 			{
-				unit->order_to(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
 			}
 			else
 			{
@@ -86,13 +86,13 @@ namespace hooks
 
 	void orders_CarrierAttack1(Unit* unit)
 	{
-		Unit* target = unit->orderTarget.unit;
+		Unit* target = unit->order_target.unit;
 		if (target == nullptr)
 		{
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
 				// 00465966:
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
@@ -113,14 +113,14 @@ namespace hooks
 			// 004659AD:
 			if (!unit->canAttackTarget(target, true))
 			{
-				unit->order_to(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
 			}
 			else
 			{
 				// 004659CF
 				u32 status_saved = (unit->status & UnitStatus::Disabled) + (unit->status & UnitStatus::HoldingPosition);
 				u8 newOrderId;
-				// give orders to Stewards and Plasma Shells (through outHangarChild)
+				// give orders to Stewards and Plasma Shells (through out_hangar_child)
 				helper::function_00465780(unit);
 
 				if (unit->id == UnitId::ProtossAccantor)
@@ -175,12 +175,12 @@ namespace hooks
 		// perform lots of checks, possibly in an attempt to
 		// auto-select a better target if the turret has choice
 		helper::PickNewAttackTargetIfNeeded(unit);
-		target = unit->orderTarget.unit;
+		target = unit->order_target.unit;
 
 		if (target != nullptr)
 		{
-			unit->orderTarget.pt.x = target->sprite->position.x;
-			unit->orderTarget.pt.y = target->sprite->position.y;
+			unit->order_target.pt.x = target->sprite->position.x;
+			unit->order_target.pt.y = target->sprite->position.y;
 		}
 
 		// 004779AE:
@@ -233,7 +233,7 @@ namespace hooks
 			bJumpToEarlierCode = false;
 			if (jump_to_77A45)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				if (unit->main_order_id == OrderId::Die)
 				{
 					prepareForNextOrder(unit);	// 00477CED
@@ -248,16 +248,16 @@ namespace hooks
 			if (jump_to_77A70) // 00477A70
 			{
 				bool bStopLoop77A70 = false;
-				while (!bStopLoop77A70 && unit->orderQueueTail != nullptr)
+				while (!bStopLoop77A70 && unit->order_queue_tail != nullptr)
 				{
-					if (!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
-						unit->orderQueueTail->orderId != OrderId::TurretGuard)
+					if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId] &&
+						unit->order_queue_tail->orderId != OrderId::TurretGuard)
 					{
 						bStopLoop77A70 = true;
 					}
 					else // 00477A94:
 					{
-						helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
+						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 					}
 				}
 				jump_to_77CDA = true;
@@ -442,11 +442,11 @@ namespace hooks
 						jump_to_77C78 = false;
 						if (jump_to_77CA1)
 						{
-							if (unit->orderTarget.pt.x != unit->next_target_waypoint.x
-								|| unit->orderTarget.pt.y != unit->next_target_waypoint.y)
+							if (unit->order_target.pt.x != unit->next_target_waypoint.x
+								|| unit->order_target.pt.y != unit->next_target_waypoint.y)
 							{
-								unit->next_target_waypoint.x = unit->orderTarget.pt.x;
-								unit->next_target_waypoint.y = unit->orderTarget.pt.y;
+								unit->next_target_waypoint.x = unit->order_target.pt.x;
+								unit->next_target_waypoint.y = unit->order_target.pt.y;
 							}
 
 							// 00477CC1
@@ -478,7 +478,7 @@ namespace hooks
 		bool jump_to_77E99 = false;
 		if (unit->unit_ai != nullptr)
 		{
-			unit->orderTarget.unit = helper::findBestAttackTarget(unit); // 00477D13
+			unit->order_target.unit = helper::findBestAttackTarget(unit); // 00477D13
 		}
 		else
 		{
@@ -488,11 +488,11 @@ namespace hooks
 		}
 
 		// 00477D25:
-		target = unit->orderTarget.unit;
+		target = unit->order_target.unit;
 		if (target != nullptr)
 		{
-			unit->orderTarget.pt.x = target->sprite->position.x;
-			unit->orderTarget.pt.y = target->sprite->position.y;
+			unit->order_target.pt.x = target->sprite->position.x;
+			unit->order_target.pt.y = target->sprite->position.y;
 		}
 		// 00477D42:
 		if (unit->is_frozen()
@@ -585,9 +585,9 @@ namespace hooks
 
 		if (jump_to_77E48)
 		{
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
@@ -608,11 +608,11 @@ namespace hooks
 			if (helper::isUnitInWeaponRange(unit, target))
 			{
 				// 00477ED6
-				if (unit->orderTarget.pt.x != unit->next_target_waypoint.x
-					|| unit->orderTarget.pt.y != unit->next_target_waypoint.y)
+				if (unit->order_target.pt.x != unit->next_target_waypoint.x
+					|| unit->order_target.pt.y != unit->next_target_waypoint.y)
 				{
-					unit->next_target_waypoint.x = unit->orderTarget.pt.x;
-					unit->next_target_waypoint.y = unit->orderTarget.pt.y;
+					unit->next_target_waypoint.x = unit->order_target.pt.x;
+					unit->next_target_waypoint.y = unit->order_target.pt.y;
 				}
 				helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
 			}
@@ -623,19 +623,19 @@ namespace hooks
 				}
 				else
 				{
-					unit->order_to(OrderId::AttackMove, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					unit->order_to(OrderId::AttackMove, unit->order_target.pt.x, unit->order_target.pt.y);
 				}
 		}
 	}
 
 	void orders_SapUnit(Unit* unit)
 	{
-		Unit* target = unit->orderTarget.unit;
+		Unit* target = unit->order_target.unit;
 		if (target == nullptr)
 		{ // 004788EB
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
@@ -699,7 +699,7 @@ namespace hooks
 						}
 						else
 						{ // 004789F4
-							unit->orderTarget.unit = unit;
+							unit->order_target.unit = unit;
 							Image* current_image = unit->sprite->images.head;
 							while (current_image != nullptr)
 							{
@@ -730,12 +730,12 @@ namespace hooks
 		bool bStopThere = false;
 		if (unit->main_order_state == 0)
 		{ // 00478A5C
-			bStopThere = !helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-			if (unit->orderTarget.pt.x != unit->next_target_waypoint.x
-				|| unit->orderTarget.pt.y != unit->next_target_waypoint.y)
+			bStopThere = !helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+			if (unit->order_target.pt.x != unit->next_target_waypoint.x
+				|| unit->order_target.pt.y != unit->next_target_waypoint.y)
 			{
-				unit->next_target_waypoint.x = unit->orderTarget.pt.x;
-				unit->next_target_waypoint.y = unit->orderTarget.pt.y;
+				unit->next_target_waypoint.x = unit->order_target.pt.x;
+				unit->next_target_waypoint.y = unit->order_target.pt.y;
 			}
 			if (!bStopThere)
 			{
@@ -757,8 +757,8 @@ namespace hooks
 				{ // 00478AB8
 					u32 distance =
 						scbw::get_distance_fast(
-							unit->orderTarget.pt.x * 256,
-							unit->orderTarget.pt.y * 256,
+							unit->order_target.pt.x * 256,
+							unit->order_target.pt.y * 256,
 							unit->halt.x,
 							unit->halt.y);
 					if ((distance / 256) > weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran])
@@ -778,7 +778,7 @@ namespace hooks
 				if (!bStopThere)
 				{ // 00478AF3
 					Image* current_image = unit->sprite->images.head;
-					unit->orderTarget.unit = unit;
+					unit->order_target.unit = unit;
 					while (current_image != nullptr)
 					{
 						current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
@@ -807,10 +807,10 @@ namespace hooks
 		// function_00478370:
 		// probably perform checks to see if the order can be done
 		if (helper::function_00478370(unit, unit->main_order_id)
-			&& unit->mainOrderTimer == 0)
+			&& unit->main_order_timer == 0)
 		{ // 00478E0B
-			unit->mainOrderTimer = 0; // used to be 15
-			if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == helper::get_region_id(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+			unit->main_order_timer = 0; // used to be 15
+			if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y))
 			{
 				helper::make_to_hold_position(unit);
 				unit->order_to_idle();
@@ -819,15 +819,15 @@ namespace hooks
 			{ // 00478E65
 				bool jump_to_78EAE = false;
 				if (unit->get_movable_state() != 0
-					&& (unit->orderTarget.pt.x != unit->sprite->position.x || unit->orderTarget.pt.y != unit->sprite->position.y))
+					&& (unit->order_target.pt.x != unit->sprite->position.x || unit->order_target.pt.y != unit->sprite->position.y))
 				{ // 00478E80
 
-					if (helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+					if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
 					{
 						jump_to_78EAE = true;
 					}
 					// 00478E91
-					else if (helper::function_00476610(unit, (s32)unit->orderTarget.pt.x, (s32)unit->orderTarget.pt.y))
+					else if (helper::function_00476610(unit, (s32)unit->order_target.pt.x, (s32)unit->order_target.pt.y))
 						{
 							helper::make_to_hold_position(unit);
 						}
@@ -852,9 +852,9 @@ namespace hooks
 		// if that's the case (not returning 0), stop the "move" 
 		// part that follow to attack the unit met
 		if (helper::function_00478370(unit, unit->main_order_id) != 0
-			&& unit->mainOrderTimer == 0)
+			&& unit->main_order_timer == 0)
 		{ // 00479058
-			unit->mainOrderTimer = 0; // used to be 15
+			unit->main_order_timer = 0; // used to be 15
 			if (unit->move_target.pt.x != unit->sprite->position.x
 				|| unit->move_target.pt.y != unit->sprite->position.y)
 			{ // Logically, this function would check one last time if a target is in range, and attack it if that's the case, else AttackMove end here
@@ -870,7 +870,7 @@ namespace hooks
 	void orders_AttackUnit(Unit* unit)
 	{
 		if (playerTable[unit->player].type != PlayerType::Computer
-			|| (unit->orderTarget.unit != nullptr && units_dat::BaseProperty[(unit->orderTarget.unit)->id] & UnitProperty::Building)
+			|| (unit->order_target.unit != nullptr && units_dat::BaseProperty[(unit->order_target.unit)->id] & UnitProperty::Building)
 			|| !helper::Ai_TryReturnHome(unit, 0))
 		{ // 00479C05
 

@@ -24,7 +24,7 @@ namespace hooks
 		u32 success = 0; // Has integer values added to it, but is essentially treated like a boolean
 
 		u16 opcode;
-		u16 unitId;
+		u16 unit_id;
 		u16 findopcode; // for upgrade level opcode
 
 		while (datReqBase[datReqOffset] != RequirementOpcodes::EndOfSublist)
@@ -45,12 +45,12 @@ namespace hooks
 
 				case RequirementOpcodes::CurrentUnitIs:
 				{
-					unitId = datReqBase[datReqOffset++];
-					if (Player::numberOfCompletedUnitsOfType(unitId, playerId) != 0)
+					unit_id = datReqBase[datReqOffset++];
+					if (Player::numberOfCompletedUnitsOfType(unit_id, playerId) != 0)
 					{
 						greyButton = false;
 					}
-					if (unit->id != unitId)
+					if (unit->id != unit_id)
 					{
 						if (unitNotFound == false) break;
 						invalidUnit = true;
@@ -64,8 +64,8 @@ namespace hooks
 
 				case RequirementOpcodes::MustHave:
 				{
-					unitId = datReqBase[datReqOffset++];
-					success += Player::numberOfCompletedUnitsOfType(unitId, playerId) + Player::numberOfUnitsOfType(unitId, playerId);
+					unit_id = datReqBase[datReqOffset++];
+					success += Player::numberOfCompletedUnitsOfType(unit_id, playerId) + Player::numberOfUnitsOfType(unit_id, playerId);
 				}
 					break;
 
@@ -102,7 +102,7 @@ namespace hooks
 
 				case RequirementOpcodes::IsNotTrainingOrMorphing:
 				{
-					if (unit->unit_is_training_or_morphing() || unit->building.techType != TechId::None)
+					if (unit->unit_is_training_or_morphing() || unit->building.tech_id != TechId::None)
 					{
 						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
@@ -111,7 +111,7 @@ namespace hooks
 					// fall through
 				case RequirementOpcodes::IsNotUpgrading:
 				{
-					if (unit->building.upgradeType != UpgradeId::None)
+					if (unit->building.upgrade_id != UpgradeId::None)
 					{
 						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
@@ -122,12 +122,12 @@ namespace hooks
 
 				case RequirementOpcodes::IsNotConstructingAddon:
 				{
-					if (unit->secondaryOrderId == OrderId::BuildAddon && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->currentBuildUnit != NULL && (unit->currentBuildUnit->status & UnitStatus::Completed) == 0)
+					if (unit->secondary_order_id == OrderId::BuildAddon && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->currentBuildUnit != NULL && (unit->currentBuildUnit->status & UnitStatus::Completed) == 0)
 					{
 						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
 					}
-					if (unit->main_order_id == OrderId::BuildProtoss1 && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->orderTarget.unit != NULL && (unit->orderTarget.unit->status & UnitStatus::Completed) == 0)
+					if (unit->main_order_id == OrderId::BuildProtoss1 && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->order_target.unit != NULL && (unit->order_target.unit->status & UnitStatus::Completed) == 0)
 					{
 						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
@@ -138,7 +138,7 @@ namespace hooks
 
 				case RequirementOpcodes::IsNotResearching:
 				{
-					if (unit->building.techType != TechId::None)
+					if (unit->building.tech_id != TechId::None)
 					{
 						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
@@ -171,9 +171,9 @@ namespace hooks
 
 				case RequirementOpcodes::DoesNotHaveExit: // Does not have exit
 				{
-					if (unit->building.nydusExit != NULL)
+					if (unit->building.nydus_exit != NULL)
 					{
-						// or unit->building.ghostNukeMissile
+						// or unit->building.nuke_missile
 						// or unit->building.nuke
 						// or unit->building.pylonAura
 						// or unit-> Worker - Harvest target unit
@@ -306,7 +306,7 @@ namespace hooks
 
 				case RequirementOpcodes::HasMines:
 				{
-					if (unit->vulture.spiderMineCount == 0)
+					if (unit->mine_carrier.mine_count == 0)
 					{
 						*lastInternalError = InternalErrors::UnitBusyOrIncompatible;
 						return 0;
@@ -377,8 +377,8 @@ namespace hooks
 				default:
 				{
 					// Any invalid opcodes will be read here as unit IDs
-					unitId = opcode;
-					success += Player::numberOfCompletedUnitsOfType(playerId, unitId);
+					unit_id = opcode;
+					success += Player::numberOfCompletedUnitsOfType(playerId, unit_id);
 				}
 			}
 
@@ -416,9 +416,9 @@ namespace hooks
 		return 1;
 	}
 
-	s8 UnitCreateAllowedLogic(u16 unitId, Unit* parentUnit, s32 playerID, u16* unitsDat, u16* requirementsTable)
+	s8 UnitCreateAllowedLogic(u16 unit_id, Unit* parentUnit, s32 playerID, u16* unitsDat, u16* requirementsTable)
 	{
-		//DebugOut("UnitCreateAllowedLogic: untitID %d, creatingUnit %d, playerID %d", unitId, parentUnit->id, playerID);
+		//DebugOut("UnitCreateAllowedLogic: untitID %d, creatingUnit %d, playerID %d", unit_id, parentUnit->id, playerID);
 		// TODO map variables and rewrite process accordingly
 		s16 v5;
 		s16 v6;
@@ -444,11 +444,11 @@ namespace hooks
 		s16 v28;
 		s16 v29;
 
-		opcodeIndex = (s16)unitsDat[unitId];
+		opcodeIndex = (s16)unitsDat[unit_id];
 		currentOpcode = requirementsTable[opcodeIndex];
 
 		*lastInternalError = InternalErrors::UnknownError0;
-		if (unitId >= UnitId::None)
+		if (unit_id >= UnitId::None)
 		{
 			*lastInternalError = InternalErrors::UnknownError16;
 			//DebugOut(">Return NotAllowed");
@@ -492,14 +492,14 @@ LABEL_86_ERROR_3_RETURN_0:
 			return 0;
 		}
 
-		if (unitsDat[unitId] == RequirementOpcodes::EndOfSublist)
+		if (unitsDat[unit_id] == RequirementOpcodes::EndOfSublist)
 		{
 			//DebugOut("EndOfSublist (%d):", currentOpcode);
 			parseUnitsDatReqs();
 		}
 
 		////DebugOut("opcode index = %d", opcodeIndex);
-		if (unitsDat[unitId] == 0)
+		if (unitsDat[unit_id] == 0)
 		{
 LABEL_93_ERROR_23_RETURN_0:
 			*lastInternalError = 23;
@@ -529,7 +529,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::CurrentUnitIs:
 				{
 					u16 nextOpcodeUnitId = requirementsTable[opcodeIndex + 1];
-					//DebugOut("CurrentUnitIs (%d) unitId = %d:", currentOpcode, nextOpcodeUnitId);
+					//DebugOut("CurrentUnitIs (%d) unit_id = %d:", currentOpcode, nextOpcodeUnitId);
 					////DebugOut("  current unit is = %d", nextOpcodeUnitId);
 					// Weirdly, nextOpcodeUnitId is sometimes still the old opcode value - but only while debugging (or when there's 
 					// an OR statement?) this is causing access violation reading completed_unit_counts. Work around this for now by checking unit Ids
@@ -606,7 +606,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotTrainingOrMorphing:
 				{
 					//DebugOut("IsNotTrainingOrMorphing (%d):", currentOpcode);
-					if (parentUnit->unit_is_training_or_morphing() || parentUnit->building.upgradeType != TechId::None || parentUnit->building.techType != UpgradeId::None)
+					if (parentUnit->unit_is_training_or_morphing() || parentUnit->building.upgrade_id != TechId::None || parentUnit->building.tech_id != UpgradeId::None)
 					{
 						//DebugOut(">False");
 						goto LABEL_87;
@@ -630,7 +630,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotResearching:
 				{
 					//DebugOut("IsNotResearching (%d):", currentOpcode);
-					if (parentUnit->building.techType != TechId::None)
+					if (parentUnit->building.tech_id != TechId::None)
 					{
 						//DebugOut(">False");
 						goto LABEL_87;
@@ -642,7 +642,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotUpgrading:
 				{
 					//DebugOut("IsNotUpgrading (%d):", currentOpcode);
-					if (parentUnit->building.upgradeType != UpgradeId::None)
+					if (parentUnit->building.upgrade_id != UpgradeId::None)
 					{
 						//DebugOut(">False");
 						goto LABEL_87;
@@ -718,7 +718,7 @@ LABEL_73_PERHAPS_FINAL_CHECK:
 					v19 = (parentUnit->id == UnitId::ProtossSolarion);
 					if (v19)
 					{
-						v20 = parentUnit->carrier.inHangarCount + parentUnit->getHangarTrainCount();
+						v20 = parentUnit->unit_with_hangar.in_hangar_count + parentUnit->getHangarTrainCount();
 					}
 					else
 					{
@@ -728,7 +728,7 @@ LABEL_73_PERHAPS_FINAL_CHECK:
 						}
 						v20 = parentUnit->getHangarTrainCount();
 					}
-					v18 = parentUnit->carrier.inHangarCount + v20;
+					v18 = parentUnit->unit_with_hangar.in_hangar_count + v20;
 LABEL_51:
 					if (v18 >= parentUnit->getMaxHangarSpace())
 					{
@@ -861,18 +861,18 @@ LABEL_71_SUM_VALUES:
 		return result;
 	}
 
-	s8 UnitCreateAllowed(u16 unitId, Unit* parentUnit, s32 playerID) // 0046E1C0
+	s8 UnitCreateAllowed(u16 unit_id, Unit* parentUnit, s32 playerID) // 0046E1C0
 	{
 		u16* unitsDat = units_dat::unitsDat43;
 		u16* requirementsTable = requirements::units;
 
-		if (customRequirements::getUnitRequirementOverrides()[unitId] != 0)
+		if (customRequirements::getUnitRequirementOverrides()[unit_id] != 0)
 		{
 			unitsDat = customRequirements::getUnitRequirementOverrides();
 			requirementsTable = customRequirements::getUnitRequirementOpcodes();;
 		}
 
-		return hooks::UnitCreateAllowedLogic(unitId, parentUnit, playerID, unitsDat, requirementsTable);
+		return hooks::UnitCreateAllowedLogic(unit_id, parentUnit, playerID, unitsDat, requirementsTable);
 	}
 
 	void parseUnitsDatReqs()

@@ -69,8 +69,8 @@ bool is_attempting_protoss_build(const Unit* probe)
 {
 	return probe->main_order_id == OrderId::BuildProtoss1
 		&& probe->status & UnitStatus::GroundedBuilding
-		&& probe->orderTarget.unit != nullptr
-		&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
+		&& probe->order_target.unit != nullptr
+		&& !(probe->order_target.unit->status & UnitStatus::Completed);
 }
 
 #include <array>
@@ -311,8 +311,8 @@ LABEL_18:
 						v11 = v9 + 1;
 						goto LABEL_72;
 					case ReqOpcode::IsNotBusyBuilding:
-						if (unit_is_training_or_morphing(unit) || unit->building.upgradeType != TechId::None ||
-							unit->building.techType != UpgradeId::None)
+						if (unit_is_training_or_morphing(unit) || unit->building.upgrade_id != TechId::None ||
+							unit->building.tech_id != UpgradeId::None)
 							goto LABEL_87;
 						++v28;
 						goto LABEL_73;
@@ -328,12 +328,12 @@ LABEL_18:
 						goto LABEL_72;
 					}
 					case ReqOpcode::IsNotTeching:
-						if (unit->building.techType != TechId::None)
+						if (unit->building.tech_id != TechId::None)
 							goto LABEL_87;
 						v11 = v9 + 1;
 						goto LABEL_72;
 					case ReqOpcode::IsNotUpgrading:
-						if (unit->building.upgradeType != UpgradeId::None)
+						if (unit->building.upgrade_id != UpgradeId::None)
 							goto LABEL_87;
 						v11 = v9 + 1;
 						goto LABEL_72;
@@ -384,7 +384,7 @@ LABEL_18:
 						v18 = unitIsCarrier(unit);
 						if (v18)
 						{
-							v19 = unit->carrier.inHangarCount + getHangerTrainCount(unit);
+							v19 = unit->unit_with_hangar.in_hangar_count + getHangerTrainCount(unit);
 						}
 						else
 						{
@@ -393,7 +393,7 @@ LABEL_18:
 								goto LABEL_51;
 							v19 = getHangerTrainCount(unit);
 						}
-						v17 = unit->carrier.inHangarCount + v19;
+						v17 = unit->unit_with_hangar.in_hangar_count + v19;
 
 					LABEL_51:
 						if (v17 >= getMaxHangerSpace(unit))
@@ -469,9 +469,9 @@ LABEL_18:
 		return acceleration;
 	}
 
-	bool is_high_templar_conduit(u16 unitId)
+	bool is_high_templar_conduit(u16 unit_id)
 	{
-		switch (unitId)
+		switch (unit_id)
 		{
 			case UnitId::ProtossArchon:
 			case UnitId::ProtossAugur:
@@ -530,11 +530,11 @@ LABEL_18:
 	{
 		if (unit->id == UnitId::TerranVulture)
 		{
-			unit->vulture.spiderMineCount = 3;
+			unit->mine_carrier.mine_count = 3;
 		}
 		else if (unit->id == UnitId::TerranEidolon)
 		{
-			unit->vulture.spiderMineCount = 2;
+			unit->mine_carrier.mine_count = 2;
 		}
 	}
 
@@ -553,7 +553,7 @@ LABEL_18:
 			scbw::print("Can cast");
 			if (techId == TechId::Lockdown)
 			{
-				scbw::printf("Lockdown %d %d", caster->orderTarget.pt.x, caster->orderTarget.pt.y);
+				scbw::printf("Lockdown %d %d", caster->order_target.pt.x, caster->order_target.pt.y);
 			}
 		}
 		return orig_result;
@@ -779,12 +779,12 @@ LABEL_18:
 		u32 hp = unit->hitpoints;
 		u32 order_type = unit->main_order_id;
 		u32 order_state = unit->main_order_state;
-		Target order_target = unit->orderTarget;
-		unit->previousUnitType = unit->id;
-		unit->previousHp = hp / 256;
-		if (!unit->previousHp)
+		Target order_target = unit->order_target;
+		unit->previous_unit_type = unit->id;
+		unit->previous_hitpoints = hp / 256;
+		if (!unit->previous_hitpoints)
 		{
-			unit->previousHp = 1;
+			unit->previous_hitpoints = 1;
 		}
 		Sprite* sprite = unit->sprite;
 		u32 player_id = sprite->playerId;
@@ -807,7 +807,7 @@ LABEL_18:
 		}
 		unit->status = unit->status & ~UnitStatus::Frozen;
 		u32 new_hp = (hp * units_dat::MaxHitPoints[unit->id]) / 256;
-		u32 max_hp = units_dat::MaxHitPoints[unit->previousUnitType] / 256;
+		u32 max_hp = units_dat::MaxHitPoints[unit->previous_unit_type] / 256;
 		u32 final_hp = 1;
 		if (max_hp)
 		{
@@ -834,11 +834,11 @@ LABEL_18:
 		}
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+			unit->build_queue[unit->build_queue_slot] = UnitId::None;
 		}
 		unit->main_order_id = order_type;
 		unit->main_order_state = order_state;
-		unit->orderTarget = order_target;
+		unit->order_target = order_target;
 
 		u32 temp_unit_id = unit_id;
 		if (!(unit->status & UnitStatus::Completed))
@@ -849,7 +849,7 @@ LABEL_18:
 			|| units_dat::BaseProperty[unit->id] & UnitProperty::Building
 			|| temp_unit_id == UnitId::None)
 		{
-			unit->currentButtonSet = temp_unit_id;
+			unit->current_button_set = temp_unit_id;
 		}
 
 		*forceButtonRefresh = 1;

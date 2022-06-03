@@ -157,8 +157,8 @@ BUTTON_SET* getCustomButtonSet()
 	// Since it's a copy of the marine set, it would have the same amount of buttons
 	customButtonSet.buttonsInSet = buttonSetTable[UnitId::TerranMaverick].buttonsInSet;
 
-	// connectedUnit should usually be init at 0xFFFF.Almost unused (maybe not fully implemented).
-	customButtonSet.connectedUnit = 0xFFFF;
+	// connected_unit should usually be init at 0xFFFF.Almost unused (maybe not fully implemented).
+	customButtonSet.connected_unit = 0xFFFF;
 
 	// This should always be like this since the array is static
 	customButtonSet.firstButton = &customButtonsArray[0];
@@ -197,14 +197,14 @@ namespace hooks
 		u32 flagsHolder;
 		s32 unitIndexFromSelection = 0;
 		Unit* unitFromSelection;
-		activeButtonSetId = (*activePortraitUnit)->currentButtonSet;
+		activeButtonSetId = (*activePortraitUnit)->current_button_set;
 		do
 		{ // count units to know if will be using special group buttonset (peons, cloakables...)
 			unitFromSelection = clientSelectionGroup->unit[unitIndexFromSelection];
 			if (unitFromSelection != nullptr)
 			{
 				flagsHolder = units_dat::BaseProperty[unitFromSelection->id];
-				selectedButtonSetId = unitFromSelection->currentButtonSet;
+				selectedButtonSetId = unitFromSelection->current_button_set;
 
 				if (flagsHolder & UnitProperty::Worker)
 				{
@@ -233,17 +233,17 @@ namespace hooks
 					countLarva++;
 				}
 
-				// if you use a custom buttonset, and are reusing the currentButtonSet property of a unit differently, change these conditions to take it in account
+				// if you use a custom buttonset, and are reusing the current_button_set property of a unit differently, change these conditions to take it in account
 				if (selectedButtonSetId != activeButtonSetId)
 				{
 					BUTTON_SET* selectedUnitButtonSet = hooks::getButtonSet(selectedButtonSetId);
 					BUTTON_SET* activeUnitButtonSet = hooks::getButtonSet(activeButtonSetId);
 					if (activeUnitButtonSet->firstButton != selectedUnitButtonSet->firstButton)
 					{
-						if (selectedUnitButtonSet->connectedUnit != activeButtonSetId)
+						if (selectedUnitButtonSet->connected_unit != activeButtonSetId)
 						{
 							// Kerrigan (Ghost) and Raynor (Vulture) have the corresponding normal unit as "connected unit"
-							if (activeUnitButtonSet->connectedUnit == selectedButtonSetId)
+							if (activeUnitButtonSet->connected_unit == selectedButtonSetId)
 							{
 								activeButtonSetId = selectedButtonSetId;
 								*BUTTONSET_CURRENT_BUTTONSETID = selectedButtonSetId;
@@ -471,7 +471,7 @@ namespace hooks
 				}
 				else
 				{
-					CX_Holder = (*activePortraitUnit)->currentButtonSet;
+					CX_Holder = (*activePortraitUnit)->current_button_set;
 				}
 			}
 		}
@@ -893,7 +893,7 @@ namespace hooks
 					if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched)
 					{
 						if (current_button->iconID == IconId::Lockdown
-							&& (*activePortraitUnit)->vulture.spiderMineCount == 0)
+							&& (*activePortraitUnit)->mine_carrier.mine_count == 0)
 						{
 							current_button_state = BUTTON_STATE::Invisible;
 						}

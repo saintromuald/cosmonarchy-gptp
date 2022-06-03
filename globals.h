@@ -76,7 +76,7 @@ struct RevivingUnit
 {
 	Vector32 position;
 	u32 timer;
-	u32 unitId;
+	u32 unit_id;
 	u8 playerId;
 	u32 energy;
 	u32 hp;
@@ -162,7 +162,7 @@ struct Globals
 	void add_multihit_empty_bullet(Bullet* bullet, s32 divider);
 	void add_bullet_multihit(Bullet* bullet, Unit* target);
 	void add_incremental_bullet_multihit(Bullet* bullet, Unit* target);
-	void initRevive(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 hp, AiTown* town);
+	void initRevive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town);
 	void remove_multihit_bullet(Bullet* bullet);
 	s32 get_divider(Bullet* bullet);
 	void clear_lakizilisk(Unit* lurker);

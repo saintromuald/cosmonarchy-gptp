@@ -70,7 +70,7 @@ namespace hooks
 		Unit* actual_target = target;
 		if (target->status & UnitStatus::InBuilding)
 		{
-			actual_target = target->connectedUnit;
+			actual_target = target->connected_unit;
 			if (!actual_target)
 			{
 				return;
@@ -197,7 +197,7 @@ LABEL_37:
 										goto LABEL_126;
 									}
 									if (child3 != UnitId::ProtossSolarion
-//										|| (u8)(LOBYTE(self->field_C8) + BYTE1(self->carrier.inHangarCount)) > 2u
+//										|| (u8)(LOBYTE(self->field_C8) + BYTE1(self->unit_with_hangar.in_hangar_count)) > 2u
 										|| !helper::ai_transport_action(self))
 									{
 										if (actual_target && actual_target->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
@@ -230,7 +230,7 @@ LABEL_37:
 												|| !helper::ai_flee(self, child7))
 											{
 									LABEL_126:
-												if (self->orderTarget.unit != actual_target)  // Responding with worker
+												if (self->order_target.unit != actual_target)  // Responding with worker
 												{
 													if (!(units_dat::BaseProperty[(u16)self->id] & UnitProperty::Worker)
 														|| (units_dat::BaseProperty[actual_target->id] & UnitProperty::Worker)
@@ -253,10 +253,10 @@ LABEL_37:
 															{
 																parentAi6 = self->subunit;
 																parentAi7 = self->subunit;
-																self->autoTargetUnit = actual_target;
+																self->auto_target_unit = actual_target;
 																if (parentAi7->is_subunit())
 																{
-																	parentAi6->autoTargetUnit = actual_target;
+																	parentAi6->auto_target_unit = actual_target;
 																}
 																helper::ai_update_attack_target(self, 0, 1, 0);
 															}
@@ -270,7 +270,7 @@ LABEL_37:
 																	{
 																		if (self->id != 34)
 																		{
-																			parentAi4 = self->orderTarget.unit;
+																			parentAi4 = self->order_target.unit;
 																			if (!parentAi4 || !helper::unit_can_attack_target(parentAi4, parentAi4, 1))
 																			{
 																				helper::ai_flee(self, actual_target);
@@ -660,7 +660,7 @@ LABEL_37:
 					{
 						if (units_dat::BaseProperty[i->id] & UnitProperty::ResourceContainer)
 						{
-							i->building.resource.resourceGroup = 0;
+							i->building.resource.resource_group = 0;
 						}
 					}
 				}
@@ -717,25 +717,25 @@ LABEL_37:
 			return 0;
 		}
 
-		s32 unitId = UnitId::None;
+		s32 unit_id = UnitId::None;
 		u8 raceId = playerTable[player].race;
 		switch(raceId)
 		{
 			case RaceId::Terran:
 			{
-				unitId = UnitId::TerranMason;
+				unit_id = UnitId::TerranMason;
 			} break;
 			case RaceId::Protoss:
 			{
-				unitId = UnitId::ProtossScribe;
+				unit_id = UnitId::ProtossScribe;
 			} break;
 			case RaceId::Zerg:
 			{
-				unitId = UnitId::ZergDroleth;
+				unit_id = UnitId::ZergDroleth;
 			} break;
 		}
-		unitId = (u16)unitId;
-		u32 completedCount = unitCountTable[(u16)unitId].player[(u8)player];
+		unit_id = (u16)unit_id;
+		u32 completedCount = unitCountTable[(u16)unit_id].player[(u8)player];
 
 		// Originally had an inlined function that combined sieged and unsieged tanks for unit counts
 		return completedCount >= 12;
@@ -855,14 +855,14 @@ LABEL_37:
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	void ai_get_build_location(u32 unitId, char* placementData, u32 playerId, Point16 desiredPos, s32 maxRange) // 004461B0
+	void ai_get_build_location(u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos, s32 maxRange) // 004461B0
 	{
 		memset(placementData, 0, 0x1000u);
-		helper::ai_get_building_placement_data(maxRange, unitId, placementData, playerId, desiredPos);
+		helper::ai_get_building_placement_data(maxRange, unit_id, placementData, playerId, desiredPos);
 		helper::ai_remove_unreachable_regions(placementData, desiredPos);
-		if (unitId != UnitId::ProtossPylon)
+		if (unit_id != UnitId::ProtossPylon)
 		{
-			helper::ai_remove_dangerous_regions(unitId, placementData, playerId, desiredPos);
+			helper::ai_remove_dangerous_regions(unit_id, placementData, playerId, desiredPos);
 		}
 		helper::ai_remove_far_tiles(placementData, desiredPos, maxRange);
 		while (2)
@@ -873,18 +873,18 @@ LABEL_37:
 				if (placementData[iterator1])
 				{
 					helper::ai_remove_different_height(placementData, desiredPos); // Owned?
-					helper::ai_placement_related_something(unitId, placementData, desiredPos);
-					if (unitId == UnitId::TerranCommandCenter || unitId == UnitId::ZergHatchery || unitId == UnitId::ProtossNexus)
+					helper::ai_placement_related_something(unit_id, placementData, desiredPos);
+					if (unit_id == UnitId::TerranCommandCenter || unit_id == UnitId::ZergHatchery || unit_id == UnitId::ProtossNexus)
 					{
 						maxRange = 1;
 					}
 					else
 					{
 						maxRange = 0;
-						helper::ai_remove_unfit_tiles(unitId, placementData, playerId, desiredPos);
+						helper::ai_remove_unfit_tiles(unit_id, placementData, playerId, desiredPos);
 					}
-					helper::ai_remove_addon_places(unitId, placementData, playerId, desiredPos);
-					switch (unitId)
+					helper::ai_remove_addon_places(unit_id, placementData, playerId, desiredPos);
+					switch (unit_id)
 					{
 						case UnitId::TerranWatchdog:
 						case UnitId::ProtossPhotonCannon:
@@ -896,7 +896,7 @@ LABEL_37:
 							if (!helper::get_bunker_placement_position(playerId, &maxRange))
 							{
 					LABEL_17:
-								helper::get_turret_placement_position(placementData, playerId, desiredPos, unitId, 0);
+								helper::get_turret_placement_position(placementData, playerId, desiredPos, unit_id, 0);
 								return;
 							}
 						}
@@ -910,7 +910,7 @@ LABEL_37:
 							if (!helper::get_bunker_placement_position(playerId, &maxRange))
 							{
 					LABEL_21:
-								helper::get_turret_placement_position(placementData, playerId, desiredPos, unitId, 0);
+								helper::get_turret_placement_position(placementData, playerId, desiredPos, unit_id, 0);
 							}
 						} break;
 						case UnitId::ProtossPylon:
@@ -921,7 +921,7 @@ LABEL_37:
 						{
 							if (!maxRange)
 							{
-								helper::get_default_placement_position(unitId, placementData, playerId, desiredPos);
+								helper::get_default_placement_position(unit_id, placementData, playerId, desiredPos);
 							}
 						} break;
 					}
@@ -942,7 +942,7 @@ LABEL_37:
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unitId, u32 unkFlag) // 00443AC0
+	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unit_id, u32 unkFlag) // 00443AC0
 	{
 		// will do this later
 		return 0;
@@ -1056,7 +1056,7 @@ LABEL_37:
 	// Hooked to investigate removing AI ally retaliation. (No cigar!) -Pr0nogo
 	s32 attack_recent_attacker(Unit* unit) // 004770E0
 	{
-		Unit* target_unit = unit->autoTargetUnit;
+		Unit* target_unit = unit->auto_target_unit;
 		if (!target_unit || unit->unit_ai)
 		{
 			return 0;
@@ -1068,12 +1068,12 @@ LABEL_37:
 		}
 		if (!scbw::is_allied_to(unit->player, target_player)) {
 			if (helper::unit_can_attack_target(target_unit, unit, 1)) {
-				helper::order_to_attack_target(unit->autoTargetUnit, unit, 1, 0);
+				helper::order_to_attack_target(unit->auto_target_unit, unit, 1, 0);
 				unit->status |= UnitStatus::Disabled;
 				return 1;
 			}
 		}
-		unit->autoTargetUnit = 0;
+		unit->auto_target_unit = 0;
 		return 0;
 	}
 
@@ -1085,7 +1085,7 @@ LABEL_37:
 			return 1;
 		}
 		if (unit->id == UnitId::ResourceVespeneGeyser || unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExcisant) {
-			return 2 + (unit->building.resource.resourceAmount != 0);
+			return 2 + (unit->building.resource.resource_amount != 0);
 		}
 		return 0;
 	}
@@ -1136,7 +1136,7 @@ LABEL_37:
 					{
 						if (worker_ai->target_resource == 1)
 						{
-							Unit* target_resource = worker->worker.targetResource.unit;
+							Unit* target_resource = worker->worker.target_resource.unit;
 							if (target_resource && helper::unit_is_mineral_field(target_resource))
 							{
 								helper::ai_auto_harvest(target_resource, worker, 0);
@@ -1144,7 +1144,7 @@ LABEL_37:
 							else
 							{
 								Unit* town_mineral = town->mineral;
-								if (!town_mineral || town_mineral->building.resource.resourceBelongsToAI)
+								if (!town_mineral || town_mineral->building.resource.resource_belongs_to_ai)
 								{
 									worker_pos = worker->sprite->position;
 									town_mineral = helper::harvest_next_nearest_resources_ex(town->worker_count <= 0xCu, worker, worker_pos);
@@ -1349,7 +1349,7 @@ LABEL_37:
 		if (unit->main_order_id == order_id) {
 			return true;
 		}
-		for (Order* order = unit->orderQueueHead; order; order = order->next) {
+		for (Order* order = unit->order_queue_head; order; order = order->next) {
 			if (order->orderId == order_id) {
 				return true;
 			}
@@ -1361,7 +1361,7 @@ LABEL_37:
 		if (!orders_dat::CanBeInterrupted[unit->main_order_id]) {
 			return true;
 		}
-		for (Order* order = unit->orderQueueHead; order; order = order->next) {
+		for (Order* order = unit->order_queue_head; order; order = order->next) {
 			if (!orders_dat::CanBeInterrupted[order->orderId]) {
 				return true;
 			}
@@ -1603,21 +1603,21 @@ LABEL_37:
 	{
 		if (worker->resourceType & ResourceType::Minerals)
 		{
-			worker->userActionFlags |= 1u;
+			worker->user_action_flags |= 1u;
 			if (worker->main_order_id)
 			{
 				while (1)
 				{
-					if (!worker->orderQueueTail)
+					if (!worker->order_queue_tail)
 					{
 						break;
 					}
-					if (!orders_dat::CanBeInterrupted[worker->orderQueueTail->orderId]
-					&&	worker->orderQueueTail->orderId != OrderId::ReturnMinerals)
+					if (!orders_dat::CanBeInterrupted[worker->order_queue_tail->orderId]
+					&&	worker->order_queue_tail->orderId != OrderId::ReturnMinerals)
 					{
 						break;
 					}
-					helper::remove_order_from_unit_queue(worker->orderQueueTail, worker);
+					helper::remove_order_from_unit_queue(worker->order_queue_tail, worker);
 				}
 				helper::perform_another_order(OrderId::ReturnMinerals, 0, worker, 228, {}, 0);
 			}
@@ -1636,7 +1636,7 @@ LABEL_37:
 			if (resource && (resource->id == UnitId::ResourceVespeneGeyser || resource->status & UnitStatus::Completed))
 			{
 				helper::assign_order_with_target(resource, worker, OrderId::Harvest1);
-				resource->building.resource.resourceBelongsToAI = 1;
+				resource->building.resource.resource_belongs_to_ai = 1;
 			}
 		}
 	}
@@ -1665,7 +1665,7 @@ LABEL_37:
 		unit_search_filter(&workers, to_repair, FilterAlly, {UnitId::TerranMason, UnitId::TerranTalos});
 		Unit* best = unit_search_find_best(&workers, [=](Unit* worker) {
 			if (!worker->has_path_to_unit(to_repair) ||
-				to_repair->orderTarget.unit == worker ||
+				to_repair->order_target.unit == worker ||
 				scbw::is_allied_to(worker->player, to_repair->player) ||
 				!helper::isOrderValid(OrderId::Repair1, worker, 0, to_repair, 0)) {
 				return ScoreInvalidUnit;
@@ -1687,7 +1687,7 @@ LABEL_37:
 		for (BuildingAi* building_ai = town->buildings; building_ai; building_ai = building_ai->link.prev)
 		{
 			Unit* building = building_ai->parent;
-			if (building->connectedUnit || !helper::ai_is_building_safe(building))
+			if (building->connected_unit || !helper::ai_is_building_safe(building))
 			{
 				continue;
 			}
@@ -1724,13 +1724,13 @@ LABEL_37:
 			return 0;
 		}
 		}
-		worker->userActionFlags |= 1u;
+		worker->user_action_flags |= 1u;
 		Point16 repairee_pos = {}; // Shouldn't we return when nothing to repair?
 		if (repairee) {
 			repairee_pos = repairee->sprite->position;
 		}
 		if (worker->main_order_id) {
-			for (Order* order_tail = worker->orderQueueTail; order_tail; order_tail = worker->orderQueueTail) {
+			for (Order* order_tail = worker->order_queue_tail; order_tail; order_tail = worker->order_queue_tail) {
 				if (!orders_dat::CanBeInterrupted[order_tail->orderId] && order_tail->orderId != OrderId::Repair1) {
 					break;
 				}
@@ -1739,7 +1739,7 @@ LABEL_37:
 			helper::perform_another_order(OrderId::Repair1, 0, worker, UnitId::None, repairee_pos, repairee);
 		}
 		helper::orders_nothing_2(worker);
-		repairee->connectedUnit = worker;
+		repairee->connected_unit = worker;
 		return 1;
 	}
 
@@ -2055,12 +2055,12 @@ LABEL_37:
 							Point16 victim_pos = {};
 							victim_pos.x = victim->sprite->position.x;
 							victim_pos.y = victim->sprite->position.y;
-							unit_to_order_1->userActionFlags |= 1u;
+							unit_to_order_1->user_action_flags |= 1u;
 							if (unit_to_order_1->main_order_id)
 							{
 								while (1)
 								{
-									Order* tail_order_1 = unit_to_order_1->orderQueueTail;
+									Order* tail_order_1 = unit_to_order_1->order_queue_tail;
 									if (!tail_order_1)
 									{
 										break;

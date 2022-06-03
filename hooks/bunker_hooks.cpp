@@ -40,36 +40,36 @@ namespace hooks
 			resultApplyCooldown = helper::attackApplyCooldown(unit);
 			if (resultApplyCooldown != 0)
 			{
-				if (unit->orderTarget.pt.x != unit->next_target_waypoint.x
-					|| unit->orderTarget.pt.y != unit->next_target_waypoint.y)
+				if (unit->order_target.pt.x != unit->next_target_waypoint.x
+					|| unit->order_target.pt.y != unit->next_target_waypoint.y)
 				{
-					unit->next_target_waypoint.x = unit->orderTarget.pt.x;
-					unit->next_target_waypoint.y = unit->orderTarget.pt.y;
+					unit->next_target_waypoint.x = unit->order_target.pt.x;
+					unit->next_target_waypoint.y = unit->order_target.pt.y;
 				}
 			}
 			else
 			{
-				if (unit->mainOrderTimer == 0)
+				if (unit->main_order_timer == 0)
 				{
-					unit->mainOrderTimer = 15;
+					unit->main_order_timer = 15;
 					
-					Unit* target = unit->orderTarget.unit;
+					Unit* target = unit->order_target.unit;
 					if (!target || !unit->canAttackTarget(target) || !isWithinAttackRange(unit, target))
 					{
-						if (unit->connectedUnit)
+						if (unit->connected_unit)
 						{
-							UnitExt* bunkerExt = globals.get_unit_ext(unit->connectedUnit);
+							UnitExt* bunkerExt = globals.get_unit_ext(unit->connected_unit);
 							Unit* target = bunkerExt->units[UnitBunkerLockOn];
 							if (target && unit->canAttackTarget(target) && isWithinAttackRange(unit, target))
 							{
-								unit->orderTarget.unit = bunkerExt->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
+								unit->order_target.unit = bunkerExt->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
 							}
 						}
 
 						if (!target || !unit->canAttackTarget(target) || !isWithinAttackRange(unit, target))
 						{
 							const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->getAirWeapon()));
-							unit->orderTarget.unit = scbw::UnitFinder::get_nearest_target(
+							unit->order_target.unit = scbw::UnitFinder::get_nearest_target(
 								unit->get_x() - radius,
 								unit->get_y() - radius,
 								unit->get_x() + radius,
@@ -90,7 +90,7 @@ namespace hooks
 
 					if (target != nullptr)
 					{
-						unit->orderQueueTimer = 0;
+						unit->order_queue_timer = 0;
 					}
 				}
 			}
@@ -107,7 +107,7 @@ namespace hooks
 			unitVar = unit->subunit;
 		}
 
-		Image* bunkerImage = unitVar->connectedUnit->sprite->main_graphic;
+		Image* bunkerImage = unitVar->connected_unit->sprite->main_graphic;
 		u8 frameDirection = (unitVar->current_direction_1 + 16) / 32 % 8;
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
 		Point8 offset = loFile->get_offset(bunkerImage->frameIndex, frameDirection);
@@ -130,7 +130,7 @@ namespace hooks
 			spriteId = 377; // Bunker attack overlay
 		}
 
-		scbw::decloak_proc(unitVar->connectedUnit);
+		scbw::decloak_proc(unitVar->connected_unit);
 
 		// TODO: Fix effect nonsense with subunits
 		Thingy* bunkerAttackEffect = helper::create_thingy(spriteId, offset.x + unitVar->get_x(), offset.y + unitVar->get_y(), unitVar->player);

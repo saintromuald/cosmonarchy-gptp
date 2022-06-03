@@ -10,11 +10,11 @@ namespace
 	//-------- CMDRECV_UnitMorph --------//
 
 	const u32 Func_AddUnitToBuildQueue = 0x00467250;
-	bool addUnitToBuildQueue(Unit* unit, u16 unitId)
+	bool addUnitToBuildQueue(Unit* unit, u16 unit_id)
 	{
 		static u32 result;
 		static u32 unitId_;
-		unitId_ = unitId;
+		unitId_ = unit_id;
 		__asm
 		{
 			PUSHAD
@@ -48,7 +48,7 @@ namespace
 	s32 __fastcall unitMorphWrapper_BTNSCOND_CanBuildUnit(u16 buildUnitId, s32 playerId, Unit* unit)
 	{
 		if (*clientSelectionCount <= 1
-			|| hooks::get_unit_morph_egg_id(unit->id, unit, unit->buildQueue[0]) != UnitId::None)
+			|| hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]) != UnitId::None)
 		{
 			return unit->can_make_unit(buildUnitId, playerId);
 		}
@@ -67,7 +67,7 @@ namespace
 			MOV EBP, ESP
 			MOV unit, ESI
 		}
-		if (hooks::get_unit_morph_egg_id(unit->id, unit, unit->buildQueue[0]) != UnitId::None)
+		if (hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]) != UnitId::None)
 		{
 			__asm
 			{
@@ -101,7 +101,7 @@ namespace
 			MOV unit, ESI
 		}
 		unit->status &= ~(UnitStatus::Completed);
-		morphEggType = hooks::get_unit_morph_egg_id(unit->id, unit, unit->buildQueue[0]);
+		morphEggType = hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]);
 		assert(scbw::is_zerg_egg_new(unit, true, false, morphEggType));
 		__asm
 		{
@@ -171,7 +171,7 @@ namespace
 			return;
 		}
 
-		if (unit->id == UnitId::ZergNydusCanal && unit->building.nydusExit != nullptr)
+		if (unit->id == UnitId::ZergNydusCanal && unit->building.nydus_exit != nullptr)
 		{
 			return;
 		}
@@ -203,7 +203,7 @@ namespace
 			u16 refundUnitId;
 			if (scbw::is_zerg_egg_new(unit, true, false))
 			{
-				refundUnitId = unit->buildQueue[unit->buildQueueSlot % 5];
+				refundUnitId = unit->build_queue[unit->build_queue_slot % 5];
 			}
 			else
 			{
@@ -218,7 +218,7 @@ namespace
 		{
 			if (unit->id == UnitId::TerranNuclearMissile)
 			{
-				Unit* silo = unit->connectedUnit;
+				Unit* silo = unit->connected_unit;
 				if (silo)
 				{
 					silo->building.silo.nuke = nullptr;
@@ -232,13 +232,13 @@ namespace
 		{
 			change_unit_type(unit, cancelChangeUnitId);
 			unit->energy = unitExt->values[ValuePreMorphEnergy];
-			unitExt->units[UnitMorphConnectedUnit] = unit->connectedUnit;
-			unit->remainingBuildTime = 0;
-			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+			unitExt->units[UnitMorphConnectedUnit] = unit->connected_unit;
+			unit->remaining_build_time = 0;
+			unit->build_queue[unit->build_queue_slot] = UnitId::None;
 			
-//			replace_sprite_images(unit->sprite, sprites_dat::ImageId[flingy_dat::SpriteID[units_dat::Graphic[unit->previousUnitType]]], 0);			
-//			auto index = units_dat::Graphic[unit->previousUnitType];
-			auto index = scbw::get_unit_data(UnitsDatEntries::Flingy, unit->previousUnitType);
+//			replace_sprite_images(unit->sprite, sprites_dat::ImageId[flingy_dat::SpriteID[units_dat::Graphic[unit->previous_unit_type]]], 0);			
+//			auto index = units_dat::Graphic[unit->previous_unit_type];
+			auto index = scbw::get_unit_data(UnitsDatEntries::Flingy, unit->previous_unit_type);
 //			replace_sprite_images(unit->sprite, sprites_dat::ImageId[scbw::get_flingy_data(FlingyDatEntries::SpriteId, index)], 0);
 			auto fl_sId = scbw::get_flingy_data(FlingyDatEntries::SpriteId, index);
 //			scbw::get_sprite_data(SpritesDatEntries::ImageId,building->sprite->spriteId),
@@ -267,12 +267,12 @@ namespace
 
 	s32 getRemainingBuildTimePctHook(Unit* unit)
 	{
-		u16 unitId = unit->id;
+		u16 unit_id = unit->id;
 		if (scbw::is_zerg_egg_new(unit, true, false) || unit->isRemorphingBuilding())
 		{
-			unitId = unit->buildQueue[unit->buildQueueSlot];
+			unit_id = unit->build_queue[unit->build_queue_slot];
 		}
-		return 100 * (units_dat::TimeCost[unitId] - unit->remainingBuildTime) / units_dat::TimeCost[unitId];
+		return 100 * (units_dat::TimeCost[unit_id] - unit->remaining_build_time) / units_dat::TimeCost[unit_id];
 	}
 
 	// Inject @ 0x004669E0
@@ -326,7 +326,7 @@ namespace
 			PUSHAD
 			MOV unit, EDI
 		}
-		if (hooks::is_rallyable_egg_unit(unit->previousUnitType))
+		if (hooks::is_rallyable_egg_unit(unit->previous_unit_type))
 		{
 			__asm
 			{

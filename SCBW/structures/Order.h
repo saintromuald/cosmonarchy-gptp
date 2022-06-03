@@ -10,7 +10,7 @@ struct Order
 	/*00*/  Order* prev;
 	/*04*/  Order* next;
 	/*08*/  u16  orderId;
-	/*0A*/  u16  unitId;
+	/*0A*/  u16  unit_id;
 	/*0C*/  Target  target;
 	/*0C*/			/*target.pt.x*/
 	/*0E*/			/*target.pt.y*/

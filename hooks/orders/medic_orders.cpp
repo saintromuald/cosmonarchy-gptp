@@ -22,12 +22,12 @@ namespace hooks
 	void orders_HealMove(Unit* unit)
 	{
 		bool bStopThere = false;
-		Unit* target = unit->orderTarget.unit;
-		Unit* oldTarget = unit->orderTarget.unit;
+		Unit* target = unit->order_target.unit;
+		Unit* oldTarget = unit->order_target.unit;
 
 		if (target != nullptr)
 		{
-			if (target->id == UnitId::ZergNydusCanal && target->building.nydusExit)
+			if (target->id == UnitId::ZergNydusCanal && target->building.nydus_exit)
 			{
 				unit->order_to(OrderId::EnterNydusCanal, target);
 				return;
@@ -36,16 +36,16 @@ namespace hooks
 			if (helper::AI_OrderHeal(unit, target) != 0)
 			{
 				unit->order_computer(OrderId::MedicHeal1);
-				unit->orderTarget.unit = target;
-				unit->orderTarget.pt.x = target->sprite->position.x;
-				unit->orderTarget.pt.y = target->sprite->position.y;
+				unit->order_target.unit = target;
+				unit->order_target.pt.x = target->sprite->position.x;
+				unit->order_target.pt.y = target->sprite->position.y;
 				helper::move_to_target(target, unit);
 				bStopThere = true;
 			}
 			else
 			{ // 00463801
-				unit->orderTarget.pt.x = target->sprite->position.x;
-				unit->orderTarget.pt.y = target->sprite->position.y;
+				unit->order_target.pt.x = target->sprite->position.x;
+				unit->order_target.pt.y = target->sprite->position.y;
 			}
 		}
 
@@ -53,7 +53,7 @@ namespace hooks
 		{ // 00463817
 			if (unit->recentOrderTimer == 0)
 			{
-				if (!helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+				if (!helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y))
 				{
 					bStopThere = true;
 				}
@@ -66,17 +66,17 @@ namespace hooks
 				{
 					unit->order_to_idle();
 				}
-				else if (unit->mainOrderTimer == 0)
+				else if (unit->main_order_timer == 0)
 				{
 					Unit* newTarget;
 					Point16 oldPos;
-					unit->mainOrderTimer = 15;
+					unit->main_order_timer = 15;
 					newTarget = helper::MedicHeal_TargetAcquire(unit);
 					if (newTarget != nullptr)
 					{
-						oldPos.x = unit->orderTarget.pt.x;
-						oldPos.y = unit->orderTarget.pt.y;
-						helper::orderInterrupt(unit, unit->orderTarget.unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, OrderId::MedicHeal1);
+						oldPos.x = unit->order_target.pt.x;
+						oldPos.y = unit->order_target.pt.y;
+						helper::orderInterrupt(unit, unit->order_target.unit, unit->order_target.pt.x, unit->order_target.pt.y, OrderId::MedicHeal1);
 
 						helper::move_to_target(newTarget, unit);
 						helper::unitOrderMoveToTargetUnit(unit, newTarget);
@@ -107,31 +107,31 @@ namespace hooks
 			Unit* target = helper::MedicHeal_TargetAcquire(unit);
 			if (target != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				if (unit->main_order_id != OrderId::Die)
 				{
-					bool bEndLoop = unit->orderQueueTail == nullptr;
+					bool bEndLoop = unit->order_queue_tail == nullptr;
 					while (!bEndLoop)
 					{
 
-						if (!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId]
-							&& unit->orderQueueTail->orderId != OrderId::MedicHeal1)
+						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId]
+							&& unit->order_queue_tail->orderId != OrderId::MedicHeal1)
 						{
 							bEndLoop = true;
 						}
 						else
 						{
-							helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
-							bEndLoop = (unit->orderQueueTail == nullptr);
+							helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
+							bEndLoop = (unit->order_queue_tail == nullptr);
 						}
 					}
 					unit->perform_another_order(OrderId::MedicHeal1, 0, 0, nullptr, UnitId::None);
 				}
 				// 00463991
 				prepareForNextOrder(unit);
-				unit->orderTarget.unit = target;
-				unit->orderTarget.pt.x = target->sprite->position.x;
-				unit->orderTarget.pt.y = target->sprite->position.y;
+				unit->order_target.unit = target;
+				unit->order_target.pt.x = target->sprite->position.x;
+				unit->order_target.pt.y = target->sprite->position.y;
 				helper::move_to_target(target, unit);
 			}
 			else
@@ -185,14 +185,14 @@ namespace hooks
 
 	void orders_MedicHeal1(Unit* unit)
 	{
-		Unit* target = unit->orderTarget.unit;
+		Unit* target = unit->order_target.unit;
 		u32 doMedicHeal_result = helper::doMedicHeal(unit, target);
 		if (doMedicHeal_result == 0)
 		{
 			helper::set_resource_target(unit);
-			if (unit->orderQueueHead != nullptr)
+			if (unit->order_queue_head != nullptr)
 			{
-				unit->userActionFlags |= 1;
+				unit->user_action_flags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else if (unit->unit_ai != nullptr)
@@ -235,15 +235,15 @@ namespace hooks
 							current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 							current_image = current_image->link.next;
 						}
-						if (unit->orderQueueHead == nullptr
-							|| unit->orderQueueHead->orderId != OrderId::MedicHeal2)
+						if (unit->order_queue_head == nullptr
+							|| unit->order_queue_head->orderId != OrderId::MedicHeal2)
 						{
 							helper::order_immediate(unit, OrderId::MedicHeal2);
 						}
 					}
 
 					// 0046425B
-					target = unit->orderTarget.unit;
+					target = unit->order_target.unit;
 					if (target != nullptr
 						&& (target->position.x != unit->next_target_waypoint.x || target->position.y != unit->next_target_waypoint.y))
 					{

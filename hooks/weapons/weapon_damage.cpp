@@ -454,9 +454,9 @@ namespace hooks
 				Unit* haluAttacker = data.attacker;
 				if ((haluAttacker->id == UnitId::ProtossSteward
 					|| haluAttacker->id == UnitId::ProtossPlasmaShell)
-					&& data.attacker->interceptor.parent != nullptr)
+					&& data.attacker->hangar_unit.parent != nullptr)
 				{
-					haluAttacker = data.attacker->interceptor.parent;
+					haluAttacker = data.attacker->hangar_unit.parent;
 				}
 				UnitExt* haluAttackerExt = globals.get_unit_ext(haluAttacker);
 				if (haluAttackerExt->units[UnitHallucinationPointer] == nullptr
@@ -979,8 +979,8 @@ namespace hooks
 			unit_search_filter(&larvae, data.target, 0, {UnitId::ZergLarva});
 			for (u32 i = 0; i < larvae.size; ++i) {
 				Unit* larva = larvae.units[i];
-				if (larva->connectedUnit == data.target) {
-					larva->connectedUnit = 0;
+				if (larva->connected_unit == data.target) {
+					larva->connected_unit = 0;
 				}
 			}
 
@@ -1224,7 +1224,7 @@ namespace hooks
 			{
 				if (helper::unit_is_in_notify_range(unit))
 				{
-					if (!unit->attackNotifyTimer)
+					if (!unit->attack_notify_timer)
 					{
 						helper::reset_all_unit_attack_notify_timers_in_range(unit);
 						*notify_cooldown = 100;

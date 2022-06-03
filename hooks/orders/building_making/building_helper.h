@@ -9,8 +9,8 @@ namespace BuildingHelper
 	{
 		return probe->main_order_id == OrderId::BuildProtoss1
 			&& probe->status & UnitStatus::GroundedBuilding
-			&& probe->orderTarget.unit != nullptr
-			&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
+			&& probe->order_target.unit != nullptr
+			&& !(probe->order_target.unit->status & UnitStatus::Completed);
 	}
 
 	// Check if @p building is in the process of constructing an add-on.
@@ -23,10 +23,10 @@ namespace BuildingHelper
 			|| unit->main_order_id == OrderId::ConstructingBuilding
 			|| is_warping_in_protoss_building(unit))
 		{
-			return unit->orderTarget.unit;
+			return unit->order_target.unit;
 		}
-		if (unit->secondaryOrderId == OrderId::Train
-			|| unit->secondaryOrderId == OrderId::TrainFighter
+		if (unit->secondary_order_id == OrderId::Train
+			|| unit->secondary_order_id == OrderId::TrainFighter
 			|| helper::is_constructing_addon(unit))
 		{
 			return unit->currentBuildUnit;
@@ -35,12 +35,12 @@ namespace BuildingHelper
 	}
 
 	// Identical to function @ 0x00466B70
-	s32 get_unit_id_count_in_build_queue(const Unit* unit, u16 unitId)
+	s32 get_unit_id_count_in_build_queue(const Unit* unit, u16 unit_id)
 	{
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
 			if (get_construct_repair_target(unit) == nullptr
-				&& unit->buildQueue[unit->buildQueueSlot % 5] == unitId
+				&& unit->build_queue[unit->build_queue_slot % 5] == unit_id
 				&& (unit->main_order_id == OrderId::BuildTerran
 					|| unit->main_order_id == OrderId::BuildProtoss1
 					|| unit->main_order_id == OrderId::DroneLand
@@ -58,28 +58,28 @@ namespace BuildingHelper
 		if (scbw::is_zerg_egg(unit->id, true, false)
 			|| unit->main_order_id == OrderId::Morph2
 			|| unit->main_order_id == OrderId::ZergBuildSelf)
-			return (unit->buildQueue[unit->buildQueueSlot % 5] == unitId) ? 1 : 0;
+			return (unit->build_queue[unit->build_queue_slot % 5] == unit_id) ? 1 : 0;
 
 		s32 unitCount = 0;
 		for (s32 i = 0; i < 5; ++i)
 		{
-			if (unit->buildQueue[(unit->buildQueueSlot + i) % 5] == unitId)
+			if (unit->build_queue[(unit->build_queue_slot + i) % 5] == unit_id)
 				++unitCount;
 		}
 		return unitCount;
 	}
 
-	s32 get_unit_id_count(const Unit* unit, u16 unitId, bool ignoreIncomplete)
+	s32 get_unit_id_count(const Unit* unit, u16 unit_id, bool ignoreIncomplete)
 	{
 		if (!ignoreIncomplete || unit->status & UnitStatus::Completed)
 		{
-			if (unit->id == unitId)
+			if (unit->id == unit_id)
 			{
 				return 1;
 			}
 			if (!ignoreIncomplete)
 			{
-				return get_unit_id_count_in_build_queue(unit, unitId);
+				return get_unit_id_count_in_build_queue(unit, unit_id);
 			}
 		}
 		return 0;

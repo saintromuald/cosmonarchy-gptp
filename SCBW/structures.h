@@ -361,7 +361,7 @@ struct BUTTON_SET
 {
 	u32			buttonsInSet;
 	BUTTON*		firstButton;
-	u32			connectedUnit;
+	u32			connected_unit;
 };
 
 //---- Taken from triggers.h ----//

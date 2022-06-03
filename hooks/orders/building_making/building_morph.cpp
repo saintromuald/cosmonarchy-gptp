@@ -18,7 +18,7 @@ namespace hooks
 		if (!(building->status & UnitStatus::Completed))
 		{
 			// was hardcoded instead of using isValidMorph in original code
-			bIsMorphing = helper::isValidMorph(building->buildQueue[building->buildQueueSlot]);
+			bIsMorphing = helper::isValidMorph(building->build_queue[building->build_queue_slot]);
 		}
 		else
 		{
@@ -36,7 +36,7 @@ namespace hooks
 		bool jump_to_5D56C = false;
 		bool jump_to_5D718 = false;
 		bool jump_to_5D720 = false;
-		buildingId = building->buildQueue[building->buildQueueSlot];
+		buildingId = building->build_queue[building->build_queue_slot];
 
 		if (!scbw::is_zerg_building_morph_result(buildingId))
 		{
@@ -55,7 +55,7 @@ namespace hooks
 
 		if (building->main_order_state == 0)
 		{
-			if (building->remainingBuildTime < (units_dat::TimeCost[buildingId] * 3 / 4))
+			if (building->remaining_build_time < (units_dat::TimeCost[buildingId] * 3 / 4))
 			{
 				building->main_order_state = 1;
 			}
@@ -69,7 +69,7 @@ namespace hooks
 		if (jump_to_5D56C)
 		{ // 0045D56C
 			jump_to_5D56C = false;
-			if (building->remainingBuildTime == 0)
+			if (building->remaining_build_time == 0)
 			{
 				jump_to_5D720 = true;
 			}
@@ -79,13 +79,13 @@ namespace hooks
 			}
 			else
 			{					
-				if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE)
+				if (building->remaining_build_time >= OPCWAL_PROGRESS_INCREASE)
 				{
-					building->remainingBuildTime -= OPCWAL_PROGRESS_INCREASE;
+					building->remaining_build_time -= OPCWAL_PROGRESS_INCREASE;
 				}
 				else
 				{
-					building->remainingBuildTime = 0;
+					building->remaining_build_time = 0;
 				}
 				jump_to_5D720 = true;
 			}
@@ -106,7 +106,7 @@ namespace hooks
 		}
 		else if (building->main_order_state == 2)
 		{ // 0045D5E2
-			if (building->remainingBuildTime < units_dat::TimeCost[buildingId] / 2)
+			if (building->remaining_build_time < units_dat::TimeCost[buildingId] / 2)
 			{
 				building->main_order_state = 3;
 			}
@@ -121,7 +121,7 @@ namespace hooks
 		}
 		else if (building->main_order_state == 4)
 		{ // 0045D618
-			if (building->remainingBuildTime == 0)
+			if (building->remaining_build_time == 0)
 			{
 				building->main_order_state = 5;
 			}
@@ -187,14 +187,14 @@ namespace hooks
 					// newHp = newHpMax - oldHpMax + oldHp
 					hpAfterMorph =
 						units_dat::MaxHitPoints[buildingId] -
-						units_dat::MaxHitPoints[building->previousUnitType] +
+						units_dat::MaxHitPoints[building->previous_unit_type] +
 						hpAfterMorph;
 					if (hpAfterMorph < 256)
 					{
 						hpAfterMorph = 256;
 					}
 					building->setHp(hpAfterMorph);
-					building->remainingBuildTime = 0;
+					building->remaining_build_time = 0;
 				}
 				// 0045D6CD
 				helper::update_unit_stats_and_finish_building(building);
@@ -214,7 +214,7 @@ namespace hooks
 		if (jump_to_5D56C)
 		{ // 0045D56C
 			jump_to_5D56C = false;
-			if (building->remainingBuildTime == 0)
+			if (building->remaining_build_time == 0)
 			{
 				jump_to_5D720 = true;
 			}
@@ -224,13 +224,13 @@ namespace hooks
 			}
 			else
 			{
-				if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE)
+				if (building->remaining_build_time >= OPCWAL_PROGRESS_INCREASE)
 				{
-					building->remainingBuildTime -= OPCWAL_PROGRESS_INCREASE;
+					building->remaining_build_time -= OPCWAL_PROGRESS_INCREASE;
 				}
 				else
 				{
-					building->remainingBuildTime = 0;
+					building->remaining_build_time = 0;
 				}
 				jump_to_5D720 = true;
 			}
@@ -240,17 +240,17 @@ namespace hooks
 		{
 			jump_to_5D718 = false;
 
-			building->remainingBuildTime--;
+			building->remaining_build_time--;
 
 			if (modifier.decrease)
 			{
-				if (building->remainingBuildTime > modifier.decrease)
+				if (building->remaining_build_time > modifier.decrease)
 				{
-					building->remainingBuildTime -= modifier.decrease;
+					building->remaining_build_time -= modifier.decrease;
 				}
 				else
 				{
-					building->remainingBuildTime = 0;
+					building->remaining_build_time = 0;
 				}
 			}
 
@@ -262,7 +262,7 @@ namespace hooks
 			jump_to_5D720 = false;
 			if (!scbw::is_zerg_building_morph_result(buildingId))
 			{
-				s32 hpGain = building->buildRepairHpGain * modifier.multiplier;
+				s32 hpGain = building->build_repair_hp_gain * modifier.multiplier;
 				if (scbw::is_cheat_enabled(CheatFlags::OperationCwal))
 				{
 					hpGain *= OPCWAL_PROGRESS_INCREASE;
@@ -277,7 +277,7 @@ namespace hooks
 		bool bStopThere = false;
 		if (!(unit->status & UnitStatus::Completed))
 		{
-			u16 builtUnitId = unit->buildQueue[unit->buildQueueSlot];
+			u16 builtUnitId = unit->build_queue[unit->build_queue_slot];
 			// original code was hardcoded instead of using isValidMorph
 			if (helper::isValidMorph(builtUnitId))
 			{
@@ -287,7 +287,7 @@ namespace hooks
 				}
 				else
 				{ // ALL of this code is no longer run; previously used for protoss building morphs (e.g. gateway -> principality)
-					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+					unit->build_queue[unit->build_queue_slot] = UnitId::None;
 					resources->minerals[unit->player] += (units_dat::MineralCost[builtUnitId] * 3) / 4;
 					resources->gas[unit->player] += (units_dat::GasCost[builtUnitId] * 3) / 4;
 					unit->status |= UnitStatus::Completed;
@@ -345,7 +345,7 @@ namespace hooks
 				{ // 0045DB1E
 					helper::update_unit_stats_and_finish_building(drone);
 					helper::update_unit_strength(drone);
-					drone->setHp(unit->previousHp * 256);
+					drone->setHp(unit->previous_hitpoints * 256);
 					unit->remove();
 					bStopThere = true;
 				}
@@ -376,7 +376,7 @@ namespace hooks
 				helper::refreshSpriteData(unit->sprite);
 				unit->order_computer(OrderId::ResetCollision1);
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
-				unit->setHp(unit->previousHp * 256);
+				unit->setHp(unit->previous_hitpoints * 256);
 
 				helper::updateCreepDisappearance(unit->sprite, unit->id, unit->get_x(), unit->get_y());
 			}
@@ -387,30 +387,30 @@ namespace hooks
 // from unhooked
 namespace
 {
-	s32 BuildingHelper::get_unit_id_count(const Unit* unit, u16 unitId, bool ignoreIncomplete);
+	s32 BuildingHelper::get_unit_id_count(const Unit* unit, u16 unit_id, bool ignoreIncomplete);
 }
 
 namespace hooks
 {
-	// Checks if @p unitId is a building that can be morphed from another building.
+	// Checks if @p unit_id is a building that can be morphed from another building.
 	// Note: This hook affects the behavior of Unit::isRemorphingBuilding().
-	bool is_morphed_building(u16 unitId)
+	bool is_morphed_building(u16 unit_id)
 	{
 		//Default StarCraft behavior
-		if (scbw::is_zerg_building_morph_result(unitId))
+		if (scbw::is_zerg_building_morph_result(unit_id))
 		{
 			return true;
 		}
 		return false;
 	}
 
-	// Determines the number of units which have @p unitId and are being built by the
+	// Determines the number of units which have @p unit_id and are being built by the
 	// @p unit. This hook is used by StarCraft's AI for counting units and buildings.
-	s32 get_morph_building_id_count(const Unit* unit, u16 unitId, bool ignoreIncomplete)
+	s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignoreIncomplete)
 	{
-		s32 unitCount = BuildingHelper::get_unit_id_count(unit, unitId, ignoreIncomplete);
+		s32 unitCount = BuildingHelper::get_unit_id_count(unit, unit_id, ignoreIncomplete);
 
-		switch (unitId)
+		switch (unit_id)
 		{
 			case UnitId::ZergHatchery:
 			{

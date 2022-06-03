@@ -72,7 +72,7 @@ namespace hooks
 						{
 							u8* consoleVar = nullptr;
 							s32 playerIdVar = (u8)playerId;
-							u16 targetUnitQueue = worker->buildQueue[(u8)worker->buildQueueSlot % 5];
+							u16 targetUnitQueue = worker->build_queue[(u8)worker->build_queue_slot % 5];
 							s32 targetUnitQueue2 = targetUnitQueue;
 							s32 targetQueueCostMinerals = units_dat::MineralCost[targetUnitQueue2];
 							s32 targetQueueCostGas = units_dat::GasCost[targetUnitQueue2];
@@ -114,7 +114,7 @@ namespace hooks
 
 	// We all know what this is for - Pr0nogo
 	// TODO: Finish and clean up
-	s32 ai_manage_building_placement(Unit* builder, u32 unitId, Point16 tryPosition, Point16* outPosition, s32 areaTiles) // 004465C0 - 3 nops
+	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 tryPosition, Point16* outPosition, s32 areaTiles) // 004465C0 - 3 nops
 	{
 		s32 playerVar;
 		Unit* builderVar;
@@ -161,7 +161,7 @@ namespace hooks
 		playerVar = (u8)builder->player;
 		_tileX.y = (*(s32*)&tryPosition >> 16) / 32;
 		__tileX.y = _tileX.y;
-		v7 = units_dat::BaseProperty[(u16)unitId];
+		v7 = units_dat::BaseProperty[(u16)unit_id];
 		ownrId = playerVar;
 		v40 = 0;
 		v41 = 0;
@@ -171,12 +171,12 @@ namespace hooks
 			v10 = *(s16*)((char*)&units_dat::BuildingDimensions[0].x + v9);
 			*(Point16*)&v40 = __tileX;
 			v9 = *(s16*)((char*)&units_dat::BuildingDimensions[0].y + v9) / -2 / 32 + __tileX.y;
-			v36 = &units_dat::MaxHitPoints[(u16)unitId + 122];
+			v36 = &units_dat::MaxHitPoints[(u16)unit_id + 122];
 			v8 = *(s16*)v36 / 32 + __tileX.x - v10 / 2 / 32;
-			v35 = (s16*)((char*)&units_dat::MaxHitPoints[(u16)unitId + 122] + 2);
+			v35 = (s16*)((char*)&units_dat::MaxHitPoints[(u16)unit_id + 122] + 2);
 			v41 = *v35 / 32 + v9;
 			v40 = v8;
-			if (!helper::can_build_on_tile_location(builderVar, ownrId, *(s32*)&v40, v41, unitId, 0, 0, 1, 0))
+			if (!helper::can_build_on_tile_location(builderVar, ownrId, *(s32*)&v40, v41, unit_id, 0, 0, 1, 0))
 			{
 				v12 = *(s16*)v36 / -32 + v8;
 				v41 = *v35 / -32 + v41;
@@ -190,7 +190,7 @@ namespace hooks
 		}
 		ownrId = 2500;
 		v38 = (s8*)1;
-		switch ((u16)unitId)
+		switch ((u16)unit_id)
 		{
 			// Town halls
 			case UnitId::TerranCommandCenter:
@@ -204,31 +204,31 @@ namespace hooks
 			case UnitId::TerranNuclearSilo:
 			case UnitId::TerranQuarry:
 			{
-				unitId = UnitId::TerranCommandCenter;
+				unit_id = UnitId::TerranCommandCenter;
 			} break;
 			case UnitId::TerranControlTower:
 			case UnitId::TerranMunitionsBay:
 			{
-				unitId = UnitId::TerranStarport;
+				unit_id = UnitId::TerranStarport;
 			} break;
 			case UnitId::TerranMedbay:
 			case UnitId::TerranCovertOps:
 			{
-				unitId = UnitId::TerranBarracks;
+				unit_id = UnitId::TerranBarracks;
 			} break;
 			case UnitId::TerranMachineShop:
 			case UnitId::TerranSalvoYard:
 			{
-				unitId = UnitId::TerranFulcrum;
+				unit_id = UnitId::TerranFulcrum;
 			} break;
 			case UnitId::TerranGuildhall:
 			{
-				unitId = UnitId::TerranCaptaincy;
+				unit_id = UnitId::TerranCaptaincy;
 			} break;
 			case UnitId::TerranBioticBase:
 			case UnitId::TerranTinkerersTower:
 			{
-				unitId = UnitId::TerranScrapyard;
+				unit_id = UnitId::TerranScrapyard;
 			} break;
 			// Misc special rules
 			case UnitId::TerranBunker:
@@ -271,8 +271,8 @@ namespace hooks
 		}
 		v18 = (u8)builderVar->player;
 		*AIBuilderUnknown = builderVar;
-		v32 = (u16)unitId;
-		helper::ai_get_build_location((u16)unitId, (char*)a1, v18, tryPosition, areaTiles);
+		v32 = (u16)unit_id;
+		helper::ai_get_build_location((u16)unit_id, (char*)a1, v18, tryPosition, areaTiles);
 		*AIBuilderUnknown = 0;
 		if (v38)
 		{
@@ -488,7 +488,7 @@ namespace hooks
 		AI_Main* mainTown;
 		s16 mainTownTown;
 		s16 unitAIQueues;
-		s16 unitId;
+		s16 unit_id;
 
 		Unit* unitCopy = unit;
 		s32 nextBuildType = AIScriptController[player].requests->type;
@@ -623,8 +623,8 @@ namespace hooks
 
 		helper::ai_reserve(player, 1);
 		helper::ai_pop_spending_request(player);
-		unitId = unitCopy->id;
-		if (unitId == UnitId::ZergLarva || unitId == UnitId::ZergMutalisk || unitId == UnitId::ZergHydralisk)
+		unit_id = unitCopy->id;
+		if (unit_id == UnitId::ZergLarva || unit_id == UnitId::ZergMutalisk || unit_id == UnitId::ZergHydralisk)
 		{
 			helper::issue_order_targeting_nothing(unitCopy, OrderId::Morph1);
 			return 1;

@@ -271,7 +271,7 @@ namespace hooks
 							if (jump_to_9ad77 == true)
 							{
 								jump_to_9ad77 = false;
-								current_unit->userActionFlags |= 2;
+								current_unit->user_action_flags |= 2;
 								jump_to_9AD7E = true;
 							}
 						}

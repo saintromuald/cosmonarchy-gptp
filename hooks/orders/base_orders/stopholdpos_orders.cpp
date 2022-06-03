@@ -29,10 +29,10 @@ namespace hooks
 
 		//try healing current target, return a value depending
 		//on what happened
-		switchValue = helper::doMedicHeal(unit, unit->orderTarget.unit);
+		switchValue = helper::doMedicHeal(unit, unit->order_target.unit);
 
 		if (switchValue == 3) //640C6
-			unit->orderTarget.unit = nullptr;
+			unit->order_target.unit = nullptr;
 
 		if (switchValue == 0 || switchValue == 2 || switchValue == 3) //640CD
 			unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
@@ -43,16 +43,16 @@ namespace hooks
 		{
 
 			//if timer is 0, seek a target in range
-			if (unit->mainOrderTimer == 0)
+			if (unit->main_order_timer == 0)
 			{
 
-				unit->mainOrderTimer = 15;
-				unit->orderTarget.unit = helper::MedicHeal_TargetAcquire(unit);
+				unit->main_order_timer = 15;
+				unit->order_target.unit = helper::MedicHeal_TargetAcquire(unit);
 
-				if (unit->orderTarget.unit != nullptr)
+				if (unit->order_target.unit != nullptr)
 				{
-					unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
-					unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
+					unit->order_target.pt.x = (unit->order_target.unit)->sprite->position.x;
+					unit->order_target.pt.y = (unit->order_target.unit)->sprite->position.y;
 				}
 
 			}
@@ -73,8 +73,8 @@ namespace hooks
 				}
 
 				if (
-					unit->orderQueueHead == nullptr ||
-					unit->orderQueueHead->orderId != OrderId::MedicHeal2
+					unit->order_queue_head == nullptr ||
+					unit->order_queue_head->orderId != OrderId::MedicHeal2
 					) 	//6413D
 					helper::order_immediate(unit, OrderId::MedicHeal2); //return to idle after heal
 
@@ -82,12 +82,12 @@ namespace hooks
 
 			//64146
 			if (
-				(unit->orderTarget.unit)->sprite->position.x != unit->next_target_waypoint.x ||
-				(unit->orderTarget.unit)->sprite->position.y != unit->next_target_waypoint.y
+				(unit->order_target.unit)->sprite->position.x != unit->next_target_waypoint.x ||
+				(unit->order_target.unit)->sprite->position.y != unit->next_target_waypoint.y
 				)
 			{
-				unit->next_target_waypoint.x = (unit->orderTarget.unit)->sprite->position.x;
-				unit->next_target_waypoint.y = (unit->orderTarget.unit)->sprite->position.y;
+				unit->next_target_waypoint.x = (unit->order_target.unit)->sprite->position.x;
+				unit->next_target_waypoint.y = (unit->order_target.unit)->sprite->position.y;
 			}
 
 		}
@@ -99,7 +99,7 @@ namespace hooks
 	void orders_ReaverStop(Unit* unit)
 	{
 
-		Unit* outHangarChild = unit->carrier.outHangarChild;
+		Unit* out_hangar_child = unit->unit_with_hangar.out_hangar_child;
 		Point16 pos;
 
 		//change move target destination to current position
@@ -115,31 +115,31 @@ namespace hooks
 		}
 
 		//65500
-		while (outHangarChild != nullptr)
+		while (out_hangar_child != nullptr)
 		{
 
-			outHangarChild->userActionFlags |= 1;
+			out_hangar_child->user_action_flags |= 1;
 
-			if (outHangarChild->main_order_id != OrderId::Die)
+			if (out_hangar_child->main_order_id != OrderId::Die)
 			{
 
 				bool bNotRemovableOrder = false;
 
-				while (outHangarChild->orderQueueTail != nullptr && !bNotRemovableOrder)
+				while (out_hangar_child->order_queue_tail != nullptr && !bNotRemovableOrder)
 				{
 
 					if (
-						!orders_dat::CanBeInterrupted[outHangarChild->orderQueueTail->orderId] &&
-						outHangarChild->orderQueueTail->orderId != OrderId::SelfDestrucing
+						!orders_dat::CanBeInterrupted[out_hangar_child->order_queue_tail->orderId] &&
+						out_hangar_child->order_queue_tail->orderId != OrderId::SelfDestrucing
 						)
 						bNotRemovableOrder = true;
 					else
-						helper::remove_order_from_unit_queue(outHangarChild->orderQueueTail, outHangarChild);
+						helper::remove_order_from_unit_queue(out_hangar_child->order_queue_tail, out_hangar_child);
 
 				}
 
 				//65539
-				outHangarChild->perform_another_order(
+				out_hangar_child->perform_another_order(
 					OrderId::SelfDestrucing,
 					0,
 					0,
@@ -150,19 +150,19 @@ namespace hooks
 			}
 
 			//65554
-			prepareForNextOrder(outHangarChild);
-			outHangarChild = outHangarChild->interceptor.hangar_link.prev;
+			prepareForNextOrder(out_hangar_child);
+			out_hangar_child = out_hangar_child->hangar_unit.hangar_link.prev;
 
-		} //while(outHangarChild != nullptr)
+		} //while(out_hangar_child != nullptr)
 
 		//65565
 
-		unit->userActionFlags |= 1;
+		unit->user_action_flags |= 1;
 
-		if (unit->orderTarget.unit != nullptr)
+		if (unit->order_target.unit != nullptr)
 		{
-			pos.x = (unit->orderTarget.unit)->sprite->position.x;
-			pos.y = (unit->orderTarget.unit)->sprite->position.y;
+			pos.x = (unit->order_target.unit)->sprite->position.x;
+			pos.y = (unit->order_target.unit)->sprite->position.y;
 		}
 		else
 		{
@@ -176,16 +176,16 @@ namespace hooks
 
 			bool bNotRemovableOrder = false;
 
-			while (unit->orderQueueTail != nullptr && !bNotRemovableOrder)
+			while (unit->order_queue_tail != nullptr && !bNotRemovableOrder)
 			{
 
 				if (
-					!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
-					unit->orderQueueTail->orderId != OrderId::Reaver
+					!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId] &&
+					unit->order_queue_tail->orderId != OrderId::Reaver
 					)
 					bNotRemovableOrder = true;
 				else
-					helper::remove_order_from_unit_queue(unit->orderQueueTail, unit);
+					helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 
 			}
 
@@ -194,7 +194,7 @@ namespace hooks
 				OrderId::Reaver,
 				pos.x,
 				pos.y,
-				unit->orderTarget.unit,
+				unit->order_target.unit,
 				UnitId::None
 			);
 
@@ -210,7 +210,7 @@ namespace hooks
 	void orders_Guard(Unit* unit)
 	{
 
-		unit->mainOrderTimer = (u8)helper::rand_between(0, 15, 29);
+		unit->main_order_timer = (u8)helper::rand_between(0, 15, 29);
 
 		if (playerTable[unit->player].type == PlayerType::Computer)
 		{
@@ -264,13 +264,13 @@ namespace hooks
 	void orders_player_guard(Unit* unit)
 	{
 
-		//if unit->autoTargetUnit, attack this target
+		//if unit->auto_target_unit, attack this target
 		//then disable the unit...I think
 		//That's why if it return true, nothing else is done
 		//since has already attacked
 		if (!helper::attack_recent_attacker(unit)) {
-			if (unit->mainOrderTimer == 0) {
-				//unit->mainOrderTimer = 15;
+			if (unit->main_order_timer == 0) {
+				//unit->main_order_timer = 15;
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
 					if (unit->subunit->next_target_waypoint.x != unit->next_target_waypoint.x ||
 						unit->subunit->next_target_waypoint.y != unit->next_target_waypoint.y) {

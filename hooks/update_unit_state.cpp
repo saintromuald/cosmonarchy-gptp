@@ -29,7 +29,7 @@ namespace hooks
 				u16 cloakingEnergyCost = 0;
 				if (!(unit->hasEnergy(cloakingEnergyCost)))
 				{
-					if (unit->secondaryOrderId == OrderId::Cloak)
+					if (unit->secondary_order_id == OrderId::Cloak)
 					{
 						unit->set_secondary_order(OrderId::Nothing2); // Supposedly, immediately decloaks the unit.
 					}
@@ -105,21 +105,21 @@ namespace hooks
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		// Timers
-		if (unit->mainOrderTimer)
+		if (unit->main_order_timer)
 		{
-			unit->mainOrderTimer--;
+			unit->main_order_timer--;
 		}
-		if (unit->groundWeaponCooldown)
+		if (unit->ground_weapon_cooldown)
 		{
-			unit->groundWeaponCooldown--;
+			unit->ground_weapon_cooldown--;
 		}
-		if (unit->airWeaponCooldown)
+		if (unit->air_weapon_cooldown)
 		{
-			unit->airWeaponCooldown--;
+			unit->air_weapon_cooldown--;
 		}
-		if (unit->spellCooldown)
+		if (unit->spell_cooldown)
 		{
-			unit->spellCooldown--;
+			unit->spell_cooldown--;
 		}
 
 		// Wyvern clear target when changed owner to allied
@@ -166,12 +166,12 @@ namespace hooks
 
 			if (seek_unit)
 			{
-				if (unit->orderTarget.unit
+				if (unit->order_target.unit
 					&& unit->main_order_id != OrderId::Follow
 					&& unit->main_order_id != OrderId::Patrol
 					&& unit->main_order_id != OrderId::WyvernLandGrab)
 				{
-					Unit* newTarget = unit->orderTarget.unit;
+					Unit* newTarget = unit->order_target.unit;
 					if (wyvern_can_fire_at(unit, newTarget))
 					{
 						unitExt->units[UnitWyvernTargetLock] = newTarget;
@@ -219,14 +219,14 @@ namespace hooks
 		// Accantor Plasma Shells get shields equal to the Accantor that launches them
 		if (unit->id == UnitId::ProtossAccantor)
 		{
-			Unit* scarab = unit->carrier.inHangarChild;
+			Unit* scarab = unit->unit_with_hangar.in_hangar_child;
 			while (scarab)
 			{
 				if (scarab->id == UnitId::ProtossPlasmaShell)
 				{
 					scarab->shields = unit->shields;
 				}
-				scarab = scarab->interceptor.hangar_link.prev;
+				scarab = scarab->hangar_unit.hangar_link.prev;
 			}
 		}
 
@@ -234,9 +234,9 @@ namespace hooks
 		if (unit->main_order_id == OrderId::MiningMinerals ||
 			unit->main_order_id == OrderId::HarvestGas3)
 		{
-			if (unit->orderTarget.unit)
+			if (unit->order_target.unit)
 			{
-				unit->orderTarget.unit->cmbw_resource_regen_mining_delay = 5 * 24;
+				unit->order_target.unit->cmbw_resource_regen_mining_delay = 5 * 24;
 			}
 		}
 
@@ -248,9 +248,9 @@ namespace hooks
 		}
 
 		// Cowardice / Malice overlays
-		if (unit->_unknown_0x08C & 0x1)
+		if (unit->unused_8c & 0x1)
 		{
-			unit->_unknown_0x08C &= ~0x1;
+			unit->unused_8c &= ~0x1;
 			u32 overlayImageId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 			if (!unit->get_overlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
 			{
@@ -279,9 +279,9 @@ namespace hooks
 		}
 
 		// Clear Malice & Cowardice overlays
-		if (unit->_unknown_0x08C & 0x2)
+		if (unit->unused_8c & 0x2)
 		{
-			unit->_unknown_0x08C &= ~0x2;
+			unit->unused_8c &= ~0x2;
 			u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
 			u32 cowardiceId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 			unitExt->values[ValueHierophantOverlay] = 0;
@@ -326,15 +326,15 @@ namespace hooks
 					bool update_image = true;
 					if (unit->id == UnitId::ResourceVespeneGeyser || (scbw::unit_id_is_capped_gas_structure(unit->id) && unitExt->timers[TimerResourceBoostedRegen]))
 					{
-						if (unit->building.resource.resourceAmount < 7500) {
-							unit->building.resource.resourceAmount++;
+						if (unit->building.resource.resource_amount < 7500) {
+							unit->building.resource.resource_amount++;
 							scbw::refresh_console();
 						}
 					}
 					else if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3)
 					{
-						if (unit->building.resource.resourceAmount < 2500) {
-							unit->building.resource.resourceAmount++;
+						if (unit->building.resource.resource_amount < 2500) {
+							unit->building.resource.resource_amount++;
 							helper::updateMineralPatchImage(unit);
 							scbw::refresh_console();
 						}
@@ -371,9 +371,9 @@ namespace hooks
 		// supposedly, allows Zerglings to attack after unburrowing without delay
 		if (unit->id == UnitId::ZergZethrokor)
 		{
-			if (unit->groundWeaponCooldown == 0)
+			if (unit->ground_weapon_cooldown == 0)
 			{
-				unit->orderQueueTimer = 0;
+				unit->order_queue_timer = 0;
 			}
 		}
 
@@ -473,7 +473,7 @@ namespace hooks
 				if (unitExt->values[ValueLastOrdersInit] == 1)
 				{
 					auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y,
-						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+						unit->order_target.pt.x, unit->order_target.pt.y);
 					if (distance < 32)
 					{
 						unit->status |= UnitStatus::Invincible;
@@ -515,7 +515,7 @@ namespace hooks
 					{
 						if (helper::unitHpIsInRedZone(unit))
 						{
-							unit->damage_hp(20, nullptr, unit->lastAttackingPlayer, true);
+							unit->damage_hp(20, nullptr, unit->last_attacking_player, true);
 						}
 					}
 				}
@@ -547,7 +547,7 @@ namespace hooks
 			{
 				do
 				{
-					first_visible_unit->orderQueueTimer = visible_timer++;
+					first_visible_unit->order_queue_timer = visible_timer++;
 					if (visible_timer == 8)
 					{
 						visible_timer = 0;
@@ -563,7 +563,7 @@ namespace hooks
 		{
 			for (char i = 0; first_visible_unit; first_visible_unit = first_visible_unit->link.next)
 			{
-				first_visible_unit->secondaryOrderTimer = i++;
+				first_visible_unit->secondary_order_timer = i++;
 				if (i == 30)
 				{
 					i = 0;
@@ -637,15 +637,15 @@ namespace hooks
 				helper::update_visibility(first_visible_unit);
 				if (first_visible_unit->status & 0x300 && unitExt->timers[TimerDecloak] == 0)
 				{
-					first_visible_unit->isCloaked = 0;
-					if (first_visible_unit->secondaryOrderTimer)
+					first_visible_unit->is_cloaked = 0;
+					if (first_visible_unit->secondary_order_timer)
 					{
-						first_visible_unit->secondaryOrderTimer = first_visible_unit->secondaryOrderTimer - 1;
+						first_visible_unit->secondary_order_timer = first_visible_unit->secondary_order_timer - 1;
 					}
 					else
 					{
 						helper::check_unit_visibility(first_visible_unit);
-						first_visible_unit->secondaryOrderTimer = 30;
+						first_visible_unit->secondary_order_timer = 30;
 					}
 				}
 				first_visible_unit = first_visible_unit->link.next;
@@ -675,7 +675,7 @@ namespace hooks
 				next_hidden_unit = hidden_unit->link.next;
 				if (hidden_unit->status & 0x300)
 				{
-					hidden_unit->isCloaked = 0;
+					hidden_unit->is_cloaked = 0;
 				}
 				*activeIscriptEntity = hidden_unit;
 				*activeIscriptUnit = hidden_unit;
@@ -736,7 +736,7 @@ namespace hooks
 				else
 				{
 					v3 = v0->status;
-					if (v3 & UnitStatus::Burrowed || v0->secondaryOrderId != OrderId::Cloak || v0->isCloaked != 1 || !(v3 & 0x800))
+					if (v3 & UnitStatus::Burrowed || v0->secondary_order_id != OrderId::Cloak || v0->is_cloaked != 1 || !(v3 & 0x800))
 					{
 						v4 = 0;
 					}

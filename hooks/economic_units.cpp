@@ -201,7 +201,7 @@ namespace hooks
 		if (!town) return false;
 		if (town->inBattle) return false; // We probably don't want supplies to be built in attacked towns. We might want to ommit this condition if it's the only eligable town
 		if (GetTownRace(town) != raceId) return false;
-		if (town->main_building->remainingBuildTime != 0) return false; // town not finished, nullchecks are in the previous function
+		if (town->main_building->remaining_build_time != 0) return false; // town not finished, nullchecks are in the previous function
 		if (raceId == RaceId::Zerg)
 		{ // Zerg don't need worker for supply building, we could check for larvae instead, but it should be fine
 			return true;
@@ -322,7 +322,7 @@ namespace hooks
 		return false;
 	}
 
-	s32 AI_AddTownSpendingRequest(s32 playerId, s32 priority, s32 unitId, void* param)
+	s32 AI_AddTownSpendingRequest(s32 playerId, s32 priority, s32 unit_id, void* param)
 	{ // 00448400
 		s32 battleTime;
 		s8 race;
@@ -333,18 +333,18 @@ namespace hooks
 		if (!battleTime
 			|| *elapsedTimeSeconds - battleTime >= 0x1E // inBattle flag? just a coincidence?
 			|| ((race = playerTable[playerId].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
-				unitId == result || priority == 140))
+				unit_id == result || priority == 140))
 		{
-			if (units_dat::BaseProperty[unitId] & UnitProperty::Worker)
+			if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker)
 			{
 				reqType = 4;
 			}
 			else
 			{
-				reqType = 2 * (units_dat::BaseProperty[unitId] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
+				reqType = 2 * (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
 			}
-			helper::ai_add_cost_to_needs(unitId, playerId, reqType);
-			result = helper::ai_add_spending_request(unitId, playerId, reqType, priority, param);
+			helper::ai_add_cost_to_needs(unit_id, playerId, reqType);
+			result = helper::ai_add_spending_request(unit_id, playerId, reqType, priority, param);
 		}
 		return result;
 	}

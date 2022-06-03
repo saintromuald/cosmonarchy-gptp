@@ -78,15 +78,15 @@ namespace
 	{
 		static u32 result;
 		static u32 player;
-		static u32 unitId;
+		static u32 unit_id;
 		__asm
 		{
 			MOV result, EAX
 			MOV player, ECX
-			MOV unitId, EDI
+			MOV unit_id, EDI
 			PUSHAD
 		}
-		hooks::AI_AddToAttack(result, player, unitId);
+		hooks::AI_AddToAttack(result, player, unit_id);
 		__asm
 		{
 			POPAD
@@ -151,15 +151,15 @@ namespace
 
 	void __declspec(naked) AI_RemoveFromAttack_Wrapper() // 00447040
 	{
-		static s32 unitId;
+		static s32 unit_id;
 		static s32 player;
 		__asm
 		{
-			MOV unitId, EAX
+			MOV unit_id, EAX
 			MOV player, EDX
 			PUSHAD
 		}
-		hooks::AI_RemoveFromAttack(unitId, player);
+		hooks::AI_RemoveFromAttack(unit_id, player);
 		__asm
 		{
 			POPAD

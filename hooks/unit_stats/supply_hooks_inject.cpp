@@ -27,15 +27,15 @@ namespace
 	void __declspec(naked) getSuppliesRemaining_Wrapper()
 	{
 		static u8 playerId;
-		static u16 unitId;
+		static u16 unit_id;
 		static s32 result;
 		__asm
 		{
-			MOV unitId, DI
+			MOV unit_id, DI
 			MOV playerId, BL
 			PUSHAD
 		}
-		result = hooks::get_supplies_remaining(playerId, unitId);
+		result = hooks::get_supplies_remaining(playerId, unit_id);
 		__asm
 		{
 			POPAD
@@ -46,16 +46,16 @@ namespace
 
 	void __declspec(naked) getSuppliesMax_Wrapper()
 	{
-		static u16 unitId;
+		static u16 unit_id;
 		static u8 playerId;
 		static s32 result;
 		__asm
 		{
 			MOV playerId, CL
-			MOV unitId, AX
+			MOV unit_id, AX
 			PUSHAD
 		}
-		result = hooks::getSuppliesMax(unitId, playerId);
+		result = hooks::getSuppliesMax(unit_id, playerId);
 		__asm
 		{
 			POPAD
@@ -164,9 +164,9 @@ namespace
 		}
 	}
 
-	b32 __stdcall hasSuppliesForUnitWrapper(u8 playerId, u16 unitId, b32 canShowErrorMessage)
+	b32 __stdcall hasSuppliesForUnitWrapper(u8 playerId, u16 unit_id, b32 canShowErrorMessage)
 	{
-		if (hooks::hasSuppliesForUnitHook(playerId, unitId, canShowErrorMessage != 0))
+		if (hooks::hasSuppliesForUnitHook(playerId, unit_id, canShowErrorMessage != 0))
 		{
 			return 1;
 		}

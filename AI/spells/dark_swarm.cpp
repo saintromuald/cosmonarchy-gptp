@@ -80,7 +80,7 @@ namespace AI
 		bool bReturnValue;
 		if (isTargetWorthHitting(target, caster))
 		{
-			Unit* targetOfTarget = target->orderTarget.unit;
+			Unit* targetOfTarget = target->order_target.unit;
 
 			if (targetOfTarget != nullptr)
 			{
@@ -179,7 +179,7 @@ namespace AI
 		// Specific to 0x00442840
 		if ((result != nullptr) && (result->status & UnitStatus::InAir))
 		{
-			result = result->orderTarget.unit;
+			result = result->order_target.unit;
 		}
 		return result;
 	}

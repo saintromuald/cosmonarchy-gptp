@@ -8,19 +8,19 @@ namespace hooks
 	// Hooked to change order conditions and actions for custom spells - Pr0nogo
 	s32 spell_order(s32 defaultOrderString, Unit* caster, u16 techId, s32 range, u16* energyCost) // 004926D0
 	{
-		Unit* orderTarget = caster->orderTarget.unit;
+		Unit* order_target = caster->order_target.unit;
 		u16 meme = (u16)defaultOrderString;
 		if (techId == TechId::Hallucination
 		||	techId == TechId::LuminaryAuralAssault
-		||	(orderTarget && hooks::canTargetSpell(techId, orderTarget, 228, caster, orderTarget->sprite->position.x, orderTarget->sprite->position.y, &meme)))
+		||	(order_target && hooks::canTargetSpell(techId, order_target, 228, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
 		{
 			char cheatFlags = *CHEAT_STATE;
 			u16 techCost = techdata_dat::EnergyCost[techId] << 8;
 			*energyCost = techCost;
 			if ((cheatFlags & 8 || caster->energy >= techCost))
 			{
-				if (techId == TechId::Hallucination && !orderTarget) {
-					Point16 target_pos = caster->orderTarget.pt;
+				if (techId == TechId::Hallucination && !order_target) {
+					Point16 target_pos = caster->order_target.pt;
 					if (scbw::get_distance_fast(caster->position, target_pos) > range) {
 						helper::set_move_target_xy(target_pos.x, target_pos.y, caster);
 						return 0;
@@ -75,8 +75,8 @@ namespace hooks
 		helper::get_stat_txt_string(caster, (u8) caster->player, finalString);
 
 		s32 result;
-		if (caster->orderQueueHead) {
-			caster->userActionFlags |= 1u;
+		if (caster->order_queue_head) {
+			caster->user_action_flags |= 1u;
 			helper::orders_nothing_2(caster);
 			result = 0;
 		} else {
@@ -178,7 +178,7 @@ namespace hooks
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		u8 orderWeaponId = orders_dat::OrderWeaponId[unit->main_order_id];
-		Unit* target = unit->orderTarget.unit;
+		Unit* target = unit->order_target.unit;
 
 		if (unit->id == UnitId::TerranPaladin)
 		{
@@ -187,22 +187,22 @@ namespace hooks
 				unit->order_signal &= ~0x20;
 				unitExt->timers[TimerSkyfall] = 3;
 				unitExt->values[ValueSkyfallStacks] = 0;
-				auto pt = unit->orderTarget.pt;
-				if (unit->orderTarget.unit != nullptr)
+				auto pt = unit->order_target.pt;
+				if (unit->order_target.unit != nullptr)
 				{
-					pt = unit->orderTarget.unit->position;
-					unit->orderTarget.unit = nullptr;
+					pt = unit->order_target.unit->position;
+					unit->order_target.unit = nullptr;
 				}
-				unitExt->values[ValueSkyfallX] = unit->orderTarget.pt.x;
-				unitExt->values[ValueSkyfallY] = unit->orderTarget.pt.y;
+				unitExt->values[ValueSkyfallX] = unit->order_target.pt.x;
+				unitExt->values[ValueSkyfallY] = unit->order_target.pt.y;
 			}
 		}
 
 		if (unit->id == UnitId::TerranWyvern)
 		{
 			unitExt->values[ValueWyvernLandGrabOn] = 1;
-			unitExt->values[ValueWyvernLandGrabX] = unit->orderTarget.pt.x;
-			unitExt->values[ValueWyvernLandGrabY] = unit->orderTarget.pt.y;
+			unitExt->values[ValueWyvernLandGrabX] = unit->order_target.pt.x;
+			unitExt->values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
 		}
 
 		if (unit->main_order_state == 2)
@@ -216,8 +216,8 @@ namespace hooks
 			{
 				if (target != nullptr)
 				{
-					unit->orderTarget.pt.x = target->sprite->position.x;
-					unit->orderTarget.pt.y = target->sprite->position.y;
+					unit->order_target.pt.x = target->sprite->position.x;
+					unit->order_target.pt.y = target->sprite->position.y;
 
 					if (target->sprite->position.x != unit->next_target_waypoint.x
 					||	target->sprite->position.y != unit->next_target_waypoint.y) // 004928C1
@@ -286,7 +286,7 @@ namespace hooks
 						unit->main_order_state = 1;
 					}
 					bool gcd_condition = true;
-					if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown > 0)
+					if (unit->id == UnitId::TerranWyvern && unit->ground_weapon_cooldown > 0)
 					{
 						gcd_condition = false; // new
 					}
@@ -308,7 +308,7 @@ namespace hooks
 						{ // 00492A38
 							bool bStopHere = false;
 							// in case it was modified by a previous function, relinking
-							target = unit->orderTarget.unit;
+							target = unit->order_target.unit;
 							if (unit->unit_ai != nullptr && target != nullptr)
 							{
 								if (orderWeaponId <= WeaponId::Maelstrom) // Maelstrom is the last spell-related weapon
@@ -359,10 +359,10 @@ namespace hooks
 								unit->spend_unit_energy(spellCost);
 
 								cooldown = helper::get_upgraded_weapon_cooldown(unit, orderWeaponId);
-								unit->spellCooldown = cooldown;
+								unit->spell_cooldown = cooldown;
 								if (unit->id == UnitId::TerranWyvern)
 								{
-									unit->groundWeaponCooldown = cooldown; // new
+									unit->ground_weapon_cooldown = cooldown; // new
 								}
 
 								// disable flag 2 if enabled, else has no effect
@@ -372,9 +372,9 @@ namespace hooks
 								{
 									Image* current_image = unit->sprite->images.head;
 									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::OrderIscriptAnim[unit->main_order_id];
-									if (techUsed == TechId::Lockdown && unit->vulture.spiderMineCount > 0)
+									if (techUsed == TechId::Lockdown && unit->mine_carrier.mine_count > 0)
 									{
-										unit->vulture.spiderMineCount--;
+										unit->mine_carrier.mine_count--;
 									}
 									while (current_image != nullptr)
 									{
@@ -402,7 +402,7 @@ namespace hooks
 		{
 			return;
 		}
-		unit->userActionFlags |= 1u;
+		unit->user_action_flags |= 1u;
 		unit->order(id, coordX, coordY, nullptr, UnitId::None, true);
 		helper::orders_nothing_2(unit);
 	}
