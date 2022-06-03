@@ -663,7 +663,6 @@ namespace hooks
 							// Apply Lazarus Agent
 							UnitExt* pickedUnitExt = globals.get_unit_ext(picked_unit);
 							pickedUnitExt->values[ValueLazarusAgent] += 1;
-							pickedUnitExt->units[UnitRevivingApostle] = unit;
 							picked_unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 							helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit, 1, 0);
 						}

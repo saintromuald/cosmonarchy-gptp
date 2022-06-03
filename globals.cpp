@@ -1225,7 +1225,6 @@ namespace scbw
 		if (parentExt->values[ValueLazarusAgent])
 		{
 			childExt->values[ValueLazarusAgent] = parentExt->values[ValueLazarusAgent];
-			childExt->units[UnitRevivingApostle] = parentExt->units[UnitRevivingApostle];
 		}
 
 		// Inherit Empress Passive Stacks

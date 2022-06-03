@@ -352,7 +352,6 @@ enum ExtUnitId
 	UnitTurretParentLink,
 	UnitBlissfulEmbrace,
 	UnitMorphConnectedUnit,
-	UnitRevivingApostle,
 
 	UnitCount,
 };
