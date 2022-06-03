@@ -78,7 +78,7 @@ struct Sprite
 	/*0x12*/ u8				width;				// based on BWAPI/Source/BW/Sprite.h
 	/*0x13*/ u8				height;				// based on BWAPI/Source/BW/Sprite.h
 	/*0x14*/ Point16		position;
-	/*0x18*/ Image*			mainGraphic;		// officially "pImagePrimary"
+	/*0x18*/ Image*			main_graphic;		// officially "pImagePrimary"
 	/*0x1C*/ List<Image>	images;				// officially "pImageHead" and "pImageTail"
 
 	////////////////////////////////////////////////////////////////////

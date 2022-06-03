@@ -15,7 +15,7 @@ namespace hooks
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		if (!(unit->order_signal & 4))
 		{
-			Image* current_image = unit->sprite->mainGraphic;
+			Image* current_image = unit->sprite->main_graphic;
 			IscriptAnimation::Enum animation = IscriptAnimation::SpecialState1;
 			if (unitExt->values[ValueSpecialSovrolethBirth]) {
 				animation = IscriptAnimation::Unused2;
@@ -228,12 +228,12 @@ namespace hooks
 					auto origin = unit->egg_origin;
 					IscriptAnimation::Enum animation = IscriptAnimation::Unused1;
 					if (origin == UnitId::ZergZethrokor
-						|| origin == UnitId::ZergNathrokor)
+					||  origin == UnitId::ZergNathrokor)
 					{
 						animation = IscriptAnimation::Unused1;
 					}
 					else if (origin == UnitId::ZergUltrokor
-						|| origin == UnitId::ZergOvileth)
+					||		 origin == UnitId::ZergOvileth)
 					{
 						animation = IscriptAnimation::AlmostBuilt;
 					}

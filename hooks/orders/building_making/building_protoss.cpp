@@ -174,7 +174,7 @@ namespace hooks
 			{
 				building->order_signal &= ~1;
 				helper::replace_sprite_images(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
-				helper::switch_to_warp_texture(building->sprite->mainGraphic);
+				helper::switch_to_warp_texture(building->sprite->main_graphic);
 				building->main_order_state = 3; // DF: Skip state 2 as it's now redundant.
 			}
 		}

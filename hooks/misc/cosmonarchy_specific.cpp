@@ -79,11 +79,11 @@ namespace hooks
 
 	bool debugDamageOverlay(Sprite* sprite) {
 		
-		if (sprite->mainGraphic == nullptr)
+		if (sprite->main_graphic == nullptr)
 		{
 			return false;
 		}
-		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
+		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayDamagePtr, sprite->main_graphic->id));
 		if (overlay == nullptr)
 		{
 			return false;
@@ -94,10 +94,10 @@ namespace hooks
 				&& image->id <= ImageId::LastMinorDamageOverlay)
 			{
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
-				if (sprite->mainGraphic->frameIndex >= overlay->frameCount)
+				if (sprite->main_graphic->frameIndex >= overlay->frameCount)
 				{
 					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
-						sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
+						sprite->main_graphic->frameIndex, sprite->main_graphic->id);
 					{
 						return false;
 					}
@@ -106,10 +106,10 @@ namespace hooks
 		}
 		std::array<s32, 22> results;
 		auto result_pos = results.begin();
-		if (sprite->mainGraphic->frameIndex >= overlay->frameCount)
+		if (sprite->main_graphic->frameIndex >= overlay->frameCount)
 		{
 			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
-				sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
+				sprite->main_graphic->frameIndex, sprite->main_graphic->id);
 			return false;
 		}
 		return true;
@@ -117,11 +117,11 @@ namespace hooks
 
 	void createDamageOverlay(Sprite* sprite)
 	{
-		if (sprite->mainGraphic == nullptr)
+		if (sprite->main_graphic == nullptr)
 		{
 			return;
 		}
-		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
+		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayDamagePtr, sprite->main_graphic->id));
 		if (overlay == nullptr)
 		{
 			return; // return if there's no overlay defined
@@ -133,27 +133,27 @@ namespace hooks
 			{
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
 				image->free();
-				if (sprite->mainGraphic->frameIndex >= overlay->frameCount)
+				if (sprite->main_graphic->frameIndex >= overlay->frameCount)
 				{
 					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
-						sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
+						sprite->main_graphic->frameIndex, sprite->main_graphic->id);
 					{
 						return; 
 					}
 				}
-				Point8 offset = overlay->get_offset(sprite->mainGraphic->frameIndex, variation);
+				Point8 offset = overlay->get_offset(sprite->main_graphic->frameIndex, variation);
 				sprite->create_top_overlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
 			}
 		}
 		std::array<s32, 22> results;
 		auto result_pos = results.begin();
-		if (sprite->mainGraphic->frameIndex >= overlay->frameCount)
+		if (sprite->main_graphic->frameIndex >= overlay->frameCount)
 		{
 			return;
 		}
 		for (s32 i = 0; i < 22; i++)
 		{
-			Point8 offset = overlay->get_offset(sprite->mainGraphic->frameIndex, i);
+			Point8 offset = overlay->get_offset(sprite->main_graphic->frameIndex, i);
 			if (offset.x == 127 && offset.y == 127)
 			{
 				continue;
@@ -177,7 +177,7 @@ namespace hooks
 		if (result_pos != results.begin())
 		{
 			s32 variation = results[scbw::rand_between(0, result_pos - results.begin() - 1)];
-			Point8 offset = overlay->get_offset(sprite->mainGraphic->frameIndex, variation);
+			Point8 offset = overlay->get_offset(sprite->main_graphic->frameIndex, variation);
 			sprite->create_top_overlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 		}
 	}
@@ -581,8 +581,8 @@ LABEL_18:
 			else if (order_state == 1)
 			{
 				if (!(unit->movement_flags & MovementFlags::Accelerating)
-					&& unit->sprite->mainGraphic->animation != IscriptAnimation::Walking
-					&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle
+					&& unit->sprite->main_graphic->animation != IscriptAnimation::Walking
+					&& unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle
 					&& unitExt->timers[TimerPlanetCrackerDelay] == 0)
 				{
 					unitExt->timers[TimerPlanetCrackerDelay] = 24;
@@ -599,7 +599,7 @@ LABEL_18:
 			}
 			else if (order_state == 3)
 			{
-				if (unitExt->timers[TimerPlanetCrackerChannel] != 0 && unitExt->timers[TimerPlanetCrackerDelay] == 0 && unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell)
+				if (unitExt->timers[TimerPlanetCrackerChannel] != 0 && unitExt->timers[TimerPlanetCrackerDelay] == 0 && unit->sprite->main_graphic->animation != IscriptAnimation::CastSpell)
 				{
 					unit->play_iscript_animation(anim);
 					unitExt->timers[TimerPlanetCrackerChannel] = 121;

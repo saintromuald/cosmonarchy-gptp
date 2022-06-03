@@ -211,7 +211,6 @@ enum ExtValueId
 	ValuePreMorphEnergy,
 	ValueGodsMadeFleshCast,
 	ValueGodsMadeFleshActive,
-	ValueLazarusAgentApostleSrc,
 	ValueLurkerPickTarget,
 	ValueKelvinMunitionsSlow,
 	ValueRaceSupplyType,
@@ -353,6 +352,7 @@ enum ExtUnitId
 	UnitTurretParentLink,
 	UnitBlissfulEmbrace,
 	UnitMorphConnectedUnit,
+	UnitRevivingApostle,
 
 	UnitCount,
 };

@@ -142,7 +142,7 @@ namespace hooks
 				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 				sEnd = true;
 				replaceSpriteImages_copy(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
-				function_004D8500_copy(building->sprite->mainGraphic);
+				function_004D8500_copy(building->sprite->main_graphic);
 			}
 
 			if (sEnd)

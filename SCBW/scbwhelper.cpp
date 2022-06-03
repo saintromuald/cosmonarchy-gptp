@@ -5953,47 +5953,47 @@ namespace helper
 		/// Paladin attacking behavior
 		if (weaponId == WeaponId::PaladinCrusaderMissiles)
 		{
-			if (source->sprite->mainGraphic->direction == 0
-				|| source->sprite->mainGraphic->direction == 1
-				|| source->sprite->mainGraphic->direction == 2
-				|| source->sprite->mainGraphic->direction == 3)
+			if (source->sprite->main_graphic->direction == 0
+				|| source->sprite->main_graphic->direction == 1
+				|| source->sprite->main_graphic->direction == 2
+				|| source->sprite->main_graphic->direction == 3)
 			{
 				new_x = source->sprite->position.x + 6;
 				new_y = source->sprite->position.y - 45;
 			}
-			else if (source->sprite->mainGraphic->direction == 4
-				|| source->sprite->mainGraphic->direction == 5)
+			else if (source->sprite->main_graphic->direction == 4
+				|| source->sprite->main_graphic->direction == 5)
 			{
 				new_x = source->sprite->position.x + 4;
 				new_y = source->sprite->position.y - 44;
 			}
-			else if (source->sprite->mainGraphic->direction == 6
-				|| source->sprite->mainGraphic->direction == 7
-				|| source->sprite->mainGraphic->direction == 8
-				|| source->sprite->mainGraphic->direction == 9)
+			else if (source->sprite->main_graphic->direction == 6
+				|| source->sprite->main_graphic->direction == 7
+				|| source->sprite->main_graphic->direction == 8
+				|| source->sprite->main_graphic->direction == 9)
 			{
 				new_x = source->sprite->position.x + 1;
 				new_y = source->sprite->position.y - 43;
 			}
-			else if (source->sprite->mainGraphic->direction == 10
-				|| source->sprite->mainGraphic->direction == 11)
+			else if (source->sprite->main_graphic->direction == 10
+				|| source->sprite->main_graphic->direction == 11)
 			{
 				new_x = source->sprite->position.x - 3;
 				new_y = source->sprite->position.y - 42;
 			}
-			else if (source->sprite->mainGraphic->direction == 12
-				|| source->sprite->mainGraphic->direction == 13)
+			else if (source->sprite->main_graphic->direction == 12
+				|| source->sprite->main_graphic->direction == 13)
 			{
 				new_x = source->sprite->position.x - 6;
 				new_y = source->sprite->position.y - 41;
 			}
-			else if (source->sprite->mainGraphic->direction == 14
-				|| source->sprite->mainGraphic->direction == 15)
+			else if (source->sprite->main_graphic->direction == 14
+				|| source->sprite->main_graphic->direction == 15)
 			{
 				new_x = source->sprite->position.x - 8;
 				new_y = source->sprite->position.y - 44;
 			}
-			else if (source->sprite->mainGraphic->direction == 16)
+			else if (source->sprite->main_graphic->direction == 16)
 			{
 				new_x = source->sprite->position.x - 8;
 				new_y = source->sprite->position.y - 48;

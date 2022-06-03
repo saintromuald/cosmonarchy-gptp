@@ -158,11 +158,11 @@ Image* Sprite::create_overlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction
 	{
 		if (this->images.head)
 		{
-			this->images.insertBefore<&Image::link>(overlay, this->mainGraphic);
+			this->images.insertBefore<&Image::link>(overlay, this->main_graphic);
 		}
 		else
 		{
-			this->mainGraphic = overlay;
+			this->main_graphic = overlay;
 			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
@@ -186,11 +186,11 @@ Image* Sprite::create_underlay(u32 imageId, s8 offsetX, s8 offsetY, u32 directio
 	{
 		if (this->images.head)
 		{
-			this->images.insertAfter<&Image::link>(underlay, this->mainGraphic);
+			this->images.insertAfter<&Image::link>(underlay, this->main_graphic);
 		}
 		else
 		{
-			this->mainGraphic = underlay;
+			this->main_graphic = underlay;
 			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
@@ -219,7 +219,7 @@ Image* Sprite::create_top_overlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direc
 		}
 		else
 		{
-			this->mainGraphic = overlay;
+			this->main_graphic = overlay;
 			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
@@ -247,7 +247,7 @@ Image* Sprite::createTopUnderlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direct
 		}
 		else
 		{
-			this->mainGraphic = underlay;
+			this->main_graphic = underlay;
 			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
