@@ -88,7 +88,7 @@ namespace hooks
 		static b32* const bAtLeast1UnitWasRecalled = (b32*)(0x0063FF50);
 
 		// Unit has started casting Recall (== went through the other condition)
-		if (unit->mainOrderState == 1) {
+		if (unit->main_order_state == 1) {
 			// Execute the recall effect when timer reach 0
 			if (unit->mainOrderTimer == 0) {
 				unit->status &= ~UnitStatus::CanNotReceiveOrders;
@@ -181,7 +181,7 @@ namespace hooks
 				scbw::decloak_proc(unit);
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 				unit->mainOrderTimer = 3 * 24; // used to be 22
-				unit->mainOrderState = 1;
+				unit->main_order_state = 1;
 			}
 		}
 	}

@@ -19,7 +19,7 @@ namespace hooks
 			wUnitType <= 227 &&
 			building->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1 &&
 			helper::has_money_can_make(building, wUnitType) && //start construction if successful
-			building->mainOrderId != OrderId::Morph2
+			building->main_order_id != OrderId::Morph2
 			)
 		{
 			building->order_computer(OrderId::Morph2);
@@ -55,12 +55,12 @@ namespace hooks
 			}
 			if (
 				bAllowMorph &&
-				current_unit->mainOrderId != OrderId::Morph1 &&
+				current_unit->main_order_id != OrderId::Morph1 &&
 				helper::has_money_can_make(current_unit, wUnitType) // start construction if successful
 				)
 			{
 				current_unit->userActionFlags |= 1;
-				if (current_unit->mainOrderId != OrderId::Die)
+				if (current_unit->main_order_id != OrderId::Die)
 				{
 					bool bKeepLooping = true;
 					while (bKeepLooping)

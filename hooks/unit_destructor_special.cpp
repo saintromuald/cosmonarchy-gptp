@@ -9,7 +9,7 @@
 #include "globals.h"
 
 void augurProc(Unit* augur, s32 radius) {
-	Unit* target = scbw::UnitFinder::getNearestTarget(
+	Unit* target = scbw::UnitFinder::get_nearest_target(
 		augur->get_x() - radius,
 		augur->get_y() - radius,
 		augur->get_x() + radius,
@@ -446,7 +446,7 @@ void unit_destructor_special_cases(Unit* unit)
 	// Metastasis - Plague spreads when a unit dies
 	if (unit->plagueTimer)
 	{
-		helper::create_bullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->currentDirection1);
+		helper::create_bullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->current_direction_1);
 		u32 range = 48;
 		Box16 coords = {};
 		coords.left   = unit->position.x - range;

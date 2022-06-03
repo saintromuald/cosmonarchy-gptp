@@ -63,7 +63,7 @@ namespace hooks
 							scbw::print("null unit in AI_progressBuild");
 							return result;
 						}
-						s32 buildOrderId = (u8)worker->mainOrderId;
+						s32 buildOrderId = (u8)worker->main_order_id;
 						if (buildOrderId == OrderId::BuildTerran
 						  || buildOrderId == OrderId::BuildProtoss1
 						  || buildOrderId == OrderId::DroneLand

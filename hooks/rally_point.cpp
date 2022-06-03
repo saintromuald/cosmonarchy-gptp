@@ -80,9 +80,9 @@ namespace hooks
             else
             {
                 u16 unitId = unit->id;
-                if (unitId == UnitId::TerranMason && unit->mainOrderId == OrderId::ConstructingBuilding
-                  || scbw::unit_can_nuke(unit) && unit->mainOrderId == OrderId::NukeTrack
-                  || unitId == UnitId::ProtossAugur && unit->mainOrderId == OrderId::CompletingArchonSummon)
+                if (unitId == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding
+                  || scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
+                  || unitId == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
                 {
                     *lastInternalError = 8;
                     result = 0;
@@ -126,9 +126,9 @@ namespace hooks
         {
             unit->orderTarget.unit = 0;
         }
-        if (unit->moveTarget.unit == dying)
+        if (unit->move_target.unit == dying)
         {
-            unit->moveTarget.unit = 0;
+            unit->move_target.unit = 0;
         }
         if (unit->autoTargetUnit == dying)
         {

@@ -186,11 +186,11 @@ namespace hooks
 			&& (unit->resourceType == ResourceType::None || unit->resourceType & ResourceType::Either))
 		{
 			helper::set_gathering_flags(unit);
-			if (unit->mainOrderState)
+			if (unit->main_order_state)
 			{
-				if (unit->mainOrderState == 5 && !unit->mainOrderTimer)
+				if (unit->main_order_state == 5 && !unit->mainOrderTimer)
 				{
-					s32 worker_direction = unit->currentDirection1;
+					s32 worker_direction = unit->current_direction_1;
 					Point16 pos = {};
 					if (helper::get_gas_exit_point(unit, node, &pos, &worker_direction))
 					{
@@ -227,19 +227,19 @@ namespace hooks
 					unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				}
 
-				unit->mainOrderState = 5;
+				unit->main_order_state = 5;
 				unit->mainOrderTimer = timer;
 			}
 		}
 		else
 		{
 			helper::setResourceTarget(unit);
-			s32 target_pos_x = unit->moveTarget.pt.x;
-			s32 target_pos_y = unit->moveTarget.pt.y;
-			if (target_pos_x != unit->nextTargetWaypoint.x || target_pos_y != unit->nextTargetWaypoint.y)
+			s32 target_pos_x = unit->move_target.pt.x;
+			s32 target_pos_y = unit->move_target.pt.y;
+			if (target_pos_x != unit->next_target_waypoint.x || target_pos_y != unit->next_target_waypoint.y)
 			{
-				unit->nextTargetWaypoint.x = target_pos_x;
-				unit->nextTargetWaypoint.y = target_pos_y;
+				unit->next_target_waypoint.x = target_pos_x;
+				unit->next_target_waypoint.y = target_pos_y;
 			}
 			helper::force_order_done(unit);
 			if (unit->worker.is_harvesting)
@@ -268,7 +268,7 @@ namespace hooks
 			&& (unit->resourceType == ResourceType::None || unit->resourceType & ResourceType::Either))
 		{
 			helper::turnUnit(unit, scbw::get_angle(unit->position, node->position));
-			if (!unit->mainOrderState) {
+			if (!unit->main_order_state) {
 				helper::Order_BeginHarvest(node, unit);
 			}
 		}
@@ -277,10 +277,10 @@ namespace hooks
 			helper::setResourceTarget(unit);
 			u32 harvest_gas_x = unit->orderTarget.pt.x;
 			u32 harvest_gas_y = unit->orderTarget.pt.y;
-			if (harvest_gas_x != unit->nextTargetWaypoint.x || harvest_gas_y != unit->nextTargetWaypoint.y)
+			if (harvest_gas_x != unit->next_target_waypoint.x || harvest_gas_y != unit->next_target_waypoint.y)
 			{
-				unit->nextTargetWaypoint.x = harvest_gas_x;
-				unit->nextTargetWaypoint.y = harvest_gas_y;
+				unit->next_target_waypoint.x = harvest_gas_x;
+				unit->next_target_waypoint.y = harvest_gas_y;
 			}
 			if (unit->orderQueueHead)
 			{
@@ -382,7 +382,7 @@ namespace hooks
 		worker->worker.harvest_target = node;
 
 		u8 harvest_order_id = OrderId::HarvestGas3;
-		if (worker->mainOrderId != OrderId::CanEnterGasMine)
+		if (worker->main_order_id != OrderId::CanEnterGasMine)
 		{
 			harvest_order_id = OrderId::MiningMinerals;
 		}
@@ -425,7 +425,7 @@ namespace hooks
 			&&  !worker->stasisTimer
 			&&  !worker->maelstromTimer)
 			{
-				if (worker->mainOrderId == OrderId::CanEnterGasMine || worker->mainOrderId == OrderId::CanHarvestOre)
+				if (worker->main_order_id == OrderId::CanEnterGasMine || worker->main_order_id == OrderId::CanHarvestOre)
 				{
 					final_worker = worker;
 				}
@@ -467,11 +467,11 @@ namespace hooks
 	void orders_entries_move_to_harvest_obscured(Unit* worker) { // 00469500
 		if (worker->resourceType && !(worker->resourceType & ResourceType::Either)) {
 			helper::set_resource_target(worker);
-			u32 fixed_x = worker->moveTarget.pt.x;
-			u32 fixed_y = worker->moveTarget.pt.y;
-			if (fixed_x != worker->nextTargetWaypoint.x || fixed_y != worker->nextTargetWaypoint.y) {
-				worker->nextTargetWaypoint.x = fixed_x;
-				worker->nextTargetWaypoint.y = fixed_y;
+			u32 fixed_x = worker->move_target.pt.x;
+			u32 fixed_y = worker->move_target.pt.y;
+			if (fixed_x != worker->next_target_waypoint.x || fixed_y != worker->next_target_waypoint.y) {
+				worker->next_target_waypoint.x = fixed_x;
+				worker->next_target_waypoint.y = fixed_y;
 			}
 			if (worker->orderQueueHead) {
 				worker->userActionFlags |= 1;
@@ -485,15 +485,15 @@ namespace hooks
 		}
 		helper::set_gathering_flags(worker);
 		Unit* target = worker->orderTarget.unit;
-		if (worker->mainOrderState) {
+		if (worker->main_order_state) {
 			u32 is_movable = helper::is_unit_movable(worker);
-			if (worker->mainOrderState == 3 && is_movable) {
+			if (worker->main_order_state == 3 && is_movable) {
 				if (target && !(target->status & UnitStatus::Completed) && !worker->unit_ai) {
 					return;
 				}
 				if (target && helper::unit_is_geyser_ex(target, worker)) {
 					if (is_movable == 2) {
-						worker->mainOrderState = 0;
+						worker->main_order_state = 0;
 					} else if (worker->resourceType & ResourceType::VespeneGas) {
 						helper::issue_order_targeting_nothing(worker, OrderId::ReturnGas);
 					} else {
@@ -517,7 +517,7 @@ namespace hooks
 				if (helper::move_to_target(target, worker)) {
 					worker->worker.targetResource.pt = worker->orderTarget.pt;
 					worker->worker.targetResource.unit = worker->orderTarget.unit;
-					worker->mainOrderState = 3;
+					worker->main_order_state = 3;
 				}
 			} else {
 				helper::prepend_order(worker, OrderId::MoveToMinerals, worker->orderTarget.pt, worker->orderTarget.unit);

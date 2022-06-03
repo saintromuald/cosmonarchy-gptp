@@ -16,7 +16,7 @@ namespace AI
 			bounds = 32 * 64;
 		}
 
-		return scbw::UnitFinder::getNearestTarget(
+		return scbw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds, caster->get_y() - bounds,
 			caster->get_x() + bounds, caster->get_y() + bounds,
 			caster, [&](Unit* target)
@@ -45,8 +45,8 @@ namespace AI
 				|| target->id == UnitId::TerranPhalanxTankMode
 				|| target->id == UnitId::TerranPhalanxSiegeMode
 				|| target->id == UnitId::TerranCleric
-				|| (target->mainOrderId == OrderId::NukeWait
-					|| target->mainOrderId == OrderId::NukeTrack))
+				|| (target->main_order_id == OrderId::NukeWait
+					|| target->main_order_id == OrderId::NukeTrack))
 			{
 				return true;
 			}

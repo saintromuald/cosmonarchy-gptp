@@ -580,7 +580,7 @@ namespace scbw
 	}
 
 
-	Unit* UnitFinder::getNearestTarget(s32 left, s32 top, s32 right, s32 bottom,
+	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom,
 		Unit* sourceUnit, UnitFinderCallbackMatchInterface match)
 	{
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
@@ -609,7 +609,7 @@ namespace scbw
 			searchLeft, searchTop, searchRight, searchBottom,
 			match, sourceUnit);
 	}
-	Unit* UnitFinder::getNearestTarget(s32 left, s32 top, s32 right, s32 bottom,
+	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom,
 		Bullet* sourceBullet, UnitFinderCallbackMatchInterface match)
 	{
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
@@ -629,7 +629,7 @@ namespace scbw
 			searchLeft, searchTop, searchRight, searchBottom,
 			match, sourceBullet);
 	}
-	Unit* UnitFinder::getNearestTarget(s32 left, s32 top, s32 right, s32 bottom,
+	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom,
 		Vector32 sourcePosition, UnitFinderCallbackMatchInterface match)
 	{
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
@@ -649,9 +649,9 @@ namespace scbw
 			searchLeft, searchTop, searchRight, searchBottom,
 			match, sourcePosition);
 	}
-	Unit* UnitFinder::getNearestTarget(Unit* sourceUnit, UnitFinderCallbackMatchInterface match)
+	Unit* UnitFinder::get_nearest_target(Unit* sourceUnit, UnitFinderCallbackMatchInterface match)
 	{
-		return getNearestTarget(0, 0, mapTileSize->width * 32, mapTileSize->height * 32, sourceUnit, match);
+		return get_nearest_target(0, 0, mapTileSize->width * 32, mapTileSize->height * 32, sourceUnit, match);
 	}
 
 	//-------- Template member function definitions --------//

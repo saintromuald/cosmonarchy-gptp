@@ -30,7 +30,7 @@ bool Unit::canDetect() const
 u32 Unit::get_current_hp_ingame() const
 {
 	assert(this);
-	return (this->hitPoints + 255) >> 8;
+	return (this->hitpoints + 255) >> 8;
 }
 
 u32 Unit::getCurrentShieldsInGame() const
@@ -405,7 +405,7 @@ bool Unit::is_valid_caster() const
 //					2 - Unit cannot move
 u32 Unit::get_movable_state()
 {
-	if (this->moveTarget.pt != this->sprite->position)
+	if (this->move_target.pt != this->sprite->position)
 		return 0;
 	else if (!(this->status & UnitStatus::Unmovable))
 		return 1;
@@ -468,23 +468,23 @@ s16 Unit::get_bottom() const
 //-------- Modifying unit state --------//
 
 const u32 Func_SetUnitHp = 0x00467340;
-void Unit::setHp(s32 hitPoints)
+void Unit::setHp(s32 hitpoints)
 {
 	assert(this);
 
 	__asm {
 		PUSHAD
 		MOV EAX, this
-		MOV ECX, hitPoints
+		MOV ECX, hitpoints
 		CALL Func_SetUnitHp
 		POPAD
 	}
 }
 
-void Unit::heal(s32 hitPoints, Unit* source, bool restore)
+void Unit::heal(s32 hitpoints, Unit* source, bool restore)
 {
 	assert(this);
-	if (this->hitPoints == this->get_max_hp_raw()) // If unit is fully healed already, skip healing
+	if (this->hitpoints == this->get_max_hp_raw()) // If unit is fully healed already, skip healing
 	{
 		return;
 	}
@@ -492,13 +492,13 @@ void Unit::heal(s32 hitPoints, Unit* source, bool restore)
 	// Cohort - Servile Vigor
 	if (id == UnitId::SharedCohort && this != source)
 	{
-		hitPoints *= 2;
+		hitpoints *= 2;
 	}
 
-	setHp(std::min((u32)this->hitPoints + hitPoints, this->get_max_hp_raw()));
+	setHp(std::min((u32)this->hitpoints + hitpoints, this->get_max_hp_raw()));
 
 	// If the unit is fully healed after this, clear any debuffs
-	if (this->hitPoints == this->get_max_hp_raw() && restore)
+	if (this->hitpoints == this->get_max_hp_raw() && restore)
 	{
 		scbw::restore_func(this);
 	}
@@ -525,7 +525,7 @@ void Unit::healShields(s32 shields, Unit* source, bool restore)
 void Unit::healOverflow(s32 amount, Unit* source, bool restore)
 {
 	heal(amount, source, restore);
-	s32 shields = this->hitPoints + amount - get_max_hp_raw();
+	s32 shields = this->hitpoints + amount - get_max_hp_raw();
 	if (shields > 0)
 	{
 		healShields(shields, source, restore);
@@ -836,7 +836,7 @@ s32 Unit::get_total_hp_plus_shields()
 	}
 	if (!hp)
 	{
-		hp = (this->hitPoints + 255) >> 8;
+		hp = (this->hitpoints + 255) >> 8;
 		if (!hp)
 		{
 			hp = 1;
@@ -1343,7 +1343,7 @@ Unit* Unit::getLoadedUnit(s32 index) const
 
 	Unit* loadedUnit = Unit::getFromIndex(this->loadedUnit[index].index);
 	if (loadedUnit && loadedUnit->sprite
-		&& !(loadedUnit->mainOrderId == OrderId::Die && loadedUnit->mainOrderState == 1)
+		&& !(loadedUnit->main_order_id == OrderId::Die && loadedUnit->main_order_state == 1)
 		&& loadedUnit->targetOrderSpecial == this->loadedUnit[index].unitId)
 	{
 		return loadedUnit;
@@ -1411,7 +1411,7 @@ bool Unit::give_to(u8 playerId)
 bool Unit::is_dead() const
 {
 	assert(this);
-	return (!this->sprite) || (this->mainOrderId == OrderId::Die);
+	return (!this->sprite) || (this->main_order_id == OrderId::Die);
 }
 
 // Probably equivalent to function @ 0047B910
@@ -1497,7 +1497,7 @@ void Unit::resetSupplyProvided() // overwrites previous supply provided
 bool Unit::is_attempting_protoss_build()
 {
 	assert(this);
-	return this->mainOrderId == OrderId::BuildProtoss1
+	return this->main_order_id == OrderId::BuildProtoss1
 		&& this->status & UnitStatus::GroundedBuilding
 		&& this->orderTarget.unit != NULL
 		&& !(this->orderTarget.unit->status & UnitStatus::Completed);

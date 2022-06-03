@@ -7,12 +7,12 @@ namespace hooks
 {
 	void orders_terran_build_self(Unit* building)
 	{
-		if (building->mainOrderState == 0)
+		if (building->main_order_state == 0)
 		{
-			if (building->hitPoints > 20 * units_dat::MaxHitPoints[building->id] / 100)
-				building->mainOrderState = 1;
+			if (building->hitpoints > 20 * units_dat::MaxHitPoints[building->id] / 100)
+				building->main_order_state = 1;
 		}
-		else if (building->mainOrderState == 1)
+		else if (building->main_order_state == 1)
 		{
 			Image* current_image = building->sprite->images.head;
 			while (current_image != nullptr)
@@ -20,14 +20,14 @@ namespace hooks
 				current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 				current_image = current_image->link.next;
 			}
-			building->mainOrderState = 2;
+			building->main_order_state = 2;
 		}
-		else if (building->mainOrderState == 2)
+		else if (building->main_order_state == 2)
 		{
-			if (building->hitPoints > 40 * units_dat::MaxHitPoints[building->id] / 100)
-				building->mainOrderState = 3;
+			if (building->hitpoints > 40 * units_dat::MaxHitPoints[building->id] / 100)
+				building->main_order_state = 3;
 		}
-		else if (building->mainOrderState == 3)
+		else if (building->main_order_state == 3)
 		{
 			Image* current_image = building->sprite->images.head;
 			while (current_image != nullptr)
@@ -35,16 +35,16 @@ namespace hooks
 				current_image->play_iscript_animation(IscriptAnimation::SpecialState2);
 				current_image = current_image->link.next;
 			}
-			building->mainOrderState = 4;
+			building->main_order_state = 4;
 		}
-		else if (building->mainOrderState == 4)
+		else if (building->main_order_state == 4)
 		{
-			if (building->hitPoints > 60 * units_dat::MaxHitPoints[building->id] / 100)
+			if (building->hitpoints > 60 * units_dat::MaxHitPoints[building->id] / 100)
 			{
-				building->mainOrderState = 5;
+				building->main_order_state = 5;
 			}
 		}
-		else if (building->mainOrderState == 5)
+		else if (building->main_order_state == 5)
 		{
 			helper::init_building(building, 0);
 			Image* current_image = building->sprite->images.head;
@@ -53,11 +53,11 @@ namespace hooks
 				current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				current_image = current_image->link.next;
 			}
-			building->mainOrderState = 6;
+			building->main_order_state = 6;
 		}
-		else if (building->mainOrderState == 6)
+		else if (building->main_order_state == 6)
 		{
-			if (building->hitPoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
+			if (building->hitpoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
 			{
 				building->order_computer(OrderId::Nothing2);
 			}
@@ -74,17 +74,17 @@ namespace hooks
 		if (builtUnit != nullptr && !(builtUnit->status & UnitStatus::Completed))
 		{
 			bool jump_to_switch_1 = false;
-			if (unit->mainOrderState > 8 ||
-				unit->mainOrderState == 1)
+			if (unit->main_order_state > 8 ||
+				unit->main_order_state == 1)
 			{
 				jump_to_switch_1 = true;
 			}
-			if (unit->mainOrderState == 0)
+			if (unit->main_order_state == 0)
 			{
 				if (helper::order_to_move_to_target(unit, builtUnit))
-					unit->mainOrderState = 2;
+					unit->main_order_state = 2;
 			}
-			if (unit->mainOrderState == 2)
+			if (unit->main_order_state == 2)
 			{
 				u32 movableState = unit->get_movable_state();
 				if (movableState == MovableState::UnmovableAtDestination)
@@ -110,18 +110,18 @@ namespace hooks
 						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
 						//    the randomized orderTarget is very near the same spot the SCV resumed construction, but I think the helper::TerrainCollision_? condition in State 4 should handle it.
 						//if (helper::ChangeMovementTargetMoveTarget2(unit, builtUnit->sprite->position.x, builtUnit->sprite->position.y))
-						unit->mainOrderState = 3;
+						unit->main_order_state = 3;
 					}
 				}
 			}
-			else if (unit->mainOrderState == 3)
+			else if (unit->main_order_state == 3)
 			{
 				if (unit->get_movable_state() != MovableState::NotReachedDestination)
 				{
-					unit->mainOrderState = 4;
+					unit->main_order_state = 4;
 				}
 			}
-			else if (unit->mainOrderState == 4)
+			else if (unit->main_order_state == 4)
 			{
 				s16 x_min, x_max, y_min, y_max;
 				x_min = builtUnit->sprite->position.x - units_dat::UnitBounds[builtUnit->id].left + units_dat::UnitBounds[unit->id].left;
@@ -151,16 +151,16 @@ namespace hooks
 
 				if (helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
 				{
-					unit->mainOrderState = 5;
+					unit->main_order_state = 5;
 					jump_to_switch_1 = true;
 				}
 			}
-			else if (unit->mainOrderState == 5)
+			else if (unit->main_order_state == 5)
 			{
-				unit->mainOrderState = 6;
+				unit->main_order_state = 6;
 				jump_to_switch_1 = true;
 			}
-			else if (unit->mainOrderState == 6)
+			else if (unit->main_order_state == 6)
 			{
 				if (!helper::is_distance_greater_than_halt_distance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, 20))
 				{
@@ -171,19 +171,19 @@ namespace hooks
 					s32 angle;
 					helper::set_resource_target(unit);
 					helper::set_secondary_waypoint(unit, (unit->orderTarget.unit)->sprite->position.x, (unit->orderTarget.unit)->sprite->position.y);
-					angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
+					angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 					unit->orderTarget.pt.x = (angleDistance[angle].x * 20) / 256 + unit->sprite->position.x;
 					unit->orderTarget.pt.y = (angleDistance[angle].y * 20) / 256 + unit->sprite->position.y;
-					unit->mainOrderState = 7;
+					unit->main_order_state = 7;
 					jump_to_switch_1 = true;
 				}
 			}
-			else if (unit->mainOrderState == 7)
+			else if (unit->main_order_state == 7)
 			{
 				if (!helper::is_unit_positions_2_equal(unit))
 				{
-					s32 angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
-					angle = unit->currentDirection1 - angle;
+					s32 angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
+					angle = unit->current_direction_1 - angle;
 					if (angle < 0)
 					{
 						angle += 256;
@@ -202,7 +202,7 @@ namespace hooks
 							current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 							current_image = current_image->link.next;
 						}
-						unit->mainOrderState = 8;
+						unit->main_order_state = 8;
 						jump_to_switch_1 = true;
 					}
 				}
@@ -216,11 +216,11 @@ namespace hooks
 						current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 						current_image = current_image->link.next;
 					}
-					unit->mainOrderState = 8;
+					unit->main_order_state = 8;
 					jump_to_switch_1 = true;
 				}
 			}
-			else if (unit->mainOrderState == 8)
+			else if (unit->main_order_state == 8)
 			{
 				if (unit->mainOrderTimer != 0)
 				{
@@ -234,7 +234,7 @@ namespace hooks
 						current_image->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
 						current_image = current_image->link.next;
 					}
-					unit->mainOrderState = 4;
+					unit->main_order_state = 4;
 					jump_to_switch_1 = true;
 				}
 			}
@@ -382,10 +382,10 @@ namespace hooks
 		{
 			unit->status |= UnitStatus::IsGathering;
 		}
-		if (unit->mainOrderState == 1)
+		if (unit->main_order_state == 1)
 		{
-			if (unit->sprite->position.x == unit->moveTarget.pt.x &&
-				unit->sprite->position.y == unit->moveTarget.pt.y)
+			if (unit->sprite->position.x == unit->move_target.pt.x &&
+				unit->sprite->position.y == unit->move_target.pt.y)
 			{
 				if (!(unit->status & UnitStatus::Unmovable)
 					&& helper::is_distance_greater_than_halt_distance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, 128)
@@ -426,8 +426,8 @@ namespace hooks
 					else // 00468131
 					{
 						builtUnit->connectedUnit = unit;
-						unit->mainOrderId = OrderId::ConstructingBuilding;
-						unit->mainOrderState = 3;
+						unit->main_order_id = OrderId::ConstructingBuilding;
+						unit->main_order_state = 3;
 						unit->orderTarget.unit = builtUnit;
 						if (*IS_PLACING_BUILDING)
 						{
@@ -448,7 +448,7 @@ namespace hooks
 				}
 			}
 		}
-		else if (unit->mainOrderState == 0) // 00468188
+		else if (unit->main_order_state == 0) // 00468188
 		{
 			bool bMoveTargetResult;
 			scbw::refresh_console();
@@ -458,16 +458,16 @@ namespace hooks
 				unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
 			}
 			bMoveTargetResult = helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-			if ((unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
-				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
+			if ((unit->orderTarget.pt.x != unit->next_target_waypoint.x ||
+				unit->orderTarget.pt.y != unit->next_target_waypoint.y)
 				&& !(unit->orderTarget.pt.x == 0 && unit->orderTarget.pt.y == 0))
 			{
-				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
-				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
+				unit->next_target_waypoint.x = unit->orderTarget.pt.x;
+				unit->next_target_waypoint.y = unit->orderTarget.pt.y;
 			}
 			if (bMoveTargetResult)
 			{
-				unit->mainOrderState = 1;
+				unit->main_order_state = 1;
 			}
 		}
 	}

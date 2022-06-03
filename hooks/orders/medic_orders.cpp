@@ -7,7 +7,7 @@ namespace hooks
 {
 	void orders_MedicHeal2(Unit* unit)
 	{
-		if (!(unit->movementFlags & MovementFlags::Accelerating))
+		if (!(unit->movement_flags & MovementFlags::Accelerating))
 		{
 			Image* current_image = unit->sprite->images.head;
 			while (current_image != nullptr)
@@ -62,7 +62,7 @@ namespace hooks
 			// 00463842
 			if (!bStopThere)
 			{
-				if (unit->moveTarget.pt.x == unit->sprite->position.x && unit->moveTarget.pt.y == unit->sprite->position.y)
+				if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y)
 				{
 					unit->order_to_idle();
 				}
@@ -108,7 +108,7 @@ namespace hooks
 			if (target != nullptr)
 			{
 				unit->userActionFlags |= 1;
-				if (unit->mainOrderId != OrderId::Die)
+				if (unit->main_order_id != OrderId::Die)
 				{
 					bool bEndLoop = unit->orderQueueTail == nullptr;
 					while (!bEndLoop)
@@ -206,7 +206,7 @@ namespace hooks
 		}
 		else // 004641D3
 		{
-			if (unit->mainOrderState == 0)
+			if (unit->main_order_state == 0)
 			{
 				if (target != nullptr
 					&& helper::moveTowards(unit, target) != 0
@@ -215,7 +215,7 @@ namespace hooks
 					if (unit->is_target_within_min_range(target, 30))
 					{
 						helper::set_resource_target(unit);
-						unit->mainOrderState = 1;
+						unit->main_order_state = 1;
 					}
 				}
 				else // 00464216
@@ -227,7 +227,7 @@ namespace hooks
 			{
 				if (doMedicHeal_result == 1)
 				{
-					if (!(unit->orderSignal & 1))
+					if (!(unit->order_signal & 1))
 					{
 						Image* current_image = unit->sprite->images.head;
 						while (current_image != nullptr)
@@ -245,15 +245,15 @@ namespace hooks
 					// 0046425B
 					target = unit->orderTarget.unit;
 					if (target != nullptr
-						&& (target->position.x != unit->nextTargetWaypoint.x || target->position.y != unit->nextTargetWaypoint.y))
+						&& (target->position.x != unit->next_target_waypoint.x || target->position.y != unit->next_target_waypoint.y))
 					{
-						unit->nextTargetWaypoint.x = target->position.x;
-						unit->nextTargetWaypoint.y = target->position.y;
+						unit->next_target_waypoint.x = target->position.x;
+						unit->next_target_waypoint.y = target->position.y;
 					}
 				}
 				else // 00464283
 				{
-					unit->mainOrderState = 0;
+					unit->main_order_state = 0;
 				}
 			}
 		}
@@ -275,7 +275,7 @@ namespace hooks
 			|| !scbw::is_allied_to(medic->player, target->player)
 			|| target->player >= 8
 			|| medic->player >= 8
-			|| target->hitPoints >= units_dat::MaxHitPoints[type]
+			|| target->hitpoints >= units_dat::MaxHitPoints[type]
 			|| target->is_frozen()
 			|| targetExt->values[TimerReviveFlagClearMax])
 		{

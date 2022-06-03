@@ -1117,7 +1117,7 @@ namespace scbw
 				{
 					if (creator)
 					{
-						unit->hitPoints = std::max(256, creator->hitPoints);
+						unit->hitpoints = std::max(256, creator->hitpoints);
 						unit->shields = std::max(256, creator->shields);
 						scbw::inherit_debuffs(creator, unit);
 					}
@@ -1137,12 +1137,12 @@ namespace scbw
 		{
 			distance = 0;
 		}
-		auto polar_x = unit->get_x() + scbw::get_polar_x(distance, unit->currentDirection1);
-		auto polar_y = unit->get_y() + scbw::get_polar_y(distance, unit->currentDirection1);
+		auto polar_x = unit->get_x() + scbw::get_polar_x(distance, unit->current_direction_1);
+		auto polar_y = unit->get_y() + scbw::get_polar_y(distance, unit->current_direction_1);
 		unit->orderTarget.unit = nullptr;
 		unit->orderTarget.pt.x = polar_x;
 		unit->orderTarget.pt.y = polar_y;
-		helper::create_bullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
+		helper::create_bullet(weaponId, unit, x, y, unit->player, unit->current_direction_1);
 		unit->orderTarget.unit = target_unit;
 		unit->orderTarget.pt = target_pos;
 	}
@@ -1818,7 +1818,7 @@ namespace scbw
 			unit->get_y() - radius,
 			unit->get_x() + radius,
 			unit->get_y() + radius
-		).forEachInMatch(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}),
+		).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}),
 			[&unitExt](Unit* target)
 		{
 			target->damage_with_custom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
@@ -1866,7 +1866,7 @@ namespace scbw
 			unit->get_y() - radius,
 			unit->get_x() + radius,
 			unit->get_y() + radius
-		).forEachInMatch(match, [&](Unit* target)
+		).for_each_in_match(match, [&](Unit* target)
 		{
 			if (scbw::is_allied_to(target->player, unit->player))
 			{
@@ -2269,7 +2269,7 @@ namespace scbw
 		// Obtain control
 		if (!targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = unit->player + 1;
-			targetExt->values[ValueBlissfulEmbraceOriginalHealth] = unit->hitPoints;
+			targetExt->values[ValueBlissfulEmbraceOriginalHealth] = unit->hitpoints;
 		}
 		unit->give_to(player);
 

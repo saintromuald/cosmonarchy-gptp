@@ -111,7 +111,7 @@ namespace hooks
 		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
 		// The unit must neither be already dead nor invincible
-		if (data.target == nullptr || data.target->hitPoints == 0 || data.target->status & UnitStatus::Invincible)
+		if (data.target == nullptr || data.target->hitpoints == 0 || data.target->status & UnitStatus::Invincible)
 		{
 			return;
 		}
@@ -233,7 +233,7 @@ namespace hooks
 				{
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y,
 						data.attacker->position.x, data.attacker->position.y);
-					u16 unit_angle = data.target->velocityDirection1;
+					u16 unit_angle = data.target->velocity_direction_1;
 					s32 arc = (f64)45 / 1.40625; // 90 degrees
 					s32 delta = unit_angle - angle;
 					delta = abs((delta + 128) % 256 - 128);
@@ -280,10 +280,10 @@ namespace hooks
 		// Olympian Mythical Might - execute enemies below 10% HP
 		if (!data.dontProcLinkDamage && (data.weaponId == WeaponId::OlympianMountainGun || data.weaponId == WeaponId::OlympianTitansFist))
 		{
-			if (data.target->hitPoints < data.target->get_max_hp_raw() * 0.1)
+			if (data.target->hitpoints < data.target->get_max_hp_raw() * 0.1)
 			{
 				helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
-				data.finalDamage = data.target->hitPoints;
+				data.finalDamage = data.target->hitpoints;
 			}
 		}
 
@@ -292,17 +292,17 @@ namespace hooks
 		{
 			weaponDamage_lifesteal(data);
 		}
-		if (data.finalDamage >= data.target->hitPoints)
+		if (data.finalDamage >= data.target->hitpoints)
 		{
 			weaponDamage_fatal(data);
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damageType != DamageType::Independent && data.target->hitPoints != 0 && data.target->defensiveMatrixHp == 0 && canDamage )
+		if (data.damageType != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensiveMatrixHp == 0 && canDamage )
 		{
 			data.target->damage_hp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
-			if (!data.target->hitPoints) {
+			if (!data.target->hitpoints) {
 				helper::unit_attack_notify(data.target);
 			}
 		}
@@ -412,7 +412,7 @@ namespace hooks
 			case WeaponId::QuaziliskAcridBarbs:
 			{
 				// Quazilisk - Melting Points
-				f32 missingFactor = 1 - ((f32)data.target->hitPoints / data.target->get_max_hp_raw());
+				f32 missingFactor = 1 - ((f32)data.target->hitpoints / data.target->get_max_hp_raw());
 				f32 damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
 				data.finalDamage += damageIncrease * HealthMultiplier;
 			} break;
@@ -441,7 +441,7 @@ namespace hooks
 			// Cabalist - Decloak, Silent Kill
 			if (data.attacker->id == UnitId::ProtossCabalist)
 			{
-				if (data.finalDamage < data.target->hitPoints) {
+				if (data.finalDamage < data.target->hitpoints) {
 					scbw::decloak_proc(data.attacker);
 				} else if (targetExt->timers[TimerDecloak] > 1) {
 					targetExt->timers[TimerDecloak] = 1;
@@ -530,10 +530,10 @@ namespace hooks
 				{
 					// Cuirass - Stonewall Protocol
 					if (!targetExt->values[ValueIsSelfReviving]
-						&& data.target->hitPoints < data.finalDamage)
+						&& data.target->hitpoints < data.finalDamage)
 					{
 						targetExt->values[ValueIsSelfReviving] = 1;
-						data.target->hitPoints = CuirassSelfReviveHP;
+						data.target->hitpoints = CuirassSelfReviveHP;
 						data.finalDamage = 0;
 						data.target->order_computer(OrderId::Stop);
 						data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
@@ -609,7 +609,7 @@ namespace hooks
 						// Demiurge - Worship
 						if (data.target->player != data.attacker->player
 							&& data.target->get_current_hp_ingame() <= data.target->get_max_hp_ingame() / 2
-							&& data.target->hitPoints > data.finalDamage)
+							&& data.target->hitpoints > data.finalDamage)
 						{
 							scbw::mind_control(data.attacker, data.target);
 						}
@@ -810,8 +810,8 @@ namespace hooks
 						// Magnetar - Law of Attraction - Pull target to attacker
 						if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
 							|| (data.target->status & UnitStatus::InAir
-								&& data.target->mainOrderId != OrderId::Liftoff
-								&& data.target->mainOrderId != OrderId::BuildingLand))
+								&& data.target->main_order_id != OrderId::Liftoff
+								&& data.target->main_order_id != OrderId::BuildingLand))
 						{
 							const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 							const u32 displacementTime = 5;
@@ -841,7 +841,7 @@ namespace hooks
 			case WeaponId::AmaranthPsiCleaver:
 			{
 				// Eternal Service - Amaranth behavior
-				const s32 hp = data.attacker->hitPoints / 256;
+				const s32 hp = data.attacker->hitpoints / 256;
 				const s32 maxHp = data.attacker->get_max_hp_ingame();
 				u32 shieldsHeal = damageDealt * MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
 				data.attacker->healShields(shieldsHeal, data.attacker);
@@ -914,7 +914,7 @@ namespace hooks
 			&& !targetExt->values[ValueIsZombified])
 		{
 			data.finalDamage = 0;
-			data.target->hitPoints = 0;
+			data.target->hitpoints = 0;
 			data.target->shields = 0;
 			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 256 * 2.5, targetExt->units[UnitEmpressSource]);
 			data.target->removeTimer = 1 + targetExt->values[ValueEmpressPassiveStacks] * 24 * 0.25;
@@ -1042,7 +1042,7 @@ namespace hooks
 						data.target->get_y() - 288,
 						data.target->get_x() + 288,
 						data.target->get_y() + 288
-					).getNearestTarget(data.target,
+					).get_nearest_target(data.target,
 						[&](Unit* unit)
 					{
 						// Don't attack friendly / allied units

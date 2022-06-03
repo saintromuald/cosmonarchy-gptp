@@ -16,7 +16,7 @@ namespace AI
 		else
 			bounds = 32 * 64;
 
-		Unit* result = scbw::UnitFinder::getNearestTarget(
+		Unit* result = scbw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds,
 			caster->get_y() - bounds,
 			caster->get_x() + bounds,
@@ -43,7 +43,7 @@ namespace AI
 		if (result || isUnderAttack)
 			return result;
 
-		return scbw::UnitFinder::getNearestTarget(
+		return scbw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds,
 			caster->get_y() - bounds,
 			caster->get_x() + bounds,

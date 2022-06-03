@@ -29,7 +29,7 @@ namespace hooks
 			}
 		}
 
-		unit->mainOrderState = 1;
+		unit->main_order_state = 1;
 		if (unit->sprite != nullptr)
 		{
 			if (!(unit->sprite->flags & SpriteFlags::Hidden))

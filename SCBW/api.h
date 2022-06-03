@@ -225,8 +225,8 @@ namespace scbw
 
 	inline Vector32f getUnitDirectionVector(Unit* unit)
 	{
-		return { (f32)sin(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f),
-			(f32)-cos(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f) };
+		return { (f32)sin(scbw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f),
+			(f32)-cos(scbw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f) };
 	}
 
 	//////////////////////////////////////////////////////////////// @}

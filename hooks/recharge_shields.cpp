@@ -62,7 +62,7 @@ namespace hooks
 
 		// Separate check for AI-controlled units
 		if (target->unit_ai) {
-			if (target->mainOrderId == OrderId::RechargeShields1 || target->mainOrderId == OrderId::Pickup4) {
+			if (target->main_order_id == OrderId::RechargeShields1 || target->main_order_id == OrderId::Pickup4) {
 				return 0;
 			}
 
@@ -105,22 +105,22 @@ namespace hooks
 
 		}
 		else
-			if (unit->mainOrderState <= 3)
+			if (unit->main_order_state <= 3)
 			{
 
 				bool bStopThere = false;
 
-				if (unit->mainOrderState == 0)
+				if (unit->main_order_state == 0)
 				{
 
 					if (helper::order_to_move_to_target(unit, battery))
-						unit->mainOrderState = 1;
+						unit->main_order_state = 1;
 
 					bStopThere = true;
 
 				}
 				else
-					if (unit->mainOrderState == 1)
+					if (unit->main_order_state == 1)
 					{
 
 						u32 movableState = unit->get_movable_state();
@@ -134,7 +134,7 @@ namespace hooks
 							if (movableState == 1)
 							{ //unit reached destination
 								helper::make_to_hold_position(unit);
-								unit->mainOrderState = 2;
+								unit->main_order_state = 2;
 							}
 							else
 							{ //probably movableState == 2 == unit unmovable
@@ -144,7 +144,7 @@ namespace hooks
 
 					}
 
-				if (!bStopThere && unit->mainOrderState == 2)
+				if (!bStopThere && unit->main_order_state == 2)
 				{
 
 					u8 overlaysCounter;
@@ -158,11 +158,11 @@ namespace hooks
 					//the order is correct, see OrderId.h description
 					helper::insertFirstOrder(unit, OrderId::Harvest5);
 
-					unit->mainOrderState = 3;
+					unit->main_order_state = 3;
 
 				}
 
-				if (!bStopThere && unit->mainOrderState == 3)
+				if (!bStopThere && unit->main_order_state == 3)
 				{
 
 					if (battery->orderTarget.unit == nullptr)
@@ -184,8 +184,8 @@ namespace hooks
 
 					}
 
-				} //if(!bStopThere && unit->mainOrderState == 3)
+				} //if(!bStopThere && unit->main_order_state == 3)
 
-			} //if(unit->mainOrderState <= 3)
+			} //if(unit->main_order_state <= 3)
 	}
 }

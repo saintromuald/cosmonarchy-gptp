@@ -578,7 +578,7 @@ namespace helper
 	Bullet* create_bullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor);
 	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);																// 004CD360
-	Flingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y);																	// 00496460
+	Flingy* createFlingy(u32 flingy_id, u32 playerId, u32 x, u32 y);																	// 00496460
 
 	//// unit_morph
 	u8 set_archon_pathing(Unit* unit);																								// 0046A820
@@ -918,7 +918,7 @@ namespace helper
 	s32 getTickCount();																						// 004FE0C4
 
 	// For initializeBullet
-	Flingy* initializeFlingy(s32 flingyId, s16 y, s32 x, Flingy* flingy, char player, char angle);			// 00496360
+	Flingy* initializeFlingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle);			// 00496360
 	void bulletBehaviorReassign(Bullet* bullet);															// 0048BD50
 	s32 weaponBehaviorCanHitTargetCheck(Unit* target, Unit* attacker);										// 004765B0
 	void appearOnTarget(Bullet* bullet, s16 x, s16 y);														// 004955C0

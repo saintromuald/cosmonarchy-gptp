@@ -6,7 +6,7 @@ namespace hooks
 	void orders_Repair1(Unit* unit) { // 004673D0
 		Unit* target = unit->orderTarget.unit;
 		if (!target
-		//||	target->hitPoints >= units_dat::MaxHitPoints[target->id]
+		//||	target->hitpoints >= units_dat::MaxHitPoints[target->id]
 		||	target->stasisTimer != 0
 		||	(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
 		||	target->status & UnitStatus::InTransport
@@ -19,7 +19,7 @@ namespace hooks
 			return;
 		}
 
-		switch (unit->mainOrderState) {
+		switch (unit->main_order_state) {
 			case 0: {
 				s16 unkRepairInfo = 0;
 				u32 repairCostMinerals = 0, repairCostGas = 0;
@@ -28,7 +28,7 @@ namespace hooks
 				helper::verifyResources(repairCostMinerals, repairCostGas, unit->player);
 
 				unit->worker.repairResourceLossTimer = 0;
-				unit->mainOrderState = 1; // continue directly into this case
+				unit->main_order_state = 1; // continue directly into this case
 			} // fallthrough
 			case 1: {
 				if (!(target->status & UnitStatus::Completed)) {
@@ -44,7 +44,7 @@ namespace hooks
 
 				if (helper::order_to_move_to_target(unit, target)) {
 					helper::unitOrderMoveToTargetUnit(unit, target);
-					unit->mainOrderState = 6;
+					unit->main_order_state = 6;
 				}
 				return;
 			} break;
@@ -54,24 +54,24 @@ namespace hooks
 					return;
 				}
 				if (!(unit->is_target_within_min_range(target, 5))) {
-					unit->mainOrderState = 1;
+					unit->main_order_state = 1;
 					return;
 				}
 
 				helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 				helper::unitOrderMoveToTargetUnit(unit, target);
-				unit->mainOrderState = 7;
+				unit->main_order_state = 7;
 			} break;
 			case 7: {
 				if (!(unit->is_target_within_min_range(target, 5))) {
-					unit->mainOrderState = 1;
+					unit->main_order_state = 1;
 					return;
 				} else {
 					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 					helper::unitOrderMoveToTargetUnit(unit, target);
 					if (!helper::is_unit_positions_2_equal(unit)) {
-						s32 angle_delta = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y);
-						s32 current_angle = unit->currentDirection1 - angle_delta;
+						s32 angle_delta = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
+						s32 current_angle = unit->current_direction_1 - angle_delta;
 						if (current_angle < 0) {
 							current_angle += 256;
 						}
@@ -81,20 +81,20 @@ namespace hooks
 						u8 weapon = unit->get_ground_weapon();
 						if (current_angle <= weapons_dat::AttackAngle[weapon]) {
 							unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
-							unit->mainOrderState = 8;
+							unit->main_order_state = 8;
 						}
 					} else {
 						unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
-						unit->mainOrderState = 8;
+						unit->main_order_state = 8;
 					}
 				}
 			} break;
 			case 8: {
 				helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 				helper::unitOrderMoveToTargetUnit(unit, target);
-				if (!unit->is_target_within_min_range(target, 5) || target->mainOrderId == OrderId::Liftoff) { 
+				if (!unit->is_target_within_min_range(target, 5) || target->main_order_id == OrderId::Liftoff) { 
 					unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
-					unit->mainOrderState = 1;
+					unit->main_order_state = 1;
 				}
 			} break;
 		}
@@ -109,7 +109,7 @@ namespace hooks
 				if (unit->orderQueueHead) {
 					helper::force_order_done(unit);
 				} else {
-					unit->mainOrderState = 1;
+					unit->main_order_state = 1;
 				}
 				return;
 			}
@@ -128,7 +128,7 @@ namespace hooks
 			}
 			target->heal(hpGain, unit);
 
-			if (target->hitPoints < units_dat::MaxHitPoints[target->id]) {
+			if (target->hitpoints < units_dat::MaxHitPoints[target->id]) {
 				return;
 			}
 		}
@@ -137,7 +137,7 @@ namespace hooks
 		if (unit->orderQueueHead) {
 			helper::force_order_done(unit);
 		} else {
-			unit->mainOrderState = 1;
+			unit->main_order_state = 1;
 		}
 		if (target && !(target->status & UnitStatus::InTransport)) {
 			target->connectedUnit = 0;
@@ -174,7 +174,7 @@ namespace hooks
 					}
 					return 0;
 				}
-				//if (target->hitPoints >= units_dat::MaxHitPoints[target->id])
+				//if (target->hitpoints >= units_dat::MaxHitPoints[target->id])
 				//{
 				//	if (bErrorFlag)
 				//	{
@@ -262,7 +262,7 @@ namespace hooks
 				}
 				errorStringId = 1325;
 				if (!(target->status & 6) // GroundedBuilding and InAir
-					&& target->hitPoints < units_dat::MaxHitPoints[target->id])
+					&& target->hitpoints < units_dat::MaxHitPoints[target->id])
 				{
 					return 1;
 				}
@@ -310,10 +310,10 @@ namespace hooks
 					else
 					{
 						unitId = unit->id;
-						if (unitId == UnitId::TerranMason && unit->mainOrderId == OrderId::ConstructingBuilding && orderId != 1
-							|| (scbw::unit_can_nuke(unit) && unit->mainOrderId == OrderId::NukeTrack)
-							|| unitId == UnitId::ProtossArchon && unit->mainOrderId == OrderId::CompletingArchonSummon
-							|| unitId == UnitId::ProtossMindTyrant && unit->mainOrderId == OrderId::CompletingArchonSummon)
+						if (unitId == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding && orderId != 1
+							|| (scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
+							|| unitId == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
+							|| unitId == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
 						{
 							*lastInternalError = 8;
 							result = 0;

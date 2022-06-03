@@ -52,8 +52,8 @@ namespace hooks
 				}
 				s32 maxEnergy;
 				if (unit->id == UnitId::ProtossMindTyrant
-					&& unit->mainOrderId == OrderId::CompletingArchonSummon
-					&& unit->mainOrderState == 0)
+					&& unit->main_order_id == OrderId::CompletingArchonSummon
+					&& unit->main_order_state == 0)
 				{
 					maxEnergy = 100 * 256; // Identical to energy amount on spawn
 				}
@@ -141,8 +141,8 @@ namespace hooks
 		{
 			auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
 			s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
-			auto x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->currentDirection1);
-			auto y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->currentDirection1);
+			auto x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
+			auto y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1);
 
 			bool seek_unit = true;
 			if (unitExt->values[ValueWyvernLandGrabOn] == 1)
@@ -167,9 +167,9 @@ namespace hooks
 			if (seek_unit)
 			{
 				if (unit->orderTarget.unit
-					&& unit->mainOrderId != OrderId::Follow
-					&& unit->mainOrderId != OrderId::Patrol
-					&& unit->mainOrderId != OrderId::WyvernLandGrab)
+					&& unit->main_order_id != OrderId::Follow
+					&& unit->main_order_id != OrderId::Patrol
+					&& unit->main_order_id != OrderId::WyvernLandGrab)
 				{
 					Unit* newTarget = unit->orderTarget.unit;
 					if (wyvern_can_fire_at(unit, newTarget))
@@ -180,7 +180,7 @@ namespace hooks
 				Unit* target = unitExt->units[UnitWyvernTargetLock];
 				if (!target || !wyvern_can_fire_at(unit, target))
 				{
-					target = scbw::UnitFinder::getNearestTarget(
+					target = scbw::UnitFinder::get_nearest_target(
 						unit->get_x() - range,
 						unit->get_y() - range,
 						unit->get_x() + range,
@@ -231,8 +231,8 @@ namespace hooks
 		}
 
 		// Add mining status, decrease the regeneration rate
-		if (unit->mainOrderId == OrderId::MiningMinerals ||
-			unit->mainOrderId == OrderId::HarvestGas3)
+		if (unit->main_order_id == OrderId::MiningMinerals ||
+			unit->main_order_id == OrderId::HarvestGas3)
 		{
 			if (unit->orderTarget.unit)
 			{
@@ -428,14 +428,14 @@ namespace hooks
 
 			// HP regeneration
 			if ((units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP || unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
-				&& unit->hitPoints > 0
-				&& unit->hitPoints / 256 != unit->get_max_hp_ingame()
+				&& unit->hitpoints > 0
+				&& unit->hitpoints / 256 != unit->get_max_hp_ingame()
 				&& unitExt->damage_receive_timer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
 
 				regen *=  1 + 0.1 * unitExt->unit_vectors[UnitVectorCrucibles].size();
-				unit->setHp(unit->hitPoints + regen);
+				unit->setHp(unit->hitpoints + regen);
 			}
 
 			// Deliberate healing
@@ -450,8 +450,8 @@ namespace hooks
 				// Azazel Innervating Matrices - heal over time
 				if (unit->defensiveMatrixHp != 0)
 				{
-					if (unit->hitPoints > 0
-						&& unit->hitPoints / 256 != unit->get_max_hp_ingame())
+					if (unit->hitpoints > 0
+						&& unit->hitpoints / 256 != unit->get_max_hp_ingame())
 					{
 						auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
 						if (caster < 8)
@@ -485,7 +485,7 @@ namespace hooks
 							unit->get_y() - radius,
 							unit->get_x() + radius,
 							unit->get_y() + radius
-						).forEachInMatch(match, [&](Unit* target)
+						).for_each_in_match(match, [&](Unit* target)
 						{
 							u32 dist = scbw::get_distance_fast(unit->position, target->position);
 							u32 damage = 20 * 256;

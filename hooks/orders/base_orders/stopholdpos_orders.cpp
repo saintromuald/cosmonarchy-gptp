@@ -6,23 +6,23 @@ namespace hooks
 	void orders_MedicHoldPosition(Unit* unit)
 	{
 		u32 switchValue;
-		if (unit->mainOrderState == 0)
+		if (unit->main_order_state == 0)
 		{
 			//change move target destination to current position
 			helper::set_resource_target(unit);
 			if (
-				unit->nextTargetWaypoint.x != unit->moveTarget.pt.x ||
-				unit->nextTargetWaypoint.y != unit->moveTarget.pt.y
+				unit->next_target_waypoint.x != unit->move_target.pt.x ||
+				unit->next_target_waypoint.y != unit->move_target.pt.y
 				)
 			{
-				unit->nextTargetWaypoint.x = unit->moveTarget.pt.x;
-				unit->nextTargetWaypoint.y = unit->moveTarget.pt.y;
+				unit->next_target_waypoint.x = unit->move_target.pt.x;
+				unit->next_target_waypoint.y = unit->move_target.pt.y;
 			}
 			//6407F:
 			unit->status |= UnitStatus::HoldingPosition;
 			if (unit->subunit != nullptr)
 				unit->subunit->status |= UnitStatus::HoldingPosition;
-			unit->mainOrderState = 1;
+			unit->main_order_state = 1;
 			unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 		}
 		//640AF
@@ -61,7 +61,7 @@ namespace hooks
 		else
 		{ //64109 (switchValue == 1)
 
-			if (!(unit->orderSignal & 1))
+			if (!(unit->order_signal & 1))
 			{
 
 				Image* current_image = unit->sprite->images.head;
@@ -82,12 +82,12 @@ namespace hooks
 
 			//64146
 			if (
-				(unit->orderTarget.unit)->sprite->position.x != unit->nextTargetWaypoint.x ||
-				(unit->orderTarget.unit)->sprite->position.y != unit->nextTargetWaypoint.y
+				(unit->orderTarget.unit)->sprite->position.x != unit->next_target_waypoint.x ||
+				(unit->orderTarget.unit)->sprite->position.y != unit->next_target_waypoint.y
 				)
 			{
-				unit->nextTargetWaypoint.x = (unit->orderTarget.unit)->sprite->position.x;
-				unit->nextTargetWaypoint.y = (unit->orderTarget.unit)->sprite->position.y;
+				unit->next_target_waypoint.x = (unit->orderTarget.unit)->sprite->position.x;
+				unit->next_target_waypoint.y = (unit->orderTarget.unit)->sprite->position.y;
 			}
 
 		}
@@ -106,12 +106,12 @@ namespace hooks
 		helper::set_resource_target(unit);
 
 		if (
-			unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
-			unit->moveTarget.pt.y != unit->nextTargetWaypoint.y
+			unit->move_target.pt.x != unit->next_target_waypoint.x ||
+			unit->move_target.pt.y != unit->next_target_waypoint.y
 			)
 		{
-			unit->nextTargetWaypoint.x = unit->moveTarget.pt.x;
-			unit->nextTargetWaypoint.y = unit->moveTarget.pt.y;
+			unit->next_target_waypoint.x = unit->move_target.pt.x;
+			unit->next_target_waypoint.y = unit->move_target.pt.y;
 		}
 
 		//65500
@@ -120,7 +120,7 @@ namespace hooks
 
 			outHangarChild->userActionFlags |= 1;
 
-			if (outHangarChild->mainOrderId != OrderId::Die)
+			if (outHangarChild->main_order_id != OrderId::Die)
 			{
 
 				bool bNotRemovableOrder = false;
@@ -171,7 +171,7 @@ namespace hooks
 		}
 
 		//65598
-		if (unit->mainOrderId != OrderId::Die)
+		if (unit->main_order_id != OrderId::Die)
 		{
 
 			bool bNotRemovableOrder = false;
@@ -218,22 +218,22 @@ namespace hooks
 			//since details about pAI structure are unknown, have to use this
 			u8* const pAI_subparameter = (u8*)(((s32)(unit->unit_ai)) + 8);
 
-			unit->mainOrderId = OrderId::ComputerAI;
+			unit->main_order_id = OrderId::ComputerAI;
 
 			if (unit->unit_ai == nullptr)
 			{
 
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Hero)
-					unit->mainOrderId = OrderId::PlayerGuard;
+					unit->main_order_id = OrderId::PlayerGuard;
 
 			}
 			else //75BD6
 				if (*pAI_subparameter == 1)
-					unit->mainOrderId = OrderId::GuardPost;
+					unit->main_order_id = OrderId::GuardPost;
 
 		}
 		else
-			unit->mainOrderId = OrderId::PlayerGuard;
+			unit->main_order_id = OrderId::PlayerGuard;
 
 	} //void orders_Guard(Unit* unit)
 
@@ -246,12 +246,12 @@ namespace hooks
 	{
 
 		if (
-			unit->subunit->nextTargetWaypoint.x != unit->nextTargetWaypoint.x ||
-			unit->subunit->nextTargetWaypoint.y != unit->nextTargetWaypoint.y
+			unit->subunit->next_target_waypoint.x != unit->next_target_waypoint.x ||
+			unit->subunit->next_target_waypoint.y != unit->next_target_waypoint.y
 			)
 		{
-			unit->nextTargetWaypoint.x = unit->subunit->nextTargetWaypoint.x;
-			unit->nextTargetWaypoint.y = unit->subunit->nextTargetWaypoint.y;
+			unit->next_target_waypoint.x = unit->subunit->next_target_waypoint.x;
+			unit->next_target_waypoint.y = unit->subunit->next_target_waypoint.y;
 		}
 
 		orders_player_guard(unit);
@@ -272,10 +272,10 @@ namespace hooks
 			if (unit->mainOrderTimer == 0) {
 				//unit->mainOrderTimer = 15;
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
-					if (unit->subunit->nextTargetWaypoint.x != unit->nextTargetWaypoint.x ||
-						unit->subunit->nextTargetWaypoint.y != unit->nextTargetWaypoint.y) {
-						unit->nextTargetWaypoint.x = unit->subunit->nextTargetWaypoint.x;
-						unit->nextTargetWaypoint.y = unit->subunit->nextTargetWaypoint.y;
+					if (unit->subunit->next_target_waypoint.x != unit->next_target_waypoint.x ||
+						unit->subunit->next_target_waypoint.y != unit->next_target_waypoint.y) {
+						unit->next_target_waypoint.x = unit->subunit->next_target_waypoint.x;
+						unit->next_target_waypoint.y = unit->subunit->next_target_waypoint.y;
 					}
 				}
 

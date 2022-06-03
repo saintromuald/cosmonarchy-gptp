@@ -6,15 +6,15 @@ namespace hooks
 	void orders_NukeTrack(Unit* unit)
 	{
 
-		if (unit->mainOrderState != 0)
+		if (unit->main_order_state != 0)
 		{
 
-			if (unit->mainOrderState == 6)
+			if (unit->main_order_state == 6)
 			{
 
 				if (
 					unit->connectedUnit == nullptr ||
-					unit->connectedUnit->mainOrderState == 5
+					unit->connectedUnit->main_order_state == 5
 					)
 				{ //64D3F
 
@@ -78,7 +78,7 @@ namespace hooks
 				helper::set_thingy_visibility_flags(nukeDot);
 			}
 
-			unit->mainOrderState = 6;
+			unit->main_order_state = 6;
 			scbw::decloak_proc(unit);
 
 		}
@@ -93,12 +93,12 @@ namespace hooks
 		u32 sightRange, distance;
 
 		if (
-			unit->nextTargetWaypoint.x != unit->orderTarget.pt.x ||
-			unit->nextTargetWaypoint.y != unit->orderTarget.pt.y
+			unit->next_target_waypoint.x != unit->orderTarget.pt.x ||
+			unit->next_target_waypoint.y != unit->orderTarget.pt.y
 			)
 		{
-			unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
-			unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
+			unit->next_target_waypoint.x = unit->orderTarget.pt.x;
+			unit->next_target_waypoint.y = unit->orderTarget.pt.y;
 		}
 
 		sightRange = unit->get_sight_range(false) * 32;
@@ -142,18 +142,18 @@ namespace hooks
 			helper::set_resource_target(unit);
 
 			if (
-				unit->nextTargetWaypoint.x != unit->position.x ||
-				unit->nextTargetWaypoint.y != unit->position.y
+				unit->next_target_waypoint.x != unit->position.x ||
+				unit->next_target_waypoint.y != unit->position.y
 				)
 			{
 
 				direction =
-					unit->currentDirection1 -
+					unit->current_direction_1 -
 					scbw::get_angle(
 						unit->sprite->position.x,
 						unit->sprite->position.y,
-						unit->nextTargetWaypoint.x,
-						unit->nextTargetWaypoint.y
+						unit->next_target_waypoint.x,
+						unit->next_target_waypoint.y
 					);
 
 				if (direction < -1 || direction > 1)

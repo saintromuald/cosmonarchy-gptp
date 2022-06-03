@@ -89,8 +89,8 @@ namespace hooks
 		std::unordered_set<Unit*> targets;
 		if (!ignoreMain
 			&& attacker->orderTarget.unit
-			&& attacker->mainOrderId != OrderId::Follow
-			&& attacker->mainOrderId != OrderId::Patrol)
+			&& attacker->main_order_id != OrderId::Follow
+			&& attacker->main_order_id != OrderId::Patrol)
 		{
 			targets.insert(attacker->orderTarget.unit);
 			launchMissile(attacker, attackerExt, attacker->orderTarget.unit, weaponId);
@@ -101,7 +101,7 @@ namespace hooks
 		{
 			u32 range = hooks::getMaxWeaponRangeHook(attacker, weaponId, 0);
 			auto filter = cosmonarchy_finder_match(attacker, flags, {});
-			Unit* newTarget = scbw::UnitFinder::getNearestTarget(
+			Unit* newTarget = scbw::UnitFinder::get_nearest_target(
 				attacker->get_x() - range,
 				attacker->get_y() - range,
 				attacker->get_x() + range,
@@ -170,8 +170,8 @@ namespace hooks
 		{
 			s32 forwardOffset = weapons_dat::ForwardOffset[weaponId];
 
-			x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->currentDirection1);
-			y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->currentDirection1)
+			x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
+			y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1)
 				- weapons_dat::VerticalOffset[weaponId];
 		}
 
@@ -313,7 +313,7 @@ namespace hooks
 						auto rotate = unitExt->values[ValueSalamanderAtkPos];
 						if (rotate == 1)
 						{
-							helper::create_bullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
+							helper::create_bullet(weaponId, unit, x, y, unit->player, unit->current_direction_1);
 						}
 						else
 						{
@@ -374,7 +374,7 @@ namespace hooks
 					} break;
 					default:
 					{
-						helper::create_bullet(weaponId, unit, x, y, unit->player, unit->currentDirection1);
+						helper::create_bullet(weaponId, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 				}
 			}
@@ -384,7 +384,7 @@ namespace hooks
 				&& unitExt->values[ValueAdaptiveAmitosis])
 			{
 				auto range = weapons_dat::MaxRange[weaponId];
-				auto a = scbw::UnitFinder::getNearestTarget(
+				auto a = scbw::UnitFinder::get_nearest_target(
 					unit->get_x() - range,
 					unit->get_y() - range,
 					unit->get_x() + range,
@@ -443,7 +443,7 @@ namespace hooks
 			if (bullet->attackTarget.unit == nullptr)
 			{
 				u32 range = AlkajeliskParasiticSporesSeekRange; // seek range
-				auto seekTarget = scbw::UnitFinder::getNearestTarget(
+				auto seekTarget = scbw::UnitFinder::get_nearest_target(
 					bullet->position.x - range,
 					bullet->position.y - range,
 					bullet->position.x + range,
@@ -457,8 +457,8 @@ namespace hooks
 				{
 					bullet->attackTarget.unit = seekTarget;
 					bullet->attackTarget.pt = seekTarget->position;
-					bullet->moveTarget.unit = seekTarget;
-					bullet->moveTarget.pt = seekTarget->position;
+					bullet->move_target.unit = seekTarget;
+					bullet->move_target.pt = seekTarget->position;
 					bullet->targetPosition = seekTarget->position;
 					bullet->targetPosition2 = seekTarget->position;
 					helper::progressBulletMovement_func(bullet);
@@ -490,8 +490,8 @@ namespace hooks
 			u8 time_current = 255 - time;
 			if (time_current == 8)
 			{
-				bullet->flingyTopSpeed *= 2;
-				bullet->flingyAcceleration *= 2;
+				bullet->flingy_top_speed *= 2;
+				bullet->flingy_acceleration *= 2;
 			}
 		}
 
@@ -553,7 +553,7 @@ namespace hooks
 			}
 		}
 
-		if (time == 0 || (bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y))
+		if (time == 0 || (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y))
 		{
 			bEnd = true;
 		}
@@ -565,7 +565,7 @@ namespace hooks
 			|| bullet->weaponId == WeaponId::HaloRockets)
 		{
 			u32 range = 128;
-			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
+			auto collisionTarget = scbw::UnitFinder::get_nearest_target(
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
 				bullet, [&](Unit* unit)
@@ -613,7 +613,7 @@ namespace hooks
 		else if (bullet->weaponId == WeaponId::StarSovereignInterventionMissiles)
 		{
 			u32 range = 128;
-			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
+			auto collisionTarget = scbw::UnitFinder::get_nearest_target(
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
 				bullet, [&](Unit* unit)
@@ -675,7 +675,7 @@ namespace hooks
 				{
 				}
 			}
-			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
+			auto collisionTarget = scbw::UnitFinder::get_nearest_target(
 				bullet->position.x - range,
 				bullet->position.y - range,
 				bullet->position.x + range,
@@ -756,11 +756,11 @@ namespace hooks
 					}
 					else
 					{
-						bullet->moveTarget.unit = bullet->attackTarget.unit;
-						if (bullet->moveTarget.unit != nullptr)
+						bullet->move_target.unit = bullet->attackTarget.unit;
+						if (bullet->move_target.unit != nullptr)
 						{
-							bullet->targetPosition = bullet->moveTarget.unit->position;
-							bullet->targetPosition2 = bullet->moveTarget.unit->position;
+							bullet->targetPosition = bullet->move_target.unit->position;
+							bullet->targetPosition2 = bullet->move_target.unit->position;
 						}
 					}
 				}
@@ -781,7 +781,7 @@ namespace hooks
 				bullet->attackTarget.unit = 0;
 			}
 			bulletSprite = bullet->sprite;
-			bullet->orderSignal |= 0x80; // new
+			bullet->order_signal |= 0x80; // new
 			bullet->unknown_0x4E = 0;
 			bullet->someUnitType = 228;
 			for (i = bulletSprite->images.head; i; i = i->link.next)
@@ -810,7 +810,7 @@ namespace hooks
 			}
 		}
 		helper::progressBulletMovement_func(bullet);
-		if (bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y)
+		if (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)
 		{
 			nextBounce = bullet->remainingBounces - 1;
 			// Gladius infinite bouncing
@@ -1130,7 +1130,7 @@ namespace hooks
 		bullet->someUnitType = 228;
 		bullet->remainingBounces = 0;
 		bullet->hitFlags = 0;
-		bullet->movementFlags |= MovementFlags::StartingAttack;
+		bullet->movement_flags |= MovementFlags::StartingAttack;
 		bullet->behaviourTypeInternal = 0;
 		bullet->attackTarget.unit = nullptr;
 		bullet->attackTarget.pt.y = 0;

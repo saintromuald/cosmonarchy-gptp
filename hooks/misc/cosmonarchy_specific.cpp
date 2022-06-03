@@ -67,7 +67,7 @@ void parseUnitDatReqs()
 
 bool is_attempting_protoss_build(const Unit* probe)
 {
-	return probe->mainOrderId == OrderId::BuildProtoss1
+	return probe->main_order_id == OrderId::BuildProtoss1
 		&& probe->status & UnitStatus::GroundedBuilding
 		&& probe->orderTarget.unit != nullptr
 		&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
@@ -338,7 +338,7 @@ LABEL_18:
 						v11 = v9 + 1;
 						goto LABEL_72;
 					case ReqOpcode::IsNotConstructingBuilding:
-						if (unit->id == UnitId::TerranSCV && unit->mainOrderId == OrderId::ConstructingBuilding)
+						if (unit->id == UnitId::TerranSCV && unit->main_order_id == OrderId::ConstructingBuilding)
 							goto LABEL_87;
 						v11 = v9 + 1;
 						goto LABEL_72;
@@ -457,15 +457,15 @@ LABEL_18:
 		return 0;
 	}
 
-	u32 realTopSpeed(Flingy* flingy, u32 flingyId)
+	u32 realTopSpeed(Flingy* flingy, u32 flingy_id)
 	{
-		u32 speed = scbw::get_flingy_data(FlingyDatEntries::TopSpeed, flingyId);
+		u32 speed = scbw::get_flingy_data(FlingyDatEntries::TopSpeed, flingy_id);
 		return speed;
 	}
 
-	u16 realAcceleration(Flingy* flingy, u32 flingyId)
+	u16 realAcceleration(Flingy* flingy, u32 flingy_id)
 	{
-		u16 acceleration = scbw::get_flingy_data(FlingyDatEntries::Acceleration, flingyId);
+		u16 acceleration = scbw::get_flingy_data(FlingyDatEntries::Acceleration, flingy_id);
 		return acceleration;
 	}
 
@@ -492,14 +492,14 @@ LABEL_18:
 	u32 getFlingyHaltDistanceHook(Flingy* flingy)
 	{
 		auto speed = flingy->current_speed2;
-		if (speed == 0 || flingy->flingyMovementType != 0)
+		if (speed == 0 || flingy->flingy_movement_type != 0)
 		{
 			return 0;
 		}
-		auto flingy_id = flingy->flingyId;
-		if (speed != realTopSpeed(flingy, flingy_id) || flingy->flingyAcceleration != realAcceleration(flingy, flingy_id))
+		auto flingy_id = flingy->flingy_id;
+		if (speed != realTopSpeed(flingy, flingy_id) || flingy->flingy_acceleration != realAcceleration(flingy, flingy_id))
 		{
-			return speed * speed / (2 * (u16)flingy->flingyAcceleration);
+			return speed * speed / (2 * (u16)flingy->flingy_acceleration);
 		}
 		else
 		{
@@ -572,7 +572,7 @@ LABEL_18:
 		{
 			if (order_state == 0)
 			{
-				if (unit->movementFlags & MovementFlags::Accelerating)
+				if (unit->movement_flags & MovementFlags::Accelerating)
 				{
 					scbw::make_to_hold_position(unit);
 				}
@@ -580,7 +580,7 @@ LABEL_18:
 			}
 			else if (order_state == 1)
 			{
-				if (!(unit->movementFlags & MovementFlags::Accelerating)
+				if (!(unit->movement_flags & MovementFlags::Accelerating)
 					&& unit->sprite->mainGraphic->animation != IscriptAnimation::Walking
 					&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle
 					&& unitExt->timers[TimerPlanetCrackerDelay] == 0)
@@ -604,9 +604,9 @@ LABEL_18:
 					unit->play_iscript_animation(anim);
 					unitExt->timers[TimerPlanetCrackerChannel] = 121;
 				}
-				else if (unit->orderSignal & 4)
+				else if (unit->order_signal & 4)
 				{
-					unit->orderSignal &= ~0x4;
+					unit->order_signal &= ~0x4;
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->status &= ~UnitStatus::CanNotAttack;
 					unitExt->values[ValueProtossSwitchOrderState] = 0;
@@ -618,7 +618,7 @@ LABEL_18:
 
 		if (order_state == 0)
 		{
-			if (unit->movementFlags & MovementFlags::Accelerating)
+			if (unit->movement_flags & MovementFlags::Accelerating)
 			{
 				scbw::make_to_hold_position(unit);
 			}
@@ -626,7 +626,7 @@ LABEL_18:
 		}
 		else if (order_state == 1)
 		{
-			if (!(unit->movementFlags & MovementFlags::Accelerating))
+			if (!(unit->movement_flags & MovementFlags::Accelerating))
 			{
 				unit->play_iscript_animation(anim);
 				unitExt->timers[TimerSwitchModeGimmick] = 5;
@@ -637,7 +637,7 @@ LABEL_18:
 		{
 			if (unitExt->timers[TimerSwitchModeGimmick] == 0)
 			{
-				unit->orderSignal &= ~0x4;
+				unit->order_signal &= ~0x4;
 				unitExt->values[ValueProtossSwitchOrderState] = 0;
 				if (unit->id == UnitId::ProtossClarion)
 				{
@@ -776,9 +776,9 @@ LABEL_18:
 	// Hooked to set starting energy to 100 - Veeq7
 	void transform_unit_main(Unit* unit, u32 unit_id) // 0049F170
 	{
-		u32 hp = unit->hitPoints;
-		u32 order_type = unit->mainOrderId;
-		u32 order_state = unit->mainOrderState;
+		u32 hp = unit->hitpoints;
+		u32 order_type = unit->main_order_id;
+		u32 order_state = unit->main_order_state;
 		Target order_target = unit->orderTarget;
 		unit->previousUnitType = unit->id;
 		unit->previousHp = hp / 256;
@@ -813,10 +813,10 @@ LABEL_18:
 		{
 			final_hp = (new_hp / max_hp) / 256;
 		}
-		unit->hitPoints = final_hp * 256;
-		if (!unit->hitPoints)
+		unit->hitpoints = final_hp * 256;
+		if (!unit->hitpoints)
 		{
-			unit->hitPoints = 1;
+			unit->hitpoints = 1;
 		}
 		unit->airStrength = helper::get_unit_strength(unit, max_hp, false);
 		unit->groundStrength = helper::get_unit_strength(unit, max_hp, true);
@@ -836,8 +836,8 @@ LABEL_18:
 		{
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 		}
-		unit->mainOrderId = order_type;
-		unit->mainOrderState = order_state;
+		unit->main_order_id = order_type;
+		unit->main_order_state = order_state;
 		unit->orderTarget = order_target;
 
 		u32 temp_unit_id = unit_id;
@@ -879,12 +879,12 @@ LABEL_18:
 		*activeIscriptUnit = unit;
 		*activeIscriptEntity = unit;
 		helper::playIdleIscript(unitSprite);
-		char unitMovementFlags = unit->movementFlags;
+		char unitMovementFlags = unit->movement_flags;
 		*activeIscriptUnit = activeSubunit;
 
 		char result = unitMovementFlags & 0xF7;
 		*activeIscriptEntity = activeEntity;
-		unit->movementFlags = result;
+		unit->movement_flags = result;
 		return result;
 	}
 }

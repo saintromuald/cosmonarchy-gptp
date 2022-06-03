@@ -29,7 +29,7 @@ namespace hooks
 			if (units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable
 				&& selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1
 				&& !(selected_unit->status & UnitStatus::Burrowed)
-				&& selected_unit->mainOrderId != OrderId::Burrow)
+				&& selected_unit->main_order_id != OrderId::Burrow)
 			{
 
 				if (bCommandType != 0)
@@ -49,8 +49,8 @@ namespace hooks
 
 	void Unburrow_Proc(Unit* unit)
 	{
-		if (unit->mainOrderId == OrderId::Burrow
-			|| unit->mainOrderId == OrderId::Burrowed
+		if (unit->main_order_id == OrderId::Burrow
+			|| unit->main_order_id == OrderId::Burrowed
 			|| unit->id == UnitId::ZergLakizilisk)
 		{
 			if (unit->id == UnitId::ZergLakizilisk)
@@ -59,7 +59,7 @@ namespace hooks
 			}
 
 			unit->userActionFlags |= 1;
-			if (unit->mainOrderId != OrderId::Die)
+			if (unit->main_order_id != OrderId::Die)
 			{
 				bool bStopLoop = false;
 				while (unit->orderQueueTail != nullptr && !bStopLoop)

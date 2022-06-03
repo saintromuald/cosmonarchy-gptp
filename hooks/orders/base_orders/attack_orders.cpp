@@ -51,7 +51,7 @@ namespace hooks
 				if (unit->id == UnitId::ProtossAccantor)
 				{
 					// 00465720:
-					if (unit->mainOrderId == OrderId::ReaverHold)
+					if (unit->main_order_id == OrderId::ReaverHold)
 					{
 						newOrderId = OrderId::ReaverHold;
 					}
@@ -63,7 +63,7 @@ namespace hooks
 				else
 				{
 					// 00465730
-					if (unit->mainOrderId == OrderId::HoldPosition1)
+					if (unit->main_order_id == OrderId::HoldPosition1)
 					{
 						newOrderId = OrderId::HoldPosition1;
 					}
@@ -126,7 +126,7 @@ namespace hooks
 				if (unit->id == UnitId::ProtossAccantor)
 				{
 					// 00465A03:
-					if (unit->mainOrderId == OrderId::ReaverHold)
+					if (unit->main_order_id == OrderId::ReaverHold)
 					{
 						newOrderId = OrderId::ReaverHold;
 					}
@@ -138,7 +138,7 @@ namespace hooks
 				else
 				{
 					// 00465A13:
-					if (unit->mainOrderId == OrderId::HoldPosition1)
+					if (unit->main_order_id == OrderId::HoldPosition1)
 					{
 						newOrderId = OrderId::HoldPosition1;
 					}
@@ -234,7 +234,7 @@ namespace hooks
 			if (jump_to_77A45)
 			{
 				unit->userActionFlags |= 1;
-				if (unit->mainOrderId == OrderId::Die)
+				if (unit->main_order_id == OrderId::Die)
 				{
 					prepareForNextOrder(unit);	// 00477CED
 				}
@@ -428,7 +428,7 @@ namespace hooks
 						}
 						if (jump_to_77C78)
 						{
-							if ((unit->subunit)->mainOrderId == units_dat::AttackUnitOrder[(unit->subunit)->id]
+							if ((unit->subunit)->main_order_id == units_dat::AttackUnitOrder[(unit->subunit)->id]
 								&& helper::getRightClickActionOrder(unit->subunit) != RightClickActions::NoMove_NormalAttack)
 							{
 								jump_to_77CA1 = true;
@@ -442,15 +442,15 @@ namespace hooks
 						jump_to_77C78 = false;
 						if (jump_to_77CA1)
 						{
-							if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
-								|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
+							if (unit->orderTarget.pt.x != unit->next_target_waypoint.x
+								|| unit->orderTarget.pt.y != unit->next_target_waypoint.y)
 							{
-								unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
-								unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
+								unit->next_target_waypoint.x = unit->orderTarget.pt.x;
+								unit->next_target_waypoint.y = unit->orderTarget.pt.y;
 							}
 
 							// 00477CC1
-							if (!((unit->subunit)->movementFlags & MovementFlags::Accelerating))
+							if (!((unit->subunit)->movement_flags & MovementFlags::Accelerating))
 							{
 								helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
 							}
@@ -608,11 +608,11 @@ namespace hooks
 			if (helper::isUnitInWeaponRange(unit, target))
 			{
 				// 00477ED6
-				if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
-					|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
+				if (unit->orderTarget.pt.x != unit->next_target_waypoint.x
+					|| unit->orderTarget.pt.y != unit->next_target_waypoint.y)
 				{
-					unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
-					unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
+					unit->next_target_waypoint.x = unit->orderTarget.pt.x;
+					unit->next_target_waypoint.y = unit->orderTarget.pt.y;
 				}
 				helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
 			}
@@ -659,11 +659,11 @@ namespace hooks
 			else
 			{ // 0047894D
 				bool bStopThere = false;
-				if (unit->mainOrderState == 0)
+				if (unit->main_order_state == 0)
 				{ // 00478965
 					if (helper::move_to_target(target, unit))
 					{
-						unit->mainOrderState = 1;
+						unit->main_order_state = 1;
 					}
 					else
 					{
@@ -671,13 +671,13 @@ namespace hooks
 					}
 				}
 
-				if (!bStopThere && unit->mainOrderState == 1)
+				if (!bStopThere && unit->main_order_state == 1)
 				{ // 00478975
 					if (!unit->is_target_within_min_range(target, 4)
 						&& unit->get_movable_state() != 2)
 					{ // 00478998
 						if (unit->is_target_within_min_range(target, 256)
-							&& target->movementFlags & MovementFlags::Accelerating)							
+							&& target->movement_flags & MovementFlags::Accelerating)							
 						{
 							// maybe trigger the acceleration of the infested terran, or something else related to distances?
 							helper::moveToCollide(unit, target);
@@ -708,14 +708,14 @@ namespace hooks
 							}
 							// 00478A11
 							unit->status |= UnitStatus::CanNotReceiveOrders;
-							unit->mainOrderState = 2;
+							unit->main_order_state = 2;
 						}
 					}
 				}
 
-				if (!bStopThere && unit->mainOrderState == 2)
+				if (!bStopThere && unit->main_order_state == 2)
 				{ // 00478A1E
-					if (unit->orderSignal & 1)
+					if (unit->order_signal & 1)
 					{
 						unit->status |= UnitStatus::IsSelfDestructing;
 						unit->remove(); // orders_self_destructing
@@ -728,26 +728,26 @@ namespace hooks
 	void orders_SapLocation(Unit* unit)
 	{
 		bool bStopThere = false;
-		if (unit->mainOrderState == 0)
+		if (unit->main_order_state == 0)
 		{ // 00478A5C
 			bStopThere = !helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-			if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
-				|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
+			if (unit->orderTarget.pt.x != unit->next_target_waypoint.x
+				|| unit->orderTarget.pt.y != unit->next_target_waypoint.y)
 			{
-				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
-				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
+				unit->next_target_waypoint.x = unit->orderTarget.pt.x;
+				unit->next_target_waypoint.y = unit->orderTarget.pt.y;
 			}
 			if (!bStopThere)
 			{
-				unit->mainOrderState = 1;
+				unit->main_order_state = 1;
 			}
 		}
 
-		if (!bStopThere && unit->mainOrderState == 1)
+		if (!bStopThere && unit->main_order_state == 1)
 		{ // 00478A89
 
-			if (unit->sprite->position.x != unit->moveTarget.pt.x
-				|| unit->sprite->position.y != unit->moveTarget.pt.y)
+			if (unit->sprite->position.x != unit->move_target.pt.x
+				|| unit->sprite->position.y != unit->move_target.pt.y)
 			{
 				bStopThere = true;
 			}
@@ -786,14 +786,14 @@ namespace hooks
 					}
 					// 00478B10
 					unit->status |= UnitStatus::CanNotReceiveOrders;
-					unit->mainOrderState = 2;
+					unit->main_order_state = 2;
 				}
 			}
 		}
 
-		if (!bStopThere && unit->mainOrderState == 2)
+		if (!bStopThere && unit->main_order_state == 2)
 		{ // 00478B1E
-			if (unit->orderSignal & 1)
+			if (unit->order_signal & 1)
 			{
 				unit->status |= UnitStatus::IsSelfDestructing;
 				unit->remove(); //orders_self_destructing
@@ -803,10 +803,10 @@ namespace hooks
 
 	void orders_AttackMoveEP(Unit* unit)
 	{
-		u8 saved_mainOrderId = unit->mainOrderId; //[EBP-0x14]
+		u8 saved_mainOrderId = unit->main_order_id; //[EBP-0x14]
 		// function_00478370:
 		// probably perform checks to see if the order can be done
-		if (helper::function_00478370(unit, unit->mainOrderId)
+		if (helper::function_00478370(unit, unit->main_order_id)
 			&& unit->mainOrderTimer == 0)
 		{ // 00478E0B
 			unit->mainOrderTimer = 0; // used to be 15
@@ -851,14 +851,14 @@ namespace hooks
 		// Logically, would check if a target is in range, and
 		// if that's the case (not returning 0), stop the "move" 
 		// part that follow to attack the unit met
-		if (helper::function_00478370(unit, unit->mainOrderId) != 0
+		if (helper::function_00478370(unit, unit->main_order_id) != 0
 			&& unit->mainOrderTimer == 0)
 		{ // 00479058
 			unit->mainOrderTimer = 0; // used to be 15
-			if (unit->moveTarget.pt.x != unit->sprite->position.x
-				|| unit->moveTarget.pt.y != unit->sprite->position.y)
+			if (unit->move_target.pt.x != unit->sprite->position.x
+				|| unit->move_target.pt.y != unit->sprite->position.y)
 			{ // Logically, this function would check one last time if a target is in range, and attack it if that's the case, else AttackMove end here
-				helper::function_00477820(unit, unit->mainOrderId); // 00479092
+				helper::function_00477820(unit, unit->main_order_id); // 00479092
 			}
 			else
 			{

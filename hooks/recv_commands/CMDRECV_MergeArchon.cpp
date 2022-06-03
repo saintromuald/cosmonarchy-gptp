@@ -57,7 +57,7 @@ namespace hooks
 
 						templar_stored->userActionFlags |= 1;
 
-						if (templar_stored->mainOrderId != OrderId::Die)
+						if (templar_stored->main_order_id != OrderId::Die)
 						{
 
 							bool bKeepLooping = true;
@@ -94,7 +94,7 @@ namespace hooks
 
 						templar_merge_partner->userActionFlags |= 1;
 
-						if (templar_merge_partner->mainOrderId != OrderId::Die)
+						if (templar_merge_partner->main_order_id != OrderId::Die)
 						{
 
 							bool bKeepLooping = true;
@@ -197,7 +197,7 @@ namespace hooks
 
 						templar_stored->userActionFlags |= 1;
 
-						if (templar_stored->mainOrderId != OrderId::Die)
+						if (templar_stored->main_order_id != OrderId::Die)
 						{
 
 							bool bKeepLooping = true;
@@ -234,7 +234,7 @@ namespace hooks
 
 						templar_merge_partner->userActionFlags |= 1;
 
-						if (templar_merge_partner->mainOrderId != OrderId::Die)
+						if (templar_merge_partner->main_order_id != OrderId::Die)
 						{
 
 							bool bKeepLooping = true;

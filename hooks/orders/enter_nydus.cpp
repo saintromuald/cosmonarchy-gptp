@@ -94,20 +94,20 @@ namespace hooks
 		}
 		else
 		{ // 004EA428
-			if (unit->mainOrderState == 0)
+			if (unit->main_order_state == 0)
 			{	// 004EA464
 				if (helper::order_to_move_to_target(unit, nydusCanal))
 				{
-					unit->mainOrderState = 1;
+					unit->main_order_state = 1;
 				}
 			}
 			else
-				if (unit->mainOrderState == 1)
+				if (unit->main_order_state == 1)
 				{ // 004EA43B
 					u8 movableState = unit->get_movable_state();
 					if (movableState == 1)	// reached destination
 					{
-						unit->mainOrderState = 2;
+						unit->main_order_state = 2;
 					}
 					else
 						if (movableState != 0)	// (value is probably 2 == unmovable)
@@ -115,7 +115,7 @@ namespace hooks
 							unit->order_to_idle();
 						}
 				}
-			if (unit->mainOrderState == 2) // 004EA458
+			if (unit->main_order_state == 2) // 004EA458
 			{
 				enterNydusCanal_Effect(unit, nydusCanal);
 			}

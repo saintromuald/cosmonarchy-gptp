@@ -43,7 +43,7 @@ namespace hooks
 							*u32_0066FF60 = 0x0B;
 						else
 							if (current_unit->id == UnitId::TerranMason &&
-								current_unit->mainOrderId == OrderId::ConstructingBuilding
+								current_unit->main_order_id == OrderId::ConstructingBuilding
 								)
 								*u32_0066FF60 = 0x08;
 							else
@@ -52,17 +52,17 @@ namespace hooks
 									current_unit->id == UnitId::Hero_AlexeiStukov ||
 									current_unit->id == UnitId::Hero_SamirDuran ||
 									current_unit->id == UnitId::Hero_InfestedDuran) &&
-									current_unit->mainOrderId == OrderId::NukeTrack
+									current_unit->main_order_id == OrderId::NukeTrack
 									)
 									*u32_0066FF60 = 0x08;
 								else
 									if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) &&
-										current_unit->mainOrderId == OrderId::CompletingArchonSummon
+										current_unit->main_order_id == OrderId::CompletingArchonSummon
 										)
 										*u32_0066FF60 = 0x08;
 									else
 										if (current_unit->id == UnitId::ProtossMindTyrant &&
-											current_unit->mainOrderId == OrderId::CompletingArchonSummon
+											current_unit->main_order_id == OrderId::CompletingArchonSummon
 											)
 											*u32_0066FF60 = 0x08;
 										else
@@ -80,7 +80,7 @@ namespace hooks
 
 													current_unit->userActionFlags |= 1;
 
-													if (current_unit->mainOrderId != OrderId::Die)
+													if (current_unit->main_order_id != OrderId::Die)
 													{
 
 														bool bContinueLoop = true;
@@ -151,7 +151,7 @@ namespace hooks
 							*u32_0066FF60 = 0x0B;
 						else
 							if (current_unit->id == UnitId::TerranMason &&
-								current_unit->mainOrderId == OrderId::ConstructingBuilding
+								current_unit->main_order_id == OrderId::ConstructingBuilding
 								)
 								*u32_0066FF60 = 0x08;
 							else
@@ -160,17 +160,17 @@ namespace hooks
 									current_unit->id == UnitId::Hero_AlexeiStukov ||
 									current_unit->id == UnitId::Hero_SamirDuran ||
 									current_unit->id == UnitId::Hero_InfestedDuran) &&
-									current_unit->mainOrderId == OrderId::NukeTrack
+									current_unit->main_order_id == OrderId::NukeTrack
 									)
 									*u32_0066FF60 = 0x08;
 								else
 									if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) &&
-										current_unit->mainOrderId == OrderId::CompletingArchonSummon
+										current_unit->main_order_id == OrderId::CompletingArchonSummon
 										)
 										*u32_0066FF60 = 0x08;
 									else
 										if (current_unit->id == UnitId::ProtossMindTyrant &&
-											current_unit->mainOrderId == OrderId::CompletingArchonSummon
+											current_unit->main_order_id == OrderId::CompletingArchonSummon
 											)
 											*u32_0066FF60 = 0x08;
 										else
@@ -188,7 +188,7 @@ namespace hooks
 
 													current_unit->userActionFlags |= 1;
 
-													if (current_unit->mainOrderId != OrderId::Die)
+													if (current_unit->main_order_id != OrderId::Die)
 													{
 
 														bool bContinueLoop = true;
@@ -265,17 +265,17 @@ namespace hooks
 				current_unit->id == UnitId::Hero_AlexeiStukov ||
 				current_unit->id == UnitId::Hero_SamirDuran ||
 				current_unit->id == UnitId::Hero_InfestedDuran) &&
-				current_unit->mainOrderId == OrderId::NukeTrack)
+				current_unit->main_order_id == OrderId::NukeTrack)
 			{
 				*u32_0066FF60 = 0x08;
 			}
 			else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) &&
-				current_unit->mainOrderId == OrderId::CompletingArchonSummon)
+				current_unit->main_order_id == OrderId::CompletingArchonSummon)
 			{
 				*u32_0066FF60 = 0x08;
 			}
 			else if (current_unit->id == UnitId::ProtossMindTyrant &&
-				current_unit->mainOrderId == OrderId::CompletingArchonSummon)
+				current_unit->main_order_id == OrderId::CompletingArchonSummon)
 			{
 				*u32_0066FF60 = 0x08;
 			}

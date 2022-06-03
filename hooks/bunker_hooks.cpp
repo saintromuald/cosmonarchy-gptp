@@ -40,11 +40,11 @@ namespace hooks
 			resultApplyCooldown = helper::attackApplyCooldown(unit);
 			if (resultApplyCooldown != 0)
 			{
-				if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
-					|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
+				if (unit->orderTarget.pt.x != unit->next_target_waypoint.x
+					|| unit->orderTarget.pt.y != unit->next_target_waypoint.y)
 				{
-					unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
-					unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
+					unit->next_target_waypoint.x = unit->orderTarget.pt.x;
+					unit->next_target_waypoint.y = unit->orderTarget.pt.y;
 				}
 			}
 			else
@@ -69,7 +69,7 @@ namespace hooks
 						if (!target || !unit->canAttackTarget(target) || !isWithinAttackRange(unit, target))
 						{
 							const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->getAirWeapon()));
-							unit->orderTarget.unit = scbw::UnitFinder::getNearestTarget(
+							unit->orderTarget.unit = scbw::UnitFinder::get_nearest_target(
 								unit->get_x() - radius,
 								unit->get_y() - radius,
 								unit->get_x() + radius,
@@ -108,7 +108,7 @@ namespace hooks
 		}
 
 		Image* bunkerImage = unitVar->connectedUnit->sprite->mainGraphic;
-		u8 frameDirection = (unitVar->currentDirection1 + 16) / 32 % 8;
+		u8 frameDirection = (unitVar->current_direction_1 + 16) / 32 % 8;
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
 		Point8 offset = loFile->get_offset(bunkerImage->frameIndex, frameDirection);
 
@@ -121,7 +121,7 @@ namespace hooks
 		u16 spriteId;
 		if (unitVar->id == UnitId::TerranHarakan)
 		{
-			frameAngle = ((unitVar->currentDirection1 + 8) / 16 % 16) * 16;
+			frameAngle = ((unitVar->current_direction_1 + 8) / 16 % 16) * 16;
 			spriteId = 378; // Firebat flamethrower graphics
 		}
 		else

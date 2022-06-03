@@ -202,16 +202,16 @@ namespace hooks
 			POP EDX
 			JMP wrapper10Jmp
 		}*/
-		static u32 flingyId;
+		static u32 flingy_id;
 		static u32 unitId;
 		__asm {
 			MOV unitId, EBX
 			PUSHAD
 		}
-		flingyId = scbw::get_unit_data(UnitsDatEntries::Flingy, unitId);
+		flingy_id = scbw::get_unit_data(UnitsDatEntries::Flingy, unitId);
 		__asm {
 			POPAD
-			MOV EAX, flingyId
+			MOV EAX, flingy_id
 			JMP wrapper10Jmp
 		}
 

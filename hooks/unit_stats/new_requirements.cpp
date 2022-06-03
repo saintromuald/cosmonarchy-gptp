@@ -1130,7 +1130,7 @@ namespace hooks {
 			case UnitId::TerranMason:
 			case UnitId::TerranTalos:
 			{
-				if (unit->mainOrderId == OrderId::ConstructingBuilding) {
+				if (unit->main_order_id == OrderId::ConstructingBuilding) {
 					return TECH_HIDDEN;
 				}
 

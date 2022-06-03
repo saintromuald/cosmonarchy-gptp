@@ -69,7 +69,7 @@ namespace hooks
 					if (helper::function_0049A410(current_unit, bActionOrder) == 0)
 						jump_to_9AD7E = true;
 					else
-						if (current_unit->mainOrderId != OrderId::NukeLaunch ||
+						if (current_unit->main_order_id != OrderId::NukeLaunch ||
 							bActionOrder == OrderId::Die
 							)
 						{ //9ABE7

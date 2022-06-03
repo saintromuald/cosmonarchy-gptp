@@ -51,16 +51,16 @@ namespace hooks
 	void __declspec(naked) FakeUnitFlingyIdState_Wrapper()
 	{
 		//		jump_patch(FakeUnitFlingyIdState_Wrapper, 0x004AAF23);
-		static u32 flingyId;
+		static u32 flingy_id;
 		static u32 index;
 		__asm {
 			MOV index, ECX
 			PUSHAD
 		}
-		flingyId = fakeExtFlingyIds[index];
+		flingy_id = fakeExtFlingyIds[index];
 		__asm {
 			POPAD
-			MOV EAX, flingyId
+			MOV EAX, flingy_id
 			RETN
 		}
 	}

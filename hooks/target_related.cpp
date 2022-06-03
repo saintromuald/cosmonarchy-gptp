@@ -61,7 +61,7 @@ namespace hooks
 		__int16 v8; // cx
 
 		v2 = a1;
-		if (a1->movementFlags & 8)
+		if (a1->movement_flags & 8)
 			return 0;
 		v4 = a1->orderTarget.unit;
 		if (v4)
@@ -72,9 +72,9 @@ namespace hooks
 		v6 = weapons_dat::MinRange[a2];
 		if (v6 && v7 < v6 || v7 > helper::get_unit_max_weapon_range(v2, a2) || v2->pathingFlags & 2)
 			return 0;
-		v8 = v2->nextTargetWaypoint.x;
-		if ((v8 != v2->position.x || v2->nextTargetWaypoint.y != v2->position.y)
-			&& !helper::isAngleInAttackAngle(v2->nextTargetWaypoint.y, v8, v2, a2))
+		v8 = v2->next_target_waypoint.x;
+		if ((v8 != v2->position.x || v2->next_target_waypoint.y != v2->position.y)
+			&& !helper::isAngleInAttackAngle(v2->next_target_waypoint.y, v8, v2, a2))
 		{
 			v2->orderQueueTimer = 0;
 			return 0;
@@ -146,12 +146,12 @@ namespace hooks
 			v3 = v1->orderTarget.unit;
 			if (v3)
 			{
-				v4 = helper::get_unit_max_weapon_range(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
-				if (v1->movementFlags & 2)
+				v4 = helper::get_unit_max_weapon_range(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->main_order_id]);
+				if (v1->movement_flags & 2)
 				{
-					if (!(v3->movementFlags & 2))
+					if (!(v3->movement_flags & 2))
 						goto LABEL_14;
-					v5 = (unsigned __int8)(v3->velocityDirection1 - v1->velocityDirection1);
+					v5 = (unsigned __int8)(v3->velocity_direction_1 - v1->velocity_direction_1);
 					if (v5 > 128)
 						v5 = 256 - v5;
 					if (v5 > 32)
@@ -164,7 +164,7 @@ namespace hooks
 			{
 				v6 = v1->orderTarget.pt.y;
 				v7 = v1->orderTarget.pt.x;
-				v8 = helper::get_unit_max_weapon_range(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
+				v8 = helper::get_unit_max_weapon_range(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->main_order_id]);
 				v9 = (helper::getFlingyHaltDistance((s32)v1) >> 8) + v8;
 				v2 = v9 >= helper::get_distance_fast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
 			}
@@ -282,7 +282,7 @@ LABEL_22:
 			}
 			v4 = v1->orderTarget.unit;
 			target = v1->orderTarget.unit;
-			if (v1->mainOrderState)
+			if (v1->main_order_state)
 			{
 				if (!v4)
 					goto LABEL_62;
@@ -352,14 +352,14 @@ LABEL_62:
 			if (helper::move_to_target(v1->orderTarget.unit, v1))
 			{
 LABEL_64:
-				v1->mainOrderState = 1;
+				v1->main_order_state = 1;
 LABEL_42:
 				v17 = v1->id;
-				if ((v17 == 3 || v17 == 17) && !(v1->movementFlags & 2))
+				if ((v17 == 3 || v17 == 17) && !(v1->movement_flags & 2))
 				{
 					v18 = v1->orderTarget.pt.y;
 					v19 = v1->orderTarget.pt.x;
-					v20 = helper::getDirectionFromPoints(v18, v1->sprite->position.x, v19, v1->sprite->position.y) - v1->currentDirection1;
+					v20 = helper::getDirectionFromPoints(v18, v1->sprite->position.x, v19, v1->sprite->position.y) - v1->current_direction_1;
 					if (v20 >= 128 || v20 <= -128)
 						v20 = -128;
 					if (abs(v20) >= 32)
@@ -373,12 +373,12 @@ LABEL_42:
 		else
 		{
 			helper::setResourceTarget(a1);
-			v21 = v1->moveTarget.pt.x;
-			v22 = v1->moveTarget.pt.y;
-			if (v21 != v1->nextTargetWaypoint.x || v22 != v1->nextTargetWaypoint.y)
+			v21 = v1->move_target.pt.x;
+			v22 = v1->move_target.pt.y;
+			if (v21 != v1->next_target_waypoint.x || v22 != v1->next_target_waypoint.y)
 			{
-				v1->nextTargetWaypoint.x = v21;
-				v1->nextTargetWaypoint.y = v22;
+				v1->next_target_waypoint.x = v21;
+				v1->next_target_waypoint.y = v22;
 			}
 			if (v1->orderQueueHead)
 			{
@@ -826,12 +826,12 @@ LABEL_34:
 		v13 = v15->sprite->position.y;
 		v2->orderTarget.pt.y = v13;
 		targeta = v15;
-		if (v14 != v2->nextTargetWaypoint.x || v13 != v2->nextTargetWaypoint.y)
+		if (v14 != v2->next_target_waypoint.x || v13 != v2->next_target_waypoint.y)
 		{
-			v2->nextTargetWaypoint.x = v14;
-			v2->nextTargetWaypoint.y = v13;
+			v2->next_target_waypoint.x = v14;
+			v2->next_target_waypoint.y = v13;
 		}
-		if (!v2->mainOrderState)
+		if (!v2->main_order_state)
 		{
 			if (!v15)
 			{
@@ -879,7 +879,7 @@ LABEL_34:
 				return 0;
 			}
 LABEL_76:
-			v2->mainOrderState = 1;
+			v2->main_order_state = 1;
 			return 1;
 		}
 		if (helper::is_unit_target_out_of_max_range(v2, v15))
@@ -959,13 +959,13 @@ LABEL_65:
 					s32 unitHP = units_dat::MaxHitPoints[unitId] >> 8;
 					if (!unitHP)
 					{
-						unitHP = (unit->hitPoints + 255) >> 8;
+						unitHP = (unit->hitpoints + 255) >> 8;
 						if (!unitHP)
 						{
 							unitHP = 1;
 						}
 					}
-					if ((unit->hitPoints + 255) >> 8 >= unitHP / 2)
+					if ((unit->hitpoints + 255) >> 8 >= unitHP / 2)
 					{
 						if (unit_can_attack_target(unit, unitTarget, 1))
 						{
@@ -1059,7 +1059,7 @@ LABEL_65:
 		}
 		else
 		{
-			u8 steward_order_id = steward->mainOrderId;
+			u8 steward_order_id = steward->main_order_id;
 			steward->userActionFlags |= 1u;
 			if (steward_order_id)
 			{

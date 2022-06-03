@@ -504,7 +504,7 @@ namespace hooks
 						workerUnit = (Unit*)parentTown->workers;
 						for (i = 0; workerUnit; i += queueCount)
 						{
-							workerTarget = workerUnit->moveTarget.unit;
+							workerTarget = workerUnit->move_target.unit;
 							if (workerTarget->id == UnitId::TerranWatchdog)
 							{
 								queueCount = 1;
@@ -753,7 +753,7 @@ namespace hooks
 						Unit* oldFirstTownUnit = (Unit*)oldUnitTown->workers;
 						for (i = 0; oldFirstTownUnit; i += queuedCount)
 						{
-							Unit* oldFirstTownMoveTarget = oldFirstTownUnit->moveTarget.unit;
+							Unit* oldFirstTownMoveTarget = oldFirstTownUnit->move_target.unit;
 							if (oldFirstTownMoveTarget->id == UnitId::TerranWatchdog)
 							{
 								queuedCount = 1;
@@ -798,7 +798,7 @@ namespace hooks
 	// Hooked in case we need it for Lakizilisk tactical AI
 	void ai_order_lurker_burrow(Unit* unit) // 0043C230
 	{
-		if (unit->id == UnitId::ZergLakizilisk && !(unit->status & UnitStatus::Burrowed) && unit->mainOrderId != OrderId::Burrow)
+		if (unit->id == UnitId::ZergLakizilisk && !(unit->status & UnitStatus::Burrowed) && unit->main_order_id != OrderId::Burrow)
 		{
 			helper::issue_order_targeting_nothing(unit, OrderId::Burrow);
 		}

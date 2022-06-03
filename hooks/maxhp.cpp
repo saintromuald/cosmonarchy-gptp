@@ -71,7 +71,7 @@ namespace hooks
 		v3 = units_dat::MaxHitPoints[v1] >> 8;
 		if (!v3)
 		{
-			v3 = (a1->hitPoints + 255) >> 8;
+			v3 = (a1->hitpoints + 255) >> 8;
 			if (!v3)
 				v3 = 1;
 		}
@@ -458,7 +458,7 @@ LABEL_55:
 			if (helper::can_weapon_target_unit(WeaponId::Restoration, a1, a2))
 			{
 				v3 = units_dat::ShieldsEnabled[(u16)v2->id] ? v2->shields >> 8 : 0;
-				if (v3 + ((v2->hitPoints + 255) >> 8) > 60
+				if (v3 + ((v2->hitpoints + 255) >> 8) > 60
 					&& scbw::isDebuffed(v2))
 				{
 					result = 1;
@@ -505,7 +505,7 @@ LABEL_55:
 		char returnValue = 0;
 
 		v5 = a1;
-		v4 = &a1->hitPoints;
+		v4 = &a1->hitpoints;
 		if (v4)
 		{
 			if (!(v5->status & UnitStatus::Invincible))
@@ -760,7 +760,7 @@ LABEL_32:
 				v12 = v10 >> 8;
 				if (!v12)
 				{
-					v12 = (v3->hitPoints + 255) >> 8;
+					v12 = (v3->hitpoints + 255) >> 8;
 					if (!v12)
 						v12 = 1;
 				}
@@ -771,7 +771,7 @@ LABEL_32:
 				v14 = v10 >> 8;
 				if (!v14)
 				{
-					v14 = (v3->hitPoints + 255) >> 8;
+					v14 = (v3->hitpoints + 255) >> 8;
 					if (!v14)
 						v14 = 1;
 				}
@@ -810,7 +810,7 @@ LABEL_32:
 		s16 v9; // [esp+Ch] [ebp-8h]
 		u8 v10; // [esp+13h] [ebp-1h]
 
-		v1 = a1->mainOrderId;
+		v1 = a1->main_order_id;
 		v2 = v1;
 		v10 = orders_dat::OrderWeaponId[v1];
 		v8 = a1->orderTarget.pt.y;
@@ -1019,16 +1019,16 @@ LABEL_23:
 			v6 = units_dat::MaxHitPoints[v4] >> 8;
 			if (!v6)
 			{
-				v6 = (v2->hitPoints + 255) >> 8;
+				v6 = (v2->hitpoints + 255) >> 8;
 				if (!v6)
 					v6 = 1;
 			}
-			if ((v2->hitPoints + 255) >> 8 >= 3 * v6 / 4 || units_dat::ShieldsEnabled[v5] && v2->shields >> 8 == units_dat::MaxShieldPoints[v5])
+			if ((v2->hitpoints + 255) >> 8 >= 3 * v6 / 4 || units_dat::ShieldsEnabled[v5] && v2->shields >> 8 == units_dat::MaxShieldPoints[v5])
 			{
 				v11 = 1;
 				if (helper::canEnterTransport(v2, a1))
 				{
-					v7 = v2->mainOrderId;
+					v7 = v2->main_order_id;
 					if (v7 != OrderId::Pickup2 && v7 != OrderId::Unload)
 					{
 						if (v7 != OrderId::MoveUnload

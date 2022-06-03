@@ -53,15 +53,15 @@ namespace hooks
 			building->status &= ~UnitStatus::IsGathering;
 		}
 
-		if (building->mainOrderState == 0)
+		if (building->main_order_state == 0)
 		{
 			if (building->remainingBuildTime < (units_dat::TimeCost[buildingId] * 3 / 4))
 			{
-				building->mainOrderState = 1;
+				building->main_order_state = 1;
 			}
 			jump_to_5D56C = true;
 		}
-		else if (building->mainOrderState > 6)
+		else if (building->main_order_state > 6)
 		{
 			jump_to_5D56C = true;
 		}
@@ -90,7 +90,7 @@ namespace hooks
 				jump_to_5D720 = true;
 			}
 		}
-		else if (building->mainOrderState == 1)
+		else if (building->main_order_state == 1)
 		{ // 0045D5AE
 			if (building->id == UnitId::ZergExcisant)
 			{
@@ -101,43 +101,43 @@ namespace hooks
 				}
 			}
 			building->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
-			building->mainOrderState = 2;
+			building->main_order_state = 2;
 			jump_to_5D56C = true;
 		}
-		else if (building->mainOrderState == 2)
+		else if (building->main_order_state == 2)
 		{ // 0045D5E2
 			if (building->remainingBuildTime < units_dat::TimeCost[buildingId] / 2)
 			{
-				building->mainOrderState = 3;
+				building->main_order_state = 3;
 			}
 			jump_to_5D56C = true;
 		}
-		else if (building->mainOrderState == 3)
+		else if (building->main_order_state == 3)
 		{ // 0045D603
 			building->sprite->play_iscript_animation(IscriptAnimation::SpecialState2, true);
-			building->mainOrderState = 4;
+			building->main_order_state = 4;
 			jump_to_5D56C = true;
 
 		}
-		else if (building->mainOrderState == 4)
+		else if (building->main_order_state == 4)
 		{ // 0045D618
 			if (building->remainingBuildTime == 0)
 			{
-				building->mainOrderState = 5;
+				building->main_order_state = 5;
 			}
 			jump_to_5D56C = true;
 		}
-		else if (building->mainOrderState == 5)
+		else if (building->main_order_state == 5)
 		{ // 005D62F
 			building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
-			building->mainOrderState = 6;
+			building->main_order_state = 6;
 			helper::play_building_completed_sound(building);
 			jump_to_5D56C = true;
 
 			// TODO: Cleanup
 			/*
 			bool sEnd = false;
-			if (building->orderSignal & 0x1)
+			if (building->order_signal & 0x1)
 			{
 				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 				sEnd = true;
@@ -147,35 +147,35 @@ namespace hooks
 
 			if (sEnd)
 			{
-				building->orderSignal |= 4;
-				building->mainOrderState = 6;
+				building->order_signal |= 4;
+				building->main_order_state = 6;
 				play_building_completed_sound(building);
 			}
 			jump_to_5D56C = true;
 			*/
 		}
-		else if (building->mainOrderState == 6)
+		else if (building->main_order_state == 6)
 		{ // 005D64B
 			bool ordCondition = false;
-			if (building->orderSignal & 0x4)
+			if (building->order_signal & 0x4)
 			{
 				ordCondition = true;
 			}
-			if (building->orderSignal & 4)
+			if (building->order_signal & 4)
 			{
-				if (building->orderSignal & 4)
+				if (building->order_signal & 4)
 				{
 				}
-				if (building->orderSignal & 1)
+				if (building->order_signal & 1)
 				{
 				}
 				s32 hpAfterMorph;
 				Image* current_image;
-				building->orderSignal -= 4;
+				building->order_signal -= 4;
 				if (helper::isValidMorph(buildingId))
 				{
 					// save hp before some functions modify them
-					hpAfterMorph = building->hitPoints;
+					hpAfterMorph = building->hitpoints;
 					u32 save_shields = building->shields;
 					// update score
 					building->status |= UnitStatus::Completed;
@@ -267,7 +267,7 @@ namespace hooks
 				{
 					hpGain *= OPCWAL_PROGRESS_INCREASE;
 				}
-				building->setHp(building->hitPoints + hpGain);
+				building->setHp(building->hitpoints + hpGain);
 			}
 		}
 	}
@@ -293,11 +293,11 @@ namespace hooks
 					unit->status |= UnitStatus::Completed;
 					helper::increment_unit_scores_ex(unit, -1, 0);
 					unit->status -= UnitStatus::Completed;
-					u32 hp = unit->hitPoints;
+					u32 hp = unit->hitpoints;
 					u32 shield = unit->shields;
 					helper::update_unit_stats_and_finish_building(unit);
 					helper::update_unit_strength(unit);
-					unit->hitPoints = hp;
+					unit->hitpoints = hp;
 					unit->shields = shield;
 					Image* anchor = unit->get_overlay(ImageId::WarpAnchor);
 					if (anchor != nullptr)

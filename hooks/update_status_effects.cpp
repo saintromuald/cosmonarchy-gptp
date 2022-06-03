@@ -118,7 +118,7 @@ namespace hooks
 			auto tile = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y);
 			if (tile.currently_occupied)
 			{
-				Unit* nearest = scbw::UnitFinder::getNearestTarget(
+				Unit* nearest = scbw::UnitFinder::get_nearest_target(
 					unit->get_left() - 32,
 					unit->get_top() - 32,
 					unit->get_right() + 32,
@@ -141,7 +141,7 @@ namespace hooks
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->building.addon) {
 			unit_id = unit->building.addon->id;
 		}
-		if (unit->sprite && unit->mainOrderId != OrderId::Die
+		if (unit->sprite && unit->main_order_id != OrderId::Die
 			&& (unit_id == UnitId::TerranQuarry || unit_id == UnitId::ZergIroleth || unit_id == UnitId::ProtossPennant))
 		{
 			u32 radius = 0;
@@ -371,10 +371,10 @@ namespace hooks
 		{
 			if (!(unit->status & UnitStatus::Burrowed) && unit->id != UnitId::ZergDroleth)
 			{
-				if (unit->mainOrderId == OrderId::ComputerAI || unit->mainOrderId == OrderId::Guard)
+				if (unit->main_order_id == OrderId::ComputerAI || unit->main_order_id == OrderId::Guard)
 				{
-					if (unit->moveTarget.pt.x == unit->sprite->position.x
-						&& unit->moveTarget.pt.y == unit->sprite->position.y
+					if (unit->move_target.pt.x == unit->sprite->position.x
+						&& unit->move_target.pt.y == unit->sprite->position.y
 						&& ((unit->status & UnitStatus::Unmovable) != 0) != -1
 						// Originally checked for burrow tech here
 						)
@@ -383,7 +383,7 @@ namespace hooks
 						auto tile = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y);
 						if (tile.currently_occupied)
 						{
-							Unit* nearest = scbw::UnitFinder::getNearestTarget(
+							Unit* nearest = scbw::UnitFinder::get_nearest_target(
 								unit->get_left() - 32,
 								unit->get_top() - 32,
 								unit->get_right() + 32,

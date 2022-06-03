@@ -17,7 +17,7 @@ namespace hooks
 		}
 		range = 32 * mine->get_seek_range();
 		return
-			scbw::UnitFinder::getNearestTarget(
+			scbw::UnitFinder::get_nearest_target(
 				mine->get_x() - range, mine->get_y() - range,
 				mine->get_x() + range, mine->get_y() + range,
 				mine, [&](Unit* target)
@@ -48,36 +48,36 @@ namespace hooks
 
 	void orders_TerranMine(Unit* unit) // 00463DF0
 	{
-		if (unit->mainOrderState == 0)
+		if (unit->main_order_state == 0)
 		{
 			unit->groundWeaponCooldown = MineBurrowTime;
-			unit->mainOrderState = 1;
+			unit->main_order_state = 1;
 		}
 
-		if (unit->mainOrderState == 1)
+		if (unit->main_order_state == 1)
 		{
 			if (unit->groundWeaponCooldown == 0)
 			{
 				unit->sprite->play_iscript_animation(IscriptAnimation::Burrow, true);
 				unit->status |= UnitStatus::NoCollide;
-				unit->mainOrderState = 2;
+				unit->main_order_state = 2;
 			}
 		}
 
-		if (unit->mainOrderState == 2)
+		if (unit->main_order_state == 2)
 		{
-			if (unit->orderSignal & 4)
+			if (unit->order_signal & 4)
 			{
 				if (!(unit->status & UnitStatus::IsHallucination))
 				{
 					helper::burrowGeneric(unit); // related to movement
 					helper::instantCloak(unit); // related to cloaking/stealth
 				}
-				unit->mainOrderState = 3;
+				unit->main_order_state = 3;
 			}
 		}
 
-		if (unit->mainOrderState == 3)
+		if (unit->main_order_state == 3)
 		{
 			Unit* target = helper::SpiderMine_AcquireTarget(unit);
 
@@ -88,13 +88,13 @@ namespace hooks
 				unit->sprite->flags &= ~SpriteFlags::Burrowed;
 				// might have been some cloaking order before
 				unit->set_secondary_order(OrderId::Nothing2);
-				unit->mainOrderState = 4;
+				unit->main_order_state = 4;
 			}
 		}
 
-		if (unit->mainOrderState == 4)
+		if (unit->main_order_state == 4)
 		{
-			if (unit->orderSignal & 4)
+			if (unit->order_signal & 4)
 			{
 				unit->sprite->elevationLevel = units_dat::Elevation[unit->id];
 				unit->status &= ~UnitStatus::NoCollide;
@@ -103,17 +103,17 @@ namespace hooks
 					// probably trigger movement/acceleration of unit toward the target
 					helper::moveToCollide(unit, unit->orderTarget.unit);
 
-					unit->mainOrderState = 5;
+					unit->main_order_state = 5;
 				}
 				else
 				{
-					unit->mainOrderState = 1;
+					unit->main_order_state = 1;
 				}
 			}
 		}
 
 		// unlike the previous states, going directly from state 4 to 5 in the same frame is impossible
-		else if (unit->mainOrderState == 5)
+		else if (unit->main_order_state == 5)
 		{
 			bool bIsCompletelyInRange = false;
 			bool bEndThere = false;
@@ -138,7 +138,7 @@ namespace hooks
 			if (!bEndThere && !bIsCompletelyInRange) // 00463F14
 			{
 				helper::set_resource_target(unit);
-				unit->mainOrderState = 1;
+				unit->main_order_state = 1;
 			}
 
 			if (bIsCompletelyInRange) // 00463F22
@@ -158,15 +158,15 @@ namespace hooks
 					current_image->play_iscript_animation(anim);
 					current_image = current_image->link.next;
 				}
-				unit->mainOrderState = 6;
+				unit->main_order_state = 6;
 			}
 		}
 
 		// unlike state 5 with state 4, state 6 can be chained from
 		// state 5, so no else here
-		if (unit->mainOrderState == 6)
+		if (unit->main_order_state == 6)
 		{
-			if (unit->orderSignal & 1)
+			if (unit->order_signal & 1)
 			{
 				unit->remove();
 			}
@@ -191,11 +191,11 @@ namespace hooks
 		Unit* v14;
 		Point16 a2;
 		v1 = unit;
-		if (unit->mainOrderState)
+		if (unit->main_order_state)
 		{
 			if (helper::techUseAllowed(unit, 3u, unit->player)
-				&& ((v11 = v1->sprite, v1->moveTarget.pt.x != v11->position.x)
-					|| v1->moveTarget.pt.y != v11->position.y
+				&& ((v11 = v1->sprite, v1->move_target.pt.x != v11->position.x)
+					|| v1->move_target.pt.y != v11->position.y
 					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1))
 			{
 				if ((helper::get_distance_fast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400)
@@ -211,7 +211,7 @@ namespace hooks
 					{
 						helper::update_unit_stats_and_finish_building(v13);
 						helper::update_unit_strength_and_apply_default_orders(v14);
-						helper::turnUnit(v14, v1->currentDirection1);
+						helper::turnUnit(v14, v1->current_direction_1);
 						v1->vulture.spiderMineCount -= 1;
 					}
 					else
@@ -249,17 +249,17 @@ namespace hooks
 				v4 = target->sprite;
 				v5 = v4->position.y;
 				v6 = v4->position.x;
-				if (v6 != v1->nextTargetWaypoint.x || v5 != v1->nextTargetWaypoint.y)
+				if (v6 != v1->next_target_waypoint.x || v5 != v1->next_target_waypoint.y)
 				{
-					v1->nextTargetWaypoint.x = v6;
-					v1->nextTargetWaypoint.y = v5;
+					v1->next_target_waypoint.x = v6;
+					v1->next_target_waypoint.y = v5;
 				}
 				if (v3)
 				{
 					v7 = v1->orderTarget.unit;
 					v1->orderTarget.pt.x = v7->sprite->position.x;
 					v1->orderTarget.pt.y = v7->sprite->position.y;
-					v1->mainOrderState = 1;
+					v1->main_order_state = 1;
 				}
 			}
 			else
@@ -267,14 +267,14 @@ namespace hooks
 				v8 = unit->orderTarget.pt.y;
 				v9 = unit->orderTarget.pt.x;
 				ByteOperations::SetLowByte(v10, helper::set_move_target_xy(v9, v8, unit));
-				if (v9 != v1->nextTargetWaypoint.x || v8 != v1->nextTargetWaypoint.y)
+				if (v9 != v1->next_target_waypoint.x || v8 != v1->next_target_waypoint.y)
 				{
-					v1->nextTargetWaypoint.x = v9;
-					v1->nextTargetWaypoint.y = v8;
+					v1->next_target_waypoint.x = v9;
+					v1->next_target_waypoint.y = v8;
 				}
 				if (v10)
 				{
-					v1->mainOrderState = 1;
+					v1->main_order_state = 1;
 				}
 			}
 		}

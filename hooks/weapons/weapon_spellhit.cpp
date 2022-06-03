@@ -66,10 +66,10 @@ namespace hooks
 		{
 			helper::return_all_interceptors(unit);
 		}
-		u8 orderId = unit->mainOrderId;
+		u8 orderId = unit->main_order_id;
 		if (orderId == OrderId::Repair1 || orderId == OrderId::DroneLand)
 		{
-			unit->mainOrderState = 0;
+			unit->main_order_state = 0;
 		}
 		if (!orders_dat::DisablingKeepsTarget[orderId])
 		{
@@ -264,12 +264,12 @@ namespace hooks
 						damage,
 						attacker,
 						attacker->player,
-						attacker->currentDirection1,
+						attacker->current_direction_1,
 						1);
 				}
 				else
 				{
-					helper::attack_overlay_and_notify(attacker, target, weaponId, attacker->currentDirection1); // no damage, but still ask for retaliation
+					helper::attack_overlay_and_notify(attacker, target, weaponId, attacker->current_direction_1); // no damage, but still ask for retaliation
 				}
 			}
 			else
@@ -285,7 +285,7 @@ namespace hooks
 					damage,
 					attacker,
 					attacker->player,
-					attacker->currentDirection1,
+					attacker->current_direction_1,
 					1);
 			}
 
@@ -422,7 +422,7 @@ namespace hooks
 				for (u32 i = 0; i < units.size; ++i) {
 					Unit* unit = units.units[i];
 
-					u32 power = target->hitPoints;
+					u32 power = target->hitpoints;
 					u32 energyMax = unit->getMaxEnergy();
 					u32 diff = energyMax - unit->energy;
 					if (power > diff)

@@ -42,11 +42,11 @@ namespace hooks
 
 		if (!bErrorReturnToIdle)
 		{
-			if (unitInfested->mainOrderState == 0)
+			if (unitInfested->main_order_state == 0)
 			{
 				//init timer
 				unitInfested->remainingBuildTime = 3;
-				unitInfested->mainOrderState = 2;
+				unitInfested->main_order_state = 2;
 				bStopFunction = true;
 			}
 
@@ -168,7 +168,7 @@ namespace hooks
 		bool bReturnToIdle = false;
 		Point16 actualpos;
 
-		if (unitInfesting->mainOrderState == 3)
+		if (unitInfesting->main_order_state == 3)
 		{
 			//infesting in progress, dealing with timer			
 			if (unitInfesting->remainingBuildTime != 0)
@@ -181,7 +181,7 @@ namespace hooks
 				bBuildTimeReachedZero = true;
 			}
 		}
-		else if (unitInfesting->mainOrderState != 0) // if ==0, wait for EA33F to start infestation logic
+		else if (unitInfesting->main_order_state != 0) // if ==0, wait for EA33F to start infestation logic
 		{
 			bStopFunction = true;
 		}
@@ -225,11 +225,11 @@ namespace hooks
 			// not started the infestation logic yet, doing it here
 			if (unitInfested != nullptr
 				&& isInfestableUnitHook(unitInfested)
-				&& unitInfested->mainOrderId != OrderId::InfestMine1)
+				&& unitInfested->main_order_id != OrderId::InfestMine1)
 			{
 				helper::hide_and_disable_unit(unitInfesting);								// hide the infesting unit
 				unitInfested->order_to(OrderId::InfestMine1, unitInfesting);				// order the target to be infested, giving it the infesting unit as order target
-				unitInfesting->mainOrderState = 3;
+				unitInfesting->main_order_state = 3;
 				unitInfesting->remainingBuildTime = 60;									// timer before reappearing
 				bStopFunction = true;
 			}
@@ -238,11 +238,11 @@ namespace hooks
 			{ // EA377
 				// "move to invalid target" logic...I think
 				helper::set_resource_target(unitInfesting);
-				if (unitInfesting->moveTarget.pt.x != unitInfesting->nextTargetWaypoint.x
-					|| unitInfesting->moveTarget.pt.y != unitInfesting->nextTargetWaypoint.y)
+				if (unitInfesting->move_target.pt.x != unitInfesting->next_target_waypoint.x
+					|| unitInfesting->move_target.pt.y != unitInfesting->next_target_waypoint.y)
 				{
-					unitInfesting->nextTargetWaypoint.x = unitInfesting->moveTarget.pt.x;
-					unitInfesting->nextTargetWaypoint.y = unitInfesting->moveTarget.pt.y;
+					unitInfesting->next_target_waypoint.x = unitInfesting->move_target.pt.x;
+					unitInfesting->next_target_waypoint.y = unitInfesting->move_target.pt.y;
 				}
 				//EA39E
 				if (unitInfesting->orderQueueHead != nullptr)

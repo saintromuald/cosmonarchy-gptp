@@ -127,7 +127,7 @@ namespace hooks
 						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
 					}
-					if (unit->mainOrderId == OrderId::BuildProtoss1 && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->orderTarget.unit != NULL && (unit->orderTarget.unit->status & UnitStatus::Completed) == 0)
+					if (unit->main_order_id == OrderId::BuildProtoss1 && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->orderTarget.unit != NULL && (unit->orderTarget.unit->status & UnitStatus::Completed) == 0)
 					{
 						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
@@ -654,7 +654,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotConstructing:
 				{
 					//DebugOut("IsNotConstructing (%d):", currentOpcode);
-					if (parentUnit->id == UnitId::TerranMason && parentUnit->mainOrderId == OrderId::ConstructingBuilding)
+					if (parentUnit->id == UnitId::TerranMason && parentUnit->main_order_id == OrderId::ConstructingBuilding)
 					{
 						//DebugOut(">False");
 						goto LABEL_87;

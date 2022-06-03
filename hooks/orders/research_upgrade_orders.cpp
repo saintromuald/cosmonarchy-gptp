@@ -115,7 +115,7 @@ namespace hooks
 
 				unit->userActionFlags |= 1;
 
-				if (unit->mainOrderId != OrderId::Die)
+				if (unit->main_order_id != OrderId::Die)
 				{
 
 					bool bStopLoop = (unit->orderQueueTail == nullptr);
@@ -254,7 +254,7 @@ namespace hooks
 
 				unit->userActionFlags |= 1;
 
-				if (unit->mainOrderId != OrderId::Die)
+				if (unit->main_order_id != OrderId::Die)
 				{
 
 					bool bStopLoop = (unit->orderQueueTail == nullptr);

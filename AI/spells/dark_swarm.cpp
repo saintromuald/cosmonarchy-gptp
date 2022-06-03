@@ -165,7 +165,7 @@ namespace AI
 			bounds = 32 * 32;	/*0x400*/
 		}
 		// Based on AI_BestUnit @ 0x004E8740 and canHitUnit @ 0x00441870
-		Unit* result = scbw::UnitFinder::getNearestTarget(
+		Unit* result = scbw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds,
 			caster->get_y() - bounds,
 			caster->get_x() + bounds,

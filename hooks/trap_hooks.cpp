@@ -164,7 +164,7 @@ namespace hooks
 		v5 = playerTable[(u8)v1->player].type;
 		if (v5 == 3)
 		{ // Rescue Passive
-			v6 = v1->mainOrderId;
+			v6 = v1->main_order_id;
 			v1->userActionFlags |= 1u;
 			if (v6)
 			{

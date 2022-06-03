@@ -22,7 +22,7 @@ namespace hooks
 		{
 			currentClientSelectionUnit = clientSelectionGroup->unit[i];
 			if (currentClientSelectionUnit != nullptr &&
-				currentClientSelectionUnit->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS)
+				currentClientSelectionUnit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
 				bFoundUnitAbleToStimpack = true;
 			}
@@ -44,7 +44,7 @@ namespace hooks
 	// code used by the AI (no questions about sync between players in that case)
 	void useStimPacksAIHook(Unit* unit)
 	{
-		if (unit->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS + StimpackOffset
+		if (unit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS + StimpackOffset
 			&& unit->stimTimer == 0)
 		{
 			helper::play_sound_from_unit(helper::rand_between(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit, 1, 0);
@@ -69,7 +69,7 @@ namespace hooks
 		while (activePlayerCurrentSelection != nullptr)
 		{
 			if (activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *ACTIVE_NATION_ID) == 1
-				&& activePlayerCurrentSelection->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS)
+				&& activePlayerCurrentSelection->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
 				s32 random_value;
 				if (!*IS_IN_GAME_LOOP)

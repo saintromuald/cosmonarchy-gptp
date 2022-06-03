@@ -16,7 +16,7 @@ namespace hooks
 			if (
 				(current_selection->id == UnitId::TerranPhalanxTankMode ||
 					current_selection->id == UnitId::Hero_EdmundDukeTankMode) &&
-				current_selection->mainOrderId != OrderId::SiegeMode
+				current_selection->main_order_id != OrderId::SiegeMode
 				)
 			{
 				if (current_selection->canUseTech(TechId::TankSiegeMode, *ACTIVE_NATION_ID) == 1)
@@ -63,7 +63,7 @@ namespace hooks
 			if (
 				(current_selection->id == UnitId::TerranPhalanxSiegeMode ||
 					current_selection->id == UnitId::Hero_EdmundDukeSiegeMode) &&
-				current_selection->mainOrderId != OrderId::TankMode
+				current_selection->main_order_id != OrderId::TankMode
 				)
 			{
 				if (current_selection->canUseTech(TechId::TankSiegeMode, *ACTIVE_NATION_ID) == 1)

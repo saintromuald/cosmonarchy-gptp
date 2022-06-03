@@ -67,7 +67,7 @@ namespace hooks
 
 		bool stopFunction = false;
 
-		if (unit->mainOrderState == 0)
+		if (unit->main_order_state == 0)
 		{
 
 			//93BB2
@@ -90,17 +90,17 @@ namespace hooks
 
 				}
 
-				unit->mainOrderState = 1;
+				unit->main_order_state = 1;
 
 			} //if(advanceRemainingBuildTime_Sub466940(unit)
 
 		}
 		else
-			if (unit->mainOrderState == 1 && (unit->orderSignal & 4))
+			if (unit->main_order_state == 1 && (unit->order_signal & 4))
 			{
 				//93B37
 
-				unit->orderSignal -= 4;
+				unit->order_signal -= 4;
 				unit->status |= UnitStatus::IsBuilding;
 
 				//pathing related
@@ -136,7 +136,7 @@ namespace hooks
 		if (
 			targetUnit == nullptr ||
 			unit->player != targetUnit->player ||
-			targetUnit->mainOrderId != OrderId::WarpingDarkArchon ||
+			targetUnit->main_order_id != OrderId::WarpingDarkArchon ||
 			targetUnit->orderTarget.unit != unit
 			)
 		{	//conditions for merge not ok
@@ -145,13 +145,13 @@ namespace hooks
 			helper::set_resource_target(unit);
 
 			if (
-				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
-				unit->moveTarget.pt.y != unit->nextTargetWaypoint.y
+				unit->move_target.pt.x != unit->next_target_waypoint.x ||
+				unit->move_target.pt.y != unit->next_target_waypoint.y
 				)
 			{
 				//94857
-				unit->nextTargetWaypoint.x = unit->moveTarget.pt.x;
-				unit->nextTargetWaypoint.y = unit->moveTarget.pt.y;
+				unit->next_target_waypoint.x = unit->move_target.pt.x;
+				unit->next_target_waypoint.y = unit->move_target.pt.y;
 			}
 
 			//9485F
@@ -207,7 +207,7 @@ namespace hooks
 				//94724
 
 												//unit unmovable			
-				if (unit->mainOrderState != 0 && unit->get_movable_state() == 2)
+				if (unit->main_order_state != 0 && unit->get_movable_state() == 2)
 				{
 					helper::make_to_hold_position(unit);
 					unit->order_to_idle();
@@ -217,7 +217,7 @@ namespace hooks
 
 					//94746
 
-					unit->mainOrderState = 1;
+					unit->main_order_state = 1;
 
 					if (distanceBetweenUnits > 19)
 						helper::delayed_set_move_target_xy(
@@ -276,7 +276,7 @@ namespace hooks
 
 					} //if(distanceBetweenUnits <= 19)
 
-				} //if(unit->mainOrderState == 0 || unit->get_movable_state() != 2)
+				} //if(unit->main_order_state == 0 || unit->get_movable_state() != 2)
 
 			} //if(distanceBetweenUnits > 20)
 			else
@@ -336,7 +336,7 @@ namespace hooks
 		if (
 			targetUnit == nullptr ||
 			unit->player != targetUnit->player ||
-			targetUnit->mainOrderId != OrderId::WarpingArchon ||
+			targetUnit->main_order_id != OrderId::WarpingArchon ||
 			targetUnit->orderTarget.unit != unit
 			)
 		{	//conditions for merge not ok
@@ -345,13 +345,13 @@ namespace hooks
 			helper::set_resource_target(unit);
 
 			if (
-				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
-				unit->moveTarget.pt.y != unit->nextTargetWaypoint.y
+				unit->move_target.pt.x != unit->next_target_waypoint.x ||
+				unit->move_target.pt.y != unit->next_target_waypoint.y
 				)
 			{
 				//94A5E
-				unit->nextTargetWaypoint.x = unit->moveTarget.pt.x;
-				unit->nextTargetWaypoint.y = unit->moveTarget.pt.y;
+				unit->next_target_waypoint.x = unit->move_target.pt.x;
+				unit->next_target_waypoint.y = unit->move_target.pt.y;
 			}
 
 			//94A66
@@ -406,7 +406,7 @@ namespace hooks
 				//94944
 
 												//unit unmovable
-				if (unit->mainOrderState != 0 && unit->get_movable_state() == 2)
+				if (unit->main_order_state != 0 && unit->get_movable_state() == 2)
 				{
 					helper::make_to_hold_position(unit);
 					unit->order_to_idle();
@@ -416,7 +416,7 @@ namespace hooks
 
 					//94966
 
-					unit->mainOrderState = 1;
+					unit->main_order_state = 1;
 
 					if (distanceBetweenUnits > 10)
 						helper::delayed_set_move_target_xy(
@@ -476,7 +476,7 @@ namespace hooks
 
 					} //if(distanceBetweenUnits <= 19)
 
-				} //if(unit->mainOrderState == 0 || unit->get_movable_state() != 2)
+				} //if(unit->main_order_state == 0 || unit->get_movable_state() != 2)
 
 			} //if(distanceBetweenUnits > 20)
 			else

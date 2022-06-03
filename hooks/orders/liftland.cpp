@@ -16,7 +16,7 @@ namespace hooks
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			unit->userActionFlags |= 1;
-			if (unit->mainOrderId != OrderId::Die)
+			if (unit->main_order_id != OrderId::Die)
 			{
 				bool bLoopBreak = false;
 				while (unit->orderQueueTail != nullptr && !bLoopBreak)
@@ -31,7 +31,7 @@ namespace hooks
 				unit->perform_another_order(OrderId::BuildingLiftoff, coords.x, coords.y,	nullptr, 0);
 			}
 			prepareForNextOrder(unit);
-			if (unit->mainOrderId != OrderId::Die)
+			if (unit->main_order_id != OrderId::Die)
 			{
 				while (unit->orderQueueTail != nullptr && unit->orderQueueTail->orderId == OrderId::BuildingLand)
 				{
@@ -41,13 +41,13 @@ namespace hooks
 			}
 			unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
 		}
-		else if (unit->mainOrderState == 0)
+		else if (unit->main_order_state == 0)
 		{
 			// Plan vertical movement toward ground
 			helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y - unit->sprite->images.tail->verticalOffset);
-			unit->mainOrderState = 1;
+			unit->main_order_state = 1;
 		}
-		else if (unit->mainOrderState == 1)
+		else if (unit->main_order_state == 1)
 		{
 			if (unit->get_movable_state() != 0)
 			{
@@ -99,33 +99,33 @@ namespace hooks
 
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 
-					unit->flingyTopSpeed = 256;
+					unit->flingy_top_speed = 256;
 					helper::SetUnitMovementSpeed(unit, 256);
 
-					unit->mainOrderState = 2;
+					unit->main_order_state = 2;
 				}
 			}
 		}
-		else if (unit->mainOrderState == 2)
+		else if (unit->main_order_state == 2)
 		{
 			bool bStopThere = false;
 			if (!helper::is_unit_positions_2_equal(unit))
 			{
-				bStopThere = ((unit->velocityDirection1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->nextTargetWaypoint.x, unit->nextTargetWaypoint.y)) != 0);
+				bStopThere = ((unit->velocity_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
 			}
 			if (!bStopThere)
 			{
 				unit->sprite->play_iscript_animation(IscriptAnimation::Landing);
-				unit->mainOrderState = 3;
+				unit->main_order_state = 3;
 			}
 		}
 
-		// There's no "else" here, mainOrderState = 2 can continue directly into mainOrderState = 3 if mainOrderState was updated
-		if (unit->mainOrderState == 3)
+		// There's no "else" here, main_order_state = 2 can continue directly into main_order_state = 3 if main_order_state was updated
+		if (unit->main_order_state == 3)
 		{
-			if ((unit->get_movable_state() != 0) && (unit->orderSignal & 0x10))
+			if ((unit->get_movable_state() != 0) && (unit->order_signal & 0x10))
 			{
-				unit->orderSignal -= 0x10;
+				unit->order_signal -= 0x10;
 
 				if (unit->orderTarget.pt.x >= 0 && unit->orderTarget.pt.x < mapTileSize->width * 32 && 
 					unit->orderTarget.pt.y >= 0 && unit->orderTarget.pt.y < mapTileSize->height * 32) { // New sanity check; Attempt on fixing clear tile flags
@@ -246,11 +246,11 @@ namespace hooks
 			}
 
 			scbw::refresh_console();
-			if (unit->sprite->position.x != unit->nextTargetWaypoint.x
-			||	unit->sprite->position.y - 42 != unit->nextTargetWaypoint.y)
+			if (unit->sprite->position.x != unit->next_target_waypoint.x
+			||	unit->sprite->position.y - 42 != unit->next_target_waypoint.y)
 			{
-				unit->nextTargetWaypoint.x = unit->sprite->position.x;
-				unit->nextTargetWaypoint.y = unit->sprite->position.y - 42;
+				unit->next_target_waypoint.x = unit->sprite->position.x;
+				unit->next_target_waypoint.y = unit->sprite->position.y - 42;
 			}
 
 			if (unit->id == UnitId::ZergInfestedCommandCenter)
@@ -263,7 +263,7 @@ namespace hooks
 			{
 				helper::placebuildingProc();
 			}
-			unit->mainOrderId = OrderId::Liftoff;
+			unit->main_order_id = OrderId::Liftoff;
 		}
 		else
 		{

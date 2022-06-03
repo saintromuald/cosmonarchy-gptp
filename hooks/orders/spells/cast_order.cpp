@@ -177,14 +177,14 @@ namespace hooks
 	void orders_Spell(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		u8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
+		u8 orderWeaponId = orders_dat::OrderWeaponId[unit->main_order_id];
 		Unit* target = unit->orderTarget.unit;
 
 		if (unit->id == UnitId::TerranPaladin)
 		{
-			if (unit->orderSignal & 0x20)
+			if (unit->order_signal & 0x20)
 			{
-				unit->orderSignal &= ~0x20;
+				unit->order_signal &= ~0x20;
 				unitExt->timers[TimerSkyfall] = 3;
 				unitExt->values[ValueSkyfallStacks] = 0;
 				auto pt = unit->orderTarget.pt;
@@ -205,11 +205,11 @@ namespace hooks
 			unitExt->values[ValueWyvernLandGrabY] = unit->orderTarget.pt.y;
 		}
 
-		if (unit->mainOrderState == 2)
+		if (unit->main_order_state == 2)
 		{
-			if (unit->orderSignal & 2)
+			if (unit->order_signal & 2)
 			{
-				unit->orderSignal -= 2;
+				unit->order_signal -= 2;
 				unit->order_to_idle();
 			}
 			else // 00492886
@@ -219,11 +219,11 @@ namespace hooks
 					unit->orderTarget.pt.x = target->sprite->position.x;
 					unit->orderTarget.pt.y = target->sprite->position.y;
 
-					if (target->sprite->position.x != unit->nextTargetWaypoint.x
-					||	target->sprite->position.y != unit->nextTargetWaypoint.y) // 004928C1
+					if (target->sprite->position.x != unit->next_target_waypoint.x
+					||	target->sprite->position.y != unit->next_target_waypoint.y) // 004928C1
 					{
-						unit->nextTargetWaypoint.x = target->sprite->position.x;
-						unit->nextTargetWaypoint.y = target->sprite->position.y;
+						unit->next_target_waypoint.x = target->sprite->position.x;
+						unit->next_target_waypoint.y = target->sprite->position.y;
 					}
 				}
 			}
@@ -241,7 +241,7 @@ namespace hooks
 			}
 			else // 0049291A
 			{
-				u8 techUsed = orders_dat::TechUsed[unit->mainOrderId];
+				u8 techUsed = orders_dat::TechUsed[unit->main_order_id];
 				s32 spellCost;
 				if (techUsed >= TechId::None)
 				{
@@ -271,8 +271,8 @@ namespace hooks
 				else // 004929C2
 				{
 					u32 result_00492620;
-					// may initiate movement from unit depending on mainOrderState
-					if (unit->mainOrderState == 0)
+					// may initiate movement from unit depending on main_order_state
+					if (unit->main_order_state == 0)
 					{
 						result_00492620 = helper::ordered_spell_progress_moving(unit, 1);
 					}
@@ -281,9 +281,9 @@ namespace hooks
 						result_00492620 = helper::ordered_spell_progress_moving(unit, 0);
 					}
 
-					if (unit->mainOrderState == 0)
+					if (unit->main_order_state == 0)
 					{
-						unit->mainOrderState = 1;
+						unit->main_order_state = 1;
 					}
 					bool gcd_condition = true;
 					if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown > 0)
@@ -303,7 +303,7 @@ namespace hooks
 						if (unit->getSpellCountdown() == 0
 						&&	gcd_condition // new
 						&&	helper::is_ready_to_attack(unit, orderWeaponId) // is ready to fire weapon (angle,range...) maybe?
-						&&	!(unit->movementFlags & MovementFlags::Accelerating)
+						&&	!(unit->movement_flags & MovementFlags::Accelerating)
 						&&	unit->get_movable_state() != 0)
 						{ // 00492A38
 							bool bStopHere = false;
@@ -366,12 +366,12 @@ namespace hooks
 								}
 
 								// disable flag 2 if enabled, else has no effect
-								unit->orderSignal &= ~2; //&= -3
-								unit->movementFlags |= MovementFlags::StartingAttack;
+								unit->order_signal &= ~2; //&= -3
+								unit->movement_flags |= MovementFlags::StartingAttack;
 								if (unit->sprite->images.head != nullptr)
 								{
 									Image* current_image = unit->sprite->images.head;
-									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::OrderIscriptAnim[unit->mainOrderId];
+									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::OrderIscriptAnim[unit->main_order_id];
 									if (techUsed == TechId::Lockdown && unit->vulture.spiderMineCount > 0)
 									{
 										unit->vulture.spiderMineCount--;
@@ -382,7 +382,7 @@ namespace hooks
 										current_image = current_image->link.next;
 									}
 								}
-								unit->mainOrderState = 2;
+								unit->main_order_state = 2;
 								if (unit->unit_ai != nullptr)
 								{
 									AIScriptController[unit->player].spellcasterTimer = 1;

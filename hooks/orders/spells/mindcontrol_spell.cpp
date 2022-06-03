@@ -17,9 +17,9 @@ namespace hooks
 			// Corresponding error message is "Invalid Target"
 			if (helper::spell_order(unit, TechId::MindControl, &techEnergyCost, unit->get_sight_range(true) * 32, 0x052E)) {
 				// Channel
-				if (!unit->mainOrderState) {
+				if (!unit->main_order_state) {
 					unit->play_iscript_animation(IscriptAnimation::Unused2);
-					unit->mainOrderState = 1;
+					unit->main_order_state = 1;
 					unit->mainOrderTimer = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 				}
@@ -47,7 +47,7 @@ namespace hooks
 				unit->order_to_idle();
 			} else {
 				// Reset timer if target out of range
-				unit->mainOrderState = 0;
+				unit->main_order_state = 0;
 			}
 		}
 	}

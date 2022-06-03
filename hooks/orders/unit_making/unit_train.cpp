@@ -93,13 +93,13 @@ namespace hooks
 					if (inHangarChild != nullptr)
 					{
 						s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
-						while (inHangarChild != nullptr && inHangarChild->hitPoints >= hpInterceptor)
+						while (inHangarChild != nullptr && inHangarChild->hitpoints >= hpInterceptor)
 						{
 							inHangarChild = inHangarChild->interceptor.hangar_link.next;
 						}
 						if (inHangarChild != nullptr)
 						{
-							inHangarChild->setHp(inHangarChild->hitPoints + 128);
+							inHangarChild->setHp(inHangarChild->hitpoints + 128);
 						}
 					}
 				}

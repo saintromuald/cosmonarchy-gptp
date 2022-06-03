@@ -437,7 +437,7 @@ namespace hooks
 		std::stringstream ss;
 		ss << std::setprecision(4);
 
-		ss << unit->flingyTopSpeed / 32 / 15 * 24;
+		ss << unit->flingy_top_speed / 32 / 15 * 24;
 		std::string movementSpeed = ss.str();
 		ss.str("");
 
@@ -597,7 +597,7 @@ namespace hooks
 		if (scbw::is_under_dark_swarm(unit))
 		{
 			Unit* darkSwarm = scbw::get_dark_swarm_unit(unit);
-			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitPoints / 256, 1, darkSwarm->removeTimer, TimerType::RemoveTimer);
+			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->removeTimer, TimerType::RemoveTimer);
 		}
 		u32 nathrokorTargetStacks = 0;
 		for (int i = 0; i < 8; i++)

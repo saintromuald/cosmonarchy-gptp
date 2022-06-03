@@ -97,7 +97,7 @@ namespace hooks
 		v1 = *activePortraitUnit;
 		v2 = v1->id;
 		v3 = units_dat::MaxHitPoints[v2] >> 8;
-		if ((v3 || (v3 = (v1->hitPoints + 255) >> 8) != 0) && v3 > 9999
+		if ((v3 || (v3 = (v1->hitpoints + 255) >> 8) != 0) && v3 > 9999
 			|| units_dat::MaxShieldPoints[v2] > 0x270Fu
 			|| v1->status & UnitStatus::IsHallucination)
 		{
@@ -112,14 +112,14 @@ namespace hooks
 			if (units_dat::ShieldsEnabled[v2])
 			{
 				v7 = helper::get_max_hp(v1);
-				v8 = (v1->hitPoints + 255) >> 8;
+				v8 = (v1->hitpoints + 255) >> 8;
 				v9 = helper::get_last_queue_slot_id(v1);
 				sprintf_s("", 32, "%d/%d %c%d/%d", v1->shields >> 8, units_dat::MaxShieldPoints[v9], v5, v8, v7);
 			}
 			else
 			{
 				v6 = helper::get_max_hp(v1);
-				sprintf_s("", 32, "%c%d/%d", v5, (v1->hitPoints + 255) >> 8, v6);
+				sprintf_s("", 32, "%c%d/%d", v5, (v1->hitpoints + 255) >> 8, v6);
 			}
 			v10 = "";
 		}

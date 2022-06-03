@@ -370,11 +370,11 @@ namespace
 
 		if (unit->id == UnitId::ZergLakizilisk)
 		{
-			unit->currentDirection1 = angle;
+			unit->current_direction_1 = angle;
 			return true;
 		}
 
-		s32 angleDiff = unit->currentDirection1 - angle;
+		s32 angleDiff = unit->current_direction_1 - angle;
 		if (angleDiff < 0)
 			angleDiff += 128;
 		if (angleDiff > 128)

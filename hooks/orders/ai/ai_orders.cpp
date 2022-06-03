@@ -52,7 +52,7 @@ namespace hooks
 					if (attacker)
 					{
 						if (units_dat::BaseProperty[(u16)self->id] & UnitProperty::Worker // cancel structure code
-							&& !(self->mainOrderId) // Original function call checks if unit has a sprite??? 00475A50
+							&& !(self->main_order_id) // Original function call checks if unit has a sprite??? 00475A50
 							&& !(self->status & UnitStatus::Completed))
 						{
 							s32 quartTotalHP = self->get_total_hp_plus_shields() / 4;
@@ -115,7 +115,7 @@ namespace hooks
 			goto LABEL_37;
 		if (helper::is_unit_loaded(self))
 		{
-			if (self->mainOrderId != 111)
+			if (self->main_order_id != 111)
 			{
 				helper::issue_order_targeting_nothing(self, 0x6Fu);
 			}
@@ -178,8 +178,8 @@ LABEL_37:
 			v14->captainFlags |= 0x20u;
 			if (self->status & UnitStatus::Completed)
 			{
-				child1 = (u8)self->mainOrderId;
-				childAi0 = (u8)self->mainOrderId;
+				child1 = (u8)self->main_order_id;
+				childAi0 = (u8)self->main_order_id;
 				if (child1 != OrderId::CompletingArchonSummon && child1 != OrderId::ResetCollision1 && child1 != OrderId::ConstructingBuilding)
 				{
 					if (main_target_reactions || !scbw::order_is_spell(child1))
@@ -336,7 +336,7 @@ LABEL_37:
 			{
 				if (unit->sprite)
 				{
-					if (unit->mainOrderId)
+					if (unit->main_order_id)
 					{
 						if (!unit->is_subunit()
 							&& unit->id != UnitId::TerranNuclearMissile
@@ -364,7 +364,7 @@ LABEL_37:
 				{
 					continue;
 				}
-				if (!unit->mainOrderId)
+				if (!unit->main_order_id)
 				{
 					continue;
 				}
@@ -531,7 +531,7 @@ LABEL_37:
 			{
 				if (firstSprite)
 				{
-					if (firstUnit->mainOrderId)
+					if (firstUnit->main_order_id)
 					{
 						if (firstUnit->status & UnitStatus::GroundedBuilding)
 						{
@@ -656,7 +656,7 @@ LABEL_37:
 			{
 				if (i->sprite != nullptr)
 				{
-					if (i->mainOrderId)
+					if (i->main_order_id)
 					{
 						if (units_dat::BaseProperty[i->id] & UnitProperty::ResourceContainer)
 						{
@@ -747,7 +747,7 @@ LABEL_37:
 		bool result = 0;
 		if (unit != nullptr && unit->sprite != nullptr)
 		{
-			if (unit->mainOrderId)
+			if (unit->main_order_id)
 			{
 				s16 regionId = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
 				AiRegion* playerRegions = AiRegionCaptains[unit->player];
@@ -814,7 +814,7 @@ LABEL_37:
 			{
 				if (i->sprite)
 				{
-					if (i->mainOrderId)
+					if (i->main_order_id)
 					{
 						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCreepColony || i->id == UnitId::ZergSunkenColony)
 						{
@@ -1078,7 +1078,7 @@ LABEL_37:
 	}
 
 	u32 ai_get_vespene_type(Unit* unit, u32 player_id, bool for_harvesting) { // 004326E0
-		if (!unit || !unit->sprite || !unit->mainOrderId) {
+		if (!unit || !unit->sprite || !unit->main_order_id) {
 			return 0;
 		}
 		if (!for_harvesting && unit->id == UnitId::ResourceVespeneGeyser) {
@@ -1346,7 +1346,7 @@ LABEL_37:
 	}
 
 	static bool unit_has_order(Unit* unit, u32 order_id) {
-		if (unit->mainOrderId == order_id) {
+		if (unit->main_order_id == order_id) {
 			return true;
 		}
 		for (Order* order = unit->orderQueueHead; order; order = order->next) {
@@ -1358,7 +1358,7 @@ LABEL_37:
 	}
 
 	static bool unit_has_uninterruptable_order(Unit* unit) {
-		if (!orders_dat::CanBeInterrupted[unit->mainOrderId]) {
+		if (!orders_dat::CanBeInterrupted[unit->main_order_id]) {
 			return true;
 		}
 		for (Order* order = unit->orderQueueHead; order; order = order->next) {
@@ -1528,7 +1528,7 @@ LABEL_37:
 				}
 
 				Unit* worker = worker_ai->parent;
-				u8 unit_order = worker->mainOrderId;
+				u8 unit_order = worker->main_order_id;
 				if (unit_order == OrderId::ConstructingBuilding
 					|| unit_order == OrderId::Pickup4
 					|| unit_order == OrderId::DroneBuild
@@ -1548,14 +1548,14 @@ LABEL_37:
 				{
 					u32 timer = 5;
 					if (unit_has_uninterruptable_order(worker)
-						|| worker->mainOrderId == OrderId::CanHarvestOre
-						|| worker->mainOrderId == OrderId::MiningMinerals
-						|| worker->mainOrderId == OrderId::ReturnMinerals
-						|| worker->mainOrderId == OrderId::CanEnterGasMine
-						|| worker->mainOrderId == OrderId::HarvestGas3
-						|| worker->mainOrderId == OrderId::ReturnGas
-						|| worker->mainOrderId == OrderId::HarvestInterrupt
-						|| worker->mainOrderId == OrderId::HarvestFinish
+						|| worker->main_order_id == OrderId::CanHarvestOre
+						|| worker->main_order_id == OrderId::MiningMinerals
+						|| worker->main_order_id == OrderId::ReturnMinerals
+						|| worker->main_order_id == OrderId::CanEnterGasMine
+						|| worker->main_order_id == OrderId::HarvestGas3
+						|| worker->main_order_id == OrderId::ReturnGas
+						|| worker->main_order_id == OrderId::HarvestInterrupt
+						|| worker->main_order_id == OrderId::HarvestFinish
 						|| unit_has_order(worker, OrderId::BuildTerran)
 						|| unit_has_order(worker, OrderId::BuildProtoss1)
 						|| unit_has_order(worker, OrderId::BuildProtoss2)
@@ -1604,7 +1604,7 @@ LABEL_37:
 		if (worker->resourceType & ResourceType::Minerals)
 		{
 			worker->userActionFlags |= 1u;
-			if (worker->mainOrderId)
+			if (worker->main_order_id)
 			{
 				while (1)
 				{
@@ -1698,13 +1698,13 @@ LABEL_37:
 			s32 max_hp = units_dat::MaxHitPoints[building->id] / 256;
 			if (!max_hp)
 			{
-				max_hp = (building->hitPoints + 255) / 256;
+				max_hp = (building->hitpoints + 255) / 256;
 				if (!max_hp)
 				{
 					max_hp = 1;
 				}
 			}
-			u32 score = max_hp - ((building->hitPoints + 255) / 256);
+			u32 score = max_hp - ((building->hitpoints + 255) / 256);
 			if (best_score < score)
 			{
 				repairee = building;
@@ -1729,7 +1729,7 @@ LABEL_37:
 		if (repairee) {
 			repairee_pos = repairee->sprite->position;
 		}
-		if (worker->mainOrderId) {
+		if (worker->main_order_id) {
 			for (Order* order_tail = worker->orderQueueTail; order_tail; order_tail = worker->orderQueueTail) {
 				if (!orders_dat::CanBeInterrupted[order_tail->orderId] && order_tail->orderId != OrderId::Repair1) {
 					break;
@@ -1797,7 +1797,7 @@ LABEL_37:
 	// Hooked to add addon cases for new addon buildings and to reserve space around buildings. -Veeq7
 	void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position) { // 00443CC0
 		for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = unit->player_link.next) {
-			if (unit->sprite && unit->mainOrderId != OrderId::Die && units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+			if (unit->sprite && unit->main_order_id != OrderId::Die && units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
 				// Map coordinates to the placement grid
 				s32 unit_x = unit->sprite->position.x / 32 - desired_position.x / 32 + 32;
 				s32 unit_y = unit->sprite->position.y / 32 - desired_position.y / 32 + 32;
@@ -1934,12 +1934,12 @@ LABEL_37:
 			if (slowest_unit->status & UnitStatus::InAir)
 			{
 				slowest_air_unit = region->slowestUnit;
-				slowest_air_speed = slowest_unit->flingyTopSpeed;
+				slowest_air_speed = slowest_unit->flingy_top_speed;
 			}
 			else
 			{
 				slowest_ground_unit = region->slowestUnit;
-				slowest_ground_speed = slowest_unit->flingyTopSpeed;
+				slowest_ground_speed = slowest_unit->flingy_top_speed;
 			}
 		}
 		for (MilitaryAi* first_military = region->first_military_ai; first_military; first_military = first_military->link.prev)
@@ -1947,15 +1947,15 @@ LABEL_37:
 			Unit* military = first_military->unit;
 			if (military->status & UnitStatus::InAir)
 			{
-				if (military->flingyTopSpeed < slowest_air_speed)
+				if (military->flingy_top_speed < slowest_air_speed)
 				{
-					slowest_air_speed = military->flingyTopSpeed;
+					slowest_air_speed = military->flingy_top_speed;
 					slowest_air_unit = first_military->unit;
 				}
 			}
-			else if (military->flingyTopSpeed < slowest_ground_speed)
+			else if (military->flingy_top_speed < slowest_ground_speed)
 			{
-				slowest_ground_speed = military->flingyTopSpeed;
+				slowest_ground_speed = military->flingy_top_speed;
 				slowest_ground_unit = first_military->unit;
 			}
 		}
@@ -1994,7 +1994,7 @@ LABEL_37:
 						{
 							if (first_player_unit->sprite)
 							{
-								u8 first_order_id = first_player_unit->mainOrderId;
+								u8 first_order_id = first_player_unit->main_order_id;
 								if (first_order_id)
 								{
 									switch (first_player_unit->id)
@@ -2036,7 +2036,7 @@ LABEL_37:
 											}
 										}
 										if (first_player_unit->energy >= techdata_dat::EnergyCost[TechId::ScannerSweep] * 256
-											|| first_player_unit->mainOrderId == OrderId::PlaceScanner) // originally orderid -117...?
+											|| first_player_unit->main_order_id == OrderId::PlaceScanner) // originally orderid -117...?
 										{
 											break;
 										}
@@ -2056,7 +2056,7 @@ LABEL_37:
 							victim_pos.x = victim->sprite->position.x;
 							victim_pos.y = victim->sprite->position.y;
 							unit_to_order_1->userActionFlags |= 1u;
-							if (unit_to_order_1->mainOrderId)
+							if (unit_to_order_1->main_order_id)
 							{
 								while (1)
 								{

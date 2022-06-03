@@ -463,7 +463,7 @@ namespace CosmonarchyFlags1
 }
 
 // From BWAPI/Source/BW/MovementFlags.h
-// Definition of Flags specifying movement type - used in BW#Unit#movementFlags
+// Definition of Flags specifying movement type - used in BW#Unit#movement_flags
 
 namespace MovementFlags
 {
@@ -486,40 +486,37 @@ namespace MovementFlags
 struct UnitLayout
 {
 	/*0x000*/ Link<Unit> link;
-	/*0x008*/ s32       hitPoints;						// Hit points of unit, note that the displayed value in broodwar is ceil(healthPoints/256)
+	/*0x008*/ s32       hitpoints;						// Hit points of unit, note that the displayed value in broodwar is ceil(healthPoints/256)
 														// Officially called "xLife"
 	/*0x00C*/ Sprite*	sprite;
-	/*0x010*/ Target    moveTarget;						// The position or unit to move to. It is NOT an order target.
-	/*0x018*/ Point16   nextMovementWaypoint;			// The next way point in the path the unit is following to get to its destination.
+	/*0x010*/ Target    move_target;					// The position or unit to move to. It is NOT an order target.
+	/*0x018*/ Point16   next_movement_waypoint;			// The next way point in the path the unit is following to get to its destination.
 														// Equal to moveToPos for air units since they don't need to navigate around buildings.
-	/*0x01C*/ Point16   nextTargetWaypoint;				// The desired position
-	/*0x020*/ u8        movementFlags;					// Flags specifying movement type, MovementFlags::Enum contains possible explanations
-	/*0x021*/ u8        currentDirection1;				// The current direction the unit is facing
-	/*0x022*/ u8        flingyTurnSpeed;				// AKA flingy turn radius
-	/*0x023*/ u8        velocityDirection1;				/*
+	/*0x01C*/ Point16   next_target_waypoint;			// The desired position
+	/*0x020*/ u8        movement_flags;					// Flags specifying movement type, MovementFlags::Enum contains possible explanations
+	/*0x021*/ u8        current_direction_1;			// The current direction the unit is facing
+	/*0x022*/ u8        flingy_turn_speed;				// AKA flingy turn radius
+	/*0x023*/ u8        velocity_direction_1;			/*
 															This usually only differs from the currentDirection field for units that can accelerate
 															and travel in a different direction than they are facing. For example Mutalisks can change
 															the direction they are facing faster than then can change the direction they are moving.
 														*/
-	/*0x024*/ u16       flingyId;
-	/*0x026*/ u8        newFlags1;						// was _unknown_0x026
-														// 0x1 - order signal for protoss morphs (unused)
-														// 0x2 - irradiate shockwave (unused)
-														// 0x4 - metastasis plague
-	/*0x027*/ u8        flingyMovementType;
+	/*0x024*/ u16       flingy_id;
+	/*0x026*/ u8        new_flags_1;					// Enum::NewFlags1
+	/*0x027*/ u8        flingy_movement_type;
 	/*0x028*/ Point16   position;						// Current position of the unit
 	/*0x02C*/ Vector32  halt;
-	/*0x034*/ u32       flingyTopSpeed;					// top speed
+	/*0x034*/ u32       flingy_top_speed;				// top speed
 	/*0x038*/ u32       current_speed1;					// ++current speed
 	/*0x03C*/ u32       current_speed2;					// ++not sure if there are any differences with these 2 variables, they always have the same value
 	/*0x040*/ Vector32  current_velocity;
-	/*0x048*/ u16       flingyAcceleration;
-	/*0x04A*/ u8        currentDirection2;				// ?
-	/*0x04B*/ u8        velocityDirection2;				// pathing related, BWAPI has more info
+	/*0x048*/ u16       flingy_acceleration;
+	/*0x04A*/ u8        current_direction_2;			// ?
+	/*0x04B*/ u8        velocity_direction_2;			// pathing related, BWAPI has more info
 
-	/*0x04C*/ u8        player;						// Id of player controlling the unit
-	/*0x04D*/ u8        mainOrderId;
-	/*0x04E*/ u8        mainOrderState;					// Used by various orders
+	/*0x04C*/ u8        player;							// Id of player controlling the unit
+	/*0x04D*/ u8        main_order_id;
+	/*0x04E*/ u8        main_order_state;				// Used by various orders
 														// < Additional order info (mostly unknown, wander property investigated so far) // officially "ubActionState"
 														/* 0x01 Moving/Following Order
 														0x02 No collide (Larva)?
@@ -527,14 +524,14 @@ struct UnitLayout
 														0x08 Constructing Stationary
 														Note: BWAPI code writer don't actually think these are flags
 														*/
-	/*0x04F*/ u8        orderSignal;					/*
+	/*0x04F*/ u8        order_signal;					/*
 															0x01  Update building graphic/state
 															0x02  Casting spell
 															0x04  Reset collision? Always enabled for hallucination...
 															0x10  Lift/Land state
 															0x20 - Bactalisk attack (unused)
 														*/
-	/*0x050*/ u16       orderUnitType;
+	/*0x050*/ u16       order_unit_id;
 	/*0x052*/ u8		egg_origin;						// was _unknown_0x052
 	/*0x053*/ u8		newFlags2;						// split from _unknown_0x052
 														// 0x1  - unused

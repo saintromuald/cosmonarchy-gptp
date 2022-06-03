@@ -22,7 +22,7 @@ namespace hooks
 		{
 			Point16 pos = {0,0};
 			unit->userActionFlags |= 1;
-			if (unit->mainOrderId != OrderId::Die)
+			if (unit->main_order_id != OrderId::Die)
 			{
 				bool bStopLoop = (unit->orderQueueTail == nullptr);
 				while (!bStopLoop)
@@ -106,9 +106,9 @@ namespace hooks
 		else
 		{ // 004E761F
 			if (unitToLoad->unit_ai == nullptr
-				|| unitToLoad->mainOrderId == OrderId::Pickup4)
+				|| unitToLoad->main_order_id == OrderId::Pickup4)
 			{ // 004E762F
-				if (unit->mainOrderState == 0)
+				if (unit->main_order_state == 0)
 				{
 					if (scbw::can_be_entered_by(unit, unitToLoad))
 					{
@@ -122,14 +122,14 @@ namespace hooks
 							else
 							{
 								helper::make_to_hold_position(unit);
-								if (unitToLoad->mainOrderId != OrderId::EnterTransport
-									&& unitToLoad->mainOrderId != OrderId::Pickup4)
+								if (unitToLoad->main_order_id != OrderId::EnterTransport
+									&& unitToLoad->main_order_id != OrderId::Pickup4)
 								{
 									unitToLoad->order_to(OrderId::EnterTransport, unit);
 								}
 								if (unit->unit_ai != nullptr)
 								{
-									unit->mainOrderState = 1;
+									unit->main_order_state = 1;
 								}
 								else
 								{
@@ -157,10 +157,10 @@ namespace hooks
 	void orders_MoveUnload(Unit* unit)
 	{
 		u32 distance;
-		if (unit->mainOrderState == 0 &&
+		if (unit->main_order_state == 0 &&
 			unit->orderTarget.unit != nullptr)
 		{
-			unit->mainOrderState = 1;
+			unit->main_order_state = 1;
 			unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 			unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
 			unit->orderTarget.unit = nullptr;
@@ -185,11 +185,11 @@ namespace hooks
 		else
 		{ // 004E77B4
 			helper::set_move_target_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-			if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
-				|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
+			if (unit->orderTarget.pt.x != unit->next_target_waypoint.x
+				|| unit->orderTarget.pt.y != unit->next_target_waypoint.y)
 			{
-				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
-				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
+				unit->next_target_waypoint.x = unit->orderTarget.pt.x;
+				unit->next_target_waypoint.y = unit->orderTarget.pt.y;
 			}
 			if (unit->unit_ai != nullptr)
 			{
@@ -429,21 +429,21 @@ namespace hooks
 			&& scbw::can_be_entered_by(target, unit))
 		{ // 004E7D51
 
-			if (unit->mainOrderState == 0
-				&& target->mainOrderId != OrderId::Pickup2)
+			if (unit->main_order_state == 0
+				&& target->main_order_id != OrderId::Pickup2)
 			{
 				if (target->status & UnitStatus::IsBuilding)
 				{
 					helper::prepend_order_targeting_unit(target, unit, OrderId::Pickup2);
 					prepareForNextOrder(target);
 				}
-				unit->mainOrderState = 1;
+				unit->main_order_state = 1;
 			}
-			if (target->sprite->position.x != unit->nextTargetWaypoint.x ||
-				target->sprite->position.y != unit->nextTargetWaypoint.y)
+			if (target->sprite->position.x != unit->next_target_waypoint.x ||
+				target->sprite->position.y != unit->next_target_waypoint.y)
 			{
-				unit->nextTargetWaypoint.x = target->sprite->position.x;
-				unit->nextTargetWaypoint.y = target->sprite->position.y;
+				unit->next_target_waypoint.x = target->sprite->position.x;
+				unit->next_target_waypoint.y = target->sprite->position.y;
 			}
 			helper::moveTowards(unit, target);
 			if (unit->is_target_within_min_range(target, 1))
@@ -497,7 +497,7 @@ namespace hooks
 					&& unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != nullptr) // sprite check
 				{
 					Unit* unitToUnload = &(unitTable_0059CB58[unit->loadedUnit[counter].index]);
-					if (unitToUnload->mainOrderId != 0 || unitToUnload->mainOrderState != 1)
+					if (unitToUnload->main_order_id != 0 || unitToUnload->main_order_state != 1)
 					{
 						if (unit->loadedUnit[counter].unitId == unitToUnload->targetOrderSpecial)
 						{
@@ -569,7 +569,7 @@ namespace hooks
 				else if (unit->unit_ai != nullptr)
 				{ // 004E81DE
 					unit->userActionFlags |= 1;
-					if (unit->mainOrderId == OrderId::Die)
+					if (unit->main_order_id == OrderId::Die)
 					{
 						prepareForNextOrder(unit);
 					}

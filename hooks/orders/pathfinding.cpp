@@ -40,7 +40,7 @@ namespace hooks
                 unit->status &= 0xFFF7FFFF;
                 return 1;
             }
-            else if (unit->unit_ai && unit->mainOrderId != 96 && helper::AI_PrepareMovingTo(unit, target->sprite->position.x, target->sprite->position.y))
+            else if (unit->unit_ai && unit->main_order_id != 96 && helper::AI_PrepareMovingTo(unit, target->sprite->position.x, target->sprite->position.y))
             {
                 scbw::print("AI");
                 return 0;
@@ -59,21 +59,21 @@ namespace hooks
         {
             unit->orderTarget.pt.y = targetSpriteY;
             unit->orderTarget.pt.x = targetSpriteX;
-            char movementFlagsVar = unit->movementFlags & 0xFB;
+            char movementFlagsVar = unit->movement_flags & 0xFB;
             Point16 targetPoint = unit->orderTarget.pt;
             unit->orderTarget.unit = target;
-            unit->movementFlags = movementFlagsVar | 1;
-            unit->nextTargetWaypoint = targetPoint;
+            unit->movement_flags = movementFlagsVar | 1;
+            unit->next_target_waypoint = targetPoint;
         }
         Order* unitOrder = unit->orderQueueHead;
         unit->recentOrderTimer = 15;
         unit->status = unit->status & 0xFFF7FFFF;
         if (!unitOrder || orders_dat::ButtonIcon[unitOrder->orderId])
         {
-            unit->movementFlags &= 0xDFu;
+            unit->movement_flags &= 0xDFu;
             return 1;
         }
-        unit->movementFlags |= 0x20u;
+        unit->movement_flags |= 0x20u;
         return 1;
     }
 

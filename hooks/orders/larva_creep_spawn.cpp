@@ -20,7 +20,7 @@ namespace hooks
 				helper::update_unit_strength(unit_created);
 				unit_created->connectedUnit = main_building;
 
-				// set mainOrderState depending on the collision state with the connected building			
+				// set main_order_state depending on the collision state with the connected building			
 				helper::function_004E8DA0(unit_created);
 				if (main_building->unit_ai != nullptr)
 				{
@@ -108,17 +108,17 @@ namespace hooks
 					{
 						unit->building.larvaTimer = LarvaSpawnRateHatchery / LarvaFactorLarvalColony;
 					}
-					if (unit->id == UnitId::ZergLair && unit->mainOrderId != OrderId::Morph2
-						|| unit->id == UnitId::ZergHive && unit->mainOrderId == OrderId::Morph2)
+					if (unit->id == UnitId::ZergLair && unit->main_order_id != OrderId::Morph2
+						|| unit->id == UnitId::ZergHive && unit->main_order_id == OrderId::Morph2)
 					{
 						unit->building.larvaTimer = LarvaSpawnRateHatchery * LarvaFactorLair;
 					}
-					else if (unit->id == UnitId::ZergHive && unit->mainOrderId != OrderId::Morph2
-						|| unit->id == UnitId::ZergSire && unit->mainOrderId == OrderId::Morph2)
+					else if (unit->id == UnitId::ZergHive && unit->main_order_id != OrderId::Morph2
+						|| unit->id == UnitId::ZergSire && unit->main_order_id == OrderId::Morph2)
 					{
 						unit->building.larvaTimer = LarvaSpawnRateHatchery * LarvaFactorHive;
 					}
-					else if (unit->id == UnitId::ZergSire && unit->mainOrderId != OrderId::Morph2)
+					else if (unit->id == UnitId::ZergSire && unit->main_order_id != OrderId::Morph2)
 					{
 						unit->building.larvaTimer = LarvaSpawnRateHatchery * LarvaFactorSire;
 					}
@@ -140,7 +140,7 @@ namespace hooks
 							helper::update_unit_strength(new_larva);
 
 							new_larva->connectedUnit = unit;
-							// set mainOrderState depending on the collision state with the connected building						
+							// set main_order_state depending on the collision state with the connected building						
 							helper::function_004E8DA0(new_larva);
 
 							if (unit->unit_ai != nullptr)

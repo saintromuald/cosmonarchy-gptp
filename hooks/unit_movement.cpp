@@ -17,11 +17,11 @@ namespace hooks
 		flags = unit->status;
 		/*      if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal)) {
 					sprite = unit->sprite;
-					if (unit->moveTarget.pt.x == sprite->position.x
-						&& unit->moveTarget.pt.y == sprite->position.y
+					if (unit->move_target.pt.x == sprite->position.x
+						&& unit->move_target.pt.y == sprite->position.y
 						&& ((flags & UnitStatus::Unmovable) != 0) != -1
-						&& unit->nextTargetWaypoint.x == unit->position.x
-						&& unit->nextTargetWaypoint.y == unit->position.y) {
+						&& unit->next_target_waypoint.x == unit->position.x
+						&& unit->next_target_waypoint.y == unit->position.y) {
 						return 0;
 					}
 				}
@@ -29,11 +29,11 @@ namespace hooks
 		if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal))
 		{
 			sprite = unit->sprite;
-			if (sprite != nullptr && unit->moveTarget.pt.x == sprite->position.x
-				&& unit->moveTarget.pt.y == sprite->position.y
+			if (sprite != nullptr && unit->move_target.pt.x == sprite->position.x
+				&& unit->move_target.pt.y == sprite->position.y
 				&& ((flags & UnitStatus::Unmovable) != 0) != -1
-				&& unit->nextTargetWaypoint.x == unit->position.x
-				&& unit->nextTargetWaypoint.y == unit->position.y)
+				&& unit->next_target_waypoint.x == unit->position.x
+				&& unit->next_target_waypoint.y == unit->position.y)
 			{
 				return 0;
 			}
@@ -54,13 +54,13 @@ namespace hooks
         helper::MoveSprite(unit->sprite, newPos.x, newPos.y);
         if (unit->sprite)
         {
-            if (unit->mainOrderId)
+            if (unit->main_order_id)
             {
                 helper::set_move_target_xy(unit, newPos.x, newPos.y);
-                if (newPos.x != unit->nextTargetWaypoint.x || newPos.y != unit->nextTargetWaypoint.y)
+                if (newPos.x != unit->next_target_waypoint.x || newPos.y != unit->next_target_waypoint.y)
                 {
-                    unit->nextTargetWaypoint.x = newPos.x;
-                    unit->nextTargetWaypoint.y = newPos.y;
+                    unit->next_target_waypoint.x = newPos.x;
+                    unit->next_target_waypoint.y = newPos.y;
                 }
             }
         }

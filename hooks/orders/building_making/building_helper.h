@@ -7,7 +7,7 @@ namespace BuildingHelper
 	// Identical to function @ 0x004E4C40
 	bool is_warping_in_protoss_building(const Unit* probe)
 	{
-		return probe->mainOrderId == OrderId::BuildProtoss1
+		return probe->main_order_id == OrderId::BuildProtoss1
 			&& probe->status & UnitStatus::GroundedBuilding
 			&& probe->orderTarget.unit != nullptr
 			&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
@@ -18,9 +18,9 @@ namespace BuildingHelper
 	// Identical to function @ 0x00466A30
 	Unit* get_construct_repair_target(const Unit* unit)
 	{
-		if (unit->mainOrderId == OrderId::BuildTerran
-			|| unit->mainOrderId == OrderId::Repair1
-			|| unit->mainOrderId == OrderId::ConstructingBuilding
+		if (unit->main_order_id == OrderId::BuildTerran
+			|| unit->main_order_id == OrderId::Repair1
+			|| unit->main_order_id == OrderId::ConstructingBuilding
 			|| is_warping_in_protoss_building(unit))
 		{
 			return unit->orderTarget.unit;
@@ -41,11 +41,11 @@ namespace BuildingHelper
 		{
 			if (get_construct_repair_target(unit) == nullptr
 				&& unit->buildQueue[unit->buildQueueSlot % 5] == unitId
-				&& (unit->mainOrderId == OrderId::BuildTerran
-					|| unit->mainOrderId == OrderId::BuildProtoss1
-					|| unit->mainOrderId == OrderId::DroneLand
-					|| unit->mainOrderId == OrderId::DroneBuild
-					|| unit->mainOrderId == OrderId::DroneStartBuild))
+				&& (unit->main_order_id == OrderId::BuildTerran
+					|| unit->main_order_id == OrderId::BuildProtoss1
+					|| unit->main_order_id == OrderId::DroneLand
+					|| unit->main_order_id == OrderId::DroneBuild
+					|| unit->main_order_id == OrderId::DroneStartBuild))
 			{
 				return 1;
 			}
@@ -56,8 +56,8 @@ namespace BuildingHelper
 		}
 
 		if (scbw::is_zerg_egg(unit->id, true, false)
-			|| unit->mainOrderId == OrderId::Morph2
-			|| unit->mainOrderId == OrderId::ZergBuildSelf)
+			|| unit->main_order_id == OrderId::Morph2
+			|| unit->main_order_id == OrderId::ZergBuildSelf)
 			return (unit->buildQueue[unit->buildQueueSlot % 5] == unitId) ? 1 : 0;
 
 		s32 unitCount = 0;

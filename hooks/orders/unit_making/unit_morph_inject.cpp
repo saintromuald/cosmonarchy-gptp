@@ -34,7 +34,7 @@ namespace
 		while (Unit* unit = getActivePlayerNextSelection())
 		{
 			if (hooks::unit_can_morph(unit, morphUnitId)
-				&& unit->mainOrderId != OrderId::Morph1
+				&& unit->main_order_id != OrderId::Morph1
 				&& addUnitToBuildQueue(unit, morphUnitId))
 			{
 				unit->order_to(OrderId::Morph1);
@@ -222,7 +222,7 @@ namespace
 				if (silo)
 				{
 					silo->building.silo.nuke = nullptr;
-					silo->mainOrderState = 0;
+					silo->main_order_state = 0;
 				}
 				scbw::refresh_console();
 			}
@@ -243,7 +243,7 @@ namespace
 			auto fl_sId = scbw::get_flingy_data(FlingyDatEntries::SpriteId, index);
 //			scbw::get_sprite_data(SpritesDatEntries::ImageId,building->sprite->spriteId),
 			replace_sprite_images(unit->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, fl_sId), 0);
-			unit->orderSignal &= ~0x4;
+			unit->order_signal &= ~0x4;
 			if (unit->id == UnitId::ZergZethrokor
 			||  unit->id == UnitId::ZergVorvrokor
 			||  unit->id == UnitId::ZergNathrokor)

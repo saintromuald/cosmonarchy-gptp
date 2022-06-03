@@ -265,9 +265,9 @@ namespace hooks
 			{
 				if (bullet->weaponId == WeaponId::KalkaliskViscousAcid)
 				{
-					if (bullet->orderSignal & 0x80)
+					if (bullet->order_signal & 0x80)
 					{
-						bullet->orderSignal &= ~0x80;
+						bullet->order_signal &= ~0x80;
 						globals.remove_multihit_bullet(bullet);
 					}
 				}
@@ -286,7 +286,7 @@ namespace hooks
 			// TODO: update to work with multi building select
 			Unit* selected = *activePortraitUnit;
 
-			// scbw::printf("%u", selected->mainOrderId);
+			// scbw::printf("%u", selected->main_order_id);
 
 			if (selected
 				&& selected->id == UnitId::ZergNydusCanal
@@ -325,15 +325,15 @@ namespace hooks
 			}
 		}
 
-		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::SharedStriga) && unit->orderSignal & 0x20)
+		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::SharedStriga) && unit->order_signal & 0x20)
 		{
-			unit->orderSignal &= ~0x20;
+			unit->order_signal &= ~0x20;
 			globals.remove_unit_from_pariah_table(unit, true);
 		}
 		//hooks::ShowHealthBar(unit);
 
 		if (unit->unit_ai) {
-			if (unit->mainOrderId == OrderId::ComputerAI) {
+			if (unit->main_order_id == OrderId::ComputerAI) {
 				switch (unit->unit_ai->type) {
 					case AiType::Building:
 					case AiType::Worker: {
@@ -356,7 +356,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranTalos:
 			{
-				if (unit->mainOrderId == OrderId::TalosSalvage) {
+				if (unit->main_order_id == OrderId::TalosSalvage) {
 					Unit* target = unit->orderTarget.unit;
 					if (target) {
 						if (unit->is_target_within_min_range(target, unit->get_max_weapon_range(unit->get_ground_weapon()))) {
@@ -384,7 +384,7 @@ namespace hooks
 								target->remove();
 							}
 
-							if (!(unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving)
+							if (!(unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving)
 								&& unitExt->timers[TimerTalosAnimationSubtimer] == 0) {
 
 								u32 width  = units_dat::BuildingDimensions[target->id].x * 0.75;
@@ -518,7 +518,6 @@ namespace hooks
 				if (unitExt->timers[TimerCorpseCocoonHatch] == 1) {
 					helper::replace_unit_with_type(unit, UnitId::ZergSovroleth);
 					scbw::give_ai_ex(unit, true);
-
 					helper::play_morphing_complete_sound(unit);
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 					helper::init_building(unit, 1);
@@ -550,8 +549,7 @@ namespace hooks
 						unitExt->timers[TimerStarSovereignInterventionMissiles] = weapons_dat::Cooldown[WeaponId::StarSovereignInterventionMissiles];
 						for (s32 arc = 0; arc < 6; arc++)
 						{
-							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlaySpecialPtr,
-								unit->sprite->mainGraphic->id));
+							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlaySpecialPtr, unit->sprite->mainGraphic->id));
 							u8 frameDirection = unit->sprite->mainGraphic->direction;
 							Point8 offset = loFile->get_offset(frameDirection, 5 - arc);
 							if (unit->sprite->mainGraphic->flags & ImageFlags::Mirrored)
@@ -564,12 +562,12 @@ namespace hooks
 							auto target_pos = unit->orderTarget.pt;
 							auto offset_direction = -40 + arc * 16;
 							auto maxRange = weapons_dat::MaxRange[WeaponId::StarSovereignInterventionMissiles];
-							auto polar_x = unit->get_x() + scbw::get_polar_x(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
-							auto polar_y = unit->get_y() + scbw::get_polar_y(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
+							auto polar_x = unit->get_x() + scbw::get_polar_x(maxRange, scbw::dir_saturate(unit->current_direction_1, offset_direction));
+							auto polar_y = unit->get_y() + scbw::get_polar_y(maxRange, scbw::dir_saturate(unit->current_direction_1, offset_direction));
 							unit->orderTarget.unit = nullptr;
 							unit->orderTarget.pt.x = polar_x;
 							unit->orderTarget.pt.y = polar_y;
-							helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player, scbw::dir_saturate(unit->currentDirection1, offset_direction));
+							helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player, scbw::dir_saturate(unit->current_direction_1, offset_direction));
 							helper::play_sound_from_unit(80, unit, 1, 0);
 							unit->orderTarget.unit = target_unit;
 							unit->orderTarget.pt = target_pos;
@@ -587,17 +585,17 @@ namespace hooks
 				u32 player = unit->player;
 				u16 X = unit->position.x;
 				u16 Y = unit->position.y;
-				if (unit->orderSignal & 8)
+				if (unit->order_signal & 8)
 				{
-					unit->orderSignal &= ~8;
+					unit->order_signal &= ~8;
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y + 32, player);
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y + 32, player);
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y - 32, player);
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y - 32, player);
 				}
-				else if (unit->orderSignal & 16)
+				else if (unit->order_signal & 16)
 				{
-					unit->orderSignal &= ~16;
+					unit->order_signal &= ~16;
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 80, player);
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 80, player);
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 80, player);
@@ -619,9 +617,9 @@ namespace hooks
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y + 80, player);
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 80, player);
 				}
-				else if (unit->orderSignal & 32)
+				else if (unit->order_signal & 32)
 				{
-					unit->orderSignal &= ~32;
+					unit->order_signal &= ~32;
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 144, player);
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 144, player);
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 144, player);
@@ -639,9 +637,9 @@ namespace hooks
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 208, player);
 					helper::create_thingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 208, player);
 				}
-				else if (unit->orderSignal & 64)
+				else if (unit->order_signal & 64)
 				{
-					unit->orderSignal &= ~64;
+					unit->order_signal &= ~64;
 				}
 			} break;
 			case UnitId::TerranApostle:
@@ -696,7 +694,7 @@ namespace hooks
 			case UnitId::TerranMadcap:
 			{
 				// Madcap Cabeirus Feeders - subtract stacks while moving
-				if (unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving)
+				if (unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving)
 				{
 					if (unitExt->values[ValueMadcapStacks] > 0)
 					{
@@ -717,10 +715,10 @@ namespace hooks
 			{
 				if (unitExt->values[ValueIsSelfReviving])
 				{
-					if (unit->hitPoints + CuirassSelfHeal >= unit->get_max_hp_raw())
+					if (unit->hitpoints + CuirassSelfHeal >= unit->get_max_hp_raw())
 					{
 						unitExt->values[ValueIsSelfReviving] = 0;
-						unit->hitPoints = unit->get_max_hp_raw();
+						unit->hitpoints = unit->get_max_hp_raw();
 						scbw::restore_func(unit);
 						unit->order_computer(OrderId::Stop);
 						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
@@ -742,7 +740,7 @@ namespace hooks
 				// Striga - Transient Travels
 				// Legionnaire - Blade Vortex
 				if (unit->orderTarget.unit != nullptr
-					&& (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::AttackUnit))
+					&& (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit))
 				{
 					Unit* target = unit->orderTarget.unit;
 					u32 distance = unit->get_distance_to_target(target);
@@ -774,7 +772,6 @@ namespace hooks
 							position.y += displacement.y;
 						}
 					}
-
 					if (doTeleport)
 					{
 						position = scbw::clamp_point(position);
@@ -817,14 +814,13 @@ namespace hooks
 						missile_target.y = tgt_y + product.y;
 
 						s32 forwardOffset = weapons_dat::ForwardOffset[10];
-						auto source_x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->currentDirection1);
-						auto source_y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->currentDirection1)
-							- weapons_dat::VerticalOffset[10];
+						auto source_x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
+						auto source_y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1) - weapons_dat::VerticalOffset[10];
 						unit->orderTarget.unit = nullptr;
 						unit->orderTarget.pt = missile_target;
 						auto range = 64;
 
-						auto targ = scbw::UnitFinder::getNearestTarget(
+						auto targ = scbw::UnitFinder::get_nearest_target(
 							missile_target.x - range,
 							missile_target.y - range,
 							missile_target.x + range,
@@ -851,19 +847,19 @@ namespace hooks
 						{
 							unit->orderTarget.unit = targ;
 						}
-						helper::create_bullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->player, unit->currentDirection1);
+						helper::create_bullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->player, unit->current_direction_1);
 					}
 				}
 			} break;
 			case UnitId::ZergLakizilisk:
 			{
 				// Lakizilisk - play sound on attack, hardcoded here to facilitate a different sound on return
-				if (unit->orderSignal & 0x20) {
-					unit->orderSignal &= ~0x20;
+				if (unit->order_signal & 0x20) {
+					unit->order_signal &= ~0x20;
 					helper::play_sound_from_unit(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
 				}
 				// Lakizilisk - Seismic Spines
-				if (unit->sprite != nullptr && unit->mainOrderId != OrderId::Die
+				if (unit->sprite != nullptr && unit->main_order_id != OrderId::Die
 					&& unitExt->timers[TimerLurkerETA] == 1)
 				{
 					auto position = unit->position; // new target
@@ -888,7 +884,6 @@ namespace hooks
 				{
 					break;
 				}
-
 				auto timer = unitExt->timers[TimerNaniteField];
 				unit->_padding_0x133 = 0;
 				if (timer == 0)
@@ -914,9 +909,9 @@ namespace hooks
 			case UnitId::TerranCentaur:
 			{
 				// Centaur - Sunchaser Missiles
-				if (unit->orderSignal & 0x20)
+				if (unit->order_signal & 0x20)
 				{
-					unit->orderSignal &= ~0x20;
+					unit->order_signal &= ~0x20;
 					if (unit->orderTarget.unit != nullptr)
 					{
 						if (unit->get_distance_to_target(unit->orderTarget.unit) <= CentaurMissileDistance)
@@ -928,9 +923,9 @@ namespace hooks
 			} break;
 			case UnitId::TerranOlympian:
 			{
-				if (unit->orderSignal & 0x20)
+				if (unit->order_signal & 0x20)
 				{
-					unit->orderSignal &= ~0x20;
+					unit->order_signal &= ~0x20;
 					if (unit->orderTarget.unit != nullptr && !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
 					{
 						if (unit->get_distance_to_target(unit->orderTarget.unit) <= OlympianMeleeDistance)
@@ -979,9 +974,6 @@ namespace hooks
 			} break;
 			case UnitId::ProtossClarion:
 			{
-				// Clarion Harmony Drive
-				unit->update_speed();
-
 				// Clarion Phase Link
 				if (scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 0)
 				{
@@ -1010,7 +1002,6 @@ namespace hooks
 							target->sprite->create_top_overlay(overlay);
 						}
 					}
-
 					if (!unit->energy) {
 						unitExt->values[ValueGodsMadeFleshActive] = 0;
 					}
@@ -1059,7 +1050,7 @@ namespace hooks
 						unit->get_y() - radius,
 						unit->get_x() + radius,
 						unit->get_y() + radius
-					).forEachInMatch(match, [&](Unit* target) {
+					).for_each_in_match(match, [&](Unit* target) {
 						UnitExt* targetExt = globals.get_unit_ext(target);
 						targetExt->timers[TimerAnticthonRevive] = 2;
 					});
@@ -1075,7 +1066,7 @@ namespace hooks
 					unit->get_y() - attackRadius,
 					unit->get_x() + attackRadius,
 					unit->get_y() + attackRadius
-				).forEachInMatch(match, [&](Unit* target)
+				).for_each_in_match(match, [&](Unit* target)
 				{
 					u32 dist = scbw::get_distance_fast(unit->position, target->position);
 					if (dist <= weapons_dat::OuterSplashRadius[WeaponId::AnthelionEventHorizon])
@@ -1113,14 +1104,14 @@ namespace hooks
 					helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire04), unit, 1, 0);
 				}
 
-				if (unit->mainOrderId == OrderId::Follow || unit->mainOrderId == OrderId::AttackUnit)
+				if (unit->main_order_id == OrderId::Follow || unit->main_order_id == OrderId::AttackUnit)
 				{
 					unit->order_to(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 				}
 
-				if (unit->mainOrderId == OrderId::Move)
+				if (unit->main_order_id == OrderId::Move)
 				{
-					if (unitExt->anthelion_last_move_target != unit->moveTarget.pt)
+					if (unitExt->anthelion_last_move_target != unit->move_target.pt)
 					{
 						if (unitExt->timers[TimerAnthelionEndlessEclipse] > 1)
 						{
@@ -1128,13 +1119,13 @@ namespace hooks
 						}
 						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 					}
-					unitExt->anthelion_last_move_target = unit->moveTarget.pt;
+					unitExt->anthelion_last_move_target = unit->move_target.pt;
 					s16 oldX = unit->sprite->position.x;
 					s16 oldY = unit->sprite->position.y;
 
 					if (unitExt->timers[TimerAnthelionEndlessEclipse] == 1)
 					{
-						bool teleport = scbw::teleport(unit, unit->moveTarget.pt, 0, true);
+						bool teleport = scbw::teleport(unit, unit->move_target.pt, 0, true);
 						if (teleport)
 						{
 							scbw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->player, 11);
@@ -1159,7 +1150,7 @@ namespace hooks
 					unit->get_y() - radius,
 					unit->get_x() + radius,
 					unit->get_y() + radius
-				).forEachInMatch(match, [&](Unit* target)
+				).for_each_in_match(match, [&](Unit* target)
 				{
 					if ((!scbw::is_allied_to(unit->player, target->player)))
 					{
@@ -1216,7 +1207,7 @@ namespace hooks
 				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, originally from DarkenedFantasies.
 				// TODO: Find a solution that works, the code below does not. -Pr0nogo
 				/*
-				if (playerTable[unit->playerId].type == PlayerType::Computer && unit->mainOrderId == OrderId::WatchTarget) {
+				if (playerTable[unit->playerId].type == PlayerType::Computer && unit->main_order_id == OrderId::WatchTarget) {
 					helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 				}
 				*/
@@ -1276,11 +1267,11 @@ namespace hooks
 
 		// Fix animation bug with acceleration movement flag
 		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding)
-			&& unit->movementFlags & MovementFlags::Accelerating
+			&& unit->movement_flags & MovementFlags::Accelerating
 			&& unit->sprite->mainGraphic->animation != IscriptAnimation::Walking
 			&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle)
 		{
-			unit->movementFlags &= ~MovementFlags::Accelerating;
+			unit->movement_flags &= ~MovementFlags::Accelerating;
 		}
 
 		// Sublime Shepherd - Check tagged units for nearby Azazels
@@ -1465,7 +1456,7 @@ namespace hooks
 				}
 			}
 			s32 angle = scbw::get_angle(unit->position, targetPos);
-			unit->currentDirection1 = angle;
+			unit->current_direction_1 = angle;
 		}
 
 		// Cyclops - Flak Cannon Fuse
@@ -1482,7 +1473,7 @@ namespace hooks
 					unit->get_y() - radius,
 					unit->get_x() + radius,
 					unit->get_y() + radius
-				).forEachInMatch(cosmonarchy_finder_match(unit, Flags::NotSelf, {}), [&](Unit* target)
+				).for_each_in_match(cosmonarchy_finder_match(unit, Flags::NotSelf, {}), [&](Unit* target)
 				{
 					target->damage_with_custom(5 * 256, DamageType::Explosive, nullptr, 0, 0, 1, false);
 				});
@@ -1504,7 +1495,7 @@ namespace hooks
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			UnitArray akistrokors = unit_search_radial(unit->position, 6 * 32);
 			unit_search_filter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
-			unit->hitPoints += akistrokors.size * 256.0 / 24.0;
+			unit->hitpoints += akistrokors.size * 256.0 / 24.0;
 
 			if (!units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) {
 				helper::secondary_order_spawning_larva(unit);
@@ -1517,9 +1508,9 @@ namespace hooks
 
 		// Akistrokor - Blissful Embrace ability
 		if (unit->id == UnitId::ZergAkistrokor) {
-			if (unit->mainOrderId == OrderId::BlissfulEmbrace) {
+			if (unit->main_order_id == OrderId::BlissfulEmbrace) {
 				Unit* target = unit->orderTarget.unit;
-				if (target && target->hitPoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
+				if (target && target->hitpoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
 					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->player != target->player) {
 					UnitExt* target_ext = globals.get_unit_ext(target);
 
@@ -1529,8 +1520,8 @@ namespace hooks
 						}
 					}
 					if (unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
-						if (unit->orderSignal & 0x2) {
-							unit->orderSignal &= ~0x2;
+						if (unit->order_signal & 0x2) {
+							unit->order_signal &= ~0x2;
 							helper::force_order_done(unit);
 							scbw::blissful_embrace(target, unit->player);
 						}
@@ -1539,7 +1530,7 @@ namespace hooks
 					helper::force_order_done(unit);
 				}
 			} else {
-				unit->orderSignal &= ~0x2;
+				unit->order_signal &= ~0x2;
 			}
 		}
 
@@ -1658,10 +1649,10 @@ namespace hooks
 		}
 
 		// Game Rule -  Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
-		if (unit->mainOrderId == OrderId::Harvest1
-			|| unit->mainOrderId == OrderId::HarvestGas1
-			|| unit->mainOrderId == OrderId::ReturnMinerals
-			|| unit->mainOrderId == OrderId::ReturnGas)
+		if (unit->main_order_id == OrderId::Harvest1
+			|| unit->main_order_id == OrderId::HarvestGas1
+			|| unit->main_order_id == OrderId::ReturnMinerals
+			|| unit->main_order_id == OrderId::ReturnGas)
 		{
 			if (unit->status & UnitStatus::IsGathering)
 			{
@@ -1701,11 +1692,11 @@ namespace hooks
 		// Luminary - Aural Assault
 		if (unitExt->timers[TimerAuralAssaultBlind] > 1)
 		{
-			if (unit->mainOrderId != OrderId::AttackUnit)
+			if (unit->main_order_id != OrderId::AttackUnit)
 			{
 				auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
 				const u32 radius = unit->get_seek_range() * 32;
-				Unit* target = scbw::UnitFinder::getNearestTarget(
+				Unit* target = scbw::UnitFinder::get_nearest_target(
 					unit->get_x() - radius,
 					unit->get_y() - radius,
 					unit->get_x() + radius,
@@ -1888,7 +1879,7 @@ namespace hooks
 				unit->get_y() - radius,
 				unit->get_x() + radius,
 				unit->get_y() + radius
-			).forEachInMatch(match, [&](Unit* target)
+			).for_each_in_match(match, [&](Unit* target)
 			{
 				if (scbw::get_distance_fast(unit->position, target->position) <= radius)
 				{

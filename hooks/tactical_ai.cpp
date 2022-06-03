@@ -133,7 +133,7 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius)
 			search_pos.y - hostile_group_radius,
 			search_pos.x + hostile_group_radius,
 			search_pos.y + hostile_group_radius
-		).forEachInMatch(cosmonarchy_finder_match(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
+		).for_each_in_match(cosmonarchy_finder_match(unit, Flags::Enemy | Flags::CanAttackOrCast, {}),
 			[&](Unit* hostileUnit)
 		{
 			u32 strength = 0;
@@ -275,22 +275,22 @@ static u32 get_distance_to_target(Unit* source)
 }
 
 static bool is_channeling(Unit* unit) {
-	if (unit->mainOrderId == OrderId::NukeTrack) {
+	if (unit->main_order_id == OrderId::NukeTrack) {
 		return true;
 	}
-	if (unit->mainOrderId == OrderId::Plague && unit->sprite->mainGraphic->animation == IscriptAnimation::Unused2) {
+	if (unit->main_order_id == OrderId::Plague && unit->sprite->mainGraphic->animation == IscriptAnimation::Unused2) {
 		return true;
 	}
-	if (unit->mainOrderId == OrderId::FireYamatoGun1 && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+	if (unit->main_order_id == OrderId::FireYamatoGun1 && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
 		return true;
 	}
-	if (unit->mainOrderId == OrderId::PaladinSkyfall && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+	if (unit->main_order_id == OrderId::PaladinSkyfall && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
 		return true;
 	}
-	if (unit->id == UnitId::ProtossStarSovereign && unit->mainOrderId == OrderId::CTFCOP2 && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+	if (unit->id == UnitId::ProtossStarSovereign && unit->main_order_id == OrderId::CTFCOP2 && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
 		return true;
 	}
-	if (unit->id == UnitId::ProtossAnthelion && unit->mainOrderId == OrderId::Move && unit->sprite->mainGraphic->animation == IscriptAnimation::Walking) {
+	if (unit->id == UnitId::ProtossAnthelion && unit->main_order_id == OrderId::Move && unit->sprite->mainGraphic->animation == IscriptAnimation::Walking) {
 		return true;
 	}
 	return false;
@@ -379,7 +379,7 @@ static s32 get_target_cost(Unit* source, Unit* target)
 	// Value attacking strategically important targets
 	if (target->id == UnitId::ZergNydusCanal
 		|| (units_dat::BaseProperty[target->id] & UnitProperty::Worker
-			&& target->mainOrderId == OrderId::ConstructingBuilding)
+			&& target->main_order_id == OrderId::ConstructingBuilding)
 		|| (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
 			&& !(target->status & UnitStatus::Completed)))
 	{
@@ -479,17 +479,17 @@ static bool unit_could_kite(Unit* unit)
 	UnitExt* unit_ext = globals.get_unit_ext(unit);
 	bool in_combat = unit_ext->damage_receive_timer < 4 * 24
 		|| unit_ext->damage_dealt_timer < 4 * 24
-		|| unit->mainOrderId == OrderId::Patrol
-		|| unit->mainOrderId == OrderId::AttackMove
-		|| unit->mainOrderId == OrderId::AttackMoveComputer
-		|| unit->mainOrderId == OrderId::AttackUnit
-		|| unit->mainOrderId == OrderId::CarrierFight
-		|| unit->mainOrderId == OrderId::ReaverFight
-		|| unit->mainOrderId == OrderId::Move
-		|| unit->mainOrderId == OrderId::MoveToMinerals
-		|| unit->mainOrderId == OrderId::HarvestGas1
-		|| unit->mainOrderId == OrderId::ComputerAI
-		|| unit->mainOrderId == OrderId::ComputerReturn;
+		|| unit->main_order_id == OrderId::Patrol
+		|| unit->main_order_id == OrderId::AttackMove
+		|| unit->main_order_id == OrderId::AttackMoveComputer
+		|| unit->main_order_id == OrderId::AttackUnit
+		|| unit->main_order_id == OrderId::CarrierFight
+		|| unit->main_order_id == OrderId::ReaverFight
+		|| unit->main_order_id == OrderId::Move
+		|| unit->main_order_id == OrderId::MoveToMinerals
+		|| unit->main_order_id == OrderId::HarvestGas1
+		|| unit->main_order_id == OrderId::ComputerAI
+		|| unit->main_order_id == OrderId::ComputerReturn;
 
 	if (unit->id == UnitId::ZergLakizilisk) {
 		if (!(unit->status & UnitStatus::Burrowed)) {
@@ -505,7 +505,7 @@ static bool unit_could_kite(Unit* unit)
 		&& unit->has_weapon()
 		&& !unit->is_frozen()
 		&& unit->status & UnitStatus::Completed
-		&& !(unit->movementFlags & MovementFlags::StartingAttack)	
+		&& !(unit->movement_flags & MovementFlags::StartingAttack)	
 		// Special units
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
@@ -513,20 +513,20 @@ static bool unit_could_kite(Unit* unit)
 		&& unit->id != UnitId::TerranNuclearMissile
 		&& unit->id != UnitId::ProtossAnthelion
 		// Other rules
-		&& unit->mainOrderId != OrderId::BuildTerran
-		&& unit->mainOrderId != OrderId::ConstructingBuilding
-		&& unit->mainOrderId != OrderId::BuildProtoss1
-		&& unit->mainOrderId != OrderId::BuildProtoss2
-		&& unit->mainOrderId != OrderId::DroneLand
-		&& unit->mainOrderId != OrderId::DroneStartBuild
-		&& unit->mainOrderId != OrderId::DroneBuild
+		&& unit->main_order_id != OrderId::BuildTerran
+		&& unit->main_order_id != OrderId::ConstructingBuilding
+		&& unit->main_order_id != OrderId::BuildProtoss1
+		&& unit->main_order_id != OrderId::BuildProtoss2
+		&& unit->main_order_id != OrderId::DroneLand
+		&& unit->main_order_id != OrderId::DroneStartBuild
+		&& unit->main_order_id != OrderId::DroneBuild
 		&& !unit_ext->values[ValueDisruptionFieldOn];
 }
 
 static bool unit_can_kite(Unit* unit) {
 	// ComputerReturn was patched away, still keeping the unreliable hardcode just in case
 	UnitExt* unit_ext = globals.get_unit_ext(unit);
-	return get_kiter_type(unit->id) != KiterType_TargetingOnly && (unit_ext->timers[TimerAI_KitingCooldown] == 0 || unit->mainOrderId == OrderId::ComputerReturn);
+	return get_kiter_type(unit->id) != KiterType_TargetingOnly && (unit_ext->timers[TimerAI_KitingCooldown] == 0 || unit->main_order_id == OrderId::ComputerReturn);
 }
 
 static bool unit_kiting_can_attack(Unit* unit)
@@ -535,7 +535,7 @@ static bool unit_kiting_can_attack(Unit* unit)
 	{
 		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
 	}
-	if (unit->movementFlags & MovementFlags::Accelerating || unit->flingyTurnSpeed < 35)
+	if (unit->movement_flags & MovementFlags::Accelerating || unit->flingy_turn_speed < 35)
 	{
 		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
 	}
@@ -634,7 +634,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					} else {
 						local_unit_ext->values[ValueAI_PreventTargeting] = 1;
 					}
-					if (local_unit->mainOrderId != attack_order_id || local_unit->orderTarget.unit != best_target) {
+					if (local_unit->main_order_id != attack_order_id || local_unit->orderTarget.unit != best_target) {
 						local_unit->order_to(attack_order_id, best_target);
 						local_unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					}
@@ -705,7 +705,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					{
 						local_unit_ext->timers[TimerAI_KitingCooldown] = 5 * 24;
 					}
-					else if (unit->movementFlags & MovementFlags::Accelerating || unit->flingyTurnSpeed < 35)
+					else if (unit->movement_flags & MovementFlags::Accelerating || unit->flingy_turn_speed < 35)
 					{
 						local_unit_ext->timers[TimerAI_KitingCooldown] = 2;
 					}
@@ -760,7 +760,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					{
 						case KiterType_Melee:
 						{
-							if (local_unit->hitPoints < local_unit->get_total_hp_plus_shields() * 0.2)
+							if (local_unit->hitpoints < local_unit->get_total_hp_plus_shields() * 0.2)
 							{
 								local_unit_ext->timers[TimerAI_KitingCooldown] = 24;
 								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
@@ -782,7 +782,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 						} break;
 						case KiterType_Ranged:
 						{
-							if ((local_unit->hitPoints < local_unit->get_total_hp_plus_shields() * 0.2
+							if ((local_unit->hitpoints < local_unit->get_total_hp_plus_shields() * 0.2
 								|| local_group_value * confidence_factor < result.biases[result.forward_index]
 								|| distance <= max_range * 0.5)
 								&& !target_has_min_range)
@@ -826,7 +826,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 						} break;
 						case KiterType_Flagship:
 						{
-							if (local_unit->hitPoints < local_unit->get_total_hp_plus_shields() * 0.2
+							if (local_unit->hitpoints < local_unit->get_total_hp_plus_shields() * 0.2
 								|| local_group_value * confidence_factor < result.biases[result.forward_index])
 							{
 								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
@@ -1012,7 +1012,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 		}
 		else if (unit->id == UnitId::ZergMatraleth)
 		{
-			if (unit->mainOrderId != OrderId::CastParasite && unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0)
+			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0)
 			{
 				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
 					Flags::NotSelf, {}, [&](Unit* u)
@@ -1122,7 +1122,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 			if (web_state && webs > threshold)
 			{
 				scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
-				if (unit->mainOrderId == OrderId::Move)
+				if (unit->main_order_id == OrderId::Move)
 				{
 					unit->order_to_idle();
 				}
@@ -1139,7 +1139,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 			{
 				if (!scbw::is_allied_to(unit->player, u->player))
 				{
-					enemyUnitsHealth += (u->hitPoints + u->shields) / 256;
+					enemyUnitsHealth += (u->hitpoints + u->shields) / 256;
 				}
 				if (scbw::is_allied_to(unit->player, u->player))
 				{
@@ -1148,18 +1148,18 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 						alliedTownHalls = true;
 						return;
 					}
-					alliedUnitsHealth += (u->hitPoints + u->shields) / 256;
+					alliedUnitsHealth += (u->hitpoints + u->shields) / 256;
 				}
 			});
 			if (!alliedTownHalls && enemyUnitsHealth >= 2000
 				&& alliedUnitsHealth < 2000
-				&& (unit->hitPoints + unit->shields) * 2 >=	(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
+				&& (unit->hitpoints + unit->shields) * 2 >=	(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
 			{
 				unitExt->timers[TimerAI_GriefOfAllGods] = 612;
 				unitExt->timers[TimerAI_KitingCooldown] = 5 * 24;
 				unit->order_computer(OrderId::KhaydarinEclipse);
 				unit->orderTarget.pt = unit->sprite->position;
-				unit->mainOrderState = 0;
+				unit->main_order_state = 0;
 			}
 		}
 		else if (unit->id == UnitId::ProtossDemiurge && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0)
@@ -1195,7 +1195,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
 			}
 		}
-		else if (unit->id == UnitId::ZergAkistrokor && unit->mainOrderId != OrderId::BlissfulEmbrace) {
+		else if (unit->id == UnitId::ZergAkistrokor && unit->main_order_id != OrderId::BlissfulEmbrace) {
 			UnitArray targets = unit_search_radial(unit->position, 512 * 32);
 			unit_search_filter(&targets, unit, FilterEnemy | FilterBuilding);
 
@@ -1203,7 +1203,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 			Unit* best_target = 0;
 			for (u32 i = 0; i < targets.size; ++i) {
 				Unit* target = targets.units[i];
-				if (target->hitPoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
+				if (target->hitpoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
 					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon)) {
 					f32 cost = get_blissful_embrace_target_cost(unit, target);
 					if (cost < min_cost) {
@@ -1220,7 +1220,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 
 		/*	
 		else if (unit->id == UnitId::TerranPaladin) {
-			if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
+			if (unit->main_order_id != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
 				bool skyfallCondition = false;
 				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
 					CFlags::Enemy, {}, [&](Unit* u) {

@@ -4,7 +4,7 @@
 bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 {
 	scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
-	auto a = scbw::UnitFinder::getNearestTarget(
+	auto a = scbw::UnitFinder::get_nearest_target(
 		unit->get_x() - r, unit->get_y() - r,
 		unit->get_x() + r, unit->get_y() + r,
 		unit, cosmonarchy_finder_match(unit, context, allowedIds)
@@ -31,7 +31,7 @@ u32 cosmonarchyUnitCount(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vect
 Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 {
 	scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
-	auto a = scbw::UnitFinder::getNearestTarget(
+	auto a = scbw::UnitFinder::get_nearest_target(
 		unit->get_x() - r,
 		unit->get_y() - r,
 		unit->get_x() + r,
@@ -45,7 +45,7 @@ Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds
 Unit* rangeMatchPosition(Vector32 position, u32 r, u32 context, std::vector<u16> allowedIds)
 {
 	scbw::UnitFinder unitsInSplash(position.x - r, position.y - r, position.x + r, position.x + r);
-	auto a = scbw::UnitFinder::getNearestTarget(
+	auto a = scbw::UnitFinder::get_nearest_target(
 		position.x - r,
 		position.y - r,
 		position.x + r,
@@ -139,7 +139,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 			{
 				u16 angle = scbw::get_angle(center->position.x, center->position.y,
 					unit->position.x, unit->position.y);
-				u16 unit_angle = center->velocityDirection1;
+				u16 unit_angle = center->velocity_direction_1;
 				s32 arc = (f64)45 / 1.40625;
 				//90 degrees
 				s32 delta = unit_angle - angle;

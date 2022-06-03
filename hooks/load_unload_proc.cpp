@@ -37,7 +37,7 @@ namespace hooks
 				}
 
 				Unit* current_loaded_unit = (Unit*)&(unitTable_0059CB58[transport->loadedUnit[counter].index]);
-				if ((current_loaded_unit->mainOrderId == OrderId::Die && current_loaded_unit->mainOrderState == 1) ||
+				if ((current_loaded_unit->main_order_id == OrderId::Die && current_loaded_unit->main_order_state == 1) ||
 					current_loaded_unit->targetOrderSpecial != transport->loadedUnit[counter].unitId)
 				{
 					break;

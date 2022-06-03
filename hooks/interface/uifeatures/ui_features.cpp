@@ -147,7 +147,7 @@ LABEL_8:
 	{
 		if (a6 && orders_dat::CanBeQueued[(u8)a7])
 		{
-			switch (a3->mainOrderId)
+			switch (a3->main_order_id)
 			{
 				case 2:
 				case 3:

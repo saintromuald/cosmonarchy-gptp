@@ -13,7 +13,7 @@ namespace hooks
 	void orders_zerg_birth(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		if (!(unit->orderSignal & 4))
+		if (!(unit->order_signal & 4))
 		{
 			Image* current_image = unit->sprite->mainGraphic;
 			IscriptAnimation::Enum animation = IscriptAnimation::SpecialState1;
@@ -26,11 +26,11 @@ namespace hooks
 			}
 		}
 
-		if (unit->orderSignal & 4)
+		if (unit->order_signal & 4)
 		{
 			bool bTwinEggOrCocoon = true;
 			Point16 pos = {};
-			unit->orderSignal &= ~4;
+			unit->order_signal &= ~4;
 			bool no_two_units = false;
 			auto origin = unit->egg_origin;
 			if (units_dat::BaseProperty[origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
@@ -126,7 +126,7 @@ namespace hooks
 	void orders_morph_1(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		if (unit->mainOrderState == 0)
+		if (unit->main_order_state == 0)
 		{
 			if (scbw::is_conventional_unit_morph_source(unit->id, true, true))
 			{
@@ -224,7 +224,7 @@ namespace hooks
 					helper::change_unit_buttonset(unit, unit->id);
 					
 					unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
-					unit->mainOrderState = 1;
+					unit->main_order_state = 1;
 					auto origin = unit->egg_origin;
 					IscriptAnimation::Enum animation = IscriptAnimation::Unused1;
 					if (origin == UnitId::ZergZethrokor
@@ -249,7 +249,7 @@ namespace hooks
 				}
 			}
 		}
-		else if (unit->mainOrderState == 1)
+		else if (unit->main_order_state == 1)
 		{
 			if (unit->id == UnitId::ZergEgg && unit->remainingBuildTime < 19)
 			{
@@ -263,14 +263,14 @@ namespace hooks
 			}
 			if (advance_remaining_build_time_custom(unit))
 			{
-				unit->mainOrderState = 2;
+				unit->main_order_state = 2;
 			}
 		}
-		else if (unit->mainOrderState == 2)
+		else if (unit->main_order_state == 2)
 		{
-			if (unit->orderSignal & 4)
+			if (unit->order_signal & 4)
 			{
-				unit->orderSignal -= 4;
+				unit->order_signal -= 4;
 				helper::replace_unit_with_type(unit, unit->buildQueue[unit->buildQueueSlot]);
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster) {
 					unit->energy = unitExt->values[ValuePreMorphEnergy];

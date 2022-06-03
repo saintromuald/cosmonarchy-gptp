@@ -12,14 +12,14 @@ namespace hooks
 			unit->status |= UnitStatus::IsGathering;
 		}
 
-		if (unit->mainOrderState == 0)
+		if (unit->main_order_state == 0)
 		{
 			if (helper::change_movement_target_move_target_2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 			{
-				unit->mainOrderState = 1;
+				unit->main_order_state = 1;
 			}
 		}
-		else if (unit->mainOrderState == 1)
+		else if (unit->main_order_state == 1)
 		{
 			u32 distance, distance_wanted;
 			distance = scbw::get_distance_fast(unit->halt.x, unit->halt.y, unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256);
@@ -42,12 +42,12 @@ namespace hooks
 			else // 004E4DA9
 			{
 				helper::make_to_hold_position(unit);
-				unit->mainOrderState = 2;
+				unit->main_order_state = 2;
 			}
 		}
-		else if (unit->mainOrderState == 2)
+		else if (unit->main_order_state == 2)
 		{
-			if (!(unit->movementFlags & MovementFlags::Accelerating))
+			if (!(unit->movement_flags & MovementFlags::Accelerating))
 			{
 				u32 distance_wanted;
 				bool isBuildingAssimilator = (unit->buildQueue[unit->buildQueueSlot] == UnitId::ProtossAquifer);
@@ -100,7 +100,7 @@ namespace hooks
 							helper::ai_training_overlord(builtUnit, unit);
 							builtUnit->order_computer(OrderId::BuildSelf2);
 							helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
-							unit->mainOrderState = 3;
+							unit->main_order_state = 3;
 						}
 					}
 					else
@@ -110,7 +110,7 @@ namespace hooks
 				}
 			}
 		}
-		else if (unit->mainOrderState == 3)
+		else if (unit->main_order_state == 3)
 		{
 			Unit* target = unit->orderTarget.unit;
 			Image* current_image;
@@ -137,11 +137,11 @@ namespace hooks
 	void orders_build_self_2(Unit* building)
 	{
 		bool jump_to_E50EE = false;
-		if (building->mainOrderState > 3)
+		if (building->main_order_state > 3)
 		{
 			jump_to_E50EE = true;
 		}
-		else if (building->mainOrderState == 0)
+		else if (building->main_order_state == 0)
 		{
 			if (building->remainingBuildTime == 0)
 			{
@@ -160,7 +160,7 @@ namespace hooks
 					current_image = current_image->link.next;
 				}
 				helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld03_wav, building, 1, 0);
-				building->mainOrderState = 1;
+				building->main_order_state = 1;
 				jump_to_E50EE = true;
 			}
 			else
@@ -168,22 +168,22 @@ namespace hooks
 				jump_to_E50EE = true;
 			}
 		}
-		else if (building->mainOrderState == 1)
+		else if (building->main_order_state == 1)
 		{
-			if (building->orderSignal & 1)
+			if (building->order_signal & 1)
 			{
-				building->orderSignal &= ~1;
+				building->order_signal &= ~1;
 				helper::replace_sprite_images(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
 				helper::switch_to_warp_texture(building->sprite->mainGraphic);
-				building->mainOrderState = 3; // DF: Skip state 2 as it's now redundant.
+				building->main_order_state = 3; // DF: Skip state 2 as it's now redundant.
 			}
 		}
-		else if (building->mainOrderState == 2) // DF: Could theorically comment out this entire if block, but I haven't extensively checked/tested if it's truly not used by anything else. Your call.
+		else if (building->main_order_state == 2) // DF: Could theorically comment out this entire if block, but I haven't extensively checked/tested if it's truly not used by anything else. Your call.
 		{
-			if (building->orderSignal & 1)
+			if (building->order_signal & 1)
 			{
 				Image* current_image;
-				building->orderSignal &= ~1;
+				building->order_signal &= ~1;
 				helper::replace_sprite_images(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
 				current_image = building->sprite->images.head;
 				while (current_image != nullptr)
@@ -199,16 +199,16 @@ namespace hooks
 					}
 					current_image = current_image->link.next;
 				}
-				building->mainOrderState = 3;
-				building->orderSignal |= 1; // DF: This is what skipped the warp fadeout animation.
+				building->main_order_state = 3;
+				building->order_signal |= 1; // DF: This is what skipped the warp fadeout animation.
 			}
 		}
-		else if (building->mainOrderState == 3)
+		else if (building->main_order_state == 3)
 		{
-			if (building->orderSignal & 1)
+			if (building->order_signal & 1)
 			{
 				Image* current_image; // DF: Copied over from state 2.
-				building->orderSignal &= ~1;
+				building->order_signal &= ~1;
 				helper::update_unit_stats_and_finish_building(building); // DF: Copying over replace_sprite_images is not necessary because of this function.
 				helper::update_unit_strength(building);
 				helper::check_unstack(building);
@@ -295,7 +295,7 @@ namespace hooks
 			{
 				hpGain = building->buildRepairHpGain * modifier.multiplier;
 			}
-			building->setHp(building->hitPoints + hpGain);
+			building->setHp(building->hitpoints + hpGain);
 
 			if (*CHEAT_STATE & CheatFlags::OperationCwal)
 			{

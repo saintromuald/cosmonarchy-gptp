@@ -210,7 +210,7 @@ namespace
 			u32 hpGain = unit->buildRepairHpGain;
 			if (isOperationCwalEnabled)
 				hpGain *= 16;
-			unit->setHp(unit->hitPoints + hpGain);
+			unit->setHp(unit->hitpoints + hpGain);
 		}
 	}
 

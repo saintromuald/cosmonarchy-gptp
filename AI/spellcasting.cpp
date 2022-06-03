@@ -31,7 +31,7 @@ namespace AI
 				if (canCastSpellOrder(unit, TechId::YamatoGun, OrderId::FireYamatoGun1))
 				{
 					Unit* target = findBestYamatoGunTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::FireYamatoGun1
+					if (unit->main_order_id == OrderId::FireYamatoGun1
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -50,7 +50,7 @@ namespace AI
 					&& unit->vulture.spiderMineCount > 0)
 				{
 					Unit* target = findBestLockdownTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::MagnaPulse
+					if (unit->main_order_id == OrderId::MagnaPulse
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -84,7 +84,7 @@ namespace AI
 				if (canCastSpellOrder(unit, TechId::DefensiveMatrix, OrderId::DefensiveMatrix))
 				{
 					Unit* target = findBestDefensiveMatrixTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::DefensiveMatrix
+					if (unit->main_order_id == OrderId::DefensiveMatrix
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -101,7 +101,7 @@ namespace AI
 				if (canCastSpellOrder(unit, TechId::Irradiate, OrderId::Irradiate))
 				{
 					Unit* target = findBestIrradiateTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::Irradiate
+					if (unit->main_order_id == OrderId::Irradiate
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -139,7 +139,7 @@ namespace AI
 					{
 						Unit* target = findBestParasiteTarget(unit, isUnitBeingAttacked);
 
-						if (unit->mainOrderId == OrderId::CastParasite
+						if (unit->main_order_id == OrderId::CastParasite
 							&& unit->orderTarget.unit == target)
 						{
 							return false;
@@ -159,7 +159,7 @@ namespace AI
 				{
 					Unit* target = findBestPlagueTarget(unit, isUnitBeingAttacked);
 
-					if (unit->mainOrderId == OrderId::Plague
+					if (unit->main_order_id == OrderId::Plague
 						&& unit->orderTarget.unit == target)
 						return false;
 
@@ -172,7 +172,7 @@ namespace AI
 				if (canCastSpellOrder(unit, TechId::DarkSwarm, OrderId::DarkSwarm))
 				{
 					Unit* target = findBestDarkSwarmTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::DarkSwarm
+					if (unit->main_order_id == OrderId::DarkSwarm
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -189,7 +189,7 @@ namespace AI
 				if (canCastSpellOrder(unit, TechId::PsionicStorm, OrderId::PsiStorm))
 				{
 					Unit* target = findBestPsiStormTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::PsiStorm
+					if (unit->main_order_id == OrderId::PsiStorm
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -205,7 +205,7 @@ namespace AI
 					&& canCastSpellOrder(unit, TechId::Hallucination, OrderId::Hallucination1))
 				{
 					Unit* target = findBestHallucinationTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::Hallucination1
+					if (unit->main_order_id == OrderId::Hallucination1
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -222,7 +222,7 @@ namespace AI
 				if (canCastSpellOrder(unit, TechId::StasisField, OrderId::StasisField))
 				{
 					Unit* target = findBestStasisFieldTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::StasisField
+					if (unit->main_order_id == OrderId::StasisField
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -237,7 +237,7 @@ namespace AI
 				if (canCastSpellOrder(unit, TechId::Recall, OrderId::Teleport))
 				{
 					Unit* target = findBestRecallTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::Teleport
+					if (unit->main_order_id == OrderId::Teleport
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -254,7 +254,7 @@ namespace AI
 				if (canCastSpellOrder(unit, TechId::MindControl, OrderId::CastMindControl))
 				{
 					Unit* target = findBestMindControlTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::CastMindControl
+					if (unit->main_order_id == OrderId::CastMindControl
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -274,7 +274,7 @@ namespace AI
 					&& unit->canUseTech(TechId::Maelstrom, unit->player) != 1)
 				{
 					Unit* target = findBestMaelstromTarget(unit, isUnitBeingAttacked);
-					if (unit->mainOrderId == OrderId::CastMaelstrom
+					if (unit->main_order_id == OrderId::CastMaelstrom
 						&& unit->orderTarget.unit == target)
 					{
 						return false;
@@ -318,7 +318,7 @@ namespace
 		{
 			return false;
 		}
-		if (unit->mainOrderId != orderId)
+		if (unit->main_order_id != orderId)
 		{
 			unit->order_to(orderId, target);
 			target->aiActionFlags |= aiActionFlag;

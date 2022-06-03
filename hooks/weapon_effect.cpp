@@ -36,14 +36,14 @@ namespace hooks
 			{
 				damage /= 2;
 			}
-			if (damage >= dsw->hitPoints)
+			if (damage >= dsw->hitpoints)
 			{
 				dsw->remove();
 			}
 			else
 			{
-				u32 old = dsw->hitPoints;
-				dsw->hitPoints -= damage;
+				u32 old = dsw->hitpoints;
+				dsw->hitpoints -= damage;
 			}
 		}
 	}
@@ -59,7 +59,7 @@ namespace hooks
 			Unit* nathrokor = bullet->sourceUnit;
 			u16 angle = scbw::get_angle(nathrokor->position.x, nathrokor->position.y,
 				target->position.x, target->position.y);
-			u16 unit_angle = nathrokor->velocityDirection1;
+			u16 unit_angle = nathrokor->velocity_direction_1;
 			s32 arc = (f64)15 / 1.40625;
 			// 30 degrees
 			s32 delta = unit_angle - angle;
@@ -383,7 +383,7 @@ namespace hooks
 			Unit* mine = scbw::create_unit_ingame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
 			if (mine != nullptr)
 			{
-				helper::turnUnit(mine, bullet->sourceUnit->currentDirection1);
+				helper::turnUnit(mine, bullet->sourceUnit->current_direction_1);
 			}
 		}
 

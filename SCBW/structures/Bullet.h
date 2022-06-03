@@ -18,10 +18,10 @@ struct Bullet
 	/*0x04*/ Bullet*      next;
 	/*0x08*/ u32          exists; //usually holds 1 (exists?)
 	/*0x0C*/ Sprite*      sprite; // sprite pointer
-	/*0x10*/ Target       moveTarget; //address? animation related? changes a during the same bullet
+	/*0x10*/ Target       move_target; //address? animation related? changes a during the same bullet
 	/*0x18*/ Point16      targetPosition;
 	/*0x1C*/ Point16      targetPosition2; //usually same as targetPosition
-	/*0x20*/ u8           movementFlags; //usually holds 0x09 for probes, 0x0b for dragoons, 0x11 for mutas
+	/*0x20*/ u8           movement_flags; //usually holds 0x09 for probes, 0x0b for dragoons, 0x11 for mutas
 	/*0x21*/ u8           direction1; //not sure how this and direction2 differ from currentDirection and velocityDirection
 	/*0x22*/ u8           flingyTurnRadius;
 	/*0x23*/ u8           direction2;
@@ -30,11 +30,11 @@ struct Bullet
 	/*0x27*/ u8           flingyMoveControl;
 	/*0x28*/ Point16      position;
 	/*0x2C*/ Vector32     halt; // (xHalt >> 4) == xHalt
-	/*0x34*/ s32          flingyTopSpeed;
+	/*0x34*/ s32          flingy_top_speed;
 	/*0x38*/ s32          unknown_0x38; //increasing counter or timer
 	/*0x3C*/ s32          unknown_0x3C; //increasing counter or timer, often the same value as unknown_0x38
 	/*0x40*/ Vector32     current_speed;
-	/*0x48*/ u16          flingyAcceleration;
+	/*0x48*/ u16          flingy_acceleration;
 	/*0x4A*/ u8           currentDirection;
 	/*0x4B*/ u8           velocityDirection; //seems to always be the same as currentDirection
 	/*0x4C*/ u8           srcPlayer; // the player ID of the bullet owner
@@ -47,7 +47,7 @@ struct Bullet
 
 												 // 6 = attack target area
 	/*0x4E*/ u8           unknown_0x4E;
-	/*0x4F*/ u8           orderSignal;  // added by iquare
+	/*0x4F*/ u8           order_signal;  // added by iquare
 	/*0x50*/ u16          someUnitType; // usually holds UnitType::None (Unknown unit type stuff?)
 	/*0x52*/ u16          unknown_0x52;
 	/*0x54*/ s32          unknown_0x54; // usually holds 0

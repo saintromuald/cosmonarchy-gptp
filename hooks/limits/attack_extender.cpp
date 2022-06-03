@@ -175,7 +175,7 @@ LABEL_14:
 			{
 				if (parentTown->sprite)
 				{
-					v8 = parentTown->mainOrderId;
+					v8 = parentTown->main_order_id;
 					if (v8)
 					{
 						v9 = (u16)parentTown->id;
@@ -392,7 +392,7 @@ LABEL_12:
 			{
 				if (childTown->sprite)
 				{
-					parentTown = childTown->mainOrderId;
+					parentTown = childTown->main_order_id;
 					if (parentTown)
 					{
 						v8 = (u16)childTown->id;

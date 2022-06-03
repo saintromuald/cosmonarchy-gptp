@@ -7,7 +7,7 @@ namespace hooks
 	void ordersTankMode(Unit* unit) // 00464AE0
 	{
 		bool bStopThere = false;
-		if (unit->mainOrderState == 0)
+		if (unit->main_order_state == 0)
 		{
 			if (unit->id == UnitId::TerranPhalanxSiegeMode)
 			{
@@ -16,7 +16,7 @@ namespace hooks
 					unit->subunit->order_to(OrderId::Nothing3, unit);
 					helper::unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
 					helper::playSubunitIscript(unit, IscriptAnimation::SpecialState1);
-					unit->mainOrderState = 2;
+					unit->main_order_state = 2;
 					scbw::decloak_proc(unit);
 				}
 			}
@@ -27,7 +27,7 @@ namespace hooks
 			}
 		}
 
-		if (!bStopThere && unit->mainOrderState == 2)
+		if (!bStopThere && unit->main_order_state == 2)
 		{
 			if (helper::getCloserToDestination_sub402BE0(unit->subunit))
 			{
@@ -38,17 +38,17 @@ namespace hooks
 					current_image = current_image->link.next;
 				}
 				helper::playSubunitIscript(unit, IscriptAnimation::SpecialState2);
-				unit->orderSignal &= ~0x01; // if bit 1 is set, unset it
-				unit->mainOrderState = 3;
+				unit->order_signal &= ~0x01; // if bit 1 is set, unset it
+				unit->main_order_state = 3;
 			}
 		}
 
-		if (!bStopThere && unit->mainOrderState == 3)
+		if (!bStopThere && unit->main_order_state == 3)
 		{
-			if (unit->orderSignal & 1)
+			if (unit->order_signal & 1)
 			{
 				u16 unitNewId;
-				unit->orderSignal -= 1;
+				unit->order_signal -= 1;
 				if (unit->id == UnitId::TerranPhalanxSiegeMode)
 				{
 					unitNewId = UnitId::TerranPhalanxTankMode;
@@ -67,15 +67,15 @@ namespace hooks
 	void ordersSiegeMode(Unit* unit) // 00464BD0
 	{
 		bool bStopThere = false;
-		if (unit->mainOrderState == 0)
+		if (unit->main_order_state == 0)
 		{
 			if (unit->id == UnitId::TerranPhalanxTankMode)
 			{
-				if (unit->movementFlags & MovementFlags::Accelerating)
+				if (unit->movement_flags & MovementFlags::Accelerating)
 				{
 					helper::make_to_hold_position(unit);
 				}
-				unit->mainOrderState = 1;
+				unit->main_order_state = 1;
 			}
 			else
 			{
@@ -84,11 +84,11 @@ namespace hooks
 			}
 		}
 
-		if (!bStopThere && unit->mainOrderState == 1)
+		if (!bStopThere && unit->main_order_state == 1)
 		{
-			if (!(unit->movementFlags & MovementFlags::Accelerating))
+			if (!(unit->movement_flags & MovementFlags::Accelerating))
 			{
-				if (!(unit->subunit->movementFlags & MovementFlags::Accelerating))
+				if (!(unit->subunit->movement_flags & MovementFlags::Accelerating))
 				{
 					if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart))
 					{
@@ -96,7 +96,7 @@ namespace hooks
 						unit->subunit->order_to(OrderId::Nothing3, unit);
 						helper::unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
 						helper::playSubunitIscript(unit, IscriptAnimation::SpecialState1);
-						unit->mainOrderState = 2;
+						unit->main_order_state = 2;
 						if (helper::checkForCloseUnit(unit))
 						{
 							bStopThere = true;
@@ -106,7 +106,7 @@ namespace hooks
 			}
 		}
 
-		if (!bStopThere && unit->mainOrderState == 2)
+		if (!bStopThere && unit->main_order_state == 2)
 		{
 			if (helper::getCloserToDestination_sub402BE0(unit))
 			{
@@ -123,17 +123,17 @@ namespace hooks
 						unitNewId = unit->id;
 					}
 					helper::replace_unit_with_type(unit, unitNewId);
-					unit->mainOrderState = 3;
+					unit->main_order_state = 3;
 					scbw::decloak_proc(unit);
 				}
 			}
 		}
 
-		if (!bStopThere && unit->mainOrderState == 3)
+		if (!bStopThere && unit->main_order_state == 3)
 		{
-			if (unit->orderSignal & 1)
+			if (unit->order_signal & 1)
 			{
-				unit->orderSignal -= 1;
+				unit->order_signal -= 1;
 				if (unit->orderQueueHead != nullptr)
 				{
 					if (!(unit->orderQueueHead->orderId == OrderId::WatchTarget))

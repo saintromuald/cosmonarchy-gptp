@@ -2971,7 +2971,7 @@ namespace helper
 	// Equivalent to function @ 0x00402160
 	bool is_unit_positions_2_equal(Unit* unit)
 	{
-		return (unit->nextTargetWaypoint.x == unit->position.x && unit->nextTargetWaypoint.y == unit->position.y);
+		return (unit->next_target_waypoint.x == unit->position.x && unit->next_target_waypoint.y == unit->position.y);
 	}
 
 	// if canBeAborted is TRUE, the unit can be aborted because there's
@@ -5815,7 +5815,7 @@ namespace helper
 		}
 	}
 
-	//return true when unit reached nextTargetWaypoint either at call
+	//return true when unit reached next_target_waypoint either at call
 	//or after some action inside the function, else return false
 	//At least that's what I think it does (not sure what I called
 	//"action inside the function" is, and how it's used to return
@@ -8080,7 +8080,7 @@ namespace helper
 	}
 
 	// more from api.cpp
-	Flingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y)
+	Flingy* createFlingy(u32 flingy_id, u32 playerId, u32 x, u32 y)
 	{
 		const u32 Func_CreateFlingy = 0x00496460;
 		static Flingy* flingy;
@@ -8090,7 +8090,7 @@ namespace helper
 			MOV EAX, playerId
 			MOV ECX, x
 			MOV EDX, y
-			PUSH flingyId
+			PUSH flingy_id
 			CALL Func_CreateFlingy
 			MOV flingy, EAX
 			POPAD
@@ -8606,7 +8606,7 @@ namespace helper
 	}
 
 	// For initializeBullet
-	Flingy* initializeFlingy(s32 flingyId, s16 y, s32 x, Flingy* flingy, char player, char angle)
+	Flingy* initializeFlingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle)
 	{
 		const u32 Func_initializeFlingy = 0x00496360;
 		static Flingy* result;
@@ -8618,7 +8618,7 @@ namespace helper
 			PUSH flingy
 			MOV ECX, x
 			MOV DX, y
-			MOV EAX, flingyId
+			MOV EAX, flingy_id
 			CALL Func_initializeFlingy
 			MOV result, EAX
 			POPAD

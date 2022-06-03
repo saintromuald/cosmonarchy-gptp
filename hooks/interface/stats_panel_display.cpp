@@ -378,7 +378,7 @@ namespace hooks
 	void draw_building_info(BinDlg* dialog) // 00427890
 	{
 		Unit* activeUnit = *activePortraitUnit;
-		selectionGroupHP[0] = (*activePortraitUnit)->hitPoints;
+		selectionGroupHP[0] = (*activePortraitUnit)->hitpoints;
 		s32 shields = (*activePortraitUnit)->shields >> 8;
 		*userInterfaceEnergy = (*activePortraitUnit)->energy;
 		*userInterfaceShields = shields;

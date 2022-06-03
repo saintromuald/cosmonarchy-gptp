@@ -494,7 +494,7 @@ namespace hooks
 				jumpTo59A9F = (*activePortraitUnit == nullptr);
 				if (!jumpTo59A9F)
 				{
-					mainOrderIdHolderUnit_EBP = (*activePortraitUnit)->mainOrderId;
+					mainOrderIdHolderUnit_EBP = (*activePortraitUnit)->main_order_id;
 					CX_Holder = mainOrderIdHolderUnit_EBP;
 					if ((*activePortraitUnit)->subunit == nullptr)
 					{
@@ -502,7 +502,7 @@ namespace hooks
 					}
 					else
 					{
-						mainOrderIdHolderSubUnit_BL = (*activePortraitUnit)->subunit->mainOrderId;
+						mainOrderIdHolderSubUnit_BL = (*activePortraitUnit)->subunit->main_order_id;
 						jumpTo59A86 = true;
 					}
 				}
@@ -518,7 +518,7 @@ namespace hooks
 				jumpTo59A9F = (*activePortraitUnit == nullptr);
 				if (!jumpTo59A9F)
 				{
-					mainOrderIdHolderUnit_EBP = (*activePortraitUnit)->mainOrderId;
+					mainOrderIdHolderUnit_EBP = (*activePortraitUnit)->main_order_id;
 					CX_Holder = mainOrderIdHolderUnit_EBP;
 					if ((*activePortraitUnit)->subunit == nullptr)
 					{
@@ -526,7 +526,7 @@ namespace hooks
 					}
 					else
 					{
-						mainOrderIdHolderSubUnit_BL = (*activePortraitUnit)->subunit->mainOrderId;
+						mainOrderIdHolderSubUnit_BL = (*activePortraitUnit)->subunit->main_order_id;
 						jumpTo59A86 = true;
 					}
 				}
@@ -539,10 +539,10 @@ namespace hooks
 			if (*activePortraitUnit != nullptr)
 			{
 				bool jumpTo59ABD = false;
-				mainOrderIdHolderUnit_EBP = (*activePortraitUnit)->mainOrderId;
+				mainOrderIdHolderUnit_EBP = (*activePortraitUnit)->main_order_id;
 				if ((*activePortraitUnit)->subunit != nullptr)
 				{
-					mainOrderIdHolderSubUnit_BL = (*activePortraitUnit)->subunit->mainOrderId;
+					mainOrderIdHolderSubUnit_BL = (*activePortraitUnit)->subunit->main_order_id;
 				}
 				else
 				{
@@ -898,7 +898,7 @@ namespace hooks
 							current_button_state = BUTTON_STATE::Invisible;
 						}
 						if (current_button->iconID == IconId::FusionCutter
-							&& (*activePortraitUnit)->mainOrderId == OrderId::ConstructingBuilding) { // Talos Salvage ability
+							&& (*activePortraitUnit)->main_order_id == OrderId::ConstructingBuilding) { // Talos Salvage ability
 							current_button_state = BUTTON_STATE::Invisible;
 						}
 						if (current_button->reqVar == TechId::Healing && current_button->iconID != IconId::Heal)

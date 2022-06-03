@@ -8,7 +8,7 @@ namespace AI
 
 	Unit* findBestNukeLaunchTarget(Unit* caster, bool isUnderAttack)
 	{
-		return scbw::UnitFinder::getNearestTarget(caster,
+		return scbw::UnitFinder::get_nearest_target(caster,
 			[&](Unit* target)
 		{
 

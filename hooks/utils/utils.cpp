@@ -111,11 +111,11 @@ namespace hooks
 				}
 				else if (unit->sprite != nullptr)
 				{
-					if (unit->mainOrderId != OrderId::Die)
+					if (unit->main_order_id != OrderId::Die)
 					{
 						bStopLoop = true;
 					}
-					else if (unit->mainOrderState != 1)
+					else if (unit->main_order_state != 1)
 					{
 						bStopLoop = true;
 					}

@@ -52,7 +52,7 @@ namespace hooks
 				&& current_unit->id != UnitId::ResourceMineralFieldType2								//
 				&& current_unit->id != UnitId::ResourceMineralFieldType3								//
 				&& current_unit->id != UnitId::ResourceVespeneGeyser									//
-				&& current_unit->mainOrderId != OrderId::Warpin											// Don't cloak units doing order WarpIn
+				&& current_unit->main_order_id != OrderId::Warpin											// Don't cloak units doing order WarpIn
 				&& scbw::is_allied_to(current_unit->player, cloaker->player)							// Only cloak allied units
 				&& current_unit->player != 11															// Don't cloak neutral units
 				&& cloaker->is_target_within_min_range(current_unit, cloakRadius)							// Check again if unit in range of cloaking

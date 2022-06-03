@@ -123,7 +123,7 @@ namespace hooks
 			Vector32f dir = scbw::getUnitDirectionVector(unit);
 
 			const u32 radius = 6 * 32;
-			Unit* enemyUnit = scbw::UnitFinder::getNearestTarget(
+			Unit* enemyUnit = scbw::UnitFinder::get_nearest_target(
 				unit->get_x() - radius,
 				unit->get_y() - radius,
 				unit->get_x() + radius,
@@ -205,7 +205,7 @@ namespace hooks
 						}
 						u16 angle = scbw::get_angle(unit->position.x, unit->position.y,
 							target->position.x, target->position.y);
-						u16 unit_angle = unit->velocityDirection1;
+						u16 unit_angle = unit->velocity_direction_1;
 						s32 arc = (f64)60 / 1.40625;
 						// 120 degrees
 						s32 delta = unit_angle - angle;
@@ -247,7 +247,7 @@ namespace hooks
 			case UnitId::TerranBlackjack:
 			{
 				// Blackjack Wear and Tear: reduce movement speed based on missing health
-				const u32 health = unit->hitPoints / 256;
+				const u32 health = unit->hitpoints / 256;
 				const u32 maxHealth = unit->get_max_hp_ingame();
 				const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 				speed *= multiplier;
