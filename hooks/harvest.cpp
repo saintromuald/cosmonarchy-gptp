@@ -181,6 +181,13 @@ namespace hooks
 	void order_enter_exit_gas(Unit* unit) // 00469980
 	{
 		Unit* node = unit->orderTarget.unit;
+		if (node && !(node->status & UnitStatus::Completed) && !unit->unit_ai) {
+			if (unit->sprite->mainGraphic->animation == IscriptAnimation::AlmostBuilt) {
+				unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
+			}
+			return;
+		}
+
 		if (unit->sprite->flags & SpriteFlags::Hidden || node
 			&& unit_is_geyser_ex(node, unit)
 			&& (unit->resourceType == ResourceType::None || unit->resourceType & ResourceType::Either))
@@ -311,7 +318,12 @@ namespace hooks
 		char worker_resource_type;
 		if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3)
 		{
-			if (unit_is_geyser_ex(node, worker, true) || node_id == UnitId::ResourceVespeneGeyser)
+			bool ignore_completed = true;
+			if (node->id == UnitId::TerranReservoir && !(node->status & UnitStatus::Completed) && (!node->connectedUnit || node->connectedUnit->orderTarget.unit != node)) {
+				ignore_completed = false;
+			}
+
+			if (unit_is_geyser_ex(node, worker, ignore_completed) || node_id == UnitId::ResourceVespeneGeyser)
 			{
 				worker_resource_type = worker->resourceType;
 				if (!worker_resource_type || worker_resource_type & ResourceType::Either)
@@ -489,6 +501,9 @@ namespace hooks
 			u32 is_movable = helper::is_unit_movable(worker);
 			if (worker->main_order_state == 3 && is_movable) {
 				if (target && !(target->status & UnitStatus::Completed) && !worker->unit_ai) {
+					if (worker->sprite->mainGraphic->animation == IscriptAnimation::AlmostBuilt) {
+						worker->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
+					}
 					return;
 				}
 				if (target && helper::unit_is_geyser_ex(target, worker)) {
