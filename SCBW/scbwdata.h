@@ -190,6 +190,10 @@ SCBW_DATA(u16*, tooltip_p_supply_cost,	0x0068C1FA);
 SCBW_DATA(u16*, tooltip_t_supply_cost,	0x0068C1FC);
 SCBW_DATA(u16*, tooltip_z_supply_cost,	0x0068C1FE);
 
+struct Event;
+typedef bool __fastcall generic_interact_function(BinDlg*, Event*);
+SCBW_DATA(generic_interact_function**, generic_interact_functions, 0x005014AC);
+
 // Added from BWAPI Offsets.h, but made const since it would not be safe to modify those
 SCBW_DATA(char*, current_map_filename,			0x0057FD3C);
 SCBW_DATA(const char*, current_map_name,		0x0057FE40);

@@ -182,7 +182,7 @@ namespace hooks
 	{
 		Unit* node = unit->orderTarget.unit;
 		if (node && !(node->status & UnitStatus::Completed) && !unit->unit_ai) {
-			if (unit->sprite->mainGraphic->animation == IscriptAnimation::AlmostBuilt) {
+			if (unit->sprite->main_graphic->animation == IscriptAnimation::AlmostBuilt) {
 				unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
 			}
 			return;
@@ -501,7 +501,7 @@ namespace hooks
 			u32 is_movable = helper::is_unit_movable(worker);
 			if (worker->main_order_state == 3 && is_movable) {
 				if (target && !(target->status & UnitStatus::Completed) && !worker->unit_ai) {
-					if (worker->sprite->mainGraphic->animation == IscriptAnimation::AlmostBuilt) {
+					if (worker->sprite->main_graphic->animation == IscriptAnimation::AlmostBuilt) {
 						worker->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
 					}
 					return;

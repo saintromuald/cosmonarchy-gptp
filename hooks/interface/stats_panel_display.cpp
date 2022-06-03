@@ -739,60 +739,45 @@ namespace hooks
 	}
 
 	// Hooked to help with tooltip debugging. -Pr0nogo
-	s32 stat_data_unit_wireframe_selection(BinDlg* dialog, Event* event_arg) // 004583E0
-	{
-		u32 result;
-		u32 event_type = event_arg->type;
+	s32 stat_data_unit_wireframe_selection(BinDlg* dialog, Event* event) { // 004583E0
 		BinDlg* dialog_var = dialog;
-		if (event_type == 3)
-		{
-			helper::status_screen_update_tooltip_mouse_held(dialog, event_arg);
-		}
-		else if (event_type == 14)
-		{
-			switch (event_arg->extended_command_type)
-			{
-				case 0:
-				{
+		if (event->type == 3) {
+			helper::status_screen_update_tooltip_mouse_held(dialog, event);
+		} else if (event->type == 14) {
+			switch (event->extended_command_type) {
+				case 0: {
 					dialog->fxnUpdate = helper::stat_data_unit_wireframe_select_update;
 					dialog->graphic = 0;
 					dialog->user = (u32*)helper::SMemAlloc(8, "Starcraft\\SWAR\\lang\\statdata.cpp", 775, 0);
 				} break;
-				case 1:
-				{
+				case 1: {
 					void* user = dialog->user;
 					if (user)
 					{
 						helper::SMemFree(user, "Starcraft\\SWAR\\lang\\statdata.cpp", 780, 0);
 					}
 				} break;
-				case 2:
-				{
+				case 2: {
 					helper::status_screen_button(dialog, dialog);
 					return 1;
 				} break;
-				case 4:
-				{
+				case 4: {
 					if (!(dialog->flags & 8))
 					{
 						break;
 					}
 					return 1;
 				} break;
-				case 6:
-				{
+				case 6: {
 					if (dialog == *control_under_mouse)
 					{
 						helper::refresh_selection_screen();
 						*control_under_mouse = 0;
 					}
 				} break;
-				default:
-				{
-				} break;
 			}
 		}
-		//JUMPOUT(__CS__, *(&generic_interact_functions + dialog_var->controlType));
-		return result;
+
+		return generic_interact_functions[dialog_var->controlType](dialog, event);
 	}
 }

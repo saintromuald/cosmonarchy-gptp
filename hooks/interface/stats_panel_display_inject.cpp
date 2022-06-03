@@ -261,7 +261,7 @@ namespace hooks
 	//	jump_patch(stats_armor_level_wrapper,					0x00425600, 1);
 	//	jump_patch(stats_weapon_level_wrapper,					0x00425790, 1);
 		jump_patch(get_unit_name_wrapper,						0x0047B5A0, 2);
-	//	jump_patch(reset_tooltip_info_wrapper_1,				0x00459360, 0);
+		jump_patch(reset_tooltip_info_wrapper_1,				0x00459360, 0);
 	//	jump_patch(reset_tooltip_info_wrapper_2,				0x004593B0, 0);
 	//	jump_patch(reset_tooltip_info_wrapper_3,				0x004597D5, 0);
 	//	jump_patch(set_tooltip_info_unit_wrapper,				0x00458800, 2);
