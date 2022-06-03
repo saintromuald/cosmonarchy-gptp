@@ -1195,6 +1195,9 @@ namespace SoundId
 		SimulacrumCloneStart01				= 1882,
 		CohortDeath01						= 1883,
 		CohortDeath02						= 1884,
+		LazarusAgentCast					= 1885,
+		CohortRevive01						= 1886,
+		CohortRevive02						= 1887,
 	};
 }
 

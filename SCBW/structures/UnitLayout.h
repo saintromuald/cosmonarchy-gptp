@@ -211,7 +211,6 @@ enum ExtValueId
 	ValuePreMorphEnergy,
 	ValueGodsMadeFleshCast,
 	ValueGodsMadeFleshActive,
-	ValueLazarusAgentApostleSrc,
 	ValueLurkerPickTarget,
 	ValueKelvinMunitionsSlow,
 	ValueRaceSupplyType,

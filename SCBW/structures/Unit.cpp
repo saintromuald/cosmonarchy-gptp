@@ -627,10 +627,10 @@ void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool noti
 	if (shield_overlay && units_dat::ShieldsEnabled[this->id] && this->shields != 0)
 	{
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayShieldPtr,
-			this->sprite->mainGraphic->id));
+			this->sprite->main_graphic->id));
 
 		u32 frameAngle = (direction - 124) / 8 % 32;
-		Point8 offset = shield_lo->get_offset(this->sprite->mainGraphic->direction, frameAngle);
+		Point8 offset = shield_lo->get_offset(this->sprite->main_graphic->direction, frameAngle);
 		this->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
 	}
 	damage_hp(damage, attacker, attackingPlayer, notify);

@@ -107,7 +107,7 @@ namespace hooks
 			unitVar = unit->subunit;
 		}
 
-		Image* bunkerImage = unitVar->connectedUnit->sprite->mainGraphic;
+		Image* bunkerImage = unitVar->connectedUnit->sprite->main_graphic;
 		u8 frameDirection = (unitVar->current_direction_1 + 16) / 32 % 8;
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
 		Point8 offset = loFile->get_offset(bunkerImage->frameIndex, frameDirection);

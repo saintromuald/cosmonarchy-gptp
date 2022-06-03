@@ -1225,7 +1225,6 @@ namespace scbw
 		if (parentExt->values[ValueLazarusAgent])
 		{
 			childExt->values[ValueLazarusAgent] = parentExt->values[ValueLazarusAgent];
-			childExt->values[ValueLazarusAgentApostleSrc] = parentExt->values[ValueLazarusAgentApostleSrc];
 		}
 
 		// Inherit Empress Passive Stacks
@@ -1528,10 +1527,10 @@ namespace scbw
 		}
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		auto rotate = unitExt->values[valueId];
-		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(overlayType, unit->sprite->mainGraphic->id));
-		u8 frameDirection = unit->sprite->mainGraphic->direction;
+		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(overlayType, unit->sprite->main_graphic->id));
+		u8 frameDirection = unit->sprite->main_graphic->direction;
 		Point8 offset = loFile->get_offset(frameDirection + (17 * frameset_offset), rotate);
-		if (unit->sprite->mainGraphic->flags & ImageFlags::Mirrored)
+		if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored)
 		{
 			offset.x = -offset.x;
 		}

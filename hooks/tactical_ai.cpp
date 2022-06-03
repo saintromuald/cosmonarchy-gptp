@@ -278,19 +278,19 @@ static bool is_channeling(Unit* unit) {
 	if (unit->main_order_id == OrderId::NukeTrack) {
 		return true;
 	}
-	if (unit->main_order_id == OrderId::Plague && unit->sprite->mainGraphic->animation == IscriptAnimation::Unused2) {
+	if (unit->main_order_id == OrderId::Plague && unit->sprite->main_graphic->animation == IscriptAnimation::Unused2) {
 		return true;
 	}
-	if (unit->main_order_id == OrderId::FireYamatoGun1 && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+	if (unit->main_order_id == OrderId::FireYamatoGun1 && unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
 		return true;
 	}
-	if (unit->main_order_id == OrderId::PaladinSkyfall && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+	if (unit->main_order_id == OrderId::PaladinSkyfall && unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
 		return true;
 	}
-	if (unit->id == UnitId::ProtossStarSovereign && unit->main_order_id == OrderId::CTFCOP2 && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+	if (unit->id == UnitId::ProtossStarSovereign && unit->main_order_id == OrderId::CTFCOP2 && unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
 		return true;
 	}
-	if (unit->id == UnitId::ProtossAnthelion && unit->main_order_id == OrderId::Move && unit->sprite->mainGraphic->animation == IscriptAnimation::Walking) {
+	if (unit->id == UnitId::ProtossAnthelion && unit->main_order_id == OrderId::Move && unit->sprite->main_graphic->animation == IscriptAnimation::Walking) {
 		return true;
 	}
 	return false;

@@ -501,7 +501,7 @@ namespace hooks
 				// Gimmick to allow morph cancellation animations to play correctly
 				if (unitExt->timers[TimerQuaziliskCancel])
 				{
-					if (unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell)
+					if (unit->sprite->main_graphic->animation != IscriptAnimation::CastSpell)
 					{
 						unit->play_iscript_animation(IscriptAnimation::CastSpell);
 					}
@@ -549,10 +549,10 @@ namespace hooks
 						unitExt->timers[TimerStarSovereignInterventionMissiles] = weapons_dat::Cooldown[WeaponId::StarSovereignInterventionMissiles];
 						for (s32 arc = 0; arc < 6; arc++)
 						{
-							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlaySpecialPtr, unit->sprite->mainGraphic->id));
-							u8 frameDirection = unit->sprite->mainGraphic->direction;
+							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlaySpecialPtr, unit->sprite->main_graphic->id));
+							u8 frameDirection = unit->sprite->main_graphic->direction;
 							Point8 offset = loFile->get_offset(frameDirection, 5 - arc);
-							if (unit->sprite->mainGraphic->flags & ImageFlags::Mirrored)
+							if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored)
 							{
 								offset.x = -offset.x;
 							}
@@ -663,9 +663,8 @@ namespace hooks
 							// Apply Lazarus Agent
 							UnitExt* pickedUnitExt = globals.get_unit_ext(picked_unit);
 							pickedUnitExt->values[ValueLazarusAgent] += 1;
-							pickedUnitExt->values[ValueLazarusAgentApostleSrc] = (u32)unit; // TODO: port as a unit
 							picked_unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-						//	helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit);
+							helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit, 1, 0);
 						}
 					}
 				}
@@ -1268,8 +1267,8 @@ namespace hooks
 		// Fix animation bug with acceleration movement flag
 		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding)
 			&& unit->movement_flags & MovementFlags::Accelerating
-			&& unit->sprite->mainGraphic->animation != IscriptAnimation::Walking
-			&& unit->sprite->mainGraphic->animation != IscriptAnimation::WalkingToIdle)
+			&& unit->sprite->main_graphic->animation != IscriptAnimation::Walking
+			&& unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle)
 		{
 			unit->movement_flags &= ~MovementFlags::Accelerating;
 		}
@@ -1325,7 +1324,7 @@ namespace hooks
 		{
 			Unit* harvest_target = unit->worker.harvest_target;
 			// Eventually make it happen for vespene geysers and mineral fields, not just refineries
-			if (harvest_target && scbw::unit_id_is_gas_structure(harvest_target->id, true) && harvest_target->sprite->mainGraphic->animation != IscriptAnimation::IsWorking)
+			if (harvest_target && scbw::unit_id_is_gas_structure(harvest_target->id, true) && harvest_target->sprite->main_graphic->animation != IscriptAnimation::IsWorking)
 			{
 				harvest_target->sprite->play_iscript_animation(IscriptAnimation::IsWorking);
 			}
@@ -1519,7 +1518,7 @@ namespace hooks
 							target_ext->ai_timer_avoid_targeting[i] = 2;
 						}
 					}
-					if (unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell) {
+					if (unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
 						if (unit->order_signal & 0x2) {
 							unit->order_signal &= ~0x2;
 							helper::force_order_done(unit);
