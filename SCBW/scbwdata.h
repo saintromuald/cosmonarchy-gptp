@@ -182,7 +182,7 @@ SCBW_DATA(const char*, TurnBuffer, 0x00654880);
 
 // For reset_tooltip_info, set_tooltip_info, set_tooltip_info_unit, etc
 SCBW_DATA(u16*, tooltip_ore_cost,		0x0068C1D0);
-SCBW_DATA(u16*, tooltip_gas_cost,		0x0068C1D0);
+SCBW_DATA(u16*, tooltip_gas_cost,		0x0068C1D2);
 SCBW_DATA(u16*, tooltip_p_energy_cost,	0x0068C1D4);
 SCBW_DATA(u16*, tooltip_t_energy_cost,	0x0068C1D6);
 SCBW_DATA(u16*, tooltip_z_energy_cost,	0x0068C1D8);

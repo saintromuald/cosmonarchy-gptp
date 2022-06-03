@@ -635,7 +635,7 @@ namespace hooks
 	static u32 tooltip_time_cost;
 
 	// 00459360 004593B0 004597D5 - Hooked to add time costs to tooltip info. -Veeq7
-	void __cdecl reset_tooltip_info() {
+	void reset_tooltip_info() {
 		helper::refreshSelectionScreen();
 
 		*tooltip_ore_cost = 0;	

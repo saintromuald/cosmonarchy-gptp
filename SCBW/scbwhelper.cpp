@@ -8440,7 +8440,6 @@ namespace helper
 		{
 			PUSHAD
 			CALL Func_refreshSelectionScreen
-			MOV result, AL
 			POPAD
 		}
 	}

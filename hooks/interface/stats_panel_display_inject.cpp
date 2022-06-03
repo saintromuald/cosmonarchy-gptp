@@ -141,7 +141,18 @@ namespace
 		}
 	}
 
-	void __declspec(naked) reset_tooltip_info_wrapper_1() { // 004593B0
+	void __declspec(naked) reset_tooltip_info_wrapper_1() { // 00459360
+		__asm {
+			PUSHAD
+		}
+		hooks::reset_tooltip_info();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) reset_tooltip_info_wrapper_2() { // 004593B0
 		static const u32 jmp_address = 0x004593ED;
 		__asm {
 			PUSHAD
@@ -153,7 +164,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) reset_tooltip_info_wrapper_2() { // 004597D5
+	void __declspec(naked) reset_tooltip_info_wrapper_3() { // 004597D5
 		static const u32 jmp_address = 0x00459819;
 		__asm {
 			PUSHAD
@@ -233,9 +244,9 @@ namespace hooks
 	//	jump_patch(stats_armor_level_wrapper,		0x00425600, 1);
 	//	jump_patch(stats_weapon_level_wrapper,		0x00425790, 1);
 		jump_patch(get_unit_name_wrapper,			0x0047B5A0, 2);
-	//	jump_patch(reset_tooltip_info,				0x00459360, 0);
-	//	jump_patch(reset_tooltip_info_wrapper_1,	0x004593B0, 0);
-	//	jump_patch(reset_tooltip_info_wrapper_2,	0x004597D5, 0);
+	//	jump_patch(reset_tooltip_info_wrapper_1,	0x00459360, 0);
+	//	jump_patch(reset_tooltip_info_wrapper_2,	0x004593B0, 0);
+	//	jump_patch(reset_tooltip_info_wrapper_3,	0x004597D5, 0);
 	//	jump_patch(set_tooltip_info_unit_wrapper,	0x00458800, 2);
 	//	jump_patch(draw_tooltip_with_icon_wrapper,	0x00458EF0, 1);
 	}
