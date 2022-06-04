@@ -302,7 +302,7 @@ namespace hooks
 						if (!(unit->order_queue_head == nullptr))
 						{
 							unit->user_action_flags |= 1;
-							prepareForNextOrder(unit);
+							prepare_for_next_order(unit);
 						}
 						else if (unit->unit_ai != nullptr) // 00467F6F
 						{
@@ -361,7 +361,7 @@ namespace hooks
 				if (!(unit->order_queue_head == nullptr))
 				{
 					unit->user_action_flags |= 1;
-					prepareForNextOrder(unit);
+					prepare_for_next_order(unit);
 				}
 				else if (unit->unit_ai != nullptr) // 00467F6F
 				{

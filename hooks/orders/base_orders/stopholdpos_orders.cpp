@@ -150,7 +150,7 @@ namespace hooks
 			}
 
 			//65554
-			prepareForNextOrder(out_hangar_child);
+			prepare_for_next_order(out_hangar_child);
 			out_hangar_child = out_hangar_child->hangar_unit.hangar_link.prev;
 
 		} //while(out_hangar_child != nullptr)
@@ -201,7 +201,7 @@ namespace hooks
 		}
 
 		//655DB
-		prepareForNextOrder(unit);
+		prepare_for_next_order(unit);
 
 	} //void orders_ReaverStop(Unit* unit)
 

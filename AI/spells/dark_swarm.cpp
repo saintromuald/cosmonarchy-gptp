@@ -86,7 +86,7 @@ namespace AI
 			{
 
 				if (targetOfTarget->player < PLAYABLE_PLAYER_COUNT
-					&& !caster->isTargetEnemy(targetOfTarget)
+					&& !caster->is_target_enemy(targetOfTarget)
 					&& targetOfTarget->subunit == nullptr
 					&& !(targetOfTarget->status & UnitStatus::InAir))
 				{

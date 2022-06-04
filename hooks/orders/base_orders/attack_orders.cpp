@@ -19,7 +19,7 @@ namespace hooks
 			{
 				// 004656A2:
 				unit->user_action_flags |= 1;
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			else
 			{
@@ -75,7 +75,7 @@ namespace hooks
 
 				// 0046573E:
 				helper::prepend_order_targeting_unit(unit, target, newOrderId);
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 
 				// restore the "disabled" and "holding position" status if they were lost
 				unit->status &= ~(UnitStatus::Disabled + UnitStatus::HoldingPosition);
@@ -93,7 +93,7 @@ namespace hooks
 			{
 				// 00465966:
 				unit->user_action_flags |= 1;
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			else
 			{
@@ -149,7 +149,7 @@ namespace hooks
 				}
 				// 00465A21:
 				helper::prepend_order_targeting_unit(unit, target, newOrderId);
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 
 				// restore the "disabled" and "holding position" status if they were lost
 				unit->status &= ~(UnitStatus::Disabled + UnitStatus::HoldingPosition);
@@ -236,7 +236,7 @@ namespace hooks
 				unit->user_action_flags |= 1;
 				if (unit->main_order_id == OrderId::Die)
 				{
-					prepareForNextOrder(unit);	// 00477CED
+					prepare_for_next_order(unit);	// 00477CED
 				}
 				else
 				{
@@ -429,7 +429,7 @@ namespace hooks
 						if (jump_to_77C78)
 						{
 							if ((unit->subunit)->main_order_id == units_dat::AttackUnitOrder[(unit->subunit)->id]
-								&& helper::getRightClickActionOrder(unit->subunit) != RightClickActions::NoMove_NormalAttack)
+								&& helper::get_right_click_action_order(unit->subunit) != RightClickActions::NoMove_NormalAttack)
 							{
 								jump_to_77CA1 = true;
 							}
@@ -464,7 +464,7 @@ namespace hooks
 			if (jump_to_77CDA)
 			{
 				unit->perform_another_order(OrderId::TurretGuard, 0, 0, nullptr, UnitId::None);
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			jump_to_77CDA = false;
 		}
@@ -588,7 +588,7 @@ namespace hooks
 			if (unit->order_queue_head != nullptr)
 			{
 				unit->user_action_flags |= 1;
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			else
 				if (unit->unit_ai != nullptr) // 00477E6B
@@ -636,7 +636,7 @@ namespace hooks
 			if (unit->order_queue_head != nullptr)
 			{
 				unit->user_action_flags |= 1;
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			else
 			{

@@ -66,7 +66,7 @@ namespace hooks
             unit->next_target_waypoint = targetPoint;
         }
         Order* unitOrder = unit->order_queue_head;
-        unit->recentOrderTimer = 15;
+        unit->recent_order_timer = 15;
         unit->status = unit->status & 0xFFF7FFFF;
         if (!unitOrder || orders_dat::ButtonIcon[unitOrder->orderId])
         {

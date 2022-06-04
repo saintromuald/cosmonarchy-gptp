@@ -150,7 +150,7 @@ namespace hooks
 	void LockdownHit(Unit* target, u8 previousLockdownTimer, Bullet* bullet)
 	{
 		// add lockdown overlay if no ongoing lockdown already
-		if (target->lockdownTimer == 0)
+		if (target->lockdown_timer == 0)
 		{
 			u32 overlayImageId = ImageId::LockdownField_Small + scbw::get_overlay_offset(target->id);
 			Unit* overlayTargetUnit;
@@ -165,10 +165,10 @@ namespace hooks
 			(overlayTargetUnit->sprite)->create_top_overlay(overlayImageId, 0, 0, 0);
 		}
 
-		// this, added to the fact that target->lockdownTimer is set to 0 before this function, probably prevents lockdown to reset the duration of a previous lock
-		if (previousLockdownTimer > target->lockdownTimer)
+		// this, added to the fact that target->lockdown_timer is set to 0 before this function, probably prevents lockdown to reset the duration of a previous lock
+		if (previousLockdownTimer > target->lockdown_timer)
 		{
-			target->lockdownTimer = previousLockdownTimer;
+			target->lockdown_timer = previousLockdownTimer;
 		}
 
 		// Should stop movements/orders/scripts of the unit, give it the status DoodadStatesThing.
@@ -353,7 +353,7 @@ namespace hooks
 				{
 					current_unit->remove();
 				}
-				else if (current_unit->stasisTimer == 0) // don't affect units in stasis
+				else if (current_unit->stasis_timer == 0) // don't affect units in stasis
 				{
 					current_unit->energy -= 100;
 					current_unit->shields -= 100;
@@ -500,10 +500,10 @@ namespace hooks
 			// update various stuff (set hp, set shield...) not finished on create_unit
 			helper::update_unit_stats_and_finish_building(dark_swarm_unit);
 			helper::update_unit_strength(dark_swarm_unit);
-			if (dark_swarm_unit->removeTimer == 0
-				|| dark_swarm_unit->removeTimer > 900)
+			if (dark_swarm_unit->remove_timer == 0
+				|| dark_swarm_unit->remove_timer > 900)
 			{
-				dark_swarm_unit->removeTimer = 900;	// 0x0384
+				dark_swarm_unit->remove_timer = 900;	// 0x0384
 			}
 		}
 	}
@@ -576,10 +576,10 @@ namespace hooks
 					helper::update_unit_stats_and_finish_building(created_broodling);
 					helper::update_unit_strength(created_broodling);
 					timerBeforeDisappearance = 720;	// 0x708
-					if (created_broodling->removeTimer == 0
-						|| created_broodling->removeTimer > timerBeforeDisappearance)
+					if (created_broodling->remove_timer == 0
+						|| created_broodling->remove_timer > timerBeforeDisappearance)
 					{
-						created_broodling->removeTimer = timerBeforeDisappearance;
+						created_broodling->remove_timer = timerBeforeDisappearance;
 					}
 
 					if (attacker->unit_ai != nullptr)
@@ -727,10 +727,10 @@ namespace hooks
 			// update various stats (set hp, set shield...) not finished on create_unit
 			helper::update_unit_stats_and_finish_building(disruption_web_unit);
 			helper::update_unit_strength(disruption_web_unit);
-			if (disruption_web_unit->removeTimer == 0
-				|| disruption_web_unit->removeTimer > 360)
+			if (disruption_web_unit->remove_timer == 0
+				|| disruption_web_unit->remove_timer > 360)
 			{
-				disruption_web_unit->removeTimer = 360; // 0x0168
+				disruption_web_unit->remove_timer = 360; // 0x0168
 			}
 		}
 		return disruption_web_unit;
@@ -743,7 +743,7 @@ namespace hooks
 
 	u8 stasisFieldOverlay(Unit* unit, u8 timer)
 	{
-		if (!unit->stasisTimer)
+		if (!unit->stasis_timer)
 		{
 			Unit* finalUnit = unit->subunit;
 			if (!finalUnit)
@@ -754,12 +754,12 @@ namespace hooks
 			unit->sprite->create_overlay(overlayImageId, 0, 0, 0);
 			unit->status |= UnitStatus::Invincible; // remove
 		}
-		u8 finalTimer = unit->stasisTimer;
+		u8 finalTimer = unit->stasis_timer;
 		if (timer > finalTimer)
 		{
 			finalTimer = timer;
 		}
-		unit->stasisTimer = finalTimer;
+		unit->stasis_timer = finalTimer;
 		return disableUnit(unit);
 	}
 

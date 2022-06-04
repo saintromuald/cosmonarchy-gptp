@@ -30,7 +30,7 @@ namespace hooks
 				}
 				unit->perform_another_order(OrderId::BuildingLiftoff, coords.x, coords.y,	nullptr, 0);
 			}
-			prepareForNextOrder(unit);
+			prepare_for_next_order(unit);
 			if (unit->main_order_id != OrderId::Die)
 			{
 				while (unit->order_queue_tail != nullptr && unit->order_queue_tail->orderId == OrderId::BuildingLand)
@@ -228,7 +228,7 @@ namespace hooks
 			{
 				helper::disconnectFromAddOn(unit);
 			}
-			if (unit->isFactory()) {
+			if (unit->is_factory()) {
 				UnitExt* unitExt = globals.get_unit_ext(unit);
 				unit->rally.unit = unit;
 			}

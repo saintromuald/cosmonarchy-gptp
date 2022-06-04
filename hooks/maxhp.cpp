@@ -845,17 +845,17 @@ LABEL_17:
 					result = 1;
 					break;
 				case OrderId::Irradiate:
-					if (v3 && !v3->irradiateTimer)
+					if (v3 && !v3->irradiate_timer)
 						goto LABEL_23;
 					result = 1;
 					break;
 				case OrderId::Plague:
-					if (v3 && !v3->plagueTimer)
+					if (v3 && !v3->plague_timer)
 						goto LABEL_23;
 					result = 1;
 					break;
 				case OrderId::Ensnare:
-					if (!v3 || !v3->ensnareTimer)
+					if (!v3 || !v3->ensnare_timer)
 						goto LABEL_23;
 					result = 1;
 					break;

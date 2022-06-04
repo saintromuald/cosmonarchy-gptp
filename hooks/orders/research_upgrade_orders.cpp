@@ -136,7 +136,7 @@ namespace hooks
 
 				}
 
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 
 			}
 			else
@@ -145,7 +145,7 @@ namespace hooks
 				if (unit->order_queue_head != nullptr)
 				{
 					unit->user_action_flags |= 1;
-					prepareForNextOrder(unit);
+					prepare_for_next_order(unit);
 				}
 				else //54896
 					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
@@ -273,7 +273,7 @@ namespace hooks
 
 				}
 
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 
 			}
 			else
@@ -282,7 +282,7 @@ namespace hooks
 				if (unit->order_queue_head != nullptr)
 				{
 					unit->user_action_flags |= 1;
-					prepareForNextOrder(unit);
+					prepare_for_next_order(unit);
 				}
 				else
 					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);

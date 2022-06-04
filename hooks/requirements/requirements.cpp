@@ -122,7 +122,7 @@ namespace hooks
 
 				case RequirementOpcodes::IsNotConstructingAddon:
 				{
-					if (unit->secondary_order_id == OrderId::BuildAddon && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->currentBuildUnit != NULL && (unit->currentBuildUnit->status & UnitStatus::Completed) == 0)
+					if (unit->secondary_order_id == OrderId::BuildAddon && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->current_build_unit != NULL && (unit->current_build_unit->status & UnitStatus::Completed) == 0)
 					{
 						*lastInternalError = InternalErrors::UnknownError5;
 						return 0;
@@ -240,7 +240,7 @@ namespace hooks
 						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
 					}
-					if (unit->getRightClickActionOrder() == RightClickActions::NoMove_NormalAttack)
+					if (unit->get_right_click_action_order() == RightClickActions::NoMove_NormalAttack)
 					{
 						*lastInternalError = InternalErrors::UnknownError19;
 						return 0;
@@ -319,7 +319,7 @@ namespace hooks
 				{
 					if ((unit->id != UnitId::ZergLakizilisk || (unit->status & UnitStatus::Burrowed) == 0)
 						&& units_dat::RightClickAction[unit->id] == RightClickActions::NoCommand_AutoAttack
-						&& ((unit->status & UnitStatus::GroundedBuilding) == 0 || unit->isFactory() == false))
+						&& ((unit->status & UnitStatus::GroundedBuilding) == 0 || unit->is_factory() == false))
 					{
 						*lastInternalError = InternalErrors::UnitBusyOrIncompatible;
 						return 0;
@@ -718,7 +718,7 @@ LABEL_73_PERHAPS_FINAL_CHECK:
 					v19 = (parentUnit->id == UnitId::ProtossSolarion);
 					if (v19)
 					{
-						v20 = parentUnit->unit_with_hangar.in_hangar_count + parentUnit->getHangarTrainCount();
+						v20 = parentUnit->unit_with_hangar.in_hangar_count + parentUnit->get_hangar_train_count();
 					}
 					else
 					{
@@ -726,11 +726,11 @@ LABEL_73_PERHAPS_FINAL_CHECK:
 						{
 							goto LABEL_51;
 						}
-						v20 = parentUnit->getHangarTrainCount();
+						v20 = parentUnit->get_hangar_train_count();
 					}
 					v18 = parentUnit->unit_with_hangar.in_hangar_count + v20;
 LABEL_51:
-					if (v18 >= parentUnit->getMaxHangarSpace())
+					if (v18 >= parentUnit->get_max_hangar_space())
 					{
 						//DebugOut(">False");
 						goto LABEL_86_ERROR_3_RETURN_0;

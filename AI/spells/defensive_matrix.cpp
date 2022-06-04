@@ -24,9 +24,9 @@ namespace AI
 			caster,
 			[&](Unit* target)
 		{
-			if (target->defensiveMatrixHp)
+			if (target->defensive_matrix_hp)
 				return false;
-			if (caster->isTargetEnemy(target))
+			if (caster->is_target_enemy(target))
 				return false;
 			if (!target->order_target.unit)  //Ignore idle units?
 				return false;

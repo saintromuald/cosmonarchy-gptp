@@ -101,7 +101,7 @@ namespace hooks
                     continue;
                 }
                 if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {
-                    if (!(other_unit->visibilityStatus & (1 << builder->player))) {
+                    if (!(other_unit->visibility_status & (1 << builder->player))) {
                         needs_detection = true;
                     }
                 }
@@ -116,10 +116,10 @@ namespace hooks
                 continue;
             }
 
-            if (unitOrderingX[other_unit->finderIndex.left  ].position < 32 * x_tile + 32
-             && unitOrderingX[other_unit->finderIndex.right ].position > 32 * x_tile
-             && unitOrderingY[other_unit->finderIndex.top   ].position < 32 * y_tile + 32
-             && unitOrderingY[other_unit->finderIndex.bottom].position > 32 * y_tile) {
+            if (unitOrderingX[other_unit->finder_index.left  ].position < 32 * x_tile + 32
+             && unitOrderingX[other_unit->finder_index.right ].position > 32 * x_tile
+             && unitOrderingY[other_unit->finder_index.top   ].position < 32 * y_tile + 32
+             && unitOrderingY[other_unit->finder_index.bottom].position > 32 * y_tile) {
                 return needs_detection ? 1 : 4;
             }
         }

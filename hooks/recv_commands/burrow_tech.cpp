@@ -77,7 +77,7 @@ namespace hooks
 				unit->perform_another_order(OrderId::Unburrow, 0, 0, nullptr, UnitId::None);
 			}
 			// 004E9846
-			prepareForNextOrder(unit);
+			prepare_for_next_order(unit);
 			helper::force_order_done(unit);
 		}
 	}

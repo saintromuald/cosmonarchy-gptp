@@ -17,7 +17,7 @@ namespace AI
 				return true;
 			}
 
-			if (target->id == UnitId::TerranBunker && target->hasLoadedUnit())
+			if (target->id == UnitId::TerranBunker && target->has_loaded_unit())
 			{
 				return true;
 			}

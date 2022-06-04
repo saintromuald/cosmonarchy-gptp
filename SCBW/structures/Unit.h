@@ -137,8 +137,8 @@ struct Unit : public UnitLayout
 	bool is_subunit() const;
 
 	/// Checks if the current unit is a factory (i.e. not nullptr and has the
-	/// flag isFactory from GroupFlags set).
-	bool isFactory() const;
+	/// flag is_factory from GroupFlags set).
+	bool is_factory() const;
 
 	/// Checks if the unit is a spellcaster (has energy) and not a hallucination.
 	bool is_valid_caster() const;
@@ -381,27 +381,27 @@ struct Unit : public UnitLayout
 
 	/// Retrieves the unit pointer by @p index from the unit table (first unit is
 	/// indexed at 1). If invalid, returns nullptr instead.
-	static Unit* getFromIndex(u16 index);
+	static Unit* get_unit_from_index(u16 index);
 
 	/// Returns the index of this unit in the unit table. First unit == index 1.
-	inline u16 getIndex() const;
+	inline u16 get_unit_index() const;
 
 	/// Returns the ID of the last player to own this unit. This is usually the
 	/// same as Unit::playerId, but if the unit belongs to a defeated player,
 	/// this returns the correct player ID (instead of 11).
-	/// @deprecated   Will be removed in v2.42. Use Unit::isTargetEnemy().
-	u8 getLastOwnerId() const;
+	/// @deprecated   Will be removed in v2.42. Use Unit::is_target_enemy().
+	u8 get_last_owner_id() const;
 
 	/// Returns the loaded unit at @p index (value between 0-7). If no unit is
 	/// loaded at the slot, returns nullptr instead.
-	Unit* getLoadedUnit(s32 index) const;
+	Unit* get_loaded_unit(s32 index) const;
 
 	/// Returns the first unit loaded in this unit. If this unit is not a
 	/// transport, or has no units inside, this function returns nullptr instead.
-	Unit* getFirstLoadedUnit() const;
+	Unit* get_first_loaded_unit() const;
 
 	/// Checks if this unit has other units loaded inside.
-	bool hasLoadedUnit() const;
+	bool has_loaded_unit() const;
 
 	/// Transfers ownership of this unit to @p playerId. This function is
 	/// identical to Mind Control and the "Give Units To Player" trigger action.
@@ -413,8 +413,8 @@ struct Unit : public UnitLayout
 	bool is_dead() const;
 
 	/// Checks whether the @p target unit is an enemy of this unit.
-	/// Internally, this calls scbw::isUnitEnemy().
-	bool isTargetEnemy(Unit* target) const;
+	/// Internally, this calls scbw::is_unit_enemy().
+	bool is_target_enemy(Unit* target) const;
 
 	/// Checks whether this unit can be seen by @playerId (i.e. not covered by the
 	/// fog-of-war and is detectable).
@@ -429,9 +429,9 @@ struct Unit : public UnitLayout
 
 	//////////////////////////////////////////////////////////////// @}
 	
-	u32 getSupplyProvided();
-	void setSupplyProvided(u8 amount);
-	void resetSupplyProvided();
+	u32 get_supply_provided();
+	void set_supply_provided(u8 amount);
+	void reset_supply_provided();
 
 	s32 get_total_hp_plus_shields();
 	s32 is_unit_ai_non_building();
@@ -443,16 +443,16 @@ struct Unit : public UnitLayout
 	bool is_constructing_addon();
 
 	/// Returns the number of hangar units currently being trained by the unit
-	u8 getHangarTrainCount();
+	u8 get_hangar_train_count();
 
 	/// Returns the maximum hangar space for the unit
-	u8 getMaxHangarSpace();
+	u8 get_max_hangar_space();
 
 	/// Returns whether the unit is of type Reaver (incl. hero Reaver)
-	bool isReaver();
+	bool is_reaver();
 
 	/// Returns whether the unit is of type Carrier (incl. hero Carrier)
-	bool isCarrier();
+	bool is_carrier();
 
 	/// Returns whether the unit is currently constructing a Protoss building
 	bool unit_is_training_or_morphing();
@@ -461,7 +461,7 @@ struct Unit : public UnitLayout
 	bool is_queue_slot_active(int slot);
 
 	// Returns the right click action for the given unit
-	u8 getRightClickActionOrder();
+	u8 get_right_click_action_order();
 };
 
 C_ASSERT(sizeof(Flingy) == 0x4c);

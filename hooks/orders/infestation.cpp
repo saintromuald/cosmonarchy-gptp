@@ -70,7 +70,7 @@ namespace hooks
 					}
 
 					// this is the same as calling 0047B2E0 unitIsFactoryUnit like original code but faster
-					if (unitInfested->isFactory())
+					if (unitInfested->is_factory())
 					{
 						UnitExt* unitInfestedExt = globals.get_unit_ext(unitInfested);
 						unitInfested->rally.unit = unitInfested;
@@ -106,10 +106,10 @@ namespace hooks
 					// Related to infestation process, don't use unitInfested->set_secondary_order
 					// because here it is supposed to perform all actions even if 
 					// unitInfested->secondary_order_id == OrderId::Nothing2 beforehand
-					unitInfested->secondaryOrderPos.y = 0;
-					unitInfested->secondaryOrderPos.x = 0;
-					unitInfested->currentBuildUnit = nullptr;
-					unitInfested->secondaryOrderState = 0;
+					unitInfested->secondary_order_pos.y = 0;
+					unitInfested->secondary_order_pos.x = 0;
+					unitInfested->current_build_unit = nullptr;
+					unitInfested->secondary_order_state = 0;
 					unitInfested->secondary_order_id = OrderId::Nothing2;
 
 					// refund what the unit was producing

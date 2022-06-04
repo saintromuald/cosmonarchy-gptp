@@ -26,7 +26,7 @@ namespace AI
 
 			if (target->id == UnitId::ProtossEnvoy || target->id == UnitId::TerranTrojan)
 			{
-				if (target->hasLoadedUnit())
+				if (target->has_loaded_unit())
 				{
 					return true;
 				}

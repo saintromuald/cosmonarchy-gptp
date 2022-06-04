@@ -16,7 +16,7 @@ namespace AI
 				&& !target->is_visible_to(caster->player))
 				return false;
 
-			if (!caster->isTargetEnemy(target))
+			if (!caster->is_target_enemy(target))
 				return false;
 
 			const s32 totalEnemyClumpValue = getTotalEnemyNukeValueInArea(target->get_x(), target->get_y(), 192, caster);

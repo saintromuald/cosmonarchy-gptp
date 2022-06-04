@@ -90,7 +90,7 @@ namespace hooks
 
 						}
 
-						prepareForNextOrder(templar_stored);
+						prepare_for_next_order(templar_stored);
 
 						templar_merge_partner->user_action_flags |= 1;
 
@@ -125,7 +125,7 @@ namespace hooks
 
 						}
 
-						prepareForNextOrder(templar_merge_partner);
+						prepare_for_next_order(templar_merge_partner);
 
 					}
 
@@ -230,7 +230,7 @@ namespace hooks
 
 						}
 
-						prepareForNextOrder(templar_stored);
+						prepare_for_next_order(templar_stored);
 
 						templar_merge_partner->user_action_flags |= 1;
 
@@ -265,7 +265,7 @@ namespace hooks
 
 						}
 
-						prepareForNextOrder(templar_merge_partner);
+						prepare_for_next_order(templar_merge_partner);
 
 					}
 

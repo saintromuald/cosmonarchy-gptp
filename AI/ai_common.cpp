@@ -16,11 +16,11 @@ namespace AI
 			return false;
 		}
 		// If the target is not detectable
-		if (target->status & 0x300 && !((1 << attacker->player) & target->visibilityStatus) && !target->is_visible_to(attacker->player))
+		if (target->status & 0x300 && !((1 << attacker->player) & target->visibility_status) && !target->is_visible_to(attacker->player))
 		{
 			return false;
 		}
-		if (!attacker->isTargetEnemy(target))
+		if (!attacker->is_target_enemy(target))
 		{
 			return false;
 		}
@@ -38,7 +38,7 @@ namespace AI
 	{
 		if (Unit* targetOfTarget = target->order_target.unit)
 		{
-			if (targetOfTarget->player < 8 && !unit->isTargetEnemy(targetOfTarget))
+			if (targetOfTarget->player < 8 && !unit->is_target_enemy(targetOfTarget))
 			{
 				return true;
 			}
@@ -108,7 +108,7 @@ namespace AI
 			if ((target != caster) &&
 				!(target->status & UnitStatus::Invincible) &&
 				scbw::can_weapon_target_unit(weaponId, target, caster) &&
-				caster->isTargetEnemy(target))
+				caster->is_target_enemy(target))
 			{
 				// specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
 				if (weaponId == WeaponId::Plague)
@@ -120,7 +120,7 @@ namespace AI
 				if (weaponId == WeaponId::Maelstrom)
 				{
 					if (units_dat::BaseProperty[target->id] & UnitProperty::Organic &&
-						target->maelstromTimer == 0)
+						target->maelstrom_timer == 0)
 					{
 						totalEnemyLife += target->get_current_life_ingame();
 					}
@@ -146,7 +146,7 @@ namespace AI
 			Unit* target = unitStatTotalFinder.get_unit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
 				scbw::can_weapon_target_unit(weaponId, target, caster) &&
-				!caster->isTargetEnemy(target))
+				!caster->is_target_enemy(target))
 			{
 				totalAllyLife += target->get_current_life_ingame();
 			}
@@ -165,7 +165,7 @@ namespace AI
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
-				caster->isTargetEnemy(target) &&
+				caster->is_target_enemy(target) &&
 				units_dat::ShieldsEnabled[target->id])
 			{
 				totalEnemyShields += target->getCurrentShieldsInGame();
@@ -185,7 +185,7 @@ namespace AI
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
-				caster->isTargetEnemy(target) &&
+				caster->is_target_enemy(target) &&
 				target->is_valid_caster())
 			{
 				totalEnemyEnergy += (&target->energy)[1]; // unitPointer+0xA3 in original code
@@ -207,7 +207,7 @@ namespace AI
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
-				caster->isTargetEnemy(target))
+				caster->is_target_enemy(target))
 			{
 				if ((units_dat::BaseProperty[target->id] & UnitProperty::Worker) ||
 					(!(target->status & UnitStatus::IsBuilding)))

@@ -30,7 +30,7 @@ namespace AI
 				return true;
 			}
 
-			if (target->irradiateTimer)
+			if (target->irradiate_timer)
 			{
 				return true;
 			}

@@ -84,7 +84,7 @@ namespace hooks
 		{
 			UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->sourceUnit);
 
-			if (bullet->sourceUnit->isBlind)
+			if (bullet->sourceUnit->is_blind)
 			{
 				splash = SplashType::Radial;
 			}
@@ -157,7 +157,7 @@ namespace hooks
 			if (target == bullet->sourceUnit && bullet->weaponId != WeaponId::PsiStorm) continue;
 
 			// Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
-			// if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+			// if(scbw::is_unit_enemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 
 			if (splash == SplashType::Enemy)
 			{
@@ -166,7 +166,7 @@ namespace hooks
 
 			else if (splash == SplashType::FriendlyNew)
 			{
-				if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+				if (scbw::is_unit_enemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 			}
 
 			// Can the unit be targeted?
@@ -204,8 +204,8 @@ namespace hooks
 			// Don't storm a unit that's already being stormed
 			if (bullet->weaponId == WeaponId::PsiStorm)
 			{
-				if (target->isUnderStorm) continue;
-				target->isUnderStorm = 1;
+				if (target->is_under_storm) continue;
+				target->is_under_storm = 1;
 			}
 
 			// Inner radius 
@@ -296,7 +296,7 @@ namespace hooks
 			if (target == bullet->sourceUnit) continue;
 
 			// Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer
-//			if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+//			if (scbw::is_unit_enemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 			if (splash == SplashType::Enemy)
 			{
 				if (bullet->srcPlayer == target->player && target != bullet->attackTarget.unit) continue;
@@ -313,7 +313,7 @@ namespace hooks
 					}
 				}
 					
-				if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && !lurkerOverride && target != bullet->attackTarget.unit)
+				if (scbw::is_unit_enemy(bullet->srcPlayer, target) == false && !lurkerOverride && target != bullet->attackTarget.unit)
 				{
 					continue;
 				}

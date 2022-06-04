@@ -77,7 +77,7 @@ namespace hooks
 					}
 					current_unit->perform_another_order(OrderId::Morph1, 0, 0, nullptr, UnitId::None, 0);
 				}
-				prepareForNextOrder(current_unit);
+				prepare_for_next_order(current_unit);
 			}
 			current_unit = getActivePlayerNextSelection();
 		}

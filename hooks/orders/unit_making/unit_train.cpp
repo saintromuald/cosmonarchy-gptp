@@ -21,17 +21,17 @@ namespace hooks
 		if (unit->id == UnitId::ProtossSolarion
 			|| unit->id == UnitId::ProtossAccantor)
 		{
-			if (unit->secondaryOrderState == 0 || unit->secondaryOrderState == 1)
+			if (unit->secondary_order_state == 0 || unit->secondary_order_state == 1)
 			{
 				if (unit->build_queue[unit->build_queue_slot] == UnitId::None)
 				{
-					unit->secondaryOrderState = 3;
-					unit->currentBuildUnit = nullptr;
+					unit->secondary_order_state = 3;
+					unit->current_build_unit = nullptr;
 				}
 				else
 				{
 					Unit* builtUnit;
-					if (unit->secondaryOrderState == 0)
+					if (unit->secondary_order_state == 0)
 					{
 						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 1);
 					}
@@ -39,21 +39,21 @@ namespace hooks
 					{
 						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 0);
 					}
-					unit->currentBuildUnit = builtUnit;
+					unit->current_build_unit = builtUnit;
 					if (builtUnit == nullptr)
 					{
-						unit->secondaryOrderState = 1;
+						unit->secondary_order_state = 1;
 					}
 					else
 					{
 						builtUnit->hangar_unit.parent = unit;
-						unit->secondaryOrderState = 2;
+						unit->secondary_order_state = 2;
 					}
 				}
 			}
-			else if (unit->secondaryOrderState == 2)
+			else if (unit->secondary_order_state == 2)
 			{
-				Unit* builtUnit = unit->currentBuildUnit;
+				Unit* builtUnit = unit->current_build_unit;
 				u32 hpGain;
 				if (builtUnit != nullptr)
 				{
@@ -70,22 +70,22 @@ namespace hooks
 							unit->build_queue_slot = 0;
 						}
 						scbw::refresh_console();
-						unit->currentBuildUnit = nullptr;
-						unit->secondaryOrderState = 0;
+						unit->current_build_unit = nullptr;
+						unit->secondary_order_state = 0;
 					}
 				}
 				else
 				{
 					scbw::refresh_console();
-					unit->currentBuildUnit = nullptr;
-					unit->secondaryOrderState = 0;
+					unit->current_build_unit = nullptr;
+					unit->secondary_order_state = 0;
 				}
 			}
-			else if (unit->secondaryOrderState == 3)
+			else if (unit->secondary_order_state == 3)
 			{
 				if (unit->id == UnitId::ProtossAccantor)
 				{
-					unit->secondaryOrderState = 4;
+					unit->secondary_order_state = 4;
 				}
 				else
 				{
@@ -115,7 +115,7 @@ namespace hooks
 			&& !(unit->is_frozen()))
 		{
 			bool jump_to_685D8 = false;
-			if (unit->secondaryOrderState <= 1)
+			if (unit->secondary_order_state <= 1)
 			{
 				if (unit->build_queue[unit->build_queue_slot] == UnitId::None)
 				{
@@ -125,7 +125,7 @@ namespace hooks
 				else
 				{
 					Unit* builtUnit;
-					if (unit->secondaryOrderState == 0)
+					if (unit->secondary_order_state == 0)
 					{
 						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 1);
 					}
@@ -133,10 +133,10 @@ namespace hooks
 					{
 						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 0);
 					}
-					unit->currentBuildUnit = builtUnit;
+					unit->current_build_unit = builtUnit;
 					if (builtUnit == nullptr)
 					{
-						unit->secondaryOrderState = 1;
+						unit->secondary_order_state = 1;
 					}
 					else
 					{
@@ -144,9 +144,9 @@ namespace hooks
 					}
 				}
 			}
-			else if (unit->secondaryOrderState == 2)
+			else if (unit->secondary_order_state == 2)
 			{
-				Unit* builtUnit = unit->currentBuildUnit;
+				Unit* builtUnit = unit->current_build_unit;
 				if (builtUnit != nullptr)
 				{
 					UnitExt* builtUnitExt = globals.get_unit_ext(builtUnit);
@@ -209,9 +209,9 @@ namespace hooks
 						else
 						{
 							u8 counter = 4;
-							if (unit->currentBuildUnit != nullptr)
+							if (unit->current_build_unit != nullptr)
 							{
-								helper::ai_cancel_structure(unit->currentBuildUnit);
+								helper::ai_cancel_structure(unit->current_build_unit);
 							}
 							else if (!units_dat::BaseProperty[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building)
 							{
@@ -251,8 +251,8 @@ namespace hooks
 						helper::queue_game_command(buf, 0xc);
 					}
 					scbw::refresh_console();
-					unit->currentBuildUnit = nullptr;
-					unit->secondaryOrderState = 0;
+					unit->current_build_unit = nullptr;
+					unit->secondary_order_state = 0;
 				}
 			}
 		}

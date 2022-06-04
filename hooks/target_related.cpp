@@ -70,7 +70,7 @@ namespace hooks
 			v5 = helper::distanceFromDboxCorner(a1, a1->order_target.pt.x, a1->order_target.pt.y);
 		v7 = v5;
 		v6 = weapons_dat::MinRange[a2];
-		if (v6 && v7 < v6 || v7 > helper::get_unit_max_weapon_range(v2, a2) || v2->pathingFlags & 2)
+		if (v6 && v7 < v6 || v7 > helper::get_unit_max_weapon_range(v2, a2) || v2->pathing_flags & 2)
 			return 0;
 		v8 = v2->next_target_waypoint.x;
 		if ((v8 != v2->position.x || v2->next_target_waypoint.y != v2->position.y)
@@ -231,7 +231,7 @@ namespace hooks
 				|| (v9 = helper::get_unit_max_weapon_range(v1, v6), ByteOperations::SetLowByte(v10, (helper::is_target_within_min_movement_range(target, v5, v9), !v10))))
 			{
 LABEL_23:
-				if (helper::getRightClickActionOrder(v1) == 3)
+				if (helper::get_right_click_action_order(v1) == 3)
 LABEL_22:
 				{
 					helper::unknownOrdersFunc((s32)v1, v1->order_target.pt.x, v1->order_target.pt.y);
@@ -403,7 +403,7 @@ LABEL_42:
 
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-			if (unit->isFactory())
+			if (unit->is_factory())
 				result = OrderId::RallyPoint2 - (target != 0);
 			else
 				result = OrderId::Nothing2;
@@ -487,7 +487,7 @@ LABEL_42:
 
 	u32 unitCanSeeCloakedTargetHook(Unit* target, Unit* unit) // 00401D60, hooked for cloak rewrite - Pr0nogo
 	{
-		return target->status & 0x300 && !((1 << unit->player) & target->visibilityStatus);
+		return target->status & 0x300 && !((1 << unit->player) & target->visibility_status);
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
@@ -501,7 +501,7 @@ LABEL_42:
 		}
 
 		u32 result;
-		if (target->status & 0x300 && !((1 << unit->player) & target->visibilityStatus))
+		if (target->status & 0x300 && !((1 << unit->player) & target->visibility_status))
 		{
 			result = (u8)(playerUnit & target->sprite->visibilityFlags);
 		}
@@ -539,7 +539,7 @@ LABEL_42:
 
 	void updateUnitVisibility(Unit* unit)
 	{
-		if (*playerVisions & unit->visibilityStatus)
+		if (*playerVisions & unit->visibility_status)
 		{
 			helper::makeSpriteVisible(unit->sprite);
 			Unit* subunit = unit->subunit;
@@ -552,7 +552,7 @@ LABEL_42:
 		{
 			if (unit->sprite->flags & SpriteFlags::Selected)
 			{
-				helper::updateBuildingLandUnitSelection(unit->visibilityStatus, unit);
+				helper::updateBuildingLandUnitSelection(unit->visibility_status, unit);
 			}
 			helper::removeSelectionCircle(unit->sprite);
 			helper::makeSpriteInvisible(unit->sprite);
@@ -568,14 +568,14 @@ LABEL_42:
 	void checkUnitVisibilityHook(Unit* unit) // 00443390
 	{
 		u32 detectingPlayers = helper::get_detecting_players(unit);
-		if (unit->visibilityStatus != detectingPlayers)
+		if (unit->visibility_status != detectingPlayers)
 		{
-			if (unit->visibilityStatus == 0x80000000)
+			if (unit->visibility_status == 0x80000000)
 			{
-				unit->visibilityStatus = ~(u8)detectingPlayers;
+				unit->visibility_status = ~(u8)detectingPlayers;
 			}
-			u32 v6 = unit->visibilityStatus ^ detectingPlayers;
-			unit->visibilityStatus = detectingPlayers;
+			u32 v6 = unit->visibility_status ^ detectingPlayers;
+			unit->visibility_status = detectingPlayers;
 
 			u32 v5 = v6 & ~detectingPlayers;
 			if (v5)
@@ -942,7 +942,7 @@ LABEL_65:
 			if (unitTarget)
 			{
 				s32 cooldownVar = 0;
-				if (unit->stimTimer)
+				if (unit->stim_timer)
 				{
 					cooldownVar = 1;
 				}
@@ -950,7 +950,7 @@ LABEL_65:
 				{
 					++cooldownVar;
 				}
-				if (unit->ensnareTimer)
+				if (unit->ensnare_timer)
 				{
 					--cooldownVar;
 				}

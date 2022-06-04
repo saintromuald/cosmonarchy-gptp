@@ -35,8 +35,8 @@ namespace hooks
 		s16 unitType; // ax
 
 		unitFlags = pUnit->status;
-		if (!(unitFlags & UnitStatus::Frozen) && pUnit->lockdownTimer == 0 && pUnit->stasisTimer == 0
-			&& pUnit->maelstromTimer == 0)
+		if (!(unitFlags & UnitStatus::Frozen) && pUnit->lockdown_timer == 0 && pUnit->stasis_timer == 0
+			&& pUnit->maelstrom_timer == 0)
 		{
 			pUnit->status = unitFlags | UnitStatus::Disabled;
 			for (i = pUnit->sprite->images.head; i; i = i->link.next)
@@ -62,7 +62,7 @@ namespace hooks
 			|| (s16)unitFlags == UnitId::Special_RightWallMissileTrap
 			|| (s16)unitFlags == UnitId::Special_RightWallFlameTrap) {
 			pUnit->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
-				pUnit->visibilityStatus = 0x80000000;
+				pUnit->visibility_status = 0x80000000;
 				ByteOperations::SetLowByte(pUnit->secondary_order_timer, 0);
 			}*/
 		}
@@ -158,7 +158,7 @@ namespace hooks
 		|| v4 == UnitId::Special_RightWallMissileTrap
 		|| v4 == UnitId::Special_RightWallFlameTrap) {
 			v1->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
-			v1->visibilityStatus = 0x80000000;
+			v1->visibility_status = 0x80000000;
 			ByteOperations::SetLowByte(v1->secondary_order_timer, 0);
 		}*/
 		v5 = playerTable[(u8)v1->player].type;
@@ -210,9 +210,9 @@ namespace hooks
 			helper::order(1, v1, v16, 0, 0, 228);
 			helper::orders_nothing_2(v1);
 		}
-		v1->airStrength = helper::get_unit_strength(v1, v13, 0);
+		v1->air_strength = helper::get_unit_strength(v1, v13, 0);
 		result = helper::get_unit_strength(v1, v18, 1);
-		v1->groundStrength = result;
+		v1->ground_strength = result;
 		return result;
 	}
 }

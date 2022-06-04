@@ -144,7 +144,7 @@ namespace hooks
 		{
 			for (s32 i = 0; i < 8; i++)
 			{
-				Unit* cargoUnit = transport->getLoadedUnit(i);
+				Unit* cargoUnit = transport->get_loaded_unit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: disable cargo units
 //				scbw::set_unit_position(cargoUnit, pos.x, pos.y); // <- does not work
@@ -158,7 +158,7 @@ namespace hooks
 		{
 			for (s32 i = 0; i < 8; i++)
 			{
-				Unit* cargoUnit = transport->getLoadedUnit(i);
+				Unit* cargoUnit = transport->get_loaded_unit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: Disable cargo units
 			}
@@ -195,11 +195,11 @@ namespace hooks
 			cargo_unit->movement_state = 0;
 			if (cargo_unit->sprite->elevationLevel < 12)
 			{
-				cargo_unit->pathingFlags |= 1;
+				cargo_unit->pathing_flags |= 1;
 			}
 			else
 			{
-				cargo_unit->pathingFlags &= ~1;
+				cargo_unit->pathing_flags &= ~1;
 			}
 			if (cargo_unit->subunit != nullptr
 				&& units_dat::BaseProperty[cargo_unit->subunit->id] & UnitProperty::Subunit)
@@ -227,11 +227,11 @@ namespace hooks
 				subUnit->movement_state = 0;
 				if (subUnit->sprite->elevationLevel < 12)
 				{
-					subUnit->pathingFlags |= 1;
+					subUnit->pathing_flags |= 1;
 				}
 				else
 				{
-					subUnit->pathingFlags &= ~1;
+					subUnit->pathing_flags &= ~1;
 				}
 			}
 			else // 004E7B51
@@ -251,9 +251,9 @@ namespace hooks
 			Unit* transport = unit->connected_unit;
 			if ((transport->main_order_timer == 0 || transport->status & UnitStatus::GroundedBuilding)
 				&& !(transport->status & UnitStatus::Frozen)
-				&& transport->lockdownTimer == 0
-				&& transport->stasisTimer == 0
-				&& transport->maelstromTimer == 0)
+				&& transport->lockdown_timer == 0
+				&& transport->stasis_timer == 0
+				&& transport->maelstrom_timer == 0)
 			{ // 004E7FDC
 
 				Point16 pos = {0,0};
@@ -310,7 +310,7 @@ namespace hooks
 						{
 							for (s32 i = 0; i < 8; i++)
 							{
-								Unit* cargoUnit = unit->getLoadedUnit(i);
+								Unit* cargoUnit = unit->get_loaded_unit(i);
 								if (cargoUnit == nullptr) continue;
 								// TODO: enable and update cargo units and their position
 //								scbw::set_unit_position(cargoUnit, pos.x, pos.y); // <- does not work
@@ -339,7 +339,7 @@ namespace hooks
 					UnitExt* transportExt = globals.get_unit_ext(transport);
 					if (transportExt->values[ValueIsNeutralBunker])
 					{
-						if (!transport->getFirstLoadedUnit())
+						if (!transport->get_first_loaded_unit())
 						{
 							transport->give_to(11);
 							transport->sprite->playerId = 11;
@@ -349,7 +349,7 @@ namespace hooks
 							bool isOwnerValid = true;
 							for (u32 i = 0; i < 4; ++i)
 							{
-								Unit* cargoUnit = transport->getLoadedUnit(i);
+								Unit* cargoUnit = transport->get_loaded_unit(i);
 								if (cargoUnit && cargoUnit->player != unit->player)
 								{
 									isOwnerValid = false;
@@ -357,7 +357,7 @@ namespace hooks
 							}
 							if (!isOwnerValid)
 							{
-								transport->give_to(transport->getFirstLoadedUnit()->player);
+								transport->give_to(transport->get_first_loaded_unit()->player);
 							}
 						}
 					}

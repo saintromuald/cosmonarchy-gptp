@@ -139,9 +139,9 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius)
 			u32 strength = 0;
 			if (hostileUnit->canAttackTarget(unit, true)) {
 				if (unit->status & UnitStatus::InAir) {
-					strength = hostileUnit->airStrength;
+					strength = hostileUnit->air_strength;
 				} else {
-					strength = hostileUnit->groundStrength;
+					strength = hostileUnit->ground_strength;
 				}
 			}
 
@@ -388,7 +388,7 @@ static s32 get_target_cost(Unit* source, Unit* target)
 	else if (target->id == UnitId::ProtossPylon
 		|| units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
 		|| units_dat::BaseProperty[target->id] & UnitProperty::Worker
-		|| units_dat::GroupFlags[target->id].isFactory
+		|| units_dat::GroupFlags[target->id].is_factory
 		|| scbw::unit_id_is_tech(target->id))
 	{
 		cost -= 25;
@@ -750,7 +750,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext)
 					u32 local_group_value = 0;
 					local_group.for_each([&](Unit* local_unit)
 					{
-						local_group_value += std::max(local_unit->groundStrength, local_unit->airStrength);
+						local_group_value += std::max(local_unit->ground_strength, local_unit->air_strength);
 					});
 
 					const f32 confidence_factor = 8;
@@ -871,7 +871,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	}
 
 	// Value attacking strategically important targets
-	if (units_dat::GroupFlags[target->id].isFactory)
+	if (units_dat::GroupFlags[target->id].is_factory)
 	{
 		cost -= 50;
 	}
@@ -887,7 +887,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	{
 		cost -= 25;
 	}
-	if (target->id == UnitId::TerranBunker && target->hasLoadedUnit())
+	if (target->id == UnitId::TerranBunker && target->has_loaded_unit())
 	{
 		cost -= 15;
 	}
@@ -913,7 +913,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 			u32 counter = 0;
 			for (u32 i = 0; i < bunker_capacity; ++i)
 			{
-				Unit* target = unit->getLoadedUnit(i);
+				Unit* target = unit->get_loaded_unit(i);
 				if (target)
 				{
 					counter += units_dat::SpaceRequired[target->id];
@@ -940,7 +940,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt)
 		{
 			for (u32 i = 0; i < bunker_capacity; ++i)
 			{
-				Unit* target = unit->getLoadedUnit(i);
+				Unit* target = unit->get_loaded_unit(i);
 				if (target && target->unit_ai)
 				{
 					unit->order_to(OrderId::Unload);

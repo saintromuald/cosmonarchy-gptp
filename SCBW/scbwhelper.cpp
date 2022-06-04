@@ -2270,8 +2270,8 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	// Identical to getRightClickActionOrder @ 0x004E5EA0;
-	u8 getRightClickActionOrder(Unit* unit)
+	// Identical to get_right_click_action_order @ 0x004E5EA0;
+	u8 get_right_click_action_order(Unit* unit)
 	{
 		u8 result;
 		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
@@ -2284,7 +2284,7 @@ namespace helper
 			if (
 				temp_result == 0 &&
 				unit->status & UnitStatus::GroundedBuilding &&
-				unit->isFactory()
+				unit->is_factory()
 				)
 			{
 				result = RightClickActions::NormalMove_NoAttack;
@@ -4342,7 +4342,7 @@ namespace helper
 		return (bTimeWasZero != 0);
 	}
 
-	// return value may be useless since it's the exact value of pathingFlags
+	// return value may be useless since it's the exact value of pathing_flags
 	u8 delete_pathing(Unit* unit)
 	{
 		u32 Func_Sub46A820 = 0x0046A820;
@@ -4381,7 +4381,7 @@ namespace helper
 		}
 	}
 
-	// get status (defensiveMatrixHp to acidSporeTime) of unit_src and give it to unit_dst
+	// get status (defensive_matrix_hp to acidSporeTime) of unit_src and give it to unit_dst
 	void merge_status_into_unit(Unit* unit_dst, Unit* unit_src)
 	{
 		const u32 Func_Sub493180 = 0x00493180;
@@ -4406,7 +4406,7 @@ namespace helper
 		}
 	}
 
-	// return true if waiting for recentOrderTimer to reach 0 or if setMoveTarget_xy returned true
+	// return true if waiting for recent_order_timer to reach 0 or if setMoveTarget_xy returned true
 	bool delayed_set_move_target_xy(Unit* unit, u16 x, u16 y)
 	{
 		const u32 Func_Sub4EB960 = 0x004EB960;
@@ -7559,11 +7559,11 @@ namespace helper
 	// Identical to function @ 0x004F3AF0
 	void set_resource_amount_carried(Unit* worker, u8 amountCarried, u32 chunkImageId, bool isMineral)
 	{
-		if (worker->resourceType != 0)
+		if (worker->resource_type != 0)
 		{
 			return;
 		}
-		worker->resourceType = isMineral ? 2 : 1;
+		worker->resource_type = isMineral ? 2 : 1;
 		Image* chunkImage = worker->sprite->create_overlay(chunkImageId);
 		if (chunkImage && !(chunkImage->flags & ImageFlags::Flag07))
 		{
@@ -10906,7 +10906,7 @@ namespace helper
 
 	// Replaces original functionality
 	bool unit_is_factory(Unit* unit) { // 0047B2E0
-		return units_dat::GroupFlags[unit->id].isFactory;
+		return units_dat::GroupFlags[unit->id].is_factory;
 	}
 
 	bool is_unit_target_inside_min_range(Unit* unit, Unit* target) {

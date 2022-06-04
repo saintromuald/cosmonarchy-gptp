@@ -693,7 +693,7 @@ namespace hooks
 						}
 						else if (current_button->reqVar == TechId::LarvalSubmenuSelectSwarm || current_button->reqVar == TechId::LarvalSubmenuSelectAssault || current_button->reqVar == TechId::LarvalSubmenuSelectControl)							
 						{
-							if ((units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) || unit->id == UnitId::ZergLarva) {
+							if ((units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
 								current_button_state = BUTTON_STATE::Enabled;
 							} else {
 								current_button_state = BUTTON_STATE::Invisible;
@@ -702,7 +702,7 @@ namespace hooks
 					}
 
 					if (current_button->iconID == IconId::Larva) {
-						if ((units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) || unit->id == UnitId::ZergLarva) {
+						if ((units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
 							current_button_state = BUTTON_STATE::Enabled;
 						} else {
 							current_button_state = BUTTON_STATE::Invisible;
@@ -710,7 +710,7 @@ namespace hooks
 					}
 
 					if (current_button->iconID == IconId::Cancel) {
-						if (units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) {
+						if (units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].is_factory) {
 							current_button->position = 6;
 						} else {
 							current_button->position = 9;
@@ -1495,7 +1495,7 @@ namespace hooks
 							int loaded = 0;
 							for (int i = 0; i < 8; ++i)
 							{								
-								Unit* bunkerUnit = (*activePortraitUnit)->getLoadedUnit(i);
+								Unit* bunkerUnit = (*activePortraitUnit)->get_loaded_unit(i);
 								if (bunkerUnit && scbw::unit_is_ranged_attacker(bunkerUnit))
 								{
 									loaded++;

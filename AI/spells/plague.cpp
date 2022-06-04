@@ -31,7 +31,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (target->plagueTimer)
+			if (target->plague_timer)
 			{
 				return false;
 			}

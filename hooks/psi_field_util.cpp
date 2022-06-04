@@ -25,7 +25,7 @@ bool isValidPsiProviderType(u16 unit_id)
 		return false;
 	}
 	// Unit::rally shares memory space with Unit::psi_link
-	if (units_dat::GroupFlags[unit_id].isFactory)
+	if (units_dat::GroupFlags[unit_id].is_factory)
 	{
 		return false;
 	}

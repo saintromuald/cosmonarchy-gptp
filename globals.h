@@ -126,7 +126,7 @@ struct Globals
 	inline UnitExt* get_unit_ext(Unit* unit)
 	{
 		assert(unit);
-		return &unitExt[unit->getIndex()];
+		return &unitExt[unit->get_unit_index()];
 	}
 
 	AttackExtender attackers;

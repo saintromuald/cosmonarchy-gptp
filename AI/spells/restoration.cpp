@@ -51,7 +51,7 @@ namespace AI
 			if (target->player != caster->player)
 				return false;
 
-			if (!(target->parasite_flags || target->maelstromTimer))
+			if (!(target->parasite_flags || target->maelstrom_timer))
 				return false;
 
 			if (!scbw::can_weapon_target_unit(WeaponId::Restoration, target, caster))

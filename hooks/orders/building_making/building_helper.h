@@ -29,7 +29,7 @@ namespace BuildingHelper
 			|| unit->secondary_order_id == OrderId::TrainFighter
 			|| helper::is_constructing_addon(unit))
 		{
-			return unit->currentBuildUnit;
+			return unit->current_build_unit;
 		}
 		return nullptr;
 	}

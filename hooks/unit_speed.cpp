@@ -18,8 +18,8 @@ namespace hooks
 
 		f64 speed = 1;
 		// Set additives based on status effects and movespeed upgrades
-		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
-		s32 decrease = (unit->ensnareTimer ? 1 : 0);
+		s32 increase = (unit->stim_timer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
+		s32 decrease = (unit->ensnare_timer ? 1 : 0);
 
 		if (decrease > 0)
 		{
@@ -212,13 +212,13 @@ namespace hooks
 						delta = abs((delta + 128) % 256 - 128);
 						if (delta <= arc)
 						{
-							unit->_padding_0x132 |= 0x2;
+							unit->new_flags_3 |= 0x2;
 						}
 					});
-					if (unit->_padding_0x132 & 0x2)
+					if (unit->new_flags_3 & 0x2)
 					{
 						speed *= 2;
-						unit->_padding_0x132 &= ~0x2;
+						unit->new_flags_3 &= ~0x2;
 					}
 					else
 					{
@@ -311,7 +311,7 @@ namespace hooks
 			return 1;
 		}
 
-		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
+		s32 increase = (unit->stim_timer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		switch (unit->id)
 		{
 			case UnitId::ProtossPanoptus:

@@ -33,7 +33,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		target = hooks::findBestAttackTargetHook(unit);
+		target = hooks::find_best_attack_target(unit);
 		__asm
 		{
 			POPAD

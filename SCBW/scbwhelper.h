@@ -238,7 +238,7 @@ namespace helper
 
 	bool isUnitVisible(Unit* unit);																			// 004E5DB0
 	bool isTargetVisible(Unit* unit, Unit* target);															// 004E5E30
-	u8 getRightClickActionOrder(Unit* unit);																// 004E5EA0
+	u8 get_right_click_action_order(Unit* unit);																// 004E5EA0
 	void set_resource_target(Unit* unit);															        // 004EB290
 	void make_to_hold_position(Unit* unit);																	// 004EB5B0
 	bool move_to_target(Unit* target, Unit* unit);															// 004EB720

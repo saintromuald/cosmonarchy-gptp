@@ -45,13 +45,13 @@ namespace hooks
 	void useStimPacksAIHook(Unit* unit)
 	{
 		if (unit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS + StimpackOffset
-			&& unit->stimTimer == 0)
+			&& unit->stim_timer == 0)
 		{
 			helper::play_sound_from_unit(helper::rand_between(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit, 1, 0);
 			unit->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
-			if (unit->stimTimer < 37)
+			if (unit->stim_timer < 37)
 			{
-				unit->stimTimer = 37;
+				unit->stim_timer = 37;
 				unit->update_speed();
 			}
 		}
@@ -89,9 +89,9 @@ namespace hooks
 				random_value = (random_value + random_value) / 32768;
 				helper::play_sound_from_unit(SoundId::Terran_MARINE_TMaSti00_WAV + random_value, activePlayerCurrentSelection, 1, 0);
 				activePlayerCurrentSelection->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
-				if (activePlayerCurrentSelection->stimTimer < 37)
+				if (activePlayerCurrentSelection->stim_timer < 37)
 				{
-					activePlayerCurrentSelection->stimTimer = 37;
+					activePlayerCurrentSelection->stim_timer = 37;
 					activePlayerCurrentSelection->update_speed();
 				}
 			}

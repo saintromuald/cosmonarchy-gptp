@@ -129,7 +129,7 @@ namespace hooks
 		if (distance / 256 > sightRange)
 		{
 
-			if (unit->recentOrderTimer == 0)
+			if (unit->recent_order_timer == 0)
 				helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
 		}

@@ -322,22 +322,22 @@ namespace hooks
 									if (switch_value != 6)
 									{
 										// no idea why irradiate is so important
-										u32 analyzed_target_status = target->irradiateTimer;
+										u32 analyzed_target_status = target->irradiate_timer;
 										if (switch_value == 2)
 										{
 											analyzed_target_status |= target->parasite_flags;
 										}
 										if (switch_value == 3)
 										{
-											analyzed_target_status |= target->ensnareTimer;
+											analyzed_target_status |= target->ensnare_timer;
 										}
 										if (switch_value == 4)
 										{
-											analyzed_target_status |= target->plagueTimer;
+											analyzed_target_status |= target->plague_timer;
 										}
 										if (switch_value == 5)
 										{
-											analyzed_target_status |= target->isBlind;
+											analyzed_target_status |= target->is_blind;
 										}
 										if (switch_value == 0 && unit->is_frozen())
 										{

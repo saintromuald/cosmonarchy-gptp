@@ -37,7 +37,7 @@ namespace hooks
 			if (nydus_canal->order_queue_head != nullptr)
 			{
 				nydus_canal->user_action_flags |= 1;
-				prepareForNextOrder(nydus_canal);
+				prepare_for_next_order(nydus_canal);
 			}
 			else if (nydus_canal->unit_ai != nullptr)
 			{

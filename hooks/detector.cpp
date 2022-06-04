@@ -14,10 +14,10 @@ namespace hooks
 			units_dat::BaseProperty[unit->id] & UnitProperty::Detector &&
 			unit->status & UnitStatus::Completed &&
 			!(unit->status & UnitStatus::Frozen) &&
-			unit->lockdownTimer == 0 &&
-			unit->stasisTimer == 0 &&
-			unit->maelstromTimer == 0 &&
-			unit->isBlind == 0
+			unit->lockdown_timer == 0 &&
+			unit->stasis_timer == 0 &&
+			unit->maelstrom_timer == 0 &&
+			unit->is_blind == 0
 			);
 	}
 

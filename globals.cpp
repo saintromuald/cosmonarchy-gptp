@@ -345,7 +345,7 @@ void Globals::unitDeathHook(Unit* unit)
 			}), vec.end());
 		}
 	}
-	ClearUnitExt(unit->getIndex());
+	ClearUnitExt(unit->get_unit_index());
 
 	for (s32 i = 0; i < this->effects.size(); i++)
 	{
@@ -381,7 +381,7 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 		return;
 	}
 	//if not already irradiated and not burrowed, add the irradiate overlay
-	if (unit->irradiateTimer == 0 && !(unit->status & UnitStatus::Burrowed))
+	if (unit->irradiate_timer == 0 && !(unit->status & UnitStatus::Burrowed))
 	{
 		u32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::get_overlay_offset(unit->id);
 		Unit* unitWithOverlay;
@@ -395,9 +395,9 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 		}
 		unitWithOverlay->sprite->create_top_overlay(irradiateImageId, 0, 0, 0);
 	}
-	unit->irradiatedBy = nullptr;
-	unit->irradiatePlayerId = player;
-	unit->irradiateTimer = time;
+	unit->irradiate_caster = nullptr;
+	unit->irradiate_player_id = player;
+	unit->irradiate_timer = time;
 }
 
 void Globals::create_effect(u8 effectId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent)
@@ -957,17 +957,17 @@ namespace scbw
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
 		// Refresh Ensnare
-		if (unit->ensnareTimer)
+		if (unit->ensnare_timer)
 		{
-			unit->ensnareTimer = MatralethEnsnareTimer;
+			unit->ensnare_timer = MatralethEnsnareTimer;
 			// specific update following ensnare removal
 			unit->update_speed();
 		}
 
 		// Refresh Plague
-		if (unit->plagueTimer)
+		if (unit->plague_timer)
 		{
-			unit->plagueTimer = IsthrathalethPlagueTimer;
+			unit->plague_timer = IsthrathalethPlagueTimer;
 		}
 
 		// Refresh Observance
@@ -989,15 +989,15 @@ namespace scbw
 		}
 
 		// Refresh Lockdown
-		if (unit->lockdownTimer)
+		if (unit->lockdown_timer)
 		{
-			unit->lockdownTimer = LobotomyMineLockdownTimer;
+			unit->lockdown_timer = LobotomyMineLockdownTimer;
 		}
 
 		// Refresh Maelstrom
-		if (unit->maelstromTimer)
+		if (unit->maelstrom_timer)
 		{
-			unit->maelstromTimer = MindTyrantMaelstromTimer;
+			unit->maelstrom_timer = MindTyrantMaelstromTimer;
 		}
 
 		// Refresh Devourer Corrosive Spores
@@ -1007,9 +1007,9 @@ namespace scbw
 		}
 
 		// Refresh Irradiate
-		if (unit->irradiateTimer)
+		if (unit->irradiate_timer)
 		{
-			unit->irradiateTimer = SeraphIrradiateTimer;
+			unit->irradiate_timer = SeraphIrradiateTimer;
 		}
 
 		// Refresh Dirge
@@ -1040,9 +1040,9 @@ namespace scbw
 		s32 overlayOffset = get_overlay_offset(child->id);
 
 		// Inherit Ensnare
-		if (parent->ensnareTimer != 0)
+		if (parent->ensnare_timer != 0)
 		{
-			child->ensnareTimer = parent->ensnareTimer;
+			child->ensnare_timer = parent->ensnare_timer;
 			if (!(child->sprite->get_overlay(ImageId::EnsnareOverlay_Small + overlayOffset)))
 			{
 				child->sprite->create_overlay(ImageId::EnsnareOverlay_Small + overlayOffset);
@@ -1051,9 +1051,9 @@ namespace scbw
 		}
 
 		// Inherit Plague
-		if (parent->plagueTimer != 0)
+		if (parent->plague_timer != 0)
 		{
-			child->plagueTimer = parent->plagueTimer;
+			child->plague_timer = parent->plague_timer;
 			if (!(child->sprite->get_overlay(ImageId::PlagueOverlay_Small + overlayOffset)))
 			{
 				child->sprite->create_overlay(ImageId::PlagueOverlay_Small + overlayOffset);
@@ -1106,15 +1106,15 @@ namespace scbw
 		}
 
 		// Inherit Lockdown
-		if (parent->lockdownTimer != 0)
+		if (parent->lockdown_timer != 0)
 		{
-			child->lockdownTimer = parent->lockdownTimer;
+			child->lockdown_timer = parent->lockdown_timer;
 		}
 
 		// Inherit Maelstrom
-		if (parent->maelstromTimer != 0)
+		if (parent->maelstrom_timer != 0)
 		{
-			child->maelstromTimer = parent->maelstromTimer;
+			child->maelstrom_timer = parent->maelstrom_timer;
 		}
 
 		// Inherit Devourer Corrosive Spores
@@ -1125,22 +1125,22 @@ namespace scbw
 		}
 
 		// Inherit Irradiate
-		if (parent->irradiateTimer != 0)
+		if (parent->irradiate_timer != 0)
 		{
-			child->irradiateTimer = parent->irradiateTimer;
+			child->irradiate_timer = parent->irradiate_timer;
 		}
 
 		// Inherit Defensive Matrix
-		if (parent->defensiveMatrixTimer > 0)
+		if (parent->defensive_matrix_timer > 0)
 		{
-			child->defensiveMatrixHp = parent->defensiveMatrixHp;
-			child->defensiveMatrixTimer = parent->defensiveMatrixTimer;
+			child->defensive_matrix_hp = parent->defensive_matrix_hp;
+			child->defensive_matrix_timer = parent->defensive_matrix_timer;
 		}
 
 		// Inherit Stasis Field
-		if (parent->stasisTimer > 0)
+		if (parent->stasis_timer > 0)
 		{
-			child->stasisTimer = parent->stasisTimer;
+			child->stasis_timer = parent->stasis_timer;
 		}
 
 		// Inherit Deconstruction
@@ -1261,13 +1261,13 @@ namespace scbw
 			|| unitExt->values[ValueKelvinMunitionsSlow]
 			|| unitExt->values[ValueSignifyStacks]
 			|| captivating_claws_get_timer(unit) > 0
-			|| unit->irradiateTimer != 0
-			|| unit->ensnareTimer != 0
-			|| unit->lockdownTimer != 0
-			|| unit->maelstromTimer != 0
-			|| unit->plagueTimer != 0
+			|| unit->irradiate_timer != 0
+			|| unit->ensnare_timer != 0
+			|| unit->lockdown_timer != 0
+			|| unit->maelstrom_timer != 0
+			|| unit->plague_timer != 0
 			|| unit->parasite_flags
-			|| unit->isBlind;
+			|| unit->is_blind;
 	}
 
 	void restore_func(Unit* unit)
@@ -1294,33 +1294,33 @@ namespace scbw
 
 		// Remove default flags
 		unit->parasite_flags = 0;
-		unit->isBlind = 0;
+		unit->is_blind = 0;
 
 		// Remove Ensnare
-		if (unit->ensnareTimer != 0)
+		if (unit->ensnare_timer != 0)
 		{
 			unit->remove_overlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
-			unit->ensnareTimer = 0;
+			unit->ensnare_timer = 0;
 			//specific update following ensnare removal
 			unit->update_speed();
 		}
 
 		// Remove Plague
-		if (unit->plagueTimer != 0)
+		if (unit->plague_timer != 0)
 		{
 			unit->remove_overlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
-			unit->plagueTimer = 0;
+			unit->plague_timer = 0;
 		}
 
 		// Remove Irradiate
-		if (unit->irradiateTimer != 0)
+		if (unit->irradiate_timer != 0)
 		{
 			unit->remove_overlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
-			unit->irradiateTimer = 0;
+			unit->irradiate_timer = 0;
 
 			//specific updates following irradiate removal
-			unit->irradiatedBy = nullptr;
-			unit->irradiatePlayerId = 8;
+			unit->irradiate_caster = nullptr;
+			unit->irradiate_player_id = 8;
 		}
 
 		// Remove Malediction
@@ -1455,7 +1455,7 @@ namespace scbw
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
-		if (unit->ensnareTimer)
+		if (unit->ensnare_timer)
 		{
 			return true;
 		}

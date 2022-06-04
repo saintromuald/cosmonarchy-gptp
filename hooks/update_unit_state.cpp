@@ -214,7 +214,7 @@ namespace hooks
 		}
 
 		// Clear Cleric healing field
-		unit->isBeingHealed = 0;
+		unit->is_being_healed = 0;
 
 		// Accantor Plasma Shells get shields equal to the Accantor that launches them
 		if (unit->id == UnitId::ProtossAccantor)
@@ -241,9 +241,9 @@ namespace hooks
 		}
 
 		// Cowardice slow flag
-		if (unit->_padding_0x132 & 0x10)
+		if (unit->new_flags_3 & 0x10)
 		{
-			unit->_padding_0x132 &= ~0x10;
+			unit->new_flags_3 &= ~0x10;
 			unit->update_speed();
 		}
 
@@ -296,9 +296,9 @@ namespace hooks
 		}
 
 		// Something to do with player-specific Signify overlays?
-		if (unit->_padding_0x132 & 0x20 && unit == playersSelections->unit[*ACTIVE_NATION_ID][0])
+		if (unit->new_flags_3 & 0x20 && unit == playersSelections->unit[*ACTIVE_NATION_ID][0])
 		{
-			unit->_padding_0x132 &= ~0x20;
+			unit->new_flags_3 &= ~0x20;
 			scbw::refresh_console();
 		}
 
@@ -380,10 +380,10 @@ namespace hooks
 		// update unit status effects (stim, maelstrom, plague, etc.)
 		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & SpriteFlags::Hidden))
 		{
-			unit->cycleCounter++;
-			if (unit->cycleCounter >= 8)
+			unit->cycle_counter++;
+			if (unit->cycle_counter >= 8)
 			{
-				unit->cycleCounter = 0;
+				unit->cycle_counter = 0;
 				helper::RestoreAllUnitStats(unit); // use update_status_effects hook if available
 			}
 		}
@@ -394,10 +394,10 @@ namespace hooks
 			bool bStopHere = false;
 
 			// remove units with timed lives
-			if (unit->removeTimer != 0)
+			if (unit->remove_timer != 0)
 			{
-				unit->removeTimer -= 1;
-				if (unit->removeTimer == 0)
+				unit->remove_timer -= 1;
+				if (unit->remove_timer == 0)
 				{
 					unit->remove();
 					bStopHere = true;
@@ -407,9 +407,9 @@ namespace hooks
 			// update unit energy (energy regen/drain)
 			update_unit_energy(unit);
 
-			if (unit->recentOrderTimer != 0)
+			if (unit->recent_order_timer != 0)
 			{
-				unit->recentOrderTimer--;
+				unit->recent_order_timer--;
 			}
 
 			// Augur - Final Hour
@@ -419,9 +419,9 @@ namespace hooks
 				bStopHere = true;
 			}
 
-			// TODO: Reduce defensiveMatrixTimer
+			// TODO: Reduce defensive_matrix_timer
 			// Cleanse debuffs on initial Defensive Matrix application
-			if (unit->defensiveMatrixTimer == 168)
+			if (unit->defensive_matrix_timer == 168)
 			{
 				scbw::restore_func(unit);
 			}
@@ -448,7 +448,7 @@ namespace hooks
 				}
 
 				// Azazel Innervating Matrices - heal over time
-				if (unit->defensiveMatrixHp != 0)
+				if (unit->defensive_matrix_hp != 0)
 				{
 					if (unit->hitpoints > 0
 						&& unit->hitpoints / 256 != unit->get_max_hp_ingame())

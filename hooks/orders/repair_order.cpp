@@ -7,7 +7,7 @@ namespace hooks
 		Unit* target = unit->order_target.unit;
 		if (!target
 		//||	target->hitpoints >= units_dat::MaxHitPoints[target->id]
-		||	target->stasisTimer != 0
+		||	target->stasis_timer != 0
 		||	(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->order_target.unit != unit)
 		||	target->status & UnitStatus::InTransport
 		||  !(target->status & UnitStatus::Completed)) {

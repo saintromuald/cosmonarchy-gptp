@@ -670,65 +670,65 @@ struct UnitLayout
 	};
 
 	/*0x0DC*/ u32       status;							// See UnitStatus::Enum for more info
-	/*0x0E0*/ u8        resourceType;					// Type of resource chunk carried by this worker. 1 = vespene gas, 2 = mineral.
-	/*0x0E1*/ u8        wireframeRandomizer;	
-	/*0x0E2*/ u8        secondaryOrderState;	
-	/*0x0E3*/ u8        recentOrderTimer;				// Counts down from 15 to 0 when most orders are given, or when the unit moves after reaching a patrol location
-	/*0x0E4*/ s32       visibilityStatus;				// Flags specifying which players can detect this unit (cloaked/burrowed)
-	/*0x0E8*/ Point16   secondaryOrderPos;				// Unused according to BWAPI
-	/*0x0EC*/ Unit* currentBuildUnit;					// tied to secondary order according to BWAPI
-	/*0x0F0*/ Link<Unit> burrow_link;
+	/*0x0E0*/ u8        resource_type;					// Type of resource chunk carried by this worker. 1 = vespene gas, 2 = mineral.
+	/*0x0E1*/ u8        wireframe_randomizer;	
+	/*0x0E2*/ u8        secondary_order_state;	
+	/*0x0E3*/ u8        recent_order_timer;				// Counts down from 15 to 0 when most orders are given, or when the unit moves after reaching a patrol location
+	/*0x0E4*/ s32       visibility_status;				// Flags specifying which players can detect this unit (cloaked/burrowed)
+	/*0x0E8*/ Point16   secondary_order_pos;			// Unused according to BWAPI
+	/*0x0EC*/ Unit*		current_build_unit;				// tied to secondary order according to BWAPI
+	/*0x0F0*/ Link<Unit>burrow_link;
 	/*0x0F8*/ union
 	{
-		Target rally;
-		Link<Unit> psi_link;
+		Target		rally;
+		Link<Unit>	psi_link;
 	};
 	/*0x100*/ void*		path;							// use BW::Path* in BWAPI
-	/*0x104*/ u8        pathingCollisionInterval;		// unknown
-	/*0x105*/ u8        pathingFlags;					// 0x01 = uses pathing; 0x02 = ?; 0x04 = ?
-	/*0x106*/ u8        unused_0x106;
-	/*0x107*/ b8		isBeingHealed;					// 1 if a medic is cleric healing this unit
-	/*0x108*/ Box16     contourBounds;					// A rect that specifies the closest contour (collision) points
+	/*0x104*/ u8        pathing_collision_interval;		// unknown
+	/*0x105*/ u8        pathing_flags;					// 0x01 = uses pathing; 0x02 = ?; 0x04 = ?
+	/*0x106*/ u8        unused_106;
+	/*0x107*/ b8		is_being_healed;				// 1 if a cleric is healing this unit
+	/*0x108*/ Box16     contour_bounds;					// A rect that specifies the closest contour (collision) points
 
-	/*0x110*/ u16       removeTimer;					// Hallucination, Dark Swarm, Disruption Web, Broodling (but not Scanner Sweep according to BWAPI)
-	/*0x112*/ u16       defensiveMatrixHp;
-	/*0x114*/ u8        defensiveMatrixTimer;
-	/*0x115*/ u8        stimTimer;
-	/*0x116*/ u8        ensnareTimer;
-	/*0x117*/ u8        lockdownTimer;
-	/*0x118*/ u8        irradiateTimer;
-	/*0x119*/ u8        stasisTimer;
-	/*0x11A*/ u8        plagueTimer;
-	/*0x11B*/ u8        isUnderStorm;					// Used to tell if a unit is under psi storm	(is "stormTimer" in BWAPI)
-	/*0x11C*/ Unit*		irradiatedBy;
-	/*0x120*/ u8        irradiatePlayerId;
+	/*0x110*/ u16       remove_timer;					// Hallucination, Dark Swarm, Disruption Web, Broodling (but not Scanner Sweep according to BWAPI)
+	/*0x112*/ u16       defensive_matrix_hp;
+	/*0x114*/ u8        defensive_matrix_timer;
+	/*0x115*/ u8        stim_timer;
+	/*0x116*/ u8        ensnare_timer;
+	/*0x117*/ u8        lockdown_timer;
+	/*0x118*/ u8        irradiate_timer;
+	/*0x119*/ u8        stasis_timer;
+	/*0x11A*/ u8        plague_timer;
+	/*0x11B*/ u8        is_under_storm;					// Used to tell if a unit is under psi storm	(is "stormTimer" in BWAPI)
+	/*0x11C*/ Unit*		irradiate_caster;
+	/*0x120*/ u8        irradiate_player_id;
 	/*0x121*/ u8        parasite_flags;					// Each bit corrisponds to the player who has parasited this unit*/
-	/*0x122*/ u8        cycleCounter;					// counts/cycles up from 0 to 7 (inclusive). See also 0x85.
-	/*0x123*/ u8        isBlind;						// is bool in BWAPI
-	/*0x124*/ u8        maelstromTimer;
-	/*0x125*/ u8        cmbw_resource_regen_mining_delay; // Used on resources for regeneration delay - Cosmonarchy
-	/*0x126*/ u8        corrosiveSporeCountUnused;		// replaced with generic_value
-	/*0x127*/ u8        corrosiveSporeTimeUnused[9];	// replaced with generic_timer
-	/*0x130*/ u16       offsetIndex3by3;				// Cycles between 0-12 for each bullet fired by this unit (if it uses a "Attack 3x3 area" weapon)
-	/*0x132*/ u8		_padding_0x132;					// Cosmonarchy - different flags
-														// 0x1 - burrowed basilisk flag
-														// 0x2 - vorvaling proc flag
-														// 0x4 - vorvaling egg flag (unused?)
-														// 0x8 - shaman deployment flag (unused)
-														// 0x10 - hierophant signify update speed flag
-														// 0x20 - update console - new parasite 
-														// 0x40 - warp flash
-	/*-133-*/ u8        _padding_0x133;					// shaman timer
+	/*0x122*/ u8        cycle_counter;					// counts/cycles up from 0 to 7 (inclusive). See also 0x85.
+	/*0x123*/ u8        is_blind;						// is bool in BWAPI
+	/*0x124*/ u8        maelstrom_timer;
+	/*0x125*/ u8        cmbw_resource_regen_mining_delay;	// Used on resources for regeneration delay - Cosmonarchy
+	/*0x126*/ u8        corrosive_spore_count_unused;		// replaced with generic_value
+	/*0x127*/ u8        corrosive_spore_timer_unused[9];	// replaced with generic_timer
+	/*0x130*/ u16       offset_index_3_by_3;				// Cycles between 0-12 for each bullet fired by this unit (if it uses a "Attack 3x3 area" weapon)
+	/*0x132*/ u8		new_flags_3;						// Cosmonarchy - different flags
+															// 0x1 - burrowed bactalisk flag (unused)
+															// 0x2 - vorvaling proc flag
+															// 0x4 - vorvaling egg flag (unused)
+															// 0x8 - shaman deployment flag (unused)
+															// 0x10 - hierophant signify update speed flag
+															// 0x20 - update console - new parasite
+															// 0x40 - warp flash
+	/*-133-*/ u8        unused_133;
 	/*0x134*/ UnitAi*	unit_ai;
-	/*0x138*/ u16       airStrength;
-	/*0x13A*/ u16       groundStrength;
+	/*0x138*/ u16       air_strength;
+	/*0x13A*/ u16       ground_strength;
 	/*0x13C*/ struct
 	{
 		u32 left, right, top, bottom;
-	} finderIndex;										// Ordering for unit boundries in unit finder for binary search
-	/*0x14C*/ u8        repulseUnknown;
-	/*0x14D*/ u8        repulseAngle;					// updated only when air unit is being pushed
-	/*0x14E*/ Point8    driftPos;						// (mapsizex / 1.5 max)
+	} finder_index;										// Ordering for unit boundries in unit finder for binary search
+	/*0x14C*/ u8        repulse_unknown;
+	/*0x14D*/ u8        repulse_angle;					// updated only when air unit is being pushed
+	/*0x14E*/ Point8    drift_pos;						// (mapsizex / 1.5 max)
 };
 C_ASSERT(sizeof(UnitLayout) == 336);
 #pragma pack()

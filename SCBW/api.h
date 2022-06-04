@@ -277,8 +277,8 @@ namespace scbw
 
 	/// Checks whether the @p unit is recognized by @p playerId as an enemy.
 	/// This will work even when the owner of the @p unit has left the game.
-	/// @see Unit::isTargetEnemy().
-	inline bool isUnitEnemy(u8 playerId, Unit* unit)
+	/// @see Unit::is_target_enemy().
+	inline bool is_unit_enemy(u8 playerId, Unit* unit)
 	{
 		//Identical to function @ 0x0047B740
 		u8 unitOwner = unit->player;
@@ -521,7 +521,7 @@ namespace scbw
 	void range_modified_fire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset);
 	bool can_spawn_broodling(Unit* target);
 	s32 get_broodling_count_from_supply(Unit* target);
-	void create_unit_from_ability(s32 unit_id, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, Unit* creator = nullptr);
+	void create_unit_from_ability(s32 unit_id, s32 count, u16 playerId, s32 x, s32 y, u32 remove_timer = 1800, Unit* creator = nullptr);
 	Unit** getSourceQueens(Unit* unit);
 	u16 get_last_queue_slot_id(Unit* a1);
 	s32 dir_saturate(s32 direction, s32 value);

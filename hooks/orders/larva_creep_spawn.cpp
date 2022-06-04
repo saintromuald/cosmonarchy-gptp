@@ -291,10 +291,10 @@ namespace hooks
 				if (unit->secondary_order_id != orderId)
 				{
 					unit->secondary_order_id = orderId;
-					unit->secondaryOrderPos.y = 0;
-					unit->secondaryOrderPos.x = 0;
-					unit->currentBuildUnit = nullptr;
-					unit->secondaryOrderState = 0;
+					unit->secondary_order_pos.y = 0;
+					unit->secondary_order_pos.x = 0;
+					unit->current_build_unit = nullptr;
+					unit->secondary_order_state = 0;
 				}
 			}
 		}

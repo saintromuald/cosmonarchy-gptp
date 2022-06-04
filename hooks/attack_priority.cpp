@@ -32,7 +32,7 @@ namespace
 	bool isTargetPosWithinAttackAngle(s32 x, s32 y, Unit* unit, u8 weaponId);
 	bool cannotChaseTarget(Unit* unit, Unit* target);
 	// Returns the minimum air/ground weapon range of the @p unit, whichever is smaller.
-	u32 getMinimumRange(Unit* unit);
+	u32 get_minimum_range(Unit* unit);
 
 	// Checks whether the @p target should be added to the attack priority group.
 	// Based on function @ 0x00442DA0
@@ -63,8 +63,8 @@ namespace
 		}
 
 		// Check if the target is an enemy
-		bool is_enemy = unit->isTargetEnemy(target);
-		if (unit->isBlind)
+		bool is_enemy = unit->is_target_enemy(target);
+		if (unit->is_blind)
 		{
 			is_enemy = true;
 		}
@@ -120,7 +120,7 @@ namespace hooks
 
 		if (target->id == UnitId::TerranBunker)
 		{
-			Unit* firstLoadedUnit = target->getFirstLoadedUnit();
+			Unit* firstLoadedUnit = target->get_first_loaded_unit();
 			if (firstLoadedUnit)
 			{
 				actualTarget = firstLoadedUnit;
@@ -179,7 +179,7 @@ namespace hooks
 	}
 
 	// Searches for the best attack target nearby for the @p unit.
-	Unit* findBestAttackTargetHook(Unit* unit)
+	Unit* find_best_attack_target(Unit* unit)
 	{
 		attackPriorityData.reset();
 		s32 seek_range = unit->get_seek_range() * 32;
@@ -197,14 +197,7 @@ namespace hooks
 		}
 
 		s32 search_range = seek_range + offset + 64;
-		u32 min_range = getMinimumRange(unit);
-		if (unit->id == UnitId::TerranCivilian)
-		{
-			if (unit->_padding_0x132 & 0x8)
-			{
-				search_range = 0;
-			}
-		}
+		u32 min_range = get_minimum_range(unit);
 		attackTargetFinder.search(
 			unit->get_x() - search_range, unit->get_y() - search_range,
 			unit->get_x() + search_range, unit->get_y() + search_range);
@@ -401,7 +394,7 @@ namespace
 		return result != 0;
 	}
 
-	u32 getMinimumRange(Unit* unit) // 00440520
+	u32 get_minimum_range(Unit* unit) // 00440520
 	{
 		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 		{

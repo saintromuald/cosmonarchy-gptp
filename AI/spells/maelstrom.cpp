@@ -40,13 +40,13 @@ namespace AI
 			{
 				return false;
 			}
-			if (target->maelstromTimer)
+			if (target->maelstrom_timer)
 			{
 				return false;
 			}
 			if (target->id == UnitId::ZergOvileth
 				&& target->movement_flags & MovementFlags::Accelerating
-				&& target->hasLoadedUnit())
+				&& target->has_loaded_unit())
 			{
 				return true;
 			}

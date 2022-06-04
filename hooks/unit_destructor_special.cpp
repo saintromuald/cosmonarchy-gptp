@@ -94,10 +94,10 @@ void kill_hangar_units(Unit* unit)
 			}
 			// should produce a number between 15 and 45 (or maybe 46)
 			randomDeathTimer = ((random_value * 31) / 32768) + 15;
-			if (childOutside->removeTimer == 0
-				|| randomDeathTimer < childOutside->removeTimer)
+			if (childOutside->remove_timer == 0
+				|| randomDeathTimer < childOutside->remove_timer)
 			{
-				childOutside->removeTimer = randomDeathTimer;
+				childOutside->remove_timer = randomDeathTimer;
 			}
 		}
 		// 00466239
@@ -141,7 +141,7 @@ void free_resource_container(Unit* resource)
 void unit_destructor_special_cases(Unit* unit)
 {
 	UnitExt* unitExt = globals.get_unit_ext(unit);
-	unit->resetSupplyProvided();
+	unit->reset_supply_provided();
 
 	if (!(unit->user_action_flags & 4) && // for silent remove
 		  unit->status & UnitStatus::Completed && 
@@ -444,7 +444,7 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Metastasis - Plague spreads when a unit dies
-	if (unit->plagueTimer)
+	if (unit->plague_timer)
 	{
 		helper::create_bullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->current_direction_1);
 		u32 range = 48;

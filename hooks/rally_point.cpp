@@ -14,7 +14,7 @@ namespace hooks
 		// Do nothing if the rally target is the factory itself or the rally target position is 0
         if (factory) {
             UnitExt* factoryExt = globals.get_unit_ext(factory);
-            if (factory->isFactory()
+            if (factory->is_factory()
                 && factory->rally.unit != factory
                 && factory->rally.pt.x != 0)
             {
@@ -118,9 +118,9 @@ namespace hooks
 
     Order* RemoveReferences(Unit* unit, Unit* dying) // 0049E590
     {
-        if (unit->currentBuildUnit == dying)
+        if (unit->current_build_unit == dying)
         {
-            unit->currentBuildUnit = 0;
+            unit->current_build_unit = 0;
         }
         if (unit->order_target.unit == dying)
         {
@@ -138,9 +138,9 @@ namespace hooks
         {
             unit->connected_unit = 0;
         }
-        if (unit->irradiatedBy == dying)
+        if (unit->irradiate_caster == dying)
         {
-            unit->irradiatedBy = 0;
+            unit->irradiate_caster = 0;
         }
         if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
         {
@@ -164,7 +164,7 @@ namespace hooks
                 unit->building.addon = 0;
             }
         }
-        if (unit->isFactory())
+        if (unit->is_factory())
         {
             UnitExt* unitExt = globals.get_unit_ext(unit);
             if (unit->rally.unit == dying)
@@ -230,7 +230,7 @@ namespace hooks
                 {
                     if (unit->status & UnitStatus::GroundedBuilding)
                     {
-                        if (unit->isFactory())
+                        if (unit->is_factory())
                         {
                             order_type = 2;
                         }
@@ -250,7 +250,7 @@ namespace hooks
             {
                 if (rightOrder == OrderId::RallyPoint1)
                 {
-                    if (unit->isFactory())
+                    if (unit->is_factory())
                     {
                         Unit* rallyTarget = target;
                         if (!rallyTarget)
@@ -268,7 +268,7 @@ namespace hooks
                 {
                     if (rightOrder == OrderId::RallyPoint2)
                     {
-                        if (unit->isFactory())
+                        if (unit->is_factory())
                         {
                             UnitExt* unitExt = globals.get_unit_ext(unit);
                             unit->rally.unit = 0;

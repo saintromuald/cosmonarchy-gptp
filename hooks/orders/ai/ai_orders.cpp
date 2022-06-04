@@ -441,8 +441,8 @@ LABEL_37:
 			}
 			if (!(townWorker->status & UnitStatus::InBuilding))
 			{
-				s32 townUnitGroundStrength = townWorker->groundStrength;
-				s16 townUnitAirStrength = townWorker->airStrength;
+				s32 townUnitGroundStrength = townWorker->ground_strength;
+				s16 townUnitAirStrength = townWorker->air_strength;
 				region->fullAirStrength += townUnitAirStrength;
 				region->fullGroundStrength += townUnitGroundStrength;
 				Sprite* townUnitSprite = townWorker->sprite;
@@ -1601,7 +1601,7 @@ LABEL_37:
 	// Hooked as part of the vespene overhaul. -Pr0nogo
 	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback) // 00433B90
 	{
-		if (worker->resourceType & ResourceType::Minerals)
+		if (worker->resource_type & ResourceType::Minerals)
 		{
 			worker->user_action_flags |= 1u;
 			if (worker->main_order_id)
@@ -1623,7 +1623,7 @@ LABEL_37:
 			}
 			helper::orders_nothing_2(worker);
 		}
-		else if (worker->resourceType & ResourceType::VespeneGas)
+		else if (worker->resource_type & ResourceType::VespeneGas)
 		{
 			helper::issue_order_targeting_nothing(worker, OrderId::ReturnGas);
 		}
@@ -2009,7 +2009,7 @@ LABEL_37:
 											break;
 										}
 									LABEL_22:
-										if (!first_player_unit->isBlind
+										if (!first_player_unit->is_blind
 											&& (first_order_id == OrderId::ComputerAI
 												|| first_order_id == OrderId::ComputerReturn
 												|| first_order_id == OrderId::GuardPost

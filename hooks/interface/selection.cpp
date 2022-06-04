@@ -73,7 +73,7 @@ namespace hooks
 						// if the unit is cloaked and visibility status test (detection by detectors units probably) fail, the unit is skipped
 						if (current_unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
 						{
-							if (!(current_unit->visibilityStatus & *VISIBILITY_CHECK_0057F0B0))
+							if (!(current_unit->visibility_status & *VISIBILITY_CHECK_0057F0B0))
 							{
 								dontAddToList = true;
 							}
@@ -277,7 +277,7 @@ namespace hooks
 						// This is what make the rally point briefly appear when selecting a building with one. Maybe can do other things?
 						if (sorted_list_length == 1
 							&& clicked_unit->player == *ACTIVE_NATION_ID
-							&& clicked_unit->isFactory())
+							&& clicked_unit->is_factory())
 						{
 							helper::function_00468670(clicked_unit);
 						}
@@ -453,7 +453,7 @@ namespace hooks
 			// selecting a building with one.
 			// maybe can do others things?
 			if (clicked_unit->player == *ACTIVE_NATION_ID
-				&& clicked_unit->isFactory())
+				&& clicked_unit->is_factory())
 			{
 				helper::function_00468670(clicked_unit);
 			}

@@ -395,7 +395,7 @@ namespace hooks
             raceSupply[RaceId::Terran].used[unit->player] += count * units_dat::SupplyRequired[unit->id];
         }
 
-        if (groupFlag.isFactory)
+        if (groupFlag.is_factory)
         {
             factoriesProducedOwnedTotal[unit->player] += count;
         }
@@ -435,12 +435,12 @@ namespace hooks
         completed_unit_counts[unit->id].player[unit->player] += count;
 
         s32 race = unit->get_race();
-        s32 supply = unit->getSupplyProvided();
+        s32 supply = unit->get_supply_provided();
         if (race <= RaceId::Protoss)
         {
             raceSupply[RaceId::Terran].provided[player] += count * supply;
         }
-        if (units_dat::GroupFlags[unit_id].isFactory)
+        if (units_dat::GroupFlags[unit_id].is_factory)
         {
             factoriesOwned[unit->player] += count;
         }

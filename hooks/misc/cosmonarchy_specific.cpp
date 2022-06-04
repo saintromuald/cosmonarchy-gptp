@@ -818,8 +818,8 @@ LABEL_18:
 		{
 			unit->hitpoints = 1;
 		}
-		unit->airStrength = helper::get_unit_strength(unit, max_hp, false);
-		unit->groundStrength = helper::get_unit_strength(unit, max_hp, true);
+		unit->air_strength = helper::get_unit_strength(unit, max_hp, false);
+		unit->ground_strength = helper::get_unit_strength(unit, max_hp, true);
 		unit->status &= ~(UnitStatus::CanNotReceiveOrders | UnitStatus::NoBrkCodeStart);
 		if (!orders_dat::CanBeInterrupted[order_type]) {
 			unit->status |= UnitStatus::CanNotReceiveOrders;
@@ -845,7 +845,7 @@ LABEL_18:
 		{
 			temp_unit_id = UnitId::None;
 		}
-		if (!(unit->status & UnitStatus::Frozen) && !unit->lockdownTimer && !unit->stasisTimer && !unit->maelstromTimer
+		if (!(unit->status & UnitStatus::Frozen) && !unit->lockdown_timer && !unit->stasis_timer && !unit->maelstrom_timer
 			|| units_dat::BaseProperty[unit->id] & UnitProperty::Building
 			|| temp_unit_id == UnitId::None)
 		{

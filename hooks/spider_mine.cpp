@@ -23,7 +23,7 @@ namespace hooks
 				mine, [&](Unit* target)
 		{
 			// Don't attack friendly or allied units
-			if (!mine->isTargetEnemy(target))
+			if (!mine->is_target_enemy(target))
 			{
 				return false;
 			}
@@ -287,9 +287,9 @@ namespace hooks
 		helper::toggle_unit_path(unit);
 
 		Sprite* unitSprite = unitVar->sprite;
-		char unitPathing = unitVar->pathingFlags;
+		char unitPathing = unitVar->pathing_flags;
 		unitVar->movement_state = 0;
-		unitVar->pathingFlags = (unitPathing ^ (unitSprite->elevationLevel < 12u)) & 1 ^ unitPathing;
+		unitVar->pathing_flags = (unitPathing ^ (unitSprite->elevationLevel < 12u)) & 1 ^ unitPathing;
 		unitVar->status |= UnitStatus::CloakingForFree | UnitStatus::Burrowed;
 		unitSprite->flags |= 0x40u; // image is hidden
 

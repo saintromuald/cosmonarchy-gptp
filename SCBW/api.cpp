@@ -943,9 +943,9 @@ namespace scbw
 		}
 
 		helper::toggle_unit_path(unit);
-		char pathing_flags = unit->pathingFlags;
+		char pathing_flags = unit->pathing_flags;
 		unit->movement_state = 0;
-		unit->pathingFlags = (pathing_flags ^ (unit->sprite->elevationLevel < 12)) & 1 ^ pathing_flags;
+		unit->pathing_flags = (pathing_flags ^ (unit->sprite->elevationLevel < 12)) & 1 ^ pathing_flags;
 	}
 
 	//-------- Utility functions --------//
@@ -1062,7 +1062,7 @@ namespace scbw
 		*someDialogUnknownUser = nullptr;
 	}
 
-	void create_unit_from_ability(s32 unit_id, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer, Unit* creator)
+	void create_unit_from_ability(s32 unit_id, s32 count, u16 playerId, s32 x, s32 y, u32 remove_timer, Unit* creator)
 	{
 		for (s32 i = 0; i < count; i++)
 		{
@@ -1076,7 +1076,7 @@ namespace scbw
 			{
 				helper::apply_hallucination_stats(unit);
 				unit->status |= UnitStatus::IsHallucination;
-				unit->removeTimer = 1350;
+				unit->remove_timer = 1350;
 				unit->sprite->create_overlay(ImageId::HallucinationDeath3);
 			}
 			switch (unit_id)
@@ -1085,9 +1085,9 @@ namespace scbw
 				case UnitId::ZergRililisk:
 				{
 					helper::play_sound_from_unit(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
-					if (unit->removeTimer == 0 || unit->removeTimer > removeTimer)
+					if (unit->remove_timer == 0 || unit->remove_timer > remove_timer)
 					{
-						unit->removeTimer = removeTimer;
+						unit->remove_timer = remove_timer;
 					}
 					u32 range = 6 * 32;
 					scbw::UnitFinder(
@@ -1219,7 +1219,7 @@ namespace scbw
 
 	void apply_ensnare(Unit* unit) // 004F45E0
 	{
-		if (!(unit->ensnareTimer)
+		if (!(unit->ensnare_timer)
 			&& !(unit->status & UnitStatus::Burrowed))
 		{
 			Unit* victim = unit;
@@ -1229,15 +1229,15 @@ namespace scbw
 			}
 			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
 		}
-		unit->ensnareTimer = 37;
+		unit->ensnare_timer = 37;
 		unit->update_speed();
 	}
 
 	bool is_enabled(Unit* unit)
 	{
-		if (unit->lockdownTimer
-			|| unit->maelstromTimer
-			|| unit->stasisTimer
+		if (unit->lockdown_timer
+			|| unit->maelstrom_timer
+			|| unit->stasis_timer
 			|| unit->status & UnitStatus::Disabled)
 		{
 			return false;
@@ -1346,7 +1346,7 @@ namespace scbw
 		{
 			if (unitExt->timers[TimerDecloak] == 0)
 			{
-				unit->visibilityStatus = 0xff;
+				unit->visibility_status = 0xff;
 				helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 			}
 			if (unitExt->timers[TimerDecloak] != 1)
@@ -1437,7 +1437,7 @@ namespace scbw
 	void play_work_animation(Unit* unit)
 	{
 		Image* current_image = unit->sprite->images.head;
-		unit->secondaryOrderState = 2;
+		unit->secondary_order_state = 2;
 		while (current_image != nullptr)
 		{
 			current_image->play_iscript_animation(IscriptAnimation::IsWorking);
@@ -1908,7 +1908,7 @@ namespace scbw
 
 		// Recurse
 		for (u32 i = 0; i < 8; ++i) {
-			Unit* unit = target->getLoadedUnit(i);
+			Unit* unit = target->get_loaded_unit(i);
 			mind_control(source, unit);
 		}
 		for (Unit* unit : targetExt->unit_vectors[UnitVectorMindControlling])

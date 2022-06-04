@@ -357,9 +357,9 @@ bool Unit::is_frozen() const
 	assert(this);
 	return
 		this->status & UnitStatus::Frozen
-		|| this->lockdownTimer
-		|| this->stasisTimer
-		|| this->maelstromTimer;
+		|| this->lockdown_timer
+		|| this->stasis_timer
+		|| this->maelstrom_timer;
 }
 
 extern const u32 Func_IsRemorphingBuilding = 0x0045CD00;
@@ -386,9 +386,9 @@ bool Unit::is_subunit() const
 }
 
 // Equivalent to function @ 0x0047B2E0 until you change .dat files.
-bool Unit::isFactory() const
+bool Unit::is_factory() const
 {
-	return (this && units_dat::GroupFlags[this->id].isFactory);
+	return (this && units_dat::GroupFlags[this->id].is_factory);
 }
 
 //Identical to function @ 0x00401210
@@ -677,15 +677,15 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 void Unit::reduce_defensive_matrix_hp(s32 amount)
 {
 	assert(this);
-	if (this->defensiveMatrixHp > amount)
+	if (this->defensive_matrix_hp > amount)
 	{
-		this->defensiveMatrixHp -= amount;
+		this->defensive_matrix_hp -= amount;
 	}
 	else
 	{
 		Image* current_image;
-		this->defensiveMatrixHp = 0;
-		this->defensiveMatrixTimer = 0;
+		this->defensive_matrix_hp = 0;
+		this->defensive_matrix_timer = 0;
 		this->remove_overlay(ImageId::DefensiveMatrixFront_Small, ImageId::DefensiveMatrixFront_Large);
 		current_image = this->sprite->images.head;
 
@@ -704,7 +704,7 @@ void Unit::reduce_defensive_matrix_hp(s32 amount)
 		}
 	}
 
-	if (this->defensiveMatrixTimer != 0 && !(this->status & UnitStatus::Burrowed))
+	if (this->defensive_matrix_timer != 0 && !(this->status & UnitStatus::Burrowed))
 	{
 		Unit* unit = this->subunit ? this->subunit : this;
 		// get_unit_overlay_adjustment code was hardcoded into function in original code)
@@ -880,7 +880,7 @@ void Unit::order_to(u8 orderId, Unit* target)
 	{
 		this->order(orderId, 0, 0, target, UnitId::None, true);
 	}
-	prepareForNextOrder(this);
+	prepare_for_next_order(this);
 }
 
 // Logically equivalent to function @ 0x00475260
@@ -889,7 +889,7 @@ void Unit::order_to(u8 orderId, u16 x, u16 y)
 	assert(this);
 	this->user_action_flags |= 0x1;
 	this->order(orderId, x, y, nullptr, UnitId::None, true);
-	prepareForNextOrder(this);
+	prepare_for_next_order(this);
 }
 
 // Logically equivalent to function orderComputer_cl @ 0x00475310
@@ -898,7 +898,7 @@ void Unit::order_computer(u8 orderId)
 {
 	this->user_action_flags |= 0x1;
 	this->order(orderId, 0, 0, nullptr, UnitId::None, true);
-	prepareForNextOrder(this);
+	prepare_for_next_order(this);
 }
 
 // Equivalent to 00474D60 __order function
@@ -924,11 +924,10 @@ void Unit::issue_queued_order_target(u8 orderId, Unit* target, bool stopPrevious
 void Unit::order_to_idle()
 {
 	assert(this);
-
 	if (this->order_queue_head)
 	{
 		this->user_action_flags |= 1;
-		prepareForNextOrder(this);
+		prepare_for_next_order(this);
 	}
 	else
 	{
@@ -943,15 +942,14 @@ void Unit::order_to_idle()
 	}
 }
 
-const u32 Func_Order = 0x00474810;
 void Unit::order(u8 orderId, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders)
 {
 	assert(this);
+	const u32 Func_Order = 0x00474810;
 	static Point16 pos;
 	static u32 targetUnitId_;
 	pos.x = x, pos.y = y;
 	targetUnitId_ = targetUnitId;
-
 	__asm {
 		PUSHAD
 		PUSH targetUnitId_
@@ -965,13 +963,11 @@ void Unit::order(u8 orderId, u16 x, u16 y, Unit* target, u16 targetUnitId, bool 
 	}
 }
 
-const u32 Func_PerformAnotherOrder = 0x004745F0;
 void Unit::perform_another_order(u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk)
 {
-
+	const u32 Func_PerformAnotherOrder = 0x004745F0;
 	static Point16 pos;
 	pos.x = x; pos.y = y;
-
 	__asm {
 		PUSHAD
 		PUSH target
@@ -983,33 +979,34 @@ void Unit::perform_another_order(u8 orderId, s16 x, s16 y, Unit* target, u16 tar
 		CALL Func_PerformAnotherOrder
 		POPAD
 	}
-
 }
 
-//Identical to @ 0x004743D0
+// Identical to @ 0x004743D0
 void Unit::set_secondary_order(u8 orderId)
 {
 	assert(this);
 	if (this->secondary_order_id == orderId)
+	{
 		return;
+	}
 	this->secondary_order_id = orderId;
-	this->secondaryOrderPos.x = 0;
-	this->secondaryOrderPos.y = 0;
-	this->currentBuildUnit = nullptr;
-	this->secondaryOrderState = 0;
+	this->secondary_order_pos.x = 0;
+	this->secondary_order_pos.y = 0;
+	this->current_build_unit = nullptr;
+	this->secondary_order_state = 0;
 }
 
 //-------- Graphics and animations --------//
 
-//Similar to function @ 0x004E5C90
+// Similar to function @ 0x004E5C90
 Image* Unit::get_overlay(u16 imageId) const
 {
 	assert(this);
-
 	Image* image = this->sprite->get_overlay(imageId);
 	if (!image && this->subunit)
+	{
 		image = this->subunit->sprite->get_overlay(imageId);
-
+	}
 	return image;
 }
 
@@ -1039,9 +1036,9 @@ void Unit::remove_overlay(u32 imageId)
 	}
 }
 
-// ----------------------------------------------------------------------------//
-// Return the proper ColorId to use an unit color with graphics function
-// ----------------------------------------------------------------------------//
+// -----------------------------------------------------------------------//
+//  Return the proper ColorId to use an unit color with graphics function
+// -----------------------------------------------------------------------//
 
 graphics::ColorId Unit::get_faction_color()
 {
@@ -1151,21 +1148,25 @@ u32 Unit::get_distance_to_target(Unit* target) const
 	{
 		dx = target->get_left() - unit->get_right() - 1;
 		if (dx < 0)
+		{
 			dx = 0;
+		}
 	}
 	s32 dy = unit->get_top() - target->get_bottom() - 1;
 	if (dy < 0)
 	{
 		dy = target->get_top() - unit->get_bottom() - 1;
 		if (dy < 0)
+		{
 			dy = 0;
+		}
 	}
 	return scbw::get_distance_fast(0, 0, dx, dy);
 }
 
-const u32 Func_HasPathToPos = 0x0049CB60; //AKA unitHasPathToDest()
 bool Unit::has_path_to_pos(u32 x, u32 y) const
 {
+	const u32 Func_HasPathToPos = 0x0049CB60;
 	assert(this);
 	u32 result;
 	__asm {
@@ -1180,9 +1181,9 @@ bool Unit::has_path_to_pos(u32 x, u32 y) const
 	return result != 0;
 }
 
-const u32 Func_HasPathToTarget = 0x0049CBB0; //AKA unitHasPathToUnit()
 bool Unit::has_path_to_unit(Unit* target) const
 {
+	const u32 Func_HasPathToTarget = 0x0049CBB0;
 	assert(this);
 	assert(target);
 	u32 result;
@@ -1197,9 +1198,9 @@ bool Unit::has_path_to_unit(Unit* target) const
 	return result != 0;
 }
 
-const u32 Func_IsTargetWithinMinRange = 0x00430F10;
 bool Unit::is_target_within_min_range(Unit* target, u32 range)
 {
+	const u32 Func_IsTargetWithinMinRange = 0x00430F10;
 	static b32 bPreResult;
 	__asm {
 		PUSHAD
@@ -1215,10 +1216,10 @@ bool Unit::is_target_within_min_range(Unit* target, u32 range)
 
 //-------- DAT Requirements --------//
 
-const u32 Func_CanMakeUnit = 0x0046E1C0;
 s32 Unit::can_make_unit(u16 unit_id, u8 playerId) const
 {
 	assert(this);
+	const u32 Func_CanMakeUnit = 0x0046E1C0;
 	s32 playerId_ = playerId;
 	static s32 result;
 	__asm {
@@ -1233,10 +1234,10 @@ s32 Unit::can_make_unit(u16 unit_id, u8 playerId) const
 	return result;
 }
 
-const u32 Func_CanUseTech = 0x0046DD80;
 s32 Unit::canUseTech(u8 techId, u8 playerId) const
 {
 	assert(this);
+	const u32 Func_CanUseTech = 0x0046DD80;
 	s32 playerId_ = playerId;
 	u32 _techId = techId;
 	static s32 result;
@@ -1256,15 +1257,13 @@ s32 Unit::canUseTech(u8 techId, u8 playerId) const
 
 //-------- Utility methods --------//
 
-const u32 Func_CanUnitAttackTarget = 0x00476730;
 bool Unit::canAttackTarget(Unit* target, bool checkVisibility) const
 {
 	assert(this);
 	assert(target);
-
+	const u32 Func_CanUnitAttackTarget = 0x00476730;
 	u32 _checkVisibility = checkVisibility ? 1 : 0;
 	static u32 result;
-
 	__asm
 	{
 		PUSHAD
@@ -1283,7 +1282,6 @@ extern const u32 Func_FireUnitWeapon = 0x00479C90;
 void Unit::fireWeapon(u8 weaponId) const
 {
 	assert(this);
-
 	static u32 weaponId_;
 	weaponId_ = weaponId;
 	__asm
@@ -1296,7 +1294,7 @@ void Unit::fireWeapon(u8 weaponId) const
 	}
 }
 
-Unit* Unit::getFromIndex(u16 index)
+Unit* Unit::get_unit_from_index(u16 index)
 {
 	if (globals.extended_unit_table == 1)
 	{
@@ -1313,7 +1311,7 @@ Unit* Unit::getFromIndex(u16 index)
 	return nullptr;
 }
 
-u16 Unit::getIndex() const
+u16 Unit::get_unit_index() const
 {
 	assert(this);
 	if (globals.extended_unit_table == 1)
@@ -1323,7 +1321,7 @@ u16 Unit::getIndex() const
 	return this - unitTable + 1;
 }
 
-u8 Unit::getLastOwnerId() const
+u8 Unit::get_last_owner_id() const
 {
 	assert(this);
 	assert(this->sprite);
@@ -1337,42 +1335,41 @@ u8 Unit::getLastOwnerId() const
 	}
 }
 
-Unit* Unit::getLoadedUnit(s32 index) const
+Unit* Unit::get_loaded_unit(s32 index) const
 {
 	assert(0 <= index && index < 8);
-
-	Unit* loaded_unit = Unit::getFromIndex(this->loaded_unit[index].index);
-	if (loaded_unit && loaded_unit->sprite
-		&& !(loaded_unit->main_order_id == OrderId::Die && loaded_unit->main_order_state == 1)
-		&& loaded_unit->target_order_special == this->loaded_unit[index].unit_id)
+	Unit* loaded_unit = Unit::get_unit_from_index(this->loaded_unit[index].index);
+	if  (loaded_unit && loaded_unit->sprite
+	&& !(loaded_unit->main_order_id == OrderId::Die && loaded_unit->main_order_state == 1)
+	&&   loaded_unit->target_order_special == this->loaded_unit[index].unit_id)
 	{
 		return loaded_unit;
 	}
 	return nullptr;
 }
 
-//Logically equivalent to function @ 0x004E6C90
-Unit* Unit::getFirstLoadedUnit() const
+// Logically equivalent to function @ 0x004E6C90
+Unit* Unit::get_first_loaded_unit() const
 {
 	assert(this);
-
 	for (s32 i = 0; i < units_dat::SpaceProvided[this->id]; ++i)
 	{
-		Unit* firstLoadedUnit = getLoadedUnit(i);
+		Unit* firstLoadedUnit = get_loaded_unit(i);
 		if (firstLoadedUnit)
+		{
 			return firstLoadedUnit;
+		}
 	}
-
 	return nullptr;
 }
 
-//Logically equivalent to function @ 0x004E7110
-bool Unit::hasLoadedUnit() const
+// Logically equivalent to function @ 0x004E7110
+bool Unit::has_loaded_unit() const
 {
 	assert(this);
 	for (s32 i = 0; i < 8; ++i)
 	{
-		if (!getLoadedUnit(i))
+		if (!get_loaded_unit(i))
 		{
 			return true;
 		}
@@ -1390,7 +1387,6 @@ bool Unit::give_to(u8 playerId)
 {
 	assert(this);
 	assert(playerId < 12);
-
 	if (giveUnitToPlayer(this, playerId) != 0)
 	{
 		if ((this->id == UnitId::ZergNydusCanal || !(units_dat::BaseProperty[this->id] & UnitProperty::Building))
@@ -1399,7 +1395,6 @@ bool Unit::give_to(u8 playerId)
 		{
 			this->order_to_idle();
 		}
-
 		UnitExt* unitExt = globals.get_unit_ext(this);
 		unitExt->timers[TimerOwnerChangedRecently] = 2;
 		return true;
@@ -1415,16 +1410,16 @@ bool Unit::is_dead() const
 }
 
 // Probably equivalent to function @ 0047B910
-bool Unit::isTargetEnemy(Unit* target) const
+bool Unit::is_target_enemy(Unit* target) const
 {
 	assert(this);
-	return scbw::isUnitEnemy(this->player, target);
+	return scbw::is_unit_enemy(this->player, target);
 }
 
 bool Unit::is_visible_to(u8 playerId) const
 {
 	assert(this);
-	return (this->visibilityStatus & (1 << playerId)) != 0;
+	return (this->visibility_status & (1 << playerId)) != 0;
 }
 
 const u32 Func_UpdateSpeed = 0x00454310;
@@ -1440,14 +1435,15 @@ void Unit::update_speed()
 	}
 }
 
-u32 Unit::getSupplyProvided() // overwrites previous supply provided
+u32 Unit::get_supply_provided() // overwrites previous supply provided
 {
 	UnitExt* unitExt = globals.get_unit_ext(this);
 	if (unitExt->values[ValueSupplyProvidedSet])
 	{
 		if (unitExt->values[ValueSupplyProvidedId] == id) {
 			return unitExt->values[ValueSupplyProvided];
-		} else {
+		}
+		else {
 			raceSupply[RaceId::Terran].provided[player] -= unitExt->values[ValueSupplyProvided];
 			raceSupply[RaceId::Terran].provided[player] += units_dat::SupplyProvided[unitExt->values[ValueSupplyProvidedId]];
 			unitExt->values[ValueSupplyProvidedSet] = 0;
@@ -1475,20 +1471,20 @@ u32 Unit::getSupplyProvided() // overwrites previous supply provided
 	return supply;
 }
 
-void Unit::setSupplyProvided(u8 amount) // overwrites previous supply provided
+void Unit::set_supply_provided(u8 amount) // overwrites previous supply provided
 {
 	UnitExt* unitExt = globals.get_unit_ext(this);
-	raceSupply[RaceId::Terran].provided[player] -= getSupplyProvided();
+	raceSupply[RaceId::Terran].provided[player] -= get_supply_provided();
 	raceSupply[RaceId::Terran].provided[player] += amount;
 	unitExt->values[ValueSupplyProvidedSet] = 1;
 	unitExt->values[ValueSupplyProvidedId] = id;
 	unitExt->values[ValueSupplyProvided] = amount;
 }
 
-void Unit::resetSupplyProvided() // overwrites previous supply provided
+void Unit::reset_supply_provided() // overwrites previous supply provided
 {
 	UnitExt* unitExt = globals.get_unit_ext(this);
-	setSupplyProvided(units_dat::SupplyProvided[id]);
+	set_supply_provided(units_dat::SupplyProvided[id]);
 	unitExt->values[ValueSupplyProvidedSet] = 0;
 	unitExt->values[ValueSupplyProvidedId] = 0;
 	unitExt->values[ValueSupplyProvided] = 0;
@@ -1508,11 +1504,11 @@ bool Unit::is_constructing_addon()
 	assert(this);
 	return this->secondary_order_id == OrderId::BuildAddon
 		&& this->status & UnitStatus::GroundedBuilding
-		&& this->currentBuildUnit != NULL
-		&& !(this->currentBuildUnit->status & UnitStatus::Completed);
+		&& this->current_build_unit != NULL
+		&& !(this->current_build_unit->status & UnitStatus::Completed);
 }
 
-u8 Unit::getHangarTrainCount()
+u8 Unit::get_hangar_train_count()
 {
 	assert(this);
 	const u32 Func_getHangarTrainCount = 0x00465270;
@@ -1526,7 +1522,7 @@ u8 Unit::getHangarTrainCount()
 	}
 }
 
-u8 Unit::getMaxHangarSpace()
+u8 Unit::get_max_hangar_space()
 {
 	assert(this);
 	const u32 Func_getMaxHangarSpace = 0x004653D0;
@@ -1540,7 +1536,7 @@ u8 Unit::getMaxHangarSpace()
 	}
 }
 
-bool Unit::isReaver()
+bool Unit::is_reaver()
 {
 	assert(this);
 	const u32 Func_unitIsReaver = 0x00401490;
@@ -1555,7 +1551,7 @@ bool Unit::isReaver()
 	return (bool)result;
 }
 
-bool Unit::isCarrier()
+bool Unit::is_carrier()
 {
 	assert(this);
 	const u32 Func_unitIsCarrier = 0x00401470;
@@ -1591,7 +1587,7 @@ bool Unit::is_queue_slot_active(int slot)
 	return this->build_queue[(slot + (unsigned __int8)this->build_queue_slot) % 5] <= (unsigned __int16)UnitId::Spell_DisruptionWeb;
 }
 
-u8 Unit::getRightClickActionOrder()
+u8 Unit::get_right_click_action_order()
 {
 	u8 result;
 	if (this->id == UnitId::ZergLakizilisk && this->status & UnitStatus::Burrowed)
@@ -1603,7 +1599,7 @@ u8 Unit::getRightClickActionOrder()
 		u8 temp_result = units_dat::RightClickAction[this->id];
 		if (temp_result == RightClickActions::NoCommand_AutoAttack &&
 			this->status & UnitStatus::GroundedBuilding &&
-			this->isFactory())
+			this->is_factory())
 		{
 			result = RightClickActions::NormalMove_NoAttack;
 		}
@@ -1611,7 +1607,6 @@ u8 Unit::getRightClickActionOrder()
 		{
 			result = temp_result;
 		}
-
 	}
 	return result;
 }

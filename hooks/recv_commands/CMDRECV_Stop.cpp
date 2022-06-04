@@ -104,7 +104,7 @@ namespace hooks
 
 													}
 
-													prepareForNextOrder(current_unit);
+													prepare_for_next_order(current_unit);
 
 												}
 
@@ -212,7 +212,7 @@ namespace hooks
 
 													}
 
-													prepareForNextOrder(current_unit);
+													prepare_for_next_order(current_unit);
 
 												}
 

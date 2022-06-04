@@ -29,9 +29,9 @@ namespace AI
 				return false;
 			}
 			Unit* targetOfTarget;
-			if (target->id == UnitId::TerranBunker && target->hasLoadedUnit())
+			if (target->id == UnitId::TerranBunker && target->has_loaded_unit())
 			{
-				targetOfTarget = target->getFirstLoadedUnit()->order_target.unit;
+				targetOfTarget = target->get_first_loaded_unit()->order_target.unit;
 			}
 			else
 			{
@@ -45,7 +45,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (caster->isTargetEnemy(targetOfTarget))
+			if (caster->is_target_enemy(targetOfTarget))
 			{
 				return false;
 			}

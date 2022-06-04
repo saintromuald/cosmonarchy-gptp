@@ -105,10 +105,10 @@ namespace hooks
 			}
 			if (resource_amount > 0)
 			{
-				if (worker->resourceType & ResourceType::Either)
+				if (worker->resource_type & ResourceType::Either)
 				{
 					helper::remove_powerup_image_overlay(worker);
-					worker->resourceType = ResourceType::None;
+					worker->resource_type = ResourceType::None;
 				}
 
 				// Resource return multipliers
@@ -190,7 +190,7 @@ namespace hooks
 
 		if (unit->sprite->flags & SpriteFlags::Hidden || node
 			&& unit_is_geyser_ex(node, unit)
-			&& (unit->resourceType == ResourceType::None || unit->resourceType & ResourceType::Either))
+			&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either))
 		{
 			helper::set_gathering_flags(unit);
 			if (unit->main_order_state)
@@ -211,7 +211,7 @@ namespace hooks
 						}
 						helper::delete_order(unit, OrderId::HarvestInterrupt);
 						helper::delete_order(unit, OrderId::ResetCollision2);
-						u8 resource_return_order = unit->resourceType & ResourceType::VespeneGas ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
+						u8 resource_return_order = unit->resource_type & ResourceType::VespeneGas ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
 						if (!unit->order_queue_head)
 						{
 							helper::order_targeting_nothing(resource_return_order, unit, 0);
@@ -272,7 +272,7 @@ namespace hooks
 		if (node
 			&& node->status & UnitStatus::Completed
 			&& valid_structure
-			&& (unit->resourceType == ResourceType::None || unit->resourceType & ResourceType::Either))
+			&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either))
 		{
 			helper::turnUnit(unit, scbw::get_angle(unit->position, node->position));
 			if (!unit->main_order_state) {
@@ -325,7 +325,7 @@ namespace hooks
 
 			if (unit_is_geyser_ex(node, worker, ignore_completed) || node_id == UnitId::ResourceVespeneGeyser)
 			{
-				worker_resource_type = worker->resourceType;
+				worker_resource_type = worker->resource_type;
 				if (!worker_resource_type || worker_resource_type & ResourceType::Either)
 				{
 					result = OrderId::HarvestGas1;
@@ -342,7 +342,7 @@ namespace hooks
 					result = OrderId::None;
 					return result;
 				}
-				worker_resource_type = worker->resourceType;
+				worker_resource_type = worker->resource_type;
 				if (worker_resource_type & ResourceType::Minerals)
 				{
 					return OrderId::ReturnMinerals;
@@ -359,7 +359,7 @@ namespace hooks
 		}
 		else
 		{
-			worker_resource_type = worker->resourceType;
+			worker_resource_type = worker->resource_type;
 			if (!worker_resource_type || worker_resource_type & ResourceType::Either)
 			{
 				result = OrderId::MoveToMinerals;
@@ -433,9 +433,9 @@ namespace hooks
 		while (worker) {
 			u32 previous_status = worker->status;
 			if (!(previous_status & UnitStatus::Frozen) // TODO: Replace this whole if with API is_disabled check
-			&&  !worker->lockdownTimer
-			&&  !worker->stasisTimer
-			&&  !worker->maelstromTimer)
+			&&  !worker->lockdown_timer
+			&&  !worker->stasis_timer
+			&&  !worker->maelstrom_timer)
 			{
 				if (worker->main_order_id == OrderId::CanEnterGasMine || worker->main_order_id == OrderId::CanHarvestOre)
 				{
@@ -477,7 +477,7 @@ namespace hooks
 	// Single-case hook of orders_entries to fix order delay on workers harvesting from vespene geysers. -Pr0nogo
 	// Also used for OrderId::Harvest1
 	void orders_entries_move_to_harvest_obscured(Unit* worker) { // 00469500
-		if (worker->resourceType && !(worker->resourceType & ResourceType::Either)) {
+		if (worker->resource_type && !(worker->resource_type & ResourceType::Either)) {
 			helper::set_resource_target(worker);
 			u32 fixed_x = worker->move_target.pt.x;
 			u32 fixed_y = worker->move_target.pt.y;
@@ -509,7 +509,7 @@ namespace hooks
 				if (target && helper::unit_is_geyser_ex(target, worker)) {
 					if (is_movable == 2) {
 						worker->main_order_state = 0;
-					} else if (worker->resourceType & ResourceType::VespeneGas) {
+					} else if (worker->resource_type & ResourceType::VespeneGas) {
 						helper::issue_order_targeting_nothing(worker, OrderId::ReturnGas);
 					} else {
 						helper::prepend_order_targeting_unit(worker, target, OrderId::CanEnterGasMine);

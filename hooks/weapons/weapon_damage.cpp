@@ -179,16 +179,16 @@ namespace hooks
 		}
 
 		// Reduce Defensive Matrix
-		if (data.target->defensiveMatrixHp != 0)
+		if (data.target->defensive_matrix_hp != 0)
 		{
 			s32 d_matrix_reduceAmount;
-			if (data.target->defensiveMatrixHp > data.finalDamage)
+			if (data.target->defensive_matrix_hp > data.finalDamage)
 			{
 				d_matrix_reduceAmount = data.finalDamage;
 			}
 			else
 			{
-				d_matrix_reduceAmount = data.target->defensiveMatrixHp;
+				d_matrix_reduceAmount = data.target->defensive_matrix_hp;
 			}
 			data.finalDamage -= d_matrix_reduceAmount;
 			data.target->reduce_defensive_matrix_hp(d_matrix_reduceAmount);
@@ -298,7 +298,7 @@ namespace hooks
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damageType != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensiveMatrixHp == 0 && canDamage )
+		if (data.damageType != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && canDamage )
 		{
 			data.target->damage_hp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
@@ -326,8 +326,8 @@ namespace hooks
 		}
 
 		// Update unit strength data
-		data.target->airStrength = helper::get_unit_strength(data.target, false);
-		data.target->groundStrength = helper::get_unit_strength(data.target, true);
+		data.target->air_strength = helper::get_unit_strength(data.target, false);
+		data.target->ground_strength = helper::get_unit_strength(data.target, true);
 	}
 
 	static void weaponDamage_damageModifiers(WeaponDamageData& data)
@@ -917,7 +917,7 @@ namespace hooks
 			data.target->hitpoints = 0;
 			data.target->shields = 0;
 			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 256 * 2.5, targetExt->units[UnitEmpressSource]);
-			data.target->removeTimer = 1 + targetExt->values[ValueEmpressPassiveStacks] * 24 * 0.25;
+			data.target->remove_timer = 1 + targetExt->values[ValueEmpressPassiveStacks] * 24 * 0.25;
 			data.target->give_to(targetExt->values[ValueEmpressSourcePlayer]);
 			targetExt->values[ValueEmpressPassiveStacks] = 0;
 			targetExt->values[ValueIsZombified] = 1;
@@ -1120,7 +1120,7 @@ namespace hooks
 		u8 overlayPadding;
 		Unit* victim;
 
-		if (!(unit->ensnareTimer)
+		if (!(unit->ensnare_timer)
 			&& !(unit->status & UnitStatus::Burrowed))
 		{
 			// Calculate overlay ID offset based on units_dat flags
@@ -1143,7 +1143,7 @@ namespace hooks
 			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + overlayPadding);
 		}
 		// Apply effect
-		unit->ensnareTimer = 37;
+		unit->ensnare_timer = 37;
 		unit->update_speed();
 	}
 

@@ -31,7 +31,7 @@ namespace AI
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
 				return false;
 
-			if (target->isBlind)
+			if (target->is_blind)
 				return false;
 
 			if (target->canDetect())

@@ -115,7 +115,7 @@ namespace scbw
 			{
 				// If height is small, check unit bounds
 				if (!isHeightExtended
-					|| Unit::getFromIndex(py->unitIndex)->get_top() < bottom)
+					|| Unit::get_unit_from_index(py->unitIndex)->get_top() < bottom)
 					unitFilter[py->unitIndex] = 1;
 			}
 		}
@@ -128,9 +128,9 @@ namespace scbw
 			{
 				// If width is small, check unit bounds
 				if (!isWidthExtended
-					|| Unit::getFromIndex(px->unitIndex)->get_left() < right)
+					|| Unit::get_unit_from_index(px->unitIndex)->get_left() < right)
 				{
-					Unit* unit = Unit::getFromIndex(px->unitIndex);
+					Unit* unit = Unit::get_unit_from_index(px->unitIndex);
 					if (unit)
 						this->units[this->unitCount++] = unit;
 				}
@@ -164,7 +164,7 @@ namespace scbw
 			//Search to the left
 			if (getStartX() <= left)
 			{
-				Unit* unit = Unit::getFromIndex(left->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(left->unitIndex);
 
 				if (boundsLeft <= unit->get_x())
 				{
@@ -192,7 +192,7 @@ namespace scbw
 			//Search to the right
 			if (right < getEndX())
 			{
-				Unit* unit = Unit::getFromIndex(right->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(right->unitIndex);
 
 				if (unit->get_x() < boundsRight)
 				{
@@ -220,7 +220,7 @@ namespace scbw
 			//Search upwards
 			if (getStartY() <= top)
 			{
-				Unit* unit = Unit::getFromIndex(top->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(top->unitIndex);
 
 				if (boundsTop <= unit->get_y())
 				{
@@ -248,7 +248,7 @@ namespace scbw
 			//Search downwards
 			if (bottom < getEndY())
 			{
-				Unit* unit = Unit::getFromIndex(bottom->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(bottom->unitIndex);
 
 				if (unit->get_y() < boundsBottom)
 				{
@@ -312,7 +312,7 @@ namespace scbw
 			//Search to the left
 			if (getStartX() <= left)
 			{
-				Unit* unit = Unit::getFromIndex(left->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(left->unitIndex);
 
 				if (boundsLeft <= unit->get_x())
 				{
@@ -340,7 +340,7 @@ namespace scbw
 			//Search to the right
 			if (right < getEndX())
 			{
-				Unit* unit = Unit::getFromIndex(right->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(right->unitIndex);
 
 				if (unit->get_x() < boundsRight)
 				{
@@ -368,7 +368,7 @@ namespace scbw
 			//Search upwards
 			if (getStartY() <= top)
 			{
-				Unit* unit = Unit::getFromIndex(top->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(top->unitIndex);
 
 				if (boundsTop <= unit->get_y())
 				{
@@ -396,7 +396,7 @@ namespace scbw
 			//Search downwards
 			if (bottom < getEndY())
 			{
-				Unit* unit = Unit::getFromIndex(bottom->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(bottom->unitIndex);
 
 				if (unit->get_y() < boundsBottom)
 				{
@@ -457,7 +457,7 @@ namespace scbw
 			//Search to the left
 			if (getStartX() <= left)
 			{
-				Unit* unit = Unit::getFromIndex(left->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(left->unitIndex);
 
 				if (boundsLeft <= unit->get_x())
 				{
@@ -485,7 +485,7 @@ namespace scbw
 			//Search to the right
 			if (right < getEndX())
 			{
-				Unit* unit = Unit::getFromIndex(right->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(right->unitIndex);
 
 				if (unit->get_x() < boundsRight)
 				{
@@ -513,7 +513,7 @@ namespace scbw
 			//Search upwards
 			if (getStartY() <= top)
 			{
-				Unit* unit = Unit::getFromIndex(top->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(top->unitIndex);
 
 				if (boundsTop <= unit->get_y())
 				{
@@ -541,7 +541,7 @@ namespace scbw
 			//Search downwards
 			if (bottom < getEndY())
 			{
-				Unit* unit = Unit::getFromIndex(bottom->unitIndex);
+				Unit* unit = Unit::get_unit_from_index(bottom->unitIndex);
 
 				if (unit->get_y() < boundsBottom)
 				{
@@ -598,10 +598,10 @@ namespace scbw
 		}
 		else
 		{
-			searchLeft = getStartX() + sourceUnit->finderIndex.right - 1;
-			searchRight = getStartX() + sourceUnit->finderIndex.left + 1;
-			searchTop = getStartY() + sourceUnit->finderIndex.bottom - 1;
-			searchBottom = getStartY() + sourceUnit->finderIndex.top + 1;
+			searchLeft = getStartX() + sourceUnit->finder_index.right - 1;
+			searchRight = getStartX() + sourceUnit->finder_index.left + 1;
+			searchTop = getStartY() + sourceUnit->finder_index.bottom - 1;
+			searchBottom = getStartY() + sourceUnit->finder_index.top + 1;
 		}
 
 		return getNearest(sourceUnit->get_x(), sourceUnit->get_y(),

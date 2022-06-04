@@ -30,7 +30,7 @@ namespace AI
 			if (!scbw::can_weapon_target_unit(WeaponId::Ensnare, target, caster))
 				return false;
 
-			if (target->ensnareTimer)
+			if (target->ensnare_timer)
 				return false;
 
 			if (!(target->status & UnitStatus::IsBuilding)) //??

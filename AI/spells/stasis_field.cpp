@@ -41,7 +41,7 @@ namespace AI
 			if (targetOfTarget->player >= 8)
 				return false;
 
-			if (caster->isTargetEnemy(targetOfTarget))
+			if (caster->is_target_enemy(targetOfTarget))
 				return false;
 
 			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::StasisField);

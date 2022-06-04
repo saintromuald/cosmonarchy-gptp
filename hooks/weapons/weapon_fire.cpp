@@ -924,7 +924,7 @@ namespace hooks
 		}
 
 		s32 unitStatus = _pIterator->status;
-		if (unitStatus & 0x300 && !((1 << pSrc->player) & _pIterator->visibilityStatus))
+		if (unitStatus & 0x300 && !((1 << pSrc->player) & _pIterator->visibility_status))
 		{
 			return 0;
 		}
@@ -1281,17 +1281,17 @@ namespace hooks
 			}
 			case WeaponBehavior::AttackNearbyArea:
 			{
-				bullet->cyclicMissileIndex = parent->offsetIndex3by3;
-				bullet->attackTarget.pt.x -= (s16)attackCurve[parent->offsetIndex3by3].x;
-				bullet->attackTarget.pt.y -= (s16)attackCurve[parent->offsetIndex3by3].y;
+				bullet->cyclicMissileIndex = parent->offset_index_3_by_3;
+				bullet->attackTarget.pt.x -= (s16)attackCurve[parent->offset_index_3_by_3].x;
+				bullet->attackTarget.pt.y -= (s16)attackCurve[parent->offset_index_3_by_3].y;
 				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 
-				s16 finalOffset = parent->offsetIndex3by3 + 1;
+				s16 finalOffset = parent->offset_index_3_by_3 + 1;
 				if (!attackCurve[finalOffset].x)
 				{
 					finalOffset = 0;
 				}
-				parent->offsetIndex3by3 = finalOffset;
+				parent->offset_index_3_by_3 = finalOffset;
 				return 1;
 			}
 			case WeaponBehavior::GoToMaxRange:

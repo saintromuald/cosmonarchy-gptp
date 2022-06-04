@@ -574,21 +574,21 @@ namespace hooks
 		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh] > 0, 1);
 
 		// Vanilla Timer + Value
-		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, 200, unit->defensiveMatrixTimer);
+		addStatus(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 200, unit->defensive_matrix_timer);
 
 		// Vanilla Timers
-		addStatus(statuses, "Stimpack", -1, 1, unit->stimTimer);
-		addStatus(statuses, "Irradiated", -1, 1, unit->irradiateTimer);
-		addStatus(statuses, "Ensnared", -1, 1, unit->ensnareTimer);
-		addStatus(statuses, "Lobotomized", -1, 1, unit->lockdownTimer);
-		addStatus(statuses, "Maelstromed", -1, 1, unit->maelstromTimer);
-		addStatus(statuses, "Plagued", -1, 1, unit->plagueTimer);
-		addStatus(statuses, "Stasis", -1, 1, unit->stasisTimer);
-		addStatus(statuses, "Timed Life", -1, 1, unit->removeTimer, TimerType::RemoveTimer);
+		addStatus(statuses, "Stimpack", -1, 1, unit->stim_timer);
+		addStatus(statuses, "Irradiated", -1, 1, unit->irradiate_timer);
+		addStatus(statuses, "Ensnared", -1, 1, unit->ensnare_timer);
+		addStatus(statuses, "Lobotomized", -1, 1, unit->lockdown_timer);
+		addStatus(statuses, "Maelstromed", -1, 1, unit->maelstrom_timer);
+		addStatus(statuses, "Plagued", -1, 1, unit->plague_timer);
+		addStatus(statuses, "Stasis", -1, 1, unit->stasis_timer);
+		addStatus(statuses, "Timed Life", -1, 1, unit->remove_timer, TimerType::RemoveTimer);
 
 		// Vanilla Value
 		addStatus(statuses, "Parasited", unit->parasite_flags != 0, 1);
-		addStatus(statuses, "Blinded", unit->isBlind != 0, 1);
+		addStatus(statuses, "Blinded", unit->is_blind != 0, 1);
 		addStatus(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::BaseProperty[unit->id] & UnitProperty::Building, 1);
 		addStatus(statuses, "Cannot Attack", unitExt->timers[TimerUnderDisruptionWeb] > 0, 1);
 
@@ -597,7 +597,7 @@ namespace hooks
 		if (scbw::is_under_dark_swarm(unit))
 		{
 			Unit* darkSwarm = scbw::get_dark_swarm_unit(unit);
-			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->removeTimer, TimerType::RemoveTimer);
+			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
 		}
 		u32 nathrokorTargetStacks = 0;
 		for (int i = 0; i < 8; i++)

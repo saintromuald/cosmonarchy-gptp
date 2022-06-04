@@ -163,7 +163,7 @@ struct GameData // taken from IDA and from https://gist.githubusercontent.com/ne
 	u16		gotGameSubtypeDisplay;		// 0x71
 	u16		gotGameSubtypeLabel;		// 0x73
 	u8		victoryCondition;			// 0x75
-	u8		resourceType;				// 0x76
+	u8		resource_type;				// 0x76
 	u8		useStandardUnitStats;		// 0x77
 	u8		fogOfWar;					// 0x78
 	u8		startingUnits;				// 0x79
@@ -480,7 +480,7 @@ struct GroupFlag
 	u8 isProtoss : 1;		/*0x04*/
 	u8 isMen : 1;			/*0x08*/
 	u8 isBuilding : 1;		/*0x10*/
-	u8 isFactory : 1;		/*0x20*/
+	u8 is_factory : 1;		/*0x20*/
 	u8 isIndependent : 1;	/*0x40*/
 	u8 isNeutral : 1;		/*0x80*/
 };

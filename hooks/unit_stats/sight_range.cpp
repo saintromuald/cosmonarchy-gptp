@@ -25,7 +25,7 @@ namespace hooks
 			sightRange = DEFAULT_SIGHT_RANGE;
 		else
 			//Check if the unit is blinded (don't bother if this is for spellcasting)
-			if (!isForSpellCasting && unit->isBlind)
+			if (!isForSpellCasting && unit->is_blind)
 				sightRange = BLIND_SIGHT_RANGE;
 			else
 				sightRange = units_dat::SightRange[unit->id];

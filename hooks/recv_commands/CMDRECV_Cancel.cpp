@@ -31,7 +31,7 @@ namespace hooks
 			&& unit->secondary_order_id == OrderId::BuildAddon
 			&& unit->status & UnitStatus::GroundedBuilding)
 		{
-			Unit* addon = unit->currentBuildUnit;
+			Unit* addon = unit->current_build_unit;
 			if (addon != nullptr
 				&& !(addon->status & UnitStatus::Completed)
 				&& unit->status & UnitStatus::Completed

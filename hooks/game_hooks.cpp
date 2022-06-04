@@ -46,7 +46,7 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target)
 	{
 		return;
 	}
-	if (target->stasisTimer)
+	if (target->stasis_timer)
 	{
 		return;
 	}
@@ -884,7 +884,6 @@ namespace hooks
 					break;
 				}
 				auto timer = unitExt->timers[TimerNaniteField];
-				unit->_padding_0x133 = 0;
 				if (timer == 0)
 				{
 					unitExt->timers[TimerNaniteField] = 24;
@@ -1009,7 +1008,7 @@ namespace hooks
 			case UnitId::TerranMaverick:
 			{
 				// Decloak on Stimpack activation
-				if (unit->stimTimer == StimpackTimer)
+				if (unit->stim_timer == StimpackTimer)
 				{
 					scbw::decloak_proc(unit);
 				}
@@ -1310,7 +1309,7 @@ namespace hooks
 		// Fix target clearing bug
 		/*
 		if (unit->order_target.unit
-			&& !(unit->order_target.unit->visibilityStatus & (1 << unit->playerId)))
+			&& !(unit->order_target.unit->visibility_status & (1 << unit->playerId)))
 		{
 			scbw::print("lard");
 			unit->order_to_idle();
@@ -1381,21 +1380,21 @@ namespace hooks
 		}
 
 		// Correct vanilla timers - THIS IS TEMPORARY!
-		if (unit->defensiveMatrixTimer > AzazelDefensiveMatrixTimer)
+		if (unit->defensive_matrix_timer > AzazelDefensiveMatrixTimer)
 		{
-			unit->defensiveMatrixTimer = AzazelDefensiveMatrixTimer;
+			unit->defensive_matrix_timer = AzazelDefensiveMatrixTimer;
 		}
-		if (unit->stasisTimer > DidactStasisFieldTimer)
+		if (unit->stasis_timer > DidactStasisFieldTimer)
 		{
-			unit->stasisTimer = DidactStasisFieldTimer;
+			unit->stasis_timer = DidactStasisFieldTimer;
 		}
-		if (unit->maelstromTimer > MindTyrantMaelstromTimer)
+		if (unit->maelstrom_timer > MindTyrantMaelstromTimer)
 		{
-			unit->maelstromTimer = MindTyrantMaelstromTimer;
+			unit->maelstrom_timer = MindTyrantMaelstromTimer;
 		}
-		if (unit->plagueTimer > IsthrathalethPlagueTimer)
+		if (unit->plague_timer > IsthrathalethPlagueTimer)
 		{
-			unit->plagueTimer = IsthrathalethPlagueTimer;
+			unit->plague_timer = IsthrathalethPlagueTimer;
 		}
 
 		// Striga - Fleeting Focus
@@ -1496,7 +1495,7 @@ namespace hooks
 			unit_search_filter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
 			unit->hitpoints += akistrokors.size * 256.0 / 24.0;
 
-			if (!units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].isFactory) {
+			if (!units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].is_factory) {
 				helper::secondary_order_spawning_larva(unit);
 			}
 
@@ -1740,7 +1739,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->visibilityStatus = 0xff;
+				unit->visibility_status = 0xff;
 				helper::update_visibility(unit); // didact cloak needs special handling
 			}
 		}
@@ -1916,7 +1915,7 @@ namespace hooks
 			}
 		}
 
-		if (unitExt->values[ValueAI_WorkerChosenForExpansion] && unit->resourceType == ResourceType::None) {
+		if (unitExt->values[ValueAI_WorkerChosenForExpansion] && unit->resource_type == ResourceType::None) {
 			unit->order_to(OrderId::Move, unitExt->values[ValueAI_WorkerChosenX], unitExt->values[ValueAI_WorkerChosenY]);
 			unitExt->values[ValueAI_WorkerChosenForExpansion] = 0;
 			unitExt->values[ValueAI_WorkerChosenX] = 0;

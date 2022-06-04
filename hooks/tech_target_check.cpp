@@ -8,7 +8,7 @@ namespace hooks
 	u16 getTechUseErrorMessageHook(Unit* target, u8 castingPlayerId, u16 techId) // 00491E80
 	{
 		u16 stringId;
-		if (target->stasisTimer != 0)
+		if (target->stasis_timer != 0)
 		{
 			stringId = 900; // Units in stasis can't be targeted.<0>
 		}

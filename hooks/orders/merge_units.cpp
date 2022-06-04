@@ -162,7 +162,7 @@ namespace hooks
 				//94866
 
 				unit->user_action_flags |= 1;	//set flag
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 
 			}
 			else
@@ -361,7 +361,7 @@ namespace hooks
 
 				//94866
 				unit->user_action_flags |= 1;	//set flag
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 
 			}
 			else

@@ -16,7 +16,7 @@ namespace hooks
 			&& scbw::can_be_entered_by(unit, unitToLoad))
 		{
 			helper::prepend_order_targeting_unit(unit, unitToLoad, OrderId::Pickup2);
-			prepareForNextOrder(unit);
+			prepare_for_next_order(unit);
 		}
 		else if (unit->unit_ai != nullptr)
 		{
@@ -42,7 +42,7 @@ namespace hooks
 				}
 				unit->perform_another_order(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
 			}
-			prepareForNextOrder(unit);
+			prepare_for_next_order(unit);
 		}
 	}
 
@@ -55,7 +55,7 @@ namespace hooks
 			if (unit->order_queue_head != nullptr)
 			{
 				unit->user_action_flags |= 1;
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			else
 			{
@@ -89,7 +89,7 @@ namespace hooks
 			if (unit->order_queue_head != nullptr)
 			{
 				unit->user_action_flags |= 1;
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			else
 			{
@@ -134,7 +134,7 @@ namespace hooks
 								else
 								{
 									helper::prepend_order_targeting_unit(unit, unitToLoad, OrderId::Pickup1);
-									prepareForNextOrder(unit);
+									prepare_for_next_order(unit);
 								}
 							}
 						}
@@ -174,12 +174,12 @@ namespace hooks
 			if (unit->order_queue_head != nullptr)
 			{
 				helper::insert_order_before(unit, unit->order_queue_head, OrderId::Unload, 0, 0, nullptr, UnitId::None);
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			else
 			{
 				unit->perform_another_order(OrderId::Unload, 0, 0, nullptr, UnitId::None);
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 		}
 		else
@@ -232,7 +232,7 @@ namespace hooks
 						if (!bStopAll)
 						{
 							helper::order_immediate(unit, OrderId::Unload);
-							prepareForNextOrder(unit);
+							prepare_for_next_order(unit);
 						}
 					}
 				}
@@ -337,7 +337,7 @@ namespace hooks
 			{
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 1);
 			}
-			prepareForNextOrder(unit);
+			prepare_for_next_order(unit);
 		}
 		else if (!(unit->status & UnitStatus::InTransport)
 				&& helper::Ai_UpdateAttackTarget(unit, 1, 0, 0) == 0)
@@ -405,7 +405,7 @@ namespace hooks
 						else
 						{ // 004E7C94
 							helper::prepend_order_targeting_unit(target, unit, OrderId::Pickup2);
-							prepareForNextOrder(target);
+							prepare_for_next_order(target);
 							if (helper::Ai_AreOnConnectedRegions(unit, target->sprite->position.x, target->sprite->position.y) != 0)
 							{
 								helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
@@ -435,7 +435,7 @@ namespace hooks
 				if (target->status & UnitStatus::IsBuilding)
 				{
 					helper::prepend_order_targeting_unit(target, unit, OrderId::Pickup2);
-					prepareForNextOrder(target);
+					prepare_for_next_order(target);
 				}
 				unit->main_order_state = 1;
 			}
@@ -456,7 +456,7 @@ namespace hooks
 			if (unit->order_queue_head != nullptr)
 			{
 				unit->user_action_flags |= 1;
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			else if (unit->unit_ai != nullptr)
 			{
@@ -556,7 +556,7 @@ namespace hooks
 			if (jump_to_E8195)
 			{
 				if (unit->status & UnitStatus::GroundedBuilding
-					|| !unit->hasLoadedUnit())
+					|| !unit->has_loaded_unit())
 					jump_to_E81AD = true;
 			}
 			if (jump_to_E81AD)
@@ -564,14 +564,14 @@ namespace hooks
 				if (unit->order_queue_head != nullptr)
 				{
 					unit->user_action_flags |= 1;
-					prepareForNextOrder(unit);
+					prepare_for_next_order(unit);
 				}
 				else if (unit->unit_ai != nullptr)
 				{ // 004E81DE
 					unit->user_action_flags |= 1;
 					if (unit->main_order_id == OrderId::Die)
 					{
-						prepareForNextOrder(unit);
+						prepare_for_next_order(unit);
 					}
 					else
 					{
@@ -593,14 +593,14 @@ namespace hooks
 							}
 						}
 						unit->perform_another_order(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
-						prepareForNextOrder(unit);
+						prepare_for_next_order(unit);
 					}
 				}
 				else
 				{ // 004E823A
 					unit->user_action_flags |= 1;
 					unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, true);
-					prepareForNextOrder(unit);
+					prepare_for_next_order(unit);
 				}
 			}
 		}

@@ -35,7 +35,7 @@ namespace hooks
 			if (unit->order_queue_head != nullptr)
 			{
 				unit->user_action_flags |= 1;
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			else if (unit->unit_ai != nullptr)
 			{
@@ -70,10 +70,10 @@ namespace hooks
 			{
 				halTimer = (halUnit->id != UnitId::ZergRilirokor && halUnit->id != UnitId::ZergRililisk) ? 0 : 1800;
 			}
-			u16 currentHalTimer = halUnit->removeTimer;
+			u16 currentHalTimer = halUnit->remove_timer;
 			if (!currentHalTimer || halTimer < currentHalTimer)
 			{
-				halUnit->removeTimer = halTimer;
+				halUnit->remove_timer = halTimer;
 			}
 			s16 unitType = halUnit->id;
 			if (unitType == UnitId::ProtossAccantor) // Originally also ran for Warbringer ID

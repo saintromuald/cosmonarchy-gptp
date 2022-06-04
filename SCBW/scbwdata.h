@@ -833,7 +833,7 @@ struct PlayerSel {
 SCBW_DATA(const PlayerSel*, CurrentUnitSelection, 0x006284B8);
 
 typedef void(__fastcall* PrepareForNextOrderFunc)(Unit*);
-SCBW_DATA(PrepareForNextOrderFunc, prepareForNextOrder, 0x00475000);
+SCBW_DATA(PrepareForNextOrderFunc, prepare_for_next_order, 0x00475000);
 
 //Contains various info on the tiles.
 SCBW_DATA(ActiveTile**, activeTileArray, 0x006D1260);

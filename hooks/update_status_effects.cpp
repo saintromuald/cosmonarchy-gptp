@@ -26,13 +26,13 @@ void irradiate_proc(Unit* unit, Unit* target)
 		s32 damage = (125 * 256) / 24;
 		if (unit != nullptr)
 		{
-			if (unit->irradiateTimer == 0)
+			if (unit->irradiate_timer == 0)
 			{
 				damage += (125 * 256) % 24;
 				//scbw::print("Add additional damage");
 			}
 		}
-		target->damage_with_custom(50.0 * 256.0 / 15.5, DamageType::Concussive, unit->irradiatedBy, unit->irradiatePlayerId, 0, 1, true);
+		target->damage_with_custom(50.0 * 256.0 / 15.5, DamageType::Concussive, unit->irradiate_caster, unit->irradiate_player_id, 0, 1, true);
 	}
 }
 	
@@ -53,7 +53,7 @@ namespace hooks
 			{
 				for (s32 i = 0; i < units_dat::SpaceProvided[transport->id]; ++i)
 				{
-					Unit* loaded_unit = transport->getLoadedUnit(i);
+					Unit* loaded_unit = transport->get_loaded_unit(i);
 					if (loaded_unit)
 						irradiate_proc(irradiatedUnit, loaded_unit);
 				}
@@ -103,10 +103,10 @@ namespace hooks
 		}
 
 		// Decrement Stasis Field timer (and remove effect if 0)
-		if (unit->stasisTimer != 0)
+		if (unit->stasis_timer != 0)
 		{
-			unit->stasisTimer--;
-			if (unit->stasisTimer == 0)
+			unit->stasis_timer--;
+			if (unit->stasis_timer == 0)
 			{
 				unit->unfreeze();
 			}
@@ -235,10 +235,10 @@ namespace hooks
 			}
 		}
 
-		if (unit->stimTimer != 0)
+		if (unit->stim_timer != 0)
 		{
-			unit->stimTimer--;
-			if (unit->stimTimer == 0)
+			unit->stim_timer--;
+			if (unit->stim_timer == 0)
 			{
 				unit->update_speed();
 			}
@@ -251,10 +251,10 @@ namespace hooks
 		}
 
 		// Decrement Ensnare timer (and remove effect if 0)
-		if (unit->ensnareTimer != 0)
+		if (unit->ensnare_timer != 0)
 		{
-			unit->ensnareTimer--;
-			if (unit->ensnareTimer == 0)
+			unit->ensnare_timer--;
+			if (unit->ensnare_timer == 0)
 			{
 				unit->remove_overlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 				unit->update_speed();
@@ -262,12 +262,12 @@ namespace hooks
 		}
 
 		// Decrement Defensive Matrix timer (and remove effect if 0)
-		if (unit->defensiveMatrixTimer != 0)
+		if (unit->defensive_matrix_timer != 0)
 		{
-			unit->defensiveMatrixTimer--;
-			if (unit->defensiveMatrixTimer == 0)
+			unit->defensive_matrix_timer--;
+			if (unit->defensive_matrix_timer == 0)
 			{
-				unit->reduce_defensive_matrix_hp(unit->defensiveMatrixHp);
+				unit->reduce_defensive_matrix_hp(unit->defensive_matrix_hp);
 			}
 		}
 
@@ -284,44 +284,44 @@ namespace hooks
 		}
 
 		// Irradiate ability
-		if (unit->irradiateTimer != 0)
+		if (unit->irradiate_timer != 0)
 		{
-			unit->irradiateTimer--;
+			unit->irradiate_timer--;
 			do_irradiate_damage(unit);
-			if (unit->irradiateTimer == 0)
+			if (unit->irradiate_timer == 0)
 			{
 				unit->remove_overlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
-				unit->irradiatedBy = nullptr;
-				unit->irradiatePlayerId = 8;
+				unit->irradiate_caster = nullptr;
+				unit->irradiate_player_id = 8;
 			}
 		}
 
-		if (unit->lockdownTimer != 0)
+		if (unit->lockdown_timer != 0)
 		{
-			unit->lockdownTimer--;
-			if (unit->lockdownTimer == 0)
+			unit->lockdown_timer--;
+			if (unit->lockdown_timer == 0)
 			{
 				unit->remove_lockdown();
 			}
 		}
 
-		if (unit->maelstromTimer != 0)
+		if (unit->maelstrom_timer != 0)
 		{
-			unit->maelstromTimer--;
-			if (unit->maelstromTimer == 0)
+			unit->maelstrom_timer--;
+			if (unit->maelstrom_timer == 0)
 			{
 				unit->remove_maelstrom();
 			}
 		}
 
-		if (unit->plagueTimer)
+		if (unit->plague_timer)
 		{
-			unit->plagueTimer--;
+			unit->plague_timer--;
 
 			if (!(unit->status & UnitStatus::Invincible))
 			{
 				s32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] * 256) / 30;
-				if (!unit->plagueTimer)
+				if (!unit->plague_timer)
 				{
 					damage += (weapons_dat::DamageAmount[WeaponId::Plague] * 256) % 30;
 				}
@@ -331,7 +331,7 @@ namespace hooks
 				}
 			}
 
-			if (!unit->plagueTimer)
+			if (!unit->plague_timer)
 			{
 				unit->remove_overlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
 			}
@@ -343,9 +343,9 @@ namespace hooks
 			scbw::placeClarionLinks(unit); //clears, then places all clarion links
 		}
 
-		if (unit->isUnderStorm != 0)
+		if (unit->is_under_storm != 0)
 		{
-			unit->isUnderStorm--;
+			unit->is_under_storm--;
 		}
 
 		// Vithrilisk - Corrosive Touch - update overlays

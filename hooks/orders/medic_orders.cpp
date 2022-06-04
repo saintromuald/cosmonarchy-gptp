@@ -51,7 +51,7 @@ namespace hooks
 
 		if (!bStopThere)
 		{ // 00463817
-			if (unit->recentOrderTimer == 0)
+			if (unit->recent_order_timer == 0)
 			{
 				if (!helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y))
 				{
@@ -128,7 +128,7 @@ namespace hooks
 					unit->perform_another_order(OrderId::MedicHeal1, 0, 0, nullptr, UnitId::None);
 				}
 				// 00463991
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 				unit->order_target.unit = target;
 				unit->order_target.pt.x = target->sprite->position.x;
 				unit->order_target.pt.y = target->sprite->position.y;
@@ -193,7 +193,7 @@ namespace hooks
 			if (unit->order_queue_head != nullptr)
 			{
 				unit->user_action_flags |= 1;
-				prepareForNextOrder(unit);
+				prepare_for_next_order(unit);
 			}
 			else if (unit->unit_ai != nullptr)
 			{

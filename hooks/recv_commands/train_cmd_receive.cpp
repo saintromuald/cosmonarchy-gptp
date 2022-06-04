@@ -35,13 +35,13 @@ namespace hooks
 				if (current_selection->id == UnitId::ProtossSolarion
 					|| current_selection->id == UnitId::ProtossAccantor)
 				{
-					if (current_selection->secondaryOrderState != 2)
+					if (current_selection->secondary_order_state != 2)
 					{
 						current_selection->secondary_order_id = OrderId::TrainFighter;
-						current_selection->secondaryOrderPos.y = 0;
-						current_selection->secondaryOrderPos.x = 0;
-						current_selection->currentBuildUnit = nullptr;
-						current_selection->secondaryOrderState = 0;
+						current_selection->secondary_order_pos.y = 0;
+						current_selection->secondary_order_pos.x = 0;
+						current_selection->current_build_unit = nullptr;
+						current_selection->secondary_order_state = 0;
 					}
 				}
 			}
