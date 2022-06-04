@@ -143,15 +143,15 @@ void unit_destructor_special_cases(Unit* unit)
 	UnitExt* unitExt = globals.get_unit_ext(unit);
 	unit->reset_supply_provided();
 
-	if (!(unit->user_action_flags & 4) && // for silent remove
-		  unit->status & UnitStatus::Completed && 
-	     (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
-		  unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
-		  units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) ||
-		  unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
-	{
-		scbw::clear_creep(scbw::unit_area(unit));
-	}
+	//if (!(unit->user_action_flags & 4) && // for silent remove
+	//	  unit->status & UnitStatus::Completed && 
+	//     (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
+	//	  unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
+	//	  units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) ||
+	//	  unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
+	//{
+	//	scbw::clear_creep(scbw::unit_area(unit));
+	//}
 
 	// These do not require the unit to be completed
 	switch (unit->id)

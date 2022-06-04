@@ -2078,10 +2078,7 @@ namespace scbw
 	void clear_creep(Box32 area) {
 		for (u32 x = 0; x < area.w / 32; ++x) {
 			for (u32 y = 0; y < area.h / 32; ++y) {
-				helper::removeCreepAtUnit(
-					area.x + x * 32,
-					area.y + y * 32,
-					UnitId::ZergEgg);
+				helper::removeCreepAtUnit(area.x + x * 32, area.y + y * 32, UnitId::ZergEgg);
 			}
 		}
 	}
