@@ -277,7 +277,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_RemoveUnitAI_Wrapper() // 004A1E50
+	void __declspec(naked) ai_remove_unit_ai_wrapper() // 004A1E50
 	{
 		static Unit* unit;
 		static UnitAi* unitAI;
@@ -295,7 +295,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_RemoveWorkerOrBuildingAI_Wrapper() // 00434C90
+	void __declspec(naked) ai_remove_worker_or_building_ai_wrapper() // 00434C90
 	{
 		static s32 result;
 		static Unit* unit;
@@ -340,7 +340,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_orderLurkerBurrow_Wrapper() // 0043C230
+	void __declspec(naked) ai_order_lurker_burrow_wrapper() // 0043C230
 	{
 		static Unit* unit;
 		__asm
@@ -389,10 +389,10 @@ namespace hooks
 	//	jump_patch(deleteBuildingAI_Wrapper,				0x00404500, 0);
 	//	jump_patch(deleteWorkerAI_nullcheck,				0x00404470, 0);
 	//	jump_patch(deleteBuildingAI_nullcheck,				0x00404500, 0);
-		jump_patch(AI_RemoveUnitAI_Wrapper,					0x004A1E50, 0);
-		jump_patch(AI_RemoveWorkerOrBuildingAI_Wrapper,		0x00434C90, 0);
+		jump_patch(ai_remove_unit_ai_wrapper,				0x004A1E50, 0);
+		jump_patch(ai_remove_worker_or_building_ai_wrapper,	0x00434C90, 0);
 	//	jump_patch(AI_TrainingOverlord_Wrapper,				0x00435770, 1);
-		jump_patch(AI_orderLurkerBurrow_Wrapper,			0x0043C230, 3);
+		jump_patch(ai_order_lurker_burrow_wrapper,			0x0043C230, 3);
 	//	jump_patch(create_building_ai_wrapper,				0x004044C0,	4);
 
 	//	jump_patch(hooks::find_nearest_military_or_guard_ai,	0x0043BAC0, 0);
