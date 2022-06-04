@@ -770,4 +770,6 @@ namespace hooks
 		}
 		return generic_interact_functions[dialog_var->control_type](dialog, event);
 	}
+
+	// TODO: 425F30 4260C0 4268D0 426FF0 427260 4273E0 - Needed to show remaining build time seconds above progress bar
 }
