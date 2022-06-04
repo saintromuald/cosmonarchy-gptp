@@ -1,5 +1,6 @@
 #include "base_layouts.h"
 #include "hooks/unit_stats/new_requirements.h"
+#include "data_ext.h"
 
 u32 chk_cache_size;
 CHKUnit chk_cache[ChkCacheLimit];
@@ -267,7 +268,26 @@ static bool unit_has_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 	area.y = y - area.h / 2;
 	for (u32 xx = 0; xx < area.w / 32; ++xx) {
 		for (u32 yy = 0; yy < area.h / 32; ++yy) {
-			if (!scbw::get_stupid_reference_to_active_tile_at(area.x + xx * 32, area.y + yy * 32).has_creep) {
+			ActiveTile* tile = scbw::get_active_tile_at_coords(area.x + xx * 32, area.y + yy * 32);
+			if (!tile->has_creep) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+static bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
+	Box32 area = {};
+	area.w = units_dat::BuildingDimensions[unit_id].x;
+	area.h = units_dat::BuildingDimensions[unit_id].y;
+	area.x = x - area.w / 2;
+	area.y = y - area.h / 2;
+	for (u32 xx = 0; xx < area.w / 32; ++xx) {
+		for (u32 yy = 0; yy < area.h / 32; ++yy) {
+			ActiveTile* tile = scbw::get_active_tile_at_coords(area.x + xx * 32, area.y + yy * 32);
+			TileExt* tile_ext = get_tile_ext_at_coords(area.x + xx * 32, area.y + yy * 32);
+			if (tile->has_creep && !can_place_on_creep_tile(tile_ext, player)) {
 				return false;
 			}
 		}
@@ -325,6 +345,10 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	if (units_dat::BaseProperty[unit_id] & UnitProperty::CreepBuilding &&
 		!unit_has_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
 		return false;
+	}
+	if (!units_dat::GroupFlags[unit_id].isZerg &&
+		unit_has_no_or_allied_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
+
 	}
 	if (units_dat::BaseProperty[unit_id] & UnitProperty::RequiredPsi &&
 		!helper::unit_has_power(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {

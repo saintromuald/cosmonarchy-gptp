@@ -168,13 +168,6 @@ namespace hooks
             human_only_player_bit = 1 << player;
         }
 
-        u32 allied_bits = 0;
-        for (u32 i = 0; i < PlayerLimit; ++i) {
-            if (scbw::is_allied_to(i, player)) {
-                allied_bits |= 1 << i;
-            }
-        }
-
         u8 result = 0;
         for (u32 y = 0; y < size.y; ++y) {
             for (u32 x = 0; x < size.x; ++x) {
@@ -182,7 +175,7 @@ namespace hooks
                 TileExt* tile_ext = get_tile_ext_at_tile(tile_x + x, tile_y + y);
 
                 u32 flags = 0x20800000; // cliff_edge, always_unbuildable
-                if (!units_dat::GroupFlags[unit_id].isZerg && tile_ext->creep_owners && !(tile_ext->creep_owners & allied_bits)) {
+                if (!units_dat::GroupFlags[unit_id].isZerg && !can_place_on_creep_tile(tile_ext, player)) {
                     flags |= check_creep ? 0x40000000 : 0x400000;
                 }
 

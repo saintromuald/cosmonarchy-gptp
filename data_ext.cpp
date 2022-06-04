@@ -23,3 +23,13 @@ TileExt* get_tile_ext_at_tile(u32 tile_x, u32 tile_y) {
 TileExt* get_tile_ext_at_coords(u32 x, u32 y) {
 	return &tiles_ext[y / 32][x / 32];
 }
+
+bool can_place_on_creep_tile(TileExt* tile_ext, u32 player) {
+	u32 allied_bits = 0;
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+		if (scbw::is_allied_to(i, player)) {
+			allied_bits |= 1 << i;
+		}
+	}
+	return !tile_ext->creep_owners || tile_ext->creep_owners & allied_bits;
+}
