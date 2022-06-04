@@ -1088,4 +1088,10 @@ struct KillUnitArgs {
 	u32		check_height;
 };
 
+struct FxnDrawIconData {
+	u16 w;
+	u16 h;
+	GrpHead* stat_icon;
+};
+
 #pragma pack()

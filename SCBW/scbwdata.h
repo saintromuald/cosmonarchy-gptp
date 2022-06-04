@@ -180,12 +180,12 @@ SCBW_DATA(u32*, sgdwBytesInCmdQueue, 0x00654AA0);
 SCBW_DATA(const char*, TurnBuffer, 0x00654880);
 ////possible values were 0057F1DC and [00596828]
 
-// For reset_tooltip_info, set_tooltip_info, set_tooltip_info_unit, etc
+// For reset_tooltip_info, set_tooltip_info, set_tooltip_info_unit_case5, etc
 SCBW_DATA(u16*, tooltip_ore_cost,		0x0068C1D0);
 SCBW_DATA(u16*, tooltip_gas_cost,		0x0068C1D2);
-SCBW_DATA(u16*, tooltip_p_energy_cost,	0x0068C1D4);
-SCBW_DATA(u16*, tooltip_t_energy_cost,	0x0068C1D6);
-SCBW_DATA(u16*, tooltip_z_energy_cost,	0x0068C1D8);
+SCBW_DATA(u16*, tooltip_energy_cost,	0x0068C1D4); // Used to be Protoss energy
+SCBW_DATA(u16*, tooltip_unused_cost,	0x0068C1D6); // Used to be Terran energy
+SCBW_DATA(u16*, tooltip_time_cost,		0x0068C1D8); // Used to be Zerg energy
 SCBW_DATA(u16*, tooltip_p_supply_cost,	0x0068C1DA);
 SCBW_DATA(u16*, tooltip_t_supply_cost,	0x0068C1DC);
 SCBW_DATA(u16*, tooltip_z_supply_cost,	0x0068C1DE);
@@ -986,7 +986,7 @@ SCBW_DATA(u32**, current_tiles, 0x006D0E84);
 // For draw_tooltip_with_icon
 SCBW_DATA(char*,	grp_stat_res_icon_mapping,	0x00515228); // sizeof 8
 SCBW_DATA(GrpHead*,	icons_grp,					0x0068C238);
-SCBW_DATA(Box16*,	required_area,				0x006CE0D8);
+SCBW_DATA(Box16*,	tooltip_required_area,				0x006CE0D8);
 
 // For do_attack_notify_unit
 SCBW_DATA(char*,	palette_index_reference,	0x006CEB20); // sizeof at least 20
