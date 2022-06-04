@@ -30,7 +30,7 @@ namespace hooks
 			dialog->fxn_interact = dlgFunc;
 		}
 
-		dialog->onInitDialog0x36.responseAreaBitArray = (u32*)helper::SMemAlloc(dialog->onInitDialog0x36.responseAreaWidth * dialog->onInitDialog0x36.responseAreaHeight, (char*)0x00505F98, 481, 0);
+		dialog->onInitDialog0x36.response_area_bit_array = (u32*)helper::SMemAlloc(dialog->onInitDialog0x36.response_area_width * dialog->onInitDialog0x36.response_area_height, (char*)0x00505F98, 481, 0);
 		dialog->index = 0;
 
 		stack_placeholder.mouseX = mouse->x;

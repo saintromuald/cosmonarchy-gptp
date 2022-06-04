@@ -332,35 +332,33 @@ struct Location
 //---- Taken from buttons.cpp ----//
 
 typedef u32 ButtonState;
-typedef ButtonState(__fastcall* REQ_FUNC)(u32, u32, Unit*);
-//(u32 reqVar, u32 playerId, Unit* selected);
-typedef void(__fastcall* ACT_FUNC)(u32, u32);
-//(u32 actVar, u32 shiftClick);
+typedef ButtonState(__fastcall* ReqFunc)(u32, u32, Unit*);
+typedef void(__fastcall* ActFunc)(u32, u32);
 
-struct BUTTON
+struct Button
 {
-	/*00*/  u16       position;
-	/*02*/  u16       iconID;
-	/*04*/  REQ_FUNC* reqFunc;
-	/*08*/  ACT_FUNC* actFunc;
-	/*0C*/  u16       reqVar;
-	/*0E*/  u16       actVar;
-	/*10*/  u16       reqStringID;
-	/*12*/  u16       actStringID;
+	/*00*/  u16		 position;
+	/*02*/  u16		 icon_id;
+	/*04*/  ReqFunc* requirement_func;
+	/*08*/  ActFunc* action_func;
+	/*0C*/  u16		 requirement_var;
+	/*0E*/  u16		 action_var;
+	/*10*/  u16		 requirement_string_id;
+	/*12*/  u16		 action_string_id;
 };
 
 struct StatusScreenState
 {
-	GrpHead* button_grp;	// 0x0
-	u16 grp_frame;			// 0x4
-	u16 type;				// 0x6
-	u8 id;					// 0x8	
+	GrpHead*	button_grp;	// 0x0
+	u16			grp_frame;	// 0x4
+	u16			type;		// 0x6
+	u8			id;			// 0x8	
 };
 
-struct BUTTON_SET
+struct ButtonSet
 {
-	u32			buttonsInSet;
-	BUTTON*		firstButton;
+	u32			buttons_in_set;
+	Button*		first_button;
 	u32			connected_unit;
 };
 
@@ -535,7 +533,7 @@ struct BinDlg
 		/*0x26*/  u32*		user;
 		/*0x26*/  Unit*		unit_user;
 		/*0x26*/  BinDlg*	dialog_user;
-		/*0x26*/  BUTTON*	button_user;
+		/*0x26*/  Button*	button_user;
 		StatusScreenState*	stat_button_user; // from Neiv's list
 		/*0x26*/  u32		non_user_value;
 	};
@@ -547,19 +545,19 @@ struct BinDlg
 	union {
 		struct
 		{
-			/*0x36*/  Box16		responseArea;
+			/*0x36*/  Box16		response_area;
 			/*0x3E*/  BinDlg*	unk_3e;
 		} initialVersion0x36;
 		struct
 		{
-			/*0x36*/  s16		responseAreaWidth;		// guess
-			/*0x38*/  s16		responseAreaHeight;		// guess
-			/*0x3A*/  u32*		responseAreaBitArray;	// set with a memory allocation function, bit array is a guess
+			/*0x36*/  s16		response_area_width;	// guess
+			/*0x38*/  s16		response_area_height;	// guess
+			/*0x3A*/  u32*		response_area_bit_array;// set with a memory allocation function, bit array is a guess
 			/*0x3E*/  u32*		unk3e;					// unverified filler
 		} onInitDialog0x36;
 		struct
 		{
-			/*0x36*/  void*		unkFunc36;				// should be a function
+			/*0x36*/  void*		unk_func_36;			// should be a function
 			/*0x3A*/  u16		scrollMinValue;			// unconfirmed
 			/*0x3C*/  u16		scrollMaxValue;			// unconfirmed
 			/*0x3E*/  u16		scrollCurrentValue;		// unconfirmed
@@ -596,8 +594,8 @@ struct BinDlg
 		struct
 		{
 			/*0x46*/  Point16	textPos;
-			/*0x4A*/  u16		responseAreaWidth;
-			/*0x4C*/  u16		responseAreaHeight;
+			/*0x4A*/  u16		response_area_width;
+			/*0x4C*/  u16		response_area_height;
 			/*0x4E*/  unk_t     unk_4e[8];
 		} initialVersion0x46;
 		struct

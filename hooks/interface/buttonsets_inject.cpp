@@ -94,7 +94,7 @@ namespace
 	void __declspec(naked) getButtonSetPatch_For_Sub4591D0()
 	{
 		static u32 index;
-		static BUTTON_SET* returnValue;
+		static ButtonSet* returnValue;
 		__asm {
 			MOV index, ECX
 			PUSHFD

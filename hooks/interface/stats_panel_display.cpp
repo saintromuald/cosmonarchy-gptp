@@ -779,47 +779,4 @@ namespace hooks
 		}
 		return generic_interact_functions[dialog_var->control_type](dialog, event);
 	}
-
-	// Hooked to help with tooltip debugging. -Pr0nogo
-	void stat_data_unit_wireframe_select_update(BinDlg* dialog, int unused_1, int unused_2) { // 00456F50
-		Unit* unit = dialog->unit_user;
-		if (unit->status & UnitStatus::IsHallucination) {
-			dialog->graphic = 31;
-		} else if (units_dat::BaseProperty[unit->id] & UnitProperty::Hero) { 
-			dialog->graphic = 19;
-		} else {
-			dialog->graphic = unit->parasite_flags ? 25 : 13;
-		}
-		helper::status_screen_draw_stat_button_border(dialog);
-		helper::status_screen_wireframe_coloring_related(unit);
-		helper::status_screen_wireframe_shield_related(0, unit); // originally passed unused var as first arg
-		helper::status_screen_wireframe_hp_related(unit);
-		u16 next = (u16)unit->link.next;
-		if (next >= (*(u16*)(*off_68C1FC) & 0x7FFF)) {
-			next = 0;
-		}
-		union {
-			u32 ints[2];
-			u8 bytes[8];
-		} dumbness = {};
-		dumbness.ints[0] = *(u32*)off_68C1FC[8 * next + 6];
-		dumbness.ints[1] = *(u32*)off_68C1FC[*(u32*)off_68C1FC[8 * next + 10]];
-		Box32 rect = {};
-		SetRect((RECT*)&rect, 0, 0, dumbness.bytes[2], dumbness.bytes[3]);
-		helper::image_render_fxn_0_0(
-			dialog->bounds.x + (dialog->bounds.w - dumbness.bytes[2] - dialog->bounds.x + 1) / 2, 
-			dialog->bounds.y + (dialog->bounds.h - dumbness.bytes[3] - dialog->bounds.y + 1) / 2,
-			&dumbness, &rect, 0);
-
-		(*imgDrawPaletteIndex)[208] = 208;
-		(*imgDrawPaletteIndex)[209] = 209;
-		(*imgDrawPaletteIndex)[210] = 210;
-		(*imgDrawPaletteIndex)[211] = 211;
-		(*imgDrawPaletteIndex)[192] = 192;
-		(*imgDrawPaletteIndex)[193] = 193;
-		(*imgDrawPaletteIndex)[216] = 216;
-		(*imgDrawPaletteIndex)[217] = 217;
-		(*imgDrawPaletteIndex)[218] = 218;
-		(*imgDrawPaletteIndex)[219] = 219;
-	}
 }

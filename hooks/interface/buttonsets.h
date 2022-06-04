@@ -11,7 +11,7 @@ namespace hooks
 
 	void statbtn_BIN_CustomCtrlID(BinDlg* dialog);	//	00459AD0 statbtn_BIN_CustomCtrlID
 
-	BUTTON_SET* getButtonSet(s32 index);
+	ButtonSet* getButtonSet(s32 index);
 
 	void injectButtonSetHooks();
 }

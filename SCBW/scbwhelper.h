@@ -872,7 +872,7 @@ namespace helper
 	void refresh_button_tooltip();																		// 00459770
 	void BINDLG_BlitSurface(BinDlg* dialog);															// 004C35F0
 	u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
-	s32 req_check(u32 reqFunc, u16 reqVar, u32 playerId, Unit* unit);
+	s32 req_check(u32 requirement_func, u16 requirement_var, u32 playerId, Unit* unit);
 	void updateMineralPatchImage(Unit* mineralPatch);
 	void update_image_position_offset(Image* image);
 

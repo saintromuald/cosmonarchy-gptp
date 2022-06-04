@@ -29,7 +29,7 @@ namespace hooks
 #define FALSE 0
 #endif
 
-	b32 BTNSCOND_IsCloaked(Unit* unit, u32 playerId, u16 reqVar)
+	b32 BTNSCOND_IsCloaked(Unit* unit, u32 playerId, u16 requirement_var)
 	{
 
 		b32 bReturnValue = TRUE;
@@ -69,9 +69,9 @@ namespace hooks
 
 		return bReturnValue;
 
-	} //b32 BTNSCOND_IsCloaked(Unit* unit, u32 playerId, u16 reqVar)
+	} //b32 BTNSCOND_IsCloaked(Unit* unit, u32 playerId, u16 requirement_var)
 
-	b32 BTNSCOND_CanCloak(Unit* unit, u32 playerId, u16 reqVar)
+	b32 BTNSCOND_CanCloak(Unit* unit, u32 playerId, u16 requirement_var)
 	{
 
 		b32 bReturnValue = FALSE;
@@ -102,6 +102,6 @@ namespace hooks
 
 		return bReturnValue;
 
-	} //b32 BTNSCOND_CanCloak(Unit* unit, u32 playerId, u16 reqVar)
+	} //b32 BTNSCOND_CanCloak(Unit* unit, u32 playerId, u16 requirement_var)
 
 } //hooks

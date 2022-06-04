@@ -33,17 +33,17 @@ namespace
 		static b32 return_value;
 		static u32 playerId;
 		static Unit* unit;	// unused in original function
-		static u16 reqVar;	// unused in original function
+		static u16 requirement_var;	// unused in original function
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV playerId, EDX
 			MOV EBX, [EBP + 0x08]
 			MOV unit, EBX
-			MOV reqVar, CX
+			MOV requirement_var, CX
 			PUSHAD
 		}
-		return_value = hooks::BTNSCOND_IsCloaked(unit, playerId, reqVar);
+		return_value = hooks::BTNSCOND_IsCloaked(unit, playerId, requirement_var);
 		__asm {
 			POPAD
 			MOV EAX, return_value
@@ -59,17 +59,17 @@ namespace
 		static b32 return_value;
 		static u32 playerId;
 		static Unit* unit;	// unused in original function
-		static u16 reqVar;	// unused in original function
+		static u16 requirement_var;	// unused in original function
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV playerId, EDX
 			MOV EBX, [EBP + 0x08]
 			MOV unit, EBX
-			MOV reqVar, CX
+			MOV requirement_var, CX
 			PUSHAD
 		}
-		return_value = hooks::BTNSCOND_CanCloak(unit, playerId, reqVar);
+		return_value = hooks::BTNSCOND_CanCloak(unit, playerId, requirement_var);
 		__asm {
 			POPAD
 			MOV EAX, return_value

@@ -211,7 +211,7 @@ LABEL_15:
 			return 0;
 		}
 
-		char* label = helper::getStatTxtString(dialog->button_user->reqStringID);
+		char* label = helper::getStatTxtString(dialog->button_user->requirement_string_id);
 		if (*label == 27 && hotkey == label[0]) // escape handling for grid hotkeys
 		{
 			return 1;

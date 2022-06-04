@@ -7495,16 +7495,16 @@ namespace helper
 	}
 
 	// dev info: examples of calls: 429520,428e60,428420,4287D0,4292C0
-	s32 req_check(u32 reqFunc, u16 reqVar, u32 playerId, Unit* unit)
+	s32 req_check(u32 requirement_func, u16 requirement_var, u32 playerId, Unit* unit)
 	{
 		static s32 return_value;
 		__asm
 		{
 			PUSHAD
-			MOV CX, reqVar
+			MOV CX, requirement_var
 			MOV EDX, playerId
 			PUSH unit
-			CALL reqFunc
+			CALL requirement_func
 			MOV return_value, EAX
 			POPAD
 		}
@@ -11899,6 +11899,7 @@ namespace helper
 			POPAD
 		}
 	}
+
 	u32 status_screen_wireframe_coloring_related(Unit* unit) {
 		static u32 result;
 		const u32 func_address = 0x004567C0;

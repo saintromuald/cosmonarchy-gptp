@@ -68,7 +68,7 @@ SCBW_DATA(const MapSize*, mapTileSize, 0x0057F1D4);
 SCBW_DATA(Location*, locationTable, 0x0058DC60);
 
 //for buttonsets
-SCBW_DATA(BUTTON_SET*, buttonSetTable, 0x005187E8);
+SCBW_DATA(ButtonSet*, buttonSetTable, 0x005187E8);
 
 SCBW_DATA(ActionPointer*, actionTable,         0x00512800); // From triggers.cpp
 SCBW_DATA(ActionPointer*, briefingActionTable, 0x00512800);
@@ -186,9 +186,9 @@ SCBW_DATA(u16*, tooltip_gas_cost,		0x0068C1D2);
 SCBW_DATA(u16*, tooltip_p_energy_cost,	0x0068C1D4);
 SCBW_DATA(u16*, tooltip_t_energy_cost,	0x0068C1D6);
 SCBW_DATA(u16*, tooltip_z_energy_cost,	0x0068C1D8);
-SCBW_DATA(u16*, tooltip_p_supply_cost,	0x0068C1FA);
-SCBW_DATA(u16*, tooltip_t_supply_cost,	0x0068C1FC);
-SCBW_DATA(u16*, tooltip_z_supply_cost,	0x0068C1FE);
+SCBW_DATA(u16*, tooltip_p_supply_cost,	0x0068C1DA);
+SCBW_DATA(u16*, tooltip_t_supply_cost,	0x0068C1DC);
+SCBW_DATA(u16*, tooltip_z_supply_cost,	0x0068C1DE);
 
 struct Event;
 typedef bool __fastcall generic_interact_function(BinDlg*, Event*);
@@ -324,11 +324,11 @@ SCBW_DATA(BufferStr*, struct_Char,				0x006CA9F8);
 SCBW_DATA(BufferStr*, struct_Char2,				0x006CAB08);
 SCBW_DATA(char*, unkString_Char,				0x006CA668);
 
-// For drawWireframeShield
+// For draw_wireframe_shield
 SCBW_DATA(char*, charBuffer,					0x0068C208);
 SCBW_DATA(char*, byteShieldStr,					0x0068C20A); // count of 22
 SCBW_DATA(u8*, wireframeConstants,				0x00515280); // count of 40
-SCBW_DATA(char**, imgDrawPaletteIndex,			0x0050CEC1); // count of 256
+SCBW_DATA(char**, image_draw_palette_index,		0x0050CEC1); // count of 256
 SCBW_DATA(u8*, off_50CE81,						0x0050CE81);
 SCBW_DATA(u8*, off_50CE82,						0x0050CE82);
 
@@ -995,6 +995,7 @@ SCBW_DATA(void*,	sound_duration,				0x006D1278); // struct_18 in IDA
 
 // For stat_data_unit_wireframe_select_update
 SCBW_DATA(char**,	off_68C1FC,					0x0068C1FC);
+SCBW_DATA(char**,	default_grp_remap,			0x0050CDC1);
 
 //////////////////////////////////////////////////////////////// @}
 
