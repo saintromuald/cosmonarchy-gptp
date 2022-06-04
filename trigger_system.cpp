@@ -394,6 +394,7 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				playlist_shuffle = do_shuffle;
 			} else if (parser_eq(&parser, "clear_creep")) {
 				Box32 location = parser_get_location(&parser);
+				scbw::printf("Clearing creep %u %u %u %u", location.x, location.y, location.w, location.h);
 				scbw::clear_creep(location);
 			} else if (parser_eq(&parser, "set_player_name")) {
 				s32 player = parser_get_s32(&parser);

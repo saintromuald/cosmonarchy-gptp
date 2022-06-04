@@ -68,7 +68,7 @@ Token parser_get_string(Parser* parser, bool consume_rest) {
 	bool is_string = false;
 	if (*parser->at == '"') {
 		++parser->at;
-		while (*parser->at && *parser->at != '"' && is_newline(*parser->at)) {
+		while (*parser->at && *parser->at != '"' && !is_newline(*parser->at)) {
 			if (parser->token.size < MaxToken - 1) {
 				parser->token.data[parser->token.size++] = *parser->at;
 			}
@@ -76,10 +76,10 @@ Token parser_get_string(Parser* parser, bool consume_rest) {
 		}
 	} else {
 		while (*parser->at) {
-			if (consume_rest && is_any_space(*parser->at)) {
+			if (!consume_rest && is_any_space(*parser->at)) {
 				break;
 			}
-			if (!consume_rest && is_newline(*parser->at)) {
+			if (consume_rest && is_newline(*parser->at)) {
 				break;
 			}
 
@@ -136,7 +136,7 @@ Box32 parser_get_location(Parser* parser) {
 	Token string = parser_get_string(parser, true);
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(locationTable[i].string_id);
-		if (name && strcmp(name, string.data) == 0) {
+		if (name && name[0] && strcmp(name, string.data) == 0) {
 			Box32 box = locationTable[i].dimensions;
 			box.w -= box.x;
 			box.h -= box.y;
