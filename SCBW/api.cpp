@@ -2078,7 +2078,10 @@ namespace scbw
 	void clear_creep(Box32 area) {
 		for (u32 x = 0; x < area.w / 32; ++x) {
 			for (u32 y = 0; y < area.h / 32; ++y) {
-				helper::removeCreepAtUnit(area.x + x * 32, area.y + y * 32, UnitId::ZergEgg);
+				u32 final_x = area.x + x * 32;
+				u32 final_y = area.y + y * 32;
+				helper::removeCreepAtUnit(final_x, final_y, UnitId::ZergEgg);
+				// TODO: update creep so it respreads if possible, also maybe don't remove creep from underneath zerg structures?
 			}
 		}
 	}
@@ -2218,7 +2221,11 @@ namespace scbw
 		u32 y = unit->position.y / 32 - h / 2;
 
 		helper::clear_tile_flags_from_area(0x8000000, x, y, w, h);
-		helper::set_creep(x, y, w, h, false);
+		if (units_dat::GroupFlags[unit->id].is_factory) {
+			helper::set_creep(x - 2, y - 1, w + 4, h + 2, true);
+		} else {
+			helper::set_creep(x, y, w, h, false);
+		}
 		helper::set_map_tile_flags(0x8000000, x, y, w, h);
 	}
 

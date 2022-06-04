@@ -291,7 +291,6 @@ namespace helper
 	void SpreadInitialCreep(u32 id, s32 x, s32 y);															// 005CE90
 	void zergPlaceBuildingCntd(Unit* unit);																	// 005D410
 	void stopCreepDisappearingAtBuilding(Unit* unit);												        // 007D770
-	void updateCreepDisappearance(Sprite* sprite, u32 unit_id, s32 x, s32 y);								// 007DE40
 	void increment_unit_scores_ex(Unit* building, s32 unk1, s32 unk2);											// 0088D50
 	void play_building_completed_sound(Unit* building);															// 008F310
 	void refreshSpriteData(Sprite* sprite);																	// 00983A0

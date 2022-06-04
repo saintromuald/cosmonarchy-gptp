@@ -378,7 +378,7 @@ namespace hooks
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
 				unit->setHp(unit->previous_hitpoints * 256);
 
-				helper::updateCreepDisappearance(unit->sprite, unit->id, unit->get_x(), unit->get_y());
+				helper::update_creep_disappearance_unit_id(unit->id, unit->get_x(), unit->get_y(), false);
 			}
 		}
 	}

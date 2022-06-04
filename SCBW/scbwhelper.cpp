@@ -2893,20 +2893,6 @@ namespace helper
 		}
 	}
 
-	void updateCreepDisappearance(Sprite* sprite, u32 unit_id, s32 x, s32 y)
-	{
-		const u32 Func_updateCreepDisappearance = 0x0047DE40;
-		__asm {
-			PUSHAD
-			MOV ECX, y
-			MOV EDX, x
-			MOV ESI, sprite
-			PUSH unit_id
-			CALL Func_updateCreepDisappearance
-			POPAD
-		}
-	}
-
 	//unk1 is ECX, unk2 is pushed value
 	void increment_unit_scores_ex(Unit* building, s32 unk1, s32 unk2)
 	{
