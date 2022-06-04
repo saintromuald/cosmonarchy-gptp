@@ -631,8 +631,6 @@ namespace hooks
 			return helper::get_unit_name_stat_string(queue);
 		}
 	}
-
-	static u32 tooltip_time_cost;
 	
 	// 004594B0 00459531 - Hooked to add time costs to tooltip info. -Veeq7
 	void set_tooltip_info_unit(u32 unit_id) {
@@ -650,7 +648,7 @@ namespace hooks
 			race == RaceId::Protoss ? supply : 0,
 			race == RaceId::Terran ? supply : 0,
 			race == RaceId::Zerg ? supply : 0);
-		tooltip_time_cost = time_cost;
+		*tooltip_time_cost = time_cost;
 	}
 
 	// 00459360 004593B0 004597D5 - Hooked to add time costs to tooltip info. -Veeq7
@@ -659,28 +657,24 @@ namespace hooks
 
 		*tooltip_ore_cost = 0;	
 		*tooltip_gas_cost = 0;
-		*tooltip_p_energy_cost = 0;
-		*tooltip_t_energy_cost = 0;
-		*tooltip_z_energy_cost = 0;
+		*tooltip_energy_cost = 0;
+		*tooltip_unused_cost = 0;
+		*tooltip_time_cost = 0;
 		*tooltip_p_supply_cost = 0;
 		*tooltip_t_supply_cost = 0;
 		*tooltip_z_supply_cost = 0;
-
-		tooltip_time_cost = 0;
 	}
 
 	// 00458800 - Hooked to add time costs to tooltip info. -Veeq7
 	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply) {
 		*tooltip_ore_cost = mineral_cost;	
 		*tooltip_gas_cost = gas_cost;
-		*tooltip_p_energy_cost = p_energy;
-		*tooltip_t_energy_cost = t_energy;
-		*tooltip_z_energy_cost = z_energy;
+		*tooltip_energy_cost = p_energy + t_energy + z_energy;
+		*tooltip_unused_cost = 0;
+		*tooltip_time_cost = 0;
 		*tooltip_p_supply_cost = p_supply;
 		*tooltip_t_supply_cost = t_supply;
 		*tooltip_z_supply_cost = z_supply;
-
-		tooltip_time_cost = 0;
 	}
 
 	// 00458EF0 - Hooked to add time costs to tooltip info. -Pr0nogo

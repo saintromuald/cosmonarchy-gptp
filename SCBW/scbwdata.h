@@ -183,9 +183,9 @@ SCBW_DATA(const char*, TurnBuffer, 0x00654880);
 // For reset_tooltip_info, set_tooltip_info, set_tooltip_info_unit_case5, etc
 SCBW_DATA(u16*, tooltip_ore_cost,		0x0068C1D0);
 SCBW_DATA(u16*, tooltip_gas_cost,		0x0068C1D2);
-SCBW_DATA(u16*, tooltip_p_energy_cost,	0x0068C1D4);
-SCBW_DATA(u16*, tooltip_t_energy_cost,	0x0068C1D6);
-SCBW_DATA(u16*, tooltip_z_energy_cost,	0x0068C1D8);
+SCBW_DATA(u16*, tooltip_energy_cost,	0x0068C1D4); // Used to be Protoss energy
+SCBW_DATA(u16*, tooltip_unused_cost,	0x0068C1D6); // Used to be Terran energy
+SCBW_DATA(u16*, tooltip_time_cost,		0x0068C1D8); // Used to be Zerg energy
 SCBW_DATA(u16*, tooltip_p_supply_cost,	0x0068C1DA);
 SCBW_DATA(u16*, tooltip_t_supply_cost,	0x0068C1DC);
 SCBW_DATA(u16*, tooltip_z_supply_cost,	0x0068C1DE);
