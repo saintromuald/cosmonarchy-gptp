@@ -1076,4 +1076,10 @@ struct Event {
 	u16 y_pos;
 };
 
+struct FxnDrawIconData {
+	u16 w;
+	u16 h;
+	GrpHead* stat_icon;
+};
+
 #pragma pack()

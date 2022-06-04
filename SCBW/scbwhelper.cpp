@@ -11777,15 +11777,15 @@ namespace helper
 		}
 	}
 
-	s32 bw_print_icon(Box16* area, Box16* dims, u16 right, u16 bottom) {
+	s32 bw_print_icon(Bounds* bounds, FxnDrawIconData* data, u32 width, u32 height) {
 		static s32 result;
 		const u32 func_address = 0x0041D090;
 		__asm {
 			PUSHAD
-			PUSH bottom
-			PUSH right
-			MOV EDI, dims
-			MOV EAX, area
+			PUSH height
+			PUSH width
+			MOV EDI, data
+			MOV EAX, bounds
 			CALL func_address
 			MOV result, EAX
 			POPAD

@@ -1296,7 +1296,7 @@ namespace helper
 
 	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply); // 00458800
 
-	s32 bw_print_icon(Box16* area, Box16* dims, u16 right, u16 bottom);										// 0041D090
+	s32 bw_print_icon(Bounds* bounds, FxnDrawIconData* data, u32 right, u32 bottom);			// 0041D090
 	u32 bw_print_xy(char* dest, s32 width, s32 height);														// 004202B0
 
 	bool unit_is_in_notify_range(Unit* unit);																// 004E5AD0

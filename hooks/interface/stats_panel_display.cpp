@@ -633,6 +633,25 @@ namespace hooks
 	}
 
 	static u32 tooltip_time_cost;
+	
+	// 004594B0 00459531 - Hooked to add time costs to tooltip info. -Veeq7
+	void set_tooltip_info_unit(u32 unit_id) {
+		u32 mineral_cost = units_dat::MineralCost[unit_id];
+		u32 gas_cost = units_dat::GasCost[unit_id];
+		u32 time_cost = units_dat::TimeCost[unit_id] / 24;
+
+		u32 race = Unit::get_race(unit_id);
+		u32 supply = 0;
+		if (units_dat::BaseProperty[unit_id] & UnitProperty::TwoUnitsIn1Egg) {
+			supply = 2;
+		}
+
+		set_tooltip_info(mineral_cost, gas_cost, 0, 0, 0,
+			race == RaceId::Protoss ? supply : 0,
+			race == RaceId::Terran ? supply : 0,
+			race == RaceId::Zerg ? supply : 0);
+		tooltip_time_cost = time_cost;
+	}
 
 	// 00459360 004593B0 004597D5 - Hooked to add time costs to tooltip info. -Veeq7
 	void reset_tooltip_info() {
@@ -650,7 +669,7 @@ namespace hooks
 		tooltip_time_cost = 0;
 	}
 
-	// 00458800 - Same as above. -Veeq7
+	// 00458800 - Hooked to add time costs to tooltip info. -Veeq7
 	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply) {
 		*tooltip_ore_cost = mineral_cost;	
 		*tooltip_gas_cost = gas_cost;
@@ -664,78 +683,56 @@ namespace hooks
 		tooltip_time_cost = 0;
 	}
 
-	// 00459531 - Same as above. -Veeq7
-	void set_tooltip_info_unit(u32 unit_id) {
-		u32 mineral_cost = units_dat::MineralCost[unit_id];
-		u32 gas_cost = units_dat::GasCost[unit_id];
-		u32 time_cost = units_dat::TimeCost[unit_id] / 24;
-
-		helper::set_tooltip_info(mineral_cost, gas_cost, 0, 0, 0, 0, 0, 0);
-		tooltip_time_cost = time_cost;
-	}
-
-	// Same as above. -Pr0nogo
-	void draw_tooltip_with_icon(Box16* area) // 00458EF0
-	{
-		Box16 result = {};
-		s32 right_dim = 2;
-		Box16 frame_dims = {};
-		s32 field_index = 0;
-		u32 x_max = 2;
-		GrpHead* stat_icon_offset = 0;
-		u32 iterations = 0;
-		char dest;
-		bool draw = false;
-		do
-		{
-			if (*(&tooltip_ore_cost + field_index))
-			{
-				u8 stat_icon = grp_stat_res_icon_mapping[field_index];
-				if (stat_icon == 1)
-				{
+	// 00458EF0 - Hooked to add time costs to tooltip info. -Pr0nogo
+	void draw_tooltip_with_icon(Box16* area) {
+		bool did_draw = false;
+		u32 max_x = 2;
+		FxnDrawIconData data = {};
+		for (u32 i = 0; i < 8; ++i) {
+			u16 value = tooltip_ore_cost[i];
+			if (value) {
+				u8 stat_icon = grp_stat_res_icon_mapping[i];
+				if (stat_icon == 1) {
 					stat_icon = *console_index + 1;
 				}
-				if (stat_icon >= icons_grp->frameCount)
-				{
+				if (stat_icon >= icons_grp->frameCount) {
 					stat_icon = 0;
 				}
-				u16 frame_bottom = icons_grp->frames[stat_icon].width;
-				u16 frame_right = icons_grp->frames[stat_icon].height;
-				u32 frame_offset = icons_grp->frames[stat_icon].data_offset;
-				frame_dims.top = frame_bottom;
-				if (frame_offset < 0)
-				{
-					frame_offset &= 0x7FFFFFFFu;
-					frame_right += 256;
+				u16 width = icons_grp->frames[stat_icon].width;
+				u16 height = icons_grp->frames[stat_icon].height;
+				s32 icon_index = icons_grp->frames[stat_icon].data_offset;
+				if (icon_index < 0) {
+					icon_index &= 0x7FFFFFFFu;
+					height += 256;
 				}
-				stat_icon_offset = (icons_grp + frame_offset);
-				Box16 frame_area = {};
-				u16 uninitialized = 0;
-				u16 frame_right_minus = frame_right - 1;
-				u16 bottom_dim = area->bottom;
-				u16 frame_bottom_var = frame_bottom;
-				frame_dims.bottom = frame_right;
-				u16 frame_right_var = frame_right;
-				u16 y_min_minus = frame_dims.top - 1;
-				helper::bw_print_icon(&frame_area, &frame_dims, right_dim, bottom_dim);
-				sprintf_s(&dest, 16, "%d", *(&tooltip_ore_cost + field_index));
-				helper::bw_print_xy(&dest, frame_right + x_max + 2, area->bottom);
-				field_index = iterations;
-				x_max = required_area->right;
-				draw = 1;
-				right_dim = required_area->right;
+
+				Bounds bounds = {};
+				bounds.x = 0;
+				bounds.y = 0;
+				bounds.w = width - 1;
+				bounds.h = height - 1;
+				bounds.width = width;
+				bounds.height = height;
+
+				data.w = width;
+				data.h = height;
+				data.stat_icon = &icons_grp[icon_index];
+				helper::bw_print_icon(&bounds, &data, max_x, area->h);
+
+				char text_buffer[16] = {};
+				sprintf_s(text_buffer, 16, "%d", value);
+				helper::bw_print_xy(text_buffer, width + max_x + 2, area->h);
+
+				did_draw = true;
+				max_x = tooltip_required_area->w;
 			}
-			iterations = ++field_index;
-		} while (field_index < 8);
-		if (draw)
-		{
-			if (right_dim > area->right)
-			{
-				area->right = right_dim;
-			}
-			area->bottom += frame_dims.top + 1;
 		}
-		return;
+		if (did_draw) {
+			if (max_x > area->right) {
+				area->right = max_x;
+			}
+			area->bottom += data.h + 1;
+		}
 	}
 
 	// Hooked by accident. -Pr0nogo

@@ -127,7 +127,21 @@ namespace
 		}
 	}
 
-	void __declspec(naked) set_tooltip_info_unit_wrapper() { // 00459531
+	void __declspec(naked) set_tooltip_info_unit_case1_wrapper() { // 004594B0
+		static const u32 jmp_address = 0x00459635;
+		static u32 unit_id;
+		__asm {
+			MOV unit_id, EDI
+			PUSHAD
+		}
+		hooks::set_tooltip_info_unit(unit_id);
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
+	}
+
+	void __declspec(naked) set_tooltip_info_unit_case5_wrapper() { // 00459531
 		static const u32 jmp_address = 0x00459635;
 		static u32 unit_id;
 		__asm {
@@ -177,31 +191,32 @@ namespace
 	}
 
 	void __declspec(naked) set_tooltip_info_wrapper() { // 00458800
-		static u32 mineral_cost;
-		static u32 gas_cost;
-		static u32 p_energy;
-		static u32 t_energy;
-		static u32 z_energy;
-		static u32 p_supply;
-		static u32 t_supply;
-		static u32 z_supply;
+		static u16 mineral_cost;
+		static u16 gas_cost;
+		static u16 p_energy;
+		static u16 t_energy;
+		static u16 z_energy;
+		static u16 p_supply;
+		static u16 t_supply;
+		static u16 z_supply;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV EAX, [EBP + 0x04]
-			MOV t_energy, EAX
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV z_energy, EAX
+			MOV t_energy, AX
 			MOV EAX, [EBP + 0x0C]
-			MOV p_supply, EAX
+			MOV z_energy, AX
 			MOV EAX, [EBP + 0x10]
-			MOV t_supply, EAX
+			MOV p_supply, AX
 			MOV EAX, [EBP + 0x14]
-			MOV z_supply, EAX
+			MOV t_supply, AX
+			MOV EAX, [EBP + 0x18]
+			MOV z_supply, AX
 			POP EAX
-			MOV mineral_cost, EAX
-			MOV gas_cost, ECX
-			MOV p_energy, EDX
+			MOV mineral_cost, AX
+			MOV gas_cost, CX
+			MOV p_energy, DX
 			PUSHAD
 		}
 		hooks::set_tooltip_info(mineral_cost, gas_cost, p_energy, t_energy, z_energy, p_supply, t_supply, z_supply);
@@ -209,7 +224,7 @@ namespace
 			POPAD
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x10
+			RETN 0x14
 		}
 	}
 
@@ -218,6 +233,7 @@ namespace
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV area, EAX
 			POP EAX
@@ -261,10 +277,12 @@ namespace hooks
 	//	jump_patch(stats_armor_level_wrapper,						0x00425600, 1);
 	//	jump_patch(stats_weapon_level_wrapper,						0x00425790, 1);
 		jump_patch(get_unit_name_wrapper,							0x0047B5A0, 2);
-	//	jump_patch(reset_tooltip_info_wrapper_1,					0x00459360, 0);
-	//	jump_patch(reset_tooltip_info_wrapper_2,					0x004593B0, 0);
-	//	jump_patch(reset_tooltip_info_wrapper_3,					0x004597D5, 0);
-	//	jump_patch(set_tooltip_info_unit_wrapper,					0x00458800, 2);
+		jump_patch(set_tooltip_info_unit_case1_wrapper,				0x004594B0, 2);
+		jump_patch(set_tooltip_info_unit_case5_wrapper,				0x00459531, 2);
+		jump_patch(reset_tooltip_info_wrapper_1,					0x00459360, 0);
+		jump_patch(reset_tooltip_info_wrapper_2,					0x004593B0, 0);
+		jump_patch(reset_tooltip_info_wrapper_3,					0x004597D5, 0);
+		jump_patch(set_tooltip_info_wrapper,						0x00458800, 4);
 	//	jump_patch(draw_tooltip_with_icon_wrapper,					0x00458EF0, 1);
 	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3);
 	}
