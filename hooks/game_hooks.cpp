@@ -305,7 +305,7 @@ namespace hooks
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		tactical_ai(unit, unitExt);
 
-		if (unit->status & UnitStatus::GroundedBuilding && units_dat::GroupFlags[unit->id].isZerg) {
+		if (unit->status & UnitStatus::GroundedBuilding && units_dat::GroupFlags[unit->id].isZerg && unit->player < PlayerLimit) {
 			u32 creep_spreader_id = scbw::unit_get_creep_spreader_id(unit);
 			Box32 creep_area = {};
 			helper::get_creep_spread_area(creep_spreader_id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &creep_area);
@@ -317,7 +317,6 @@ namespace hooks
 						ActiveTile* tile = scbw::get_active_tile_at_tile(x, y);
 						if (tile->has_creep || tile->temporary_creep) {
 							TileExt* tile_ext = get_tile_ext_at_tile(x, y);
-							tile_ext->creep_generators |= 1 << unit->player;
 							tile_ext->creep_owners |= 1 << unit->player;
 						}
 					}

@@ -182,7 +182,7 @@ namespace hooks
                 TileExt* tile_ext = get_tile_ext_at_tile(tile_x + x, tile_y + y);
 
                 u32 flags = 0x20800000; // cliff_edge, always_unbuildable
-                if (!units_dat::GroupFlags[unit_id].isZerg && !(tile_ext->creep_owners & allied_bits)) {
+                if (!units_dat::GroupFlags[unit_id].isZerg && tile_ext->creep_owners && !(tile_ext->creep_owners & allied_bits)) {
                     flags |= check_creep ? 0x40000000 : 0x400000;
                 }
 
