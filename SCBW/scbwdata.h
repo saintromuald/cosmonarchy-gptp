@@ -328,7 +328,7 @@ SCBW_DATA(char*, unkString_Char,				0x006CA668);
 SCBW_DATA(char*, charBuffer,					0x0068C208);
 SCBW_DATA(char*, byteShieldStr,					0x0068C20A); // count of 22
 SCBW_DATA(u8*, wireframeConstants,				0x00515280); // count of 40
-SCBW_DATA(char*, imgDrawPaletteIndex,			0x0050CEC1); // count of 256
+SCBW_DATA(char**, imgDrawPaletteIndex,			0x0050CEC1); // count of 256
 SCBW_DATA(u8*, off_50CE81,						0x0050CE81);
 SCBW_DATA(u8*, off_50CE82,						0x0050CE82);
 
@@ -994,7 +994,7 @@ SCBW_DATA(u32*,		notify_cooldown,			0x00640870);
 SCBW_DATA(void*,	sound_duration,				0x006D1278); // struct_18 in IDA
 
 // For stat_data_unit_wireframe_select_update
-SCBW_DATA(void**,	off_68C1FC,					0x0068C1FC);
+SCBW_DATA(char**,	off_68C1FC,					0x0068C1FC);
 
 //////////////////////////////////////////////////////////////// @}
 
