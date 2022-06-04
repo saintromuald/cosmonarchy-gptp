@@ -1267,6 +1267,7 @@ namespace helper
 	SCBW_FUNC(0x004A1E50, void __fastcall, remove_unit_ai, Unit* unit, UnitAi* unit_ai);
 	SCBW_FUNC(0x00487B00, Thingy* __stdcall, find_blocking_fow_resource, u32 x, u32 y, u32 radius);
 	SCBW_FUNC(0x00493640, void __cdecl, create_pylon_aura);
+	SCBW_FUNC(0x0040ABBE, void __fastcall, image_render_fxn_0_0, u32 screenX, u32 screenY, void* frame, Box32* rect, u32 colorData);
 
 	b32 ai_try_expanding_to(u32 resarea);																	// 00443A00
 

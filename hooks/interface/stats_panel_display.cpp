@@ -781,48 +781,45 @@ namespace hooks
 	}
 
 	// Hooked to help with tooltip debugging. -Pr0nogo
-	void stat_data_unit_wireframe_select_update(BinDlg* dialog, int unused_1, int unused_2) // 00456F50
-	{
-		BinDlg* dialog_var = dialog;
-		Unit* dialog_unit = dialog->unit_user;
-		Unit* unit_var = dialog_unit;
-		if (dialog_unit->status & UnitStatus::IsHallucination)
-		{
+	void stat_data_unit_wireframe_select_update(BinDlg* dialog, int unused_1, int unused_2) { // 00456F50
+		Unit* unit = dialog->unit_user;
+		if (unit->status & UnitStatus::IsHallucination) {
 			dialog->graphic = 31;
-		}
-		else if (units_dat::BaseProperty[unit_var->id] & 0x40)
-		{
+		} else if (units_dat::BaseProperty[unit->id] & UnitProperty::Hero) { 
 			dialog->graphic = 19;
-		}
-		else
-		{
-			dialog->graphic = unit_var->parasite_flags != 0 ? 25 : 13;
+		} else {
+			dialog->graphic = unit->parasite_flags ? 25 : 13;
 		}
 		helper::status_screen_draw_stat_button_border(dialog);
-		helper::status_screen_wireframe_coloring_related(unit_var);
-		helper::status_screen_wireframe_shield_related(0, unit_var); // originally passed unused var as first arg
-		helper::status_screen_wireframe_hp_related(unit_var);
-	//	u16 dialog_unit_something = dialog_unit[2];
-		/*
-		if (dialog_unit_something >= (*off_68C1FC & 0x7FFF))
-		{
-			dialog_unit_something = 0;
+		helper::status_screen_wireframe_coloring_related(unit);
+		helper::status_screen_wireframe_shield_related(0, unit); // originally passed unused var as first arg
+		helper::status_screen_wireframe_hp_related(unit);
+		u16 next = (u16)unit->link.next;
+		if (next >= (*(u16*)(*off_68C1FC) & 0x7FFF)) {
+			next = 0;
 		}
-		u32 wtf = *(off_68C1FC + 8 * dialog_unit_something + 6);
-		char* wtf_2 = off_68C1FC + *(off_68C1FC + 8 * dialog_unit_something + 10);
-		*/
+		union {
+			u32 ints[2];
+			u8 bytes[8];
+		} dumbness = {};
+		dumbness.ints[0] = *(u32*)off_68C1FC[8 * next + 6];
+		dumbness.ints[1] = *(u32*)off_68C1FC[*(u32*)off_68C1FC[8 * next + 10]];
 		Box32 rect = {};
-	//	SetRect(&rect, 0, 0, BYTE2(wtf), wtf >> 24);
-	//	helper::image_render_fxn_0(dialog_var->Xmin + (dialog_var->Xmax - BYTE2(wtf) - dialog_var->Xmin + 1) / 2, dialog_var->Ymin + (dialog_var->Ymax - HIBYTE(wtf) - dialog_var->Ymin + 1) / 2, &wtf, &rect, 0);
-		imgDrawPaletteIndex[208] = -48;
-		imgDrawPaletteIndex[209] = -47;
-		imgDrawPaletteIndex[210] = -46;
-		imgDrawPaletteIndex[211] = -45;
-		imgDrawPaletteIndex[192] = -64;
-		imgDrawPaletteIndex[193] = -63;
-		imgDrawPaletteIndex[216] = -40;
-		imgDrawPaletteIndex[217] = -39;
-		imgDrawPaletteIndex[218] = -38;
-		imgDrawPaletteIndex[219] = -37;
+		SetRect((RECT*)&rect, 0, 0, dumbness.bytes[2], dumbness.bytes[3]);
+		helper::image_render_fxn_0_0(
+			dialog->bounds.x + (dialog->bounds.w - dumbness.bytes[2] - dialog->bounds.x + 1) / 2, 
+			dialog->bounds.y + (dialog->bounds.h - dumbness.bytes[3] - dialog->bounds.y + 1) / 2,
+			&dumbness, &rect, 0);
+
+		(*imgDrawPaletteIndex)[208] = 208;
+		(*imgDrawPaletteIndex)[209] = 209;
+		(*imgDrawPaletteIndex)[210] = 210;
+		(*imgDrawPaletteIndex)[211] = 211;
+		(*imgDrawPaletteIndex)[192] = 192;
+		(*imgDrawPaletteIndex)[193] = 193;
+		(*imgDrawPaletteIndex)[216] = 216;
+		(*imgDrawPaletteIndex)[217] = 217;
+		(*imgDrawPaletteIndex)[218] = 218;
+		(*imgDrawPaletteIndex)[219] = 219;
 	}
 }
