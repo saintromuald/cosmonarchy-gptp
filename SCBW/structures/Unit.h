@@ -337,7 +337,7 @@ struct Unit : public UnitLayout
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Checks if the @p unit can build / train / morph into @p unit_id. This checks:
-	/// * If the unit is actually owned by the commanding @p playerId
+	/// * If the unit is actually owned by the commanding @p player
 	/// * Whether the unit is stunned / disabled.
 	///
 	/// If the unit can build / train / morph, returns 1. If the tech needs to be
@@ -345,7 +345,7 @@ struct Unit : public UnitLayout
 	s32 can_make_unit(u16 unit_id, u8 playerId) const;
 
 	/// Checks the following:
-	///  * If the unit is actually owned by the commanding @p playerId
+	///  * If the unit is actually owned by the commanding @p player
 	///  * If the unit's owning player has the @p techId researched
 	///  * If the unit has enough energy (or energy cheat is enabled)
 	///  * If the unit is not stunned / is a hallucination / is being built
@@ -387,7 +387,7 @@ struct Unit : public UnitLayout
 	inline u16 get_unit_index() const;
 
 	/// Returns the ID of the last player to own this unit. This is usually the
-	/// same as Unit::playerId, but if the unit belongs to a defeated player,
+	/// same as Unit::player, but if the unit belongs to a defeated player,
 	/// this returns the correct player ID (instead of 11).
 	/// @deprecated   Will be removed in v2.42. Use Unit::is_target_enemy().
 	u8 get_last_owner_id() const;
@@ -398,12 +398,12 @@ struct Unit : public UnitLayout
 
 	/// Returns the first unit loaded in this unit. If this unit is not a
 	/// transport, or has no units inside, this function returns nullptr instead.
-	Unit* get_first_loaded_unit() const;
+	Unit* get_first_loaded_unit();
 
 	/// Checks if this unit has other units loaded inside.
 	bool has_loaded_unit() const;
 
-	/// Transfers ownership of this unit to @p playerId. This function is
+	/// Transfers ownership of this unit to @p player. This function is
 	/// identical to Mind Control and the "Give Units To Player" trigger action.
 	/// @return   true if successful, false otherwise.
 	bool give_to(u8 playerId);
@@ -416,7 +416,7 @@ struct Unit : public UnitLayout
 	/// Internally, this calls scbw::is_unit_enemy().
 	bool is_target_enemy(Unit* target) const;
 
-	/// Checks whether this unit can be seen by @playerId (i.e. not covered by the
+	/// Checks whether this unit can be seen by @player (i.e. not covered by the
 	/// fog-of-war and is detectable).
 	bool is_visible_to(u8 playerId) const;
 

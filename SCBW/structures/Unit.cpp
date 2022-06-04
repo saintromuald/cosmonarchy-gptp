@@ -5,6 +5,7 @@
 #include "globals.h"
 #include "hooks\limits\ccmu.h"
 #include "hooks\weapons\weapon_damage.h"
+#include "hooks\load_unload_proc.h"
 
 #include "math_utils.h"
 //-------- Unit stats and properties --------//
@@ -224,7 +225,7 @@ const char* Unit::getName(u16 unit_id)
 
 	if (units_dat::MapStringId[unit_id])
 	{
-		return mapStringTbl->getString(units_dat::MapStringId[unit_id]);
+		return mapStringTbl->get_string(units_dat::MapStringId[unit_id]);
 	}
 	else
 	{
@@ -1048,13 +1049,13 @@ graphics::ColorId Unit::get_faction_color()
 
 graphics::ColorId Unit::get_faction_color(Unit* unit)
 {
-	// store a playerId until the end where it will properly store a ColorId
+	// store a player until the end where it will properly store a ColorId
 	graphics::ColorId return_value;
 	if (unit != nullptr)
 	{
 		if (unit->sprite != nullptr)
 		{
-			// note: using the sprite playerId to preserve recruitable units color
+			// note: using the sprite player to preserve recruitable units color
 			return_value = unit->sprite->playerId;
 		}
 		else
@@ -1065,7 +1066,7 @@ graphics::ColorId Unit::get_faction_color(Unit* unit)
 		// for normal players, apply colors switching
 		if (unit->player < PLAYABLE_PLAYER_COUNT)
 		{
-			// get the proper playerId in multiplayer game (don't break campaigns/UMS)
+			// get the proper player in multiplayer game (don't break campaigns/UMS)
 			return_value = factionsColorsOrdering[return_value];
 			// fix BROWN to GREEN color swap in Desert map
 			if (*CURRENT_TILESET == TilesetType::Desert && return_value == 5)
@@ -1082,7 +1083,7 @@ graphics::ColorId Unit::get_faction_color(Unit* unit)
 			return_value = graphics::standardColors[return_value];
 		}
 		else {
-			return_value = graphics::BLACK; // will return 0/black if abnormal playerId
+			return_value = graphics::BLACK; // will return 0/black if abnormal player
 		}
 	}
 	else {
@@ -1105,7 +1106,7 @@ graphics::ColorId Unit::get_color(Unit* unit)
 	if (unit != nullptr)
 	{
 		if (unit->sprite != nullptr) {
-			// note: using the sprite playerId to preserve recruitable units color
+			// note: using the sprite player to preserve recruitable units color
 			return_value = unit->sprite->playerId;
 		}
 		else {
@@ -1124,7 +1125,7 @@ graphics::ColorId Unit::get_color(Unit* unit)
 			return_value = playerMinimapColors[return_value];
 		}
 		else {
-			return_value = graphics::BLACK; // will return 0/black if abnormal playerId
+			return_value = graphics::BLACK; // will return 0/black if abnormal player
 		}
 	}
 	else {
@@ -1306,7 +1307,7 @@ Unit* Unit::get_unit_from_index(u16 index)
 	}
 	if (1 <= index && index <= UNIT_ARRAY_LENGTH)
 	{
-		return &unitTable[index - 1];
+		return &unit_table[index - 1];
 	}
 	return nullptr;
 }
@@ -1318,7 +1319,7 @@ u16 Unit::get_unit_index() const
 	{
 		return this - (Unit*)&new_unit_table.units[0] + 1;
 	}
-	return this - unitTable + 1;
+	return this - unit_table + 1;
 }
 
 u8 Unit::get_last_owner_id() const
@@ -1337,30 +1338,14 @@ u8 Unit::get_last_owner_id() const
 
 Unit* Unit::get_loaded_unit(s32 index) const
 {
-	assert(0 <= index && index < 8);
-	Unit* loaded_unit = Unit::get_unit_from_index(this->loaded_unit[index].index);
-	if  (loaded_unit && loaded_unit->sprite
-	&& !(loaded_unit->main_order_id == OrderId::Die && loaded_unit->main_order_state == 1)
-	&&   loaded_unit->target_order_special == this->loaded_unit[index].unit_id)
-	{
-		return loaded_unit;
-	}
-	return nullptr;
+	return hooks::get_unit_from_index(index);
 }
 
 // Logically equivalent to function @ 0x004E6C90
-Unit* Unit::get_first_loaded_unit() const
+Unit* Unit::get_first_loaded_unit()
 {
 	assert(this);
-	for (s32 i = 0; i < units_dat::SpaceProvided[this->id]; ++i)
-	{
-		Unit* firstLoadedUnit = get_loaded_unit(i);
-		if (firstLoadedUnit)
-		{
-			return firstLoadedUnit;
-		}
-	}
-	return nullptr;
+	return hooks::get_first_loaded_unit(this);
 }
 
 // Logically equivalent to function @ 0x004E7110

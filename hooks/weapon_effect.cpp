@@ -156,7 +156,7 @@ namespace hooks
 			// Units can't splash themselves -- except psi storm
 			if (target == bullet->sourceUnit && bullet->weaponId != WeaponId::PsiStorm) continue;
 
-			// Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
+			// Don't hit allied units -- normally just checks target->player == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
 			// if(scbw::is_unit_enemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 
 			if (splash == SplashType::Enemy)
@@ -295,7 +295,7 @@ namespace hooks
 			// Units can't splash themselves
 			if (target == bullet->sourceUnit) continue;
 
-			// Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer
+			// Don't hit allied units -- normally just checks target->player == bullet->srcPlayer
 //			if (scbw::is_unit_enemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 			if (splash == SplashType::Enemy)
 			{

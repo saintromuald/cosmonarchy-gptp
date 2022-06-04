@@ -303,7 +303,7 @@ namespace hooks
 			if (helper::is_target_within_min_range(unitVar, 1u, order_target))
 			{
 				scbw::print("target within min range");
-				helper::loadUnitProc(order_target, unitVar);
+				helper::load_unit_proc(order_target, unitVar);
 				helper::issueOrderTargetingGround(order_target, OrderId::MoveUnload, unitVar->order_target.pt.x, unitVar->order_target.pt.y);
 				if (order_target->unit_ai)
 				{
@@ -326,7 +326,7 @@ namespace hooks
 		}
 
 		/*
-		if (unit->playerId == 11)
+		if (unit->player == 11)
 		{
 			unit->user_action_flags |= 1;
 			if (unit->status & UnitStatus::InTransport)
@@ -395,7 +395,7 @@ namespace hooks
 					{
 						if (unit->is_target_within_min_range(target, 1))
 						{ // 004E7C52
-							helper::loadUnitProc(target, unit);
+							helper::load_unit_proc(target, unit);
 							target->order_to(OrderId::MoveUnload, unit->order_target.pt.x, unit->order_target.pt.y);
 							if (target->pAI != nullptr)
 							{
@@ -448,7 +448,7 @@ namespace hooks
 			helper::moveTowards(unit, target);
 			if (unit->is_target_within_min_range(target, 1))
 			{
-				helper::loadUnitProc(target, unit);
+				helper::load_unit_proc(target, unit);
 			}
 		}
 		else
@@ -502,7 +502,7 @@ namespace hooks
 						if (unit->loaded_unit[counter].unit_id == unitToUnload->target_order_special)
 						{
 							bFoundUnitToUnload = true;
-							result_E7F70 = helper::unloadUnitProc(unitToUnload);
+							result_E7F70 = helper::unload_unit_proc(unitToUnload);
 							if (!(unit->status & UnitStatus::GroundedBuilding))
 							{
 								bEndLoop = true;

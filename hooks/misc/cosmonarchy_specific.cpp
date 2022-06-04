@@ -268,7 +268,7 @@ LABEL_18:
 					{
 					case ReqOpcode::CurrentUnitIs:
 						requiredId = reqTable[v7++];
-						if (completed_unit_counts[requiredId].player[unit->playerId] > 0)
+						if (completed_unit_counts[requiredId].player[unit->player] > 0)
 							v26 = 0;
 						if (requiredId == unit->id)
 						{
@@ -282,7 +282,7 @@ LABEL_18:
 						goto LABEL_73;
 					case ReqOpcode::HasUnit:
 						requiredId = reqTable[v7++];
-						v24 = completed_unit_counts[requiredId].player[unit->playerId] + all_unit_counts[requiredId].player[unit->playerId];
+						v24 = completed_unit_counts[requiredId].player[unit->player] + all_unit_counts[requiredId].player[unit->player];
 						goto LABEL_71;
 					case ReqOpcode::HasAddonAttached:
 						if (*CHEAT_STATE & CheatFlags::ModifyThePhaseVariance)
@@ -430,7 +430,7 @@ LABEL_18:
 						goto LABEL_72;
 					case ReqOpcode::TechIsResearched:
 						auto v10 = reqTable[v7++];
-						if (scbw::has_tech_researched(unit->playerId,v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
+						if (scbw::has_tech_researched(unit->player,v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
 						{
 							*lastError = 9;
 							return -1;
@@ -448,7 +448,7 @@ LABEL_18:
 					default:
 						if (*CHEAT_STATE & 0x2000)
 							++v9;
-						v24 = completed_unit_counts[requiredId][playerId];
+						v24 = completed_unit_counts[requiredId][player];
 					LABEL_71:
 						v11 = v24 + v9;
 						goto LABEL_72;

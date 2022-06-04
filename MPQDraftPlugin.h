@@ -29,7 +29,7 @@
 	globally unique ID of the plugin; the module ID is the plugin-specific ID
 	of the module.
 
-	[FURTHER TEXT TO BE ADDED HERE]
+	[FURTHER Text TO BE ADDED HERE]
 
 	- SETUP SIDE -
 	There are two halves to each plugin: a setup side and a patching side. The

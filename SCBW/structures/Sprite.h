@@ -59,7 +59,7 @@ struct Sprite
 	/// If the image cannot be found, returns nullptr.
 	Image* get_overlay(u16 imageId) const;
 
-	/// Checks whether this sprite is visible to @p playerId (i.e. not covered by
+	/// Checks whether this sprite is visible to @p player (i.e. not covered by
 	/// the fog of war). This does NOT check detectability.
 	bool isVisibleTo(u8 playerId) const;
 

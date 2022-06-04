@@ -16,7 +16,7 @@ namespace YAML {
 	enum CHOMP {
 		STRIP = -1, CLIP, KEEP
 	};
-	enum ACTION {
+	enum Action {
 		NONE, BREAK, THROW
 	};
 	enum FOLD {
@@ -55,8 +55,8 @@ namespace YAML {
 					  // end)
 		//   Note: strip means kill all, clip means keep at most one, keep means keep
 		// all
-		ACTION onDocIndicator;      // what do we do if we see a document indicator?
-		ACTION onTabInIndentation;  // what do we do if we see a tab where we should
+		Action onDocIndicator;      // what do we do if we see a document indicator?
+		Action onTabInIndentation;  // what do we do if we see a tab where we should
 									// be seeing indentation spaces
 
 		// output:

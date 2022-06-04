@@ -98,7 +98,7 @@ namespace hooks
 				&& unit->worker.powerup
 				&& (unit->worker.powerup)->id == UnitId::Powerup_Flag)
 			{
-				if ((unit->worker.powerup)->playerId == playerId || playerId >= 8)
+				if ((unit->worker.powerup)->player == player || player >= 8)
 				{
 					helper::drop_powerup(unit->worker.powerup); //return the flag to initial position?
 				}
@@ -115,7 +115,7 @@ namespace hooks
 		{
 			if (unit->id == UnitId::TerranCleric)
 			{
-				Unit* freeMedic = AIScriptController[player].mainMedic;				
+				Unit* freeMedic = AIScriptController[player].main_medic;				
 				if (freeMedic == nullptr)
 				{
 					freeMedic = unit;
@@ -131,14 +131,14 @@ namespace hooks
 				//if (default_ai_expansion_block[player] && scbw::unit_id_is_town_center(unit->id) && (!town || town->resarea != closest_resarea)) {
 				//	AiScript* aiscript = 0;
 				//	for (AiScript* it = *first_active_aiscript; it; it = it->link.next) {
-				//		if (it->playerId == player) {
+				//		if (it->player == player) {
 				//			aiscript = it;
 				//			break;
 				//		}
 				//	}
 				//	if (aiscript) {
 				//		if (helper::ai_try_expanding_to(closest_resarea)) {
-				//			helper::ai_expand_to(aiscript, closest_resarea, default_ai_expansion_block[aiscript->playerId]);
+				//			helper::ai_expand_to(aiscript, closest_resarea, default_ai_expansion_block[aiscript->player]);
 				//			town = scbw::get_closest_town(player, unit->position);
 				//		}
 				//	}

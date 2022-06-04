@@ -28,7 +28,7 @@ namespace
 	void __stdcall statdatalUserInteractWrapper(BinDlg* consoleIcon)
 	{
 		GuiOverlay* gui = (GuiOverlay*)consoleIcon->user;
-		switch (gui->overlayType)
+		switch (gui->overlay_type)
 		{
 			case 0:
 			{

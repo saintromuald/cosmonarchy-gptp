@@ -127,7 +127,7 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 	placeholder.position.y = unit->y;
 	placeholder.priority = unit->hp;
 	placeholder.guard_rebuilds = unit->energy == 100 ? 0 : unit->energy + 1;
-	u32 flags = unit->validStateFlags & unit->stateFlags;
+	u32 flags = unit->valid_state_flags & unit->state_flags;
 	placeholder.was_preplaced = !(flags & ChkUnitFlags_Hallucinated);
 	placeholder.should_request = !(flags & ChkUnitFlags_Cloaked);
 	if (flags & ChkUnitFlags_Invincible) {
@@ -195,7 +195,7 @@ static void init_base_layouts() {
 		}
 
 		if (unit->playerId == 11) {
-			u32 flags = unit->validStateFlags & unit->stateFlags;
+			u32 flags = unit->valid_state_flags & unit->state_flags;
 			if (flags & ChkUnitFlags_Hallucinated) {
 				for (u32 i = 0; i < 8; ++i) {
 					add_placeholder(unit, i);

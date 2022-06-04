@@ -31,40 +31,40 @@ const s32 SOUND_TYPE_COUNT = 1144;
 
 #pragma pack(1)
 
-struct unitPath
+struct UnitPath
 {
 	s32		start;
 	s32		next;
 	s32		finish;
-	s32		timeStarted;
-	s32		unitIndex;
-	s8		isCalculating;
+	s32		time_started;
+	s32		unit_index;
+	s8		is_calculating;
 	s8		field_19;
 	s8		field_1A;
-	s8		pathCount;
-	s8		numAreas;
-	s8		curAreas;
-	s8		numSegments;
-	s8		curSegments;
+	s8		path_count;
+	s8		num_areas;
+	s8		cur_areas;
+	s8		num_segments;
+	s8		cur_segments;
 	s32		steps[24];
 };
 
 struct CampaignMission
 {
-	char* missionName;
-	s32 missionIndex;
+	char*	mission_name;
+	s32		mission_index;
 };
 
-struct chkStruct
+struct CHKStruct
 {
-	u8 section[4];
+	u8	section[4];
 	u32 function;
 	u32 flags;
 };
 
-struct scenarioFormat
+struct ScenarioFormat
 {
-	chkStruct* chkStruct;
+	CHKStruct* chk_struct;
 	u32 chkStructCount;
 };
 
@@ -96,13 +96,13 @@ struct unk_62
 	u8 anonymous_7;
 };
 
-struct bStringMap
+struct StringMap_b
 {
 	u8		value;				// 0x0
 	u8		id;					// 0x1
 };
 
-struct wStringMap
+struct StringMap_w
 {
 	u16		tblstring;			// 0x0
 	u16		index;				// 0x2
@@ -202,57 +202,57 @@ C_ASSERT(sizeof(ReplayFrame) == 0x6);
 struct Options // taken from IDA
 {
 	u32		speed;						// 0x0
-	u32		mouseScroll;				// 0x4
-	u32		keyboardScroll;				// 0x8
+	u32		mouse_scroll;				// 0x4
+	u32		keyboard_scroll;			// 0x8
 	u32		music;						// 0xC
 	u32		sfx;						// 0x10
-	u32		tipNumber;					// 0x14
+	u32		tip_number;					// 0x14
 	u32		flags;						// 0x18
-	u32		m_mouseScroll;				// 0x1C
-	u32		m_keyboardScroll;			// 0x20
-	u32		useChatColors;				// 0x24
+	u32		m_mouse_scroll;				// 0x1C
+	u32		m_keyboard_scroll;			// 0x20
+	u32		use_chat_colors;			// 0x24
 	u32		null;						// 0x28
 };
 C_ASSERT(sizeof(Options) == 0x2C);
 
 struct PlayerName
 {
-	char	playerName[0x19];			// 0x0
+	char	player_name[0x19];			// 0x0
 };
 
-struct MENDEATHS
+struct MenDeaths
 {
 	u32        player[12];
 };
-struct UNITDEATHS
+struct UnitDeaths
 {
 	u32        player[12];
 };
-struct UNITSCORES_I
+struct UnitScores_I
 {
 	u32        player[12];
 };
 // Based on http://code.google.com/p/bwapi/source/browse/branches/bwapi4/bwapi/BWAPI/Source/BW/Image.h
 
-struct TEXT
+struct Text
 {
-	char  textdisplay[218][13];  //[last is text at bottom; ex: "Cheat enabled."]
+	char	text_display[218][13];  // last is text at bottom; ex: "Cheat enabled."
 	unk_t   unknown1;
 	unk_t   unknown2;
-	u8    color[13];
-	unk_t   unknown3[3];  //[last is text at bottom; ex: "Cheat enabled."]
-	u8    timer[13];
+	u8		color[13];
+	unk_t   unknown3[3];			// last is text at bottom; ex: "Cheat enabled."
+	u8		timer[13];
 };
 
-struct TILE
+struct Tile
 {
 	/*00*/  u16 index;
-	/*02*/  u8 buildability; /**< 8th bit should sign not buildable. */
-	/*03*/  u8 groundHeight; /**< Ground Height(4 lower bits) - Deprecated? Some values are incorrect. */
-	/*04*/  u16 leftEdge;
-	/*06*/  u16 topEdge;
-	/*08*/  u16 rightEdge;
-	/*0A*/  u16 buttomEdge;
+	/*02*/  u8 buildability;	/**< 8th bit should sign not buildable. */
+	/*03*/  u8 ground_height;	/**< Ground Height(4 lower bits) - Deprecated? Some values are incorrect. */
+	/*04*/  u16 left_edge;
+	/*06*/  u16 top_edge;
+	/*08*/  u16 right_edge;
+	/*0A*/  u16 bottom_edge;
 	/*0C*/  u16 _1;
 	/*0E*/  u16 _2; /**<  Unknown - Edge piece has rows above it. (Recently noticed; not fully understood.)
 					o 1 = Basic edge piece.
@@ -260,14 +260,14 @@ struct TILE
 					o 3 = Left edge piece.*/
 	/*10*/  u16 _3;
 	/*12*/  u16 _4;
-	/*14*/  u16 miniTile[16]; /** MegaTile References (VF4/VX4) */
+	/*14*/  u16 minitile[16]; /** MegaTile References (VF4/VX4) */
 };
 
-struct DOODAD
+struct Doodad
 {
 	/*00*/  u16 index;
-	/*02*/ u8 buildability; /**< 8th bit should sign not buildable. */
-	/*03*/  u8 groundHeightAndOverlayFlags; /**< Ground Height(4 lower bits) - Deprecated? Some values are incorrect.
+	/*02*/	u8	buildability; /**< 8th bit should sign not buildable. */
+	/*03*/  u8	ground_height_and_overlay_flags; /**< Ground Height(4 lower bits) - Deprecated? Some values are incorrect.
 					   * Overlay Flags:
 					   * o 0x0 - None
 					   * o 0x1 - Sprites.dat Reference
@@ -276,13 +276,13 @@ struct DOODAD
 					   */
 	/*04*/  u16 overlayID;
 	/*06*/  u16 _1;
-	/*08*/  u16 doodatGrupString;
+	/*08*/  u16 doodad_group_string;
 	/*0A*/  u16 _2;
-	/*0C*/  u16 dddataBinIndex;
-	/*0E*/  u16 doodatHeight;
-	/*10*/  u16 doodatWidth;
+	/*0C*/  u16 data_bin_index;
+	/*0E*/  u16 doodad_height;
+	/*10*/  u16 doodad_width;
 	/*12*/  u16 _3;
-	/*14*/  u16 miniTile[16]; /** MegaTile References (VF4/VX4) */
+	/*14*/  u16 minitile[16]; /** MegaTile References (VF4/VX4) */
 }; // size 34
 
 struct Thingy
@@ -300,8 +300,8 @@ struct CHKUnit
 	/*06*/	u16	 y;
 	/*08*/	u16	 unit_id;
 	/*0A*/	u16	 relation;
-	/*0C*/	u16	 validStateFlags;
-	/*0E*/	u16	 validProperties;
+	/*0C*/	u16	 valid_state_flags;
+	/*0E*/	u16	 valid_properties;
 	/*10*/	u8	 playerId;
 	/*11*/	u8	 hp;
 	/*12*/	u8	 shields;
@@ -309,9 +309,9 @@ struct CHKUnit
 	/*14*/	u16	 resources;
 	/*16*/	u16	 field_16;
 	/*18*/	u16	 hangar;
-	/*1A*/	u16	 stateFlags;
+	/*1A*/	u16	 state_flags;
 	/*1C*/	u32	 field_1c;
-	/*20*/	u32	 relatedUnit;
+	/*20*/	u32	 related_unit;
 };
 
 //---- Taken from locations.cpp ----//
@@ -325,7 +325,7 @@ struct MapSize
 struct Location
 {
 	Box32 dimensions;
-	u16   stringId;
+	u16   string_id;
 	u16   flags;
 };
 
@@ -363,7 +363,7 @@ struct ButtonSet
 };
 
 //---- Taken from triggers.h ----//
-struct CONDITION
+struct Condition
 {
 	u32			location;
 	u32			player;
@@ -375,9 +375,9 @@ struct CONDITION
 	u8			flags;
 };
 
-typedef b32(__fastcall* ConditionPointer)(CONDITION*);
+typedef b32(__fastcall* ConditionPointer)(Condition*);
 
-struct ACTION
+struct Action
 {
 	u32        location;
 	u32        string;
@@ -390,7 +390,7 @@ struct ACTION
 	u8         number2;
 	u8         flags;
 };
-typedef b32(__fastcall* ActionPointer)(ACTION*);
+typedef b32(__fastcall* ActionPointer)(Action*);
 
 //GRP frame header
 struct GrpFrame
@@ -407,10 +407,10 @@ C_ASSERT(sizeof(GrpFrame) == 8);
 //GRP file header
 struct GrpHead
 {
-	u16 frameCount;
-	s16 width;
-	s16 height;
-	GrpFrame frames[1];
+	u16			frameCount;
+	s16			width;
+	s16			height;
+	GrpFrame	frames[1];
 };
 
 C_ASSERT(sizeof(GrpHead) == 14);
@@ -423,7 +423,6 @@ struct LO_Header
 	u32 overlayCount;
 	u32 frameOffsets[1];
 
-
 	Point8 get_offset(s32 frameNum, s32 overlayNum) const {
 		return ((Point8*)(this->frameOffsets[frameNum] + (u32)this))[overlayNum];
 	}
@@ -435,9 +434,9 @@ C_ASSERT(sizeof(LO_Header) == 12);
 // Image Remapping Data
 struct ColorShiftData
 {
-	u32 index;
-	void* data;
-	char name[12];
+	u32		index;
+	void*	data;
+	char	name[12];
 };
 
 C_ASSERT(sizeof(ColorShiftData) == 20);
@@ -518,15 +517,15 @@ C_ASSERT(sizeof(UnitFinderData) == 8);
 
 struct BinDlg
 {
-	/*0x00*/  BinDlg*	next;
-	/*0x04*/  Bounds	bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
-	/*0x10*/  u8*		buffer;
-	/*0x14*/  char*		pszText;
-	/*0x18*/  u32		flags;			// use BinDlgFlags::Enum
-	/*0x1C*/  u32		unk_1c;
-	/*0x20*/  u16		index;
-	/*0x22*/  u16		control_type;	// use DialogControlTypes::Enum
-	/*0x24*/  u16		graphic;
+	/*0x00*/  BinDlg*		next;
+	/*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
+	/*0x10*/  u8*			buffer;
+	/*0x14*/  char*			pszText;
+	/*0x18*/  u32			flags;			// use BinDlgFlags::Enum
+	/*0x1C*/  u32			unk_1c;
+	/*0x20*/  u16			index;
+	/*0x22*/  u16			control_type;	// use DialogControlTypes::Enum
+	/*0x24*/  u16			graphic;
 
 	union
 	{
@@ -642,7 +641,7 @@ C_ASSERT(sizeof(SMK_Structure) == 30); //0x1E
 struct GuiOverlay
 {
 	/*0x00*/  unk_t     unk_0[6];
-	/*0x06*/  u16		overlayType;
+	/*0x06*/  u16		overlay_type;
 	/*0x08*/  u16		id;
 	/*0x0A*/  unk_t     unk_a[34];
 };
@@ -683,7 +682,6 @@ struct AiRegion
 };
 
 C_ASSERT(sizeof(AiRegion) == 52);
-//static_assert(sizeof(AiRegion) == 52, "The size of the AiRegion structure is invalid");
 
 struct Region
 {
@@ -717,53 +715,53 @@ struct RegionArray
 
 struct GuardAi
 {
-	Link<GuardAi>	link;				// 0x0, 0x4
-	u8 type;							// 0x8
-	u8 timesDied;						// 0x9
-	u8 unkA[2];							// 0xA
-	Unit* parent;						// 0xC
-	u16 unit_id;						// 0x10
-	Point16 home;						// 0x12
-	Point16 unkPos;						// 0x16
-	u8 unk1A[2];						// 0x1A
-	u32 previousUpdate;					// 0x1C
+	Link<GuardAi> link;				// 0x0, 0x4
+	u8 type;						// 0x8
+	u8 times_died;					// 0x9
+	u8 unk_a[2];					// 0xA
+	Unit* parent;					// 0xC
+	u16 unit_id;					// 0x10
+	Point16 home;					// 0x12
+	Point16 unk_pos;				// 0x16
+	u8 unk_1a[2];					// 0x1A
+	u32 previous_update;			// 0x1C
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
 
 struct AiTown; // declaring this here to avoid compiler errors
 struct WorkerAi
 {
-	Link<WorkerAi>	link;				// 0x0, 0x4
-	u8 type;							// 0x8
-	u8 target_resource;					// 0x9
-	u8 reassign_count;					// 0xA
-	u8 wait_timer;						// 0xB
-	u32 last_update_second;				// 0xC
-	Unit* parent;						// 0x10
-	AiTown* town;						// 0x14
+	Link<WorkerAi> link;			// 0x0, 0x4
+	u8 type;						// 0x8
+	u8 target_resource;				// 0x9
+	u8 reassign_count;				// 0xA
+	u8 wait_timer;					// 0xB
+	u32 last_update_second;			// 0xC
+	Unit* parent;					// 0x10
+	AiTown* town;					// 0x14
 };
 C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 
 struct BuildingAi
 {
-	Link<BuildingAi> link;				// 0x0, 0x4
-	u8 type;							// 0x8
-	u8 trainQueueTypes[5];				// 0x9
-	u8 unkE[2];							// 0xE
-	Unit* parent;						// 0x10
-	AiTown* town;						// 0x14
-	void* trainQueueValues[5];			// 0x18
+	Link<BuildingAi> link;			// 0x0, 0x4
+	u8 type;						// 0x8
+	u8 trainQueueTypes[5];			// 0x9
+	u8 unkE[2];						// 0xE
+	Unit* parent;					// 0x10
+	AiTown* town;					// 0x14
+	void* trainQueueValues[5];		// 0x18
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
 
 struct MilitaryAi
 {
-	Link<MilitaryAi>	link;			// 0x0, 0x4
-	u8 type;							// 0x8
-	u8 padding1;						// 0x9
-	u16 padding2;						// 0xA
-	Unit* unit;							// 0xC
-	AiRegion* region;					// 0x10
+	Link<MilitaryAi> link;			// 0x0, 0x4
+	u8 type;						// 0x8
+	u8 padding1;					// 0x9
+	u16 padding2;					// 0xA
+	Unit* unit;						// 0xC
+	AiRegion* region;				// 0x10
 };
 C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14
 
@@ -832,26 +830,26 @@ struct TownReq
 
 struct AiTown
 {
-	AiTown* prev;								//	0x0
-	AiTown* next;								//	0x4
-	WorkerAiArray* free_workers;				//	0x8
-	WorkerAi* workers;							//	0xC
-	BuildingAiArray* free_buildings;			//	0x10
-	BuildingAi* buildings;						//	0x14
-	u8 player;									//	0x18
-	u8 inited;									//	0x19
-	u8 worker_count;							//	0x1a
-	u8 worker_limit;							//	0x1b
-	u8 resarea;									//	0x1c
-	u8 resource_units_not_set;					//	0x1d
-	u8 inBattle;								//	0x1e
-	u8 unk1f;									//	0x1f
-	Point16 position;							//	0x20
-	Unit* main_building;						//	0x24
-	Unit* building_SCV;							//	0x28
-	Unit* mineral;								//	0x2c
-	Unit* gas_buildings[3];						//	0x30
-	TownReq town_units[0x64];					//	0x3c
+	AiTown* prev;						//	0x0
+	AiTown* next;						//	0x4
+	WorkerAiArray* free_workers;		//	0x8
+	WorkerAi* workers;					//	0xC
+	BuildingAiArray* free_buildings;	//	0x10
+	BuildingAi* buildings;				//	0x14
+	u8 player;							//	0x18
+	u8 inited;							//	0x19
+	u8 worker_count;					//	0x1a
+	u8 worker_limit;					//	0x1b
+	u8 resarea;							//	0x1c
+	u8 resource_units_not_set;			//	0x1d
+	u8 inBattle;						//	0x1e
+	u8 unk1f;							//	0x1f
+	Point16 position;					//	0x20
+	Unit* main_building;				//	0x24
+	Unit* building_SCV;					//	0x28
+	Unit* mineral;						//	0x2c
+	Unit* gas_buildings[3];				//	0x30
+	TownReq town_units[0x64];			//	0x3c
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
 
@@ -872,26 +870,26 @@ struct AiSpendingRequest
 
 struct SpendingRequest
 {
-	u8 priority;
-	u8 type;
-	u16 id;
-	void* val;
+	u8		priority;
+	u8		type;
+	u16		id;
+	void*	val;
 };
 
 struct AI_Main
 {
-	u32 mineralCollection;				/*0000*/
-	u32 gasCollection;					/*0004*/
-	u32 supplyCollection;				/*0008*/
+	u32 mineral_collection;				/*0000*/
+	u32 gas_collection;					/*0004*/
+	u32 supply_collection;				/*0008*/
 	u32 minerals_available;				/*000C*/
 	u32 gas_available;					/*0010*/
 	u32 supply_available;				/*0014*/
 	SpendingRequest requests[0x3f];		/*0018*/
 	u8 request_count;					/*0210*/
 	u8 liftoff_cooldown;				/*0211*/
-	u8 AI_NukeRate;						/*0212*/
-	u8 AI_Attacks;						/*0213*/
-	u32 AI_LastNukeTime;				/*0214*/
+	u8 ai_nuke_rate;					/*0212*/
+	u8 ai_attacks;						/*0213*/
+	u32 ai_last_nuke_time;				/*0214*/
 	struct
 	{
 		u16 isSecureFinished : 1;		/*0001*/
@@ -907,29 +905,29 @@ struct AI_Main
 		u16 bUpgradesFinished : 1;		/*0400*/
 		u16 bTargetExpansion : 1;		/*0800*/
 	} AI_Flags;
-	u16 AI_PanicBlock;					/*021A*/
-	u16 AI_MaxForce;					/*021C*/
-	u16 AI_AttackGroup;					/*021E*/
+	u16 ai_panic_block;					/*021A*/
+	u16 ai_max_force;					/*021C*/
+	u16 ai_attack_group;				/*021E*/
 	u16 wanted_unit;					/*0220*/
 	u8	dc222;							/*0222*/
 	u8	defense_priority_base;			/*0223*/
 	u32 previous_building_hit_second;	/*0224*/
 	u32 last_attack_seconds;			/*0228*/
 	u8	strategic_suicide;				/*022C*/
-	u8	spellcasterTimer;				/*022D*/
+	u8	spellcaster_timer;				/*022D*/
 	u8	attack_failed;					/*022E*/
 	u8	difficulty;						/*022F*/
 	u16 attackers[0x40];				/*0230*/
-	u32 AI_DefenseBuild_GG[10];			/*02B0*/
-	u32 AI_DefenseBuild_AG[10];			/*02D8*/
-	u32 AI_DefenseBuild_GA[10];			/*0300*/
-	u32 AI_DefenseBuild_AA[10];			/*0328*/
-	u32 AI_DefenseUse_GG[10];			/*0350*/
-	u32 AI_DefenseUse_AG[10];			/*0378*/
-	u32 AI_DefenseUse_GA[10];			/*03A0*/
-	u32 AI_DefenseUse_AA[10];			/*03C8*/
+	u32 ai_defensebuild_gg[10];			/*02B0*/
+	u32 ai_defensebuild_ag[10];			/*02D8*/
+	u32 ai_defensebuild_ga[10];			/*0300*/
+	u32 ai_defensebuild_aa[10];			/*0328*/
+	u32 ai_defenseuse_gg[10];			/*0350*/
+	u32 ai_defenseuse_ag[10];			/*0378*/
+	u32 ai_defenseuse_ga[10];			/*03A0*/
+	u32 ai_defenseuse_aa[10];			/*03C8*/
 	u8 unit_build_limits[0xe4];			/*03F0*/
-	Unit* mainMedic;					/*04D4*/
+	Unit* main_medic;					/*04D4*/
 	u8 unk4d8[0x10];					/*04D8*/
 };
 C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
@@ -937,11 +935,11 @@ C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
 struct AiScript
 {
 	Link<AiScript>		link;			// 0x0, 0x4
-	s32					scriptOffset;	// 0x8
+	s32					script_offset;	// 0x8
 	s32					sleep;			// 0xC
-	s32					playerId;		// 0x10
-	Box32				locBounds;		// 0x14
-	Vector32			locCenter;		// 0x24
+	s32					player;			// 0x10
+	Box32				loc_bounds;		// 0x14
+	Vector32			loc_center;		// 0x24
 	AiTown*				town;			// 0x2C
 	s32					flags;			// 0x30
 };
@@ -974,7 +972,7 @@ struct _uavail
 struct StringTbl
 {
 	/// Returns the number of string entries in the TBL file.
-	u16 getStringCount() const
+	u16 get_string_count() const
 	{
 		return *buffer;
 	}
@@ -982,11 +980,11 @@ struct StringTbl
 	/// Returns the string at @p index in the TBL file.
 	/// If the @p index is 0, returns nullptr.
 	/// If the @p index is out of bounds, returns an empty string.
-	const char* getString(u16 index) const
+	const char* get_string(u16 index) const
 	{
 		//Based on function @ 0x004C36F0
 		if (index == 0) return nullptr;
-		else if (index <= getStringCount())
+		else if (index <= get_string_count())
 		{
 			return (const char*)(buffer)+buffer[index];
 		}
@@ -995,7 +993,6 @@ struct StringTbl
 			return (const char*)0x00501B7D;	//StringEmpty in scbwdata.h, SC default empty string
 		}
 	}
-
 	u16* buffer;
 };
 
@@ -1074,6 +1071,21 @@ struct Event {
 	u16 type;
 	u16 x_pos;
 	u16 y_pos;
+};
+
+struct FindUnitLocationParam {
+	u32		player;
+	u16		unit_id;
+	u16		location_flags;
+	u32		check_height;
+};
+
+struct KillUnitArgs {
+	void*	func; // IsValid(), arg 1 Unit *unit, ecx player, edx unit_id
+	u32		player;
+	u16		unit_id;
+	u16		flags;
+	u32		check_height;
 };
 
 #pragma pack()

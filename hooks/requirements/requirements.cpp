@@ -11,7 +11,7 @@ namespace hooks
 		// eax          u32    dat req offset
 		// esi          CUnit* unit
 		// ebp+8  arg1  u16    tech/upg ID
-		// ebp+c  arg2  u32    playerId
+		// ebp+c  arg2  u32    player
 		// ebp+10 arg3  u16*   dat req script ptr
 
 		bool invalidUnit = false; // janky 'Current Unit Is...' logic variables

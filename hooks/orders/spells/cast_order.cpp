@@ -385,7 +385,7 @@ namespace hooks
 								unit->main_order_state = 2;
 								if (unit->unit_ai != nullptr)
 								{
-									AIScriptController[unit->player].spellcasterTimer = 1;
+									AIScriptController[unit->player].spellcaster_timer = 1;
 								}
 							}
 						}

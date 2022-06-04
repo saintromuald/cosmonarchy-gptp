@@ -1205,7 +1205,7 @@ namespace hooks
 				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, originally from DarkenedFantasies.
 				// TODO: Find a solution that works, the code below does not. -Pr0nogo
 				/*
-				if (playerTable[unit->playerId].type == PlayerType::Computer && unit->main_order_id == OrderId::WatchTarget) {
+				if (playerTable[unit->player].type == PlayerType::Computer && unit->main_order_id == OrderId::WatchTarget) {
 					helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 				}
 				*/
@@ -1309,7 +1309,7 @@ namespace hooks
 		// Fix target clearing bug
 		/*
 		if (unit->order_target.unit
-			&& !(unit->order_target.unit->visibility_status & (1 << unit->playerId)))
+			&& !(unit->order_target.unit->visibility_status & (1 << unit->player)))
 		{
 			scbw::print("lard");
 			unit->order_to_idle();

@@ -340,11 +340,11 @@ namespace hooks
 		if (chk_cache_size < ChkCacheLimit) {
 			chk_cache[chk_cache_size++] = *chkunit;
 		}
-		u32 flags = chkunit->validStateFlags & chkunit->stateFlags;
+		u32 flags = chkunit->valid_state_flags & chkunit->state_flags;
 		if (!(flags & ChkUnitFlags_Hallucinated)) {
 			Unit* unit = CreateUnitXY(chkunit->playerId, chkunit->unit_id, chkunit->x, chkunit->y, false);
 			if (unit) {
-				helper::edit_unit_flags(unit, &chkunit->validStateFlags);
+				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
 				if (unit->id != UnitId::ResourceMineralField
 					&& unit->id != UnitId::ResourceMineralFieldType2
 					&& unit->id != UnitId::ResourceMineralFieldType3

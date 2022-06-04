@@ -1212,7 +1212,7 @@ namespace helper
 		return result;
 	}
 
-	void hideUnit(Unit* unit)
+	void hide_unit(Unit* unit)
 	{
 		const u32 Func_hideUnit = 0x004E6340;
 		__asm {
@@ -5776,7 +5776,7 @@ namespace helper
 		return result;
 	}
 
-	void loadUnitProc(Unit* unit, Unit* unitToLoad)
+	void load_unit_proc(Unit* unit, Unit* unitToLoad)
 	{
 		const u32 Func_Sub4E78E0 = 0x004E78E0;
 		__asm {
@@ -5788,7 +5788,7 @@ namespace helper
 		}
 	}
 
-	b32 unloadUnitProc(Unit* unit)
+	b32 unload_unit_proc(Unit* unit)
 	{
 		const u32 Func_Sub4E7F70 = 0x004E7F70;
 		static b32 return_value;
@@ -11489,8 +11489,8 @@ namespace helper
 		return result;
 	}
 
-	unitPath* reassign_path(Unit* unit) {
-		static unitPath* result;
+	UnitPath* reassign_path(Unit* unit) {
+		static UnitPath* result;
 		const u32 func_address = 0x0042F740;
 		__asm {
 			PUSHAD
@@ -11938,5 +11938,56 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	char toggle_unit_pathing_properties(Unit* unit) {
+		static char result;
+		const u32 func_address = 0x004030D0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	u32 is_unit_at_height(Unit* unit, u32 height) {
+		static u32 result;
+		const u32 func_address = 0x0045F8D0;
+		__asm {
+			PUSHAD
+			MOV ESI, height
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) {
+		static bool result;
+		const u32 func_address = 0x004C7E20;
+		__asm {
+			PUSHAD
+			MOV EDX, args
+			MOV ECX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void kill_powerup(Unit* unit) {
+		const u32 func_address = 0x004F3C60;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
 	}
 }

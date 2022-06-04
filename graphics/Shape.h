@@ -25,7 +25,7 @@ struct Shape {
 
       enum ShapeType {
       NONE,
-      TEXT,
+      Text,
       DOT,
       LINE,
       BOX,

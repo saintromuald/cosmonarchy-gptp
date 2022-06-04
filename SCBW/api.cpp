@@ -780,7 +780,7 @@ namespace scbw
 		/*
 		else if (upgradeId<UpgradeId::None)
 		{
-			return UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PStructurePlating];
+			return UpgradesBw->currentLevel[player][upgradeId - UpgradeId::PStructurePlating];
 		}
 		*/
 		else
@@ -815,7 +815,7 @@ namespace scbw
 		/*
 		else if (upgradeId<UpgradeId::None)
 		{
-			return UpgradesBw->maxLevel[playerId][upgradeId - UpgradeId::PStructurePlating];
+			return UpgradesBw->maxLevel[player][upgradeId - UpgradeId::PStructurePlating];
 		}
 		*/
 		else
@@ -2409,8 +2409,8 @@ namespace scbw
 		if (!prefer_military || units_dat::ComputerAIInternal[unit->id] & 2) {
 			helper::give_ai(unit);
 		} else {
-			if (unit->id == UnitId::TerranCleric && !AIScriptController[unit->player].mainMedic) {
-				AIScriptController[unit->player].mainMedic = unit;
+			if (unit->id == UnitId::TerranCleric && !AIScriptController[unit->player].main_medic) {
+				AIScriptController[unit->player].main_medic = unit;
 			}
 			helper::ai_training_simple_military(unit, unit);
 		}
