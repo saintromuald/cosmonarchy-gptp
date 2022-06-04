@@ -14,7 +14,7 @@ namespace
 
 	// for loadMap
 	s32 readMapChunks(s32 a1, s32 a2, s32* a3, s32 sizeArg);                               // 004CC060
-	s32 readChunkNodes(s32 count, s32 a2, chkStruct* nodes, void* buffer, s32 a5);      // 00413710
+	s32 readChunkNodes(s32 count, s32 a2, CHKStruct* nodes, void* buffer, s32 a5);      // 00413710
 	s32 unkNetworkFunc(char* a1, char* a2, s32 a3);                                     // 004CC7F0
 }
 
@@ -57,7 +57,7 @@ namespace hooks
 		s32 v3; // esi
 		void* v4; // edi
 		s32 result; // eax
-		scenarioFormat* v6; // ecx
+		ScenarioFormat* v6; // ecx
 		s32 v7; // [esp+0h] [ebp-4h]
 
 		v7 = a1;
@@ -73,7 +73,7 @@ namespace hooks
 					v6 = &stru_500574[5 * v7];
 				else
 					v6 = &stru_50057C[5 * v7];
-				result = readChunkNodes(v6->chkStructCount, v3, v6->chkStruct, v4, 0);
+				result = readChunkNodes(v6->chkStructCount, v3, v6->chk_struct, v4, 0);
 			}
 		}
 		else if (current_map_filename[0])
@@ -203,7 +203,7 @@ namespace
 	}
 
 	const u32 Func_readChunkNodes = 0x00413710;
-	s32 readChunkNodes(s32 count, s32 a2, chkStruct* nodes, void* buffer, s32 a5)
+	s32 readChunkNodes(s32 count, s32 a2, CHKStruct* nodes, void* buffer, s32 a5)
 	{
 		static s32 result;
 		__asm {

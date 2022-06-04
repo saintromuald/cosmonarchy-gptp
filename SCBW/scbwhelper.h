@@ -132,7 +132,7 @@ namespace helper
 	Unit* create_unit(s16 unitType, s32 x, s32 y, s32 playerId);
 	void update_unit_stats_and_finish_building(Unit* unit);
 	u32 update_unit_strength_and_apply_default_orders(Unit* unit);
-	void hideUnit(Unit* unit);
+	void hide_unit(Unit* unit);
 
 	// For AI_TrainingBroodling
 	void ai_set_region_type(s32 regionType, AiRegion* region);
@@ -653,8 +653,8 @@ namespace helper
 	Unit* getLoadedUnitFromIndex(Unit* transport, s32 index);																		// 004E6C40
 	b32 getFirstLoadedWorker(Unit* transport);																						// 004E6D90
 	b32 Ai_FindTransport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
-	void loadUnitProc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
-	b32 unloadUnitProc(Unit* unit);																									// 004E7F70 (Hooked)
+	void load_unit_proc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
+	b32 unload_unit_proc(Unit* unit);																									// 004E7F70 (Hooked)
 	void issueOrderTargetingGround(Unit* unit, u8 orderId, s16 x, s16 y);															// 00475260
 
 	//// siege_transform
@@ -1248,12 +1248,12 @@ namespace helper
 
 	u32 stop_creep_disappearing(u32 x_tile, u32 y_tile);													// 0047D540
 
-	void secondary_order_spawning_larva(Unit* unit);															// 004EA780
+	void secondary_order_spawning_larva(Unit* unit);														// 004EA780
 
 	AiTown* create_ai_town(u32 player, u32 x, u32 y);														// 00432020
 
 	Sprite* sprite_destructor(Sprite* sprite);																// 00497B40
-	unitPath* reassign_path(Unit* unit);																	// 0042F740
+	UnitPath* reassign_path(Unit* unit);																	// 0042F740
 	u32 initialize_unit(Unit* unit, u32 y, u32 unit_id, u32 x, u8 player_id);								// 0049F206
 
 	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker);												// 00468930
@@ -1311,4 +1311,10 @@ namespace helper
 	u32 status_screen_wireframe_coloring_related(Unit* unit);												// 004567C0
 	char status_screen_wireframe_shield_related(u32 unused, Unit* unit);									// 004566B0
 	u32 status_screen_wireframe_hp_related(Unit* unit);														// 00456730
+
+	char toggle_unit_pathing_properties(Unit* unit);														// 004030D0
+
+	u32 is_unit_at_height(Unit* unit, u32 height);															// 0045F8D0
+	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args);										// 004C7E20
+	void kill_powerup(Unit* unit);																			// 004F3C60
 }

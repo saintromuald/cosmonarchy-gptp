@@ -278,7 +278,7 @@ namespace hooks
 
             /*
 			u32 race = unit->get_race();
-			u32 supply_used = suppliesUsed_Terran[unit->playerId];
+			u32 supply_used = suppliesUsed_Terran[unit->player];
 
 			u32 supply_used_string_id = race + 820;
             char* supply_used_string = 0;
@@ -312,10 +312,10 @@ namespace hooks
 			} else {
 				supply_available_string = "";
 			}
-			u32 supply_available = get_supplies_available(unit->playerId, race);
+			u32 supply_available = get_supplies_available(unit->player, race);
 			sprintf_s(supply_available_buffer, 260, "%s %d", supply_available_string, (supply_available + 1) / 2);
 
-            u32 supply_max = suppliesMax_Terran[unit->playerId];
+            u32 supply_max = suppliesMax_Terran[unit->player];
 			u32 supply_max_string_id = race + 823;
             char* supply_max_string = 0;
 			if (race == -824) {
@@ -477,7 +477,7 @@ namespace hooks
         }
     }
 
-    // Check if @p playerId has enough supplies to build @p unit_id.
+    // Check if @p player has enough supplies to build @p unit_id.
     bool hasSuppliesForUnitHook(u8 playerId, u16 unit_id, bool canShowErrorMessage)
     {
         // Default StarCraft behavior

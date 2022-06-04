@@ -42,7 +42,7 @@ namespace scbw
 
 	/// Displays an error message and plays a sound for the player.
 	///
-	/// @param  playerId  ID of the player who receives the message.
+	/// @param  player  ID of the player who receives the message.
 	/// @param  statTxtId ID of the error message string in stat_txt.tbl
 	/// @param  sfxId     ID of the sound file in sfxdata.dat.
 	void show_error_message_with_sfx(u32 playerId, u32 statTxtId, u32 sfxId);
@@ -275,7 +275,7 @@ namespace scbw
 		return 0 != playerVision[playerA].flags[playerB];
 	}
 
-	/// Checks whether the @p unit is recognized by @p playerId as an enemy.
+	/// Checks whether the @p unit is recognized by @p player as an enemy.
 	/// This will work even when the owner of the @p unit has left the game.
 	/// @see Unit::is_target_enemy().
 	inline bool is_unit_enemy(u8 playerId, Unit* unit)
@@ -289,7 +289,7 @@ namespace scbw
 
 	u32 get_sized_overlay(Unit* unit, u32 initial);
 	/// Returns the amount of remaining supply (total available - total used) for
-	/// the @p playerId, using @p raceId to determine the appropriate race to use.
+	/// the @p player, using @p raceId to determine the appropriate race to use.
 	/// This is affected by the "Food For Thought" cheat flag.
 	s32 get_supply_remaining(u8 playerId, u8 raceId);
 	u32 get_flingy_data(u32 entry, u32 index);
@@ -316,7 +316,7 @@ namespace scbw
 	void make_to_hold_position(Unit* unit);
 
 	void send_gptp_aise_command(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
-	/// Checks whether the @p playerId has the @p techId researched.
+	/// Checks whether the @p player has the @p techId researched.
 	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
 	bool has_tech_researched(u8 playerId, u16 techId);
 
@@ -328,7 +328,7 @@ namespace scbw
 
 	u8 get_upgrade_max_level(u8 playerId, u8 upgradeId);
 	bool has_tech_available(u8 playerId, u16 techId);
-	//u32 techUseAllowed(Unit* unit, u16 techId, u32 playerId);
+	//u32 techUseAllowed(Unit* unit, u16 techId, u32 player);
 	/// Sets the player's tech research state for @p techId to @p isResearched.
 	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
 	void set_tech_research_state(u8 playerId, u16 techId, bool isResearched);

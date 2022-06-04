@@ -11,7 +11,7 @@ namespace graphics
 
 	void Shape::setText(s32 x, s32 y, s32 stringIndex, FontSize fontSize, CoordType coordType)
 	{
-		this->type = TEXT;
+		this->type = Text;
 		this->p1.x = x;
 		this->p1.y = y;
 		this->stringIndex = stringIndex;
@@ -143,7 +143,7 @@ namespace graphics
 		switch (this->type)
 		{
 
-			case TEXT:
+			case Text:
 				//TODO: Add ability to change font size
 				gameScreenBuffer->blitString(
 					getStringFromIndex(this->stringIndex).c_str(), p1.x, p1.y, this->fontSize);

@@ -653,10 +653,8 @@ struct UnitLayout
 				/*0x0D0*/			Box16	larva_spawn_zone;		// Not game coordinates, but "activity values".
 																	// Increased by 25 every time worker returns resources to the side unless over 100, and all
 																	// sides are decreased by 1 at the same time. Larvas spawn at the side with smallest value.
-				/*0x0D0*/			Point16	powerup_origin;
 			};
 		} building;
-
 		struct
 		{
 			/*0x0C0*/				Unit*		powerup;
@@ -667,6 +665,8 @@ struct UnitLayout
 			/*0x0D0*/				Unit*		harvest_target;		// When waiting or harvesting
 			/*0x0D4*/				Link<Unit>	harvest_link;		// When there is a gather conflict
 		} worker;
+		/*0x0D0*/			Point16	powerup_origin;
+		/*0x0D4*/			Unit*	powerup_carrier;
 	};
 
 	/*0x0DC*/ u32       status;							// See UnitStatus::Enum for more info
@@ -728,7 +728,7 @@ struct UnitLayout
 	} finder_index;										// Ordering for unit boundries in unit finder for binary search
 	/*0x14C*/ u8        repulse_unknown;
 	/*0x14D*/ u8        repulse_angle;					// updated only when air unit is being pushed
-	/*0x14E*/ Point8    drift_pos;						// (mapsizex / 1.5 max)
+	/*0x14E*/ Point8    driftPos;						// (mapsizex / 1.5 max)
 };
 C_ASSERT(sizeof(UnitLayout) == 336);
 #pragma pack()

@@ -83,11 +83,11 @@ namespace hooks
 
 				MOV ESI, unit
 				MOVZX ECX, byte ptr[ESI + 0xC9]	//unit->building.upgrade_id
-				MOVZX EAX, byte ptr[ESI + 0x4C]	//unit->playerId
+				MOVZX EAX, byte ptr[ESI + 0x4C]	//unit->player
 				MOV EDX, ECX
 				SHR EDX, 0x3
 				AND ECX, 0x80000007
-				LEA EAX, [EDX + EAX * 0x8 + 0x0058F3E0] //EAX = &(UpgradesBw->currentLevel[unit->playerId][unit->building.upgrade_id CONVERTED?])
+				LEA EAX, [EDX + EAX * 0x8 + 0x0058F3E0] //EAX = &(UpgradesBw->currentLevel[unit->player][unit->building.upgrade_id CONVERTED?])
 				JNS lbl547E7
 
 				DEC ECX
@@ -222,12 +222,12 @@ namespace hooks
 
 				MOV ESI, unit
 				MOVZX ECX, byte ptr[ESI + 0xC8] //unit->building.tech_id
-				MOVZX EAX, byte ptr[ESI + 0x4C] //unit->playerId
+				MOVZX EAX, byte ptr[ESI + 0x4C] //unit->player
 				MOV EDX, ECX
 				SHR EDX, 0x3
 				AND ECX, 0x80000007
 				LEA EAX, [EAX + EAX * 0x2]
-				LEA EAX, [EDX + EAX * 0x2 + 0x0058F230] //EAX = &(TechBw->isResearched[unit->playerId][unit->building.tech_id CONVERTED?])
+				LEA EAX, [EDX + EAX * 0x2 + 0x0058F230] //EAX = &(TechBw->isResearched[unit->player][unit->building.tech_id CONVERTED?])
 				JNS lbl549C7
 
 				DEC ECX

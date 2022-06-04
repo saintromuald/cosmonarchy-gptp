@@ -44,22 +44,22 @@ SCBW_DATA(Units12*, firstPlayerUnit, 0x006283F8);  //Indexed by player Id
 /// @name Structure tables
 //////////////////////////////////////////////////////////////// @{
 
-SCBW_DATA(Units12*, completed_factory_counts, 0x0068A9D8);
-SCBW_DATA(Units12*, all_factory_counts, 0x0068A9A8);
+SCBW_DATA(Units12*, completed_factory_counts,	0x0068A9D8);
+SCBW_DATA(Units12*, all_factory_counts,			0x0068A9A8);
 
-SCBW_DATA(Unit*, unitTable, 0x0059CCA8);
-SCBW_DATA(u32*, unitCount, 0x006283F0);
-SCBW_DATA(Bullet*, bulletTable, 0x0064B2E8);
-SCBW_DATA(UNITDEATHS*, deathTable, 0x0058A364);
-SCBW_DATA(UNITDEATHS*, unit_deaths, deathTable);
-SCBW_DATA(Sprite*, spriteTable, 0x00629D98);
+SCBW_DATA(Unit*, unit_table,					0x0059CCA8);
+SCBW_DATA(u32*, unitCount,						0x006283F0);
+SCBW_DATA(Bullet*, bulletTable,					0x0064B2E8);
+SCBW_DATA(UnitDeaths*, deathTable,				0x0058A364);
+SCBW_DATA(UnitDeaths*, unit_deaths,				deathTable);
+SCBW_DATA(Sprite*, spriteTable,					0x00629D98);
 
-SCBW_DATA(UNITSCORES_I*, unitCountTable, 0x00584DE4);
-SCBW_DATA(UNITSCORES_I*, completed_unit_counts, unitCountTable);
+SCBW_DATA(UnitScores_I*, unitCountTable,		0x00584DE4);
+SCBW_DATA(UnitScores_I*, completed_unit_counts, unitCountTable);
 
 
-SCBW_DATA(UNITSCORES_I*, allUnitCountTable, 0x00582324);
-SCBW_DATA(UNITSCORES_I*, all_unit_counts, unitCountTable);
+SCBW_DATA(UnitScores_I*, allUnitCountTable, 0x00582324);
+SCBW_DATA(UnitScores_I*, all_unit_counts, unitCountTable);
 
 SCBW_DATA(Thingy**, first_lone_sprite, 0x00654874);
 
@@ -204,8 +204,8 @@ SCBW_DATA(Ping*, ping_array, 0x0059C1B8); // 16
 
 // Added by Pr0nogo
 // For raceDropdown
-SCBW_DATA(bStringMap*,	singleRaceSelect,	0x0051AAA0);
-SCBW_DATA(wStringMap*,	singleTypeSelect,	0x0051AAA8);
+SCBW_DATA(StringMap_b*,	singleRaceSelect,	0x0051AAA0);
+SCBW_DATA(StringMap_w*,	singleTypeSelect,	0x0051AAA8);
 SCBW_DATA(const u16*,	networkTable,		0x006D1220);
 
 // For initSingleplayerCustom
@@ -357,8 +357,8 @@ SCBW_DATA(Unit**, bulletBounceMissileTarget,	0x0064EED0);
 SCBW_DATA(Unit**, bulletBounceMissileNext,		0x0064EED4);
 
 // For setUnderDisruptionWeb
-SCBW_DATA(void**, unkArray_59CB64,			0x0059CB64);	// size of 252
-SCBW_DATA(Unit*, unitReference,				0x0059CB58);
+SCBW_DATA(void**,	unk_array_59CB64,			0x0059CB64);	// size of 252
+SCBW_DATA(Unit*,	unit_reference,				0x0059CB58);
 
 // For startGame
 SCBW_DATA(s8*, gameState,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
@@ -390,8 +390,8 @@ SCBW_DATA(char*,	mapsFolder,				0x0066FC08);
 SCBW_DATA(s32*,		dword_5994DC,			0x005994DC);
 
 // For loadMap
-SCBW_DATA(scenarioFormat*, stru_500574,		0x00500574);
-SCBW_DATA(scenarioFormat*, stru_50057C,		0x0050057C);
+SCBW_DATA(ScenarioFormat*, stru_500574,		0x00500574);
+SCBW_DATA(ScenarioFormat*, stru_50057C,		0x0050057C);
 SCBW_DATA(s32*, scenarioCHKSize,			0x006D0F20);
 
 // For gameLoop
@@ -996,6 +996,11 @@ SCBW_DATA(void*,	sound_duration,				0x006D1278); // struct_18 in IDA
 // For stat_data_unit_wireframe_select_update
 SCBW_DATA(char**,	off_68C1FC,					0x0068C1FC);
 SCBW_DATA(char**,	default_grp_remap,			0x0050CDC1);
+
+// For kill_units_at_location_proc
+SCBW_DATA(u32*,		trig_remove_unit_active,		0x005971DC);
+SCBW_DATA(u32*,		trig_killing_additional_unit,	0x00596CD4);
+SCBW_DATA(u32*,		trig_kill_unit_count,			0x005971E0);
 
 //////////////////////////////////////////////////////////////// @}
 

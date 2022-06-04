@@ -103,7 +103,7 @@ namespace hooks
 		if ( !levelCheatUnlocked )
 		return 1;
 		levelCheatUnlocked = 0;
-		if ( !playerName[0] )
+		if ( !player_name[0] )
 		{
 		if ( *networkTable > 0x47u )
 			v3 = (char *)networkTable + networkTable[72];

@@ -13,7 +13,7 @@ namespace AI
 	/// Returns true if @p target is attacking a player allied to @p unit.
 	bool isTargetAttackingAlly(Unit* target, Unit* unit);
 
-	/// Determines whether the given @p playerId is in a UMS map (i.e. campaign mode).
+	/// Determines whether the given @p player is in a UMS map (i.e. campaign mode).
 	bool isUmsMode(u8 playerId);
 
 	/// Determines if the @p unit is within a region that is not commanded by its

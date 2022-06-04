@@ -203,8 +203,8 @@ namespace hooks
 		if (v14 & UnitProperty::NeutralAccessories)
 		{
 			v15 = v1->sprite;
-			v1->building.powerup_origin.x = v15->position.x;
-			v1->building.powerup_origin.y = v15->position.y;
+			v1->powerup_origin.x = v15->position.x;
+			v1->powerup_origin.y = v15->position.y;
 			v16 = units_dat::HumanIdleOrder[v13];
 			v1->user_action_flags |= 1u;
 			helper::order(1, v1, v16, 0, 0, 228);

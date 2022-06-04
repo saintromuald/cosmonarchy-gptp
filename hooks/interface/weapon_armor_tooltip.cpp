@@ -69,7 +69,7 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 	// Get game strings
 	const char* entryName = statTxtTblNew->getString(entryStrIndex);
 	const char* damageStr = statTxtTblNew->getString(777);					//"Damage:"
-//	const char* perRocketStr = statTxtTblNew->getString(1301);				//"per rocket"
+//	const char* perRocketStr = statTxtTblNew->get_string(1301);				//"per rocket"
 	const char* typeName = "";
 
 	u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);

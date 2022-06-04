@@ -341,7 +341,7 @@ static Music* get_next_music() {
 
 bool has_custom_name[PlayerLimit];
 
-static b32 __fastcall parse_comment_action(ACTION* action) {
+static b32 __fastcall parse_comment_action(Action* action) {
 	if (*currentTriggerPlayerId == *LOCAL_NATION_ID) {
 		char* comment = helper::get_chk_string(action->string);
 

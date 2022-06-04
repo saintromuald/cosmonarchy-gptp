@@ -17,7 +17,7 @@ namespace AI
 	bool AI_spellcasterHook(Unit* unit, bool isUnitBeingAttacked)
 	{
 		if (!isUnitBeingAttacked
-			&& AIScriptController[unit->player].spellcasterTimer != 0)
+			&& AIScriptController[unit->player].spellcaster_timer != 0)
 		{
 			return false;
 		}
@@ -73,7 +73,7 @@ namespace AI
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connected_unit = unit;
-						AIScriptController[unit->player].AI_LastNukeTime = *elapsedTimeSeconds;
+						AIScriptController[unit->player].ai_last_nuke_time = *elapsedTimeSeconds;
 						return true;
 					}
 				}
@@ -125,7 +125,7 @@ namespace AI
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connected_unit = unit;
-						AIScriptController[unit->player].AI_LastNukeTime = *elapsedTimeSeconds;
+						AIScriptController[unit->player].ai_last_nuke_time = *elapsedTimeSeconds;
 						return true;
 					}
 				}
@@ -342,7 +342,7 @@ namespace
 	// Logically equivalent to function @ 0x00446E50
 	bool isNukeTimerReady(u8 playerId)
 	{
-		return *elapsedTimeSeconds >= AIScriptController[playerId].AI_LastNukeTime + 60 * AIScriptController[playerId].AI_NukeRate;
+		return *elapsedTimeSeconds >= AIScriptController[playerId].ai_last_nuke_time + 60 * AIScriptController[playerId].ai_nuke_rate;
 	}
 
 	// Logically equivalent to function @ 0x00463360
@@ -378,7 +378,7 @@ namespace
 		return return_value;
 
 		/*
-		for (Unit* unit = firstPlayerUnit->unit[ghost->playerId];
+		for (Unit* unit = firstPlayerUnit->unit[ghost->player];
 		     unit; unit = unit->player_link.next)
 		{
 		  if (unit->id == UnitId::nuclear_silo && unit->building.silo.is_ready) {

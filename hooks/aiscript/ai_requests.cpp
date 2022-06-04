@@ -770,9 +770,9 @@ namespace hooks
 						{
 							witness_supply_cost = 2 * units_dat::SupplyRequired[UnitId::ProtossWitness];
 						}
-						AIScriptController[player_id].mineralCollection += units_dat::MineralCost[UnitId::ProtossWitness];
-						AIScriptController[player_id].gasCollection += witness_gas_cost;
-						AIScriptController[player_id].supplyCollection += witness_supply_cost;
+						AIScriptController[player_id].mineral_collection += units_dat::MineralCost[UnitId::ProtossWitness];
+						AIScriptController[player_id].gas_collection += witness_gas_cost;
+						AIScriptController[player_id].supply_collection += witness_supply_cost;
 						helper::ai_add_spending_request(UnitId::ProtossWitness, player_id, 8, 80, 0);
 						--witness_request_quantity;
 					} while (witness_request_quantity);
@@ -797,10 +797,10 @@ namespace hooks
 						{
 							transport_supply_cost *= 2;
 						}
-						v29 = AIScriptController[player_id].gasCollection;
-						AIScriptController[player_id].mineralCollection += units_dat::MineralCost[transport_unit_id_1];
-						AIScriptController[player_id].gasCollection = transport_1_gas_cost + v29;
-						AIScriptController[player_id].supplyCollection += transport_supply_cost;
+						v29 = AIScriptController[player_id].gas_collection;
+						AIScriptController[player_id].mineral_collection += units_dat::MineralCost[transport_unit_id_1];
+						AIScriptController[player_id].gas_collection = transport_1_gas_cost + v29;
+						AIScriptController[player_id].supply_collection += transport_supply_cost;
 						helper::ai_add_spending_request(transport_unit_id_1, player_id, 1, transport_1_priority, v33);
 						helper::ai_add_base_unit_spending_request(transport_unit_id_2, player_id, v33, transport_1_priority);
 						if (!--transport_1_request_count)
@@ -903,7 +903,7 @@ namespace hooks
 	void ai_region_train_attack_force(AiRegion* region) { // 0043E670
 		u32 attack_wave[63] = {};
 		u32 priority = 80;
-		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be AIScriptController[region->playerId].AI_Flags.isUseMapSettings. We use melee for now, but we should invesitage it. -Veeq7
+		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be AIScriptController[region->player].AI_Flags.isUseMapSettings. We use melee for now, but we should invesitage it. -Veeq7
 		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
 			if (unit_id < UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))

@@ -12,9 +12,9 @@ namespace hooks
 		{
 			for (s32 i = 0; i < 65; i++)
 			{
-				if (campaignMissions[i].missionIndex == *campaignIndex)
+				if (campaignMissions[i].mission_index == *campaignIndex)
 				{
-					helper::loadInitCreditsBIN(campaignMissions[i].missionName);
+					helper::loadInitCreditsBIN(campaignMissions[i].mission_name);
 				}
 			}
 		}

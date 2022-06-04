@@ -319,7 +319,7 @@ LABEL_37:
 			{
 				techId = TechId::CloakingField;
 			}
-			if (helper::techUseAllowed(unit, techId, unit->playerId) == 1)
+			if (helper::techUseAllowed(unit, techId, unit->player) == 1)
 			{
 				helper::applyCloakingOrder(unit);
 			}
@@ -408,12 +408,12 @@ LABEL_37:
 					continue;
 				}
 				memset(AIScriptController[player].attackers, 0, sizeof(AIScriptController[player].attackers));
-				AIScriptController[player].AI_AttackGroup = 0;
+				AIScriptController[player].ai_attack_group = 0;
 				helper::ai_attack_clear(player);
 				if (!helper::ai_attack_manager(player, unit->sprite->position.x, unit->sprite->position.y, 0, 1))
 				{
 					AIScriptController[player].strategic_suicide = 24;
-					regionIndex = (u16)AIScriptController[player].AI_AttackGroup - 1;
+					regionIndex = (u16)AIScriptController[player].ai_attack_group - 1;
 					region2 = &AiRegionCaptains[player][regionIndex];
 					helper::remove_unit_ai(unit, nullptr);
 					helper::add_military_ai(region2, unit, 1);
@@ -493,8 +493,8 @@ LABEL_37:
 			region->neededGroundStrength = regionGroundStrength;
 		}
 
-		u16 result = AIScriptController[region->playerId].AI_MaxForce;
-		if (AIScriptController[region->playerId].AI_MaxForce)
+		u16 result = AIScriptController[region->playerId].ai_max_force;
+		if (AIScriptController[region->playerId].ai_max_force)
 		{
 			if (region->neededAirStrength > result)
 			{
@@ -902,7 +902,7 @@ LABEL_37:
 						}
 						case UnitId::ZergCreepColony:
 						{
-							if (!AIScriptController[playerId].AI_Flags.isSecureFinished) // SLOBYTE(AIScriptController[playerId].AI_Flags) < 0
+							if (!AIScriptController[playerId].AI_Flags.isSecureFinished) // SLOBYTE(AIScriptController[player].AI_Flags) < 0
 							{
 								goto LABEL_21;
 							}
@@ -1745,15 +1745,15 @@ LABEL_37:
 
 	// Hooked to remove a ridicilus condition that would stop AI from expanding in late game and to allow base layouts to control expand order
 	void ai_expand(AiScript* aiscript, u32 block, u32 amount) { // 0045B530
-		default_ai_expansion_block[aiscript->playerId] = block;
+		default_ai_expansion_block[aiscript->player] = block;
 		if (aiscript->town->resarea) {
 			u32 base_id = ai_get_next_custom_expo(aiscript->town);
 			if (!base_id || !helper::ai_try_expanding_to(base_id)) {
-				base_id = helper::ai_find_expansion(aiscript->playerId, aiscript->town->resarea, amount);
+				base_id = helper::ai_find_expansion(aiscript->player, aiscript->town->resarea, amount);
 			}
 			if (base_id) {
 				helper::ai_expand_to(aiscript, base_id, block);
-				scbw::ai_defend(aiscript->playerId, scbw::get_region_id(resource_areas->areas[base_id].pos), 115, true);
+				scbw::ai_defend(aiscript->player, scbw::get_region_id(resource_areas->areas[base_id].pos), 115, true);
 			}
 		}
 	}

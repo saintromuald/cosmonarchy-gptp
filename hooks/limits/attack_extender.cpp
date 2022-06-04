@@ -311,13 +311,13 @@ LABEL_8:
 		char regionsList[2500];
 		u32 waveBool;
 
-		if (AIScriptController[player].supplyCollection)
+		if (AIScriptController[player].supply_collection)
 		{
 			return 1;
 		}
-		if (AIScriptController[player].AI_AttackGroup)
+		if (AIScriptController[player].ai_attack_group)
 		{
-			return *((u8*)&AiRegionCaptains[player][(u16)AIScriptController[player].AI_AttackGroup] - 47) != 8;
+			return *((u8*)&AiRegionCaptains[player][(u16)AIScriptController[player].ai_attack_group] - 47) != 8;
 		}
 		memset(regionsList, 0, sizeof(regionsList));
 		helper::PopulateRegionsWithOwn(regionsList, player);
@@ -354,7 +354,7 @@ LABEL_12:
 			if (!helper::AI_SetAttackGroupingRegion(1, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
 				&& !helper::AI_SetAttackGroupingRegion(1, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
 			{
-				AIScriptController[player].supplyCollection = 1;
+				AIScriptController[player].supply_collection = 1;
 				return 1;
 			}
 		}

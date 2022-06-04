@@ -12,8 +12,8 @@ namespace hooks
 			return;
 		}
 
-		if (result->id == UnitId::TerranCleric && !AIScriptController[result->player].mainMedic) {
-			AIScriptController[result->player].mainMedic = result;
+		if (result->id == UnitId::TerranCleric && !AIScriptController[result->player].main_medic) {
+			AIScriptController[result->player].main_medic = result;
 		}
 
 		if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
@@ -377,7 +377,7 @@ namespace hooks
 			{
 				helper::update_unit_stats_and_finish_building(nuke);
 				helper::update_unit_strength_and_apply_default_orders(nuke);
-				helper::hideUnit(nuke);
+				helper::hide_unit(nuke);
 				silo->building.silo.nuke = nuke;
 				silo->building.silo.is_ready = 1;
 				nuke->connected_unit = silo;
@@ -396,10 +396,10 @@ namespace hooks
 		/*
 		if (region->state == 3 && !alwaysThisRegion)
 		{
-			region = &AiRegionCaptains[(u8)unit->playerId][helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y)];
+			region = &AiRegionCaptains[(u8)unit->player][helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y)];
 		}
 
-		Unit* medic = region->mainMedic;
+		Unit* medic = region->main_medic;
 		UnitAi* medicAI = (UnitAi*)medic->pAI;
 		if (medicAI)
 		{
@@ -553,11 +553,11 @@ namespace hooks
 			if (unitAI->type == AiType::Guard)
 			{
 				GuardAi* guardAI = (GuardAi*)unitAI;
-				u8 timesDied = guardAI->timesDied;
+				u8 timesDied = guardAI->times_died;
 				guardAI->parent = nullptr;
 				if ((u8)timesDied < 100u)
 				{
-					guardAI->timesDied = timesDied + 1;
+					guardAI->times_died = timesDied + 1;
 				}
 			}
 		}

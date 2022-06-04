@@ -47,10 +47,10 @@ namespace hooks
             }
         }
 
-        unitPath* pathVar = (unitPath*)unit->path;
+        UnitPath* pathVar = (UnitPath*)unit->path;
         if (pathVar)
         {
-            pathVar->isCalculating |= 1u;
+            pathVar->is_calculating |= 1u;
         }
         Sprite* targetSprite = target->sprite;
         s16 targetSpriteX = targetSprite->position.x;

@@ -42,7 +42,7 @@ namespace hooks
 	u32 maxhp(s32 id, s32 playerId)
 	{
 		u32 result = units_dat::MaxHitPoints[id];
-		//if (id==UnitId::firebat && scbw::get_upgrade_level(playerId, UpgradeId::Heatshield)) {
+		//if (id==UnitId::firebat && scbw::get_upgrade_level(player, UpgradeId::Heatshield)) {
 		//	result += 15 * 256;
 		//}
 		return result;
@@ -51,7 +51,7 @@ namespace hooks
 	u32 maxshields(s32 id, s32 playerId)
 	{
 		u32 result = units_dat::MaxShieldPoints[id];
-		//if (units_dat::BaseProperty[id] & UnitProperty::RoboticUnit && scbw::get_upgrade_level(playerId, UpgradeId::Autovitality)) {
+		//if (units_dat::BaseProperty[id] & UnitProperty::RoboticUnit && scbw::get_upgrade_level(player, UpgradeId::Autovitality)) {
 		//	result += result / 2;
 		//}
 		return result;
@@ -1009,7 +1009,7 @@ LABEL_23:
 			if (v3 & 0x40000000)
 				goto LABEL_22;
 			v4 = v2->id;
-			//			if (v4 == 42 && !upgradesLevelSC[(u8)v2->playerId][24])
+			//			if (v4 == 42 && !upgradesLevelSC[(u8)v2->player][24])
 			goto LABEL_22;
 			v5 = v4;
 			if (!units_dat::SpaceProvided[v4] || !(v3 & 1) || !(v3 & 0x20000))

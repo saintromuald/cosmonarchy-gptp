@@ -319,11 +319,11 @@ namespace hooks
 			}
 			return 0;
 		}
-		if (statTxtTblNew->getString(570))
+		if (statTxtTblNew->get_string(570))
 		{
 			return "";
 		}
-		return (char*)statTxtTblNew->getString(571); // "Admiral"
+		return (char*)statTxtTblNew->get_string(571); // "Admiral"
 		*/
 	}
 
@@ -339,7 +339,7 @@ namespace hooks
 		if (unit->id == UnitId::ZergSkryling
 			|| unit->id == UnitId::ZergInfestedTerran
 			|| unit->status & UnitStatus::IsHallucination
-			&& unit->playerId == *LOCAL_NATION_ID
+			&& unit->player == *LOCAL_NATION_ID
 			&& !*IS_IN_REPLAY)
 		{
 			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
