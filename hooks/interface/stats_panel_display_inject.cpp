@@ -248,6 +248,35 @@ namespace
 		}
 	}
 
+	static void draw_tooltip_with_icon_partial(u32 index, char* buffer, u32 value) {
+		if (index == 5) {
+			sprintf_s(buffer, 16, "%ds", value);
+		} else {
+			sprintf_s(buffer, 16, "%d", value);
+		}
+	}
+
+	void __declspec(naked) draw_tooltip_with_icon_partial_wrapper() { // 00458FB2
+		static const u32 jmp_address = 0x00458FC5;
+		static u32 index;
+		static char* buffer;
+		static u32 value;
+		__asm {
+			MOV index, ESI
+			PUSH EAX
+			LEA EAX, [EBP-0x2C] // This is wrong
+			MOV buffer, EAX
+			POP EAX
+			MOV value, EDX
+			PUSHAD
+		}
+		draw_tooltip_with_icon_partial(index, buffer, value);
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
+	}
+
 	void __declspec(naked) stat_data_unit_wireframe_selection_wrapper() { // 004583E0
 		static u32 result;
 		static BinDlg* dialog;
@@ -285,5 +314,7 @@ namespace hooks
 		jump_patch(set_tooltip_info_wrapper,						0x00458800, 4);
 	//	jump_patch(draw_tooltip_with_icon_wrapper,					0x00458EF0, 1);
 	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3);
+		
+	//	call_patch(draw_tooltip_with_icon_partial_wrapper,          0x00458FB2, 1);
 	}
 }
