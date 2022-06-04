@@ -1891,7 +1891,7 @@ namespace scbw
 
 	void mind_control(Unit* source, Unit* target)
 	{
-		if (!source || !target || source->player == target->player)
+		if (!source || !target || source->player == target->player || scbw::is_allied_to(source->player, target->player))
 		{
 			return;
 		}

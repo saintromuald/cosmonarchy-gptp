@@ -394,14 +394,14 @@ struct Unit : public UnitLayout
 
 	/// Returns the loaded unit at @p index (value between 0-7). If no unit is
 	/// loaded at the slot, returns nullptr instead.
-	Unit* get_loaded_unit(s32 index) const;
+	Unit* get_loaded_unit(s32 index);
 
 	/// Returns the first unit loaded in this unit. If this unit is not a
 	/// transport, or has no units inside, this function returns nullptr instead.
 	Unit* get_first_loaded_unit();
 
 	/// Checks if this unit has other units loaded inside.
-	bool has_loaded_unit() const;
+	bool has_loaded_unit();
 
 	/// Transfers ownership of this unit to @p player. This function is
 	/// identical to Mind Control and the "Give Units To Player" trigger action.

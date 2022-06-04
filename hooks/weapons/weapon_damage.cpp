@@ -607,8 +607,7 @@ namespace hooks
 					case WeaponId::DemiurgeGalacticWeaver:
 					{
 						// Demiurge - Worship
-						if (data.target->player != data.attacker->player
-							&& data.target->get_current_hp_ingame() <= data.target->get_max_hp_ingame() / 2
+						if (data.target->get_current_hp_ingame() <= data.target->get_max_hp_ingame() / 2
 							&& data.target->hitpoints > data.finalDamage)
 						{
 							scbw::mind_control(data.attacker, data.target);

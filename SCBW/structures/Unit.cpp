@@ -1336,9 +1336,9 @@ u8 Unit::get_last_owner_id() const
 	}
 }
 
-Unit* Unit::get_loaded_unit(s32 index) const
+Unit* Unit::get_loaded_unit(s32 index)
 {
-	return hooks::get_unit_from_index(index);
+	return hooks::get_loaded_unit_from_index(this, index);
 }
 
 // Logically equivalent to function @ 0x004E6C90
@@ -1349,7 +1349,7 @@ Unit* Unit::get_first_loaded_unit()
 }
 
 // Logically equivalent to function @ 0x004E7110
-bool Unit::has_loaded_unit() const
+bool Unit::has_loaded_unit()
 {
 	assert(this);
 	for (s32 i = 0; i < 8; ++i)

@@ -1224,7 +1224,7 @@ namespace hooks
 			} break;
 		}
 
-		// Tyranny - Rescind
+		// Tyranny
 		if (unitExt->values[ValueTyrannyPlayer]) {
 
 			UnitArray mind_tyrants = unit_search_radial(unit->position, 8 * 32);
@@ -1237,10 +1237,12 @@ namespace hooks
 			});
 
 			if (mind_tyrants.size) {
-				if (unit->status & UnitStatus::Frozen) {
-					unit->unfreeze();
+				if (unitExt->timers[TimerTyrannyRecede] <= 4 * 24) {
+					if (unit->status & UnitStatus::Frozen) {
+						unit->unfreeze();
+					}
+					unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
 				}
-				unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
 				unitExt->timers[TimerTyrannyRecede] = 5 * 24;
 			}
 			if (unitExt->timers[TimerTyrannyRecede] <= 4 * 24) {
@@ -1508,7 +1510,8 @@ namespace hooks
 			if (unit->main_order_id == OrderId::BlissfulEmbrace) {
 				Unit* target = unit->order_target.unit;
 				if (target && target->hitpoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
-					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon) && unit->player != target->player) {
+					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon
+					&& unit->player != target->player && !scbw::is_allied_to(unit->player, target->player))) {
 					UnitExt* target_ext = globals.get_unit_ext(target);
 
 					for (u32 i = 0; i < 8; ++i) {
