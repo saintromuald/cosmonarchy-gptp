@@ -370,7 +370,7 @@ struct Unit : public UnitLayout
 	/// * Reavers (and Warbringers) return true only if they have a ground path
 	///   to the @p target unit.
 	/// * AI-controlled Arbiters (not including Danimoths) always return false.
-	bool canAttackTarget(Unit* target, bool checkVisibility = true) const;
+	bool can_attack_target(Unit* target, bool checkVisibility = true) const;
 
 	/// Makes the unit use the specified weapon to attack its current target unit
 	/// stored in the Unit::order_target.unit member. This does not affect the

@@ -1258,7 +1258,7 @@ s32 Unit::canUseTech(u8 techId, u8 playerId) const
 
 //-------- Utility methods --------//
 
-bool Unit::canAttackTarget(Unit* target, bool checkVisibility) const
+bool Unit::can_attack_target(Unit* target, bool checkVisibility) const
 {
 	assert(this);
 	assert(target);

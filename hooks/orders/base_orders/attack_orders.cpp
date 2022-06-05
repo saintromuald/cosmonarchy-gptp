@@ -38,7 +38,7 @@ namespace hooks
 		else
 		{
 			// 004656D8:
-			if (!unit->canAttackTarget(target, true))
+			if (!unit->can_attack_target(target, true))
 			{
 				unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
 			}
@@ -111,7 +111,7 @@ namespace hooks
 		else
 		{
 			// 004659AD:
-			if (!unit->canAttackTarget(target, true))
+			if (!unit->can_attack_target(target, true))
 			{
 				unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
 			}
@@ -652,7 +652,7 @@ namespace hooks
 		}
 		else
 		{ // 00478928
-			if (!unit->canAttackTarget(target, true))
+			if (!unit->can_attack_target(target, true))
 			{
 				unit->order_to(OrderId::Move, target->sprite->position.x, target->sprite->position.y);
 			}

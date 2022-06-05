@@ -57,7 +57,7 @@ namespace
 		}
 
 		// Check if the target can be attacked.
-		if (!unit->canAttackTarget(target))
+		if (!unit->can_attack_target(target))
 		{
 			return false;
 		}
@@ -143,7 +143,7 @@ namespace hooks
 		}
 
 		//Units that can fight back
-		else if (actualTarget->canAttackTarget(attacker))
+		else if (actualTarget->can_attack_target(attacker))
 		{
 			attackPriority = 0;
 		}

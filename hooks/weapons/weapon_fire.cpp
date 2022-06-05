@@ -31,7 +31,7 @@ static bool madrigalFuriaMatch(Unit* madrigal, Unit* unit)
 	{
 		return false;
 	}
-	if (!madrigal->canAttackTarget(unit))
+	if (!madrigal->can_attack_target(unit))
 	{
 		return false;
 	}
@@ -112,7 +112,7 @@ namespace hooks
 				if (target == attacker
 					|| targets.find(target) != targets.end()
 					|| scbw::is_allied_to(attacker->player, target->player)
-					|| !attacker->canAttackTarget(target)
+					|| !attacker->can_attack_target(target)
 					|| !filter(target)
 					|| (targets.size() >= maxTargets && maxTargets > 0))
 				{

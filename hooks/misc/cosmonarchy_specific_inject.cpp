@@ -365,7 +365,7 @@ namespace hooks
 
 	void clarionWrappers()
 	{
-		// canAttackTarget - end
+		// can_attack_target - end
 		// jump_patch(canAttackTarget_Tail_Wrapper, 0x0047682C, 1);
 		// tail wrapper disabled, without air weapon it don't have sense anywhere, will be reworked w/ air target functionality
 		jump_patch(getGroundWeaponHookWrapper, 0x00475AD0);

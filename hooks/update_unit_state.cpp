@@ -96,7 +96,7 @@ namespace hooks
 		const u32 unitOffset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
 		return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
 			&& scbw::get_distance_fast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon] + unitOffset
-			&& unit->canAttackTarget(target);
+			&& unit->can_attack_target(target);
 	}
 
 	// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
