@@ -280,7 +280,7 @@ namespace hooks
 				}
 
 				if (unit->get_seek_range() != 0) {
-					Unit* target = helper::findBestAttackTarget(unit);
+					Unit* target = helper::find_best_attack_target(unit);
 					if (target) {
 						// attack target I think, also used by attack_recent_attacker
 						helper::order_to_attack_target(unit, target, 1, 0);

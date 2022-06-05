@@ -1224,7 +1224,6 @@ namespace helper
 	}
 
 	// for AI_TrainingBroodling
-
 	void ai_set_region_type(s32 regionType, AiRegion* region)
 	{
 		const u32 func_address = 0x004390A0;
@@ -1251,7 +1250,6 @@ namespace helper
 	}
 
 	// for AI_AddUnitAI
-
 	BuildingAi* create_building_ai(BuildingAiArray** buildingAI)
 	{
 		const u32 Func_AI_CreateBuildingAi = 0x004044C0;
@@ -1333,9 +1331,8 @@ namespace helper
 		return result;
 	}
 
-	// for ai_unit_was_hit
-	// some of these should probably be methods in api/etc
-
+	// For ai_unit_was_hit
+	// Some of these should probably be methods in api/etc
 	char ai_cancel_structure(Unit* structure)
 	{
 		const u32 Func_AI_cancel_structure = 0x00468280;
@@ -1628,7 +1625,7 @@ namespace helper
 		return result;
 	}
 
-	void orderInterrupt(Unit* unit, u8 orderId, Vector32* pos, Unit* target)
+	void order_interrupt(Unit* unit, u8 orderId, Vector32* pos, Unit* target)
 	{
 		const u32 Func_orderInterrupt = 0x00474C30;
 		__asm {
@@ -1643,7 +1640,6 @@ namespace helper
 	}
 
 	// for iterate_building_ai
-
 	u16 ai_remove_from_towns(Unit* worker)
 	{
 		const u32 Func_AI_RemoveFromTowns = 0x00432760;
@@ -1742,25 +1738,7 @@ namespace helper
 		return result;
 	}
 
-	u32 AI_AddBaseUnitSpendingRequest(u32 unit_id, u32 player, AiRegion* region, char priority)
-	{
-		const u32 Func_AI_AddBaseUnitSpendingRequest = 0x004484A0;
-		static u32 result;
-		__asm {
-			PUSHAD
-			PUSH priority
-			MOV ESI, region
-			MOV ECX, player
-			MOV EAX, unit_id
-			CALL Func_AI_AddBaseUnitSpendingRequest
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
 	// for AIRegion_GroupForAttack
-
 	u32 ai_recalculate_region_strength(AiRegion* region)
 	{
 		const u32 Func_AI_RecalculateRegionStrength = 0x0043A390;
@@ -1775,7 +1753,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* AI_TargetEnemyInRegion(AiRegion* region)
+	Unit* ai_target_enemy_in_region(AiRegion* region)
 	{
 		const u32 Func_AI_TargetEnemyInRegion = 0x0043CC40;
 		static Unit* result;
@@ -1789,7 +1767,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_MoveMilitaryToDefend(AiRegion* region)
+	s32 ai_move_military_to_defend(AiRegion* region)
 	{
 		const u32 Func_AI_MoveMilitaryToDefend = 0x0043DE40;
 		static s32 result;
@@ -1803,7 +1781,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_GetRegionMilitaryTypes(AiRegion* region, s32* hasGroundMilitary,
+	void ai_get_region_military_types(AiRegion* region, s32* hasGroundMilitary,
 		s32* cantAttackGround, s32* cantAttackAir)
 	{
 		const u32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
@@ -1818,7 +1796,7 @@ namespace helper
 		}
 	}
 
-	s32 AI_CanTravelToRegion(AiRegion* region1, AiRegion* region2)
+	s32 ai_can_travel_to_region(AiRegion* region1, AiRegion* region2)
 	{
 		const u32 Func_AI_CanTravelToRegion = 0x0043A790;
 		static s32 result;
@@ -1833,7 +1811,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* AI_PickAttackTarget_NoBuildings(AiRegion* region)
+	Unit* ai_pick_attack_target_no_buildings(AiRegion* region)
 	{
 		const u32 Func_AI_PickAttackTarget_NoBuildings = 0x0043A510;
 		static Unit* result;
@@ -1847,8 +1825,7 @@ namespace helper
 		return result;
 	}
 
-	u32 AI_MoveMilitaryToOtherRegion(AiRegion* target, AiRegion* source, u32 pullUnitsNearRegion,
-		u32 sendPureSpellcasters, u32 dontSendFromBunkers)
+	u32 ai_move_military_to_other_region(AiRegion* target, AiRegion* source, u32 pullUnitsNearRegion, u32 sendPureSpellcasters, u32 dontSendFromBunkers)
 	{
 		const u32 Func_AI_MoveMilitaryToOtherRegion = 0x0043E580;
 		static u32 result;
@@ -1866,7 +1843,7 @@ namespace helper
 		return result;
 	}
 
-	AiTown* AI_IterateTownSomething(AiRegion* region)
+	AiTown* ai_iterate_town_something(AiRegion* region)
 	{
 		const u32 Func_AI_IterateTownSomething = 0x0043DD20;
 		static AiTown* result;
@@ -1880,7 +1857,7 @@ namespace helper
 		return result;
 	}
 
-	u32 AI_AttackTimerDecrement(u32 player)
+	u32 ai_attack_timer_decrement(u32 player)
 	{
 		const u32 Func_AI_AttackTimerDecrement = 0x00447090;
 		static u32 result;
@@ -1894,7 +1871,7 @@ namespace helper
 		return result;
 	}
 
-	s32 AI_HasForcesMovingToAttack(u32 player)
+	s32 ai_has_forces_moving_to_attack(u32 player)
 	{
 		const u32 Func_AI_HasForcesMovingToAttack = 0x0043A2E0;
 		static s32 result;
@@ -1909,8 +1886,7 @@ namespace helper
 	}
 
 	// for ai_attack_manager
-
-	u16 PopulateRegionsWithOwn(char* regionData, u32 player)
+	u16 populate_regions_with_own(char* regionData, u32 player)
 	{
 		const u32 Func_PopulateRegionsWithOwn = 0x00438B30;
 		static u32 result;
@@ -1925,7 +1901,7 @@ namespace helper
 		return (u16)result;
 	}
 
-	void PopulateRegionsWithEnemy(u32 player, char* regionData)
+	void populate_regions_with_enemy(u32 player, char* regionData)
 	{
 		const u32 Func_PopulateRegionsWithEnemy = 0x00439B50;
 		__asm {
@@ -1937,7 +1913,7 @@ namespace helper
 		}
 	}
 
-	s32 AI_GetNeighborRegionTypes(char* regionData)
+	s32 ai_get_neighboring_region_types(char* regionData)
 	{
 		const u32 Func_AI_GetNeighborRegionTypes = 0x00436D80;
 		static s32 result;
@@ -1951,7 +1927,7 @@ namespace helper
 		return result;
 	}
 
-	void AI_FinishRegionAccessibility(char* regionData)
+	void ai_finish_region_accessibility(char* regionData)
 	{
 		const u32 Func_AI_FinishRegionAccessibility = 0x00436CF0;
 		__asm {
@@ -1962,8 +1938,7 @@ namespace helper
 		}
 	}
 
-	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
-		s32 x, s32 y, u32 alwaysOverwriteLastAttack)
+	s32 ai_set_attack_grouping_region(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData, s32 x, s32 y, u32 alwaysOverwriteLastAttack)
 	{
 		const u32 Func_AI_SetAttackGroupingRegion = 0x004399D0;
 		static s32 result;
@@ -1983,7 +1958,7 @@ namespace helper
 		return result;
 	}
 
-	bool unitCantSeeCloakedTarget(Unit* unit, Unit* target)
+	bool unit_cant_see_cloaked_target(Unit* unit, Unit* target)
 	{
 		const u32 Func_unitCantSeeCloakedTarget = 0x00401D60;
 		static b32 bPreResult;
@@ -1998,7 +1973,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool unitCanInfest(Unit* unit)
+	bool unit_can_infest(Unit* unit)
 	{
 		const u32 Func_CanInfest = 0x00402750;
 		static b32 bPreResult;
@@ -2012,7 +1987,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	void AI_AttackUnit(Unit* unit)
+	void ai_attack_unit(Unit* unit)
 	{
 		const u32 Func_AI_AttackUnit = 0x0043FFD0;
 		__asm {
@@ -2023,7 +1998,7 @@ namespace helper
 		}
 	}
 
-	Unit* findBestAttackTarget(Unit* unit)
+	Unit* find_best_attack_target(Unit* unit)
 	{
 		const u32 Func_Sub443080 = 0x00443080;
 		static Unit* result;
@@ -2037,7 +2012,7 @@ namespace helper
 		return result;
 	}
 
-	bool Ai_TryReturnHome(Unit* unit, u8 unknownByteValue)
+	bool ai_try_return_home(Unit* unit, u8 unknownByteValue)
 	{
 		const u32 Func_Sub462EA0 = 0x00462EA0;
 		static u32 _unknownByteValue;
@@ -2054,7 +2029,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	void function_00465780(Unit* unit)
+	void set_interceptors_to_standby(Unit* unit)
 	{
 		const u32 Func_Sub465780 = 0x00465780;
 		__asm {
@@ -2109,7 +2084,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool function_00476610(Unit* unit, s32 x, s32 y)
+	bool ai_is_unreachable_position(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_Sub476610 = 0x00476610;
 		static b32 bPreResult;
@@ -2125,7 +2100,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool isUnitInWeaponRange(Unit* unit, Unit* target)
+	bool is_unit_in_weapon_range(Unit* unit, Unit* target)
 	{
 		const u32 Func_isUnitInWeaponRange = 0x00476870;
 		static b32 bPreResult;
@@ -2140,7 +2115,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	void getWeaponBeginIscript(Unit* unit, IscriptAnimation::Enum anim)
+	void get_weapon_begin_iscriptt(Unit* unit, IscriptAnimation::Enum anim)
 	{
 		const u32 Func_getWeaponBeginIscript = 0x00476ED0;
 		__asm {
@@ -2152,7 +2127,7 @@ namespace helper
 		}
 	}
 
-	void PickNewAttackTargetIfNeeded(Unit* unit)
+	void pick_new_target_if_needed(Unit* unit)
 	{
 		const u32 Func_Sub477510 = 0x00477510;
 		__asm {
@@ -2163,7 +2138,7 @@ namespace helper
 		}
 	}
 
-	void function_00477820(Unit* unit, u8 orderId)
+	void attack_move_try_pick_target(Unit* unit, u8 orderId)
 	{
 		const u32 Func_Sub477820 = 0x00477820;
 		static u32 orderId_;
@@ -2177,7 +2152,7 @@ namespace helper
 		}
 	}
 
-	bool function_00478370(Unit* unit, u8 orderId)
+	bool attack_move_react_to_attack(Unit* unit, u8 orderId)
 	{
 		const u32 Func_Sub478370 = 0x00478370;
 		static b32 bPreResult;
@@ -2194,7 +2169,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool Order_AttackUnit_Main(Unit* unit)
+	bool attack_unit_main(Unit* unit)
 	{
 		const u32 Func_Sub478540 = 0x00478540;
 		static b32 bPreResult;
@@ -2208,28 +2183,13 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	// Identical to Unit::isCritter() @ 0x0047B450
-	bool isUnitCritter(Unit* unit)
+	// 0x0047B450
+	bool is_unit_critter(Unit* unit)
 	{
-		bool bReturnValue;
-		/*
-		if(
-				unit->id == UnitId::Critter_Rhynadon ||
-				unit->id == UnitId::Critter_Bengalaas ||
-				unit->id == UnitId::Critter_Ragnasaur ||
-				unit->id == UnitId::Critter_Kakaru ||
-				unit->id == UnitId::Critter_Scantid ||
-				unit->id == UnitId::Critter_Ursadon
-			) {
-				bReturnValue = true;
-			}
-			else
-			*/
-		bReturnValue = false;
-		return bReturnValue;
+		return false;
 	}
 
-	void moveToCollide(Unit* unit, Unit* target)
+	void move_to_collide(Unit* unit, Unit* target)
 	{
 		const u32 Func_moveToCollide = 0x00495400;
 		__asm {
@@ -2241,7 +2201,7 @@ namespace helper
 		}
 	}
 
-	bool isUnitVisible(Unit* unit)
+	bool is_unit_visible(Unit* unit)
 	{
 		const u32 Func_isUnitVisible = 0x004E5DB0;
 		static b32 bPreResult;
@@ -2255,7 +2215,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool isTargetVisible(Unit* unit, Unit* target)
+	bool is_target_visible(Unit* unit, Unit* target)
 	{
 		const u32 Func_isTargetVisible = 0x004E5E30;
 		static b32 bPreResult;
@@ -2281,11 +2241,7 @@ namespace helper
 		else
 		{
 			u8 temp_result = units_dat::RightClickAction[unit->id];
-			if (
-				temp_result == 0 &&
-				unit->status & UnitStatus::GroundedBuilding &&
-				unit->is_factory()
-				)
+			if (temp_result == 0 && unit->status & UnitStatus::GroundedBuilding && unit->is_factory())
 			{
 				result = RightClickActions::NormalMove_NoAttack;
 			}
@@ -2432,7 +2388,7 @@ namespace helper
 	}
 
 	// imageId may not be really a parameter
-	void addOverlayBelowMain(Sprite* sprite, u32 imageId, u32 x_offset, u32 y_offset, u32 direction)
+	void add_overlay_below_main(Sprite* sprite, u32 imageId, u32 x_offset, u32 y_offset, u32 direction)
 	{
 		const u32 Func_addOverlayBelowMain = 0x00498D70;
 		__asm
@@ -7261,7 +7217,7 @@ namespace helper
 		return result != 0;
 	}
 
-	void orderInterrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 orderId)
+	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 orderId)
 	{
 		const u32 Func_orderInterrupt = 0x00474C30;
 		static Point16 pos;
@@ -9631,7 +9587,7 @@ namespace helper
 		return result;
 	}
 
-	// For AI_AttackUnit
+	// For ai_attack_unit
 	void stimpackProc(Unit* unit)
 	{
 		const u32 Func_stimpackSFXRand = 0x004554A0;

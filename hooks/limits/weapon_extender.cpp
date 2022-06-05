@@ -573,7 +573,7 @@ namespace hooks
 		patchWeaponDat(2, 0x0043CFAA, PatchMaxWeaponCompare);
 		patchWeaponDat(1, 0x0043CFB9, PatchMaxWeaponCompare);
 
-		// void __stdcall AI_AttackUnit(CUNIT *unitMem) // 0043FFD0
+		// void __stdcall ai_attack_unit(CUNIT *unitMem) // 0043FFD0
 		// 004400E8  |>  80FB 82       CMP BL,82
 		patchWeaponDat(2, 0x004400E8, PatchMaxWeaponCompare);
 
@@ -641,7 +641,7 @@ namespace hooks
 		patchWeaponDat(2, 0x0047683E, PatchMaxWeaponCompare);
 		patchWeaponDat(1, 0x00476854, PatchMaxWeaponCompare);
 
-		// bool __userpurge isUnitInWeaponRange@<al>(CUNIT *a1@<eax>, CUNIT *a2) // 00476870
+		// bool __userpurge is_unit_in_weapon_range@<al>(CUNIT *a1@<eax>, CUNIT *a2) // 00476870
 		// 004768F3  |>  80FB 82       CMP BL,82
 		patchWeaponDat(2, 0x004768F3, PatchMaxWeaponCompare);
 

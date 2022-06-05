@@ -734,7 +734,7 @@ namespace hooks
 								if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256)
 								{ 
 									// Shield Check for default behavior
-									helper::addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+									helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 								}
 								else
 								{ 
@@ -901,7 +901,7 @@ namespace hooks
 						unit->addUnitEnergy(5 * 256);
 						if (show)
 						{
-							helper::addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+							helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 						}
 					});
 				}

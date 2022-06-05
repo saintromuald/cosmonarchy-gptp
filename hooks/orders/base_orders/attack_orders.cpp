@@ -121,7 +121,7 @@ namespace hooks
 				u32 status_saved = (unit->status & UnitStatus::Disabled) + (unit->status & UnitStatus::HoldingPosition);
 				u8 newOrderId;
 				// give orders to Stewards and Plasma Shells (through out_hangar_child)
-				helper::function_00465780(unit);
+				helper::set_interceptors_to_standby(unit);
 
 				if (unit->id == UnitId::ProtossAccantor)
 				{
@@ -174,7 +174,7 @@ namespace hooks
 
 		// perform lots of checks, possibly in an attempt to
 		// auto-select a better target if the turret has choice
-		helper::PickNewAttackTargetIfNeeded(unit);
+		helper::pick_new_target_if_needed(unit);
 		target = unit->order_target.unit;
 
 		if (target != nullptr)
@@ -188,7 +188,7 @@ namespace hooks
 			|| target == nullptr
 			|| target->status & UnitStatus::Invincible
 			|| target->sprite->flags & SpriteFlags::Hidden
-			|| helper::unitCantSeeCloakedTarget(unit, target))
+			|| helper::unit_cant_see_cloaked_target(unit, target))
 		{
 			jump_to_77A45 = true;
 		}
@@ -266,7 +266,7 @@ namespace hooks
 			if (jump_to_77A9D) // 00477A9D
 			{
 
-				if (helper::unitCanInfest(unit))
+				if (helper::unit_can_infest(unit))
 				{
 					if (helper::is_infestable_unit(target))
 					{
@@ -315,7 +315,7 @@ namespace hooks
 			jump_to_77AB7 = false;
 			if (jump_to_77AFE)
 			{
-				if (!helper::isTargetVisible(unit, target))
+				if (!helper::is_target_visible(unit, target))
 				{
 					jump_to_77A45 = true;
 					bJumpToEarlierCode = true;
@@ -329,7 +329,7 @@ namespace hooks
 					if (unit->id != UnitId::TerranPhalanxTankModeTurret
 						|| current_subunit->unit_ai == nullptr
 						|| (current_subunit->canUseTech(TechId::TankSiegeMode, unit->player) != TRUE)
-						|| !helper::isUnitVisible(unit))
+						|| !helper::is_unit_visible(unit))
 						jump_to_77BD7 = true;
 					else
 					{
@@ -345,7 +345,7 @@ namespace hooks
 							result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::GroundWeapon[UnitId::TerranPhalanxTankModeTurret]);
 
 							if (helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange)
-								|| helper::isUnitCritter(target))
+								|| helper::is_unit_critter(target))
 							{
 								jump_to_77BD7 = true;
 							}
@@ -369,7 +369,7 @@ namespace hooks
 						bool jump_to_77CA1 = false;
 						if (target != nullptr)
 						{
-							if (helper::isTargetVisible(unit, target))
+							if (helper::is_target_visible(unit, target))
 							{
 								if ((unit->subunit)->is_subunit())
 								{
@@ -452,7 +452,7 @@ namespace hooks
 							// 00477CC1
 							if (!((unit->subunit)->movement_flags & MovementFlags::Accelerating))
 							{
-								helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
+								helper::get_weapon_begin_iscriptt(unit, IscriptAnimation::GndAttkRpt);
 							}
 						}
 						jump_to_77CA1 = false;
@@ -478,13 +478,13 @@ namespace hooks
 		bool jump_to_77E99 = false;
 		if (unit->unit_ai != nullptr)
 		{
-			unit->order_target.unit = helper::findBestAttackTarget(unit); // 00477D13
+			unit->order_target.unit = helper::find_best_attack_target(unit); // 00477D13
 		}
 		else
 		{
 			// perform lots of checks, possibly in an attempt to
 			// auto-select a better target if the unit has choice
-			helper::PickNewAttackTargetIfNeeded(unit); // 00477D1F
+			helper::pick_new_target_if_needed(unit); // 00477D1F
 		}
 
 		// 00477D25:
@@ -499,7 +499,7 @@ namespace hooks
 			|| target == nullptr
 			|| target->status & UnitStatus::Invincible
 			|| target->sprite->flags & SpriteFlags::Hidden
-			|| helper::unitCantSeeCloakedTarget(unit, target))
+			|| helper::unit_cant_see_cloaked_target(unit, target))
 		{
 			jump_to_77E48 = true;
 		}
@@ -543,7 +543,7 @@ namespace hooks
 						}
 			if (jump_to_77DEF)
 			{
-				if (helper::unitCanInfest(unit))
+				if (helper::unit_can_infest(unit))
 				{
 					if (helper::is_infestable_unit(target))
 					{
@@ -605,7 +605,7 @@ namespace hooks
 		{
 			bool jump_to_77EC8 = false;
 			bool jump_to_77ED6 = false;
-			if (helper::isUnitInWeaponRange(unit, target))
+			if (helper::is_unit_in_weapon_range(unit, target))
 			{
 				// 00477ED6
 				if (unit->order_target.pt.x != unit->next_target_waypoint.x
@@ -614,7 +614,7 @@ namespace hooks
 					unit->next_target_waypoint.x = unit->order_target.pt.x;
 					unit->next_target_waypoint.y = unit->order_target.pt.y;
 				}
-				helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
+				helper::get_weapon_begin_iscriptt(unit, IscriptAnimation::GndAttkRpt);
 			}
 			else
 				if (unit->unit_ai == nullptr)
@@ -680,7 +680,7 @@ namespace hooks
 							&& target->movement_flags & MovementFlags::Accelerating)							
 						{
 							// maybe trigger the acceleration of the infested terran, or something else related to distances?
-							helper::moveToCollide(unit, target);
+							helper::move_to_collide(unit, target);
 						}
 						else // 004789BF
 						{
@@ -804,9 +804,9 @@ namespace hooks
 	void orders_AttackMoveEP(Unit* unit)
 	{
 		u8 saved_mainOrderId = unit->main_order_id; //[EBP-0x14]
-		// function_00478370:
+		// attack_move_react_to_attack:
 		// probably perform checks to see if the order can be done
-		if (helper::function_00478370(unit, unit->main_order_id)
+		if (helper::attack_move_react_to_attack(unit, unit->main_order_id)
 			&& unit->main_order_timer == 0)
 		{ // 00478E0B
 			unit->main_order_timer = 0; // used to be 15
@@ -827,7 +827,7 @@ namespace hooks
 						jump_to_78EAE = true;
 					}
 					// 00478E91
-					else if (helper::function_00476610(unit, (s32)unit->order_target.pt.x, (s32)unit->order_target.pt.y))
+					else if (helper::ai_is_unreachable_position(unit, (s32)unit->order_target.pt.x, (s32)unit->order_target.pt.y))
 						{
 							helper::make_to_hold_position(unit);
 						}
@@ -839,7 +839,7 @@ namespace hooks
 
 				if (jump_to_78EAE)
 				{
-					helper::function_00477820(unit, saved_mainOrderId);
+					helper::attack_move_try_pick_target(unit, saved_mainOrderId);
 				}
 			}
 		}
@@ -847,18 +847,18 @@ namespace hooks
 
 	void orders_AttackMove(Unit* unit)
 	{
-		// function_00478370:
+		// attack_move_react_to_attack:
 		// Logically, would check if a target is in range, and
 		// if that's the case (not returning 0), stop the "move" 
 		// part that follow to attack the unit met
-		if (helper::function_00478370(unit, unit->main_order_id) != 0
+		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) != 0
 			&& unit->main_order_timer == 0)
 		{ // 00479058
 			unit->main_order_timer = 0; // used to be 15
 			if (unit->move_target.pt.x != unit->sprite->position.x
 				|| unit->move_target.pt.y != unit->sprite->position.y)
 			{ // Logically, this function would check one last time if a target is in range, and attack it if that's the case, else AttackMove end here
-				helper::function_00477820(unit, unit->main_order_id); // 00479092
+				helper::attack_move_try_pick_target(unit, unit->main_order_id); // 00479092
 			}
 			else
 			{
@@ -871,23 +871,23 @@ namespace hooks
 	{
 		if (playerTable[unit->player].type != PlayerType::Computer
 			|| (unit->order_target.unit != nullptr && units_dat::BaseProperty[(unit->order_target.unit)->id] & UnitProperty::Building)
-			|| !helper::Ai_TryReturnHome(unit, 0))
+			|| !helper::ai_try_return_home(unit, 0))
 		{ // 00479C05
 
 			// perform lots of checks, possibly in an attempt to
 			// auto-select a better target if the unit has choice
-			helper::PickNewAttackTargetIfNeeded(unit);
+			helper::pick_new_target_if_needed(unit);
 
 			// function perform tests to see if attack is possible
 			// and how it should be done and return true if attack
 			// can be done
-			if (helper::Order_AttackUnit_Main(unit))
+			if (helper::attack_unit_main(unit))
 			{ // 00479C16
 				if (unit->unit_ai != nullptr)
 				{
-					helper::AI_AttackUnit(unit);
+					helper::ai_attack_unit(unit);
 				}
-				helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
+				helper::get_weapon_begin_iscriptt(unit, IscriptAnimation::GndAttkRpt);
 			}
 		}
 	}

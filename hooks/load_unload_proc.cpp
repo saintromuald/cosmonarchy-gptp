@@ -666,4 +666,40 @@ namespace hooks
 		}
 		return nullptr;
 	}
+
+	u32 iterate_loaded_units(Unit* transport, void* func, Unit* cargo) // 004E6D00
+	{
+		u32 space_provided = units_dat::SpaceProvided[transport->id];
+		if (!space_provided)
+		{
+			return 0;
+		}
+		u16 index = transport->loaded_unit[0].index;
+		u32 iterations = 0;
+		while (1)
+		{
+			u16 index_var = index;
+			if (index)
+			{
+				Unit* func_transport = &unit_reference[index_var & 0x7FF];
+				if (func_transport->sprite)
+				{
+					if ((func_transport->main_order_id || func_transport->main_order_state != 1)
+					&&   func_transport->target_order_special == index_var >> 11
+				//	&&   func(func_transport, cargo)
+						)
+					{
+						break;
+					}
+				}
+			}
+			++iterations;
+			++index;
+			if (iterations >= space_provided)
+			{
+				return 0;
+			}
+		}
+		return 1;
+	}
 }

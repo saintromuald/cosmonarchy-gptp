@@ -50,7 +50,7 @@ namespace hooks
 					AIScriptController[v8].AI_Flags.flag_0x40 = 1; // Might be wrong
 					helper::ai_add_cost_to_needs(parentTown, v8, 1);
 					helper::ai_add_spending_request(parentTown, v8, 1, 60, parentAi);
-					helper::AI_AddBaseUnitSpendingRequest(parentTown, v8, parentAi, 60);
+					helper::ai_add_base_unit_spending_request(parentTown, v8, parentAi, 60);
 					v6 = v12;
 				}
 				result = v10;
@@ -78,32 +78,32 @@ namespace hooks
 		s32 a2;
 
 		helper::ai_recalculate_region_strength(region);
-		helper::AI_TargetEnemyInRegion(region);
-		if (region->captainFlags & 0x20 && helper::AI_MoveMilitaryToDefend(region))
+		helper::ai_target_enemy_in_region(region);
+		if (region->captainFlags & 0x20 && helper::ai_move_military_to_defend(region))
 		{
 			return;
 		}
-		helper::AI_GetRegionMilitaryTypes(region, &a2, &a3, &a4);
+		helper::ai_get_region_military_types(region, &a2, &a3, &a4);
 		regionVar = region;
-		if (a2 && (*SAI_Paths)->regions[region->region].accessibilityFlags == 0x1FFD || helper::AI_CanTravelToRegion(region, region))
+		if (a2 && (*SAI_Paths)->regions[region->region].accessibilityFlags == 0x1FFD || helper::ai_can_travel_to_region(region, region))
 		{
 			helper::ai_set_region_type(0, region);
-			attackTarget = helper::AI_PickAttackTarget_NoBuildings(region);
+			attackTarget = helper::ai_pick_attack_target_no_buildings(region);
 			if (attackTarget)
 			{
 				targetRegion = &AiRegionCaptains[(u8)region->playerId][helper::get_region_id(
 					attackTarget->sprite->position.x,
 					attackTarget->sprite->position.y)];
 				helper::ai_set_region_type(9, targetRegion);
-				helper::AI_MoveMilitaryToOtherRegion(targetRegion, region, 0, 0, 1);
+				helper::ai_move_military_to_other_region(targetRegion, region, 0, 0, 1);
 			}
 			else
 			{
-				helper::AI_IterateTownSomething(region);
+				helper::ai_iterate_town_something(region);
 			}
 			return;
 		}
-		if (helper::AI_AttackTimerDecrement((u8)region->playerId))
+		if (helper::ai_attack_timer_decrement((u8)region->playerId))
 		{
 LABEL_15:
 			regionId = region->targetRegion;
@@ -113,7 +113,7 @@ LABEL_15:
 				helper::ai_set_region_type(1, targetRegion2);
 				targetRegion3 = targetRegion2;
 				regionVar = region;
-				helper::AI_MoveMilitaryToOtherRegion(targetRegion3, region, 0, 0, 1);
+				helper::ai_move_military_to_other_region(targetRegion3, region, 0, 0, 1);
 			}
 			helper::ai_set_region_type(0, regionVar);
 			return;
@@ -123,7 +123,7 @@ LABEL_15:
 		if (!missingUnits)
 		{
 LABEL_14:
-			if (helper::AI_HasForcesMovingToAttack((u8)region->playerId))
+			if (helper::ai_has_forces_moving_to_attack((u8)region->playerId))
 			{
 				return;
 			}
@@ -320,11 +320,11 @@ LABEL_8:
 			return *((u8*)&AiRegionCaptains[player][(u16)AIScriptController[player].ai_attack_group] - 47) != 8;
 		}
 		memset(regionsList, 0, sizeof(regionsList));
-		helper::PopulateRegionsWithOwn(regionsList, player);
-		helper::PopulateRegionsWithEnemy(player, regionsList);
-		while (helper::AI_GetNeighborRegionTypes(regionsList))
+		helper::populate_regions_with_own(regionsList, player);
+		helper::populate_regions_with_enemy(player, regionsList);
+		while (helper::ai_get_neighboring_region_types(regionsList))
 		{
-			helper::AI_FinishRegionAccessibility(regionsList);
+			helper::ai_finish_region_accessibility(regionsList);
 		}
 		attackWave = AIScriptController[player].attackers[0];
 		attackWave2 = AIScriptController[player].attackers;
@@ -344,15 +344,15 @@ LABEL_8:
 		}
 LABEL_12:
 		AIScriptController[player].AI_Flags.isSecureFinished = 1;
-		if (!helper::AI_SetAttackGroupingRegion(waveBool, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
-			&& !helper::AI_SetAttackGroupingRegion(waveBool, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
+		if (!helper::ai_set_attack_grouping_region(waveBool, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
+			&& !helper::ai_set_attack_grouping_region(waveBool, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
 		{
 			if (!allowFallbackAirOnly || waveBool)
 			{
 				return 1;
 			}
-			if (!helper::AI_SetAttackGroupingRegion(1, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
-				&& !helper::AI_SetAttackGroupingRegion(1, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
+			if (!helper::ai_set_attack_grouping_region(1, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
+				&& !helper::ai_set_attack_grouping_region(1, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
 			{
 				AIScriptController[player].supply_collection = 1;
 				return 1;

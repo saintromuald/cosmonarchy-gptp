@@ -101,7 +101,7 @@ namespace hooks
 				if (unit->order_target.unit != nullptr)
 				{
 					// probably trigger movement/acceleration of unit toward the target
-					helper::moveToCollide(unit, unit->order_target.unit);
+					helper::move_to_collide(unit, unit->order_target.unit);
 
 					unit->main_order_state = 5;
 				}
@@ -124,7 +124,7 @@ namespace hooks
 				{
 					// probably trigger movement/acceleration of unit
 					// toward the target
-					helper::moveToCollide(unit, unit->order_target.unit);
+					helper::move_to_collide(unit, unit->order_target.unit);
 					if (unit->is_target_within_min_range(unit->order_target.unit, MineDetonateRange))
 					{
 						bIsCompletelyInRange = true; // jump to 00463F22

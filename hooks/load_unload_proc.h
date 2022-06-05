@@ -11,6 +11,7 @@ namespace hooks
 	Unit* get_first_loaded_unit(Unit* transport);						// 004E6C90
 	Unit* get_loaded_unit(Unit* transport, u32 index);					// Moved from Unit.cpp
 	Unit* get_unit_from_index(u16 index);								// Moved from Unit.cpp
+	u32 iterate_loaded_units(Unit* transport, void* func, Unit* cargo);	// 004E6D00
 
 	void injectLoadUnloadProcHooks();
 }
