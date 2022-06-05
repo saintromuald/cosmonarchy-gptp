@@ -322,7 +322,7 @@ void Globals::reset()
 	}
 }
 
-void Globals::unitDeathHook(Unit* unit)
+void Globals::unit_death(Unit* unit)
 {
 	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{ // set dead unit pointers to nullptr and erase them from unit vectors

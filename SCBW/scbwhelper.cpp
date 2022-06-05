@@ -6304,7 +6304,7 @@ namespace helper
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_Plague(Unit* attacker, Box16* coords)
+	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords)
 	{
 		const u32 PlagueProc_function = 0x004F4AF0;
 		__asm {

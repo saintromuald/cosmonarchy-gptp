@@ -433,7 +433,7 @@ namespace hooks
 					}
 					else
 					{
-						unit->healEnergy(power, attacker);
+						unit->heal_energy(power, attacker);
 					}
 					unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 				}
@@ -608,7 +608,7 @@ namespace hooks
 		//	coords.top    = y - distance;
 		//	coords.right  = x + distance;
 		//	coords.bottom = y + distance;
-		//	helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
+		//	helper::iterate_units_at_location_target_proc_plague(attacker, &coords);
 		//
 		//	UnitExt* attackerExt = globals.get_unit_ext(attacker);
 		//	scbw::UnitFinder(

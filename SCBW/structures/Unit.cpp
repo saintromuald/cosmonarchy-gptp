@@ -543,7 +543,7 @@ void Unit::healUnderflow(s32 amount, Unit* source, bool restore)
 	}
 }
 
-void Unit::healEnergy(s32 energy, Unit* source)
+void Unit::heal_energy(s32 energy, Unit* source)
 {
 	assert(this);
 	if (this->energy == helper::getUnitMaxEnergy(this) * 256)

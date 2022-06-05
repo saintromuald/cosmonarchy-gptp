@@ -415,7 +415,7 @@ namespace hooks
 			// Augur - Final Hour
 			if (unit->id == UnitId::ProtossAugur && unit->shields == 0)
 			{
-				augurSacrifice(unit);
+				augur_sacrifice(unit);
 				bStopHere = true;
 			}
 
