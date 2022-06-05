@@ -602,4 +602,6 @@ namespace scbw
 	void give_ai_ex(Unit* unit, bool prefer_military);
 
 	u32 unit_get_creep_spreader_id(Unit* unit);
+
+	bool sprite_id_is_corpse(u32 sprite_id);
 }

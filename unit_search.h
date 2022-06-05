@@ -3,9 +3,6 @@
 #include <functional>
 #include <unordered_set>
 
-// GENERAL NOTES:
-// more performant version of unit finder, with more reasonable syntax
-
 enum SearchFilter
 {
 	FilterInvincible		= 1 <<  0,
@@ -36,32 +33,31 @@ enum SearchFilter
 };
 
 #define ScoreInvalidUnit INT_MIN
+#define EntryLimit 1700
 
-struct UnitArray
-{
+struct UnitArray {
 	u32 size;
-	Unit* units[1700];
+	Unit* units[EntryLimit];
 };
 
 struct CorpseArray {
 	u32 size;
-	Thingy* corpses[1700];
+	Thingy* corpses[EntryLimit];
 };
 
 void unit_array_add(UnitArray* array, Unit* unit);
-void unit_array_remove_fast(UnitArray* array, u32 index); // won't preserve order, will swap with last element
-void unit_array_remove(UnitArray* array, u32 index); // will preserve order
+void unit_array_remove(UnitArray* array, u32 index); // won't preserve order
 
 void corpse_array_add(CorpseArray* array, Thingy* unit);
-void corpse_array_remove_fast(CorpseArray* array, u32 index); // won't preserve order, will swap with last element
-void corpse_array_remove(CorpseArray* array, u32 index); // will preserve order
+void corpse_array_remove(CorpseArray* array, u32 index); // won't preserve order
 
-// NOTES:
+// NOTE:
 // not a fan of using an STL container, but we already have that dependency in the code base
 // also not sure how I would handle variadic argument like that, without refactoring everything that exists in this project
 // optional allowance of lambdas is pretty handy, since most of behaviors need adhoc adjustments
 using SearchFilterFunc = std::function<bool(Unit*)>;
 using SearchScoreFunc = std::function<s32(Unit*)>;
+
 UnitArray unit_search_rect(Box32 rect);
 UnitArray unit_search_square(Point16 center, u32 radius);
 UnitArray unit_search_radial(Point16 center, u32 radius);
@@ -71,7 +67,7 @@ CorpseArray corpse_search_square(Point16 center, u32 radius);
 CorpseArray corpse_search_radial(Point16 center, u32 radius);
 
 // TODO: combine filter and search together for ease of use (unit_search_radial_ex)
-void unit_search_filter(UnitArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, prefer sorting after filter
+void unit_search_filter(UnitArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, do sorting after filtering!
 void unit_search_custom_filter(UnitArray* unit_array, SearchFilterFunc filter); // will break ordering, prefer sorting after filter
 void unit_search_sort(UnitArray* unit_array, SearchScoreFunc score_func);
 void unit_search_sort_by_distance(UnitArray* unit_array, Point16 center);
@@ -79,7 +75,7 @@ Unit* unit_search_find_best(UnitArray* unit_array, SearchScoreFunc score_func = 
 Unit* unit_search_get_first(UnitArray* unit_array, SearchFilterFunc match_func = nullptr); // defaults to no check
 bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids);
 
-void update_search_grid(); // must be done once per frame
+void update_search_index(); // must be done once per frame
 
 bool is_point_in_rect(Point16 point, Box32 rect);
 bool is_rect_in_rect(Box32 inner, Box32 outer);

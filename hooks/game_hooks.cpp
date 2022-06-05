@@ -231,7 +231,7 @@ namespace hooks
 				raceSupply[RaceId::Terran].provided[i] = 60000;
 			}
 
-			update_search_grid();
+			update_search_index();
 			scbw::set_ingame_loop_state(true); // Needed for scbw::random() to work
 			graphics::reset_all_graphics();
 			hooks::update_psi_field_providers();
@@ -432,8 +432,7 @@ namespace hooks
 			case UnitId::ZergZoryusthaleth:
 			{
 				// Zoryusthaleth - Swarming Omen
-				if (!unitExt->timers[TimerSwarmingOmen]
-					&& unit->get_current_hp_ingame() < unit->get_max_hp_ingame() / 2)
+				if (unit->get_current_hp_ingame() < unit->get_max_hp_ingame() / 2)
 				{
 					unitExt->timers[TimerSwarmingOmen] = 15 * 24;
 				}
