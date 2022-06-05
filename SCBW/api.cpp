@@ -2446,6 +2446,9 @@ namespace scbw
 		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			return UnitId::ZergHatchery;
 		}
-		return unit->id;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) {
+			return unit->id;
+		}
+		return UnitId::None;
 	}
 }

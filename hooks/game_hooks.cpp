@@ -305,8 +305,8 @@ namespace hooks
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		tactical_ai(unit, unitExt);
 
-		if (unit->status & UnitStatus::GroundedBuilding && units_dat::GroupFlags[unit->id].isZerg && unit->player < PlayerLimit) {
-			u32 creep_spreader_id = scbw::unit_get_creep_spreader_id(unit);
+		u32 creep_spreader_id = scbw::unit_get_creep_spreader_id(unit);
+		if (creep_spreader_id != UnitId::None && unit->player < PlayerLimit) {
 			Box32 creep_area = {};
 			helper::get_creep_spread_area(creep_spreader_id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &creep_area);
 			for (u32 y = creep_area.top; y <= creep_area.bottom; ++y) {
