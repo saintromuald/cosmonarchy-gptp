@@ -149,6 +149,21 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) get_first_loaded_worker_wrapper() { // 004E6D90
+		static s32 result;
+		static Unit* transport;
+		__asm {
+			MOV transport, EAX
+			PUSHAD
+		}
+		result = hooks::get_first_loaded_worker();
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -163,5 +178,6 @@ namespace hooks
 	//	jump_patch(get_loaded_unit_from_index_wrapper,	0x004E6C40, 3);
 		jump_patch(get_first_loaded_unit_wrapper,		0x004E6C90, 0);
 	//	jump_patch(iterate_loaded_units_wrapper,		0x004E6D00, 2);
+	//	jump_patch(get_first_loaded_worker_wrapper,		0x004E6D90, 1);
 	}
 }

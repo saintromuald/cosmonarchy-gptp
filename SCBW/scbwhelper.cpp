@@ -5585,7 +5585,7 @@ namespace helper
 		}
 	}
 
-	void function_474940(Unit* unit, Unit* target, u8 orderId)
+	void update_target_something(Unit* unit, Unit* target, u8 orderId)
 	{
 		const u32 Func_sub474940 = 0x00474940;
 		__asm {
@@ -5599,7 +5599,7 @@ namespace helper
 		}
 	}
 
-	b32 Ai_AreOnConnectedRegions(Unit* unit, s32 x, s32 y)
+	b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_Ai_AreOnConnectedRegions = 0x00438E70;
 		static b32 result;
@@ -5615,7 +5615,7 @@ namespace helper
 		return result;
 	}
 
-	void function_0043DF30(Unit* unit)
+	void ai_unload_failure(Unit* unit)
 	{
 		const u32 Func_Sub43DF30 = 0x0043DF30;
 		__asm {
@@ -5644,7 +5644,7 @@ namespace helper
 		}
 	}
 
-	void _doOrder(Unit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders)
+	void do_order(Unit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders)
 	{
 		const u32 Func__doOrder = 0x00474C70;
 		b32 bStopPreviousOrders = stopPreviousOrders ? 1 : 0;
@@ -5660,7 +5660,7 @@ namespace helper
 		}
 	}
 
-	b32 Ai_UpdateAttackTarget(Unit* unit, u32 unk1, u32 unk2, u32 unk3)
+	b32 ai_update_attack_target(Unit* unit, u32 unk1, u32 unk2, u32 unk3)
 	{
 		const u32 Func_Ai_UpdateAttackTarget = 0x00477160;
 		__asm {
@@ -5674,7 +5674,7 @@ namespace helper
 		}
 	}
 
-	Unit* getLoadedUnitFromIndex(Unit* transport, s32 index)
+	Unit* get_loaded_unit_from_index(Unit* transport, s32 index)
 	{
 		const u32 Func_getLoadedUnitFromIndex = 0x004E6C40;
 		static Unit* return_value;
@@ -5689,7 +5689,7 @@ namespace helper
 		return return_value;
 	}
 
-	b32 getFirstLoadedWorker(Unit* transport)
+	b32 get_first_loaded_worker(Unit* transport)
 	{
 		const u32 Func_getFirstLoadedWorker = 0x004E6D90;
 		static b32 return_value;
@@ -5703,7 +5703,7 @@ namespace helper
 		return return_value;
 	}
 
-	b32 Ai_FindTransport(Unit* unit, Unit** unitTargetOffset)
+	b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset)
 	{
 		const u32 Func_Ai_FindTransport = 0x004E6EF0;
 		b32 result;

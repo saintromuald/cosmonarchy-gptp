@@ -82,7 +82,7 @@ namespace hooks
 						helper::unitOrderMoveToTargetUnit(unit, newTarget);
 						if (oldTarget != nullptr)
 						{
-							helper::function_474940(unit, oldTarget, OrderId::HealMove);
+							helper::update_target_something(unit, oldTarget, OrderId::HealMove);
 						}
 						else
 						{

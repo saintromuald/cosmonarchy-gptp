@@ -638,19 +638,19 @@ namespace helper
 	//// medic_orders
 	b32 AI_OrderHeal(Unit* unit, Unit* target);																						// 00463530
 	void function_4748E0(Unit* unit, s32 x, s32 y, u8 orderId);																		// 004748E0
-	void function_474940(Unit* unit, Unit* target, u8 orderId);																		// 00474940
+	void update_target_something(Unit* unit, Unit* target, u8 orderId);																		// 00474940
 	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 orderId);														// 00474C30
 	void unitOrderMoveToTargetUnit(Unit* unit, Unit* target);																		// 00479FE0
 
 	//// load_unload_orders
-	b32 Ai_AreOnConnectedRegions(Unit* unit, s32 x, s32 y);																			// 00438E70
-	void function_0043DF30(Unit* unit);																								// 0043DF30
+	b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y);																			// 00438E70
+	void ai_unload_failure(Unit* unit);																								// 0043DF30
 	void insert_order_before(Unit* unit, Order* order, u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId);					// 00474540
-	void _doOrder(Unit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
-	b32 Ai_UpdateAttackTarget(Unit* unit, u32 unk1, u32 unk2, u32 unk3);															// 00477160
-	Unit* getLoadedUnitFromIndex(Unit* transport, s32 index);																		// 004E6C40
-	b32 getFirstLoadedWorker(Unit* transport);																						// 004E6D90
-	b32 Ai_FindTransport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
+	void do_order(Unit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
+	b32 ai_update_attack_target(Unit* unit, u32 unk1, u32 unk2, u32 unk3);															// 00477160
+	Unit* get_loaded_unit_from_index(Unit* transport, s32 index);																		// 004E6C40
+	b32 get_first_loaded_worker(Unit* transport);																						// 004E6D90
+	b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
 	void load_unit_proc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
 	b32 unload_unit_proc(Unit* unit);																									// 004E7F70 (Hooked)
 	void issueOrderTargetingGround(Unit* unit, u8 orderId, s16 x, s16 y);															// 00475260

@@ -667,6 +667,7 @@ namespace hooks
 		return nullptr;
 	}
 
+	// Hooked to extend transports. -Pr0nogo
 	u32 iterate_loaded_units(Unit* transport, void* func, Unit* cargo) // 004E6D00
 	{
 		u32 space_provided = units_dat::SpaceProvided[transport->id];
@@ -696,6 +697,92 @@ namespace hooks
 			++iterations;
 			++index;
 			if (iterations >= space_provided)
+			{
+				return 0;
+			}
+		}
+		return 1;
+	}
+
+	// Hooked to extend transports. -Pr0nogo
+	s32 get_first_loaded_worker(Unit* transport) // 004E6D90
+	{
+		u32 iterations = 0;
+		u16 index = transport->loaded_unit[0].index;
+		while (1)
+		{
+			u16 index_var = index;
+			if (index)
+			{
+				Unit* unit_reference = &::unit_reference[index_var & 0x7FF];
+				if (unit_reference->sprite)
+				{
+					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
+						&& unit_reference->target_order_special == index_var >> 11
+						&& units_dat::BaseProperty[unit_reference->id] & UnitProperty::Worker)
+					{
+						break;
+					}
+				}
+			}
+			++iterations;
+			++index;
+			if (iterations >= 8)
+			{
+				return 0;
+			}
+		}
+		return 1;
+	}
+
+	// Hooked to extend transports. -Pr0nogo
+	s32 is_carrying_flag(Unit* unit) // 004F3A80
+	{
+		u16 unit_id = unit->id;
+		if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker)
+		{
+			Unit* powerup = unit->worker.powerup;
+			if (powerup && powerup->id == UnitId::Powerup_Flag)
+			{
+				return 1;
+			}
+			return 0;
+		}
+		if (unit->status & UnitStatus::IsHallucination
+			|| !units_dat::SpaceProvided[unit_id])
+		{
+			return 0;
+		}
+		u32 iterations = 0;
+		u16 index = unit->loaded_unit[0].index;
+		while (1)
+		{
+			u16 index_var = index;
+			if (index)
+			{
+				Unit* unit_reference = &::unit_reference[index_var & 0x7FF];
+				if (unit_reference->sprite)
+				{
+					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
+						&& unit_reference->target_order_special == index_var >> 11)
+					{
+						if (units_dat::BaseProperty[unit_reference->id] & UnitProperty::Worker)
+						{
+							Unit* powerup_reference = unit_reference->worker.powerup;
+							if (powerup_reference)
+							{
+								if (powerup_reference->id == UnitId::Powerup_Flag)
+								{
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+			++iterations;
+			++index;
+			if (iterations >= 8)
 			{
 				return 0;
 			}
