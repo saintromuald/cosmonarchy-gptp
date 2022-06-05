@@ -759,14 +759,26 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				allies.for_each([&](Unit* local_unit) {
 					allied_value += std::max(local_unit->ground_strength, local_unit->air_strength);
 				});
+				allied_value *= 1.25; // Give AI some more confidence
 
 				u32 crowd_score = 0;
 				if (!(unit->status & UnitStatus::InAir)) {
 					crowd_score = cosmonarchyUnitCount(unit, unit->position, CrowdCalcRadius, Flags::Ally | Flags::NotSelf | Flags::NoAir, {});
 				}
 
+				bool should_kite_back = false;
+				Unit* target = unit->order_target.unit;
+				if (target && target->canAttackTarget(unit)) { // This formula was found by iquare
+					f32 factor = 1.0 / 343.0;
+					f32 kiter_speed = unit->flingy_top_speed;
+					f32 target_speed = target->flingy_top_speed;
+					f32 kiting_time = (unit->flingy_acceleration + unit->flingy_turn_speed) * 2 * factor;
+					if (kiter_speed > target_speed && get_max_range(target->id) > get_max_range(unit->id) + kiting_time) {
+						should_kite_back = true;
+					}
+				}
+
 				bool prefer_kiting_forward = !unit_has_min_range(unit) && result.forward_found;
-				f32 confidence_factor = 1.25;
 				u32 distance = get_distance_to_target(unit);
 				u32 max_range = get_max_range(unit->id);
 				switch (get_kiter_type(unit->id)) {
@@ -783,25 +795,28 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							unit_ext->timers[TimerAI_KitingCooldown] = 24;
 							unit->order_to(OrderId::Move, result.strafe_pos.x, result.strafe_pos.y);
 							KITE_DEBUG("%s: strafe", unit->getName());
+						} else if (should_kite_back) {
+							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
+							KITE_DEBUG("%s: backward", unit->getName());
 						}
 						unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					} break;
 					case KiterType_Ranged: {
 						if (!prefer_kiting_forward && (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2
-							|| allied_value * confidence_factor < result.hostile_biases[result.forward_index]
+							|| allied_value <= result.hostile_biases[result.forward_index]
 							|| distance <= max_range * 0.5)) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: fall back", unit->getName());
 						} else if (prefer_kiting_forward
 							|| distance > max_range * 1.5
 							|| (distance > max_range * 1 && crowd_score > 9)
-							|| (distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index] * confidence_factor)) {
+							|| (distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index])) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
 						} else if (crowd_score > 9) {
 							unit->order_to(OrderId::Move, result.strafe_pos.x, result.strafe_pos.y);
 							KITE_DEBUG("%s: strafe", unit->getName());
-						} else if (allied_value <= result.hostile_biases[result.forward_index] * confidence_factor) {
+						} else if (should_kite_back || allied_value <= result.hostile_biases[result.forward_index]) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: backward", unit->getName());
 						}
@@ -811,7 +826,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 						if (distance > max_range * 1.5) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
-						} else if (distance < max_range * 1.25) {
+						} else if (should_kite_back || distance < max_range * 1.25) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: backward", unit->getName());
 						}
@@ -819,12 +834,15 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 					} break;
 					case KiterType_Flagship: {
 						if (!prefer_kiting_forward
-							&& (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || allied_value * confidence_factor < result.hostile_biases[result.forward_index])) {
+							&& (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || allied_value <= result.hostile_biases[result.forward_index])) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: fall back", unit->getName());
-						} else if (prefer_kiting_forward || distance > max_range * 1.5 || (distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index] * confidence_factor)) {
+						} else if (prefer_kiting_forward || distance > max_range * 1.5 || (distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index])) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
+						} else if (should_kite_back) {
+							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
+							KITE_DEBUG("%s: backward", unit->getName());
 						}
 						unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					} break;
