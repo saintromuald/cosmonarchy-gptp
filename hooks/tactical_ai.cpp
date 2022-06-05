@@ -694,6 +694,13 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 					return;
 				}
 
+				if (!(unit->status & UnitStatus::InAir)) {
+					if (scbw::get_region(scbw::get_region_id(unit->position))->groupIndex !=
+						scbw::get_region(scbw::get_region_id(target->position))->groupIndex) {
+						return;
+					}
+				}
+
 				UnitExt* target_ext = globals.get_unit_ext(target);
 				if (!target_ext->ai_timer_avoid_targeting[unit->player] && unit->canAttackTarget(target, true) && target->is_visible_to(unit->player)) {
 					s32 cost = get_target_cost(unit, target);
