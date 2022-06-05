@@ -373,7 +373,7 @@ namespace hooks
 							{
 								unit->ground_weapon_cooldown = helper::get_upgraded_weapon_cooldown(unit, weaponId);
 							}
-							weaponId = unit->getAirWeapon();
+							weaponId = unit->get_air_weapon();
 							if (weaponId != WeaponId::None)
 							{
 								unit->air_weapon_cooldown = helper::get_upgraded_weapon_cooldown(unit, weaponId);

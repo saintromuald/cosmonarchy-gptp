@@ -16,7 +16,7 @@ namespace hooks
 		Unit* current_unit;
 
 		// Use the unit's air weapon range
-		u32 cloakRadius = cloaker->get_max_weapon_range(cloaker->getAirWeapon());
+		u32 cloakRadius = cloaker->get_max_weapon_range(cloaker->get_air_weapon());
 		area_of_effect.left = cloaker->sprite->position.x - cloakRadius;
 		area_of_effect.right = cloaker->sprite->position.x + cloakRadius;
 		area_of_effect.top = cloaker->sprite->position.y - cloakRadius;

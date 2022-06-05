@@ -16,8 +16,8 @@ namespace hooks
 		}
 		if (target->status & UnitStatus::InAir)
 		{
-			return !attacker->is_target_within_min_range(target, weapons_dat::MinRange[attacker->getAirWeapon()])
-				&& attacker->is_target_within_min_range(target, weapons_dat::MaxRange[attacker->getAirWeapon()]);
+			return !attacker->is_target_within_min_range(target, weapons_dat::MinRange[attacker->get_air_weapon()])
+				&& attacker->is_target_within_min_range(target, weapons_dat::MaxRange[attacker->get_air_weapon()]);
 		}
 		else
 		{
@@ -68,7 +68,7 @@ namespace hooks
 
 						if (!target || !unit->canAttackTarget(target) || !isWithinAttackRange(unit, target))
 						{
-							const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->getAirWeapon()));
+							const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->get_air_weapon()));
 							unit->order_target.unit = scbw::UnitFinder::get_nearest_target(
 								unit->get_x() - radius,
 								unit->get_y() - radius,

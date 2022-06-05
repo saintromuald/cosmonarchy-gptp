@@ -76,7 +76,7 @@ u8 Unit::get_ground_weapon() const
 	}
 }
 
-u8 Unit::getAirWeapon() const
+u8 Unit::get_air_weapon() const
 {
 	assert(this);
 	return units_dat::AirWeapon[this->id];
@@ -144,7 +144,7 @@ u32 Unit::get_max_hp_ingame() const
 	return maxHp;
 }
 
-u32 Unit::getMaxShieldsInGame() const
+u32 Unit::get_max_shields_in_game() const
 {
 	assert(this);
 
@@ -321,7 +321,7 @@ bool Unit::has_weapon() const
 	assert(this);
 
 	if (this->get_ground_weapon() != WeaponId::None
-		|| this->getAirWeapon() != WeaponId::None)
+		|| this->get_air_weapon() != WeaponId::None)
 		return true;
 
 	if (this->id == UnitId::ProtossSolarion)
@@ -343,7 +343,7 @@ bool Unit::has_weapon() const
 	if (this->subunit)
 	{
 		if (this->subunit->get_ground_weapon() != WeaponId::None
-			|| this->subunit->getAirWeapon() != WeaponId::None)
+			|| this->subunit->get_air_weapon() != WeaponId::None)
 		{
 			return true;
 		}

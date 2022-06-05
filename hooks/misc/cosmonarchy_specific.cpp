@@ -665,7 +665,7 @@ LABEL_18:
 		}
 		if (target_flags & UnitStatus::InAir)
 		{
-			if (source->getAirWeapon() != WeaponId::None)
+			if (source->get_air_weapon() != WeaponId::None)
 			{
 				return true;
 			}

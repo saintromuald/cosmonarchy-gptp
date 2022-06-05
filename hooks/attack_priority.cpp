@@ -406,10 +406,10 @@ namespace
 			groundWeapon = unit->subunit->get_ground_weapon();
 		}
 
-		u8 airWeapon = unit->getAirWeapon();
+		u8 airWeapon = unit->get_air_weapon();
 		if (airWeapon == WeaponId::None && unit->subunit)
 		{
-			airWeapon = unit->subunit->getAirWeapon();
+			airWeapon = unit->subunit->get_air_weapon();
 		}
 
 		if (groundWeapon == WeaponId::None)

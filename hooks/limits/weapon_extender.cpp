@@ -607,7 +607,7 @@ namespace hooks
 		// 0046F023  |>  80FB 82       CMP BL,82
 		patchWeaponDat(2, 0x0046F023, PatchMaxWeaponCompare);
 
-		// char __thiscall Unit::getAirWeapon(CUNIT *this) // 00475840
+		// char __thiscall Unit::get_air_weapon(CUNIT *this) // 00475840
 		// 0047584A  |.  3C 82         CMP AL,82
 		patchWeaponDat(1, 0x0047584A, PatchMaxWeaponCompare);
 

@@ -618,7 +618,7 @@ void Globals::frame_hook() {
 						} break;
 					}
 				} break;
-				case EffectId_DisruptionWeb: {
+				case EffectId_DisruptionField: {
 					if (!effect->origin) {
 						effect->current_time = 0;
 						break;

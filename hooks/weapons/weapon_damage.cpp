@@ -849,7 +849,7 @@ namespace hooks
 			{
 				// Axitrilisk passive
 				const s32 shields = data.attacker->getCurrentShieldsInGame();
-				const s32 maxShields = data.attacker->getMaxShieldsInGame();
+				const s32 maxShields = data.attacker->get_max_shields_in_game();
 				u32 lifeHeal = damageDealt * MathUtils::map(shields, 0, maxShields, 1.0, 0.0, true);
 				data.attacker->heal(lifeHeal, data.attacker);
 

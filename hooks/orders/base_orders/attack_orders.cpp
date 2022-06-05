@@ -383,7 +383,7 @@ namespace hooks
 								// 00477C0C
 								if (target->status & UnitStatus::InAir)
 								{
-									current_unit_weaponId = current_unit->getAirWeapon();
+									current_unit_weaponId = current_unit->get_air_weapon();
 								}
 								else
 								{
@@ -560,7 +560,7 @@ namespace hooks
 					// 00477E1A
 					if (target->status & UnitStatus::InAir)
 					{
-						currentWeaponId = current_unit->getAirWeapon();
+						currentWeaponId = current_unit->get_air_weapon();
 					}
 					else
 					{

@@ -676,7 +676,7 @@ namespace hooks
 					if (!unitExt->values[ValueDisruptionFieldOn])
 					{
 						unitExt->values[ValueDisruptionFieldOn] = 1;
-						globals.create_effect(EffectId_DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, unit);
+						globals.create_effect(EffectId_DisruptionField, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, unit);
 					}
 					else if (unit->is_frozen())
 					{
