@@ -345,7 +345,7 @@ void Globals::unitDeathHook(Unit* unit)
 			}), vec.end());
 		}
 	}
-	ClearUnitExt(unit->get_unit_index());
+	ClearUnitExt(unit->get_unit_index() - 1);
 
 	for (s32 i = 0; i < this->effects.size(); i++)
 	{
