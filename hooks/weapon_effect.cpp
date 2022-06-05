@@ -94,22 +94,22 @@ namespace hooks
 			{
 				case WeaponId::SalamanderPerditionBarrage:
 				{
-					globals.create_effect(EffectId::SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->srcPlayer, bullet->sourceUnit);
+					globals.create_effect(EffectId_SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->srcPlayer, bullet->sourceUnit);
 					break;
 				}
 				case WeaponId::KeskathalorScreamingVenom:
 				{
-					globals.create_effect(EffectId::CausticDischarge, 5 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->srcPlayer, bullet->sourceUnit);
+					globals.create_effect(EffectId_CausticDischarge, 5 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->srcPlayer, bullet->sourceUnit);
 					break;
 				}
 				case WeaponId::IonCannon:
 				{
-					globals.create_effect(EffectId::IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5, bullet->srcPlayer, bullet->sourceUnit);
+					globals.create_effect(EffectId_IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5, bullet->srcPlayer, bullet->sourceUnit);
 					break;
 				}
 				case WeaponId::CantavisHallucinationCast:
 				{
-					globals.create_effect(EffectId::Hallucination, 10 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::ProtossHallucinationEffect, 5, bullet->srcPlayer, bullet->sourceUnit);
+					globals.create_effect(EffectId_Hallucination, 10 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::ProtossHallucinationEffect, 5, bullet->srcPlayer, bullet->sourceUnit);
 					break;
 				}
 			}
@@ -572,7 +572,7 @@ namespace hooks
 	{
 		Vector32 pos = { bullet->position.x, bullet->position.y } ;
 
-		globals.create_effect(EffectId::GroundZero, 24, pos, 0, -1, 5, bullet->srcPlayer, bullet->sourceUnit);
+		globals.create_effect(EffectId_GroundZero, 24, pos, 0, -1, 5, bullet->srcPlayer, bullet->sourceUnit);
 
 		splash(bullet, weaponId, SplashType::Radial);
 	}

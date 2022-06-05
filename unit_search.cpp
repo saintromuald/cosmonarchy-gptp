@@ -11,11 +11,6 @@ struct SearchEntry {
 	void* data;
 };
 
-struct EntryArray {
-	u32 size;
-	void* entries[EntryLimit];
-};
-
 struct SearchIndex {
 	u32 size;
 	SearchEntry entries[EntryLimit];
@@ -24,40 +19,17 @@ struct SearchIndex {
 
 static SearchIndex unit_index;
 static SearchIndex corpse_index;
+static SearchIndex effect_index;
 
-static void entry_array_add(EntryArray* array, void* data) {
+void entry_array_add(EntryArray* array, void* data) {
 	if (array->size < EntryLimit) {
 		array->entries[array->size++] = data;
 	}
 }
 
-static void entry_array_remove(EntryArray* array, u32 index) {
+void entry_array_remove(EntryArray* array, u32 index) {
 	if (index < array->size) {
 		array->entries[index] = array->entries[--array->size];
-	}
-}
-
-void unit_array_add(UnitArray* array, Unit* unit) {
-	if (array->size < EntryLimit) {
-		array->units[array->size++] = unit;
-	}
-}
-
-void unit_array_remove(UnitArray* array, u32 index) {
-	if (index < array->size) {
-		array->units[index] = array->units[--array->size];
-	}
-}
-
-void corpse_array_add(CorpseArray* array, Thingy* corpse) {
-	if (array->size < EntryLimit) {
-		array->corpses[array->size++] = corpse;
-	}
-}
-
-void corpse_array_remove(CorpseArray* array, u32 index) {
-	if (index < array->size) {
-		array->corpses[index] = array->corpses[--array->size];
 	}
 }
 
@@ -168,73 +140,83 @@ static EntryArray index_search_radial(SearchIndex* index, Point16 center, u32 ra
 	return entry_array;
 }
 
-inline UnitArray entry_array_to_unit_array(EntryArray entry_array) {
-	UnitArray unit_array = *(UnitArray*)&entry_array;
-	for (u32 i = 0; i < unit_array.size; ++i) {
-		Unit* unit = unit_array.units[i];
+inline EntryArray filter_unit_array(EntryArray entry_array) {
+	for (u32 i = 0; i < entry_array.size; ++i) {
+		Unit* unit = entry_array.units[i];
 		if (unit->is_dead()) {
-			unit_array_remove(&unit_array, i--);
+			entry_array_remove(&entry_array, i--);
 		}
 	}
-	return unit_array;
+	return entry_array;
 }
 
-UnitArray unit_search_rect(Box32 rect) {
-	return entry_array_to_unit_array(index_search_rect(&unit_index, rect));
+EntryArray unit_search_rect(Box32 rect) {
+	return filter_unit_array(index_search_rect(&unit_index, rect));
 }
 
-UnitArray unit_search_square(Point16 center, u32 radius) {
-	return entry_array_to_unit_array(index_search_square(&unit_index, center, radius));
+EntryArray unit_search_square(Point16 center, u32 radius) {
+	return filter_unit_array(index_search_square(&unit_index, center, radius));
 }
 
-UnitArray unit_search_radial(Point16 center, u32 radius) {
-	return entry_array_to_unit_array(index_search_radial(&unit_index, center, radius));
+EntryArray unit_search_radial(Point16 center, u32 radius) {
+	return filter_unit_array(index_search_radial(&unit_index, center, radius));
 }
 
-inline CorpseArray entry_array_to_corpse_array(EntryArray entry_array) {
-	CorpseArray corpse_array = *(CorpseArray*)&entry_array;
-	for (u32 i = 0; i < corpse_array.size; ++i) {
-		Thingy* corpse = corpse_array.corpses[i];
+inline EntryArray filter_corpse_array(EntryArray entry_array) {
+	for (u32 i = 0; i < entry_array.size; ++i) {
+		Thingy* corpse = entry_array.corpses[i];
 		if (corpse->sprite->flags & SpriteFlags::Flag04) {
-			corpse_array_remove(&corpse_array, i--);
+			entry_array_remove(&entry_array, i--);
 		}
 	}
-	return corpse_array;
+	return entry_array;
 }
 
-CorpseArray corpse_search_rect(Box32 rect) {
-	return entry_array_to_corpse_array(index_search_rect(&corpse_index, rect));
+EntryArray corpse_search_rect(Box32 rect) {
+	return filter_corpse_array(index_search_rect(&corpse_index, rect));
 }
 
-CorpseArray corpse_search_square(Point16 center, u32 radius) {
-	return entry_array_to_corpse_array(index_search_square(&corpse_index, center, radius));
+EntryArray corpse_search_square(Point16 center, u32 radius) {
+	return filter_corpse_array(index_search_square(&corpse_index, center, radius));
 }
 
-CorpseArray corpse_search_radial(Point16 center, u32 radius) {
-	return entry_array_to_corpse_array(index_search_radial(&corpse_index, center, radius));
+EntryArray corpse_search_radial(Point16 center, u32 radius) {
+	return filter_corpse_array(index_search_radial(&corpse_index, center, radius));
 }
 
-void unit_search_filter(UnitArray* unit_array, Unit* reference, u32 flags, std::unordered_set<u16> allowed_unit_ids) {
+EntryArray effect_search_rect(Box32 rect) {
+	return index_search_rect(&effect_index, rect);
+}
+
+EntryArray effect_search_square(Point16 center, u32 radius) {
+	return index_search_square(&effect_index, center, radius);
+}
+
+EntryArray effect_search_radial(Point16 center, u32 radius) {
+	return index_search_radial(&effect_index, center, radius);
+}
+
+void unit_search_filter(EntryArray* unit_array, Unit* reference, u32 flags, std::unordered_set<u16> allowed_unit_ids) {
 	for (u32 i = 0; i < unit_array->size; i++) {
 		Unit* unit = unit_array->units[i];
 		if (!unit_flag_match(unit, reference, flags, allowed_unit_ids)) {
-			unit_array_remove(unit_array, i--);
+			entry_array_remove(unit_array, i--);
 			continue;
 		}
 	}
 }
 
-void unit_search_custom_filter(UnitArray* unit_array, SearchFilterFunc filter) {
+void unit_search_custom_filter(EntryArray* unit_array, SearchFilterFunc filter) {
 	for (u32 i = 0; i < unit_array->size; i++) {
 		Unit* unit = unit_array->units[i];
 		if (!filter(unit)) {
-			unit_array_remove(unit_array, i--);
+			entry_array_remove(unit_array, i--);
 			continue;
 		}
 	}
 }
 
-void unit_search_sort(UnitArray* unit_array, SearchScoreFunc score_func) {
+void unit_search_sort(EntryArray* unit_array, SearchScoreFunc score_func) {
 	// not a fan of std::sort, probably should replace with own qsort
 	// qsort from C can't work with lambdas
 	std::sort(unit_array->units, unit_array->units + unit_array->size, [&](Unit* a, Unit* b) {
@@ -247,12 +229,12 @@ static s32 distance_compare_func(void const* a, void const* b) {
 	return scbw::get_distance_fast(temp_center, ((Unit*)a)->position) > scbw::get_distance_fast(temp_center, ((Unit*)b)->position);	
 }
 
-void unit_search_sort_by_distance(UnitArray* unit_array, Point16 center) {
+void unit_search_sort_by_distance(EntryArray* unit_array, Point16 center) {
 	temp_center = center;
 	qsort(unit_array->units, unit_array->size, sizeof(Unit*), distance_compare_func);
 }
 
-Unit* unit_search_find_best(UnitArray* unit_array, SearchScoreFunc score_func) {
+Unit* unit_search_find_best(EntryArray* unit_array, SearchScoreFunc score_func) {
 	s32 best_score = ScoreInvalidUnit;
 	Unit* best_unit = 0;
 
@@ -268,7 +250,7 @@ Unit* unit_search_find_best(UnitArray* unit_array, SearchScoreFunc score_func) {
 	return best_unit;
 }
 
-Unit* unit_search_get_first(UnitArray* unit_array, SearchFilterFunc match_func) {
+Unit* unit_search_get_first(EntryArray* unit_array, SearchFilterFunc match_func) {
 	if (!match_func) {
 		if (unit_array->size) {
 			return unit_array->units[0];
@@ -299,6 +281,19 @@ void update_search_index() {
 		if (thingy->sprite && scbw::sprite_id_is_corpse(thingy->sprite->sprite_id)) {
 			search_index_add(&corpse_index, thingy->sprite->position, thingy);
 		}
+	}
+
+	// Reset effects
+	search_index_reset(&effect_index);
+}
+
+void update_search_index_effects() {
+	// Add effects
+	for (Effect& effect : globals.effects) {
+		Point16 position = {};
+		position.x = effect.position.x;
+		position.y = effect.position.y;
+		search_index_add(&effect_index, position, &effect);
 	}
 }
 

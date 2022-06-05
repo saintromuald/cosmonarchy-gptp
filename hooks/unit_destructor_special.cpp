@@ -233,7 +233,7 @@ void unit_destructor_special_cases(Unit* unit)
 		{
 			case UnitId::SharedAspirant:
 			{
-				globals.create_effect(EffectId::Criticality, 10 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
+				globals.create_effect(EffectId_Criticality, 10 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
 			} break;
 			case UnitId::ProtossClarion:
 			{
@@ -329,7 +329,7 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	{ // Spellcaster - restore energy on ally kill
-		UnitArray unit_array = unit_search_radial(unit->position, 11 * 32);
+		EntryArray unit_array = unit_search_radial(unit->position, 11 * 32);
 		unit_search_filter(&unit_array, unit, FilterEnemy | FilterSpellcaster);
 
 		for (u32 i = 0; i < unit_array.size; ++i)

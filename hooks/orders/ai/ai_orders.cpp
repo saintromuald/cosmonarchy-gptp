@@ -1661,7 +1661,7 @@ LABEL_37:
 
 	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
 	Unit* ai_find_best_repair_unit(Unit* to_repair) { // 00443160
-		UnitArray workers = unit_search_radial(to_repair->position, 64 * 32);
+		EntryArray workers = unit_search_radial(to_repair->position, 64 * 32);
 		unit_search_filter(&workers, to_repair, FilterAlly, {UnitId::TerranMason, UnitId::TerranTalos});
 		Unit* best = unit_search_find_best(&workers, [=](Unit* worker) {
 			if (!worker->has_path_to_unit(to_repair) ||

@@ -52,7 +52,7 @@ namespace hooks
 
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
-			UnitArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
+			EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
 			scale +=  0.05 * sovroleths.size;
 		}
 
@@ -118,7 +118,7 @@ namespace hooks
 
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
-			UnitArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
+			EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
 			scale +=  0.05 * sovroleths.size;
 		}
 

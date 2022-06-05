@@ -258,6 +258,7 @@ namespace hooks
 			lastShift = newShift;
 
 			globals.frame_hook();
+			update_search_index_effects();
 			update_ext_variables();
 
 			// Loop through bullets
@@ -440,7 +441,7 @@ namespace hooks
 				if (unitExt->timers[TimerReconstitutionCooldown] == 0)
 				{
 					u32 radius = 5 * 32;
-					CorpseArray corpses = corpse_search_radial(unit->position, radius);
+					EntryArray corpses = corpse_search_radial(unit->position, radius);
 					for (u32 i = 0; i < corpses.size; ++i)
 					{
 						Thingy* corpse = corpses.corpses[i];
@@ -454,7 +455,7 @@ namespace hooks
 						}
 						unit->spend_unit_energy(5 * 256);
 
-						UnitArray targets = unit_search_radial(unit->position, radius);
+						EntryArray targets = unit_search_radial(unit->position, radius);
 						unit_search_filter(&targets, unit, FilterAlly);
 						for (u32 i = 0; i < targets.size; ++i) {
 							Unit* target = targets.units[i];
@@ -475,7 +476,7 @@ namespace hooks
 				unit->update_speed();
 
 				// Corpse Cocoon
-				CorpseArray corpses = corpse_search_rect({unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom()});
+				EntryArray corpses = corpse_search_rect({unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom()});
 				for (u32 i = 0; i < corpses.size; ++i) {
 					Thingy* corpse = corpses.corpses[i];
 					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
@@ -576,7 +577,7 @@ namespace hooks
 				// Star Sovereign - Grief of All Gods
 				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
 				{
-					globals.create_effect(EffectId::StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->player, unit, unit);
+					globals.create_effect(EffectId_StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->player, unit, unit);
 				}
 
 				// blast effects
@@ -675,7 +676,7 @@ namespace hooks
 					if (!unitExt->values[ValueDisruptionFieldOn])
 					{
 						unitExt->values[ValueDisruptionFieldOn] = 1;
-						globals.create_effect(EffectId::DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, unit);
+						globals.create_effect(EffectId_DisruptionWeb, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, unit);
 					}
 					else if (unit->is_frozen())
 					{
@@ -1226,7 +1227,7 @@ namespace hooks
 		// Tyranny
 		if (unitExt->values[ValueTyrannyPlayer]) {
 
-			UnitArray mind_tyrants = unit_search_radial(unit->position, 8 * 32);
+			EntryArray mind_tyrants = unit_search_radial(unit->position, 8 * 32);
 			unit_search_filter(&mind_tyrants, unit, 0, {UnitId::ProtossMindTyrant});
 			unit_search_custom_filter(&mind_tyrants, [=](Unit* mind_tyrant) {
 				if (scbw::is_allied_to(mind_tyrant->player, unitExt->values[ValueTyrannyPlayer] - 1)) {
@@ -1491,7 +1492,7 @@ namespace hooks
 
 		// Blissful Embrace - Creep Spread
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			UnitArray akistrokors = unit_search_radial(unit->position, 6 * 32);
+			EntryArray akistrokors = unit_search_radial(unit->position, 6 * 32);
 			unit_search_filter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
 			unit->hitpoints += akistrokors.size * 256.0 / 24.0;
 
@@ -1796,7 +1797,7 @@ namespace hooks
 		// Crucible - Khaydarin Charge stacks
 		if (unit->id == UnitId::ProtossCrucible && unit->status & UnitStatus::Completed)
 		{
-			UnitArray arr = unit_search_radial(unit->position, 8 * 32);
+			EntryArray arr = unit_search_radial(unit->position, 8 * 32);
 			unit_search_filter(&arr, unit, FilterAlly | FilterBuilding);
 			for (u32 i = 0; i < arr.size; i++)
 			{

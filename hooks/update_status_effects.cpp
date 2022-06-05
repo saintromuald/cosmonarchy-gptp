@@ -402,7 +402,7 @@ namespace hooks
 						if (canBurrow)
 						{
 							if (unit->id != UnitId::ZergLakizilisk) {
-								UnitArray array = unit_search_radial(unit->position, 10 * 32);
+								EntryArray array = unit_search_radial(unit->position, 10 * 32);
 								unit_search_filter(&array, unit, FilterAlly | FilterBuilding);
 								if (array.size) {
 									return; // Disable idle burrowing close to infrastructure

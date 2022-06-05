@@ -96,7 +96,7 @@ namespace hooks
 
 	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId)
 	{
-		globals.create_effect(EffectId::Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId, attacker);
+		globals.create_effect(EffectId_Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId, attacker);
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
@@ -417,7 +417,7 @@ namespace hooks
 			helper::increment_unit_death_scores(target, attacker->player);
 			if (!(target->status & UnitStatus::IsHallucination))
 			{
-				UnitArray units = unit_search_radial(attacker->position, 3 * 32);
+				EntryArray units = unit_search_radial(attacker->position, 3 * 32);
 				unit_search_filter(&units, attacker, FilterAlly | FilterIncludingSelf);
 				for (u32 i = 0; i < units.size; ++i) {
 					Unit* unit = units.units[i];
@@ -599,7 +599,7 @@ namespace hooks
 	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		if (attacker) {
-			globals.create_effect(EffectId::PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::PlagueField, 5, attacker->player, attacker);
+			globals.create_effect(EffectId_PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::PlagueField, 5, attacker->player, attacker);
 		}
 		//if (attacker) {
 		//	u32 range = 64;

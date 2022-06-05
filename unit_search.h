@@ -1,5 +1,6 @@
 #pragma once
 #include <SCBW\scbwdata.h>
+#include <globals.h>
 #include <functional>
 #include <unordered_set>
 
@@ -35,21 +36,18 @@ enum SearchFilter
 #define ScoreInvalidUnit INT_MIN
 #define EntryLimit 1700
 
-struct UnitArray {
+struct EntryArray {
 	u32 size;
-	Unit* units[EntryLimit];
+	union {
+		void* entries[EntryLimit];
+		Unit* units[EntryLimit];
+		Thingy* corpses[EntryLimit];
+		Effect* effects[EntryLimit];
+	};
 };
 
-struct CorpseArray {
-	u32 size;
-	Thingy* corpses[EntryLimit];
-};
-
-void unit_array_add(UnitArray* array, Unit* unit);
-void unit_array_remove(UnitArray* array, u32 index); // won't preserve order
-
-void corpse_array_add(CorpseArray* array, Thingy* unit);
-void corpse_array_remove(CorpseArray* array, u32 index); // won't preserve order
+void entry_array_add(EntryArray* array, void* data);
+void entry_array_remove(EntryArray* array, u32 index); // won't preserve order
 
 // NOTE:
 // not a fan of using an STL container, but we already have that dependency in the code base
@@ -58,24 +56,29 @@ void corpse_array_remove(CorpseArray* array, u32 index); // won't preserve order
 using SearchFilterFunc = std::function<bool(Unit*)>;
 using SearchScoreFunc = std::function<s32(Unit*)>;
 
-UnitArray unit_search_rect(Box32 rect);
-UnitArray unit_search_square(Point16 center, u32 radius);
-UnitArray unit_search_radial(Point16 center, u32 radius);
+EntryArray unit_search_rect(Box32 rect);
+EntryArray unit_search_square(Point16 center, u32 radius);
+EntryArray unit_search_radial(Point16 center, u32 radius);
 
-CorpseArray corpse_search_rect(Box32 rect);
-CorpseArray corpse_search_square(Point16 center, u32 radius);
-CorpseArray corpse_search_radial(Point16 center, u32 radius);
+EntryArray corpse_search_rect(Box32 rect);
+EntryArray corpse_search_square(Point16 center, u32 radius);
+EntryArray corpse_search_radial(Point16 center, u32 radius);
+
+EntryArray effect_search_rect(Box32 rect);
+EntryArray effect_search_square(Point16 center, u32 radius);
+EntryArray effect_search_radial(Point16 center, u32 radius);
 
 // TODO: combine filter and search together for ease of use (unit_search_radial_ex)
-void unit_search_filter(UnitArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, do sorting after filtering!
-void unit_search_custom_filter(UnitArray* unit_array, SearchFilterFunc filter); // will break ordering, prefer sorting after filter
-void unit_search_sort(UnitArray* unit_array, SearchScoreFunc score_func);
-void unit_search_sort_by_distance(UnitArray* unit_array, Point16 center);
-Unit* unit_search_find_best(UnitArray* unit_array, SearchScoreFunc score_func = nullptr); // score_func defaults to distance check
-Unit* unit_search_get_first(UnitArray* unit_array, SearchFilterFunc match_func = nullptr); // defaults to no check
+void unit_search_filter(EntryArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, do sorting after filtering!
+void unit_search_custom_filter(EntryArray* unit_array, SearchFilterFunc filter); // will break ordering, prefer sorting after filter
+void unit_search_sort(EntryArray* unit_array, SearchScoreFunc score_func);
+void unit_search_sort_by_distance(EntryArray* unit_array, Point16 center);
+Unit* unit_search_find_best(EntryArray* unit_array, SearchScoreFunc score_func = nullptr); // score_func defaults to distance check
+Unit* unit_search_get_first(EntryArray* unit_array, SearchFilterFunc match_func = nullptr); // defaults to no check
 bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids);
 
 void update_search_index(); // must be done once per frame
+void update_search_index_effects(); // must be done once per frame after effects are updated
 
 bool is_point_in_rect(Point16 point, Box32 rect);
 bool is_rect_in_rect(Box32 inner, Box32 outer);

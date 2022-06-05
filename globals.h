@@ -24,31 +24,28 @@ struct SaveState
 	}
 };
 
-namespace EffectId
-{
-	enum
-	{
-		SalamanderFire,
-		StarSovereignTheGriefOfAllGods,
-		IonField,
-		Criticality,
-		CausticDischarge,
-		Irradiate,
-		Hallucination,
-		GroundZero,
-		DisruptionWeb,
-		PlagueField,
-	};
-}
+enum EffectId {
+	EffectId_SalamanderFire,
+	EffectId_StarSovereignTheGriefOfAllGods,
+	EffectId_IonField,
+	EffectId_Criticality,
+	EffectId_CausticDischarge,
+	EffectId_Irradiate,
+	EffectId_Hallucination,
+	EffectId_GroundZero,
+	EffectId_DisruptionWeb,
+	EffectId_PlagueField,
 
-struct Effect
-{
-	u8 effectId;
+	EffectId_Count,
+};
+
+struct Effect {
+	u8 id;
 	Vector32 position;
 	u32 radius;
-	u32 currentTime;
-	u32 maxTime;
-	s32 spriteId;
+	u32 current_time;
+	u32 max_time;
+	s32 sprite_id;
 	u8 elevation;
 	u8 player;
 	Thingy* thingy;
@@ -56,14 +53,12 @@ struct Effect
 	Unit* origin;
 };
 
-struct PariahHit
-{
+struct PariahHit {
 	Unit* source;
 	Unit* target;
 };
 
-struct MultihitBullet
-{
+struct MultihitBullet {
 	Bullet* bullet;
 	s32 divider;
 	std::vector<Unit*> already_hit;
@@ -72,8 +67,7 @@ struct MultihitBullet
 	MultihitBullet(Bullet* bullet, std::vector<Unit*> already_hit, u32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {}
 };
 
-struct RevivingUnit
-{
+struct RevivingUnit {
 	Vector32 position;
 	u32 timer;
 	u32 unit_id;
@@ -84,8 +78,7 @@ struct RevivingUnit
 	bool ignore_town;
 };
 
-struct AttackExtender
-{
+struct AttackExtender {
 	//	std::vector<std::vector<u16>> attacks;
 	u16 attacks[PLAYABLE_PLAYER_COUNT][ATTACK_LIMIT];
 	AttackExtender()
@@ -101,35 +94,41 @@ struct AttackExtender
 	}
 };
 
-struct Globals
-{
+struct Globals {
 	std::string output;
-	//debugging data
+	// Debugging data
 /*	f64 unitSpeedDbg;
 	f64 weaponDamageDbg;
 	f64 gameHookDbg;
 	f64 updateUnitStateDbg;
 	f64 updateStatusEffectsDbg;*/
-	//serializable data
+	// Serializable data
 	u32 extended_unit_table;
 	u32 extended_sfx;
 	bool tbl_extender;
 	bool unitid_extender;
 
 	std::vector<Effect> effects;
-	std::vector<PariahHit> pariahHits;
-	std::vector<MultihitBullet> multihitBullets;
-	std::vector<RevivingUnit> revivingUnits;
-	std::unordered_map<Unit*, std::vector<Unit*>> lurkerSpineHits;
+	std::vector<PariahHit> pariah_hits;
+	std::vector<MultihitBullet> multihit_bullets;
+	std::vector<RevivingUnit> reviving_units;
+	std::unordered_map<Unit*, std::vector<Unit*>> lurker_spine_hits;
+	AttackExtender attackers;
 	UnitExt unitExt[UNIT_ARRAY_LENGTH];
 
-	inline UnitExt* get_unit_ext(Unit* unit)
-	{
+	inline UnitExt* get_unit_ext(Unit* unit) {
 		assert(unit);
 		return &unitExt[unit->get_unit_index()];
 	}
 
-	AttackExtender attackers;
+	Globals() {
+		extended_unit_table = 0;
+		extended_sfx = 0;
+		tbl_extender = false;
+		unitid_extender = false;
+
+		refreshDebuggingInfo();
+	}
 
 	// non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	s32 flingy_init_bullet_id;
@@ -138,15 +137,6 @@ struct Globals
 //	SaveState aise_save();
 	void aise_save();
 	void aise_load(const char* ptr, u32 len);
-	Globals()
-	{
-		extended_unit_table = 0;
-		extended_sfx = 0;
-		tbl_extender = false;
-		unitid_extender = false;
-
-		refreshDebuggingInfo();
-	}
 	void refreshDebuggingInfo();
 	void reset();
 	void frame_hook();
@@ -155,7 +145,7 @@ struct Globals
 	bool was_hit_by_pariah(Unit* source, Unit* target);
 
 	void register_pariah_hit(Unit* source, Unit* target);
-	void create_effect(u8 effectId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent = nullptr);
+	void create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent = nullptr);
 	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
 	bool multihit_bullet_is_set(Bullet* bullet);
 	u32 get_multihit_count(Bullet* bullet);

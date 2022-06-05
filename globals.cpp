@@ -38,35 +38,35 @@ void Globals::aise_save()
 	for (s32 i = 0; i < effectsSize; i++)
 	{
 		Effect* effect = &effects[i];
-		stream.write(reinterpret_cast<const char*>(&effect->effectId), sizeof(effect->effectId));
+		stream.write(reinterpret_cast<const char*>(&effect->id), sizeof(effect->id));
 		stream.write(reinterpret_cast<const char*>(&effect->position.x), sizeof(effect->position.x));
 		stream.write(reinterpret_cast<const char*>(&effect->position.y), sizeof(effect->position.y));
 		stream.write(reinterpret_cast<const char*>(&effect->radius), sizeof(effect->radius));
-		stream.write(reinterpret_cast<const char*>(&effect->currentTime), sizeof(effect->currentTime));
-		stream.write(reinterpret_cast<const char*>(&effect->maxTime), sizeof(effect->maxTime));;
+		stream.write(reinterpret_cast<const char*>(&effect->current_time), sizeof(effect->current_time));
+		stream.write(reinterpret_cast<const char*>(&effect->max_time), sizeof(effect->max_time));;
 		stream.write(reinterpret_cast<const char*>(&effect->elevation), sizeof(effect->elevation));
-		stream.write(reinterpret_cast<const char*>(&effect->spriteId), sizeof(effect->spriteId));
+		stream.write(reinterpret_cast<const char*>(&effect->sprite_id), sizeof(effect->sprite_id));
 		stream.write(reinterpret_cast<const char*>(&effect->player), sizeof(effect->player));
 		// should find a way on how to serialize thingy, since pointers won't match after save / load
 		//stream.write(reinterpret_cast<const char*>(&effect->thingy), sizeof(effect->thingy));
 	}
 
-	u32 pariahHitCount = pariahHits.size();
+	u32 pariahHitCount = pariah_hits.size();
 	for (s32 i = 0; i < pariahHitCount; i++)
 	{
-		stream.write(reinterpret_cast<const char*>(&pariahHits[i].source), sizeof(pariahHits[i].source));
-		stream.write(reinterpret_cast<const char*>(&pariahHits[i].target), sizeof(pariahHits[i].target));
+		stream.write(reinterpret_cast<const char*>(&pariah_hits[i].source), sizeof(pariah_hits[i].source));
+		stream.write(reinterpret_cast<const char*>(&pariah_hits[i].target), sizeof(pariah_hits[i].target));
 	}
 
-	u32 apostleCount = revivingUnits.size();
+	u32 apostleCount = reviving_units.size();
 	for (s32 i = 0; i < apostleCount; i++)
 	{
-		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].energy), sizeof(revivingUnits[i].energy));
-		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].playerId), sizeof(revivingUnits[i].playerId));
-		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].position.x), sizeof(revivingUnits[i].position.x));
-		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].position.y), sizeof(revivingUnits[i].position.y));
-		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].timer), sizeof(revivingUnits[i].timer));
-		stream.write(reinterpret_cast<const char*>(&revivingUnits[i].unit_id), sizeof(revivingUnits[i].unit_id));
+		stream.write(reinterpret_cast<const char*>(&reviving_units[i].energy), sizeof(reviving_units[i].energy));
+		stream.write(reinterpret_cast<const char*>(&reviving_units[i].playerId), sizeof(reviving_units[i].playerId));
+		stream.write(reinterpret_cast<const char*>(&reviving_units[i].position.x), sizeof(reviving_units[i].position.x));
+		stream.write(reinterpret_cast<const char*>(&reviving_units[i].position.y), sizeof(reviving_units[i].position.y));
+		stream.write(reinterpret_cast<const char*>(&reviving_units[i].timer), sizeof(reviving_units[i].timer));
+		stream.write(reinterpret_cast<const char*>(&reviving_units[i].unit_id), sizeof(reviving_units[i].unit_id));
 	}
 
 	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
@@ -77,11 +77,11 @@ void Globals::aise_save()
 		}
 	}
 
-	u32 multihitCount = multihitBullets.size();
+	u32 multihitCount = multihit_bullets.size();
 	stream.write(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
 	for (s32 i = 0; i < multihitCount; i++)
 	{
-		MultihitBullet bull = multihitBullets[i];
+		MultihitBullet bull = multihit_bullets[i];
 		stream.write(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
 		stream.write(reinterpret_cast<char*>(&bull.divider), sizeof(bull.divider));
 		u32 alreadyHitCount = bull.already_hit.size();
@@ -93,8 +93,8 @@ void Globals::aise_save()
 		}
 	}
 
-	u32 lurkerMapSize = lurkerSpineHits.size();
-	for (auto a : lurkerSpineHits)
+	u32 lurkerMapSize = lurker_spine_hits.size();
+	for (auto a : lurker_spine_hits)
 	{
 		Unit* key = a.first;
 		stream.write(reinterpret_cast<char*>(&key), sizeof(key));
@@ -183,14 +183,14 @@ void Globals::aise_load(const char* ptr, u32 len)
 	for (s32 i = 0; i < impactsSize; i++)
 	{
 		Effect effect = {};
-		stream.read(reinterpret_cast<char*>(&effect.effectId), sizeof(effect.effectId));
+		stream.read(reinterpret_cast<char*>(&effect.id), sizeof(effect.id));
 		stream.read(reinterpret_cast<char*>(&effect.position.x), sizeof(effect.position.x));
 		stream.read(reinterpret_cast<char*>(&effect.position.y), sizeof(effect.position.y));
 		stream.read(reinterpret_cast<char*>(&effect.radius), sizeof(effect.radius));
-		stream.read(reinterpret_cast<char*>(&effect.currentTime), sizeof(effect.currentTime));
-		stream.read(reinterpret_cast<char*>(&effect.maxTime), sizeof(effect.maxTime));
+		stream.read(reinterpret_cast<char*>(&effect.current_time), sizeof(effect.current_time));
+		stream.read(reinterpret_cast<char*>(&effect.max_time), sizeof(effect.max_time));
 		stream.read(reinterpret_cast<char*>(&effect.elevation), sizeof(effect.elevation));
-		stream.read(reinterpret_cast<char*>(&effect.spriteId), sizeof(effect.spriteId));
+		stream.read(reinterpret_cast<char*>(&effect.sprite_id), sizeof(effect.sprite_id));
 		stream.read(reinterpret_cast<char*>(&effect.player), sizeof(effect.player));
 		// should find a way on how to serialize thingy, since pointers won't match after save / load
 		//stream.read(reinterpret_cast<char*>(&effect.thingy), sizeof(effect.thingy));
@@ -204,7 +204,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 		PariahHit hit;
 		stream.read(reinterpret_cast<char*>(&hit.source), sizeof(hit.source));
 		stream.read(reinterpret_cast<char*>(&hit.target), sizeof(hit.target));
-		pariahHits.push_back(hit);
+		pariah_hits.push_back(hit);
 	}
 
 	u32 apostleCount = 0;
@@ -218,7 +218,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 		stream.read(reinterpret_cast<char*>(&agent.position.y), sizeof(agent.position.y));
 		stream.read(reinterpret_cast<char*>(&agent.timer), sizeof(agent.timer));
 		stream.read(reinterpret_cast<char*>(&agent.unit_id), sizeof(agent.unit_id));
-		revivingUnits.push_back(agent);
+		reviving_units.push_back(agent);
 	}
 
 	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
@@ -244,7 +244,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 			stream.read(reinterpret_cast<char*>(&hit), sizeof(hit));
 			bull.already_hit.push_back(hit);
 		}
-		multihitBullets.push_back(bull);
+		multihit_bullets.push_back(bull);
 	}
 
 	u32 lurkerMapSize = 0;
@@ -257,7 +257,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 		for (s32 j = 0; j < valueCount; j++) {
 			Unit* value = nullptr;
 			stream.read(reinterpret_cast<char*>(&value), sizeof(value));
-			lurkerSpineHits[key].push_back(value);
+			lurker_spine_hits[key].push_back(value);
 		}
 	}*/
 
@@ -312,10 +312,10 @@ static void ClearUnitExt(int index)
 void Globals::reset()
 {
 	effects.clear();
-	pariahHits.clear();
-	multihitBullets.clear();
-	revivingUnits.clear();
-	lurkerSpineHits.clear();
+	pariah_hits.clear();
+	multihit_bullets.clear();
+	reviving_units.clear();
+	lurker_spine_hits.clear();
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
 		ClearUnitExt(i);
@@ -360,8 +360,8 @@ void Globals::unitDeathHook(Unit* unit)
 		}
 	}
 
-	lurkerSpineHits[unit].clear();
-	for (auto& a : lurkerSpineHits)
+	lurker_spine_hits[unit].clear();
+	for (auto& a : lurker_spine_hits)
 	{
 		for (s32 b = 0; b < a.second.size(); b++)
 		{
@@ -400,26 +400,24 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 	unit->irradiate_timer = time;
 }
 
-void Globals::create_effect(u8 effectId, u32 time, Vector32 position, u32 radius, s32 spriteId, u8 elevation, u8 player, Unit* source, Unit* parent)
+void Globals::create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent)
 {
 	Effect effect = {};
-	effect.effectId = effectId;
+	effect.id = id;
 	effect.position = position;
 	effect.radius = radius;
-	effect.currentTime = time;
-	effect.maxTime = time;
-	effect.spriteId = spriteId;
+	effect.current_time = time;
+	effect.max_time = time;
+	effect.sprite_id = sprite_id;
 	effect.elevation = elevation;
 	effect.player = player;
 	effect.thingy = nullptr;
 	effect.source = source;
 	effect.origin = parent;
 
-	if (effect.spriteId >= 0)
-	{
-		Thingy* thingy = scbw::create_and_init_thingy(effect.spriteId, effect.position.x, effect.position.y, player);
-		if (!thingy)
-		{
+	if (effect.sprite_id >= 0) {
+		Thingy* thingy = scbw::create_and_init_thingy(effect.sprite_id, effect.position.x, effect.position.y, player);
+		if (!thingy) {
 			return;
 		}
 		effect.thingy = thingy;
@@ -469,9 +467,9 @@ void Globals::frame_hook()
 	}
 
 	// Lazarus Agent and Counter-Proposal
-	for (s32 i = 0; i < revivingUnits.size(); ++i)
+	for (s32 i = 0; i < reviving_units.size(); ++i)
 	{
-		auto& revivingUnit = revivingUnits[i];
+		auto& revivingUnit = reviving_units[i];
 		if (revivingUnit.timer > 0)
 		{
 			revivingUnit.timer--;
@@ -496,7 +494,7 @@ void Globals::frame_hook()
 					revivedExt->timers[TimerReviveFlagClearMax] = 14;
 				}
 			}
-			revivingUnits.erase(revivingUnits.begin() + i);
+			reviving_units.erase(reviving_units.begin() + i);
 			i--;
 		}
 	}
@@ -504,7 +502,7 @@ void Globals::frame_hook()
 	for (s32 i = 0; i < effects.size(); i++)
 	{
 		Effect* effect = &effects[i];
-		effect->currentTime--;
+		effect->current_time--;
 		if (effect->origin)
 		{
 			effect->position = {effect->origin->position.x, effect->origin->position.y};
@@ -514,16 +512,16 @@ void Globals::frame_hook()
 			}
 		}
 		const s32 framePeriod = 6;
-		if (effect->currentTime % framePeriod == 1)
+		if (effect->current_time % framePeriod == 1)
 		{
-			const f64 damageMultiplier = 256.0 * (f64)framePeriod / effect->maxTime;
-			switch (effect->effectId)
+			const f64 damageMultiplier = 256.0 * (f64)framePeriod / effect->max_time;
+			switch (effect->id)
 			{
-				case EffectId::StarSovereignTheGriefOfAllGods:
+				case EffectId_StarSovereignTheGriefOfAllGods:
 				{
 					if (!effect->origin)
 					{
-						effect->currentTime = 0;
+						effect->current_time = 0;
 						return;
 					}
 
@@ -537,9 +535,9 @@ void Globals::frame_hook()
 						unit->damage_with_custom(2500 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
 					});
 				} break;
-				case EffectId::SalamanderFire:
+				case EffectId_SalamanderFire:
 				{
-					UnitArray unit_array = unit_search_radial({(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
+					EntryArray unit_array = unit_search_radial({(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
 					unit_search_filter(&unit_array, nullptr, FilterNoAir);
 
 					for (u32 j = 0; j < unit_array.size; j++)
@@ -548,7 +546,7 @@ void Globals::frame_hook()
 						target->damage_with_custom(20 * damageMultiplier, DamageType::Concussive, effect->source, effect->player, 0, 1, true);
 					}
 				} break;
-				case EffectId::Criticality:
+				case EffectId_Criticality:
 				{
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
@@ -564,7 +562,7 @@ void Globals::frame_hook()
 						unit->healUnderflow(2 * 256 / framePeriod, effect->source, true); // this math seems wrong
 					});
 				} break;
-				case EffectId::CausticDischarge:
+				case EffectId_CausticDischarge:
 				{
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
@@ -582,7 +580,7 @@ void Globals::frame_hook()
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 				} break;
-				case EffectId::IonField:
+				case EffectId_IonField:
 				{
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
@@ -600,7 +598,7 @@ void Globals::frame_hook()
 						unitExt->timers[TimerIonFieldSpeed] = 2 * 24 + 1;
 					});
 				} break;
-				case EffectId::Hallucination:
+				case EffectId_Hallucination:
 				{
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
@@ -616,15 +614,15 @@ void Globals::frame_hook()
 						UnitExt* unitExt = globals.get_unit_ext(unit);
 						if (!unitExt->timers[TimerHallucinating])
 						{
-							scbw::apply_new_hallucination(unit, effect->player, effect->currentTime);
+							scbw::apply_new_hallucination(unit, effect->player, effect->current_time);
 						}
 						else
 						{
-							unitExt->timers[TimerHallucinating] = effect->currentTime;
+							unitExt->timers[TimerHallucinating] = effect->current_time;
 						}
 					});
 				} break;
-				case EffectId::Irradiate:
+				case EffectId_Irradiate:
 				{
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
@@ -640,16 +638,16 @@ void Globals::frame_hook()
 						ApplyIrradiate(unit, effect->player, 15);
 					});
 				} break;
-				case EffectId::GroundZero:
+				case EffectId_GroundZero:
 				{
-					const u32 delta = effect->maxTime - effect->currentTime;
+					const u32 delta = effect->max_time - effect->current_time;
 					const u32 stage = delta / framePeriod;
 
 					switch (stage)
 					{
 						case 0:
 						{
-							globals.create_effect(EffectId::Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+							globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 						} break;
 						case 1:
 						case 2:
@@ -662,23 +660,23 @@ void Globals::frame_hook()
 							for (u32 j = 0; j < count; ++j)
 							{
 								newPos = scbw::rotate_point(effect->position, newPos, (360.0 / count));
-								globals.create_effect(EffectId::Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+								globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 							}
 						} break;
 					}
 				} break;
-				case EffectId::DisruptionWeb:
+				case EffectId_DisruptionWeb:
 				{
 					if (!effect->origin)
 					{
-						effect->currentTime = 0;
+						effect->current_time = 0;
 						break;
 					}
 
 					UnitExt* parentExt = globals.get_unit_ext(effect->origin);
 					if (!parentExt->values[ValueDisruptionFieldOn])
 					{
-						effect->currentTime = 0;
+						effect->current_time = 0;
 						break;
 					}
 
@@ -694,7 +692,7 @@ void Globals::frame_hook()
 						unit->status |= UnitStatus::CanNotAttack;
 					});
 				} break;
-				case EffectId::PlagueField:
+				case EffectId_PlagueField:
 				{
 					scbw::UnitFinder(
 						effect->position.x - 1.5 * 32,
@@ -707,7 +705,7 @@ void Globals::frame_hook()
 				} break;
 			}
 		}
-		if (effect->currentTime == 0)
+		if (effect->current_time == 0)
 		{
 			if (effect->thingy && effect->thingy->sprite)
 			{
@@ -722,11 +720,11 @@ void Globals::frame_hook()
 
 void Globals::remove_unit_from_pariah_table(Unit* unit, bool sourceOnly)
 {
-	for (s32 i = 0; i < pariahHits.size(); i++)
+	for (s32 i = 0; i < pariah_hits.size(); i++)
 	{
-		if (pariahHits[i].source == unit || (pariahHits[i].target == unit && !sourceOnly))
+		if (pariah_hits[i].source == unit || (pariah_hits[i].target == unit && !sourceOnly))
 		{
-			pariahHits.erase(pariahHits.begin() + i);
+			pariah_hits.erase(pariah_hits.begin() + i);
 			i--;
 		}
 	}
@@ -734,11 +732,11 @@ void Globals::remove_unit_from_pariah_table(Unit* unit, bool sourceOnly)
 
 void Globals::remove_multihit_bullet(Bullet* bullet)
 {
-	for (s32 i = 0; i < multihitBullets.size(); i++)
+	for (s32 i = 0; i < multihit_bullets.size(); i++)
 	{
-		if (multihitBullets[i].bullet == bullet)
+		if (multihit_bullets[i].bullet == bullet)
 		{
-			multihitBullets.erase(multihitBullets.begin() + i);
+			multihit_bullets.erase(multihit_bullets.begin() + i);
 			i--;
 		}
 	}
@@ -746,7 +744,7 @@ void Globals::remove_multihit_bullet(Bullet* bullet)
 
 bool Globals::was_hit_by_pariah(Unit* source, Unit* target)
 {
-	for (auto a : pariahHits)
+	for (auto a : pariah_hits)
 	{
 		if (source == a.source && target == a.target)
 		{
@@ -761,12 +759,12 @@ void Globals::register_pariah_hit(Unit* source, Unit* target)
 	PariahHit hit;
 	hit.source = source;
 	hit.target = target;
-	pariahHits.push_back(hit);
+	pariah_hits.push_back(hit);
 }
 
 bool Globals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target)
 {
-	for (auto& a : multihitBullets)
+	for (auto& a : multihit_bullets)
 	{
 		if (bullet == a.bullet)
 		{
@@ -784,7 +782,7 @@ bool Globals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target)
 
 bool Globals::multihit_bullet_is_set(Bullet* bullet)
 {
-	for (auto& a : multihitBullets)
+	for (auto& a : multihit_bullets)
 	{
 		if (bullet == a.bullet)
 		{
@@ -796,7 +794,7 @@ bool Globals::multihit_bullet_is_set(Bullet* bullet)
 
 void Globals::add_bullet_multihit(Bullet* bullet, Unit* target)
 {
-	for (auto& a : multihitBullets)
+	for (auto& a : multihit_bullets)
 	{
 		if (a.bullet == bullet)
 		{
@@ -805,12 +803,12 @@ void Globals::add_bullet_multihit(Bullet* bullet, Unit* target)
 		}
 	}
 	MultihitBullet gb(bullet, {target}, 0);
-	multihitBullets.push_back(gb);
+	multihit_bullets.push_back(gb);
 }
 
 void Globals::add_incremental_bullet_multihit(Bullet* bullet, Unit* target)
 {
-	for (auto& a : multihitBullets)
+	for (auto& a : multihit_bullets)
 	{
 		if (a.bullet == bullet)
 		{
@@ -819,12 +817,12 @@ void Globals::add_incremental_bullet_multihit(Bullet* bullet, Unit* target)
 		}
 	}
 	MultihitBullet gb(bullet, {target}, 1);
-	multihitBullets.push_back(gb);
+	multihit_bullets.push_back(gb);
 }
 
 s32 Globals::get_divider(Bullet* bullet)
 {
-	for (auto& a : multihitBullets)
+	for (auto& a : multihit_bullets)
 	{
 		if (a.bullet == bullet && a.divider != 0)
 		{
@@ -836,7 +834,7 @@ s32 Globals::get_divider(Bullet* bullet)
 
 u32 Globals::get_multihit_count(Bullet* bullet)
 {
-	for (auto& a : multihitBullets)
+	for (auto& a : multihit_bullets)
 	{
 		if (a.bullet == bullet)
 		{
@@ -848,7 +846,7 @@ u32 Globals::get_multihit_count(Bullet* bullet)
 
 void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 {
-	for (auto& a : multihitBullets)
+	for (auto& a : multihit_bullets)
 	{
 		if (a.bullet == bullet)
 		{
@@ -857,7 +855,7 @@ void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 		}
 	}
 	MultihitBullet gb(bullet, {}, divider);
-	multihitBullets.push_back(gb);
+	multihit_bullets.push_back(gb);
 }
 
 void Globals::initRevive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town)
@@ -878,22 +876,22 @@ void Globals::initRevive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 h
 	{
 		revivingUnit.ignore_town = true;
 	}
-	revivingUnits.push_back(revivingUnit);
+	reviving_units.push_back(revivingUnit);
 }
 
 void Globals::clear_lakizilisk(Unit* lurker)
 {
-	lurkerSpineHits[lurker].clear();
+	lurker_spine_hits[lurker].clear();
 }
 
 void Globals::add_lurker_spine_pair(Unit* lurker, Unit* target)
 {
-	lurkerSpineHits[lurker].push_back(target);
+	lurker_spine_hits[lurker].push_back(target);
 }
 
 bool Globals::spine_pair_exists(Unit* lurker, Unit* target)
 {
-	for (auto a : lurkerSpineHits)
+	for (auto a : lurker_spine_hits)
 	{
 		for (auto b : a.second)
 		{
@@ -1723,7 +1721,7 @@ namespace scbw
 	void spreadSovrolethDamage(hooks::WeaponDamageData& data)
 	{
 		Unit* unit = data.target;
-		UnitArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
+		EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
 		s32 damage = data.finalDamage / (sovroleths.size + 1);
 		for (u32 i = 0; i < sovroleths.size; ++i) {
 			linkDamage(sovroleths.units[i], damage, data);

@@ -974,7 +974,7 @@ namespace hooks
 			//}
 
 			// Remove connected larva
-			UnitArray larvae = unit_search_radial(data.target->position, 4 * 32);
+			EntryArray larvae = unit_search_radial(data.target->position, 4 * 32);
 			unit_search_filter(&larvae, data.target, 0, {UnitId::ZergLarva});
 			for (u32 i = 0; i < larvae.size; ++i) {
 				Unit* larva = larvae.units[i];
