@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include "hooks/cosmonarchy_finder.h"
 #include "hooks/orders/spells/hallucination_spell.h"
+#include "hooks/orders/building_making/building_modifier.h"
 #include "globals.h"
 #ifndef TRUE
 #define TRUE 1
@@ -126,23 +127,15 @@ namespace hooks
 				if (built_unit != nullptr)
 				{
 					UnitExt* builtUnitExt = globals.get_unit_ext(built_unit);
-					u32 hpGain = helper::getHPGainForRepair(built_unit);
 					bool extraBuild = false;
-					if (builtUnitExt->values[ValueCrucible] == 0)
-					{
-						for (Unit* unit : unitExt->unit_vectors[UnitVectorCrucibles])
-						{
-							builtUnitExt->values[ValueCrucible] = 18; // 6 is ~115%, 18 should be ~105%
-							helper::progress_build(built_unit, hpGain, TRUE);
-							if (built_unit->status & UnitStatus::Completed)
-							{
-								extraBuild = true;
-							}
+					BuildingModifier modifier = get_building_modifier(unit, 0, false);
+					u32 hpGain = helper::getHPGainForRepair(built_unit) * modifier.multiplier;
+					if (modifier.decrease) {
+						if (built_unit->remaining_build_time > modifier.decrease) {
+							built_unit->remaining_build_time -= modifier.decrease;
+						} else {
+							built_unit->remaining_build_time = 0;
 						}
-					}
-					else
-					{
-						builtUnitExt->values[ValueCrucible]--;
 					}
 					if (extraBuild || helper::progress_build(built_unit, hpGain, TRUE))
 					{
@@ -150,8 +143,7 @@ namespace hooks
 						{
 							u32 count = 1;
 							Unit* builtUnits[2] = {built_unit, nullptr};
-							if (units_dat::BaseProperty[built_unit->id] & UnitProperty::TwoUnitsIn1Egg)
-							{
+							if (units_dat::BaseProperty[built_unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 								count = 2;
 								builtUnits[1] = scbw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
 							}

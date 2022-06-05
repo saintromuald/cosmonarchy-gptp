@@ -1,10 +1,9 @@
 #pragma once
 #include "SCBW\api.h"
 
-struct BuildingModifier
-{
+struct BuildingModifier {
 	f32 multiplier;
 	u32 decrease;
 };
 
-BuildingModifier get_building_modifier(Unit* building, Unit* builder);
+BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool constructing);

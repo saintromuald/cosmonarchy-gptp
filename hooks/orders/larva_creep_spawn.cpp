@@ -86,15 +86,11 @@ namespace hooks
 				{
 					unit->building.larva_timer--;
 
-					BuildingModifier modifier = get_building_modifier(unit, 0);
-					if (modifier.decrease)
-					{
-						if (unit->building.larva_timer > modifier.decrease)
-						{
+					BuildingModifier modifier = get_building_modifier(unit, 0, false);
+					if (modifier.decrease) {
+						if (unit->building.larva_timer > modifier.decrease) {
 							unit->building.larva_timer -= modifier.decrease;
-						}
-						else
-						{
+						} else {
 							unit->building.larva_timer = 0;
 						}
 					}
@@ -170,15 +166,11 @@ namespace hooks
 			{
 				unit->building.creep_timer -= 2;
 
-				BuildingModifier modifier = get_building_modifier(unit, 0);
-				if (modifier.decrease)
-				{
-					if (unit->building.creep_timer > modifier.decrease)
-					{
+				BuildingModifier modifier = get_building_modifier(unit, 0, false);
+				if (modifier.decrease) {
+					if (unit->building.creep_timer > modifier.decrease) {
 						unit->building.creep_timer -= modifier.decrease;
-					}
-					else
-					{
+					} else {
 						unit->building.creep_timer = 0;
 					}
 				}

@@ -9,12 +9,10 @@ namespace hooks
 		s32 x, y;
 		x = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].x;
 		y = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].y;
-		if (x < 0)
-		{
+		if (x < 0) {
 			x++;
 		}
-		if (y < 0)
-		{
+		if (y < 0) {
 			y++;
 		}
 		x = nydus_canal->order_target.pt.x - (x / 2);
@@ -31,44 +29,23 @@ namespace hooks
 		y /= 32;
 
 		// check if the nydus exit can be placed
-		if (helper::can_build_on_tile_location(nydus_canal, nydus_canal->player, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0))
-		{
+		if (helper::can_build_on_tile_location(nydus_canal, nydus_canal->player, x, y, UnitId::ZergNydusCanal, 0, 0, 1, 0)) {
 			helper::play_worker_error_sound(nydus_canal, 0x358); // "You can't build there"
-			if (nydus_canal->order_queue_head != nullptr)
-			{
-				nydus_canal->user_action_flags |= 1;
-				prepare_for_next_order(nydus_canal);
-			}
-			else if (nydus_canal->unit_ai != nullptr)
-			{
-				nydus_canal->order_computer(OrderId::ComputerAI);
-			}
-			else
-			{
-				nydus_canal->order_computer(units_dat::ReturnToIdleOrder[nydus_canal->id]);
-			}
-		}
-		else
-		{ // 0045DCDB
+			nydus_canal->order_to_idle();
+		} else { // 0045DCDB
 			Unit* nydus_exit = helper::create_unit(UnitId::ZergNydusCanal, nydus_canal->order_target.pt.x, nydus_canal->order_target.pt.y, nydus_canal->player);
-			if (nydus_exit)
-			{
+			if (nydus_exit) {
 				helper::ai_training_overlord(nydus_exit, nydus_canal);
 			}
 			
-			if (nydus_exit == nullptr)
-			{
+			if (!nydus_exit) {
 				helper::display_last_network_error_for_player(nydus_canal->player);
-			}
-			else if (nydus_exit->id != UnitId::ZergNydusCanal)
-			{
+			} else if (nydus_exit->id != UnitId::ZergNydusCanal) {
 				// TODO: should probably remove, since we are already handling CCMU properly here
 				// we should test first though
 				helper::display_last_network_error_for_player(nydus_canal->player);
 				nydus_exit->remove();
-			}
-			else
-			{
+			} else {
 				helper::init_building(nydus_exit, 1);
 				// logically equivalent to a more complex original calculation
 				nydus_exit->hitpoints = (10 * units_dat::MaxHitPoints[nydus_exit->id]) / 100;
@@ -82,8 +59,7 @@ namespace hooks
 		}
 	}
 
-	u32 adjustFlags(u32 flags, u32 player)
-	{
+	u32 adjustFlags(u32 flags, u32 player) {
 		return 0xffffffff; // don't check any creep tile flags for nydus placement
 	}
 }

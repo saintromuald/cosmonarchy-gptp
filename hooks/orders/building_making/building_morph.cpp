@@ -27,9 +27,14 @@ namespace hooks
 		return bIsMorphing;
 	}
 
-	void orders_zerg_build_self(Unit* building)
-	{
-		BuildingModifier modifier = get_building_modifier(building, 0);
+	void orders_zerg_build_self(Unit* building) {
+		bool is_nydus = building->id == UnitId::ZergNydusCanal && building->building.nydus_exit;
+		BuildingModifier modifier = get_building_modifier(building, 0, is_nydus ? false : true);
+		if (is_nydus) {
+			BuildingModifier nydus_modifier = get_building_modifier(building->building.nydus_exit, 0, false);
+			modifier.decrease += nydus_modifier.decrease;
+			modifier.multiplier *= nydus_modifier.multiplier;
+		}
 
 		const s32 OPCWAL_PROGRESS_INCREASE = 16;
 		u16 buildingId;
@@ -241,15 +246,10 @@ namespace hooks
 			jump_to_5D718 = false;
 
 			building->remaining_build_time--;
-
-			if (modifier.decrease)
-			{
-				if (building->remaining_build_time > modifier.decrease)
-				{
+			if (modifier.decrease) {
+				if (building->remaining_build_time > modifier.decrease) {
 					building->remaining_build_time -= modifier.decrease;
-				}
-				else
-				{
+				} else {
 					building->remaining_build_time = 0;
 				}
 			}

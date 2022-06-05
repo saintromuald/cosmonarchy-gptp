@@ -1798,23 +1798,22 @@ namespace hooks
 			for (u32 i = 0; i < arr.size; i++)
 			{
 				Unit* target = arr.units[i];
+				UnitExt* target_ext = globals.get_unit_ext(target);
 				if (scbw::unit_id_is_tech(target->id)) {
-					continue;
-				}
-				switch (target->id) {
-					case UnitId::ProtossPylon:
-					case UnitId::ProtossPennant:
-					case UnitId::ProtossCrucible:
-					case UnitId::TerranSupplyDepot:
-					case UnitId::TerranBunker:
-					{
+					if (units_dat::GroupFlags[target->id].isTerran && !target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 						continue;
 					}
 				}
-				if (scbw::unit_id_is_gas_structure(target->id)) {
-					continue;
+				switch (target->id) {
+					case UnitId::TerranSupplyDepot:
+					case UnitId::TerranBunker:
+					case UnitId::TerranReservoir: {
+						if (!target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+							continue;
+						}
+					}
 				}
-				if (target->id == UnitId::ZergNydusCanal && target->building.nydus_exit) {
+				if (!(target->status & UnitStatus::Completed) && target->id != UnitId::ZergNydusCanal) {
 					continue;
 				}
 

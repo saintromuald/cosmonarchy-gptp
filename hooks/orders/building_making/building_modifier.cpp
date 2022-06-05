@@ -1,7 +1,7 @@
 #include "building_modifier.h"
 #include <globals.h>
 
-BuildingModifier get_building_modifier(Unit* building, Unit* builder) {
+BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool constructing) {
 	BuildingModifier modifier = {};
 	modifier.multiplier = 1;
 	if (!building) {
@@ -9,6 +9,9 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder) {
 	}
 
 	UnitExt* buildingExt = globals.get_unit_ext(building);
+	if (!constructing) {
+		modifier.multiplier *= 1 + 0.15 * buildingExt->unit_vectors[UnitVectorCrucibles].size();
+	}
 	if (builder && builder->id == UnitId::TerranTalos) {
 		modifier.multiplier *= 1.5;
 	}

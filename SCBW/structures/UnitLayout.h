@@ -185,7 +185,6 @@ enum ExtValueId
 	ValuePegasusMissilePos,
 	ValueSovereignCannonPos,
 	ValueAICloakGimmick,
-	ValueCrucible,
 	ValueKeskathalorMissilePos,
 	ValueAugurSafetyCheck,
 	ValuePenumbraLaserPos,
