@@ -82,7 +82,7 @@ struct Unit : public UnitLayout
 	u32 get_max_hp_raw() const;
 
 	u32 get_max_shields_in_game() const;
-	u32 getMaxShieldsRaw() const;
+	u32 get_max_shields_raw() const;
 
 
 	/// Returns the maximum distance of a weapon in pixels. The weapon is assumed to

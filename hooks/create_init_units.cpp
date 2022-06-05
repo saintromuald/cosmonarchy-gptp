@@ -350,7 +350,7 @@ namespace hooks
 					&& unit->id != UnitId::ResourceMineralFieldType3
 					&& unit->id != UnitId::ResourceVespeneGeyser) {
 					unit->hitpoints = unit->get_max_hp_raw();
-					unit->shields = unit->getMaxShieldsRaw();
+					unit->shields = unit->get_max_shields_raw();
 					unit->energy = unit->getMaxEnergy();
 
 					unit->status &= ~UnitStatus::Cloaked;

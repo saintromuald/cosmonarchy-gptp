@@ -171,7 +171,7 @@ u32 Unit::get_max_hp_raw() const
 	return units_dat::MaxHitPoints[this->id];
 }
 
-u32 Unit::getMaxShieldsRaw() const
+u32 Unit::get_max_shields_raw() const
 {
 	assert(this);
 	return units_dat::MaxShieldPoints[this->id] * 256;
@@ -508,16 +508,16 @@ void Unit::heal(s32 hitpoints, Unit* source, bool restore)
 void Unit::healShields(s32 shields, Unit* source, bool restore)
 {
 	assert(this);
-	if (this->shields == this->getMaxShieldsRaw()) // skip healing if max shields already
+	if (this->shields == this->get_max_shields_raw()) // skip healing if max shields already
 	{
 		return;
 	}
 
-	this->shields = std::min((u32)this->shields + shields, this->getMaxShieldsRaw());
+	this->shields = std::min((u32)this->shields + shields, this->get_max_shields_raw());
 	helper::update_unit_strength(this);
 
 	// If heals to full clear debuffs
-	if (this->shields == this->getMaxShieldsRaw() && restore)
+	if (this->shields == this->get_max_shields_raw() && restore)
 	{
 		scbw::restore_func(this);
 	}
@@ -536,7 +536,7 @@ void Unit::healOverflow(s32 amount, Unit* source, bool restore)
 void Unit::healUnderflow(s32 amount, Unit* source, bool restore)
 {
 	healShields(amount, source, restore);
-	s32 health = shields + amount - getMaxShieldsRaw();
+	s32 health = shields + amount - get_max_shields_raw();
 	if (health > 0)
 	{
 		heal(health, source, restore);
