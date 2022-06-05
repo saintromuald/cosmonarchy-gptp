@@ -602,7 +602,7 @@ namespace hooks
 			bullet->position.y + radius / 2
 		).for_each([&](Unit* unit)
 		{
-			scbw::applyParasite(unit, bullet->sourceUnit->player, bullet->sourceUnit);
+			scbw::apply_parasite(unit, bullet->sourceUnit->player, bullet->sourceUnit);
 		});
 	}
 

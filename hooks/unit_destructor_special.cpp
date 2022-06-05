@@ -240,7 +240,7 @@ void unit_destructor_special_cases(Unit* unit)
 			case UnitId::ProtossClarion:
 			{
 				// Phase Link
-				scbw::clearClarionLinks(unit);
+				scbw::clear_clarion_links(unit);
 			} break;
 			case UnitId::ProtossVassal:
 			{

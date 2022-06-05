@@ -37,7 +37,7 @@ struct Sprite
 
 	/// AKA fixSpritePosition @ 0x00497A10
 	/// Moves the sprite to the new position.
-	void setPosition(u16 x, u16 y);
+	void set_position(u16 x, u16 y);
 
 	/// Creates an image overlay over the main image of this sprite.
 	Image* create_overlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0);

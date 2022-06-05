@@ -22,23 +22,23 @@ namespace NewGameCommand
 {
 	enum
 	{
-		ShamanAction = 0x01,
-		CyprianAction = 0x02,
-		RelicAction = 0x03,
-		Aperture = 0x04,
-		PhaseLink = 0x05, // also Khaydarin Eclipse, obsolete
-		StarSovereignTheGriefOfAllGods = 0x06,
-		CreateUnit = 0x07,
-		// KhaydarinControl = 0x08, // obsolete
-		CarrierPrebuild = 0x09,
+		ShamanAction					= 0x01,
+		CyprianAction					= 0x02,
+		RelicAction						= 0x03,
+		Aperture						= 0x04,
+		PhaseLink						= 0x05, // also Khaydarin Eclipse, obsolete
+		StarSovereignTheGriefOfAllGods	= 0x06,
+		CreateUnit						= 0x07,
+	//	KhaydarinControl				= 0x08, // obsolete
+		CarrierPrebuild					= 0x09,
 
-		OverlordDamageField = 0xA,
-		OverlordTurbomode = 0xB,
-		OverlordCustomStim = 0xC,
-		GenericSwitchAbility = 0x0D,
-		Observance = 0xE,
-		IssueCTFCop2 = 0xF,
-		OverlordAltitudeChange = 0x10,
+		OverlordDamageField				= 0xA,
+		OverlordTurbomode				= 0xB,
+		OverlordCustomStim				= 0xC,
+		GenericSwitchAbility			= 0x0D,
+		Observance						= 0xE,
+		IssueCTFCop2					= 0xF,
+		OverlordAltitudeChange			= 0x10,
 	};
 }
 
@@ -46,41 +46,41 @@ namespace GptpId
 {
 	enum
 	{
-		NoOpcode,
-		AddCyprianSwitch,
-		SetCyprianStatus,
-		SetEscalation,
-		EmpowerHero,
-		BlindJudgeTimedEffect,
-		SetLastOrders,
-		PrepareToExplode,
-		ErasePersistingUnit,
-		SetGenericSwitch = 9,
-		SetGenericValue = 10,
-		AddGenericValue = 11,
-		LinkWarpRelayToStructure,
-		SetApertureStatus,
-		PlaceScreamerPool,
-		SetPhaseLinkStatus,
-		// PlaceClarionLinksForUnit,
-		// SpreadClarionDamage,
-		SetGenericTimer = 18,
-		// FreeMindControlled,
-		// SetMindControlLink,
-		SetMaelstromOffset = 21,
-		SetMatrixCaster,
-		SetSublimeShepherd,
-		SetGenericUnit,
-		DirgeImpale,
-		// ClearClarionLinks,
-		SetGenericVariable = 27,
-		SetSpriteData = 28,
+		NoOpcode					= 0,
+		AddCyprianSwitch			= 1,
+		SetCyprianStatus			= 2,
+		SetEscalation				= 3,
+		EmpowerHero					= 4,
+		BlindJudgeTimedEffect		= 5,
+		SetLastOrders				= 6,
+		PrepareToExplode			= 7,
+		ErasePersistingUnit			= 8,
+		SetGenericSwitch			= 9,
+		SetGenericValue				= 10,
+		AddGenericValue				= 11,
+		LinkWarpRelayToStructure	= 12,
+		SetApertureStatus			= 13,
+		PlaceScreamerPool			= 14,
+		SetPhaseLinkStatus			= 15,
+	//	PlaceClarionLinksForUnit	= 16,
+	//	SpreadClarionDamage			= 17,
+		SetGenericTimer				= 18,
+	//	FreeMindControlled			= 19,
+	//	SetMindControlLink			= 20,
+		SetMaelstromOffset			= 21,
+		SetMatrixCaster				= 22,
+		SetSublimeShepherd			= 23,
+		SetGenericUnit				= 24,
+		DirgeImpale					= 25,
+	//	ClearClarionLinks			= 26,
+		SetGenericVariable			= 27,
+		SetSpriteData				= 28,
 
 		// TODO
-		SetGuard = 29,
-		SetBaseLayout = 30,
+		SetGuard					= 29,
+		SetBaseLayout				= 30,
 
-		Void = 10005,
+		Void						= 10005,
 	};
 }
 
@@ -88,36 +88,36 @@ namespace AiseId
 {
 	enum
 	{
-		NoOpcodeAise,
-		SendCyprianValue,
-		RecvEscalationValue,
-		GetRelicByIndex,
-		HasRelic,
-		UpgradeLength,
-		HasMalice,
-		IsSuicidingScout,
-		IsBlowingUp,//unused currently
-		GenericSwitch = 9,
-		GenericValue = 10,
-		SendWarpRelayValue,
-		SendClarionValue,
-		SendStarcallerValue,//UNUSED
-		LinkedToWarpRelay,
-		//HasClarionLink,
-		GenericTimer = 16,
-		//SumMindControlCost,
-		GetLegionnaireMarks = 18,
-		GetMatrixCasterPlayer,
-		GetShepherds,
-		GetFlingyData,
-		GetSpriteData,
-		GetImageData,
-		ReadSamaseFile,
-		ReadSamaseFile_Ptr,
-		GenericUnit,
-		GenericVariable,
-		GetUnitData,
-		GetFlingyPtr,//for extender
+		NoOpcodeAise				= 0,
+		SendCyprianValue			= 1,
+		RecvEscalationValue			= 2,
+		GetRelicByIndex				= 3,
+		HasRelic					= 4,
+		UpgradeLength				= 5,
+		HasMalice					= 6,
+		IsSuicidingScout			= 7,
+		IsBlowingUp					= 8,
+		GenericSwitch				= 9,
+		GenericValue				= 10,
+		SendWarpRelayValue			= 11,
+		SendClarionValue			= 12,
+		SendStarSovereignValue		= 13,
+		LinkedToWarpRelay			= 14,
+	//	HasClarionLink				= 15,
+		GenericTimer				= 16,
+	//	SumMindControlCost			= 17,
+		GetLegionnaireMarks			= 18,
+		GetMatrixCasterPlayer		= 19,
+		GetShepherds				= 20,
+		GetFlingyData				= 21,
+		GetSpriteData				= 22,
+		GetImageData				= 23,
+		ReadSamaseFile				= 24,
+		ReadSamaseFile_Ptr			= 25,
+		GenericUnit					= 26,
+		GenericVariable				= 27,
+		GetUnitData					= 28,
+		GetFlingyPtr				= 29, // for extender
 	};
 }
 
@@ -125,25 +125,15 @@ namespace OverlayOffset
 {
 	enum
 	{
-		Orange = 0,
-		Green = 25,
-		Red = 50,
-		Blue = 75,
+		Orange	= 0,
+		Green	= 25,
+		Red		= 50,
+		Blue	= 75,
 	};
 }
 
 enum ExtValueId
 {
-	ValueArmorReduce,				// unused
-	ValueStarcallerSwitch,			// unused
-	ValueStarcallerCracking,		// unused
-	ValueWarpingIn,					// unused
-	ValueMalediction,				// unused
-	ValueWyvernSlow,				// unused
-	ValueLandGrabStart,				// unused
-	ValueUpgradeBoost,				// unused
-	ValueRemainingBuildTimeCopy,	// unused
-	ValueIonCannonSprite,			// unused
 	ValueWyvernLandGrabOn,
 	ValueAmitosis,
 	ValueSomaticImplants,
@@ -181,8 +171,6 @@ enum ExtValueId
 	ValueStellarEnforcement,
 	ValueAlkajeliskParasite,
 	ValueAlkajeliskParasitePlayer,
-	ValuePegasusLaserPos,
-	ValuePegasusMissilePos,
 	ValueSovereignCannonPos,
 	ValueAICloakGimmick,
 	ValueKeskathalorMissilePos,
@@ -205,8 +193,6 @@ enum ExtValueId
 	ValueDeconstructionPlayer,
 	ValueWorshipStack,
 	ValueMindControlOriginalPlayer,
-	ValueChasmalColonyArteries,		// unused
-	ValueAdaptiveAmitosis,			// unused
 	ValuePreMorphEnergy,
 	ValueGodsMadeFleshCast,
 	ValueGodsMadeFleshActive,

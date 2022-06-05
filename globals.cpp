@@ -8,7 +8,7 @@
 #include <Utils/captivating_claws.h>
 Globals globals;
 
-void Globals::refreshDebuggingInfo()
+void Globals::refresh_debugging_info()
 {
 	/*	
 	unitSpeedDbg = 0;
@@ -169,7 +169,6 @@ void Globals::aise_load(const char* ptr, u32 len)
 		return; // error
 	}
 
-	//scbw::print("Load....");
 	std::stringstream stream(std::stringstream::in | std::stringstream::out | std::stringstream::binary);
 	std::string str(ptr, len);
 	stream << str;
@@ -374,13 +373,13 @@ void Globals::unit_death(Unit* unit)
 	}
 }
 
-void ApplyIrradiate(Unit* unit, u8 player, u32 time)
+void apply_irradiate(Unit* unit, u8 player, u32 time)
 {
 	if (time == 0)
 	{
 		return;
 	}
-	//if not already irradiated and not burrowed, add the irradiate overlay
+	// if not already irradiated and not burrowed, add the irradiate overlay
 	if (unit->irradiate_timer == 0 && !(unit->status & UnitStatus::Burrowed))
 	{
 		u32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::get_overlay_offset(unit->id);
@@ -468,7 +467,7 @@ void Globals::frame_hook() {
 					UnitExt* revivedExt = globals.get_unit_ext(revived);
 					revived->hitpoints = 1;
 					revived->shields = 0;
-					revived->healOverflow(revivingUnit.hp);
+					revived->heal_overflow(revivingUnit.hp);
 					revived->energy = revivingUnit.energy;
 					revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 					revived->play_iscript_animation(IscriptAnimation::Unused1);
@@ -490,7 +489,7 @@ void Globals::frame_hook() {
 			effect->position = {effect->origin->position.x, effect->origin->position.y};
 			if (effect->thingy)
 			{
-				effect->thingy->sprite->setPosition(effect->origin->position.x, effect->origin->position.y);
+				effect->thingy->sprite->set_position(effect->origin->position.x, effect->origin->position.y);
 			}
 		}
 		const s32 framePeriod = 6;
@@ -532,7 +531,7 @@ void Globals::frame_hook() {
 						{
 							return;
 						}
-						unit->healUnderflow(2 * 256 / framePeriod, effect->source, true); // this math seems wrong
+						unit->heal_underflow(2 * 256 / framePeriod, effect->source, true); // this math seems wrong
 					});
 				} break;
 				case EffectId_CausticDischarge: {
@@ -593,7 +592,7 @@ void Globals::frame_hook() {
 						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 							return;
 						}
-						ApplyIrradiate(unit, effect->player, 15);
+						apply_irradiate(unit, effect->player, 15);
 					});
 				} break;
 				case EffectId_GroundZero: {
@@ -648,7 +647,7 @@ void Globals::frame_hook() {
 						effect->position.x + 1.5 * 32,
 						effect->position.y + 1 * 32
 					).for_each([&](Unit* unit) {
-						helper::PlagueProc(unit, 0);
+						helper::plague_proc(unit, 0);
 					});
 				} break;
 			}
@@ -804,7 +803,7 @@ void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 	multihit_bullets.push_back(gb);
 }
 
-void Globals::initRevive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town)
+void Globals::init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town)
 {
 	RevivingUnit revivingUnit = {};
 	revivingUnit.playerId = player;
@@ -850,7 +849,7 @@ bool Globals::spine_pair_exists(Unit* lurker, Unit* target)
 	return false;
 }
 
-void __declspec(naked) Globals_SaveStateWrapper()
+void __declspec(naked) globals_save_state_wrapper()
 {
 	static SaveState* state;
 	__asm {
@@ -866,7 +865,7 @@ void __declspec(naked) Globals_SaveStateWrapper()
 	}
 }
 
-void __declspec(naked) Globals_LoadStateWrapper()
+void __declspec(naked) globals_load_state_wrapper()
 {
 	static const char* pointer;
 	static u32 len;
@@ -884,8 +883,8 @@ void __declspec(naked) Globals_LoadStateWrapper()
 
 void injectGlobalsHooks()
 {
-	jump_patch(Globals_SaveStateWrapper, 0x004AAF23);
-	jump_patch(Globals_LoadStateWrapper, 0x004AAE94);
+	jump_patch(globals_save_state_wrapper, 0x004AAF23);
+	jump_patch(globals_load_state_wrapper, 0x004AAE94);
 	// const u8 retn = 0xc3;
 	// memoryPatch(0x004AAF23 + 5, &retn, 1);
 	// memoryPatch(0x004AAE94 + 5, &retn, 1);
@@ -893,7 +892,7 @@ void injectGlobalsHooks()
 
 namespace scbw
 {
-	void refreshDebuffs(Unit* unit)
+	void refresh_debuffs(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -1008,12 +1007,6 @@ namespace scbw
 		if (parentExt->units[UnitParasiteSource] != nullptr)
 		{
 			childExt->units[UnitParasiteSource] = parentExt->units[UnitParasiteSource];
-		}
-
-		// Inherit armor rend (generic)
-		if (parentExt->values[ValueArmorReduce] > 0)
-		{
-			childExt->values[ValueArmorReduce] = parentExt->values[ValueArmorReduce];
 		}
 
 		// Inherit Observance
@@ -1191,7 +1184,7 @@ namespace scbw
 	}
 
 	// TODO: update
-	bool isDebuffed(Unit* unit)
+	bool is_debuffed(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		return unitExt->timers[TimerMaledictionSlow]
@@ -1201,7 +1194,6 @@ namespace scbw
 			|| unitExt->timers[TimerCorrosiveTouch]
 			|| unitExt->values[ValueDeconstruction]
 			|| unitExt->values[ValueEntropyGauntlets]
-			|| unitExt->values[ValueArmorReduce]
 			|| unitExt->values[ValueKelvinMunitionsSlow]
 			|| unitExt->values[ValueSignifyStacks]
 			|| captivating_claws_get_timer(unit) > 0
@@ -1320,9 +1312,6 @@ namespace scbw
 			}
 		}
 
-		// Remove armor rend (generic)
-		unitExt->values[ValueArmorReduce] = 0;
-
 		// Remove Controlled Opposition
 		unitExt->values[ValueControlledOpposition] = 0;
 
@@ -1376,7 +1365,7 @@ namespace scbw
 		scbw::refresh_console();
 	}
 
-	void applyParasite(Unit* unit, u8 playerID, Unit* queen)
+	void apply_parasite(Unit* unit, u8 playerID, Unit* queen)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -1395,7 +1384,7 @@ namespace scbw
 		scbw::refresh_console();
 	}
 
-	bool isSlowed(Unit* unit)
+	bool is_slowed(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -1427,7 +1416,7 @@ namespace scbw
 		return false;
 	}
 
-	Unit** getSourceQueens(Unit* unit) // TODO: remove?
+	Unit** get_source_matraleths(Unit* unit) // TODO: remove?
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -1441,7 +1430,7 @@ namespace scbw
 		return queens;
 	}
 
-	void doDeconstructionDamage(Unit* unit, u16 weaponId, bool playSound)
+	void do_deconstruction_damage(Unit* unit, u16 weaponId, bool playSound)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -1456,14 +1445,14 @@ namespace scbw
 				return;
 			}
 		}
-		hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->player, 0, 1);
+		hooks::weapon_damage(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->player, 0, 1);
 		if (playSound)
 		{
 			helper::play_sound_from_unit(1372, unit, 1, 0);
 		}
 	}
 
-	Bullet* setMissileSourcePos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset, u32 fake_amount)
+	Bullet* set_missile_source_pos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset, u32 fake_amount)
 	{
 		if (unit->sprite == nullptr || unit->order_target.unit == nullptr)
 		{
@@ -1494,9 +1483,9 @@ namespace scbw
 		return bullet;
 	}
 
-	const u32 Func_RemoveOverlays2 = 0x00492370;
-	void removeoverlays2(u32 from, u32 to, Unit* unit)
+	void remove_overlays_2(u32 from, u32 to, Unit* unit)
 	{
+		const u32 Func_RemoveOverlays2 = 0x00492370;
 		__asm {
 			PUSHAD
 			MOV EAX, from
@@ -1507,7 +1496,7 @@ namespace scbw
 		}
 	}
 
-	void clearClarionLinks(Unit* unit)
+	void clear_clarion_links(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -1526,12 +1515,12 @@ namespace scbw
 		unitExt->unit_vectors[UnitVectorPhaseLinkClarions].clear();
 	}
 
-	void placeClarionLinks(Unit* unit)
+	void place_clarion_links(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		auto& link = unitExt->unit_vectors[UnitVectorPhaseLink];
 
-		clearClarionLinks(unit);
+		clear_clarion_links(unit);
 		const s32 radius = 3 * 32;
 		scbw::UnitFinder(
 			unit->get_x() - radius,
@@ -1548,7 +1537,7 @@ namespace scbw
 			{
 				return false;
 			}
-			if (!target->shieldsEnabled())
+			if (!target->shields_enabled())
 			{
 				return false;
 			}
@@ -1577,13 +1566,13 @@ namespace scbw
 		});
 	}
 
-	bool hasClarionLinks(Unit* unit)
+	bool has_clarion_links(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		return unitExt->unit_vectors[UnitVectorPhaseLinkClarions].size();
 	}
 
-	void linkDamage(Unit* unit, s32 damage, hooks::WeaponDamageData& data)
+	void link_damage(Unit* unit, s32 damage, hooks::WeaponDamageData& data)
 	{
 		hooks::WeaponDamageData newData = {
 			damage,
@@ -1599,18 +1588,18 @@ namespace scbw
 			true,
 			data.ignoreFlatArmor
 		};
-		hooks::weaponDamage_root(newData);
+		hooks::weapon_damage_root(newData);
 	}
 
-	void spreadClarionDamage(hooks::WeaponDamageData& data)
+	void spread_clarion_damage(hooks::WeaponDamageData& data)
 	{
 		Unit* unit = data.target;
-		auto links = getClarionLinks(unit); // has to be copy
+		auto links = get_clarion_links(unit); // has to be copy
 		links.erase(std::remove(links.begin(), links.end(), unit), links.end());
 		s32 damage = data.finalDamage;
 		if (links.size() == 0 || unit->shields < 256)
 		{
-			linkDamage(unit, damage, data);
+			link_damage(unit, damage, data);
 		}
 		else
 		{
@@ -1637,15 +1626,15 @@ namespace scbw
 					s32 unitDamage = std::min(divided, linkUnit->shields);
 					damage -= unitDamage;
 					data.direction = scbw::get_angle(damageOriginUnit->get_x(), damageOriginUnit->get_y(), linkUnit->get_x(), linkUnit->get_y());
-					linkDamage(linkUnit, unitDamage, data);
+					link_damage(linkUnit, unitDamage, data);
 				}
 				data.direction = oldDirection;
 			}
-			linkDamage(unit, damage, data);
+			link_damage(unit, damage, data);
 		}
 	}
 
-	std::vector<Unit*> getClarionLinks(Unit* unit)
+	std::vector<Unit*> get_clarion_links(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -1664,14 +1653,14 @@ namespace scbw
 		return std::vector<Unit*>(links.begin(), links.end());
 	}
 
-	void spreadSovrolethDamage(hooks::WeaponDamageData& data)
+	void spread_sovroleth_damage(hooks::WeaponDamageData& data)
 	{
 		Unit* unit = data.target;
 		EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
 		s32 damage = data.finalDamage / (sovroleths.size + 1);
 		for (u32 i = 0; i < sovroleths.size; ++i) {
-			linkDamage(sovroleths.units[i], damage, data);
+			link_damage(sovroleths.units[i], damage, data);
 		}
-		linkDamage(unit, damage, data);
+		link_damage(unit, damage, data);
 	}
 }

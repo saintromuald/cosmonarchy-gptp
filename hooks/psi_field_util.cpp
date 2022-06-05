@@ -107,7 +107,7 @@ void updatePsiFieldPosition(Unit* unit)
 	Sprite* psiField = unit->building.pylon_aura;
 	if (unit->sprite->position != psiField->position)
 	{
-		psiField->setPosition(unit->get_x(), unit->get_y());
+		psiField->set_position(unit->get_x(), unit->get_y());
 		helper::refreshSpriteData(psiField);
 		*canUpdatePoweredStatus = true;
 	}

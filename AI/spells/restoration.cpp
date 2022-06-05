@@ -30,7 +30,7 @@ namespace AI
 			if (target->get_current_life_ingame() <= 60)
 				return false;
 
-			if (scbw::isDebuffed(target))
+			if (scbw::is_debuffed(target))
 				return true;
 
 			return false;

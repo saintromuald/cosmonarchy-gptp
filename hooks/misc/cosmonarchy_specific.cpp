@@ -643,12 +643,12 @@ LABEL_18:
 				{
 					if (status == 0)
 					{
-						scbw::placeClarionLinks(unit);
+						scbw::place_clarion_links(unit);
 					}
 					else
 					{
-						scbw::placeClarionLinks(unit);
-						scbw::clearClarionLinks(unit);
+						scbw::place_clarion_links(unit);
+						scbw::clear_clarion_links(unit);
 					}
 				}
 				unit->update_speed();

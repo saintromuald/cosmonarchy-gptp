@@ -81,7 +81,7 @@ void Sprite::free()
 }
 
 
-void Sprite::setPosition(u16 x, u16 y)
+void Sprite::set_position(u16 x, u16 y)
 {
 	assert(this);
 	if (this->position.x == x && this->position.y == y)

@@ -6317,7 +6317,7 @@ namespace helper
 		}
 	}
 
-	void PlagueProc(Unit* unit, Unit* attacker) {
+	void plague_proc(Unit* unit, Unit* attacker) {
 		const u32 func_address = 0x004F4AF0;
 		__asm {
 			PUSHAD

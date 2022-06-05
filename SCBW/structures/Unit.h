@@ -181,8 +181,8 @@ struct Unit : public UnitLayout
 	void setHp(s32 hitpoints);
 	void heal(s32 hitpoints, Unit* source = nullptr, bool restore = true);
 	void healShields(s32 shields, Unit* source = nullptr, bool restore = true);
-	void healOverflow(s32 amount, Unit* source = nullptr, bool restore = true);
-	void healUnderflow(s32 amount, Unit* source = nullptr, bool restore = true);
+	void heal_overflow(s32 amount, Unit* source = nullptr, bool restore = true);
+	void heal_underflow(s32 amount, Unit* source = nullptr, bool restore = true);
 	void heal_energy(s32 energy, Unit* source = nullptr);
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.
@@ -286,7 +286,7 @@ struct Unit : public UnitLayout
 	/// that matches the @p imageId. If the image cannot be found, returns nullptr.
 	Image* get_overlay(u16 imageId) const;
 	s32 maxShields() const;
-	bool shieldsEnabled() const;
+	bool shields_enabled() const;
 
 	/// Makes the unit's sprite play the specified Iscript animation entry.
 	void play_iscript_animation(IscriptAnimation::Enum animation);

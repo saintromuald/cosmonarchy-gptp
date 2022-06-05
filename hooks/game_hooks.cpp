@@ -1238,7 +1238,8 @@ namespace hooks
 					if (unit->status & UnitStatus::Frozen) {
 						unit->unfreeze();
 					}
-					unit->remove_overlay(ImageId::TyrannyStun);
+					u32 offset = scbw::get_overlay_offset(unit->id, true);
+					unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
 				}
 				unitExt->timers[TimerTyrannyRecede] = 5 * 24;
 			}
@@ -1246,15 +1247,17 @@ namespace hooks
 				if (!(unit->status & UnitStatus::Frozen)) {
 					unit->freeze();
 				}
-				if (!unit->get_overlay(ImageId::TyrannyStun)) {
-					unit->sprite->create_top_overlay(ImageId::TyrannyStun);
+				u32 offset = scbw::get_overlay_offset(unit->id, true);
+				if (!unit->get_overlay(ImageId::TyrannyStunSmall + offset)) {
+					unit->sprite->create_top_overlay(ImageId::TyrannyStunSmall + offset);
 				}
 			}
 			if (!unitExt->timers[TimerTyrannyRecede]) {
 				if (unit->status & UnitStatus::Frozen) {
 					unit->unfreeze();
 				}
-				unit->remove_overlay(ImageId::TyrannyStun);
+				u32 offset = scbw::get_overlay_offset(unit->id, true);
+				unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
 				scbw::recede_mind_control(unit);
 				unitExt->values[ValueTyrannyPlayer] = 0;
 			}

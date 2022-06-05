@@ -128,7 +128,7 @@ struct Globals {
 		tbl_extender = false;
 		unitid_extender = false;
 
-		refreshDebuggingInfo();
+		refresh_debugging_info();
 	}
 
 	// non-serializable data (exists only temporarily in memory in wrapper/hook flow)
@@ -138,7 +138,7 @@ struct Globals {
 //	SaveState aise_save();
 	void aise_save();
 	void aise_load(const char* ptr, u32 len);
-	void refreshDebuggingInfo();
+	void refresh_debugging_info();
 	void reset();
 	void frame_hook();
 	void unit_death(Unit* unit);
@@ -153,7 +153,7 @@ struct Globals {
 	void add_multihit_empty_bullet(Bullet* bullet, s32 divider);
 	void add_bullet_multihit(Bullet* bullet, Unit* target);
 	void add_incremental_bullet_multihit(Bullet* bullet, Unit* target);
-	void initRevive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town);
+	void init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town);
 	void remove_multihit_bullet(Bullet* bullet);
 	s32 get_divider(Bullet* bullet);
 	void clear_lakizilisk(Unit* lurker);
@@ -161,7 +161,7 @@ struct Globals {
 	bool spine_pair_exists(Unit* lurker, Unit* target);
 };
 
-void ApplyIrradiate(Unit* unit, u8 player, u32 time);
+void apply_irradiate(Unit* unit, u8 player, u32 time);
 
 void injectGlobalsHooks();
 
@@ -174,20 +174,20 @@ namespace hooks
 
 namespace scbw
 {
-	Bullet* setMissileSourcePos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0, u32 fake_amount = 0);
-	bool isSlowed(Unit* unit);
-	void refreshDebuffs(Unit* unit);
+	Bullet* set_missile_source_pos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0, u32 fake_amount = 0);
+	bool is_slowed(Unit* unit);
+	void refresh_debuffs(Unit* unit);
 	void inherit_debuffs(Unit* parent, Unit* child);
-	bool isDebuffed(Unit* unit);
+	bool is_debuffed(Unit* unit);
 	void restore_func(Unit* unit);
-	void applyParasite(Unit* unit, u8 playerID, Unit* queen);
-	void doDeconstructionDamage(Unit* unit, u16 weaponId, bool playSound = true);
-	Unit** getSourceQueens(Unit* unit);
+	void apply_parasite(Unit* unit, u8 playerID, Unit* queen);
+	void do_deconstruction_damage(Unit* unit, u16 weaponId, bool playSound = true);
+	Unit** get_source_matraleths(Unit* unit);
 
-	void clearClarionLinks(Unit* unit);
-	void placeClarionLinks(Unit* unit);
-	bool hasClarionLinks(Unit* unit);
-	std::vector<Unit*> getClarionLinks(Unit* unit);
-	void spreadClarionDamage(hooks::WeaponDamageData& data);
-	void spreadSovrolethDamage(hooks::WeaponDamageData& data);
+	void clear_clarion_links(Unit* unit);
+	void place_clarion_links(Unit* unit);
+	bool has_clarion_links(Unit* unit);
+	std::vector<Unit*> get_clarion_links(Unit* unit);
+	void spread_clarion_damage(hooks::WeaponDamageData& data);
+	void spread_sovroleth_damage(hooks::WeaponDamageData& data);
 }

@@ -340,7 +340,7 @@ namespace hooks
 
 		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 		{
-			scbw::placeClarionLinks(unit); //clears, then places all clarion links
+			scbw::place_clarion_links(unit); //clears, then places all clarion links
 		}
 
 		if (unit->is_under_storm != 0)

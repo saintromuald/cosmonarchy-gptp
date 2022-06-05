@@ -257,7 +257,7 @@ namespace hooks
 					damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 					if (attackerExt->values[ValueDeconstruction])
 					{
-						scbw::doDeconstructionDamage(attacker, weaponId);
+						scbw::do_deconstruction_damage(attacker, weaponId);
 					}
 					target->damage_with(
 						weaponId,
@@ -278,7 +278,7 @@ namespace hooks
 				damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 				if (attackerExt->values[ValueDeconstruction])
 				{
-					scbw::doDeconstructionDamage(attacker, weaponId);
+					scbw::do_deconstruction_damage(attacker, weaponId);
 				}
 				target->damage_with(
 					weaponId,
@@ -386,7 +386,7 @@ namespace hooks
 		// spreads originally
 		if (bullet->attackTarget.unit != nullptr)
 		{
-			auto vec = scbw::getClarionLinks(bullet->attackTarget.unit);
+			auto vec = scbw::get_clarion_links(bullet->attackTarget.unit);
 			if (vec.size() != 0)
 			{
 				for (auto unit : vec)
@@ -429,7 +429,7 @@ namespace hooks
 					{
 						unit->energy = energyMax;
 						power -= diff;
-						unit->healOverflow(power, attacker);
+						unit->heal_overflow(power, attacker);
 					}
 					else
 					{

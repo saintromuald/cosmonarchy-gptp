@@ -56,7 +56,7 @@ s32 Unit::maxShields() const
 	return units_dat::MaxShieldPoints[this->id];
 }
 
-bool Unit::shieldsEnabled() const
+bool Unit::shields_enabled() const
 {
 	assert(this);
 	return units_dat::ShieldsEnabled[this->id];
@@ -148,7 +148,7 @@ u32 Unit::get_max_shields_in_game() const
 {
 	assert(this);
 
-	if (!this->shieldsEnabled())
+	if (!this->shields_enabled())
 	{
 		return 0;
 	}
@@ -523,7 +523,7 @@ void Unit::healShields(s32 shields, Unit* source, bool restore)
 	}
 }
 
-void Unit::healOverflow(s32 amount, Unit* source, bool restore)
+void Unit::heal_overflow(s32 amount, Unit* source, bool restore)
 {
 	heal(amount, source, restore);
 	s32 shields = this->hitpoints + amount - get_max_hp_raw();
@@ -533,7 +533,7 @@ void Unit::healOverflow(s32 amount, Unit* source, bool restore)
 	}
 }
 
-void Unit::healUnderflow(s32 amount, Unit* source, bool restore)
+void Unit::heal_underflow(s32 amount, Unit* source, bool restore)
 {
 	healShields(amount, source, restore);
 	s32 health = shields + amount - get_max_shields_raw();

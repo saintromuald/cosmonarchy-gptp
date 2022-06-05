@@ -1139,7 +1139,10 @@ enum Enum {
 	ArtisanShadow								= 1516,
 	EmpressBirth								= 1517,
 	OthstolethBirth								= 1518,
-	TyrannyStun									= 1519,
+	TyrannyStunSmall							= 1519,
+	TyrannyStunMedium							= 1520,
+	TyrannyStunLarge							= 1521,
+	TyrannyStunXLarge							= 1522,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,

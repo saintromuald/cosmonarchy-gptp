@@ -459,7 +459,7 @@ LABEL_55:
 			{
 				v3 = units_dat::ShieldsEnabled[(u16)v2->id] ? v2->shields >> 8 : 0;
 				if (v3 + ((v2->hitpoints + 255) >> 8) > 60
-					&& scbw::isDebuffed(v2))
+					&& scbw::is_debuffed(v2))
 				{
 					result = 1;
 				}

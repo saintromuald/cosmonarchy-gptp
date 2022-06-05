@@ -31,7 +31,7 @@ namespace
 			MOV attackingPlayerId, EAX
 			PUSHAD
 		}
-		hooks::weaponDamageHook(damage, target, weaponId, attacker, attackingPlayerId,
+		hooks::weapon_damage(damage, target, weaponId, attacker, attackingPlayerId,
 			direction, damageDivisor);
 		__asm {
 			POPAD

@@ -49,7 +49,7 @@ namespace hooks
 	static void weaponDamage_fatal(WeaponDamageData& data);
 
 	/// Hooks into the Unit::damage_with() function.
-	void weaponDamageHook(
+	void weapon_damage(
 		s32 damage,
 		Unit* target,
 		u8 weaponId,
@@ -74,7 +74,7 @@ namespace hooks
 			false,
 			false
 		};
-		weaponDamage_root(data);
+		weapon_damage_root(data);
 	}
 
 	void weaponDamageCustom(
@@ -103,10 +103,10 @@ namespace hooks
 			false,
 			ignoreFlatArmor
 		};
-		weaponDamage_root(data);
+		weapon_damage_root(data);
 	}
 
-	void weaponDamage_root(WeaponDamageData& data)
+	void weapon_damage_root(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
@@ -149,12 +149,12 @@ namespace hooks
 		if (!data.dontProcLinkDamage && data.target->id == UnitId::ZergSovroleth)
 		{
 			data.finalDamage /= 2;
-			scbw::spreadSovrolethDamage(data);
+			scbw::spread_sovroleth_damage(data);
 		}
-		else if (!data.dontProcLinkDamage && scbw::hasClarionLinks(data.target))
+		else if (!data.dontProcLinkDamage && scbw::has_clarion_links(data.target))
 		{
 			data.finalDamage /= 2;
-			scbw::spreadClarionDamage(data);
+			scbw::spread_clarion_damage(data);
 		}
 
 		// Hallucinations deal half damage
@@ -419,7 +419,7 @@ namespace hooks
 			case WeaponId::AlmaksaliskPiercingSpines:
 			{
 				// Almaksalisk - Flanking Spines
-				if (scbw::isDebuffed(data.target))
+				if (scbw::is_debuffed(data.target))
 				{
 					data.damageType = DamageType::IgnoreArmor;
 				}
@@ -616,7 +616,7 @@ namespace hooks
 					case WeaponId::KonviliskSowingSpines:
 					{
 						// Fertile Spines - Konvilisk behavior
-						scbw::applyParasite(data.target, data.attacker->player, data.attacker);
+						scbw::apply_parasite(data.target, data.attacker->player, data.attacker);
 					} break;
 					case WeaponId::GorgonArtificeBattery:
 					{
@@ -915,7 +915,7 @@ namespace hooks
 			data.finalDamage = 0;
 			data.target->hitpoints = 0;
 			data.target->shields = 0;
-			data.target->healOverflow(targetExt->values[ValueEmpressPassiveStacks] * 256 * 2.5, targetExt->units[UnitEmpressSource]);
+			data.target->heal_overflow(targetExt->values[ValueEmpressPassiveStacks] * 256 * 2.5, targetExt->units[UnitEmpressSource]);
 			data.target->remove_timer = 1 + targetExt->values[ValueEmpressPassiveStacks] * 24 * 0.25;
 			data.target->give_to(targetExt->values[ValueEmpressSourcePlayer]);
 			targetExt->values[ValueEmpressPassiveStacks] = 0;
@@ -961,7 +961,7 @@ namespace hooks
 				town = ai->town;
 			}
 
-			globals.initRevive(data.target->position.x, data.target->position.y, data.target->player, data.target->id, data.target->energy, hp, town);
+			globals.init_revive(data.target->position.x, data.target->position.y, data.target->player, data.target->id, data.target->energy, hp, town);
 		}
 
 		if (targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {

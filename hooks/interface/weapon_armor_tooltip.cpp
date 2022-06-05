@@ -399,7 +399,6 @@ namespace hooks
 		f32 bonusArmor = unit->getArmorBonus();
 
 		bonusArmor -= std::min(unitExt->values[ValueControlledOpposition], (u32)baseArmor);
-		bonusArmor -= unitExt->values[ValueArmorReduce];
 		bonusArmor -= unitExt->values[ValueObservanceRend];
 
 		const u8 transportSpace = units_dat::SpaceRequired[unit->id];
@@ -520,7 +519,6 @@ namespace hooks
 			unitExt->timers[TimerIonFieldSpeed], TimerType::Aise);
 
 		// Aise Value
-		addStatus(statuses, "Armor Reduction", unitExt->values[ValueArmorReduce], 0);
 		addStatus(statuses, "Cabeirus Feeders", ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
 		addStatus(statuses, "Nemean Reactors", unitExt->values[ValueNemeanReactorsStack], 0);
 		addStatus(statuses, "Sublime Shepherd", unitExt->values[ValueSublimeShepherd], 0);
@@ -547,10 +545,9 @@ namespace hooks
 		addStatus(statuses, "Swarming Omen", unitExt->values[ValueSwarmingOmenStatus] > 0, 1);
 		addStatus(statuses, "Protective Instincts", unitExt->values[ValueProtectiveInstinctsStatus] > 0, 1);
 		addStatus(statuses, "Making Gods from Flesh", unitExt->values[ValueGodsMadeFleshActive] > 0, 1);
-		addStatus(statuses, "Adaptive Amitosis", unitExt->values[ValueAdaptiveAmitosis] > 0, 1);
 		addStatus(statuses, "Blissful Embrace", unitExt->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
 		addStatus(statuses, "Kelvin Munitions", unitExt->values[ValueKelvinMunitionsSlow] > 0, 1);
-		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
+		addStatus(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
 
 		if (unitExt->units[UnitMindController])
 		{

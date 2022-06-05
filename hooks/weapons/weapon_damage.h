@@ -5,7 +5,7 @@ bool darkswarm_blocks_damage(Unit* target, u32 weaponId, u32 damageDivisor);
 
 namespace hooks {
 
-	void weaponDamageHook(
+	void weapon_damage(
 		s32 damage,
 		Unit* target,
 		u8 weaponId,
@@ -42,7 +42,7 @@ namespace hooks {
 		bool ignoreFlatArmor;
 	};
 
-	void weaponDamage_root(WeaponDamageData& data);
+	void weapon_damage_root(WeaponDamageData& data);
 
 	void apply_ensnare(Unit* a1);
 	u16 get_spores_overlay_id(Unit* target);
