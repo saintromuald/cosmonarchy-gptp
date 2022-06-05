@@ -106,7 +106,14 @@ static EntryArray index_search_rect(SearchIndex* index, Box32 rect) {
 	for (u32 x = x1; x < x2; x++) {
 		for (u32 y = y1; y < y2; y++) {
 			for (SearchEntry* entry = index->grid[x][y]; entry; entry = entry->next) {
-				bool is_fully_covered = false; // TODO: readd this
+				Box32 tile_rect = {
+					x * CELL_PX_SIZE,
+					y * CELL_PX_SIZE,
+					x * CELL_PX_SIZE + CELL_PX_SIZE,
+					y * CELL_PX_SIZE + CELL_PX_SIZE
+				};
+				bool is_fully_covered = is_rect_in_rect(tile_rect, rect);
+
 				if (is_fully_covered || is_point_in_rect(entry->position, rect) && entry_array.size < EntryLimit) {
 					entry_array_add(&entry_array, entry->data);
 				}
@@ -144,7 +151,12 @@ static EntryArray index_search_radial(SearchIndex* index, Point16 center, u32 ra
 
 	for (u32 x = x1; x < x2; x++) {
 		for (u32 y = y1; y < y2; y++) {
-			bool is_fully_covered = false; // TODO: readd this
+			Point16 tile_center = {
+				x * CELL_PX_SIZE + CELL_PX_SIZE / 2,
+				y * CELL_PX_SIZE + CELL_PX_SIZE / 2
+			};
+			bool is_fully_covered = scbw::get_distance_fast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
+
 			for (SearchEntry* entry = index->grid[x][y]; entry; entry = entry->next) {
 				if (is_fully_covered || scbw::get_distance_fast(center, entry->position) <= radius) {
 					entry_array_add(&entry_array, entry->data);

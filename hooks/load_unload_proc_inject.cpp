@@ -157,7 +157,7 @@ namespace
 			MOV transport, EAX
 			PUSHAD
 		}
-		result = hooks::get_first_loaded_worker();
+		result = hooks::get_first_loaded_worker(transport);
 		__asm {
 			POPAD
 			MOV EAX, result
