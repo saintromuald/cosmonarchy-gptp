@@ -425,17 +425,13 @@ void Globals::create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 
 	effects.push_back(effect);
 }
 
-void Globals::frame_hook()
-{
-	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
-	{
+void Globals::frame_hook() {
+	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j) {
 		UnitExt* ext = &unitExt[j];
-		if (ext->damage_receive_timer != -1) // don't increment past max value of u32
-		{
+		if (ext->damage_receive_timer != -1) { // don't increment past max value of u32
 			++ext->damage_receive_timer;
 		}
-		if (ext->damage_dealt_timer != -1) // don't increment past max value of u32
-		{
+		if (ext->damage_dealt_timer != -1) { // don't increment past max value of u32
 			++ext->damage_dealt_timer;
 		}
 		for (u32 i = 0; i < PlayerLimit; ++i) {
@@ -443,44 +439,32 @@ void Globals::frame_hook()
 				ext->ai_timer_avoid_targeting[i] -= 1;
 			}
 		}
-		for (u32 i = 0; i < TimerCount; ++i)
-		{
-			if (ext->timers[i] > 0)
-			{
+		for (u32 i = 0; i < TimerCount; ++i) {
+			if (ext->timers[i] > 0) {
 				ext->timers[i]--;
 			}
 		}
-		for (u32 i = 0; i < TimerVectorCount; ++i)
-		{
-			for (auto& timer : ext->timer_vectors[i])
-			{
-				if (timer > 0)
-				{
+		for (u32 i = 0; i < TimerVectorCount; ++i) {
+			for (auto& timer : ext->timer_vectors[i]) {
+				if (timer > 0) {
 					timer--;
 				}
 			}
-			ext->timer_vectors[i].erase(std::remove_if(ext->timer_vectors[i].begin(), ext->timer_vectors[i].end(), [&](u32& timer)
-			{
+			ext->timer_vectors[i].erase(std::remove_if(ext->timer_vectors[i].begin(), ext->timer_vectors[i].end(), [&](u32& timer) {
 				return timer == 0;
 			}), ext->timer_vectors[i].end());
 		}
 	}
 
 	// Lazarus Agent and Counter-Proposal
-	for (s32 i = 0; i < reviving_units.size(); ++i)
-	{
+	for (s32 i = 0; i < reviving_units.size(); ++i) {
 		auto& revivingUnit = reviving_units[i];
-		if (revivingUnit.timer > 0)
-		{
+		if (revivingUnit.timer > 0) {
 			revivingUnit.timer--;
-		}
-		else
-		{
-			if (playerTable[revivingUnit.playerId].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town)
-			{
+		} else {
+			if (playerTable[revivingUnit.playerId].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town) {
 				auto revived = scbw::create_unit_in_game(revivingUnit.unit_id, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
-				if (revived)
-				{
+				if (revived) {
 					UnitExt* revivedExt = globals.get_unit_ext(revived);
 					revived->hitpoints = 1;
 					revived->shields = 0;
@@ -499,12 +483,10 @@ void Globals::frame_hook()
 		}
 	}
 
-	for (s32 i = 0; i < effects.size(); i++)
-	{
+	for (s32 i = 0; i < effects.size(); i++) {
 		Effect* effect = &effects[i];
 		effect->current_time--;
-		if (effect->origin)
-		{
+		if (effect->origin) {
 			effect->position = {effect->origin->position.x, effect->origin->position.y};
 			if (effect->thingy)
 			{
@@ -512,15 +494,11 @@ void Globals::frame_hook()
 			}
 		}
 		const s32 framePeriod = 6;
-		if (effect->current_time % framePeriod == 1)
-		{
+		if (effect->current_time % framePeriod == 1) {
 			const f64 damageMultiplier = 256.0 * (f64)framePeriod / effect->max_time;
-			switch (effect->id)
-			{
-				case EffectId_StarSovereignTheGriefOfAllGods:
-				{
-					if (!effect->origin)
-					{
+			switch (effect->id) {
+				case EffectId_StarSovereignTheGriefOfAllGods: {
+					if (!effect->origin) {
 						effect->current_time = 0;
 						return;
 					}
@@ -530,31 +508,26 @@ void Globals::frame_hook()
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit)
-					{
+					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
 						unit->damage_with_custom(2500 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
 					});
 				} break;
-				case EffectId_SalamanderFire:
-				{
+				case EffectId_SalamanderFire: {
 					EntryArray unit_array = unit_search_radial({(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
 					unit_search_filter(&unit_array, nullptr, FilterNoAir);
 
-					for (u32 j = 0; j < unit_array.size; j++)
-					{
+					for (u32 j = 0; j < unit_array.size; j++) {
 						Unit* target = unit_array.units[j];
 						target->damage_with_custom(20 * damageMultiplier, DamageType::Concussive, effect->source, effect->player, 0, 1, true);
 					}
 				} break;
-				case EffectId_Criticality:
-				{
+				case EffectId_Criticality: {
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit)
-					{
+					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
 						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
 						{
 							return;
@@ -562,17 +535,14 @@ void Globals::frame_hook()
 						unit->healUnderflow(2 * 256 / framePeriod, effect->source, true); // this math seems wrong
 					});
 				} break;
-				case EffectId_CausticDischarge:
-				{
+				case EffectId_CausticDischarge: {
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit)
-					{
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
-						{
+					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 							return;
 						}
 						UnitExt* unitExt = globals.get_unit_ext(unit);
@@ -580,17 +550,14 @@ void Globals::frame_hook()
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 				} break;
-				case EffectId_IonField:
-				{
+				case EffectId_IonField: {
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit)
-					{
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
-						{
+					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 							return;
 						}
 						UnitExt* unitExt = globals.get_unit_ext(unit);
@@ -598,84 +565,67 @@ void Globals::frame_hook()
 						unitExt->timers[TimerIonFieldSpeed] = 2 * 24 + 1;
 					});
 				} break;
-				case EffectId_Hallucination:
-				{
+				case EffectId_Hallucination: {
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit)
-					{
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
-						{
+					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 							return;
 						}
 						UnitExt* unitExt = globals.get_unit_ext(unit);
-						if (!unitExt->timers[TimerHallucinating])
-						{
+						if (!unitExt->timers[TimerHallucinating]) {
 							scbw::apply_new_hallucination(unit, effect->player, effect->current_time);
-						}
-						else
-						{
+						} else {
 							unitExt->timers[TimerHallucinating] = effect->current_time;
 						}
 					});
 				} break;
-				case EffectId_Irradiate:
-				{
+				case EffectId_Irradiate: {
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
 						effect->position.y - effect->radius,
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit)
-					{
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
-						{
+					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
+						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 							return;
 						}
 						ApplyIrradiate(unit, effect->player, 15);
 					});
 				} break;
-				case EffectId_GroundZero:
-				{
+				case EffectId_GroundZero: {
 					const u32 delta = effect->max_time - effect->current_time;
 					const u32 stage = delta / framePeriod;
 
-					switch (stage)
-					{
-						case 0:
-						{
+					switch (stage) {
+						case 0: {
 							globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 						} break;
 						case 1:
-						case 2:
-						{
+						case 2: {
 							f32 d = stage * 2 * 32;
 							u32 count = stage * 8;
 
 							Vector32 newPos = effect->position;
 							newPos.x += d;
-							for (u32 j = 0; j < count; ++j)
-							{
+							for (u32 j = 0; j < count; ++j) {
 								newPos = scbw::rotate_point(effect->position, newPos, (360.0 / count));
 								globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 							}
 						} break;
 					}
 				} break;
-				case EffectId_DisruptionWeb:
-				{
-					if (!effect->origin)
-					{
+				case EffectId_DisruptionWeb: {
+					if (!effect->origin) {
 						effect->current_time = 0;
 						break;
 					}
 
 					UnitExt* parentExt = globals.get_unit_ext(effect->origin);
-					if (!parentExt->values[ValueDisruptionFieldOn])
-					{
+					if (!parentExt->values[ValueDisruptionFieldOn]) {
 						effect->current_time = 0;
 						break;
 					}
@@ -685,15 +635,13 @@ void Globals::frame_hook()
 						effect->position.y - 40,
 						effect->position.x + 60,
 						effect->position.y + 40
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit)
-					{
+					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
 						UnitExt* unitExt = globals.get_unit_ext(unit);
 						unitExt->timers[TimerUnderDisruptionWeb] = 8;
 						unit->status |= UnitStatus::CanNotAttack;
 					});
 				} break;
-				case EffectId_PlagueField:
-				{
+				case EffectId_PlagueField: {
 					scbw::UnitFinder(
 						effect->position.x - 1.5 * 32,
 						effect->position.y - 1 * 32,
@@ -705,10 +653,8 @@ void Globals::frame_hook()
 				} break;
 			}
 		}
-		if (effect->current_time == 0)
-		{
-			if (effect->thingy && effect->thingy->sprite)
-			{
+		if (effect->current_time == 0) {
+			if (effect->thingy && effect->thingy->sprite) {
 				effect->thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
 			}
 

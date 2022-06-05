@@ -62,7 +62,7 @@ one another. Attempt to group as many units as possible during the channel.
 #endif
 
 struct KitePositions {
-	bool enemies_found;
+	bool targets_found;
 	f32 biases[9];
 	u32 forward_index;
 	u32 backward_index;
@@ -88,6 +88,51 @@ const Vector32f BiasOrigins[KiteZoneCount] = {
 	{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
 };
 
+static s32 get_effect_value(Unit* unit, Effect* effect) {
+	s32 value = 0;
+	switch (effect->id) {
+		case EffectId_SalamanderFire: {
+			value -= 50;
+		} break;
+		case EffectId_StarSovereignTheGriefOfAllGods: {
+			value -= 1000;
+		} break;
+		case EffectId_IonField: {
+			if (unit->get_total_hp_plus_shields() > 50) {
+				value += 100;
+			} else {
+				value -= 100;
+			}
+		} break;
+		case EffectId_Criticality: {
+			value += 100;
+		} break;
+		case EffectId_CausticDischarge: {
+			if (unit->get_total_hp_plus_shields() > 50) {
+				value += 100;
+			} else {
+				value -= 100;
+			}
+		} break;
+		case EffectId_Irradiate: {
+			value -= 100;
+		} break;
+		case EffectId_Hallucination: {
+			value -= 100;
+		} break;
+		case EffectId_GroundZero: {
+			value -= 100;
+		} break;
+		case EffectId_DisruptionWeb: {
+			value -= 100;
+		} break;
+		case EffectId_PlagueField: {
+			value -= 100;
+		} break;
+	}
+	return value;
+}
+
 static u32 get_max_range(u32 unit_id) {
 	if (unit_id == UnitId::ProtossSolarion) {
 		return 8 * 32;
@@ -110,9 +155,10 @@ static bool is_melee_attacker(u32 unit_id) {
 }
 
 static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
-	u32 zone_value[KiteZoneCount] = {0};
+	u32 zone_enemy_value[KiteZoneCount] = {0};
+	u32 zone_effect_value[KiteZoneCount] = {0};
 	KitePositions result = {};
-	result.enemies_found = false;
+	result.targets_found = false;
 
 	for (int i = 0; i < KiteZoneCount; i++) {
 		Point16 search_pos = unit->position;
@@ -135,26 +181,36 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
 			}
 
 			if (strength && !(units_dat::BaseProperty[hostileUnit->id] & UnitProperty::Building)) {
-				zone_value[i] += strength;
-				result.enemies_found = true;
+				zone_enemy_value[i] += strength;
+				result.targets_found = true;
 			}
 		});
+
+		// EntryArray effects = effect_search_square(search_pos, hostile_group_radius);
+		// for (u32 i = 0; i < effects.size; ++i) {
+		// 	Effect* effect = effects.effects[i];
+		// 	u32 value = get_effect_value(unit, effect);
+		// 	if (value) {
+		// 		zone_effect_value[i] -= value;
+		// 		result.targets_found = true;
+		// 	}
+		// }
 	}
 
-	if (result.enemies_found) {
-		Vector32f biasVectors[KiteZoneCount] = {
+	if (result.targets_found) {
+		Vector32f bias_vectors[KiteZoneCount] = {
 			{-0.7, -0.7}, { 0, -1.1}, {+0.7, -0.7},
 			{-1.1,    0}, { 0,    0}, {+1.1,    0},	
 			{-0.7, +0.7}, { 0, +1.1}, {+0.7, +0.7},
 		};
 		for (int i = 0; i < KiteZoneCount; i++) {
 			result.biases[i] = 0;
-			biasVectors[i].x *= zone_value[i];
-			biasVectors[i].y *= zone_value[i];
+			bias_vectors[i].x *= zone_enemy_value[i];
+			bias_vectors[i].y *= zone_enemy_value[i];
 		}
 		for (int i = 0; i < KiteZoneCount; i++) {
 			for (int j = 0; j < KiteZoneCount; j++) {
-				result.biases[i] += scbw::getDotProduct(BiasOrigins[i], biasVectors[j]);
+				result.biases[i] += scbw::dot_product(BiasOrigins[i], bias_vectors[j]);
 			}
 			result.biases[i] /= KiteZoneCount;
 		}
@@ -588,7 +644,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				|| unit->id == UnitId::ProtossSolarion
 				|| unit->id == UnitId::ProtossAccantor) {
 				KitePositions result = get_kite_positions(unit, hostile_group_radius);
-				if (!result.enemies_found) {			
+				if (!result.targets_found) {			
 					local_group.for_each([&](Unit* local_unit) {
 						UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
 						local_unit_ext->timers[TimerAI_KitingCooldown] = 8;

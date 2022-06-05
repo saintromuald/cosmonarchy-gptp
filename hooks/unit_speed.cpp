@@ -151,7 +151,7 @@ namespace hooks
 
 				Vector32 diff = scbw::get_vector_between_points(enemy->position, unit->position);
 				Vector32f target = scbw::get_normalized_vector(diff);
-				f32 dot = scbw::getDotProduct(dir, target);
+				f32 dot = scbw::dot_product(dir, target);
 
 				if (dot < 0)
 				{

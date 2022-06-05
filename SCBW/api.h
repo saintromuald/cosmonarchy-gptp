@@ -208,7 +208,7 @@ namespace scbw
 		return { vector.x / dist, vector.y / dist };
 	}
 
-	inline f32 getDotProduct(Vector32f a, Vector32f b)
+	inline f32 dot_product(Vector32f a, Vector32f b)
 	{
 		return a.x * b.x + a.y * b.y;
 	}
