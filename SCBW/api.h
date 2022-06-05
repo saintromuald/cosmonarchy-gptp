@@ -208,6 +208,12 @@ namespace scbw
 		return { vector.x / dist, vector.y / dist };
 	}
 
+	inline Vector32f get_normalized_vector(Vector32f vector)
+	{
+		f32 dist = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
+		return { vector.x / dist, vector.y / dist };
+	}
+
 	inline f32 dot_product(Vector32f a, Vector32f b)
 	{
 		return a.x * b.x + a.y * b.y;

@@ -117,8 +117,9 @@ struct Globals {
 	UnitExt unitExt[UNIT_ARRAY_LENGTH];
 
 	inline UnitExt* get_unit_ext(Unit* unit) {
-		assert(unit);
-		return &unitExt[unit->get_unit_index()];
+		u32 index = unit->get_unit_index() - 1;
+		assert(unit && index >= 0 && index < UNIT_ARRAY_LENGTH);
+		return &unitExt[index];
 	}
 
 	Globals() {
