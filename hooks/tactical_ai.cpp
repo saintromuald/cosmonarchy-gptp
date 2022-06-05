@@ -810,7 +810,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							unit_ext->timers[TimerAI_KitingCooldown] = 24;
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: fall back", unit->getName());
-						} else if (prefer_kiting_forward || distance >= max_range * 1.5) {
+						} else if (prefer_kiting_forward || distance >= max_range * 2) {
 							unit_ext->timers[TimerAI_KitingCooldown] = 24;
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
@@ -821,17 +821,14 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 						unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					} break;
 					case KiterType_Ranged: {
-						if (!prefer_kiting_forward
-							&& (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2
-							|| hostile_advantage >= 2.0
-							|| distance <= max_range * 0.5)) {
+						if (!prefer_kiting_forward && (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || hostile_advantage >= 2.0)) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: fall back", unit->getName());
-						} else if (prefer_kiting_forward || distance > max_range * 2
+						} else if (prefer_kiting_forward || distance >= max_range * 2
 							|| (distance > max_range * 0.75 && hostile_advantage <= 0.5)) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
-						} else if (should_kite_back || hostile_advantage >= 1.0) {
+						} else if (should_kite_back || hostile_advantage >= 1.0 || distance <= max_range * 0.25) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: backward", unit->getName());
 						}
