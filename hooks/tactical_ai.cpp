@@ -549,14 +549,16 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			hostile_group_radius = 4 * 32;
 		}
 
-		scbw::UnitFinder local_group(
+		scbw::UnitFinder allies(
 			unit->get_x() - LocalGroupRadius,
 			unit->get_y() - LocalGroupRadius,
 			unit->get_x() + LocalGroupRadius,
 			unit->get_y() + LocalGroupRadius
 		);
-		local_group.filter(cosmonarchy_finder_match(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
-		local_group.filter([&](Unit* local_unit){ return unit_could_kite(local_unit); });
+		allies.filter(cosmonarchy_finder_match(unit, Flags::IncludingSelf | Flags::Ally | Flags::CanAttackOrCast, {unit->id}));
+
+		scbw::UnitFinder local_group = allies;
+		local_group.filter([&](Unit* local_unit){ return local_unit->player == unit->player && unit_could_kite(local_unit); });
 
 		if (unit_kiting_can_attack(unit)) {
 			local_group.for_each([&](Unit* local_unit) {
@@ -701,14 +703,14 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 						}
 					}
 
-					u32 local_group_value = 0;
-					local_group.for_each([&](Unit* local_unit) {
-						local_group_value += std::max(local_unit->ground_strength, local_unit->air_strength);
+					u32 allied_value = 0;
+					allies.for_each([&](Unit* local_unit) {
+						allied_value += std::max(local_unit->ground_strength, local_unit->air_strength);
 					});
 
-					const f32 confidence_factor = 8;
-					const u32 distance = get_distance_to_target(local_unit);
-					const u32 max_range = get_max_range(local_unit->id);
+					f32 confidence_factor = 1.25;
+					u32 distance = get_distance_to_target(local_unit);
+					u32 max_range = get_max_range(local_unit->id);
 					switch (get_kiter_type(local_unit->id)) {
 						case KiterType_Melee: {
 							if (local_unit->hitpoints < local_unit->get_total_hp_plus_shields() * 0.2) {
@@ -728,20 +730,20 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 						} break;
 						case KiterType_Ranged: {
 							if ((local_unit->hitpoints < local_unit->get_total_hp_plus_shields() * 0.2
-								|| local_group_value * confidence_factor < result.hostile_biases[result.forward_index]
+								|| allied_value * confidence_factor < result.hostile_biases[result.forward_index]
 								|| distance <= max_range * 0.5) && !target_has_min_range) {
 								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 								KITE_DEBUG("%s: fall back", local_unit->getName());
 							} else if (distance > max_range * 1.5
 								|| (distance > max_range * 1 && crowd_score > 9)
-								|| (distance > max_range * 0.75 && local_group_value > result.hostile_biases[result.forward_index] * confidence_factor)
+								|| (distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index] * confidence_factor)
 								|| target_has_min_range) {
 								local_unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 								KITE_DEBUG("%s: forward", local_unit->getName());
 							} else if (crowd_score > 9) {
 								local_unit->order_to(OrderId::Move, result.strafe_pos.x, result.strafe_pos.y);
 								KITE_DEBUG("%s: strafe", local_unit->getName());
-							} else if (local_group_value <= result.hostile_biases[result.forward_index] * confidence_factor) {
+							} else if (allied_value <= result.hostile_biases[result.forward_index] * confidence_factor) {
 								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 								KITE_DEBUG("%s: backward", local_unit->getName());
 							}
@@ -758,10 +760,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							local_unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 						} break;
 						case KiterType_Flagship: {
-							if (local_unit->hitpoints < local_unit->get_total_hp_plus_shields() * 0.2 || local_group_value * confidence_factor < result.hostile_biases[result.forward_index]) {
+							if (local_unit->hitpoints < local_unit->get_total_hp_plus_shields() * 0.2 || allied_value * confidence_factor < result.hostile_biases[result.forward_index]) {
 								local_unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 								KITE_DEBUG("%s: fall back", local_unit->getName());
-							} else if (distance > max_range * 1.5 || (distance > max_range * 0.75 && local_group_value > result.hostile_biases[result.forward_index] * confidence_factor)) {
+							} else if (distance > max_range * 1.5 || (distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index] * confidence_factor)) {
 								local_unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 								KITE_DEBUG("%s: forward", local_unit->getName());
 							}
