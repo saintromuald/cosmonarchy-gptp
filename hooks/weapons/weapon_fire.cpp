@@ -900,7 +900,7 @@ namespace hooks
 			}
 			else
 			{
-				if (helper::unitCanInfest(pSrc))
+				if (helper::unit_can_infest(pSrc))
 				{
 					Unit* unusedUnit = nullptr;
 					miscBool = helper::canBeInfested(unusedUnit, _pIterator) != 0; // unusedUnit is not used..?

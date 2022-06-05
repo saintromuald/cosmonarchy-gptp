@@ -799,7 +799,7 @@ LABEL_23:
 			}
 			return result;
 		}
-		if (helper::unitCanInfest(v2))
+		if (helper::unit_can_infest(v2))
 		{
 			v8 = helper::canBeInfested(v9, v1) != 0;
 		}
@@ -837,7 +837,7 @@ LABEL_34:
 			{
 				goto LABEL_76;
 			}
-			if (helper::isTargetVisible(v15, v2))
+			if (helper::is_target_visible(v15, v2))
 			{
 				v16 = v2->subunit;
 				if (!v16 || !(units_dat::BaseProperty[v16->id] & UnitProperty::Subunit))
@@ -979,7 +979,7 @@ LABEL_65:
 								}
 								return;
 							}
-							if (helper::isTargetVisible(unitTarget, unit))
+							if (helper::is_target_visible(unitTarget, unit))
 							{
 								Unit* subunit = unit->subunit;
 								if (!subunit || !(units_dat::BaseProperty[subunit->id] & UnitProperty::Subunit))

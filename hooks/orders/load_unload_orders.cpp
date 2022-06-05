@@ -199,8 +199,8 @@ namespace hooks
 					distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 					distance &= 0xFFFFFF00;
 					if (distance <= 0xCA000
-						&& helper::Ai_AreOnConnectedRegions(unit, unit->order_target.pt.x, unit->order_target.pt.y) != 0
-						&& helper::getFirstLoadedWorker(unit) == 0)
+						&& helper::ai_are_on_connected_regions(unit, unit->order_target.pt.x, unit->order_target.pt.y) != 0
+						&& helper::get_first_loaded_worker(unit) == 0)
 					{
 						s32 index = 0;
 						bool bStopLoop = false;
@@ -209,7 +209,7 @@ namespace hooks
 						Point16 pos = {0,0}; // unsure about this start value
 						while (!bStopLoop)
 						{
-							Unit* unitToUnload = helper::getLoadedUnitFromIndex(unit, index);
+							Unit* unitToUnload = helper::get_loaded_unit_from_index(unit, index);
 							if (unitToUnload != nullptr)
 							{
 								if (unitToUnload->id == UnitId::ProtossAccantor && bIsDistanceGreaterThanHaltDistance)
@@ -280,7 +280,7 @@ namespace hooks
 			}
 			else
 			{
-				if (!helper::Ai_FindTransport(unitVar, &unitVar->order_target.unit))
+				if (!helper::ai_find_transport(unitVar, &unitVar->order_target.unit))
 				{
 					scbw::print("toIdle / return");
 					helper::to_idle(unitVar);
@@ -308,7 +308,7 @@ namespace hooks
 				if (order_target->unit_ai)
 				{
 					scbw::print("has AI");
-					helper::_doOrder(order_target, OrderId::Move, order_target->sprite->position.x, order_target->sprite->position.y, 0);
+					helper::do_order(order_target, OrderId::Move, order_target->sprite->position.x, order_target->sprite->position.y, 0);
 				}
 			}
 			else
@@ -316,7 +316,7 @@ namespace hooks
 				scbw::print("target not within min range");
 				helper::prepend_order_targeting_unit(unitVar, order_target, 0x5Eu);
 				helper::orders_nothing_2(order_target);
-				if (helper::Ai_AreOnConnectedRegions(unitVar, order_target->sprite->position.x, order_target->sprite->position.y))
+				if (helper::ai_are_on_connected_regions(unitVar, order_target->sprite->position.x, order_target->sprite->position.y))
 				{
 					scbw::print("set waypoint");
 					helper::set_secondary_waypoint(unitVar, order_target->sprite->position.x, order_target->sprite->position.y);
@@ -340,7 +340,7 @@ namespace hooks
 			prepare_for_next_order(unit);
 		}
 		else if (!(unit->status & UnitStatus::InTransport)
-				&& helper::Ai_UpdateAttackTarget(unit, 1, 0, 0) == 0)
+				&& helper::ai_update_attack_target(unit, 1, 0, 0) == 0)
 		{ // 004E7BEB
 			Unit* target = unit->order_target.unit;
 			bool jump_to_E7C2B = false;
@@ -349,7 +349,7 @@ namespace hooks
 			bool bEndThere = false;
 			if (target == nullptr)
 			{
-				if (helper::Ai_FindTransport(unit, &target) == 0)
+				if (helper::ai_find_transport(unit, &target) == 0)
 				{
 					unit->order_to_idle();
 					bEndThere = true;
@@ -399,14 +399,14 @@ namespace hooks
 							target->order_to(OrderId::MoveUnload, unit->order_target.pt.x, unit->order_target.pt.y);
 							if (target->pAI != nullptr)
 							{
-								helper::_doOrder(target, OrderId::Move, target->sprite->position.x, target->sprite->position.y, false);
+								helper::do_order(target, OrderId::Move, target->sprite->position.x, target->sprite->position.y, false);
 							}
 						}
 						else
 						{ // 004E7C94
 							helper::prepend_order_targeting_unit(target, unit, OrderId::Pickup2);
 							prepare_for_next_order(target);
-							if (helper::Ai_AreOnConnectedRegions(unit, target->sprite->position.x, target->sprite->position.y) != 0)
+							if (helper::ai_are_on_connected_regions(unit, target->sprite->position.x, target->sprite->position.y) != 0)
 							{
 								helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 								helper::moveTowards(unit, target);
@@ -539,7 +539,7 @@ namespace hooks
 				}
 				else
 				{
-					helper::function_0043DF30(unit);
+					helper::ai_unload_failure(unit);
 				}
 			}
 			if (jump_to_E8191)
@@ -640,7 +640,7 @@ namespace hooks
 		{
 			do
 			{
-				loaded_unit = helper::getLoadedUnitFromIndex(transport, index);
+				loaded_unit = helper::get_loaded_unit_from_index(transport, index);
 				if (loaded_unit)
 				{
 					spaceRequired += units_dat::SpaceRequired[loaded_unit->id];

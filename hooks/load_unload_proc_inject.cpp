@@ -122,6 +122,48 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) iterate_loaded_units_wrapper() { // 004E6D00
+		static u32 result;
+		static Unit* transport;
+		static void* func;
+		static Unit* cargo;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV cargo, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV func, EAX
+			POP EAX
+			MOV transport, EAX
+			PUSHAD
+		}
+		result = hooks::iterate_loaded_units(transport, func, cargo);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) get_first_loaded_worker_wrapper() { // 004E6D90
+		static s32 result;
+		static Unit* transport;
+		__asm {
+			MOV transport, EAX
+			PUSHAD
+		}
+		result = hooks::get_first_loaded_worker();
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -135,5 +177,7 @@ namespace hooks
 	//	jump_patch(kill_units_at_location_proc_wrapper, 0x004C7E20, 1);
 	//	jump_patch(get_loaded_unit_from_index_wrapper,	0x004E6C40, 3);
 		jump_patch(get_first_loaded_unit_wrapper,		0x004E6C90, 0);
+	//	jump_patch(iterate_loaded_units_wrapper,		0x004E6D00, 2);
+	//	jump_patch(get_first_loaded_worker_wrapper,		0x004E6D90, 1);
 	}
 }

@@ -76,13 +76,13 @@ namespace hooks
 					{
 						oldPos.x = unit->order_target.pt.x;
 						oldPos.y = unit->order_target.pt.y;
-						helper::orderInterrupt(unit, unit->order_target.unit, unit->order_target.pt.x, unit->order_target.pt.y, OrderId::MedicHeal1);
+						helper::order_interrupt(unit, unit->order_target.unit, unit->order_target.pt.x, unit->order_target.pt.y, OrderId::MedicHeal1);
 
 						helper::move_to_target(newTarget, unit);
 						helper::unitOrderMoveToTargetUnit(unit, newTarget);
 						if (oldTarget != nullptr)
 						{
-							helper::function_474940(unit, oldTarget, OrderId::HealMove);
+							helper::update_target_something(unit, oldTarget, OrderId::HealMove);
 						}
 						else
 						{

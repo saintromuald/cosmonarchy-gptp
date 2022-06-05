@@ -192,52 +192,51 @@ namespace helper
 	s32 ai_add_to_region_military(AiRegion* region, s32 unit_id, s32 priority);
 	u32 ai_add_cost_to_needs(u32 unit_id, u32 playerId, u32 type);
 	u32 ai_add_spending_request(u16 unit_id, u32 player, u8 type, char priority, void* value);
-	u32 AI_AddBaseUnitSpendingRequest(u32 unit_id, u32 player, AiRegion* region, char priority);
 
 	// for AIRegion_GroupForAttack
 	u32 ai_recalculate_region_strength(AiRegion* region);
-	Unit* AI_TargetEnemyInRegion(AiRegion* region);
-	s32 AI_MoveMilitaryToDefend(AiRegion* region);
-	void AI_GetRegionMilitaryTypes(AiRegion* region, s32* hasGroundMilitary,
+	Unit* ai_target_enemy_in_region(AiRegion* region);
+	s32 ai_move_military_to_defend(AiRegion* region);
+	void ai_get_region_military_types(AiRegion* region, s32* hasGroundMilitary,
 		s32* cantAttackGround, s32* cantAttackAir);
-	s32 AI_CanTravelToRegion(AiRegion* region1, AiRegion* region2);
-	Unit* AI_PickAttackTarget_NoBuildings(AiRegion* region);
-	u32 AI_MoveMilitaryToOtherRegion(AiRegion* target, AiRegion* source, u32 pullUnitsNearRegion,
+	s32 ai_can_travel_to_region(AiRegion* region1, AiRegion* region2);
+	Unit* ai_pick_attack_target_no_buildings(AiRegion* region);
+	u32 ai_move_military_to_other_region(AiRegion* target, AiRegion* source, u32 pullUnitsNearRegion,
 		u32 sendPureSpellcasters, u32 dontSendFromBunkers);
-	AiTown* AI_IterateTownSomething(AiRegion* region);
-	u32 AI_AttackTimerDecrement(u32 player);
-	s32 AI_HasForcesMovingToAttack(u32 player);
+	AiTown* ai_iterate_town_something(AiRegion* region);
+	u32 ai_attack_timer_decrement(u32 player);
+	s32 ai_has_forces_moving_to_attack(u32 player);
 
 	// for ai_attack_manager
-	u16 PopulateRegionsWithOwn(char* regionData, u32 player);
-	void PopulateRegionsWithEnemy(u32 player, char* regionData);
-	s32 AI_GetNeighborRegionTypes(char* regionData);
-	void AI_FinishRegionAccessibility(char* regionData);
-	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
+	u16 populate_regions_with_own(char* regionData, u32 player);
+	void populate_regions_with_enemy(u32 player, char* regionData);
+	s32 ai_get_neighboring_region_types(char* regionData);
+	void ai_finish_region_accessibility(char* regionData);
+	s32 ai_set_attack_grouping_region(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
 		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
 	char ai_cancel_structure(Unit* structure);
 
-	bool unitCantSeeCloakedTarget(Unit* unit, Unit* target);												// 00401D60
-	bool unitCanInfest(Unit* unit);																			// 00402750
-	void AI_AttackUnit(Unit* unit);																			// 0043FFD0
-	Unit* findBestAttackTarget(Unit* unit);																	// 00443080
-	bool Ai_TryReturnHome(Unit* unit, u8 unknownByteValue);													// 00462EA0
-	void function_00465780(Unit* unit);																		// 00465780
+	bool unit_cant_see_cloaked_target(Unit* unit, Unit* target);												// 00401D60
+	bool unit_can_infest(Unit* unit);																			// 00402750
+	void ai_attack_unit(Unit* unit);																			// 0043FFD0
+	Unit* find_best_attack_target(Unit* unit);																	// 00443080
+	bool ai_try_return_home(Unit* unit, u8 unknownByteValue);													// 00462EA0
+	void set_interceptors_to_standby(Unit* unit);																		// 00465780
 	Order* remove_order_from_unit_queue(Order* order, Unit* unit);											// 004742D0
 	void prepend_order_targeting_unit(Unit* unit, Unit* target, u8 orderId);								// 00474A70
 	bool is_target_within_min_movement_range(Unit* unit, Unit* target, u32 range);							// 004763D0
-	bool function_00476610(Unit* unit, s32 x, s32 y);														// 00476610
-	bool isUnitInWeaponRange(Unit* unit, Unit* target);														// 00476870
-	void getWeaponBeginIscript(Unit* unit, IscriptAnimation::Enum anim);									// 00476ED0
-	void PickNewAttackTargetIfNeeded(Unit* unit);															// 00477510
-	void function_00477820(Unit* unit, u8 orderId);															// 00477820
-	bool function_00478370(Unit* unit, u8 orderId);															// 00478370
-	bool Order_AttackUnit_Main(Unit* unit);																	// 00478540
-	bool isUnitCritter(Unit* unit);																			// 0047B450
-	void moveToCollide(Unit* unit, Unit* target);														    // 00495400
+	bool ai_is_unreachable_position(Unit* unit, s32 x, s32 y);														// 00476610
+	bool is_unit_in_weapon_range(Unit* unit, Unit* target);														// 00476870
+	void get_weapon_begin_iscriptt(Unit* unit, IscriptAnimation::Enum anim);									// 00476ED0
+	void pick_new_target_if_needed(Unit* unit);															// 00477510
+	void attack_move_try_pick_target(Unit* unit, u8 orderId);															// 00477820
+	bool attack_move_react_to_attack(Unit* unit, u8 orderId);															// 00478370
+	bool attack_unit_main(Unit* unit);																	// 00478540
+	bool is_unit_critter(Unit* unit);																			// 0047B450
+	void move_to_collide(Unit* unit, Unit* target);														    // 00495400
 
-	bool isUnitVisible(Unit* unit);																			// 004E5DB0
-	bool isTargetVisible(Unit* unit, Unit* target);															// 004E5E30
+	bool is_unit_visible(Unit* unit);																			// 004E5DB0
+	bool is_target_visible(Unit* unit, Unit* target);															// 004E5E30
 	u8 get_right_click_action_order(Unit* unit);																// 004E5EA0
 	void set_resource_target(Unit* unit);															        // 004EB290
 	void make_to_hold_position(Unit* unit);																	// 004EB5B0
@@ -250,7 +249,7 @@ namespace helper
 	void check_unstack(Unit* unit);												                            // 0042D9A0
 	bool begin_building(Unit* unit);																			// 00467030
 	Unit* begin_gas_building(Unit* unit, u32 unit_id);															// 004678A0
-	void addOverlayBelowMain(Sprite* sprite, u32 imageId, u32 x_offset, u32 y_offset, u32 direction);		// 00498D70
+	void add_overlay_below_main(Sprite* sprite, u32 imageId, u32 x_offset, u32 y_offset, u32 direction);		// 00498D70
 	void replace_sprite_images(Sprite* sprite, u32 imageId, u32 imageDirection);								// 00499BB0
 	void display_last_network_error_for_player(u32 playerId);										                // 0049E530
 	void update_unit_strength(Unit* unit);												                    // 0049FA40
@@ -516,7 +515,7 @@ namespace helper
 	s32 getDirectionFromPoints(s32 a1, s32 a2, s32 a3, s32 a4);
 	Vector32 setResourceTarget(Unit* a1);
 
-	// for AI_AttackUnit
+	// for ai_attack_unit
 	void stimpackProc(Unit* unit);																									// 004554A0
 
 	// for genericRightClickUnitProc2
@@ -639,19 +638,19 @@ namespace helper
 	//// medic_orders
 	b32 AI_OrderHeal(Unit* unit, Unit* target);																						// 00463530
 	void function_4748E0(Unit* unit, s32 x, s32 y, u8 orderId);																		// 004748E0
-	void function_474940(Unit* unit, Unit* target, u8 orderId);																		// 00474940
-	void orderInterrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 orderId);														// 00474C30
+	void update_target_something(Unit* unit, Unit* target, u8 orderId);																		// 00474940
+	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 orderId);														// 00474C30
 	void unitOrderMoveToTargetUnit(Unit* unit, Unit* target);																		// 00479FE0
 
 	//// load_unload_orders
-	b32 Ai_AreOnConnectedRegions(Unit* unit, s32 x, s32 y);																			// 00438E70
-	void function_0043DF30(Unit* unit);																								// 0043DF30
+	b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y);																			// 00438E70
+	void ai_unload_failure(Unit* unit);																								// 0043DF30
 	void insert_order_before(Unit* unit, Order* order, u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId);					// 00474540
-	void _doOrder(Unit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
-	b32 Ai_UpdateAttackTarget(Unit* unit, u32 unk1, u32 unk2, u32 unk3);															// 00477160
-	Unit* getLoadedUnitFromIndex(Unit* transport, s32 index);																		// 004E6C40
-	b32 getFirstLoadedWorker(Unit* transport);																						// 004E6D90
-	b32 Ai_FindTransport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
+	void do_order(Unit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
+	b32 ai_update_attack_target(Unit* unit, u32 unk1, u32 unk2, u32 unk3);															// 00477160
+	Unit* get_loaded_unit_from_index(Unit* transport, s32 index);																		// 004E6C40
+	b32 get_first_loaded_worker(Unit* transport);																						// 004E6D90
+	b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
 	void load_unit_proc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
 	b32 unload_unit_proc(Unit* unit);																									// 004E7F70 (Hooked)
 	void issueOrderTargetingGround(Unit* unit, u8 orderId, s16 x, s16 y);															// 00475260
@@ -1295,7 +1294,7 @@ namespace helper
 
 	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply); // 00458800
 
-	s32 bw_print_icon(Bounds* bounds, FxnDrawIconData* data, u32 right, u32 bottom);			// 0041D090
+	s32 bw_print_icon(Bounds* bounds, FxnDrawIconData* data, u32 right, u32 bottom);						// 0041D090
 	u32 bw_print_xy(char* dest, s32 width, s32 height);														// 004202B0
 
 	bool unit_is_in_notify_range(Unit* unit);																// 004E5AD0
