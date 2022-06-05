@@ -63,6 +63,7 @@ one another. Attempt to group as many units as possible during the channel.
 
 #define MoveRadius (3 * 32)
 #define LocalGroupRadius (6 * 32)
+#define GroupRadius (12 * 32)
 #define CrowdCalcRadius (2 * 32)
 #define KiteZoneCount 9
 
@@ -425,13 +426,39 @@ static bool should_kite_back_against(Unit* unit, Unit* target) {
 	return false;
 }
 
-static KitePositions get_kite_positions(Unit* unit, u32 group_radius) {
+static bool unit_in_combat(Unit* unit, bool strict) {
+	UnitExt* unit_ext = globals.get_unit_ext(unit);
+	if (unit_ext->timers[TimerAI_KitingCombat]
+		|| unit_ext->damage_receive_timer < 4 * 24
+		|| unit_ext->damage_dealt_timer < 4 * 24
+		|| unit->main_order_id == OrderId::Patrol
+		|| unit->main_order_id == OrderId::AttackMove
+		|| unit->main_order_id == OrderId::AttackMoveComputer
+		|| unit->main_order_id == OrderId::AttackUnit
+		|| unit->main_order_id == OrderId::CarrierFight
+		|| unit->main_order_id == OrderId::ReaverFight) {
+		return true;
+	}
+
+	if (!strict) {
+		if (unit->main_order_id == OrderId::Move
+			|| unit->main_order_id == OrderId::MoveToMinerals
+			|| unit->main_order_id == OrderId::HarvestGas1
+			|| unit->main_order_id == OrderId::ComputerAI
+			|| unit->main_order_id == OrderId::ComputerReturn) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+static KitePositions get_kite_positions(Unit* unit) {
 	KitePositions result = {};
 	result.targets_found = false;
 	result.distance = get_max_range(unit->id);
 
-	Point16 search_pos = unit->position;
-	EntryArray hostiles = unit_search_square(search_pos, group_radius);
+	EntryArray hostiles = unit_search_square(unit->position, GroupRadius);
 	unit_search_filter(&hostiles, unit, FilterEnemy | FilterCanAttackOrCast);
 	for (u32 i = 0; i < hostiles.size; ++i) {
 		Unit* hostile = hostiles.units[i];
@@ -469,10 +496,10 @@ static KitePositions get_kite_positions(Unit* unit, u32 group_radius) {
 		}
 	}
 
-	EntryArray allies = unit_search_square(search_pos, group_radius);
+	EntryArray allies = unit_search_square(unit->position, GroupRadius);
 	unit_search_filter(&allies, unit, FilterAlly | FilterCanAttackOrCast);
 	for (u32 i = 0; i < allies.size; ++i) {
-		Unit* ally = hostiles.units[i];
+		Unit* ally = allies.units[i];
 
 		u32 strength = 0;
 		if (ally->air_strength > ally->ground_strength) {
@@ -483,7 +510,7 @@ static KitePositions get_kite_positions(Unit* unit, u32 group_radius) {
 		result.ally_strength += strength; 
 	}
 
-	EntryArray effects = effect_search_square(search_pos, group_radius);
+	EntryArray effects = effect_search_square(unit->position, GroupRadius);
 	for (u32 i = 0; i < effects.size; ++i) {
 		Effect* effect = effects.effects[i];
 		s32 value = get_effect_value(unit, effect);
@@ -531,22 +558,9 @@ static KitePositions get_kite_positions(Unit* unit, u32 group_radius) {
 	return result;
 }
 
-static bool unit_could_kite(Unit* unit)
-{
+static bool unit_could_kite(Unit* unit) {
 	UnitExt* unit_ext = globals.get_unit_ext(unit);
-	bool in_combat = unit_ext->damage_receive_timer < 4 * 24
-		|| unit_ext->damage_dealt_timer < 4 * 24
-		|| unit->main_order_id == OrderId::Patrol
-		|| unit->main_order_id == OrderId::AttackMove
-		|| unit->main_order_id == OrderId::AttackMoveComputer
-		|| unit->main_order_id == OrderId::AttackUnit
-		|| unit->main_order_id == OrderId::CarrierFight
-		|| unit->main_order_id == OrderId::ReaverFight
-		|| unit->main_order_id == OrderId::Move
-		|| unit->main_order_id == OrderId::MoveToMinerals
-		|| unit->main_order_id == OrderId::HarvestGas1
-		|| unit->main_order_id == OrderId::ComputerAI
-		|| unit->main_order_id == OrderId::ComputerReturn;
+	bool in_combat = unit_in_combat(unit, false);
 
 	if (unit->id == UnitId::ZergLakizilisk) {
 		if (!(unit->status & UnitStatus::Burrowed)) {
@@ -614,19 +628,44 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 	}
 
 	if (unit_could_kite(unit)) {
-		u32 group_radius = 12 * 32;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
-			group_radius = 4 * 32;
-		}
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker && !unit_ext->timers[TimerAI_KitingCombat]) {
+			EntryArray allies = unit_search_square(unit->position, GroupRadius);
+			unit_search_filter(&allies, unit, FilterAlly | FilterCanAttackOrCast);
+			u32 allied_combat_strength = 0;
+			for (u32 i = 0; i < allies.size; ++i) {
+				Unit* ally = allies.units[i];
+				if (unit_in_combat(ally, true)) {
+					u32 strength = 0;
+					if (ally->air_strength > ally->ground_strength) {
+						strength = ally->air_strength;
+					} else {
+						strength = ally->ground_strength;
+					}
+					allied_combat_strength += strength; 
+				}
+			}
 
-		scbw::UnitFinder local_group(
-			unit->get_x() - LocalGroupRadius,
-			unit->get_y() - LocalGroupRadius,
-			unit->get_x() + LocalGroupRadius,
-			unit->get_y() + LocalGroupRadius
-		);
-		local_group.filter(cosmonarchy_finder_match(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
-		local_group.filter([&](Unit* local_unit){ return unit_could_kite(local_unit); });
+			EntryArray hostiles = unit_search_square(unit->position, GroupRadius);
+			unit_search_filter(&hostiles, unit, FilterEnemy | FilterCanAttackOrCast);
+			u32 hostile_combat_strength = 0;
+			for (u32 i = 0; i < hostiles.size; ++i) {
+				Unit* hostile = hostiles.units[i];
+				if (unit_in_combat(hostile, true)) {
+					u32 strength = 0;
+					if (hostile->air_strength > hostile->ground_strength) {
+						strength = hostile->air_strength;
+					} else {
+						strength = hostile->ground_strength;
+					}
+					hostile_combat_strength += strength; 
+				}
+			}
+
+			if (allied_combat_strength >= hostile_combat_strength) {
+				unit_ext->values[ValueAI_PreventTargeting] = 0;
+				return;
+			}
+		}
 
 		if (unit_kiting_can_attack(unit)) {
 			if (get_kiter_type(unit->id) != KiterType_TargetingOnly) {
@@ -642,10 +681,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			Unit* best_target = 0;
 			s32 best_cost = INT_MAX;
 			scbw::UnitFinder(
-				unit->get_x() - group_radius,
-				unit->get_y() - group_radius,
-				unit->get_x() + group_radius,
-				unit->get_y() + group_radius
+				unit->get_x() - GroupRadius,
+				unit->get_y() - GroupRadius,
+				unit->get_x() + GroupRadius,
+				unit->get_y() + GroupRadius
 			).for_each([&](Unit* target) {
 				if (!target_match(target) || !unit->canAttackTarget(target, true)) {
 					return;
@@ -673,6 +712,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				} else {
 					unit_ext->values[ValueAI_PreventTargeting] = 1;
 				}
+				unit_ext->timers[TimerAI_KitingCombat] = 24;
 				if (unit->main_order_id != attack_order_id || unit->order_target.unit != best_target) {
 					unit->order_to(attack_order_id, best_target);
 					unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
@@ -684,6 +724,15 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				unit_ext->values[ValueAI_PreventTargeting] = 0;
 			}
 		} else if (unit_can_kite(unit)) {
+			scbw::UnitFinder local_group(
+				unit->get_x() - LocalGroupRadius,
+				unit->get_y() - LocalGroupRadius,
+				unit->get_x() + LocalGroupRadius,
+				unit->get_y() + LocalGroupRadius
+			);
+			local_group.filter(cosmonarchy_finder_match(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
+			local_group.filter([&](Unit* local_unit){ return unit_could_kite(local_unit); });
+
 			bool sync = false;
 			bool update_sync = false;
 			if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) {
@@ -705,7 +754,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			}
 
 			if (sync) {
-				KitePositions result = get_kite_positions(unit, group_radius);
+				KitePositions result = get_kite_positions(unit);
 
 				if (!result.targets_found) {			
 					local_group.for_each([&](Unit* local_unit) {
@@ -736,6 +785,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				unit_ext->timers[TimerAI_KitingLeash] = 0;
 				unit_ext->values[ValueAI_KitingSignal] = 0;
 				unit_ext->values[ValueAI_PreventTargeting] = 0;
+				unit_ext->timers[TimerAI_KitingCombat] = 24;
 
 				bool should_kite_back = result.backward_found;
 				bool prefer_kiting_forward = !unit_has_min_range(unit) && result.forward_found;
