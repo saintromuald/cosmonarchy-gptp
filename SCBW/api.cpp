@@ -2443,7 +2443,7 @@ namespace scbw
 		if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
 			return unit->id;
 		}
-		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] && !(unit->status & UnitStatus::InAir)) {
 			return UnitId::ZergHatchery;
 		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) {
