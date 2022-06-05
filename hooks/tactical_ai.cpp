@@ -353,10 +353,13 @@ static KiterType get_kiter_type(u32 unit_id) {
 }
 
 static s32 get_effect_value(Unit* unit, Effect* effect) {
+	UnitExt* unit_ext = globals.get_unit_ext(unit);
 	s32 value = 0;
+
 	bool flyer = unit->status & UnitStatus::InAir;
 	u32 total_hp = unit->get_total_hp_plus_shields();
 	f32 hp_percentage = total_hp / (f32)(unit->get_max_hp_ingame() + unit->get_max_shields_in_game());
+
 	KiterType type = get_kiter_type(unit->id);
 	switch (effect->id) {
 		case EffectId_SalamanderFire: {
@@ -371,7 +374,7 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 		} break;
 		case EffectId_IonField: {
 			if (!flyer) {
-				if (total_hp > 50 && hp_percentage > 0.5 && type != KiterType_Artillery) {
+				if (total_hp > 50 && hp_percentage > 0.5 && unit_ext->timers[TimerIonFieldSpeed] < 1 * 24) {
 					value += 100;
 				} else {
 					value -= 100;
@@ -385,7 +388,7 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 		} break;
 		case EffectId_CausticDischarge: {
 			if (!flyer) {
-				if (total_hp > 50 && hp_percentage > 0.5 && type == KiterType_Melee) {
+				if (total_hp > 50 && hp_percentage > 0.5 && type == KiterType_Melee && unit_ext->timers[TimerCausticDischargeSpeed] < 1 * 24) {
 					value += 100;
 				} else {
 					value -= 100;
