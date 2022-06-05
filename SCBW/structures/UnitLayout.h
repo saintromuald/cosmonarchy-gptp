@@ -333,6 +333,7 @@ enum ExtTimerId
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
 	TimerAI_KitingCooldown,
 	TimerAI_KitingLeash,
+	TimerAI_KitingSync,
 	
 	TimerCount,
 };
