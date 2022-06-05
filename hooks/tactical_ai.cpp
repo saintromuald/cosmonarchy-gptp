@@ -78,7 +78,8 @@ struct KitePositions {
 	f32 hostile_biases[KiteZoneCount];
 	f32 forward_biases[KiteZoneCount];
 	f32 effect_biases[KiteZoneCount];
-	f32 avoid_biases[KiteZoneCount];
+	f32 avoid_aoe_biases[KiteZoneCount];
+	f32 strafe_avoid_biases[KiteZoneCount];
 	u32 forward_index;
 	u32 backward_index;
 	u32 strafe_index;
@@ -473,12 +474,13 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
 		}
 	}
 
-	if (enemies_have_aoe) {
-		EntryArray nearby_allies = unit_search_square(search_pos, 3 * 32);
-		unit_search_filter(&nearby_allies, unit, FilterAlly | FilterCanAttackOrCast);
-		for (u32 i = 0; i < nearby_allies.size; ++i) {
-			Unit* ally = nearby_allies.units[i];
-			adjust_biases(result.avoid_biases, unit, ally->position, 25);
+	EntryArray nearby_allies = unit_search_square(search_pos, 3 * 32);
+	unit_search_filter(&nearby_allies, unit, FilterAlly | FilterCanAttackOrCast);
+	for (u32 i = 0; i < nearby_allies.size; ++i) {
+		Unit* ally = nearby_allies.units[i];
+		adjust_biases(result.strafe_avoid_biases, unit, ally->position, 25);
+		if (enemies_have_aoe) {
+			adjust_biases(result.avoid_aoe_biases, unit, ally->position, 25);
 		}
 	}
 
@@ -505,19 +507,19 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
 		s32 strafe_scores[KiteZoneCount] = {};
 
 		for (u32 i = 0; i < KiteZoneCount; i++) {
-			s32 forward_score = result.effect_biases[i] + result.hostile_biases[i] - result.avoid_biases[i] + result.forward_biases[i];
+			s32 forward_score = result.effect_biases[i] + result.hostile_biases[i] - result.avoid_aoe_biases[i] + result.forward_biases[i];
 			if (forward_score > forward_scores[result.forward_index]) {
 				result.forward_index = i;
 				forward_scores[i] = forward_score;
 			}
 
-			s32 backward_score = result.effect_biases[i] - result.hostile_biases[i] - result.avoid_biases[i];
+			s32 backward_score = result.effect_biases[i] - result.hostile_biases[i] - result.avoid_aoe_biases[i];
 			if (backward_score > backward_scores[result.backward_index]) {
 				result.backward_index = i;
 				backward_scores[i] = backward_score;
 			}
 
-			s32 strafe_score = result.effect_biases[i] - fabs(result.hostile_biases[i]) - result.avoid_biases[i];
+			s32 strafe_score = result.effect_biases[i] - fabs(result.hostile_biases[i]) - result.avoid_aoe_biases[i] - result.strafe_avoid_biases[i];
 			if (strafe_score > strafe_scores[result.strafe_index]) {
 				result.strafe_index = i;
 				strafe_scores[i] = strafe_score;
