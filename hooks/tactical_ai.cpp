@@ -787,7 +787,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							unit_ext->timers[TimerAI_KitingCooldown] = 24;
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: fall back", unit->getName());
-						} else if (prefer_kiting_forward || distance <= max_range * 2) {
+						} else if (prefer_kiting_forward || (distance >= max_range * 0.75 && distance <= max_range * 2)) {
 							unit_ext->timers[TimerAI_KitingCooldown] = 24;
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
@@ -807,10 +807,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							|| distance <= max_range * 0.5)) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: fall back", unit->getName());
-						} else if (prefer_kiting_forward
+						} else if ((prefer_kiting_forward
 							|| distance > max_range * 1.5
 							|| (distance > max_range * 1 && crowd_score > 9)
-							|| (distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index])) {
+							|| (distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index] && !should_kite_back))) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
 						} else if (crowd_score > 9) {
@@ -837,7 +837,8 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							&& (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || allied_value <= result.hostile_biases[result.forward_index])) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: fall back", unit->getName());
-						} else if (prefer_kiting_forward || distance > max_range * 1.5 || (distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index])) {
+						} else if (prefer_kiting_forward || distance > max_range * 1.5
+							|| (distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index] && !should_kite_back)) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
 						} else if (should_kite_back) {
