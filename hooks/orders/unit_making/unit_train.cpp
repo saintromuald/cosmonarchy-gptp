@@ -1,6 +1,7 @@
 #include "unit_train.h"
 #include <SCBW/api.h>
 #include "hooks/cosmonarchy_finder.h"
+#include "hooks/orders/spells/hallucination_spell.h"
 #include "globals.h"
 #ifndef TRUE
 #define TRUE 1
@@ -16,52 +17,37 @@ namespace hooks
 		return unit->build_queue[(slot + unit->build_queue_slot) % 5] < UnitId::None;
 	}
 
-	void secondaryOrd_TrainFighter(Unit* unit)
-	{
-		if (unit->id == UnitId::ProtossSolarion
-			|| unit->id == UnitId::ProtossAccantor)
-		{
-			if (unit->secondary_order_state == 0 || unit->secondary_order_state == 1)
-			{
-				if (unit->build_queue[unit->build_queue_slot] == UnitId::None)
-				{
+	void secondaryOrd_TrainFighter(Unit* unit) {
+		if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) {
+			if (unit->secondary_order_state == 0 || unit->secondary_order_state == 1) {
+				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {
 					unit->secondary_order_state = 3;
-					unit->current_build_unit = nullptr;
-				}
-				else
-				{
-					Unit* builtUnit;
-					if (unit->secondary_order_state == 0)
-					{
-						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 1);
+					unit->current_build_unit = 0;
+				} else {
+					Unit* built_unit = 0;
+					if (unit->secondary_order_state == 0) {
+						built_unit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 1);
+					} else {
+						built_unit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 0);
 					}
-					else
-					{
-						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 0);
-					}
-					unit->current_build_unit = builtUnit;
-					if (builtUnit == nullptr)
-					{
+					unit->current_build_unit = built_unit;
+					if (!built_unit) {
 						unit->secondary_order_state = 1;
-					}
-					else
-					{
-						builtUnit->hangar_unit.parent = unit;
+					} else {
+						built_unit->hangar_unit.parent = unit;
 						unit->secondary_order_state = 2;
 					}
 				}
-			}
-			else if (unit->secondary_order_state == 2)
-			{
-				Unit* builtUnit = unit->current_build_unit;
-				u32 hpGain;
-				if (builtUnit != nullptr)
-				{
-					hpGain = helper::getHPGainForRepair(builtUnit);
-					helper::progress_build(builtUnit, hpGain, FALSE);
-					if (builtUnit->status & UnitStatus::Completed)
-					{
-						helper::addHangarUnit(unit, builtUnit);
+			} else if (unit->secondary_order_state == 2) {
+				Unit* built_unit = unit->current_build_unit;
+				if (built_unit) {
+					u32 hpGain = helper::getHPGainForRepair(built_unit);
+					helper::progress_build(built_unit, hpGain, FALSE);
+					if (built_unit->status & UnitStatus::Completed) {
+						helper::add_hangar_unit(unit, built_unit);
+						if (unit->status & UnitStatus::IsHallucination) {
+							apply_hallucination(built_unit, unit);
+						}
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
 						unit->build_queue_slot++;
 
@@ -70,35 +56,25 @@ namespace hooks
 							unit->build_queue_slot = 0;
 						}
 						scbw::refresh_console();
-						unit->current_build_unit = nullptr;
+						unit->current_build_unit = 0;
 						unit->secondary_order_state = 0;
 					}
-				}
-				else
-				{
+				} else {
 					scbw::refresh_console();
-					unit->current_build_unit = nullptr;
+					unit->current_build_unit = 0;
 					unit->secondary_order_state = 0;
 				}
-			}
-			else if (unit->secondary_order_state == 3)
-			{
-				if (unit->id == UnitId::ProtossAccantor)
-				{
+			} else if (unit->secondary_order_state == 3) {
+				if (unit->id == UnitId::ProtossAccantor) {
 					unit->secondary_order_state = 4;
-				}
-				else
-				{
+				} else {
 					Unit* in_hangar_child = unit->unit_with_hangar.in_hangar_child;
-					if (in_hangar_child != nullptr)
-					{
+					if (in_hangar_child) {
 						s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
-						while (in_hangar_child != nullptr && in_hangar_child->hitpoints >= hpInterceptor)
-						{
+						while (in_hangar_child && in_hangar_child->hitpoints >= hpInterceptor) {
 							in_hangar_child = in_hangar_child->hangar_unit.hangar_link.next;
 						}
-						if (in_hangar_child != nullptr)
-						{
+						if (in_hangar_child) {
 							in_hangar_child->setHp(in_hangar_child->hitpoints + 128);
 						}
 					}
@@ -146,19 +122,19 @@ namespace hooks
 			}
 			else if (unit->secondary_order_state == 2)
 			{
-				Unit* builtUnit = unit->current_build_unit;
-				if (builtUnit != nullptr)
+				Unit* built_unit = unit->current_build_unit;
+				if (built_unit != nullptr)
 				{
-					UnitExt* builtUnitExt = globals.get_unit_ext(builtUnit);
-					u32 hpGain = helper::getHPGainForRepair(builtUnit);
+					UnitExt* builtUnitExt = globals.get_unit_ext(built_unit);
+					u32 hpGain = helper::getHPGainForRepair(built_unit);
 					bool extraBuild = false;
 					if (builtUnitExt->values[ValueCrucible] == 0)
 					{
 						for (Unit* unit : unitExt->unit_vectors[UnitVectorCrucibles])
 						{
 							builtUnitExt->values[ValueCrucible] = 18; // 6 is ~115%, 18 should be ~105%
-							helper::progress_build(builtUnit, hpGain, TRUE);
-							if (builtUnit->status & UnitStatus::Completed)
+							helper::progress_build(built_unit, hpGain, TRUE);
+							if (built_unit->status & UnitStatus::Completed)
 							{
 								extraBuild = true;
 							}
@@ -168,23 +144,23 @@ namespace hooks
 					{
 						builtUnitExt->values[ValueCrucible]--;
 					}
-					if (extraBuild || helper::progress_build(builtUnit, hpGain, TRUE))
+					if (extraBuild || helper::progress_build(built_unit, hpGain, TRUE))
 					{
-						if (builtUnit->status & UnitStatus::Completed)
+						if (built_unit->status & UnitStatus::Completed)
 						{
 							u32 count = 1;
-							Unit* builtUnits[2] = {builtUnit, nullptr};
-							if (units_dat::BaseProperty[builtUnit->id] & UnitProperty::TwoUnitsIn1Egg)
+							Unit* builtUnits[2] = {built_unit, nullptr};
+							if (units_dat::BaseProperty[built_unit->id] & UnitProperty::TwoUnitsIn1Egg)
 							{
 								count = 2;
-								builtUnits[1] = scbw::create_unit_ingame(builtUnit->id, builtUnit->player, builtUnit->position.x - 32, builtUnit->position.y, unit, true);
+								builtUnits[1] = scbw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
 							}
 
 							for (u32 i = 0; i < count; i++)
 							{
 								Unit* newUnit = builtUnits[i];
 								helper::ai_training_unit(newUnit, unit);
-								if (builtUnit->id == UnitId::TerranNuclearMissile)
+								if (built_unit->id == UnitId::TerranNuclearMissile)
 								{
 									helper::hide_and_disable_unit(newUnit);
 								}
@@ -239,16 +215,18 @@ namespace hooks
 				if (jump_to_685D8)
 				{
 					// Solarion - start with 12 interceptors
-					if (builtUnit != nullptr && builtUnit->id == UnitId::ProtossSolarion)
+					if (built_unit && built_unit->id == UnitId::ProtossSolarion)
 					{
-						s32 interceptors = 12;
-						u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
-						buf[0] = 0x99; // new general command
-						buf[1] = NewGameCommand::CarrierPrebuild;
-						buf[2] = interceptors;
-						buf[3] = *ACTIVE_PLAYER_ID;
-						memcpy(&buf[4], &builtUnit, 4);
-						helper::queue_game_command(buf, 0xc);
+						scbw::create_hangar_units(built_unit, 20, UnitId::ProtossSteward);
+						
+						// s32 interceptors = 12;
+						// u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
+						// buf[0] = 0x99; // new general command
+						// buf[1] = NewGameCommand::CarrierPrebuild;
+						// buf[2] = interceptors;
+						// buf[3] = *ACTIVE_PLAYER_ID;
+						// memcpy(&buf[4], &built_unit, 4);
+						// helper::queue_game_command(buf, 0xc);
 					}
 					scbw::refresh_console();
 					unit->current_build_unit = nullptr;

@@ -7,7 +7,7 @@ namespace hooks
 	void orders_Hallucination1(Unit* unit)
 	{
 		s32 sightRange = unit->get_sight_range(true);
-		u16 techCost;
+		u16 techCost = 0;
 		if (helper::spell_order(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899))
 		{
 			s32 counter = 1;
@@ -32,74 +32,56 @@ namespace hooks
 				unit->spend_unit_energy(techCost);
 			}
 
-			if (unit->order_queue_head != nullptr)
-			{
-				unit->user_action_flags |= 1;
-				prepare_for_next_order(unit);
+			unit->order_to_idle();
+		}
+	}
+
+	void apply_hallucination(Unit* unit, Unit* source) {
+		u16 remove_timer = unit->id == UnitId::ZergRilirokor || unit->id == UnitId::ZergRililisk ? 1800 : 0;
+		helper::apply_hallucination_stats(unit);
+		if (unit->status & UnitStatus::IsHallucination) {
+			remove_timer = 1350;
+		}
+		if (source->remove_timer && source->remove_timer < remove_timer) {
+			remove_timer = source->remove_timer;
+		}
+		if (!unit->remove_timer || remove_timer < unit->remove_timer)
+		{
+			unit->remove_timer = remove_timer;
+		}
+		if (source) {
+			if (unit->id == UnitId::ProtossAccantor) {
+				//helper::hallucinate_scarabs(unit, source);
+
+				u32 count = source->unit_with_hangar.in_hangar_count;
+				for (u32 i = 0; i < count; ++i) {
+					Unit* plasma_shell = scbw::create_hangar_unit(unit, UnitId::ProtossPlasmaShell);
+					apply_hallucination(plasma_shell, unit);
+				}
 			}
-			else if (unit->unit_ai != nullptr)
-			{
-				unit->order_computer(OrderId::ComputerAI);
-			}
-			else
-			{
-				unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+			if (unit->id == UnitId::ProtossSolarion) {
+				u32 count = source->unit_with_hangar.in_hangar_count + source->unit_with_hangar.out_hangar_count;
+				for (u32 i = 0; i < count; ++i) {
+					Unit* steward = scbw::create_hangar_unit(unit, UnitId::ProtossSteward);
+					apply_hallucination(steward, unit);
+				}
 			}
 		}
 	}
 
 	// Hooked to rule out AI issues -- Pr0nogo
-	Unit* createHallucination(Unit* source, s32 player)
-	{
-		if (units_dat::BaseProperty[source->id] & UnitProperty::Building)
-		{
-			return nullptr;
+	Unit* createHallucination(Unit* source, s32 player) {
+		if (units_dat::BaseProperty[source->id] & UnitProperty::Building || source->id == UnitId::ProtossSteward || source->id == UnitId::ProtossPlasmaShell) {
+			return 0;
 		}
-
-		Unit* result = nullptr;
-		Unit* halUnit = helper::create_unit(source->id, source->sprite->position.x, source->sprite->position.y, player);
-		if (halUnit)
-		{
-			u16 halTimer = 0;
-			helper::apply_hallucination_stats(halUnit);
-			if (halUnit->status & UnitStatus::IsHallucination)
-			{
-				halTimer = 1350;
-			}
-			else
-			{
-				halTimer = (halUnit->id != UnitId::ZergRilirokor && halUnit->id != UnitId::ZergRililisk) ? 0 : 1800;
-			}
-			u16 currentHalTimer = halUnit->remove_timer;
-			if (!currentHalTimer || halTimer < currentHalTimer)
-			{
-				halUnit->remove_timer = halTimer;
-			}
-			s16 unitType = halUnit->id;
-			if (unitType == UnitId::ProtossAccantor) // Originally also ran for Warbringer ID
-			{
-				helper::hallucinate_scarabs(halUnit, source);
-			}
-			if (source->unit_ai)
-			{
-				if (units_dat::BaseProperty[halUnit->id] & (UnitProperty::Worker | UnitProperty::Building)
-					|| scbw::unit_id_is_zerg_supply(source->id))
-				{
-					WorkerAi* sourceAI = (WorkerAi*)source->unit_ai;
-					helper::add_worker_structure_ai(halUnit, sourceAI->town);
-				}
-				else
-				{
-					helper::ai_training_simple_military(halUnit, halUnit);
-				}
-			}
-			result = halUnit;
-		}
-		else
-		{
+		Unit* result = 0;
+		Unit* hallucinated_unit = helper::create_unit(source->id, source->sprite->position.x, source->sprite->position.y, player);
+		if (!hallucinated_unit) {
 			helper::display_last_network_error_for_player(player);
-			result = nullptr;
+			return 0;
 		}
-		return result;
+		apply_hallucination(hallucinated_unit, source);
+		scbw::give_ai_ex(hallucinated_unit, true);
+		return hallucinated_unit;
 	}
 }

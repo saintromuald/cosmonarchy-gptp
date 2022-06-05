@@ -380,7 +380,7 @@ namespace hooks
 		// Create Lobotomy Mines
 		if (bullet->sourceUnit != nullptr && weaponId == WeaponId::Lockdown)
 		{
-			Unit* mine = scbw::create_unit_ingame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
+			Unit* mine = scbw::create_unit_in_game(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
 			if (mine != nullptr)
 			{
 				helper::turnUnit(mine, bullet->sourceUnit->current_direction_1);

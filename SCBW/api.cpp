@@ -950,29 +950,48 @@ namespace scbw
 
 	//-------- Utility functions --------//
 
-	Unit* create_unit_ingame(u16 unit_id, u8 playerId, u32 x, u32 y, Unit* creator, bool initAI)
+	Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator, bool initAI)
 	{
-		if (*unitCount >= 1700)
-		{
-			return nullptr; // Prevent crashes, move to create unit later. - Veeq7
+		if (*unitCount >= 1700) {
+			return 0; // Prevent crashes, move to create unit later. -Veeq7
 		}
 		Point16 pos = {x, y};
 		helper::fix_target_location(&pos, unit_id);
-		Unit* unit = helper::create_unit(unit_id, pos.x, pos.y, playerId);
-		if (unit == nullptr)
-		{
-			helper::display_last_network_error_for_player(playerId);
+		Unit* unit = helper::create_unit(unit_id, pos.x, pos.y, player);
+		if (!unit) {
+			helper::display_last_network_error_for_player(player);
+			return 0;
 		}
-		else
-		{
-			helper::update_unit_stats_and_finish_building(unit);
-			helper::update_unit_strength(unit);
-			if (initAI)
-			{
-				helper::ai_training_unit(unit, creator);
-			}
+		helper::update_unit_stats_and_finish_building(unit);
+		helper::update_unit_strength(unit);
+		if (initAI) {
+			scbw::give_ai_ex(unit, true); // no longer need creator if we are using this robust AI function, still keeping the argument for legacy reasons
 		}
 		return unit;
+	}
+
+	Unit* create_hangar_unit(Unit* source, u32 unit_id) {
+		u32 count = source->unit_with_hangar.in_hangar_count;
+		if (source->id == UnitId::ProtossSolarion) {
+			count += source->unit_with_hangar.out_hangar_count;
+		}
+		if (count >= source->get_max_hangar_space()) {
+			return 0;
+		}
+
+		Unit* unit = create_unit_in_game(unit_id, source->player, source->position.x, source->position.y, source, false);
+		if (!unit) {
+			return 0;
+		}
+		unit->hangar_unit.parent = source;
+		helper::add_hangar_unit(source, unit);
+		return unit;
+	}
+
+	void create_hangar_units(Unit* source, u32 count, u32 unit_id) {
+		for (u32 i = 0; i < count; ++i) {
+			create_hangar_unit(source, unit_id);
+		}
 	}
 
 	u32 get_unit_overlay_adjustment(Unit* const unit)
@@ -1066,9 +1085,8 @@ namespace scbw
 	{
 		for (s32 i = 0; i < count; i++)
 		{
-			Unit* unit = scbw::create_unit_ingame(unit_id, playerId, x, y, creator, false);
-			if (!unit)
-			{
+			Unit* unit = scbw::create_unit_in_game(unit_id, playerId, x, y, creator, false);
+			if (!unit) {
 				return;
 			}
 			scbw::give_ai_ex(unit, true);

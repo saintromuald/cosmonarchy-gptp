@@ -5896,7 +5896,7 @@ namespace helper
 		}
 	}
 
-	void addHangarUnit(Unit* main_unit, Unit* added_unit)
+	void add_hangar_unit(Unit* main_unit, Unit* added_unit)
 	{
 		const u32 Func_addHangerUnit = 0x00466300;
 		__asm {

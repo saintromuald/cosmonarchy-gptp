@@ -480,7 +480,7 @@ namespace hooks
 				for (u32 i = 0; i < corpses.size; ++i) {
 					Thingy* corpse = corpses.corpses[i];
 					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
-						Unit* egg = scbw::create_unit_ingame(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
+						Unit* egg = scbw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
 							egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
 							egg->build_queue[egg->build_queue_slot] = UnitId::ZergSovroleth;

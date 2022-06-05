@@ -667,7 +667,7 @@ namespace helper
 	u32 getHPGainForRepair(Unit* unit);																								// 00402C40
 	void refund_unit_train_cost(u32 unit_id, u8 playerId);																			// 0042CEC0
 	void function_00432430(Unit* unit, u32 build_queue_slot);																			// 00432430
-	void addHangarUnit(Unit* main_unit, Unit* added_unit);																			// 00466300
+	void add_hangar_unit(Unit* main_unit, Unit* added_unit);																			// 00466300
 	Unit* attemptTrainHatchUnit(Unit* trainer, u32 builtUnitID, u32 flag);															// 00468200
 
 	//// weapon_fire
@@ -1316,4 +1316,6 @@ namespace helper
 	u32 is_unit_at_height(Unit* unit, u32 height);															// 0045F8D0
 	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args);										// 004C7E20
 	void kill_powerup(Unit* unit);																			// 004F3C60
+
+	void set_hangar_count(Unit* unit, u32 flags, u32 amount);												// 004CD260
 }

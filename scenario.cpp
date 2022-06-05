@@ -1530,7 +1530,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					}
 
 					Point16 pos = fraud_spawn.sequence[player-1].location->pos;
-					Unit* augur = scbw::create_unit_ingame(UnitId::ProtossAugur, player, pos.x, pos.y);
+					Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, pos.x, pos.y);
 					if (augur) {
 						augur->user_action_flags |= 4;
 						augurSacrifice(augur, 10 * 32);
@@ -1760,12 +1760,12 @@ void tick_scenario() {
 							Point16 source_pos = source->pos;
 							Point16 rally = source->rallies[sequence->rally_index % source->rally_count];
 
-							Unit* augur = scbw::create_unit_ingame(UnitId::ProtossAugur, i, source_pos.x, source_pos.y);
+							Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, i, source_pos.x, source_pos.y);
 							if (augur) {
 								augur->user_action_flags |= 4;
 								augurSacrifice(augur, 10 * 32);
 							}
-							Unit* unit = scbw::create_unit_ingame(unit_id, i, source_pos.x, source_pos.y);
+							Unit* unit = scbw::create_unit_in_game(unit_id, i, source_pos.x, source_pos.y);
 							if (unit) {
 								helper::give_ai(unit);
 								if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Worker)) {
