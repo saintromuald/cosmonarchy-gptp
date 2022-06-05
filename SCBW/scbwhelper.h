@@ -715,7 +715,7 @@ namespace helper
 	void setAllImageGroupFlagsPal11(Sprite* sprite);																// 00497430
 	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);						// 004E8280
 	void IterateUnitsAtLocationTargetProc_Ensnare(Unit* attacker, Box16* coords);									// 004E8280
-	void IterateUnitsAtLocationTargetProc_Plague(Unit* attacker, Box16* coords);									// 004E8280
+	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords);									// 004E8280
 	void PlagueProc(Unit* unit, Unit* attacker);																	// 004F4AF0
 	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords);									// 004E8280
 	void IterateUnitsAtLocationTargetProc_StasisField(Unit* attacker, Box16* coords);								// 004E8280

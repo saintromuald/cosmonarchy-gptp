@@ -141,7 +141,7 @@ struct Globals {
 	void refreshDebuggingInfo();
 	void reset();
 	void frame_hook();
-	void unitDeathHook(Unit* unit);
+	void unit_death(Unit* unit);
 	void remove_unit_from_pariah_table(Unit* unit, bool sourceOnly);
 	bool was_hit_by_pariah(Unit* source, Unit* target);
 

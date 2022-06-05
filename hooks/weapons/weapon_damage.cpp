@@ -667,7 +667,7 @@ namespace hooks
 								u32 energy = std::min(data.target->energy, (u16)(10 * 256));
 								if (energy) {
 									data.target->energy -= energy;
-									data.attacker->healEnergy(energy);
+									data.attacker->heal_energy(energy);
 									helper::create_thingy(SpriteId::Feedback_Hit_Small + target_offset,
 										data.target->position.x, data.target->position.y, data.attackingPlayerId);
 								}

@@ -300,7 +300,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 	}
 }
 
-static void ClearUnitExt(int index)
+static void clear_unit_ext(int index)
 {
 	globals.unitExt[index] = {};
 	// this should set combat timer to highest u32,
@@ -318,11 +318,11 @@ void Globals::reset()
 	lurker_spine_hits.clear();
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
-		ClearUnitExt(i);
+		clear_unit_ext(i);
 	}
 }
 
-void Globals::unitDeathHook(Unit* unit)
+void Globals::unit_death(Unit* unit)
 {
 	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{ // set dead unit pointers to nullptr and erase them from unit vectors
@@ -345,7 +345,7 @@ void Globals::unitDeathHook(Unit* unit)
 			}), vec.end());
 		}
 	}
-	ClearUnitExt(unit->get_unit_index() - 1);
+	clear_unit_ext(unit->get_unit_index() - 1);
 
 	for (s32 i = 0; i < this->effects.size(); i++)
 	{

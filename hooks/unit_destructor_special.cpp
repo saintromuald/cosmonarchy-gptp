@@ -8,7 +8,7 @@
 #include <SCBW/UnitFinder.h>
 #include "globals.h"
 
-void augurProc(Unit* augur, s32 radius) {
+void augur_proc(Unit* augur, s32 radius) {
 	Unit* target = scbw::UnitFinder::get_nearest_target(
 		augur->get_x() - radius,
 		augur->get_y() - radius,
@@ -44,13 +44,13 @@ void augurProc(Unit* augur, s32 radius) {
 	}
 }
 
-void augurSacrifice(Unit* augur, s32 radius)
+void augur_sacrifice(Unit* augur, s32 radius)
 {
 	UnitExt* targetExt = globals.get_unit_ext(augur);
 	if (targetExt->values[ValueAugurSafetyCheck] == 0)
 	{
 		targetExt->values[ValueAugurSafetyCheck] = 1;
-		augurProc(augur, radius);
+		augur_proc(augur, radius);
 		augur->remove();
 	}
 }
@@ -95,7 +95,7 @@ void kill_hangar_units(Unit* unit)
 			// should produce a number between 15 and 45 (or maybe 46)
 			randomDeathTimer = ((random_value * 31) / 32768) + 15;
 			if (childOutside->remove_timer == 0
-				|| randomDeathTimer < childOutside->remove_timer)
+			||  randomDeathTimer < childOutside->remove_timer)
 			{
 				childOutside->remove_timer = randomDeathTimer;
 			}
@@ -143,15 +143,17 @@ void unit_destructor_special_cases(Unit* unit)
 	UnitExt* unitExt = globals.get_unit_ext(unit);
 	unit->reset_supply_provided();
 
-	//if (!(unit->user_action_flags & 4) && // for silent remove
-	//	  unit->status & UnitStatus::Completed && 
-	//     (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
-	//	  unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
-	//	  units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) ||
-	//	  unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
-	//{
-	//	scbw::clear_creep(scbw::unit_area(unit));
-	//}
+	/*
+	if (!(unit->user_action_flags & 4) && // for silent remove
+		  unit->status & UnitStatus::Completed && 
+	     (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
+		  unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
+		  units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) ||
+		  unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
+	{
+		scbw::clear_creep(scbw::unit_area(unit));
+	}
+	*/
 
 	// These do not require the unit to be completed
 	switch (unit->id)
@@ -269,7 +271,7 @@ void unit_destructor_special_cases(Unit* unit)
 			case UnitId::ProtossAccantor:
 			case UnitId::ProtossSolarion:
 			{
-				kill_hangar_units(unit);				
+				kill_hangar_units(unit);
 			} break;
 			case UnitId::ProtossPlasmaShell:
 			case UnitId::ProtossSteward:
@@ -323,7 +325,7 @@ void unit_destructor_special_cases(Unit* unit)
 			} break;
 			case UnitId::ProtossAugur:
 			{
-				augurSacrifice(unit);
+				augur_sacrifice(unit);
 			} break;
 		}
 	}
@@ -337,7 +339,7 @@ void unit_destructor_special_cases(Unit* unit)
 			Unit* caster = unit_array.units[i];
 			if (scbw::get_distance_fast(unit->position, caster->position) <= caster->get_sight_range() * 32)
 			{
-				caster->healEnergy(5 * 256);
+				caster->heal_energy(5 * 256);
 			}
 		}
 	}
@@ -420,7 +422,7 @@ void unit_destructor_special_cases(Unit* unit)
 			{
 				return;
 			}
-			target->healEnergy(ApostleLastBreathEnergyGain);
+			target->heal_energy(ApostleLastBreathEnergyGain);
 			target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 		});
 	}
@@ -453,7 +455,7 @@ void unit_destructor_special_cases(Unit* unit)
 		coords.top    = unit->position.y - range;
 		coords.right  = unit->position.x + range;
 		coords.bottom = unit->position.y + range;
-		helper::IterateUnitsAtLocationTargetProc_Plague(unit, &coords);
+		helper::iterate_units_at_location_target_proc_plague(unit, &coords);
 	}
 
 	// Update Custom Creep Disappearance
@@ -461,7 +463,7 @@ void unit_destructor_special_cases(Unit* unit)
 
 	// Globals memory management
 	globals.remove_unit_from_pariah_table(unit, false);
-	globals.unitDeathHook(unit);
+	globals.unit_death(unit);
 }
 
 void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 tile_x, s32 tile_y) {
@@ -480,16 +482,12 @@ void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 
 
 void __declspec(naked) unit_destructor_special_cases_wrapper()
 {
-
 	static Unit* unit;
-
 	__asm {
 		MOV unit, EAX
 		PUSHAD
 	}
-
 	unit_destructor_special_cases(unit);
-
 	__asm {
 		POPAD
 		RETN
