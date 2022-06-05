@@ -602,20 +602,20 @@ namespace hooks
 			globals.create_effect(EffectId_PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::PlagueField, 5, attacker->player, attacker);
 		}
 		//if (attacker) {
-		//	u32 range = 64;
+		//	u32 distance = 64;
 		//	Box16 coords = {};
-		//	coords.left   = x - range;
-		//	coords.top    = y - range;
-		//	coords.right  = x + range;
-		//	coords.bottom = y + range;
+		//	coords.left   = x - distance;
+		//	coords.top    = y - distance;
+		//	coords.right  = x + distance;
+		//	coords.bottom = y + distance;
 		//	helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
 		//
 		//	UnitExt* attackerExt = globals.get_unit_ext(attacker);
 		//	scbw::UnitFinder(
-		//		x - range,
-		//		y - range,
-		//		x + range,
-		//		y + range
+		//		x - distance,
+		//		y - distance,
+		//		x + distance,
+		//		y + distance
 		//	).for_each([&](Unit* unit) {
 		//		if (attacker && attackerExt->timers[TimerEnsnaringBrood] > 0
 		//			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building))

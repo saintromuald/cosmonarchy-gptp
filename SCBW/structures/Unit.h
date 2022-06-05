@@ -85,7 +85,7 @@ struct Unit : public UnitLayout
 	u32 getMaxShieldsRaw() const;
 
 
-	/// Returns the maximum range of a weapon in pixels. The weapon is assumed to
+	/// Returns the maximum distance of a weapon in pixels. The weapon is assumed to
 	/// be attached to this unit for calculating upgrade effects.
 	/// This is affected by the Weapon Range hook module.
 	u32 get_max_weapon_range(u8 weaponId) const;
@@ -106,11 +106,11 @@ struct Unit : public UnitLayout
 	/// @return   RaceId::Terran, Zerg, Protoss, or Neutral.
 	static RaceId::Enum get_race(u16 unit_id);
 
-	/// Returns the unit's seek range (AKA target acquisition range) in matrices.
+	/// Returns the unit's seek distance (AKA target acquisition distance) in matrices.
 	/// This is affected by the Weapon Range hook module.
 	u8 get_seek_range() const;
 
-	/// Returns the sight range of this unit (with upgrades).
+	/// Returns the sight distance of this unit (with upgrades).
 	/// If @p isForSpellCasting is true, also factors in status effects.
 	u32 get_sight_range(bool isForSpellCasting = false) const;
 
@@ -328,7 +328,7 @@ struct Unit : public UnitLayout
 	/// for terrain, and does not consider obstacles (units and buildings).
 	bool has_path_to_unit(Unit* target) const;
 
-	///  Checks whether the @p target unit is within the @p range from the unit.
+	///  Checks whether the @p target unit is within the @p distance from the unit.
 	bool is_target_within_min_range(Unit* target, u32 range);
 
 	//////////////////////////////////////////////////////////////// @}

@@ -158,7 +158,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	Upgrade                = 0x4C, /**< Building researching upgrade.
 					* Default Requirements: Unused. */
-	Larva                  = 0x4D, /**< Idle order for larva. Make sure it stays on creep, dies if off, and says within the range of the parent it came from.
+	Larva                  = 0x4D, /**< Idle order for larva. Make sure it stays on creep, dies if off, and says within the distance of the parent it came from.
 					* Default Requirements: Unit must be Zerg Larva. Allow on hallucinated units. */
 	SpawningLarva          = 0x4E, /**< Building is spawning larva.
 					* Default Requirements: Unit must be Hatchery/Lair/Hive. */
@@ -266,7 +266,7 @@ enum Enum {
 					* Default Requirements: Unit must be Terran Nuclear Missile. */
 	InitArbiter            = 0x82, /**< Run nearby cloaking.
 					* Default Requirements: Unit must be Protoss Arbiter/Danimoth. Allow on Hallucinated units. */
-	CloakNearbyUnits       = 0x83, /**< Cloak non arbiters within range.
+	CloakNearbyUnits       = 0x83, /**< Cloak non arbiters within distance.
 					* Default Requirements: Unit must be Protoss Arbiter/Danimoth. */
 	PlaceMine              = 0x84, /**< Place spider mine.
 					* Default Requirements: Unused. */
@@ -278,7 +278,7 @@ enum Enum {
 					* Default Requirements: Unit must be Zerg infested Terran. Allow on Hallucinated units. */
 	HoldPosition4          = 0x88, /**< Suicide Hold Position.
 					* Default Requirements: Unit must be Zerg Infested Terran or Zerg Scourge. Allow on Hallucinated units. */
-	Teleport               = 0x89, /**< Recall(units within range of target pos).
+	Teleport               = 0x89, /**< Recall(units within distance of target pos).
 					* Default Requirements: Unused. */
 	TeleporttoLocation     = 0x8A, /**< Causes units to teleport when being recalled.
 					* Default Requirements: Unused. */
@@ -360,7 +360,7 @@ enum Enum {
 					* Default Requirements: Unit must be Terran Medic. */
 	HealMove               = 0xB1, /**< Attack move command for the Terran Medic.
 					* Default Requirements: Unit must be Terran Medic. */
-	MedicHoldPosition      = 0xB2, /**< Holds Position for Terran Medics, heals units within range.
+	MedicHoldPosition      = 0xB2, /**< Holds Position for Terran Medics, heals units within distance.
 					* Default Requirements: Unit must be Terran Medic. */
 	MedicHeal2             = 0xB3, /**< Return to idle after heal.
 					* Default Requirements: Unused. */

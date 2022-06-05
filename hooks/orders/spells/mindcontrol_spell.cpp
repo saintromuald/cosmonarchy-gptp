@@ -46,7 +46,7 @@ namespace hooks
 				helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 				unit->order_to_idle();
 			} else {
-				// Reset timer if target out of range
+				// Reset timer if target out of distance
 				unit->main_order_state = 0;
 			}
 		}

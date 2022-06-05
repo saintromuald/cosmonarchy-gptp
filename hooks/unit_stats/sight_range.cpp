@@ -8,7 +8,7 @@ const s32 MAX_SIGHT_RANGE = 11;
 namespace hooks
 {
 
-	/// Returns the modified sight range of the unit, measured in matrices.
+	/// Returns the modified sight distance of the unit, measured in matrices.
 	/// StarCraft passes 1 for isForSpellCasting when using Feedback, Mind Control,
 	/// and Hallucination (but not when launching Nukes).
 	/// Note: sight ranges cannot exceed 11, unless extended.

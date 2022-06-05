@@ -36,15 +36,15 @@ have been spotted/attacked/killed within the last few minutes.
 That way it's like they're responding to ground paths taken by enemies.
 Vulture Spider Mines could be done in similar ways.
 
-Madrigal Tempo Change: When 3 or more hostiles within 4 weapon range,
+Madrigal Tempo Change: When 3 or more hostiles within 4 weapon distance,
 switch to Tempo Up (Furia);
 else, switch to Tempo Down (Imperioso)
 
-Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within range,
+Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within distance,
 target terrain between the Paladin and the target group, 64px away from the group.
 
 Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target
-the group and stay within range while attempting to avoid damage.
+the group and stay within distance while attempting to avoid damage.
 
 Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many
 nearby_allies as possible.
@@ -75,17 +75,20 @@ const Vector32f KiteOffsets[KiteZoneCount] = {
 struct KitePositions {
 	bool targets_found;
 	bool forward_found;
+	bool backward_found;
+
+	u32 distance;
+	u32 ally_strength;
+	u32 hostile_strength;
+
 	f32 hostile_biases[KiteZoneCount];
 	f32 forward_biases[KiteZoneCount];
+	f32 backward_biases[KiteZoneCount];
 	f32 effect_biases[KiteZoneCount];
-	f32 avoid_aoe_biases[KiteZoneCount];
-	f32 strafe_avoid_biases[KiteZoneCount];
 	u32 forward_index;
 	u32 backward_index;
-	u32 strafe_index;
 	Point16 forward_pos;
 	Point16 backward_pos;
-	Point16 strafe_pos;
 };
 
 static u32 get_max_range(u32 unit_id) {
@@ -142,24 +145,6 @@ static bool unit_has_min_range(Unit* unit) {
 	return false;
 }
 
-static bool unit_has_aoe(Unit* unit) {
-	Unit* context = unit;
-	if (context->subunit) {
-		context = context->subunit;
-	}
-	u32 weapon_id = WeaponId::None;
-	if (unit->status & UnitStatus::InAir) {
-		weapon_id = context->get_air_weapon();
-	} else {
-		weapon_id = context->get_ground_weapon();
-	}
-	if (weapons_dat::ExplosionType[weapon_id] != WeaponEffect::NormalHit) {
-		return true;
-	}
-	return false;
-}
-
-
 static u8 get_current_weapon_cooldown(Unit* unit) {
 	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) {
 		if (unit->main_order_timer == 0 && (unit->unit_with_hangar.in_hangar_count || (*elapsedTimeFrames) % 24 == 0)) {
@@ -188,15 +173,6 @@ static u8 get_max_weapon_cooldown(Unit* unit) {
 	}
 
 	return std::max(ground_cooldown, air_cooldown);
-}
-
-static u32 get_distance_to_target(Unit* source) {
-	Unit* target = source->order_target.unit;
-	if (!target) {
-		return get_max_range(source->id);
-	}
-
-	return scbw::get_distance_fast(source->position, target->position);
 }
 
 static bool is_channeling(Unit* unit) {
@@ -368,7 +344,7 @@ static KiterType get_kiter_type(u32 unit_id) {
 	}
 
 	if (is_melee_attacker(unit_id)) {
-		// Minor adjustments, while in melee range
+		// Minor adjustments, while in melee distance
 		return KiterType_Melee;
 	}
 	// Default kiting
@@ -436,14 +412,26 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 	return value;
 }
 
-static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
+static bool should_kite_back_against(Unit* unit, Unit* target) {
+	if (target && target->canAttackTarget(unit)) { // This formula was found by iquare
+		f32 factor = 1.0 / 343.0;
+		f32 kiter_speed = unit->flingy_top_speed;
+		f32 target_speed = target->flingy_top_speed;
+		f32 kiting_time = (unit->flingy_acceleration + unit->flingy_turn_speed) * 2 * factor;
+		if (kiter_speed > target_speed && get_max_range(target->id) > get_max_range(unit->id) + kiting_time) {
+			return true;
+		}
+	}
+	return false;
+}
+
+static KitePositions get_kite_positions(Unit* unit, u32 group_radius) {
 	KitePositions result = {};
 	result.targets_found = false;
+	result.distance = get_max_range(unit->id);
 
 	Point16 search_pos = unit->position;
-	bool enemies_have_aoe = false;
-
-	EntryArray hostiles = unit_search_square(search_pos, hostile_group_radius);
+	EntryArray hostiles = unit_search_square(search_pos, group_radius);
 	unit_search_filter(&hostiles, unit, FilterEnemy | FilterCanAttackOrCast);
 	for (u32 i = 0; i < hostiles.size; ++i) {
 		Unit* hostile = hostiles.units[i];
@@ -456,6 +444,12 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
 				strength = hostile->ground_strength;
 			}
 		}
+		result.hostile_strength += strength; 
+
+		u32 distance = scbw::get_distance_fast(unit->position, hostile->position);
+		if (distance < result.distance) {
+			result.distance = distance;
+		}
 
 		if (strength) {
 			result.targets_found = true;
@@ -463,28 +457,33 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
 				adjust_biases(result.forward_biases, unit, hostile->position, strength);
 			} else {
 				adjust_biases(result.hostile_biases, unit, hostile->position, strength);
+				if (should_kite_back_against(unit, hostile)) {
+					result.backward_found = true;
+					adjust_biases(result.backward_biases, unit, hostile->position, strength);
+				}
 			}
 			if (unit_has_min_range(unit)) {
 				result.forward_found = true;
 				adjust_biases(result.forward_biases, unit, hostile->position, strength);
 			}
-			if (unit_has_aoe) {
-				enemies_have_aoe = true;
-			}
 		}
 	}
 
-	EntryArray nearby_allies = unit_search_square(search_pos, 3 * 32);
-	unit_search_filter(&nearby_allies, unit, FilterAlly | FilterCanAttackOrCast);
-	for (u32 i = 0; i < nearby_allies.size; ++i) {
-		Unit* ally = nearby_allies.units[i];
-		adjust_biases(result.strafe_avoid_biases, unit, ally->position, 25);
-		if (enemies_have_aoe) {
-			adjust_biases(result.avoid_aoe_biases, unit, ally->position, 25);
+	EntryArray allies = unit_search_square(search_pos, group_radius);
+	unit_search_filter(&allies, unit, FilterAlly | FilterCanAttackOrCast);
+	for (u32 i = 0; i < allies.size; ++i) {
+		Unit* ally = hostiles.units[i];
+
+		u32 strength = 0;
+		if (ally->air_strength > ally->ground_strength) {
+			strength = ally->air_strength;
+		} else {
+			strength = ally->ground_strength;
 		}
+		result.ally_strength += strength; 
 	}
 
-	EntryArray effects = effect_search_square(search_pos, hostile_group_radius);
+	EntryArray effects = effect_search_square(search_pos, group_radius);
 	for (u32 i = 0; i < effects.size; ++i) {
 		Effect* effect = effects.effects[i];
 		s32 value = get_effect_value(unit, effect);
@@ -498,38 +497,26 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
 	}
 
 	if (result.targets_found) {
+		// Default to center region
 		result.forward_index = KiteZoneCount / 2;
 		result.backward_index = KiteZoneCount / 2;
-		result.strafe_index = 0;
 
 		s32 forward_scores[KiteZoneCount] = {};
 		s32 backward_scores[KiteZoneCount] = {};
-		s32 strafe_scores[KiteZoneCount] = {};
 
 		for (u32 i = 0; i < KiteZoneCount; i++) {
-			s32 forward_score = result.effect_biases[i] + result.hostile_biases[i] - result.avoid_aoe_biases[i] + result.forward_biases[i];
+			s32 forward_score = result.effect_biases[i] + result.hostile_biases[i] + result.forward_biases[i];
 			if (forward_score > forward_scores[result.forward_index]) {
 				result.forward_index = i;
 				forward_scores[i] = forward_score;
 			}
 
-			s32 backward_score = result.effect_biases[i] - result.hostile_biases[i] - result.avoid_aoe_biases[i];
+			s32 backward_score = result.effect_biases[i] - result.hostile_biases[i] + result.backward_biases[i];
 			if (backward_score > backward_scores[result.backward_index]) {
 				result.backward_index = i;
 				backward_scores[i] = backward_score;
 			}
-
-			s32 strafe_score = result.effect_biases[i] - fabs(result.hostile_biases[i]) - result.avoid_aoe_biases[i] - result.strafe_avoid_biases[i];
-			if (strafe_score > strafe_scores[result.strafe_index]) {
-				result.strafe_index = i;
-				strafe_scores[i] = strafe_score;
-			}
 		}
-
-		//KITE_DEBUG("%f %f %f", hostile_biases[0], hostile_biases[1], hostile_biases[2]);
-		//KITE_DEBUG("%f %f %f", hostile_biases[3], hostile_biases[4], hostile_biases[5]);
-		//KITE_DEBUG("%f %f %f", hostile_biases[6], hostile_biases[7], hostile_biases[8]);
-		//KITE_DEBUG("\n");
 
 		result.forward_pos = unit->position;
 		result.forward_pos.x += KiteOffsets[result.forward_index].x * MoveRadius;
@@ -540,11 +527,6 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
 		result.backward_pos.x += KiteOffsets[result.backward_index].x * MoveRadius;
 		result.backward_pos.y += KiteOffsets[result.backward_index].y * MoveRadius;
 		result.backward_pos = scbw::clamp_point(result.backward_pos);
-
-		result.strafe_pos = unit->position;
-		result.strafe_pos.x += KiteOffsets[result.strafe_index].x * MoveRadius;
-		result.strafe_pos.y += KiteOffsets[result.strafe_index].y * MoveRadius;
-		result.strafe_pos = scbw::clamp_point(result.strafe_pos);
 	}
 	return result;
 }
@@ -632,21 +614,19 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 	}
 
 	if (unit_could_kite(unit)) {
-		u32 hostile_group_radius = 12 * 32;
+		u32 group_radius = 12 * 32;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
-			hostile_group_radius = 4 * 32;
+			group_radius = 4 * 32;
 		}
 
-		scbw::UnitFinder allies(
+		scbw::UnitFinder local_group(
 			unit->get_x() - LocalGroupRadius,
 			unit->get_y() - LocalGroupRadius,
 			unit->get_x() + LocalGroupRadius,
 			unit->get_y() + LocalGroupRadius
 		);
-		allies.filter(cosmonarchy_finder_match(unit, Flags::IncludingSelf | Flags::Ally | Flags::CanAttackOrCast, {unit->id}));
-
-		scbw::UnitFinder local_group = allies;
-		local_group.filter([&](Unit* local_unit){ return local_unit->player == unit->player && unit_could_kite(local_unit); });
+		local_group.filter(cosmonarchy_finder_match(unit, Flags::IncludingSelf | Flags::Own | Flags::CanAttackOrCast, {unit->id}));
+		local_group.filter([&](Unit* local_unit){ return unit_could_kite(local_unit); });
 
 		if (unit_kiting_can_attack(unit)) {
 			if (get_kiter_type(unit->id) != KiterType_TargetingOnly) {
@@ -662,10 +642,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			Unit* best_target = 0;
 			s32 best_cost = INT_MAX;
 			scbw::UnitFinder(
-				unit->get_x() - hostile_group_radius,
-				unit->get_y() - hostile_group_radius,
-				unit->get_x() + hostile_group_radius,
-				unit->get_y() + hostile_group_radius
+				unit->get_x() - group_radius,
+				unit->get_y() - group_radius,
+				unit->get_x() + group_radius,
+				unit->get_y() + group_radius
 			).for_each([&](Unit* target) {
 				if (!target_match(target) || !unit->canAttackTarget(target, true)) {
 					return;
@@ -725,7 +705,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			}
 
 			if (sync) {
-				KitePositions result = get_kite_positions(unit, hostile_group_radius);
+				KitePositions result = get_kite_positions(unit, group_radius);
 
 				if (!result.targets_found) {			
 					local_group.for_each([&](Unit* local_unit) {
@@ -741,7 +721,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				if (update_sync) {
 					local_group.for_each([&](Unit* local_unit) {
 						UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
-						local_unit_ext->timers[TimerAI_KitingSync] = 4;
+						local_unit_ext->timers[TimerAI_KitingSync] = 24;
 					});
 				}
 				unit_ext->timers[TimerAI_KitingSync] = 0;
@@ -757,31 +737,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				unit_ext->values[ValueAI_KitingSignal] = 0;
 				unit_ext->values[ValueAI_PreventTargeting] = 0;
 
-				u32 allied_value = 0;
-				allies.for_each([&](Unit* local_unit) {
-					allied_value += std::max(local_unit->ground_strength, local_unit->air_strength);
-				});
-				allied_value *= 1.25; // Give AI some more confidence
-
-				u32 crowd_score = 0;
-				if (!(unit->status & UnitStatus::InAir)) {
-					crowd_score = cosmonarchyUnitCount(unit, unit->position, CrowdCalcRadius, Flags::Ally | Flags::NotSelf | Flags::NoAir, {});
-				}
-
-				bool should_kite_back = false;
-				Unit* target = unit->order_target.unit;
-				if (target && target->canAttackTarget(unit)) { // This formula was found by iquare
-					f32 factor = 1.0 / 343.0;
-					f32 kiter_speed = unit->flingy_top_speed;
-					f32 target_speed = target->flingy_top_speed;
-					f32 kiting_time = (unit->flingy_acceleration + unit->flingy_turn_speed) * 2 * factor;
-					if (kiter_speed > target_speed && get_max_range(target->id) > get_max_range(unit->id) + kiting_time) {
-						should_kite_back = true;
-					}
-				}
-
+				bool should_kite_back = result.backward_found;
 				bool prefer_kiting_forward = !unit_has_min_range(unit) && result.forward_found;
-				u32 distance = get_distance_to_target(unit);
+				f32 hostile_advantage = result.hostile_strength / (f32)result.ally_strength;
+				u32 distance = result.distance;
 				u32 max_range = get_max_range(unit->id);
 				switch (get_kiter_type(unit->id)) {
 					case KiterType_Melee: {
@@ -789,15 +748,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							unit_ext->timers[TimerAI_KitingCooldown] = 24;
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: fall back", unit->getName());
-						} else if (prefer_kiting_forward
-							|| (!should_kite_back && distance >= max_range * 0.75 && distance <= max_range * 2)) {
+						} else if (prefer_kiting_forward || distance >= max_range * 1.5) {
 							unit_ext->timers[TimerAI_KitingCooldown] = 24;
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
-						} else if (!should_kite_back && crowd_score > 9 && distance <= max_range * 4) {
-							unit_ext->timers[TimerAI_KitingCooldown] = 24;
-							unit->order_to(OrderId::Move, result.strafe_pos.x, result.strafe_pos.y);
-							KITE_DEBUG("%s: strafe", unit->getName());
 						} else if (should_kite_back) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: backward", unit->getName());
@@ -807,27 +761,22 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 					case KiterType_Ranged: {
 						if (!prefer_kiting_forward
 							&& (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2
-							|| allied_value <= result.hostile_biases[result.forward_index]
+							|| hostile_advantage >= 2.0
 							|| distance <= max_range * 0.5)) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: fall back", unit->getName());
-						} else if (prefer_kiting_forward
-							|| (!should_kite_back && distance > max_range * 1.5)
-							|| (!should_kite_back && distance > max_range * 1 && crowd_score > 9) 
-							|| (!should_kite_back && distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index])) {
+						} else if (prefer_kiting_forward || distance > max_range * 2
+							|| (distance > max_range * 0.75 && hostile_advantage <= 0.5)) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
-						} else if (!should_kite_back && crowd_score > 9) {
-							unit->order_to(OrderId::Move, result.strafe_pos.x, result.strafe_pos.y);
-							KITE_DEBUG("%s: strafe", unit->getName());
-						} else if (should_kite_back || allied_value <= result.hostile_biases[result.forward_index]) {
+						} else if (should_kite_back || hostile_advantage >= 1.0) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: backward", unit->getName());
 						}
 						unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					} break;
 					case KiterType_Artillery: {
-						if (distance > max_range * 1.5) {
+						if (distance > max_range * 2) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
 						} else if (should_kite_back || distance < max_range * 1.25) {
@@ -838,12 +787,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 					} break;
 					case KiterType_Flagship: {
 						if (!prefer_kiting_forward
-							&& (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || allied_value <= result.hostile_biases[result.forward_index])) {
+							&& (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || hostile_advantage >= 2.0)) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: fall back", unit->getName());
-						} else if (prefer_kiting_forward
-							|| (!should_kite_back && distance > max_range * 1.5)
-							|| (!should_kite_back && distance > max_range * 0.75 && allied_value > result.hostile_biases[result.forward_index])) {
+						} else if (prefer_kiting_forward || (distance > max_range * 0.75 && hostile_advantage <= 0.5)) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
 							KITE_DEBUG("%s: forward", unit->getName());
 						} else if (should_kite_back) {
