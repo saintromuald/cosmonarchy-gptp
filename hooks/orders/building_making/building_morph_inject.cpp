@@ -234,7 +234,7 @@ namespace
 		}
 	}
 
-	//-------- cancelZergBuilding --------//
+	//-------- cancel_zerg_building --------//
 
 	const u32 Hook_IsMorphedBuilding_CancelZergBuildingContinue = 0x0045DA93;
 	const u32 Func_CancelZergBuildingRemorph = 0x0045D410;
