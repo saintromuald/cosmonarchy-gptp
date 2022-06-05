@@ -100,6 +100,7 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::FernGreen,
 		PlayerColor::VineGreen,
 		PlayerColor::DarkGreen,
+		PlayerColor::Turquoise,
 		PlayerColor::Emerald,
 		PlayerColor::DarkSpringGreen,
 		PlayerColor::ForestGreen,
@@ -130,6 +131,7 @@ const std::vector<std::vector<u32>> player_tints =
 	},
 	{	// Cyan
 		PlayerColor::Teal,
+		PlayerColor::Asparagus,
 		PlayerColor::Cyan,
 		PlayerColor::EggshellBlue,
 		PlayerColor::Mint,
