@@ -226,7 +226,7 @@ namespace hooks
 					unit->remaining_build_time = units_dat::TimeCost[unit->build_queue[unit->build_queue_slot]];
 					unit->main_order_state = 1;
 					auto origin = unit->egg_origin;
-					IscriptAnimation::Enum animation = IscriptAnimation::Unused1;
+					IscriptAnimation::Enum animation = IscriptAnimation::Init;
 					if (origin == UnitId::ZergZethrokor
 					||  origin == UnitId::ZergNathrokor)
 					{

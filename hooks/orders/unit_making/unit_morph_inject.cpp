@@ -111,19 +111,16 @@ namespace
 		}
 	}
 
-	//-------- cancelBuild --------//
+	//-------- cancel_build --------//
 
 	typedef void(__stdcall* CancelZergBuildingFunc)(Unit*);
-	CancelZergBuildingFunc cancelZergBuilding = (CancelZergBuildingFunc)0x0045DA40;
+	CancelZergBuildingFunc cancel_zerg_building = (CancelZergBuildingFunc)0x0045DA40;
 
 	const u32 Func_ChangeUnitType = 0x0049FED0;
 	void change_unit_type(Unit* unit, u16 newUnitId)
 	{
-
 		static u32 newUnitId_ = newUnitId;
-
 		newUnitId_ = newUnitId;
-
 		__asm {
 			PUSHAD
 			PUSH newUnitId_
@@ -131,19 +128,15 @@ namespace
 			CALL Func_ChangeUnitType
 			POPAD
 		}
-
 	}
 
 	const u32 Func_ReplaceSpriteImages = 0x00499BB0;
 	void replace_sprite_images(Sprite* sprite, u16 imageId, u8 imageDirection)
 	{
-
 		static u32 imageId_;
 		static u32 imageDirection_;
-
 		imageId_ = imageId;
 		imageDirection_ = imageDirection;
-
 		__asm {
 			PUSHAD
 			PUSH imageDirection_
@@ -152,10 +145,9 @@ namespace
 			CALL Func_ReplaceSpriteImages
 			POPAD
 		}
-
 	}
 
-	//-------- cancelUnit --------//
+	//-------- cancel_unit --------//
 
 	void __fastcall cancel_unit_wrapper(Unit* unit)
 	{
@@ -192,7 +184,7 @@ namespace
 		{
 			if (unit->get_race() == RaceId::Zerg)
 			{
-				cancelZergBuilding(unit);
+				cancel_zerg_building(unit);
 				return;
 			}
 			resources->minerals[unit->player] += units_dat::MineralCost[unit->id] * 3 / 4;
@@ -265,7 +257,7 @@ namespace
 
 	//-------- getRemainingBuildTimePct --------//
 
-	s32 getRemainingBuildTimePctHook(Unit* unit)
+	s32 get_remaining_build_time_pct(Unit* unit)
 	{
 		u16 unit_id = unit->id;
 		if (scbw::is_zerg_egg_new(unit, true, false) || unit->isRemorphingBuilding())
@@ -276,7 +268,7 @@ namespace
 	}
 
 	// Inject @ 0x004669E0
-	void __declspec(naked) getRemainingBuildTimePctWrapper()
+	void __declspec(naked) get_remaining_build_time_pct_wrapper()
 	{
 		static Unit* unit;
 		static s32 percentage;
@@ -285,7 +277,7 @@ namespace
 			MOV unit, ESI
 			MOV EBP, ESP
 		}
-		percentage = getRemainingBuildTimePctHook(unit);
+		percentage = get_remaining_build_time_pct(unit);
 		__asm {
 			POPAD
 			MOV EAX, percentage
@@ -293,11 +285,11 @@ namespace
 		}
 	}
 
-	//-------- orders_zergBirth --------//
+	//-------- orders_zerg_birth --------//
 
 	// Inject @ 0x0045DE00
 	const u32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
-	void __declspec(naked) getUnitVerticalOffsetOnBirthWrapper()
+	void __declspec(naked) get_unit_vertical_offset_on_birth_wrapper()
 	{
 		static Unit* unit;
 		static s16 yOffset;
@@ -316,7 +308,7 @@ namespace
 	// Inject @ 0x0045DE57
 	const u32 Hook_IsRallyableEggUnit_Yes = 0x0045DE6C;
 	const u32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
-	void __declspec(naked) isRallyableEggUnitWrapper()
+	void __declspec(naked) is_rallyable_unit_egg_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -347,7 +339,7 @@ namespace
 
 namespace
 {
-	void __declspec(naked) orders_ZergBirthWrapper()
+	void __declspec(naked) orders_zerg_birth_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -365,7 +357,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_Morph1Wrapper()
+	void __declspec(naked) orders_morph_1_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -381,7 +373,7 @@ namespace
 
 	const u32 Jmp_IsEgg = 0x00434CF1;
 	const u32 Jmp_IsNotEgg = 0x00434CD6;
-	void __declspec(naked) deleteBuildingWorkerAiEggJmpWrapper()
+	void __declspec(naked) delete_building_worker_ai_egg_jump_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -406,7 +398,7 @@ namespace
 
 	const u32 Jmp_UnitAi_IsEgg = 0x00433E74;
 	const u32 Jmp_UnitAi_IsNotEgg = 0x00433E6A;
-	void __declspec(naked) addUnitAiEggJmpWrapper()
+	void __declspec(naked) add_unit_ai_egg_jump_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -432,7 +424,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) beginTrainWrapper()
+	void __declspec(naked) begin_train_wrapper()
 	{
 		static u32 notify_error;
 		static Unit* unit;
@@ -463,7 +455,7 @@ namespace
 
 	const u32 Jmp_UnitTask_IsEgg = 0x00434CF1;
 	const u32 Jmp_UnitTask_IsNotEgg = 0x00434CD6;
-	void __declspec(naked) detachUnitTask_EggJmpWrapper()
+	void __declspec(naked) detach_unit_task_egg_jump_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -491,7 +483,7 @@ namespace
 
 	const u32 Jmp_PrepSuicide_IsEgg = 0x0043D218;
 	const u32 Jmp_PrepSuicide_IsNotEgg = 0x0043D212;
-	void __declspec(naked) prepSuicide_EggJmpWrapper()
+	void __declspec(naked) prep_suicide_egg_jump_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -522,23 +514,23 @@ namespace hooks
 {
 	void injectUnitMorphHooks()
 	{
-		jump_patch(orders_ZergBirthWrapper,					0x0045DD60, 1);
-		jump_patch(orders_Morph1Wrapper,					0x0045DEA0, 0);
-		call_patch(unitMorphWrapper_CMDRECV_UnitMorph,		0x00486B50);		// jmp 004C1990  CMDRECV_UnitMorph
-		jump_patch(unitMorphWrapper_BTNSCOND_CanBuildUnit,	0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
-		jump_patch(unitMorphWrapper_Orders_Morph1_Check,	0x0045DFB0);		// 0045DEA0  orders_morph_1 within	
-		jump_patch(unitMorphWrapper_Orders_Morph1_EggType,	0x0045E019);		// 0045DEA0  orders_morph_1 within
-		jump_patch(cancel_unit_wrapper,						0x00468280);		// 00468280  ai_cancel_structure EXACT
-		jump_patch(getRemainingBuildTimePctWrapper,			0x004669E0);		// 004669E0  sub_4669E0 EXACT
-		jump_patch(getUnitVerticalOffsetOnBirthWrapper,		0x0045DE00);		// 0045DD60  orders_zerg_birth within
-		jump_patch(isRallyableEggUnitWrapper,				0x0045DE57);		// 0045DD60  orders_zerg_birth within
+		jump_patch(orders_zerg_birth_wrapper,					0x0045DD60, 1);
+		jump_patch(orders_morph_1_wrapper,						0x0045DEA0, 0);
+		call_patch(unitMorphWrapper_CMDRECV_UnitMorph,			0x00486B50, 0);		// jmp 004C1990  CMDRECV_UnitMorph
+		jump_patch(unitMorphWrapper_BTNSCOND_CanBuildUnit,		0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
+		jump_patch(unitMorphWrapper_Orders_Morph1_Check,		0x0045DFB0);		// 0045DEA0  orders_morph_1 within	
+		jump_patch(unitMorphWrapper_Orders_Morph1_EggType,		0x0045E019);		// 0045DEA0  orders_morph_1 within
+		jump_patch(cancel_unit_wrapper,							0x00468280);		// 00468280  ai_cancel_structure EXACT
+		jump_patch(get_remaining_build_time_pct_wrapper,		0x004669E0);		// 004669E0  sub_4669E0 EXACT
+		jump_patch(get_unit_vertical_offset_on_birth_wrapper,	0x0045DE00);		// 0045DD60  orders_zerg_birth within
+		jump_patch(is_rallyable_unit_egg_wrapper,				0x0045DE57);		// 0045DD60  orders_zerg_birth within
 		
-		jump_patch(beginTrainWrapper,						0x00468200);
-		jump_patch(detachUnitTask_EggJmpWrapper,			0x00434CD0, 1);
-		jump_patch(prepSuicide_EggJmpWrapper,				0x0043D20C, 1);
+		jump_patch(begin_train_wrapper,							0x00468200);
+		jump_patch(detach_unit_task_egg_jump_wrapper,			0x00434CD0, 1);
+		jump_patch(prep_suicide_egg_jump_wrapper,				0x0043D20C, 1);
 		// has unfinished disabled bugged hook in aise
 
-		jump_patch(deleteBuildingWorkerAiEggJmpWrapper,		0x00434CD0, 1);
-		jump_patch(addUnitAiEggJmpWrapper,					0x00433E64, 1);
+		jump_patch(delete_building_worker_ai_egg_jump_wrapper,	0x00434CD0, 1);
+		jump_patch(add_unit_ai_egg_jump_wrapper,				0x00433E64, 1);
 	}
 }
