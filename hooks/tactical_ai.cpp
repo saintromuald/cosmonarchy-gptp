@@ -79,11 +79,6 @@ const u32 CrowdCalcRadius = 2 * 32;
 
 const u32 KiteZoneCount = 9;
 const Vector32f KiteOffsets[KiteZoneCount] = {
-	{-1, -1}, {0, -1}, {+1, -1},
-	{-1,  0}, {0,  0}, {+1,  0},	
-	{-1, +1}, {0, +1}, {+1, +1},
-};
-const Vector32f BiasOrigins[KiteZoneCount] = {
 	{-0.7, -0.7}, { 0, -1.0}, {+0.7, -0.7},
 	{-1.0,    0}, { 0,    0}, {+1.0,    0},	
 	{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
@@ -157,12 +152,12 @@ static bool is_melee_attacker(u32 unit_id) {
 
 static void adjust_biases(f32* biases, Unit* unit, Point16 position, s32 value) {
 	Vector32f delta = {};
-	delta.x = position.x - unit->position.x;
-	delta.y = position.y - unit->position.y;
+	delta.x = unit->position.x - position.x;
+	delta.y = unit->position.y - position.y;
 	delta = scbw::get_normalized_vector(delta);
 
 	for (u32 i = 0; i < KiteZoneCount; ++i) {
-		biases[i] += scbw::dot_product(delta, BiasOrigins[i]) * value;
+		biases[i] += scbw::dot_product(delta, KiteOffsets[i]) * value;
 	}
 }
 
@@ -198,7 +193,7 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
 	EntryArray effects = effect_search_square(search_pos, hostile_group_radius);
 	for (u32 i = 0; i < effects.size; ++i) {
 		Effect* effect = effects.effects[i];
-		u32 value = get_effect_value(unit, effect);
+		s32 value = get_effect_value(unit, effect);
 		if (value) {
 			result.targets_found = true;
 			Point16 position = {};
@@ -218,10 +213,6 @@ static KitePositions get_kite_positions(Unit* unit, u32 hostile_group_radius) {
 		s32 strafe_scores[KiteZoneCount] = {};
 
 		for (u32 i = 0; i < KiteZoneCount; i++) {
-			if (i == KiteZoneCount / 2) {
-				continue;
-			}
-
 			s32 forward_score = result.effect_biases[i] + result.hostile_biases[i];
 			if (forward_score > forward_scores[result.forward_index]) {
 				result.forward_index = i;
