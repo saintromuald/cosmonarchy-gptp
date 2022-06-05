@@ -74,8 +74,8 @@ namespace UnitsDatEntries
 		1, //max air hits
 		1, //computer ai unit type
 		4, //flags
-		1, //seek range
-		1, //sight range
+		1, //seek distance
+		1, //sight distance
 		1, //armor upgrade
 		1, //size
 		1, //armor

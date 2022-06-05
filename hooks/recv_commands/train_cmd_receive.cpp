@@ -58,7 +58,7 @@ namespace hooks
 		builder = getActivePlayerNextSelection();
 		if (builder != nullptr && getActivePlayerNextSelection() == nullptr)
 		{
-			// Originally also checked for a lardcoded ID range, disabled for training units with high IDs
+			// Originally also checked for a lardcoded ID distance, disabled for training units with high IDs
 			if (builder->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1)
 			{
 				if (helper::has_money_can_make(builder, wUnitType)) // add unit to build queue if successful

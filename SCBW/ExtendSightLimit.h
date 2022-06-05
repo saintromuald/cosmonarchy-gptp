@@ -1,8 +1,8 @@
 /// This header file contains the structures and functions that allow you to
-/// change the maximum sight range limit in StarCraft.
+/// change the maximum sight distance limit in StarCraft.
 
 /// To use, add the following code to the game_on() function in hooks/game_hooks.cpp:
-///    set_max_sight_range<20>();  //Sets maximum sight range to 20
+///    set_max_sight_range<20>();  //Sets maximum sight distance to 20
 
 #pragma once
 #include "../definitions.h"
@@ -29,7 +29,7 @@ struct SightStruct
 C_ASSERT(sizeof(SightStruct) == 28);
 //static_assert(sizeof(SightStruct) == 28, "The size of the SightStruct structure is invalid");
 
-//Sight range varies between 0 and MAX_SIGHT_RANGE, inclusive
+//Sight distance varies between 0 and MAX_SIGHT_RANGE, inclusive
 template <u32 MAX_SIGHT_RANGE>
 void set_max_sight_range()
 {

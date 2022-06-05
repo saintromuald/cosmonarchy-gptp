@@ -31,7 +31,7 @@ namespace
 {
 	bool isTargetPosWithinAttackAngle(s32 x, s32 y, Unit* unit, u8 weaponId);
 	bool cannotChaseTarget(Unit* unit, Unit* target);
-	// Returns the minimum air/ground weapon range of the @p unit, whichever is smaller.
+	// Returns the minimum air/ground weapon distance of the @p unit, whichever is smaller.
 	u32 get_minimum_range(Unit* unit);
 
 	// Checks whether the @p target should be added to the attack priority group.
@@ -74,7 +74,7 @@ namespace
 			return false;
 		}
 
-		// Check if the target is within the minimum weapon range
+		// Check if the target is within the minimum weapon distance
 		if (minRange != 0)
 		{
 			if (unit->get_distance_to_target(target) <= minRange)
@@ -85,7 +85,7 @@ namespace
 
 		Unit* actualUnit = unit->subunit->is_subunit() ? unit->subunit : unit;
 
-		// Check if the target is within the seek range
+		// Check if the target is within the seek distance
 		if (!(unit->get_distance_to_target(target) <= seekRange))
 		{
 			return false;
@@ -101,7 +101,7 @@ namespace
 			}
 		}
 
-		// If the target cannot be chased (i.e. ground vs air, is out of range), don't bother
+		// If the target cannot be chased (i.e. ground vs air, is out of distance), don't bother
 		if (cannotChaseTarget(unit, target))
 		{
 			return false;
@@ -190,7 +190,7 @@ namespace hooks
 		{
 			offset += 64;
 		}
-		// AI units have use default sight range if it is bigger
+		// AI units have use default sight distance if it is bigger
 		else if (unit->unit_ai)
 		{
 			seek_range = std::max(seek_range, units_dat::SightRange[unit->id] * 32);

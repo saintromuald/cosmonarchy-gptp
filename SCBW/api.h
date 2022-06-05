@@ -456,7 +456,7 @@ namespace scbw
 	/// Generates a pseudorandom number between min and max, inclusive. This is
 	/// identical to the function used internally by StarCraft, and is guaranteed to
 	/// generate the same sequence in a replay.
-	/// NOTE: The RNG has a maximum range of 0 - 32767.
+	/// NOTE: The RNG has a maximum distance of 0 - 32767.
 	u32 rand_between(u32 min, u32 max);
 
 	/// Generates a pseudorandom number between 0 and 32767, inclusive. This is

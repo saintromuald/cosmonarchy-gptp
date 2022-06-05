@@ -4,10 +4,10 @@
 #include "globals.h"
 namespace hooks
 {
-	// Returns the modified seek range (AKA target acquisition range) for the unit.
+	// Returns the modified seek distance (AKA target acquisition distance) for the unit.
 	// This hook affects the behavior of Unit::get_seek_range().
 	// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
-	u8 getSeekRangeHook(Unit* unit, Unit* target) // seek range is measured in tiles, unfortunately
+	u8 getSeekRangeHook(Unit* unit, Unit* target) // seek distance is measured in tiles, unfortunately
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -41,7 +41,7 @@ namespace hooks
 			}
 		}
 
-		// Ignore bonus range for melee units
+		// Ignore bonus distance for melee units
 		if (weapons_dat::MaxRange[unit->get_ground_weapon()] <= 32)
 		{
 			bonusAmount = 0;
@@ -65,7 +65,7 @@ namespace hooks
 		return seekRange;
 	};
 
-	// Returns the modified max range for the weapon, which is assumed to be attached to the given unit.
+	// Returns the modified max distance for the weapon, which is assumed to be attached to the given unit.
 	// This hook affects the behavior of Unit::get_max_weapon_range().
 	// Note: Weapon ranges are measured in pixels.
 	u32 getMaxWeaponRangeHook(Unit* unit, u8 weaponId, Unit* target)
@@ -73,7 +73,7 @@ namespace hooks
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		u32 bonusAmount = 0;
-		// Give bonus range to units inside Bunkers
+		// Give bonus distance to units inside Bunkers
 		if (unit->status & UnitStatus::InBuilding)
 		{
 			bonusAmount = 64;

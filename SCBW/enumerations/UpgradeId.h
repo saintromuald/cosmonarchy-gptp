@@ -21,32 +21,32 @@ namespace UpgradeId {
 		ProtossGroundWeapons = 0x0D,	//
 		ProtossAirWeapons = 0x0E,		//
 		ProtossPlasmaShields = 0x0F,	//
-		U238Shells = 0x10,				// Marine attack range
+		U238Shells = 0x10,				// Marine attack distance
 		IonThrusters = 0x11,			// Vulture movespeed
 		MiningEfficiency = 0x12,		
 		TitanReactor = 0x13,			// Science Vessel energy
-		OcularImplants = 0x14,			// Ghost sight range
+		OcularImplants = 0x14,			// Ghost sight distance
 		MoebiusReactor = 0x15,			// Ghost energy
 		ApolloReactor = 0x16,			// Wraith energy
 		ColossusReactor = 0x17,			// Battlecruiser energy
 		VentralSacs = 0x18,				// Overlord capacity
-		Antennae = 0x19,				// Overlord sight range
+		Antennae = 0x19,				// Overlord sight distance
 		PneumatizedCarapace = 0x1A,		// Overlord movespeed
 		MetabolicBoost = 0x1B,			// Zergling movespeed
 		AdrenalGlands = 0x1C,			// Zergling attackspeed
 		MuscularAugments = 0x1D,		// Hydralisk movespeed
-		GroovedSpines = 0x1E,			// Hydralisk attack range
+		GroovedSpines = 0x1E,			// Hydralisk attack distance
 		GameteMeiosis = 0x1F,			// Queen energy
 		MetasynapticNode = 0x20,		// Defiler energy
-		SingularityCharge = 0x21,		// Strider attack range
+		SingularityCharge = 0x21,		// Strider attack distance
 		LegEnhancements = 0x22,			// Zealot movespeed
 		ReinforcedScarabs = 0x23,		// Scarab armor and damage
 		ReaverCapacity = 0x24,			// Reaver Scarab capacity
 		GraviticDrive = 0x25,			// Shuttle movespeed
-		SensorArray = 0x26,				// Observer sight range
+		SensorArray = 0x26,				// Observer sight distance
 		GraviticBoosters = 0x27,		// Observer movespeed
 		KhaydarinAmulet = 0x28,			// High Templar energy
-		ApialSensors = 0x29,			// Scout sight range
+		ApialSensors = 0x29,			// Scout sight distance
 		GraviticThrusters = 0x2A,		// Scout movespeed
 		AuxilliaryHangars = 0x2B,		// Carrier Interceptor capacity
 		KhaydarinCore = 0x2C,			// Arbiter energy
@@ -59,7 +59,7 @@ namespace UpgradeId {
 		CaduceusReactor = 0x33,			// Medic energy
 		ChitinousPlating = 0x34,		// Ultralisk armor
 		AnabolicSynthesis = 0x35,		// Ultralisk movespeed
-		CharonBooster = 0x36,			// Goliath attack range
+		CharonBooster = 0x36,			// Goliath attack distance
 		SignifyMalice = 0x37,			// Hierophant attack speed slow
 		BladeVortex = 0x38,				// Legionnaire teleport to target
 		ProtossStructurePlating = 0x39,	
@@ -87,7 +87,7 @@ namespace UpgradeId {
 		RaveningMandible = 76,			// Gorgoleth attack speed per energy
 		Metastasis = 77,				// Plague transmit on death
 		Heatshield = 78,				// Firebat HP
-		SequesterPods = 80,				// Missile Turret range
+		SequesterPods = 80,				// Missile Turret distance
 		Reservations = 81,				// Terran Building extra addon spot
 		RadiationShockwave = 82,		// Irradiate EMP on death
 		ExpandedHull = 83,				// Shuttle transport capacity
@@ -100,7 +100,7 @@ namespace UpgradeId {
 		TectonicClaws = 90,				// Lurker burrow speed
 		SaberSiphon = 91,				// Ultralisk lifesteal
 		KaiserRampage = 92,				// Ultralisk movement and attack speed on kill
-		CorrosiveDispersion = 93,		// Basilisk attack range on creep
+		CorrosiveDispersion = 93,		// Basilisk attack distance on creep
 		SynapticGrowth = 94,			// Chasmal Colony energy
 		LastOrders = 95,				// Scout crash on death
 		TemporalBatteries = 96,			// Protoss Building shield regen (2x Pylon)
@@ -134,7 +134,7 @@ namespace UpgradeId {
 		RequiemAfterburners = 125,		// Madrigal missile speed
 		HammerfallShells = 126,			// Siege Tank splash radius
 		SunchaserMissiles = 127,		// Centaur secondary explosion
-		HaymakerBattery = 128,			// Southpaw weapon range
+		HaymakerBattery = 128,			// Southpaw weapon distance
 		BabylonPlating = 129,			// Siege Tank armor bonus in tank mode
 
 		// relics \\

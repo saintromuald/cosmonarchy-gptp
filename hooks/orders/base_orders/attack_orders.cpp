@@ -848,7 +848,7 @@ namespace hooks
 	void orders_AttackMove(Unit* unit)
 	{
 		// attack_move_react_to_attack:
-		// Logically, would check if a target is in range, and
+		// Logically, would check if a target is in distance, and
 		// if that's the case (not returning 0), stop the "move" 
 		// part that follow to attack the unit met
 		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) != 0
@@ -857,7 +857,7 @@ namespace hooks
 			unit->main_order_timer = 0; // used to be 15
 			if (unit->move_target.pt.x != unit->sprite->position.x
 				|| unit->move_target.pt.y != unit->sprite->position.y)
-			{ // Logically, this function would check one last time if a target is in range, and attack it if that's the case, else AttackMove end here
+			{ // Logically, this function would check one last time if a target is in distance, and attack it if that's the case, else AttackMove end here
 				helper::attack_move_try_pick_target(unit, unit->main_order_id); // 00479092
 			}
 			else

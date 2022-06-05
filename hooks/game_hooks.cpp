@@ -1210,12 +1210,11 @@ namespace hooks
 			case UnitId::ZergIsthrathaleth:
 			{
 				if (unit->get_overlay(ImageId::PlagueChannelOverlay)) {
-					if (unit->sprite->images.head->animation != IscriptAnimation::Unused2) {
+					if (unit->main_order_id != OrderId::Plague) {
 						unit->remove_overlay(ImageId::PlagueChannelOverlay);
 					}
-				}
-				else {
-					if (unit->sprite->images.head->animation == IscriptAnimation::Unused2) {
+				} else {
+					if (unit->main_order_id == OrderId::Plague && unit->sprite->main_graphic->animation == IscriptAnimation::Unused2) {
 						unit->sprite->create_top_overlay(ImageId::PlagueChannelOverlay); // TODO: Use the Isthrathaleth's attack overlay for origin coordinates.
 					}
 				}

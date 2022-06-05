@@ -42,7 +42,7 @@ namespace hooks
 		if (switchValue != 1)
 		{
 
-			//if timer is 0, seek a target in range
+			//if timer is 0, seek a target in distance
 			if (unit->main_order_timer == 0)
 			{
 

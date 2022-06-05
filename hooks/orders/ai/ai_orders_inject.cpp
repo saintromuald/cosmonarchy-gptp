@@ -654,5 +654,9 @@ namespace hooks
 		jump_patch(ai_try_return_home_wrapper,					0x00462EA0, 1);
 
 		call_patch(AI_ReactToHit_TownNullCheck,					0x0043F388, 5);
+
+		// Disable worker and zethrokor defense gimmick
+		nops(0x0043F85E, 2);
+		nops(0x0043F864, 2);
 	}
 }

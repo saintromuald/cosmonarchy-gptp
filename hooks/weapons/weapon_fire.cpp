@@ -442,7 +442,7 @@ namespace hooks
 		{
 			if (bullet->attackTarget.unit == nullptr)
 			{
-				u32 range = AlkajeliskParasiticSporesSeekRange; // seek range
+				u32 range = AlkajeliskParasiticSporesSeekRange; // seek distance
 				auto seekTarget = scbw::UnitFinder::get_nearest_target(
 					bullet->position.x - range,
 					bullet->position.y - range,
