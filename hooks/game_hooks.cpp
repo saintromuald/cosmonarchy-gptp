@@ -453,8 +453,6 @@ namespace hooks
 						{
 							continue;
 						}
-						unit->spend_unit_energy(5 * 256);
-
 						EntryArray targets = unit_search_radial(unit->position, radius);
 						unit_search_filter(&targets, unit, FilterAlly);
 						for (u32 i = 0; i < targets.size; ++i) {
@@ -1241,7 +1239,7 @@ namespace hooks
 					if (unit->status & UnitStatus::Frozen) {
 						unit->unfreeze();
 					}
-					unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+					unit->remove_overlay(ImageId::TyrannyStun);
 				}
 				unitExt->timers[TimerTyrannyRecede] = 5 * 24;
 			}
@@ -1249,16 +1247,15 @@ namespace hooks
 				if (!(unit->status & UnitStatus::Frozen)) {
 					unit->freeze();
 				}
-				u32 offset = scbw::get_overlay_offset(unit->id);
-				if (!unit->get_overlay(ImageId::MaelstromOverlay_Small + offset)) {
-					unit->sprite->create_top_overlay(ImageId::MaelstromOverlay_Small + offset);
+				if (!unit->get_overlay(ImageId::TyrannyStun)) {
+					unit->sprite->create_top_overlay(ImageId::TyrannyStun);
 				}
 			}
 			if (!unitExt->timers[TimerTyrannyRecede]) {
 				if (unit->status & UnitStatus::Frozen) {
 					unit->unfreeze();
 				}
-				unit->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+				unit->remove_overlay(ImageId::TyrannyStun);
 				scbw::recede_mind_control(unit);
 				unitExt->values[ValueTyrannyPlayer] = 0;
 			}

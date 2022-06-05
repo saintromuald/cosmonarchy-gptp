@@ -1131,7 +1131,15 @@ enum Enum {
 	PlagueChannelOverlay						= 1508,
 	PlagueField									= 1509,
 	CharlatanBirth								= 1510,
-	AncithonBirth								= 1511,
+	AnticthonBirth								= 1511,
+	Gosvileth									= 1512,
+	GosvilethShadow								= 1513,
+	GosvilethBirth								= 1514,
+	Artisan										= 1515,
+	ArtisanShadow								= 1516,
+	EmpressBirth								= 1517,
+	OthstolethBirth								= 1518,
+	TyrannyStun									= 1519,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,
