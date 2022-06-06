@@ -632,7 +632,7 @@ namespace hooks
 		}
 	}
 	
-	// 004594B0 00459531 - Hooked to add time costs to tooltip info. -Veeq7
+	// 004594B0 0045952F - Hooked to add time costs to tooltip info. -Veeq7
 	void set_tooltip_info_unit(u8 unit_id) {
 		u32 mineral_cost = units_dat::MineralCost[unit_id];
 		u32 gas_cost = units_dat::GasCost[unit_id];

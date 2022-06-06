@@ -13,7 +13,7 @@ namespace hooks
 	const char* get_unit_name(Unit* unit);																										// 0047B5A0
 	void reset_tooltip_info();																													// 00459360 004593B0 004597D5
 	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply);	// 00458800
-	void set_tooltip_info_unit(u8 unit_id);																										// 004594B0 00459531
+	void set_tooltip_info_unit(u8 unit_id);																										// 004594B0 0045952F
 	void draw_tooltip_with_icon(Box16* area);																									// 00458EF0
 	s32 stat_data_unit_wireframe_selection(BinDlg* dialog, Event* event_arg);																	// 004583E0
 

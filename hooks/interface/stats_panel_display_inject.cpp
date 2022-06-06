@@ -141,7 +141,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) set_tooltip_info_unit_case5_wrapper() { // 00459531
+	void __declspec(naked) set_tooltip_info_unit_case5_wrapper() { // 0045952F
 		static const u32 jmp_address = 0x00459635;
 		static u32 unit_id;
 		__asm {
@@ -307,7 +307,7 @@ namespace hooks
 	//	jump_patch(stats_weapon_level_wrapper,						0x00425790, 1);
 		jump_patch(get_unit_name_wrapper,							0x0047B5A0, 2);
 		jump_patch(set_tooltip_info_unit_case1_wrapper,				0x004594B0, 2);
-		jump_patch(set_tooltip_info_unit_case5_wrapper,				0x00459531, 2);
+		jump_patch(set_tooltip_info_unit_case5_wrapper,				0x0045952F, 4);
 		jump_patch(reset_tooltip_info_wrapper_1,					0x00459360, 0);
 		jump_patch(reset_tooltip_info_wrapper_2,					0x004593B0, 0);
 		jump_patch(reset_tooltip_info_wrapper_3,					0x004597D5, 0);
