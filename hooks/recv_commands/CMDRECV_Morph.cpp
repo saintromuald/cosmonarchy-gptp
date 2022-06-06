@@ -7,9 +7,8 @@ namespace hooks
 	void CMDRECV_BuildingMorph(u16 unit_id)
 	{
 		*unit_iterator_pos = 0;
-		for (Unit* unit = get_active_player_next_selection(); unit; unit = get_active_player_next_selection()) {
-			if (unit &&
-				unit->id >= UnitId::ZergInfestedCommandCenter && unit->id < UnitId::None &&
+		while (Unit* unit = helper::get_active_player_next_selection()) {
+			if (unit->id >= UnitId::ZergInfestedCommandCenter && unit->id < UnitId::None &&
 				unit_id >= UnitId::ZergInfestedCommandCenter && unit_id < UnitId::None &&
 				unit->can_make_unit(unit_id, *ACTIVE_NATION_ID) == 1 &&
 				helper::has_money_can_make(unit, unit_id) && // start construction if successful
@@ -80,7 +79,7 @@ namespace hooks
 	// Hooked for multi-unit select. -Pr0nogo
 	void cmdrecv_train(char* buffer) { // 004C1C20
 		*unit_iterator_pos = 0;
-		for (Unit* unit = get_active_player_next_selection(); unit; unit = get_active_player_next_selection()) {
+		while (Unit* unit = helper::get_active_player_next_selection()) {
 			u8 unit_id = buffer[1];
 			if (helper::create_unit_allowed(unit_id, unit, *ACTIVE_NATION_ID)) {
 				if (helper::has_money_can_make(unit, unit_id)) {
