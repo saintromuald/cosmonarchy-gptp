@@ -16,6 +16,7 @@ namespace hooks
 	void set_tooltip_info_unit(u8 unit_id);																										// 004594B0 0045952F
 	void draw_tooltip_with_icon(Box16* area);																									// 00458EF0
 	s32 stat_data_unit_wireframe_selection(BinDlg* dialog, Event* event_arg);																	// 004583E0
+	u16 get_last_queue_slot_id(Unit* unit);																										// 0047B270
 
-	void injectStatsPanelDisplayHook();
+	void inject_stats_panel_display_hooks();
 }

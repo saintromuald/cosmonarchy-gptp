@@ -293,11 +293,26 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) get_last_queue_slot_id_wrapper() { // 0047B270
+		static u16 result;
+		static Unit* unit;
+		__asm {
+			MOV unit, EDX
+			PUSHAD
+		}
+		result = hooks::get_last_queue_slot_id(unit);
+		__asm {
+			POPAD
+			MOV AX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
 {
-	void injectStatsPanelDisplayHook()
+	void inject_stats_panel_display_hooks()
 	{
 		jump_patch(stats_panel_display_wrapper,						0x00426C60, 1);
 		jump_patch(get_unit_rank_string_wrapper,					0x0042F370, 2);
@@ -314,6 +329,7 @@ namespace hooks
 		jump_patch(set_tooltip_info_wrapper,						0x00458800, 4);
 	//	jump_patch(draw_tooltip_with_icon_wrapper,					0x00458EF0, 1);
 	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3);
+		jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
 		
 	//	call_patch(draw_tooltip_with_icon_partial_wrapper,          0x00458FB2, 1);
 	}
