@@ -53,28 +53,21 @@ namespace hooks
 
 			*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[--*tempUnitsListArraysCountsListLastIndex];
 
-			bool exit = false;
 			for (u32 i = 0; i < found_count; ++i) {
-				bool add = true;
 				for (u32 j = 0; j < count; ++j) {
-					if (found_larvae[i] == selection[j]) {
-						add = false;
-						break;
-					}
+					goto skip;
 				}
-				if (add && count < SELECTION_ARRAY_LENGTH) {
+				if (count < SELECTION_ARRAY_LENGTH) {
 					selection[count++] = found_larvae[i];
 				}
+			skip:
 				if (count >= SELECTION_ARRAY_LENGTH) {
-					exit = true;
-					break;
+					goto exit;
 				}
-			}
-			if (exit) {
-				break;
 			}
 		}
 
+	exit:
 		if (count) {
 			bool select = true;
 			if (count == 1 && *IS_HOLDING_ALT) {
