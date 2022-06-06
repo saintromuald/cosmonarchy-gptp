@@ -945,7 +945,7 @@ LABEL_23:
 		s32* v10; // edx
 
 		v2 = *(u16*)(a2 + 8);
-		v3 = activePlayerSelection->unit[*(u8*)(a2 + 11)];
+		v3 = active_player_selection->unit[*(u8*)(a2 + 11)];
 		v4 = sprites_dat::IsVisible[v2 + 390];
 		*(s8*)(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
 			+ (imageGrpGraphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)

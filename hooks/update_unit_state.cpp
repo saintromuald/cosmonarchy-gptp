@@ -296,7 +296,7 @@ namespace hooks
 		}
 
 		// Something to do with player-specific Signify overlays?
-		if (unit->new_flags_3 & 0x20 && unit == playersSelections->unit[*ACTIVE_NATION_ID][0])
+		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*ACTIVE_NATION_ID][0])
 		{
 			unit->new_flags_3 &= ~0x20;
 			scbw::refresh_console();

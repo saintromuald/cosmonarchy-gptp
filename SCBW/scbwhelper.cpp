@@ -11997,12 +11997,13 @@ namespace helper
 		return result;
 	}
 
-	char input_target_order_left_mouse_click(Event* event) {
-		static char result;
-		const u32 func_address = 0x004BD500;
+	bool compare_unit_rank(Unit* unit, Unit* compare_unit) {
+		static bool result;
+		const u32 func_address = 0x0049A350;
 		__asm {
 			PUSHAD
-			MOV ECX, event
+			MOV compare_unit, ESI
+			MOV unit, EDI
 			CALL func_address
 			MOV result, AL
 			POPAD
@@ -12010,7 +12011,20 @@ namespace helper
 		return result;
 	}
 
-	char input_place_building_left_mouse_click(Event* event, u32 unused, Point16 position) { // 0048E5D0
+	char input_target_order_left_mouse_click(Event* event_veeq) {
+		static char result;
+		const u32 func_address = 0x004BD500;
+		__asm {
+			PUSHAD
+			MOV ECX, event_veeq
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	char input_place_building_left_mouse_click(Event* event, u32 unused, Point16 position) {
 		static char result;
 		const u32 func_address = 0x0048E5D0;
 		__asm {

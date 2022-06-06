@@ -25,12 +25,12 @@ namespace hooks
 	{
 		// replacement for proc 00423660
 		bool TechCapableUnit = false;
-		Unit* firstInList = playersSelections->unit[*ACTIVE_NATION_ID][0];
+		Unit* firstInList = players_selections->unit[*ACTIVE_NATION_ID][0];
 		if (firstInList != nullptr)
 		{
 			// Initial check for energy-based switch abilities
 			// Not sure if Lanifect needs this anymore
-			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect
+			if (players_selections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect
 				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1)
 			{
 				TechCapableUnit = true;
@@ -49,7 +49,7 @@ namespace hooks
 			if (firstInList != nullptr)
 			{
 				/*
-				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel
+				if (players_selections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel
 					&& scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
 				{
 					TechCapableUnit = true;
@@ -59,7 +59,7 @@ namespace hooks
 			if (!TechCapableUnit)
 			{
 				char* message = (char*)statTxtTblNew->getString(864);
-				Unit* portrait_unit = playersSelections->unit[*ACTIVE_NATION_ID][0];
+				Unit* portrait_unit = players_selections->unit[*ACTIVE_NATION_ID][0];
 				helper::get_stat_txt_string(*active_portrait_unit, (*active_portrait_unit)->player, message);
 				return;
 			}
@@ -152,7 +152,7 @@ namespace hooks
 			} break;
 			case TechId::CancelNewAbility:
 			{
-				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranWyvern)
+				if (players_selections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranWyvern)
 				{
 					s32 action = 1;
 					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0};
@@ -163,8 +163,8 @@ namespace hooks
 					buf[4] = RustId::CancelLandGrab;
 					helper::queue_game_command(buf, 0xc);
 				}
-				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergAkistrokor
-					|| playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergSovroleth)
+				else if (players_selections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergAkistrokor
+					|| players_selections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ZergSovroleth)
 				{
 					s32 action = 1;
 					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0};

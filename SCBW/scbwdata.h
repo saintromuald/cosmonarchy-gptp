@@ -818,7 +818,7 @@ namespace images_dat {
 
 //Helper functions for several hooks
 SCBW_DATA(u8*, unit_iterator_pos, 0x006284B6);
-SCBW_DATA(const UnitsSel*, activePlayerSelection, 0x006284B8);
+SCBW_DATA(const UnitsSel*, active_player_selection, 0x006284B8);
 typedef Unit* (__cdecl* GetActivePlayerNextSelectionFunc)();
 SCBW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x0049A850);
 
@@ -826,7 +826,7 @@ SCBW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x
 struct PlayersSel {
 	Unit* unit[PLAYABLE_PLAYER_COUNT][SELECTION_ARRAY_LENGTH];
 };
-SCBW_DATA(const PlayersSel*, playersSelections, 0x006284E8);
+SCBW_DATA(const PlayersSel*, players_selections, 0x006284E8);
 struct PlayerSel {
 	Unit* unit[SELECTION_ARRAY_LENGTH];
 };
@@ -1008,6 +1008,9 @@ SCBW_DATA(char*,	order_id_obstructed,			0x00641693);
 SCBW_DATA(char*,	order_id_unit,					0x00641692);
 SCBW_DATA(u16*,		unk_rally_related,				0x006556FC);
 SCBW_DATA(u16*,		orders_buttonset,				0x0068C1C8);
+
+// For select_multiple_units_from_unit_list
+SCBW_DATA(char*,	client_selection_changed,		0x0059723C);
 
 //////////////////////////////////////////////////////////////// @}
 
