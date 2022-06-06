@@ -180,7 +180,7 @@ struct Unit : public UnitLayout
 	/// strength data (used by the AI). HP is guaranteed not to overflow.
 	void setHp(s32 hitpoints);
 	void heal(s32 hitpoints, Unit* source = nullptr, bool restore = true);
-	void healShields(s32 shields, Unit* source = nullptr, bool restore = true);
+	void heal_shields(s32 shields, Unit* source = nullptr, bool restore = true);
 	void heal_overflow(s32 amount, Unit* source = nullptr, bool restore = true);
 	void heal_underflow(s32 amount, Unit* source = nullptr, bool restore = true);
 	void heal_energy(s32 energy, Unit* source = nullptr);

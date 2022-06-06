@@ -505,7 +505,7 @@ void Unit::heal(s32 hitpoints, Unit* source, bool restore)
 	}
 }
 
-void Unit::healShields(s32 shields, Unit* source, bool restore)
+void Unit::heal_shields(s32 shields, Unit* source, bool restore)
 {
 	assert(this);
 	if (this->shields == this->get_max_shields_raw()) // skip healing if max shields already
@@ -529,13 +529,13 @@ void Unit::heal_overflow(s32 amount, Unit* source, bool restore)
 	s32 shields = this->hitpoints + amount - get_max_hp_raw();
 	if (shields > 0)
 	{
-		healShields(shields, source, restore);
+		heal_shields(shields, source, restore);
 	}
 }
 
 void Unit::heal_underflow(s32 amount, Unit* source, bool restore)
 {
-	healShields(amount, source, restore);
+	heal_shields(amount, source, restore);
 	s32 health = shields + amount - get_max_shields_raw();
 	if (health > 0)
 	{
@@ -546,11 +546,11 @@ void Unit::heal_underflow(s32 amount, Unit* source, bool restore)
 void Unit::heal_energy(s32 energy, Unit* source)
 {
 	assert(this);
-	if (this->energy == helper::getUnitMaxEnergy(this) * 256)
+	if (this->energy == helper::get_unit_max_energy(this) * 256)
 	{
 		return;
 	}
-	this->energy = std::min(this->energy + energy, helper::getUnitMaxEnergy(this) * 256);
+	this->energy = std::min(this->energy + energy, helper::get_unit_max_energy(this) * 256);
 }
 
 const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files

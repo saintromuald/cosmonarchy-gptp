@@ -660,7 +660,7 @@ LABEL_55:
 				{
 					if (!v23)
 					{
-						v24 = helper::getUnitMaxEnergy((Unit*)v5) >> 8;
+						v24 = helper::get_unit_max_energy((Unit*)v5) >> 8;
 						goto LABEL_32;
 					}
 				}
