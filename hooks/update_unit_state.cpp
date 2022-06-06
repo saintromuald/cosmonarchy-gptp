@@ -722,9 +722,9 @@ namespace hooks
 		s32 v4;
 		s32 v5;
 
-		v0 = *firstInvisibleUnit;
+		v0 = *first_invisible_unit;
 		v1 = 0;
-		if (*firstInvisibleUnit)
+		if (*first_invisible_unit)
 		{
 			while (1)
 			{
@@ -758,9 +758,9 @@ namespace hooks
 				{
 					if (v1)
 					{
-						*forceButtonRefresh = 1;
-						portraitRedraw[0] = 1;
-						*statusScreenRedraw = 1;
+						*force_button_refresh = 1;
+						portrait_redraw[0] = 1;
+						*status_screen_redraw = 1;
 						*control_under_mouse = 0;
 						*control_under_mouse_value = 0;
 					}
@@ -780,9 +780,9 @@ namespace hooks
 		}
 		if (!IS_IN_REPLAY && unitVar->player == *LOCAL_NATION_ID)
 		{
-			*forceButtonRefresh = 1;
-			portraitRedraw[0] = 1;
-			*statusScreenRedraw = 1;
+			*force_button_refresh = 1;
+			portrait_redraw[0] = 1;
+			*status_screen_redraw = 1;
 			*control_under_mouse = 0;
 			*control_under_mouse_value = 0;
 		}

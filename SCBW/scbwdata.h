@@ -381,7 +381,7 @@ SCBW_DATA(AiTown*,		AiTownArray,		0x006AA090);
 SCBW_DATA(AiExpandList*,AiActiveTownArray,	0x006AA050); // sizeof 0x64[0x8]
 
 // For CMDRECV_HoldPosition
-SCBW_DATA(s16*, mapHeightPixels,			0x006284B4);
+SCBW_DATA(s16*, map_height_pixels,			0x006284B4);
 SCBW_DATA(s32*, orderType4Position,			0x006D5C20);
 SCBW_DATA(s32*, orderType4Target,			0x006D5C24);
 
@@ -405,10 +405,10 @@ SCBW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
 SCBW_DATA(s16*, unkUpgradeCount,			0x006CA940);
 
 // For isUnitCloaked
-SCBW_DATA(Unit**,	firstInvisibleUnit,			0x0063FF5C);
-SCBW_DATA(s32*,		forceButtonRefresh,			0x0068C1B0);
-SCBW_DATA(s8*,		portraitRedraw,				0x0068AC74); // sizeof 4
-SCBW_DATA(s8*,		statusScreenRedraw,			0x0068C1F8);
+SCBW_DATA(Unit**,	first_invisible_unit,		0x0063FF5C);
+SCBW_DATA(s32*,		force_button_refresh,		0x0068C1B0);
+SCBW_DATA(s8*,		portrait_redraw,			0x0068AC74); // sizeof 4
+SCBW_DATA(s8*,		status_screen_redraw,		0x0068C1F8);
 SCBW_DATA(BinDlg**,	control_under_mouse,		0x0068C1E8);
 SCBW_DATA(BinDlg**,	control_under_mouse_value,	0x0068C1EC); // void* in Neiv's list
 

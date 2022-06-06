@@ -852,9 +852,9 @@ LABEL_18:
 			unit->current_button_set = temp_unit_id;
 		}
 
-		*forceButtonRefresh = 1;
-		portraitRedraw[0] = 1;
-		*statusScreenRedraw = 1;
+		*force_button_refresh = 1;
+		portrait_redraw[0] = 1;
+		*status_screen_redraw = 1;
 		*control_under_mouse = 0;
 		*control_under_mouse_value = 0;
 	}

@@ -442,7 +442,7 @@ LABEL_42:
 		s16 unit_id;
 		u8 orderId;
 
-		*((s8*)&mapHeightPixels + 2) = 0;
+		*((s8*)&map_height_pixels + 2) = 0;
 		result = helper::get_active_player_first_selection();
 		for (i = result; result; i = result)
 		{
@@ -599,9 +599,9 @@ LABEL_42:
 		}
 
 		s32 redraw = 0;
-		if (*firstInvisibleUnit == unit)
+		if (*first_invisible_unit == unit)
 		{
-			*firstInvisibleUnit = unit->burrow_link.next;
+			*first_invisible_unit = unit->burrow_link.next;
 			redraw = 1;
 		}
 
@@ -625,9 +625,9 @@ LABEL_42:
 
 		if (redraw)
 		{
-			*forceButtonRefresh = 1;
-			portraitRedraw[0] = (s8)1;
-			*statusScreenRedraw = 1;
+			*force_button_refresh = 1;
+			portrait_redraw[0] = (s8)1;
+			*status_screen_redraw = 1;
 			*control_under_mouse = 0;
 			*control_under_mouse_value = 0;
 		}

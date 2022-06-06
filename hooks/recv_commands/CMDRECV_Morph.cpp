@@ -83,4 +83,30 @@ namespace hooks
 		}
 		scbw::refresh_console();
 	}
+
+	// Hooked for multi-building select. -Pr0nogo
+	void cmdrecv_train(char* buffer) // 004C1C20
+	{
+		*unit_iterator_pos = 0; // XD
+		Unit* selection = helper::get_active_player_first_selection();
+		if (selection)
+		{
+			if (helper::create_unit_allowed(*(buffer + 1), selection, *ACTIVE_NATION_ID))
+			{
+				u16 unit_id = *(buffer + 1);
+				if (unit_id <= UnitId::Spell_DisruptionWeb)
+				{
+					if (helper::has_money_can_make(selection, unit_id))
+					{
+						helper::set_secondary_order(selection, OrderId::Train);
+					}
+					*force_button_refresh = 1;
+					portrait_redraw[0] = 1;
+					*status_screen_redraw = 1;
+					*control_under_mouse = 0;
+					*control_under_mouse_value = 0;
+				}
+			}
+		}
+	}
 }

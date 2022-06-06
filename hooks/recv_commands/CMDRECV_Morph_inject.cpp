@@ -37,6 +37,20 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) cmdrecv_train_wrapper()
+	{
+		static char* buffer;
+		__asm {
+			MOV buffer, EAX
+			PUSHAD
+		}
+		hooks::cmdrecv_train(buffer);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -45,5 +59,6 @@ namespace hooks
 	{
 		jump_patch(CMDRECV_BuildingMorphWrapper,	0x004C1910, 7);
 		jump_patch(CMDRECV_UnitMorphWrapper,		0x004C1990, 3);
+	//	jump_patch(cmdrecv_train_wrapper,			0x004C1C20, 6);
 	}
 }
