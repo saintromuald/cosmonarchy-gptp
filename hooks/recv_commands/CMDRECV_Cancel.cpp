@@ -110,7 +110,6 @@ namespace hooks
 			if (unit->player == *ACTIVE_NATION_ID) {
 				helper::ai_cancel_structure(unit);
 			}
-			unit = get_active_player_next_selection();
 		}
 	}
 
