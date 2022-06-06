@@ -1327,4 +1327,7 @@ namespace helper
 
 	char input_target_order_left_mouse_click(Event* event_veeq);											// 004BD500
 	SCBW_FUNC(0x004845F0, void __cdecl, input_target_order_right_mouse_click);
+
+	char input_place_building_left_mouse_click(Event* event, u32 unused, Point16 position);					// 0048E5D0
+	SCBW_FUNC(0x00484600, void __cdecl, input_place_building_right_mouse_click);
 }

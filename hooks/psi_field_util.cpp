@@ -141,7 +141,7 @@ namespace hooks
 			}
 		}
 
-		if (!(*IS_PLACING_BUILDING))
+		if (!(*is_place_building))
 		{
 			Unit* selUnit;
 			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)

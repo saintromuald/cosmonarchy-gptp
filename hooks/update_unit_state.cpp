@@ -529,7 +529,7 @@ namespace hooks
 		*interceptorFocusedThisFrame = 0;
 		if (helper::is_selected_unit_group_enabled())
 		{
-			if (*IS_PLACING_BUILDING)
+			if (*is_place_building)
 			{
 				helper::refresh_layers_3_and_4();
 				helper::end_building_placement();
