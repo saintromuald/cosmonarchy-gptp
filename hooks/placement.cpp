@@ -33,7 +33,7 @@ namespace hooks
     u8 draw_placement_box(Point16 ecx0) // 0048DDC0
     {
         Point16 placement_box = ecx0;
-        u8 result = *IS_PLACING_BUILDING;
+        u8 result = *is_place_building;
         if (!result)
         {
             return result;

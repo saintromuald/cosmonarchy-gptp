@@ -277,6 +277,29 @@ namespace hooks
 
 			// Quick Casting
 			if (config.quick_casting) {
+				if (*is_place_building) {
+					Event event = {};
+					event.x_pos = mouse->x;
+					event.y_pos = mouse->y;
+
+					Point16 position = {};
+					position.x = mouse->x;
+					position.y = mouse->y;
+
+					bool not_held = true;
+					for (char c = 'A'; c <= 'Z'; ++c) {
+						if (IS_KEYCODE_USED[c]) {
+							not_held = false;
+							break;
+						}
+					}
+					if (not_held) {
+						helper::input_place_building_left_mouse_click(&event, 0, position);
+						if (*is_place_building) {
+							helper::input_place_building_right_mouse_click();
+						}
+					}
+				}
 				if (*is_targeting) {
 					Event event = {};
 					event.x_pos = mouse->x;

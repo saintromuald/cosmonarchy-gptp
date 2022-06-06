@@ -412,7 +412,7 @@ namespace hooks
 			{
 				if (*bDoingCancellableTargetOrder == 0)
 				{
-					if (*IS_PLACING_BUILDING)
+					if (*is_place_building)
 					{
 						*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_CancelPlaceBuilding;
 					}

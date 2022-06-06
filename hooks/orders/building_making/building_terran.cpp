@@ -428,7 +428,7 @@ namespace hooks
 						unit->main_order_id = OrderId::ConstructingBuilding;
 						unit->main_order_state = 3;
 						unit->order_target.unit = builtUnit;
-						if (*IS_PLACING_BUILDING)
+						if (*is_place_building)
 						{
 							if (!helper::can_still_place_building())
 							{
@@ -474,8 +474,8 @@ namespace hooks
 	char refresh_screen(s32 ecx0) // 0048DDC0
 	{
 		auto v6 = ecx0;
-		auto result = *IS_PLACING_BUILDING;
-		if (*IS_PLACING_BUILDING)
+		auto result = *is_place_building;
+		if (*is_place_building)
 		{
 			auto y = mouse->y;
 			auto x = mouse->x;
