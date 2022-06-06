@@ -40,7 +40,7 @@ namespace hooks
 					helper::MindControlHit(unit, target);
 					target->order_to_idle();
 				}
-				if (!(*CHEAT_STATE & CheatFlags::TheGathering)) {
+				if (!(*cheat_state & CheatFlags::TheGathering)) {
 					unit->spend_unit_energy(techEnergyCost);
 				}
 				helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);

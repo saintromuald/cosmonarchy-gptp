@@ -542,8 +542,8 @@ SCBW_DATA(s8*,		unkSoundBoolCore,				0x006D1264);
 */
 
 // For handle_window_messages
-//typedef void(__fastcall* input_procs_func[19])(s32 arg);
-//SCBW_DATA(input_procs_func,	input_procs,	0x005968A0);
+typedef void(__fastcall*		input_procs_func)(s32 arg); // sizeof 19
+SCBW_DATA(input_procs_func*,	input_procs,	0x005968A0);
 
 // For get_standard_attack_target
 SCBW_DATA(u32*,		min_range,					0x006955B8); // sizeof 10
@@ -921,27 +921,27 @@ SCBW_DATA(ResourceAreaArray*, resource_areas, 0x00692688);
 
 //-------- Internal constants --------//
 
-SCBW_DATA(const b32*, IS_GAME_PAUSED, 0x006509C4);  //See scbw::is_game_paused()
-SCBW_DATA(const b8*, IS_BROOD_WAR, 0x0058F440);  //See scbw::isBroodWarMode()
-SCBW_DATA(const u32*, CHEAT_STATE, 0x006D5A6C);  //See scbw::is_cheat_enabled()
-SCBW_DATA(const s32*, MAX_UNIT_WIDTH, 0x006BEE68);
-SCBW_DATA(const s32*, MAX_UNIT_HEIGHT, 0x006BB930);
-SCBW_DATA(const b32*, IS_IN_REPLAY, 0x006D0F14);  //See scbw::isInReplay()
-SCBW_DATA(const b32*, IS_REPLAY_PAUSED, 0x006D11B0);
-SCBW_DATA(b32*, IS_IN_GAME_LOOP, 0x006D11C8);
-SCBW_DATA(u32*, lastRandomNumber, 0x0051CA14);  //See scbw::random(), scbw::rand_between()
-SCBW_DATA(b32*, canUpdatePoweredStatus, 0x0063FF44);
-SCBW_DATA(b32*, is_place_building, 0x00640880);
+SCBW_DATA(const b32*, is_game_paused,		0x006509C4);  // See scbw::is_game_paused()
+SCBW_DATA(const b8*, is_brood_war,			0x0058F440);  // See scbw::isBroodWarMode()
+SCBW_DATA(const u32*, cheat_state,			0x006D5A6C);  // See scbw::is_cheat_enabled()
+SCBW_DATA(const s32*, max_unit_width,		0x006BEE68);
+SCBW_DATA(const s32*, max_unit_height,		0x006BB930);
+SCBW_DATA(const b32*, is_in_replay,			0x006D0F14);  // See scbw::isInReplay()
+SCBW_DATA(const b32*, is_replay_paused,		0x006D11B0);
+SCBW_DATA(b32*, is_in_game_loop,			0x006D11C8);
+SCBW_DATA(u32*, last_random_number,			0x0051CA14);  // See scbw::random(), scbw::rand_between()
+SCBW_DATA(b32*, can_update_powered_status,	0x0063FF44);
+SCBW_DATA(b32*, is_placing_building,		0x00640880);
 
 //-------- Tech levels --------//
 
 struct _scTechs {
-	u8 is_enabled[PLAYER_COUNT][24];		//0x0058CE24
-	u8 isResearched[PLAYER_COUNT][24];	//0x0058CF44
+	u8 is_enabled[PLAYER_COUNT][24];		// 0058CE24
+	u8 isResearched[PLAYER_COUNT][24];		// 0058CF44
 };
 struct _bwTechs {
-	u8 is_enabled[PLAYER_COUNT][20];		//0x0058F050
-	u8 isResearched[PLAYER_COUNT][20];	//0x0058F140
+	u8 is_enabled[PLAYER_COUNT][20];		// 0058F050
+	u8 isResearched[PLAYER_COUNT][20];		// 0058F140
 };
 
 // Available and Researched techs are exactly next to each other,
@@ -1011,6 +1011,12 @@ SCBW_DATA(u16*,		orders_buttonset,				0x0068C1C8);
 
 // For select_multiple_units_from_unit_list
 SCBW_DATA(char*,	client_selection_changed,		0x0059723C);
+
+// For set_ingame_input_procs
+SCBW_DATA(HACCEL*,				common_accelerator,		0x006D120C);
+SCBW_DATA(HACCEL*,				accelerator_tables,		0x005968F0);
+SCBW_DATA(input_procs_func*,	left_click_proc,		0x006556EC);
+SCBW_DATA(input_procs_func*,	right_click_proc,		0x006556F0);
 
 //////////////////////////////////////////////////////////////// @}
 

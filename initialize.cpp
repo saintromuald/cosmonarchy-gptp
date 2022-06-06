@@ -485,7 +485,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch((void*)(0x004B9988 + 2), &human_slots, sizeof(u8));
 
 	// injection
-	hooks::injectGameHooks();
+	hooks::inject_game_hooks();
 	hooks::injectDrawHook();
 
 	hooks::injectSiegeTransformHooks();

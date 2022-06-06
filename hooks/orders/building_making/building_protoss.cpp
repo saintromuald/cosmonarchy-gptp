@@ -258,7 +258,7 @@ namespace hooks
 			BuildingModifier modifier = get_building_modifier(building, 0, true);
 			if (building->remaining_build_time != 0)
 			{
-				if (*CHEAT_STATE & CheatFlags::OperationCwal)
+				if (*cheat_state & CheatFlags::OperationCwal)
 				{
 					if (building->remaining_build_time > 16)
 					{
@@ -282,7 +282,7 @@ namespace hooks
 				}
 			}
 
-			if (*CHEAT_STATE & CheatFlags::OperationCwal)
+			if (*cheat_state & CheatFlags::OperationCwal)
 			{
 				hpGain = building->build_repair_hp_gain * 16;
 			}
@@ -292,7 +292,7 @@ namespace hooks
 			}
 			building->setHp(building->hitpoints + hpGain);
 
-			if (*CHEAT_STATE & CheatFlags::OperationCwal)
+			if (*cheat_state & CheatFlags::OperationCwal)
 			{
 				shield_gain = building->shield_gain * 16;
 			}

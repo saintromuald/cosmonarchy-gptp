@@ -61,7 +61,7 @@ namespace hooks
 		u32 index = 0;
 
 		if (!(activeUnit->status & UnitStatus::IsHallucination)
-			|| (!*IS_IN_REPLAY && activeUnit->player != *LOCAL_NATION_ID))
+			|| (!*is_in_replay && activeUnit->player != *LOCAL_NATION_ID))
 		{
 			bool bNoAirWeaponDisplay;
 			u32 airWeapon;
@@ -340,7 +340,7 @@ namespace hooks
 			|| unit->id == UnitId::ZergInfestedTerran
 			|| unit->status & UnitStatus::IsHallucination
 			&& unit->player == *LOCAL_NATION_ID
-			&& !*IS_IN_REPLAY)
+			&& !*is_in_replay)
 		{
 			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
 			BinDlg* child = actual_dialog->children_dialog;
@@ -392,7 +392,7 @@ namespace hooks
 		{
 			goto LABEL_35;
 		}
-		if (!IS_IN_REPLAY && activeUnit->player != *LOCAL_NATION_ID)
+		if (!is_in_replay && activeUnit->player != *LOCAL_NATION_ID)
 		{
 			goto LABEL_6;
 		}

@@ -14,7 +14,7 @@ namespace hooks
 		||	techId == TechId::LuminaryAuralAssault
 		||	(order_target && hooks::canTargetSpell(techId, order_target, 228, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
 		{
-			char cheatFlags = *CHEAT_STATE;
+			char cheatFlags = *cheat_state;
 			u16 techCost = techdata_dat::EnergyCost[techId] << 8;
 			*energyCost = techCost;
 			if ((cheatFlags & 8 || caster->energy >= techCost))
@@ -252,7 +252,7 @@ namespace hooks
 					spellCost = techdata_dat::EnergyCost[techUsed] * 256;
 				}
 
-				if (!(*CHEAT_STATE & CheatFlags::TheGathering) &&
+				if (!(*cheat_state & CheatFlags::TheGathering) &&
 					unit->energy < spellCost)
 				{
 					u8 raceId = unit->get_race();

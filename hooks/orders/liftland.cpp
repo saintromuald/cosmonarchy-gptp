@@ -204,7 +204,7 @@ namespace hooks
 				{
 					helper::completeAddon(unit, addon);
 				}
-				if (*is_place_building)
+				if (*is_placing_building)
 				{
 					helper::placebuildingProc();
 
@@ -259,7 +259,7 @@ namespace hooks
 			}
 			scbw::update_custom_creep_disappearance(unit);
 
-			if (*is_place_building)
+			if (*is_placing_building)
 			{
 				helper::placebuildingProc();
 			}

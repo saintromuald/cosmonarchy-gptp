@@ -82,7 +82,7 @@ namespace hooks
 				&& units_dat::GroupFlags[unit->id].is_protoss != 1
 				&& unit->status & UnitStatus::GroundedBuilding)
 			{
-				*canUpdatePoweredStatus = 1;
+				*can_update_powered_status = 1;
 			}
 
 			helper::give_ai(unit);

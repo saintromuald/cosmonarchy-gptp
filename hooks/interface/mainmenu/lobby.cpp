@@ -65,7 +65,7 @@ namespace hooks
 		}
 
 		// Replay-specific
-		if (*IS_IN_REPLAY)
+		if (*is_in_replay)
 		{
 			for (s32 i = 0; i < 12; i++)
 			{

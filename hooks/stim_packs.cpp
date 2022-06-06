@@ -72,7 +72,7 @@ namespace hooks
 				&& activePlayerCurrentSelection->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
 				s32 random_value;
-				if (!*IS_IN_GAME_LOOP)
+				if (!*is_in_game_loop)
 				{
 					random_value = 0;
 				}
@@ -82,8 +82,8 @@ namespace hooks
 					static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
 					*randomnessCounter_0051C68C = (*randomnessCounter_0051C68C) + 1;
 					*randomnessCounter_0051CA18 = (*randomnessCounter_0051CA18) + 1;
-					*lastRandomNumber = ((*lastRandomNumber) * 0x015A4E35) + 1;
-					random_value = ((*lastRandomNumber) / 65535) & 32767;
+					*last_random_number = ((*last_random_number) * 0x015A4E35) + 1;
+					random_value = ((*last_random_number) / 65535) & 32767;
 				}
 				// if used random, should give a value between 0 and 1
 				random_value = (random_value + random_value) / 32768;

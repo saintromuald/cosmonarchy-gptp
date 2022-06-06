@@ -412,7 +412,7 @@ namespace hooks
 			{
 				if (*bDoingCancellableTargetOrder == 0)
 				{
-					if (*is_place_building)
+					if (*is_placing_building)
 					{
 						*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_CancelPlaceBuilding;
 					}
@@ -425,7 +425,7 @@ namespace hooks
 		}
 		else
 		{
-			if (*IS_REPLAY_PAUSED != 0)
+			if (*is_replay_paused != 0)
 			{
 				*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_ReplayPaused;
 			}
@@ -471,7 +471,7 @@ namespace hooks
 			bool bNeedUpdateButtonSet = false;
 			if (*BUTTONSET_SPECIAL_BUTTONSETID != UnitId::Buttons_Blank)
 			{
-				if (*IS_IN_REPLAY)
+				if (*is_in_replay)
 				{
 					bNeedUpdateButtonSet = true;
 				}
@@ -613,7 +613,7 @@ namespace hooks
 
 		if (jumpTo59A9F)
 		{
-			if (*IS_IN_REPLAY)
+			if (*is_in_replay)
 			{
 				helper::replay_stat_buttons(*BUTTONSET_DIALOG);
 			}
@@ -1612,7 +1612,7 @@ namespace hooks
 			// 00459278
 			if (!bStopThere && !jumpto5934E)
 			{
-				jumpto5933C = (!*IS_IN_REPLAY) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *LOCAL_NATION_ID);
+				jumpto5933C = (!*is_in_replay) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *LOCAL_NATION_ID);
 				if (!jumpto5933C)
 				{
 					// 0045929A

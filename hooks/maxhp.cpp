@@ -184,7 +184,7 @@ LABEL_26:
 
 		v1 = (BinDlg*)a1;
 		v2 = *active_portrait_unit;
-		if (IS_IN_REPLAY || (*active_portrait_unit)->player == *LOCAL_NATION_ID)
+		if (is_in_replay || (*active_portrait_unit)->player == *LOCAL_NATION_ID)
 		{
 			helper::get_supplies_used_no_args();
 			if (*statusScreenFunc != 12)

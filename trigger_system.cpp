@@ -459,7 +459,7 @@ static void init_trigger_system() {
 }
 
 void tick_trigger_system(bool in_game) {
-	if (!music_init || (*IS_IN_GAME_LOOP && *elapsedTimeFrames == 0)) {
+	if (!music_init || (*is_in_game_loop && *elapsedTimeFrames == 0)) {
 		init_trigger_system();
 	}
 

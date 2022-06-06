@@ -1055,10 +1055,10 @@ namespace scbw
 	// Similar to 004DC4A0 randomize_short, but doesn't update the RNG and doesn't use a parameter among possible differences.
 	u16 random()
 	{
-		if (*IS_IN_GAME_LOOP)
+		if (*is_in_game_loop)
 		{
-			*lastRandomNumber = 22695477 * (*lastRandomNumber) + 1;
-			return (*lastRandomNumber >> 16) % 32768; // Make a number between 0 and 32767
+			*last_random_number = 22695477 * (*last_random_number) + 1;
+			return (*last_random_number >> 16) % 32768; // Make a number between 0 and 32767
 		}
 		else
 		{

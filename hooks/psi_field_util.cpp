@@ -66,7 +66,7 @@ void addPsiField(Unit* unit)
 	}
 	*first_psi_field_provider = unit;
 	helper::addPsiFieldSprite(unit);
-	*canUpdatePoweredStatus = true;
+	*can_update_powered_status = true;
 }
 
 // Identical to function @ 0x00493100
@@ -91,7 +91,7 @@ void removePsiField(Unit* unit)
 	{
 		unit->building.pylon_aura->free();
 		unit->building.pylon_aura = nullptr;
-		*canUpdatePoweredStatus = true;   // Might work?
+		*can_update_powered_status = true;   // Might work?
 	}
 	removeFromPsiProviderList(unit);
 }
@@ -109,7 +109,7 @@ void updatePsiFieldPosition(Unit* unit)
 	{
 		psiField->set_position(unit->get_x(), unit->get_y());
 		helper::refreshSpriteData(psiField);
-		*canUpdatePoweredStatus = true;
+		*can_update_powered_status = true;
 	}
 }
 
@@ -141,7 +141,7 @@ namespace hooks
 			}
 		}
 
-		if (!(*is_place_building))
+		if (!(*is_placing_building))
 		{
 			Unit* selUnit;
 			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)

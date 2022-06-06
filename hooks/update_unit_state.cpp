@@ -529,7 +529,7 @@ namespace hooks
 		*interceptorFocusedThisFrame = 0;
 		if (helper::is_selected_unit_group_enabled())
 		{
-			if (*is_place_building)
+			if (*is_placing_building)
 			{
 				helper::refresh_layers_3_and_4();
 				helper::end_building_placement();
@@ -778,7 +778,7 @@ namespace hooks
 		{
 			helper::play_sound_from_unit(soundId, unit, 1, 0);
 		}
-		if (!IS_IN_REPLAY && unitVar->player == *LOCAL_NATION_ID)
+		if (!is_in_replay && unitVar->player == *LOCAL_NATION_ID)
 		{
 			*force_button_refresh = 1;
 			portrait_redraw[0] = 1;

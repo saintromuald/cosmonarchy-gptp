@@ -1330,4 +1330,6 @@ namespace helper
 
 	char input_place_building_left_mouse_click(Event* event, u32 unused, Point16 position);					// 0048E5D0
 	SCBW_FUNC(0x00484600, void __cdecl, input_place_building_right_mouse_click);
+
+	void initialize_input_procs();																			// 004D2FF0
 }

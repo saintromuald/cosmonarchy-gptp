@@ -33,7 +33,7 @@ namespace hooks
 			case 1: {
 				if (!(target->status & UnitStatus::Completed)) {
 					unit->order_to(OrderId::ConstructingBuilding, target);
-					if (*is_place_building) {
+					if (*is_placing_building) {
 						if (!helper::can_still_place_building()) {
 							helper::refresh_layers_3_and_4();
 							helper::end_building_placement();
@@ -122,7 +122,7 @@ namespace hooks
 		}
 		if (do_repair) {
 			u32 hpGain = target->build_repair_hp_gain;
-			if (*CHEAT_STATE & CheatFlags::OperationCwal) {
+			if (*cheat_state & CheatFlags::OperationCwal) {
 				hpGain *= 16;
 			}
 			// Talos - Advanced repair speed

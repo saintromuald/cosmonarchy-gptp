@@ -243,7 +243,7 @@ namespace hooks
 			{
 				u32 hpGain = builtUnit->build_repair_hp_gain * modifier.multiplier;
 				UnitExt* unitExt = globals.get_unit_ext(builtUnit);
-				if (*CHEAT_STATE & CheatFlags::OperationCwal)
+				if (*cheat_state & CheatFlags::OperationCwal)
 				{
 					hpGain *= 16;
 				}
@@ -428,7 +428,7 @@ namespace hooks
 						unit->main_order_id = OrderId::ConstructingBuilding;
 						unit->main_order_state = 3;
 						unit->order_target.unit = builtUnit;
-						if (*is_place_building)
+						if (*is_placing_building)
 						{
 							if (!helper::can_still_place_building())
 							{
@@ -474,8 +474,8 @@ namespace hooks
 	char refresh_screen(s32 ecx0) // 0048DDC0
 	{
 		auto v6 = ecx0;
-		auto result = *is_place_building;
-		if (*is_place_building)
+		auto result = *is_placing_building;
+		if (*is_placing_building)
 		{
 			auto y = mouse->y;
 			auto x = mouse->x;

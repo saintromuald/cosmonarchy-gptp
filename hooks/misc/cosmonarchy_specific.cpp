@@ -277,7 +277,7 @@ LABEL_18:
 						v24 = completed_unit_counts[requiredId].player[unit->player] + all_unit_counts[requiredId].player[unit->player];
 						goto LABEL_71;
 					case ReqOpcode::HasAddonAttached:
-						if (*CHEAT_STATE & CheatFlags::ModifyThePhaseVariance)
+						if (*cheat_state & CheatFlags::ModifyThePhaseVariance)
 						{
 							++v7;
 							v11 = v9 + 1;
@@ -413,7 +413,7 @@ LABEL_18:
 					case ReqOpcode::Blank:
 						goto LABEL_93;
 					case ReqOpcode::BroodWar:
-						if (!*IS_BROOD_WAR)
+						if (!*is_brood_war)
 						{
 							*lastError = 26;
 							return 0;
@@ -422,7 +422,7 @@ LABEL_18:
 						goto LABEL_72;
 					case ReqOpcode::TechIsResearched:
 						auto v10 = reqTable[v7++];
-						if (scbw::has_tech_researched(unit->player,v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
+						if (scbw::has_tech_researched(unit->player,v10) && !(*cheat_state & CheatFlags::MedievalMan))
 						{
 							*lastError = 9;
 							return -1;
@@ -438,7 +438,7 @@ LABEL_18:
 						v11 = v9 + 1;
 						goto LABEL_72;
 					default:
-						if (*CHEAT_STATE & 0x2000)
+						if (*cheat_state & 0x2000)
 							++v9;
 						v24 = completed_unit_counts[requiredId][player];
 					LABEL_71:
@@ -722,12 +722,12 @@ LABEL_18:
 	Unit* create_unit(u16 unitType, s32 x, s32 y, s32 playerId) 
 	{
 		u32 randomNumber = 0;
-		if (*IS_IN_GAME_LOOP)
+		if (*is_in_game_loop)
 		{
 			++randomCounts[14];
-			*lastRandomNumber = 0x15A4E35 * *lastRandomNumber + 1;
+			*last_random_number = 0x15A4E35 * *last_random_number + 1;
 			++(*randomCountsTotal);
-			randomNumber = (*lastRandomNumber >> 16) & 0x7FFF;
+			randomNumber = (*last_random_number >> 16) & 0x7FFF;
 		}
 		Unit* unit = helper::unit_constructor(x, y, unitType, playerId, randomNumber);
 		if (!unit)

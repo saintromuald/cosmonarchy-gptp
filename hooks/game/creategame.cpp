@@ -67,7 +67,7 @@ namespace hooks
 				{
 					gameActive = 0;
 					nextSCMainState = 4;
-					if (!IS_IN_REPLAY)
+					if (!is_in_replay)
 						replayEndFrame = elapsedTimeFrames;
 				}
 				nextLeaveGameMenu(v3);
@@ -125,7 +125,7 @@ namespace hooks
 			{
 				gameState = 0;
 				gamePosition = 4;
-				if ( !IS_IN_REPLAY )
+				if ( !is_in_replay )
 					Replay_FrameCount = elapsedTime;
 			}
 			nextLeaveGameMenu(v4);
@@ -172,7 +172,7 @@ namespace hooks
 				{
 				gameState = 0;
 				gamePosition = 4;
-				if ( !IS_IN_REPLAY )
+				if ( !is_in_replay )
 					Replay_FrameCount = elapsedTime;
 				}
 				nextLeaveGameMenu(v10);
@@ -191,7 +191,7 @@ namespace hooks
 			{
 				gameState = 0;
 				gamePosition = 4;
-				if ( !IS_IN_REPLAY )
+				if ( !is_in_replay )
 				{
 				v8 = (void *)elapsedTime;
 				Replay_FrameCount = elapsedTime;
@@ -212,7 +212,7 @@ namespace hooks
 		{
 			gameState = 0;
 			gamePosition = 4;
-			if ( !IS_IN_REPLAY )
+			if ( !is_in_replay )
 			{
 			v9 = (void *)elapsedTime;
 			Replay_FrameCount = elapsedTime;

@@ -111,8 +111,40 @@ namespace hooks
 		tick_trigger_system(false);
 	}
 
-	void __cdecl set_in_game_input_procs() {
-		
+	// Hooked to remove the 1-frame delay from quick-casting. -Pr0nogo
+	u32 __cdecl set_ingame_input_procs() { // 00484CC0
+		helper::initialize_input_procs();
+		input_procs[4] = (input_procs_func)0x00484380; // game_input_left_mouse_button_down;
+		input_procs[6] = (input_procs_func)0x00484380; // game_input_left_mouse_button_down;
+		input_procs[7] = (input_procs_func)0x00484620; // game_input_right_mouse_button_down;
+		input_procs[9] = (input_procs_func)0x00484620; // game_input_right_mouse_button_down;
+		*common_accelerator = *accelerator_tables;
+		input_procs[0] = (input_procs_func)0x00484350; // null_input;
+		input_procs[10] = (input_procs_func)0x00484520; // game_input_middle_mouse_button_down;
+		input_procs[11] = (input_procs_func)0x004843A0; // game_input_middle_mouse_button_up;
+		input_procs[3] = 0;
+		input_procs[13] = (input_procs_func)0x00484390; // game_input_idle;
+		input_procs[15] = (input_procs_func)0x004846B0; // game_input_user_key_press;
+		input_procs[17] = 0;
+		input_procs[18] = 0;
+		input_procs[16] = (input_procs_func)0x004846E0; // cmdact_hotkey;
+
+		if (*is_placing_building)
+		{
+			*left_click_proc = (input_procs_func)0x0048E5D0; // input_place_building_left_mouse_click;
+			*right_click_proc = (input_procs_func)0x00484600; // input_place_building_right_mouse_click;
+		}
+		else if (is_targeting)
+		{
+			*left_click_proc = (input_procs_func)0x004BD500; // input_target_order_left_mouse_click;
+			*right_click_proc = (input_procs_func)0x004845F0; // input_target_order_right_mouse_click;
+		}
+		else
+		{
+			*left_click_proc = (input_procs_func)0x0046FF70; // input_game_left_mouse_click;
+			*right_click_proc = (input_procs_func)0x004564E0; // input_game_right_mouse_click;
+		}
+		return 0;
 	}
 
 	/// This hook is called every frame
@@ -281,7 +313,7 @@ namespace hooks
 
 			// Quick Casting
 			if (config.quick_casting) {
-				if (*is_place_building) {
+				if (*is_placing_building) {
 					Event event = {};
 					event.x_pos = mouse->x;
 					event.y_pos = mouse->y;
@@ -299,7 +331,7 @@ namespace hooks
 					}
 					if (not_held) {
 						helper::input_place_building_left_mouse_click(&event, 0, position);
-						if (*is_place_building) {
+						if (*is_placing_building) {
 							helper::input_place_building_right_mouse_click();
 						}
 					}

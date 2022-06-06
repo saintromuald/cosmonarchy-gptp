@@ -61,7 +61,7 @@ namespace hooks
 		s32 v7; // [esp+0h] [ebp-4h]
 
 		v7 = a1;
-		if (IS_IN_REPLAY)
+		if (is_in_replay)
 		{
 			v3 = *scenarioCHKSize;
 			v4 = scenarioChk;

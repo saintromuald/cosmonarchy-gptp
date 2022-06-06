@@ -120,7 +120,7 @@ namespace hooks
 						{
 							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
 						}
-						else if (*IS_IN_REPLAY)
+						else if (*is_in_replay)
 						{
 							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
 						}

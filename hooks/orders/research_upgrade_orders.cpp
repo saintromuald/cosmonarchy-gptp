@@ -28,7 +28,7 @@ namespace hooks
 					upgrade_level = UpgradesSc->currentLevel[unit->player][unit->building.upgrade_id];
 
 				if (upgrade_level < unit->building.upgrade_level &&
-					!(*CHEAT_STATE & CheatFlags::OperationCwal))
+					!(*cheat_state & CheatFlags::OperationCwal))
 					bStopThere = true;
 
 			}
@@ -179,7 +179,7 @@ namespace hooks
 					bIsResearched = TechBw->isResearched[unit->player][unit->building.tech_id - TechId::Restoration];
 
 				if (bIsResearched == 0 &&
-					!(*CHEAT_STATE & CheatFlags::OperationCwal)
+					!(*cheat_state & CheatFlags::OperationCwal)
 					)
 					bStopThere = true;
 
@@ -193,7 +193,7 @@ namespace hooks
 
 				if (unit->building.tech_id < TechId::Restoration)
 					TechSc->isResearched[unit->player][unit->building.tech_id] = 1;
-				else if (*IS_BROOD_WAR)
+				else if (*is_brood_war)
 					TechBw->isResearched[unit->player][unit->building.tech_id - TechId::Restoration] = 1;
 
 				scbw::refresh_console();

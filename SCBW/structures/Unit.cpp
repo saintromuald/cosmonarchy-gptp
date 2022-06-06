@@ -796,7 +796,7 @@ void Unit::removeAcidSpores()
 void Unit::spend_unit_energy(u32 energySpent)
 {
 	UnitExt* unitExt = globals.get_unit_ext(this);
-	if (!(*CHEAT_STATE & CheatFlags::TheGathering))
+	if (!(*cheat_state & CheatFlags::TheGathering))
 	{
 		if (this->energy > energySpent)
 		{

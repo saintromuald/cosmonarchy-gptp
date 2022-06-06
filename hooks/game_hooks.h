@@ -2,10 +2,10 @@
 
 namespace hooks
 {
-	void __cdecl set_in_game_input_procs();
+	u32 __cdecl set_ingame_input_procs(); // 00484CC0
 	bool game_on();
 	bool game_end();
 	void next_ui_frame();
 	bool next_frame();
-	void injectGameHooks();
+	void inject_game_hooks();
 }

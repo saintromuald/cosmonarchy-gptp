@@ -305,7 +305,7 @@ namespace hooks
 	}
 
 	Unit* CreateUnitXY(u16 player_id, u16 id, u32 x, u32 y, bool prevent_creep) {
-		if (units_dat::StarEditAvailFlags[id] & 0x200 && !*IS_BROOD_WAR) {
+		if (units_dat::StarEditAvailFlags[id] & 0x200 && !*is_brood_war) {
 			return 0;
 		}
 		Unit* unit = helper::create_unit(id, x, y, player_id);

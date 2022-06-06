@@ -151,16 +151,16 @@ namespace hooks
 				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevationLevel + 1);
 
 				u32 random_value = 0;
-				if (*IS_IN_GAME_LOOP) {
+				if (*is_in_game_loop) {
 					// Hardcoded (not using a function) RNG use, like the original code did
 					static u32* const u32_0051C654 = (u32*)0x0051C654;
 					static u32* const u32_0051CA18 = (u32*)0x0051CA18;
 
 					*u32_0051C654 = *u32_0051C654 + 1;
 					*u32_0051CA18 = *u32_0051CA18 + 1;
-					*lastRandomNumber = (*lastRandomNumber * 0x015A4E35) + 1;
+					*last_random_number = (*last_random_number * 0x015A4E35) + 1;
 
-					random_value = ((*lastRandomNumber) / 65536) & 0x7FFF;
+					random_value = ((*last_random_number) / 65536) & 0x7FFF;
 				}
 
 				// Original code added (random_value & 1) to the base sound

@@ -1214,7 +1214,7 @@ namespace hooks
 	// Hooked to fix one-shots never notifying. -Pr0nogo
 	void unit_attack_notify(Unit* unit) // 0048F230
 	{
-		if (!IS_IN_REPLAY && unit->player == *LOCAL_NATION_ID)
+		if (!is_in_replay && unit->player == *LOCAL_NATION_ID)
 		{
 			unit->last_event_color = palette_index_reference[20];
 			bool cooldown = *notify_cooldown == 0;
