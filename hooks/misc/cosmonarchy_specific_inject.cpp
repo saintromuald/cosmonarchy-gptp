@@ -1,8 +1,9 @@
 #include "hooks/misc/cosmonarchy_specific.h"
 #include "globals.h"
+
 namespace hooks
 {
-	void __declspec(naked) getFlingyHaltDistanceHookWrapper()
+	void __declspec(naked) get_flingy_halt_distance_wrapper()
 	{
 		static Flingy* flingy;
 		static u32 result;
@@ -10,7 +11,7 @@ namespace hooks
 			MOV flingy, ECX
 			PUSHAD
 		}
-		result = hooks::getFlingyHaltDistanceHook(flingy);
+		result = hooks::get_flingy_halt_distance(flingy);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -19,7 +20,7 @@ namespace hooks
 	}
 
 	const u32 jmp_00496390 = 0x00496390;
-	void __declspec(naked) initializeFlingy_96377_JmpWrapper()
+	void __declspec(naked) initialize_flingy_96377_jump_wrapper()
 	{
 		static u32 topSpeed;
 		static u32 flingy_id;
@@ -34,8 +35,8 @@ namespace hooks
 			MOV flingy, ESI
 			PUSHAD
 		}
-		topSpeed = hooks::realTopSpeed(flingy, flingy_id);
-		acceleration = hooks::realAcceleration(flingy, flingy_id);
+		topSpeed = hooks::real_top_speed(flingy, flingy_id);
+		acceleration = hooks::real_acceleration(flingy, flingy_id);
 		globals.flingy_init_bullet_id = -1;
 		__asm {
 			POPAD
@@ -47,7 +48,7 @@ namespace hooks
 	}
 
 	const u32 jmp_8BEDE = 0x0048BEDE;
-	void __declspec(naked) initializeBullet_8BED7_JmpWrapper()
+	void __declspec(naked) initialize_bullet_8BED7_jump_wrapper()
 	{
 		static u32 weapon_id;
 		static u32 player_id;
@@ -65,11 +66,11 @@ namespace hooks
 		}
 	}
 
-	void flingySpeedPatches() // for madrigals
+	void flingy_speed_patches() // for madrigals
 	{
-		jump_patch(getFlingyHaltDistanceHookWrapper, 0x00494F90);
-		jump_patch(initializeFlingy_96377_JmpWrapper, 0x00496377, 2);
-		jump_patch(initializeBullet_8BED7_JmpWrapper, 0x0048BED7, 2);
+		jump_patch(get_flingy_halt_distance_wrapper,		0x00494F90);
+		jump_patch(initialize_flingy_96377_jump_wrapper,	0x00496377, 2);
+		jump_patch(initialize_bullet_8BED7_jump_wrapper,	0x0048BED7, 2);
 	}
 
 	const u32 jmp_004295F8 = 0x004295F8;
@@ -103,7 +104,7 @@ namespace hooks
 	const u32 func_getTargetSomething = 0x0043FF90;
 	const u32 progressOrderSwitch_e71b = 0x004EC71B;
 	const u32 spellOrderCases = 0x004ECADB;
-	void __declspec(naked) unusedOrderPatchWrapper()
+	void __declspec(naked) unused_order_patch_wrapper()
 	{
 
 		static u8 orderId;
@@ -132,14 +133,14 @@ namespace hooks
 	}
 
 	const u32 jmp_004A0682 = 0x004A0682;
-	void __declspec(naked) lobotomyMineJmpWrapper()
+	void __declspec(naked) lobotomy_mine_jump_wrapper()
 	{
 		Unit* unit;
 		__asm {
 			MOV unit, ESI
 			PUSHAD
 		}
-		setupSpiderMines(unit);
+		set_up_spider_mines(unit);
 		__asm {
 			POPAD
 			JMP jmp_004A0682
@@ -148,7 +149,7 @@ namespace hooks
 	}
 
 	const u32 jmp_0046512B = 0x0046512B;
-	void orders_PlaceMine_JmpWrapper()
+	void orders_place_mine_jump_wrapper_1()
 	{
 		Unit* unit;
 		u32 result;
@@ -165,7 +166,7 @@ namespace hooks
 	}
 
 	const u32 jmp_0046514A = 0x0046514A;
-	void orders_PlaceMine_JmpWrapper2()
+	void orders_place_mine_jump_wrapper_2()
 	{
 		Unit* unit;
 		u32 result;
@@ -181,29 +182,28 @@ namespace hooks
 		}
 	}
 
-	void unusedOrderPatches()
+	void unused_order_patches()
 	{
-		jump_patch(unusedOrderPatchWrapper, 0x004EC70B, 7); // turns unused orders to spell orders
+		jump_patch(unused_order_patch_wrapper, 0x004EC70B, 7); // turns unused orders to spell orders
 		// later add jump patches to make CTFCop2 and WarpIn useless
 	}
 
-	void archonHardcodePatches() // for augurs
+	void archon_hardcode_patches() // for augurs
 	{
 		jump_patch(wrapper_295EB, 0x004295EB, 1);
 	}
 
-	void lobotomyMinePatches()
+	void lobotomy_mine_patches()
 	{
-
-		jump_patch(lobotomyMineJmpWrapper, 0x004A066B, 3);  /*
-		jump_patch(orders_PlaceMine_JmpWrapper, 0x00465126, 0);
-		jump_patch(orders_PlaceMine_JmpWrapper2, 0x00465145, 0);
+		jump_patch(lobotomy_mine_jump_wrapper, 0x004A066B, 3);  /*
+		jump_patch(orders_place_mine_jump_wrapper_1, 0x00465126, 0);
+		jump_patch(orders_place_mine_jump_wrapper_2, 0x00465145, 0);
 		nops(0x00465088, 8); // remove tech requirement for any mines */
 	}
 
 	const u32 func_techTargetSpellCheck = 0x00491E80;
 	const u32 jmp_004920E3 = 0x004920E3;
-	void __declspec(naked) getOrderTargetErrorString_JmpWrapper()
+	void __declspec(naked) get_order_target_error_string_jump_wrapper()
 	{
 		static Unit* caster;
 		static u8 playerId;
@@ -230,7 +230,7 @@ namespace hooks
 	}
 
 	const u32 jmp_004922E1 = 0x004922E1;
-	void __declspec(naked) ShouldStopOrderedSpell_JmpWrapper()
+	void __declspec(naked) should_stop_ordered_spell_jump_wrapper()
 	{
 		static Unit* caster;
 		static u8 playerId;
@@ -260,11 +260,11 @@ namespace hooks
 
 	void lobotomyMineTargetingPatches()
 	{
-		jump_patch(getOrderTargetErrorString_JmpWrapper, 0x004920D9);
-		jump_patch(ShouldStopOrderedSpell_JmpWrapper, 0x004922DC);
+		jump_patch(get_order_target_error_string_jump_wrapper,	0x004920D9);
+		jump_patch(should_stop_ordered_spell_jump_wrapper,		0x004922DC);
 	}
 
-	void trapJumpWrappers()
+	void trap_jump_wrappers()
 	{
 		memory_patch(0x00401438, (u8)0xEB); // change to jump
 		u8 patchb030[] = {0x33, 0xc0, 0x90, 0x90};
@@ -304,26 +304,26 @@ namespace hooks
 	}
 
 	const u32 progressOrder_jmp = 0x004EC6F1;
-	void __declspec(naked) PhaseLinkOrder_Wrapper()
+	void __declspec(naked) phase_link_order_wrapper()
 	{
 		static Unit* unit;
 		__asm {
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::order_PhaseLink(unit);
+		hooks::order_phase_link(unit);
 		__asm {
 			POPAD
 			JMP progressOrder_jmp
 		}
 	}
 
-	void phaseLinkPatches()
+	void phase_link_patches()
 	{
-		jump_patch(PhaseLinkOrder_Wrapper, 0x004EC629, 2);
+		jump_patch(phase_link_order_wrapper, 0x004EC629, 2);
 	}
 
-	void __declspec(naked) canAttackTarget_Tail_Wrapper()
+	void __declspec(naked) can_attack_target_tail_wrapper()
 	{
 		static u32 target_flags;
 		static Unit* source;
@@ -336,7 +336,7 @@ namespace hooks
 			MOV source, EDI
 			PUSHAD
 		}
-		result = hooks::canAttackTarget_EndChunk(source, target_flags);
+		result = hooks::can_attack_target_end_chunk(source, target_flags);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -347,7 +347,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) getGroundWeaponHookWrapper()
+	void __declspec(naked) get_ground_weapon_hook_wrapper()
 	{
 		static Unit* unit;
 		static u32 result;
@@ -363,17 +363,17 @@ namespace hooks
 		}
 	}
 
-	void clarionWrappers()
+	void clarion_wrappers()
 	{
 		// can_attack_target - end
-		// jump_patch(canAttackTarget_Tail_Wrapper, 0x0047682C, 1);
+		// jump_patch(can_attack_target_tail_wrapper, 0x0047682C, 1);
 		// tail wrapper disabled, without air weapon it don't have sense anywhere, will be reworked w/ air target functionality
-		jump_patch(getGroundWeaponHookWrapper, 0x00475AD0);
+		jump_patch(get_ground_weapon_hook_wrapper, 0x00475AD0);
 	}
 
 	const u32 jmp_skip = 0x00404541;
 	const u32 jmp_continue = 0x00404539;
-	void __declspec(naked) createBuildingAiWorkaround_Wrapper()
+	void __declspec(naked) create_building_ai_workaround_wrapper()
 	{
 		static BuildingAi* bAi;
 		__asm {
@@ -397,7 +397,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) checkUnitDatRequirements_Wrapper()
+	void __declspec(naked) check_unit_dat_requirements_wrapper()
 	{
 		static u32 result;
 		static u32 unit_id;
@@ -414,7 +414,7 @@ namespace hooks
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::checkUnitDatRequirements(playerId, unit_id, parent);
+		result = hooks::check_unit_dat_requirements(playerId, unit_id, parent);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -425,15 +425,15 @@ namespace hooks
 //		0046E1C0 = CheckUnitDatRequirements(), arg 1 player_id, eax unit_id, esi Unit* parent
 	}
 
-	void createBuildingAiWorkaround()
+	void create_building_ai_workaround()
 	{
-		jump_patch(createBuildingAiWorkaround_Wrapper, 0x00404533, 1);
+		jump_patch(create_building_ai_workaround_wrapper, 0x00404533, 1);
 	}
 
 	static bool warningOnce00 = false;
 	const u32 Hook_DropDebugging00 = 0x0047CDDB;
 	const u32 Hook_DropDebugging00Back = 0x0047CDE1;
-	void __declspec(naked) dropDebugging00()
+	void __declspec(naked) drop_debugging_00()
 	{
 		static char buffer[256];
 		static u8 hashStructIndex;
@@ -461,7 +461,7 @@ namespace hooks
 
 	static bool warningOnce01 = false;
 	const u32 Hook_DropDebugging01 = 0x0047CCF8;
-	void __declspec(naked) dropDebugging01()
+	void __declspec(naked) drop_debugging_01()
 	{
 		static char buffer[256];
 		static u32 activeNationID;
@@ -491,7 +491,7 @@ namespace hooks
 
 	static bool warningOnce02 = false;
 	const u32 Hook_DropDebugging02 = 0x0047CD63;
-	void __declspec(naked) dropDebugging02()
+	void __declspec(naked) drop_debugging_02()
 	{
 //		static char buffer[256];
 		static bool isSucceeded;
@@ -534,7 +534,7 @@ namespace hooks
 	static bool warningOnce03_00 = false;
 	static bool warningOnce03_01 = false;
 	const u32 Hook_DropDebugging03 = 0x0047CDF1;
-	void __declspec(naked) dropDebugging03()
+	void __declspec(naked) drop_debugging_03()
 	{
 		static char buffer[256];
 		static u8* data;
@@ -590,13 +590,13 @@ namespace hooks
 		}
 	}
 
-	void desyncTesting()
+	void desync_debug_messages()
 	{
 		// code from BG
-		jump_patch(dropDebugging00, Hook_DropDebugging00);
-		jump_patch(dropDebugging01, Hook_DropDebugging01);
-		jump_patch(dropDebugging02, Hook_DropDebugging02);
-		jump_patch(dropDebugging03, Hook_DropDebugging03);
+		jump_patch(drop_debugging_00, Hook_DropDebugging00);
+		jump_patch(drop_debugging_01, Hook_DropDebugging01);
+		jump_patch(drop_debugging_02, Hook_DropDebugging02);
+		jump_patch(drop_debugging_03, Hook_DropDebugging03);
 	}
 
 	void __declspec(naked) createDamageOverlay_Wrapper() // 004993C0
@@ -612,7 +612,7 @@ namespace hooks
 			POP EAX
 			PUSHAD
 		}
-		hooks::createDamageOverlay(sprite);
+		hooks::create_damage_overlay(sprite);
 		__asm
 		{
 			POPAD
@@ -633,7 +633,7 @@ namespace hooks
 			MOV cmp2,EDI
 			PUSHAD
 		}
-		if (debugDamageOverlay(sprite) && cmp1!=cmp2) {
+		if (debug_damage_overlay(sprite) && cmp1!=cmp2) {
 			__asm {
 				POPAD
 				JMP DmgOverlay_JmpBack
@@ -647,20 +647,20 @@ namespace hooks
 		}	
 	}
 
-	void damageOverlayDebug()
+	void damage_overlay_debug()
 	{
 //		jump_patch(createDamageOverlay_Wrapper, 0x004993C0);
 		jump_patch(newDamageOverlay_JmpWrapper, 0x004993DB, 3);
 	}
 
-	void __declspec(naked) gameLoop_Wrapper()
+	void __declspec(naked) game_loop_wrapper()
 	{
 		static s32 result;
 		__asm
 		{
 			PUSHAD
 		}
-		result = hooks::gameLoop();
+		result = hooks::game_loop();
 		__asm
 		{
 			POPAD
@@ -669,7 +669,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) createUnit_Wrapper() // 004A09D0
+	void __declspec(naked) create_unit_wrapper() // 004A09D0
 	{
 		static Unit* result;
 		static u16 unitType;
@@ -701,7 +701,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) transform_unit_main_Wrapper() { // 0049F170
+	void __declspec(naked) transform_unit_main_wrapper() { // 0049F170
 		static Unit* unit;
 		static u8 unit_id;
 		__asm {
@@ -724,7 +724,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) ignoreIscriptGoToIdle_Wrapper() // 00476550
+	void __declspec(naked) ignore_iscript_and_go_to_idle_wrapper() // 00476550
 	{
 		static Unit* unit;
 		static char result;
@@ -733,7 +733,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::ignoreIscriptGoToIdle(unit);
+		result = hooks::ignore_iscript_and_go_to_idle(unit);
 		__asm
 		{
 			POPAD
@@ -742,32 +742,32 @@ namespace hooks
 		}
 	}
 
-	void injectCosmonarchySpecific()
+	void inject_cosmonarchy_specific()
 	{
 		// must be finished first (and add Firegraft offsets)
-//		jump_patch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);
+//		jump_patch(check_unit_dat_requirements_wrapper, 0x0046E1C0, 1);
 
-		flingySpeedPatches();
-		desyncTesting();
+		flingy_speed_patches();
+		desync_debug_messages();
 		// start of spell order code
 		// default case of switch 004EC4FF
-		unusedOrderPatches();
-		phaseLinkPatches(); // replaces CTFCop2 order
-		lobotomyMinePatches();
-		trapJumpWrappers();
-		clarionWrappers();
-		createBuildingAiWorkaround();
-		damageOverlayDebug();
+		unused_order_patches();
+		phase_link_patches(); // replaces CTFCop2 order
+		lobotomy_mine_patches();
+		trap_jump_wrappers();
+		clarion_wrappers();
+		create_building_ai_workaround();
+		damage_overlay_debug();
 //		lobotomyMineTargetingPatches();
 
 		// add later: disable WarpIn functionality, make it useless
-		archonHardcodePatches();
+		archon_hardcode_patches();
 
 		// Hook patches!
-//      jump_patch(gameLoop_Wrapper,				0x004D94B0, 3);
-		jump_patch(createUnit_Wrapper,				0x004A09D0, 1);
-		jump_patch(transform_unit_main_Wrapper,		0x0049F170, 1);
-		jump_patch(ignoreIscriptGoToIdle_Wrapper,	0x00476550, 1);
+//      jump_patch(game_loop_wrapper,						0x004D94B0, 3);
+		jump_patch(create_unit_wrapper,						0x004A09D0, 1);
+		jump_patch(transform_unit_main_wrapper,				0x0049F170, 1);
+		jump_patch(ignore_iscript_and_go_to_idle_wrapper,	0x00476550, 1);
 	}
 }
 

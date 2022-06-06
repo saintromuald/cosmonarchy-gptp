@@ -7107,7 +7107,7 @@ namespace helper
 		return result;
 	}
 
-	u8 initializeRandomizerInfo()
+	u8 initialize_randomizer_info()
 	{
 		const u32 Func_initializeRandomizerInfo = 0x0047E410;
 		static u32 result;
@@ -7120,7 +7120,7 @@ namespace helper
 		return (u8)result;
 	}
 
-	void AI_Loop()
+	void ai_loop()
 	{
 		const u32 Func_AI_Loop = 0x004A2B00;
 		__asm {
@@ -7130,7 +7130,7 @@ namespace helper
 		}
 	}
 
-	s32 updateActiveTileInfo()
+	s32 update_active_tile_info()
 	{
 		const u32 Func_updateActiveTileInfo = 0x0049C4C0;
 		static s32 result;
@@ -7143,7 +7143,7 @@ namespace helper
 		return result;
 	}
 
-	s32 removeFOWCheat()
+	s32 remove_fow_cheat()
 	{
 		const u32 Func_removeFOWCheat = 0x00480880;
 		static s32 result;
@@ -7166,7 +7166,7 @@ namespace helper
 		}
 	}
 
-	s32 imageDrawingBulletDrawing()
+	s32 image_drawing_bullet_drawing()
 	{
 		const u32 Func_imageDrawingBulletDrawing = 0x0048C3D0;
 		static s32 result;
@@ -7179,7 +7179,7 @@ namespace helper
 		return result;
 	}
 
-	void updateImages()
+	void update_images()
 	{
 		const u32 Func_updateImages = 0x00496330;
 		__asm {
@@ -7189,7 +7189,7 @@ namespace helper
 		}
 	}
 
-	void updateThingys()
+	void update_thingies()
 	{
 		const u32 Func_updateThingys = 0x00488510;
 		__asm {
@@ -8160,7 +8160,7 @@ namespace helper
 	}
 
 	// For create_unit
-	Unit* unitConstructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused)
+	Unit* unit_constructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused)
 	{
 		const u32 Func_unitConstructor = 0x004A06C0;
 		static Unit* result;
@@ -8179,7 +8179,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* CListPushBackUsedUnitEntry(Unit* unit)
+	Unit* list_push_back_used_unit_entry(Unit* unit)
 	{
 		const u32 Func_CListPushBackUsedUnitEntry = 0x0049DCA0;
 		static Unit* result;
@@ -8194,7 +8194,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* CListPushBackHiddenUnitEntry(Unit* unit)
+	Unit* list_push_back_hidden_unit_entry(Unit* unit)
 	{
 		const u32 Func_CListPushBackHiddenUnitEntry = 0x0049DCE0;
 		static Unit* result;
@@ -8209,7 +8209,7 @@ namespace helper
 		return result;
 	}
 
-	Sprite* unitDestructor(Unit* unit)
+	Sprite* unit_destructor(Unit* unit)
 	{
 		const u32 Func_unitDestructor = 0x004A0990;
 		static Sprite* result;
@@ -8224,7 +8224,7 @@ namespace helper
 		return result;
 	}
 
-	void* getImageAttackFrame(void* resultArg, Sprite* sprite, s32 index, u32 overlay_type)
+	void* get_image_attack_frame(void* resultArg, Sprite* sprite, s32 index, u32 overlay_type)
 	{
 		const u32 Func_getImageAttackFrame = 0x00401DF0;
 		static void* result;
@@ -8242,7 +8242,7 @@ namespace helper
 		return result;
 	}
 
-	void setSpriteMainImageOffset(Sprite* sprite, char x, char y)
+	void set_sprite_main_image_offset(Sprite* sprite, char x, char y)
 	{
 		const u32 Func_setSpriteMainImageOffset = 0x00401E40;
 		__asm
@@ -9534,8 +9534,8 @@ namespace helper
 		}
 	}
 
-	// For ignoreIscriptGoToIdle
-	void playIdleIscript(Sprite* sprite)
+	// For ignore_iscript_and_go_to_idle
+	void play_idle_iscript(Sprite* sprite)
 	{
 		const u32 Func_PlayIdleIscript = 0x00497880;
 		__asm

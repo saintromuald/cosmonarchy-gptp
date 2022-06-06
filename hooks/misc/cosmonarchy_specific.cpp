@@ -1,4 +1,3 @@
-//
 #include "hooks/misc/cosmonarchy_specific.h"
 #include "globals.h"
 #include <cassert>
@@ -6,6 +5,7 @@
 #include "stopwatch/Stopwatch.h"
 #include "logger.h"
 #include "SCBW/scbwdata.h"
+#include <array>
 
 namespace ReqOpcode
 {
@@ -51,8 +51,8 @@ namespace ReqOpcode
 	};
 }
 
-//u32 parseUnitDatReqs() {
-void parseUnitDatReqs()
+//u32 parse_unit_dat_requirements() {
+void parse_unit_dat_requirements()
 {
 	//	static u32 result;
 	const u32 parseUnitFunc = 0x0046e100;
@@ -73,11 +73,9 @@ bool is_attempting_protoss_build(const Unit* probe)
 		&& !(probe->order_target.unit->status & UnitStatus::Completed);
 }
 
-#include <array>
 namespace hooks
 {
-
-	bool debugDamageOverlay(Sprite* sprite) {
+	bool debug_damage_overlay(Sprite* sprite) {
 		
 		if (sprite->main_graphic == nullptr)
 		{
@@ -96,8 +94,7 @@ namespace hooks
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
 				if (sprite->main_graphic->frameIndex >= overlay->frameCount)
 				{
-					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
-						sprite->main_graphic->frameIndex, sprite->main_graphic->id);
+					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frameIndex, sprite->main_graphic->id);
 					{
 						return false;
 					}
@@ -108,14 +105,13 @@ namespace hooks
 		auto result_pos = results.begin();
 		if (sprite->main_graphic->frameIndex >= overlay->frameCount)
 		{
-			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
-				sprite->main_graphic->frameIndex, sprite->main_graphic->id);
+			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frameIndex, sprite->main_graphic->id);
 			return false;
 		}
 		return true;
 	}
 
-	void createDamageOverlay(Sprite* sprite)
+	void create_damage_overlay(Sprite* sprite)
 	{
 		if (sprite->main_graphic == nullptr)
 		{
@@ -135,8 +131,7 @@ namespace hooks
 				image->free();
 				if (sprite->main_graphic->frameIndex >= overlay->frameCount)
 				{
-					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
-						sprite->main_graphic->frameIndex, sprite->main_graphic->id);
+					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frameIndex, sprite->main_graphic->id);
 					{
 						return; 
 					}
@@ -182,13 +177,10 @@ namespace hooks
 		}
 	}
 
-	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, Unit* unit)
+	u32 check_unit_dat_requirements(u8 playerId, u16 unit_id, Unit* unit)
 	{
 		//
-		//
-		// Warning: This hook don't points to firegraft offsets. Firegraft offsets must be taken into account and added to hook
-		// before using it.
-		//
+		// Warning: This hook doesn't points to firegraft offsets. Firegraft offsets must be taken into account and added to hook before using it.
 		//
 		auto v3 = unit_id;
 		static u32* lastError = (u32*)0x0066FF60;
@@ -235,7 +227,7 @@ LABEL_86:
 
 		if (units_dat::unitsDat43[unit->id] == ReqOpcode::EndOfSublist)
 		{
-			parseUnitDatReqs();
+			parse_unit_dat_requirements();
 		}
 		s32 v7 = (u16)units_dat::unitsDat43[unit->id];
 
@@ -457,13 +449,13 @@ LABEL_18:
 		return 0;
 	}
 
-	u32 realTopSpeed(Flingy* flingy, u32 flingy_id)
+	u32 real_top_speed(Flingy* flingy, u32 flingy_id)
 	{
 		u32 speed = scbw::get_flingy_data(FlingyDatEntries::TopSpeed, flingy_id);
 		return speed;
 	}
 
-	u16 realAcceleration(Flingy* flingy, u32 flingy_id)
+	u16 real_acceleration(Flingy* flingy, u32 flingy_id)
 	{
 		u16 acceleration = scbw::get_flingy_data(FlingyDatEntries::Acceleration, flingy_id);
 		return acceleration;
@@ -473,11 +465,14 @@ LABEL_18:
 	{
 		switch (unit_id)
 		{
-			case UnitId::ProtossArchon:
 			case UnitId::ProtossAugur:
+			{
 				return true;
+			}
 			default:
+			{
 				break;
+			}
 		}
 		return false;
 	}
@@ -489,7 +484,7 @@ LABEL_18:
 		return weapons_dat::FlingyId[weaponId];
 	}
 
-	u32 getFlingyHaltDistanceHook(Flingy* flingy)
+	u32 get_flingy_halt_distance(Flingy* flingy)
 	{
 		auto speed = flingy->current_speed2;
 		if (speed == 0 || flingy->flingy_movement_type != 0)
@@ -497,7 +492,7 @@ LABEL_18:
 			return 0;
 		}
 		auto flingy_id = flingy->flingy_id;
-		if (speed != realTopSpeed(flingy, flingy_id) || flingy->flingy_acceleration != realAcceleration(flingy, flingy_id))
+		if (speed != real_top_speed(flingy, flingy_id) || flingy->flingy_acceleration != real_acceleration(flingy, flingy_id))
 		{
 			return speed * speed / (2 * (u16)flingy->flingy_acceleration);
 		}
@@ -526,7 +521,7 @@ LABEL_18:
 		return false;
 	}
 
-	void setupSpiderMines(Unit* unit)
+	void set_up_spider_mines(Unit* unit)
 	{
 		if (unit->id == UnitId::TerranVulture)
 		{
@@ -560,7 +555,7 @@ LABEL_18:
 	}
 
 	// replaces CTFCop2 order
-	void order_PhaseLink(Unit* unit)
+	void order_phase_link(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		auto order_state = unitExt->values[ValueProtossSwitchOrderState];
@@ -657,7 +652,7 @@ LABEL_18:
 		}
 	}
 
-	bool canAttackTarget_EndChunk(Unit* source, u32 target_flags)
+	bool can_attack_target_end_chunk(Unit* source, u32 target_flags)
 	{
 		if (source->id == UnitId::ProtossClarion && scbw::get_aise_value(source, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 		{
@@ -680,7 +675,7 @@ LABEL_18:
 		return false;
 	}
 
-	s32 gameLoop()
+	s32 game_loop()
 	{ // 004D94B0 - hooked for lag testing - Pr0nogo
 		bool v0;
 		win32::Stopwatch sw;
@@ -688,21 +683,23 @@ LABEL_18:
 		f64 aiLoop, unitLoop, imageThingyLoop, tileLoop;
 
 		scbw::set_ingame_loop_state(1);
-		helper::initializeRandomizerInfo();
-		helper::AI_Loop();
+		helper::initialize_randomizer_info();
+		helper::ai_loop();
 		aiLoop = sw.ElapsedMilliseconds();
 		sw.Stop();
 
 		if (!visionUpdateCount)
+		{
 			*visionUpdateCount = 100;
+		}
 		v0 = *visionUpdateCount == 1;
 		*visionUpdateCount -= 1;
 		*visionUpdated = v0;
 		sw.Start();
 		if (v0)
 		{
-			helper::updateActiveTileInfo();
-			helper::removeFOWCheat();
+			helper::update_active_tile_info();
+			helper::remove_fow_cheat();
 		}
 		sw.Stop();
 		tileLoop = sw.ElapsedMilliseconds();
@@ -711,9 +708,9 @@ LABEL_18:
 		sw.Stop();
 		sw.Start();
 		unitLoop = sw.ElapsedMilliseconds();
-		helper::imageDrawingBulletDrawing();
-		helper::updateImages();
-		helper::updateThingys();
+		helper::image_drawing_bullet_drawing();
+		helper::update_images();
+		helper::update_thingies();
 		sw.Stop();
 		imageThingyLoop = sw.ElapsedMilliseconds();
 		GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
@@ -732,7 +729,7 @@ LABEL_18:
 			++(*randomCountsTotal);
 			randomNumber = (*lastRandomNumber >> 16) & 0x7FFF;
 		}
-		Unit* unit = helper::unitConstructor(x, y, unitType, playerId, randomNumber);
+		Unit* unit = helper::unit_constructor(x, y, unitType, playerId, randomNumber);
 		if (!unit)
 		{
 			return 0;
@@ -744,11 +741,11 @@ LABEL_18:
 		}
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-			helper::CListPushBackUsedUnitEntry(unit);
+			helper::list_push_back_used_unit_entry(unit);
 		}
 		else
 		{
-			helper::CListPushBackHiddenUnitEntry(unit);
+			helper::list_push_back_hidden_unit_entry(unit);
 		}
 
 		if (unitType > UnitId::Spell_DisruptionWeb || units_dat::SubUnit[unitType] == UnitId::None)
@@ -757,19 +754,19 @@ LABEL_18:
 			return unit;
 		}
 
-		Unit* subunit = helper::unitConstructor(x, y, units_dat::SubUnit[unitType], playerId, randomNumber);
+		Unit* subunit = helper::unit_constructor(x, y, units_dat::SubUnit[unitType], playerId, randomNumber);
 		if (!subunit)
 		{
-			helper::unitDestructor(unit);
+			helper::unit_destructor(unit);
 			return 0;
 		}
 
 		unit->subunit = subunit;
 		subunit->subunit = unit;
 		u32 attack_frame = 0;
-		helper::getImageAttackFrame(&attack_frame, unit->sprite, 0, 2u);
+		helper::get_image_attack_frame(&attack_frame, unit->sprite, 0, 2u);
 		if (!subunit) {} // debug builds will crash without this line, because XD
-		helper::setSpriteMainImageOffset(subunit->sprite, attack_frame, randomNumber);
+		helper::set_sprite_main_image_offset(subunit->sprite, attack_frame, randomNumber);
 		return unit;
 	}
 
@@ -860,7 +857,7 @@ LABEL_18:
 	}
 
 	// Hooked to add nullcheck - Pr0nogo
-	char ignoreIscriptGoToIdle(Unit* unit) // 00476550
+	char ignore_iscript_and_go_to_idle(Unit* unit) // 00476550
 	{
 		if (!unit)
 		{
@@ -878,7 +875,7 @@ LABEL_18:
 		unitSprite->flags &= 0x7Fu;
 		*activeIscriptUnit = unit;
 		*activeIscriptEntity = unit;
-		helper::playIdleIscript(unitSprite);
+		helper::play_idle_iscript(unitSprite);
 		char unitMovementFlags = unit->movement_flags;
 		*activeIscriptUnit = activeSubunit;
 

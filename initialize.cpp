@@ -258,7 +258,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	const u8 retn = 0xc3;
 //	memoryPatch(0x004AAF23 + 5, &retn, 1);
 	injectGlobalsHooks();
-	hooks::injectCosmonarchySpecific();
+	hooks::inject_cosmonarchy_specific();
 	hooks::injectLimitHooks();
 	hooks::injectWeaponExtender();
 	hooks::injectTargetRelatedHooks();
