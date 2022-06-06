@@ -609,7 +609,7 @@ struct UnitLayout
 		struct
 		{
 			/*0x0C0*/     Unit*		addon;
-			/*0x0C4*/     u16		addon_build_type;
+			/*0x0C4*/     u16		addon_build_id;
 			/*0x0C6*/     u16		upgrade_research_time;
 			/*0x0C8*/     u8		tech_id;
 			/*0x0C9*/     u8		upgrade_id;
