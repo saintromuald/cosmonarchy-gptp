@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) cmdrecv_building_morph_wrapper()
+	void __declspec(naked) cmdrecv_building_morph_wrapper() // 004C1910
 	{
 		static u16 wUnitType;
 		__asm {
@@ -18,7 +18,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cmdrecv_unit_morph_wrapper()
+	void __declspec(naked) cmdrecv_unit_morph_wrapper() // 004C1990
 	{
 		static u16 wUnitType;
 		__asm {
@@ -40,7 +40,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cmdrecv_train_wrapper()
+	void __declspec(naked) cmdrecv_train_wrapper() // 004C1C20
 	{
 		static char* buffer;
 		__asm {
@@ -54,7 +54,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cmdrecv_liftoff_wrapper()
+	void __declspec(naked) cmdrecv_liftoff_wrapper() // 004C1620
 	{
 		static char* buffer;
 		__asm {
@@ -94,8 +94,8 @@ namespace hooks
 {
 	void injectCMDRECV_MorphHooks()
 	{
-		jump_patch(cmdrecv_building_morph_wrapper,	0x004C1910, 7);
-		jump_patch(cmdrecv_unit_morph_wrapper,		0x004C1990, 3);
+		jump_patch(cmdrecv_building_morph_wrapper,	0x004C1910, 6);
+		jump_patch(cmdrecv_unit_morph_wrapper,		0x004C1990, 1);
 		jump_patch(cmdrecv_train_wrapper,			0x004C1C20, 6);
 		jump_patch(cmdrecv_liftoff_wrapper,			0x004C1620, 1);
 	//	jump_patch(btnsact_rally_point_wrapper,		0x004244A0, 2);
