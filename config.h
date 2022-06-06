@@ -15,6 +15,7 @@ struct Config
 	bool always_show_extended_tooltips = false;
 
 	// Hotkeys
+	bool quick_casting = false;
 	bool grid_hotkeys = false;
 	std::array<std::string, 3> layout = {"QWE", "ASD", "ZXC"};
 

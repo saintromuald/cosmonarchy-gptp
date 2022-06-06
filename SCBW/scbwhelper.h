@@ -1322,4 +1322,7 @@ namespace helper
 	bool is_unit_owned_by_player_ex(u32 player, Unit* unit);												// 0045FEF0
 
 	char issue_place_building_order(char* unused, u32 unit_id, char order_id);								// 0048E730
+
+	char input_target_order_left_mouse_click(Event* event);													// 004BD500
+	SCBW_FUNC(0x004845F0, void __cdecl, input_target_order_right_mouse_click);
 }

@@ -11996,4 +11996,17 @@ namespace helper
 		}
 		return result;
 	}
+
+	char input_target_order_left_mouse_click(Event* event) {
+		static char result;
+		const u32 func_address = 0x004BD500;
+		__asm {
+			PUSHAD
+			MOV ECX, event
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }
