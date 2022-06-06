@@ -111,6 +111,10 @@ namespace hooks
 		tick_trigger_system(false);
 	}
 
+	void __cdecl set_in_game_input_procs() {
+		
+	}
+
 	/// This hook is called every frame
 	bool next_frame()
 	{
@@ -324,9 +328,8 @@ namespace hooks
 			// Unit* selected = *active_portrait_unit;
 			// scbw::printf("%u", selected->main_order_id);
 
-
 			*unit_iterator_pos = 0;
-			for (Unit* selection = get_active_player_next_selection(); selection; selection = get_active_player_next_selection()) {
+			while (Unit* selection = get_active_player_next_selection()) {
 				if (selection->id == UnitId::ZergNydusCanal
 					&& selection->building.nydus_exit
 					&& (scbw::is_allied_to(selection->player, *LOCAL_HUMAN_ID) || helper::get_detecting_players(selection) & (1 << *LOCAL_HUMAN_ID)))

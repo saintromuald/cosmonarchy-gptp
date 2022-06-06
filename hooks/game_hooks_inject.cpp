@@ -93,6 +93,9 @@ namespace hooks
 	void injectGameHooks()
 	{
 		jump_patch(onGameStart,		Hook_OnGameStart);
+		jump_patch(set_in_game_input_procs, 0x00484CC0);
+
+
 		call_patch(onGameEnd,		0x004EE983);
 		call_patch(nextFrameHook,	0x004D974E);
 
