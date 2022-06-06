@@ -153,7 +153,7 @@ static u32 get_unit_class(u32 unit_id) {
 } 
 
 static u32 get_unit_cost(u32 unit_id) {
-	return units_dat::MineralCost[unit_id] + units_dat::GasCost[unit_id];
+	return units_dat::mineral_cost[unit_id] + units_dat::gas_cost[unit_id];
 }
 
 static s32 compare_base_layout(void* context, const void* a, const void* b) {
@@ -334,7 +334,7 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	}
 
 	// Check gas availability
-	if (units_dat::GasCost[unit_id] > resources->gas[town->player] &&
+	if (units_dat::gas_cost[unit_id] > resources->gas[town->player] &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::TerranReservoir) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ProtossAquifer) &&
 		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ZergExcisant)) {

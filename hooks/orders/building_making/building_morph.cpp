@@ -288,8 +288,8 @@ namespace hooks
 				else
 				{ // ALL of this code is no longer run; previously used for protoss building morphs (e.g. gateway -> principality)
 					unit->build_queue[unit->build_queue_slot] = UnitId::None;
-					resources->minerals[unit->player] += (units_dat::MineralCost[builtUnitId] * 3) / 4;
-					resources->gas[unit->player] += (units_dat::GasCost[builtUnitId] * 3) / 4;
+					resources->minerals[unit->player] += (units_dat::mineral_cost[builtUnitId] * 3) / 4;
+					resources->gas[unit->player] += (units_dat::gas_cost[builtUnitId] * 3) / 4;
 					unit->status |= UnitStatus::Completed;
 					helper::increment_unit_scores_ex(unit, -1, 0);
 					unit->status -= UnitStatus::Completed;

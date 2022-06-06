@@ -7,7 +7,7 @@ namespace hooks
 {
 	bool stat_lobotomy_mine_count(BinDlg* dialog, u32 index)
 	{
-		auto activeUnit = *activePortraitUnit;
+		auto activeUnit = *active_portrait_unit;
 		// Originally had code for research, removed
 		sprintf_s(statusscreen_infobtn[index], 8, "%d ", activeUnit->mine_carrier.mine_count);
 		if (dialog->control_type)
@@ -57,7 +57,7 @@ namespace hooks
 	void stats_panel_display(BinDlg* dialog)
 	{
 		BinDlg* current_dialog;
-		Unit* activeUnit = *activePortraitUnit;
+		Unit* activeUnit = *active_portrait_unit;
 		u32 index = 0;
 
 		if (!(activeUnit->status & UnitStatus::IsHallucination)
@@ -329,7 +329,7 @@ namespace hooks
 
 	void draw_unit_kills_string(BinDlg* dialog) // 00425DD0
 	{
-		Unit* unit = *activePortraitUnit;
+		Unit* unit = *active_portrait_unit;
 
 		static char buffer[256] = {};
 		strcpy_s(buffer, playerNameList->player[unit->player].force_name);
@@ -377,10 +377,10 @@ namespace hooks
 	// Hooked to draw armor icons to buildings. - Pr0nogo
 	void draw_building_info(BinDlg* dialog) // 00427890
 	{
-		Unit* activeUnit = *activePortraitUnit;
-		selectionGroupHP[0] = (*activePortraitUnit)->hitpoints;
-		s32 shields = (*activePortraitUnit)->shields >> 8;
-		*userInterfaceEnergy = (*activePortraitUnit)->energy;
+		Unit* activeUnit = *active_portrait_unit;
+		selectionGroupHP[0] = (*active_portrait_unit)->hitpoints;
+		s32 shields = (*active_portrait_unit)->shields >> 8;
+		*userInterfaceEnergy = (*active_portrait_unit)->energy;
 		*userInterfaceShields = shields;
 		*redrawTransportUI = helper::ui_needs_redraw();
 		helper::generic_status_update_drawn_values();
@@ -475,7 +475,7 @@ namespace hooks
 	LABEL_32:
 		helper::set_text_string(dialog);
 		helper::set_unit_status_string_text(dialog);
-		helper::add_text_to_dialog(dialog, -5, get_unit_name(*activePortraitUnit));
+		helper::add_text_to_dialog(dialog, -5, get_unit_name(*active_portrait_unit));
 	}
 
 	// Hooked to draw new values to icons. -- Pr0nogo
@@ -494,7 +494,7 @@ namespace hooks
 		u8 v13;
 
 		v3 = dialog;
-		v13 = helper::getArmorCount(*activePortraitUnit, unused);
+		v13 = helper::getArmorCount(*active_portrait_unit, unused);
 		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v13);
 		if (v3->control_type)
 		{
@@ -519,7 +519,7 @@ namespace hooks
 		helper::disable_dialog(v4);
 		v5 = cmdicons_grp;
 		v6 = *v4->user;
-		v7 = *activePortraitUnit;
+		v7 = *active_portrait_unit;
 		v4->graphic = 12;
 		// TODO: Fix compiler error
 	//	*(s32*)v6 = v5;
@@ -566,7 +566,7 @@ namespace hooks
 		s16 v10;
 
 		v3 = dialog;
-		v4 = (*activePortraitUnit)->player;
+		v4 = (*active_portrait_unit)->player;
 		if (weapons_dat::DamageUpgrade[weaponId] >= 0x2Eu)
 		{
 //			v5 = *upgradesLevelBW[v4][weapons_dat::DamageUpgrade[weaponId]];
@@ -634,8 +634,8 @@ namespace hooks
 	
 	// 004594B0 0045952F - Hooked to add time costs to tooltip info. -Veeq7
 	void set_tooltip_info_unit(u8 unit_id) {
-		u32 mineral_cost = units_dat::MineralCost[unit_id];
-		u32 gas_cost = units_dat::GasCost[unit_id];
+		u32 mineral_cost = units_dat::mineral_cost[unit_id];
+		u32 gas_cost = units_dat::gas_cost[unit_id];
 		u32 time_cost = units_dat::TimeCost[unit_id] / 24;
 
 		u32 race = Unit::get_race(unit_id);

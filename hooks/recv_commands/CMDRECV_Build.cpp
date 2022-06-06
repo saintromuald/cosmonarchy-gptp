@@ -173,14 +173,14 @@ namespace hooks
 			{
 				if ((unit->id != UnitId::ZergNydusCanal || order_id != OrderId::Build5) && order_id != OrderId::CTFCOP2)
 				{
-					AIMineralsReserve[unit->player] = units_dat::MineralCost[target_unit_id];
-					AIGasReserve[unit->player] = units_dat::GasCost[target_unit_id];
+					ai_minerals_reserve[unit->player] = units_dat::mineral_cost[target_unit_id];
+					ai_gas_reserve[unit->player] = units_dat::gas_cost[target_unit_id];
 					if (helper::has_supplies_for_unit(unit->player, target_unit_id, 1))
 					{
 						u8 console_index_var = *console_index; // aids
-						if (gameMinerals[unit->player] >= AIMineralsReserve[unit->player])
+						if (game_minerals[unit->player] >= ai_minerals_reserve[unit->player])
 						{
-							if (gameGas[unit->player] >= AIGasReserve[unit->player])
+							if (game_vespene[unit->player] >= ai_gas_reserve[unit->player])
 							{
 								helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
 								if (units_dat::BaseProperty[unit->id] & 1 && units_dat::BaseProperty[target_unit_id] & 1)

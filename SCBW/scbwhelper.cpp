@@ -11980,4 +11980,20 @@ namespace helper
 		}
 		return result;
 	}
+
+	char issue_place_building_order(char* unused, u32 unit_id, char order_id) {
+		static char result;
+		const u32 func_address = 0x0048E730;
+		u32 order_id_xd = order_id;
+		__asm {
+			PUSHAD
+			PUSH order_id_xd
+			MOV ESI, unit_id
+			MOV EDI, unused
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

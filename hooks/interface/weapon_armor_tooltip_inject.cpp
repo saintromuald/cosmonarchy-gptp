@@ -32,19 +32,19 @@ namespace
 		{
 			case 0:
 			{
-				createContextHelpFromDialog(consoleIcon, hooks::getWeaponTooltipString((u8)gui->id, *activePortraitUnit));
+				createContextHelpFromDialog(consoleIcon, hooks::getWeaponTooltipString((u8)gui->id, *active_portrait_unit));
 			} break;
 			case 1:
 			{
-				createContextHelpFromDialog(consoleIcon, hooks::getArmorTooltipString(*activePortraitUnit));
+				createContextHelpFromDialog(consoleIcon, hooks::getArmorTooltipString(*active_portrait_unit));
 			} break;
 			case 2:
 			{
-				createContextHelpFromDialog(consoleIcon, hooks::getShieldTooltipString(*activePortraitUnit));
+				createContextHelpFromDialog(consoleIcon, hooks::getShieldTooltipString(*active_portrait_unit));
 			} break;
 			case 3:
 			{
-				createContextHelpFromDialog(consoleIcon, hooks::getSpecialTooltipString(gui->id, *activePortraitUnit));
+				createContextHelpFromDialog(consoleIcon, hooks::getSpecialTooltipString(gui->id, *active_portrait_unit));
 			} break;
 		}
 	}

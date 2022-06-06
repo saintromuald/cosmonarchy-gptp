@@ -94,7 +94,7 @@ namespace hooks
 		u16 v9; // ax
 		const char* v10; // [esp-4h] [ebp-10h]
 
-		v1 = *activePortraitUnit;
+		v1 = *active_portrait_unit;
 		v2 = v1->id;
 		v3 = units_dat::MaxHitPoints[v2] >> 8;
 		if ((v3 || (v3 = (v1->hitpoints + 255) >> 8) != 0) && v3 > 9999
@@ -105,7 +105,7 @@ namespace hooks
 		}
 		else
 		{
-			if (helper::unit_hp_below_33_percent(*activePortraitUnit))
+			if (helper::unit_hp_below_33_percent(*active_portrait_unit))
 				v5 = 6;
 			else
 				v5 = helper::unit_hp_between_33_66_percent(v4, v1) != 0 ? 3 : 7;

@@ -507,7 +507,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectUnitMorphHooks();
 	hooks::injectWireframeHook();
 	hooks::injectDieOrderHook();
-	hooks::injectBuildingTerranHook();
+	hooks::inject_building_terran_hook();
 	hooks::injectBuildingProtossHooks();
 	hooks::injectUnitTrainHooks();
 

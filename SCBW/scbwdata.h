@@ -445,10 +445,10 @@ SCBW_DATA(s32*, launchSpinRandom,					0x0064DEC0);
 SCBW_DATA(Point16*, attackCurve,					0x00513650);
 
 // For ai_progress_build
-SCBW_DATA(s32*,	gameMinerals,						0x0057F0F0);
-SCBW_DATA(s32*,	gameGas,							0x0057F120);
-SCBW_DATA(s32*, AIMineralsReserve,					0x006CA51C);
-SCBW_DATA(s32*, AIGasReserve,						0x006CA4EC);
+SCBW_DATA(s32*,	game_minerals,						0x0057F0F0);
+SCBW_DATA(s32*,	game_vespene,						0x0057F120);
+SCBW_DATA(s32*, ai_minerals_reserve,				0x006CA51C);
+SCBW_DATA(s32*, ai_gas_reserve,						0x006CA4EC);
 
 // For updateBriefingRoomObjectives
 SCBW_DATA(BinDlg**, readyRoomDialog,				0x0066FF6C);
@@ -621,8 +621,8 @@ namespace units_dat {
 	SCBW_DATA(Point16*, AddonPlacement, unitsDat[37].address);				// 006626E0
 	SCBW_DATA(Box16*, UnitBounds, unitsDat[38].address);					// 006617C8	// Unit Dimensions in PyDAT
 	//SCBW_DATA(u16*,		???,					unitsDat[39].address);	// 00662F88 // Portrait according to EUDDB
-	SCBW_DATA(u16*, MineralCost, unitsDat[40].address);						// 00663888
-	SCBW_DATA(u16*, GasCost, unitsDat[41].address);							// 0065FD00
+	SCBW_DATA(u16*, mineral_cost, unitsDat[40].address);					// 00663888
+	SCBW_DATA(u16*, gas_cost, unitsDat[41].address);						// 0065FD00
 	SCBW_DATA(u16*, TimeCost, unitsDat[42].address);						// 00660428
 	SCBW_DATA(u16*, unitsDat43, unitsDat[43].address);						// 00660A70 // "Restriction Address" according to EUDDB
 	SCBW_DATA(GroupFlag*, GroupFlags, unitsDat[44].address);				// 006637A0
@@ -741,8 +741,8 @@ namespace upgrades_dat {
 namespace techdata_dat {
 	SCBW_DATA(const DatLoad*, techdataDat, 0x005137D8);
 
-	SCBW_DATA(u16*, MineralCost, techdataDat[0].address);	//00656248
-	SCBW_DATA(u16*, GasCost, techdataDat[1].address);	//006561F0
+	SCBW_DATA(u16*, mineral_cost, techdataDat[0].address);	//00656248
+	SCBW_DATA(u16*, gas_cost, techdataDat[1].address);	//006561F0
 	SCBW_DATA(u16*, TimeCost, techdataDat[2].address);	//006563D8
 	SCBW_DATA(u16*, EnergyCost, techdataDat[3].address);	//00656380
 	//SCBW_DATA(u16*, ???,				techdataDat[4].address);	//00656198
@@ -910,7 +910,7 @@ struct PlayerFlags {
 SCBW_DATA(PlayerFlags<u8>*, playerAlliance, 0x0058D634);  //See scbw::is_allied_to()
 SCBW_DATA(PlayerFlags<u32>*, playerVision, 0x0057F1EC);
 
-SCBW_DATA(Unit* const*, activePortraitUnit, 0x00597248);
+SCBW_DATA(Unit* const*, active_portrait_unit, 0x00597248);
 
 SCBW_DATA(AI_Main*, AIScriptController, 0x0068FEE8);
 SCBW_DATA(AiRegion* const*, AiRegionCaptains, 0x0069A604);

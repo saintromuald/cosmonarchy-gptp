@@ -282,9 +282,9 @@ namespace hooks
 			scbw::set_ingame_loop_state(false);
 		}
 
-		if (*activePortraitUnit)
+		if (*active_portrait_unit)
 		{
-			// Unit* selected = *activePortraitUnit;
+			// Unit* selected = *active_portrait_unit;
 			// scbw::printf("%u", selected->main_order_id);
 
 
@@ -367,13 +367,13 @@ namespace hooks
 							u32 time = units_dat::TimeCost[target->id] / 2;
 							targetExt->salvage_time += 1;
 							
-							targetExt->salvage_minerals += (f32)units_dat::MineralCost[target->id] / time;
+							targetExt->salvage_minerals += (f32)units_dat::mineral_cost[target->id] / time;
 							while (targetExt->salvage_minerals > 1) {
 								targetExt->salvage_minerals -= 1;
 								resources->minerals[unit->player] += 1;
 							}
 							
-							targetExt->salvage_gas += (f32)units_dat::GasCost[target->id] / time;
+							targetExt->salvage_gas += (f32)units_dat::gas_cost[target->id] / time;
 							while (targetExt->salvage_gas > 1) {
 								targetExt->salvage_gas -= 1;
 								resources->gas[unit->player] += 1;

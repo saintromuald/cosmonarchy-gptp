@@ -1320,4 +1320,6 @@ namespace helper
 	u32 set_ingame_input_procs();																			// 00484CC0
 	void update_current_buttonset();																		// 004599A0
 	bool is_unit_owned_by_player_ex(u32 player, Unit* unit);												// 0045FEF0
+
+	char issue_place_building_order(char* unused, u32 unit_id, char order_id);								// 0048E730
 }

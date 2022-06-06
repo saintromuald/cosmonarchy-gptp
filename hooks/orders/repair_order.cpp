@@ -406,7 +406,7 @@ namespace hooks
 					{
 						return 1;
 					}
-					if (!helper::is_unit_enemy(*activePortraitUnit, target))
+					if (!helper::is_unit_enemy(*active_portrait_unit, target))
 					{
 						return 1;
 					}
@@ -467,7 +467,7 @@ namespace hooks
 					}
 					else
 					{
-						if (!helper::is_unit_enemy(*activePortraitUnit, target))
+						if (!helper::is_unit_enemy(*active_portrait_unit, target))
 						{
 							return 1;
 						}

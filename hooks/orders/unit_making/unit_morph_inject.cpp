@@ -187,8 +187,8 @@ namespace
 				cancel_zerg_building(unit);
 				return;
 			}
-			resources->minerals[unit->player] += units_dat::MineralCost[unit->id] * 3 / 4;
-			resources->gas[unit->player] += units_dat::GasCost[unit->id] * 3 / 4;
+			resources->minerals[unit->player] += units_dat::mineral_cost[unit->id] * 3 / 4;
+			resources->gas[unit->player] += units_dat::gas_cost[unit->id] * 3 / 4;
 		}
 		else
 		{
@@ -201,8 +201,8 @@ namespace
 			{
 				refundUnitId = unit->id;
 			}
-			resources->minerals[unit->player] += units_dat::MineralCost[refundUnitId];
-			resources->gas[unit->player] += units_dat::GasCost[refundUnitId];
+			resources->minerals[unit->player] += units_dat::mineral_cost[refundUnitId];
+			resources->gas[unit->player] += units_dat::gas_cost[refundUnitId];
 		}
 
 		u16 cancelChangeUnitId = hooks::get_cancel_morph_revert_id(unit);

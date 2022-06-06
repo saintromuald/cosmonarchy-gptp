@@ -16,7 +16,7 @@ namespace hooks
 	static void select_larva_type(u32 type) {
 		BTSNACT_select_larva();
 		helper::update_hud_info();
-		if (*activePortraitUnit && (*activePortraitUnit)->id == UnitId::ZergLarva) {
+		if (*active_portrait_unit && (*active_portrait_unit)->id == UnitId::ZergLarva) {
 			helper::BTNSACT_ChangeButtons(206 + type);
 		}
 	}
@@ -60,7 +60,7 @@ namespace hooks
 			{
 				char* message = (char*)statTxtTblNew->getString(864);
 				Unit* portrait_unit = playersSelections->unit[*ACTIVE_NATION_ID][0];
-				helper::get_stat_txt_string(*activePortraitUnit, (*activePortraitUnit)->player, message);
+				helper::get_stat_txt_string(*active_portrait_unit, (*active_portrait_unit)->player, message);
 				return;
 			}
 		}

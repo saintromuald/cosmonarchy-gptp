@@ -272,7 +272,7 @@ namespace hooks
 		}
 
 		// Redraw console/UI elements
-		if (unit == *activePortraitUnit)
+		if (unit == *active_portrait_unit)
 		{
 			if (unit->is_valid_caster())
 			{

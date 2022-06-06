@@ -117,6 +117,21 @@ namespace
 		}
 	}
 
+	void __declspec(naked) btnsact_place_addon_wrapper() {
+		static char* buffer;
+		static u8 unit_id;
+		__asm {
+			MOV buffer, EDI
+			MOV unit_id, CL
+			PUSHAD
+		}
+		hooks::btnsact_place_addon(unit_id, buffer);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void placementSimpleWrappers()
 	{
 		jump_patch(update_placement_simple_wrapper,		0x0048DD42, 2);
@@ -126,13 +141,14 @@ namespace
 
 namespace hooks
 {
-	void injectBuildingTerranHook()
+	void inject_building_terran_hook()
 	{
-		jump_patch(orders_terran_build_self_wrapper,			0x00467760, 2);
-		jump_patch(orders_scv_build_2_wrapper,					0x00467A70, 1);
-		jump_patch(orders_scv_build_wrapper,					0x00467FD0, 0);
-//		jump_patch(refresh_screen_wrapper,						0x0048DDC0, 4);
+		jump_patch(orders_terran_build_self_wrapper,	0x00467760, 2);
+		jump_patch(orders_scv_build_2_wrapper,			0x00467A70, 1);
+		jump_patch(orders_scv_build_wrapper,			0x00467FD0, 0);
+	//	jump_patch(refresh_screen_wrapper,				0x0048DDC0, 4);
+		jump_patch(btnsact_place_addon_wrapper,			0x00423D10, 4);
 
-//		placementSimpleWrappers(); // bugged
+	//	placementSimpleWrappers(); // bugged
 	}
 }

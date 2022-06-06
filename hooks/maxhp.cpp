@@ -90,7 +90,7 @@ namespace hooks
 		BufferStr* v8; // [esp-8h] [ebp-10h]
 
 		v1 = a1;
-		*suppliesAvailableTemp = (*activePortraitUnit)->building.resource.resource_amount;
+		*suppliesAvailableTemp = (*active_portrait_unit)->building.resource.resource_amount;
 		if (*statusScreenFunc != 15)
 		{
 			helper::hide_optional_status_screen_controls(a1);
@@ -100,20 +100,20 @@ namespace hooks
 		helper::add_text_to_dialog(v1, -10, 0);
 		helper::add_text_to_dialog(v1, -12, 0);
 		helper::add_text_to_dialog(v1, -13, 0);
-		v2 = (*activePortraitUnit)->id;
+		v2 = (*active_portrait_unit)->id;
 		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u)
 		{
 			if (*statTxtTbl > 0x31Bu)
 				v3 = (char*)statTxtTbl + statTxtTbl[796];
 			else
 				v3 = "";
-			v7 = (u16)(*activePortraitUnit)->building.resource.resource_amount;
+			v7 = (u16)(*active_portrait_unit)->building.resource.resource_amount;
 LABEL_14:
 			sprintf_s(struct_Char->buf, 260, "%s %d", v3, v7);
 			v8 = struct_Char;
 			goto LABEL_19;
 		}
-		v4 = (*activePortraitUnit)->building.resource.resource_amount;
+		v4 = (*active_portrait_unit)->building.resource.resource_amount;
 		if (v4)
 		{
 			if (*statTxtTbl > 0x31Cu)
@@ -130,7 +130,7 @@ LABEL_14:
 		v8 = (BufferStr*)v5;
 LABEL_19:
 		helper::add_text_to_dialog(v1, -11, (const char*)v8);
-		if (units_dat::ShieldsEnabled[(*activePortraitUnit)->id])
+		if (units_dat::ShieldsEnabled[(*active_portrait_unit)->id])
 		{
 			helper::draw_shield_upgrade(v1, 0);
 		}
@@ -183,15 +183,15 @@ LABEL_26:
 		u8 v22; // [esp+7h] [ebp-1h]
 
 		v1 = (BinDlg*)a1;
-		v2 = *activePortraitUnit;
-		if (IS_IN_REPLAY || (*activePortraitUnit)->player == *LOCAL_NATION_ID)
+		v2 = *active_portrait_unit;
+		if (IS_IN_REPLAY || (*active_portrait_unit)->player == *LOCAL_NATION_ID)
 		{
 			helper::get_supplies_used_no_args();
 			if (*statusScreenFunc != 12)
 			{
 				helper::hide_optional_status_screen_controls(v1);
 				helper::show_control_group(v1, -10, -13);
-				v2 = *activePortraitUnit;
+				v2 = *active_portrait_unit;
 				*statusScreenFunc = 12;
 			}
 			v3 = units_dat::GroupFlags[(u16)v2->id];
@@ -255,7 +255,7 @@ LABEL_26:
 			{
 				v9 = "";
 			}
-			v10 = helper::get_last_queue_slot_id((*activePortraitUnit));
+			v10 = helper::get_last_queue_slot_id((*active_portrait_unit));
 			sprintf_s("", 260, "%s %d", v9, (units_dat::SupplyProvided[v10] + 1) / 2);
 			v11 = v20 + 66353;
 			if (v21 == -818)
@@ -272,11 +272,11 @@ LABEL_26:
 				v12 = "";
 			}
 			ByteOperations::SetLowByte(v11, v21);
-			v13 = helper::get_supplies_available((*activePortraitUnit)->player, v11);
+			v13 = helper::get_supplies_available((*active_portrait_unit)->player, v11);
 			sprintf_s(unkString_Char, 260, "%s %d", v12, (v13 + 1) / 2);
-			v22 = (*activePortraitUnit)->player;
-			v14 = units_dat::GroupFlags[helper::get_last_queue_slot_id((*activePortraitUnit))];
-			s32 race = (*activePortraitUnit)->get_race();
+			v22 = (*active_portrait_unit)->player;
+			v14 = units_dat::GroupFlags[helper::get_last_queue_slot_id((*active_portrait_unit))];
+			s32 race = (*active_portrait_unit)->get_race();
 			if (v14.is_zerg)
 			{
 				v15 = raceSupply[RaceId::Zerg].max[v22];
@@ -311,7 +311,7 @@ LABEL_26:
 			helper::add_text_to_dialog(v1, -11, "");
 			helper::add_text_to_dialog(v1, -12, (const char*)unkString_Char);
 			helper::add_text_to_dialog(v1, -13, (const char*)struct_Char2);
-			v18 = (*activePortraitUnit)->id;
+			v18 = (*active_portrait_unit)->id;
 			if (units_dat::ShieldsEnabled[v18])
 			{
 				helper::draw_shield_upgrade(v1, 0);

@@ -151,7 +151,7 @@ namespace hooks
 
             if (*clientSelectionCount)
             {
-                Unit* activeUnit = *activePortraitUnit;
+                Unit* activeUnit = *active_portrait_unit;
                 if (*clientSelectionCount != 1)
                 {
                     activeUnit = clientSelectionGroup->unit[0];
@@ -210,9 +210,9 @@ namespace hooks
             dialogVar = dialogVar->next;
         }
 
-        helper::printStatResInfo(dialogVar, *console_index + 1, (char**)unknown_68C22C, (char*)gameGas[*LOCAL_NATION_ID], replay_switch_something);
+        helper::printStatResInfo(dialogVar, *console_index + 1, (char**)unknown_68C22C, (char*)game_vespene[*LOCAL_NATION_ID], replay_switch_something);
         BinDlg* v18 = dialogVar->next;
-        helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)gameMinerals[*LOCAL_NATION_ID], replay_switch_something);
+        helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)game_minerals[*LOCAL_NATION_ID], replay_switch_something);
         BinDlg* v17 = v18->next;
         if (v18->next)
         {
@@ -235,7 +235,7 @@ namespace hooks
 
     s32 getSuppliesTemp() // 004246D0
     {
-        Unit* activeUnit = *activePortraitUnit;
+        Unit* activeUnit = *active_portrait_unit;
         GroupFlag groupFlags = units_dat::GroupFlags[activeUnit->id];
         *suppliesAvailableTemp = get_supplies_available(activeUnit->player, RaceId::Terran);
         u8 playerId = activeUnit->player;
@@ -246,13 +246,13 @@ namespace hooks
 
     bool redrawSupplyInfo() // 00425230 // Guessed name
     {
-        if (!IS_IN_REPLAY && (u8)(*activePortraitUnit)->player != *LOCAL_NATION_ID)
+        if (!IS_IN_REPLAY && (u8)(*active_portrait_unit)->player != *LOCAL_NATION_ID)
         {
             return helper::unitStatCond_Standard();
         }
 
-        u8 activePlayer = (*activePortraitUnit)->player;
-        GroupFlag groupFlags = units_dat::GroupFlags[(u16)(*activePortraitUnit)->id];
+        u8 activePlayer = (*active_portrait_unit)->player;
+        GroupFlag groupFlags = units_dat::GroupFlags[(u16)(*active_portrait_unit)->id];
         char race = RaceId::Terran;
 
         if ((u16)suppliesAvailableTemp == get_supplies_available(activePlayer, race))
@@ -267,7 +267,7 @@ namespace hooks
     }
 
 	void drawSupplyUnitStatus(BinDlg* dialog) {
-		Unit* unit = *activePortraitUnit;
+		Unit* unit = *active_portrait_unit;
 		if (*IS_IN_REPLAY || unit->player == *LOCAL_NATION_ID) {
 			getSuppliesTemp();
 			if (*statusScreenFunc != 12) {

@@ -1454,7 +1454,7 @@ LABEL_37:
 			}
 
 			// Lard special cases
-			if (gameGas[town_player] < 800)
+			if (game_vespene[town_player] < 800)
 			{
 				if (worker_count < 20)
 				{

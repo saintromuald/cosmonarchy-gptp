@@ -36,7 +36,7 @@ namespace hooks
 		else
 		{
 			char* message = (char*)statTxtTblNew->getString(874); //not enough life remaining
-			helper::get_stat_txt_string(*activePortraitUnit, *LOCAL_NATION_ID, message);
+			helper::get_stat_txt_string(*active_portrait_unit, *LOCAL_NATION_ID, message);
 		}
 	}
 
