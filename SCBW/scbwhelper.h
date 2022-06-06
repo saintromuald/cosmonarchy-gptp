@@ -539,7 +539,7 @@ namespace helper
 	void function_004756B0(Unit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommandType);											// 004756B0
 	void function_004756E0(Unit* unit, Unit* target, u32 orderId, u32 bCommandType);												// 004756E0
 	u32 function_0049A410(Unit* unit, u8 orderId);																					// 0049A410
-	bool CanTargetSelf(Unit* unit, u8 orderId);																						// 0049A480
+	bool can_target_self(Unit* unit, u8 orderId);																						// 0049A480
 	void function_0049A500(Unit* unit, u8* array_of_data);																			// 0049A500
 	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																// 0049A8C0
 
@@ -1006,7 +1006,7 @@ namespace helper
 	bool ai_regions_are_connected(u32 playerId, u32 region1, u32 region2);									// 00437E70
 
 	// For BTNSCOND_ZergBuildingRally
-	u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit);													// 00429520
+	u32 btnscond_rally(u32 unused, u32 player, Unit* unit);													// 00429520
 
 	// For ai_get_build_location
 	u32 ai_get_building_placement_data(u32 maxRange, u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos);		// 00445D60

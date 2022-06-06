@@ -9,7 +9,7 @@ namespace hooks
 	// @param  factory   The unit (building) that created the given unit.
 	// Identical to sub_466F50 @ 00466F50
 
-	void orderNewUnitToRallyHook(Unit* unit, Unit* factory)
+	void order_new_unit_to_rally(Unit* unit, Unit* factory)
 	{
 		// Do nothing if the rally target is the factory itself or the rally target position is 0
         if (factory) {
@@ -32,7 +32,7 @@ namespace hooks
 	}
 
 	// Called when the player sets the rally point on the ground.
-	void setRallyPosition(Unit* unit, u16 x, u16 y)
+	void set_rally_position(Unit* unit, u16 x, u16 y)
 	{
         UnitExt* unitExt = globals.get_unit_ext(unit);
         unit->rally.unit = nullptr;
@@ -41,7 +41,7 @@ namespace hooks
 	}
 
 	// Called when the player sets the rally point on a unit.
-	void setRallyUnit(Unit* unit, Unit* target)
+	void set_rally_unit(Unit* unit, Unit* target)
 	{
 		if (target == nullptr)
         {
@@ -56,7 +56,7 @@ namespace hooks
 
     // Hooked to allow rally for morphing Larval Colonies - Pr0nogo
     // Possible downstream effect: need to clear rally for the creep colony if the morph cancelled?
-    u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit) // 00429520
+    u32 btnscond_rally(u32 unused, u32 player, Unit* unit) // 00429520
     {
         *last_internal_error = 0;
         if (orders_dat::RequirementsOffset[OrderId::RallyPoint2] == -1)
@@ -116,7 +116,7 @@ namespace hooks
         return result;
     }
 
-    Order* RemoveReferences(Unit* unit, Unit* dying) // 0049E590
+    Order* remove_references(Unit* unit, Unit* dying) // 0049E590
     {
         if (unit->current_build_unit == dying)
         {
@@ -178,7 +178,7 @@ namespace hooks
         {
             if (units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
             {
-                RemoveReferences(unit->subunit, dying);
+                remove_references(unit->subunit, dying);
             }
         }
         Order* result = unit->order_queue_head;
@@ -194,7 +194,7 @@ namespace hooks
         return 0; // used to return result, but it will always be 0. the return value is never used anyways
     }
 
-    Unit* RightClickCommand(signed int x, signed int y, Unit *target, signed int fow_unit_id, char queued)
+    Unit* right_click_command(signed int x, signed int y, Unit *target, signed int fow_unit_id, char queued)
     {
         MovementGroup movement_group = {};
         movement_group.pos.x = x;

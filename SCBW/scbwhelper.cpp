@@ -4826,38 +4826,34 @@ namespace helper
 		return result;
 	}
 
-	//Logically identical to 0049A480 sub_49A480
-	bool CanTargetSelf(Unit* unit, u8 orderId)
+	// Logically identical to 0049A480 sub_49A480
+	bool can_target_self(Unit* unit, u8 orderId)
 	{
-		bool return_value;
-		if (
-			unit->status & UnitStatus::GroundedBuilding &&
-			(orderId == OrderId::RallyPoint1 || orderId == OrderId::RallyPoint2)
-			)
+		bool return_value = false;
+		if (unit->status & UnitStatus::GroundedBuilding && (orderId == OrderId::RallyPoint1 || orderId == OrderId::RallyPoint2))
+		{
 			return_value = true;
-		else
-			if (
-				(unit->id == UnitId::ZergIsthrathaleth || unit->id == UnitId::Hero_UncleanOne) &&
-				orderId == OrderId::DarkSwarm
-				)
-				return_value = true;
-			else
-				if (unit->status & UnitStatus::IsHallucination)
-					return_value = false;
-				else
-					if (
-						unit->id == UnitId::ZergOvileth &&
-						UpgradesSc->currentLevel[unit->player][UpgradeId::VentralSacs] == 0
-						)
-						return_value = false;
-					else
-						if (units_dat::SpaceProvided[unit->id] == 0)
-							return_value = false;
-						else
-							if (orderId == OrderId::MoveUnload)
-								return_value = true;
-							else
-								return_value = false;
+		}
+		else if ((unit->id == UnitId::ZergIsthrathaleth) && orderId == OrderId::DarkSwarm)
+		{
+			return_value = true;
+		}
+		else if (unit->status & UnitStatus::IsHallucination)
+		{
+			return_value = false;
+		}
+		else if (unit->id == UnitId::ZergOvileth && UpgradesSc->currentLevel[unit->player][UpgradeId::VentralSacs] == 0)
+		{
+			return_value = false;
+		}
+		else if (units_dat::SpaceProvided[unit->id] == 0)
+		{
+			return_value = false;
+		}
+		else if (orderId == OrderId::MoveUnload)
+		{
+			return_value = true;
+		}
 		return return_value;
 	}
 
@@ -9311,7 +9307,7 @@ namespace helper
 	}
 	
 	// For BTNSCOND_ZergBuildingRally
-	u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit)
+	u32 btnscond_rally(u32 unused, u32 player, Unit* unit)
 	{
 		const u32 Func_BTNSCOND_Rally = 0x00429520;
 		static u32 result;
