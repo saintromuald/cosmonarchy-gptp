@@ -134,10 +134,10 @@ namespace hooks
 {
 	void inject_cmdrecv_build_hooks()
 	{
-	//	jump_patch(CMDRECV_PlaceBuildingAllowed_Wrapper,	0x0048DBD0, 1);
-	//	jump_patch(cmdRECV_PlaceBuildingNormal_Wrapper,		0x0048E010, 0);
-	//	jump_patch(cmdRECV_PlaceBuildingAddon_Wrapper,		0x0048E0A0, 0);
-	//	jump_patch(CMDRECV_Build_Wrapper,					0x004C23C0, 3);
+	//	jump_patch(cmdrecv_place_building_allowed_wrapper,	0x0048DBD0, 1);
+	//	jump_patch(cmdrecv_place_building_normal_wrapper,	0x0048E010, 0);
+	//	jump_patch(cmdrecv_place_addon_wrapper,				0x0048E0A0, 0);
+	//	jump_patch(cmdrecv_build_wrapper,					0x004C23C0, 3);
 	//	jump_patch(process_building_placement_wrapper,		0x0048DE70, 0);
 	}
 }
