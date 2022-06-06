@@ -55,7 +55,9 @@ namespace hooks
 
 			for (u32 i = 0; i < found_count; ++i) {
 				for (u32 j = 0; j < count; ++j) {
-					goto skip;
+					if (found_larvae[i] == selection[j]) {
+						goto skip;
+					}
 				}
 				if (count < SELECTION_ARRAY_LENGTH) {
 					selection[count++] = found_larvae[i];
