@@ -54,11 +54,15 @@ namespace hooks
 		{
 			if (current_unit != unit)
 			{
-				if (has_units && units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
-					dontAddToList = true;
-				}
-				if (has_buildings && !(units_dat::BaseProperty[current_unit->id] & UnitProperty::Building)) {
-					dontAddToList = true;
+				// This `if` fixes a bug where selecting both building and units using Shift and control groups disallows from selecting units
+				// TODO: find control group add functionality and make it protect from that edge case
+				if (!has_units || !has_buildings) {
+					if (has_units && units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
+						dontAddToList = true;
+					}
+					if (has_buildings && !(units_dat::BaseProperty[current_unit->id] & UnitProperty::Building)) {
+						dontAddToList = true;
+					}
 				}
 
 				if (!dontAddToList) {
