@@ -5818,7 +5818,7 @@ namespace helper
 	// Identical to getHPGainForRepair @ 0x00402C40
 	u32 getHPGainForRepair(Unit* unit)
 	{
-		if (*cheat_state & CheatFlags::OperationCwal)
+		if (*bw_cheat_state & CheatFlags::OperationCwal)
 		{
 			return unit->build_repair_hp_gain * 16;
 		}
@@ -6402,7 +6402,7 @@ namespace helper
 	bool unit_is_owned_by_current_player(Unit* unit)
 	{
 		bool return_value;
-		if (*is_in_replay != 0 || unit->player != *LOCAL_NATION_ID)
+		if (*bw_is_in_replay != 0 || unit->player != *LOCAL_NATION_ID)
 		{
 			return_value = false;
 		}

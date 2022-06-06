@@ -1,6 +1,7 @@
 #include "buttonsets.h"
 #include "SCBW/api.h"
 #include "globals.h"
+#include "hooks/game_hooks.h"
 
 // Main names from Firegraft, comments names from vgce
 namespace ButtonRequirements
@@ -425,7 +426,7 @@ namespace hooks
 		}
 		else
 		{
-			if (*is_replay_paused != 0)
+			if (*bw_is_replay_paused != 0)
 			{
 				*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_ReplayPaused;
 			}
@@ -451,6 +452,11 @@ namespace hooks
 	// Main updateButtonSet function because it call updateButtonSet() and others
 	void updateCurrentButtonset() // 004599A0
 	{
+		if (hooks::reset_command_card) {
+			hooks::reset_command_card = false;
+			*orders_buttonset = hooks::cached_command_card;
+		}
+
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
 		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
 		u8* const BUTTONSET_SUBUNIT_MAINORDERID = (u8*)0x0068C1B8;
@@ -471,7 +477,7 @@ namespace hooks
 			bool bNeedUpdateButtonSet = false;
 			if (*BUTTONSET_SPECIAL_BUTTONSETID != UnitId::Buttons_Blank)
 			{
-				if (*is_in_replay)
+				if (*bw_is_in_replay)
 				{
 					bNeedUpdateButtonSet = true;
 				}
@@ -613,7 +619,7 @@ namespace hooks
 
 		if (jumpTo59A9F)
 		{
-			if (*is_in_replay)
+			if (*bw_is_in_replay)
 			{
 				helper::replay_stat_buttons(*BUTTONSET_DIALOG);
 			}
@@ -1612,7 +1618,7 @@ namespace hooks
 			// 00459278
 			if (!bStopThere && !jumpto5934E)
 			{
-				jumpto5933C = (!*is_in_replay) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *LOCAL_NATION_ID);
+				jumpto5933C = (!*bw_is_in_replay) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *LOCAL_NATION_ID);
 				if (!jumpto5933C)
 				{
 					// 0045929A

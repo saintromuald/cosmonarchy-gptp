@@ -122,7 +122,7 @@ namespace hooks
 		}
 		if (do_repair) {
 			u32 hpGain = target->build_repair_hp_gain;
-			if (*cheat_state & CheatFlags::OperationCwal) {
+			if (*bw_cheat_state & CheatFlags::OperationCwal) {
 				hpGain *= 16;
 			}
 			// Talos - Advanced repair speed

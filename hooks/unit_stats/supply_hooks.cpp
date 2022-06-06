@@ -33,7 +33,7 @@ namespace hooks
             supplyUsed = suppliesUsed_Terran[playerId];
             supplyAvailable = hooks::getSuppliesMax(unit_id, playerId);
         }
-        if (*cheat_state & 0x20000)
+        if (*bw_cheat_state & 0x20000)
         {
             return suppliesMax_Terran[playerId] - supplyUsed;
         }
@@ -146,7 +146,7 @@ namespace hooks
 
         s32 activePlayer = *LOCAL_NATION_ID;
         s32 replay_switch_something = 0;
-        if (*is_in_replay)
+        if (*bw_is_in_replay)
         {
 
             if (*clientSelectionCount)
@@ -227,7 +227,7 @@ namespace hooks
             }
             while (v17);
         }
-        if (*is_in_replay)
+        if (*bw_is_in_replay)
         {
             *LOCAL_NATION_ID = activePlayer;
         }
@@ -246,7 +246,7 @@ namespace hooks
 
     bool redrawSupplyInfo() // 00425230 // Guessed name
     {
-        if (!is_in_replay && (u8)(*active_portrait_unit)->player != *LOCAL_NATION_ID)
+        if (!bw_is_in_replay && (u8)(*active_portrait_unit)->player != *LOCAL_NATION_ID)
         {
             return helper::unitStatCond_Standard();
         }
@@ -268,7 +268,7 @@ namespace hooks
 
 	void drawSupplyUnitStatus(BinDlg* dialog) {
 		Unit* unit = *active_portrait_unit;
-		if (*is_in_replay || unit->player == *LOCAL_NATION_ID) {
+		if (*bw_is_in_replay || unit->player == *LOCAL_NATION_ID) {
 			getSuppliesTemp();
 			if (*statusScreenFunc != 12) {
 				helper::hide_optional_status_screen_controls(dialog);

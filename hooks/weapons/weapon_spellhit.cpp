@@ -780,7 +780,7 @@ namespace hooks
 		Point16 a2; // [esp+4h] [ebp-4h]
 
 		v1 = unit;
-		if (!(*cheat_state & 0x800))
+		if (!(*bw_cheat_state & 0x800))
 		{
 			v2 = techdata_dat::EnergyCost[4] * 256;
 			v3 = v1->energy >= v2;
@@ -850,7 +850,7 @@ LABEL_15:
 			helper::update_unit_stats_and_finish_building(v10);
 			helper::update_unit_strength(v11);
 			helper::play_sound_from_unit(388, v1, 1, 0);
-			if (!(*cheat_state & 0x800))
+			if (!(*bw_cheat_state & 0x800))
 			{
 				v1->spend_unit_energy(techdata_dat::EnergyCost[4] * 256);
 			}

@@ -27,7 +27,7 @@ namespace hooks
 
 			helper::create_bullet(WeaponId::CantavisHallucinationCast, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 
-			if (!(*cheat_state & CheatFlags::TheGathering))
+			if (!(*bw_cheat_state & CheatFlags::TheGathering))
 			{
 				unit->spend_unit_energy(techCost);
 			}

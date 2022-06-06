@@ -61,7 +61,7 @@ namespace hooks
 		u32 index = 0;
 
 		if (!(activeUnit->status & UnitStatus::IsHallucination)
-			|| (!*is_in_replay && activeUnit->player != *LOCAL_NATION_ID))
+			|| (!*bw_is_in_replay && activeUnit->player != *LOCAL_NATION_ID))
 		{
 			bool bNoAirWeaponDisplay;
 			u32 airWeapon;
@@ -392,7 +392,7 @@ namespace hooks
 		{
 			goto LABEL_35;
 		}
-		if (!is_in_replay && activeUnit->player != *LOCAL_NATION_ID)
+		if (!*bw_is_in_replay && activeUnit->player != *LOCAL_NATION_ID)
 		{
 			goto LABEL_6;
 		}

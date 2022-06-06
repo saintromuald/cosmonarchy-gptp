@@ -778,7 +778,7 @@ namespace hooks
 		{
 			helper::play_sound_from_unit(soundId, unit, 1, 0);
 		}
-		if (!is_in_replay && unitVar->player == *LOCAL_NATION_ID)
+		if (!bw_is_in_replay && unitVar->player == *LOCAL_NATION_ID)
 		{
 			*force_button_refresh = 1;
 			portrait_redraw[0] = 1;

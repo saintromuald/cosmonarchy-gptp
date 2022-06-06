@@ -243,25 +243,25 @@ namespace scbw
 	/// Checks whether the game is in Brood War mode (instead of vanilla StarCraft).
 	inline bool isBroodWarMode()
 	{
-		return (*is_brood_war) != 0;
+		return (*bw_is_brood_war) != 0;
 	}
 
 	/// Checks whether the given cheat flag is enabled.
 	inline bool is_cheat_enabled(u32 cheatFlag)
 	{
-		return ((*cheat_state) & cheatFlag) != 0;
+		return ((*bw_cheat_state) & cheatFlag) != 0;
 	}
 
 	/// Checks whether the game is paused.
 	inline bool is_game_paused()
 	{
-		return (*is_game_paused) != 0;
+		return (*bw_is_game_paused) != 0;
 	}
 
 	/// Checks whether the game is in replay mode.
 	inline bool isInReplay()
 	{
-		return (*is_in_replay) != 0;
+		return (*bw_is_in_replay) != 0;
 	}
 
 	//////////////////////////////////////////////////////////////// @}

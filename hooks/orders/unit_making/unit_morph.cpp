@@ -108,7 +108,7 @@ namespace hooks
 		if (!unit->remaining_build_time) {
 			return 1;
 		}
-		if (*cheat_state & CheatFlags::OperationCwal) {
+		if (*bw_cheat_state & CheatFlags::OperationCwal) {
 			unit->remaining_build_time -= 16;
 		} else {
 			unit->remaining_build_time -= 1;
