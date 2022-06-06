@@ -772,7 +772,11 @@ namespace hooks
 						}
 					}
 
-					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == IconId::Lair && *clientSelectionCount) {
+					if (current_button->action_func == (ActFunc*)ButtonActions::Create_AddOn && *clientSelectionCount > 1) {
+						current_button_state = BUTTON_STATE::Invisible;
+					}
+
+					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == IconId::Lair && *clientSelectionCount > 1) {
 						current_button_state = BUTTON_STATE::Invisible;
 					}
 
