@@ -100,22 +100,24 @@ namespace hooks
 		}
 
 		bool do_repair = false;
-		if (unit->worker.repair_resource_loss_timer == 0) {
-			unit->worker.repair_resource_loss_timer--;
-			do_repair = helper::ord_repair_subtract(unit, target);
-			if (!do_repair)
-			{
-				unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
-				if (unit->order_queue_head) {
-					helper::force_order_done(unit);
-				} else {
-					unit->main_order_state = 1;
+		if (target->hitpoints < units_dat::MaxHitPoints[target->id]) {
+			if (unit->worker.repair_resource_loss_timer == 0) {
+				unit->worker.repair_resource_loss_timer--;
+				do_repair = helper::ord_repair_subtract(unit, target);
+				if (!do_repair)
+				{
+					unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
+					if (unit->order_queue_head) {
+						helper::force_order_done(unit);
+					} else {
+						unit->main_order_state = 1;
+					}
+					return;
 				}
-				return;
+			} else {
+				unit->worker.repair_resource_loss_timer--;
+				do_repair = true;
 			}
-		} else {
-			unit->worker.repair_resource_loss_timer--;
-			do_repair = true;
 		}
 		if (do_repair) {
 			u32 hpGain = target->build_repair_hp_gain;
