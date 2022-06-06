@@ -285,7 +285,7 @@ struct Unit : public UnitLayout
 	/// Returns the overlay image of this unit's sprite (or its subunit's sprite)
 	/// that matches the @p imageId. If the image cannot be found, returns nullptr.
 	Image* get_overlay(u16 imageId) const;
-	s32 maxShields() const;
+	s32 max_shields() const;
 	bool shields_enabled() const;
 
 	/// Makes the unit's sprite play the specified Iscript animation entry.

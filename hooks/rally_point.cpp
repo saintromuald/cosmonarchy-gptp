@@ -58,7 +58,7 @@ namespace hooks
     // Possible downstream effect: need to clear rally for the creep colony if the morph cancelled?
     u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit) // 00429520
     {
-        *lastInternalError = 0;
+        *last_internal_error = 0;
         if (orders_dat::RequirementsOffset[OrderId::RallyPoint2] == -1)
         {
             helper::parse_orders_dat_requirements();
@@ -69,12 +69,12 @@ namespace hooks
         {
             if (unit->is_frozen())
             {
-                *lastInternalError = 10;
+                *last_internal_error = 10;
                 result = 0;
             }
             else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk) // ?
             {
-                *lastInternalError = 11;
+                *last_internal_error = 11;
                 result = 0;
             }
             else
@@ -84,7 +84,7 @@ namespace hooks
                   || scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
                   || unit_id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
                 {
-                    *lastInternalError = 8;
+                    *last_internal_error = 8;
                     result = 0;
                 }
                 else
@@ -98,19 +98,19 @@ namespace hooks
                         }
                         else
                         {
-                            result = helper::parse_requirement_opcodes(unit, OrderId::RallyPoint2, player, (u32)ordersRequirementTree, orders_dat::RequirementsOffset[OrderId::RallyPoint2]);
+                            result = helper::parse_requirement_opcodes(unit, OrderId::RallyPoint2, player, (u32)orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::RallyPoint2]);
                         }
                     }
                     else
                     {
-                        *lastInternalError = 23;
+                        *last_internal_error = 23;
                     }
                 }
             }
         }
         else
         {
-            *lastInternalError = 1;
+            *last_internal_error = 1;
             result = 0;
         }
         return result;

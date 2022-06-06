@@ -523,7 +523,7 @@ namespace helper
 	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80
 
 	// for CMDRECV_HoldPosition
-	Unit* get_active_player_first_selection();																							// 0049A850
+	Unit* get_active_player_next_selection();																							// 0049A850
 	s32 orderAllowed(Unit* a1, u16 a2, s32 a3);																						// 0046DC20
 	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
 
@@ -653,7 +653,7 @@ namespace helper
 	b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
 	void load_unit_proc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
 	b32 unload_unit_proc(Unit* unit);																									// 004E7F70 (Hooked)
-	void issueOrderTargetingGround(Unit* unit, u8 orderId, s16 x, s16 y);															// 00475260
+	void issue_order_targeting_ground(Unit* unit, u8 orderId, s16 x, s16 y);															// 00475260
 
 	//// siege_transform
 	void unitSetRetreatPoint(Unit* unit, u8 angleValue);																			// 004011A0
@@ -1027,7 +1027,7 @@ namespace helper
 	// For ignoreIscriptGoToIdle
 	void playIdleIscript(Sprite* sprite);																						// 00497880
 
-	// For issueOrderTargetingGround
+	// For issue_order_targeting_ground
 	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6);													// 00447810
 
 	// For unit_destructor_special

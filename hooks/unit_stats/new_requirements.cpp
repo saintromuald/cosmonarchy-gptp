@@ -18,7 +18,7 @@ namespace hooks {
 
 	s32 createUnitIdAllowed(s16 unit_id, s32 player_id, bool ignore_creator)
 	{
-		*lastInternalError = InternalErrors::UnknownError0;
+		*last_internal_error = InternalErrors::UnknownError0;
 		if (unit_id >= UnitId::None)
 		{
 			return false;
@@ -1045,40 +1045,40 @@ namespace hooks {
 
 	s32 createUnitAllowed_Partial(s16 unit_id, Unit* unit, s32 player_id)
 	{
-		*lastInternalError = InternalErrors::UnknownError0;
+		*last_internal_error = InternalErrors::UnknownError0;
 		if (unit_id >= UnitId::None)
 		{
-			*lastInternalError = InternalErrors::UnknownError16;
+			*last_internal_error = InternalErrors::UnknownError16;
 			return TECH_HIDDEN;
 		}
 		if (player_id != unit->player)
 		{
-			*lastInternalError = InternalErrors::UnknownError1;
+			*last_internal_error = InternalErrors::UnknownError1;
 			return TECH_HIDDEN;
 		}
 		if (!(unit->status & UnitStatus::Completed))
 		{
-			*lastInternalError = InternalErrors::UnknownError20;
+			*last_internal_error = InternalErrors::UnknownError20;
 			return TECH_HIDDEN;
 		}
 		if (unit->is_frozen())
 		{
-			*lastInternalError = InternalErrors::UnitFrozen;
+			*last_internal_error = InternalErrors::UnitFrozen;
 			return TECH_HIDDEN;
 		}
 		if (!unit_availability->available[unit->player][unit_id])
 		{
-			*lastInternalError = InternalErrors::UnknownError2;
+			*last_internal_error = InternalErrors::UnknownError2;
 			return TECH_HIDDEN;
 		}
 		if (unit->is_queue_slot_active(4))
 		{
-			*lastInternalError = InternalErrors::UnknownError3;
+			*last_internal_error = InternalErrors::UnknownError3;
 			return TECH_HIDDEN;
 		}
 		if (unit->status & UnitStatus::IsHallucination)
 		{
-			*lastInternalError = InternalErrors::UnknownError22;
+			*last_internal_error = InternalErrors::UnknownError22;
 			return TECH_HIDDEN;
 		}
 

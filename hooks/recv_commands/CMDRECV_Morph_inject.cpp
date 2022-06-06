@@ -51,6 +51,26 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) cmdrecv_liftoff_wrapper()
+	{
+		static char* buffer;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV buffer, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::cmdrecv_train(buffer);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
@@ -60,5 +80,6 @@ namespace hooks
 		jump_patch(CMDRECV_BuildingMorphWrapper,	0x004C1910, 7);
 		jump_patch(CMDRECV_UnitMorphWrapper,		0x004C1990, 3);
 		jump_patch(cmdrecv_train_wrapper,			0x004C1C20, 6);
+		jump_patch(cmdrecv_liftoff_wrapper,			0x004C1620, 1);
 	}
 }

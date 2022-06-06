@@ -3,58 +3,29 @@
 
 namespace hooks
 {
-
-	//was initially in a building_morph file
-	//the rest of the function this fragment is from use
-	//too many unknowns, thus this is only a fragment.
-	//This allow to change the wireframe displayed for
-	//the unit, the special case being that zerg morphing
-	//buildings show the wireframe of the new building
-	//before construction is complete
-	u16 statdata_UnitWireframeUpdate_Fragment(Unit* unit)
+	// Was initially in building_morph. The rest of the function this fragment is from use too many unknowns, thus this is only a fragment.
+	// This allows to change the wireframe displayed for the unit, the special case being that zerg morphing buildings show the wireframe of the new building before construction is complete.
+	// -iquare
+	u16 stat_data_unit_wireframe_update_fragment(Unit* unit)
 	{
-
-		u16 unit_id;
+		u16 unit_id = UnitId::None;
 		bool bUseCurrentUnitId = true;
-
 		if (!(unit->status & UnitStatus::Completed))
 		{
-
 			unit_id = unit->build_queue[unit->build_queue_slot];
-
-			if (
-				unit_id == UnitId::ZergHive ||
-				unit_id == UnitId::ZergLair ||
-				unit_id == UnitId::ZergGeszithRoost ||
-				unit_id == UnitId::ZergSporeColony ||
-				unit_id == UnitId::ZergSunkenColony ||
-				unit_id == 191
-				)
+			if (scbw::is_zerg_building_morph_result(unit_id))
+			{
 				bUseCurrentUnitId = false;
-
+			}
 		}
-
-		//5694F
 		if (bUseCurrentUnitId)
+		{
 			unit_id = unit->id;
-
+		}
 		return unit_id;
 	}
-	u16 get_last_queue_slot_id(Unit* unit)
-	{
-		u16 unit_id;
-		if (unit->status & UnitStatus::Completed)
-			unit_id = unit->id;
-		else
-		{
-			unit_id = unit->build_queue[unit->build_queue_slot];
-			if (!(scbw::is_zerg_building_morph_result))
-				unit_id = unit->id;
-		}
-		return unit_id;
-	};
 
-	u8 wireframeShields(Unit* unit)
+	u8 wireframe_shields(Unit* unit)
 	{
 		auto eax = unit->id;
 		u8 al = 0;
@@ -64,7 +35,7 @@ namespace hooks
 			u32 maxShields = units_dat::MaxShieldPoints[lastSlot];
 			if (lastSlot == unit->id)
 			{
-				maxShields = unit->maxShields();//for stasis, later
+				maxShields = unit->max_shields(); // for stasis, later
 			}
 			if (maxShields)
 			{
@@ -72,7 +43,9 @@ namespace hooks
 				shields *= 7;
 				shields /= maxShields;
 				if (shields * 2 + 1 >= 40)
+				{
 					return al; // safety check
+				}
 				auto wireConst = wireframeConstants[shields * 2];
 				auto wireConstShift = wireframeConstants[(shields * 2) + 1];
 				auto buf1 = charBuffer[wireConst];//CL
@@ -89,4 +62,4 @@ namespace hooks
 		}
 		return al;
 	}
-} //hooks
+}

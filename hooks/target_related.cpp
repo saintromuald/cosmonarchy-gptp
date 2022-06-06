@@ -443,7 +443,7 @@ LABEL_42:
 		u8 orderId;
 
 		*((s8*)&map_height_pixels + 2) = 0;
-		result = helper::get_active_player_first_selection();
+		result = helper::get_active_player_next_selection();
 		for (i = result; result; i = result)
 		{
 			unit_id = i->id;
@@ -480,7 +480,7 @@ LABEL_42:
 			{
 				helper::targetedOrder(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
 			}
-			result = helper::get_active_player_first_selection();
+			result = helper::get_active_player_next_selection();
 		}
 		return result;
 	}

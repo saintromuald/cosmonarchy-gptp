@@ -772,4 +772,19 @@ namespace hooks
 	}
 
 	// TODO: 425F30 4260C0 4268D0 426FF0 427260 4273E0 - Needed to show remaining build time seconds above progress bar
+
+	// Hooked to correct errors and replace building morph id checks. -Pr0nogo
+	u16 get_last_queue_slot_id(Unit* unit) // 0047B270
+	{
+		if (unit->status & UnitStatus::Completed)
+		{
+			return unit->id;
+		}
+		u16 queued_id = unit->build_queue[unit->build_queue_slot];
+		if (!scbw::is_zerg_building_morph_result(queued_id))
+		{
+			return unit->id;
+		}
+		return queued_id;
+	}
 }

@@ -50,7 +50,7 @@ u32 Unit::get_current_life_ingame() const
 		return get_current_hp_ingame();
 }
 
-s32 Unit::maxShields() const
+s32 Unit::max_shields() const
 {
 	assert(this);
 	return units_dat::MaxShieldPoints[this->id];
