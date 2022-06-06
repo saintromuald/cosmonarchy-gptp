@@ -788,17 +788,17 @@ namespace hooks
 			if (!v3)
 			{
 				targetsFound2 = units_dat::GroupFlags[(u16)v1->id];
-				if (targetsFound2.isZerg)
+				if (targetsFound2.is_zerg)
 				{
 					iterate = 0;
 				}
-				else if (targetsFound2.isTerran)
+				else if (targetsFound2.is_terran)
 				{
 					iterate = 1;
 				}
 				else
 				{
-					iterate = (targetsFound2.isProtoss) != 0 ? 2 : 4;
+					iterate = (targetsFound2.is_protoss) != 0 ? 2 : 4;
 				}
 				v6 = iterate + 864;
 				v7 = iterate + 863;

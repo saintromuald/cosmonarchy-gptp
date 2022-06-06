@@ -175,7 +175,7 @@ namespace hooks
                 TileExt* tile_ext = get_tile_ext_at_tile(tile_x + x, tile_y + y);
 
                 u32 flags = 0x20800000; // cliff_edge, always_unbuildable
-                if (!units_dat::GroupFlags[unit_id].isZerg && !can_place_on_creep_tile(tile_ext, player)) {
+                if (!units_dat::GroupFlags[unit_id].is_zerg && !can_place_on_creep_tile(tile_ext, player)) {
                     flags |= check_creep ? 0x40000000 : 0x400000;
                 }
 

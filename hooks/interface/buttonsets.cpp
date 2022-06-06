@@ -223,7 +223,7 @@ namespace hooks
 
 				// count flying zerg units (to disable "burrow group" if there's one)
 				if (!(unitFromSelection->status & UnitStatus::InAir)
-					&& units_dat::GroupFlags[unitFromSelection->id].isZerg)
+					&& units_dat::GroupFlags[unitFromSelection->id].is_zerg)
 				{
 					countNotInAirAndZergs++;
 				}
@@ -702,7 +702,7 @@ namespace hooks
 						}
 						else if (current_button->requirement_var == TechId::LarvalSubmenuSelectSwarm || current_button->requirement_var == TechId::LarvalSubmenuSelectAssault || current_button->requirement_var == TechId::LarvalSubmenuSelectControl)							
 						{
-							if ((units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
+							if ((units_dat::GroupFlags[unit->id].is_zerg && units_dat::GroupFlags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
 								current_button_state = BUTTON_STATE::Enabled;
 							} else {
 								current_button_state = BUTTON_STATE::Invisible;
@@ -711,7 +711,7 @@ namespace hooks
 					}
 
 					if (current_button->icon_id == IconId::Larva) {
-						if ((units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
+						if ((units_dat::GroupFlags[unit->id].is_zerg && units_dat::GroupFlags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
 							current_button_state = BUTTON_STATE::Enabled;
 						} else {
 							current_button_state = BUTTON_STATE::Invisible;
@@ -719,7 +719,7 @@ namespace hooks
 					}
 
 					if (current_button->icon_id == IconId::Cancel) {
-						if (units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].is_factory) {
+						if (units_dat::GroupFlags[unit->id].is_zerg && units_dat::GroupFlags[unit->id].is_factory) {
 							current_button->position = 6;
 						} else {
 							current_button->position = 9;

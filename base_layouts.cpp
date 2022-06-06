@@ -346,7 +346,7 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 		!unit_has_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
 		return false;
 	}
-	if (units_dat::BaseProperty[unit_id] & UnitProperty::Building && !units_dat::GroupFlags[unit_id].isZerg &&
+	if (units_dat::BaseProperty[unit_id] & UnitProperty::Building && !units_dat::GroupFlags[unit_id].is_zerg &&
 		!unit_has_no_or_allied_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
 		return false;
 	}

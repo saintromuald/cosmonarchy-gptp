@@ -195,17 +195,17 @@ LABEL_26:
 				*statusScreenFunc = 12;
 			}
 			v3 = units_dat::GroupFlags[(u16)v2->id];
-			if (v3.isZerg)
+			if (v3.is_zerg)
 			{
 				v21 = 0;
 			}
-			else if (v3.isProtoss)
+			else if (v3.is_protoss)
 			{
 				v21 = 2;
 			}
 			else
 			{
-				v21 = (v3.isTerran) != 0 ? RaceId::Terran : RaceId::Neutral;
+				v21 = (v3.is_terran) != 0 ? RaceId::Terran : RaceId::Neutral;
 			}
 			v4 = v2->player;
 			if (v21)
@@ -277,15 +277,15 @@ LABEL_26:
 			v22 = (*activePortraitUnit)->player;
 			v14 = units_dat::GroupFlags[helper::get_last_queue_slot_id((*activePortraitUnit))];
 			s32 race = (*activePortraitUnit)->get_race();
-			if (v14.isZerg)
+			if (v14.is_zerg)
 			{
 				v15 = raceSupply[RaceId::Zerg].max[v22];
 			}
-			else if (v14.isTerran)
+			else if (v14.is_terran)
 			{
 				v15 = raceSupply[RaceId::Terran].max[v22];
 			}
-			else if (v14.isProtoss)
+			else if (v14.is_protoss)
 			{
 				v15 = raceSupply[RaceId::Protoss].max[v22];
 			}

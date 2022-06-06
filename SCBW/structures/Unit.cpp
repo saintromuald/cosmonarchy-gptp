@@ -244,15 +244,15 @@ RaceId::Enum Unit::get_race(u16 unit_id)
 {
 	assert(unit_id < UNIT_TYPE_COUNT);
 
-	if (units_dat::GroupFlags[unit_id].isZerg)
+	if (units_dat::GroupFlags[unit_id].is_zerg)
 	{
 		return RaceId::Zerg;
 	}
-	else if (units_dat::GroupFlags[unit_id].isProtoss)
+	else if (units_dat::GroupFlags[unit_id].is_protoss)
 	{
 		return RaceId::Protoss;
 	}
-	else if (units_dat::GroupFlags[unit_id].isTerran)
+	else if (units_dat::GroupFlags[unit_id].is_terran)
 	{
 		return RaceId::Terran;
 	}

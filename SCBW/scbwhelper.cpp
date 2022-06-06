@@ -11964,4 +11964,18 @@ namespace helper
 			POPAD
 		}
 	}
+
+	bool is_unit_owned_by_player_ex(u32 player, Unit* unit) {
+		static bool result;
+		const u32 func_address = 0x0045FEF0;
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV ECX, player
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

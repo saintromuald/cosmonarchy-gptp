@@ -78,8 +78,8 @@ namespace hooks
 
 			helper::recheck_attacks(unit);
 			scbw::refresh_console();
-			if (units_dat::GroupFlags[unit->id].isZerg != 1
-				&& units_dat::GroupFlags[unit->id].isProtoss != 1
+			if (units_dat::GroupFlags[unit->id].is_zerg != 1
+				&& units_dat::GroupFlags[unit->id].is_protoss != 1
 				&& unit->status & UnitStatus::GroundedBuilding)
 			{
 				*canUpdatePoweredStatus = 1;

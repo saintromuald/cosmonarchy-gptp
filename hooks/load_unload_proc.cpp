@@ -52,15 +52,15 @@ namespace hooks
 		}
 		
 		// 004E7952
-		if (units_dat::GroupFlags[transport->id].isZerg)
+		if (units_dat::GroupFlags[transport->id].is_zerg)
 		{
 			unitRaceId = RaceId::Zerg;
 		}
-		else if (units_dat::GroupFlags[transport->id].isProtoss)
+		else if (units_dat::GroupFlags[transport->id].is_protoss)
 		{
 			unitRaceId = RaceId::Protoss;
 		}
-		else if (units_dat::GroupFlags[transport->id].isTerran)
+		else if (units_dat::GroupFlags[transport->id].is_terran)
 		{
 			unitRaceId = RaceId::Terran;
 		}
@@ -509,7 +509,103 @@ namespace hooks
 		}
 	}
 
-	// TODO: 004C6F70 get_doodad_state_unit
+	// Hooked to extend transports. -Pr0nogo
+	s32 get_doodad_state_unit(Unit* unit, FindUnitLocationParam* parameter) // 004C6F70
+	{
+		u32* player_id = &parameter->player;
+		u32 do_check_height = parameter->check_height;
+		FindUnitLocationParam* parameter_var = parameter;
+		if (do_check_height && helper::is_unit_at_height(unit, parameter->location_flags))
+		{
+			return 0;
+		}
+
+		u32 playerid_1_wrong = player_id[1];
+		u32 playerid_2_wrong = player_id[2];
+		FindUnitLocationParam param_2 = {};
+		param_2.player = *player_id;
+		u32 unit_id_2 = unit->id;
+		param_2.check_height = playerid_2_wrong;
+		u32 iterations = 0;
+		*&param_2.unit_id = playerid_1_wrong;
+		param_2.check_height = 0;
+
+		if (!(units_dat::BaseProperty[unit_id_2] & UnitProperty::Worker)
+		||	  unit->building.addon == 0
+		||   !get_doodad_state_unit(unit->building.addon, &param_2))
+		{
+			if (helper::is_unit_owned_by_player_ex(*player_id, unit))
+			{
+				if (helper::unit_is_active_transport(unit))
+				{
+					u32 unit_id_3 = unit->id;
+					u32 space_provided_1 = units_dat::BaseProperty[unit_id_3];
+					u32 space_provided_2 = units_dat::SpaceProvided[unit_id_3];
+					if (space_provided_1)
+					{
+						u16 index = unit->loaded_unit[0].index;
+						do
+						{
+							if (index)
+							{
+								Unit* loaded_unit = get_loaded_unit_from_index(unit, iterations);
+								if (loaded_unit && get_doodad_state_unit(loaded_unit, &param_2))
+								{
+									return 1;
+								}
+								space_provided_1 = space_provided_2;
+							}
+							++iterations;
+							++index;
+						} while (iterations < space_provided_1);
+						player_id = &parameter_var->player;
+					}
+				}
+				u32 unit_id = unit->id;
+				GroupFlag group_flags = units_dat::GroupFlags[unit_id];
+				u32 playerid_2_wrong_2 = *(player_id + 2);
+				switch (playerid_2_wrong_2)
+				{
+				case 0xE5:
+				{
+					return 1;
+				}
+				case 0xE6:
+				{
+					if (group_flags.is_men)
+					{
+						return 1;
+					}
+					return 0;
+				}
+				case 0xE7:
+				{
+					if (group_flags.is_building)
+					{
+						return 1;
+					}
+					return 0;
+				}
+				case 0xE8:
+				{
+					if (!(group_flags.is_factory))
+					{
+						return 0;
+					}
+					return 1;
+				}
+				default:
+					if (unit_id == playerid_2_wrong_2)
+					{
+						return 1;
+					}
+					break;
+				}
+			}
+			return 0;
+		}
+		return 1;
+	}
 
 	// Hooked to extend transports. -Pr0nogo
 	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) // 004C7E20
@@ -948,13 +1044,13 @@ namespace hooks
 			{
 				GroupFlag group_flags = units_dat::GroupFlags[connected_unit->id];
 				u8 sound_offset = 0; // Zerg
-				if (group_flags.isProtoss)
+				if (group_flags.is_protoss)
 				{
 					sound_offset = 2;
 				}
 				else
 				{
-					sound_offset = (group_flags.isTerran) != 0 ? 1 : 4;
+					sound_offset = (group_flags.is_terran) != 0 ? 1 : 4;
 				}
 				helper::play_sound_from_unit(SoundId::Misc_ZOvTra01_wav + sound_offset, connected_unit, 1, 0);
 				helper::show_and_enable_unit(cargo);
@@ -977,5 +1073,51 @@ namespace hooks
 				return;
 			}
 		}
+	}
+
+	// Hooked to extend transports. -Pr0nogo
+	u32 set_under_disruption_field(Unit* unit) // 004EB170
+	{
+		u32 status = unit->status;
+		if (status & 4)
+		{
+			return 0;
+		}
+		u32 status_something = status | 0x8000;
+		unit->status = status_something;
+		u32 unit_id = unit->id;
+		if (status_something & 0x40000000
+		|| !units_dat::SpaceProvided[unit_id])
+		{
+			Unit* subunit = unit->subunit;
+			if (subunit)
+			{
+				subunit->status |= 0x8000u;
+			}
+			return 0;
+		}
+		u16 index = unit->loaded_unit[0].index;
+		u32 iterations = 8;
+		do
+		{
+			u32 index_var = index;
+			if (index)
+			{
+				u32 array_insanity = 336 * (index_var & 0x7FF);
+				void* array_result = unk_array_59CB64[array_insanity / 4];
+				Unit* reference = &unit_reference[array_insanity / 0x150];
+				if (array_result)
+				{
+					if ((reference->main_order_id || reference->main_order_state != 1)
+						&& reference->target_order_special == index_var >> 11)
+					{
+						reference->status |= 0x8000u;
+					}
+				}
+			}
+			++index;
+			--iterations;
+		} while (iterations);
+		return 0;
 	}
 }
