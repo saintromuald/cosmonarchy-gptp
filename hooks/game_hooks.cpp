@@ -284,18 +284,19 @@ namespace hooks
 
 		if (*activePortraitUnit)
 		{
-			// TODO: update to work with multi building select
-			Unit* selected = *activePortraitUnit;
-
+			// Unit* selected = *activePortraitUnit;
 			// scbw::printf("%u", selected->main_order_id);
 
-			if (selected
-				&& selected->id == UnitId::ZergNydusCanal
-				&& selected->building.nydus_exit
-				&& (scbw::is_allied_to(selected->player, *LOCAL_HUMAN_ID) || helper::get_detecting_players(selected) & (1 << *LOCAL_HUMAN_ID)))
-			{
-				Unit* exit = selected->building.nydus_exit;
-				graphics::draw_line(selected->get_x(), selected->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
+
+			*unit_iterator_pos = 0;
+			for (Unit* selection = getActivePlayerNextSelection(); selection; selection = getActivePlayerNextSelection()) {
+				if (selection->id == UnitId::ZergNydusCanal
+					&& selection->building.nydus_exit
+					&& (scbw::is_allied_to(selection->player, *LOCAL_HUMAN_ID) || helper::get_detecting_players(selection) & (1 << *LOCAL_HUMAN_ID)))
+				{
+					Unit* exit = selection->building.nydus_exit;
+					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
+				}
 			}
 		}
 		return true;

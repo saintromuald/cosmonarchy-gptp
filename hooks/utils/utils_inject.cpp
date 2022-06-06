@@ -68,8 +68,8 @@ namespace hooks
 {
 	void injectUtilsHooks()
 	{
-		jump_patch(InitializeDialogWrapper,				0x00419D20, 1);
+		//jump_patch(InitializeDialogWrapper,				0x00419D20, 1);
 		jump_patch(unit_IsStandardAndMovableWrapper,		0x0047B770, 2);
-		jump_patch(getActivePlayerFirstSelectionWrapper,	0x0049A850, 2);
+		//jump_patch(getActivePlayerFirstSelectionWrapper,	0x0049A850, 2);
 	}
 }

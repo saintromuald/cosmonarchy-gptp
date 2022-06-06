@@ -7,7 +7,7 @@ namespace hooks
 	{
 		Unit* current_selection;
 
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		current_selection = getActivePlayerNextSelection();
 
 		while (current_selection != nullptr)
@@ -54,7 +54,7 @@ namespace hooks
 
 		Unit* current_selection;
 
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		current_selection = getActivePlayerNextSelection();
 
 		while (current_selection != nullptr)

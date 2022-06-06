@@ -610,4 +610,6 @@ namespace scbw
 	u32 unit_get_creep_spreader_id(Unit* unit);
 
 	bool sprite_id_is_corpse(u32 sprite_id);
+
+	bool unit_queue_full(Unit* unit);
 }

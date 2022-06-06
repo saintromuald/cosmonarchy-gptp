@@ -7,7 +7,7 @@ namespace hooks
 	// hooked to allow non-ghosts units to cancel nukes
 	void CMDRECV_CancelNuke()
 	{
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		Unit* current_unit = getActivePlayerNextSelection();
 		while (current_unit != nullptr)
 		{
@@ -21,129 +21,112 @@ namespace hooks
 		}
 	}
 
-	// hooked because the default code didn't allow for multiple selection
+	// hooked because the default code didn't allow for multiple unit
 	void CMDRECV_CancelAddon()
 	{
-		*selectionIndexStart = 0;
-		Unit* unit = getActivePlayerNextSelection();
-		if (unit != nullptr
-			&& getActivePlayerNextSelection() == nullptr
-			&& unit->secondary_order_id == OrderId::BuildAddon
-			&& unit->status & UnitStatus::GroundedBuilding)
-		{
-			Unit* addon = unit->current_build_unit;
-			if (addon != nullptr
-				&& !(addon->status & UnitStatus::Completed)
-				&& unit->status & UnitStatus::Completed
-				&& unit->player == *ACTIVE_NATION_ID)
+		*unit_iterator_pos = 0;
+		for (Unit* unit = getActivePlayerNextSelection(); unit; unit = getActivePlayerNextSelection()) {
+			if (unit->secondary_order_id == OrderId::BuildAddon
+				&& unit->status & UnitStatus::GroundedBuilding)
 			{
-				helper::cancel_addon_proc(unit);
-				scbw::refresh_console();
-			}
-		}
-	}
-
-	// hooked because the default code didn't allow for multiple selection
-	void CMDRECV_CancelUpgrade()
-	{
-		*selectionIndexStart = 0;
-		Unit* unit = getActivePlayerNextSelection();
-		if (unit != nullptr
-			&& getActivePlayerNextSelection() == nullptr
-			&& unit->status & UnitStatus::Completed
-			&& unit->player == *ACTIVE_NATION_ID)
-		{
-			helper::cancel_upgrade_proc(unit);
-			scbw::refresh_console();
-		}
-	}
-
-	// hooked because the default code didn't allow for multiple selection
-	void CMDRECV_CancelResearch()
-	{
-		*selectionIndexStart = 0;
-		Unit* unit = getActivePlayerNextSelection();
-		if (unit != nullptr
-			&& getActivePlayerNextSelection() == nullptr
-			&& units_dat::BaseProperty[unit->id] & UnitProperty::Building
-			&& unit->status & UnitStatus::Completed
-			&& unit->player == *ACTIVE_NATION_ID)
-		{
-			helper::CancelResearch_Proc(unit);
-			scbw::refresh_console();
-		}
-	}
-
-	// hooked because the default code didn't allow for multiple selection
-	void CMDRECV_CancelTrain(u16 wUnitID)
-	{
-		*selectionIndexStart = 0;
-		Unit* unit = getActivePlayerNextSelection();
-		if (unit != nullptr
-			&& getActivePlayerNextSelection() == nullptr
-			&& unit->id != UnitId::ZergLarva
-			&& unit->id != UnitId::ZergMutalisk
-			&& unit->id != UnitId::ZergHydralisk
-			&& unit->id != UnitId::ZergHatchery
-			&& unit->id != UnitId::ZergLair
-			&& unit->id != UnitId::ZergMuthrokSpire
-			&& unit->id != UnitId::ZergCreepColony
-			&& unit->status & UnitStatus::Completed
-			&& unit->player == *ACTIVE_NATION_ID)
-		{
-			if (wUnitID == 0xFE)
-			{
-				helper::cancel_last_training(unit);
-				scbw::refresh_console();
-			}
-			else if (wUnitID == 0xFF)
-			{
-				scbw::refresh_console();
-			}
-			else
-			{
-				helper::refund_queue_slot(unit, wUnitID);
-				scbw::refresh_console();
-			}
-		}
-	}
-
-	void CMDRECV_CancelUnitMorph()
-	{
-		*selectionIndexStart = 0;
-		Unit* current_unit = getActivePlayerNextSelection();
-		while (current_unit != nullptr)
-		{
-			if (current_unit->player == *ACTIVE_NATION_ID)
-			{
-				helper::ai_cancel_structure(current_unit);
-			}
-			current_unit = getActivePlayerNextSelection();
-		}
-	}
-
-	// hooked because the default code didn't allow for multiple selection
-	void CMDRECV_CancelConstruction()
-	{
-		Unit* unit;
-		*selectionIndexStart = 0;
-		unit = getActivePlayerNextSelection();
-		if (unit != nullptr)
-		{
-			if (unit->id == 158 || unit->id == 161)
-			{
-				if (unit->get_overlay(ImageId::WarpAnchor))
+				Unit* addon = unit->current_build_unit;
+				if (addon != nullptr
+					&& !(addon->status & UnitStatus::Completed)
+					&& unit->status & UnitStatus::Completed
+					&& unit->player == *ACTIVE_NATION_ID)
 				{
-					unit->remove_overlay(ImageId::WarpAnchor);
+					helper::cancel_addon_proc(unit);
+					scbw::refresh_console();
 				}
 			}
 		}
+	}
 
-		if (unit != nullptr
-			&& getActivePlayerNextSelection() == nullptr
-			&& unit->player == *ACTIVE_NATION_ID)
-		{
-			helper::ai_cancel_structure(unit);
+	// hooked because the default code didn't allow for multiple unit
+	void CMDRECV_CancelUpgrade()
+	{
+		*unit_iterator_pos = 0;
+		for (Unit* unit = getActivePlayerNextSelection(); unit; unit = getActivePlayerNextSelection()) {
+			if (unit->status & UnitStatus::Completed
+				&& unit->player == *ACTIVE_NATION_ID)
+			{
+				helper::cancel_upgrade_proc(unit);
+				scbw::refresh_console();
+			}
+		}
+	}
+
+	// hooked because the default code didn't allow for multiple unit
+	void CMDRECV_CancelResearch()
+	{
+		*unit_iterator_pos = 0;
+		for (Unit* unit = getActivePlayerNextSelection(); unit; unit = getActivePlayerNextSelection()) {
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::Building
+				&& unit->status & UnitStatus::Completed
+				&& unit->player == *ACTIVE_NATION_ID)
+			{
+				helper::CancelResearch_Proc(unit);
+				scbw::refresh_console();
+			}
+		}
+	}
+
+	// hooked because the default code didn't allow for multiple unit
+	void CMDRECV_CancelTrain(u16 wUnitID)
+	{
+		*unit_iterator_pos = 0;
+		for (Unit* unit = getActivePlayerNextSelection(); unit; unit = getActivePlayerNextSelection()) {
+			if (unit->id != UnitId::ZergLarva
+				&& unit->id != UnitId::ZergMutalisk
+				&& unit->id != UnitId::ZergHydralisk
+				&& unit->id != UnitId::ZergHatchery
+				&& unit->id != UnitId::ZergLair
+				&& unit->id != UnitId::ZergMuthrokSpire
+				&& unit->id != UnitId::ZergCreepColony
+				&& unit->status & UnitStatus::Completed
+				&& unit->player == *ACTIVE_NATION_ID)
+			{
+				if (wUnitID == 0xFE)
+				{
+					helper::cancel_last_training(unit);
+					scbw::refresh_console();
+				}
+				else if (wUnitID == 0xFF)
+				{
+					scbw::refresh_console();
+				}
+				else
+				{
+					helper::refund_queue_slot(unit, wUnitID);
+					scbw::refresh_console();
+				}
+			}
+		}
+	}
+
+	void CMDRECV_CancelUnitMorph() {
+		*unit_iterator_pos = 0;
+		for (Unit* unit = getActivePlayerNextSelection(); unit; unit = getActivePlayerNextSelection()) {
+			if (unit->player == *ACTIVE_NATION_ID) {
+				helper::ai_cancel_structure(unit);
+			}
+			unit = getActivePlayerNextSelection();
+		}
+	}
+
+	// hooked because the default code didn't allow for multiple unit
+	void CMDRECV_CancelConstruction() {
+		*unit_iterator_pos = 0;
+		for (Unit* unit = getActivePlayerNextSelection(); unit; unit = getActivePlayerNextSelection()) {
+			//if (unit->id == 158 || unit->id == 161) {
+			//	if (unit->get_overlay(ImageId::WarpAnchor)) {
+			//		unit->remove_overlay(ImageId::WarpAnchor);
+			//	}
+			//}
+
+			if (unit->player == *ACTIVE_NATION_ID) {
+				helper::ai_cancel_structure(unit);
+			}
 		}
 	}
 }

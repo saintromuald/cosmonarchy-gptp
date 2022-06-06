@@ -125,7 +125,7 @@ namespace
 
 	void __cdecl cloakingTechWrapper_CMDRECV_Cloak()
 	{
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		while (Unit* unit = getActivePlayerNextSelection())
 		{
 			if (unit->canUseTech(hooks::getCloakingTech(unit), *ACTIVE_NATION_ID) == 1)
@@ -168,7 +168,7 @@ namespace
 
 	void __cdecl cloakingTechWrapper_CMDRECV_Decloak()
 	{
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		while (Unit* unit = getActivePlayerNextSelection())
 		{
 			if (unit->canUseTech(hooks::getCloakingTech(unit), *ACTIVE_NATION_ID) == 1)

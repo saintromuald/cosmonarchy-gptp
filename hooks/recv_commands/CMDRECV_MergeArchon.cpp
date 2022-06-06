@@ -14,7 +14,7 @@ namespace hooks
 		Unit** templars_stored_iterator;
 		s32 templars_stored_count;
 
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		current_unit = getActivePlayerNextSelection();
 
 		if (current_unit != nullptr &&
@@ -154,7 +154,7 @@ namespace hooks
 		Unit** templars_stored_iterator;
 		s32 templars_stored_count;
 
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		current_unit = getActivePlayerNextSelection();
 
 		if (current_unit != nullptr &&

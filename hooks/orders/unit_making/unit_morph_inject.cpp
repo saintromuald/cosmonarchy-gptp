@@ -30,7 +30,7 @@ namespace
 	void __stdcall unitMorphWrapper_CMDRECV_UnitMorph(u8* commandData)
 	{
 		const u16 morphUnitId = *((u16*)&commandData[1]);
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		while (Unit* unit = getActivePlayerNextSelection())
 		{
 			if (hooks::unit_can_morph(unit, morphUnitId)

@@ -4,33 +4,28 @@
 
 namespace hooks
 {
-	void CMDRECV_BuildingMorph(u16 wUnitType)
+	void CMDRECV_BuildingMorph(u16 unit_id)
 	{
-
-		Unit* building;
-		*selectionIndexStart = 0;
-		building = getActivePlayerNextSelection();
-		if (
-			building != nullptr &&
-			getActivePlayerNextSelection() == nullptr &&
-			building->id >= UnitId::ZergInfestedCommandCenter &&
-			building->id <= 227 &&
-			wUnitType >= UnitId::ZergInfestedCommandCenter &&
-			wUnitType <= 227 &&
-			building->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1 &&
-			helper::has_money_can_make(building, wUnitType) && //start construction if successful
-			building->main_order_id != OrderId::Morph2
-			)
-		{
-			building->order_computer(OrderId::Morph2);
-			scbw::refresh_console();
-		}
+		*unit_iterator_pos = 0;
+		for (Unit* selection = getActivePlayerNextSelection(); selection; selection = getActivePlayerNextSelection()) {
+			if (selection &&
+				selection->id >= UnitId::ZergInfestedCommandCenter &&
+				selection->id <= 227 &&
+				unit_id >= UnitId::ZergInfestedCommandCenter &&
+				unit_id <= 227 &&
+				selection->can_make_unit(unit_id, *ACTIVE_NATION_ID) == 1 &&
+				helper::has_money_can_make(selection, unit_id) && //start construction if successful
+				selection->main_order_id != OrderId::Morph2) {
+				selection->order_computer(OrderId::Morph2);
+				scbw::refresh_console();
+			}
+		};
 	}
 
 	void CMDRECV_UnitMorph(u16 wUnitType)
 	{
 		Unit* current_unit;
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		current_unit = getActivePlayerNextSelection();
 		while (current_unit != nullptr)
 		{
@@ -39,7 +34,7 @@ namespace hooks
 			/*
 			if(
 				current_unit->id == UnitId::ZergHydralisk &&
-				wUnitType == UnitId::ZergLakizilisk
+				unit_id == UnitId::ZergLakizilisk
 			)
 				bAllowMorph = current_unit->canUseTech(TechId::LurkerAspect,*ACTIVE_NATION_ID) == 1;
 			else*/
@@ -84,27 +79,17 @@ namespace hooks
 		scbw::refresh_console();
 	}
 
-	// Hooked for multi-building select. -Pr0nogo
-	void cmdrecv_train(char* buffer) // 004C1C20
-	{
-		*unit_iterator_pos = 0; // XD
-		Unit* selection = helper::get_active_player_first_selection();
-		if (selection)
-		{
-			if (helper::create_unit_allowed(*(buffer + 1), selection, *ACTIVE_NATION_ID))
-			{
+	// Hooked for multi-selection select. -Pr0nogo
+	void cmdrecv_train(char* buffer) { // 004C1C20
+		*unit_iterator_pos = 0;
+		for (Unit* selection = getActivePlayerNextSelection(); selection; selection = getActivePlayerNextSelection()) {
+			if (helper::create_unit_allowed(*(buffer + 1), selection, *ACTIVE_NATION_ID)) {
 				u16 unit_id = *(buffer + 1);
-				if (unit_id <= UnitId::Spell_DisruptionWeb)
-				{
-					if (helper::has_money_can_make(selection, unit_id))
-					{
+				if (unit_id <= UnitId::Spell_DisruptionWeb) {
+					if (helper::has_money_can_make(selection, unit_id)) {
 						helper::set_secondary_order(selection, OrderId::Train);
 					}
-					*force_button_refresh = 1;
-					portrait_redraw[0] = 1;
-					*status_screen_redraw = 1;
-					*control_under_mouse = 0;
-					*control_under_mouse_value = 0;
+					scbw::refresh_console();
 				}
 			}
 		}

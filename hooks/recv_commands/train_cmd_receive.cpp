@@ -6,7 +6,7 @@ namespace hooks
 	void CMDRECV_TrainFighter()
 	{
 		Unit* current_selection;
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		current_selection = getActivePlayerNextSelection();
 
 		while (current_selection != nullptr)
@@ -54,7 +54,7 @@ namespace hooks
 	void CMDRECV_Train(u16 wUnitType)
 	{
 		Unit* builder;
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		builder = getActivePlayerNextSelection();
 		if (builder != nullptr && getActivePlayerNextSelection() == nullptr)
 		{

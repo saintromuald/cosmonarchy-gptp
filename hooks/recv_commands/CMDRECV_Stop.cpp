@@ -14,7 +14,7 @@ namespace hooks
 		Unit* current_unit;
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
 
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 
 		current_unit = getActivePlayerNextSelection();
 
@@ -122,7 +122,7 @@ namespace hooks
 		Unit* current_unit;
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
 
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 
 		current_unit = getActivePlayerNextSelection();
 
@@ -230,7 +230,7 @@ namespace hooks
 		Unit* current_unit;
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
 
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 
 		current_unit = getActivePlayerNextSelection();
 

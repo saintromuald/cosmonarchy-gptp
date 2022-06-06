@@ -2486,4 +2486,13 @@ namespace scbw
 		}
 		return false;
 	}
+
+	bool unit_queue_full(Unit* unit) {
+		for (u32 i = 0; i < 5; ++i) {
+			if (unit->build_queue[i] == UnitId::None) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

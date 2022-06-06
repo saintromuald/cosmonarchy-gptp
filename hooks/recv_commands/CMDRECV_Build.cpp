@@ -44,7 +44,7 @@ namespace hooks
 		Unit* builder;
 		u32 result_function_00473FB0;
 
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		builder = getActivePlayerNextSelection();
 
 		result_function_00473FB0 =
@@ -99,7 +99,7 @@ namespace hooks
 
 		u16 addonPlaceX = 0, addonPlaceY = 0;
 
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		builder = getActivePlayerNextSelection();
 
 		result_function_00473FB0 =
@@ -214,7 +214,7 @@ namespace hooks
 
 		Unit* builder;
 
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		builder = getActivePlayerNextSelection();
 
 		if (builder != nullptr)

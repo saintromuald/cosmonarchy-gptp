@@ -65,11 +65,8 @@ namespace hooks
 		dialog->flags &= ~BinDlgFlags::VerticalAlignmentBottom;
 	}
 	
-	bool unit_is_standard_and_movable(Unit* unit) // 0047B770
-	{
-		bool return_value;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building
-			|| units_dat::BaseProperty[unit->id] & UnitProperty::NeutralAccessories
+	bool unit_is_standard_and_movable(Unit* unit) { // 0047B770
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::NeutralAccessories
 			|| unit->status & UnitStatus::Frozen
 			|| unit->id == UnitId::TerranSpiderMine
 			|| unit->id == UnitId::TerranLobotomyMine
@@ -78,28 +75,23 @@ namespace hooks
 			|| unit->id == UnitId::Special_PitDoor
 			|| unit->id == UnitId::Special_RightPitDoor
 			|| unit->id == UnitId::Special_UpperLevelDoor
-			|| unit->id == UnitId::Special_RightUpperLevelDoor)
-		{
-			return_value = false;
+			|| unit->id == UnitId::Special_RightUpperLevelDoor) {
+			return false;
 		}
-		else
-		{
-			return_value = true;
-		}
-		return return_value;
+		return true;
 	}
 		
 	Unit* get_active_player_first_selection() // 0049A850
 	{
 		Unit* unit;
-		if (*selectionIndexStart >= 12)
+		if (*unit_iterator_pos >= 12)
 		{
 			unit = nullptr;
 		}
 		else
 		{
 			s32 playerId = *ACTIVE_PLAYER_ID;
-			u8 index = *selectionIndexStart;
+			u8 index = *unit_iterator_pos;
 			bool bStopLoop = false;
 			while (!bStopLoop)
 			{
@@ -125,7 +117,7 @@ namespace hooks
 					helper::remove_from_selections(unit);
 				}
 			}
-			*selectionIndexStart = *selectionIndexStart + 1;
+			*unit_iterator_pos = *unit_iterator_pos + 1;
 		}
 		return unit;
 	}

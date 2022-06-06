@@ -34,7 +34,7 @@ namespace hooks
 			Unit* current_unit;
 			u32 current_order = bActionOrder;	//EBX
 
-			*selectionIndexStart = 0;
+			*unit_iterator_pos = 0;
 			current_unit = getActivePlayerNextSelection();
 
 			*saved_unit = current_unit;

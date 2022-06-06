@@ -6,7 +6,7 @@ namespace hooks
 	void CMDRECV_Unburrow()
 	{
 		Unit* selected_unit;
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		selected_unit = getActivePlayerNextSelection();
 		while (selected_unit != nullptr)
 		{
@@ -22,7 +22,7 @@ namespace hooks
 	void CMDRECV_Burrow(u8 bCommandType)
 	{
 		Unit* selected_unit;
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		selected_unit = getActivePlayerNextSelection();
 		while (selected_unit != nullptr)
 		{

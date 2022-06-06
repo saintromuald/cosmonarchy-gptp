@@ -500,7 +500,6 @@ SCBW_DATA(ResourceArea*,	baseArray,				0x00692688);
 SCBW_DATA(u32*,		regionIdsCount,					0x0069265C);
 SCBW_DATA(u16*,		regionIds,						0x0069262C);
 
-SCBW_DATA(u8*,		unit_iterator_pos,				0x006284B6);
 SCBW_DATA(u8*,		byte_68C300,					0x0068C300);
 
 SCBW_DATA(u32**,	activeTileArrayInt,				0x006D1260);
@@ -817,7 +816,7 @@ namespace images_dat {
 //////////////////////////////////////////////////////////////// @{
 
 //Helper functions for several hooks
-SCBW_DATA(u8*, selectionIndexStart, 0x006284B6);
+SCBW_DATA(u8*, unit_iterator_pos, 0x006284B6);
 SCBW_DATA(const UnitsSel*, activePlayerSelection, 0x006284B8);
 typedef Unit* (__cdecl* GetActivePlayerNextSelectionFunc)();
 SCBW_DATA(GetActivePlayerNextSelectionFunc, getActivePlayerNextSelection, 0x0049A850);

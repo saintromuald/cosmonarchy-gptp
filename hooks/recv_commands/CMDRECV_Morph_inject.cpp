@@ -59,6 +59,6 @@ namespace hooks
 	{
 		jump_patch(CMDRECV_BuildingMorphWrapper,	0x004C1910, 7);
 		jump_patch(CMDRECV_UnitMorphWrapper,		0x004C1990, 3);
-	//	jump_patch(cmdrecv_train_wrapper,			0x004C1C20, 6);
+		jump_patch(cmdrecv_train_wrapper,			0x004C1C20, 6);
 	}
 }

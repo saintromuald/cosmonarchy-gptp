@@ -603,5 +603,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	hooks::injectStopHoldPosOrdersHooks();
 
+	hooks::injectUtilsHooks();
+
 	return TRUE;
 }

@@ -725,11 +725,9 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::TerranCleric
 								|| current_button->requirement_var == UnitId::TerranShaman)
 							{
-								if ((*activePortraitUnit)->building.addon == nullptr)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMedbay)
+								if (!(*activePortraitUnit)->building.addon
+									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranMedbay
+									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -741,11 +739,9 @@ namespace hooks
 							else if (current_button->requirement_var == UnitId::TerranEidolon
 									|| current_button->requirement_var == UnitId::TerranSavant)
 							{
-								if ((*activePortraitUnit)->building.addon == nullptr)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps)
+								if (!(*activePortraitUnit)->building.addon
+									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps
+									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -762,11 +758,9 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::TerranCuirass
 								|| current_button->requirement_var == UnitId::TerranPhalanxTankMode)
 							{
-								if ((*activePortraitUnit)->building.addon == nullptr)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMachineShop)
+								if (!(*activePortraitUnit)->building.addon
+									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranMachineShop
+									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -778,11 +772,9 @@ namespace hooks
 							else if (current_button->requirement_var == UnitId::TerranMadrigal
 									|| current_button->requirement_var == UnitId::TerranPaladin)
 							{
-								if ((*activePortraitUnit)->building.addon == nullptr)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard)
+								if (!(*activePortraitUnit)->building.addon
+									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard
+									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -799,11 +791,9 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::TerranSalamander
 								|| current_button->requirement_var == UnitId::TerranWyvern)
 							{
-								if ((*activePortraitUnit)->building.addon == nullptr)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay)
+								if (!(*activePortraitUnit)->building.addon
+									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay
+									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -815,11 +805,9 @@ namespace hooks
 							else if (current_button->requirement_var == UnitId::TerranAzazel
 									|| current_button->requirement_var == UnitId::TerranSeraph)
 							{
-								if ((*activePortraitUnit)->building.addon == nullptr)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower)
+								if (!(*activePortraitUnit)->building.addon
+									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower
+									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -836,11 +824,9 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::SharedStriga
 								|| current_button->requirement_var == UnitId::SharedLuminary)
 							{
-								if ((*activePortraitUnit)->building.addon == NULL)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranTinkerersTower)
+								if (!(*activePortraitUnit)->building.addon ||
+									(*activePortraitUnit)->building.addon->id != UnitId::TerranTinkerersTower
+									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -852,11 +838,9 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::SharedTarasque
 								|| current_button->requirement_var == UnitId::SharedAnticthon)
 							{
-								if ((*activePortraitUnit)->building.addon == NULL)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranBioticBase)
+								if (!(*activePortraitUnit)->building.addon
+									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranBioticBase
+									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -873,11 +857,9 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::TerranOlympian
 								|| current_button->requirement_var == UnitId::TerranAutocrat)
 							{
-								if ((*activePortraitUnit)->building.addon == nullptr)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranGuildhall)
+								if (!(*activePortraitUnit)->building.addon
+									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranGuildhall
+									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}

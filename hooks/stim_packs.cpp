@@ -64,7 +64,7 @@ namespace hooks
 	void CMDRECV_StimPack()
 	{
 		Unit* activePlayerCurrentSelection;
-		*selectionIndexStart = 0;
+		*unit_iterator_pos = 0;
 		activePlayerCurrentSelection = getActivePlayerNextSelection();
 		while (activePlayerCurrentSelection != nullptr)
 		{
