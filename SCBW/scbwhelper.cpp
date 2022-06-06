@@ -3594,7 +3594,7 @@ namespace helper
 
 	// Note: this function was made from what was seen in this case of use, some things are hardcoded because it's hard to tell what is used or not.
 	// Basically, used elsewhere, the function would be implemented differently
-	void TargetedOrderCopy(Unit* unit, u32 unit_id, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5)
+	void targeted_order(Unit* unit, u32 unit_id, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5)
 	{
 		const u32 Func_TargetedOrderCopy = 0x004754F0;
 		__asm
@@ -7090,6 +7090,7 @@ namespace helper
 			MOV result, AL
 			POPAD
 		}
+		return result;
 	}
 
 	bool unit_is_training_or_morphing(Unit* unit)
@@ -7103,6 +7104,7 @@ namespace helper
 			MOV result, EAX
 			POPAD
 		}
+		return result;
 	}
 
 	u8 initializeRandomizerInfo()

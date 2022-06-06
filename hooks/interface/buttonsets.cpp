@@ -193,6 +193,7 @@ namespace hooks
 		u8 countBurrowables = 0;
 		u8 countLarva = 0;
 		u8 count_hatches = 0;
+		u8 count_buildings = 0;
 		u16 activeButtonSetId;
 		u16 selectedButtonSetId;
 		u32 flagsHolder;
@@ -219,6 +220,10 @@ namespace hooks
 
 				if (scbw::is_zerg_production(unitFromSelection->id)) {
 					count_hatches++;
+				}
+
+				if (units_dat::BaseProperty[unitFromSelection->id] & UnitProperty::Building) {
+					count_buildings++;
 				}
 
 				// count flying zerg units (to disable "burrow group" if there's one)
@@ -286,6 +291,10 @@ namespace hooks
 			else if (count_hatches == *clientSelectionCount)
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
+			}
+			else if (count_buildings)
+			{
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranGoliathTurret;
 			}
 		}
 	}
@@ -738,8 +747,7 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::TerranCleric
 								|| current_button->requirement_var == UnitId::TerranShaman)
 							{
-								if (!(*activePortraitUnit)->building.addon
-									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranMedbay
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranMedbay)
 									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
@@ -752,8 +760,7 @@ namespace hooks
 							else if (current_button->requirement_var == UnitId::TerranEidolon
 									|| current_button->requirement_var == UnitId::TerranSavant)
 							{
-								if (!(*activePortraitUnit)->building.addon
-									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranCovertOps)
 									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
@@ -771,8 +778,7 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::TerranCuirass
 								|| current_button->requirement_var == UnitId::TerranPhalanxTankMode)
 							{
-								if (!(*activePortraitUnit)->building.addon
-									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranMachineShop
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop)
 									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
@@ -785,8 +791,7 @@ namespace hooks
 							else if (current_button->requirement_var == UnitId::TerranMadrigal
 									|| current_button->requirement_var == UnitId::TerranPaladin)
 							{
-								if (!(*activePortraitUnit)->building.addon
-									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranSalvoYard)
 									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
@@ -804,8 +809,7 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::TerranSalamander
 								|| current_button->requirement_var == UnitId::TerranWyvern)
 							{
-								if (!(*activePortraitUnit)->building.addon
-									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranMunitionsBay)
 									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
@@ -818,8 +822,7 @@ namespace hooks
 							else if (current_button->requirement_var == UnitId::TerranAzazel
 									|| current_button->requirement_var == UnitId::TerranSeraph)
 							{
-								if (!(*activePortraitUnit)->building.addon
-									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranControlTower)
 									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
@@ -837,8 +840,7 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::SharedStriga
 								|| current_button->requirement_var == UnitId::SharedLuminary)
 							{
-								if (!(*activePortraitUnit)->building.addon ||
-									(*activePortraitUnit)->building.addon->id != UnitId::TerranTinkerersTower
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranTinkerersTower)
 									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
@@ -851,8 +853,7 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::SharedTarasque
 								|| current_button->requirement_var == UnitId::SharedAnticthon)
 							{
-								if (!(*activePortraitUnit)->building.addon
-									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranBioticBase
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranBioticBase)
 									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;
@@ -870,8 +871,7 @@ namespace hooks
 							if (current_button->requirement_var == UnitId::TerranOlympian
 								|| current_button->requirement_var == UnitId::TerranAutocrat)
 							{
-								if (!(*activePortraitUnit)->building.addon
-									|| (*activePortraitUnit)->building.addon->id != UnitId::TerranGuildhall
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranGuildhall)
 									|| scbw::unit_queue_full(*activePortraitUnit))
 								{
 									current_button_state = BUTTON_STATE::Invisible;

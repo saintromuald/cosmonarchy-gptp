@@ -605,5 +605,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectUtilsHooks();
 	hooks::injectSelectLarvaHooks();
 
+	hooks::injectCMDRECV_SiegeTankHooks();
+
 	return TRUE;
 }

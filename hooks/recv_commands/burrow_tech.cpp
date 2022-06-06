@@ -41,7 +41,7 @@ namespace hooks
 					bCommandType = 0;
 				}
 
-				helper::TargetedOrderCopy(selected_unit, UnitId::None, *(u32*)(0x006D5C24), *(u32*)(0x006D5C20), OrderId::Burrow, 0, bCommandType, 1);
+				helper::targeted_order(selected_unit, UnitId::None, *(u32*)(0x006D5C24), *(u32*)(0x006D5C20), OrderId::Burrow, 0, bCommandType, 1);
 			}
 			selected_unit = get_active_player_next_selection();
 		}

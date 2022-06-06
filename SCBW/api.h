@@ -612,4 +612,5 @@ namespace scbw
 	bool sprite_id_is_corpse(u32 sprite_id);
 
 	bool unit_queue_full(Unit* unit);
+	bool all_selected_units_have_addon(u32 unit_id);
 }
