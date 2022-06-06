@@ -509,27 +509,36 @@ namespace hooks
 	}
 
 	// Hooked to allow instant addon placement. -Pr0nogo
-	void btnsact_place_addon(u8 unit_id, char* buffer) // 00423D10
-	{
-		u8 player = (*active_portrait_unit)->player;
-		ai_minerals_reserve[player] = units_dat::mineral_cost[unit_id];
-		ai_gas_reserve[player] = units_dat::gas_cost[unit_id];
-		if (helper::has_supplies_for_unit(player, unit_id, 1))
-		{
-			if (game_minerals[player] >= ai_minerals_reserve[player])
-			{
-				if (game_vespene[player] >= ai_gas_reserve[player])
-				{
-					helper::issue_place_building_order(buffer, unit_id, OrderId::PlaceAddon);
+	void btnsact_place_addon(u8 unit_id, char* buffer) { // 00423D10
+		bool errored = false;
+		*unit_iterator_pos = 0;
+		while (Unit* unit = helper::get_next_commanded_unit()) {
+			u8 player = unit->player;
+			ai_minerals_reserve[player] = units_dat::mineral_cost[unit_id];
+			ai_gas_reserve[player] = units_dat::gas_cost[unit_id];
+			if (helper::has_supplies_for_unit(player, unit_id, 1)) {
+				if (game_minerals[player] >= ai_minerals_reserve[player]) {
+					if (game_vespene[player] >= ai_gas_reserve[player]) {
+						if ((*IS_HOLDING_SHIFT || unit->status & UnitStatus::InAir) && *clientSelectionCount <= 1) {
+							helper::issue_place_building_order(buffer, unit_id, OrderId::PlaceAddon);
+						} else if (!(unit->status & UnitStatus::InAir)) {
+							u8 buffer[8] = {};
+							buffer[0] = 12;
+							buffer[1] = OrderId::PlaceAddon;
+							u16* buffer_u16 = (u16*)(buffer + 2);
+							buffer_u16[0] = unit->position.x;
+							buffer_u16[1] = unit->position.y;
+							buffer_u16[2] = unit_id;
+							helper::queue_game_command(buffer, sizeof(buffer));
+						}
+					} else if (!errored) {
+						errored = true;
+						helper::display_error_message_id_with_sfx(player, 851, console_index[150]);
+					}
+				} else if (!errored) {
+					errored = true;
+					helper::display_error_message_id_with_sfx(player, 850, console_index[147]);
 				}
-				else
-				{
-					helper::display_error_message_id_with_sfx(player, 851, console_index[150]);
-				}
-			}
-			else
-			{
-				helper::display_error_message_id_with_sfx(player, 850, console_index[147]);
 			}
 		}
 	}

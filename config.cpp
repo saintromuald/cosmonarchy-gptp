@@ -26,6 +26,7 @@ void LoadConfig()
 		LoadField(configNode, "show-timer", config.show_timer);
 		LoadField(configNode, "extended-camera-hotkeys", config.extended_camera_hotkeys);
 		LoadField(configNode, "always-show-extended-tooltips", config.always_show_extended_tooltips);
+		LoadField(configNode, "quick-casting", config.quick_casting);
 
 		LoadField(configNode, "verbose", config.verbose);
 		GPTP::doLogging = config.verbose;
@@ -63,6 +64,7 @@ void SaveConfig()
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Hotkeys");
+	WriteField(out, "quick-casting", config.quick_casting);
 	WriteField(out, "grid-hotkeys", YAML::BeginMap);
 	WriteField(out, "enabled", config.grid_hotkeys);
 	WriteField(out, "layout", YAML::BeginSeq);

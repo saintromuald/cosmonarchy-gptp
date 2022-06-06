@@ -29,6 +29,7 @@
 #include "math_utils.h"
 #include "graphics/Bitmap.h"
 #include "data_ext.h"
+#include "config.h"
 
 const u32 hyperTrigger = 0x006509A0;
 
@@ -270,6 +271,19 @@ namespace hooks
 					{
 						bullet->order_signal &= ~0x80;
 						globals.remove_multihit_bullet(bullet);
+					}
+				}
+			}
+
+			// Quick Casting
+			if (config.quick_casting) {
+				if (*is_targeting) {
+					Event event = {};
+					event.x_pos = mouse->x;
+					event.y_pos = mouse->y;
+					helper::input_target_order_left_mouse_click(&event);
+					if (*is_targeting) {
+						helper::input_target_order_right_mouse_click();
 					}
 				}
 			}

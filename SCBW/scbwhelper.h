@@ -1324,4 +1324,7 @@ namespace helper
 	char issue_place_building_order(char* unused, u32 unit_id, char order_id);								// 0048E730
 
 	bool compare_unit_rank(Unit* unit, Unit* compare_unit);													// 0049A350
+
+	char input_target_order_left_mouse_click(Event* event_veeq);											// 004BD500
+	SCBW_FUNC(0x004845F0, void __cdecl, input_target_order_right_mouse_click);
 }
