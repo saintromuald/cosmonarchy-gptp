@@ -105,8 +105,8 @@ namespace hooks
 		levelCheatUnlocked = 0;
 		if ( !player_name[0] )
 		{
-		if ( *networkTable > 0x47u )
-			v3 = (char *)networkTable + networkTable[72];
+		if ( *network_table > 0x47u )
+			v3 = (char *)network_table + network_table[72];
 		else
 			v3 = "";
 		sStrCopy("", v3, 0x19u);
