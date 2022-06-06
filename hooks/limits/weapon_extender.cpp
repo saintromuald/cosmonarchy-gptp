@@ -687,7 +687,7 @@ namespace hooks
 		patchWeaponDat(2, 0x0048B0C7, PatchMaxWeaponCompare);
 		patchWeaponDat(1, 0x0048B0D8, PatchMaxWeaponCompare);
 
-		// BOOL __usercall CMDRECV_PlaceBuildingAllowed@<eax>(unsigned __int16 a1@<ax>, unsigned __int8 a2@<dl>, CUNIT *a3@<ecx>) // 0048DBD0
+		// BOOL __usercall cmdrecv_place_building_allowed@<eax>(unsigned __int16 a1@<ax>, unsigned __int8 a2@<dl>, CUNIT *a3@<ecx>) // 0048DBD0
 		// 0048DBDC  |.  81F9 82000000 CMP ECX,82
 		patchWeaponDat(2, 0x0048DBDC, PatchMaxWeaponCompare);
 

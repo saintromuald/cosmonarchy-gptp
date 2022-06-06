@@ -15,7 +15,7 @@ namespace
 			MOV builtUnitId, AX
 			PUSHAD
 		}
-		bReturnValue = (hooks::CMDRECV_PlaceBuildingAllowed(builder, orderId, builtUnitId)) ? 1 : 0;
+		bReturnValue = (hooks::cmdrecv_place_building_allowed(builder, orderId, builtUnitId)) ? 1 : 0;
 		__asm {
 			POPAD
 			MOV EAX, bReturnValue
@@ -42,7 +42,7 @@ namespace
 			MOV builtUnitId, EAX
 			PUSHAD
 		}
-		hooks::cmdRECV_PlaceBuildingNormal(x, y, orderId, builtUnitId);
+		hooks::cmdrecv_place_building_normal(x, y, orderId, builtUnitId);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -70,7 +70,7 @@ namespace
 			MOV builtUnitId, EAX
 			PUSHAD
 		}
-		hooks::cmdRECV_PlaceBuildingAddon(x, y, orderId, builtUnitId);
+		hooks::cmdrecv_place_building_addon(x, y, orderId, builtUnitId);
 		__asm {
 			POPAD
 			MOV ESP, EBP
