@@ -2017,6 +2017,11 @@ namespace hooks
 	bool game_on()
 	{
 		chk_cache_size = 0;
+		memset(chk_cache, 0, sizeof(chk_cache));
+
+		quickcasting_signal = false;
+		quickcasting_command_card = 0;
+
 		set_max_sight_range<20>();
 		return true;
 	}
