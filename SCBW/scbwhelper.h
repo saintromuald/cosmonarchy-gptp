@@ -743,19 +743,19 @@ namespace helper
 	Unit** findAllUnits(Box16* coords);																				// 004308A0
 
 	//// selection
-	bool unitIsOwnedByCurrentPlayer(Unit* unit); 																	// 00401170
+	bool unit_is_owned_by_current_player(Unit* unit); 																	// 00401170
 	bool isUnitBurrowed(Unit* unit);																				// 00402A70
-	void SC_memcpy_0(u32 dest, u32 src, u32 memsize);																// 00408FD0
-	void function_00468670(Unit* unit);																				// 00468670
-	bool unit_isUnselectable(u16 unit_id);																			// 0046ED80
+	void sc_memcpy_0(u32 dest, u32 src, u32 memsize);																// 00408FD0
+	void show_rally_target(Unit* unit);																				// 00468670
+	bool unit_is_unselectable(u16 unit_id);																			// 0046ED80
 	void function_0046F040(Unit* current_unit, Unit** unit_list, Unit* clicked_unit, u32 list_length);				// 0046F040
-	u32 combineLists_Sub_6F290(Unit* unit, Unit** unit_list_1, Unit** unit_list_2, u32 list_length);				// 0046F290
-	void applyNewSelect_Sub_6FA00(Unit** unit_list, u32 unit_list_length);											// 0046FA00
-	u32 CUnitToUnitID(Unit* unit);																					// 0047B1D0
-	bool unit_IsStandardAndMovable(Unit* unit); 																	// 0047B770
-	void selectBuildingSFX(Unit* unit);																				// 0048F910
-	void CreateNewUnitSelectionsFromList(Unit** unit_list, u32 unit_list_length);									// 0049AE40
-	void CMDACT_Select(Unit** unit_list, u32 unit_list_length); 													// 004C0860
+	u32 combine_lists(Unit* unit, Unit** unit_list_1, Unit** unit_list_2, u32 list_length);				// 0046F290
+	void apply_new_selection(Unit** unit_list, u32 unit_list_length);											// 0046FA00
+	u32 unit_to_unit_id(Unit* unit);																					// 0047B1D0
+	bool unit_is_standard_and_movable(Unit* unit); 																	// 0047B770
+	void select_building_sfx(Unit* unit);																				// 0048F910
+	void create_new_unit_selections_from_list(Unit** unit_list, u32 unit_list_length);									// 0049AE40
+	void cmdact_select(Unit** unit_list, u32 unit_list_length); 													// 004C0860
 
 	//// cloak_nearby_units
 	void secondaryOrder_Cloak(Unit* unit);																			// 00491790

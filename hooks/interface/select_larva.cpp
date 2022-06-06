@@ -35,7 +35,7 @@ namespace hooks
 	}
 
 	/// Action of Select Larva button from main Zerg building
-	/// Like almost all button actions, a command is queued and broadcast to all players (happen in CMDACT_Select that happen in selectMultipleUnitsFromUnitList).
+	/// Like almost all button actions, a command is queued and broadcast to all players (happen in cmdact_select that happen in selectMultipleUnitsFromUnitList).
 	void BTSNACT_select_larva() // 00423930
 	{
 		Box16 coords;
@@ -61,7 +61,7 @@ namespace hooks
 
 			if (larvaeCount == 1 && *IS_HOLDING_ALT != 0)
 			{
-				u32 unitID = helper::CUnitToUnitID(new_selection[0]);
+				u32 unitID = helper::unit_to_unit_id(new_selection[0]);
 				bJumpToEnd = (helper::select_single_unit_from_id(unitID) != 0);
 			}
 

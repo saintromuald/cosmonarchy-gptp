@@ -4,7 +4,7 @@
 namespace hooks
 {
 	/// Function used by Ctrl+Click (select all units of same type)
-	u32 SortAllUnits(Unit* unit, Unit** unit_list, Unit** units_in_bounds)
+	u32 sort_all_units(Unit* unit, Unit** unit_list, Unit** units_in_bounds)
 	{
 		const u32* VISIBILITY_CHECK_0057F0B0 = (u32*)0x0057F0B0;
 		Unit* current_unit;
@@ -87,11 +87,11 @@ namespace hooks
 					if (!dontAddToList)
 					{
 						// 0046F18C
-						if (helper::unit_isUnselectable(current_unit->id))
+						if (helper::unit_is_unselectable(current_unit->id))
 						{
 							dontAddToList = true;
 						}
-						else if (!helper::unit_IsStandardAndMovable(current_unit))
+						else if (!helper::unit_is_standard_and_movable(current_unit))
 						{
 							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
 						}
@@ -218,7 +218,7 @@ namespace hooks
 	}
 
 	/// Function used by Click on unit (possibly with key pressed)
-	void function_0046FB40(Unit* clicked_unit)
+	void unit_selection_click(Unit* clicked_unit)
 	{
 		b32* const IS_DOUBLE_CLICKING = (b32*)0x0066FF58;
 
@@ -263,7 +263,7 @@ namespace hooks
 					local_temp_box16_structure.right = *MoveToX + 640;
 					local_temp_box16_structure.bottom = *MoveToY + 400;
 					units_in_bounds = helper::get_all_units_in_bounds(&local_temp_box16_structure);
-					sorted_list_length = SortAllUnits(clicked_unit, local_temp_array_1, units_in_bounds);
+					sorted_list_length = sort_all_units(clicked_unit, local_temp_array_1, units_in_bounds);
 
 					// reload the previous temporary unit list from before the call to get_all_units_in_bounds
 					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
@@ -272,14 +272,14 @@ namespace hooks
 					if (sorted_list_length != 0)
 					{
 						// turn the local array as the newly applied selection
-						helper::applyNewSelect_Sub_6FA00(local_temp_array_1, sorted_list_length);
+						helper::apply_new_selection(local_temp_array_1, sorted_list_length);
 
 						// This is what make the rally point briefly appear when selecting a building with one. Maybe can do other things?
 						if (sorted_list_length == 1
 							&& clicked_unit->player == *ACTIVE_NATION_ID
 							&& clicked_unit->is_factory())
 						{
-							helper::function_00468670(clicked_unit);
+							helper::show_rally_target(clicked_unit);
 						}
 					}
 				}
@@ -311,7 +311,7 @@ namespace hooks
 
 					// locate surrounding units for selection
 					units_in_bounds = helper::get_all_units_in_bounds(&local_temp_box16_structure);
-					sorted_list_length = SortAllUnits(clicked_unit, local_temp_array_1, units_in_bounds);
+					sorted_list_length = sort_all_units(clicked_unit, local_temp_array_1, units_in_bounds);
 
 					// reload the previous temporary unit list from before the call to get_all_units_in_bounds
 					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
@@ -321,9 +321,9 @@ namespace hooks
 					{
 						// 0046FCD4
 						// recombine current selection and newly selectable items in local_temp_array_2
-						u32 list_remixed_length = helper::combineLists_Sub_6F290(clicked_unit, local_temp_array_1, local_temp_array_2, sorted_list_length);
+						u32 list_remixed_length = helper::combine_lists(clicked_unit, local_temp_array_1, local_temp_array_2, sorted_list_length);
 						// turn local_temp_array_2 as the newly applied selection
-						helper::applyNewSelect_Sub_6FA00(local_temp_array_2, list_remixed_length);
+						helper::apply_new_selection(local_temp_array_2, list_remixed_length);
 					}
 				}
 				else
@@ -343,17 +343,17 @@ namespace hooks
 						// 0x0046FD13 (getting unit sprite) and 0x0046FD18 (middle of the test with the flag)
 						// unit not selected, so it's added to current selection if valid
 						if (arrayIndex < SELECTION_ARRAY_LENGTH
-							&& helper::unit_IsStandardAndMovable(local_temp_array_1[0])
-							&& helper::unitIsOwnedByCurrentPlayer(local_temp_array_1[0])
-							&& helper::unit_IsStandardAndMovable(clicked_unit)
-							&& helper::unitIsOwnedByCurrentPlayer(clicked_unit))
+							&& helper::unit_is_standard_and_movable(local_temp_array_1[0])
+							&& helper::unit_is_owned_by_current_player(local_temp_array_1[0])
+							&& helper::unit_is_standard_and_movable(clicked_unit)
+							&& helper::unit_is_owned_by_current_player(clicked_unit))
 						{
 							// new unit is added at end of array, and the index is increased to be used as new array length
 							local_temp_array_1[arrayIndex] = clicked_unit;
 							arrayIndex++;
 
 							// turn local_temp_array_1 as the newly applied selection
-							helper::applyNewSelect_Sub_6FA00(local_temp_array_1, arrayIndex);
+							helper::apply_new_selection(local_temp_array_1, arrayIndex);
 						}
 					}
 					else
@@ -369,7 +369,7 @@ namespace hooks
 						memcpy_size = (arrayIndex - clicked_unit->sprite->selectionIndex) * 4;
 
 						// Copy the elements on the right of the one to delete one step left to overwrite the one to delete
-						helper::SC_memcpy_0((u32)&local_temp_array_1[clicked_unit->sprite->selectionIndex], (u32)&local_temp_array_1[clicked_unit->sprite->selectionIndex + 1], memcpy_size);
+						helper::sc_memcpy_0((u32)&local_temp_array_1[clicked_unit->sprite->selectionIndex], (u32)&local_temp_array_1[clicked_unit->sprite->selectionIndex + 1], memcpy_size);
 
 						// either erase the element to delete or one that was repeated after memcpy
 						local_temp_array_1[arrayIndex] = 0;
@@ -383,7 +383,7 @@ namespace hooks
 								// It is the code below that is causing the
 								// deselection to fail where simple shift+click would
 								// continue to deselect.
-								u32 unitIndex = helper::CUnitToUnitID(local_temp_array_1[0]);
+								u32 unitIndex = helper::unit_to_unit_id(local_temp_array_1[0]);
 								if (helper::select_single_unit_from_id(unitIndex) != 0)
 								{
 									bUpdateSelection = false;
@@ -395,8 +395,8 @@ namespace hooks
 						{
 							// Create a new unit selection (since the clicked unit is unselected)
 							// and choose it as current selection)
-							helper::CreateNewUnitSelectionsFromList(local_temp_array_1, arrayIndex);
-							helper::CMDACT_Select(local_temp_array_1, arrayIndex);
+							helper::create_new_unit_selections_from_list(local_temp_array_1, arrayIndex);
+							helper::cmdact_select(local_temp_array_1, arrayIndex);
 
 							// tell the GUI to update stuff
 							*someDialogUnknown = 0;
@@ -422,7 +422,7 @@ namespace hooks
 				// Recall the selection the unit belong to if there's one
 				// In this case, skip the code for a single unit handling
 
-				u32 temp_unit_index = helper::CUnitToUnitID(clicked_unit);
+				u32 temp_unit_index = helper::unit_to_unit_id(clicked_unit);
 				if (helper::select_single_unit_from_id(temp_unit_index) != 0)
 				{
 					bRecreatedSelectionThroughAltClick = true;
@@ -433,11 +433,11 @@ namespace hooks
 			{
 				// 0046FBD1
 				// Create a new selection containing only the clicked unit
-				helper::CreateNewUnitSelectionsFromList(&clicked_unit, 1);
+				helper::create_new_unit_selections_from_list(&clicked_unit, 1);
 				// play the sound of the unit (don't need to be a building)
-				helper::selectBuildingSFX(clicked_unit);
+				helper::select_building_sfx(clicked_unit);
 				// select the unit
-				helper::CMDACT_Select(&clicked_unit, 1);
+				helper::cmdact_select(&clicked_unit, 1);
 
 				// tell the GUI to update stuff
 				*bCanUpdateSelectedUnitData = 1;
@@ -455,7 +455,7 @@ namespace hooks
 			if (clicked_unit->player == *ACTIVE_NATION_ID
 				&& clicked_unit->is_factory())
 			{
-				helper::function_00468670(clicked_unit);
+				helper::show_rally_target(clicked_unit);
 			}
 		}
 	}

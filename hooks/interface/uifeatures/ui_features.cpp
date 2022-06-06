@@ -192,7 +192,7 @@ LABEL_15:
 
 	s32 selectUnits(Unit** a1, s32 a2, u8 a3, s32 a4)
 	{
-		s32 v4 = helper::CUnitToUnitID(*a1);
+		s32 v4 = helper::unit_to_unit_id(*a1);
 		s32 result = helper::select_single_unit_from_id(v4); // eax
 
 		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0)

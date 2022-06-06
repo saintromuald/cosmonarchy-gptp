@@ -4,9 +4,9 @@
 namespace hooks
 {
 
-	void function_0046FB40(Unit* clicked_unit);
-	u32 SortAllUnits(Unit* unit, Unit** unit_list, Unit** units_in_bounds);
+	void unit_selection_click(Unit* clicked_unit);
+	u32 sort_all_units(Unit* unit, Unit** unit_list, Unit** units_in_bounds);
 
-	void injectSelectMod();
+	void inject_selection_hooks();
 
 }

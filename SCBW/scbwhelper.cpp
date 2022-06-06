@@ -6399,7 +6399,7 @@ namespace helper
 	}
 
 	//Identical to 0x00401170
-	bool unitIsOwnedByCurrentPlayer(Unit* unit)
+	bool unit_is_owned_by_current_player(Unit* unit)
 	{
 		bool return_value;
 		if (*IS_IN_REPLAY != 0 || unit->player != *LOCAL_NATION_ID)
@@ -6419,7 +6419,7 @@ namespace helper
 		return (unit->status & (UnitStatus::CloakingForFree + UnitStatus::Burrowed)) != 0;
 	}
 
-	void SC_memcpy_0(u32 dest, u32 src, u32 memsize)
+	void sc_memcpy_0(u32 dest, u32 src, u32 memsize)
 	{
 		const u32 Func_memcpy_0 = 0x00408FD0;
 		__asm {
@@ -6433,7 +6433,7 @@ namespace helper
 		}
 	}
 
-	void function_00468670(Unit* unit)
+	void show_rally_target(Unit* unit)
 	{
 		const u32 Func_Sub_468670 = 0x00468670;
 		__asm {
@@ -6444,7 +6444,7 @@ namespace helper
 		}
 	}
 
-	bool unit_isUnselectable(u16 unit_id)
+	bool unit_is_unselectable(u16 unit_id)
 	{
 		const u32 Func_Unit_isUnselectable = 0x0046ED80;
 		b32 bHalfReturnValue;
@@ -6474,7 +6474,7 @@ namespace helper
 		}
 	}
 
-	u32 combineLists_Sub_6F290(Unit* unit, Unit** unit_list_1, Unit** unit_list_2, u32 list_length)
+	u32 combine_lists(Unit* unit, Unit** unit_list_1, Unit** unit_list_2, u32 list_length)
 	{
 		const u32 Func_Sub_46F290 = 0x0046F290;
 		u32 return_value;
@@ -6491,7 +6491,7 @@ namespace helper
 		return return_value;
 	}
 
-	void applyNewSelect_Sub_6FA00(Unit** unit_list, u32 unit_list_length)
+	void apply_new_selection(Unit** unit_list, u32 unit_list_length)
 	{
 		const u32 Func_Sub_46FA00 = 0x0046FA00;
 		__asm {
@@ -6505,7 +6505,7 @@ namespace helper
 		}
 	}
 
-	u32 CUnitToUnitID(Unit* unit)
+	u32 unit_to_unit_id(Unit* unit)
 	{
 		const u32 Func_CUnitToUnitID = 0x0047B1D0;
 		static u32 return_value;
@@ -6519,7 +6519,7 @@ namespace helper
 		return return_value;
 	}
 
-	bool unit_IsStandardAndMovable(Unit* unit)
+	bool unit_is_standard_and_movable(Unit* unit)
 	{
 		const u32 Func_Unit_IsStandardAndMovable = 0x0047B770;
 		b32 return_value_unconverted;
@@ -6533,7 +6533,7 @@ namespace helper
 		return (return_value_unconverted != 0);
 	}
 
-	void selectBuildingSFX(Unit* unit)
+	void select_building_sfx(Unit* unit)
 	{
 		const u32 Func_SelectBuildingSFX = 0x0048F910;
 		__asm {
@@ -6544,7 +6544,7 @@ namespace helper
 		}
 	}
 
-	void CreateNewUnitSelectionsFromList(Unit** unit_list, u32 unit_list_length)
+	void create_new_unit_selections_from_list(Unit** unit_list, u32 unit_list_length)
 	{
 		const u32 Func_CreateNewUnitSelectionsFromList = 0x0049AE40;
 		__asm {
@@ -6556,7 +6556,7 @@ namespace helper
 		}
 	}
 
-	void CMDACT_Select(Unit** unit_list, u32 unit_list_length)
+	void cmdact_select(Unit** unit_list, u32 unit_list_length)
 	{
 		const u32 Func_CMDACT_Select = 0x004C0860;
 		__asm {

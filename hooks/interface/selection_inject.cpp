@@ -4,7 +4,7 @@
 namespace
 {
 	const u32 Func_function_0046F3A0 = 0x0046F3A0;
-	void __declspec(naked) function_0046FB40_Wrapper()
+	void __declspec(naked) unit_selection_click_wrapper()
 	{
 		static Unit* clicked_unit;
 		__asm {
@@ -28,7 +28,7 @@ namespace
 		}
 		if (clicked_unit != nullptr)
 		{
-			hooks::function_0046FB40(clicked_unit);
+			hooks::unit_selection_click(clicked_unit);
 		}
 		__asm {
 			POPAD
@@ -40,7 +40,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) SortAllUnits_Wrapper()
+	void __declspec(naked) sort_all_units_wrapper()
 	{
 		static Unit* unit;
 		static Unit** unit_list;
@@ -58,7 +58,7 @@ namespace
 			MOV units_in_bounds, EAX
 			PUSHAD
 		}
-		result = hooks::SortAllUnits(unit, unit_list, units_in_bounds);
+		result = hooks::sort_all_units(unit, unit_list, units_in_bounds);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -71,9 +71,9 @@ namespace
 
 namespace hooks
 {
-	void injectSelectMod()
+	void inject_selection_hooks()
 	{
-		jump_patch(function_0046FB40_Wrapper, 0x0046FB40, 27);
-		jump_patch(SortAllUnits_Wrapper, 0x0046F0F0, 1);
+		jump_patch(unit_selection_click_wrapper,	0x0046FB40, 27);
+		jump_patch(sort_all_units_wrapper,			0x0046F0F0, 1);
 	}
 }
