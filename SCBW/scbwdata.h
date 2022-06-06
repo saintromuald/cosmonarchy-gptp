@@ -381,6 +381,7 @@ SCBW_DATA(AiTown*,		AiTownArray,		0x006AA090);
 SCBW_DATA(AiExpandList*,AiActiveTownArray,	0x006AA050); // sizeof 0x64[0x8]
 
 // For CMDRECV_HoldPosition
+SCBW_DATA(s16*, map_width_pixels,			0x00628450);
 SCBW_DATA(s16*, map_height_pixels,			0x006284B4);
 SCBW_DATA(s32*, orderType4Position,			0x006D5C20);
 SCBW_DATA(s32*, orderType4Target,			0x006D5C24);
@@ -426,8 +427,8 @@ SCBW_DATA(s32*,		lurkerSplashListIndex,				0x0064EEC8);
 SCBW_DATA(s32*,		lastBulletIndex,					0x0064DEA8);
 
 // For orderAllowed
-SCBW_DATA(s32*,	lastInternalError,					0x0066FF60);
-SCBW_DATA(s16*, ordersRequirementTree,				0x00514CF8);
+SCBW_DATA(s32*,	last_internal_error,					0x0066FF60);
+SCBW_DATA(s16*, orders_requirement_tree,				0x00514CF8);
 
 // For larva_creep_spawn
 SCBW_DATA(s16*, larvaCounter,						0x0067D3F8);

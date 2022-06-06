@@ -304,7 +304,7 @@ namespace hooks
 			{
 				scbw::print("target within min range");
 				helper::load_unit_proc(order_target, unitVar);
-				helper::issueOrderTargetingGround(order_target, OrderId::MoveUnload, unitVar->order_target.pt.x, unitVar->order_target.pt.y);
+				helper::issue_order_targeting_ground(order_target, OrderId::MoveUnload, unitVar->order_target.pt.x, unitVar->order_target.pt.y);
 				if (order_target->unit_ai)
 				{
 					scbw::print("has AI");

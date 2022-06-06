@@ -8450,7 +8450,7 @@ namespace helper
 	}
 
 	// For orders_Pickup4_0
-	void issueOrderTargetingGround(Unit* unit, u8 orderId, s16 x, s16 y)
+	void issue_order_targeting_ground(Unit* unit, u8 orderId, s16 x, s16 y)
 	{
 		const u32 Func_issueOrderTargetingGround = 0x00475260;
 		__asm
@@ -9545,7 +9545,7 @@ namespace helper
 		}
 	}
 
-	// For issueOrderTargetingGround
+	// For issue_order_targeting_ground
 	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6)
 	{
 		const u32 Func_order = 0x00474810;

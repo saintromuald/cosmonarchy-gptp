@@ -109,4 +109,84 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked for multi-building select. -Pr0nogo
+	void cmdrecv_liftoff(char* buffer) // 004C1620
+	{
+		*unit_iterator_pos = 0;
+		Unit* selection = helper::get_active_player_first_selection();
+		if (selection)
+		{
+			if (!helper::get_active_player_first_selection()
+				&& !helper::unit_is_training_or_morphing(selection)
+				&& selection->building.tech_id == 44
+				&& selection->building.upgrade_id == 61)
+			{
+				if (selection->status & UnitStatus::GroundedBuilding)
+				{
+					if (units_dat::BaseProperty[selection->id] & UnitProperty::FlyingBuilding)
+					{
+						*last_internal_error = 0;
+						if (orders_dat::RequirementsOffset[72] == -1)
+						{
+							helper::parse_orders_dat_requirements();
+						}
+						if (*ACTIVE_NATION_ID == selection->player)
+						{
+							u32 status = selection->status;
+							if (status & UnitStatus::Completed)
+							{
+								if (status & UnitStatus::Frozen || selection->lockdown_timer || selection->stasis_timer || selection->maelstrom_timer)
+								{
+									*last_internal_error = 10;
+								}
+								else if (status & UnitStatus::Burrowed && selection->id != UnitId::TerranCommandCenter)
+								{
+									*last_internal_error = 11;
+								}
+								else
+								{
+									u16 unit_id = selection->id;
+									if (unit_id == UnitId::TerranMason && selection->main_order_id == OrderId::ConstructingBuilding
+										|| scbw::unit_can_nuke(selection) && selection->main_order_id == OrderId::NukeTrack
+										|| unit_id == UnitId::ProtossAugur && selection->main_order_id == OrderId::CompletingArchonSummon)
+									{
+										*last_internal_error = 8;
+									}
+									else if (orders_dat::RequirementsOffset[72])
+									{
+										if (helper::parse_requirement_opcodes(selection, OrderId::BuildingLiftoff, *ACTIVE_NATION_ID, *orders_requirement_tree == 1, orders_dat::RequirementsOffset[72]))
+										{
+											s32 buffer_width = *(buffer + 1);
+											if (buffer_width < *map_width_pixels)
+											{
+												s32 buffer_height = *(buffer + 3);
+												if (buffer_height < *map_height_pixels)
+												{
+													helper::issue_order_targeting_ground(selection, OrderId::BuildingLiftoff, buffer_width, buffer_height);
+													helper::do_order(selection, units_dat::ReturnToIdleOrder[selection->id], *(buffer + 1), *(buffer + 3) - 42, 0);
+												}
+											}
+										}
+									}
+									else
+									{
+										*last_internal_error = 23;
+									}
+								}
+							}
+							else
+							{
+								*last_internal_error = 20;
+							}
+						}
+						else
+						{
+							*last_internal_error = 1;
+						}
+					}
+				}
+			}
+		}
+	}
 }

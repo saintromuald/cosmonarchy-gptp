@@ -653,7 +653,7 @@ namespace helper
 	b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
 	void load_unit_proc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
 	b32 unload_unit_proc(Unit* unit);																									// 004E7F70 (Hooked)
-	void issueOrderTargetingGround(Unit* unit, u8 orderId, s16 x, s16 y);															// 00475260
+	void issue_order_targeting_ground(Unit* unit, u8 orderId, s16 x, s16 y);															// 00475260
 
 	//// siege_transform
 	void unitSetRetreatPoint(Unit* unit, u8 angleValue);																			// 004011A0
@@ -1027,7 +1027,7 @@ namespace helper
 	// For ignoreIscriptGoToIdle
 	void playIdleIscript(Sprite* sprite);																						// 00497880
 
-	// For issueOrderTargetingGround
+	// For issue_order_targeting_ground
 	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6);													// 00447810
 
 	// For unit_destructor_special

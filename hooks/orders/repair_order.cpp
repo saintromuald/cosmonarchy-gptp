@@ -288,7 +288,7 @@ namespace hooks
 		s32 result = 0;
 		s16 unit_id;
 
-		*lastInternalError = 0;
+		*last_internal_error = 0;
 		if (orderId < OrderId::None)
 		{
 			if (orders_dat::RequirementsOffset[orderId] == -1)
@@ -301,12 +301,12 @@ namespace hooks
 				{
 					if (unit->is_frozen())
 					{
-						*lastInternalError = 10;
+						*last_internal_error = 10;
 						result = 0;
 					}
 					else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk && orderId != OrderId::Unburrow)
 					{
-						*lastInternalError = 11;
+						*last_internal_error = 11;
 						result = 0;
 					}
 					else
@@ -317,7 +317,7 @@ namespace hooks
 							|| unit_id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
 							|| unit_id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
 						{
-							*lastInternalError = 8;
+							*last_internal_error = 8;
 							result = 0;
 						}
 						else
@@ -328,30 +328,30 @@ namespace hooks
 									orderId,
 									player,
 									orders_dat::RequirementsOffset[orderId],
-									(s32)ordersRequirementTree);
+									(s32)orders_requirement_tree);
 							}
 							else
 							{
-								*lastInternalError = 23;
+								*last_internal_error = 23;
 							}
 						}
 					}
 				}
 				else
 				{
-					*lastInternalError = 20;
+					*last_internal_error = 20;
 					result = 0;
 				}
 			}
 			else
 			{
-				*lastInternalError = 1;
+				*last_internal_error = 1;
 				result = 0;
 			}
 		}
 		else
 		{
-			*lastInternalError = 15;
+			*last_internal_error = 15;
 			result = 0;
 		}
 		return result;

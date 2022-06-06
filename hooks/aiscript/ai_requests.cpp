@@ -539,11 +539,11 @@ namespace hooks
 
 		if (!helper::is_unit_id_race_equal_to_unit_race(nextBuildType, unitCopy) || helper::create_unit_allowed(nextBuildType, unitCopy, player) != 1)
 		{
-			if (*lastInternalError == 2
-			  || *lastInternalError == 23
-			  || *lastInternalError == 21
-			  || *lastInternalError == 8
-			  || *lastInternalError == 7)
+			if (*last_internal_error == 2
+			  || *last_internal_error == 23
+			  || *last_internal_error == 21
+			  || *last_internal_error == 8
+			  || *last_internal_error == 7)
 			{
 				helper::ai_reserve(player, 0);
 				helper::ai_pop_spending_request(player);
@@ -553,7 +553,7 @@ namespace hooks
 				}
 				return 0;
 			}
-			error = *lastInternalError == 13;
+			error = *last_internal_error == 13;
 			if (error)
 			{
 				helper::ai_reserve(player, 0);
