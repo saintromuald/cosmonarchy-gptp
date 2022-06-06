@@ -789,4 +789,193 @@ namespace hooks
 		}
 		return 1;
 	}
+
+	// Hooked to extend transports. -Pr0nogo
+	s32 is_unit_loaded(Unit* transport) // 004E7110
+	{
+		u32 iterations = 0;
+		u16 index = transport->loaded_unit[0].index;
+		s32 result = 1;
+		while (1)
+		{
+			u32 index_var = index;
+			if (index)
+			{
+				u32 array_insanity = 336 * (index_var & 0x7FF);
+				void* array_result = unk_array_59CB64[array_insanity / 4];
+				Unit* reference = &unit_reference[array_insanity / 0x150];
+				if (array_result)
+				{
+					if ((reference->main_order_id || reference->main_order_state != 1)
+						&& reference->target_order_special == index_var >> 11)
+					{
+						break;
+					}
+				}
+			}
+			++iterations;
+			++index;
+			if (iterations >= 8)
+			{
+				return 0;
+			}
+		}
+		return result;
+	}
+
+	// Hooked to extend transports. -Pr0nogo
+	u32 get_loaded_space_amount(Unit* transport) // 004E7170
+	{
+		u32 result = 0;
+		u16 index_1 = transport->loaded_unit[1].index;
+		u32 two_iterations = 2;
+		do
+		{
+			u32 index_var_1 = (index_1 - 1);
+			if ((index_1 - 1))
+			{
+				u32 array_insanity_1 = 336 * (index_var_1 & 0x7FF);
+				void* array_result_1 = unk_array_59CB64[array_insanity_1 / 4];
+				Unit* reference_1 = &unit_reference[array_insanity_1 / 0x150];
+				if (array_result_1)
+				{
+					if ((reference_1->main_order_id || reference_1->main_order_state != 1)
+						&& reference_1->target_order_special == index_var_1 >> 11)
+					{
+						result += units_dat::SpaceRequired[reference_1->id];
+					}
+				}
+			}
+			u32 index_var_2 = index_1;
+			if (index_1)
+			{
+				u32 array_insanity_2 = 336 * (index_var_2 & 0x7FF);
+				void* array_result_2 = unk_array_59CB64[array_insanity_2 / 4];
+				Unit* reference_2 = &unit_reference[array_insanity_2 / 0x150];
+				if (array_result_2)
+				{
+					if ((reference_2->main_order_id || reference_2->main_order_state != 1)
+						&& reference_2->target_order_special == index_var_2 >> 11)
+					{
+						result += units_dat::SpaceRequired[reference_2->id];
+					}
+				}
+			}
+			u32 index_var_3 = index_1 + 1;
+			if (index_1 + 1)
+			{
+				u32 array_insanity_3 = 336 * (index_var_3 & 0x7FF);
+				void* array_result_3 = unk_array_59CB64[array_insanity_3 / 4];
+				Unit* reference_3 = &unit_reference[array_insanity_3 / 0x150];
+				if (array_result_3)
+				{
+					if ((reference_3->main_order_id || reference_3->main_order_state != 1)
+						&& reference_3->target_order_special == index_var_3 >> 11)
+					{
+						result += units_dat::SpaceRequired[reference_3->id];
+					}
+				}
+			}
+			u32 index_var_4 = index_1 + 2;
+			if (index_1 + 2)
+			{
+				u32 array_insanity_4 = 336 * (index_var_4 & 0x7FF);
+				void* array_result_4 = unk_array_59CB64[array_insanity_4 / 4];
+				Unit* reference_4 = &unit_reference[array_insanity_4 / 0x150];
+				if (array_result_4)
+				{
+					if ((reference_4->main_order_id || reference_4->main_order_state != 1)
+						&& reference_4->target_order_special == index_var_4 >> 11)
+					{
+						result += units_dat::SpaceRequired[reference_4->id];
+					}
+				}
+			}
+			index_1 += 4;
+			--two_iterations;
+		} while (two_iterations);
+		return result;
+	}
+
+	// Hooked to extend transports. -Pr0nogo
+	void unload_unit_ext(Unit* cargo, u32 transport_died) // 004E7E10
+	{
+		u32 cargo_status = cargo->status;
+		Unit* cargo_subunit = 0;
+		bool is_not_subunit = true;
+		if (cargo_status & UnitStatus::InTransport)
+		{
+			if (transport_died && !cargo->connected_unit)
+			{
+				cargo->status = cargo_status & 0xFFFFFFBF;
+				helper::toggle_unit_pathing_properties(cargo);
+				cargo_subunit = cargo->subunit;
+				if (!cargo_subunit)
+				{
+					return;
+				}
+				is_not_subunit = (units_dat::BaseProperty[cargo_subunit->id] & UnitProperty::Subunit) == 0;
+				goto LABEL_24;
+			}
+			u32 cargo_index = cargo - unit_table + 1;
+			u32 target_order_shifted = 0;
+			if (cargo_index <= 1700)
+			{
+				target_order_shifted = cargo_index | (cargo->target_order_special << 11);
+			}
+			Unit* connected_unit = cargo->connected_unit;
+			u32 iterations = 0;
+			u32 iterations_2 = 0;
+			if (units_dat::SpaceProvided[connected_unit->id])
+			{
+				u16 index = connected_unit->loaded_unit[0].index;
+				do
+				{
+					if (index == target_order_shifted)
+					{
+						break;
+					}
+					++iterations;
+					++index;
+				} while (iterations < units_dat::SpaceProvided[connected_unit->id]);
+				iterations_2 = iterations;
+			}
+			if (transport_died)
+			{
+				helper::move_unit_duplicate(cargo, connected_unit->sprite->position.x, connected_unit->sprite->position.y);
+			}
+			else
+			{
+				GroupFlag group_flags = units_dat::GroupFlags[connected_unit->id];
+				u8 sound_offset = 0; // Zerg
+				if (group_flags.isProtoss)
+				{
+					sound_offset = 2;
+				}
+				else
+				{
+					sound_offset = (group_flags.isTerran) != 0 ? 1 : 4;
+				}
+				helper::play_sound_from_unit(SoundId::Misc_ZOvTra01_wav + sound_offset, connected_unit, 1, 0);
+				helper::show_and_enable_unit(cargo);
+				iterations = iterations_2;
+			}
+			cargo->connected_unit->loaded_unit[iterations].index = 0;
+			u32 cargo_status_something = cargo->status & 0xFFFFFFBF;
+			cargo->connected_unit = 0;
+			cargo->status = cargo_status_something;
+			helper::toggle_unit_pathing_properties(cargo);
+			cargo_subunit = cargo->subunit;
+			if (cargo_subunit)
+			{
+				is_not_subunit = (units_dat::BaseProperty[cargo_subunit->id] & UnitProperty::Subunit) == 0;
+			LABEL_24:
+				if (!is_not_subunit)
+				{
+					helper::toggle_unit_pathing_properties(cargo_subunit);
+				}
+				return;
+			}
+		}
+	}
 }

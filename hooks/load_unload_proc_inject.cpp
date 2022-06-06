@@ -164,11 +164,63 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) is_unit_loaded_wrapper() { // 004E6D90
+		static s32 result;
+		static Unit* transport;
+		__asm {
+			MOV transport, EAX
+			PUSHAD
+		}
+		result = hooks::is_unit_loaded(transport);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) get_loaded_space_amount_wrapper() { // 004E6D90
+		static s32 result;
+		static Unit* transport;
+		__asm {
+			MOV transport, ECX
+			PUSHAD
+		}
+		result = hooks::get_loaded_space_amount(transport);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) unload_unit_ext_wrapper() { // 004E7E10
+		static Unit* cargo;
+		static u32 transport_died;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV transport_died, EAX
+			POP EAX
+			MOV cargo, EAX
+			PUSHAD
+		}
+		hooks::unload_unit_ext(cargo, transport_died);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
 {
-	void injectLoadUnloadProcHooks()
+	void inject_load_unload_proc_hooks()
 	{
 		jump_patch(load_unit_proc_wrapper,				0x004E78E0, 0);
 		jump_patch(unload_unit_proc_wrapper,			0x004E7F70, 1);
@@ -179,5 +231,8 @@ namespace hooks
 		jump_patch(get_first_loaded_unit_wrapper,		0x004E6C90, 0);
 	//	jump_patch(iterate_loaded_units_wrapper,		0x004E6D00, 2);
 	//	jump_patch(get_first_loaded_worker_wrapper,		0x004E6D90, 1);
+	//	jump_patch(is_unit_loaded_wrapper,				0x004E7110, 0);
+	//	jump_patch(get_loaded_space_amount_wrapper,		0x004E7170, 0);
+	//	jump_patch(unload_unit_ext_wrapper,				0x004E7E10, 0);
 	}
 }
