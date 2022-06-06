@@ -1322,4 +1322,6 @@ namespace helper
 	bool is_unit_owned_by_player_ex(u32 player, Unit* unit);												// 0045FEF0
 
 	char issue_place_building_order(char* unused, u32 unit_id, char order_id);								// 0048E730
+
+	bool compare_unit_rank(Unit* unit, Unit* compare_unit);													// 0049A350
 }

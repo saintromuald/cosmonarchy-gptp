@@ -287,7 +287,7 @@ namespace hooks
 		}
 
 		if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit
-			|| (*IS_HOLDING_SHIFT && activePlayerSelection->unit[0]))
+			|| (*IS_HOLDING_SHIFT && active_player_selection->unit[0]))
 		{
 			if (!*IS_HOLDING_SHIFT)
 			{
@@ -350,7 +350,7 @@ namespace hooks
 					// save existing selection to a temporary array
 					for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 					{
-						local_temp_array_2[i] = activePlayerSelection->unit[i];
+						local_temp_array_2[i] = active_player_selection->unit[i];
 					}
 
 					// locate surrounding units for selection
@@ -377,9 +377,9 @@ namespace hooks
 					// Shift + click while there's an existing selection (because hold on CTRL case was already dealt with so there's an existing selection at this point) add/remove unit from selection
 					s32 arrayIndex;
 					// copy the existing selection into the local array
-					for (arrayIndex = 0; arrayIndex < SELECTION_ARRAY_LENGTH && activePlayerSelection->unit[arrayIndex]; arrayIndex++)
+					for (arrayIndex = 0; arrayIndex < SELECTION_ARRAY_LENGTH && active_player_selection->unit[arrayIndex]; arrayIndex++)
 					{
-						local_temp_array_1[arrayIndex] = activePlayerSelection->unit[arrayIndex];
+						local_temp_array_1[arrayIndex] = active_player_selection->unit[arrayIndex];
 					}
 
 					if (!(clicked_unit->sprite->flags & SpriteFlags::Selected))
@@ -502,5 +502,87 @@ namespace hooks
 				helper::show_rally_target(clicked_unit);
 			}
 		}
+	}
+	
+	// Hooked to forbid buildings. -Pr0nogo
+	s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, char play_sound, u32 send_command) // 0049AEF0
+	{
+		Unit** selection_var = selection;
+		u32 unit_count_var = unit_count;
+		helper::create_new_unit_selections_from_list(selection, unit_count);
+		if (play_sound)
+		{
+			Unit* sfx_unit = 0;
+			if (unit_count > 0)
+			{
+				u32 unit_count_var_2 = unit_count;
+				do
+				{
+					Unit* unit_from_selection = *selection_var;
+					if (helper::compare_unit_rank(*selection_var, sfx_unit))
+					{
+						sfx_unit = unit_from_selection;
+					}
+					++selection_var;
+					--unit_count_var_2;
+				} while (unit_count_var_2);
+				unit_count_var = unit_count;
+				selection_var = selection;
+			}
+			helper::select_building_sfx(sfx_unit);
+		}
+		if (send_command)
+		{
+			helper::cmdact_select(selection_var, unit_count_var);
+		}
+		u32 result = 1;
+		*control_under_mouse = 0;
+		*control_under_mouse_value = 0;
+		*client_selection_changed = 1;
+		*force_button_refresh = 1;
+		portrait_redraw[0] = 1;
+		*status_screen_redraw = 1;
+		return result;
+	}
+
+	// Hooked to forbid buildings. -Pr0nogo
+	u32 create_new_unit_selections_from_list(Unit** unit_list, u32 count) // 0049AE40
+	{
+		Unit** selected = (Unit**)active_player_selection->unit;
+		do
+		{
+			Unit* unit_from_selection = *selected;
+			if (!*selected)
+			{
+				break;
+			}
+			*selected = 0;
+			if (units_dat::BaseProperty[unit_from_selection->id] & UnitProperty::Subunit)
+			{
+				unit_from_selection = unit_from_selection->subunit;
+			}
+			helper::destroy_unit_selection(unit_from_selection);
+			++selected;
+		} while (selected < (Unit**)players_selections->unit);
+		u32 result = count;
+		Unit** unit_list_var = unit_list;
+		for (u32 i = 0; i < count; ++i)
+		{
+			Unit* unit_from_list = *unit_list_var;
+			*active_player_selection->unit[i] = **unit_list_var;
+			if (units_dat::BaseProperty[unit_from_list->id] & UnitProperty::Subunit)
+			{
+				helper::create_unit_selection(unit_from_list->subunit, i);
+				*active_player_selection->unit[i] = *unit_from_list->subunit;
+			}
+			else
+			{
+				helper::create_unit_selection(unit_from_list, i);
+			}
+			result = count;
+			*unit_list_var = active_player_selection->unit[i];
+			++unit_list_var;
+		}
+		return result;
 	}
 }

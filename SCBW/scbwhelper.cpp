@@ -11996,4 +11996,18 @@ namespace helper
 		}
 		return result;
 	}
+
+	bool compare_unit_rank(Unit* unit, Unit* compare_unit) {
+		static bool result;
+		const u32 func_address = 0x0049A350;
+		__asm {
+			PUSHAD
+			MOV compare_unit, ESI
+			MOV unit, EDI
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

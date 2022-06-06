@@ -95,7 +95,7 @@ namespace hooks
 			bool bStopLoop = false;
 			while (!bStopLoop)
 			{
-				unit = playersSelections->unit[playerId][index];
+				unit = players_selections->unit[playerId][index];
 				if (unit == nullptr)
 				{
 					bStopLoop = true;
