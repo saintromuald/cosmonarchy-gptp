@@ -9,8 +9,8 @@ namespace hooks
 	void cloakNearbyUnitsHook(Unit* cloaker)
 	{
 		bool needsRefresh = false;
-		static u16* const maxBoxRightValue = (u16*)0x00628450;	//should usually be mapTileSize->width * 32
-		static u16* const maxBoxBottomValue = (u16*)0x006284B4;	//should usually be mapTileSize->height * 32
+		static u16* const maxBoxRightValue = (u16*)0x00628450;	//should usually be map_tile_size->width * 32
+		static u16* const maxBoxBottomValue = (u16*)0x006284B4;	//should usually be map_tile_size->height * 32
 		Box16 area_of_effect;
 		Unit** unitsInAreaOfEffect;
 		Unit* current_unit;

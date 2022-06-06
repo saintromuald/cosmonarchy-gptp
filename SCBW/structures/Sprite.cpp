@@ -46,9 +46,9 @@ void Sprite::free()
 	{
 		sprite_row_position = 0;
 	}
-	else if (sprite_row_position >= mapTileSize->height)
+	else if (sprite_row_position >= map_tile_size->height)
 	{
-		sprite_row_position = mapTileSize->height - 1;
+		sprite_row_position = map_tile_size->height - 1;
 	}
 
 	// remove the sprite from the spritesOnTileRow list
@@ -89,8 +89,8 @@ void Sprite::set_position(u16 x, u16 y)
 		return;
 	}
 
-	const s32 oldTileY = CLAMP(this->position.y / 32, 0, mapTileSize->height - 1);
-	const s32 newTileY = CLAMP(y / 32, 0, mapTileSize->height - 1);
+	const s32 oldTileY = CLAMP(this->position.y / 32, 0, map_tile_size->height - 1);
+	const s32 newTileY = CLAMP(y / 32, 0, map_tile_size->height - 1);
 
 	this->position.x = x;
 	this->position.y = y;

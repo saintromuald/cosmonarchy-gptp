@@ -148,8 +148,8 @@ namespace hooks
 		{
 			if (!get_active_player_next_selection()) // multiple selection not allowed
 			{
-				if (x < mapTileSize->width
-				&&	y < mapTileSize->height
+				if (x < map_tile_size->width
+				&&	y < map_tile_size->height
 				&&	helper::CMDRECV_place_building_allowed(builder, orderId, builtUnitId))
 				{
 					helper::CMDRECV_place_building(x, y, orderId, builtUnitId);

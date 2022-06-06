@@ -497,7 +497,7 @@ LABEL_42:
 		playerUnit = 1 << unit->player;
 		if (!target)
 		{
-			return playerUnit & ~(activeTileArray[unit->order_target.pt.x / 32 + mapTileSize->width * (unit->order_target.pt.y / 32)]->visibility_flags);
+			return playerUnit & ~(activeTileArray[unit->order_target.pt.x / 32 + map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
 		u32 result;
@@ -523,7 +523,7 @@ LABEL_42:
 		playerUnit = 1 << unit->player;
 		if (!target)
 		{
-			return playerUnit & ~(activeTileArray[unit->order_target.pt.x / 32 + mapTileSize->width * (unit->order_target.pt.y / 32)]->visibility_flags);
+			return playerUnit & ~(activeTileArray[unit->order_target.pt.x / 32 + map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
 		if (unit->status & 0x300)

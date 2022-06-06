@@ -36,14 +36,8 @@ namespace hooks
 		u32 count = 0;
 		Unit* selection[SELECTION_ARRAY_LENGTH] = {};
 
-		u32 prev = 0;
 		*unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
-			if (prev == *unit_iterator_pos) {
-				break; // Fixes a weird freeze
-			}
-			prev = *unit_iterator_pos;
-
 			Box16 coords = {};
 			coords.right = unit->sprite->position.x + 128;
 			coords.bottom = unit->sprite->position.y + 128;
@@ -52,10 +46,12 @@ namespace hooks
 
 			Unit** units_in_bounds = helper::get_all_units_in_bounds(&coords);
 			Unit* found_larvae[SELECTION_ARRAY_LENGTH] = {};
-			u32 found_count = get_larvae_units_from_list(units_in_bounds, found_larvae);
 
-			*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[*tempUnitsListArraysCountsListLastIndex];
-			*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
+			u32 temp = *unit_iterator_pos;
+			u32 found_count = get_larvae_units_from_list(units_in_bounds, found_larvae);
+			*unit_iterator_pos = temp;
+
+			*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[--*tempUnitsListArraysCountsListLastIndex];
 
 			for (u32 i = 0; i < found_count; ++i) {
 				for (u32 j = 0; j < count; ++j) {
@@ -71,7 +67,6 @@ namespace hooks
 					goto exit;
 				}
 			}
-			
 		}
 
 	exit:

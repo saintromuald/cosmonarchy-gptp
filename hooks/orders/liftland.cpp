@@ -127,8 +127,8 @@ namespace hooks
 			{
 				unit->order_signal -= 0x10;
 
-				if (unit->order_target.pt.x >= 0 && unit->order_target.pt.x < mapTileSize->width * 32 && 
-					unit->order_target.pt.y >= 0 && unit->order_target.pt.y < mapTileSize->height * 32) { // New sanity check; Attempt on fixing clear tile flags
+				if (unit->order_target.pt.x >= 0 && unit->order_target.pt.x < map_tile_size->width * 32 && 
+					unit->order_target.pt.y >= 0 && unit->order_target.pt.y < map_tile_size->height * 32) { // New sanity check; Attempt on fixing clear tile flags
 					helper::clear_building_from_tile_flag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 				}
 
