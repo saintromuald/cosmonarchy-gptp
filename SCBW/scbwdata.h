@@ -1018,8 +1018,11 @@ SCBW_DATA(char*,	client_selection_changed,		0x0059723C);
 // For set_ingame_input_procs
 SCBW_DATA(HACCEL*,				common_accelerator,		0x006D120C);
 SCBW_DATA(HACCEL*,				accelerator_tables,		0x005968F0);
-SCBW_DATA(InputProcsFunc**,	left_click_proc,		0x006556EC);
-SCBW_DATA(InputProcsFunc**,	right_click_proc,		0x006556F0);
+SCBW_DATA(InputProcsFunc**,		left_click_proc,		0x006556EC);
+SCBW_DATA(InputProcsFunc**,		right_click_proc,		0x006556F0);
+
+SCBW_DATA(u16*,					minimap_cursor,			0x006556FC);
+SCBW_DATA(RECT*,				minimap_rect,			0x00512D00);
 
 //////////////////////////////////////////////////////////////// @}
 

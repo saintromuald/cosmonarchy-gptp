@@ -1332,4 +1332,6 @@ namespace helper
 	SCBW_FUNC(0x00484600, void __cdecl, input_place_building_right_mouse_click);
 
 	void initialize_input_procs();																			// 004D2FF0
+
+	u16 get_minimap_cursor_pos(u16* x, u16* y);																// 004A3D70
 }

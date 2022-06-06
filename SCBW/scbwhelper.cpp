@@ -12047,4 +12047,17 @@ namespace helper
 			POPAD
 		}
 	}
+
+	u16 get_minimap_cursor_pos(u16* x, u16* y) {
+		const u32 func_address = 0x004A3D70;
+		static u16 result;
+		__asm {
+			PUSHAD
+			MOV EAX, x
+			MOV ECX, y
+			CALL func_address
+			MOV result, AX
+			POPAD
+		}
+	}
 }

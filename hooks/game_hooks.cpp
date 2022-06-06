@@ -111,7 +111,7 @@ namespace hooks
 		tick_trigger_system(false);
 	}
 
-	static bool process_quickcasting() {
+	static bool process_quickcasting(bool process_targeting) {
 		// Quick Casting
 		if (config.quick_casting) {
 			if (*is_placing_building) {
@@ -123,13 +123,13 @@ namespace hooks
 					}
 				}
 				if (not_held) {
-					Event event = {};
-					event.x_pos = mouse->x;
-					event.y_pos = mouse->y;
-
 					Point16 position = {};
 					position.x = mouse->x;
 					position.y = mouse->y;
+
+					Event event = {};
+					event.x_pos = position.x;
+					event.y_pos = position.y;
 
 					helper::input_place_building_left_mouse_click(&event, 0, position);
 					if (*is_placing_building) {
@@ -138,22 +138,24 @@ namespace hooks
 				}
 				return true;
 			}
-			if (*is_targeting) {
-				Event event = {};
-				event.x_pos = mouse->x;
-				event.y_pos = mouse->y;
-				helper::input_target_order_left_mouse_click(&event);
-				if (*is_targeting) {
-					helper::input_target_order_right_mouse_click();
+			if (process_targeting && *is_targeting) {
+				if (!PtInRect(minimap_rect, *(POINT*) mouse)) {
+					Event event = {};
+					event.x_pos = mouse->x;
+					event.y_pos = mouse->y;
+					helper::input_target_order_left_mouse_click(&event);
+					if (*is_targeting) {
+						helper::input_target_order_right_mouse_click();
+					}
+					return true;
 				}
-				return true;
 			}
 		}
 		return false;
 	}
 
-	bool reset_command_card;
-	u32 cached_command_card;
+	bool quickcasting_signal;
+	u32 quickcasting_command_card;
 
 	// Hooked to remove the 1-frame delay from quick-casting. -Pr0nogo
 	u32 __cdecl set_ingame_input_procs() { // 00484CC0
@@ -179,9 +181,9 @@ namespace hooks
 		input_procs->funcs[17] = 0;
 		input_procs->funcs[18] = 0;
 
-		if (process_quickcasting()) {
-			reset_command_card = true;
-			cached_command_card = *orders_buttonset;
+		if (process_quickcasting(true)) {
+			quickcasting_signal = true;
+			quickcasting_command_card = *orders_buttonset;
 		}
 
 		if (*is_placing_building) {
@@ -361,7 +363,7 @@ namespace hooks
 				}
 			}
 
-			process_quickcasting();
+			process_quickcasting(false);
 
 			// Loop through all visible units in the game.
 			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)

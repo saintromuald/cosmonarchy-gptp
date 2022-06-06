@@ -452,9 +452,11 @@ namespace hooks
 	// Main updateButtonSet function because it call updateButtonSet() and others
 	void updateCurrentButtonset() // 004599A0
 	{
-		if (hooks::reset_command_card) {
-			hooks::reset_command_card = false;
-			*orders_buttonset = hooks::cached_command_card;
+		// Quick casting post handling
+		if (hooks::quickcasting_signal) {
+			hooks::quickcasting_signal = false;
+			*orders_buttonset = hooks::quickcasting_command_card;
+			*minimap_cursor = 0;
 		}
 
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
