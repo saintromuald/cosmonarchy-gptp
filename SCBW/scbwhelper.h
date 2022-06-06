@@ -415,7 +415,7 @@ namespace helper
 	void cancel_last_training(Unit* unit);																							// 00466E40
 	void cancel_addon_proc(Unit* unit);																								// 004E66E0
 
-	//// CMDRECV_Build
+	//// cmdrecv_build
 	b32 order_is_allowed(Unit* unit, u16 order, u32 nationID);																		// 0046DC20
 	bool place_building_message(u32 result_function_473FB0);																		// 0048D930
 	bool CMDRECV_place_building_allowed(Unit* unit, u8 orderId, u16 builtUnitId);													// 0048DBD0

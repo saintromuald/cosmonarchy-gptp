@@ -67,7 +67,7 @@ namespace hooks
 		}
 	}
 
-	void cmdrecv_place_building_addon(s16 x, s16 y, u32 orderId, u32 builtUnitId)
+	void cmdrecv_place_addon(s16 x, s16 y, u32 orderId, u32 builtUnitId)
 	{
 		u16 addonPlaceX = 0;
 		u16 addonPlaceY = 0;
@@ -140,7 +140,7 @@ namespace hooks
 		}
 	}
 
-	void CMDRECV_Build(u8 orderId, s16 x, s16 y, u16 builtUnitId)
+	void cmdrecv_build(u8 orderId, s16 x, s16 y, u16 builtUnitId)
 	{
 		Unit* builder = get_active_player_next_selection();
 		*unit_iterator_pos = 0;
@@ -153,6 +153,61 @@ namespace hooks
 				&&	helper::CMDRECV_place_building_allowed(builder, orderId, builtUnitId))
 				{
 					helper::CMDRECV_place_building(x, y, orderId, builtUnitId);
+				}
+			}
+		}
+	}
+
+	// Hooked to try to allow for queueable build orders. -Pr0nogo
+	void process_building_placement(Unit* unit, u8 order_id, Point16 pos, u16 target_unit_id) // 0048DE70
+	{
+		if (order_id == OrderId::BuildingLand)
+		{
+			helper::issue_order_targeting_ground(unit, OrderId::BuildingLand, pos.x, pos.y);
+		}
+		else
+		{
+			if  (unit->id != UnitId::ZergDroleth && unit->id != UnitId::ZergGosvileth
+			|| ((unit->main_order_id != OrderId::DroneLand) || !(unit->status & 0x3000)) // CanNotReceiveOrders or NoBrkCodeStart
+			&&   unit->main_order_id != OrderId::DroneBuild)
+			{
+				if ((unit->id != UnitId::ZergNydusCanal || order_id != OrderId::Build5) && order_id != OrderId::CTFCOP2)
+				{
+					AIMineralsReserve[unit->player] = units_dat::MineralCost[target_unit_id];
+					AIGasReserve[unit->player] = units_dat::GasCost[target_unit_id];
+					if (helper::has_supplies_for_unit(unit->player, target_unit_id, 1))
+					{
+						u8 console_index_var = *console_index; // aids
+						if (gameMinerals[unit->player] >= AIMineralsReserve[unit->player])
+						{
+							if (gameGas[unit->player] >= AIGasReserve[unit->player])
+							{
+								helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
+								if (units_dat::BaseProperty[unit->id] & 1 && units_dat::BaseProperty[target_unit_id] & 1)
+								{
+									helper::refund_all_queue_slots(unit);
+									unit->building.addon_build_id = target_unit_id; // guessed
+								}
+								else
+								{
+									helper::refund_all_queue_slots(unit);
+									helper::has_money_can_make(unit, target_unit_id);
+								}
+							}
+							else
+							{
+								helper::display_error_message_id_with_sfx(unit->player, 851, console_index_var + 0x96);
+							}
+						}
+						else
+						{
+							helper::display_error_message_id_with_sfx(unit->player, 850, console_index_var + 0x93);
+						}
+					}
+				}
+				else
+				{
+					helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
 				}
 			}
 		}

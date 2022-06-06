@@ -534,7 +534,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_stats_panel_display_hooks();
 //	hooks::injectUtilsHooks();
 	hooks::injectMindControlSpellHook();
-	hooks::injectCMDRECV_BuildHooks();
+	hooks::inject_cmdrecv_build_hooks();
 	
 	hooks::injectApplyUpgradeFlags();
 	hooks::injectAttackPriorityHooks();

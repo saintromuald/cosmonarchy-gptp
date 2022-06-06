@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) CMDRECV_PlaceBuildingAllowed_Wrapper()
+	void __declspec(naked) cmdrecv_place_building_allowed_wrapper()
 	{
 		static Unit* builder;
 		static u8 orderId;
@@ -23,7 +23,7 @@ namespace
 		}
 	}	
 
-	void __declspec(naked) cmdRECV_PlaceBuildingNormal_Wrapper()
+	void __declspec(naked) cmdrecv_place_building_normal_wrapper()
 	{
 		static s16 x;
 		static s16 y;
@@ -51,7 +51,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cmdRECV_PlaceBuildingAddon_Wrapper()
+	void __declspec(naked) cmdrecv_place_addon_wrapper()
 	{
 		static s16 x;
 		static s16 y;
@@ -70,7 +70,7 @@ namespace
 			MOV builtUnitId, EAX
 			PUSHAD
 		}
-		hooks::cmdrecv_place_building_addon(x, y, orderId, builtUnitId);
+		hooks::cmdrecv_place_addon(x, y, orderId, builtUnitId);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -79,7 +79,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) CMDRECV_Build_Wrapper()
+	void __declspec(naked) cmdrecv_build_wrapper()
 	{
 		static u8 orderId;
 		static s16 x;
@@ -96,21 +96,48 @@ namespace
 			MOV builtUnitId, AX
 			PUSHAD
 		}
-		hooks::CMDRECV_Build(orderId, x, y, builtUnitId);
+		hooks::cmdrecv_build(orderId, x, y, builtUnitId);
 		__asm {
 			POPAD
 			RETN
+		}
+	}
+
+	void __declspec(naked) process_building_placement_wrapper() { // 0048DE70
+		static Unit* unit;
+		static u8 order_id;
+		static Point16 pos;
+		static u16 target_unit_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV order_id, AL
+			MOV EAX, [EBP + 0x0C]
+			MOV pos, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV target_unit_id, AX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::process_building_placement(unit, order_id, pos, target_unit_id);
+		__asm {
+			POPAD
+			RETN 0x0C
 		}
 	}
 }
 
 namespace hooks
 {
-	void injectCMDRECV_BuildHooks()
+	void inject_cmdrecv_build_hooks()
 	{
 	//	jump_patch(CMDRECV_PlaceBuildingAllowed_Wrapper,	0x0048DBD0, 1);
 	//	jump_patch(cmdRECV_PlaceBuildingNormal_Wrapper,		0x0048E010, 0);
 	//	jump_patch(cmdRECV_PlaceBuildingAddon_Wrapper,		0x0048E0A0, 0);
 	//	jump_patch(CMDRECV_Build_Wrapper,					0x004C23C0, 3);
+	//	jump_patch(process_building_placement_wrapper,		0x0048DE70, 0);
 	}
 }
