@@ -6,7 +6,7 @@ namespace hooks
 	void orders_Repair1(Unit* unit) { // 004673D0
 		Unit* target = unit->order_target.unit;
 		if (!target
-		//||	target->hitpoints >= units_dat::MaxHitPoints[target->id]
+	//	||	target->hitpoints >= units_dat::MaxHitPoints[target->id] // Disabled to allow tasking repair on full HP targets
 		||	target->stasis_timer != 0
 		||	(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->order_target.unit != unit)
 		||	target->status & UnitStatus::InTransport
@@ -100,10 +100,11 @@ namespace hooks
 		}
 
 		bool do_repair = false;
+		//UnitExt* target_ext = globals.get_unit_ext(target);
 		if (target->hitpoints < units_dat::MaxHitPoints[target->id]) {
-			if (unit->worker.repair_resource_loss_timer == 0) {
-				unit->worker.repair_resource_loss_timer--;
-				do_repair = helper::ord_repair_subtract(unit, target);
+			if (unit->worker.repair_resource_loss_timer == 0) { // target_ext->values[ValueNewRepairTimer] == 0
+				unit->worker.repair_resource_loss_timer--; // target_ext->values[ValueNewRepairTimer] == units_dat::TimeCost[target->id] / 2; 
+				do_repair = helper::subtract_repair_resources(unit, target); // This function calls get_repair_info which has some dumb handling that we might need.
 				if (!do_repair)
 				{
 					unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
@@ -115,7 +116,7 @@ namespace hooks
 					return;
 				}
 			} else {
-				unit->worker.repair_resource_loss_timer--;
+				unit->worker.repair_resource_loss_timer--; // target_ext->values[ValueNewRepairTimer] -= 1;
 				do_repair = true;
 			}
 		}

@@ -7047,7 +7047,7 @@ namespace helper
 		}
 	}
 
-	bool ord_repair_subtract(Unit* worker, Unit* target)
+	bool subtract_repair_resources(Unit* worker, Unit* target)
 	{
 		const u32 Func_ord_repair_subtract = 0x00466FB0;
 		static b32 bPreResult;

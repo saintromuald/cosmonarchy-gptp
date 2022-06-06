@@ -228,6 +228,7 @@ enum ExtValueId
 	ValueSpecialSovrolethBirth,
 	ValuePlayingAddonWorkingAnim,
 	ValueTyrannyPlayer,
+	ValueNewRepairTimer,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
