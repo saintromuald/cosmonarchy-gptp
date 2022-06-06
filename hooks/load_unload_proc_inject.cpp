@@ -216,6 +216,21 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) set_under_disruption_field_wrapper() { // 004EB170
+		static u32 result;
+		static Unit* unit;
+		__asm {
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::set_under_disruption_field(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -234,5 +249,6 @@ namespace hooks
 	//	jump_patch(is_unit_loaded_wrapper,				0x004E7110, 0);
 	//	jump_patch(get_loaded_space_amount_wrapper,		0x004E7170, 0);
 	//	jump_patch(unload_unit_ext_wrapper,				0x004E7E10, 0);
+	//	jump_patch(set_under_disruption_field_wrapper,	0x004EB170, 0);
 	}
 }

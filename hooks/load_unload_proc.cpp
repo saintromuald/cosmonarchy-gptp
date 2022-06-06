@@ -978,4 +978,50 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to extend transports. -Pr0nogo
+	u32 set_under_disruption_field(Unit* unit) // 004EB170
+	{
+		u32 status = unit->status;
+		if (status & 4)
+		{
+			return 0;
+		}
+		u32 status_something = status | 0x8000;
+		unit->status = status_something;
+		u32 unit_id = unit->id;
+		if (status_something & 0x40000000
+		|| !units_dat::SpaceProvided[unit_id])
+		{
+			Unit* subunit = unit->subunit;
+			if (subunit)
+			{
+				subunit->status |= 0x8000u;
+			}
+			return 0;
+		}
+		u16 index = unit->loaded_unit[0].index;
+		u32 iterations = 8;
+		do
+		{
+			u32 index_var = index;
+			if (index)
+			{
+				u32 array_insanity = 336 * (index_var & 0x7FF);
+				void* array_result = unk_array_59CB64[array_insanity / 4];
+				Unit* reference = &unit_reference[array_insanity / 0x150];
+				if (array_result)
+				{
+					if ((reference->main_order_id || reference->main_order_state != 1)
+						&& reference->target_order_special == index_var >> 11)
+					{
+						reference->status |= 0x8000u;
+					}
+				}
+			}
+			++index;
+			--iterations;
+		} while (iterations);
+		return 0;
+	}
 }

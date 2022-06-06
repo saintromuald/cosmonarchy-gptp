@@ -19,6 +19,7 @@ namespace hooks
 	s32 is_unit_loaded(Unit* transport);								// 004E7110
 	u32 get_loaded_space_amount(Unit* transport);						// 004E7170
 	void unload_unit_ext(Unit* cargo, u32 transport_died);				// 004E7E10
+	u32 set_under_disruption_field(Unit* unit);							// 004EB170
 
 	void inject_load_unload_proc_hooks();
 }
