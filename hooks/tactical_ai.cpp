@@ -665,8 +665,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			}
 
-			if (allied_combat_strength * 0.75 >= hostile_combat_strength) {
-				unit_ext->values[ValueAI_PreventTargeting] = 0;
+			if (allied_combat_strength * 2 >= hostile_combat_strength) {
 				return;
 			}
 		}
@@ -674,7 +673,11 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 		if (unit_kiting_can_attack(unit)) {
 			if (get_kiter_type(unit->id) != KiterType_TargetingOnly) {
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
-					unit_ext->timers[TimerAI_KitingLeash] = 6 * 24;
+					if (!unit_ext->timers[TimerAI_KitingLeash]) {
+						unit_ext->timers[TimerAI_KitingLeash] = 6 * 24;
+					} else if (unit_ext->timers[TimerAI_KitingLeash] < 2 * 24)  {
+						unit_ext->timers[TimerAI_KitingLeash] = 2 * 24;
+					}
 				} else {
 					unit_ext->timers[TimerAI_KitingLeash] = 24 * 24;
 				}
