@@ -81,14 +81,12 @@ namespace hooks
 	void cmdrecv_train(char* buffer) { // 004C1C20
 		*unit_iterator_pos = 0;
 		for (Unit* unit = get_active_player_next_selection(); unit; unit = get_active_player_next_selection()) {
-			if (helper::create_unit_allowed(*(buffer + 1), unit, *ACTIVE_NATION_ID)) {
-				u16 unit_id = *(buffer + 1);
-				if (unit_id <= UnitId::Spell_DisruptionWeb) {
-					if (helper::has_money_can_make(unit, unit_id)) {
-						helper::set_secondary_order(unit, OrderId::Train);
-					}
-					scbw::refresh_console();
+			u8 unit_id = buffer[1];
+			if (helper::create_unit_allowed(unit_id, unit, *ACTIVE_NATION_ID)) {
+				if (helper::has_money_can_make(unit, unit_id)) {
+					helper::set_secondary_order(unit, OrderId::Train);
 				}
+				scbw::refresh_console();
 			}
 		}
 	}

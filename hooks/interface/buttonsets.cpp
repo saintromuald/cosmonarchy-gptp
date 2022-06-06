@@ -194,6 +194,7 @@ namespace hooks
 		u8 countLarva = 0;
 		u8 count_hatches = 0;
 		u8 count_buildings = 0;
+		u8 count_lifted_buildings = 0;
 		u16 activeButtonSetId;
 		u16 selectedButtonSetId;
 		u32 flagsHolder;
@@ -224,6 +225,9 @@ namespace hooks
 
 				if (units_dat::BaseProperty[unitFromSelection->id] & UnitProperty::Building) {
 					count_buildings++;
+					if (unitFromSelection->status & UnitStatus::InAir) {
+						count_lifted_buildings++;
+					}
 				}
 
 				// count flying zerg units (to disable "burrow group" if there's one)
@@ -291,6 +295,10 @@ namespace hooks
 			else if (count_hatches == *clientSelectionCount)
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
+			}
+			else if (count_lifted_buildings)
+			{
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			}
 			else if (count_buildings)
 			{
@@ -773,6 +781,10 @@ namespace hooks
 					}
 
 					if (current_button->action_func == (ActFunc*)ButtonActions::Create_AddOn && *clientSelectionCount > 1) {
+						current_button_state = BUTTON_STATE::Invisible;
+					}
+
+					if (current_button->icon_id == IconId::Land && *clientSelectionCount > 1) {
 						current_button_state = BUTTON_STATE::Invisible;
 					}
 

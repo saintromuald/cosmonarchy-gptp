@@ -97,7 +97,7 @@ namespace hooks
 		jump_patch(cmdrecv_building_morph_wrapper,	0x004C1910, 7);
 		jump_patch(cmdrecv_unit_morph_wrapper,		0x004C1990, 3);
 		jump_patch(cmdrecv_train_wrapper,			0x004C1C20, 6);
-		jump_patch(cmdrecv_liftoff_wrapper,			0x004C1620, 1);
+		//jump_patch(cmdrecv_liftoff_wrapper,			0x004C1620, 1);
 	//	jump_patch(btnsact_rally_point_wrapper,		0x004244A0, 2);
 	}
 }
