@@ -5,16 +5,16 @@ namespace
 {
 	void __declspec(naked) CMDRECV_SiegeWrapper()
 	{
-		static u8 bCommandType;
+		static u8 command_type;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
 			MOV AL, [EAX + 1]
-			MOV bCommandType, AL
+			MOV command_type, AL
 			PUSHAD
 		}
-		hooks::CMDRECV_Siege(bCommandType);
+		hooks::CMDRECV_Siege(command_type);
 		__asm {
 			POPAD
 			POP EBP
@@ -24,16 +24,16 @@ namespace
 
 	void __declspec(naked) CMDRECV_UnsiegeWrapper()
 	{
-		static u8 bCommandType;
+		static u8 command_type;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
 			MOV AL, [EAX + 1]
-			MOV bCommandType, AL
+			MOV command_type, AL
 			PUSHAD
 		}
-		hooks::CMDRECV_Unsiege(bCommandType);
+		hooks::CMDRECV_Unsiege(command_type);
 		__asm {
 			POPAD
 			POP EBP

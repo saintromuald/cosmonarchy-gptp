@@ -17,14 +17,31 @@ namespace hooks
 		backup_current_unit = 0;
 
 		// if unit not null, become first entry of unit_list
-		if (unit)
-		{
+		if (unit) {
 			unit_list[0] = unit;
 			current_index_in_unit_list = 1;
-		}
-		else
-		{
+		} else {
 			current_index_in_unit_list = 0;
+		}
+
+		bool has_units = false;
+		bool has_buildings = false;
+		*unit_iterator_pos = 0;
+		for (Unit* current_unit = get_active_player_next_selection(); current_unit; current_unit = get_active_player_next_selection()) {
+			if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
+				has_buildings = true;
+			} else {
+				has_units = true;
+			}
+		}
+		for (Unit** it = units_in_bounds; *it; ++it) {
+			Unit* current_unit = *it;
+			if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Subunit) {
+				current_unit = current_unit->subunit;
+			}
+			if (!(units_dat::BaseProperty[current_unit->id] & UnitProperty::Building)) {
+				has_units = true;
+			}
 		}
 
 		// work with the first unit from units_in_bounds
@@ -37,30 +54,43 @@ namespace hooks
 		{
 			if (current_unit != unit)
 			{
-				// if current_unit==unit, then it's already in
-				// unit_list
-				if (current_unit->subunit)
-				{
-					// if what got selected is the turret or another subunit, swap
-					// the unit and the subunit as current_unit
-					if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Subunit)
-					{
-						current_unit = current_unit->subunit;
+				// This `if` fixes a bug where selecting both building and units using Shift and control groups disallows from selecting units
+				// TODO: find control group add functionality and make it protect from that edge case
+				if (!has_units || !has_buildings) {
+					if (has_units && units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
+						dontAddToList = true;
 					}
-					if (current_index_in_unit_list != 0)
+					if (has_buildings && !(units_dat::BaseProperty[current_unit->id] & UnitProperty::Building)) {
+						dontAddToList = true;
+					}
+				}
+
+				if (!dontAddToList) {
+					// if current_unit==unit, then it's already in
+					// unit_list
+					if (current_unit->subunit)
 					{
-						// 0046F150
-						u32 index = current_index_in_unit_list;
-						do
+						// if what got selected is the turret or another subunit, swap
+						// the unit and the subunit as current_unit
+						if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Subunit)
 						{
-							index--;
-							// if the unit is already in the list, skip it
-							if (unit_list[index] == current_unit)
-							{
-								dontAddToList = true;
-							}
+							current_unit = current_unit->subunit;
 						}
-						while (index != 0 && !dontAddToList);
+						if (current_index_in_unit_list != 0)
+						{
+							// 0046F150
+							u32 index = current_index_in_unit_list;
+							do
+							{
+								index--;
+								// if the unit is already in the list, skip it
+								if (unit_list[index] == current_unit)
+								{
+									dontAddToList = true;
+								}
+							}
+							while (index != 0 && !dontAddToList);
+						}
 					}
 				}
 
@@ -138,6 +168,11 @@ namespace hooks
 									{
 										dontAddToList = true;
 									}
+
+									u32 mixed_params = units_dat::BaseProperty[unit->id] ^ units_dat::BaseProperty[current_unit->id];
+									if (mixed_flags & UnitProperty::Building) {
+										dontAddToList = true;
+									}
 								}
 							}
 
@@ -151,6 +186,12 @@ namespace hooks
 								}
 								else
 								{
+									if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
+										has_buildings = true;
+									} else {
+										has_units = true;
+									}
+
 									// 0046F217
 									// Add current_unit to unit_list
 									unit_list[current_index_in_unit_list] = current_unit;

@@ -3,94 +3,37 @@
 
 namespace hooks
 {
-	void CMDRECV_Siege(u8 bCommandType)
-	{
-		Unit* current_selection;
-
+	void CMDRECV_Siege(u8 command_type) {
 		*unit_iterator_pos = 0;
-		current_selection = get_active_player_next_selection();
-
-		while (current_selection != nullptr)
-		{
-
-			if (
-				(current_selection->id == UnitId::TerranPhalanxTankMode ||
-					current_selection->id == UnitId::Hero_EdmundDukeTankMode) &&
-				current_selection->main_order_id != OrderId::SiegeMode
-				)
-			{
-				if (current_selection->canUseTech(TechId::TankSiegeMode, *ACTIVE_NATION_ID) == 1)
-				{
-
-					if (bCommandType != 0)
-						bCommandType = 1;
-					else
-						bCommandType = 0;
-
-					helper::TargetedOrderCopy(
-						current_selection,
-						UnitId::None,
-						*(u32*)(0x006D5C24),
-						*(u32*)(0x006D5C20),
-						OrderId::SiegeMode,
-						0,
-						bCommandType,
-						1
-					);
-
+		Unit* unit = get_active_player_next_selection();
+		while (unit) {
+			if (unit->id == UnitId::TerranPhalanxTankMode && unit->main_order_id != OrderId::SiegeMode) {
+				if (unit->canUseTech(TechId::TankSiegeMode, *ACTIVE_NATION_ID) == 1) {
+					if (command_type) {
+						unit->issue_queued_order_target(OrderId::SiegeMode, 0, false);
+					} else {
+						unit->order_to(OrderId::SiegeMode);
+					}
 				}
 			}
-
-			current_selection = get_active_player_next_selection();
-
+			unit = get_active_player_next_selection();
 		}
-
 	}
 
-	;
-
-	void CMDRECV_Unsiege(u8 bCommandType)
-	{
-
-		Unit* current_selection;
-
+	void CMDRECV_Unsiege(u8 command_type) {
 		*unit_iterator_pos = 0;
-		current_selection = get_active_player_next_selection();
-
-		while (current_selection != nullptr)
-		{
-
-			if (
-				(current_selection->id == UnitId::TerranPhalanxSiegeMode ||
-					current_selection->id == UnitId::Hero_EdmundDukeSiegeMode) &&
-				current_selection->main_order_id != OrderId::TankMode
-				)
-			{
-				if (current_selection->canUseTech(TechId::TankSiegeMode, *ACTIVE_NATION_ID) == 1)
-				{
-
-					if (bCommandType != 0)
-						bCommandType = 1;
-					else
-						bCommandType = 0;
-
-					helper::TargetedOrderCopy(
-						current_selection,
-						UnitId::None,
-						*(u32*)(0x006D5C24),
-						*(u32*)(0x006D5C20),
-						OrderId::TankMode,
-						0,
-						bCommandType,
-						1
-					);
-
+		Unit* unit = get_active_player_next_selection();
+		while (unit) {
+			if (unit->id == UnitId::TerranPhalanxSiegeMode && unit->main_order_id != OrderId::TankMode) {
+				if (unit->canUseTech(TechId::TankSiegeMode, *ACTIVE_NATION_ID) == 1) {
+					if (command_type) {
+						unit->issue_queued_order_target(OrderId::TankMode, 0, false);
+					} else {
+						unit->order_to(OrderId::TankMode);
+					}
 				}
 			}
-
-			current_selection = get_active_player_next_selection();
-
+			unit = get_active_player_next_selection();
 		}
-
 	}
 }
