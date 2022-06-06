@@ -126,7 +126,7 @@ namespace
 	void __cdecl cloakingTechWrapper_CMDRECV_Cloak()
 	{
 		*unit_iterator_pos = 0;
-		while (Unit* unit = getActivePlayerNextSelection())
+		while (Unit* unit = get_active_player_next_selection())
 		{
 			if (unit->canUseTech(hooks::getCloakingTech(unit), *ACTIVE_NATION_ID) == 1)
 				applyCloakingOrderHook(unit);
@@ -169,7 +169,7 @@ namespace
 	void __cdecl cloakingTechWrapper_CMDRECV_Decloak()
 	{
 		*unit_iterator_pos = 0;
-		while (Unit* unit = getActivePlayerNextSelection())
+		while (Unit* unit = get_active_player_next_selection())
 		{
 			if (unit->canUseTech(hooks::getCloakingTech(unit), *ACTIVE_NATION_ID) == 1)
 				unit->set_secondary_order(OrderId::Decloak);

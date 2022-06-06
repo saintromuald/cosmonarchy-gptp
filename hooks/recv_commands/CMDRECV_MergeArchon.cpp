@@ -15,7 +15,7 @@ namespace hooks
 		s32 templars_stored_count;
 
 		*unit_iterator_pos = 0;
-		current_unit = getActivePlayerNextSelection();
+		current_unit = get_active_player_next_selection();
 
 		if (current_unit != nullptr &&
 			current_unit->canUseTech(TechId::DarkArchonMeld, *ACTIVE_NATION_ID) == 1)
@@ -35,7 +35,7 @@ namespace hooks
 					templars_stored_count++;
 				}
 
-				current_unit = getActivePlayerNextSelection();
+				current_unit = get_active_player_next_selection();
 
 			}
 
@@ -155,7 +155,7 @@ namespace hooks
 		s32 templars_stored_count;
 
 		*unit_iterator_pos = 0;
-		current_unit = getActivePlayerNextSelection();
+		current_unit = get_active_player_next_selection();
 
 		if (current_unit != nullptr &&
 			current_unit->canUseTech(TechId::ArchonWarp, *ACTIVE_NATION_ID) == 1)
@@ -175,7 +175,7 @@ namespace hooks
 					templars_stored_count++;
 				}
 
-				current_unit = getActivePlayerNextSelection();
+				current_unit = get_active_player_next_selection();
 
 			}
 

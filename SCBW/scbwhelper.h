@@ -797,7 +797,7 @@ namespace helper
 	//// select_larva
 
 	u32 getLarvaeUnitsFromList(Unit** unitList, Unit** outputList);													// 00423190
-	void selectMultipleUnitsFromUnitList(Unit** unitList, u32 unitsCount, b32 unk1, b32 unk2);					    // 0049AEF0
+	void select_multiple_units_from_unit_list(Unit** unitList, u32 unitsCount, b32 unk1, b32 unk2);					    // 0049AEF0
 
 	//// uifeatures
 
@@ -811,7 +811,7 @@ namespace helper
 
 	// For selectUnits
 	s32 select_single_unit_from_id(s32 index);																		// 00496D30
-	s32 selectMultipleUnitsFromUnitList(s32 a1, Unit** a2, u8 a3, s32 a4);										    // 0049AEF0
+	s32 select_multiple_units_from_unit_list(s32 a1, Unit** a2, u8 a3, s32 a4);										    // 0049AEF0
 	s32 SNetGetTurnsInTransit(u32* turns);
 	u8 sendTurn();
 	s32 SErrGetLastError();

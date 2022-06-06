@@ -8,7 +8,7 @@ namespace hooks
 		Unit* current_selection;
 
 		*unit_iterator_pos = 0;
-		current_selection = getActivePlayerNextSelection();
+		current_selection = get_active_player_next_selection();
 
 		while (current_selection != nullptr)
 		{
@@ -41,7 +41,7 @@ namespace hooks
 				}
 			}
 
-			current_selection = getActivePlayerNextSelection();
+			current_selection = get_active_player_next_selection();
 
 		}
 
@@ -55,7 +55,7 @@ namespace hooks
 		Unit* current_selection;
 
 		*unit_iterator_pos = 0;
-		current_selection = getActivePlayerNextSelection();
+		current_selection = get_active_player_next_selection();
 
 		while (current_selection != nullptr)
 		{
@@ -88,7 +88,7 @@ namespace hooks
 				}
 			}
 
-			current_selection = getActivePlayerNextSelection();
+			current_selection = get_active_player_next_selection();
 
 		}
 

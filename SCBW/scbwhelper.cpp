@@ -6839,7 +6839,7 @@ namespace helper
 		return larvaeList_Count;
 	}
 
-	void selectMultipleUnitsFromUnitList(Unit** unitList, u32 unitsCount, b32 unk1, b32 unk2)
+	void select_multiple_units_from_unit_list(Unit** unitList, u32 unitsCount, b32 unk1, b32 unk2)
 	{
 		const u32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
 		__asm {
@@ -6957,7 +6957,7 @@ namespace helper
 		return result;
 	}
 
-	s32 selectMultipleUnitsFromUnitList(s32 a1, Unit** a2, u8 a3, s32 a4)
+	s32 select_multiple_units_from_unit_list(s32 a1, Unit** a2, u8 a3, s32 a4)
 	{
 		const u32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
 		static s32 result;

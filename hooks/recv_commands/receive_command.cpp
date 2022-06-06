@@ -35,7 +35,7 @@ namespace hooks
 			u32 current_order = bActionOrder;	//EBX
 
 			*unit_iterator_pos = 0;
-			current_unit = getActivePlayerNextSelection();
+			current_unit = get_active_player_next_selection();
 
 			*saved_unit = current_unit;
 
@@ -284,7 +284,7 @@ namespace hooks
 				if (jump_to_9AD7E)
 				{
 					jump_to_9AD7E = false;
-					*saved_unit = getActivePlayerNextSelection();
+					*saved_unit = get_active_player_next_selection();
 				}
 
 				//9AB62:

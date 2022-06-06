@@ -31,7 +31,7 @@ namespace
 	{
 		const u16 morphUnitId = *((u16*)&commandData[1]);
 		*unit_iterator_pos = 0;
-		while (Unit* unit = getActivePlayerNextSelection())
+		while (Unit* unit = get_active_player_next_selection())
 		{
 			if (hooks::unit_can_morph(unit, morphUnitId)
 				&& unit->main_order_id != OrderId::Morph1

@@ -192,6 +192,7 @@ namespace hooks
 		u8 countNotInAirAndZergs = 0;
 		u8 countBurrowables = 0;
 		u8 countLarva = 0;
+		u8 count_hatches = 0;
 		u16 activeButtonSetId;
 		u16 selectedButtonSetId;
 		u32 flagsHolder;
@@ -214,6 +215,10 @@ namespace hooks
 				if (flagsHolder & UnitProperty::Cloakable)
 				{
 					countCloakables++;
+				}
+
+				if (scbw::is_zerg_production(unitFromSelection->id)) {
+					count_hatches++;
 				}
 
 				// count flying zerg units (to disable "burrow group" if there's one)
@@ -277,6 +282,10 @@ namespace hooks
 			else if (countLarva == *clientSelectionCount)
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
+			}
+			else if (count_hatches == *clientSelectionCount)
+			{
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
 			}
 		}
 	}
@@ -715,6 +724,10 @@ namespace hooks
 						} else {
 							current_button->position = 9;
 						}
+					}
+
+					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == IconId::Lair && *clientSelectionCount) {
+						current_button_state = BUTTON_STATE::Invisible;
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding)

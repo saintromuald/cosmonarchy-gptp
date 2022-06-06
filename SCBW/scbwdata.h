@@ -820,7 +820,7 @@ namespace images_dat {
 SCBW_DATA(u8*, unit_iterator_pos, 0x006284B6);
 SCBW_DATA(const UnitsSel*, activePlayerSelection, 0x006284B8);
 typedef Unit* (__cdecl* GetActivePlayerNextSelectionFunc)();
-SCBW_DATA(GetActivePlayerNextSelectionFunc, getActivePlayerNextSelection, 0x0049A850);
+SCBW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x0049A850);
 
 /// Selections of all players
 struct PlayersSel {

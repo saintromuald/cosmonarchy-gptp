@@ -196,7 +196,7 @@ LABEL_15:
 		s32 result = helper::select_single_unit_from_id(v4); // eax
 
 		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0)
-			result = helper::selectMultipleUnitsFromUnitList(a2, a1, a3, a4);
+			result = helper::select_multiple_units_from_unit_list(a2, a1, a3, a4);
 		return result;
 	}
 

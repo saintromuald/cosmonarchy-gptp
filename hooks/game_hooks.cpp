@@ -289,7 +289,7 @@ namespace hooks
 
 
 			*unit_iterator_pos = 0;
-			for (Unit* selection = getActivePlayerNextSelection(); selection; selection = getActivePlayerNextSelection()) {
+			for (Unit* selection = get_active_player_next_selection(); selection; selection = get_active_player_next_selection()) {
 				if (selection->id == UnitId::ZergNydusCanal
 					&& selection->building.nydus_exit
 					&& (scbw::is_allied_to(selection->player, *LOCAL_HUMAN_ID) || helper::get_detecting_players(selection) & (1 << *LOCAL_HUMAN_ID)))

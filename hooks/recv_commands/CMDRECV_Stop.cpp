@@ -16,7 +16,7 @@ namespace hooks
 
 		*unit_iterator_pos = 0;
 
-		current_unit = getActivePlayerNextSelection();
+		current_unit = get_active_player_next_selection();
 
 		while (current_unit != nullptr)
 		{
@@ -108,7 +108,7 @@ namespace hooks
 
 												}
 
-			current_unit = getActivePlayerNextSelection();
+			current_unit = get_active_player_next_selection();
 
 		}
 
@@ -124,7 +124,7 @@ namespace hooks
 
 		*unit_iterator_pos = 0;
 
-		current_unit = getActivePlayerNextSelection();
+		current_unit = get_active_player_next_selection();
 
 		while (current_unit != nullptr)
 		{
@@ -216,7 +216,7 @@ namespace hooks
 
 												}
 
-			current_unit = getActivePlayerNextSelection();
+			current_unit = get_active_player_next_selection();
 
 		}
 
@@ -232,7 +232,7 @@ namespace hooks
 
 		*unit_iterator_pos = 0;
 
-		current_unit = getActivePlayerNextSelection();
+		current_unit = get_active_player_next_selection();
 
 		while (current_unit != nullptr)
 		{
@@ -309,7 +309,7 @@ namespace hooks
 				unitExt->units[UnitWyvernTargetLock] = nullptr;
 			}
 							
-			current_unit = getActivePlayerNextSelection();
+			current_unit = get_active_player_next_selection();
 		}
 	}
 }

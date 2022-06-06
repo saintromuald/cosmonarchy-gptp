@@ -7,7 +7,7 @@ namespace hooks
 	{
 		Unit* selected_unit;
 		*unit_iterator_pos = 0;
-		selected_unit = getActivePlayerNextSelection();
+		selected_unit = get_active_player_next_selection();
 		while (selected_unit != nullptr)
 		{
 			if (units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable
@@ -15,7 +15,7 @@ namespace hooks
 			{
 				helper::function_004E97C0(selected_unit);
 			}
-			selected_unit = getActivePlayerNextSelection();
+			selected_unit = get_active_player_next_selection();
 		}
 	}
 
@@ -23,7 +23,7 @@ namespace hooks
 	{
 		Unit* selected_unit;
 		*unit_iterator_pos = 0;
-		selected_unit = getActivePlayerNextSelection();
+		selected_unit = get_active_player_next_selection();
 		while (selected_unit != nullptr)
 		{
 			if (units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable
@@ -43,7 +43,7 @@ namespace hooks
 
 				helper::TargetedOrderCopy(selected_unit, UnitId::None, *(u32*)(0x006D5C24), *(u32*)(0x006D5C20), OrderId::Burrow, 0, bCommandType, 1);
 			}
-			selected_unit = getActivePlayerNextSelection();
+			selected_unit = get_active_player_next_selection();
 		}
 	}
 

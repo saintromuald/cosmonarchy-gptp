@@ -65,7 +65,7 @@ namespace hooks
 	{
 		Unit* activePlayerCurrentSelection;
 		*unit_iterator_pos = 0;
-		activePlayerCurrentSelection = getActivePlayerNextSelection();
+		activePlayerCurrentSelection = get_active_player_next_selection();
 		while (activePlayerCurrentSelection != nullptr)
 		{
 			if (activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *ACTIVE_NATION_ID) == 1
@@ -95,7 +95,7 @@ namespace hooks
 					activePlayerCurrentSelection->update_speed();
 				}
 			}
-			activePlayerCurrentSelection = getActivePlayerNextSelection();
+			activePlayerCurrentSelection = get_active_player_next_selection();
 		}
 	}
 }

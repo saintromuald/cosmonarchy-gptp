@@ -7,7 +7,7 @@ namespace hooks
 	{
 		Unit* current_selection;
 		*unit_iterator_pos = 0;
-		current_selection = getActivePlayerNextSelection();
+		current_selection = get_active_player_next_selection();
 
 		while (current_selection != nullptr)
 		{
@@ -45,7 +45,7 @@ namespace hooks
 					}
 				}
 			}
-			current_selection = getActivePlayerNextSelection();
+			current_selection = get_active_player_next_selection();
 		}
 		scbw::refresh_console();
 	}
@@ -55,8 +55,8 @@ namespace hooks
 	{
 		Unit* builder;
 		*unit_iterator_pos = 0;
-		builder = getActivePlayerNextSelection();
-		if (builder != nullptr && getActivePlayerNextSelection() == nullptr)
+		builder = get_active_player_next_selection();
+		if (builder != nullptr && get_active_player_next_selection() == nullptr)
 		{
 			// Originally also checked for a lardcoded ID distance, disabled for training units with high IDs
 			if (builder->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1)

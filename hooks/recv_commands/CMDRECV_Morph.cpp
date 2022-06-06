@@ -7,7 +7,7 @@ namespace hooks
 	void CMDRECV_BuildingMorph(u16 unit_id)
 	{
 		*unit_iterator_pos = 0;
-		for (Unit* selection = getActivePlayerNextSelection(); selection; selection = getActivePlayerNextSelection()) {
+		for (Unit* selection = get_active_player_next_selection(); selection; selection = get_active_player_next_selection()) {
 			if (selection &&
 				selection->id >= UnitId::ZergInfestedCommandCenter &&
 				selection->id <= 227 &&
@@ -26,7 +26,7 @@ namespace hooks
 	{
 		Unit* current_unit;
 		*unit_iterator_pos = 0;
-		current_unit = getActivePlayerNextSelection();
+		current_unit = get_active_player_next_selection();
 		while (current_unit != nullptr)
 		{
 
@@ -74,7 +74,7 @@ namespace hooks
 				}
 				prepare_for_next_order(current_unit);
 			}
-			current_unit = getActivePlayerNextSelection();
+			current_unit = get_active_player_next_selection();
 		}
 		scbw::refresh_console();
 	}
@@ -82,7 +82,7 @@ namespace hooks
 	// Hooked for multi-unit select. -Pr0nogo
 	void cmdrecv_train(char* buffer) { // 004C1C20
 		*unit_iterator_pos = 0;
-		for (Unit* selection = getActivePlayerNextSelection(); selection; selection = getActivePlayerNextSelection()) {
+		for (Unit* selection = get_active_player_next_selection(); selection; selection = get_active_player_next_selection()) {
 			if (helper::create_unit_allowed(*(buffer + 1), selection, *ACTIVE_NATION_ID)) {
 				u16 unit_id = *(buffer + 1);
 				if (unit_id <= UnitId::Spell_DisruptionWeb) {
