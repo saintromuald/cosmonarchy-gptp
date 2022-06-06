@@ -3,59 +3,42 @@
 
 namespace hooks
 {
-	s32 init_placement_box_pos(s32 unused, Point16* placement) // 0048D660
-	{
-        u16 x = placement->x;
-        u16 y = placement->y;
-        if (placement->x >= 640u || y >= 400u)
-        {
+	s32 init_placement_box_pos(s32 unused, Point16* placement_pos) { // 0048D660
+        if (placement_pos->x >= 640 || placement_pos->y >= 400) {
             return 0;
         }
-        s16 tempY = *moveToTileY + (y >> 5);
-        *placeBuildingY = tempY;
-        *placeBuildingX = *moveToTileX + (x >> 5);
-        placement->x = 32 * (*moveToTileX + (x >> 5)) - *moveToX;
-        placement->y = 32 * tempY - *moveToY;
-        if ( placement->x < 0 )
-        {
-            *placeBuildingX = *placeBuildingX + 1;
-            placement->x = placement->x + 32;
-        }
-        if (placement->y >= 0)
-        {
-            return 1;
-        }
-        placement->y = placement->y + 32;
-        *placeBuildingY = tempY + 1;
+
+        u32 tile_x = *moveToTileX + (placement_pos->x + 16) / 32;
+        u32 tile_y = *moveToTileY + (placement_pos->y + 16) / 32;
+
+        *placeBuildingX = tile_x;
+        *placeBuildingY = tile_y;
+        placement_pos->x = tile_x * 32 - *moveToX;
+        placement_pos->y = tile_y * 32 - *moveToY;
+
         return 1;
 	}
 
-    u8 draw_placement_box(Point16 ecx0) // 0048DDC0
-    {
-        Point16 placement_box = ecx0;
+    u8 draw_placement_box(Point16 unused) { // 0048DDC0
+        Point16 placement_pos = unused;
         u8 result = *is_placing_building;
-        if (!result)
-        {
+        if (!result) {
             return result;
         }
-        ecx0.x = mouse->y;
-        placement_box.x = mouse->x;
-        placement_box.y = mouse->y;
+        unused.x = mouse->y;
         Point16 dims = units_dat::BuildingDimensions[*placeBuildingUnitType];
-        placement_box.x -= dims.x / 2;
-        placement_box.y -= dims.y / 2;
-        placement_box.x += 24;
-        placement_box.y += 24;
-        if (helper::init_placement_box_pos(&placement_box))
+        placement_pos.x = mouse->x - dims.x / 2;
+        placement_pos.y = mouse->y - dims.y / 2;
+        if (helper::init_placement_box_pos(&placement_pos))
         {
             *placeBuildingMessageId = helper::update_placement_state_for_placement_box();
             helper::refresh_layers_3_and_4();
-            helper::unk_building_placement_related(1, &placement_box);
+            helper::unk_building_placement_related(1, &placement_pos);
             if (*isPlacingAddon)
             {
-                placement_box.x -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-                placement_box.y -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
-                helper::unk_building_placement_related(0, &placement_box);
+                placement_pos.x -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+                placement_pos.y -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+                helper::unk_building_placement_related(0, &placement_pos);
             }
             result = helper::refresh_layers_3_and_4();
         }

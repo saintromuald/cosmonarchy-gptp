@@ -514,7 +514,7 @@ void Unit::healShields(s32 shields, Unit* source, bool restore)
 	}
 
 	this->shields = std::min((u32)this->shields + shields, this->get_max_shields_raw());
-	helper::update_unit_strength(this);
+	this->setHp(this->hitpoints); // Updates unit strength
 
 	// If heals to full clear debuffs
 	if (this->shields == this->get_max_shields_raw() && restore)

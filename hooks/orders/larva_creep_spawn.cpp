@@ -216,13 +216,13 @@ namespace hooks
 				{
 					y1 = 0;
 				}
-				if (x2 >= mapTileSize->width)
+				if (x2 >= map_tile_size->width)
 				{
-					x2 = mapTileSize->width - 1;
+					x2 = map_tile_size->width - 1;
 				}
-				if (y2 >= mapTileSize->height)
+				if (y2 >= map_tile_size->height)
 				{
-					y2 = mapTileSize->height - 1;
+					y2 = map_tile_size->height - 1;
 				}
 
 				for (s32 i = x1; i <= x2; i++)
@@ -476,9 +476,9 @@ namespace hooks
 				{
 					do
 					{
-						if (!(*activeTileArray[(s16)v9 + mapTileSize->width * (s16)v6] & 0x20800000)
-							&& ((s16)v6 + 1 == mapTileSize->height
-								|| !(*activeTileArray[(s16)v9 + mapTileSize->width * (s16)(v6 + 1)] & 0x800000)))
+						if (!(*activeTileArray[(s16)v9 + map_tile_size->width * (s16)v6] & 0x20800000)
+							&& ((s16)v6 + 1 == map_tile_size->height
+								|| !(*activeTileArray[(s16)v9 + map_tile_size->width * (s16)(v6 + 1)] & 0x800000)))
 						{
 							modifyCreepState(
 								v9,
@@ -539,7 +539,7 @@ namespace hooks
 			}
 			while (((*current_tiles)[rect_left + rect_top * *map_creep_width] & 0x7FF0) != 16
 				|| does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
-				|| tile_flags & (*activeTileArrayInt)[rect_left + rect_top * mapTileSize->width]
+				|| tile_flags & (*activeTileArrayInt)[rect_left + rect_top * map_tile_size->width]
 				|| helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
 				|| helper::mark_creep_to_disappear(rect_left, rect_top))
 			{

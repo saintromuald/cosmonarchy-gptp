@@ -8,8 +8,8 @@ void reset_ext_variables() {
 
 void update_ext_variables() {
 	// Tiles
-	for (u32 y = 0; y < mapTileSize->height; ++y) {
-		for (u32 x = 0; x < mapTileSize->width; ++x) {
+	for (u32 y = 0; y < map_tile_size->height; ++y) {
+		for (u32 x = 0; x < map_tile_size->width; ++x) {
 			TileExt* tile_ext = get_tile_ext_at_tile(x, y);
 			tile_ext->creep_owners = 0;
 		}

@@ -44,7 +44,7 @@ void set_max_sight_range()
 
     memory_patch(offsets::SightStructArrayRef, &sightData);
 
-    const u16 mapTileWidth = mapTileSize->width;
+    const u16 mapTileWidth = map_tile_size->width;
     const u32 sightRangeParam = MAX_SIGHT_RANGE + 1;
     __asm {
         PUSHAD

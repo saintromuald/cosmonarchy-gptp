@@ -2257,7 +2257,7 @@ namespace scbw
 
 		for (u32 y_tile = rect.top; y_tile <= rect.bottom; ++y_tile) {
 			for (u32 x_tile = rect.left; x_tile <= rect.right; ++x_tile) {
-				if ((*activeTileArrayInt)[x_tile + y_tile * mapTileSize->width] & 0x10000000) {
+				if ((*activeTileArrayInt)[x_tile + y_tile * map_tile_size->width] & 0x10000000) {
 					u32 x = x_tile * 32 - unit->position.x + 16;
 					u32 y = y_tile * 32 - unit->position.y + 16;
 					if (!spreads_creep || 100 * x * x + (y * y << 8) <= 10240000) {

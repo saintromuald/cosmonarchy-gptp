@@ -651,7 +651,7 @@ namespace scbw
 	}
 	Unit* UnitFinder::get_nearest_target(Unit* sourceUnit, UnitFinderCallbackMatchInterface match)
 	{
-		return get_nearest_target(0, 0, mapTileSize->width * 32, mapTileSize->height * 32, sourceUnit, match);
+		return get_nearest_target(0, 0, map_tile_size->width * 32, map_tile_size->height * 32, sourceUnit, match);
 	}
 
 	//-------- Template member function definitions --------//

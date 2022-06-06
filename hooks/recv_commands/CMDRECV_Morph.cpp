@@ -94,7 +94,7 @@ namespace hooks
 	// Hooked for multi-building select. -Pr0nogo
 	void cmdrecv_liftoff(char* buffer) { // 004C1620
 		*unit_iterator_pos = 0;
-		for (Unit* unit = helper::get_active_player_next_selection(); unit; unit = helper::get_active_player_next_selection()) {
+		while (Unit* unit = helper::get_active_player_next_selection()) {
 			if (!helper::unit_is_training_or_morphing(unit) && unit->building.tech_id == TechId::None && unit->building.upgrade_id == UpgradeId::None) {
 				if (unit->status & UnitStatus::GroundedBuilding) {
 					if (units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding) {
@@ -118,13 +118,12 @@ namespace hooks
 							*last_internal_error = 11;
 							continue;
 						}
-						u16 unit_id = unit->id;
-						if (unit_id == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding
+						if (unit->id == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding
 							|| scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
-							|| unit_id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)	{
+							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)	{
 							*last_internal_error = 8;
 						} else if (orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) {
-							if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *ACTIVE_NATION_ID, 0x00514CF8, orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) == 1) {
+							if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *ACTIVE_NATION_ID, (u32)orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) == 1) {
 								u16* buffer_u16 = (u16*)(buffer + 1);
 								u16 x = buffer_u16[0];
 								u16 y = buffer_u16[1];
