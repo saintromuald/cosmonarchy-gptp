@@ -534,7 +534,7 @@ namespace hooks
 				helper::refresh_layers_3_and_4();
 				helper::end_building_placement();
 			}
-			if (*isTargeting)
+			if (*is_targeting)
 			{
 				helper::cancel_target_order();
 			}

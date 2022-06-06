@@ -1316,5 +1316,7 @@ namespace helper
 	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args);										// 004C7E20
 	void kill_powerup(Unit* unit);																			// 004F3C60
 
-	void set_hangar_count(Unit* unit, u32 flags, u32 amount);												// 004CD260
+	void send_message_something(u32 unused, const char* string);											// 004F31D0
+	u32 set_ingame_input_procs();																			// 00484CC0
+	void update_current_buttonset();																		// 004599A0
 }

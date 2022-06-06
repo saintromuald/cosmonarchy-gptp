@@ -11932,4 +11932,36 @@ namespace helper
 			POPAD
 		}
 	}
+
+	void send_message_something(u32 unused, const char* string) {
+		const u32 func_address = 0x004F31D0;
+		__asm {
+			PUSHAD
+			MOV EDX, string
+			MOV ECX, unused
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u32 set_ingame_input_procs() {
+		static u32 result;
+		const u32 func_address = 0x00484CC0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void update_current_buttonset() {
+		const u32 func_address = 0x004599A0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
 }

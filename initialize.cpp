@@ -511,7 +511,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectBuildingProtossHooks();
 	hooks::injectUnitTrainHooks();
 
-	hooks::injectLoadUnloadProcHooks();
+	hooks::inject_load_unload_proc_hooks();
 	hooks::injectLoadUnloadOrdersHooks();
 	hooks::injectNukeOrdersHooks();
 //	hooks::injectBurrowTechHooks();

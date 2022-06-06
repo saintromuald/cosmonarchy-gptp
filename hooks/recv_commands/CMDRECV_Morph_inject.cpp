@@ -74,6 +74,20 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) btnsact_rally_point_wrapper() // 004244A0
+	{
+		u32 xd;
+		__asm {
+			MOV xd, ECX
+			PUSHAD
+		}
+		hooks::btnsact_rally_point(xd);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -84,5 +98,6 @@ namespace hooks
 		jump_patch(cmdrecv_unit_morph_wrapper,		0x004C1990, 3);
 		jump_patch(cmdrecv_train_wrapper,			0x004C1C20, 6);
 		jump_patch(cmdrecv_liftoff_wrapper,			0x004C1620, 1);
+	//	jump_patch(btnsact_rally_point_wrapper,		0x004244A0, 2);
 	}
 }

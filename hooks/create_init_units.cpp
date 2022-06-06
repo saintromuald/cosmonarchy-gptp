@@ -320,8 +320,8 @@ namespace hooks
 				return unit;
 			} else {
 				const char* text  = "";
-				if ( *networkTable > 0x11u ) {
-					text = (char *)networkTable + networkTable[18];
+				if ( *network_table > 0x11u ) {
+					text = (char *)network_table + network_table[18];
 				}
 				const char* text2 = helper::get_unit_name_stat_string(unit->id);
 				char buffer[256] = {};

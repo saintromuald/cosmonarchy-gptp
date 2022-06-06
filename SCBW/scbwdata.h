@@ -204,9 +204,9 @@ SCBW_DATA(Ping*, ping_array, 0x0059C1B8); // 16
 
 // Added by Pr0nogo
 // For raceDropdown
-SCBW_DATA(StringMap_b*,	singleRaceSelect,	0x0051AAA0);
-SCBW_DATA(StringMap_w*,	singleTypeSelect,	0x0051AAA8);
-SCBW_DATA(const u16*,	networkTable,		0x006D1220);
+SCBW_DATA(StringMap_b*,	single_race_select,	0x0051AAA0);
+SCBW_DATA(StringMap_w*,	single_type_select,	0x0051AAA8);
+SCBW_DATA(const u16*,	network_table,		0x006D1220);
 
 // For initSingleplayerCustom
 SCBW_DATA(const u32*, selectedGameType, 0x0059BA64);
@@ -415,7 +415,7 @@ SCBW_DATA(BinDlg**,	control_under_mouse_value,	0x0068C1EC); // void* in Neiv's l
 
 // For update_units
 SCBW_DATA(s32*,		interceptorFocusedThisFrame,		0x006957D0);
-SCBW_DATA(s8*,		isTargeting,						0x00641694);
+SCBW_DATA(s8*,		is_targeting,						0x00641694);
 SCBW_DATA(s32*,		orderTimerReassignCount,			0x0059CCA4);
 SCBW_DATA(s32*,		secondaryOrderTimerReassignCount,	0x006283E8);
 SCBW_DATA(Unit**,	activeIscriptEntity,				0x006D11F4);
@@ -986,7 +986,7 @@ SCBW_DATA(u32**, current_tiles, 0x006D0E84);
 // For draw_tooltip_with_icon
 SCBW_DATA(char*,	grp_stat_res_icon_mapping,	0x00515228); // sizeof 8
 SCBW_DATA(GrpHead*,	icons_grp,					0x0068C238);
-SCBW_DATA(Box16*,	tooltip_required_area,				0x006CE0D8);
+SCBW_DATA(Box16*,	tooltip_required_area,		0x006CE0D8);
 
 // For do_attack_notify_unit
 SCBW_DATA(char*,	palette_index_reference,	0x006CEB20); // sizeof at least 20
@@ -1001,6 +1001,13 @@ SCBW_DATA(char**,	default_grp_remap,			0x0050CDC1);
 SCBW_DATA(u32*,		trig_remove_unit_active,		0x005971DC);
 SCBW_DATA(u32*,		trig_killing_additional_unit,	0x00596CD4);
 SCBW_DATA(u32*,		trig_kill_unit_count,			0x005971E0);
+
+// For btnsact_rally_point
+SCBW_DATA(char*,	order_id_ground,				0x00641691);
+SCBW_DATA(char*,	order_id_obstructed,			0x00641693);
+SCBW_DATA(char*,	order_id_unit,					0x00641692);
+SCBW_DATA(u16*,		unk_rally_related,				0x006556FC);
+SCBW_DATA(u16*,		orders_buttonset,				0x0068C1C8);
 
 //////////////////////////////////////////////////////////////// @}
 
