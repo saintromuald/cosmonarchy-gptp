@@ -12011,27 +12011,12 @@ namespace helper
 		return result;
 	}
 
-	char input_target_order_left_mouse_click(Event* event_arg) {
+	char input_target_order_left_mouse_click(Event* event_veeq) {
 		static char result;
 		const u32 func_address = 0x004BD500;
 		__asm {
 			PUSHAD
-			MOV ECX, event_arg
-			CALL func_address
-			MOV result, AL
-			POPAD
-		}
-		return result;
-	}
-
-	char input_place_building_left_mouse_click(Event* event, u32 unused, Point16 position) { // 0048E5D0
-		static char result;
-		const u32 func_address = 0x0048E5D0;
-		__asm {
-			PUSHAD
-			MOV ECX, event
-			MOV EDI, unused
-			MOV ESI, position
+			MOV ECX, event_veeq
 			CALL func_address
 			MOV result, AL
 			POPAD
