@@ -395,7 +395,7 @@ SCBW_DATA(ScenarioFormat*, stru_500574,		0x00500574);
 SCBW_DATA(ScenarioFormat*, stru_50057C,		0x0050057C);
 SCBW_DATA(s32*, scenarioCHKSize,			0x006D0F20);
 
-// For gameLoop
+// For game_loop
 SCBW_DATA(s32*, visionUpdateCount,			0x0051CE98);
 SCBW_DATA(s8*, visionUpdated,				0x0051CE9C);
 

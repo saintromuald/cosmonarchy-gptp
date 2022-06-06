@@ -829,22 +829,22 @@ namespace helper
 	//// cosmonarchy_specific
 	u8 getHangerTrainCount(Unit* unit);
 	bool unit_is_training_or_morphing(Unit* unit);
-	u8 initializeRandomizerInfo();
-	void AI_Loop();
-	s32 updateActiveTileInfo();
-	s32 removeFOWCheat();
+	u8 initialize_randomizer_info();
+	void ai_loop();
+	s32 update_active_tile_info();
+	s32 remove_fow_cheat();
 	void update_units();
-	s32 imageDrawingBulletDrawing();
-	void updateImages();
-	void updateThingys();
+	s32 image_drawing_bullet_drawing();
+	void update_images();
+	void update_thingies();
 
 	// create_unit
-	Unit* unitConstructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused);						// 004A06C0
-	Unit* CListPushBackUsedUnitEntry(Unit* unit);														// 0049DCA0
-	Unit* CListPushBackHiddenUnitEntry(Unit* unit);														// 0049DCE0
-	Sprite* unitDestructor(Unit* unit);																	// 004A0990
-	void* getImageAttackFrame(void* resultArg, Sprite* sprite, s32 index, u32 overlay_type);			// 00401DF0
-	void setSpriteMainImageOffset(Sprite* sprite, char x, char y);										// 00401E40
+	Unit* unit_constructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused);						// 004A06C0
+	Unit* list_push_back_used_unit_entry(Unit* unit);														// 0049DCA0
+	Unit* list_push_back_hidden_unit_entry(Unit* unit);														// 0049DCE0
+	Sprite* unit_destructor(Unit* unit);																	// 004A0990
+	void* get_image_attack_frame(void* resultArg, Sprite* sprite, s32 index, u32 overlay_type);			// 00401DF0
+	void set_sprite_main_image_offset(Sprite* sprite, char x, char y);										// 00401E40
 
 	//// psi_field_util
 	bool addPsiFieldSprite(Unit* unit);
@@ -1024,8 +1024,8 @@ namespace helper
 	// For ai_check_military_grouping
 	void get_region_center_from_id(u16 regionId, u32* out_x, u32* out_y);														// 0049CAA0
 
-	// For ignoreIscriptGoToIdle
-	void playIdleIscript(Sprite* sprite);																						// 00497880
+	// For ignore_iscript_and_go_to_idle
+	void play_idle_iscript(Sprite* sprite);																						// 00497880
 
 	// For issue_order_targeting_ground
 	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6);													// 00447810
