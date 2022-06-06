@@ -719,6 +719,43 @@ namespace hooks
 						}
 					}
 
+					if (current_button->icon_id == IconId::Burrow) {
+						bool has_burrowed = false;
+
+						*unit_iterator_pos = 0;
+						while (Unit* unit = helper::get_next_commanded_unit()) {
+							if (unit->status & UnitStatus::Burrowed) {
+								has_burrowed = true;
+							}
+						}
+
+						if (has_burrowed) {
+							current_button_state = BUTTON_STATE::Invisible;
+						} else {
+							current_button_state = BUTTON_STATE::Enabled;
+						}
+					}
+
+					if (current_button->icon_id == IconId::Unburrow) {
+						bool has_burrowed = false;
+						bool has_unburrowed = false;
+
+						*unit_iterator_pos = 0;
+						while (Unit* unit = helper::get_next_commanded_unit()) {
+							if (unit->status & UnitStatus::Burrowed) {
+								has_burrowed = true;
+							} else {
+								has_unburrowed = true;
+							}
+						}
+
+						if (has_burrowed || has_unburrowed) {
+							current_button_state = BUTTON_STATE::Enabled;
+						} else {
+							current_button_state = BUTTON_STATE::Invisible;
+						}
+					}
+
 					if (current_button->icon_id == IconId::Larva) {
 						if ((units_dat::GroupFlags[unit->id].is_zerg && units_dat::GroupFlags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
 							current_button_state = BUTTON_STATE::Enabled;
