@@ -744,7 +744,7 @@ namespace hooks
 								if (units_dat::ShieldsEnabled[unit->id])
 								{ 
 									// Shield Heal
-									unit->healShields(2 * 256, data.target);
+									unit->heal_shields(2 * 256, data.target);
 								}
 							});
 					} break;
@@ -843,7 +843,7 @@ namespace hooks
 				const s32 hp = data.attacker->hitpoints / 256;
 				const s32 maxHp = data.attacker->get_max_hp_ingame();
 				u32 shieldsHeal = damageDealt * MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
-				data.attacker->healShields(shieldsHeal, data.attacker);
+				data.attacker->heal_shields(shieldsHeal, data.attacker);
 			} break;
 			case WeaponId::AxitriliskSearingVenom:
 			{
@@ -856,7 +856,7 @@ namespace hooks
 				const s32 hp = data.attacker->get_current_hp_ingame();
 				const s32 maxHp = data.attacker->get_max_hp_ingame();
 				u32 shieldsHeal = damageDealt * MathUtils::map(hp, 0, maxHp, 1.0, 0.0, true);
-				data.attacker->healShields(shieldsHeal, data.attacker);
+				data.attacker->heal_shields(shieldsHeal, data.attacker);
 			} break;
 		}
 	}
@@ -1027,7 +1027,7 @@ namespace hooks
 						return;
 					}
 					u32 value = ArchonAstralAegisShieldHeal;
-					unit->healShields(value, data.target);
+					unit->heal_shields(value, data.target);
 				});
 			} break;
 			case UnitId::ProtossAurora:

@@ -751,7 +751,7 @@ namespace helper
 		return result;
 	}
 
-	s32 getUnitMaxEnergy(Unit* a1)
+	s32 get_unit_max_energy(Unit* a1)
 	{
 		const u32 Func_getUnitMaxEnergy = 0x00491870;
 		static s32 result;

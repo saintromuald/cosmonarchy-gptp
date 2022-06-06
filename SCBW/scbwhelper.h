@@ -87,7 +87,7 @@ namespace helper
 	s32 hpBarSurfaceBuffer(s32 a1, s32 a2, s32* a3, s32 a4, s32 a5);
 	s32 hpBarSurfaceBuffer2(s32 a1, s32 a2, u16 a3, s32 a4);
 	s32 renderHPBar(s32 a1, s32 a2, s32* a3, s32 a4, s32 a5);
-	s32 getUnitMaxEnergy(Unit* a1);
+	s32 get_unit_max_energy(Unit* a1);
 	s32 getHpBarDrawSizes(s32 a1, s32 a2, s32 a3, s32 a4);
 
 	// For canCastSpell
