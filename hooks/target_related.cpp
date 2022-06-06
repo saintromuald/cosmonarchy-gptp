@@ -23,7 +23,7 @@ namespace hooks
 			return 1;
 		}
 		finalUnit = _unit->subunit;
-		if (!finalUnit || !(units_dat::GroupFlags[(unsigned __int16)finalUnit->id].isBuilding))
+		if (!finalUnit || !(units_dat::GroupFlags[(unsigned __int16)finalUnit->id].is_building))
 			finalUnit = _unit;
 		if (a2->status & UnitStatus::InAir)
 		{
@@ -101,7 +101,7 @@ namespace hooks
 		if (!isTargetVisibleHook(v2, a2))
 			return 0;
 		v4 = a2->subunit;
-		if (!v4 || !(units_dat::GroupFlags[(unsigned __int16)v4->id].isBuilding))
+		if (!v4 || !(units_dat::GroupFlags[(unsigned __int16)v4->id].is_building))
 			v4 = a2;
 		if (v2->status & UnitStatus::InAir)
 		{
@@ -206,7 +206,7 @@ namespace hooks
 				goto LABEL_23;
 			}
 			v5 = v1->subunit;
-			if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].isBuilding))
+			if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].is_building))
 			{
 				v5 = v1;
 			}
@@ -289,7 +289,7 @@ LABEL_22:
 				if (!isTargetVisibleHook(v4, v1))
 					goto LABEL_63;
 				v11 = v1->subunit;
-				if (!v11 || !(units_dat::GroupFlags[(unsigned __int16)v11->id].isBuilding))
+				if (!v11 || !(units_dat::GroupFlags[(unsigned __int16)v11->id].is_building))
 					v11 = v1;
 				if (v4->status & 4)
 				{
@@ -323,7 +323,7 @@ LABEL_62:
 			if (isTargetVisibleHook(v4, v1))
 			{
 				v5 = v1->subunit;
-				if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].isBuilding))
+				if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].is_building))
 					v5 = v1;
 				if (v4->status & 4)
 				{

@@ -250,7 +250,7 @@ namespace hooks
 		char unitStatus = unit->status;
 		if (bIsNeutral)
 		{
-			scbw::print("isNeutral");
+			scbw::print("is_neutral");
 			u8 idleOrder;
 			if (unitStatus & 0x40)
 			{

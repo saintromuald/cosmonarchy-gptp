@@ -1496,7 +1496,7 @@ namespace hooks
 			unit_search_filter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
 			unit->hitpoints += akistrokors.size * 256.0 / 24.0;
 
-			if (!units_dat::GroupFlags[unit->id].isZerg && units_dat::GroupFlags[unit->id].is_factory) {
+			if (!units_dat::GroupFlags[unit->id].is_zerg && units_dat::GroupFlags[unit->id].is_factory) {
 				helper::secondary_order_spawning_larva(unit);
 			}
 
@@ -1804,7 +1804,7 @@ namespace hooks
 				Unit* target = arr.units[i];
 				UnitExt* target_ext = globals.get_unit_ext(target);
 				if (scbw::unit_id_is_tech(target->id)) {
-					if (units_dat::GroupFlags[target->id].isTerran && !target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+					if (units_dat::GroupFlags[target->id].is_terran && !target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 						continue;
 					}
 				}

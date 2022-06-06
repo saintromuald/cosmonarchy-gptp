@@ -74,6 +74,23 @@ namespace
 		}
 	}
 
+	void __declspec(naked) get_doodad_state_unit_wrapper() { // 004C6F70
+		static s32 result;
+		static Unit* unit;
+		static FindUnitLocationParam* parameter;
+		__asm {
+			MOV parameter, EDX
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::get_doodad_state_unit(unit, parameter);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	void __declspec(naked) kill_units_at_location_proc_wrapper() { // 004C7E20
 		static bool result;
 		static Unit* unit;
@@ -241,6 +258,7 @@ namespace hooks
 		jump_patch(unload_unit_proc_wrapper,			0x004E7F70, 1);
 	//	jump_patch(update_unit_transport_data_wrapper,	0x00401EA0, 1);
 	//	jump_patch(kill_all_loaded_units_wrapper,		0x0049FDD0, 1);
+	//	jump_patch(get_doodad_state_unit_wrapper,		0x004C6F70, 1);
 	//	jump_patch(kill_units_at_location_proc_wrapper, 0x004C7E20, 1);
 	//	jump_patch(get_loaded_unit_from_index_wrapper,	0x004E6C40, 3);
 		jump_patch(get_first_loaded_unit_wrapper,		0x004E6C90, 0);

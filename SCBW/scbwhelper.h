@@ -1319,4 +1319,5 @@ namespace helper
 	void send_message_something(u32 unused, const char* string);											// 004F31D0
 	u32 set_ingame_input_procs();																			// 00484CC0
 	void update_current_buttonset();																		// 004599A0
+	bool is_unit_owned_by_player_ex(u32 player, Unit* unit);												// 0045FEF0
 }

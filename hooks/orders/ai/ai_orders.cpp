@@ -1124,7 +1124,7 @@ LABEL_37:
 			AiTown* town = worker_ai->town;
 			worker_ai->last_update_second = *elapsedTimeSeconds;
 			GroupFlag group_flags = units_dat::GroupFlags[worker->id];
-			if ((group_flags.isZerg || group_flags.isProtoss || !group_flags.isTerran || !helper::ai_scv_repair_controller(worker, town))
+			if ((group_flags.is_zerg || group_flags.is_protoss || !group_flags.is_terran || !helper::ai_scv_repair_controller(worker, town))
 				&& !helper::ai_try_progress_spending_queue_worker(town, worker))
 			{
 				Unit* main_building = town->main_building;

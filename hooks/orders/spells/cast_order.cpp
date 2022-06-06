@@ -40,15 +40,15 @@ namespace hooks
 			GroupFlag casterGroupFlags = units_dat::GroupFlags[caster->id];
 			char casterPlayer = caster->player;
 			u8 casterRace;
-			if (casterGroupFlags.isZerg)
+			if (casterGroupFlags.is_zerg)
 			{
 				casterRace = 0;
 			}
-			else if (casterGroupFlags.isTerran)
+			else if (casterGroupFlags.is_terran)
 			{
 				casterRace = 1;
 			} else {
-			casterRace = (casterGroupFlags.isProtoss) != 0 ? 2 : 4;
+			casterRace = (casterGroupFlags.is_protoss) != 0 ? 2 : 4;
 			}
 
 			char* string = helper::getStatTxtString(casterRace + 864);

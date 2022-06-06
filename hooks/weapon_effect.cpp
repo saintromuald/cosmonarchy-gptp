@@ -628,7 +628,7 @@ namespace hooks
 		{
 			Unit* target = unitsInSplash.get_unit(i);
 			if (!target->is_dead()
-				&& !units_dat::GroupFlags[target->id].isBuilding
+				&& !units_dat::GroupFlags[target->id].is_building
 				&& !(units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
 				&& target->id != UnitId::TerranSpiderMine
 				&& target->id != UnitId::TerranLobotomyMine)

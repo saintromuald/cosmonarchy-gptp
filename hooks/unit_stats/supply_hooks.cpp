@@ -188,7 +188,7 @@ namespace hooks
             if (unit->status & UnitStatus::Completed) {
                 if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
                     workers += 2;
-                } else if (units_dat::GroupFlags[unit->id].isMen) {
+                } else if (units_dat::GroupFlags[unit->id].is_men) {
                     men += 2;
                 }
             }
@@ -399,11 +399,11 @@ namespace hooks
         {
             factoriesProducedOwnedTotal[unit->player] += count;
         }
-        if (groupFlag.isMen)
+        if (groupFlag.is_men)
         {
             unitsProducedOwnedTotal[unit->player] += count;
         }
-        if (groupFlag.isBuilding)
+        if (groupFlag.is_building)
         {
             structuresProducedOwnedTotal[unit->player] += count;
         }
@@ -444,17 +444,17 @@ namespace hooks
         {
             factoriesOwned[unit->player] += count;
         }
-        if (units_dat::GroupFlags[unit_id].isBuilding)
+        if (units_dat::GroupFlags[unit_id].is_building)
         {
             buildingsOwned[unit->player] += count;
         }
-        if (units_dat::GroupFlags[unit_id].isMen)
+        if (units_dat::GroupFlags[unit_id].is_men)
         {
             unitsProduced[unit->player] += count;
         }
         if (increment_scores != 0)
         {
-            if (units_dat::GroupFlags[unit_id].isMen)
+            if (units_dat::GroupFlags[unit_id].is_men)
             {
                 if (!scbw::is_any_morph_result(unit_id))
                 {
@@ -462,7 +462,7 @@ namespace hooks
                 }
                 unitScore[unit->player] += count;
             }
-            else if (units_dat::GroupFlags[unit_id].isBuilding)
+            else if (units_dat::GroupFlags[unit_id].is_building)
             {
                 if (!scbw::is_zerg_building_morph_result(unit_id))
                 {

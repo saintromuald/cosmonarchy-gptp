@@ -1167,7 +1167,7 @@ namespace scbw
 
 	bool can_spawn_broodling(Unit* target)
 	{
-		if (units_dat::GroupFlags[target->id].isBuilding) return false;
+		if (units_dat::GroupFlags[target->id].is_building) return false;
 		return true;
 	}
 
