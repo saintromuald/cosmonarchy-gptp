@@ -26,21 +26,17 @@ namespace hooks
 
 		bool has_units = false;
 		bool has_buildings = false;
-		*unit_iterator_pos = 0;
-		for (Unit* current_unit = get_active_player_next_selection(); current_unit; current_unit = get_active_player_next_selection()) {
-			if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
-				has_buildings = true;
-			} else {
-				has_units = true;
-			}
-		}
 		for (Unit** it = units_in_bounds; *it; ++it) {
 			Unit* current_unit = *it;
-			if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Subunit) {
-				current_unit = current_unit->subunit;
-			}
-			if (!(units_dat::BaseProperty[current_unit->id] & UnitProperty::Building)) {
-				has_units = true;
+			if (current_unit != unit && (!unit || current_unit->id == unit->id)) {
+				if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Subunit) {
+					current_unit = current_unit->subunit;
+				}
+				if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
+					has_buildings = true;
+				} else {
+					has_units = true;
+				}
 			}
 		}
 
@@ -54,13 +50,12 @@ namespace hooks
 		{
 			if (current_unit != unit)
 			{
-				// This `if` fixes a bug where selecting both building and units using Shift and control groups disallows from selecting units
-				// TODO: find control group add functionality and make it protect from that edge case
-				if (!has_units || !has_buildings) {
-					if (has_units && units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
+				if (has_units) {
+					if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
 						dontAddToList = true;
 					}
-					if (has_buildings && !(units_dat::BaseProperty[current_unit->id] & UnitProperty::Building)) {
+				} else if (has_buildings) {
+					if (!(units_dat::BaseProperty[current_unit->id] & UnitProperty::Building)) {
 						dontAddToList = true;
 					}
 				}
@@ -169,8 +164,15 @@ namespace hooks
 										dontAddToList = true;
 									}
 
-									u32 mixed_params = units_dat::BaseProperty[unit->id] ^ units_dat::BaseProperty[current_unit->id];
-									if (mixed_flags & UnitProperty::Building) {
+									// Same thing for completed
+									if (mixed_flags & UnitStatus::Completed)
+									{
+										dontAddToList = true;
+									}
+
+									// Same thing for lifted
+									if (mixed_flags & UnitStatus::InAir)
+									{
 										dontAddToList = true;
 									}
 								}
@@ -254,7 +256,8 @@ namespace hooks
 					current_index_in_unit_list = 1; // return 1 (an unit preserved by bKeepForEmptyListCase)
 				}
 			}
-		}
+		}	
+
 		return current_index_in_unit_list;
 	}
 

@@ -36,8 +36,14 @@ namespace hooks
 		u32 count = 0;
 		Unit* selection[SELECTION_ARRAY_LENGTH] = {};
 
+		u32 prev = 0;
 		*unit_iterator_pos = 0;
-		for (Unit* unit = helper::get_active_player_next_selection(); unit; unit = helper::get_active_player_next_selection()) {
+		while (Unit* unit = helper::get_active_player_next_selection()) {
+			if (prev == *unit_iterator_pos) {
+				break; // Fixes a weird freeze
+			}
+			prev = *unit_iterator_pos;
+
 			Box16 coords = {};
 			coords.right = unit->sprite->position.x + 128;
 			coords.bottom = unit->sprite->position.y + 128;
