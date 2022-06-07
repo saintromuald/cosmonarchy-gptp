@@ -600,6 +600,9 @@ void handle_music() {
 }
 
 void handle_recolor() {
+	if (*elapsed_time_frames == 0) {
+		set_color_palette(trigger_system.current_recolor.r, trigger_system.current_recolor.g, trigger_system.current_recolor.b, trigger_system.current_recolor.gamma);
+	}
 	if (trigger_system.recolor_time < trigger_system.target_recolor.time) {
 		trigger_system.recolor_time += 1.0 / 24; // Tick Time for Brood War
 
@@ -609,13 +612,14 @@ void handle_recolor() {
 		}
 		f32 source_percentage = 1 - target_percentage;
 
-		f32 r     = trigger_system.source_recolor.r     * source_percentage + trigger_system.target_recolor.r     * target_percentage;
-		f32 g     = trigger_system.source_recolor.g     * source_percentage + trigger_system.target_recolor.g     * target_percentage;
-		f32 b     = trigger_system.source_recolor.b     * source_percentage + trigger_system.target_recolor.b     * target_percentage;
-		f32 gamma = trigger_system.source_recolor.gamma * source_percentage + trigger_system.target_recolor.gamma * target_percentage;
+		Recolor current = {};
+		current.r     = trigger_system.source_recolor.r     * source_percentage + trigger_system.target_recolor.r     * target_percentage;
+		current.g     = trigger_system.source_recolor.g     * source_percentage + trigger_system.target_recolor.g     * target_percentage;
+		current.b     = trigger_system.source_recolor.b     * source_percentage + trigger_system.target_recolor.b     * target_percentage;
+		current.gamma = trigger_system.source_recolor.gamma * source_percentage + trigger_system.target_recolor.gamma * target_percentage;
 
-		trigger_system.current_recolor = trigger_system.target_recolor;
-		set_color_palette(r, g, b, gamma);
+		trigger_system.current_recolor = current;
+		set_color_palette(current.r, current.g, current.b, current.gamma);
 	} else if (trigger_system.recolor_list.count) {
 		trigger_system.recolor_list.index %= trigger_system.recolor_list.count; // In case the list got smaller
 
@@ -639,6 +643,7 @@ void tick_trigger_system(bool in_game) {
 		// Leaving the game should reset music
 		trigger_system_in_game = false;
 		init_trigger_system();
+		set_color_palette(1, 1, 1, 1);
 	}
 	
 	handle_music();

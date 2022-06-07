@@ -201,8 +201,7 @@ namespace hooks
 	}
 
 	/// This hook is called every frame
-	bool next_frame()
-	{
+	bool next_frame() {
 		tick_trigger_system(true);
 		tick_base_layouts();
 		// This block is executed once every game
@@ -2015,15 +2014,16 @@ namespace hooks
 		}
 	}
 
-	bool game_on()
-	{
+	bool game_on() {
+		set_max_sight_range<20>();
+
 		chk_cache_size = 0;
 		memset(chk_cache, 0, sizeof(chk_cache));
 
 		quickcasting_signal = false;
 		quickcasting_command_card = 0;
 
-		set_max_sight_range<20>();
+		set_color_palette(0, 0, 0, 0);
 		return true;
 	}
 
