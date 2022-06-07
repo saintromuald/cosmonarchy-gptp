@@ -293,7 +293,7 @@ namespace hooks
 					return;
 				}
 			}
-			if (!canEnterTransport(order_target, unitVar))
+			if (!can_enter_transport(order_target, unitVar))
 			{
 			LABEL_16:
 				scbw::print("can't enter transport");
@@ -606,7 +606,7 @@ namespace hooks
 		}
 	}
 
-	bool canEnterTransport(Unit* transport, Unit* unit)
+	bool can_enter_transport(Unit* transport, Unit* unit)
 	{ // 004E6E00
 		if (!(transport->status & UnitStatus::Completed))
 		{

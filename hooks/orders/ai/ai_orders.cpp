@@ -319,7 +319,7 @@ LABEL_37:
 			{
 				techId = TechId::CloakingField;
 			}
-			if (helper::techUseAllowed(unit, techId, unit->player) == 1)
+			if (helper::tech_use_allowed(unit, techId, unit->player) == 1)
 			{
 				helper::applyCloakingOrder(unit);
 			}
@@ -1667,7 +1667,7 @@ LABEL_37:
 			if (!worker->has_path_to_unit(to_repair) ||
 				to_repair->order_target.unit == worker ||
 				scbw::is_allied_to(worker->player, to_repair->player) ||
-				!helper::isOrderValid(OrderId::Repair1, worker, 0, to_repair, 0)) {
+				!helper::is_order_valid(OrderId::Repair1, worker, 0, to_repair, 0)) {
 				return ScoreInvalidUnit;
 			}
 			s32 score = 0;

@@ -416,9 +416,9 @@ LABEL_42:
 				return OrderId::Rightclickaction;
 			return OrderId::Move;
 		}
-		if (helper::unit_is_active_transport(unit) && helper::isOrderValid(OrderId::Pickup2, unit, 0, targetVar, 0))
+		if (helper::unit_is_active_transport(unit) && helper::is_order_valid(OrderId::Pickup2, unit, 0, targetVar, 0))
 			return OrderId::Pickup2;
-		if (helper::unit_is_active_transport(targetVar) && helper::canEnterTransport(targetVar, unit))
+		if (helper::unit_is_active_transport(targetVar) && helper::can_enter_transport(targetVar, unit))
 			return OrderId::EnterTransport;
 		if (targetVar->status & UnitStatus::Burrowed)
 			return OrderId::Move;
@@ -476,7 +476,7 @@ LABEL_42:
 			{
 				orderId = OrderId::HoldPosition1;
 			}
-			if (helper::orderAllowed(i, orderId, *ACTIVE_NATION_ID) == 1)
+			if (helper::order_allowed(i, orderId, *ACTIVE_NATION_ID) == 1)
 			{
 				helper::targetedOrder(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
 			}
@@ -972,7 +972,7 @@ LABEL_65:
 							unitTarget = unit->order_target.unit;
 							if (!unitTarget)
 							{
-								if (helper::techUseAllowed(unit, 0, unit->player) == 1
+								if (helper::tech_use_allowed(unit, 0, unit->player) == 1
 								  && helper::get_current_hp_plus_shields(unitTarget) >= 100)
 								{
 									helper::stimpackProc(unit);
@@ -1012,7 +1012,7 @@ LABEL_65:
 										s32 airWeaponMaxRange = weapons_dat::MaxRange[airWeapon];
 										if (helper::is_target_within_min_movement_range(unitTarget, subunit, airWeaponMaxRange))
 										{
-											if (helper::techUseAllowed(unit, 0, unit->player) == 1
+											if (helper::tech_use_allowed(unit, 0, unit->player) == 1
 											  && helper::get_current_hp_plus_shields(unitTarget) >= 100)
 											{
 												helper::stimpackProc(unit);

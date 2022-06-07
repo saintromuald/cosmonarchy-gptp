@@ -911,7 +911,7 @@ namespace helper
 		}
 	}
 
-	bool canEnterTransport(Unit* a1, Unit* a2)
+	bool can_enter_transport(Unit* a1, Unit* a2)
 	{
 		const u32 Func_canEnterTransport = 0x004E6E00;
 		static s32 result;
@@ -2610,7 +2610,7 @@ namespace helper
 
 	// For orders_PlaceMine
 
-	s32 techUseAllowed(Unit* a1, __int16 a2, s32 a3)
+	s32 tech_use_allowed(Unit* a1, __int16 a2, s32 a3)
 	{
 		const u32 Func_techUseAllowed = 0x0046DD80;
 		static s32 result;
@@ -4612,7 +4612,7 @@ namespace helper
 
 	// for genericRightClickUnitProc2
 
-	s32 isOrderValid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5)
+	s32 is_order_valid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5)
 	{
 		const u32 Func_isOrderValid = 0x00474D90;
 		static s32 result;
@@ -4661,7 +4661,7 @@ namespace helper
 		return result;
 	}
 
-	s32 orderAllowed(Unit* a1, u16 a2, s32 a3)
+	s32 order_allowed(Unit* a1, u16 a2, s32 a3)
 	{
 		const u32 Func_orderAllowed = 0x0046DC20;
 		static s32 result;
@@ -7632,7 +7632,7 @@ namespace helper
 		}
 	}
 
-	// For isOrderValid
+	// For is_order_valid
 	bool unit_is_resource(Unit* unit)
 	{
 		const u32 Func_unitIsResource = 0x004688E0;

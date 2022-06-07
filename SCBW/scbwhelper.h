@@ -104,7 +104,7 @@ namespace helper
 	void playImageIscript(Image* img, u8 iscriptAnim);
 
 	// For AI_FindTransport
-	bool canEnterTransport(Unit* a1, Unit* a2);
+	bool can_enter_transport(Unit* a1, Unit* a2);
 	s32 getUnitDistanceToHalt(s32 a1, Unit* a2, s32 a3);
 
 	// For mapDataTransfer
@@ -270,7 +270,7 @@ namespace helper
 	void burrowGeneric(Unit* unit);																			// 004E9A30
 
 	// For orders_PlaceMine
-	s32 techUseAllowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
+	s32 tech_use_allowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
 	u32 get_distance_fast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
 	s32 orders_HoldPosSuicidal(Unit* a1);												                    // 004EB5B0
 	void turnUnit(Unit* a1, char a2);													                    // 00495F20
@@ -519,12 +519,12 @@ namespace helper
 	void stimpackProc(Unit* unit);																									// 004554A0
 
 	// for genericRightClickUnitProc2
-	s32 isOrderValid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																	// 00474D90
+	s32 is_order_valid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																	// 00474D90
 	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80
 
 	// for CMDRECV_HoldPosition
 	Unit* get_active_player_next_selection();																							// 0049A850
-	s32 orderAllowed(Unit* a1, u16 a2, s32 a3);																						// 0046DC20
+	s32 order_allowed(Unit* a1, u16 a2, s32 a3);																						// 0046DC20
 	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
 
 	// for check_unit_visibility
@@ -823,7 +823,7 @@ namespace helper
 	bool verifyResources(u32 mineralCost, u32 gasCost, u32 playerId);												// 00466EE0
 	bool subtract_repair_resources(Unit* worker, Unit* target);															// 00466FB0
 
-	// For isOrderValid
+	// For is_order_valid
 	bool unit_is_resource(Unit* unit);																				// 004688E0
 
 	//// cosmonarchy_specific

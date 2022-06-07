@@ -426,7 +426,7 @@ SCBW_DATA(Unit**,	lurkerSplashList,					0x0064DEC8); // sizeof 400
 SCBW_DATA(s32*,		lurkerSplashListIndex,				0x0064EEC8);
 SCBW_DATA(s32*,		lastBulletIndex,					0x0064DEA8);
 
-// For orderAllowed
+// For order_allowed
 SCBW_DATA(s32*,	last_internal_error,					0x0066FF60);
 SCBW_DATA(s16*, orders_requirement_tree,				0x00514CF8);
 

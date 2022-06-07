@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_Repair1Wrapper() // 004673D0
+	void __declspec(naked) orders_repair_1_wrapper() // 004673D0
 	{
 		static Unit* unit;
 		__asm {
@@ -12,7 +12,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_Repair1(unit);
+		hooks::orders_repair_1(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -21,7 +21,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) isOrderValid_Wrapper() // 00474D90
+	void __declspec(naked) is_order_valid_wrapper() // 00474D90
 	{
 		static s32 result;
 		static char orderId;
@@ -42,7 +42,7 @@ namespace
 			MOV orderId, AL
 			PUSHAD
 		}
-		result = hooks::isOrderValid(orderId, unit, unused, target, bErrorFlag);
+		result = hooks::is_order_valid(orderId, unit, unused, target, bErrorFlag);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -52,7 +52,7 @@ namespace
 		}
 	}
 
-	void __declspec() orderAllowed_Wrapper() // 0046DC20
+	void __declspec() order_allowed_wrapper() // 0046DC20
 	{
 		static s32 result;
 		static Unit* unit;
@@ -69,7 +69,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::orderAllowed(unit, orderId, player);
+		result = hooks::order_allowed(unit, orderId, player);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -104,11 +104,11 @@ namespace
 
 namespace hooks
 {
-	void injectRepairOrderHook()
+	void inject_repair_order_hooks()
 	{
-		jump_patch(orders_Repair1Wrapper,						0x004673D0, 1);
-		jump_patch(isOrderValid_Wrapper,						0x00474D90, 1);
-//		jump_patch(orderAllowed_Wrapper,						0x0046DC20, 3); // crashes
+		jump_patch(orders_repair_1_wrapper,						0x004673D0, 1);
+		jump_patch(is_order_valid_wrapper,						0x00474D90, 1);
+//		jump_patch(order_allowed_wrapper,						0x0046DC20, 3); // crashes
 		jump_patch(show_right_click_error_if_needed_Wrapper,	0x00455A00, 0);
 	}
 }

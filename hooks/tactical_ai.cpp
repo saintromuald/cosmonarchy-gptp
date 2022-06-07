@@ -927,7 +927,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 			for (u32 i = 0; i < allies.size && counter <= bunker_capacity; ++i) {
 				Unit* target = allies.units[i];
 
-				if (target->unit_ai && helper::canEnterTransport(unit, target)
+				if (target->unit_ai && helper::can_enter_transport(unit, target)
 					&& !is_melee_attacker(target->id) && !(units_dat::BaseProperty[unit->id] & UnitProperty::Worker)) {
 					target->order_to(OrderId::EnterTransport, unit);
 					counter += units_dat::SpaceRequired[target->id];
