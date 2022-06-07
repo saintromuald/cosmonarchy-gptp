@@ -4,7 +4,7 @@
 
 namespace hooks
 {
-	void CMDRECV_BuildingMorph(u16 unit_id)
+	void cmdrecv_building_morph(u16 unit_id)
 	{
 		*unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
@@ -19,7 +19,7 @@ namespace hooks
 		};
 	}
 
-	void CMDRECV_UnitMorph(u16 wUnitType)
+	void cmdrecv_unit_morph(u16 wUnitType)
 	{
 		Unit* current_unit;
 		*unit_iterator_pos = 0;
@@ -184,7 +184,7 @@ namespace hooks
 					{
 						return OrderId::EnterTransport;
 					}
-					if (helper::is_order_valid(OrderId::Repair1, unit, target_prev, target_prev, 0))
+					if (helper::is_order_valid(OrderId::Repair1, unit, (s32)target_prev, target_prev, 0)) // this helper is hilarious
 					{
 						return OrderId::Repair1;
 					}
