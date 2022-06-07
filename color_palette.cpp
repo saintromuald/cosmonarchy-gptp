@@ -19,25 +19,14 @@ struct Palette {
 static Palette* const init_palette = (Palette*)0x005994E0;
 static Palette* const game_palette = (Palette*)0x006CEB40;
 
-static void set_color(u8* color, f32 value) {
-	if (value < 0) {
-		value = 0;
-	}
-	if (value > 255) {
-		value = 255;
-	}
-	*color = value;
+static f32 clamp(f32 value, f32 min, f32 max) {
+	if (value < min) return min;
+	if (value > max) return max;
+	return value;
 }
 
-static void update_palette() {
-	const u32 func_address = 0x0041E5C0;
-	__asm {
-		PUSHAD
-		MOV EDI, 1
-		MOV ESI, 1
-		CALL func_address
-		POPAD
-	}
+static void set_color(u8* color, f32 value) {
+	*color = clamp(value, 0, 255);
 }
 
 void set_color_palette(f32 r, f32 g, f32 b, f32 gamma) {
