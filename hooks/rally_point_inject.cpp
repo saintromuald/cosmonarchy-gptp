@@ -59,7 +59,7 @@ namespace
 	}
 
 	// Additional wrappers for uses of the logic that would be hardcoded instead of using the functions
-	void __declspec(naked) setRallyPositionWrapper_Jmp1()
+	void __declspec(naked) set_rally_position_wrapper_jump1()
 	{
 		static const u32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
 		static Unit* unit;
@@ -78,7 +78,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) setRallyPositionWrapper_Jmp2()
+	void __declspec(naked) set_rally_position_wrapper_jump2()
 	{
 		static const u32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
 		static Unit* unit;
@@ -97,7 +97,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) setRallyUnitWrapper_Jmp1()
+	void __declspec(naked) set_rally_unit_wrapper_jump1()
 	{
 		static const u32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
 		static Unit* unit;
@@ -114,7 +114,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) setRallyUnitWrapper_Jmp2()
+	void __declspec(naked) set_rally_unit_wrapper_jump2()
 	{
 		static const u32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
 		static Unit* unit;
@@ -227,19 +227,19 @@ namespace hooks
 {
 	void inject_rally_hooks()
 	{
-		jump_patch(setRallyPositionWrapper,			0x00466910, 2);
-		jump_patch(setRallyUnitWrapper,				0x00466B40, 1);
-		jump_patch(orderNewUnitToRallyWrapper,		0x00466F50, 0);
+		jump_patch(setRallyPositionWrapper,				0x00466910, 2);
+		jump_patch(setRallyUnitWrapper,					0x00466B40, 1);
+		jump_patch(orderNewUnitToRallyWrapper,			0x00466F50, 0);
 
-		jump_patch(setRallyPositionWrapper_Jmp1,	0x00456256, 19);	// 24 - 5 of jump
-		jump_patch(setRallyPositionWrapper_Jmp2,	0x0049ACEF, 19);	// 24 - 5 of jump
+		jump_patch(set_rally_position_wrapper_jump1,	0x00456256, 19);	// 24 - 5 of jump
+		jump_patch(set_rally_position_wrapper_jump2,	0x0049ACEF, 19);	// 24 - 5 of jump
 
-		jump_patch(setRallyUnitWrapper_Jmp1,		0x0045620D, 35);	// 40 - 5 of jump
-		jump_patch(setRallyUnitWrapper_Jmp2,		0x0049ACB0, 37);	// 42 - 5 of jump
+		jump_patch(set_rally_unit_wrapper_jump1,		0x0045620D, 35);	// 40 - 5 of jump
+		jump_patch(set_rally_unit_wrapper_jump2,		0x0049ACB0, 37);	// 42 - 5 of jump
 
-		jump_patch(remove_references_wrapper,		0x0049E590, 1);
-		jump_patch(right_click_command_wrapper,		0x004560D0, 1);
+		jump_patch(remove_references_wrapper,			0x0049E590, 1);
+		jump_patch(right_click_command_wrapper,			0x004560D0, 1);
 
-	//	jump_patch(btnscond_rally_wrapper,			0x00429520, 7);
+	//	jump_patch(btnscond_rally_wrapper,				0x00429520, 7);
 	}
 }

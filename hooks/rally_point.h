@@ -9,7 +9,7 @@ namespace hooks
 	u32 btnscond_rally(u32 unused, u32 player, Unit* unit);		// 00429520
 
 	Order* remove_references(Unit* unit, Unit* dying);			// 0049E590
-	Unit* right_click_command(signed int x, signed int y, Unit *unit, signed int fow_unit_id, char queued); // 004560D0
+	Unit* right_click_command(u32 x, u32 y, Unit *unit, u32 fow_unit_id, char queued); // 004560D0
 
 	void inject_rally_hooks();
 }
