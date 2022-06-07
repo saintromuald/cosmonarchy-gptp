@@ -21,7 +21,7 @@ namespace ButtonRequirements
 		Cancel_Last = 0x00428530,																		// BTNSCOND_IsTraining
 		Cancel_AddOn = 0x00428920,																		// BTNSCOND_IsBuildingAddon
 		Larva_Exists_Upgrading_Only = 0x00428500,														// BTNSCOND_HatcheryLairHive
-		Rally_Point = 0x00429520,																		// BTNSCOND_Rally
+		Rally_Point = 0x00429520,																		// btnscond_rally
 		Rally_Point_While_Upgrading_Only = 0x00429740,													// BTNSCOND_HatcheryLairHiveRally
 		ConstructionorMutation_Underway = 0x004284E0,													// BTNSCOND_IsConstructing
 		Upgrade_Underway = 0x00428900,																	// BTNSCOND_isUpgrading

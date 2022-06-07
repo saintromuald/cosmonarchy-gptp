@@ -55,7 +55,7 @@ namespace hooks
 
 					if (current_unit == unitParam)
 					{ //target is the caster/ordered unit
-						if (!helper::CanTargetSelf(current_unit, bActionOrder))
+						if (!helper::can_target_self(current_unit, bActionOrder))
 							jump_to_9AD7E = true;
 					}
 

@@ -104,7 +104,7 @@ namespace helper
 	void playImageIscript(Image* img, u8 iscriptAnim);
 
 	// For AI_FindTransport
-	bool canEnterTransport(Unit* a1, Unit* a2);
+	bool can_enter_transport(Unit* a1, Unit* a2);
 	s32 getUnitDistanceToHalt(s32 a1, Unit* a2, s32 a3);
 
 	// For mapDataTransfer
@@ -270,7 +270,7 @@ namespace helper
 	void burrowGeneric(Unit* unit);																			// 004E9A30
 
 	// For orders_PlaceMine
-	s32 techUseAllowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
+	s32 tech_use_allowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
 	u32 get_distance_fast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
 	s32 orders_HoldPosSuicidal(Unit* a1);												                    // 004EB5B0
 	void turnUnit(Unit* a1, char a2);													                    // 00495F20
@@ -519,12 +519,12 @@ namespace helper
 	void stimpackProc(Unit* unit);																									// 004554A0
 
 	// for genericRightClickUnitProc2
-	s32 isOrderValid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																	// 00474D90
+	s32 is_order_valid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																	// 00474D90
 	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80
 
 	// for CMDRECV_HoldPosition
 	Unit* get_active_player_next_selection();																							// 0049A850
-	s32 orderAllowed(Unit* a1, u16 a2, s32 a3);																						// 0046DC20
+	s32 order_allowed(Unit* a1, u16 a2, s32 a3);																						// 0046DC20
 	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
 
 	// for check_unit_visibility
@@ -539,7 +539,7 @@ namespace helper
 	void function_004756B0(Unit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommandType);											// 004756B0
 	void function_004756E0(Unit* unit, Unit* target, u32 orderId, u32 bCommandType);												// 004756E0
 	u32 function_0049A410(Unit* unit, u8 orderId);																					// 0049A410
-	bool CanTargetSelf(Unit* unit, u8 orderId);																						// 0049A480
+	bool can_target_self(Unit* unit, u8 orderId);																						// 0049A480
 	void function_0049A500(Unit* unit, u8* array_of_data);																			// 0049A500
 	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																// 0049A8C0
 
@@ -823,7 +823,7 @@ namespace helper
 	bool verifyResources(u32 mineralCost, u32 gasCost, u32 playerId);												// 00466EE0
 	bool subtract_repair_resources(Unit* worker, Unit* target);															// 00466FB0
 
-	// For isOrderValid
+	// For is_order_valid
 	bool unit_is_resource(Unit* unit);																				// 004688E0
 
 	//// cosmonarchy_specific
@@ -1006,7 +1006,7 @@ namespace helper
 	bool ai_regions_are_connected(u32 playerId, u32 region1, u32 region2);									// 00437E70
 
 	// For BTNSCOND_ZergBuildingRally
-	u32 BTNSCOND_Rally(u32 unused, u32 player, Unit* unit);													// 00429520
+	u32 btnscond_rally(u32 unused, u32 player, Unit* unit);													// 00429520
 
 	// For ai_get_build_location
 	u32 ai_get_building_placement_data(u32 maxRange, u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos);		// 00445D60

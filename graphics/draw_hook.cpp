@@ -22,8 +22,8 @@ namespace
 			u16 x = deathTable[6].player[11];
 			u16 y = deathTable[7].player[11];
 			u16 unit= deathTable[5].player[11];
-			//graphics::drawBox(l, t, r, b, graphics::YELLOW, graphics::ON_MAP);
-		  //  graphics::drawDot(x, y, graphics::GREEN, graphics::ON_MAP);
+			//graphics::draw_box(l, t, r, b, graphics::YELLOW, graphics::ON_MAP);
+		  //  graphics::draw_dot(x, y, graphics::GREEN, graphics::ON_MAP);
 		}*/
 		oldDrawGameProc(surface, bounds);
 
@@ -34,7 +34,7 @@ namespace
 		//  if ( numShapes )
 		//    wantRefresh = true;
 		//}
-		if (graphics::drawAllShapes() > 0)
+		if (graphics::draw_all_shapes() > 0)
 		{
 			wantRefresh = true;
 		}

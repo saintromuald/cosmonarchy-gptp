@@ -151,8 +151,8 @@ namespace graphics
 			{
 				if (bitmapBuffer[xOff + KOR_CHAR_MAX_WIDTH * yOff])
 				{
-					this->drawDot(x + xOff + 1, y + yOff + 3, gbFontColors[color][0]); //Shadow
-					this->drawDot(x + xOff, y + yOff + 2, gbFontColors[color][1]);
+					this->draw_dot(x + xOff + 1, y + yOff + 3, gbFontColors[color][0]); //Shadow
+					this->draw_dot(x + xOff, y + yOff + 2, gbFontColors[color][1]);
 				}
 			}
 		}
@@ -281,7 +281,7 @@ namespace graphics
 
 	//-------- Dot and line drawing --------//
 
-	void Bitmap::drawDot(s32 x, s32 y, ColorId color)
+	void Bitmap::draw_dot(s32 x, s32 y, ColorId color)
 	{
 		if (x < 0 || x >= this->getWidth()) return;
 		if (y < 0 || y >= this->getHeight()) return;
@@ -311,7 +311,7 @@ namespace graphics
 			s32 err = dx + dy;
 
 			s32 x = x1, y = y1;
-			this->drawDot(x, y, color);
+			this->draw_dot(x, y, color);
 			while (x != x2 || y != y2)
 			{
 				const s32 e2 = err * 2;
@@ -323,7 +323,7 @@ namespace graphics
 				{
 					err += dx; y += sy;
 				}
-				this->drawDot(x, y, color);
+				this->draw_dot(x, y, color);
 			}
 		}
 	}
@@ -353,7 +353,7 @@ namespace graphics
 
 	//-------- Box drawing --------//
 
-	void Bitmap::drawBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color)
+	void Bitmap::draw_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color)
 	{
 		if (left > right) std::swap(left, right);
 		if (right < 0 || left >= this->getWidth()) return;
@@ -378,7 +378,7 @@ namespace graphics
 			this->drawVerticalLineUnsafe(right, yMin, yMax, color);
 	}
 
-	void Bitmap::drawFilledBox(s32 left, s32 top, s32 right, s32 bottom,
+	void Bitmap::draw_filled_box(s32 left, s32 top, s32 right, s32 bottom,
 		ColorId color)
 	{
 		if (left > right) std::swap(left, right);
@@ -399,7 +399,7 @@ namespace graphics
 
 	//-------- Circle drawing --------//
 
-	void Bitmap::drawCircle(s32 x, s32 y, s32 radius, ColorId color)
+	void Bitmap::draw_circle(s32 x, s32 y, s32 radius, ColorId color)
 	{
 		if (radius <= 0) return;
 
@@ -408,10 +408,10 @@ namespace graphics
 		s32 px = -radius, py = 0, err = 2 - 2 * radius; /* II. Quadrant */
 		do
 		{
-			this->drawDot(x - px, y + py, color); /*   I. Quadrant */
-			this->drawDot(x - py, y - px, color); /*  II. Quadrant */
-			this->drawDot(x + px, y - py, color); /* III. Quadrant */
-			this->drawDot(x + py, y + px, color); /*  IV. Quadrant */
+			this->draw_dot(x - px, y + py, color); /*   I. Quadrant */
+			this->draw_dot(x - py, y - px, color); /*  II. Quadrant */
+			this->draw_dot(x + px, y - py, color); /* III. Quadrant */
+			this->draw_dot(x + py, y + px, color); /*  IV. Quadrant */
 			const s32 r = err;
 			if (r <= py) err += ++py * 2 + 1;            /* e_xy+e_y < 0 */
 			if (r > px || err > py) err += ++px * 2 + 1; /* e_xy+e_x > 0 or no 2nd y-step */
@@ -419,7 +419,7 @@ namespace graphics
 		while (px < 0);
 	}
 
-	void Bitmap::drawFilledCircle(s32 x, s32 y, s32 radius, ColorId color)
+	void Bitmap::draw_filled_circle(s32 x, s32 y, s32 radius, ColorId color)
 	{
 		if (radius <= 0) return;
 
@@ -439,7 +439,7 @@ namespace graphics
 
 	//-------- Ellipse drawing --------//
 
-	void Bitmap::drawEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color)
+	void Bitmap::draw_ellipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color)
 	{
 
 		if (left > right) std::swap(left, right);
@@ -470,10 +470,10 @@ namespace graphics
 
 		do
 		{
-			this->drawDot(x1, y0, color); /*   I. Quadrant */
-			this->drawDot(x0, y0, color); /*  II. Quadrant */
-			this->drawDot(x0, y1, color); /* III. Quadrant */
-			this->drawDot(x1, y1, color); /*  IV. Quadrant */
+			this->draw_dot(x1, y0, color); /*   I. Quadrant */
+			this->draw_dot(x0, y0, color); /*  II. Quadrant */
+			this->draw_dot(x0, y1, color); /* III. Quadrant */
+			this->draw_dot(x1, y1, color); /*  IV. Quadrant */
 			e2 = 2 * err;
 			if (e2 <= dy)
 			{
@@ -488,17 +488,17 @@ namespace graphics
 
 		while (y0 - y1 < b)
 		{  /* too early stop of flat ellipses a=1 */
-			this->drawDot(x0 - 1, y0, color); /* -> finish tip of ellipse */
-			this->drawDot(x1 + 1, y0++, color);
-			this->drawDot(x0 - 1, y1, color);
-			this->drawDot(x1 + 1, y1--, color);
+			this->draw_dot(x0 - 1, y0, color); /* -> finish tip of ellipse */
+			this->draw_dot(x1 + 1, y0++, color);
+			this->draw_dot(x0 - 1, y1, color);
+			this->draw_dot(x1 + 1, y1--, color);
 		}
 
 	}
 
 	//-------- Dotted line drawing --------//
 
-	void Bitmap::drawDottedLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color)
+	void Bitmap::draw_dotted_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color)
 	{
 
 		s32 nIgnoreHalf = 0;
@@ -509,7 +509,7 @@ namespace graphics
 
 		s32 x = x1, y = y1;
 		if (nIgnoreHalf % 20 < 5)
-			this->drawDot(x, y, color);
+			this->draw_dot(x, y, color);
 		nIgnoreHalf++;
 		while (x != x2 || y != y2)
 		{
@@ -523,14 +523,14 @@ namespace graphics
 				err += dx; y += sy;
 			}
 			if (nIgnoreHalf % 20 < 5)
-				this->drawDot(x, y, color);
+				this->draw_dot(x, y, color);
 			nIgnoreHalf++;
 		}
 	}
 
 	//-------- Dotted Ellipse drawing --------//
 
-	void Bitmap::drawDottedEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color)
+	void Bitmap::draw_dotted_elipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color)
 	{
 
 		s32 nIgnoreHalf = 0;
@@ -566,10 +566,10 @@ namespace graphics
 
 			if (nIgnoreHalf % 20 < 5)
 			{
-				this->drawDot(x1, y0, color); /*   I. Quadrant */
-				this->drawDot(x0, y0, color); /*  II. Quadrant */
-				this->drawDot(x0, y1, color); /* III. Quadrant */
-				this->drawDot(x1, y1, color); /*  IV. Quadrant */
+				this->draw_dot(x1, y0, color); /*   I. Quadrant */
+				this->draw_dot(x0, y0, color); /*  II. Quadrant */
+				this->draw_dot(x0, y1, color); /* III. Quadrant */
+				this->draw_dot(x1, y1, color); /*  IV. Quadrant */
 			}
 
 			nIgnoreHalf++;
@@ -593,10 +593,10 @@ namespace graphics
 
 			if (nIgnoreHalf % 20 < 5)
 			{
-				this->drawDot(x0 - 1, y0, color); /* -> finish tip of ellipse */
-				this->drawDot(x1 + 1, y0++, color); //this->drawDot(x1+1, y0++, color); 
-				this->drawDot(x0 - 1, y1, color);
-				this->drawDot(x1 + 1, y1--, color);//this->drawDot(x1+1, y1--, color); 
+				this->draw_dot(x0 - 1, y0, color); /* -> finish tip of ellipse */
+				this->draw_dot(x1 + 1, y0++, color); //this->draw_dot(x1+1, y0++, color); 
+				this->draw_dot(x0 - 1, y1, color);
+				this->draw_dot(x1 + 1, y1--, color);//this->draw_dot(x1+1, y1--, color); 
 			}
 			else
 			{

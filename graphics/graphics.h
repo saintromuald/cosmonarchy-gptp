@@ -46,25 +46,25 @@ enum CoordType {
 /// called every frame in game_hooks.cpp.
 void reset_all_graphics();
 
-void drawText(s32 x, s32 y, const std::string& str,
+void draw_text(s32 x, s32 y, const std::string& str,
               FontSize fontSize = FONT_MEDIUM, CoordType ct = ON_SCREEN);
 
-void drawDot(s32 x, s32 y, ColorId color, CoordType ct = ON_SCREEN);
+void draw_dot(s32 x, s32 y, ColorId color, CoordType ct = ON_SCREEN);
 
 void draw_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
+void draw_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawCircle(s32 x, s32 y, s32 radius, ColorId color, CoordType ct = ON_SCREEN);
+void draw_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawFilledBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
+void draw_filled_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawFilledCircle(s32 x, s32 y, s32 radius, ColorId color, CoordType ct = ON_SCREEN);
+void draw_filled_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
+void draw_ellipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawDottedLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
+void draw_dotted_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawDottedEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
+void draw_dotted_elipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 
 } //graphics

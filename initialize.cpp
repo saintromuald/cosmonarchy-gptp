@@ -530,7 +530,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectCMDRECV_MorphHooks();
 	hooks::injectCMDRECV_StopHooks();
 	hooks::injectCMDRECV_CancelHooks();
-	hooks::injectRepairOrderHook();
+	hooks::inject_repair_order_hooks();
 	hooks::inject_stats_panel_display_hooks();
 //	hooks::injectUtilsHooks();
 	hooks::injectMindControlSpellHook();
@@ -544,7 +544,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	hooks::injectDetectorHooks();
 	hooks::injectHarvestResource();
 
-	//hooks::injectRallyHooks();
+	//hooks::inject_rally_hooks();
 	//hooks::injectLiftLandHooks();
 	//hooks::injectInfestationHooks();
 	//hooks::injectRecvCmdHook();

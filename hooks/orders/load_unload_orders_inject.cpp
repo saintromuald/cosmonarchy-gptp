@@ -129,7 +129,7 @@ namespace
 			MOV transport, EAX
 			PUSHAD
 		}
-		result = hooks::canEnterTransport(transport, unit);
+		result = hooks::can_enter_transport(transport, unit);
 		__asm {
 			POPAD
 			MOVZX EAX, result

@@ -1026,7 +1026,7 @@ LABEL_23:
 			if ((v2->hitpoints + 255) >> 8 >= 3 * v6 / 4 || units_dat::ShieldsEnabled[v5] && v2->shields >> 8 == units_dat::MaxShieldPoints[v5])
 			{
 				v11 = 1;
-				if (helper::canEnterTransport(v2, a1))
+				if (helper::can_enter_transport(v2, a1))
 				{
 					v7 = v2->main_order_id;
 					if (v7 != OrderId::Pickup2 && v7 != OrderId::Unload)

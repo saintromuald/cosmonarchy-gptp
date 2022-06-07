@@ -433,7 +433,7 @@ namespace hooks
 		if (scbw::is_zerg_production(unit->id)
 			|| scbw::is_zerg_production(unit->build_queue[unit->build_queue_slot]))
 		{
-			return helper::BTNSCOND_Rally(unused, player, unit);
+			return helper::btnscond_rally(unused, player, unit);
 		}
 		else
 		{

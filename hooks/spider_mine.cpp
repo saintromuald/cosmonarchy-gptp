@@ -193,7 +193,7 @@ namespace hooks
 		v1 = unit;
 		if (unit->main_order_state)
 		{
-			if (helper::techUseAllowed(unit, 3u, unit->player)
+			if (helper::tech_use_allowed(unit, 3u, unit->player)
 				&& ((v11 = v1->sprite, v1->move_target.pt.x != v11->position.x)
 					|| v1->move_target.pt.y != v11->position.y
 					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1))

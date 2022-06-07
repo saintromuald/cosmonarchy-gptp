@@ -12,7 +12,7 @@ namespace
 			MOV factory, ECX
 			PUSHAD
 		}
-		hooks::orderNewUnitToRallyHook(unit, factory);
+		hooks::order_new_unit_to_rally(unit, factory);
 		__asm {
 			POPAD
 			RETN
@@ -34,7 +34,7 @@ namespace
 			MOV y, DX
 			PUSHAD
 		}
-		hooks::setRallyPosition(unit, x, y);
+		hooks::set_rally_position(unit, x, y);
 		__asm {
 			POPAD
 			POP EBP
@@ -51,7 +51,7 @@ namespace
 			MOV target, EAX
 			PUSHAD
 		}
-		hooks::setRallyUnit(unit, target);
+		hooks::set_rally_unit(unit, target);
 		__asm {
 			POPAD
 			RETN
@@ -71,7 +71,7 @@ namespace
 			MOV y, SI
 			PUSHAD
 		}
-		hooks::setRallyPosition(unit, x, y);
+		hooks::set_rally_position(unit, x, y);
 		__asm {
 			POPAD
 			JMP Hook_SetRallyGenericJmpBack1
@@ -90,7 +90,7 @@ namespace
 			MOV y, DX
 			PUSHAD
 		}
-		hooks::setRallyPosition(unit, x, y);
+		hooks::set_rally_position(unit, x, y);
 		__asm {
 			POPAD
 			JMP Hook_SetRallyGenericJmpBack2
@@ -107,7 +107,7 @@ namespace
 			MOV target, EAX
 			PUSHAD
 		}
-		hooks::setRallyUnit(unit, target);
+		hooks::set_rally_unit(unit, target);
 		__asm {
 			POPAD
 			JMP Hook_SetRallyGenericJmpBack1
@@ -124,7 +124,7 @@ namespace
 			MOV target, EBX
 			PUSHAD
 		}
-		hooks::setRallyUnit(unit, target);
+		hooks::set_rally_unit(unit, target);
 
 		__asm {
 			POPAD
@@ -132,7 +132,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) RemoveReferences_Wrapper() { // 0049E590
+	void __declspec(naked) remove_references_wrapper() { // 0049E590
 		static Unit* unit;
 		static Unit* dying;
 		static Order* result;
@@ -147,7 +147,7 @@ namespace
 			MOV unit, ECX
 			PUSHAD
 		}
-		result = hooks::RemoveReferences(unit, dying);
+		result = hooks::remove_references(unit, dying);
 		__asm
 		{
 			POPAD
@@ -158,7 +158,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) RightClickCommand_Wrapper() { // 004560D0
+	void __declspec(naked) right_click_command_wrapper() { // 004560D0
 		static s32 x;
 		static s32 y;
 		static Unit* unit;
@@ -183,7 +183,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::RightClickCommand(x, y, unit, fow_unit_id, queued);
+		result = hooks::right_click_command(x, y, unit, fow_unit_id, queued);
 		__asm
 		{
 			POPAD
@@ -194,7 +194,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) BTNSCOND_Rally_Wrapper() // 00429520
+	void __declspec(naked) btnscond_rally_wrapper() // 00429520
 	{
 		static u32 unused;
 		static u32 player;
@@ -211,7 +211,7 @@ namespace
 			MOV unused, ECX
 			PUSHAD
 		}
-		result = hooks::BTNSCOND_Rally(unused, player, unit);
+		result = hooks::btnscond_rally(unused, player, unit);
 		__asm
 		{
 			POPAD
@@ -225,7 +225,7 @@ namespace
 
 namespace hooks
 {
-	void injectRallyHooks()
+	void inject_rally_hooks()
 	{
 		jump_patch(setRallyPositionWrapper,			0x00466910, 2);
 		jump_patch(setRallyUnitWrapper,				0x00466B40, 1);
@@ -237,9 +237,9 @@ namespace hooks
 		jump_patch(setRallyUnitWrapper_Jmp1,		0x0045620D, 35);	// 40 - 5 of jump
 		jump_patch(setRallyUnitWrapper_Jmp2,		0x0049ACB0, 37);	// 42 - 5 of jump
 
-		jump_patch(RemoveReferences_Wrapper,		0x0049E590, 1);
-		jump_patch(RightClickCommand_Wrapper,		0x004560D0, 1);
+		jump_patch(remove_references_wrapper,		0x0049E590, 1);
+		jump_patch(right_click_command_wrapper,		0x004560D0, 1);
 
-	//	jump_patch(BTNSCOND_Rally_Wrapper,			0x00429520, 7);
+	//	jump_patch(btnscond_rally_wrapper,			0x00429520, 7);
 	}
 }

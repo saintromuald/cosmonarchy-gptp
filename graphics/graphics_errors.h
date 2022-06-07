@@ -14,13 +14,13 @@ enum GraphicsErrorId {
 };
 
 //Sets an error flag.
-void setError(GraphicsErrorId error);
+void set_error(GraphicsErrorId error);
 
 //Clears all error flags.
-void clearErrors();
+void clear_errors();
 
 //Checks current error flags and draws appropriate error messages to the screen.
 //If NDEBUG is defined (i.e. release builds), this function does nothing.
-void drawErrorMessages();
+void draw_error_messages();
 
 } //graphics

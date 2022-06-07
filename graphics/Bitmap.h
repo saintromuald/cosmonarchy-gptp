@@ -14,15 +14,15 @@ namespace graphics
 		u16 getWidth() const;
 		u16 getHeight() const;
 
-		void drawDot(s32 x, s32 y, ColorId color);
+		void draw_dot(s32 x, s32 y, ColorId color);
 		void draw_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color);
-		void drawBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
-		void drawFilledBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
-		void drawCircle(s32 x, s32 y, s32 radius, ColorId color);
-		void drawFilledCircle(s32 x, s32 y, s32 radius, ColorId color);
-		void drawEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
-		void drawDottedLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color);
-		void drawDottedEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
+		void draw_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
+		void draw_filled_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
+		void draw_circle(s32 x, s32 y, s32 radius, ColorId color);
+		void draw_filled_circle(s32 x, s32 y, s32 radius, ColorId color);
+		void draw_ellipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
+		void draw_dotted_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color);
+		void draw_dotted_elipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
 
 		u16 width, height;
 		u8* data;

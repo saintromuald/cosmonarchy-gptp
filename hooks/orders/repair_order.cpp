@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	void orders_Repair1(Unit* unit) { // 004673D0
+	void orders_repair_1(Unit* unit) { // 004673D0
 		Unit* target = unit->order_target.unit;
 		if (!target
 	//	||	target->hitpoints >= units_dat::MaxHitPoints[target->id] // Disabled to allow tasking repair on full HP targets
@@ -148,13 +148,10 @@ namespace hooks
 	}
 
 	// Hooked to allow for general Repair and some other shit - Pr0nogo
-	s32 isOrderValid(char orderId, Unit* unit, s32 unused, Unit* target, s32 bErrorFlag) // 00474D90
+	s32 is_order_valid(char orderId, Unit* unit, s32 unused, Unit* target, s32 bErrorFlag) // 00474D90
 	{
-		u16 errorStringId;
-		bool ofsubCompare;
-		u8 ofsubResult;
-		s32 unusedResult;
-
+		s32 unusedResult = 0;
+		u16 errorStringId = 0;
 		switch (orderId)
 		{
 			case OrderId::Repair1:
@@ -239,7 +236,7 @@ namespace hooks
 					}
 					return 0;
 				}
-				if (helper::canEnterTransport(unit, target))
+				if (helper::can_enter_transport(unit, target))
 				{
 					return 1;
 				}
@@ -259,7 +256,7 @@ namespace hooks
 				{
 					return 1;
 				}
-				if (!helper::techUseAllowed(unit, TechId::Healing, unit->player))
+				if (!helper::tech_use_allowed(unit, TechId::Healing, unit->player))
 				{
 					return 0;
 				}
@@ -284,11 +281,9 @@ namespace hooks
 	}
 
 	// Hooked to investigate Repair crashes - Pr0nogo
-	s32 orderAllowed(Unit* unit, u16 orderId, s32 player) // 0046DC20
+	s32 order_allowed(Unit* unit, u16 orderId, s32 player) // 0046DC20
 	{
 		s32 result = 0;
-		s16 unit_id;
-
 		*last_internal_error = 0;
 		if (orderId < OrderId::None)
 		{
@@ -312,11 +307,10 @@ namespace hooks
 					}
 					else
 					{
-						unit_id = unit->id;
-						if (unit_id == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding && orderId != 1
-							|| (scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
-							|| unit_id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
-							|| unit_id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
+						if (unit->id == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding && orderId != 1
+						|| (scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
+						||  unit->id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
+						||  unit->id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
 						{
 							*last_internal_error = 8;
 							result = 0;

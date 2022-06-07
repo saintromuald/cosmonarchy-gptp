@@ -9,7 +9,7 @@ namespace graphics
 
 	//-------- Registering shapes --------//
 
-	void Shape::setText(s32 x, s32 y, s32 stringIndex, FontSize fontSize, CoordType coordType)
+	void Shape::set_text(s32 x, s32 y, s32 stringIndex, FontSize fontSize, CoordType coordType)
 	{
 		this->type = Text;
 		this->p1.x = x;
@@ -19,7 +19,7 @@ namespace graphics
 		this->coordType = coordType;
 	}
 
-	void Shape::setDot(s32 x, s32 y, ColorId color, CoordType coordType)
+	void Shape::set_dot(s32 x, s32 y, ColorId color, CoordType coordType)
 	{
 		this->type = DOT;
 		this->p1.x = x;
@@ -28,7 +28,7 @@ namespace graphics
 		this->coordType = coordType;
 	}
 
-	void Shape::setLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType coordType)
+	void Shape::set_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType coordType)
 	{
 		this->type = LINE;
 		this->p1.x = x1;
@@ -39,7 +39,7 @@ namespace graphics
 		this->coordType = coordType;
 	}
 
-	void Shape::setBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType)
+	void Shape::set_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType)
 	{
 		this->type = BOX;
 		this->p1.x = left;
@@ -50,7 +50,7 @@ namespace graphics
 		this->coordType = coordType;
 	}
 
-	void Shape::setEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType)
+	void Shape::set_ellipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType)
 	{
 		this->type = ELLIPSE;
 		this->p1.x = left;
@@ -61,7 +61,7 @@ namespace graphics
 		this->coordType = coordType;
 	}
 
-	void Shape::setDottedEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType)
+	void Shape::set_dotted_elipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType)
 	{
 		this->type = DOTTED_ELLIPSE;
 		this->p1.x = left;
@@ -72,7 +72,7 @@ namespace graphics
 		this->coordType = coordType;
 	}
 
-	void Shape::setDottedLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType coordType)
+	void Shape::set_dotted_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType coordType)
 	{
 		this->type = DOTTED_LINE;
 		this->p1.x = x1;
@@ -83,7 +83,7 @@ namespace graphics
 		this->coordType = coordType;
 	}
 
-	void Shape::setCircle(s32 x, s32 y, s32 radius, ColorId color, CoordType coordType)
+	void Shape::set_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType coordType)
 	{
 		this->type = CIRCLE;
 		this->p1.x = x;
@@ -93,7 +93,7 @@ namespace graphics
 		this->coordType = coordType;
 	};
 
-	void Shape::setFilledBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType)
+	void Shape::set_filled_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType)
 	{
 		this->type = FILLED_BOX;
 		this->p1.x = left;
@@ -104,7 +104,7 @@ namespace graphics
 		this->coordType = coordType;
 	};
 
-	void Shape::setFilledCircle(s32 x, s32 y, s32 radius, ColorId color, CoordType coordType)
+	void Shape::set_filled_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType coordType)
 	{
 		this->type = FILLED_CIRCLE;
 		this->p1.x = x;
@@ -136,7 +136,7 @@ namespace graphics
 				p2.y += mouse->y;
 				break;
 			default:
-				setError(ERR_UNKNOWN_COORD_TYPE);
+				set_error(ERR_UNKNOWN_COORD_TYPE);
 				break;
 		}
 
@@ -146,11 +146,11 @@ namespace graphics
 			case Text:
 				//TODO: Add ability to change font size
 				gameScreenBuffer->blitString(
-					getStringFromIndex(this->stringIndex).c_str(), p1.x, p1.y, this->fontSize);
+					get_string_from_index(this->stringIndex).c_str(), p1.x, p1.y, this->fontSize);
 				break;
 
 			case DOT:
-				gameScreenBuffer->drawDot(p1.x, p1.y, this->color);
+				gameScreenBuffer->draw_dot(p1.x, p1.y, this->color);
 				break;
 
 			case LINE:
@@ -158,35 +158,35 @@ namespace graphics
 				break;
 
 			case BOX:
-				gameScreenBuffer->drawBox(p1.x, p1.y, p2.x, p2.y, this->color);
+				gameScreenBuffer->draw_box(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			case CIRCLE:
-				gameScreenBuffer->drawCircle(p1.x, p1.y, this->radius, this->color);
+				gameScreenBuffer->draw_circle(p1.x, p1.y, this->radius, this->color);
 				break;
 
 			case FILLED_BOX:
-				gameScreenBuffer->drawFilledBox(p1.x, p1.y, p2.x, p2.y, this->color);
+				gameScreenBuffer->draw_filled_box(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			case FILLED_CIRCLE:
-				gameScreenBuffer->drawFilledCircle(p1.x, p1.y, this->radius, this->color);
+				gameScreenBuffer->draw_filled_circle(p1.x, p1.y, this->radius, this->color);
 				break;
 
 			case ELLIPSE:
-				gameScreenBuffer->drawEllipse(p1.x, p1.y, p2.x, p2.y, this->color);
+				gameScreenBuffer->draw_ellipse(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			case DOTTED_LINE:
-				gameScreenBuffer->drawDottedLine(p1.x, p1.y, p2.x, p2.y, this->color);
+				gameScreenBuffer->draw_dotted_line(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			case DOTTED_ELLIPSE:
-				gameScreenBuffer->drawDottedEllipse(p1.x, p1.y, p2.x, p2.y, this->color);
+				gameScreenBuffer->draw_dotted_elipse(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			default:
-				setError(ERR_UNKNOWN_SHAPE);
+				set_error(ERR_UNKNOWN_SHAPE);
 				return;
 		}
 	}

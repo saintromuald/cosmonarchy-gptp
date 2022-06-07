@@ -31,7 +31,7 @@ void format_time(char* buffer, u32 size, char* prefix, u32 seconds) {
 
 namespace hooks
 {
-	void drawText(const char* text, s32 x, s32 y, s32 width, s32 height, char color)
+	void draw_text(const char* text, s32 x, s32 y, s32 width, s32 height, char color)
 	{
 		helper::GetColorHandle(color);
 		*printXYAlignment = 0x11;
@@ -82,11 +82,11 @@ namespace hooks
 		{
 			char buffer[32] = {0};
 			format_time(buffer, 32, "", * elapsedTimeFrames / 24);
-			drawText(buffer, 10, 3, 100, 15, 7);
+			draw_text(buffer, 10, 3, 100, 15, 7);
 		}
 
 		//std::string apm = "APM: " + std::to_string(getAPM());
-		//drawText(apm.c_str(), 10, 15, 100, 15, 7);
+		//draw_text(apm.c_str(), 10, 15, 100, 15, 7);
 	}
 
 	bool isFirstSelectedUnitOfCurrentPlayer(Unit* unit)
