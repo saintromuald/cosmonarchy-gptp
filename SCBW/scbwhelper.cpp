@@ -12056,4 +12056,15 @@ namespace helper
 			POPAD
 		}
 	}
+
+	void update_palette() {
+		const u32 func_address = 0x0041E5C0;
+		__asm {
+			PUSHAD
+			MOV EDI, 1
+			MOV ESI, 1
+			CALL func_address
+			POPAD
+		}
+	}
 }

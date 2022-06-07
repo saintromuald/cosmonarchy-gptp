@@ -1741,7 +1741,7 @@ void tick_scenario() {
 		for (u32 i = 1; i < 7; ++i) {
 			FraudSpawnSequence* sequence = &fraud_spawn.sequence[i - 1];
 
-			if (sequence->temp_townhall && *elapsedTimeFrames > 1) {
+			if (sequence->temp_townhall && *elapsed_time_frames > 1) {
 				Unit* unit = sequence->temp_townhall;
 				helper::SetBuildingTileFlag(unit, unit->get_x(), unit->get_y());
 				sequence->temp_townhall = 0;

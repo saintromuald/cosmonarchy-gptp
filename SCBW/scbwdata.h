@@ -165,9 +165,9 @@ struct SupplyData {
 };
 SCBW_DATA(SupplyData*, raceSupply, 0x00582144);  //Array; Use Unit::get_race() to get the index.
 
-SCBW_DATA(const u32*, elapsedTimeFrames, 0x0057F23C);  //Elapsed game time in frames
+SCBW_DATA(const u32*, elapsed_time_frames, 0x0057F23C);  //Elapsed game time in frames
 SCBW_DATA(const u32*, CountdownTimer, 0x0058D6F4);  //Countdown Timer (in seconds) (From BWAPI Offsets.h)
-SCBW_DATA(const u32*, elapsedTimeSeconds, 0x0058D6F8);  //Elapsed game time in seconds
+SCBW_DATA(const u32*, elapsed_time_seconds, 0x0058D6F8);  //Elapsed game time in seconds
 SCBW_DATA(const u8*, GAME_TYPE, 0x00596820);  //Part of a larger structure; Compare with GameType::Enum.
 SCBW_DATA(const s32*, ACTIVE_NATION_ID, 0x00512678);  //AKA g_ActiveNationID
 SCBW_DATA(const s32*, ACTIVE_PLAYER_ID, 0x0051267C);  //Used by GetActivePlayerNextSelectionFunc

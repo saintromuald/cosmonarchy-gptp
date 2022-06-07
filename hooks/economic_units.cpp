@@ -331,7 +331,7 @@ namespace hooks
 
 		battleTime = AIScriptController[playerId].previous_building_hit_second;
 		if (!battleTime
-			|| *elapsedTimeSeconds - battleTime >= 0x1E // inBattle flag? just a coincidence?
+			|| *elapsed_time_seconds - battleTime >= 0x1E // inBattle flag? just a coincidence?
 			|| ((race = playerTable[playerId].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
 				unit_id == result || priority == 140))
 		{

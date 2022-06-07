@@ -885,7 +885,7 @@ namespace hooks
 		u32 priority = 70;
 		u32 last_hit = AIScriptController[player_id].previous_building_hit_second;
 		/*
-		if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
+		if (last_hit && *elapsed_time_seconds - last_hit < 30) {
 			return;
 		}
 		*/
@@ -921,7 +921,7 @@ namespace hooks
 		u32 last_hit = AIScriptController[player].previous_building_hit_second;
 		u32 race = playerTable[player].race;
 		/*
-		if (last_hit && *elapsedTimeSeconds - last_hit < 30) {
+		if (last_hit && *elapsed_time_seconds - last_hit < 30) {
 			return;
 		}
 		*/

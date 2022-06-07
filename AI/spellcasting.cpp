@@ -73,7 +73,7 @@ namespace AI
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connected_unit = unit;
-						AIScriptController[unit->player].ai_last_nuke_time = *elapsedTimeSeconds;
+						AIScriptController[unit->player].ai_last_nuke_time = *elapsed_time_seconds;
 						return true;
 					}
 				}
@@ -125,7 +125,7 @@ namespace AI
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connected_unit = unit;
-						AIScriptController[unit->player].ai_last_nuke_time = *elapsedTimeSeconds;
+						AIScriptController[unit->player].ai_last_nuke_time = *elapsed_time_seconds;
 						return true;
 					}
 				}
@@ -342,7 +342,7 @@ namespace
 	// Logically equivalent to function @ 0x00446E50
 	bool isNukeTimerReady(u8 playerId)
 	{
-		return *elapsedTimeSeconds >= AIScriptController[playerId].ai_last_nuke_time + 60 * AIScriptController[playerId].ai_nuke_rate;
+		return *elapsed_time_seconds >= AIScriptController[playerId].ai_last_nuke_time + 60 * AIScriptController[playerId].ai_nuke_rate;
 	}
 
 	// Logically equivalent to function @ 0x00463360

@@ -58,7 +58,7 @@ namespace hooks
 	*/
 	void registerAction()
 	{
-		//actions.push_back(Action{*elapsedTimeFrames});
+		//actions.push_back(Action{*elapsed_time_frames});
 		totalActions++;
 	}
 
@@ -71,7 +71,7 @@ namespace hooks
 	u32 getAPM()
 	{
 		u32 actionCount = totalActions;//actions.size();
-		f64 divider = (*elapsedTimeFrames) / 24.0 / 60.0;
+		f64 divider = (*elapsed_time_frames) / 24.0 / 60.0;
 
 		return actionCount / divider;
 	}
@@ -81,7 +81,7 @@ namespace hooks
 		if (config.show_timer)
 		{
 			char buffer[32] = {0};
-			format_time(buffer, 32, "", * elapsedTimeFrames / 24);
+			format_time(buffer, 32, "", * elapsed_time_frames / 24);
 			draw_text(buffer, 10, 3, 100, 15, 7);
 		}
 

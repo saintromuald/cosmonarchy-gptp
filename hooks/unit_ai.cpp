@@ -239,7 +239,7 @@ namespace hooks
 					ai->parent = unit;
 					ai->town = town;
 					ai->target_resource = 1;
-					ai->last_update_second = *elapsedTimeSeconds;
+					ai->last_update_second = *elapsed_time_seconds;
 					ai->wait_timer = 0;
 					ai->reassign_count = 0;
 					unit->worker.target_resource.unit = 0;
@@ -497,7 +497,7 @@ namespace hooks
 					}
 				}
 				helper::add_worker_structure_ai(result, parentTown);
-				if (result->id != UnitId::TerranBunker || *elapsedTimeSeconds <= 60)
+				if (result->id != UnitId::TerranBunker || *elapsed_time_seconds <= 60)
 				{
 					if (result->id == UnitId::TerranWatchdog)
 					{
@@ -743,7 +743,7 @@ namespace hooks
 
 				helper::add_worker_structure_ai(newUnit, oldUnitTown);
 				u16 newUnitId = newUnit->id;
-				if (newUnitId != UnitId::TerranBunker || *elapsedTimeSeconds <= 60)
+				if (newUnitId != UnitId::TerranBunker || *elapsed_time_seconds <= 60)
 				{
 					if (newUnitId == UnitId::TerranWatchdog)
 					{

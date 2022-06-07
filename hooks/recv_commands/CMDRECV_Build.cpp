@@ -29,7 +29,7 @@ namespace hooks
 			}
 			else if (orderId == OrderId::CTFCOP2) // Create Flag Beacon
 			{
-				if (*elapsedTimeSeconds <= 600 && builder->id == builtUnitId)
+				if (*elapsed_time_seconds <= 600 && builder->id == builtUnitId)
 				{
 					bReturnValue = (helper::order_is_allowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
 				}

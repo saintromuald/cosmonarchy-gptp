@@ -68,7 +68,7 @@ namespace hooks
 					gameActive = 0;
 					nextSCMainState = 4;
 					if (!is_in_replay)
-						replayEndFrame = elapsedTimeFrames;
+						replayEndFrame = elapsed_time_frames;
 				}
 				nextLeaveGameMenu(v3);
 			}

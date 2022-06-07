@@ -1334,4 +1334,6 @@ namespace helper
 	void initialize_input_procs();																			// 004D2FF0
 
 	u16 get_minimap_cursor_pos(u16* x, u16* y);																// 004A3D70
+
+	void update_palette();																					// 0041E5C0
 }

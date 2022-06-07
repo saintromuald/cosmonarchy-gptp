@@ -427,7 +427,7 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 }
 
 void tick_base_layouts() {
-	if (*elapsedTimeFrames == 0) {
+	if (*elapsed_time_frames == 0) {
 		init_base_layouts();
 	}
 

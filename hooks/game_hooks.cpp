@@ -30,6 +30,7 @@
 #include "graphics/Bitmap.h"
 #include "data_ext.h"
 #include "config.h"
+#include "color_palette.h"
 
 const u32 hyperTrigger = 0x006509A0;
 
@@ -205,7 +206,7 @@ namespace hooks
 		tick_trigger_system(true);
 		tick_base_layouts();
 		// This block is executed once every game
-		if (*elapsedTimeFrames == 0)
+		if (*elapsed_time_frames == 0)
 		{
 #ifdef CM_DEBUG
 			helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
@@ -222,7 +223,7 @@ namespace hooks
 			}
 		}
 
-		if (*elapsedTimeFrames % 2 == 0)
+		if (*elapsed_time_frames % 2 == 0)
 		{
 			for (u32 i = 0; i < 16; ++i)
 			{
@@ -236,15 +237,15 @@ namespace hooks
 
 		// Map Features
 		scbw::set_ingame_loop_state(true);
-		if (*elapsedTimeFrames == 1) {
+		if (*elapsed_time_frames == 1) {
 			load_player_colors();
 		}
-		if (*elapsedTimeFrames == 0 || *elapsedTimeFrames == 24) {
+		if (*elapsed_time_frames == 0 || *elapsed_time_frames == 24) {
 			load_player_names();
 		}
 		scbw::set_ingame_loop_state(false);
 
-		if (*elapsedTimeFrames == 2) {
+		if (*elapsed_time_frames == 2) {
 			u32 local_flags = unit_deaths[UnitId::ResourceVespeneGeyser].player[*LOCAL_NATION_ID];
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
@@ -327,10 +328,10 @@ namespace hooks
 			*(s32*)hyperTrigger = 0; // Single frame hypertriggers
 
 			// Scenario Features
-			if (*elapsedTimeFrames == 1) {
+			if (*elapsed_time_frames == 1) {
 				init_scenario();
 			}
-			if (*elapsedTimeFrames >= 1) {
+			if (*elapsed_time_frames >= 1) {
 				tick_scenario();
 			}
 
@@ -1422,7 +1423,7 @@ namespace hooks
 		*/
 
 		// Phase Link Overlay
-		if (*elapsedTimeFrames % 10 == 0
+		if (*elapsed_time_frames % 10 == 0
 			&& unitExt->unit_vectors[UnitVectorPhaseLinkClarions].size())
 		{
 			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
@@ -1590,7 +1591,7 @@ namespace hooks
 				helper::secondary_order_spawning_larva(unit);
 			}
 
-			if (*elapsedTimeFrames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreads_creep(unit->id, true)) {
+			if (*elapsed_time_frames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreads_creep(unit->id, true)) {
 				scbw::spread_custom_creep(unit);
 			}
 		}

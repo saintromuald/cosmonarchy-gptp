@@ -76,7 +76,7 @@ namespace GPTP
 	{
 		if (doLogging)
 		{
-			const s32 currentFrame = *elapsedTimeFrames;
+			const s32 currentFrame = *elapsed_time_frames;
 			if (currentFrame > lastUpdatedFrame)
 			{
 				lastUpdatedFrame = currentFrame;

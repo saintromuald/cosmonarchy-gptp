@@ -3,6 +3,7 @@
 #include <limits.h>
 
 #include "token_parser.h"
+#include "color_palette.h"
 
 // Copy paste from Antikythera
 #define RiffId(a, b, c, d) ((a << 0) | (b << 8) | (c << 16) | (d << 24))
@@ -101,8 +102,6 @@ struct Music {
 	s16* data;
 };
 
-static bool music_init;
-static bool music_in_game;
 static LPDIRECTSOUND direct_sound;
 static LPDIRECTSOUNDBUFFER ds_buffer;
 
@@ -110,21 +109,48 @@ static u32 music_tracks_count;
 static Music music_tracks[MaxMusic];
 static Music* music_tracks_hash[MaxMusicHash];
 
-static bool playlist_shuffle;
-static u32 playlist_index;
-static u32 playlist_size;
-static Music* playlist_tracks[MaxMusic];
+struct Recolor {
+	f32 r;
+	f32 g;
+	f32 b;
+	f32 gamma;
+	f32 time;
+};
 
-static Music* current_music;
-static Music* next_music;
-static f32 music_fade_in;
-static f32 music_fade_out;
-static f32 music_fade;
-static s32 music_target_fade;
-static f32 music_volume;
-static f32 music_target_volume;
-static f32 music_volume_time;
-static bool music_paused;
+#define MaxRecolors 32
+struct RecolorList {
+	u32 index;
+	u32 count;
+	Recolor recolors[MaxRecolors];
+};
+
+struct TriggerSystem {
+	bool playlist_shuffle;
+	u32 playlist_index;
+	u32 playlist_size;
+	Music* playlist_tracks[MaxMusic];
+
+	Music* current_music;
+	Music* next_music;
+	f32 music_fade_in;
+	f32 music_fade_out;
+	f32 music_fade;
+	s32 music_target_fade;
+	f32 music_volume;
+	f32 music_target_volume;
+	f32 music_volume_time;
+	bool music_paused;
+
+	f32 recolor_time;
+	Recolor source_recolor;
+	Recolor current_recolor;
+	Recolor target_recolor;
+	RecolorList recolor_list;
+};
+
+static bool trigger_system_init;
+static bool trigger_system_in_game;
+static TriggerSystem trigger_system;
 
 static u32 hash_string(char* string) {
 	u32 hash = 5381;
@@ -237,12 +263,12 @@ typedef int __cdecl getMusicVolume_Func();
 static getMusicVolume_Func* getMusicVolume = (getMusicVolume_Func*)0x004A5EF0;
 
 static s32 get_volume() {
-	if (music_fade == 0 || music_volume == 0) {
+	if (trigger_system.music_fade == 0 || trigger_system.music_volume == 0) {
 		return DSBVOLUME_MIN;
 	}
 
 	s32 volume = getMusicVolume();
-	volume += (-4000 - volume) * (1 - music_fade * music_volume);
+	volume += (-4000 - volume) * (1 - trigger_system.music_fade * trigger_system.music_volume);
 	return volume;
 }
 
@@ -304,18 +330,18 @@ static void stop_music() {
 		ds_buffer->Release();
 		ds_buffer = 0;
 	}
-	current_music = 0;
+	trigger_system.current_music = 0;
 }
 
 static void shuffle_playlist() {
-	for (u32 i = 0; i < playlist_size; ++i) {
-		Music* music_a = playlist_tracks[i];
-		for (u32 j = i + 1; j < playlist_size; ++j) {
-			if (i == 0 && j == playlist_size - 1) {
+	for (u32 i = 0; i < trigger_system.playlist_size; ++i) {
+		Music* music_a = trigger_system.playlist_tracks[i];
+		for (u32 j = i + 1; j < trigger_system.playlist_size; ++j) {
+			if (i == 0 && j == trigger_system.playlist_size - 1) {
 				// Avoid swapping first and last, so we don't hear the same music twice
 				continue;
 			}
-			Music* music_b = playlist_tracks[j];
+			Music* music_b = trigger_system.playlist_tracks[j];
 			if (rand() % 2 == 0) {
 				Music temp = *music_a;
 				*music_a = *music_b;
@@ -326,15 +352,15 @@ static void shuffle_playlist() {
 }
 
 static Music* get_next_music() {
-	if (!playlist_size) {
+	if (!trigger_system.playlist_size) {
 		return 0;
 	}
-	if (playlist_index == 0 && playlist_shuffle) {
+	if (trigger_system.playlist_index == 0 && trigger_system.playlist_shuffle) {
 		shuffle_playlist();
 	}
-	Music* music = playlist_tracks[playlist_index++];
-	if (playlist_index >= playlist_size) {
-		playlist_index = 0;
+	Music* music = trigger_system.playlist_tracks[trigger_system.playlist_index++];
+	if (trigger_system.playlist_index >= trigger_system.playlist_size) {
+		trigger_system.playlist_index = 0;
 	}
 	return music;
 }
@@ -350,48 +376,48 @@ static b32 __fastcall parse_comment_action(Action* action) {
 		while (parser_get_command(&parser)) {
 			if (parser_eq(&parser, "play_music")) {
 				Token filename = parser_get_string(&parser, true);
-				next_music = get_music(filename.data);
-				music_target_fade = 0;
+				trigger_system.next_music = get_music(filename.data);
+				trigger_system.music_target_fade = 0;
 			} else if (parser_eq(&parser, "stop_music")) {
-				music_target_fade = 0;
+				trigger_system.music_target_fade = 0;
 			} else if (parser_eq(&parser, "pause_music")) {
-				music_target_fade = 0;
-				music_paused = true;
+				trigger_system.music_target_fade = 0;
+				trigger_system.music_paused = true;
 			} else if (parser_eq(&parser, "resume_music")) {
-				music_target_fade = 1;
-				music_paused = false;
+				trigger_system.music_target_fade = 1;
+				trigger_system.music_paused = false;
 				if (ds_buffer) {
 					ds_buffer->Play(0, 0, 0);
 				}
 			} else if (parser_eq(&parser, "fade_in")) {
 				f32 fade_in = parser_get_f32(&parser);
-				music_fade_in = fade_in;
+				trigger_system.music_fade_in = fade_in;
 			} else if (parser_eq(&parser, "fade_out")) {
 				f32 fade_out = parser_get_f32(&parser);
-				music_fade_out = fade_out;
+				trigger_system.music_fade_out = fade_out;
 			} else if (parser_eq(&parser, "volume")) {
 				f32 volume = parser_get_f32(&parser);
 				f32 time = parser_get_f32(&parser);
 				if (time == 0) {
-					music_volume = 0;
+					trigger_system.music_volume = 0;
 				}
-				music_target_volume = volume;
-				music_volume_time = time;
+				trigger_system.music_target_volume = volume;
+				trigger_system.music_volume_time = time;
 			} else if (parser_eq(&parser, "playlist_clear")) {
-				playlist_size = 0;
+				trigger_system.playlist_size = 0;
 			} else if (parser_eq(&parser, "playlist_add")) {
 				Token filename = parser_get_string(&parser, true);
-				if (playlist_size < MaxMusic) {
+				if (trigger_system.playlist_size < MaxMusic) {
 					Music* music = get_music(filename.data);
 					if (music) {
-						playlist_tracks[playlist_size++] = music;
+						trigger_system.playlist_tracks[trigger_system.playlist_size++] = music;
 					}
 				} else {
 					scbw::printf("Error: Playlist already full! (%s)", filename.data);
 				}
 			} else if (parser_eq(&parser, "playlist_shuffle")) {
 				s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
-				playlist_shuffle = do_shuffle;
+				trigger_system.playlist_shuffle = do_shuffle;
 			} else if (parser_eq(&parser, "clear_creep")) {
 				Box32 location = parser_get_location(&parser);
 				scbw::clear_creep(location);
@@ -413,6 +439,34 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				if (player >= 0 && player < 8) {
 					sprintf_s(playerNameList->player[player].force_name, "%s", name.data);
 				}
+			} else if (parser_eq(&parser, "recolor")) {
+				Recolor recolor = {};
+				recolor.r = parser_get_f32(&parser);
+				recolor.g = parser_get_f32(&parser);
+				recolor.b = parser_get_f32(&parser);
+				recolor.gamma = parser_get_f32(&parser);
+				recolor.time = parser_get_f32(&parser);
+
+				trigger_system.recolor_time = 0;
+				trigger_system.source_recolor = trigger_system.current_recolor;
+				trigger_system.target_recolor = recolor;
+				if (!recolor.time) {
+					trigger_system.current_recolor = recolor;
+					set_color_palette(recolor.r, recolor.g, recolor.b, recolor.gamma);
+				}
+			} else if (parser_eq(&parser, "recolor_loop_add")) {
+				Recolor recolor = {};
+				recolor.r = parser_get_f32(&parser);
+				recolor.g = parser_get_f32(&parser);
+				recolor.b = parser_get_f32(&parser);
+				recolor.gamma = parser_get_f32(&parser);
+				recolor.time = parser_get_f32(&parser);
+
+				if (trigger_system.recolor_list.count < MaxRecolors) {
+					trigger_system.recolor_list.recolors[trigger_system.recolor_list.count++] = recolor;
+				}
+			} else if (parser_eq(&parser, "recolor_loop_clear")) {
+				memset(&trigger_system.recolor_list, 0, sizeof(trigger_system.recolor_list));
 			}
 		}
 	}
@@ -420,7 +474,7 @@ static b32 __fastcall parse_comment_action(Action* action) {
 }
 
 static void init_trigger_system() {
-	music_init = true;
+	trigger_system_init = true;
 	if (!direct_sound) {
 		init_direct_sound();
 	}
@@ -433,64 +487,54 @@ static void init_trigger_system() {
 	actionTable[47] = parse_comment_action;
 
 	memset(has_custom_name, 0, sizeof(has_custom_name));
-
 	for (u32 i = 0; i < MaxMusic; ++i) {
 		free_music(&music_tracks[i]);
 	}
+
 	music_tracks_count = 0;
 	memset(music_tracks, 0, sizeof(music_tracks));
 	memset(music_tracks_hash, 0, sizeof(music_tracks_hash));
 
-	playlist_shuffle = false;
-	playlist_index = 0;
-	playlist_size = 0;
-	memset(playlist_tracks, 0, sizeof(playlist_tracks));
+	memset(has_custom_name, 0, sizeof(has_custom_name));
 
-	current_music = 0;
-	next_music = 0;
-	music_fade_in = 0;
-	music_fade_out = 0;
-	music_fade = 1;
-	music_target_fade = 1;
-	music_volume = 1;
-	music_target_volume = 1;
-	music_volume_time = 0;
-	music_paused = false;
+	memset(&trigger_system, 0, sizeof(trigger_system));
+	trigger_system.music_fade = 1;
+	trigger_system.music_target_fade = 1;
+	trigger_system.music_volume = 1;
+	trigger_system.music_target_volume = 1;
+
+	trigger_system.current_recolor.r = 1;
+	trigger_system.current_recolor.g = 1;
+	trigger_system.current_recolor.b = 1;
+	trigger_system.current_recolor.gamma = 1;
+
+	trigger_system.target_recolor.r = 1;
+	trigger_system.target_recolor.g = 1;
+	trigger_system.target_recolor.b = 1;
+	trigger_system.target_recolor.gamma = 1;
 }
 
-void tick_trigger_system(bool in_game) {
-	if (!music_init || (*is_in_game_loop && *elapsedTimeFrames == 0)) {
-		init_trigger_system();
-	}
-
-	if (in_game) {
-		music_in_game = true;
-	} else if (music_in_game) {
-		// Leaving the game should reset music
-		music_in_game = false;
-		init_trigger_system();
-	}
-	
+void handle_music() {
 	if (ds_buffer) {
 		DWORD status = 0;
 		ds_buffer->GetStatus(&status);
 		if (status != DSBSTATUS_PLAYING) {
-			current_music = 0;
+			trigger_system.current_music = 0;
 		}
 	} else {
-		current_music = 0;
+		trigger_system.current_music = 0;
 	}
 
-	if (music_target_fade == 0) {
-		if (music_fade_out) {
-			music_fade -= (1.0 / music_fade_out) / 24.0;
+	if (trigger_system.music_target_fade == 0) {
+		if (trigger_system.music_fade_out) {
+			trigger_system.music_fade -= (1.0 / trigger_system.music_fade_out) / 24.0;
 		} else {
-			music_fade = 0;
+			trigger_system.music_fade = 0;
 		}
-		if (music_fade <= 0) {
-			music_fade = 0;
+		if (trigger_system.music_fade <= 0) {
+			trigger_system.music_fade = 0;
 
-			if (music_paused) {
+			if (trigger_system.music_paused) {
 				if (ds_buffer) {
 					ds_buffer->Stop();
 				}
@@ -500,19 +544,19 @@ void tick_trigger_system(bool in_game) {
 		}
 	}
 
-	if (!current_music && !music_paused) {
-		if (!next_music) {
-			next_music = get_next_music();
+	if (!trigger_system.current_music && !trigger_system.music_paused) {
+		if (!trigger_system.next_music) {
+			trigger_system.next_music = get_next_music();
 		}
-		current_music = next_music;
-		next_music = get_next_music();
-		if (current_music) {
-			music_target_fade = 1;
-			play_music(current_music);
+		trigger_system.current_music = trigger_system.next_music;
+		trigger_system.next_music = get_next_music();
+		if (trigger_system.current_music) {
+			trigger_system.music_target_fade = 1;
+			play_music(trigger_system.current_music);
 		}
 	}
 
-	if (current_music || music_paused) {
+	if (trigger_system.current_music || trigger_system.music_paused) {
 		if (*musicPlaying) {
 			helper::stopMusic();
 		}
@@ -522,35 +566,83 @@ void tick_trigger_system(bool in_game) {
 		}
 	}
 
-	if (music_target_fade == 1) {
-		if (music_fade_in) {
-			music_fade += (1.0 / music_fade_in) / 24.0;
+	if (trigger_system.music_target_fade == 1) {
+		if (trigger_system.music_fade_in) {
+			trigger_system.music_fade += (1.0 / trigger_system.music_fade_in) / 24.0;
 		} else {
-			music_fade = 1;
+			trigger_system.music_fade = 1;
 		}
-		if (music_fade >= 1) {
-			music_fade = 1;
+		if (trigger_system.music_fade >= 1) {
+			trigger_system.music_fade = 1;
 		}
 	}
 
-	if (music_volume_time) {
-		f32 music_volume_delta = (1.0 / music_volume_time) / 24.0;
-		if (music_volume < music_target_volume) {
-			music_volume += music_volume_delta;
-			if (music_volume >= music_target_volume) {
-				music_volume = music_target_volume;
+	if (trigger_system.music_volume_time) {
+		f32 music_volume_delta = (1.0 / trigger_system.music_volume_time) / 24.0;
+		if (trigger_system.music_volume < trigger_system.music_target_volume) {
+			trigger_system.music_volume += music_volume_delta;
+			if (trigger_system.music_volume >= trigger_system.music_target_volume) {
+				trigger_system.music_volume = trigger_system.music_target_volume;
 			}
 		} else {
-			music_volume -= music_volume_delta;
-			if (music_volume <= music_target_volume) {
-				music_volume = music_target_volume;
+			trigger_system.music_volume -= music_volume_delta;
+			if (trigger_system.music_volume <= trigger_system.music_target_volume) {
+				trigger_system.music_volume = trigger_system.music_target_volume;
 			}
 		}
 	} else {
-		music_volume = music_target_volume;
+		trigger_system.music_volume = trigger_system.music_target_volume;
 	}
 
 	if (ds_buffer) {
 		ds_buffer->SetVolume(get_volume());
+	}
+}
+
+void handle_recolor() {
+	if (trigger_system.recolor_time < trigger_system.target_recolor.time) {
+		trigger_system.recolor_time += 1.0 / 24; // Tick Time for Brood War
+
+		f32 target_percentage = trigger_system.recolor_time / trigger_system.target_recolor.time;
+		if (target_percentage > 1) {
+			target_percentage = 1;
+		}
+		f32 source_percentage = 1 - target_percentage;
+
+		f32 r     = trigger_system.source_recolor.r     * source_percentage + trigger_system.target_recolor.r     * target_percentage;
+		f32 g     = trigger_system.source_recolor.g     * source_percentage + trigger_system.target_recolor.g     * target_percentage;
+		f32 b     = trigger_system.source_recolor.b     * source_percentage + trigger_system.target_recolor.b     * target_percentage;
+		f32 gamma = trigger_system.source_recolor.gamma * source_percentage + trigger_system.target_recolor.gamma * target_percentage;
+
+		trigger_system.current_recolor = trigger_system.target_recolor;
+		set_color_palette(r, g, b, gamma);
+	} else if (trigger_system.recolor_list.count) {
+		trigger_system.recolor_list.index %= trigger_system.recolor_list.count; // In case the list got smaller
+
+		trigger_system.recolor_time = 0;
+		trigger_system.source_recolor = trigger_system.current_recolor;
+		trigger_system.target_recolor = trigger_system.recolor_list.recolors[trigger_system.recolor_list.index];
+
+		trigger_system.recolor_list.index += 1;
+		trigger_system.recolor_list.index %= trigger_system.recolor_list.count;
+	}
+}
+
+void tick_trigger_system(bool in_game) {
+	if (!trigger_system_init || (*is_in_game_loop && *elapsed_time_frames == 0)) {
+		init_trigger_system();
+	}
+
+	if (in_game) {
+		trigger_system_in_game = true;
+	} else if (trigger_system_in_game) {
+		// Leaving the game should reset music
+		trigger_system_in_game = false;
+		init_trigger_system();
+	}
+	
+	handle_music();
+	if (in_game) {
+		handle_recolor();
 	}
 }

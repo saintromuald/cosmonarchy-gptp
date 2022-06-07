@@ -41,7 +41,7 @@ namespace hooks
 		{
 			if (self->unit_ai)
 			{
-				AIScriptController[self->player].previous_building_hit_second = *elapsedTimeSeconds;
+				AIScriptController[self->player].previous_building_hit_second = *elapsed_time_seconds;
 				BuildingAi* selfBuildingAi = (BuildingAi*)self->unit_ai;
 				if (selfBuildingAi)
 				{
@@ -154,7 +154,7 @@ LABEL_37:
 						}
 						if (v14->state)
 						{
-							if (!selfRegion->state && *elapsedTimeSeconds > 60)
+							if (!selfRegion->state && *elapsed_time_seconds > 60)
 								helper::ai_set_region_type(5, selfRegion);
 						}
 					}
@@ -1122,7 +1122,7 @@ LABEL_37:
 			}
 			Point16 worker_pos = {};
 			AiTown* town = worker_ai->town;
-			worker_ai->last_update_second = *elapsedTimeSeconds;
+			worker_ai->last_update_second = *elapsed_time_seconds;
 			GroupFlag group_flags = units_dat::GroupFlags[worker->id];
 			if ((group_flags.is_zerg || group_flags.is_protoss || !group_flags.is_terran || !helper::ai_scv_repair_controller(worker, town))
 				&& !helper::ai_try_progress_spending_queue_worker(town, worker))
@@ -1534,13 +1534,13 @@ LABEL_37:
 					|| unit_order == OrderId::DroneBuild
 					|| worker->status & UnitStatus::InTransport)
 				{
-					worker_ai->last_update_second = *elapsedTimeSeconds;
+					worker_ai->last_update_second = *elapsed_time_seconds;
 				}
-				//else if (*elapsedTimeSeconds - worker_ai->last_update_second >= 60)
+				//else if (*elapsed_time_seconds - worker_ai->last_update_second >= 60)
 				//{
 				//	helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
 				//	worker_ai->wait_timer = 10;
-				//	worker_ai->last_update_second = *elapsedTimeSeconds;
+				//	worker_ai->last_update_second = *elapsed_time_seconds;
 				//	worker_ai->reassign_count += 1;
 				//	helper::ai_get_old_peons(worker_ai->town, 1u);
 				//}
@@ -1565,12 +1565,12 @@ LABEL_37:
 					}
 
 					UnitExt* workerExt = globals.get_unit_ext(worker);
-					if (*elapsedTimeSeconds - worker_ai->last_update_second >= timer
+					if (*elapsed_time_seconds - worker_ai->last_update_second >= timer
 						&& !workerExt->timers[TimerAI_KitingLeash])
 					{
 						helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
 						worker_ai->wait_timer = 0;
-						worker_ai->last_update_second = *elapsedTimeSeconds;
+						worker_ai->last_update_second = *elapsed_time_seconds;
 						helper::ai_get_old_peons(worker_ai->town, 1);
 					}
 				}
