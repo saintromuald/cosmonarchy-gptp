@@ -4,24 +4,20 @@
 
 namespace graphics
 {
-
 	s32 errorFlags;
-
-	void setError(GraphicsErrorId error)
+	void set_error(GraphicsErrorId error)
 	{
 		errorFlags |= error;
 	}
 
-	void clearErrors()
+	void clear_errors()
 	{
 		errorFlags = 0;
 	}
 
-	void drawErrorMessages()
+	void draw_error_messages()
 	{
-
 #ifndef NDEBUG
-
 		if (errorFlags & ERR_TOO_MANY_SHAPES)
 		{
 			gameScreenBuffer->blitString("Error: Too many shapes!", 10, 10, 2);
@@ -41,9 +37,7 @@ namespace graphics
 		{
 			gameScreenBuffer->blitString("Error: Unknown coordinate type found.", 10, 100, 2);
 		}
-
 #endif
 
-	};
-
-} //graphics
+	}
+}
