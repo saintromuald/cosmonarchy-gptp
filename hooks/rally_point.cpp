@@ -323,7 +323,7 @@ namespace hooks
                     }
                 }
             }
-            result = helper::get_next_commanded_unit();
+            result = helper:: get_next_commanded_unit();
         }
         return 0;
     }

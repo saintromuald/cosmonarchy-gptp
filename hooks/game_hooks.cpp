@@ -249,8 +249,8 @@ namespace hooks
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
 				for (s32 i = 0; i < 4092; i++) {
-					if (fog_of_war_mask->unexplored[i] < 5) {
-						fog_of_war_mask->unexplored[i] = 5;
+					if (fog_of_war_mask->unexplored[i] < 8) {
+						fog_of_war_mask->unexplored[i] = 8;
 					}
 				}
 				scbw::refresh_screen();
