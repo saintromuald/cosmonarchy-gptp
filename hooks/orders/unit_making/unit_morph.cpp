@@ -305,8 +305,7 @@ namespace hooks
 				{
 					helper::update_unit_stats_and_finish_building(unit);
 					helper::update_unit_strength(unit);
-					if (unit->id == UnitId::ZergEgg && unit->egg_origin == UnitId::ZergLarva)
-					{
+					if (unit->id == UnitId::ZergEgg && unit->egg_origin == UnitId::ZergLarva) {
 						helper::order_new_unit_to_rally(unit, unit->connected_unit);
 					}
 				}

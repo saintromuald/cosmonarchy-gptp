@@ -10827,11 +10827,6 @@ namespace helper
 		return result;
 	}
 
-	// Replaces original functionality
-	bool unit_can_rally(Unit* unit) { // 0047B2E0
-		return units_dat::GroupFlags[unit->id].is_factory;
-	}
-
 	bool is_unit_target_inside_min_range(Unit* unit, Unit* target) {
 		static bool result;
 		const u32 func_address = 0x004764D0;

@@ -1,6 +1,7 @@
 #pragma once
 #include "CMDRECV_Morph.h"
 #include <SCBW/api.h>
+#include "hooks/rally_point.h"
 
 namespace hooks
 {
@@ -202,7 +203,7 @@ namespace hooks
 		u32 result = OrderId::Nothing2;
 		if (unit->status & UnitStatus::GroundedBuilding || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
 		{
-			if (helper::unit_can_rally(unit) || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
+			if (hooks::unit_can_rally(unit))
 			{
 				result = OrderId::RallyPoint2 - (*target != 0);
 			}
@@ -292,14 +293,14 @@ namespace hooks
 			{
 				if (right_click_order == OrderId::RallyPoint1)
 				{
-					if (helper::unit_can_rally(unit))
+					if (hooks::unit_can_rally(unit))
 					{
 						helper::set_rally_unit(unit_in_point, unit);
 					}
 				}
 				else if (right_click_order == OrderId::RallyPoint2)
 				{
-					if (helper::unit_can_rally(unit))
+					if (hooks::unit_can_rally(unit))
 					{
 						helper::set_rally_position(unit, x_pos, y_pos);
 					}
@@ -336,12 +337,9 @@ namespace hooks
 		char right_click_order = units_dat::RightClickAction[unit->id];
 		if (!right_click_order)
 		{
-			if (unit->status & 2)
+			if (hooks::unit_can_rally(unit))
 			{
-				if (helper::unit_can_rally(unit))
-				{
-					right_click_order = 2;
-				}
+				right_click_order = 2;
 			}
 		}
 		return right_click_order;

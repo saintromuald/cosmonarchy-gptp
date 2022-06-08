@@ -9,46 +9,49 @@ namespace hooks
 	// @param  factory   The unit (building) that created the given unit.
 	// Identical to sub_466F50 @ 00466F50
 
-	void order_new_unit_to_rally(Unit* unit, Unit* factory)
-	{
-		// Do nothing if the rally target is the factory itself or the rally target position is 0
-        if (factory) {
-            UnitExt* factoryExt = globals.get_unit_ext(factory);
-            if (factory->is_factory()
-                && factory->rally.unit != factory
-                && factory->rally.pt.x != 0)
-            {
+	void order_new_unit_to_rally(Unit* unit, Unit* factory) {
+        // Egg rally
+        if (unit) {
+            if (unit->rally.unit != unit
+            &&  unit->rally.unit != factory
+            &&  unit->rally.pt.x != 0) {
                 // Following should be allowed only on friendly units
-                if (factory->rally.unit && scbw::is_allied_to((factory->rally.unit)->player, unit->player))
-                {
-                    unit->order_to(OrderId::Follow, factory->rally.unit);
+                if (unit->rally.unit && scbw::is_allied_to((unit->rally.unit)->player, unit->player)) {
+                    unit->order_to(OrderId::Follow, unit->rally.unit);
+                }  else {
+                    unit->order_to(OrderId::Move, unit->rally.pt.x, unit->rally.pt.y);
                 }
-                else
-                {
-                    unit->order_to(OrderId::Move, factory->rally.pt.x, factory->rally.pt.y);
-                }
+                unit->rally = {};
+                return;
+            }
+        }
+		// Do nothing if the rally target is the factory itself or the rally target position is 0
+        if (factory
+        &&  factory->is_factory()
+        &&  factory->rally.unit != unit
+        &&  factory->rally.unit != factory
+        &&  factory->rally.pt.x != 0) {
+            // Following should be allowed only on friendly units
+            if (factory->rally.unit && scbw::is_allied_to((factory->rally.unit)->player, unit->player)) {
+                unit->order_to(OrderId::Follow, factory->rally.unit);
+            } else {
+                unit->order_to(OrderId::Move, factory->rally.pt.x, factory->rally.pt.y);
             }
         }
 	}
 
 	// Called when the player sets the rally point on the ground.
-	void set_rally_position(Unit* unit, u16 x, u16 y)
-	{
-        UnitExt* unitExt = globals.get_unit_ext(unit);
-        unit->rally.unit = nullptr;
+	void set_rally_position(Unit* unit, u16 x, u16 y) {
+        unit->rally.unit = 0;
         unit->rally.pt.x = x;
         unit->rally.pt.y = y;
 	}
 
 	// Called when the player sets the rally point on a unit.
-	void set_rally_unit(Unit* unit, Unit* target)
-	{
-		if (target == nullptr)
-        {
+	void set_rally_unit(Unit* unit, Unit* target) {
+		if (!target) {
             target = unit;
         }
-
-        UnitExt* unitExt = globals.get_unit_ext(unit);
         unit->rally.unit = target;
         unit->rally.pt.x = target->get_x();
         unit->rally.pt.y = target->get_y();
@@ -64,7 +67,7 @@ namespace hooks
             helper::parse_orders_dat_requirements();
         }
 
-        u32 result;
+        u32 result = 0;
         if (player == unit->player)
         {
             if (unit->is_frozen())
@@ -326,5 +329,21 @@ namespace hooks
             result = helper:: get_next_commanded_unit();
         }
         return 0;
+    }
+
+    bool unit_can_have_rally(Unit* unit) { // 0047B2E0
+        return units_dat::GroupFlags[unit->id].is_factory
+            || unit->id == UnitId::ZergEgg
+            || unit->id == UnitId::ZergCocoon;
+    }
+    
+    bool unit_can_rally(Unit* unit) {
+        if (unit_can_have_rally(unit)) {
+            if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+                return unit->status & UnitStatus::GroundedBuilding;
+            }
+            return true;
+        }
+        return false;
     }
 }

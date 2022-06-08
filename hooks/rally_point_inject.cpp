@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orderNewUnitToRallyWrapper()
+	void __declspec(naked) order_new_unit_to_rally_wrapper()
 	{
 		static Unit* unit;
 		static Unit* factory;
@@ -19,7 +19,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) setRallyPositionWrapper()
+	void __declspec(naked) set_rally_position_wrapper()
 	{
 		static Unit* unit;
 		static u16 x;
@@ -42,7 +42,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) setRallyUnitWrapper()
+	void __declspec(naked) set_rally_unit_wrapper()
 	{
 		static Unit* unit;
 		static Unit* target;
@@ -221,25 +221,42 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) unit_can_have_rally_wrapper() { // 0x0047B2E0
+		static u32 result;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::unit_can_have_rally(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
 {
-	void inject_rally_hooks()
-	{
-		jump_patch(setRallyPositionWrapper,				0x00466910, 2);
-		jump_patch(setRallyUnitWrapper,					0x00466B40, 1);
-		jump_patch(orderNewUnitToRallyWrapper,			0x00466F50, 0);
+	void inject_rally_hooks() {
+	//	jump_patch(set_rally_position_wrapper,			0x00466910, 2);
+	//	jump_patch(set_rally_unit_wrapper,				0x00466B40, 1);
 
-		jump_patch(set_rally_position_wrapper_jump1,	0x00456256, 19);	// 24 - 5 of jump
-		jump_patch(set_rally_position_wrapper_jump2,	0x0049ACEF, 19);	// 24 - 5 of jump
+	//	jump_patch(set_rally_position_wrapper_jump1,	0x00456256, 19);	// 24 - 5 of jump
+	//	jump_patch(set_rally_position_wrapper_jump2,	0x0049ACEF, 19);	// 24 - 5 of jump
 
-		jump_patch(set_rally_unit_wrapper_jump1,		0x0045620D, 35);	// 40 - 5 of jump
-		jump_patch(set_rally_unit_wrapper_jump2,		0x0049ACB0, 37);	// 42 - 5 of jump
+	//	jump_patch(set_rally_unit_wrapper_jump1,		0x0045620D, 35);	// 40 - 5 of jump
+	//	jump_patch(set_rally_unit_wrapper_jump2,		0x0049ACB0, 37);	// 42 - 5 of jump
 
-		jump_patch(remove_references_wrapper,			0x0049E590, 1);
-		jump_patch(right_click_command_wrapper,			0x004560D0, 1);
+		jump_patch(order_new_unit_to_rally_wrapper,		0x00466F50, 0);
+
+	//	jump_patch(remove_references_wrapper,			0x0049E590, 1);
+	//	jump_patch(right_click_command_wrapper,			0x004560D0, 1);
 
 	//	jump_patch(btnscond_rally_wrapper,				0x00429520, 7);
+
+		jump_patch(unit_can_have_rally_wrapper,			0x0047B2E0, 3);
 	}
 }
