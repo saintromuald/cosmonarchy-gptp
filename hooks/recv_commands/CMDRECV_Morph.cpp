@@ -339,12 +339,9 @@ namespace hooks
 			u8 right_click_order = units_dat::RightClickAction[unit->id];
 			if (!right_click_order)
 			{
-				if (unit->status & UnitStatus::GroundedBuilding)
+				if (hooks::unit_can_rally(unit))
 				{
-					if (helper::unit_can_rally(unit))
-					{
-						right_click_order = OrderId::Guard;
-					}
+					right_click_order = OrderId::Guard;
 				}
 			}
 			result = right_click_order;
@@ -396,7 +393,7 @@ namespace hooks
 							Unit* unit_at_point_var = unit_at_point;
 							if (*client_selection_count != 1
 								|| *active_portrait_unit != unit_at_point
-								|| unit_at_point && unit_at_point->status & 2 && helper::unit_can_rally(unit_at_point))
+								|| unit_at_point && hooks::unit_can_rally(unit_at_point))
 							{
 								if (unit_at_point_var)
 								{
@@ -456,12 +453,9 @@ namespace hooks
 		u8 right_click_order = units_dat::RightClickAction[unit->id];
 		if (!right_click_order)
 		{
-			if (unit->status & UnitStatus::GroundedBuilding)
+			if (hooks::unit_can_rally(unit))
 			{
-				if (helper::unit_can_rally(unit))
-				{
-					right_click_order = 2;
-				}
+				right_click_order = 2;
 			}
 		}
 		return right_click_order != 0;

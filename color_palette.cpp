@@ -25,15 +25,18 @@ static f32 clamp(f32 value, f32 min, f32 max) {
 	return value;
 }
 
-static void set_color(u8* color, f32 value) {
-	*color = clamp(value, 0, 255);
+static u8 mix_color(u8 color, f32 multiplier) {
+	f32 new_color = color / 255;
+	new_color *= multiplier;
+
+	return clamp(new_color, 0, 1) * 255;
 }
 
 void set_color_palette(f32 r, f32 g, f32 b, f32 gamma) {
 	for (u32 i = 0; i < PaletteSize; ++i) {
-		set_color(&game_palette->colors[i].r, init_palette->colors[i].r * r * gamma);
-		set_color(&game_palette->colors[i].g, init_palette->colors[i].g * g * gamma);
-		set_color(&game_palette->colors[i].b, init_palette->colors[i].b * b * gamma);
+		game_palette->colors[i].r = mix_color(init_palette->colors[i].r, r * gamma);
+		game_palette->colors[i].g = mix_color(init_palette->colors[i].g, g * gamma);
+		game_palette->colors[i].b = mix_color(init_palette->colors[i].b, b * gamma);
 	}
 	helper::update_palette();
 }
