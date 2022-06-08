@@ -11,5 +11,8 @@ namespace hooks
 	Order* remove_references(Unit* unit, Unit* dying);			// 0049E590
 	Unit* right_click_command(u32 x, u32 y, Unit *unit, u32 fow_unit_id, char queued); // 004560D0
 
+	bool unit_can_have_rally(Unit* unit); // 0047B2E0
+	bool unit_can_rally(Unit* unit);
+
 	void inject_rally_hooks();
 }

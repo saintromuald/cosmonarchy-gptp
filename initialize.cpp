@@ -544,7 +544,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	hooks::injectDetectorHooks();
 	hooks::injectHarvestResource();
 
-	//hooks::inject_rally_hooks();
+	hooks::inject_rally_hooks();
 	//hooks::injectLiftLandHooks();
 	//hooks::injectInfestationHooks();
 	//hooks::injectRecvCmdHook();

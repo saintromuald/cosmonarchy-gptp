@@ -1,5 +1,6 @@
 #include "new_requirements.h"
 #include <hook_tools.h>
+#include "hooks/rally_point.h"
 
 namespace hooks {
 	enum {
@@ -2365,12 +2366,6 @@ namespace hooks {
 	}
 
 	bool can_set_rally_opcode(Unit* unit) {
-		if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
-			return true;
-		}
-		if (unit->status & UnitStatus::GroundedBuilding) {
-			return true;
-		}
-		return false;
+		return hooks::unit_can_rally(unit);
 	}
 }

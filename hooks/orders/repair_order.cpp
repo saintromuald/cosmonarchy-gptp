@@ -1,5 +1,6 @@
 #include "repair_order.h"
 #include <SCBW/api.h>
+#include <hooks/rally_point.h>
 
 namespace hooks
 {
@@ -377,7 +378,7 @@ namespace hooks
 					{
 						if (unit->status & UnitStatus::GroundedBuilding)
 						{
-							if (helper::unit_can_rally(unit))
+							if (hooks::unit_can_have_rally(unit))
 							{
 								right_click_order = RightClickActions::NormalMove_NoAttack;
 							}
