@@ -164,46 +164,34 @@ namespace hooks
 	}
 
 	// Hooked for contextual orders. -Pr0nogo
-	u32 order_acquire_generic_right_click_unit_proc(Unit* unit, u32 x_pos, u16 y_pos, Unit* target, u16 fow_unit_id) // 00455CC0 - guessed x_pos and y_pos
-	{
-		Unit* target_prev = target->link.prev; // seems wrong, guess IDA could be pranking me and this could simply be target?
-		if (!target->link.prev)
-		{
+	u32 order_acquire_generic_right_click_unit_proc(Unit* unit, u32 x_pos, u16 y_pos, Unit** target, u16 fow_unit_id) { // 00455CC0 - guessed x_pos and y_pos
+		Unit* target_unit = *target;
+		if (!target_unit) {
 			return helper::order_acquire_generic_idle_unit_proc(unit, x_pos, y_pos, target, fow_unit_id);
 		}
-		u32 result = helper::order_acquire_generic_right_click_harvest_proc(target_prev, unit);
-		if (result == OrderId::None)
-		{
-			if (!(target_prev->status & UnitStatus::GroundedBuilding) || target_prev->status & UnitStatus::Completed)
-			{
-				if (scbw::is_allied_to(unit->player, target_prev->player))
-				{
-					if (!(units_dat::BaseProperty[target_prev->id] & UnitProperty::Building)
-						&& helper::unit_is_active_transport(target_prev)
-						&& helper::can_enter_transport(target_prev, unit))
-					{
+		u32 result = helper::order_acquire_generic_right_click_harvest_proc(target_unit, unit);
+		if (result == OrderId::None) {
+			if (!(target_unit->status & UnitStatus::GroundedBuilding) || target_unit->status & UnitStatus::Completed) {
+				if (scbw::is_allied_to(unit->player, target_unit->player)) {
+					if (!(units_dat::BaseProperty[target_unit->id] & UnitProperty::Building)
+					&&  helper::unit_is_active_transport(target_unit)
+					&&  helper::can_enter_transport(target_unit, unit)) {
 						return OrderId::EnterTransport;
 					}
-					if (helper::is_order_valid(OrderId::Repair1, unit, (s32)target_prev, target_prev, 0)) // this helper is hilarious
-					{
+					if (helper::is_order_valid(OrderId::Repair1, unit, (s32)target_unit, target_unit, 0)) { // this helper is hilarious
 						return OrderId::Repair1;
 					}
-					if (helper::unit_is_active_transport(target_prev) && helper::can_enter_transport(target_prev, unit))
-					{
+					if (helper::unit_is_active_transport(target_unit) && helper::can_enter_transport(target_unit, unit)) {
 						return OrderId::EnterTransport;
 					}
 				}
-			}
-			else if (target_prev->player == unit->player
-				&& target_prev->get_race() == RaceId::Terran
-				&& !(units_dat::BaseProperty[target_prev->id] & UnitProperty::Addon))
-			{
-				if (!target_prev->connected_unit || target_prev->connected_unit->order_target.unit != target_prev)
-				{
+			} else if (target_unit->player == unit->player && target_unit->get_race() == RaceId::Terran
+				&&   !(units_dat::BaseProperty[target_unit->id] & UnitProperty::Addon)) {
+				if (!target_unit->connected_unit || target_unit->connected_unit->order_target.unit != target_unit) {
 					return OrderId::ConstructingBuilding;
 				}
 			}
-			result = helper::order_acquire_generic_idle_unit_proc(unit, x_pos, y_pos, target, fow_unit_id);
+			return helper::order_acquire_generic_idle_unit_proc(unit, x_pos, y_pos, target, fow_unit_id);
 		}
 		return result;
 	}

@@ -16,7 +16,7 @@ namespace hooks {
 		return Player::number_of_completed_units_of_id(player_id, unit_id);
 	}
 
-	s32 createUnitIdAllowed(s16 unit_id, s32 player_id, bool ignore_creator)
+	s32 create_unit_id_allowed(s16 unit_id, s32 player_id, bool ignore_creator)
 	{
 		*last_internal_error = InternalErrors::UnknownError0;
 		if (unit_id >= UnitId::None)
@@ -1043,7 +1043,7 @@ namespace hooks {
 		return false;
 	}
 
-	s32 createUnitAllowed_Partial(s16 unit_id, Unit* unit, s32 player_id)
+	s32 create_unit_allowed_partial(s16 unit_id, Unit* unit, s32 player_id)
 	{
 		*last_internal_error = InternalErrors::UnknownError0;
 		if (unit_id >= UnitId::None)
@@ -2362,5 +2362,15 @@ namespace hooks {
 			}
 		}
 		return TECH_HIDDEN;
+	}
+
+	bool can_set_rally_opcode(Unit* unit) {
+		if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
+			return true;
+		}
+		if (unit->status & UnitStatus::GroundedBuilding) {
+			return true;
+		}
+		return false;
 	}
 }

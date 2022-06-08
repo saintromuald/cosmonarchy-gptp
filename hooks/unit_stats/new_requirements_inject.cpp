@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) createUnitAllowed_PartialWrapper() // 0046E1C0
+	void __declspec(naked) create_unit_allowed_partial_wrapper() // 0046E1C0
 	{
 		bool runOriginal;
 		static s32 result;
@@ -22,7 +22,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::createUnitAllowed_Partial(unit_id, unit, playerId);
+		result = hooks::create_unit_allowed_partial(unit_id, unit, playerId);
 		__asm
 		{
 			POPAD
@@ -32,12 +32,33 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) can_set_rally_opcode_wrapper() {
+		static const u32 jmp_failed  = 0x0046DB03;
+		static const u32 jmp_success = 0x0046D8BC;
+		static Unit* unit;
+		static bool result;
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+		result = hooks::can_set_rally_opcode(unit);
+		if (result) {
+			__asm {
+				POPAD
+				JMP jmp_success
+			}
+		}
+		__asm {
+			POPAD
+			JMP jmp_failed
+		}
+	}
 }
 
-namespace hooks
-{
-	void injectNewRequirementsHooks()
-	{
-		jump_patch(createUnitAllowed_PartialWrapper, 0x0046E1C0, 1);
+namespace hooks {
+	void injectNewRequirementsHooks() {
+		jump_patch(create_unit_allowed_partial_wrapper, 0x0046E1C0, 1);
+		jump_patch(can_set_rally_opcode_wrapper, 0x0046D8AF, 2);
 	}
 }

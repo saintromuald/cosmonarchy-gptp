@@ -788,12 +788,6 @@ namespace hooks
 						}
 					}
 
-					if (current_button->icon_id == IconId::SetRallyPoint) {
-						if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
-							current_button_state = Button_State::Enabled;
-						}
-					}
-
 					if (current_button->action_func == (ActFunc*)ButtonActions::Create_AddOn && *clientSelectionCount > 1) {
 						current_button_state = Button_State::Invisible;
 					}

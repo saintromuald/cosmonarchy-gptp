@@ -12068,7 +12068,7 @@ namespace helper
 		}
 	}
 
-	u32 order_acquire_generic_idle_unit_proc(Unit* unit, u32 x_pos, u16 y_pos, Unit* target, u16 fow_unit_id) {
+	u32 order_acquire_generic_idle_unit_proc(Unit* unit, u32 x_pos, u16 y_pos, Unit** target, u16 fow_unit_id) {
 		static u32 result;
 		static u32 fow_unit_id_xd = fow_unit_id;
 		static u32 y_pos_xd = y_pos;
