@@ -191,10 +191,10 @@ namespace hooks
             }
             result = next;
         }
-        return 0; // used to return result, but it will always be 0. the return value is never used anyways
+        return 0; // used to return result, but it will always be 0. The return value is never used anyways. -Veeq7
     }
 
-    Unit* right_click_command(signed int x, signed int y, Unit *target, signed int fow_unit_id, char queued)
+    Unit* right_click_command(u32 x, u32 y, Unit *target, u32 fow_unit_id, char queued) // 004560D0
     {
         MovementGroup movement_group = {};
         movement_group.pos.x = x;
@@ -268,7 +268,7 @@ namespace hooks
                 {
                     if (rightOrder == OrderId::RallyPoint2)
                     {
-                        if (unit->is_factory())
+                        if (unit->is_factory() || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
                         {
                             UnitExt* unitExt = globals.get_unit_ext(unit);
                             unit->rally.unit = 0;

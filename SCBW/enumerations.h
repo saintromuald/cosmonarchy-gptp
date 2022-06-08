@@ -328,7 +328,7 @@ namespace NewFlags2
 	};
 }
 
-namespace BUTTON_STATE
+namespace Button_State
 {
 	enum Enum
 	{

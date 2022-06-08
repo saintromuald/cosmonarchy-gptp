@@ -910,8 +910,8 @@ template <typename T>
 struct PlayerFlags {
 	T flags[PLAYER_COUNT];
 };
-SCBW_DATA(PlayerFlags<u8>*, playerAlliance, 0x0058D634);  //See scbw::is_allied_to()
-SCBW_DATA(PlayerFlags<u32>*, playerVision, 0x0057F1EC);
+SCBW_DATA(PlayerFlags<u8>*,		player_alliance,	0x0058D634); // See scbw::is_allied_to()
+SCBW_DATA(PlayerFlags<u32>*,	player_vision,		0x0057F1EC);
 
 SCBW_DATA(Unit* const*, active_portrait_unit, 0x00597248);
 

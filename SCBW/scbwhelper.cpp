@@ -12067,4 +12067,37 @@ namespace helper
 			POPAD
 		}
 	}
+
+	u32 order_acquire_generic_idle_unit_proc(Unit* unit, u32 x_pos, u16 y_pos, Unit* target, u16 fow_unit_id) {
+		static u32 result;
+		static u32 fow_unit_id_xd = fow_unit_id;
+		static u32 y_pos_xd = y_pos;
+		const u32 func_address = 0x00455900;
+		__asm {
+			PUSHAD
+			PUSH fow_unit_id_xd
+			PUSH target
+			PUSH y_pos_xd
+			MOV EDX, x_pos
+			MOV ECX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker) {
+		static u32 result;
+		const u32 func_address = 0x004557C0;
+		__asm {
+			PUSHAD
+			MOV EDI, node
+			MOV ESI, worker
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

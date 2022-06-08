@@ -1336,4 +1336,7 @@ namespace helper
 	u16 get_minimap_cursor_pos(u16* x, u16* y);																// 004A3D70
 
 	void update_palette();																					// 0041E5C0
+
+	u32 order_acquire_generic_idle_unit_proc(Unit* unit, u32 x_pos, u16 y_pos, Unit* target, u16 fow_unit_id);	// 00455900
+	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker);								// 004557C0
 }

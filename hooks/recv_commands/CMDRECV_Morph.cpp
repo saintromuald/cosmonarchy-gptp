@@ -4,7 +4,7 @@
 
 namespace hooks
 {
-	void CMDRECV_BuildingMorph(u16 unit_id)
+	void cmdrecv_building_morph(u16 unit_id)
 	{
 		*unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
@@ -19,7 +19,7 @@ namespace hooks
 		};
 	}
 
-	void CMDRECV_UnitMorph(u16 wUnitType)
+	void cmdrecv_unit_morph(u16 wUnitType)
 	{
 		Unit* current_unit;
 		*unit_iterator_pos = 0;
@@ -161,5 +161,50 @@ namespace hooks
 		*unk_rally_related = 2;
 		*orders_buttonset = 229;
 		helper::update_current_buttonset();
+	}
+
+	// Hooked for contextual orders. -Pr0nogo
+	u32 order_acquire_generic_right_click_unit_proc(Unit* unit, u32 x_pos, u16 y_pos, Unit* target, u16 fow_unit_id) // 00455CC0 - guessed x_pos and y_pos
+	{
+		Unit* target_prev = target->link.prev; // seems wrong, guess IDA could be pranking me and this could simply be target?
+		if (!target->link.prev)
+		{
+			return helper::order_acquire_generic_idle_unit_proc(unit, x_pos, y_pos, target, fow_unit_id);
+		}
+		u32 result = helper::order_acquire_generic_right_click_harvest_proc(target_prev, unit);
+		if (result == OrderId::None)
+		{
+			if (!(target_prev->status & UnitStatus::GroundedBuilding) || target_prev->status & UnitStatus::Completed)
+			{
+				if (scbw::is_allied_to(unit->player, target_prev->player))
+				{
+					if (!(units_dat::BaseProperty[target_prev->id] & UnitProperty::Building)
+						&& helper::unit_is_active_transport(target_prev)
+						&& helper::can_enter_transport(target_prev, unit))
+					{
+						return OrderId::EnterTransport;
+					}
+					if (helper::is_order_valid(OrderId::Repair1, unit, (s32)target_prev, target_prev, 0)) // this helper is hilarious
+					{
+						return OrderId::Repair1;
+					}
+					if (helper::unit_is_active_transport(target_prev) && helper::can_enter_transport(target_prev, unit))
+					{
+						return OrderId::EnterTransport;
+					}
+				}
+			}
+			else if (target_prev->player == unit->player
+				&& target_prev->get_race() == RaceId::Terran
+				&& !(units_dat::BaseProperty[target_prev->id] & UnitProperty::Addon))
+			{
+				if (!target_prev->connected_unit || target_prev->connected_unit->order_target.unit != target_prev)
+				{
+					return OrderId::ConstructingBuilding;
+				}
+			}
+			result = helper::order_acquire_generic_idle_unit_proc(unit, x_pos, y_pos, target, fow_unit_id);
+		}
+		return result;
 	}
 }
