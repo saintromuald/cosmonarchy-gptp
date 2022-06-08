@@ -204,7 +204,7 @@ namespace hooks
 		activeButtonSetId = (*active_portrait_unit)->current_button_set;
 		do
 		{ // count units to know if will be using special group buttonset (peons, cloakables...)
-			unitFromSelection = clientSelectionGroup->unit[unitIndexFromSelection];
+			unitFromSelection = client_selection_group->unit[unitIndexFromSelection];
 			if (unitFromSelection != nullptr)
 			{
 				flagsHolder = units_dat::BaseProperty[unitFromSelection->id];
@@ -277,23 +277,23 @@ namespace hooks
 		while (unitIndexFromSelection < SELECTION_ARRAY_LENGTH);
 		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank)
 		{
-			if (countWorkers == *clientSelectionCount)
+			if (countWorkers == *client_selection_count)
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
 			}
-			else if (countCloakables == *clientSelectionCount)
+			else if (countCloakables == *client_selection_count)
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupCloaker;
 			}
-			else if ((countBurrowables != 0) && (countNotInAirAndZergs == *clientSelectionCount))
+			else if ((countBurrowables != 0) && (countNotInAirAndZergs == *client_selection_count))
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // aerial units and non-zergs units prevent this (but not Ultralisk)
 			}
-			else if (countLarva == *clientSelectionCount)
+			else if (countLarva == *client_selection_count)
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
 			}
-			else if (count_hatches == *clientSelectionCount)
+			else if (count_hatches == *client_selection_count)
 			{
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
 			}
@@ -409,7 +409,7 @@ namespace hooks
 		*BUTTONSET_PORTRAIT_BUTTONSETID = UnitId::Buttons_Blank;
 		if (!scbw::isInReplay())
 		{
-			if (*clientSelectionCount != 0)
+			if (*client_selection_count != 0)
 			{
 				if (*bDoingCancellableTargetOrder == 0)
 				{
@@ -436,7 +436,7 @@ namespace hooks
 			}
 		}
 		*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_Blank;
-		if ((*clientSelectionCount > 1) && (!scbw::isInReplay()))
+		if ((*client_selection_count > 1) && (!scbw::isInReplay()))
 		{
 			updateButtonSetEx();
 		}
@@ -788,15 +788,15 @@ namespace hooks
 						}
 					}
 
-					if (current_button->action_func == (ActFunc*)ButtonActions::Create_AddOn && *clientSelectionCount > 1) {
+					if (current_button->action_func == (ActFunc*)ButtonActions::Create_AddOn && *client_selection_count > 1) {
 						current_button_state = Button_State::Invisible;
 					}
 
-					if (current_button->icon_id == IconId::Land && *clientSelectionCount > 1) {
+					if (current_button->icon_id == IconId::Land && *client_selection_count > 1) {
 						current_button_state = Button_State::Invisible;
 					}
 
-					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == IconId::Lair && *clientSelectionCount > 1) {
+					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == IconId::Lair && *client_selection_count > 1) {
 						current_button_state = Button_State::Invisible;
 					}
 

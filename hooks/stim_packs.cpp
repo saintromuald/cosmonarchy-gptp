@@ -16,11 +16,11 @@ namespace hooks
 		Unit* currentClientSelectionUnit;
 		bool bFoundUnitAbleToStimpack = false;
 
-		// original code used pointer comparison with clientSelectionGroupEnd
-		// and incrementing a pointer starting at clientSelectionGroup
+		// original code used pointer comparison with client_selection_group_end
+		// and incrementing a pointer starting at client_selection_group
 		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH && !bFoundUnitAbleToStimpack; i++)
 		{
-			currentClientSelectionUnit = clientSelectionGroup->unit[i];
+			currentClientSelectionUnit = client_selection_group->unit[i];
 			if (currentClientSelectionUnit != nullptr &&
 				currentClientSelectionUnit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{

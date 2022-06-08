@@ -357,8 +357,8 @@ namespace hooks
 	{
 		s32 sfx_id = -1;
 		s32 text_id = -1;
-		Unit** selected_units = &clientSelectionGroup->unit[11];
-		Unit** selected_units_2 = &clientSelectionGroup->unit[11];
+		Unit** selected_units = &client_selection_group->unit[11];
+		Unit** selected_units_2 = &client_selection_group->unit[11];
 		do
 		{
 			Unit* unit = *selected_units;
@@ -483,7 +483,7 @@ namespace hooks
 			}
 			selected_units = selected_units_2 - 1;
 			--selected_units_2;
-		} while (selected_units_2 >= clientSelectionGroup->unit);
+		} while (selected_units_2 >= client_selection_group->unit);
 		if (sfx_id != -1)
 		{
 			if (sfx_id)

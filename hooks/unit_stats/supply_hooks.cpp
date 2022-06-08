@@ -149,12 +149,12 @@ namespace hooks
         if (*bw_is_in_replay)
         {
 
-            if (*clientSelectionCount)
+            if (*client_selection_count)
             {
                 Unit* activeUnit = *active_portrait_unit;
-                if (*clientSelectionCount != 1)
+                if (*client_selection_count != 1)
                 {
-                    activeUnit = clientSelectionGroup->unit[0];
+                    activeUnit = client_selection_group->unit[0];
                 }
                 activePlayer = activeUnit->player;
                 if (activePlayer != 11)

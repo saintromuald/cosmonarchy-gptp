@@ -36,7 +36,7 @@ namespace
 			POPAD
 			MOV ESP, EBP
 			POP EBP
-			RETN 4
+			RETN 0x04
 		}
 	}
 
@@ -181,8 +181,38 @@ namespace
 			RETN 0x08
 		}
 	}
+	
+	void __declspec(naked) get_generic_unit_idle_order_wrapper() { // 00455760
+		static u8 result;
+		static u32 order_unit_id;
+		static Unit* unit;
+		__asm {
+			MOV order_unit_id, ECX
+			MOV unit, EDX
+			PUSHAD
+		}
+		result = hooks::get_generic_unit_idle_order(order_unit_id, unit);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 
-	void __declspec(naked) get_right_click_action_order_wrapper() {
+	void __declspec(naked) input_game_right_mouse_click_wrapper() { // 004564E0
+		static DialogEvent* dlg_event;
+		__asm {
+			MOV dlg_event, ECX
+			PUSHAD
+		}
+		hooks::input_game_right_mouse_click(dlg_event);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) get_right_click_action_order_wrapper() { // 004E5EA0
 		static char result;
 		static Unit* unit;
 		__asm {
@@ -193,6 +223,23 @@ namespace
 		__asm {
 			POPAD
 			MOV AL, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) can_do_targeted_order_wrapper() { // 0049A410
+		static u32 result;
+		static Unit* unit;
+		static u8 order_id;
+		__asm {
+			MOV order_id, DL
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::can_do_targeted_order(unit, order_id);
+		__asm {
+			POPAD
+			MOV result, EAX
 			RETN
 		}
 	}
@@ -210,6 +257,9 @@ namespace hooks
 	//	jump_patch(order_acquire_generic_right_click_unit_proc_wrapper,		0x00455CC0, 2);
 	//	jump_patch(order_acquire_generic_right_click_unit_proc_2_wrapper,	0x00455E00,	1);
 	//	jump_patch(process_right_click_action_wrapper,						0x00455F20,	1);
-	//	jump_patch(get_right_click_action_order_wrapper,					0x004E5EA0,	1);
+	//	jump_patch(get_generic_unit_idle_order_wrapper,						0x00455760,	1);
+	//	jump_patch(input_game_right_mouse_click_wrapper,					0x004564E0,	0);
+	//	jump_patch(get_right_click_action_order_wrapper,					0x004E5EA0,	3);
+	//	jump_patch(can_do_targeted_order_wrapper,							0x0049A410,	2);
 	}
 }

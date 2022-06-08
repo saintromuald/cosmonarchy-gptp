@@ -302,10 +302,10 @@ namespace hooks
 					u32 sorted_list_length;
 
 					// locate surrounding units for selection
-					local_temp_box16_structure.left = *MoveToX;
-					local_temp_box16_structure.top = *MoveToY;
-					local_temp_box16_structure.right = *MoveToX + 640;
-					local_temp_box16_structure.bottom = *MoveToY + 400;
+					local_temp_box16_structure.left = *move_to_x;
+					local_temp_box16_structure.top = *move_to_y;
+					local_temp_box16_structure.right = *move_to_x + 640;
+					local_temp_box16_structure.bottom = *move_to_y + 400;
 					units_in_bounds = helper::get_all_units_in_bounds(&local_temp_box16_structure);
 					sorted_list_length = sort_all_units(clicked_unit, local_temp_array_1, units_in_bounds);
 
@@ -342,10 +342,10 @@ namespace hooks
 					u32 sorted_list_length;
 
 					// prepare to locate surrounding units for selection
-					local_temp_box16_structure.left = *MoveToX;
-					local_temp_box16_structure.top = *MoveToY;
-					local_temp_box16_structure.right = *MoveToX + 640;
-					local_temp_box16_structure.bottom = *MoveToY + 400;
+					local_temp_box16_structure.left = *move_to_x;
+					local_temp_box16_structure.top = *move_to_y;
+					local_temp_box16_structure.right = *move_to_x + 640;
+					local_temp_box16_structure.bottom = *move_to_y + 400;
 
 					// save existing selection to a temporary array
 					for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)

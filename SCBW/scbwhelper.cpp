@@ -1170,7 +1170,7 @@ namespace helper
 	}
 
 	// for ai_create_nuke
-	Unit* create_unit(s16 unitType, s32 x, s32 y, s32 playerId)
+	Unit* create_unit(s16 unit_id, s32 x, s32 y, s32 playerId)
 	{
 		const u32 Func_createUnit = 0x004A09D0;
 		static Unit* result;
@@ -1179,7 +1179,7 @@ namespace helper
 			PUSH playerId
 			PUSH y
 			MOV EAX, x
-			MOVZX CX, unitType
+			MOVZX CX, unit_id
 			CALL Func_createUnit
 			MOV result, EAX
 			POPAD
@@ -3058,7 +3058,7 @@ namespace helper
 
 	// For update_placement_state_for_placement_box
 
-	s32 can_build_on_tile_location(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision)
+	s32 can_build_on_tile_location(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unit_id, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision)
 	{
 		const u32 Func_canBuildOnTileLocation = 0x00473FB0;
 		static s32 result;
@@ -3069,7 +3069,7 @@ namespace helper
 			PUSH bAlsoInvisible
 			PUSH bCheckVision
 			PUSH placementStateEntry
-			PUSH unitType
+			PUSH unit_id
 			PUSH yTile
 			PUSH xTile
 			PUSH playerId
@@ -7981,17 +7981,17 @@ namespace helper
 		return result;
 	}
 
-	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y)
+	Unit* createUnitAtPos(u16 unit_id, u16 playerId, u32 x, u32 y)
 	{
 		const u32 Func_CreateUnitAtPos = 0x004CD360; // AKA createUnitXY()
-		if (unitType >= UNIT_TYPE_COUNT)
+		if (unit_id >= UNIT_TYPE_COUNT)
 		{
 			return nullptr;
 		}
 		static Unit* unit;
 		__asm {
 			PUSHAD
-			MOV CX, unitType
+			MOV CX, unit_id
 			MOV AX, playerId
 			PUSH y
 			PUSH x
@@ -8139,7 +8139,7 @@ namespace helper
 	}
 
 	// For create_unit
-	Unit* unit_constructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused)
+	Unit* unit_constructor(s32 x, s32 y, u16 unit_id, s32 playerId, s32 unused)
 	{
 		const u32 Func_unitConstructor = 0x004A06C0;
 		static Unit* result;
@@ -8148,7 +8148,7 @@ namespace helper
 			PUSHAD
 			PUSH unused
 			PUSH playerId
-			MOV DI, unitType
+			MOV DI, unit_id
 			MOV EDX, y
 			MOV ESI, x
 			CALL Func_unitConstructor
@@ -12131,6 +12131,114 @@ namespace helper
 			PUSH y_pos
 			PUSH x_pos
 			MOV EAX, factory
+			CALL func_address
+			POPAD
+		}
+	}
+
+	s32 s_trans_442(u32 current_x, u32 current_y) {
+		static s32 result;
+		const u32 func_address = 0x004D1140;
+		__asm {
+			PUSHAD
+			MOV ECX, current_x
+			MOV EAX, current_y
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool accepts_right_click_commands(Unit* unit) {
+		static bool result;
+		const u32 func_address = 0x004556D0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* find_unit_at_point(u32 x_pos, u32 y_pos) {
+		static Unit* result;
+		const u32 func_address = 0x0046F3A0;
+		__asm {
+			PUSHAD
+			PUSH y_pos
+			PUSH x_pos
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+	}
+
+	s32 can_move(Unit* unit) {
+		static s32 result;
+		const u32 func_address = 0x00455660;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Thingy* show_command_response(u32 x_pos, u16 y_pos, Unit* unit) {
+		static Thingy* result;
+		const u32 func_address = 0x00456490;
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV DI, y_pos
+			MOV EAX, x_pos
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char cmdact_right_click_order(Unit* target, u16 x_pos, u16 y_pos, u16 unit_id, u8 keycode_used) {
+		static char result;
+		const u32 func_address = 0x004C0380;
+		__asm {
+			PUSHAD
+			PUSH keycode_used
+			PUSH unit_id
+			PUSH y_pos
+			PUSH x_pos
+			MOV ESI, target
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	s32 show_right_click_error_if_needed(Unit* target) {
+		static s32 result;
+		const u32 func_address = 0x00455A00;
+		__asm {
+			PUSHAD
+			PUSH target
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void play_worker_action_sound(Unit* unit) {
+		const u32 func_address = 0x0048F4D0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
 			CALL func_address
 			POPAD
 		}

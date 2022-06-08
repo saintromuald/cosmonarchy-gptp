@@ -198,7 +198,7 @@ namespace hooks
 			} break;
 			case TechId::StarSovereignTheGriefOfAllGods:
 			{
-				auto firstInList = clientSelectionGroup->unit[0];
+				auto firstInList = client_selection_group->unit[0];
 				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
 				buf[0] = 0x99;
 				buf[1] = NewGameCommand::IssueCTFCop2;

@@ -32,7 +32,7 @@ namespace hooks
 	{ // 0047B4B0
 		s32 unitFlags; // eax
 		Image* i; // esi
-		s16 unitType; // ax
+		s16 unit_id; // ax
 
 		unitFlags = pUnit->status;
 		if (!(unitFlags & UnitStatus::Frozen) && pUnit->lockdown_timer == 0 && pUnit->stasis_timer == 0
@@ -41,15 +41,15 @@ namespace hooks
 			pUnit->status = unitFlags | UnitStatus::Disabled;
 			for (i = pUnit->sprite->images.head; i; i = i->link.next)
 				helper::playImageIscript(i, IscriptAnimation::AlmostBuilt);
-			unitType = pUnit->id;
+			unit_id = pUnit->id;
 			pUnit->status |= UnitStatus::NoCollide;
 
-			if (/*unitType == UnitId::Special_FloorMissileTrap
-			||  unitType == UnitId::Special_FloorGunTrap
-			||*/  unitType == UnitId::Special_UpperLevelDoor
-				|| unitType == UnitId::Special_RightUpperLevelDoor
-				|| unitType == UnitId::Special_PitDoor
-				|| unitType == UnitId::Special_RightPitDoor)
+			if (/*unit_id == UnitId::Special_FloorMissileTrap
+			||  unit_id == UnitId::Special_FloorGunTrap
+			||*/  unit_id == UnitId::Special_UpperLevelDoor
+				|| unit_id == UnitId::Special_RightUpperLevelDoor
+				|| unit_id == UnitId::Special_PitDoor
+				|| unit_id == UnitId::Special_RightPitDoor)
 			{
 				pUnit->sprite->elevationLevel = 1;
 			}

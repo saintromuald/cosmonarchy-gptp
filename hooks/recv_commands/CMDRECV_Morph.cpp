@@ -320,10 +320,151 @@ namespace hooks
 		}
 	}
 
-	// TODO for right-click rally on eggs and cocoons. -Pr0nogo
-	// 00455760 get_generic_unit_idle_order
-	// 004564E0 input_game_right_mouse_click
-	// 0049A410 can_do_targeted_order
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	u8 get_generic_unit_idle_order(u32 order_unit_id, Unit* unit) // 00455760
+	{
+		if (!unit)
+		{
+			return OrderId::Die;
+		}
+
+		u8 result = 0;
+		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
+		{
+			result = OrderId::PlayerGuard;
+		}
+		else
+		{
+			u8 right_click_order = units_dat::RightClickAction[unit->id];
+			if (!right_click_order)
+			{
+				if (unit->status & UnitStatus::GroundedBuilding)
+				{
+					if (helper::unit_can_rally(unit))
+					{
+						right_click_order = OrderId::Guard;
+					}
+				}
+			}
+			result = right_click_order;
+		}
+		if (unit->status & UnitStatus::IsHallucination)
+		{
+			if (result == OrderId::TurretGuard || result == OrderId::BunkerGuard)
+			{
+				result = OrderId::Stop;
+			}
+		}
+		return result;
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	void input_game_right_mouse_click(DialogEvent* dlg_event) // 004564E0
+	{
+		if (!helper::s_trans_442(dlg_event->current.x, dlg_event->current.y))
+		{
+			u8 local_group_owner = local_selection_group[0] ? local_selection_group[0]->player : -1;
+			if (local_group_owner == *LOCAL_NATION_ID)
+			{
+				if (active_portrait_unit)
+				{
+					if (helper::unit_is_owned_by_current_player(*active_portrait_unit))
+					{
+						s32 selection_iterator = 0;
+						while (1)
+						{
+							Unit* selected_unit = *client_selection_group[selection_iterator].unit;
+							if (selected_unit)
+							{
+								if (helper::accepts_right_click_commands(selected_unit))
+								{
+									break;
+								}
+							}
+							if (++selection_iterator >= 12)
+							{
+								return;
+							}
+						}
+						if (selection_iterator < 12)
+						{
+							u32 find_x = *move_to_x + dlg_event->current.x;
+							u32 find_y = *move_to_y + dlg_event->current.y;
+							u32 find_x_var = find_x;
+							Unit* unit_at_point = helper::find_unit_at_point(find_x, find_y);
+							Unit* unit_at_point_var = unit_at_point;
+							if (*client_selection_count != 1
+								|| *active_portrait_unit != unit_at_point
+								|| unit_at_point && unit_at_point->status & 2 && helper::unit_can_rally(unit_at_point))
+							{
+								if (unit_at_point_var)
+								{
+									goto LABEL_33;
+								}
+								s32 selection_iterator_2 = 0;
+								do
+								{
+									Unit* selected_unit_2 = *client_selection_group[selection_iterator_2].unit;
+									if (selected_unit_2)
+									{
+										if (helper::can_move(selected_unit_2))
+										{
+											break;
+										}
+									}
+									++selection_iterator_2;
+								} while (selection_iterator_2 < 12);
+								if (selection_iterator_2 < 12)
+								{
+								LABEL_33:
+									Thingy* command_thingy = helper::show_command_response(find_x_var, find_y, unit_at_point_var);
+									u16 unit_id_xd = UnitId::None;
+									if (command_thingy)
+									{
+										unit_id_xd = command_thingy->unit_id;
+									}
+									helper::cmdact_right_click_order(unit_at_point_var, find_x_var, find_y, unit_id_xd, IS_KEYCODE_USED[16]);
+									if (helper::show_right_click_error_if_needed(unit_at_point_var))
+									{
+										helper::play_worker_action_sound(*active_portrait_unit);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	u32 can_do_targeted_order(Unit* unit, u8 order_id) // 0049A410
+	{
+		if (unit->status & UnitStatus::GroundedBuilding
+		&&    (order_id == OrderId::RallyPoint1
+			|| order_id == OrderId::RallyPoint2
+			|| order_id == OrderId::Rechargeshields2
+			|| order_id == OrderId::Pickup3))
+		{
+			return 1;
+		}
+		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
+		{
+			return 1;
+		}
+		u8 right_click_order = units_dat::RightClickAction[unit->id];
+		if (!right_click_order)
+		{
+			if (unit->status & UnitStatus::GroundedBuilding)
+			{
+				if (helper::unit_can_rally(unit))
+				{
+					right_click_order = 2;
+				}
+			}
+		}
+		return right_click_order != 0;
+	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	char get_right_click_action_order(Unit* unit) // 004E5EA0

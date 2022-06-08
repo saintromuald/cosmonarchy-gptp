@@ -116,7 +116,7 @@ struct DialogEvent
 	u16		wVirtKey;			// 0x8
 	u16		wVirtKeyMod;		// 0xA
 	u16		no;					// 0xC
-	u32		current;			// 0xE
+	Point16	current;			// 0xE
 	u16		field_12;			// 0x12
 };
 
@@ -289,7 +289,7 @@ struct Thingy
 {
 	/*00*/  Thingy* prev;
 	/*04*/  Thingy* next;
-	/*08*/  u32     unitType;
+	/*08*/  u32     unit_id;
 	/*0C*/  Sprite* sprite;
 };
 

@@ -126,9 +126,9 @@ SCBW_DATA(const char*, StringEmpty, 0x00501B7D);
 struct UnitsSel {
 	Unit* unit[SELECTION_ARRAY_LENGTH];
 };
-SCBW_DATA(UnitsSel*, clientSelectionGroup, 0x00597208);
-SCBW_DATA(Unit*, clientSelectionGroupEnd, 0x00597238);
-SCBW_DATA(u8*, clientSelectionCount, 0x0059723D);
+SCBW_DATA(UnitsSel*,	client_selection_group,		0x00597208);
+SCBW_DATA(Unit*,		client_selection_group_end, 0x00597238);
+SCBW_DATA(u8*,			client_selection_count,		0x0059723D);
 
 /// Screen position relative to the map
 SCBW_DATA(s32*, screenX, 0x00628448);
@@ -152,8 +152,8 @@ SCBW_DATA(const b8*, IS_HOLDING_CTRL, 0x00596A29);
 SCBW_DATA(const b8*, IS_HOLDING_ALT, 0x00596A2A);
 
 /// Maybe used by Map triggers to init a progressive movement toward the corresponding location, see GameImpl::setScreenPosition of BWAPI
-SCBW_DATA(u32*, MoveToX, 0x0062848C);
-SCBW_DATA(u32*, MoveToY, 0x006284A8);
+SCBW_DATA(u32*, move_to_x,	0x0062848C);
+SCBW_DATA(u32*, move_to_y,	0x006284A8);
 
 /// Contains various information (names, player types, race types, and associated forces) of each player in the current game
 SCBW_DATA(Player*, playerTable, 0x0057EEE0);
@@ -1025,8 +1025,10 @@ SCBW_DATA(u16*,					minimap_cursor,			0x006556FC);
 SCBW_DATA(RECT*,				minimap_rect,			0x00512D00);
 
 // For process_right_click_action
-SCBW_DATA(u16*,	is_unit_in_point_x_pos,	0x006509CC);
-SCBW_DATA(u16*,	is_unit_in_point_y_pos,	0x006509CE);
+SCBW_DATA(u16*,	is_unit_in_point_x_pos,		0x006509CC);
+SCBW_DATA(u16*,	is_unit_in_point_y_pos,		0x006509CE);
+
+SCBW_DATA(Unit**,	local_selection_group,	0x0059724C);
 
 //////////////////////////////////////////////////////////////// @}
 

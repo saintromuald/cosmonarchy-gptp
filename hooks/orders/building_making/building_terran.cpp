@@ -519,7 +519,7 @@ namespace hooks
 			if (helper::has_supplies_for_unit(player, unit_id, 1)) {
 				if (game_minerals[player] >= ai_minerals_reserve[player]) {
 					if (game_vespene[player] >= ai_gas_reserve[player]) {
-						if ((*IS_HOLDING_SHIFT || unit->status & UnitStatus::InAir) && *clientSelectionCount <= 1) {
+						if ((*IS_HOLDING_SHIFT || unit->status & UnitStatus::InAir) && *client_selection_count <= 1) {
 							helper::issue_place_building_order(buffer, unit_id, OrderId::PlaceAddon);
 						} else if (!(unit->status & UnitStatus::InAir)) {
 							u8 buffer[8] = {};
