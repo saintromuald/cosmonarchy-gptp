@@ -94,7 +94,7 @@ namespace helper
 	bool unitIsFrozen(Unit* a1);
 	bool isUnitCasterNotHallucination(Unit* a1);
 	b32 getActiveTileFlag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags);
-	Unit* getTargetUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);
+	Unit* get_target_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3);
 
 	// For modifyUnitShields
 	s32 SErrSetLastError(char a1);

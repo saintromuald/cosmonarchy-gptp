@@ -195,4 +195,52 @@ namespace hooks
 		}
 		return result;
 	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	u32 order_acquire_generic_right_click_unit_proc_2(Unit* unit, u32 x_pos, u16 y_pos, Unit** target, u16 fow_unit_id) // 00455E00
+	{
+		u32 result = OrderId::Nothing2;
+		if (unit->status & UnitStatus::GroundedBuilding || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
+		{
+			if (helper::unit_is_factory(unit) || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
+			{
+				result = OrderId::RallyPoint2 - (*target != 0);
+			}
+			return result;
+		}
+
+		Unit* target_unit = *target;
+		if (!*target)
+		{
+			if ((unit->id == UnitId::ZergMatraleth) && fow_unit_id != UnitId::None)
+			{
+				return OrderId::Rightclickaction;
+			}
+			return OrderId::Move;
+		}
+		if (helper::unit_is_active_transport(unit) && helper::is_order_valid(OrderId::Pickup2, unit, 0, target_unit, 0))
+		{
+			return OrderId::Pickup2;
+		}
+		if (helper::unit_is_active_transport(target_unit) && helper::can_enter_transport(target_unit, unit))
+		{
+			return OrderId::EnterTransport;
+		}
+		if (target_unit->status & UnitStatus::Burrowed)
+		{
+			return OrderId::Move;
+		}
+
+		if (unit->id != UnitId::ZergMatraleth
+		||  target_unit->status & UnitStatus::Invincible
+		||  helper::get_target_unit_ability_error_stat_string(target_unit, unit->player, 12) != 0)
+		{
+			result = (unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
+		}
+		else
+		{
+			result = OrderId::InfestMine2;
+		}
+		return result;
+	}
 }

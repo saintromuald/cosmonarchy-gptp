@@ -94,7 +94,7 @@ namespace
 		static Unit* unit;
 		static u32 x_pos;
 		static u16 y_pos;
-		static Unit* target;
+		static Unit** target;
 		static u16 fow_unit_id;
 		__asm {
 			PUSH EBP
@@ -120,17 +120,50 @@ namespace
 			RETN 0x0C
 		}
 	}
+
+	void __declspec(naked) order_acquire_generic_right_click_unit_proc_2_wrapper() { // 00455E00
+		static u32 result;
+		static Unit* unit;
+		static u32 x_pos;
+		static u16 y_pos;
+		static Unit** target;
+		static u16 fow_unit_id;
+		__asm {
+			PUSH EBP
+			PUSH EAX
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV y_pos, AX
+			MOV EAX, [EBP + 0x0C]
+			MOV target, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV fow_unit_id, AX
+			POP EAX
+			MOV x_pos, EDX
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::order_acquire_generic_right_click_unit_proc_2(unit, x_pos, y_pos, target, fow_unit_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x0C
+		}
+	}
 }
 
 namespace hooks
 {
 	void inject_cmdrecv_morph_hooks()
 	{
-		jump_patch(cmdrecv_building_morph_wrapper,						0x004C1910, 6);
-		jump_patch(cmdrecv_unit_morph_wrapper,							0x004C1990, 1);
-		jump_patch(cmdrecv_train_wrapper,								0x004C1C20, 6);
-		jump_patch(cmdrecv_liftoff_wrapper,								0x004C1620, 6);
-	//	jump_patch(btnsact_rally_point_wrapper,							0x004244A0, 2);
-	//	jump_patch(order_acquire_generic_right_click_unit_proc_wrapper,	0x00455CC0, 2);
+		jump_patch(cmdrecv_building_morph_wrapper,							0x004C1910, 6);
+		jump_patch(cmdrecv_unit_morph_wrapper,								0x004C1990, 1);
+		jump_patch(cmdrecv_train_wrapper,									0x004C1C20, 6);
+		jump_patch(cmdrecv_liftoff_wrapper,									0x004C1620, 6);
+	//	jump_patch(btnsact_rally_point_wrapper,								0x004244A0, 2);
+	//	jump_patch(order_acquire_generic_right_click_unit_proc_wrapper,		0x00455CC0, 2);
+	//	jump_patch(order_acquire_generic_right_click_unit_proc_2_wrapper,	0x00455E00,	1);
 	}
 }

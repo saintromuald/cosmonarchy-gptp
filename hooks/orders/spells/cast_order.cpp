@@ -121,7 +121,7 @@ namespace hooks
 						LABEL_20:
 							if (fowUnitId == UnitId::None)
 							{
-								errorStatString = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->player, techId);
+								errorStatString = (u32)helper::get_target_unit_ability_error_stat_string(target, caster->player, techId);
 							}
 							else
 							{

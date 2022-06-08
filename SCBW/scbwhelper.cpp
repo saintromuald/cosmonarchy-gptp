@@ -829,7 +829,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* getTargetUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3)
+	Unit* get_target_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3)
 	{
 		const u32 Func_getTargetUnitAbilityErrorStatString = 0x00491E80;
 		static Unit* result;

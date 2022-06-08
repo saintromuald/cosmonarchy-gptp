@@ -899,7 +899,7 @@ LABEL_23:
 							{
 								if (!v3 || v3->status & 0x4000000)
 									goto LABEL_17;
-								v7 = (u16)helper::getTargetUnitAbilityErrorStatString(v3, a1->player, v6) == 0;
+								v7 = (u16)helper::get_target_unit_ability_error_stat_string(v3, a1->player, v6) == 0;
 							}
 							if (!v7)
 								goto LABEL_17;
