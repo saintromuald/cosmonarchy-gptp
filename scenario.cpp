@@ -1300,14 +1300,14 @@ bool fraud_share_alliance(u32 a, u32 b) {
 }
 
 void set_ally(u32 a, u32 b, bool ally) {
-	playerAlliance[a].flags[b] = ally;
-	playerAlliance[b].flags[a] = ally;
+	player_alliance[a].flags[b] = ally;
+	player_alliance[b].flags[a] = ally;
 	if (ally) {
-		playerVision->flags[a] |= 1 << b;
-		playerVision->flags[b] |= 1 << a;
+		player_vision->flags[a] |= 1 << b;
+		player_vision->flags[b] |= 1 << a;
 	} else {
-		playerVision->flags[a] &= ~(1 << b);
-		playerVision->flags[b] &= ~(1 << a);
+		player_vision->flags[a] &= ~(1 << b);
+		player_vision->flags[b] &= ~(1 << a);
 	}
 }
 
@@ -1556,9 +1556,9 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				}
 
 				scbw::minimap_ping(spawn_location->pos.x, spawn_location->pos.y, 0, *LOCAL_NATION_ID);
-				playerVision->flags[player] |= 1 << 0;
+				player_vision->flags[player] |= 1 << 0;
 				if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
-					playerVision->flags[player] |= 1 << 7;
+					player_vision->flags[player] |= 1 << 7;
 				}
 
 				return true;
@@ -1788,9 +1788,9 @@ void tick_scenario() {
 							}
 						}
 					} else {
-						playerVision->flags[i] &= ~(1 << 0);
+						player_vision->flags[i] &= ~(1 << 0);
 						if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
-							playerVision->flags[i] &= ~(1 << 7);
+							player_vision->flags[i] &= ~(1 << 7);
 						}
 						sequence->location = 0;
 					}

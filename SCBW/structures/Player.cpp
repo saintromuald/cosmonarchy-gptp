@@ -73,7 +73,7 @@ graphics::ColorId Player::get_faction_color(u8 playerId)
 	return return_value;
 }
 
-u32 Player::numberOfUnitsOfType(u8 playerId, u16 unit_id)
+u32 Player::number_of_units_of_id(u8 playerId, u16 unit_id)
 {
 	if (unit_id > UNIT_TYPE_COUNT - 1)
 	{
@@ -82,7 +82,7 @@ u32 Player::numberOfUnitsOfType(u8 playerId, u16 unit_id)
 	return allUnitCountTable[unit_id].player[playerId];
 }
 
-u32 Player::numberOfCompletedUnitsOfType(u8 playerId, u16 unit_id)
+u32 Player::number_of_completed_units_of_id(u8 playerId, u16 unit_id)
 {
 	if (unit_id > UNIT_TYPE_COUNT - 1)
 	{

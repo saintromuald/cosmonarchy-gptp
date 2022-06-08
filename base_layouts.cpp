@@ -335,9 +335,9 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 
 	// Check gas availability
 	if (units_dat::gas_cost[unit_id] > resources->gas[town->player] &&
-		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::TerranReservoir) &&
-		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ProtossAquifer) &&
-		!Player::numberOfCompletedUnitsOfType(town->player, UnitId::ZergExcisant)) {
+		!Player::number_of_completed_units_of_id(town->player, UnitId::TerranReservoir) &&
+		!Player::number_of_completed_units_of_id(town->player, UnitId::ProtossAquifer) &&
+		!Player::number_of_completed_units_of_id(town->player, UnitId::ZergExcisant)) {
 		return false;
 	}
 	

@@ -3,41 +3,40 @@
 
 namespace
 {
-	void __declspec(naked) getParseRequirementOpcodesWrapper() // 0046D610
+	void __declspec(naked) parse_requirement_opcodes_wrapper() // 0046D610
 	{
 		static Unit* unit;
-		static u32 datReqOffset;
-		static u32 techID;
-		static u32 playerId;
-		static u16* datReqBase;
+		static u32 dat_req_offset;
+		static u32 tech_id;
+		static u32 player_id;
+		static u16* dat_req_base;
 		static s32 result;
-
 		__asm
 		{
 			PUSH EBP
 			MOV EBP, ESP
-			MOV datReqOffset, EAX
+			MOV dat_req_offset, EAX
 			MOV unit, ESI
 			MOV EAX, [EBP + 0x08]
-			MOV techID, EAX
+			MOV tech_id, EAX
 			MOV EAX, [EBP + 0x0C]
-			MOV playerId, EAX
+			MOV player_id, EAX
 			MOV EAX, [EBP + 0x10]
-			MOV datReqBase, EAX
+			MOV dat_req_base, EAX
 			PUSHAD
 		}
-		result = hooks::parse_requirement_opcodes(unit, datReqOffset, techID, playerId, datReqBase);
+		result = hooks::parse_requirement_opcodes(unit, dat_req_offset, tech_id, player_id, dat_req_base);
 		__asm
 		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 12
+			RETN 0x0C
 		}
 	}
 
-	void __declspec(naked) getUnitCreateAllowedWrapper() // 0046E1C0
+	void __declspec(naked) unit_create_allowed_wrapper() // 0046E1C0
 	{
 		static s32 result;
 		static s16 unit_id;
@@ -55,23 +54,23 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::UnitCreateAllowed(unit_id, unit, playerId);
+		result = hooks::unit_create_allowed(unit_id, unit, playerId);
 		__asm
 		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 4
+			RETN 0x04
 		}
 	}
 }
 
 namespace hooks
 {
-	void injectRequirementHooks()
+	void inject_requirement_hooks()
 	{
-		jump_patch(getParseRequirementOpcodesWrapper,	0x0046D610, 0);
-		jump_patch(getUnitCreateAllowedWrapper,			0x0046E1C0, 0);
+	//	jump_patch(parse_requirement_opcodes_wrapper,	0x0046D610, 1);
+	//	jump_patch(unit_create_allowed_wrapper,			0x0046E1C0, 0);
 	}
 }

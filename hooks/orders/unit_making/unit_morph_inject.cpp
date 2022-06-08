@@ -7,7 +7,7 @@
 
 namespace
 {
-	//-------- CMDRECV_UnitMorph --------//
+	//-------- cmdrecv_unit_morph --------//
 
 	const u32 Func_AddUnitToBuildQueue = 0x00467250;
 	bool addUnitToBuildQueue(Unit* unit, u16 unit_id)
@@ -516,7 +516,7 @@ namespace hooks
 	{
 		jump_patch(orders_zerg_birth_wrapper,					0x0045DD60, 1);
 		jump_patch(orders_morph_1_wrapper,						0x0045DEA0, 0);
-		call_patch(unitMorphWrapper_CMDRECV_UnitMorph,			0x00486B50, 0);		// jmp 004C1990  CMDRECV_UnitMorph
+		call_patch(unitMorphWrapper_CMDRECV_UnitMorph,			0x00486B50, 0);		// jmp 004C1990  cmdrecv_unit_morph
 		jump_patch(unitMorphWrapper_BTNSCOND_CanBuildUnit,		0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
 		jump_patch(unitMorphWrapper_Orders_Morph1_Check,		0x0045DFB0);		// 0045DEA0  orders_morph_1 within	
 		jump_patch(unitMorphWrapper_Orders_Morph1_EggType,		0x0045E019);		// 0045DEA0  orders_morph_1 within

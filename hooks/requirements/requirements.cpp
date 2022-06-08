@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	s32 parseRequirementOpcodesLogic(Unit* unit, u32 datReqOffset, u16 id, u32 playerId, u16* datReqBase)
+	s32 parse_requirement_opcodes_logic(Unit* unit, u32 datReqOffset, u16 id, u32 playerId, u16* datReqBase)
 	{
 		// args:
 		// eax          u32    dat req offset
@@ -34,7 +34,7 @@ namespace hooks
 			{
 				case RequirementOpcodes::MustBeBroodWar:
 				{
-					if (scbw::isBroodWarMode() == false)
+					if (scbw::is_brood_war_mode() == false)
 					{
 						*last_internal_error = InternalErrors::UnknownError26;
 						return 0;
@@ -46,7 +46,7 @@ namespace hooks
 				case RequirementOpcodes::CurrentUnitIs:
 				{
 					unit_id = datReqBase[datReqOffset++];
-					if (Player::numberOfCompletedUnitsOfType(unit_id, playerId) != 0)
+					if (Player::number_of_completed_units_of_id(unit_id, playerId) != 0)
 					{
 						greyButton = false;
 					}
@@ -65,7 +65,7 @@ namespace hooks
 				case RequirementOpcodes::MustHave:
 				{
 					unit_id = datReqBase[datReqOffset++];
-					success += Player::numberOfCompletedUnitsOfType(unit_id, playerId) + Player::numberOfUnitsOfType(unit_id, playerId);
+					success += Player::number_of_completed_units_of_id(unit_id, playerId) + Player::number_of_units_of_id(unit_id, playerId);
 				}
 					break;
 
@@ -378,7 +378,7 @@ namespace hooks
 				{
 					// Any invalid opcodes will be read here as unit IDs
 					unit_id = opcode;
-					success += Player::numberOfCompletedUnitsOfType(playerId, unit_id);
+					success += Player::number_of_completed_units_of_id(playerId, unit_id);
 				}
 			}
 
@@ -416,9 +416,9 @@ namespace hooks
 		return 1;
 	}
 
-	s8 UnitCreateAllowedLogic(u16 unit_id, Unit* parentUnit, s32 playerID, u16* unitsDat, u16* requirementsTable)
+	s8 unit_create_allowed_logic(u16 unit_id, Unit* parentUnit, s32 playerID, u16* unitsDat, u16* requirementsTable)
 	{
-		//DebugOut("UnitCreateAllowedLogic: untitID %d, creatingUnit %d, playerID %d", unit_id, parentUnit->id, playerID);
+		//DebugOut("unit_create_allowed_logic: untitID %d, creatingUnit %d, playerID %d", unit_id, parentUnit->id, playerID);
 		// TODO map variables and rewrite process accordingly
 		s16 v5;
 		s16 v6;
@@ -495,7 +495,7 @@ LABEL_86_ERROR_3_RETURN_0:
 		if (unitsDat[unit_id] == RequirementOpcodes::EndOfSublist)
 		{
 			//DebugOut("EndOfSublist (%d):", currentOpcode);
-			parseUnitsDatReqs();
+			parse_unit_dat_requirements();
 		}
 
 		////DebugOut("opcode index = %d", opcodeIndex);
@@ -533,7 +533,7 @@ LABEL_18_ENTER_MAIN_BODY:
 					////DebugOut("  current unit is = %d", nextOpcodeUnitId);
 					// Weirdly, nextOpcodeUnitId is sometimes still the old opcode value - but only while debugging (or when there's 
 					// an OR statement?) this is causing access violation reading completed_unit_counts. Work around this for now by checking unit Ids
-					if (Player::numberOfCompletedUnitsOfType(parentUnit->player, nextOpcodeUnitId) > 0)
+					if (Player::number_of_completed_units_of_id(parentUnit->player, nextOpcodeUnitId) > 0)
 					{
 						v27 = 0;
 					}
@@ -556,7 +556,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				{
 					//DebugOut("MustHave (%d):", currentOpcode);
 					v24 = requirementsTable[opcodeIndex++];
-					v25 = Player::numberOfCompletedUnitsOfType(playerID, currentOpcode) + Player::numberOfUnitsOfType(playerID, currentOpcode);
+					v25 = Player::number_of_completed_units_of_id(playerID, currentOpcode) + Player::number_of_units_of_id(playerID, currentOpcode);
 					//DebugOut(">Checking next opcode");
 				}
 					goto LABEL_71_SUM_VALUES;
@@ -819,12 +819,12 @@ LABEL_87:
 					goto LABEL_72_NEXT_OPCODE;
 				default:
 				{
-					// DebugOut("(Default) numberOfCompletedUnitsOfType (%d)", currentOpcode);
+					// DebugOut("(Default) number_of_completed_units_of_id (%d)", currentOpcode);
 					if (*bw_cheat_state & CheatFlags::ModifyThePhaseVariance)
 					{
 						++v9;
 					}
-					v25 = Player::numberOfCompletedUnitsOfType(playerID, currentOpcode);
+					v25 = Player::number_of_completed_units_of_id(playerID, currentOpcode);
 					// DebugOut(">%s", v25 > 0 ? "True" : "False");
 LABEL_71_SUM_VALUES:
 					v11 = v25 + v9;
@@ -834,34 +834,34 @@ LABEL_71_SUM_VALUES:
 		}
 	}
 
-	s32 parse_requirement_opcodes(Unit* unit, u32 datReqOffset, u16 id, u32 player, u16* datReqBase) // 0046D610
+	s32 parse_requirement_opcodes(Unit* unit, u32 dat_req_offset, u16 id, u32 player, u16* dat_req_base) // 0046D610
 	{
-		if (datReqBase == requirements::orders && customRequirements::getOrderRequirementOverrides()[id] != 0)
+		if (dat_req_base == requirements::orders && customRequirements::get_order_requirement_overrides()[id] != 0)
 		{
-			datReqOffset = customRequirements::getOrderRequirementOverrides()[id];
-			datReqBase = customRequirements::getOrderRequirementOpcodes();
+			dat_req_offset = customRequirements::get_order_requirement_overrides()[id];
+			dat_req_base = customRequirements::get_order_requirement_opcodes();
 		}
-		else if (datReqBase == requirements::research && customRequirements::getResearchRequirementOverrides()[id] != 0)
+		else if (dat_req_base == requirements::research && customRequirements::get_research_requirement_overrides()[id] != 0)
 		{
-			datReqOffset = customRequirements::getResearchRequirementOverrides()[id];
-			datReqBase = customRequirements::getResearchRequirementOpcodes();
+			dat_req_offset = customRequirements::get_research_requirement_overrides()[id];
+			dat_req_base = customRequirements::get_research_requirement_opcodes();
 		}
-		else if (datReqBase == requirements::tech && customRequirements::getTechRequirementOverrides()[id] != 0)
+		else if (dat_req_base == requirements::tech && customRequirements::get_tech_requirement_overrides()[id] != 0)
 		{
-			datReqOffset = customRequirements::getTechRequirementOverrides()[id];
-			datReqBase = customRequirements::getTechRequirementOpcodes();
+			dat_req_offset = customRequirements::get_tech_requirement_overrides()[id];
+			dat_req_base = customRequirements::get_tech_requirement_opcodes();
 		}
-		else if (datReqBase == requirements::upgrade && customRequirements::getUpgradeRequirementOverrides()[id] != 0)
+		else if (dat_req_base == requirements::upgrade && customRequirements::get_upgrade_requirement_overrides()[id] != 0)
 		{
-			datReqOffset = customRequirements::getUpgradeRequirementOverrides()[id];
-			datReqBase = customRequirements::getUpgradeRequirementOpcodes();
+			dat_req_offset = customRequirements::get_upgrade_requirement_overrides()[id];
+			dat_req_base = customRequirements::get_upgrade_requirement_opcodes();
 		}
 
-		s32 result = hooks::parseRequirementOpcodesLogic(unit, datReqOffset, id, player, datReqBase);
+		s32 result = hooks::parse_requirement_opcodes_logic(unit, dat_req_offset, id, player, dat_req_base);
 		return result;
 	}
 
-	s8 UnitCreateAllowed(u16 unit_id, Unit* parentUnit, s32 playerID) // 0046E1C0
+	s8 unit_create_allowed(u16 unit_id, Unit* parentUnit, s32 playerID) // 0046E1C0
 	{
 		u16* unitsDat = units_dat::unitsDat43;
 		u16* requirementsTable = requirements::units;
@@ -872,10 +872,10 @@ LABEL_71_SUM_VALUES:
 			requirementsTable = customRequirements::getUnitRequirementOpcodes();;
 		}
 
-		return hooks::UnitCreateAllowedLogic(unit_id, parentUnit, playerID, unitsDat, requirementsTable);
+		return hooks::unit_create_allowed_logic(unit_id, parentUnit, playerID, unitsDat, requirementsTable);
 	}
 
-	void parseUnitsDatReqs()
+	void parse_unit_dat_requirements()
 	{
 		const u32 Func_parseUnitDatReqs = 0x0046E100;
 		__asm {

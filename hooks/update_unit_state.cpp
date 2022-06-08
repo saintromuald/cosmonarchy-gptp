@@ -589,7 +589,7 @@ namespace hooks
 					{
 						if (playerTable[first_dying_unit->player].type == 2) // PLAYER_OCCUPIED
 						{
-							helper::reveal_sight_at_location(1, playerVision->flags[first_dying_unit->player], first_dying_unit->sprite->position.x, first_dying_unit->sprite->position.y, (first_dying_unit->status >> 2) & 1); // is air unit
+							helper::reveal_sight_at_location(1, player_vision->flags[first_dying_unit->player], first_dying_unit->sprite->position.x, first_dying_unit->sprite->position.y, (first_dying_unit->status >> 2) & 1); // is air unit
 						}
 					}
 					helper::update_visibility(first_dying_unit);

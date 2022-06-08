@@ -9,11 +9,11 @@ namespace hooks {
 	};
 
 	static bool player_has_unit_id(s32 player_id, u32 unit_id) {
-		return Player::numberOfUnitsOfType(player_id, unit_id);
+		return Player::number_of_units_of_id(player_id, unit_id);
 	}
 
 	static bool player_has_completed_unit_id(s32 player_id, u32 unit_id) {
-		return Player::numberOfCompletedUnitsOfType(player_id, unit_id);
+		return Player::number_of_completed_units_of_id(player_id, unit_id);
 	}
 
 	s32 createUnitIdAllowed(s16 unit_id, s32 player_id, bool ignore_creator)

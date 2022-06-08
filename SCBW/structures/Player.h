@@ -24,6 +24,6 @@ struct Player
 	// return the faction (tribe, brood or other) color of the player identified by PlayerId
 	static u8 get_faction_color(u8 playerId);
 
-	static u32 numberOfUnitsOfType(u8 playerId, u16 unit_id);
-	static u32 numberOfCompletedUnitsOfType(u8 playerId, u16 unit_id);
+	static u32 number_of_units_of_id(u8 playerId, u16 unit_id);
+	static u32 number_of_completed_units_of_id(u8 playerId, u16 unit_id);
 };

@@ -65,34 +65,34 @@ namespace customRequirements
 	const int TMP_CONST_COUNT = 512;
 	const int ENTRY_OPCODE_LIMIT = 32;
 
-	u16* getOrderRequirementOverrides()
+	u16* get_order_requirement_overrides()
 	{
 		static u16 orderRequirementOverridesIndex[TMP_CONST_COUNT] = {0};
 		return orderRequirementOverridesIndex;
 	}
-	u16* getOrderRequirementOpcodes()
+	u16* get_order_requirement_opcodes()
 	{
 		static u16 orderRequirementOpcodes[TMP_CONST_COUNT * ENTRY_OPCODE_LIMIT] = {0};
 		return orderRequirementOpcodes;
 	}
 
-	u16* getResearchRequirementOverrides()
+	u16* get_research_requirement_overrides()
 	{
 		static u16 researchRequirementOverridesIndex[TMP_CONST_COUNT] = {0};
 		return researchRequirementOverridesIndex;
 	}
-	u16* getResearchRequirementOpcodes()
+	u16* get_research_requirement_opcodes()
 	{
 		static u16 researchRequirementOpcodes[TMP_CONST_COUNT * ENTRY_OPCODE_LIMIT] = {0};
 		return researchRequirementOpcodes;
 	}
 
-	u16* getTechRequirementOverrides()
+	u16* get_tech_requirement_overrides()
 	{
 		static u16 techRequirementOverridesIndex[TMP_CONST_COUNT] = {0};
 		return techRequirementOverridesIndex;
 	}
-	u16* getTechRequirementOpcodes()
+	u16* get_tech_requirement_opcodes()
 	{
 		static u16 techRequirementOpcodes[TMP_CONST_COUNT * ENTRY_OPCODE_LIMIT] = {0};
 		return techRequirementOpcodes;
@@ -109,12 +109,12 @@ namespace customRequirements
 		return unitRequirementOpcodes;
 	}
 
-	u16* getUpgradeRequirementOverrides()
+	u16* get_upgrade_requirement_overrides()
 	{
 		static u16 upgradeRequirementOverridesIndex[TMP_CONST_COUNT] = {0};
 		return upgradeRequirementOverridesIndex;
 	}
-	u16* getUpgradeRequirementOpcodes()
+	u16* get_upgrade_requirement_opcodes()
 	{
 		static u16 upgradeRequirementOpcodes[TMP_CONST_COUNT * ENTRY_OPCODE_LIMIT] = {0};
 		return upgradeRequirementOpcodes;
@@ -126,11 +126,11 @@ namespace customRequirements
 		if (!initialized)
 		{
 			initialized = true;
-			parseRequirementsFile("datreq\\orders.txt", customRequirements::getOrderRequirementOverrides(), customRequirements::getOrderRequirementOpcodes());
-			parseRequirementsFile("datreq\\research.txt", customRequirements::getResearchRequirementOverrides(), customRequirements::getResearchRequirementOpcodes());
-			parseRequirementsFile("datreq\\tech.txt", customRequirements::getTechRequirementOverrides(), customRequirements::getTechRequirementOpcodes());
+			parseRequirementsFile("datreq\\orders.txt", customRequirements::get_order_requirement_overrides(), customRequirements::get_order_requirement_opcodes());
+			parseRequirementsFile("datreq\\research.txt", customRequirements::get_research_requirement_overrides(), customRequirements::get_research_requirement_opcodes());
+			parseRequirementsFile("datreq\\tech.txt", customRequirements::get_tech_requirement_overrides(), customRequirements::get_tech_requirement_opcodes());
 			parseRequirementsFile("datreq\\units.txt", customRequirements::getUnitRequirementOverrides(), customRequirements::getUnitRequirementOpcodes());
-			parseRequirementsFile("datreq\\upgrades.txt", customRequirements::getUpgradeRequirementOverrides(), customRequirements::getUpgradeRequirementOpcodes());
+			parseRequirementsFile("datreq\\upgrades.txt", customRequirements::get_upgrade_requirement_overrides(), customRequirements::get_upgrade_requirement_opcodes());
 		}
 	}
 }

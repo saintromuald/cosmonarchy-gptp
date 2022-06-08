@@ -925,7 +925,7 @@ SCBW_DATA(ResourceAreaArray*, resource_areas, 0x00692688);
 //-------- Internal constants --------//
 
 SCBW_DATA(const b32*, bw_is_game_paused,	0x006509C4);  // See scbw::bw_is_game_paused()
-SCBW_DATA(const b8*,  bw_is_brood_war,		0x0058F440);  // See scbw::isBroodWarMode()
+SCBW_DATA(const b8*,  bw_is_brood_war,		0x0058F440);  // See scbw::is_brood_war_mode()
 SCBW_DATA(const u32*, bw_cheat_state,		0x006D5A6C);  // See scbw::is_cheat_enabled()
 SCBW_DATA(const b32*, bw_is_in_replay,		0x006D0F14);  // See scbw::isInReplay()
 SCBW_DATA(const b32*, bw_is_replay_paused,	0x006D11B0);

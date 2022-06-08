@@ -932,7 +932,7 @@ namespace hooks
 		}
 
 		s8 playerId = _pIterator->player == 11 ? _pIterator->sprite->playerId : _pIterator->player;
-		if (playerAlliance[(u8)pSrc->player].flags[playerId] || *bulletBounceMissileTarget == _pIterator)
+		if (player_alliance[(u8)pSrc->player].flags[playerId] || *bulletBounceMissileTarget == _pIterator)
 		{
 			return 0;
 		}

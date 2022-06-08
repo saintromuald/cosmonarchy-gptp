@@ -241,7 +241,7 @@ namespace scbw
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Checks whether the game is in Brood War mode (instead of vanilla StarCraft).
-	inline bool isBroodWarMode()
+	inline bool is_brood_war_mode()
 	{
 		return (*bw_is_brood_war) != 0;
 	}
@@ -273,12 +273,12 @@ namespace scbw
 	/// Warning: The opposite may not necessarily be true!
 	inline bool is_allied_to(u8 playerA, u8 playerB)
 	{
-		return 0 != playerAlliance[playerA].flags[playerB];
+		return 0 != player_alliance[playerA].flags[playerB];
 	}
 
 	inline bool is_vision_allied_to(u8 playerA, u8 playerB)
 	{
-		return 0 != playerVision[playerA].flags[playerB];
+		return 0 != player_vision[playerA].flags[playerB];
 	}
 
 	/// Checks whether the @p unit is recognized by @p player as an enemy.
@@ -290,7 +290,7 @@ namespace scbw
 		u8 unitOwner = unit->player;
 		if (unitOwner == 11)
 			unitOwner = unit->sprite->playerId;
-		return 0 == playerAlliance[playerId].flags[unitOwner];
+		return 0 == player_alliance[playerId].flags[unitOwner];
 	}
 
 	u32 get_sized_overlay(Unit* unit, u32 initial);
