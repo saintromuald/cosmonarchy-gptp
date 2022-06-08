@@ -4504,8 +4504,7 @@ namespace helper
 	}
 
 	// for ordersWatchTarget
-
-	void unknownOrdersFunc(s32 a1, __int16 a2, __int16 a3)
+	void unknown_orders_func(s32 a1, __int16 a2, __int16 a3)
 	{
 		const u32 Func_unknownOrdersFunc = 0x00475350;
 		__asm {
@@ -4519,8 +4518,7 @@ namespace helper
 	}
 
 	// for ordersStayInRange
-
-	void prependOrderTargetingGround(__int8 order_id, __int16 x, __int16 y, Unit* unit)
+	void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit)
 	{
 		const u32 Func_prependOrderTargetingGround = 0x00474A20;
 		__asm {
@@ -4534,7 +4532,7 @@ namespace helper
 		}
 	}
 
-	s32 moveTowards(Unit* unit, Unit* target)
+	s32 move_towards(Unit* unit, Unit* target)
 	{
 		const u32 Func_moveTowards = 0x004EB900;
 		static s32 result;
@@ -4549,7 +4547,7 @@ namespace helper
 		return result;
 	}
 
-	s32 ordersHoldPositionSuicidal(Unit* a1)
+	s32 orders_hold_position_suicidal(Unit* a1)
 	{
 		const u32 Func_ordersHoldPositionSuicidal = 0x004EB5B0;
 		static s32 result;
@@ -4563,7 +4561,7 @@ namespace helper
 		return result;
 	}
 
-	s32 getDirectionFromPoints(s32 a1, s32 a2, s32 a3, s32 a4)
+	s32 get_direction_from_points(s32 a1, s32 a2, s32 a3, s32 a4)
 	{
 		const u32 Func_getDirectionFromPoints = 0x00495300;
 		static s32 result;
@@ -4593,21 +4591,6 @@ namespace helper
 			MOV result, EAX
 			POPAD
 		}
-	}
-
-	Vector32 setResourceTarget(Unit* a1)
-	{
-		const u32 Func_setResourceTarget = 0x004EB290;
-		static __int32 result;
-		static Vector32 resultPoint;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_setResourceTarget
-			MOV result, EAX
-			POPAD
-		}
-		return resultPoint = *(Vector32*)&result;
 	}
 
 	// for genericRightClickUnitProc2
@@ -9586,7 +9569,7 @@ namespace helper
 	}
 
 	// For ai_attack_unit
-	void stimpackProc(Unit* unit)
+	void stimpack_proc(Unit* unit)
 	{
 		const u32 Func_stimpackSFXRand = 0x004554A0;
 		__asm
@@ -10439,7 +10422,7 @@ namespace helper
 
 	u8 get_right_click_order(u32 index, Unit* unit, s32 x, s32 y, Unit** target, s32 unit_id) {
 		static u8 result;
-		void* function = GetRightClickOrderArray[index];
+		void* function = get_right_click_order_array[index];
 		__asm {
 			PUSHAD
 			PUSH unit_id
@@ -12099,5 +12082,57 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	char get_generic_unit_idle_order(u32 order_unit_id, Unit* unit) {
+		static char result;
+		const u32 func_address = 0x00455760;
+		__asm {
+			PUSHAD
+			MOV EDX, unit
+			MOV ECX, order_unit_id
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* iterate_units_at_location_target_proc_in_point(Box16* location, Unit* target)
+	{
+		static Unit* result;
+		const u32 is_unit_in_point_function = 0x00487A90;
+		__asm {
+			PUSHAD
+			PUSH target
+			MOV EAX, location
+			CALL is_unit_in_point_function
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void set_rally_unit(Unit* factory, Unit* target) {
+		const u32 func_address = 0x00466B40;
+		__asm {
+			PUSHAD
+			MOV ECX, target
+			MOV EAX, factory
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void set_rally_position(Unit* factory, u16 x_pos, u16 y_pos) {
+		const u32 func_address = 0x00466910;
+		__asm {
+			PUSHAD
+			PUSH y_pos
+			PUSH x_pos
+			MOV EAX, factory
+			CALL func_address
+			POPAD
+		}
 	}
 }

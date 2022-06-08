@@ -234,7 +234,7 @@ LABEL_23:
 				if (helper::get_right_click_action_order(v1) == 3)
 LABEL_22:
 				{
-					helper::unknownOrdersFunc((s32)v1, v1->order_target.pt.x, v1->order_target.pt.y);
+					helper::unknown_orders_func((s32)v1, v1->order_target.pt.x, v1->order_target.pt.y);
 				}
 			}
 		}
@@ -276,7 +276,7 @@ LABEL_22:
 			if (!v3)
 			{
 				if (!(v1->status & 0x8000000) && !v1->unit_ai)
-					helper::prependOrderTargetingGround(6u, v1->order_target.pt.x, v1->order_target.pt.y, v1);
+					helper::prepend_order_targeting_ground(6u, v1->order_target.pt.x, v1->order_target.pt.y, v1);
 				helper::to_idle(v1);
 				return;
 			}
@@ -308,13 +308,13 @@ LABEL_22:
 					|| (v15 = helper::get_unit_max_weapon_range(v1, v12), ByteOperations::SetLowByte(v16, (helper::is_target_within_min_movement_range(target, v11, v15), !v16))))
 				{
 LABEL_63:
-					if (!helper::moveTowards(v1->order_target.unit, v1))
+					if (!helper::move_towards(v1->order_target.unit, v1))
 						return;
 				}
 				else
 				{
 LABEL_62:
-					helper::ordersHoldPositionSuicidal(v1);
+					helper::orders_hold_position_suicidal(v1);
 				}
 				goto LABEL_42;
 			}
@@ -359,7 +359,7 @@ LABEL_42:
 				{
 					v18 = v1->order_target.pt.y;
 					v19 = v1->order_target.pt.x;
-					v20 = helper::getDirectionFromPoints(v18, v1->sprite->position.x, v19, v1->sprite->position.y) - v1->current_direction_1;
+					v20 = helper::get_direction_from_points(v18, v1->sprite->position.x, v19, v1->sprite->position.y) - v1->current_direction_1;
 					if (v20 >= 128 || v20 <= -128)
 						v20 = -128;
 					if (abs(v20) >= 32)
@@ -372,7 +372,7 @@ LABEL_42:
 		}
 		else
 		{
-			helper::setResourceTarget(a1);
+			helper::set_resource_target(a1);
 			v21 = v1->move_target.pt.x;
 			v22 = v1->move_target.pt.y;
 			if (v21 != v1->next_target_waypoint.x || v22 != v1->next_target_waypoint.y)
@@ -768,7 +768,7 @@ LABEL_23:
 			v11 = v2->order_target.unit;
 			if ( !v11 || v2->status & UnitStatus::HoldingPosition )
 			{
-				helper::setResourceTarget(v2);
+				helper::set_resource_target(v2);
 				if (v2->order_queue_head)
 				{
 					v2->user_action_flags |= 1u;
@@ -792,7 +792,7 @@ LABEL_23:
 			{
 				if ( !v2->unit_ai )
 				{
-					helper::prependOrderTargetingGround(6u, v11->sprite->position.x, v11->sprite->position.y, v2);
+					helper::prepend_order_targeting_ground(6u, v11->sprite->position.x, v11->sprite->position.y, v2);
 				}
 				helper::to_idle(v2);
 				result = 0;
@@ -910,7 +910,7 @@ LABEL_65:
 			v24 = v2->order_target.unit;
 			if (!v25)
 			{
-				helper::moveTowards(v2, v24);
+				helper::move_towards(v2, v24);
 				return 0;
 			}
 			helper::moveForMeleeRange(v24, v2);
@@ -922,7 +922,7 @@ LABEL_65:
 		}
 		else
 		{
-			helper::setResourceTarget(v2);
+			helper::set_resource_target(v2);
 		}
 		return 1;
 	}
@@ -975,7 +975,7 @@ LABEL_65:
 								if (helper::tech_use_allowed(unit, 0, unit->player) == 1
 								  && helper::get_current_hp_plus_shields(unitTarget) >= 100)
 								{
-									helper::stimpackProc(unit);
+									helper::stimpack_proc(unit);
 								}
 								return;
 							}
@@ -1015,7 +1015,7 @@ LABEL_65:
 											if (helper::tech_use_allowed(unit, 0, unit->player) == 1
 											  && helper::get_current_hp_plus_shields(unitTarget) >= 100)
 											{
-												helper::stimpackProc(unit);
+												helper::stimpack_proc(unit);
 											}
 											return;
 										}

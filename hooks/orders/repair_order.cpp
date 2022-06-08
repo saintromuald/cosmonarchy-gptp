@@ -50,7 +50,7 @@ namespace hooks
 			} break;
 			case 6: {
 				if (!unit->get_movable_state()) { // not reached destination
-					helper::moveTowards(unit, target); // may cause unit to move or become idle
+					helper::move_towards(unit, target); // may cause unit to move or become idle
 					return;
 				}
 				if (!(unit->is_target_within_min_range(target, 5))) {

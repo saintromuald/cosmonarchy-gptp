@@ -240,7 +240,7 @@ namespace hooks
 		}
 		else
 		{
-			helper::setResourceTarget(unit);
+			helper::set_resource_target(unit);
 			s32 target_pos_x = unit->move_target.pt.x;
 			s32 target_pos_y = unit->move_target.pt.y;
 			if (target_pos_x != unit->next_target_waypoint.x || target_pos_y != unit->next_target_waypoint.y)
@@ -281,7 +281,7 @@ namespace hooks
 		}
 		else
 		{
-			helper::setResourceTarget(unit);
+			helper::set_resource_target(unit);
 			u32 harvest_gas_x = unit->order_target.pt.x;
 			u32 harvest_gas_y = unit->order_target.pt.y;
 			if (harvest_gas_x != unit->next_target_waypoint.x || harvest_gas_y != unit->next_target_waypoint.y)

@@ -501,11 +501,11 @@ SCBW_DATA(ResourceArea*,	baseArray,				0x00692688);
 SCBW_DATA(u32*,		regionIdsCount,					0x0069265C);
 SCBW_DATA(u16*,		regionIds,						0x0069262C);
 
-SCBW_DATA(u8*,		byte_68C300,					0x0068C300);
+SCBW_DATA(u8*,		unk_order_array,				0x0068C300);
 
 SCBW_DATA(u32**,	activeTileArrayInt,				0x006D1260);
 
-SCBW_DATA(void**,	GetRightClickOrderArray,		0x005153FC);
+SCBW_DATA(void**,	get_right_click_order_array,	0x005153FC);
 
 // For prepare_unit_move_custom
 SCBW_DATA(BinDlg*,	portrait,						0x0068AC98);
@@ -1023,6 +1023,10 @@ SCBW_DATA(InputProcsFunc**,		right_click_proc,		0x006556F0);
 
 SCBW_DATA(u16*,					minimap_cursor,			0x006556FC);
 SCBW_DATA(RECT*,				minimap_rect,			0x00512D00);
+
+// For process_right_click_action
+SCBW_DATA(u16*,	is_unit_in_point_x_pos,	0x006509CC);
+SCBW_DATA(u16*,	is_unit_in_point_y_pos,	0x006509CE);
 
 //////////////////////////////////////////////////////////////// @}
 

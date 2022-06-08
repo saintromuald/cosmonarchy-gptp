@@ -48,7 +48,7 @@ namespace hooks
 		{
 			subunit->status |= UnitStatus::Disabled;
 		}
-		helper::setResourceTarget(unit);
+		helper::set_resource_target(unit);
 		s16 unit_id = unit->id;
 		if (scbw::unit_can_nuke(unit))
 		{

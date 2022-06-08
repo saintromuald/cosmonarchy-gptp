@@ -320,7 +320,7 @@ namespace hooks
 				{
 					scbw::print("set waypoint");
 					helper::set_secondary_waypoint(unitVar, order_target->sprite->position.x, order_target->sprite->position.y);
-					helper::moveTowards(order_target, unitVar);
+					helper::move_towards(order_target, unitVar);
 				}
 			}
 		}
@@ -409,7 +409,7 @@ namespace hooks
 							if (helper::ai_are_on_connected_regions(unit, target->sprite->position.x, target->sprite->position.y) != 0)
 							{
 								helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
-								helper::moveTowards(unit, target);
+								helper::move_towards(unit, target);
 							}
 						}
 					}
@@ -445,7 +445,7 @@ namespace hooks
 				unit->next_target_waypoint.x = target->sprite->position.x;
 				unit->next_target_waypoint.y = target->sprite->position.y;
 			}
-			helper::moveTowards(unit, target);
+			helper::move_towards(unit, target);
 			if (unit->is_target_within_min_range(target, 1))
 			{
 				helper::load_unit_proc(target, unit);

@@ -152,6 +152,35 @@ namespace
 			RETN 0x0C
 		}
 	}
+
+	void __declspec(naked) process_right_click_action_wrapper() { // 00455F20
+		static Unit* unit;
+		static u32 order_unit_id;
+		static u16 y_pos;
+		static u32 x_pos;
+		static Unit* target;
+		__asm {
+			PUSH EBP
+			PUSH EAX
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV x_pos, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV target, EAX
+			POP EAX
+			MOV y_pos, DI
+			MOV order_unit_id, ECX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::process_right_click_action(unit, order_unit_id, y_pos, x_pos, target);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
 }
 
 namespace hooks
@@ -165,5 +194,6 @@ namespace hooks
 	//	jump_patch(btnsact_rally_point_wrapper,								0x004244A0, 2);
 	//	jump_patch(order_acquire_generic_right_click_unit_proc_wrapper,		0x00455CC0, 2);
 	//	jump_patch(order_acquire_generic_right_click_unit_proc_2_wrapper,	0x00455E00,	1);
+	//	jump_patch(process_right_click_action_wrapper,						0x00455F20,	1);
 	}
 }

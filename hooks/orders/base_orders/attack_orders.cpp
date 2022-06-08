@@ -684,7 +684,7 @@ namespace hooks
 						}
 						else // 004789BF
 						{
-							helper::moveTowards(unit, target);
+							helper::move_towards(unit, target);
 						}
 						bStopThere = true;
 					}

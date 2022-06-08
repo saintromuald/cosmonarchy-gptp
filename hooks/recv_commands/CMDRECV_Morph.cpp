@@ -243,4 +243,80 @@ namespace hooks
 		}
 		return result;
 	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	void process_right_click_action(Unit* unit, u32 order_unit_id, u16 y_pos, u32 x_pos, Unit* target) // 00455F20
+	{
+		Box16 location = {};
+		location.x = x_pos - 96;
+		location.w = x_pos + 96;
+		location.h = y_pos + 96;
+		location.y = y_pos - 96;
+		unk_order_array[0] = 23;
+		*is_unit_in_point_x_pos = x_pos;
+		*is_unit_in_point_y_pos = y_pos;
+		u8 idle_order = helper::get_generic_unit_idle_order(order_unit_id, unit);
+		Unit* unit_in_point = helper::iterate_units_at_location_target_proc_in_point(&location, target);
+		u8 right_click_order = helper::get_right_click_order(idle_order, unit_in_point, x_pos, y_pos, &unit_in_point, UnitId::None);
+		if (right_click_order == OrderId::Nothing2)
+		{
+			helper::set_resource_target(unit);
+			u32 x_move_target = unit->move_target.pt.x;
+			u32 y_move_target = unit->move_target.pt.y;
+			if (x_move_target != unit->next_target_waypoint.x || y_move_target != unit->next_target_waypoint.y)
+			{
+				unit->next_target_waypoint.x = x_move_target;
+				unit->next_target_waypoint.y = y_move_target;
+			}
+			if (unit->order_queue_head)
+			{
+				unit->user_action_flags |= 1u;
+				helper::orders_nothing_2(unit);
+			}
+			else if (unit->unit_ai)
+			{
+				helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
+			}
+			else
+			{
+				helper::issue_order_targeting_nothing(unit, units_dat::ReturnToIdleOrder[unit->id]);
+			}
+		}
+		else
+		{
+			if (right_click_order == 8)
+			{
+				right_click_order = units_dat::AttackUnitOrder[unit->id];
+			}
+			if (helper::order_allowed(unit, right_click_order, unit->player) == 1)
+			{
+				if (right_click_order == OrderId::RallyPoint1)
+				{
+					if (helper::unit_is_factory(unit))
+					{
+						helper::set_rally_unit(unit_in_point, unit);
+					}
+				}
+				else if (right_click_order == OrderId::RallyPoint2)
+				{
+					if (helper::unit_is_factory(unit))
+					{
+						helper::set_rally_position(unit, x_pos, y_pos);
+					}
+				}
+				else
+				{
+					if (unit_in_point)
+					{
+						helper::prepend_order_targeting_unit(unit_in_point, unit, right_click_order);
+					}
+					else
+					{
+						helper::prepend_order_targeting_ground(right_click_order, x_pos, y_pos, unit);
+					}
+					helper::to_idle(unit);
+				}
+			}
+		}
+	}
 }

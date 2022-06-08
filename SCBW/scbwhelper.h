@@ -242,7 +242,7 @@ namespace helper
 	void make_to_hold_position(Unit* unit);																	// 004EB5B0
 	bool move_to_target(Unit* target, Unit* unit);															// 004EB720
 	bool set_move_target_xy(Unit* unit, s32 x, s32 y);														// 004EB820
-	s32 moveTowards(Unit* unit, Unit* target);																// 004EB900
+	s32 move_towards(Unit* unit, Unit* target);																// 004EB900
 	bool change_movement_target_move_target_2(Unit* unit, s32 x, s32 y);											// 004EB9C0
 
 	bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance);							// 00401240
@@ -507,24 +507,23 @@ namespace helper
 	s32 getFlingyHaltDistance(s32 a1);
 
 	// for ordersWatchTarget
-	void unknownOrdersFunc(s32 a1, __int16 a2, __int16 a3);
+	void unknown_orders_func(s32 a1, __int16 a2, __int16 a3);
 
 	// for ordersStayInRange
-	void prependOrderTargetingGround(__int8 order_id, __int16 x, __int16 y, Unit* unit);
-	s32 ordersHoldPositionSuicidal(Unit* a1);
-	s32 getDirectionFromPoints(s32 a1, s32 a2, s32 a3, s32 a4);
-	Vector32 setResourceTarget(Unit* a1);
+	void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit);
+	s32 orders_hold_position_suicidal(Unit* a1);
+	s32 get_direction_from_points(s32 a1, s32 a2, s32 a3, s32 a4);
 
 	// for ai_attack_unit
-	void stimpackProc(Unit* unit);																									// 004554A0
+	void stimpack_proc(Unit* unit);																									// 004554A0
 
 	// for genericRightClickUnitProc2
-	s32 is_order_valid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																	// 00474D90
+	s32 is_order_valid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																// 00474D90
 	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80
 
 	// for CMDRECV_HoldPosition
-	Unit* get_active_player_next_selection();																							// 0049A850
-	s32 order_allowed(Unit* a1, u16 a2, s32 a3);																						// 0046DC20
+	Unit* get_active_player_next_selection();																						// 0049A850
+	s32 order_allowed(Unit* a1, u16 a2, s32 a3);																					// 0046DC20
 	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
 
 	// for check_unit_visibility
@@ -539,7 +538,7 @@ namespace helper
 	void function_004756B0(Unit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommandType);											// 004756B0
 	void function_004756E0(Unit* unit, Unit* target, u32 orderId, u32 bCommandType);												// 004756E0
 	u32 function_0049A410(Unit* unit, u8 orderId);																					// 0049A410
-	bool can_target_self(Unit* unit, u8 orderId);																						// 0049A480
+	bool can_target_self(Unit* unit, u8 orderId);																					// 0049A480
 	void function_0049A500(Unit* unit, u8* array_of_data);																			// 0049A500
 	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																// 0049A8C0
 
@@ -576,7 +575,7 @@ namespace helper
 	Bullet* create_bullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor);
 	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);																// 004CD360
-	Flingy* createFlingy(u32 flingy_id, u32 playerId, u32 x, u32 y);																	// 00496460
+	Flingy* createFlingy(u32 flingy_id, u32 playerId, u32 x, u32 y);																// 00496460
 
 	//// unit_morph
 	u8 set_archon_pathing(Unit* unit);																								// 0046A820
@@ -715,7 +714,7 @@ namespace helper
 	void setAllImageGroupFlagsPal11(Sprite* sprite);																// 00497430
 	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);						// 004E8280
 	void IterateUnitsAtLocationTargetProc_Ensnare(Unit* attacker, Box16* coords);									// 004E8280
-	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords);									// 004E8280
+	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords);								// 004E8280
 	void plague_proc(Unit* unit, Unit* attacker);																	// 004F4AF0
 	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords);									// 004E8280
 	void IterateUnitsAtLocationTargetProc_StasisField(Unit* attacker, Box16* coords);								// 004E8280
@@ -1339,4 +1338,9 @@ namespace helper
 
 	u32 order_acquire_generic_idle_unit_proc(Unit* unit, u32 x_pos, u16 y_pos, Unit** target, u16 fow_unit_id);	// 00455900
 	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker);								// 004557C0
+
+	char get_generic_unit_idle_order(u32 order_unit_id, Unit* unit);											// 00455760
+	Unit* iterate_units_at_location_target_proc_in_point(Box16* location, Unit* target);						// 004E8280
+	void set_rally_unit(Unit* factory, Unit* target);															// 00466B40
+	void set_rally_position(Unit* factory, u16 x_pos, u16 y_pos);												// 00466B40
 }

@@ -244,7 +244,7 @@ namespace hooks
                     order_type = 1;
                 }
             }
-            byte_68C300[0] = OrderId::Nothing2;
+            unk_order_array[0] = OrderId::Nothing2;
             u8 rightOrder = helper::get_right_click_order(order_type, unit, x, y, &target, fow_unit_id);
             if (rightOrder != OrderId::Nothing2)
             {
@@ -292,9 +292,9 @@ namespace hooks
                             if (target)
                             {
                                 helper::targeted_order_unit(target, unit, queued != 0, rightOrder);
-                                if (byte_68C300[0] != OrderId::Nothing2)
+                                if (unk_order_array[0] != OrderId::Nothing2)
                                 {
-                                    helper::targeted_order_unit(target, unit, queued != 0, byte_68C300[0]);
+                                    helper::targeted_order_unit(target, unit, queued != 0, unk_order_array[0]);
                                 }
                             }
                             else
@@ -313,9 +313,9 @@ namespace hooks
                                 u16 target_x = movement_group.current_unit_target.x;
                                 u16 target_y = movement_group.current_unit_target.y;
                                 helper::targeted_order_ground(rightOrder, fow_unit_id, unit, queued != 0, target_x, target_y);
-                                if (byte_68C300[0] != OrderId::Nothing2)
+                                if (unk_order_array[0] != OrderId::Nothing2)
                                 {
-                                    helper::targeted_order_ground(byte_68C300[0], fow_unit_id, unit, queued != 0, target_x, target_y);
+                                    helper::targeted_order_ground(unk_order_array[0], fow_unit_id, unit, queued != 0, target_x, target_y);
                                 }
                             }
                             unit->user_action_flags |= 2u;
