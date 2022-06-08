@@ -202,7 +202,7 @@ namespace hooks
 		u32 result = OrderId::Nothing2;
 		if (unit->status & UnitStatus::GroundedBuilding || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
 		{
-			if (helper::unit_is_factory(unit) || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
+			if (helper::unit_can_rally(unit) || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
 			{
 				result = OrderId::RallyPoint2 - (*target != 0);
 			}
@@ -292,14 +292,14 @@ namespace hooks
 			{
 				if (right_click_order == OrderId::RallyPoint1)
 				{
-					if (helper::unit_is_factory(unit))
+					if (helper::unit_can_rally(unit))
 					{
 						helper::set_rally_unit(unit_in_point, unit);
 					}
 				}
 				else if (right_click_order == OrderId::RallyPoint2)
 				{
-					if (helper::unit_is_factory(unit))
+					if (helper::unit_can_rally(unit))
 					{
 						helper::set_rally_position(unit, x_pos, y_pos);
 					}
@@ -318,5 +318,32 @@ namespace hooks
 				}
 			}
 		}
+	}
+
+	// TODO for right-click rally on eggs and cocoons. -Pr0nogo
+	// 00455760 get_generic_unit_idle_order
+	// 004564E0 input_game_right_mouse_click
+	// 0049A410 can_do_targeted_order
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	char get_right_click_action_order(Unit* unit) // 004E5EA0
+	{
+		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
+		{
+			return 3;
+		}
+
+		char right_click_order = units_dat::RightClickAction[unit->id];
+		if (!right_click_order)
+		{
+			if (unit->status & 2)
+			{
+				if (helper::unit_can_rally(unit))
+				{
+					right_click_order = 2;
+				}
+			}
+		}
+		return right_click_order;
 	}
 }

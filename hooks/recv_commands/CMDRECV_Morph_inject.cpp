@@ -181,6 +181,21 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) get_right_click_action_order_wrapper() {
+		static char result;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::get_right_click_action_order(unit);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -195,5 +210,6 @@ namespace hooks
 	//	jump_patch(order_acquire_generic_right_click_unit_proc_wrapper,		0x00455CC0, 2);
 	//	jump_patch(order_acquire_generic_right_click_unit_proc_2_wrapper,	0x00455E00,	1);
 	//	jump_patch(process_right_click_action_wrapper,						0x00455F20,	1);
+	//	jump_patch(get_right_click_action_order_wrapper,					0x004E5EA0,	1);
 	}
 }

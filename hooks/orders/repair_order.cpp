@@ -377,7 +377,7 @@ namespace hooks
 					{
 						if (unit->status & UnitStatus::GroundedBuilding)
 						{
-							if (helper::unit_is_factory(unit))
+							if (helper::unit_can_rally(unit))
 							{
 								right_click_order = RightClickActions::NormalMove_NoAttack;
 							}

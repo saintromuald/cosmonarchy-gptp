@@ -10828,7 +10828,7 @@ namespace helper
 	}
 
 	// Replaces original functionality
-	bool unit_is_factory(Unit* unit) { // 0047B2E0
+	bool unit_can_rally(Unit* unit) { // 0047B2E0
 		return units_dat::GroupFlags[unit->id].is_factory;
 	}
 
