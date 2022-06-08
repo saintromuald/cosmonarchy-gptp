@@ -4681,7 +4681,6 @@ namespace helper
 	}
 
 	// For check_unit_visibility
-
 	u32 get_detecting_players(Unit* unit)
 	{
 		const u32 Func_getDetectingPlayers = 0x00441130;
@@ -4696,7 +4695,7 @@ namespace helper
 		return result;
 	}
 
-	u32 iteratePlayerUnitsSomething(u32 aResult, Unit* unit)
+	u32 iterate_player_units_something(u32 aResult, Unit* unit)
 	{
 		const u32 Func_iteratePlayerUnitsSomething = 0x0049E8A0;
 		static u32 result;
@@ -4711,7 +4710,7 @@ namespace helper
 		return result;
 	}
 
-	void makeSpriteVisible(Sprite* sprite)
+	void make_sprite_visible(Sprite* sprite)
 	{
 		const u32 Func_makeSpriteVisible = 0x00497ED0;
 		__asm {
@@ -4722,7 +4721,7 @@ namespace helper
 		}
 	}
 
-	s32 updateBuildingLandUnitSelection(u32 unused, Unit* selection)
+	s32 update_building_land_unit_selection(u32 unused, Unit* selection)
 	{
 		const u32 Func_updateBuildingLandUnitSelection = 0x004C3B40;
 		static s32 result;
@@ -4737,7 +4736,7 @@ namespace helper
 		return result;
 	}
 
-	char removeSelectionCircle(Sprite* sprite)
+	char remove_selection_circle(Sprite* sprite)
 	{
 		const u32 Func_removeSelectionCircle = 0x004975D0;
 		static s32 result;
@@ -4751,7 +4750,7 @@ namespace helper
 		return (char)result;
 	}
 
-	Image* makeSpriteInvisible(Sprite* sprite)
+	Image* make_sprite_invisible(Sprite* sprite)
 	{
 		const u32 Func_makeUndetected = 0x00498A10;
 		static Image* result;
