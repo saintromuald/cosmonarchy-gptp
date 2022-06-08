@@ -74,7 +74,7 @@ struct Unit : public UnitLayout
 	u8 getArmorBonus() const;
 
 	/// Returns the maximum energy amount of this unit (with upgrades).
-	u16 getMaxEnergy() const;
+	u16 get_max_energy() const;
 
 	/// Returns the maximum HP amount displayed in-game. This is equal to
 	/// units_dat::MaxHitPoints[unit->id] >> 8 (minimum value is 1).

@@ -1125,7 +1125,7 @@ namespace scbw
 						}
 						if (target->energy < 200 * 256)
 						{
-							target->energy = std::min((u16)(target->energy + (u16)5 * (u16)256), target->getMaxEnergy());
+							target->energy = std::min((u16)(target->energy + (u16)5 * (u16)256), target->get_max_energy());
 							target->sprite->create_underlay(425);
 						}
 					});

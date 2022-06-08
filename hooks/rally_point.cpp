@@ -346,4 +346,20 @@ namespace hooks
         }
         return false;
     }
+
+    // Original functonality for pack/unpack, required to be able to read/save maps and saves properly. DO NOT CHANGE!!!
+    bool unit_can_have_rally_original(Unit* unit) {
+        return unit->id == UnitId::TerranCommandCenter
+            || unit->id == UnitId::TerranBarracks
+            || unit->id == UnitId::TerranFulcrum
+            || unit->id == UnitId::TerranStarport
+            || unit->id == UnitId::ZergInfestedCommandCenter
+            || unit->id == UnitId::ZergHatchery
+            || unit->id == UnitId::ZergLair
+            || unit->id == UnitId::ZergHive
+            || unit->id == UnitId::ProtossNexus
+            || unit->id == UnitId::ProtossGateway
+            || unit->id == UnitId::ProtossStargate
+            || unit->id == UnitId::ProtossRoboticsFacility;
+    }
 }

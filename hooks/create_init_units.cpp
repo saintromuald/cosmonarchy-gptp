@@ -346,12 +346,12 @@ namespace hooks
 			if (unit) {
 				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
 				if (unit->id != UnitId::ResourceMineralField
-					&& unit->id != UnitId::ResourceMineralFieldType2
-					&& unit->id != UnitId::ResourceMineralFieldType3
-					&& unit->id != UnitId::ResourceVespeneGeyser) {
+				&&  unit->id != UnitId::ResourceMineralFieldType2
+				&&  unit->id != UnitId::ResourceMineralFieldType3
+				&&  unit->id != UnitId::ResourceVespeneGeyser) {
 					unit->hitpoints = unit->get_max_hp_raw();
 					unit->shields = unit->get_max_shields_raw();
-					unit->energy = unit->getMaxEnergy();
+					unit->energy = unit->get_max_energy();
 
 					unit->status &= ~UnitStatus::Cloaked;
 					unit->status &= ~UnitStatus::Invincible;

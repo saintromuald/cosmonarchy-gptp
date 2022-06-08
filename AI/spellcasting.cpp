@@ -133,7 +133,7 @@ namespace AI
 			case UnitId::ZergMatraleth:
 			{
 				// Parasite
-				if (unit->energy >= unit->getMaxEnergy() / 2)
+				if (unit->energy >= unit->get_max_energy() / 2)
 				{
 					if (canCastSpellOrder(unit, TechId::Parasite, OrderId::CastParasite))
 					{
@@ -201,7 +201,7 @@ namespace AI
 				}
 
 				// Hallucination
-				if (unit->getMaxEnergy() == unit->energy
+				if (unit->get_max_energy() == unit->energy
 					&& canCastSpellOrder(unit, TechId::Hallucination, OrderId::Hallucination1))
 				{
 					Unit* target = findBestHallucinationTarget(unit, isUnitBeingAttacked);
@@ -268,7 +268,7 @@ namespace AI
 				// Maelstrom
 				energyReserve = getOrderEnergyCost(OrderId::CastMaelstrom)
 					+ (getOrderEnergyCost(OrderId::CastMindControl) / 2);
-				energyReserve = std::min(energyReserve, unit->getMaxEnergy());
+				energyReserve = std::min(energyReserve, unit->get_max_energy());
 
 				if ((unit->energy >= energyReserve || scbw::is_cheat_enabled(CheatFlags::TheGathering))
 					&& unit->canUseTech(TechId::Maelstrom, unit->player) != 1)

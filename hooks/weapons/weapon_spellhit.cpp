@@ -423,7 +423,7 @@ namespace hooks
 					Unit* unit = units.units[i];
 
 					u32 power = target->hitpoints;
-					u32 energyMax = unit->getMaxEnergy();
+					u32 energyMax = unit->get_max_energy();
 					u32 diff = energyMax - unit->energy;
 					if (power > diff)
 					{

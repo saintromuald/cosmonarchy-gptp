@@ -894,7 +894,7 @@ namespace hooks
 							return;
 						}
 						bool show = true;
-						if (unit->energy == unit->getMaxEnergy())
+						if (unit->energy == unit->get_max_energy())
 						{
 							show = false;
 						}

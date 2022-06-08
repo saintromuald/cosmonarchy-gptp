@@ -59,7 +59,7 @@ namespace hooks
 				}
 				else
 				{
-					maxEnergy = unit->getMaxEnergy();
+					maxEnergy = unit->get_max_energy();
 				}
 
 				if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] > 0)

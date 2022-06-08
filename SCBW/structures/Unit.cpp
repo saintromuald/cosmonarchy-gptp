@@ -106,7 +106,7 @@ u8 Unit::getArmorBonus() const
 }
 
 extern const u32 Func_GetMaxEnergy = 0x00491870;
-u16 Unit::getMaxEnergy() const
+u16 Unit::get_max_energy() const
 {
 	assert(this);
 
@@ -816,7 +816,7 @@ void Unit::spend_unit_energy(u32 energySpent)
 
 void Unit::addUnitEnergy(u32 energy)
 {
-	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, this->getMaxEnergy());
+	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, this->get_max_energy());
 }
 
 void Unit::addUnitEnergy(u32 energy, u32 energyMax)

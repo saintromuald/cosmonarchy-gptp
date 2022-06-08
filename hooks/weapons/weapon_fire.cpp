@@ -275,7 +275,7 @@ namespace hooks
 						if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] == 0)
 						{
 							unit->addUnitEnergy(5 * 256);
-							if (unit->energy == unit->getMaxEnergy())
+							if (unit->energy == unit->get_max_energy())
 							{
 								unitExt->values[ValuePhobosDischarge] = 1;
 								unit->ground_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
