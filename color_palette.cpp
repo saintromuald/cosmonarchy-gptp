@@ -25,18 +25,25 @@ static f32 clamp(f32 value, f32 min, f32 max) {
 	return value;
 }
 
-static u8 mix_color(u8 color, f32 multiplier) {
-	f32 new_color = color / 255;
-	new_color *= multiplier;
+static u8 mix_color(f32 base, f32 blend, f32 brightness) {
+	f32 darkness = 1 - brightness;
 
-	return clamp(new_color, 0, 1) * 255;
+	// Overlay
+	//f32 multiply = base * blend;
+	//f32 screen   = 1 - (1 - base) * (1 - blend);
+	//f32 color    = darkness * multiply + brightness * screen;
+
+	f32 color = base * blend;
+
+	return clamp(color, 0, 1) * 255;
 }
 
 void set_color_palette(f32 r, f32 g, f32 b, f32 gamma) {
 	for (u32 i = 0; i < PaletteSize; ++i) {
-		game_palette->colors[i].r = mix_color(init_palette->colors[i].r, r * gamma);
-		game_palette->colors[i].g = mix_color(init_palette->colors[i].g, g * gamma);
-		game_palette->colors[i].b = mix_color(init_palette->colors[i].b, b * gamma);
+		f32 brightness = std::max({init_palette->colors[i].r, init_palette->colors[i].g, init_palette->colors[i].b}) / 255.0;
+		game_palette->colors[i].r = mix_color(init_palette->colors[i].r / 255.0, r * gamma, brightness);
+		game_palette->colors[i].g = mix_color(init_palette->colors[i].g / 255.0, g * gamma, brightness);
+		game_palette->colors[i].b = mix_color(init_palette->colors[i].b / 255.0, b * gamma, brightness);
 	}
 	helper::update_palette();
 }
