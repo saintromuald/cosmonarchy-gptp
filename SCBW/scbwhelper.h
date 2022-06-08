@@ -129,7 +129,7 @@ namespace helper
 	void ai_assign_region_to_slowest_unit(AiRegion* region);										// 00436F70
 
 	// For ai_create_nuke
-	Unit* create_unit(s16 unitType, s32 x, s32 y, s32 playerId);
+	Unit* create_unit(s16 unit_id, s32 x, s32 y, s32 playerId);
 	void update_unit_stats_and_finish_building(Unit* unit);
 	u32 update_unit_strength_and_apply_default_orders(Unit* unit);
 	void hide_unit(Unit* unit);
@@ -321,7 +321,7 @@ namespace helper
 		char bDontIgnoreReacting, char bAlsoInvisible);
 
 	// For update_placement_state_for_placement_box
-	s32 can_build_on_tile_location(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unitType,				// 00473FB0
+	s32 can_build_on_tile_location(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unit_id,				// 00473FB0
 		s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision);
 	
 	// For refresh_screen
@@ -574,7 +574,7 @@ namespace helper
 	void ApplySpores(Unit* unit);
 	Bullet* create_bullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor);
-	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);																// 004CD360
+	Unit* createUnitAtPos(u16 unit_id, u16 playerId, u32 x, u32 y);																// 004CD360
 	Flingy* createFlingy(u32 flingy_id, u32 playerId, u32 x, u32 y);																// 00496460
 
 	//// unit_morph
@@ -838,7 +838,7 @@ namespace helper
 	void update_thingies();
 
 	// create_unit
-	Unit* unit_constructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused);						// 004A06C0
+	Unit* unit_constructor(s32 x, s32 y, u16 unit_id, s32 playerId, s32 unused);						// 004A06C0
 	Unit* list_push_back_used_unit_entry(Unit* unit);														// 0049DCA0
 	Unit* list_push_back_hidden_unit_entry(Unit* unit);														// 0049DCE0
 	Sprite* unit_destructor(Unit* unit);																	// 004A0990
@@ -1338,8 +1338,17 @@ namespace helper
 	u32 order_acquire_generic_idle_unit_proc(Unit* unit, u32 x_pos, u16 y_pos, Unit** target, u16 fow_unit_id);	// 00455900
 	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker);								// 004557C0
 
-	char get_generic_unit_idle_order(u32 order_unit_id, Unit* unit);											// 00455760
-	Unit* iterate_units_at_location_target_proc_in_point(Box16* location, Unit* target);						// 004E8280
-	void set_rally_unit(Unit* factory, Unit* target);															// 00466B40
-	void set_rally_position(Unit* factory, u16 x_pos, u16 y_pos);												// 00466B40
+	char get_generic_unit_idle_order(u32 order_unit_id, Unit* unit);										// 00455760
+	Unit* iterate_units_at_location_target_proc_in_point(Box16* location, Unit* target);					// 004E8280
+	void set_rally_unit(Unit* factory, Unit* target);														// 00466B40
+	void set_rally_position(Unit* factory, u16 x_pos, u16 y_pos);											// 00466B40
+
+	s32 s_trans_442(u32 current_x, u32 current_y);															// 004D1140
+	bool accepts_right_click_commands(Unit* unit);															// 004556D0
+	Unit* find_unit_at_point(u32 x_pos, u32 y_pos);															// 0046F3A0
+	s32 can_move(Unit* unit);																				// 00455660
+	Thingy* show_command_response(u32 x_pos, u16 y_pos, Unit* unit);										// 00456490
+	char cmdact_right_click_order(Unit* target, u16 x_pos, u16 y_pos, u16 unit_id, u8 keycode_used);		// 004C0380
+	s32 show_right_click_error_if_needed(Unit* target);														// 00455A00
+	void play_worker_action_sound(Unit* unit);																// 0048F4D0
 }

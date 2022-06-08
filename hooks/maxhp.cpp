@@ -743,7 +743,7 @@ LABEL_32:
 		s8 v8; // cl
 		s32 result; // eax
 		s32 v10; // eax
-		s32 unitType; // ecx
+		s32 unit_id; // ecx
 		s32 v12; // eax
 		s32 v13; // ecx
 		s32 v14; // eax
@@ -753,9 +753,9 @@ LABEL_32:
 		v3 = victim;
 		if (weapons_dat::ExplosionType[v2] == WeaponEffect::NuclearMissile)
 		{
-			unitType = (u16)victim->id;
-			v10 = units_dat::MaxHitPoints[unitType];
-			if (units_dat::ShieldsEnabled[unitType])
+			unit_id = (u16)victim->id;
+			v10 = units_dat::MaxHitPoints[unit_id];
+			if (units_dat::ShieldsEnabled[unit_id])
 			{
 				v12 = v10 >> 8;
 				if (!v12)
@@ -764,7 +764,7 @@ LABEL_32:
 					if (!v12)
 						v12 = 1;
 				}
-				v13 = 2 * (v12 + units_dat::MaxShieldPoints[unitType]);
+				v13 = 2 * (v12 + units_dat::MaxShieldPoints[unit_id]);
 			}
 			else
 			{

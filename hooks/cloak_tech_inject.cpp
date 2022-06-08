@@ -213,7 +213,7 @@ namespace
 		RaceId::Enum race;
 		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i)
 		{
-			Unit* unit = clientSelectionGroup->unit[i];
+			Unit* unit = client_selection_group->unit[i];
 			if (unit != nullptr)
 			{
 				if (scbw::is_cheat_enabled(CheatFlags::TheGathering)

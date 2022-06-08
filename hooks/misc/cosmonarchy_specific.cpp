@@ -719,7 +719,7 @@ LABEL_18:
 
 	// 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
 	// Now used to set starting energy to 100 - Veeq7
-	Unit* create_unit(u16 unitType, s32 x, s32 y, s32 playerId) 
+	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 playerId) 
 	{
 		u32 randomNumber = 0;
 		if (*is_in_game_loop)
@@ -729,12 +729,12 @@ LABEL_18:
 			++(*randomCountsTotal);
 			randomNumber = (*last_random_number >> 16) & 0x7FFF;
 		}
-		Unit* unit = helper::unit_constructor(x, y, unitType, playerId, randomNumber);
+		Unit* unit = helper::unit_constructor(x, y, unit_id, playerId, randomNumber);
 		if (!unit)
 		{
 			return 0;
 		}
-		if (units_dat::BaseProperty[unitType] & UnitProperty::Spellcaster) {
+		if (units_dat::BaseProperty[unit_id] & UnitProperty::Spellcaster) {
 			unit->energy = 100 * 256; // New starting amount
 		} else {
 			unit->energy = 0;
@@ -748,13 +748,13 @@ LABEL_18:
 			helper::list_push_back_hidden_unit_entry(unit);
 		}
 
-		if (unitType > UnitId::Spell_DisruptionWeb || units_dat::SubUnit[unitType] == UnitId::None)
+		if (unit_id > UnitId::Spell_DisruptionWeb || units_dat::SubUnit[unit_id] == UnitId::None)
 		{
 			unit->subunit = 0;
 			return unit;
 		}
 
-		Unit* subunit = helper::unit_constructor(x, y, units_dat::SubUnit[unitType], playerId, randomNumber);
+		Unit* subunit = helper::unit_constructor(x, y, units_dat::SubUnit[unit_id], playerId, randomNumber);
 		if (!subunit)
 		{
 			helper::unit_destructor(unit);

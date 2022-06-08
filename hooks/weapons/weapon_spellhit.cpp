@@ -80,7 +80,7 @@ namespace hooks
 		Sprite* sprite = unit->sprite;
 		if (sprite->flags & 8)
 		{
-			if (*clientSelectionCount > 1u)
+			if (*client_selection_count > 1u)
 			{
 				result = helper::updateBuildingLandUnitSelection(*(u32*)sprite, unit);
 			}

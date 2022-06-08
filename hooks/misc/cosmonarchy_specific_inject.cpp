@@ -672,7 +672,7 @@ namespace hooks
 	void __declspec(naked) create_unit_wrapper() // 004A09D0
 	{
 		static Unit* result;
-		static u16 unitType;
+		static u16 unit_id;
 		static s32 x;
 		static s32 y;
 		static s32 playerId;
@@ -687,10 +687,10 @@ namespace hooks
 			MOV playerId, EAX
 			POP EAX
 			MOV x, EAX
-			MOV unitType, CX
+			MOV unit_id, CX
 			PUSHAD
 		}
-		result = hooks::create_unit(unitType, x, y, playerId);
+		result = hooks::create_unit(unit_id, x, y, playerId);
 		__asm
 		{
 			POPAD

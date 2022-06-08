@@ -146,7 +146,7 @@ namespace hooks
 			Unit* selUnit;
 			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 			{
-				selUnit = clientSelectionGroup->unit[i];
+				selUnit = client_selection_group->unit[i];
 
 				if (selUnit != nullptr && hooks::is_ready_to_make_psi_field(selUnit))
 				{
