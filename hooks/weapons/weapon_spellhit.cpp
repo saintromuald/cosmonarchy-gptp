@@ -82,7 +82,7 @@ namespace hooks
 		{
 			if (*client_selection_count > 1u)
 			{
-				result = helper::updateBuildingLandUnitSelection(*(u32*)sprite, unit);
+				result = helper::update_building_land_unit_selection(*(u32*)sprite, unit);
 			}
 		}
 		unit->current_button_set = 228;

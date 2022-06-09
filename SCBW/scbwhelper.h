@@ -528,11 +528,11 @@ namespace helper
 
 	// for check_unit_visibility
 	u32 get_detecting_players(Unit* unit);																							// 00441130
-	u32 iteratePlayerUnitsSomething(u32 aResult, Unit* unit);																		// 0049E8A0
-	void makeSpriteVisible(Sprite* sprite);																							// 00497ED0
-	s32 updateBuildingLandUnitSelection(u32 unused, Unit* selection);																// 004C3B40
-	char removeSelectionCircle(Sprite* sprite);																						// 004975D0
-	Image* makeSpriteInvisible(Sprite* sprite);																						// 00498A10
+	u32 iterate_player_units_something(u32 aResult, Unit* unit);																		// 0049E8A0
+	void make_sprite_visible(Sprite* sprite);																							// 00497ED0
+	s32 update_building_land_unit_selection(u32 unused, Unit* selection);																// 004C3B40
+	char remove_selection_circle(Sprite* sprite);																						// 004975D0
+	Image* make_sprite_invisible(Sprite* sprite);																						// 00498A10
 
 	//// receive_command
 	void function_004756B0(Unit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommandType);											// 004756B0

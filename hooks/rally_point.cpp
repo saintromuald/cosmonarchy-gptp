@@ -336,7 +336,7 @@ namespace hooks
             || unit->id == UnitId::ZergEgg
             || unit->id == UnitId::ZergCocoon;
     }
-    
+
     bool unit_can_rally(Unit* unit) {
         if (unit_can_have_rally(unit)) {
             if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {

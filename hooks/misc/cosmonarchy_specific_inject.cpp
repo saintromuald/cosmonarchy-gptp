@@ -258,7 +258,7 @@ namespace hooks
 		}
 	}
 
-	void lobotomyMineTargetingPatches()
+	void lobotomy_mine_targeting_patches()
 	{
 		jump_patch(get_order_target_error_string_jump_wrapper,	0x004920D9);
 		jump_patch(should_stop_ordered_spell_jump_wrapper,		0x004922DC);
@@ -395,34 +395,6 @@ namespace hooks
 				JMP jmp_continue
 			}
 		}
-	}
-
-	void __declspec(naked) check_unit_dat_requirements_wrapper()
-	{
-		static u32 result;
-		static u32 unit_id;
-		static Unit* parent;
-		static u32 playerId;
-		__asm {
-			PUSH EBP
-			MOV EBP, ESP
-			MOV unit_id, EAX
-			MOV parent, ESI
-			PUSH EAX
-			MOV EAX, [EBP + 0x08]
-			MOV playerId, EAX
-			POP EAX
-			PUSHAD
-		}
-		result = hooks::check_unit_dat_requirements(playerId, unit_id, parent);
-		__asm {
-			POPAD
-			MOV EAX, result
-			MOV ESP, EBP
-			POP EBP
-			RETN 4
-		}
-//		0046E1C0 = CheckUnitDatRequirements(), arg 1 player_id, eax unit_id, esi Unit* parent
 	}
 
 	void create_building_ai_workaround()
@@ -742,13 +714,22 @@ namespace hooks
 		}
 	}
 
+	void __declspec(naked) init_damage_overlay_counts_wrapper() { // 004D5C20
+		__asm {
+			PUSHAD
+		}
+		hooks::init_damage_overlay_counts();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void inject_cosmonarchy_specific()
 	{
-		// must be finished first (and add Firegraft offsets)
-//		jump_patch(check_unit_dat_requirements_wrapper, 0x0046E1C0, 1);
-
 		flingy_speed_patches();
 		desync_debug_messages();
+
 		// start of spell order code
 		// default case of switch 004EC4FF
 		unused_order_patches();
@@ -758,58 +739,16 @@ namespace hooks
 		clarion_wrappers();
 		create_building_ai_workaround();
 		damage_overlay_debug();
-//		lobotomyMineTargetingPatches();
+//		lobotomy_mine_targeting_patches();
 
 		// add later: disable WarpIn functionality, make it useless
 		archon_hardcode_patches();
 
 		// Hook patches!
-//      jump_patch(game_loop_wrapper,						0x004D94B0, 3);
+	//	jump_patch(game_loop_wrapper,						0x004D94B0, 3);
 		jump_patch(create_unit_wrapper,						0x004A09D0, 1);
 		jump_patch(transform_unit_main_wrapper,				0x0049F170, 1);
 		jump_patch(ignore_iscript_and_go_to_idle_wrapper,	0x00476550, 1);
+	//	jump_patch(init_damage_overlay_counts_wrapper,		0x004D5C20, 3);
 	}
 }
-
-// TODO: Cleanup
-		/*
-
-00431B26  |.  0F95C1        |SETNE CL
-00431B29  |.  8BC1          |MOV EAX,ECX
-00431B2B  |>  85C0          |TEST EAX,EAX
-00431B2D  |.  0F84 70010000 |JE 00431CA3
-		*/
-
-		/*
-
-0043AFCD  |>  8BCB          |MOV ECX,EBX
-0043AFCF  |.  E8 FCAA0300   |CALL 00475AD0
-0043AFD4  |>  3C 82         |CMP AL,82
-0043AFD6  |.  74 23         |JE SHORT 0043AFFB
-		*/
-
-		/*
-
-004418D9   .  E8 F2410300   CALL 00475AD0
-		*/
-
-		/*
-
-00441900   .  E8 CB410300   CALL 00475AD0
-00441905   .  3C 82         CMP AL,82
-		*/
-
-		/*
-
-	Line 154324: 00467E37  |.  E8 94DC0000   CALL 00475AD0
-	Line 175187: 00475AD0  /$  66:8B41 64    MOV AX,WORD PTR DS:[ECX+64]
-	Line 175887: 004761F1  |>  E8 DAF8FFFF   CALL 00475AD0
-	Line 176527: 0047684D  |.  E8 7EF2FFFF   CALL 00475AD0
-	Line 178261: 00477AE8  |.  E8 E3DFFFFF   CALL 00475AD0
-	Line 178537: 00477E36  |.  E8 95DCFFFF   CALL 00475AD0
-	Line 179279: 00478640  |.  E8 8BD4FFFF   CALL 00475AD0
-	Line 179802: 00478BC4  |.  E8 07CFFFFF   CALL 00475AD0
-	Line 207274: 0048B0D1   .  E8 FAA9FEFF   CALL 00475AD0
-	Line 321514: 004D818F  |.  E8 3CD9F9FF   |CALL 00475AD0
-	Line 344811: 004E8076  |.  E8 55DAF8FF   CALL 00475AD0
-		*/

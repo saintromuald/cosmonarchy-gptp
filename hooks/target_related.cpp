@@ -541,25 +541,25 @@ LABEL_42:
 	{
 		if (*playerVisions & unit->visibility_status)
 		{
-			helper::makeSpriteVisible(unit->sprite);
+			helper::make_sprite_visible(unit->sprite);
 			Unit* subunit = unit->subunit;
 			if (subunit)
 			{
-				helper::makeSpriteVisible(subunit->sprite);
+				helper::make_sprite_visible(subunit->sprite);
 			}
 		}
 		else
 		{
 			if (unit->sprite->flags & SpriteFlags::Selected)
 			{
-				helper::updateBuildingLandUnitSelection(unit->visibility_status, unit);
+				helper::update_building_land_unit_selection(unit->visibility_status, unit);
 			}
-			helper::removeSelectionCircle(unit->sprite);
-			helper::makeSpriteInvisible(unit->sprite);
+			helper::remove_selection_circle(unit->sprite);
+			helper::make_sprite_invisible(unit->sprite);
 			Unit* subunit = unit->subunit;
 			if (subunit)
 			{
-				helper::makeSpriteInvisible(subunit->sprite);
+				helper::make_sprite_invisible(subunit->sprite);
 			}
 		}
 	}
@@ -580,7 +580,7 @@ LABEL_42:
 			u32 v5 = v6 & ~detectingPlayers;
 			if (v5)
 			{
-				helper::iteratePlayerUnitsSomething(v5, unit);
+				helper::iterate_player_units_something(v5, unit);
 			}
 
 			if (*playerVisions & v6)
