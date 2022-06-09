@@ -439,7 +439,8 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				s32 player = parser_get_s32(&parser);
 				Token name = parser_get_string(&parser, true);
 				if (player >= 0 && player < 8) {
-					sprintf_s(playerNameList->player[player].force_name, "%s", name.data);
+					snprintf(playerNameList->player[player].force_name, sizeof(playerNameList->player[player].force_name),
+						"%s", name.data);
 				}
 			} else if (parser_eq(&parser, "recolor")) {
 				Recolor recolor = {};
