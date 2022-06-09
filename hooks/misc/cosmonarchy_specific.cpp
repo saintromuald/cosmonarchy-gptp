@@ -7,72 +7,6 @@
 #include "SCBW/scbwdata.h"
 #include <array>
 
-namespace ReqOpcode
-{
-	enum
-	{
-		Or = 0xff01,
-		CurrentUnitIs = 0xff02,
-		HasUnit = 0xff03,
-		HasAddonAttached = 0xff04,
-		IsNotLifted = 0xff05,
-		IsLifted = 0xff06,
-		IsNotBusyBuilding = 0xff07,
-		IsNotConstructingAddon = 0xff08,
-		IsNotTeching = 0xff09,
-		IsNotUpgrading = 0xff0a,
-		IsNotConstructingBuilding = 0xff0b,
-		HasNoAddon = 0xff0c,
-		HasNoNydusExit = 0xff0d,
-		HasHangarSpace = 0xff0e,
-		TechIsResearched = 0xff0f,
-		HasNoNuke = 0xff10,
-		NotBurrowedOrAIControlled = 0xff11,
-		IsNotLandedBuilding = 0xff12,
-		IsLandedBuidling = 0xff13,
-		CanMove = 0xff14,
-		CanAttack = 0xff15,
-		IsWorker = 0xff16,
-		CanLiftOff = 0xff17,
-		IsTransport = 0xff18,
-		IsPowerup = 0xff19,
-		IsSubunit = 0xff1a,
-		HasSpiderMinesOrAddons = 0xff1b,
-		IsHero = 0xff1c,
-		CanRallyOrRclick = 0xff1d,
-		AllowOnHallucinations = 0xff1e,
-		UpgradeLevelBasedJump = 0xff1f,//0xff20 if level 1, 0xff20 if level >=2
-		Disabled = 0xff22,
-		Blank = 0xff23,
-		BroodWar = 0xff24,
-		IfTechResearched = 0xff25,
-		IfBurrowed = 0xff26,
-		EndOfSublist = 0xFFFF,
-	};
-}
-
-//u32 parse_unit_dat_requirements() {
-void parse_unit_dat_requirements()
-{
-	//	static u32 result;
-	const u32 parseUnitFunc = 0x0046e100;
-	__asm {
-		PUSHAD
-		CALL parseUnitFunc
-//		MOV result,EAX
-		POPAD
-	}
-//	return result;
-}
-
-bool is_attempting_protoss_build(const Unit* probe)
-{
-	return probe->main_order_id == OrderId::BuildProtoss1
-		&& probe->status & UnitStatus::GroundedBuilding
-		&& probe->order_target.unit != nullptr
-		&& !(probe->order_target.unit->status & UnitStatus::Completed);
-}
-
 namespace hooks
 {
 	bool debug_damage_overlay(Sprite* sprite) {
@@ -175,278 +109,6 @@ namespace hooks
 			Point8 offset = overlay->get_offset(sprite->main_graphic->frameIndex, variation);
 			sprite->create_top_overlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 		}
-	}
-
-	u32 check_unit_dat_requirements(u8 playerId, u16 unit_id, Unit* unit)
-	{
-		//
-		// Warning: This hook doesn't points to firegraft offsets. Firegraft offsets must be taken into account and added to hook before using it.
-		//
-		auto v3 = unit_id;
-		static u32* lastError = (u32*)0x0066FF60;
-		static u16* reqTable = (u16*)0x00514178;
-		*lastError = 0;
-		if (unit_id >= UnitId::None)
-		{
-			*lastError = 16;
-			return 0;
-		}
-		if (playerId != unit->player)
-		{
-			*lastError = 1;
-			return 0;
-		}
-		if (!(unit->status & UnitStatus::Completed))
-		{
-			*lastError = 20;
-			return 0;
-		}
-		if (unit->is_frozen())
-		{
-			*lastError = 10;
-			return 0;
-		}
-		if (!unit_availability->available[unit->player][unit->id])
-		{
-			*lastError = 2;
-			return 0;
-		}
-		if (hooks::is_queue_slot_active(unit, 4))
-		{//if build queue is full
-LABEL_86:
-			*lastError = 3;
-			return 0;
-		}
-		if (unit->status & UnitStatus::IsHallucination)
-		{
-			*lastError = 22;
-			return 0;
-		}
-		// 57
-
-
-		if (units_dat::unitsDat43[unit->id] == ReqOpcode::EndOfSublist)
-		{
-			parse_unit_dat_requirements();
-		}
-		s32 v7 = (u16)units_dat::unitsDat43[unit->id];
-
-		if (units_dat::unitsDat43[unit->id] == 0)
-		{
-LABEL_93:
-			*lastError = 23;
-			return 0;
-		}
-		auto v26 = 1;
-		auto v25 = 1;
-		s32 v8 = reqTable[v7];
-		auto v27 = 0;
-		if (v8 == -1)
-			return 1;
-LABEL_18:
-		auto v9 = 0;
-		auto v28 = 0;
-		auto v11 = 0;
-		auto v24 = 0;
-		auto v14 = 0;
-		auto v17 = 0;
-		auto v18 = 0;
-		Unit* v12 = 0;
-		auto requiredId = 0;
-		/*		while (true)
-				{
-					v8 = (u16)v8;
-					switch (v8)
-					{
-					case ReqOpcode::CurrentUnitIs:
-						requiredId = reqTable[v7++];
-						if (completed_unit_counts[requiredId].player[unit->player] > 0)
-							v26 = 0;
-						if (requiredId == unit->id)
-						{
-							v27 = 0;
-							v25 = 0;
-							v11 = v9 + 1;
-							goto LABEL_72;//end
-						}
-						if (v25)
-							v27 = 1;
-						goto LABEL_73;
-					case ReqOpcode::HasUnit:
-						requiredId = reqTable[v7++];
-						v24 = completed_unit_counts[requiredId].player[unit->player] + all_unit_counts[requiredId].player[unit->player];
-						goto LABEL_71;
-					case ReqOpcode::HasAddonAttached:
-						if (*cheat_state & CheatFlags::ModifyThePhaseVariance)
-						{
-							++v7;
-							v11 = v9 + 1;
-						}
-						else
-						{
-							v12 = unit->building.addon;
-							if (v12 != nullptr || (++v7, v12->id != reqTable[v7]))
-							{
-								if (!v27)
-									*lastError = 4;
-								return -1;
-							}
-							v11 = v9 + 1;
-						}
-						goto LABEL_72;
-					case ReqOpcode::IsNotLifted:
-						if (!(unit->status & UnitStatus::GroundedBuilding))
-						{
-							*lastError = 7;
-							return 0;
-						}
-						v11 = v9 + 1;
-						goto LABEL_72;
-					case ReqOpcode::IsNotBusyBuilding:
-						if (unit_is_training_or_morphing(unit) || unit->building.upgrade_id != TechId::None ||
-							unit->building.tech_id != UpgradeId::None)
-							goto LABEL_87;
-						++v28;
-						goto LABEL_73;
-					case ReqOpcode::IsNotConstructingAddon:
-					{
-						auto v13 = is_constructing_addon(unit);
-						if (v13)
-							goto LABEL_87;
-						auto v15 = is_attempting_protoss_build(unit);
-						if (v15)
-							goto LABEL_87;
-						v11 = v14 + 1;
-						goto LABEL_72;
-					}
-					case ReqOpcode::IsNotTeching:
-						if (unit->building.tech_id != TechId::None)
-							goto LABEL_87;
-						v11 = v9 + 1;
-						goto LABEL_72;
-					case ReqOpcode::IsNotUpgrading:
-						if (unit->building.upgrade_id != UpgradeId::None)
-							goto LABEL_87;
-						v11 = v9 + 1;
-						goto LABEL_72;
-					case ReqOpcode::IsNotConstructingBuilding:
-						if (unit->id == UnitId::TerranSCV && unit->main_order_id == OrderId::ConstructingBuilding)
-							goto LABEL_87;
-						v11 = v9 + 1;
-						goto LABEL_72;
-					case ReqOpcode::HasNoAddon:
-						if (unit->building.addon)
-						{
-							if (!v27)
-								*lastError = 4;
-							return 0;
-						}
-						v11 = v9 + 1;
-					LABEL_72:
-						v28 = v11;
-					LABEL_73:
-						if (reqTable[++v7] == -255)
-						{
-							v8 = reqTable[v7];
-							v9 = v28;
-							++v7;
-							continue;
-						}
-						if (!v28 && v26)
-						{
-							*lastError = 8;
-							return -1;
-						}
-						v8 = reqTable[v7];
-						v26 = 1;
-						if (v8 != -1)
-							goto LABEL_18;
-						if (v27)
-						{
-							*lastError = 25;
-							return -1;
-						}
-						return 1;
-					case ReqOpcode::HasHangarSpace:
-					{
-						v17 = -1;
-						auto v19 = 0;
-						auto v21 = 0;
-						auto v20 = 0;
-						v18 = unitIsCarrier(unit);
-						if (v18)
-						{
-							v19 = unit->unit_with_hangar.in_hangar_count + getHangerTrainCount(unit);
-						}
-						else
-						{
-							v21 = unitIsReaver(unit);
-							if (!v21)
-								goto LABEL_51;
-							v19 = getHangerTrainCount(unit);
-						}
-						v17 = unit->unit_with_hangar.in_hangar_count + v19;
-
-					LABEL_51:
-						if (v17 >= getMaxHangerSpace(unit))
-							goto LABEL_86;
-						++v28;
-						goto LABEL_73;
-					}
-					case ReqOpcode::HasNoNuke:
-						if (unit->building.silo.nuke)
-							goto LABEL_86;
-						v11 = v9 + 1;
-						goto LABEL_72;
-					case ReqOpcode::NotBurrowedOrAIControlled:
-						if (unit->status & UnitStatus::Burrowed)
-						{
-						LABEL_87:
-							*lastError = 5;
-							return 0;
-						}
-						v11 = v9 + 1;
-						goto LABEL_72;
-					case ReqOpcode::Disabled:
-						*lastError = 21;
-						return -1;
-					case ReqOpcode::Blank:
-						goto LABEL_93;
-					case ReqOpcode::BroodWar:
-						if (!*is_brood_war)
-						{
-							*lastError = 26;
-							return 0;
-						}
-						v11 = v9 + 1;
-						goto LABEL_72;
-					case ReqOpcode::TechIsResearched:
-						auto v10 = reqTable[v7++];
-						if (scbw::has_tech_researched(unit->player,v10) && !(*cheat_state & CheatFlags::MedievalMan))
-						{
-							*lastError = 9;
-							return -1;
-						}
-						++v28;
-						goto LABEL_73;
-					case ReqOpcode::IfBurrowed:
-						if (!(unit->status & UnitStatus::Burrowed))
-						{
-							*lastError = 5;
-							return -1;
-						}
-						v11 = v9 + 1;
-						goto LABEL_72;
-					default:
-						if (*cheat_state & 0x2000)
-							++v9;
-						v24 = completed_unit_counts[requiredId][player];
-					LABEL_71:
-						v11 = v24 + v9;
-						goto LABEL_72;
-					}
-				}*/
-		return 0;
 	}
 
 	u32 real_top_speed(Flingy* flingy, u32 flingy_id)
@@ -884,5 +546,35 @@ LABEL_18:
 		unit->movement_flags = result;
 		return result;
 	}
-}
 
+	// Hooked to investigate startup crash. -Pr0nogo
+	void init_damage_overlay_counts() // 004D5C20
+	{
+		s32 index = 999;
+		s32 offset = 0;
+		do
+		{
+			--index;
+			u32 max_overlay_state = 0;
+			building_overlay_state_max[index] = 0;
+			GrpHead* overlay = images_damage_overlay_graphic[index];
+			if (overlay)
+			{
+				offset = 44;
+				do
+				{
+					offset -= 2;
+					GrpFrame* overlay_frame = 0; // (overlay + offset + *&overlay->frames[0].width);
+					if (overlay_frame->x != 127 || overlay_frame->y != 127)
+					{
+						++max_overlay_state;
+					}
+				} while (offset);
+				if (max_overlay_state)
+				{
+					building_overlay_state_max[index] = 2 * max_overlay_state;
+				}
+			}
+		} while (index);
+	}
+}

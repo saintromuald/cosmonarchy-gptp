@@ -22,9 +22,10 @@ namespace hooks
 
 	u32 check_unit_dat_requirements(u8 playerId, u16 unit_id, Unit* parent);
 	s32 game_loop();																				// 004D94B0
-	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 playerId);									// 004A09D0
+	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 playerId);										// 004A09D0
 	void transform_unit_main(Unit* unit, u32 unit_id);												// 0049F170
 	char ignore_iscript_and_go_to_idle(Unit* unit);													// 00476550
+	void init_damage_overlay_counts();																// 004D5C20
 }
 
 namespace hooks
