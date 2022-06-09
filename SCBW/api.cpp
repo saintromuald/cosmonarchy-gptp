@@ -2499,7 +2499,7 @@ namespace scbw
 	bool all_selected_units_have_addon(u32 unit_id) {
 		bool has_selection = false;
 		*unit_iterator_pos = 0;
-		for (Unit* unit = helper::get_active_player_next_selection(); unit; unit = helper::get_active_player_next_selection()) {
+		while (Unit* unit = helper::get_active_player_next_selection()) {
 			has_selection = true;
 			if (!unit->building.addon || unit->building.addon->id != unit_id) {
 				return false;
