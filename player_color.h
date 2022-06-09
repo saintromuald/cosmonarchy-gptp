@@ -510,7 +510,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Slow, Fat, Victorious",
 			"StuckInMudDuringWinter.jpeg",
 			"Foreign Dogwalkers",
-			"Somehow Still Viable!",
+			"Somehow, I'm Still Viable!",
 		},
 		// Raider
 		{
@@ -588,7 +588,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Estranged Aviary",
 			"DarkDarkDark BTW",
 			"Infinite Bounce Foundation",
-			"Side of Fleet Beacon",
+			"With a Side of Fleet Beacon",
 			"Tiny \"Techrush\" Tony",
 			"Stargate SV7",
 			"Furious Angles",
@@ -601,14 +601,14 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Voidthem Ifyoucan",
 			"nullptr",
 			"A Vile Voidspeaker",
-			"Shadowcloak Skullcrusher",
+			"Shadowcloak Skullcrushers",
 			"Ancient Artifact",
 		},
 		// General
 		{
 			"F.R.A.U.D.s",
 			"The Fraudclave",
-			"Obscure Reference #3",
+			"Obscure Childhood Reference #3",
 			"Incoherent Ape Noises",
 			"Anime Campaign Protagonist",
 			"NoMoreRoom_InMyBase_HELP",
