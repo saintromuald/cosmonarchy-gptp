@@ -427,9 +427,11 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				if (player >= 0 && player < 8) {
 					has_custom_name[player] = true;
 					if (playerTable[player].type == PlayerType::Human || playerTable[player].type == PlayerType::HumanDefeated) {
-						sprintf_s(playerNameList->player[player].player_name, "%s (%s)", name.data, playerTable[player].name);
+						snprintf(playerNameList->player[player].player_name, sizeof(playerNameList->player[player].player_name),
+							"%s (%s)", name.data, playerTable[player].name);
 					} else {
-						sprintf_s(playerNameList->player[player].player_name, "%s", name.data);
+						snprintf(playerNameList->player[player].player_name, sizeof(playerNameList->player[player].player_name),
+							"%s", name.data);
 					}
 
 				}
