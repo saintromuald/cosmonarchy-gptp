@@ -2022,8 +2022,8 @@ namespace hooks
 
 		quickcasting_signal = false;
 		quickcasting_command_card = 0;
-
-		set_color_palette(0, 0, 0, 0);
+		
+		set_palette_recolor({}, {});
 		return true;
 	}
 
