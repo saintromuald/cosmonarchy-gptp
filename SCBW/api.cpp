@@ -2503,6 +2503,10 @@ namespace scbw
 		bool has_selection = false;
 		*unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
+			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
+				return false;
+			}
+
 			has_selection = true;
 			if (!unit->building.addon || unit->building.addon->id != unit_id) {
 				return false;

@@ -1322,7 +1322,9 @@ namespace helper
 
 	bool compare_unit_rank(Unit* unit, Unit* compare_unit);													// 0049A350
 
-	char input_target_order_left_mouse_click(Event* event_veeq);											// 004BD500
+	void do_targeted_order(u32 x, u32 y, Unit* target, u32 fow_unit_id);									// 004A55F0
+	void minimap_game_target_order(Event* event);															// 004A55F0
+	char input_target_order_left_mouse_click(Event* event);													// 004BD500
 	SCBW_FUNC(0x004845F0, void __cdecl, input_target_order_right_mouse_click);
 
 	char input_place_building_left_mouse_click(Event* event, u32 unused, Point16 position);					// 0048E5D0
