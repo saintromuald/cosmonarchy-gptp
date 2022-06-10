@@ -11984,12 +11984,35 @@ namespace helper
 		return result;
 	}
 
-	char input_target_order_left_mouse_click(Event* event_veeq) {
+	void do_targeted_order(u32 x, u32 y, Unit* target, u32 fow_unit_id) {
+		const u32 func_address = 0x0046F5B0;
+		__asm {
+			PUSHAD
+			PUSH fow_unit_id
+			PUSH target
+			PUSH y
+			PUSH x
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void minimap_game_target_order(Event* event) {
+		const u32 func_address = 0x004A55F0;
+		__asm {
+			PUSHAD
+			MOV EAX, event
+			CALL func_address
+			POPAD
+		}
+	}
+
+	char input_target_order_left_mouse_click(Event* event) {
 		static char result;
 		const u32 func_address = 0x004BD500;
 		__asm {
 			PUSHAD
-			MOV ECX, event_veeq
+			MOV ECX, event
 			CALL func_address
 			MOV result, AL
 			POPAD

@@ -3,8 +3,7 @@
 #include <array>
 
 const std::string CONFIG_FILENAME = "config.yml";
-struct Config
-{
+struct Config {
 	// Launch Settings
 	bool disable_wmode_prompt = false;
 	bool prefer_wmode = true;
@@ -16,6 +15,7 @@ struct Config
 
 	// Hotkeys
 	bool quick_casting = false;
+	bool quick_building = false;
 	bool grid_hotkeys = false;
 	std::array<std::string, 3> layout = {"QWE", "ASD", "ZXC"};
 
@@ -24,6 +24,6 @@ struct Config
 };
 extern Config config;
 
-bool FileExists(std::string file);
-void LoadConfig();
-void SaveConfig();
+bool file_exists(std::string file);
+void load_config();
+void save_config();

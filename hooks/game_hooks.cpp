@@ -112,45 +112,51 @@ namespace hooks
 		tick_trigger_system(false);
 	}
 
-	static bool process_quickcasting(bool process_targeting) {
-		// Quick Casting
-		if (config.quick_casting) {
-			if (*is_placing_building) {
-				bool not_held = true;
-				for (char c = 'A'; c <= 'Z'; ++c) {
-					if (IS_KEYCODE_USED[c]) {
-						not_held = false;
-						break;
-					}
-				}
-				if (not_held) {
-					Point16 position = {};
-					position.x = mouse->x;
-					position.y = mouse->y;
-
-					Event event = {};
-					event.x_pos = position.x;
-					event.y_pos = position.y;
-
-					helper::input_place_building_left_mouse_click(&event, 0, position);
-					if (*is_placing_building) {
-						helper::input_place_building_right_mouse_click();
-					}
-				}
-				return true;
+	static bool process_quickcasting() {
+		if (config.quick_casting && *is_targeting) {
+			if (PtInRect(minimap_rect, *(POINT*) mouse)) {
+				u16 x = mouse->x;
+				u16 y = mouse->y;
+				helper::get_minimap_cursor_pos(&x, &y);
+				helper::do_targeted_order(x, y, 0, UnitId::None);
+			} else {
+				Event event = {};
+				event.x_pos = mouse->x;
+				event.y_pos = mouse->y;
+				helper::input_target_order_left_mouse_click(&event);
 			}
-			if (process_targeting && *is_targeting) {
-				if (!PtInRect(minimap_rect, *(POINT*) mouse)) {
-					Event event = {};
-					event.x_pos = mouse->x;
-					event.y_pos = mouse->y;
-					helper::input_target_order_left_mouse_click(&event);
-					if (*is_targeting) {
-						helper::input_target_order_right_mouse_click();
-					}
-					return true;
+			if (*is_targeting) {
+				helper::input_target_order_right_mouse_click();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	static bool process_quickbuilding() {
+		if (config.quick_building && *is_placing_building) {
+			bool not_held = true;
+			for (char c = 'A'; c <= 'Z'; ++c) {
+				if (IS_KEYCODE_USED[c]) {
+					not_held = false;
+					break;
 				}
 			}
+			if (not_held) {
+				Point16 position = {};
+				position.x = mouse->x;
+				position.y = mouse->y;
+
+				Event event = {};
+				event.x_pos = position.x;
+				event.y_pos = position.y;
+
+				helper::input_place_building_left_mouse_click(&event, 0, position);
+				if (*is_placing_building) {
+					helper::input_place_building_right_mouse_click();
+				}
+			}
+			return true;
 		}
 		return false;
 	}
@@ -182,7 +188,7 @@ namespace hooks
 		input_procs->funcs[17] = 0;
 		input_procs->funcs[18] = 0;
 
-		if (process_quickcasting(true)) {
+		if (process_quickcasting()) {
 			quickcasting_signal = true;
 			quickcasting_command_card = *orders_buttonset;
 		}
@@ -363,7 +369,7 @@ namespace hooks
 				}
 			}
 
-			process_quickcasting(false);
+			process_quickbuilding();
 
 			// Loop through all visible units in the game.
 			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)

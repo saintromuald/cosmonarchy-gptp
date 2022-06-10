@@ -11,7 +11,7 @@ void LoadField(const YAML::Node& node, const std::string& key, T& variable)
 }
 
 template<typename T>
-void WriteField(YAML::Emitter& emitter, const std::string& key, const T& value)
+void write_field(YAML::Emitter& emitter, const std::string& key, const T& value)
 {
 	emitter << YAML::Key << key << YAML::Value << value;
 }
