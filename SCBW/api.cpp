@@ -1470,6 +1470,9 @@ namespace scbw
 			|| id == UnitId::TerranMaverick
 			|| id == UnitId::TerranHarakan
 			|| id == UnitId::TerranCyprian
+			|| id == UnitId::TerranMadcap
+			|| id == UnitId::TerranHeracles
+			|| id == UnitId::TerranApostle
 			|| id == UnitId::TerranVulture
 			|| id == UnitId::TerranCyclops
 			|| id == UnitId::TerranGoliath
