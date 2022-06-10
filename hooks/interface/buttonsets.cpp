@@ -666,16 +666,20 @@ namespace hooks {
 				current_button_state = Button_State::Invisible;
 				while (current_button_state == Button_State::Invisible && (buttons_count < current_buttonset->buttons_in_set))
 				{
-					current_button_state = helper::req_check((u32)current_button->requirement_func, (u8)current_button->requirement_var, (u8)*LOCAL_NATION_ID, *active_portrait_unit);
+					current_button_state = helper::req_check((u32)current_button->requirement_func, (u8)current_button->requirement_var, (u8)*LOCAL_NATION_ID, unit);
 
 					// I am currently forcing the buttons to show, which is effectively fighting lardcode that forces them not to show when group-unit.
 					// This is STUPID, EXPENSIVE, and should be REPLACED as soon as possible. - Pr0nogo
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons)
 					{
-						if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg)
+						if (unit->id == UnitId::ZergLarva)
 						{
 							current_button_state = Button_State::Enabled;
 						}
+					}
+
+					if (unit->id == UnitId::ZergEgg) {
+						current_button_state = Button_State::Enabled;
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched)
