@@ -114,8 +114,8 @@ namespace hooks
 					while (!bEndLoop)
 					{
 
-						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId]
-							&& unit->order_queue_tail->orderId != OrderId::MedicHeal1)
+						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id]
+							&& unit->order_queue_tail->order_id != OrderId::MedicHeal1)
 						{
 							bEndLoop = true;
 						}
@@ -236,7 +236,7 @@ namespace hooks
 							current_image = current_image->link.next;
 						}
 						if (unit->order_queue_head == nullptr
-							|| unit->order_queue_head->orderId != OrderId::MedicHeal2)
+							|| unit->order_queue_head->order_id != OrderId::MedicHeal2)
 						{
 							helper::order_immediate(unit, OrderId::MedicHeal2);
 						}

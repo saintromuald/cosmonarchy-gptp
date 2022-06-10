@@ -249,31 +249,31 @@ struct Unit : public UnitLayout
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Issue the @p order to the unit, using the given @p target unit.
-	void order_to(u8 orderId, Unit* target = nullptr);
+	void order_to(u8 order_id, Unit* target = nullptr);
 
 	/// Issue the @p order to the unit, using the given position as the target.
-	void order_to(u8 orderId, u16 x, u16 y);
+	void order_to(u8 order_id, u16 x, u16 y);
 
 	//  Issue the @p order to the unit, without a target
-	void order_computer(u8 orderId);
+	void order_computer(u8 order_id);
 
 	//  Issue the @p order to the unit and specify if previous orders should be stopped
-	void order_simple(u8 orderId, bool stopPreviousOrders);
+	void order_simple(u8 order_id, bool stopPreviousOrders);
 
 	//  Issue the @p order to the unit, using the given @p target unit and specify if previous orders should be stopped
-	void issue_queued_order_target(u8 orderId, Unit* target, bool stopPreviousOrders);
+	void issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviousOrders);
 
 	/// Causes the unit to become idle.
 	void order_to_idle();
 
 	/// Issues a new order to the unit.
-	void order(u8 orderId, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders);
+	void order(u8 order_id, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders);
 
 	/// Probably add the @p order to the orders queue
-	void perform_another_order(u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk = NULL);
+	void perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk = NULL);
 
 	/// Used by several hooks, details not completely understood.
-	void set_secondary_order(u8 orderId);
+	void set_secondary_order(u8 order_id);
 
 	//////////////////////////////////////////////////////////////// @}
 

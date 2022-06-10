@@ -271,18 +271,18 @@ namespace hooks
 					|| unit->id == UnitId::ZergSire
 					|| unit->id == UnitId::ZergLarvalColony;
 
-				u8 orderId;
+				u8 order_id;
 				if (isZergMainBuilding)
 				{
-					orderId = OrderId::SpawningLarva;
+					order_id = OrderId::SpawningLarva;
 				}
 				else
 				{
-					orderId = OrderId::Nothing2;
+					order_id = OrderId::Nothing2;
 				}
-				if (unit->secondary_order_id != orderId)
+				if (unit->secondary_order_id != order_id)
 				{
-					unit->secondary_order_id = orderId;
+					unit->secondary_order_id = order_id;
 					unit->secondary_order_pos.y = 0;
 					unit->secondary_order_pos.x = 0;
 					unit->current_build_unit = nullptr;

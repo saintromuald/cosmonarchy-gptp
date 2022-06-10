@@ -149,11 +149,11 @@ namespace hooks
 	}
 
 	// Hooked to allow for general Repair and some other shit - Pr0nogo
-	s32 is_order_valid(char orderId, Unit* unit, s32 unused, Unit* target, s32 bErrorFlag) // 00474D90
+	s32 is_order_valid(char order_id, Unit* unit, s32 unused, Unit* target, s32 bErrorFlag) // 00474D90
 	{
 		s32 unusedResult = 0;
 		u16 errorStringId = 0;
-		switch (orderId)
+		switch (order_id)
 		{
 			case OrderId::Repair1:
 			{
@@ -282,33 +282,33 @@ namespace hooks
 	}
 
 	// Hooked to investigate Repair crashes - Pr0nogo
-	s32 order_allowed(Unit* unit, u16 orderId, s32 player) // 0046DC20
+	s32 order_allowed(Unit* unit, u16 order_id, s32 player) // 0046DC20
 	{
 		s32 result = 0;
 		*last_internal_error = 0;
-		if (orderId < OrderId::None)
+		if (order_id < OrderId::None)
 		{
-			if (orders_dat::RequirementsOffset[orderId] == -1)
+			if (orders_dat::RequirementsOffset[order_id] == -1)
 			{
 				helper::parse_orders_dat_requirements();
 			}
 			if (player == unit->player)
 			{
-				if (orderId == OrderId::RallyPoint1 || orderId == OrderId::RallyPoint2 || unit->status & UnitStatus::Completed)
+				if (order_id == OrderId::RallyPoint1 || order_id == OrderId::RallyPoint2 || unit->status & UnitStatus::Completed)
 				{
 					if (unit->is_frozen())
 					{
 						*last_internal_error = 10;
 						result = 0;
 					}
-					else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk && orderId != OrderId::Unburrow)
+					else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk && order_id != OrderId::Unburrow)
 					{
 						*last_internal_error = 11;
 						result = 0;
 					}
 					else
 					{
-						if (unit->id == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding && orderId != 1
+						if (unit->id == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding && order_id != 1
 						|| (scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
 						||  unit->id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
 						||  unit->id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
@@ -318,12 +318,12 @@ namespace hooks
 						}
 						else
 						{
-							if (orders_dat::RequirementsOffset[orderId])
+							if (orders_dat::RequirementsOffset[order_id])
 							{
 								result = helper::parse_requirement_opcodes(unit,
-									orderId,
+									order_id,
 									player,
-									orders_dat::RequirementsOffset[orderId],
+									orders_dat::RequirementsOffset[order_id],
 									(s32)orders_requirement_tree);
 							}
 							else

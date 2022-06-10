@@ -440,7 +440,7 @@ LABEL_42:
 		Unit* result;
 		Unit* i;
 		s16 unit_id;
-		u8 orderId;
+		u8 order_id;
 
 		*((s8*)&map_height_pixels + 2) = 0;
 		result = helper::get_active_player_next_selection();
@@ -455,30 +455,30 @@ LABEL_42:
 					{
 						if (unit_id != UnitId::ZergSkryling && unit_id != UnitId::ZergInfestedTerran)
 						{
-							orderId = unit_id != UnitId::TerranCleric ? 107 : 178;
+							order_id = unit_id != UnitId::TerranCleric ? 107 : 178;
 						}
 						else
 						{
-							orderId = OrderId::HoldPosition4;
+							order_id = OrderId::HoldPosition4;
 						}
 					}
 					else
 					{
-						orderId = OrderId::HoldPosition3;
+						order_id = OrderId::HoldPosition3;
 					}
 				}
 				else
 				{
-					orderId = OrderId::ReaverHold;
+					order_id = OrderId::ReaverHold;
 				}
 			}
 			else
 			{
-				orderId = OrderId::HoldPosition1;
+				order_id = OrderId::HoldPosition1;
 			}
-			if (helper::order_allowed(i, orderId, *ACTIVE_NATION_ID) == 1)
+			if (helper::order_allowed(i, order_id, *ACTIVE_NATION_ID) == 1)
 			{
-				helper::targetedOrder(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
+				helper::targetedOrder(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, order_id, 0, *orderType4Position, *orderType4Target);
 			}
 			result = helper::get_active_player_next_selection();
 		}
@@ -1070,7 +1070,7 @@ LABEL_65:
 					{
 						break;
 					}
-					if (!orders_dat::CanBeInterrupted[order_tail->orderId] && order_tail->orderId != OrderId::Return)
+					if (!orders_dat::CanBeInterrupted[order_tail->order_id] && order_tail->order_id != OrderId::Return)
 					{
 						break;
 					}

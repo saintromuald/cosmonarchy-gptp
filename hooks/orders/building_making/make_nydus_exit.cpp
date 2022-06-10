@@ -51,7 +51,7 @@ namespace hooks
 				nydus_exit->hitpoints = (10 * units_dat::MaxHitPoints[nydus_exit->id]) / 100;
 				nydus_exit->order_computer(OrderId::ZergBuildSelf);
 				nydus_exit->current_button_set = UnitId::Buttons_Blank;
-				helper::stopCreepDisappearingAtBuilding(nydus_exit);
+				helper::stop_creep_disappearing_at_building(nydus_exit);
 				nydus_canal->building.nydus_exit = nydus_exit;
 				nydus_exit->building.nydus_exit = nydus_canal;
 			}

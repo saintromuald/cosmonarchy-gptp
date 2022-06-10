@@ -1350,7 +1350,7 @@ LABEL_37:
 			return true;
 		}
 		for (Order* order = unit->order_queue_head; order; order = order->next) {
-			if (order->orderId == order_id) {
+			if (order->order_id == order_id) {
 				return true;
 			}
 		}
@@ -1362,7 +1362,7 @@ LABEL_37:
 			return true;
 		}
 		for (Order* order = unit->order_queue_head; order; order = order->next) {
-			if (!orders_dat::CanBeInterrupted[order->orderId]) {
+			if (!orders_dat::CanBeInterrupted[order->order_id]) {
 				return true;
 			}
 		}
@@ -1612,8 +1612,8 @@ LABEL_37:
 					{
 						break;
 					}
-					if (!orders_dat::CanBeInterrupted[worker->order_queue_tail->orderId]
-					&&	worker->order_queue_tail->orderId != OrderId::ReturnMinerals)
+					if (!orders_dat::CanBeInterrupted[worker->order_queue_tail->order_id]
+					&&	worker->order_queue_tail->order_id != OrderId::ReturnMinerals)
 					{
 						break;
 					}
@@ -1731,7 +1731,7 @@ LABEL_37:
 		}
 		if (worker->main_order_id) {
 			for (Order* order_tail = worker->order_queue_tail; order_tail; order_tail = worker->order_queue_tail) {
-				if (!orders_dat::CanBeInterrupted[order_tail->orderId] && order_tail->orderId != OrderId::Repair1) {
+				if (!orders_dat::CanBeInterrupted[order_tail->order_id] && order_tail->order_id != OrderId::Repair1) {
 					break;
 				}
 				helper::remove_order_from_unit_queue(order_tail, worker);
@@ -2065,7 +2065,7 @@ LABEL_37:
 									{
 										break;
 									}
-									if (!orders_dat::CanBeInterrupted[tail_order_1->orderId] && tail_order_1->orderId != -93)
+									if (!orders_dat::CanBeInterrupted[tail_order_1->order_id] && tail_order_1->order_id != -93)
 									{
 										break;
 									}

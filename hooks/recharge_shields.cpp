@@ -66,7 +66,7 @@ namespace hooks
 				return 0;
 			}
 
-			if (target->order_queue_head && target->order_queue_head->orderId == OrderId::RechargeShields1) {
+			if (target->order_queue_head && target->order_queue_head->order_id == OrderId::RechargeShields1) {
 				return 1;
 			}
 

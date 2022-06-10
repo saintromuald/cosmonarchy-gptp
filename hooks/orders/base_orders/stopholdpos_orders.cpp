@@ -74,7 +74,7 @@ namespace hooks
 
 				if (
 					unit->order_queue_head == nullptr ||
-					unit->order_queue_head->orderId != OrderId::MedicHeal2
+					unit->order_queue_head->order_id != OrderId::MedicHeal2
 					) 	//6413D
 					helper::order_immediate(unit, OrderId::MedicHeal2); //return to idle after heal
 
@@ -129,8 +129,8 @@ namespace hooks
 				{
 
 					if (
-						!orders_dat::CanBeInterrupted[out_hangar_child->order_queue_tail->orderId] &&
-						out_hangar_child->order_queue_tail->orderId != OrderId::SelfDestrucing
+						!orders_dat::CanBeInterrupted[out_hangar_child->order_queue_tail->order_id] &&
+						out_hangar_child->order_queue_tail->order_id != OrderId::SelfDestrucing
 						)
 						bNotRemovableOrder = true;
 					else
@@ -180,8 +180,8 @@ namespace hooks
 			{
 
 				if (
-					!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId] &&
-					unit->order_queue_tail->orderId != OrderId::Reaver
+					!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id] &&
+					unit->order_queue_tail->order_id != OrderId::Reaver
 					)
 					bNotRemovableOrder = true;
 				else

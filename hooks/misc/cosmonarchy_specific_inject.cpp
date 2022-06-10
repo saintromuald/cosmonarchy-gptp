@@ -107,16 +107,16 @@ namespace hooks
 	void __declspec(naked) unused_order_patch_wrapper()
 	{
 
-		static u8 orderId;
+		static u8 order_id;
 		__asm {
 			MOV[ESI + 0x85], 0x8
 			CALL func_getTargetSomething
 			MOV AL, [ESI + 0x4D]
-			MOV orderId, AL
+			MOV order_id, AL
 			MOVZX EAX, AL
 			PUSHAD
 		}
-		if (hooks::is_unused_order(orderId))
+		if (hooks::is_unused_order(order_id))
 		{
 			__asm {
 				POPAD

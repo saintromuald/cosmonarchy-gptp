@@ -132,5 +132,6 @@ namespace hooks
 		jump_patch(sort_all_units_wrapper,							0x0046F0F0, 1);
 	//	jump_patch(select_multiple_units_from_unit_list_wrapper,	0x0049AEF0, 2);
 	//	jump_patch(create_new_unit_selections_from_list_wrapper,	0x0049AE40, 0);
+	//	jump_patch(get_selected_units_in_box,						0x0046FA40, 1);
 	}
 }

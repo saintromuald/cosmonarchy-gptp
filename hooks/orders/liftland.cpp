@@ -22,8 +22,8 @@ namespace hooks
 				while (unit->order_queue_tail != nullptr && !bLoopBreak)
 				{
 					bLoopBreak =
-						!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId] &&
-						(unit->order_queue_tail->orderId != OrderId::BuildingLiftoff);
+						!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id] &&
+						(unit->order_queue_tail->order_id != OrderId::BuildingLiftoff);
 					if (!bLoopBreak) {
 						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 					}
@@ -33,7 +33,7 @@ namespace hooks
 			prepare_for_next_order(unit);
 			if (unit->main_order_id != OrderId::Die)
 			{
-				while (unit->order_queue_tail != nullptr && unit->order_queue_tail->orderId == OrderId::BuildingLand)
+				while (unit->order_queue_tail != nullptr && unit->order_queue_tail->order_id == OrderId::BuildingLand)
 				{
 					helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 				}
@@ -76,7 +76,7 @@ namespace hooks
 					helper::playBuildingLandSound(unit);
 
 					if (unit->order_queue_head != nullptr
-					&&	unit->order_queue_head->orderId != OrderId::PlaceAddon)
+					&&	unit->order_queue_head->order_id != OrderId::PlaceAddon)
 					{
 						helper::remove_order_from_unit_queue(unit->order_queue_head, unit);
 					}
@@ -159,8 +159,8 @@ namespace hooks
 				if (unit->order_queue_head != nullptr)
 				{
 					bool bGotMoveOrder;
-					if (unit->order_queue_head->orderId == OrderId::Move
-					||	unit->order_queue_head->orderId == OrderId::Follow)
+					if (unit->order_queue_head->order_id == OrderId::Move
+					||	unit->order_queue_head->order_id == OrderId::Follow)
 					{
 						bGotMoveOrder = true;
 					}
@@ -168,7 +168,7 @@ namespace hooks
 					{
 						bGotMoveOrder = false;
 						Order* order = unit->order_queue_head;
-						if (order->orderId != OrderId::PlaceAddon)
+						if (order->order_id != OrderId::PlaceAddon)
 						{
 							order = nullptr;
 						}

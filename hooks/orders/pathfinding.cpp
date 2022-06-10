@@ -68,7 +68,7 @@ namespace hooks
         Order* unitOrder = unit->order_queue_head;
         unit->recent_order_timer = 15;
         unit->status = unit->status & 0xFFF7FFFF;
-        if (!unitOrder || orders_dat::ButtonIcon[unitOrder->orderId])
+        if (!unitOrder || orders_dat::ButtonIcon[unitOrder->order_id])
         {
             unit->movement_flags &= 0xDFu;
             return 1;

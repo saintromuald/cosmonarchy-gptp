@@ -123,8 +123,8 @@ namespace hooks
 					while (!bStopLoop)
 					{
 
-						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId] &&
-							unit->order_queue_tail->orderId != OrderId::ComputerAI
+						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id] &&
+							unit->order_queue_tail->order_id != OrderId::ComputerAI
 							)
 							bStopLoop = true;
 						else
@@ -261,8 +261,8 @@ namespace hooks
 
 					while (!bStopLoop)
 					{
-						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId] &&
-							unit->order_queue_tail->orderId != OrderId::ComputerAI
+						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id] &&
+							unit->order_queue_tail->order_id != OrderId::ComputerAI
 							)
 							bStopLoop = true;
 						else

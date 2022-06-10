@@ -316,7 +316,7 @@ namespace hooks
 					if (sorted_list_length != 0)
 					{
 						// turn the local array as the newly applied selection
-						helper::apply_new_selection(local_temp_array_1, sorted_list_length);
+						helper::select_units_if_alt_not_held(local_temp_array_1, sorted_list_length, 1, 1);
 
 						// This is what make the rally point briefly appear when selecting a building with one. Maybe can do other things?
 						if (sorted_list_length == 1
@@ -367,7 +367,7 @@ namespace hooks
 						// recombine current selection and newly selectable items in local_temp_array_2
 						u32 list_remixed_length = helper::combine_lists(clicked_unit, local_temp_array_1, local_temp_array_2, sorted_list_length);
 						// turn local_temp_array_2 as the newly applied selection
-						helper::apply_new_selection(local_temp_array_2, list_remixed_length);
+						helper::select_units_if_alt_not_held(local_temp_array_2, list_remixed_length, 1, 1);
 					}
 				}
 				else
@@ -397,7 +397,7 @@ namespace hooks
 							arrayIndex++;
 
 							// turn local_temp_array_1 as the newly applied selection
-							helper::apply_new_selection(local_temp_array_1, arrayIndex);
+							helper::select_units_if_alt_not_held(local_temp_array_1, arrayIndex, 1, 1);
 						}
 					}
 					else
@@ -584,5 +584,56 @@ namespace hooks
 			++unit_list_var;
 		}
 		return result;
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	void __stdcall get_selected_units_in_box(Box16* coords) // 0046FA40
+	{
+		Unit* new_unit = 0;
+		memset(&new_unit, 0, 0x30u);
+		Unit** found_units = helper::find_all_units(coords);
+		Unit** sorted_units = helper::sort_all_units(found_units, &new_unit, 0);
+		u32 temp_units = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
+		*tempUnitsListCurrentArrayCount = temp_units;
+		if (sorted_units)
+		{
+			if (IS_KEYCODE_USED[16] && active_player_selection[0].unit)
+			{
+				Unit* combined = 0;
+				memcpy(&combined, active_player_selection, 0x30u);
+				u32 added_units = helper::combine_lists(combined, &new_unit, sorted_units, 0);
+				helper::select_units_if_alt_not_held(&combined, added_units, 1, 1);
+				return;
+			}
+
+			Unit* selected_unit = new_unit;
+			if (
+			//	sorted_units != 1 ||
+			!IS_KEYCODE_USED[18]
+			|| !helper::select_single_unit_from_id(helper::unit_to_unit_id(new_unit)))
+			{
+				helper::select_multiple_units_from_unit_list((u32)sorted_units, &new_unit, 1, 1);
+				/*
+				if (sorted_units != 1)
+				{
+					return;
+				}
+				*/
+				selected_unit = new_unit;
+			}
+
+			if (selected_unit)
+			{
+				if (selected_unit->player == *ACTIVE_NATION_ID)
+				{
+					/*
+					if (helper::unit_can_rally(selected_unit))
+					{
+						helper::show_rally_target(selected_unit);
+					}
+					*/
+				}
+			}
+		}
 	}
 }
