@@ -3,42 +3,42 @@
 
 namespace hooks
 {
-	bool cmdrecv_place_building_allowed(Unit* builder, u8 orderId, u16 builtUnitId)
+	bool cmdrecv_place_building_allowed(Unit* builder, u8 order_id, u16 builtUnitId)
 	{
 		bool bReturnValue = false;
-		if (orderId >= OrderId::DroneStartBuild && orderId <= OrderId::CTFCOP2)
+		if (order_id >= OrderId::DroneStartBuild && order_id <= OrderId::CTFCOP2)
 		{
-			if (orderId == OrderId::DroneStartBuild
-			||	orderId == OrderId::BuildTerran
-			||	orderId == OrderId::BuildProtoss1
-			||	orderId == OrderId::BuildProtoss2
-			||	orderId == OrderId::PlaceAddon)
+			if (order_id == OrderId::DroneStartBuild
+			||	order_id == OrderId::BuildTerran
+			||	order_id == OrderId::BuildProtoss1
+			||	order_id == OrderId::BuildProtoss2
+			||	order_id == OrderId::PlaceAddon)
 			{
 				if (builder->can_make_unit(builtUnitId, *ACTIVE_NATION_ID))
 				{
-					bReturnValue = (helper::order_is_allowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
+					bReturnValue = (helper::order_is_allowed(builder, order_id, *ACTIVE_NATION_ID) != 0);
 				}
 			}
-			else if (orderId == OrderId::Build5			// Build Nydus Exit
-			||		 orderId == OrderId::BuildingLand)
+			else if (order_id == OrderId::Build5			// Build Nydus Exit
+			||		 order_id == OrderId::BuildingLand)
 			{
 				if (builder->id == builtUnitId)
 				{
-					bReturnValue = (helper::order_is_allowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
+					bReturnValue = (helper::order_is_allowed(builder, order_id, *ACTIVE_NATION_ID) != 0);
 				}
 			}
-			else if (orderId == OrderId::CTFCOP2) // Create Flag Beacon
+			else if (order_id == OrderId::CTFCOP2) // Create Flag Beacon
 			{
 				if (*elapsed_time_seconds <= 600 && builder->id == builtUnitId)
 				{
-					bReturnValue = (helper::order_is_allowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
+					bReturnValue = (helper::order_is_allowed(builder, order_id, *ACTIVE_NATION_ID) != 0);
 				}
 			}
 		}
 		return bReturnValue;
 	}
 
-	void cmdrecv_place_building_normal(s16 x, s16 y, u32 orderId, u32 builtUnitId)
+	void cmdrecv_place_building_normal(s16 x, s16 y, u32 order_id, u32 builtUnitId)
 	{
 		Unit* builder;
 		u32 result_function_00473FB0;
@@ -63,11 +63,11 @@ namespace hooks
 			}
 			DimensionY /= 2;
 			DimensionY += (y * 32);
-			helper::function_0048DE70(builder, orderId, DimensionX, DimensionY, builtUnitId);
+			helper::function_0048DE70(builder, order_id, DimensionX, DimensionY, builtUnitId);
 		}
 	}
 
-	void cmdrecv_place_addon(s16 x, s16 y, u32 orderId, u32 builtUnitId)
+	void cmdrecv_place_addon(s16 x, s16 y, u32 order_id, u32 builtUnitId)
 	{
 		u16 addonPlaceX = 0;
 		u16 addonPlaceY = 0;
@@ -136,11 +136,11 @@ namespace hooks
 			DimensionY /= 2;
 			addonPlaceY *= 32;
 			DimensionY += addonPlaceY;
-			helper::function_0048DE70(builder, orderId, DimensionX, DimensionY, builtUnitId);
+			helper::function_0048DE70(builder, order_id, DimensionX, DimensionY, builtUnitId);
 		}
 	}
 
-	void cmdrecv_build(u8 orderId, s16 x, s16 y, u16 builtUnitId)
+	void cmdrecv_build(u8 order_id, s16 x, s16 y, u16 builtUnitId)
 	{
 		Unit* builder = get_active_player_next_selection();
 		*unit_iterator_pos = 0;
@@ -150,9 +150,9 @@ namespace hooks
 			{
 				if (x < map_tile_size->width
 				&&	y < map_tile_size->height
-				&&	helper::CMDRECV_place_building_allowed(builder, orderId, builtUnitId))
+				&&	helper::CMDRECV_place_building_allowed(builder, order_id, builtUnitId))
 				{
-					helper::CMDRECV_place_building(x, y, orderId, builtUnitId);
+					helper::CMDRECV_place_building(x, y, order_id, builtUnitId);
 				}
 			}
 		}

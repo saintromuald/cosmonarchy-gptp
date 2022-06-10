@@ -164,9 +164,9 @@ namespace hooks
 		}
 	}
 
-	bool is_unused_order(u8 orderId)
+	bool is_unused_order(u8 order_id)
 	{
-		switch (orderId)
+		switch (order_id)
 		{
 			case OrderId::GuardianAspect:
 			case OrderId::PaladinSkyfall: // OrderId::AttackTile

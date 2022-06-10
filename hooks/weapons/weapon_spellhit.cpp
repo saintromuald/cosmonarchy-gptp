@@ -66,12 +66,12 @@ namespace hooks
 		{
 			helper::return_all_interceptors(unit);
 		}
-		u8 orderId = unit->main_order_id;
-		if (orderId == OrderId::Repair1 || orderId == OrderId::DroneLand)
+		u8 order_id = unit->main_order_id;
+		if (order_id == OrderId::Repair1 || order_id == OrderId::DroneLand)
 		{
 			unit->main_order_state = 0;
 		}
-		if (!orders_dat::DisablingKeepsTarget[orderId])
+		if (!orders_dat::DisablingKeepsTarget[order_id])
 		{
 			unit->order_target.unit = 0;
 		}

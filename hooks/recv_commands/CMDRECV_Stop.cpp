@@ -91,8 +91,8 @@ namespace hooks
 															if (current_unit->order_queue_tail == nullptr)
 																bContinueLoop = false;
 															else
-																if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->orderId] ||
-																	current_unit->order_queue_tail->orderId == OrderId::ReaverStop
+																if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id] ||
+																	current_unit->order_queue_tail->order_id == OrderId::ReaverStop
 																	)
 																	helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
 																else
@@ -199,8 +199,8 @@ namespace hooks
 															if (current_unit->order_queue_tail == nullptr)
 																bContinueLoop = false;
 															else
-																if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->orderId] ||
-																	current_unit->order_queue_tail->orderId == OrderId::CarrierStop
+																if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id] ||
+																	current_unit->order_queue_tail->order_id == OrderId::CarrierStop
 																	)
 																	helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
 																else

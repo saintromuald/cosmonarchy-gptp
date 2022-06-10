@@ -6,16 +6,16 @@ namespace
 	void __declspec(naked) cmdrecv_place_building_allowed_wrapper()
 	{
 		static Unit* builder;
-		static u8 orderId;
+		static u8 order_id;
 		static u16 builtUnitId;
 		static b32 bReturnValue;
 		__asm {
 			MOV builder, ECX
-			MOV orderId, DL
+			MOV order_id, DL
 			MOV builtUnitId, AX
 			PUSHAD
 		}
-		bReturnValue = (hooks::cmdrecv_place_building_allowed(builder, orderId, builtUnitId)) ? 1 : 0;
+		bReturnValue = (hooks::cmdrecv_place_building_allowed(builder, order_id, builtUnitId)) ? 1 : 0;
 		__asm {
 			POPAD
 			MOV EAX, bReturnValue
@@ -27,7 +27,7 @@ namespace
 	{
 		static s16 x;
 		static s16 y;
-		static u32 orderId;
+		static u32 order_id;
 		static u32 builtUnitId;
 		__asm {
 			PUSH EBP
@@ -37,12 +37,12 @@ namespace
 			MOV AX, [EBP + 0x0A]
 			MOV y, AX
 			MOV EAX, [EBP + 0x0C]
-			MOV orderId, EAX
+			MOV order_id, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV builtUnitId, EAX
 			PUSHAD
 		}
-		hooks::cmdrecv_place_building_normal(x, y, orderId, builtUnitId);
+		hooks::cmdrecv_place_building_normal(x, y, order_id, builtUnitId);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -55,7 +55,7 @@ namespace
 	{
 		static s16 x;
 		static s16 y;
-		static u32 orderId;
+		static u32 order_id;
 		static u32 builtUnitId;
 		__asm {
 			PUSH EBP
@@ -65,12 +65,12 @@ namespace
 			MOV AX, [EBP + 0x0A]
 			MOV y, AX
 			MOV EAX, [EBP + 0x0C]
-			MOV orderId, EAX
+			MOV order_id, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV builtUnitId, EAX
 			PUSHAD
 		}
-		hooks::cmdrecv_place_addon(x, y, orderId, builtUnitId);
+		hooks::cmdrecv_place_addon(x, y, order_id, builtUnitId);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -81,13 +81,13 @@ namespace
 
 	void __declspec(naked) cmdrecv_build_wrapper()
 	{
-		static u8 orderId;
+		static u8 order_id;
 		static s16 x;
 		static s16 y;
 		static u16 builtUnitId;
 		__asm {
 			MOV AL, [ESI + 0x01]
-			MOV orderId, AL
+			MOV order_id, AL
 			MOV AX, [ESI + 0x02]
 			MOV x, AX
 			MOV AX, [ESI + 0x04]
@@ -96,7 +96,7 @@ namespace
 			MOV builtUnitId, AX
 			PUSHAD
 		}
-		hooks::cmdrecv_build(orderId, x, y, builtUnitId);
+		hooks::cmdrecv_build(order_id, x, y, builtUnitId);
 		__asm {
 			POPAD
 			RETN

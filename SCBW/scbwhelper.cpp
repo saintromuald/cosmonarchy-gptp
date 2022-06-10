@@ -1142,7 +1142,7 @@ namespace helper
 		}
 	}
 
-	void ai_order_to_destination(Unit* unit, s32 orderId, s32 x, s32 y)
+	void ai_order_to_destination(Unit* unit, s32 order_id, s32 x, s32 y)
 	{
 		const u32 Func_AI_OrderToDestination = 0x0043D5D0;
 		__asm
@@ -1150,7 +1150,7 @@ namespace helper
 			PUSHAD
 			PUSH y
 			PUSH x
-			PUSH orderId
+			PUSH order_id
 			PUSH unit
 			CALL Func_AI_OrderToDestination
 			POPAD
@@ -1264,26 +1264,26 @@ namespace helper
 		return result;
 	}
 
-	void issue_order_targeting_nothing(Unit* unit, u8 orderId)
+	void issue_order_targeting_nothing(Unit* unit, u8 order_id)
 	{
 		const u32 Func_orderComputerClear = 0x00475310;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
-			MOVZX CL, orderId
+			MOVZX CL, order_id
 			CALL Func_orderComputerClear
 			POPAD
 		}
 	}
 
-	Unit* set_secondary_order(Unit* result, char orderId)
+	Unit* set_secondary_order(Unit* result, char order_id)
 	{
 		const u32 Func_setSecondaryOrder = 0x004743D0;
 		static Unit* result2;
 		__asm {
 			PUSHAD
 			MOV EAX, result
-			MOVZX CL, orderId
+			MOVZX CL, order_id
 			CALL Func_setSecondaryOrder
 			MOV result2, EAX
 			POPAD
@@ -1625,14 +1625,14 @@ namespace helper
 		return result;
 	}
 
-	void order_interrupt(Unit* unit, u8 orderId, Vector32* pos, Unit* target)
+	void order_interrupt(Unit* unit, u8 order_id, Vector32* pos, Unit* target)
 	{
 		const u32 Func_orderInterrupt = 0x00474C30;
 		__asm {
 			PUSHAD
 			PUSH target
 			PUSH pos
-			PUSH orderId
+			PUSH order_id
 			MOV ESI, unit
 			CALL Func_orderInterrupt
 			POPAD
@@ -2055,12 +2055,12 @@ namespace helper
 		return result;
 	}
 
-	void prepend_order_targeting_unit(Unit* unit, Unit* target, u8 orderId)
+	void prepend_order_targeting_unit(Unit* unit, Unit* target, u8 order_id)
 	{
 		const u32 Func_prependOrderTargetingUnit = 0x00474A70;
 		__asm {
 			PUSHAD
-			MOV CL, orderId
+			MOV CL, order_id
 			MOV EDX, unit
 			MOV EAX, target
 			CALL Func_prependOrderTargetingUnit
@@ -2138,11 +2138,11 @@ namespace helper
 		}
 	}
 
-	void attack_move_try_pick_target(Unit* unit, u8 orderId)
+	void attack_move_try_pick_target(Unit* unit, u8 order_id)
 	{
 		const u32 Func_Sub477820 = 0x00477820;
 		static u32 orderId_;
-		orderId_ = orderId;
+		orderId_ = order_id;
 		__asm {
 			PUSHAD
 			PUSH orderId_
@@ -2152,12 +2152,12 @@ namespace helper
 		}
 	}
 
-	bool attack_move_react_to_attack(Unit* unit, u8 orderId)
+	bool attack_move_react_to_attack(Unit* unit, u8 order_id)
 	{
 		const u32 Func_Sub478370 = 0x00478370;
 		static b32 bPreResult;
 		static u32 orderId_;
-		orderId_ = orderId;
+		orderId_ = order_id;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2838,7 +2838,7 @@ namespace helper
 		}
 	}
 
-	void stopCreepDisappearingAtBuilding(Unit* unit)
+	void stop_creep_disappearing_at_building(Unit* unit)
 	{
 		const u32 Func_stopCreepDisappearingAtBuilding = 0x0047D770;
 		__asm {
@@ -2849,7 +2849,7 @@ namespace helper
 		}
 	}
 
-	//unk1 is ECX, unk2 is pushed value
+	// unk1 is ECX, unk2 is pushed value
 	void increment_unit_scores_ex(Unit* building, s32 unk1, s32 unk2)
 	{
 		const u32 Func_incrementUnitScoresEx = 0x00488D50;
@@ -2935,25 +2935,25 @@ namespace helper
 		return bResult;
 	}
 
-	void prepend_order_targeting_nothing(Unit* unit, Order* order, u8 orderId)
+	void prepend_order_targeting_nothing(Unit* unit, Order* order, u8 order_id)
 	{
 		const u32 Func_prependOrderTargetingNothing = 0x00474760;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			MOV EDI, order
-			MOV BL, orderId
+			MOV BL, order_id
 			CALL Func_prependOrderTargetingNothing
 			POPAD
 		}
 	}
 
-	void add_order_targeting_nothing(Unit* unit, Order* order, u8 orderId)
+	void add_order_targeting_nothing(Unit* unit, Order* order, u8 order_id)
 	{
 		const u32 Func_addOrderTargetingNothing = 0x004749A0;
 		__asm {
 			PUSHAD
-			MOV BL, orderId
+			MOV BL, order_id
 			MOV ESI, unit
 			MOV EDI, order
 			CALL Func_addOrderTargetingNothing
@@ -3594,7 +3594,7 @@ namespace helper
 
 	// Note: this function was made from what was seen in this case of use, some things are hardcoded because it's hard to tell what is used or not.
 	// Basically, used elsewhere, the function would be implemented differently
-	void targeted_order(Unit* unit, u32 unit_id, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5)
+	void targeted_order(Unit* unit, u32 unit_id, u32 unk1, u32 unk2, u32 order_id, u32 unk3, u32 unk4, u32 unk5)
 	{
 		const u32 Func_TargetedOrderCopy = 0x004754F0;
 		__asm
@@ -3607,7 +3607,7 @@ namespace helper
 			PUSH unk1
 			PUSH unk2
 			PUSH unk3
-			PUSH orderId
+			PUSH order_id
 			PUSH unk4
 			PUSH unk5
 			CALL Func_TargetedOrderCopy
@@ -3770,7 +3770,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	bool CMDRECV_place_building_allowed(Unit* unit, u8 orderId, u16 builtUnitId)
+	bool CMDRECV_place_building_allowed(Unit* unit, u8 order_id, u16 builtUnitId)
 	{
 		const u32 Func_CMDRECV_PlaceBuildingAllowed = 0x0048DBD0;
 		static b32 bPreResult;
@@ -3778,7 +3778,7 @@ namespace helper
 		{
 			PUSHAD
 			MOV AX, builtUnitId
-			MOV DL, orderId
+			MOV DL, order_id
 			MOV ECX, unit
 			CALL Func_CMDRECV_PlaceBuildingAllowed
 			MOV bPreResult, EAX
@@ -3787,7 +3787,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	void function_0048DE70(Unit* unit, u32 orderId, u16 dimensionX, u16 dimensionY, u32 builtUnitId)
+	void function_0048DE70(Unit* unit, u32 order_id, u16 dimensionX, u16 dimensionY, u32 builtUnitId)
 	{
 		const u32 Func_Sub48DE70 = 0x0048DE70;
 		static Point16 dim;
@@ -3797,14 +3797,14 @@ namespace helper
 			PUSHAD
 			PUSH builtUnitId
 			PUSH dim
-			PUSH orderId
+			PUSH order_id
 			MOV EAX, unit
 			CALL Func_Sub48DE70
 			POPAD
 		}
 	}
 
-	void CMDRECV_place_building(s16 x, s16 y, u8 orderId, u16 builtUnitId)
+	void CMDRECV_place_building(s16 x, s16 y, u8 order_id, u16 builtUnitId)
 	{
 		const u32 Func_cmdRECV_PlaceBuilding = 0x0048E190;
 		static Point16 pos;
@@ -3813,7 +3813,7 @@ namespace helper
 		{
 			PUSHAD
 			MOVZX EAX, builtUnitId	// bugfix: should have been "MOV AX, builtUnitId" but for some reason it crashed
-			MOV CL, orderId
+			MOV CL, order_id
 			PUSH pos
 			CALL Func_cmdRECV_PlaceBuilding
 			POPAD
@@ -3848,7 +3848,7 @@ namespace helper
 		}
 	}
 
-	s32 parse_requirement_opcodes(Unit* unit, u32 orderId, u32 playerId, u32 address, u32 req_offset)
+	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 playerId, u32 address, u32 req_offset)
 	{
 		const u32 Func_parseRequirementOpcodes = 0x0046D610;
 		static s32 return_value;
@@ -3859,7 +3859,7 @@ namespace helper
 			MOV ESI, unit
 			PUSH address
 			PUSH playerId
-			PUSH orderId
+			PUSH order_id
 			CALL Func_parseRequirementOpcodes
 			MOV return_value, EAX
 			POPAD
@@ -4764,12 +4764,12 @@ namespace helper
 		return result;
 	}
 
-	void function_004756B0(Unit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommandType)
+	void function_004756B0(Unit* unit, u8 order_id, u32 unk1, u32 unk2, u32 bCommandType)
 	{
 		const u32 Func_Sub4756B0 = 0x004756B0;
 		__asm {
 			PUSHAD
-			MOV DL, orderId
+			MOV DL, order_id
 			MOV ESI, unit
 			PUSH unk1
 			PUSH unk2
@@ -4779,28 +4779,28 @@ namespace helper
 		}
 	}
 
-	void function_004756E0(Unit* unit, Unit* target, u32 orderId, u32 bCommandType)
+	void function_004756E0(Unit* unit, Unit* target, u32 order_id, u32 bCommandType)
 	{
 		const u32 Func_Sub4756E0 = 0x004756E0;
 		__asm {
 			PUSHAD
 			MOV EDX, target
 			MOV ESI, unit
-			PUSH orderId
+			PUSH order_id
 			PUSH bCommandType
 			CALL Func_Sub4756E0
 			POPAD
 		}
 	}
 
-	u32 function_0049A410(Unit* unit, u8 orderId)
+	u32 function_0049A410(Unit* unit, u8 order_id)
 	{
 		const u32 Func_Sub49A410 = 0x0049A410;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			MOV DL, orderId
+			MOV DL, order_id
 			CALL Func_Sub49A410
 			MOV result, EAX
 			POPAD
@@ -4809,14 +4809,14 @@ namespace helper
 	}
 
 	// Logically identical to 0049A480 sub_49A480
-	bool can_target_self(Unit* unit, u8 orderId)
+	bool can_target_self(Unit* unit, u8 order_id)
 	{
 		bool return_value = false;
-		if (unit->status & UnitStatus::GroundedBuilding && (orderId == OrderId::RallyPoint1 || orderId == OrderId::RallyPoint2))
+		if (unit->status & UnitStatus::GroundedBuilding && (order_id == OrderId::RallyPoint1 || order_id == OrderId::RallyPoint2))
 		{
 			return_value = true;
 		}
-		else if ((unit->id == UnitId::ZergIsthrathaleth) && orderId == OrderId::DarkSwarm)
+		else if ((unit->id == UnitId::ZergIsthrathaleth) && order_id == OrderId::DarkSwarm)
 		{
 			return_value = true;
 		}
@@ -4832,7 +4832,7 @@ namespace helper
 		{
 			return_value = false;
 		}
-		else if (orderId == OrderId::MoveUnload)
+		else if (order_id == OrderId::MoveUnload)
 		{
 			return_value = true;
 		}
@@ -5423,12 +5423,12 @@ namespace helper
 		return result;
 	}
 
-	void insertFirstOrder(Unit* unit, u8 orderId)
+	void insertFirstOrder(Unit* unit, u8 order_id)
 	{
 		const u32 Helper_InsertFirstOrder = 0x004749D0;
 		__asm {
 			PUSHAD
-			MOV AL, orderId
+			MOV AL, order_id
 			MOV ECX, unit
 			CALL Helper_InsertFirstOrder
 			POPAD
@@ -5548,12 +5548,12 @@ namespace helper
 		return result;
 	}
 
-	void function_4748E0(Unit* unit, s32 x, s32 y, u8 orderId)
+	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id)
 	{
 		const u32 Func_sub4748E0 = 0x004748E0;
 		__asm {
 			PUSHAD
-			MOV BL, orderId
+			MOV BL, order_id
 			MOV ESI, unit
 			XOR EDI, EDI
 			PUSH y
@@ -5563,12 +5563,12 @@ namespace helper
 		}
 	}
 
-	void update_target_something(Unit* unit, Unit* target, u8 orderId)
+	void update_target_something(Unit* unit, Unit* target, u8 order_id)
 	{
 		const u32 Func_sub474940 = 0x00474940;
 		__asm {
 			PUSHAD
-			MOV BL, orderId
+			MOV BL, order_id
 			MOV ESI, unit
 			MOV EAX, target
 			XOR EDI, EDI
@@ -5604,7 +5604,7 @@ namespace helper
 		}
 	}
 
-	void insert_order_before(Unit* unit, Order* order, u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId)
+	void insert_order_before(Unit* unit, Order* order, u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId)
 	{
 		static Point16 pos;
 		pos.x = x; pos.y = y;
@@ -5613,7 +5613,7 @@ namespace helper
 			PUSHAD
 			PUSH target
 			PUSH pos
-			MOV BL, orderId
+			MOV BL, order_id
 			MOVZX EDX, targetUnitId
 			MOV ESI, unit
 			MOV EDI, order
@@ -5622,7 +5622,7 @@ namespace helper
 		}
 	}
 
-	void do_order(Unit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders)
+	void do_order(Unit* unit, u32 order_id, s32 x, s32 y, bool stopPreviousOrders)
 	{
 		const u32 Func__doOrder = 0x00474C70;
 		b32 bStopPreviousOrders = stopPreviousOrders ? 1 : 0;
@@ -5631,7 +5631,7 @@ namespace helper
 			PUSH bStopPreviousOrders
 			PUSH y
 			PUSH x
-			PUSH orderId
+			PUSH order_id
 			PUSH unit
 			CALL Func__doOrder
 			POPAD
@@ -6469,13 +6469,14 @@ namespace helper
 		return return_value;
 	}
 
-	void apply_new_selection(Unit** unit_list, u32 unit_list_length)
+	void select_units_if_alt_not_held(Unit** unit_list, u32 unit_list_length, char play_sound, u32 send_command)
 	{
 		const u32 Func_Sub_46FA00 = 0x0046FA00;
+		static u32 play_sound_xd = play_sound;
 		__asm {
 			PUSHAD
-			PUSH 0x01
-			PUSH 0x01
+			PUSH send_command
+			PUSH play_sound_xd
 			MOV EBX, unit_list
 			MOV EDI, unit_list_length
 			CALL Func_Sub_46FA00
@@ -6817,20 +6818,6 @@ namespace helper
 		return larvaeList_Count;
 	}
 
-	void select_multiple_units_from_unit_list(Unit** unitList, u32 unitsCount, b32 unk1, b32 unk2)
-	{
-		const u32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
-		__asm {
-			PUSHAD
-			PUSH unk2
-			PUSH unk1
-			PUSH unitList
-			PUSH unitsCount
-			CALL Func_selectMultipleUnitsFromUnitList
-			POPAD
-		}
-	}
-
 	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y)
 	{
 		const u32 BWFXN_PrintXY_function = 0x004202B0;
@@ -6935,16 +6922,17 @@ namespace helper
 		return result;
 	}
 
-	s32 select_multiple_units_from_unit_list(s32 a1, Unit** a2, u8 a3, s32 a4)
+	s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, char play_sound, u32 send_command)
 	{
 		const u32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
 		static s32 result;
+		static u32 play_sound_xd = play_sound;
 		__asm {
 			PUSHAD
-			PUSH a4
-			PUSH a3
-			PUSH a2
-			PUSH a1
+			PUSH send_command
+			PUSH play_sound_xd
+			PUSH selection
+			PUSH unit_count
 			CALL Func_selectMultipleUnitsFromUnitList
 			MOV result, EAX
 			POPAD
@@ -7197,7 +7185,7 @@ namespace helper
 		return result != 0;
 	}
 
-	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 orderId)
+	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 order_id)
 	{
 		const u32 Func_orderInterrupt = 0x00474C30;
 		static Point16 pos;
@@ -7207,7 +7195,7 @@ namespace helper
 			MOV ESI, unit
 			PUSH target
 			PUSH pos
-			PUSH orderId
+			PUSH order_id
 			CALL Func_orderInterrupt
 			POPAD
 		}
@@ -7851,8 +7839,7 @@ namespace helper
 	}
 
 	// For findBestUnit
-
-	Unit** findAllUnits(Box16* coords)
+	Unit** find_all_units(Box16* coords)
 	{
 		const u32 Func_findAllUnits = 0x004308A0;
 		static Unit** result;
@@ -8430,7 +8417,7 @@ namespace helper
 	}
 
 	// For orders_Pickup4_0
-	void issue_order_targeting_ground(Unit* unit, u8 orderId, s16 x, s16 y)
+	void issue_order_targeting_ground(Unit* unit, u8 order_id, s16 x, s16 y)
 	{
 		const u32 Func_issueOrderTargetingGround = 0x00475260;
 		__asm
@@ -8438,7 +8425,7 @@ namespace helper
 			PUSHAD
 			PUSH y
 			PUSH x
-			PUSH orderId
+			PUSH order_id
 			MOV ESI, unit
 			CALL Func_issueOrderTargetingGround
 			POPAD
@@ -10022,13 +10009,13 @@ namespace helper
 		return result;
 	}
 
-	void assign_order_with_target(Unit* unit, Unit* target, s32 orderId)
+	void assign_order_with_target(Unit* unit, Unit* target, s32 order_id)
 	{
 		const u32 Func_AssignOrderWithTarget = 0x004752B0;
 		__asm
 		{
 			PUSHAD
-			PUSH orderId
+			PUSH order_id
 			MOV ESI, target
 			MOV EAX, unit
 			CALL Func_AssignOrderWithTarget
@@ -12236,5 +12223,20 @@ namespace helper
 			CALL func_address
 			POPAD
 		}
+	}
+
+	Unit** sort_all_units(Unit** units, Unit** units_2, Unit* unit) {
+		static Unit** result;
+		const u32 func_address = 0x0046F0F0;
+		__asm {
+			PUSHAD
+			PUSH unit
+			PUSH units_2
+			PUSH units
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

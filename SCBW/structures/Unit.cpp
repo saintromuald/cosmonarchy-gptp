@@ -868,56 +868,56 @@ s32 Unit::is_unit_ai_non_building()
 // Logically equivalent to function @ 0x004752B0
 // ESI = this
 // EAX = target
-// [ebp+08] = orderId
-void Unit::order_to(u8 orderId, Unit* target)
+// [ebp+08] = order_id
+void Unit::order_to(u8 order_id, Unit* target)
 {
 	assert(this);
 	this->user_action_flags |= 0x1;
 	if (target)
 	{
-		this->order(orderId, target->get_x(), target->get_y(), target, UnitId::None, true);
+		this->order(order_id, target->get_x(), target->get_y(), target, UnitId::None, true);
 	}
 	else
 	{
-		this->order(orderId, 0, 0, target, UnitId::None, true);
+		this->order(order_id, 0, 0, target, UnitId::None, true);
 	}
 	prepare_for_next_order(this);
 }
 
 // Logically equivalent to function @ 0x00475260
-void Unit::order_to(u8 orderId, u16 x, u16 y)
+void Unit::order_to(u8 order_id, u16 x, u16 y)
 {
 	assert(this);
 	this->user_action_flags |= 0x1;
-	this->order(orderId, x, y, nullptr, UnitId::None, true);
+	this->order(order_id, x, y, nullptr, UnitId::None, true);
 	prepare_for_next_order(this);
 }
 
 // Logically equivalent to function orderComputer_cl @ 0x00475310
 // used in hooks so not doing assert, mind it if used in mods
-void Unit::order_computer(u8 orderId)
+void Unit::order_computer(u8 order_id)
 {
 	this->user_action_flags |= 0x1;
-	this->order(orderId, 0, 0, nullptr, UnitId::None, true);
+	this->order(order_id, 0, 0, nullptr, UnitId::None, true);
 	prepare_for_next_order(this);
 }
 
 // Equivalent to 00474D60 __order function
-void Unit::order_simple(u8 orderId, bool stopPreviousOrders)
+void Unit::order_simple(u8 order_id, bool stopPreviousOrders)
 {
-	this->order(orderId, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
+	this->order(order_id, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
 }
 
 // Equivalent to 00474D10 issue_queued_order_target function
-void Unit::issue_queued_order_target(u8 orderId, Unit* target, bool stopPreviousOrders)
+void Unit::issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviousOrders)
 {
 	if (target == nullptr)
 	{
-		this->order(orderId, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
+		this->order(order_id, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
 	}
 	else
 	{
-		this->order(orderId, target->sprite->position.x, target->sprite->position.y, target, UnitId::None, stopPreviousOrders);
+		this->order(order_id, target->sprite->position.x, target->sprite->position.y, target, UnitId::None, stopPreviousOrders);
 	}
 }
 
@@ -943,7 +943,7 @@ void Unit::order_to_idle()
 	}
 }
 
-void Unit::order(u8 orderId, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders)
+void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders)
 {
 	assert(this);
 	const u32 Func_Order = 0x00474810;
@@ -957,14 +957,14 @@ void Unit::order(u8 orderId, u16 x, u16 y, Unit* target, u16 targetUnitId, bool 
 		PUSH target
 		PUSH pos
 		MOVZX EAX, stopPreviousOrders
-		MOV CL, orderId
+		MOV CL, order_id
 		MOV EDX, this
 		CALL Func_Order
 		POPAD
 	}
 }
 
-void Unit::perform_another_order(u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk)
+void Unit::perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk)
 {
 	const u32 Func_PerformAnotherOrder = 0x004745F0;
 	static Point16 pos;
@@ -973,7 +973,7 @@ void Unit::perform_another_order(u8 orderId, s16 x, s16 y, Unit* target, u16 tar
 		PUSHAD
 		PUSH target
 		PUSH pos
-		MOV BL, orderId
+		MOV BL, order_id
 		MOVZX EDX, targetUnitId
 		MOV ESI, this
 		MOV EDI, unk
@@ -983,14 +983,14 @@ void Unit::perform_another_order(u8 orderId, s16 x, s16 y, Unit* target, u16 tar
 }
 
 // Identical to @ 0x004743D0
-void Unit::set_secondary_order(u8 orderId)
+void Unit::set_secondary_order(u8 order_id)
 {
 	assert(this);
-	if (this->secondary_order_id == orderId)
+	if (this->secondary_order_id == order_id)
 	{
 		return;
 	}
-	this->secondary_order_id = orderId;
+	this->secondary_order_id = order_id;
 	this->secondary_order_pos.x = 0;
 	this->secondary_order_pos.y = 0;
 	this->current_build_unit = nullptr;

@@ -4,9 +4,9 @@
 
 namespace
 {
-	bool canCastSpellOrder(Unit* unit, u8 techId, u8 orderId);
-	bool aiCastSpellOrder(Unit* unit, Unit* target, u8 orderId, u8 aiActionFlag = 1);
-	u16 getOrderEnergyCost(u8 orderId);
+	bool canCastSpellOrder(Unit* unit, u8 techId, u8 order_id);
+	bool aiCastSpellOrder(Unit* unit, Unit* target, u8 order_id, u8 aiActionFlag = 1);
+	u16 getOrderEnergyCost(u8 order_id);
 	bool isNukeTimerReady(u8 playerId);
 	Unit* getLoadedSilo(Unit* ghost, b32 checkNukeAvailableForGhost = 1);
 }
@@ -293,12 +293,12 @@ namespace AI
 namespace
 {
 	// Logically equivalent to function @ 0x004A11E0
-	bool canCastSpellOrder(Unit* unit, u8 techId, u8 orderId)
+	bool canCastSpellOrder(Unit* unit, u8 techId, u8 order_id)
 	{
 		u16 energyCost = 0;
-		if (orders_dat::TechUsed[orderId] < TechId::None)
+		if (orders_dat::TechUsed[order_id] < TechId::None)
 		{
-			energyCost = techdata_dat::EnergyCost[orders_dat::TechUsed[orderId]] * 256;
+			energyCost = techdata_dat::EnergyCost[orders_dat::TechUsed[order_id]] * 256;
 		}
 		if (techId == TechId::Lockdown && unit->mine_carrier.mine_count == 0)
 		{
@@ -312,26 +312,26 @@ namespace
 	}
 
 	// Logically equivalent to function @ 0x004A1290
-	bool aiCastSpellOrder(Unit* unit, Unit* target, u8 orderId, u8 aiActionFlag)
+	bool aiCastSpellOrder(Unit* unit, Unit* target, u8 order_id, u8 aiActionFlag)
 	{
 		if (!target || target->ai_action_flags & aiActionFlag)
 		{
 			return false;
 		}
-		if (unit->main_order_id != orderId)
+		if (unit->main_order_id != order_id)
 		{
-			unit->order_to(orderId, target);
+			unit->order_to(order_id, target);
 			target->ai_action_flags |= aiActionFlag;
 		}
 		return true;
 	}
 
 	// Logically equivalent to function @ 0x0049E1C0
-	u16 getOrderEnergyCost(u8 orderId)
+	u16 getOrderEnergyCost(u8 order_id)
 	{
-		if (orders_dat::TechUsed[orderId] < TechId::None)
+		if (orders_dat::TechUsed[order_id] < TechId::None)
 		{
-			return techdata_dat::EnergyCost[orders_dat::TechUsed[orderId]] * 256;
+			return techdata_dat::EnergyCost[orders_dat::TechUsed[order_id]] * 256;
 		}
 		else
 		{

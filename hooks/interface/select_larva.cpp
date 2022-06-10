@@ -79,7 +79,7 @@ namespace hooks
 				}
 			}
 			if (select) {
-				helper::select_multiple_units_from_unit_list(selection, count, 1, 1);
+				helper::select_multiple_units_from_unit_list(count, selection, 1, 1);
 			}
 		}
 	}

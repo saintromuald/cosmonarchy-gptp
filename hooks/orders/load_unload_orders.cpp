@@ -27,9 +27,9 @@ namespace hooks
 				bool bStopLoop = (unit->order_queue_tail == nullptr);
 				while (!bStopLoop)
 				{
-					u8 orderId = (u8)unit->order_queue_tail->orderId;
-					if (orders_dat::CanBeInterrupted[orderId] == 0
-						&& orderId != OrderId::ComputerAI)
+					u8 order_id = (u8)unit->order_queue_tail->order_id;
+					if (orders_dat::CanBeInterrupted[order_id] == 0
+						&& order_id != OrderId::ComputerAI)
 					{
 						bStopLoop = true;
 					}
@@ -578,8 +578,8 @@ namespace hooks
 						bEndLoop = (unit->order_queue_tail == nullptr);
 						while (!bEndLoop)
 						{
-							if (orders_dat::CanBeInterrupted[(unit->order_queue_tail)->orderId]
-								|| unit->order_queue_tail->orderId == OrderId::ComputerAI)
+							if (orders_dat::CanBeInterrupted[(unit->order_queue_tail)->order_id]
+								|| unit->order_queue_tail->order_id == OrderId::ComputerAI)
 							{
 								helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 							}

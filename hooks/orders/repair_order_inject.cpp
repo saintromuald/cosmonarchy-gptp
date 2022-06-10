@@ -24,7 +24,7 @@ namespace
 	void __declspec(naked) is_order_valid_wrapper() // 00474D90
 	{
 		static s32 result;
-		static char orderId;
+		static char order_id;
 		static Unit* unit;
 		static s32 unused;
 		static Unit* target;
@@ -39,10 +39,10 @@ namespace
 			MOV target, ESI
 			MOV unused, EDI
 			MOV unit, EBX
-			MOV orderId, AL
+			MOV order_id, AL
 			PUSHAD
 		}
-		result = hooks::is_order_valid(orderId, unit, unused, target, bErrorFlag);
+		result = hooks::is_order_valid(order_id, unit, unused, target, bErrorFlag);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -56,7 +56,7 @@ namespace
 	{
 		static s32 result;
 		static Unit* unit;
-		static u16 orderId;
+		static u16 order_id;
 		static s32 player;
 		__asm {
 			PUSH EBP
@@ -65,11 +65,11 @@ namespace
 			MOV EAX, [EBP + 0x08]
 			MOV player, EAX
 			POP EAX
-			MOV orderId, BX
+			MOV order_id, BX
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::order_allowed(unit, orderId, player);
+		result = hooks::order_allowed(unit, order_id, player);
 		__asm {
 			POPAD
 			MOV EAX, result

@@ -1325,18 +1325,18 @@ namespace scbw
 
 	// Identical to function order_is_spell @ 00436930 -- Pr0nogo
 	// We should update the lardcode for Cosmonarchy
-	bool order_is_spell(s32 orderId)
+	bool order_is_spell(s32 order_id)
 	{
-		return orderId == OrderId::Plague
-			|| orderId == OrderId::DarkSwarm
-//			|| orderId == OrderId::Ensnare				// Land Grab
-			|| orderId == OrderId::Irradiate
-			|| orderId == OrderId::StasisField
-			|| orderId == OrderId::EmpShockwave			// Observance
-			|| orderId == OrderId::MagnaPulse			// Lobotomy Mine
-			|| orderId == OrderId::PsiStorm
-//			|| orderId == OrderId::SummonBroodlings		// unused
-			|| orderId == OrderId::FireYamatoGun1;
+		return order_id == OrderId::Plague
+			|| order_id == OrderId::DarkSwarm
+//			|| order_id == OrderId::Ensnare				// Land Grab
+			|| order_id == OrderId::Irradiate
+			|| order_id == OrderId::StasisField
+			|| order_id == OrderId::EmpShockwave			// Observance
+			|| order_id == OrderId::MagnaPulse			// Lobotomy Mine
+			|| order_id == OrderId::PsiStorm
+//			|| order_id == OrderId::SummonBroodlings		// unused
+			|| order_id == OrderId::FireYamatoGun1;
 	}
 
 	bool can_be_parasited(Unit* unit)

@@ -173,7 +173,7 @@ namespace hooks
 					v7 = v1->order_queue_tail;
 					if (!v7)
 						break;
-					v8 = v7->orderId;
+					v8 = v7->order_id;
 					if (!orders_dat::CanBeInterrupted[v8] && v8 != -95)
 						break;
 					helper::remove_order_from_unit_queue(v7, v1);

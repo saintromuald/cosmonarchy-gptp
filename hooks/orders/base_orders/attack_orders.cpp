@@ -250,8 +250,8 @@ namespace hooks
 				bool bStopLoop77A70 = false;
 				while (!bStopLoop77A70 && unit->order_queue_tail != nullptr)
 				{
-					if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->orderId] &&
-						unit->order_queue_tail->orderId != OrderId::TurretGuard)
+					if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id] &&
+						unit->order_queue_tail->order_id != OrderId::TurretGuard)
 					{
 						bStopLoop77A70 = true;
 					}
@@ -353,11 +353,11 @@ namespace hooks
 							{ // 00477B9D
 								unit->order_computer(OrderId::Nothing2);
 
-								// this orderId is hardcoded, not calculated 
+								// this order_id is hardcoded, not calculated 
 								unit->order_simple(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeModeTurret], false);
 								current_subunit->order_computer(OrderId::SiegeMode);
 
-								// this orderId is hardcoded, not calculated
+								// this order_id is hardcoded, not calculated
 								current_subunit->issue_queued_order_target(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeMode], target, false);
 							}
 						}

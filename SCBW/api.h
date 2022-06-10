@@ -550,7 +550,7 @@ namespace scbw
 	s32 get_overlay_offset(u16 unit_id, bool xlargeAllowed = false);
 	s32 get_final_damage(Unit* unit, u16 weaponId);
 	bool unit_id_is_pacifist(Unit* unit);
-	bool order_is_spell(s32 orderId);
+	bool order_is_spell(s32 order_id);
 	bool can_be_parasited(Unit* unit);
 	void apply_parasite(Unit* unit, u8 playerID, Unit* queen);
 	void create_shield_overlay(Unit* unit, u32 attackDirection);
