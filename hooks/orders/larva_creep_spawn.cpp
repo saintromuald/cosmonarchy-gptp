@@ -14,7 +14,7 @@ namespace hooks
 		if (helper::getLarvaSpawnPos(main_building, &coords))
 		{
 			Unit* unit_created = helper::create_unit(UnitId::ZergLarva, coords.x, coords.y, main_building->player);
-			if (unit_created != nullptr)
+			if (unit_created)
 			{
 				helper::update_unit_stats_and_finish_building(unit_created);
 				helper::update_unit_strength(unit_created);
@@ -102,21 +102,21 @@ namespace hooks
 					unit->building.larva_timer = LarvaSpawnRateHatchery;
 					if (unit->id == UnitId::ZergLarvalColony)
 					{
-						unit->building.larva_timer = LarvaSpawnRateHatchery / LarvaFactorLarvalColony;
+						unit->building.larva_timer /= LarvaFactorLarvalColony;
 					}
-					if (unit->id == UnitId::ZergLair && unit->main_order_id != OrderId::Morph2
+					else if (unit->id == UnitId::ZergLair && unit->main_order_id != OrderId::Morph2
 						|| unit->id == UnitId::ZergHive && unit->main_order_id == OrderId::Morph2)
 					{
-						unit->building.larva_timer = LarvaSpawnRateHatchery * LarvaFactorLair;
+						unit->building.larva_timer /= LarvaFactorLair;
 					}
 					else if (unit->id == UnitId::ZergHive && unit->main_order_id != OrderId::Morph2
 						|| unit->id == UnitId::ZergSire && unit->main_order_id == OrderId::Morph2)
 					{
-						unit->building.larva_timer = LarvaSpawnRateHatchery * LarvaFactorHive;
+						unit->building.larva_timer /= LarvaFactorHive;
 					}
 					else if (unit->id == UnitId::ZergSire && unit->main_order_id != OrderId::Morph2)
 					{
-						unit->building.larva_timer = LarvaSpawnRateHatchery * LarvaFactorSire;
+						unit->building.larva_timer /= LarvaFactorSire;
 					}
 
 					// if failed to find a spawn point for larva set the timer before retry to 3
@@ -187,10 +187,6 @@ namespace hooks
 			u8 result_00414680;
 
 			unit->building.creep_timer = 15;
-			if (unit->id == 180)
-			{
-				unit->building.creep_timer = 10;
-			}
 
 			// look for a place to spawn creep on
 			// return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
