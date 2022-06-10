@@ -86,17 +86,34 @@ bool isGameOn = false;
 		}
 	}
 
+	void __declspec(naked) ui_button_click_wrapper() {
+		static const u32 jmp_address = 0x004190F4;
+		static BinDlg* dialog;
+		__asm {
+			MOV dialog, ESI
+			PUSHAD
+		}
+		hooks::ui_button_click(dialog);
+		__asm {
+			POPAD
+			MOV EDX, EBX
+			MOV ECX, ESI
+			CALL dword ptr [ESI + 0x2A]
+			JMP jmp_address
+		}
+	}
+
 //-------- Hook injector --------//
 
-namespace hooks
-{
-	void inject_game_hooks()
-	{
+namespace hooks {
+	void inject_game_hooks() {
 		jump_patch(on_game_start,			Hook_OnGameStart);
-		jump_patch(set_ingame_input_procs,	0x00484CC0);
+		jump_patch(set_ingame_input_procs,	0x00484CC0, 0);
 
-		call_patch(on_game_end,				0x004EE983);
-		call_patch(next_frame_hook,			0x004D974E);
-		call_patch(next_ui_frame_hook,		0x004DE433);
+		jump_patch(ui_button_click_wrapper, 0x004190ED, 2);
+
+		call_patch(on_game_end,				0x004EE983, 0);
+		call_patch(next_frame_hook,			0x004D974E, 0);
+		call_patch(next_ui_frame_hook,		0x004DE433, 0);
 	}
 }

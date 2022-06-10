@@ -112,8 +112,15 @@ namespace hooks
 		tick_trigger_system(false);
 	}
 
+	void ui_button_click(BinDlg* dialog) {
+		if (dialog->parent && dialog->parent->pszText && strcmp(dialog->parent->pszText, "StatBtn") == 0) {
+			hooks::disable_quickcasting  = 5;
+			hooks::disable_quickbuilding = 5;
+		}
+	}
+
 	static bool process_quickcasting() {
-		if (config.quick_casting && *is_targeting) {
+		if (config.quick_casting && *is_targeting && !disable_quickcasting) {
 			if (PtInRect(minimap_rect, *(POINT*) mouse)) {
 				u16 x = mouse->x;
 				u16 y = mouse->y;
@@ -134,7 +141,7 @@ namespace hooks
 	}
 
 	static bool process_quickbuilding() {
-		if (config.quick_building && *is_placing_building) {
+		if (config.quick_building && *is_placing_building && !disable_quickbuilding) {
 			bool not_held = true;
 			for (char c = 'A'; c <= 'Z'; ++c) {
 				if (IS_KEYCODE_USED[c]) {
@@ -161,6 +168,8 @@ namespace hooks
 		return false;
 	}
 
+	u8 disable_quickcasting;
+	u8 disable_quickbuilding;
 	bool quickcasting_signal;
 	u32 quickcasting_command_card;
 
@@ -208,6 +217,12 @@ namespace hooks
 
 	/// This hook is called every frame
 	bool next_frame() {
+		if (disable_quickcasting && !*is_targeting) {
+			disable_quickcasting--;
+		}
+		if (disable_quickbuilding && !*is_placing_building) {
+			disable_quickbuilding--;
+		}
 		tick_trigger_system(true);
 		tick_base_layouts();
 		// This block is executed once every game
@@ -2030,6 +2045,7 @@ namespace hooks
 		quickcasting_command_card = 0;
 		
 		set_palette_recolor({}, {});
+
 		return true;
 	}
 
