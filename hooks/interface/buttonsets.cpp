@@ -183,127 +183,108 @@ namespace hooks
 {
 	// 00458BC0
 	// Called (with a jump) as last instruction of updateButtonSet
-	// Will update the buttonset for the currently selected unit if alone
-	// Handle special case of group orders if multiple units are selected
+	// Will update the buttonset for the currently unit active if alone
+	// Handle special case of group orders if multiple units are unit
 	void updateButtonSetEx()
 	{
 		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
-		u8 countWorkers = 0;
-		u8 countCloakables = 0;
-		u8 countNotInAirAndZergs = 0;
-		u8 countBurrowables = 0;
-		u8 countLarva = 0;
+		u8 count_workers = 0;
+		u8 count_burrowables = 0;
+		u8 count_larva = 0;
+		u8 count_eggs  = 0;
 		u8 count_hatches = 0;
+		u8 count_zergs = 0;
 		u8 count_buildings = 0;
 		u8 count_lifted_buildings = 0;
-		u16 activeButtonSetId;
-		u16 selectedButtonSetId;
-		u32 flagsHolder;
-		s32 unitIndexFromSelection = 0;
-		Unit* unitFromSelection;
-		activeButtonSetId = (*active_portrait_unit)->current_button_set;
-		do
-		{ // count units to know if will be using special group buttonset (peons, cloakables...)
-			unitFromSelection = client_selection_group->unit[unitIndexFromSelection];
-			if (unitFromSelection != nullptr)
-			{
-				flagsHolder = units_dat::BaseProperty[unitFromSelection->id];
-				selectedButtonSetId = unitFromSelection->current_button_set;
+		u16 active_button_set_id;
+		u16 selected_button_set_id;
+		u32 selected_properties;
+		Unit* selected;
 
-				if (flagsHolder & UnitProperty::Worker)
-				{
-					countWorkers++;
+		Unit* active = *active_portrait_unit;
+		for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+			Unit* unit = client_selection_group->unit[i];
+			if (unit && unit->status & UnitStatus::Completed) {
+				active = unit;
+				break;
+			}
+		}
+		active_button_set_id = active->current_button_set;
+
+		*BUTTONSET_CURRENT_BUTTONSETID = active_button_set_id;
+		for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) { // count units to know if will be using special group buttonset (peons, cloakables...)
+			Unit* selected = client_selection_group->unit[i];
+			if (selected) {
+				selected_button_set_id = selected->current_button_set;
+
+				selected_properties = units_dat::BaseProperty[selected->id];
+				if (selected_properties & UnitProperty::Worker) {
+					count_workers++;
 				}
 
-				if (flagsHolder & UnitProperty::Cloakable)
-				{
-					countCloakables++;
-				}
-
-				if (scbw::is_zerg_production(unitFromSelection->id)) {
-					count_hatches++;
-				}
-
-				if (units_dat::BaseProperty[unitFromSelection->id] & UnitProperty::Building) {
+				if (selected_properties & UnitProperty::Building) {
 					count_buildings++;
-					if (unitFromSelection->status & UnitStatus::InAir) {
+					if (selected->status & UnitStatus::InAir) {
 						count_lifted_buildings++;
 					}
 				}
 
-				// count flying zerg units (to disable "burrow group" if there's one)
-				if (!(unitFromSelection->status & UnitStatus::InAir)
-					&& units_dat::GroupFlags[unitFromSelection->id].is_zerg)
-				{
-					countNotInAirAndZergs++;
+				if (selected_properties & UnitProperty::Burrowable) {
+					count_burrowables++;
 				}
 
-				if (flagsHolder & UnitProperty::Burrowable)
-				{
-					countBurrowables++;
+				if (scbw::is_zerg_production(selected->id)) {
+					count_hatches++;
 				}
 
-				if (unitFromSelection->id == UnitId::ZergLarva)
-				{
-					countLarva++;
+				if (units_dat::GroupFlags[selected->id].is_zerg) {
+					count_zergs++;
 				}
 
-				// if you use a custom buttonset, and are reusing the current_button_set property of a unit differently, change these conditions to take it in account
-				if (selectedButtonSetId != activeButtonSetId)
-				{
-					ButtonSet* selectedUnitButtonSet = hooks::getButtonSet(selectedButtonSetId);
-					ButtonSet* activeUnitButtonSet = hooks::getButtonSet(activeButtonSetId);
-					if (activeUnitButtonSet->first_button != selectedUnitButtonSet->first_button)
-					{
-						if (selectedUnitButtonSet->connected_unit != activeButtonSetId)
-						{
-							// Kerrigan (Ghost) and Raynor (Vulture) have the corresponding normal unit as "connected unit"
-							if (activeUnitButtonSet->connected_unit == selectedButtonSetId)
-							{
-								activeButtonSetId = selectedButtonSetId;
-								*BUTTONSET_CURRENT_BUTTONSETID = selectedButtonSetId;
-							}
-							else
-							{
+				if (selected->id == UnitId::ZergLarva) {
+					count_larva++;
+				}
+
+				if (selected->id == UnitId::ZergEgg) {
+					count_eggs++;
+				}
+
+				// if you use a custom buttonset, and are reusing the current_button_set property of a active differently, change these conditions to take it in account
+				if (selected->status & UnitStatus::Completed && selected_button_set_id != active_button_set_id) {
+					ButtonSet* selected_button_set = hooks::getButtonSet(selected_button_set_id);
+					ButtonSet* active_button_set = hooks::getButtonSet(active_button_set_id);
+					if (active_button_set->first_button != selected_button_set->first_button) {
+						if (selected_button_set->connected_unit != active_button_set_id) {
+							// Kerrigan (Ghost) and Raynor (Vulture) have the corresponding normal active as "connected active"
+							if (active_button_set->connected_unit == selected_button_set_id) {
+								active_button_set_id = selected_button_set_id;
+								*BUTTONSET_CURRENT_BUTTONSETID = selected_button_set_id;
+							} else {
 								*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed;
 							}
 						}
 					}
 				}
 			}
-			// 00458C88
-			unitIndexFromSelection++;
 		}
-		while (unitIndexFromSelection < SELECTION_ARRAY_LENGTH);
-		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank)
-		{
-			if (countWorkers == *client_selection_count)
-			{
+		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank) {
+			if (count_workers == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
 			}
-			else if (countCloakables == *client_selection_count)
-			{
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupCloaker;
+			else if (count_burrowables != 0 && count_zergs == *client_selection_count) {
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
 			}
-			else if ((countBurrowables != 0) && (countNotInAirAndZergs == *client_selection_count))
-			{
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // aerial units and non-zergs units prevent this (but not Ultralisk)
-			}
-			else if (countLarva == *client_selection_count)
-			{
+			else if (count_larva && count_larva + count_eggs == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
 			}
-			else if (count_hatches == *client_selection_count)
-			{
+			else if (count_hatches == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
 			}
-			else if (count_lifted_buildings)
-			{
+			else if (count_lifted_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			}
-			else if (count_buildings)
-			{
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranGoliathTurret;
+			else if (count_buildings) {
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_Blank;
 			}
 		}
 	}
@@ -442,7 +423,7 @@ namespace hooks
 		}
 	}
 
-	// Add active/selected units checks here and you can change the buttonset to any you created here in GPTP using something based on getCustomButtonSet method or a more customized way.
+	// Add active/unit units checks here and you can change the buttonset to any you created here in GPTP using something based on getCustomButtonSet method or a more customized way.
 	// Note: if you use updateButtonSet_Sub4591D0, you can disable the injection of this function in the _inject.cpp file.
 	ButtonSet* getButtonSet(s32 index)
 	{
@@ -689,7 +670,7 @@ namespace hooks
 				{
 					current_button_state = helper::req_check((u32)current_button->requirement_func, (u8)current_button->requirement_var, (u8)*LOCAL_NATION_ID, *active_portrait_unit);
 
-					// I am currently forcing the buttons to show, which is effectively fighting lardcode that forces them not to show when group-selected.
+					// I am currently forcing the buttons to show, which is effectively fighting lardcode that forces them not to show when group-unit.
 					// This is STUPID, EXPENSIVE, and should be REPLACED as soon as possible. - Pr0nogo
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons)
 					{
@@ -701,7 +682,7 @@ namespace hooks
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched)
 					{
-						UnitExt* unitExt = globals.get_unit_ext((*active_portrait_unit));
+						UnitExt* unitExt = globals.get_unit_ext(*active_portrait_unit);
 						// Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
 						if (current_button->requirement_var == TechId::ControlledDemolition)
 						{
