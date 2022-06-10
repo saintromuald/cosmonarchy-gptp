@@ -129,7 +129,7 @@ namespace hooks
 					{
 						// 004EA830:
 						Unit* new_larva = helper::create_unit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->player);
-						if (new_larva != nullptr)
+						if (new_larva)
 						{
 							// update various stats (set hp, set shield...) not finished on CreateUnit
 							helper::update_unit_stats_and_finish_building(new_larva);
@@ -139,7 +139,7 @@ namespace hooks
 							// set main_order_state depending on the collision state with the connected building						
 							helper::function_004E8DA0(new_larva);
 
-							if (unit->unit_ai != nullptr)
+							if (unit->unit_ai)
 							{
 								helper::ai_training_overlord(new_larva, unit);
 							}
