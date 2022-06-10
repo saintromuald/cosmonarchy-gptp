@@ -15,7 +15,6 @@ namespace hooks
         *placeBuildingY = tile_y + *moveToTileY;
         placement_pos->x = tile_x * 32;
         placement_pos->y = tile_y * 32;
-
         return 1;
 	}
 
@@ -29,25 +28,19 @@ namespace hooks
         Point16 dims = units_dat::BuildingDimensions[*placeBuildingUnitType];
         placement_pos.x = mouse->x - dims.x / 2;
         placement_pos.y = mouse->y - dims.y / 2;
-        if (helper::init_placement_box_pos(&placement_pos))
-        {
+        if (helper::init_placement_box_pos(&placement_pos)) {
             *placeBuildingMessageId = helper::update_placement_state_for_placement_box();
             helper::refresh_layers_3_and_4();
             helper::unk_building_placement_related(1, &placement_pos);
-            if (*isPlacingAddon)
-            {
+            if (*isPlacingAddon) {
                 placement_pos.x -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
                 placement_pos.y -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
                 helper::unk_building_placement_related(0, &placement_pos);
             }
-            result = helper::refresh_layers_3_and_4();
+            return helper::refresh_layers_3_and_4();
         }
-        else
-        {
-            helper::unk_building_placement_related_mouse(0, 1);
-            result = helper::unk_building_placement_related_mouse(0, 0);
-        }
-        return result;
+        helper::unk_building_placement_related_mouse(0, 1);
+        return helper::unk_building_placement_related_mouse(0, 0);
     }
 
     s32 update_placement_state_for_placement_box() // 0048DCE0
