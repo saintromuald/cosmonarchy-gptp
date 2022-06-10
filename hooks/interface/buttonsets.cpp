@@ -210,8 +210,8 @@ namespace hooks
 			}
 		}
 		active_button_set_id = active->current_button_set;
-
 		*BUTTONSET_CURRENT_BUTTONSETID = active_button_set_id;
+
 		for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) { // count units to know if will be using special group buttonset (peons, cloakables...)
 			Unit* selected = client_selection_group->unit[i];
 			if (selected) {
@@ -270,20 +270,15 @@ namespace hooks
 		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank) {
 			if (count_workers == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
-			}
-			else if (count_burrowables != 0 && count_zergs == *client_selection_count) {
+			} else if (count_burrowables != 0 && count_zergs == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
-			}
-			else if (count_larva && count_larva + count_eggs == *client_selection_count) {
+			} else if (count_larva && count_larva + count_eggs == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
-			}
-			else if (count_hatches == *client_selection_count) {
+			} else if (count_hatches == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
-			}
-			else if (count_lifted_buildings) {
+			} else if (count_lifted_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
-			}
-			else if (count_buildings) {
+			} else if (count_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_Blank;
 			}
 		}
@@ -440,13 +435,13 @@ namespace hooks
 			*minimap_cursor = 0;
 		}
 
-		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
-		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
-		u8* const BUTTONSET_SUBUNIT_MAINORDERID = (u8*)0x0068C1B8;
-		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
-		u16* const BUTTONSET_SPECIAL_BUTTONSETID = (u16*)0x0068C1C8; // replay, cancel building...
-		u8* const BUTTONSET_UNIT_MAINORDERID = (u8*)0x0068C1E4;
-		u32* const bCanUpdateCurrentButtonSet = (u32*)0x0068C1B0;
+		BinDlg** const BUTTONSET_DIALOG               = (BinDlg**)0x0068C148;
+		u16*     const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)    0x0068C14C;
+		u8*      const BUTTONSET_SUBUNIT_MAINORDERID  = (u8*)     0x0068C1B8;
+		u16*     const BUTTONSET_CURRENT_BUTTONSETID  = (u16*)    0x0068C1C4;
+		u16*     const BUTTONSET_SPECIAL_BUTTONSETID  = (u16*)    0x0068C1C8; // replay, cancel building...
+		u8*      const BUTTONSET_UNIT_MAINORDERID     = (u8*)     0x0068C1E4;
+		u32*     const bCanUpdateCurrentButtonSet     = (u32*)    0x0068C1B0;
 		bool jumpTo59A38 = false;
 		bool jumpTo59A9F = false;
 		bool jumpTo59A83 = false;
@@ -480,7 +475,7 @@ namespace hooks
 			CX_Holder = *BUTTONSET_CURRENT_BUTTONSETID;
 			if (*BUTTONSET_CURRENT_BUTTONSETID == UnitId::Buttons_Blank)
 			{
-				if (*active_portrait_unit == nullptr)
+				if (!*active_portrait_unit)
 				{
 					jumpTo59A38 = true;
 				}
@@ -506,12 +501,12 @@ namespace hooks
 			{
 				helper::update_command_card();
 				helper::refresh_button_tooltip();
-				jumpTo59A9F = (*active_portrait_unit == nullptr);
+				jumpTo59A9F = *active_portrait_unit;
 				if (!jumpTo59A9F)
 				{
 					mainOrderIdHolderUnit_EBP = (*active_portrait_unit)->main_order_id;
 					CX_Holder = mainOrderIdHolderUnit_EBP;
-					if ((*active_portrait_unit)->subunit == nullptr)
+					if (!(*active_portrait_unit)->subunit)
 					{
 						jumpTo59A83 = true;
 					}
@@ -530,12 +525,12 @@ namespace hooks
 			{
 				helper::update_command_card();
 				helper::refresh_button_tooltip();
-				jumpTo59A9F = (*active_portrait_unit == nullptr);
+				jumpTo59A9F = !*active_portrait_unit;
 				if (!jumpTo59A9F)
 				{
 					mainOrderIdHolderUnit_EBP = (*active_portrait_unit)->main_order_id;
 					CX_Holder = mainOrderIdHolderUnit_EBP;
-					if ((*active_portrait_unit)->subunit == nullptr)
+					if (!(*active_portrait_unit)->subunit)
 					{
 						jumpTo59A83 = true;
 					}
@@ -551,11 +546,11 @@ namespace hooks
 		if (!jumpTo59A83 && !jumpTo59A86 && !jumpTo59A9F)
 		{
 			// 00459A3C
-			if (*active_portrait_unit != nullptr)
+			if (*active_portrait_unit)
 			{
 				bool jumpTo59ABD = false;
 				mainOrderIdHolderUnit_EBP = (*active_portrait_unit)->main_order_id;
-				if ((*active_portrait_unit)->subunit != nullptr)
+				if ((*active_portrait_unit)->subunit)
 				{
 					mainOrderIdHolderSubUnit_BL = (*active_portrait_unit)->subunit->main_order_id;
 				}
@@ -643,11 +638,11 @@ namespace hooks
 		}
 		// 00459203:
 		current_dialog = current_dialog->children_dialog;
-		while (current_dialog != nullptr && current_dialog->index != 1)
+		while (current_dialog && current_dialog->index != 1)
 		{
 			current_dialog = current_dialog->next;
 		}
-		if (current_dialog == nullptr || current_dialog->index != 1)
+		if (!current_dialog || current_dialog->index != 1)
 		{
 			bStopThere = true;
 		}
