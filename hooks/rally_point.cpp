@@ -544,25 +544,20 @@ namespace hooks
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	u32 can_do_targeted_order(Unit* unit, u8 order_id) // 0049A410
-	{
+	u32 can_do_targeted_order(Unit* unit, u8 order_id) { // 0049A410
 		if (unit->status & UnitStatus::GroundedBuilding
-			&& (order_id == OrderId::RallyPoint1
-				|| order_id == OrderId::RallyPoint2
-				|| order_id == OrderId::Rechargeshields2
-				|| order_id == OrderId::Pickup3))
-		{
+		&& (order_id == OrderId::RallyPoint1
+		||  order_id == OrderId::RallyPoint2
+		||  order_id == OrderId::Rechargeshields2
+		||  order_id == OrderId::Pickup3)) {
 			return 1;
 		}
-		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
-		{
+		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
 			return 1;
 		}
 		u8 right_click_order = units_dat::RightClickAction[unit->id];
-		if (!right_click_order)
-		{
-			if (hooks::unit_can_rally(unit))
-			{
+		if (!right_click_order) {
+			if (hooks::unit_can_rally(unit)) {
 				right_click_order = 2;
 			}
 		}
@@ -570,60 +565,43 @@ namespace hooks
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	char get_right_click_action_order(Unit* unit) // 004E5EA0
-	{
-		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
-		{
+	char get_right_click_action_order(Unit* unit) { // 004E5EA0
+		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
 			return 3;
 		}
 
 		char right_click_order = units_dat::RightClickAction[unit->id];
-		if (!right_click_order)
-		{
-			if (hooks::unit_can_rally(unit))
-			{
-				right_click_order = 2;
+		if (!right_click_order) {
+			if (hooks::unit_can_rally(unit)) {
+				return 2;
 			}
 		}
 		return right_click_order;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	s32 __stdcall btnscond_can_move_special_case(u32 buffer) // 00428D40 - guessed arg name, unused
-	{
+	s32 __stdcall btnscond_can_move_special_case(u32 buffer) { // 00428D40 - guessed arg name, unused
 		UnitsSel selected_units = *client_selection_group;
 		Unit* unit_from_selection = 0;
-		u32 i = 0;
-		while (1)
-		{
+		for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
 			unit_from_selection = selected_units.unit[i];
-			if (unit_from_selection)
-			{
-				if (unit_from_selection->id == UnitId::ZergLakizilisk)
-				{
-					if (unit_from_selection->status & UnitStatus::Burrowed)
-					{
-						break;
+			if (unit_from_selection) {
+				if (unit_from_selection->id == UnitId::ZergLakizilisk) {
+					if (unit_from_selection->status & UnitStatus::Burrowed) {
+						return 1;
 					}
 				}
 				if (units_dat::RightClickAction[unit_from_selection->id]
-				||  unit_from_selection->status & UnitStatus::GroundedBuilding && unit_can_rally(unit_from_selection))
-				{
-					break;
+				||  unit_from_selection->status & UnitStatus::GroundedBuilding && unit_can_rally(unit_from_selection)) {
+					return 1;
 				}
 			}
-			++i;
-			if (selected_units.unit[i] >= client_selection_group_end)
-			{
-				return 0;
-			}
 		}
-		return 1;
+		return 0;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	s32 __stdcall btnscond_can_move(u32 buffer) // 00428DA0
-	{
+	s32 __stdcall btnscond_can_move(u32 buffer) { // 00428DA0
 		UnitsSel selected_units = *client_selection_group;
 		Unit* unit_from_selection = 0;
 		u32 i = 0;
