@@ -5,8 +5,7 @@
 
 namespace hooks
 {
-	void cmdrecv_building_morph(u16 unit_id)
-	{
+	void cmdrecv_building_morph(u16 unit_id) {
 		*unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
 			if (unit->id >= UnitId::ZergInfestedCommandCenter && unit->id < UnitId::None &&
@@ -17,62 +16,28 @@ namespace hooks
 				unit->order_computer(OrderId::Morph2);
 				scbw::refresh_console();
 			}
-		};
+		}
 	}
 
-	void cmdrecv_unit_morph(u16 wUnitType)
-	{
-		Unit* current_unit;
+	void cmdrecv_unit_morph(u16 unit_id) {
 		*unit_iterator_pos = 0;
-		current_unit = get_active_player_next_selection();
-		while (current_unit != nullptr)
-		{
-
-			bool bAllowMorph;
-			/*
-			if(
-				current_unit->id == UnitId::ZergHydralisk &&
-				unit_id == UnitId::ZergLakizilisk
-			)
-				bAllowMorph = current_unit->canUseTech(TechId::LurkerAspect,*ACTIVE_NATION_ID) == 1;
-			else*/
-			if ((current_unit->id, true)
-				)
-			{
-
-				bAllowMorph = current_unit->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1;
-			}
-			else
-			{
-				bAllowMorph = false;
-			}
-			if (
-				bAllowMorph &&
-				current_unit->main_order_id != OrderId::Morph1 &&
-				helper::has_money_can_make(current_unit, wUnitType) // start construction if successful
-				)
-			{
+		while (Unit* current_unit = helper::get_active_player_next_selection()) {
+			if (current_unit->can_make_unit(unit_id, *ACTIVE_NATION_ID)
+				&& current_unit->main_order_id != OrderId::Morph1
+				&& helper::has_money_can_make(current_unit, unit_id)) { // start construction if successful
 				current_unit->user_action_flags |= 1;
-				if (current_unit->main_order_id != OrderId::Die)
-				{
-					bool bKeepLooping = true;
-					while (bKeepLooping)
-					{
-						if (current_unit->order_queue_tail == nullptr)
-							bKeepLooping = false;
-						else
-							if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id] ||
-								current_unit->order_queue_tail->order_id == OrderId::Morph1
-								)
-								helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
-							else
-								bKeepLooping = false;
+				if (current_unit->main_order_id != OrderId::Die) {
+					while (current_unit->order_queue_tail) {
+						if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id] || current_unit->order_queue_tail->order_id == OrderId::Morph1) {
+							helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
+						} else {
+							break;
+						}
 					}
 					current_unit->perform_another_order(OrderId::Morph1, 0, 0, nullptr, UnitId::None, 0);
 				}
 				prepare_for_next_order(current_unit);
 			}
-			current_unit = get_active_player_next_selection();
 		}
 		scbw::refresh_console();
 	}
@@ -142,8 +107,7 @@ namespace hooks
 	}
 
 	// Hooked for multi-building select. -Pr0nogo
-	void btnsact_rally_point(u32 xd) // 004244A0
-	{
+	void btnsact_rally_point(u32 xd) { // 004244A0
 		*order_id_ground = OrderId::RallyPointToTile;
 		*order_id_obstructed = OrderId::RallyPointToTile;
 		bool network_table_1 = *network_table < 0x3Eu;
@@ -152,8 +116,7 @@ namespace hooks
 		*order_id_unit = OrderId::RallyPointToVisibleUnit;
 
 		const char* string = (const char*)(*network_table + network_table[63]);
-		if (network_table_1 || network_table_2)
-		{
+		if (network_table_1 || network_table_2) {
 			string = "";
 		}
 

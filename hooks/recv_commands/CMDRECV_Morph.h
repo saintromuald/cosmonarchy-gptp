@@ -4,8 +4,8 @@
 
 namespace hooks
 {
-	void cmdrecv_building_morph(u16 wUnitType);																				// 004C1910
-	void cmdrecv_unit_morph(u16 wUnitType);																					// 004C1990
+	void cmdrecv_building_morph(u16 unit_id);																				// 004C1910
+	void cmdrecv_unit_morph(u16 unit_id);																					// 004C1990
 	void cmdrecv_train(char* buffer);																						// 004C1C20
 	void cmdrecv_liftoff(char* buffer);																						// 004C1620
 	void btnsact_rally_point(u32 xd);																						// 004244A0
