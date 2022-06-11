@@ -560,6 +560,7 @@ namespace hooks
 		if (send_command) {
 			helper::cmdact_select(unit_list, count);
 		}
+		*client_selection_changed = 1;
 		scbw::refresh_console();
 		return 1;
 	}

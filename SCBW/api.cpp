@@ -1066,19 +1066,12 @@ namespace scbw
 		}
 	}
 
-	void refresh_console() // 004C36C0
-	{
-		static u32* const bCanUpdateCurrentButtonSet = (u32*)0x0068C1B0;
-		static u8* const bCanUpdateSelectedUnitPortrait = (u8*)0x0068AC74;
-		static u8* const bCanUpdateStatDataDialog = (u8*)0x0068C1F8;
-		static BinDlg** const someDialogUnknown = (BinDlg**)0x0068C1E8;
-		static BinDlg** const someDialogUnknownUser = (BinDlg**)0x0068C1EC;
-
-		*bCanUpdateCurrentButtonSet = 1;
-		*bCanUpdateSelectedUnitPortrait = 1;
-		*bCanUpdateStatDataDialog = 1;
-		*someDialogUnknown = nullptr;
-		*someDialogUnknownUser = nullptr;
+	void refresh_console() { // 004C36C0
+		*force_button_refresh      = 1;
+		*portrait_redraw           = 1;
+		*status_screen_redraw      = 1;
+		*control_under_mouse       = 0;
+		*control_under_mouse_value = 0;
 	}
 
 	void create_unit_from_ability(s32 unit_id, s32 count, u16 playerId, s32 x, s32 y, u32 remove_timer, Unit* creator)
