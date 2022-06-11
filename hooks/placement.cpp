@@ -13,8 +13,8 @@ namespace hooks
 
         *placeBuildingX = tile_x + *moveToTileX;
         *placeBuildingY = tile_y + *moveToTileY;
-        placement_pos->x = tile_x * 32;
-        placement_pos->y = tile_y * 32;
+        placement_pos->x = *placeBuildingX * 32 - *moveToX;
+        placement_pos->y = *placeBuildingY * 32 - *moveToY;
         return 1;
 	}
 
