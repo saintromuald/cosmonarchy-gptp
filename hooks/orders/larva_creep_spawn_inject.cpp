@@ -97,7 +97,7 @@ namespace
 	/*
 	void __declspec(naked) spreadCreep_Wrapper() // 0x00414680
 	{
-		u8 spreadCreep(u16 unit_id, s32 x, s32 y);
+		u8 spread_creep(u16 unit_id, s32 x, s32 y);
 
 		static u16 unit_id;
 		static s32 x;
@@ -111,7 +111,7 @@ namespace
 		MOV y, EAX
 		PUSHAD
 		}
-		result = hooks::spreadCreep(unit_id, x, y);
+		result = hooks::spread_creep(unit_id, x, y);
 		__asm
 		{
 		POPAD

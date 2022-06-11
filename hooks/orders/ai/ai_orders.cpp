@@ -123,7 +123,7 @@ namespace hooks
 		}
 		if (helper::ai_try_return_home(self, 0) || !helper::ai_transport_action(self))
 		{
-			if (AIScriptController[(u8)self->player].AI_Flags.isUseMapSettings)
+			if (AIScriptController[(u8)self->player].AI_Flags.is_use_map_settings)
 			{
 				parentAi9 = 1;
 			}
@@ -140,7 +140,7 @@ LABEL_37:
 					if (!self->unit_ai
 						|| helper::ai_is_under_attack(self, 0)
 						|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
-						&& AIScriptController[(u8)self->player].AI_Flags.isUseMapSettings)
+						&& AIScriptController[(u8)self->player].AI_Flags.is_use_map_settings)
 					{
 						childAi2 = 0;
 					}
@@ -201,7 +201,7 @@ LABEL_37:
 										|| !helper::ai_transport_action(self))
 									{
 										if (actual_target && actual_target->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
-											|| AIScriptController[(u8)self->player].AI_Flags.isUseMapSettings
+											|| AIScriptController[(u8)self->player].AI_Flags.is_use_map_settings
 											|| ((child5 = 3 * self->get_total_hp_plus_shields() / 4, self->get_current_life_ingame() > child5)
 												|| child3 != UnitId::ProtossDidact && child3 != UnitId::TerranWraith && child3 != UnitId::ZergMutalisk
 												|| !helper::ai_transport_action(self))
@@ -371,7 +371,7 @@ LABEL_37:
 				GuardAi* guardAI = (GuardAi*)unit->unit_ai;
 				if (!guardAI
 				  || helper::unit_is_active_transport(unit)
-				  || unit->status & UnitStatus::InBuilding && !(AIScriptController[player].AI_Flags.isUseMapSettings))
+				  || unit->status & UnitStatus::InBuilding && !(AIScriptController[player].AI_Flags.is_use_map_settings))
 				{
 					continue;
 				}
@@ -460,7 +460,7 @@ LABEL_37:
 			}
 		}
 
-		if (AIScriptController[region->playerId].AI_Flags.isUseMapSettings)
+		if (AIScriptController[region->playerId].AI_Flags.is_use_map_settings)
 		{
 			s32 v8 = region->region << 6;
 			s32 v9 = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterY + v8);
@@ -474,7 +474,7 @@ LABEL_37:
 		}
 
 		u32 regionAirStrength = region->enemyAirStrength;
-		if (!(AIScriptController[region->playerId].AI_Flags.isUseMapSettings))
+		if (!(AIScriptController[region->playerId].AI_Flags.is_use_map_settings))
 		{
 			regionAirStrength += regionAirStrength >> 1;
 		}
@@ -484,7 +484,7 @@ LABEL_37:
 		}
 
 		u32 regionGroundStrength = region->enemyGroundStrength;
-		if (!(AIScriptController[region->playerId].AI_Flags.isUseMapSettings))
+		if (!(AIScriptController[region->playerId].AI_Flags.is_use_map_settings))
 		{
 			regionGroundStrength += regionGroundStrength >> 1;
 		}
@@ -902,7 +902,7 @@ LABEL_37:
 						}
 						case UnitId::ZergCreepColony:
 						{
-							if (!AIScriptController[playerId].AI_Flags.isSecureFinished) // SLOBYTE(AIScriptController[player].AI_Flags) < 0
+							if (!AIScriptController[playerId].AI_Flags.is_secure_finished) // SLOBYTE(AIScriptController[player].AI_Flags) < 0
 							{
 								goto LABEL_21;
 							}
@@ -1971,7 +1971,7 @@ LABEL_37:
 	{
 		if (victim->unit_ai)
 		{
-			AIScriptController[victim->player].AI_Flags.isSecureFinished;
+			AIScriptController[victim->player].AI_Flags.is_secure_finished;
 			UnitAi* victim_ai = victim->unit_ai;
 			AiRegion* victim_region = 0;
 			if (victim_ai->type == AiType::Military)
@@ -1999,51 +1999,53 @@ LABEL_37:
 								{
 									switch (first_player_unit->id)
 									{
-									case UnitId::TerranSeraph:
-									case UnitId::ProtossWitness:
-										goto LABEL_22;
-									case UnitId::ZergOvileth:
-									case UnitId::ZergIroleth:
-										if (helper::is_unit_loaded(first_player_unit))
+										case UnitId::TerranSeraph:
+										case UnitId::ProtossWitness:
+										case UnitId::ZergOvileth:
+										case UnitId::ZergIroleth:
 										{
-											break;
-										}
-									LABEL_22:
-										if (!first_player_unit->is_blind
-											&& (first_order_id == OrderId::ComputerAI
-												|| first_order_id == OrderId::ComputerReturn
-												|| first_order_id == OrderId::GuardPost
-												|| first_order_id == OrderId::AIPatrol))
-										{
-											u32 distance = helper::get_distance_fast(victim->sprite->position.x, first_player_unit->sprite->position.x, victim->sprite->position.y, first_player_unit->sprite->position.y);
-											if (distance < max_distance)
-											{
-												unit_to_order_1 = first_player_unit;
-												max_distance = distance;
-											}
-										}
-										break;
-									case UnitId::TerranComsatStation:
-										if (!(first_player_unit->status & UnitStatus::Completed))
-										{
-											break;
-										}
-										if (victim->id != UnitId::TerranBunker || !helper::is_unit_loaded(victim))
-										{
-											if (!helper::ai_unit_can_attack(victim) || units_dat::BaseProperty[victim->id] & UnitProperty::Worker)
+											if (helper::is_unit_loaded(first_player_unit))
 											{
 												break;
 											}
-										}
-										if (first_player_unit->energy >= techdata_dat::EnergyCost[TechId::ScannerSweep] * 256
-											|| first_player_unit->main_order_id == OrderId::PlaceScanner) // originally orderid -117...?
+											if (!first_player_unit->is_blind
+											&&  (first_order_id == OrderId::ComputerAI
+												|| first_order_id == OrderId::ComputerReturn
+												|| first_order_id == OrderId::GuardPost
+												|| first_order_id == OrderId::AIPatrol))
+											{
+												u32 distance = helper::get_distance_fast(victim->sprite->position.x, first_player_unit->sprite->position.x, victim->sprite->position.y, first_player_unit->sprite->position.y);
+												if (distance < max_distance)
+												{
+													unit_to_order_1 = first_player_unit;
+													max_distance = distance;
+												}
+											}
+										} break;
+										case UnitId::TerranComsatStation:
 										{
-											break;
-										}
-										helper::assign_order_with_target(threat, first_player_unit, OrderId::PlaceScanner);
-										return;
-									default:
-										break;
+											if (!(first_player_unit->status & UnitStatus::Completed))
+											{
+												break;
+											}
+											// TODO: Add check to see if victim is already detected / if there's a detector in the area?
+											if (victim->id != UnitId::TerranBunker || !helper::is_unit_loaded(victim))
+											{
+												if (!helper::ai_unit_can_attack(victim) || units_dat::BaseProperty[victim->id] & UnitProperty::Worker)
+												{
+													break;
+												}
+											}
+											if (first_player_unit->energy >= techdata_dat::EnergyCost[TechId::ScannerSweep] * 256 || first_player_unit->main_order_id == OrderId::PlaceScanner)
+											{
+												break;
+											}
+											helper::assign_order_with_target(threat, first_player_unit, OrderId::PlaceScanner);
+											return;
+										} break;
+										default:
+										{
+										} break;
 									}
 								}
 							}
@@ -2055,7 +2057,7 @@ LABEL_37:
 							Point16 victim_pos = {};
 							victim_pos.x = victim->sprite->position.x;
 							victim_pos.y = victim->sprite->position.y;
-							unit_to_order_1->user_action_flags |= 1u;
+							unit_to_order_1->user_action_flags |= 1;
 							if (unit_to_order_1->main_order_id)
 							{
 								while (1)
@@ -2065,13 +2067,13 @@ LABEL_37:
 									{
 										break;
 									}
-									if (!orders_dat::CanBeInterrupted[tail_order_1->order_id] && tail_order_1->order_id != -93)
+									if (!orders_dat::CanBeInterrupted[tail_order_1->order_id] && tail_order_1->order_id != OrderId::ComputerReturn)
 									{
 										break;
 									}
 									helper::remove_order_from_unit_queue(tail_order_1, unit_to_order_1);
 								}
-								helper::perform_another_order(OrderId::ComputerReturn, 0, unit_to_order_1, UnitId::None, victim_pos, 0);// Computer Return
+								helper::perform_another_order(OrderId::ComputerReturn, 0, unit_to_order_1, UnitId::None, victim_pos, 0);
 							}
 							helper::orders_nothing_2(unit_to_order_1);
 						}
@@ -2083,9 +2085,9 @@ LABEL_37:
 			}
 			if (victim_region)
 			{
-				if (victim_region->followTarget)
+				if (victim_region->follow_target)
 				{
-					helper::assign_order_with_target(victim, victim_region->followTarget, OrderId::AIPatrol);
+					helper::assign_order_with_target(victim, victim_region->follow_target, OrderId::AIPatrol);
 					return;
 				}
 			}

@@ -363,7 +363,7 @@ namespace helper
 
 	//// larva_creep_spawn
 	Unit* getUnitPointer();
-	u8 spreadCreep(u32 unit_id, s32 x, s32 y);																						// 00414680
+	u8 spread_creep(u32 unit_id, s32 x, s32 y);																						// 00414680
 	void ai_training_overlord(Unit* main_building, Unit* larva);																		// 00435770
 	void update_unit_strength(Unit* unit);																							// 0049FA40
 	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit* unit, Box16* coords);														// 004E8280

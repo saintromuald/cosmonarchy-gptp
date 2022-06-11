@@ -676,7 +676,7 @@ struct AiRegion
 	/*0x1C*/  Unit* airTarget;
 	/*0x20*/  Unit* groundTarget;
 	/*0x24*/  Unit* slowestUnit;
-	/*0x28*/  Unit* followTarget;
+	/*0x28*/  Unit* follow_target;
 	/*0x2C*/  MilitaryAiArray* military;
 	/*0x30*/  MilitaryAi* first_military_ai;
 };
@@ -892,18 +892,18 @@ struct AI_Main
 	u32 ai_last_nuke_time;				/*0214*/
 	struct
 	{
-		u16 isSecureFinished : 1;		/*0001*/
-		u16 isTownStarted : 1;			/*0002*/
-		u16 isDefaultBuildOff : 1;		/*0004*/
-		u16 isTransportsOff : 1;		/*0008*/
-		u16 isFarmsNotimingOn : 1;		/*0010*/
-		u16 isUseMapSettings : 1;		/*0020*/
-		u16 flag_0x40 : 1;				/*0040*/
-		u16 spreadCreep : 1;			/*0080*/
-		u16 flag_0x100 : 1;				/*0100*/
-		u16 hasStrongestGndArmy : 1;	/*0200*/ //Set if the AI's ground army is stronger than the total strength of the strongest enemy force
-		u16 bUpgradesFinished : 1;		/*0400*/
-		u16 bTargetExpansion : 1;		/*0800*/
+		u16 is_secure_finished : 1;			/*0001*/
+		u16 is_town_started : 1;			/*0002*/
+		u16 is_default_build_off : 1;		/*0004*/
+		u16 is_transports_off : 1;			/*0008*/
+		u16 is_farms_notiming_on : 1;		/*0010*/
+		u16 is_use_map_settings : 1;		/*0020*/
+		u16 flag_0x40 : 1;					/*0040*/
+		u16 spread_creep : 1;				/*0080*/
+		u16 flag_0x100 : 1;					/*0100*/
+		u16 has_strongest_ground_army : 1;	/*0200*/ // Set if the AI's ground army is stronger than the total strength of the strongest enemy force
+		u16 upgrades_finished : 1;			/*0400*/
+		u16 target_expansion : 1;			/*0800*/
 	} AI_Flags;
 	u16 ai_panic_block;					/*021A*/
 	u16 ai_max_force;					/*021C*/

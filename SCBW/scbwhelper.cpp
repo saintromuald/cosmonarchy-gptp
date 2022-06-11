@@ -3493,7 +3493,7 @@ namespace helper
 		return unit;
 	}
 
-	u8 spreadCreep(u32 unit_id, s32 x, s32 y)
+	u8 spread_creep(u32 unit_id, s32 x, s32 y)
 	{
 		const u32 Func_Sub414680 = 0x00414680;
 		static u8 return_value;
