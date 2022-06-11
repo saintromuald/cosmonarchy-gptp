@@ -364,56 +364,47 @@ namespace hooks
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	u32 order_acquire_generic_right_click_unit_proc_2(Unit* unit, u32 x_pos, u16 y_pos, Unit** target, u16 fow_unit_id) // 00455E00
-	{
+	u32 order_acquire_generic_right_click_unit_proc_2(Unit* unit, u32 x_pos, u16 y_pos, Unit** target, u16 fow_unit_id) { // 00455E00
 		u32 result = OrderId::Nothing2;
-		if (unit->status & UnitStatus::GroundedBuilding || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
-		{
-			if (hooks::unit_can_rally(unit))
-			{
+		if (unit->status & UnitStatus::GroundedBuilding || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
+			if (hooks::unit_can_rally(unit)) {
 				result = OrderId::RallyPoint2 - (*target != 0);
 			}
 			return result;
 		}
 
 		Unit* target_unit = *target;
-		if (!*target)
-		{
+		if (!*target) {
 			if ((unit->id == UnitId::ZergMatraleth) && fow_unit_id != UnitId::None)
 			{
 				return OrderId::Rightclickaction;
 			}
 			return OrderId::Move;
 		}
-		if (helper::unit_is_active_transport(unit) && helper::is_order_valid(OrderId::Pickup2, unit, 0, target_unit, 0))
-		{
+		if (helper::unit_is_active_transport(unit) && helper::is_order_valid(OrderId::Pickup2, unit, 0, target_unit, 0)) {
 			return OrderId::Pickup2;
 		}
-		if (helper::unit_is_active_transport(target_unit) && helper::can_enter_transport(target_unit, unit))
-		{
+		if (helper::unit_is_active_transport(target_unit) && helper::can_enter_transport(target_unit, unit)) {
 			return OrderId::EnterTransport;
 		}
-		if (target_unit->status & UnitStatus::Burrowed)
-		{
+		if (target_unit->status & UnitStatus::Burrowed) {
 			return OrderId::Move;
 		}
 
-		if (unit->id != UnitId::ZergMatraleth
-			|| target_unit->status & UnitStatus::Invincible
-			|| helper::get_target_unit_ability_error_stat_string(target_unit, unit->player, 12) != 0)
+		if (unit->id == UnitId::ZergMatraleth
+		&& !(target_unit->status & UnitStatus::Invincible)
+		&& helper::get_target_unit_ability_error_stat_string(target_unit, unit->player, 12) == 0)
 		{
-			result = (unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
+			return OrderId::InfestMine2;
 		}
-		else
-		{
-			result = OrderId::InfestMine2;
+		if (unit->id == UnitId::TerranCleric) {
+			return OrderId::HealMove;
 		}
-		return result;
+		return OrderId::Follow;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	void process_right_click_action(Unit* unit, u32 order_unit_id, u16 y_pos, u32 x_pos, Unit* target) // 00455F20
-	{
+	void process_right_click_action(Unit* unit, u32 order_unit_id, u16 y_pos, u32 x_pos, Unit* target) { // 00455F20
 		Box16 location = {};
 		location.x = x_pos - 96;
 		location.w = x_pos + 96;
@@ -425,60 +416,42 @@ namespace hooks
 		u8 idle_order = helper::get_generic_unit_idle_order(order_unit_id, unit);
 		Unit* unit_in_point = helper::iterate_units_at_location_target_proc_in_point(&location, target);
 		u8 right_click_order = helper::get_right_click_order(idle_order, unit_in_point, x_pos, y_pos, &unit_in_point, UnitId::None);
-		if (right_click_order == OrderId::Nothing2)
-		{
+		if (right_click_order == OrderId::Nothing2) {
 			helper::set_resource_target(unit);
 			u32 x_move_target = unit->move_target.pt.x;
 			u32 y_move_target = unit->move_target.pt.y;
-			if (x_move_target != unit->next_target_waypoint.x || y_move_target != unit->next_target_waypoint.y)
-			{
+			if (x_move_target != unit->next_target_waypoint.x || y_move_target != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = x_move_target;
 				unit->next_target_waypoint.y = y_move_target;
 			}
-			if (unit->order_queue_head)
-			{
+			if (unit->order_queue_head) {
 				unit->user_action_flags |= 1u;
 				helper::orders_nothing_2(unit);
-			}
-			else if (unit->unit_ai)
-			{
+			} else if (unit->unit_ai) {
 				helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
-			}
-			else
-			{
+			} else {
 				helper::issue_order_targeting_nothing(unit, units_dat::ReturnToIdleOrder[unit->id]);
 			}
-		}
-		else
-		{
-			if (right_click_order == 8)
-			{
+		} else {
+			if (right_click_order == 8) {
 				right_click_order = units_dat::AttackUnitOrder[unit->id];
 			}
-			if (helper::order_allowed(unit, right_click_order, unit->player) == 1)
-			{
+			if (helper::order_allowed(unit, right_click_order, unit->player) == 1) {
 				if (right_click_order == OrderId::RallyPoint1)
 				{
 					if (hooks::unit_can_rally(unit))
 					{
 						helper::set_rally_unit(unit_in_point, unit);
 					}
-				}
-				else if (right_click_order == OrderId::RallyPoint2)
-				{
+				} else if (right_click_order == OrderId::RallyPoint2) {
 					if (hooks::unit_can_rally(unit))
 					{
 						helper::set_rally_position(unit, x_pos, y_pos);
 					}
-				}
-				else
-				{
-					if (unit_in_point)
-					{
+				} else {
+					if (unit_in_point) {
 						helper::prepend_order_targeting_unit(unit_in_point, unit, right_click_order);
-					}
-					else
-					{
+					} else {
 						helper::prepend_order_targeting_ground(right_click_order, x_pos, y_pos, unit);
 					}
 					helper::to_idle(unit);
@@ -488,34 +461,25 @@ namespace hooks
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	u8 get_generic_unit_idle_order(u32 order_unit_id, Unit* unit) // 00455760
-	{
-		if (!unit)
-		{
+	u8 get_generic_unit_idle_order(u32 order_unit_id, Unit* unit) { // 00455760
+		if (!unit) {
 			return OrderId::Die;
 		}
 
 		u8 result = 0;
-		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
-		{
+		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
 			result = OrderId::PlayerGuard;
-		}
-		else
-		{
+		} else {
 			u8 right_click_order = units_dat::RightClickAction[unit->id];
-			if (!right_click_order)
-			{
-				if (hooks::unit_can_rally(unit))
-				{
+			if (!right_click_order) {
+				if (hooks::unit_can_rally(unit)) {
 					right_click_order = OrderId::Guard;
 				}
 			}
 			result = right_click_order;
 		}
-		if (unit->status & UnitStatus::IsHallucination)
-		{
-			if (result == OrderId::TurretGuard || result == OrderId::BunkerGuard)
-			{
+		if (unit->status & UnitStatus::IsHallucination) {
+			if (result == OrderId::TurretGuard || result == OrderId::BunkerGuard) {
 				result = OrderId::Stop;
 			}
 		}
@@ -523,74 +487,52 @@ namespace hooks
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	void input_game_right_mouse_click(DialogEvent* dlg_event) // 004564E0
-	{
-		if (!helper::s_trans_442(dlg_event->current.x, dlg_event->current.y))
-		{
-			u8 local_group_owner = local_selection_group[0] ? local_selection_group[0]->player : -1;
-			if (local_group_owner == *LOCAL_NATION_ID)
-			{
-				if (active_portrait_unit)
-				{
-					if (helper::unit_is_owned_by_current_player(*active_portrait_unit))
-					{
+	void input_game_right_mouse_click(DialogEvent* dlg_event) { // 004564E0
+		if (!helper::is_outside_of_game_screen(dlg_event->current.x, dlg_event->current.y)) {
+			u8 local_group_owner = local_selection_group[0] ? local_selection_group[0]->player : 255;
+			if (local_group_owner == *LOCAL_NATION_ID) {
+				if (*active_portrait_unit) {
+					if (helper::unit_is_owned_by_current_player(*active_portrait_unit)) {
 						s32 selection_iterator = 0;
-						while (1)
-						{
+						for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
 							Unit* selected_unit = *client_selection_group[selection_iterator].unit;
-							if (selected_unit)
-							{
-								if (helper::accepts_right_click_commands(selected_unit))
-								{
+							if (selected_unit) {
+								if (helper::accepts_right_click_commands(selected_unit)) {
 									break;
 								}
 							}
-							if (++selection_iterator >= 12)
-							{
+							if (i == SELECTION_ARRAY_LENGTH - 1) {
 								return;
 							}
 						}
-						if (selection_iterator < 12)
-						{
+						if (selection_iterator < SELECTION_ARRAY_LENGTH) {
 							u32 find_x = *move_to_x + dlg_event->current.x;
 							u32 find_y = *move_to_y + dlg_event->current.y;
-							u32 find_x_var = find_x;
 							Unit* unit_at_point = helper::find_unit_at_point(find_x, find_y);
-							Unit* unit_at_point_var = unit_at_point;
 							if (*client_selection_count != 1
-								|| *active_portrait_unit != unit_at_point
-								|| unit_at_point && hooks::unit_can_rally(unit_at_point))
-							{
-								if (unit_at_point_var)
-								{
-									goto LABEL_33;
+							|| *active_portrait_unit != unit_at_point
+							|| unit_at_point && hooks::unit_can_rally(unit_at_point)) {
+								if (unit_at_point) {
+									goto exit;
 								}
-								s32 selection_iterator_2 = 0;
-								do
-								{
-									Unit* selected_unit_2 = *client_selection_group[selection_iterator_2].unit;
-									if (selected_unit_2)
-									{
-										if (helper::can_move(selected_unit_2))
-										{
+								for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+									Unit* unit = client_selection_group->unit[i];
+									if (unit) {
+										if (helper::can_move(unit)) {
+											if (i < 12) {
+											exit:
+												Thingy* command_thingy = helper::show_command_response(find_x, find_y, unit_at_point);
+												u16 unit_id = UnitId::None;
+												if (command_thingy) {
+													unit_id = command_thingy->unit_id;
+												}
+												helper::cmdact_right_click_order(unit_at_point, find_x, find_y, unit_id, IS_KEYCODE_USED[16]);
+												if (helper::show_right_click_error_if_needed(unit_at_point)) {
+													helper::play_worker_action_sound(*active_portrait_unit);
+												}
+											}
 											break;
 										}
-									}
-									++selection_iterator_2;
-								} while (selection_iterator_2 < 12);
-								if (selection_iterator_2 < 12)
-								{
-								LABEL_33:
-									Thingy* command_thingy = helper::show_command_response(find_x_var, find_y, unit_at_point_var);
-									u16 unit_id_xd = UnitId::None;
-									if (command_thingy)
-									{
-										unit_id_xd = command_thingy->unit_id;
-									}
-									helper::cmdact_right_click_order(unit_at_point_var, find_x_var, find_y, unit_id_xd, IS_KEYCODE_USED[16]);
-									if (helper::show_right_click_error_if_needed(unit_at_point_var))
-									{
-										helper::play_worker_action_sound(*active_portrait_unit);
 									}
 								}
 							}

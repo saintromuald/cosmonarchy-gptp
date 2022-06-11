@@ -12140,7 +12140,7 @@ namespace helper
 		}
 	}
 
-	s32 s_trans_442(u32 current_x, u32 current_y) {
+	s32 is_outside_of_game_screen(u32 current_x, u32 current_y) {
 		static s32 result;
 		const u32 func_address = 0x004D1140;
 		__asm {

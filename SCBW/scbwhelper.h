@@ -1344,7 +1344,7 @@ namespace helper
 	void set_rally_unit(Unit* factory, Unit* target);														// 00466B40
 	void set_rally_position(Unit* factory, u16 x_pos, u16 y_pos);											// 00466B40
 
-	s32 s_trans_442(u32 current_x, u32 current_y);															// 004D1140
+	s32 is_outside_of_game_screen(u32 current_x, u32 current_y);															// 004D1140
 	bool accepts_right_click_commands(Unit* unit);															// 004556D0
 	Unit* find_unit_at_point(u32 x_pos, u32 y_pos);															// 0046F3A0
 	s32 can_move(Unit* unit);																				// 00455660
