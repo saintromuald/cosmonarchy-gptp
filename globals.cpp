@@ -1362,6 +1362,9 @@ namespace scbw
 			unitExt->nathrokor_target_stacks[i] = 0;
 		}
 
+		// Remove Stellar Enforcement
+		unitExt->values[ValueStellarEnforcement] = 0;
+
 		scbw::refresh_console();
 	}
 
