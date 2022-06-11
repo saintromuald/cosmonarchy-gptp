@@ -2514,4 +2514,8 @@ namespace scbw
 		}
 		return has_selection;
 	}
+
+	bool unit_is_stunned(Unit* unit) {
+		return unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer;
+	}
 }

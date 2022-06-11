@@ -663,95 +663,56 @@ namespace hooks
 	}
 	
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	s32 unit_can_move(Unit* unit) // 00455660
-	{
-		u32 result = 0;
+	s32 unit_can_move(Unit* unit) { // 00455660
 		u16 right_click_order = units_dat::RightClickAction[unit->id];
-		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
-		{
+		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
 			right_click_order = OrderId::PlayerGuard;
-		}
-		else
-		{
-			if (!right_click_order)
-			{
-				if (unit->status & UnitStatus::GroundedBuilding)
-				{
-					if (unit_can_rally(unit))
-					{
-						right_click_order = 2;
-					}
+		} else if (!right_click_order) {
+			if (unit->status & UnitStatus::GroundedBuilding) {
+				if (unit_can_rally(unit)) {
+					right_click_order = OrderId::Guard;
 				}
 			}
 		}
-		switch (right_click_order)
-		{
+		switch (right_click_order) {
 			case 1:
 			case 2:
 			case 4:
 			case 5:
-			case 6:
-			{
-				result = 1;
-			} break;
-			default:
-			{
-				result = 0;
+			case 6: {
+				return 1;
 			} break;
 		}
-		return result;
+		return 0;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	void drone_build_execute(Unit* unit) // 0045D2E0
-	{
-		Unit* unit_var = unit;
+	void drone_build_execute(Unit* unit) { // 0045D2E0
 		helper::stop_creep_disappearing_at_building(unit);
-		u32 unit_status = unit_var->status;
-		if (!unit_can_rally(unit_var))
-		{
-			if (!(unit_status & UnitStatus::Frozen)
-			&&   !unit_var->lockdown_timer
-			&&   !unit_var->stasis_timer
-			&&   !unit_var->maelstrom_timer
-			||    units_dat::BaseProperty[unit_var->id] & UnitProperty::Building)
-			{
-				unit_var->current_button_set = 233;
+		u32 unit_status = unit->status;
+		if (!scbw::unit_is_stunned(unit) || units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+			if (unit_can_have_rally(unit)) {
+				unit->current_button_set = UnitId::Buttons_CancelMutationWithRallyPt;
+			} else {
+				unit->current_button_set = UnitId::Buttons_CancelMutation;
 			}
-		}
-		else if (!(unit_status & UnitStatus::Frozen)
-			&& !unit_var->lockdown_timer
-			&& !unit_var->stasis_timer
-			&& !unit_var->maelstrom_timer
-			|| units_dat::BaseProperty[unit_var->id] & UnitProperty::Building)
-		{
-			unit_var->current_button_set = 234;
 		}
 
-		helper::init_building(unit_var, 1);
-		char main_order_id = unit_var->main_order_id;
-		char action_flags = unit_var->user_action_flags | 1;
-		unit_var->hitpoints = units_dat::MaxHitPoints[unit_var->id] / 10;
-		unit_var->user_action_flags = action_flags;
-		if (main_order_id)
-		{
-			while (1)
-			{
-				Order* order_queue_tail = unit_var->order_queue_tail;
-				if (!order_queue_tail)
-				{
+		helper::init_building(unit, 1);
+		char main_order_id = unit->main_order_id;
+		char action_flags = unit->user_action_flags | 1;
+		unit->hitpoints = units_dat::MaxHitPoints[unit->id] / 10;
+		unit->user_action_flags = action_flags;
+		if (main_order_id) {
+			while (Order* order = unit->order_queue_tail) {
+				if (!orders_dat::CanBeInterrupted[order->order_id] && order->order_id != OrderId::ZergBirth) {
 					break;
 				}
-				u8 order_id = order_queue_tail->order_id;
-				if (!orders_dat::CanBeInterrupted[order_id] && order_id != OrderId::ZergBirth)
-				{
-					break;
-				}
-				helper::remove_order_from_unit_queue(order_queue_tail, unit_var);
+				helper::remove_order_from_unit_queue(order, unit);
 			}
-			helper::perform_another_order(OrderId::ZergBuildSelf, 0, unit_var, UnitId::None, {}, 0);
+			helper::perform_another_order(OrderId::ZergBuildSelf, 0, unit, UnitId::None, {}, 0);
 		}
-		helper::orders_nothing_2(unit_var);
-		unit_var->build_queue[unit_var->build_queue_slot] = UnitId::None;
+		helper::orders_nothing_2(unit);
+		unit->build_queue[unit->build_queue_slot] = UnitId::None;
 	}
 }

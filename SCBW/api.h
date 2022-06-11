@@ -613,4 +613,6 @@ namespace scbw
 
 	bool unit_queue_full(Unit* unit);
 	bool all_selected_units_have_addon(u32 unit_id);
+
+	bool unit_is_stunned(Unit* unit);
 }
