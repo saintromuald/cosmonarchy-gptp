@@ -613,10 +613,12 @@ namespace hooks
 				selected_units = new_units;
 			}
 
-			Unit* first_selected = selected_units[0];
-			if (first_selected && first_selected->player == *ACTIVE_NATION_ID) {
-				if (hooks::unit_can_rally(first_selected)) {
-					helper::show_rally_target(first_selected);
+			for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+				Unit* unit = selected_units[i];
+				if (unit && unit->player == *ACTIVE_NATION_ID) {
+					if (hooks::unit_can_rally(unit)) {
+						helper::show_rally_target(unit);
+					}
 				}
 			}
 		}
