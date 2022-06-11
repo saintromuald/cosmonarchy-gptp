@@ -821,7 +821,7 @@ namespace images_dat {
 
 //Helper functions for several hooks
 SCBW_DATA(u8*, unit_iterator_pos, 0x006284B6);
-SCBW_DATA(const UnitsSel*, active_player_selection, 0x006284B8);
+SCBW_DATA(UnitsSel*, active_player_selection, 0x006284B8);
 typedef Unit* (__cdecl* GetActivePlayerNextSelectionFunc)();
 SCBW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x0049A850);
 

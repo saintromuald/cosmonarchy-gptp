@@ -66,7 +66,7 @@ namespace hooks
 					// unit_list
 					if (current_unit->subunit)
 					{
-						// if what got selected is the turret or another subunit, swap
+						// if what got it is the turret or another subunit, swap
 						// the unit and the subunit as current_unit
 						if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Subunit)
 						{
@@ -296,13 +296,13 @@ namespace hooks
 				if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit)
 				{
 					// Ctrl+click on unit or f64-click on already
-					// selected unit without other key
-					// =>	select surrounding units with same type as clicked unit, making them the current selection
+					// it unit without other key
+					// =>	select surrounding units with same type as clicked unit, making them the current unit_list
 
 					Unit** units_in_bounds;
 					u32 sorted_list_length;
 
-					// locate surrounding units for selection
+					// locate surrounding units for unit_list
 					local_temp_box16_structure.left = *move_to_x;
 					local_temp_box16_structure.top = *move_to_y;
 					local_temp_box16_structure.right = *move_to_x + 640;
@@ -316,7 +316,7 @@ namespace hooks
 
 					if (sorted_list_length != 0)
 					{
-						// turn the local array as the newly applied selection
+						// turn the local array as the newly applied unit_list
 						helper::select_units_if_alt_not_held(local_temp_array_1, sorted_list_length, 1, 1);
 
 						// This is what make the rally point briefly appear when selecting a building with one. Maybe can do other things?
@@ -331,30 +331,30 @@ namespace hooks
 			}
 			else
 			{
-				// holding SHIFT (if not holding CTRL, then there's an active selection too)
+				// holding SHIFT (if not holding CTRL, then there's an active unit_list too)
 				if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit)
 				{
 					// {Ctrl+Shift+click on unit} OR {Shift+f64-click on 
-					// selected unit WHILE having an active selection}
+					// it unit WHILE having an active unit_list}
 					// select units same type as clicked unit, adding them to the
-					// active selection
+					// active unit_list
 
 					Unit** units_in_bounds;
 					u32 sorted_list_length;
 
-					// prepare to locate surrounding units for selection
+					// prepare to locate surrounding units for unit_list
 					local_temp_box16_structure.left = *move_to_x;
 					local_temp_box16_structure.top = *move_to_y;
 					local_temp_box16_structure.right = *move_to_x + 640;
 					local_temp_box16_structure.bottom = *move_to_y + 400;
 
-					// save existing selection to a temporary array
+					// save existing unit_list to a temporary array
 					for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 					{
 						local_temp_array_2[i] = active_player_selection->unit[i];
 					}
 
-					// locate surrounding units for selection
+					// locate surrounding units for unit_list
 					units_in_bounds = helper::get_all_units_in_bounds(&local_temp_box16_structure);
 					sorted_list_length = sort_all_units(clicked_unit, local_temp_array_1, units_in_bounds);
 
@@ -365,9 +365,9 @@ namespace hooks
 					if (sorted_list_length != 0)
 					{
 						// 0046FCD4
-						// recombine current selection and newly selectable items in local_temp_array_2
+						// recombine current unit_list and newly selectable items in local_temp_array_2
 						u32 list_remixed_length = helper::combine_lists(clicked_unit, local_temp_array_1, local_temp_array_2, sorted_list_length);
-						// turn local_temp_array_2 as the newly applied selection
+						// turn local_temp_array_2 as the newly applied unit_list
 						helper::select_units_if_alt_not_held(local_temp_array_2, list_remixed_length, 1, 1);
 					}
 				}
@@ -375,9 +375,9 @@ namespace hooks
 				{
 					// 0046FCF6
 
-					// Shift + click while there's an existing selection (because hold on CTRL case was already dealt with so there's an existing selection at this point) add/remove unit from selection
+					// Shift + click while there's an existing unit_list (because hold on CTRL case was already dealt with so there's an existing unit_list at this point) add/remove unit from unit_list
 					s32 arrayIndex;
-					// copy the existing selection into the local array
+					// copy the existing unit_list into the local array
 					for (arrayIndex = 0; arrayIndex < SELECTION_ARRAY_LENGTH && active_player_selection->unit[arrayIndex]; arrayIndex++)
 					{
 						local_temp_array_1[arrayIndex] = active_player_selection->unit[arrayIndex];
@@ -386,7 +386,7 @@ namespace hooks
 					if (!(clicked_unit->sprite->flags & SpriteFlags::Selected))
 					{
 						// 0x0046FD13 (getting unit sprite) and 0x0046FD18 (middle of the test with the flag)
-						// unit not selected, so it's added to current selection if valid
+						// unit not it, so it's added to current unit_list if valid
 						if (arrayIndex < SELECTION_ARRAY_LENGTH
 							&& helper::unit_is_standard_and_movable(local_temp_array_1[0])
 							&& helper::unit_is_owned_by_current_player(local_temp_array_1[0])
@@ -397,14 +397,14 @@ namespace hooks
 							local_temp_array_1[arrayIndex] = clicked_unit;
 							arrayIndex++;
 
-							// turn local_temp_array_1 as the newly applied selection
+							// turn local_temp_array_1 as the newly applied unit_list
 							helper::select_units_if_alt_not_held(local_temp_array_1, arrayIndex, 1, 1);
 						}
 					}
 					else
 					{
 						// 0046FD77
-						// unit already selected, remove it from selection
+						// unit already it, remove it from unit_list
 						u32 memcpy_size;
 						bool bUpdateSelection = true;
 
@@ -424,7 +424,7 @@ namespace hooks
 							if (*IS_HOLDING_ALT)
 							{
 								// It seems you can unselect things with Shift+Alt like
-								// with shift alone, UNTIL you have 2 units selected.
+								// with shift alone, UNTIL you have 2 units it.
 								// It is the code below that is causing the
 								// deselection to fail where simple shift+click would
 								// continue to deselect.
@@ -438,8 +438,8 @@ namespace hooks
 
 						if (bUpdateSelection)
 						{
-							// Create a new unit selection (since the clicked unit is unselected)
-							// and choose it as current selection)
+							// Create a new unit unit_list (since the clicked unit is unselected)
+							// and choose it as current unit_list)
 							helper::create_new_unit_selections_from_list(local_temp_array_1, arrayIndex);
 							helper::cmdact_select(local_temp_array_1, arrayIndex);
 
@@ -464,7 +464,7 @@ namespace hooks
 			bool bRecreatedSelectionThroughAltClick = false;
 			if (*IS_HOLDING_ALT)
 			{
-				// Recall the selection the unit belong to if there's one
+				// Recall the unit_list the unit belong to if there's one
 				// In this case, skip the code for a single unit handling
 
 				u32 temp_unit_index = helper::unit_to_unit_id(clicked_unit);
@@ -477,7 +477,7 @@ namespace hooks
 			if (!bRecreatedSelectionThroughAltClick)
 			{
 				// 0046FBD1
-				// Create a new selection containing only the clicked unit
+				// Create a new unit_list containing only the clicked unit
 				helper::create_new_unit_selections_from_list(&clicked_unit, 1);
 				// play the sound of the unit (don't need to be a building)
 				helper::select_building_sfx(clicked_unit);
@@ -504,87 +504,92 @@ namespace hooks
 			}
 		}
 	}
+
+	static u32 filter_out_buildings(Unit** list, u32 unit_count, Unit** sample_list, u32 sample_count) {
+		bool has_buildings = false;
+		bool has_units = false;
+		for (u32 i = 0; i < sample_count; ++i) {
+			Unit* unit = sample_list[i];
+			if (!unit) {
+				break;
+			}
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+				has_buildings = true;
+			} else {
+				has_units = true;
+			}
+		}
+
+		u32 count = 0;
+		for (u32 i = 0; i < unit_count; ++i) {
+			Unit* unit = list[i];
+			if (!unit) {
+				break;
+			}
+			if ((has_units && has_buildings) || !has_units) {
+				if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+					list[count++] = unit;
+				}
+			} else if (!has_buildings) {
+				if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
+					list[count++] = unit;
+				}
+			}
+		}
+		return count;
+	}
 	
 	// Hooked to forbid buildings. -Pr0nogo
-	s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, char play_sound, u32 send_command) // 0049AEF0
-	{
-		Unit** selection_var = selection;
-		u32 unit_count_var = unit_count;
-		helper::create_new_unit_selections_from_list(selection, unit_count);
-		if (play_sound)
-		{
+	s32 select_multiple_units_from_unit_list(u32 count, Unit** unit_list, char play_sound, u32 send_command) { // 0049AEF0
+		if (*IS_HOLDING_SHIFT) {
+			count = filter_out_buildings(unit_list, count, active_player_selection->unit, SELECTION_ARRAY_LENGTH);
+		}
+		helper::create_new_unit_selections_from_list(unit_list, count);
+		if (play_sound) {
 			Unit* sfx_unit = 0;
-			if (unit_count > 0)
-			{
-				u32 unit_count_var_2 = unit_count;
-				do
-				{
-					Unit* unit_from_selection = *selection_var;
-					if (helper::compare_unit_rank(*selection_var, sfx_unit))
-					{
-						sfx_unit = unit_from_selection;
+			if (count) {
+				for (u32 i = 0; i < count; ++i) {
+					Unit* unit = unit_list[i];
+					if (helper::compare_unit_rank(unit, sfx_unit)) {
+						sfx_unit = unit;
 					}
-					++selection_var;
-					--unit_count_var_2;
-				} while (unit_count_var_2);
-				unit_count_var = unit_count;
-				selection_var = selection;
+				}
 			}
 			helper::select_building_sfx(sfx_unit);
 		}
-		if (send_command)
-		{
-			helper::cmdact_select(selection_var, unit_count_var);
+		if (send_command) {
+			helper::cmdact_select(unit_list, count);
 		}
-		u32 result = 1;
-		*control_under_mouse = 0;
-		*control_under_mouse_value = 0;
-		*client_selection_changed = 1;
-		*force_button_refresh = 1;
-		portrait_redraw[0] = 1;
-		*status_screen_redraw = 1;
-		return result;
+		scbw::refresh_console();
+		return 1;
 	}
 
 	// Hooked to forbid buildings. -Pr0nogo
-	u32 create_new_unit_selections_from_list(Unit** unit_list, u32 count) // 0049AE40
-	{
-		Unit** selected = (Unit**)active_player_selection->unit;
-		do
-		{
-			Unit* unit_from_selection = *selected;
-			if (!*selected)
-			{
+	u32 create_new_unit_selections_from_list(Unit** unit_list, u32 count) { // 0049AE40
+		count = filter_out_buildings(unit_list, count, unit_list, count);
+		for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+			Unit* unit = active_player_selection->unit[i];
+			if (!unit) {
 				break;
 			}
-			*selected = 0;
-			if (units_dat::BaseProperty[unit_from_selection->id] & UnitProperty::Subunit)
-			{
-				unit_from_selection = unit_from_selection->subunit;
+			active_player_selection->unit[i] = 0;
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
+				unit = unit->subunit;
 			}
-			helper::destroy_unit_selection(unit_from_selection);
-			++selected;
-		} while (selected < (Unit**)players_selections->unit);
-		u32 result = count;
-		Unit** unit_list_var = unit_list;
-		for (u32 i = 0; i < count; ++i)
-		{
-			Unit* unit_from_list = *unit_list_var;
-			*active_player_selection->unit[i] = **unit_list_var;
-			if (units_dat::BaseProperty[unit_from_list->id] & UnitProperty::Subunit)
-			{
-				helper::create_unit_selection(unit_from_list->subunit, i);
-				*active_player_selection->unit[i] = *unit_from_list->subunit;
-			}
-			else
-			{
-				helper::create_unit_selection(unit_from_list, i);
-			}
-			result = count;
-			*unit_list_var = active_player_selection->unit[i];
-			++unit_list_var;
+			helper::destroy_unit_selection(unit);
 		}
-		return result;
+		for (u32 i = 0; i < count; ++i) {
+			Unit* unit = unit_list[i];
+			active_player_selection->unit[i] = unit;
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
+				helper::create_unit_selection(unit->subunit, i);
+				active_player_selection->unit[i] = unit->subunit;
+				unit_list[i] = unit->subunit;
+			} else {
+				helper::create_unit_selection(unit, i);
+			}
+		}
+		return count;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo

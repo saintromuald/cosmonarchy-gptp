@@ -11962,8 +11962,8 @@ namespace helper
 		const u32 func_address = 0x0049A350;
 		__asm {
 			PUSHAD
-			MOV compare_unit, ESI
-			MOV unit, EDI
+			MOV ESI, compare_unit
+			MOV EDI, unit
 			CALL func_address
 			MOV result, AL
 			POPAD
