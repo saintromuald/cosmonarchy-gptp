@@ -62,7 +62,7 @@ namespace hooks
 	u32 btnscond_rally(u32 unused, u32 player, Unit* unit) // 00429520
 	{
 		*last_internal_error = 0;
-		if (orders_dat::RequirementsOffset[OrderId::RallyPoint2] == -1)
+		if (orders_dat::RequirementsOffset[OrderId::RallyPointToTile] == -1)
 		{
 			helper::parse_orders_dat_requirements();
 		}
@@ -92,8 +92,8 @@ namespace hooks
 				}
 				else
 				{
-					result = orders_dat::RequirementsOffset[OrderId::RallyPoint2];
-					if (orders_dat::RequirementsOffset[OrderId::RallyPoint2])
+					result = orders_dat::RequirementsOffset[OrderId::RallyPointToTile];
+					if (orders_dat::RequirementsOffset[OrderId::RallyPointToTile])
 					{
 						if (unit->id == UnitId::ZergCreepColony && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvalColony) // lame
 						{
@@ -101,7 +101,7 @@ namespace hooks
 						}
 						else
 						{
-							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPoint2, player, (u32)orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::RallyPoint2]);
+							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPointToTile, player, (u32)orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::RallyPointToTile]);
 						}
 					}
 					else
@@ -194,7 +194,7 @@ namespace hooks
 			}
 			result = next;
 		}
-		return 0; // used to return result, but it will always be 0. The return value is never used anyways. -Veeq7
+		return 0; // used to return order_id, but it will always be 0. The return value is never used anyways. -Veeq7
 	}
 
 	Unit* right_click_command(u32 x, u32 y, Unit *target, u32 fow_unit_id, char queued) // 004560D0
@@ -251,7 +251,7 @@ namespace hooks
 			u8 rightOrder = helper::get_right_click_order(order_type, unit, x, y, &target, fow_unit_id);
 			if (rightOrder != OrderId::Nothing2)
 			{
-				if (rightOrder == OrderId::RallyPoint1)
+				if (rightOrder == OrderId::RallyPointToVisibleUnit)
 				{
 					if (unit->is_factory())
 					{
@@ -269,7 +269,7 @@ namespace hooks
 				}
 				else if (unit != target)
 				{
-					if (rightOrder == OrderId::RallyPoint2)
+					if (rightOrder == OrderId::RallyPointToTile)
 					{
 						if (unit->is_factory() || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
 						{
@@ -365,12 +365,15 @@ namespace hooks
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	u32 order_acquire_generic_right_click_unit_proc_2(Unit* unit, u32 x_pos, u16 y_pos, Unit** target, u16 fow_unit_id) { // 00455E00
-		u32 result = OrderId::Nothing2;
-		if (unit->status & UnitStatus::GroundedBuilding || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
-			if (hooks::unit_can_rally(unit)) {
-				result = OrderId::RallyPoint2 - (*target != 0);
+		if (unit_can_rally(unit)) {
+			u32 order_id = OrderId::RallyPointToTile;
+			if (*target) {
+				order_id = OrderId::RallyPointToVisibleUnit;
 			}
-			return result;
+			return order_id;
+		}
+		if (unit->status & UnitStatus::GroundedBuilding) {
+			return OrderId::Nothing2;
 		}
 
 		Unit* target_unit = *target;
@@ -424,28 +427,18 @@ namespace hooks
 				unit->next_target_waypoint.x = x_move_target;
 				unit->next_target_waypoint.y = y_move_target;
 			}
-			if (unit->order_queue_head) {
-				unit->user_action_flags |= 1u;
-				helper::orders_nothing_2(unit);
-			} else if (unit->unit_ai) {
-				helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
-			} else {
-				helper::issue_order_targeting_nothing(unit, units_dat::ReturnToIdleOrder[unit->id]);
-			}
+			unit->order_to_idle();
 		} else {
 			if (right_click_order == 8) {
 				right_click_order = units_dat::AttackUnitOrder[unit->id];
 			}
 			if (helper::order_allowed(unit, right_click_order, unit->player) == 1) {
-				if (right_click_order == OrderId::RallyPoint1)
-				{
-					if (hooks::unit_can_rally(unit))
-					{
+				if (right_click_order == OrderId::RallyPointToVisibleUnit) {
+					if (hooks::unit_can_have_rally(unit)) {
 						helper::set_rally_unit(unit_in_point, unit);
 					}
-				} else if (right_click_order == OrderId::RallyPoint2) {
-					if (hooks::unit_can_rally(unit))
-					{
+				} else if (right_click_order == OrderId::RallyPointToTile) {
+					if (hooks::unit_can_have_rally(unit)) {
 						helper::set_rally_position(unit, x_pos, y_pos);
 					}
 				} else {
@@ -454,7 +447,7 @@ namespace hooks
 					} else {
 						helper::prepend_order_targeting_ground(right_click_order, x_pos, y_pos, unit);
 					}
-					helper::to_idle(unit);
+					unit->order_to_idle();
 				}
 			}
 		}
@@ -466,29 +459,27 @@ namespace hooks
 			return OrderId::Die;
 		}
 
-		u8 result = 0;
+		u8 order_id = OrderId::Die;
 		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
-			result = OrderId::PlayerGuard;
+			order_id = OrderId::PlayerGuard;
 		} else {
 			u8 right_click_order = units_dat::RightClickAction[unit->id];
-			if (!right_click_order) {
-				if (hooks::unit_can_rally(unit)) {
-					right_click_order = OrderId::Guard;
-				}
+			if (!right_click_order && hooks::unit_can_rally(unit)) {
+				right_click_order = OrderId::Guard;
 			}
-			result = right_click_order;
+			order_id = right_click_order;
 		}
 		if (unit->status & UnitStatus::IsHallucination) {
-			if (result == OrderId::TurretGuard || result == OrderId::BunkerGuard) {
-				result = OrderId::Stop;
+			if (order_id == OrderId::TurretGuard || order_id == OrderId::BunkerGuard) {
+				order_id = OrderId::Stop;
 			}
 		}
-		return result;
+		return order_id;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	void input_game_right_mouse_click(DialogEvent* dlg_event) { // 004564E0
-		if (!helper::is_outside_of_game_screen(dlg_event->current.x, dlg_event->current.y)) {
+	void input_game_right_mouse_click(DialogEvent* dialog_event) { // 004564E0
+		if (!helper::is_outside_of_game_screen(dialog_event->current.x, dialog_event->current.y)) {
 			u8 local_group_owner = local_selection_group[0] ? local_selection_group[0]->player : 255;
 			if (local_group_owner == *LOCAL_NATION_ID) {
 				if (*active_portrait_unit) {
@@ -506,8 +497,8 @@ namespace hooks
 							}
 						}
 						if (selection_iterator < SelectionCap) {
-							u32 find_x = *move_to_x + dlg_event->current.x;
-							u32 find_y = *move_to_y + dlg_event->current.y;
+							u32 find_x = *move_to_x + dialog_event->current.x;
+							u32 find_y = *move_to_y + dialog_event->current.y;
 							Unit* unit_at_point = helper::find_unit_at_point(find_x, find_y);
 							if (*client_selection_count != 1
 							|| *active_portrait_unit != unit_at_point
@@ -546,8 +537,8 @@ namespace hooks
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	u32 can_do_targeted_order(Unit* unit, u8 order_id) { // 0049A410
 		if (unit->status & UnitStatus::GroundedBuilding
-		&& (order_id == OrderId::RallyPoint1
-		||  order_id == OrderId::RallyPoint2
+		&& (order_id == OrderId::RallyPointToVisibleUnit
+		||  order_id == OrderId::RallyPointToTile
 		||  order_id == OrderId::Rechargeshields2
 		||  order_id == OrderId::Pickup3)) {
 			return 1;
@@ -557,7 +548,7 @@ namespace hooks
 		}
 		u8 right_click_order = units_dat::RightClickAction[unit->id];
 		if (!right_click_order) {
-			if (hooks::unit_can_rally(unit)) {
+			if (hooks::unit_can_have_rally(unit)) {
 				right_click_order = 2;
 			}
 		}
@@ -572,7 +563,7 @@ namespace hooks
 
 		char right_click_order = units_dat::RightClickAction[unit->id];
 		if (!right_click_order) {
-			if (hooks::unit_can_rally(unit)) {
+			if (hooks::unit_can_have_rally(unit)) {
 				return 2;
 			}
 		}
@@ -580,98 +571,77 @@ namespace hooks
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	s32 __stdcall btnscond_can_move_special_case(u32 buffer) { // 00428D40 - guessed arg name, unused
-		UnitsSel selected_units = *client_selection_group;
-		Unit* unit_from_selection = 0;
+	b32 __stdcall btnscond_can_move_special_case(u32 buffer) { // 00428D40 - guessed arg name, unused
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			unit_from_selection = selected_units.unit[i];
-			if (unit_from_selection) {
-				if (unit_from_selection->id == UnitId::ZergLakizilisk) {
-					if (unit_from_selection->status & UnitStatus::Burrowed) {
-						return 1;
+			Unit* unit = client_selection_group->unit[i];
+			if (unit) {
+				if (unit->id == UnitId::ZergLakizilisk) {
+					if (unit->status & UnitStatus::Burrowed) {
+						return true;
 					}
 				}
-				if (units_dat::RightClickAction[unit_from_selection->id]
-				||  unit_from_selection->status & UnitStatus::GroundedBuilding && unit_can_rally(unit_from_selection)) {
-					return 1;
+				if (units_dat::RightClickAction[unit->id]
+				||  unit->status & UnitStatus::GroundedBuilding && unit_can_rally(unit)) {
+					return true;
 				}
 			}
 		}
-		return 0;
+		return false;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	s32 __stdcall btnscond_can_move(u32 buffer) { // 00428DA0
-		Unit** selected_units = client_selection_group->unit;
-		Unit* unit_from_selection = 0;
+	b32 __stdcall btnscond_can_move(u32 buffer) { // 00428DA0
 		char right_click_order = 0;
 		bool another_pass = false;
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			unit_from_selection = selected_units[i];
-			if (!unit_from_selection) {
+			Unit* unit = client_selection_group->unit[i];
+			if (!unit) {
 				continue;
 			}
-			if (unit_from_selection->id == UnitId::ZergLakizilisk) {
-				if (unit_from_selection->status & UnitStatus::Burrowed) {
+			if (unit->id == UnitId::ZergLakizilisk) {
+				if (unit->status & UnitStatus::Burrowed) {
 					continue;
 				}
 			}
-			right_click_order = units_dat::RightClickAction[unit_from_selection->id];
+			right_click_order = units_dat::RightClickAction[unit->id];
 			if (right_click_order) {
 				if (right_click_order == OrderId::PlayerGuard) {
 					continue;
 				}
-				return 1;
+				return true;
 			}
-			if (unit_from_selection->status & UnitStatus::GroundedBuilding) {
-				if (unit_can_rally(unit_from_selection)) {
-					return true;
-				}
-				continue;
+			if (unit_can_rally(unit)) {
+				return true;
 			}
 		}
-		return 0;
+		return false;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	s32 __stdcall btnscond_can_attack(u32 buffer) // 00428F30
-	{
-		UnitsSel selected = *client_selection_group;
-		u32 i = 0;
-		while (1)
-		{
-			Unit* unit_from_selected = selected.unit[i];
-			if (unit_from_selected)
-			{
-				if (unit_from_selected->id == UnitId::ZergLakizilisk && unit_from_selected->status & UnitStatus::Burrowed
-				||  units_dat::RightClickAction[unit_from_selected->id]
-				||  unit_from_selected->status & UnitStatus::GroundedBuilding && unit_can_rally(unit_from_selected))
-				{
-					if (helper::ai_unit_can_attack(unit_from_selected))
-					{
-						break;
+	b32 __stdcall btnscond_can_attack(u32 buffer) { // 00428F30
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			Unit* unit = client_selection_group->unit[i];
+			if (unit) {
+				if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed
+				||  units_dat::RightClickAction[unit->id]
+				||  unit_can_rally(unit)) {
+					if (helper::ai_unit_can_attack(unit)) {
+						return true;
 					}
 				}
 			}
-			++i;
-			if (selected.unit[i] >= client_selection_group_end)
-			{
-				return 0;
-			}
 		}
-		return 1;
+		return false;
 	}
 	
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	s32 unit_can_move(Unit* unit) { // 00455660
+	b32 unit_can_move(Unit* unit) { // 00455660
 		u16 right_click_order = units_dat::RightClickAction[unit->id];
 		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
 			right_click_order = OrderId::PlayerGuard;
 		} else if (!right_click_order) {
-			if (unit->status & UnitStatus::GroundedBuilding) {
-				if (unit_can_rally(unit)) {
-					right_click_order = OrderId::Guard;
-				}
+			if (unit_can_rally(unit)) {
+				right_click_order = OrderId::Guard;
 			}
 		}
 		switch (right_click_order) {
@@ -680,10 +650,10 @@ namespace hooks
 			case 4:
 			case 5:
 			case 6: {
-				return 1;
+				return true;
 			} break;
 		}
-		return 0;
+		return false;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo

@@ -922,24 +922,15 @@ void Unit::issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviou
 }
 
 // Logically equivalent to function to_idle @ 0x004753A0
-void Unit::order_to_idle()
-{
+void Unit::order_to_idle() {
 	assert(this);
-	if (this->order_queue_head)
-	{
+	if (this->order_queue_head) {
 		this->user_action_flags |= 1;
 		prepare_for_next_order(this);
-	}
-	else
-	{
-		if (this->unit_ai)
-		{
-			this->order_to(OrderId::ComputerAI);
-		}
-		else
-		{
-			this->order_to(units_dat::ReturnToIdleOrder[this->id]);
-		}
+	} else if (this->unit_ai) {
+		this->order_to(OrderId::ComputerAI);
+	} else {
+		this->order_to(units_dat::ReturnToIdleOrder[this->id]);
 	}
 }
 

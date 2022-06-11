@@ -4812,7 +4812,7 @@ namespace helper
 	bool can_target_self(Unit* unit, u8 order_id)
 	{
 		bool return_value = false;
-		if (unit->status & UnitStatus::GroundedBuilding && (order_id == OrderId::RallyPoint1 || order_id == OrderId::RallyPoint2))
+		if (unit->status & UnitStatus::GroundedBuilding && (order_id == OrderId::RallyPointToVisibleUnit || order_id == OrderId::RallyPointToTile))
 		{
 			return_value = true;
 		}

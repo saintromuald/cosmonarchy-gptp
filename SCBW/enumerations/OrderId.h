@@ -82,9 +82,9 @@ enum Enum {
 					* Default Requirements: Unused. */
 	Train                  = 0x26, /**< Training Unit.
 					* Default Requirements: Unused. */
-	RallyPoint1            = 0x27, /**< Rally to Visible Unit. Causes units to follow the selected unit.
+	RallyPointToVisibleUnit= 0x27, /**< Rally to Visible Unit. Causes units to follow the selected unit.
 					* Default Requirements: Unit is able to set Rally Point. */
-	RallyPoint2            = 0x28, /**< Rally to tile.
+	RallyPointToTile       = 0x28, /**< Rally to tile.
 					* Default Requirements: Unit is able to set Rally Point. */
 	ZergBirth              = 0x29, /**< Unit is being born.
 					* Default Requirements: Unit must be Zerg Egg or Zerg Cocoon. */

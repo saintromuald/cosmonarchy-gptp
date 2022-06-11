@@ -294,7 +294,7 @@ namespace hooks
 			}
 			if (player == unit->player)
 			{
-				if (order_id == OrderId::RallyPoint1 || order_id == OrderId::RallyPoint2 || unit->status & UnitStatus::Completed)
+				if (order_id == OrderId::RallyPointToVisibleUnit || order_id == OrderId::RallyPointToTile || unit->status & UnitStatus::Completed)
 				{
 					if (unit->is_frozen())
 					{

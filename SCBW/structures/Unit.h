@@ -263,7 +263,8 @@ struct Unit : public UnitLayout
 	//  Issue the @p order to the unit, using the given @p target unit and specify if previous orders should be stopped
 	void issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviousOrders);
 
-	/// Causes the unit to become idle.
+	// Original documentation was a lie: Causes the unit to become idle.
+	// Finishes the current order and issues appropriate idle order if no order is in the queue.
 	void order_to_idle();
 
 	/// Issues a new order to the unit.

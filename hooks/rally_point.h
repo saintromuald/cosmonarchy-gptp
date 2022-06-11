@@ -22,10 +22,10 @@ namespace hooks
 	void input_game_right_mouse_click(DialogEvent* dlg_event);																// 004564E0
 	u32 can_do_targeted_order(Unit* unit, u8 order_id);																		// 0049A410
 	char get_right_click_action_order(Unit* unit);																			// 004E5EA0
-	s32 __stdcall btnscond_can_move_special_case(u32 buffer);																// 00428D40
-	s32 __stdcall btnscond_can_move(u32 buffer);																			// 00428DA0
-	s32 __stdcall btnscond_can_attack(u32 buffer);																			// 00428F30
-	s32 unit_can_move(Unit* unit);																							// 00455660
+	b32 __stdcall btnscond_can_move_special_case(u32 buffer);																// 00428D40
+	b32 __stdcall btnscond_can_move(u32 buffer);																			// 00428DA0
+	b32 __stdcall btnscond_can_attack(u32 buffer);																			// 00428F30
+	b32 unit_can_move(Unit* unit);																							// 00455660
 	void drone_build_execute(Unit* unit);																					// 0045D2E0
 
 	void inject_rally_hooks();

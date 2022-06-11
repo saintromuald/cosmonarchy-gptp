@@ -185,7 +185,7 @@ namespace hooks
 
 									jump_to_9aca9 = false;
 
-									if (*saved_order_3 == OrderId::RallyPoint1)
+									if (*saved_order_3 == OrderId::RallyPointToVisibleUnit)
 									{
 
 										Unit* target = unitParam;
@@ -204,7 +204,7 @@ namespace hooks
 									}
 
 									//9acdf
-									if (*saved_order_2 == OrderId::RallyPoint2)
+									if (*saved_order_2 == OrderId::RallyPointToTile)
 									{
 
 										loop_to_9ac0d = false;

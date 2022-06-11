@@ -144,12 +144,12 @@ namespace hooks
 	// Hooked for multi-building select. -Pr0nogo
 	void btnsact_rally_point(u32 xd) // 004244A0
 	{
-		*order_id_ground = OrderId::RallyPoint2;
-		*order_id_obstructed = OrderId::RallyPoint2;
+		*order_id_ground = OrderId::RallyPointToTile;
+		*order_id_obstructed = OrderId::RallyPointToTile;
 		bool network_table_1 = *network_table < 0x3Eu;
 		bool network_table_2 = *network_table == 62;
 		*is_targeting = 1;
-		*order_id_unit = OrderId::RallyPoint1;
+		*order_id_unit = OrderId::RallyPointToVisibleUnit;
 
 		const char* string = (const char*)(*network_table + network_table[63]);
 		if (network_table_1 || network_table_2)

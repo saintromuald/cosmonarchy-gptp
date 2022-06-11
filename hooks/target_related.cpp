@@ -404,7 +404,7 @@ LABEL_42:
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			if (unit->is_factory())
-				result = OrderId::RallyPoint2 - (target != 0);
+				result = OrderId::RallyPointToTile - (target != 0);
 			else
 				result = OrderId::Nothing2;
 			return result;
