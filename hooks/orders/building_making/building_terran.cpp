@@ -507,6 +507,17 @@ namespace hooks
 		}
 		return result;
 	}
+	
+	// Utility structure, so setting command buffer is easier
+#pragma pack(push, 1)
+	struct BuildCommand {
+		u8 id;
+		u8 order_id;
+		u16 tile_x;
+		u16 tile_y;
+		u16 unit_id;
+	};
+#pragma pack(pop)
 
 	// Hooked to allow instant addon placement. -Pr0nogo
 	void btnsact_place_addon(u8 unit_id, char* buffer) { // 00423D10
@@ -519,18 +530,22 @@ namespace hooks
 			if (helper::has_supplies_for_unit(player, unit_id, 1)) {
 				if (game_minerals[player] >= ai_minerals_reserve[player]) {
 					if (game_vespene[player] >= ai_gas_reserve[player]) {
+						helper::issue_place_building_order(buffer, unit_id, OrderId::PlaceAddon);
+
+						// For MBS this would essentially require custom game command, for now we just have to disable it :( -Veeq7
+						/*
 						if ((*IS_HOLDING_SHIFT || unit->status & UnitStatus::InAir) && *client_selection_count <= 1) {
 							helper::issue_place_building_order(buffer, unit_id, OrderId::PlaceAddon);
 						} else if (!(unit->status & UnitStatus::InAir)) {
-							u8 buffer[8] = {};
-							buffer[0] = 12;
-							buffer[1] = OrderId::PlaceAddon;
-							u16* buffer_u16 = (u16*)(buffer + 2);
-							buffer_u16[0] = unit->position.x;
-							buffer_u16[1] = unit->position.y;
-							buffer_u16[2] = unit_id;
-							helper::queue_game_command(buffer, sizeof(buffer));
+							BuildCommand command = {};
+							command.id = 12;
+							command.order_id = OrderId::PlaceAddon;
+							command.tile_x = (unit->position.x - units_dat::AddonPlacement[unit_id].x) / 32;
+							command.tile_y = (unit->position.y - units_dat::AddonPlacement[unit_id].y) / 32;
+							command.unit_id = unit_id;
+							helper::queue_game_command((u8*)&command, sizeof(command));
 						}
+						*/
 					} else if (!errored) {
 						errored = true;
 						helper::display_error_message_id_with_sfx(player, 851, console_index[150]);

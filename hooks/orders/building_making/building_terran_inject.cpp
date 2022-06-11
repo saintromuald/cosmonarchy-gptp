@@ -147,7 +147,7 @@ namespace hooks
 		jump_patch(orders_scv_build_2_wrapper,			0x00467A70, 1);
 		jump_patch(orders_scv_build_wrapper,			0x00467FD0, 0);
 	//	jump_patch(refresh_screen_wrapper,				0x0048DDC0, 4);
-		jump_patch(btnsact_place_addon_wrapper,			0x00423D10, 4);
+	//	jump_patch(btnsact_place_addon_wrapper,			0x00423D10, 4);
 
 	//	placementSimpleWrappers(); // bugged
 	}
