@@ -151,14 +151,16 @@ namespace hooks
 							for (u32 i = 0; i < count; i++)
 							{
 								Unit* newUnit = builtUnits[i];
-								helper::ai_training_unit(newUnit, unit);
-								if (built_unit->id == UnitId::TerranNuclearMissile)
-								{
-									helper::hide_and_disable_unit(newUnit);
-								}
-								else
-								{
-									helper::order_new_unit_to_rally(newUnit, unit);
+								if (newUnit) {
+									helper::ai_training_unit(newUnit, unit);
+									if (built_unit->id == UnitId::TerranNuclearMissile)
+									{
+										helper::hide_and_disable_unit(newUnit);
+									}
+									else
+									{
+										helper::order_new_unit_to_rally(newUnit, unit);
+									}
 								}
 							}
 							helper::function_00432430(unit, unit->build_queue_slot);
