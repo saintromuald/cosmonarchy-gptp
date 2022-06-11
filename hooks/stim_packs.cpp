@@ -18,7 +18,7 @@ namespace hooks
 
 		// original code used pointer comparison with client_selection_group_end
 		// and incrementing a pointer starting at client_selection_group
-		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH && !bFoundUnitAbleToStimpack; i++)
+		for (s32 i = 0; i < SelectionCap && !bFoundUnitAbleToStimpack; i++)
 		{
 			currentClientSelectionUnit = client_selection_group->unit[i];
 			if (currentClientSelectionUnit != nullptr &&

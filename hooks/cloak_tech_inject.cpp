@@ -211,7 +211,7 @@ namespace
 	b32 __cdecl currentUnitSelectionCanCloakWrapper()
 	{
 		RaceId::Enum race;
-		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i)
+		for (s32 i = 0; i < SelectionCap; ++i)
 		{
 			Unit* unit = client_selection_group->unit[i];
 			if (unit != nullptr)

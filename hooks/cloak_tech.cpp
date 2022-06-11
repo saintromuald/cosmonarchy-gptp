@@ -36,7 +36,7 @@ namespace hooks
 		Unit* unit_from_selection;
 
 
-		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH && (bReturnValue == TRUE); i++)
+		for (s32 i = 0; i < SelectionCap && (bReturnValue == TRUE); i++)
 		{
 
 			unit_from_selection = client_selection_group->unit[i];
@@ -77,7 +77,7 @@ namespace hooks
 		b32 bReturnValue = FALSE;
 		Unit* unit_from_selection;
 
-		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH && (bReturnValue == FALSE); i++)
+		for (s32 i = 0; i < SelectionCap && (bReturnValue == FALSE); i++)
 		{
 
 			unit_from_selection = client_selection_group->unit[i];

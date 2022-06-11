@@ -4,7 +4,7 @@
 namespace hooks
 {
 	/// Filter larvae out of a list of units
-	/// unitList contains various units (possibly including larvae) outputList is an empty list of 12 (SELECTION_ARRAY_LENGTH) slots to fill with larvae found_larvae in unitList.
+	/// unitList contains various units (possibly including larvae) outputList is an empty list of 12 (SelectionCap) slots to fill with larvae found_larvae in unitList.
 	u32 get_larvae_units_from_list(Unit** unit_list, Unit** output_list) { // 00423190
 		u32 count = 0;
 		for (Unit** it = unit_list; *it; ++it) {
@@ -21,7 +21,7 @@ namespace hooks
 
 				if (connected) {
 					output_list[count++] = unit;
-					if (count >= SELECTION_ARRAY_LENGTH) {
+					if (count >= SelectionCap) {
 						break;
 					}
 				}
@@ -34,7 +34,7 @@ namespace hooks
 	/// Like almost all button actions, a command is queued and broadcast to all players (happen in cmdact_select that happen in select_multiple_units_from_unit_list).
 	void BTSNACT_select_larva() { // 00423930
 		u32 count = 0;
-		Unit* selection[SELECTION_ARRAY_LENGTH] = {};
+		Unit* selection[SelectionCap] = {};
 
 		*unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
@@ -45,7 +45,7 @@ namespace hooks
 			coords.top = unit->sprite->position.y - 128;
 
 			Unit** units_in_bounds = helper::get_all_units_in_bounds(&coords);
-			Unit* found_larvae[SELECTION_ARRAY_LENGTH] = {};
+			Unit* found_larvae[SelectionCap] = {};
 
 			u32 temp = *unit_iterator_pos;
 			u32 found_count = get_larvae_units_from_list(units_in_bounds, found_larvae);
@@ -59,11 +59,11 @@ namespace hooks
 						goto skip;
 					}
 				}
-				if (count < SELECTION_ARRAY_LENGTH) {
+				if (count < SelectionCap) {
 					selection[count++] = found_larvae[i];
 				}
 			skip:
-				if (count >= SELECTION_ARRAY_LENGTH) {
+				if (count >= SelectionCap) {
 					goto exit;
 				}
 			}

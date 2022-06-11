@@ -26,7 +26,7 @@ namespace hooks
 
 		s32 return_value = BUTTON_ENABLED;
 
-		for (s32 i = 0; return_value == BUTTON_ENABLED && i < SELECTION_ARRAY_LENGTH; i++)
+		for (s32 i = 0; return_value == BUTTON_ENABLED && i < SelectionCap; i++)
 			if (client_selection_group->unit[i] != nullptr && client_selection_group->unit[i]->status & UnitStatus::Burrowed)
 				return_value = BUTTON_HIDDEN;
 
@@ -41,7 +41,7 @@ namespace hooks
 
 		s32 return_value = BUTTON_DISABLED;
 
-		for (s32 i = 0; return_value == BUTTON_DISABLED && i < SELECTION_ARRAY_LENGTH; i++)
+		for (s32 i = 0; return_value == BUTTON_DISABLED && i < SelectionCap; i++)
 			if (client_selection_group->unit[i] != nullptr &&
 				(client_selection_group->unit[i]->id == UnitId::Hero_Warbringer || client_selection_group->unit[i]->id == UnitId::ProtossAccantor) &&
 				client_selection_group->unit[i]->unit_with_hangar.in_hangar_count != 0

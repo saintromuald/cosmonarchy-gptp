@@ -10,7 +10,7 @@ namespace hooks
 		Unit* current_unit;
 		Unit* templar_stored;
 		Unit* templar_merge_partner;
-		Unit* templars_stored[SELECTION_ARRAY_LENGTH];
+		Unit* templars_stored[SelectionCap];
 		Unit** templars_stored_iterator;
 		s32 templars_stored_count;
 
@@ -21,7 +21,7 @@ namespace hooks
 			current_unit->canUseTech(TechId::DarkArchonMeld, *ACTIVE_NATION_ID) == 1)
 		{
 
-			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+			for (s32 i = 0; i < SelectionCap; i++)
 				templars_stored[i] = nullptr;
 
 			templars_stored_count = 0;
@@ -150,7 +150,7 @@ namespace hooks
 		Unit* current_unit;
 		Unit* templar_stored;
 		Unit* templar_merge_partner;
-		Unit* templars_stored[SELECTION_ARRAY_LENGTH];
+		Unit* templars_stored[SelectionCap];
 		Unit** templars_stored_iterator;
 		s32 templars_stored_count;
 
@@ -161,7 +161,7 @@ namespace hooks
 			current_unit->canUseTech(TechId::ArchonWarp, *ACTIVE_NATION_ID) == 1)
 		{
 
-			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+			for (s32 i = 0; i < SelectionCap; i++)
 				templars_stored[i] = nullptr;
 
 			templars_stored_count = 0;

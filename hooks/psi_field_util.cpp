@@ -144,7 +144,7 @@ namespace hooks
 		if (!(*is_placing_building))
 		{
 			Unit* selUnit;
-			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+			for (s32 i = 0; i < SelectionCap; i++)
 			{
 				selUnit = client_selection_group->unit[i];
 

@@ -182,8 +182,8 @@ namespace hooks
 							if (!dontAddToList)
 							{
 								// 0046F203
-								// 0x0046F208 (use of SELECTION_ARRAY_LENGTH)
-								if (current_index_in_unit_list >= SELECTION_ARRAY_LENGTH) // action when unit_list is full
+								// 0x0046F208 (use of SelectionCap)
+								if (current_index_in_unit_list >= SelectionCap) // action when unit_list is full
 								{
 									helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
 								}
@@ -274,15 +274,15 @@ namespace hooks
 		b8* const bCanUpdateStatDataDialog = (b8*)0x0068C1F8;
 		BinDlg** const someDialogUnknownUser = (BinDlg**)0x0068C1EC; // related to MouseOver? Usually someDialogUnknown->user if not 0 or -1
 
-		Unit* local_temp_array_1[SELECTION_ARRAY_LENGTH];	// used instead of an array starting from [EBP-3C]
-		Unit* local_temp_array_2[SELECTION_ARRAY_LENGTH];	// used instead of an array starting from [EBP-6C]
+		Unit* local_temp_array_1[SelectionCap];	// used instead of an array starting from [EBP-3C]
+		Unit* local_temp_array_2[SelectionCap];	// used instead of an array starting from [EBP-6C]
 
 		Box16 local_temp_box16_structure;	// used instead of using from [EBP-0C] to [EBP-06]
 
 		bool isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit =
 			*IS_HOLDING_CTRL || (*IS_DOUBLE_CLICKING && (clicked_unit->sprite->flags & SpriteFlags::Selected));
 
-		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+		for (s32 i = 0; i < SelectionCap; i++)
 		{
 			local_temp_array_1[i] = 0;
 		}
@@ -349,7 +349,7 @@ namespace hooks
 					local_temp_box16_structure.bottom = *move_to_y + 400;
 
 					// save existing unit_list to a temporary array
-					for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+					for (s32 i = 0; i < SelectionCap; i++)
 					{
 						local_temp_array_2[i] = active_player_selection->unit[i];
 					}
@@ -378,7 +378,7 @@ namespace hooks
 					// Shift + click while there's an existing unit_list (because hold on CTRL case was already dealt with so there's an existing unit_list at this point) add/remove unit from unit_list
 					s32 arrayIndex;
 					// copy the existing unit_list into the local array
-					for (arrayIndex = 0; arrayIndex < SELECTION_ARRAY_LENGTH && active_player_selection->unit[arrayIndex]; arrayIndex++)
+					for (arrayIndex = 0; arrayIndex < SelectionCap && active_player_selection->unit[arrayIndex]; arrayIndex++)
 					{
 						local_temp_array_1[arrayIndex] = active_player_selection->unit[arrayIndex];
 					}
@@ -387,7 +387,7 @@ namespace hooks
 					{
 						// 0x0046FD13 (getting unit sprite) and 0x0046FD18 (middle of the test with the flag)
 						// unit not it, so it's added to current unit_list if valid
-						if (arrayIndex < SELECTION_ARRAY_LENGTH
+						if (arrayIndex < SelectionCap
 							&& helper::unit_is_standard_and_movable(local_temp_array_1[0])
 							&& helper::unit_is_owned_by_current_player(local_temp_array_1[0])
 							&& helper::unit_is_standard_and_movable(clicked_unit)
@@ -542,7 +542,7 @@ namespace hooks
 	// Hooked to forbid buildings. -Pr0nogo
 	s32 select_multiple_units_from_unit_list(u32 count, Unit** unit_list, char play_sound, u32 send_command) { // 0049AEF0
 		if (*IS_HOLDING_SHIFT) {
-			count = filter_out_buildings(unit_list, count, active_player_selection->unit, SELECTION_ARRAY_LENGTH);
+			count = filter_out_buildings(unit_list, count, active_player_selection->unit, SelectionCap);
 		}
 		helper::create_new_unit_selections_from_list(unit_list, count);
 		if (play_sound) {
@@ -567,7 +567,7 @@ namespace hooks
 	// Hooked to forbid buildings. -Pr0nogo
 	u32 create_new_unit_selections_from_list(Unit** unit_list, u32 count) { // 0049AE40
 		count = filter_out_buildings(unit_list, count, unit_list, count);
-		for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = active_player_selection->unit[i];
 			if (!unit) {
 				break;
@@ -594,12 +594,12 @@ namespace hooks
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	void __stdcall get_selected_units_in_box(Box16* coords) { // 0046FA40
-		Unit* new_units[SELECTION_ARRAY_LENGTH] = {};
+		Unit* new_units[SelectionCap] = {};
 		Unit** found_units = helper::find_all_units(coords);
 		u32 sorted_units = helper::sort_all_units(found_units, new_units, 0);
 		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
 		if (sorted_units) {
-			for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+			for (u32 i = 0; i < SelectionCap; ++i) {
 				Unit* unit = new_units[i];
 				if (unit && unit->player == *ACTIVE_NATION_ID) {
 					if (hooks::unit_can_rally(unit)) {
@@ -610,7 +610,7 @@ namespace hooks
 			}
 
 			if (IS_KEYCODE_USED[16] && active_player_selection[0].unit) {
-				Unit* combined_units[SELECTION_ARRAY_LENGTH] = {};
+				Unit* combined_units[SelectionCap] = {};
 				memcpy(combined_units, active_player_selection, sizeof(UnitsSel));
 				u32 added_units = helper::combine_lists(0, new_units, combined_units, sorted_units);
 				helper::select_units_if_alt_not_held(combined_units, added_units, 1, 1);

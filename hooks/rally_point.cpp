@@ -494,18 +494,18 @@ namespace hooks
 				if (*active_portrait_unit) {
 					if (helper::unit_is_owned_by_current_player(*active_portrait_unit)) {
 						s32 selection_iterator = 0;
-						for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+						for (u32 i = 0; i < SelectionCap; ++i) {
 							Unit* selected_unit = *client_selection_group[selection_iterator].unit;
 							if (selected_unit) {
 								if (helper::accepts_right_click_commands(selected_unit)) {
 									break;
 								}
 							}
-							if (i == SELECTION_ARRAY_LENGTH - 1) {
+							if (i == SelectionCap - 1) {
 								return;
 							}
 						}
-						if (selection_iterator < SELECTION_ARRAY_LENGTH) {
+						if (selection_iterator < SelectionCap) {
 							u32 find_x = *move_to_x + dlg_event->current.x;
 							u32 find_y = *move_to_y + dlg_event->current.y;
 							Unit* unit_at_point = helper::find_unit_at_point(find_x, find_y);
@@ -515,7 +515,7 @@ namespace hooks
 								if (unit_at_point) {
 									goto exit;
 								}
-								for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+								for (u32 i = 0; i < SelectionCap; ++i) {
 									Unit* unit = client_selection_group->unit[i];
 									if (unit) {
 										if (helper::can_move(unit)) {
@@ -583,7 +583,7 @@ namespace hooks
 	s32 __stdcall btnscond_can_move_special_case(u32 buffer) { // 00428D40 - guessed arg name, unused
 		UnitsSel selected_units = *client_selection_group;
 		Unit* unit_from_selection = 0;
-		for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+		for (u32 i = 0; i < SelectionCap; ++i) {
 			unit_from_selection = selected_units.unit[i];
 			if (unit_from_selection) {
 				if (unit_from_selection->id == UnitId::ZergLakizilisk) {
@@ -602,49 +602,35 @@ namespace hooks
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	s32 __stdcall btnscond_can_move(u32 buffer) { // 00428DA0
-		UnitsSel selected_units = *client_selection_group;
+		Unit** selected_units = client_selection_group->unit;
 		Unit* unit_from_selection = 0;
-		u32 i = 0;
 		char right_click_order = 0;
 		bool another_pass = false;
-		while (1)
-		{
-			unit_from_selection = selected_units.unit[i];
-			if (!unit_from_selection)
-			{
-				goto LABEL_10;
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			unit_from_selection = selected_units[i];
+			if (!unit_from_selection) {
+				continue;
 			}
-			if (unit_from_selection->id == UnitId::ZergLakizilisk)
-			{
-				if (unit_from_selection->status & UnitStatus::Burrowed)
-				{
-					goto LABEL_10;
+			if (unit_from_selection->id == UnitId::ZergLakizilisk) {
+				if (unit_from_selection->status & UnitStatus::Burrowed) {
+					continue;
 				}
 			}
 			right_click_order = units_dat::RightClickAction[unit_from_selection->id];
-			if (right_click_order)
-			{
-				break;
+			if (right_click_order) {
+				if (right_click_order == OrderId::PlayerGuard) {
+					continue;
+				}
+				return 1;
 			}
-			if (unit_from_selection->status & UnitStatus::GroundedBuilding)
-			{
-				another_pass = unit_can_rally(unit_from_selection) == 0;
-				goto LABEL_9;
-			}
-		LABEL_10:
-			++i;
-			if (selected_units.unit[i] >= client_selection_group_end)
-			{
-				return 0;
+			if (unit_from_selection->status & UnitStatus::GroundedBuilding) {
+				if (unit_can_rally(unit_from_selection)) {
+					return true;
+				}
+				continue;
 			}
 		}
-		another_pass = right_click_order == OrderId::PlayerGuard;
-	LABEL_9:
-		if (another_pass)
-		{
-			goto LABEL_10;
-		}
-		return 1;
+		return 0;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo

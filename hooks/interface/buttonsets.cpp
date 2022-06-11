@@ -182,7 +182,7 @@ ButtonSet* getCustomButtonSet()
 namespace hooks {
 	static Unit* get_selected_unit() {
 		Unit* active = *active_portrait_unit;
-		for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = client_selection_group->unit[i];
 			if (unit && unit->status & UnitStatus::Completed) {
 				return unit;
@@ -215,7 +215,7 @@ namespace hooks {
 		active_button_set_id = active->current_button_set;
 		*BUTTONSET_CURRENT_BUTTONSETID = active_button_set_id;
 
-		for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) { // count units to know if will be using special group buttonset (peons, cloakables...)
+		for (u32 i = 0; i < SelectionCap; ++i) { // count units to know if will be using special group buttonset (peons, cloakables...)
 			Unit* selected = client_selection_group->unit[i];
 			if (selected) {
 				selected_button_set_id = selected->current_button_set;

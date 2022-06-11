@@ -124,7 +124,7 @@ SCBW_DATA(const char*, StringEmpty, 0x00501B7D);
 
 /// Units that are selected by the current player (or the player viewing the replay).
 struct UnitsSel {
-	Unit* unit[SELECTION_ARRAY_LENGTH];
+	Unit* unit[SelectionCap];
 };
 SCBW_DATA(UnitsSel*,	client_selection_group,		0x00597208);
 SCBW_DATA(Unit*,		client_selection_group_end, 0x00597238);
@@ -827,11 +827,11 @@ SCBW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x
 
 /// Selections of all players
 struct PlayersSel {
-	Unit* unit[PLAYABLE_PLAYER_COUNT][SELECTION_ARRAY_LENGTH];
+	Unit* unit[PLAYABLE_PLAYER_COUNT][SelectionCap];
 };
 SCBW_DATA(const PlayersSel*, players_selections, 0x006284E8);
 struct PlayerSel {
-	Unit* unit[SELECTION_ARRAY_LENGTH];
+	Unit* unit[SelectionCap];
 };
 SCBW_DATA(const PlayerSel*, CurrentUnitSelection, 0x006284B8);
 
