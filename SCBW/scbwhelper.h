@@ -1352,5 +1352,5 @@ namespace helper
 	char cmdact_right_click_order(Unit* target, u16 x_pos, u16 y_pos, u16 unit_id, u8 keycode_used);		// 004C0380
 	s32 show_right_click_error_if_needed(Unit* target);														// 00455A00
 	void play_worker_action_sound(Unit* unit);																// 0048F4D0
-	Unit** sort_all_units(Unit** units, Unit** units_2, Unit* unit);										// 0046F0F0
+	u32 sort_all_units(Unit** units, Unit** units_2, Unit* unit);										// 0046F0F0
 }

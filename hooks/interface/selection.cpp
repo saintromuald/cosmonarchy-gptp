@@ -1,5 +1,6 @@
 #include "selection.h"
 #include <SCBW/api.h>
+#include "hooks/rally_point.h"
 
 namespace hooks
 {
@@ -587,51 +588,35 @@ namespace hooks
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
-	void __stdcall get_selected_units_in_box(Box16* coords) // 0046FA40
-	{
-		Unit* new_unit = 0;
-		memset(&new_unit, 0, 0x30u);
+	void __stdcall get_selected_units_in_box(Box16* coords) { // 0046FA40
+		Unit* new_units[SELECTION_ARRAY_LENGTH] = {};
 		Unit** found_units = helper::find_all_units(coords);
-		Unit** sorted_units = helper::sort_all_units(found_units, &new_unit, 0);
-		u32 temp_units = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
-		*tempUnitsListCurrentArrayCount = temp_units;
-		if (sorted_units)
-		{
-			if (IS_KEYCODE_USED[16] && active_player_selection[0].unit)
-			{
-				Unit* combined = 0;
-				memcpy(&combined, active_player_selection, 0x30u);
-				u32 added_units = helper::combine_lists(combined, &new_unit, sorted_units, 0);
-				helper::select_units_if_alt_not_held(&combined, added_units, 1, 1);
+		u32 sorted_units = helper::sort_all_units(found_units, new_units, 0);
+		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
+		if (sorted_units) {
+			if (IS_KEYCODE_USED[16] && active_player_selection[0].unit) {
+				Unit* combined_units[SELECTION_ARRAY_LENGTH] = {};
+				memcpy(combined_units, active_player_selection, sizeof(UnitsSel));
+				u32 added_units = helper::combine_lists(0, new_units, combined_units, sorted_units);
+				helper::select_units_if_alt_not_held(combined_units, added_units, 1, 1);
 				return;
 			}
 
-			Unit* selected_unit = new_unit;
-			if (
-			//	sorted_units != 1 ||
-			!IS_KEYCODE_USED[18]
-			|| !helper::select_single_unit_from_id(helper::unit_to_unit_id(new_unit)))
-			{
-				helper::select_multiple_units_from_unit_list((u32)sorted_units, &new_unit, 1, 1);
-				/*
-				if (sorted_units != 1)
-				{
+			Unit** selected_units = new_units;
+			if (sorted_units != 1
+			|| !IS_KEYCODE_USED[18]
+			|| !helper::select_single_unit_from_id(helper::unit_to_unit_id(new_units[0]))) {
+				helper::select_multiple_units_from_unit_list((u32)sorted_units, new_units, 1, 1);
+				if (sorted_units != 1) {
 					return;
 				}
-				*/
-				selected_unit = new_unit;
+				selected_units = new_units;
 			}
 
-			if (selected_unit)
-			{
-				if (selected_unit->player == *ACTIVE_NATION_ID)
-				{
-					/*
-					if (helper::unit_can_rally(selected_unit))
-					{
-						helper::show_rally_target(selected_unit);
-					}
-					*/
+			Unit* first_selected = selected_units[0];
+			if (first_selected && first_selected->player == *ACTIVE_NATION_ID) {
+				if (hooks::unit_can_rally(first_selected)) {
+					helper::show_rally_target(first_selected);
 				}
 			}
 		}

@@ -12248,8 +12248,8 @@ namespace helper
 		}
 	}
 
-	Unit** sort_all_units(Unit** units, Unit** units_2, Unit* unit) {
-		static Unit** result;
+	u32 sort_all_units(Unit** units, Unit** units_2, Unit* unit) {
+		static u32 result;
 		const u32 func_address = 0x0046F0F0;
 		__asm {
 			PUSHAD
