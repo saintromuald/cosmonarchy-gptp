@@ -594,6 +594,16 @@ namespace hooks
 		u32 sorted_units = helper::sort_all_units(found_units, new_units, 0);
 		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
 		if (sorted_units) {
+			for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+				Unit* unit = new_units[i];
+				if (unit && unit->player == *ACTIVE_NATION_ID) {
+					if (hooks::unit_can_rally(unit)) {
+						helper::show_rally_target(unit);
+						break; // Currently the game doesn't support showing more than 1 rally thingy XD
+					}
+				}
+			}
+
 			if (IS_KEYCODE_USED[16] && active_player_selection[0].unit) {
 				Unit* combined_units[SELECTION_ARRAY_LENGTH] = {};
 				memcpy(combined_units, active_player_selection, sizeof(UnitsSel));
@@ -602,23 +612,12 @@ namespace hooks
 				return;
 			}
 
-			Unit** selected_units = new_units;
 			if (sorted_units != 1
 			|| !IS_KEYCODE_USED[18]
 			|| !helper::select_single_unit_from_id(helper::unit_to_unit_id(new_units[0]))) {
 				helper::select_multiple_units_from_unit_list((u32)sorted_units, new_units, 1, 1);
 				if (sorted_units != 1) {
 					return;
-				}
-				selected_units = new_units;
-			}
-
-			for (u32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
-				Unit* unit = selected_units[i];
-				if (unit && unit->player == *ACTIVE_NATION_ID) {
-					if (hooks::unit_can_rally(unit)) {
-						helper::show_rally_target(unit);
-					}
 				}
 			}
 		}
