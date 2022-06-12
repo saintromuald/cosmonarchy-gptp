@@ -43,10 +43,8 @@ namespace hooks
         return helper::unk_building_placement_related_mouse(0, 0);
     }
 
-    s32 update_placement_state_for_placement_box() // 0048DCE0
-    {
-        if (*active_portrait_unit == nullptr)
-        {
+    s32 update_placement_state_for_placement_box() { // 0048DCE0
+        if (!*active_portrait_unit) {
             return 0;
         }
 
@@ -59,16 +57,14 @@ namespace hooks
         s32 can_build = helper::can_build_on_tile_location(*active_portrait_unit, *placingPlayer, *placeBuildingX, *placeBuildingY, *placeBuildingUnitType, 1, 1, 0, 0);
         s32 result = helper::can_build_on_tile_location(*active_portrait_unit, *placingPlayer, addon_x, addon_y, *placeBuildBaseType, 0, 1, 0, 0);
         // ^ this call might be needed, even if the result isn't returned, untested
-        if (!*isPlacingAddon || can_build)
-        {
+        if (!*isPlacingAddon || can_build) {
             result = can_build;
         }
         return result;
     }
 
 	// Hooked to enable unit mover for human players. - Pr0nogo
-    s32 is_tile_blocked_by(Unit** unit_array, Unit* builder, s32 x_tile, s32 y_tile, s8 dont_ignore_reacting, s8 also_invisible) // 00473300
-    {
+    s32 is_tile_blocked_by(Unit** unit_array, Unit* builder, s32 x_tile, s32 y_tile, s8 dont_ignore_reacting, s8 also_invisible) { // 00473300
         for (Unit** it = unit_array; *it; ++it) {
             Unit* other_unit = *it;
             bool needs_detection = false;
@@ -83,19 +79,19 @@ namespace hooks
                 }
             }
             if ((!dont_ignore_reacting && other_unit->status & UnitStatus::IsBuilding)
-             || (needs_detection && !also_invisible)
-             || other_unit == builder
-             || other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir)
-             || other_unit->id == UnitId::Spell_DarkSwarm
-             || other_unit->id == UnitId::Spell_DisruptionWeb
-             || other_unit->sprite->flags & SpriteFlags::Hidden) {
+            ||  (needs_detection && !also_invisible)
+            ||   other_unit == builder
+            ||   other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir | UnitStatus::Burrowed)
+            ||   other_unit->id == UnitId::Spell_DarkSwarm
+            ||   other_unit->id == UnitId::Spell_DisruptionWeb
+            ||   other_unit->sprite->flags & SpriteFlags::Hidden) {
                 continue;
             }
 
             if (unitOrderingX[other_unit->finder_index.left  ].position < 32 * x_tile + 32
-             && unitOrderingX[other_unit->finder_index.right ].position > 32 * x_tile
-             && unitOrderingY[other_unit->finder_index.top   ].position < 32 * y_tile + 32
-             && unitOrderingY[other_unit->finder_index.bottom].position > 32 * y_tile) {
+            &&  unitOrderingX[other_unit->finder_index.right ].position > 32 * x_tile
+            &&  unitOrderingY[other_unit->finder_index.top   ].position < 32 * y_tile + 32
+            &&  unitOrderingY[other_unit->finder_index.bottom].position > 32 * y_tile) {
                 return needs_detection ? 1 : 4;
             }
         }
