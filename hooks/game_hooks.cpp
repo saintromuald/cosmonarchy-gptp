@@ -1572,7 +1572,6 @@ namespace hooks
 		// Cyclops - Flak Cannon Fuse
 		for (u32 fuse_timer : unitExt->timer_vectors[TimerVectorCyclopsFuse]) {
 			if (fuse_timer == 1) {
-				// Todo: make thingy
 				helper::create_thingy(SpriteId::FragmentaryExplosion, unit->get_x(), unit->get_y(), 11);
 				helper::play_sound_from_unit(scbw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
 				const u32 radius = 1.5 * 32;
