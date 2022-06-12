@@ -636,7 +636,7 @@ namespace hooks {
 				break;
 			}
 			if (unit->id == UnitId::ZergLarva) {
-				has_larva= true;
+				has_larva = true;
 			}
 		}
 

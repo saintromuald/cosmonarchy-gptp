@@ -46,14 +46,18 @@ namespace hooks
 				u32 count = source->unit_with_hangar.in_hangar_count;
 				for (u32 i = 0; i < count; ++i) {
 					Unit* plasma_shell = scbw::create_hangar_unit(unit, UnitId::ProtossPlasmaShell);
-					apply_hallucination(plasma_shell, unit);
+					if (plasma_shell) {
+						apply_hallucination(plasma_shell, unit);
+					}
 				}
 			}
 			if (unit->id == UnitId::ProtossSolarion) {
 				u32 count = source->unit_with_hangar.in_hangar_count + source->unit_with_hangar.out_hangar_count;
 				for (u32 i = 0; i < count; ++i) {
 					Unit* steward = scbw::create_hangar_unit(unit, UnitId::ProtossSteward);
-					apply_hallucination(steward, unit);
+					if (steward) {
+						apply_hallucination(steward, unit);
+					}
 				}
 			}
 		}
