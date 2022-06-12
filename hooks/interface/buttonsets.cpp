@@ -701,7 +701,7 @@ namespace hooks {
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched)
 					{
-						UnitExt* unitExt = globals.get_unit_ext(*active_portrait_unit);
+						UnitExt* unitExt = globals.get_unit_ext(unit);
 						// Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
 						if (current_button->requirement_var == TechId::ControlledDemolition)
 						{
