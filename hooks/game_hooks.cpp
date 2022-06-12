@@ -455,6 +455,10 @@ namespace hooks
 			}
 		}
 
+		if ((unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergGosvileth) && unit->status& UnitStatus::Completed) {
+			unit->morph_origin = unit->id;
+		}
+
 		switch (unit->id)
 		{
 			case UnitId::TerranReservoir:
