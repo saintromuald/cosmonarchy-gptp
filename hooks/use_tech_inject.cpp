@@ -83,7 +83,7 @@ namespace hooks
 	void inject_use_tech_hooks()
 	{
 		jump_patch(btnsact_use_tech_wrapper,		0x00423F70, 1);
-		jump_patch(upgrade_id_comparison_wrapper,	0x0046D5B8);
+		jump_patch(upgrade_id_comparison_wrapper,	0x0046D5B8, 0);
 		jump_patch(tech_use_allowed_wrapper,		0x0046DD80, 2);
 	}
 }

@@ -305,6 +305,7 @@ enum ExtTimerId
 	TimerTyrannyRecede,
 	TimerTalosAnimationSubtimer,
 	TimerTalosSoundLoopTimer,
+	TimerAddonAnimation,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

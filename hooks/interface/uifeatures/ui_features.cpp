@@ -87,7 +87,7 @@ namespace hooks
 			s32 y_pos = 3;
 			if (*leaderboard_dialog) {
 				// TODO: Get leaderboard width. Or actually just move the leaderboard down instead. This resolves issues with the test map.
-				x_pos = 70;
+				x_pos = 90;
 				y_pos = 0;
 			}
 			draw_text(buffer, x_pos, y_pos, 100, 15, 7);
