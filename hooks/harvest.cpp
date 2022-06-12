@@ -599,34 +599,21 @@ namespace hooks
 
 	// Hooked to investigate crashes. -Pr0nogo
 	void remove_harvesters(Unit* node) { // 00468770
-		Unit* next_gatherer = node->building.resource.next_gatherer;
 		node->building.resource.gather_queue_count = 0;
-		if (next_gatherer)
-		{
-			Unit* next_worker_2 = 0;
-			do
-			{
-				Unit* prev_worker = next_gatherer->worker.harvest_link.prev;
-				Unit* next_worker_1 = next_gatherer->worker.harvest_link.next;
-				next_worker_2 = next_gatherer->worker.harvest_link.next;
-				if (prev_worker)
-				{
-					prev_worker->worker.harvest_link.next = next_worker_1;
-				}
-				else
-				{
-					node->building.resource.next_gatherer = next_worker_1;
-				}
-				Unit* next_worker_3 = next_gatherer->worker.harvest_link.next;
-				if (next_worker_3)
-				{
-					next_worker_3->worker.harvest_link.prev = next_gatherer->worker.harvest_link.prev;
-				}
-				next_gatherer->worker.harvest_link.prev = 0;
-				next_gatherer->worker.harvest_link.next = 0;
-				next_gatherer->worker.harvest_target = 0;
-				next_gatherer = next_worker_2;
-			} while (next_worker_2);
+		for (Unit* worker = node->building.resource.next_gatherer; worker; worker = worker->worker.harvest_link.next) {
+			Unit* prev_worker = worker->worker.harvest_link.prev;
+			if (prev_worker) {
+				prev_worker->worker.harvest_link.next = prev_worker;
+			} else {
+				node->building.resource.next_gatherer = 0;
+			}
+			Unit* next_worker = worker->worker.harvest_link.next;
+			if (next_worker) {
+				next_worker->worker.harvest_link.prev = worker->worker.harvest_link.prev;
+			}
+			worker->worker.harvest_link.prev = 0;
+			worker->worker.harvest_link.next = 0;
+			worker->worker.harvest_target = 0;
 		}
 	}
 }
