@@ -782,7 +782,7 @@ namespace hooks
 		v1 = unit;
 		if (!(*bw_cheat_state & 0x800))
 		{
-			v2 = techdata_dat::EnergyCost[4] * 256;
+			v2 = techdata_dat::energy_cost[4] * 256;
 			v3 = v1->energy >= v2;
 			//			a2 = (Point32)(v1->energy < v2);		// check this out
 			if (!v3)
@@ -852,7 +852,7 @@ LABEL_15:
 			helper::play_sound_from_unit(388, v1, 1, 0);
 			if (!(*bw_cheat_state & 0x800))
 			{
-				v1->spend_unit_energy(techdata_dat::EnergyCost[4] * 256);
+				v1->spend_unit_energy(techdata_dat::energy_cost[4] * 256);
 			}
 			helper::to_idle(v1);
 		}

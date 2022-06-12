@@ -130,16 +130,16 @@ namespace hooks
 				unit->order_to_idle();
 			}
 		} else {
-			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::EnergyCost[TechId::Recall] * 256) {
+			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::energy_cost[TechId::Recall] * 256) {
 				u8 raceId = unit->get_race();
-				char* message = (char*)statTxtTblNew->getString(864 + raceId);	//"Not enough energy" text
+				char* message = (char*)statTxtTblNew->get_string(864 + raceId);	//"Not enough energy" text
 				if (message && unit->player == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID) {
 					helper::setUnitStatTxtErrorMsg(message);
 				}
 				unit->order_to_idle();
 			} else {
 				if (!scbw::is_cheat_enabled(CheatFlags::TheGathering)) {
-					unit->spend_unit_energy(techdata_dat::EnergyCost[TechId::Recall] * 256);
+					unit->spend_unit_energy(techdata_dat::energy_cost[TechId::Recall] * 256);
 				}
 
 				if (unit->order_target.unit) {

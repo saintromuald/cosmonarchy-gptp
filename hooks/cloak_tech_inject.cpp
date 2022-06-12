@@ -91,7 +91,7 @@ namespace
 		}
 
 		// original code is hardcoded instead of using a function like getCloakingTech
-		const u16 energyCost = techdata_dat::EnergyCost[hooks::getCloakingTech(unit)] * 256;
+		const u16 energyCost = techdata_dat::energy_cost[hooks::getCloakingTech(unit)] * 256;
 
 		if (scbw::is_cheat_enabled(CheatFlags::TheGathering) || unit->energy >= energyCost)
 		{
@@ -217,7 +217,7 @@ namespace
 			if (unit != nullptr)
 			{
 				if (scbw::is_cheat_enabled(CheatFlags::TheGathering)
-					|| unit->energy >= techdata_dat::EnergyCost[hooks::getCloakingTech(unit)] * 256)
+					|| unit->energy >= techdata_dat::energy_cost[hooks::getCloakingTech(unit)] * 256)
 				{
 					return true;
 				}

@@ -264,7 +264,7 @@ namespace
 		{
 			unit_id = unit->build_queue[unit->build_queue_slot];
 		}
-		return 100 * (units_dat::TimeCost[unit_id] - unit->remaining_build_time) / units_dat::TimeCost[unit_id];
+		return 100 * (units_dat::time_cost[unit_id] - unit->remaining_build_time) / units_dat::time_cost[unit_id];
 	}
 
 	// Inject @ 0x004669E0

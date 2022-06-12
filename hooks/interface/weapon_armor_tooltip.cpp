@@ -67,8 +67,8 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 	const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
 	// Get game strings
-	const char* entryName = statTxtTblNew->getString(entryStrIndex);
-	const char* damageStr = statTxtTblNew->getString(777);					//"Damage:"
+	const char* entryName = statTxtTblNew->get_string(entryStrIndex);
+	const char* damageStr = statTxtTblNew->get_string(777);					//"Damage:"
 //	const char* perRocketStr = statTxtTblNew->get_string(1301);				//"per rocket"
 	const char* typeName = "";
 
@@ -306,7 +306,7 @@ namespace hooks
 	// Returns the C-string for the tooltip text of the unit's weapon icon.
 	const char* getWeaponTooltipString(u8 weaponId, Unit* unit)
 	{
-		return getDamageTooltipString(weaponId, unit, weapons_dat::Label[weaponId]);
+		return getDamageTooltipString(weaponId, unit, weapons_dat::label[weaponId]);
 	}
 
 	static std::string timerToString(s32 timer)
@@ -388,9 +388,9 @@ namespace hooks
 
 		const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
-		const u16 labelId = upgrades_dat::Label[units_dat::ArmorUpgrade[unit->id]];
-		const char* armorUpgradeName = statTxtTblNew->getString(labelId);
-		const char* armorStr = statTxtTblNew->getString(778); // "Armor:"
+		const u16 labelId = upgrades_dat::label[units_dat::ArmorUpgrade[unit->id]];
+		const char* armorUpgradeName = statTxtTblNew->get_string(labelId);
+		const char* armorStr = statTxtTblNew->get_string(778); // "Armor:"
 
 		const u8 baseArmor = units_dat::ArmorAmount[unit->id];
 		const u8 unitSize = units_dat::SizeType[unit->id];
@@ -705,9 +705,9 @@ namespace hooks
 	// Returns the C-string for the tooltip text of the plasma shield icon.
 	const char* getShieldTooltipString(Unit* unit)
 	{
-		const u16 labelId = upgrades_dat::Label[UpgradeId::ProtossPlasmaShields];
-		const char* shieldUpgradeName = statTxtTblNew->getString(labelId);
-		const char* shieldStr = statTxtTblNew->getString(779); // "Shields:"
+		const u16 labelId = upgrades_dat::label[UpgradeId::ProtossPlasmaShields];
+		const char* shieldUpgradeName = statTxtTblNew->get_string(labelId);
+		const char* shieldStr = statTxtTblNew->get_string(779); // "Shields:"
 
 		u8 shieldUpgradeLevel = scbw::get_upgrade_level(unit->player, UpgradeId::ProtossPlasmaShields);
 
@@ -733,7 +733,7 @@ namespace hooks
 		}
 		if (iconUnitId == UnitId::TerranNuclearMissile)
 		{
-			return statTxtTblNew->getString(793);											// "Nukes"
+			return statTxtTblNew->get_string(793);											// "Nukes"
 		}
 		if (iconUnitId == UnitId::TerranSpiderMine && unit->id == UnitId::TerranVulture)
 		{

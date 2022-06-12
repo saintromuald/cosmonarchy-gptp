@@ -303,10 +303,10 @@ SCBW_DATA(u32*, unitsProducedOwnedTotal,		0x00581DE4); // Array of 12
 SCBW_DATA(u32*, placeBuildingMessageId,			0x00640958);
 SCBW_DATA(u16*, placeBuildingUnitId,			0x0064088A);
 
-// For targetedOrder
+// For targeted_order
 SCBW_DATA(u32*, COrderCount,					0x00641698);
 
-// For createUpgradeLevelTooltip
+// For create_upgrade_level_tooltip
 SCBW_DATA(u16*, upgradeLevelTooltip,			0x0068C1CC);
 SCBW_DATA(u16**, statTxtBuffer,					0x006D1238);
 
@@ -626,7 +626,7 @@ namespace units_dat {
 	//SCBW_DATA(u16*,		???,					unitsDat[39].address);	// 00662F88 // Portrait according to EUDDB
 	SCBW_DATA(u16*, mineral_cost, unitsDat[40].address);					// 00663888
 	SCBW_DATA(u16*, gas_cost, unitsDat[41].address);						// 0065FD00
-	SCBW_DATA(u16*, TimeCost, unitsDat[42].address);						// 00660428
+	SCBW_DATA(u16*, time_cost, unitsDat[42].address);						// 00660428
 	SCBW_DATA(u16*, unitsDat43, unitsDat[43].address);						// 00660A70 // "Restriction Address" according to EUDDB
 	SCBW_DATA(GroupFlag*, GroupFlags, unitsDat[44].address);				// 006637A0
 	SCBW_DATA(u8*, SupplyProvided, unitsDat[45].address);					// 006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
@@ -668,7 +668,7 @@ namespace sfx_dat {
 namespace weapons_dat {
 	SCBW_DATA(const DatLoad*, weaponsDat, 0x00513868);
 
-	SCBW_DATA(u16*, Label, weaponsDat[0].address);  // 006572E0
+	SCBW_DATA(u16*, label, weaponsDat[0].address);  // 006572E0
 	SCBW_DATA(u32*, FlingyId, weaponsDat[1].address);  // 00656CA8
 	SCBW_DATA(u8*, SpecialAttack, weaponsDat[2].address);  // 006573E8 //"Special Attack" according to EUDDB
 	SCBW_DATA(TargetFlag*, TargetFlags, weaponsDat[3].address);  // 00657998
@@ -698,7 +698,7 @@ namespace weapons_dat {
 #define MAX_WEAPONS 256
 namespace weapons_dat
 {
-	extern	u16			Label[MAX_WEAPONS];			
+	extern	u16			label[MAX_WEAPONS];			
 	extern	u32			FlingyId[MAX_WEAPONS];			
 	extern	u8			SpecialAttack[MAX_WEAPONS];	
 	extern	TargetFlag	TargetFlags[MAX_WEAPONS];		
@@ -735,7 +735,7 @@ namespace upgrades_dat {
 	SCBW_DATA(u16*, TimeCostFactor, upgradesDat[5].address);	//00655940
 	//SCBW_DATA(u16*, ???,              upgradesDat[6].address);	//006558C0	//Restriction Flags according to EUDDB
 	SCBW_DATA(u16*, UpgradeIcon, upgradesDat[7].address);	//00655AC0	//"Icon, cmdicons.grp frame" according to EUDDB
-	SCBW_DATA(u16*, Label, upgradesDat[8].address);	//00655A40
+	SCBW_DATA(u16*, label, upgradesDat[8].address);	//00655A40
 	SCBW_DATA(u8*, Race, upgradesDat[9].address);	//00655BFC
 	SCBW_DATA(u8*, MaxRepeats, upgradesDat[10].address);	//00655700
 	//SCBW_DATA(u8*, ???,				upgradesDat[11].address);	//00655B3C	//Brood War Flag according to EUDDB
@@ -744,23 +744,23 @@ namespace upgrades_dat {
 namespace techdata_dat {
 	SCBW_DATA(const DatLoad*, techdataDat, 0x005137D8);
 
-	SCBW_DATA(u16*, mineral_cost, techdataDat[0].address);	//00656248
-	SCBW_DATA(u16*, gas_cost, techdataDat[1].address);	//006561F0
-	SCBW_DATA(u16*, TimeCost, techdataDat[2].address);	//006563D8
-	SCBW_DATA(u16*, EnergyCost, techdataDat[3].address);	//00656380
-	//SCBW_DATA(u16*, ???,				techdataDat[4].address);	//00656198
-	//SCBW_DATA(u16*, ???,				techdataDat[5].address);	//006562F8	//Restriction Flags according to EUDDB
-	//SCBW_DATA(u16*, ???,				techdataDat[6].address);	//00656430	//"Icon, cmdicons.grp frame" according to EUDDB
-	SCBW_DATA(u16*, Label, techdataDat[7].address);	//006562A0
-	//SCBW_DATA(u8*, ???,				techdataDat[8].address);	//00656488	//Race according to EUDDB
-	//SCBW_DATA(u8*, ???,				techdataDat[9].address);	//00656350	//"Researched" according to EUDDB
-	//SCBW_DATA(u8*, ???,				techdataDat[10].address);	//006564B4	//Brood War Flag according to EUDDB
-} //techdata_dat (last entry at 0x00513850)
+	SCBW_DATA(u16*, mineral_cost,	techdataDat[0].address);	//00656248
+	SCBW_DATA(u16*, gas_cost,		techdataDat[1].address);	//006561F0
+	SCBW_DATA(u16*, time_cost,		techdataDat[2].address);	//006563D8
+	SCBW_DATA(u16*, energy_cost,	techdataDat[3].address);	//00656380
+//	//SCBW_DATA(u16*, ???,			techdataDat[4].address);	//00656198
+	SCBW_DATA(u16*, dep_index,		techdataDat[5].address);	//006562F8
+//	SCBW_DATA(u16*, ???,			techdataDat[6].address);	//00656430	// "Icon, cmdicons.grp frame" according to EUDDB
+	SCBW_DATA(u16*, label,			techdataDat[7].address);	//006562A0
+//	SCBW_DATA(u8*, ???,				techdataDat[8].address);	//00656488	// Race according to EUDDB
+//	SCBW_DATA(u8*, ???,				techdataDat[9].address);	//00656350	// "Researched" according to EUDDB
+//	SCBW_DATA(u8*, ???,				techdataDat[10].address);	//006564B4	// Brood War Flag according to EUDDB
+} // last entry at 0x00513850
 
 namespace orders_dat {
 	SCBW_DATA(const DatLoad*, ordersDat, 0x00513EC8);
 
-	SCBW_DATA(u16*, Label, ordersDat[0].address);	//00665280
+	SCBW_DATA(u16*, label, ordersDat[0].address);	//00665280
 	SCBW_DATA(u8*, UseWeaponTargeting, ordersDat[1].address);	//00664B00
 	//SCBW_DATA(u8*,	???,				ordersDat[2].address);	//00665940 //May be "secondary order" used for debug/assert only / "Order goes in bSecondaryOrderID instead of bMainOrderID." according to EUDDB
 	SCBW_DATA(u8*, Unused3, ordersDat[3].address);	//00665A00 //May be "Non-subunit" used for debug only
@@ -1034,6 +1034,9 @@ SCBW_DATA(Unit**,	local_selection_group,	0x0059724C);
 // For init_damage_overlay_counts
 SCBW_DATA(u8*,			building_overlay_state_max,		0x005240D0);
 SCBW_DATA(GrpHead**,	images_damage_overlay_graphic,	0x00520244);
+
+// To move in-game timer while leaderboard is active
+SCBW_DATA(BinDlg**,		leaderboard_dialog,				0x00597284);
 
 //////////////////////////////////////////////////////////////// @}
 

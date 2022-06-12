@@ -722,7 +722,7 @@ LABEL_32:
 				v4 = (s32)((unsigned __int64)(1717986919i64 * (units_dat::MaxShieldPoints[_type] << 8)) >> 0x20) >> 2;
 				v3 = v4 + (v4 >> 31);
 				a1->shields = v3;
-				v2 = units_dat::TimeCost[_type];
+				v2 = units_dat::time_cost[_type];
 				if (!v2
 					|| (v5 = (((u32)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (a1->build_repair_hp_gain = v5) == 0))
 				{

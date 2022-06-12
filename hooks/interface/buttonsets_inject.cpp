@@ -142,7 +142,7 @@ void __declspec(naked) get_stattxt_string_Wrapper()
 			stringId = 1634;
 		}
 	}
-	message = (char*)statTxtTblNew->getString(stringId);
+	message = (char*)statTxtTblNew->get_string(stringId);
 	__asm {
 		POPAD
 		MOV EAX, message

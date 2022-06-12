@@ -420,13 +420,14 @@ namespace helper
 	bool place_building_message(u32 result_function_473FB0);																		// 0048D930
 	bool CMDRECV_place_building_allowed(Unit* unit, u8 order_id, u16 builtUnitId);													// 0048DBD0
 	void function_0048DE70(Unit* unit, u32 order_id, u16 dimensionX, u16 dimensionY, u32 builtUnitId);								// 0048DE70
-	void CMDRECV_place_building(s16 x, s16 y, u8 order_id, u16 builtUnitId);															// 0048E190
+	void CMDRECV_place_building(s16 x, s16 y, u8 order_id, u16 builtUnitId);														// 0048E190
 
 	//// CMDRECV_MergeArchon
 	Unit* templar_merge_partner(Unit* unit, Unit** units_list, u32 units_list_length);												// 004BFA80
 
 	//// CMDRECV_Stop
 	void parse_orders_dat_requirements();																							// 0046D450
+	u16* parse_tech_dat_requirements();																								// 0046D4C0
 	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 playerId, u32 address, u32 req_offset);								// 0046D610
 
 	//// give_unit
@@ -454,7 +455,7 @@ namespace helper
 	void increment_unit_death_scores(Unit* unit, u8 player);																		// 00488AF0
 	void initialize_empty_unit_linked_list_references(Unit* unit, u8 playerId);														// 0049E4E0
 	void give_unit_helper(Unit* unit, u32 playerId, s32 unkScore);																	// 0049EFA0
-	void change_unit_buttonset(Unit* unit, u16 unit_id);																				// 004E5D60
+	void change_unit_buttonset(Unit* unit, u16 unit_id);																			// 004E5D60
 	void show_and_enable_unit(Unit* unit);																							// 004E6490
 
 	//// tech_target_check
@@ -524,7 +525,7 @@ namespace helper
 	// for CMDRECV_HoldPosition
 	Unit* get_active_player_next_selection();																						// 0049A850
 	s32 order_allowed(Unit* a1, u16 a2, s32 a3);																					// 0046DC20
-	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
+	void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
 
 	// for check_unit_visibility
 	u32 get_detecting_players(Unit* unit);																							// 00441130
@@ -555,7 +556,7 @@ namespace helper
 	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId);																	// 00425790
 	bool StatSpidermineCount(BinDlg* dialog, u32 index);																			// 00426300
 
-	// For get_unit_rank_string and checkHotkeyChar
+	// For get_unit_rank_string and check_hotkey_char
 	__int8 unitGetRace(Unit* a1);																									// 0047B150
 	char* getStatTxtString(u16 a1);																									// 004C36F0
 
@@ -799,21 +800,21 @@ namespace helper
 
 	//// uifeatures
 
-	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y);
-	s32 GetColorHandle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
+	s32 bwfxn_print_xy(const char* text, s32 x, s32 y);
+	s32 get_color_handle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
 
-	// For targetedOrder
+	// For targeted_order
 	Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9);		// 00474B90
 	s32 show_stat_txt_to_player(s32 a1, s32 a2);																	// 0048CF00
 	void set_order_target(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vector32* a8, Unit* a9);		    // 00475470
 
-	// For selectUnits
+	// For select_units
 	s32 select_single_unit_from_id(s32 index);																		// 00496D30
 	s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, char play_sound, u32 send_command);	// 0049AEF0
-	s32 SNetGetTurnsInTransit(u32* turns);
-	u8 sendTurn();
-	s32 SErrGetLastError();
-	u8 packetErrHandle(s32 result, s32 a1, const char* a3, s32 a4, s32 a5);
+	s32 snet_get_turns_in_transit(u32* turns);
+	u8 send_turn();
+	s32 serr_get_last_error();
+	u8 packet_error_handle(s32 result, s32 a1, const char* a3, s32 a4, s32 a5);
 
 	//// repair_order
 
@@ -884,8 +885,8 @@ namespace helper
 	void applyCloakingOrder(Unit* unit);																	// 00491B30
 
 	//// use_tech
-	const void issueTriTargetOrder(u8 order1, u8 order2, u8 order3);										// 0048CAF0
-	s32 checkEnergyForTechUse(s32 tech_id);																	// 00423660
+	const void issue_tri_target_order(u8 order1, u8 order2, u8 order3);										// 0048CAF0
+	s32 check_energy_for_tech_use(s32 tech_id);																	// 00423660
 
 	//// pathfinding
 	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, s32 position_xy);							// 004EB720
@@ -897,7 +898,7 @@ namespace helper
 	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target);											// 00476430
 	s32 moveForMeleeRange(Unit* target, Unit* unit);
 
-	// For createUpgradeLevelTooltip
+	// For create_upgrade_level_tooltip
 	s16 create_tooltip(char* text);																			// 004591A6
 	char refresh_selection_screen();																		// 00481480
 
@@ -1344,7 +1345,7 @@ namespace helper
 	void set_rally_unit(Unit* factory, Unit* target);														// 00466B40
 	void set_rally_position(Unit* factory, u16 x_pos, u16 y_pos);											// 00466B40
 
-	s32 is_outside_of_game_screen(u32 current_x, u32 current_y);															// 004D1140
+	s32 is_outside_of_game_screen(u32 current_x, u32 current_y);											// 004D1140
 	bool accepts_right_click_commands(Unit* unit);															// 004556D0
 	Unit* find_unit_at_point(u32 x_pos, u32 y_pos);															// 0046F3A0
 	s32 can_move(Unit* unit);																				// 00455660
@@ -1352,5 +1353,7 @@ namespace helper
 	char cmdact_right_click_order(Unit* target, u16 x_pos, u16 y_pos, u16 unit_id, u8 keycode_used);		// 004C0380
 	s32 show_right_click_error_if_needed(Unit* target);														// 00455A00
 	void play_worker_action_sound(Unit* unit);																// 0048F4D0
-	u32 sort_all_units(Unit** units, Unit** units_2, Unit* unit);										// 0046F0F0
+	u32 sort_all_units(Unit** units, Unit** units_2, Unit* unit);											// 0046F0F0
+
+	char tech_is_researched_bw(u32 player, u16 tech_id);													// 004CE8A0
 }

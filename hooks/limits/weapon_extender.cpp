@@ -2,7 +2,7 @@
 #include "hook_tools.h"
 
 /*
-u16*,		Label,				weaponsDat[0].address);  // 006572E0
+u16*,		label,				weaponsDat[0].address);  // 006572E0
 u32*,		FlingyId,			weaponsDat[1].address);  // 00656CA8
 u8*,		SpecialAttack,		weaponsDat[2].address);  // 006573E8 //"Special Attack" according to EUDDB
 TargetFlag*,TargetFlags,		weaponsDat[3].address);  // 00657998
@@ -55,7 +55,7 @@ patchWeaponDat(0, 0x0051397C, PatchIcon);						  DATStruct <offset weaponsdat_ic
 
 namespace weapons_dat
 {
-	u16			Label[MAX_WEAPONS];			
+	u16			label[MAX_WEAPONS];			
 	u32			FlingyId[MAX_WEAPONS];			
 	u8			SpecialAttack[MAX_WEAPONS];	
 	TargetFlag	TargetFlags[MAX_WEAPONS];		
@@ -116,7 +116,7 @@ static inline void patchWeaponDat(u32 opcodeSize, u32 address, u32 patchType)
 {
 	const void* patches[] =
 	{
-		weapons_dat::Label,				
+		weapons_dat::label,				
 		weapons_dat::FlingyId,			
 		weapons_dat::SpecialAttack,		
 		weapons_dat::TargetFlags,		

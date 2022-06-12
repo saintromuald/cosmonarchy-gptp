@@ -3848,6 +3848,18 @@ namespace helper
 		}
 	}
 
+	u16* parse_tech_dat_requirements() {
+		const u32 func_address = 0x0046D4C0;
+		static u16* result;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 playerId, u32 address, u32 req_offset)
 	{
 		const u32 Func_parseRequirementOpcodes = 0x0046D610;
@@ -4660,7 +4672,7 @@ namespace helper
 		return result;
 	}
 
-	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10)
+	void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10)
 	{
 		const u32 Func_targetedOrder = 0x004754F0;
 		__asm {
@@ -6818,7 +6830,7 @@ namespace helper
 		return larvaeList_Count;
 	}
 
-	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y)
+	s32 bwfxn_print_xy(const char* text, s32 x, s32 y)
 	{
 		const u32 BWFXN_PrintXY_function = 0x004202B0;
 		static s32 result;
@@ -6834,7 +6846,7 @@ namespace helper
 		return result;
 	}
 
-	s32 GetColorHandle(u8 color)
+	s32 get_color_handle(u8 color)
 	{
 		const u32 GetColorHandle_function = 0x0041F610;
 		static s32 result;
@@ -6848,7 +6860,7 @@ namespace helper
 		return result;
 	}
 
-	// For targetedOrder
+	// For targeted_order
 
 	Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9)
 	{
@@ -6906,7 +6918,7 @@ namespace helper
 		}
 	}
 
-	// For selectUnits
+	// For select_units
 
 	s32 select_single_unit_from_id(s32 index)
 	{
@@ -6940,7 +6952,7 @@ namespace helper
 		return result;
 	}
 
-	s32 SNetGetTurnsInTransit(u32* turns)
+	s32 snet_get_turns_in_transit(u32* turns)
 	{
 		const u32 SNetGetTurnsInTransit_function = 0x00410275;
 		static s32 result;
@@ -6954,7 +6966,7 @@ namespace helper
 		return result;
 	}
 
-	u8 sendTurn()
+	u8 send_turn()
 	{
 		const u32 sendTurn_function = 0x00485A40;
 		static u32 result;
@@ -6967,7 +6979,7 @@ namespace helper
 		return result;
 	}
 
-	s32 SErrGetLastError()
+	s32 serr_get_last_error()
 	{
 		const u32 SErrGetLastError_function = 0x004100FA;
 		static s32 result;
@@ -6980,7 +6992,7 @@ namespace helper
 		return result;
 	}
 
-	u8 packetErrHandle(s32 result_arg, s32 a1, const char* a3, s32 a4, s32 a5)
+	u8 packet_error_handle(s32 result_arg, s32 a1, const char* a3, s32 a4, s32 a5)
 	{
 		const u32 packetErrHandle_function = 0x004BB0B0;
 		static u32 result;
@@ -7768,7 +7780,7 @@ namespace helper
 	}
 
 	// For use_tech
-	const void issueTriTargetOrder(u8 order1, u8 order2, u8 order3)
+	const void issue_tri_target_order(u8 order1, u8 order2, u8 order3)
 	{
 		const u32 Func_TriTargetOrder = 0x0048CAF0;
 		if (order2 == 0)
@@ -7812,7 +7824,7 @@ namespace helper
 		}
 	}
 
-	s32 checkEnergyForTechUse(s32 tech_id)
+	s32 check_energy_for_tech_use(s32 tech_id)
 	{
 		const s32 techUseFunc = 0x00423660;
 		static s32 result;
@@ -12258,6 +12270,20 @@ namespace helper
 			PUSH units
 			CALL func_address
 			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char tech_is_researched_bw(u32 player, u16 tech_id) {
+		static char result;
+		const u32 func_address = 0x004CE8A0;
+		__asm {
+			PUSHAD
+			MOV CX, tech_id
+			MOV EAX, player
+			CALL func_address
+			MOV result, AL
 			POPAD
 		}
 		return result;

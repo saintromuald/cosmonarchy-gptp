@@ -5,7 +5,7 @@
 
 namespace
 {
-	void __declspec(naked) UseTechWrapper()
+	void __declspec(naked) btnsact_use_tech_wrapper() // 00423F70
 	{
 		static u16 id;
 		static GrpHead* grphead;
@@ -16,7 +16,7 @@ namespace
 			PUSHAD
 		}
 		// grphead framecount (1-9) is button number in command card
-		hooks::BTNSACT_UseTech(id, grphead);
+		hooks::btnsact_use_tech(id, grphead);
 		__asm
 		{
 			POPAD
@@ -26,7 +26,7 @@ namespace
 
 	const u32 Hook_Jump_SkipUpgradeOp = 0x0046D5CC;
 	const u32 Hook_Jump_UpgradeFunctionality = 0x0046D5BE;
-	void __declspec(naked) UpgradeIdComparison_Wrapper()
+	void __declspec(naked) upgrade_id_comparison_wrapper()
 	{
 		// EDX (0xffff), CX (firegraft shift), EAX (1)
 		static u32 edx_0xffff;
@@ -53,13 +53,37 @@ namespace
 			}
 		}
 	}
+
+	void __declspec(naked) tech_use_allowed_wrapper() { // 0046DD80
+		static u32 result;
+		static Unit* unit;
+		static u16 tech_id;
+		static u32 player;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			POP EAX
+			MOV tech_id, DI
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::tech_use_allowed(unit, tech_id, player);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
 {
-	void injectUseTechHooks()
+	void inject_use_tech_hooks()
 	{
-		jump_patch(UseTechWrapper,				0x00423F70);
-		jump_patch(UpgradeIdComparison_Wrapper,	0x0046D5B8);
+		jump_patch(btnsact_use_tech_wrapper,		0x00423F70, 1);
+		jump_patch(upgrade_id_comparison_wrapper,	0x0046D5B8);
+		jump_patch(tech_use_allowed_wrapper,		0x0046DD80, 2);
 	}
 }

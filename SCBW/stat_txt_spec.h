@@ -11,7 +11,7 @@ struct StatTxtStringTbl
 	{
 		return *extendedBuffer;
 	}
-	const char* getString(u32 index) const
+	const char* get_string(u32 index) const
 	{
 		if (globals.tbl_extender)
 		{

@@ -223,7 +223,7 @@ namespace hooks
 					}
 					helper::change_unit_buttonset(unit, unit->id);
 					
-					unit->remaining_build_time = units_dat::TimeCost[unit->build_queue[unit->build_queue_slot]];
+					unit->remaining_build_time = units_dat::time_cost[unit->build_queue[unit->build_queue_slot]];
 					unit->main_order_state = 1;
 					auto origin = unit->egg_origin;
 					IscriptAnimation::Enum animation = IscriptAnimation::Init;

@@ -15,7 +15,7 @@ namespace hooks
 		||	(order_target && hooks::canTargetSpell(techId, order_target, 228, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
 		{
 			char cheatFlags = *bw_cheat_state;
-			u16 techCost = techdata_dat::EnergyCost[techId] << 8;
+			u16 techCost = techdata_dat::energy_cost[techId] << 8;
 			*energyCost = techCost;
 			if ((cheatFlags & 8 || caster->energy >= techCost))
 			{
@@ -232,7 +232,7 @@ namespace hooks
 		{
 			if (!helper::can_cast_spell(unit))
 			{
-				char* message = (char*)statTxtTblNew->getString(876); // Invalid target
+				char* message = (char*)statTxtTblNew->get_string(876); // Invalid target
 				// do the actual transmission corresponding to the message
 				helper::get_stat_txt_string(unit, unit->player, message);
 				// make the unit stop since the order failed
@@ -249,14 +249,14 @@ namespace hooks
 				}
 				else
 				{
-					spellCost = techdata_dat::EnergyCost[techUsed] * 256;
+					spellCost = techdata_dat::energy_cost[techUsed] * 256;
 				}
 
 				if (!(*bw_cheat_state & CheatFlags::TheGathering) &&
 					unit->energy < spellCost)
 				{
 					u8 raceId = unit->get_race();
-					char* message = (char*)statTxtTblNew->getString(864 + raceId); // Not enough energy
+					char* message = (char*)statTxtTblNew->get_string(864 + raceId); // Not enough energy
 					if (message != nullptr)
 					{
 						// display an error message only for the owner of the unit

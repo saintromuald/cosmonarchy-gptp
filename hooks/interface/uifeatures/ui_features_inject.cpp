@@ -10,7 +10,7 @@ namespace
 		_asm {
 			PUSHAD
 		}
-		hooks::drawUIFeatures();
+		hooks::draw_ui_features();
 		_asm {
 			POPAD
 			CALL SetFontHandle
@@ -72,7 +72,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		hooks::targetedOrder(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
+		hooks::targeted_order(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -101,7 +101,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		hooks::selectUnits(a1, a2, a3, a4);
+		hooks::select_units(a1, a2, a3, a4);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -122,7 +122,7 @@ namespace
 			MOV hotkey, EDX
 			PUSHAD
 		}
-		result = hooks::checkHotkeyChar(dialog, *hotkey);
+		result = hooks::check_hotkey_char(dialog, *hotkey);
 		__asm
 		{
 			POPAD
@@ -141,7 +141,7 @@ namespace
 			MOV text, ECX
 			PUSHAD
 		}
-		result = hooks::createUpgradeLevelTooltip(text);
+		result = hooks::create_upgrade_level_tooltip(text);
 		__asm
 		{
 			POPAD

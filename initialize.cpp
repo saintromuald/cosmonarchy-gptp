@@ -563,7 +563,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectWeaponFireHooks();
 	hooks::injectUnitDestructorSpecial();
 	hooks::injectWeaponEffectHook();
-	hooks::injectUseTechHooks();
+	hooks::inject_use_tech_hooks();
 	hooks::inject_psi_field_hooks();
 
 	hooks::injectArmorBonusHook();

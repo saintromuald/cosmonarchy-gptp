@@ -475,7 +475,7 @@ namespace hooks
 							UnitExt* targetExt = globals.get_unit_ext(target);
 							targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
 							
-							u32 time = units_dat::TimeCost[target->id] / 2;
+							u32 time = units_dat::time_cost[target->id] / 2;
 							targetExt->salvage_time += 1;
 							
 							targetExt->salvage_minerals += (f32)units_dat::mineral_cost[target->id] / time;
@@ -759,7 +759,7 @@ namespace hooks
 					scbw::decloak_proc(unit);
 					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 0);
 					// Cast Lazarus Agent						
-					unit->spend_unit_energy(techdata_dat::EnergyCost[TechId::ApostleLazarusAgent] * 256);
+					unit->spend_unit_energy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256);
 					auto r = 4 * 32;
 					auto n = cosmonarchy_finder_match(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar, {});
 					scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r,
@@ -1076,7 +1076,7 @@ namespace hooks
 						targetExt->timers[TimerEnsnaringBrood] = 12 * 24;
 						target->sprite->create_top_overlay(ImageId::EnsnaringBroodOverlay);
 					});
-					unit->spend_unit_energy(techdata_dat::EnergyCost[TechId::MatralethEnsnaringBrood] * 256);
+					unit->spend_unit_energy(techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256);
 				}
 			} break;
 			case UnitId::ProtossClarion:

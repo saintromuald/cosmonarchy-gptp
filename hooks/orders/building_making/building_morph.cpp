@@ -60,7 +60,7 @@ namespace hooks
 
 		if (building->main_order_state == 0)
 		{
-			if (building->remaining_build_time < (units_dat::TimeCost[buildingId] * 3 / 4))
+			if (building->remaining_build_time < (units_dat::time_cost[buildingId] * 3 / 4))
 			{
 				building->main_order_state = 1;
 			}
@@ -111,7 +111,7 @@ namespace hooks
 		}
 		else if (building->main_order_state == 2)
 		{ // 0045D5E2
-			if (building->remaining_build_time < units_dat::TimeCost[buildingId] / 2)
+			if (building->remaining_build_time < units_dat::time_cost[buildingId] / 2)
 			{
 				building->main_order_state = 3;
 			}

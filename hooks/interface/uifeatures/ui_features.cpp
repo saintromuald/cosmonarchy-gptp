@@ -33,13 +33,13 @@ namespace hooks
 {
 	void draw_text(const char* text, s32 x, s32 y, s32 width, s32 height, char color)
 	{
-		helper::GetColorHandle(color);
+		helper::get_color_handle(color);
 		*printXYAlignment = 0x11;
 		drawTextBox->left = x;
 		drawTextBox->right = x + width;
 		drawTextBox->top = y;
 		drawTextBox->bottom = y + height;
-		helper::BWFXN_PrintXY(text, x, y);
+		helper::bwfxn_print_xy(text, x, y);
 	}
 	
 	/*
@@ -56,7 +56,8 @@ namespace hooks
 		- Single unit selection, drag selection, select larva
 		- Invoking control groups
 	*/
-	void registerAction()
+
+	void register_action()
 	{
 		//actions.push_back(Action{*elapsed_time_frames});
 		totalActions++;
@@ -68,7 +69,7 @@ namespace hooks
 		totalActions = 0;
 	}
 
-	u32 getAPM()
+	u32 get_apm()
 	{
 		u32 actionCount = totalActions;//actions.size();
 		f64 divider = (*elapsed_time_frames) / 24.0 / 60.0;
@@ -76,20 +77,27 @@ namespace hooks
 		return actionCount / divider;
 	}
 
-	void drawUIFeatures()
+	void draw_ui_features()
 	{
 		if (config.show_timer)
 		{
 			char buffer[32] = {0};
 			format_time(buffer, 32, "", * elapsed_time_frames / 24);
-			draw_text(buffer, 10, 3, 100, 15, 7);
+			s32 x_pos = 10;
+			s32 y_pos = 3;
+			if (*leaderboard_dialog) {
+				// TODO: Get leaderboard width. Or actually just move the leaderboard down instead. This resolves issues with the test map.
+				x_pos = 70;
+				y_pos = 0;
+			}
+			draw_text(buffer, x_pos, y_pos, 100, 15, 7);
 		}
 
-		//std::string apm = "APM: " + std::to_string(getAPM());
+		//std::string apm = "APM: " + std::to_string(get_apm());
 		//draw_text(apm.c_str(), 10, 15, 100, 15, 7);
 	}
 
-	bool isFirstSelectedUnitOfCurrentPlayer(Unit* unit)
+	bool is_first_selected_unit_of_current_player(Unit* unit)
 	{
 		for (s32 i = 0; i < 12; i++)
 		{
@@ -121,12 +129,12 @@ namespace hooks
 			goto LABEL_8;
 		if (*scMainState == 4)
 			return v2;
-		if (helper::SNetGetTurnsInTransit(&turns))
+		if (helper::snet_get_turns_in_transit(&turns))
 		{
 			v2 = LOBYTE(turns) | HIBYTE(v2);
 			if (turns >= 16 - *provider_LatencyCalls)
 				return v2;
-			helper::sendTurn();
+			helper::send_turn();
 LABEL_8:
 			_sgdwBytesInCmdQueue = *sgdwBytesInCmdQueue;
 			memcpy((void*)&TurnBuffer[*sgdwBytesInCmdQueue], buffer, len);
@@ -137,13 +145,13 @@ LABEL_8:
 		v2 = LOBYTE(outOfGame) | HIBYTE(v2);
 		if (!outOfGame)
 		{
-			v5 = helper::SErrGetLastError();
-			v2 = helper::packetErrHandle(v5, 81, "Starcraft\\SWAR\\lang\\net_mgr.cpp", 225, 1) | HIBYTE(v2);
+			v5 = helper::serr_get_last_error();
+			v2 = helper::packet_error_handle(v5, 81, "Starcraft\\SWAR\\lang\\net_mgr.cpp", 225, 1) | HIBYTE(v2);
 		}
 		return v2;
 	}
 
-	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10)
+	void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10)
 	{
 		if (a6 && orders_dat::CanBeQueued[(u8)a7])
 		{
@@ -190,17 +198,19 @@ LABEL_15:
 		}
 	}
 
-	s32 selectUnits(Unit** a1, s32 a2, u8 a3, s32 a4)
+	s32 select_units(Unit** a1, s32 a2, u8 a3, s32 a4)
 	{
 		s32 v4 = helper::unit_to_unit_id(*a1);
 		s32 result = helper::select_single_unit_from_id(v4); // eax
 
 		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0)
+		{
 			result = helper::select_multiple_units_from_unit_list(a2, a1, a3, a4);
+		}
 		return result;
 	}
 
-	b32 checkHotkeyChar(BinDlg* dialog, char hotkey)
+	b32 check_hotkey_char(BinDlg* dialog, char hotkey)
 	{
 		if (dialog->index < 0 || dialog->index > 9)
 		{
@@ -228,7 +238,7 @@ LABEL_15:
 		return hotkey == label[0];
 	}
 
-	char createUpgradeLevelTooltip(char* text)
+	char create_upgrade_level_tooltip(char* text)
 	{
 		if (!*upgradeLevelTooltip)
 		{
@@ -256,6 +266,4 @@ LABEL_15:
 		scbw::printf("%s", buffer);
 		return helper::create_tooltip(buffer);
 	}
-
-	// TODO: Hook 004593A0 for time icon/cost on tooltip (and removing supply icon from tooltip)
 }

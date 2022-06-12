@@ -298,7 +298,7 @@ namespace
 		u16 energyCost = 0;
 		if (orders_dat::TechUsed[order_id] < TechId::None)
 		{
-			energyCost = techdata_dat::EnergyCost[orders_dat::TechUsed[order_id]] * 256;
+			energyCost = techdata_dat::energy_cost[orders_dat::TechUsed[order_id]] * 256;
 		}
 		if (techId == TechId::Lockdown && unit->mine_carrier.mine_count == 0)
 		{
@@ -331,7 +331,7 @@ namespace
 	{
 		if (orders_dat::TechUsed[order_id] < TechId::None)
 		{
-			return techdata_dat::EnergyCost[orders_dat::TechUsed[order_id]] * 256;
+			return techdata_dat::energy_cost[orders_dat::TechUsed[order_id]] * 256;
 		}
 		else
 		{

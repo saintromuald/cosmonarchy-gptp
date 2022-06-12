@@ -953,7 +953,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 		kiting_ai(unit, unitExt);
 
 		if (unit->id == UnitId::TerranApostle) {
-			if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::ApostleLazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
+			if (unit->hasEnergy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
 			{
 				s32 count = 0;
 				cosmonarchyFinderLoop(0, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
@@ -994,7 +994,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 1);
 			}
 		} else if (unit->id == UnitId::ZergMatraleth) {
-			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0) {
+			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0) {
 				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite], Flags::NotSelf, {}, [&](Unit* u) {
 					std::vector<std::pair<Unit*, u32>> group;
 					s32 supply = 0;
@@ -1030,7 +1030,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				});
 			}
 
-			if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::MatralethEnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0) {
+			if (unit->hasEnergy(techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0) {
 				s32 enemy_count = cosmonarchyUnitCount(0, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast, {});
 				if (enemy_count >= 2) {
 					s32 count = 0;

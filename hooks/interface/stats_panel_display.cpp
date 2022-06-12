@@ -636,7 +636,7 @@ namespace hooks
 	void set_tooltip_info_unit(u8 unit_id) {
 		u32 mineral_cost = units_dat::mineral_cost[unit_id];
 		u32 gas_cost = units_dat::gas_cost[unit_id];
-		u32 time_cost = units_dat::TimeCost[unit_id] / 24;
+		u32 time_cost = units_dat::time_cost[unit_id] / 24;
 
 		u32 race = Unit::get_race(unit_id);
 		u32 supply = 0;

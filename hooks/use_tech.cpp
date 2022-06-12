@@ -21,9 +21,9 @@ namespace hooks
 		}
 	}
 
-	void BTNSACT_UseTech(u16 tech, GrpHead* head)
+	void btnsact_use_tech(u16 tech, GrpHead* head) // 00423F70
 	{
-		// replacement for proc 00423660
+		// Replacement for proc @ 00423660. -iquare
 		bool TechCapableUnit = false;
 		Unit* firstInList = players_selections->unit[*ACTIVE_NATION_ID][0];
 		if (firstInList != nullptr)
@@ -42,7 +42,7 @@ namespace hooks
 		}
 		if (!TechCapableUnit)
 		{
-			if (helper::checkEnergyForTechUse(tech))
+			if (helper::check_energy_for_tech_use(tech))
 			{
 				TechCapableUnit = true;
 			}
@@ -58,7 +58,7 @@ namespace hooks
 			}
 			if (!TechCapableUnit)
 			{
-				char* message = (char*)statTxtTblNew->getString(864);
+				char* message = (char*)statTxtTblNew->get_string(864);
 				Unit* portrait_unit = players_selections->unit[*ACTIVE_NATION_ID][0];
 				helper::get_stat_txt_string(*active_portrait_unit, (*active_portrait_unit)->player, message);
 				return;
@@ -68,27 +68,27 @@ namespace hooks
 		{
 			case TechId::ScannerSweep:
 			{
-				helper::issueTriTargetOrder(OrderId::PlaceScanner, 0, 0);
+				helper::issue_tri_target_order(OrderId::PlaceScanner, 0, 0);
 			} break;
 			case TechId::SpiderMines:
 			{
-				helper::issueTriTargetOrder(OrderId::PlaceMine, 0, 0);
+				helper::issue_tri_target_order(OrderId::PlaceMine, 0, 0);
 			} break;
 			case TechId::YamatoGun:
 			{
-				helper::issueTriTargetOrder(OrderId::FireYamatoGun1, OrderId::FireYamatoGun2, 0);
+				helper::issue_tri_target_order(OrderId::FireYamatoGun1, OrderId::FireYamatoGun2, 0);
 			} break;
 			case TechId::Lockdown:
 			{
-				helper::issueTriTargetOrder(OrderId::MagnaPulse, 0, 0);
+				helper::issue_tri_target_order(OrderId::MagnaPulse, 0, 0);
 			} break;
 			case TechId::Recall:
 			{
-				helper::issueTriTargetOrder(OrderId::Teleport, 0, 0);
+				helper::issue_tri_target_order(OrderId::Teleport, 0, 0);
 			} break;
 			case TechId::DefensiveMatrix:
 			{
-				helper::issueTriTargetOrder(OrderId::DefensiveMatrix, 0, 0);
+				helper::issue_tri_target_order(OrderId::DefensiveMatrix, 0, 0);
 			} break;
 			case TechId::MatralethEnsnaringBrood:
 			{
@@ -102,43 +102,43 @@ namespace hooks
 			} break;
 			case TechId::Parasite:
 			{
-				helper::issueTriTargetOrder(OrderId::CastParasite, 0, 0);
+				helper::issue_tri_target_order(OrderId::CastParasite, 0, 0);
 			} break;
 			case TechId::Infestation:
 			{
-				helper::issueTriTargetOrder(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
+				helper::issue_tri_target_order(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
 			} break;
 			case TechId::Irradiate:
 			{
-				helper::issueTriTargetOrder(OrderId::Irradiate, 0, 0);
+				helper::issue_tri_target_order(OrderId::Irradiate, 0, 0);
 			} break;
 			case TechId::Ensnare:
 			{
-				helper::issueTriTargetOrder(OrderId::CTFCOPInit, 0, 0);
+				helper::issue_tri_target_order(OrderId::CTFCOPInit, 0, 0);
 			} break;
 			case TechId::StasisField:
 			{
-				helper::issueTriTargetOrder(OrderId::StasisField, 0, 0);
+				helper::issue_tri_target_order(OrderId::StasisField, 0, 0);
 			} break;
 			case TechId::DarkSwarm:
 			{
-				helper::issueTriTargetOrder(OrderId::DarkSwarm, 0, 0);
+				helper::issue_tri_target_order(OrderId::DarkSwarm, 0, 0);
 			} break;
 			case TechId::Plague:
 			{
-				helper::issueTriTargetOrder(OrderId::Plague, 0, 0);
+				helper::issue_tri_target_order(OrderId::Plague, 0, 0);
 			} break;
 			case TechId::Consume:
 			{
-				helper::issueTriTargetOrder(OrderId::Consume, 0, 0);
+				helper::issue_tri_target_order(OrderId::Consume, 0, 0);
 			} break;
 			case TechId::PsionicStorm:
 			{
-				helper::issueTriTargetOrder(OrderId::PsiStorm, 0, 0);
+				helper::issue_tri_target_order(OrderId::PsiStorm, 0, 0);
 			} break;
 			case TechId::Hallucination:
 			{
-				helper::issueTriTargetOrder(OrderId::Hallucination1, 0, 0);
+				helper::issue_tri_target_order(OrderId::Hallucination1, 0, 0);
 			} break;
 			case TechId::DemiurgeGodsMadeFlesh:
 			{
@@ -246,11 +246,11 @@ namespace hooks
 			} break;
 			case TechId::PaladinSkyfall:
 			{
-				helper::issueTriTargetOrder(OrderId::PaladinSkyfall, 0, 0);
+				helper::issue_tri_target_order(OrderId::PaladinSkyfall, 0, 0);
 			} break;
 			case TechId::AkistrokorBlissfulEmbrace:
 			{
-				helper::issueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
+				helper::issue_tri_target_order(OrderId::CTFCOP1, 0, 0);
 			} break;
 			case TechId::DisruptionWeb:
 			{
@@ -269,19 +269,19 @@ namespace hooks
 			} break;
 			case TechId::MindControl:
 			{
-				helper::issueTriTargetOrder(OrderId::CastMindControl, 0, 0);
+				helper::issue_tri_target_order(OrderId::CastMindControl, 0, 0);
 			} break;
 			case TechId::LuminaryAuralAssault:
 			{
-				helper::issueTriTargetOrder(OrderId::CastOpticalFlare, 0, 0);
+				helper::issue_tri_target_order(OrderId::CastOpticalFlare, 0, 0);
 			} break;
 			case TechId::Maelstrom:
 			{
-				helper::issueTriTargetOrder(OrderId::CastMaelstrom, 0, 0);
+				helper::issue_tri_target_order(OrderId::CastMaelstrom, 0, 0);
 			} break;
 			case TechId::TalosSalvage:
 			{
-				helper::issueTriTargetOrder(OrderId::TalosSalvage, 0, 0);
+				helper::issue_tri_target_order(OrderId::TalosSalvage, 0, 0);
 			} break;
 			case TechId::LarvalSubmenuSelectSwarm:
 			{
@@ -299,5 +299,60 @@ namespace hooks
 			{
 			}
 		};
+	}
+
+	// Hooked to allow Hallucinations to use tech. -Pr0nogo
+	u32 tech_use_allowed(Unit* unit, u16 tech_id, u32 player) // 0046DD80
+	{
+		*last_internal_error = 0;
+		u32 result = 0;
+		if (tech_id < TechId::None)
+		{
+			if (techdata_dat::dep_index[tech_id] == RequirementOpcodes::EndOfSublist)
+			{
+				helper::parse_tech_dat_requirements();
+			}
+			if (player == unit->player)
+			{
+				if (unit->status & UnitStatus::Completed)
+				{
+					if (unit->is_frozen())
+					{
+						*last_internal_error = 10;
+						result = 0;
+					}
+					else if (unit->status & UnitStatus::IsHallucination && tech_id != TechId::Burrowing)
+					{
+						*last_internal_error = 22;
+						result = 0;
+					}
+					u32 index = techdata_dat::dep_index[tech_id];
+					if (index)
+					{
+						result = helper::parse_requirement_opcodes(unit, tech_id, player, *requirements::tech, index);
+					}
+					else
+					{
+						*last_internal_error = 23;
+					}
+				}
+				else
+				{
+					*last_internal_error = 20;
+					result = 0;
+				}
+			}
+			else
+			{
+				*last_internal_error = 1;
+				result = 0;
+			}
+		}
+		else
+		{
+			*last_internal_error = 17;
+			result = 0;
+		}
+		return result;
 	}
 }

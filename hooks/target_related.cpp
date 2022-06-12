@@ -478,7 +478,7 @@ LABEL_42:
 			}
 			if (helper::order_allowed(i, order_id, *ACTIVE_NATION_ID) == 1)
 			{
-				helper::targetedOrder(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, order_id, 0, *orderType4Position, *orderType4Target);
+				helper::targeted_order(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, order_id, 0, *orderType4Position, *orderType4Target);
 			}
 			result = helper::get_active_player_next_selection();
 		}

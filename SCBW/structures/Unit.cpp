@@ -229,7 +229,7 @@ const char* Unit::getName(u16 unit_id)
 	}
 	else
 	{
-		return statTxtTblNew->getString(unit_id + 1);
+		return statTxtTblNew->get_string(unit_id + 1);
 	}
 }
 

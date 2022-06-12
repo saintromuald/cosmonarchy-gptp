@@ -2036,7 +2036,7 @@ LABEL_37:
 													break;
 												}
 											}
-											if (first_player_unit->energy >= techdata_dat::EnergyCost[TechId::ScannerSweep] * 256 || first_player_unit->main_order_id == OrderId::PlaceScanner)
+											if (first_player_unit->energy >= techdata_dat::energy_cost[TechId::ScannerSweep] * 256 || first_player_unit->main_order_id == OrderId::PlaceScanner)
 											{
 												break;
 											}
