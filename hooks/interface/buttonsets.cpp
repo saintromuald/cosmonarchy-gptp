@@ -734,10 +734,10 @@ namespace hooks {
 							}
 						}
 
-						if (has_burrowed && !has_unburrowed) {
-							current_button_state = Button_State::Invisible;
-						} else {
+						if (has_unburrowed && !has_burrowed) {
 							current_button_state = Button_State::Enabled;
+						} else {
+							current_button_state = Button_State::Invisible;
 						}
 					}
 
