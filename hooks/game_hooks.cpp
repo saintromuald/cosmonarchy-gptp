@@ -1491,6 +1491,22 @@ namespace hooks
 			}
 		}
 
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon && !(unit->status & UnitStatus::Completed)) {
+			if (unit->connected_unit && !unit->connected_unit->is_frozen() && unitExt->timers[TimerAddonAnimation] == 0) {
+				u32 width = units_dat::BuildingDimensions[unit->id].x * 0.5;
+				u32 height = units_dat::BuildingDimensions[unit->id].y * 0.5;
+
+				s32 x_offset = scbw::random() % width - width / 2;
+				s32 y_offset = scbw::random() % height - height / 2;
+
+				x_offset = MathUtils::clamp(x_offset, -127, 128);
+				y_offset = MathUtils::clamp(y_offset, -127, 128);
+
+				unit->sprite->create_overlay(ImageId::FusionCutterHitDamageless, x_offset, y_offset); // TODO: Figure out why changing a construction frame freezes these overlays.
+				unitExt->timers[TimerAddonAnimation] = scbw::rand_between(16, 20);
+			}
+		}
+
 		// Correct vanilla timers - THIS IS TEMPORARY!
 		if (unit->defensive_matrix_timer > AzazelDefensiveMatrixTimer)
 		{
