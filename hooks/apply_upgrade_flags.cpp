@@ -24,7 +24,7 @@ namespace hooks
 
 		/*	if (unit->id == UnitId::mine_carrier) {
 				if(scbw::get_upgrade_level(unit->player,UpgradeId::IonPropulsion) && unit->sprite!=nullptr){
-					unit->sprite->elevationLevel = 12;
+					unit->sprite->elevation_level = 12;
 				}
 			}*/
 
@@ -56,7 +56,7 @@ namespace hooks
 
 		/*if (unit->id == UnitId::TerranVulture) {
 			if (scbw::get_upgrade_level(unit->player, UpgradeId::IonPropulsion) && unit->sprite != nullptr) {
-				unit->sprite->elevationLevel = 12;
+				unit->sprite->elevation_level = 12;
 			}
 		}*/
 	}

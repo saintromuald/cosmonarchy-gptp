@@ -74,7 +74,7 @@ namespace hooks
 
 			if (nukeDot != nullptr)
 			{
-				nukeDot->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
+				nukeDot->sprite->elevation_level = unit->sprite->elevation_level + 1;
 				helper::set_thingy_visibility_flags(nukeDot);
 			}
 

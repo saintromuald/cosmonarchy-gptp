@@ -92,7 +92,7 @@ namespace hooks
 					// Plan movement again after latest updates
 					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
-					if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
+					if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW)
 					{
 						unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 					}
@@ -135,7 +135,7 @@ namespace hooks
 				helper::end_collision_tracking(unit); // Recalculate position and update effect on surroundings?
 				helper::toggle_pathing_related(unit); // Toggle pathing-related stuff to prepare to no longer use pathing
 
-				unit->sprite->elevationLevel = 4;
+				unit->sprite->elevation_level = 4;
 				helper::setUnitPathing(unit, 0);
 				scbw::set_unit_position(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
@@ -148,7 +148,7 @@ namespace hooks
 				}
 
 				helper::set_shadow_y(unit->sprite, 0);
-				if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
+				if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW)
 				{
 					unit->sprite->images.tail->flags &= ~ImageFlags::DontUpdate;
 				}
@@ -236,11 +236,11 @@ namespace hooks
 			helper::end_collision_tracking(unit); // Update globally known position and may remove repulse tile if no longer needed
 			helper::modify_building_grounded_status(unit); // Disable GroundedBuilding status and prepare to enable pathing?
 
-			unit->sprite->elevationLevel = 12;
+			unit->sprite->elevation_level = 12;
 			helper::setUnitPathing(unit, 1);
 			helper::start_collision_tracking(unit); // Maybe update orders targetting the unit, set repulse for units in surroundings,and  some others things?
 
-			if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
+			if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW)
 			{
 				unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 			}

@@ -178,7 +178,7 @@ struct Unit : public UnitLayout
 
 	/// Sets the unit's HP, and also updates burning / bleeding graphics and unit
 	/// strength data (used by the AI). HP is guaranteed not to overflow.
-	void setHp(s32 hitpoints);
+	void set_hitpoints(s32 hitpoints);
 	void heal(s32 hitpoints, Unit* source = nullptr, bool restore = true);
 	void heal_shields(s32 shields, Unit* source = nullptr, bool restore = true);
 	void heal_overflow(s32 amount, Unit* source = nullptr, bool restore = true);

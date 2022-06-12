@@ -210,7 +210,7 @@ namespace
 			u32 hpGain = unit->build_repair_hp_gain;
 			if (isOperationCwalEnabled)
 				hpGain *= 16;
-			unit->setHp(unit->hitpoints + hpGain);
+			unit->set_hitpoints(unit->hitpoints + hpGain);
 		}
 	}
 
@@ -246,10 +246,8 @@ namespace
 			MOV EBP, ESP
 			MOV unit, EBX
 		}
-		if (!(unit->status & UnitStatus::Completed)
-			&& hooks::is_morphed_building(unit->build_queue[unit->build_queue_slot]))
+		if (!(unit->status & UnitStatus::Completed) && hooks::is_morphed_building(unit->build_queue[unit->build_queue_slot]))
 		{
-			//scbw::print("Morph detected");
 			__asm {
 				POPAD
 				MOV EAX, EBX
@@ -257,12 +255,11 @@ namespace
 				POP EBX
 				MOV ESP, EBP
 				POP EBP
-				RETN 4
+				RETN 0x04
 			}
 		}
 		else
 		{
-			//scbw::print("Morph is not detected");
 			__asm {
 				POPAD
 				JMP Hook_IsMorphedBuilding_CancelZergBuildingContinue
@@ -366,7 +363,7 @@ namespace hooks
 		jump_patch(orders_isMorphingWrapper,									0x0045CD00, 2);
 		jump_patch(orders_ZergBuildSelfWrapper,									0x0045D500, 0);
 		jump_patch(ZergPlaceBuildingWrapper,									0x0045DA40, 1);
-		jump_patch(isRemorphingBuildingWrapper,																																															Func_IsRemorphingBuilding);
+		jump_patch(isRemorphingBuildingWrapper,									Func_IsRemorphingBuilding);
 		jump_patch(isMorphedBuildingWrapper_AI_MorphBehavior,					0x0043505F);
 		jump_patch(isMorphedBuildingWrapper_ConsoleWireFrameUpdate,				0x00456911);
 		jump_patch(isMorphedBuildingWrapper_ZergBuildSelf_GetType,				0x0045D505);

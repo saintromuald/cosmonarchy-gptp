@@ -307,7 +307,7 @@ namespace hooks
 		Thingy* emp_sprite = helper::create_thingy(371, x, y, 0);
 		if (emp_sprite != nullptr)
 		{
-			emp_sprite->sprite->elevationLevel = 19; // 0x13
+			emp_sprite->sprite->elevation_level = 19; // 0x13
 			helper::set_thingy_visibility_flags(emp_sprite);
 		}
 		static u16* const maxBoxRightValue = (u16*)0x00628450;	// should usually be map_tile_size->width * 32
@@ -449,7 +449,7 @@ namespace hooks
 		Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::Ensnare, x, y, 0);
 		if (ensnare_effect_sprite != nullptr)
 		{
-			ensnare_effect_sprite->sprite->elevationLevel = 19; // 0x13
+			ensnare_effect_sprite->sprite->elevation_level = 19; // 0x13
 			helper::set_thingy_visibility_flags(ensnare_effect_sprite);
 		}
 		Box16 coords;
@@ -495,7 +495,7 @@ namespace hooks
 		else
 		{
 			dark_swarm_unit->status |= UnitStatus::NoCollide;
-			dark_swarm_unit->sprite->elevationLevel = 11;
+			dark_swarm_unit->sprite->elevation_level = 11;
 
 			// update various stuff (set hp, set shield...) not finished on create_unit
 			helper::update_unit_stats_and_finish_building(dark_swarm_unit);
@@ -633,7 +633,7 @@ namespace hooks
 		Thingy* maelstrom_effect_sprite = helper::create_thingy(SpriteId::Maelstrom_Hit, x, y, 0);
 		if (maelstrom_effect_sprite != nullptr)
 		{
-			maelstrom_effect_sprite->sprite->elevationLevel = 17;
+			maelstrom_effect_sprite->sprite->elevation_level = 17;
 			helper::set_thingy_visibility_flags(maelstrom_effect_sprite);
 		}
 		helper::play_sound_from_unit(SoundId::Protoss_Darchon_Parahit_wav, attacker, 1, 0);
@@ -693,7 +693,7 @@ namespace hooks
 		Thingy* stasisfield_effect_sprite = helper::create_thingy(SpriteId::Stasis_Field_Hit, x, y, 0);
 		if (stasisfield_effect_sprite != nullptr)
 		{
-			stasisfield_effect_sprite->sprite->elevationLevel = 17; // 0x11
+			stasisfield_effect_sprite->sprite->elevation_level = 17; // 0x11
 			helper::set_thingy_visibility_flags(stasisfield_effect_sprite);
 		}
 		Box16 coords;
@@ -723,7 +723,7 @@ namespace hooks
 		else
 		{
 			disruption_web_unit->status |= UnitStatus::NoCollide;
-			disruption_web_unit->sprite->elevationLevel = 11;
+			disruption_web_unit->sprite->elevation_level = 11;
 			// update various stats (set hp, set shield...) not finished on create_unit
 			helper::update_unit_stats_and_finish_building(disruption_web_unit);
 			helper::update_unit_strength(disruption_web_unit);

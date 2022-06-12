@@ -108,7 +108,7 @@ void updatePsiFieldPosition(Unit* unit)
 	if (unit->sprite->position != psiField->position)
 	{
 		psiField->set_position(unit->get_x(), unit->get_y());
-		helper::refreshSpriteData(psiField);
+		helper::refresh_sprite_data(psiField);
 		*can_update_powered_status = true;
 	}
 }

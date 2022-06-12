@@ -86,7 +86,7 @@ namespace scbw
 				recall_effect_sprite = helper::create_thingy(spriteAnimation, new_pos.x, new_pos.y, 0);
 				if (recall_effect_sprite != nullptr)
 				{
-					recall_effect_sprite->sprite->elevationLevel = u->sprite->elevationLevel + 1;
+					recall_effect_sprite->sprite->elevation_level = u->sprite->elevation_level + 1;
 					helper::set_thingy_visibility_flags(recall_effect_sprite);
 				}
 
@@ -106,12 +106,12 @@ namespace scbw
 		return result;
 	}
 
-	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 playerId, s32 elevationLevel)
+	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 playerId, s32 elevation_level)
 	{
 		Thingy* thingy = helper::create_thingy(spriteId, x, y, playerId);
 		if (thingy)
 		{
-			thingy->sprite->elevationLevel = elevationLevel;
+			thingy->sprite->elevation_level = elevation_level;
 			helper::set_thingy_visibility_flags(thingy);
 		}
 		return thingy;
@@ -483,7 +483,7 @@ namespace scbw
 	{
 		if (unit->id == UnitId::ZergEgg)
 		{
-			u8 origin = unit->egg_origin;
+			u8 origin = unit->morph_origin;
 			if (origin == UnitId::ZergLarva)
 			{
 				return true;
@@ -507,7 +507,7 @@ namespace scbw
 		{
 			case UnitId::ZergEgg:
 			{
-				if (unit && !allow_larval_eggs && unit->egg_origin == UnitId::ZergLarva)
+				if (unit && !allow_larval_eggs && unit->morph_origin == UnitId::ZergLarva)
 				{
 					return false;
 				}
@@ -945,7 +945,7 @@ namespace scbw
 		helper::toggle_unit_path(unit);
 		char pathing_flags = unit->pathing_flags;
 		unit->movement_state = 0;
-		unit->pathing_flags = (pathing_flags ^ (unit->sprite->elevationLevel < 12)) & 1 ^ pathing_flags;
+		unit->pathing_flags = (pathing_flags ^ (unit->sprite->elevation_level < 12)) & 1 ^ pathing_flags;
 	}
 
 	//-------- Utility functions --------//

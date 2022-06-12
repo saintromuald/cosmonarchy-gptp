@@ -42,7 +42,7 @@ namespace hooks
 			//Thingy* recall_effect_sprite = helper::create_thingy(SpriteId::Recall_Field, new_pos.x, new_pos.y, 0);
 			//if (recall_effect_sprite)
 			//{
-			//	recall_effect_sprite->sprite->elevationLevel = target->sprite->elevationLevel + 1;
+			//	recall_effect_sprite->sprite->elevation_level = target->sprite->elevation_level + 1;
 			//	helper::set_thingy_visibility_flags(recall_effect_sprite);
 			//}
 
@@ -121,10 +121,10 @@ namespace hooks
 					Point16 center = {unit->position.x, unit->position.y};
 					Point16 top = center;
 					top.y -= 3 * 32;
-					scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, center.x, center.y, unit->player, unit->sprite->elevationLevel - 1);
+					scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, center.x, center.y, unit->player, unit->sprite->elevation_level - 1);
 					for (u32 i = 0; i < 8; ++i) {
 						Point16 next = scbw::rotate_point(center, top, i * (360 / 8));
-						scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, next.x, next.y, unit->player, unit->sprite->elevationLevel - 1);
+						scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, next.x, next.y, unit->player, unit->sprite->elevation_level - 1);
 					}
 				}
 				unit->order_to_idle();
@@ -147,8 +147,8 @@ namespace hooks
 					unit->order_target.pt.y = unit->order_target.unit->sprite->position.y;
 				}
 
-				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->position.x, unit->position.y, unit->player, unit->sprite->elevationLevel - 1);
-				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevationLevel + 1);
+				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->position.x, unit->position.y, unit->player, unit->sprite->elevation_level - 1);
+				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevation_level + 1);
 
 				u32 random_value = 0;
 				if (*is_in_game_loop) {

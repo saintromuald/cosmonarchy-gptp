@@ -2776,7 +2776,7 @@ namespace helper
 		}
 	}
 
-	void refundBuildingCost(u16 unit_id, u8 playerId)
+	void refund_building_cost(u16 unit_id, u8 playerId)
 	{
 		const u32 Func_refundBuildingCost = 0x0042CE70;
 		__asm {
@@ -2788,7 +2788,7 @@ namespace helper
 		}
 	}
 
-	void updateBuildingsAI(Unit* unit)
+	void update_building_ai(Unit* unit)
 	{
 		const u32 Func_updateBuildingsAI = 0x00433FE0;
 		__asm {
@@ -2799,8 +2799,8 @@ namespace helper
 		}
 	}
 
-	//Identical to isValidMorph @ 0x0045CC60;
-	bool isValidMorph(u16 buildingId)
+	//Identical to is_valid_morph @ 0x0045CC60;
+	bool is_valid_morph(u16 buildingId)
 	{
 		bool result;
 		if (scbw::is_zerg_building_morph_result(buildingId))
@@ -2814,7 +2814,7 @@ namespace helper
 		return result;
 	}
 
-	void SpreadInitialCreep(u32 id, s32 x, s32 y)
+	void spread_initial_creep(u32 id, s32 x, s32 y)
 	{
 		const u32 Func_updateNewUnitVision = 0x0045CE90;
 		__asm {
@@ -2874,7 +2874,7 @@ namespace helper
 		}
 	}
 
-	void refreshSpriteData(Sprite* sprite)
+	void refresh_sprite_data(Sprite* sprite)
 	{
 		const u32 Func_refreshSpriteData = 0x004983A0;
 		__asm {
@@ -6211,7 +6211,7 @@ namespace helper
 			current_image != nullptr;
 			current_image = current_image->link.next)
 		{
-			if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
+			if (current_image->palette_type == PaletteType::RLE_HPFLOATDRAW)
 			{
 				current_image->flags |= ImageFlags::Redraw;
 			}

@@ -469,7 +469,7 @@ s16 Unit::get_bottom() const
 //-------- Modifying unit state --------//
 
 const u32 Func_SetUnitHp = 0x00467340;
-void Unit::setHp(s32 hitpoints)
+void Unit::set_hitpoints(s32 hitpoints)
 {
 	assert(this);
 
@@ -496,7 +496,7 @@ void Unit::heal(s32 hitpoints, Unit* source, bool restore)
 		hitpoints *= 2;
 	}
 
-	setHp(std::min((u32)this->hitpoints + hitpoints, this->get_max_hp_raw()));
+	set_hitpoints(std::min((u32)this->hitpoints + hitpoints, this->get_max_hp_raw()));
 
 	// If the unit is fully healed after this, clear any debuffs
 	if (this->hitpoints == this->get_max_hp_raw() && restore)
@@ -514,7 +514,7 @@ void Unit::heal_shields(s32 shields, Unit* source, bool restore)
 	}
 
 	this->shields = std::min((u32)this->shields + shields, this->get_max_shields_raw());
-	this->setHp(this->hitpoints); // Updates unit strength
+	this->set_hitpoints(this->hitpoints); // Updates unit strength
 
 	// If heals to full clear debuffs
 	if (this->shields == this->get_max_shields_raw() && restore)

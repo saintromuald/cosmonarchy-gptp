@@ -290,7 +290,7 @@ namespace hooks
 			{
 				hpGain = building->build_repair_hp_gain * modifier.multiplier;
 			}
-			building->setHp(building->hitpoints + hpGain);
+			building->set_hitpoints(building->hitpoints + hpGain);
 
 			if (*bw_cheat_state & CheatFlags::OperationCwal)
 			{

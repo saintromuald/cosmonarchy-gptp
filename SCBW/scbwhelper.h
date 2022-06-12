@@ -284,15 +284,15 @@ namespace helper
 	char switchSpriteId(Sprite* sprite, s32 spriteId);														// 00499860
 
 	//// building_morph
-	void refundBuildingCost(u16 unit_id, u8 playerId);														// 002CE70
-	void updateBuildingsAI(Unit* unit);																		// 0033FE0
-	bool isValidMorph(u16 buildingId);																		// 005CC60
-	void SpreadInitialCreep(u32 id, s32 x, s32 y);															// 005CE90
+	void refund_building_cost(u16 unit_id, u8 playerId);														// 002CE70
+	void update_building_ai(Unit* unit);																		// 0033FE0
+	bool is_valid_morph(u16 buildingId);																		// 005CC60
+	void spread_initial_creep(u32 id, s32 x, s32 y);															// 005CE90
 	void zergPlaceBuildingCntd(Unit* unit);																	// 005D410
 	void stop_creep_disappearing_at_building(Unit* unit);												        // 007D770
 	void increment_unit_scores_ex(Unit* building, s32 unk1, s32 unk2);											// 0088D50
 	void play_building_completed_sound(Unit* building);															// 008F310
-	void refreshSpriteData(Sprite* sprite);																	// 00983A0
+	void refresh_sprite_data(Sprite* sprite);																	// 00983A0
 	void display_last_network_error_for_player(u32 playerId);									                    // 009E530
 	void replace_unit_with_type(Unit* unit, u16 newUnitId);													// 009FED0
 

@@ -521,7 +521,7 @@ struct UnitLayout
 															0x20 - Bactalisk attack (unused)
 														*/
 	/*0x050*/ u16       order_unit_id;
-	/*0x052*/ u8		egg_origin;						// was unused
+	/*0x052*/ u8		morph_origin;					// was unused
 	/*0x053*/ u8		new_flags_2;					// Enum NewFlags2 | was unused
 	/*0x054*/ u8        main_order_timer;				// A timer for orders, example: time left before minerals are harvested
 	/*0x055*/ u8        ground_weapon_cooldown;

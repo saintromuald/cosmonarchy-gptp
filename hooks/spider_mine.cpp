@@ -96,7 +96,7 @@ namespace hooks
 		{
 			if (unit->order_signal & 4)
 			{
-				unit->sprite->elevationLevel = units_dat::Elevation[unit->id];
+				unit->sprite->elevation_level = units_dat::Elevation[unit->id];
 				unit->status &= ~UnitStatus::NoCollide;
 				if (unit->order_target.unit != nullptr)
 				{
@@ -289,7 +289,7 @@ namespace hooks
 		Sprite* unitSprite = unitVar->sprite;
 		char unitPathing = unitVar->pathing_flags;
 		unitVar->movement_state = 0;
-		unitVar->pathing_flags = (unitPathing ^ (unitSprite->elevationLevel < 12u)) & 1 ^ unitPathing;
+		unitVar->pathing_flags = (unitPathing ^ (unitSprite->elevation_level < 12u)) & 1 ^ unitPathing;
 		unitVar->status |= UnitStatus::CloakingForFree | UnitStatus::Burrowed;
 		unitSprite->flags |= 0x40u; // image is hidden
 
@@ -299,13 +299,13 @@ namespace hooks
 		{
 			// Warning, tism detected
 			// ByteOperations::SetLowByte(newSprite, switchSpriteId(oldSprite, SpriteId::White_Circle_Invisible));
-			unitVar->sprite->elevationLevel = 1;
+			unitVar->sprite->elevation_level = 1;
 		}
 		else
 		{
 			helper::switchSpriteId(oldSprite, SpriteId::White_Circle_Invisible);
 			newSprite = unitVar->sprite;
-			newSprite->elevationLevel = 1;
+			newSprite->elevation_level = 1;
 		}
 		return (char)newSprite;
 	}

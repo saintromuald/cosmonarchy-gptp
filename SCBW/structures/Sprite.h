@@ -71,7 +71,7 @@ struct Sprite
 	/*0x0A*/ u8				playerId;			// officially "creator"
 	/*0x0B*/ u8				selectionIndex;		// 0 <= selectionIndex <= 11. Index in the selection area at bottom of screen.
 	/*0x0C*/ u8				visibilityFlags;	// Determines whether the sprite is visible (not hidden by the fog-of-war).
-	/*0x0D*/ u8				elevationLevel;
+	/*0x0D*/ u8				elevation_level;
 	/*0x0E*/ u8				flags;				// Use Sprite_Flags
 	/*0x0F*/ u8				selectionTimer;
 	/*0x10*/ u16			index;				// u32->u16 based on BWAPI/Source/BW/Sprite.h

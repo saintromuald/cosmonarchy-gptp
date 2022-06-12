@@ -768,7 +768,7 @@ namespace hooks
 									Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
 									if (thingy != nullptr)
 									{
-										thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
+										thingy->sprite->elevation_level = target->sprite->elevation_level + 1;
 										helper::set_thingy_visibility_flags(thingy);
 									}
 								});
@@ -854,7 +854,7 @@ namespace hooks
 			{
 				// Plague - Don't kill
 				data.finalDamage = 0;
-				data.target->setHp(256);
+				data.target->set_hitpoints(256);
 			} break;
 			case WeaponId::PsiStorm:
 			{
@@ -971,7 +971,7 @@ namespace hooks
 			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
 
 			data.finalDamage = 0;
-			data.target->setHp(targetExt->values[ValueBlissfulEmbraceOriginalHealth]);
+			data.target->set_hitpoints(targetExt->values[ValueBlissfulEmbraceOriginalHealth]);
 
 			// Make this a sprite
 			u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
@@ -1058,7 +1058,7 @@ namespace hooks
 					if (nearest != nullptr)
 					{
 						data.finalDamage = 0;
-						data.target->setHp(units_dat::MaxHitPoints[data.target->id] / 2);
+						data.target->set_hitpoints(units_dat::MaxHitPoints[data.target->id] / 2);
 						data.target->order_to(OrderId::Move, nearest->position.x, nearest->position.y);
 						data.target->status |= UnitStatus::CanNotReceiveOrders;
 					}

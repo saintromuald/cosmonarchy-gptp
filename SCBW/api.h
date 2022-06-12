@@ -25,7 +25,7 @@ namespace scbw
 	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y);
 	std::string read_samase_file(char* name);
 	bool teleport(Unit* u, Point16 target, u16 spriteAnimation = 0, bool preserveOrder = false);
-	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 playerId = 11, s32 elevationLevel = 11);
+	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 playerId = 11, s32 elevation_level = 11);
 	Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees);
 	Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees);
 

@@ -76,7 +76,7 @@ namespace hooks
 							in_hangar_child = in_hangar_child->hangar_unit.hangar_link.next;
 						}
 						if (in_hangar_child) {
-							in_hangar_child->setHp(in_hangar_child->hitpoints + 128);
+							in_hangar_child->set_hitpoints(in_hangar_child->hitpoints + 128);
 						}
 					}
 				}

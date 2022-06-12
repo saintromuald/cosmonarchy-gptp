@@ -17,8 +17,8 @@ namespace hooks
 		bool bIsMorphing;
 		if (!(building->status & UnitStatus::Completed))
 		{
-			// was hardcoded instead of using isValidMorph in original code
-			bIsMorphing = helper::isValidMorph(building->build_queue[building->build_queue_slot]);
+			// was hardcoded instead of using is_valid_morph in original code
+			bIsMorphing = helper::is_valid_morph(building->build_queue[building->build_queue_slot]);
 		}
 		else
 		{
@@ -177,7 +177,7 @@ namespace hooks
 				s32 hpAfterMorph;
 				Image* current_image;
 				building->order_signal -= 4;
-				if (helper::isValidMorph(buildingId))
+				if (helper::is_valid_morph(buildingId))
 				{
 					// save hp before some functions modify them
 					hpAfterMorph = building->hitpoints;
@@ -187,32 +187,36 @@ namespace hooks
 					helper::increment_unit_scores_ex(building, -1, 0);
 
 					// do the building change
+					u16 morph_origin = building->id;
 					building->status -= UnitStatus::Completed;
 					helper::replace_unit_with_type(building, buildingId);
+					building->morph_origin = morph_origin;
+
 					// newHp = newHpMax - oldHpMax + oldHp
-					hpAfterMorph =
-						units_dat::MaxHitPoints[buildingId] -
-						units_dat::MaxHitPoints[building->previous_unit_type] +
-						hpAfterMorph;
+					hpAfterMorph = units_dat::MaxHitPoints[buildingId] - units_dat::MaxHitPoints[building->previous_unit_type] + hpAfterMorph;
 					if (hpAfterMorph < 256)
 					{
 						hpAfterMorph = 256;
 					}
-					building->setHp(hpAfterMorph);
+					building->set_hitpoints(hpAfterMorph);
 					building->remaining_build_time = 0;
+				}
+				else {
+					if (building->morph_origin == UnitId::ZergGosvileth && building->previous_hitpoints >= 50 * 256) {
+						Unit* worker = scbw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y);
+						worker->set_hitpoints(building->previous_hitpoints * 256);
+					}
 				}
 				// 0045D6CD
 				helper::update_unit_stats_and_finish_building(building);
 				helper::update_unit_strength(building);
-				// relate to building placement / taking room around?
-				;
 				current_image = building->sprite->images.head;
 				while (current_image != nullptr)
 				{
 					current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 					current_image = current_image->link.next;
 				}
-				helper::SpreadInitialCreep(buildingId, building->sprite->position.x, building->sprite->position.y);
+				helper::spread_initial_creep(buildingId, building->sprite->position.x, building->sprite->position.y);
 			}
 		}
 
@@ -244,7 +248,6 @@ namespace hooks
 		if (jump_to_5D718)
 		{
 			jump_to_5D718 = false;
-
 			building->remaining_build_time--;
 			if (modifier.decrease) {
 				if (building->remaining_build_time > modifier.decrease) {
@@ -253,7 +256,6 @@ namespace hooks
 					building->remaining_build_time = 0;
 				}
 			}
-
 			jump_to_5D720 = true;
 		}
 
@@ -267,7 +269,7 @@ namespace hooks
 				{
 					hpGain *= OPCWAL_PROGRESS_INCREASE;
 				}
-				building->setHp(building->hitpoints + hpGain);
+				building->set_hitpoints(building->hitpoints + hpGain);
 			}
 		}
 	}
@@ -278,8 +280,8 @@ namespace hooks
 		if (!(unit->status & UnitStatus::Completed))
 		{
 			u16 builtUnitId = unit->build_queue[unit->build_queue_slot];
-			// original code was hardcoded instead of using isValidMorph
-			if (helper::isValidMorph(builtUnitId))
+			// original code was hardcoded instead of using is_valid_morph
+			if (helper::is_valid_morph(builtUnitId))
 			{
 				if (unit->get_race() == RaceId::Zerg)
 				{
@@ -325,7 +327,7 @@ namespace hooks
 			static u32* const u32_00581E44 = (u32*)0x00581E44;
 			static u32* const u32_00581ED4 = (u32*)0x00581ED4;
 			static u16* const u16_0066345A = (u16*)0x0066345A;
-			helper::refundBuildingCost(unit->id, unit->player);
+			helper::refund_building_cost(unit->id, unit->player);
 
 			// possibly related to scores?
 			u32_00581ED4[unit->player] = u32_00581ED4[unit->player] - *u16_0066345A;
@@ -333,19 +335,27 @@ namespace hooks
 
 			if (unit->id == UnitId::ZergExcisant)
 			{
-				Unit* drone = helper::create_unit(UnitId::ZergDroleth, unit->get_x(), unit->get_y(), unit->player);
-				if (drone == nullptr)
+				u16 worker_id = UnitId::ZergDroleth;
+				if (unit->morph_origin = UnitId::ZergGosvileth) {
+					worker_id = UnitId::ZergGosvileth;
+				}
+				Unit* worker = helper::create_unit(worker_id, unit->get_x(), unit->get_y(), unit->player);
+				if (worker == nullptr)
 				{
-					helper::refund_unit_train_cost(UnitId::ZergDroleth, unit->player);
+					helper::refund_unit_train_cost(worker_id, unit->player);
 					helper::display_last_network_error_for_player(unit->player);
 					unit->remove();
 					bStopThere = true;
 				}
 				else
 				{ // 0045DB1E
-					helper::update_unit_stats_and_finish_building(drone);
-					helper::update_unit_strength(drone);
-					drone->setHp(unit->previous_hitpoints * 256);
+					unit->morph_origin = UnitId::ZergLarva;
+					if (worker_id == UnitId::ZergGosvileth) {
+						unit->morph_origin = UnitId::ZergDroleth;
+					}
+					helper::update_unit_stats_and_finish_building(worker);
+					helper::update_unit_strength(worker);
+					worker->set_hitpoints(unit->previous_hitpoints * 256);
 					unit->remove();
 					bStopThere = true;
 				}
@@ -356,27 +366,32 @@ namespace hooks
 				Thingy* thingy = helper::create_thingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
 				if (thingy != nullptr)
 				{
-					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
+					thingy->sprite->elevation_level = unit->sprite->elevation_level + 1;
 					helper::set_thingy_visibility_flags(thingy);
 				}
 				helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
-				helper::replace_unit_with_type(unit, UnitId::ZergDroleth);
-				// probably AI related
-				helper::updateBuildingsAI(unit);
+				if (unit->morph_origin == UnitId::ZergGosvileth) {
+					helper::replace_unit_with_type(unit, UnitId::ZergGosvileth);
+					unit->morph_origin = UnitId::ZergDroleth;
+				}
+				else {
+					helper::replace_unit_with_type(unit, UnitId::ZergDroleth);
+					unit->morph_origin = UnitId::ZergLarva;
+				}
+				helper::update_building_ai(unit);
 				helper::update_unit_stats_and_finish_building(unit);
 				helper::update_unit_strength(unit);
 
-				if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW &&
-					unit->sprite->images.tail->verticalOffset != 7)
+				if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW && unit->sprite->images.tail->verticalOffset != 7)
 				{
 					unit->sprite->images.tail->flags |= ImageFlags::Redraw;
 					unit->sprite->images.tail->verticalOffset = 7;
 				}
 
-				helper::refreshSpriteData(unit->sprite);
+				helper::refresh_sprite_data(unit->sprite);
 				unit->order_computer(OrderId::ResetCollision1);
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
-				unit->setHp(unit->previous_hitpoints * 256);
+				unit->set_hitpoints(unit->previous_hitpoints * 256);
 
 				helper::update_creep_disappearance_unit_id(unit->id, unit->get_x(), unit->get_y(), false);
 			}

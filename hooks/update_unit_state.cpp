@@ -435,7 +435,7 @@ namespace hooks
 				s32 regen = 11; // 1 HP per second
 
 				regen *=  1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size();
-				unit->setHp(unit->hitpoints + regen);
+				unit->set_hitpoints(unit->hitpoints + regen);
 			}
 
 			// Deliberate healing

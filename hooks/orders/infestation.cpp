@@ -145,7 +145,7 @@ namespace hooks
 					{
 						unitInfested->sprite->create_overlay(infestationOverlayId);
 					}
-					unitInfested->setHp(units_dat::MaxHitPoints[infestedUnitNewId]);
+					unitInfested->set_hitpoints(units_dat::MaxHitPoints[infestedUnitNewId]);
 
 					// give the proper button set to the unit
 					helper::change_unit_buttonset(unitInfested, infestedUnitNewId);

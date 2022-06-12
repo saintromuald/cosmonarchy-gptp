@@ -104,7 +104,7 @@ namespace hooks
 					{
 						builtUnit->connected_unit = unit;
 						unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
-						unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
+						unit->sprite->elevation_level = units_dat::Elevation[unit->id] + 1;
 						unit->order_simple(OrderId::ResetCollision1, false);
 						unit->order_simple(units_dat::ReturnToIdleOrder[unit->id], false);
 						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
@@ -392,7 +392,7 @@ namespace hooks
 				{
 					Unit* builtUnit;
 					unit->status &= ~UnitStatus::IsNormal;
-					unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
+					unit->sprite->elevation_level = units_dat::Elevation[unit->id] + 1;
 					if (unit->order_queue_head == nullptr) // 004680A5
 					{
 						helper::add_order_targeting_nothing(unit, nullptr, OrderId::ResetCollision1);

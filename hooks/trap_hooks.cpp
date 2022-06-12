@@ -51,7 +51,7 @@ namespace hooks
 				|| unit_id == UnitId::Special_PitDoor
 				|| unit_id == UnitId::Special_RightPitDoor)
 			{
-				pUnit->sprite->elevationLevel = 1;
+				pUnit->sprite->elevation_level = 1;
 			}
 			/*
 			ByteOperations::SetLowByte(unitFlags, pUnit->id);

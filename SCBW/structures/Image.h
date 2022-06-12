@@ -14,7 +14,7 @@ struct Sprite;
 struct GrpHead;
 struct GrpFrame;
 
-/// Used by Image.paletteType
+/// Used by Image.palette_type
 namespace PaletteType
 {
 	enum Enum : u8
@@ -99,7 +99,7 @@ struct Image
 
 	/// ++Drawing function (values are the same as DataEdit)
 	/// officially "ubRLE"
-	/*0x0A*/  u8						paletteType;				//Use PaletteType::Enum
+	/*0x0A*/  u8						palette_type;				//Use PaletteType::Enum
 	/*0x0B*/  u8						direction;
 	/*0x0C*/  u16						flags;						// Use CImage_Flags enum
 	/*0x0E*/  u8						horizontalOffset;
