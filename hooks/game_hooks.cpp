@@ -455,6 +455,10 @@ namespace hooks
 			}
 		}
 
+		if ((unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergGosvileth) && unit->status& UnitStatus::Completed) {
+			unit->morph_origin = unit->id;
+		}
+
 		switch (unit->id)
 		{
 			case UnitId::TerranReservoir:
@@ -1349,6 +1353,7 @@ namespace hooks
 				if (unitExt->timers[TimerTyrannyRecede] <= 4 * 24) {
 					if (unit->status & UnitStatus::Frozen) {
 						unit->unfreeze();
+						unit->unfreeze();
 					}
 					u32 offset = scbw::get_overlay_offset(unit->id, true);
 					unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
@@ -1366,6 +1371,7 @@ namespace hooks
 			}
 			if (!unitExt->timers[TimerTyrannyRecede]) {
 				if (unit->status & UnitStatus::Frozen) {
+					unit->unfreeze();
 					unit->unfreeze();
 				}
 				u32 offset = scbw::get_overlay_offset(unit->id, true);
