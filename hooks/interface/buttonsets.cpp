@@ -271,15 +271,18 @@ namespace hooks {
 			}
 		}
 		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank) {
+			bool mixed = *BUTTONSET_CURRENT_BUTTONSETID == UnitId::Buttons_GroupMixed;
 			if (count_workers == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
 			} else if (count_burrowables != 0 && count_zergs == *client_selection_count) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
+				if (mixed) {
+					*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
+				}
 			} else if (count_larva && count_larva + count_eggs == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
 			} else if (count_hatches == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
-			} else if (count_lifted_buildings) {
+			} else if (count_lifted_buildings && mixed) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_Blank;
@@ -720,15 +723,18 @@ namespace hooks {
 
 					if (current_button->icon_id == IconId::Burrow) {
 						bool has_burrowed = false;
+						bool has_unburrowed = false;
 
 						*unit_iterator_pos = 0;
 						while (Unit* unit = helper::get_next_commanded_unit()) {
 							if (unit->status & UnitStatus::Burrowed) {
 								has_burrowed = true;
+							} else {
+								has_unburrowed = true;
 							}
 						}
 
-						if (has_burrowed) {
+						if (has_burrowed && !has_unburrowed) {
 							current_button_state = Button_State::Invisible;
 						} else {
 							current_button_state = Button_State::Enabled;
@@ -748,7 +754,7 @@ namespace hooks {
 							}
 						}
 
-						if (has_burrowed || has_unburrowed) {
+						if (has_burrowed) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;

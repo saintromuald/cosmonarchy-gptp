@@ -1353,7 +1353,6 @@ namespace hooks
 				if (unitExt->timers[TimerTyrannyRecede] <= 4 * 24) {
 					if (unit->status & UnitStatus::Frozen) {
 						unit->unfreeze();
-						unit->unfreeze();
 					}
 					u32 offset = scbw::get_overlay_offset(unit->id, true);
 					unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
@@ -1371,7 +1370,6 @@ namespace hooks
 			}
 			if (!unitExt->timers[TimerTyrannyRecede]) {
 				if (unit->status & UnitStatus::Frozen) {
-					unit->unfreeze();
 					unit->unfreeze();
 				}
 				u32 offset = scbw::get_overlay_offset(unit->id, true);
