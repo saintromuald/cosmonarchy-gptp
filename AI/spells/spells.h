@@ -4,7 +4,7 @@
 namespace AI {
 
 Unit* findBestLockdownTarget(Unit* caster, bool isUnderAttack);
-Unit* findBestNukeLaunchTarget(Unit* caster, bool isUnderAttack);
+Unit* find_best_nuke_launch_target(Unit* caster, bool isUnderAttack);
 Unit* findBestDefensiveMatrixTarget(Unit* caster, bool isUnderAttack);
 Unit* findBestEmpShockwaveTarget(Unit* caster, bool isUnderAttack);
 Unit* findBestIrradiateTarget(Unit* caster, bool isUnderAttack);

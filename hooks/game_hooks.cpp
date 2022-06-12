@@ -113,7 +113,7 @@ namespace hooks
 	}
 
 	void ui_button_click(BinDlg* dialog) {
-		if (dialog->parent && dialog->parent->pszText && strcmp(dialog->parent->pszText, "StatBtn") == 0) {
+		if (dialog->parent && dialog->parent->psz_text && strcmp(dialog->parent->psz_text, "StatBtn") == 0) {
 			hooks::disable_quickcasting  = 5;
 			hooks::disable_quickbuilding = 5;
 		}

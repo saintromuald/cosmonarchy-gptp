@@ -502,7 +502,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectEnterNydusHooks();
 	hooks::injectCastOrderHooks();
 	hooks::injectWpnSpellHitHooks();
-	hooks::injectBuildingMorphHooks();
+	hooks::inject_building_morph_hooks();
 	hooks::injectMakeNydusExitHook();
 	hooks::injectUnitMorphHooks();
 	hooks::injectWireframeHook();
@@ -513,7 +513,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	hooks::inject_load_unload_proc_hooks();
 	hooks::injectLoadUnloadOrdersHooks();
-	hooks::injectNukeOrdersHooks();
+	hooks::inject_nuke_orders_hooks();
 //	hooks::injectBurrowTechHooks();
 //	hooks::injectResearchUpgradeOrdersHooks();
 	hooks::injectMedicOrdersHooks();
