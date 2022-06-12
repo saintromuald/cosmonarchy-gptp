@@ -333,6 +333,6 @@ namespace hooks
 			*last_internal_error = 23;
 			return 0;
 		}
-		return helper::parse_requirement_opcodes(unit, tech_id, player, (u32)requirements::tech, req_offset);
+		return helper::parse_requirement_opcodes(unit, tech_id, player, requirements::tech, req_offset);
 	}
 }

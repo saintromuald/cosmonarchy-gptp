@@ -428,7 +428,7 @@ namespace helper
 	//// CMDRECV_Stop
 	void parse_orders_dat_requirements();																							// 0046D450
 	u16* parse_tech_dat_requirements();																								// 0046D4C0
-	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 playerId, u32 address, u32 req_offset);								// 0046D610
+	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 playerId, u16* address, u32 req_offset);							// 0046D610
 
 	//// give_unit
 	void apply_speed_upgrade_from_unit_type(Unit* unit);																			// 00454370

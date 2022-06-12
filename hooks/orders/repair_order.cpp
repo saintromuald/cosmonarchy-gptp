@@ -323,8 +323,8 @@ namespace hooks
 								result = helper::parse_requirement_opcodes(unit,
 									order_id,
 									player,
-									orders_dat::RequirementsOffset[order_id],
-									(s32)orders_requirement_tree);
+									orders_requirement_tree,
+									orders_dat::RequirementsOffset[order_id]);
 							}
 							else
 							{

@@ -428,7 +428,7 @@ SCBW_DATA(s32*,		lastBulletIndex,					0x0064DEA8);
 
 // For order_allowed
 SCBW_DATA(s32*,	last_internal_error,					0x0066FF60);
-SCBW_DATA(s16*, orders_requirement_tree,				0x00514CF8);
+SCBW_DATA(u16*, orders_requirement_tree,				0x00514CF8);
 
 // For larva_creep_spawn
 SCBW_DATA(s16*, larvaCounter,						0x0067D3F8);

@@ -101,7 +101,7 @@ namespace hooks
 						}
 						else
 						{
-							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPointToTile, player, (u32)orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::RallyPointToTile]);
+							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPointToTile, player, (u16*)orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::RallyPointToTile]);
 						}
 					}
 					else

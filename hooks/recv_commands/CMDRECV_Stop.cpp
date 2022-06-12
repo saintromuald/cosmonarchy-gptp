@@ -73,7 +73,7 @@ namespace hooks
 													current_unit,
 													OrderId::ReaverStop,
 													*ACTIVE_NATION_ID,
-													0x00514CF8,
+													(u16*)0x00514CF8,
 													orders_dat::RequirementsOffset[OrderId::ReaverStop]
 												) == 1)
 												{
@@ -181,7 +181,7 @@ namespace hooks
 													current_unit,
 													OrderId::CarrierStop,
 													*ACTIVE_NATION_ID,
-													0x00514CF8,
+													(u16*)0x00514CF8,
 													orders_dat::RequirementsOffset[OrderId::CarrierStop]
 												) == 1)
 												{
@@ -287,7 +287,7 @@ namespace hooks
 				current_unit,
 				OrderId::Stop,
 				*ACTIVE_NATION_ID,
-				0x00514CF8,
+				(u16*)0x00514CF8,
 				orders_dat::RequirementsOffset[OrderId::Stop]
 			) == 1)
 			{

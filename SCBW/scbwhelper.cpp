@@ -3860,7 +3860,7 @@ namespace helper
 		return result;
 	}
 
-	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 playerId, u32 address, u32 req_offset)
+	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 playerId, u16* address, u32 req_offset)
 	{
 		const u32 Func_parseRequirementOpcodes = 0x0046D610;
 		static s32 return_value;
