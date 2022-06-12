@@ -230,32 +230,17 @@ namespace hooks
 		}
 	}
 
-	char getMaxHangerSpace(Unit* unit) // 0x004653D0
-	{
-		u16 id;
-		s32 hangarSpace;
-
-		id = unit->id;
-		if (id != UnitId::ProtossSolarion)
-		{
-			if (id != UnitId::ProtossAccantor)
-			{
-				hangarSpace = 0;
-			}
-			else
-			{
-				hangarSpace = 5;
-			}
+	char getMaxHangerSpace(Unit* unit) { // 0x004653D0
+		if (unit->id == UnitId::ProtossSolarion) {
+			return 12;
 		}
-		else
-		{
-			hangarSpace = 12;
+		if (unit->id == UnitId::ProtossAccantor) {
+			return 1;
 		}
-		return hangarSpace;
+		return 0;
 	}
 
-	b32 _stdcall ButtonIsTraining(Unit* unit)
-	{
+	b32 _stdcall ButtonIsTraining(Unit* unit) {
 		return unit->build_queue[unit->build_queue_slot % 5] != UnitId::None;
 	}
 }
