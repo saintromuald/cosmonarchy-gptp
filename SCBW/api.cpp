@@ -2494,8 +2494,12 @@ namespace scbw
 
 	bool all_selected_units_have_addon(u32 unit_id) {
 		bool has_selection = false;
-		*unit_iterator_pos = 0;
-		while (Unit* unit = helper::get_active_player_next_selection()) {
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			Unit* unit = client_selection_group->unit[i];
+			if (!unit) {
+				break;
+			}
+
 			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
 				return false;
 			}

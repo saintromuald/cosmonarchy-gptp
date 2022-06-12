@@ -11,8 +11,11 @@ namespace hooks
 			Unit* unit = *it;
 			if (unit->id == UnitId::ZergLarva && !(unit->sprite->flags & SpriteFlags::Hidden)) {
 				bool connected = false;
-				*unit_iterator_pos = 0;
-				for (Unit* other = helper::get_active_player_next_selection(); other; other = helper::get_active_player_next_selection()) {
+				for (u32 i = 0; i < SelectionCap; ++i) {
+					Unit* other = client_selection_group->unit[i];
+					if (!other) {
+						break;
+					}
 					if (unit->connected_unit == other) {
 						connected = true;
 						break;
@@ -36,8 +39,11 @@ namespace hooks
 		u32 count = 0;
 		Unit* selection[SelectionCap] = {};
 
-		*unit_iterator_pos = 0;
-		while (Unit* unit = helper::get_active_player_next_selection()) {
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			Unit* unit = client_selection_group->unit[i];
+			if (!unit) {
+				break;
+			}
 			Box16 coords = {};
 			coords.right = unit->sprite->position.x + 128;
 			coords.bottom = unit->sprite->position.y + 128;
@@ -47,9 +53,7 @@ namespace hooks
 			Unit** units_in_bounds = helper::get_all_units_in_bounds(&coords);
 			Unit* found_larvae[SelectionCap] = {};
 
-			u32 temp = *unit_iterator_pos;
 			u32 found_count = get_larvae_units_from_list(units_in_bounds, found_larvae);
-			*unit_iterator_pos = temp;
 
 			*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[--*tempUnitsListArraysCountsListLastIndex];
 

@@ -279,9 +279,13 @@ namespace hooks {
 					*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
 				}
 			} else if (count_larva && count_larva + count_eggs == *client_selection_count) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
+				if (mixed) {
+					*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
+				}
 			} else if (count_hatches == *client_selection_count) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
+				if (mixed) {
+					*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
+				}
 			} else if (count_lifted_buildings && mixed) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_buildings) {
@@ -625,6 +629,16 @@ namespace hooks {
 			buttonsetId = UnitId::Special_StartLocation;
 		}
 
+		bool has_larva = false;
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			Unit* unit = client_selection_group->unit[i];
+			if (!unit) {
+				break;
+			}
+			if (unit->id == UnitId::ZergLarva) {
+				has_larva= true;
+			}
+		}
 
 		ButtonSet* const current_buttonset = getButtonSet(buttonsetId);
 		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
@@ -681,7 +695,7 @@ namespace hooks {
 						}
 					}
 
-					if (unit->id == UnitId::ZergEgg) {
+					if (has_larva && unit->id == UnitId::ZergEgg) {
 						current_button_state = Button_State::Enabled;
 					}
 
