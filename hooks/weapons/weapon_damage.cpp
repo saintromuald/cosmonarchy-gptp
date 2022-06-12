@@ -30,9 +30,9 @@ namespace
 bool darkswarm_blocks_damage(Unit* target, u32 weaponId, u32 damageDivisor) {
 	return scbw::is_under_dark_swarm(target)
 		&& weapons_dat::MaxRange[weaponId] > 32
-		&& (damageDivisor == 1 || weaponId == WeaponId::AcidSpore)
-		&& weaponId != WeaponId::FlameThrower
-		&& weaponId != WeaponId::SubterraneanSpines
+		&& (damageDivisor == 1 || weaponId == WeaponId::GeszithalorAcidSpore)
+		&& weaponId != WeaponId::HarakanFlameThrower
+		&& weaponId != WeaponId::LakiziliskSubterraneanSpines
 		&& weaponId != WeaponId::Custom;
 }
 
@@ -77,7 +77,7 @@ namespace hooks
 		weapon_damage_root(data);
 	}
 
-	void weaponDamageCustom(
+	void weapon_damage_custom(
 		s32 damage,
 		Unit* target,
 		u8 damageType,
@@ -349,23 +349,6 @@ namespace hooks
 			data.damageType = DamageType::Independent;
 		}
 
-		switch (data.weaponId) // Damage Calc
-		{
-			case WeaponId::SubterraneanTentacle:
-			case WeaponId::SeekerSpores:
-			{
-				if (data.attacker)
-				{
-					UnitExt* attackerExt = globals.get_unit_ext(data.attacker);
-					if (attackerExt->values[ValueAmitosis] == 1)
-					{
-						data.finalDamage /= 2;
-						attackerExt->values[ValueAmitosis] = 0;
-					}
-				}
-			} break;
-		}
-
 		// Observance Armor Rend
 		data.finalDamage += 256 * targetExt->values[ValueObservanceRend];
 
@@ -382,13 +365,13 @@ namespace hooks
 				s32 dmg = ((f64)data.finalDamage / div);
 				data.finalDamage = dmg + targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
-			case WeaponId::AcidSpore:
+			case WeaponId::GeszithalorAcidSpore:
 			{
 				// Searing Acid - Geszithalor behavior
 				data.finalDamage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
 			} break;
 			case WeaponId::LiiraliskHollowedSpores:
-			case WeaponId::GlaveWurm:
+			case WeaponId::MutaliskGlaveWurm:
 			case WeaponId::CharlatanFerventBlaster:
 			{
 				// Lithe Organelle - bounce damage
@@ -418,7 +401,7 @@ namespace hooks
 			} break;
 			case WeaponId::AlmaksaliskPiercingSpines:
 			{
-				// Almaksalisk - Flanking Spines
+				// Almaksalisk - Flanking DrolethSpines
 				if (scbw::is_debuffed(data.target))
 				{
 					data.damageType = DamageType::IgnoreArmor;
@@ -466,7 +449,7 @@ namespace hooks
 					{
 						return;
 					}
-					Unit* hal_unit = helper::createHallucination(haluAttacker, haluAttacker->player);
+					Unit* hal_unit = helper::create_hallucination(haluAttacker, haluAttacker->player);
 					if (hal_unit != nullptr)
 					{
 						hal_unit->sprite->create_overlay(ImageId::HallucinationDeath3);
@@ -549,7 +532,7 @@ namespace hooks
 				{
 					targetExt->timers[TimerAnthelionGravityWell] = 2;
 				} break;
-				case WeaponId::Claws:
+				case WeaponId::ZethrokorClaws:
 				{
 					// Adrenal Glands - Zergling behavior
 					if (attackerExt->values[ValueAdrenalStacks] < 4)
@@ -573,7 +556,7 @@ namespace hooks
 				} break;
 				case WeaponId::VorvalingClaws:
 				{
-					// Captivating Claws - Vorvaling behavior
+					// Captivating ZethrokorClaws - Vorvaling behavior
 					captivating_claws_apply(data.attacker, data.target);
 				} break;
 				case WeaponId::GorgrokorSerratedCleavers:
@@ -615,7 +598,7 @@ namespace hooks
 					} break;
 					case WeaponId::KonviliskSowingSpines:
 					{
-						// Fertile Spines - Konvilisk behavior
+						// Fertile DrolethSpines - Konvilisk behavior
 						scbw::apply_parasite(data.target, data.attacker->player, data.attacker);
 					} break;
 					case WeaponId::GorgonArtificeBattery:
@@ -832,7 +815,7 @@ namespace hooks
 		u32 damageDealt = data.finalDamage + data.shieldReduceAmount;
 		switch (data.weaponId)
 		{
-			case WeaponId::KaiserBlades:
+			case WeaponId::UltrokorKaiserBlades:
 			{
 				// Ultrakor Saber Siphon passive
 				data.attacker->heal(damageDealt * 0.5, data.attacker);
@@ -1095,7 +1078,7 @@ namespace hooks
 					targetExt->values[ValueAlkajeliskParasite] = 1;
 					targetExt->values[ValueAlkajeliskParasitePlayer] = data.attacker->player;
 				} break;
-				case WeaponId::KaiserBlades:
+				case WeaponId::UltrokorKaiserBlades:
 				{
 					// Kaiser Rampage - Ultralisk behavior
 					attackerExt->timers[TimerKaiserRampage] = 1 + (2 * 24);
@@ -1166,52 +1149,36 @@ namespace hooks
 		return overlayMultiplier + 4 * scbw::get_overlay_offset(target->id) + ImageId::AcidSpores_1_Overlay_Small;
 	}
 
-	// TODO: Refactor
 	// Hooked to change Corrosive Spores timer - Pr0nogo
 	s32 apply_spores_hook(Unit* target) // 004F4480
 	{
-		u8 sporeCount;
-		u32 overlayMultiplier;
-		u8 overlayOffset;
-		s32 overlay = 0;
-		s32 v6;
-		Unit* targetFinal;
-		u32 result_sub_1;
-		u32 acidTimeMax;
-		u32 result;
-		u32 v11_acidSporeTime;
-		Image* image;
-		Sprite* spriteFinal;
-
 		UnitExt* targetExt = globals.get_unit_ext(target);
 		targetExt->values[ValueCorrosiveTouchStacks]++;
-		image = target->get_overlay(get_spores_overlay_id(target));
+		Image* image = target->get_overlay(get_spores_overlay_id(target));
+		u32 overlay = 0;
 		if (image)
 		{
 			overlay = image->id;
 		}
+
 		if (!overlay)
 		{
 			target->remove_overlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
-			v6 = helper::getCorrosiveSporesImage(target);
-			targetFinal = target->subunit;
-			if (!targetFinal)
+			u32 spores_image = helper::get_corrosive_spores_image(target);
+			Unit* final_unit = target->subunit;
+			if (!final_unit)
 			{
-				targetFinal = target;
+				final_unit = target;
 			}
-			spriteFinal = targetFinal->sprite;
-			spriteFinal->create_overlay(v6, 0, 0, 0);
+			Sprite* final_sprite = final_unit->sprite;
+			final_sprite->create_overlay(spores_image, 0, 0, 0);
 		}
 
-		result_sub_1 = 0;
-		acidTimeMax = 99999;
-		result = 0;
-
 		targetExt->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
-		return result;
+		return 0;
 	}
 
-	// Hooked to fix one-shots never notifying. -Pr0nogo
+	// Hooked to fix one-shots never notifying owners. -Pr0nogo
 	void unit_attack_notify(Unit* unit) // 0048F230
 	{
 		if (!*bw_is_in_replay && unit->player == *LOCAL_NATION_ID)

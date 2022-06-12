@@ -5243,7 +5243,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	// for createHallucination
+	// for create_hallucination
 
 	void apply_hallucination_stats(Unit* halUnit)
 	{
@@ -5392,8 +5392,7 @@ namespace helper
 	}
 
 	// Hallucination-related
-	// Moved here instead of including an entire other file...
-	Unit* createHallucination(Unit* target, u32 playerId)
+	Unit* create_hallucination(Unit* target, u32 playerId)
 	{
 		const u32 Func_createHallucination = 0x004F6B90;
 		static Unit* return_value;
@@ -5409,7 +5408,7 @@ namespace helper
 	}
 
 	// For updateCorrosiveSpores
-	u32 getCorrosiveSporesImage(Unit* unit)
+	u32 get_corrosive_spores_image(Unit* unit)
 	{
 		const u32 Func_getCorrosiveSporesImage = 0x004F41F0;
 		static u32 result;
@@ -5423,7 +5422,7 @@ namespace helper
 		return result;
 	}
 
-	void insertFirstOrder(Unit* unit, u8 order_id)
+	void insert_first_order(Unit* unit, u8 order_id)
 	{
 		const u32 Helper_InsertFirstOrder = 0x004749D0;
 		__asm {
@@ -5919,6 +5918,7 @@ namespace helper
 				new_y = source->sprite->position.y - 48;
 			}
 		}
+
 		static Bullet* bullet;
 		__asm {
 			PUSHAD

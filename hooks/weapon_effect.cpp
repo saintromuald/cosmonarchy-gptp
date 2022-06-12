@@ -424,7 +424,7 @@ namespace hooks
 			divisor = globals.get_divider(bullet);
 		}
 
-		else if (weaponId == WeaponId::AcidSpore
+		else if (weaponId == WeaponId::GeszithalorAcidSpore
 			&& bullet->sourceUnit
 			&& bullet->sourceUnit->sprite
 			&& target->sprite)

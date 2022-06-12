@@ -692,7 +692,7 @@ namespace hooks
 					else
 					{ // 004789CC
 						helper::set_resource_target(unit);
-						if (!unit->is_target_within_min_range(target, weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran]))
+						if (!unit->is_target_within_min_range(target, weapons_dat::OuterSplashRadius[WeaponId::InfestedTerranSuicide]))
 						{
 							unit->order_to_idle();
 							bStopThere = true;
@@ -761,7 +761,7 @@ namespace hooks
 							unit->order_target.pt.y * 256,
 							unit->halt.x,
 							unit->halt.y);
-					if ((distance / 256) > weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran])
+					if ((distance / 256) > weapons_dat::OuterSplashRadius[WeaponId::InfestedTerranSuicide])
 					{
 						unit->order_to_idle();
 						bStopThere = true;

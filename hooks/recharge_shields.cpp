@@ -156,7 +156,7 @@ namespace hooks
 					unit->sprite->create_overlay(ImageId::RechargeShields_Small + overlaysCounter, 0, 0, 0);
 
 					//the order is correct, see OrderId.h description
-					helper::insertFirstOrder(unit, OrderId::Harvest5);
+					helper::insert_first_order(unit, OrderId::Harvest5);
 
 					unit->main_order_state = 3;
 

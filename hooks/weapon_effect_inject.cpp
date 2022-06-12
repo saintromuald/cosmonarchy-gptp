@@ -16,7 +16,7 @@ namespace
 			MOV bullet, EBX
 			MOV weaponId, ECX
 		}
-		if (weaponId == WeaponId::SubterraneanSpines)
+		if (weaponId == WeaponId::LakiziliskSubterraneanSpines)
 		{
 			hooks::lurkerSplash(bullet, weaponId, SplashType::FriendlyNew);
 		}
@@ -43,7 +43,7 @@ namespace
 			MOV bullet, EBX
 			MOV weaponId, ECX
 		}
-		if (weaponId == WeaponId::SubterraneanSpines)
+		if (weaponId == WeaponId::LakiziliskSubterraneanSpines)
 		{
 			hooks::lurkerSplash(bullet, weaponId, SplashType::Enemy);
 		}
@@ -69,7 +69,7 @@ namespace
 			MOV bullet, EBX
 			MOV weaponId, ECX
 		}
-		if (weaponId == WeaponId::SubterraneanSpines)
+		if (weaponId == WeaponId::LakiziliskSubterraneanSpines)
 		{
 			hooks::lurkerSplash(bullet, weaponId, SplashType::Radial);
 		}

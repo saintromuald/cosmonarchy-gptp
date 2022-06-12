@@ -36,7 +36,7 @@ namespace
 			MOV source, ECX
 			PUSHAD
 		}
-		result = hooks::createHallucination(source, player);
+		result = hooks::create_hallucination(source, player);
 		__asm {
 			POPAD
 			MOV EAX, result

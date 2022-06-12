@@ -590,7 +590,7 @@ void Unit::damage_with_custom(
 {
 	assert(this);
 
-	hooks::weaponDamageCustom(
+	hooks::weapon_damage_custom(
 		damage,
 		this,
 		damageType,

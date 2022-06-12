@@ -247,7 +247,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		cost -= (weapons_dat::DamageAmount[WeaponId::Scarab] /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
 			* 1.5; // aoe multiplier
 	} else if (target->id == UnitId::ProtossSolarion) {
-		cost -= (weapons_dat::DamageAmount[WeaponId::PulseCannon] /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
+		cost -= (weapons_dat::DamageAmount[WeaponId::StewardPulseCannon] /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
 			* (target->unit_with_hangar.in_hangar_count + target->unit_with_hangar.out_hangar_count)
 			* 1.5; // additional bias to encourage targeting solarions more
 	} else {

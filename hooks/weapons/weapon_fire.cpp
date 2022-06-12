@@ -185,8 +185,8 @@ namespace hooks
 
 		if (weapons_dat::FlingyId[weaponId] != 0)
 		{
-			// Lurker Seismic Spines behavior
-			if (weaponId == WeaponId::SubterraneanSpines)
+			// Lurker Seismic DrolethSpines behavior
+			if (weaponId == WeaponId::LakiziliskSubterraneanSpines)
 			{
 				unitExt->timers[TimerLurkerETA] = 17;
 				auto range = weapons_dat::MaxRange[weaponId] + 16;
@@ -261,7 +261,7 @@ namespace hooks
 					{
 						scbw::set_missile_source_pos(unit, weaponId, ValuePenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
-					case WeaponId::BurstLasers:
+					case WeaponId::WraithBurstLasers:
 					{
 						scbw::set_missile_source_pos(unit, weaponId, ValueWraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr, 0, 2);
 					} break;
@@ -305,6 +305,10 @@ namespace hooks
 					case WeaponId::KeskathalorScreamingVenom:
 					{
 						scbw::set_missile_source_pos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr, 0, 1);
+					} break;
+					case WeaponId::SporeColonySeekerSpores:
+					{
+						scbw::set_missile_source_pos(unit, weaponId, ValueSporeColonyMissilePos, 1, ImagesDatEntries::OverlayAttackPtr, 0, 1);
 					} break;
 					// Missile spawn positions end
 					case WeaponId::SalamanderPerditionBarrage:
@@ -564,7 +568,7 @@ namespace hooks
 		// Empyrean Heavenly Passage
 		// Valkyrie Charon Afterburners
 		else if (bullet->weaponId == WeaponId::EmpyreanPlasmaBarrage
-			|| bullet->weaponId == WeaponId::HaloRockets)
+			|| bullet->weaponId == WeaponId::ValkyrieHaloRockets)
 		{
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::get_nearest_target(

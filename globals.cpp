@@ -925,7 +925,7 @@ namespace scbw
 			unitExt->timers[TimerHallucinating] = CantavisHallucinationTimer;
 		}
 
-		// Refresh Captivating Claws
+		// Refresh Captivating ZethrokorClaws
 		if (unitExt->timers[TimerCaptivatingClaws])
 		{
 			unitExt->timers[TimerCaptivatingClaws] = VorvrokorCaptivatingClawsTimer;
@@ -1029,7 +1029,7 @@ namespace scbw
 			childExt->timers[TimerHallucinating] = parentExt->timers[TimerHallucinating];
 		}
 
-		// Inherit Captivating Claws
+		// Inherit Captivating ZethrokorClaws
 		if (auto timer = parentExt->timers[TimerCaptivatingClaws])
 		{
 			childExt->timers[TimerCaptivatingClaws] = timer;
@@ -1283,7 +1283,7 @@ namespace scbw
 			unitExt->timers[TimerHallucinating] = 1;
 		}
 
-		// Remove Captivating Claws
+		// Remove Captivating ZethrokorClaws
 		if (unitExt->timers[TimerCaptivatingClaws])
 		{
 			unitExt->timers[TimerCaptivatingClaws] = 1;

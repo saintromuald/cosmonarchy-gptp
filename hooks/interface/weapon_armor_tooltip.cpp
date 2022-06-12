@@ -19,9 +19,9 @@ char buffer[256];
 u8 getDamageFactorForTooltip(u8 weaponId, Unit* unit)
 {
 	if (weaponId == WeaponId::CohortGaussPistols
-	||  weaponId == WeaponId::FlameThrower
+	||  weaponId == WeaponId::HarakanFlameThrower
 	||  weaponId == WeaponId::PazuzuJupiterDriver
-	||  weaponId == WeaponId::PsiBlades
+	||  weaponId == WeaponId::ZealotPsiBlades
 	||  weaponId == WeaponId::LegionnairePsiSabers
 	||  weaponId == WeaponId::AmaranthPsiCleaver
 	||  weaponId == WeaponId::GolemBloodlessAssault
@@ -214,7 +214,7 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 		if (bonusDamage > 0) text += "+" + std::to_string(damageFactor * bonusDamage);
 
 		/*
-		if (weaponId == WeaponId::HaloRockets)
+		if (weaponId == WeaponId::ValkyrieHaloRockets)
 		{
 			text += " " + std::string(perRocketStr);
 		}
@@ -464,7 +464,7 @@ namespace hooks
 		// Aise Timer + Value
 		addStatus(statuses, "Adrenal Glands", unitExt->values[ValueAdrenalStacks], 4,
 			unitExt->timers[TimerAdrenal], TimerType::Aise);
-		addStatus(statuses, "Captivating Claws", captivating_claws_get_stacks(unit), 4,
+		addStatus(statuses, "Captivating ZethrokorClaws", captivating_claws_get_stacks(unit), 4,
 			captivating_claws_get_timer(unit), TimerType::Aise);
 		addStatus(statuses, "Swarming Omen Aura", unitExt->values[ValueSwarmingOmenAbility], 1,
 			unitExt->timers[TimerSwarmingOmen], TimerType::Aise);
@@ -725,7 +725,7 @@ namespace hooks
 	{
 		if (iconUnitId == UnitId::ProtossSteward)
 		{
-			return getDamageTooltipString(WeaponId::PulseCannon, unit, 791);				// "Interceptors"
+			return getDamageTooltipString(WeaponId::StewardPulseCannon, unit, 791);				// "Interceptors"
 		}
 		if (iconUnitId == UnitId::ProtossPlasmaShell)
 		{
