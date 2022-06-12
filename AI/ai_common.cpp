@@ -49,7 +49,7 @@ namespace AI
 	bool isUmsMode(u8 playerId)
 	{
 		assert(playerId < 8);
-		return AIScriptController[playerId].AI_Flags.isUseMapSettings;
+		return AIScriptController[playerId].AI_Flags.is_use_map_settings;
 	}
 
 	// Internal use only

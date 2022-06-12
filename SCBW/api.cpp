@@ -2266,7 +2266,7 @@ namespace scbw
 
 	void spread_custom_creep(Unit* unit) {
 		scbw::stop_custom_creep_disappearing(unit);
-		helper::spreadCreep(UnitId::ZergHive, unit->position.x, unit->position.y);
+		helper::spread_creep(UnitId::ZergHive, unit->position.x, unit->position.y);
 	}
 
 	void update_custom_creep_disappearance(Unit* unit) {

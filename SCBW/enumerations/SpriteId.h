@@ -384,7 +384,7 @@ namespace SpriteId
 		Hallucination_Death2 = 375,
 		Hallucination_Death3 = 376,
 		Bunker_Overlay = 377,
-		FlameThrower = 378,
+		HarakanFlameThrower = 378,
 		Recall_Field = 379,
 		Scanner_Sweep_Hit = 380,
 		Left_Upper_Level_Door = 381,

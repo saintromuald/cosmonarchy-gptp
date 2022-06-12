@@ -191,7 +191,7 @@ namespace hooks
 			// look for a place to spawn creep on
 			// return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
 			// Replace UnitId::ZergHive with unit->id if giving specific buildings different creep bounding rectangles in getCreepRegion
-			result_00414680 = helper::spreadCreep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
+			result_00414680 = helper::spread_creep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
 			if (unit->id == 180 && result_00414680 != 0)
 			{
 				u32 current_tile_x = unit->sprite->position.x / 32;

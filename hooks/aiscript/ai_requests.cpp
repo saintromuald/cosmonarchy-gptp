@@ -568,7 +568,7 @@ namespace hooks
 
 		if (!helper::hasResourcesForUnit(nextBuildType, player))
 		{
-			error = (AIScriptController[player].AI_Flags.isUseMapSettings) == 0;
+			error = (AIScriptController[player].AI_Flags.is_use_map_settings) == 0;
 			if (error)
 			{
 				helper::ai_reserve(player, 0);
@@ -740,7 +740,7 @@ namespace hooks
 				--region_count_zeroed;
 			} while (!finished_with_regions);
 		}
-		if (!(AIScriptController[player_id].AI_Flags.isTransportsOff))
+		if (!(AIScriptController[player_id].AI_Flags.is_transports_off))
 		{
 			u32 player_race = playerTable[player_id].race;
 			if (player_race == RaceId::Terran)
@@ -783,7 +783,7 @@ namespace hooks
 			if (v33)
 			{
 				transport_1_count = allUnitCountTable[0].player[player_id + 12 * transport_unit_id_1];
-				transport_1_quantity = (AIScriptController[player_id].AI_Flags.isUseMapSettings) != 0 ? 2 : 5;
+				transport_1_quantity = (AIScriptController[player_id].AI_Flags.is_use_map_settings) != 0 ? 2 : 5;
 				transport_1_priority = allUnitCountTable[0].player[player_id + 12 * transport_unit_id_1] != 0 ? 50 : 80;
 				if (transport_1_count < transport_1_quantity)
 				{
@@ -903,7 +903,7 @@ namespace hooks
 	void ai_region_train_attack_force(AiRegion* region) { // 0043E670
 		u32 attack_wave[63] = {};
 		u32 priority = 80;
-		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be AIScriptController[region->player].AI_Flags.isUseMapSettings. We use melee for now, but we should invesitage it. -Veeq7
+		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be AIScriptController[region->player].AI_Flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
 		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
 			if (unit_id < UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))

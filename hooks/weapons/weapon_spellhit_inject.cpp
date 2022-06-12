@@ -119,7 +119,7 @@ namespace
 	{
 		static Bullet* bullet;
 		static Unit* target;
-		static u32 hitFlags;
+		static u32 hit_flags;
 		__asm
 		{
 			PUSH EBP
@@ -127,10 +127,10 @@ namespace
 			MOV bullet, EDX
 			MOV target, EAX
 			MOV EAX, [EBP + 0x08]
-			MOV hitFlags, EAX
+			MOV hit_flags, EAX
 			PUSHAD
 		}
-		hooks::WeaponBulletHit(bullet, target, hitFlags);
+		hooks::WeaponBulletHit(bullet, target, hit_flags);
 		__asm
 		{
 			POPAD

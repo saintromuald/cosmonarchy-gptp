@@ -8,7 +8,7 @@ namespace hooks
 	void secondaryOrd_SpawningLarva(Unit* unit);													// 004EA780
 	void secondaryOrd_SpreadCreepSpawningLarva(Unit* unit);											// 004EA880
 
-//	u8 spreadCreep(u16 unit_id, s32 x, s32 y);														// 00414680
+//	u8 spread_creep(u16 unit_id, s32 x, s32 y);														// 00414680
 	bool getCreepRegion(Box32* rect, u16 unit_id, s32 x, s32 y, bool isComplete);					// 00413DB0
 	bool spreads_creep(u16 unit_id, bool baseRetVal);													// 00413870
 	bool inCreepArea(s32 x, s32 y);																	// inline function

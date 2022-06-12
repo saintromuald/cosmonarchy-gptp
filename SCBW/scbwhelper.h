@@ -363,7 +363,7 @@ namespace helper
 
 	//// larva_creep_spawn
 	Unit* getUnitPointer();
-	u8 spreadCreep(u32 unit_id, s32 x, s32 y);																						// 00414680
+	u8 spread_creep(u32 unit_id, s32 x, s32 y);																						// 00414680
 	void ai_training_overlord(Unit* main_building, Unit* larva);																		// 00435770
 	void update_unit_strength(Unit* unit);																							// 0049FA40
 	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit* unit, Box16* coords);														// 004E8280
@@ -594,7 +594,7 @@ namespace helper
 	void UnitDestructor(Unit* unit);
 	bool place_hallucination(Unit* unit);																							// 004F66D0
 
-	// for createHallucination
+	// for create_hallucination
 	void apply_hallucination_stats(Unit* halUnit);																					// 004F6180
 	s32 hallucinate_scarabs(Unit* a1, Unit* a2);																					// 004F65B0
 
@@ -618,13 +618,13 @@ namespace helper
 
 	//// weapon_damage
 	u16 get_unit_strength(Unit* unit, bool useGroundStrength);
-	Unit* createHallucination(Unit* target, u32 playerId);
+	Unit* create_hallucination(Unit* target, u32 playerId);
 
 	// For updateCorrosiveSpores
-	u32 getCorrosiveSporesImage(Unit* unit);																						// 004F41F0
+	u32 get_corrosive_spores_image(Unit* unit);																						// 004F41F0
 
 	//// recharge_shields
-	void insertFirstOrder(Unit* unit, u8 order_id);																					// 004749D0
+	void insert_first_order(Unit* unit, u8 order_id);																					// 004749D0
 	u8 has_overlay(Unit* unit);																										// 0047B720
 	bool isHangarUnit(Unit* unit);
 

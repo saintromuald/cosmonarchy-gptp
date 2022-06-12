@@ -39,10 +39,10 @@ namespace hooks
 	};
 	C_ASSERT(sizeof(PlacementData) == 0x1000);
 	void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position);	// 00443CC0
+
 	void ai_manage_military_controller(Unit* unit);																		// 0043D910
 	void ai_assign_region_to_slowest_unit(AiRegion* region);															// 00436F70
 	void ai_respond_to_cloaked_threat(Unit* victim, Unit* threat);														// 0043C580
-
 	u32 ai_try_return_home(Unit* unit, u32 dont_issue_order);															// 00462EA0
 
 	void injectAIOrdersHooks();

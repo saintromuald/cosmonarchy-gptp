@@ -1163,6 +1163,7 @@ namespace SoundId
 		AkistrokorBlissfulEmbraceChannel	= 1277,
 		Simulacrum_Clone_01					= 1332,
 		PhobosArgentCapacitorsProc			= 1353,
+		PazuzuDeconstructionDamage			= 1372,
 		LakiziliskProjectileReturn			= 1392,
 		DemiurgeGodsMadeFleshCast01			= 1407,
 		DemiurgeGodsMadeFleshCast02			= 1408,

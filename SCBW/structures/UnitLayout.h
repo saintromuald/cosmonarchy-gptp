@@ -229,6 +229,7 @@ enum ExtValueId
 	ValuePlayingAddonWorkingAnim,
 	ValueTyrannyPlayer,
 	ValueNewRepairTimer,
+	ValueSporeColonyMissilePos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

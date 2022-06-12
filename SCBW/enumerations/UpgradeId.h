@@ -210,7 +210,7 @@ namespace ScUpgrade {
 		ProtossPlasmaShields = 15,
 		U_238Shells = 16,
 		IonThrusters = 17,
-		BurstLasers = 18, // (Unused)
+		WraithBurstLasers = 18, // (Unused)
 		TitanReactor = 19, // (SV +50)
 		OcularImplants = 20,
 		MoebiusReactor = 21, // (Ghost +50)

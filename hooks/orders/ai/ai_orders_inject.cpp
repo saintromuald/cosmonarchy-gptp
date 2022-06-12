@@ -587,6 +587,28 @@ namespace
 		}
 	}
 
+	void __declspec(naked) ai_respond_to_cloaked_threat_wrapper() { // 0043C580
+		static Unit* victim;
+		static Unit* threat;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV threat, EAX
+			POP EAX
+			MOV victim, EAX
+			PUSHAD
+		}
+		hooks::ai_respond_to_cloaked_threat(victim, threat);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
 	void __declspec(naked) ai_try_return_home_wrapper() { // 00462EA0
 		static u32 result;
 		static Unit* unit;
@@ -650,7 +672,7 @@ namespace hooks
 		jump_patch(ai_remove_addon_placements,					0x00443CC0, 3);
 		jump_patch(ai_manage_military_controller_wrapper,		0x0043D910, 1);
 		jump_patch(ai_assign_region_to_slowest_unit_wrapper,	0x00436F70, 2);
-
+	//	jump_patch(ai_respond_to_cloaked_threat_wrapper,		0x0043C580,	1);
 		jump_patch(ai_try_return_home_wrapper,					0x00462EA0, 1);
 
 		call_patch(AI_ReactToHit_TownNullCheck,					0x0043F388, 5);

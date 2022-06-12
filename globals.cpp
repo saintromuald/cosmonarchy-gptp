@@ -925,7 +925,7 @@ namespace scbw
 			unitExt->timers[TimerHallucinating] = CantavisHallucinationTimer;
 		}
 
-		// Refresh Captivating Claws
+		// Refresh Captivating ZethrokorClaws
 		if (unitExt->timers[TimerCaptivatingClaws])
 		{
 			unitExt->timers[TimerCaptivatingClaws] = VorvrokorCaptivatingClawsTimer;
@@ -1029,7 +1029,7 @@ namespace scbw
 			childExt->timers[TimerHallucinating] = parentExt->timers[TimerHallucinating];
 		}
 
-		// Inherit Captivating Claws
+		// Inherit Captivating ZethrokorClaws
 		if (auto timer = parentExt->timers[TimerCaptivatingClaws])
 		{
 			childExt->timers[TimerCaptivatingClaws] = timer;
@@ -1283,7 +1283,7 @@ namespace scbw
 			unitExt->timers[TimerHallucinating] = 1;
 		}
 
-		// Remove Captivating Claws
+		// Remove Captivating ZethrokorClaws
 		if (unitExt->timers[TimerCaptivatingClaws])
 		{
 			unitExt->timers[TimerCaptivatingClaws] = 1;
@@ -1451,7 +1451,7 @@ namespace scbw
 		hooks::weapon_damage(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->player, 0, 1);
 		if (playSound)
 		{
-			helper::play_sound_from_unit(1372, unit, 1, 0);
+			helper::play_sound_from_unit(SoundId::PazuzuDeconstructionDamage, unit, 1, 0);
 		}
 	}
 
@@ -1481,7 +1481,7 @@ namespace scbw
 		Bullet* bullet = helper::create_bullet(weaponId, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
 		if (bullet && unitExt->values[valueId] < fake_amount)
 		{
-			bullet->hitFlags |= 0x1;
+			bullet->hit_flags |= 0x1;
 		}
 		return bullet;
 	}

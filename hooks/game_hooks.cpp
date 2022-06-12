@@ -966,7 +966,7 @@ namespace hooks
 					unit->order_signal &= ~0x20;
 					helper::play_sound_from_unit(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
 				}
-				// Lakizilisk - Seismic Spines
+				// Lakizilisk - Seismic DrolethSpines
 				if (unit->sprite != nullptr && unit->main_order_id != OrderId::Die
 					&& unitExt->timers[TimerLurkerETA] == 1)
 				{
@@ -977,7 +977,7 @@ namespace hooks
 					pos.y = unitExt->values[ValueSpineY];
 					unit->position = pos;
 					unit->sprite->position = pos;
-					scbw::artificial_bullet_from(WeaponId::SubterraneanSpines, unit->player, unit, nullptr, spr_position);
+					scbw::artificial_bullet_from(WeaponId::LakiziliskSubterraneanSpines, unit->player, unit, nullptr, spr_position);
 					helper::play_sound_from_unit(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
 					unit->position = position;
 					unit->sprite->position = spr_position;
@@ -1750,7 +1750,7 @@ namespace hooks
 			unitExt->values[ValueAdrenalStacks] = 0;
 		}
 
-		// Vorvaling - Captivating Claws
+		// Vorvaling - Captivating ZethrokorClaws
 		if (unitExt->timers[TimerCaptivatingClaws] == 1)
 		{
 			unitExt->unit_vectors[UnitVectorCaptivatingClaws] = {};

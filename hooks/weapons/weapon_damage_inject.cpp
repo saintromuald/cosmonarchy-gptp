@@ -92,7 +92,7 @@ namespace
 
 namespace hooks
 {
-	void injectWeaponDamageHook()
+	void inject_weapon_damage_hooks()
 	{
 		jump_patch(weapon_damage_wrapper,				0x00479930, 1);
 		jump_patch(apply_ensnare_wrapper,				0x004F45E0, 2);

@@ -15,7 +15,7 @@ namespace hooks {
 		u8 damageDivisor
 	);
 
-	void weaponDamageCustom(
+	void weapon_damage_custom(
 		s32 damage,
 		Unit* target,
 		u8 damageType,
@@ -49,5 +49,5 @@ namespace hooks {
 	s32 apply_spores_hook(Unit* target);		// 004F4480
 	void unit_attack_notify(Unit* unit);		// 0048F230
 
-	void injectWeaponDamageHook();
+	void inject_weapon_damage_hooks();
 }

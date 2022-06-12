@@ -108,12 +108,6 @@ namespace hooks {
 					return true;
 				}
 				case UnitId::TerranTalos:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier3])
-					{
-						return true;
-					}
-				}
 				case UnitId::TerranNuclearSilo:
 				case UnitId::TerranQuarry:
 				{
@@ -373,21 +367,12 @@ namespace hooks {
 				return true;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossNexus))
-		{
-			if (unit_id == UnitId::ProtossArtisan)
-			{
-				if (player_has_completed_unit_id(player_id, UnitId::ProtossForge))
-				{
-					return true;
-				}
-			}
-		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossForge))
 		{
 			if (unit_id == UnitId::ProtossScribe
-				|| unit_id == UnitId::ProtossEnvoy
-				|| unit_id == UnitId::ProtossWitness)
+			||  unit_id == UnitId::ProtossEnvoy
+			||  unit_id == UnitId::ProtossWitness
+			||  unit_id == UnitId::ProtossArtisan)
 			{
 				return true;
 			}
@@ -855,7 +840,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergGosvileth)
 			{
-				if (TierUnlocked[RaceId::Zerg][Tier3])
+				if (TierUnlocked[RaceId::Zerg][Tier2])
 				{
 					return true;
 				}
@@ -1195,7 +1180,7 @@ namespace hooks {
 						if (inAir) {
 							return TECH_HIDDEN;
 						}
-						if (TierUnlocked[RaceId::Terran][Tier3]) {
+						if (TierUnlocked[RaceId::Terran][Tier2]) {
 							return TECH_ACTIVE;
 						}
 						return TECH_LOCKED;
@@ -1586,21 +1571,14 @@ namespace hooks {
 				{
 					return TECH_ACTIVE;
 				}
-				if (unit_id == UnitId::ProtossArtisan)
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossForge))
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_LOCKED;
-				}
 				return TECH_HIDDEN;
 			}
 			case UnitId::ProtossForge:
 			{
 				if (unit_id == UnitId::ProtossScribe
-					|| unit_id == UnitId::ProtossEnvoy
-					|| unit_id == UnitId::ProtossWitness)
+				||  unit_id == UnitId::ProtossEnvoy
+				||  unit_id == UnitId::ProtossWitness
+				||  unit_id == UnitId::ProtossArtisan)
 				{
 					return TECH_ACTIVE;
 				}
@@ -2216,7 +2194,7 @@ namespace hooks {
 					}
 					case UnitId::ZergGosvileth:
 					{
-						if (TierUnlocked[RaceId::Zerg][Tier3])
+						if (TierUnlocked[RaceId::Zerg][Tier2])
 						{
 							return TECH_ACTIVE;
 						}

@@ -301,7 +301,7 @@ namespace hooks
 						helper::set_secondary_order(unit, OrderId::SpreadCreep);
 					}
 				}
-				if (!(AIScriptController[town->player].AI_Flags.isUseMapSettings)
+				if (!(AIScriptController[town->player].AI_Flags.is_use_map_settings)
 					|| unit->status & UnitStatus::GroundedBuilding
 					&& unit->id != UnitId::TerranWatchdog
 					&& unit->id != UnitId::TerranBunker
@@ -854,11 +854,11 @@ namespace hooks
 							if (unit_ai->type != 4 ||
 								(unit_region_type = unit_ai_region->state, unit_region_type != 1) &&
 								unit_region_type != 2 ||
-								AIScriptController[ai_region->playerId].AI_Flags.isUseMapSettings)
+								AIScriptController[ai_region->playerId].AI_Flags.is_use_map_settings)
 							{
 								if ( (!(first_player_unit->status & UnitStatus::InBuilding)
 									|| a2 != 20
-									&& (AIScriptController[first_player_unit->player].AI_Flags.isUseMapSettings
+									&& (AIScriptController[first_player_unit->player].AI_Flags.is_use_map_settings
 										|| helper::region_is_for_attack_prepare(ai_region)))
 									&& (ai_region->state != 7 && !helper::region_is_for_attack_prepare(ai_region) || unit_ai_region_id != a6)
 									&& unit_ai_region->defensePriorityAdd < a2 )
@@ -872,7 +872,7 @@ namespace hooks
 					}
 					goto next;
 				}
-				if (AIScriptController[ai_region_1->playerId].AI_Flags.isUseMapSettings)
+				if (AIScriptController[ai_region_1->playerId].AI_Flags.is_use_map_settings)
 				{
 					if (ai_region_1->airTarget == (Unit*)7)
 					{

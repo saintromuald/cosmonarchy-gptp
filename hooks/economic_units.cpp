@@ -296,7 +296,7 @@ namespace hooks
 			{
 				checkEcoUnits = (supplyUsedCompare - townHallSupply) / units_dat::SupplyProvided[supplyUnit];
 				//farms_timing on, compare ecounits required vs ecounits count
-				if (!(AIScriptController[player].AI_Flags.isFarmsNotimingOn) && (checkEcoUnits + 1 > helper::ai_count_economy_units(player, supplyUnit)))
+				if (!(AIScriptController[player].AI_Flags.is_farms_notiming_on) && (checkEcoUnits + 1 > helper::ai_count_economy_units(player, supplyUnit)))
 				{
 					return true;
 				}

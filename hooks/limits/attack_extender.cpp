@@ -25,9 +25,9 @@ namespace hooks
 
 		parentAi = region;
 		child = (u8)region->playerId;
-		result = AI_GetMissingAttackForceUnits(region, v9, AIScriptController[child].AI_Flags.isUseMapSettings);
+		result = AI_GetMissingAttackForceUnits(region, v9, AIScriptController[child].AI_Flags.is_use_map_settings);
 		v10 = result;
-		if (AIScriptController[child].AI_Flags.isUseMapSettings
+		if (AIScriptController[child].AI_Flags.is_use_map_settings
 			|| (childTown = AIScriptController[child].previous_building_hit_second) != 0
 			&& (v12 = *elapsed_time_seconds - childTown >= 30, *elapsed_time_seconds - childTown < 30))
 		{
@@ -343,7 +343,7 @@ LABEL_8:
 			waveBool = 0;
 		}
 LABEL_12:
-		AIScriptController[player].AI_Flags.isSecureFinished = 1;
+		AIScriptController[player].AI_Flags.is_secure_finished = 1;
 		if (!helper::ai_set_attack_grouping_region(waveBool, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
 			&& !helper::ai_set_attack_grouping_region(waveBool, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
 		{
