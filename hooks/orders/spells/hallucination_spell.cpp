@@ -4,32 +4,21 @@
 
 namespace hooks
 {
-	void orders_Hallucination1(Unit* unit)
-	{
+	void orders_Hallucination1(Unit* unit) {
 		s32 sightRange = unit->get_sight_range(true);
 		u16 techCost = 0;
-		if (helper::spell_order(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899))
-		{
-			s32 counter = 1;
-
-			Vector32 hit;
-			if (Unit* target = unit->order_target.unit)
-			{
+		if (helper::spell_order(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899)) {
+			Vector32 hit = {unit->order_target.pt.x, unit->order_target.pt.y};
+			if (Unit* target = unit->order_target.unit) {
 				hit = {target->get_x(), target->get_y()};
-			}
-			else
-			{
-				Point16 pt = unit->order_target.pt;
-				hit = {pt.x, pt.y};
 			}
 			
 			scbw::decloak_proc(unit);
 
-			unit->play_iscript_animation(IscriptAnimation::CastSpell);
+			unit->play_iscript_animation(IscriptAnimation::Unused2);
 			helper::create_bullet(WeaponId::CantavisHallucinationCast, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 
-			if (!(*bw_cheat_state & CheatFlags::TheGathering))
-			{
+			if (!(*bw_cheat_state & CheatFlags::TheGathering)) {
 				unit->spend_unit_energy(techCost);
 			}
 
