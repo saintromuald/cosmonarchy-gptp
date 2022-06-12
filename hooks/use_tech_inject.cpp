@@ -62,6 +62,7 @@ namespace
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV player, EAX
 			POP EAX

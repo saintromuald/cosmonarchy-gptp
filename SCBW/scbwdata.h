@@ -744,17 +744,17 @@ namespace upgrades_dat {
 namespace techdata_dat {
 	SCBW_DATA(const DatLoad*, techdataDat, 0x005137D8);
 
-	SCBW_DATA(u16*, mineral_cost,	techdataDat[0].address);	//00656248
-	SCBW_DATA(u16*, gas_cost,		techdataDat[1].address);	//006561F0
-	SCBW_DATA(u16*, time_cost,		techdataDat[2].address);	//006563D8
-	SCBW_DATA(u16*, energy_cost,	techdataDat[3].address);	//00656380
-//	//SCBW_DATA(u16*, ???,			techdataDat[4].address);	//00656198
-	SCBW_DATA(u16*, dep_index,		techdataDat[5].address);	//006562F8
-//	SCBW_DATA(u16*, ???,			techdataDat[6].address);	//00656430	// "Icon, cmdicons.grp frame" according to EUDDB
-	SCBW_DATA(u16*, label,			techdataDat[7].address);	//006562A0
-//	SCBW_DATA(u8*, ???,				techdataDat[8].address);	//00656488	// Race according to EUDDB
-//	SCBW_DATA(u8*, ???,				techdataDat[9].address);	//00656350	// "Researched" according to EUDDB
-//	SCBW_DATA(u8*, ???,				techdataDat[10].address);	//006564B4	// Brood War Flag according to EUDDB
+	SCBW_DATA(u16*, mineral_cost,			techdataDat[0].address);	//00656248
+	SCBW_DATA(u16*, gas_cost,				techdataDat[1].address);	//006561F0
+	SCBW_DATA(u16*, time_cost,				techdataDat[2].address);	//006563D8
+	SCBW_DATA(u16*, energy_cost,			techdataDat[3].address);	//00656380
+//	//SCBW_DATA(u16*, ???,					techdataDat[4].address);	//00656198
+	SCBW_DATA(u16*, requirement_offsets,	techdataDat[5].address);	//006562F8
+//	SCBW_DATA(u16*, ???,					techdataDat[6].address);	//00656430	// "Icon, cmdicons.grp frame" according to EUDDB
+	SCBW_DATA(u16*, label,					techdataDat[7].address);	//006562A0
+//	SCBW_DATA(u8*, ???,						techdataDat[8].address);	//00656488	// Race according to EUDDB
+//	SCBW_DATA(u8*, ???,						techdataDat[9].address);	//00656350	// "Researched" according to EUDDB
+//	SCBW_DATA(u8*, ???,						techdataDat[10].address);	//006564B4	// Brood War Flag according to EUDDB
 } // last entry at 0x00513850
 
 namespace orders_dat {

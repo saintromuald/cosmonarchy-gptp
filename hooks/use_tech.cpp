@@ -302,57 +302,37 @@ namespace hooks
 	}
 
 	// Hooked to allow Hallucinations to use tech. -Pr0nogo
-	u32 tech_use_allowed(Unit* unit, u16 tech_id, u32 player) // 0046DD80
-	{
+	u32 tech_use_allowed(Unit* unit, u16 tech_id, u32 player) { // 0046DD80
 		*last_internal_error = 0;
 		u32 result = 0;
-		if (tech_id < TechId::None)
-		{
-			if (techdata_dat::dep_index[tech_id] == RequirementOpcodes::EndOfSublist)
-			{
-				helper::parse_tech_dat_requirements();
-			}
-			if (player == unit->player)
-			{
-				if (unit->status & UnitStatus::Completed)
-				{
-					if (unit->is_frozen())
-					{
-						*last_internal_error = 10;
-						result = 0;
-					}
-					else if (unit->status & UnitStatus::IsHallucination && tech_id != TechId::Burrowing)
-					{
-						*last_internal_error = 22;
-						result = 0;
-					}
-					u32 index = techdata_dat::dep_index[tech_id];
-					if (index)
-					{
-						result = helper::parse_requirement_opcodes(unit, tech_id, player, *requirements::tech, index);
-					}
-					else
-					{
-						*last_internal_error = 23;
-					}
-				}
-				else
-				{
-					*last_internal_error = 20;
-					result = 0;
-				}
-			}
-			else
-			{
-				*last_internal_error = 1;
-				result = 0;
-			}
-		}
-		else
-		{
+		if (tech_id >= TechId::None) {
 			*last_internal_error = 17;
-			result = 0;
+			return 0;
 		}
-		return result;
+		if (techdata_dat::requirement_offsets[tech_id] == RequirementOpcodes::EndOfSublist) {
+			//helper::parse_tech_dat_requirements();
+		}
+		if (player != unit->player) {
+			*last_internal_error = 1;
+			return 0;
+		}
+		if (!(unit->status & UnitStatus::Completed)) {
+			*last_internal_error = 20;
+			return 0;
+		}
+		if (unit->is_frozen()) {
+			*last_internal_error = 10;
+			return 0;
+		} 
+		if (unit->status & UnitStatus::IsHallucination && tech_id != TechId::Burrowing) {
+			*last_internal_error = 22;
+			return 0;
+		}
+		u32 req_offset = techdata_dat::requirement_offsets[tech_id];
+		if (!req_offset) {
+			*last_internal_error = 23;
+			return 0;
+		}
+		return helper::parse_requirement_opcodes(unit, tech_id, player, (u32)requirements::tech, req_offset);
 	}
 }
