@@ -310,7 +310,7 @@ namespace hooks
 			return 0;
 		}
 		if (techdata_dat::requirement_offsets[tech_id] == RequirementOpcodes::EndOfSublist) {
-			//helper::parse_tech_dat_requirements();
+			helper::parse_tech_dat_requirements();
 		}
 		if (player != unit->player) {
 			*last_internal_error = 1;
