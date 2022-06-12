@@ -302,7 +302,7 @@ namespace hooks
 	}
 
 	// Hooked to allow Hallucinations to use tech. -Pr0nogo
-	u32 tech_use_allowed(Unit* unit, u16 tech_id, u32 player) { // 0046DD80
+	s32 tech_use_allowed(Unit* unit, u16 tech_id, u32 player) { // 0046DD80
 		*last_internal_error = 0;
 		u32 result = 0;
 		if (tech_id >= TechId::None) {

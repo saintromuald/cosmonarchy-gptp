@@ -55,7 +55,7 @@ namespace
 	}
 
 	void __declspec(naked) tech_use_allowed_wrapper() { // 0046DD80
-		static u32 result;
+		static s32 result;
 		static Unit* unit;
 		static u16 tech_id;
 		static u32 player;
@@ -74,6 +74,8 @@ namespace
 		__asm {
 			POPAD
 			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
 			RETN 0x04
 		}
 	}
