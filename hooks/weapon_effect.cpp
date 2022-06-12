@@ -32,7 +32,7 @@ namespace hooks
 		{
 			u32 damage = (weapons_dat::DamageAmount[weaponId] * 256) +
 				(weapons_dat::DamageBonus[weaponId] * 256 * scbw::get_upgrade_level(bullet->srcPlayer, weapons_dat::DamageUpgrade[weaponId]));
-			if (bullet->hitFlags & 2)
+			if (bullet->hit_flags & 2)
 			{
 				damage /= 2;
 			}
@@ -436,7 +436,7 @@ namespace hooks
 			divisor = scbw::get_distance_fast(X, Y, target->get_x(), target->get_y()) / (32 * 3);
 		}
 
-		if (bullet->hitFlags & 1) // Miss?
+		if (bullet->hit_flags & 1) // Miss?
 		{
 			if (target->unit_ai == nullptr)
 			{

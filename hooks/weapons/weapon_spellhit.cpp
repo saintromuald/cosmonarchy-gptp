@@ -179,7 +179,7 @@ namespace hooks
 	void WeaponBulletHit(Bullet* bullet, Unit* target, u32 damageDivisor)
 	{
 		u32 base_damage = helper::get_unit_bullet_damage(bullet, target);
-		if (bullet->hitFlags & 2)
+		if (bullet->hit_flags & 2)
 		{
 			if (bullet->sourceUnit != nullptr)
 			{

@@ -1481,7 +1481,7 @@ namespace scbw
 		Bullet* bullet = helper::create_bullet(weaponId, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
 		if (bullet && unitExt->values[valueId] < fake_amount)
 		{
-			bullet->hitFlags |= 0x1;
+			bullet->hit_flags |= 0x1;
 		}
 		return bullet;
 	}

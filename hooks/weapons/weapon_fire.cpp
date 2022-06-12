@@ -308,7 +308,7 @@ namespace hooks
 					} break;
 					case WeaponId::SporeColonySeekerSpores:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueSporeColonyMissilePos, 1, ImagesDatEntries::OverlayAttackPtr, 0, 1);
+						scbw::set_missile_source_pos(unit, weaponId, ValueSporeColonyMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					// Missile spawn positions end
 					case WeaponId::SalamanderPerditionBarrage:
@@ -382,52 +382,6 @@ namespace hooks
 					} break;
 				}
 			}
-
-			// Chasmal Colony - Adaptive Amitosis ability
-			/*
-			if (unit->order_target.unit != nullptr
-				&& unitExt->values[ValueAdaptiveAmitosis])
-			{
-				auto range = weapons_dat::MaxRange[weaponId];
-				auto a = scbw::UnitFinder::get_nearest_target(
-					unit->get_x() - range,
-					unit->get_y() - range,
-					unit->get_x() + range,
-					unit->get_y() + range,
-					unit, [&](Unit* target)
-				{
-					if (target == unit)
-					{
-						return false;
-					}
-					if (target == unit->order_target.unit)
-					{
-						return false;
-					}
-					if (scbw::is_allied_to(unit->player, target->player))
-						return false;
-					return scbw::can_weapon_target_unit(weaponId, target, unit);
-				});
-				if (a != nullptr)
-				{
-					auto old = unit->order_target;
-					unit->order_target.unit = a;
-					unit->order_target.pt = a->sprite->position;
-					unitExt->values[ValueAdaptiveAmitosis] = 1;
-					// TODO: verify that this will work with all weapon types
-					const u32 Iscript_UseWeapon = 0x00479C30;
-					__asm
-					{
-						PUSHAD
-						MOV ESI, unit
-						PUSH weaponId
-						CALL Iscript_UseWeapon
-						POPAD
-					}
-					unit->order_target = old;
-				}
-			}
-			*/
 		}
 
 		// Deconstruction - Pazuzu passive
@@ -810,7 +764,7 @@ namespace hooks
 		v1 = bullet->attackTarget.unit;
 		if (v1)
 		{
-			if (!(bullet->hitFlags & 1))
+			if (!(bullet->hit_flags & 1))
 			{
 				helper::changeMovePos(bullet, v1->sprite->position.y, v1->sprite->position.x);
 			}
@@ -1135,7 +1089,7 @@ namespace hooks
 		bullet->time_remaining = weapons_dat::RemoveAfter[weaponId];
 		bullet->someUnitType = 228;
 		bullet->remainingBounces = 0;
-		bullet->hitFlags = 0;
+		bullet->hit_flags = 0;
 		bullet->movement_flags |= MovementFlags::StartingAttack;
 		bullet->behaviourTypeInternal = 0;
 		bullet->attackTarget.unit = nullptr;
@@ -1181,7 +1135,7 @@ namespace hooks
 		}
 		if (parent->status & UnitStatus::IsHallucination)
 		{
-			bullet->hitFlags |= 2u;
+			bullet->hit_flags |= 2u;
 		}
 		bullet->nextBounceUnit = nullptr;
 
