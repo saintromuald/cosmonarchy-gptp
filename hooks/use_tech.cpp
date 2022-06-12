@@ -329,7 +329,7 @@ namespace hooks
 					u32 index = techdata_dat::dep_index[tech_id];
 					if (index)
 					{
-						result = helper::parse_requirement_opcodes(unit, tech_id, player, *requirements::tech, index);
+						result = helper::parse_requirement_opcodes(unit, tech_id, player, (u32)requirements::tech, index);
 					}
 					else
 					{
