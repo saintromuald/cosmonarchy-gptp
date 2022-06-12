@@ -542,7 +542,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectCloakNearbyUnits();
 	hooks::injectCloakingTechHooks();
 //	hooks::injectDetectorHooks();
-	hooks::injectHarvestResource();
+	hooks::inject_harvest_resource();
 
 	hooks::inject_rally_hooks();
 	//hooks::injectLiftLandHooks();

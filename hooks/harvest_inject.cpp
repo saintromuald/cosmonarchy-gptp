@@ -193,7 +193,7 @@ namespace {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0x8]
+			MOV EAX, [EBP + 0x08]
 			MOV node, EAX
 			POP EAX
 			MOV worker, EAX
@@ -205,14 +205,27 @@ namespace {
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x4
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) remove_harvesters_wrapper() { // 00468770
+		static Unit* node;
+		__asm {
+			MOV node, EDI
+			PUSHAD
+		}
+		hooks::remove_harvesters(node);
+		__asm {
+			POPAD
+			RETN
 		}
 	}
 }
 
 namespace hooks
 {
-	void injectHarvestResource()
+	void inject_harvest_resource()
 	{
 		jump_patch(remove_powerup_image_overlay_wrapper,					0x004F3900, 2);
 		jump_patch(transfer_resource_to_worker_wrapper,						0x004696D0, 0);
@@ -226,5 +239,6 @@ namespace hooks
 		jump_patch(orders_entries_move_to_harvest_obscured_wrapper,			0x00469500, 4);
 		jump_patch(remove_references_node_worker_wrapper,					0x00468EF0,	4);
 		jump_patch(remove_from_current_harvesters_wrapper,					0x004686D0,	4);
+		jump_patch(remove_harvesters_wrapper,								0x00468770,	1);
 	}
 }
