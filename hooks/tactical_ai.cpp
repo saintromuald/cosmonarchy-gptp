@@ -198,16 +198,39 @@ static bool is_channeling(Unit* unit) {
 	return false;
 }
 
+static u32 get_damage_against(u32 weapon_id, Unit* target) {
+	u32 damage = weapons_dat::DamageAmount[weapon_id];
+	if (damage && target) {
+		damage = std::max(damage - target->getArmor(), 1u);
+	}
+	return damage;
+}
+
+static u32 get_dps_against(Unit* source, Unit* target) {
+	if (target->id == UnitId::ProtossAccantor) {
+		if (!(target->status & UnitStatus::InAir)) {
+			return (get_damage_against(WeaponId::Scarab, target) /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
+				* 1.5; // aoe multiplier
+		}
+	} else if (target->id == UnitId::ProtossSolarion) {
+		return (get_damage_against(WeaponId::StewardPulseCannon, target) /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
+			* (target->unit_with_hangar.in_hangar_count + target->unit_with_hangar.out_hangar_count)
+			* 1.5; // additional bias to encourage targeting solarions more
+	} else if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster
+		&& target->id != UnitId::TerranComsatStation
+		&& target->id != UnitId::ProtossShieldBattery) {
+		return (target->energy / 256 / 50) * 20;
+	} else {
+		u32 weapon_id = target->status & UnitStatus::InAir ? source->get_air_weapon() : source->get_ground_weapon();
+		f32 multiplier = weapons_dat::InnerSplashRadius[weapon_id] ? 1.5 : 1;
+		return hooks::get_current_dps_from_damage(target, weapon_id, get_damage_against(weapon_id, target)) * multiplier;
+	}
+	return 0;
+}
+
 static s32 get_target_cost(Unit* source, Unit* target) {
 	// Value attacking wounded units first
 	s32 cost = target->get_current_life_ingame() / 10;
-
-	// Value attacking more threatning units first
-	if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster
-		&& target->id != UnitId::TerranComsatStation
-		&& target->id != UnitId::ProtossShieldBattery) {
-		cost -= (target->energy / 256 / 50) * 20;
-	}
 
 	// Value channeling units more
 	if (is_channeling(target)) {
@@ -227,6 +250,14 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		} break;
 	}
 
+	// Value targeting larva and egg less
+	switch (target->id) {
+		case UnitId::ZergLarva:
+		case UnitId::ZergEgg: {
+			cost += 100;
+		} break;
+	}
+
 	// Value splitting simulacra more
 	UnitExt* target_ext = globals.get_unit_ext(target);
 	if (target_ext->timers[TimerSimulacrumClone]) {
@@ -243,23 +274,11 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		cost += 25;
 	}
 
-	if (target->id == UnitId::ProtossAccantor) {
-		cost -= (weapons_dat::DamageAmount[WeaponId::Scarab] /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
-			* 1.5; // aoe multiplier
-	} else if (target->id == UnitId::ProtossSolarion) {
-		cost -= (weapons_dat::DamageAmount[WeaponId::StewardPulseCannon] /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
-			* (target->unit_with_hangar.in_hangar_count + target->unit_with_hangar.out_hangar_count)
-			* 1.5; // additional bias to encourage targeting solarions more
-	} else {
-		u32 weapon_id = WeaponId::None;
-		if (source->status & UnitStatus::InAir) {
-			weapon_id = target->get_air_weapon();
-		} else {
-			weapon_id = target->get_ground_weapon();
-		}
-		f32 multiplier = weapons_dat::InnerSplashRadius[weapon_id] ? 1.5 : 1;
-		cost -= hooks::getCurrentDPS(target, weapon_id) * multiplier;
-	}
+	// Value easy to kill units
+	cost -= get_dps_against(source, target);
+
+	// Value dangerous units
+	cost -= get_dps_against(target, source);
 
 	// Value attacking units with smaller pathing cost more
 	s32 dist = (s32)scbw::get_distance_fast(source->position, target->position) - get_max_range(source->id);
@@ -269,27 +288,19 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 
 	// Value attacking strategically important targets
 	if (target->id == UnitId::ZergNydusCanal
-		|| (units_dat::BaseProperty[target->id] & UnitProperty::Worker
-			&& target->main_order_id == OrderId::ConstructingBuilding)
-		|| (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
-			&& !(target->status & UnitStatus::Completed))) {
+	|| (units_dat::BaseProperty[target->id] & UnitProperty::Worker && target->main_order_id == OrderId::ConstructingBuilding)
+	|| (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot && !(target->status & UnitStatus::Completed))) {
 		cost -= 50;
-	}
-	else if (target->id == UnitId::ProtossPylon
-		|| units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
-		|| units_dat::BaseProperty[target->id] & UnitProperty::Worker
-		|| units_dat::GroupFlags[target->id].is_factory
-		|| scbw::unit_id_is_tech(target->id)) {
+	} else if (target->id == UnitId::ProtossPylon
+		    || units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
+		    || units_dat::BaseProperty[target->id] & UnitProperty::Worker
+		    || units_dat::GroupFlags[target->id].is_factory
+		    || scbw::unit_id_is_tech(target->id)) {
 		cost -= 25;
 	}
 
 	{
-		u32 weapon_id = 0;
-		if (target->status & UnitStatus::InAir) {
-			weapon_id = source->get_air_weapon();
-		} else {
-			weapon_id = source->get_ground_weapon();
-		}
+		u32 weapon_id = target->status & UnitStatus::InAir ? weapon_id = source->get_air_weapon() : source->get_ground_weapon();
 
 		// Value dark swarm immune units way less
 		if (darkswarm_blocks_damage(target, weapon_id, 1)) {
@@ -878,7 +889,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 		weapon_id = target->get_ground_weapon();
 	}
 	f32 multiplier = weapons_dat::InnerSplashRadius[weapon_id] ? 1.5 : 1;
-	cost -= hooks::getCurrentDPS(target, weapon_id) * multiplier;
+	cost -= hooks::get_current_dps(target, weapon_id) * multiplier;
 
 	// Value attacking units with smaller pathing cost more
 	s32 dist = (s32)scbw::get_distance_fast(source->position, target->position) - get_max_range(source->id);
@@ -980,13 +991,13 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				scbw::set_generic_rust_value(unit, RustId::ToggleSavantOnhit, 0);
 			}
 		} else if (unit->id == UnitId::TerranMadrigal) {
-			f32 furiaDamagePotential = hooks::getCurrentDPS(unit, WeaponId::MadrigalFuriaMissiles);
+			f32 furiaDamagePotential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
 			furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
 			if (unit->order_target.unit) {
 				UnitExt* target_ext = globals.get_unit_ext(unit->order_target.unit);
 				furiaDamagePotential += (f32)target_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage;
 			}
-			f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::getWeaponCooldownFloat(unit, WeaponId::MadrigalImperiosoMissiles);
+			f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::get_weapon_cooldwon_float(unit, WeaponId::MadrigalImperiosoMissiles);
 
 			if (furiaDamagePotential > dirgeDamagePotential) {
 				scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 0);
