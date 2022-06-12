@@ -25,6 +25,7 @@ namespace hooks
 			
 			scbw::decloak_proc(unit);
 
+			unit->play_iscript_animation(IscriptAnimation::CastSpell);
 			helper::create_bullet(WeaponId::CantavisHallucinationCast, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 
 			if (!(*bw_cheat_state & CheatFlags::TheGathering))
