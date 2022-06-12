@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_NukeTrackWrapper()
+	void __declspec(naked) orders_nuke_track_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -13,7 +13,7 @@ namespace
 			MOV unit, EBX
 			PUSHAD
 		}
-		hooks::orders_NukeTrack(unit);
+		hooks::orders_nuke_track(unit);
 		__asm
 		{
 			POPAD
@@ -23,7 +23,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_NukeGroundWrapper()
+	void __declspec(naked) order_nuke_ground_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -34,21 +34,21 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_NukeGround(unit);
+		hooks::orders_nuke_ground(unit);
 		__asm
 		{
 			POPAD
 			POP EBP
-			RETN 4
+			RETN 0x04
 		}
 	}
 }
 
 namespace hooks
 {
-	void injectNukeOrdersHooks()
+	void inject_nuke_orders_hooks()
 	{
-		jump_patch(orders_NukeTrackWrapper,		0x00464D10, 2);
-		jump_patch(orders_NukeGroundWrapper,	0x00479200, 0);
+		jump_patch(orders_nuke_track_wrapper,	0x00464D10, 2);
+		jump_patch(order_nuke_ground_wrapper,	0x00479200, 0);
 	}
 }

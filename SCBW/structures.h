@@ -520,7 +520,7 @@ struct BinDlg
 	/*0x00*/  BinDlg*		next;
 	/*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
 	/*0x10*/  u8*			buffer;
-	/*0x14*/  char*			pszText;
+	/*0x14*/  char*			psz_text;
 	/*0x18*/  u32			flags;			// use BinDlgFlags::Enum
 	/*0x1C*/  u32			unk_1c;
 	/*0x20*/  u16			index;
@@ -579,7 +579,7 @@ struct BinDlg
 			/*0x36*/  u8		unkFlags36;				// "flag" because of possible unkFlags36 |= 1
 			/*0x37*/  unk_t     unk37[3];				// unverified filler
 			/*0x3A*/  u8**		unk3aArrayCharPtr;		// seen in a different context so may be wrong and belong to another category
-			/*0x3E*/  u8		pszTextLen;				// should be the length of pszText
+			/*0x3E*/  u8		pszTextLen;				// should be the length of psz_text
 			/*0x3F*/  unk_t     unk3f[3];				// unverified filler
 		} textDialog0x36;								// seems to apply to some text related dialogs
 	};

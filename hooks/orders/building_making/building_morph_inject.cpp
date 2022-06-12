@@ -37,7 +37,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ZergPlaceBuildingWrapper()
+	void __declspec(naked) cancel_zerg_building_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -61,7 +61,7 @@ namespace
 {
 	//-------- isMorphingBuilding() --------//
 
-	void __declspec(naked) isRemorphingBuildingWrapper()
+	void __declspec(naked) is_remorphing_building_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -91,7 +91,7 @@ namespace
 	//-------- ai_morph_behavior() --------//
 
 	const u32 Hook_AI_MorphBehavior_IsMorphedBuildingYes = 0x0043508B;
-	void __declspec(naked) isMorphedBuildingWrapper_AI_MorphBehavior()
+	void __declspec(naked) is_morphed_building_wrapper_ai_morph_behavior()
 	{
 		static u16 buildUnitId;
 		__asm {
@@ -122,7 +122,7 @@ namespace
 	//-------- statdata_UnitWireframeUpdate() --------//
 
 	const u32 Hook_IsMorphedBuilding_ConsoleWireframeUpdateBack = 0x00456955;
-	void __declspec(naked) isMorphedBuildingWrapper_ConsoleWireFrameUpdate()
+	void __declspec(naked) is_morphed_building_wrapper_console_wireframe_update()
 	{
 		static Unit* unit;
 		static u16 buildUnitId;
@@ -147,7 +147,7 @@ namespace
 	//-------- orders_zerg_build_self() --------//
 
 	const u32 Hook_isMorphedBuilding_ZergBuildSelf_GetTypeBack = 0x0045D53F;
-	void __declspec(naked) isMorphedBuildingWrapper_ZergBuildSelf_GetType()
+	void __declspec(naked) is_morphed_building_wrapper_zerg_build_self_get_id()
 	{
 		static Unit* unit;
 		static u16 buildUnitId;
@@ -168,7 +168,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) isMorphedBuildingWrapper_ZergBuildSelf_Complete()
+	void __declspec(naked) is_morphed_building_wrapper_zerg_build_self_complete()
 	{
 		static u16 unit_id;
 		__asm {
@@ -195,15 +195,19 @@ namespace
 	}
 
 	// This was moved out of the naked function to prevent stack corruption bug
-	void zergBuildSelf_UpdateBuildTimerAndHp(Unit* unit, u16 unit_id)
+	void zerg_build_self_update_timer_and_hitpoints(Unit* unit, u16 unit_id)
 	{
 		bool isOperationCwalEnabled = scbw::is_cheat_enabled(CheatFlags::OperationCwal);
 		if (unit->remaining_build_time)
 		{
 			if (isOperationCwalEnabled)
+			{
 				unit->remaining_build_time -= std::min<u16>(unit->remaining_build_time, 16);
+			}
 			else
+			{
 				unit->remaining_build_time--;
+			}
 		}
 		if (!hooks::is_morphed_building(unit_id))
 		{
@@ -214,7 +218,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) isMorphedBuildingWrapper_ZergBuildSelf_SetTimer()
+	void __declspec(naked) is_morphed_building_wrapper_zerg_build_self_set_timer()
 	{
 		static Unit* unit;
 		static u16 unit_id;
@@ -224,7 +228,7 @@ namespace
 			MOV unit, EDI
 			MOV unit_id, BX
 		}
-		zergBuildSelf_UpdateBuildTimerAndHp(unit, unit_id);
+		zerg_build_self_update_timer_and_hitpoints(unit, unit_id);
 		__asm {
 			POPAD
 			POP EDI
@@ -238,7 +242,7 @@ namespace
 
 	const u32 Hook_IsMorphedBuilding_CancelZergBuildingContinue = 0x0045DA93;
 	const u32 Func_CancelZergBuildingRemorph = 0x0045D410;
-	void __declspec(naked) isMorphedBuildingWrapper_CancelZergBuilding()
+	void __declspec(naked) is_morphed_building_wrapper_cancel_zerg_building()
 	{
 		static Unit* unit;
 		__asm {
@@ -271,7 +275,7 @@ namespace
 
 	// Inject @ 0x00433286
 	const u32 Hook_AI_GetWaitBuildUnitCount_Return = 0x004333D3;
-	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_GetWaitBuildUnitCount()
+	void __declspec(naked) get_morph_building_id_count_wrapper_ai_get_wait_build_unit_count()
 	{
 		static Unit* unit;
 		static u16 unit_id;
@@ -295,7 +299,7 @@ namespace
 
 	// Inject @ 0x004334D9
 	const u32 Hook_AI_GetUnitCount_Return = 0x00433588;
-	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_GetUnitCount()
+	void __declspec(naked) get_morph_building_id_count_type_ai_get_unit_count()
 	{
 		static Unit* unit;
 		static u16 unit_id;
@@ -319,7 +323,7 @@ namespace
 	// Inject @ 0x00436439
 
 	const u32 Hook_MorphSpecialStateContinue = 0x0045D2B1;
-	void __declspec(naked) MorphSpecialStateSetup_Wrapper()
+	void __declspec(naked) morph_special_state_setup_wrapper()
 	{
 		static Sprite* sprite;
 		__asm {
@@ -334,7 +338,7 @@ namespace
 	}
 
 	const u32 Hook_AI_ManageBases_Return = 0x004364F7;
-	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_ManageBases()
+	void __declspec(naked) get_morph_building_id_count_wrapper_ai_manage_bases()
 	{
 		static Unit* unit;
 		static u16 unit_id;
@@ -358,21 +362,21 @@ namespace
 extern const u32 Func_IsRemorphingBuilding;
 namespace hooks
 {
-	void injectBuildingMorphHooks()
+	void inject_building_morph_hooks()
 	{
-		jump_patch(orders_isMorphingWrapper,									0x0045CD00, 2);
-		jump_patch(orders_ZergBuildSelfWrapper,									0x0045D500, 0);
-		jump_patch(ZergPlaceBuildingWrapper,									0x0045DA40, 1);
-		jump_patch(isRemorphingBuildingWrapper,									Func_IsRemorphingBuilding);
-		jump_patch(isMorphedBuildingWrapper_AI_MorphBehavior,					0x0043505F);
-		jump_patch(isMorphedBuildingWrapper_ConsoleWireFrameUpdate,				0x00456911);
-		jump_patch(isMorphedBuildingWrapper_ZergBuildSelf_GetType,				0x0045D505);
-		call_patch(isMorphedBuildingWrapper_ZergBuildSelf_Complete,				0x0045D65D);
-		jump_patch(isMorphedBuildingWrapper_ZergBuildSelf_SetTimer,				0x0045D56C);
-		jump_patch(isMorphedBuildingWrapper_CancelZergBuilding,					0x0045DA4A);
-		jump_patch(getMorphBuildingTypeCountWrapper_AI_GetWaitBuildUnitCount,	0x00433286);
-		jump_patch(getMorphBuildingTypeCountWrapper_AI_GetUnitCount,			0x004334D9);
-		jump_patch(getMorphBuildingTypeCountWrapper_AI_ManageBases,				0x00436439);
-		jump_patch(MorphSpecialStateSetup_Wrapper,								0x0045D2A1);
+		jump_patch(orders_isMorphingWrapper,											0x0045CD00, 2);
+		jump_patch(orders_ZergBuildSelfWrapper,											0x0045D500, 0);
+		jump_patch(cancel_zerg_building_wrapper,										0x0045DA40, 1);
+		jump_patch(is_remorphing_building_wrapper,										Func_IsRemorphingBuilding);
+		jump_patch(is_morphed_building_wrapper_ai_morph_behavior,						0x0043505F);
+		jump_patch(is_morphed_building_wrapper_console_wireframe_update,				0x00456911);
+		jump_patch(is_morphed_building_wrapper_zerg_build_self_get_id,					0x0045D505);
+		call_patch(is_morphed_building_wrapper_zerg_build_self_complete,				0x0045D65D);
+		jump_patch(is_morphed_building_wrapper_zerg_build_self_set_timer,				0x0045D56C);
+		jump_patch(is_morphed_building_wrapper_cancel_zerg_building,					0x0045DA4A);
+		jump_patch(get_morph_building_id_count_wrapper_ai_get_wait_build_unit_count,	0x00433286);
+		jump_patch(get_morph_building_id_count_type_ai_get_unit_count,					0x004334D9);
+		jump_patch(get_morph_building_id_count_wrapper_ai_manage_bases,					0x00436439);
+		jump_patch(morph_special_state_setup_wrapper,									0x0045D2A1);
 	}
 }

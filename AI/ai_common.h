@@ -24,7 +24,7 @@ namespace AI
 	s32 getTotalAllyLifeInArea(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId);
 	s32 getTotalEnemyShieldsInArea(s32 x, s32 y, s32 searchBounds, Unit* caster);
 	s32 getTotalEnemyEnergyInArea(s32 x, s32 y, s32 searchBounds, Unit* caster);
-	s32 getTotalEnemyNukeValueInArea(s32 x, s32 y, s32 searchBounds, Unit* caster);
+	s32 get_total_enemy_nuke_value_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster);
 
 	//-------- Template function definition --------//
 

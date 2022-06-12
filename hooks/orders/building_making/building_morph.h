@@ -12,5 +12,5 @@ namespace hooks
 	s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignoreIncomplete);
 	void set_special_state_1(Sprite* sprite);
 
-	void injectBuildingMorphHooks();
+	void inject_building_morph_hooks();
 }

@@ -69,7 +69,7 @@ namespace AI
 					{
 						return false;
 					}
-					Unit* target = findBestNukeLaunchTarget(unit, isUnitBeingAttacked);
+					Unit* target = find_best_nuke_launch_target(unit, isUnitBeingAttacked);
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connected_unit = unit;
@@ -121,7 +121,7 @@ namespace AI
 					{
 						return false;
 					}
-					Unit* target = findBestNukeLaunchTarget(unit, isUnitBeingAttacked);
+					Unit* target = find_best_nuke_launch_target(unit, isUnitBeingAttacked);
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connected_unit = unit;

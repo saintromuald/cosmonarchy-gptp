@@ -44,7 +44,7 @@ namespace hooks
 //		statData->id = UnitId::LobotomyMine;
 		statData->id = 13;
 		auto v8 = childDialog->flags;
-		childDialog->pszText = statusscreen_infobtn[index];
+		childDialog->psz_text = statusscreen_infobtn[index];
 		if (!(v8 & 1))
 		{
 			childDialog->flags = v8 | 1;
@@ -544,7 +544,7 @@ namespace hooks
 			v11 = v7->build_queue[(u8)v7->build_queue_slot];
 		}
 		*(s16*)(v6 + 8) = (u8)units_dat::ArmorUpgrade[v11];
-		v4->pszText = statusscreen_infobtn[buttonRelated];
+		v4->psz_text = statusscreen_infobtn[buttonRelated];
 		v12 = v4->flags;
 		if (!(v12 & UnitStatus::Completed))
 		{
@@ -608,7 +608,7 @@ namespace hooks
 		*(s16*)(v7 + 6) = 0;
 		*(s16*)(v7 + 8) = weaponId;
 		v9 = v6->flags;
-		v6->pszText = statusscreen_infobtn[buttonRelated];
+		v6->psz_text = statusscreen_infobtn[buttonRelated];
 		if (!(v9 & 1))
 		{
 			v6->flags = v9 | 1;

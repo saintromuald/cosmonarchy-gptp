@@ -198,7 +198,7 @@ namespace AI
 	//					getEnemyClumpValueProc	@ 0x00440B20
 	// 0x00695798 would contains totalNukeTargetValue
 	// Optimized to stop when reaching totalNukeTargetValue == 800 since that's what matters
-	s32 getTotalEnemyNukeValueInArea(s32 x, s32 y, s32 searchBounds, Unit* caster)
+	s32 get_total_enemy_nuke_value_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster)
 	{
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
