@@ -1451,7 +1451,7 @@ namespace scbw
 		hooks::weapon_damage(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->player, 0, 1);
 		if (playSound)
 		{
-			helper::play_sound_from_unit(1372, unit, 1, 0);
+			helper::play_sound_from_unit(SoundId::PazuzuDeconstructionDamage, unit, 1, 0);
 		}
 	}
 
