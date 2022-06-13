@@ -65,7 +65,7 @@ namespace hooks {
 			u32 min = seconds / 60 % 60;
 			u32 hrs = seconds / 60 / 60;
 
-			char buffer[32] = {0};
+			char buffer[32] = {};
 			sprintf_s(buffer, "%02u:%02u:%02u", hrs, min, sec);
 			draw_text(buffer, x_pos, y_pos, 100, 15, 7);
 			y_pos += 15;
@@ -74,7 +74,7 @@ namespace hooks {
 		if (config.show_apm) {
 			u32 apm = total_client_actions / (*elapsed_time_frames / 24.0 / 60.0);
 
-			char buffer[32];
+			char buffer[32] = {};
 			sprintf_s(buffer, "APM: %u", apm);
 			draw_text(buffer, x_pos, y_pos, 100, 15, 7);
 			y_pos += 15;
