@@ -4,7 +4,7 @@
 namespace
 {
 	const u32 Func_GetTechUseErrorMessage = 0x00491E80;
-	void __declspec(naked) getTechUseErrorMessageWrapper()
+	void __declspec(naked) get_tech_use_error_message_hook_wrapper() // 00491E80
 	{
 		static Unit* target;
 		static u8 castingPlayer;
@@ -19,7 +19,7 @@ namespace
 			MOV techId, AX
 			PUSHAD
 		}
-		errorMessage = hooks::getTechUseErrorMessageHook(target, castingPlayer, techId);
+		errorMessage = hooks::get_tech_use_error_message_hook(target, castingPlayer, techId);
 		__asm {
 			POPAD
 			MOV EAX, errorMessage
@@ -31,8 +31,8 @@ namespace
 
 namespace hooks
 {
-	void injectTechTargetCheckHooks()
+	void inject_tech_target_check_hooks()
 	{
-		jump_patch(getTechUseErrorMessageWrapper, Func_GetTechUseErrorMessage, 4);
+		jump_patch(get_tech_use_error_message_hook_wrapper, Func_GetTechUseErrorMessage, 4);
 	}
 }

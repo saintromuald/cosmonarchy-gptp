@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	u16 getTechUseErrorMessageHook(Unit* target, u8 castingPlayerId, u16 techId) // 00491E80
+	u16 get_tech_use_error_message_hook(Unit* target, u8 castingPlayerId, u16 techId) // 00491E80
 	{
 		u16 stringId;
 		if (target->stasis_timer != 0)

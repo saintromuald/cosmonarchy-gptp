@@ -23,7 +23,7 @@ namespace hooks
     {
         u32 supplyAvailable = 0;
         u32 supplyUsed = 0;
-        if (hooks::getSuppliesMax(unit_id, player) >= suppliesAvailable_Terran[player])
+        if (hooks::get_supplies_max(unit_id, player) >= suppliesAvailable_Terran[player])
         {
             supplyUsed = suppliesUsed_Terran[player];
             supplyAvailable = suppliesAvailable_Terran[player];
@@ -31,7 +31,7 @@ namespace hooks
         else
         {
             supplyUsed = suppliesUsed_Terran[player];
-            supplyAvailable = hooks::getSuppliesMax(unit_id, player);
+            supplyAvailable = hooks::get_supplies_max(unit_id, player);
         }
         if (*bw_cheat_state & 0x20000)
         {
@@ -40,7 +40,7 @@ namespace hooks
         return supplyAvailable - supplyUsed;
     }
 
-    s32 getSuppliesMax(u16 unit_id, u8 player) // 00488990
+    s32 get_supplies_max(u16 unit_id, u8 player) // 00488990
     {
         return suppliesMax_Terran[player];
     }
@@ -50,7 +50,7 @@ namespace hooks
         return suppliesUsed_Terran[player];
     }
 
-    char initializeUnitCounts() // 00488F90
+    char initialize_unit_counts() // 00488F90
     {
         memset(unitCountScore, 0, 0x540u);
         memset(allUnitCountTable, 0, 0xAB00u);
@@ -120,7 +120,7 @@ namespace hooks
         return result;
     }
 
-    void StatRes_MainProc(BinDlg* dialog) // 004E5640
+    void stat_res_main_proc(BinDlg* dialog) // 004E5640
     {
         if (dialog->control_type)
         {
@@ -233,7 +233,7 @@ namespace hooks
         }
     }
 
-    s32 getSuppliesTemp() // 004246D0
+    s32 get_supplies_temp() // 004246D0
     {
         Unit* activeUnit = *active_portrait_unit;
         GroupFlag groupFlags = units_dat::GroupFlags[activeUnit->id];
@@ -244,7 +244,7 @@ namespace hooks
         return result;
     }
 
-    bool redrawSupplyInfo() // 00425230 // Guessed name
+    bool redraw_supply_info() // 00425230 // Guessed name
     {
         if (!bw_is_in_replay && (u8)(*active_portrait_unit)->player != *LOCAL_NATION_ID)
         {
@@ -266,10 +266,10 @@ namespace hooks
         return 1;
     }
 
-	void drawSupplyUnitStatus(BinDlg* dialog) {
+	void draw_supply_unit_status(BinDlg* dialog) {
 		Unit* unit = *active_portrait_unit;
 		if (*bw_is_in_replay || unit->player == *LOCAL_NATION_ID) {
-			getSuppliesTemp();
+			get_supplies_temp();
 			if (*statusScreenFunc != 12) {
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -10, -13);
@@ -478,7 +478,7 @@ namespace hooks
     }
 
     // Check if @p player has enough supplies to build @p unit_id.
-    bool hasSuppliesForUnitHook(u8 player, u16 unit_id, bool canShowErrorMessage)
+    bool has_supplies_for_unit(u8 player, u16 unit_id, bool canShowErrorMessage)
     {
         // Default StarCraft behavior
         s32 supplyCost = units_dat::SupplyRequired[unit_id];

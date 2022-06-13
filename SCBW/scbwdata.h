@@ -471,19 +471,19 @@ SCBW_DATA(s32*,	suppliesUsed_Protoss,				0x00582294);
 SCBW_DATA(s32*,	suppliesUsed_Terran,				0x00582204);
 SCBW_DATA(s32*,	suppliesUsed_Zerg,					0x00582174);
 
-// For initializeUnitCounts
+// For initialize_unit_counts
 SCBW_DATA(s32*,	unitCountScore,						0x00581DE4);
 SCBW_DATA(s8*,	unknown_57F41CB,					0x0057F1CB);
 
-// For StatRes_MainProc
+// For stat_res_main_proc
 SCBW_DATA(s32*,	unknown_player_5153F8,				0x005153F8);
 SCBW_DATA(s32*,	unknown_68C22C,						0x0068C22C);
 SCBW_DATA(s32*,	unknown_68C230,						0x0068C230);
 
-// For getSuppliesTemp
+// For get_supplies_temp
 SCBW_DATA(s16*,	suppliesUsedTemp,					0x006CA93E);
 
-// For drawSupplyUnitStatus
+// For draw_supply_unit_status
 SCBW_DATA(char*, supply_available_buffer,			0x006CA668);
 SCBW_DATA(char*, supply_used_buffer,				0x006CA9F8);
 SCBW_DATA(char*, supply_max_buffer,					0x006CAB08);
