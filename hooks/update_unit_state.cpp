@@ -433,6 +433,9 @@ namespace hooks
 				&& unitExt->damage_receive_timer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
+				if (unit->status & UnitStatus::Burrowed) {
+					regen *= 2;
+				}
 
 				regen *=  1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size();
 				unit->set_hitpoints(unit->hitpoints + regen);
