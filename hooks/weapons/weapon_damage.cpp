@@ -8,23 +8,6 @@
 #include "globals.h"
 #include "logger.h"
 
-namespace
-{
-	/// Definition of damage factors
-	struct
-	{
-		s32 damageType;
-		s32 unitSizeFactor[5];	 // Order: {independent, small, medium, large, titanic}
-	} const damageFactor[] = {
-		{0, 0, 0,	0,	 0,   0},			// Independent
-		{1, 0, 128, 192, 256, 192},			// Explosive
-		{2, 0, 256, 192, 128, 64},			// Concussive
-		{3, 0, 256, 256, 192, 128},			// Normal
-		{4, 0, 256, 256, 256, 256},			// IgnoreArmor
-		{5, 0, 256, 256, 256, 256},			// Chronal
-	};
-}
-
 #include "SCBW\UnitFinder.h"
 
 bool darkswarm_blocks_damage(Unit* target, u32 weaponId, u32 damageDivisor) {
@@ -196,7 +179,7 @@ namespace hooks
 
 		// Cliff Advantage - Armor | Disabled 10 Jan 2022
 		/*
-		if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
+		if (data.damage_type != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
 		{
 			data.finalDamage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 		}
@@ -255,7 +238,7 @@ namespace hooks
 		}
 
 		// Apply damage type/unit size factor
-		s32 damage_factor = damageFactor[data.damageType].unitSizeFactor[units_dat::SizeType[data.target->id]];
+		s32 damage_factor = damage_factors[data.damageType].unit_size_factor[units_dat::SizeType[data.target->id]];
 		if (data.attacker != nullptr)
 		{
 			switch (data.attacker->id)
