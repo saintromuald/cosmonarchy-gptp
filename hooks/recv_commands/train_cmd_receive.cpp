@@ -3,34 +3,32 @@
 
 namespace hooks
 {
-	void CMDRECV_TrainFighter()
+	void cmdrecv_train_fighter() // 004C1800
 	{
-		Unit* current_selection;
 		*unit_iterator_pos = 0;
-		current_selection = get_active_player_next_selection();
-
-		while (current_selection != nullptr)
+		Unit* current_selection = get_active_player_next_selection();
+		while (current_selection)
 		{
-			u32 unitToBuild;
+			u32 unit_to_train;
 			//the original code was messy, simplified/optimized version here
 			if (current_selection->id == UnitId::ProtossSolarion)
 			{
-				unitToBuild = UnitId::ProtossSteward;
+				unit_to_train = UnitId::ProtossSteward;
 			}
 			else
 			{
 				if (current_selection->id == UnitId::ProtossAccantor)
 				{
-					unitToBuild = UnitId::ProtossPlasmaShell;
+					unit_to_train = UnitId::ProtossPlasmaShell;
 				}
 				else
 				{
-					unitToBuild = 0; // not translating it as marine as it's an error case
+					unit_to_train = 0; // not translating it as marine as it's an error case
 				}
 			}
 
-			if (current_selection->can_make_unit(unitToBuild, *ACTIVE_NATION_ID) == 1
-				&& helper::has_money_can_make(current_selection, unitToBuild)) // add unit to build queue if successful
+			if (current_selection->can_make_unit(unit_to_train, *ACTIVE_NATION_ID) == 1
+				&& helper::has_money_can_make(current_selection, unit_to_train)) // add unit to build queue if successful
 			{
 				if (current_selection->id == UnitId::ProtossSolarion
 					|| current_selection->id == UnitId::ProtossAccantor)
@@ -40,7 +38,7 @@ namespace hooks
 						current_selection->secondary_order_id = OrderId::TrainFighter;
 						current_selection->secondary_order_pos.y = 0;
 						current_selection->secondary_order_pos.x = 0;
-						current_selection->current_build_unit = nullptr;
+						current_selection->current_build_unit = 0;
 						current_selection->secondary_order_state = 0;
 					}
 				}
@@ -51,17 +49,17 @@ namespace hooks
 	}
 
 	// Note: the default function isn't compatible with multiple selection
-	void CMDRECV_Train(u16 wUnitType)
+	void cmdrecv_train(u16 unit_id) // 004C1C20
 	{
 		Unit* builder;
 		*unit_iterator_pos = 0;
 		builder = get_active_player_next_selection();
-		if (builder != nullptr && get_active_player_next_selection() == nullptr)
+		if (builder && get_active_player_next_selection() == 0)
 		{
 			// Originally also checked for a lardcoded ID distance, disabled for training units with high IDs
-			if (builder->can_make_unit(wUnitType, *ACTIVE_NATION_ID) == 1)
+			if (builder->can_make_unit(unit_id, *ACTIVE_NATION_ID) == 1)
 			{
-				if (helper::has_money_can_make(builder, wUnitType)) // add unit to build queue if successful
+				if (helper::has_money_can_make(builder, unit_id)) // add unit to build queue if successful
 				{
 					builder->set_secondary_order(OrderId::Train);
 				}

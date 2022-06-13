@@ -8699,7 +8699,7 @@ namespace helper
 		return result;
 	}
 
-	// For initializeUnitCounts
+	// For initialize_unit_counts
 	char teamGame_CountRaces(char force, char* bIsLegal, char race)
 	{
 		const u32 Func_teamGame_CountRaces = 0x004857B0;
@@ -8718,7 +8718,7 @@ namespace helper
 		return result;
 	}
 
-	// For StatRes_MainProc
+	// For stat_res_main_proc
 	void showSupplyInfo(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB)
 	{
 		const u32 Func_showSupplyInfo = 0x004E53B0;
@@ -8754,7 +8754,7 @@ namespace helper
 		}
 	}
 
-	// For redrawSupplyInfo
+	// For redraw_supply_info
 	bool unitStatCond_Standard()
 	{
 		const u32 Func_unitStatCondStandard = 0x00424980;
@@ -8769,7 +8769,7 @@ namespace helper
 		return result;
 	}
 
-	// For drawSupplyUnitStatus
+	// For draw_supply_unit_status
 	void draw_shield_upgrade(BinDlg* dialog, u16 statusScreenIndex)
 	{
 		const u32 Func_drawShieldUpgrade = 0x00425510;

@@ -3,10 +3,10 @@
 
 namespace
 {
-	void __declspec(naked) CMDRECV_TrainFighterWrapper()
+	void __declspec(naked) cmdrecv_train_fighter_wrapper()
 	{
 		__asm PUSHAD
-		hooks::CMDRECV_TrainFighter();
+		hooks::cmdrecv_train_fighter();
 		__asm
 		{
 			POPAD
@@ -14,16 +14,16 @@ namespace
 		}
 	}
 
-	void __declspec(naked) CMDRECV_TrainWrapper()
+	void __declspec(naked) cmdrecv_train_2_wrapper()
 	{
-		static u16 wUnitType;
+		static u16 unit_id;
 		__asm
 		{
 			MOV AX, [EAX + 01]
-			MOV wUnitType, AX
+			MOV unit_id, AX
 			PUSHAD
 		}
-		hooks::CMDRECV_Train(wUnitType);
+		hooks::cmdrecv_train(unit_id);
 		__asm
 		{
 			POPAD
@@ -34,9 +34,9 @@ namespace
 
 namespace hooks
 {
-	void injectTrainCmdRecvHooks()
+	void inject_train_cmd_recv_hooks()
 	{
-		jump_patch(CMDRECV_TrainFighterWrapper,		0x004C1800, 5);
-		jump_patch(CMDRECV_TrainWrapper,			0x004C1C20, 7);
+		jump_patch(cmdrecv_train_fighter_wrapper,	0x004C1800, 5);
+	//	jump_patch(cmdrecv_train_2_wrapper,		 	0x004C1C20, 7);
 	}
 }

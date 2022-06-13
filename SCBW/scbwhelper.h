@@ -932,17 +932,17 @@ namespace helper
 	void ai_placement_data_something(s8* placementData, Point16 tryPosition);								// 00443610
 	u32 getTileDistance(s32 x, s32 y, s32 x2, s32 y2);														// 00444100
 
-	// For initializeUnitCounts
+	// For initialize_unit_counts
 	char teamGame_CountRaces(char force, char* bIsLegal, char race);										// 004857B0
 
-	// For StatRes_MainProc
+	// For stat_res_main_proc
 	void showSupplyInfo(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB);									// 004E53B0
 	void printStatResInfo(BinDlg* dialog, s16 graphic, char** a3, char* a4, s32 bSomething);				// 004E52E0
 
-	// For redrawSupplyInfo
+	// For redraw_supply_info
 	bool unitStatCond_Standard();																			// 00424980
 
-	// For drawSupplyUnitStatus
+	// For draw_supply_unit_status
 	void draw_shield_upgrade(BinDlg* dialog, u16 statusScreenIndex);										// 00425510
 	void drawArmor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex);										// 00425600
 

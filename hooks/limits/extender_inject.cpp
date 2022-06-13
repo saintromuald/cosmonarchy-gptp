@@ -474,7 +474,7 @@ namespace hooks
 //		hooks::sfxExtender();
 		newSfxExtender();
 //		injectPortdataLimits();
-//		hooks::injectTblExtender();
+//		hooks::inject_tbl_extender();
 		insaneFlingyIdExtender();
 
 //		newAttackExtender(); // if extended attack config option is not enabled in aise, will cause aise crashes

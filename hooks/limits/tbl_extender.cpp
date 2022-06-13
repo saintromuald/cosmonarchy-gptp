@@ -3,7 +3,6 @@
 
 namespace hooks
 {
-
 	std::vector<u32> offset_list()
 	{
 		return {
@@ -256,6 +255,7 @@ namespace hooks
 
 		};
 	}
+
 	std::vector<u32> patch_convention()
 	{
 		return {
@@ -367,42 +367,36 @@ namespace hooks
 			Reg::_ESI,Reg::_EAX,
 			0x00457C41,0x650,
 
-
-
-
-
-
-
-		TblPatchType::PtrMathWriting, 3, 1, 9, 7, 10, 1,1,1,1,1,1,1,
-		Reg::_EAX,Reg::_ECX,Reg::_EAX,
-		0x0042609E,
-		0x0042616F,
-		0x0046F9AB,
-		0x0048F775,
-		0x0048F865,
-		0x004C370F,
-		0x004271B2,
-		Reg::_EAX,Reg::_ECX,Reg::_EDX,
-		0x004266D1,
-		0x004268B3,
-		0x00464EC0,
-		0x0047B0DF,
-		0x0046F8B5,
-		0x0048D96E,
-		0x0048EEC0,
-		0x00494582,
-		0x004273A1,
-		0x00455C54,
-		Reg::_EAX,Reg::_ESI,Reg::_EAX,0x004927E2,
-		Reg::_EAX, Reg::_EDX,Reg::_EAX,0x004277AF,
-		Reg::_EDX,Reg::_ECX,Reg::_EDX,0x00426BC4,
-		Reg::_ECX,Reg::_ESI,Reg::_EAX,0x00427639,
-		Reg::_ESI,Reg::_ECX,Reg::_EDX,0x00427690,
-		Reg::_ESI,Reg::_EDX,Reg::_ECX,0x00427704,
-		Reg::_ESI,Reg::_ECX,Reg::_EAX,0x00457BC0,
-		//
-		// 1 nop
-		//
+			TblPatchType::PtrMathWriting, 3, 1, 9, 7, 10, 1,1,1,1,1,1,1,
+			Reg::_EAX,Reg::_ECX,Reg::_EAX,
+			0x0042609E,
+			0x0042616F,
+			0x0046F9AB,
+			0x0048F775,
+			0x0048F865,
+			0x004C370F,
+			0x004271B2,
+			Reg::_EAX,Reg::_ECX,Reg::_EDX,
+			0x004266D1,
+			0x004268B3,
+			0x00464EC0,
+			0x0047B0DF,
+			0x0046F8B5,
+			0x0048D96E,
+			0x0048EEC0,
+			0x00494582,
+			0x004273A1,
+			0x00455C54,
+			Reg::_EAX,Reg::_ESI,Reg::_EAX,0x004927E2,
+			Reg::_EAX, Reg::_EDX,Reg::_EAX,0x004277AF,
+			Reg::_EDX,Reg::_ECX,Reg::_EDX,0x00426BC4,
+			Reg::_ECX,Reg::_ESI,Reg::_EAX,0x00427639,
+			Reg::_ESI,Reg::_ECX,Reg::_EDX,0x00427690,
+			Reg::_ESI,Reg::_EDX,Reg::_ECX,0x00427704,
+			Reg::_ESI,Reg::_ECX,Reg::_EAX,0x00457BC0,
+			//
+			// 1 nop
+			//
 			TblPatchType::RegisterPointerCmp,2,1,5,20,1,1,1,1,
 			Reg::L_AX,Reg::_ECX,
 			0x00426083,
@@ -548,7 +542,8 @@ namespace hooks
 						0x00457A33, Jmp::JA,
 						0x004575CC, Jmp::JA,
 						0x0045760A, Jmp::JA,
-						0x00457747, Jmp::JA,*/
+						0x00457747, Jmp::JA,
+						*/
 		};
 	}
 	namespace ConvReadStatus
@@ -560,7 +555,7 @@ namespace hooks
 			ReadArgs,
 		};
 	}
-	void memoryPatchVec(u32 address, std::vector<u8>& patch)
+	void memory_patch_vec(u32 address, std::vector<u8>& patch)
 	{
 		for (s32 i = 0; i < patch.size(); i++)
 		{
@@ -661,7 +656,8 @@ namespace hooks
 			JMP wrapJumpAddressAfter[currentWrapPatch]
 		}
 	}*/
-	void patchTblList()
+
+	void patch_tbl_list()
 	{
 		s32 read_status = ConvReadStatus::ReadHeader;
 		std::vector<u32> args;
@@ -954,7 +950,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 
 
 
-						memoryPatchVec(address, patch);
+						memory_patch_vec(address, patch);
 						//don't patch if wrapper offset
 
 						i += currentArgCount;
@@ -965,7 +961,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 			}
 		}
 	}
-	void injectTblExtender()
+	void inject_tbl_extender()
 	{
 		globals.tbl_extender = true;
 		auto ptr_list = offset_list();
@@ -973,7 +969,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 		/*for (s32 i = 0; i < ptr_list.size(); i++) {
 			memoryPatch(ptr_list[i], (u32)&extendedTbl);
 		}*/
-		patchTblList();
+		patch_tbl_list();
 		memory_patch(0x004C3A6A + 1, &tblNew);
 		memory_patch(0x004C3A2E + 1, &tblNew);
 		memory_patch(0x004C3AF4 + 1, &tblNew);
