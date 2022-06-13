@@ -364,6 +364,7 @@ static Music* get_next_music() {
 }
 
 bool has_custom_name[PlayerLimit];
+Objectives objectives;
 
 static b32 __fastcall parse_comment_action(Action* action) {
 	if (*currentTriggerPlayerId == *LOCAL_NATION_ID) {
@@ -504,6 +505,15 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				}
 			} else if (parser_eq(&parser, "recolor_loop_clear")) {
 				memset(&trigger_system.recolor_list, 0, sizeof(trigger_system.recolor_list));
+			} else if (parser_eq(&parser, "objectives_add")) {
+				Token objective = parser_get_string(&parser, true);
+				if (objectives.count < ObjectivesCap) {
+					sprintf_s(objectives.entries[objectives.count].data, "- %s", objective.data);
+					objectives.entries[objectives.count].size = strlen(objectives.entries[objectives.count].data);
+					objectives.count++;
+				}
+			} else if (parser_eq(&parser, "objectives_clear")) {
+				memset(&objectives, 0, sizeof(objectives));
 			}
 		}
 	}
@@ -524,6 +534,7 @@ static void init_trigger_system() {
 	actionTable[47] = parse_comment_action;
 
 	memset(has_custom_name, 0, sizeof(has_custom_name));
+	memset(&objectives, 0, sizeof(objectives));
 	for (u32 i = 0; i < MaxMusic; ++i) {
 		free_music(&music_tracks[i]);
 	}

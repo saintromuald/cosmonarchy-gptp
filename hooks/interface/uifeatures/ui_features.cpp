@@ -5,18 +5,15 @@
 #include <algorithm>
 #include <Windows.h>
 #include "config.h"
+#include "trigger_system.h"
 
-/*
-struct Action {
-	u32 frame; // timestamp
-};
-*/
-//	std::vector<Action> actions;
 u64 total_client_actions;
 
 s32* const fonts = (s32*)0x006CE0F4;
 char* const printXYAlignment = (char*)0x006CE110;
 Box16* const drawTextBox = (Box16*)0x006CE0C8;
+
+Point16 ui_text_pos;
 
 void format_time(char* buffer, u32 size, char* prefix, u32 seconds) {
 	u32 sec = seconds % 60;
@@ -27,14 +24,19 @@ void format_time(char* buffer, u32 size, char* prefix, u32 seconds) {
 }
 
 namespace hooks {
-	void draw_text(const char* text, s32 x, s32 y, s32 width, s32 height, char color) {
+	void draw_text(const char* text, u32 x, u32 y, u32 w, u32 h, char color) {
 		helper::get_color_handle(color);
 		*printXYAlignment = 0x11;
 		drawTextBox->left = x;
-		drawTextBox->right = x + width;
+		drawTextBox->right = x + w;
 		drawTextBox->top = y;
-		drawTextBox->bottom = y + height;
+		drawTextBox->bottom = y + h;
 		helper::bwfxn_print_xy(text, x, y);
+	}
+
+	void draw_ui_text(const char* text, u8 color) {
+		draw_text(text, ui_text_pos.x, ui_text_pos.y, 200, ui_y_increment, color);
+		ui_text_pos.y += ui_y_increment;
 	}
 
 	void register_action(u8 type) {
@@ -51,24 +53,15 @@ namespace hooks {
 	}
 
 	void draw_ui_features() {
-		u32 x_pos = 10;
-		u32 y_pos = 3;
-
+		ui_text_pos = {10, 3};
 		if (*leaderboard_type) {
-			// TODO: Get leaderboard width. Or actually just move the leaderboard down instead. This resolves issues with the test map.
-			x_pos += 80;
+			ui_text_pos.x += 80;
 		}
 
 		if (config.show_timer) {
-			u32 seconds = *elapsed_time_frames / 24;
-			u32 sec = seconds % 60;
-			u32 min = seconds / 60 % 60;
-			u32 hrs = seconds / 60 / 60;
-
 			char buffer[32] = {};
-			sprintf_s(buffer, "%02u:%02u:%02u", hrs, min, sec);
-			draw_text(buffer, x_pos, y_pos, 100, 15, 7);
-			y_pos += 15;
+			format_time(buffer, 32, "", *elapsed_time_frames / 24);
+			draw_ui_text(buffer, 7);
 		}
 
 		if (config.show_apm) {
@@ -76,8 +69,11 @@ namespace hooks {
 
 			char buffer[32] = {};
 			sprintf_s(buffer, "APM: %u", apm);
-			draw_text(buffer, x_pos, y_pos, 100, 15, 7);
-			y_pos += 15;
+			draw_ui_text(buffer, 7);
+		}
+
+		for (u32 i = 0; i < objectives.count; ++i) {
+			draw_ui_text(objectives.entries[i].data, 7);
 		}
 	}
 

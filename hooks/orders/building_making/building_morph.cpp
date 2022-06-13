@@ -334,6 +334,8 @@ namespace hooks
 					helper::set_thingy_visibility_flags(thingy);
 				}
 				helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
+
+
 				u32 previous_hitpoints = unit->previous_hitpoints * 256;
 				helper::replace_unit_with_type(unit, unit->morph_origin);
 				helper::update_building_ai(unit);
