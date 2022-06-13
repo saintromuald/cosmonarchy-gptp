@@ -5,7 +5,7 @@ namespace
 {
 	const u32 SetFontHandle = 0x0041F610;
 	const u32 drawUIFeatures_jmp = 0x0048D0AE;
-	void _declspec(naked) drawUIFeatures_wrapper()
+	void _declspec(naked) draw_ui_features_wrapper()
 	{
 		_asm {
 			PUSHAD
@@ -18,7 +18,7 @@ namespace
 		}
 	}
 
-	void _declspec(naked) QueueGameCommand_wrapper()
+	void _declspec(naked) queue_game_command_wrapper()
 	{
 		static const void* a1;
 		static u32 a2;
@@ -36,7 +36,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) targetedOrder_Wrapper()
+	void __declspec(naked) targeted_order_wrapper()
 	{
 		static s16 a1;
 		static s32 a2;
@@ -48,7 +48,6 @@ namespace
 		static s32 a8;
 		static s32 a9;
 		static s32 a10;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -81,13 +80,12 @@ namespace
 		}
 	}
 
-	void __declspec(naked) selectUnits_Wrapper()
+	void __declspec(naked) select_units_wrapper()
 	{
 		static Unit** a1;
 		static s32 a2;
 		static s32 a3;
 		static s32 a4;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -110,12 +108,11 @@ namespace
 		}
 	}
 
-	void __declspec(naked) checkHotkeyChar_wrapper()
+	void __declspec(naked) check_hotkey_char_wrapper()
 	{
 		static b32 result;
 		static BinDlg* dialog;
 		static char* hotkey;
-
 		__asm
 		{
 			MOV dialog, ECX
@@ -131,11 +128,10 @@ namespace
 		}
 	}
 
-	void __declspec(naked) createUpgradeLevelTooltip_wrapper()
+	void __declspec(naked) create_upgrade_level_tooltip_wrapper()
 	{
 		static char result;
 		static char* text;
-
 		__asm
 		{
 			MOV text, ECX
@@ -153,13 +149,13 @@ namespace
 
 namespace hooks
 {
-	void injectUIFeaturesHooks()
+	void inject_ui_features_hooks()
 	{
-		jump_patch(drawUIFeatures_wrapper,				0x0048D0A9, 0);
-	//	jump_patch(targetedOrder_Wrapper,				0x004754F0, 1);
-	//	jump_patch(selectUnits_Wrapper,					0x0046FA00, 1);
-		jump_patch(QueueGameCommand_wrapper,			0x00485BD0, 4);
-		jump_patch(checkHotkeyChar_wrapper,				0x004588C0, 3);
-	//	jump_patch(createUpgradeLevelTooltip_wrapper,	0x00459150, 3);
+		jump_patch(draw_ui_features_wrapper,				0x0048D0A9, 0);
+	//	jump_patch(targeted_order_wrapper,					0x004754F0, 1);
+	//	jump_patch(select_units_wrapper,					0x0046FA00, 1);
+		jump_patch(queue_game_command_wrapper,				0x00485BD0, 4);
+		jump_patch(check_hotkey_char_wrapper,				0x004588C0, 3);
+	//	jump_patch(create_upgrade_level_tooltip_wrapper,	0x00459150, 3);
 	}
 }

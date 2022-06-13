@@ -126,14 +126,20 @@ namespace hooks
 		buffer = a1;
 		v2 = LOWORD(a2 + *sgdwBytesInCmdQueue) | HIWORD(v2);
 		if (a2 + *sgdwBytesInCmdQueue <= *provider_MaxBuffer)
+		{
 			goto LABEL_8;
+		}
 		if (*scMainState == 4)
+		{
 			return v2;
+		}
 		if (helper::snet_get_turns_in_transit(&turns))
 		{
 			v2 = LOBYTE(turns) | HIBYTE(v2);
 			if (turns >= 16 - *provider_LatencyCalls)
+			{
 				return v2;
+			}
 			helper::send_turn();
 LABEL_8:
 			_sgdwBytesInCmdQueue = *sgdwBytesInCmdQueue;
