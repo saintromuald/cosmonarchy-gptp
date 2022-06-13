@@ -1037,6 +1037,7 @@ SCBW_DATA(GrpHead**,	images_damage_overlay_graphic,	0x00520244);
 
 // To move in-game timer while leaderboard is active
 SCBW_DATA(BinDlg**,		leaderboard_dialog,				0x00597284);
+SCBW_DATA(char*,		leaderboard_type,				0x0058D70C);
 
 //////////////////////////////////////////////////////////////// @}
 
