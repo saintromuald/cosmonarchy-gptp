@@ -442,13 +442,14 @@ static b32 __fastcall parse_comment_action(Action* action) {
 						"%s", name.data);
 				}
 			} else if (parser_eq(&parser, "recolor")) {
-				TimedRecolor recolor  = {};
-				recolor.shadows.r     = parser_get_f32(&parser);
-				recolor.shadows.g     = parser_get_f32(&parser);
-				recolor.shadows.b     = parser_get_f32(&parser);
-				recolor.shadows.gamma = parser_get_f32(&parser);
-				recolor.highlights    = recolor.shadows;
-				recolor.time = parser_get_f32(&parser);
+				TimedRecolor recolor = {};
+				recolor.shadows.r          = parser_get_f32(&parser);
+				recolor.shadows.g          = parser_get_f32(&parser);
+				recolor.shadows.b          = parser_get_f32(&parser);
+				recolor.shadows.gamma      = parser_get_f32(&parser);
+				recolor.shadows.saturation = parser_get_f32(&parser);
+				recolor.highlights = recolor.shadows;
+				recolor.time       = parser_get_f32(&parser);
 
 				trigger_system.recolor_time = 0;
 				trigger_system.source_recolor = trigger_system.current_recolor;
@@ -458,27 +459,32 @@ static b32 __fastcall parse_comment_action(Action* action) {
 					set_palette_recolor(recolor.shadows, recolor.highlights);
 				}
 			} else if (parser_eq(&parser, "recolor_loop_add")) {
-				TimedRecolor recolor  = {};
-				recolor.shadows.r     = parser_get_f32(&parser);
-				recolor.shadows.g     = parser_get_f32(&parser);
-				recolor.shadows.b     = parser_get_f32(&parser);
-				recolor.shadows.gamma = parser_get_f32(&parser);
-				recolor.highlights    = recolor.shadows;
-				recolor.time = parser_get_f32(&parser);
+				TimedRecolor recolor = {};
+				recolor.shadows.r          = parser_get_f32(&parser);
+				recolor.shadows.g          = parser_get_f32(&parser);
+				recolor.shadows.b          = parser_get_f32(&parser);
+				recolor.shadows.gamma      = parser_get_f32(&parser);
+				recolor.shadows.saturation = parser_get_f32(&parser);
+				recolor.highlights = recolor.shadows;
+				recolor.time       = parser_get_f32(&parser);
 
 				if (trigger_system.recolor_list.count < MaxRecolors) {
 					trigger_system.recolor_list.recolors[trigger_system.recolor_list.count++] = recolor;
 				}
 			} else if (parser_eq(&parser, "recolor_ex")) {
-				TimedRecolor recolor  = {};
-				recolor.shadows.r     = parser_get_f32(&parser);
-				recolor.shadows.g     = parser_get_f32(&parser);
-				recolor.shadows.b     = parser_get_f32(&parser);
-				recolor.shadows.gamma = parser_get_f32(&parser);
-				recolor.highlights.r     = parser_get_f32(&parser);
-				recolor.highlights.g     = parser_get_f32(&parser);
-				recolor.highlights.b     = parser_get_f32(&parser);
-				recolor.highlights.gamma = parser_get_f32(&parser);
+				TimedRecolor recolor = {};
+				recolor.shadows.r             = parser_get_f32(&parser);
+				recolor.shadows.g             = parser_get_f32(&parser);
+				recolor.shadows.b             = parser_get_f32(&parser);
+				recolor.shadows.gamma         = parser_get_f32(&parser);
+				recolor.shadows.saturation    = parser_get_f32(&parser);
+
+				recolor.highlights.r          = parser_get_f32(&parser);
+				recolor.highlights.g          = parser_get_f32(&parser);
+				recolor.highlights.b          = parser_get_f32(&parser);
+				recolor.highlights.gamma      = parser_get_f32(&parser);
+				recolor.highlights.saturation = parser_get_f32(&parser);
+
 				recolor.time = parser_get_f32(&parser);
 
 				trigger_system.recolor_time = 0;
@@ -489,15 +495,19 @@ static b32 __fastcall parse_comment_action(Action* action) {
 					set_palette_recolor(recolor.shadows, recolor.highlights);
 				}
 			} else if (parser_eq(&parser, "recolor_ex_loop_add")) {
-				TimedRecolor recolor  = {};
-				recolor.shadows.r     = parser_get_f32(&parser);
-				recolor.shadows.g     = parser_get_f32(&parser);
-				recolor.shadows.b     = parser_get_f32(&parser);
-				recolor.shadows.gamma = parser_get_f32(&parser);
-				recolor.highlights.r     = parser_get_f32(&parser);
-				recolor.highlights.g     = parser_get_f32(&parser);
-				recolor.highlights.b     = parser_get_f32(&parser);
-				recolor.highlights.gamma = parser_get_f32(&parser);
+				TimedRecolor recolor = {};
+				recolor.shadows.r             = parser_get_f32(&parser);
+				recolor.shadows.g             = parser_get_f32(&parser);
+				recolor.shadows.b             = parser_get_f32(&parser);
+				recolor.shadows.gamma         = parser_get_f32(&parser);
+				recolor.shadows.saturation    = parser_get_f32(&parser);
+
+				recolor.highlights.r          = parser_get_f32(&parser);
+				recolor.highlights.g          = parser_get_f32(&parser);
+				recolor.highlights.b          = parser_get_f32(&parser);
+				recolor.highlights.gamma      = parser_get_f32(&parser);
+				recolor.highlights.saturation = parser_get_f32(&parser);
+
 				recolor.time = parser_get_f32(&parser);
 
 				if (trigger_system.recolor_list.count < MaxRecolors) {
@@ -648,7 +658,7 @@ void handle_music() {
 
 void handle_recolor() {
 	if (*elapsed_time_frames == 0) {
-		set_palette_recolor({1, 1, 1, 1}, {1, 1, 1, 1});
+		set_palette_recolor({1, 1, 1, 1, 1}, {1, 1, 1, 1, 1});
 	}
 	if (trigger_system.recolor_time < trigger_system.target_recolor.time) {
 		trigger_system.recolor_time += 1.0 / 24; // Tick Time for Brood War
@@ -685,7 +695,7 @@ void tick_trigger_system(bool in_game) {
 		// Leaving the game should reset music
 		trigger_system_in_game = false;
 		init_trigger_system();
-		set_palette_recolor({1, 1, 1, 1}, {1, 1, 1, 1});
+		set_palette_recolor({1, 1, 1, 1, 1}, {1, 1, 1, 1, 1});
 	}
 	
 	handle_music();
