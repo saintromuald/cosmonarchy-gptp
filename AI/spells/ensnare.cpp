@@ -24,7 +24,7 @@ namespace AI
 			caster,
 			[&](Unit* target)
 		{
-			if (!isTargetWorthHitting(target, caster))
+			if (!is_target_worth_hitting(target, caster))
 				return false;
 
 			if (!scbw::can_weapon_target_unit(WeaponId::Ensnare, target, caster))
@@ -39,11 +39,11 @@ namespace AI
 			if (!isTargetAttackingAlly(target, caster))
 				return false;
 
-			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::Ensnare);
+			const s32 totalEnemyLife = get_total_enemy_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::Ensnare);
 			if (!isUnderAttack && totalEnemyLife < 250)
 				return false;
 
-			const s32 totalAllyLife = getTotalAllyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::Ensnare);
+			const s32 totalAllyLife = get_total_ally_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::Ensnare);
 			if (totalAllyLife * 2 >= totalEnemyLife)
 				return false;
 

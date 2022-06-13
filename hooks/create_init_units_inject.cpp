@@ -7,7 +7,7 @@ namespace
 {
 	void __declspec(naked) CreateInitialMeleeBuildingsWrapper()
 	{
-		static u32 playerId;
+		static u32 player;
 		static u8 raceId;
 		__asm
 		{
@@ -15,10 +15,10 @@ namespace
 			MOV EBP, ESP
 			MOV raceId, AL
 			MOV EAX, [EBP + 0x08]
-			MOV playerId, EAX
+			MOV player, EAX
 			PUSHAD
 		}
-		hooks::CreateInitialMeleeBuildings(raceId, playerId);
+		hooks::CreateInitialMeleeBuildings(raceId, player);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -47,16 +47,16 @@ namespace
 
 	void __declspec(naked) CreateInitialOverlordWrapper()
 	{
-		static u8 playerId;
+		static u8 player;
 		__asm
 		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV AL, byte ptr[EBP + 0x08]
-			MOV playerId, AL
+			MOV player, AL
 			PUSHAD
 		}
-		hooks::CreateInitialOverlord(playerId);
+		hooks::CreateInitialOverlord(player);
 		__asm
 		{
 			POPAD

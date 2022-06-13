@@ -16,14 +16,14 @@ struct Player
 	u8 get_color();
 
 	// return the possibly non-standard color of the player identified by PlayerId
-	static u8 get_color(u8 playerId);
+	static u8 get_color(u8 player);
 
 	// return the faction (tribe, brood or other) color  of current player
 	u8 get_faction_color();
 
 	// return the faction (tribe, brood or other) color of the player identified by PlayerId
-	static u8 get_faction_color(u8 playerId);
+	static u8 get_faction_color(u8 player);
 
-	static u32 number_of_units_of_id(u8 playerId, u16 unit_id);
-	static u32 number_of_completed_units_of_id(u8 playerId, u16 unit_id);
+	static u32 number_of_units_of_id(u8 player, u16 unit_id);
+	static u32 number_of_completed_units_of_id(u8 player, u16 unit_id);
 };

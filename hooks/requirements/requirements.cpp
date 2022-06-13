@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	s32 parse_requirement_opcodes_logic(Unit* unit, u32 datReqOffset, u16 id, u32 playerId, u16* datReqBase)
+	s32 parse_requirement_opcodes_logic(Unit* unit, u32 datReqOffset, u16 id, u32 player, u16* datReqBase)
 	{
 		// args:
 		// eax          u32    dat req offset
@@ -46,7 +46,7 @@ namespace hooks
 				case RequirementOpcodes::CurrentUnitIs:
 				{
 					unit_id = datReqBase[datReqOffset++];
-					if (Player::number_of_completed_units_of_id(unit_id, playerId) != 0)
+					if (Player::number_of_completed_units_of_id(unit_id, player) != 0)
 					{
 						greyButton = false;
 					}
@@ -65,7 +65,7 @@ namespace hooks
 				case RequirementOpcodes::MustHave:
 				{
 					unit_id = datReqBase[datReqOffset++];
-					success += Player::number_of_completed_units_of_id(unit_id, playerId) + Player::number_of_units_of_id(unit_id, playerId);
+					success += Player::number_of_completed_units_of_id(unit_id, player) + Player::number_of_units_of_id(unit_id, player);
 				}
 					break;
 
@@ -85,7 +85,7 @@ namespace hooks
 						success++;
 						break;
 					}
-					if (scbw::has_tech_researched(playerId, id) == false && scbw::is_cheat_enabled(CheatFlags::MedievalMan) == false)
+					if (scbw::has_tech_researched(player, id) == false && scbw::is_cheat_enabled(CheatFlags::MedievalMan) == false)
 					{
 						break;
 					}
@@ -337,7 +337,7 @@ namespace hooks
 
 				case RequirementOpcodes::UpgradeLv1Requires:
 				{
-					switch (scbw::get_upgrade_level(playerId, id))
+					switch (scbw::get_upgrade_level(player, id))
 					{
 						default:
 						{
@@ -378,7 +378,7 @@ namespace hooks
 				{
 					// Any invalid opcodes will be read here as unit IDs
 					unit_id = opcode;
-					success += Player::number_of_completed_units_of_id(playerId, unit_id);
+					success += Player::number_of_completed_units_of_id(player, unit_id);
 				}
 			}
 

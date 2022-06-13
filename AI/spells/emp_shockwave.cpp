@@ -24,7 +24,7 @@ namespace AI
 			caster,
 			[&](Unit* target)
 		{
-			if (!isTargetWorthHitting(target, caster))
+			if (!is_target_worth_hitting(target, caster))
 				return false;
 
 			if (!units_dat::ShieldsEnabled[target->id])
@@ -51,7 +51,7 @@ namespace AI
 			caster,
 			[&](Unit* target)
 		{
-			if (!isTargetWorthHitting(target, caster))
+			if (!is_target_worth_hitting(target, caster))
 				return false;
 
 			if (!target->is_valid_caster())

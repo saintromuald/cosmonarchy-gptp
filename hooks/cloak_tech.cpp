@@ -29,7 +29,7 @@ namespace hooks
 #define FALSE 0
 #endif
 
-	b32 BTNSCOND_IsCloaked(Unit* unit, u32 playerId, u16 requirement_var)
+	b32 BTNSCOND_IsCloaked(Unit* unit, u32 player, u16 requirement_var)
 	{
 
 		b32 bReturnValue = TRUE;
@@ -47,7 +47,7 @@ namespace hooks
 				//original code is hardcoded, not using a function
 				u8 techId = getCloakingTech(unit_from_selection);
 
-				if (unit_from_selection->canUseTech(techId, playerId) == TRUE)
+				if (unit_from_selection->canUseTech(techId, player) == TRUE)
 				{
 
 					if (
@@ -71,7 +71,7 @@ namespace hooks
 
 	} //b32 BTNSCOND_IsCloaked(Unit* unit, u32 player, u16 requirement_var)
 
-	b32 BTNSCOND_CanCloak(Unit* unit, u32 playerId, u16 requirement_var)
+	b32 BTNSCOND_CanCloak(Unit* unit, u32 player, u16 requirement_var)
 	{
 
 		b32 bReturnValue = FALSE;
@@ -89,7 +89,7 @@ namespace hooks
 				u8 techId = getCloakingTech(unit_from_selection);
 
 				if (
-					unit_from_selection->canUseTech(techId, playerId) == TRUE &&				//must be able to use cloaking tech for more checks to be necessary
+					unit_from_selection->canUseTech(techId, player) == TRUE &&				//must be able to use cloaking tech for more checks to be necessary
 					(!(unit_from_selection->status & UnitStatus::CloakingForFree) ||	//to cloak, unit should not already be cloaked for free
 						unit_from_selection->status & UnitStatus::Burrowed) &&				//if burrowed, cloaking for free, but still allowed to cloak
 					!(unit_from_selection->status & UnitStatus::RequiresDetection)			//if unit doesn't already require detection

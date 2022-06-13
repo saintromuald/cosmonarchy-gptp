@@ -45,12 +45,12 @@ namespace
 
 	//-------- BTNSCOND_CanBuildUnit --------//
 
-	s32 __fastcall unitMorphWrapper_BTNSCOND_CanBuildUnit(u16 buildUnitId, s32 playerId, Unit* unit)
+	s32 __fastcall unitMorphWrapper_BTNSCOND_CanBuildUnit(u16 buildUnitId, s32 player, Unit* unit)
 	{
 		if (*client_selection_count <= 1
 			|| hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]) != UnitId::None)
 		{
-			return unit->can_make_unit(buildUnitId, playerId);
+			return unit->can_make_unit(buildUnitId, player);
 		}
 		return 0;
 	}

@@ -7,9 +7,9 @@ namespace hooks
 {
 	// used in itself, completeAddon, begin_gas_building, GiveAllUnitPropertiesToPlayerAndMakeIdle, removeSubunitOrGasContainer, ai_create_unit, orders_RescuePassive, orders_InfestMine1
 	// Changes would affect all those functions and maybe more
-	void giveUnit(Unit* unit, u32 playerId, u32 bCountAsCompleted)
+	void giveUnit(Unit* unit, u32 player, u32 bCountAsCompleted)
 	{
-		if (unit->player != playerId)
+		if (unit->player != player)
 		{
 			helper::remove_unit_ai(unit, 0);
 
@@ -49,7 +49,7 @@ namespace hooks
 
 			unit->player_link.prev = nullptr;
 			unit->player_link.next = nullptr;
-			unit->player = playerId;
+			unit->player = player;
 
 			// maybe "if" not needed?
 			if (isSelected)
@@ -58,14 +58,14 @@ namespace hooks
 			}
 
 			unit->player_link.prev = nullptr;
-			unit->player_link.next = firstPlayerUnit->unit[playerId];
+			unit->player_link.next = firstPlayerUnit->unit[player];
 
-			if (firstPlayerUnit->unit[playerId])
+			if (firstPlayerUnit->unit[player])
 			{
-				(firstPlayerUnit->unit[playerId])->player_link.prev = unit;
+				(firstPlayerUnit->unit[player])->player_link.prev = unit;
 			}
 
-			firstPlayerUnit->unit[playerId] = unit;
+			firstPlayerUnit->unit[player] = unit;
 			helper::increment_unit_scores(unit, 1);
 			if (unit->status & UnitStatus::Completed)
 			{
@@ -88,7 +88,7 @@ namespace hooks
 			helper::give_ai(unit);
 			if (unit->subunit && units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
 			{
-				giveUnit(unit->subunit, playerId, bCountAsCompleted);
+				giveUnit(unit->subunit, player, bCountAsCompleted);
 			}
 
 			helper::apply_speed_upgrade_from_unit_type(unit);

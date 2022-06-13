@@ -39,7 +39,7 @@
 
 namespace hooks
 {
-	u32 maxhp(s32 id, s32 playerId)
+	u32 maxhp(s32 id, s32 player)
 	{
 		u32 result = units_dat::MaxHitPoints[id];
 		//if (id==UnitId::firebat && scbw::get_upgrade_level(player, UpgradeId::Heatshield)) {
@@ -48,7 +48,7 @@ namespace hooks
 		return result;
 	}
 
-	u32 maxshields(s32 id, s32 playerId)
+	u32 maxshields(s32 id, s32 player)
 	{
 		u32 result = units_dat::MaxShieldPoints[id];
 		//if (units_dat::BaseProperty[id] & UnitProperty::RoboticUnit && scbw::get_upgrade_level(player, UpgradeId::Autovitality)) {
@@ -359,7 +359,7 @@ LABEL_55:
 		if (a1 != a2)
 		{
 			v2 = a2->player;
-			v3 = a1->player == 11 ? a1->sprite->playerId : a1->player;
+			v3 = a1->player == 11 ? a1->sprite->player : a1->player;
 			if (!scbw::is_allied_to(v2, v3))
 			{
 				ByteOperations::SetLowByte(v4, helper::ai_unit_can_attack(a1));

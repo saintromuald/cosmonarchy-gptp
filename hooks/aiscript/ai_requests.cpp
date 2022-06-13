@@ -44,10 +44,10 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	AiTown* ai_progress_build(s32 playerId, s32* minerals, s32* gas) // 00434480
+	AiTown* ai_progress_build(s32 player, s32* minerals, s32* gas) // 00434480
 	{
-		AiTown* result = AiActiveTownArray[playerId].first;
-		AiTown* firstTown = AiActiveTownArray[playerId].first;
+		AiTown* result = AiActiveTownArray[player].first;
+		AiTown* firstTown = AiActiveTownArray[player].first;
 		if (result)
 		{
 			do
@@ -71,32 +71,32 @@ namespace hooks
 						  || buildOrderId == OrderId::DroneStartBuild)
 						{
 							u8* consoleVar = nullptr;
-							s32 playerIdVar = (u8)playerId;
+							s32 playerIdVar = (u8)player;
 							u16 targetUnitQueue = worker->build_queue[(u8)worker->build_queue_slot % 5];
 							s32 targetUnitQueue2 = targetUnitQueue;
 							s32 targetQueueCostMinerals = units_dat::mineral_cost[targetUnitQueue2];
 							s32 targetQueueCostGas = units_dat::gas_cost[targetUnitQueue2];
 							ai_minerals_reserve[playerIdVar] = targetQueueCostMinerals;
 							ai_gas_reserve[playerIdVar] = targetQueueCostGas;
-							if (helper::has_supplies_for_unit(targetUnitQueue, playerId, 1))
+							if (helper::has_supplies_for_unit(targetUnitQueue, player, 1))
 							{
-								if (game_minerals[(u8)playerId] >= (s32)ai_minerals_reserve[(u8)playerId])
+								if (game_minerals[(u8)player] >= (s32)ai_minerals_reserve[(u8)player])
 								{
-									if (game_vespene[(u8)playerId] >= (s32)ai_gas_reserve[(u8)playerId])
+									if (game_vespene[(u8)player] >= (s32)ai_gas_reserve[(u8)player])
 									{
-										*minerals -= ai_minerals_reserve[playerId];
-										*gas -= ai_gas_reserve[playerId];
+										*minerals -= ai_minerals_reserve[player];
+										*gas -= ai_gas_reserve[player];
 									}
 									else
 									{
 										consoleVar = console_index;
-										helper::display_error_message_id_with_sfx((u8)playerId, 851, *consoleVar + 150);
+										helper::display_error_message_id_with_sfx((u8)player, 851, *consoleVar + 150);
 									}
 								}
 								else
 								{
 									consoleVar = console_index;
-									helper::display_error_message_id_with_sfx((u8)playerId, 850, *consoleVar + 147);
+									helper::display_error_message_id_with_sfx((u8)player, 850, *consoleVar + 147);
 								}
 							}
 						}
@@ -908,10 +908,10 @@ namespace hooks
 			u32 unit_id = attack_wave[i];
 			if (unit_id < UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
 			{
-				AIScriptController[region->playerId].AI_Flags.flag_0x40 = true;
-				helper::ai_add_cost_to_needs(unit_id, region->playerId, 1);
-				helper::ai_add_spending_request(unit_id, region->playerId, 1, priority, region);
-				helper::ai_add_base_unit_spending_request(unit_id, region->playerId, region, priority);
+				AIScriptController[region->player].AI_Flags.flag_0x40 = true;
+				helper::ai_add_cost_to_needs(unit_id, region->player, 1);
+				helper::ai_add_spending_request(unit_id, region->player, 1, priority, region);
+				helper::ai_add_base_unit_spending_request(unit_id, region->player, region, priority);
 			}
 		}
 	}

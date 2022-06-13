@@ -62,7 +62,7 @@ void Globals::aise_save()
 	for (s32 i = 0; i < apostleCount; i++)
 	{
 		stream.write(reinterpret_cast<const char*>(&reviving_units[i].energy), sizeof(reviving_units[i].energy));
-		stream.write(reinterpret_cast<const char*>(&reviving_units[i].playerId), sizeof(reviving_units[i].playerId));
+		stream.write(reinterpret_cast<const char*>(&reviving_units[i].player), sizeof(reviving_units[i].player));
 		stream.write(reinterpret_cast<const char*>(&reviving_units[i].position.x), sizeof(reviving_units[i].position.x));
 		stream.write(reinterpret_cast<const char*>(&reviving_units[i].position.y), sizeof(reviving_units[i].position.y));
 		stream.write(reinterpret_cast<const char*>(&reviving_units[i].timer), sizeof(reviving_units[i].timer));
@@ -212,7 +212,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 	{
 		RevivingUnit agent;
 		stream.read(reinterpret_cast<char*>(&agent.energy), sizeof(agent.energy));
-		stream.read(reinterpret_cast<char*>(&agent.playerId), sizeof(agent.playerId));
+		stream.read(reinterpret_cast<char*>(&agent.player), sizeof(agent.player));
 		stream.read(reinterpret_cast<char*>(&agent.position.x), sizeof(agent.position.x));
 		stream.read(reinterpret_cast<char*>(&agent.position.y), sizeof(agent.position.y));
 		stream.read(reinterpret_cast<char*>(&agent.timer), sizeof(agent.timer));
@@ -461,8 +461,8 @@ void Globals::frame_hook() {
 		if (revivingUnit.timer > 0) {
 			revivingUnit.timer--;
 		} else {
-			if (playerTable[revivingUnit.playerId].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town) {
-				auto revived = scbw::create_unit_in_game(revivingUnit.unit_id, revivingUnit.playerId, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
+			if (playerTable[revivingUnit.player].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town) {
+				auto revived = scbw::create_unit_in_game(revivingUnit.unit_id, revivingUnit.player, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
 				if (revived) {
 					UnitExt* revivedExt = globals.get_unit_ext(revived);
 					revived->hitpoints = 1;
@@ -806,7 +806,7 @@ void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 void Globals::init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town)
 {
 	RevivingUnit revivingUnit = {};
-	revivingUnit.playerId = player;
+	revivingUnit.player = player;
 	revivingUnit.position.x = x;
 	revivingUnit.position.y = y;
 	revivingUnit.timer = 48;

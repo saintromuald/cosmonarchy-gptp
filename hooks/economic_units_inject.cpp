@@ -208,7 +208,7 @@ namespace hooks
 	void __declspec(naked) AI_AddTownSpendingRequest_Wrapper() // 00448400
 	{
 		static s32 result;
-		static s32 playerId;
+		static s32 player;
 		static s32 priority;
 		static s32 unit_id;
 		static void* param;
@@ -221,10 +221,10 @@ namespace hooks
 			POP EAX
 			MOV unit_id, ESI
 			MOV priority, EDI
-			MOV playerId, EAX
+			MOV player, EAX
 			PUSHAD
 		}
-		result = hooks::AI_AddTownSpendingRequest(playerId, priority, unit_id, param);
+		result = hooks::AI_AddTownSpendingRequest(player, priority, unit_id, param);
 		__asm {
 			POPAD
 			MOV EAX, result

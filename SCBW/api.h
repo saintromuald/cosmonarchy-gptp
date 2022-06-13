@@ -21,11 +21,11 @@ namespace scbw
 	bool is_larval_egg(Unit* unit);
 	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
 	bool is_zerg_egg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt);
-	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y);
+	void artificial_bullet_from(u8 weaponId, u8 player, Unit* source, Unit* target, Point16 target_pt);
+	void artificial_bullet_from(u8 weaponId, u8 player, Unit* source, Unit* target, u16 x, u16 y);
 	std::string read_samase_file(char* name);
 	bool teleport(Unit* u, Point16 target, u16 spriteAnimation = 0, bool preserveOrder = false);
-	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 playerId = 11, s32 elevation_level = 11);
+	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player = 11, s32 elevation_level = 11);
 	Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees);
 	Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees);
 
@@ -45,7 +45,7 @@ namespace scbw
 	/// @param  player  ID of the player who receives the message.
 	/// @param  statTxtId ID of the error message string in stat_txt.tbl
 	/// @param  sfxId     ID of the sound file in sfxdata.dat.
-	void show_error_message_with_sfx(u32 playerId, u32 statTxtId, u32 sfxId);
+	void show_error_message_with_sfx(u32 player, u32 statTxtId, u32 sfxId);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -284,20 +284,20 @@ namespace scbw
 	/// Checks whether the @p unit is recognized by @p player as an enemy.
 	/// This will work even when the owner of the @p unit has left the game.
 	/// @see Unit::is_target_enemy().
-	inline bool is_unit_enemy(u8 playerId, Unit* unit)
+	inline bool is_unit_enemy(u8 player, Unit* unit)
 	{
 		//Identical to function @ 0x0047B740
 		u8 unitOwner = unit->player;
 		if (unitOwner == 11)
-			unitOwner = unit->sprite->playerId;
-		return 0 == player_alliance[playerId].flags[unitOwner];
+			unitOwner = unit->sprite->player;
+		return 0 == player_alliance[player].flags[unitOwner];
 	}
 
 	u32 get_sized_overlay(Unit* unit, u32 initial);
 	/// Returns the amount of remaining supply (total available - total used) for
 	/// the @p player, using @p raceId to determine the appropriate race to use.
 	/// This is affected by the "Food For Thought" cheat flag.
-	s32 get_supply_remaining(u8 playerId, u8 raceId);
+	s32 get_supply_remaining(u8 player, u8 raceId);
 	u32 get_flingy_data(u32 entry, u32 index);
 
 	u32 get_sprite_data(u32 entry, u32 index);
@@ -324,7 +324,7 @@ namespace scbw
 	void send_gptp_aise_command(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
 	/// Checks whether the @p player has the @p techId researched.
 	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
-	bool has_tech_researched(u8 playerId, u16 techId);
+	bool has_tech_researched(u8 player, u16 techId);
 
 	/// Adjusts x,y addon coordinates of quarry and similar unit ids
 
@@ -332,20 +332,20 @@ namespace scbw
 	void adjust_addon_y(u16 addonId, u16 sourceId, u16* y);
 	void adjust_addon_coordinates(u16 addonId, u16 sourceId, u16* x, u16* y);
 
-	u8 get_upgrade_max_level(u8 playerId, u8 upgradeId);
-	bool has_tech_available(u8 playerId, u16 techId);
+	u8 get_upgrade_max_level(u8 player, u8 upgradeId);
+	bool has_tech_available(u8 player, u16 techId);
 	//u32 tech_use_allowed(Unit* unit, u16 techId, u32 player);
 	/// Sets the player's tech research state for @p techId to @p isResearched.
 	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
-	void set_tech_research_state(u8 playerId, u16 techId, bool isResearched);
+	void set_tech_research_state(u8 player, u16 techId, bool isResearched);
 
 	/// Returns the player's upgrade level of @p upgradeId. Note that this uses
 	/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.
-	u8 get_upgrade_level(u8 playerId, u8 upgradeId);
+	u8 get_upgrade_level(u8 player, u8 upgradeId);
 
 	/// Sets the player's upgrade level of @p upgradeId. Note that this uses
 	/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.
-	void set_upgrade_level(u8 playerId, u8 upgradeId, u8 level);
+	void set_upgrade_level(u8 player, u8 upgradeId, u8 level);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -474,10 +474,10 @@ namespace scbw
 	void refresh_console();
 
 	// Moves the camera/screen to the unit
-	void move_screen_to_unit(Unit* unit, u32 playerId = 8);
+	void move_screen_to_unit(Unit* unit, u32 player = 8);
 
 	// Creates a minimap ping at x,y (relative pos)
-	void minimap_ping(u32 x, u32 y, s32 color, u32 playerId = 8);
+	void minimap_ping(u32 x, u32 y, s32 color, u32 player = 8);
 
 	// Functionally identical to the [playfram] opcode in iscript.bin.
 	inline void playFrame(Image* image, u16 frameset)
@@ -531,7 +531,7 @@ namespace scbw
 	void range_modified_fire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset);
 	bool can_spawn_broodling(Unit* target);
 	s32 get_broodling_count_from_supply(Unit* target);
-	void create_unit_from_ability(s32 unit_id, s32 count, u16 playerId, s32 x, s32 y, u32 remove_timer = 1800, Unit* creator = nullptr);
+	void create_unit_from_ability(s32 unit_id, s32 count, u16 player, s32 x, s32 y, u32 remove_timer = 1800, Unit* creator = nullptr);
 	Unit** get_source_matraleths(Unit* unit);
 	u16 get_last_queue_slot_id(Unit* a1);
 	s32 dir_saturate(s32 direction, s32 value);
@@ -561,7 +561,7 @@ namespace scbw
 	bool unit_is_ranged_attacker(Unit* unit);
 	void play_work_animation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);
-	void apply_new_hallucination(Unit* unit, u8 playerId, u32 time);
+	void apply_new_hallucination(Unit* unit, u8 player, u32 time);
 	bool weapon_pierces_targets(u16 weaponId);
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
 	void update_signify_status(Unit* unit, UnitExt* unitExt);

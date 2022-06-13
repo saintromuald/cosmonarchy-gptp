@@ -17,7 +17,7 @@
 
 namespace scbw
 {
-	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt)
+	void artificial_bullet_from(u8 weaponId, u8 player, Unit* source, Unit* target, Point16 target_pt)
 	{
 		auto target_unit = source->order_target.unit;
 		auto target_pos = source->order_target.pt;
@@ -32,17 +32,17 @@ namespace scbw
 		{
 			source->order_target.pt = target_pt;
 		}
-		helper::create_bullet(weaponId, source, source->sprite->position.x, source->sprite->position.y, playerId,
+		helper::create_bullet(weaponId, source, source->sprite->position.x, source->sprite->position.y, player,
 			get_angle(source->position.x, source->position.y, source->order_target.pt.x, source->order_target.pt.y));
 		source->order_target.unit = target_unit;
 		source->order_target.pt = target_pos;
 	}
-	void artificial_bullet_from(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y)
+	void artificial_bullet_from(u8 weaponId, u8 player, Unit* source, Unit* target, u16 x, u16 y)
 	{
 		Point16 tgt;
 		tgt.x = x;
 		tgt.y = y;
-		artificial_bullet_from(weaponId, playerId, source, target, tgt);
+		artificial_bullet_from(weaponId, player, source, target, tgt);
 	}
 
 	bool teleport(Unit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
@@ -106,9 +106,9 @@ namespace scbw
 		return result;
 	}
 
-	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 playerId, s32 elevation_level)
+	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player, s32 elevation_level)
 	{
-		Thingy* thingy = helper::create_thingy(spriteId, x, y, playerId);
+		Thingy* thingy = helper::create_thingy(spriteId, x, y, player);
 		if (thingy)
 		{
 			thingy->sprite->elevation_level = elevation_level;
@@ -383,63 +383,63 @@ namespace scbw
 
 	//-------- Player information --------//
 
-	s32 get_supply_remaining(u8 playerId, u8 raceId)
+	s32 get_supply_remaining(u8 player, u8 raceId)
 	{
 		assert(raceId <= 2);
-		assert(playerId < PLAYER_COUNT);
+		assert(player < PLAYER_COUNT);
 
 		s32 supplyProvided;
 		if (is_cheat_enabled(CheatFlags::FoodForThought))
 		{
-			supplyProvided = raceSupply[RaceId::Terran].max[playerId];
+			supplyProvided = raceSupply[RaceId::Terran].max[player];
 		}
 		else
 		{
-			supplyProvided = std::min(raceSupply[RaceId::Terran].max[playerId], raceSupply[RaceId::Terran].provided[playerId]);
+			supplyProvided = std::min(raceSupply[RaceId::Terran].max[player], raceSupply[RaceId::Terran].provided[player]);
 		}
-		return supplyProvided - raceSupply[RaceId::Terran].used[playerId];
+		return supplyProvided - raceSupply[RaceId::Terran].used[player];
 	}
 
-	bool has_tech_researched(u8 playerId, u16 techId)
+	bool has_tech_researched(u8 player, u16 techId)
 	{
-		assert(playerId < PLAYER_COUNT);
+		assert(player < PLAYER_COUNT);
 		assert(techId < TechId::None);
 		if (techId < TechId::Restoration)
 		{
-			return TechSc->isResearched[playerId][techId] != 0;
+			return TechSc->isResearched[player][techId] != 0;
 		}
 		else
 		{
-			return TechBw->isResearched[playerId][techId - TechId::Restoration] != 0;
+			return TechBw->isResearched[player][techId - TechId::Restoration] != 0;
 		}
 	}
 
-	bool has_tech_available(u8 playerId, u16 techId)
+	bool has_tech_available(u8 player, u16 techId)
 	{
-		assert(playerId < PLAYER_COUNT);
+		assert(player < PLAYER_COUNT);
 		assert(techId < TechId::None);
 		if (techId < TechId::Restoration)
 		{
-			return TechSc->is_enabled[playerId][techId] != 0;
+			return TechSc->is_enabled[player][techId] != 0;
 		}
 		else
 		{
-			return TechBw->is_enabled[playerId][techId - TechId::Restoration] != 0;
+			return TechBw->is_enabled[player][techId - TechId::Restoration] != 0;
 		}
 	}
 
-	void set_tech_research_state(u8 playerId, u16 techId, bool isResearched)
+	void set_tech_research_state(u8 player, u16 techId, bool isResearched)
 	{
-		assert(playerId < PLAYER_COUNT);
+		assert(player < PLAYER_COUNT);
 		assert(techId < TechId::None);
 
 		if (techId < TechId::Restoration)
 		{
-			TechSc->isResearched[playerId][techId] = isResearched;
+			TechSc->isResearched[player][techId] = isResearched;
 		}
 		else
 		{
-			TechBw->isResearched[playerId][techId - TechId::Restoration] = isResearched;
+			TechBw->isResearched[player][techId - TechId::Restoration] = isResearched;
 		}
 	}
 
@@ -767,15 +767,15 @@ namespace scbw
 	}
 
 	const u32 Func_PsiPlacement = 0x00473920;
-	u8 get_upgrade_level(u8 playerId, u8 upgradeId)
+	u8 get_upgrade_level(u8 player, u8 upgradeId)
 	{
-		assert(playerId < PLAYER_COUNT);
+		assert(player < PLAYER_COUNT);
 //		assert(upgradeId < UpgradeId::None);
 		assert(upgradeId < 256);
 
 		if (upgradeId < UpgradeId::PrismaticShield)
 		{
-			return UpgradesSc->currentLevel[playerId][upgradeId];
+			return UpgradesSc->currentLevel[player][upgradeId];
 		}
 		/*
 		else if (upgradeId<UpgradeId::None)
@@ -786,7 +786,7 @@ namespace scbw
 		else
 		{
 			u32 result = 0;
-			u32 player_u32 = playerId;
+			u32 player_u32 = player;
 			u32 upgrade_u32 = upgradeId;
 			_asm {
 				PUSHAD
@@ -803,14 +803,14 @@ namespace scbw
 	}
 	//EBX = max/current upgrade read, ECX - player, EDI - id
 
-	u8 get_upgrade_max_level(u8 playerId, u8 upgradeId)
+	u8 get_upgrade_max_level(u8 player, u8 upgradeId)
 	{
-		assert(playerId < PLAYER_COUNT);
+		assert(player < PLAYER_COUNT);
 //		assert(upgradeId < UpgradeId::None);
 		assert(upgradeId < 256);
 		if (upgradeId < UpgradeId::PrismaticShield)
 		{
-			return UpgradesSc->maxLevel[playerId][upgradeId];
+			return UpgradesSc->maxLevel[player][upgradeId];
 		}
 		/*
 		else if (upgradeId<UpgradeId::None)
@@ -821,7 +821,7 @@ namespace scbw
 		else
 		{
 			u32 result = 0;
-			u32 player_u32 = playerId;
+			u32 player_u32 = player;
 			u32 upgrade_u32 = upgradeId;
 			_asm
 			{
@@ -838,14 +838,14 @@ namespace scbw
 		}
 	}
 
-	void set_upgrade_level(u8 playerId, u8 upgradeId, u8 level)
+	void set_upgrade_level(u8 player, u8 upgradeId, u8 level)
 	{
-		assert(playerId < PLAYER_COUNT);
+		assert(player < PLAYER_COUNT);
 		assert(upgradeId < UpgradeId::None);
 		if (upgradeId < UpgradeId::PrismaticShield)
-			UpgradesSc->currentLevel[playerId][upgradeId] = level;
+			UpgradesSc->currentLevel[player][upgradeId] = level;
 		else
-			UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PrismaticShield] = level;
+			UpgradesBw->currentLevel[player][upgradeId - UpgradeId::PrismaticShield] = level;
 	}
 
 	void adjust_addon_x(u16 addonId, u16 sourceId, u16* x)
@@ -1074,11 +1074,11 @@ namespace scbw
 		*control_under_mouse_value = 0;
 	}
 
-	void create_unit_from_ability(s32 unit_id, s32 count, u16 playerId, s32 x, s32 y, u32 remove_timer, Unit* creator)
+	void create_unit_from_ability(s32 unit_id, s32 count, u16 player, s32 x, s32 y, u32 remove_timer, Unit* creator)
 	{
 		for (s32 i = 0; i < count; i++)
 		{
-			Unit* unit = scbw::create_unit_in_game(unit_id, playerId, x, y, creator, false);
+			Unit* unit = scbw::create_unit_in_game(unit_id, player, x, y, creator, false);
 			if (!unit) {
 				return;
 			}
@@ -1479,7 +1479,7 @@ namespace scbw
 			|| id == UnitId::TerranSiren;
 	}
 
-	void apply_new_hallucination(Unit* unit, u8 playerId, u32 time)
+	void apply_new_hallucination(Unit* unit, u8 player, u32 time)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -1522,14 +1522,14 @@ namespace scbw
 		return result != 0;
 	}
 
-	void show_error_message_with_sfx(u32 playerId, u32 statTxtId, u32 sfxId)
+	void show_error_message_with_sfx(u32 player, u32 statTxtId, u32 sfxId)
 	{
 		const u32 Func_ShowErrorMessageWithSfx = 0x0048EE30;
 		__asm {
 			PUSHAD
 			MOV ESI, sfxId
 			MOV EDI, statTxtId
-			MOV EBX, playerId
+			MOV EBX, player
 			CALL Func_ShowErrorMessageWithSfx
 			POPAD
 		}
@@ -1732,10 +1732,10 @@ namespace scbw
 	}
 
 	// Player check added based on how others functions test it. Values above or equal to 8 means all players.
-	void move_screen_to_unit(Unit* unit, u32 playerId) // 004E6020
+	void move_screen_to_unit(Unit* unit, u32 player) // 004E6020
 	{
 		const u32 Func_MoveScreen = 0x0049C440;
-		if (playerId >= 8 || playerId == *LOCAL_NATION_ID)
+		if (player >= 8 || player == *LOCAL_NATION_ID)
 		{
 			s32 x, y;
 			x = (s16)unit->sprite->position.x;
@@ -1763,10 +1763,10 @@ namespace scbw
 	// Player check added based on how others functions test it
 	// Values above or equal to 8 means all players
 	// x and y are coords as gotten from unit->sprite->position
-	void minimap_ping(u32 x, u32 y, s32 color, u32 playerId)
+	void minimap_ping(u32 x, u32 y, s32 color, u32 player)
 	{
 		const u32 Func_minimapPing = 0x004A34C0;
-		if (playerId >= 8 || playerId == *LOCAL_NATION_ID)
+		if (player >= 8 || player == *LOCAL_NATION_ID)
 		{
 			__asm
 			{

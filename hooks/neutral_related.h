@@ -4,7 +4,6 @@
 
 namespace hooks
 {
-
-	bool unitNotNeutral(CHKUnit* unit);								// 004CBE20
-	void injectNeutralRelatedHooks();
+	bool unit_is_not_neutral(CHKUnit* unit);		// 004CBE20
+	void inject_neutral_related_hooks();
 }

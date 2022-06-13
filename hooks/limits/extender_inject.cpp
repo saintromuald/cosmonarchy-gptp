@@ -201,17 +201,17 @@ namespace hooks
 	void __declspec(naked) GetAttackUnit_Wrapper()
 	{
 		static u32 unit_id;
-		static u32 playerId;
+		static u32 player;
 		static u32 index;
 		__asm {
-			MOV playerId, ECX
+			MOV player, ECX
 			MOV index, EBX
 			PUSHAD
 		}
-		assert(playerId < 8);
+		assert(player < 8);
 		assert(index < ATTACK_LIMIT);
 		//		unit_id = AIScriptController[player].attackers[index]; // is actually "unit_id+1"
-		unit_id = globals.attackers.attacks[playerId][index];
+		unit_id = globals.attackers.attacks[player][index];
 		__asm {
 			POPAD
 			MOV EAX, unit_id
@@ -235,17 +235,17 @@ namespace hooks
 	{
 		static u32 unit_id;
 		static u32 index;
-		static u32 playerId;
+		static u32 player;
 		__asm {
 			MOV unit_id, ECX
 			MOV index, EBX
-			MOV playerId, EDX
+			MOV player, EDX
 			PUSHAD
 		}
-		assert(playerId < 8);
+		assert(player < 8);
 		assert(index < ATTACK_LIMIT);//change later
 //		AIScriptController[player].attackers[index] = unit_id;//is actually "unit_id+1"
-		globals.attackers.attacks[playerId][index] = unit_id;
+		globals.attackers.attacks[player][index] = unit_id;
 		__asm {
 			POPAD
 			RETN
@@ -255,14 +255,14 @@ namespace hooks
 	const u32 GetMissingJmpWrapper = 0x00438067;
 	void __declspec(naked) AI_GetMissingAttackForceUnits_JmpWrapper()
 	{
-		static u32 playerId;
+		static u32 player;
 		static u16* arrayStart;
 		__asm {
-			MOV playerId, ECX
+			MOV player, ECX
 			PUSHAD
 		}
 		//		arrayStart = &AIScriptController[player].attackers[0];
-		arrayStart = &globals.attackers.attacks[playerId][0];
+		arrayStart = &globals.attackers.attacks[player][0];
 		__asm {
 			POPAD
 			MOV ECX, arrayStart
@@ -274,14 +274,14 @@ namespace hooks
 	const u32 AIAddToAttack_Continue = 0x00447265;
 	void __declspec(naked) AI_AddToAttack_JmpWrapper1()
 	{
-		static u32 playerId;
+		static u32 player;
 		static u32 arrayOffset;
 		__asm {
-			MOV playerId, ECX
+			MOV player, ECX
 			PUSHAD
 		}
 		//		if (AIScriptController[player].attackers[0] == 0) {
-		if (globals.attackers.attacks[playerId][0] == 0)
+		if (globals.attackers.attacks[player][0] == 0)
 		{
 			__asm {
 				POPAD
@@ -291,7 +291,7 @@ namespace hooks
 		else
 		{
 			//			arrayOffset = reinterpret_cast<u32>(&AIScriptController[player].attackers[0]);
-			arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[playerId][0]);
+			arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[player][0]);
 			__asm {
 				POPAD
 				MOV ECX, arrayOffset
@@ -327,13 +327,13 @@ namespace hooks
 	void __declspec(naked) AI_AttackManager_JmpWrapper()
 	{
 		static u32 offset;
-		static u32 playerId;
+		static u32 player;
 		static u32 arrayOffset;
 		static u16 unit_id;
 		__asm {
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV playerId, EAX
+			MOV player, EAX
 			POP EAX
 			PUSHAD
 		}
@@ -341,8 +341,8 @@ namespace hooks
 		unit_id = AIScriptController[player].attackers[0];
 		arrayOffset = reinterpret_cast<u32>(AIScriptController[player].attackers);
 		*/
-		unit_id = globals.attackers.attacks[playerId][0];
-		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[playerId][0]);
+		unit_id = globals.attackers.attacks[player][0];
+		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[player][0]);
 		__asm {
 			POPAD
 			MOV AX, unit_id
@@ -354,14 +354,14 @@ namespace hooks
 	static u32 AI_HasUnitsForAttack_Jmp = 0x00437F36;
 	void __declspec(naked) AI_HasUnitsForAttackForce_JmpWrapper()
 	{
-		static u32 playerId;
+		static u32 player;
 		static u32 arrayOffset;
 		__asm {
-			MOV playerId, EAX
+			MOV player, EAX
 			PUSHAD
 		}
 		//		arrayOffset = reinterpret_cast<u32>(AIScriptController[player].attackers);
-		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[playerId][0]);
+		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[player][0]);
 		__asm {
 			POPAD
 			MOV EAX, arrayOffset
@@ -388,7 +388,7 @@ namespace hooks
 	const u32 Jmp_SendSuicide = 0x0043e1f9;
 	void __declspec(naked) AI_SendSuicide_JmpWrapper()
 	{
-		static u32 playerId;
+		static u32 player;
 		static u32 index;
 		static u32 arrayOffset;
 		static u32 size2;
@@ -396,8 +396,8 @@ namespace hooks
 			MOV EDX, index
 			PUSHAD
 		}
-		playerId = index / sizeof(AI_Main);
-		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[playerId][0]);
+		player = index / sizeof(AI_Main);
+		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[player][0]);
 		size2 = ATTACK_LIMIT / 2;
 		__asm {
 			POPAD
@@ -410,7 +410,7 @@ namespace hooks
 	const u32 Jmp_Unk1 = 0x00448179;
 	void __declspec(naked) AI_Unk1_JmpWrapper()
 	{
-		static u32 playerId;
+		static u32 player;
 		static u32 index;
 		static u32 arrayOffset;
 		static u32 size2;
@@ -418,8 +418,8 @@ namespace hooks
 			MOV EDX, index
 			PUSHAD
 		}
-		playerId = index / sizeof(AI_Main);
-		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[playerId][0]);
+		player = index / sizeof(AI_Main);
+		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[player][0]);
 		size2 = ATTACK_LIMIT / 2;
 		__asm {
 			POPAD
@@ -431,13 +431,13 @@ namespace hooks
 
 	void __declspec(naked) AI_Unk2_Wrapper()
 	{
-		static u32 playerId;
+		static u32 player;
 		static u32 arrayOffset;
 		__asm {
-			MOV EAX, playerId
+			MOV EAX, player
 			PUSHAD
 		}
-		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[playerId][0]);
+		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[player][0]);
 		__asm {
 			POPAD
 			MOV EAX, arrayOffset

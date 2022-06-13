@@ -460,7 +460,7 @@ LABEL_37:
 			}
 		}
 
-		if (AIScriptController[region->playerId].AI_Flags.is_use_map_settings)
+		if (AIScriptController[region->player].AI_Flags.is_use_map_settings)
 		{
 			s32 v8 = region->region << 6;
 			s32 v9 = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterY + v8);
@@ -474,7 +474,7 @@ LABEL_37:
 		}
 
 		u32 regionAirStrength = region->enemyAirStrength;
-		if (!(AIScriptController[region->playerId].AI_Flags.is_use_map_settings))
+		if (!(AIScriptController[region->player].AI_Flags.is_use_map_settings))
 		{
 			regionAirStrength += regionAirStrength >> 1;
 		}
@@ -484,7 +484,7 @@ LABEL_37:
 		}
 
 		u32 regionGroundStrength = region->enemyGroundStrength;
-		if (!(AIScriptController[region->playerId].AI_Flags.is_use_map_settings))
+		if (!(AIScriptController[region->player].AI_Flags.is_use_map_settings))
 		{
 			regionGroundStrength += regionGroundStrength >> 1;
 		}
@@ -493,8 +493,8 @@ LABEL_37:
 			region->neededGroundStrength = regionGroundStrength;
 		}
 
-		u16 result = AIScriptController[region->playerId].ai_max_force;
-		if (AIScriptController[region->playerId].ai_max_force)
+		u16 result = AIScriptController[region->player].ai_max_force;
+		if (AIScriptController[region->player].ai_max_force)
 		{
 			if (region->neededAirStrength > result)
 			{
@@ -509,7 +509,7 @@ LABEL_37:
 	}	
 
 	// Hooked to change functionality later - Pr0nogo
-	Unit* get_closest_enemy_structure(s32 x, s32 y, s32 playerId) // 004A0F90
+	Unit* get_closest_enemy_structure(s32 x, s32 y, s32 player) // 004A0F90
 	{
 		s16 regionId = helper::get_region_id(x, y);
 		Unit* firstUnit = *firstVisibleUnit;
@@ -537,8 +537,8 @@ LABEL_37:
 						{
 							firstUnitPlayer = firstUnit->player;
 							if (firstUnitPlayer == 11)
-								firstUnitPlayer = firstSprite->playerId;
-							if (!scbw::is_allied_to(playerId, firstUnitPlayer))
+								firstUnitPlayer = firstSprite->player;
+							if (!scbw::is_allied_to(player, firstUnitPlayer))
 							{
 								fastDistance = helper::get_distance_fast(regionCenterX >> 8, firstUnit->sprite->position.x, regionCenterY >> 8, firstUnit->sprite->position.y);
 								if (fastDistance < maxDistance)
@@ -855,14 +855,14 @@ LABEL_37:
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	void ai_get_build_location(u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos, s32 maxRange) // 004461B0
+	void ai_get_build_location(u32 unit_id, char* placementData, u32 player, Point16 desiredPos, s32 maxRange) // 004461B0
 	{
 		memset(placementData, 0, 0x1000u);
-		helper::ai_get_building_placement_data(maxRange, unit_id, placementData, playerId, desiredPos);
+		helper::ai_get_building_placement_data(maxRange, unit_id, placementData, player, desiredPos);
 		helper::ai_remove_unreachable_regions(placementData, desiredPos);
 		if (unit_id != UnitId::ProtossPylon)
 		{
-			helper::ai_remove_dangerous_regions(unit_id, placementData, playerId, desiredPos);
+			helper::ai_remove_dangerous_regions(unit_id, placementData, player, desiredPos);
 		}
 		helper::ai_remove_far_tiles(placementData, desiredPos, maxRange);
 		while (2)
@@ -881,9 +881,9 @@ LABEL_37:
 					else
 					{
 						maxRange = 0;
-						helper::ai_remove_unfit_tiles(unit_id, placementData, playerId, desiredPos);
+						helper::ai_remove_unfit_tiles(unit_id, placementData, player, desiredPos);
 					}
-					helper::ai_remove_addon_places(unit_id, placementData, playerId, desiredPos);
+					helper::ai_remove_addon_places(unit_id, placementData, player, desiredPos);
 					switch (unit_id)
 					{
 						case UnitId::TerranWatchdog:
@@ -893,35 +893,35 @@ LABEL_37:
 						}
 						case UnitId::TerranBunker:
 						{
-							if (!helper::get_bunker_placement_position(playerId, &maxRange))
+							if (!helper::get_bunker_placement_position(player, &maxRange))
 							{
 					LABEL_17:
-								helper::get_turret_placement_position(placementData, playerId, desiredPos, unit_id, 0);
+								helper::get_turret_placement_position(placementData, player, desiredPos, unit_id, 0);
 								return;
 							}
 						}
 						case UnitId::ZergCreepColony:
 						{
-							if (!AIScriptController[playerId].AI_Flags.is_secure_finished) // SLOBYTE(AIScriptController[player].AI_Flags) < 0
+							if (!AIScriptController[player].AI_Flags.is_secure_finished) // SLOBYTE(AIScriptController[player].AI_Flags) < 0
 							{
 								goto LABEL_21;
 							}
 
-							if (!helper::get_bunker_placement_position(playerId, &maxRange))
+							if (!helper::get_bunker_placement_position(player, &maxRange))
 							{
 					LABEL_21:
-								helper::get_turret_placement_position(placementData, playerId, desiredPos, unit_id, 0);
+								helper::get_turret_placement_position(placementData, player, desiredPos, unit_id, 0);
 							}
 						} break;
 						case UnitId::ProtossPylon:
 						{
-							helper::get_pylon_placement_position(placementData, playerId, desiredPos);
+							helper::get_pylon_placement_position(placementData, player, desiredPos);
 						} break;
 						default:
 						{
 							if (!maxRange)
 							{
-								helper::get_default_placement_position(unit_id, placementData, playerId, desiredPos);
+								helper::get_default_placement_position(unit_id, placementData, player, desiredPos);
 							}
 						} break;
 					}
@@ -942,7 +942,7 @@ LABEL_37:
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unit_id, u32 unkFlag) // 00443AC0
+	u32 get_turret_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag) // 00443AC0
 	{
 		// will do this later
 		return 0;
@@ -1064,7 +1064,7 @@ LABEL_37:
 
 		u8 target_player = target_unit->player;
 		if (target_unit->player == 11) { // Neutral
-			target_player = target_unit->sprite->playerId;
+			target_player = target_unit->sprite->player;
 		}
 		if (!scbw::is_allied_to(unit->player, target_player)) {
 			if (helper::unit_can_attack_target(target_unit, unit, 1)) {
@@ -1851,7 +1851,7 @@ LABEL_37:
 				u32 other_id = region->neighbors[i];
 				Region* other_region = scbw::get_region(other_id);
 				if (military_ai->unit->status & UnitStatus::InAir || region->groupIndex == other_region->groupIndex) {
-					AiRegion* new_ai_region = find_better_region(military_ai, scbw::get_ai_region(ai_region->playerId, other_id), recurses - 1);
+					AiRegion* new_ai_region = find_better_region(military_ai, scbw::get_ai_region(ai_region->player, other_id), recurses - 1);
 					if (new_ai_region) {
 						return new_ai_region;
 					}

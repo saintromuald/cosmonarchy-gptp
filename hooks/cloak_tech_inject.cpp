@@ -31,19 +31,19 @@ namespace
 	void __declspec(naked) cloakingTechWrapper_IsCloaked()
 	{
 		static b32 return_value;
-		static u32 playerId;
+		static u32 player;
 		static Unit* unit;	// unused in original function
 		static u16 requirement_var;	// unused in original function
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV playerId, EDX
+			MOV player, EDX
 			MOV EBX, [EBP + 0x08]
 			MOV unit, EBX
 			MOV requirement_var, CX
 			PUSHAD
 		}
-		return_value = hooks::BTNSCOND_IsCloaked(unit, playerId, requirement_var);
+		return_value = hooks::BTNSCOND_IsCloaked(unit, player, requirement_var);
 		__asm {
 			POPAD
 			MOV EAX, return_value
@@ -57,19 +57,19 @@ namespace
 	void __declspec(naked) cloakingTechWrapper_CanCloak()
 	{
 		static b32 return_value;
-		static u32 playerId;
+		static u32 player;
 		static Unit* unit;	// unused in original function
 		static u16 requirement_var;	// unused in original function
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV playerId, EDX
+			MOV player, EDX
 			MOV EBX, [EBP + 0x08]
 			MOV unit, EBX
 			MOV requirement_var, CX
 			PUSHAD
 		}
-		return_value = hooks::BTNSCOND_CanCloak(unit, playerId, requirement_var);
+		return_value = hooks::BTNSCOND_CanCloak(unit, player, requirement_var);
 		__asm {
 			POPAD
 			MOV EAX, return_value

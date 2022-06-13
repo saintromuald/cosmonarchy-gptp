@@ -45,7 +45,7 @@ u8 GetRaceWorker(u8 raceId)
 
 namespace hooks
 {
-	void CreateInitialMeleeBuildings(u8 raceId, u32 playerId)
+	void CreateInitialMeleeBuildings(u8 raceId, u32 player)
 	{
 		u8 buildingId = GetRaceTownhall(raceId);
 		s32 buildingSizeX, buildingSizeY;
@@ -63,17 +63,17 @@ namespace hooks
 			buildingSizeY++;
 		}
 
-		searchBox.left = (startPositions[playerId].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0;
-		searchBox.top = (startPositions[playerId].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0;
-		searchBox.bottom = buildingSizeY / 2 + ((startPositions[playerId].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2 - 1;
-		searchBox.right = buildingSizeX / 2 + ((startPositions[playerId].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
+		searchBox.left = (startPositions[player].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0;
+		searchBox.top = (startPositions[player].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0;
+		searchBox.bottom = buildingSizeY / 2 + ((startPositions[player].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2 - 1;
+		searchBox.right = buildingSizeX / 2 + ((startPositions[player].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
 
 		// yes, the return value is unused for some reason
 		helper::FindBestUnit(&searchBox, 0x0049D640);
 		created_unit = helper::create_unit(buildingId,
-				((startPositions[playerId].x - (buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2,
-				((startPositions[playerId].y - (buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2,
-				playerId);
+				((startPositions[player].x - (buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2,
+				((startPositions[player].y - (buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2,
+				player);
 
 		if (created_unit != nullptr)
 		{
@@ -190,45 +190,45 @@ namespace hooks
 
 	void CreateInitialMeleeUnits()
 	{
-		u32 playerId;
+		u32 player;
 		u8* raceIdOffset;
 
-		playerId = 8;
+		player = 8;
 		raceIdOffset = (u8*)0x0057F009;
 
 		while (raceIdOffset != (u8*)0x0057EEE9)
 		{
 			raceIdOffset -= 0x24;
-			playerId--;
+			player--;
 
 			if (*(raceIdOffset - 1) == 2 || *(raceIdOffset - 1) == 1)
 			{
 				// 0 is use map settings, 1 is Workers, 2 is Workers + Main Building
-				u8 startingUnits = (u8)(*(u16*)(0x00596871));
+				u8 starting_units = (u8)(*(u16*)(0x00596871));
 
 				static u8* victory_conditions = (u8*)0x0059686D;
 				static u8* tournament_mode = (u8*)0x00596877;
 				static u8* user_select_slots = (u8*)0x0059BDA8;
 
 				if (*victory_conditions == 0					// check triggers for conditions
-					&& startingUnits == 0 						// use map units
+					&& starting_units == 0 						// use map units
 					&& *tournament_mode == 0					// tournament mode off
-					&& playerId < 8
-					&& (user_select_slots[playerId]) != 0		// race selected instead of using map settings?
+					&& player < 8
+					&& (user_select_slots[player]) != 0		// race selected instead of using map settings?
 					)
 				{
-					startingUnits = 2;
+					starting_units = 2;
 				}
 
-				if (startingUnits == 2)
+				if (starting_units == 2)
 				{
-					CreateInitialMeleeBuildings(*raceIdOffset, playerId);
+					CreateInitialMeleeBuildings(*raceIdOffset, player);
 
 					if (*raceIdOffset == RaceId::Zerg)
-						CreateInitialOverlord(playerId);
+						CreateInitialOverlord(player);
 				}
 
-				if (startingUnits == 1 || startingUnits == 2)
+				if (starting_units == 1 || starting_units == 2)
 				{
 					u8 unit_id = GetRaceWorker(*raceIdOffset);
 					u8 townhallId = GetRaceTownhall(*raceIdOffset);
@@ -236,7 +236,7 @@ namespace hooks
 
 					if (unit_id != UnitId::None)
 					{
-						Point16 startPos = startPositions[playerId];
+						Point16 startPos = startPositions[player];
 						bool horizontal = true;
 						Point16 pos = FindWorkerSpawnPositions(townhallId, startPos.x, startPos.y, horizontal);
 
@@ -249,7 +249,7 @@ namespace hooks
 							if (horizontal) pos.x += unitWidth;
 							else pos.y -= unitHeight;
 
-							created_unit = helper::create_unit(unit_id, pos.x, pos.y, playerId);
+							created_unit = helper::create_unit(unit_id, pos.x, pos.y, player);
 							scbw::teleport(created_unit, pos);
 
 							if (created_unit != nullptr)
@@ -267,7 +267,7 @@ namespace hooks
 		}
 	}
 		
-	void CreateInitialOverlord(u8 playerId)
+	void CreateInitialOverlord(u8 player)
 	{
 		return; // Ovileth no longer spawns
 
@@ -275,25 +275,25 @@ namespace hooks
 		static u16* const maxBoxBottomValue = (u16*)0x006284B4;
 		s32 overlordStartX, overlordStartY;
 		Unit* created_unit;
-		if (startPositions[playerId].x < *maxBoxRightValue / 2)
+		if (startPositions[player].x < *maxBoxRightValue / 2)
 		{
-			overlordStartX = startPositions[playerId].x + units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1;
+			overlordStartX = startPositions[player].x + units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1;
 		}
 		else
 		{
-			overlordStartX = startPositions[playerId].x - (units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1);
+			overlordStartX = startPositions[player].x - (units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1);
 		}
 
-		if (startPositions[playerId].y < *maxBoxBottomValue / 2)
+		if (startPositions[player].y < *maxBoxBottomValue / 2)
 		{
-			overlordStartY = startPositions[playerId].y + units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1;
+			overlordStartY = startPositions[player].y + units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1;
 		}
 		else
 		{
-			overlordStartY = startPositions[playerId].y - (units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1);
+			overlordStartY = startPositions[player].y - (units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1);
 		}
 
-		created_unit = helper::create_unit(UnitId::ZergOvileth, overlordStartX, overlordStartY, playerId);
+		created_unit = helper::create_unit(UnitId::ZergOvileth, overlordStartX, overlordStartY, player);
 		if (created_unit != nullptr)
 		{
 			helper::update_unit_stats_and_finish_building(created_unit);
@@ -342,7 +342,7 @@ namespace hooks
 		}
 		u32 flags = chkunit->valid_state_flags & chkunit->state_flags;
 		if (!(flags & ChkUnitFlags_Hallucinated)) {
-			Unit* unit = CreateUnitXY(chkunit->playerId, chkunit->unit_id, chkunit->x, chkunit->y, false);
+			Unit* unit = CreateUnitXY(chkunit->player, chkunit->unit_id, chkunit->x, chkunit->y, false);
 			if (unit) {
 				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
 				if (unit->id != UnitId::ResourceMineralField

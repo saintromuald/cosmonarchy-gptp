@@ -7,7 +7,7 @@ namespace AI
 	{
 		auto match = [&](Unit* target)
 		{
-			if (!isTargetWorthHitting(target, caster))
+			if (!is_target_worth_hitting(target, caster))
 			{
 				return false;
 			}

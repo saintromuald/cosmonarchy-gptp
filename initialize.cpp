@@ -584,7 +584,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	hooks::injectLobbyHooks();
 	hooks::injectUnitMovementHooks();
-	hooks::injectNeutralRelatedHooks();
+	hooks::inject_neutral_related_hooks();
 //	hooks::injectFileOperationsHooks();
 	hooks::injectGlucustomHooks();
 	hooks::injectPathfindingHooks();

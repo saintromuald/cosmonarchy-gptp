@@ -3,8 +3,8 @@
 namespace hooks
 {
 	void injectMaxHpHooks();
-	u32 maxhp(s32 id, s32 playerId);
-	u32 maxshields(s32 id, s32 playerId);
+	u32 maxhp(s32 id, s32 player);
+	u32 maxshields(s32 id, s32 player);
 	u32 get_total_hp_plus_shields(Unit* a1);
 	void drawUnitInfo(BinDlg* a1);
 	void draw_supply_unit_info(s32 a1);																		// 00427540

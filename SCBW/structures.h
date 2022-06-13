@@ -166,7 +166,7 @@ struct GameData // taken from IDA and from https://gist.githubusercontent.com/ne
 	u8		resource_type;				// 0x76
 	u8		useStandardUnitStats;		// 0x77
 	u8		fogOfWar;					// 0x78
-	u8		startingUnits;				// 0x79
+	u8		starting_units;				// 0x79
 	u8		useFixedPositions;			// 0x7A
 	u8		restrictionFlags;			// 0x7B
 	u8		alliesEnabled;				// 0x7C
@@ -302,7 +302,7 @@ struct CHKUnit
 	/*0A*/	u16	 relation;
 	/*0C*/	u16	 valid_state_flags;
 	/*0E*/	u16	 valid_properties;
-	/*10*/	u8	 playerId;
+	/*10*/	u8	 player;
 	/*11*/	u8	 hp;
 	/*12*/	u8	 shields;
 	/*13*/	u8	 energy;
@@ -658,7 +658,7 @@ struct AiRegion
 {
 	/*0x00*/  u16 region;
 	/*0x02*/  u16 targetRegion;
-	/*0x04*/  u8  playerId;
+	/*0x04*/  u8  player;
 	/*0x05*/  u8  state;
 	/*0x06*/  u8  defensePriorityAdd;
 	/*0x07*/  u8  defendTimeout;

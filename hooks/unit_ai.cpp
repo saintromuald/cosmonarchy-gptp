@@ -820,7 +820,7 @@ namespace hooks
 		unsigned int min_distance; // [esp+10h] [ebp-4h]
 
 		ai_region_1 = ai_region;
-		first_player_unit = firstPlayerUnit->unit[ai_region->playerId];
+		first_player_unit = firstPlayerUnit->unit[ai_region->player];
 		result = 0;
 		min_distance = 9999999;
 		best_ai = 0;
@@ -854,7 +854,7 @@ namespace hooks
 							if (unit_ai->type != 4 ||
 								(unit_region_type = unit_ai_region->state, unit_region_type != 1) &&
 								unit_region_type != 2 ||
-								AIScriptController[ai_region->playerId].AI_Flags.is_use_map_settings)
+								AIScriptController[ai_region->player].AI_Flags.is_use_map_settings)
 							{
 								if ( (!(first_player_unit->status & UnitStatus::InBuilding)
 									|| a2 != 20
@@ -872,7 +872,7 @@ namespace hooks
 					}
 					goto next;
 				}
-				if (AIScriptController[ai_region_1->playerId].AI_Flags.is_use_map_settings)
+				if (AIScriptController[ai_region_1->player].AI_Flags.is_use_map_settings)
 				{
 					if (ai_region_1->airTarget == (Unit*)7)
 					{

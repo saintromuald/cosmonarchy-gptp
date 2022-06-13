@@ -29,7 +29,7 @@ namespace hooks
 			return 0;
 		if (customSingleplayer[0])
 		{
-			if (gameData->victoryCondition || gameData->startingUnits || gameData->tournamentModeEnabled)
+			if (gameData->victoryCondition || gameData->starting_units || gameData->tournamentModeEnabled)
 			{
 				switchComputerToOpen();
 				playerTable[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];

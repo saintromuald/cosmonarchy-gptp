@@ -342,7 +342,7 @@ namespace hooks
 						if (!transport->get_first_loaded_unit())
 						{
 							transport->give_to(11);
-							transport->sprite->playerId = 11;
+							transport->sprite->player = 11;
 						}
 						else
 						{

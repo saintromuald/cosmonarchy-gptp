@@ -381,7 +381,7 @@ namespace hooks
 
 	// 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
 	// Now used to set starting energy to 100 - Veeq7
-	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 playerId) 
+	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) 
 	{
 		u32 randomNumber = 0;
 		if (*is_in_game_loop)
@@ -391,7 +391,7 @@ namespace hooks
 			++(*randomCountsTotal);
 			randomNumber = (*last_random_number >> 16) & 0x7FFF;
 		}
-		Unit* unit = helper::unit_constructor(x, y, unit_id, playerId, randomNumber);
+		Unit* unit = helper::unit_constructor(x, y, unit_id, player, randomNumber);
 		if (!unit)
 		{
 			return 0;
@@ -416,7 +416,7 @@ namespace hooks
 			return unit;
 		}
 
-		Unit* subunit = helper::unit_constructor(x, y, units_dat::SubUnit[unit_id], playerId, randomNumber);
+		Unit* subunit = helper::unit_constructor(x, y, units_dat::SubUnit[unit_id], player, randomNumber);
 		if (!subunit)
 		{
 			helper::unit_destructor(unit);
@@ -446,7 +446,7 @@ namespace hooks
 			unit->previous_hitpoints = 1;
 		}
 		Sprite* sprite = unit->sprite;
-		u32 player_id = sprite->playerId;
+		u32 player_id = sprite->player;
 		u32 x = sprite->position.x;
 		u32 y = sprite->position.y;
 		if (sprite->images.head)
@@ -483,9 +483,9 @@ namespace hooks
 		if (!orders_dat::CanBeInterrupted[order_type]) {
 			unit->status |= UnitStatus::CanNotReceiveOrders;
 		}
-		if (sprite->playerId != player_id )
+		if (sprite->player != player_id )
 		{
-			sprite->playerId = player_id;
+			sprite->player = player_id;
 			for (Image* image = sprite->images.head; image; image->link.next)
 			{
 				//image->flags |= ImageFlags::Redraw;

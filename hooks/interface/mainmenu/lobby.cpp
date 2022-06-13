@@ -14,32 +14,32 @@ namespace hooks
 
 		if (*customSingleplayer)
 		{
-			if (gameData->victoryCondition || gameData->startingUnits || gameData->tournamentModeEnabled)
+			if (gameData->victoryCondition || gameData->starting_units || gameData->tournamentModeEnabled)
 			{
 				helper::switchAllAvailableComputerSlotsToOpen();
 				playerTable[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
-				for (s32 playerId = 0; playerId < 8; playerId++)
+				for (s32 player = 0; player < 8; player++)
 				{
-					if (selectedSingleplayerRace[playerId + 1] != RaceId::None)
+					if (selectedSingleplayerRace[player + 1] != RaceId::None)
 					{
-						helper::setLastOpenSlotToComputer(selectedSingleplayerRace[playerId + 1]);
+						helper::setLastOpenSlotToComputer(selectedSingleplayerRace[player + 1]);
 					}
 				}
 			}
 
 			// Convert open slots to computers (singleplayer)
-			for (s32 playerId = 0; playerId < 8; playerId++)
+			for (s32 player = 0; player < 8; player++)
 			{
-				if (playerTable[playerId].type == PlayerType::OpenSlot)
+				if (playerTable[player].type == PlayerType::OpenSlot)
 				{
-					playerTable[playerId].type = PlayerType::Computer;
+					playerTable[player].type = PlayerType::Computer;
 				}
 			}
 		}
 		return 1;
 	}
 
-	s32 startGame(void* lobbyState, s32 playerId) // 00472060
+	s32 startGame(void* lobbyState, s32 player) // 00472060
 	{
 		lobbyState = gameState;
 		u8 bootReason = 4;
@@ -51,8 +51,8 @@ namespace hooks
 		}
 
 		// ?
-		s32 result = playerId;
-		if (playerId)
+		s32 result = player;
+		if (player)
 		{
 			return result;
 		}

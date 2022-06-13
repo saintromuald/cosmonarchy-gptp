@@ -85,7 +85,7 @@ namespace hooks
 			format_time(buffer, 32, "", * elapsed_time_frames / 24);
 			s32 x_pos = 10;
 			s32 y_pos = 3;
-			if (*leaderboard_dialog) {
+			if (*leaderboard_type) {
 				// TODO: Get leaderboard width. Or actually just move the leaderboard down instead. This resolves issues with the test map.
 				x_pos = 90;
 				y_pos = 0;

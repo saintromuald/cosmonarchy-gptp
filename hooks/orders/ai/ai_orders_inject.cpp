@@ -110,7 +110,7 @@ namespace
 	{
 		static s32 x;
 		static s32 y;
-		static s32 playerId;
+		static s32 player;
 		static Unit* result;
 		__asm
 		{
@@ -118,13 +118,13 @@ namespace
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV playerId, EAX
+			MOV player, EAX
 			POP EAX
 			MOV y, ECX
 			MOV x, EAX
 			PUSHAD
 		}
-		result = hooks::get_closest_enemy_structure(x, y, playerId);
+		result = hooks::get_closest_enemy_structure(x, y, player);
 		__asm
 		{
 			POPAD
@@ -297,7 +297,7 @@ namespace
 	{
 		static u32 unit_id;
 		static char* placementData;
-		static u32 playerId;
+		static u32 player;
 		static Point16 desiredPos;
 		static s32 maxRange;
 		__asm
@@ -306,7 +306,7 @@ namespace
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV playerId, EAX
+			MOV player, EAX
 			MOV EAX, [EBP + 0x0C]
 			MOV desiredPos, EAX
 			MOV EAX, [EBP + 0x10]
@@ -316,7 +316,7 @@ namespace
 			MOV unit_id, EBX
 			PUSHAD
 		}
-		hooks::ai_get_build_location(unit_id, placementData, playerId, desiredPos, maxRange);
+		hooks::ai_get_build_location(unit_id, placementData, player, desiredPos, maxRange);
 		__asm
 		{
 			POPAD
