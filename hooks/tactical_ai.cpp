@@ -199,11 +199,15 @@ static bool is_channeling(Unit* unit) {
 }
 
 static u32 get_damage_against(u32 weapon_id, Unit* target) {
-	u32 damage = weapons_dat::DamageAmount[weapon_id];
-	if (damage && target) {
+	if (target) {
+		u32 type = weapons_dat::DamageType[weapon_id];
+		u32 size = units_dat::SizeType[target->id];
+		f32 factor = damage_factors[type].unit_size_factor[size] / 256.0f;
+
+		u32 damage = weapons_dat::DamageAmount[weapon_id] * factor;
 		damage = std::max(damage - target->getArmor(), 1u);
 	}
-	return damage;
+	return 0;
 }
 
 static u32 get_dps_against(Unit* source, Unit* target) {
