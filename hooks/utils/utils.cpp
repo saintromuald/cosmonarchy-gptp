@@ -90,12 +90,12 @@ namespace hooks
 		}
 		else
 		{
-			s32 playerId = *ACTIVE_PLAYER_ID;
+			s32 player = *ACTIVE_PLAYER_ID;
 			u8 index = *unit_iterator_pos;
 			bool bStopLoop = false;
 			while (!bStopLoop)
 			{
-				unit = players_selections->unit[playerId][index];
+				unit = players_selections->unit[player][index];
 				if (unit == nullptr)
 				{
 					bStopLoop = true;

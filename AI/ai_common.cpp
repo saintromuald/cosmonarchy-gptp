@@ -8,7 +8,7 @@
 namespace AI
 {
 	// Equivalent to 00440E30 ai_target_unit_is_worth_hitting
-	bool isTargetWorthHitting(Unit* target, Unit* attacker)
+	bool is_target_worth_hitting(Unit* target, Unit* attacker)
 	{
 		// If the target is hidden by the fog-of-war
 		if (!target->sprite->isVisibleTo(attacker->player))
@@ -46,10 +46,10 @@ namespace AI
 		return false;
 	}
 
-	bool isUmsMode(u8 playerId)
+	bool isUmsMode(u8 player)
 	{
-		assert(playerId < 8);
-		return AIScriptController[playerId].AI_Flags.is_use_map_settings;
+		assert(player < 8);
+		return AIScriptController[player].AI_Flags.is_use_map_settings;
 	}
 
 	// Internal use only
@@ -97,7 +97,7 @@ namespace AI
 	// In original functions:
 	// 0x00695604 would contains weaponId
 	// 0x00695798 would contains totalEnemyLife
-	s32 getTotalEnemyLifeInArea(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId)
+	s32 get_total_enemy_life_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId)
 	{
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
@@ -136,7 +136,7 @@ namespace AI
 
 	// Loop content based on AIAllyUnitHPAccumulatorProc @ 0x00440D60
 	// 0x00695798 would contains totalAllyLife
-	s32 getTotalAllyLifeInArea(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId)
+	s32 get_total_ally_life_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId)
 	{
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);

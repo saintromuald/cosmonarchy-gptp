@@ -24,7 +24,7 @@ namespace hooks
 		u32 v12;
 
 		parentAi = region;
-		child = (u8)region->playerId;
+		child = (u8)region->player;
 		result = AI_GetMissingAttackForceUnits(region, v9, AIScriptController[child].AI_Flags.is_use_map_settings);
 		v10 = result;
 		if (AIScriptController[child].AI_Flags.is_use_map_settings
@@ -46,7 +46,7 @@ namespace hooks
 				parentTown = v9[v6];
 				if (parentTown < UnitId::None && !helper::ai_add_to_region_military(parentAi, parentTown, v11))
 				{
-					v8 = (u8)parentAi->playerId;
+					v8 = (u8)parentAi->player;
 					AIScriptController[v8].AI_Flags.flag_0x40 = 1; // Might be wrong
 					helper::ai_add_cost_to_needs(parentTown, v8, 1);
 					helper::ai_add_spending_request(parentTown, v8, 1, 60, parentAi);
@@ -91,7 +91,7 @@ namespace hooks
 			attackTarget = helper::ai_pick_attack_target_no_buildings(region);
 			if (attackTarget)
 			{
-				targetRegion = &AiRegionCaptains[(u8)region->playerId][helper::get_region_id(
+				targetRegion = &AiRegionCaptains[(u8)region->player][helper::get_region_id(
 					attackTarget->sprite->position.x,
 					attackTarget->sprite->position.y)];
 				helper::ai_set_region_type(9, targetRegion);
@@ -103,13 +103,13 @@ namespace hooks
 			}
 			return;
 		}
-		if (helper::ai_attack_timer_decrement((u8)region->playerId))
+		if (helper::ai_attack_timer_decrement((u8)region->player))
 		{
 LABEL_15:
 			regionId = region->targetRegion;
 			if (regionId)
 			{
-				targetRegion2 = &AiRegionCaptains[(u8)region->playerId][regionId];
+				targetRegion2 = &AiRegionCaptains[(u8)region->player][regionId];
 				helper::ai_set_region_type(1, targetRegion2);
 				targetRegion3 = targetRegion2;
 				regionVar = region;
@@ -123,7 +123,7 @@ LABEL_15:
 		if (!missingUnits)
 		{
 LABEL_14:
-			if (helper::ai_has_forces_moving_to_attack((u8)region->playerId))
+			if (helper::ai_has_forces_moving_to_attack((u8)region->player))
 			{
 				return;
 			}
@@ -158,7 +158,7 @@ LABEL_14:
 		Unit* v18;
 		MilitaryAi* military;
 
-		childAi = AIScriptController[(u8)region->playerId].attackers;
+		childAi = AIScriptController[(u8)region->player].attackers;
 		parentAi = *childAi;
 		for (i = 0; *childAi; ++i)
 		{
@@ -166,7 +166,7 @@ LABEL_14:
 			++childAi;
 			parentAi = *childAi;
 		}
-		v6 = (u8)region->playerId;
+		v6 = (u8)region->player;
 		parentTown = firstPlayerUnit->unit[v6];
 		v18 = firstPlayerUnit->unit[v6];
 		if (parentTown)

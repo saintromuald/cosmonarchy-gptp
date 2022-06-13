@@ -23,7 +23,7 @@ namespace AI
 			caster,
 			[&](Unit* target)
 		{
-			if (!isTargetWorthHitting(target, caster))
+			if (!is_target_worth_hitting(target, caster))
 			{
 				return false;
 			}
@@ -39,12 +39,12 @@ namespace AI
 			{
 				return false;
 			}
-			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::Plague);
+			const s32 totalEnemyLife = get_total_enemy_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::Plague);
 			if (!isUnderAttack && totalEnemyLife < 250)
 			{
 				return false;
 			}
-			const s32 totalAllyLife = getTotalAllyLifeInArea(target->get_x(), target->get_y(), 96, caster, WeaponId::Plague);
+			const s32 totalAllyLife = get_total_ally_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::Plague);
 			if (totalAllyLife * 2 >= totalEnemyLife)
 			{
 				return false;

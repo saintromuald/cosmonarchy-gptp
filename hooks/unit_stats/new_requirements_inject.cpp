@@ -9,20 +9,20 @@ namespace
 		static s32 result;
 		static s16 unit_id;
 		static Unit* unit;
-		static s32 playerId;
+		static s32 player;
 		__asm
 		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV playerId, EAX
+			MOV player, EAX
 			POP EAX
 			MOV unit_id, AX
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::create_unit_allowed_partial(unit_id, unit, playerId);
+		result = hooks::create_unit_allowed_partial(unit_id, unit, player);
 		__asm
 		{
 			POPAD

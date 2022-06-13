@@ -864,10 +864,10 @@ LABEL_15:
 	}
 
 	// Hooked to add Nydus handling, except it already existed - Pr0nogo
-	b32 giveUnitToPlayer(Unit* unit, u32 playerId) // 004C8040
+	b32 giveUnitToPlayer(Unit* unit, u32 player) // 004C8040
 	{
-		u32 playerIdVar = playerId;
-		if (playerId == 13)
+		u32 playerIdVar = player;
+		if (player == 13)
 		{
 			playerIdVar = *currentTriggerPlayerId;
 		}

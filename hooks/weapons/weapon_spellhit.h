@@ -23,7 +23,7 @@ namespace hooks
 	void MindControlHitHook(Unit* attacker, Unit* target);							// 004F6910
 	void StasisFieldHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);				// 004F6A80
 	void DisruptionWebHit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet);		// 004F6AF0
-	Unit* createDisruptionWeb(u32 playerId, s32 x, s32 y);
+	Unit* createDisruptionWeb(u32 player, s32 x, s32 y);
 	s32 ensnareProc(Unit* target, Unit* attacker);									// 004F46C0
 	void createScanner(Unit* unit);													// 00464E40
 	u8 stasisFieldOverlay(Unit* a1, u8 a2);
@@ -32,7 +32,7 @@ namespace hooks
 	Unit* iterateUnitsAtLocationTargetProc(Box16* location,							// 004E8280
 		Unit*(__fastcall* proc)(Unit*, Unit*),
 		Unit* unit);
-	b32 giveUnitToPlayer(Unit* unit, u32 playerId);									// 004C8040
+	b32 giveUnitToPlayer(Unit* unit, u32 player);									// 004C8040
 
 	void injectWpnSpellHitHooks();
 }

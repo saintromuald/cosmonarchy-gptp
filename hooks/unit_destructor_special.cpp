@@ -185,7 +185,7 @@ void unit_destructor_special_cases(Unit* unit)
 		} break;
 		case UnitId::ProtossPylon:
 		{
-			// code from hooks::removePsiField(Unit* unit)
+			// code from hooks::remove_psi_field(Unit* unit)
 			// copied because the content is hardcoded here
 			if (unit->building.pylon_aura != nullptr)
 			{
@@ -193,7 +193,7 @@ void unit_destructor_special_cases(Unit* unit)
 				unit->building.pylon_aura = nullptr;
 			}
 
-			// begin hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
+			// begin hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
 			if (unit->psi_link.prev != nullptr)  // untie the previous pylon from current pylon (tie it to next)
 			{
 				(unit->psi_link.prev)->psi_link.next = unit->psi_link.next;
@@ -209,7 +209,7 @@ void unit_destructor_special_cases(Unit* unit)
 			}
 			unit->psi_link.prev = nullptr;
 			unit->psi_link.next = nullptr;
-			// end hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
+			// end hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
 			*can_update_powered_status = true;
 		} break;
 		case UnitId::ZergNydusCanal:

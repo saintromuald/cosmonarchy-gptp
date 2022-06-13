@@ -8,10 +8,10 @@
 namespace hooks
 {
     // Until further notice, these hooks are all for the shared supply rewrite - Pr0nogo
-    u32 get_supplies_available(u8 playerId, s32 race) // 00488900
+    u32 get_supplies_available(u8 player, s32 race) // 00488900
     {
-        u32 result = suppliesMax_Terran[playerId];
-        u32 suppliesAvailable = suppliesAvailable_Terran[playerId];
+        u32 result = suppliesMax_Terran[player];
+        u32 suppliesAvailable = suppliesAvailable_Terran[player];
         if (suppliesAvailable < result)
         {
             result = suppliesAvailable;
@@ -19,35 +19,35 @@ namespace hooks
         return result;
     }
 
-    s32 get_supplies_remaining(u8 playerId, u16 unit_id) // 004889D0
+    s32 get_supplies_remaining(u8 player, u16 unit_id) // 004889D0
     {
         u32 supplyAvailable = 0;
         u32 supplyUsed = 0;
-        if (hooks::getSuppliesMax(unit_id, playerId) >= suppliesAvailable_Terran[playerId])
+        if (hooks::getSuppliesMax(unit_id, player) >= suppliesAvailable_Terran[player])
         {
-            supplyUsed = suppliesUsed_Terran[playerId];
-            supplyAvailable = suppliesAvailable_Terran[playerId];
+            supplyUsed = suppliesUsed_Terran[player];
+            supplyAvailable = suppliesAvailable_Terran[player];
         }
         else
         {
-            supplyUsed = suppliesUsed_Terran[playerId];
-            supplyAvailable = hooks::getSuppliesMax(unit_id, playerId);
+            supplyUsed = suppliesUsed_Terran[player];
+            supplyAvailable = hooks::getSuppliesMax(unit_id, player);
         }
         if (*bw_cheat_state & 0x20000)
         {
-            return suppliesMax_Terran[playerId] - supplyUsed;
+            return suppliesMax_Terran[player] - supplyUsed;
         }
         return supplyAvailable - supplyUsed;
     }
 
-    s32 getSuppliesMax(u16 unit_id, u8 playerId) // 00488990
+    s32 getSuppliesMax(u16 unit_id, u8 player) // 00488990
     {
-        return suppliesMax_Terran[playerId];
+        return suppliesMax_Terran[player];
     }
 
-    s32 get_supplies_used(s32 race, u8 playerId) // 004888C0
+    s32 get_supplies_used(s32 race, u8 player) // 004888C0
     {
-        return suppliesUsed_Terran[playerId];
+        return suppliesUsed_Terran[player];
     }
 
     char initializeUnitCounts() // 00488F90
@@ -238,9 +238,9 @@ namespace hooks
         Unit* activeUnit = *active_portrait_unit;
         GroupFlag groupFlags = units_dat::GroupFlags[activeUnit->id];
         *suppliesAvailableTemp = get_supplies_available(activeUnit->player, RaceId::Terran);
-        u8 playerId = activeUnit->player;
-        s32 result = suppliesUsed_Terran[playerId];
-        *suppliesUsedTemp = suppliesUsed_Terran[playerId];
+        u8 player = activeUnit->player;
+        s32 result = suppliesUsed_Terran[player];
+        *suppliesUsedTemp = suppliesUsed_Terran[player];
         return result;
     }
 
@@ -478,7 +478,7 @@ namespace hooks
     }
 
     // Check if @p player has enough supplies to build @p unit_id.
-    bool hasSuppliesForUnitHook(u8 playerId, u16 unit_id, bool canShowErrorMessage)
+    bool hasSuppliesForUnitHook(u8 player, u16 unit_id, bool canShowErrorMessage)
     {
         // Default StarCraft behavior
         s32 supplyCost = units_dat::SupplyRequired[unit_id];
@@ -491,29 +491,29 @@ namespace hooks
             supplyCost -= units_dat::SupplyRequired[UnitId::ZergHydralisk];
         }
 
-        aiSupplyReserved[playerId] = supplyCost;
+        aiSupplyReserved[player] = supplyCost;
         // No supply cost check needed
         if (supplyCost == 0 || units_dat::BaseProperty[unit_id] & UnitProperty::MorphFromOtherUnit)
         {
             return true;
         }
-        u32 raceId = playerTable[playerId].race;
-        const u32 supplyUsed = raceSupply[RaceId::Terran].used[playerId];
+        u32 raceId = playerTable[player].race;
+        const u32 supplyUsed = raceSupply[RaceId::Terran].used[player];
         // Must construct additional pylons
-        if (supplyUsed + supplyCost > raceSupply[RaceId::Terran].max[playerId])
+        if (supplyUsed + supplyCost > raceSupply[RaceId::Terran].max[player])
         {
             if (canShowErrorMessage)
             {
-                scbw::show_error_message_with_sfx(playerId, 847 + raceId, 1 + raceId);
+                scbw::show_error_message_with_sfx(player, 847 + raceId, 1 + raceId);
             }
             return false;
         }
         // Supply limit exceeded
-        if (supplyCost > scbw::get_supply_remaining(playerId, RaceId::Terran))
+        if (supplyCost > scbw::get_supply_remaining(player, RaceId::Terran))
         {
             if (canShowErrorMessage)
             {
-                scbw::show_error_message_with_sfx(playerId, 844 + raceId, 153 + raceId);
+                scbw::show_error_message_with_sfx(player, 844 + raceId, 153 + raceId);
             }
             return false;
         }

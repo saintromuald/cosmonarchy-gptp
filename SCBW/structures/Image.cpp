@@ -81,7 +81,7 @@ void Image::initializeData(Sprite* parent, u16 imageId, s8 x, s8 y)
 		this->coloringData = colorShift[images_dat::Remapping[imageId]].data;*/
 
 	if (scbw::get_image_data(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_PLAYER_SIDE)
-		*(u32*)(&this->coloringData) = parent->playerId;
+		*(u32*)(&this->coloringData) = parent->player;
 	if (scbw::get_image_data(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_EFFECT)
 		this->coloringData = colorShift[scbw::get_image_data(ImagesDatEntries::DrawRemap, imageId)].data;
 }

@@ -19,7 +19,7 @@ Unit* findBestSpawnBroodlingsTarget(Unit* caster, bool isUnderAttack);
 Unit* findBestDarkSwarmTarget(Unit* caster, bool isUnderAttack);
 Unit* findBestPlagueTarget(Unit* caster, bool isUnderAttack);
 
-Unit* findBestPsiStormTarget(Unit* caster, bool isUnderAttack);
+Unit* find_best_psi_storm_target(Unit* caster, bool isUnderAttack);
 Unit* findBestHallucinationTarget(Unit* caster, bool isUnderAttack);
 Unit* findBestStasisFieldTarget(Unit* caster, bool isUnderAttack);
 Unit* findBestRecallTarget(Unit* caster, bool isUnderAttack);

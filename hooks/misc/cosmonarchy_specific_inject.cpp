@@ -206,7 +206,7 @@ namespace hooks
 	void __declspec(naked) get_order_target_error_string_jump_wrapper()
 	{
 		static Unit* caster;
-		static u8 playerId;
+		static u8 player;
 		static u32 techId;
 		static Unit* target;
 		static u32 func_result;
@@ -216,7 +216,7 @@ namespace hooks
 			MOV BL, [EAX + 0x4c]
 			MOV EAX, EDI
 			MOV target, EAX
-			MOV playerId, BL
+			MOV player, BL
 			CALL func_techTargetSpellCheck
 			MOV func_result, EAX
 			PUSHAD
@@ -233,7 +233,7 @@ namespace hooks
 	void __declspec(naked) should_stop_ordered_spell_jump_wrapper()
 	{
 		static Unit* caster;
-		static u8 playerId;
+		static u8 player;
 		static u32 techId;
 		static Unit* target;
 		static u32 func_result;
@@ -243,7 +243,7 @@ namespace hooks
 			MOV EAX, [EBP + 0x08]
 			MOV techId, EAX
 			POP EAX
-			MOV playerId, BL
+			MOV player, BL
 			MOV target, EAX
 			MOV caster, EDI
 			CALL func_techTargetSpellCheck
@@ -647,7 +647,7 @@ namespace hooks
 		static u16 unit_id;
 		static s32 x;
 		static s32 y;
-		static s32 playerId;
+		static s32 player;
 		__asm
 		{
 			PUSH EBP
@@ -656,13 +656,13 @@ namespace hooks
 			MOV EAX, [EBP + 0x08]
 			MOV y, EAX
 			MOV EAX, [EBP + 0xC]
-			MOV playerId, EAX
+			MOV player, EAX
 			POP EAX
 			MOV x, EAX
 			MOV unit_id, CX
 			PUSHAD
 		}
-		result = hooks::create_unit(unit_id, x, y, playerId);
+		result = hooks::create_unit(unit_id, x, y, player);
 		__asm
 		{
 			POPAD

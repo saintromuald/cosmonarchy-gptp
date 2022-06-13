@@ -21,7 +21,7 @@ namespace AI
 			caster->get_x() + bounds, caster->get_y() + bounds,
 			caster, [&](Unit* target)
 		{
-			if (!isTargetWorthHitting(target, caster))
+			if (!is_target_worth_hitting(target, caster))
 			{
 				return false;
 			}

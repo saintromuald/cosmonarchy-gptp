@@ -7,7 +7,7 @@ namespace
 	bool canCastSpellOrder(Unit* unit, u8 techId, u8 order_id);
 	bool aiCastSpellOrder(Unit* unit, Unit* target, u8 order_id, u8 aiActionFlag = 1);
 	u16 getOrderEnergyCost(u8 order_id);
-	bool isNukeTimerReady(u8 playerId);
+	bool isNukeTimerReady(u8 player);
 	Unit* getLoadedSilo(Unit* ghost, b32 checkNukeAvailableForGhost = 1);
 }
 
@@ -188,7 +188,7 @@ namespace AI
 				// Psionic Storm
 				if (canCastSpellOrder(unit, TechId::PsionicStorm, OrderId::PsiStorm))
 				{
-					Unit* target = findBestPsiStormTarget(unit, isUnitBeingAttacked);
+					Unit* target = find_best_psi_storm_target(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::PsiStorm
 						&& unit->order_target.unit == target)
 					{
@@ -340,9 +340,9 @@ namespace
 	}
 
 	// Logically equivalent to function @ 0x00446E50
-	bool isNukeTimerReady(u8 playerId)
+	bool isNukeTimerReady(u8 player)
 	{
-		return *elapsed_time_seconds >= AIScriptController[playerId].ai_last_nuke_time + 60 * AIScriptController[playerId].ai_nuke_rate;
+		return *elapsed_time_seconds >= AIScriptController[player].ai_last_nuke_time + 60 * AIScriptController[player].ai_nuke_rate;
 	}
 
 	// Logically equivalent to function @ 0x00463360

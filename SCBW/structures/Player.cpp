@@ -14,11 +14,11 @@ graphics::ColorId Player::get_color()
 	return playerMinimapColors[(u8)this->id];
 }
 
-graphics::ColorId Player::get_color(u8 playerId)
+graphics::ColorId Player::get_color(u8 player)
 {
-	if (playerId < PLAYER_COUNT)
+	if (player < PLAYER_COUNT)
 	{
-		return playerMinimapColors[playerId];
+		return playerMinimapColors[player];
 	}
 	else
 	{
@@ -32,16 +32,16 @@ graphics::ColorId Player::get_faction_color()
 	return get_faction_color(this->id);
 }
 
-graphics::ColorId Player::get_faction_color(u8 playerId)
+graphics::ColorId Player::get_faction_color(u8 player)
 {
 	// store a player until the end where it will properly store a ColorId
 	graphics::ColorId return_value;
 
 	// for normal players, apply colors switching
-	if (playerId < PLAYABLE_PLAYER_COUNT)
+	if (player < PLAYABLE_PLAYER_COUNT)
 	{
 		// get the proper player in multiplayer game (don't break campaigns/UMS)
-		return_value = factionsColorsOrdering[playerId];
+		return_value = factionsColorsOrdering[player];
 
 		// fix BROWN to GREEN color swap in Desert map
 		if (*CURRENT_TILESET == TilesetType::Desert && return_value == 5)
@@ -58,10 +58,10 @@ graphics::ColorId Player::get_faction_color(u8 playerId)
 
 	else
 	{
-		return_value = playerId;
+		return_value = player;
 	}
 
-	if (playerId < PLAYER_COUNT)
+	if (player < PLAYER_COUNT)
 	{
 		return_value = graphics::standardColors[return_value];
 	}
@@ -73,20 +73,20 @@ graphics::ColorId Player::get_faction_color(u8 playerId)
 	return return_value;
 }
 
-u32 Player::number_of_units_of_id(u8 playerId, u16 unit_id)
+u32 Player::number_of_units_of_id(u8 player, u16 unit_id)
 {
 	if (unit_id > UNIT_TYPE_COUNT - 1)
 	{
 		return 0;
 	}
-	return allUnitCountTable[unit_id].player[playerId];
+	return allUnitCountTable[unit_id].player[player];
 }
 
-u32 Player::number_of_completed_units_of_id(u8 playerId, u16 unit_id)
+u32 Player::number_of_completed_units_of_id(u8 player, u16 unit_id)
 {
 	if (unit_id > UNIT_TYPE_COUNT - 1)
 	{
 		return 0;
 	}
-	return unitCountTable[unit_id].player[playerId];
+	return unitCountTable[unit_id].player[player];
 }

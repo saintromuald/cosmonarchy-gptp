@@ -71,7 +71,7 @@ struct RevivingUnit {
 	Vector32 position;
 	u32 timer;
 	u32 unit_id;
-	u8 playerId;
+	u8 player;
 	u32 energy;
 	u32 hp;
 	AiTown* town;

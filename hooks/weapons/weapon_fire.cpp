@@ -889,8 +889,8 @@ namespace hooks
 			return 0;
 		}
 
-		s8 playerId = _pIterator->player == 11 ? _pIterator->sprite->playerId : _pIterator->player;
-		if (player_alliance[(u8)pSrc->player].flags[playerId] || *bulletBounceMissileTarget == _pIterator)
+		s8 player = _pIterator->player == 11 ? _pIterator->sprite->player : _pIterator->player;
+		if (player_alliance[(u8)pSrc->player].flags[player] || *bulletBounceMissileTarget == _pIterator)
 		{
 			return 0;
 		}
@@ -996,7 +996,7 @@ namespace hooks
 	}
 
 	// Hooked to stop Valkyries from being cucked by lardcode - Pr0nogo
-	Bullet* create_bullet(s32 weaponId, Unit* parent, s32 x, s16 y, char playerId, s32 angle) // 0048C260
+	Bullet* create_bullet(s32 weaponId, Unit* parent, s32 x, s16 y, char player, s32 angle) // 0048C260
 	{
 		Bullet* pBullet;
 		s32 parentStatus;
@@ -1019,7 +1019,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (!hooks::initializeBullet(playerId, parent, y, *first_free_bullet, weaponId, x, angle))
+		if (!hooks::initializeBullet(player, parent, y, *first_free_bullet, weaponId, x, angle))
 		{
 			return 0;
 		}
@@ -1071,14 +1071,14 @@ namespace hooks
 	}
 
 	// Hooked so we don't need aise for Bactalisks - Pr0nogo
-	s32 initializeBullet(char playerId, Unit* parent, s16 y, Bullet* bullet, s32 weaponId, s32 x, s32 angle) // 0048BEC0
+	s32 initializeBullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weaponId, s32 x, s32 angle) // 0048BEC0
 	{
-		if (!helper::initializeFlingy(weapons_dat::FlingyId[weaponId], y, x, (Flingy*)bullet, playerId, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
+		if (!helper::initializeFlingy(weapons_dat::FlingyId[weaponId], y, x, (Flingy*)bullet, player, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
 		{
 			return 0;
 		}
 
-		bullet->srcPlayer = playerId;
+		bullet->srcPlayer = player;
 		bullet->someUnitType = 228;
 		bullet->unknown_0x4E = 0;
 		bullet->attackTarget.unit = nullptr;

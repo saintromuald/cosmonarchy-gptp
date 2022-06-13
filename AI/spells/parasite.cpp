@@ -25,7 +25,7 @@ namespace AI
 			[&](Unit* target)
 		{
 
-			if (!isTargetWorthHitting(target, caster))
+			if (!is_target_worth_hitting(target, caster))
 				return false;
 
 			if (isUmsMode(caster->player) && target->parasite_flags)

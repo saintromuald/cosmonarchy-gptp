@@ -170,7 +170,7 @@ namespace
 	{
 		static s32 x;
 		static s32 y;
-		static u32 playerId;
+		static u32 player;
 		static Bullet* bullet;
 		__asm
 		{
@@ -180,10 +180,10 @@ namespace
 			MOV y, EAX
 			MOV bullet, EBX
 			MOV EAX, [EBP + 0x08]
-			MOV playerId, EAX
+			MOV player, EAX
 			PUSHAD
 		}
-		hooks::CorrosiveAcidHit(playerId, x, y, bullet);
+		hooks::CorrosiveAcidHit(player, x, y, bullet);
 		__asm
 		{
 			POPAD
@@ -400,7 +400,7 @@ namespace
 	{
 		static s32 x;
 		static s32 y;
-		static u32 playerId;
+		static u32 player;
 		static Bullet* bullet;
 		__asm
 		{
@@ -410,10 +410,10 @@ namespace
 			MOV y, EAX
 			MOV bullet, EBX
 			MOV EAX, [EBP + 0x08]
-			MOV playerId, EAX
+			MOV player, EAX
 			PUSHAD
 		}
-		hooks::DisruptionWebHit(playerId, x, y, bullet);
+		hooks::DisruptionWebHit(player, x, y, bullet);
 		__asm
 		{
 			POPAD
@@ -554,7 +554,7 @@ namespace
 	void __declspec(naked) giveUnitToPlayer_Wrapper()
 	{
 		static Unit* unit;
-		static u32 playerId;
+		static u32 player;
 		static b32 result;
 		__asm
 		{
@@ -562,13 +562,13 @@ namespace
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV playerId, EAX
+			MOV player, EAX
 			MOV EAX, [EBP + 0x0C]
 			MOV unit, EAX
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::giveUnitToPlayer(unit, playerId);
+		result = hooks::giveUnitToPlayer(unit, player);
 		__asm
 		{
 			POPAD

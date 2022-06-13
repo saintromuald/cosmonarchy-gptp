@@ -2,13 +2,10 @@
 //   hooks/unit_destructor_special.cpp
 //   hooks/unit_selection_graphics.cpp
 
-// NOT FULLY REVALIDATED BY UNDEADSTAR
-
 #pragma once
 #include "../SCBW/structures/Unit.h"
 
 namespace hooks {
-
 	// Edit these functions in psi_field.cpp.
 	bool is_ready_to_make_psi_field(Unit* unit);
 	bool can_make_psi_field(u16 unit_id);
@@ -24,5 +21,4 @@ namespace hooks {
 
 	// Call this in initialize.h.
 	void inject_psi_field_hooks();
-
 }

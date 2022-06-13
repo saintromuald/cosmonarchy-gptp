@@ -1170,13 +1170,13 @@ namespace helper
 	}
 
 	// for ai_create_nuke
-	Unit* create_unit(s16 unit_id, s32 x, s32 y, s32 playerId)
+	Unit* create_unit(s16 unit_id, s32 x, s32 y, s32 player)
 	{
 		const u32 Func_createUnit = 0x004A09D0;
 		static Unit* result;
 		__asm {
 			PUSHAD
-			PUSH playerId
+			PUSH player
 			PUSH y
 			MOV EAX, x
 			MOVZX CX, unit_id
@@ -1291,13 +1291,13 @@ namespace helper
 		return result2;
 	}
 
-	void ai_make_guard(s32 playerId, Unit* unit)
+	void ai_make_guard(s32 player, Unit* unit)
 	{
 		const u32 Func_AI_MakeGuard = 0x0043A010;
 		__asm {
 			PUSHAD
 			PUSH unit
-			PUSH playerId
+			PUSH player
 			CALL Func_AI_MakeGuard
 			POPAD
 		}
@@ -1317,13 +1317,13 @@ namespace helper
 		return (bool)result;
 	}
 
-	u32 get_default_refinery_type(u32 playerId)
+	u32 get_default_refinery_type(u32 player)
 	{
 		const u32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
 		static u32 result;
 		__asm {
 			PUSHAD
-			MOV EAX, playerId
+			MOV EAX, player
 			CALL Func_getPlayerDefaultRefineryUnitType
 			MOV result, EAX
 			POPAD
@@ -1702,7 +1702,7 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_add_cost_to_needs(u32 unit_id, u32 playerId, u32 type)
+	u32 ai_add_cost_to_needs(u32 unit_id, u32 player, u32 type)
 	{
 		const u32 Func_AI_FindUnit = 0x00447DC0;
 		static u32 typeXD = type;
@@ -1710,7 +1710,7 @@ namespace helper
 		__asm {
 			PUSHAD
 			PUSH typeXD
-			MOV EBX, playerId
+			MOV EBX, player
 			MOV EAX, unit_id
 			CALL Func_AI_FindUnit
 			MOV result, EAX
@@ -2418,13 +2418,13 @@ namespace helper
 		}
 	}
 
-	void display_last_network_error_for_player(u32 playerId)
+	void display_last_network_error_for_player(u32 player)
 	{
 		const u32 Func_displayLastNetErrorForPlayer = 0x0049E530;
 		__asm
 		{
 			PUSHAD
-			PUSH playerId
+			PUSH player
 			CALL Func_displayLastNetErrorForPlayer
 			POPAD
 		}
@@ -2484,7 +2484,7 @@ namespace helper
 		return (bPreResult != 0);
 	}
 
-	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 playerId)
+	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player)
 	{
 		const u32 Func_CreateThingy = 0x00488210;
 		static Thingy* thingy;
@@ -2492,7 +2492,7 @@ namespace helper
 		__asm
 		{
 			PUSHAD
-			PUSH playerId
+			PUSH player
 			MOVSX EDI, y
 			PUSH x_
 			PUSH spriteId
@@ -2776,13 +2776,13 @@ namespace helper
 		}
 	}
 
-	void refund_building_cost(u16 unit_id, u8 playerId)
+	void refund_building_cost(u16 unit_id, u8 player)
 	{
 		const u32 Func_refundBuildingCost = 0x0042CE70;
 		__asm {
 			PUSHAD
 			MOV AX, unit_id
-			MOV CL, playerId
+			MOV CL, player
 			CALL Func_refundBuildingCost
 			POPAD
 		}
@@ -3058,7 +3058,7 @@ namespace helper
 
 	// For update_placement_state_for_placement_box
 
-	s32 can_build_on_tile_location(Unit* builder, s32 playerId, s32 xTile, s32 yTile, s32 unit_id, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision)
+	s32 can_build_on_tile_location(Unit* builder, s32 player, s32 xTile, s32 yTile, s32 unit_id, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision)
 	{
 		const u32 Func_canBuildOnTileLocation = 0x00473FB0;
 		static s32 result;
@@ -3072,7 +3072,7 @@ namespace helper
 			PUSH unit_id
 			PUSH yTile
 			PUSH xTile
-			PUSH playerId
+			PUSH player
 			PUSH builder
 			CALL Func_canBuildOnTileLocation
 			MOV result, EAX
@@ -3860,7 +3860,7 @@ namespace helper
 		return result;
 	}
 
-	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 playerId, u16* address, u32 req_offset)
+	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 player, u16* address, u32 req_offset)
 	{
 		const u32 Func_parseRequirementOpcodes = 0x0046D610;
 		static s32 return_value;
@@ -3870,7 +3870,7 @@ namespace helper
 			MOV EAX, req_offset
 			MOV ESI, unit
 			PUSH address
-			PUSH playerId
+			PUSH player
 			PUSH order_id
 			CALL Func_parseRequirementOpcodes
 			MOV return_value, EAX
@@ -3992,14 +3992,14 @@ namespace helper
 		return (pre_result != 0);
 	}
 
-	u32 get_stat_txt_string(Unit* unit, u32 playerId, char* message)
+	u32 get_stat_txt_string(Unit* unit, u32 player, char* message)
 	{
 		const u32 Func_get_statTxt_Str_0 = 0x0048EF30;
 		static u32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, message
-			MOV ECX, playerId
+			MOV ECX, player
 			MOV EDX, unit
 			CALL Func_get_statTxt_Str_0
 			MOV EAX, return_value
@@ -4061,26 +4061,26 @@ namespace helper
 		}
 	}
 
-	void initialize_empty_unit_linked_list_references(Unit* unit, u8 playerId)
+	void initialize_empty_unit_linked_list_references(Unit* unit, u8 player)
 	{
 		const u32 Func_initializeEmptyUnitsLinkedListRef = 0x0049E4E0;
 		__asm {
 			PUSHAD
-			MOV DL, playerId
+			MOV DL, player
 			MOV ECX, unit
 			CALL Func_initializeEmptyUnitsLinkedListRef
 			POPAD
 		}
 	}
 
-	void give_unit_helper(Unit* unit, u32 playerId, s32 unkScore)
+	void give_unit_helper(Unit* unit, u32 player, s32 unkScore)
 	{
 		const u32 Func_GiveUnitHelper = 0x0049EFA0;
 		__asm {
 			PUSHAD
 			PUSH unkScore
 			MOV ECX, unit
-			PUSH playerId
+			PUSH player
 			CALL Func_GiveUnitHelper
 			POPAD
 		}
@@ -4268,14 +4268,14 @@ namespace helper
 		}
 	}
 
-	void set_upgrade_level(u32 playerId, u32 upgrade_id, u8 upgrade_level)
+	void set_upgrade_level(u32 player, u32 upgrade_id, u8 upgrade_level)
 	{
 		const u32 Func_setUpgradeLevel = 0x004CE770;
 		__asm {
 			PUSHAD
 			MOV DL, upgrade_level
 			MOV ECX, upgrade_id
-			MOV EAX, playerId
+			MOV EAX, player
 			CALL Func_setUpgradeLevel
 			POPAD
 		}
@@ -5165,7 +5165,7 @@ namespace helper
 		return result;
 	}
 
-	bool has_supplies_for_unit(u32 unit_id, u32 playerId, b32 canShowErrorMessage)
+	bool has_supplies_for_unit(u32 unit_id, u32 player, b32 canShowErrorMessage)
 	{
 		return 1; // Supply was removed
 
@@ -5176,7 +5176,7 @@ namespace helper
 			PUSHAD
 			PUSH canShowErrorMessage
 			PUSH unit_id
-			PUSH playerId
+			PUSH player
 			CALL Func_hasSuppliesForUnit
 			MOV bPreResult, EAX
 			POPAD
@@ -5404,13 +5404,13 @@ namespace helper
 	}
 
 	// Hallucination-related
-	Unit* create_hallucination(Unit* target, u32 playerId)
+	Unit* create_hallucination(Unit* target, u32 player)
 	{
 		const u32 Func_createHallucination = 0x004F6B90;
 		static Unit* return_value;
 		__asm {
 			PUSHAD
-			PUSH playerId
+			PUSH player
 			MOV ECX, target
 			CALL Func_createHallucination
 			MOV return_value, EAX
@@ -5817,13 +5817,13 @@ namespace helper
 		}
 	}
 
-	void refund_unit_train_cost(u32 unit_id, u8 playerId)
+	void refund_unit_train_cost(u32 unit_id, u8 player)
 	{
 		const u32 Func_refundUnitTrainCost = 0x0042CEC0;
 		__asm {
 			PUSHAD
 			MOV ECX, unit_id
-			MOV AL, playerId
+			MOV AL, player
 			CALL Func_refundUnitTrainCost
 			POPAD
 		}
@@ -6177,13 +6177,13 @@ namespace helper
 		return return_value;
 	}
 
-	u32 get_spell_stat_string(Unit* target, u32 techId, u8 playerId)
+	u32 get_spell_stat_string(Unit* target, u32 techId, u8 player)
 	{
 		const u32 Func_getSpellStatString = 0x00491E80;
 		static u32 return_value;
 		__asm {
 			PUSHAD
-			MOV BL, playerId
+			MOV BL, player
 			PUSH techId
 			MOV EAX, target
 			CALL Func_getSpellStatString
@@ -7041,7 +7041,7 @@ namespace helper
 	}
 
 	// display an error message and return false if not enough resources
-	bool verifyResources(u32 mineralCost, u32 gasCost, u32 playerId)
+	bool verifyResources(u32 mineralCost, u32 gasCost, u32 player)
 	{
 		const u32 Func_verifyResources = 0x00466EE0;
 		b32 bPreResult;
@@ -7049,7 +7049,7 @@ namespace helper
 			PUSHAD
 			MOV EAX, mineralCost
 			PUSH gasCost
-			MOV ECX, playerId
+			MOV ECX, player
 			CALL Func_verifyResources
 			MOV bPreResult, EAX
 			POPAD
@@ -7179,7 +7179,7 @@ namespace helper
 
 	// AKA createPsiFieldSpriteForUnit()
 	// Returns true if successful, false otherwise.
-	bool addPsiFieldSprite(Unit* unit)
+	bool add_psi_field_sprite(Unit* unit)
 	{
 		if (!unit)
 		{
@@ -7237,14 +7237,14 @@ namespace helper
 		}
 	}
 
-	Thingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 playerId)
+	Thingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 player)
 	{
 		const u32 Func_CreateThingy = 0x00488210;
 		static Thingy* thingy;
 		s32 x_ = x;
 		__asm {
 			PUSHAD
-			PUSH playerId
+			PUSH player
 			MOVSX EDI, y
 			PUSH x_
 			PUSH spriteId
@@ -7417,14 +7417,14 @@ namespace helper
 	}
 
 	// dev info: examples of calls: 429520,428e60,428420,4287D0,4292C0
-	s32 req_check(u32 requirement_func, u16 requirement_var, u32 playerId, Unit* unit)
+	s32 req_check(u32 requirement_func, u16 requirement_var, u32 player, Unit* unit)
 	{
 		static s32 return_value;
 		__asm
 		{
 			PUSHAD
 			MOV CX, requirement_var
-			MOV EDX, playerId
+			MOV EDX, player
 			PUSH unit
 			CALL requirement_func
 			MOV return_value, EAX
@@ -7979,7 +7979,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* createUnitAtPos(u16 unit_id, u16 playerId, u32 x, u32 y)
+	Unit* createUnitAtPos(u16 unit_id, u16 player, u32 x, u32 y)
 	{
 		const u32 Func_CreateUnitAtPos = 0x004CD360; // AKA createUnitXY()
 		if (unit_id >= UNIT_TYPE_COUNT)
@@ -7990,7 +7990,7 @@ namespace helper
 		__asm {
 			PUSHAD
 			MOV CX, unit_id
-			MOV AX, playerId
+			MOV AX, player
 			PUSH y
 			PUSH x
 			CALL Func_CreateUnitAtPos
@@ -8001,14 +8001,14 @@ namespace helper
 	}
 
 	// more from api.cpp
-	Flingy* createFlingy(u32 flingy_id, u32 playerId, u32 x, u32 y)
+	Flingy* createFlingy(u32 flingy_id, u32 player, u32 x, u32 y)
 	{
 		const u32 Func_CreateFlingy = 0x00496460;
 		static Flingy* flingy;
 		__asm
 		{
 			PUSHAD
-			MOV EAX, playerId
+			MOV EAX, player
 			MOV ECX, x
 			MOV EDX, y
 			PUSH flingy_id
@@ -8137,7 +8137,7 @@ namespace helper
 	}
 
 	// For create_unit
-	Unit* unit_constructor(s32 x, s32 y, u16 unit_id, s32 playerId, s32 unused)
+	Unit* unit_constructor(s32 x, s32 y, u16 unit_id, s32 player, s32 unused)
 	{
 		const u32 Func_unitConstructor = 0x004A06C0;
 		static Unit* result;
@@ -8145,7 +8145,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH unused
-			PUSH playerId
+			PUSH player
 			MOV DI, unit_id
 			MOV EDX, y
 			MOV ESI, x
@@ -8251,7 +8251,7 @@ namespace helper
 	}
 
 	// For create_bullet
-	s32 initializeBullet(char playerId, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle)
+	s32 initializeBullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle)
 	{
 		const u32 Func_initializeBullet = 0x0048BEC0;
 		static s32 result;
@@ -8264,7 +8264,7 @@ namespace helper
 			PUSH bulletResult
 			MOVZX DX, y
 			MOV EAX, parent
-			MOVZX CL, playerId
+			MOVZX CL, player
 			CALL Func_initializeBullet
 			MOV result, EAX
 			POPAD
@@ -8605,7 +8605,7 @@ namespace helper
 		return result;
 	}
 
-	void display_error_message_id_with_sfx(s32 playerId, s32 messageId, s32 soundId)
+	void display_error_message_id_with_sfx(s32 player, s32 messageId, s32 soundId)
 	{
 		const u32 Func_displayErrorMessageIDWithSFX = 0x0048EE30;
 		__asm
@@ -8613,7 +8613,7 @@ namespace helper
 			PUSHAD
 			MOV ESI, soundId
 			MOV EDI, messageId
-			MOV EBX, playerId
+			MOV EBX, player
 			CALL Func_displayErrorMessageIDWithSFX
 			POPAD
 		}
@@ -8652,7 +8652,7 @@ namespace helper
 		return result;
 	}
 
-	void ai_get_build_location(s32 unit_id, char* placementData, s32 playerId, Point16 tryPosition, s32 maxRange)
+	void ai_get_build_location(s32 unit_id, char* placementData, s32 player, Point16 tryPosition, s32 maxRange)
 	{
 		const u32 Func_AIGetBuildLocation = 0x004461B0;
 		__asm
@@ -8660,7 +8660,7 @@ namespace helper
 			PUSHAD
 			PUSH maxRange
 			PUSH tryPosition
-			PUSH playerId
+			PUSH player
 			MOV ESI, placementData
 			MOV EBX, unit_id
 			CALL Func_AIGetBuildLocation
@@ -8873,10 +8873,10 @@ namespace helper
 	}
 
 	// For giveUnitToPlayer
-	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 playerId)
+	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 player)
 	{
 		const u32 Func_giveAllUnitPropertiesToPlayer = 0x0047C9F0;
-		s32 playerIdArg = playerId;
+		s32 playerIdArg = player;
 		__asm
 		{
 			PUSHAD
@@ -9270,7 +9270,7 @@ namespace helper
 	//}
 
 	// For ai_are_on_connected_regions
-	bool ai_regions_are_connected(u32 playerId, u32 region1, u32 region2)
+	bool ai_regions_are_connected(u32 player, u32 region1, u32 region2)
 	{
 		const u32 Func_AI_RegionsAreConnected = 0x00437E70;
 		static bool result;
@@ -9279,7 +9279,7 @@ namespace helper
 			PUSHAD
 			MOV ESI, region2
 			MOV EBX, region1
-			MOV EAX, playerId
+			MOV EAX, player
 			CALL Func_AI_RegionsAreConnected
 			MOV result, AL
 			POPAD
@@ -9306,7 +9306,7 @@ namespace helper
 	}
 
 	// For AI_GetBuildingLocation
-	u32 ai_get_building_placement_data(u32 maxRange, u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos)
+	u32 ai_get_building_placement_data(u32 maxRange, u32 unit_id, char* placementData, u32 player, Point16 desiredPos)
 	{
 		const u32 Func_Ai_GetBuildingPlacementData = 0x00445D60;
 		static u32 result;
@@ -9314,7 +9314,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH desiredPos
-			PUSH playerId
+			PUSH player
 			PUSH placementData
 			PUSH unit_id
 			MOV EAX, maxRange
@@ -9409,14 +9409,14 @@ namespace helper
 		return result;
 	}
 
-	void ai_remove_unfit_tiles(u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos)
+	void ai_remove_unfit_tiles(u32 unit_id, char* placementData, u32 player, Point16 desiredPos)
 	{
 		const u32 Func_Ai_RemoveTilesIfUnfit = 0x00444CE0;
 		__asm
 		{
 			PUSHAD
 			PUSH desiredPos
-			PUSH playerId
+			PUSH player
 			PUSH placementData
 			MOV ECX, unit_id
 			CALL Func_Ai_RemoveTilesIfUnfit
@@ -9424,7 +9424,7 @@ namespace helper
 		}
 	}
 
-	u32 ai_remove_addon_places(u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos)
+	u32 ai_remove_addon_places(u32 unit_id, char* placementData, u32 player, Point16 desiredPos)
 	{
 		const u32 Func_Ai_RemoveAddonPlaces = 0x00443CC0;
 		static u32 result;
@@ -9432,7 +9432,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH desiredPos
-			PUSH playerId
+			PUSH player
 			PUSH placementData
 			PUSH unit_id
 			CALL Func_Ai_RemoveAddonPlaces
@@ -9442,7 +9442,7 @@ namespace helper
 		return result;
 	}
 
-	u32 get_turret_placement_position(char* placementData, u32 playerId, Point16 desiredPos, u16 unit_id, u32 unkFlag)
+	u32 get_turret_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag)
 	{
 		const u32 Func_getTurretPlacementPosition = 0x00443AC0;
 		static u32 result;
@@ -9452,7 +9452,7 @@ namespace helper
 			PUSH unkFlag
 			PUSH unit_id
 			PUSH desiredPos
-			PUSH playerId
+			PUSH player
 			PUSH placementData
 			CALL Func_getTurretPlacementPosition
 			MOV result, EAX
@@ -9461,7 +9461,7 @@ namespace helper
 		return result;
 	}
 
-	u32 get_pylon_placement_position(char* placementData, u8 playerId, Point16 desiredPos)
+	u32 get_pylon_placement_position(char* placementData, u8 player, Point16 desiredPos)
 	{
 		const u32 Func_getPylonPlacementPosition = 0x004448D0;
 		static u32 result;
@@ -9469,7 +9469,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH desiredPos
-			PUSH playerId
+			PUSH player
 			PUSH placementData
 			CALL Func_getPylonPlacementPosition
 			MOV result, EAX
@@ -9478,7 +9478,7 @@ namespace helper
 		return result;
 	}
 
-	u32 get_default_placement_position(u32 unit_id, char* placementData, u32 playerId, Point16 desiredPos)
+	u32 get_default_placement_position(u32 unit_id, char* placementData, u32 player, Point16 desiredPos)
 	{
 		const u32 Func_getDefaultPlacementPosition = 0x004449A0;
 		static u32 result;
@@ -9486,7 +9486,7 @@ namespace helper
 		{
 			PUSHAD
 			PUSH desiredPos
-			PUSH playerId
+			PUSH player
 			PUSH placementData
 			MOV ECX, unit_id
 			CALL Func_getDefaultPlacementPosition
@@ -9843,7 +9843,7 @@ namespace helper
 		}
 	}
 
-	bool ai_unit_construction_behavior(s32 playerId, Unit* unit, s32 someBool)
+	bool ai_unit_construction_behavior(s32 player, Unit* unit, s32 someBool)
 	{
 		static s32 result;
 		const u32 Func_AI_UnitConstructionBehavior = 0x00433890;
@@ -9852,7 +9852,7 @@ namespace helper
 			PUSHAD
 			PUSH someBool
 			PUSH unit
-			PUSH playerId
+			PUSH player
 			CALL Func_AI_UnitConstructionBehavior
 			MOV result, EAX
 			POPAD
@@ -9860,7 +9860,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	char ai_plan_do_merge_morph(s32 playerId, Unit* unit, s32 someBool)
+	char ai_plan_do_merge_morph(s32 player, Unit* unit, s32 someBool)
 	{
 		static s32 result;
 		const u32 Func_AI_PlanDoMergeMorph = 0x00435F10;
@@ -9869,7 +9869,7 @@ namespace helper
 			PUSHAD
 			PUSH someBool
 			PUSH unit
-			PUSH playerId
+			PUSH player
 			CALL Func_AI_PlanDoMergeMorph
 			MOV result, EAX
 			POPAD

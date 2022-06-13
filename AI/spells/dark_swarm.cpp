@@ -78,7 +78,7 @@ namespace AI
 	bool DarkSwarmTargetFinderMatch(Unit* caster, Unit* target)
 	{
 		bool bReturnValue;
-		if (isTargetWorthHitting(target, caster))
+		if (is_target_worth_hitting(target, caster))
 		{
 			Unit* targetOfTarget = target->order_target.unit;
 

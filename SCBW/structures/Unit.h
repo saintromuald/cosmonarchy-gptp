@@ -343,7 +343,7 @@ struct Unit : public UnitLayout
 	///
 	/// If the unit can build / train / morph, returns 1. If the tech needs to be
 	/// researched, returns -1. If the unit cannot use the tech at all, returns 0.
-	s32 can_make_unit(u16 unit_id, u8 playerId) const;
+	s32 can_make_unit(u16 unit_id, u8 player) const;
 
 	/// Checks the following:
 	///  * If the unit is actually owned by the commanding @p player
@@ -354,7 +354,7 @@ struct Unit : public UnitLayout
 	///
 	/// If the unit can use the tech, returns 1. If the tech needs to be
 	/// researched, returns -1. If the unit cannot use the tech at all, returns 0.
-	s32 canUseTech(u8 techId, u8 playerId) const;
+	s32 canUseTech(u8 techId, u8 player) const;
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -407,7 +407,7 @@ struct Unit : public UnitLayout
 	/// Transfers ownership of this unit to @p player. This function is
 	/// identical to Mind Control and the "Give Units To Player" trigger action.
 	/// @return   true if successful, false otherwise.
-	bool give_to(u8 playerId);
+	bool give_to(u8 player);
 
 	/// Checks if the unit has an associated sprite and is not running the
 	/// OrderId::Die order.
@@ -419,7 +419,7 @@ struct Unit : public UnitLayout
 
 	/// Checks whether this unit can be seen by @player (i.e. not covered by the
 	/// fog-of-war and is detectable).
-	bool is_visible_to(u8 playerId) const;
+	bool is_visible_to(u8 player) const;
 
 	/// Updates the unit's actual speed. This function should be called after
 	/// changing any properties and status effects that affect movement speed.

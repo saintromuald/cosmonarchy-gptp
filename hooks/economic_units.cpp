@@ -211,7 +211,7 @@ namespace hooks
 
 	// First checks if main town is eligible for supply building
 	// If not then iterates on every player's town and then checks if it's eligible for supply building
-	AiTown* GetFirstEligibleTown(AiTown* mainTown, u8 playerId, u8 raceId)
+	AiTown* GetFirstEligibleTown(AiTown* mainTown, u8 player, u8 raceId)
 	{
 		if (mainTown)
 		{
@@ -224,7 +224,7 @@ namespace hooks
 		if (!aiTown) return nullptr; // no AI towns
 		do
 		{
-			if (aiTown->player == playerId)
+			if (aiTown->player == player)
 			{
 				if (IsTownEligible(aiTown, raceId))
 				{
@@ -322,17 +322,17 @@ namespace hooks
 		return false;
 	}
 
-	s32 AI_AddTownSpendingRequest(s32 playerId, s32 priority, s32 unit_id, void* param)
+	s32 AI_AddTownSpendingRequest(s32 player, s32 priority, s32 unit_id, void* param)
 	{ // 00448400
 		s32 battleTime;
 		s8 race;
 		s32 result;
 		s32 reqType;
 
-		battleTime = AIScriptController[playerId].previous_building_hit_second;
+		battleTime = AIScriptController[player].previous_building_hit_second;
 		if (!battleTime
 			|| *elapsed_time_seconds - battleTime >= 0x1E // inBattle flag? just a coincidence?
-			|| ((race = playerTable[playerId].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
+			|| ((race = playerTable[player].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
 				unit_id == result || priority == 140))
 		{
 			if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker)
@@ -343,8 +343,8 @@ namespace hooks
 			{
 				reqType = 2 * (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
 			}
-			helper::ai_add_cost_to_needs(unit_id, playerId, reqType);
-			result = helper::ai_add_spending_request(unit_id, playerId, reqType, priority, param);
+			helper::ai_add_cost_to_needs(unit_id, player, reqType);
+			result = helper::ai_add_spending_request(unit_id, player, reqType, priority, param);
 		}
 		return result;
 	}

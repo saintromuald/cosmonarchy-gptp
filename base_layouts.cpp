@@ -188,14 +188,14 @@ static void init_base_layouts() {
 
 	for (u32 i = 0; i < chk_cache_size; ++i) {
 		CHKUnit* unit = &chk_cache[i];
-		if (unit->playerId > PlayerLimit && unit->playerId != 11) {
+		if (unit->player > PlayerLimit && unit->player != 11) {
 			continue;
 		}
 		if (!(units_dat::BaseProperty[unit->unit_id] & UnitProperty::Building) && units_dat::ComputerAIInternal[unit->unit_id] & 0x2) { // Don't become guard
 			continue;
 		}
 
-		if (unit->playerId == 11) {
+		if (unit->player == 11) {
 			u32 flags = unit->valid_state_flags & unit->state_flags;
 			if (flags & ChkUnitFlags_Hallucinated) {
 				for (u32 i = 0; i < 8; ++i) {
@@ -203,7 +203,7 @@ static void init_base_layouts() {
 				}
 			}
 		} else {
-			add_placeholder(unit, unit->playerId);
+			add_placeholder(unit, unit->player);
 		}
 	}
 

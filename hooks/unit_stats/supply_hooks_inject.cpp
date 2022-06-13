@@ -6,16 +6,16 @@ namespace
 {
 	void __declspec(naked) getSuppliesAvailable_Wrapper()
 	{
-		static u8 playerId;
+		static u8 player;
 		static s32 race;
 		static u32 result;
 		__asm
 		{
 			MOV race, ECX
-			MOV playerId, AL
+			MOV player, AL
 			PUSHAD
 		}
-		result = hooks::get_supplies_available(playerId, race);
+		result = hooks::get_supplies_available(player, race);
 		__asm
 		{
 			POPAD
@@ -26,16 +26,16 @@ namespace
 
 	void __declspec(naked) getSuppliesRemaining_Wrapper()
 	{
-		static u8 playerId;
+		static u8 player;
 		static u16 unit_id;
 		static s32 result;
 		__asm
 		{
 			MOV unit_id, DI
-			MOV playerId, BL
+			MOV player, BL
 			PUSHAD
 		}
-		result = hooks::get_supplies_remaining(playerId, unit_id);
+		result = hooks::get_supplies_remaining(player, unit_id);
 		__asm
 		{
 			POPAD
@@ -47,15 +47,15 @@ namespace
 	void __declspec(naked) getSuppliesMax_Wrapper()
 	{
 		static u16 unit_id;
-		static u8 playerId;
+		static u8 player;
 		static s32 result;
 		__asm
 		{
-			MOV playerId, CL
+			MOV player, CL
 			MOV unit_id, AX
 			PUSHAD
 		}
-		result = hooks::getSuppliesMax(unit_id, playerId);
+		result = hooks::getSuppliesMax(unit_id, player);
 		__asm
 		{
 			POPAD
@@ -67,15 +67,15 @@ namespace
 	void __declspec(naked) getSuppliesUsed_Wrapper()
 	{
 		static s32 race;
-		static u8 playerId;
+		static u8 player;
 		static s32 result;
 		__asm
 		{
-			MOV playerId, CL
+			MOV player, CL
 			MOV race, EAX
 			PUSHAD
 		}
-		result = hooks::get_supplies_used(race, playerId);
+		result = hooks::get_supplies_used(race, player);
 		__asm
 		{
 			POPAD
@@ -164,9 +164,9 @@ namespace
 		}
 	}
 
-	b32 __stdcall hasSuppliesForUnitWrapper(u8 playerId, u16 unit_id, b32 canShowErrorMessage)
+	b32 __stdcall hasSuppliesForUnitWrapper(u8 player, u16 unit_id, b32 canShowErrorMessage)
 	{
-		if (hooks::hasSuppliesForUnitHook(playerId, unit_id, canShowErrorMessage != 0))
+		if (hooks::hasSuppliesForUnitHook(player, unit_id, canShowErrorMessage != 0))
 		{
 			return 1;
 		}

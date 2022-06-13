@@ -13,7 +13,7 @@
 // Checks if the given unit ID can provide psi (for use in assertion)
 // The following unit types cannot make psi fields:
 // worker, factories, resource containers, ghosts, nydus canals, silos, hatcheries, and powerups
-bool isValidPsiProviderType(u16 unit_id)
+bool is_valid_psi_provider_type(u16 unit_id)
 {
 	if (unit_id >= UNIT_TYPE_COUNT)
 	{
@@ -48,7 +48,7 @@ bool isValidPsiProviderType(u16 unit_id)
 // Adds @p unit to the psi provider list and creates the psi field sprite.
 // Based on orders_InitPsiProvider() @ 00493F70
 // This does not affect the unit's current order.
-void addPsiField(Unit* unit)
+void add_psi_field(Unit* unit)
 {
 	if (!unit)
 	{
@@ -65,12 +65,12 @@ void addPsiField(Unit* unit)
 		(*first_psi_field_provider)->psi_link.prev = unit;
 	}
 	*first_psi_field_provider = unit;
-	helper::addPsiFieldSprite(unit);
+	helper::add_psi_field_sprite(unit);
 	*can_update_powered_status = true;
 }
 
 // Identical to function @ 0x00493100
-void removeFromPsiProviderList(Unit* psiProvider)
+void remove_from_psi_providers_list(Unit* psiProvider)
 {
 	if (psiProvider->psi_link.prev)
 		psiProvider->psi_link.prev->psi_link.next = psiProvider->psi_link.next;
@@ -85,7 +85,7 @@ void removeFromPsiProviderList(Unit* psiProvider)
 }
 
 // Removes @p unit from the psi provider list and destroys the psi field sprite.
-void removePsiField(Unit* unit)
+void remove_psi_field(Unit* unit)
 {
 	if (unit->building.pylon_aura)
 	{
@@ -93,11 +93,11 @@ void removePsiField(Unit* unit)
 		unit->building.pylon_aura = nullptr;
 		*can_update_powered_status = true;   // Might work?
 	}
-	removeFromPsiProviderList(unit);
+	remove_from_psi_providers_list(unit);
 }
 
 // Synchronizes the unit's psi field sprite position with the unit.
-void updatePsiFieldPosition(Unit* unit)
+void update_psi_field_position(Unit* unit)
 {
 	if (!unit || !unit->sprite || !unit->building.pylon_aura)
 	{
@@ -124,18 +124,18 @@ namespace hooks
 		{
 			if (hooks::can_make_psi_field(unit->id))
 			{
-				assert(isValidPsiProviderType(unit->id));
+				assert(is_valid_psi_provider_type(unit->id));
 
 				if (unit->status & UnitStatus::Completed)
 				{
 					if (hooks::is_ready_to_make_psi_field(unit))
 					{
-						addPsiField(unit);
-						updatePsiFieldPosition(unit);
+						add_psi_field(unit);
+						update_psi_field_position(unit);
 					}
 					else
 					{
-						removePsiField(unit);
+						remove_psi_field(unit);
 					}
 				}
 			}

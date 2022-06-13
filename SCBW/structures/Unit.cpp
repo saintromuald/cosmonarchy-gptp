@@ -1047,7 +1047,7 @@ graphics::ColorId Unit::get_faction_color(Unit* unit)
 		if (unit->sprite != nullptr)
 		{
 			// note: using the sprite player to preserve recruitable units color
-			return_value = unit->sprite->playerId;
+			return_value = unit->sprite->player;
 		}
 		else
 		{
@@ -1098,7 +1098,7 @@ graphics::ColorId Unit::get_color(Unit* unit)
 	{
 		if (unit->sprite != nullptr) {
 			// note: using the sprite player to preserve recruitable units color
-			return_value = unit->sprite->playerId;
+			return_value = unit->sprite->player;
 		}
 		else {
 			// note: using player color for spriteless units (if that exist)
@@ -1208,11 +1208,11 @@ bool Unit::is_target_within_min_range(Unit* target, u32 range)
 
 //-------- DAT Requirements --------//
 
-s32 Unit::can_make_unit(u16 unit_id, u8 playerId) const
+s32 Unit::can_make_unit(u16 unit_id, u8 player) const
 {
 	assert(this);
 	const u32 Func_CanMakeUnit = 0x0046E1C0;
-	s32 playerId_ = playerId;
+	s32 playerId_ = player;
 	static s32 result;
 	__asm {
 		PUSHAD
@@ -1226,11 +1226,11 @@ s32 Unit::can_make_unit(u16 unit_id, u8 playerId) const
 	return result;
 }
 
-s32 Unit::canUseTech(u8 techId, u8 playerId) const
+s32 Unit::canUseTech(u8 techId, u8 player) const
 {
 	assert(this);
 	const u32 Func_CanUseTech = 0x0046DD80;
-	s32 playerId_ = playerId;
+	s32 playerId_ = player;
 	u32 _techId = techId;
 	static s32 result;
 
@@ -1319,7 +1319,7 @@ u8 Unit::get_last_owner_id() const
 	assert(this->sprite);
 	if (this->player == 11) // The owner has left the game
 	{
-		return this->sprite->playerId;
+		return this->sprite->player;
 	}
 	else
 	{
@@ -1355,15 +1355,15 @@ bool Unit::has_loaded_unit()
 
 namespace
 {
-	typedef u32(__stdcall* GiveUnitToPlayerFunc)(Unit* unit, u32 playerId);
+	typedef u32(__stdcall* GiveUnitToPlayerFunc)(Unit* unit, u32 player);
 	GiveUnitToPlayerFunc const giveUnitToPlayer = (GiveUnitToPlayerFunc)0x004C8040;
 }
 
-bool Unit::give_to(u8 playerId)
+bool Unit::give_to(u8 player)
 {
 	assert(this);
-	assert(playerId < 12);
-	if (giveUnitToPlayer(this, playerId) != 0)
+	assert(player < 12);
+	if (giveUnitToPlayer(this, player) != 0)
 	{
 		if ((this->id == UnitId::ZergNydusCanal || !(units_dat::BaseProperty[this->id] & UnitProperty::Building))
 			&& this->id != UnitId::ZergEgg
@@ -1392,10 +1392,10 @@ bool Unit::is_target_enemy(Unit* target) const
 	return scbw::is_unit_enemy(this->player, target);
 }
 
-bool Unit::is_visible_to(u8 playerId) const
+bool Unit::is_visible_to(u8 player) const
 {
 	assert(this);
-	return (this->visibility_status & (1 << playerId)) != 0;
+	return (this->visibility_status & (1 << player)) != 0;
 }
 
 const u32 Func_UpdateSpeed = 0x00454310;
