@@ -1612,9 +1612,10 @@ namespace hooks {
 						}
 					}
 
-					if ((*active_portrait_unit)->player != *LOCAL_NATION_ID) {
-						current_button_state = Button_State::Disabled;
-					}
+					// TODO: Reenable and test
+					//if ((*active_portrait_unit)->player != *LOCAL_NATION_ID && current_button_state == Button_State::Enabled) {
+					//	current_button_state = Button_State::Disabled;
+					//}
 
 					if (current_button_state == Button_State::Invisible)
 					{
@@ -1627,7 +1628,9 @@ namespace hooks {
 			// 00459278
 			if (!bStopThere && !jumpto5934E)
 			{
-				jumpto5933C = (!*bw_is_in_replay) && (*active_portrait_unit != nullptr) && false;//((*active_portrait_unit)->player != *LOCAL_NATION_ID);
+				jumpto5933C = (!*bw_is_in_replay) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *LOCAL_NATION_ID);
+				// TODO: Reenable and test
+				// jumpto5933C = false;
 				if (!jumpto5933C)
 				{
 					// 0045929A
