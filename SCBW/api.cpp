@@ -2171,6 +2171,8 @@ namespace scbw
 					ai_region->defensePriorityAdd = priority;
 				}
 				ai_region->defendTimeout = 0;
+				if (ai_region->neededGroundStrength) ai_region->neededGroundStrength = 200;
+				if (ai_region->neededAirStrength)    ai_region->neededAirStrength    = 200;
 			} break;
 		}
 		if (recurse) {
