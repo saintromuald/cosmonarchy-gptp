@@ -1513,7 +1513,7 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergIroleth &&		// Iroleth Endomorphic Accelerant passive
+							else if (unit->id == UnitId::ZergIroleth &&			// Iroleth Endomorphic Accelerant passive
 								current_button->icon_id == IconId::ZergBasicBuildings)
 							{
 								current_button_state = Button_State::Enabled;
@@ -1531,9 +1531,9 @@ namespace hooks {
 								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ZergSire &&			// Sire Ectomorphic Accelerant passive
-							current_button->icon_id == IconId::ZergAdvancedBuildings)
+								current_button->icon_id == IconId::ZergAdvancedBuildings)
 							{
-							current_button_state = Button_State::Enabled;
+								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ZergLarvalColony &&	// Larval Colony Larval Gestation passive
 								current_button->icon_id == IconId::MetasynapticNode)
@@ -1612,6 +1612,10 @@ namespace hooks {
 						}
 					}
 
+					if ((*active_portrait_unit)->player != *LOCAL_NATION_ID) {
+						current_button_state = Button_State::Disabled;
+					}
+
 					if (current_button_state == Button_State::Invisible)
 					{
 						buttons_count++;
@@ -1623,7 +1627,7 @@ namespace hooks {
 			// 00459278
 			if (!bStopThere && !jumpto5934E)
 			{
-				jumpto5933C = (!*bw_is_in_replay) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *LOCAL_NATION_ID);
+				jumpto5933C = (!*bw_is_in_replay) && (*active_portrait_unit != nullptr) && false;//((*active_portrait_unit)->player != *LOCAL_NATION_ID);
 				if (!jumpto5933C)
 				{
 					// 0045929A
