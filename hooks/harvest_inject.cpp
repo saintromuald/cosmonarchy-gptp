@@ -17,6 +17,7 @@ namespace {
 			RETN
 		}
 	}
+
 	void __declspec(naked) transfer_resource_to_worker_wrapper() // 004696D0
 	{
 		static Unit* worker;
