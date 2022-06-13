@@ -429,7 +429,7 @@ namespace hooks
 			// HP regeneration
 			if ((units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP || unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 				&& unit->hitpoints > 0
-				&& unit->hitpoints / 256 != unit->get_max_hp_ingame()
+				&& unit->hitpoints != unit->get_max_hp_raw()
 				&& unitExt->damage_receive_timer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
