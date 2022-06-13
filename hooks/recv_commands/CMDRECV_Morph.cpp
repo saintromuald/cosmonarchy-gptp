@@ -42,11 +42,39 @@ namespace hooks
 		scbw::refresh_console();
 	}
 
+	s32 compare_unit_train_priority(const void* a, const void* b) {
+		Unit* unit_a = *(Unit**)a;
+		Unit* unit_b = *(Unit**)b;
+
+		u32 count_a = 0;
+		u32 count_b = 0;
+		for (u32 i = 0; i < 5; ++i) {
+			if (unit_a->build_queue[i] != UnitId::None) {
+				count_a++;
+			}
+			if (unit_b->build_queue[i] != UnitId::None) {
+				count_b++;
+			}
+		}
+
+		return count_a - count_b;
+	}
+
 	// Hooked for multi-unit select. -Pr0nogo
 	void cmdrecv_train(char* buffer) { // 004C1C20
-		*unit_iterator_pos = 0;
-		while (Unit* unit = helper::get_active_player_next_selection()) {
-			u8 unit_id = buffer[1];
+		u32 size = 0;
+		Unit* selection[SelectionCap] = {};
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			Unit* unit = players_selections->unit[*ACTIVE_PLAYER_ID][i];
+			if (unit && !unit->is_dead()) {
+				selection[size++] = unit;
+			}
+		}
+		qsort(selection, size, sizeof(Unit*), compare_unit_train_priority);
+
+		u8 unit_id = buffer[1];
+		for (u32 i = 0; i < size; ++i) {
+			Unit* unit = selection[i];
 			if (helper::create_unit_allowed(unit_id, unit, *ACTIVE_NATION_ID)) {
 				if (helper::has_money_can_make(unit, unit_id)) {
 					helper::set_secondary_order(unit, OrderId::Train);
