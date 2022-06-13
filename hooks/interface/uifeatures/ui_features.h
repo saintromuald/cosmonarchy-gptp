@@ -15,7 +15,7 @@ namespace hooks
 	b32 check_hotkey_char(BinDlg* dialog, char hotkey);
 	char create_upgrade_level_tooltip(char* text);
 
-	void injectUIFeaturesHooks();
+	void inject_ui_features_hooks();
 
 	void draw_ui_features();
 	void register_action();
