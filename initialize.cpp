@@ -121,14 +121,14 @@
 
 namespace
 {
-	void loadWMode()
+	void load_wmode()
 	{
 		HINSTANCE hDll;
 		hDll = LoadLibrary("./WMODE.dll");
 		hDll = LoadLibrary("./WMODE_FIX.dll");
 	}
 
-	void runWMode(bool hidePrompt, bool preferWmode)
+	void run_wmode(bool hidePrompt, bool preferWmode)
 	{
 		if (!hidePrompt)
 		{
@@ -137,7 +137,7 @@ namespace
 			switch (msgboxID)
 			{
 				case IDYES:
-					loadWMode();
+					load_wmode();
 					break;
 				case IDCANCEL:
 					exit(0);
@@ -148,7 +148,7 @@ namespace
 		{
 			if (preferWmode)
 			{
-				loadWMode();
+				load_wmode();
 			}
 		}
 	}
@@ -157,7 +157,7 @@ namespace
 BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 {
 	load_config();
-	runWMode(config.disable_wmode_prompt, config.prefer_wmode);
+	run_wmode(config.disable_wmode_prompt, config.prefer_wmode);
 	//StarCraft.exe version check
 	char exePath[300];
 	const DWORD pathLen = GetModuleFileName(nullptr, exePath, sizeof(exePath));
