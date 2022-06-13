@@ -18,20 +18,19 @@ namespace
 		}
 	}
 
-	void _declspec(naked) queue_game_command_wrapper()
-	{
-		static const void* a1;
-		static u32 a2;
+	void _declspec(naked) queue_game_command_wrapper() {
+		static u8* data;
+		static u32 len;
 		static u8 result;
 		_asm {
-			MOV a1, ECX
-			MOV a2, EDX
+			MOV data, ECX
+			MOV len, EDX
 			PUSHAD
 		}
-		result = hooks::queue_game_command(a1, a2);
+		hooks::queue_game_command(data, len);
 		_asm {
-			MOVZX EAX, result
 			POPAD
+			MOV EAX, 0
 			RETN
 		}
 	}

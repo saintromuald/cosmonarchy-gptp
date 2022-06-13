@@ -6,20 +6,17 @@
 #include <Windows.h>
 #include "config.h"
 
-namespace
-{
-	/*
-	struct Action {
-		u32 frame; // timestamp
-	};
-	*/
-	//	std::vector<Action> actions;
-	u64 totalActions;
+/*
+struct Action {
+	u32 frame; // timestamp
+};
+*/
+//	std::vector<Action> actions;
+u64 total_client_actions;
 
-	s32* const fonts = (s32*)0x006CE0F4;
-	char* const printXYAlignment = (char*)0x006CE110;
-	Box16* const drawTextBox = (Box16*)0x006CE0C8;
-}
+s32* const fonts = (s32*)0x006CE0F4;
+char* const printXYAlignment = (char*)0x006CE110;
+Box16* const drawTextBox = (Box16*)0x006CE0C8;
 
 void format_time(char* buffer, u32 size, char* prefix, u32 seconds) {
 	u32 sec = seconds % 60;
@@ -29,10 +26,8 @@ void format_time(char* buffer, u32 size, char* prefix, u32 seconds) {
 	sprintf_s(buffer, size, "%s%02u:%02u:%02u", prefix, hrs, min, sec);
 }
 
-namespace hooks
-{
-	void draw_text(const char* text, s32 x, s32 y, s32 width, s32 height, char color)
-	{
+namespace hooks {
+	void draw_text(const char* text, s32 x, s32 y, s32 width, s32 height, char color) {
 		helper::get_color_handle(color);
 		*printXYAlignment = 0x11;
 		drawTextBox->left = x;
@@ -41,128 +36,84 @@ namespace hooks
 		drawTextBox->bottom = y + height;
 		helper::bwfxn_print_xy(text, x, y);
 	}
-	
-	/*
-		APM Counter TODO
 
-		We have hooks for:
-		- Most Orders
-		- Shift, Shift+Box, Double Click
-		- Queue Game Command
-
-		We need hooks for:
-		- Morph, training and building orders
-		- Lift off, land orders
-		- Single unit selection, drag selection, select larva
-		- Invoking control groups
-	*/
-
-	void register_action()
-	{
-		//actions.push_back(Action{*elapsed_time_frames});
-		totalActions++;
+	void register_action(u8 type) {
+		switch (type) {
+			case 84: // Start game?
+			case 55: // Create preplaced unit?
+				return;
+		}
+		total_client_actions++;
 	}
 
-	void clear_actions() // Called on map start
-	{
-		//actions.clear();
-		totalActions = 0;
+	void clear_actions() { // Called on map start
+		total_client_actions = 0;
 	}
 
-	u32 get_apm()
-	{
-		u32 actionCount = totalActions;//actions.size();
-		f64 divider = (*elapsed_time_frames) / 24.0 / 60.0;
+	void draw_ui_features() {
+		u32 x_pos = 10;
+		u32 y_pos = 3;
 
-		return actionCount / divider;
-	}
+		if (*leaderboard_type) {
+			// TODO: Get leaderboard width. Or actually just move the leaderboard down instead. This resolves issues with the test map.
+			x_pos += 80;
+		}
 
-	void draw_ui_features()
-	{
-		if (config.show_timer)
-		{
+		if (config.show_timer) {
+			u32 seconds = *elapsed_time_frames / 24;
+			u32 sec = seconds % 60;
+			u32 min = seconds / 60 % 60;
+			u32 hrs = seconds / 60 / 60;
+
 			char buffer[32] = {0};
-			format_time(buffer, 32, "", * elapsed_time_frames / 24);
-			s32 x_pos = 10;
-			s32 y_pos = 3;
-			if (*leaderboard_type) {
-				// TODO: Get leaderboard width. Or actually just move the leaderboard down instead. This resolves issues with the test map.
-				x_pos = 90;
-				y_pos = 0;
-			}
+			sprintf_s(buffer, "%02u:%02u:%02u", hrs, min, sec);
 			draw_text(buffer, x_pos, y_pos, 100, 15, 7);
+			y_pos += 15;
 		}
 
-		//std::string apm = "APM: " + std::to_string(get_apm());
-		//draw_text(apm.c_str(), 10, 15, 100, 15, 7);
+		if (config.show_apm) {
+			u32 apm = total_client_actions / (*elapsed_time_frames / 24.0 / 60.0);
+
+			char buffer[32];
+			sprintf_s(buffer, "APM: %u", apm);
+			draw_text(buffer, x_pos, y_pos, 100, 15, 7);
+			y_pos += 15;
+		}
 	}
 
-	bool is_first_selected_unit_of_current_player(Unit* unit)
-	{
-		for (s32 i = 0; i < 12; i++)
-		{
-			if (CurrentUnitSelection->unit[i] == unit)
-			{
-				return true;
-			}
-			else if (CurrentUnitSelection->unit[i] != nullptr)
-			{
-				return false;
-			}
+	void queue_game_command(u8* data, u32 size) {
+		if (*command_queue_size + size <= *provider_MaxBuffer) {
+			register_action(data[0]);
+			memcpy((void*)&TurnBuffer[*command_queue_size], data, size);
+			*command_queue_size += size;
+			return;
 		}
-		return false;
-	}
 
-	u8 queue_game_command(const void* a1, u32 a2)
-	{
-		u32 v2; // eax
-		u32 len; // ebx
-		const void* buffer; // esi
-		s32 v5; // eax
-		u32 _sgdwBytesInCmdQueue; // eax
-		u32 turns; // [esp+8h] [ebp-4h]
+		if (*scMainState == 4) {
+			return;
+		}
 
-		len = a2;
-		buffer = a1;
-		v2 = LOWORD(a2 + *sgdwBytesInCmdQueue) | HIWORD(v2);
-		if (a2 + *sgdwBytesInCmdQueue <= *provider_MaxBuffer)
-		{
-			goto LABEL_8;
-		}
-		if (*scMainState == 4)
-		{
-			return v2;
-		}
-		if (helper::snet_get_turns_in_transit(&turns))
-		{
-			v2 = LOBYTE(turns) | HIBYTE(v2);
-			if (turns >= 16 - *provider_LatencyCalls)
-			{
-				return v2;
+		u32 turns = 0;
+		if (helper::snet_get_turns_in_transit(&turns)) {
+			if (turns >= 16 - *provider_LatencyCalls) {
+				return;
 			}
+			register_action(data[0]);
 			helper::send_turn();
-LABEL_8:
-			_sgdwBytesInCmdQueue = *sgdwBytesInCmdQueue;
-			memcpy((void*)&TurnBuffer[*sgdwBytesInCmdQueue], buffer, len);
-			v2 = len + _sgdwBytesInCmdQueue;
-			*sgdwBytesInCmdQueue = v2;
-			return v2;
+			memcpy((void*)&TurnBuffer[*command_queue_size], data, size);
+			*command_queue_size += size;
+			return;
 		}
-		v2 = LOBYTE(outOfGame) | HIBYTE(v2);
-		if (!outOfGame)
-		{
-			v5 = helper::serr_get_last_error();
-			v2 = helper::packet_error_handle(v5, 81, "Starcraft\\SWAR\\lang\\net_mgr.cpp", 225, 1) | HIBYTE(v2);
+
+		if (!*outOfGame) {
+			u32 error = helper::serr_get_last_error();
+			helper::packet_error_handle(error, 81, "Starcraft\\SWAR\\lang\\net_mgr.cpp", 225, 1);
 		}
-		return v2;
 	}
 
-	void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10)
-	{
-		if (a6 && orders_dat::CanBeQueued[(u8)a7])
-		{
-			switch (a3->main_order_id)
-			{
+	void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10) {
+		if (a6 && orders_dat::CanBeQueued[(u8)a7]) {
+			switch (a3->main_order_id) {
 				case 2:
 				case 3:
 				case 23:
@@ -171,70 +122,57 @@ LABEL_8:
 				case 175:
 					goto LABEL_15;
 				default:
-					if (a3->order_queue_count < 8u)
-					{
-						if (*COrderCount < 1800)
-						{
+					if (a3->order_queue_count < 8u) {
+						if (*COrderCount < 1800) {
 							helper::queue_new_order((Order*)a5, a1, a4, a3, a7, a8, a2, (Vector32*)a9, (Unit*)a10);
-						}
-						else
-						{
+						} else {
 							u8 v11 = a3->player;
-							if (*statTxtTbl > 0x368u)
+							if (*statTxtTbl > 0x368u) {
 								helper::show_stat_txt_to_player(*statTxtTbl + statTxtTbl[873], v11);
-							else
+							} else {
 								helper::show_stat_txt_to_player((s32)"", v11);
+							}
 						}
-					}
-					else
-					{
+					} else {
 						u8 v10 = a3->player;
-						if (*statTxtTbl > 0x366u)
+						if (*statTxtTbl > 0x366u) {
 							helper::show_stat_txt_to_player(*statTxtTbl + statTxtTbl[871], v10);
-						else
+						} else {
 							helper::show_stat_txt_to_player((s32)"", v10);
+						}
 					}
 					break;
 			}
-		}
-		else
-		{
+		} else {
 LABEL_15:
 			helper::set_order_target(a7, a1, a4, a5, (s32)a3, (Unit*)a8, (u16)a2, (Vector32*)a9, (Unit*)a10);
 		}
 	}
 
-	s32 select_units(Unit** a1, s32 a2, u8 a3, s32 a4)
-	{
+	s32 select_units(Unit** a1, s32 a2, u8 a3, s32 a4) {
 		s32 v4 = helper::unit_to_unit_id(*a1);
 		s32 result = helper::select_single_unit_from_id(v4); // eax
 
-		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0)
-		{
+		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0) {
 			result = helper::select_multiple_units_from_unit_list(a2, a1, a3, a4);
 		}
 		return result;
 	}
 
-	b32 check_hotkey_char(BinDlg* dialog, char hotkey)
-	{
-		if (dialog->index < 0 || dialog->index > 9)
-		{
+	b32 check_hotkey_char(BinDlg* dialog, char hotkey) {
+		if (dialog->index < 0 || dialog->index > 9) {
 			return 0;
 		}
-		if (!(dialog->flags & BinDlgFlags::Visible) || dialog->flags & BinDlgFlags::Disabled)
-		{
+		if (!(dialog->flags & BinDlgFlags::Visible) || dialog->flags & BinDlgFlags::Disabled) {
 			return 0;
 		}
 
 		char* label = helper::getStatTxtString(dialog->button_user->requirement_string_id);
-		if (*label == 27 && hotkey == label[0]) // escape handling for grid hotkeys
-		{
+		if (*label == 27 && hotkey == label[0]) {  // escape handling for grid hotkeys
 			return 1;
 		}
 
-		if (config.grid_hotkeys && dialog->index > 0)
-		{
+		if (config.grid_hotkeys && dialog->index > 0) {
 			int index = dialog->index - 1;
 			int x = index % 3;
 			int y = index / 3;
@@ -244,27 +182,21 @@ LABEL_15:
 		return hotkey == label[0];
 	}
 
-	char create_upgrade_level_tooltip(char* text)
-	{
-		if (!*upgradeLevelTooltip)
-		{
+	char create_upgrade_level_tooltip(char* text) {
+		if (!*upgradeLevelTooltip) {
 			if (text)
 			{
 				return helper::create_tooltip(text);
 			}
 			return helper::refresh_selection_screen();
 		}
-		if (!text)
-		{
+		if (!text) {
 			return helper::refresh_selection_screen();
 		}
 		const char* description;
-		if (**statTxtBuffer > 794u)
-		{
+		if (**statTxtBuffer > 794u) {
 			description = (char *)*statTxtBuffer + (*statTxtBuffer)[795];
-		}
-		else
-		{
+		} else {
 			description = "";
 		}
 		char buffer[128];

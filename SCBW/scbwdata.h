@@ -176,7 +176,7 @@ SCBW_DATA(const s32*, LOCAL_HUMAN_ID, 0x00512688);  //AKA g_LocalHumanID; Invali
 SCBW_DATA(const u8*, CURRENT_TILESET, 0x00596828);  //Tileset of current map. Compare with TilesetType::Enum
 SCBW_DATA(const s32*, provider_MaxBuffer, 0x0057F0D8);
 SCBW_DATA(const u32*, provider_LatencyCalls, 0x0057F090);
-SCBW_DATA(u32*, sgdwBytesInCmdQueue, 0x00654AA0);
+SCBW_DATA(u32*, command_queue_size, 0x00654AA0);
 SCBW_DATA(const char*, TurnBuffer, 0x00654880);
 ////possible values were 0057F1DC and [00596828]
 
