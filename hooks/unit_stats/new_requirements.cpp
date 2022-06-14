@@ -2048,10 +2048,6 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ZergBactalisk)
 				{
-					if (unit->status & UnitStatus::Burrowed)
-					{
-						return TECH_HIDDEN;
-					}
 					if (player_has_completed_unit_id(player_id, UnitId::ZergGorgralSwamp))
 					{
 						return TECH_ACTIVE;
@@ -2100,6 +2096,10 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ZergUltrokor)
 				{
+					if (unit->status & UnitStatus::Burrowed)
+					{
+						return TECH_HIDDEN;
+					}
 					if (player_has_completed_unit_id(player_id, UnitId::ZergUltrokCavern))
 					{
 						return TECH_ACTIVE;
