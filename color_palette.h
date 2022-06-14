@@ -6,6 +6,7 @@ struct Recolor {
 	f32 g;
 	f32 b;
 	f32 gamma;
+	f32 saturation;
 };
 
 Recolor lerp_recolor(f32 t, Recolor a, Recolor b);
