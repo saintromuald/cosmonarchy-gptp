@@ -26,24 +26,25 @@ static f32 clamp(f32 value, f32 min, f32 max) {
 }
 
 static f32 lerp(f32 t, f32 a, f32 b) {
-	return a * t + b * (1 - t);
+	return a * (1 - t) + b * t;
 }
 
 static u8 mix_color(f32 base, f32 blend_shadow, f32 blend_highlight, f32 saturation_shadow, f32 saturation_highlight, f32 brightness) {
 	f32 darkness = 1 - brightness;
-	f32 saturation = clamp((saturation_shadow * darkness) + (saturation_highlight * brightness), 0, 1);
 
+	f32 saturation = (saturation_shadow * darkness) + (saturation_highlight * brightness);
 	base = lerp(saturation, brightness, base);
+
 	f32 color = (base * blend_shadow * darkness) + (base * blend_highlight * brightness);
 	return clamp(color, 0, 1) * 255;
 }
 
 Recolor lerp_recolor(f32 t, Recolor a, Recolor b) {
-	a.r          = a.r          * t + b.r          * (1 - t);
-	a.g          = a.g          * t + b.g          * (1 - t);
-	a.b          = a.b          * t + b.b          * (1 - t);
-	a.gamma      = a.gamma      * t + b.gamma      * (1 - t);
-	a.saturation = a.saturation * t + b.saturation * (1 - t);
+	a.r          = lerp(t, a.r,			 b.r);
+	a.g          = lerp(t, a.g,			 b.g);
+	a.b          = lerp(t, a.b,			 b.b);
+	a.gamma      = lerp(t, a.gamma,		 b.gamma);
+	a.saturation = lerp(t, a.saturation, b.saturation);
 	return a;
 }
 
