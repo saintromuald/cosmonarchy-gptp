@@ -19,5 +19,5 @@ namespace hooks
 	void bulletBehaviorReassign(Bullet* bullet);																// 0048BD50
 	void get_weapon_iscript_init(Unit* unit, char iscript_anim);												// 00476ED0
 
-	void injectWeaponFireHooks();
+	void inject_weapon_fire_hooks();
 }

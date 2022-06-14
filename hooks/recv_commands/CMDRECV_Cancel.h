@@ -12,6 +12,6 @@ namespace hooks
 	void CMDRECV_CancelUnitMorph();			//004C2EC0
 	void CMDRECV_CancelConstruction();		//004C2EF0
 
-	void injectCMDRECV_CancelHooks();
+	void inject_cmdrecv_cancel_hooks();
 
 } //hooks

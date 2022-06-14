@@ -11,6 +11,6 @@ namespace hooks
 	void orders_WarpingArchon(Unit* unit);												//004948B0
 
 	//The injector function that should be called in initialize.cpp
-	void injectMergeUnitsHooks();
+	void inject_merge_units_hooks();
 
 } //hooks

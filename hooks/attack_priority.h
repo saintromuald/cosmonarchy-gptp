@@ -7,6 +7,6 @@ namespace hooks
 	Unit* find_best_attack_target(Unit* unit);
 	Unit* findRandomAttackTargetHook(Unit* unit);
 
-	void injectAttackPriorityHooks();
+	void inject_attack_priority_hooks();
 
 } //hooks

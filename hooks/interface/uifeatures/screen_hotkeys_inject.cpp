@@ -75,7 +75,7 @@ namespace
 namespace hooks
 {
 
-	void injectScreenHotkeysHooks()
+	void inject_screen_hotkey_hooks()
 	{
 		if (config.extended_camera_hotkeys)
 		{

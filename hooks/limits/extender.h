@@ -37,7 +37,7 @@ struct Extender
 
 namespace hooks
 {
-	void injectLimitHooks();
+	void inject_limit_hooks();
 }
 namespace Reg
 {

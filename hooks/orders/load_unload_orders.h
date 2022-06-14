@@ -13,6 +13,6 @@ namespace hooks
 	void orders_Unload(Unit* unit);				// 004E80D0
 	bool can_enter_transport(Unit* a1, Unit* a2);	// 004E6E00
 
-	void injectLoadUnloadOrdersHooks();
+	void inject_load_unload_orders_hooks();
 
 } //hooks

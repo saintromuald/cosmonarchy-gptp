@@ -6,6 +6,6 @@ namespace hooks {
 b32 unitCanRechargeShieldsHook(Unit* target, Unit* battery);
 void orderRechargeShieldsHook(Unit* unit);
 
-void injectRechargeShieldsHooks();
+void inject_recharge_shields_hooks();
 
 } //hooks

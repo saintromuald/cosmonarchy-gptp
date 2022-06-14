@@ -149,7 +149,7 @@ namespace
 
 namespace hooks
 {
-	void injectAttackOrdersHooks()
+	void inject_attack_orders_hooks()
 	{
 		//jump_patch(orders_ReaverAttack1Wrapper,		0x00465690, 2);
 		//jump_patch(orders_CarrierAttack1Wrapper,		0x00465950, 0);

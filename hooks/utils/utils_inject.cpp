@@ -66,7 +66,7 @@ namespace
 
 namespace hooks
 {
-	void injectUtilsHooks()
+	void inject_utils_hooks()
 	{
 		//jump_patch(InitializeDialogWrapper,				0x00419D20, 1);
 		jump_patch(unit_IsStandardAndMovableWrapper,		0x0047B770, 2);

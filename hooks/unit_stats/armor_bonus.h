@@ -4,5 +4,5 @@
 namespace hooks
 {
 	u8 getArmorBonusHook(Unit* unit);
-	void injectArmorBonusHook();
+	void inject_armor_bonus_hooks();
 }

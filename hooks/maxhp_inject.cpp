@@ -879,7 +879,7 @@ namespace hooks
 		}
 	}
 
-	void injectMaxHpHooks()
+	void inject_max_hp_hooks()
 	{
 		//		jump_patch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
 		//		jump_patch(drawUnitInfo_Wrapper, 0x00426190, 3);

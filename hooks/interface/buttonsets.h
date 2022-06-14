@@ -13,5 +13,5 @@ namespace hooks
 
 	ButtonSet* getButtonSet(s32 index);
 
-	void injectButtonSetHooks();
+	void inject_buttonset_hooks();
 }

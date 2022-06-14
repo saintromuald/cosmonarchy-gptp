@@ -110,7 +110,7 @@ namespace
 
 namespace hooks
 {
-	void injectPathfindingHooks()
+	void inject_pathfinding_hooks()
 	{
 //		jump_patch(moveToTarget_Wrapper,		0x004EB720, 0);
 //		jump_patch(getActiveTileFlag_Wrapper,	0x00472F80, 1);

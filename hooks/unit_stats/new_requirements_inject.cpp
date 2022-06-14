@@ -57,7 +57,7 @@ namespace
 }
 
 namespace hooks {
-	void injectNewRequirementsHooks() {
+	void inject_new_requirements_hooks() {
 		jump_patch(create_unit_allowed_partial_wrapper, 0x0046E1C0, 1);
 		jump_patch(can_set_rally_opcode_wrapper, 0x0046D8AF, 2);
 	}

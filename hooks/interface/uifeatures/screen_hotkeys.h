@@ -11,6 +11,6 @@ namespace hooks
 
 	void handle_screen_hotkeys();
 
-	void injectScreenHotkeysHooks();
+	void inject_screen_hotkey_hooks();
 	extern Point16 screen_hotkeys[8];
 }

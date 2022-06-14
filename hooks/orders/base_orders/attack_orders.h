@@ -14,6 +14,6 @@ namespace hooks
 	void orders_AttackMove(Unit* unit);		//00479040
 	void orders_AttackUnit(Unit* unit);		//00479BD0
 
-	void injectAttackOrdersHooks();
+	void inject_attack_orders_hooks();
 
 } //hooks

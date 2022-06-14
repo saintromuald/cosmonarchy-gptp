@@ -53,7 +53,7 @@ namespace
 
 namespace hooks
 {
-	void injectCMDRECV_StopHooks()
+	void inject_cmdrecv_stop_hooks()
 	{
 		jump_patch(CMDRECV_ReaverStopWrapper,	0x004C1240, 1);
 		jump_patch(CMDRECV_CarrierStopWrapper,	0x004C1430, 1);

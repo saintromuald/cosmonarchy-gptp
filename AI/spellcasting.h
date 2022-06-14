@@ -9,6 +9,6 @@ bool AI_spellcasterHook(Unit* unit, bool isUnitBeingAttacked);
 
 namespace hooks {
 
-void injectSpellcasterAI();
+void inject_spellcaster_ai_hooks();
 
 } //hooks

@@ -90,7 +90,7 @@ namespace
 
 namespace hooks
 {
-	void injectUpdateUnitState()
+	void inject_update_unit_state_hooks()
 	{
 		jump_patch(update_unit_energy_wrapper,				0x004EB4B0, 0);
 		jump_patch(update_unit_state_wrapper,				0x004EC290, 1);

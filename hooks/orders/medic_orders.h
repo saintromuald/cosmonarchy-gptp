@@ -11,5 +11,5 @@ namespace hooks
 	bool AI_AcquireHealTarget(Unit* a1, Unit* a2);		// 00463530
 	u32 doMedicHeal_Func(Unit* medic, Unit* target);	// 00463C40
 
-	void injectMedicOrdersHooks();
+	void inject_medic_orders_hooks();
 }

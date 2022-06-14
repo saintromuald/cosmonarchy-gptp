@@ -47,7 +47,7 @@ BOOL WINAPI Plugin::CanPatchExecutable(LPCSTR lpszEXEFileName)
 		return FALSE;
 	}
 
-	if (!checkStarCraftExeVersion(lpszEXEFileName))
+	if (!check_starcraft_exe_version(lpszEXEFileName))
 		return FALSE;
 
 	return TRUE;
@@ -87,7 +87,7 @@ BOOL WINAPI Plugin::TerminatePlugin()
 //Checks the file version of StarCraft.exe.
 //If the version is correct, returns TRUE. Otherwise, this displays appropriate
 //error messages and returns FALSE.
-BOOL Plugin::checkStarCraftExeVersion(LPCSTR exePath) const
+BOOL Plugin::check_starcraft_exe_version(LPCSTR exePath) const
 {
 	BOOL result = FALSE;
 	DWORD dummy;

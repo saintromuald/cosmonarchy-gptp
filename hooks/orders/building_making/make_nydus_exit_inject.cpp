@@ -59,7 +59,7 @@ namespace
 
 namespace hooks
 {
-	void injectMakeNydusExitHook()
+	void inject_make_nydus_exit_hooks()
 	{
 		jump_patch(orders_Build5Wrapper,			0x0045DC20, 2);
 //		jump_patch(nydusPlaceExitTileCheckWrapper1,	0x00473156, 1);

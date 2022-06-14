@@ -23,7 +23,7 @@ namespace
 
 namespace hooks
 {
-	void injectUnitMaxEnergyHook()
+	void inject_unit_max_energy_hooks()
 	{
 		jump_patch(getUnitMaxEnergyWrapper, Func_GetMaxEnergy, 7);
 	}

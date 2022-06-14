@@ -80,7 +80,7 @@ namespace
 
 namespace hooks
 {
-	void injectMergeUnitsHooks()
+	void inject_merge_units_hooks()
 	{
 		jump_patch(templarMergePartnerWrapper,				0x004BFA80, 1);
 		jump_patch(orders_CompletingArchonSummonWrapper,	0x00493B10, 1);

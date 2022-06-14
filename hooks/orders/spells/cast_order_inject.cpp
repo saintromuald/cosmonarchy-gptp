@@ -133,7 +133,7 @@ namespace
 
 namespace hooks
 {
-	void injectCastOrderHooks()
+	void inject_cast_order_hooks()
 	{
 		jump_patch(orders_Spell_Wrapper,					0x00492850, 1);
 		jump_patch(spellOrder_Wrapper,						0x004926D0, 0);

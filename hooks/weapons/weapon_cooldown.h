@@ -8,5 +8,5 @@ namespace hooks
 	f32 get_current_dps(Unit* unit, u8 weaponId);
 	f32 get_current_dps_from_damage(Unit* unit, u8 weapon_id, u32 damage);
 
-	void injectWeaponCooldownHook();
+	void inject_weapon_cooldown_hooks();
 }

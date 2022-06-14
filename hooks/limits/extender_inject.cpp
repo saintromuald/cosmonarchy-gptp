@@ -467,7 +467,7 @@ namespace hooks
 		jump_patch(AI_Unk2_Wrapper, 0x00447220, 0); // most likely do not execute
 	}
 
-	void injectLimitHooks()
+	void inject_limit_hooks()
 	{
 
 //		hooks::injectCCMUHooks();

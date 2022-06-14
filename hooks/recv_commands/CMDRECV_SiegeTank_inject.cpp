@@ -44,7 +44,7 @@ namespace
 
 namespace hooks
 {
-	void injectCMDRECV_SiegeTankHooks()
+	void inject_cmdrecv_siege_tank_hooks()
 	{
 		jump_patch(CMDRECV_SiegeWrapper,	0x004C1E80, 6);
 		jump_patch(CMDRECV_UnsiegeWrapper,	0x004C1F10, 6);

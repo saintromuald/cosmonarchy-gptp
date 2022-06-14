@@ -37,7 +37,7 @@ namespace
 
 namespace hooks
 {
-	void injectSpellcasterAI()
+	void inject_spellcaster_ai_hooks()
 	{
 		jump_patch(AI_spellcasterWrapper, 0x004A13C0, 2);
 	}

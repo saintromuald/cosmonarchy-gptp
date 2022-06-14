@@ -512,7 +512,7 @@ namespace
 
 namespace hooks
 {
-	void injectUnitMorphHooks()
+	void inject_unit_morph_hooks()
 	{
 		jump_patch(orders_zerg_birth_wrapper,					0x0045DD60, 1);
 		jump_patch(orders_morph_1_wrapper,						0x0045DEA0, 0);

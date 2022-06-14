@@ -42,7 +42,7 @@ namespace
 
 namespace hooks
 {
-	void injectBuildingProtossHooks()
+	void inject_building_protoss_hooks()
 	{
 		jump_patch(orders_ProbeBuildWrapper,	0x004E4D00, 1);
 		jump_patch(orders_BuildSelf2Wrapper,	0x004E4F40, 0);

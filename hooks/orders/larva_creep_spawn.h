@@ -17,5 +17,5 @@ namespace hooks
 	u32 BTNSCOND_ZergBuildingRally(u32 unused, u32 player, Unit* unit);								// 00429740
 	s32 UpdateCreepDisappearanceUnit(Unit* unit);													// 0047DD60
 
-	void injectLarvaCreepSpawnHooks();
+	void inject_larva_creep_spawn_hooks();
 }

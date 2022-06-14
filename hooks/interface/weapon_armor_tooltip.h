@@ -8,5 +8,5 @@ namespace hooks
 	const char* getShieldTooltipString(Unit* unit);
 	const char* getSpecialTooltipString(u16 iconUnitId, Unit* unit);
 
-	void injectUnitTooltipHook();
+	void inject_unit_tooltip_hooks();
 }

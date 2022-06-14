@@ -4,5 +4,5 @@
 namespace hooks
 {
 	void ordersCastMindControl(Unit* unit);			// 004F6950
-	void injectMindControlSpellHook();
+	void inject_tyranny_spell_hooks();
 }

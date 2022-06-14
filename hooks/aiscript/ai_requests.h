@@ -15,5 +15,5 @@ namespace hooks
 	void ai_region_train_attack_force(AiRegion* region);														// 0043E670
 	void ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, AiRegion* region);                 // 00448400
 
-	void injectAIRequestsHooks();
+	void inject_ai_request_hooks();
 }

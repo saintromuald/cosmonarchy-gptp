@@ -39,7 +39,7 @@ namespace
 
 namespace hooks
 {
-	void injectUpdateStatusEffects()
+	void inject_update_status_effects_hooks()
 	{
 		jump_patch(updateStatusEffectsWrapper,	0x00492F70, 5);
 		jump_patch(AiBurrower_Wrapper,			0x004A1340, 4);

@@ -34,7 +34,7 @@ namespace hooks
 		Unit* unit);
 	b32 giveUnitToPlayer(Unit* unit, u32 player);									// 004C8040
 
-	void injectWpnSpellHitHooks();
+	void inject_weapon_spell_hit_hooks();
 }
 
 // Hooks could be confirmed thanks to 0048B770 CBullet_Damage that call almost all of them

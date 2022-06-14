@@ -49,7 +49,7 @@ namespace
 
 namespace hooks
 {
-	void injectHallucinationSpellHook()
+	void inject_hallucination_spell_hooks()
 	{
 		jump_patch(orders_Hallucination1Wrapper,	0x004F6C40, 0);
 		jump_patch(createHallucination_Wrapper,		0x004F6B90, 2);

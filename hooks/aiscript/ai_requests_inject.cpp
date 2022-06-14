@@ -301,7 +301,7 @@ namespace
 
 namespace hooks
 {
-	void injectAIRequestsHooks()
+	void inject_ai_request_hooks()
 	{
 //		jump_patch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
 		jump_patch(AI_ProgressBuild_Wrapper,				0x00434480, 1);

@@ -8,5 +8,5 @@ namespace hooks
 	bool unitHasPathToDest(Unit* unit, s32 x, s32 y);							// 0049CB60
 	bool unitHasPathToUnit(Unit* pather, Unit* target);							// 0049CBB0
 
-	void injectPathfindingHooks();
+	void inject_pathfinding_hooks();
 }

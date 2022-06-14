@@ -20,5 +20,5 @@ namespace hooks
 	void AI_AttackUnit(Unit* unit);																		// 0043FFD0
 	s32 return_interceptor_if_cannot_attack(Unit* hangar_unit);												// 00465810
 
-	void injectTargetRelatedHooks();
+	void inject_target_related_hooks();
 }

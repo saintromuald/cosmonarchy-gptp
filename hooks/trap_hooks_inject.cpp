@@ -79,7 +79,7 @@ namespace
 
 namespace hooks
 {
-	void injectTrapHooks()
+	void inject_trap_hooks()
 	{
 		jump_patch(unitIsInstallationAsset_Wrapper, 0x00401430, 3);
 		jump_patch(unitIsFloorTrap_Wrapper,			0x0047B070, 3);

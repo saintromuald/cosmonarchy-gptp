@@ -7,6 +7,6 @@ namespace hooks
 	void unitAttackFromInsideBunkerHook(Unit* unit);
 	void createBunkerAttackThingyHook(Unit* unit);
 
-	void injectBunkerHooks();
+	void inject_bunker_hooks();
 
 } //hooks

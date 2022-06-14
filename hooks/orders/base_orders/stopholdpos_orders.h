@@ -10,6 +10,6 @@ namespace hooks
 	void orders_player_guard(Unit* unit);			//004774A0	sub_4774A0_unreferenced
 	void orders_TurretGuard(Unit* unit);			//004777F0  orders_TurretGuard
 
-	void injectStopHoldPosOrdersHooks();
+	void inject_stop_hold_position_orders_hooks();
 
 } //namespace hooks

@@ -41,7 +41,7 @@ namespace
 
 namespace hooks
 {
-	void injectSelectLarvaHooks()
+	void inject_select_larva_hooks()
 	{
 		jump_patch(getLarvaeUnitsFromList_Wrapper,	0x00423190, 1);
 		jump_patch(BTNSACT_SelectLarva_Wrapper,		0x00423930, 1);

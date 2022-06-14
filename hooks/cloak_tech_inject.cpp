@@ -231,7 +231,7 @@ namespace
 
 namespace hooks
 {
-	void injectCloakingTechHooks()
+	void inject_cloaking_tech_hooks()
 	{
 //		jump_patch(cloakingTechWrapper_IsCloaked,       0x00429210, 1);
 //		jump_patch(cloakingTechWrapper_CanCloak,        0x004292C0, 1);

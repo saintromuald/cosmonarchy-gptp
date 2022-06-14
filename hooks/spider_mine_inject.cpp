@@ -64,7 +64,7 @@ namespace
 
 namespace hooks
 {
-	void injectSpiderMineHooks()
+	void inject_spider_mine_hooks()
 	{
 		jump_patch(findBestTerranMineTarget_Wrapper,	0x00441270, 1);
 		jump_patch(orders_TerranMine_Wrapper,			0x00463DF0, 2);

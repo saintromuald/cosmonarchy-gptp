@@ -63,7 +63,7 @@ namespace
 
 namespace hooks
 {
-	void injectRecallSpellHooks()
+	void inject_recall_spell_hooks()
 	{
 		jump_patch(spells_Recall_ActionOnValidTargetForRecallWrapper,	0x004942D0, 1);
 		jump_patch(spells_Recall_ActionOnTargetInRangeWrapper,			0x00494400, 3);

@@ -881,7 +881,7 @@ void __declspec(naked) globals_load_state_wrapper()
 	}
 }
 
-void injectGlobalsHooks()
+void inject_globals_hooks()
 {
 	jump_patch(globals_save_state_wrapper, 0x004AAF23);
 	jump_patch(globals_load_state_wrapper, 0x004AAE94);

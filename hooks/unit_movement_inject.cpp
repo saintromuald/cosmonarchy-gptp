@@ -45,7 +45,7 @@ namespace
 
 namespace hooks
 {
-	void injectUnitMovementHooks()
+	void inject_unit_movement_hooks()
 	{
 		jump_patch(unitMovementDormant_Wrapper,	0x0046A8D0, 1);
 	//	jump_patch(MoveUnit_Wrapper,			0x004EB9F0, 1); // breaks sprite sorting

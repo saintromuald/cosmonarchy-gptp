@@ -128,25 +128,27 @@ namespace
 		hDll = LoadLibrary("./WMODE_FIX.dll");
 	}
 
-	void run_wmode(bool hidePrompt, bool preferWmode)
+	void run_wmode(bool hide_prompt, bool prefer_wmode)
 	{
-		if (!hidePrompt)
+		if (!hide_prompt)
 		{
-			// KYSXD W-Mode start
+			// KYSXD windowed mode
 			s32 msgboxID = MessageBox(nullptr, "Do you want to play in windowed mode?", PLUGIN_NAME, MB_YESNOCANCEL);
 			switch (msgboxID)
 			{
 				case IDYES:
+				{
 					load_wmode();
-					break;
+				} break;
 				case IDCANCEL:
+				{
 					exit(0);
+				} break;
 			}
-			// KYSXD W-Mode end
 		}
 		else
 		{
-			if (preferWmode)
+			if (prefer_wmode)
 			{
 				load_wmode();
 			}
@@ -168,7 +170,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 		return FALSE;
 	}
 
-	if (!checkStarCraftExeVersion(exePath))
+	if (!check_starcraft_exe_version(exePath))
 	{
 		return FALSE;
 	}
@@ -257,11 +259,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	nops(0x004AAF23, 5);
 //	const u8 retn = 0xc3;
 //	memoryPatch(0x004AAF23 + 5, &retn, 1);
-	injectGlobalsHooks();
+
+	inject_globals_hooks();
 	hooks::inject_cosmonarchy_specific();
-	hooks::injectLimitHooks();
-	hooks::injectWeaponExtender();
-	hooks::injectTargetRelatedHooks();
+	hooks::inject_limit_hooks();
+	hooks::inject_weapon_extender();
+	hooks::inject_target_related_hooks();
 //	hooks::unitsDatWrapperPatches();
 
 	// arbiter attack hardcode
@@ -303,7 +306,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	u8 patchLastUnit[] = {0xE4};
 	// allow pissed/yes sounds for >= Command Center
-//	memoryPatch(0x0048EA20 + 2, patchLastUnit, 1);
+	// memoryPatch(0x0048EA20 + 2, patchLastUnit, 1);
 	// hook required
 	// nops(0x0048EAB0, 5);
 
@@ -399,8 +402,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004014C6 + 2, patchLastUnit, 1);
 	memory_patch(0x0040149A + 2, patchLastUnit, 1);
 
-	// dark archon - energy of controlled dark archons is no longer set to 0
+	// Mind Tyrant - energy of controlled Mind Tyrants is no longer set to 0
 //	memoryPatch(0x004F6938 + 4, patchLastUnit, 1);
+
 	nops(0x0049EEBD, 0xa); // disable beacon collision hardcode
 //	u8 p8a = { 0x8a };
 
@@ -479,6 +483,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// allow starting the game alone (singleplayer)
 	jump_patch((void*)(0x004AEE9E), 0x004AEE83, 2);
 	jump_patch((void*)(0x004A8222), 0x004A81CA, 0);
+
 	// allow starting the game alone (multiplayer)
 	const u8 human_slots = 0x01;
 	memory_patch((void*)(0x004B995B + 2), &human_slots, sizeof(u8)); 
@@ -486,126 +491,125 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// injection
 	hooks::inject_game_hooks();
-	hooks::injectDrawHook();
+	hooks::inject_draw_hook();
 
-	hooks::injectSiegeTransformHooks();
-	hooks::injectButtonSetHooks();
+	hooks::inject_siege_transform_hooks();
+	hooks::inject_buttonset_hooks();
 
 	hooks::inject_selection_hooks();
-	hooks::injectMergeUnitsHooks();
+	hooks::inject_merge_units_hooks();
 
-	hooks::injectLarvaCreepSpawnHooks();
-	hooks::injectLiftLandHooks();
-//	hooks::injectAttackOrdersHooks();
-//	hooks::injectStopHoldPosOrdersHooks();
-	hooks::injectRecallSpellHooks();
-	hooks::injectEnterNydusHooks();
-	hooks::injectCastOrderHooks();
-	hooks::injectWpnSpellHitHooks();
+	hooks::inject_larva_creep_spawn_hooks();
+	hooks::inject_lift_land_hooks();
+//	hooks::inject_attack_orders_hooks();
+//	hooks::inject_stop_hold_position_orders_hooks();
+	hooks::inject_recall_spell_hooks();
+	hooks::inject_enter_nydus_hooks();
+	hooks::inject_cast_order_hooks();
+	hooks::inject_weapon_spell_hit_hooks();
 	hooks::inject_building_morph_hooks();
-	hooks::injectMakeNydusExitHook();
-	hooks::injectUnitMorphHooks();
-	hooks::injectWireframeHook();
-	hooks::injectDieOrderHook();
+	hooks::inject_make_nydus_exit_hooks();
+	hooks::inject_unit_morph_hooks();
+	hooks::inject_wireframe_hooks();
+	hooks::inject_die_order_hooks();
 	hooks::inject_building_terran_hook();
-	hooks::injectBuildingProtossHooks();
-	hooks::injectUnitTrainHooks();
+	hooks::inject_building_protoss_hooks();
+	hooks::inject_unit_train_hooks();
 
 	hooks::inject_load_unload_proc_hooks();
-	hooks::injectLoadUnloadOrdersHooks();
+	hooks::inject_load_unload_orders_hooks();
 	hooks::inject_nuke_orders_hooks();
 //	hooks::injectBurrowTechHooks();
 //	hooks::injectResearchUpgradeOrdersHooks();
-	hooks::injectMedicOrdersHooks();
-	hooks::injectHallucinationSpellHook();
+	hooks::inject_medic_orders_hooks();
+	hooks::inject_hallucination_spell_hooks();
 //	hooks::injectFeedbackSpellHook();
 //	hooks::injectBtnsCondHook();
 //	hooks::injectRecvCmdHook();
-	hooks::injectCreateInitUnitsHooks();
-	hooks::injectGiveUnitHook();
-	hooks::inject_train_cmd_recv_hooks();
-//	hooks::injectCMDRECV_SiegeTankHooks();
+	hooks::inject_create_initial_units_hooks();
+	hooks::inject_give_unit_hooks();
+	hooks::inject_train_cmdrecv_hooks();
+//	hooks::inject_cmdrecv_siege_tank_hooks();
 //	hooks::injectCMDRECV_MergeArchonHooks();
 
 	hooks::inject_cmdrecv_morph_hooks();
-	hooks::injectCMDRECV_StopHooks();
-	hooks::injectCMDRECV_CancelHooks();
+	hooks::inject_cmdrecv_stop_hooks();
+	hooks::inject_cmdrecv_cancel_hooks();
 	hooks::inject_repair_order_hooks();
 	hooks::inject_stats_panel_display_hooks();
-//	hooks::injectUtilsHooks();
-	hooks::injectMindControlSpellHook();
+//	hooks::inject_utils_hooks();
+	hooks::inject_tyranny_spell_hooks();
 	hooks::inject_cmdrecv_build_hooks();
 	
-	hooks::injectApplyUpgradeFlags();
-	hooks::injectAttackPriorityHooks();
-	hooks::injectBunkerHooks();
-	hooks::injectCloakNearbyUnits();
-	hooks::injectCloakingTechHooks();
+	hooks::inject_apply_upgrade_flags_hooks();
+	hooks::inject_attack_priority_hooks();
+	hooks::inject_bunker_hooks();
+	hooks::inject_cloak_nearby_units_hooks();
+	hooks::inject_cloaking_tech_hooks();
 //	hooks::injectDetectorHooks();
 	hooks::inject_harvest_resource();
 
 	hooks::inject_rally_hooks();
-	//hooks::injectLiftLandHooks();
 	//hooks::injectInfestationHooks();
 	//hooks::injectRecvCmdHook();
 
-	hooks::injectRechargeShieldsHooks();
-	hooks::injectSpiderMineHooks();
+	hooks::inject_recharge_shields_hooks();
+	hooks::inject_spider_mine_hooks();
 
 //	hooks::injectStimPacksHooks();
 	hooks::inject_tech_target_check_hooks();
 //	hooks::injectTransferTechAndUpgradesHooks();
-	hooks::injectUnitSpeedHooks();
-	hooks::injectUpdateStatusEffects();
-	hooks::injectUpdateUnitState();
-	hooks::injectWeaponCooldownHook();
+	hooks::inject_unit_speed_hooks();
+	hooks::inject_update_status_effects_hooks();
+	hooks::inject_update_unit_state_hooks();
+	hooks::inject_weapon_cooldown_hooks();
 	hooks::inject_weapon_damage_hooks();
-	hooks::injectWeaponFireHooks();
-	hooks::injectUnitDestructorSpecial();
-	hooks::injectWeaponEffectHook();
+	hooks::inject_weapon_fire_hooks();
+	hooks::inject_unit_destructor_special_hooks();
+	hooks::inject_weapon_effect_hooks();
 	hooks::inject_use_tech_hooks();
 	hooks::inject_psi_field_hooks();
 
-	hooks::injectArmorBonusHook();
-	hooks::injectSightRangeHook();
-	hooks::injectUnitMaxEnergyHook();
-	hooks::injectWeaponRangeHooks();
-	hooks::injectUnitTooltipHook();
-	hooks::injectMaxHpHooks();
-	hooks::injectSpellcasterAI();
-	hooks::injectAIOrdersHooks();
-	hooks::injectSfxHooks();
-	hooks::injectMissChanceHooks();
-	hooks::injectBuildTimeHooks();
-	hooks::injectScreenHotkeysHooks();
+	hooks::inject_armor_bonus_hooks();
+	hooks::inject_sight_range_hooks();
+	hooks::inject_unit_max_energy_hooks();
+	hooks::inject_weapon_range_hooks();
+	hooks::inject_unit_tooltip_hooks();
+	hooks::inject_max_hp_hooks();
+	hooks::inject_spellcaster_ai_hooks();
+	hooks::inject_ai_orders_hooks();
+	hooks::inject_sfx_hooks();
+	hooks::inject_miss_chance_hooks();
+	hooks::inject_build_time_hooks();
+	hooks::inject_screen_hotkey_hooks();
 //	hooks::injectHpBarsHooks();
 	hooks::inject_ui_features_hooks();
-	hooks::injectTrapHooks();
+	hooks::inject_trap_hooks();
 
-	hooks::injectLobbyHooks();
-	hooks::injectUnitMovementHooks();
+	hooks::inject_lobby_hooks();
+	hooks::inject_unit_movement_hooks();
 	hooks::inject_neutral_related_hooks();
 //	hooks::injectFileOperationsHooks();
-	hooks::injectGlucustomHooks();
-	hooks::injectPathfindingHooks();
-	hooks::injectPlacementHooks();
-	hooks::injectBriefingHooks();
+	hooks::inject_glucustom_hooks();
+	hooks::inject_pathfinding_hooks();
+	hooks::inject_placement_hooks();
+	hooks::inject_briefing_hooks();
 	hooks::inject_supply_hooks();
 
-	hooks::inject_requirement_hooks();
-	hooks::injectNewRequirementsHooks();
-	hooks::injectUnitAIHooks();
-	hooks::injectAttackExtenderHooks();
-	hooks::injectAIRequestsHooks();
+//	hooks::inject_requirement_hooks();
+	hooks::inject_new_requirements_hooks();
+	hooks::inject_unit_ai_hooks();
+	hooks::inject_ai_attack_extender();
+	hooks::inject_ai_request_hooks();
 
-	hooks::injectAttackOrdersHooks();
+	hooks::inject_attack_orders_hooks();
 
-	hooks::injectStopHoldPosOrdersHooks();
+	hooks::inject_stop_hold_position_orders_hooks();
 
-	hooks::injectUtilsHooks();
-	hooks::injectSelectLarvaHooks();
+	hooks::inject_utils_hooks();
+	hooks::inject_select_larva_hooks();
 
-	hooks::injectCMDRECV_SiegeTankHooks();
+	hooks::inject_cmdrecv_siege_tank_hooks();
 
 	return TRUE;
 }

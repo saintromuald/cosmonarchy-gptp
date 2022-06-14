@@ -71,7 +71,7 @@ namespace
 
 namespace hooks
 {
-	void injectEnterNydusHooks()
+	void inject_enter_nydus_hooks()
 	{
 		jump_patch(canEnterNydusCanalWrapper,			0x004E8C20, 2);
 		jump_patch(enterNydusCanal_EffectWrapper,		0x004EA180, 1);
