@@ -40,7 +40,7 @@ namespace hooks {
 
 	struct WeaponDamageData {
 		const s32 damage;
-		s32 finalDamage;
+		s32 final_damage;
 		s32 shieldReduceAmount;
 		u8 damageType;
 		u8 damageDivisor;

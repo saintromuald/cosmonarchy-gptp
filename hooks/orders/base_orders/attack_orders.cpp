@@ -204,12 +204,12 @@ namespace hooks
 				current_unit = unit;
 			}
 
-			// identical to check performed by unitIsCarrier @ 0x00401470
+			// identical to check performed by unit_is_carrier @ 0x00401470
 			if (unit->id == UnitId::ProtossSolarion)
 			{
 				jump_to_77AFE = true;
 			}
-			// identical to check performed by unitIsReaver @ 0x00401490, using if(!unitIsReaver())
+			// identical to check performed by unit_is_reaver @ 0x00401490, using if(!unit_is_reaver())
 			else if (!(unit->id == UnitId::ProtossAccantor))
 			{
 				jump_to_77A9D = true;

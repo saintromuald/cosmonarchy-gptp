@@ -176,7 +176,7 @@ namespace hooks
 		disableUnit(target);
 	}
 
-	void WeaponBulletHit(Bullet* bullet, Unit* target, u32 damageDivisor)
+	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damageDivisor)
 	{
 		u32 base_damage = helper::get_unit_bullet_damage(bullet, target);
 		if (bullet->hit_flags & 2)

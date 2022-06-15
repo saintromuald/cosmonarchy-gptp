@@ -9,7 +9,7 @@ void Image::play_iscript_animation(IscriptAnimation::Enum animation)
 	assert(this);
 	u32 animation_ = (u8)animation;
 
-	const u32 Func_PlayIscriptAnim = 0x004D8470;  //AKA playImageIscript();
+	const u32 Func_PlayIscriptAnim = 0x004D8470;  //AKA play_image_iscript();
 	__asm {
 		PUSHAD
 		PUSH animation_

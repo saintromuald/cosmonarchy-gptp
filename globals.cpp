@@ -1599,7 +1599,7 @@ namespace scbw
 		Unit* unit = data.target;
 		auto links = get_clarion_links(unit); // has to be copy
 		links.erase(std::remove(links.begin(), links.end(), unit), links.end());
-		s32 damage = data.finalDamage;
+		s32 damage = data.final_damage;
 		if (links.size() == 0 || unit->shields < 256)
 		{
 			link_damage(unit, damage, data);
@@ -1660,7 +1660,7 @@ namespace scbw
 	{
 		Unit* unit = data.target;
 		EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
-		s32 damage = data.finalDamage / (sovroleths.size + 1);
+		s32 damage = data.final_damage / (sovroleths.size + 1);
 		for (u32 i = 0; i < sovroleths.size; ++i) {
 			link_damage(sovroleths.units[i], damage, data);
 		}

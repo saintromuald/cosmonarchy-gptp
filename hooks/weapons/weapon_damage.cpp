@@ -102,7 +102,7 @@ namespace hooks
 		// Demiurge - Gods Made Flesh - target is impervious to damage
 		if (targetExt->timers[TimerGodsMadeFlesh])
 		{
-			data.finalDamage = 0;
+			data.final_damage = 0;
 			data.damageType = DamageType::Independent;
 		}
 
@@ -131,12 +131,12 @@ namespace hooks
 
 		if (!data.dontProcLinkDamage && data.target->id == UnitId::ZergSovroleth)
 		{
-			data.finalDamage /= 2;
+			data.final_damage /= 2;
 			scbw::spread_sovroleth_damage(data);
 		}
 		else if (!data.dontProcLinkDamage && scbw::has_clarion_links(data.target))
 		{
-			data.finalDamage /= 2;
+			data.final_damage /= 2;
 			scbw::spread_clarion_damage(data);
 		}
 
@@ -145,35 +145,35 @@ namespace hooks
 		{
 			if (data.attacker->status & UnitStatus::IsHallucination)
 			{
-				data.finalDamage /= 2;
+				data.final_damage /= 2;
 			}
 		}
 
 		// Hallucinations take double damage
 		if (data.target->status & UnitStatus::IsHallucination)
 		{
-			data.finalDamage *= 2;
+			data.final_damage *= 2;
 		}
 
 		// Minimum amount of damage that can be dealt
-		if (data.finalDamage < 256)
+		if (data.final_damage < 256)
 		{
-			data.finalDamage = 256;
+			data.final_damage = 256;
 		}
 
 		// Reduce Defensive Matrix
 		if (data.target->defensive_matrix_hp != 0)
 		{
 			s32 d_matrix_reduceAmount;
-			if (data.target->defensive_matrix_hp > data.finalDamage)
+			if (data.target->defensive_matrix_hp > data.final_damage)
 			{
-				d_matrix_reduceAmount = data.finalDamage;
+				d_matrix_reduceAmount = data.final_damage;
 			}
 			else
 			{
 				d_matrix_reduceAmount = data.target->defensive_matrix_hp;
 			}
-			data.finalDamage -= d_matrix_reduceAmount;
+			data.final_damage -= d_matrix_reduceAmount;
 			data.target->reduce_defensive_matrix_hp(d_matrix_reduceAmount);
 		}
 
@@ -181,7 +181,7 @@ namespace hooks
 		/*
 		if (data.damage_type != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
 		{
-			data.finalDamage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
+			data.final_damage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 		}
 		*/
 
@@ -191,17 +191,17 @@ namespace hooks
 			if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
 			{
 				s32 plasmaShieldUpg = scbw::get_upgrade_level(data.target->player, UpgradeId::ProtossPlasmaShields) * 256;
-				if (data.finalDamage > plasmaShieldUpg)
+				if (data.final_damage > plasmaShieldUpg)
 				{
-					data.finalDamage -= plasmaShieldUpg;
+					data.final_damage -= plasmaShieldUpg;
 				}
 				else
 				{
-					data.finalDamage = 128;
+					data.final_damage = 128;
 				}
 			}
-			data.shieldReduceAmount = std::min(data.finalDamage, data.target->shields);
-			data.finalDamage -= data.shieldReduceAmount;
+			data.shieldReduceAmount = std::min(data.final_damage, data.target->shields);
+			data.final_damage -= data.shieldReduceAmount;
 		}
 
 		// Apply armor
@@ -234,7 +234,7 @@ namespace hooks
 				armorTotal = std::max(armorTotal - (s32)targetExt->values[ValueControlledOpposition] * 256, 0);
 			}
 
-			data.finalDamage -= std::min(data.finalDamage, armorTotal);
+			data.final_damage -= std::min(data.final_damage, armorTotal);
 		}
 
 		// Apply damage type/unit size factor
@@ -254,10 +254,10 @@ namespace hooks
 			}
 		}
 
-		data.finalDamage = (data.finalDamage * damage_factor) / 256;
-		if (data.shieldReduceAmount == 0 && data.finalDamage < 128)
+		data.final_damage = (data.final_damage * damage_factor) / 256;
+		if (data.shieldReduceAmount == 0 && data.final_damage < 128)
 		{
-			data.finalDamage = 128;
+			data.final_damage = 128;
 		}
 
 		// Olympian Mythical Might - execute enemies below 10% HP
@@ -266,7 +266,7 @@ namespace hooks
 			if (data.target->hitpoints < data.target->get_max_hp_raw() * 0.1)
 			{
 				helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
-				data.finalDamage = data.target->hitpoints;
+				data.final_damage = data.target->hitpoints;
 			}
 		}
 
@@ -275,7 +275,7 @@ namespace hooks
 		{
 			weaponDamage_lifesteal(data);
 		}
-		if (data.finalDamage >= data.target->hitpoints)
+		if (data.final_damage >= data.target->hitpoints)
 		{
 			weaponDamage_fatal(data);
 		}
@@ -283,7 +283,7 @@ namespace hooks
 		// Deal damage, except for Independent damage, which always deals 0
 		if (data.damageType != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && canDamage )
 		{
-			data.target->damage_hp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
+			data.target->damage_hp(data.final_damage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
 			if (!data.target->hitpoints) {
 				helper::unit_attack_notify(data.target);
@@ -322,7 +322,7 @@ namespace hooks
 		{
 			if (scbw::is_allied_to(data.attackingPlayerId, targetExt->values[ValueAlliedInvPlayer]))
 			{
-				data.finalDamage = 0;
+				data.final_damage = 0;
 			}
 		}
 
@@ -333,7 +333,7 @@ namespace hooks
 		}
 
 		// Observance Armor Rend
-		data.finalDamage += 256 * targetExt->values[ValueObservanceRend];
+		data.final_damage += 256 * targetExt->values[ValueObservanceRend];
 
 		switch (data.weaponId) // Damage Divisor Calc
 		{
@@ -345,21 +345,21 @@ namespace hooks
 				{
 					div = (f64)data.damageDivisor;
 				}
-				s32 dmg = ((f64)data.finalDamage / div);
-				data.finalDamage = dmg + targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
+				s32 dmg = ((f64)data.final_damage / div);
+				data.final_damage = dmg + targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
 			case WeaponId::GeszithalorAcidSpore:
 			{
 				// Searing Acid - Geszithalor behavior
-				data.finalDamage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
+				data.final_damage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
 			} break;
 			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::MutaliskGlaveWurm:
 			case WeaponId::CharlatanFerventBlaster:
 			{
 				// Lithe Organelle - bounce damage
-				data.finalDamage *= 1 - data.damageDivisor * 0.33;
-				data.finalDamage += (s32)targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
+				data.final_damage *= 1 - data.damageDivisor * 0.33;
+				data.final_damage += (s32)targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
 			default:
 			{
@@ -369,7 +369,7 @@ namespace hooks
 					divisor = 1;
 					scbw::printf("Incorrect weapon hit %d", data.weaponId);
 				}
-				data.finalDamage = data.finalDamage / divisor + (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction);
+				data.final_damage = data.final_damage / divisor + (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction);
 			}
 		}
 
@@ -380,7 +380,7 @@ namespace hooks
 				// Quazilisk - Melting Points
 				f32 missingFactor = 1 - ((f32)data.target->hitpoints / data.target->get_max_hp_raw());
 				f32 damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
-				data.finalDamage += damageIncrease * HealthMultiplier;
+				data.final_damage += damageIncrease * HealthMultiplier;
 			} break;
 			case WeaponId::AlmaksaliskPiercingSpines:
 			{
@@ -407,7 +407,7 @@ namespace hooks
 			// Cabalist - Decloak, Silent Kill
 			if (data.attacker->id == UnitId::ProtossCabalist)
 			{
-				if (data.finalDamage < data.target->hitpoints) {
+				if (data.final_damage < data.target->hitpoints) {
 					scbw::decloak_proc(data.attacker);
 				} else if (targetExt->timers[TimerDecloak] > 1) {
 					targetExt->timers[TimerDecloak] = 1;
@@ -465,7 +465,7 @@ namespace hooks
 					if (!scbw::is_allied_to(data.target->player, data.attacker->player)
 						&& !scbw::is_under_dark_swarm(data.target)
 						&& data.shieldReduceAmount >= data.target->shields
-						&& data.finalDamage
+						&& data.final_damage
 						&& targetExt->timers[TimerSimulacrumClone] == 0)
 					{
 						targetExt->timers[TimerSimulacrumClone] = 4 * 24;
@@ -496,11 +496,11 @@ namespace hooks
 				{
 					// Cuirass - Stonewall Protocol
 					if (!targetExt->values[ValueIsSelfReviving]
-						&& data.target->hitpoints < data.finalDamage)
+						&& data.target->hitpoints < data.final_damage)
 					{
 						targetExt->values[ValueIsSelfReviving] = 1;
 						data.target->hitpoints = CuirassSelfReviveHP;
-						data.finalDamage = 0;
+						data.final_damage = 0;
 						data.target->order_computer(OrderId::Stop);
 						data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 						helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
@@ -547,7 +547,7 @@ namespace hooks
 					// Essence Drain - Gorgrokor Energy Steal
 					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster)
 					{
-						u16 energy = std::min(data.target->energy, (u16)(data.finalDamage + data.shieldReduceAmount));
+						u16 energy = std::min(data.target->energy, (u16)(data.final_damage + data.shieldReduceAmount));
 						data.target->energy -= energy;
 						data.attacker->energy += energy;
 					}
@@ -574,7 +574,7 @@ namespace hooks
 					{
 						// Demiurge - Worship
 						if (data.target->get_current_hp_ingame() <= data.target->get_max_hp_ingame() / 2
-							&& data.target->hitpoints > data.finalDamage)
+							&& data.target->hitpoints > data.final_damage)
 						{
 							scbw::mind_control(data.attacker, data.target);
 						}
@@ -643,7 +643,7 @@ namespace hooks
 							u32 energy = std::min(data.attacker->energy, (u16)(10 * 256));
 							if (energy) {
 								data.attacker->energy -= energy;
-								data.finalDamage += energy;
+								data.final_damage += energy;
 								helper::create_thingy(SpriteId::EntropyGauntletsOverlay,
 									data.attacker->position.x, data.attacker->position.y, data.attackingPlayerId);
 							}
@@ -651,7 +651,7 @@ namespace hooks
 					} break;
 					case WeaponId::HeraclesJavelinCannons:
 					{
-						data.finalDamage += attackerExt->values[ValueNemeanReactorsStack];
+						data.final_damage += attackerExt->values[ValueNemeanReactorsStack];
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
@@ -795,7 +795,7 @@ namespace hooks
 
 	static void weaponDamage_lifesteal(WeaponDamageData& data)
 	{
-		u32 damageDealt = data.finalDamage + data.shieldReduceAmount;
+		u32 damageDealt = data.final_damage + data.shieldReduceAmount;
 		switch (data.weaponId)
 		{
 			case WeaponId::UltrokorKaiserBlades:
@@ -836,7 +836,7 @@ namespace hooks
 			case WeaponId::Plague:
 			{
 				// Plague - Don't kill
-				data.finalDamage = 0;
+				data.final_damage = 0;
 				data.target->set_hitpoints(256);
 			} break;
 			case WeaponId::PsiStorm:
@@ -878,7 +878,7 @@ namespace hooks
 		if (targetExt->values[ValueEmpressPassiveStacks]
 			&& !targetExt->values[ValueIsZombified])
 		{
-			data.finalDamage = 0;
+			data.final_damage = 0;
 			data.target->hitpoints = 0;
 			data.target->shields = 0;
 			data.target->heal_overflow(targetExt->values[ValueEmpressPassiveStacks] * 256 * 2.5, targetExt->units[UnitEmpressSource]);
@@ -893,7 +893,7 @@ namespace hooks
 		}
 
 		// Apostle, Anticthon - Revive
-		if (data.finalDamage > 0 && (targetExt->values[ValueLazarusAgent] || targetExt->timers[TimerAnticthonRevive]))
+		if (data.final_damage > 0 && (targetExt->values[ValueLazarusAgent] || targetExt->timers[TimerAnticthonRevive]))
 		{
 			u32 hp = targetExt->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
 
@@ -953,7 +953,7 @@ namespace hooks
 			data.target->give_to(targetExt->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
 			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
 
-			data.finalDamage = 0;
+			data.final_damage = 0;
 			data.target->set_hitpoints(targetExt->values[ValueBlissfulEmbraceOriginalHealth]);
 
 			// Make this a sprite
@@ -1040,7 +1040,7 @@ namespace hooks
 					});
 					if (nearest != nullptr)
 					{
-						data.finalDamage = 0;
+						data.final_damage = 0;
 						data.target->set_hitpoints(units_dat::MaxHitPoints[data.target->id] / 2);
 						data.target->order_to(OrderId::Move, nearest->position.x, nearest->position.y);
 						data.target->status |= UnitStatus::CanNotReceiveOrders;

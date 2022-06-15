@@ -40,7 +40,7 @@ namespace hooks
 		{
 			pUnit->status = unitFlags | UnitStatus::Disabled;
 			for (i = pUnit->sprite->images.head; i; i = i->link.next)
-				helper::playImageIscript(i, IscriptAnimation::AlmostBuilt);
+				helper::play_image_iscript(i, IscriptAnimation::AlmostBuilt);
 			unit_id = pUnit->id;
 			pUnit->status |= UnitStatus::NoCollide;
 

@@ -68,7 +68,7 @@ namespace hooks
 		*(a1 + 48) = v3;
 		updateImageDrawData(a1);
 		*(a1 + 12) |= 1u;
-		playImageIscript(a1, 0);
+		play_image_iscript(a1, 0);
 	*/
 	}
 

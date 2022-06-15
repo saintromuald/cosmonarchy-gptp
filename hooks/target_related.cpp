@@ -647,17 +647,17 @@ LABEL_42:
 		}
 
 		Unit* unitWithWeapon = unit->subunit;
-		if (!helper::unitIsSubunit(unit->subunit))
+		if (!helper::unit_is_subunit(unit->subunit))
 		{
 			unitWithWeapon = unit;
 		}
 
-		if (helper::unitIsCarrier(unit))
+		if (helper::unit_is_carrier(unit))
 		{
 			return 1;
 		}
 
-		if (helper::unitIsReaver(unit))
+		if (helper::unit_is_reaver(unit))
 		{
 			if (!(target->status & UnitStatus::InAir))
 			{
@@ -686,7 +686,7 @@ LABEL_42:
 		u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[unitWithWeapon->id] : units_dat::GroundWeapon[unitWithWeapon->id];
 
 		if (unit->status & UnitStatus::GroundedBuilding || unit->status & UnitStatus::Burrowed || unit->id == UnitId::TerranPhalanxSiegeMode) {
-			if (!unit->is_target_within_min_range(target, hooks::getMaxWeaponRangeHook(unit, weapon, target))) {
+			if (!unit->is_target_within_min_range(target, hooks::get_max_weapon_range(unit, weapon, target))) {
 				return false;
 			}
 		}
@@ -749,7 +749,7 @@ LABEL_42:
 			goto LABEL_23;
 		}
 		v5 = v2->subunit;
-		if (!helper::unitIsSubunit(v2->subunit))
+		if (!helper::unit_is_subunit(v2->subunit))
 		{
 			v5 = v2;
 		}
@@ -801,7 +801,7 @@ LABEL_23:
 		}
 		if (helper::unit_can_infest(v2))
 		{
-			v8 = helper::canBeInfested(v9, v1) != 0;
+			v8 = helper::can_be_infested(v9, v1) != 0;
 		}
 		else
 		{

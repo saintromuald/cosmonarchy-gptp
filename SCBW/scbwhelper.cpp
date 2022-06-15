@@ -899,7 +899,7 @@ namespace helper
 		}
 	}
 
-	void playImageIscript(Image* img, u8 iscriptAnim)
+	void play_image_iscript(Image* img, u8 iscriptAnim)
 	{
 		const u32 playImageIscript_function = 0x004D8470;
 		_asm {
@@ -5949,7 +5949,7 @@ namespace helper
 
 	// For progressBulletMovement
 
-	void progressBulletMovement_func(Bullet* a1)
+	void progress_bullet_movement(Bullet* a1)
 	{
 		const u32 Func_progressBulletMovement = 0x0048B250;
 		__asm {
@@ -5961,7 +5961,7 @@ namespace helper
 	}
 
 	// For bulletBehavior_Bounce
-	Bullet* changeMovePos(Bullet* a1, s32 a2, s32 a3)
+	Bullet* change_move_pos(Bullet* a1, s32 a2, s32 a3)
 	{
 		const u32 Func_changeMovePos = 0x00495240;
 		static Bullet* result;
@@ -5977,7 +5977,7 @@ namespace helper
 		return result;
 	}
 
-	Unit* findNextBounceTarget_func(Bullet* a1)
+	Unit* find_next_bounce_target(Bullet* a1)
 	{
 		const u32 Func_findNextBounceTarget = 0x0048B1E0;
 		static Unit* result;
@@ -5991,7 +5991,7 @@ namespace helper
 		return result;
 	}
 
-	bool unitIsSubunit(Unit* a1)
+	bool unit_is_subunit(Unit* a1)
 	{
 		const u32 Func_unitIsSubunit = 0x00401D40;
 		static s32 result;
@@ -6005,7 +6005,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	bool unitIsCarrier(Unit* a1)
+	bool unit_is_carrier(Unit* a1)
 	{
 		return a1->id == UnitId::ProtossSolarion;
 		/*
@@ -6022,7 +6022,7 @@ namespace helper
 		*/
 	}
 
-	bool unitIsReaver(Unit* a1)
+	bool unit_is_reaver(Unit* a1)
 	{
 		return a1->id == UnitId::ProtossAccantor;
 		/*
@@ -6054,7 +6054,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	s32 canBeInfested(Unit* a1, Unit* a2)
+	s32 can_be_infested(Unit* a1, Unit* a2)
 	{
 		const u32 Func_canBeInfested = 0x00402210;
 		static s32 result;
@@ -8251,7 +8251,7 @@ namespace helper
 	}
 
 	// For create_bullet
-	s32 initializeBullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle)
+	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle)
 	{
 		const u32 Func_initializeBullet = 0x0048BEC0;
 		static s32 result;
@@ -8525,8 +8525,8 @@ namespace helper
 		return result;
 	}
 
-	// For initializeBullet
-	Flingy* initializeFlingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle)
+	// For initialize_bullet
+	Flingy* initialize_flingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle)
 	{
 		const u32 Func_initializeFlingy = 0x00496360;
 		static Flingy* result;
@@ -8546,7 +8546,7 @@ namespace helper
 		return result;
 	}
 
-	void bulletBehaviorReassign(Bullet* bullet)
+	void bullet_behavior_reassign(Bullet* bullet)
 	{
 		const u32 Func_bulletBehaviorReassign = 0x0048BD50;
 		__asm
@@ -8558,7 +8558,7 @@ namespace helper
 		}
 	}
 
-	s32 weaponBehaviorCanHitTargetCheck(Unit* target, Unit* attacker)
+	s32 weapon_behavior_can_hit_target_check(Unit* target, Unit* attacker)
 	{
 		const u32 Func_weaponBehaviorCanHitTargetCheck = 0x004765B0;
 		static s32 result;
@@ -8574,7 +8574,7 @@ namespace helper
 		return result;
 	}
 
-	void appearOnTarget(Bullet* bullet, s16 x, s16 y)
+	void appear_on_target(Bullet* bullet, s16 x, s16 y)
 	{
 		const u32 Func_appearOnTarget = 0x004955C0;
 		__asm
@@ -8588,7 +8588,7 @@ namespace helper
 		}
 	}
 
-	Bullet* attackFlyToTarget(Bullet* bullet, s32 x, s32 y)
+	Bullet* attack_fly_to_target(Bullet* bullet, s32 x, s32 y)
 	{
 		const u32 Func_attackFlyToTarget = 0x00494B70;
 		static Bullet* result;
@@ -8800,7 +8800,7 @@ namespace helper
 	}
 
 	// For progressBulletFrame
-	void bulletBehaviorFly(Bullet* bullet)
+	void bullet_behavior_fly(Bullet* bullet)
 	{
 		const u32 Func_bulletBehaviorFly = 0x0048B3B0;
 		__asm
@@ -8812,7 +8812,7 @@ namespace helper
 		}
 	}
 
-	void bulletBehaviorFollow(Bullet* bullet)
+	void bullet_behavior_follow(Bullet* bullet)
 	{
 		const u32 Func_bulletBehaviorFollow = 0x0048B500;
 		__asm
@@ -8824,7 +8824,7 @@ namespace helper
 		}
 	}
 
-	void bulletBehaviorBounce(Bullet* bullet)
+	void bullet_behavior_bounce(Bullet* bullet)
 	{
 		const u32 Func_bulletBehaviorBounce = 0x0048B2D0;
 		__asm
@@ -8836,7 +8836,7 @@ namespace helper
 		}
 	}
 
-	void bulletBehaviorPersist(Bullet* bullet)
+	void bullet_behavior_persist(Bullet* bullet)
 	{
 		const u32 Func_bulletBehaviorPersist = 0x0048BC70;
 		__asm
@@ -8848,7 +8848,7 @@ namespace helper
 		}
 	}
 
-	void bulletBehaviorInstant(Bullet* bullet)
+	void bullet_behavior_instant(Bullet* bullet)
 	{
 		const u32 Func_bulletBehaviorInstant = 0x0048A560;
 		__asm
@@ -8860,7 +8860,7 @@ namespace helper
 		}
 	}
 
-	void bulletBehaviorArea(Bullet* bullet)
+	void bullet_behavior_area(Bullet* bullet)
 	{
 		const u32 Func_bulletBehaviorArea = 0x0048B440;
 		__asm
@@ -8970,8 +8970,8 @@ namespace helper
 		return result;
 	}
 	
-	// For bulletBehaviorReassign
-	void playSpriteIscript(Sprite* sprite, char scriptId, s32 bPlay)
+	// For bullet_behavior_reassign
+	void play_sprite_iscript(Sprite* sprite, char scriptId, s32 bPlay)
 	{
 		const u32 Func_playSpriteIscript = 0x00499D00;
 		s32 scriptIdArg = scriptId;
@@ -8986,7 +8986,7 @@ namespace helper
 		}
 	}
 
-	Bullet* assignWeaponData(Bullet* bullet, char behaviorType)
+	Bullet* assign_weapon_data(Bullet* bullet, char behaviorType)
 	{
 		const u32 Func_assignWeaponData = 0x0048AA80;
 		static Bullet* result;

@@ -130,7 +130,7 @@ namespace
 			MOV hit_flags, EAX
 			PUSHAD
 		}
-		hooks::WeaponBulletHit(bullet, target, hit_flags);
+		hooks::weapon_bullet_hit(bullet, target, hit_flags);
 		__asm
 		{
 			POPAD

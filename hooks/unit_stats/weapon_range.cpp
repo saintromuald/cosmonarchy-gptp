@@ -68,7 +68,7 @@ namespace hooks
 	// Returns the modified max distance for the weapon, which is assumed to be attached to the given unit.
 	// This hook affects the behavior of Unit::get_max_weapon_range().
 	// Note: Weapon ranges are measured in pixels.
-	u32 getMaxWeaponRangeHook(Unit* unit, u8 weaponId, Unit* target)
+	u32 get_max_weapon_range(Unit* unit, u8 weaponId, Unit* target)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 

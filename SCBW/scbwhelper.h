@@ -101,7 +101,7 @@ namespace helper
 
 	// For compileHealthBar
 	void updateImageDrawData(Image* result);
-	void playImageIscript(Image* img, u8 iscriptAnim);
+	void play_image_iscript(Image* img, u8 iscriptAnim);
 
 	// For AI_FindTransport
 	bool can_enter_transport(Unit* a1, Unit* a2);
@@ -670,27 +670,27 @@ namespace helper
 	Unit* attemptTrainHatchUnit(Unit* trainer, u32 builtUnitID, u32 flag);															// 00468200
 
 	//// weapon_fire
-	// For progressBulletFlight
+	// For progress_bullet_flight
 	void progressBulletMovement(Bullet* a1);																						// 0048B250
 	void do_missile_damage(Bullet* bullet);																							// 0048B770
 
 	// For bulletBehavior_Bounce
-	Bullet* changeMovePos(Bullet* a1, s32 a2, s32 a3);																				// 00495240
-	void progressBulletMovement_func(Bullet* a1);																					// 0048B250
-	Unit* findNextBounceTarget_func(Bullet* a1);																					// 0048B1E0
+	Bullet* change_move_pos(Bullet* a1, s32 a2, s32 a3);																				// 00495240
+	void progress_bullet_movement(Bullet* a1);																					// 0048B250
+	Unit* find_next_bounce_target(Bullet* a1);																					// 0048B1E0
 
-	// For findNextBounceTargetProc
-	bool unitIsSubunit(Unit* a1);																									// 00401D40
-	bool unitIsCarrier(Unit* a1);																									// 00401470
-	bool unitIsReaver(Unit* a1);																									// 00401490
+	// For find_next_bounce_target_proc
+	bool unit_is_subunit(Unit* a1);																									// 00401D40
+	bool unit_is_carrier(Unit* a1);																									// 00401470
+	bool unit_is_reaver(Unit* a1);																									// 00401490
 	bool unitHasPathToUnit(Unit* a1, Unit* a2);																						// 0049CBB0
-	s32 canBeInfested(Unit* a1, Unit* a2);																							// 00402210
+	s32 can_be_infested(Unit* a1, Unit* a2);																							// 00402210
 
-	// For findNextBounceTarget
+	// For find_next_bounce_target
 	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);								// 004E8280
 
 	// For create_bullet
-	s32 initializeBullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle);					// 0048BEC0
+	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle);					// 0048BEC0
 
 	// For writeBullets
 	/*
@@ -914,12 +914,12 @@ namespace helper
 	void setTimerFunc();																					// 00472E00
 	s32 getTickCount();																						// 004FE0C4
 
-	// For initializeBullet
-	Flingy* initializeFlingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle);			// 00496360
-	void bulletBehaviorReassign(Bullet* bullet);															// 0048BD50
-	s32 weaponBehaviorCanHitTargetCheck(Unit* target, Unit* attacker);										// 004765B0
-	void appearOnTarget(Bullet* bullet, s16 x, s16 y);														// 004955C0
-	Bullet* attackFlyToTarget(Bullet* bullet, s32 x, s32 y);												// 00494B70
+	// For initialize_bullet
+	Flingy* initialize_flingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle);			// 00496360
+	void bullet_behavior_reassign(Bullet* bullet);															// 0048BD50
+	s32 weapon_behavior_can_hit_target_check(Unit* target, Unit* attacker);										// 004765B0
+	void appear_on_target(Bullet* bullet, s16 x, s16 y);														// 004955C0
+	Bullet* attack_fly_to_target(Bullet* bullet, s32 x, s32 y);												// 00494B70
 
 	// For ai_progress_build
 	void display_error_message_id_with_sfx(s32 player, s32 messageId, s32 soundId);						// 0048EE30
@@ -947,12 +947,12 @@ namespace helper
 	void drawArmor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex);										// 00425600
 
 	// For progressBulletFrame
-	void bulletBehaviorFly(Bullet* bullet);																	// 0048B3B0
-	void bulletBehaviorFollow(Bullet* bullet);																// 0048B500
-	void bulletBehaviorBounce(Bullet* bullet);																// 0048B2D0
-	void bulletBehaviorPersist(Bullet* bullet);																// 0048BC70
-	void bulletBehaviorInstant(Bullet* bullet);																// 0048A560
-	void bulletBehaviorArea(Bullet* bullet);																// 0048B440
+	void bullet_behavior_fly(Bullet* bullet);																	// 0048B3B0
+	void bullet_behavior_follow(Bullet* bullet);																// 0048B500
+	void bullet_behavior_bounce(Bullet* bullet);																// 0048B2D0
+	void bullet_behavior_persist(Bullet* bullet);																// 0048BC70
+	void bullet_behavior_instant(Bullet* bullet);																// 0048A560
+	void bullet_behavior_area(Bullet* bullet);																// 0048B440
 
 	// For giveUnitToPlayer
 	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 player);											// 0047C9F0
@@ -965,9 +965,9 @@ namespace helper
 	void MoveSprite(Sprite* sprite, s16 x, s16 y);															// 00497A10
 	u32 updateUnitSortingInfo(u32 x_diff, Unit* unit, u32 y_diff);											// 0046A000
 
-	// For bulletBehaviorReassign
-	void playSpriteIscript(Sprite* sprite, char scriptId, s32 bPlay);										// 00499D00
-	Bullet* assignWeaponData(Bullet* bullet, char behaviorType);											// 0048AA80
+	// For bullet_behavior_reassign
+	void play_sprite_iscript(Sprite* sprite, char scriptId, s32 bPlay);										// 00499D00
+	Bullet* assign_weapon_data(Bullet* bullet, char behaviorType);											// 0048AA80
 
 	// For ai_training_normal
 	AiRegion* getAiRegionInfoFromUnitLoc(Unit* unit);														// 00438BF0

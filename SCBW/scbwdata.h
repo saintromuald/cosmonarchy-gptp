@@ -351,7 +351,7 @@ SCBW_DATA(unk_62*, struct_5140E8,				0x005140E8);
 SCBW_DATA(char*, upgradesLevelSC,				0x0058D2B0);
 SCBW_DATA(char*, upgradesLevelBW,				0x0058F2FE);
 
-// For findNextBounceTargetProc
+// For find_next_bounce_target_proc
 SCBW_DATA(Unit**, bulletBounceMissileSource,	0x0064EECC);
 SCBW_DATA(Unit**, bulletBounceMissileTarget,	0x0064EED0);
 SCBW_DATA(Unit**, bulletBounceMissileNext,		0x0064EED4);
