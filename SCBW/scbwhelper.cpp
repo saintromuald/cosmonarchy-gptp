@@ -3677,7 +3677,7 @@ namespace helper
 		}
 	}
 
-	void CancelResearch_Proc(Unit* unit)
+	void cancel_research_proc(Unit* unit)
 	{
 		const u32 Func_Sub453E30 = 0x00453E30;
 		__asm

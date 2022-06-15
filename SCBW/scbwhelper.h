@@ -409,7 +409,7 @@ namespace helper
 	void hide_and_disable_unit(Unit* unit);																							// 004E6340
 
 	//// CMDRECV_Cancel
-	void CancelResearch_Proc(Unit* unit);																							// 00453E30
+	void cancel_research_proc(Unit* unit);																							// 00453E30
 	void cancel_upgrade_proc(Unit* unit);																							// 00454280
 	void refund_queue_slot(Unit* unit, u16 slot);																					// 00466A70
 	void cancel_last_training(Unit* unit);																							// 00466E40
