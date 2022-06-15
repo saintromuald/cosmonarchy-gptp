@@ -304,7 +304,7 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 namespace hooks
 {
 	// Returns the C-string for the tooltip text of the unit's weapon icon.
-	const char* getWeaponTooltipString(u8 weaponId, Unit* unit)
+	const char* get_weapon_tooltip_string(u8 weaponId, Unit* unit)
 	{
 		return getDamageTooltipString(weaponId, unit, weapons_dat::label[weaponId]);
 	}
@@ -382,7 +382,7 @@ namespace hooks
 		}
 	}
 
-	const char* getArmorTooltipString(Unit* unit)
+	const char* get_armor_tooltip_string(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -703,7 +703,7 @@ namespace hooks
 	}
 
 	// Returns the C-string for the tooltip text of the plasma shield icon.
-	const char* getShieldTooltipString(Unit* unit)
+	const char* get_shield_tooltip_string(Unit* unit)
 	{
 		const u16 labelId = upgrades_dat::label[UpgradeId::ProtossPlasmaShields];
 		const char* shieldUpgradeName = statTxtTblNew->get_string(labelId);
@@ -721,7 +721,7 @@ namespace hooks
 	}
 
 	// Returns the C-string for the tooltip text of the Interceptor icon (Carriers), Scarab icon (Reavers), Nuclear Missile icon (Nuclear Silos), and Spider Mine icon (Vultures).
-	const char* getSpecialTooltipString(u16 iconUnitId, Unit* unit)
+	const char* get_special_tooltip_string(u16 iconUnitId, Unit* unit)
 	{
 		if (iconUnitId == UnitId::ProtossSteward)
 		{

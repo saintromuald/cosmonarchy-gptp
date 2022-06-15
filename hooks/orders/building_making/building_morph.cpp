@@ -182,7 +182,7 @@ namespace hooks
 
 					// do the building change
 					building->status &= ~UnitStatus::Completed;
-					helper::replace_unit_with_type(building, buildingId);
+					helper::replace_unit_with_id(building, buildingId);
 
 					// newHp = newHpMax - oldHpMax + oldHp
 					hpAfterMorph = units_dat::MaxHitPoints[buildingId] - units_dat::MaxHitPoints[building->previous_unit_type] + hpAfterMorph;
@@ -337,7 +337,7 @@ namespace hooks
 
 
 				u32 previous_hitpoints = unit->previous_hitpoints * 256;
-				helper::replace_unit_with_type(unit, unit->morph_origin);
+				helper::replace_unit_with_id(unit, unit->morph_origin);
 				helper::update_building_ai(unit);
 				helper::update_unit_stats_and_finish_building(unit);
 				helper::update_unit_strength(unit);
@@ -466,5 +466,26 @@ namespace hooks
 			}
 			current_image = current_image->link.next;
 		}
+	}
+
+	// Hooked to help Veeq7 remember to go to sleep. -Pr0nogo
+	void drone_morph_standard(Unit* unit, u32 id) // 0045D890
+	{
+		helper::increment_unit_scores_ex(unit, -1, 0);
+		unit->status &= 0xFFFFFFFE;
+		helper::replace_unit_with_id(unit, id);
+		if (playerTable[unit->player].type == PlayerType::Computer)
+		{
+			if (unit->unit_ai)
+			{
+				WorkerAi* worker_ai = (WorkerAi*)unit->unit_ai;
+				AiTown* unit_town = worker_ai->town;
+				unit->unit_ai = 0;
+				helper::delete_worker_ai(worker_ai, &unit_town->free_workers);
+				--unit_town->worker_count;
+				helper::add_worker_structure_ai(unit, unit_town);
+			}
+		}
+		helper::drone_build_execute(unit);
 	}
 }

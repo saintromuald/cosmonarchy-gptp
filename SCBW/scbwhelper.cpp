@@ -2885,7 +2885,7 @@ namespace helper
 		}
 	}
 
-	void replace_unit_with_type(Unit* unit, u16 newUnitId)
+	void replace_unit_with_id(Unit* unit, u16 newUnitId)
 	{
 		const u32 Func_ReplaceUnitWithType = 0x0049FED0;
 		u32 newUnitId_ = newUnitId;
@@ -12287,5 +12287,15 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	void drone_build_execute(Unit* unit) {
+		const u32 func_address = 0x0045D2E0;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL func_address
+			POPAD
+		}
 	}
 }

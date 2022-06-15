@@ -5,7 +5,7 @@
 namespace
 {
 	const u32 Func_CreateContextHelp = 0x00481510;
-	void createContextHelpFromDialog(BinDlg* dialog, const char* text)
+	void create_context_help_from_dialog(BinDlg* dialog, const char* text)
 	{
 		u32 x = dialog->bounds.right, y = dialog->bounds.bottom;
 		if (dialog->control_type != 0)
@@ -25,26 +25,26 @@ namespace
 	}
 
 	// Replaces function @ 0x004576A0
-	void __stdcall statdatalUserInteractWrapper(BinDlg* consoleIcon)
+	void __stdcall statdata_luser_interact_wrapper(BinDlg* consoleIcon)
 	{
 		GuiOverlay* gui = (GuiOverlay*)consoleIcon->user;
 		switch (gui->overlay_type)
 		{
 			case 0:
 			{
-				createContextHelpFromDialog(consoleIcon, hooks::getWeaponTooltipString((u8)gui->id, *active_portrait_unit));
+				create_context_help_from_dialog(consoleIcon, hooks::get_weapon_tooltip_string((u8)gui->id, *active_portrait_unit));
 			} break;
 			case 1:
 			{
-				createContextHelpFromDialog(consoleIcon, hooks::getArmorTooltipString(*active_portrait_unit));
+				create_context_help_from_dialog(consoleIcon, hooks::get_armor_tooltip_string(*active_portrait_unit));
 			} break;
 			case 2:
 			{
-				createContextHelpFromDialog(consoleIcon, hooks::getShieldTooltipString(*active_portrait_unit));
+				create_context_help_from_dialog(consoleIcon, hooks::get_shield_tooltip_string(*active_portrait_unit));
 			} break;
 			case 3:
 			{
-				createContextHelpFromDialog(consoleIcon, hooks::getSpecialTooltipString(gui->id, *active_portrait_unit));
+				create_context_help_from_dialog(consoleIcon, hooks::get_special_tooltip_string(gui->id, *active_portrait_unit));
 			} break;
 		}
 	}
@@ -54,6 +54,6 @@ namespace hooks
 {
 	void inject_unit_tooltip_hooks()
 	{
-		call_patch(&statdatalUserInteractWrapper, 0x00457D4B);
+		call_patch(&statdata_luser_interact_wrapper, 0x00457D4B);
 	}
 }

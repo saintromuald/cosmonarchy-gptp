@@ -2,9 +2,9 @@
 #include "../SCBW/structures/Unit.h"
 
 namespace hooks {
-	void CMDACT_Stimpack();					//004234D0
-	void useStimPacksAIHook(Unit* unit);	//004554A0
-	void CMDRECV_StimPack();				//004C2F30
+	void cmdact_stimpack();					//004234D0
+	void use_stimpack_ai(Unit* unit);	//004554A0
+	void cmdrecv_stimpack();				//004C2F30
 
 	void injectStimPacksHooks();
 }

@@ -11,7 +11,7 @@ namespace hooks
 	// Local answer when using stimpacks (check units of selection,
 	// and can just display an error message without notifying others
 	// players of the attempt if no unit can do the stimpack action)
-	void CMDACT_Stimpack()
+	void cmdact_stimpack()
 	{
 		Unit* currentClientSelectionUnit;
 		bool bFoundUnitAbleToStimpack = false;
@@ -42,7 +42,7 @@ namespace hooks
 
 	// Identical to StimpackSFXRand @ 004554A0
 	// code used by the AI (no questions about sync between players in that case)
-	void useStimPacksAIHook(Unit* unit)
+	void use_stimpack_ai(Unit* unit)
 	{
 		if (unit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS + StimpackOffset
 			&& unit->stim_timer == 0)
@@ -61,7 +61,7 @@ namespace hooks
 	// Global answer when applying the validated action of stimpack
 	// Check the active player selection and apply stimpack effect on
 	// each valid stimpack user
-	void CMDRECV_StimPack()
+	void cmdrecv_stimpack()
 	{
 		Unit* activePlayerCurrentSelection;
 		*unit_iterator_pos = 0;

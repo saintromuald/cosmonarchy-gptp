@@ -213,7 +213,9 @@ namespace
 		{
 			u32 hpGain = unit->build_repair_hp_gain;
 			if (isOperationCwalEnabled)
+			{
 				hpGain *= 16;
+			}
 			unit->set_hitpoints(unit->hitpoints + hpGain);
 		}
 	}
@@ -357,6 +359,27 @@ namespace
 			JMP Hook_AI_ManageBases_Return
 		}
 	}
+
+	void __declspec(naked) drone_morph_standard_wrapper() { // 0045D890
+		static Unit* unit;
+		static u32 id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV id, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::drone_morph_standard(unit, id);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 extern const u32 Func_IsRemorphingBuilding;
@@ -378,5 +401,6 @@ namespace hooks
 		jump_patch(get_morph_building_id_count_type_ai_get_unit_count,					0x004334D9);
 		jump_patch(get_morph_building_id_count_wrapper_ai_manage_bases,					0x00436439);
 		jump_patch(morph_special_state_setup_wrapper,									0x0045D2A1);
+	//	jump_patch(drone_morph_standard_wrapper,										0x0045D890, 0);
 	}
 }

@@ -284,7 +284,7 @@ namespace hooks
 
 				//9479C:
 				helper::merge_status_into_unit(unit, targetUnit);
-				helper::replace_unit_with_type(unit, UnitId::ProtossMindTyrant);
+				helper::replace_unit_with_id(unit, UnitId::ProtossMindTyrant);
 
 				//update stuff related to the beginning of merge process I think
 				helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
@@ -484,7 +484,7 @@ namespace hooks
 
 				//949BC:
 				helper::merge_status_into_unit(unit, targetUnit);
-				helper::replace_unit_with_type(unit, UnitId::ProtossArchon);
+				helper::replace_unit_with_id(unit, UnitId::ProtossArchon);
 
 				unit->sprite->flags &= ~SpriteFlags::IscriptCode; //disable the flag if set
 

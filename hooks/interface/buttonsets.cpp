@@ -108,7 +108,7 @@ namespace ButtonActions
 		Research_Technology = 0x00423350,																// CMDACT_Research
 		Cancel_Technology_Research = 0x00423330,														// CMDACT_CancelResearch
 		Use_Technology = 0x00423F70,																	// btnsact_use_tech
-		StimPack = 0x004234D0,																			// CMDACT_Stimpack
+		StimPack = 0x004234D0,																			// cmdact_stimpack
 		Research_Upgrade = 0x00423310,																	// CMDACT_Upgrade
 		Cancel_Upgrade_Research = 0x004232F0,															// CMDACT_CancelUpgrade
 		Cancel_AddOn = 0x004232D0,																		// CMDACT_CancelAddon

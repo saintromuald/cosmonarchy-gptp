@@ -196,7 +196,7 @@ namespace hooks
 					}
 					if (unit->id == UnitId::ProtossCantavis)
 					{
-						helper::replace_unit_with_type(unit, UnitId::ProtossAugur);
+						helper::replace_unit_with_id(unit, UnitId::ProtossAugur);
 						unit->sprite->flags &= ~SpriteFlags::IscriptCode;
 						if (unit->sprite->images.head != nullptr)
 						{
@@ -219,7 +219,7 @@ namespace hooks
 					{
 						unit->morph_origin = unit->id;		
 						unitExt->units[UnitMorphConnectedUnit] = 0;
-						helper::replace_unit_with_type(unit, eggId); // morph into egg from source unit
+						helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
 					}
 					helper::change_unit_buttonset(unit, unit->id);
 					
@@ -271,7 +271,7 @@ namespace hooks
 			if (unit->order_signal & 4)
 			{
 				unit->order_signal -= 4;
-				helper::replace_unit_with_type(unit, unit->build_queue[unit->build_queue_slot]);
+				helper::replace_unit_with_id(unit, unit->build_queue[unit->build_queue_slot]);
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster) {
 					unit->energy = unitExt->values[ValuePreMorphEnergy];
 				} else {

@@ -294,7 +294,7 @@ namespace helper
 	void play_building_completed_sound(Unit* building);															// 008F310
 	void refresh_sprite_data(Sprite* sprite);																	// 00983A0
 	void display_last_network_error_for_player(u32 player);									                    // 009E530
-	void replace_unit_with_type(Unit* unit, u16 newUnitId);													// 009FED0
+	void replace_unit_with_id(Unit* unit, u16 newUnitId);													// 009FED0
 
 	//// building_terran
 	bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance);							// 00401240
@@ -1356,4 +1356,6 @@ namespace helper
 	u32 sort_all_units(Unit** units, Unit** units_2, Unit* unit);											// 0046F0F0
 
 	char tech_is_researched_bw(u32 player, u16 tech_id);													// 004CE8A0
+
+	void drone_build_execute(Unit* unit);																	// 0045D2E0
 }
