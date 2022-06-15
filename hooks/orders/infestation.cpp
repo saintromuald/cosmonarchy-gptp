@@ -100,8 +100,8 @@ namespace hooks
 					}
 
 					// I don't really know, advanced internal mechanics, just have to work with it
-					helper::give_unit_helper(unitInfested, unitInfesting->player, 1);
-					helper::initialize_empty_unit_linked_list_references(unitInfested, unitInfesting->player);
+					helper::give_unit(unitInfested, unitInfesting->player, 1);
+					helper::give_sprite(unitInfested, unitInfesting->player);
 
 					// Related to infestation process, don't use unitInfested->set_secondary_order
 					// because here it is supposed to perform all actions even if 

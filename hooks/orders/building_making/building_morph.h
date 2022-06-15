@@ -13,6 +13,7 @@ namespace hooks
 	void set_special_state_1(Sprite* sprite);
 
 	void drone_morph_standard(Unit* unit, u32 id);				// 0045D890
+	Unit* begin_gas_building(Unit* unit, u8 unit_id);			// 004678A0
 
 	void inject_building_morph_hooks();
 }

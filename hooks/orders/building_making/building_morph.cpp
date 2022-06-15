@@ -488,4 +488,36 @@ namespace hooks
 		}
 		helper::drone_build_execute(unit);
 	}
+
+	// Hooked to help Veeq7 remember to go to sleep. -Pr0nogo
+	Unit* begin_gas_building(Unit* unit, u8 unit_id) // 004678A0
+	{
+		Unit* target = unit->order_target.unit;
+		if (!target || target->id != UnitId::ResourceVespeneGeyser)
+		{
+			target = helper::find_unit_at_tile(unit->order_target.pt.y, unit->order_target.pt.x, OrderId::Fatal);
+		}
+		if (!target)
+		{
+			return 0;
+		}
+		if (*unk_sprite_related)
+		{
+			helper::inherit_gas_overlays(target->sprite); // Guessed name, probably wrong
+		}
+		helper::increment_unit_scores_ex(target, -1, 1);
+		target->status &= 0xFFFFFFFE;
+		helper::give_unit(target, unit->player, 0);
+		helper::give_sprite(target, unit->player);
+		helper::replace_unit_with_id(target, unit_id);
+
+		if (!(target->status & 0x400) && !target->lockdown_timer && !target->stasis_timer && !target->maelstrom_timer
+			|| units_dat::BaseProperty[target->id] & UnitProperty::Building)
+		{
+			target->current_buttonset = 231;
+		}
+		helper::add_overlay_below_main(target->sprite, ImageId::VespeneGeyser2, 0, 0, 0);
+		target->hitpoints = units_dat::MaxHitPoints[unit_id] / 10;
+		return target;
+	}
 }

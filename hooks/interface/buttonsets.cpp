@@ -212,13 +212,13 @@ namespace hooks {
 		Unit* selected;
 
 		Unit* active = get_selected_unit();
-		active_button_set_id = active->current_button_set;
+		active_button_set_id = active->current_buttonset;
 		*BUTTONSET_CURRENT_BUTTONSETID = active_button_set_id;
 
 		for (u32 i = 0; i < SelectionCap; ++i) { // count units to know if will be using special group buttonset (peons, cloakables...)
 			Unit* selected = client_selection_group->unit[i];
 			if (selected) {
-				selected_button_set_id = selected->current_button_set;
+				selected_button_set_id = selected->current_buttonset;
 
 				selected_properties = units_dat::BaseProperty[selected->id];
 				if (selected_properties & UnitProperty::Worker) {
@@ -252,7 +252,7 @@ namespace hooks {
 					count_eggs++;
 				}
 
-				// if you use a custom buttonset, and are reusing the current_button_set property of a active differently, change these conditions to take it in account
+				// if you use a custom buttonset, and are reusing the current_buttonset property of a active differently, change these conditions to take it in account
 				if (selected->status & UnitStatus::Completed && selected_button_set_id != active_button_set_id) {
 					ButtonSet* selected_button_set = hooks::getButtonSet(selected_button_set_id);
 					ButtonSet* active_button_set = hooks::getButtonSet(active_button_set_id);
@@ -491,7 +491,7 @@ namespace hooks {
 				}
 				else
 				{
-					CX_Holder = (*active_portrait_unit)->current_button_set;
+					CX_Holder = (*active_portrait_unit)->current_buttonset;
 				}
 			}
 		}

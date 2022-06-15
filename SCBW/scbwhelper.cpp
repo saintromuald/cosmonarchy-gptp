@@ -4061,7 +4061,7 @@ namespace helper
 		}
 	}
 
-	void initialize_empty_unit_linked_list_references(Unit* unit, u8 player)
+	void give_sprite(Unit* unit, u8 player)
 	{
 		const u32 Func_initializeEmptyUnitsLinkedListRef = 0x0049E4E0;
 		__asm {
@@ -4073,7 +4073,7 @@ namespace helper
 		}
 	}
 
-	void give_unit_helper(Unit* unit, u32 player, s32 unkScore)
+	void give_unit(Unit* unit, u32 player, s32 unkScore)
 	{
 		const u32 Func_GiveUnitHelper = 0x0049EFA0;
 		__asm {
@@ -12294,6 +12294,31 @@ namespace helper
 		__asm {
 			PUSHAD
 			MOV ECX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Unit* find_unit_at_tile(u16 y_pos, u16 x_pos, u16 order_id) {
+		static Unit* result;
+		const u32 func_address = 0x004734B0;
+		__asm {
+			PUSHAD
+			PUSH order_id
+			MOV CX, x_pos 
+			MOV AX, y_pos
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void inherit_gas_overlays(Sprite* sprite) {
+		const u32 func_address = 0x004D5BB0;
+		__asm {
+			PUSHAD
+			MOV EDI, sprite
 			CALL func_address
 			POPAD
 		}

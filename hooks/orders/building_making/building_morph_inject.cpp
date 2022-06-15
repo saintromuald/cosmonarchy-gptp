@@ -402,5 +402,6 @@ namespace hooks
 		jump_patch(get_morph_building_id_count_wrapper_ai_manage_bases,					0x00436439);
 		jump_patch(morph_special_state_setup_wrapper,									0x0045D2A1);
 	//	jump_patch(drone_morph_standard_wrapper,										0x0045D890, 0);
+	//	jump_patch(begin_gas_building_wrapper,											0x004678A0, 0);
 	}
 }

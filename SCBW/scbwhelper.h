@@ -453,8 +453,8 @@ namespace helper
 	s16 canTargetSpellOnFOWUnit(s32 techId, s16 unit_id);																			// 004914B0
 
 	void increment_unit_death_scores(Unit* unit, u8 player);																		// 00488AF0
-	void initialize_empty_unit_linked_list_references(Unit* unit, u8 player);														// 0049E4E0
-	void give_unit_helper(Unit* unit, u32 player, s32 unkScore);																	// 0049EFA0
+	void give_sprite(Unit* unit, u8 player);														// 0049E4E0
+	void give_unit(Unit* unit, u32 player, s32 unkScore);																	// 0049EFA0
 	void change_unit_buttonset(Unit* unit, u16 unit_id);																			// 004E5D60
 	void show_and_enable_unit(Unit* unit);																							// 004E6490
 
@@ -1358,4 +1358,7 @@ namespace helper
 	char tech_is_researched_bw(u32 player, u16 tech_id);													// 004CE8A0
 
 	void drone_build_execute(Unit* unit);																	// 0045D2E0
+
+	Unit* find_unit_at_tile(u16 y_pos, u16 x_pos, u16 order_id);											// 004734B0
+	void inherit_gas_overlays(Sprite* sprite);																// 004D5BB0
 }

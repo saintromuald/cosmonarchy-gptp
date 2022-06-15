@@ -85,7 +85,7 @@ namespace hooks
 				result = helper::update_building_land_unit_selection(*(u32*)sprite, unit);
 			}
 		}
-		unit->current_button_set = 228;
+		unit->current_buttonset = 228;
 		*control_under_mouse = 0;
 		*control_under_mouse_value = 0;
 		*force_button_refresh = 1;

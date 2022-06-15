@@ -508,7 +508,7 @@ namespace hooks
 			|| units_dat::BaseProperty[unit->id] & UnitProperty::Building
 			|| temp_unit_id == UnitId::None)
 		{
-			unit->current_button_set = temp_unit_id;
+			unit->current_buttonset = temp_unit_id;
 		}
 
 		*force_button_refresh = 1;
