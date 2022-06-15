@@ -328,7 +328,7 @@ namespace hooks
 
 	// Hooked to resolve delay on first-time multi-worker vespene harvesting. -Pr0nogo
 	void orders_harvest4(Unit* worker) { // 00468ED0
-		if (worker->worker.harvest_target && worker->worker.harvest_target->id != UnitId::ResourceVespeneGeyser) {
+		if (worker->worker.harvest_target) {
 			worker = helper::remove_from_current_harvesters(worker, worker->worker.harvest_target);
 		}
 		helper::force_order_done(worker);
@@ -365,21 +365,12 @@ namespace hooks
 		Unit* final_worker = 0;
 		while (worker) {
 			u32 previous_status = worker->status;
-			if (!(previous_status & UnitStatus::Frozen) // TODO: Replace this whole if with API is_disabled check
-			&&  !worker->lockdown_timer
-			&&  !worker->stasis_timer
-			&&  !worker->maelstrom_timer)
-			{
-				if (worker->main_order_id == OrderId::CanEnterGasMine || worker->main_order_id == OrderId::CanHarvestOre)
-				{
+			if (!scbw::unit_is_stunned(worker)) {
+				if (worker->main_order_id == OrderId::CanEnterGasMine || worker->main_order_id == OrderId::CanHarvestOre) {
 					final_worker = worker;
 				}
 			}
 			worker = worker->worker.harvest_link.next;
-			if (++i > 100) {
-				scbw::printf("Bandage fixing harvester link!");
-				break; // This is a bandage fix for harvest_link recursing indefinitely. TODO: Fix the actual cause.
-			}
 		}
 
 		if (!final_worker) {
