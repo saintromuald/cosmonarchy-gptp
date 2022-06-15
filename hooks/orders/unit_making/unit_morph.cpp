@@ -90,7 +90,7 @@ namespace hooks
 			}
 			if (!scbw::is_zerg_egg_new(unit, true, false, unit->previous_unit_type))
 			{
-				if (unit->morph_origin == UnitId::ZergLarva)
+				if (unit->morph_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva)
 				{
 					helper::order_new_unit_to_rally(unit, unit->connected_unit);
 					if (unit2)
