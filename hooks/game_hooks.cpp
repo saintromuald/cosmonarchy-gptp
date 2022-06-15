@@ -465,10 +465,13 @@ namespace hooks
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
 			{
+				// Disabled, since it doensn't seem to cause issues when disabled, and it definetely does cause issues when enabled -Veeq7
+				/*
 				// Fixes an issue where geyser would freeze, when upgrading the geyser while a harvester was mining
 				if (!(unit->status & UnitStatus::Completed)) {
 					helper::remove_harvesters(unit);
 				}
+				*/
 			} break;
 			case UnitId::TerranTalos:
 			{
@@ -1220,33 +1223,31 @@ namespace hooks
 					unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
 				}
 
-				if (unit->main_order_id == OrderId::Move)
-				{
-					if (unitExt->anthelion_last_move_target != unit->move_target.pt)
-					{
-						if (unitExt->timers[TimerAnthelionEndlessEclipse] > 1)
-						{
-							helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02), unit, 1, 0);
+				if (unit->main_order_id == OrderId::Move) {
+					Point16 target = unit->move_target.pt;
+					if (scbw::get_active_tile_at_coords(target.x, target.y)->visibility_flags & (1 << unit->player)) {
+						unitExt->anthelion_last_move_target = {};
+					} else {
+						if (unitExt->anthelion_last_move_target != target) {
+							if (unitExt->timers[TimerAnthelionEndlessEclipse] > 1) {
+								helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02), unit, 1, 0);
+							}
+							unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 						}
-						unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
-					}
-					unitExt->anthelion_last_move_target = unit->move_target.pt;
-					s16 oldX = unit->sprite->position.x;
-					s16 oldY = unit->sprite->position.y;
+						unitExt->anthelion_last_move_target = unit->move_target.pt;
+						s16 oldX = unit->sprite->position.x;
+						s16 oldY = unit->sprite->position.y;
 
-					if (unitExt->timers[TimerAnthelionEndlessEclipse] == 1)
-					{
-						bool teleport = scbw::teleport(unit, unit->move_target.pt, 0, true);
-						if (teleport)
-						{
-							scbw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->player, 11);
-							helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
-							unit->sprite->create_top_overlay(ImageId::AnthelionTeleportArrival, 0, 0, 0);
+						if (unitExt->timers[TimerAnthelionEndlessEclipse] == 1) {
+							bool teleport = scbw::teleport(unit, unit->move_target.pt, 0, true);
+							if (teleport) {
+								scbw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->player, 11);
+								helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
+								unit->sprite->create_top_overlay(ImageId::AnthelionTeleportArrival, 0, 0, 0);
+							}
 						}
 					}
-				}
-				else
-				{
+				} else {
 					unitExt->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 				}
 			} break;
@@ -1497,7 +1498,7 @@ namespace hooks
 
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon && !(unit->status & UnitStatus::Completed)) {
 			if (unit->connected_unit && !unit->connected_unit->is_frozen() && unitExt->timers[TimerAddonAnimation] == 0) {
-				u32 width = units_dat::BuildingDimensions[unit->id].x * 0.5;
+				u32 width  = units_dat::BuildingDimensions[unit->id].x * 0.5;
 				u32 height = units_dat::BuildingDimensions[unit->id].y * 0.5;
 
 				s32 x_offset = scbw::random() % width - width / 2;

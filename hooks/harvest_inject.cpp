@@ -222,14 +222,38 @@ namespace {
 			RETN
 		}
 	}
+
+	b32 death_geyser_check(Unit* unit) {
+		if (unit->id == UnitId::TerranReservoir
+		||  unit->id == UnitId::ProtossAquifer
+		||  unit->id == UnitId::ZergExcisant
+		||  unit->id == UnitId::ResourceVespeneGeyser) {
+			return true;
+		}
+		return false;
+	}
+
+	void __declspec(naked) death_geyser_check_wrapper() { // 0049F515
+		static b32 result;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = death_geyser_check(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
-namespace hooks
-{
-	void inject_harvest_resource()
-	{
+namespace hooks {
+	void inject_harvest_resource() {
 		jump_patch(remove_powerup_image_overlay_wrapper,					0x004F3900, 2);
 		jump_patch(transfer_resource_to_worker_wrapper,						0x004696D0, 0);
+
 		jump_patch(unit_is_geyser_ex_wrapper,								0x00468930, 5);
 		jump_patch(order_enter_exit_gas_wrapper,							0x00469980, 1);
 		jump_patch(can_harvest_gas_wrapper,									0x00469000, 1);
@@ -238,8 +262,11 @@ namespace hooks
 		jump_patch(begin_harvest_wrapper,									0x00468C70, 4);
 		jump_patch(let_next_unit_mine_wrapper,								0x00468970, 1);
 		jump_patch(orders_entries_move_to_harvest_obscured_wrapper,			0x00469500, 4);
+
 		jump_patch(remove_references_node_worker_wrapper,					0x00468EF0,	4);
 		jump_patch(remove_from_current_harvesters_wrapper,					0x004686D0,	4);
 		jump_patch(remove_harvesters_wrapper,								0x00468770,	1);
+
+		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
 	}
 }

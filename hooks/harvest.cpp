@@ -178,8 +178,7 @@ namespace hooks
 	}
 
 	// Hooked as part of the vespene rework. -Pr0nogo
-	void order_enter_exit_gas(Unit* unit) // 00469980
-	{
+	void order_enter_exit_gas(Unit* unit) { // 00469980
 		Unit* node = unit->order_target.unit;
 		if (node && !(node->status & UnitStatus::Completed) && !unit->unit_ai) {
 			if (unit->sprite->main_graphic->animation == IscriptAnimation::AlmostBuilt) {
@@ -190,43 +189,32 @@ namespace hooks
 
 		if (unit->sprite->flags & SpriteFlags::Hidden || node
 			&& unit_is_geyser_ex(node, unit)
-			&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either))
-		{
+			&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either)) {
 			helper::set_gathering_flags(unit);
-			if (unit->main_order_state)
-			{
-				if (unit->main_order_state == 5 && !unit->main_order_timer)
-				{
+			if (unit->main_order_state) {
+				if (unit->main_order_state == 5 && !unit->main_order_timer) {
 					s32 worker_direction = unit->current_direction_1;
 					Point16 pos = {};
-					if (helper::get_gas_exit_point(unit, node, &pos, &worker_direction))
-					{
-						if (node)
-						{
+					if (helper::get_gas_exit_point(unit, node, &pos, &worker_direction)) {
+						if (node) {
 							hooks::transfer_resource_to_worker(unit, node);
 						}
-						if (unit->worker.is_harvesting)
-						{
+						if (unit->worker.is_harvesting) {
 							helper::finished_mining(unit, unit->worker.harvest_target);
 						}
 						helper::delete_order(unit, OrderId::HarvestInterrupt);
 						helper::delete_order(unit, OrderId::ResetCollision2);
-						u8 resource_return_order = unit->resource_type & ResourceType::VespeneGas ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
-						if (!unit->order_queue_head)
-						{
+						if (!unit->order_queue_head) {
+							u8 resource_return_order = unit->resource_type & ResourceType::VespeneGas ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
 							helper::order_targeting_nothing(resource_return_order, unit, 0);
 						}
 						helper::prepend_order_targeting_nothing(unit, unit->order_queue_head, OrderId::ResetCollision2);
 						helper::force_order_done(unit);
-					}
-					else
-					{
+					} else {
 						unit->main_order_timer = 18;
 					}
 				}
-			}
-			else
-			{
+			} else {
 				helper::turnUnit(unit, scbw::get_angle(unit->position, node->position));
 				u32 timer = 30;
 				if (node && node->id == UnitId::ResourceVespeneGeyser) {
@@ -237,20 +225,16 @@ namespace hooks
 				unit->main_order_state = 5;
 				unit->main_order_timer = timer;
 			}
-		}
-		else
-		{
+		} else {
 			helper::set_resource_target(unit);
 			s32 target_pos_x = unit->move_target.pt.x;
 			s32 target_pos_y = unit->move_target.pt.y;
-			if (target_pos_x != unit->next_target_waypoint.x || target_pos_y != unit->next_target_waypoint.y)
-			{
+			if (target_pos_x != unit->next_target_waypoint.x || target_pos_y != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = target_pos_x;
 				unit->next_target_waypoint.y = target_pos_y;
 			}
 			helper::force_order_done(unit);
-			if (unit->worker.is_harvesting)
-			{
+			if (unit->worker.is_harvesting) {
 				helper::finished_mining(unit, unit->worker.harvest_target);
 			}
 		}
@@ -272,71 +256,46 @@ namespace hooks
 		if (node
 			&& node->status & UnitStatus::Completed
 			&& valid_structure
-			&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either))
-		{
+			&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either)) {
 			helper::turnUnit(unit, scbw::get_angle(unit->position, node->position));
 			if (!unit->main_order_state) {
 				helper::Order_BeginHarvest(node, unit);
 			}
-		}
-		else
-		{
+		} else {
 			helper::set_resource_target(unit);
 			u32 harvest_gas_x = unit->order_target.pt.x;
 			u32 harvest_gas_y = unit->order_target.pt.y;
-			if (harvest_gas_x != unit->next_target_waypoint.x || harvest_gas_y != unit->next_target_waypoint.y)
-			{
+			if (harvest_gas_x != unit->next_target_waypoint.x || harvest_gas_y != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = harvest_gas_x;
 				unit->next_target_waypoint.y = harvest_gas_y;
 			}
-			if (unit->order_queue_head)
-			{
-				unit->user_action_flags |= 1u;
-				helper::orders_nothing_2(unit);
-			}
-			else if (unit->unit_ai)
-			{
-				unit->order_computer(OrderId::ComputerAI);
-			}
-			else
-			{
-				unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
-			}
+			unit->order_to_idle();
 		}
 	}
 
 	// Hooked to investigate right-click error on geysers. -Pr0nogo
-	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker) // 004557C0
-	{
+	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker) { // 004557C0
 		u16 node_id = node->id;
-		if (units_dat::BaseProperty[node_id] & UnitStatus::CloakingForFree)
-		{
+		if (units_dat::BaseProperty[node_id] & UnitStatus::CloakingForFree) {
 			return OrderId::Move;
 		}
 
 		u32 result;
 		char worker_resource_type;
-		if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3)
-		{
+		if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3) {
 			bool ignore_completed = true;
 			if (node->id == UnitId::TerranReservoir && !(node->status & UnitStatus::Completed) && (!node->connected_unit || node->connected_unit->order_target.unit != node)) {
 				ignore_completed = false;
 			}
 
-			if (unit_is_geyser_ex(node, worker, ignore_completed) || node_id == UnitId::ResourceVespeneGeyser)
-			{
+			if (unit_is_geyser_ex(node, worker, ignore_completed) || node_id == UnitId::ResourceVespeneGeyser) {
 				worker_resource_type = worker->resource_type;
-				if (!worker_resource_type || worker_resource_type & ResourceType::Either)
-				{
+				if (!worker_resource_type || worker_resource_type & ResourceType::Either) {
 					result = OrderId::HarvestGas1;
-				}
-				else
-				{
+				} else {
 					result = OrderId::Move;
 				}
-			}
-			else
-			{
+			} else {
 				if (!helper::unit_is_active_resource_depot(node) || node->player != worker->player)
 				{
 					result = OrderId::None;
@@ -356,16 +315,11 @@ namespace hooks
 					result = OrderId::None;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			worker_resource_type = worker->resource_type;
-			if (!worker_resource_type || worker_resource_type & ResourceType::Either)
-			{
+			if (!worker_resource_type || worker_resource_type & ResourceType::Either) {
 				result = OrderId::MoveToMinerals;
-			}
-			else
-			{
+			} else {
 				result = OrderId::Move;
 			}
 		}
@@ -373,56 +327,35 @@ namespace hooks
 	}
 
 	// Hooked to resolve delay on first-time multi-worker vespene harvesting. -Pr0nogo
-	void orders_harvest4(Unit* worker) // 00468ED0
-	{
-		if (worker->worker.harvest_target && worker->worker.harvest_target->id != UnitId::ResourceVespeneGeyser)
-		{
+	void orders_harvest4(Unit* worker) { // 00468ED0
+		if (worker->worker.harvest_target && worker->worker.harvest_target->id != UnitId::ResourceVespeneGeyser) {
 			worker = helper::remove_from_current_harvesters(worker, worker->worker.harvest_target);
 		}
 		helper::force_order_done(worker);
 	}
 
 	// Hooked as part of the vespene overhaul. -Pr0nogo
-	s32 begin_harvest(Unit* worker, Unit* node) // 00468CAA
-	{
-		if (node->building.resource.gather_queue_count)
-		{
+	s32 begin_harvest(Unit* worker, Unit* node) { // 00468CAA
+		if (node->building.resource.gather_queue_count) {
 			return 0;
 		}
 		node->building.resource.gather_queue_count = 1;
 		worker->worker.is_harvesting = 1;
 		worker->worker.harvest_target = node;
 
-		u8 harvest_order_id = OrderId::HarvestGas3;
-		if (worker->main_order_id != OrderId::CanEnterGasMine)
-		{
-			harvest_order_id = OrderId::MiningMinerals;
+		u8 harvest_order_id = OrderId::MiningMinerals;
+		if (worker->main_order_id == OrderId::CanEnterGasMine) {
+			harvest_order_id = OrderId::HarvestGas3;
 		}
 		helper::order_immediate(worker, OrderId::HarvestInterrupt); // This needs to be called for harvesting gas too, since it's now interruptable
 		helper::prepend_order_targeting_unit(worker, node, harvest_order_id);
 
-		if (worker->order_queue_head)
-		{
-			worker->user_action_flags |= 1u;
-			helper::orders_nothing_2(worker);
-		}
-		else
-		{
-			if (worker->unit_ai)
-			{
-				helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
-			}
-			else
-			{
-				helper::issue_order_targeting_nothing(worker, units_dat::ReturnToIdleOrder[worker->id]);
-			}
-		}
+		worker->order_to_idle();
 		return 1;
 	}
 
 	// Hooked to triage issues with the vespene rework. -Pr0nogo
-	Unit* let_next_unit_mine(Unit* node) // 00468970
-	{
+	Unit* let_next_unit_mine(Unit* node) { // 00468970
 		Unit* worker = node->building.resource.next_gatherer;
 		if (!worker) {
 			return 0;
@@ -444,27 +377,23 @@ namespace hooks
 			}
 			worker = worker->worker.harvest_link.next;
 			if (++i > 100) {
+				scbw::printf("Bandage fixing harvester link!");
 				break; // This is a bandage fix for harvest_link recursing indefinitely. TODO: Fix the actual cause.
 			}
 		}
 
-		if (!final_worker)
-		{
+		if (!final_worker) {
 			return 0;
 		}
 
 		Unit* prev = final_worker->worker.harvest_link.prev;
 		Unit* next = final_worker->worker.harvest_link.next;
-		if (prev)
-		{
+		if (prev) {
 			prev->worker.harvest_link.next = next;
-		}
-		else
-		{
+		} else {
 			node->building.resource.next_gatherer = final_worker->worker.harvest_link.next;
 		}
-		if (next)
-		{
+		if (next) {
 			next->worker.harvest_link.prev = prev;
 		}
 		final_worker->worker.harvest_link.prev = 0;
@@ -485,14 +414,7 @@ namespace hooks
 				worker->next_target_waypoint.x = fixed_x;
 				worker->next_target_waypoint.y = fixed_y;
 			}
-			if (worker->order_queue_head) {
-				worker->user_action_flags |= 1;
-				helper::orders_nothing_2(worker);
-			} else if (worker->unit_ai) {
-				helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
-			} else {
-				helper::issue_order_targeting_nothing(worker, units_dat::ReturnToIdleOrder[worker->id]);
-			}
+			worker->order_to_idle();
 			return;
 		}
 		helper::set_gathering_flags(worker);
@@ -528,15 +450,15 @@ namespace hooks
 				return;
 			}
 			u16 node_id = target->id;
-			if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3) {
+			if (node_id >= UnitId::ResourceMineralField && node_id <= UnitId::ResourceMineralFieldType3) {
+				helper::prepend_order(worker, OrderId::MoveToMinerals, worker->order_target.pt, worker->order_target.unit);
+				helper::to_idle(worker);
+			} else {
 				if (helper::move_to_target(target, worker)) {
 					worker->worker.target_resource.pt = worker->order_target.pt;
 					worker->worker.target_resource.unit = worker->order_target.unit;
 					worker->main_order_state = 3;
 				}
-			} else {
-				helper::prepend_order(worker, OrderId::MoveToMinerals, worker->order_target.pt, worker->order_target.unit);
-				helper::to_idle(worker);
 			}
 		}
 	}
