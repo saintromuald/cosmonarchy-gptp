@@ -11,6 +11,6 @@ namespace hooks
 	void ordersSiegeMode(Unit* unit);
 
 	//The injector function that should be called in initialize.cpp
-	void injectSiegeTransformHooks();
+	void inject_siege_transform_hooks();
 
 } //hooks

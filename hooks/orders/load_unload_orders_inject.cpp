@@ -142,7 +142,7 @@ namespace
 
 namespace hooks
 {
-	void injectLoadUnloadOrdersHooks()
+	void inject_load_unload_orders_hooks()
 	{
 		jump_patch(orders_Pickup1Wrapper,			0x004E7300, 1);
 		jump_patch(orders_Pickup3_0Wrapper,			0x004E73B0, 1);

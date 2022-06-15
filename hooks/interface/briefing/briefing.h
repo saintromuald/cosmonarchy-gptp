@@ -3,5 +3,5 @@ namespace hooks
 {
 	void updateMissionObjectives(); // 0046CD30
 
-	void injectBriefingHooks();
+	void inject_briefing_hooks();
 }

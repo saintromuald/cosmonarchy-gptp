@@ -127,7 +127,7 @@ namespace
 
 namespace hooks
 {
-	void injectUnitTrainHooks() {
+	void inject_unit_train_hooks() {
 		jump_patch(queueSlotActiveWrapper,				0x00401E70, 2);
 		jump_patch(secondaryOrd_TrainFighterWrapper,	0x00466790, 2);
 		jump_patch(function_00468420Wrapper,			0x00468420, 4);

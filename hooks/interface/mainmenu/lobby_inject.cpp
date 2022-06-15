@@ -51,7 +51,7 @@ namespace
 namespace hooks
 {
 
-	void injectLobbyHooks()
+	void inject_lobby_hooks()
 	{
 		jump_patch(initGame_Wrapper,	0x004EE110, 0);
 		jump_patch(startGame_Wrapper, 0x00472060, 4);

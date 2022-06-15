@@ -61,7 +61,7 @@ namespace
 
 namespace hooks
 {
-	void injectUnitSpeedHooks()
+	void inject_unit_speed_hooks()
 	{
 		jump_patch(getModifiedUnitSpeedWrapper,			0x0047B5F0, 2);
 		jump_patch(getModifiedUnitAccelerationWrapper,	0x0047B8A0, 6);

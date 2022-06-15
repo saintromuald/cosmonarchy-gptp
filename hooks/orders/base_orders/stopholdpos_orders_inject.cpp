@@ -67,7 +67,7 @@ namespace
 
 namespace hooks
 {
-	void injectStopHoldPosOrdersHooks()
+	void inject_stop_hold_position_orders_hooks()
 	{
 	//	jump_patch(orders_MedicHoldPositionWrapper,		0x00464050, 0);
 	//	jump_patch(orders_ReaverStopWrapper,			0x004654B0, 1);

@@ -34,7 +34,7 @@ namespace
 
 namespace hooks
 {
-	void inject_train_cmd_recv_hooks()
+	void inject_train_cmdrecv_hooks()
 	{
 		jump_patch(cmdrecv_train_fighter_wrapper,	0x004C1800, 5);
 	//	jump_patch(cmdrecv_train_2_wrapper,		 	0x004C1C20, 7);

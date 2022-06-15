@@ -152,7 +152,7 @@ void __declspec(naked) get_stattxt_string_Wrapper()
 
 namespace hooks
 {
-	void injectButtonSetHooks()
+	void inject_buttonset_hooks()
 	{
 		jump_patch(getButtonSetPatch_For_Sub4591D0,		Func_Sub_4591ED, 2);
 		jump_patch(updateButtonSetExWrapper,			0x00458BC0, 1);

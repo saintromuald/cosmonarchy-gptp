@@ -20,7 +20,7 @@ namespace
 
 namespace hooks
 {
-	void injectBriefingHooks()
+	void inject_briefing_hooks()
 	{
 //		jump_patch(updateMissionObjectives_Wrapper,	0x0046CD30, 0);
 	}

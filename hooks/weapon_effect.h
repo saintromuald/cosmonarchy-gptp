@@ -16,7 +16,7 @@ namespace hooks
 	void splash(Bullet* bullet, u32 weaponId, u8 splashType, Unit* guaranteedHit = nullptr);
 	void lurkerSplash(Bullet* bullet, u32 weaponId, u8 splash);
 
-	void injectWeaponEffectHook();
+	void inject_weapon_effect_hooks();
 	void normalDamage(Bullet* bullet, u32 weaponId);
 	void yamatoDamage(Bullet* bullet, u32 weaponId);
 	void airSplash(Bullet* bullet, u32 weaponId);

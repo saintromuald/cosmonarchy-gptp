@@ -267,7 +267,7 @@ extern const u32 Func_FireUnitWeapon;
 
 namespace hooks
 {
-	void injectWeaponFireHooks()
+	void inject_weapon_fire_hooks()
 	{
 		jump_patch(fireWeaponWrapper,					Func_FireUnitWeapon, 0);
 		jump_patch(progressBulletFlight_Wrapper,		0x0048B3B0, 3);

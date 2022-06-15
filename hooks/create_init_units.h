@@ -10,5 +10,5 @@ namespace hooks
 	Unit* CreateUnitXY(u16 player_id, u16 id, u32 x, u32 y, bool prevent_creep); // 004CD360
 	Unit* CreatePreplacedUnit(CHKUnit* chkunit);								 // 004CD740
 
-	void injectCreateInitUnitsHooks();
+	void inject_create_initial_units_hooks();
 }

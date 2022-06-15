@@ -3,5 +3,5 @@
 
 namespace hooks
 {
-	void injectWeaponExtender();
+	void inject_weapon_extender();
 }

@@ -7,5 +7,5 @@ namespace hooks {
 	void orders_PlaceMine(Unit* a1);				// 00464FD0
 	char burrowGeneric(Unit* unit);				// 004E9A30
 
-	void injectSpiderMineHooks();
+	void inject_spider_mine_hooks();
 }

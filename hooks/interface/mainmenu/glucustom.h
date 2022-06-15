@@ -5,5 +5,5 @@ namespace hooks
 {
 	void displayEstablishingShot();					// 004D9200, hooked by X405
 	void CMDACT_game_speed(BinDlg* control);		// 00481EF0
-	void injectGlucustomHooks();
+	void inject_glucustom_hooks();
 }

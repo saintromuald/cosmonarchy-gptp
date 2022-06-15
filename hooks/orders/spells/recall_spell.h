@@ -8,6 +8,6 @@ namespace hooks
 	void spells_Recall_ActionOnTargetInRange(Unit* target, Unit* caster);			//00494400  sub_494400
 	void orders_Recall(Unit* unit);												//00494470
 
-	void injectRecallSpellHooks();
+	void inject_recall_spell_hooks();
 
 } //hooks

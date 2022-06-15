@@ -33,7 +33,7 @@ void __declspec(naked) unitTransformIntoSiegeModeOrder()
 
 namespace hooks
 {
-	void injectSiegeTransformHooks()
+	void inject_siege_transform_hooks()
 	{
 		jump_patch(unitTransformIntoTankModeOrder,	0x00464AE0, 1);
 		jump_patch(unitTransformIntoSiegeModeOrder, 0x00464BD0, 1);

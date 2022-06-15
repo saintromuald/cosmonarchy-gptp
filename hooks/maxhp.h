@@ -2,7 +2,7 @@
 #include "SCBW/api.h"
 namespace hooks
 {
-	void injectMaxHpHooks();
+	void inject_max_hp_hooks();
 	u32 maxhp(s32 id, s32 player);
 	u32 maxshields(s32 id, s32 player);
 	u32 get_total_hp_plus_shields(Unit* a1);

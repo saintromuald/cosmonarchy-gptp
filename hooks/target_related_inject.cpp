@@ -262,7 +262,7 @@ namespace hooks
 		jump_patch(return_interceptor_if_cannot_attack_wrapper,	0x00465810, 1);
 	}
 
-	void injectTargetRelatedHooks()
+	void inject_target_related_hooks()
 	{
 		injectTargetHooks();
 	}

@@ -120,7 +120,7 @@ namespace
 
 namespace hooks
 {
-	void injectCreateInitUnitsHooks()
+	void inject_create_initial_units_hooks()
 	{
 		jump_patch(CreateInitialMeleeBuildingsWrapper,	0x0049D7C0, 1);
 		jump_patch(CreateInitialMeleeUnitsWrapper,		0x0049DA40, 1);

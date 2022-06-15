@@ -6,6 +6,6 @@ namespace hooks
 
 	void orders_Die(Unit* unit);		//00479480
 
-	void injectDieOrderHook();
+	void inject_die_order_hooks();
 
 } //hooks

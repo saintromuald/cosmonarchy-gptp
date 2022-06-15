@@ -26,7 +26,7 @@ namespace
 
 namespace hooks
 {
-	void injectWeaponCooldownHook()
+	void inject_weapon_cooldown_hooks()
 	{
 		jump_patch(getModifiedWeaponCooldownWrapper, 0x00475DC0, 2);
 	}

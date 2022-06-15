@@ -97,7 +97,7 @@ namespace
 
 namespace hooks
 {
-	void injectCMDRECV_CancelHooks()
+	void inject_cmdrecv_cancel_hooks()
 	{
 		jump_patch(CMDRECV_CancelNukeWrapper,			0x004BFCD0, 4);
 		jump_patch(CMDRECV_CancelAddonWrapper,			0x004BFF30, 3);

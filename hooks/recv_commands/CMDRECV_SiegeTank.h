@@ -6,5 +6,5 @@ namespace hooks {
 	void CMDRECV_Siege(u8 command_type);					// 004C1E80
 	void CMDRECV_Unsiege(u8 command_type);					// 004C1F10
 
-	void injectCMDRECV_SiegeTankHooks();
+	void inject_cmdrecv_siege_tank_hooks();
 }

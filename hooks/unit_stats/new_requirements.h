@@ -7,5 +7,5 @@ namespace hooks
 	s32 create_unit_allowed_partial(s16 unit_id, Unit* unit, s32 player);
 	bool can_set_rally_opcode(Unit* unit);
 
-	void injectNewRequirementsHooks();
+	void inject_new_requirements_hooks();
 }

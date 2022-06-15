@@ -44,7 +44,7 @@ namespace
 
 namespace hooks
 {
-	void injectLiftLandHooks()
+	void inject_lift_land_hooks()
 	{
 		jump_patch(orders_BuildingLandWrapper,		0x00464360, 1);
 		jump_patch(orders_BuildingLiftoffWrapper,	0x004649B0, 1);

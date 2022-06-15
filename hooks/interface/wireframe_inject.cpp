@@ -39,7 +39,7 @@ namespace
 
 namespace hooks
 {
-	void injectWireframeHook()
+	void inject_wireframe_hooks()
 	{
 		// unused right now, must be updated for new unit ids if used
 	//	jump_patch(statdata_UnitWireframeUpdate_FragmentWrapper,	0x00456911, 2);

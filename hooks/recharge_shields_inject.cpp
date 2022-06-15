@@ -38,7 +38,7 @@ namespace
 
 namespace hooks
 {
-	void injectRechargeShieldsHooks()
+	void inject_recharge_shields_hooks()
 	{
 		jump_patch(unitCanRechargeShieldsWrapper,	0x00493520, 1);
 	//	jump_patch(orderRechargeShieldsWrapper,		0x00493DD0, 1);

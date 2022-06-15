@@ -4,6 +4,6 @@
 
 namespace hooks {
 
-void injectDrawHook();
+void inject_draw_hook();
 
 } //hooks

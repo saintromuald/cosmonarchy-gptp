@@ -11,7 +11,7 @@ namespace hooks
 	s32 AI_HasUnitsForAttackForce(u32 player);																		// 00437F20
 	void AI_RemoveFromAttack(s32 unit_id, s32 player);																// 00447040
 
-	void injectAttackExtenderHooks();
+	void inject_ai_attack_extender();
 }
 
 constexpr s32 ATTACK_LIMIT = 64;

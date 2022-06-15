@@ -16,5 +16,5 @@ struct Plugin : public IMPQDraftPlugin
 	BOOL WINAPI TerminatePlugin();
 
 	//Custom methods
-	BOOL checkStarCraftExeVersion(LPCSTR exePath) const;
+	BOOL check_starcraft_exe_version(LPCSTR exePath) const;
 };

@@ -176,7 +176,7 @@ namespace
 
 namespace hooks
 {
-	void injectPlacementHooks()
+	void inject_placement_hooks()
 	{
 		jump_patch(init_placement_box_pos_wrapper,							0x0048D660, 0);
 		jump_patch(draw_placement_box_wrapper,								0x0048DDC0, 4);

@@ -636,7 +636,7 @@ namespace
 
 namespace hooks
 {
-	void injectAIOrdersHooks()
+	void inject_ai_orders_hooks()
 	{
 //		jump_patch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);
 

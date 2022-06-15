@@ -374,7 +374,7 @@ namespace
 
 namespace hooks
 {
-	void injectUnitAIHooks()
+	void inject_unit_ai_hooks()
 	{
 		jump_patch(AI_TrainingUnit_Wrapper,					0x004A2830, 2);
 	//	jump_patch(AI_CreateNuke_Wrapper,					0x0045B7A0, 0);

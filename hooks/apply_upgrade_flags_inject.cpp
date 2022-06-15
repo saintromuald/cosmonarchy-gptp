@@ -47,7 +47,7 @@ namespace
 
 namespace hooks
 {
-	void injectApplyUpgradeFlags()
+	void inject_apply_upgrade_flags_hooks()
 	{
 		jump_patch(applyUpgradeFlagsToNewUnitWrapper,		0x00454370, 2);
 		jump_patch(applyUpgradeFlagsToExistingUnitsWrapper,	0x00454540, 2);

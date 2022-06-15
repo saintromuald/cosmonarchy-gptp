@@ -8,6 +8,6 @@ namespace hooks
 	void enterNydusCanal_Effect(Unit* unit, Unit* nydusCanal);	//004EA180
 	void orders_EnterNydusCanal(Unit* unit);						//004EA3E0
 
-	void injectEnterNydusHooks();
+	void inject_enter_nydus_hooks();
 
 } //hooks

@@ -163,7 +163,7 @@ struct Globals {
 
 void apply_irradiate(Unit* unit, u8 player, u32 time);
 
-void injectGlobalsHooks();
+void inject_globals_hooks();
 
 extern Globals globals;
 

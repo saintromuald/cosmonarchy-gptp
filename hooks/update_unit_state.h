@@ -9,5 +9,5 @@ namespace hooks {
 	void do_cloak(Unit* unit, s32 soundId);											// 0049B440
 	void progress_unit_frame(Unit* unit);											// 004ECF70
 
-	void injectUpdateUnitState();
+	void inject_update_unit_state_hooks();
 }

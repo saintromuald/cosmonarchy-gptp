@@ -170,7 +170,7 @@ namespace
 
 namespace hooks
 {
-	void injectAttackExtenderHooks()
+	void inject_ai_attack_extender()
 	{
 		/*
 		jump_patch(AI_TrainAttackForce_Wrapper,				0x0043E670, 4);

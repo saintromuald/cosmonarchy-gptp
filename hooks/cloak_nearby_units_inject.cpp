@@ -23,7 +23,7 @@ void __declspec(naked) cloakNearbyUnitsWrapper()
 
 namespace hooks
 {
-	void injectCloakNearbyUnits()
+	void inject_cloak_nearby_units_hooks()
 	{
 		jump_patch(cloakNearbyUnitsWrapper, 0x00491C20, 1);
 	}

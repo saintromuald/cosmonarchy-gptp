@@ -118,7 +118,7 @@ namespace
 
 namespace hooks
 {
-	void injectMedicOrdersHooks()
+	void inject_medic_orders_hooks()
 	{
 		jump_patch(orders_MedicHeal2Wrapper,		0x00463740, 1);
 		jump_patch(orders_HealMoveWrapper,			0x004637B0, 1);

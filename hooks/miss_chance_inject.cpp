@@ -25,7 +25,7 @@ namespace
 namespace hooks
 {
 
-	void injectMissChanceHooks()
+	void inject_miss_chance_hooks()
 	{
 		// remove miss change from height disadvantage
 		jump_patch(canHitTargetCheck_Wrapper, 0x004765B0, 1);

@@ -12,5 +12,5 @@ namespace hooks
 	s16 get_unit_vertical_offset_on_birth(Unit* unit);
 	Unit* begin_train(Unit* unit, u16 unit_id, bool notify_error);
 
-	void injectUnitMorphHooks();
+	void inject_unit_morph_hooks();
 }

@@ -582,7 +582,7 @@ namespace
 
 namespace hooks
 {
-    void injectWpnSpellHitHooks()
+    void inject_weapon_spell_hit_hooks()
     {
         jump_patch(IrradiateHitWrapper,							0x00454E00, 4);
         jump_patch(OpticalFlareHitWrapper,						0x00455170, 1);

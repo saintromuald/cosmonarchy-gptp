@@ -52,7 +52,7 @@ namespace
 
 namespace hooks
 {
-	void injectUnitTooltipHook()
+	void inject_unit_tooltip_hooks()
 	{
 		call_patch(&statdatalUserInteractWrapper, 0x00457D4B);
 	}

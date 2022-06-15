@@ -39,7 +39,7 @@ namespace
 
 namespace hooks
 {
-	void injectBunkerHooks()
+	void inject_bunker_hooks()
 	{
 		jump_patch(unitCanAttackInsideBunkerWrapper,	0x004790A0, 2);
 		jump_patch(createBunkerAttackThingyWrapper,		0x00477FD0, 3);

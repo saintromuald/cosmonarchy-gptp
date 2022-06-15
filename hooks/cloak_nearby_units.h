@@ -6,6 +6,6 @@ namespace hooks
 
 	void cloakNearbyUnitsHook(Unit* unit);	//00491C20
 
-	void injectCloakNearbyUnits();
+	void inject_cloak_nearby_units_hooks();
 
 } //hooks

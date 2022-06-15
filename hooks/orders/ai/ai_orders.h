@@ -45,5 +45,5 @@ namespace hooks
 	void ai_respond_to_cloaked_threat(Unit* victim, Unit* threat);														// 0043C580
 	u32 ai_try_return_home(Unit* unit, u32 dont_issue_order);															// 00462EA0
 
-	void injectAIOrdersHooks();
+	void inject_ai_orders_hooks();
 }

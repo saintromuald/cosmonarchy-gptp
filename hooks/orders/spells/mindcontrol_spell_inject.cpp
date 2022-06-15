@@ -26,7 +26,7 @@ namespace
 
 namespace hooks
 {
-	void injectMindControlSpellHook()
+	void inject_tyranny_spell_hooks()
 	{
 		jump_patch(orders_CastMindControlWrapper,		0x004F6950, 0);
 	}

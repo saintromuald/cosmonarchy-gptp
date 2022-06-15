@@ -53,7 +53,7 @@ namespace
 
 namespace hooks
 {
-	void injectGiveUnitHook()
+	void inject_give_unit_hooks()
 	{
 	//	jump_patch(giveUnit_Wrapper,	0x0049EFA0, 1);
 		jump_patch(giveAI_Wrapper,		0x00463040,	1);

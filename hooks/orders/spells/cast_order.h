@@ -8,5 +8,5 @@ namespace hooks
 	bool canTargetSpell(u16 techId, Unit* target, s16 fowUnitId, Unit* caster, s16 x, s16 y, u16* error);	// 00492020
 	void issueOrderTargetingGround(Unit* unit, u8 id, u16 coordX, u16 coordY);								// 00475260
 
-	void injectCastOrderHooks();
+	void inject_cast_order_hooks();
 }

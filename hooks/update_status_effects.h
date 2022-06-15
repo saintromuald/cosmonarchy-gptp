@@ -5,5 +5,5 @@ namespace hooks {
 	void update_status_effects(Unit* unit);
 	void ai_burrower(Unit* unit);
 
-	void injectUpdateStatusEffects();
+	void inject_update_status_effects_hooks();
 }

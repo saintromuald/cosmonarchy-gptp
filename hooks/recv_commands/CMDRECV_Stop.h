@@ -8,6 +8,6 @@ namespace hooks
 	void CMDRECV_CarrierStop();			//004C1430
 	void CMDRECV_Stop(u8 bCommandType);	//004C2190
 
-	void injectCMDRECV_StopHooks();
+	void inject_cmdrecv_stop_hooks();
 
 } //hooks

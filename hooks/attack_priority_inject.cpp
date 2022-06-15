@@ -69,7 +69,7 @@ namespace
 
 namespace hooks
 {
-	void injectAttackPriorityHooks()
+	void inject_attack_priority_hooks()
 	{
 		jump_patch(getAttackPriorityWrapper,			0x00442160, 3);
 		jump_patch(findBestAttackTargetWrapper,			0x00443080, 1);

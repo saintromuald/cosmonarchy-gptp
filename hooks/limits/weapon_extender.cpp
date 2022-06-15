@@ -160,7 +160,7 @@ static inline void patchWeaponDat(u32 opcodeSize, u32 address, u32 patchType)
 
 namespace hooks
 {
-	void injectWeaponExtender()
+	void inject_weapon_extender()
 	{
 		// Load code
 

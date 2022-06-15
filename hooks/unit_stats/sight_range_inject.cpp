@@ -29,7 +29,7 @@ namespace
 
 namespace hooks
 {
-	void injectSightRangeHook()
+	void inject_sight_range_hooks()
 	{
 		jump_patch(getSightRangeWrapper, Func_GetSightRange, 4);
 	}
