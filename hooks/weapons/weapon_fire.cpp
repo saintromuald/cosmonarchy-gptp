@@ -53,8 +53,6 @@ namespace
 	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc)0x004762C0;
 }
 
-//-------- Actual hook functions --------//
-
 namespace hooks
 {
 	static void launch_missile(Unit* attacker, UnitExt* attackerExt, Unit* target, u8 weaponId)

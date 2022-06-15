@@ -634,18 +634,16 @@ namespace hooks
 								if (energy) {
 									data.target->energy -= energy;
 									data.attacker->heal_energy(energy);
-									helper::create_thingy(SpriteId::Feedback_Hit_Small + target_offset,
-										data.target->position.x, data.target->position.y, data.attackingPlayerId);
+									helper::create_thingy(SpriteId::Feedback_Hit_Small + target_offset, data.target->position.x, data.target->position.y, data.attackingPlayerId);
 								}
 							}
 						} else {
 							// Entropy Gauntlet
-							u32 energy = std::min(data.attacker->energy, (u16)(10 * 256));
+							u32 energy = std::min(data.attacker->energy, (u16)(15 * 256));
 							if (energy) {
 								data.attacker->energy -= energy;
-								data.final_damage += energy;
-								helper::create_thingy(SpriteId::EntropyGauntletsOverlay,
-									data.attacker->position.x, data.attacker->position.y, data.attackingPlayerId);
+								data.final_damage += energy / 2;
+								helper::create_thingy(SpriteId::EntropyGauntletsOverlay, data.attacker->position.x, data.attacker->position.y, data.attackingPlayerId);
 							}
 						}
 					} break;
