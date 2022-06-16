@@ -467,8 +467,8 @@ void unit_destructor_special_cases(Unit* unit)
 }
 
 void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 tile_x, s32 tile_y) {
-	for (s32 y = tile_height; y >= 0; --y) {
-		for (s32 x = tile_width; x >= 0; --x) {
+	for (s32 y = tile_height - 1; y >= 0; --y) {
+		for (s32 x = tile_width - 1; x >= 0; --x) {
 			s32 fx = tile_x + x;
 			s32 fy = tile_y + y;
 			if (fx >= 0 && fx < map_tile_size->width && fy >= 0 && fy < map_tile_size->height) {
