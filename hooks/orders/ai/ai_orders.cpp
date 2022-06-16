@@ -1747,21 +1747,27 @@ LABEL_37:
 		f32 score = 0;
 
 		// TODO: make trigger customizable (and probably convert all biases to 1.0, so it's always the default)
+		const f32 own_bias      = -1.0;
 		const f32 ally_bias     = -0.5;
 		const f32 enemy_bias    =  0.5;
 		const f32 distance_bias = -4.0;
 		const f32 mineral_bias  =  1.0;
 		const f32 gas_bias      =  1.0;
 
+		u32 own_count = 0;
 		u32 ally_count = 0;
 		u32 enemy_count = 0;
+		f32 average_own_distance = 0; 
 		f32 average_ally_distance = 0; 
 		f32 average_enemy_distance = 0; 
 
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			for (Unit* unit = first_player_unit->unit[i]; unit; unit = unit->player_link.next) {
 				f32 distance = scbw::get_distance_fast(area->position, unit->position) / 32.0;
-				if (scbw::is_allied_to(player, i)) {
+				if (player == i) {
+					own_count++;
+					average_own_distance += distance;
+				} else if (scbw::is_allied_to(player, i)) {
 					ally_count++;
 					average_ally_distance += distance;
 				} else {
@@ -1770,8 +1776,10 @@ LABEL_37:
 				}
 			}
 		}
+		average_own_distance   /= own_count;
 		average_ally_distance  /= ally_count;
 		average_enemy_distance /= enemy_count;
+		score += average_own_distance   * own_bias;
 		score += average_ally_distance  * ally_bias;
 		score += average_enemy_distance * enemy_bias;
 
@@ -1785,8 +1793,10 @@ LABEL_37:
 
 		for (u32 j = 0; j < units->count; ++j) {
 			Unit* unit = units->units[j];
-			if (player != unit->player && scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
-				score -= 100;
+			if (unit->player < PlayerLimit) {
+				if (player != unit->player && scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
+					score -= 10;
+				}
 			}
 		}
 
@@ -1810,7 +1820,7 @@ LABEL_37:
 		}
 
 		Region* main_region = scbw::get_region(scbw::get_region_id(main_town->position));
-		for (u32 i = 1; i < resource_areas->used_count; ++i) {
+		for (u32 i = 1; i <= resource_areas->used_count; ++i) {
 			ResourceArea* area = &resource_areas->areas[i];
 			if (area->flags & 3) {
 				continue;
@@ -1822,11 +1832,13 @@ LABEL_37:
 			EntryArray units = unit_search_radial(area->position, 12 * 32);
 			for (u32 j = 0; j < units.count; ++j) {
 				Unit* unit = units.units[j];
-				if (player != unit->player && scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_factory) {
-					goto exit;
-				}
-				if (!scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
-					goto exit;
+				if (unit->player < PlayerLimit) {
+					if (player != unit->player && scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_factory) {
+						goto exit;
+					}
+					if (!scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
+						goto exit;
+					}
 				}
 			}
 

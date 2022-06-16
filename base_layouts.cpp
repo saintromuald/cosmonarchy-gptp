@@ -208,7 +208,7 @@ static void init_base_layouts() {
 	}
 
 	for (u32 i = 0; i < PlayerLimit; ++i) {
-		for (u32 j = 1; j < ResAreaLimit; ++j) {
+		for (u32 j = 1; j <= resource_areas->used_count; ++j) {
 			BaseLayouts* base_layouts = &resarea_base_layouts[i][j];
 			base_layouts->resarea_pos = resource_areas->areas[j].position;
 			sort_base_layouts(base_layouts);
@@ -359,7 +359,7 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 }
 
 static bool has_expanding_town(u32 player) {
-	for (u32 i = 1; i < ResAreaLimit; ++i) {
+	for (u32 i = 1; i <= resource_areas->used_count; ++i) {
 		BaseLayouts* base_layouts = active_base_layouts[i];
 		if (base_layouts && base_layouts->town->player == player && !base_layouts->town->main_building) {
 			return true;
@@ -402,7 +402,7 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 	u32 best_priority = 0;
 	u32 best_distance = UINT_MAX;
 	u32 best_resarea = 0;
-	for (u32 i = 1; i < ResAreaLimit; ++i) {
+	for (u32 i = 1; i <= resource_areas->used_count; ++i) {
 		// Check if resarea is available
 		if (resource_areas->areas[i].flags & 3) {
 			continue;
@@ -432,7 +432,7 @@ void tick_base_layouts() {
 	}
 
 	// Deinit, Tick
-	for (u32 i = 1; i < ResAreaLimit; ++i) {
+	for (u32 i = 1; i <= resource_areas->used_count; ++i) {
 		BaseLayouts* base_layouts = active_base_layouts[i];
 		if (base_layouts) {
 			AiTown* town = base_layouts->town;
