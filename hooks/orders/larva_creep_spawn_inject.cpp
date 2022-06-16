@@ -94,33 +94,6 @@ namespace
 		}
 	}
 
-	/*
-	void __declspec(naked) spreadCreep_Wrapper() // 0x00414680
-	{
-		u8 spread_creep(u16 unit_id, s32 x, s32 y);
-
-		static u16 unit_id;
-		static s32 x;
-		static s32 y;
-		static u8 result;
-
-		__asm
-		{
-		MOV unit_id, DX
-		MOV x, ECX
-		MOV y, EAX
-		PUSHAD
-		}
-		result = hooks::spread_creep(unit_id, x, y);
-		__asm
-		{
-		POPAD
-		MOV AL, result
-		RET
-		}
-	}
-	*/
-
 	void __declspec(naked) get_creep_region_wrapper() // 0x00413DB0
 	{
 		static Box32* rect;
@@ -221,7 +194,7 @@ namespace
 			MOV y, EAX
 			PUSHAD
 		}
-		r = hooks::inCreepArea(x, y);
+		r = hooks::in_creep_area(x, y);
 		__asm
 		{
 			POPAD
@@ -359,14 +332,12 @@ namespace hooks
 		jump_patch(secondary_order_spawning_larva_wrapper,				0x004EA780, 1);
 		jump_patch(secondary_order_spread_creep_spawning_larva_wrapper, 0x004EA880, 3);
 
-//		jump_patch(spreadCreep_Wrapper,						0x00414680); // not really useful
-
 		jump_patch(get_creep_region_wrapper,				0x00413DB0);
 		jump_patch(spreads_creep_wrapper,					0x00413870);
 		jump_patch(run_creep_randomizer_wrapper,			0x004140A0);
 //		jump_patch(update_creep_disappearance_unit_wrapper, 0x0047DF90, 0); // broken
 
-		jump_patch(bug_wrapper, 0x0047DCCA); // attempt to fix Bug
+		jump_patch(bug_wrapper, 0x0047DCCA); // attempt to fix bug
 
 //		jump_patch(btsncond_zerg_building_rally_wrapper, 0x00429740, 2);
 		

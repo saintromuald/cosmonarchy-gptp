@@ -130,7 +130,7 @@ namespace hooks
 	// Fires a weapon from the @p unit.
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fireWeapon().
-	void fire_weapon(Unit* unit, u8 wId)
+	void fire_weapon(Unit* unit, u8 wId) // 00479C90
 	{
 		if (unit == nullptr)
 		{
@@ -385,7 +385,7 @@ namespace hooks
 		}
 	}
 
-	void progress_bullet_flight(Bullet* bullet)
+	void progress_bullet_flight(Bullet* bullet) // 0048B3B0
 	{
 		Bullet* v1;
 		Unit* target;

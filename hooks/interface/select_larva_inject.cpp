@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) getLarvaeUnitsFromList_Wrapper()
+	void __declspec(naked) get_larvae_units_from_list_wrapper()
 	{
 		static Unit** unitList;
 		static Unit** outputList;
@@ -22,14 +22,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) BTNSACT_SelectLarva_Wrapper()
+	void __declspec(naked) btnsact_select_larva_wrapper()
 	{
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSHAD
 		}
-		hooks::BTSNACT_select_larva();
+		hooks::btnsact_select_larva();
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -43,7 +43,7 @@ namespace hooks
 {
 	void inject_select_larva_hooks()
 	{
-		jump_patch(getLarvaeUnitsFromList_Wrapper,	0x00423190, 1);
-		jump_patch(BTNSACT_SelectLarva_Wrapper,		0x00423930, 1);
+		jump_patch(get_larvae_units_from_list_wrapper,	0x00423190, 1);
+		jump_patch(btnsact_select_larva_wrapper,		0x00423930, 1);
 	}
 }

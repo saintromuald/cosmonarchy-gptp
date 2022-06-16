@@ -14,7 +14,7 @@ namespace hooks
 	};
 
 	static void select_larva_type(u32 type) {
-		BTSNACT_select_larva();
+		btnsact_select_larva();
 		helper::update_hud_info();
 		if (*active_portrait_unit && (*active_portrait_unit)->id == UnitId::ZergLarva) {
 			helper::BTNSACT_ChangeButtons(206 + type);

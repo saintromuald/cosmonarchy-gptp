@@ -35,7 +35,7 @@ namespace hooks
 
 	/// Action of Select Larva button from main Zerg building
 	/// Like almost all button actions, a command is queued and broadcast to all players (happen in cmdact_select that happen in select_multiple_units_from_unit_list).
-	void BTSNACT_select_larva() { // 00423930
+	void btnsact_select_larva() { // 00423930
 		u32 count = 0;
 		Unit* selection[SelectionCap] = {};
 
