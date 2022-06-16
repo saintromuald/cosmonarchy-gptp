@@ -135,7 +135,7 @@ SCBW_DATA(s32*, screenX, 0x00628448);
 SCBW_DATA(s32*, screenY, 0x00628470);
 
 ///To use with a player ID
-SCBW_DATA(Point16*, startPositions, 0x0058D720);
+SCBW_DATA(Point16*, start_positions, 0x0058D720);
 
 /// Mouse position relative to the screen
 SCBW_DATA(const Vector32*, mouse, 0x006CDDC4);

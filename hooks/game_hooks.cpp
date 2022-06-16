@@ -328,7 +328,7 @@ namespace hooks
 						color = 8; // green
 					}
 
-					scbw::minimap_ping(startPositions[target].x, startPositions[target].y, color, *LOCAL_NATION_ID);
+					scbw::minimap_ping(start_positions[target].x, start_positions[target].y, color, *LOCAL_NATION_ID);
 				}
 			}
 		}

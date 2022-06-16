@@ -959,7 +959,7 @@ C_ASSERT(sizeof(ResourceArea) == 48);
 
 struct ResourceAreaArray {
 	ResourceArea areas[250];
-	u32 used_count;
+	u32 count;
 	u32 frames_till_update;
 };
 
