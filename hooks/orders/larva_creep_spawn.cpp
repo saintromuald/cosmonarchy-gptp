@@ -6,8 +6,8 @@
 
 namespace hooks
 {
-	helper::setCreepRelationalData_callback runCreepRandomizerPtr = &runCreepRandomizer;
-	void function_0049D660(Unit* main_building)
+	helper::setCreepRelationalData_callback runCreepRandomizerPtr = &run_creep_randomizer;
+	void create_building_larva(Unit* main_building)
 	{
 		Vector32 coords;
 		// look for a location to spawn a larva at
@@ -31,7 +31,7 @@ namespace hooks
 	}
 
 	// filter for larva in internal game searches, use the limit of 3 larvas
-	bool function_004E8C80(Unit* unit, Unit* main_building)
+	bool iterate_units_at_location_target_proc_larva_count(Unit* unit, Unit* main_building)
 	{
 		// while bReturnValue == false, the calling function keep calling,
 		// so it return true only when max amount of larvas was counted,
@@ -63,7 +63,7 @@ namespace hooks
 		return bReturnValue;
 	}
 
-	void secondaryOrd_SpawningLarva(Unit* unit)
+	void secondary_order_spawning_larva(Unit* unit)
 	{
 		if (unit->status & UnitStatus::IsHallucination) {
 			return;
@@ -79,7 +79,7 @@ namespace hooks
 			coords.bottom = unit->sprite->position.y + 256;
 
 			// Count existing larvas in LARVA_COUNTER
-			helper::IterateUnitsAtLocationTargetProc_LarvaCount(unit, &coords);
+			helper::iterate_units_at_location_target_proc_larva_count(unit, &coords);
 			if (*larvaCounter < 3 && !(unit->status & UnitStatus::InAir))
 			{
 				if (unit->building.larva_timer != 0)
@@ -150,7 +150,7 @@ namespace hooks
 		}
 	}
 
-	void secondaryOrd_SpreadCreepSpawningLarva(Unit* unit)
+	void secondary_order_spread_creep_spawning_larva(Unit* unit)
 	{
 		if (unit->id == UnitId::ZergHatchery
 			|| unit->id == UnitId::ZergLair
@@ -158,7 +158,7 @@ namespace hooks
 			|| unit->id == UnitId::ZergSire
 			|| unit->id == UnitId::ZergLarvalColony)
 		{
-			secondaryOrd_SpawningLarva(unit);
+			secondary_order_spawning_larva(unit);
 		}
 		if (unit->building.creep_timer != 0)
 		{
@@ -190,7 +190,7 @@ namespace hooks
 
 			// look for a place to spawn creep on
 			// return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
-			// Replace UnitId::ZergHive with unit->id if giving specific buildings different creep bounding rectangles in getCreepRegion
+			// Replace UnitId::ZergHive with unit->id if giving specific buildings different creep bounding rectangles in get_creep_region
 			result_00414680 = helper::spread_creep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
 			if (unit->id == 180 && result_00414680 != 0)
 			{
@@ -290,7 +290,7 @@ namespace hooks
 
 	// Returns the bounding rectangle (in tiles) of the maximum extent of creep around a source or the building footprint of a non-source creep building.
 	// Return value is if the building is a creep source (spreads creep) or not
-	bool getCreepRegion(Box32* rect, u16 unit_id, s32 x, s32 y, bool defRetVal)
+	bool get_creep_region(Box32* rect, u16 unit_id, s32 x, s32 y, bool defRetVal)
 	{
 		// Default maximum bounding count
 		const static s32 maxCreepAreaLeft = 320; // 10 tiles
@@ -401,7 +401,7 @@ namespace hooks
 	}
 
 	// Callback to determine the creep tile that will replace the existing tile.
-	bool runCreepRandomizer(u16* tileBackup, u8* creepOverlayVal, u32* retval, u16* tile, u32 arg)
+	bool run_creep_randomizer(u16* tileBackup, u8* creepOverlayVal, u32* retval, u16* tile, u32 arg)
 	{
 		// Stores the existing tile to replace the creep tile when the creep is removed
 		if (*tileBackup == 0)
@@ -424,7 +424,7 @@ namespace hooks
 		return true;
 	}
 
-	u32 BTNSCOND_ZergBuildingRally(u32 unused, u32 player, Unit* unit) // 00429740
+	u32 btsncond_zerg_building_rally(u32 unused, u32 player, Unit* unit) // 00429740
 	{
 		if (scbw::is_zerg_production(unit->id)
 			|| scbw::is_zerg_production(unit->build_queue[unit->build_queue_slot]))
@@ -438,7 +438,7 @@ namespace hooks
 	}
 
 	/*
-	char applyCreepAtLocationFromUnitType(s16 a1, s32 a2, s32 a3) // 004148F0
+	char apply_creep_at_location_from_unit_id(s16 a1, s32 a2, s32 a3) // 004148F0
 	{
 		u32 v3; // ecx
 		u32 v4; // ebx
@@ -479,7 +479,7 @@ namespace hooks
 							modifyCreepState(
 								v9,
 								v6,
-								(s32(__stdcall*)(s32, s32, s32, s32, s32))runCreepRandomizer,
+								(s32(__stdcall*)(s32, s32, s32, s32, s32))run_creep_randomizer,
 								0);
 							if (!(*(u32*)0x006D0C78) || !unkCreepBorders(v9, v6))
 							{
@@ -503,7 +503,7 @@ namespace hooks
 	}
 	*/
 
-	s32 UpdateCreepDisappearanceUnit(Unit* unit)
+	s32 update_creep_disappearance_unit(Unit* unit)
 	{
 		Box32 rect = {};
 		bool does_spread = helper::get_creep_spread_area(unit->id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &rect);
