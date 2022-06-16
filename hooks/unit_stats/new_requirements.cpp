@@ -108,7 +108,7 @@ namespace hooks {
 					return true;
 				}
 				case UnitId::TerranTalos:
-				case UnitId::TerranNuclearSilo:
+				case UnitId::TerranMissileSilo:
 				case UnitId::TerranQuarry:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
@@ -118,7 +118,7 @@ namespace hooks {
 				}
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranNuclearSilo))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMissileSilo))
 		{
 			switch (unit_id)
 			{
@@ -146,7 +146,7 @@ namespace hooks {
 				{
 					return true;
 				}
-				case UnitId::TerranNuclearSilo:
+				case UnitId::TerranMissileSilo:
 				case UnitId::TerranQuarry:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
@@ -1193,7 +1193,7 @@ namespace hooks {
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranNuclearSilo:
+					case UnitId::TerranMissileSilo:
 					case UnitId::TerranQuarry:
 					{
 						if (hasAddon || isTraining)
@@ -1208,7 +1208,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranNuclearSilo:
+			case UnitId::TerranMissileSilo:
 			{
 				switch (unit_id)
 				{
@@ -1243,7 +1243,7 @@ namespace hooks {
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranNuclearSilo:
+					case UnitId::TerranMissileSilo:
 					case UnitId::TerranQuarry:
 					{
 						if (hasAddon || isTraining)

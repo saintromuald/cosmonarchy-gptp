@@ -201,7 +201,7 @@ namespace hooks
 			}
 			// Addons
 			case UnitId::TerranComsatStation:
-			case UnitId::TerranNuclearSilo:
+			case UnitId::TerranMissileSilo:
 			case UnitId::TerranQuarry:
 			{
 				unit_id = UnitId::TerranCommandCenter;
@@ -391,7 +391,7 @@ namespace hooks
 			{
 				helper::ai_cast_spell_behavior(unit, 0);
 			} break;
-			case UnitId::TerranNuclearSilo:
+			case UnitId::TerranMissileSilo:
 			{
 				helper::ai_nuke_silo_behavior(unit);
 			} break;

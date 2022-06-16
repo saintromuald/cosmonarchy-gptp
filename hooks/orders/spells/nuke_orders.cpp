@@ -112,7 +112,7 @@ namespace hooks
 					{
 						bLoopEnd = true;
 					}
-					else if (current_unit->id == UnitId::TerranNuclearSilo
+					else if (current_unit->id == UnitId::TerranMissileSilo
 					&&		 current_unit->building.silo.is_ready)
 					{
 						bLoopEnd = true;

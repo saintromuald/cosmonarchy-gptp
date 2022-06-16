@@ -1337,6 +1337,20 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::TerranMissileSilo:
+			{
+				// Light up yellow when missile is loaded. -Pr0nogo
+				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {
+					if (unitExt->values[ValueMissileSiloLoaded] == 0 && unit->building.silo.nuke) {
+						unitExt->values[ValueMissileSiloLoaded] = 1;
+						unit->sprite->main_graphic->play_iscript_animation(IscriptAnimation::Unused2);
+					}
+					else if (unitExt->values[ValueMissileSiloLoaded] == 1 && !unit->building.silo.nuke) {
+						unitExt->values[ValueMissileSiloLoaded] = 0;
+						unit->sprite->main_graphic->play_iscript_animation(IscriptAnimation::Built);
+					}
+				}
+			} break;
 		}
 
 		// Tyranny

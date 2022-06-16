@@ -2332,7 +2332,7 @@ namespace scbw
 		if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
 			switch (unit_id) {
 				case UnitId::TerranComsatStation:
-				case UnitId::TerranNuclearSilo:
+				case UnitId::TerranMissileSilo:
 				case UnitId::TerranQuarry:
 					return false;
 			}

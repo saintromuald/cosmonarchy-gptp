@@ -261,7 +261,7 @@ namespace UnitId
 		/*0x69*/	Spell_DisruptionWeb						= 105,
 		/*0x6A*/	TerranCommandCenter						= 106,
 		/*0x6B*/	TerranComsatStation						= 107,
-		/*0x6C*/	TerranNuclearSilo						= 108,
+		/*0x6C*/	TerranMissileSilo						= 108,
 		/*0x6D*/	TerranSupplyDepot						= 109,
 		/*0x6E*/	TerranReservoir							= 110,
 		/*0x6F*/	TerranBarracks							= 111,

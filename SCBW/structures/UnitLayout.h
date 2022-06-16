@@ -230,6 +230,7 @@ enum ExtValueId
 	ValueTyrannyPlayer,
 	ValueNewRepairTimer,
 	ValueSporeColonyMissilePos,
+	ValueMissileSiloLoaded,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -535,7 +536,7 @@ struct UnitLayout
 	/*0x064*/ u16       id;								// Unit ID in units.dat
 	/*0x066*/ u8		cmbw_resource_regen_cooldown;	// Cosmonarchy BW - mineral regen cooldown
 			  u8		unused_67;						// unused
-	/*0x068*/ Link<Unit> player_link;
+	/*0x068*/ Link<Unit>player_link;
 	/*0x070*/ Unit*		subunit;
 	/*0x074*/ Order*	order_queue_head;
 	/*0x078*/ Order*	order_queue_tail;

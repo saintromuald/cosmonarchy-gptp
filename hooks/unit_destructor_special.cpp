@@ -169,13 +169,13 @@ void unit_destructor_special_cases(Unit* unit)
 		} break;
 		case UnitId::TerranNuclearMissile:
 		{
-			if (unit->connected_unit != nullptr && unit->connected_unit->id == UnitId::TerranNuclearSilo)
+			if (unit->connected_unit != nullptr && unit->connected_unit->id == UnitId::TerranMissileSilo)
 			{
 				(unit->connected_unit)->building.silo.nuke = nullptr;
 				(unit->connected_unit)->building.silo.is_ready = false;
 			}
 		} break;
-		case UnitId::TerranNuclearSilo:
+		case UnitId::TerranMissileSilo:
 		{
 			if (unit->building.silo.nuke != nullptr)
 			{
@@ -394,7 +394,7 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Nuclear Silo - death
-	if (unit->id == UnitId::TerranNuclearSilo && unit->building.silo.is_ready && !unitExt->timers[TimerControlledDemolition])
+	if (unit->id == UnitId::TerranMissileSilo && unit->building.silo.is_ready && !unitExt->timers[TimerControlledDemolition])
 	{
 		scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
 		helper::create_bullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);

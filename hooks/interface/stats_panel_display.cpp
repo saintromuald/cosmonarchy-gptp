@@ -257,7 +257,7 @@ namespace hooks
 				}
 			}
 			unit_id = helper::get_last_queue_slot_id(activeUnit);
-			if (unit_id == UnitId::TerranNuclearSilo)
+			if (unit_id == UnitId::TerranMissileSilo)
 			{
 				helper::StatsNukesCount(dialog, index);
 				index++;
@@ -402,7 +402,7 @@ namespace hooks
 			helper::draw_progress_bar(dialog);
 			goto LABEL_32;
 		}
-		if (unit_id == UnitId::TerranNuclearSilo)
+		if (unit_id == UnitId::TerranMissileSilo)
 		{
 			scbw::print("draw_nuke_silo_info");
 			helper::draw_nuke_silo_info(dialog);

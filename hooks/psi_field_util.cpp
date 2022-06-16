@@ -35,7 +35,7 @@ bool is_valid_psi_provider_type(u16 unit_id)
 	// Uses memory space of Unit::building for other purposes
 	if (unit_id == UnitId::TerranEidolon
 		|| unit_id == UnitId::ZergNydusCanal
-		|| unit_id == UnitId::TerranNuclearSilo
+		|| unit_id == UnitId::TerranMissileSilo
 		|| unit_id == UnitId::ZergHatchery
 		|| unit_id == UnitId::ZergLair
 		|| unit_id == UnitId::ZergHive)
