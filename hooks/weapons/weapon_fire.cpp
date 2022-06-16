@@ -1,5 +1,3 @@
-//Source file for the Weapon Fire hook module.
-//This hook controls how weapons are fired.
 #include "weapon_fire.h"
 #include <SCBW/scbwdata.h>
 #include <SCBW/enumerations.h>
@@ -15,9 +13,7 @@
 #include <set>
 #include "weapon_cooldown.h"
 
-//-------- Helper function declarations. Do NOT modify! ---------//
-
-static bool madrigalFuriaMatch(Unit* madrigal, Unit* unit)
+static bool madrigal_furia_match(Unit* madrigal, Unit* unit)
 {
 	if (unit == madrigal)
 	{
@@ -38,7 +34,7 @@ static bool madrigalFuriaMatch(Unit* madrigal, Unit* unit)
 	return true;
 }
 
-static bool alkajSporeMatch(Bullet* bullet, Unit* unit)
+static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 {
 	if (unit->status & UnitStatus::Invincible)
 	{
@@ -57,11 +53,9 @@ namespace
 	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc)0x004762C0;
 }
 
-//-------- Actual hook functions --------//
-
 namespace hooks
 {
-	static void launchMissile(Unit* attacker, UnitExt* attackerExt, Unit* target, u8 weaponId)
+	static void launch_missile(Unit* attacker, UnitExt* attackerExt, Unit* target, u8 weaponId)
 	{
 		s32 posX;
 		s32 posY;
@@ -93,13 +87,13 @@ namespace hooks
 			&& attacker->main_order_id != OrderId::Patrol)
 		{
 			targets.insert(attacker->order_target.unit);
-			launchMissile(attacker, attackerExt, attacker->order_target.unit, weaponId);
+			launch_missile(attacker, attackerExt, attacker->order_target.unit, weaponId);
 			fired = true;
 		}
 		Unit* old = attacker->order_target.unit;
 		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
 		{
-			u32 range = hooks::getMaxWeaponRangeHook(attacker, weaponId, 0);
+			u32 range = hooks::get_max_weapon_range(attacker, weaponId, 0);
 			auto filter = cosmonarchy_finder_match(attacker, flags, {});
 			Unit* newTarget = scbw::UnitFinder::get_nearest_target(
 				attacker->get_x() - range,
@@ -125,7 +119,7 @@ namespace hooks
 				break;
 			}
 			attacker->order_target.unit = newTarget;
-			launchMissile(attacker, attackerExt, newTarget, weaponId);
+			launch_missile(attacker, attackerExt, newTarget, weaponId);
 			fired = true;
 			targets.insert(newTarget);
 		}
@@ -136,7 +130,7 @@ namespace hooks
 	// Fires a weapon from the @p unit.
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fireWeapon().
-	void fireWeaponHook(Unit* unit, u8 wId)
+	void fire_weapon(Unit* unit, u8 wId)
 	{
 		if (unit == nullptr)
 		{
@@ -391,7 +385,7 @@ namespace hooks
 		}
 	}
 
-	void progressBulletFlight(Bullet* bullet)
+	void progress_bullet_flight(Bullet* bullet)
 	{
 		Bullet* v1;
 		Unit* target;
@@ -411,7 +405,7 @@ namespace hooks
 					bullet,
 					[&](Unit* unit)
 				{
-					return alkajSporeMatch(bullet, unit);
+					return alkajelisk_spore_match(bullet, unit);
 				});
 				if (seekTarget != nullptr)
 				{
@@ -421,17 +415,17 @@ namespace hooks
 					bullet->move_target.pt = seekTarget->position;
 					bullet->targetPosition = seekTarget->position;
 					bullet->targetPosition2 = seekTarget->position;
-					helper::progressBulletMovement_func(bullet);
+					helper::progress_bullet_movement(bullet);
 				}
 			}
 			else
 			{
-				helper::progressBulletMovement_func(bullet);
+				helper::progress_bullet_movement(bullet);
 			}
 		}
 		else
 		{
-			helper::progressBulletMovement_func(bullet);
+			helper::progress_bullet_movement(bullet);
 		}
 
 		u8 time = bullet->time_remaining--;
@@ -491,7 +485,7 @@ namespace hooks
 						{
 							continue;
 						}
-						if (!alkajSporeMatch(bullet, target))
+						if (!alkajelisk_spore_match(bullet, target))
 						{
 							continue;
 						}
@@ -613,7 +607,7 @@ namespace hooks
 			}
 		}
 
-		// for missiles hitting targets mid-flight
+		// For missiles hitting targets mid-flight
 		else if (scbw::weapon_pierces_targets(bullet->weaponId))
 		{
 			u32 range = 0;
@@ -685,14 +679,14 @@ namespace hooks
 					// Penumbra - Shroud Piercer - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
 					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-					hooks::WeaponBulletHit(bullet, collisionTarget, 2);
+					hooks::weapon_bullet_hit(bullet, collisionTarget, 2);
 				}
 				else if (bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					// Claymore - Kelvin Munitions - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
 					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-					hooks::WeaponBulletHit(bullet, collisionTarget, 1);
+					hooks::weapon_bullet_hit(bullet, collisionTarget, 1);
 
 					// Claymore - Kelvin Munitions - slow pierced targets
 					UnitExt* collisionTargetExt = globals.get_unit_ext(collisionTarget);
@@ -746,12 +740,12 @@ namespace hooks
 			bullet->someUnitType = 228;
 			for (i = bulletSprite->images.head; i; i = i->link.next)
 			{
-				helper::playImageIscript(i, IscriptAnimation::Death);
+				helper::play_image_iscript(i, IscriptAnimation::Death);
 			}
 		}
 	}
 
-	void bulletBehaviour_Bounce(Bullet* bullet) // 0048B2D0
+	void bullet_behavior_bounce(Bullet* bullet) // 0048B2D0
 	{
 		Unit* v1;
 		char nextBounce;
@@ -766,10 +760,10 @@ namespace hooks
 		{
 			if (!(bullet->hit_flags & 1))
 			{
-				helper::changeMovePos(bullet, v1->sprite->position.y, v1->sprite->position.x);
+				helper::change_move_pos(bullet, v1->sprite->position.y, v1->sprite->position.x);
 			}
 		}
-		helper::progressBulletMovement_func(bullet);
+		helper::progress_bullet_movement(bullet);
 		if (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)
 		{
 			nextBounce = bullet->remainingBounces - 1;
@@ -781,11 +775,11 @@ namespace hooks
 
 			bullet->remainingBounces = nextBounce;
 			globals.bounce_bullet = bullet;
-			if (nextBounce && (target = helper::findNextBounceTarget_func(bullet), bullet->nextBounceUnit = bullet->attackTarget.unit, target))
+			if (nextBounce && (target = helper::find_next_bounce_target(bullet), bullet->nextBounceUnit = bullet->attackTarget.unit, target))
 			{
 				for (i = bullet->sprite->images.head; i; i = i->link.next)
 				{
-					helper::playImageIscript(i, IscriptAnimation::SpecialState1);
+					helper::play_image_iscript(i, IscriptAnimation::SpecialState1);
 				}
 				bullet->attackTarget.unit = target;
 			}
@@ -812,13 +806,13 @@ namespace hooks
 
 				for (j = sprite->images.head; j; j = j->link.next)
 				{
-					helper::playImageIscript(j, IscriptAnimation::Death);
+					helper::play_image_iscript(j, IscriptAnimation::Death);
 				}
 			}
 		}
 	}
 
-	bool findNextBounceTargetProc(Unit* pIterator) // 0048AFD0
+	bool find_next_bounce_target_proc(Unit* pIterator) // 0048AFD0
 	{
 		Unit* pSrc = *bulletBounceMissileSource;
 		s32 nSrcStatus = (*bulletBounceMissileSource)->status;
@@ -843,14 +837,14 @@ namespace hooks
 		}
 
 		Unit* bounceSource = pSrc;
-		if (pSrc->subunit != nullptr && helper::unitIsSubunit(pSrc->subunit))
+		if (pSrc->subunit != nullptr && helper::unit_is_subunit(pSrc->subunit))
 		{
 			bounceSource = pSrc->subunit;
 		}
-		if (!(helper::unitIsCarrier(pSrc)))
+		if (!(helper::unit_is_carrier(pSrc)))
 		{
 			bool miscBool;
-			if (helper::unitIsReaver(pSrc))
+			if (helper::unit_is_reaver(pSrc))
 			{
 				if (_pIterator->status & UnitStatus::InAir)
 				{
@@ -863,7 +857,7 @@ namespace hooks
 				if (helper::unit_can_infest(pSrc))
 				{
 					Unit* unusedUnit = nullptr;
-					miscBool = helper::canBeInfested(unusedUnit, _pIterator) != 0; // unusedUnit is not used..?
+					miscBool = helper::can_be_infested(unusedUnit, _pIterator) != 0; // unusedUnit is not used..?
 				}
 				else
 				{
@@ -921,7 +915,7 @@ namespace hooks
 		return *bulletBounceMissileNext != _pIterator;
 	}
 
-	Unit* findNextBounceTarget(Bullet* bullet) // 0048B1E0
+	Unit* find_next_bounce_target(Bullet* bullet) // 0048B1E0
 	{
 		if (!bullet->sourceUnit)
 		{
@@ -940,11 +934,11 @@ namespace hooks
 		coords.top = posX + 96;
 		coords.right = posY - 96;
 		coords.bottom = posY + 96;
-//		return (Unit*)helper::iterateUnitsAtLocationTargetProc(&coords, findNextBounceTargetProc, 0);
+//		return (Unit*)helper::iterateUnitsAtLocationTargetProc(&coords, find_next_bounce_target_proc, 0);
 	}
 
 	// Hooked to resolve issues with multihit bullets - Pr0nogo
-	Bullet* deleteBullet (Bullet* bullet) // 0048A560
+	Bullet* delete_bullet (Bullet* bullet) // 0048A560
 	{
 		if (!bullet->sprite)
 		{
@@ -1019,7 +1013,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (!hooks::initializeBullet(player, parent, y, *first_free_bullet, weaponId, x, angle))
+		if (!hooks::initialize_bullet(player, parent, y, *first_free_bullet, weaponId, x, angle))
 		{
 			return 0;
 		}
@@ -1071,9 +1065,9 @@ namespace hooks
 	}
 
 	// Hooked so we don't need aise for Bactalisks - Pr0nogo
-	s32 initializeBullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weaponId, s32 x, s32 angle) // 0048BEC0
+	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weaponId, s32 x, s32 angle) // 0048BEC0
 	{
-		if (!helper::initializeFlingy(weapons_dat::FlingyId[weaponId], y, x, (Flingy*)bullet, player, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
+		if (!helper::initialize_flingy(weapons_dat::FlingyId[weaponId], y, x, (Flingy*)bullet, player, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
 		{
 			return 0;
 		}
@@ -1096,7 +1090,7 @@ namespace hooks
 		bullet->attackTarget.pt.y = 0;
 		bullet->attackTarget.pt.x = 0;
 		bullet->unknown_0x4E = 0;
-		hooks::bulletBehaviorReassign(bullet);
+		hooks::bullet_behavior_reassign(bullet);
 
 		u8 launchSpin = weapons_dat::LaunchSpin[weaponId];
 		if (launchSpin)
@@ -1164,10 +1158,10 @@ namespace hooks
 				{
 					if (parent != nullptr)
 					{
-						helper::weaponBehaviorCanHitTargetCheck(targetUnit, parent);
+						helper::weapon_behavior_can_hit_target_check(targetUnit, parent);
 					}
 				}
-				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 				return 1;
 			}
 			case WeaponBehavior::AppearOnTargetUnit:
@@ -1181,12 +1175,12 @@ namespace hooks
 				{
 					return 1;
 				}
-				helper::weaponBehaviorCanHitTargetCheck(targetUnit, bullet->sourceUnit);
+				helper::weapon_behavior_can_hit_target_check(targetUnit, bullet->sourceUnit);
 				return 1;
 			}
 			case WeaponBehavior::PersistOnTargetSite:
 			{
-				helper::appearOnTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				helper::appear_on_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 				return 1;
 			}
 			case WeaponBehavior::AppearOnAttacker:
@@ -1233,10 +1227,10 @@ namespace hooks
 				{
 					if (bullet->sourceUnit)
 					{
-						helper::weaponBehaviorCanHitTargetCheck(targetUnit, bullet->sourceUnit);
+						helper::weapon_behavior_can_hit_target_check(targetUnit, bullet->sourceUnit);
 					}
 				}
-				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 				return 1;
 			}
 			case WeaponBehavior::AttackNearbyArea:
@@ -1244,7 +1238,7 @@ namespace hooks
 				bullet->cyclicMissileIndex = parent->offset_index_3_by_3;
 				bullet->attackTarget.pt.x -= (s16)attackCurve[parent->offset_index_3_by_3].x;
 				bullet->attackTarget.pt.y -= (s16)attackCurve[parent->offset_index_3_by_3].y;
-				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 
 				s16 finalOffset = parent->offset_index_3_by_3 + 1;
 				if (!attackCurve[finalOffset].x)
@@ -1260,7 +1254,7 @@ namespace hooks
 				s32 maxRangeVar = (weapons_dat::MaxRange[bullet->weaponId] + 20) << 8;
 				bullet->attackTarget.pt.x = parent->sprite->position.x + ((u32)(maxRangeVar * angleDistance[bulletDirection].x) >> 16);
 				bullet->attackTarget.pt.y = parent->sprite->position.y + ((u32)(maxRangeVar * angleDistance[bulletDirection].y) >> 16);
-				helper::attackFlyToTarget(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 				return 1;
 			}
 		}
@@ -1268,7 +1262,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate weaponsdat extender crashes - Pr0nogo
-	void progressBulletFrames() // 0048C3D0
+	void progress_bullet_frames() // 0048C3D0
 	{
 		Bullet* bulletVar = *first_bullet;
 		Sprite* bulletSprite = nullptr;
@@ -1294,31 +1288,31 @@ namespace hooks
 			{
 				case 0:
 				{
-					hooks::bulletBehaviorReassign(bulletVar);
+					hooks::bullet_behavior_reassign(bulletVar);
 				} break;
 				case 1:
 				{
-					helper::bulletBehaviorFly(bulletVar);
+					helper::bullet_behavior_fly(bulletVar);
 				} break;
 				case 2:
 				{
-					helper::bulletBehaviorFollow(bulletVar);
+					helper::bullet_behavior_follow(bulletVar);
 				} break;
 				case 3:
 				{
-					helper::bulletBehaviorBounce(bulletVar);
+					helper::bullet_behavior_bounce(bulletVar);
 				} break;
 				case 4:
 				{
-					helper::bulletBehaviorPersist(bulletVar);
+					helper::bullet_behavior_persist(bulletVar);
 				} break;
 				case 5:
 				{
-					helper::bulletBehaviorInstant(bulletVar);
+					helper::bullet_behavior_instant(bulletVar);
 				} break;
 				case 6:
 				{
-					helper::bulletBehaviorArea(bulletVar);
+					helper::bullet_behavior_area(bulletVar);
 				} break;
 				default:
 				{
@@ -1331,7 +1325,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate firstFreeBullet nonsense - Pr0nogo
-	void bulletBehaviorReassign(Bullet* bullet) // 0048BD50
+	void bullet_behavior_reassign(Bullet* bullet) // 0048BD50
 	{
 		while (2) // xd
 		{
@@ -1358,28 +1352,28 @@ namespace hooks
 						}
 						bullet->unknown_0x4E = 0;
 						bullet->someUnitType = 228;
-						helper::playSpriteIscript(bullet->sprite, 1, 1);
+						helper::play_sprite_iscript(bullet->sprite, 1, 1);
 					} break;
 					case WeaponBehavior::Fly_FollowTarget:
 					{
-						helper::assignWeaponData(bullet, 2);
-						helper::playSpriteIscript(bullet->sprite, 2, 1);
+						helper::assign_weapon_data(bullet, 2);
+						helper::play_sprite_iscript(bullet->sprite, 2, 1);
 					}  break;
 					case WeaponBehavior::Bounce:
 					{
-						helper::assignWeaponData(bullet, 3);
-						helper::playSpriteIscript(bullet->sprite, 2, 1);
+						helper::assign_weapon_data(bullet, 3);
+						helper::play_sprite_iscript(bullet->sprite, 2, 1);
 					}  break;
 					case WeaponBehavior::PersistOnTargetSite:
 					{
-						helper::assignWeaponData(bullet, 4);
+						helper::assign_weapon_data(bullet, 4);
 						Image* bulletOverlay = nullptr;
 						bulletOverlay = bullet->sprite->images.head;
 						if (bulletOverlay)
 						{
 							do
 							{
-								helper::playImageIscript(bulletOverlay, 14);
+								helper::play_image_iscript(bulletOverlay, 14);
 								bulletOverlay = bulletOverlay->link.next;
 							}
 							while (bulletOverlay);
@@ -1387,13 +1381,13 @@ namespace hooks
 					} break;
 					case WeaponBehavior::AttackNearbyArea:
 					{
-						helper::assignWeaponData(bullet, 6);
+						helper::assign_weapon_data(bullet, 6);
 						Image* bulletOverlay = bullet->sprite->images.head;
 						if (bulletOverlay)
 						{
 							do
 							{
-								helper::playImageIscript(bulletOverlay, 2);
+								helper::play_image_iscript(bulletOverlay, 2);
 								bulletOverlay = bulletOverlay->link.next;
 							}
 							while (bulletOverlay);
@@ -1401,13 +1395,13 @@ namespace hooks
 					} break;
 					default:
 					{
-						helper::assignWeaponData(bullet, 1);
+						helper::assign_weapon_data(bullet, 1);
 						Image* bulletOverlay = bullet->sprite->images.head;
 						if (bulletOverlay)
 						{
 							do
 							{
-								helper::playImageIscript(bulletOverlay, 2);
+								helper::play_image_iscript(bulletOverlay, 2);
 								bulletOverlay = bulletOverlay->link.next;
 							}
 							while (bulletOverlay);
@@ -1423,27 +1417,27 @@ namespace hooks
 					}
 					case 1:
 					{
-						helper::bulletBehaviorFly(bullet);
+						helper::bullet_behavior_fly(bullet);
 					} break;
 					case 2:
 					{
-						helper::bulletBehaviorFollow(bullet);
+						helper::bullet_behavior_follow(bullet);
 					} break;
 					case 3:
 					{
-						helper::bulletBehaviorBounce(bullet);
+						helper::bullet_behavior_bounce(bullet);
 					} break;
 					case 4:
 					{
-						helper::bulletBehaviorPersist(bullet);
+						helper::bullet_behavior_persist(bullet);
 					} break;
 					case 5:
 					{
-						helper::bulletBehaviorInstant(bullet);
+						helper::bullet_behavior_instant(bullet);
 					} break;
 					case 6:
 					{
-						helper::bulletBehaviorArea(bullet);
+						helper::bullet_behavior_area(bullet);
 					} break;
 					default:
 					{

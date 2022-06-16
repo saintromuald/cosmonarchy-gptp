@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cassert>
 
-// Functionally identical to playSpriteIscript() (offset 0x00499D00)
+// Functionally identical to play_sprite_iscript() (offset 0x00499D00)
 void Sprite::play_iscript_animation(IscriptAnimation::Enum animation, bool bReplaceCurrentScript)
 {
 	assert(this);

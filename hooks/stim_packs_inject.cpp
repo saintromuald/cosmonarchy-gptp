@@ -3,14 +3,14 @@
 
 namespace
 {
-	void __declspec(naked) CMDACT_StimpackWrapper()
+	void __declspec(naked) cmdact_stimpack_wrapper()
 	{
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSHAD
 		}
-		hooks::CMDACT_Stimpack();
+		hooks::cmdact_stimpack();
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -19,24 +19,27 @@ namespace
 		}
 	}
 
-	void __declspec(naked) useStimPacksAIWrapper()
+	void __declspec(naked) use_stimpack_ai_wrapper()
 	{
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::useStimPacksAIHook(unit);
+		hooks::use_stimpack_ai(unit);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) CMDRECV_StimPackWrapper()
+	void __declspec(naked) cmdrecv_stimpack_wrapper()
 	{
-		__asm PUSHAD
-		hooks::CMDRECV_StimPack();
+		__asm
+		{
+			PUSHAD
+		}
+		hooks::cmdrecv_stimpack();
 		__asm {
 			POPAD
 			RETN
@@ -49,8 +52,8 @@ namespace hooks
 {
 	void injectStimPacksHooks()
 	{
-		jump_patch(CMDACT_StimpackWrapper,	0x004234D0, 4);
-		jump_patch(useStimPacksAIWrapper,	0x004554A0, 5);
-		jump_patch(CMDRECV_StimPackWrapper,	0x004C2F30, 3);
+		jump_patch(cmdact_stimpack_wrapper,		0x004234D0, 4);
+		jump_patch(use_stimpack_ai_wrapper,		0x004554A0, 5);
+		jump_patch(cmdrecv_stimpack_wrapper,	0x004C2F30, 3);
 	}
 }

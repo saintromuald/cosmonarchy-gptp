@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) getModifiedWeaponCooldownWrapper()
+	void __declspec(naked) get_modified_weapon_cooldown_wrapper()
 	{
 		static Unit* unit;
 		static u8 weaponId;
@@ -28,6 +28,6 @@ namespace hooks
 {
 	void inject_weapon_cooldown_hooks()
 	{
-		jump_patch(getModifiedWeaponCooldownWrapper, 0x00475DC0, 2);
+		jump_patch(get_modified_weapon_cooldown_wrapper, 0x00475DC0, 2);
 	}
 }

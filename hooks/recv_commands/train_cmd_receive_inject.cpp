@@ -5,7 +5,10 @@ namespace
 {
 	void __declspec(naked) cmdrecv_train_fighter_wrapper()
 	{
-		__asm PUSHAD
+		__asm
+		{
+			PUSHAD
+		}
 		hooks::cmdrecv_train_fighter();
 		__asm
 		{

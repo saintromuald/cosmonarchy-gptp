@@ -12,5 +12,8 @@ namespace hooks
 	s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignoreIncomplete);
 	void set_special_state_1(Sprite* sprite);
 
+	void drone_morph_standard(Unit* unit, u32 id);				// 0045D890
+	Unit* begin_gas_building(Unit* unit, u8 unit_id);			// 004678A0
+
 	void inject_building_morph_hooks();
 }

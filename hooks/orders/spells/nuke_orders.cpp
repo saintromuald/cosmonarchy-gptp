@@ -142,12 +142,12 @@ namespace hooks
 					{ // 004793C4
 						if (units_dat::base_property[unit->id] & UnitProperty::Building)
 						{
-							unit->current_button_set = UnitId::Buttons_CancelNukeStrike;
+							unit->current_buttonset = UnitId::Buttons_CancelNukeStrike;
 						}
 					}
 					else
 					{
-						unit->current_button_set = UnitId::Buttons_CancelNukeStrike;
+						unit->current_buttonset = UnitId::Buttons_CancelNukeStrike;
 					}
 					scbw::refresh_console();
 				}

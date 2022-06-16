@@ -662,9 +662,9 @@ namespace hooks
 		u32 unit_status = unit->status;
 		if (!scbw::unit_is_stunned(unit) || units_dat::base_property[unit->id] & UnitProperty::Building) {
 			if (unit_can_have_rally(unit)) {
-				unit->current_button_set = UnitId::Buttons_CancelMutationWithRallyPt;
+				unit->current_buttonset = UnitId::Buttons_CancelMutationWithRallyPt;
 			} else {
-				unit->current_button_set = UnitId::Buttons_CancelMutation;
+				unit->current_buttonset = UnitId::Buttons_CancelMutation;
 			}
 		}
 

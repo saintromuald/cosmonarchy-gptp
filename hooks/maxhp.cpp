@@ -981,7 +981,7 @@ LABEL_23:
 		// *(s32*)(a1 + 48) = v3;
 		helper::updateImageDrawData((Image*)a1);
 		*(s8*)(a1 + 12) |= 1u;
-		helper::playImageIscript((Image*)a1, 0);
+		helper::play_image_iscript((Image*)a1, 0);
 	}
 
 	s32 AI_FindTransport(Unit* a1, s32 a2)

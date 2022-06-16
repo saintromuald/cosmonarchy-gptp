@@ -4,7 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) fireWeaponWrapper()
+	void __declspec(naked) fire_weapon_wrapper()
 	{
 		static Unit* unit;
 		static u8 weaponId;
@@ -18,7 +18,7 @@ namespace
 			PUSHAD
 		}
 
-		hooks::fireWeaponHook(unit, weaponId);
+		hooks::fire_weapon(unit, weaponId);
 
 		__asm {
 			POPAD
@@ -28,35 +28,35 @@ namespace
 		}
 	}
 
-	void __declspec(naked) progressBulletFlight_Wrapper()
+	void __declspec(naked) progress_bullet_flight_wrapper()
 	{
 		static Bullet* bullet;
 		__asm {
 			MOV bullet, EAX
 			PUSHAD
 		}
-		hooks::progressBulletFlight(bullet);
+		hooks::progress_bullet_flight(bullet);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) bulletBehaviour_Bounce_Wrapper()
+	void __declspec(naked) bullet_behavior_bounce_wrapper()
 	{
 		static Bullet* a1;
 		__asm {
 			MOV a1, EDI
 			PUSHAD
 		}
-		hooks::bulletBehaviour_Bounce(a1);
+		hooks::bullet_behavior_bounce(a1);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) findNextBounceTargetProc_Wrapper()
+	void __declspec(naked) find_next_bounce_target_proc_wrapper()
 	{
 		static Unit* pIterator;
 		static bool result;
@@ -64,7 +64,7 @@ namespace
 			MOV pIterator, ECX
 			PUSHAD
 		}
-		result = hooks::findNextBounceTargetProc(pIterator);
+		result = hooks::find_next_bounce_target_proc(pIterator);
 		__asm {
 			POPAD
 			MOVZX EAX, result
@@ -72,7 +72,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) findNextBounceTarget_Wrapper()
+	void __declspec(naked) find_next_bounce_target_wrapper()
 	{
 		static Bullet* a1;
 		static Unit* result;
@@ -80,7 +80,7 @@ namespace
 			MOV a1, EAX
 			PUSHAD
 		}
-		result = hooks::findNextBounceTarget(a1);
+		result = hooks::find_next_bounce_target(a1);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -88,7 +88,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) deleteBullet_Wrapper()
+	void __declspec(naked) delete_bullet_wrapper()
 	{
 		static Bullet* result;
 		static Bullet* bullet;
@@ -97,7 +97,7 @@ namespace
 			MOV bullet, EAX
 			PUSHAD
 		}
-		result = hooks::deleteBullet(bullet);
+		result = hooks::delete_bullet(bullet);
 		__asm
 		{
 			POPAD
@@ -106,7 +106,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) createBullet_Wrapper() // 0048C260
+	void __declspec(naked) create_bullet_wrapper() // 0048C260
 	{
 		static Bullet* result;
 		static s32 weaponId;
@@ -144,7 +144,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) initializeBullet_Wrapper()
+	void __declspec(naked) initialize_bullet_wrapper()
 	{
 		static char player;
 		static Unit* parent;
@@ -174,7 +174,7 @@ namespace
 			MOV y, DX
 			PUSHAD
 		}
-		result = hooks::initializeBullet(player, parent, y, bullet, weaponId, x, angle);
+		result = hooks::initialize_bullet(player, parent, y, bullet, weaponId, x, angle);
 		__asm
 		{
 			POPAD
@@ -185,13 +185,13 @@ namespace
 		}
 	}
 
-	void __declspec(naked) progressBulletFrames_Wrapper()
+	void __declspec(naked) progress_bullet_frames_wrapper()
 	{
 		__asm
 		{
 			PUSHAD
 		}
-		hooks::progressBulletFrames();
+		hooks::progress_bullet_frames();
 		__asm
 		{
 			POPAD
@@ -200,7 +200,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) bulletBehaviorReassign_Wrapper()
+	void __declspec(naked) bullet_behavior_reassign_wrapper()
 	{
 		static Bullet* bullet;
 		__asm
@@ -208,7 +208,7 @@ namespace
 			MOV bullet, ECX
 			PUSHAD
 		}
-		hooks::bulletBehaviorReassign(bullet);
+		hooks::bullet_behavior_reassign(bullet);
 		__asm
 		{
 			POPAD
@@ -217,7 +217,7 @@ namespace
 	}
 
 	const u32 BulletDamageJmpBack = 0x0048B77A;
-	void __declspec(naked) BulletDamage_bulletNullcheck()
+	void __declspec(naked) bullet_damage_bullet_nullcheck()
 	{
 		static Bullet* bullet; 
 		__asm
@@ -264,22 +264,21 @@ namespace
 }
 
 extern const u32 Func_FireUnitWeapon;
-
 namespace hooks
 {
 	void inject_weapon_fire_hooks()
 	{
-		jump_patch(fireWeaponWrapper,					Func_FireUnitWeapon, 0);
-		jump_patch(progressBulletFlight_Wrapper,		0x0048B3B0, 3);
-		jump_patch(bulletBehaviour_Bounce_Wrapper,		0x0048B2D0, 0);
-		jump_patch(findNextBounceTargetProc_Wrapper,	0x0048AFD0, 3);
-		jump_patch(deleteBullet_Wrapper,				0x0048A560, 0);
-		jump_patch(createBullet_Wrapper,				0x0048C260, 5);
-		jump_patch(initializeBullet_Wrapper,			0x0048BEC0, 0);
-	//	jump_patch(progressBulletFrames_Wrapper,		0x0048C3D0, 2);
-	//	jump_patch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
-	//	jump_patch(bulletBehaviorReassign_Wrapper,		0x00488D50, 1);
-		jump_patch(BulletDamage_bulletNullcheck,		0x0048B770, 1);
-	//	jump_patch(get_weapon_iscript_init_wrapper,		0x00476ED0, 2);
+		jump_patch(fire_weapon_wrapper,						Func_FireUnitWeapon, 0);
+		jump_patch(progress_bullet_flight_wrapper,			0x0048B3B0, 3);
+		jump_patch(bullet_behavior_bounce_wrapper,			0x0048B2D0, 0);
+		jump_patch(find_next_bounce_target_proc_wrapper,	0x0048AFD0, 3);
+		jump_patch(delete_bullet_wrapper,					0x0048A560, 0);
+		jump_patch(create_bullet_wrapper,					0x0048C260, 5);
+		jump_patch(initialize_bullet_wrapper,				0x0048BEC0, 0);
+	//	jump_patch(progress_bullet_frames_wrapper,			0x0048C3D0, 2);
+	//	jump_patch(find_next_bounce_target_wrapper,			0x0048B1E0, 1);
+	//	jump_patch(bullet_behavior_reassign_wrapper,		0x00488D50, 1);
+		jump_patch(bullet_damage_bullet_nullcheck,			0x0048B770, 1);
+	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
 	}
 }

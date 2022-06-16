@@ -633,7 +633,7 @@ namespace hooks
 					unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
 				}
 				if (unitExt->timers[TimerCorpseCocoonHatch] == 1) {
-					helper::replace_unit_with_type(unit, UnitId::ZergSovroleth);
+					helper::replace_unit_with_id(unit, UnitId::ZergSovroleth);
 					scbw::give_ai_ex(unit, true);
 					helper::play_morphing_complete_sound(unit);
 					unit->build_queue[unit->build_queue_slot] = UnitId::None;

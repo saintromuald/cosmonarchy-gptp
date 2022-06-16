@@ -57,7 +57,7 @@ namespace hooks
 				{
 					unitNewId = unit->id;
 				}
-				helper::replace_unit_with_type(unit, unitNewId);
+				helper::replace_unit_with_id(unit, unitNewId);
 				helper::orderReturnToIdle(unit);
 				helper::orderReturnToIdle(unit->subunit);
 			}
@@ -122,7 +122,7 @@ namespace hooks
 					{
 						unitNewId = unit->id;
 					}
-					helper::replace_unit_with_type(unit, unitNewId);
+					helper::replace_unit_with_id(unit, unitNewId);
 					unit->main_order_state = 3;
 					scbw::decloak_proc(unit);
 				}

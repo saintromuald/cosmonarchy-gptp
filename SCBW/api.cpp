@@ -1301,12 +1301,12 @@ namespace scbw
 		s32 upgType = get_upgrade_type(unit);
 		s32 baseDamage = weapons_dat::DamageAmount[weaponId];
 		f64 bonusDamage = (f64)weapons_dat::DamageBonus[weaponId] * (f64)scbw::get_upgrade_level(unit->player, upgType);
-		f64 finalDamage = baseDamage;
+		f64 final_damage = baseDamage;
 		if (bonusDamage)
 		{
-			finalDamage = baseDamage + bonusDamage;
+			final_damage = baseDamage + bonusDamage;
 		}
-		return finalDamage;
+		return final_damage;
 	}
 
 	// I may need to make this function more flexible later -- Pr0nogo

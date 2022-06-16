@@ -85,7 +85,7 @@ namespace hooks
 				result = helper::update_building_land_unit_selection(*(u32*)sprite, unit);
 			}
 		}
-		unit->current_button_set = 228;
+		unit->current_buttonset = 228;
 		*control_under_mouse = 0;
 		*control_under_mouse_value = 0;
 		*force_button_refresh = 1;
@@ -176,7 +176,7 @@ namespace hooks
 		disableUnit(target);
 	}
 
-	void WeaponBulletHit(Bullet* bullet, Unit* target, u32 damageDivisor)
+	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damageDivisor)
 	{
 		u32 base_damage = helper::get_unit_bullet_damage(bullet, target);
 		if (bullet->hit_flags & 2)
