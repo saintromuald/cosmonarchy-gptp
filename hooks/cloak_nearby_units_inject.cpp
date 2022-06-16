@@ -11,7 +11,7 @@ void __declspec(naked) cloakNearbyUnitsWrapper()
 		MOV unit, EDI
 		PUSHAD
 	}
-	hooks::cloakNearbyUnitsHook(unit);
+	hooks::cloak_nearby_units(unit);
 	__asm
 	{
 		POPAD

@@ -1842,7 +1842,6 @@ LABEL_37:
 		
 		if (best_resarea) {
 			resource_areas->areas[best_resarea].flags |= 2;
-			scbw::printf("Player %u expanding to %u", player, best_resarea);
 		}
 		return best_resarea;
 	}

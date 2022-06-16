@@ -4,7 +4,7 @@
 namespace hooks
 {
 
-	void cloakNearbyUnitsHook(Unit* unit);	//00491C20
+	void cloak_nearby_units(Unit* unit);	//00491C20
 
 	void inject_cloak_nearby_units_hooks();
 

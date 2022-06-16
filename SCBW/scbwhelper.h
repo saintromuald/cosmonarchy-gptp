@@ -758,7 +758,7 @@ namespace helper
 	void cmdact_select(Unit** unit_list, u32 unit_list_length); 													// 004C0860
 
 	//// cloak_nearby_units
-	void secondaryOrder_Cloak(Unit* unit);																			// 00491790
+	void secondary_order_cloak(Unit* unit);																			// 00491790
 
 	//// update_unit_state
 	bool unitHpIsInRedZone(Unit* unit);																				// 004022C0

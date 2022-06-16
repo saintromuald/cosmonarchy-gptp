@@ -6560,7 +6560,7 @@ namespace helper
 	}
 
 	// Equivalent to secondaryOrd_Cloak @ 0x00491790
-	void secondaryOrder_Cloak(Unit* unit)
+	void secondary_order_cloak(Unit* unit)
 	{
 		static Unit** const firstBurrowedUnit = (Unit**)0x0063FF5C;
 		unit->is_cloaked++;
