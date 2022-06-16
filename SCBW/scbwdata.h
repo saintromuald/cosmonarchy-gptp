@@ -921,7 +921,6 @@ SCBW_DATA(u32*, aiSupplyReserved, 0x006CA4BC);
 SCBW_DATA(AiScript**, first_active_aiscript, 0x0068C100);
 
 SCBW_DATA(ResourceAreaArray*, resource_areas, 0x00692688);
-SCBW_DATA(u32*,				  resource_areas_count, 0x00695568);
 
 //-------- Internal constants --------//
 
