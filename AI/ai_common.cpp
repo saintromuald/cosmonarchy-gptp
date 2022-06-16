@@ -76,9 +76,9 @@ namespace AI
 		u16 currentRegion = get_region_at_position_exact(unit->get_x(), unit->get_y());
 		AiRegion* currentAiRegion = &AiRegionCaptains[unit->player][currentRegion];
 		return currentAiRegion->state == 3
-			|| currentAiRegion->airTarget
-			|| currentAiRegion->groundTarget
-			|| currentAiRegion->captainFlags & 0x20;
+			|| currentAiRegion->air_target
+			|| currentAiRegion->ground_target
+			|| currentAiRegion->captain_flags & 0x20;
 	}
 
 

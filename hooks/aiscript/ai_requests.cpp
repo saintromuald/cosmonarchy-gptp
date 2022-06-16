@@ -281,9 +281,9 @@ namespace hooks
 		unitTypea = __tileX;
 		if (ownrId != 2500)
 		{
-			v19 = (s16)((*SAI_Paths)->regions[(u16)ownrId].regionCenterX >> 8);
+			v19 = (s16)((*SAI_Paths)->regions[(u16)ownrId].region_center_x >> 8);
 //			LOWORD(unitTypea) = (((v19) & 0x1F) + (s32)v19) >> 5;
-//			HIWORD(unitTypea) = (s16)((*SAI_Paths)->regions[(u16)ownrId].regionCenterY >> 8) / 32;
+//			HIWORD(unitTypea) = (s16)((*SAI_Paths)->regions[(u16)ownrId].region_center_y >> 8) / 32;
 		}
 		v30 = __tileX.y - 32;
 		bestDistance = 99999999;
@@ -701,26 +701,26 @@ namespace hooks
 						}
 						else
 						{
-							defense_region_id = military_region->targetRegion;
+							defense_region_id = military_region->target_region;
 						}
-						region_air_strength = military_region->fullAirStrength;
+						region_air_strength = military_region->air_strength_full;
 						defense_region_id_copy = defense_region_id;
-						i = player_regions[defense_region_id_copy].neededAirStrength;
+						i = player_regions[defense_region_id_copy].air_strength_needed;
 						defense_region = &player_regions[defense_region_id_copy];
 						if (i)
 						{
-							for (i = i; i > region_air_strength; i = defense_region->neededAirStrength)
+							for (i = i; i > region_air_strength; i = defense_region->air_strength_needed)
 							{
 								region_air_strength += helper::ai_defend_region(military_region, defense_region_id, 1, i - region_air_strength);
 							}
 						}
-						j = defense_region->neededGroundStrength;
-						region_gnd_strength = military_region->fullGroundStrength;
+						j = defense_region->ground_strength_needed;
+						region_gnd_strength = military_region->ground_strength_full;
 						if (j)
 						{
-							for (j = j; j > region_gnd_strength; j = defense_region->neededGroundStrength)
+							for (j = j; j > region_gnd_strength; j = defense_region->ground_strength_needed)
 							{
-								region_gnd_strength += helper::ai_defend_region(military_region, defense_region_id, defense_region->enemyAirStrength != 0, j - region_gnd_strength);
+								region_gnd_strength += helper::ai_defend_region(military_region, defense_region_id, defense_region->air_strength_enemy != 0, j - region_gnd_strength);
 							}
 						}
 						if (AIScriptController[player_id].AI_Flags.flag_0x40)

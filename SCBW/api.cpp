@@ -2152,8 +2152,8 @@ namespace scbw
 
 	Point16 get_region_center(Region* region) {
 		Point16 center = {};
-		center.x = region->regionCenterX >> 8;
-		center.y = region->regionCenterY >> 8;
+		center.x = region->region_center_x >> 8;
+		center.y = region->region_center_y >> 8;
 		return center;
 	}
 
@@ -2167,17 +2167,17 @@ namespace scbw
 			case RegionState::Defending:
 			case RegionState::ChaseAway: {
 				helper::ai_set_region_type(RegionState::Defending, ai_region);
-				if (ai_region->defensePriorityAdd < priority) {
-					ai_region->defensePriorityAdd = priority;
+				if (ai_region->defense_priority_add < priority) {
+					ai_region->defense_priority_add = priority;
 				}
-				ai_region->defendTimeout = 0;
-				if (ai_region->neededGroundStrength) ai_region->neededGroundStrength = 200;
-				if (ai_region->neededAirStrength)    ai_region->neededAirStrength    = 200;
+				ai_region->defend_timeout = 0;
+				if (ai_region->ground_strength_needed) ai_region->ground_strength_needed = 200;
+				if (ai_region->air_strength_needed)    ai_region->air_strength_needed    = 200;
 			} break;
 		}
 		if (recurse) {
 			Region* region = scbw::get_region(region_id);
-			for (u32 i = 0; i < region->neighborCount; ++i) {
+			for (u32 i = 0; i < region->neighbor_count; ++i) {
 				scbw::ai_defend(player, region->neighbors[i], priority, false);
 			}
 		}

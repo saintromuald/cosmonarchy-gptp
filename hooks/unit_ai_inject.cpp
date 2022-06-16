@@ -4,7 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) AI_TrainingUnit_Wrapper() // 004A2830
+	void __declspec(naked) ai_training_unit_wrapper() // 004A2830
 	{
 		static Unit* result;
 		static Unit* parent;
@@ -22,7 +22,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_CreateNuke_Wrapper() // 0045B7A0
+	void __declspec(naked) ai_create_nuke_wrapper() // 0045B7A0
 	{
 		static Unit* silo;
 		static Unit* result;
@@ -40,7 +40,31 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_TrainingSimpleMilitary_Wrapper() // 0043E280
+	void __declspec(naked) ai_add_military_to_region_wrapper() { // 0043DA20
+		static AiRegion* region;
+		static Unit* unit;
+		static u32 must_use_region;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV must_use_region, EAX
+			POP EAX
+			MOV unit, EBX
+			MOV region, EAX
+			PUSHAD
+		}
+		hooks::ai_add_military_to_region(region, unit, must_use_region);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) ai_training_simple_military_wrapper() // 0043E280
 	{
 		static Unit* parent;
 		static Unit* result;
@@ -67,7 +91,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_TrainingWorker_Wrapper() // 00435700
+	void __declspec(naked) ai_training_worker_wrapper() // 00435700
 	{
 		static Unit* newUnit;
 		static Unit* otherUnit;
@@ -85,7 +109,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_TrainingNormal_Wrapper() // 00435DB0
+	void __declspec(naked) ai_training_normal_wrapper() // 00435DB0
 	{
 		static Unit* newUnit;
 		static Unit* parentUnit;
@@ -103,7 +127,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_AddWorkerStructureAI_Wrapper() // 00433DD0
+	void __declspec(naked) add_worker_structure_ai_wrapper() // 00433DD0
 	{
 		static void* result;
 		static Unit* unit;
@@ -124,7 +148,7 @@ namespace
 	}
 
 	const u32 addUnitAiShortJump = 0x00433DED;
-	void __declspec(naked) AI_AddUnitAi_FreeWorkerCheck_JmpWrapper()
+	void __declspec(naked) add_unit_ai_free_worker_check_jump_wrapper()
 	{
 		static WorkerAiArray* free;
 		__asm
@@ -153,7 +177,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_IterateBuildingAI_Wrapper() // 00435770
+	void __declspec(naked) iterate_building_ai_wrapper() // 00435770
 	{
 		static Unit* result;
 		static Unit* parent;
@@ -169,7 +193,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) deleteWorkerAI_Wrapper() // 00404470
+	void __declspec(naked) delete_worker_ai_wrapper() // 00404470
 	{
 		static WorkerAi* workerAi;
 		static WorkerAiArray** workerAiArray;
@@ -187,7 +211,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) deleteBuildingAI_Wrapper() // 00404500
+	void __declspec(naked) delete_building_ai_wrapper() // 00404500
 	{
 		static BuildingAi* buildingAi;
 		static BuildingAiArray** buildingAiArray;
@@ -205,7 +229,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) deleteWorkerAI_nullcheck() // 00404470
+	void __declspec(naked) delete_worker_ai_nullcheck() // 00404470
 	{
 		static const u32 back_jump = 0x00404475;
 		static const u32 cmp_jump = 0x0040447A;
@@ -241,7 +265,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) deleteBuildingAI_nullcheck() // 00404500
+	void __declspec(naked) delete_building_ai_nullcheck() // 00404500
 	{
 		static const u32 back_jump = 0x00404505;
 		static const u32 cmp_jump = 0x0040450A;
@@ -322,7 +346,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_TrainingOverlord_Wrapper() // 00435770
+	void __declspec(naked) ai_training_overlord_wrapper() // 00435770
 	{
 		static Unit* newUnit;
 		static Unit* oldUnit;
@@ -376,24 +400,25 @@ namespace hooks
 {
 	void inject_unit_ai_hooks()
 	{
-		jump_patch(AI_TrainingUnit_Wrapper,					0x004A2830, 2);
-	//	jump_patch(AI_CreateNuke_Wrapper,					0x0045B7A0, 0);
-		jump_patch(AI_TrainingSimpleMilitary_Wrapper,		0x0043E280, 1);
-		jump_patch(AI_TrainingWorker_Wrapper,				0x00435700, 0);
-	//	jump_patch(AI_TrainingNormal_Wrapper,				0x00435DB0, 0);
-		jump_patch(AI_AddWorkerStructureAI_Wrapper,			0x00433DD0, 2);
-	//	jump_patch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
-	//	jump_patch(AI_IterateBuildingAI_Wrapper,			0x00435770, 1);
+		jump_patch(ai_training_unit_wrapper,					0x004A2830, 2);
+	//	jump_patch(ai_create_nuke_wrapper,						0x0045B7A0, 0);
+		jump_patch(ai_add_military_to_region_wrapper,			0x0043DA20, 1);
+		jump_patch(ai_training_simple_military_wrapper,			0x0043E280, 1);
+		jump_patch(ai_training_worker_wrapper,					0x00435700, 0);
+	//	jump_patch(ai_training_normal_wrapper,					0x00435DB0, 0);
+		jump_patch(add_worker_structure_ai_wrapper,				0x00433DD0, 2);
+	//	jump_patch(add_unit_ai_free_worker_check_jump_wrapper,	0x00433DE7, 1);
+	//	jump_patch(iterate_building_ai_wrapper,					0x00435770, 1);
 
-	//	jump_patch(deleteWorkerAI_Wrapper,					0x00404470, 0);
-	//	jump_patch(deleteBuildingAI_Wrapper,				0x00404500, 0);
-	//	jump_patch(deleteWorkerAI_nullcheck,				0x00404470, 0);
-	//	jump_patch(deleteBuildingAI_nullcheck,				0x00404500, 0);
-		jump_patch(ai_remove_unit_ai_wrapper,				0x004A1E50, 0);
-		jump_patch(ai_remove_worker_or_building_ai_wrapper,	0x00434C90, 0);
-	//	jump_patch(AI_TrainingOverlord_Wrapper,				0x00435770, 1);
-		jump_patch(ai_order_lurker_burrow_wrapper,			0x0043C230, 3);
-	//	jump_patch(create_building_ai_wrapper,				0x004044C0,	4);
+	//	jump_patch(delete_worker_ai_wrapper,					0x00404470, 0);
+	//	jump_patch(delete_building_ai_wrapper,					0x00404500, 0);
+	//	jump_patch(delete_worker_ai_nullcheck,					0x00404470, 0);
+	//	jump_patch(delete_building_ai_nullcheck,				0x00404500, 0);
+		jump_patch(ai_remove_unit_ai_wrapper,					0x004A1E50, 0);
+		jump_patch(ai_remove_worker_or_building_ai_wrapper,		0x00434C90, 0);
+	//	jump_patch(ai_training_overlord_wrapper,				0x00435770, 1);
+		jump_patch(ai_order_lurker_burrow_wrapper,				0x0043C230, 3);
+	//	jump_patch(create_building_ai_wrapper,					0x004044C0,	4);
 
 	//	jump_patch(hooks::find_nearest_military_or_guard_ai,	0x0043BAC0, 0);
 	}

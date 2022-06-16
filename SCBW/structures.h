@@ -657,25 +657,25 @@ struct MilitaryAiArray; // fuck you visual studio
 struct AiRegion
 {
 	/*0x00*/  u16 region;
-	/*0x02*/  u16 targetRegion;
+	/*0x02*/  u16 target_region;
 	/*0x04*/  u8  player;
 	/*0x05*/  u8  state;
-	/*0x06*/  u8  defensePriorityAdd;
-	/*0x07*/  u8  defendTimeout;
-	/*0x08*/  u8  captainFlags;
+	/*0x06*/  u8  defense_priority_add;
+	/*0x07*/  u8  defend_timeout;
+	/*0x08*/  u8  captain_flags;
 	/*0x09*/  u8  unknown_0x9;
-	/*0x0A*/  u16 groundUnitCount;
-	/*0x0C*/  u16 neededGroundStrength;
-	/*0x0E*/  u16 neededAirStrength;
-	/*0x10*/  u16 regionGroundStrength;
-	/*0x12*/  u16 regionAirStrength;
-	/*0x14*/  u16 fullGroundStrength;
-	/*0x16*/  u16 fullAirStrength;
-	/*0x18*/  u16 enemyAirStrength;
-	/*0x1A*/  u16 enemyGroundStrength;
-	/*0x1C*/  Unit* airTarget;
-	/*0x20*/  Unit* groundTarget;
-	/*0x24*/  Unit* slowestUnit;
+	/*0x0A*/  u16 ground_unit_count;
+	/*0x0C*/  u16 ground_strength_needed;
+	/*0x0E*/  u16 air_strength_needed;
+	/*0x10*/  u16 ground_strength;
+	/*0x12*/  u16 air_strength;
+	/*0x14*/  u16 ground_strength_full;
+	/*0x16*/  u16 air_strength_full;
+	/*0x18*/  u16 air_strength_enemy;
+	/*0x1A*/  u16 ground_strength_enemy;
+	/*0x1C*/  Unit* air_target;
+	/*0x20*/  Unit* ground_target;
+	/*0x24*/  Unit* slowest_unit;
 	/*0x28*/  Unit* follow_target;
 	/*0x2C*/  MilitaryAiArray* military;
 	/*0x30*/  MilitaryAi* first_military_ai;
@@ -685,15 +685,15 @@ C_ASSERT(sizeof(AiRegion) == 52);
 
 struct Region
 {
-	u16		accessibilityFlags;		// 0x00
-	u16		group_index;				// 0x02
-	u16		tileCount;				// 0x04
-	u8		pathCount;				// 0x06
-	u8		neighborCount;			// 0x07
+	u16		accessibility_flags;	// 0x00
+	u16		group_index;			// 0x02
+	u16		tile_count;				// 0x04
+	u8		path_count;				// 0x06
+	u8		neighbor_count;			// 0x07
 	u32		field_8;				// 0x08
 	u16*	neighbors;				// 0x0C
-	u32		regionCenterX;			// 0x10
-	u32		regionCenterY;			// 0x14
+	u32		region_center_x;		// 0x10
+	u32		region_center_y;		// 0x14
 	u16		left;					// 0x18
 	u16		top;					// 0x1A
 	u16		right;					// 0x1C
@@ -701,7 +701,7 @@ struct Region
 	u32		properties;				// 0x20
 	u32		field_24;				// 0x24
 	u32		field_28;				// 0x28
-	u16		localData[10];			// 0x2C
+	u16		local_data[10];			// 0x2C
 };
 C_ASSERT(sizeof(Region) == 64);
 

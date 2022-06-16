@@ -160,22 +160,22 @@ LABEL_37:
 					}
 					if (!dont_call_help)
 					{
-						selfRegion->enemyAirStrength = helper::get_enemy_air_strength_in_region(selfRegion->region, (u8)self->player);
-						selfRegion->enemyGroundStrength = helper::get_enemy_strength_in_region(selfRegion->region, (u8)self->player, 0);
-						v19 = selfRegion->neededAirStrength;
-						if (v19 > v14->neededAirStrength)
+						selfRegion->air_strength_enemy = helper::get_enemy_air_strength_in_region(selfRegion->region, (u8)self->player);
+						selfRegion->ground_strength_enemy = helper::get_enemy_strength_in_region(selfRegion->region, (u8)self->player, 0);
+						v19 = selfRegion->air_strength_needed;
+						if (v19 > v14->air_strength_needed)
 						{
-							v14->neededAirStrength = v19;
+							v14->air_strength_needed = v19;
 						}
-						child0 = selfRegion->neededGroundStrength;
-						if (child0 > v14->neededGroundStrength)
+						child0 = selfRegion->ground_strength_needed;
+						if (child0 > v14->ground_strength_needed)
 						{
-							v14->neededGroundStrength = child0;
+							v14->ground_strength_needed = child0;
 						}
 					}
 				}
 			}
-			v14->captainFlags |= 0x20u;
+			v14->captain_flags |= 0x20u;
 			if (self->status & UnitStatus::Completed)
 			{
 				child1 = (u8)self->main_order_id;
@@ -427,10 +427,10 @@ LABEL_37:
 	{
 		const u32 Func_CB_AICaptainStrengthIterator = 0x00438F60;
 		MilitaryAi* military_ai = region->first_military_ai;
-		region->regionAirStrength = 0;
-		region->fullAirStrength = 0;
-		region->regionGroundStrength = 0;
-		region->fullGroundStrength = 0;
+		region->air_strength = 0;
+		region->air_strength_full = 0;
+		region->ground_strength = 0;
+		region->ground_strength_full = 0;
 			
 		for (MilitaryAi* i = military_ai; i; i = i->link.prev)
 		{
@@ -443,8 +443,8 @@ LABEL_37:
 			{
 				s32 townUnitGroundStrength = townWorker->ground_strength;
 				s16 townUnitAirStrength = townWorker->air_strength;
-				region->fullAirStrength += townUnitAirStrength;
-				region->fullGroundStrength += townUnitGroundStrength;
+				region->air_strength_full += townUnitAirStrength;
+				region->ground_strength_full += townUnitGroundStrength;
 				Sprite* townUnitSprite = townWorker->sprite;
 				if (!townUnitSprite)
 				{
@@ -454,8 +454,8 @@ LABEL_37:
 				s32 regionTown6 = townUnitGroundStrength;
 				if (helper::get_region_id(v6, townUnitSprite->position.y) == region->region)
 				{
-					region->regionAirStrength += townUnitAirStrength;
-					region->regionGroundStrength += regionTown6;
+					region->air_strength += townUnitAirStrength;
+					region->ground_strength += regionTown6;
 				}
 			}
 		}
@@ -463,8 +463,8 @@ LABEL_37:
 		if (AIScriptController[region->player].AI_Flags.is_use_map_settings)
 		{
 			s32 v8 = region->region << 6;
-			s32 v9 = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterY + v8);
-			s32 regionTown0 = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterX + v8) >> 8;
+			s32 v9 = *(s32*)((char*)&(*SAI_Paths)->regions[0].region_center_y + v8);
+			s32 regionTown0 = *(s32*)((char*)&(*SAI_Paths)->regions[0].region_center_x + v8) >> 8;
 			v9 >>= 8;
 			s16 a1 = regionTown0 - 256;
 			s32 regionTown6 = (v9 + 256) << 16;
@@ -473,36 +473,36 @@ LABEL_37:
 			helper::iterateUnitsAtLocationTargetProc((Box16*)&a1, (Unit*(__fastcall*)(Unit*, Unit*))Func_CB_AICaptainStrengthIterator, (Unit*)region);
 		}
 
-		u32 regionAirStrength = region->enemyAirStrength;
+		u32 air_strength = region->air_strength_enemy;
 		if (!(AIScriptController[region->player].AI_Flags.is_use_map_settings))
 		{
-			regionAirStrength += regionAirStrength >> 1;
+			air_strength += air_strength >> 1;
 		}
-		if (regionAirStrength > region->neededAirStrength)
+		if (air_strength > region->air_strength_needed)
 		{
-			region->neededAirStrength = regionAirStrength;
+			region->air_strength_needed = air_strength;
 		}
 
-		u32 regionGroundStrength = region->enemyGroundStrength;
+		u32 ground_strength = region->ground_strength_enemy;
 		if (!(AIScriptController[region->player].AI_Flags.is_use_map_settings))
 		{
-			regionGroundStrength += regionGroundStrength >> 1;
+			ground_strength += ground_strength >> 1;
 		}
-		if (regionGroundStrength > region->neededGroundStrength)
+		if (ground_strength > region->ground_strength_needed)
 		{
-			region->neededGroundStrength = regionGroundStrength;
+			region->ground_strength_needed = ground_strength;
 		}
 
 		u16 result = AIScriptController[region->player].ai_max_force;
 		if (AIScriptController[region->player].ai_max_force)
 		{
-			if (region->neededAirStrength > result)
+			if (region->air_strength_needed > result)
 			{
-				region->neededAirStrength = result;
+				region->air_strength_needed = result;
 			}
-			if (region->neededGroundStrength > result)
+			if (region->ground_strength_needed > result)
 			{
-				region->neededGroundStrength = result;
+				region->ground_strength_needed = result;
 			}
 		}
 		return result;
@@ -514,8 +514,8 @@ LABEL_37:
 		s16 regionId = helper::get_region_id(x, y);
 		Unit* firstUnit = *firstVisibleUnit;
 		s32 regionOffset = regionId << 6;
-		s32 regionCenterX = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterX + regionOffset);
-		s32 regionCenterY = *(s32*)((char*)&(*SAI_Paths)->regions[0].regionCenterY + regionOffset);
+		s32 region_center_x = *(s32*)((char*)&(*SAI_Paths)->regions[0].region_center_x + regionOffset);
+		s32 region_center_y = *(s32*)((char*)&(*SAI_Paths)->regions[0].region_center_y + regionOffset);
 
 		Unit* result = nullptr;
 		if (firstVisibleUnit)
@@ -540,7 +540,7 @@ LABEL_37:
 								firstUnitPlayer = firstSprite->player;
 							if (!scbw::is_allied_to(player, firstUnitPlayer))
 							{
-								fastDistance = helper::get_distance_fast(regionCenterX >> 8, firstUnit->sprite->position.x, regionCenterY >> 8, firstUnit->sprite->position.y);
+								fastDistance = helper::get_distance_fast(region_center_x >> 8, firstUnit->sprite->position.x, region_center_y >> 8, firstUnit->sprite->position.y);
 								if (fastDistance < maxDistance)
 								{
 									maxDistance = fastDistance;
@@ -753,7 +753,7 @@ LABEL_37:
 				AiRegion* playerRegions = AiRegionCaptains[unit->player];
 				char regionState = playerRegions[regionId].state;
 				AiRegion* region = &playerRegions[regionId];
-				if (regionState != RegionState::EnemySighted && !region->airTarget && !region->groundTarget && !(region->captainFlags & 0x20))
+				if (regionState != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->captain_flags & 0x20))
 				{
 					result = 1;
 				}
@@ -802,8 +802,8 @@ LABEL_37:
 				do
 				{
 					u32 regionOffset = regionIds[iterator1] << 6;
-					u32 region_x = *(u32*)((char*)&_paths->regions[0].regionCenterX + regionOffset) >> 8;
-					u32 region_y = *(u32*)((char*)&_paths->regions[0].regionCenterY + regionOffset) >> 8;
+					u32 region_x = *(u32*)((char*)&_paths->regions[0].region_center_x + regionOffset) >> 8;
+					u32 region_y = *(u32*)((char*)&_paths->regions[0].region_center_y + regionOffset) >> 8;
 					regionPositions[iterator1].x = region_x;
 					regionPositions[iterator1++].y = region_y;
 				} while (iterator1 < region_max);
@@ -964,15 +964,15 @@ LABEL_37:
 		}
 
 		AiRegion* region = militaryAi->region;
-		Unit* slowestUnitVar = region->slowestUnit;
+		Unit* slowestUnitVar = region->slowest_unit;
 		if (!slowestUnitVar
 		  || !slowestUnitVar->sprite // new
 		  || slowestUnitVar->status & UnitStatus::InTransport
 		  || slowestUnitVar == unit
 		  || region->state == 2
-		  || (u16)(&(*SAI_Paths)->regionCount + 32 * (helper::get_region_id_from_unit(region->slowestUnit) + 4392)) < 60u
+		  || (u16)(&(*SAI_Paths)->regionCount + 32 * (helper::get_region_id_from_unit(region->slowest_unit) + 4392)) < 60u
 		  || !helper::ai_are_on_connected_regions(slowestUnitVar, unit)
-		  || helper::get_distance_fast(region->slowestUnit->sprite->position.x, unit->sprite->position.x, region->slowestUnit->sprite->position.y, unit->sprite->position.y) <= 0x80)
+		  || helper::get_distance_fast(region->slowest_unit->sprite->position.x, unit->sprite->position.x, region->slowest_unit->sprite->position.y, unit->sprite->position.y) <= 0x80)
 		{
 			return 1;
 		}
@@ -1983,7 +1983,7 @@ LABEL_37:
 		}
 		if (recurses) {
 			Region* region = scbw::get_region(ai_region->region);
-			for (u32 i = 0; i < region->neighborCount; ++i) {
+			for (u32 i = 0; i < region->neighbor_count; ++i) {
 				u32 other_id = region->neighbors[i];
 				Region* other_region = scbw::get_region(other_id);
 				if (military_ai->unit->status & UnitStatus::InAir || region->group_index == other_region->group_index) {
@@ -2026,11 +2026,11 @@ LABEL_37:
 							s32 region_id = ai_region->region;
 							if (ai_region->state == RegionState::ContinueAttackHere)
 							{
-								if (!ai_region->slowestUnit)
+								if (!ai_region->slowest_unit)
 								{
 									helper::ai_assign_region_to_slowest_unit(ai_region);
 								}
-								Unit* slowest_unit = ai_region->slowestUnit;
+								Unit* slowest_unit = ai_region->slowest_unit;
 								if (slowest_unit)
 								{
 									if (helper::ai_has_incomplete_military_in_region(ai_region))
@@ -2060,7 +2060,7 @@ LABEL_37:
 	// Hooked to help AI group mixed speed armies in more intelligent ways. -Pr0nogo
 	void ai_assign_region_to_slowest_unit(AiRegion* region) // 00436F70
 	{
-		Unit* slowest_unit = region->slowestUnit;
+		Unit* slowest_unit = region->slowest_unit;
 		Unit* slowest_ground_unit = 0;
 		Unit* slowest_air_unit = 0;
 		u32 slowest_ground_speed = 99999999;
@@ -2069,12 +2069,12 @@ LABEL_37:
 		{
 			if (slowest_unit->status & UnitStatus::InAir)
 			{
-				slowest_air_unit = region->slowestUnit;
+				slowest_air_unit = region->slowest_unit;
 				slowest_air_speed = slowest_unit->flingy_top_speed;
 			}
 			else
 			{
-				slowest_ground_unit = region->slowestUnit;
+				slowest_ground_unit = region->slowest_unit;
 				slowest_ground_speed = slowest_unit->flingy_top_speed;
 			}
 		}
@@ -2099,7 +2099,7 @@ LABEL_37:
 		{
 			slowest_ground_unit = slowest_air_unit;
 		}
-		region->slowestUnit = slowest_ground_unit;
+		region->slowest_unit = slowest_ground_unit;
 	}
 
 	// Hooked to improve behavior. -Pr0nogo
