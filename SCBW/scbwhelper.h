@@ -439,8 +439,8 @@ namespace helper
 	void drop_powerup(Unit* powerup);																								// 004F3B70
 
 	//// cast_order
-	u32 get_upgraded_weapon_cooldown(Unit* unit, u8 weaponId);																		// 00475DC0
-	bool is_ready_to_attack(Unit* unit, u32 weaponId);																				// 00476640
+	u32 get_upgraded_weapon_cooldown(Unit* unit, u8 weapon_id);																		// 00475DC0
+	bool is_ready_to_attack(Unit* unit, u32 weapon_id);																				// 00476640
 	u32 get_stat_txt_string(Unit* unit, u32 player, char* message);																// 0048EF30
 	bool can_cast_spell(Unit* unit);																								// 00492140
 	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero);														// 00492620
@@ -553,7 +553,7 @@ namespace helper
 	void StatHangerCount(BinDlg* dialog, u32 index);																				// 004253D0
 	void StatsShieldLevel(BinDlg* dialog, u32 index);																				// 00425510
 	void StatsArmorLevel(BinDlg* dialog, u32 index);																				// 00425600
-	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId);																	// 00425790
+	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weapon_id);																	// 00425790
 	bool StatSpidermineCount(BinDlg* dialog, u32 index);																			// 00426300
 
 	// For get_unit_rank_string and check_hotkey_char
@@ -573,7 +573,7 @@ namespace helper
 
 	//// api
 	void ApplySpores(Unit* unit);
-	Bullet* create_bullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
+	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor);
 	Unit* createUnitAtPos(u16 unit_id, u16 player, u32 x, u32 y);																// 004CD360
 	Flingy* createFlingy(u32 flingy_id, u32 player, u32 x, u32 y);																// 00496460
@@ -690,7 +690,7 @@ namespace helper
 	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);								// 004E8280
 
 	// For create_bullet
-	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle);					// 0048BEC0
+	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weapon_id, s32 x, s32 angle);					// 0048BEC0
 
 	// For writeBullets
 	/*
@@ -706,7 +706,7 @@ namespace helper
 	bool can_unit_id_fit_at_xy(s32 x, s32 y, u32 unit_id);														    // 0042D810
 	Unit** get_all_units_in_bounds(Box16* coords);																	// 0042FF80
 	void increment_unit_kill_count(Unit* unit);																		// 004759C0
-	u32 get_unit_damage_bonus(Unit* unit, u8 weaponId);																// 00475EC0
+	u32 get_unit_damage_bonus(Unit* unit, u8 weapon_id);																// 00475EC0
 	void attack_overlay_and_notify(Unit* attacker, Unit* target, u32 weaponType, u32 direction);			        // 00479730
 	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player);												// 00488210
 	u32 get_unit_bullet_damage(Bullet* bullet, Unit* target);														// 0048ACD0

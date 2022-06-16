@@ -554,7 +554,7 @@ namespace hooks
 		*unkUpgradeCount += v13;
 	}
 
-	void stats_weapon_level(BinDlg* dialog, u16 buttonRelated, u8 weaponId) // 00425790
+	void stats_weapon_level(BinDlg* dialog, u16 buttonRelated, u8 weapon_id) // 00425790
 	{
 		BinDlg* v3;
 		s32 v4;
@@ -567,13 +567,13 @@ namespace hooks
 
 		v3 = dialog;
 		v4 = (*active_portrait_unit)->player;
-		if (weapons_dat::DamageUpgrade[weaponId] >= 0x2Eu)
+		if (weapons_dat::DamageUpgrade[weapon_id] >= 0x2Eu)
 		{
-//			v5 = *upgradesLevelBW[v4][weapons_dat::DamageUpgrade[weaponId]];
+//			v5 = *upgradesLevelBW[v4][weapons_dat::DamageUpgrade[weapon_id]];
 		}
 		else
 		{
-//			v5 = *upgradesLevelSC[v4][weapons_dat::DamageUpgrade[weaponId]];
+//			v5 = *upgradesLevelSC[v4][weapons_dat::DamageUpgrade[weapon_id]];
 		}
 		v10 = v5;
 		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v5);
@@ -604,9 +604,9 @@ namespace hooks
 		v8 = cmdicons_grp;
 		v6->graphic = 12;
 	//	*(s32*)v7 = v8;
-		*(s16*)(v7 + 4) = weapons_dat::Icon[weaponId];
+		*(s16*)(v7 + 4) = weapons_dat::Icon[weapon_id];
 		*(s16*)(v7 + 6) = 0;
-		*(s16*)(v7 + 8) = weaponId;
+		*(s16*)(v7 + 8) = weapon_id;
 		v9 = v6->flags;
 		v6->psz_text = statusscreen_infobtn[buttonRelated];
 		if (!(v9 & 1))

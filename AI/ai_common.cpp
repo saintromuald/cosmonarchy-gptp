@@ -95,9 +95,9 @@ namespace AI
 	scbw::UnitFinder unitStatTotalFinder;
 
 	// In original functions:
-	// 0x00695604 would contains weaponId
+	// 0x00695604 would contains weapon_id
 	// 0x00695798 would contains totalEnemyLife
-	s32 get_total_enemy_life_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId)
+	s32 get_total_enemy_life_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weapon_id)
 	{
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
@@ -107,17 +107,17 @@ namespace AI
 			Unit* target = unitStatTotalFinder.get_unit(i);
 			if ((target != caster) &&
 				!(target->status & UnitStatus::Invincible) &&
-				scbw::can_weapon_target_unit(weaponId, target, caster) &&
+				scbw::can_weapon_target_unit(weapon_id, target, caster) &&
 				caster->is_target_enemy(target))
 			{
 				// specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
-				if (weaponId == WeaponId::Plague)
+				if (weapon_id == WeaponId::Plague)
 				{
 					totalEnemyLife += target->get_current_hp_ingame();
 				}
 				else
 				// specific to AIEnemyOrganicUnitHPAccumulatorProc @ 0x00440CF0 - used only by Maelstrom
-				if (weaponId == WeaponId::Maelstrom)
+				if (weapon_id == WeaponId::Maelstrom)
 				{
 					if (units_dat::base_property[target->id] & UnitProperty::Organic &&
 						target->maelstrom_timer == 0)
@@ -136,7 +136,7 @@ namespace AI
 
 	// Loop content based on AIAllyUnitHPAccumulatorProc @ 0x00440D60
 	// 0x00695798 would contains totalAllyLife
-	s32 get_total_ally_life_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId)
+	s32 get_total_ally_life_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weapon_id)
 	{
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
@@ -145,7 +145,7 @@ namespace AI
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
-				scbw::can_weapon_target_unit(weaponId, target, caster) &&
+				scbw::can_weapon_target_unit(weapon_id, target, caster) &&
 				!caster->is_target_enemy(target))
 			{
 				totalAllyLife += target->get_current_life_ingame();

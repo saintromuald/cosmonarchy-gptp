@@ -188,22 +188,22 @@ u8 Unit::getSpellCountdown() const
 }
 
 extern const u32 Func_GetMaxWeaponRange = 0x00475870;
-u32 Unit::get_max_weapon_range(u8 weaponId) const
+u32 Unit::get_max_weapon_range(u8 weapon_id) const
 {
 	assert(this);
 
-	if (weaponId == WeaponId::None)
+	if (weapon_id == WeaponId::None)
 	{
 		return 0;
 	}
 
-	assert(weaponId < WEAPON_TYPE_COUNT);
+	assert(weapon_id < WEAPON_TYPE_COUNT);
 
 	static u32 maxWeaponRange;
 	__asm
 	{
 		PUSHAD
-		MOV BL, weaponId
+		MOV BL, weapon_id
 		MOV EAX, this
 		CALL Func_GetMaxWeaponRange
 		MOV maxWeaponRange, EAX
@@ -554,14 +554,14 @@ void Unit::heal_energy(s32 energy, Unit* source)
 }
 
 const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
-void Unit::damage_with(u8 weaponId, s32 damage, Unit* attacker, u8 attackingPlayer, s8 direction, u8 damageDivisor)
+void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attackingPlayer, s8 direction, u8 damage_divisor)
 {
 	assert(this);
-	assert(weaponId < WEAPON_TYPE_COUNT);
-//	assert(damageDivisor != 0);
+	assert(weapon_id < WEAPON_TYPE_COUNT);
+//	assert(damage_divisor != 0);
 	if (damage < 0)
 	{
-		damage = weapons_dat::DamageAmount[weaponId] * 256;
+		damage = weapons_dat::DamageAmount[weapon_id] * 256;
 	}
 	__asm
 	{
@@ -571,8 +571,8 @@ void Unit::damage_with(u8 weaponId, s32 damage, Unit* attacker, u8 attackingPlay
 		PUSH attackingPlayer
 		PUSH attacker
 		PUSH direction
-		PUSH damageDivisor
-		PUSH weaponId
+		PUSH damage_divisor
+		PUSH weapon_id
 		CALL Func_DoWeaponDamage
 		POPAD
 	}
@@ -580,12 +580,12 @@ void Unit::damage_with(u8 weaponId, s32 damage, Unit* attacker, u8 attackingPlay
 
 void Unit::damage_with_custom(
 	s32 damage,
-	u8 damageType,
+	u8 damage_type,
 	Unit* attacker,
 	u8 attackingPlayerId,
 	s8 direction,
-	u8 damageDivisor,
-	bool ignoreFlatArmor
+	u8 damage_divisor,
+	bool ignore_flat_armor
 )
 {
 	assert(this);
@@ -593,12 +593,12 @@ void Unit::damage_with_custom(
 	hooks::weapon_damage_custom(
 		damage,
 		this,
-		damageType,
+		damage_type,
 		attacker,
 		attackingPlayerId,
 		direction,
-		damageDivisor,
-		ignoreFlatArmor
+		damage_divisor,
+		ignore_flat_armor
 	);
 }
 
@@ -607,23 +607,23 @@ void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool noti
 {
 	UnitExt* unitExt = globals.get_unit_ext(this);
 	auto damage = dmg;
-	s32 shieldReduceAmount = 0;
+	s32 shield_reduce_amount = 0;
 	if (unitExt->timers[TimerGodsMadeFlesh])
 	{
 		return;
 	}
 	if (units_dat::ShieldsEnabled[this->id])
 	{
-		shieldReduceAmount = std::min(damage, this->shields);
-		damage -= shieldReduceAmount;
+		shield_reduce_amount = std::min(damage, this->shields);
+		damage -= shield_reduce_amount;
 	}
-	if (shieldReduceAmount == 0 && damage < 128 && !ignoreDmg128Overflow)
+	if (shield_reduce_amount == 0 && damage < 128 && !ignoreDmg128Overflow)
 	{
 		damage = 128;
 	}
-	if (shieldReduceAmount != 0)
+	if (shield_reduce_amount != 0)
 	{
-		this->shields -= shieldReduceAmount;
+		this->shields -= shield_reduce_amount;
 	}
 	if (shield_overlay && units_dat::ShieldsEnabled[this->id] && this->shields != 0)
 	{
@@ -1271,11 +1271,11 @@ bool Unit::can_attack_target(Unit* target, bool checkVisibility) const
 }
 
 extern const u32 Func_FireUnitWeapon = 0x00479C90;
-void Unit::fireWeapon(u8 weaponId) const
+void Unit::fireWeapon(u8 weapon_id) const
 {
 	assert(this);
 	static u32 weaponId_;
-	weaponId_ = weaponId;
+	weaponId_ = weapon_id;
 	__asm
 	{
 		PUSHAD

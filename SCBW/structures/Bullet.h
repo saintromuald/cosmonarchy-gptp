@@ -54,7 +54,7 @@ struct Bullet
 	/*0x58*/ Target       attackTarget;
 	// ^-- POSSIBLE SHARED Bullet/Unit STRUCTURE END
 
-	/*0x60*/ u8           weaponId;
+	/*0x60*/ u8           weapon_id;
 	/*0x61*/ u8           time_remaining;
 	/*0x62*/ u8           hit_flags;           // 0x01 = miss target; 0x02 = no damage (hallucination)
 	/*0x63*/ u8           remainingBounces;   // Bounce count for mutalisk weapon (official name: ubChain)

@@ -374,7 +374,7 @@ namespace hooks
 			// Loop through bullets
 			for (Bullet* bullet = *first_bullet; bullet; bullet = bullet->next)
 			{
-				if (bullet->weaponId == WeaponId::KalkaliskViscousAcid)
+				if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid)
 				{
 					if (bullet->order_signal & 0x80)
 					{

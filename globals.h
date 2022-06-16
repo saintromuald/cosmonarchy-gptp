@@ -174,14 +174,14 @@ namespace hooks
 
 namespace scbw
 {
-	Bullet* set_missile_source_pos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0, u32 fake_amount = 0);
+	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0, u32 fake_amount = 0);
 	bool is_slowed(Unit* unit);
 	void refresh_debuffs(Unit* unit);
 	void inherit_debuffs(Unit* parent, Unit* child);
 	bool is_debuffed(Unit* unit);
 	void restore_func(Unit* unit);
 	void apply_parasite(Unit* unit, u8 playerID, Unit* queen);
-	void do_deconstruction_damage(Unit* unit, u16 weaponId, bool playSound = true);
+	void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool playSound = true);
 	Unit** get_source_matraleths(Unit* unit);
 
 	void clear_clarion_links(Unit* unit);

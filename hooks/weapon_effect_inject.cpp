@@ -11,18 +11,18 @@ namespace
 	void __declspec(naked) friendlySplashWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
-		if (weaponId == WeaponId::LakiziliskSubterraneanSpines)
+		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 		{
-			hooks::lurkerSplash(bullet, weaponId, SplashType::FriendlyNew);
+			hooks::lurkerSplash(bullet, weapon_id, SplashType::FriendlyNew);
 		}
 		else
 		{
-			hooks::splash(bullet, weaponId, SplashType::FriendlyNew);
+			hooks::splash(bullet, weapon_id, SplashType::FriendlyNew);
 		}
 		// Everything is conveniently already pushed!
 		__asm {
@@ -38,18 +38,18 @@ namespace
 	void __declspec(naked) enemySplashWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
-		if (weaponId == WeaponId::LakiziliskSubterraneanSpines)
+		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 		{
-			hooks::lurkerSplash(bullet, weaponId, SplashType::Enemy);
+			hooks::lurkerSplash(bullet, weapon_id, SplashType::Enemy);
 		}
 		else
 		{
-			hooks::splash(bullet, weaponId, SplashType::Enemy);
+			hooks::splash(bullet, weapon_id, SplashType::Enemy);
 		}
 		__asm {
 			POP EDI
@@ -64,18 +64,18 @@ namespace
 	void __declspec(naked) radialSplashWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
-		if (weaponId == WeaponId::LakiziliskSubterraneanSpines)
+		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 		{
-			hooks::lurkerSplash(bullet, weaponId, SplashType::Radial);
+			hooks::lurkerSplash(bullet, weapon_id, SplashType::Radial);
 		}
 		else
 		{
-			hooks::splash(bullet, weaponId, SplashType::Radial);
+			hooks::splash(bullet, weapon_id, SplashType::Radial);
 		}
 		__asm {
 			POP EDI
@@ -90,12 +90,12 @@ namespace
 	void __declspec(naked) normalWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
-		hooks::normalDamage(bullet, weaponId);
+		hooks::normalDamage(bullet, weapon_id);
 		__asm {
 			POP EDI
 			POP ESI
@@ -109,12 +109,12 @@ namespace
 	void __declspec(naked) yamatoWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
-		hooks::yamatoDamage(bullet, weaponId);
+		hooks::yamatoDamage(bullet, weapon_id);
 		__asm {
 			POP EDI
 			POP ESI
@@ -128,12 +128,12 @@ namespace
 	void __declspec(naked) parasiteWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
-		hooks::parasite(bullet, weaponId);
+		hooks::parasite(bullet, weapon_id);
 		__asm {
 			POP EDI
 			POP ESI
@@ -147,12 +147,12 @@ namespace
 	void __declspec(naked) broodlingsWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
-		hooks::broodlings(bullet, weaponId);
+		hooks::broodlings(bullet, weapon_id);
 		__asm {
 			POP EDI
 			POP ESI
@@ -166,12 +166,12 @@ namespace
 	void __declspec(naked) lockdownWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
-		hooks::lockdown(bullet, weaponId);
+		hooks::lockdown(bullet, weapon_id);
 		__asm {
 			POP EDI
 			POP ESI
@@ -185,12 +185,12 @@ namespace
 	void __declspec(naked) airSplashWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
-		hooks::airSplash(bullet, weaponId);
+		hooks::airSplash(bullet, weapon_id);
 		__asm {
 			POP EDI
 			POP ESI
@@ -204,10 +204,10 @@ namespace
 	void __declspec(naked) irradiateWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
 		hooks::IrradiateHit(bullet->sourceUnit, bullet->attackTarget.pt, bullet->srcPlayer);
 		__asm {
@@ -223,12 +223,12 @@ namespace
 	void __declspec(naked) nukeWrapper()
 	{
 		static Bullet* bullet;
-		static u32 weaponId;
+		static u32 weapon_id;
 		__asm {
 			MOV bullet, EBX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 		}
-		hooks::nuke(bullet, weaponId);
+		hooks::nuke(bullet, weapon_id);
 		__asm {
 			POP EDI
 			POP ESI

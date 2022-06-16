@@ -525,7 +525,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_hallucination_spell_hooks();
 //	hooks::injectFeedbackSpellHook();
 //	hooks::injectBtnsCondHook();
-//	hooks::injectRecvCmdHook();
+//	hooks::inject_receive_command_hooks();
 	hooks::inject_create_initial_units_hooks();
 	hooks::inject_give_unit_hooks();
 	hooks::inject_train_cmdrecv_hooks();
@@ -551,7 +551,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	hooks::inject_rally_hooks();
 	//hooks::injectInfestationHooks();
-	//hooks::injectRecvCmdHook();
+	//hooks::inject_receive_command_hooks();
 
 	hooks::inject_recharge_shields_hooks();
 	hooks::inject_spider_mine_hooks();

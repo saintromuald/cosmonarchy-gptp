@@ -10,10 +10,10 @@ namespace hooks
 
 	/// Calculates the unit's weapon cooldown, factoring in upgrades and status effects.
 	/// @return	the modified cooldown value.
-	u32 get_modified_weapon_cooldown(Unit* unit, u8 weaponId)
+	u32 get_modified_weapon_cooldown(Unit* unit, u8 weapon_id)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		u32 cooldown = weapons_dat::Cooldown[weaponId];
+		u32 cooldown = weapons_dat::Cooldown[weapon_id];
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
 		s32 cooldownModifier = (unit->stim_timer ? 1 : 0) - (unit->ensnare_timer ? 1 : 0)
@@ -120,9 +120,9 @@ namespace hooks
 		return cooldown;
 	}
 
-	f32 get_weapon_cooldwon_float(Unit* unit, u8 weaponId)
+	f32 get_weapon_cooldwon_float(Unit* unit, u8 weapon_id)
 	{
-		return get_modified_weapon_cooldown(unit, weaponId) / 24.0f;
+		return get_modified_weapon_cooldown(unit, weapon_id) / 24.0f;
 	}
 
 	f32 get_current_dps(Unit* unit, u8 weapon_id) {

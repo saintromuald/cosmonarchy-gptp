@@ -24,15 +24,15 @@ namespace
 	void __declspec(naked) getMaxWeaponRangeWrapper()
 	{
 		static Unit* unit;
-		static u8 weaponId;
+		static u8 weapon_id;
 		static u32 maxWeaponRange;
 		__asm
 		{
 			MOV unit, EAX
-			MOV weaponId, BL
+			MOV weapon_id, BL
 			PUSHAD
 		}
-		maxWeaponRange = hooks::get_max_weapon_range(unit, weaponId, unit->order_target.unit);
+		maxWeaponRange = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit);
 		__asm
 		{
 			POPAD

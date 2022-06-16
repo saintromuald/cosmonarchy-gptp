@@ -176,23 +176,23 @@ namespace hooks
 		disableUnit(target);
 	}
 
-	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damageDivisor)
+	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damage_divisor)
 	{
 		u32 base_damage = helper::get_unit_bullet_damage(bullet, target);
 		if (bullet->hit_flags & 2)
 		{
 			if (bullet->sourceUnit != nullptr)
 			{
-				target->damage_with(bullet->weaponId, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damageDivisor);
+				target->damage_with(bullet->weapon_id, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damage_divisor);
 			}
 			else
 			{
-				helper::attack_overlay_and_notify(bullet->sourceUnit, target, bullet->weaponId, bullet->direction1); // no damage, but still ask for retaliation
+				helper::attack_overlay_and_notify(bullet->sourceUnit, target, bullet->weapon_id, bullet->direction1); // no damage, but still ask for retaliation
 			}
 		}
 		else
 		{
-			target->damage_with(bullet->weaponId, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damageDivisor);
+			target->damage_with(bullet->weapon_id, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damage_divisor);
 		}
 	}
 
@@ -234,33 +234,33 @@ namespace hooks
 		Unit* target = attacker->order_target.unit;
 		if (target != nullptr)
 		{
-			u8 weaponId;
+			u8 weapon_id;
 			// Lakizilisks can only attack while burrowed even if given a melee attack, according to this code
 			if (attacker->id != UnitId::ZergLakizilisk
 				|| (attacker->status & UnitStatus::Burrowed
 					|| attacker->status & UnitStatus::InBuilding)) // Attempt to allow Lakizilisks to attack from within Bunkers, didn't work, but may still be part of the solution
 			{
-				weaponId = units_dat::GroundWeapon[attacker->id];
+				weapon_id = units_dat::GroundWeapon[attacker->id];
 			}
 			else
 			{
-				weaponId = WeaponId::None;
+				weapon_id = WeaponId::None;
 			}
-			attackerExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId] + 1;
+			attackerExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weapon_id] + 1;
 			attackerExt->values[ValueAI_PreventTargeting] = 0;
 
 			if (attacker->status & UnitStatus::IsHallucination)
 			{
 				if (attacker != nullptr)
 				{
-					u32 damage = helper::get_unit_damage_bonus(attacker, weaponId);
-					damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
+					u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
+					damage = ((u16)damage + weapons_dat::DamageAmount[weapon_id]) * 256;
 					if (attackerExt->values[ValueDeconstruction])
 					{
-						scbw::do_deconstruction_damage(attacker, weaponId);
+						scbw::do_deconstruction_damage(attacker, weapon_id);
 					}
 					target->damage_with(
-						weaponId,
+						weapon_id,
 						damage,
 						attacker,
 						attacker->player,
@@ -269,19 +269,19 @@ namespace hooks
 				}
 				else
 				{
-					helper::attack_overlay_and_notify(attacker, target, weaponId, attacker->current_direction_1); // no damage, but still ask for retaliation
+					helper::attack_overlay_and_notify(attacker, target, weapon_id, attacker->current_direction_1); // no damage, but still ask for retaliation
 				}
 			}
 			else
 			{
-				u32 damage = helper::get_unit_damage_bonus(attacker, weaponId);
-				damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
+				u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
+				damage = ((u16)damage + weapons_dat::DamageAmount[weapon_id]) * 256;
 				if (attackerExt->values[ValueDeconstruction])
 				{
-					scbw::do_deconstruction_damage(attacker, weaponId);
+					scbw::do_deconstruction_damage(attacker, weapon_id);
 				}
 				target->damage_with(
-					weaponId,
+					weapon_id,
 					damage,
 					attacker,
 					attacker->player,
