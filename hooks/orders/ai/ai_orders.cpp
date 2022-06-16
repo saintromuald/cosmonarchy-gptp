@@ -1753,13 +1753,16 @@ LABEL_37:
 		const f32 distance_bias = -4.0;
 		const f32 mineral_bias  =  1.0;
 		const f32 gas_bias      =  1.0;
+		const f32 start_location_bias = 10;
 
 		u32 own_count = 0;
 		u32 ally_count = 0;
 		u32 enemy_count = 0;
+		u32 start_location_count = 0;
 		f32 average_own_distance = 0; 
 		f32 average_ally_distance = 0; 
 		f32 average_enemy_distance = 0; 
+		f32 average_start_location_distance = 0; 
 
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			for (Unit* unit = first_player_unit->unit[i]; unit; unit = unit->player_link.next) {
@@ -1775,13 +1778,28 @@ LABEL_37:
 					average_enemy_distance += distance;
 				}
 			}
+			if (player != i && first_player_unit->unit[i]) {
+				f32 distance = scbw::get_distance_fast(area->position, start_positions[i]) / 32.0;
+				start_location_count++;
+				average_start_location_distance += distance;
+			}
 		}
-		if (own_count)   average_own_distance   /= own_count;
-		if (ally_count)  average_ally_distance  /= ally_count;
-		if (enemy_count) average_enemy_distance /= enemy_count;
-		score += average_own_distance   * own_bias;
-		score += average_ally_distance  * ally_bias;
-		score += average_enemy_distance * enemy_bias;
+		if (own_count) {
+			average_own_distance /= own_count;
+			score += average_own_distance * own_bias;
+		}
+		if (ally_count) {
+			average_ally_distance /= ally_count;
+			score += average_ally_distance  * ally_bias;
+		}
+		if (enemy_count) {
+			average_enemy_distance /= enemy_count;
+			score += average_enemy_distance * enemy_bias;
+		}
+		if (start_location_count) {
+			average_start_location_distance /= start_location_count;
+			score += average_start_location_distance * start_location_bias;
+		}
 
 		f32 distance_from_main = scbw::get_distance_fast(main_town->position, area->position) / 32;
 		score += distance_from_main * distance_bias;

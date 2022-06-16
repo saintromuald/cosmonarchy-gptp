@@ -63,16 +63,16 @@ namespace hooks
 			buildingSizeY++;
 		}
 
-		searchBox.left = (startPositions[player].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0;
-		searchBox.top = (startPositions[player].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0;
-		searchBox.bottom = buildingSizeY / 2 + ((startPositions[player].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2 - 1;
-		searchBox.right = buildingSizeX / 2 + ((startPositions[player].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
+		searchBox.left = (start_positions[player].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0;
+		searchBox.top = (start_positions[player].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0;
+		searchBox.bottom = buildingSizeY / 2 + ((start_positions[player].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2 - 1;
+		searchBox.right = buildingSizeX / 2 + ((start_positions[player].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
 
 		// yes, the return value is unused for some reason
 		helper::FindBestUnit(&searchBox, 0x0049D640);
 		created_unit = helper::create_unit(buildingId,
-				((startPositions[player].x - (buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2,
-				((startPositions[player].y - (buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2,
+				((start_positions[player].x - (buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2,
+				((start_positions[player].y - (buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2,
 				player);
 
 		if (created_unit != nullptr)
@@ -236,7 +236,7 @@ namespace hooks
 
 					if (unit_id != UnitId::None)
 					{
-						Point16 startPos = startPositions[player];
+						Point16 startPos = start_positions[player];
 						bool horizontal = true;
 						Point16 pos = FindWorkerSpawnPositions(townhallId, startPos.x, startPos.y, horizontal);
 
@@ -275,22 +275,22 @@ namespace hooks
 		static u16* const maxBoxBottomValue = (u16*)0x006284B4;
 		s32 overlordStartX, overlordStartY;
 		Unit* created_unit;
-		if (startPositions[player].x < *maxBoxRightValue / 2)
+		if (start_positions[player].x < *maxBoxRightValue / 2)
 		{
-			overlordStartX = startPositions[player].x + units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1;
+			overlordStartX = start_positions[player].x + units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1;
 		}
 		else
 		{
-			overlordStartX = startPositions[player].x - (units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1);
+			overlordStartX = start_positions[player].x - (units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1);
 		}
 
-		if (startPositions[player].y < *maxBoxBottomValue / 2)
+		if (start_positions[player].y < *maxBoxBottomValue / 2)
 		{
-			overlordStartY = startPositions[player].y + units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1;
+			overlordStartY = start_positions[player].y + units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1;
 		}
 		else
 		{
-			overlordStartY = startPositions[player].y - (units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1);
+			overlordStartY = start_positions[player].y - (units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1);
 		}
 
 		created_unit = helper::create_unit(UnitId::ZergOvileth, overlordStartX, overlordStartY, player);
