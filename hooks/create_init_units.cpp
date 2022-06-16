@@ -85,7 +85,7 @@ namespace hooks
 			if (helper::spreads_creep(created_unit->id, 1)
 				|| units_dat::base_property[created_unit->id] & UnitProperty::CreepBuilding)
 			{
-				helper::applyCreepAtLocationFromUnitType(created_unit->sprite->position.x, created_unit->sprite->position.y, created_unit->id);
+				helper::apply_creep_at_location_from_unit_id(created_unit->sprite->position.x, created_unit->sprite->position.y, created_unit->id);
 			}
 		}
 	}
@@ -311,7 +311,7 @@ namespace hooks
 		Unit* unit = helper::create_unit(id, x, y, player_id);
 		if (unit) {
 			if (!prevent_creep && (helper::spreads_creep(unit->id, 1) || units_dat::base_property[id] & UnitProperty::CreepBuilding)) {
-				helper::applyCreepAtLocationFromUnitType(unit->sprite->position.x, unit->sprite->position.y, id);
+				helper::apply_creep_at_location_from_unit_id(unit->sprite->position.x, unit->sprite->position.y, id);
 			}
 			helper::update_unit_stats_and_finish_building(unit);
 			if (helper::show_finished_unit(unit)) {

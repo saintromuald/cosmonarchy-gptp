@@ -356,8 +356,8 @@ namespace helper
 
 	//// create_init_units
 	b32 spreads_creep(u32 unit_id, b32 defaultReturn);																				// 00413870
-	void applyCreepAtLocationFromUnitType(s32 x, s32 y, u32 unit_id);																// 004148F0
-	void CreateBuildingLarva(Unit* main_building);																					// 0049D660
+	void apply_creep_at_location_from_unit_id(s32 x, s32 y, u32 unit_id);																// 004148F0
+	void create_building_larva(Unit* main_building);																					// 0049D660
 	b32 show_finished_unit(Unit* unit);																								// 0049EC30
 	Unit* FindBestUnit(Box16* coords, u32 searchProc);																				// 004E8830
 
@@ -366,7 +366,7 @@ namespace helper
 	u8 spread_creep(u32 unit_id, s32 x, s32 y);																						// 00414680
 	void ai_training_overlord(Unit* main_building, Unit* larva);																		// 00435770
 	void update_unit_strength(Unit* unit);																							// 0049FA40
-	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit* unit, Box16* coords);														// 004E8280
+	u32 iterate_units_at_location_target_proc_larva_count(Unit* unit, Box16* coords);														// 004E8280
 	void function_004E8DA0(Unit* unit);																								// 004E8DA0
 	bool getLarvaSpawnPos(Unit* unit, Vector32* coords);																			// 004E8E10
 
@@ -385,12 +385,12 @@ namespace helper
 	u32 iterateDirectionalCreepData(u32 x, u32 y, u32 callback, u32 arg);															// 00413B30
 
 	// TODO: add helpers for these functions
-	// for applyCreepAtLocationFromUnitType
+	// for apply_creep_at_location_from_unit_id
 	
 	typedef s32 __stdcall CreepChange(s32, s32, s32, s32, s32);
 
 	s32 modifyCreepState(s32 x_tile, s32 y_tile, CreepChange* creepChange, u32 param);												// 00413FA0
-	s32 runCreepRandomizer(s16* originalTile, s32 creepTileBorders, s32* outCreepStatus, s16* currentTile, s32 unused);				// 004140A0 // "note possible desync"
+	s32 run_creep_randomizer(s16* originalTile, s32 creepTileBorders, s32* outCreepStatus, s16* currentTile, s32 unused);				// 004140A0 // "note possible desync"
 	s32 unkCreepBorders(s32 a1, s32 a2);																							// 006D0C78
 	u32 forEachAdjacentTile(s32(__stdcall* callback)(s32, s32, s32, s32, void*), void* param, s32 x_tile, s32 y_tile);				// 00413B30
 	s32 unkCreepTile(s32 pos, s32 originalTile, s32 x_tile, s32 y_tile, void* param);												// 00414440
@@ -1004,7 +1004,7 @@ namespace helper
 	// For ai_are_on_connected_regions
 	bool ai_regions_are_connected(u32 player, u32 region1, u32 region2);									// 00437E70
 
-	// For BTNSCOND_ZergBuildingRally
+	// For btsncond_zerg_building_rally
 	u32 btnscond_rally(u32 unused, u32 player, Unit* unit);													// 00429520
 
 	// For ai_get_build_location

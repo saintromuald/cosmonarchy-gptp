@@ -3421,7 +3421,7 @@ namespace helper
 		return bReturnValue;
 	}
 
-	void applyCreepAtLocationFromUnitType(s32 x, s32 y, u32 unit_id)
+	void apply_creep_at_location_from_unit_id(s32 x, s32 y, u32 unit_id)
 	{
 		const u32 Func_applyCreepAtLocationFromUnitType = 0x004148F0;
 		__asm {
@@ -3434,7 +3434,7 @@ namespace helper
 		}
 	}
 
-	void CreateBuildingLarva(Unit* main_building)
+	void create_building_larva(Unit* main_building)
 	{
 		const u32 Func_Sub49D660 = 0x0049D660;
 		__asm {
@@ -6235,7 +6235,7 @@ namespace helper
 	}
 
 	// hardcoding the larva count function, keeping the return value though it's unused here
-	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit* unit, Box16* coords)
+	u32 iterate_units_at_location_target_proc_larva_count(Unit* unit, Box16* coords)
 	{
 		const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
 		static u32 return_value;
@@ -9287,7 +9287,7 @@ namespace helper
 		return result;
 	}
 	
-	// For BTNSCOND_ZergBuildingRally
+	// For btsncond_zerg_building_rally
 	u32 btnscond_rally(u32 unused, u32 player, Unit* unit)
 	{
 		const u32 Func_BTNSCOND_Rally = 0x00429520;
