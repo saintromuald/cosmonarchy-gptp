@@ -227,8 +227,11 @@ namespace hooks
 					unit->main_order_state = 1;
 					auto origin = unit->morph_origin;
 					IscriptAnimation::Enum animation = IscriptAnimation::Init;
-					if (origin == UnitId::ZergZethrokor
-					||  origin == UnitId::ZergNathrokor)
+					if (origin == UnitId::ZergDroleth) {
+						animation = IscriptAnimation::AirAttkInit;
+					}
+					else if (origin == UnitId::ZergZethrokor
+					||		 origin == UnitId::ZergNathrokor)
 					{
 						animation = IscriptAnimation::Unused1;
 					}
