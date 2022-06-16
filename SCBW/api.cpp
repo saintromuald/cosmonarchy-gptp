@@ -2103,7 +2103,7 @@ namespace scbw
 	u32 get_closest_resarea(Point16 position) {
 		u32 min_distance = UINT32_MAX;
 		u32 best_resarea = 0;
-		for (u32 i = 1; i < ResAreaLimit; ++i) {
+		for (u32 i = 1; i <= *resource_areas_count; ++i) {
 			ResourceArea* resarea = &resource_areas->areas[i];
 			u32 distance = scbw::get_distance_fast(position, resarea->position);
 			if (distance < min_distance) {

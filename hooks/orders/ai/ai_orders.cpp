@@ -1819,24 +1819,36 @@ LABEL_37:
 			}
 		}
 
+		u32 a = 0;
+		u32 b = 0;
+		u32 c = 0;
+		u32 d = 0;
+
 		Region* main_region = scbw::get_region(scbw::get_region_id(main_town->position));
-		for (u32 i = 1; i <= resource_areas->used_count; ++i) {
+		for (u32 i = 1; i <= *resource_areas_count; ++i) {
 			ResourceArea* area = &resource_areas->areas[i];
 			if (area->flags & 3) {
+				a++;
 				continue;
 			}
 			Region* area_region = scbw::get_region(scbw::get_region_id(area->position));
 			if (!has_transport_or_flying_worker && main_region->group_index != area_region->group_index) {
+				b++;
 				continue;
 			}
 			EntryArray units = unit_search_radial(area->position, 12 * 32);
 			for (u32 j = 0; j < units.count; ++j) {
 				Unit* unit = units.units[j];
 				if (unit->player < PlayerLimit) {
-					if (player != unit->player && scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_factory) {
+					if (player != unit->player && scbw::is_allied_to(player, unit->player)
+						&& (units_dat::group_flags[unit->id].is_factory
+							|| units_dat::base_property[unit->id] & UnitProperty::ResourceDepot
+							|| units_dat::base_property[unit->id] & UnitProperty::Worker)) {
+						c++;
 						goto exit;
 					}
 					if (!scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
+						d++;
 						goto exit;
 					}
 				}
@@ -1854,6 +1866,8 @@ LABEL_37:
 		
 		if (best_resarea) {
 			resource_areas->areas[best_resarea].flags |= 2;
+		} else {
+			scbw::printf("Player %u failed to find an expo! %u %u %u %u", player, a, b, c, d);
 		}
 		return best_resarea;
 	}
