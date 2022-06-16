@@ -45,7 +45,7 @@ namespace AI
 				return true;
 			}
 
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Worker)
+			if (units_dat::base_property[target->id] & UnitProperty::Worker)
 			{
 				return true;
 			}

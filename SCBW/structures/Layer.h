@@ -22,7 +22,7 @@ struct Layer {
 };
 
 C_ASSERT(sizeof(Layer) == 20); /*0x14*/
-//static_assert(sizeof(Layer) == 20, "The size of the Layer structure is invalid");
+//static_assert(sizeof(Layer) == 20, "The count of the Layer structure is invalid");
 
 
 struct Layers {

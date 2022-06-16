@@ -65,7 +65,7 @@ namespace hooks
 
 	// Hooked to rule out AI issues -- Pr0nogo
 	Unit* create_hallucination(Unit* source, s32 player) {
-		if (units_dat::BaseProperty[source->id] & UnitProperty::Building || source->id == UnitId::ProtossSteward || source->id == UnitId::ProtossPlasmaShell) {
+		if (units_dat::base_property[source->id] & UnitProperty::Building || source->id == UnitId::ProtossSteward || source->id == UnitId::ProtossPlasmaShell) {
 			return 0;
 		}
 		Unit* result = 0;

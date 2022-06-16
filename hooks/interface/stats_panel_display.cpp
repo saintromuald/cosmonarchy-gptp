@@ -293,7 +293,7 @@ namespace hooks
 	char* get_unit_rank_string(Unit* unit) // 0042F370
 	{
 		u16 unit_id = unit->id;
-		if (units_dat::BaseProperty[unit_id] & UnitProperty::NeutralAccessories)
+		if (units_dat::base_property[unit_id] & UnitProperty::NeutralAccessories)
 		//	|| scbw::unit_is_trap(unit))
 		{
 			return 0;
@@ -309,7 +309,7 @@ namespace hooks
 		/*
 		// Originally had Gantrithor - Tassadar hardcode here
 		if (unit_id != UnitId::TerranMinotaur
-			|| !(units_dat::BaseProperty[unit_id] & UnitProperty::Hero)
+			|| !(units_dat::base_property[unit_id] & UnitProperty::Hero)
 			|| !units_dat::MapStringId[unit_id])
 		{
 			if (helper::unitGetRace(unit) == RaceId::Terran
@@ -640,7 +640,7 @@ namespace hooks
 
 		u32 race = Unit::get_race(unit_id);
 		u32 supply = 0;
-		if (units_dat::BaseProperty[unit_id] & UnitProperty::TwoUnitsIn1Egg) {
+		if (units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg) {
 			supply = 2;
 		}
 

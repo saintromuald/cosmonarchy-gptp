@@ -220,7 +220,7 @@ static u32 get_dps_against(Unit* source, Unit* target) {
 		return (get_damage_against(WeaponId::StewardPulseCannon, target) /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
 			* (target->unit_with_hangar.in_hangar_count + target->unit_with_hangar.out_hangar_count)
 			* 1.5; // additional bias to encourage targeting solarions more
-	} else if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster
+	} else if (units_dat::base_property[target->id] & UnitProperty::Spellcaster
 		&& target->id != UnitId::TerranComsatStation
 		&& target->id != UnitId::ProtossShieldBattery) {
 		return (target->energy / 256 / 50) * 20;
@@ -292,13 +292,13 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 
 	// Value attacking strategically important targets
 	if (target->id == UnitId::ZergNydusCanal
-	|| (units_dat::BaseProperty[target->id] & UnitProperty::Worker && target->main_order_id == OrderId::ConstructingBuilding)
-	|| (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot && !(target->status & UnitStatus::Completed))) {
+	|| (units_dat::base_property[target->id] & UnitProperty::Worker && target->main_order_id == OrderId::ConstructingBuilding)
+	|| (units_dat::base_property[target->id] & UnitProperty::ResourceDepot && !(target->status & UnitStatus::Completed))) {
 		cost -= 50;
 	} else if (target->id == UnitId::ProtossPylon
-		    || units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot
-		    || units_dat::BaseProperty[target->id] & UnitProperty::Worker
-		    || units_dat::GroupFlags[target->id].is_factory
+		    || units_dat::base_property[target->id] & UnitProperty::ResourceDepot
+		    || units_dat::base_property[target->id] & UnitProperty::Worker
+		    || units_dat::group_flags[target->id].is_factory
 		    || scbw::unit_id_is_tech(target->id)) {
 		cost -= 25;
 	}
@@ -326,7 +326,7 @@ enum KiterType {
 };
 
 static KiterType get_kiter_type(u32 unit_id) {
-	if (units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
+	if (units_dat::base_property[unit_id] & UnitProperty::Building) {
 		// No kiting; Just smart targeting
 		return KiterType_TargetingOnly;
 	}
@@ -478,7 +478,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 
 	EntryArray hostiles = unit_search_square(unit->position, GroupRadius);
 	unit_search_filter(&hostiles, unit, FilterEnemy | FilterCanAttackOrCast);
-	for (u32 i = 0; i < hostiles.size; ++i) {
+	for (u32 i = 0; i < hostiles.count; ++i) {
 		Unit* hostile = hostiles.units[i];
 
 		s32 strength = 0;
@@ -498,7 +498,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 
 		if (strength) {
 			result.targets_found = true;
-			if (units_dat::BaseProperty[hostile->id] & UnitProperty::Building) {
+			if (units_dat::base_property[hostile->id] & UnitProperty::Building) {
 				adjust_biases(result.forward_biases, unit, hostile->position, strength);
 			} else {
 				adjust_biases(result.hostile_biases, unit, hostile->position, strength);
@@ -516,7 +516,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 
 	EntryArray allies = unit_search_square(unit->position, GroupRadius);
 	unit_search_filter(&allies, unit, FilterAlly | FilterCanAttackOrCast);
-	for (u32 i = 0; i < allies.size; ++i) {
+	for (u32 i = 0; i < allies.count; ++i) {
 		Unit* ally = allies.units[i];
 
 		u32 strength = 0;
@@ -529,7 +529,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 	}
 
 	EntryArray effects = effect_search_square(unit->position, GroupRadius);
-	for (u32 i = 0; i < effects.size; ++i) {
+	for (u32 i = 0; i < effects.count; ++i) {
 		Effect* effect = effects.effects[i];
 		s32 value = get_effect_value(unit, effect);
 		if (value) {
@@ -647,11 +647,11 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 	}
 
 	if (unit_could_kite(unit)) {
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker && !unit_ext->timers[TimerAI_KitingCombat]) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker && !unit_ext->timers[TimerAI_KitingCombat]) {
 			EntryArray allies = unit_search_square(unit->position, GroupRadius);
 			unit_search_filter(&allies, unit, FilterAlly | FilterCanAttackOrCast);
 			u32 allied_combat_strength = 0;
-			for (u32 i = 0; i < allies.size; ++i) {
+			for (u32 i = 0; i < allies.count; ++i) {
 				Unit* ally = allies.units[i];
 				if (unit_in_combat(ally, true)) {
 					u32 strength = 0;
@@ -667,7 +667,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			EntryArray hostiles = unit_search_square(unit->position, GroupRadius);
 			unit_search_filter(&hostiles, unit, FilterEnemy | FilterCanAttackOrCast);
 			u32 hostile_combat_strength = 0;
-			for (u32 i = 0; i < hostiles.size; ++i) {
+			for (u32 i = 0; i < hostiles.count; ++i) {
 				Unit* hostile = hostiles.units[i];
 				if (unit_in_combat(hostile, true)) {
 					u32 strength = 0;
@@ -687,7 +687,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 		if (unit_kiting_can_attack(unit)) {
 			if (get_kiter_type(unit->id) != KiterType_TargetingOnly) {
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
+				if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 					if (!unit_ext->timers[TimerAI_KitingLeash]) {
 						unit_ext->timers[TimerAI_KitingLeash] = 6 * 24;
 					} else if (unit_ext->timers[TimerAI_KitingLeash] < 2 * 24)  {
@@ -715,7 +715,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				if (!(unit->status & UnitStatus::InAir)) {
 					u32 distance = scbw::get_distance_fast(unit->position, target->position);
 					u32 range = get_max_range(unit->id);
-					if (distance > range && scbw::get_region(scbw::get_region_id(unit->position))->groupIndex != scbw::get_region(scbw::get_region_id(target->position))->groupIndex) {
+					if (distance > range && scbw::get_region(scbw::get_region_id(unit->position))->group_index != scbw::get_region(scbw::get_region_id(target->position))->group_index) {
 						return;
 					}
 				}
@@ -902,10 +902,10 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	}
 
 	// Value attacking strategically important targets
-	if (units_dat::GroupFlags[target->id].is_factory) {
+	if (units_dat::group_flags[target->id].is_factory) {
 		cost -= 50;
 	}
-	if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceDepot) {
+	if (units_dat::base_property[target->id] & UnitProperty::ResourceDepot) {
 		cost -= 25;
 	}
 	if (scbw::unit_id_is_tech(target->id)) {
@@ -931,7 +931,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 		unit_search_filter(&allies, unit, FilterAlly);
 		unit_search_filter(&enemies, unit, unit->player == 11 ? 0 : FilterEnemy);
 
-		if (enemies.size) {
+		if (enemies.count) {
 			u32 counter = 0;
 			for (u32 i = 0; i < bunker_capacity; ++i) {
 				Unit* target = unit->get_loaded_unit(i);
@@ -939,11 +939,11 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 					counter += units_dat::SpaceRequired[target->id];
 				}
 			}
-			for (u32 i = 0; i < allies.size && counter <= bunker_capacity; ++i) {
+			for (u32 i = 0; i < allies.count && counter <= bunker_capacity; ++i) {
 				Unit* target = allies.units[i];
 
 				if (target->unit_ai && helper::can_enter_transport(unit, target)
-					&& !is_melee_attacker(target->id) && !(units_dat::BaseProperty[unit->id] & UnitProperty::Worker)) {
+					&& !is_melee_attacker(target->id) && !(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
 					target->order_to(OrderId::EnterTransport, unit);
 					counter += units_dat::SpaceRequired[target->id];
 				}
@@ -1122,7 +1122,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				}
 				if (scbw::is_allied_to(unit->player, u->player))
 				{
-					if (units_dat::BaseProperty[u->id] & UnitProperty::ResourceDepot)
+					if (units_dat::base_property[u->id] & UnitProperty::ResourceDepot)
 					{
 						alliedTownHalls = true;
 						return;
@@ -1167,10 +1167,10 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 
 			f32 min_cost = FLT_MAX;
 			Unit* best_target = 0;
-			for (u32 i = 0; i < targets.size; ++i) {
+			for (u32 i = 0; i < targets.count; ++i) {
 				Unit* target = targets.units[i];
 				if (target->hitpoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
-					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon)) {
+					&& units_dat::base_property[target->id] & UnitProperty::Building && !(units_dat::base_property[target->id] & UnitProperty::Addon)) {
 					f32 cost = get_blissful_embrace_target_cost(unit, target);
 					if (cost < min_cost) {
 						min_cost = cost;

@@ -32,7 +32,7 @@ namespace hooks
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
 			EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
-			speed *= pow(0.95, sovroleths.size);
+			speed *= pow(0.95, sovroleths.count);
 		}
 
 		// Crucible Aura
@@ -199,7 +199,7 @@ namespace hooks
 					unitFinder.for_each([&](Unit* target)
 					{
 						if (scbw::is_allied_to(unit->player, target->player)
-							|| units_dat::BaseProperty[target->id] & UnitProperty::Flyer)
+							|| units_dat::base_property[target->id] & UnitProperty::Flyer)
 						{
 							return;
 						}

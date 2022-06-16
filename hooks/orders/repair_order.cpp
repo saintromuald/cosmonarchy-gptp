@@ -207,7 +207,7 @@ namespace hooks
 					return 0;
 				}
 				errorStringId = 892;
-				if (!(units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer))
+				if (!(units_dat::base_property[target->id] & UnitProperty::ResourceContainer))
 				{
 					if (bErrorFlag)
 					{
@@ -405,7 +405,7 @@ namespace hooks
 					{
 						return 1;
 					}
-					if (units_dat::BaseProperty[target->id] & UnitProperty::NeutralAccessories)
+					if (units_dat::base_property[target->id] & UnitProperty::NeutralAccessories)
 					{
 						return 1;
 					}
@@ -420,7 +420,7 @@ namespace hooks
 					{
 						break;
 					}
-					if (units_dat::BaseProperty[target->id] & UnitProperty::NeutralAccessories)
+					if (units_dat::base_property[target->id] & UnitProperty::NeutralAccessories)
 					{
 						break;
 					}
@@ -451,7 +451,7 @@ namespace hooks
 					{
 						return 1;
 					}
-					if (units_dat::BaseProperty[target->id] & UnitProperty::NeutralAccessories)
+					if (units_dat::base_property[target->id] & UnitProperty::NeutralAccessories)
 					{
 						return 1;
 					}
@@ -466,7 +466,7 @@ namespace hooks
 						{
 							return 1;
 						}
-						if (units_dat::BaseProperty[target->id] & UnitProperty::NeutralAccessories)
+						if (units_dat::base_property[target->id] & UnitProperty::NeutralAccessories)
 						{
 							return 1;
 						}

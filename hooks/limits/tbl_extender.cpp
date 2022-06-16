@@ -735,9 +735,9 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 							/*
 								let executable = exe.exec_alloc(code.len());
 								//
-									pub fn exec_alloc(&mut self, size: usize) -> &'static mut [u8] {
-										let mem = self.parent.state.exec_heap.allocate(size);
-										unsafe { ::std::slice::from_raw_parts_mut(mem, size) }
+									pub fn exec_alloc(&mut self, count: usize) -> &'static mut [u8] {
+										let mem = self.parent.state.exec_heap.allocate(count);
+										unsafe { ::std::slice::from_raw_parts_mut(mem, count) }
 									}
 								//
 								if nops>0 {
@@ -966,7 +966,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 		globals.tbl_extender = true;
 		auto ptr_list = offset_list();
 		//DATA MUST BE INITIALIZED
-		/*for (s32 i = 0; i < ptr_list.size(); i++) {
+		/*for (s32 i = 0; i < ptr_list.count(); i++) {
 			memoryPatch(ptr_list[i], (u32)&extendedTbl);
 		}*/
 		patch_tbl_list();

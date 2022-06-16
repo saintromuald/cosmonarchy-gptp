@@ -30,10 +30,10 @@ namespace hooks
 		for (Unit** it = units_in_bounds; *it; ++it) {
 			Unit* current_unit = *it;
 			if (current_unit != unit && (!unit || current_unit->id == unit->id)) {
-				if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Subunit) {
+				if (units_dat::base_property[current_unit->id] & UnitProperty::Subunit) {
 					current_unit = current_unit->subunit;
 				}
-				if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
+				if (units_dat::base_property[current_unit->id] & UnitProperty::Building) {
 					has_buildings = true;
 				} else {
 					has_units = true;
@@ -52,11 +52,11 @@ namespace hooks
 			if (current_unit != unit)
 			{
 				if (has_units) {
-					if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
+					if (units_dat::base_property[current_unit->id] & UnitProperty::Building) {
 						dontAddToList = true;
 					}
 				} else if (has_buildings) {
-					if (!(units_dat::BaseProperty[current_unit->id] & UnitProperty::Building)) {
+					if (!(units_dat::base_property[current_unit->id] & UnitProperty::Building)) {
 						dontAddToList = true;
 					}
 				}
@@ -68,7 +68,7 @@ namespace hooks
 					{
 						// if what got it is the turret or another subunit, swap
 						// the unit and the subunit as current_unit
-						if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Subunit)
+						if (units_dat::base_property[current_unit->id] & UnitProperty::Subunit)
 						{
 							current_unit = current_unit->subunit;
 						}
@@ -189,7 +189,7 @@ namespace hooks
 								}
 								else
 								{
-									if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) {
+									if (units_dat::base_property[current_unit->id] & UnitProperty::Building) {
 										has_buildings = true;
 									} else {
 										has_units = true;
@@ -513,7 +513,7 @@ namespace hooks
 			if (!unit) {
 				break;
 			}
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+			if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 				has_buildings = true;
 			} else {
 				has_units = true;
@@ -527,11 +527,11 @@ namespace hooks
 				break;
 			}
 			if ((has_units && has_buildings) || !has_units) {
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+				if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 					list[count++] = unit;
 				}
 			} else if (!has_buildings) {
-				if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
+				if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
 					list[count++] = unit;
 				}
 			}
@@ -574,7 +574,7 @@ namespace hooks
 				break;
 			}
 			active_player_selection->unit[i] = 0;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
+			if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
 				unit = unit->subunit;
 			}
 			helper::destroy_unit_selection(unit);
@@ -582,7 +582,7 @@ namespace hooks
 		for (u32 i = 0; i < count; ++i) {
 			Unit* unit = unit_list[i];
 			active_player_selection->unit[i] = unit;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
+			if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
 				helper::create_unit_selection(unit->subunit, i);
 				active_player_selection->unit[i] = unit->subunit;
 				unit_list[i] = unit->subunit;

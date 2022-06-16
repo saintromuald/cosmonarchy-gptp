@@ -13,7 +13,7 @@ Notes:
 	We need to replace THREE arrays with extended ones, we are aiming for 18,
 	but it should be possible to try pseudo "unlimited" selection once we are done.
 	Easiest thing to do, without need for hooks and ultimate overhead of changing entire game logic,
-	would be to have the arrays with fixed size and don't bother with dynamic arrays (vectors).
+	would be to have the arrays with fixed count and don't bother with dynamic arrays (vectors).
 	Then most of the work would be to memorypatch pointer addresses with addresses of new arrays,
 	I don't think there is need for hooks in most cases, making those would probably take ages
 	we must also make sure that conditions check for 18 instead 12, so the new array is

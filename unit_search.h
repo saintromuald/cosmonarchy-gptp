@@ -37,7 +37,7 @@ enum SearchFilter
 #define EntryLimit 1700
 
 struct EntryArray {
-	u32 size;
+	u32 count;
 	union {
 		void* entries[EntryLimit];
 		Unit* units[EntryLimit];

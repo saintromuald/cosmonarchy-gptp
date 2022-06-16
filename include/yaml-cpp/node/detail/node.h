@@ -92,7 +92,7 @@ class node {
     m_pRef->set_style(style);
   }
 
-  // size/iterator
+  // count/iterator
   std::size_t size() const { return m_pRef->size(); }
 
   const_node_iterator begin() const {

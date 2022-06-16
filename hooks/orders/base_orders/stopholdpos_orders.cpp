@@ -223,7 +223,7 @@ namespace hooks
 			if (unit->unit_ai == nullptr)
 			{
 
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::Hero)
+				if (units_dat::base_property[unit->id] & UnitProperty::Hero)
 					unit->main_order_id = OrderId::PlayerGuard;
 
 			}
@@ -271,7 +271,7 @@ namespace hooks
 		if (!helper::attack_recent_attacker(unit)) {
 			if (unit->main_order_timer == 0) {
 				//unit->main_order_timer = 15;
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
+				if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
 					if (unit->subunit->next_target_waypoint.x != unit->next_target_waypoint.x ||
 						unit->subunit->next_target_waypoint.y != unit->next_target_waypoint.y) {
 						unit->next_target_waypoint.x = unit->subunit->next_target_waypoint.x;

@@ -237,7 +237,7 @@ namespace hooks
 			data.finalDamage -= std::min(data.finalDamage, armorTotal);
 		}
 
-		// Apply damage type/unit size factor
+		// Apply damage type/unit count factor
 		s32 damage_factor = damage_factors[data.damageType].unit_size_factor[units_dat::SizeType[data.target->id]];
 		if (data.attacker != nullptr)
 		{
@@ -246,7 +246,7 @@ namespace hooks
 				case UnitId::TerranHarakan:
 				{
 					// Harakan Apollyoid Adhesive - Full damage to structures
-					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
+					if (units_dat::base_property[data.target->id] & UnitProperty::Building)
 					{
 						damage_factor = 256;
 					}
@@ -451,7 +451,7 @@ namespace hooks
 
 			// Ensnaring Brood - Queen enchantment ability
 			if (attackerExt->timers[TimerEnsnaringBrood] > 0
-				&& !(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
+				&& !(units_dat::base_property[data.target->id] & UnitProperty::Building)
 				&& !scbw::is_under_dark_swarm(data.target))
 			{
 				apply_ensnare(data.target);
@@ -475,7 +475,7 @@ namespace hooks
 				case UnitId::SharedStriga:
 				{
 					// Striga - Fleeting Focus
-					if (!(units_dat::BaseProperty[data.attacker->id] & UnitProperty::Building)
+					if (!(units_dat::base_property[data.attacker->id] & UnitProperty::Building)
 						&& !scbw::is_under_dark_swarm(data.target))
 					{
 						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
@@ -545,7 +545,7 @@ namespace hooks
 				case WeaponId::GorgrokorSerratedCleavers:
 				{
 					// Essence Drain - Gorgrokor Energy Steal
-					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster)
+					if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster)
 					{
 						u16 energy = std::min(data.target->energy, (u16)(data.finalDamage + data.shieldReduceAmount));
 						data.target->energy -= energy;
@@ -629,7 +629,7 @@ namespace hooks
 						u32 target_offset = scbw::get_overlay_offset(data.target->id);
 						if (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
 							// Power Siphon
-							if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster) {
+							if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster) {
 								u32 energy = std::min(data.target->energy, (u16)(10 * 256));
 								if (energy) {
 									data.target->energy -= energy;
@@ -773,7 +773,7 @@ namespace hooks
 					case WeaponId::MagnetarNewtonianShockCannon:
 					{
 						// Magnetar - Law of Attraction - Pull target to attacker
-						if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
+						if (!(units_dat::base_property[data.target->id] & UnitProperty::Building)
 							|| (data.target->status & UnitStatus::InAir
 								&& data.target->main_order_id != OrderId::Liftoff
 								&& data.target->main_order_id != OrderId::BuildingLand))
@@ -942,7 +942,7 @@ namespace hooks
 			// Remove connected larva
 			EntryArray larvae = unit_search_radial(data.target->position, 4 * 32);
 			unit_search_filter(&larvae, data.target, 0, {UnitId::ZergLarva});
-			for (u32 i = 0; i < larvae.size; ++i) {
+			for (u32 i = 0; i < larvae.count; ++i) {
 				Unit* larva = larvae.units[i];
 				if (larva->connected_unit == data.target) {
 					larva->connected_unit = 0;
@@ -958,9 +958,9 @@ namespace hooks
 
 			// Make this a sprite
 			u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-			if (units_dat::BaseProperty[data.target->id] & UnitProperty::LargeOverlay) {
+			if (units_dat::base_property[data.target->id] & UnitProperty::LargeOverlay) {
 				effect_image_id = ImageId::ZergBuildingExplosion;
-			} else if (units_dat::BaseProperty[data.target->id] & UnitProperty::MediumOverlay) {
+			} else if (units_dat::base_property[data.target->id] & UnitProperty::MediumOverlay) {
 				effect_image_id = ImageId::ZergAirDeathExplosion_Large;
 			}
 			data.target->sprite->create_overlay(effect_image_id);
@@ -1090,7 +1090,7 @@ namespace hooks
 		{
 			// Calculate overlay ID offset based on units_dat flags
 			overlayPadding = 0;
-			baseProperty = units_dat::BaseProperty[unit->id];
+			baseProperty = units_dat::base_property[unit->id];
 			if (baseProperty & UnitProperty::MediumOverlay)
 			{
 				overlayPadding = 1;

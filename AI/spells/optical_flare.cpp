@@ -28,7 +28,7 @@ namespace AI
 			if (!is_target_worth_hitting(target, caster))
 				return false;
 
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+			if (units_dat::base_property[target->id] & UnitProperty::Building)
 				return false;
 
 			if (target->is_blind)

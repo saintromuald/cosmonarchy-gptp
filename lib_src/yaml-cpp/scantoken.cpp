@@ -28,7 +28,7 @@ namespace YAML {
 		m_simpleKeyAllowed = false;
 		m_canBeJSONFlow = false;
 
-		// store pos and eat indicator
+		// store position and eat indicator
 		Token token(Token::DIRECTIVE, INPUT.mark());
 		INPUT.eat(1);
 

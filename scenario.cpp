@@ -544,11 +544,11 @@ FraudSpawnLocation* get_random_spawn() {
 
 		u32 cost = 0;
 		EntryArray unit_array = unit_search_radial(fraud_spawn.spawns[location].pos, 12 * 32);
-		if (unit_array.size) {
+		if (unit_array.count) {
 			cost += 1;
 		}
 		unit_search_filter(&unit_array, 0, FilterBuilding);
-		if (unit_array.size) {
+		if (unit_array.count) {
 			cost += 1;
 		}
 
@@ -592,7 +592,7 @@ FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point16 pos) 
 
 void init_fraud_spawns() {
 	Unit* next = 0;
-	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
+	for (Unit* unit = first_player_unit->unit[11]; unit; unit = next) {
 		next = unit->player_link.next;
 		if (unit->id == UnitId::TerranCommandCenter) {
 			FraudSpawnLocation spawn = {};
@@ -607,7 +607,7 @@ void init_fraud_spawns() {
 			unit->remove();
 		}
 	}
-	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
+	for (Unit* unit = first_player_unit->unit[11]; unit; unit = next) {
 		next = unit->player_link.next;
 		if (unit->id == UnitId::ProtossPylon) {
 			FraudSpawnLocation* spawn = get_closest_spawn(unit->position);
@@ -623,7 +623,7 @@ void init_fraud_spawns() {
 			unit->remove();
 		}
 	}
-	for (Unit* unit = firstPlayerUnit->unit[11]; unit; unit = next) {
+	for (Unit* unit = first_player_unit->unit[11]; unit; unit = next) {
 		next = unit->player_link.next;
 		if (unit->id == UnitId::TerranMaverick) {
 			FraudSpawnLocation* spawn = get_closest_spawn(unit->position);
@@ -1488,7 +1488,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				f32 multiplier = 0.5 + fraud_count * 0.2;
 				for (u32 i = 0; i < fraud_spawn.unit_count[next_fraud][race]; ++i) {
 					fraud_spawn.units[next_fraud][race][i].count *= multiplier;
-					if (units_dat::BaseProperty[fraud_spawn.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
+					if (units_dat::base_property[fraud_spawn.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
 						if (fraud_spawn.units[next_fraud][race][i].count > 40) {
 							fraud_spawn.units[next_fraud][race][i].count = 40;
 						}
@@ -1668,17 +1668,17 @@ void tick_scenario() {
 			}
 			if (all_factory_counts->unit[player] == 0 && sequence->fraud && !sequence->location && !sequence->safety_timer) {
 				if (sequence->fraud_class == FraudClass_God) {
-					if (firstPlayerUnit->unit[player]) {
+					if (first_player_unit->unit[player]) {
 						sequence->fraud = Fraud_None;
 						sequence->fraud_class = FraudClass_None;
 					}
 				} else {
-					if (firstPlayerUnit->unit[player]) {
+					if (first_player_unit->unit[player]) {
 						messagef("%s\x01 (Class: %s\x01) died!", fraud_names[sequence->fraud], fraud_class_names[fraud_spawn.sequence[player-1].fraud_class]);
 						sequence->safety_timer = 24;
 					}
 					Unit* next = 0;
-					for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = next) {
+					for (Unit* unit = first_player_unit->unit[player]; unit; unit = next) {
 						next = unit->player_link.next;
 						unit->remove();
 					}
@@ -1699,7 +1699,7 @@ void tick_scenario() {
 			for (u32 j = 0; j < 6; ++j) {
 				u32 player = (j + offset) % 6 + 1;
 				FraudSpawnSequence* sequence = &fraud_spawn.sequence[player-1];
-				if (all_factory_counts->unit[player] == 0 && !sequence->safety_timer && *unitCount < 1600) {
+				if (all_factory_counts->unit[player] == 0 && !sequence->safety_timer && *unit_count < 1600) {
 					u32 fraud_class = FraudClass_None;
 					if (fraud_spawn.used_count < god_spawn_breakpoint) {
 						fraud_class = FraudClass_Fraud;
@@ -1752,7 +1752,7 @@ void tick_scenario() {
 					--sequence->unit_timer;
 				}
 				if (!sequence->unit_timer) {
-					if (sequence->unit_index < fraud_spawn.unit_count[sequence->fraud][sequence->race] && sequence->location->source_count && *unitCount < 1650) {
+					if (sequence->unit_index < fraud_spawn.unit_count[sequence->fraud][sequence->race] && sequence->location->source_count && *unit_count < 1650) {
 						FraudSpawnSource* source = &sequence->location->sources[sequence->source_index % sequence->location->source_count];
 						u32 unit_id = fraud_spawn.units[sequence->fraud][sequence->race][sequence->unit_index].unit_id;
 						if (source->rally_count) {
@@ -1767,7 +1767,7 @@ void tick_scenario() {
 							Unit* unit = scbw::create_unit_in_game(unit_id, i, source_pos.x, source_pos.y);
 							if (unit) {
 								helper::give_ai(unit);
-								if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Worker)) {
+								if (!(units_dat::base_property[unit_id] & UnitProperty::Worker)) {
 									unit->order_to(OrderId::AttackMove, rally.x, rally.y);
 								}
 
@@ -1781,7 +1781,7 @@ void tick_scenario() {
 							}
 						}
 						++sequence->source_index;
-						if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Worker)) {
+						if (!(units_dat::base_property[unit_id] & UnitProperty::Worker)) {
 							if (sequence->source_index % sequence->location->source_count == 0) {
 								++sequence->rally_index;
 							}

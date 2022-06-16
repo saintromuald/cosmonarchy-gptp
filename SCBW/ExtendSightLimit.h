@@ -27,7 +27,7 @@ struct SightStruct
 };
 
 C_ASSERT(sizeof(SightStruct) == 28);
-//static_assert(sizeof(SightStruct) == 28, "The size of the SightStruct structure is invalid");
+//static_assert(sizeof(SightStruct) == 28, "The count of the SightStruct structure is invalid");
 
 //Sight distance varies between 0 and MAX_SIGHT_RANGE, inclusive
 template <u32 MAX_SIGHT_RANGE>

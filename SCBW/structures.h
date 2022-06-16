@@ -283,7 +283,7 @@ struct Doodad
 	/*10*/  u16 doodad_width;
 	/*12*/  u16 _3;
 	/*14*/  u16 minitile[16]; /** MegaTile References (VF4/VX4) */
-}; // size 34
+}; // count 34
 
 struct Thingy
 {
@@ -402,7 +402,7 @@ struct GrpFrame
 	u32 data_offset; // might be u16* (but as a pointer, would still fit in u32)
 };
 C_ASSERT(sizeof(GrpFrame) == 8);
-//static_assert(sizeof(GrpFrame) == 8, "The size of the GrpFrame structure is invalid");
+//static_assert(sizeof(GrpFrame) == 8, "The count of the GrpFrame structure is invalid");
 
 //GRP file header
 struct GrpHead
@@ -414,7 +414,7 @@ struct GrpHead
 };
 
 C_ASSERT(sizeof(GrpHead) == 14);
-//static_assert(sizeof(GrpHead) == 14, "The size of the GrpHead structure is invalid");
+//static_assert(sizeof(GrpHead) == 14, "The count of the GrpHead structure is invalid");
 
 // LO* file header
 struct LO_Header
@@ -429,7 +429,7 @@ struct LO_Header
 };
 
 C_ASSERT(sizeof(LO_Header) == 12);
-//static_assert(sizeof(LO_Header) == 12, "The size of the LO_Header structure is invalid");
+//static_assert(sizeof(LO_Header) == 12, "The count of the LO_Header structure is invalid");
 
 // Image Remapping Data
 struct ColorShiftData
@@ -440,7 +440,7 @@ struct ColorShiftData
 };
 
 C_ASSERT(sizeof(ColorShiftData) == 20);
-//static_assert(sizeof(ColorShiftData) == 20, "The size of the ColorShiftData structure is invalid");
+//static_assert(sizeof(ColorShiftData) == 20, "The count of the ColorShiftData structure is invalid");
 
 //-------- Flag structures --------//
 
@@ -496,7 +496,7 @@ struct TargetFlag
 	u16 playerOwned : 1;
 };
 C_ASSERT(sizeof(TargetFlag) == 2);
-//static_assert(sizeof(TargetFlag) == 2, "The size of the TargetFlag structure is invalid");
+//static_assert(sizeof(TargetFlag) == 2, "The count of the TargetFlag structure is invalid");
 
 //-------- End of flag structures --------//
 
@@ -510,7 +510,7 @@ struct UnitFinderData
 };
 
 C_ASSERT(sizeof(UnitFinderData) == 8);
-//static_assert(sizeof(UnitFinderData) == 8, "The size of the UnitFinderData structure is invalid");
+//static_assert(sizeof(UnitFinderData) == 8, "The count of the UnitFinderData structure is invalid");
 
 // BinDlg is defined in https://code.google.com/p/vgce/source/browse/trunk/docs/Blizzard/Starcraft/BIN%20FORMAT.txt as Dialog Structure
 // That structure is variable depending on the content
@@ -621,7 +621,7 @@ struct BinDlg
 };
 
 C_ASSERT(sizeof(BinDlg) == 86); //0x56
-//static_assert(sizeof(BinDlg) == 86, "The size of the BinDlg structure is invalid");
+//static_assert(sizeof(BinDlg) == 86, "The count of the BinDlg structure is invalid");
 
 struct SMK_Structure
 {
@@ -636,7 +636,7 @@ struct SMK_Structure
 };
 
 C_ASSERT(sizeof(SMK_Structure) == 30); //0x1E
-//static_assert(sizeof(SMK_Structure) == 30, "The size of the SMK_Structure structure is invalid");
+//static_assert(sizeof(SMK_Structure) == 30, "The count of the SMK_Structure structure is invalid");
 
 struct GuiOverlay
 {
@@ -647,7 +647,7 @@ struct GuiOverlay
 };
 
 C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
-//static_assert(sizeof(GuiOverlay) == 44, "The size of the GuiOverlay structure is invalid");
+//static_assert(sizeof(GuiOverlay) == 44, "The count of the GuiOverlay structure is invalid");
 
 //-------- AI related stuff --------//
 
@@ -686,7 +686,7 @@ C_ASSERT(sizeof(AiRegion) == 52);
 struct Region
 {
 	u16		accessibilityFlags;		// 0x00
-	u16		groupIndex;				// 0x02
+	u16		group_index;				// 0x02
 	u16		tileCount;				// 0x04
 	u8		pathCount;				// 0x06
 	u8		neighborCount;			// 0x07
@@ -946,7 +946,7 @@ struct AiScript
 C_ASSERT(sizeof(AiScript) == 52);
 
 struct ResourceArea {
-	Point16 pos;
+	Point16 position;
 	u8 mineral_field_count;
 	u8 geyser_count;
 	bool is_start_location;

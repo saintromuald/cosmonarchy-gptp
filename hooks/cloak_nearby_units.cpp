@@ -46,7 +46,7 @@ namespace hooks
 			UnitExt* unitExt = globals.get_unit_ext(current_unit);
 
 			if (current_unit != cloaker																	// Don't cloak self
-				&& !(units_dat::BaseProperty[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items
+				&& !(units_dat::base_property[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items
 				&& current_unit->id != UnitId::TerranNuclearMissile										// Don't cloak nukes
 				&& current_unit->id != UnitId::ResourceMineralField										// Don't cloak resources
 				&& current_unit->id != UnitId::ResourceMineralFieldType2								//

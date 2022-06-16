@@ -16,7 +16,7 @@ namespace hooks
 			AIScriptController[result->player].main_medic = result;
 		}
 
-		if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
+		if (units_dat::base_property[result->id] & UnitProperty::Worker) {
 			helper::ai_training_worker(result, parent);
 		} else if (scbw::unit_id_is_zerg_supply(result->id)) {
 			helper::ai_training_overlord(result, parent); // replace with hook later
@@ -34,7 +34,7 @@ namespace hooks
 	// Hooked to add region null check - Pr0nogo
 	void ai_training_simple_military(Unit* result, Unit* parent) // 0043E280
 	{
-		if (units_dat::BaseProperty[result->id] & (UnitProperty::Worker | UnitProperty::Building))
+		if (units_dat::base_property[result->id] & (UnitProperty::Worker | UnitProperty::Building))
 		{
 			scbw::printf("SimpleMilitary on worker or building! ID: %i", result->id);
 		}
@@ -205,7 +205,7 @@ namespace hooks
 	void* add_worker_structure_ai(Unit* unit, AiTown* town) // 00433DD0
 	{
 		void* result = 0;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker)
 		{
 			if (town->free_workers) {
 				WorkerAi* ai = 0;
@@ -262,7 +262,7 @@ namespace hooks
 				}
 			}
 		}
-		else if ((units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser) ||
+		else if ((units_dat::base_property[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser) ||
 			unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth)
 		{
 			BuildingAi* ai = 0;
@@ -638,7 +638,7 @@ namespace hooks
 		if (unitAIVar)
 		{
 			u16 unit_id = unit->id;
-			u32 baseProperty = units_dat::BaseProperty[unit_id];
+			u32 baseProperty = units_dat::base_property[unit_id];
 			AiTown* town = nullptr;
 			if (!unitAI)
 			{
@@ -808,7 +808,7 @@ namespace hooks
 	{
 		MilitaryAi *result; // eax
 		AiRegion *ai_region_1; // edi
-		Unit *first_player_unit; // esi
+		Unit *unit; // esi
 		unsigned int distance; // edx
 		MilitaryAi *unit_ai; // ecx
 		char ai_type; // al
@@ -820,24 +820,24 @@ namespace hooks
 		unsigned int min_distance; // [esp+10h] [ebp-4h]
 
 		ai_region_1 = ai_region;
-		first_player_unit = firstPlayerUnit->unit[ai_region->player];
+		unit = first_player_unit->unit[ai_region->player];
 		result = 0;
 		min_distance = 9999999;
 		best_ai = 0;
-		if (first_player_unit)
+		if (unit)
 		{
 			while (1)
 			{
-				if (!helper::is_valid_for(a3, first_player_unit, 0))
+				if (!helper::is_valid_for(a3, unit, 0))
 				{
 					goto next;
 				}
-				distance = scbw::get_distance_fast(x1, first_player_unit->sprite->position.x, y1, first_player_unit->sprite->position.y);
+				distance = scbw::get_distance_fast(x1, unit->sprite->position.x, y1, unit->sprite->position.y);
 				if ( distance >= min_distance )
 				{
 					goto next;
 				}
-				unit_ai = (MilitaryAi*)first_player_unit->unit_ai;
+				unit_ai = (MilitaryAi*)unit->unit_ai;
 				if (!unit_ai)
 				{
 					goto next;
@@ -856,9 +856,9 @@ namespace hooks
 								unit_region_type != 2 ||
 								AIScriptController[ai_region->player].AI_Flags.is_use_map_settings)
 							{
-								if ( (!(first_player_unit->status & UnitStatus::InBuilding)
+								if ( (!(unit->status & UnitStatus::InBuilding)
 									|| a2 != 20
-									&& (AIScriptController[first_player_unit->player].AI_Flags.is_use_map_settings
+									&& (AIScriptController[unit->player].AI_Flags.is_use_map_settings
 										|| helper::region_is_for_attack_prepare(ai_region)))
 									&& (ai_region->state != 7 && !helper::region_is_for_attack_prepare(ai_region) || unit_ai_region_id != a6)
 									&& unit_ai_region->defensePriorityAdd < a2 )
@@ -887,12 +887,12 @@ namespace hooks
 						goto next;
 					}
 				}
-				best_ai = (MilitaryAi*)first_player_unit->unit_ai;
+				best_ai = (MilitaryAi*)unit->unit_ai;
 				min_distance = distance;
 
 			next:
-				first_player_unit = first_player_unit->player_link.next;
-				if ( !first_player_unit )
+				unit = unit->player_link.next;
+				if ( !unit )
 				{
 					return (UnitAi*)best_ai;
 				}

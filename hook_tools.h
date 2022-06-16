@@ -36,7 +36,7 @@ void nops(const u32 address, u32 number);
 /// Injects a relative CALL (0xE8) instruction to the [target] address at the
 /// given memory [position]. If [nops] is specified, also overwrites additional
 /// bytes of memory with NOP (0x90) instructions. This is useful when you are
-/// overwriting an instruction sequence that is longer than the size of the CALL
+/// overwriting an instruction sequence that is longer than the count of the CALL
 /// instruction (5 bytes).
 /// A hook function for CallPatch() should usually end with a RET instruction,
 /// which returns the control of flow to where the function was injected. This
@@ -59,7 +59,7 @@ void memory_patch(const u32 address, const T& data)
 	memory_patch(address, (u8*)&data, sizeof(T));
 }
 
-/// Inject an array of bytes, using the given size.
+/// Inject an array of bytes, using the given count.
 void memory_patch(void* const address, const u8* data, const size_t size);
 inline void memory_patch(const u32 address, const u8* data, const size_t size)
 {

@@ -244,15 +244,15 @@ RaceId::Enum Unit::get_race(u16 unit_id)
 {
 	assert(unit_id < UNIT_TYPE_COUNT);
 
-	if (units_dat::GroupFlags[unit_id].is_zerg)
+	if (units_dat::group_flags[unit_id].is_zerg)
 	{
 		return RaceId::Zerg;
 	}
-	else if (units_dat::GroupFlags[unit_id].is_protoss)
+	else if (units_dat::group_flags[unit_id].is_protoss)
 	{
 		return RaceId::Protoss;
 	}
-	else if (units_dat::GroupFlags[unit_id].is_terran)
+	else if (units_dat::group_flags[unit_id].is_terran)
 	{
 		return RaceId::Terran;
 	}
@@ -383,20 +383,20 @@ bool Unit::isRemorphingBuilding() const
 //Identical to function @ 0x00401D40
 bool Unit::is_subunit() const
 {
-	return (this && units_dat::BaseProperty[this->id] & UnitProperty::Subunit);
+	return (this && units_dat::base_property[this->id] & UnitProperty::Subunit);
 }
 
 // Equivalent to function @ 0x0047B2E0 until you change .dat files.
 bool Unit::is_factory() const
 {
-	return (this && units_dat::GroupFlags[this->id].is_factory);
+	return (this && units_dat::group_flags[this->id].is_factory);
 }
 
 //Identical to function @ 0x00401210
 bool Unit::is_valid_caster() const
 {
 	assert(this);
-	return units_dat::BaseProperty[this->id] & UnitProperty::Spellcaster
+	return units_dat::base_property[this->id] & UnitProperty::Spellcaster
 		&& !(this->status & UnitStatus::IsHallucination);
 }
 
@@ -856,7 +856,7 @@ s32 Unit::is_unit_ai_non_building()
 	if (!ai
 		|| ai->type != 4
 		|| mai->unit != this
-		|| units_dat::BaseProperty[this->id] & UnitProperty::Building)
+		|| units_dat::base_property[this->id] & UnitProperty::Building)
 	{
 		result = 0;
 	}
@@ -1365,7 +1365,7 @@ bool Unit::give_to(u8 player)
 	assert(player < 12);
 	if (giveUnitToPlayer(this, player) != 0)
 	{
-		if ((this->id == UnitId::ZergNydusCanal || !(units_dat::BaseProperty[this->id] & UnitProperty::Building))
+		if ((this->id == UnitId::ZergNydusCanal || !(units_dat::base_property[this->id] & UnitProperty::Building))
 			&& this->id != UnitId::ZergEgg
 			&& this->id != UnitId::ZergLarva)
 		{

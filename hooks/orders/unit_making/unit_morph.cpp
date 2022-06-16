@@ -33,12 +33,12 @@ namespace hooks
 			unit->order_signal &= ~4;
 			bool no_two_units = false;
 			auto origin = unit->morph_origin;
-			if (units_dat::BaseProperty[origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
+			if (units_dat::base_property[origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
 			||  unitExt->values[ValueSpecialSovrolethBirth])
 			{
 				no_two_units = true;
 			}
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg
+			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg
 				|| unit->previous_unit_type == UnitId::ZergCocoon)
 			{
 				bTwinEggOrCocoon = false;
@@ -48,7 +48,7 @@ namespace hooks
 			}
 			unitExt->values[ValueSpecialSovrolethBirth] = 0;
 			Unit* unit2 = nullptr;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units)
+			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units)
 			{
 				unit2 = helper::zerg_dual_birth(unit);
 				if (unit2)
@@ -187,7 +187,7 @@ namespace hooks
 							}
 						}  break;
 					}
-					if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)
+					if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
 					{
 						unitExt->values[ValuePreMorphEnergy] = unit->energy;
 					} else
@@ -270,9 +270,9 @@ namespace hooks
 		{
 			if (unit->order_signal & 4)
 			{
-				unit->order_signal -= 4;
+				unit->order_signal &= ~4;
 				helper::replace_unit_with_type(unit, unit->build_queue[unit->build_queue_slot]);
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster) {
+				if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster) {
 					unit->energy = unitExt->values[ValuePreMorphEnergy];
 				} else {
 					unit->energy = 0;
@@ -435,7 +435,7 @@ namespace hooks
 	// Return the ID of the egg unit to use when morphing @p unit_id. If the unit cannot morph, return UnitId::None.
 	u16 get_unit_morph_egg_id(u16 unit_id, Unit* unit, u16 resultId)
 	{
-		if (units_dat::BaseProperty[unit_id] & UnitProperty::Flyer)
+		if (units_dat::base_property[unit_id] & UnitProperty::Flyer)
 		{
 			return UnitId::ZergCocoon;
 		}
@@ -452,7 +452,7 @@ namespace hooks
 		auto source = egg_unit->morph_origin;
 		if (egg_unit->get_race() == RaceId::Zerg)
 		{
-			if (!(units_dat::BaseProperty[egg_unit->id] & UnitProperty::Building))
+			if (!(units_dat::base_property[egg_unit->id] & UnitProperty::Building))
 			{
 				return source;
 			}
@@ -464,7 +464,7 @@ namespace hooks
 	s16 get_unit_vertical_offset_on_birth(Unit* unit)
 	{
 		// No offset, birth offset is handled elsewhere
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg)
+		if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg)
 		{
 			return 0;
 		}

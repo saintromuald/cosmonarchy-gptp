@@ -31,7 +31,7 @@ namespace AI
 				return false;
 			}
 
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
+			if (units_dat::base_property[target->id] & UnitProperty::Hero)
 			{
 				return false;
 			}
@@ -41,7 +41,7 @@ namespace AI
 				return false;
 			}
 
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Worker
+			if (units_dat::base_property[target->id] & UnitProperty::Worker
 				|| target->id == UnitId::TerranPhalanxTankMode
 				|| target->id == UnitId::TerranPhalanxSiegeMode
 				|| target->id == UnitId::TerranCleric

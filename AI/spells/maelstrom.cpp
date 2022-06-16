@@ -36,7 +36,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic))
+			if (!(units_dat::base_property[target->id] & UnitProperty::Organic))
 			{
 				return false;
 			}
@@ -50,7 +50,7 @@ namespace AI
 			{
 				return true;
 			}
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+			if (units_dat::base_property[target->id] & UnitProperty::Building)
 			{
 				return false;
 			}

@@ -42,9 +42,9 @@ namespace hooks
 			{
 				(unit->player_link.next)->player_link.prev = unit->player_link.prev;
 			}
-			if (unit == firstPlayerUnit->unit[unit->player])
+			if (unit == first_player_unit->unit[unit->player])
 			{
-				firstPlayerUnit->unit[unit->player] = unit->player_link.next;
+				first_player_unit->unit[unit->player] = unit->player_link.next;
 			}
 
 			unit->player_link.prev = nullptr;
@@ -58,14 +58,14 @@ namespace hooks
 			}
 
 			unit->player_link.prev = nullptr;
-			unit->player_link.next = firstPlayerUnit->unit[player];
+			unit->player_link.next = first_player_unit->unit[player];
 
-			if (firstPlayerUnit->unit[player])
+			if (first_player_unit->unit[player])
 			{
-				(firstPlayerUnit->unit[player])->player_link.prev = unit;
+				(first_player_unit->unit[player])->player_link.prev = unit;
 			}
 
-			firstPlayerUnit->unit[player] = unit;
+			first_player_unit->unit[player] = unit;
 			helper::increment_unit_scores(unit, 1);
 			if (unit->status & UnitStatus::Completed)
 			{
@@ -78,15 +78,15 @@ namespace hooks
 
 			helper::recheck_attacks(unit);
 			scbw::refresh_console();
-			if (units_dat::GroupFlags[unit->id].is_zerg != 1
-				&& units_dat::GroupFlags[unit->id].is_protoss != 1
+			if (units_dat::group_flags[unit->id].is_zerg != 1
+				&& units_dat::group_flags[unit->id].is_protoss != 1
 				&& unit->status & UnitStatus::GroundedBuilding)
 			{
 				*can_update_powered_status = 1;
 			}
 
 			helper::give_ai(unit);
-			if (unit->subunit && units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
+			if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit)
 			{
 				giveUnit(unit->subunit, player, bCountAsCompleted);
 			}
@@ -94,7 +94,7 @@ namespace hooks
 			helper::apply_speed_upgrade_from_unit_type(unit);
 
 			/* -- Disabled since Flag ID is used in Cosmonarchy
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker
+			if (units_dat::base_property[unit->id] & UnitProperty::Worker
 				&& unit->worker.powerup
 				&& (unit->worker.powerup)->id == UnitId::Powerup_Flag)
 			{

@@ -119,7 +119,7 @@ namespace AI
 				// specific to AIEnemyOrganicUnitHPAccumulatorProc @ 0x00440CF0 - used only by Maelstrom
 				if (weaponId == WeaponId::Maelstrom)
 				{
-					if (units_dat::BaseProperty[target->id] & UnitProperty::Organic &&
+					if (units_dat::base_property[target->id] & UnitProperty::Organic &&
 						target->maelstrom_timer == 0)
 					{
 						totalEnemyLife += target->get_current_life_ingame();
@@ -209,12 +209,12 @@ namespace AI
 			if (!(target->status & UnitStatus::Invincible) &&
 				caster->is_target_enemy(target))
 			{
-				if ((units_dat::BaseProperty[target->id] & UnitProperty::Worker) ||
+				if ((units_dat::base_property[target->id] & UnitProperty::Worker) ||
 					(!(target->status & UnitStatus::IsBuilding)))
 				{
 					totalNukeTargetValue += target->get_current_life_ingame();
 				}
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+				if (units_dat::base_property[target->id] & UnitProperty::Building)
 				{
 					if (target->canDetect()
 					||  target->id == UnitId::ZergSunkenColony

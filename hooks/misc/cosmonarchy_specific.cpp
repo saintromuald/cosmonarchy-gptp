@@ -396,7 +396,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (units_dat::BaseProperty[unit_id] & UnitProperty::Spellcaster) {
+		if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster) {
 			unit->energy = 100 * 256; // New starting amount
 		} else {
 			unit->energy = 0;
@@ -459,7 +459,7 @@ namespace hooks
 			helper::reassign_path(unit);
 		}
 		helper::initialize_unit(unit, y, unit_id, x, unit->player);
-		if (units_dat::BaseProperty[unit_id] & UnitProperty::Spellcaster) {
+		if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster) {
 			unit->energy = 100 * 256; // New starting amount
 		} else {
 			unit->energy = 0;
@@ -505,7 +505,7 @@ namespace hooks
 			temp_unit_id = UnitId::None;
 		}
 		if (!(unit->status & UnitStatus::Frozen) && !unit->lockdown_timer && !unit->stasis_timer && !unit->maelstrom_timer
-			|| units_dat::BaseProperty[unit->id] & UnitProperty::Building
+			|| units_dat::base_property[unit->id] & UnitProperty::Building
 			|| temp_unit_id == UnitId::None)
 		{
 			unit->current_button_set = temp_unit_id;

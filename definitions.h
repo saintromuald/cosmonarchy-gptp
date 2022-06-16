@@ -15,7 +15,7 @@
 //may want to either include it or add the other 2 macros directly into
 //the file where you need this trick
 
-//Helper macro for retrieving the size of an array
+//Helper macro for retrieving the count of an array
 //Taken from http://blogs.msdn.com/b/the1/archive/2004/05/07/128242.aspx
 template <typename T, size_t N>
 char(&_ArraySizeHelper(T(&array)[N]))[N];

@@ -121,7 +121,7 @@ namespace hooks
 		s32 i = 0;
 		do
 		{
-			if (!(units_dat::BaseProperty[i] & UnitProperty::Building))
+			if (!(units_dat::base_property[i] & UnitProperty::Building))
 			{
 				if (units_dat::StarEditAvailFlags[i] & 0x1)
 				{
@@ -482,7 +482,7 @@ namespace hooks
 		jump_patch(preInitDataWrapper, 0x004DAF31);
 		/*
 		auto str = scbw::read_samase_file("samase\\sfx_ext.txt");
-		GPTP::logger << "Read Test Len: " << str.size() << '\n';
+		GPTP::logger << "Read Test Len: " << str.count() << '\n';
 		*/
 	}
 }

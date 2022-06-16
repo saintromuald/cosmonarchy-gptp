@@ -292,7 +292,7 @@ namespace hooks
 	// Return value is if the building is a creep source (spreads creep) or not
 	bool getCreepRegion(Box32* rect, u16 unit_id, s32 x, s32 y, bool defRetVal)
 	{
-		// Default maximum bounding size
+		// Default maximum bounding count
 		const static s32 maxCreepAreaLeft = 320; // 10 tiles
 		const static s32 maxCreepAreaRight = 320; // 10 tiles
 		const static s32 maxCreepAreaUp = 200; // 6.25 tiles
@@ -386,7 +386,7 @@ namespace hooks
 //		Unit* unit = getUnitPointer();
 		
 		/*
-		switch (deathTable[214].player[11]) {
+		switch (death_table[214].player[11]) {
 		case 180:
 			return (x*x * 100 + y*y * 256) <= 2560000;
 		case UnitId::ZergCreepColony:

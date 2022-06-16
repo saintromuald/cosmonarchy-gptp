@@ -34,7 +34,7 @@ namespace AI
 			if (target->status & UnitStatus::GroundedBuilding)
 				return false;
 
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
+			if (units_dat::base_property[target->id] & UnitProperty::Hero)
 				return false;
 
 			if (target->energy / 256u >= target->get_current_life_ingame())

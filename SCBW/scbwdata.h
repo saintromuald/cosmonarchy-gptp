@@ -37,7 +37,7 @@ SCBW_DATA(u32*,			bullet_count,				0x0064DEBC);
 struct Units12 {
 	Unit* unit[12];
 };
-SCBW_DATA(Units12*, firstPlayerUnit, 0x006283F8);  //Indexed by player Id
+SCBW_DATA(Units12*, first_player_unit, 0x006283F8);  //Indexed by player Id
 
 //////////////////////////////////////////////////////////////// @}
 
@@ -48,24 +48,24 @@ SCBW_DATA(Units12*, completed_factory_counts,	0x0068A9D8);
 SCBW_DATA(Units12*, all_factory_counts,			0x0068A9A8);
 
 SCBW_DATA(Unit*, unit_table,					0x0059CCA8);
-SCBW_DATA(u32*, unitCount,						0x006283F0);
-SCBW_DATA(Bullet*, bulletTable,					0x0064B2E8);
-SCBW_DATA(UnitDeaths*, deathTable,				0x0058A364);
-SCBW_DATA(UnitDeaths*, unit_deaths,				deathTable);
+SCBW_DATA(u32*, unit_count,						0x006283F0);
+SCBW_DATA(Bullet*, bullet_table,				0x0064B2E8);
+SCBW_DATA(UnitDeaths*, death_table,				0x0058A364);
+SCBW_DATA(UnitDeaths*, unit_deaths,				death_table);
 SCBW_DATA(Sprite*, spriteTable,					0x00629D98);
 
-SCBW_DATA(UnitScores_I*, unitCountTable,		0x00584DE4);
-SCBW_DATA(UnitScores_I*, completed_unit_counts, unitCountTable);
+SCBW_DATA(UnitScores_I*, unit_count_table,		0x00584DE4);
+SCBW_DATA(UnitScores_I*, completed_unit_counts, unit_count_table);
 
 
-SCBW_DATA(UnitScores_I*, allUnitCountTable, 0x00582324);
-SCBW_DATA(UnitScores_I*, all_unit_counts, unitCountTable);
+SCBW_DATA(UnitScores_I*, all_unit_count_table, 0x00582324);
+SCBW_DATA(UnitScores_I*, all_unit_counts, unit_count_table);
 
 SCBW_DATA(Thingy**, first_lone_sprite, 0x00654874);
 
 //From locations.cpp
 SCBW_DATA(const MapSize*, map_tile_size, 0x0057F1D4);
-SCBW_DATA(Location*, locationTable, 0x0058DC60);
+SCBW_DATA(Location*, location_table, 0x0058DC60);
 
 //for buttonsets
 SCBW_DATA(ButtonSet*, buttonSetTable, 0x005187E8);
@@ -228,7 +228,7 @@ SCBW_DATA(const u8*, multiPlayerMode, 0x0057F0B4);
 SCBW_DATA(const u32*, initialSeed, 0x0051CA10);
 SCBW_DATA(const u32*, replaySeed, 0x006D0F38);
 //SCBW_DATA(const func*,			mouseOverCallback,			0x006D5EAC); // how to define a func?
-SCBW_DATA(u32*, randomCounts, 0x0051C610); // size of 0x400, array?
+SCBW_DATA(u32*, randomCounts, 0x0051C610); // count of 0x400, array?
 SCBW_DATA(u32*, randomCountsTotal, 0x0051CA18);
 SCBW_DATA(u16*, campaignIndex, 0x0057F244);
 SCBW_DATA(void**, mapArchiveHandle, 0x00596BC4);
@@ -357,7 +357,7 @@ SCBW_DATA(Unit**, bulletBounceMissileTarget,	0x0064EED0);
 SCBW_DATA(Unit**, bulletBounceMissileNext,		0x0064EED4);
 
 // For setUnderDisruptionWeb
-SCBW_DATA(void**,	unk_array_59CB64,			0x0059CB64);	// size of 252
+SCBW_DATA(void**,	unk_array_59CB64,			0x0059CB64);	// count of 252
 SCBW_DATA(Unit*,	unit_reference,				0x0059CB58);
 
 // For startGame
@@ -371,7 +371,7 @@ SCBW_DATA(s32*, isInGame,					0x006D5BC8);
 SCBW_DATA(s32*, countdownTimeRemaining,		0x0059CC78);
 
 // For airSplash
-SCBW_DATA(Unit**, airSplashList,			0x0064EEE0);	// size of 1700
+SCBW_DATA(Unit**, airSplashList,			0x0064EEE0);	// count of 1700
 SCBW_DATA(s32*, airSplashListCount,			0x0046DEB4);
 SCBW_DATA(s32*, isInGroundSplashProc,		0x0064DEB8);
 
@@ -606,7 +606,7 @@ namespace units_dat {
 	SCBW_DATA(u8*, AirWeapon, unitsDat[19].address);						// 006616E0
 	SCBW_DATA(u8*, MaxAirHits, unitsDat[20].address);						// 0065FC18
 	SCBW_DATA(u8*, ComputerAIInternal, unitsDat[21].address);				// 00660178 // "Computer AI Unit Type" according to EUDDB
-	SCBW_DATA(u32*, BaseProperty, unitsDat[22].address);					// 00664080 // AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
+	SCBW_DATA(u32*, base_property, unitsDat[22].address);					// 00664080 // AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
 	SCBW_DATA(u8*, SeekRange, unitsDat[23].address);						// 00662DB8 // AKA Target Acquisition Range, Acquire Target Range, etc.
 	SCBW_DATA(u8*, SightRange, unitsDat[24].address);						// 00663238
 	SCBW_DATA(u8*, ArmorUpgrade, unitsDat[25].address);						// 006635D0
@@ -628,7 +628,7 @@ namespace units_dat {
 	SCBW_DATA(u16*, gas_cost, unitsDat[41].address);						// 0065FD00
 	SCBW_DATA(u16*, time_cost, unitsDat[42].address);						// 00660428
 	SCBW_DATA(u16*, unitsDat43, unitsDat[43].address);						// 00660A70 // "Restriction Address" according to EUDDB
-	SCBW_DATA(GroupFlag*, GroupFlags, unitsDat[44].address);				// 006637A0
+	SCBW_DATA(GroupFlag*, group_flags, unitsDat[44].address);				// 006637A0
 	SCBW_DATA(u8*, SupplyProvided, unitsDat[45].address);					// 006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
 	SCBW_DATA(u8*, SupplyRequired, unitsDat[46].address);					// 00663CE8
 	SCBW_DATA(u8*, SpaceRequired, unitsDat[47].address);					// 00664410

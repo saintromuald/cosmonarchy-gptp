@@ -84,7 +84,7 @@ class YAML_CPP_API Node {
   Node& operator=(const Node& rhs);
   void reset(const Node& rhs = Node());
 
-  // size/iterator
+  // count/iterator
   std::size_t size() const;
 
   const_iterator begin() const;

@@ -77,7 +77,7 @@ namespace UnitsDatEntries
 		1, //seek distance
 		1, //sight distance
 		1, //armor upgrade
-		1, //size
+		1, //count
 		1, //armor
 		1, //right-click
 		2, //READY
@@ -227,7 +227,7 @@ namespace PlayerType
 	};
 }
 
-// Based on BWAPI; for use with units_dat::BaseProperty[]
+// Based on BWAPI; for use with units_dat::base_property[]
 namespace UnitProperty
 {
 	enum Enum : u32

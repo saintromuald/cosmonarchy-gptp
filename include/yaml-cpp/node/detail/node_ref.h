@@ -37,7 +37,7 @@ class node_ref {
   void set_scalar(const std::string& scalar) { m_pData->set_scalar(scalar); }
   void set_style(EmitterStyle::value style) { m_pData->set_style(style); }
 
-  // size/iterator
+  // count/iterator
   std::size_t size() const { return m_pData->size(); }
 
   const_node_iterator begin() const {

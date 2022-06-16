@@ -199,7 +199,7 @@ namespace scbw
 		}
 
 		const TargetFlag tf = weapons_dat::TargetFlags[weaponId];
-		const u32 targetProps = units_dat::BaseProperty[target->id];
+		const u32 targetProps = units_dat::base_property[target->id];
 		if ((target->status & UnitStatus::InAir) ? !tf.air : !tf.ground)
 		{
 			return false;
@@ -952,7 +952,7 @@ namespace scbw
 
 	Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator, bool initAI)
 	{
-		if (*unitCount >= 1700) {
+		if (*unit_count >= 1700) {
 			return 0; // Prevent crashes, move to create unit later. -Veeq7
 		}
 		Point16 pos = {x, y};
@@ -996,11 +996,11 @@ namespace scbw
 
 	u32 get_unit_overlay_adjustment(Unit* const unit)
 	{
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
+		if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay)
 		{
 			return 1;
 		}
-		else if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+		else if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay)
 		{
 			return 2;
 		}
@@ -1160,7 +1160,7 @@ namespace scbw
 
 	bool can_spawn_broodling(Unit* target)
 	{
-		if (units_dat::GroupFlags[target->id].is_building) return false;
+		if (units_dat::group_flags[target->id].is_building) return false;
 		return true;
 	}
 
@@ -1190,11 +1190,11 @@ namespace scbw
 	u32 get_sized_overlay(Unit* unit, u32 initial)
 	{
 		u32 overlayImageId;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
+		if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay)
 		{
 			overlayImageId = initial + 1;
 		}
-		else if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+		else if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay)
 		{
 			overlayImageId = initial + 2;
 		}
@@ -1285,11 +1285,11 @@ namespace scbw
 		{
 			overlayOffset = 3;
 		}
-		else if (units_dat::BaseProperty[unit_id] & UnitProperty::MediumOverlay)
+		else if (units_dat::base_property[unit_id] & UnitProperty::MediumOverlay)
 		{
 			overlayOffset = 1;
 		}
-		else if (units_dat::BaseProperty[unit_id] & UnitProperty::LargeOverlay)
+		else if (units_dat::base_property[unit_id] & UnitProperty::LargeOverlay)
 		{
 			overlayOffset = 2;
 		}
@@ -1334,7 +1334,7 @@ namespace scbw
 
 	bool can_be_parasited(Unit* unit)
 	{
-		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
+		return !(units_dat::base_property[unit->id] & UnitProperty::Building);
 	}
 
 	// Creates the Plasma Shield flickering effect.
@@ -1373,7 +1373,7 @@ namespace scbw
 
 	bool is_decloakable(Unit* unit)
 	{
-		return (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
+		return (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
 			&& !(unit->status & UnitStatus::Burrowed);
 	}
 
@@ -1852,8 +1852,8 @@ namespace scbw
 			unit->remove_overlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
 			unit->remove_overlay(ImageId::Malice_Small, ImageId::Malice_Large);
 		}
-		else if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
-			|| units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding
+		else if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
+			|| units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
 			|| unit->has_weapon())
 		{
 			if (unitExt->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardiceId))
@@ -2103,9 +2103,9 @@ namespace scbw
 	u32 get_closest_resarea(Point16 position) {
 		u32 min_distance = UINT32_MAX;
 		u32 best_resarea = 0;
-		for (u32 i = 0; i < ResAreaLimit; ++i) {
+		for (u32 i = 1; i < ResAreaLimit; ++i) {
 			ResourceArea* resarea = &resource_areas->areas[i];
-			u32 distance = scbw::get_distance_fast(position, resarea->pos);
+			u32 distance = scbw::get_distance_fast(position, resarea->position);
 			if (distance < min_distance) {
 				min_distance = distance;
 				best_resarea = i;
@@ -2190,7 +2190,7 @@ namespace scbw
 
 		EntryArray allied_structures = unit_search_radial(victim->position, 40 * 32);
 		unit_search_filter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
-		if (allied_structures.size) {
+		if (allied_structures.count) {
 			for (u32 i = 0; i < 8; ++i) {
 				if (playerTable[i].type == PlayerType::Computer && victim->is_visible_to(i) &&
 					!scbw::is_allied_to(i, attacker->player) && scbw::is_allied_to(i, victim->player)) {
@@ -2209,7 +2209,7 @@ namespace scbw
 	}
 
 	bool unit_id_is_smaller_building(u16 unit_id) {
-		return units_dat::BaseProperty[unit_id] & UnitProperty::Addon
+		return units_dat::base_property[unit_id] & UnitProperty::Addon
 			|| unit_id == UnitId::TerranSupplyDepot
 			|| unit_id == UnitId::TerranWatchdog
 			|| unit_id == UnitId::TerranBunker
@@ -2237,7 +2237,7 @@ namespace scbw
 		u32 y = unit->position.y / 32 - h / 2;
 
 		helper::clear_tile_flags_from_area(0x8000000, x, y, w, h);
-		if (units_dat::GroupFlags[unit->id].is_factory) {
+		if (units_dat::group_flags[unit->id].is_factory) {
 			helper::set_creep(x - 2, y - 1, w + 4, h + 2, true);
 		} else {
 			helper::set_creep(x, y, w, h, false);
@@ -2280,7 +2280,7 @@ namespace scbw
 
 	void blissful_embrace(Unit* unit, u32 player) {
 		// Sanity Check. Spawning creep wouldn't work properly on units. Spawning creep on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building) || units_dat::BaseProperty[unit->id] & UnitProperty::Addon) {
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Building) || units_dat::base_property[unit->id] & UnitProperty::Addon) {
 			return;
 		}
 
@@ -2299,7 +2299,7 @@ namespace scbw
 		// Remove connected larva
 		EntryArray larvae = unit_search_radial(unit->position, 4 * 32);
 		unit_search_filter(&larvae, unit, 0, {UnitId::ZergLarva});
-		for (u32 i = 0; i < larvae.size; ++i) {
+		for (u32 i = 0; i < larvae.count; ++i) {
 			Unit* larva = larvae.units[i];
 			if (larva->connected_unit == unit) {
 				larva->connected_unit = 0;
@@ -2317,9 +2317,9 @@ namespace scbw
 
 		// Spawn effect overlay  TODO: Make this a sprite
 		u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay) {
+		if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
 			effect_image_id = ImageId::ZergBuildingExplosion;
-		} else if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay) {
+		} else if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay) {
 			effect_image_id = ImageId::ZergAirDeathExplosion_Large;
 		}
 		unit->sprite->create_overlay(effect_image_id);
@@ -2329,7 +2329,7 @@ namespace scbw
 	}
 
 	b32 unit_id_is_tech(u32 unit_id) {
-		if (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) {
+		if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
 			switch (unit_id) {
 				case UnitId::TerranComsatStation:
 				case UnitId::TerranNuclearSilo:
@@ -2444,7 +2444,7 @@ namespace scbw
 		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] && !(unit->status & UnitStatus::InAir)) {
 			return UnitId::ZergHatchery;
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) {
+		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) {
 			return unit->id;
 		}
 		return UnitId::None;
@@ -2502,7 +2502,7 @@ namespace scbw
 				break;
 			}
 
-			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
 				return false;
 			}
 
@@ -2516,5 +2516,13 @@ namespace scbw
 
 	bool unit_is_stunned(Unit* unit) {
 		return unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer;
+	}
+
+	bool unit_id_is_transport(u32 unit_id) {
+		return unit_id == UnitId::TerranTrojan
+			|| unit_id == UnitId::ProtossEnvoy
+			|| unit_id == UnitId::ZergOvileth
+			|| unit_id == UnitId::ZergIroleth
+			|| unit_id == UnitId::ZergOthstoleth;
 	}
 }

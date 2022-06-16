@@ -137,7 +137,7 @@ namespace hooks
 		u32 attackPriority = 4;
 
 		// Workers
-		if (units_dat::BaseProperty[actualTarget->id] & UnitProperty::Worker)
+		if (units_dat::base_property[actualTarget->id] & UnitProperty::Worker)
 		{
 			attackPriority = 2;
 		}

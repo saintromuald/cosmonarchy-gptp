@@ -91,7 +91,7 @@ namespace hooks
 		s32 v18; // ecx
 
 		v1 = a1;
-		v2 = units_dat::BaseProperty[(u16)a1->id];
+		v2 = units_dat::base_property[(u16)a1->id];
 		if (v2 & UnitProperty::TwoUnitsIn1Egg)
 		{
 			helper::increment_unit_scores(a1, -1);
@@ -104,7 +104,7 @@ namespace hooks
 		}
 
 		helper::increment_unit_scores_ex(v1, 1, 1);
-		if (units_dat::BaseProperty[(u16)v1->id] & UnitProperty::PermanentCloak)
+		if (units_dat::base_property[(u16)v1->id] & UnitProperty::PermanentCloak)
 		{
 			helper::anim_cloak(v1, 273);
 		}
@@ -199,7 +199,7 @@ namespace hooks
 			helper::issue_order_targeting_nothing(v1, v12);
 		}
 		v13 = (u16)v1->id;
-		v14 = units_dat::BaseProperty[v13];
+		v14 = units_dat::base_property[v13];
 		if (v14 & UnitProperty::NeutralAccessories)
 		{
 			v15 = v1->sprite;

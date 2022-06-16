@@ -69,7 +69,7 @@ s32 Extender::get_file_entry_count(char* name, u32 entries)
 	std::vector<std::string> lines = split_by(str, '\n');
 	GPTP::logger << "Str size: " << str.size() << ", Line size: " << lines.size() << '\n';
 	/*
-	if (str.size() > 0) {
+	if (str.count() > 0) {
 		GPTP::logger << str << '\n';
 	}*/
 	u32 count = 0;
@@ -82,7 +82,7 @@ s32 Extender::get_file_entry_count(char* name, u32 entries)
 			continue;
 		}
 		std::vector<std::string> command_list = split_by(line, ':');
-		//GPTP::logger << "split length: " << command_list.size() << '\n';
+		//GPTP::logger << "split length: " << command_list.count() << '\n';
 		if (command_list.size() != 2)
 		{
 			continue;

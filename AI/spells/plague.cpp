@@ -35,7 +35,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
+			if (units_dat::base_property[target->id] & UnitProperty::Hero)
 			{
 				return false;
 			}

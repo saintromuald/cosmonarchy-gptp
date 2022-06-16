@@ -46,7 +46,7 @@ namespace hooks
 			*(v5 + 8) = 19;
 		*(*(a1 + 44) + 9) = 0;
 		v6 = v3->id;
-		if (units_dat::BaseProperty[v6] & 0x200000 && !(v3->status & 0x40000000)
+		if (units_dat::base_property[v6] & 0x200000 && !(v3->status & 0x40000000)
 		  || v3->status & 0x40000000
 		  || v6 == 40) {
 			*(*(a1 + 44) + 9) += 6;

@@ -17,7 +17,7 @@ namespace hooks
 			helper::clearUnitSprites(unit->sprite, unit->subunit->sprite);
 			if (unit->subunit->subunit != nullptr)
 			{
-				if (units_dat::BaseProperty[(unit->subunit->subunit)->id] & UnitProperty::Subunit)
+				if (units_dat::base_property[(unit->subunit->subunit)->id] & UnitProperty::Subunit)
 				{
 					helper::UnitDestructor(unit->subunit->subunit);
 					unit->subunit->subunit = nullptr;
@@ -65,7 +65,7 @@ namespace hooks
 			helper::hide_and_disable_unit(unit);
 			if (unit->subunit != nullptr)
 			{
-				if (units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
+				if (units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit)
 				{
 					helper::UnitDestructor(unit->subunit);
 					unit->subunit = nullptr;

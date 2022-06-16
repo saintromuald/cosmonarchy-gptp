@@ -143,7 +143,7 @@ namespace hooks
 						{
 							u32 count = 1;
 							Unit* builtUnits[2] = {built_unit, nullptr};
-							if (units_dat::BaseProperty[built_unit->id] & UnitProperty::TwoUnitsIn1Egg) {
+							if (units_dat::base_property[built_unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 								count = 2;
 								builtUnits[1] = scbw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
 							}
@@ -183,7 +183,7 @@ namespace hooks
 							{
 								helper::ai_cancel_structure(unit->current_build_unit);
 							}
-							else if (!units_dat::BaseProperty[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building)
+							else if (!units_dat::base_property[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building)
 							{
 								helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot % 5], unit->player);
 							}

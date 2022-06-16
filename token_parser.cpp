@@ -135,9 +135,9 @@ Box32 parser_get_location(Parser* parser) {
 
 	Token string = parser_get_string(parser, true);
 	for (u32 i = 0; i < 256; ++i) {
-		char* name = helper::get_chk_string(locationTable[i].string_id);
+		char* name = helper::get_chk_string(location_table[i].string_id);
 		if (name && name[0] && strcmp(name, string.data) == 0) {
-			Box32 box = locationTable[i].dimensions;
+			Box32 box = location_table[i].dimensions;
 			box.w -= box.x;
 			box.h -= box.y;
 			return box;
@@ -146,7 +146,7 @@ Box32 parser_get_location(Parser* parser) {
 
 	s32 i = parser_get_s32(parser);
 	if (i >= 0 && i < 256) {
-		Box32 box = locationTable[i].dimensions;
+		Box32 box = location_table[i].dimensions;
 		box.w -= box.x;
 		box.h -= box.y;
 		return box;

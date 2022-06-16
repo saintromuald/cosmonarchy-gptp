@@ -8,7 +8,7 @@ namespace hooks
 	{
 		Unit* target = unit->order_target.unit;
 		if (target != nullptr
-			&& units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster
+			&& units_dat::base_property[target->id] & UnitProperty::Spellcaster
 			&& !(target->status & UnitStatus::IsHallucination))
 		{
 			u16 techCost;

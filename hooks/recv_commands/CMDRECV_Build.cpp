@@ -183,7 +183,7 @@ namespace hooks
 							if (game_vespene[unit->player] >= ai_gas_reserve[unit->player])
 							{
 								helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
-								if (units_dat::BaseProperty[unit->id] & 1 && units_dat::BaseProperty[target_unit_id] & 1)
+								if (units_dat::base_property[unit->id] & 1 && units_dat::base_property[target_unit_id] & 1)
 								{
 									helper::refund_all_queue_slots(unit);
 									unit->building.addon_build_id = target_unit_id; // guessed

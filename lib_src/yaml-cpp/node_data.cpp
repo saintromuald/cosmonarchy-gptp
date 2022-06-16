@@ -90,7 +90,7 @@ namespace YAML {
 			m_scalar = scalar;
 		}
 
-		// size/iterator
+		// count/iterator
 		std::size_t node_data::size() const {
 			if (!m_isDefined)
 				return 0;

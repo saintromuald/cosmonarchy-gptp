@@ -53,7 +53,7 @@ namespace hooks
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
 			EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
-			scale +=  0.05 * sovroleths.size;
+			scale +=  0.05 * sovroleths.count;
 		}
 
 		// Compile variable for use in height advantage calculations
@@ -119,7 +119,7 @@ namespace hooks
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
 			EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
-			scale +=  0.05 * sovroleths.size;
+			scale +=  0.05 * sovroleths.count;
 		}
 
 		// Height advantage

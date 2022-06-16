@@ -351,7 +351,7 @@ namespace
 	Unit* getLoadedSilo(Unit* ghost, b32 checkNukeAvailableForGhost)
 	{
 		Unit* return_value = nullptr;
-		Unit* current_unit = firstPlayerUnit->unit[ghost->player];
+		Unit* current_unit = first_player_unit->unit[ghost->player];
 		while (current_unit != nullptr && return_value == nullptr)
 		{
 			if (current_unit->id == UnitId::TerranNuclearSilo
@@ -378,7 +378,7 @@ namespace
 		return return_value;
 
 		/*
-		for (Unit* unit = firstPlayerUnit->unit[ghost->player];
+		for (Unit* unit = first_player_unit->unit[ghost->player];
 		     unit; unit = unit->player_link.next)
 		{
 		  if (unit->id == UnitId::nuclear_silo && unit->building.silo.is_ready) {

@@ -144,7 +144,7 @@ namespace graphics
 		{
 
 			case Text:
-				//TODO: Add ability to change font size
+				//TODO: Add ability to change font count
 				gameScreenBuffer->blitString(
 					get_string_from_index(this->stringIndex).c_str(), p1.x, p1.y, this->fontSize);
 				break;

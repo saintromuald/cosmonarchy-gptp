@@ -50,7 +50,7 @@ class YAML_CPP_API node_data {
   const std::string& tag() const { return m_tag; }
   EmitterStyle::value style() const { return m_style; }
 
-  // size/iterator
+  // count/iterator
   std::size_t size() const;
 
   const_node_iterator begin() const;

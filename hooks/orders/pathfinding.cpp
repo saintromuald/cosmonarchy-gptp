@@ -93,7 +93,7 @@ namespace hooks
         }
         RegionArray* paths = *SAI_Paths;
         s32 regionId = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) << 6;
-        return paths->regions[helper::get_region_id(x, y)].groupIndex == *(s16*)((char*)&paths->regions[0].groupIndex + regionId);
+        return paths->regions[helper::get_region_id(x, y)].group_index == *(s16*)((char*)&paths->regions[0].group_index + regionId);
     }
 
     // Hooked to investigate crashes - Pr0nogo
@@ -106,6 +106,6 @@ namespace hooks
         Sprite* patherSprite = pather->sprite;
         RegionArray* paths = *SAI_Paths;
         s32 regionId = helper::get_region_id(target->sprite->position.x, target->sprite->position.y) << 6;
-        return *(s16*)((char*)&paths->regions[0].groupIndex + regionId) == paths->regions[helper::get_region_id(patherSprite->position.x, patherSprite->position.y)].groupIndex;
+        return *(s16*)((char*)&paths->regions[0].group_index + regionId) == paths->regions[helper::get_region_id(patherSprite->position.x, patherSprite->position.y)].group_index;
     }    
 }

@@ -222,7 +222,7 @@ namespace hooks
 	void orders_BuildingLiftoff(Unit* unit) // 004649B0
 	{
 		if ((unit->status & UnitStatus::GroundedBuilding)
-		&& (units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding))
+		&& (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding))
 		{
 			if (unit->building.addon != nullptr)
 			{

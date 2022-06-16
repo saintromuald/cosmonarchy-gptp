@@ -82,7 +82,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 		}
 		if (context & Flags::Spellcaster)
 		{
-			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster))
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Spellcaster))
 			{
 				return false;
 			}
@@ -178,23 +178,23 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 				return false;
 			}
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic && context & Flags::NoOrganic)
+		if (units_dat::base_property[unit->id] & UnitProperty::Organic && context & Flags::NoOrganic)
 		{
 			return false;
 		}
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic) && context & Flags::OnlyOrganic)
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Organic) && context & Flags::OnlyOrganic)
 		{
 			return false;
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical && context & Flags::NoMechanical)
+		if (units_dat::base_property[unit->id] & UnitProperty::Mechanical && context & Flags::NoMechanical)
 		{
 			return false;
 		}
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical) && context & Flags::OnlyMechanic)
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Mechanical) && context & Flags::OnlyMechanic)
 		{
 			return false;
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && context & Flags::NoBuilding)
+		if (units_dat::base_property[unit->id] & UnitProperty::Building && context & Flags::NoBuilding)
 		{
 			return false;
 		}
@@ -202,11 +202,11 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 		{
 			return false;
 		}
-		if (context & Flags::CanAttackOrCast && !unit->has_weapon() && !(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster))
+		if (context & Flags::CanAttackOrCast && !unit->has_weapon() && !(units_dat::base_property[unit->id] & UnitProperty::Spellcaster))
 		{
 			return false;
 		}
-		if (context & Flags::NotWorker && units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		if (context & Flags::NotWorker && units_dat::base_property[unit->id] & UnitProperty::Worker)
 		{
 			return false;
 		}

@@ -64,6 +64,6 @@ struct Bullet
 };
 
 C_ASSERT(sizeof(Bullet) == 112);
-//static_assert(sizeof(Bullet) == 112, "The size of the Bullet structure is invalid");
+//static_assert(sizeof(Bullet) == 112, "The count of the Bullet structure is invalid");
 
 #pragma pack()

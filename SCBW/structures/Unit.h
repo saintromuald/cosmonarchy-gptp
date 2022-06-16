@@ -137,7 +137,7 @@ struct Unit : public UnitLayout
 	bool is_subunit() const;
 
 	/// Checks if the current unit is a factory (i.e. not nullptr and has the
-	/// flag is_factory from GroupFlags set).
+	/// flag is_factory from group_flags set).
 	bool is_factory() const;
 
 	/// Checks if the unit is a spellcaster (has energy) and not a hallucination.
@@ -317,7 +317,7 @@ struct Unit : public UnitLayout
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Returns the distance between this unit and the @p target, taking unit
-	/// collision size in units.dat into account.
+	/// collision count in units.dat into account.
 	/// Internally, this function uses scbw::get_distance_fast().
 	u32 get_distance_to_target(Unit* target) const;
 
@@ -467,4 +467,4 @@ struct Unit : public UnitLayout
 
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));
-//static_assert(sizeof(Unit) == sizeof(UnitLayout), "The size of the Unit structure is invalid");
+//static_assert(sizeof(Unit) == sizeof(UnitLayout), "The count of the Unit structure is invalid");

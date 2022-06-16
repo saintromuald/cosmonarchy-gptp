@@ -419,7 +419,7 @@ namespace hooks
 			{
 				EntryArray units = unit_search_radial(attacker->position, 3 * 32);
 				unit_search_filter(&units, attacker, FilterAlly | FilterIncludingSelf);
-				for (u32 i = 0; i < units.size; ++i) {
+				for (u32 i = 0; i < units.count; ++i) {
 					Unit* unit = units.units[i];
 
 					u32 power = target->hitpoints;
@@ -463,7 +463,7 @@ namespace hooks
 	s32 ensnareProc(Unit* target, Unit* attacker)
 	{
 		if (target != attacker
-			&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
+			&& !(units_dat::base_property[target->id] & UnitProperty::Building)
 			&& target->id != UnitId::ZergInfestedTerran)
 		{
 			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
@@ -618,7 +618,7 @@ namespace hooks
 		//		y + distance
 		//	).for_each([&](Unit* unit) {
 		//		if (attacker && attackerExt->timers[TimerEnsnaringBrood] > 0
-		//			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building))
+		//			&& !(units_dat::base_property[unit->id] & UnitProperty::Building))
 		//		{
 		//			scbw::apply_ensnare(unit);
 		//		}
@@ -662,7 +662,7 @@ namespace hooks
 		{
 			if (target != source && !(unitStatus & UnitStatus::Invincible))
 			{
-				s32 unitProperty = units_dat::BaseProperty[target->id];
+				s32 unitProperty = units_dat::base_property[target->id];
 				if (!(unitStatus & UnitStatus::Burrowed))
 				{
 					helper::set_maelstrom_timer(target, MindTyrantMaelstromTimer);
@@ -787,7 +787,7 @@ namespace hooks
 			//			a2 = (Point32)(v1->energy < v2);		// check this out
 			if (!v3)
 			{
-				targetsFound2 = units_dat::GroupFlags[(u16)v1->id];
+				targetsFound2 = units_dat::group_flags[(u16)v1->id];
 				if (targetsFound2.is_zerg)
 				{
 					iterate = 0;
@@ -887,7 +887,7 @@ LABEL_15:
 		  || unit_id == UnitId::ResourceVespeneGeyser
 		  || unit_id == UnitId::ProtossSteward
 		  || unit_id == UnitId::ProtossPlasmaShell
-		  || units_dat::BaseProperty[unit_id] & UnitProperty::Addon
+		  || units_dat::base_property[unit_id] & UnitProperty::Addon
 		  || (u8)unit->player == playerIdVar)
 		{
 			return 0;

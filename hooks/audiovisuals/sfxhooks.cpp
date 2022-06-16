@@ -14,7 +14,7 @@ namespace hooks
 		s32 rand;				//v6
 		s32 result;
 
-		if (!(units_dat::GroupFlags[unit_id].is_building))
+		if (!(units_dat::group_flags[unit_id].is_building))
 		{		// original check was unit_id <= 0x69, now checks for existance of annoyed lines
 			sound = scbw::get_unit_data(UnitsDatEntries::SndPssFirst, unit_id);
 			if ((s16)sound)
@@ -56,7 +56,7 @@ namespace hooks
 		u16 v1; // ax
 		s32 result; // eax
 
-		if (!(units_dat::GroupFlags[a1].is_building) && (v1 = scbw::get_unit_data(UnitsDatEntries::SndYesFirst, a1)) != 0)
+		if (!(units_dat::group_flags[a1].is_building) && (v1 = scbw::get_unit_data(UnitsDatEntries::SndYesFirst, a1)) != 0)
 			result = helper::randGetSFXBetween((s32)scbw::get_unit_data(UnitsDatEntries::SndYesLast, a1), (s32)v1);
 		else
 			result = 0;

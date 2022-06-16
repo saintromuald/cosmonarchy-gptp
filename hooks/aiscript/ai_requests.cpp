@@ -161,7 +161,7 @@ namespace hooks
 		playerVar = (u8)builder->player;
 		_tileX.y = (*(s32*)&tryPosition >> 16) / 32;
 		__tileX.y = _tileX.y;
-		v7 = units_dat::BaseProperty[(u16)unit_id];
+		v7 = units_dat::base_property[(u16)unit_id];
 		ownrId = playerVar;
 		v40 = 0;
 		v41 = 0;
@@ -745,7 +745,7 @@ namespace hooks
 			u32 player_race = playerTable[player_id].race;
 			if (player_race == RaceId::Terran)
 			{
-				if (!unitCountTable[UnitId::TerranPhalanxTankModeTurret].player[player_id + 12]) // what
+				if (!unit_count_table[UnitId::TerranPhalanxTankModeTurret].player[player_id + 12]) // what
 				{
 					return;
 				}
@@ -758,7 +758,7 @@ namespace hooks
 				{
 					return;
 				}
-				witness_count = allUnitCountTable[UnitId::ProtossWitness].player[player_id];
+				witness_count = all_unit_count_table[UnitId::ProtossWitness].player[player_id];
 				if (witness_count < 2)
 				{
 					witness_request_quantity = 2 - witness_count;
@@ -766,7 +766,7 @@ namespace hooks
 					{
 						witness_gas_cost = units_dat::gas_cost[UnitId::ProtossWitness];
 						witness_supply_cost = units_dat::SupplyRequired[UnitId::ProtossWitness];
-						if (units_dat::BaseProperty[UnitId::ProtossWitness] & UnitProperty::TwoUnitsIn1Egg)
+						if (units_dat::base_property[UnitId::ProtossWitness] & UnitProperty::TwoUnitsIn1Egg)
 						{
 							witness_supply_cost = 2 * units_dat::SupplyRequired[UnitId::ProtossWitness];
 						}
@@ -782,9 +782,9 @@ namespace hooks
 			}
 			if (v33)
 			{
-				transport_1_count = allUnitCountTable[0].player[player_id + 12 * transport_unit_id_1];
+				transport_1_count = all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1];
 				transport_1_quantity = (AIScriptController[player_id].AI_Flags.is_use_map_settings) != 0 ? 2 : 5;
-				transport_1_priority = allUnitCountTable[0].player[player_id + 12 * transport_unit_id_1] != 0 ? 50 : 80;
+				transport_1_priority = all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1] != 0 ? 50 : 80;
 				if (transport_1_count < transport_1_quantity)
 				{
 					transport_1_request_count = transport_1_quantity - transport_1_count;
@@ -793,7 +793,7 @@ namespace hooks
 						AIScriptController[player_id].AI_Flags.flag_0x40 = true;
 						transport_1_gas_cost = units_dat::gas_cost[transport_unit_id_1];
 						transport_supply_cost = units_dat::SupplyRequired[transport_unit_id_1];
-						if (units_dat::BaseProperty[transport_unit_id_1] & UnitProperty::TwoUnitsIn1Egg)
+						if (units_dat::base_property[transport_unit_id_1] & UnitProperty::TwoUnitsIn1Egg)
 						{
 							transport_supply_cost *= 2;
 						}
@@ -925,12 +925,12 @@ namespace hooks
 			return;
 		}
 		*/
-		if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker) {
+		if (units_dat::base_property[unit_id] & UnitProperty::Worker) {
 			u32 type = 4;
 			helper::ai_add_cost_to_needs(unit_id, player, type);
 			helper::ai_add_spending_request(unit_id, player, type, priority, region);
 		} else {
-			u32 type = 2 * (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) | 3;
+			u32 type = 2 * (units_dat::base_property[unit_id] & UnitProperty::Addon) | 3;
 			helper::ai_add_cost_to_needs(unit_id, player, type);
 			helper::ai_add_spending_request(unit_id, player, type, priority, region);
 		}

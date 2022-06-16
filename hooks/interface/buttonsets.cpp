@@ -220,7 +220,7 @@ namespace hooks {
 			if (selected) {
 				selected_button_set_id = selected->current_button_set;
 
-				selected_properties = units_dat::BaseProperty[selected->id];
+				selected_properties = units_dat::base_property[selected->id];
 				if (selected_properties & UnitProperty::Worker) {
 					count_workers++;
 				}
@@ -240,7 +240,7 @@ namespace hooks {
 					count_hatches++;
 				}
 
-				if (units_dat::GroupFlags[selected->id].is_zerg) {
+				if (units_dat::group_flags[selected->id].is_zerg) {
 					count_zergs++;
 				}
 
@@ -727,7 +727,7 @@ namespace hooks {
 						}
 						else if (current_button->requirement_var == TechId::LarvalSubmenuSelectSwarm || current_button->requirement_var == TechId::LarvalSubmenuSelectAssault || current_button->requirement_var == TechId::LarvalSubmenuSelectControl)							
 						{
-							if ((units_dat::GroupFlags[unit->id].is_zerg && units_dat::GroupFlags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
+							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
 								current_button_state = Button_State::Enabled;
 							} else {
 								current_button_state = Button_State::Invisible;
@@ -776,7 +776,7 @@ namespace hooks {
 					}
 
 					if (current_button->icon_id == IconId::Larva) {
-						if ((units_dat::GroupFlags[unit->id].is_zerg && units_dat::GroupFlags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
+						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
@@ -784,7 +784,7 @@ namespace hooks {
 					}
 
 					if (current_button->icon_id == IconId::Cancel) {
-						if (units_dat::GroupFlags[unit->id].is_zerg && units_dat::GroupFlags[unit->id].is_factory) {
+						if (units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
 							current_button->position = 6;
 						} else {
 							current_button->position = 9;
@@ -1742,7 +1742,7 @@ namespace hooks {
 	};
 
 	// Using a local array instead of the original may allow to go past the 9 buttons limitations
-	// May need a special case using the original array adress and size when in replay if modified
+	// May need a special case using the original array adress and count when in replay if modified
 	void statbtn_BIN_CustomCtrlID(BinDlg* dialog)
 	{
 		helper::register_user_dialog_action(dialog, (u32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));

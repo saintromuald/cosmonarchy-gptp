@@ -586,7 +586,7 @@ namespace hooks
 		// Vanilla Value
 		addStatus(statuses, "Parasited", unit->parasite_flags != 0, 1);
 		addStatus(statuses, "Blinded", unit->is_blind != 0, 1);
-		addStatus(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::BaseProperty[unit->id] & UnitProperty::Building, 1);
+		addStatus(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::base_property[unit->id] & UnitProperty::Building, 1);
 		addStatus(statuses, "Cannot Attack", unitExt->timers[TimerUnderDisruptionWeb] > 0, 1);
 
 		// Case Specific
@@ -617,47 +617,47 @@ namespace hooks
 		// color code source player if possible
 
 		std::vector<std::string> flags;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+		if (units_dat::base_property[unit->id] & UnitProperty::Building)
 		{
 			flags.push_back("Structure");
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::ProducesUnits)
+		if (units_dat::base_property[unit->id] & UnitProperty::ProducesUnits)
 		{
 			flags.push_back("Factory");
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
+		if (units_dat::base_property[unit->id] & UnitProperty::Addon)
 		{
 			flags.push_back("Addon");
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker)
 		{
 			flags.push_back("Worker");
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Hero)
+		if (units_dat::base_property[unit->id] & UnitProperty::Hero)
 		{
 			flags.push_back("Hero");
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Invincible)
+		if (units_dat::base_property[unit->id] & UnitProperty::Invincible)
 		{
 			flags.push_back("Invincible");
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic)
+		if (units_dat::base_property[unit->id] & UnitProperty::Organic)
 		{
 			flags.push_back("Organic");
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical)
+		if (units_dat::base_property[unit->id] & UnitProperty::Mechanical)
 		{
 			flags.push_back("Mechanical");
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit)
+		if (units_dat::base_property[unit->id] & UnitProperty::RoboticUnit)
 		{
 			flags.push_back("Robotic");
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Detector)
+		if (units_dat::base_property[unit->id] & UnitProperty::Detector)
 		{
 			flags.push_back("Detector");
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding
+		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding
 			|| (unit->id == UnitId::ZergBactalisk && unit->status & UnitStatus::Burrowed))
 		{
 			flags.push_back("Spreads Creep");

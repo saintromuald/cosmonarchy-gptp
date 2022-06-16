@@ -130,7 +130,7 @@ namespace graphics
 		*(u16*)koreanChars = *(u16*)ch;
 		koreanChars[2] = '\0';
 
-		//Retrieve the size of the rectangular area to draw the character
+		//Retrieve the count of the rectangular area to draw the character
 		RECT chRect = {};
 		DrawText(bufferDc, koreanChars, strlen(koreanChars), &chRect, DT_CALCRECT);
 
@@ -163,7 +163,7 @@ namespace graphics
 
 	bool Bitmap::blitString(const char* pszStr, s32 x, s32 y, u8 size)
 	{
-		// verify valid size index
+		// verify valid count index
 		if (size > 3 || !pszStr)
 			return false;
 

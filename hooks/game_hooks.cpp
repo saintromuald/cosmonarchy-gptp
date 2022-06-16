@@ -44,7 +44,7 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target)
 			return;
 		}
 	}
-	if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+	if (units_dat::base_property[target->id] & UnitProperty::Building)
 	{
 		return;
 	}
@@ -311,7 +311,7 @@ namespace hooks
 				// Reveal resources
 				for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 				{
-					if (unit->player == 11 && units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+					if (unit->player == 11 && units_dat::base_property[unit->id] & UnitProperty::Building)
 					{
 						unit->sprite->visibilityFlags |= reveal_flag;
 					}
@@ -455,7 +455,8 @@ namespace hooks
 			}
 		}
 
-		if ((unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergGosvileth) && unit->status& UnitStatus::Completed) {
+		// Temporary workaround for Droleth/Gosvileth morph source  TODO: replace with hooks to begin_gas_building and drone_morph_standard
+		if ((unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergGosvileth) && unit->status & UnitStatus::Completed) {
 			unit->morph_origin = unit->id;
 		}
 
@@ -561,7 +562,7 @@ namespace hooks
 				{
 					u32 radius = 5 * 32;
 					EntryArray corpses = corpse_search_radial(unit->position, radius);
-					for (u32 i = 0; i < corpses.size; ++i)
+					for (u32 i = 0; i < corpses.count; ++i)
 					{
 						Thingy* corpse = corpses.corpses[i];
 						if (unit->energy < 5 * 256)
@@ -574,7 +575,7 @@ namespace hooks
 						}
 						EntryArray targets = unit_search_radial(unit->position, radius);
 						unit_search_filter(&targets, unit, FilterAlly);
-						for (u32 i = 0; i < targets.size; ++i) {
+						for (u32 i = 0; i < targets.count; ++i) {
 							Unit* target = targets.units[i];
 							target->heal(ZoryusthalethReconstitutionHealing, unit);
 							//scbw::create_and_init_thingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
@@ -594,7 +595,7 @@ namespace hooks
 
 				// Corpse Cocoon
 				EntryArray corpses = corpse_search_rect({unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom()});
-				for (u32 i = 0; i < corpses.size; ++i) {
+				for (u32 i = 0; i < corpses.count; ++i) {
 					Thingy* corpse = corpses.corpses[i];
 					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
 						Unit* egg = scbw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
@@ -1040,7 +1041,7 @@ namespace hooks
 				if (unit->order_signal & 0x20)
 				{
 					unit->order_signal &= ~0x20;
-					if (unit->order_target.unit != nullptr && !(units_dat::BaseProperty[unit->order_target.unit->id] & UnitProperty::Flyer))
+					if (unit->order_target.unit != nullptr && !(units_dat::base_property[unit->order_target.unit->id] & UnitProperty::Flyer))
 					{
 						if (unit->get_distance_to_target(unit->order_target.unit) <= OlympianMeleeDistance)
 						{
@@ -1069,7 +1070,7 @@ namespace hooks
 						{
 							return;
 						}
-						if (units_dat::BaseProperty[target->id] & UnitProperty::Building
+						if (units_dat::base_property[target->id] & UnitProperty::Building
 							|| !(target->status & UnitStatus::Completed))
 						{
 							return;
@@ -1186,7 +1187,7 @@ namespace hooks
 					if (dist <= weapons_dat::OuterSplashRadius[WeaponId::AnthelionEventHorizon])
 					{
 						UnitExt* targetExt = globals.get_unit_ext(target);
-						if (!(units_dat::BaseProperty[target->id] & UnitProperty::Building)
+						if (!(units_dat::base_property[target->id] & UnitProperty::Building)
 							&& targetExt->timers[TimerAnthelionGravityWell])
 						{
 							targetExt->timers[TimerAnthelionGravityWell] = 2;
@@ -1350,7 +1351,7 @@ namespace hooks
 				return false;
 			});
 
-			if (mind_tyrants.size) {
+			if (mind_tyrants.count) {
 				if (unitExt->timers[TimerTyrannyRecede] <= 4 * 24) {
 					if (unit->status & UnitStatus::Frozen) {
 						unit->unfreeze();
@@ -1381,7 +1382,7 @@ namespace hooks
 		}
 
 		// Fix animation bug with acceleration movement flag
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding)
+		if (!(units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)
 			&& unit->movement_flags & MovementFlags::Accelerating
 			&& unit->sprite->main_graphic->animation != IscriptAnimation::Walking
 			&& unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle)
@@ -1436,7 +1437,7 @@ namespace hooks
 		// Play harvesting animations when a worker harvests from a resource
 		// Requires more involved anim/graphics work
 		/*
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker)
 		{
 			Unit* harvest_target = unit->worker.harvest_target;
 			// Eventually make it happen for vespene geysers and mineral fields, not just refineries
@@ -1481,7 +1482,7 @@ namespace hooks
 		}
 
 		// Play addon work animations when related units are being trained by parent structure
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->building.addon && unit->building.addon->status & UnitStatus::Completed)
+		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon && unit->building.addon->status & UnitStatus::Completed)
 		{
 			u16 unit_id = unit->build_queue[unit->build_queue_slot];
 			if (unit_id != UnitId::None && !scbw::unit_id_is_available_without_an_addon(unit_id))
@@ -1496,7 +1497,7 @@ namespace hooks
 			}
 		}
 
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon && !(unit->status & UnitStatus::Completed)) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Addon && !(unit->status & UnitStatus::Completed)) {
 			if (unit->connected_unit && !unit->connected_unit->is_frozen() && unitExt->timers[TimerAddonAnimation] == 0) {
 				u32 width  = units_dat::BuildingDimensions[unit->id].x * 0.5;
 				u32 height = units_dat::BuildingDimensions[unit->id].y * 0.5;
@@ -1622,9 +1623,9 @@ namespace hooks
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			EntryArray akistrokors = unit_search_radial(unit->position, 6 * 32);
 			unit_search_filter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
-			unit->hitpoints += akistrokors.size * 256.0 / 24.0;
+			unit->hitpoints += akistrokors.count * 256.0 / 24.0;
 
-			if (!units_dat::GroupFlags[unit->id].is_zerg && units_dat::GroupFlags[unit->id].is_factory) {
+			if (!units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
 				helper::secondary_order_spawning_larva(unit);
 			}
 
@@ -1638,7 +1639,7 @@ namespace hooks
 			if (unit->main_order_id == OrderId::BlissfulEmbrace) {
 				Unit* target = unit->order_target.unit;
 				if (target && target->hitpoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
-					&& units_dat::BaseProperty[target->id] & UnitProperty::Building && !(units_dat::BaseProperty[target->id] & UnitProperty::Addon
+					&& units_dat::base_property[target->id] & UnitProperty::Building && !(units_dat::base_property[target->id] & UnitProperty::Addon
 					&& unit->player != target->player && !scbw::is_allied_to(unit->player, target->player))) {
 					UnitExt* target_ext = globals.get_unit_ext(target);
 
@@ -1863,7 +1864,7 @@ namespace hooks
 		// Cloaked units recloak after 2 seconds of being out of combat
 		if (unitExt->timers[TimerDecloak] == 1)
 		{
-			if (scbw::is_decloakable(unit) && units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak)
+			if (scbw::is_decloakable(unit) && units_dat::base_property[unit->id] & UnitProperty::PermanentCloak)
 			{
 				helper::anim_cloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
 			}
@@ -1927,12 +1928,12 @@ namespace hooks
 		{
 			EntryArray arr = unit_search_radial(unit->position, 8 * 32);
 			unit_search_filter(&arr, unit, FilterAlly | FilterBuilding);
-			for (u32 i = 0; i < arr.size; i++)
+			for (u32 i = 0; i < arr.count; i++)
 			{
 				Unit* target = arr.units[i];
 				UnitExt* target_ext = globals.get_unit_ext(target);
 				if (scbw::unit_id_is_tech(target->id)) {
-					if (units_dat::GroupFlags[target->id].is_terran && !target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+					if (units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 						continue;
 					}
 				}

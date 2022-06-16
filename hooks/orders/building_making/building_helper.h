@@ -37,7 +37,7 @@ namespace BuildingHelper
 	// Identical to function @ 0x00466B70
 	s32 get_unit_id_count_in_build_queue(const Unit* unit, u16 unit_id)
 	{
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker)
 		{
 			if (get_construct_repair_target(unit) == nullptr
 				&& unit->build_queue[unit->build_queue_slot % 5] == unit_id

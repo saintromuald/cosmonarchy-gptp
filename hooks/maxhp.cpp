@@ -51,7 +51,7 @@ namespace hooks
 	u32 maxshields(s32 id, s32 player)
 	{
 		u32 result = units_dat::MaxShieldPoints[id];
-		//if (units_dat::BaseProperty[id] & UnitProperty::RoboticUnit && scbw::get_upgrade_level(player, UpgradeId::Autovitality)) {
+		//if (units_dat::base_property[id] & UnitProperty::RoboticUnit && scbw::get_upgrade_level(player, UpgradeId::Autovitality)) {
 		//	result += result / 2;
 		//}
 		return result;
@@ -194,7 +194,7 @@ LABEL_26:
 				v2 = *active_portrait_unit;
 				*statusScreenFunc = 12;
 			}
-			v3 = units_dat::GroupFlags[(u16)v2->id];
+			v3 = units_dat::group_flags[(u16)v2->id];
 			if (v3.is_zerg)
 			{
 				v21 = 0;
@@ -275,7 +275,7 @@ LABEL_26:
 			v13 = helper::get_supplies_available((*active_portrait_unit)->player, v11);
 			sprintf_s(unkString_Char, 260, "%s %d", v12, (v13 + 1) / 2);
 			v22 = (*active_portrait_unit)->player;
-			v14 = units_dat::GroupFlags[helper::get_last_queue_slot_id((*active_portrait_unit))];
+			v14 = units_dat::group_flags[helper::get_last_queue_slot_id((*active_portrait_unit))];
 			s32 race = (*active_portrait_unit)->get_race();
 			if (v14.is_zerg)
 			{
@@ -649,7 +649,7 @@ LABEL_55:
 			ByteOperations::SetHighByte(colorData, 6);
 		}
 		v21 = *(s16*)(v5 + 100);
-		v22 = units_dat::BaseProperty[v21] & UnitProperty::Spellcaster;
+		v22 = units_dat::base_property[v21] & UnitProperty::Spellcaster;
 		if (v22 && (v23 = (*(s32*)(v5 + 220) >> 30) & 1) == 0
 			|| (v23 = (*(s32*)(v5 + 220) >> 30) & 1) != 0
 			|| v21 == 40)
@@ -958,7 +958,7 @@ LABEL_23:
 			*(s8*)(v5 + 8) = 19;
 		*(s8*)(*(s32*)(a1 + 44) + 9) = 0;
 		v6 = v3->id;
-		if (units_dat::BaseProperty[v6] & 0x200000 && !(v3->status & 0x40000000)
+		if (units_dat::base_property[v6] & 0x200000 && !(v3->status & 0x40000000)
 			|| v3->status & 0x40000000
 			|| v6 == 40)
 		{
@@ -998,7 +998,7 @@ LABEL_23:
 		u32 v12; // [esp+Ch] [ebp-8h]
 
 		*(s32*)a2 = 0;
-		v2 = firstPlayerUnit->unit[(u8)a1->player];
+		v2 = first_player_unit->unit[(u8)a1->player];
 		v11 = 0;
 		v12 = 99999999;
 		if (!v2)

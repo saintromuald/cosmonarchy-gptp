@@ -65,8 +65,8 @@ namespace scbw
 	/// [unit]. It does NOT check whether [transport] is a hallucination, or is an
 	/// Overlord without the transport upgrade, or whether the [unit] itself has any
 	/// status effects. Note that this function is affected by the EXE edits
-	/// "change bunker size check to organic flag check" and
-	/// "remove bunker size check" in FireGraft.
+	/// "change bunker count check to organic flag check" and
+	/// "remove bunker count check" in FireGraft.
 	bool can_be_entered_by(Unit* transport, Unit* unit);
 
 	/// Checks weapons.dat targeting flags to see if the @p target can be hit by the
@@ -476,7 +476,7 @@ namespace scbw
 	// Moves the camera/screen to the unit
 	void move_screen_to_unit(Unit* unit, u32 player = 8);
 
-	// Creates a minimap ping at x,y (relative pos)
+	// Creates a minimap ping at x,y (relative position)
 	void minimap_ping(u32 x, u32 y, s32 color, u32 player = 8);
 
 	// Functionally identical to the [playfram] opcode in iscript.bin.
@@ -497,7 +497,7 @@ namespace scbw
 	/// Sets the data of the Anywhere location.
 	inline void setAnywhereLocation()
 	{
-		Location* location = &locationTable[63];
+		Location* location = &location_table[63];
 		location->dimensions.left = 0;
 		location->dimensions.top = 0;
 		location->dimensions.right = 32 * map_tile_size->width;
@@ -508,7 +508,7 @@ namespace scbw
 	/// Sets the data of location @p locNumber.
 	inline void setLocation(s32 locNumber, s32 left, s32 top, s32 right, s32 bottom, s32 flags)
 	{
-		Location* location = &locationTable[locNumber];
+		Location* location = &location_table[locNumber];
 		location->dimensions.left = left;
 		location->dimensions.top = top;
 		location->dimensions.right = right;
@@ -615,4 +615,6 @@ namespace scbw
 	bool all_selected_units_have_addon(u32 unit_id);
 
 	bool unit_is_stunned(Unit* unit);
+
+	bool unit_id_is_transport(u32 unit_id);
 }

@@ -53,7 +53,7 @@ namespace hooks
     char initialize_unit_counts() // 00488F90
     {
         memset(unitCountScore, 0, 0x540u);
-        memset(allUnitCountTable, 0, 0xAB00u);
+        memset(all_unit_count_table, 0, 0xAB00u);
 
         s32 result = 0;
         if (multiPlayerMode && gameData->teamsEnabled)
@@ -184,11 +184,11 @@ namespace hooks
 
         s32 workers = 0;
         s32 men = 0;
-        for (Unit* unit = firstPlayerUnit->unit[*LOCAL_NATION_ID]; unit; unit = unit->player_link.next) {
+        for (Unit* unit = first_player_unit->unit[*LOCAL_NATION_ID]; unit; unit = unit->player_link.next) {
             if (unit->status & UnitStatus::Completed) {
-                if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
+                if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
                     workers += 2;
-                } else if (units_dat::GroupFlags[unit->id].is_men) {
+                } else if (units_dat::group_flags[unit->id].is_men) {
                     men += 2;
                 }
             }
@@ -236,7 +236,7 @@ namespace hooks
     s32 get_supplies_temp() // 004246D0
     {
         Unit* activeUnit = *active_portrait_unit;
-        GroupFlag groupFlags = units_dat::GroupFlags[activeUnit->id];
+        GroupFlag groupFlags = units_dat::group_flags[activeUnit->id];
         *suppliesAvailableTemp = get_supplies_available(activeUnit->player, RaceId::Terran);
         u8 player = activeUnit->player;
         s32 result = suppliesUsed_Terran[player];
@@ -252,7 +252,7 @@ namespace hooks
         }
 
         u8 activePlayer = (*active_portrait_unit)->player;
-        GroupFlag groupFlags = units_dat::GroupFlags[(u16)(*active_portrait_unit)->id];
+        GroupFlag groupFlags = units_dat::group_flags[(u16)(*active_portrait_unit)->id];
         char race = RaceId::Terran;
 
         if ((u16)suppliesAvailableTemp == get_supplies_available(activePlayer, race))
@@ -354,12 +354,12 @@ namespace hooks
         {
             return;
         }
-        if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit)
+        if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
         {
             return;
         }
-        allUnitCountTable[unit->id].player[unit->player] += count;
-        GroupFlag groupFlag = units_dat::GroupFlags[(u16)unit->id];
+        all_unit_count_table[unit->id].player[unit->player] += count;
+        GroupFlag groupFlag = units_dat::group_flags[(u16)unit->id];
         
         if (unit->get_race() == RaceId::Zerg)
         {
@@ -368,7 +368,7 @@ namespace hooks
             if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon)
             {
                 supply = units_dat::SupplyRequired[unit->id];
-                if (!(units_dat::BaseProperty[unit->id] & 0x400) || unit->status & 1)
+                if (!(units_dat::base_property[unit->id] & 0x400) || unit->status & 1)
                 {
                     raceSupply[RaceId::Terran].used[unit->player] += count * supply;
                 }
@@ -382,7 +382,7 @@ namespace hooks
             {
                 s32 queueUnit = unit->build_queue[unit->build_queue_slot];
                 supply = units_dat::SupplyRequired[queueUnit];
-                if (units_dat::BaseProperty[queueUnit] & UnitProperty::TwoUnitsIn1Egg)
+                if (units_dat::base_property[queueUnit] & UnitProperty::TwoUnitsIn1Egg)
                 {
                     supply *= 2;
                 }
@@ -412,9 +412,9 @@ namespace hooks
             unitsProducedOwnedTotal[unit->player] += count;
         }
 
-        if (allUnitCountTable[unit->id].player[unit->player] < 0)
+        if (all_unit_count_table[unit->id].player[unit->player] < 0)
         {
-            allUnitCountTable[unit->id].player[unit->player] = 0;
+            all_unit_count_table[unit->id].player[unit->player] = 0;
         }
     }
 
@@ -426,7 +426,7 @@ namespace hooks
         {
             return;
         }
-        if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit)
+        if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
         {
             return;
         }
@@ -440,21 +440,21 @@ namespace hooks
         {
             raceSupply[RaceId::Terran].provided[player] += count * supply;
         }
-        if (units_dat::GroupFlags[unit_id].is_factory)
+        if (units_dat::group_flags[unit_id].is_factory)
         {
             factoriesOwned[unit->player] += count;
         }
-        if (units_dat::GroupFlags[unit_id].is_building)
+        if (units_dat::group_flags[unit_id].is_building)
         {
             buildingsOwned[unit->player] += count;
         }
-        if (units_dat::GroupFlags[unit_id].is_men)
+        if (units_dat::group_flags[unit_id].is_men)
         {
             unitsProduced[unit->player] += count;
         }
         if (increment_scores != 0)
         {
-            if (units_dat::GroupFlags[unit_id].is_men)
+            if (units_dat::group_flags[unit_id].is_men)
             {
                 if (!scbw::is_any_morph_result(unit_id))
                 {
@@ -462,7 +462,7 @@ namespace hooks
                 }
                 unitScore[unit->player] += count;
             }
-            else if (units_dat::GroupFlags[unit_id].is_building)
+            else if (units_dat::group_flags[unit_id].is_building)
             {
                 if (!scbw::is_zerg_building_morph_result(unit_id))
                 {
@@ -482,7 +482,7 @@ namespace hooks
     {
         // Default StarCraft behavior
         s32 supplyCost = units_dat::SupplyRequired[unit_id];
-        if (units_dat::BaseProperty[unit_id] & UnitProperty::TwoUnitsIn1Egg)
+        if (units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg)
         {
             supplyCost *= 2;
         }
@@ -493,7 +493,7 @@ namespace hooks
 
         aiSupplyReserved[player] = supplyCost;
         // No supply cost check needed
-        if (supplyCost == 0 || units_dat::BaseProperty[unit_id] & UnitProperty::MorphFromOtherUnit)
+        if (supplyCost == 0 || units_dat::base_property[unit_id] & UnitProperty::MorphFromOtherUnit)
         {
             return true;
         }

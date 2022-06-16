@@ -283,7 +283,7 @@ inline void Node::AssignNode(const Node& rhs) {
   m_pNode = rhs.m_pNode;
 }
 
-// size/iterator
+// count/iterator
 inline std::size_t Node::size() const {
   if (!m_isValid)
     throw InvalidNode(m_invalidKey);

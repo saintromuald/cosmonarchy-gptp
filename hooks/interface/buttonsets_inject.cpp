@@ -101,7 +101,7 @@ namespace
 			PUSHAD
 		}
 		// In assembly, the index get multiplied to fit
-		// the size of the variable to get (1st by 3 then
+		// the count of the variable to get (1st by 3 then
 		// in the replaced code by 4), which is why the 
 		// value must get divided here.
 		returnValue = hooks::getButtonSet(index / 3);

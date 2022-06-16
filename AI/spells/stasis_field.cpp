@@ -31,7 +31,7 @@ namespace AI
 			if (!scbw::can_weapon_target_unit(WeaponId::StasisField, target, caster))
 				return false;
 
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+			if (units_dat::base_property[target->id] & UnitProperty::Building)
 				return false;
 
 			Unit* targetOfTarget = target->order_target.unit;

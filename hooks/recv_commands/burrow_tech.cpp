@@ -10,7 +10,7 @@ namespace hooks
 		selected_unit = get_active_player_next_selection();
 		while (selected_unit != nullptr)
 		{
-			if (units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable
+			if (units_dat::base_property[selected_unit->id] & UnitProperty::Burrowable
 				&& selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1)
 			{
 				helper::function_004E97C0(selected_unit);
@@ -26,7 +26,7 @@ namespace hooks
 		selected_unit = get_active_player_next_selection();
 		while (selected_unit != nullptr)
 		{
-			if (units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable
+			if (units_dat::base_property[selected_unit->id] & UnitProperty::Burrowable
 				&& selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1
 				&& !(selected_unit->status & UnitStatus::Burrowed)
 				&& selected_unit->main_order_id != OrderId::Burrow)

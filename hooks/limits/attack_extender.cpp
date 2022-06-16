@@ -167,8 +167,8 @@ LABEL_14:
 			parentAi = *childAi;
 		}
 		v6 = (u8)region->player;
-		parentTown = firstPlayerUnit->unit[v6];
-		v18 = firstPlayerUnit->unit[v6];
+		parentTown = first_player_unit->unit[v6];
+		v18 = first_player_unit->unit[v6];
 		if (parentTown)
 		{
 			while (1)
@@ -179,7 +179,7 @@ LABEL_14:
 					if (v8)
 					{
 						v9 = (u16)parentTown->id;
-						if (!(units_dat::BaseProperty[v9] & UnitProperty::Subunit))
+						if (!(units_dat::base_property[v9] & UnitProperty::Subunit))
 							break;
 					}
 				}
@@ -205,7 +205,7 @@ LABEL_36:
 				if (v10 == UnitId::ZergEgg || v10 == UnitId::ZergCocoon)
 				{
 					v10 = (u16)v18->build_queue[(u8)v18->build_queue_slot];
-					v13 = units_dat::BaseProperty[v10];
+					v13 = units_dat::base_property[v10];
 					if (v13 & 0x400)
 						v11 = 2;
 				}
@@ -384,7 +384,7 @@ LABEL_12:
 			++child;
 			parentAi = *child;
 		}
-		childTown = firstPlayerUnit->unit[player];
+		childTown = first_player_unit->unit[player];
 		if (childTown)
 		{
 			v6 = i - 1;
@@ -396,7 +396,7 @@ LABEL_12:
 					if (parentTown)
 					{
 						v8 = (u16)childTown->id;
-						if (!(units_dat::BaseProperty[v8] & 0x10))
+						if (!(units_dat::base_property[v8] & 0x10))
 						{
 							v9 = (u16)childTown->id;
 							if (v8 == 30)

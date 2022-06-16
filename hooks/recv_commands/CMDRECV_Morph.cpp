@@ -90,7 +90,7 @@ namespace hooks
 		while (Unit* unit = helper::get_active_player_next_selection()) {
 			if (!helper::unit_is_training_or_morphing(unit) && unit->building.tech_id == TechId::None && unit->building.upgrade_id == UpgradeId::None) {
 				if (unit->status & UnitStatus::GroundedBuilding) {
-					if (units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding) {
+					if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
 						*last_internal_error = 0;
 						if (orders_dat::RequirementsOffset[OrderId::BuildingLiftoff] == 65535) {
 							helper::parse_orders_dat_requirements();
@@ -165,7 +165,7 @@ namespace hooks
 		if (result == OrderId::None) {
 			if (!(target_unit->status & UnitStatus::GroundedBuilding) || target_unit->status & UnitStatus::Completed) {
 				if (scbw::is_allied_to(unit->player, target_unit->player)) {
-					if (!(units_dat::BaseProperty[target_unit->id] & UnitProperty::Building)
+					if (!(units_dat::base_property[target_unit->id] & UnitProperty::Building)
 					&&  helper::unit_is_active_transport(target_unit)
 					&&  helper::can_enter_transport(target_unit, unit)) {
 						return OrderId::EnterTransport;
@@ -178,7 +178,7 @@ namespace hooks
 					}
 				}
 			} else if (target_unit->player == unit->player && target_unit->get_race() == RaceId::Terran
-				&&   !(units_dat::BaseProperty[target_unit->id] & UnitProperty::Addon)) {
+				&&   !(units_dat::base_property[target_unit->id] & UnitProperty::Addon)) {
 				if (!target_unit->connected_unit || target_unit->connected_unit->order_target.unit != target_unit) {
 					return OrderId::ConstructingBuilding;
 				}

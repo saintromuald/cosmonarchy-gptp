@@ -20,12 +20,12 @@ bool is_valid_psi_provider_type(u16 unit_id)
 		return false;
 	}
 	// Uses memory space of Unit::building for other purposes
-	if (units_dat::BaseProperty[unit_id] & (UnitProperty::Worker | UnitProperty::ResourceContainer | UnitProperty::NPCOrAccessories))
+	if (units_dat::base_property[unit_id] & (UnitProperty::Worker | UnitProperty::ResourceContainer | UnitProperty::NPCOrAccessories))
 	{
 		return false;
 	}
 	// Unit::rally shares memory space with Unit::psi_link
-	if (units_dat::GroupFlags[unit_id].is_factory)
+	if (units_dat::group_flags[unit_id].is_factory)
 	{
 		return false;
 	}

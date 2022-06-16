@@ -138,7 +138,7 @@ namespace hooks
 
 		// Quarry, Iroleth, Pennant resource regeneration aura
 		u32 unit_id = unit->id;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->building.addon) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon) {
 			unit_id = unit->building.addon->id;
 		}
 		if (unit->sprite && unit->main_order_id != OrderId::Die
@@ -175,7 +175,7 @@ namespace hooks
 				{
 					return;
 				}
-				if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
+				if (units_dat::base_property[target->id] & UnitProperty::ResourceContainer)
 				{
 					UnitExt* targetExt = globals.get_unit_ext(target);
 					targetExt->timers[TimerResourceBoostedRegen] = 24;
@@ -367,7 +367,7 @@ namespace hooks
 
 	void ai_burrower(Unit* unit) // 004A1340
 	{
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)
+		if (units_dat::base_property[unit->id] & UnitProperty::Burrowable)
 		{
 			if (!(unit->status & UnitStatus::Burrowed) && unit->id != UnitId::ZergDroleth)
 			{
@@ -404,7 +404,7 @@ namespace hooks
 							if (unit->id != UnitId::ZergLakizilisk) {
 								EntryArray array = unit_search_radial(unit->position, 10 * 32);
 								unit_search_filter(&array, unit, FilterAlly | FilterBuilding);
-								if (array.size) {
+								if (array.count) {
 									return; // Disable idle burrowing close to infrastructure
 								}
 							}

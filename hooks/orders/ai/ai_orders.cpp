@@ -37,7 +37,7 @@ namespace hooks
 		{
 			return;
 		}
-		if (units_dat::BaseProperty[(u16)self->id] & UnitProperty::Building)
+		if (units_dat::base_property[(u16)self->id] & UnitProperty::Building)
 		{
 			if (self->unit_ai)
 			{
@@ -51,7 +51,7 @@ namespace hooks
 				{
 					if (attacker)
 					{
-						if (units_dat::BaseProperty[(u16)self->id] & UnitProperty::Worker // cancel structure code
+						if (units_dat::base_property[(u16)self->id] & UnitProperty::Worker // cancel structure code
 							&& !(self->main_order_id) // Original function call checks if unit has a sprite??? 00475A50
 							&& !(self->status & UnitStatus::Completed))
 						{
@@ -232,8 +232,8 @@ LABEL_37:
 									LABEL_126:
 												if (self->order_target.unit != actual_target)  // Responding with worker
 												{
-													if (!(units_dat::BaseProperty[(u16)self->id] & UnitProperty::Worker)
-														|| (units_dat::BaseProperty[actual_target->id] & UnitProperty::Worker)
+													if (!(units_dat::base_property[(u16)self->id] & UnitProperty::Worker)
+														|| (units_dat::base_property[actual_target->id] & UnitProperty::Worker)
 														|| !scbw::unit_is_ranged_attacker(actual_target) // previously only checked for Zethrokor id
 														|| helper::ai_has_no_defense_build((u8)self->id))
 													{
@@ -332,7 +332,7 @@ LABEL_37:
 	{
 		if (randomSuicide)
 		{
-			for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = unit->player_link.next)
+			for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next)
 			{
 				if (unit->sprite)
 				{
@@ -341,7 +341,7 @@ LABEL_37:
 						if (!unit->is_subunit()
 							&& unit->id != UnitId::TerranNuclearMissile
 							&& unit->id != UnitId::ZergLarva
-							&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+							&& !(units_dat::base_property[unit->id] & UnitProperty::Worker)
 							&& !(unit->sprite->flags & SpriteFlags::Hidden)
 							&& !helper::is_threat(0, unit))
 						{
@@ -358,7 +358,7 @@ LABEL_37:
 			AiRegion* region2 = 0;
 
 			s32 regionIndex = 2500;
-			for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = unit->player_link.next)
+			for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next)
 			{
 				if (!unit->sprite)
 				{
@@ -571,7 +571,7 @@ LABEL_37:
 		bool result = false;
 		WorkerAi* repairmanAI = (WorkerAi*)repairman->unit_ai;
 		if (repairman->player == repairTarget->player
-			&& units_dat::BaseProperty[repairman->id] & UnitProperty::Worker
+			&& units_dat::base_property[repairman->id] & UnitProperty::Worker
 			&& !(repairman->status & UnitStatus::InTransport)
 			&& !(repairman->status & UnitStatus::InBuilding) // new
 			&& repairmanAI != nullptr
@@ -610,7 +610,7 @@ LABEL_37:
 		{
 			return false;
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+		if (units_dat::base_property[unit->id] & UnitProperty::Building)
 		{
 			return false;
 		}
@@ -658,7 +658,7 @@ LABEL_37:
 				{
 					if (i->main_order_id)
 					{
-						if (units_dat::BaseProperty[i->id] & UnitProperty::ResourceContainer)
+						if (units_dat::base_property[i->id] & UnitProperty::ResourceContainer)
 						{
 							i->building.resource.resource_group = 0;
 						}
@@ -735,7 +735,7 @@ LABEL_37:
 			} break;
 		}
 		unit_id = (u16)unit_id;
-		u32 completedCount = unitCountTable[(u16)unit_id].player[(u8)player];
+		u32 completedCount = unit_count_table[(u16)unit_id].player[(u8)player];
 
 		// Originally had an inlined function that combined sieged and unsieged tanks for unit counts
 		return completedCount >= 12;
@@ -810,7 +810,7 @@ LABEL_37:
 			}
 
 			Unit* i;
-			for (i = *firstPlayerUnit[placementId].unit; i; i = i->player_link.next)
+			for (i = *first_player_unit[placementId].unit; i; i = i->player_link.next)
 			{
 				if (i->sprite)
 				{
@@ -952,7 +952,7 @@ LABEL_37:
 	bool ai_check_military_grouping(Unit* unit) // 00439550
 	{
 		UnitAi* unitAi = (UnitAi*)unit->unit_ai;
-		if (!unitAi || unitAi->type != 4 || units_dat::BaseProperty[unit->id] & 1)
+		if (!unitAi || unitAi->type != 4 || units_dat::base_property[unit->id] & 1)
 		{
 			return 1;
 		}
@@ -1123,7 +1123,7 @@ LABEL_37:
 			Point16 worker_pos = {};
 			AiTown* town = worker_ai->town;
 			worker_ai->last_update_second = *elapsed_time_seconds;
-			GroupFlag group_flags = units_dat::GroupFlags[worker->id];
+			GroupFlag group_flags = units_dat::group_flags[worker->id];
 			if ((group_flags.is_zerg || group_flags.is_protoss || !group_flags.is_terran || !helper::ai_scv_repair_controller(worker, town))
 				&& !helper::ai_try_progress_spending_queue_worker(town, worker))
 			{
@@ -1442,14 +1442,14 @@ LABEL_37:
 			u32 worker_count = 0;
 			switch (playerTable[town_player].race) {
 				case RaceId::Terran: {
-					worker_count += unitCountTable[UnitId::TerranMason].player[town_player];
-					worker_count += unitCountTable[UnitId::TerranTalos].player[town_player];
+					worker_count += unit_count_table[UnitId::TerranMason].player[town_player];
+					worker_count += unit_count_table[UnitId::TerranTalos].player[town_player];
 				} break;
 				case RaceId::Protoss: {
-					worker_count += unitCountTable[UnitId::ProtossScribe].player[town_player];
+					worker_count += unit_count_table[UnitId::ProtossScribe].player[town_player];
 				} break;
 				case RaceId::Zerg: {
-					worker_count += unitCountTable[UnitId::ZergDroleth].player[town_player];
+					worker_count += unit_count_table[UnitId::ZergDroleth].player[town_player];
 				} break;
 			}
 
@@ -1713,16 +1713,16 @@ LABEL_37:
 		}
 		if (!town->buildings || !repairee)
 		{
-		if (!town->building_SCV) {
-			town->building_SCV = worker;
-		}
-		if (town->building_SCV != worker) {
-			return 0;
-		}
-		repairee = helper::ai_find_best_repair_unit(worker); // This writing to repairee seems really wrong
-		if (!repairee) {
-			return 0;
-		}
+			if (!town->building_SCV) {
+				town->building_SCV = worker;
+			}
+			if (town->building_SCV != worker) {
+				return 0;
+			}
+			repairee = helper::ai_find_best_repair_unit(worker); // This writing to repairee seems really wrong
+			if (!repairee) {
+				return 0;
+			}
 		}
 		worker->user_action_flags |= 1u;
 		Point16 repairee_pos = {}; // Shouldn't we return when nothing to repair?
@@ -1743,17 +1743,121 @@ LABEL_37:
 		return 1;
 	}
 
+	f32 get_resarea_score(u32 player, AiTown* main_town, ResourceArea* area, EntryArray* units) {
+		f32 score = 0;
+
+		// TODO: make trigger customizable (and probably convert all biases to 1.0, so it's always the default)
+		const f32 ally_bias     = -0.5;
+		const f32 enemy_bias    =  0.5;
+		const f32 distance_bias = -4.0;
+		const f32 mineral_bias  =  1.0;
+		const f32 gas_bias      =  1.0;
+
+		u32 ally_count = 0;
+		u32 enemy_count = 0;
+		f32 average_ally_distance = 0; 
+		f32 average_enemy_distance = 0; 
+
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			for (Unit* unit = first_player_unit->unit[i]; unit; unit = unit->player_link.next) {
+				f32 distance = scbw::get_distance_fast(area->position, unit->position) / 32.0;
+				if (scbw::is_allied_to(player, i)) {
+					ally_count++;
+					average_ally_distance += distance;
+				} else {
+					enemy_count++;
+					average_enemy_distance += distance;
+				}
+			}
+		}
+		average_ally_distance  /= ally_count;
+		average_enemy_distance /= enemy_count;
+		score += average_ally_distance  * ally_bias;
+		score += average_enemy_distance * enemy_bias;
+
+		f32 distance_from_main = scbw::get_distance_fast(main_town->position, area->position) / 32;
+		score += distance_from_main * distance_bias;
+
+		f32 mineral_value = area->mineral_field_count + area->total_mineral_count / 1500.0;
+		f32 gas_value     = area->geyser_count * 3    + area->total_gas_count     / 500.0;
+		score += mineral_value * mineral_bias;
+		score += gas_value     * gas_bias;
+
+		for (u32 j = 0; j < units->count; ++j) {
+			Unit* unit = units->units[j];
+			if (player != unit->player && scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
+				score -= 100;
+			}
+		}
+
+		return score;
+	}
+
+	u32 ai_find_expansion_custom(u32 player, AiTown* main_town) {
+		u32 best_resarea = 0;
+		f32 best_score = INT_MIN;
+
+		bool has_transport_or_flying_worker = false;
+		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+			if (scbw::unit_id_is_transport(unit->id)) {
+				has_transport_or_flying_worker = true;
+				break;
+			}
+			if (units_dat::base_property[unit->id] & UnitProperty::Worker && units_dat::base_property[unit->id] & UnitProperty::Flyer) {
+				has_transport_or_flying_worker = true;
+				break;
+			}
+		}
+
+		Region* main_region = scbw::get_region(scbw::get_region_id(main_town->position));
+		for (u32 i = 1; i < resource_areas->used_count; ++i) {
+			ResourceArea* area = &resource_areas->areas[i];
+			if (area->flags & 3) {
+				continue;
+			}
+			Region* area_region = scbw::get_region(scbw::get_region_id(area->position));
+			if (!has_transport_or_flying_worker && main_region->group_index != area_region->group_index) {
+				continue;
+			}
+			EntryArray units = unit_search_radial(area->position, 12 * 32);
+			for (u32 j = 0; j < units.count; ++j) {
+				Unit* unit = units.units[j];
+				if (player != unit->player && scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_factory) {
+					goto exit;
+				}
+				if (!scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
+					goto exit;
+				}
+			}
+
+			f32 score = get_resarea_score(player, main_town, area, &units);
+			if (score > best_score) {
+				best_score = score;
+				best_resarea = i;
+			}
+
+		exit:
+			continue;
+		}
+		
+		if (best_resarea) {
+			resource_areas->areas[best_resarea].flags |= 2;
+			scbw::printf("Player %u expanding to %u", player, best_resarea);
+		}
+		return best_resarea;
+	}
+
 	// Hooked to remove a ridicilus condition that would stop AI from expanding in late game and to allow base layouts to control expand order
 	void ai_expand(AiScript* aiscript, u32 block, u32 amount) { // 0045B530
 		default_ai_expansion_block[aiscript->player] = block;
-		if (aiscript->town->resarea) {
+		if (aiscript->town->resarea) { 
 			u32 base_id = ai_get_next_custom_expo(aiscript->town);
 			if (!base_id || !helper::ai_try_expanding_to(base_id)) {
-				base_id = helper::ai_find_expansion(aiscript->player, aiscript->town->resarea, amount);
+				base_id = ai_find_expansion_custom(aiscript->player, aiscript->town);
 			}
 			if (base_id) {
 				helper::ai_expand_to(aiscript, base_id, block);
-				scbw::ai_defend(aiscript->player, scbw::get_region_id(resource_areas->areas[base_id].pos), 115, true);
+				scbw::ai_defend(aiscript->player, scbw::get_region_id(resource_areas->areas[base_id].position), 115, true);
 			}
 		}
 	}
@@ -1796,8 +1900,8 @@ LABEL_37:
 
 	// Hooked to add addon cases for new addon buildings and to reserve space around buildings. -Veeq7
 	void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position) { // 00443CC0
-		for (Unit* unit = firstPlayerUnit->unit[player]; unit; unit = unit->player_link.next) {
-			if (unit->sprite && unit->main_order_id != OrderId::Die && units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+			if (unit->sprite && unit->main_order_id != OrderId::Die && units_dat::base_property[unit->id] & UnitProperty::Building) {
 				// Map coordinates to the placement grid
 				s32 unit_x = unit->sprite->position.x / 32 - desired_position.x / 32 + 32;
 				s32 unit_y = unit->sprite->position.y / 32 - desired_position.y / 32 + 32;
@@ -1850,7 +1954,7 @@ LABEL_37:
 			for (u32 i = 0; i < region->neighborCount; ++i) {
 				u32 other_id = region->neighbors[i];
 				Region* other_region = scbw::get_region(other_id);
-				if (military_ai->unit->status & UnitStatus::InAir || region->groupIndex == other_region->groupIndex) {
+				if (military_ai->unit->status & UnitStatus::InAir || region->group_index == other_region->group_index) {
 					AiRegion* new_ai_region = find_better_region(military_ai, scbw::get_ai_region(ai_region->player, other_id), recurses - 1);
 					if (new_ai_region) {
 						return new_ai_region;
@@ -1880,7 +1984,7 @@ LABEL_37:
 			if (military_ai->unit == unit)
 			{
 				u16 unit_id = unit->id;
-				if (!(units_dat::BaseProperty[unit_id] & UnitProperty::Building))
+				if (!(units_dat::base_property[unit_id] & UnitProperty::Building))
 				{
 					AiRegion* ai_region = military_ai->region;
 					if (unit_id && unit_id != UnitId::TerranHarakan || !helper::ai_defender_bunker_behavior(unit, ai_region->region))
@@ -1984,63 +2088,63 @@ LABEL_37:
 				if (victim_ai->type != AiType::Guard)
 				{
 				LABEL_9:
-					Unit* first_player_unit = *firstPlayerUnit[victim->player].unit;
+					Unit* unit = *first_player_unit[victim->player].unit;
 					Unit* unit_to_order_1 = 0;
 					u32 max_distance = 9999999;
-					Unit* first_player_unit_2 = *firstPlayerUnit[victim->player].unit;
-					if (first_player_unit)
+					Unit* unit_2 = *first_player_unit[victim->player].unit;
+					if (unit)
 					{
 						do
 						{
-							if (first_player_unit->sprite)
+							if (unit->sprite)
 							{
-								u8 first_order_id = first_player_unit->main_order_id;
+								u8 first_order_id = unit->main_order_id;
 								if (first_order_id)
 								{
-									switch (first_player_unit->id)
+									switch (unit->id)
 									{
 										case UnitId::TerranSeraph:
 										case UnitId::ProtossWitness:
 										case UnitId::ZergOvileth:
 										case UnitId::ZergIroleth:
 										{
-											if (helper::is_unit_loaded(first_player_unit))
+											if (helper::is_unit_loaded(unit))
 											{
 												break;
 											}
-											if (!first_player_unit->is_blind
+											if (!unit->is_blind
 											&&  (first_order_id == OrderId::ComputerAI
 												|| first_order_id == OrderId::ComputerReturn
 												|| first_order_id == OrderId::GuardPost
 												|| first_order_id == OrderId::AIPatrol))
 											{
-												u32 distance = helper::get_distance_fast(victim->sprite->position.x, first_player_unit->sprite->position.x, victim->sprite->position.y, first_player_unit->sprite->position.y);
+												u32 distance = helper::get_distance_fast(victim->sprite->position.x, unit->sprite->position.x, victim->sprite->position.y, unit->sprite->position.y);
 												if (distance < max_distance)
 												{
-													unit_to_order_1 = first_player_unit;
+													unit_to_order_1 = unit;
 													max_distance = distance;
 												}
 											}
 										} break;
 										case UnitId::TerranComsatStation:
 										{
-											if (!(first_player_unit->status & UnitStatus::Completed))
+											if (!(unit->status & UnitStatus::Completed))
 											{
 												break;
 											}
 											// TODO: Add check to see if victim is already detected / if there's a detector in the area?
 											if (victim->id != UnitId::TerranBunker || !helper::is_unit_loaded(victim))
 											{
-												if (!helper::ai_unit_can_attack(victim) || units_dat::BaseProperty[victim->id] & UnitProperty::Worker)
+												if (!helper::ai_unit_can_attack(victim) || units_dat::base_property[victim->id] & UnitProperty::Worker)
 												{
 													break;
 												}
 											}
-											if (first_player_unit->energy >= techdata_dat::energy_cost[TechId::ScannerSweep] * 256 || first_player_unit->main_order_id == OrderId::PlaceScanner)
+											if (unit->energy >= techdata_dat::energy_cost[TechId::ScannerSweep] * 256 || unit->main_order_id == OrderId::PlaceScanner)
 											{
 												break;
 											}
-											helper::assign_order_with_target(threat, first_player_unit, OrderId::PlaceScanner);
+											helper::assign_order_with_target(threat, unit, OrderId::PlaceScanner);
 											return;
 										} break;
 										default:
@@ -2049,9 +2153,9 @@ LABEL_37:
 									}
 								}
 							}
-							first_player_unit = first_player_unit->player_link.next;
-							first_player_unit_2 = first_player_unit;
-						} while (first_player_unit);
+							unit = unit->player_link.next;
+							unit_2 = unit;
+						} while (unit);
 						if (unit_to_order_1)
 						{
 							Point16 victim_pos = {};

@@ -1125,7 +1125,7 @@ namespace hooks
 		}
 
 		bullet->sourceUnit = parent;
-		if (units_dat::BaseProperty[parent->id] & UnitProperty::Subunit)
+		if (units_dat::base_property[parent->id] & UnitProperty::Subunit)
 		{
 			bullet->sourceUnit = parent->subunit;
 		}

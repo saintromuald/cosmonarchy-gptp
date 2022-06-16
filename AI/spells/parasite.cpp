@@ -48,7 +48,7 @@ namespace AI
 			if (target->is_valid_caster())
 				return true;
 
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Worker)
+			if (units_dat::base_property[target->id] & UnitProperty::Worker)
 				return true;
 
 			if (target->get_current_life_ingame() >= 300)

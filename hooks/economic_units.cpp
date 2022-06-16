@@ -335,13 +335,13 @@ namespace hooks
 			|| ((race = playerTable[player].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
 				unit_id == result || priority == 140))
 		{
-			if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker)
+			if (units_dat::base_property[unit_id] & UnitProperty::Worker)
 			{
 				reqType = 4;
 			}
 			else
 			{
-				reqType = 2 * (units_dat::BaseProperty[unit_id] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
+				reqType = 2 * (units_dat::base_property[unit_id] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
 			}
 			helper::ai_add_cost_to_needs(unit_id, player, reqType);
 			result = helper::ai_add_spending_request(unit_id, player, reqType, priority, param);

@@ -11,7 +11,7 @@ namespace hooks
 	bool unitCanDetectHook(Unit* unit)
 	{
 		return (
-			units_dat::BaseProperty[unit->id] & UnitProperty::Detector &&
+			units_dat::base_property[unit->id] & UnitProperty::Detector &&
 			unit->status & UnitStatus::Completed &&
 			!(unit->status & UnitStatus::Frozen) &&
 			unit->lockdown_timer == 0 &&

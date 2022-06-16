@@ -302,7 +302,7 @@ namespace hooks
 			scbw::refresh_console();
 		}
 
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::ResourceContainer)
+		if (units_dat::base_property[unit->id] & UnitProperty::ResourceContainer)
 		{
 			// Decrement resource regen timers
 			if (unit->cmbw_resource_regen_mining_delay > 0)
@@ -427,7 +427,7 @@ namespace hooks
 			}
 
 			// HP regeneration
-			if ((units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP || unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
+			if ((units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP || unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 				&& unit->hitpoints > 0
 				&& unit->hitpoints != unit->get_max_hp_raw()
 				&& unitExt->damage_receive_timer > 2 * 24)
@@ -514,7 +514,7 @@ namespace hooks
 				if (unit->get_race() == RaceId::Terran)
 				{
 					if (unit->status & UnitStatus::GroundedBuilding
-						|| units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding)
+						|| units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)
 					{
 						if (helper::unitHpIsInRedZone(unit))
 						{
@@ -812,7 +812,7 @@ namespace hooks
 	void progress_unit_frame(Unit* unit) // 004ECF70
 	{
 		Unit* unitVar = unit;
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) && unit->sprite)
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && unit->sprite)
 		{
 			if (!(unit->sprite->flags & 0x20))
 			{
@@ -825,7 +825,7 @@ namespace hooks
 
 		if (unit->subunit)
 		{
-			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit))
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit))
 			{
 				*activeIscriptUnit = unit->subunit;
 				progress_unit_frame(unit->subunit);

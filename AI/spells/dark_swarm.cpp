@@ -17,7 +17,7 @@ namespace AI
 			isUnderDarkSwarmStatus = 0;
 		}
 		else
-			if ((units_dat::BaseProperty[target->id] & UnitProperty::Building)
+			if ((units_dat::base_property[target->id] & UnitProperty::Building)
 				|| (*offset_0x005873F0 == 0)
 				|| !scbw::is_under_dark_swarm(target))
 			{

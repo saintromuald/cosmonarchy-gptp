@@ -10,7 +10,7 @@ struct Player
 	/*09*/  u8    race;       // Use with scbw::RaceId
 	/*0A*/  u8    force;
 	/*0B*/  char  name[25];
-	/*struct size = 36 (0x24)*/
+	/*struct count = 36 (0x24)*/
 
 	// return the possibly non-standard color of the current player
 	u8 get_color();

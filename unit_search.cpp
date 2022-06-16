@@ -22,14 +22,14 @@ static SearchIndex corpse_index;
 static SearchIndex effect_index;
 
 void entry_array_add(EntryArray* array, void* data) {
-	if (array->size < EntryLimit) {
-		array->entries[array->size++] = data;
+	if (array->count < EntryLimit) {
+		array->entries[array->count++] = data;
 	}
 }
 
 void entry_array_remove(EntryArray* array, u32 index) {
-	if (index < array->size) {
-		array->entries[index] = array->entries[--array->size];
+	if (index < array->count) {
+		array->entries[index] = array->entries[--array->count];
 	}
 }
 
@@ -86,7 +86,7 @@ static EntryArray index_search_rect(SearchIndex* index, Box32 rect) {
 				};
 				bool is_fully_covered = is_rect_in_rect(tile_rect, rect);
 
-				if (is_fully_covered || is_point_in_rect(entry->position, rect) && entry_array.size < EntryLimit) {
+				if (is_fully_covered || is_point_in_rect(entry->position, rect) && entry_array.count < EntryLimit) {
 					entry_array_add(&entry_array, entry->data);
 				}
 			}
@@ -141,7 +141,7 @@ static EntryArray index_search_radial(SearchIndex* index, Point16 center, u32 ra
 }
 
 inline EntryArray filter_unit_array(EntryArray entry_array) {
-	for (u32 i = 0; i < entry_array.size; ++i) {
+	for (u32 i = 0; i < entry_array.count; ++i) {
 		Unit* unit = entry_array.units[i];
 		if (unit->is_dead()) {
 			entry_array_remove(&entry_array, i--);
@@ -163,7 +163,7 @@ EntryArray unit_search_radial(Point16 center, u32 radius) {
 }
 
 inline EntryArray filter_corpse_array(EntryArray entry_array) {
-	for (u32 i = 0; i < entry_array.size; ++i) {
+	for (u32 i = 0; i < entry_array.count; ++i) {
 		Thingy* corpse = entry_array.corpses[i];
 		if (corpse->sprite->flags & SpriteFlags::Flag04) {
 			entry_array_remove(&entry_array, i--);
@@ -197,7 +197,7 @@ EntryArray effect_search_radial(Point16 center, u32 radius) {
 }
 
 void unit_search_filter(EntryArray* unit_array, Unit* reference, u32 flags, std::unordered_set<u16> allowed_unit_ids) {
-	for (u32 i = 0; i < unit_array->size; i++) {
+	for (u32 i = 0; i < unit_array->count; i++) {
 		Unit* unit = unit_array->units[i];
 		if (!unit_flag_match(unit, reference, flags, allowed_unit_ids)) {
 			entry_array_remove(unit_array, i--);
@@ -207,7 +207,7 @@ void unit_search_filter(EntryArray* unit_array, Unit* reference, u32 flags, std:
 }
 
 void unit_search_custom_filter(EntryArray* unit_array, SearchFilterFunc filter) {
-	for (u32 i = 0; i < unit_array->size; i++) {
+	for (u32 i = 0; i < unit_array->count; i++) {
 		Unit* unit = unit_array->units[i];
 		if (!filter(unit)) {
 			entry_array_remove(unit_array, i--);
@@ -219,7 +219,7 @@ void unit_search_custom_filter(EntryArray* unit_array, SearchFilterFunc filter) 
 void unit_search_sort(EntryArray* unit_array, SearchScoreFunc score_func) {
 	// not a fan of std::sort, probably should replace with own qsort
 	// qsort from C can't work with lambdas
-	std::sort(unit_array->units, unit_array->units + unit_array->size, [&](Unit* a, Unit* b) {
+	std::sort(unit_array->units, unit_array->units + unit_array->count, [&](Unit* a, Unit* b) {
 		return score_func(a) > score_func(b);	
 	});
 }
@@ -231,14 +231,14 @@ static s32 distance_compare_func(void const* a, void const* b) {
 
 void unit_search_sort_by_distance(EntryArray* unit_array, Point16 center) {
 	temp_center = center;
-	qsort(unit_array->units, unit_array->size, sizeof(Unit*), distance_compare_func);
+	qsort(unit_array->units, unit_array->count, sizeof(Unit*), distance_compare_func);
 }
 
 Unit* unit_search_find_best(EntryArray* unit_array, SearchScoreFunc score_func) {
 	s32 best_score = ScoreInvalidUnit;
 	Unit* best_unit = 0;
 
-	for (u32 i = 0; i < unit_array->size; i++) {
+	for (u32 i = 0; i < unit_array->count; i++) {
 		Unit* unit = unit_array->units[i];
 		s32 score = score_func(unit);
 		if (score > best_score) {
@@ -252,13 +252,13 @@ Unit* unit_search_find_best(EntryArray* unit_array, SearchScoreFunc score_func) 
 
 Unit* unit_search_get_first(EntryArray* unit_array, SearchFilterFunc match_func) {
 	if (!match_func) {
-		if (unit_array->size) {
+		if (unit_array->count) {
 			return unit_array->units[0];
 		}
 		return 0;
 	}
 
-	for (u32 i = 0; i < unit_array->size; i++) {
+	for (u32 i = 0; i < unit_array->count; i++) {
 		Unit* unit = unit_array->units[i];
 		if (match_func(unit)) {
 			return unit;
@@ -314,7 +314,7 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16
 		return false;
 	}
 	if (flags & FilterSpellcaster) {
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Spellcaster)) {
 			return false;
 		}
 	}
@@ -377,31 +377,31 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16
 	if (allowed_unit_ids.size() && allowed_unit_ids.find(unit->id) == allowed_unit_ids.end()) {
 		return false;
 	}
-	if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic && flags & FilterNoOrganic) {
+	if (units_dat::base_property[unit->id] & UnitProperty::Organic && flags & FilterNoOrganic) {
 		return false;
 	}
-	if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic) && flags & FilterOnlyOrganic) {
+	if (!(units_dat::base_property[unit->id] & UnitProperty::Organic) && flags & FilterOnlyOrganic) {
 		return false;
 	}
-	if (units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical && flags & FilterNoMechanical) {
+	if (units_dat::base_property[unit->id] & UnitProperty::Mechanical && flags & FilterNoMechanical) {
 		return false;
 	}
-	if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical) && flags & FilterOnlyMechanic) {
+	if (!(units_dat::base_property[unit->id] & UnitProperty::Mechanical) && flags & FilterOnlyMechanic) {
 		return false;
 	}
-	if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && flags & FilterNoBuilding) {
+	if (units_dat::base_property[unit->id] & UnitProperty::Building && flags & FilterNoBuilding) {
 		return false;
 	}
-	if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Building) && flags & FilterBuilding) {
+	if (!(units_dat::base_property[unit->id] & UnitProperty::Building) && flags & FilterBuilding) {
 		return false;
 	}
 	if (!(scbw::is_enabled(unit)) && flags & FilterEnabled) {
 		return false;
 	}
-	if (flags & FilterCanAttackOrCast && !unit->has_weapon() && !(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
+	if (flags & FilterCanAttackOrCast && !unit->has_weapon() && !(units_dat::base_property[unit->id] & UnitProperty::Spellcaster)) {
 		return false;
 	}
-	if (flags & FilterNotWorker && units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
+	if (flags & FilterNotWorker && units_dat::base_property[unit->id] & UnitProperty::Worker) {
 		return false;
 	}
 	return true;

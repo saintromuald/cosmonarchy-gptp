@@ -37,7 +37,7 @@ namespace hooks
 				return helper::spellOrder_MoveTowardsTarget(caster, range);
 			}
 
-			GroupFlag casterGroupFlags = units_dat::GroupFlags[caster->id];
+			GroupFlag casterGroupFlags = units_dat::group_flags[caster->id];
 			char casterPlayer = caster->player;
 			u8 casterRace;
 			if (casterGroupFlags.is_zerg)
@@ -151,7 +151,7 @@ namespace hooks
 							return 0;
 						}
 					}
-					if (!hasTarget || !(~(units_dat::BaseProperty[fowUnitId] >> 29) & 1))
+					if (!hasTarget || !(~(units_dat::base_property[fowUnitId] >> 29) & 1))
 					{
 						if (error)
 						{

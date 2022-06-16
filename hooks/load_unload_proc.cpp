@@ -52,15 +52,15 @@ namespace hooks
 		}
 		
 		// 004E7952
-		if (units_dat::GroupFlags[transport->id].is_zerg)
+		if (units_dat::group_flags[transport->id].is_zerg)
 		{
 			unitRaceId = RaceId::Zerg;
 		}
-		else if (units_dat::GroupFlags[transport->id].is_protoss)
+		else if (units_dat::group_flags[transport->id].is_protoss)
 		{
 			unitRaceId = RaceId::Protoss;
 		}
-		else if (units_dat::GroupFlags[transport->id].is_terran)
+		else if (units_dat::group_flags[transport->id].is_terran)
 		{
 			unitRaceId = RaceId::Terran;
 		}
@@ -147,7 +147,7 @@ namespace hooks
 				Unit* cargoUnit = transport->get_loaded_unit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: disable cargo units
-//				scbw::set_unit_position(cargoUnit, pos.x, pos.y); // <- does not work
+//				scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
 			}
 		}
 		cargo_unit->status |= UnitStatus::InTransport;
@@ -202,7 +202,7 @@ namespace hooks
 				cargo_unit->pathing_flags &= ~1;
 			}
 			if (cargo_unit->subunit != nullptr
-				&& units_dat::BaseProperty[cargo_unit->subunit->id] & UnitProperty::Subunit)
+				&& units_dat::base_property[cargo_unit->subunit->id] & UnitProperty::Subunit)
 			{
 				Unit* subUnit = cargo_unit->subunit;
 				scbw::set_unit_position(subUnit, transport->sprite->position.x, transport->sprite->position.y);
@@ -313,7 +313,7 @@ namespace hooks
 								Unit* cargoUnit = unit->get_loaded_unit(i);
 								if (cargoUnit == nullptr) continue;
 								// TODO: enable and update cargo units and their position
-//								scbw::set_unit_position(cargoUnit, pos.x, pos.y); // <- does not work
+//								scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
 							}
 						}
 					}
@@ -428,7 +428,7 @@ namespace hooks
 				helper::toggle_unit_pathing_properties(cargo);
 				if (cargo->subunit)
 				{
-					if (units_dat::BaseProperty[cargo->subunit->id] & UnitProperty::Subunit)
+					if (units_dat::base_property[cargo->subunit->id] & UnitProperty::Subunit)
 					{
 						pathing = helper::toggle_unit_pathing_properties(cargo->subunit);
 					}
@@ -440,7 +440,7 @@ namespace hooks
 				helper::toggle_unit_pathing_properties(cargo);
 				if (cargo->subunit)
 				{
-					if (units_dat::BaseProperty[cargo->subunit->id] & UnitProperty::Subunit)
+					if (units_dat::base_property[cargo->subunit->id] & UnitProperty::Subunit)
 					{
 						pathing = helper::toggle_unit_pathing_properties(cargo->subunit);
 					}
@@ -530,7 +530,7 @@ namespace hooks
 		*&param_2.unit_id = playerid_1_wrong;
 		param_2.check_height = 0;
 
-		if (!(units_dat::BaseProperty[unit_id_2] & UnitProperty::Worker)
+		if (!(units_dat::base_property[unit_id_2] & UnitProperty::Worker)
 		||	  unit->building.addon == 0
 		||   !get_doodad_state_unit(unit->building.addon, &param_2))
 		{
@@ -539,7 +539,7 @@ namespace hooks
 				if (helper::unit_is_active_transport(unit))
 				{
 					u32 unit_id_3 = unit->id;
-					u32 space_provided_1 = units_dat::BaseProperty[unit_id_3];
+					u32 space_provided_1 = units_dat::base_property[unit_id_3];
 					u32 space_provided_2 = units_dat::SpaceProvided[unit_id_3];
 					if (space_provided_1)
 					{
@@ -562,7 +562,7 @@ namespace hooks
 					}
 				}
 				u32 unit_id = unit->id;
-				GroupFlag group_flags = units_dat::GroupFlags[unit_id];
+				GroupFlag group_flags = units_dat::group_flags[unit_id];
 				u32 playerid_2_wrong_2 = *(player_id + 2);
 				switch (playerid_2_wrong_2)
 				{
@@ -652,7 +652,7 @@ namespace hooks
 				} while (space_provided);
 			}
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker)
 		{
 			Unit* powerup = unit->worker.powerup;
 			if (powerup)
@@ -676,7 +676,7 @@ namespace hooks
 			return 0;
 		}
 		*/
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::NeutralAccessories && unit->powerup_carrier)
+		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories && unit->powerup_carrier)
 		{
 			helper::kill_powerup(unit->powerup_carrier);
 		}
@@ -815,7 +815,7 @@ namespace hooks
 				{
 					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
 						&& unit_reference->target_order_special == index_var >> 11
-						&& units_dat::BaseProperty[unit_reference->id] & UnitProperty::Worker)
+						&& units_dat::base_property[unit_reference->id] & UnitProperty::Worker)
 					{
 						break;
 					}
@@ -835,7 +835,7 @@ namespace hooks
 	s32 is_carrying_flag(Unit* unit) // 004F3A80
 	{
 		u16 unit_id = unit->id;
-		if (units_dat::BaseProperty[unit_id] & UnitProperty::Worker)
+		if (units_dat::base_property[unit_id] & UnitProperty::Worker)
 		{
 			Unit* powerup = unit->worker.powerup;
 			if (powerup && powerup->id == UnitId::Powerup_Flag)
@@ -862,7 +862,7 @@ namespace hooks
 					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
 						&& unit_reference->target_order_special == index_var >> 11)
 					{
-						if (units_dat::BaseProperty[unit_reference->id] & UnitProperty::Worker)
+						if (units_dat::base_property[unit_reference->id] & UnitProperty::Worker)
 						{
 							Unit* powerup_reference = unit_reference->worker.powerup;
 							if (powerup_reference)
@@ -1010,7 +1010,7 @@ namespace hooks
 				{
 					return;
 				}
-				is_not_subunit = (units_dat::BaseProperty[cargo_subunit->id] & UnitProperty::Subunit) == 0;
+				is_not_subunit = (units_dat::base_property[cargo_subunit->id] & UnitProperty::Subunit) == 0;
 				goto LABEL_24;
 			}
 			u32 cargo_index = cargo - unit_table + 1;
@@ -1042,7 +1042,7 @@ namespace hooks
 			}
 			else
 			{
-				GroupFlag group_flags = units_dat::GroupFlags[connected_unit->id];
+				GroupFlag group_flags = units_dat::group_flags[connected_unit->id];
 				u8 sound_offset = 0; // Zerg
 				if (group_flags.is_protoss)
 				{
@@ -1064,7 +1064,7 @@ namespace hooks
 			cargo_subunit = cargo->subunit;
 			if (cargo_subunit)
 			{
-				is_not_subunit = (units_dat::BaseProperty[cargo_subunit->id] & UnitProperty::Subunit) == 0;
+				is_not_subunit = (units_dat::base_property[cargo_subunit->id] & UnitProperty::Subunit) == 0;
 			LABEL_24:
 				if (!is_not_subunit)
 				{

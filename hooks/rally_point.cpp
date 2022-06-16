@@ -145,7 +145,7 @@ namespace hooks
 		{
 			unit->irradiate_caster = 0;
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker)
 		{
 			if (unit->worker.target_resource.unit == dying)
 			{
@@ -179,7 +179,7 @@ namespace hooks
 		}
 		if (unit->subunit)
 		{
-			if (units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
+			if (units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit)
 			{
 				remove_references(unit->subunit, dying);
 			}
@@ -332,14 +332,14 @@ namespace hooks
 	}
 
 	bool unit_can_have_rally(Unit* unit) { // 0047B2E0
-		return units_dat::GroupFlags[unit->id].is_factory
+		return units_dat::group_flags[unit->id].is_factory
 			|| unit->id == UnitId::ZergEgg
 			|| unit->id == UnitId::ZergCocoon;
 	}
 
 	bool unit_can_rally(Unit* unit) {
 		if (unit_can_have_rally(unit)) {
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+			if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 				return unit->status & UnitStatus::GroundedBuilding;
 			}
 			return true;
@@ -660,7 +660,7 @@ namespace hooks
 	void drone_build_execute(Unit* unit) { // 0045D2E0
 		helper::stop_creep_disappearing_at_building(unit);
 		u32 unit_status = unit->status;
-		if (!scbw::unit_is_stunned(unit) || units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+		if (!scbw::unit_is_stunned(unit) || units_dat::base_property[unit->id] & UnitProperty::Building) {
 			if (unit_can_have_rally(unit)) {
 				unit->current_button_set = UnitId::Buttons_CancelMutationWithRallyPt;
 			} else {

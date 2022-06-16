@@ -95,7 +95,7 @@ namespace hooks
 
 				case RequirementOpcodes::IsHeroAndEnabled:
 				{
-					if ((units_dat::BaseProperty[unit->id] & UnitProperty::Hero) == 0) break;
+					if ((units_dat::base_property[unit->id] & UnitProperty::Hero) == 0) break;
 					success++;
 				}
 					break;
@@ -262,7 +262,7 @@ namespace hooks
 
 				case RequirementOpcodes::IsSubunit:
 				{
-					if ((units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) == 0)
+					if ((units_dat::base_property[unit->id] & UnitProperty::Subunit) == 0)
 					{
 						*last_internal_error = InternalErrors::UnknownError19;
 						return 0;
@@ -273,7 +273,7 @@ namespace hooks
 
 				case RequirementOpcodes::IsFlyingBuilding:
 				{
-					if ((units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding) == 0)
+					if ((units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) == 0)
 					{
 						*last_internal_error = InternalErrors::UnknownError19;
 						return 0;
@@ -284,7 +284,7 @@ namespace hooks
 
 				case RequirementOpcodes::IsWorker:
 				{
-					if ((units_dat::BaseProperty[unit->id] & UnitProperty::Worker) == 0)
+					if ((units_dat::base_property[unit->id] & UnitProperty::Worker) == 0)
 					{
 						*last_internal_error = InternalErrors::UnknownError19;
 						return 0;
@@ -295,7 +295,7 @@ namespace hooks
 
 				case RequirementOpcodes::IsPowerup:
 				{
-					if ((units_dat::BaseProperty[unit->id] & UnitProperty::NeutralAccessories) == 0)
+					if ((units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories) == 0)
 					{
 						*last_internal_error = InternalErrors::UnknownError19;
 						return 0;

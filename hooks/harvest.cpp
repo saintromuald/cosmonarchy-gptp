@@ -276,7 +276,7 @@ namespace hooks
 	// Hooked to investigate right-click error on geysers. -Pr0nogo
 	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker) { // 004557C0
 		u16 node_id = node->id;
-		if (units_dat::BaseProperty[node_id] & UnitStatus::CloakingForFree) {
+		if (units_dat::base_property[node_id] & UnitStatus::CloakingForFree) {
 			return OrderId::Move;
 		}
 

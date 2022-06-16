@@ -105,7 +105,7 @@ namespace hooks
 			if (!bEndThere)
 			{
 				bool bLoopEnd = false;
-				Unit* current_unit = firstPlayerUnit->unit[unit->player];
+				Unit* current_unit = first_player_unit->unit[unit->player];
 				while (!bLoopEnd)
 				{
 					if (current_unit == nullptr)
@@ -140,7 +140,7 @@ namespace hooks
 					unit->order_to(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
 					if (unit->is_frozen())
 					{ // 004793C4
-						if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+						if (units_dat::base_property[unit->id] & UnitProperty::Building)
 						{
 							unit->current_button_set = UnitId::Buttons_CancelNukeStrike;
 						}

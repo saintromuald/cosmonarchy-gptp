@@ -148,7 +148,7 @@ void unit_destructor_special_cases(Unit* unit)
 		  unit->status & UnitStatus::Completed && 
 	     (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
 		  unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
-		  units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding) ||
+		  units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) ||
 		  unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 	{
 		scbw::clear_creep(scbw::unit_area(unit));
@@ -334,7 +334,7 @@ void unit_destructor_special_cases(Unit* unit)
 		EntryArray unit_array = unit_search_radial(unit->position, 11 * 32);
 		unit_search_filter(&unit_array, unit, FilterEnemy | FilterSpellcaster);
 
-		for (u32 i = 0; i < unit_array.size; ++i)
+		for (u32 i = 0; i < unit_array.count; ++i)
 		{
 			Unit* caster = unit_array.units[i];
 			if (scbw::get_distance_fast(unit->position, caster->position) <= caster->get_sight_range() * 32)
@@ -432,7 +432,7 @@ void unit_destructor_special_cases(Unit* unit)
 	{
 		u32 supplyCount = scbw::get_broodling_count_from_supply(unit);
 		u16 type = UnitId::ZergRilirokor;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Flyer)
+		if (units_dat::base_property[unit->id] & UnitProperty::Flyer)
 		{
 			type = UnitId::ZergRililisk;
 		}

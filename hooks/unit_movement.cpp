@@ -64,7 +64,7 @@ namespace hooks
                 }
             }
         }
-        if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) && !ignoreCollision)
+        if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && !ignoreCollision)
         {
             helper::updateUnitSortingInfo(newPos.x - oldPos.x, unit, newPos.y - oldPos.y);
             if (!ignoreCollision && !(unit->sprite->flags & SpriteFlags::Hidden))

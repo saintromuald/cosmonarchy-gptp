@@ -50,7 +50,7 @@ namespace hooks
 	void CMDRECV_CancelResearch() {
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::Building
+			if (units_dat::base_property[unit->id] & UnitProperty::Building
 			&&  unit->status & UnitStatus::Completed
 			&&  unit->player == *ACTIVE_NATION_ID) {
 				helper::CancelResearch_Proc(unit);

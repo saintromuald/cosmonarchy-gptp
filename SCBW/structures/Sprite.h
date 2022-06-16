@@ -90,6 +90,6 @@ struct Sprite
 };
 
 C_ASSERT(sizeof(Sprite) == 36);
-//static_assert(sizeof(Sprite) == 36, "The size of the Sprite structure is invalid");
+//static_assert(sizeof(Sprite) == 36, "The count of the Sprite structure is invalid");
 
 #pragma pack()

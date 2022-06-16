@@ -23,7 +23,7 @@ namespace hooks
 			return 1;
 		}
 		finalUnit = _unit->subunit;
-		if (!finalUnit || !(units_dat::GroupFlags[(unsigned __int16)finalUnit->id].is_building))
+		if (!finalUnit || !(units_dat::group_flags[(unsigned __int16)finalUnit->id].is_building))
 			finalUnit = _unit;
 		if (a2->status & UnitStatus::InAir)
 		{
@@ -101,7 +101,7 @@ namespace hooks
 		if (!isTargetVisibleHook(v2, a2))
 			return 0;
 		v4 = a2->subunit;
-		if (!v4 || !(units_dat::GroupFlags[(unsigned __int16)v4->id].is_building))
+		if (!v4 || !(units_dat::group_flags[(unsigned __int16)v4->id].is_building))
 			v4 = a2;
 		if (v2->status & UnitStatus::InAir)
 		{
@@ -206,7 +206,7 @@ namespace hooks
 				goto LABEL_23;
 			}
 			v5 = v1->subunit;
-			if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].is_building))
+			if (!v5 || !(units_dat::group_flags[(unsigned __int16)v5->id].is_building))
 			{
 				v5 = v1;
 			}
@@ -289,7 +289,7 @@ LABEL_22:
 				if (!isTargetVisibleHook(v4, v1))
 					goto LABEL_63;
 				v11 = v1->subunit;
-				if (!v11 || !(units_dat::GroupFlags[(unsigned __int16)v11->id].is_building))
+				if (!v11 || !(units_dat::group_flags[(unsigned __int16)v11->id].is_building))
 					v11 = v1;
 				if (v4->status & 4)
 				{
@@ -323,7 +323,7 @@ LABEL_62:
 			if (isTargetVisibleHook(v4, v1))
 			{
 				v5 = v1->subunit;
-				if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].is_building))
+				if (!v5 || !(units_dat::group_flags[(unsigned __int16)v5->id].is_building))
 					v5 = v1;
 				if (v4->status & 4)
 				{
@@ -840,7 +840,7 @@ LABEL_34:
 			if (helper::is_target_visible(v15, v2))
 			{
 				v16 = v2->subunit;
-				if (!v16 || !(units_dat::BaseProperty[v16->id] & UnitProperty::Subunit))
+				if (!v16 || !(units_dat::base_property[v16->id] & UnitProperty::Subunit))
 				{
 					v16 = v2;
 				}
@@ -927,7 +927,7 @@ LABEL_65:
 		return 1;
 	}
 
-	// Hooked to help with the Titanic size game rule - Pr0nogo
+	// Hooked to help with the Titanic count game rule - Pr0nogo
 	void AI_AttackUnit(Unit* unit) // 0043FFD0
 	{
 		if (!unit)
@@ -982,7 +982,7 @@ LABEL_65:
 							if (helper::is_target_visible(unitTarget, unit))
 							{
 								Unit* subunit = unit->subunit;
-								if (!subunit || !(units_dat::BaseProperty[subunit->id] & UnitProperty::Subunit))
+								if (!subunit || !(units_dat::base_property[subunit->id] & UnitProperty::Subunit))
 								{
 									subunit = unit;
 								}

@@ -147,7 +147,7 @@ namespace hooks
                 TileExt* tile_ext = get_tile_ext_at_tile(tile_x + x, tile_y + y);
 
                 u32 flags = 0x20800000; // cliff_edge, always_unbuildable
-                if (!units_dat::GroupFlags[unit_id].is_zerg && !can_place_on_creep_tile(tile_ext, player)) {
+                if (!units_dat::group_flags[unit_id].is_zerg && !can_place_on_creep_tile(tile_ext, player)) {
                     flags |= check_creep ? 0x40000000 : 0x400000;
                 }
 
@@ -155,13 +155,13 @@ namespace hooks
                 if (tile->explored_flags & human_only_player_bit) {
                     //state = 10;
 
-                    if (units_dat::BaseProperty[unit_id] & UnitProperty::ResourceDepot && helper::find_blocking_fow_resource(x + tile_x, y + tile_y, 3)) {
+                    if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot && helper::find_blocking_fow_resource(x + tile_x, y + tile_y, 3)) {
                         state = 2;
                     }
                 } else if (!check_creep && tile->visibility_flags & human_only_player_bit
                 || !(tile->value & flags)
                 || tile->value < 0) { // originally also checked for if the unit id was any racial beacon
-                    if (units_dat::BaseProperty[unit_id] & UnitProperty::ResourceDepot && helper::place_building_resource_restriction_check(check_creep, x + tile_x, y + tile_y)) {
+                    if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot && helper::place_building_resource_restriction_check(check_creep, x + tile_x, y + tile_y)) {
                         state = 2;
                     }
                 } else {

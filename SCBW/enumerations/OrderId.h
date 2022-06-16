@@ -278,7 +278,7 @@ enum Enum {
 					* Default Requirements: Unit must be Zerg infested Terran. Allow on Hallucinated units. */
 	HoldPosition4          = 0x88, /**< Suicide Hold Position.
 					* Default Requirements: Unit must be Zerg Infested Terran or Zerg Scourge. Allow on Hallucinated units. */
-	Teleport               = 0x89, /**< Recall(units within distance of target pos).
+	Teleport               = 0x89, /**< Recall(units within distance of target position).
 					* Default Requirements: Unused. */
 	TeleporttoLocation     = 0x8A, /**< Causes units to teleport when being recalled.
 					* Default Requirements: Unused. */

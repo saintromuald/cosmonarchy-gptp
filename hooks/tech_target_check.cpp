@@ -25,7 +25,7 @@ namespace hooks
 			// GPTP mongomin were here
 			switch (techId) {
 				case TechId::Feedback: {
-					if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+					if (units_dat::base_property[target->id] & UnitProperty::Building)
 					{
 						stringId = 877; // Unable to target structure.<0>
 					}
@@ -43,7 +43,7 @@ namespace hooks
 					{
 						stringId = 1327; // Must target enemy units<0>
 					}
-					else if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+					else if (units_dat::base_property[target->id] & UnitProperty::Building)
 					{
 						stringId = 877; // Unable to target structure.<0>
 					}
@@ -67,7 +67,7 @@ namespace hooks
 					{
 						stringId = 876; // Invalid target.<0>
 					}
-					else if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+					else if (units_dat::base_property[target->id] & UnitProperty::Building)
 					{
 						stringId = 877; // Unable to target structure.<0>
 					}
@@ -84,7 +84,7 @@ namespace hooks
 				case TechId::Irradiate:
 				case TechId::Restoration:
 				case TechId::OpticalFlare: {
-					if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+					if (units_dat::base_property[target->id] & UnitProperty::Building)
 					{
 						stringId = 877; // Unable to target structure.<0>
 					}
@@ -105,7 +105,7 @@ namespace hooks
 					}
 				} break;
 				case TechId::Consume: {
-					if (units_dat::BaseProperty[target->id] & UnitProperty::Building
+					if (units_dat::base_property[target->id] & UnitProperty::Building
 						|| target->player != castingPlayerId
 						|| target->get_race() != RaceId::Zerg
 						|| scbw::is_zerg_egg_new(target))

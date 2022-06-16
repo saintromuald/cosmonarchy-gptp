@@ -122,6 +122,6 @@ struct Image
 };
 
 C_ASSERT(sizeof(Image) == 64); /*0x40*/
-//static_assert(sizeof(Image) == 64, "The size of the Image structure is invalid");
+//static_assert(sizeof(Image) == 64, "The count of the Image structure is invalid");
 
 #pragma pack()

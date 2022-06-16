@@ -140,13 +140,13 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 }
 
 static u32 get_unit_class(u32 unit_id) {
-	if (unit_id == UnitId::ProtossPylon || !(units_dat::BaseProperty[unit_id] & UnitProperty::Building)) {
+	if (unit_id == UnitId::ProtossPylon || !(units_dat::base_property[unit_id] & UnitProperty::Building)) {
 		return 3;
 	}
 	if (unit_id == UnitId::ZergCreepColony || unit_id == UnitId::ZergLarvalColony || unit_id == UnitId::ZergSunkenColony || unit_id == UnitId::ZergSporeColony) {
 		return 2;
 	}
-	if (units_dat::GroupFlags[unit_id].is_factory || scbw::unit_id_is_tech(unit_id)) {
+	if (units_dat::group_flags[unit_id].is_factory || scbw::unit_id_is_tech(unit_id)) {
 		return 1;
 	}
 	return 0;
@@ -191,7 +191,7 @@ static void init_base_layouts() {
 		if (unit->player > PlayerLimit && unit->player != 11) {
 			continue;
 		}
-		if (!(units_dat::BaseProperty[unit->unit_id] & UnitProperty::Building) && units_dat::ComputerAIInternal[unit->unit_id] & 0x2) { // Don't become guard
+		if (!(units_dat::base_property[unit->unit_id] & UnitProperty::Building) && units_dat::ComputerAIInternal[unit->unit_id] & 0x2) { // Don't become guard
 			continue;
 		}
 
@@ -208,9 +208,9 @@ static void init_base_layouts() {
 	}
 
 	for (u32 i = 0; i < PlayerLimit; ++i) {
-		for (u32 j = 0; j < ResAreaLimit; ++j) {
+		for (u32 j = 1; j < ResAreaLimit; ++j) {
 			BaseLayouts* base_layouts = &resarea_base_layouts[i][j];
-			base_layouts->resarea_pos = resource_areas->areas[j].pos;
+			base_layouts->resarea_pos = resource_areas->areas[j].position;
 			sort_base_layouts(base_layouts);
 
 			/*
@@ -221,7 +221,7 @@ static void init_base_layouts() {
 
 				for (u32 k = 0; k < base_layouts->placeholders_count; ++k) {
 					Placeholder* placeholder = &base_layouts->placeholders[k];
-					if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
+					if (units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
 						fprintf(file, "%s\n", Unit::getName(placeholder->unit_id));
 						fprintf(file, "Priority: %u\n", placeholder->priority);
 						fprintf(file, "Was Preplaced: %u\n", placeholder->was_preplaced);
@@ -313,7 +313,7 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	}
 
 	// Prevent building non town halls when town hall is missing
-	if ((!town->main_building || !(town->main_building->status & UnitStatus::Completed)) && units_dat::BaseProperty[unit_id] & UnitProperty::Building) {
+	if ((!town->main_building || !(town->main_building->status & UnitStatus::Completed)) && units_dat::base_property[unit_id] & UnitProperty::Building) {
 		// Ignore all non townhalls
 		if (!is_basic_townhall(unit_id)) {
 			return false;
@@ -342,15 +342,15 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	}
 	
 	// Check placeability
-	if (units_dat::BaseProperty[unit_id] & UnitProperty::CreepBuilding &&
+	if (units_dat::base_property[unit_id] & UnitProperty::CreepBuilding &&
 		!unit_has_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
 		return false;
 	}
-	if (units_dat::BaseProperty[unit_id] & UnitProperty::Building && !units_dat::GroupFlags[unit_id].is_zerg &&
+	if (units_dat::base_property[unit_id] & UnitProperty::Building && !units_dat::group_flags[unit_id].is_zerg &&
 		!unit_has_no_or_allied_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
 		return false;
 	}
-	if (units_dat::BaseProperty[unit_id] & UnitProperty::RequiredPsi &&
+	if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi &&
 		!helper::unit_has_power(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
 		return false;
 	}
@@ -359,7 +359,7 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 }
 
 static bool has_expanding_town(u32 player) {
-	for (u32 i = 0; i < ResAreaLimit; ++i) {
+	for (u32 i = 1; i < ResAreaLimit; ++i) {
 		BaseLayouts* base_layouts = active_base_layouts[i];
 		if (base_layouts && base_layouts->town->player == player && !base_layouts->town->main_building) {
 			return true;
@@ -376,7 +376,7 @@ static void init_placeholder(BaseLayouts* base_layouts, Placeholder* placeholder
 		init_placeholder(base_layouts, &copy);
 	}
 
-	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
+	if (units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
 		scbw::send_gptp_aise_command((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetBaseLayout, base_layouts->town->player, 0, 0);
 	}
 }
@@ -391,7 +391,7 @@ static void request_placeholder(BaseLayouts* base_layouts, Placeholder* placehol
 
 	u32 count = ++base_layouts->request_count[placeholder->unit_id];
 	placeholder->wait_build_start_count = count;
-	if (units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
+	if (units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
 		helper::ai_build(placeholder->unit_id, false, count, base_layouts->town, placeholder->priority);
 	} else {
 		scbw::send_gptp_aise_command((Unit*)placeholder, (Unit*)base_layouts->town, GptpId::SetGuard, base_layouts->town->player, 0, 0);
@@ -402,7 +402,7 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 	u32 best_priority = 0;
 	u32 best_distance = UINT_MAX;
 	u32 best_resarea = 0;
-	for (u32 i = 0; i < ResAreaLimit; ++i) {
+	for (u32 i = 1; i < ResAreaLimit; ++i) {
 		// Check if resarea is available
 		if (resource_areas->areas[i].flags & 3) {
 			continue;
@@ -412,8 +412,8 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 		BaseLayouts* base_layouts = &resarea_base_layouts[main_town->player][i];
 		for (u32 j = 0; j < base_layouts->placeholders_count; ++j) {
 			Placeholder* placeholder = &base_layouts->placeholders[j];
-			if (placeholder->should_request && units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building) {
-				u32 distance = scbw::get_distance_fast(main_town->position, resource_areas->areas[i].pos);
+			if (placeholder->should_request && units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
+				u32 distance = scbw::get_distance_fast(main_town->position, resource_areas->areas[i].position);
 				if (placeholder->priority > best_priority || (placeholder->priority == best_priority && distance < best_distance)) {
 					best_priority = placeholder->priority;
 					best_distance = distance;
@@ -432,7 +432,7 @@ void tick_base_layouts() {
 	}
 
 	// Deinit, Tick
-	for (u32 i = 0; i < ResAreaLimit; ++i) {
+	for (u32 i = 1; i < ResAreaLimit; ++i) {
 		BaseLayouts* base_layouts = active_base_layouts[i];
 		if (base_layouts) {
 			AiTown* town = base_layouts->town;
@@ -452,7 +452,7 @@ void tick_base_layouts() {
 						request_placeholder(base_layouts, placeholder);
 					}
 					if (base_layouts->placeholders_requested[j] &&
-						units_dat::BaseProperty[placeholder->unit_id] & UnitProperty::Building &&
+						units_dat::base_property[placeholder->unit_id] & UnitProperty::Building &&
 						has_down_equivalent(town, placeholder->unit_id) &&
 						number_of_equivalents_up(town, find_unit_base_merge(placeholder->unit_id)) < placeholder->wait_build_start_count) {
 						// Lock adding new requests until this request is started

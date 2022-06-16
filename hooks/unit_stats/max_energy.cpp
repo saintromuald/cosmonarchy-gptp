@@ -14,7 +14,7 @@ namespace hooks
 	u16 getUnitMaxEnergyHook(Unit* const unit)
 	{
 
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Hero)
+		if (units_dat::base_property[unit->id] & UnitProperty::Hero)
 			return ENERGY_INGAME_250;
 
 		return ENERGY_INGAME_200;

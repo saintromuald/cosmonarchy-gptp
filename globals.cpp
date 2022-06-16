@@ -515,7 +515,7 @@ void Globals::frame_hook() {
 					EntryArray unit_array = unit_search_radial({(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
 					unit_search_filter(&unit_array, nullptr, FilterNoAir);
 
-					for (u32 j = 0; j < unit_array.size; j++) {
+					for (u32 j = 0; j < unit_array.count; j++) {
 						Unit* target = unit_array.units[j];
 						target->damage_with_custom(20 * damageMultiplier, DamageType::Concussive, effect->source, effect->player, 0, 1, true);
 					}
@@ -813,7 +813,7 @@ void Globals::init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 
 	revivingUnit.unit_id = unit_id;
 	revivingUnit.energy = energy;
 	revivingUnit.hp = hp;
-	if (units_dat::BaseProperty[unit_id] & (UnitProperty::Worker | UnitProperty::Building) || unit_id == UnitId::ZergOvileth)
+	if (units_dat::base_property[unit_id] & (UnitProperty::Worker | UnitProperty::Building) || unit_id == UnitId::ZergOvileth)
 	{
 		revivingUnit.town = town;
 	}
@@ -1440,7 +1440,7 @@ namespace scbw
 		// Deconstruction - Pazuzu passive
 		f64 selfDamage = (unitExt->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::DamageAmount[weaponId] * 256.0));
 		auto deconstructionTarget = unit;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit)
+		if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
 		{
 			deconstructionTarget = unitExt->units[UnitTurretParentLink]; // TODO: port as unit
 			if (deconstructionTarget == nullptr)
@@ -1536,7 +1536,7 @@ namespace scbw
 			{
 				return false;
 			}
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+			if (units_dat::base_property[target->id] & UnitProperty::Building)
 			{
 				return false;
 			}
@@ -1660,8 +1660,8 @@ namespace scbw
 	{
 		Unit* unit = data.target;
 		EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
-		s32 damage = data.finalDamage / (sovroleths.size + 1);
-		for (u32 i = 0; i < sovroleths.size; ++i) {
+		s32 damage = data.finalDamage / (sovroleths.count + 1);
+		for (u32 i = 0; i < sovroleths.count; ++i) {
 			link_damage(sovroleths.units[i], damage, data);
 		}
 		link_damage(unit, damage, data);

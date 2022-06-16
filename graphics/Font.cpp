@@ -32,11 +32,11 @@ namespace graphics
 	// ----------------- GET WIDTH ---------------------
 	s32 Font::getTextWidth(const char* pszStr) const
 	{
-		// verify valid size index
+		// verify valid count index
 		assert(this);
 		if (!pszStr) return 0;
 
-		// Retrieve size
+		// Retrieve count
 		s32 size = 0;
 		for (; *pszStr; ++pszStr)
 			size += this->getCharWidth(*pszStr);
@@ -46,7 +46,7 @@ namespace graphics
 	// ----------------- GET WIDTH ---------------------
 	s32 Font::getTextHeight(const char* pszStr) const
 	{
-		// verify valid size index
+		// verify valid count index
 		if (!pszStr || this == nullptr) return 0;
 
 		s32 size = this->yMax;
