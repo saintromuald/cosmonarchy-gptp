@@ -8,7 +8,7 @@
 namespace hooks
 {
 	void ai_training_unit(Unit* result, Unit* parent) { // 004A2830
-		if (playerTable[result->player].type != PlayerType::Computer) {
+		if (player_table[result->player].type != PlayerType::Computer) {
 			return;
 		}
 
@@ -278,10 +278,10 @@ namespace hooks
 				}
 
 				u32 town_hall_id = UnitId::ZergHatchery;
-				if (playerTable[unit->player].race == RaceId::Terran) {
+				if (player_table[unit->player].race == RaceId::Terran) {
 					town_hall_id = UnitId::TerranCommandCenter;
 				}
-				else if (playerTable[unit->player].race == RaceId::Protoss) {
+				else if (player_table[unit->player].race == RaceId::Protoss) {
 					town_hall_id = UnitId::ProtossNexus;
 				}
 
@@ -333,8 +333,11 @@ namespace hooks
 		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 			scbw::printf("Military AI added to building!");
 		}
-		if (playerTable[unit->player].type != PlayerType::Computer) {
+		if (player_table[unit->player].type != PlayerType::Computer) {
 			scbw::printf("Military AI added to non computer!");
+		}
+		if (ai_region->player != unit->player) {
+			scbw::printf("Military AI added to wrong player!");
 		}
 		if (ai_region->state == RegionState::EnemySighted && !must_use_region) {
 			ai_region = scbw::get_ai_region(unit->player, scbw::get_region_id(unit->sprite->position));
@@ -393,7 +396,7 @@ namespace hooks
 		WorkerAi* worker;
 		BuildingAi* building;
 
-		if (playerTable[(u8)parent->player].type == PlayerType::Computer)
+		if (player_table[(u8)parent->player].type == PlayerType::Computer)
 		{
 			parentAI = (UnitAi*)parent->unit_ai;
 			if (parentAI)
@@ -634,7 +637,7 @@ namespace hooks
 	// Hooked to investigate unit AI corruption - Pr0nogo
 	void ai_training_overlord(Unit* newUnit, Unit* oldUnit) // 00435770
 	{
-		if (playerTable[oldUnit->player].type == PlayerType::Computer)
+		if (player_table[oldUnit->player].type == PlayerType::Computer)
 		{
 			UnitAi* oldUnitAI = (UnitAi*)oldUnit->unit_ai;
 			if (oldUnitAI)

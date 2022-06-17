@@ -156,7 +156,7 @@ SCBW_DATA(u32*, move_to_x,	0x0062848C);
 SCBW_DATA(u32*, move_to_y,	0x006284A8);
 
 /// Contains various information (names, player types, race types, and associated forces) of each player in the current game
-SCBW_DATA(Player*, playerTable, 0x0057EEE0);
+SCBW_DATA(Player*, player_table, 0x0057EEE0);
 
 struct SupplyData {
 	u32 provided[PLAYER_COUNT];

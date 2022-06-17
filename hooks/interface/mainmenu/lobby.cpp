@@ -17,7 +17,7 @@ namespace hooks
 			if (gameData->victoryCondition || gameData->starting_units || gameData->tournamentModeEnabled)
 			{
 				helper::switchAllAvailableComputerSlotsToOpen();
-				playerTable[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
+				player_table[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
 				for (s32 player = 0; player < 8; player++)
 				{
 					if (selectedSingleplayerRace[player + 1] != RaceId::None)
@@ -30,9 +30,9 @@ namespace hooks
 			// Convert open slots to computers (singleplayer)
 			for (s32 player = 0; player < 8; player++)
 			{
-				if (playerTable[player].type == PlayerType::OpenSlot)
+				if (player_table[player].type == PlayerType::OpenSlot)
 				{
-					playerTable[player].type = PlayerType::Computer;
+					player_table[player].type = PlayerType::Computer;
 				}
 			}
 		}
@@ -69,7 +69,7 @@ namespace hooks
 		{
 			for (s32 i = 0; i < 12; i++)
 			{
-				playerReplayWatchers[i] = playerTable[i];
+				playerReplayWatchers[i] = player_table[i];
 			}
 		}
 
@@ -95,9 +95,9 @@ namespace hooks
 		// Convert open slots to computers (multiplayer)
 		for (s32 i = 0; i < 8; i++)
 		{
-			if (playerTable[i].type == PlayerType::OpenSlot)
+			if (player_table[i].type == PlayerType::OpenSlot)
 			{
-				playerTable[i].type = PlayerType::Computer;
+				player_table[i].type = PlayerType::Computer;
 			}
 		}
 

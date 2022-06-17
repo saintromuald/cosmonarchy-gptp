@@ -963,8 +963,8 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 	}
 
 	if (unit->unit_ai && !helper::is_unit_loaded(unit) &&
-		playerTable[unit->player].type != PlayerType::Human &&
-		playerTable[unit->player].type != PlayerType::HumanDefeated) {
+		player_table[unit->player].type != PlayerType::Human &&
+		player_table[unit->player].type != PlayerType::HumanDefeated) {
 		kiting_ai(unit, unitExt);
 
 		if (unit->id == UnitId::TerranApostle) {

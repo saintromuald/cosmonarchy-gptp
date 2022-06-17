@@ -32,7 +32,7 @@ namespace hooks
 			if (gameData->victoryCondition || gameData->starting_units || gameData->tournamentModeEnabled)
 			{
 				switchComputerToOpen();
-				playerTable[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
+				player_table[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
 				v1 = 0;
 				do
 				{

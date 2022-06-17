@@ -425,9 +425,9 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				Token name = parser_get_string(&parser, true);
 				if (player >= 0 && player < 8) {
 					has_custom_name[player] = true;
-					if (playerTable[player].type == PlayerType::Human || playerTable[player].type == PlayerType::HumanDefeated) {
+					if (player_table[player].type == PlayerType::Human || player_table[player].type == PlayerType::HumanDefeated) {
 						snprintf(playerNameList->player[player].player_name, sizeof(playerNameList->player[player].player_name),
-							"%s (%s)", name.data, playerTable[player].name);
+							"%s (%s)", name.data, player_table[player].name);
 					} else {
 						snprintf(playerNameList->player[player].player_name, sizeof(playerNameList->player[player].player_name),
 							"%s", name.data);

@@ -111,7 +111,7 @@ namespace hooks
 	void giveAI(Unit* unit) // 00463040
 	{
 		s32 player = unit->player;
-		if (player < 8 && playerTable[player].type == PlayerType::Computer)
+		if (player < 8 && player_table[player].type == PlayerType::Computer)
 		{
 			if (unit->id == UnitId::TerranCleric)
 			{

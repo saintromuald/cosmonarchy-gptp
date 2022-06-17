@@ -869,7 +869,7 @@ namespace hooks
 
 	void orders_AttackUnit(Unit* unit)
 	{
-		if (playerTable[unit->player].type != PlayerType::Computer
+		if (player_table[unit->player].type != PlayerType::Computer
 			|| (unit->order_target.unit != nullptr && units_dat::base_property[(unit->order_target.unit)->id] & UnitProperty::Building)
 			|| !helper::ai_try_return_home(unit, 0))
 		{ // 00479C05

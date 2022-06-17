@@ -473,7 +473,7 @@ namespace hooks
 		helper::increment_unit_scores_ex(unit, -1, 0);
 		unit->status &= 0xFFFFFFFE;
 		helper::replace_unit_with_id(unit, id);
-		if (playerTable[unit->player].type == PlayerType::Computer)
+		if (player_table[unit->player].type == PlayerType::Computer)
 		{
 			if (unit->unit_ai)
 			{

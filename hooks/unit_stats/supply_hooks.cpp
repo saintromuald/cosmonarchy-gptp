@@ -194,17 +194,17 @@ namespace hooks
             }
         }
 
-        if (playerTable[activePlayer].race == RaceId::Zerg)
+        if (player_table[activePlayer].race == RaceId::Zerg)
         {
             helper::showSupplyInfo(dialogVar, 4, workers, men);
             dialogVar = dialogVar->next;
         }
-        else if (playerTable[activePlayer].race == RaceId::Terran)
+        else if (player_table[activePlayer].race == RaceId::Terran)
         {
             helper::showSupplyInfo(dialogVar, 5, workers, men);
             dialogVar = dialogVar->next;
         }
-        else if (playerTable[activePlayer].race == RaceId::Protoss)
+        else if (player_table[activePlayer].race == RaceId::Protoss)
         {
             helper::showSupplyInfo(dialogVar, 6, workers, men);
             dialogVar = dialogVar->next;
@@ -497,7 +497,7 @@ namespace hooks
         {
             return true;
         }
-        u32 raceId = playerTable[player].race;
+        u32 raceId = player_table[player].race;
         const u32 supplyUsed = raceSupply[RaceId::Terran].used[player];
         // Must construct additional pylons
         if (supplyUsed + supplyCost > raceSupply[RaceId::Terran].max[player])

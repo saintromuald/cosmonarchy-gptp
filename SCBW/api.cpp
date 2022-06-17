@@ -2142,7 +2142,7 @@ namespace scbw
 		unit_search_filter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
 		if (allied_structures.count) {
 			for (u32 i = 0; i < 8; ++i) {
-				if (playerTable[i].type == PlayerType::Computer && victim->is_visible_to(i) &&
+				if (player_table[i].type == PlayerType::Computer && victim->is_visible_to(i) &&
 					!scbw::is_allied_to(i, attacker->player) && scbw::is_allied_to(i, victim->player)) {
 					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 120, true);
 				}
@@ -2373,7 +2373,7 @@ namespace scbw
 	}
 
 	void give_ai_ex(Unit* unit, bool prefer_military) {
-		if (!unit || playerTable[unit->player].type != PlayerType::Computer) {
+		if (!unit || player_table[unit->player].type != PlayerType::Computer) {
 			return;
 		}
 		if (!prefer_military || units_dat::ComputerAIInternal[unit->id] & 2) {

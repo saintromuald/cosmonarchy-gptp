@@ -33,7 +33,7 @@ namespace hooks
 		s32 childAi2;
 		s32 childAi4;
 
-		if (playerTable[self->player].type != PlayerType::Computer || self->player >= 8u)
+		if (player_table[self->player].type != PlayerType::Computer || self->player >= 8u)
 		{
 			return;
 		}
@@ -718,7 +718,7 @@ LABEL_37:
 		}
 
 		s32 unit_id = UnitId::None;
-		u8 raceId = playerTable[player].race;
+		u8 raceId = player_table[player].race;
 		switch(raceId)
 		{
 			case RaceId::Terran:
@@ -1440,7 +1440,7 @@ LABEL_37:
 			u32 gas_count = gas_percentage * town->worker_count / 100;
 
 			u32 worker_count = 0;
-			switch (playerTable[town_player].race) {
+			switch (player_table[town_player].race) {
 				case RaceId::Terran: {
 					worker_count += unit_count_table[UnitId::TerranMason].player[town_player];
 					worker_count += unit_count_table[UnitId::TerranTalos].player[town_player];

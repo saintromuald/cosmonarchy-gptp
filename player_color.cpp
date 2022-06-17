@@ -16,7 +16,7 @@ static u32 get_color_for_personality(u32 player);
 
 static bool is_player_randomizable(u32 player) {
 	if (can_randomize_player_colors) {
-		bool randomize = playerForceFlags[playerTable[player].force - 1].randomize_start_locations;
+		bool randomize = playerForceFlags[player_table[player].force - 1].randomize_start_locations;
 		if (death_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
 			randomize = !randomize;
 		}
@@ -48,8 +48,8 @@ static bool can_use_player_color(u32 color, u32 player) {
 }
 
 static bool can_use_player_tint(u32 color_tint, u32 player) {
-	if (playerTable[player].race < banned_race_tints.size()) {
-		for (u32 banned_tint : banned_race_tints[playerTable[player].race]) {
+	if (player_table[player].race < banned_race_tints.size()) {
+		for (u32 banned_tint : banned_race_tints[player_table[player].race]) {
 			if (color_tint == banned_tint) {
 				return false;
 			}
@@ -83,7 +83,7 @@ static u32 get_random_color_from_tint(u32 tint) {
 }
 
 static u32 get_color_for_personality(u32 player) {
-	const u32 race = playerTable[player].race;
+	const u32 race = player_table[player].race;
 	const u32 build = death_table[UnitId::Spell_DisruptionWeb].player[player] - 1;
 	if (build >= 0
 		&& personality_colors.size() > race
@@ -115,7 +115,7 @@ static bool has_enough_colors() {
 }
 
 static void randomize_player_color(u32 player) {
-	if (playerTable[player].type == PlayerType::Computer) {
+	if (player_table[player].type == PlayerType::Computer) {
 		u32 color = get_color_for_personality(player);
 		if (color != PlayerColor::Invalid) {
 			set_player_color(player, color);
@@ -175,7 +175,7 @@ void load_player_colors() {
 
 static bool can_get_player_name(u32 player) {
 	if (!has_custom_name[player]
-	&&  playerTable[player].type == PlayerType::Computer) {
+	&&  player_table[player].type == PlayerType::Computer) {
 		return true;
 	}
 	return false;
@@ -211,7 +211,7 @@ static void update_player_name(u32 player) {
 	if (!can_get_player_name(player)) {
 		return;
 	}
-	u32 race = playerTable[player].race;
+	u32 race = player_table[player].race;
 	u32 personality = unit_deaths[UnitId::Spell_DisruptionWeb].player[player];
 	u32 count = get_name_count(race, personality);
 	if (count) {
