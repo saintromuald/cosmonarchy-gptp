@@ -536,11 +536,11 @@ static b32 __fastcall parse_comment_action(Action* action) {
 
 				Objective* objective = find_objective(key);
 				if (objective) {
-					sprintf_s(objective->text, "- %s", text);
+					sprintf_s(objective->text, "- %s", text.data);
 				} else if (objectives.count < ObjectivesCap) {
 					objective = &objectives.entries[objectives.count++];
 					objective->key = key;
-					sprintf_s(objective->text, "- %s", text);
+					sprintf_s(objective->text, "- %s", text.data);
 					qsort(objectives.entries, objectives.count, sizeof(Objective), compare_objective);
 				}
 			} else if (parser_eq(&parser, "objective_remove")) {
