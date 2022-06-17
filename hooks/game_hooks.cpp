@@ -1812,17 +1812,12 @@ namespace hooks
 
 		// Hallucinating Visual Effect
 		u32 hallucinatingTimer = unitExt->timers[TimerHallucinating];
-		if (unit != nullptr && unit->sprite != nullptr)
-		{
-			if (hallucinatingTimer % 24 == 1)
-			{
+		if (unit && unit->sprite) {
+			if (hallucinatingTimer % 24 == 1) {
 				Sprite* sprite;
-				if (unit->subunit != nullptr)
-				{
+				if (unit->subunit) {
 					sprite = unit->subunit->sprite;
-				}
-				else
-				{
+				} else {
 					sprite = unit->sprite;
 				}
 				sprite->create_overlay(ImageId::HallucinationOverlay, 0, 0, 0);
@@ -1830,30 +1825,34 @@ namespace hooks
 		}
 
 		// Luminary - Wax Wings Clear
-		if (unitExt->timers[TimerWaxWingsDebuff] == 1)
-		{
+		if (unitExt->timers[TimerWaxWingsDebuff] == 1) {
 			unit->update_speed();
 		}
 
 		// Luminary - Aural Assault
-		if (unitExt->timers[TimerAuralAssaultBlind] > 1)
-		{
-			if (unit->main_order_id != OrderId::AttackUnit)
-			{
-				auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
+		if (unitExt->timers[TimerAuralAssaultBlind] > 1) {
+			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(unit->id);
+			Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
+			if (!overlay_unit->get_overlay(overlay)) {
+				overlay_unit->sprite->create_top_overlay(overlay, 0, 0, 0);
+			}
+			if (unit->main_order_id != OrderId::AttackUnit) {
 				const u32 radius = unit->get_seek_range() * 32;
 				Unit* target = scbw::UnitFinder::get_nearest_target(
 					unit->get_x() - radius,
 					unit->get_y() - radius,
 					unit->get_x() + radius,
 					unit->get_y() + radius,
-					unit, match
+					unit, cosmonarchy_finder_match(unit, Flags::NotSelf, {})
 				);
-				if (target)
-				{
+				if (target) {
 					unit->order_to(OrderId::AttackUnit, target);
 				}
 			}
+			unit->status |= UnitStatus::CanNotReceiveOrders;
+		}
+		if (unitExt->timers[TimerAuralAssaultBlind] == 1) {
+			unit->status &= ~UnitStatus::CanNotReceiveOrders;
 		}
 
 		// Talos - Salvage Stun

@@ -1206,8 +1206,7 @@ namespace scbw
 			|| unit->is_blind;
 	}
 
-	void restore_func(Unit* unit)
-	{
+	void restore_func(Unit* unit) {
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		Unit* overlayTargetUnit = unit;
@@ -1231,6 +1230,16 @@ namespace scbw
 		// Remove default flags
 		unit->parasite_flags = 0;
 		unit->is_blind = 0;
+
+		// Remove Blind
+		if (unitExt->timers[TimerAuralAssaultBlind]) {
+			unitExt->timers[TimerAuralAssaultBlind] = 0;
+
+			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(unit->id);
+			Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
+			overlay_unit->remove_overlay(overlay);
+			unit->status &= ~UnitStatus::CanNotReceiveOrders;
+		}
 
 		// Remove Ensnare
 		if (unit->ensnare_timer != 0)

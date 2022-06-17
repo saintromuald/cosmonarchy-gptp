@@ -29,25 +29,25 @@ namespace
 		}
 	}
 
-	void __declspec(naked) OpticalFlareHitWrapper()
-	{
+	void __declspec(naked) OpticalFlareHitWrapper() {
 		static Unit* target;
 		static u32 attackingPlayerId;
 		static Bullet* bullet;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV bullet, EBX
-			MOV EBX, [EBP + 0x08]
-			MOV attackingPlayerId, EBX
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV attackingPlayerId, EAX
+			POP EAX
 			MOV target, EAX
+			MOV bullet, EBX
 			PUSHAD
 		}
 		hooks::OpticalFlareHit(target, attackingPlayerId, bullet);
-		__asm
-		{
+		__asm {
 			POPAD
+			MOV ESP, EBP
 			POP EBP
 			RETN 4
 		}
@@ -608,5 +608,9 @@ namespace hooks
         jump_patch(maelstromProc_Wrapper,						0x004F6760, 3);
 	//	jump_patch(iterateUnitsAtLocationTargetProc_Wrapper,	0x004F6760, 0);
 	//	jump_patch(giveUnitToPlayer_Wrapper,					0x004C8040, 2);
+
+		// Remove optical flare target check
+		nops(0x0048BBC7, 2);
+		nops(0x0048BBD2, 2);
     }
 }

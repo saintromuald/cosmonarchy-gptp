@@ -100,15 +100,11 @@ namespace hooks
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	void OpticalFlareHit(Unit* unused, u32 attackingPlayerId, Bullet* bullet)
-	{
-		if (!bullet)
-		{
-			scbw::print("no");
+	void OpticalFlareHit(Unit* unused, u32 attackingPlayerId, Bullet* bullet) {
+		if (!bullet) {
 			return;
 		}
 
-		scbw::print("fire");
 		const u32 radius = 2 * 32;
 		helper::play_sound_from_unit(SoundId::Terran_Medic_Miopia1_wav, (Unit*)bullet, 1, 0);
 		scbw::UnitFinder(
@@ -116,17 +112,8 @@ namespace hooks
 			bullet->position.y - radius,
 			bullet->position.x + radius,
 			bullet->position.y + radius
-		).for_each([&](Unit* target)
-		{
-			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(target->id);
-			Unit* overlayUnit = target;
+		).for_each([&](Unit* target) {
 			UnitExt* targetExt = globals.get_unit_ext(target);
-			if (target->subunit != nullptr)
-			{
-				targetExt = globals.get_unit_ext(target->subunit);
-				overlayUnit = target->subunit;
-			}
-			overlayUnit->sprite->create_top_overlay(overlay, 0, 0, 0);
 			targetExt->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
 		});
 	}

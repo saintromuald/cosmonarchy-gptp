@@ -516,19 +516,6 @@ namespace hooks
 					}
 					attackerExt->timers[TimerAdrenal] = ZethrokorAdrenalGlandsTimer;
 				} break;
-				case WeaponId::LuminaryAuralAssault:
-				{
-					// Aural Assault - Luminary ability
-					u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(data.target->id);
-					Unit* overlayUnit = data.target;
-					if (data.target->subunit != nullptr)
-					{
-						targetExt = globals.get_unit_ext(data.target->subunit);
-						overlayUnit = data.target->subunit;
-					}
-					overlayUnit->sprite->create_top_overlay(overlay, 0, 0, 0);
-					targetExt->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
-				} break;
 				case WeaponId::VorvalingClaws:
 				{
 					// Captivating ZethrokorClaws - Vorvaling behavior
