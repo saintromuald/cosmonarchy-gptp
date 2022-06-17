@@ -1828,7 +1828,7 @@ namespace hooks
 			}
 			if (unit->main_order_id != OrderId::AttackUnit) {
 				const u32 radius = unit->get_seek_range() * 32 + 4 * 32;
-				auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
+				auto match = cosmonarchy_finder_match(unit, 0, {});
 				Unit* best_target = scbw::UnitFinder::get_nearest_target(
 					unit->get_x() - radius,
 					unit->get_y() - radius,
