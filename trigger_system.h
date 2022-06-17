@@ -3,10 +3,15 @@
 
 extern bool has_custom_name[PlayerLimit];
 
+struct Objective {
+	s32 key;
+	char text[256];
+};
+
 #define ObjectivesCap 64
 struct Objectives {
 	u32 count;
-	Token entries[ObjectivesCap];
+	Objective entries[ObjectivesCap];
 };
 extern Objectives objectives;
 

@@ -366,6 +366,21 @@ static Music* get_next_music() {
 bool has_custom_name[PlayerLimit];
 Objectives objectives;
 
+static Objective* find_objective(s32 key) {
+	for (u32 i = 0; i < objectives.count; ++i) {
+		if (objectives.entries[i].key == key) {
+			return &objectives.entries[i];
+		}
+	}
+	return 0;
+}
+
+static s32 compare_objective(const void* a, const void* b) {
+	Objective* objective_a = (Objective*) a;
+	Objective* objective_b = (Objective*) b;
+	return objective_a->key - objective_b->key;
+}
+
 static b32 __fastcall parse_comment_action(Action* action) {
 	if (*currentTriggerPlayerId == *LOCAL_NATION_ID) {
 		char* comment = helper::get_chk_string(action->string);
@@ -515,13 +530,27 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				}
 			} else if (parser_eq(&parser, "recolor_loop_clear")) {
 				memset(&trigger_system.recolor_list, 0, sizeof(trigger_system.recolor_list));
-			} else if (parser_eq(&parser, "objectives_add")) {
-				Token objective = parser_get_string(&parser, true);
-				if (objectives.count < ObjectivesCap) {
-					sprintf_s(objectives.entries[objectives.count].data, "- %s", objective.data);
-					objectives.entries[objectives.count].size = strlen(objectives.entries[objectives.count].data);
-					objectives.count++;
+			} else if (parser_eq(&parser, "objective_set")) {
+				s32 key = parser_get_s32(&parser);
+				Token text = parser_get_string(&parser, true);
+
+				Objective* objective = find_objective(key);
+				if (objective) {
+					sprintf_s(objective->text, "- %s", text);
+				} else if (objectives.count < ObjectivesCap) {
+					objective = &objectives.entries[objectives.count++];
+					objective->key = key;
+					sprintf_s(objective->text, "- %s", text);
+					qsort(objectives.entries, objectives.count, sizeof(Objective), compare_objective);
 				}
+			} else if (parser_eq(&parser, "objective_remove")) {
+				s32 key = parser_get_s32(&parser);
+
+				Objective* objective = find_objective(key);
+				if (objective && objectives.count) {
+					*objective = objectives.entries[--objectives.count];
+					qsort(objectives.entries, objectives.count, sizeof(Objective), compare_objective);
+				}				
 			} else if (parser_eq(&parser, "objectives_clear")) {
 				memset(&objectives, 0, sizeof(objectives));
 			}

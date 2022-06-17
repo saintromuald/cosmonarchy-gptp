@@ -73,7 +73,7 @@ namespace hooks {
 		}
 
 		for (u32 i = 0; i < objectives.count; ++i) {
-			draw_ui_text(objectives.entries[i].data, 7);
+			draw_ui_text(objectives.entries[i].text, 7);
 		}
 	}
 
