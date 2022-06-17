@@ -308,28 +308,21 @@ namespace
 	// Inject @ 0x0045DE57
 	const u32 Hook_IsRallyableEggUnit_Yes = 0x0045DE6C;
 	const u32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
-	void __declspec(naked) is_rallyable_unit_egg_wrapper()
-	{
+	void __declspec(naked) is_rallyable_unit_egg_wrapper() {
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			POP ESI
 			POP EBX
 			PUSHAD
 			MOV unit, EDI
 		}
-		if (hooks::is_rallyable_egg_unit(unit->previous_unit_type))
-		{
-			__asm
-			{
+		if (hooks::is_rallyable_egg_unit(unit->previous_unit_type)) {
+			__asm {
 				POPAD
 				JMP Hook_IsRallyableEggUnit_Yes
 			}
-		}
-		else
-		{
-			__asm
-			{
+		} else {
+			__asm {
 				POPAD
 				JMP Hook_IsRallyableEggUnit_No
 			}
