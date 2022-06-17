@@ -1433,12 +1433,12 @@ namespace scbw
 		return queens;
 	}
 
-	void do_deconstruction_damage(Unit* unit, u16 weaponId, bool playSound)
+	void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool playSound)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		// Deconstruction - Pazuzu passive
-		f64 selfDamage = (unitExt->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::DamageAmount[weaponId] * 256.0));
+		f64 selfDamage = (unitExt->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::DamageAmount[weapon_id] * 256.0));
 		auto deconstructionTarget = unit;
 		if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
 		{
@@ -1448,14 +1448,14 @@ namespace scbw
 				return;
 			}
 		}
-		hooks::weapon_damage(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->player, 0, 1);
+		hooks::weapon_damage(selfDamage, deconstructionTarget, weapon_id, deconstructionTarget, deconstructionTarget->player, 0, 1);
 		if (playSound)
 		{
 			helper::play_sound_from_unit(SoundId::PazuzuDeconstructionDamage, unit, 1, 0);
 		}
 	}
 
-	Bullet* set_missile_source_pos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset, u32 fake_amount)
+	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset, u32 fake_amount)
 	{
 		if (unit->sprite == nullptr || unit->order_target.unit == nullptr)
 		{
@@ -1478,7 +1478,7 @@ namespace scbw
 		unitExt->values[valueId] = rotate;
 		auto X = unit->get_x() + offset.x;
 		auto Y = unit->get_y() + offset.y;
-		Bullet* bullet = helper::create_bullet(weaponId, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
+		Bullet* bullet = helper::create_bullet(weapon_id, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
 		if (bullet && unitExt->values[valueId] < fake_amount)
 		{
 			bullet->hit_flags |= 0x1;
@@ -1581,15 +1581,15 @@ namespace scbw
 			damage,
 			damage,
 			0,
-			data.damageType,
-			data.damageDivisor,
-			data.weaponId,
+			data.damage_type,
+			data.damage_divisor,
+			data.weapon_id,
 			data.direction,
 			unit,
 			data.attacker,
 			data.attackingPlayerId,
 			true,
-			data.ignoreFlatArmor
+			data.ignore_flat_armor
 		};
 		hooks::weapon_damage_root(newData);
 	}

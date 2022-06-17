@@ -21,8 +21,8 @@ namespace scbw
 	bool is_larval_egg(Unit* unit);
 	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
 	bool is_zerg_egg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-	void artificial_bullet_from(u8 weaponId, u8 player, Unit* source, Unit* target, Point16 target_pt);
-	void artificial_bullet_from(u8 weaponId, u8 player, Unit* source, Unit* target, u16 x, u16 y);
+	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt);
+	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y);
 	std::string read_samase_file(char* name);
 	bool teleport(Unit* u, Point16 target, u16 spriteAnimation = 0, bool preserveOrder = false);
 	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player = 11, s32 elevation_level = 11);
@@ -72,11 +72,11 @@ namespace scbw
 	/// Checks weapons.dat targeting flags to see if the @p target can be hit by the
 	/// @p weapon.
 	///
-	/// @param  weaponId  If this is an invalid weapons.dat ID, returns false.
+	/// @param  weapon_id  If this is an invalid weapons.dat ID, returns false.
 	/// @param  target    If nullptr is passed, the function checks whether the
 	///                   weapon can target a position on the ground. If @p target
 	///                   is invincible, the function returns false.
-	bool can_weapon_target_unit(u8 weaponId, Unit* target = nullptr,
+	bool can_weapon_target_unit(u8 weapon_id, Unit* target = nullptr,
 		Unit* attacker = nullptr);
 
 	/// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
@@ -528,7 +528,7 @@ namespace scbw
 
 	//////////////////////////////////////////////////////////////// @}
 
-	void range_modified_fire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset);
+	void range_modified_fire(u8 weapon_id, Unit* unit, s16 x, s16 y, u32 offset);
 	bool can_spawn_broodling(Unit* target);
 	s32 get_broodling_count_from_supply(Unit* target);
 	void create_unit_from_ability(s32 unit_id, s32 count, u16 player, s32 x, s32 y, u32 remove_timer = 1800, Unit* creator = nullptr);
@@ -548,7 +548,7 @@ namespace scbw
 	bool is_debuffed(Unit* unit);
 	s32 get_upgrade_type(Unit* unit);
 	s32 get_overlay_offset(u16 unit_id, bool xlargeAllowed = false);
-	s32 get_final_damage(Unit* unit, u16 weaponId);
+	s32 get_final_damage(Unit* unit, u16 weapon_id);
 	bool unit_id_is_pacifist(Unit* unit);
 	bool order_is_spell(s32 order_id);
 	bool can_be_parasited(Unit* unit);
@@ -562,7 +562,7 @@ namespace scbw
 	void play_work_animation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);
 	void apply_new_hallucination(Unit* unit, u8 player, u32 time);
-	bool weapon_pierces_targets(u16 weaponId);
+	bool weapon_pierces_targets(u16 weapon_id);
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
 	void update_signify_status(Unit* unit, UnitExt* unitExt);
 	bool is_unit_isolated(Unit* unit);

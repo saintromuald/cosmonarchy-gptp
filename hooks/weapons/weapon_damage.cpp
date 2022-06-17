@@ -10,13 +10,13 @@
 
 #include "SCBW\UnitFinder.h"
 
-bool darkswarm_blocks_damage(Unit* target, u32 weaponId, u32 damageDivisor) {
+bool darkswarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
 	return scbw::is_under_dark_swarm(target)
-		&& weapons_dat::MaxRange[weaponId] > 32
-		&& (damageDivisor == 1 || weaponId == WeaponId::GeszithalorAcidSpore)
-		&& weaponId != WeaponId::HarakanFlameThrower
-		&& weaponId != WeaponId::LakiziliskSubterraneanSpines
-		&& weaponId != WeaponId::Custom;
+		&& weapons_dat::MaxRange[weapon_id] > 32
+		&& (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
+		&& weapon_id != WeaponId::HarakanFlameThrower
+		&& weapon_id != WeaponId::LakiziliskSubterraneanSpines
+		&& weapon_id != WeaponId::Custom;
 }
 
 bool irradiateTarget(Unit* unit)
@@ -26,30 +26,22 @@ bool irradiateTarget(Unit* unit)
 
 namespace hooks
 {
-	static void weaponDamage_damageModifiers(WeaponDamageData& data);
-	static void weaponDamage_lifesteal(WeaponDamageData& data);
-	static void weaponDamage_behaviors(WeaponDamageData& data);
-	static void weaponDamage_fatal(WeaponDamageData& data);
+	static void weapon_damage_damage_modifiers(WeaponDamageData& data);
+	static void weapon_damage_lifesteal(WeaponDamageData& data);
+	static void weapon_damage_behaviors(WeaponDamageData& data);
+	static void weapon_damage_fatal(WeaponDamageData& data);
 
 	/// Hooks into the Unit::damage_with() function.
-	void weapon_damage(
-		s32 damage,
-		Unit* target,
-		u8 weaponId,
-		Unit* attacker,
-		u8 attackingPlayerId,
-		s8 direction,
-		u8 damageDivisor
-	)
+	void weapon_damage(s32 damage, Unit* target, u8 weapon_id, Unit* attacker, u8 attackingPlayerId, s8 direction, u8 damage_divisor)
 	{
 		WeaponDamageData data =
 		{
 			damage,
 			damage,
 			0,
-			weapons_dat::DamageType[weaponId],
-			damageDivisor,
-			weaponId,
+			weapons_dat::DamageType[weapon_id],
+			damage_divisor,
+			weapon_id,
 			direction,
 			target,
 			attacker,
@@ -63,12 +55,12 @@ namespace hooks
 	void weapon_damage_custom(
 		s32 damage,
 		Unit* target,
-		u8 damageType,
+		u8 damage_type,
 		Unit* attacker,
 		u8 attackingPlayerId,
 		s8 direction,
-		u8 damageDivisor,
-		bool ignoreFlatArmor
+		u8 damage_divisor,
+		bool ignore_flat_armor
 	)
 	{
 		WeaponDamageData data =
@@ -76,15 +68,15 @@ namespace hooks
 			damage,
 			damage,
 			0,
-			damageType,
-			damageDivisor,
+			damage_type,
+			damage_divisor,
 			WeaponId::Custom,
 			direction,
 			target,
 			attacker,
 			attackingPlayerId,
 			false,
-			ignoreFlatArmor
+			ignore_flat_armor
 		};
 		weapon_damage_root(data);
 	}
@@ -103,7 +95,7 @@ namespace hooks
 		if (targetExt->timers[TimerGodsMadeFlesh])
 		{
 			data.final_damage = 0;
-			data.damageType = DamageType::Independent;
+			data.damage_type = DamageType::Independent;
 		}
 
 		// TODO: remove this
@@ -124,17 +116,17 @@ namespace hooks
 			}
 		}
 
-		if (!data.dontProcLinkDamage) // damage from links was already calculated
+		if (!data.dont_proc_link_damage) // damage from links was already calculated
 		{
-			weaponDamage_damageModifiers(data);
+			weapon_damage_damage_modifiers(data);
 		}
 
-		if (!data.dontProcLinkDamage && data.target->id == UnitId::ZergSovroleth)
+		if (!data.dont_proc_link_damage && data.target->id == UnitId::ZergSovroleth)
 		{
 			data.final_damage /= 2;
 			scbw::spread_sovroleth_damage(data);
 		}
-		else if (!data.dontProcLinkDamage && scbw::has_clarion_links(data.target))
+		else if (!data.dont_proc_link_damage && scbw::has_clarion_links(data.target))
 		{
 			data.final_damage /= 2;
 			scbw::spread_clarion_damage(data);
@@ -179,7 +171,7 @@ namespace hooks
 
 		// Cliff Advantage - Armor | Disabled 10 Jan 2022
 		/*
-		if (data.damage_type != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
+		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor)
 		{
 			data.final_damage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 		}
@@ -188,7 +180,7 @@ namespace hooks
 		// Reduce Plasma Shields
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256)
 		{
-			if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
+			if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor)
 			{
 				s32 plasmaShieldUpg = scbw::get_upgrade_level(data.target->player, UpgradeId::ProtossPlasmaShields) * 256;
 				if (data.final_damage > plasmaShieldUpg)
@@ -200,13 +192,13 @@ namespace hooks
 					data.final_damage = 128;
 				}
 			}
-			data.shieldReduceAmount = std::min(data.final_damage, data.target->shields);
-			data.final_damage -= data.shieldReduceAmount;
+			data.shield_reduce_amount = std::min(data.final_damage, data.target->shields);
+			data.final_damage -= data.shield_reduce_amount;
 		}
 
 		// Apply armor
 		bool shield_overlay = false;
-		if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor)
+		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor)
 		{
 			s32 armorTotal = data.target->getArmor() * 256;
 			if (data.attacker != nullptr)
@@ -238,7 +230,7 @@ namespace hooks
 		}
 
 		// Apply damage type/unit count factor
-		s32 damage_factor = damage_factors[data.damageType].unit_size_factor[units_dat::SizeType[data.target->id]];
+		s32 damage_factor = damage_factors[data.damage_type].unit_size_factor[units_dat::SizeType[data.target->id]];
 		if (data.attacker != nullptr)
 		{
 			switch (data.attacker->id)
@@ -255,13 +247,13 @@ namespace hooks
 		}
 
 		data.final_damage = (data.final_damage * damage_factor) / 256;
-		if (data.shieldReduceAmount == 0 && data.final_damage < 128)
+		if (data.shield_reduce_amount == 0 && data.final_damage < 128)
 		{
 			data.final_damage = 128;
 		}
 
 		// Olympian Mythical Might - execute enemies below 10% HP
-		if (!data.dontProcLinkDamage && (data.weaponId == WeaponId::OlympianMountainGun || data.weaponId == WeaponId::OlympianTitansFist))
+		if (!data.dont_proc_link_damage && (data.weapon_id == WeaponId::OlympianMountainGun || data.weapon_id == WeaponId::OlympianTitansFist))
 		{
 			if (data.target->hitpoints < data.target->get_max_hp_raw() * 0.1)
 			{
@@ -270,20 +262,20 @@ namespace hooks
 			}
 		}
 
-		weaponDamage_behaviors(data);
+		weapon_damage_behaviors(data);
 		if (data.attacker)
 		{
-			weaponDamage_lifesteal(data);
+			weapon_damage_lifesteal(data);
 		}
 		if (data.final_damage >= data.target->hitpoints)
 		{
-			weaponDamage_fatal(data);
+			weapon_damage_fatal(data);
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damageType != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && canDamage )
+		if (data.damage_type != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && canDamage )
 		{
-			data.target->damage_hp(data.final_damage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
+			data.target->damage_hp(data.final_damage, data.attacker, data.attackingPlayerId, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
 			if (!data.target->hitpoints) {
 				helper::unit_attack_notify(data.target);
@@ -294,10 +286,10 @@ namespace hooks
 		scbw::ask_for_ai_help(data.target, data.attacker);
 
 		// Reduce shields
-		if (data.shieldReduceAmount != 0 && canDamage)
+		if (data.shield_reduce_amount != 0 && canDamage)
 		{
-			data.target->shields -= data.shieldReduceAmount;
-			if (data.damageType != DamageType::Independent && data.target->shields != 0)
+			data.target->shields -= data.shield_reduce_amount;
+			if (data.damage_type != DamageType::Independent && data.target->shields != 0)
 			{
 				shield_overlay = true;
 			}
@@ -313,7 +305,7 @@ namespace hooks
 		data.target->ground_strength = helper::get_unit_strength(data.target, true);
 	}
 
-	static void weaponDamage_damageModifiers(WeaponDamageData& data)
+	static void weapon_damage_damage_modifiers(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
@@ -327,23 +319,23 @@ namespace hooks
 		}
 
 		// Isthrathaleth Dark Swarm
-		if (darkswarm_blocks_damage(data.target, data.weaponId, data.damageDivisor))
+		if (darkswarm_blocks_damage(data.target, data.weapon_id, data.damage_divisor))
 		{
-			data.damageType = DamageType::Independent;
+			data.damage_type = DamageType::Independent;
 		}
 
 		// Observance Armor Rend
 		data.final_damage += 256 * targetExt->values[ValueObservanceRend];
 
-		switch (data.weaponId) // Damage Divisor Calc
+		switch (data.weapon_id) // Damage Divisor Calc
 		{
 			case WeaponId::ArchitectDispersiveSalvo:
 			{
 				// Reactive Payload - Architect behavior
 				f64 div = 1.0;
-				if (data.damageDivisor != 0)
+				if (data.damage_divisor != 0)
 				{
-					div = (f64)data.damageDivisor;
+					div = (f64)data.damage_divisor;
 				}
 				s32 dmg = ((f64)data.final_damage / div);
 				data.final_damage = dmg + targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
@@ -351,29 +343,29 @@ namespace hooks
 			case WeaponId::GeszithalorAcidSpore:
 			{
 				// Searing Acid - Geszithalor behavior
-				data.final_damage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
+				data.final_damage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damage_divisor * 10 * 256);
 			} break;
 			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::MutaliskGlaveWurm:
 			case WeaponId::CharlatanFerventBlaster:
 			{
 				// Lithe Organelle - bounce damage
-				data.final_damage *= 1 - data.damageDivisor * 0.33;
+				data.final_damage *= 1 - data.damage_divisor * 0.33;
 				data.final_damage += (s32)targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
 			default:
 			{
-				u32 divisor = data.damageDivisor;
+				u32 divisor = data.damage_divisor;
 				if (divisor == 0)
 				{
 					divisor = 1;
-					scbw::printf("Incorrect weapon hit %d", data.weaponId);
+					scbw::printf("Incorrect weapon hit %d", data.weapon_id);
 				}
 				data.final_damage = data.final_damage / divisor + (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction);
 			}
 		}
 
-		switch (data.weaponId)
+		switch (data.weapon_id)
 		{
 			case WeaponId::QuaziliskAcridBarbs:
 			{
@@ -387,13 +379,13 @@ namespace hooks
 				// Almaksalisk - Flanking DrolethSpines
 				if (scbw::is_debuffed(data.target))
 				{
-					data.damageType = DamageType::IgnoreArmor;
+					data.damage_type = DamageType::IgnoreArmor;
 				}
 			} break;
 		}
 	}
 
-	static void weaponDamage_behaviors(WeaponDamageData& data)
+	static void weapon_damage_behaviors(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
@@ -464,7 +456,7 @@ namespace hooks
 					// Autovitality - Simulacrum behavior
 					if (!scbw::is_allied_to(data.target->player, data.attacker->player)
 						&& !scbw::is_under_dark_swarm(data.target)
-						&& data.shieldReduceAmount >= data.target->shields
+						&& data.shield_reduce_amount >= data.target->shields
 						&& data.final_damage
 						&& targetExt->timers[TimerSimulacrumClone] == 0)
 					{
@@ -509,7 +501,7 @@ namespace hooks
 			}
 
 			// These bypass Dark Swarm
-			switch (data.weaponId)
+			switch (data.weapon_id)
 			{
 				case WeaponId::AnthelionEventHorizon:
 				{
@@ -547,7 +539,7 @@ namespace hooks
 					// Essence Drain - Gorgrokor Energy Steal
 					if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster)
 					{
-						u16 energy = std::min(data.target->energy, (u16)(data.final_damage + data.shieldReduceAmount));
+						u16 energy = std::min(data.target->energy, (u16)(data.final_damage + data.shield_reduce_amount));
 						data.target->energy -= energy;
 						data.attacker->energy += energy;
 					}
@@ -556,7 +548,7 @@ namespace hooks
 
 			if (!scbw::is_under_dark_swarm(data.target))
 			{
-				switch (data.weaponId)
+				switch (data.weapon_id)
 				{
 					case WeaponId::EmpressFadingBioplasma:
 					{
@@ -791,10 +783,10 @@ namespace hooks
 		}
 	}
 
-	static void weaponDamage_lifesteal(WeaponDamageData& data)
+	static void weapon_damage_lifesteal(WeaponDamageData& data)
 	{
-		u32 damageDealt = data.final_damage + data.shieldReduceAmount;
-		switch (data.weaponId)
+		u32 damageDealt = data.final_damage + data.shield_reduce_amount;
+		switch (data.weapon_id)
 		{
 			case WeaponId::UltrokorKaiserBlades:
 			{
@@ -825,11 +817,11 @@ namespace hooks
 		}
 	}
 
-	static void weaponDamage_fatal(WeaponDamageData& data)
+	static void weapon_damage_fatal(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
-		switch (data.weaponId)
+		switch (data.weapon_id)
 		{
 			case WeaponId::Plague:
 			{
@@ -1050,7 +1042,7 @@ namespace hooks
 		if (data.attacker != nullptr)
 		{
 			UnitExt* attackerExt = globals.get_unit_ext(data.attacker);
-			switch (data.weaponId)
+			switch (data.weapon_id)
 			{
 				case WeaponId::AlkajeliskPlasmidSpores:
 				case WeaponId::AlkajeliskParasiticSpores:

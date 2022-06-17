@@ -13,45 +13,45 @@ struct {
 	{5, 0, 256, 256, 256, 256},			// Chronal
 };
 
-bool darkswarm_blocks_damage(Unit* target, u32 weaponId, u32 damageDivisor);
+bool darkswarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor);
 
 namespace hooks {
 
 	void weapon_damage(
 		s32 damage,
 		Unit* target,
-		u8 weaponId,
+		u8 weapon_id,
 		Unit* attacker,
 		u8 attackingPlayerId,
 		s8 direction,
-		u8 damageDivisor
+		u8 damage_divisor
 	);
 
 	void weapon_damage_custom(
 		s32 damage,
 		Unit* target,
-		u8 damageType,
+		u8 damage_type,
 		Unit* attacker,
 		u8 attackingPlayerId,
 		s8 direction,
-		u8 damageDivisor,
-		bool ignoreFlatArmor
+		u8 damage_divisor,
+		bool ignore_flat_armor
 	);
 
 	struct WeaponDamageData {
 		const s32 damage;
 		s32 final_damage;
-		s32 shieldReduceAmount;
-		u8 damageType;
-		u8 damageDivisor;
-		u16 weaponId;
+		s32 shield_reduce_amount;
+		u8 damage_type;
+		u8 damage_divisor;
+		u16 weapon_id;
 		s8 direction;
 
 		Unit* target;
 		Unit* attacker;
 		u8 attackingPlayerId;
-		bool dontProcLinkDamage;
-		bool ignoreFlatArmor;
+		bool dont_proc_link_damage;
+		bool ignore_flat_armor;
 	};
 
 	void weapon_damage_root(WeaponDamageData& data);

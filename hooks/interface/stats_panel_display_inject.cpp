@@ -92,19 +92,19 @@ namespace
 	{
 		static BinDlg* dialog;
 		static u16 buttonRelated;
-		static u8 weaponId;
+		static u8 weapon_id;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0xC]
-			MOV weaponId, AL
+			MOV weapon_id, AL
 			MOV EAX, [EBP + 0x08]
 			MOV buttonRelated, AX
 			POP EAX
 			MOV dialog, EAX
 			PUSHAD
 		}
-		hooks::stats_weapon_level(dialog, buttonRelated, weaponId);
+		hooks::stats_weapon_level(dialog, buttonRelated, weapon_id);
 		__asm {
 			POPAD
 			RETN

@@ -368,15 +368,15 @@ namespace hooks
 					{ // 004E806B
 						if (unit->id != UnitId::ProtossAccantor)
 						{
-							u8 weaponId = unit->get_ground_weapon();
-							if (weaponId != WeaponId::None)
+							u8 weapon_id = unit->get_ground_weapon();
+							if (weapon_id != WeaponId::None)
 							{
-								unit->ground_weapon_cooldown = helper::get_upgraded_weapon_cooldown(unit, weaponId);
+								unit->ground_weapon_cooldown = helper::get_upgraded_weapon_cooldown(unit, weapon_id);
 							}
-							weaponId = unit->get_air_weapon();
-							if (weaponId != WeaponId::None)
+							weapon_id = unit->get_air_weapon();
+							if (weapon_id != WeaponId::None)
 							{
-								unit->air_weapon_cooldown = helper::get_upgraded_weapon_cooldown(unit, weaponId);
+								unit->air_weapon_cooldown = helper::get_upgraded_weapon_cooldown(unit, weapon_id);
 							}
 							unit->spell_cooldown = 30;
 						}

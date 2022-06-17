@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) receive_commandWrapper()
+	void __declspec(naked) receive_command_wrapper()
 	{
 		static s32 x;
 		static s32 y;
@@ -42,8 +42,8 @@ namespace
 
 namespace hooks
 {
-	void injectRecvCmdHook()
+	void inject_receive_command_hooks()
 	{
-		jump_patch(receive_commandWrapper, 0x0049AB00, 1);
+		jump_patch(receive_command_wrapper, 0x0049AB00, 1);
 	}
 }

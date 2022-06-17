@@ -6,15 +6,15 @@ namespace
 	void __declspec(naked) get_modified_weapon_cooldown_wrapper()
 	{
 		static Unit* unit;
-		static u8 weaponId;
+		static u8 weapon_id;
 		static u32 cooldown;
 		__asm
 		{
 			MOV unit, ESI
-			MOV weaponId, AL
+			MOV weapon_id, AL
 			PUSHAD
 		}
-		cooldown = hooks::get_modified_weapon_cooldown(unit, weaponId);
+		cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id);
 		__asm
 		{
 			POPAD

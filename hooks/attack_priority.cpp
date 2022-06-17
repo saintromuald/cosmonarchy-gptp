@@ -29,7 +29,7 @@ scbw::UnitFinder attackTargetFinder;
 
 namespace
 {
-	bool isTargetPosWithinAttackAngle(s32 x, s32 y, Unit* unit, u8 weaponId);
+	bool isTargetPosWithinAttackAngle(s32 x, s32 y, Unit* unit, u8 weapon_id);
 	bool cannotChaseTarget(Unit* unit, Unit* target);
 	// Returns the minimum air/ground weapon distance of the @p unit, whichever is smaller.
 	u32 get_minimum_range(Unit* unit);
@@ -355,7 +355,7 @@ namespace
 {
 
 	//Identical to function @ 0x00475BE0
-	bool isTargetPosWithinAttackAngle(s32 x, s32 y, Unit* unit, u8 weaponId)
+	bool isTargetPosWithinAttackAngle(s32 x, s32 y, Unit* unit, u8 weapon_id)
 	{
 		assert(unit);
 
@@ -372,7 +372,7 @@ namespace
 			angleDiff += 128;
 		if (angleDiff > 128)
 			angleDiff = 256 - angleDiff;
-		return angleDiff <= weapons_dat::AttackAngle[weaponId];
+		return angleDiff <= weapons_dat::AttackAngle[weapon_id];
 	}
 
 	const u32 Func_CannotChaseTarget = 0x004A1140;

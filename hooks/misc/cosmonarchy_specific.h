@@ -9,7 +9,7 @@ namespace hooks
 	u32 real_top_speed(Flingy* flingy, u32 flingy_id);
 	u16 real_acceleration(Flingy* flingy, u32 flingy_id);
 	bool is_high_templar_conduit(u16 unit_id);
-	u32 weapon_flingy(u32 weaponId, u8 player);
+	u32 weapon_flingy(u32 weapon_id, u8 player);
 	u32 get_flingy_halt_distance(Flingy* flingy);
 	bool is_unused_order(u8 order_id);
 	void set_up_spider_mines(Unit* unit);

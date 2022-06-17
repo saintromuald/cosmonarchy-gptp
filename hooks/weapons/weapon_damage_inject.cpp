@@ -10,8 +10,8 @@ namespace
 		static Unit* attacker;
 		static s32 damage;
 		static s32 direction;
-		static u32 weaponId;
-		static u32 damageDivisor;
+		static u32 weapon_id;
+		static u32 damage_divisor;
 		static u32 attackingPlayerId;
 
 		__asm {
@@ -20,9 +20,9 @@ namespace
 			MOV damage, EAX
 			MOV target, EDI
 			MOV EAX, [EBP + 0x08]
-			MOV weaponId, EAX
+			MOV weapon_id, EAX
 			MOV EAX, [EBP + 0x0C]
-			MOV damageDivisor, EAX
+			MOV damage_divisor, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV direction, EAX
 			MOV EAX, [EBP + 0x14]
@@ -31,8 +31,8 @@ namespace
 			MOV attackingPlayerId, EAX
 			PUSHAD
 		}
-		hooks::weapon_damage(damage, target, weaponId, attacker, attackingPlayerId,
-			direction, damageDivisor);
+		hooks::weapon_damage(damage, target, weapon_id, attacker, attackingPlayerId,
+			direction, damage_divisor);
 		__asm {
 			POPAD
 			POP EBP

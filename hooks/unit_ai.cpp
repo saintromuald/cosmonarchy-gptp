@@ -144,12 +144,12 @@ namespace hooks
 					}
 					AiRegion* region = (AiRegion*)parentUnitAi->trainQueueValues[queueSlot];
 					if (parentUnitAi->trainQueueTypes[queueSlot] == 2) {
-						if (!region->neededGroundStrength) {
-							s16 regionFullAir = region->fullAirStrength;
-							s16 regionEnemyAir = region->enemyAirStrength;
-							region->neededGroundStrength = (u16)newUnit;
-							region->regionAirStrength = regionFullAir;
-							region->fullGroundStrength = regionEnemyAir;
+						if (!region->ground_strength_needed) {
+							s16 regionFullAir = region->air_strength_full;
+							s16 regionEnemyAir = region->air_strength_enemy;
+							region->ground_strength_needed = (u16)newUnit;
+							region->air_strength = regionFullAir;
+							region->ground_strength_full = regionEnemyAir;
 							newUnit->unit_ai = (UnitAi*)region;
 							return;
 						}
@@ -311,7 +311,7 @@ namespace hooks
 
 	// Hooked to rule out AI crashes - Pr0nogo
 	void ai_create_nuke(Unit* silo, Unit* result) { // 0045B7A0 - originally had 3 args; last one was unused
-		if (silo->id == UnitId::TerranNuclearSilo && !silo->building.silo.is_ready) {
+		if (silo->id == UnitId::TerranMissileSilo && !silo->building.silo.is_ready) {
 			Unit* nuke = helper::create_unit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->player);
 			if (nuke) {
 				helper::update_unit_stats_and_finish_building(nuke);
@@ -326,58 +326,50 @@ namespace hooks
 	}
 
 
-	// Hooked to add functionality - Pr0nogo
-	void ai_add_military(AiRegion* region, Unit* unit, s32 alwaysThisRegion) // 0043DA20
+	// Hooked to investigate improperly-initialized unit AI, and to add functionality. -Pr0nogo
+	void ai_add_military_to_region(AiRegion* region, Unit* unit, u32 must_use_region) // 0043DA20
 	{
-		// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
-		// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
-
-		/*
-		if (region->state == 3 && !alwaysThisRegion)
+		AiRegion* final_region = region;
+		if (region->state == RegionState::EnemySighted && !must_use_region)
 		{
-			region = &AiRegionCaptains[(u8)unit->player][helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y)];
+			final_region = &AiRegionCaptains[unit->player][helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y)];
 		}
-
-		Unit* medic = region->main_medic;
-		UnitAi* medicAI = (UnitAi*)medic->pAI;
-		if (medicAI)
+		MilitaryAiArray* military_ai_array = final_region->military;
+		MilitaryAi* first_free_military = military_ai_array->first_free_military;
+		if (first_free_military)
 		{
-			UnitAi* nextAI = (UnitAi*)medicAI->link.prev;
-			medic->pAI = (void*)medicAI->link.prev;
-			if (!medicAI->link.prev)
+			MilitaryAi* prev_military = first_free_military->link.prev;
+			military_ai_array->first_free_military = (MilitaryAi*)first_free_military->link.prev;
+			if (first_free_military->link.prev)
 			{
-				nextAI->link.next = 0;
+				prev_military->link.next = 0;
 			}
-
-			if (nextAI)
+			if (first_free_military)
 			{
-				nextAI->link.next = 0;
-				nextAI->link.prev = region->town;
-				AiTown* town = (AiTown*)region->town;
-				if (town)
+				first_free_military->link.next = 0;
+				first_free_military->link.prev = final_region->first_military_ai;
+				MilitaryAi* first_military = final_region->first_military_ai;
+				if (first_military)
 				{
-					town->link.next = (AiTown*)medicAI;
+					first_military->link.next = first_free_military;
 				}
-
-				region->town = (AiTown*)medicAI;
-				medicAI->type = 4;
-				medicAI->parent = unit;
-				medicAI->captain = region;
-				if (!(unit->status & 4))
+				final_region->first_military_ai = first_free_military;
+				first_free_military->type = AiType::Military;
+				first_free_military->unit = unit;
+				first_free_military->region = final_region;
+				if (!(unit->status & UnitStatus::InAir))
 				{
-					*(s32*)&region->unknown_0xA += 1;
+					++final_region->ground_unit_count;
 				}
-
-				unit->pAI = medicAI;
-				helper::ai_order_to_destination(unit, unit->id != UnitId::TerranCleric ? 157 : 177,
-					SAI_Paths->regions[(u16)region->region].rgnCenterX >> 8, SAI_Paths->regions[(u16)region->region].rgnCenterY >> 8);
-				if (region->state == 8 || region->state == 9 || region->state == 1 || region->state == 2)
+				unit->unit_ai = (UnitAi*)first_free_military;
+				helper::ai_order_to_destination(unit, unit->id != UnitId::TerranCleric ? 157 : 177, (*SAI_Paths)->regions[final_region->region].region_center_x >> 8, (*SAI_Paths)->regions[final_region->region].region_center_y >> 8);
+				char region_state = final_region->state;
+				if (region_state == RegionState::PreparingAttack || region_state == RegionState::PreparingAttackOldUnreachable || region_state == RegionState::ContinueAttackHere || region_state == RegionState::Attacking)
 				{
-					helper::ai_assign_region_to_slowest_unit(region);
+					helper::ai_assign_region_to_slowest_unit(final_region);
 				}
 			}
 		}
-		*/
 	}
 
 	// Hooked to change guard assignments for structures based on AI personality -- Pr0nogo
@@ -800,7 +792,7 @@ namespace hooks
 									&& (AIScriptController[unit->player].AI_Flags.is_use_map_settings
 										|| helper::region_is_for_attack_prepare(ai_region)))
 									&& (ai_region->state != 7 && !helper::region_is_for_attack_prepare(ai_region) || unit_ai_region_id != a6)
-									&& unit_ai_region->defensePriorityAdd < a2 )
+									&& unit_ai_region->defense_priority_add < a2 )
 								{
 									best_ai = unit_ai;
 									min_distance = distance;
@@ -813,7 +805,7 @@ namespace hooks
 				}
 				if (AIScriptController[ai_region_1->player].AI_Flags.is_use_map_settings)
 				{
-					if (ai_region_1->airTarget == (Unit*)7)
+					if (ai_region_1->air_target == (Unit*)7)
 					{
 						goto next;
 					}

@@ -55,11 +55,11 @@ namespace
 
 namespace hooks
 {
-	static void launch_missile(Unit* attacker, UnitExt* attackerExt, Unit* target, u8 weaponId)
+	static void launch_missile(Unit* attacker, UnitExt* attackerExt, Unit* target, u8 weapon_id)
 	{
 		s32 posX;
 		s32 posY;
-		if (weapons_dat::Behavior[weaponId] & WeaponBehavior::AppearOnTargetUnit)
+		if (weapons_dat::Behavior[weapon_id] & WeaponBehavior::AppearOnTargetUnit)
 		{
 			posX = target->get_x();
 			posY = target->get_y();
@@ -70,14 +70,14 @@ namespace hooks
 			posY = attacker->get_y();
 		}
 		auto newAngle = scbw::get_angle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
-		helper::create_bullet(weaponId, attacker, posX, posY, attacker->player, newAngle);
+		helper::create_bullet(weapon_id, attacker, posX, posY, attacker->player, newAngle);
 		if (attackerExt->values[ValueDeconstruction])
 		{
-			scbw::do_deconstruction_damage(attacker, weaponId, false);
+			scbw::do_deconstruction_damage(attacker, weapon_id, false);
 		}
 	}
 
-	bool fire_multiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags, bool ignoreMain)
+	bool fire_multiple(Unit* attacker, UnitExt* attackerExt, u32 weapon_id, u32 maxTargets, u32 flags, bool ignoreMain)
 	{
 		bool fired = false;
 		std::unordered_set<Unit*> targets;
@@ -87,13 +87,13 @@ namespace hooks
 			&& attacker->main_order_id != OrderId::Patrol)
 		{
 			targets.insert(attacker->order_target.unit);
-			launch_missile(attacker, attackerExt, attacker->order_target.unit, weaponId);
+			launch_missile(attacker, attackerExt, attacker->order_target.unit, weapon_id);
 			fired = true;
 		}
 		Unit* old = attacker->order_target.unit;
 		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
 		{
-			u32 range = hooks::get_max_weapon_range(attacker, weaponId, 0);
+			u32 range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
 			auto filter = cosmonarchy_finder_match(attacker, flags, {});
 			Unit* newTarget = scbw::UnitFinder::get_nearest_target(
 				attacker->get_x() - range,
@@ -119,7 +119,7 @@ namespace hooks
 				break;
 			}
 			attacker->order_target.unit = newTarget;
-			launch_missile(attacker, attackerExt, newTarget, weaponId);
+			launch_missile(attacker, attackerExt, newTarget, weapon_id);
 			fired = true;
 			targets.insert(newTarget);
 		}
@@ -130,20 +130,20 @@ namespace hooks
 	// Fires a weapon from the @p unit.
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fireWeapon().
-	void fire_weapon(Unit* unit, u8 wId)
+	void fire_weapon(Unit* unit, u8 wId) // 00479C90
 	{
 		if (unit == nullptr)
 		{
 			return;
 		}
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		u8 weaponId = wId;
-		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weaponId] + 1;
+		u8 weapon_id = wId;
+		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weapon_id] + 1;
 		unitExt->values[ValueAI_PreventTargeting] = 0;
 		// Retrieve the spawning position for the bullet.
 		s32 x, y;
-		u8 behavior = weapons_dat::Behavior[weaponId];
-		if (weaponId == WeaponId::SavantPowerSiphon)
+		u8 behavior = weapons_dat::Behavior[weapon_id];
+		if (weapon_id == WeaponId::SavantPowerSiphon)
 		{
 			behavior = WeaponBehavior::AppearOnTargetSite;
 		}
@@ -162,11 +162,11 @@ namespace hooks
 		}
 		else
 		{
-			s32 forwardOffset = weapons_dat::ForwardOffset[weaponId];
+			s32 forwardOffset = weapons_dat::ForwardOffset[weapon_id];
 
 			x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
 			y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1)
-				- weapons_dat::VerticalOffset[weaponId];
+				- weapons_dat::VerticalOffset[weapon_id];
 		}
 
 		// Cloaked Units - Decloak
@@ -177,13 +177,13 @@ namespace hooks
 			scbw::decloak_proc(unit);
 		}
 
-		if (weapons_dat::FlingyId[weaponId] != 0)
+		if (weapons_dat::FlingyId[weapon_id] != 0)
 		{
 			// Lurker Seismic DrolethSpines behavior
-			if (weaponId == WeaponId::LakiziliskSubterraneanSpines)
+			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 			{
 				unitExt->timers[TimerLurkerETA] = 17;
-				auto range = weapons_dat::MaxRange[weaponId] + 16;
+				auto range = weapons_dat::MaxRange[weapon_id] + 16;
 				s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), unit->order_target.unit->get_x(), unit->order_target.unit->get_y());
 				s32 targ_x = unit->get_x() + scbw::get_polar_x(range, angle);
 				s32 targ_y = unit->get_y() + scbw::get_polar_y(range, angle);
@@ -200,14 +200,14 @@ namespace hooks
 				&& unit->id != UnitId::ProtossAnthelion)
 			{
 				// Madrigal Tempo Change weapon switch
-				if (weaponId == WeaponId::MadrigalFuriaMissiles
+				if (weapon_id == WeaponId::MadrigalFuriaMissiles
 					&& scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1)
 				{
-					weaponId = WeaponId::MadrigalImperiosoMissiles;
+					weapon_id = WeaponId::MadrigalImperiosoMissiles;
 				}
 
 				// Nemean Reactors - Heracles behavior - Refresh timer on attack and add stack
-				if (weaponId == WeaponId::HeraclesJavelinCannons)
+				if (weapon_id == WeaponId::HeraclesJavelinCannons)
 				{
 					unitExt->values[ValueNemeanReactorsStack]++;
 					unitExt->timers[TimerNemeanReactors] = 49;
@@ -224,44 +224,44 @@ namespace hooks
 				// Track launch position
 				unitExt->last_bullet_launch_position = unit->position;
 
-				switch (weaponId)
+				switch (weapon_id)
 				{
 					// Missile spawn positions start
 					case WeaponId::AxitriliskSearingVenom:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueAxitriliskMissilePos, 1, ImagesDatEntries::OverlaySpecialPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueAxitriliskMissilePos, 1, ImagesDatEntries::OverlaySpecialPtr);
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueCharlatanMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::ExemplarPlasmaTorpedo:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueExemplarMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::EmpyreanPlasmaBarrage:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueEmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueEmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::StarSovereignCelestialCannon:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueSovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueClaymoreMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueClaymoreMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::PenumbraErebolShockCannon:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValuePenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::WraithBurstLasers:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueWraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr, 0, 2);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr, 0, 2);
 					} break;
 					case WeaponId::CentaurSunchaserMissiles:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueCentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueCentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::PhobosArgosLaserBatteries:
 					{
@@ -278,31 +278,31 @@ namespace hooks
 								unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
 							}
 						}
-						scbw::set_missile_source_pos(unit, weaponId, ValuePhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::SkithrokorSkitteringSpores:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueSkithrokorMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSkithrokorMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::LiiraliskHollowedSpores:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueLiiraliskMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueLiiraliskMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueBactaliskMissilePos, 2, ImagesDatEntries::OverlaySpecialPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueBactaliskMissilePos, 2, ImagesDatEntries::OverlaySpecialPtr);
 					} break;
 					case WeaponId::KalkaliskViscousAcid:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueKalkaliskMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueKalkaliskMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::KeskathalorScreamingVenom:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr, 0, 1);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr, 0, 1);
 					} break;
 					case WeaponId::SporeColonySeekerSpores:
 					{
-						scbw::set_missile_source_pos(unit, weaponId, ValueSporeColonyMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSporeColonyMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					// Missile spawn positions end
 					case WeaponId::SalamanderPerditionBarrage:
@@ -311,11 +311,11 @@ namespace hooks
 						auto rotate = unitExt->values[ValueSalamanderAtkPos];
 						if (rotate == 1)
 						{
-							helper::create_bullet(weaponId, unit, x, y, unit->player, unit->current_direction_1);
+							helper::create_bullet(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 						}
 						else
 						{
-							scbw::range_modified_fire(weaponId, unit, x, y, 32 - 32 * rotate);
+							scbw::range_modified_fire(weapon_id, unit, x, y, 32 - 32 * rotate);
 						}
 						rotate++;
 						if (rotate > 2)
@@ -327,7 +327,7 @@ namespace hooks
 					case WeaponId::MinotaurAsterionLaserBattery:
 					{
 						// Monoceros Targeting - Minotaur
-						fire_multiple(unit, unitExt, weaponId, 5, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, unitExt, weapon_id, 5, Flags::Enemy | Flags::FrontalArc);
 					} break;
 					case WeaponId::SirenCharybdalRifle:
 					{
@@ -355,7 +355,7 @@ namespace hooks
 						}
 
 						// Tertiary Eyes - Siren
-						fire_multiple(unit, unitExt, weaponId, 1 + count, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, unitExt, weapon_id, 1 + count, Flags::Enemy | Flags::FrontalArc);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles:
 					{
@@ -368,11 +368,11 @@ namespace hooks
 					case WeaponId::IzirokorEnergizedBioplasma:
 					{
 						// Crushing Tide - Izirokor
-						fire_multiple(unit, unitExt, weaponId, 3, Flags::Enemy);
+						fire_multiple(unit, unitExt, weapon_id, 3, Flags::Enemy);
 					} break;
 					default:
 					{
-						helper::create_bullet(weaponId, unit, x, y, unit->player, unit->current_direction_1);
+						helper::create_bullet(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 				}
 			}
@@ -381,18 +381,18 @@ namespace hooks
 		// Deconstruction - Pazuzu passive
 		if (unitExt->values[ValueDeconstruction])
 		{
-			scbw::do_deconstruction_damage(unit, weaponId);
+			scbw::do_deconstruction_damage(unit, weapon_id);
 		}
 	}
 
-	void progress_bullet_flight(Bullet* bullet)
+	void progress_bullet_flight(Bullet* bullet) // 0048B3B0
 	{
 		Bullet* v1;
 		Unit* target;
 		Sprite* bulletSprite;
 		Image* i;
 
-		if (bullet->weaponId == WeaponId::AlkajeliskParasiticSpores)
+		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores)
 		{
 			if (bullet->attackTarget.unit == nullptr)
 			{
@@ -429,7 +429,7 @@ namespace hooks
 		}
 
 		u8 time = bullet->time_remaining--;
-		if (bullet->weaponId == WeaponId::AlkajeliskParasiticSpores)
+		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores)
 		{
 			if (bullet->time_remaining < AlkajeliskParasiticSporesTimer && bullet->attackTarget.unit == nullptr)
 			{
@@ -439,7 +439,7 @@ namespace hooks
 		bool bEnd = false;
 
 		// Accelerate missiles over time
-		if (bullet->weaponId == WeaponId::EmpyreanPlasmaBarrage)
+		if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage)
 		{
 			u8 time_current = 255 - time;
 			if (time_current == 8)
@@ -449,7 +449,7 @@ namespace hooks
 			}
 		}
 
-		if (bullet->weaponId == WeaponId::ArchitectDispersiveSalvo
+		if (bullet->weapon_id == WeaponId::ArchitectDispersiveSalvo
 			&& bullet->sourceUnit
 			&& bullet->attackTarget.unit
 			&& bullet->attackTarget.unit->sprite && bullet->sourceUnit->sprite)
@@ -515,8 +515,8 @@ namespace hooks
 		// Missile interception
 		// Empyrean Heavenly Passage
 		// Valkyrie Charon Afterburners
-		else if (bullet->weaponId == WeaponId::EmpyreanPlasmaBarrage
-			|| bullet->weaponId == WeaponId::ValkyrieHaloRockets)
+		else if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage
+			|| bullet->weapon_id == WeaponId::ValkyrieHaloRockets)
 		{
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::get_nearest_target(
@@ -564,7 +564,7 @@ namespace hooks
 		}
 
 		// Star Sovereign Intervention
-		else if (bullet->weaponId == WeaponId::StarSovereignInterventionMissiles)
+		else if (bullet->weapon_id == WeaponId::StarSovereignInterventionMissiles)
 		{
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::get_nearest_target(
@@ -608,10 +608,10 @@ namespace hooks
 		}
 
 		// For missiles hitting targets mid-flight
-		else if (scbw::weapon_pierces_targets(bullet->weaponId))
+		else if (scbw::weapon_pierces_targets(bullet->weapon_id))
 		{
 			u32 range = 0;
-			switch (bullet->weaponId)
+			switch (bullet->weapon_id)
 			{
 				case WeaponId::KalkaliskViscousAcid:
 				{
@@ -674,14 +674,14 @@ namespace hooks
 			);
 			if (collisionTarget != nullptr)
 			{
-				if (bullet->weaponId == WeaponId::PenumbraErebolShockCannon)
+				if (bullet->weapon_id == WeaponId::PenumbraErebolShockCannon)
 				{
 					// Penumbra - Shroud Piercer - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
 					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					hooks::weapon_bullet_hit(bullet, collisionTarget, 2);
 				}
-				else if (bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
+				else if (bullet->weapon_id == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					// Claymore - Kelvin Munitions - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
@@ -695,7 +695,7 @@ namespace hooks
 						collisionTargetExt->values[ValueKelvinMunitionsSlow] = 1;
 					}
 				}
-				else if (bullet->weaponId == WeaponId::KalkaliskViscousAcid) {
+				else if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid) {
 					// Kalkalisk behavior
 					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 					auto count = globals.get_multihit_count(bullet);
@@ -768,7 +768,7 @@ namespace hooks
 		{
 			nextBounce = bullet->remainingBounces - 1;
 			// Gladius infinite bouncing
-			if (bullet->weaponId == WeaponId::GladiusPlasmaFlurry)
+			if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 			{
 				nextBounce = 1;
 			}
@@ -785,7 +785,7 @@ namespace hooks
 			}
 			else
 			{
-				if (bullet->weaponId == WeaponId::GladiusPlasmaFlurry)
+				if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 				{
 					globals.remove_multihit_bullet(bullet);
 				}
@@ -890,7 +890,7 @@ namespace hooks
 		}
 
 		// Gladius Binding Plasma behavior
-		if (globals.bounce_bullet->weaponId == WeaponId::GladiusPlasmaFlurry)
+		if (globals.bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 		{
 			if (pIterator != nullptr && *bulletBounceMissileNext != nullptr
 				&& (*bulletBounceMissileNext)->sprite != nullptr
@@ -990,7 +990,7 @@ namespace hooks
 	}
 
 	// Hooked to stop Valkyries from being cucked by lardcode - Pr0nogo
-	Bullet* create_bullet(s32 weaponId, Unit* parent, s32 x, s16 y, char player, s32 angle) // 0048C260
+	Bullet* create_bullet(s32 weapon_id, Unit* parent, s32 x, s16 y, char player, s32 angle) // 0048C260
 	{
 		Bullet* pBullet;
 		s32 parentStatus;
@@ -1013,7 +1013,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (!hooks::initialize_bullet(player, parent, y, *first_free_bullet, weaponId, x, angle))
+		if (!hooks::initialize_bullet(player, parent, y, *first_free_bullet, weapon_id, x, angle))
 		{
 			return 0;
 		}
@@ -1065,9 +1065,9 @@ namespace hooks
 	}
 
 	// Hooked so we don't need aise for Bactalisks - Pr0nogo
-	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weaponId, s32 x, s32 angle) // 0048BEC0
+	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle) // 0048BEC0
 	{
-		if (!helper::initialize_flingy(weapons_dat::FlingyId[weaponId], y, x, (Flingy*)bullet, player, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
+		if (!helper::initialize_flingy(weapons_dat::FlingyId[weapon_id], y, x, (Flingy*)bullet, player, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
 		{
 			return 0;
 		}
@@ -1079,8 +1079,8 @@ namespace hooks
 		bullet->attackTarget.pt.y = 0;
 		bullet->attackTarget.pt.x = 0;
 		bullet->unknown_0x54 = 0;
-		bullet->weaponId = weaponId;
-		bullet->time_remaining = weapons_dat::RemoveAfter[weaponId];
+		bullet->weapon_id = weapon_id;
+		bullet->time_remaining = weapons_dat::RemoveAfter[weapon_id];
 		bullet->someUnitType = 228;
 		bullet->remainingBounces = 0;
 		bullet->hit_flags = 0;
@@ -1092,7 +1092,7 @@ namespace hooks
 		bullet->unknown_0x4E = 0;
 		hooks::bullet_behavior_reassign(bullet);
 
-		u8 launchSpin = weapons_dat::LaunchSpin[weaponId];
+		u8 launchSpin = weapons_dat::LaunchSpin[weapon_id];
 		if (launchSpin)
 		{
 			s32 launchSpinVariance = 0;
@@ -1149,7 +1149,7 @@ namespace hooks
 			bullet->attackTarget.pt.y = parent->order_target.pt.y;
 		}
 
-		switch (weapons_dat::Behavior[weaponId])
+		switch (weapons_dat::Behavior[weapon_id])
 		{
 			case WeaponBehavior::Fly_DoNotFollowTarget:
 			case WeaponBehavior::Fly_FollowTarget:
@@ -1200,7 +1200,7 @@ namespace hooks
 			}
 			case WeaponBehavior::Bounce:
 			{
-				switch (weaponId)
+				switch (weapon_id)
 				{
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
@@ -1251,7 +1251,7 @@ namespace hooks
 			case WeaponBehavior::GoToMaxRange:
 			{
 				s32 bulletDirection = bullet->direction1;
-				s32 maxRangeVar = (weapons_dat::MaxRange[bullet->weaponId] + 20) << 8;
+				s32 maxRangeVar = (weapons_dat::MaxRange[bullet->weapon_id] + 20) << 8;
 				bullet->attackTarget.pt.x = parent->sprite->position.x + ((u32)(maxRangeVar * angleDistance[bulletDirection].x) >> 16);
 				bullet->attackTarget.pt.y = parent->sprite->position.y + ((u32)(maxRangeVar * angleDistance[bulletDirection].y) >> 16);
 				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
@@ -1333,7 +1333,7 @@ namespace hooks
 			{
 				bullet->unknown_0x4E = bullet->unknown_0x4E & 0xFE;
 				Image* bulletOverlay = nullptr;
-				switch (weapons_dat::Behavior[bullet->weaponId])
+				switch (weapons_dat::Behavior[bullet->weapon_id])
 				{
 					case WeaponBehavior::AppearOnTargetUnit:
 					case WeaponBehavior::AppearOnTargetSite:

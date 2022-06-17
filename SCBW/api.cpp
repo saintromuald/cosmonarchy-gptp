@@ -17,7 +17,7 @@
 
 namespace scbw
 {
-	void artificial_bullet_from(u8 weaponId, u8 player, Unit* source, Unit* target, Point16 target_pt)
+	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt)
 	{
 		auto target_unit = source->order_target.unit;
 		auto target_pos = source->order_target.pt;
@@ -32,17 +32,17 @@ namespace scbw
 		{
 			source->order_target.pt = target_pt;
 		}
-		helper::create_bullet(weaponId, source, source->sprite->position.x, source->sprite->position.y, player,
+		helper::create_bullet(weapon_id, source, source->sprite->position.x, source->sprite->position.y, player,
 			get_angle(source->position.x, source->position.y, source->order_target.pt.x, source->order_target.pt.y));
 		source->order_target.unit = target_unit;
 		source->order_target.pt = target_pos;
 	}
-	void artificial_bullet_from(u8 weaponId, u8 player, Unit* source, Unit* target, u16 x, u16 y)
+	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y)
 	{
 		Point16 tgt;
 		tgt.x = x;
 		tgt.y = y;
-		artificial_bullet_from(weaponId, player, source, target, tgt);
+		artificial_bullet_from(weapon_id, player, source, target, tgt);
 	}
 
 	bool teleport(Unit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
@@ -183,22 +183,22 @@ namespace scbw
 	//-------- Unit checks --------//
 
 	// Identical to function @ 0x00475CE0
-	bool can_weapon_target_unit(u8 weaponId, Unit* target, Unit* attacker)
+	bool can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker)
 	{
-		if (weaponId >= WEAPON_TYPE_COUNT)
+		if (weapon_id >= WEAPON_TYPE_COUNT)
 		{
 			return false;
 		}
 		if (!target)
 		{
-			return weapons_dat::TargetFlags[weaponId].terrain;
+			return weapons_dat::TargetFlags[weapon_id].terrain;
 		}
 		if (target->status & UnitStatus::Invincible)
 		{
 			return false;
 		}
 
-		const TargetFlag tf = weapons_dat::TargetFlags[weaponId];
+		const TargetFlag tf = weapons_dat::TargetFlags[weapon_id];
 		const u32 targetProps = units_dat::base_property[target->id];
 		if ((target->status & UnitStatus::InAir) ? !tf.air : !tf.ground)
 		{
@@ -1088,7 +1088,7 @@ namespace scbw
 		}
 	}
 
-	void range_modified_fire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset)
+	void range_modified_fire(u8 weapon_id, Unit* unit, s16 x, s16 y, u32 offset)
 	{
 		auto target_unit = unit->order_target.unit;
 		auto target_pos = unit->order_target.pt;
@@ -1103,7 +1103,7 @@ namespace scbw
 		unit->order_target.unit = nullptr;
 		unit->order_target.pt.x = polar_x;
 		unit->order_target.pt.y = polar_y;
-		helper::create_bullet(weaponId, unit, x, y, unit->player, unit->current_direction_1);
+		helper::create_bullet(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 		unit->order_target.unit = target_unit;
 		unit->order_target.pt = target_pos;
 	}
@@ -1246,11 +1246,11 @@ namespace scbw
 		return overlayOffset;
 	}
 
-	s32 get_final_damage(Unit* unit, u16 weaponId)
+	s32 get_final_damage(Unit* unit, u16 weapon_id)
 	{
 		s32 upgType = get_upgrade_type(unit);
-		s32 baseDamage = weapons_dat::DamageAmount[weaponId];
-		f64 bonusDamage = (f64)weapons_dat::DamageBonus[weaponId] * (f64)scbw::get_upgrade_level(unit->player, upgType);
+		s32 baseDamage = weapons_dat::DamageAmount[weapon_id];
+		f64 bonusDamage = (f64)weapons_dat::DamageBonus[weapon_id] * (f64)scbw::get_upgrade_level(unit->player, upgType);
 		f64 final_damage = baseDamage;
 		if (bonusDamage)
 		{
@@ -1756,9 +1756,9 @@ namespace scbw
 		}
 	}
 
-	bool weapon_pierces_targets(u16 weaponId)
+	bool weapon_pierces_targets(u16 weapon_id)
 	{
-		switch (weaponId)
+		switch (weapon_id)
 		{
 			case WeaponId::KalkaliskViscousAcid:
 			case WeaponId::PenumbraErebolShockCannon:
@@ -2102,8 +2102,8 @@ namespace scbw
 
 	Point16 get_region_center(Region* region) {
 		Point16 center = {};
-		center.x = region->regionCenterX >> 8;
-		center.y = region->regionCenterY >> 8;
+		center.x = region->region_center_x >> 8;
+		center.y = region->region_center_y >> 8;
 		return center;
 	}
 
@@ -2117,17 +2117,17 @@ namespace scbw
 			case RegionState::Defending:
 			case RegionState::ChaseAway: {
 				helper::ai_set_region_type(RegionState::Defending, ai_region);
-				if (ai_region->defensePriorityAdd < priority) {
-					ai_region->defensePriorityAdd = priority;
+				if (ai_region->defense_priority_add < priority) {
+					ai_region->defense_priority_add = priority;
 				}
-				ai_region->defendTimeout = 0;
-				if (ai_region->neededGroundStrength) ai_region->neededGroundStrength = 200;
-				if (ai_region->neededAirStrength)    ai_region->neededAirStrength    = 200;
+				ai_region->defend_timeout = 0;
+				if (ai_region->ground_strength_needed) ai_region->ground_strength_needed = 200;
+				if (ai_region->air_strength_needed)    ai_region->air_strength_needed    = 200;
 			} break;
 		}
 		if (recurse) {
 			Region* region = scbw::get_region(region_id);
-			for (u32 i = 0; i < region->neighborCount; ++i) {
+			for (u32 i = 0; i < region->neighbor_count; ++i) {
 				scbw::ai_defend(player, region->neighbors[i], priority, false);
 			}
 		}
@@ -2282,7 +2282,7 @@ namespace scbw
 		if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
 			switch (unit_id) {
 				case UnitId::TerranComsatStation:
-				case UnitId::TerranNuclearSilo:
+				case UnitId::TerranMissileSilo:
 				case UnitId::TerranQuarry:
 					return false;
 			}

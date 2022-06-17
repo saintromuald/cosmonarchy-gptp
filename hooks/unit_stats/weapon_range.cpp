@@ -68,7 +68,7 @@ namespace hooks
 	// Returns the modified max distance for the weapon, which is assumed to be attached to the given unit.
 	// This hook affects the behavior of Unit::get_max_weapon_range().
 	// Note: Weapon ranges are measured in pixels.
-	u32 get_max_weapon_range(Unit* unit, u8 weaponId, Unit* target)
+	u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
@@ -102,7 +102,7 @@ namespace hooks
 
 		// Stellar Enforcement - Magister behavior
 		if (unit->order_target.unit
-			&& weapons_dat::MaxRange[weaponId] > 32)
+			&& weapons_dat::MaxRange[weapon_id] > 32)
 		{
 			UnitExt* orderUnitExt = globals.get_unit_ext(unit->order_target.unit);
 			if (orderUnitExt->values[ValueStellarEnforcement])
@@ -123,8 +123,8 @@ namespace hooks
 		}
 
 		// Height advantage
-		bonusAmount += scbw::get_cliff_advantage(unit, target, weaponId) * 32;
+		bonusAmount += scbw::get_cliff_advantage(unit, target, weapon_id) * 32;
 
-		return weapons_dat::MaxRange[weaponId] * scale + bonusAmount;
+		return weapons_dat::MaxRange[weapon_id] * scale + bonusAmount;
 	}
 }

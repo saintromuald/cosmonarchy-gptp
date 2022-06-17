@@ -1319,7 +1319,7 @@ namespace DeathSoundId
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//Spell_DisruptionWeb
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//TerranCommandCenter
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//TerranComsatStation
-		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//TerranNuclearSilo
+		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//TerranMissileSilo
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranSupplyDepot
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranRefinery
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranBarracks

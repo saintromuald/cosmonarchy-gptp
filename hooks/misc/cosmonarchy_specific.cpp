@@ -139,11 +139,11 @@ namespace hooks
 		return false;
 	}
 
-	u32 weapon_flingy(u32 weaponId, u8 player_id)
+	u32 weapon_flingy(u32 weapon_id, u8 player_id)
 	{
-		globals.flingy_init_bullet_id = weaponId;
+		globals.flingy_init_bullet_id = weapon_id;
 		globals.flingy_init_player_id = player_id;
-		return weapons_dat::FlingyId[weaponId];
+		return weapons_dat::FlingyId[weapon_id];
 	}
 
 	u32 get_flingy_halt_distance(Flingy* flingy)

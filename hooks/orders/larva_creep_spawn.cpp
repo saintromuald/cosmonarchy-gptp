@@ -375,7 +375,7 @@ namespace hooks
 
 	// x and y are relative positions where (0,0) is presumably the center of the building
 	// !!! WARNING !!! Because of the super fun getUnitPointer call in this function, you probably never want to call this function directly
-	bool inCreepArea(s32 x, s32 y)
+	bool in_creep_area(s32 x, s32 y)
 	{
 		// Default function:
 		Unit* unit = helper::getUnitPointer();

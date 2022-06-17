@@ -374,7 +374,7 @@ namespace hooks
 			// Loop through bullets
 			for (Bullet* bullet = *first_bullet; bullet; bullet = bullet->next)
 			{
-				if (bullet->weaponId == WeaponId::KalkaliskViscousAcid)
+				if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid)
 				{
 					if (bullet->order_signal & 0x80)
 					{
@@ -1334,6 +1334,20 @@ namespace hooks
 				} else {
 					if (unit->main_order_id == OrderId::Plague && unit->sprite->main_graphic->animation == IscriptAnimation::Unused2) {
 						unit->sprite->create_top_overlay(ImageId::PlagueChannelOverlay); // TODO: Use the Isthrathaleth's attack overlay for origin coordinates.
+					}
+				}
+			} break;
+			case UnitId::TerranMissileSilo:
+			{
+				// Light up yellow when missile is loaded. -Pr0nogo
+				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {
+					if (unitExt->values[ValueMissileSiloLoaded] == 0 && unit->building.silo.nuke) {
+						unitExt->values[ValueMissileSiloLoaded] = 1;
+						unit->sprite->main_graphic->play_iscript_animation(IscriptAnimation::Unused2);
+					}
+					else if (unitExt->values[ValueMissileSiloLoaded] == 1 && !unit->building.silo.nuke) {
+						unitExt->values[ValueMissileSiloLoaded] = 0;
+						unit->sprite->main_graphic->play_iscript_animation(IscriptAnimation::Built);
 					}
 				}
 			} break;

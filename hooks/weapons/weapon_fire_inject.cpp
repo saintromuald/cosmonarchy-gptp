@@ -7,18 +7,18 @@ namespace
 	void __declspec(naked) fire_weapon_wrapper()
 	{
 		static Unit* unit;
-		static u8 weaponId;
+		static u8 weapon_id;
 
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOVZX EAX, [EBP + 0x08]
-			MOV weaponId, AL
+			MOV weapon_id, AL
 			MOV unit, ESI
 			PUSHAD
 		}
 
-		hooks::fire_weapon(unit, weaponId);
+		hooks::fire_weapon(unit, weapon_id);
 
 		__asm {
 			POPAD
@@ -109,7 +109,7 @@ namespace
 	void __declspec(naked) create_bullet_wrapper() // 0048C260
 	{
 		static Bullet* result;
-		static s32 weaponId;
+		static s32 weapon_id;
 		static Unit* parent;
 		static s32 x;
 		static s16 y;
@@ -130,10 +130,10 @@ namespace
 			MOV angle, EAX
 			POP EAX
 			MOV parent, EAX
-			MOV weaponId, ECX
+			MOV weapon_id, ECX
 			PUSHAD
 		}
-		result = hooks::create_bullet(weaponId, parent, x, y, player, angle);
+		result = hooks::create_bullet(weapon_id, parent, x, y, player, angle);
 		__asm
 		{
 			POPAD
@@ -150,7 +150,7 @@ namespace
 		static Unit* parent;
 		static s16 y;
 		static Bullet* bullet;
-		static s32 weaponId;
+		static s32 weapon_id;
 		static s32 x;
 		static s32 angle;
 		static s32 result;
@@ -163,7 +163,7 @@ namespace
 			MOV EAX, [EBP + 0x08]
 			MOV bullet, EAX
 			MOV EAX, [EBP + 0x0C]
-			MOV weaponId, EAX
+			MOV weapon_id, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV x, EAX
 			MOV EAX, [EBP + 0x14]
@@ -174,7 +174,7 @@ namespace
 			MOV y, DX
 			PUSHAD
 		}
-		result = hooks::initialize_bullet(player, parent, y, bullet, weaponId, x, angle);
+		result = hooks::initialize_bullet(player, parent, y, bullet, weapon_id, x, angle);
 		__asm
 		{
 			POPAD

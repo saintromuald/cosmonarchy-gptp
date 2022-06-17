@@ -16,25 +16,25 @@ char buffer[256];
 
 // Returns the special damage multiplier factor for units that don't use the
 // "Damage Factor" property in weapons.dat.
-u8 getDamageFactorForTooltip(u8 weaponId, Unit* unit)
+u8 getDamageFactorForTooltip(u8 weapon_id, Unit* unit)
 {
-	if (weaponId == WeaponId::CohortGaussPistols
-	||  weaponId == WeaponId::HarakanFlameThrower
-	||  weaponId == WeaponId::PazuzuJupiterDriver
-	||  weaponId == WeaponId::ZealotPsiBlades
-	||  weaponId == WeaponId::LegionnairePsiSabers
-	||  weaponId == WeaponId::AmaranthPsiCleaver
-	||  weaponId == WeaponId::GolemBloodlessAssault
-	||  weaponId == WeaponId::PariahIconoclastBlades
-	||  weaponId == WeaponId::StarSovereignCelestialCannon
-	||  weaponId == WeaponId::LiiraliskHollowedSpores
-	||  weaponId == WeaponId::BactaliskCorrosiveAcid
-	||  weaponId == WeaponId::AlmaksaliskPiercingSpines
-	||  weaponId == WeaponId::KeskathalorScreamingVenom)
+	if (weapon_id == WeaponId::CohortGaussPistols
+	||  weapon_id == WeaponId::HarakanFlameThrower
+	||  weapon_id == WeaponId::PazuzuJupiterDriver
+	||  weapon_id == WeaponId::ZealotPsiBlades
+	||  weapon_id == WeaponId::LegionnairePsiSabers
+	||  weapon_id == WeaponId::AmaranthPsiCleaver
+	||  weapon_id == WeaponId::GolemBloodlessAssault
+	||  weapon_id == WeaponId::PariahIconoclastBlades
+	||  weapon_id == WeaponId::StarSovereignCelestialCannon
+	||  weapon_id == WeaponId::LiiraliskHollowedSpores
+	||  weapon_id == WeaponId::BactaliskCorrosiveAcid
+	||  weapon_id == WeaponId::AlmaksaliskPiercingSpines
+	||  weapon_id == WeaponId::KeskathalorScreamingVenom)
 	{
 		return 2;
 	}
-	return weapons_dat::DamageFactor[weaponId];
+	return weapons_dat::DamageFactor[weapon_id];
 }
 
 // Returns the C-string for the tooltip text of the unit's weapon icon.
@@ -62,7 +62,7 @@ static std::string formatStringVector(std::vector<std::string> strings)
 	return result;
 }
 
-const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
+const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 {
 	const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
@@ -72,31 +72,31 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 //	const char* perRocketStr = statTxtTblNew->get_string(1301);				//"per rocket"
 	const char* typeName = "";
 
-	u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
-	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::DamageUpgrade[weaponId]);
-	u8 damageType = weapons_dat::DamageType[weaponId];
-	u32 baseDamage = weapons_dat::DamageAmount[weaponId];
-	u32 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgrade_level;
+	u8 damageFactor = getDamageFactorForTooltip(weapon_id, unit);
+	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::DamageUpgrade[weapon_id]);
+	u8 damage_type = weapons_dat::DamageType[weapon_id];
+	u32 baseDamage = weapons_dat::DamageAmount[weapon_id];
+	u32 bonusDamage = weapons_dat::DamageBonus[weapon_id] * upgrade_level;
 
-	f32 minRange = weapons_dat::MinRange[weaponId] / 32.0;
-	f32 range = weapons_dat::MaxRange[weaponId] / 32.0;
-	f32 bonusRange = hooks::get_max_weapon_range(unit, weaponId, unit->order_target.unit) / 32.0 - range;
-	bonusRange -= scbw::get_cliff_advantage(unit, unit->order_target.unit, weaponId);
+	f32 minRange = weapons_dat::MinRange[weapon_id] / 32.0;
+	f32 range = weapons_dat::MaxRange[weapon_id] / 32.0;
+	f32 bonusRange = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit) / 32.0 - range;
+	bonusRange -= scbw::get_cliff_advantage(unit, unit->order_target.unit, weapon_id);
 
 	std::string damageModifiers = "";
-	f64 attackCd = (f64)weapons_dat::Cooldown[weaponId] / 24;
-	f64 attackCdModifier = ((f64)hooks::get_modified_weapon_cooldown(unit, weaponId) / 24) - attackCd;
+	f64 attackCd = (f64)weapons_dat::Cooldown[weapon_id] / 24;
+	f64 attackCdModifier = ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24) - attackCd;
 
-	s32 splashInner = weapons_dat::InnerSplashRadius[weaponId];
-	s32 splashMedium = weapons_dat::MediumSplashRadius[weaponId];
-	s32 splashOuter = weapons_dat::OuterSplashRadius[weaponId];
+	s32 splashInner = weapons_dat::InnerSplashRadius[weapon_id];
+	s32 splashMedium = weapons_dat::MediumSplashRadius[weapon_id];
+	s32 splashOuter = weapons_dat::OuterSplashRadius[weapon_id];
 	bool hasSplash = splashInner || splashMedium || splashOuter;
-	s32 splashType = weapons_dat::ExplosionType[weaponId];
+	s32 splashType = weapons_dat::ExplosionType[weapon_id];
 	std::string splashTypeValue = "";
 
 	bool isSuicideUnit = unit->id == UnitId::ZergSkryling;
 
-	switch (damageType)
+	switch (damage_type)
 	{
 		case DamageType::Concussive:
 		{
@@ -167,31 +167,31 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 	};
 
 	std::vector<std::string> targetFlags;
-	if (weapons_dat::TargetFlags[weaponId].ground)
+	if (weapons_dat::TargetFlags[weapon_id].ground)
 	{
 		targetFlags.push_back("Ground");
 	}
-	if (weapons_dat::TargetFlags[weaponId].air)
+	if (weapons_dat::TargetFlags[weapon_id].air)
 	{
 		targetFlags.push_back("Air");
 	}
-	if (weapons_dat::TargetFlags[weaponId].mechanical || weapons_dat::TargetFlags[weaponId].orgOrMech)
+	if (weapons_dat::TargetFlags[weapon_id].mechanical || weapons_dat::TargetFlags[weapon_id].orgOrMech)
 	{
 		targetFlags.push_back("Mechanical");
 	}
-	if (weapons_dat::TargetFlags[weaponId].organic || weapons_dat::TargetFlags[weaponId].orgOrMech)
+	if (weapons_dat::TargetFlags[weapon_id].organic || weapons_dat::TargetFlags[weapon_id].orgOrMech)
 	{
 		targetFlags.push_back("Organic");
 	}
-	if (weapons_dat::TargetFlags[weaponId].nonBuilding)
+	if (weapons_dat::TargetFlags[weapon_id].nonBuilding)
 	{
 		targetFlags.push_back("Not Building");
 	}
-	if (weapons_dat::TargetFlags[weaponId].nonRobotic)
+	if (weapons_dat::TargetFlags[weapon_id].nonRobotic)
 	{
 		targetFlags.push_back("Not Robotic");
 	}
-	if (weapons_dat::TargetFlags[weaponId].terrain)
+	if (weapons_dat::TargetFlags[weapon_id].terrain)
 	{
 		targetFlags.push_back("Terrain");
 	}
@@ -214,7 +214,7 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 		if (bonusDamage > 0) text += "+" + std::to_string(damageFactor * bonusDamage);
 
 		/*
-		if (weaponId == WeaponId::ValkyrieHaloRockets)
+		if (weapon_id == WeaponId::ValkyrieHaloRockets)
 		{
 			text += " " + std::string(perRocketStr);
 		}
@@ -304,9 +304,9 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 namespace hooks
 {
 	// Returns the C-string for the tooltip text of the unit's weapon icon.
-	const char* get_weapon_tooltip_string(u8 weaponId, Unit* unit)
+	const char* get_weapon_tooltip_string(u8 weapon_id, Unit* unit)
 	{
-		return getDamageTooltipString(weaponId, unit, weapons_dat::label[weaponId]);
+		return getDamageTooltipString(weapon_id, unit, weapons_dat::label[weapon_id]);
 	}
 
 	static std::string timerToString(s32 timer)

@@ -3962,13 +3962,13 @@ namespace helper
 		}
 	}
 
-	u32 get_upgraded_weapon_cooldown(Unit* unit, u8 weaponId)
+	u32 get_upgraded_weapon_cooldown(Unit* unit, u8 weapon_id)
 	{
 		const u32 Func_getUpgradedWpnCooldown = 0x00475DC0;
 		static u32 return_value;
 		__asm {
 			PUSHAD
-			MOV AL, weaponId
+			MOV AL, weapon_id
 			MOV ESI, unit
 			CALL Func_getUpgradedWpnCooldown
 			MOV return_value, EAX
@@ -3977,13 +3977,13 @@ namespace helper
 		return return_value;
 	}
 
-	bool is_ready_to_attack(Unit* unit, u32 weaponId)
+	bool is_ready_to_attack(Unit* unit, u32 weapon_id)
 	{
 		const u32 Func_is_ready_to_attack = 0x00476640;
 		static b32 pre_result;
 		__asm {
 			PUSHAD
-			PUSH weaponId
+			PUSH weapon_id
 			MOV EAX, unit
 			CALL Func_is_ready_to_attack
 			MOV pre_result, EAX
@@ -4962,13 +4962,13 @@ namespace helper
 		}
 	}
 
-	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId)
+	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weapon_id)
 	{
 		const u32 Func_Sub425790 = 0x00425790;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
-			PUSH weaponId
+			PUSH weapon_id
 			PUSH index
 			CALL Func_Sub425790
 			POPAD
@@ -5130,7 +5130,7 @@ namespace helper
 	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor)
 	{
 		const u32 Helper_WeaponBulletShot = 0x00479AE0;
-		if (bullet != nullptr && target != nullptr && bullet->sourceUnit && (bullet->weaponId == WeaponId::PariahIconoclastBlades || bullet->weaponId == WeaponId::StrigaPhaseSaber))
+		if (bullet != nullptr && target != nullptr && bullet->sourceUnit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber))
 		{
 			if (!globals.was_hit_by_pariah(bullet->sourceUnit, target))
 			{
@@ -5869,7 +5869,7 @@ namespace helper
 		return builtUnit;
 	}
 
-	Bullet* create_bullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction)
+	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction)
 	{
 		const u32 Helper_CreateBullet = 0x0048C260;
 		static u32 new_attackingPlayer;
@@ -5882,7 +5882,7 @@ namespace helper
 		new_y = y;
 
 		/// Paladin attacking behavior
-		if (weaponId == WeaponId::PaladinCrusaderMissiles)
+		if (weapon_id == WeaponId::PaladinCrusaderMissiles)
 		{
 			if (source->sprite->main_graphic->direction == 0
 				|| source->sprite->main_graphic->direction == 1
@@ -5939,7 +5939,7 @@ namespace helper
 			PUSH new_y
 			PUSH new_x
 			MOV EAX, source
-			MOVZX ECX, weaponId
+			MOVZX ECX, weapon_id
 			CALL Helper_CreateBullet
 			MOV bullet, EAX
 			POPAD
@@ -6112,14 +6112,14 @@ namespace helper
 		return units_in_bounds;
 	}
 
-	u32 get_unit_damage_bonus(Unit* unit, u8 weaponId)
+	u32 get_unit_damage_bonus(Unit* unit, u8 weapon_id)
 	{
 		const u32 Func_getUnitDamageBonus = 0x00475EC0;
 		static u32 damageBonus;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			MOV DL, weaponId
+			MOV DL, weapon_id
 			CALL Func_getUnitDamageBonus
 			MOV damageBonus, EAX
 			POPAD
@@ -8251,7 +8251,7 @@ namespace helper
 	}
 
 	// For create_bullet
-	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weaponId, s32 x, s32 angle)
+	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weapon_id, s32 x, s32 angle)
 	{
 		const u32 Func_initializeBullet = 0x0048BEC0;
 		static s32 result;
@@ -8260,7 +8260,7 @@ namespace helper
 			PUSHAD
 			PUSH angle
 			PUSH x
-			PUSH weaponId
+			PUSH weapon_id
 			PUSH bulletResult
 			MOVZX DX, y
 			MOV EAX, parent

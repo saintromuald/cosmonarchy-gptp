@@ -66,7 +66,7 @@ namespace hooks
 	{
 		AiRegion* regionVar;
 		Unit* attackTarget;
-		AiRegion* targetRegion;
+		AiRegion* target_region;
 		u32 missingUnits;
 		u32 attackUnit;
 		u16 regionId;
@@ -79,23 +79,23 @@ namespace hooks
 
 		helper::ai_recalculate_region_strength(region);
 		helper::ai_target_enemy_in_region(region);
-		if (region->captainFlags & 0x20 && helper::ai_move_military_to_defend(region))
+		if (region->captain_flags & 0x20 && helper::ai_move_military_to_defend(region))
 		{
 			return;
 		}
 		helper::ai_get_region_military_types(region, &a2, &a3, &a4);
 		regionVar = region;
-		if (a2 && (*SAI_Paths)->regions[region->region].accessibilityFlags == 0x1FFD || helper::ai_can_travel_to_region(region, region))
+		if (a2 && (*SAI_Paths)->regions[region->region].accessibility_flags == 0x1FFD || helper::ai_can_travel_to_region(region, region))
 		{
 			helper::ai_set_region_type(0, region);
 			attackTarget = helper::ai_pick_attack_target_no_buildings(region);
 			if (attackTarget)
 			{
-				targetRegion = &AiRegionCaptains[(u8)region->player][helper::get_region_id(
+				target_region = &AiRegionCaptains[(u8)region->player][helper::get_region_id(
 					attackTarget->sprite->position.x,
 					attackTarget->sprite->position.y)];
-				helper::ai_set_region_type(9, targetRegion);
-				helper::ai_move_military_to_other_region(targetRegion, region, 0, 0, 1);
+				helper::ai_set_region_type(9, target_region);
+				helper::ai_move_military_to_other_region(target_region, region, 0, 0, 1);
 			}
 			else
 			{
@@ -106,7 +106,7 @@ namespace hooks
 		if (helper::ai_attack_timer_decrement((u8)region->player))
 		{
 LABEL_15:
-			regionId = region->targetRegion;
+			regionId = region->target_region;
 			if (regionId)
 			{
 				targetRegion2 = &AiRegionCaptains[(u8)region->player][regionId];

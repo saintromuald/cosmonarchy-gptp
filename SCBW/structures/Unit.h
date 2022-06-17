@@ -88,7 +88,7 @@ struct Unit : public UnitLayout
 	/// Returns the maximum distance of a weapon in pixels. The weapon is assumed to
 	/// be attached to this unit for calculating upgrade effects.
 	/// This is affected by the Weapon Range hook module.
-	u32 get_max_weapon_range(u8 weaponId) const;
+	u32 get_max_weapon_range(u8 weapon_id) const;
 
 	/// Retrieves the in-game name of this unit. In UMS maps, this returns custom
 	/// names (if they exist).
@@ -187,22 +187,22 @@ struct Unit : public UnitLayout
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.
 	void damage_with(
-		u8 weaponId,              ///< weapons.dat ID to use.
-		s32 damage = -1,			 ///< Amount of damage dealt to this unit. -1 = inherit from weaponId
+		u8 weapon_id,              ///< weapons.dat ID to use.
+		s32 damage = -1,			 ///< Amount of damage dealt to this unit. -1 = inherit from weapon_id
 		Unit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
 		u8 attackingPlayer = -1,  ///< Attacking player (for increasing kill score)
 		s8 direction = 0,          ///< Attacked direction (for shield flicker overlays)
-		u8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
+		u8 damage_divisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
 	);
 
 	void Unit::damage_with_custom(
 		s32 damage,
-		u8 damageType,
+		u8 damage_type,
 		Unit* attacker,
 		u8 attackingPlayerId,
 		s8 direction,
-		u8 damageDivisor,
-		bool ignoreFlatArmor
+		u8 damage_divisor,
+		bool ignore_flat_armor
 	);
 
 	/// Deals damage directly to unit HP, killing it if possible.
@@ -378,7 +378,7 @@ struct Unit : public UnitLayout
 	/// unit's weapon cooldown. The spawned weapon sprite obeys the weapon
 	/// behavior properties in weapons.dat.
 	/// Note: This function is affected by the Fire Weapon hook module.
-	void fireWeapon(u8 weaponId) const;
+	void fireWeapon(u8 weapon_id) const;
 
 	/// Retrieves the unit pointer by @p index from the unit table (first unit is
 	/// indexed at 1). If invalid, returns nullptr instead.
