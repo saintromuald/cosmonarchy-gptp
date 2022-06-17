@@ -662,12 +662,10 @@ static bool unit_kiting_can_attack(Unit* unit) {
 }
 
 void kiting_ai(Unit* unit, UnitExt* unit_ext) {
-	// Kiting AI
 	if (unit_could_kite(unit) && unit_ext->timers[TimerAI_KitingLeash] == 1) {
 		unit_ext->values[ValueAI_PreventTargeting] = 0;
 		unit_ext->timers[TimerAI_KitingCooldown] = 1 * 24;
 		unit->order_to(OrderId::Move, unit_ext->ai_kiting_origin.x, unit_ext->ai_kiting_origin.y);
-		unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 	}
 
 	if (unit_could_kite(unit)) {
@@ -768,10 +766,8 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				unit_ext->timers[TimerAI_KitingCombat] = 4 * 24;
 				if (unit->main_order_id != attack_order_id || unit->order_target.unit != best_target) {
 					unit->order_to(attack_order_id, best_target);
-					unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					if (unit->subunit) {
 						unit->subunit->order_to(attack_order_id, best_target);
-						unit->subunit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					}
 				}
 			} else {
@@ -863,7 +859,6 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: backward", unit->getName());
 						}
-						unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					} break;
 					case KiterType_Ranged: {
 						if (!prefer_kiting_forward && (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || hostile_advantage >= 2.0)) {
@@ -877,7 +872,6 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: backward", unit->getName());
 						}
-						unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					} break;
 					case KiterType_Artillery: {
 						if (distance > max_range * 2) {
@@ -887,7 +881,6 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: backward", unit->getName());
 						}
-						unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					} break;
 					case KiterType_Flagship: {
 						if (!prefer_kiting_forward
@@ -901,7 +894,6 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
 							KITE_DEBUG("%s: backward", unit->getName());
 						}
-						unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
 					} break;
 				}
 			}
