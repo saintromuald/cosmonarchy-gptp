@@ -1833,26 +1833,35 @@ namespace hooks
 			}
 			if (unit->main_order_id != OrderId::AttackUnit) {
 				const u32 radius = unit->get_seek_range() * 32;
-				Unit* target = scbw::UnitFinder::get_nearest_target(
+				auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
+
+				Unit* best_target = scbw::UnitFinder::get_nearest_target(
 					unit->get_x() - radius,
 					unit->get_y() - radius,
 					unit->get_x() + radius,
 					unit->get_y() + radius,
-					unit, cosmonarchy_finder_match(unit, Flags::NotSelf, {})
-				);
-				
-				Unit* attacker = unit->subunit ? unit->subunit : unit;
-				if (target && attacker->can_attack_target(target) && helper::is_unit_in_weapon_range(unit, target)) {
-					attacker->order_to(OrderId::AttackUnit, target);
+					unit, [&](Unit* target) {
+					if (!unit->can_attack_target(target) || !helper::is_unit_in_weapon_range(unit, target)) {
+						return false;
+					}
+					return true;
+				});
+				if (best_target) {
+					unit->order_to(OrderId::AttackUnit, best_target);
+					if (unit->subunit) {
+						unit->subunit->order_to(OrderId::AttackUnit, best_target);
+					}
 				}
 			}
 			unit->status |= UnitStatus::CanNotReceiveOrders;
 		}
 		if (unitExt->timers[TimerAuralAssaultBlind] == 1) {
 			Unit* target = unit->order_target.unit;
-			Unit* attacker = unit->subunit ? unit->subunit : unit;
-			if (attacker->main_order_id == OrderId::AttackUnit && target && scbw::is_allied_to(attacker->player, target->player)) {
-				attacker->order_to_idle();
+			if (unit->main_order_id == OrderId::AttackUnit && target && scbw::is_allied_to(unit->player, target->player)) {
+				unit->order_to_idle();
+				if (unit->subunit) {
+					unit->subunit->order_to_idle();
+				}
 			}
 			unit->status &= ~UnitStatus::CanNotReceiveOrders;
 		}
