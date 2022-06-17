@@ -396,13 +396,11 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_unit_ai_hooks()
-	{
+namespace hooks {
+	void inject_unit_ai_hooks() {
 		jump_patch(ai_training_unit_wrapper,					0x004A2830, 2);
 	//	jump_patch(ai_create_nuke_wrapper,						0x0045B7A0, 0);
-	//	jump_patch(ai_add_military_to_region_wrapper,			0x0043DA20, 1);
+		jump_patch(ai_add_military_to_region_wrapper,			0x0043DA20, 1);
 		jump_patch(ai_training_simple_military_wrapper,			0x0043E280, 1);
 		jump_patch(ai_training_worker_wrapper,					0x00435700, 0);
 	//	jump_patch(ai_training_normal_wrapper,					0x00435DB0, 0);

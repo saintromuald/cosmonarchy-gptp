@@ -31,7 +31,7 @@ namespace hooks
 		}
 	}
 
-	// Hooked to add region null check - Pr0nogo
+	// Hooked to add ai_region null check - Pr0nogo
 	void ai_training_simple_military(Unit* unit, Unit* parent) { // 0043E280
 		if (units_dat::base_property[unit->id] & (UnitProperty::Worker | UnitProperty::Building)) {
 			scbw::printf("SimpleMilitary on worker or building! ID: %u", (u32)unit->id);
@@ -325,48 +325,45 @@ namespace hooks
 		}
 	}
 
-
 	// Hooked to investigate improperly-initialized unit AI, and to add functionality. -Pr0nogo
-	void ai_add_military_to_region(AiRegion* region, Unit* unit, u32 must_use_region) // 0043DA20
-	{
-		AiRegion* final_region = region;
-		if (region->state == RegionState::EnemySighted && !must_use_region)
-		{
-			final_region = &AiRegionCaptains[unit->player][helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y)];
+	void ai_add_military_to_region(AiRegion* ai_region, Unit* unit, u32 must_use_region) { // 0043DA20
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+			scbw::printf("Military AI added to worker!");
 		}
-		MilitaryAiArray* military_ai_array = final_region->military;
-		MilitaryAi* first_free_military = military_ai_array->first_free_military;
-		if (first_free_military)
-		{
-			MilitaryAi* prev_military = first_free_military->link.prev;
-			military_ai_array->first_free_military = (MilitaryAi*)first_free_military->link.prev;
-			if (first_free_military->link.prev)
-			{
-				prev_military->link.next = 0;
+		if (ai_region->state == RegionState::EnemySighted && !must_use_region) {
+			ai_region = scbw::get_ai_region(unit->player, scbw::get_region_id(unit->sprite->position));
+		}
+		MilitaryAi* military_ai = ai_region->military->first_free_military;
+		if (military_ai) {
+			MilitaryAi* prev = military_ai->link.prev;
+			ai_region->military->first_free_military = (MilitaryAi*)military_ai->link.prev;
+			if (military_ai->link.prev) {
+				prev->link.next = 0;
 			}
-			if (first_free_military)
-			{
-				first_free_military->link.next = 0;
-				first_free_military->link.prev = final_region->first_military_ai;
-				MilitaryAi* first_military = final_region->first_military_ai;
-				if (first_military)
-				{
-					first_military->link.next = first_free_military;
+			if (military_ai) {
+				military_ai->link.next = 0;
+				military_ai->link.prev = ai_region->first_military_ai;
+				MilitaryAi* first_military = ai_region->first_military_ai;
+				if (first_military) {
+					first_military->link.next = military_ai;
 				}
-				final_region->first_military_ai = first_free_military;
-				first_free_military->type = AiType::Military;
-				first_free_military->unit = unit;
-				first_free_military->region = final_region;
-				if (!(unit->status & UnitStatus::InAir))
-				{
-					++final_region->ground_unit_count;
+				ai_region->first_military_ai = military_ai;
+				military_ai->type = AiType::Military;
+				military_ai->unit = unit;
+				military_ai->region = ai_region;
+				if (!(unit->status & UnitStatus::InAir)) {
+					++ai_region->ground_unit_count;
 				}
-				unit->unit_ai = (UnitAi*)first_free_military;
-				helper::ai_order_to_destination(unit, unit->id != UnitId::TerranCleric ? 157 : 177, (*SAI_Paths)->regions[final_region->region].region_center_x >> 8, (*SAI_Paths)->regions[final_region->region].region_center_y >> 8);
-				char region_state = final_region->state;
-				if (region_state == RegionState::PreparingAttack || region_state == RegionState::PreparingAttackOldUnreachable || region_state == RegionState::ContinueAttackHere || region_state == RegionState::Attacking)
-				{
-					helper::ai_assign_region_to_slowest_unit(final_region);
+				unit->unit_ai = (UnitAi*)military_ai;
+				Region* region = scbw::get_region(ai_region->region);
+				helper::ai_order_to_destination(unit, unit->id == UnitId::TerranCleric ? OrderId::HealMove : OrderId::AttackMoveComputer,
+					region->region_center_x >> 8, region->region_center_y >> 8);
+				char region_state = ai_region->state;
+				if (region_state == RegionState::PreparingAttack
+					|| region_state == RegionState::PreparingAttackOldUnreachable
+					|| region_state == RegionState::ContinueAttackHere
+					|| region_state == RegionState::Attacking) {
+					helper::ai_assign_region_to_slowest_unit(ai_region);
 				}
 			}
 		}
