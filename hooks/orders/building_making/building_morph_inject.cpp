@@ -7,7 +7,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_isMorphingWrapper()
+	void __declspec(naked) orders_is_morphing_wrapper()
 	{
 		static Unit* building;
 		static b32 result;
@@ -23,7 +23,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_ZergBuildSelfWrapper()
+	void __declspec(naked) orders_zerg_build_self_wrapper()
 	{
 		static Unit* building;
 		__asm {
@@ -412,8 +412,8 @@ namespace hooks
 {
 	void inject_building_morph_hooks()
 	{
-		jump_patch(orders_isMorphingWrapper,											0x0045CD00, 2);
-		jump_patch(orders_ZergBuildSelfWrapper,											0x0045D500, 0);
+		jump_patch(orders_is_morphing_wrapper,											0x0045CD00, 2);
+		jump_patch(orders_zerg_build_self_wrapper,										0x0045D500, 0);
 		jump_patch(cancel_zerg_building_wrapper,										0x0045DA40, 1);
 		jump_patch(is_remorphing_building_wrapper,										Func_IsRemorphingBuilding);
 		jump_patch(is_morphed_building_wrapper_ai_morph_behavior,						0x0043505F);
