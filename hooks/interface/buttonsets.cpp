@@ -726,7 +726,7 @@ namespace hooks {
 						}
 					}
 
-					if (current_button->icon_id == IconId::Burrow) {
+					if (current_button->icon_id == IconId::Burrow || current_button->icon_id == IconId::LurkerBurrow) {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
 
@@ -739,19 +739,14 @@ namespace hooks {
 							}
 						}
 
-						bool enabled = has_unburrowed;
-						if (buttonset_id != UnitId::ZergLakizilisk && has_burrowed) {
-							enabled = false;
-						}
-
-						if (enabled) {
+						if (has_unburrowed && !has_burrowed) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
 						}
 					}
 
-					if (current_button->icon_id == IconId::Unburrow) {
+					if (current_button->icon_id == IconId::Unburrow || current_button->icon_id == IconId::LurkerUnburrow) {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
 
@@ -764,12 +759,7 @@ namespace hooks {
 							}
 						}
 
-						bool enabled = has_burrowed;
-						if (buttonset_id == UnitId::ZergLakizilisk && has_unburrowed) {
-							enabled = false;
-						}
-
-						if (enabled) {
+						if (has_burrowed) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;

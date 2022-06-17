@@ -403,5 +403,8 @@ namespace IconId
 		UnusedGhost,
 		DidactPassiveShroudOfAdun,
 		PaladinActiveSkyfall,
+
+		LurkerBurrow = 377,
+		LurkerUnburrow = 398,
 	};
 }
