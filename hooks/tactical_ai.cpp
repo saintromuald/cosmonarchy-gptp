@@ -545,12 +545,12 @@ static KitePositions get_kite_positions(Unit* unit) {
 		EntryArray corpses = corpse_search_radial(unit->position, GroupRadius);
 		for (u32 i = 0; i < corpses.count; ++i) {
 			Thingy* corpse = corpses.corpses[i];
-
-			result.targets_found = true;
 			if (corpse->sprite) {
+				result.targets_found = true;
 				Point16 position = {};
 				position.x = corpse->sprite->position.x;
 				position.y = corpse->sprite->position.y;
+				result.forward_found = true;
 				adjust_biases(result.forward_biases, unit, position, 100);
 			}
 		}
