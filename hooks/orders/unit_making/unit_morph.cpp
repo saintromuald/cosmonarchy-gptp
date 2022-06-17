@@ -32,7 +32,7 @@ namespace hooks
 			Point16 pos = {};
 			unit->order_signal &= ~4;
 			bool no_two_units = false;
-			auto origin = unit->morph_origin;
+			auto origin = unit->create_origin;
 			if (units_dat::base_property[origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
 			||  unitExt->values[ValueSpecialSovrolethBirth])
 			{
@@ -90,7 +90,7 @@ namespace hooks
 			}
 			if (!scbw::is_zerg_egg_new(unit, true, false, unit->previous_unit_type))
 			{
-				if (unit->morph_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva)
+				if (unit->create_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva)
 				{
 					helper::order_new_unit_to_rally(unit, unit->connected_unit);
 					if (unit2)
@@ -217,7 +217,7 @@ namespace hooks
 					}
 					else
 					{
-						unit->morph_origin = unit->id;		
+						unit->create_origin = unit->id;		
 						unitExt->units[UnitMorphConnectedUnit] = 0;
 						helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
 					}
@@ -225,7 +225,7 @@ namespace hooks
 					
 					unit->remaining_build_time = units_dat::time_cost[unit->build_queue[unit->build_queue_slot]];
 					unit->main_order_state = 1;
-					auto origin = unit->morph_origin;
+					auto origin = unit->create_origin;
 					IscriptAnimation::Enum animation = IscriptAnimation::Init;
 					if (origin == UnitId::ZergDroleth) {
 						animation = IscriptAnimation::AirAttkInit;
@@ -308,7 +308,7 @@ namespace hooks
 				{
 					helper::update_unit_stats_and_finish_building(unit);
 					helper::update_unit_strength(unit);
-					if (unit->id == UnitId::ZergEgg && unit->morph_origin == UnitId::ZergLarva) {
+					if (unit->id == UnitId::ZergEgg && unit->create_origin == UnitId::ZergLarva) {
 						helper::order_new_unit_to_rally(unit, unit->connected_unit);
 					}
 				}
@@ -450,7 +450,7 @@ namespace hooks
 	// Determine the type (unit ID) of the unit to revert to when cancelling an @p egg_unit while it is morphing.
 	u16 get_cancel_morph_revert_id(Unit* egg_unit)
 	{
-		auto source = egg_unit->morph_origin;
+		auto source = egg_unit->create_origin;
 		if (egg_unit->get_race() == RaceId::Zerg)
 		{
 			if (!(units_dat::base_property[egg_unit->id] & UnitProperty::Building))

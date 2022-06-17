@@ -7,7 +7,7 @@ namespace hooks
 {
 	void orders_probe_build(Unit* unit)
 	{
-		if (unit->unit_ai != nullptr)
+		if (unit->unit_ai)
 		{
 			unit->status |= UnitStatus::IsGathering;
 		}
@@ -70,19 +70,19 @@ namespace hooks
 				{
 					if (helper::begin_building(unit))
 					{
-						Unit* builtUnit;
-						if (isBuildingAssimilator)
-						{
+						Unit* builtUnit = 0;
+						if (isBuildingAssimilator) {
 							builtUnit = helper::begin_gas_building(unit, UnitId::ProtossAquifer);
-						}
-						else
-						{
+						} else {
 							builtUnit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
+						}
+						if (builtUnit) {
+							builtUnit->create_origin = unit->id;
 						}
 
 						u32 unit_id = unit->build_queue[unit->build_queue_slot];
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
-						if (builtUnit == nullptr)
+						if (!builtUnit)
 						{
 							helper::refund_unit_train_cost(unit_id, unit->player);
 							helper::display_last_network_error_for_player(unit->player);
@@ -114,9 +114,9 @@ namespace hooks
 		{
 			Unit* target = unit->order_target.unit;
 			Image* current_image;
-			if (target == nullptr
+			if (!target
 				|| target->id != UnitId::ProtossAquifer
-				|| unit->order_queue_head != nullptr)
+				|| unit->order_queue_head)
 			{
 				unit->order_to_idle();
 			}
@@ -125,7 +125,7 @@ namespace hooks
 				unit->order_to(OrderId::CanEnterGasMine, target);
 			}
 			current_image = unit->sprite->images.head;
-			while (current_image != nullptr)
+			while (current_image)
 			{
 				current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
@@ -146,7 +146,7 @@ namespace hooks
 			if (building->remaining_build_time == 0)
 			{
 				Image* current_image = building->sprite->images.head;
-				while (current_image != nullptr)
+				while (current_image)
 				{
 					if (current_image->flags & ImageFlags::Flag04)
 					{
@@ -186,7 +186,7 @@ namespace hooks
 				building->order_signal &= ~1;
 				helper::replace_sprite_images(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->sprite_id), 0);
 				current_image = building->sprite->images.head;
-				while (current_image != nullptr)
+				while (current_image)
 				{
 					if (current_image->flags & ImageFlags::Flag04)
 					{
@@ -213,7 +213,7 @@ namespace hooks
 				helper::update_unit_strength(building);
 				helper::check_unstack(building);
 				current_image = building->sprite->images.head; // DF: Copied over from state 2.
-				while (current_image != nullptr) // DF: Copied over from state 2.
+				while (current_image) // DF: Copied over from state 2.
 				{
 					if (current_image->flags & ImageFlags::Flag04)
 					{
@@ -230,7 +230,7 @@ namespace hooks
 				if (building->status & UnitStatus::Frozen)
 				{
 					Image* current_image = building->sprite->images.head;
-					while (current_image != nullptr)
+					while (current_image)
 					{
 						if (current_image->flags & ImageFlags::Flag04)
 						{

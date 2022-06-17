@@ -15,7 +15,7 @@ namespace hooks
 		else if (building->main_order_state == 1)
 		{
 			Image* current_image = building->sprite->images.head;
-			while (current_image != nullptr)
+			while (current_image)
 			{
 				current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 				current_image = current_image->link.next;
@@ -30,7 +30,7 @@ namespace hooks
 		else if (building->main_order_state == 3)
 		{
 			Image* current_image = building->sprite->images.head;
-			while (current_image != nullptr)
+			while (current_image)
 			{
 				current_image->play_iscript_animation(IscriptAnimation::SpecialState2);
 				current_image = current_image->link.next;
@@ -48,7 +48,7 @@ namespace hooks
 		{
 			helper::init_building(building, 0);
 			Image* current_image = building->sprite->images.head;
-			while (current_image != nullptr)
+			while (current_image)
 			{
 				current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				current_image = current_image->link.next;
@@ -71,7 +71,7 @@ namespace hooks
 
 		BuildingModifier modifier = get_building_modifier(builtUnit, unit, true);
 
-		if (builtUnit != nullptr && !(builtUnit->status & UnitStatus::Completed))
+		if (builtUnit && !(builtUnit->status & UnitStatus::Completed))
 		{
 			bool jump_to_switch_1 = false;
 			if (unit->main_order_state > 8 ||
@@ -94,7 +94,7 @@ namespace hooks
 				else if (movableState == MovableState::ReachedDestination)
 				{
 					scbw::refresh_console();
-					if (builtUnit->connected_unit != nullptr &&
+					if (builtUnit->connected_unit &&
 						builtUnit->connected_unit != unit &&
 						(builtUnit->connected_unit)->order_target.unit == builtUnit)
 					{
@@ -197,7 +197,7 @@ namespace hooks
 						u8 rand_value = helper::randomize_short(10);
 						Image* current_image = unit->sprite->images.head;
 						unit->main_order_timer = (rand_value & 63) + 30;
-						while (current_image != nullptr)
+						while (current_image)
 						{
 							current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 							current_image = current_image->link.next;
@@ -211,7 +211,7 @@ namespace hooks
 					u8 rand_value = helper::randomize_short(10);
 					Image* current_image = unit->sprite->images.head;
 					unit->main_order_timer = (rand_value & 63) + 30;
-					while (current_image != nullptr)
+					while (current_image)
 					{
 						current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 						current_image = current_image->link.next;
@@ -229,7 +229,7 @@ namespace hooks
 				else
 				{
 					Image* current_image = unit->sprite->images.head;
-					while (current_image != nullptr)
+					while (current_image)
 					{
 						current_image->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
 						current_image = current_image->link.next;
@@ -259,12 +259,12 @@ namespace hooks
 				{
 					Image* current_image = unit->sprite->images.head;
 					bool bEndThere = false;
-					while (current_image != nullptr)
+					while (current_image)
 					{
 						current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 						current_image = current_image->link.next;
 					}
-					if (builtUnit != nullptr)
+					if (builtUnit)
 					{
 						bool jump_to_67F3C = false;
 						builtUnit->connected_unit = nullptr;
@@ -298,12 +298,12 @@ namespace hooks
 					}
 					if (!bEndThere) // 00467F4C
 					{
-						if (!(unit->order_queue_head == nullptr))
+						if (unit->order_queue_head)
 						{
 							unit->user_action_flags |= 1;
 							prepare_for_next_order(unit);
 						}
-						else if (unit->unit_ai != nullptr) // 00467F6F
+						else if (unit->unit_ai) // 00467F6F
 						{
 							unit->order_computer(OrderId::ComputerAI);
 						}
@@ -319,12 +319,12 @@ namespace hooks
 		{
 			Image* current_image = unit->sprite->images.head;
 			bool bEndThere = false;
-			while (current_image != nullptr)
+			while (current_image)
 			{
 				current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
-			if (builtUnit != nullptr)
+			if (builtUnit)
 			{
 				bool jump_to_67F3C = false;
 				builtUnit->connected_unit = nullptr;
@@ -357,12 +357,12 @@ namespace hooks
 			}
 			if (!bEndThere) // 00467F4C
 			{
-				if (!(unit->order_queue_head == nullptr))
+				if (unit->order_queue_head)
 				{
 					unit->user_action_flags |= 1;
 					prepare_for_next_order(unit);
 				}
-				else if (unit->unit_ai != nullptr) // 00467F6F
+				else if (unit->unit_ai) // 00467F6F
 				{
 					unit->order_computer(OrderId::ComputerAI);
 				}
@@ -377,7 +377,7 @@ namespace hooks
 	// Go to build a not yet existing building
 	void orders_scv_build(Unit* unit)
 	{
-		if (unit->unit_ai != nullptr)
+		if (unit->unit_ai)
 		{
 			unit->status |= UnitStatus::IsGathering;
 		}
@@ -393,7 +393,7 @@ namespace hooks
 					Unit* builtUnit;
 					unit->status &= ~UnitStatus::IsNormal;
 					unit->sprite->elevation_level = units_dat::Elevation[unit->id] + 1;
-					if (unit->order_queue_head == nullptr) // 004680A5
+					if (!unit->order_queue_head) // 004680A5
 					{
 						helper::add_order_targeting_nothing(unit, nullptr, OrderId::ResetCollision1);
 						helper::add_order_targeting_nothing(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
@@ -414,9 +414,12 @@ namespace hooks
 							unit->order_target.pt.y,
 							unit->player);
 					}
+					if (builtUnit) {
+						builtUnit->create_origin = unit->id;
+					}
 					u32 unit_id = unit->build_queue[unit->build_queue_slot];
 					unit->build_queue[unit->build_queue_slot] = UnitId::None;
-					if (builtUnit == nullptr)
+					if (!builtUnit)
 					{
 						helper::refund_unit_train_cost(unit_id, unit->player);
 						helper::display_last_network_error_for_player(unit->player);
@@ -451,7 +454,7 @@ namespace hooks
 		{
 			bool bMoveTargetResult;
 			scbw::refresh_console();
-			if (unit->order_target.unit != nullptr)
+			if (unit->order_target.unit)
 			{
 				unit->order_target.pt.x = (unit->order_target.unit)->sprite->position.x;
 				unit->order_target.pt.y = (unit->order_target.unit)->sprite->position.y;

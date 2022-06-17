@@ -483,7 +483,7 @@ namespace scbw
 	{
 		if (unit->id == UnitId::ZergEgg)
 		{
-			u8 origin = unit->morph_origin;
+			u8 origin = unit->create_origin;
 			if (origin == UnitId::ZergLarva)
 			{
 				return true;
@@ -501,7 +501,7 @@ namespace scbw
 		}
 		switch (id) {
 			case UnitId::ZergEgg: {
-				if (unit && !allow_larval_eggs && unit->morph_origin == UnitId::ZergLarva) {
+				if (unit && !allow_larval_eggs && unit->create_origin == UnitId::ZergLarva) {
 					return false;
 				}
 				return true;

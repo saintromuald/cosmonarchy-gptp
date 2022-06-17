@@ -191,7 +191,7 @@ namespace hooks
 					}
 					building->set_hitpoints(hpAfterMorph);
 					building->remaining_build_time = 0;
-				} else if (building->morph_origin == UnitId::ZergGosvileth && building->previous_hitpoints >= 50) {
+				} else if (building->create_origin == UnitId::ZergGosvileth && building->previous_hitpoints >= 50) {
 					Unit* worker = scbw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y);
 					worker->set_hitpoints((building->previous_hitpoints - 50) * 256);
 				}
@@ -312,9 +312,9 @@ namespace hooks
 			u32_00581E44[unit->player] = u32_00581E44[unit->player] - 1;
 
 			if (unit->id == UnitId::ZergExcisant) {
-				Unit* worker = helper::create_unit(unit->morph_origin, unit->get_x(), unit->get_y(), unit->player);
+				Unit* worker = helper::create_unit(unit->create_origin, unit->get_x(), unit->get_y(), unit->player);
 				if (!worker) {
-					helper::refund_unit_train_cost(unit->morph_origin, unit->player);
+					helper::refund_unit_train_cost(unit->create_origin, unit->player);
 					helper::display_last_network_error_for_player(unit->player);
 					unit->remove();
 					bStopThere = true;
@@ -336,7 +336,7 @@ namespace hooks
 				helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
 
 				u32 previous_hitpoints = unit->previous_hitpoints * 256;
-				helper::replace_unit_with_id(unit, unit->morph_origin);
+				helper::replace_unit_with_id(unit, unit->create_origin);
 				helper::update_building_ai(unit);
 				helper::update_unit_stats_and_finish_building(unit);
 				helper::update_unit_strength(unit);
@@ -471,7 +471,7 @@ namespace hooks
 	void drone_morph_standard(Unit* unit, u32 id) { // 0045D890
 		helper::increment_unit_scores_ex(unit, -1, 0);
 		unit->status &= ~UnitStatus::Completed;
-		unit->morph_origin = unit->id;
+		unit->create_origin = unit->id;
 		helper::replace_unit_with_id(unit, id);
 		if (player_table[unit->player].type == PlayerType::Computer) {
 			if (unit->unit_ai) {
@@ -502,10 +502,10 @@ namespace hooks
 		target->status &= ~UnitStatus::Completed;
 		helper::give_unit(target, unit->player, 0);
 		helper::give_sprite(target, unit->player);
-		target->morph_origin = unit->id;
+		target->create_origin = unit->id;
 		helper::replace_unit_with_id(target, unit_id);
 		if (!scbw::unit_is_stunned(target) || units_dat::base_property[target->id] & UnitProperty::Building) {
-			target->current_buttonset = 231;
+			target->current_buttonset = UnitId::Buttons_CancelConstruction;
 		}
 		helper::add_overlay_below_main(target->sprite, ImageId::VespeneGeyser2, 0, 0, 0);
 		target->hitpoints = units_dat::MaxHitPoints[unit_id] / 10;
