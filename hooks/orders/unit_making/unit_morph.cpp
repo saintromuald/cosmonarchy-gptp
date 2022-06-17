@@ -88,7 +88,7 @@ namespace hooks
 			{
 				scbw::set_unit_position(unit, pos.x, pos.y);
 			}
-			if (!scbw::is_zerg_egg_new(unit, true, false, unit->previous_unit_type))
+			if (!scbw::is_zerg_egg_new(unit, true, false))
 			{
 				if (unit->create_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva)
 				{
@@ -114,7 +114,7 @@ namespace hooks
 			unit->remaining_build_time -= 1;
 		}
 		if (!scbw::is_larval_egg(unit) &&
-			scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).has_creep) {
+			scbw::get_active_tile_at_coords(unit->position.x, unit->position.y)->has_creep) {
 			unit->remaining_build_time -= 1;
 		}
 		if (unit->remaining_build_time < 0) {
