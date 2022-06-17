@@ -32,52 +32,40 @@ namespace hooks
 	}
 
 	// Hooked to add region null check - Pr0nogo
-	void ai_training_simple_military(Unit* result, Unit* parent) // 0043E280
-	{
-		if (units_dat::base_property[result->id] & (UnitProperty::Worker | UnitProperty::Building))
-		{
-			scbw::printf("SimpleMilitary on worker or building! ID: %i", result->id);
+	void ai_training_simple_military(Unit* unit, Unit* parent) { // 0043E280
+		if (units_dat::base_property[unit->id] & (UnitProperty::Worker | UnitProperty::Building)) {
+			scbw::printf("SimpleMilitary on worker or building! ID: %u", (u32)unit->id);
 		}
 
-		s32 pX, pY;
-		if (result->sprite != nullptr)
-		{
-			pX = result->sprite->position.x;
-			pY = result->sprite->position.y;
-		}
-		else
-		{
-			pX = result->position.x;
-			pY = result->position.y;
-			GPTP::logger << "null sprite of Create Broodling detected!" << '\n';
+		Point16 position = {};
+		if (unit->sprite) {
+			position = unit->sprite->position;
+		} else {
+			position = unit->position;
+			scbw::printf("null sprite of Create Broodling detected!");
 		}
 
-		s32 regionId = helper::get_region_id(pX, pY);
-		AiRegion* playerRegion = AiRegionCaptains[parent->player];
-		if (playerRegion == nullptr)
-		{
-			GPTP::logger << "null region in AI_TrainingBroodling!" << '\n';
+		s32 region_id = scbw::get_region_id(position);
+		AiRegion* player_region = AiRegionCaptains[parent->player];
+		if (!player_region) {
+			scbw::printf("null region in AI_TrainingBroodling!");
 			return;
 		}
 
-		AiRegion* region = &playerRegion[regionId];
-		if (region == nullptr)
-		{
-			GPTP::logger << "AI Broodling Bug: Null region!" << '\n';
+		AiRegion* region = &player_region[region_id];
+		if (!region) {
+			scbw::printf("AI Broodling Bug: Null region!");
+			return;
 		}
-		else
-		{
-			if (playerRegion[regionId].state != RegionState::Nothing)
-			{
-				helper::ai_set_region_type(1, region);
-			}
-			helper::add_military_ai(region, result, 1);
+
+		if (player_region[region_id].state == RegionState::Nothing) {
+			helper::ai_set_region_type(RegionState::ContinueAttackHere, region);
 		}
+		helper::add_military_ai(region, unit, true);
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	void ai_training_worker(Unit* unit, Unit* parent) // 00435700
-	{
+	void ai_training_worker(Unit* unit, Unit* parent) { // 00435700
 		AiTown* town = 0;
 		WorkerAi* parent_ai = (WorkerAi*)parent->unit_ai;
 		if (parent_ai && (parent_ai->type == AiType::Worker || parent_ai->type == AiType::Building)) {
@@ -94,21 +82,16 @@ namespace hooks
 			helper::remove_unit_ai(unit, unit->unit_ai); // Sanity removal for cases when workers have military AI for some reason
 		}
 
-		if (parent == unit)
-		{
+		if (parent == unit) {
 			WorkerAi* unit_ai = (WorkerAi*)unit->unit_ai;
-			if (unit_ai)
-			{
+			if (unit_ai) {
 				AiTown* town = unit_ai->town;
-				if (town && unit_ai->type == AiType::Building) // type check is new
-				{
+				if (town && unit_ai->type == AiType::Building) { // type check is new
 					helper::delete_building_ai((BuildingAi*)unit_ai, &town->free_buildings); // moved within nullcheck for sanity
-					if (town->building_SCV == unit)
-					{
+					if (town->building_SCV == unit) {
 						town->building_SCV = 0;
 					}
-					if (town->main_building == unit)
-					{
+					if (town->main_building == unit) {
 						town->main_building = 0;
 					}
 				}
@@ -122,34 +105,26 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes and remove Archon hardcode - Pr0nogo
-	void ai_training_normal(Unit* newUnit, Unit* parentUnit) // 00435DB0
-	{
+	void ai_training_normal(Unit* newUnit, Unit* parentUnit) { // 00435DB0
 		s16 unit_id = newUnit->id;
-		if (!scbw::is_conventional_unit_morph_result(unit_id))
-		{
-			if (newUnit->status & UnitStatus::IsHallucination)
-			{
+		if (!scbw::is_conventional_unit_morph_result(unit_id)) {
+			if (newUnit->status & UnitStatus::IsHallucination) {
 				helper::add_military_ai(&AiRegionCaptains[(u8)newUnit->player][helper::get_region_id(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
 				return;
 			}
-			if (unit_id != UnitId::TerranNuclearMissile && unit_id != UnitId::ProtossWitness)
-			{
+			if (unit_id != UnitId::TerranNuclearMissile && unit_id != UnitId::ProtossWitness) {
 				BuildingAi* parentUnitAi = (BuildingAi*)parentUnit->unit_ai;
 				BuildingAi* parentUnitAiBackup = (BuildingAi*)parentUnit->unit_ai;
-				if (parentUnitAi)
-				{
+				if (parentUnitAi) {
 					s32 queueSlot = 0;
-					if (parentUnit == newUnit)
-					{
+					if (parentUnit == newUnit) {
 						queueSlot = 0;
 						helper::ai_remove_from_towns(newUnit);
 						BuildingAi* newUnitAi = (BuildingAi*)newUnit->unit_ai;
-						if (newUnitAi)
-						{
+						if (newUnitAi) {
 							AiTown* newUnitTown = newUnitAi->town;
 							helper::delete_building_ai(newUnitAi, &newUnitTown->free_buildings);
-							if (newUnitTown)
-							{
+							if (newUnitTown) {
 								if (newUnit == newUnitTown->building_SCV)
 								{
 									newUnitTown->building_SCV = 0;
@@ -162,20 +137,14 @@ namespace hooks
 							parentUnitAi = parentUnitAiBackup;
 							newUnit->unit_ai = 0;
 						}
-					}
-					else if (parentUnit->id == unit_id)
-					{
+					} else if (parentUnit->id == unit_id) {
 						queueSlot = 0;
-					}
-					else
-					{
+					} else {
 						queueSlot = (u8)parentUnit->build_queue_slot;
 					}
 					AiRegion* region = (AiRegion*)parentUnitAi->trainQueueValues[queueSlot];
-					if (parentUnitAi->trainQueueTypes[queueSlot] == 2)
-					{
-						if (!region->neededGroundStrength)
-						{
+					if (parentUnitAi->trainQueueTypes[queueSlot] == 2) {
+						if (!region->neededGroundStrength) {
 							s16 regionFullAir = region->fullAirStrength;
 							s16 regionEnemyAir = region->enemyAirStrength;
 							region->neededGroundStrength = (u16)newUnit;
@@ -188,12 +157,9 @@ namespace hooks
 						region = helper::getAiRegionInfoFromUnitLoc(newUnit);
 						parentUnitAi->trainQueueValues[queueSlot] = (void*)region;
 					}
-					if (parentUnitAi->trainQueueTypes[queueSlot] == 1)
-					{
+					if (parentUnitAi->trainQueueTypes[queueSlot] == 1) {
 						helper::add_military_ai(region, newUnit, 0);
-					}
-					else
-					{
+					} else {
 						helper::add_guard_ai_to_unit(newUnit);
 					}
 				}
@@ -202,11 +168,9 @@ namespace hooks
 	}
 
 	// Hooked because iquare told me to - Pr0nogo
-	void* add_worker_structure_ai(Unit* unit, AiTown* town) // 00433DD0
-	{
+	void* add_worker_structure_ai(Unit* unit, AiTown* town) { // 00433DD0
 		void* result = 0;
-		if (units_dat::base_property[unit->id] & UnitProperty::Worker)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 			if (town->free_workers) {
 				WorkerAi* ai = 0;
 				if (town && town->free_workers) {
@@ -220,8 +184,7 @@ namespace hooks
 					}
 					ai = town->free_workers->first_free_worker; // This nullcheck was added
 				}
-				if (ai)
-				{
+				if (ai) {
 					result = ai;
 					WorkerAi* worker_prev = ai->link.prev;
 					town->free_workers->first_free_worker = ai->link.prev;
@@ -230,8 +193,7 @@ namespace hooks
 					}
 					ai->link.next = 0;
 					ai->link.prev = town->workers;
-					if (town->workers)
-					{
+					if (town->workers) {
 						town->workers->link.next = ai;
 					}
 					town->workers = ai;
@@ -246,8 +208,7 @@ namespace hooks
 					unit->unit_ai = (UnitAi*)ai;
 					++town->worker_count;
 
-					if (!town->inited)
-					{
+					if (!town->inited) {
 						town->inited = 1;
 						town->mineral = 0;
 						town->gas_buildings[0] = 0;
@@ -261,10 +222,8 @@ namespace hooks
 					}
 				}
 			}
-		}
-		else if ((units_dat::base_property[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser) ||
-			unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth)
-		{
+		} else if ((units_dat::base_property[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser) ||
+				unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth) {
 			BuildingAi* ai = 0;
 			if (town && town->free_buildings) {
 				if (town->free_buildings <= (void*)0x100000) {
@@ -293,28 +252,24 @@ namespace hooks
 				ai->trainQueueTypes[3] = 0;
 				ai->trainQueueTypes[4] = 0;
 				unit->unit_ai = (UnitAi*)ai;
-				if (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair || unit->id == UnitId::ZergHive || unit->id == UnitId::ZergSire)
-				{
-					if (unit->status & UnitStatus::Completed)
-					{
+				if (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair || unit->id == UnitId::ZergHive || unit->id == UnitId::ZergSire) {
+					if (unit->status & UnitStatus::Completed) {
 						unit->order_computer(OrderId::ComputerAI);
 						helper::set_secondary_order(unit, OrderId::SpreadCreep);
 					}
 				}
 				if (!(AIScriptController[town->player].AI_Flags.is_use_map_settings)
-					|| unit->status & UnitStatus::GroundedBuilding
-					&& unit->id != UnitId::TerranWatchdog
-					&& unit->id != UnitId::TerranBunker
-					&& unit->id != UnitId::ZergCreepColony
-					&& unit->id != UnitId::ZergSporeColony
-					&& unit->id != UnitId::ZergSunkenColony
-					&& unit->id != UnitId::ProtossPylon
-					&& unit->id != UnitId::ProtossPhotonCannon)
-				{
+						|| unit->status & UnitStatus::GroundedBuilding
+						&& unit->id != UnitId::TerranWatchdog
+						&& unit->id != UnitId::TerranBunker
+						&& unit->id != UnitId::ZergCreepColony
+						&& unit->id != UnitId::ZergSporeColony
+						&& unit->id != UnitId::ZergSunkenColony
+						&& unit->id != UnitId::ProtossPylon
+						&& unit->id != UnitId::ProtossPhotonCannon) {
 					helper::ai_make_guard(town->player, unit);
 				}
-				if (!town->inited)
-				{
+				if (!town->inited) {
 					town->inited = 1;
 					town->mineral = 0;
 					town->gas_buildings[0] = 0;
@@ -323,41 +278,28 @@ namespace hooks
 				}
 
 				u32 town_hall_id = UnitId::ZergHatchery;
-				if (playerTable[unit->player].race == RaceId::Terran)
-				{
+				if (playerTable[unit->player].race == RaceId::Terran) {
 					town_hall_id = UnitId::TerranCommandCenter;
 				}
-				else if (playerTable[unit->player].race == RaceId::Protoss)
-				{
+				else if (playerTable[unit->player].race == RaceId::Protoss) {
 					town_hall_id = UnitId::ProtossNexus;
 				}
 
-				if (unit->id == town_hall_id || helper::unit_is_active_resource_depot(unit))
-				{
-					if (!town->main_building)
-					{
+				if (unit->id == town_hall_id || helper::unit_is_active_resource_depot(unit)) {
+					if (!town->main_building) {
 						town->main_building = unit;
 					}
-				}
-				else
-				{
+				} else {
 					u32 refinery_id = helper::get_default_refinery_type(unit->player);
-					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneGeyser)
-					{
-						if (!town->gas_buildings[0])
-						{
+					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneGeyser) {
+						if (!town->gas_buildings[0]) {
 							town->gas_buildings[0] = unit;
-						}
-						else if (!town->gas_buildings[1])
-						{
+						} else if (!town->gas_buildings[1]) {
 							town->gas_buildings[1] = unit;
-						}
-						else if (!town->gas_buildings[2])
-						{
+						} else if (!town->gas_buildings[2]) {
 							town->gas_buildings[2] = unit;
 						}
-						if (town->resarea)
-						{
+						if (town->resarea) {
 							town->resource_units_not_set = 1;
 						}
 					}
@@ -368,13 +310,10 @@ namespace hooks
 	}
 
 	// Hooked to rule out AI crashes - Pr0nogo
-	void ai_create_nuke(Unit* silo, Unit* result)	// 0045B7A0
-	{												// originally had 3 args; last one was unused
-		if (silo->id == UnitId::TerranNuclearSilo && !silo->building.silo.is_ready)
-		{
+	void ai_create_nuke(Unit* silo, Unit* result) { // 0045B7A0 - originally had 3 args; last one was unused
+		if (silo->id == UnitId::TerranNuclearSilo && !silo->building.silo.is_ready) {
 			Unit* nuke = helper::create_unit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->player);
-			if (nuke)
-			{
+			if (nuke) {
 				helper::update_unit_stats_and_finish_building(nuke);
 				helper::update_unit_strength_and_apply_default_orders(nuke);
 				helper::hide_unit(nuke);
