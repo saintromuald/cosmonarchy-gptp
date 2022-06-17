@@ -443,11 +443,6 @@ namespace hooks
 			}
 		}
 
-		// Temporary workaround for Droleth/Gosvileth morph source  TODO: replace with hooks to begin_gas_building and drone_morph_standard
-		if ((unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergGosvileth) && unit->status & UnitStatus::Completed) {
-			unit->morph_origin = unit->id;
-		}
-
 		switch (unit->id)
 		{
 			case UnitId::TerranReservoir:

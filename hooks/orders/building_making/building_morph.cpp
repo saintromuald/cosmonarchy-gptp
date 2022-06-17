@@ -468,15 +468,13 @@ namespace hooks
 	}
 
 	// Hooked to help Veeq7 remember to go to sleep. -Pr0nogo
-	void drone_morph_standard(Unit* unit, u32 id) // 0045D890
-	{
+	void drone_morph_standard(Unit* unit, u32 id) { // 0045D890
 		helper::increment_unit_scores_ex(unit, -1, 0);
-		unit->status &= 0xFFFFFFFE;
+		unit->status &= ~UnitStatus::Completed;
+		unit->morph_origin = unit->id;
 		helper::replace_unit_with_id(unit, id);
-		if (player_table[unit->player].type == PlayerType::Computer)
-		{
-			if (unit->unit_ai)
-			{
+		if (player_table[unit->player].type == PlayerType::Computer) {
+			if (unit->unit_ai) {
 				WorkerAi* worker_ai = (WorkerAi*)unit->unit_ai;
 				AiTown* unit_town = worker_ai->town;
 				unit->unit_ai = 0;
@@ -489,30 +487,24 @@ namespace hooks
 	}
 
 	// Hooked to help Veeq7 remember to go to sleep. -Pr0nogo
-	Unit* begin_gas_building(Unit* unit, u8 unit_id) // 004678A0
-	{
+	Unit* begin_gas_building(Unit* unit, u8 unit_id) { // 004678A0
 		Unit* target = unit->order_target.unit;
-		if (!target || target->id != UnitId::ResourceVespeneGeyser)
-		{
+		if (!target || target->id != UnitId::ResourceVespeneGeyser) {
 			target = helper::find_unit_at_tile(unit->order_target.pt.y, unit->order_target.pt.x, OrderId::Fatal);
 		}
-		if (!target)
-		{
+		if (!target) {
 			return 0;
 		}
-		if (*unk_sprite_related)
-		{
+		if (*unk_sprite_related) {
 			helper::inherit_gas_overlays(target->sprite); // Guessed name, probably wrong
 		}
 		helper::increment_unit_scores_ex(target, -1, 1);
-		target->status &= 0xFFFFFFFE;
+		target->status &= ~UnitStatus::Completed;
 		helper::give_unit(target, unit->player, 0);
 		helper::give_sprite(target, unit->player);
+		target->morph_origin = unit->id;
 		helper::replace_unit_with_id(target, unit_id);
-
-		if (!(target->status & 0x400) && !target->lockdown_timer && !target->stasis_timer && !target->maelstrom_timer
-			|| units_dat::base_property[target->id] & UnitProperty::Building)
-		{
+		if (!scbw::unit_is_stunned(target) || units_dat::base_property[target->id] & UnitProperty::Building) {
 			target->current_buttonset = 231;
 		}
 		helper::add_overlay_below_main(target->sprite, ImageId::VespeneGeyser2, 0, 0, 0);

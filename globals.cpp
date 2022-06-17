@@ -1184,9 +1184,15 @@ namespace scbw
 	}
 
 	// TODO: update
-	bool is_debuffed(Unit* unit)
-	{
+	bool is_debuffed(Unit* unit) {
 		UnitExt* unitExt = globals.get_unit_ext(unit);
+		bool has_parasite = false;
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			if (unitExt->parasite_spawn_count[i]) {
+				has_parasite = true;
+			}
+		}
+
 		return unitExt->timers[TimerMaledictionSlow]
 			|| unitExt->timers[TimerPetrification]
 			|| unitExt->timers[TimerLobotomySlow]
@@ -1202,8 +1208,8 @@ namespace scbw
 			|| unit->lockdown_timer != 0
 			|| unit->maelstrom_timer != 0
 			|| unit->plague_timer != 0
-			|| unit->parasite_flags
-			|| unit->is_blind;
+			|| unit->is_blind
+			|| has_parasite;
 	}
 
 	void restore_func(Unit* unit) {

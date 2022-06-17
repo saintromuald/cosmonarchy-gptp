@@ -344,17 +344,15 @@ namespace hooks
 		}
 		MilitaryAi* military_ai = ai_region->military->first_free_military;
 		if (military_ai) {
-			MilitaryAi* prev = military_ai->link.prev;
 			ai_region->military->first_free_military = (MilitaryAi*)military_ai->link.prev;
 			if (military_ai->link.prev) {
-				prev->link.next = 0;
+				military_ai->link.prev->link.next = 0;
 			}
 			if (military_ai) {
 				military_ai->link.next = 0;
 				military_ai->link.prev = ai_region->first_military_ai;
-				MilitaryAi* first_military = ai_region->first_military_ai;
-				if (first_military) {
-					first_military->link.next = military_ai;
+				if (ai_region->first_military_ai) {
+					ai_region->first_military_ai->link.next = military_ai;
 				}
 				ai_region->first_military_ai = military_ai;
 				military_ai->type = AiType::Military;

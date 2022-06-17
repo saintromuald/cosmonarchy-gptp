@@ -1026,6 +1026,7 @@ namespace scbw
 
 	void create_unit_from_ability(s32 unit_id, s32 count, u16 player, s32 x, s32 y, u32 remove_timer, Unit* creator) {
 		for (s32 i = 0; i < count; i++) {
+			u32 actual_remove_timer = remove_timer + scbw::rand_between(0, 5);
 			Unit* unit = scbw::create_unit_in_game(unit_id, player, x, y, creator, false);
 			if (!unit) {
 				return;
@@ -1041,8 +1042,8 @@ namespace scbw
 				case UnitId::ZergRilirokor:
 				case UnitId::ZergRililisk: {
 					helper::play_sound_from_unit(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
-					if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
-						unit->remove_timer = remove_timer;
+					if (unit->remove_timer == 0 || unit->remove_timer > actual_remove_timer) {
+						unit->remove_timer = actual_remove_timer;
 					}
 					u32 range = 6 * 32;
 					scbw::UnitFinder(

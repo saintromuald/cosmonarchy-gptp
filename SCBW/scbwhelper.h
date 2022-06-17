@@ -1359,6 +1359,6 @@ namespace helper
 
 	void drone_build_execute(Unit* unit);																	// 0045D2E0
 
-	Unit* find_unit_at_tile(u16 y_pos, u16 x_pos, u16 order_id);											// 004734B0
+	Unit* find_unit_at_tile(u16 y_pos, u16 x_pos, u32 order_id);											// 004734B0
 	void inherit_gas_overlays(Sprite* sprite);																// 004D5BB0
 }

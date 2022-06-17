@@ -12293,20 +12293,20 @@ namespace helper
 		const u32 func_address = 0x0045D2E0;
 		__asm {
 			PUSHAD
-			MOV ECX, unit
+			MOV EAX, unit
 			CALL func_address
 			POPAD
 		}
 	}
 
-	Unit* find_unit_at_tile(u16 y_pos, u16 x_pos, u16 order_id) {
+	Unit* find_unit_at_tile(u16 y_pos, u16 x_pos, u32 order_id) {
 		static Unit* result;
 		const u32 func_address = 0x004734B0;
 		__asm {
 			PUSHAD
 			PUSH order_id
-			MOV CX, x_pos 
-			MOV AX, y_pos
+			MOVZX ECX, x_pos 
+			MOVZX EAX, y_pos
 			CALL func_address
 			MOV result, EAX
 			POPAD
