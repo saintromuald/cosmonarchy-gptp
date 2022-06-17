@@ -587,7 +587,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Solawrong!",
 			"Estranged Aviary",
 			"DarkDarkDark BTW",
-			"Infinite Bounce Foundation",
+			"Infinibounce Incorporated",
 			"With a Side of Fleet Beacon",
 			"Tiny \"Techrush\" Tony",
 			"Stargate SV7",
