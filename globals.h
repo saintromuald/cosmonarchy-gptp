@@ -182,7 +182,6 @@ namespace scbw
 	void restore_func(Unit* unit);
 	void apply_parasite(Unit* unit, u8 playerID, Unit* queen);
 	void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool playSound = true);
-	Unit** get_source_matraleths(Unit* unit);
 
 	void clear_clarion_links(Unit* unit);
 	void place_clarion_links(Unit* unit);

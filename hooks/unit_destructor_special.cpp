@@ -428,19 +428,14 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Parasite - spawn broodlings on death
-	if (unit->parasite_flags != 0)
 	{
-		u32 supplyCount = scbw::get_broodling_count_from_supply(unit);
 		u16 type = UnitId::ZergRilirokor;
-		if (units_dat::base_property[unit->id] & UnitProperty::Flyer)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Flyer) {
 			type = UnitId::ZergRililisk;
 		}
-		for (u32 player = 0; player < PLAYER_COUNT; player++)
-		{
-			if (unit->parasite_flags & (1 << player) && unitExt->timers[TimerParasiteArm] <= 1)
-			{
-				scbw::create_unit_from_ability(type, supplyCount, player, unit->position.x, unit->position.y, 720);
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			if (unitExt->parasite_spawn_count[i]) {
+				scbw::create_unit_from_ability(type, unitExt->parasite_spawn_count[i], i, unit->position.x, unit->position.y, 720);
 			}
 		}
 	}
@@ -523,10 +518,8 @@ void __declspec(naked) clear_tile_flags_from_area_wrapper() {
 	}
 }
 
-namespace hooks
-{
-	void inject_unit_destructor_special_hooks()
-	{
+namespace hooks {
+	void inject_unit_destructor_special_hooks() {
 		jump_patch(unit_destructor_special_cases_wrapper,	0x0049F4A0, 2);
 		jump_patch(clear_tile_flags_from_area_wrapper,		0x00472E50, 2);
 	}

@@ -426,32 +426,32 @@ void Globals::create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 
 
 void Globals::frame_hook() {
 	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j) {
-		UnitExt* ext = &unitExt[j];
-		if (ext->damage_receive_timer != -1) { // don't increment past max value of u32
-			++ext->damage_receive_timer;
+		UnitExt* unit_ext = &unitExt[j];
+		if (unit_ext->damage_receive_timer != -1) { // don't increment past max value of u32
+			++unit_ext->damage_receive_timer;
 		}
-		if (ext->damage_dealt_timer != -1) { // don't increment past max value of u32
-			++ext->damage_dealt_timer;
+		if (unit_ext->damage_dealt_timer != -1) { // don't increment past max value of u32
+			++unit_ext->damage_dealt_timer;
 		}
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (ext->ai_timer_avoid_targeting[i]) {
-				ext->ai_timer_avoid_targeting[i] -= 1;
+			if (unit_ext->ai_timer_avoid_targeting[i]) {
+				unit_ext->ai_timer_avoid_targeting[i] -= 1;
 			}
 		}
 		for (u32 i = 0; i < TimerCount; ++i) {
-			if (ext->timers[i] > 0) {
-				ext->timers[i]--;
+			if (unit_ext->timers[i] > 0) {
+				unit_ext->timers[i]--;
 			}
 		}
 		for (u32 i = 0; i < TimerVectorCount; ++i) {
-			for (auto& timer : ext->timer_vectors[i]) {
+			for (auto& timer : unit_ext->timer_vectors[i]) {
 				if (timer > 0) {
 					timer--;
 				}
 			}
-			ext->timer_vectors[i].erase(std::remove_if(ext->timer_vectors[i].begin(), ext->timer_vectors[i].end(), [&](u32& timer) {
+			unit_ext->timer_vectors[i].erase(std::remove_if(unit_ext->timer_vectors[i].begin(), unit_ext->timer_vectors[i].end(), [&](u32& timer) {
 				return timer == 0;
-			}), ext->timer_vectors[i].end());
+			}), unit_ext->timer_vectors[i].end());
 		}
 	}
 
@@ -1004,9 +1004,9 @@ namespace scbw
 		}
 
 		// Inherit Parasite
-		if (parentExt->units[UnitParasiteSource] != nullptr)
-		{
-			childExt->units[UnitParasiteSource] = parentExt->units[UnitParasiteSource];
+		child->parasite_flags = parent->parasite_flags;
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			childExt->parasite_spawn_count[i] = parentExt->parasite_spawn_count[i];
 		}
 
 		// Inherit Observance
@@ -1220,12 +1220,13 @@ namespace scbw
 		// remove status effects and corresponding overlays
 
 		// Remove Parasite
-		if (unitExt->timers[TimerParasiteArm])
-		{
+		if (unitExt->timers[TimerParasiteArm]) {
 			unitExt->timers[TimerParasiteArm] = 0;
 			unit->remove_overlay(ImageId::ParasiteOverlay);
 		}
-		unitExt->units[UnitParasiteSource] = nullptr;
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			unitExt->parasite_spawn_count[i] = 0;
+		}
 
 		// Remove default flags
 		unit->parasite_flags = 0;
@@ -1377,22 +1378,14 @@ namespace scbw
 		scbw::refresh_console();
 	}
 
-	void apply_parasite(Unit* unit, u8 playerID, Unit* queen)
-	{
+	void apply_parasite(Unit* unit, u8 player, Unit* queen) {
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-
-		if (!scbw::can_be_parasited(unit))
-		{
-			return;
-		}
-		s32 playerFlag = 1 << playerID;
-		if (unit->parasite_flags != playerFlag)
-		{ // <- Prevent restarting arm period
+		if (!unitExt->timers[TimerParasiteArm]) {
 			unitExt->timers[TimerParasiteArm] = DefaultArmParasiteTimer;
+			unitExt->values[ValueParasiteArmPlayer] = player;
 			unit->sprite->create_overlay(ImageId::ParasiteOverlay, 0, 0, 0);
 		}
-		unitExt->units[UnitParasiteSource] = queen; // TODO: remove?
-		unit->parasite_flags = playerFlag; // Parasite now overwrites other player's parasite
+		// unit->parasite_flags |= 1 << player; // No longer using this, since we don't want vision or UI junk
 		scbw::refresh_console();
 	}
 
@@ -1426,20 +1419,6 @@ namespace scbw
 		}
 
 		return false;
-	}
-
-	Unit** get_source_matraleths(Unit* unit) // TODO: remove?
-	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
-
-		Unit* queens[2] = {nullptr};
-		if (unit == nullptr)
-		{
-			return queens; // <- prevents crash from incubators, but does not fix the issue
-		}
-		queens[0] = unitExt->units[UnitBroodlingMother];
-		queens[1] = unitExt->units[UnitParasiteSource];
-		return queens;
 	}
 
 	void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool playSound)

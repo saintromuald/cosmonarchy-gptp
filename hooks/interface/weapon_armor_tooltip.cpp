@@ -316,7 +316,7 @@ namespace hooks
 		return ss.str();
 	}
 
-	static std::string aiseTimerToString(s32 timer)
+	static std::string gptpTimerToString(s32 timer)
 	{
 		std::stringstream ss;
 		ss << ceil((timer - 1) / 24.0) << "s";
@@ -333,7 +333,7 @@ namespace hooks
 	enum struct TimerType
 	{
 		Vanilla = 0,
-		Aise,
+		Gptp,
 		RemoveTimer
 	};
 
@@ -355,9 +355,9 @@ namespace hooks
 					{
 						text += timerToString(timer);
 					}
-					else if (timerType == TimerType::Aise)
+					else if (timerType == TimerType::Gptp)
 					{
-						text += aiseTimerToString(timer);
+						text += gptpTimerToString(timer);
 					}
 					else
 					{
@@ -461,64 +461,61 @@ namespace hooks
 			statuses.push_back("Cloaked");
 		}
 
-		// Aise Timer + Value
+		// Gptp Timer + Value
 		addStatus(statuses, "Adrenal Glands", unitExt->values[ValueAdrenalStacks], 4,
-			unitExt->timers[TimerAdrenal], TimerType::Aise);
+			unitExt->timers[TimerAdrenal], TimerType::Gptp);
 		addStatus(statuses, "Captivating ZethrokorClaws", captivating_claws_get_stacks(unit), 4,
-			captivating_claws_get_timer(unit), TimerType::Aise);
+			captivating_claws_get_timer(unit), TimerType::Gptp);
 		addStatus(statuses, "Swarming Omen Aura", unitExt->values[ValueSwarmingOmenAbility], 1,
-			unitExt->timers[TimerSwarmingOmen], TimerType::Aise);
+			unitExt->timers[TimerSwarmingOmen], TimerType::Gptp);
 		addStatus(statuses, "Observance", unitExt->values[ValueObservanceRend], 0,
-			unitExt->timers[TimerObservanceDebuff], TimerType::Aise);
+			unitExt->timers[TimerObservanceDebuff], TimerType::Gptp);
 		addStatus(statuses, "Corrosive Spores", unitExt->values[ValueCorrosiveTouchStacks], 0,
-			unitExt->timers[TimerCorrosiveTouch], TimerType::Aise);
+			unitExt->timers[TimerCorrosiveTouch], TimerType::Gptp);
 		addStatus(statuses, "Dirge Fuse", unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage, 0,
-			unitExt->timers[TimerDirgeFuse], TimerType::Aise);
+			unitExt->timers[TimerDirgeFuse], TimerType::Gptp);
 		addStatus(statuses, "Adrenal Frenzy", unitExt->values[ValueNathrokorBuffStacks], 0,
-			unitExt->timers[TimerNathrokorBuff], TimerType::Aise);
+			unitExt->timers[TimerNathrokorBuff], TimerType::Gptp);
 		addStatus(statuses, "Petrification", unitExt->values[ValuePetrificationStacks], 0,
-			unitExt->timers[TimerPetrification], TimerType::Aise);
+			unitExt->timers[TimerPetrification], TimerType::Gptp);
 
 		if (unitExt->values[ValueSignifyStacks] < 5)
 		{
 			addStatus(statuses, "Cowardice", unitExt->values[ValueSignifyStacks], 5,
-				unitExt->timers[TimerSignify], TimerType::Aise);
+				unitExt->timers[TimerSignify], TimerType::Gptp);
 		}
 		else
 		{
 			addStatus(statuses, "Malice", unitExt->values[ValueSignifyStacks], 1,
-				unitExt->timers[TimerSignify], TimerType::Aise);
+				unitExt->timers[TimerSignify], TimerType::Gptp);
 		}
 
-		// Aise Timer
+		// Gptp Timer
+		// TODO: Add mineral and egg boost timers eventually (currently can't read tooltips from eggs nor mineral fields)
 		addStatus(statuses, "Malediction", -1, 1,
-			unitExt->timers[TimerMaledictionSlow], TimerType::Aise);
+			unitExt->timers[TimerMaledictionSlow], TimerType::Gptp);
 		addStatus(statuses, "Ensnaring Brood", -1, 1,
-			unitExt->timers[TimerEnsnaringBrood], TimerType::Aise);
+			unitExt->timers[TimerEnsnaringBrood], TimerType::Gptp);
 		addStatus(statuses, "Lobotomy Slow", -1, 1,
-			unitExt->timers[TimerLobotomySlow], TimerType::Aise);
+			unitExt->timers[TimerLobotomySlow], TimerType::Gptp);
 		addStatus(statuses, "Kaiser Rampage", -1, 1,
-			unitExt->timers[TimerKaiserRampage], TimerType::Aise);
+			unitExt->timers[TimerKaiserRampage], TimerType::Gptp);
 		addStatus(statuses, "Hallucinating", -1, 1,
-			unitExt->timers[TimerHallucinating], TimerType::Aise);
-		//addStatus(statuses, "Ectomorphic Accelerant", 0, -1,
-		//	unitExt->EggBoostTimer, TimerType::Aise)); // currently can't read tooltips from eggs
-		//addStatus(statuses, "Endomorphic Accelerant", 0, -1,
-		//	unitExt->MineralSpecialRegenTimer, TimerType::Aise)); // nor mineral fields
+			unitExt->timers[TimerHallucinating], TimerType::Gptp);
 		addStatus(statuses, "Controlled Demolition", -1, 1,
-			unitExt->timers[TimerControlledDemolition], TimerType::Aise);
+			unitExt->timers[TimerControlledDemolition], TimerType::Gptp);
 		addStatus(statuses, "Emergency Detonation", -1, 1,
-			unitExt->timers[TimerEmergencyDetonation], TimerType::Aise);
+			unitExt->timers[TimerEmergencyDetonation], TimerType::Gptp);
 		addStatus(statuses, "Binding Grip", -1, 1,
-			unitExt->timers[TimerBindingGrip], TimerType::Aise);
+			unitExt->timers[TimerBindingGrip], TimerType::Gptp);
 		addStatus(statuses, "Autovitality", -1, 1,
-			unitExt->timers[TimerSimulacrumClone], TimerType::Aise);
+			unitExt->timers[TimerSimulacrumClone], TimerType::Gptp);
 		addStatus(statuses, "Caustic Discharge", -1, 1,
-			unitExt->timers[TimerCausticDischargeSpeed], TimerType::Aise);
+			unitExt->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
 		addStatus(statuses, "Ion Field", -1, 1,
-			unitExt->timers[TimerIonFieldSpeed], TimerType::Aise);
+			unitExt->timers[TimerIonFieldSpeed], TimerType::Gptp);
 
-		// Aise Value
+		// Gptp Value
 		addStatus(statuses, "Cabeirus Feeders", ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
 		addStatus(statuses, "Nemean Reactors", unitExt->values[ValueNemeanReactorsStack], 0);
 		addStatus(statuses, "Sublime Shepherd", unitExt->values[ValueSublimeShepherd], 0);
@@ -537,7 +534,7 @@ namespace hooks
 		addStatus(statuses, "Deconstructing", unitExt->values[ValueDeconstruction], 0);
 		addStatus(statuses, "Khaydarin Charge", unitExt->unit_vectors[UnitVectorCrucibles].size(), 0);
 
-		// Aise Value - Gimmicked
+		// Gptp Value - Gimmicked
 		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
 		addStatus(statuses, "Tempo Down", scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1, 1);
 		addStatus(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
@@ -564,7 +561,7 @@ namespace hooks
 			}
 		}
 
-		// Aise Timers - Gimmicked
+		// Gptp Timers - Gimmicked
 		addStatus(statuses, "Observing", unitExt->timers[TimerObservanceOverlay] > 0, 1);
 		addStatus(statuses, "Dermal Accelerant", unitExt->timers[TimerAlaszilethRegenBoost] > 0, 1);
 		addStatus(statuses, "Counter-Proposal Active", unitExt->timers[TimerAnticthonRevive] > 0, 1);
@@ -583,8 +580,13 @@ namespace hooks
 		addStatus(statuses, "Stasis", -1, 1, unit->stasis_timer);
 		addStatus(statuses, "Timed Life", -1, 1, unit->remove_timer, TimerType::RemoveTimer);
 
+		u32 parasite_spawn_count = 0;
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			parasite_spawn_count += unitExt->parasite_spawn_count[i];
+		}
+
 		// Vanilla Value
-		addStatus(statuses, "Parasited", unit->parasite_flags != 0, 1);
+		addStatus(statuses, "Parasited", parasite_spawn_count, 0);
 		addStatus(statuses, "Blinded", unit->is_blind != 0, 1);
 		addStatus(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::base_property[unit->id] & UnitProperty::Building, 1);
 		addStatus(statuses, "Cannot Attack", unitExt->timers[TimerUnderDisruptionWeb] > 0, 1);

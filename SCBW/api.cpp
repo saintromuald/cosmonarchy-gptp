@@ -1024,30 +1024,24 @@ namespace scbw
 		*control_under_mouse_value = 0;
 	}
 
-	void create_unit_from_ability(s32 unit_id, s32 count, u16 player, s32 x, s32 y, u32 remove_timer, Unit* creator)
-	{
-		for (s32 i = 0; i < count; i++)
-		{
+	void create_unit_from_ability(s32 unit_id, s32 count, u16 player, s32 x, s32 y, u32 remove_timer, Unit* creator) {
+		for (s32 i = 0; i < count; i++) {
 			Unit* unit = scbw::create_unit_in_game(unit_id, player, x, y, creator, false);
 			if (!unit) {
 				return;
 			}
 			scbw::give_ai_ex(unit, true);
-			if (creator && creator->status & UnitStatus::IsHallucination)
-			{
+			if (creator && creator->status & UnitStatus::IsHallucination) {
 				helper::apply_hallucination_stats(unit);
 				unit->status |= UnitStatus::IsHallucination;
 				unit->remove_timer = 1350;
 				unit->sprite->create_overlay(ImageId::HallucinationDeath3);
 			}
-			switch (unit_id)
-			{
+			switch (unit_id) {
 				case UnitId::ZergRilirokor:
-				case UnitId::ZergRililisk:
-				{
+				case UnitId::ZergRililisk: {
 					helper::play_sound_from_unit(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
-					if (unit->remove_timer == 0 || unit->remove_timer > remove_timer)
-					{
+					if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
 						unit->remove_timer = remove_timer;
 					}
 					u32 range = 6 * 32;
@@ -1056,28 +1050,22 @@ namespace scbw
 						unit->get_y() - range,
 						unit->get_x() + range,
 						unit->get_y() + range
-					).for_each([&](Unit* target)
-					{
-						if (target->id != UnitId::ZergMatraleth)
-						{
+					).for_each([&](Unit* target) {
+						if (target->id != UnitId::ZergMatraleth) {
 							return;
 						}
-						if (!scbw::is_allied_to(unit->player, target->player))
-						{
+						if (!scbw::is_allied_to(unit->player, target->player)) {
 							return;
 						}
-						if (target->energy < 200 * 256)
-						{
+						if (target->energy < 200 * 256) {
 							target->energy = std::min((u16)(target->energy + (u16)5 * (u16)256), target->get_max_energy());
 							target->sprite->create_underlay(425);
 						}
 					});
 					break;
 				}
-				case UnitId::ProtossSimulacrum:
-				{
-					if (creator)
-					{
+				case UnitId::ProtossSimulacrum: {
+					if (creator) {
 						unit->hitpoints = std::max(256, creator->hitpoints);
 						unit->shields = std::max(256, creator->shields);
 						scbw::inherit_debuffs(creator, unit);
@@ -1112,15 +1100,6 @@ namespace scbw
 	{
 		if (units_dat::group_flags[target->id].is_building) return false;
 		return true;
-	}
-
-	s32 get_broodling_count_from_supply(Unit* target)
-	{
-		if (!can_spawn_broodling(target)) return 0;
-		bool ground = !(target->status & UnitStatus::InAir);
-		bool onCreep = scbw::get_stupid_reference_to_active_tile_at(target->get_x(), target->get_y()).has_creep;
-		f64 multiplier = (ground && onCreep) ? 1.5 : 1;
-		return std::ceil(std::max((s32)units_dat::SupplyRequired[target->id], 1) * multiplier);
 	}
 
 	s32 dir_saturate(s32 direction, s32 value)
@@ -1280,11 +1259,6 @@ namespace scbw
 			|| order_id == OrderId::PsiStorm
 //			|| order_id == OrderId::SummonBroodlings		// unused
 			|| order_id == OrderId::FireYamatoGun1;
-	}
-
-	bool can_be_parasited(Unit* unit)
-	{
-		return !(units_dat::base_property[unit->id] & UnitProperty::Building);
 	}
 
 	// Creates the Plasma Shield flickering effect.

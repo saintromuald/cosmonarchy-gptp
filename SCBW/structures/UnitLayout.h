@@ -232,6 +232,7 @@ enum ExtValueId
 	ValueSporeColonyMissilePos,
 	ValueMissileSiloLoaded,
 	ValueSovrolethLinkCount,
+	ValueParasiteArmPlayer,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -332,7 +333,6 @@ enum ExtTimerId
 enum ExtUnitId
 {
 	UnitBroodlingMother,			// is this still really used?
-	UnitParasiteSource,
 	UnitHallucinationPointer,
 	UnitDecaySavant,
 	UnitMindController,
@@ -395,6 +395,7 @@ struct UnitExt
 	f32						salvage_gas;
 
 	u32						ai_timer_avoid_targeting[PlayerLimit];
+	u32						parasite_spawn_count[PlayerLimit];
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];

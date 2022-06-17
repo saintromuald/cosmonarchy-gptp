@@ -35,35 +35,28 @@
 const u32 hyperTrigger = 0x006509A0;
 
 #include "SCBW\UnitFinder.h"
-void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target)
-{
-	if (target->player != shaman->player)
-	{
-		if (!scbw::is_allied_to(target->player, shaman->player))
-		{
+void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
+	if (target->player != shaman->player) {
+		if (!scbw::is_allied_to(target->player, shaman->player)) {
 			return;
 		}
 	}
-	if (units_dat::base_property[target->id] & UnitProperty::Building)
-	{
+	if (units_dat::base_property[target->id] & UnitProperty::Building) {
 		return;
 	}
-	if (target->stasis_timer)
-	{
+	if (target->stasis_timer) {
 		return;
 	}
-	if (target == shaman)
-	{
+	if (target == shaman) {
 		return;
 	}
 	u32 dist = scbw::get_distance_fast(target->position, shaman->position);
-	if (dist > 128) {
+	if (dist > 4 * 32) {
 		return;
 	}
 
 	bool reqHeal = false;
-	if (target->get_current_hp_ingame() < target->get_max_hp_ingame())
-	{
+	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
 		reqHeal = true;
 		u32 overlayImageId = ImageId::ShamanNaniteField;
 		Unit* tgt = nullptr;
@@ -78,17 +71,14 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target)
 		(tgt->sprite)->create_top_overlay(overlayImageId, 0, 0, 0);
 	}
 
-	u32 new_heal = heal;
-	if (dist <= 32) {
-		new_heal *= 2.5;
+	if (dist <= 1 * 32) {
+		heal *= 2.5;
+	} else if (dist <= 2 * 32) {
+		heal *= 2;
+	} else if (dist <= 3 * 32) {
+		heal *= 1.5;
 	}
-	else if (dist <= 64) {
-		new_heal *= 2;
-	}
-	else if (dist <= 96) {
-		new_heal *= 1.5;
-	}
-	target->heal(new_heal * 256, shaman);
+	target->heal(heal * 256, shaman);
 }
 
 namespace hooks
@@ -1470,6 +1460,11 @@ namespace hooks
 			&& unitExt->unit_vectors[UnitVectorPhaseLinkClarions].size())
 		{
 			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
+		}
+
+		// Parasite Arm
+		if (unitExt->timers[TimerParasiteArm] == 1) {
+			unitExt->parasite_spawn_count[unitExt->values[ValueParasiteArmPlayer]] += 2;
 		}
 
 		// Disruption Web Clear

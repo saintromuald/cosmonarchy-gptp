@@ -94,8 +94,7 @@ namespace hooks
 		return result;
 	}
 
-	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId)
-	{
+	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId) {
 		globals.create_effect(EffectId_Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId, attacker);
 	}
 
@@ -920,6 +919,4 @@ LABEL_15:
 		}
 		return 1;
 	}
-
-
 }
