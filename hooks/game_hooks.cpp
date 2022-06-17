@@ -387,8 +387,7 @@ namespace hooks
 			process_quickbuilding();
 
 			// Loop through all visible units in the game.
-			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
-			{
+			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				tick_unit(unit);
 			}
 			scbw::set_ingame_loop_state(false);
@@ -413,8 +412,7 @@ namespace hooks
 		return true;
 	}
 
-	void tick_unit(Unit* unit)
-	{
+	void tick_unit(Unit* unit) {
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		tactical_ai(unit, unitExt);
 
@@ -590,6 +588,11 @@ namespace hooks
 			} break;
 			case UnitId::ZergSovroleth:
 			{
+				{
+					EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
+					unitExt->values[ValueSovrolethLinkCount] = sovroleths.count;
+				}
+
 				// Update Speed
 				unit->update_speed();
 

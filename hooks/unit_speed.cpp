@@ -31,8 +31,7 @@ namespace hooks
 
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
-			EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
-			speed *= pow(0.95, sovroleths.count);
+			speed *= pow(0.95, unitExt->values[ValueSovrolethLinkCount]);
 		}
 
 		// Crucible Aura

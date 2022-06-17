@@ -231,6 +231,7 @@ enum ExtValueId
 	ValueNewRepairTimer,
 	ValueSporeColonyMissilePos,
 	ValueMissileSiloLoaded,
+	ValueSovrolethLinkCount,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

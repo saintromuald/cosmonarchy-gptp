@@ -1569,15 +1569,13 @@ namespace scbw
 		});
 	}
 
-	bool has_clarion_links(Unit* unit)
-	{
+	bool has_clarion_links(Unit* unit) {
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		return unitExt->unit_vectors[UnitVectorPhaseLinkClarions].size();
 	}
 
-	void link_damage(Unit* unit, s32 damage, hooks::WeaponDamageData& data)
-	{
-		hooks::WeaponDamageData newData = {
+	void link_damage(Unit* unit, s32 damage, hooks::WeaponDamageData& data) {
+		hooks::WeaponDamageData new_data = {
 			damage,
 			damage,
 			0,
@@ -1591,41 +1589,32 @@ namespace scbw
 			true,
 			data.ignore_flat_armor
 		};
-		hooks::weapon_damage_root(newData);
+		hooks::weapon_damage_root(new_data);
 	}
 
-	void spread_clarion_damage(hooks::WeaponDamageData& data)
-	{
+	void spread_clarion_damage(hooks::WeaponDamageData& data) {
 		Unit* unit = data.target;
 		auto links = get_clarion_links(unit); // has to be copy
 		links.erase(std::remove(links.begin(), links.end(), unit), links.end());
 		s32 damage = data.final_damage;
-		if (links.size() == 0 || unit->shields < 256)
-		{
+		if (links.size() == 0 || unit->shields < 256) {
 			link_damage(unit, damage, data);
-		}
-		else
-		{
-			links.erase(std::remove_if(links.begin(), links.end(), [](Unit* linkUnit)
-			{
+		} else {
+			links.erase(std::remove_if(links.begin(), links.end(), [](Unit* linkUnit) {
 				return linkUnit->shields < 256;
 			}), links.end());
-			if (links.size())
-			{
+			if (links.size()) {
 				s32 divided = damage / links.size();
 				auto it = std::find(links.begin(), links.end(), unit);
-				if (it != links.end())
-				{
+				if (it != links.end()) {
 					links.erase(it);
 				}
 				Unit* damageOriginUnit = data.attacker;
-				if (!damageOriginUnit)
-				{
+				if (!damageOriginUnit) {
 					damageOriginUnit = unit;
 				}
 				s8 oldDirection = data.direction;
-				for (Unit* linkUnit : links)
-				{
+				for (Unit* linkUnit : links) {
 					s32 unitDamage = std::min(divided, linkUnit->shields);
 					damage -= unitDamage;
 					data.direction = scbw::get_angle(damageOriginUnit->get_x(), damageOriginUnit->get_y(), linkUnit->get_x(), linkUnit->get_y());
@@ -1637,16 +1626,13 @@ namespace scbw
 		}
 	}
 
-	std::vector<Unit*> get_clarion_links(Unit* unit)
-	{
+	std::vector<Unit*> get_clarion_links(Unit* unit) {
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		std::unordered_set<Unit*> links = {};
 		auto& clarions = unitExt->unit_vectors[UnitVectorPhaseLinkClarions];
-		for (Unit* clarion : clarions)
-		{
-			if (!clarion)
-			{
+		for (Unit* clarion : clarions) {
+			if (!clarion) {
 				continue;
 			}
 			UnitExt* clarionExt = globals.get_unit_ext(clarion);
@@ -1656,8 +1642,7 @@ namespace scbw
 		return std::vector<Unit*>(links.begin(), links.end());
 	}
 
-	void spread_sovroleth_damage(hooks::WeaponDamageData& data)
-	{
+	void spread_sovroleth_damage(hooks::WeaponDamageData& data) {
 		Unit* unit = data.target;
 		EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
 		s32 damage = data.final_damage / (sovroleths.count + 1);
