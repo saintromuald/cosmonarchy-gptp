@@ -330,6 +330,12 @@ namespace hooks
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 			scbw::printf("Military AI added to worker!");
 		}
+		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+			scbw::printf("Military AI added to building!");
+		}
+		if (playerTable[unit->player].type != PlayerType::Computer) {
+			scbw::printf("Military AI added to non computer!");
+		}
 		if (ai_region->state == RegionState::EnemySighted && !must_use_region) {
 			ai_region = scbw::get_ai_region(unit->player, scbw::get_region_id(unit->sprite->position));
 		}
