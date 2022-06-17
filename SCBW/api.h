@@ -549,7 +549,6 @@ namespace scbw
 	s32 get_final_damage(Unit* unit, u16 weapon_id);
 	bool unit_id_is_pacifist(Unit* unit);
 	bool order_is_spell(s32 order_id);
-	bool can_be_parasited(Unit* unit);
 	void apply_parasite(Unit* unit, u8 playerID, Unit* queen);
 	void create_shield_overlay(Unit* unit, u32 attackDirection);
 	void decloak_proc(Unit* unit);

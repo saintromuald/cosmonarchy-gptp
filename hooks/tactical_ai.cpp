@@ -161,13 +161,15 @@ static u8 get_max_weapon_cooldown(Unit* unit) {
 		return 1;
 	}
 
-	u32 ground_weapon = unit->get_ground_weapon();
+	Unit* context = unit->subunit ? unit->subunit : unit;
+
+	u32 ground_weapon = context->get_ground_weapon();
 	u32 ground_cooldown = 0;
 	if (ground_weapon != WeaponId::None) {
 		ground_cooldown = hooks::get_modified_weapon_cooldown(unit, ground_weapon);
 	}
 
-	u32 air_weapon = unit->get_air_weapon();
+	u32 air_weapon = context->get_air_weapon();
 	u32 air_cooldown = 0;
 	if (air_weapon != WeaponId::None) {
 		air_cooldown = hooks::get_modified_weapon_cooldown(unit, air_weapon);
@@ -225,7 +227,8 @@ static u32 get_dps_against(Unit* source, Unit* target) {
 		&& target->id != UnitId::ProtossShieldBattery) {
 		return (target->energy / 256 / 50) * 20;
 	} else {
-		u32 weapon_id = target->status & UnitStatus::InAir ? source->get_air_weapon() : source->get_ground_weapon();
+		Unit* context = source->subunit ? source->subunit : source;
+		u32 weapon_id = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
 		f32 multiplier = weapons_dat::InnerSplashRadius[weapon_id] ? 1.5 : 1;
 		return hooks::get_current_dps_from_damage(target, weapon_id, get_damage_against(weapon_id, target)) * multiplier;
 	}
@@ -260,6 +263,11 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		case UnitId::ZergEgg: {
 			cost += 100;
 		} break;
+	}
+
+	// Value targeting units inside of range more
+	if (helper::is_unit_in_weapon_range(source, target)) {
+		cost -= 100;
 	}
 
 	// Value splitting simulacra more
@@ -304,7 +312,8 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 	}
 
 	{
-		u32 weapon_id = target->status & UnitStatus::InAir ? weapon_id = source->get_air_weapon() : source->get_ground_weapon();
+		Unit* context = source->subunit ? source->subunit : source;
+		u32 weapon_id = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
 
 		// Value dark swarm immune units way less
 		if (darkswarm_blocks_damage(target, weapon_id, 1)) {
@@ -723,7 +732,9 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				unit->get_x() + GroupRadius,
 				unit->get_y() + GroupRadius
 			).for_each([&](Unit* target) {
-				if (!target_match(target) || !unit->can_attack_target(target, true)) {
+				UnitExt* target_ext = globals.get_unit_ext(target);
+				if (!target_match(target) || !unit->can_attack_target(target, true)
+					|| !target->is_visible_to(unit->player) || target_ext->ai_timer_avoid_targeting[unit->player]) {
 					return;
 				}
 
@@ -735,13 +746,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 					}
 				}
 
-				UnitExt* target_ext = globals.get_unit_ext(target);
-				if (!target_ext->ai_timer_avoid_targeting[unit->player] && unit->can_attack_target(target, true) && target->is_visible_to(unit->player)) {
-					s32 cost = get_target_cost(unit, target);
-					if (cost < best_cost) {
-						best_target = target;
-						best_cost = cost;
-					}
+				s32 cost = get_target_cost(unit, target);
+				if (cost < best_cost) {
+					best_target = target;
+					best_cost = cost;
 				}
 			});
 
@@ -761,6 +769,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				if (unit->main_order_id != attack_order_id || unit->order_target.unit != best_target) {
 					unit->order_to(attack_order_id, best_target);
 					unit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
+					if (unit->subunit) {
+						unit->subunit->order_to(attack_order_id, best_target);
+						unit->subunit->issue_queued_order_target(OrderId::ComputerAI, 0, false);
+					}
 				}
 			} else {
 				unit_ext->timers[TimerAI_KitingCooldown] = 4;
@@ -901,12 +913,8 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	f32 cost = 0;
 
 	// Value attacking units with higher dps
-	u32 weapon_id = 0;
-	if (source->status & UnitStatus::InAir) {
-		weapon_id = target->get_air_weapon();
-	} else {
-		weapon_id = target->get_ground_weapon();
-	}
+	Unit* context_target = target->subunit ? target->subunit : target;
+	u32 weapon_id = source->status & UnitStatus::InAir ? context_target->get_air_weapon() : context_target->get_ground_weapon();
 	f32 multiplier = weapons_dat::InnerSplashRadius[weapon_id] ? 1.5 : 1;
 	cost -= hooks::get_current_dps(target, weapon_id) * multiplier;
 
