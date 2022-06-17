@@ -195,8 +195,7 @@ namespace hooks {
 	// Called (with a jump) as last instruction of updateButtonSet
 	// Will update the buttonset for the currently unit active if alone
 	// Handle special case of group orders if multiple units are unit
-	void updateButtonSetEx()
-	{
+	void updateButtonSetEx() {
 		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
 		u8 count_workers = 0;
 		u8 count_burrowables = 0;
@@ -213,7 +212,6 @@ namespace hooks {
 
 		Unit* active = get_selected_unit();
 		active_button_set_id = active->current_buttonset;
-		*BUTTONSET_CURRENT_BUTTONSETID = active_button_set_id;
 
 		for (u32 i = 0; i < SelectionCap; ++i) { // count units to know if will be using special group buttonset (peons, cloakables...)
 			Unit* selected = client_selection_group->unit[i];
@@ -271,25 +269,18 @@ namespace hooks {
 			}
 		}
 		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank) {
-			bool mixed = *BUTTONSET_CURRENT_BUTTONSETID == UnitId::Buttons_GroupMixed;
 			if (count_workers == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
 			} else if (count_burrowables != 0 && count_zergs == *client_selection_count) {
-				if (mixed) {
-					*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
-				}
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
 			} else if (count_larva && count_larva + count_eggs == *client_selection_count) {
-				if (mixed) {
-					*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
-				}
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
 			} else if (count_hatches == *client_selection_count) {
-				if (mixed) {
-					*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
-				}
-			} else if (count_lifted_buildings && mixed) {
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
+			} else if (count_lifted_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_buildings) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_Blank;
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranGoliathTurret;
 			}
 		}
 	}
