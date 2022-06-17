@@ -423,10 +423,8 @@ namespace hooks
 		return false;
 	}
 
-	bool is_rallyable_egg_unit(u16 unit_id)
-	{
-		if (scbw::is_zerg_egg_new(0, false, false, unit_id))
-		{
+	bool is_rallyable_egg_unit(u16 unit_id) {
+		if (scbw::is_zerg_egg_new(0, false, false, unit_id)) {
 			return false;
 		}
 		return true;

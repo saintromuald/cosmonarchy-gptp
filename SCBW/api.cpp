@@ -492,67 +492,48 @@ namespace scbw
 		return false;
 	}
 
-	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs, bool allow_larvae, u16 explicit_unit_id)
-	{
-		u16 id = UnitId::None;
-		if (id != NULL)
-		{
+	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs, bool allow_larvae, u16 explicit_unit_id) {
+		u32 id = UnitId::None;
+		if (explicit_unit_id != UnitId::None) {
+			id = explicit_unit_id;
+		} else if (unit) {
 			id = unit->id;
 		}
-		else
-		{
-			id = explicit_unit_id;
-		}
-		switch (id)
-		{
-			case UnitId::ZergEgg:
-			{
-				if (unit && !allow_larval_eggs && unit->morph_origin == UnitId::ZergLarva)
-				{
+		switch (id) {
+			case UnitId::ZergEgg: {
+				if (unit && !allow_larval_eggs && unit->morph_origin == UnitId::ZergLarva) {
 					return false;
 				}
 				return true;
 			}
-			case UnitId::ZergCocoon:
-			{
+			case UnitId::ZergCocoon: {
 				return true;
 			}
 		}
 
-		if (allow_larvae && id == UnitId::ZergLarva)
-		{
+		if (allow_larvae && id == UnitId::ZergLarva) {
 			return true;
 		}
 		return false;
 	}
 
-	bool is_zerg_egg(u16 id, bool allow_normal_eggs, bool allow_larvae)
-	{
-		switch (id)
-		{
-			case UnitId::ZergCocoon:
-			{
+	bool is_zerg_egg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
+		switch (id) {
+			case UnitId::ZergCocoon: {
 				return true; 
 			}
-			default:
-			{
-			} break;
 		}
-		if (id == UnitId::ZergLarva && allow_larvae)
-		{
+		if (id == UnitId::ZergLarva && allow_larvae) {
 			return true;
 		}
-		if (id == UnitId::ZergEgg && allow_normal_eggs)
-		{
+		if (id == UnitId::ZergEgg && allow_normal_eggs) {
 			return true;
 		}
 		return false;
 	}
 
-	bool is_conventional_unit_morph_result(u16 id)
-	{
-		switch (id)
-		{
+	bool is_conventional_unit_morph_result(u16 id) {
+		switch (id) {
 			case UnitId::ZergGosvileth:
 			case UnitId::ZergIroleth:
 			case UnitId::ZergAlaszileth:
@@ -566,41 +547,28 @@ namespace scbw
 			case UnitId::ZergAlmaksalisk:
 			case UnitId::ZergUltrokor:
 			case UnitId::ZergAlkajelisk:
-			case UnitId::ProtossAugur:
-			{
+			case UnitId::ProtossAugur: {
 				return true;
 			}
-			default:
-			{
-			} break;
 		}
 		return false;
 	}
 
-	bool is_any_morph_result(u16 id)
-	{
-		if (is_conventional_unit_morph_result(id))
-		{
+	bool is_any_morph_result(u16 id) {
+		if (is_conventional_unit_morph_result(id)) {
 			return true;
 		}
-		switch (id)
-		{
+		switch (id) {
 			case UnitId::ProtossArchon:
-			case UnitId::ProtossMindTyrant:
-			{
+			case UnitId::ProtossMindTyrant: {
 				return true;
 			}
-			default:
-			{
-			} break;
 		}
 		return false;
 	}
 
-	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae, bool allow_high_templar)
-	{
-		switch (id)
-		{
+	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae, bool allow_high_templar) {
+		switch (id) {
 			case UnitId::ZergDroleth:
 			case UnitId::ZergOvileth:
 			case UnitId::ZergOthstoleth:
@@ -613,29 +581,21 @@ namespace scbw
 			case UnitId::ZergMatraleth:
 			case UnitId::ZergKonvilisk:
 			case UnitId::ZergZoryusthaleth:
-			case UnitId::ZergKeskathalor:
-			{
+			case UnitId::ZergKeskathalor: {
 				return true; 
 			}
-			default:
-			{
-			} break;
 		}
-		if (id == UnitId::ProtossCantavis && allow_high_templar)
-		{
+		if (id == UnitId::ProtossCantavis && allow_high_templar) {
 			return true;
 		}
-		if (id == UnitId::ZergLarva && allow_larvae)
-		{
+		if (id == UnitId::ZergLarva && allow_larvae) {
 			return true;
 		}
 		return false;
 	}
 
-	bool is_zerg_building_morph_result(u16 id)
-	{
-		switch (id)
-		{
+	bool is_zerg_building_morph_result(u16 id) {
+		switch (id) {
 			case UnitId::ZergSire:
 			case UnitId::ZergHive:
 			case UnitId::ZergLair:
@@ -649,21 +609,15 @@ namespace scbw
 			case UnitId::ZergGorgralSwamp:
 			case UnitId::ZergAlmakisAntre:
 			case UnitId::ZergAlkajChasm:
-			case UnitId::ZergUltrokCavern:
-			{
+			case UnitId::ZergUltrokCavern: {
 				return true;
 			}
-			default:
-			{
-			} break;
 		}
 		return false;
 	}
 
-	bool is_zerg_building_morph_source(u16 id)
-	{
-		switch (id)
-		{
+	bool is_zerg_building_morph_source(u16 id) {
+		switch (id) {
 			case UnitId::ZergHive:
 			case UnitId::ZergLair:
 			case UnitId::ZergHatchery:
@@ -676,13 +630,9 @@ namespace scbw
 			case UnitId::ZergMatravilNest:
 			case UnitId::ZergZorkizShroud:
 			case UnitId::ZergGeszkathGrotto:
-			case UnitId::ZergSovthrathMound:
-			{
+			case UnitId::ZergSovthrathMound: {
 				return true;
 			}
-			default:
-			{
-			} break;
 		}
 		return false;
 	}

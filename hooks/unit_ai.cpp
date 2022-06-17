@@ -109,7 +109,7 @@ namespace hooks
 		s16 unit_id = newUnit->id;
 		if (!scbw::is_conventional_unit_morph_result(unit_id)) {
 			if (newUnit->status & UnitStatus::IsHallucination) {
-				helper::add_military_ai(&AiRegionCaptains[(u8)newUnit->player][helper::get_region_id(newUnit->sprite->position.x, newUnit->sprite->position.y)], newUnit, 1);
+				helper::add_military_ai(&AiRegionCaptains[newUnit->player][scbw::get_region_id(newUnit->sprite->position)], newUnit, 1);
 				return;
 			}
 			if (unit_id != UnitId::TerranNuclearMissile && unit_id != UnitId::ProtossWitness) {
