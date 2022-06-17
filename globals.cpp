@@ -1379,6 +1379,9 @@ namespace scbw
 	}
 
 	void apply_parasite(Unit* unit, u8 player, Unit* queen) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Invincible) {
+			return;
+		}
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		if (!unitExt->timers[TimerParasiteArm]) {
 			unitExt->timers[TimerParasiteArm] = DefaultArmParasiteTimer;
