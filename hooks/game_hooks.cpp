@@ -1827,16 +1827,15 @@ namespace hooks
 				overlay_unit->sprite->create_top_overlay(overlay, 0, 0, 0);
 			}
 			if (unit->main_order_id != OrderId::AttackUnit) {
-				const u32 radius = unit->get_seek_range() * 32;
+				const u32 radius = unit->get_seek_range() * 32 + 4 * 32;
 				auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
-
 				Unit* best_target = scbw::UnitFinder::get_nearest_target(
 					unit->get_x() - radius,
 					unit->get_y() - radius,
 					unit->get_x() + radius,
 					unit->get_y() + radius,
 					unit, [&](Unit* target) {
-					if (!unit->can_attack_target(target) || !helper::is_unit_in_weapon_range(unit, target)) {
+					if (!match(target) || !unit->can_attack_target(target) || !helper::is_unit_in_weapon_range(unit, target)) {
 						return false;
 					}
 					return true;
