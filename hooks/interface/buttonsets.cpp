@@ -611,13 +611,13 @@ namespace hooks {
 	{
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
 		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
-		auto buttonsetId = *BUTTONSET_PORTRAIT_BUTTONSETID;
+		auto buttonset_id = *BUTTONSET_PORTRAIT_BUTTONSETID;
 		BinDlg* current_dialog = *BUTTONSET_DIALOG;
 
 		// Custom buttonset overrides
-		if (buttonsetId == UnitId::TerranTreasury)
+		if (buttonset_id == UnitId::TerranTreasury)
 		{
-			buttonsetId = UnitId::Special_StartLocation;
+			buttonset_id = UnitId::Special_StartLocation;
 		}
 
 		bool has_larva = false;
@@ -631,7 +631,7 @@ namespace hooks {
 			}
 		}
 
-		ButtonSet* const current_buttonset = getButtonSet(buttonsetId);
+		ButtonSet* const current_buttonset = getButtonSet(buttonset_id);
 		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
 		bool bStopThere = false;
 		bool jumpto59336 = false;
@@ -730,8 +730,8 @@ namespace hooks {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
 
-						*unit_iterator_pos = 0;
-						while (Unit* unit = helper::get_next_commanded_unit()) {
+						for (u32 i = 0; i < *client_selection_count; ++i) {
+							Unit* unit = client_selection_group->unit[i];
 							if (unit->status & UnitStatus::Burrowed) {
 								has_burrowed = true;
 							} else {
@@ -739,7 +739,12 @@ namespace hooks {
 							}
 						}
 
-						if (has_unburrowed && !has_burrowed) {
+						bool enabled = has_unburrowed;
+						if (buttonset_id != UnitId::ZergLakizilisk && has_burrowed) {
+							enabled = false;
+						}
+
+						if (enabled) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
@@ -750,8 +755,8 @@ namespace hooks {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
 
-						*unit_iterator_pos = 0;
-						while (Unit* unit = helper::get_next_commanded_unit()) {
+						for (u32 i = 0; i < *client_selection_count; ++i) {
+							Unit* unit = client_selection_group->unit[i];
 							if (unit->status & UnitStatus::Burrowed) {
 								has_burrowed = true;
 							} else {
@@ -759,7 +764,12 @@ namespace hooks {
 							}
 						}
 
-						if (has_burrowed) {
+						bool enabled = has_burrowed;
+						if (buttonset_id == UnitId::ZergLakizilisk && has_unburrowed) {
+							enabled = false;
+						}
+
+						if (enabled) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
