@@ -437,8 +437,8 @@ namespace hooks
 					regen *= 2;
 				}
 
-				regen *=  1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size();
-				unit->set_hitpoints(unit->hitpoints + regen);
+				regen *= 1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size();
+				unit->heal(regen);
 			}
 
 			// Deliberate healing

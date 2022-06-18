@@ -976,32 +976,25 @@ namespace hooks
 			case UnitId::ProtossAurora:
 			{
 				// Last Orders - Aurora behavior
-				if (targetExt->values[ValueLastOrdersInit] == 0)
-				{
+				if (targetExt->values[ValueLastOrdersInit] == 0) {
 					targetExt->values[ValueLastOrdersInit] = 1;
 					Unit* nearest = scbw::UnitFinder(
-						data.target->get_x() - 288,
-						data.target->get_y() - 288,
-						data.target->get_x() + 288,
-						data.target->get_y() + 288
-					).get_nearest_target(data.target,
-						[&](Unit* unit)
-					{
+						data.target->get_x() - 9 * 32,
+						data.target->get_y() - 9 * 32,
+						data.target->get_x() + 9 * 32,
+						data.target->get_y() + 9 * 32
+					).get_nearest_target(data.target, [&](Unit* unit) {
 						// Don't attack friendly / allied units
-						if (unit->player == data.target->player)
-						{
+						if (unit->player == data.target->player) {
 							return false;
 						}
-						if (scbw::is_allied_to(data.target->player, unit->player))
-						{
+						if (scbw::is_allied_to(data.target->player, unit->player)) {
 							return false;
 						}
-						if (unit->status & UnitStatus::Invincible)
-						{
+						if (unit->status & UnitStatus::Invincible) {
 							return false;
 						}
-						if (unit->status & UnitStatus::InAir)
-						{
+						if (unit->status & UnitStatus::InAir) {
 							return false;
 						}
 						if (!unit->is_visible_to(data.target->player)) {
@@ -1009,14 +1002,12 @@ namespace hooks
 						}
 						// TODO: iquare consultation
 						// Is this needed? Seems like it's already guaranteed
-						if (scbw::get_distance_fast(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 288)
-						{
+						if (scbw::get_distance_fast(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 9 * 32) {
 							return false;
 						}
 						return true;
 					});
-					if (nearest != nullptr)
-					{
+					if (nearest) {
 						data.final_damage = 0;
 						data.target->set_hitpoints(units_dat::MaxHitPoints[data.target->id] / 2);
 						data.target->order_to(OrderId::Move, nearest->position.x, nearest->position.y);
