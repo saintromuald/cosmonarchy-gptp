@@ -204,6 +204,7 @@ namespace hooks {
 		u8 count_hatches = 0;
 		u8 count_zergs = 0;
 		u8 count_buildings = 0;
+		u8 count_attacking_buildings = 0;
 		u8 count_lifted_buildings = 0;
 		u16 active_button_set_id;
 		u16 selected_button_set_id;
@@ -225,6 +226,9 @@ namespace hooks {
 
 				if (selected_properties & UnitProperty::Building) {
 					count_buildings++;
+					if (selected->get_ground_weapon() != WeaponId::None || selected->get_air_weapon() != WeaponId::None) {
+						count_attacking_buildings++;
+					}
 					if (selected->status & UnitStatus::InAir) {
 						count_lifted_buildings++;
 					}
@@ -279,6 +283,8 @@ namespace hooks {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
 			} else if (count_lifted_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
+			} else if (count_attacking_buildings) {
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranWatchdog;
 			} else if (count_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranGoliathTurret;
 			}
