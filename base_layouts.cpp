@@ -5,6 +5,7 @@
 u32 chk_cache_size;
 CHKUnit chk_cache[ChkCacheLimit];
 
+bool log_placeholder_requests;
 u32 default_ai_expansion_block[PlayerLimit];
 
 static BaseLayouts mainarea_base_layouts[PlayerLimit];
@@ -181,6 +182,7 @@ static void sort_base_layouts(BaseLayouts* base_layouts) {
 }
 
 static void init_base_layouts() {
+	log_placeholder_requests = false;
 	memset(default_ai_expansion_block, 0, sizeof(default_ai_expansion_block));
 	memset(mainarea_base_layouts, 0, sizeof(mainarea_base_layouts));
 	memset(resarea_base_layouts, 0, sizeof(resarea_base_layouts));
@@ -457,7 +459,9 @@ void tick_base_layouts() {
 				if (placeholder->should_request) {
 					if (!base_layouts->placeholders_requested[j] && can_build_placeholder(base_layouts, placeholder)) {
 						base_layouts->placeholders_requested[j] = true;
-						scbw::printf("%s #%u requested at resarea %u", Unit::getName(placeholder->unit_id), j, i);
+						if (log_placeholder_requests) {
+							scbw::printf("%s #%u requested at resarea %u", Unit::getName(placeholder->unit_id), j, i);
+						}
 						request_placeholder(base_layouts, placeholder);
 					}
 					u32 unit_id = find_unit_base_merge(placeholder->unit_id);

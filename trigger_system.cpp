@@ -4,6 +4,7 @@
 
 #include "token_parser.h"
 #include "color_palette.h"
+#include "base_layouts.h"
 
 // Copy paste from Antikythera
 #define RiffId(a, b, c, d) ((a << 0) | (b << 8) | (c << 16) | (d << 24))
@@ -553,6 +554,9 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				}				
 			} else if (parser_eq(&parser, "objectives_clear")) {
 				memset(&objectives, 0, sizeof(objectives));
+			} else if (parser_eq(&parser, "log_placeholder_requests")) {
+				s32 value = parser_get_s32(&parser);
+				log_placeholder_requests = value;
 			}
 		}
 	}

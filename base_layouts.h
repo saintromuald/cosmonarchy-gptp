@@ -14,6 +14,7 @@ enum ChkUnitFlags {
 extern u32 chk_cache_size;
 extern CHKUnit chk_cache[ChkCacheLimit];
 
+extern bool log_placeholder_requests;
 extern u32 default_ai_expansion_block[PlayerLimit];
 
 // This structure is mirrored in aise, be careful when you change it 
