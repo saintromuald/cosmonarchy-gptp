@@ -331,7 +331,7 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	}
 
 	// Prevent building non town halls when town hall is missing
-	if (!town->main_building && units_dat::base_property[unit_id] & UnitProperty::Building) {
+	if ((!town->main_building || !(town->main_building->status & UnitStatus::Completed)) && units_dat::base_property[unit_id] & UnitProperty::Building) {
 		// Ignore all non townhalls
 		if (!is_basic_townhall(unit_id)) {
 			return false;
