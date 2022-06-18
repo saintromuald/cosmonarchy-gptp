@@ -1297,7 +1297,7 @@ namespace hooks
 			{
 				// Axitrilisk - play sound on shield loss, timer of 5 seconds per unit
 				if (unit->shields < 1
-					&& !unitExt->timers[TimerAxitriliskShieldLossSFX])
+				&& !unitExt->timers[TimerAxitriliskShieldLossSFX])
 				{
 					unitExt->timers[TimerAxitriliskShieldLossSFX] = AxitriliskShieldLossSFXTimer;
 					helper::play_sound_from_unit(scbw::rand_between(SoundId::AxitriliskShieldLoss01, SoundId::AxitriliskShieldLoss03), unit, 1, 0);
