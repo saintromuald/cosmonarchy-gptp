@@ -241,7 +241,7 @@ static u32 count_units_in_town(AiTown* town, u32 unit_id) {
 	u32 count = 0;
 	for (Unit* unit = first_player_unit->unit[town->player]; unit; unit = unit->player_link.next) {
 		UnitAi* unit_ai = unit->unit_ai;
-		if (unit_ai && unit_ai->type == AiType::Worker || unit_ai->type == AiType::Building) {
+		if (unit_ai && (unit_ai->type == AiType::Worker || unit_ai->type == AiType::Building)) {
 			if (unit_ai->worker_ai.town == town && unit->id == unit_id) {
 				count += 1;
 			}
