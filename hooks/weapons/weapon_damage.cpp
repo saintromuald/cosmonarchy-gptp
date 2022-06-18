@@ -1000,8 +1000,6 @@ namespace hooks
 						if (!unit->is_visible_to(data.target->player)) {
 							return false;
 						}
-						// TODO: iquare consultation
-						// Is this needed? Seems like it's already guaranteed
 						if (scbw::get_distance_fast(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 9 * 32) {
 							return false;
 						}
