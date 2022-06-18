@@ -237,16 +237,32 @@ static void init_base_layouts() {
 	}
 }
 
+static u32 count_units_in_town(AiTown* town, u32 unit_id) {
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[town->player]; unit; unit = unit->player_link.next) {
+		UnitAi* unit_ai = unit->unit_ai;
+		if (unit_ai && unit_ai->type == AiType::Worker || unit_ai->type == AiType::Building) {
+			if (unit_ai->worker_ai.town == town && unit->id == unit_id) {
+				count += 1;
+			}
+		} else if (unit->id == unit_id) {
+			// Could add closest town check, but for now we will just count any unit that doesn't belong to a town
+			count += 1;
+		}
+	}
+	return count;
+}
+
 static u32 has_down_equivalent(AiTown* town, u32 unit_id) {
 	Equivalent equivalent = find_unit_equivalent_down(unit_id);
-	if (equivalent.to != UnitId::None) {
-		return helper::ai_count_units_in_town(town, equivalent.to, false);
+	if (equivalent.from != UnitId::None) {
+		return count_units_in_town(town, equivalent.from);
 	}
 	return true;
 }
 
 static u32 number_of_equivalents_up(AiTown* town, u32 unit_id) {
-	u32 i = helper::ai_count_units_in_town(town, unit_id, false);
+	u32 i = count_units_in_town(town, unit_id);
 	if (unit_id == UnitId::ZergCreepColony) {
 		i += number_of_equivalents_up(town, UnitId::ZergSunkenColony);
 		i += number_of_equivalents_up(town, UnitId::ZergSporeColony);
@@ -313,7 +329,7 @@ static bool can_build_placeholder(BaseLayouts* base_layouts, Placeholder* placeh
 	}
 
 	// Prevent building non town halls when town hall is missing
-	if ((!town->main_building || !(town->main_building->status & UnitStatus::Completed)) && units_dat::base_property[unit_id] & UnitProperty::Building) {
+	if (!town->main_building && units_dat::base_property[unit_id] & UnitProperty::Building) {
 		// Ignore all non townhalls
 		if (!is_basic_townhall(unit_id)) {
 			return false;
@@ -441,13 +457,14 @@ void tick_base_layouts() {
 				if (placeholder->should_request) {
 					if (!base_layouts->placeholders_requested[j] && can_build_placeholder(base_layouts, placeholder)) {
 						base_layouts->placeholders_requested[j] = true;
-						scbw::printf("Unit %s (index: %u) requested at resarea %u", Unit::getName(placeholder->unit_id), j, i);
+						scbw::printf("%s #%u requested at resarea %u", Unit::getName(placeholder->unit_id), j, i);
 						request_placeholder(base_layouts, placeholder);
 					}
+					u32 unit_id = find_unit_base_merge(placeholder->unit_id);
 					if (base_layouts->placeholders_requested[j] &&
-						units_dat::base_property[placeholder->unit_id] & UnitProperty::Building &&
-						has_down_equivalent(town, placeholder->unit_id) &&
-						number_of_equivalents_up(town, find_unit_base_merge(placeholder->unit_id)) < placeholder->wait_build_start_count) {
+						units_dat::base_property[unit_id] & UnitProperty::Building &&
+						has_down_equivalent(town, unit_id) &&
+						number_of_equivalents_up(town, unit_id) < placeholder->wait_build_start_count) {
 						// Lock adding new requests until this request is started
 						break;
 					}
