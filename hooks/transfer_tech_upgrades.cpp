@@ -90,7 +90,7 @@ namespace hooks {
 			PUSH techId				// [EBP+0x0C]
 			PUSH sourceUnit			// [EBP+0x08]
 			CALL researchTechFunc
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
 		return (result != 0);
