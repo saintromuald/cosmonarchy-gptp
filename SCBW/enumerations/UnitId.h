@@ -11,8 +11,6 @@ namespace UnitId
 	//	DarkSwarm											= 202,		// Dark Swarm				- might need mempatches?
 	
 	// Unused
-	//	CrashedBattlecruiser								= 126,		// Norad II Crashed Battlecruiser
-	//	ProtossArbiterTribunal								= 170,		// Arbiter Tribunal
 	//	LeftUpperLevelDoor									= 205		// Left Upper Level Door 	- might need mempatches?
 	//	RightUpperLevelDoor									= 206		// Right Upper Level Door	- might need mempatches?
 
@@ -130,6 +128,7 @@ namespace UnitId
 		ZergZoryusthaleth									= 97,		// Lurker Egg
 		ZergLiiralisk										= 112,		// Terran Academy
 		ZergSovroleth										= 123,		// Terran Armory
+		ZergKagralisk										= 126,		// Norad II Crashed Battlecruiser
 		ZergVorvrokor										= 128,		// Uraj
 		ZergBactalisk										= 129,		// Khalis
 		ZergAlaszileth										= 173,		// Khaydarin Crystal Formation
@@ -143,6 +142,7 @@ namespace UnitId
 		ZergOrbothOmlia										= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation
 		ZergOthstolOviform									= 152,		// Cerebrate Daggoth
 		ZergGorgralSwamp									= 153,		// Unused Zerg 2
+		ZergIzkagIteth										= 170,		// Arbiter Tribunal
 		ZergAlaszilArbor									= 181,		// Cantina
 		ZergZorkizShroud									= 193,		// Protoss Marker
 		ZergVithrathHaunt									= 197,		// Zerg Flag Beacon

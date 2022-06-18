@@ -812,6 +812,7 @@ namespace SpriteId
 		Corpse_Bactalisk			= 617,
 		Corpse_Konvilisk			= 689,
 		Corpse_Izirokor				= 763,
+		Corpse_Kagralisk			= 780,
 
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
