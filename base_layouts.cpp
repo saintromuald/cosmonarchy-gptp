@@ -449,6 +449,7 @@ void tick_base_layouts() {
 				if (placeholder->should_request) {
 					if (!base_layouts->placeholders_requested[j] && can_build_placeholder(base_layouts, placeholder)) {
 						base_layouts->placeholders_requested[j] = true;
+						scbw::printf("Unit %s (index: %u) requested at resarea %u", Unit::getName(placeholder->unit_id), j, i);
 						request_placeholder(base_layouts, placeholder);
 					}
 					if (base_layouts->placeholders_requested[j] &&
