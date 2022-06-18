@@ -662,10 +662,16 @@ static bool unit_kiting_can_attack(Unit* unit) {
 }
 
 void kiting_ai(Unit* unit, UnitExt* unit_ext) {
-	if (unit_could_kite(unit) && unit_ext->timers[TimerAI_KitingLeash] == 1) {
-		unit_ext->values[ValueAI_PreventTargeting] = 0;
-		unit_ext->timers[TimerAI_KitingCooldown] = 1 * 24;
-		unit->order_to(OrderId::Move, unit_ext->ai_kiting_origin.x, unit_ext->ai_kiting_origin.y);
+	if (unit_could_kite(unit) && unit_ext->timers[TimerAI_KitingLeash]) {
+		bool should_leash = unit_ext->timers[TimerAI_KitingLeash] == 1;
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker && scbw::get_distance_fast(unit->position, unit_ext->ai_kiting_origin) > GroupRadius) {
+			should_leash = true;
+		}
+		if (should_leash) {
+			unit_ext->values[ValueAI_PreventTargeting] = 0;
+			unit_ext->timers[TimerAI_KitingCooldown] = 1 * 24;
+			unit->order_to(OrderId::Move, unit_ext->ai_kiting_origin.x, unit_ext->ai_kiting_origin.y);
+		}
 	}
 
 	if (unit_could_kite(unit)) {
