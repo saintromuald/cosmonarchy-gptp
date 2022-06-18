@@ -460,7 +460,7 @@ void tick_base_layouts() {
 					if (!base_layouts->placeholders_requested[j] && can_build_placeholder(base_layouts, placeholder)) {
 						base_layouts->placeholders_requested[j] = true;
 						if (log_placeholder_requests) {
-							scbw::printf("%s #%u requested at resarea %u", Unit::getName(placeholder->unit_id), j, i);
+							scbw::printf("Player %u requested %s #%u at resarea %u", town->player, Unit::getName(placeholder->unit_id), j, i);
 						}
 						request_placeholder(base_layouts, placeholder);
 					}
