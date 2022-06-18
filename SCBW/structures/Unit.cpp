@@ -482,25 +482,21 @@ void Unit::set_hitpoints(s32 hitpoints)
 	}
 }
 
-void Unit::heal(s32 hitpoints, Unit* source, bool restore)
-{
+void Unit::heal(s32 hitpoints, Unit* source, bool restore) {
 	assert(this);
-	if (this->hitpoints == this->get_max_hp_raw()) // If unit is fully healed already, skip healing
-	{
+	if (this->hitpoints == this->get_max_hp_raw()) { // If unit is fully healed already, skip healing
 		return;
 	}
 
 	// Cohort - Servile Vigor
-	if (id == UnitId::SharedCohort && this != source)
-	{
+	if (id == UnitId::SharedCohort) {
 		hitpoints *= 2;
 	}
 
 	set_hitpoints(std::min((u32)this->hitpoints + hitpoints, this->get_max_hp_raw()));
 
 	// If the unit is fully healed after this, clear any debuffs
-	if (this->hitpoints == this->get_max_hp_raw() && restore)
-	{
+	if (this->hitpoints == this->get_max_hp_raw() && restore) {
 		scbw::restore_func(this);
 	}
 }
@@ -508,8 +504,7 @@ void Unit::heal(s32 hitpoints, Unit* source, bool restore)
 void Unit::heal_shields(s32 shields, Unit* source, bool restore)
 {
 	assert(this);
-	if (this->shields == this->get_max_shields_raw()) // skip healing if max shields already
-	{
+	if (this->shields == this->get_max_shields_raw()) { // skip healing if max shields already
 		return;
 	}
 
@@ -517,8 +512,7 @@ void Unit::heal_shields(s32 shields, Unit* source, bool restore)
 	this->set_hitpoints(this->hitpoints); // Updates unit strength
 
 	// If heals to full clear debuffs
-	if (this->shields == this->get_max_shields_raw() && restore)
-	{
+	if (this->shields == this->get_max_shields_raw() && restore) {
 		scbw::restore_func(this);
 	}
 }
