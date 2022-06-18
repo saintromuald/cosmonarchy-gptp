@@ -134,7 +134,7 @@ static void add_placeholder(CHKUnit* unit, u32 player) {
 	if (flags & ChkUnitFlags_Invincible) {
 		add_placeholder_by_unit_id(&mainarea_base_layouts[player], &placeholder, unit->unit_id);
 	} else {
-		u32 res_area = scbw::get_closest_resarea(placeholder.position) + 1;
+		u32 res_area = scbw::get_closest_resarea(placeholder.position) - 1;
 		add_placeholder_by_unit_id(&resarea_base_layouts[player][res_area], &placeholder, unit->unit_id);
 	}
 }
