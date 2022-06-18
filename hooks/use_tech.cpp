@@ -7,47 +7,41 @@
 
 namespace hooks
 {
-	enum LarvaType {
-		LarvaType_Swarm,
-		LarvaType_Assault,
-		LarvaType_Control,
+	enum {
+		ButtonSet_Swarm   = 206,
+		ButtonSet_Assault = 207,
+		ButtonSet_Control = 208,
+		ButtonSet_Shared  = 101,
 	};
 
-	static void select_larva_type(u32 type) {
+	static void select_larva_type(u32 buttonset) {
 		btnsact_select_larva();
 		helper::update_hud_info();
 		if (*active_portrait_unit && (*active_portrait_unit)->id == UnitId::ZergLarva) {
-			helper::BTNSACT_ChangeButtons(206 + type);
+			helper::BTNSACT_ChangeButtons(buttonset);
 		}
 	}
 
-	void btnsact_use_tech(u16 tech, GrpHead* head) // 00423F70
-	{
+	void btnsact_use_tech(u16 tech, GrpHead* head) { // 00423F70
 		// Replacement for proc @ 00423660. -iquare
 		bool TechCapableUnit = false;
 		Unit* firstInList = players_selections->unit[*ACTIVE_NATION_ID][0];
-		if (firstInList != nullptr)
-		{
+		if (firstInList) {
 			// Initial check for energy-based switch abilities
 			// Not sure if Lanifect needs this anymore
 			if (players_selections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect
-				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1)
-			{
+				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1) {
 				TechCapableUnit = true;
 			}
-			if (tech == TechId::EidolonLobotomyMine)
-			{
+			if (tech == TechId::EidolonLobotomyMine) {
 				TechCapableUnit = true;
 			}
 		}
-		if (!TechCapableUnit)
-		{
-			if (helper::check_energy_for_tech_use(tech))
-			{
+		if (!TechCapableUnit) {
+			if (helper::check_energy_for_tech_use(tech)) {
 				TechCapableUnit = true;
 			}
-			if (firstInList != nullptr)
-			{
+			if (firstInList) {
 				/*
 				if (players_selections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel
 					&& scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
@@ -64,8 +58,7 @@ namespace hooks
 				return;
 			}
 		}
-		switch (tech)
-		{
+		switch (tech) {
 			case TechId::ScannerSweep:
 			{
 				helper::issue_tri_target_order(OrderId::PlaceScanner, 0, 0);
@@ -285,19 +278,20 @@ namespace hooks
 			} break;
 			case TechId::LarvalSubmenuSelectSwarm:
 			{
-				select_larva_type(LarvaType_Swarm);
+				select_larva_type(ButtonSet_Swarm);
 			} break;
 			case TechId::LarvalSubmenuSelectAssault:
 			{
-				select_larva_type(LarvaType_Assault);
+				select_larva_type(ButtonSet_Assault);
 			} break;
 			case TechId::LarvalSubmenuSelectControl:
 			{
-				select_larva_type(LarvaType_Control);
+				select_larva_type(ButtonSet_Control);
 			} break;
-			default:
+			case TechId::LarvalSubmenuSelectShared:
 			{
-			}
+				select_larva_type(ButtonSet_Shared);
+			} break;
 		};
 	}
 

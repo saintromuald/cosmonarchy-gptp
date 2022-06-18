@@ -30,6 +30,7 @@ namespace TechId {
 		LarvalSubmenuSelectControl		= 28, // Dark Archon Meld
 		LarvalSubmenuSelectSwarm		= 33, // Unused Tech 33
 		LarvalSubmenuSelectAssault		= 38, // Unused Tech 38
+		LarvalSubmenuSelectShared		= 9,  // Cloaking Field Wraith
 		AkistrokorBlissfulEmbrace		= 35, // Unused Tech 35
 
 	// techdata.dat is not yet extended

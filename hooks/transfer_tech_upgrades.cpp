@@ -5,14 +5,13 @@
 #include "apply_upgrade_flags.h"
 #include <SCBW/api.h>
 
-namespace
-{
-	struct TechTransferData
-	{
+namespace {
+	struct TechTransferData {
 		u16 unit_id;
 		u16 relatedTech[5]; //Maximum number of tech (use TechId::None to mark a premature end-of-list)
 	};
-	const TechTransferData techTransferData[] = {
+
+	const TechTransferData tech_transfer_data[] = {
 		// Terran
 		{UnitId::TerranMaverick, TechId::Stimpacks, TechId::None},
 		{UnitId::TerranHarakan, TechId::Stimpacks, TechId::None},
@@ -41,13 +40,12 @@ namespace
 		{UnitId::ProtossMindTyrant, TechId::MindControl, TechId::Feedback, TechId::Maelstrom, TechId::None},
 	};
 
-	struct UpgradeTransferData
-	{
+	struct UpgradeTransferData {
 		u16 unit_id;
-		u8 relatedUpgrades[4]; //Maximum number of tech (use UpgradeId::None to mark a premature end-of-list)
+		u8 related_upgrades[4]; //Maximum number of tech (use UpgradeId::None to mark a premature end-of-list)
 	};
 
-	const UpgradeTransferData upgradeTransferData[] = {
+	const UpgradeTransferData upgrade_transfer_data[] = {
 		// Terran
 		{UnitId::TerranMaverick, UpgradeId::U238Shells, UpgradeId::None},
 		{UnitId::TerranEidolon, UpgradeId::OcularImplants, UpgradeId::MoebiusReactor, UpgradeId::None},
@@ -79,173 +77,123 @@ namespace
 		{UnitId::ProtossDidact, UpgradeId::KhaydarinCore, UpgradeId::None},
 		{UnitId::ProtossLanifect, UpgradeId::ArgusJewel, UpgradeId::None},
 	};
+}
 
-} //Unnamed namespace
-
-namespace hooks
-{
-
-	//summon a function passed as parameter, having the same variables layout for both upgrade and tech related functions.
-	bool researchHelper(u32 researchTechFunc, Unit* sourceUnit, u32 techId, u32 relativeVariable, u32 destPlayerId)
-	{
-
-		static u32 bPreResult;
-
+namespace hooks {
+	// Summon a function passed as parameter, having the same variables layout for both upgrade and tech related functions.
+	bool research_helper(u32 researchTechFunc, Unit* sourceUnit, u32 techId, u32 relativeVariable, u32 destPlayerId) {
+		static u32 result;
 		__asm {
 			PUSHAD
-			PUSH destPlayerId		//[EBP+0x14]
-			PUSH relativeVariable	//[EBP+0x10] //this variable has different meaning depending on the caller (boolean or number) 
-			PUSH techId				//[EBP+0x0C]
-			PUSH sourceUnit			//[EBP+0x08]
+			PUSH destPlayerId		// [EBP+0x14]
+			PUSH relativeVariable	// [EBP+0x10] // this variable has different meaning depending on the caller (boolean or number) 
+			PUSH techId				// [EBP+0x0C]
+			PUSH sourceUnit			// [EBP+0x08]
 			CALL researchTechFunc
 			MOV bPreResult, EAX
 			POPAD
 		}
-
-		return (bPreResult != 0);
-
-	} //bool researchHelper(u32 researchTechFunc, Unit* sourceUnit, u32 techId, u32 relativeVariable, u32 destPlayerId)
-
-	;
-
-	//Transfers all tech related to the @p source unit to @p targetPlayerId.
-	//Originally researchAllTechsFromUnit @ 004E2C00
-	void transferUnitTechToPlayerHook(Unit* sourceUnit, u8 targetPlayerId, u32 researchTechFunc)
-	{
-
-		const TechTransferData* techDataArrayPosBegin = &techTransferData[0];								//original was (TechTransferData*) 0x005011CA;
-		const TechTransferData* techDataArrayPosEnd = &techTransferData[ARRAY_SIZE(techTransferData)];	//original was (TechTransferData*) 0x005012DE;
-		const s32 relatedTechArraySize = 5;
-
-		//Stop if the source unit does not exist
-		if (researchTechFunc == NULL || sourceUnit == nullptr)
-			helper::SErrSetLastError(87);
-		else
-		{
-
-			bool bBreakMainLoop = false;
-			bool bBreakSubLoop;
-
-			//Browse through TechTransferData structures
-			for (TechTransferData* data = (TechTransferData*)techDataArrayPosBegin; !bBreakMainLoop && (data != techDataArrayPosEnd); data++)
-			{
-
-				if (sourceUnit->id == data->unit_id)
-				{
-
-					bBreakSubLoop = false;
-
-					//Browse through techs for current unit
-					for (s32 techIndex = 0; !bBreakSubLoop && techIndex < relatedTechArraySize; techIndex++)
-					{
-
-						u16 techId = data->relatedTech[techIndex];
-
-						//forced end of array, stop checking techs, but still check others TechTransferData
-						//(in case the unit is represented several times?)
-						if (techId == TechId::None)
-							bBreakSubLoop = true;
-						else
-						{
-
-							b8 bIsResearched;
-
-							//check if tech is researched by unit for transfer
-							if (techId >= TechId::Restoration)
-								bIsResearched = TechBw->isResearched[sourceUnit->player][techId - TechId::Restoration];
-							else
-								bIsResearched = TechSc->isResearched[sourceUnit->player][techId];
-
-							//probably research the tech of unit if not already researched by player
-							//if return false, stop checking techs and TechTransferData
-							if (!researchHelper(researchTechFunc, sourceUnit, techId, bIsResearched, targetPlayerId))
-							{
-								bBreakSubLoop = true;
-								bBreakMainLoop = true;
-							}
-
-						}
-
-					}
-
-				} //if (sourceUnit->id == data->unit_id)
-
-			} //for (TechTransferData* data = (TechTransferData*)techDataArrayPosBegin; !bBreakMainLoop && (data != techDataArrayPosEnd); data++)
-
-		} //if (researchTechFunc != nullptr && sourceUnit != nullptr)
-
-	} //void transferUnitTechToPlayerHook(Unit* sourceUnit, u8 targetPlayerId, u32 researchTechFunc)
-
-	;
-
-	//Transfers all upgrades related to the @p source unit to @p targetPlayerId.
-	//Originally upgradeAllUpgradesFromUnit @ 004E2B50
-	void transferUnitUpgradesToPlayerHook(Unit* sourceUnit, u8 targetPlayerId, u32 researchUpgradesFunc)
-	{
-
-		const UpgradeTransferData* upgradeDataArrayPosBegin = &upgradeTransferData[0];									//original was (UpgradeTransferData*) 0x005012E2;
-		const UpgradeTransferData* upgradeDataArrayPosEnd = &upgradeTransferData[ARRAY_SIZE(upgradeTransferData)];	//original was (UpgradeTransferData*) 0x005013DC;
-		const s32 relatedUpgradeArraySize = 4;
-
-		//Stop if the source unit does not exist
-		if (researchUpgradesFunc == NULL || sourceUnit == nullptr)
-			helper::SErrSetLastError(87);	//0x57
-		else
-		{
-
-			bool bBreakMainLoop = false;
-			bool bBreakSubLoop;
-
-			//Browse through UpgradeTransferData structures
-			for (UpgradeTransferData* data = (UpgradeTransferData*)upgradeDataArrayPosBegin; !bBreakMainLoop && (data != upgradeDataArrayPosEnd); data++)
-			{
-
-				if (sourceUnit->id == data->unit_id)
-				{
-
-					bBreakSubLoop = false;
-
-					//Browse through upgrades for current unit
-					for (s32 upgradeIndex = 0; !bBreakSubLoop && upgradeIndex < relatedUpgradeArraySize; upgradeIndex++)
-					{
-
-						u16 upgradeId = data->relatedUpgrades[upgradeIndex];
-
-						//forced end of array, stop checking upgrades, but still check others UpgradeTransferData
-						//(in case the unit is represented several times?)
-						if (upgradeId == UpgradeId::None)
-							bBreakSubLoop = true;
-						else
-						{
-
-							u8 sourceUpgradeLevel;
-
-							//check level of upgrade of by unit for transfer
-							if (upgradeId >= UpgradeId::PrismaticShield)
-								sourceUpgradeLevel = UpgradesBw->currentLevel[sourceUnit->player][upgradeId - UpgradeId::PrismaticShield];
-							else
-								sourceUpgradeLevel = UpgradesSc->currentLevel[sourceUnit->player][upgradeId];
-
-							//probably increase the upgrade level of player until reaching same point as sourceUnit
-							//if return false, stop checking upgrades and UpgradeTransferData
-							if (!researchHelper(researchUpgradesFunc, sourceUnit, upgradeId, sourceUpgradeLevel, targetPlayerId))
-							{
-								bBreakSubLoop = true;
-								bBreakMainLoop = true;
-							}
-
-						}
-
-					}
-
-				} //if (sourceUnit->id == data->unit_id)
-
-			} //for (upgradeTransferData* data = (upgradeTransferData*)upgradeDataArrayPosBegin; !bBreakMainLoop && (data != upgradeDataArrayPosEnd); data++)
-
-		} //if (researchupgradeFunc != nullptr && sourceUnit != nullptr)
+		return (result != 0);
 
 	}
 
-	;
+	// Transfers all tech related to the @p source unit to @p target_player.
+	// Originally researchAllTechsFromUnit @ 004E2C00
+	void transfer_unit_tech_to_player_hook(Unit* source_unit, u8 target_player, u32 research_tech_func) {
+		return;
 
-} //hooks
+		const TechTransferData* tech_data_array_pos_begin = &tech_transfer_data[0];								// original was (TechTransferData*) 0x005011CA;
+		const TechTransferData* tech_data_array_pos_end = &tech_transfer_data[ARRAY_SIZE(tech_transfer_data)];	// original was (TechTransferData*) 0x005012DE;
+		const s32 related_tech_array_size = 5;
+
+		// Stop if the source unit does not exist
+		if (!research_tech_func || !source_unit) {
+			helper::SErrSetLastError(87);
+		} else {
+			bool break_main_loop = false;
+			bool break_sub_loop;
+
+			// Browse through TechTransferData structures
+			for (TechTransferData* data = (TechTransferData*)tech_data_array_pos_begin; !break_main_loop && (data != tech_data_array_pos_end); ++data) {
+				if (source_unit->id == data->unit_id) {
+					break_sub_loop = false;
+
+					// Browse through techs for current unit
+					for (s32 tech_index = 0; !break_sub_loop && tech_index < related_tech_array_size; tech_index++) {
+						u16 tech_id = data->relatedTech[tech_index];
+						// Forced end of array, stop checking techs, but still check others TechTransferData
+						// (in case the unit is represented several times?)
+						if (tech_id == TechId::None) {
+							break_sub_loop = true;
+						} else {
+							// Check if tech is researched by unit for transfer
+							b8 is_researched = false;
+							if (tech_id >= TechId::Restoration) {
+								is_researched = TechBw->isResearched[source_unit->player][tech_id - TechId::Restoration];
+							} else {
+								is_researched = TechSc->isResearched[source_unit->player][tech_id];\
+							}
+
+							// Probably research the tech of unit if not already researched by player
+							// if return false, stop checking techs and TechTransferData
+							if (!research_helper(research_tech_func, source_unit, tech_id, is_researched, target_player)) {
+								break_sub_loop = true;
+								break_main_loop = true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Transfers all upgrades related to the @p source unit to @p target_player.
+	// Originally upgradeAllUpgradesFromUnit @ 004E2B50
+	void transfer_unit_upgrades_to_player_hook(Unit* source_unit, u8 target_player, u32 research_upgrades_func) {
+		return;
+
+		const UpgradeTransferData* upgrade_data_array_pos_begin = &upgrade_transfer_data[0];								// original was (UpgradeTransferData*) 0x005012E2;
+		const UpgradeTransferData* upgrade_data_array_pos_end = &upgrade_transfer_data[ARRAY_SIZE(upgrade_transfer_data)];	// original was (UpgradeTransferData*) 0x005013DC;
+		const s32 related_upgrade_array_size = 4;
+
+		//Stop if the source unit does not exist
+		if (!research_upgrades_func || !source_unit) {
+			helper::SErrSetLastError(87); // 0x57
+		} else { 
+			bool break_main_loop = false;
+			bool break_sub_loop = false;
+
+			// Browse through UpgradeTransferData structures
+			for (UpgradeTransferData* data = (UpgradeTransferData*)upgrade_data_array_pos_begin; !break_main_loop && (data != upgrade_data_array_pos_end); ++data) { 
+				if (source_unit->id == data->unit_id) {
+					break_sub_loop = false;
+
+					// Browse through upgrades for current unit
+					for (s32 upgrade_index = 0; !break_sub_loop && upgrade_index < related_upgrade_array_size; upgrade_index++) {
+						u16 upgrade_id = data->related_upgrades[upgrade_index];
+						// Forced end of array, stop checking upgrades, but still check others UpgradeTransferData
+						// (in case the unit is represented several times?)
+						if (upgrade_id == UpgradeId::None) {
+							break_sub_loop = true;
+						} else {
+							u8 source_upgrade_level = 0;
+							// check level of upgrade of by unit for transfer
+							if (upgrade_id >= UpgradeId::PrismaticShield) {
+								source_upgrade_level = UpgradesBw->currentLevel[source_unit->player][upgrade_id - UpgradeId::PrismaticShield];
+							} else {
+								source_upgrade_level = UpgradesSc->currentLevel[source_unit->player][upgrade_id];
+							}
+
+							// Probably increase the upgrade level of player until reaching same point as source_unit
+							// if return false, stop checking upgrades and UpgradeTransferData
+							if (!research_helper(research_upgrades_func, source_unit, upgrade_id, source_upgrade_level, target_player)) {
+								break_sub_loop = true;
+								break_main_loop = true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -8,15 +8,15 @@ namespace hooks
 	// For the cloaking energy consumption, see energy_regeneration.cpp
 	u8 getCloakingTech(Unit* unit)
 	{
-		if (unit->id == UnitId::TerranEidolon)
-		{
-			return TechId::PersonnelCloaking;
-		}
-
-		if (unit->id == UnitId::TerranWraith)
-		{
-			return TechId::CloakingField;
-		}
+		//if (unit->id == UnitId::TerranEidolon)
+		//{
+		//	return TechId::PersonnelCloaking;
+		//}
+		//
+		//if (unit->id == UnitId::TerranWraith)
+		//{
+		//	return TechId::CloakingField;
+		//}
 
 		return TechId::None;
 

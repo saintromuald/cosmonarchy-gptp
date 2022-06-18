@@ -18,7 +18,7 @@ namespace
 			MOV targetPlayerId, AL
 			PUSHAD
 		}
-		hooks::transferUnitUpgradesToPlayerHook(sourceUnit, targetPlayerId, researchUpgradeFunc);
+		hooks::transfer_unit_upgrades_to_player_hook(sourceUnit, targetPlayerId, researchUpgradeFunc);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -42,7 +42,7 @@ namespace
 			MOV targetPlayerId, AL
 			PUSHAD
 		}
-		hooks::transferUnitTechToPlayerHook(sourceUnit, targetPlayerId, researchTechFunc);
+		hooks::transfer_unit_tech_to_player_hook(sourceUnit, targetPlayerId, researchTechFunc);
 		__asm {
 			POPAD
 			MOV ESP, EBP
