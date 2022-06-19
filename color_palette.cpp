@@ -80,7 +80,7 @@ static u8 mix_color(f32 base, f32 blend, f32 saturation, f32 brightness) {
 
 void set_palette_recolor(RecolorSet set) {
 	for (u32 i = 0; i < PaletteSize; ++i) {
-		f32 brightness = std::max({init_palette->colors[i].r, init_palette->colors[i].g, init_palette->colors[i].b}) / 255.0;
+		f32 brightness = (init_palette->colors[i].r + init_palette->colors[i].g + init_palette->colors[i].b) / 3.0 / 255.0;
 		Recolor recolor = lerp3_recolor(brightness, set.shadows, set.midtones, set.highlights);
 		game_palette->colors[i].r = mix_color(init_palette->colors[i].r / 255.0, recolor.r * recolor.gamma, recolor.saturation, brightness);
 		game_palette->colors[i].g = mix_color(init_palette->colors[i].g / 255.0, recolor.g * recolor.gamma, recolor.saturation, brightness);
