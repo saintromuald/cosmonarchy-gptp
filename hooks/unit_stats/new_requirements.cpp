@@ -66,7 +66,7 @@ namespace hooks {
 				case UnitId::TerranBunker:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::TerranBarracks:
 				case UnitId::TerranFulcrum:
 				case UnitId::TerranStarport:
@@ -77,7 +77,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranTreasury:
 				case UnitId::TerranCaptaincy:
 				case UnitId::TerranScienceFacility:
@@ -86,7 +86,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranIronFoundry:
 				case UnitId::TerranNaniteAssembly:
 				case UnitId::TerranIonCannon:
@@ -95,7 +95,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandCenter))
@@ -106,7 +106,7 @@ namespace hooks {
 				case UnitId::TerranComsatStation:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::TerranTalos:
 				case UnitId::TerranMissileSilo:
 				case UnitId::TerranQuarry:
@@ -115,7 +115,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMissileSilo))
@@ -125,7 +125,7 @@ namespace hooks {
 				case UnitId::TerranNuclearMissile:
 				{
 					return true;
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranQuarry))
@@ -135,7 +135,7 @@ namespace hooks {
 				case UnitId::TerranMason:
 				{
 					return true;
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranTreasury))
@@ -145,7 +145,7 @@ namespace hooks {
 				case UnitId::TerranComsatStation:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::TerranMissileSilo:
 				case UnitId::TerranQuarry:
 				{
@@ -153,7 +153,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranBarracks))
@@ -163,20 +163,20 @@ namespace hooks {
 				case UnitId::TerranMedbay:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::TerranCovertOps:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranMaverick:
 				case UnitId::TerranHarakan:
 				case UnitId::TerranCyprian:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::TerranCleric:
 				case UnitId::TerranShaman:
 				{
@@ -184,7 +184,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranEidolon:
 				case UnitId::TerranSavant:
 				{
@@ -192,7 +192,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranFulcrum))
@@ -206,13 +206,13 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranVulture:
 				case UnitId::TerranGoliath:
 				case UnitId::TerranCyclops:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::TerranPhalanxTankMode:
 				case UnitId::TerranCuirass:
 				{
@@ -220,7 +220,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranPaladin:
 				case UnitId::TerranMadrigal:
 				{
@@ -228,7 +228,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranStarport))
@@ -242,14 +242,14 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranWraith:
 				case UnitId::TerranGorgon:
 				case UnitId::TerranValkyrie:
 				case UnitId::TerranTrojan:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::TerranAzazel:
 				case UnitId::TerranSeraph:
 				{
@@ -257,7 +257,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranSalamander:
 				case UnitId::TerranWyvern:
 				{
@@ -265,7 +265,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranScrapyard))
@@ -279,14 +279,14 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranBlackjack:
 				case UnitId::SharedAspirant:
 				case UnitId::SharedCohort:
 				case UnitId::TerranSiren:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::SharedStriga:
 				case UnitId::SharedLuminary:
 				{
@@ -294,7 +294,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::SharedTarasque:
 				case UnitId::SharedAnticthon:
 				{
@@ -302,7 +302,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCaptaincy))
@@ -315,13 +315,13 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranMadcap:
 				case UnitId::TerranHeracles:
 				case UnitId::TerranApostle:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::TerranOlympian:
 				case UnitId::TerranAutocrat:
 				{
@@ -329,7 +329,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranIronFoundry))
@@ -341,7 +341,7 @@ namespace hooks {
 				case UnitId::TerranPenumbra:
 				{
 					return true;
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranNaniteAssembly))
@@ -354,7 +354,7 @@ namespace hooks {
 				case UnitId::TerranPhobos:
 				{
 					return true;
-				}
+				} break;
 			}
 		}
 
@@ -386,7 +386,7 @@ namespace hooks {
 				case UnitId::ProtossEcclesiast:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::ProtossLegionnaire:
 				case UnitId::ProtossHierophant:
 				{
@@ -394,7 +394,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGrandLibrary))
@@ -406,14 +406,14 @@ namespace hooks {
 				case UnitId::ProtossAtreus:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::ProtossArchon:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossArchonArchives))
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossRoboticsFacility))
@@ -425,7 +425,7 @@ namespace hooks {
 				case UnitId::ProtossManifold:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::ProtossGolem:
 				case UnitId::ProtossIdol:
 				{
@@ -433,7 +433,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossRoboticsAuthority))
@@ -445,14 +445,14 @@ namespace hooks {
 				case UnitId::ProtossClarion:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::ProtossDemiurge:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod))
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossStargate))
@@ -464,7 +464,7 @@ namespace hooks {
 				case UnitId::ProtossLanifect:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::ProtossGladius:
 				case UnitId::ProtossExemplar:
 				{
@@ -472,7 +472,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossArgosy))
@@ -484,21 +484,21 @@ namespace hooks {
 				case UnitId::ProtossEmpyrean:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::ProtossSolarion:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossFleetBeacon))
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ProtossStarSovereign:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossCosmicAltar))
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossProstrationStage))
@@ -509,7 +509,7 @@ namespace hooks {
 				case UnitId::ProtossBarghest:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::ProtossMindTyrant:
 				case UnitId::ProtossPariah:
 				{
@@ -517,14 +517,14 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ProtossAnthelion:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossMonumentOfSin))
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossRogueGallery))
@@ -536,7 +536,7 @@ namespace hooks {
 				case UnitId::SharedAxitrilisk:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::SharedStriga:
 				case UnitId::SharedLuminary:
 				case UnitId::SharedEmpress:
@@ -545,7 +545,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 
@@ -608,7 +608,7 @@ namespace hooks {
 				case UnitId::ProtossMonumentOfSin:
 				{
 					return true;
-				}
+				} break;
 			}
 		}
 
@@ -622,14 +622,14 @@ namespace hooks {
 				case UnitId::ZergOvileth:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::ZergOthstoleth:
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier3])
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ZergZethrokor:
 				case UnitId::ZergQuazilisk:
 				{
@@ -638,7 +638,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ZergHydralisk:
 				case UnitId::ZergSkithrokor:
 				{
@@ -647,7 +647,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ZergMutalisk:
 				case UnitId::ZergNathrokor:
 				{
@@ -656,14 +656,14 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::SharedCohort:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia))
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::SharedAxitrilisk:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia)
@@ -671,7 +671,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ZergKagralisk:
 				case UnitId::ZergIzirokor:
 				{
@@ -679,7 +679,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ZergZoryusthaleth:
 				case UnitId::ZergLakizilisk:
 				{
@@ -688,7 +688,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ZergMatraleth:
 				case UnitId::ZergKonvilisk:
 				{
@@ -697,7 +697,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::SharedTarasque:
 				case UnitId::SharedCharlatan:
 				case UnitId::SharedEmpress:
@@ -707,7 +707,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ZergKeskathalor:
 				case UnitId::ZergGeszithalor:
 				{
@@ -716,7 +716,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ZergIsthrathaleth:
 				case UnitId::ZergSovroleth:
 				{
@@ -724,7 +724,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::SharedAnticthon:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia)
@@ -732,7 +732,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 
@@ -883,7 +883,7 @@ namespace hooks {
 				case UnitId::ZergOrbothOmlia:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::ZergIrolIris:
 				{
 					if (player_has_unit_id(player_id, UnitId::ZergSire)
@@ -893,7 +893,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ZergZorkizShroud:
 				case UnitId::ZergMatravilNest:
 				{
@@ -901,7 +901,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::ZergNydusCanal:
 				case UnitId::ZergGeszkathGrotto:
 				case UnitId::ZergSovthrathMound:
@@ -910,7 +910,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 			}
 		}
 

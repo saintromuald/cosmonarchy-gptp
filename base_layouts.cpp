@@ -323,6 +323,11 @@ static bool can_place_unit(u32 unit_id, Point16 position, u32 player) {
 
 static bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* placeholder) {
 	u32 unit_id = placeholder->unit_id;
+	if (unit_id == UnitId::TerranCovertOps) {
+		if (hooks::create_unit_id_allowed(unit_id, town->player, false)) {
+			int x = hooks::create_unit_id_allowed(unit_id, town->player, false);
+		}
+	}
 
 	// Check tech availability
 	u32 base_unit_id = find_unit_base_merge(unit_id);
@@ -493,7 +498,7 @@ void tick_layouts() {
 			u32 base_unit_id = find_unit_base_merge(placeholder->unit_id);
 			if (!placeholder->requested && can_build_placeholder(layouts, town, placeholder)) {
 				if (can_place_unit(base_unit_id, placeholder->position, i)) {
-					placeholder->requested = true;
+ 					placeholder->requested = true;
 					if (log_placeholder_requests[town->player]) {
 						scbw::printf("Player %u requested %s #%u at resarea %u", i, Unit::getName(placeholder->unit_id), j, placeholder->resarea);
 					}
