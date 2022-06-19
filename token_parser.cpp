@@ -155,6 +155,70 @@ Box32 parser_get_location(Parser* parser) {
 	return {};
 }
 
+bool parser_has_recolor(Parser* parser) {
+	if (!parser_skip_whitespace(parser)) {
+		return false;
+	}
+	return *parser->at == '(';
+}
+
+Recolor parser_get_recolor(Parser* parser) {
+	memset(&parser->token, 0, sizeof(parser->token));
+
+	Recolor recolor = default_recolor();
+	if (!parser_skip_whitespace(parser)) {
+		return recolor;
+	}
+
+	if (*parser->at == '(') {
+		++parser->at;
+
+		while (*parser->at && *parser->at != ')') {
+			if (is_newline(*parser->at)) {
+				break;
+			}
+
+			if (parser->token.size < MaxToken - 1) {
+				parser->token.data[parser->token.size++] = *parser->at;
+			}
+			++parser->at;
+		}
+
+		if (*parser->at == ')') {
+			++parser->at;
+		}
+
+		Box32 box = {};
+		sscanf(parser->token.data, "%f %f %f %f %f", &recolor.r, &recolor.g, &recolor.b, &recolor.gamma, &recolor.saturation);
+	}
+	return recolor;
+}
+
+RecolorSet parser_get_recolor_set(Parser* parser) {
+	RecolorSet set = default_recolor_set();
+
+	if (!parser_has_recolor(parser)) {
+		return set;
+	}
+	set.shadows = parser_get_recolor(parser);
+
+	if (!parser_has_recolor(parser)) {
+		set.midtones   = set.shadows;
+		set.highlights = set.shadows;
+		return set;
+	}
+
+	set.midtones = parser_get_recolor(parser);
+	if (!parser_has_recolor(parser)) {
+		set.highlights = set.midtones;
+		set.midtones   = lerp_recolor(0.5, set.shadows, set.highlights);
+		return set;
+	}
+
+	set.highlights = parser_get_recolor(parser);
+	return set;
+}
+
 Point16 box_center(Box32 box) {
 	Point16 point = {};
 	point.x = box.x + box.w / 2;

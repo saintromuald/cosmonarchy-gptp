@@ -2082,7 +2082,11 @@ namespace hooks
 		quickcasting_signal = false;
 		quickcasting_command_card = 0;
 		
-		set_palette_recolor({}, {});
+		RecolorSet set = default_recolor_set();
+		set.shadows.gamma = 0;
+		set.midtones.gamma = 0;
+		set.highlights.gamma = 0;
+		set_palette_recolor(set);
 
 		return true;
 	}
