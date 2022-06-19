@@ -887,7 +887,7 @@ struct AI_Main
 	u32 minerals_available;				/*000C*/
 	u32 gas_available;					/*0010*/
 	u32 supply_available;				/*0014*/
-	SpendingRequest requests[0x3f];		/*0018*/
+	SpendingRequest requests[63];		/*0018*/
 	u8 request_count;					/*0210*/
 	u8 liftoff_cooldown;				/*0211*/
 	u8 ai_nuke_rate;					/*0212*/
