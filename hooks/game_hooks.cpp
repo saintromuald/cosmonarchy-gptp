@@ -214,7 +214,7 @@ namespace hooks
 			disable_quickbuilding--;
 		}
 		tick_trigger_system(true);
-		tick_base_layouts();
+		tick_layouts();
 		// This block is executed once every game
 		if (*elapsed_time_frames == 0)
 		{

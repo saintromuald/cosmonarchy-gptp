@@ -14,7 +14,7 @@ enum ChkUnitFlags {
 extern u32 chk_cache_size;
 extern CHKUnit chk_cache[ChkCacheLimit];
 
-extern bool log_placeholder_requests;
+extern bool log_placeholder_requests[PlayerLimit];
 extern u32 default_ai_expansion_block[PlayerLimit];
 
 // This structure is mirrored in aise, be careful when you change it 
@@ -26,17 +26,20 @@ struct Placeholder {
 	u8 wait_build_start_count;
 	b8 was_preplaced;
 	b8 should_request;
+	u8 resarea;
 };
 
-#define PlaceholderLimit 512
-struct BaseLayouts {
-	AiTown* town;
-	Point16 resarea_pos;
+#define PlaceholderLimit 1024
+struct Layouts {
 	u32 placeholders_count;
 	Placeholder placeholders[PlaceholderLimit];
 	bool placeholders_requested[PlaceholderLimit];
+};
+
+struct LayoutsTown {
+	AiTown* town;
 	u32 request_count[UnitId::Count]; // First used to set wait_build_start_count, then used to track request counts
 };
 
 u32 ai_get_next_custom_expo(AiTown* main_town);
-void tick_base_layouts();
+void tick_layouts();

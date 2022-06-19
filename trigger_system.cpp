@@ -555,8 +555,9 @@ static b32 __fastcall parse_comment_action(Action* action) {
 			} else if (parser_eq(&parser, "objectives_clear")) {
 				memset(&objectives, 0, sizeof(objectives));
 			} else if (parser_eq(&parser, "log_placeholder_requests")) {
+				s32 player = parser_get_s32(&parser);
 				s32 value = parser_get_s32(&parser);
-				log_placeholder_requests = value;
+				log_placeholder_requests[player] = value;
 			}
 		}
 	}
