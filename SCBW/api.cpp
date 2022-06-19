@@ -2451,4 +2451,55 @@ namespace scbw
 			|| unit_id == UnitId::ZergIroleth
 			|| unit_id == UnitId::ZergOthstoleth;
 	}
+
+	bool unit_id_race_check(u32 unit_id, u32 race) {
+		switch (race) {
+			case RaceId::Terran: {
+				if (units_dat::group_flags[unit_id].is_terran) {
+					return true;
+				}
+				switch (unit_id) {
+					case UnitId::SharedCohort:
+					case UnitId::SharedAspirant:
+					case UnitId::SharedTarasque:
+					case UnitId::SharedStriga:
+					case UnitId::SharedAnticthon:
+					case UnitId::SharedLuminary: {
+						return true;
+					}
+				}
+			} break;
+			case RaceId::Protoss: {
+				if (units_dat::group_flags[unit_id].is_protoss) {
+					return true;
+				}
+				switch (unit_id) {
+					case UnitId::SharedAspirant:
+					case UnitId::SharedAxitrilisk:
+					case UnitId::SharedStriga:
+					case UnitId::SharedCharlatan:
+					case UnitId::SharedEmpress:
+					case UnitId::SharedLuminary: {
+						return true;
+					}
+				}
+			} break;
+			case RaceId::Zerg: {
+				if (units_dat::group_flags[unit_id].is_zerg) {
+					return true;
+				}
+				switch (unit_id) {
+					case UnitId::SharedCohort:
+					case UnitId::SharedAxitrilisk:
+					case UnitId::SharedTarasque:
+					case UnitId::SharedCharlatan:
+					case UnitId::SharedEmpress:
+					case UnitId::SharedAnticthon: {
+						return true;
+					}
+				}
+			} break;
+		}
+		return false;
+	}
 }

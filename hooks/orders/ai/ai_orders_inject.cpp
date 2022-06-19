@@ -632,6 +632,23 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) ai_is_unit_id_unit_race_wrapper() { // 00432480
+		static u32 result;
+		static u16 unit_id;
+		static Unit* unit;
+		__asm {
+			MOV unit_id, AX
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::ai_is_unit_id_unit_race(unit_id, unit);
+		__asm {
+			MOV EAX, result
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -674,6 +691,7 @@ namespace hooks
 		jump_patch(ai_assign_region_to_slowest_unit_wrapper,	0x00436F70, 2);
 	//	jump_patch(ai_respond_to_cloaked_threat_wrapper,		0x0043C580,	1);
 		jump_patch(ai_try_return_home_wrapper,					0x00462EA0, 1);
+		jump_patch(ai_is_unit_id_unit_race_wrapper, 			0x00432480, 4);
 
 		call_patch(AI_ReactToHit_TownNullCheck,					0x0043F388, 5);
 

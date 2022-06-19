@@ -491,7 +491,7 @@ void tick_layouts() {
 				continue;
 			}
 			u32 base_unit_id = find_unit_base_merge(placeholder->unit_id);
-			if (!placeholder->requested) {//&& can_build_placeholder(layouts, town, placeholder)) {
+			if (!placeholder->requested && can_build_placeholder(layouts, town, placeholder)) {
 				if (can_place_unit(base_unit_id, placeholder->position, i)) {
 					placeholder->requested = true;
 					if (log_placeholder_requests[town->player]) {

@@ -614,4 +614,6 @@ namespace scbw
 	bool unit_is_stunned(Unit* unit);
 
 	bool unit_id_is_transport(u32 unit_id);
+
+	bool unit_id_race_check(u32 unit_id, u32 race);
 }

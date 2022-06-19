@@ -470,16 +470,19 @@ union ActiveTile
 };
 C_ASSERT(sizeof(ActiveTile) == 4);
 
-struct GroupFlag
+union GroupFlag
 {
-	u8 is_zerg			: 1; /*0x01*/
-	u8 is_terran		: 1; /*0x02*/
-	u8 is_protoss		: 1; /*0x04*/
-	u8 is_men			: 1; /*0x08*/
-	u8 is_building		: 1; /*0x10*/
-	u8 is_factory		: 1; /*0x20*/
-	u8 is_independent	: 1; /*0x40*/
-	u8 is_neutral		: 1; /*0x80*/
+	struct {
+		u8 is_zerg			: 1; /*0x01*/
+		u8 is_terran		: 1; /*0x02*/
+		u8 is_protoss		: 1; /*0x04*/
+		u8 is_men			: 1; /*0x08*/
+		u8 is_building		: 1; /*0x10*/
+		u8 is_factory		: 1; /*0x20*/
+		u8 is_independent	: 1; /*0x40*/
+		u8 is_neutral		: 1; /*0x80*/
+	};
+	u8 value;
 };
 C_ASSERT(sizeof(GroupFlag) == 1);
 

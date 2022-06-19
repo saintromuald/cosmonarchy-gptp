@@ -2235,4 +2235,12 @@ LABEL_37:
 	u32 ai_try_return_home(Unit* unit, u32 dont_issue_order) {
 		return 0;
 	}
+
+	b32 ai_is_unit_id_unit_race(u16 unit_id, Unit* unit) {
+		if (scbw::unit_id_race_check(unit_id, unit->get_race())) {
+			return 1;
+		}
+		*last_internal_error = 25;
+		return 0;
+	}
 }
