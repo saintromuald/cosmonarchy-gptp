@@ -44,18 +44,21 @@ namespace
 		static AiRegion* region;
 		static Unit* unit;
 		static u32 must_use_region;
+		static void* debug_caller_address;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV must_use_region, EAX
+			MOV EAX, [EBP]
+			MOV debug_caller_address, EAX
 			POP EAX
 			MOV unit, EBX
 			MOV region, EAX
 			PUSHAD
 		}
-		hooks::ai_add_military_to_region(region, unit, must_use_region);
+		hooks::ai_add_military_to_region(region, unit, must_use_region, debug_caller_address);
 		__asm {
 			POPAD
 			MOV ESP, EBP

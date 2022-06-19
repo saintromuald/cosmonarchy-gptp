@@ -326,18 +326,18 @@ namespace hooks
 	}
 
 	// Hooked to investigate improperly-initialized unit AI, and to add functionality. -Pr0nogo
-	void ai_add_military_to_region(AiRegion* ai_region, Unit* unit, u32 must_use_region) { // 0043DA20
+	void ai_add_military_to_region(AiRegion* ai_region, Unit* unit, u32 must_use_region, void* debug_caller_address) { // 0043DA20
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
-			scbw::printf("Military AI added to worker!");
+			scbw::printf("Military AI added to worker! 0x%X", debug_caller_address);
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-			scbw::printf("Military AI added to building!");
+			scbw::printf("Military AI added to building! 0x%X", debug_caller_address);
 		}
 		if (player_table[unit->player].type != PlayerType::Computer) {
-			scbw::printf("Military AI added to non computer!");
+			scbw::printf("Military AI added to non computer! 0x%X", debug_caller_address);
 		}
 		if (ai_region->player != unit->player) {
-			scbw::printf("Military AI added to wrong player!");
+			scbw::printf("Military AI added to wrong player! 0x%X", debug_caller_address);
 		}
 		if (ai_region->state == RegionState::EnemySighted && !must_use_region) {
 			ai_region = scbw::get_ai_region(unit->player, scbw::get_region_id(unit->sprite->position));
