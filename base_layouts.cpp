@@ -103,15 +103,18 @@ static void add_placeholder_by_unit_id(Layouts* layouts, Placeholder* placeholde
 	}
 
 	Equivalent equivalent = find_unit_equivalent_down(unit_id);
-	if (equivalent.from != UnitId::None && !equivalent.merge_requests) {
+	if (equivalent.from != UnitId::None) {
 		add_placeholder_by_unit_id(layouts, placeholder, equivalent.from);
 	}
 
-	placeholder->priority -= equivalent.priority_decrease;
 	for (u32 i = 0; i < layouts->placeholders_count; ++i) {
 		Placeholder* other = &layouts->placeholders[i];
 		if (unit_id == layouts->placeholders[i].unit_id &&
 			placeholder->position.x == other->position.x && placeholder->position.y == other->position.y) {
+			if (other->priority < placeholder->priority) {
+				other->priority = placeholder->priority;
+			}
+			placeholder->priority -= equivalent.priority_decrease;
 			return;
 		}
 	}
@@ -120,6 +123,7 @@ static void add_placeholder_by_unit_id(Layouts* layouts, Placeholder* placeholde
 	if (layouts->placeholders_count < PlaceholderLimit) {
 		layouts->placeholders[layouts->placeholders_count++] = *placeholder;
 	}
+	placeholder->priority -= equivalent.priority_decrease;
 }
 
 static void add_placeholder(CHKUnit* unit, u32 player) {
@@ -219,8 +223,12 @@ static u32 count_units_in_town(AiTown* town, u32 unit_id) {
 	for (Unit* unit = first_player_unit->unit[town->player]; unit; unit = unit->player_link.next) {
 		UnitAi* unit_ai = unit->unit_ai;
 		if (unit_ai && (unit_ai->type == AiType::Worker || unit_ai->type == AiType::Building)) {
-			if (unit_ai->worker_ai.town == town && unit->id == unit_id) {
-				count += 1;
+			if (unit_ai->worker_ai.town == town) {
+				if (unit->id == unit_id) {
+					count += 1;
+				} else {
+					count += helper::ai_get_queued_count(unit, unit_id);
+				}
 			}
 		} else if (unit->id == unit_id) {
 			// Could add closest town check, but for now we will just count any unit that doesn't belong to a town
@@ -295,6 +303,9 @@ static bool is_basic_townhall(u32 unit_id) {
 }
 
 static bool can_place_unit(u32 unit_id, Point16 position, u32 player) {
+	if (find_unit_equivalent_down(unit_id).from != UnitId::None) {
+		return true; // If we are requesting an structure upgrade that is not merged into one request, we don't actually place it
+	}
 	if (units_dat::base_property[unit_id] & UnitProperty::CreepBuilding &&
 		!unit_has_creep(unit_id, position.x, position.y)) {
 		return false;
@@ -321,7 +332,7 @@ static bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* p
 	}
 
 	// Prevent building non town halls when town hall is missing
-	if ((!town->main_building || !(town->main_building->status & UnitStatus::Completed)) && units_dat::base_property[unit_id] & UnitProperty::Building) {
+	if (!town->main_building && units_dat::base_property[unit_id] & UnitProperty::Building) {
 		// Ignore all non townhalls
 		if (!is_basic_townhall(unit_id)) {
 			return false;
@@ -476,11 +487,11 @@ void tick_layouts() {
 				continue;
 			}
 			AiTown* town = layouts_town->town;
-			if (town->main_building && has_expanding_town(town->player)) {
+			if (!town->main_building || has_expanding_town(town->player)) {
 				continue;
 			}
 			u32 base_unit_id = find_unit_base_merge(placeholder->unit_id);
-			if (!placeholder->requested && can_build_placeholder(layouts, town, placeholder)) {
+			if (!placeholder->requested) {//&& can_build_placeholder(layouts, town, placeholder)) {
 				if (can_place_unit(base_unit_id, placeholder->position, i)) {
 					placeholder->requested = true;
 					if (log_placeholder_requests[town->player]) {
