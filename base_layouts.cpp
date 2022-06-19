@@ -323,11 +323,6 @@ static bool can_place_unit(u32 unit_id, Point16 position, u32 player) {
 
 static bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* placeholder) {
 	u32 unit_id = placeholder->unit_id;
-	if (unit_id == UnitId::TerranCovertOps) {
-		if (hooks::create_unit_id_allowed(unit_id, town->player, false)) {
-			int x = hooks::create_unit_id_allowed(unit_id, town->player, false);
-		}
-	}
 
 	// Check tech availability
 	u32 base_unit_id = find_unit_base_merge(unit_id);
