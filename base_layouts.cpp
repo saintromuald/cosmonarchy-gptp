@@ -340,11 +340,6 @@ static bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* p
 
 		// TODO: maybe add custom get old peons handling
 	}
-	
-	// Check placeability
-	if (!can_place_unit(placeholder->unit_id, placeholder->position, town->player)) {
-		return false;
-	}
 
 	return true;
 }
@@ -457,6 +452,7 @@ void tick_layouts() {
 				Placeholder* placeholder = &layouts->placeholders[j];
 				if (placeholder->resarea == town->resarea) {
 					placeholder->requested = false;
+					placeholder->placement_timeout = 0;
 					init_placeholder(town, placeholder);
 				}
 			}
@@ -483,23 +479,23 @@ void tick_layouts() {
 			if (town->main_building && has_expanding_town(town->player)) {
 				continue;
 			}
+			u32 base_unit_id = find_unit_base_merge(placeholder->unit_id);
 			if (!placeholder->requested && can_build_placeholder(layouts, town, placeholder)) {
-				placeholder->requested = true;
-				if (log_placeholder_requests[town->player]) {
-					scbw::printf("Player %u requested %s #%u at resarea %u", i, Unit::getName(placeholder->unit_id), j, placeholder->resarea);
+				if (can_place_unit(base_unit_id, placeholder->position, i)) {
+					placeholder->requested = true;
+					if (log_placeholder_requests[town->player]) {
+						scbw::printf("Player %u requested %s #%u at resarea %u", i, Unit::getName(placeholder->unit_id), j, placeholder->resarea);
+					}
+					request_placeholder(layouts_town, placeholder);
+				} else if (placeholder->placement_timeout < 10 * 24) {  // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
+					placeholder->placement_timeout++;
+					break;
 				}
-				request_placeholder(layouts_town, placeholder);
-			}
-			u32 unit_id = find_unit_base_merge(placeholder->unit_id);
-			if (!placeholder->requested && !can_place_unit(unit_id, placeholder->position, i)
-				&& placeholder->placement_timeout < 10 * 24) { // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
-				placeholder->placement_timeout++;
-				break;
 			}
 			if (placeholder->requested &&
-				units_dat::base_property[unit_id] & UnitProperty::Building &&
-				has_down_equivalent(town, unit_id) &&
-				number_of_equivalents_up(town, unit_id) < layouts_town->request_count[unit_id]) {
+				units_dat::base_property[base_unit_id] & UnitProperty::Building &&
+				has_down_equivalent(town, base_unit_id) &&
+				number_of_equivalents_up(town, base_unit_id) < layouts_town->request_count[base_unit_id]) {
 				// Lock adding new requests until this request is started
 				break;
 			}

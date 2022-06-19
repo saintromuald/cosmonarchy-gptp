@@ -26,6 +26,8 @@ struct Placeholder {
 	u8 resarea;
 	b8 was_preplaced;
 	b8 should_request;
+
+	// Runtime data
 	b8 requested;
 	u8 placement_timeout;
 };
