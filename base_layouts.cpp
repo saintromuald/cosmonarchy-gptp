@@ -253,7 +253,7 @@ static u32 number_of_equivalents_up(AiTown* town, u32 unit_id) {
 	return i;
 }
 
-static bool unit_has_creep(u32 unit_id, u32 x, u32 y, u32 player) {
+static bool unit_has_creep(u32 unit_id, u32 x, u32 y) {
 	Box32 area = {};
 	area.w = units_dat::BuildingDimensions[unit_id].x;
 	area.h = units_dat::BuildingDimensions[unit_id].y;
@@ -294,6 +294,22 @@ static bool is_basic_townhall(u32 unit_id) {
 		unit_id == UnitId::ZergHatchery;
 }
 
+static bool can_place_unit(u32 unit_id, Point16 position, u32 player) {
+	if (units_dat::base_property[unit_id] & UnitProperty::CreepBuilding &&
+		!unit_has_creep(unit_id, position.x, position.y)) {
+		return false;
+	}
+	if (units_dat::base_property[unit_id] & UnitProperty::Building && !units_dat::group_flags[unit_id].is_zerg &&
+		!unit_has_no_or_allied_creep(unit_id, position.x, position.y, player)) {
+		return false;
+	}
+	if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi &&
+		!helper::unit_has_power(unit_id, position.x, position.y, player)) {
+		return false;
+	}
+	return true;
+}
+
 static bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* placeholder) {
 	u32 unit_id = placeholder->unit_id;
 
@@ -326,16 +342,7 @@ static bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* p
 	}
 	
 	// Check placeability
-	if (units_dat::base_property[unit_id] & UnitProperty::CreepBuilding &&
-		!unit_has_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
-		return false;
-	}
-	if (units_dat::base_property[unit_id] & UnitProperty::Building && !units_dat::group_flags[unit_id].is_zerg &&
-		!unit_has_no_or_allied_creep(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
-		return false;
-	}
-	if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi &&
-		!helper::unit_has_power(unit_id, placeholder->position.x, placeholder->position.y, town->player)) {
+	if (!can_place_unit(placeholder->unit_id, placeholder->position, town->player)) {
 		return false;
 	}
 
@@ -474,7 +481,7 @@ void tick_layouts() {
 			}
 			AiTown* town = layouts_town->town;
 			if (town->main_building && has_expanding_town(town->player)) {
-				//continue;
+				continue;
 			}
 			if (!placeholder->requested && can_build_placeholder(layouts, town, placeholder)) {
 				placeholder->requested = true;
@@ -484,6 +491,11 @@ void tick_layouts() {
 				request_placeholder(layouts_town, placeholder);
 			}
 			u32 unit_id = find_unit_base_merge(placeholder->unit_id);
+			if (!placeholder->requested && !can_place_unit(unit_id, placeholder->position, i)
+				&& placeholder->placement_timeout < 10 * 24) { // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
+				placeholder->placement_timeout++;
+				break;
+			}
 			if (placeholder->requested &&
 				units_dat::base_property[unit_id] & UnitProperty::Building &&
 				has_down_equivalent(town, unit_id) &&

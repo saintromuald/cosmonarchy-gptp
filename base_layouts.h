@@ -27,6 +27,7 @@ struct Placeholder {
 	b8 was_preplaced;
 	b8 should_request;
 	b8 requested;
+	u8 placement_timeout;
 };
 
 #define PlaceholderLimit 2048
