@@ -446,7 +446,7 @@ void tick_base_layouts() {
 		BaseLayouts* base_layouts = active_base_layouts[i];
 		if (base_layouts) {
 			AiTown* town = base_layouts->town;
-			if (!town->inited) {
+			if (!town->inited || !town->resarea) {
 				base_layouts->town = 0;
 				active_base_layouts[i] = 0;
 				continue;
@@ -480,8 +480,8 @@ void tick_base_layouts() {
 	// Init
 	for (u32 i = 0; i < AiTownLimit; ++i) {
 		AiTown* town = &AiTownArray[i];
-		if (town->inited && !active_base_layouts[town->resarea + 1]) {
-			BaseLayouts* base_layouts = &resarea_base_layouts[town->player][town->resarea + 1];
+		if (town->inited && town->resarea && !active_base_layouts[town->resarea]) {
+			BaseLayouts* base_layouts = &resarea_base_layouts[town->player][town->resarea];
 
 			BaseLayouts* mainarea_layouts = &mainarea_base_layouts[town->player];
 			if (mainarea_layouts->placeholders_count) {
@@ -501,7 +501,7 @@ void tick_base_layouts() {
 				Placeholder* placeholder = &base_layouts->placeholders[j];
 				init_placeholder(base_layouts, placeholder);
 			}
-			active_base_layouts[town->resarea + 1] = base_layouts;
+			active_base_layouts[town->resarea] = base_layouts;
 		}
 	}
 }

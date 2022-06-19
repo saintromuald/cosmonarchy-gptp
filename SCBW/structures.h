@@ -840,7 +840,7 @@ struct AiTown
 	u8 inited;							//	0x19
 	u8 worker_count;					//	0x1a
 	u8 worker_limit;					//	0x1b
-	u8 resarea;							//	0x1c // This is 0 based, meanwhile location array is 1 based (where 0 means none) -Veeq7
+	u8 resarea;							//	0x1c
 	u8 resource_units_not_set;			//	0x1d
 	u8 inBattle;						//	0x1e
 	u8 unk1f;							//	0x1f
