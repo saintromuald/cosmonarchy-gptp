@@ -23,17 +23,16 @@ struct Placeholder {
 	u8 unit_id;
 	u8 priority;
 	u8 guard_rebuilds;
-	u8 wait_build_start_count;
+	u8 resarea;
 	b8 was_preplaced;
 	b8 should_request;
-	u8 resarea;
+	b8 requested;
 };
 
-#define PlaceholderLimit 1024
+#define PlaceholderLimit 2048
 struct Layouts {
 	u32 placeholders_count;
 	Placeholder placeholders[PlaceholderLimit];
-	bool placeholders_requested[PlaceholderLimit];
 };
 
 struct LayoutsTown {

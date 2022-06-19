@@ -374,7 +374,6 @@ static void request_placeholder(LayoutsTown* layouts_town, Placeholder* placehol
 	}
 
 	u32 count = ++layouts_town->request_count[placeholder->unit_id];
-	placeholder->wait_build_start_count = count;
 	if (units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
 		helper::ai_build(placeholder->unit_id, false, count, layouts_town->town, placeholder->priority);
 	} else {
@@ -419,46 +418,8 @@ void tick_layouts() {
 	for (u32 i = 1; i <= resource_areas->count; ++i) {
 		LayoutsTown* layouts_town = &layouts_towns[i];
 		AiTown* town = layouts_town->town;
-		if (town) {
-			if (!town->inited || !town->resarea) {
-				layouts_town->town = 0;
-			}
-		}
-	}
-
-	// Tick
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		Layouts* layouts = &player_layouts[i];
-		if (layouts) {
-			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-				Placeholder* placeholder = &layouts->placeholders[j];
-				if (!placeholder->should_request) {
-					continue;
-				}
-				LayoutsTown* layouts_town = &layouts_towns[placeholder->resarea];
-				if (!layouts_town->town || layouts_town->town->player != i) {
-					continue;
-				}
-				AiTown* town = layouts_town->town;
-				if (town->main_building && has_expanding_town(town->player)) {
-					continue;
-				}
-				if (!layouts->placeholders_requested[j] && can_build_placeholder(layouts, town, placeholder)) {
-					layouts->placeholders_requested[j] = true;
-					if (log_placeholder_requests[town->player]) {
-						scbw::printf("Player %u requested %s #%u at resarea %u", town->player, Unit::getName(placeholder->unit_id), j, i);
-					}
-					request_placeholder(layouts_town, placeholder);
-				}
-				u32 unit_id = find_unit_base_merge(placeholder->unit_id);
-				if (layouts->placeholders_requested[j] &&
-					units_dat::base_property[unit_id] & UnitProperty::Building &&
-					has_down_equivalent(town, unit_id) &&
-					number_of_equivalents_up(town, unit_id) < placeholder->wait_build_start_count) {
-					// Lock adding new requests until this request is started
-					break;
-				}
-			}
+		if (town && (!town->inited || !town->resarea)) {
+			layouts_town->town = 0;
 		}
 	}
 
@@ -471,15 +432,64 @@ void tick_layouts() {
 			memset(layouts_town->request_count, 0, sizeof(layouts_town->request_count));
 
 			Layouts* layouts = &player_layouts[town->player];
+			// Claim ownership of invincible placeholders
+			bool claimed = false;
 			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 				Placeholder* placeholder = &layouts->placeholders[j];
 				if (!placeholder->resarea) {
-					placeholder->resarea = town->resarea; // Claim ownership of invincible placeholders
+					placeholder->resarea = town->resarea;
+					claimed = true;
 				}
+			}
+			if (claimed) {
+				sort_layouts(layouts);
+			}
+
+			// Init placeholders
+			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
+				Placeholder* placeholder = &layouts->placeholders[j];
 				if (placeholder->resarea == town->resarea) {
-					layouts->placeholders_requested[j] = false;
+					placeholder->requested = false;
 					init_placeholder(town, placeholder);
 				}
+			}
+
+			if (log_placeholder_requests[town->player]) {
+				scbw::printf("Player %u started Town #%u at resarea %u", town->player, i, town->resarea);
+			}
+		}
+	}
+
+	// Tick
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+		Layouts* layouts = &player_layouts[i];
+		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
+			Placeholder* placeholder = &layouts->placeholders[j];
+			if (!placeholder->should_request) {
+				continue;
+			}
+			LayoutsTown* layouts_town = &layouts_towns[placeholder->resarea];
+			if (!layouts_town->town || layouts_town->town->player != i) {
+				continue;
+			}
+			AiTown* town = layouts_town->town;
+			if (town->main_building && has_expanding_town(town->player)) {
+				//continue;
+			}
+			if (!placeholder->requested && can_build_placeholder(layouts, town, placeholder)) {
+				placeholder->requested = true;
+				if (log_placeholder_requests[town->player]) {
+					scbw::printf("Player %u requested %s #%u at resarea %u", i, Unit::getName(placeholder->unit_id), j, placeholder->resarea);
+				}
+				request_placeholder(layouts_town, placeholder);
+			}
+			u32 unit_id = find_unit_base_merge(placeholder->unit_id);
+			if (placeholder->requested &&
+				units_dat::base_property[unit_id] & UnitProperty::Building &&
+				has_down_equivalent(town, unit_id) &&
+				number_of_equivalents_up(town, unit_id) < layouts_town->request_count[unit_id]) {
+				// Lock adding new requests until this request is started
+				break;
 			}
 		}
 	}
