@@ -278,6 +278,7 @@ namespace hooks
 			case UnitId::TerranEidolon:
 			case UnitId::ProtossAmaranth:
 			case UnitId::ProtossCabalist:
+			case UnitId::ZergKagralisk:
 			case UnitId::ZergZoryusthaleth:
 			{
 				speed *= 1.2;

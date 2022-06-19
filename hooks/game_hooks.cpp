@@ -1343,7 +1343,6 @@ namespace hooks
 
 		// Tyranny
 		if (unitExt->values[ValueTyrannyPlayer]) {
-
 			EntryArray mind_tyrants = unit_search_radial(unit->position, 8 * 32);
 			unit_search_filter(&mind_tyrants, unit, 0, {UnitId::ProtossMindTyrant});
 			unit_search_custom_filter(&mind_tyrants, [=](Unit* mind_tyrant) {

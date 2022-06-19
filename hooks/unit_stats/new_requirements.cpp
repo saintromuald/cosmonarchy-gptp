@@ -672,9 +672,10 @@ namespace hooks {
 						return true;
 					}
 				}
+				case UnitId::ZergKagralisk:
 				case UnitId::ZergIzirokor:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergLiivralPond))
+					if (player_has_completed_unit_id(player_id, UnitId::ZergIzkagIteth))
 					{
 						return true;
 					}
@@ -878,6 +879,7 @@ namespace hooks {
 				case UnitId::ZergQuazrokPool:
 				case UnitId::ZergHydrokDen:
 				case UnitId::ZergMuthrokSpire:
+				case UnitId::ZergIzkagIteth:
 				case UnitId::ZergOrbothOmlia:
 				{
 					return true;
@@ -1927,9 +1929,10 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
+					case UnitId::ZergKagralisk:
 					case UnitId::ZergIzirokor:
 					{
-						if (player_has_unit_id(player_id, UnitId::ZergLiivralPond))
+						if (player_has_unit_id(player_id, UnitId::ZergIzkagIteth))
 						{
 							return TECH_ACTIVE;
 						}
@@ -2177,6 +2180,7 @@ namespace hooks {
 					case UnitId::ZergQuazrokPool:
 					case UnitId::ZergHydrokDen:
 					case UnitId::ZergMuthrokSpire:
+					case UnitId::ZergIzkagIteth:
 					case UnitId::ZergOrbothOmlia:
 					{
 						return TECH_ACTIVE;
@@ -2236,6 +2240,7 @@ namespace hooks {
 					case UnitId::ZergQuazrokPool:
 					case UnitId::ZergHydrokDen:
 					case UnitId::ZergMuthrokSpire:
+					case UnitId::ZergIzkagIteth:
 					case UnitId::ZergOrbothOmlia:
 					{
 						return TECH_ACTIVE;
