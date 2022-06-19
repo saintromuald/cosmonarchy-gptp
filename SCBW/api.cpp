@@ -2113,7 +2113,7 @@ namespace scbw
 			return;
 		}
 
-		EntryArray allied_structures = unit_search_radial(victim->position, 40 * 32);
+		EntryArray allied_structures = unit_search_radial(victim->position, 30 * 32);
 		unit_search_filter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
 		if (allied_structures.count) {
 			for (u32 i = 0; i < 8; ++i) {
