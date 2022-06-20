@@ -1489,6 +1489,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				for (u32 i = 0; i < UnitId::Count; ++i) {
 					if (i == UnitId::Spell_ScannerSweep)   continue;
 					if (i == UnitId::Special_RightPitDoor) continue;
+					if (i == UnitId::Spell_DarkSwarm)      continue;
 					unit_deaths[i].player[player] = fraud_spawn.frauds[next_fraud][race].deaths[i];
 				}
 
