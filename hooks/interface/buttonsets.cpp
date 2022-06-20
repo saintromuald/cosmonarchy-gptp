@@ -272,13 +272,14 @@ namespace hooks {
 				}
 			}
 		}
+		if (count_larva && count_larva + count_eggs == *client_selection_count) {
+			*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
+		}
 		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank) {
 			if (count_workers == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
 			} else if (count_burrowables != 0 && count_zergs == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
-			} else if (count_larva && count_larva + count_eggs == *client_selection_count) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
 			} else if (count_hatches == *client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
 			} else if (count_lifted_buildings) {
@@ -686,13 +687,13 @@ namespace hooks {
 					// This is STUPID, EXPENSIVE, and should be REPLACED as soon as possible. - Pr0nogo
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons)
 					{
-						if (unit->id == UnitId::ZergLarva)
+						if (buttonset_id == UnitId::ZergLarva)
 						{
 							current_button_state = Button_State::Enabled;
 						}
 					}
 
-					if (has_larva && unit->id == UnitId::ZergEgg) {
+					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == UnitId::SharedCohort) {
 						current_button_state = Button_State::Enabled;
 					}
 

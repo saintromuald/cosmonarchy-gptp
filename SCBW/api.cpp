@@ -2502,4 +2502,18 @@ namespace scbw
 		}
 		return false;
 	}
+
+	void dump_sync_data() {
+		FILE* file = fopen("desync.text", "wb");
+		for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
+			fprintf(file, "Unit %s #%u", unit->getName(), unit->get_unit_index() - 1);
+			fprintf(file, "\tPlayer %u", unit->player);
+
+			Sprite* sprite = unit->sprite;
+			fprintf(file, "Sprite");
+			fprintf(file, "Sprite Id: %u", (u32)sprite->sprite_id);
+			fprintf(file, "Visibility: %u", (u32)sprite->visibilityFlags);
+		}
+		fclose(file);
+	}
 }

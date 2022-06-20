@@ -616,4 +616,6 @@ namespace scbw
 	bool unit_id_is_transport(u32 unit_id);
 
 	bool unit_id_race_check(u32 unit_id, u32 race);
+
+	void dump_sync_data();
 }
