@@ -447,6 +447,24 @@ const char* fraud_names[] = {
 };
 C_ASSERT(ARRAY_SIZE(fraud_names) == Fraud_Count);
 
+const char* fraud_alliance_names[] = {
+	"New Ruska",
+	"Nah, Fuck That!",
+	"East Aero Progamers",
+	"StarEdit Crusaders",
+	"ColoredVaguery",
+	"Of the Utalian Peninsula...",
+	"Chinese Translators",
+	"The Wireframers",
+	"The 3%",
+	"The Vile Voidspeakers",
+	"Gatesoft Microbills",
+	"The Shitfling Sinners",
+	"Fraudulent Task Force",
+	"Ego Death",
+};
+C_ASSERT(ARRAY_SIZE(fraud_alliances) == ARRAY_SIZE(fraud_alliances));
+
 const char* fraud_class_names[] = {
 	"None",
 	"\x10\Fraud",
@@ -1478,6 +1496,21 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				unit_deaths[UnitId::ProtossPlasmaShell].player[player] = fraud_spawn.frauds[next_fraud][race].build_type;
 				unit_deaths[UnitId::Spell_DarkSwarm].player[player] = fraud_spawn.frauds[next_fraud][race].build_order;
 				set_player_color(player, fraud_spawn.frauds[next_fraud][race].color);
+				set_player_name(player, (char*)fraud_names[next_fraud]);
+				set_player_force_name(player, (char*)fraud_class_names[fraud_class]);
+				for (u32 i = 0; i < ARRAY_SIZE(fraud_alliances); ++i) {
+					bool exit = false;
+					for (u32 j = 0; j < AlliancePlayerCap; ++j) {
+						if (fraud_alliances[i][j] == next_fraud) {
+							set_player_force_name(player, (char*)fraud_alliance_names[i]);
+							exit = true;
+							break;
+						}
+					}
+					if (exit) {
+						break;
+					}
+				}
 
 				// Todo: reset kills using aise
 				s32 fraud_count = fraud_spawn.used_count - fraud_spawn.initial_spawn_count; // Don't count initial spawns towards the multiplier
@@ -1501,15 +1534,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				resources->gas[player] = 300 * multiplier;
 
 				unit_deaths[UnitId::ResourceVespeneGeyser].player[player] = 1; // Disable AI upgrade overwrite
-				u32 resource_upgrade = 0;
-				if (race == RaceId::Protoss) {
-					resource_upgrade = 1;
-				} else if (race == RaceId::Terran) {
-					resource_upgrade = 2;
-				} else if (race == RaceId::Zerg) {
-					resource_upgrade = 3;
-				}
-				resource_upgrade += fraud_class - 1;
+				u32 resource_upgrade = fraud_class;
 				scbw::set_upgrade_level(player, UpgradeId::MiningEfficiency, resource_upgrade);
 
 				start_positions[player] = spawn_location->pos;

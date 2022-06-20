@@ -619,3 +619,5 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 };
 
 void load_player_names();
+void set_player_name(u32 player, char* name);
+void set_player_force_name(u32 player, char* name);
