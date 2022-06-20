@@ -4,7 +4,7 @@
 namespace
 {
 	const u32 Hook_UnitCanAttackInsideBunkerYes = 0x004790DC;
-	void __declspec(naked) unitCanAttackInsideBunkerWrapper()
+	void __declspec(naked) unit_attacks_from_inside_bunker_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -20,7 +20,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) createBunkerAttackThingyWrapper()
+	void __declspec(naked) create_bunker_attack_overlay_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -41,7 +41,7 @@ namespace hooks
 {
 	void inject_bunker_hooks()
 	{
-		jump_patch(unitCanAttackInsideBunkerWrapper,	0x004790A0, 2);
-		jump_patch(createBunkerAttackThingyWrapper,		0x00477FD0, 3);
+		jump_patch(unit_attacks_from_inside_bunker_wrapper,		0x004790A0, 2);
+		jump_patch(create_bunker_attack_overlay_wrapper,		0x00477FD0, 3);
 	}
 }

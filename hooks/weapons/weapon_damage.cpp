@@ -544,11 +544,6 @@ namespace hooks
 						targetExt->values[ValueEmpressPassiveStacks]++;
 						targetExt->values[ValueEmpressSourcePlayer] = data.attackingPlayerId;
 					} break;
-					case WeaponId::NathrokorPlasmidBreath:
-					{
-						// Nathrokor - Adrenal Frenzy
-						targetExt->nathrokor_target_stacks[data.attackingPlayerId]++;
-					} break;
 					case WeaponId::DemiurgeGalacticWeaver:
 					{
 						// Demiurge - Worship

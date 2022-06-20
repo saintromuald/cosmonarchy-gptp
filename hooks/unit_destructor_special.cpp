@@ -344,31 +344,6 @@ void unit_destructor_special_cases(Unit* unit)
 		}
 	}
 
-	// Nathrokor - Adrenal Frenzy
-	for (u32 i = 0; i < 8; i++)
-	{
-		u32 stacks = unitExt->nathrokor_target_stacks[i];
-		if (stacks)
-		{
-			const u32 radius = 3 * 32;
-			scbw::UnitFinder(
-				unit->get_x() - radius,
-				unit->get_y() - radius,
-				unit->get_x() + radius,
-				unit->get_y() + radius
-			).for_each([&](Unit* target)
-			{
-				if (scbw::is_allied_to(i, target->player))
-				{
-					UnitExt* targetExt = globals.get_unit_ext(target);
-					targetExt->timers[TimerNathrokorBuff] = NathrokorAdrenalFrenzyTimer;
-					targetExt->values[ValueNathrokorBuffStacks] += stacks;
-					target->update_speed();
-				}
-			});
-		}
-	}
-
 	// Alkajelisk Parasitic Spores behavior
 	if (unitExt->values[ValueAlkajeliskParasite] == 1)
 	{

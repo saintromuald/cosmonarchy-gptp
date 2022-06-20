@@ -1902,14 +1902,6 @@ namespace hooks
 			// remove overlay later
 		}
 
-		// Update flingy speed when Adrenal Frenzy period expires
-		if (unitExt->timers[TimerNathrokorBuff] == 1)
-		{
-			unitExt->timers[TimerNathrokorBuff] = 0;
-			unitExt->values[ValueNathrokorBuffStacks] = 0;
-			unit->update_speed();
-		}
-
 		// Autovitality - Simulacrum behavior
 		if (unitExt->timers[TimerSimulacrumClone] == 1)
 		{

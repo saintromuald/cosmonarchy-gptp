@@ -1392,11 +1392,6 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergNathrokor && // Nathrokor Adrenal Frenzy passive
-								current_button->icon_id == IconId::SuicideScourge)
-							{
-								current_button_state = Button_State::Enabled;
-							}
 							else if (unit->id == UnitId::ZergKalkalisk && // Kalkalisk Lithe Organelle passive
 								current_button->icon_id == IconId::GeszithalorAcidSpore)
 							{

@@ -212,7 +212,6 @@ enum ExtValueId
 	ValueLiiraliskMissilePos,
 	ValueAlliedInvPlayer,
 	ValueControlledOpposition,
-	ValueNathrokorBuffStacks,
 	ValueEmpressPassiveStacks,
 	ValueEmpressSourcePlayer,
 	ValueAnticthonStacks,
@@ -270,7 +269,6 @@ enum ExtTimerId
 	TimerNewMedstim,
 	TimerAugurGimmick,
 	TimerObservanceOverlay,
-	TimerNathrokorBuff,
 	TimerNaniteField,
 	TimerCorrosiveTouch,
 	TimerSkyfall,
@@ -379,7 +377,6 @@ struct UnitExt
 {
 	u32						damage_receive_timer;
 	u32						damage_dealt_timer;
-	u32						nathrokor_target_stacks[PlayerLimit];
 	Point16					anthelion_last_move_target;
 	Vector32f				repulsion_vector;
 	Point16					last_bullet_launch_position;

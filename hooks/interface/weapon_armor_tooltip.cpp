@@ -474,8 +474,6 @@ namespace hooks
 			unitExt->timers[TimerCorrosiveTouch], TimerType::Gptp);
 		addStatus(statuses, "Dirge Fuse", unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage, 0,
 			unitExt->timers[TimerDirgeFuse], TimerType::Gptp);
-		addStatus(statuses, "Adrenal Frenzy", unitExt->values[ValueNathrokorBuffStacks], 0,
-			unitExt->timers[TimerNathrokorBuff], TimerType::Gptp);
 		addStatus(statuses, "Petrification", unitExt->values[ValuePetrificationStacks], 0,
 			unitExt->timers[TimerPetrification], TimerType::Gptp);
 
@@ -598,12 +596,7 @@ namespace hooks
 			Unit* darkSwarm = scbw::get_dark_swarm_unit(unit);
 			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
 		}
-		u32 nathrokorTargetStacks = 0;
-		for (int i = 0; i < 8; i++)
-		{
-			nathrokorTargetStacks += unitExt->nathrokor_target_stacks[i];
-		}
-		addStatus(statuses, "Adrenal Mark", nathrokorTargetStacks, 0);
+
 		/* // Can't see armor icons on eggs yet
 		if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
 			if (scbw::get_active_tile_at(unit->position.x, unit->position.y).hasCreep) {

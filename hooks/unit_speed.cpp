@@ -52,19 +52,13 @@ namespace hooks
 		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
 		speed *= 1.0 + unitExt->values[ValueTerminalSurge] * 0.05;
 
-		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby allies after kill
-		if (unitExt->timers[TimerNathrokorBuff])
-		{
-			speed *= 1 + NathrokorAdrenalFrenzySpeedFactor * unitExt->values[ValueNathrokorBuffStacks];
-		}
-
 		// Luminary - Wax Wings
 		if (unitExt->timers[TimerWaxWingsDebuff] > 1)
 		{
 			speed *= 0.6666;
 		}
 
-		// Vorvaling Captivating ZethrokorClaws: reduces movement speed by 25% per unique attacker
+		// Vorvrokor Captivating Claws: reduces movement speed by 25% per unique attacker
 		if (captivating_claws_get_timer(unit) > 0)
 		{
 			speed *= 1 - 0.25 * captivating_claws_get_stacks(unit);

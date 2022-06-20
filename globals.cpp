@@ -1125,13 +1125,6 @@ namespace scbw
 			childExt->values[ValueStellarEnforcement] = parentExt->values[ValueStellarEnforcement];
 		}
 
-		// Inherit Adrenal Frenzy
-		if (parentExt->timers[TimerNathrokorBuff])
-		{
-			childExt->timers[TimerNathrokorBuff] = parentExt->timers[TimerNathrokorBuff];
-			childExt->values[ValueNathrokorBuffStacks] = parentExt->values[ValueNathrokorBuffStacks];
-		}
-
 		// Inherit Swarming Omen
 		if (parentExt->timers[TimerSwarmingOmen])
 		{
@@ -1371,12 +1364,6 @@ namespace scbw
 		unitExt->values[ValueSignifyStacks] = 0;
 		unitExt->value_vectors[ValueVectorSignifySourcePlayer] = {};
 		scbw::update_signify_status(unit, unitExt);
-
-		// Remove Nathrokor attack stacks
-		for (u32 i = 0; i < 8; i++)
-		{
-			unitExt->nathrokor_target_stacks[i] = 0;
-		}
 
 		// Remove Stellar Enforcement
 		unitExt->values[ValueStellarEnforcement] = 0;
