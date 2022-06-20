@@ -438,7 +438,7 @@ namespace hooks
 				}
 
 				regen *= 1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size();
-				unit->heal(regen);
+				unit->heal(regen, 0, false);
 			}
 
 			// Deliberate healing

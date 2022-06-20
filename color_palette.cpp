@@ -57,6 +57,12 @@ Recolor lerp_recolor(f32 t, Recolor a, Recolor b) {
 }
 
 Recolor lerpn_recolor(f32 t, Recolor* recolors, u32 count) {
+	if (count == 0) {
+		return default_recolor();
+	}
+	if (count == 1) {
+		return recolors[0];
+	}
 	u32 index = clamp(t * count, 0, count - 2);
 	t -= index * (1.0 / count);
 	t *= count;
