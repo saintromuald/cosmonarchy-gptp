@@ -61,7 +61,7 @@ one another. Attempt to group as many units as possible during the channel.
 #define KITE_DEBUG(...)
 #endif
 
-#define MoveRadius (3 * 32)
+#define MoveRadius (6 * 32)
 #define LocalGroupRadius (6 * 32)
 #define GroupRadius (12 * 32)
 #define CrowdCalcRadius (2 * 32)
