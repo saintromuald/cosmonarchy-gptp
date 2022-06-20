@@ -794,27 +794,26 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 			bool sync = false;
 			bool update_sync = false;
-			if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) {
-				sync = true;
-			} else if (unit_ext->timers[TimerAI_KitingSync]) {
-				sync = true;
-			} else {
-				u32 signal_sum = 0;
-				local_group.for_each([&](Unit* local_unit) {
-					UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
-					if (local_unit_ext->values[ValueAI_KitingSignal] >= 256) {
-						signal_sum += 1;
-					}
-				});
-				if (signal_sum >= local_group.unitCount * 0.4) {
-					sync = true;
-					update_sync = true;
-				}
-			}
+			//if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) {
+			//	sync = true;
+			//} else if (unit_ext->timers[TimerAI_KitingSync]) {
+			//	sync = true;
+			//} else {
+			//	u32 signal_sum = 0;
+			//	local_group.for_each([&](Unit* local_unit) {
+			//		UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
+			//		if (local_unit_ext->values[ValueAI_KitingSignal] >= 256) {
+			//			signal_sum += 1;
+			//		}
+			//	});
+			//	if (signal_sum >= local_group.unitCount * 0.4) {
+			//		sync = true;
+			//		update_sync = true;
+			//	}
+			//}
 
 			// For now we test without sync
 			sync = true;
-			update_sync = false;
 
 			if (sync) {
 				KitePositions result = get_kite_positions(unit);
