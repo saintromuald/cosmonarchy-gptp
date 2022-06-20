@@ -1,8 +1,6 @@
 #pragma once
 #include "SCBW/scbwdata.h"
 
-const u32 SELECTION_LIMIT = 12;
-
 namespace hooks
 {
 	s32 select_dual_birth_units(Unit* unit);				// 0045D040

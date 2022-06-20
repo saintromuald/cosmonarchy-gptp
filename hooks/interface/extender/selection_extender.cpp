@@ -4,12 +4,12 @@
 namespace hooks {
 	s32 select_dual_birth_units(Unit* unit) { // 0045D040
         u32 selection_index = 0;
-        Unit* selection_array[SELECTION_LIMIT];
+        Unit* selection_array[SelectionCap];
         memcpy(selection_array, active_player_selection, sizeof(selection_array));
         s32 result = 0;
         while (selection_array[result])
         {
-            if (++result >= SELECTION_LIMIT)
+            if (++result >= SelectionCap)
             {
                 return result;
             }
