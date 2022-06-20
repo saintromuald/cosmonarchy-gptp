@@ -195,27 +195,16 @@ Recolor parser_get_recolor(Parser* parser) {
 }
 
 RecolorSet parser_get_recolor_set(Parser* parser) {
-	RecolorSet set = default_recolor_set();
-
-	if (!parser_has_recolor(parser)) {
-		return set;
+	RecolorSet set = {};
+	while (set.count < RecolorCap) {
+		if (!parser_has_recolor(parser)) {
+			break;
+		}
+		set.recolors[set.count++] = parser_get_recolor(parser);
 	}
-	set.shadows = parser_get_recolor(parser);
-
-	if (!parser_has_recolor(parser)) {
-		set.midtones   = set.shadows;
-		set.highlights = set.shadows;
-		return set;
+	if (!set.count) {
+		set = default_recolor_set();
 	}
-
-	set.midtones = parser_get_recolor(parser);
-	if (!parser_has_recolor(parser)) {
-		set.highlights = set.midtones;
-		set.midtones   = lerp_recolor(0.5, set.shadows, set.highlights);
-		return set;
-	}
-
-	set.highlights = parser_get_recolor(parser);
 	return set;
 }
 

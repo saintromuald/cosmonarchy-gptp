@@ -641,9 +641,9 @@ void handle_recolor() {
 			t = 1;
 		}
 
-		trigger_system.current_recolor.set.shadows    = lerp_recolor(t, trigger_system.current_recolor.set.shadows,    trigger_system.target_recolor.set.shadows);
-		trigger_system.current_recolor.set.midtones   = lerp_recolor(t, trigger_system.current_recolor.set.midtones,   trigger_system.target_recolor.set.midtones);
-		trigger_system.current_recolor.set.highlights = lerp_recolor(t, trigger_system.current_recolor.set.highlights, trigger_system.target_recolor.set.highlights);
+		for (u32 i = 0; i < trigger_system.current_recolor.set.count; ++i) {
+			trigger_system.current_recolor.set.recolors[i] = lerp_recolor(t, trigger_system.current_recolor.set.recolors[i], trigger_system.target_recolor.set.recolors[i]);
+		}
 
 		set_palette_recolor(trigger_system.current_recolor.set);
 	} else if (trigger_system.recolor_list.count) {
