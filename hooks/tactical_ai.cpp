@@ -893,7 +893,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 						}
 					} break;
 					case KiterType_Flagship: {
-						bool dont_turn = unit->id == UnitId::TerranMinotaur; // TODO: do a turn rate check
+						bool dont_turn = unit->flingy_turn_speed < 15;
 						if (!prefer_kiting_forward && !dont_turn
 							&& (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || hostile_advantage >= 2.0)) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
