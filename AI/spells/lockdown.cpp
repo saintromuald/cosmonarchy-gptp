@@ -15,7 +15,7 @@ namespace AI
 		{
 			bounds = 32 * 9;
 		}
-		else if (isUmsMode(caster->player))
+		else if (is_campaign_ai(caster->player))
 		{
 			bounds = 32 * 64;
 		}

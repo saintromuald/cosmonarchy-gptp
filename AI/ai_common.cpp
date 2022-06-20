@@ -46,7 +46,7 @@ namespace AI
 		return false;
 	}
 
-	bool isUmsMode(u8 player)
+	bool is_campaign_ai(u8 player)
 	{
 		assert(player < 8);
 		return AIScriptController[player].AI_Flags.is_use_map_settings;
