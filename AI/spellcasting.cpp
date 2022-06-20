@@ -16,12 +16,11 @@ namespace AI
 	// Attempts make the @p unit cast a spell.
 	bool AI_spellcasterHook(Unit* unit, bool isUnitBeingAttacked)
 	{
-		if (!isUnitBeingAttacked
-			&& AIScriptController[unit->player].spellcaster_timer != 0)
-		{
-			return false;
-		}
-		u16 energyReserve;
+		//if (!isUnitBeingAttacked && AIScriptController[unit->player].spellcaster_timer)
+		//{
+		//	return false;
+		//}
+		u16 energyReserve = 0;
 
 		switch (unit->id)
 		{
