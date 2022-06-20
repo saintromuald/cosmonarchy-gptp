@@ -4,7 +4,7 @@
 
 namespace hooks
 {
-	void orders_BuildingLand(Unit* unit) // 00464360
+	void orders_building_land(Unit* unit) // 00464360
 	{
 		Target unitTarget;
 		unitTarget.unit = unit->order_target.unit;
@@ -73,7 +73,7 @@ namespace hooks
 				if (return_00473FB0 != 0)
 				{
 					// Probably play "landing sequence interrupted"
-					helper::playBuildingLandSound(unit);
+					helper::play_building_land_sound(unit);
 
 					if (unit->order_queue_head != nullptr
 					&&	unit->order_queue_head->order_id != OrderId::PlaceAddon)
@@ -85,7 +85,7 @@ namespace hooks
 				else
 				{
 					// Use a AddFogMask() function after some coordinates calculations
-					helper::SetBuildingTileFlag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+					helper::set_building_tile_flag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
 					unit->building.landing_timer = 1;
 
@@ -100,7 +100,7 @@ namespace hooks
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 
 					unit->flingy_top_speed = 256;
-					helper::SetUnitMovementSpeed(unit, 256);
+					helper::set_unit_movement_speed(unit, 256);
 
 					unit->main_order_state = 2;
 				}
@@ -136,7 +136,7 @@ namespace hooks
 				helper::toggle_pathing_related(unit); // Toggle pathing-related stuff to prepare to no longer use pathing
 
 				unit->sprite->elevation_level = 4;
-				helper::setUnitPathing(unit, 0);
+				helper::set_unit_pathing(unit, 0);
 				scbw::set_unit_position(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
 				helper::start_collision_tracking(unit); // Maybe update orders targeting the unit, set repulse for units in surroundings, and some other things?
@@ -199,14 +199,14 @@ namespace hooks
 					scbw::spawn_custom_creep(unit);
 				}
 
-				Unit* addon = helper::connectAddonCheck(unit);
+				Unit* addon = helper::connect_addon_check(unit);
 				if (addon != nullptr)
 				{
-					helper::completeAddon(unit, addon);
+					helper::complete_addon(unit, addon);
 				}
 				if (*is_placing_building)
 				{
-					helper::placebuildingProc();
+					helper::place_building_proc();
 
 					// Add the last minute occupation info of landing building to update an ongoing attempt to choose a building or landing location?
 					if (!helper::can_still_place_building())
@@ -219,14 +219,14 @@ namespace hooks
 		}
 	}
 
-	void orders_BuildingLiftoff(Unit* unit) // 004649B0
+	void orders_building_liftoff(Unit* unit) // 004649B0
 	{
 		if ((unit->status & UnitStatus::GroundedBuilding)
 		&& (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding))
 		{
 			if (unit->building.addon != nullptr)
 			{
-				helper::disconnectFromAddOn(unit);
+				helper::disconnect_from_addon(unit);
 			}
 			if (unit->is_factory()) {
 				UnitExt* unitExt = globals.get_unit_ext(unit);
@@ -237,7 +237,7 @@ namespace hooks
 			helper::modify_building_grounded_status(unit); // Disable GroundedBuilding status and prepare to enable pathing?
 
 			unit->sprite->elevation_level = 12;
-			helper::setUnitPathing(unit, 1);
+			helper::set_unit_pathing(unit, 1);
 			helper::start_collision_tracking(unit); // Maybe update orders targetting the unit, set repulse for units in surroundings,and  some others things?
 
 			if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW)
@@ -261,7 +261,7 @@ namespace hooks
 
 			if (*is_placing_building)
 			{
-				helper::placebuildingProc();
+				helper::place_building_proc();
 			}
 			unit->main_order_id = OrderId::Liftoff;
 		}

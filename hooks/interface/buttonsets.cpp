@@ -149,7 +149,7 @@ namespace ButtonActions
 // Example on how to create a custom button set.
 // This makes a copy of the Marine buttonset.
 // Note that the function would have to be duplicated for each custom buttonset
-ButtonSet* getCustomButtonSet()
+ButtonSet* get_custom_buttonset()
 {
 	// Use static variables to avoid memory allocation trouble
 	static ButtonSet customButtonSet;
@@ -192,10 +192,10 @@ namespace hooks {
 	}
 
 	// 00458BC0
-	// Called (with a jump) as last instruction of updateButtonSet
+	// Called (with a jump) as last instruction of update_buttonset
 	// Will update the buttonset for the currently unit active if alone
 	// Handle special case of group orders if multiple units are unit
-	void updateButtonSetEx() {
+	void update_buttonset_ex() {
 		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
 		u8 count_workers = 0;
 		u8 count_burrowables = 0;
@@ -256,8 +256,8 @@ namespace hooks {
 
 				// if you use a custom buttonset, and are reusing the current_buttonset property of a active differently, change these conditions to take it in account
 				if (selected->status & UnitStatus::Completed && selected_button_set_id != active_button_set_id) {
-					ButtonSet* selected_button_set = hooks::getButtonSet(selected_button_set_id);
-					ButtonSet* active_button_set = hooks::getButtonSet(active_button_set_id);
+					ButtonSet* selected_button_set = hooks::get_buttonset(selected_button_set_id);
+					ButtonSet* active_button_set = hooks::get_buttonset(active_button_set_id);
 					if (active_button_set->first_button != selected_button_set->first_button) {
 						if (selected_button_set->connected_unit != active_button_set_id) {
 							// Kerrigan (Ghost) and Raynor (Vulture) have the corresponding normal active as "connected active"
@@ -296,7 +296,7 @@ namespace hooks {
 	// Not calling others converted to C functions
 	// Probably making it so the button corresponding to current order has light on
 	// Last function called within updateCurrentButtonSet
-	void updateButtonSet_Sub458D50()
+	void update_buttonset_sub458D50()
 	{
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
 		u8* const BUTTONSET_SUBUNIT_MAINORDERID = (u8*)0x0068C1B8;
@@ -381,9 +381,9 @@ namespace hooks {
 
 	// 00458DE0
 	// Case when buttonset would use BUTTONSET_SPECIAL_BUTTONSETID
-	// Use updateButtonSetEx() for individual units and groups
-	// Called by updateCurrentButtonset and updateSelectedUnitData (004C38B0)
-	void updateButtonSet()
+	// Use update_buttonset_ex() for individual units and groups
+	// Called by update_current_buttonset and updateSelectedUnitData (004C38B0)
+	void update_buttonset()
 	{
 		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
 		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
@@ -422,19 +422,19 @@ namespace hooks {
 		*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_Blank;
 		if ((*client_selection_count > 1) && (!scbw::isInReplay()))
 		{
-			updateButtonSetEx();
+			update_buttonset_ex();
 		}
 	}
 
-	// Add active/unit units checks here and you can change the buttonset to any you created here in GPTP using something based on getCustomButtonSet method or a more customized way.
-	// Note: if you use updateButtonSet_Sub4591D0, you can disable the injection of this function in the _inject.cpp file.
-	ButtonSet* getButtonSet(s32 index)
+	// Add active/unit units checks here and you can change the buttonset to any you created here in GPTP using something based on get_custom_buttonset method or a more customized way.
+	// Note: if you use update_buttonset_sub4591D0, you can disable the injection of this function in the _inject.cpp file.
+	ButtonSet* get_buttonset(s32 index)
 	{
 		return &(buttonSetTable[index]);
 	}
 
-	// Main updateButtonSet function because it call updateButtonSet() and others
-	void updateCurrentButtonset() // 004599A0
+	// Main update_buttonset function because it call update_buttonset() and others
+	void update_current_buttonset() // 004599A0
 	{
 		// Quick casting post handling
 		if (hooks::quickcasting_signal) {
@@ -474,7 +474,7 @@ namespace hooks {
 			}
 			if (bNeedUpdateButtonSet)
 			{
-				updateButtonSet();
+				update_buttonset();
 			}
 		}
 		CX_Holder = *BUTTONSET_SPECIAL_BUTTONSETID;
@@ -579,11 +579,11 @@ namespace hooks {
 				{
 					// 00459A65
 					// light up the button of the current order
-					updateButtonSet_Sub458D50();
+					update_buttonset_sub458D50();
 					*BUTTONSET_UNIT_MAINORDERID = mainOrderIdHolderUnit_EBP;
 					*BUTTONSET_SUBUNIT_MAINORDERID = mainOrderIdHolderSubUnit_BL;
 					// light up the button of the current order
-					updateButtonSet_Sub458D50();
+					update_buttonset_sub458D50();
 				}
 			}
 		}
@@ -595,11 +595,11 @@ namespace hooks {
 		if (jumpTo59A86)
 		{
 			// light up the button of the current order
-			updateButtonSet_Sub458D50();
+			update_buttonset_sub458D50();
 			*BUTTONSET_UNIT_MAINORDERID = mainOrderIdHolderUnit_EBP;
 			*BUTTONSET_SUBUNIT_MAINORDERID = mainOrderIdHolderSubUnit_BL;
 			// light up the button of the current order
-			updateButtonSet_Sub458D50();
+			update_buttonset_sub458D50();
 			jumpTo59A9F = true;
 		}
 
@@ -614,7 +614,7 @@ namespace hooks {
 		}
 	}
 
-	void updateButtonSet_Sub4591D0()
+	void update_buttonset_sub4591D0()
 	{
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
 		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
@@ -638,7 +638,7 @@ namespace hooks {
 			}
 		}
 
-		ButtonSet* const current_buttonset = getButtonSet(buttonset_id);
+		ButtonSet* const current_buttonset = get_buttonset(buttonset_id);
 		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
 		bool bStopThere = false;
 		bool jumpto59336 = false;
@@ -1741,9 +1741,9 @@ namespace hooks {
 
 	// Using a local array instead of the original may allow to go past the 9 buttons limitations
 	// May need a special case using the original array adress and count when in replay if modified
-	void statbtn_BIN_CustomCtrlID(BinDlg* dialog)
+	void statbtn_bin_custom_ctrl_id(BinDlg* dialog)
 	{
 		helper::register_user_dialog_action(dialog, (u32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
-		helper::BINDLG_BlitSurface(dialog);
+		helper::bindlg_blit_surface(dialog);
 	}
 }

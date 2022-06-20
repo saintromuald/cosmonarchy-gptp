@@ -32,7 +32,6 @@
 #include "config.h"
 #include "color_palette.h"
 
-const u32 hyperTrigger = 0x006509A0;
 
 #include "SCBW\UnitFinder.h"
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
@@ -335,6 +334,7 @@ namespace hooks
 			scbw::set_ingame_loop_state(true); // Needed for scbw::random() to work
 			graphics::reset_all_graphics();
 			hooks::update_psi_field_providers();
+			const u32 hyperTrigger = 0x006509A0;
 			*(s32*)hyperTrigger = 0; // Single frame hypertriggers
 
 			// Scenario Features

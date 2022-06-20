@@ -13,7 +13,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_BuildingLand(unit);
+		hooks::orders_building_land(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -32,7 +32,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::orders_BuildingLiftoff(unit);
+		hooks::orders_building_liftoff(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP

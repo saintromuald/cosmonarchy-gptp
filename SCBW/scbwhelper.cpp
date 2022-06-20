@@ -3141,7 +3141,7 @@ namespace helper
 		return (char)result;
 	}
 
-	void setUnitPathing(Unit* unit, u8 unkPathRelated)
+	void set_unit_pathing(Unit* unit, u8 unkPathRelated)
 	{
 		const u32 Func_SetUnitPathing = 0x00401360;
 		__asm {
@@ -3153,7 +3153,7 @@ namespace helper
 		}
 	}
 
-	Unit* connectAddonCheck(Unit* unit)
+	Unit* connect_addon_check(Unit* unit)
 	{
 		const u32 Func_ConnectAddonCheck = 0x004404A0;
 		Unit* found_addon;
@@ -3200,7 +3200,7 @@ namespace helper
 		}
 	}
 
-	void completeAddon(Unit* unit, Unit* addon)
+	void complete_addon(Unit* unit, Unit* addon)
 	{
 		const u32 Func_CompleteAddon = 0x00463D50;
 		__asm {
@@ -3223,7 +3223,7 @@ namespace helper
 		}
 	}
 
-	void disconnectFromAddOn(Unit* unit)
+	void disconnect_from_addon(Unit* unit)
 	{
 		const u32 Func_Sub464930 = 0x00464930;
 		__asm {
@@ -3247,7 +3247,7 @@ namespace helper
 		}
 	}
 
-	void SetBuildingTileFlag(Unit* unit, s32 x, s32 y)
+	void set_building_tile_flag(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_Sub469F60 = 0x00469F60;
 		__asm {
@@ -3339,7 +3339,7 @@ namespace helper
 		}
 	}
 
-	void placebuildingProc()
+	void place_building_proc()
 	{
 		const u32 Func_PracebuildingProc = 0x0048E6E0;
 		__asm {
@@ -3349,7 +3349,7 @@ namespace helper
 		}
 	}
 
-	void playBuildingLandSound(Unit* unit)
+	void play_building_land_sound(Unit* unit)
 	{
 		const u32 Func_PlayBuildingLandSound = 0x0048F5A0;
 		__asm {
@@ -3360,7 +3360,7 @@ namespace helper
 		}
 	}
 
-	void SetUnitMovementSpeed(Unit* unit, u32 newSpeed)
+	void set_unit_movement_speed(Unit* unit, u32 newSpeed)
 	{
 		const u32 Func_SetUnitMovementSpeed = 0x004951C0;
 		__asm {
@@ -5087,7 +5087,7 @@ namespace helper
 		return target;
 	}
 
-	b32 attackApplyCooldown(Unit* unit)
+	b32 attack_apply_cooldown(Unit* unit)
 	{
 		const u32 Func_attackApplyCooldown = 0x00478B40;
 		static u32 result;
@@ -5101,7 +5101,7 @@ namespace helper
 		return result;
 	}
 
-	void setImageDirection(Image* image, s8 direction)
+	void set_image_direction(Image* image, s8 direction)
 	{
 		const u32 Func_SetImageDirection = 0x004D5F80;
 		static u32 direction_;
@@ -7404,7 +7404,7 @@ namespace helper
 		}
 	}
 
-	void BINDLG_BlitSurface(BinDlg* dialog)
+	void bindlg_blit_surface(BinDlg* dialog)
 	{
 		const u32 Func_BINDLG_BlitSurface = 0x004C35F0;
 		__asm

@@ -66,7 +66,7 @@ namespace hooks
 					// disconnect terran buildings from their add-on
 					if (unitInfested->building.addon != nullptr)
 					{
-						helper::disconnectFromAddOn(unitInfested);
+						helper::disconnect_from_addon(unitInfested);
 					}
 
 					// this is the same as calling 0047B2E0 unitIsFactoryUnit like original code but faster

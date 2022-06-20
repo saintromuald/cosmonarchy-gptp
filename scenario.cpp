@@ -1768,7 +1768,7 @@ void tick_scenario() {
 
 			if (sequence->temp_townhall && *elapsed_time_frames > 1) {
 				Unit* unit = sequence->temp_townhall;
-				helper::SetBuildingTileFlag(unit, unit->get_x(), unit->get_y());
+				helper::set_building_tile_flag(unit, unit->get_x(), unit->get_y());
 				sequence->temp_townhall = 0;
 			}
 

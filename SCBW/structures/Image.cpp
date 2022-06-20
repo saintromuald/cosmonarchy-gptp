@@ -88,7 +88,7 @@ void Image::initializeData(Sprite* parent, u16 imageId, s8 x, s8 y)
 
 
 ///same as function 0x004D5EA0, direction is 0-31
-void Image::setImageDirection(u8 direction)
+void Image::set_image_direction(u8 direction)
 {
 	assert(this);
 	constexpr u32 Func_setDir = 0x004D5EA0;

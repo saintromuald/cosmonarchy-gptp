@@ -12,7 +12,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::unitAttackFromInsideBunkerHook(unit);
+		hooks::unit_attacks_from_inside_bunker(unit);
 		__asm
 		{
 			POPAD
@@ -28,7 +28,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::createBunkerAttackThingyHook(unit);
+		hooks::create_bunker_attack_overlay(unit);
 		__asm
 		{
 			POPAD

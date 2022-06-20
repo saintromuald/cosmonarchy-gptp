@@ -85,7 +85,7 @@ struct Image
 	/// functions, and should not be used by modders.
 	void initializeData(Sprite* parent, u16 imageId, s8 x, s8 y);
 
-	void setImageDirection(u8 direction);
+	void set_image_direction(u8 direction);
 
 	/// Return a pointer to the current frame when called
 	GrpFrame* getCurrentFrame() const;

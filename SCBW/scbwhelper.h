@@ -331,25 +331,25 @@ namespace helper
 	char unk_building_placement_related_mouse(s32 a1, s32 a2);													// 0048D7B0
 
 	//// liftland
-	void setUnitPathing(Unit* unit, u8 unkPathRelated);																				// 00401360
+	void set_unit_pathing(Unit* unit, u8 unkPathRelated);																				// 00401360
 	bool is_unit_positions_2_equal(Unit* unit);																							// 00402160
-	Unit* connectAddonCheck(Unit* unit);																							// 004404A0
+	Unit* connect_addon_check(Unit* unit);																							// 004404A0
 	void modify_building_grounded_status(Unit* unit);																				// 00463470
 	void toggle_pathing_related(Unit* unit);																						// 004634E0
 	void flying_building_lift_if_still_blocked(Unit* unit);																			// 00463640
-	void completeAddon(Unit* unit, Unit* addon);																					// 00463D50
+	void complete_addon(Unit* unit, Unit* addon);																					// 00463D50
 	void crush_immobile_units(Unit* unit);																							// 00464300
-	void disconnectFromAddOn(Unit* unit);																							// 00464930
+	void disconnect_from_addon(Unit* unit);																							// 00464930
 	void clear_building_from_tile_flag(Unit* unit, s32 x, s32 y);																	// 00469EC0
-	void SetBuildingTileFlag(Unit* unit, s32 x, s32 y);																				// 00469F60
+	void set_building_tile_flag(Unit* unit, s32 x, s32 y);																				// 00469F60
 	void end_collision_tracking(Unit* unit);																						// 0046A560
 	void start_collision_tracking(Unit* unit);																						// 0046A5A0
 	void force_order_done(Unit* unit);																								// 00475420
 	bool update_creep_disappearance_unit(Unit* unit);																				// 0047DF90
 	void update_creep_disappearance_unit_id(u32 unit_id, u32 x, u32 y, b32 completed);												// 0047DE40
-	void placebuildingProc();																										// 0048E6E0
-	void playBuildingLandSound(Unit* unit);																							// 0048F5A0
-	void SetUnitMovementSpeed(Unit* unit, u32 newSpeed);																			// 004951C0
+	void place_building_proc();																										// 0048E6E0
+	void play_building_land_sound(Unit* unit);																							// 0048F5A0
+	void set_unit_movement_speed(Unit* unit, u32 newSpeed);																			// 004951C0
 	void set_shadow_y(Sprite* sprite, u8 newVerticalOffset);																		// 00498150
 	void create_landing_dust(Sprite* sprite);																						// 004997E0
 	void function_004C3B40(Unit* unit);																								// 004C3B40
@@ -568,8 +568,8 @@ namespace helper
 
 	//// bunker_hooks
 	Unit* findRandomAttackTarget(Unit* unit);																						// 00442FC0
-	b32 attackApplyCooldown(Unit* unit);																							// 00478B40
-	void setImageDirection(Image* image, s8 direction);																				// 004D5F80
+	b32 attack_apply_cooldown(Unit* unit);																							// 00478B40
+	void set_image_direction(Image* image, s8 direction);																				// 004D5F80
 
 	//// api
 	void ApplySpores(Unit* unit);
@@ -867,7 +867,7 @@ namespace helper
 	void replay_stat_buttons(BinDlg* dialog);																		// 00427A80
 	void update_command_card();																						// 004591D0
 	void refresh_button_tooltip();																					// 00459770
-	void BINDLG_BlitSurface(BinDlg* dialog);																		// 004C35F0
+	void bindlg_blit_surface(BinDlg* dialog);																		// 004C35F0
 	u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
 	s32 req_check(u32 requirement_func, u16 requirement_var, u32 player, Unit* unit);
 	void updateMineralPatchImage(Unit* mineralPatch);

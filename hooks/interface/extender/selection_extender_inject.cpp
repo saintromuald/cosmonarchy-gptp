@@ -1,10 +1,35 @@
 #include "selection_extender.h"
 #include "hook_tools.h"
 
+namespace
+{
+	void __declspec(naked) select_dual_birth_units_wrapper() { // 0045D040
+		static u32 result;
+		static Unit* unit;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::select_dual_birth_units(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+}
+
 namespace hooks
 {
-	void injectSelectionExtenderHooks()
+	void inject_selection_extender_hooks()
 	{
-
+		jump_patch(select_dual_birth_units_wrapper, 0x0045D040, 1);
 	}
 }

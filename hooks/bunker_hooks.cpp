@@ -8,7 +8,7 @@
 
 namespace hooks
 {
-	static inline bool isWithinAttackRange(Unit* attacker, Unit* target)
+	static inline bool is_within_attack_range(Unit* attacker, Unit* target)
 	{
 		if (!target)
 		{
@@ -17,18 +17,21 @@ namespace hooks
 		if (target->status & UnitStatus::InAir)
 		{
 			return !attacker->is_target_within_min_range(target, weapons_dat::MinRange[attacker->get_air_weapon()])
-				&& attacker->is_target_within_min_range(target, weapons_dat::MaxRange[attacker->get_air_weapon()]);
+			&&		attacker->is_target_within_min_range(target, weapons_dat::MaxRange[attacker->get_air_weapon()]);
 		}
 		else
 		{
 			return !attacker->is_target_within_min_range(target, weapons_dat::MinRange[attacker->get_ground_weapon()])
-				&& attacker->is_target_within_min_range(target, weapons_dat::MaxRange[attacker->get_ground_weapon()]);
+			&&		attacker->is_target_within_min_range(target, weapons_dat::MaxRange[attacker->get_ground_weapon()]);
 		}
 	}
 
 	// Checks whether the unit can attack from inside a bunker.
-	void unitAttackFromInsideBunkerHook(Unit* unit)
+	void unit_attacks_from_inside_bunker(Unit* unit)
 	{
+		if (unit->connected_unit && unit->connected_unit->status & UnitStatus::InAir) { // Disallow units in Bunkers from firing while Bunker is lifted
+			return;
+		}
 		if (scbw::unit_is_ranged_attacker(unit))
 		{
 			b32 resultApplyCooldown;
@@ -37,11 +40,11 @@ namespace hooks
 			{
 				(unit->subunit)->status |= UnitStatus::HoldingPosition;
 			}
-			resultApplyCooldown = helper::attackApplyCooldown(unit);
+			resultApplyCooldown = helper::attack_apply_cooldown(unit);
 			if (resultApplyCooldown != 0)
 			{
 				if (unit->order_target.pt.x != unit->next_target_waypoint.x
-					|| unit->order_target.pt.y != unit->next_target_waypoint.y)
+				||  unit->order_target.pt.y != unit->next_target_waypoint.y)
 				{
 					unit->next_target_waypoint.x = unit->order_target.pt.x;
 					unit->next_target_waypoint.y = unit->order_target.pt.y;
@@ -54,19 +57,19 @@ namespace hooks
 					unit->main_order_timer = 15;
 					
 					Unit* target = unit->order_target.unit;
-					if (!target || !unit->can_attack_target(target) || !isWithinAttackRange(unit, target))
+					if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target))
 					{
 						if (unit->connected_unit)
 						{
 							UnitExt* bunkerExt = globals.get_unit_ext(unit->connected_unit);
 							Unit* target = bunkerExt->units[UnitBunkerLockOn];
-							if (target && unit->can_attack_target(target) && isWithinAttackRange(unit, target))
+							if (target && unit->can_attack_target(target) && is_within_attack_range(unit, target))
 							{
 								unit->order_target.unit = bunkerExt->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
 							}
 						}
 
-						if (!target || !unit->can_attack_target(target) || !isWithinAttackRange(unit, target))
+						if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target))
 						{
 							const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->get_air_weapon()));
 							unit->order_target.unit = scbw::UnitFinder::get_nearest_target(
@@ -78,8 +81,8 @@ namespace hooks
 								[&](Unit* target)
 							{
 								if (scbw::is_allied_to(unit->player, target->player)
-									|| !unit->can_attack_target(target)
-									|| !isWithinAttackRange(unit, target))
+								|| !unit->can_attack_target(target)
+								|| !is_within_attack_range(unit, target))
 								{
 									return false;
 								}
@@ -97,8 +100,7 @@ namespace hooks
 		}
 	}
 
-	//not checked against original code by UndeadStar
-	void createBunkerAttackThingyHook(Unit* unit)
+	void create_bunker_attack_overlay(Unit* unit)
 	{
 		// Fixes units with subunits not attacking
 		Unit* unitVar = unit;
@@ -144,7 +146,7 @@ namespace hooks
 			image != nullptr;
 			image = image->link.next)
 		{
-			helper::setImageDirection(image, frameAngle);
+			helper::set_image_direction(image, frameAngle);
 		}
 		helper::set_thingy_visibility_flags(bunkerAttackEffect);
 	}

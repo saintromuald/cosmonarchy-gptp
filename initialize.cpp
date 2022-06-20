@@ -113,6 +113,7 @@
 	#include "hooks/aiscript/ai_requests.h"
 	#include "SCBW/ExtendSightLimit.h"
 //	#include "hooks/requirements/requirements.h"
+	#include "hooks/interface/extender/selection_extender.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -610,6 +611,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_select_larva_hooks();
 
 	hooks::inject_cmdrecv_siege_tank_hooks();
+	hooks::inject_selection_extender_hooks();
 
 	return TRUE;
 }
