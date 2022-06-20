@@ -31,9 +31,8 @@ Recolor default_recolor() {
 
 RecolorSet default_recolor_set() {
 	RecolorSet set = {};
-	set.shadows = default_recolor();
-	set.midtones = default_recolor();
-	set.highlights = default_recolor();
+	set.count = 1;
+	set.recolors[0] = default_recolor();
 	return set;
 }
 
@@ -48,13 +47,6 @@ static f32 lerp(f32 t, f32 a, f32 b) {
 	return a * (1 - t) + b * t;
 }
 
-static f32 lerp3(f32 t, f32 a, f32 b, f32 c) {
-	if (t < 0.5) {
-		return lerp(t * 2, a, b);
-	}
-	return lerp((t - 0.5) * 2, b, c);
-}
-
 Recolor lerp_recolor(f32 t, Recolor a, Recolor b) {
 	a.r          = lerp(t, a.r,			 b.r);
 	a.g          = lerp(t, a.g,			 b.g);
@@ -64,13 +56,11 @@ Recolor lerp_recolor(f32 t, Recolor a, Recolor b) {
 	return a;
 }
 
-Recolor lerp3_recolor(f32 t, Recolor a, Recolor b, Recolor c) {
-	a.r          = lerp3(t, a.r,		  b.r,          c.r);
-	a.g          = lerp3(t, a.g,		  b.g,          c.g);
-	a.b          = lerp3(t, a.b,		  b.b,          c.b);
-	a.gamma      = lerp3(t, a.gamma,	  b.gamma,      c.gamma);
-	a.saturation = lerp3(t, a.saturation, b.saturation, c.saturation);
-	return a;
+Recolor lerpn_recolor(f32 t, Recolor* recolors, u32 count) {
+	u32 index = clamp(t * count, 0, count - 2);
+	t -= index * (1.0 / count);
+	t *= count;
+	return lerp_recolor(t, recolors[index], recolors[index + 1]);
 }
 
 static u8 mix_color(f32 base, f32 blend, f32 saturation, f32 brightness) {
@@ -81,7 +71,7 @@ static u8 mix_color(f32 base, f32 blend, f32 saturation, f32 brightness) {
 void set_palette_recolor(RecolorSet set) {
 	for (u32 i = 0; i < PaletteSize; ++i) {
 		f32 brightness = (init_palette->colors[i].r + init_palette->colors[i].g + init_palette->colors[i].b) / 3.0 / 255.0;
-		Recolor recolor = lerp3_recolor(brightness, set.shadows, set.midtones, set.highlights);
+		Recolor recolor = lerpn_recolor(brightness, set.recolors, set.count);
 		game_palette->colors[i].r = mix_color(init_palette->colors[i].r / 255.0, recolor.r * recolor.gamma, recolor.saturation, brightness);
 		game_palette->colors[i].g = mix_color(init_palette->colors[i].g / 255.0, recolor.g * recolor.gamma, recolor.saturation, brightness);
 		game_palette->colors[i].b = mix_color(init_palette->colors[i].b / 255.0, recolor.b * recolor.gamma, recolor.saturation, brightness);
