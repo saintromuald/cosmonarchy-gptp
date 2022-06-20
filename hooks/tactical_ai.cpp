@@ -812,6 +812,10 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			}
 
+			// For now we test without sync
+			sync = true;
+			update_sync = false;
+
 			if (sync) {
 				KitePositions result = get_kite_positions(unit);
 
