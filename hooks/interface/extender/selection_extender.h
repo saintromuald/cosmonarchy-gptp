@@ -28,6 +28,9 @@ Notes:
 */
 
 /*
+ 
+	Hook xrefs to 0049AEF0 
+ 
 	Current Selection Groups
 
 	Line 138572: 0x0045D04D  |.  BE B8846200   MOV ESI,006284B8							// 0045D040 select_dual_birth_units; hooked by Pr0nogo
@@ -42,7 +45,7 @@ Notes:
 	Line 229198: 0x00499A70  |>  8B349D B88462>/MOV ESI,DWORD PTR DS:[EBX*4+6284B8]		// 00499A60 create_all_selection_circles; unhooked	--  old comment: memory patch address and cmp 12
 	Line 229209: 0x00499A98  |.  89148D B88462>|MOV DWORD PTR DS:[ECX*4+6284B8],EDX
 
-	Line 230030: 0x0049A2C6  |.  BA B8846200   MOV EDX,006284B8							// 0049A2C0 is_selected_unit_group_enabled; hooked by Pr0nogo (not working yet)
+	Line 230030: 0x0049A2C6  |.  BA B8846200   MOV EDX,006284B8							// 0049A2C0 is_selected_unit_group_enabled; hooked by Pr0nogo
 
 	Line 230073: 0x0049A328   .  BF B8846200   MOV EDI,006284B8							// 0049A320 very small function; https://pastebin.com/raw/jC5bW6LM
 
@@ -86,7 +89,7 @@ Notes:
 	Line 229953: 0x0049A226  |.  8DB9 E8846200 LEA EDI,DWORD PTR DS:[ECX+6284E8]		// 0049A170 remove_from_selection_2; unhooked
 	Line 229961: 0x0049A241  |.  C7048D E88462>MOV DWORD PTR DS:[ECX*4+6284E8],0		//
 
-	Line 230048: 0x0049A303  |.  81FA E8846200 |CMP EDX,006284E8						// 0049A2C0  is_selected_unit_group_enabled; unhooked
+	Line 230048: 0x0049A303  |.  81FA E8846200 |CMP EDX,006284E8						// 0049A2C0 is_selected_unit_group_enabled; hooked by Pr0nogo
 
 	Line 230076: 0x0049A334   .  BF E8846200   MOV EDI,006284E8							// not shown in ida, ?
 

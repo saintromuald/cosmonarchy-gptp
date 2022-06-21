@@ -22,32 +22,25 @@ namespace hooks {
             helper::cmdact_select(selection_array, selection_index);
             result = 1;
             *client_selection_changed = 1;
-            *force_button_refresh = 1;
-            portrait_redraw[0] = 1;
-            *status_screen_redraw = 1;
-            *control_under_mouse = 0;
-            *control_under_mouse_value = 0;
+            scbw::refresh_console();
         }
         return result;
 	}
 
     bool is_selected_unit_group_enabled() // 0049A2C0
     {
-        bool result = 1;
-        Unit** unit_selection = active_player_selection->unit;
-        do
+        for (u32 i = 0; i < SelectionCap; ++i)
         {
-            Unit* unit_from_selection = *unit_selection;
-            if (!*unit_selection)
+            Unit* unit_from_selection = active_player_selection->unit[i];
+            if (!unit_from_selection)
             {
                 break;
             }
-            if (!unit_from_selection->is_frozen()) // Originally also checked for DisabledDoodad, not sure if we need that too. -Pr0nogo
+            if (unit_from_selection->is_frozen())
             {
-                return 0;
+                return false;
             }
-            ++unit_selection;
-        } while (unit_selection < players_selections->unit[0]); // [0] is wrong, but I don't yet know how to translate this from IDA to GPTP. -Pr0nogo
-        return result;
+        }
+        return true;
     }
 }
