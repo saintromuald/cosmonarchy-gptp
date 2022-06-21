@@ -239,5 +239,7 @@ namespace WeaponId {
 		AlmaksaliskPiercingSpines			= 110,	// Almaksalisk weapon
 		KalkaliskViscousAcid				= 117,	// Kalkalisk weapon
 		AkistrokorBlissfulEmbrace			= 127,	// Akistrokor ability targeting
+		KagraliskRepeatingVenom				= 145,	// Kagralisk weapon
+		EvigriliskBrutishTendrils			= 146,	// Evigrilisk weapon
 	};
 }

@@ -641,10 +641,18 @@ namespace hooks {
 				} break;
 				case UnitId::ZergHydralisk:
 				case UnitId::ZergSkithrokor:
-				case UnitId::ZergEvigrilisk:
 				{
 					if (player_has_unit_id(player_id, UnitId::ZergGorgralSwamp)
 						|| player_has_completed_unit_id(player_id, UnitId::ZergHydrokDen))
+					{
+						return true;
+					}
+				} break;
+				case UnitId::ZergKagralisk:
+				case UnitId::ZergIzirokor:
+				case UnitId::ZergEvigrilisk:
+				{
+					if (player_has_completed_unit_id(player_id, UnitId::ZergIzkagIteth))
 					{
 						return true;
 					}
@@ -669,14 +677,6 @@ namespace hooks {
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia)
 						&& TierUnlocked[RaceId::Zerg][Tier2])
-					{
-						return true;
-					}
-				} break;
-				case UnitId::ZergKagralisk:
-				case UnitId::ZergIzirokor:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ZergIzkagIteth))
 					{
 						return true;
 					}
@@ -1895,10 +1895,19 @@ namespace hooks {
 					}
 					case UnitId::ZergHydralisk:
 					case UnitId::ZergSkithrokor:
-					case UnitId::ZergEvigrilisk:
 					{
 						if (player_has_unit_id(player_id, UnitId::ZergGorgralSwamp)
 							|| player_has_completed_unit_id(player_id, UnitId::ZergHydrokDen))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::ZergKagralisk:
+					case UnitId::ZergIzirokor:
+					case UnitId::ZergEvigrilisk:
+					{
+						if (player_has_completed_unit_id(player_id, UnitId::ZergIzkagIteth))
 						{
 							return TECH_ACTIVE;
 						}
@@ -1926,15 +1935,6 @@ namespace hooks {
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia)
 							&& TierUnlocked[RaceId::Zerg][Tier2])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::ZergKagralisk:
-					case UnitId::ZergIzirokor:
-					{
-						if (player_has_completed_unit_id(player_id, UnitId::ZergIzkagIteth))
 						{
 							return TECH_ACTIVE;
 						}
