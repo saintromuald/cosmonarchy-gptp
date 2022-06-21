@@ -560,40 +560,41 @@ namespace hooks
 				u32 playerid_2_wrong_2 = *(player_id + 2);
 				switch (playerid_2_wrong_2)
 				{
-				case 0xE5:
-				{
-					return 1;
-				}
-				case 0xE6:
-				{
-					if (group_flags.is_men)
+					case 0xE5:
 					{
 						return 1;
-					}
-					return 0;
-				}
-				case 0xE7:
-				{
-					if (group_flags.is_building)
+					} break;
+					case 0xE6:
 					{
-						return 1;
-					}
-					return 0;
-				}
-				case 0xE8:
-				{
-					if (!(group_flags.is_factory))
-					{
+						if (group_flags.is_men)
+						{
+							return 1;
+						}
 						return 0;
-					}
-					return 1;
-				}
-				default:
-					if (unit_id == playerid_2_wrong_2)
+					} break;
+					case 0xE7:
 					{
+						if (group_flags.is_building)
+						{
+							return 1;
+						}
+						return 0;
+					} break;
+					case 0xE8:
+					{
+						if (!(group_flags.is_factory))
+						{
+							return 0;
+						}
 						return 1;
-					}
-					break;
+					} break;
+					default:
+					{
+						if (unit_id == playerid_2_wrong_2)
+						{
+							return 1;
+						}
+					} break;
 				}
 			}
 			return 0;
