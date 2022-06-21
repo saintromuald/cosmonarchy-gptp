@@ -790,11 +790,11 @@ namespace hooks
 	s32 get_first_loaded_worker(Unit* transport) // 004E6D90
 	{
 		u32 iterations = 0;
-		u16 index = transport->loaded_unit[0].index;
+		u16* index = &transport->loaded_unit[0].value;
 		while (1)
 		{
-			u16 index_var = index;
-			if (index)
+			u16 index_var = *index;
+			if (*index)
 			{
 				Unit* unit_reference = &::g_unit_reference[index_var & 0x7FF];
 				if (unit_reference->sprite)
@@ -836,11 +836,11 @@ namespace hooks
 			return 0;
 		}
 		u32 iterations = 0;
-		u16 index = unit->loaded_unit[0].index;
+		u16* index = &unit->loaded_unit[0].value;
 		while (1)
 		{
-			u16 index_var = index;
-			if (index)
+			u16 index_var = *index;
+			if (*index)
 			{
 				Unit* unit_reference = &::g_unit_reference[index_var & 0x7FF];
 				if (unit_reference->sprite)
@@ -876,12 +876,12 @@ namespace hooks
 	s32 is_unit_loaded(Unit* transport) // 004E7110
 	{
 		u32 iterations = 0;
-		u16 index = transport->loaded_unit[0].index;
+		u16* index = &transport->loaded_unit[0].value;
 		s32 result = 1;
 		while (1)
 		{
-			u32 index_var = index;
-			if (index)
+			u32 index_var = *index;
+			if (*index)
 			{
 				u32 array_insanity = 336 * (index_var & 0x7FF);
 				void* array_result = unk_array_59CB64[array_insanity / 4];
@@ -909,12 +909,12 @@ namespace hooks
 	u32 get_loaded_space_amount(Unit* transport) // 004E7170
 	{
 		u32 result = 0;
-		u16 index_1 = transport->loaded_unit[1].index;
+		u16* index_1 = &transport->loaded_unit[1].value;
 		u32 two_iterations = 2;
 		do
 		{
-			u32 index_var_1 = (index_1 - 1);
-			if ((index_1 - 1))
+			u32 index_var_1 = *(index_1 - 1);
+			if (*(index_1 - 1))
 			{
 				u32 array_insanity_1 = 336 * (index_var_1 & 0x7FF);
 				void* array_result_1 = unk_array_59CB64[array_insanity_1 / 4];
@@ -928,8 +928,8 @@ namespace hooks
 					}
 				}
 			}
-			u32 index_var_2 = index_1;
-			if (index_1)
+			u32 index_var_2 = *index_1;
+			if (*index_1)
 			{
 				u32 array_insanity_2 = 336 * (index_var_2 & 0x7FF);
 				void* array_result_2 = unk_array_59CB64[array_insanity_2 / 4];
@@ -943,8 +943,8 @@ namespace hooks
 					}
 				}
 			}
-			u32 index_var_3 = index_1 + 1;
-			if (index_1 + 1)
+			u32 index_var_3 = *index_1 + 1;
+			if (index_1[1])
 			{
 				u32 array_insanity_3 = 336 * (index_var_3 & 0x7FF);
 				void* array_result_3 = unk_array_59CB64[array_insanity_3 / 4];
@@ -958,8 +958,8 @@ namespace hooks
 					}
 				}
 			}
-			u32 index_var_4 = index_1 + 2;
-			if (index_1 + 2)
+			u32 index_var_4 = *index_1 + 2;
+			if (index_1[2])
 			{
 				u32 array_insanity_4 = 336 * (index_var_4 & 0x7FF);
 				void* array_result_4 = unk_array_59CB64[array_insanity_4 / 4];
@@ -1010,10 +1010,10 @@ namespace hooks
 			u32 iterations_2 = 0;
 			if (units_dat::SpaceProvided[connected_unit->id])
 			{
-				u16 index = connected_unit->loaded_unit[0].index;
+				u16* index = &connected_unit->loaded_unit[0].value;
 				do
 				{
-					if (index == target_order_shifted)
+					if (*index == target_order_shifted)
 					{
 						break;
 					}
@@ -1042,7 +1042,7 @@ namespace hooks
 				helper::show_and_enable_unit(cargo);
 				iterations = iterations_2;
 			}
-			cargo->connected_unit->loaded_unit[iterations].index = 0;
+			cargo->connected_unit->loaded_unit[iterations].value = 0;
 			u32 cargo_status_something = cargo->status & 0xFFFFFFBF;
 			cargo->connected_unit = 0;
 			cargo->status = cargo_status_something;
@@ -1082,12 +1082,12 @@ namespace hooks
 			}
 			return 0;
 		}
-		u16 index = unit->loaded_unit[0].index;
+		u16* index = &unit->loaded_unit[0].value;
 		u32 iterations = 8;
 		do
 		{
-			u32 index_var = index;
-			if (index)
+			u32 index_var = *index;
+			if (*index)
 			{
 				u32 array_insanity = 336 * (index_var & 0x7FF);
 				void* array_result = unk_array_59CB64[array_insanity / 4];
