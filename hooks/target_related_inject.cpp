@@ -270,21 +270,21 @@ namespace hooks
 	void inject_target_hooks()
 	{
 		// Removes can not attack status checks from some update functions, it was done by iquare - not exactly sure what was the intention. Currently it doesn't seem to do anything. -Veeq7
-//		nops(0x004EB176, 8);
-//		nops(0x004EB316, 2);
+	//	nops(0x004EB176, 8);
+	//	nops(0x004EB316, 2);
 
-//		jump_patch(generic_right_click_unit_proc_2_wrapper,			0x00455E00, 1);
-//		jump_patch(generic_right_click_unit_proc_2_wrapper,			0x004C20C0, 0);
-//		jump_patch(unit_can_see_cloaked_target_wrapper,				0x00401D60, 4);
-//		jump_patch(is_target_visible_wrapper,						0x004E5E30, 4);
-//		jump_patch(is_unit_visible_wrapper,							0x004E5DB0, 1);
+	//	jump_patch(generic_right_click_unit_proc_2_wrapper,			0x00455E00, 1);
+	//	jump_patch(generic_right_click_unit_proc_2_wrapper,			0x004C20C0, 0);
+	//	jump_patch(unit_can_see_cloaked_target_wrapper,				0x00401D60, 4);
+	//	jump_patch(is_target_visible_wrapper,						0x004E5E30, 4);
+	//	jump_patch(is_unit_visible_wrapper,							0x004E5DB0, 1);
 		jump_patch(check_unit_visibility_wrapper,					0x00443390, 3);
-//		jump_patch(is_unit_cloaking_wrapper,						0x004916E0, 0);
+	//	jump_patch(is_unit_cloaking_wrapper,						0x004916E0, 0);
 		jump_patch(unit_can_attack_target_wrapper,					0x00476730, 5);
-//		jump_patch(order_attack_behavior_wrapper,					0x00478540, 0);
+	//	jump_patch(order_attack_behavior_wrapper,					0x00478540, 0);
 		jump_patch(ai_attack_unit_wrapper,							0x0043FFD0, 1);
 		jump_patch(return_interceptor_if_cannot_attack_wrapper,		0x00465810, 1);
-		jump_patch(find_fow_target_wrapper,							0x00487A10, 5);
+	//	jump_patch(find_fow_target_wrapper,							0x00487A10, 5);
 	}
 
 	void inject_target_related_hooks()

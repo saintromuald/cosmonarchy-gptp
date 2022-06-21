@@ -730,9 +730,9 @@ namespace hooks
 	// Moved from Unit.cpp
 	Unit* get_loaded_unit(Unit* transport, u32 index) {
 		Unit* loaded_unit = get_unit_from_index(transport->loaded_unit[index].index);
-		if (loaded_unit && loaded_unit->sprite
-			&& !(loaded_unit->main_order_id == OrderId::Die && loaded_unit->main_order_state == 1)
-			&& loaded_unit->target_order_special == transport->loaded_unit[index].unit_id)
+		if  (loaded_unit && loaded_unit->sprite
+		&& !(loaded_unit->main_order_id == OrderId::Die && loaded_unit->main_order_state == 1)
+		&&   loaded_unit->target_order_special == transport->loaded_unit[index].unit_id)
 		{
 			return loaded_unit;
 		}
