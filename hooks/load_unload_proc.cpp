@@ -808,7 +808,7 @@ namespace hooks
 			u16 index_var = *index;
 			if (*index)
 			{
-				Unit* unit_reference = &::g_unit_reference[index_var & 0x7FF];
+				Unit* unit_reference = &g_unit_reference[index_var & 0x7FF];
 				if (unit_reference->sprite)
 				{
 					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
