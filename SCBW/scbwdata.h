@@ -318,35 +318,35 @@ SCBW_DATA(u8*,			g_status_screen_func,		0x0068C1E5);
 SCBW_DATA(BufferStr*,	g_struct_char,				0x006CA9F8);
 
 // For draw_supply_unit_info
-SCBW_DATA(BufferStr*,	g_struct_char_2,		0x006CAB08);
-SCBW_DATA(char*,		g_unk_string_char,		0x006CA668);
+SCBW_DATA(BufferStr*,	g_struct_char_2,			0x006CAB08);
+SCBW_DATA(char*,		g_unk_string_char,			0x006CA668);
 
 // For draw_wireframe_shield
-SCBW_DATA(char*,	g_char_buffer,				0x0068C208);
-SCBW_DATA(char*,	g_byte_shield_string,		0x0068C20A); // count of 22
-SCBW_DATA(u8*,		g_wireframe_constants,		0x00515280); // count of 40
-SCBW_DATA(char**,	g_image_draw_palette_index,	0x0050CEC1); // count of 256
-SCBW_DATA(u8*,		off_50CE81,					0x0050CE81);
-SCBW_DATA(u8*,		off_50CE82,					0x0050CE82);
+SCBW_DATA(char*,		g_char_buffer,				0x0068C208);
+SCBW_DATA(char*,		g_byte_shield_string,		0x0068C20A); // count of 22
+SCBW_DATA(u8*,			g_wireframe_constants,		0x00515280); // count of 40
+SCBW_DATA(char**,		g_image_draw_palette_index,	0x0050CEC1); // count of 256
+SCBW_DATA(u8*,			off_50CE81,					0x0050CE81);
+SCBW_DATA(u8*,			off_50CE82,					0x0050CE82);
 
 // For draw_building_info
-SCBW_DATA(s32*,		g_selection_group_hp,		0x006CA94C);
-SCBW_DATA(s16*,		g_ui_energy,				0x006CAC0C);
-SCBW_DATA(s32*,		g_ui_shields,				0x006CA9EC);
-SCBW_DATA(char*,	g_redraw_transport_ui,		0x006CA9F0);
+SCBW_DATA(s32*,			g_selection_group_hp,		0x006CA94C);
+SCBW_DATA(s16*,			g_ui_energy,				0x006CAC0C);
+SCBW_DATA(s32*,			g_ui_shields,				0x006CA9EC);
+SCBW_DATA(char*,		g_redraw_transport_ui,		0x006CA9F0);
 
 // For AI_EMPShieldRequirementsProc
-SCBW_DATA(s32*,		g_temp_hp_shields,			0x00695798);
-SCBW_DATA(s32*,		g_temp_weapon,				0x00695604);
+SCBW_DATA(s32*,			g_temp_hp_shields,			0x00695798);
+SCBW_DATA(s32*,			g_temp_weapon,				0x00695604);
 
 // For drawImageHPBar
-SCBW_DATA(unk_61*,	struct_5140C4,				0x005140C4);
-SCBW_DATA(unk_61*,	struct_5140D8,				0x005140D8);
-SCBW_DATA(unk_62*,	struct_5140E8,				0x005140E8);
+SCBW_DATA(unk_61*,		struct_5140C4,				0x005140C4);
+SCBW_DATA(unk_61*,		struct_5140D8,				0x005140D8);
+SCBW_DATA(unk_62*,		struct_5140E8,				0x005140E8);
 
 // For getUnitBulletDamage
-SCBW_DATA(char*,	g_upgrades_level_sc,		0x0058D2B0);
-SCBW_DATA(char*,	g_upgrades_level_bw,		0x0058F2FE);
+SCBW_DATA(char*,		g_upgrades_level_sc,		0x0058D2B0);
+SCBW_DATA(char*,		g_upgrades_level_bw,		0x0058F2FE);
 
 // For find_next_bounce_target_proc
 SCBW_DATA(Unit**,	g_bullet_bounce_missile_source,	0x0064EECC);
@@ -354,12 +354,12 @@ SCBW_DATA(Unit**,	g_bullet_bounce_missile_target,	0x0064EED0);
 SCBW_DATA(Unit**,	g_bullet_bounce_missile_next,	0x0064EED4);
 
 // For setUnderDisruptionWeb
-SCBW_DATA(void**,	unk_array_59CB64,			0x0059CB64);	// count of 252
-SCBW_DATA(Unit*,	g_unit_reference,			0x0059CB58);
+SCBW_DATA(void**,	unk_array_59CB64,				0x0059CB64);	// count of 252
+SCBW_DATA(Unit*,	g_unit_reference,				0x0059CB58);
 
 // For startGame
-SCBW_DATA(s8*,		g_game_state,				0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
-SCBW_DATA(Player*,	g_player_replay_watchers,	0x00640970);
+SCBW_DATA(s8*,		g_game_state,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
+SCBW_DATA(Player*,	g_player_replay_watchers,		0x00640970);
 
 SCBW_DATA(s8*,		g_countdown_timer_interval,		0x0066FBFC);
 SCBW_DATA(s32*,		g_countdown_timer_tick_count,	0x0059CC7C);
