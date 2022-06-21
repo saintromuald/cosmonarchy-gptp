@@ -1024,7 +1024,7 @@ SCBW_DATA(u16*,	is_unit_in_point_x_pos,		0x006509CC);
 SCBW_DATA(u16*,	is_unit_in_point_y_pos,		0x006509CE);
 
 // For input_game_right_mouse_click
-SCBW_DATA(Unit**,	local_selection_group,	0x0059724C);
+SCBW_DATA(Unit**,	local_selection_group_2,	0x0059724C);
 
 // For init_damage_overlay_counts
 SCBW_DATA(u8*,			building_overlay_state_max,		0x005240D0);

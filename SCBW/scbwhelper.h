@@ -1350,7 +1350,7 @@ namespace helper
 	Unit* find_unit_at_point(u32 x_pos, u32 y_pos);															// 0046F3A0
 	s32 can_move(Unit* unit);																				// 00455660
 	Thingy* show_command_response(u32 x_pos, u16 y_pos, Unit* unit);										// 00456490
-	char cmdact_right_click_order(Unit* target, u16 x_pos, u16 y_pos, u16 unit_id, u8 keycode_used);		// 004C0380
+	char cmdact_right_click_order(Unit* target, u32 x_pos, u32 y_pos, u32 unit_id, u32 keycode_used);		// 004C0380
 	s32 show_right_click_error_if_needed(Unit* target);														// 00455A00
 	void play_worker_action_sound(Unit* unit);																// 0048F4D0
 	u32 sort_all_units(Unit** units, Unit** units_2, Unit* unit);											// 0046F0F0

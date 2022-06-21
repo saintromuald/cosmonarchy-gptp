@@ -431,15 +431,15 @@ namespace hooks
 
 		// For right-click rallies for eggs and cocoons
 		jump_patch(order_acquire_generic_right_click_unit_proc_2_wrapper,	0x00455E00,	1);
-	//	jump_patch(process_right_click_action_wrapper,						0x00455F20,	1);
-	//	jump_patch(get_generic_unit_idle_order_wrapper,						0x00455760,	1);
-	//	jump_patch(input_game_right_mouse_click_wrapper,					0x004564E0,	0);
-	//	jump_patch(get_right_click_action_order_wrapper,					0x004E5EA0,	3);
-	//	jump_patch(can_do_targeted_order_wrapper,							0x0049A410,	2);
-	//	jump_patch(btnscond_can_move_special_case,							0x00428D40,	0);
-	//	jump_patch(btnscond_can_move,										0x00428DA0,	0);
-	//	jump_patch(btnscond_can_attack,										0x00428F30,	1);
-	//	jump_patch(unit_can_move_wrapper,									0x00455660,	3);
-	//	jump_patch(drone_build_execute_wrapper,								0x0045D2E0,	1);
+		jump_patch(process_right_click_action_wrapper,						0x00455F20,	1);
+		jump_patch(get_generic_unit_idle_order_wrapper,						0x00455760,	1);
+		jump_patch(input_game_right_mouse_click_wrapper,					0x004564E0,	0);
+		jump_patch(get_right_click_action_order_wrapper,					0x004E5EA0,	3);
+		jump_patch(can_do_targeted_order_wrapper,							0x0049A410,	2);
+		jump_patch(btnscond_can_move_special_case,							0x00428D40,	0);
+		jump_patch(btnscond_can_move,										0x00428DA0,	0);
+		jump_patch(btnscond_can_attack,										0x00428F30,	1);
+		jump_patch(unit_can_move_wrapper,									0x00455660,	3);
+		jump_patch(drone_build_execute_wrapper,								0x0045D2E0,	1);
 	}
 }

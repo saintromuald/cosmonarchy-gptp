@@ -33,7 +33,7 @@ namespace
 		result = hooks::is_selected_unit_group_enabled();
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			RETN
 		}
 	}
