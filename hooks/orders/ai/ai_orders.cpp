@@ -463,8 +463,8 @@ LABEL_37:
 		if (AIScriptController[region->player].AI_Flags.is_use_map_settings)
 		{
 			s32 v8 = region->region << 6;
-			s32 v9 = *(s32*)((char*)&(*SAI_Paths)->regions[0].region_center_y + v8);
-			s32 regionTown0 = *(s32*)((char*)&(*SAI_Paths)->regions[0].region_center_x + v8) >> 8;
+			s32 v9 = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_y + v8);
+			s32 regionTown0 = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_x + v8) >> 8;
 			v9 >>= 8;
 			s16 a1 = regionTown0 - 256;
 			s32 regionTown6 = (v9 + 256) << 16;
@@ -514,8 +514,8 @@ LABEL_37:
 		s16 regionId = helper::get_region_id(x, y);
 		Unit* firstUnit = *firstVisibleUnit;
 		s32 regionOffset = regionId << 6;
-		s32 region_center_x = *(s32*)((char*)&(*SAI_Paths)->regions[0].region_center_x + regionOffset);
-		s32 region_center_y = *(s32*)((char*)&(*SAI_Paths)->regions[0].region_center_y + regionOffset);
+		s32 region_center_x = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_x + regionOffset);
+		s32 region_center_y = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_y + regionOffset);
 
 		Unit* result = nullptr;
 		if (firstVisibleUnit)
@@ -673,8 +673,8 @@ LABEL_37:
 			}
 
 			s32 player = (u8)town->player;
-			AiTown* firstTown = AiActiveTownArray[player].first;
-			AiExpandList* townList = &AiActiveTownArray[player];
+			AiTown* firstTown = gi_ai_active_town_array[player].first;
+			AiExpandList* townList = &gi_ai_active_town_array[player];
 			if (firstTown == town)
 			{
 				townList->first = town->prev;
@@ -798,7 +798,7 @@ LABEL_37:
 			if (region_ids_count)
 			{
 				memset(tileDistances, 99999999, *region_ids_count);
-				RegionArray* _paths = *SAI_Paths;
+				RegionArray* _paths = *g_sai_paths;
 				do
 				{
 					u32 regionOffset = region_ids[iterator1] << 6;
@@ -970,7 +970,7 @@ LABEL_37:
 		  || slowestUnitVar->status & UnitStatus::InTransport
 		  || slowestUnitVar == unit
 		  || region->state == 2
-		  || (u16)(&(*SAI_Paths)->regionCount + 32 * (helper::get_region_id_from_unit(region->slowest_unit) + 4392)) < 60u
+		  || (u16)(&(*g_sai_paths)->regionCount + 32 * (helper::get_region_id_from_unit(region->slowest_unit) + 4392)) < 60u
 		  || !helper::ai_are_on_connected_regions(slowestUnitVar, unit)
 		  || helper::get_distance_fast(region->slowest_unit->sprite->position.x, unit->sprite->position.x, region->slowest_unit->sprite->position.y, unit->sprite->position.y) <= 0x80)
 		{
@@ -2248,7 +2248,7 @@ LABEL_37:
 	bool player_has_transport(u32 player_id) // 00437250
 	{
 		scbw::print("PLAYER HAS TRANSPORT???");
-		return g_unit_count_table[UnitId::TerranTrojan].player[player_id]
+		return g_unit_count_table[UnitId::TerranTrojan].player[player_id] // Dunno how to properly access this in GPTP. -Pr0nogo
 			|| g_unit_count_table[UnitId::ProtossEnvoy].player[player_id]
 			|| g_unit_count_table[UnitId::ZergOvileth].player[player_id]
 			|| g_unit_count_table[UnitId::ZergIroleth].player[player_id]

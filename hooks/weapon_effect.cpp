@@ -485,7 +485,7 @@ namespace hooks
 		s32 list;
 		Box16* searchRadius;
 
-		*airSplashListCount = 0;
+		*g_air_splash_list_count = 0;
 		searchRadius->left = posX - radius;
 		searchRadius->top = posY - radius;
 		searchRadius->right = radius + posX;
@@ -524,36 +524,36 @@ namespace hooks
 							}
 							else
 							{
-								airSplashList[0] = target;
+								g_air_splash_list[0] = target;
 							}
 							result = 1;
-							*airSplashListCount = 1;
+							*g_air_splash_list_count = 1;
 							break;
 						}
-						listCount = *airSplashListCount;
+						listCount = *g_air_splash_list_count;
 						if (globals.extended_unit_table)
 						{
-							new_unit_table.air_splash_results[*airSplashListCount] = target;
+							new_unit_table.air_splash_results[*g_air_splash_list_count] = target;
 						}
 						else
 						{
-							airSplashList[*airSplashListCount] = target;
+							g_air_splash_list[*g_air_splash_list_count] = target;
 						}
-						*airSplashListCount = listCount + 1;
+						*g_air_splash_list_count = listCount + 1;
 					}
 				}
 			}
 		}
 
-		if (airSplashListCount)
+		if (g_air_splash_list_count)
 		{
-			if (*airSplashListCount == 1)
+			if (*g_air_splash_list_count == 1)
 			{
 				list = 0;
 			}
 			else
 			{
-				list = helper::randomize_short(58) % *airSplashListCount;
+				list = helper::randomize_short(58) % *g_air_splash_list_count;
 			}
 			if (globals.extended_unit_table)
 			{
@@ -561,7 +561,7 @@ namespace hooks
 			}
 			else
 			{
-				helper::weaponBulletShot(target, bullet, (s32)airSplashList[list]);
+				helper::weaponBulletShot(target, bullet, (s32)g_air_splash_list[list]);
 			}
 		}
 		// airSplashProc2

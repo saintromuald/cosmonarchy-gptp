@@ -26,13 +26,13 @@ namespace hooks
 		bool result; // eax
 		char FileName; // [esp+8h] [ebp-104h]
 
-		SStrCopy(&FileName, mapsFolder, 0x104u);
+		SStrCopy(&FileName, g_maps_folder, 0x104u);
 		SStrNCat(&FileName, (const char*)(vector + 20), 0x104u);
 		strrchr(&FileName, 92);
 		SStrCopy(current_map_filename, &FileName, 0x104u);
 		*campaign_index = 0;
 		*dword_5994DC = 1;
-		if (!createDirectory(mapsFolder))
+		if (!createDirectory(g_maps_folder))
 			return 0;
 		map = pfOpen(23, &FileName);
 		if (!map)

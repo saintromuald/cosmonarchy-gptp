@@ -123,7 +123,7 @@ namespace hooks
 			setNetTblError(0, 0, 0, a1, 97);
 			if ( gwGameMode == 3 )
 			{
-				game_state = 0;
+				g_game_state = 0;
 				gamePosition = 4;
 				if ( !is_in_replay )
 					Replay_FrameCount = elapsedTime;
@@ -170,7 +170,7 @@ namespace hooks
 				setNetTblError(0, 0, 0, v20, 97);
 				if ( gwGameMode == 3 )
 				{
-				game_state = 0;
+				g_game_state = 0;
 				gamePosition = 4;
 				if ( !is_in_replay )
 					Replay_FrameCount = elapsedTime;
@@ -189,7 +189,7 @@ namespace hooks
 			setNetTblError(0, 0, 0, v20, 102);
 			if ( gwGameMode == 3 )
 			{
-				game_state = 0;
+				g_game_state = 0;
 				gamePosition = 4;
 				if ( !is_in_replay )
 				{
@@ -210,7 +210,7 @@ namespace hooks
 		setNetTblError(0, 0, 0, a1, 97);
 		if ( gwGameMode == 3 )
 		{
-			game_state = 0;
+			g_game_state = 0;
 			gamePosition = 4;
 			if ( !is_in_replay )
 			{

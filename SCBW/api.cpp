@@ -2042,7 +2042,7 @@ namespace scbw
 	AiTown* get_closest_town(u32 player, Point16 position) {
 		u32 min_distance = UINT32_MAX;
 		AiTown* best_town = 0;
-		for (AiTown* town = AiActiveTownArray[player].first; town; town = town->prev) {
+		for (AiTown* town = gi_ai_active_town_array[player].first; town; town = town->prev) {
 			if (!town->inited) {
 				continue;
 			}
@@ -2072,7 +2072,7 @@ namespace scbw
 	}
 
 	Region* get_region(u32 index) {
-		return &(*SAI_Paths)->regions[index];
+		return &(*g_sai_paths)->regions[index];
 	}
 
 	Point16 get_region_center(Region* region) {

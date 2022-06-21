@@ -625,7 +625,7 @@ namespace hooks
 						{
 							u32 dumbness = 336 * (index_lowbyte & 0x7FF);
 							void* array_insanity = unk_array_59CB64[dumbness / 4];
-							Unit* unit_reference = &::unit_reference[dumbness / 0x150];
+							Unit* unit_reference = &::g_unit_reference[dumbness / 0x150];
 							if (array_insanity)
 							{
 								if (unit_reference->main_order_id || unit_reference->main_order_state != 1)
@@ -701,7 +701,7 @@ namespace hooks
 	Unit* get_loaded_unit_from_index(Unit* transport, u32 index) // 004E6C40
 	{
 		int loaded_index = transport->loaded_unit[index].index;
-		Unit* result = &unit_reference[loaded_index & 0x7FF];
+		Unit* result = &g_unit_reference[loaded_index & 0x7FF];
 		if (!loaded_index
 		||  !result->sprite
 		||  !result->main_order_id && result->main_order_state == 1
@@ -772,7 +772,7 @@ namespace hooks
 			u16 index_var = index;
 			if (index)
 			{
-				Unit* func_transport = &unit_reference[index_var & 0x7FF];
+				Unit* func_transport = &g_unit_reference[index_var & 0x7FF];
 				if (func_transport->sprite)
 				{
 					if ((func_transport->main_order_id || func_transport->main_order_state != 1)
@@ -804,7 +804,7 @@ namespace hooks
 			u16 index_var = index;
 			if (index)
 			{
-				Unit* unit_reference = &::unit_reference[index_var & 0x7FF];
+				Unit* unit_reference = &::g_unit_reference[index_var & 0x7FF];
 				if (unit_reference->sprite)
 				{
 					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
@@ -850,7 +850,7 @@ namespace hooks
 			u16 index_var = index;
 			if (index)
 			{
-				Unit* unit_reference = &::unit_reference[index_var & 0x7FF];
+				Unit* unit_reference = &::g_unit_reference[index_var & 0x7FF];
 				if (unit_reference->sprite)
 				{
 					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
@@ -893,7 +893,7 @@ namespace hooks
 			{
 				u32 array_insanity = 336 * (index_var & 0x7FF);
 				void* array_result = unk_array_59CB64[array_insanity / 4];
-				Unit* reference = &unit_reference[array_insanity / 0x150];
+				Unit* reference = &g_unit_reference[array_insanity / 0x150];
 				if (array_result)
 				{
 					if ((reference->main_order_id || reference->main_order_state != 1)
@@ -926,7 +926,7 @@ namespace hooks
 			{
 				u32 array_insanity_1 = 336 * (index_var_1 & 0x7FF);
 				void* array_result_1 = unk_array_59CB64[array_insanity_1 / 4];
-				Unit* reference_1 = &unit_reference[array_insanity_1 / 0x150];
+				Unit* reference_1 = &g_unit_reference[array_insanity_1 / 0x150];
 				if (array_result_1)
 				{
 					if ((reference_1->main_order_id || reference_1->main_order_state != 1)
@@ -941,7 +941,7 @@ namespace hooks
 			{
 				u32 array_insanity_2 = 336 * (index_var_2 & 0x7FF);
 				void* array_result_2 = unk_array_59CB64[array_insanity_2 / 4];
-				Unit* reference_2 = &unit_reference[array_insanity_2 / 0x150];
+				Unit* reference_2 = &g_unit_reference[array_insanity_2 / 0x150];
 				if (array_result_2)
 				{
 					if ((reference_2->main_order_id || reference_2->main_order_state != 1)
@@ -956,7 +956,7 @@ namespace hooks
 			{
 				u32 array_insanity_3 = 336 * (index_var_3 & 0x7FF);
 				void* array_result_3 = unk_array_59CB64[array_insanity_3 / 4];
-				Unit* reference_3 = &unit_reference[array_insanity_3 / 0x150];
+				Unit* reference_3 = &g_unit_reference[array_insanity_3 / 0x150];
 				if (array_result_3)
 				{
 					if ((reference_3->main_order_id || reference_3->main_order_state != 1)
@@ -971,7 +971,7 @@ namespace hooks
 			{
 				u32 array_insanity_4 = 336 * (index_var_4 & 0x7FF);
 				void* array_result_4 = unk_array_59CB64[array_insanity_4 / 4];
-				Unit* reference_4 = &unit_reference[array_insanity_4 / 0x150];
+				Unit* reference_4 = &g_unit_reference[array_insanity_4 / 0x150];
 				if (array_result_4)
 				{
 					if ((reference_4->main_order_id || reference_4->main_order_state != 1)
@@ -1099,7 +1099,7 @@ namespace hooks
 			{
 				u32 array_insanity = 336 * (index_var & 0x7FF);
 				void* array_result = unk_array_59CB64[array_insanity / 4];
-				Unit* reference = &unit_reference[array_insanity / 0x150];
+				Unit* reference = &g_unit_reference[array_insanity / 0x150];
 				if (array_result)
 				{
 					if ((reference->main_order_id || reference->main_order_state != 1)

@@ -29,7 +29,7 @@ namespace hooks
         placement_pos.x = mouse->x - dims.x / 2;
         placement_pos.y = mouse->y - dims.y / 2;
         if (helper::init_placement_box_pos(&placement_pos)) {
-            *place_building_message_id = helper::update_placement_state_for_placement_box();
+            *g_place_building_message_id = helper::update_placement_state_for_placement_box();
             helper::refresh_layers_3_and_4();
             helper::unk_building_placement_related(1, &placement_pos);
             if (*is_placing_addon) {

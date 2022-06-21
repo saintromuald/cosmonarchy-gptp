@@ -237,7 +237,7 @@ namespace hooks
     {
         Unit* activeUnit = *active_portrait_unit;
         GroupFlag groupFlags = units_dat::group_flags[activeUnit->id];
-        *supplies_available_temp = get_supplies_available(activeUnit->player, RaceId::Terran);
+        *g_supplies_available_temp = get_supplies_available(activeUnit->player, RaceId::Terran);
         u8 player = activeUnit->player;
         s32 result = suppliesUsed_Terran[player];
         *suppliesUsedTemp = suppliesUsed_Terran[player];
@@ -255,7 +255,7 @@ namespace hooks
         GroupFlag groupFlags = units_dat::group_flags[(u16)(*active_portrait_unit)->id];
         char race = RaceId::Terran;
 
-        if ((u16)supplies_available_temp == get_supplies_available(activePlayer, race))
+        if ((u16)g_supplies_available_temp == get_supplies_available(activePlayer, race))
         {
             s32 suppliesVar = suppliesUsed_Terran[activePlayer];
             if ((u16)suppliesUsedTemp == suppliesVar)
@@ -270,10 +270,10 @@ namespace hooks
 		Unit* unit = *active_portrait_unit;
 		if (*g_is_in_replay || unit->player == *g_local_nation_id) {
 			get_supplies_temp();
-			if (*status_screen_func != 12) {
+			if (*g_status_screen_func != 12) {
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -10, -13);
-				*status_screen_func = 12;
+				*g_status_screen_func = 12;
 			}
 
             /*
@@ -284,8 +284,8 @@ namespace hooks
             char* supply_used_string = 0;
 			if (race == -821) {
 				supply_used_string = 0;
-			} else if (supply_used_string_id < **stat_txt_buffer) {
-				supply_used_string = (char*)*stat_txt_buffer + (*stat_txt_buffer)[supply_used_string_id + 1];
+			} else if (supply_used_string_id < **g_stat_txt_buffer) {
+				supply_used_string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[supply_used_string_id + 1];
 			} else {
 				supply_used_string = "";
 			}
@@ -295,8 +295,8 @@ namespace hooks
             char* supply_provided_string = 0;
 			if (race == -815) {
 				supply_provided_string = 0;
-			} else if (supply_provided_string_id < **stat_txt_buffer) {
-				supply_provided_string = (char*)*stat_txt_buffer + (*stat_txt_buffer)[supply_provided_string_id + 1];
+			} else if (supply_provided_string_id < **g_stat_txt_buffer) {
+				supply_provided_string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[supply_provided_string_id + 1];
 			} else {
 				supply_provided_string = "";
 			}
@@ -307,8 +307,8 @@ namespace hooks
             char* supply_available_string = 0;
 			if (race == -818) {
 				supply_available_string = 0;
-			} else if (supply_available_string_id < **stat_txt_buffer) {
-				supply_available_string = (char*)*stat_txt_buffer + (*stat_txt_buffer)[supply_available_string_id + 1];
+			} else if (supply_available_string_id < **g_stat_txt_buffer) {
+				supply_available_string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[supply_available_string_id + 1];
 			} else {
 				supply_available_string = "";
 			}
@@ -320,8 +320,8 @@ namespace hooks
             char* supply_max_string = 0;
 			if (race == -824) {
 				supply_max_string = 0;
-			} else if (supply_max_string_id < **stat_txt_buffer) {
-				supply_max_string = (char*)*stat_txt_buffer + (*stat_txt_buffer)[supply_max_string_id + 1];
+			} else if (supply_max_string_id < **g_stat_txt_buffer) {
+				supply_max_string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[supply_max_string_id + 1];
 			} else {
 				supply_max_string = "";
 			}

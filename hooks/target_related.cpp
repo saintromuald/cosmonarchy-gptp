@@ -442,7 +442,7 @@ LABEL_42:
 		s16 unit_id;
 		u8 order_id;
 
-		*((s8*)&map_height_pixels + 2) = 0;
+		*((s8*)&g_map_height_pixels + 2) = 0;
 		result = helper::get_active_player_next_selection();
 		for (i = result; result; i = result)
 		{
@@ -478,7 +478,7 @@ LABEL_42:
 			}
 			if (helper::order_allowed(i, order_id, *g_active_nation_id) == 1)
 			{
-				helper::targeted_order(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, order_id, 0, *orderType4Position, *orderType4Target);
+				helper::targeted_order(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, order_id, 0, *g_order_type_4_position, *g_order_type_4_target);
 			}
 			result = helper::get_active_player_next_selection();
 		}

@@ -814,8 +814,8 @@ namespace hooks
 
 	bool find_next_bounce_target_proc(Unit* pIterator) // 0048AFD0
 	{
-		Unit* pSrc = *bulletBounceMissileSource;
-		s32 nSrcStatus = (*bulletBounceMissileSource)->status;
+		Unit* pSrc = *g_bullet_bounce_missile_source;
+		s32 nSrcStatus = (*g_bullet_bounce_missile_source)->status;
 		Unit* _pIterator = pIterator;
 
 		// Previously disallowed bouncing if unit was disabled
@@ -831,7 +831,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (helper::unit_can_see_cloaked_target(pIterator, (*bulletBounceMissileSource)))
+		if (helper::unit_can_see_cloaked_target(pIterator, (*g_bullet_bounce_missile_source)))
 		{
 			return 0;
 		}
@@ -884,7 +884,7 @@ namespace hooks
 		}
 
 		s8 player = _pIterator->player == 11 ? _pIterator->sprite->player : _pIterator->player;
-		if (player_alliance[(u8)pSrc->player].flags[player] || *bulletBounceMissileTarget == _pIterator)
+		if (player_alliance[(u8)pSrc->player].flags[player] || *g_bullet_bounce_missile_target == _pIterator)
 		{
 			return 0;
 		}
@@ -892,8 +892,8 @@ namespace hooks
 		// Gladius Binding Plasma behavior
 		if (globals.bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 		{
-			if (pIterator != nullptr && *bulletBounceMissileNext != nullptr
-				&& (*bulletBounceMissileNext)->sprite != nullptr
+			if (pIterator != nullptr && *g_bullet_bounce_missile_next != nullptr
+				&& (*g_bullet_bounce_missile_next)->sprite != nullptr
 				&& _pIterator->sprite != nullptr)
 			{
 				if (globals.was_already_hit_by_multihit_bullet(globals.bounce_bullet, _pIterator))
@@ -903,7 +903,7 @@ namespace hooks
 				else
 				{
 					globals.add_bullet_multihit(globals.bounce_bullet, _pIterator);
-					return *bulletBounceMissileNext != _pIterator;
+					return *g_bullet_bounce_missile_next != _pIterator;
 
 				}
 			}
@@ -912,7 +912,7 @@ namespace hooks
 //				scbw::print("bad bullet");
 			}
 		}
-		return *bulletBounceMissileNext != _pIterator;
+		return *g_bullet_bounce_missile_next != _pIterator;
 	}
 
 	Unit* find_next_bounce_target(Bullet* bullet) // 0048B1E0
@@ -922,13 +922,13 @@ namespace hooks
 			return 0;
 		}
 		Unit* nextBounce = bullet->nextBounceUnit;
-		*bulletBounceMissileSource = bullet->sourceUnit;
+		*g_bullet_bounce_missile_source = bullet->sourceUnit;
 		Unit* target = bullet->attackTarget.unit;
 		Sprite* bulletSprite = bullet->sprite;
-		*bulletBounceMissileTarget = target;
+		*g_bullet_bounce_missile_target = target;
 		u16 posY = bulletSprite->position.x;
 		u16 posX = bulletSprite->position.y;
-		*bulletBounceMissileNext = nextBounce;
+		*g_bullet_bounce_missile_next = nextBounce;
 		Box16 coords;
 		coords.left = posX - 96;
 		coords.top = posX + 96;

@@ -41,11 +41,11 @@ namespace hooks
 
 	s32 startGame(void* lobbyState, s32 player) // 00472060
 	{
-		lobbyState = game_state;
+		lobbyState = g_game_state;
 		u8 bootReason = 4;
 
 		// Boot (incoming?) players if lobby is not idle
-		if (*game_state != 4)
+		if (*g_game_state != 4)
 		{
 			return helper::bootReason(bootReason);
 		}
@@ -69,28 +69,28 @@ namespace hooks
 		{
 			for (s32 i = 0; i < 12; i++)
 			{
-				playerReplayWatchers[i] = g_player_table[i];
+				g_player_replay_watchers[i] = g_player_table[i];
 			}
 		}
 
 		// Start countdown
-		*game_state = 5;
-		*countdownTimerInterval = 24;
+		*g_game_state = 5;
+		*g_countdown_timer_interval = 24;
 		if (2 * *g_provider_latency_calls + 4 >= 24)
 		{
-			*countdownTimerInterval = 2 * *g_provider_latency_calls + 4;
+			*g_countdown_timer_interval = 2 * *g_provider_latency_calls + 4;
 		}
 
 		// Set timers
 		helper::setTimerFunc();
 		s32 tickCount = helper::getTickCount(); // CRASH
-		*countdownTimeTickCount = tickCount;
-		*countdownTimeTickCount_0 = tickCount;
+		*g_countdown_timer_tick_count = tickCount;
+		*g_countdown_timer_tick_count_2 = tickCount;
 		result = tickCount - 120000;
 
-		*isInGame = 1;
+		*g_is_in_game = 1;
 		*elapsed_time_modified = 0;
-		*countdownTimeRemaining = result;
+		*g_countdown_time_remaining = result;
 
 		// Convert open slots to computers (multiplayer)
 		for (s32 i = 0; i < 8; i++)

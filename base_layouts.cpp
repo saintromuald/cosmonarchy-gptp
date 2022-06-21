@@ -438,7 +438,7 @@ void tick_layouts() {
 
 	// Init
 	for (u32 i = 0; i < AiTownLimit; ++i) {
-		AiTown* town = &AiTownArray[i];
+		AiTown* town = &g_ai_town_array[i];
 		if (town->inited && town->resarea && !layouts_towns[town->resarea].town) {
 			LayoutsTown* layouts_town = &layouts_towns[town->resarea];
 			layouts_town->town = town;

@@ -357,9 +357,9 @@ namespace hooks
 			if (helper::ai_unit_can_attack(unit) || unit->kill_count)
 			{
 				char* text = "";
-				if (**stat_txt_buffer > 0x2FBu)
+				if (**g_stat_txt_buffer > 0x2FBu)
 				{
-					text = (char *)*stat_txt_buffer + (*stat_txt_buffer)[764];
+					text = (char *)*g_stat_txt_buffer + (*g_stat_txt_buffer)[764];
 				}
 				sprintf_s(kills_buffer, 260, "%s %d", text, unit->kill_count);
 				helper::add_text_to_dialog(dialog, -21, kills_buffer);
@@ -378,11 +378,11 @@ namespace hooks
 	void draw_building_info(BinDlg* dialog) // 00427890
 	{
 		Unit* activeUnit = *active_portrait_unit;
-		selectionGroupHP[0] = (*active_portrait_unit)->hitpoints;
+		g_selection_group_hp[0] = (*active_portrait_unit)->hitpoints;
 		s32 shields = (*active_portrait_unit)->shields >> 8;
-		*userInterfaceEnergy = (*active_portrait_unit)->energy;
-		*userInterfaceShields = shields;
-		*redrawTransportUI = helper::ui_needs_redraw();
+		*g_ui_energy = (*active_portrait_unit)->energy;
+		*g_ui_shields = shields;
+		*g_redraw_transport_ui = helper::ui_needs_redraw();
 		helper::generic_status_update_drawn_values();
 		s32 unit_id = activeUnit->id;
 		if (unit_id == UnitId::ResourceMineralField 
@@ -457,18 +457,18 @@ namespace hooks
 			&& !units_dat::ShieldsEnabled[unit_id])
 		{
 		LABEL_6:
-			if (*status_screen_func != 4)
+			if (*g_status_screen_func != 4)
 			{
 				helper::hide_optional_status_screen_controls(dialog);
-				*status_screen_func = 4;
+				*g_status_screen_func = 4;
 			}
 			goto LABEL_32;
 		}
-		if (*status_screen_func != 3)
+		if (*g_status_screen_func != 3)
 		{
 			helper::hide_optional_status_screen_controls(dialog);
 			helper::show_control_group(dialog, -20, 12);
-			*status_screen_func = 3;
+			*g_status_screen_func = 3;
 		}
 		helper::draw_display_buttons(dialog);
 		helper::hide_dialog(helper::get_control_from_index(dialog, -21));
@@ -569,11 +569,11 @@ namespace hooks
 		v4 = (*active_portrait_unit)->player;
 		if (weapons_dat::DamageUpgrade[weapon_id] >= 0x2Eu)
 		{
-//			v5 = *upgradesLevelBW[v4][weapons_dat::DamageUpgrade[weapon_id]];
+//			v5 = *g_upgrades_level_bw[v4][weapons_dat::DamageUpgrade[weapon_id]];
 		}
 		else
 		{
-//			v5 = *upgradesLevelSC[v4][weapons_dat::DamageUpgrade[weapon_id]];
+//			v5 = *g_upgrades_level_sc[v4][weapons_dat::DamageUpgrade[weapon_id]];
 		}
 		v10 = v5;
 		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v5);

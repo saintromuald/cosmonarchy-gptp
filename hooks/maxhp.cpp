@@ -90,12 +90,12 @@ namespace hooks
 		BufferStr* v8; // [esp-8h] [ebp-10h]
 
 		v1 = a1;
-		*supplies_available_temp = (*active_portrait_unit)->building.resource.resource_amount;
-		if (*status_screen_func != 15)
+		*g_supplies_available_temp = (*active_portrait_unit)->building.resource.resource_amount;
+		if (*g_status_screen_func != 15)
 		{
 			helper::hide_optional_status_screen_controls(a1);
 			helper::show_control_group(v1, -10, -13);
-			*status_screen_func = 15;
+			*g_status_screen_func = 15;
 		}
 		helper::add_text_to_dialog(v1, -10, 0);
 		helper::add_text_to_dialog(v1, -12, 0);
@@ -109,8 +109,8 @@ namespace hooks
 				v3 = "";
 			v7 = (u16)(*active_portrait_unit)->building.resource.resource_amount;
 LABEL_14:
-			sprintf_s(struct_char->buf, 260, "%s %d", v3, v7);
-			v8 = struct_char;
+			sprintf_s(g_struct_char->buf, 260, "%s %d", v3, v7);
+			v8 = g_struct_char;
 			goto LABEL_19;
 		}
 		v4 = (*active_portrait_unit)->building.resource.resource_amount;
@@ -187,12 +187,12 @@ LABEL_26:
 		if (*g_is_in_replay || (*active_portrait_unit)->player == *g_local_nation_id)
 		{
 			helper::get_supplies_used_no_args();
-			if (*status_screen_func != 12)
+			if (*g_status_screen_func != 12)
 			{
 				helper::hide_optional_status_screen_controls(v1);
 				helper::show_control_group(v1, -10, -13);
 				v2 = *active_portrait_unit;
-				*status_screen_func = 12;
+				*g_status_screen_func = 12;
 			}
 			v3 = units_dat::group_flags[(u16)v2->id];
 			if (v3.is_zerg)
@@ -241,7 +241,7 @@ LABEL_26:
 			{
 				v7 = "";
 			}
-			sprintf_s(struct_char_2->buf, 260, "%s %d", v7, (v5 + 1) / 2);
+			sprintf_s(g_struct_char_2->buf, 260, "%s %d", v7, (v5 + 1) / 2);
 			v8 = v21 + 814;
 			if (v21 == -815)
 			{
@@ -273,7 +273,7 @@ LABEL_26:
 			}
 			ByteOperations::SetLowByte(v11, v21);
 			v13 = helper::get_supplies_available((*active_portrait_unit)->player, v11);
-			sprintf_s(unk_string_char, 260, "%s %d", v12, (v13 + 1) / 2);
+			sprintf_s(g_unk_string_char, 260, "%s %d", v12, (v13 + 1) / 2);
 			v22 = (*active_portrait_unit)->player;
 			v14 = units_dat::group_flags[helper::get_last_queue_slot_id((*active_portrait_unit))];
 			s32 race = (*active_portrait_unit)->get_race();
@@ -306,11 +306,11 @@ LABEL_26:
 			{
 				v17 = "";
 			}
-			sprintf_s(struct_char_2->buf, 260, "%s %d", v17, (u32)(v15 + 1) >> 1);
-			helper::add_text_to_dialog(v1, -10, (const char*)struct_char);
+			sprintf_s(g_struct_char_2->buf, 260, "%s %d", v17, (u32)(v15 + 1) >> 1);
+			helper::add_text_to_dialog(v1, -10, (const char*)g_struct_char);
 			helper::add_text_to_dialog(v1, -11, "");
-			helper::add_text_to_dialog(v1, -12, (const char*)unk_string_char);
-			helper::add_text_to_dialog(v1, -13, (const char*)struct_char_2);
+			helper::add_text_to_dialog(v1, -12, (const char*)g_unk_string_char);
+			helper::add_text_to_dialog(v1, -13, (const char*)g_struct_char_2);
 			v18 = (*active_portrait_unit)->id;
 			if (units_dat::ShieldsEnabled[v18])
 			{
@@ -487,15 +487,15 @@ LABEL_55:
 		v5 = v2->sprite;
 		v6 = v5->position.y;
 		spriteX = v5->position.x;
-		*tempHPShields = 0;
-		*tempWeapon = WeaponId::EMP_Shockwave;
+		*g_temp_hp_shields = 0;
+		*g_temp_weapon = WeaponId::EMP_Shockwave;
 		helper::create_splash_weapon_proc(
 			160,
 			spriteX,
 			v6,
 			(s32(__fastcall*)(s32, s32))helper::unit_shields_clump_in_area_accumulator_proc,
 			(s32)v3);
-		return *tempHPShields >= 200;
+		return *g_temp_hp_shields >= 200;
 	}
 
 	char attackOverlayAndNotify(Unit* a1, Unit* a2, u8 a3, char a4)
@@ -789,9 +789,9 @@ LABEL_32:
 			v7 = weapons_dat::DamageAmount[v5];
 			v4 = (u8)bullet->srcPlayer;
 			if (v6 >= (u16)BwUpgrade::UnusedUpgrade46)
-				/*v8 = upgradesLevelBW[v4][v6];
+				/*v8 = g_upgrades_level_bw[v4][v6];
 			else
-				v8 = upgradesLevelSC[v4][v6];*/
+				v8 = g_upgrades_level_sc[v4][v6];*/
 				result = (v7 + v8 * weapons_dat::DamageBonus[v2]) << 8;
 		}
 		return result;
@@ -1009,7 +1009,7 @@ LABEL_23:
 			if (v3 & 0x40000000)
 				goto LABEL_22;
 			v4 = v2->id;
-			//			if (v4 == 42 && !upgradesLevelSC[(u8)v2->player][24])
+			//			if (v4 == 42 && !g_upgrades_level_sc[(u8)v2->player][24])
 			goto LABEL_22;
 			v5 = v4;
 			if (!units_dat::SpaceProvided[v4] || !(v3 & 1) || !(v3 & 0x20000))

@@ -46,8 +46,8 @@ namespace hooks
 	// Hooked to investigate crashes - Pr0nogo
 	AiTown* ai_progress_build(s32 player, s32* minerals, s32* gas) // 00434480
 	{
-		AiTown* result = AiActiveTownArray[player].first;
-		AiTown* firstTown = AiActiveTownArray[player].first;
+		AiTown* result = gi_ai_active_town_array[player].first;
+		AiTown* firstTown = gi_ai_active_town_array[player].first;
 		if (result)
 		{
 			do
@@ -281,9 +281,9 @@ namespace hooks
 		unitTypea = __tileX;
 		if (ownrId != 2500)
 		{
-			v19 = (s16)((*SAI_Paths)->regions[(u16)ownrId].region_center_x >> 8);
+			v19 = (s16)((*g_sai_paths)->regions[(u16)ownrId].region_center_x >> 8);
 //			LOWORD(unitTypea) = (((v19) & 0x1F) + (s32)v19) >> 5;
-//			HIWORD(unitTypea) = (s16)((*SAI_Paths)->regions[(u16)ownrId].region_center_y >> 8) / 32;
+//			HIWORD(unitTypea) = (s16)((*g_sai_paths)->regions[(u16)ownrId].region_center_y >> 8) / 32;
 		}
 		v30 = __tileX.y - 32;
 		bestDistance = 99999999;
@@ -671,7 +671,7 @@ namespace hooks
 		s32 v34;
 		u16 transport_unit_id_2;
 
-		region_count = (*SAI_Paths)->regionCount;
+		region_count = (*g_sai_paths)->regionCount;
 		v33 = 0;
 		if (region_count > 1)
 		{

@@ -46,17 +46,17 @@ namespace hooks
 				{
 					return al; // safety check
 				}
-				auto wireConst = wireframeConstants[shields * 2];
-				auto wireConstShift = wireframeConstants[(shields * 2) + 1];
-				auto buf1 = charBuffer[wireConst];//CL
-				al = charBuffer[wireConstShift];//AL
+				auto wireConst = g_wireframe_constants[shields * 2];
+				auto wireConstShift = g_wireframe_constants[(shields * 2) + 1];
+				auto buf1 = g_char_buffer[wireConst];//CL
+				al = g_char_buffer[wireConstShift];//AL
 				*off_50CE81 = buf1;
 				*off_50CE82 = al;
 			}
 		}
 		else
 		{
-			al = *byteShieldStr;
+			al = *g_byte_shield_string;
 			*off_50CE81 = al;
 			*off_50CE82 = al;
 		}

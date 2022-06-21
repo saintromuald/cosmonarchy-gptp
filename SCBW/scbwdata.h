@@ -299,92 +299,92 @@ SCBW_DATA(u32*,		structures_produced_owned_total,0x00581F34); // Array of 12
 SCBW_DATA(u32*,		units_produced_owned_total,		0x00581DE4); // Array of 12
 
 // For refresh_screen
-SCBW_DATA(u32*,		place_building_message_id,		0x00640958);
+SCBW_DATA(u32*,		g_place_building_message_id,	0x00640958);
 
 // For targeted_order
-SCBW_DATA(u32*,		order_count,					0x00641698);
+SCBW_DATA(u32*,		g_order_count,					0x00641698);
 
 // For create_upgrade_level_tooltip
-SCBW_DATA(u16*,		upgrade_level_tooltip,			0x0068C1CC);
-SCBW_DATA(u16**,	stat_txt_buffer,				0x006D1238);
+SCBW_DATA(u16*,		g_upgrade_level_tooltip,		0x0068C1CC);
+SCBW_DATA(u16**,	g_stat_txt_buffer,				0x006D1238);
 
 struct BufferStr {
 	char buf[260];
 };
 
 // For drawUnitInfo
-SCBW_DATA(u16*,			supplies_available_temp,	0x006CA93C);
-SCBW_DATA(u8*,			status_screen_func,			0x0068C1E5);
-SCBW_DATA(BufferStr*,	struct_char,				0x006CA9F8);
+SCBW_DATA(u16*,			g_supplies_available_temp,	0x006CA93C);
+SCBW_DATA(u8*,			g_status_screen_func,		0x0068C1E5);
+SCBW_DATA(BufferStr*,	g_struct_char,				0x006CA9F8);
 
 // For draw_supply_unit_info
-SCBW_DATA(BufferStr*,	struct_char_2,				0x006CAB08);
-SCBW_DATA(char*,		unk_string_char,			0x006CA668);
+SCBW_DATA(BufferStr*,	g_struct_char_2,		0x006CAB08);
+SCBW_DATA(char*,		g_unk_string_char,		0x006CA668);
 
 // For draw_wireframe_shield
-SCBW_DATA(char*, charBuffer,					0x0068C208);
-SCBW_DATA(char*, byteShieldStr,					0x0068C20A); // count of 22
-SCBW_DATA(u8*, wireframeConstants,				0x00515280); // count of 40
-SCBW_DATA(char**, image_draw_palette_index,		0x0050CEC1); // count of 256
-SCBW_DATA(u8*, off_50CE81,						0x0050CE81);
-SCBW_DATA(u8*, off_50CE82,						0x0050CE82);
+SCBW_DATA(char*,	g_char_buffer,				0x0068C208);
+SCBW_DATA(char*,	g_byte_shield_string,		0x0068C20A); // count of 22
+SCBW_DATA(u8*,		g_wireframe_constants,		0x00515280); // count of 40
+SCBW_DATA(char**,	g_image_draw_palette_index,	0x0050CEC1); // count of 256
+SCBW_DATA(u8*,		off_50CE81,					0x0050CE81);
+SCBW_DATA(u8*,		off_50CE82,					0x0050CE82);
 
 // For draw_building_info
-SCBW_DATA(s32*, selectionGroupHP,				0x006CA94C);
-SCBW_DATA(s16*, userInterfaceEnergy,			0x006CAC0C);
-SCBW_DATA(s32*, userInterfaceShields,			0x006CA9EC);
-SCBW_DATA(char*, redrawTransportUI,				0x006CA9F0);
+SCBW_DATA(s32*,		g_selection_group_hp,		0x006CA94C);
+SCBW_DATA(s16*,		g_ui_energy,				0x006CAC0C);
+SCBW_DATA(s32*,		g_ui_shields,				0x006CA9EC);
+SCBW_DATA(char*,	g_redraw_transport_ui,		0x006CA9F0);
 
 // For AI_EMPShieldRequirementsProc
-SCBW_DATA(s32*, tempHPShields,					0x00695798);
-SCBW_DATA(s32*, tempWeapon,						0x00695604);
+SCBW_DATA(s32*,		g_temp_hp_shields,			0x00695798);
+SCBW_DATA(s32*,		g_temp_weapon,				0x00695604);
 
 // For drawImageHPBar
-SCBW_DATA(unk_61*, struct_5140C4,				0x005140C4);
-SCBW_DATA(unk_61*, struct_5140D8,				0x005140D8);
-SCBW_DATA(unk_62*, struct_5140E8,				0x005140E8);
+SCBW_DATA(unk_61*,	struct_5140C4,				0x005140C4);
+SCBW_DATA(unk_61*,	struct_5140D8,				0x005140D8);
+SCBW_DATA(unk_62*,	struct_5140E8,				0x005140E8);
 
 // For getUnitBulletDamage
-SCBW_DATA(char*, upgradesLevelSC,				0x0058D2B0);
-SCBW_DATA(char*, upgradesLevelBW,				0x0058F2FE);
+SCBW_DATA(char*,	g_upgrades_level_sc,		0x0058D2B0);
+SCBW_DATA(char*,	g_upgrades_level_bw,		0x0058F2FE);
 
 // For find_next_bounce_target_proc
-SCBW_DATA(Unit**, bulletBounceMissileSource,	0x0064EECC);
-SCBW_DATA(Unit**, bulletBounceMissileTarget,	0x0064EED0);
-SCBW_DATA(Unit**, bulletBounceMissileNext,		0x0064EED4);
+SCBW_DATA(Unit**,	g_bullet_bounce_missile_source,	0x0064EECC);
+SCBW_DATA(Unit**,	g_bullet_bounce_missile_target,	0x0064EED0);
+SCBW_DATA(Unit**,	g_bullet_bounce_missile_next,	0x0064EED4);
 
 // For setUnderDisruptionWeb
 SCBW_DATA(void**,	unk_array_59CB64,			0x0059CB64);	// count of 252
-SCBW_DATA(Unit*,	unit_reference,				0x0059CB58);
+SCBW_DATA(Unit*,	g_unit_reference,			0x0059CB58);
 
 // For startGame
-SCBW_DATA(s8*, game_state,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
-SCBW_DATA(Player*, playerReplayWatchers,	0x00640970);
+SCBW_DATA(s8*,		g_game_state,				0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
+SCBW_DATA(Player*,	g_player_replay_watchers,	0x00640970);
 
-SCBW_DATA(s8*, countdownTimerInterval,		0x0066FBFC);
-SCBW_DATA(s32*, countdownTimeTickCount,		0x0059CC7C);
-SCBW_DATA(s32*, countdownTimeTickCount_0,	0x0059CC88);
-SCBW_DATA(s32*, isInGame,					0x006D5BC8);
-SCBW_DATA(s32*, countdownTimeRemaining,		0x0059CC78);
+SCBW_DATA(s8*,		g_countdown_timer_interval,		0x0066FBFC);
+SCBW_DATA(s32*,		g_countdown_timer_tick_count,	0x0059CC7C);
+SCBW_DATA(s32*,		g_countdown_timer_tick_count_2,	0x0059CC88);
+SCBW_DATA(s32*,		g_is_in_game,					0x006D5BC8);
+SCBW_DATA(s32*,		g_countdown_time_remaining,		0x0059CC78);
 
 // For airSplash
-SCBW_DATA(Unit**, airSplashList,			0x0064EEE0);	// count of 1700
-SCBW_DATA(s32*, airSplashListCount,			0x0046DEB4);
-SCBW_DATA(s32*, isInGroundSplashProc,		0x0064DEB8);
+SCBW_DATA(Unit**,	g_air_splash_list,				0x0064EEE0);	// count of 1700
+SCBW_DATA(s32*,		g_air_splash_list_count,		0x0046DEB4);
+SCBW_DATA(s32*,		g_is_in_ground_splash_proc,		0x0064DEB8);
 
 // For ai_add_military
-SCBW_DATA(RegionArray**,SAI_Paths,			0x006D5BFC);
-SCBW_DATA(AiTown*,		AiTownArray,		0x006AA090);
-SCBW_DATA(AiExpandList*,AiActiveTownArray,	0x006AA050); // sizeof 0x64[0x8]
+SCBW_DATA(RegionArray**,	g_sai_paths,				0x006D5BFC);
+SCBW_DATA(AiTown*,			g_ai_town_array,			0x006AA090);
+SCBW_DATA(AiExpandList*,	gi_ai_active_town_array,	0x006AA050); // sizeof 0x64[0x8]
 
 // For cmdrecv_hold_position
-SCBW_DATA(s16*, map_width_pixels,			0x00628450);
-SCBW_DATA(s16*, map_height_pixels,			0x006284B4);
-SCBW_DATA(s32*, orderType4Position,			0x006D5C20);
-SCBW_DATA(s32*, orderType4Target,			0x006D5C24);
+SCBW_DATA(s16*,		g_map_width_pixels,					0x00628450);
+SCBW_DATA(s16*,		g_map_height_pixels,				0x006284B4);
+SCBW_DATA(s32*,		g_order_type_4_position,			0x006D5C20);
+SCBW_DATA(s32*,		g_order_type_4_target,				0x006D5C24);
 
 // For openMapFile
-SCBW_DATA(char*,	mapsFolder,				0x0066FC08);
+SCBW_DATA(char*,	g_maps_folder,			0x0066FC08);
 SCBW_DATA(s32*,		dword_5994DC,			0x005994DC);
 
 // For loadMap

@@ -119,7 +119,7 @@ namespace hooks {
 					goto LABEL_15;
 				default:
 					if (a3->order_queue_count < 8u) {
-						if (*order_count < 1800) {
+						if (*g_order_count < 1800) {
 							helper::queue_new_order((Order*)a5, a1, a4, a3, a7, a8, a2, (Vector32*)a9, (Unit*)a10);
 						} else {
 							u8 v11 = a3->player;
@@ -179,7 +179,7 @@ LABEL_15:
 	}
 
 	char create_upgrade_level_tooltip(char* text) {
-		if (!*upgrade_level_tooltip) {
+		if (!*g_upgrade_level_tooltip) {
 			if (text)
 			{
 				return helper::create_tooltip(text);
@@ -190,13 +190,13 @@ LABEL_15:
 			return helper::refresh_selection_screen();
 		}
 		const char* description;
-		if (**stat_txt_buffer > 794u) {
-			description = (char *)*stat_txt_buffer + (*stat_txt_buffer)[795];
+		if (**g_stat_txt_buffer > 794u) {
+			description = (char *)*g_stat_txt_buffer + (*g_stat_txt_buffer)[795];
 		} else {
 			description = "";
 		}
 		char buffer[128];
-		sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)*upgrade_level_tooltip);
+		sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)*g_upgrade_level_tooltip);
 		scbw::printf("%s", buffer);
 		return helper::create_tooltip(buffer);
 	}

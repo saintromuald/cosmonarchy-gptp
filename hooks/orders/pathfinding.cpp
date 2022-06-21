@@ -91,7 +91,7 @@ namespace hooks
         {
             return false;
         }
-        RegionArray* paths = *SAI_Paths;
+        RegionArray* paths = *g_sai_paths;
         s32 regionId = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) << 6;
         return paths->regions[helper::get_region_id(x, y)].group_index == *(s16*)((char*)&paths->regions[0].group_index + regionId);
     }
@@ -104,7 +104,7 @@ namespace hooks
             return false;
         }
         Sprite* patherSprite = pather->sprite;
-        RegionArray* paths = *SAI_Paths;
+        RegionArray* paths = *g_sai_paths;
         s32 regionId = helper::get_region_id(target->sprite->position.x, target->sprite->position.y) << 6;
         return *(s16*)((char*)&paths->regions[0].group_index + regionId) == paths->regions[helper::get_region_id(patherSprite->position.x, patherSprite->position.y)].group_index;
     }    

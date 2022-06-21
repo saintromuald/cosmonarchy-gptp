@@ -124,7 +124,7 @@ namespace hooks
 
 			if (units_dat::ComputerAIInternal[unit->id] & 2) // "Non-military"
 			{
-				// Originally used AiActiveTownArray[player].first
+				// Originally used gi_ai_active_town_array[player].first
 
 				AiTown* town = scbw::get_closest_town(player, unit->position);
 				//u32 closest_resarea = scbw::get_closest_resarea(unit->position);

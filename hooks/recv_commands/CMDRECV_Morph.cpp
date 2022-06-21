@@ -120,7 +120,7 @@ namespace hooks
 								u16* buffer_u16 = (u16*)(buffer + 1);
 								u16 x = buffer_u16[0];
 								u16 y = buffer_u16[1];
-								if (x < *map_width_pixels && y < *map_height_pixels) {
+								if (x < *g_map_width_pixels && y < *g_map_height_pixels) {
 									helper::issue_order_targeting_ground(unit, OrderId::BuildingLiftoff, x, y);
 									helper::do_order(unit, units_dat::ReturnToIdleOrder[unit->id], x, y - 42, 0);
 								}
