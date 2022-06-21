@@ -240,7 +240,7 @@ namespace hooks
 	void Ai_BuildSupplies(AiTown* mainTown)
 	{
 		u8 player = mainTown->player;
-		u8 race = player_table[player].race;
+		u8 race = g_player_table[player].race;
 		if (mainTown)
 		{
 			if (checkSupplyNeed(player, RaceId::Terran))
@@ -331,8 +331,8 @@ namespace hooks
 
 		battleTime = AIScriptController[player].previous_building_hit_second;
 		if (!battleTime
-			|| *elapsed_time_seconds - battleTime >= 0x1E // inBattle flag? just a coincidence?
-			|| ((race = player_table[player].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
+			|| *g_elapsed_time_seconds - battleTime >= 0x1E // inBattle flag? just a coincidence?
+			|| ((race = g_player_table[player].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
 				unit_id == result || priority == 140))
 		{
 			if (units_dat::base_property[unit_id] & UnitProperty::Worker)

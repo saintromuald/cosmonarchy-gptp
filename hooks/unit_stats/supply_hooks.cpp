@@ -33,7 +33,7 @@ namespace hooks
             supplyUsed = suppliesUsed_Terran[player];
             supplyAvailable = hooks::get_supplies_max(unit_id, player);
         }
-        if (*bw_cheat_state & 0x20000)
+        if (*g_cheat_state & 0x20000)
         {
             return suppliesMax_Terran[player] - supplyUsed;
         }
@@ -144,23 +144,23 @@ namespace hooks
             dialogVar = 0;
         }
 
-        s32 activePlayer = *local_nation_id;
+        s32 activePlayer = *g_local_nation_id;
         s32 replay_switch_something = 0;
-        if (*bw_is_in_replay)
+        if (*g_is_in_replay)
         {
 
-            if (*client_selection_count)
+            if (*g_client_selection_count)
             {
                 Unit* activeUnit = *active_portrait_unit;
-                if (*client_selection_count != 1)
+                if (*g_client_selection_count != 1)
                 {
-                    activeUnit = client_selection_group->unit[0];
+                    activeUnit = g_client_selection_group->unit[0];
                 }
                 activePlayer = activeUnit->player;
                 if (activePlayer != 11)
                 {
                     activePlayer = activePlayer;
-                    *local_nation_id = activePlayer;
+                    *g_local_nation_id = activePlayer;
                     if (activePlayer != *unknown_player_5153F8)
                     {
                         replay_switch_something = 1;
@@ -184,7 +184,7 @@ namespace hooks
 
         s32 workers = 0;
         s32 men = 0;
-        for (Unit* unit = first_player_unit->unit[*local_nation_id]; unit; unit = unit->player_link.next) {
+        for (Unit* unit = first_player_unit->unit[*g_local_nation_id]; unit; unit = unit->player_link.next) {
             if (unit->status & UnitStatus::Completed) {
                 if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
                     workers += 2;
@@ -194,25 +194,25 @@ namespace hooks
             }
         }
 
-        if (player_table[activePlayer].race == RaceId::Zerg)
+        if (g_player_table[activePlayer].race == RaceId::Zerg)
         {
             helper::showSupplyInfo(dialogVar, 4, workers, men);
             dialogVar = dialogVar->next;
         }
-        else if (player_table[activePlayer].race == RaceId::Terran)
+        else if (g_player_table[activePlayer].race == RaceId::Terran)
         {
             helper::showSupplyInfo(dialogVar, 5, workers, men);
             dialogVar = dialogVar->next;
         }
-        else if (player_table[activePlayer].race == RaceId::Protoss)
+        else if (g_player_table[activePlayer].race == RaceId::Protoss)
         {
             helper::showSupplyInfo(dialogVar, 6, workers, men);
             dialogVar = dialogVar->next;
         }
 
-        helper::printStatResInfo(dialogVar, *console_index + 1, (char**)unknown_68C22C, (char*)game_vespene[*local_nation_id], replay_switch_something);
+        helper::printStatResInfo(dialogVar, *console_index + 1, (char**)unknown_68C22C, (char*)game_vespene[*g_local_nation_id], replay_switch_something);
         BinDlg* v18 = dialogVar->next;
-        helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)game_minerals[*local_nation_id], replay_switch_something);
+        helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)game_minerals[*g_local_nation_id], replay_switch_something);
         BinDlg* v17 = v18->next;
         if (v18->next)
         {
@@ -227,9 +227,9 @@ namespace hooks
             }
             while (v17);
         }
-        if (*bw_is_in_replay)
+        if (*g_is_in_replay)
         {
-            *local_nation_id = activePlayer;
+            *g_local_nation_id = activePlayer;
         }
     }
 
@@ -246,7 +246,7 @@ namespace hooks
 
     bool redraw_supply_info() // 00425230 // Guessed name
     {
-        if (!bw_is_in_replay && (u8)(*active_portrait_unit)->player != *local_nation_id)
+        if (!g_is_in_replay && (u8)(*active_portrait_unit)->player != *g_local_nation_id)
         {
             return helper::unitStatCond_Standard();
         }
@@ -268,7 +268,7 @@ namespace hooks
 
 	void draw_supply_unit_status(BinDlg* dialog) {
 		Unit* unit = *active_portrait_unit;
-		if (*bw_is_in_replay || unit->player == *local_nation_id) {
+		if (*g_is_in_replay || unit->player == *g_local_nation_id) {
 			get_supplies_temp();
 			if (*status_screen_func != 12) {
 				helper::hide_optional_status_screen_controls(dialog);
@@ -497,7 +497,7 @@ namespace hooks
         {
             return true;
         }
-        u32 raceId = player_table[player].race;
+        u32 raceId = g_player_table[player].race;
         const u32 supplyUsed = raceSupply[RaceId::Terran].used[player];
         // Must construct additional pylons
         if (supplyUsed + supplyCost > raceSupply[RaceId::Terran].max[player])

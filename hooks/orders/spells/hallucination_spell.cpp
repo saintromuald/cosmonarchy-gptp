@@ -18,7 +18,7 @@ namespace hooks
 			unit->play_iscript_animation(IscriptAnimation::Unused2);
 			helper::create_bullet(WeaponId::CantavisHallucinationCast, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 
-			if (!(*bw_cheat_state & CheatFlags::TheGathering)) {
+			if (!(*g_cheat_state & CheatFlags::TheGathering)) {
 				unit->spend_unit_energy(techCost);
 			}
 

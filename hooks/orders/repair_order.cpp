@@ -34,7 +34,7 @@ namespace hooks
 			case 1: {
 				if (!(target->status & UnitStatus::Completed)) {
 					unit->order_to(OrderId::ConstructingBuilding, target);
-					if (*is_placing_building) {
+					if (*g_is_placing_building) {
 						if (!helper::can_still_place_building()) {
 							helper::refresh_layers_3_and_4();
 							helper::end_building_placement();
@@ -123,7 +123,7 @@ namespace hooks
 		}
 		if (do_repair) {
 			u32 hpGain = target->build_repair_hp_gain;
-			if (*bw_cheat_state & CheatFlags::OperationCwal) {
+			if (*g_cheat_state & CheatFlags::OperationCwal) {
 				hpGain *= 16;
 			}
 			// Talos - Advanced repair speed
@@ -358,8 +358,8 @@ namespace hooks
 	{
 		s32 sfx_id = -1;
 		s32 text_id = -1;
-		Unit** selected_units = &client_selection_group->unit[11];
-		Unit** selected_units_2 = &client_selection_group->unit[11];
+		Unit** selected_units = &g_client_selection_group->unit[11];
+		Unit** selected_units_2 = &g_client_selection_group->unit[11];
 		do
 		{
 			Unit* unit = *selected_units;
@@ -480,7 +480,7 @@ namespace hooks
 			}
 			selected_units = selected_units_2 - 1;
 			--selected_units_2;
-		} while (selected_units_2 >= client_selection_group->unit);
+		} while (selected_units_2 >= g_client_selection_group->unit);
 		if (sfx_id != -1)
 		{
 			if (sfx_id)
@@ -520,11 +520,11 @@ namespace hooks
 			if (text_id)
 			{
 				char* text_string = 0;
-				if (text_id_zeroed < *statTxtTbl) {
-					text_string = (char*)statTxtTbl + statTxtTbl[text_id_zeroed + 1];
+				if (text_id_zeroed < *g_stat_txt_tbl) {
+					text_string = (char*)g_stat_txt_tbl + g_stat_txt_tbl[text_id_zeroed + 1];
 				}
 				if (text_string) {
-					if (*active_player_id == *local_human_id)
+					if (*g_active_player_id == *g_local_human_id)
 					{
 						strncpy(draw_out_text_left, text_string, 0xDAu);
 						text_bytes[12] = 4;

@@ -142,7 +142,7 @@ namespace hooks
 				helper::start_collision_tracking(unit); // Maybe update orders targeting the unit, set repulse for units in surroundings, and some other things?
 
 				// Maybe the landing unit would get excluded from multi-units selection if that could happen in normal Starcraft gameplay? That may be what this function does.
-				if (unit->sprite->flags & SpriteFlags::Selected && *client_selection_count > 1)
+				if (unit->sprite->flags & SpriteFlags::Selected && *g_client_selection_count > 1)
 				{
 					helper::function_004C3B40(unit);
 				}
@@ -204,7 +204,7 @@ namespace hooks
 				{
 					helper::complete_addon(unit, addon);
 				}
-				if (*is_placing_building)
+				if (*g_is_placing_building)
 				{
 					helper::place_building_proc();
 
@@ -259,7 +259,7 @@ namespace hooks
 			}
 			scbw::update_custom_creep_disappearance(unit);
 
-			if (*is_placing_building)
+			if (*g_is_placing_building)
 			{
 				helper::place_building_proc();
 			}

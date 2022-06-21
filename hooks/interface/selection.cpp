@@ -121,11 +121,11 @@ namespace hooks
 						{
 							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
 						}
-						else if (*bw_is_in_replay)
+						else if (*g_is_in_replay)
 						{
 							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
 						}
-						else if (current_unit->player != *local_nation_id)
+						else if (current_unit->player != *g_local_nation_id)
 						{
 							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
 						}
@@ -280,7 +280,7 @@ namespace hooks
 		Box16 local_temp_box16_structure;	// used instead of using from [EBP-0C] to [EBP-06]
 
 		bool isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit =
-			*IS_HOLDING_CTRL || (*IS_DOUBLE_CLICKING && (clicked_unit->sprite->flags & SpriteFlags::Selected));
+			*g_is_holding_ctrl || (*IS_DOUBLE_CLICKING && (clicked_unit->sprite->flags & SpriteFlags::Selected));
 
 		for (s32 i = 0; i < SelectionCap; i++)
 		{
@@ -288,9 +288,9 @@ namespace hooks
 		}
 
 		if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit
-			|| (*IS_HOLDING_SHIFT && active_player_selection->unit[0]))
+			|| (*g_is_holding_shift && active_player_selection->unit[0]))
 		{
-			if (!*IS_HOLDING_SHIFT)
+			if (!*g_is_holding_shift)
 			{
 				// 0046FE07
 				if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit)
@@ -303,10 +303,10 @@ namespace hooks
 					u32 sorted_list_length;
 
 					// locate surrounding units for unit_list
-					local_temp_box16_structure.left = *move_to_x;
-					local_temp_box16_structure.top = *move_to_y;
-					local_temp_box16_structure.right = *move_to_x + 640;
-					local_temp_box16_structure.bottom = *move_to_y + 400;
+					local_temp_box16_structure.left = *g_move_to_x;
+					local_temp_box16_structure.top = *g_move_to_y;
+					local_temp_box16_structure.right = *g_move_to_x + 640;
+					local_temp_box16_structure.bottom = *g_move_to_y + 400;
 					units_in_bounds = helper::get_all_units_in_bounds(&local_temp_box16_structure);
 					sorted_list_length = sort_all_units(clicked_unit, local_temp_array_1, units_in_bounds);
 
@@ -321,7 +321,7 @@ namespace hooks
 
 						// This is what make the rally point briefly appear when selecting a building with one. Maybe can do other things?
 						if (sorted_list_length == 1
-							&& clicked_unit->player == *active_nation_id
+							&& clicked_unit->player == *g_active_nation_id
 							&& clicked_unit->is_factory())
 						{
 							helper::show_rally_target(clicked_unit);
@@ -343,10 +343,10 @@ namespace hooks
 					u32 sorted_list_length;
 
 					// prepare to locate surrounding units for unit_list
-					local_temp_box16_structure.left = *move_to_x;
-					local_temp_box16_structure.top = *move_to_y;
-					local_temp_box16_structure.right = *move_to_x + 640;
-					local_temp_box16_structure.bottom = *move_to_y + 400;
+					local_temp_box16_structure.left = *g_move_to_x;
+					local_temp_box16_structure.top = *g_move_to_y;
+					local_temp_box16_structure.right = *g_move_to_x + 640;
+					local_temp_box16_structure.bottom = *g_move_to_y + 400;
 
 					// save existing unit_list to a temporary array
 					for (s32 i = 0; i < SelectionCap; i++)
@@ -421,7 +421,7 @@ namespace hooks
 
 						if (arrayIndex == 1)
 						{
-							if (*IS_HOLDING_ALT)
+							if (*g_is_holding_alt)
 							{
 								// It seems you can unselect things with Shift+Alt like
 								// with shift alone, UNTIL you have 2 units it.
@@ -462,7 +462,7 @@ namespace hooks
 			// 0046FBB7
 			// Simple click...almost (there's still ALT key)
 			bool bRecreatedSelectionThroughAltClick = false;
-			if (*IS_HOLDING_ALT)
+			if (*g_is_holding_alt)
 			{
 				// Recall the unit_list the unit belong to if there's one
 				// In this case, skip the code for a single unit handling
@@ -497,7 +497,7 @@ namespace hooks
 			// this is what make the rally point briefly appear when
 			// selecting a building with one.
 			// maybe can do others things?
-			if (clicked_unit->player == *active_nation_id
+			if (clicked_unit->player == *g_active_nation_id
 				&& clicked_unit->is_factory())
 			{
 				helper::show_rally_target(clicked_unit);
@@ -541,7 +541,7 @@ namespace hooks
 	
 	// Hooked to forbid buildings. -Pr0nogo
 	s32 select_multiple_units_from_unit_list(u32 count, Unit** unit_list, char play_sound, u32 send_command) { // 0049AEF0
-		if (*IS_HOLDING_SHIFT) {
+		if (*g_is_holding_shift) {
 			count = filter_out_buildings(unit_list, count, active_player_selection->unit, SelectionCap);
 		}
 		helper::create_new_unit_selections_from_list(unit_list, count);
@@ -602,7 +602,7 @@ namespace hooks
 		if (sorted_units) {
 			for (u32 i = 0; i < SelectionCap; ++i) {
 				Unit* unit = new_units[i];
-				if (unit && unit->player == *active_nation_id) {
+				if (unit && unit->player == *g_active_nation_id) {
 					if (hooks::unit_can_rally(unit)) {
 						helper::show_rally_target(unit);
 						break; // Currently the game doesn't support showing more than 1 rally thingy XD
@@ -610,7 +610,7 @@ namespace hooks
 				}
 			}
 
-			if (IS_KEYCODE_USED[16] && active_player_selection[0].unit) {
+			if (g_is_keycode_used[16] && active_player_selection[0].unit) {
 				Unit* combined_units[SelectionCap] = {};
 				memcpy(combined_units, active_player_selection, sizeof(UnitsSel));
 				u32 added_units = helper::combine_lists(0, new_units, combined_units, sorted_units);
@@ -619,7 +619,7 @@ namespace hooks
 			}
 
 			if (sorted_units != 1
-			|| !IS_KEYCODE_USED[18]
+			|| !g_is_keycode_used[18]
 			|| !helper::select_single_unit_from_id(helper::unit_to_unit_id(new_units[0]))) {
 				helper::select_multiple_units_from_unit_list((u32)sorted_units, new_units, 1, 1);
 				if (sorted_units != 1) {

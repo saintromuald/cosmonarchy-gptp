@@ -212,7 +212,7 @@ namespace hooks
 
 		unit->main_order_timer = (u8)helper::rand_between(0, 15, 29);
 
-		if (player_table[unit->player].type == PlayerType::Computer)
+		if (g_player_table[unit->player].type == PlayerType::Computer)
 		{
 
 			//since details about pAI structure are unknown, have to use this

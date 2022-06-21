@@ -54,7 +54,7 @@ namespace
 			MOV v1, EDI
 			PUSHAD
 		}
-		if (!(*bw_is_game_paused))
+		if (!(*g_is_game_paused))
 		{
 			result = hooks::screenLocationSwitchCase(v1 + 0x642D);
 			if (!result)

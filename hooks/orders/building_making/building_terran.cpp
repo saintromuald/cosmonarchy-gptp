@@ -5,7 +5,8 @@
 
 namespace hooks
 {
-	void orders_terran_build_self(Unit* building)
+	// The structure is being constructed
+	void orders_terran_build_self(Unit* building) // 00467760
 	{
 		if (building->main_order_state == 0)
 		{
@@ -25,7 +26,9 @@ namespace hooks
 		else if (building->main_order_state == 2)
 		{
 			if (building->hitpoints > 40 * units_dat::MaxHitPoints[building->id] / 100)
+			{
 				building->main_order_state = 3;
+			}
 		}
 		else if (building->main_order_state == 3)
 		{
@@ -64,13 +67,11 @@ namespace hooks
 		}
 	}
 
-	// Go to build on an existing building
-	void orders_scv_build_2(Unit* unit)
+	// Resume construction on an existing structure
+	void orders_scv_build_2(Unit* unit) // 00467A70
 	{
 		Unit* builtUnit = unit->order_target.unit;
-
 		BuildingModifier modifier = get_building_modifier(builtUnit, unit, true);
-
 		if (builtUnit && !(builtUnit->status & UnitStatus::Completed))
 		{
 			bool jump_to_switch_1 = false;
@@ -98,9 +99,9 @@ namespace hooks
 						builtUnit->connected_unit != unit &&
 						(builtUnit->connected_unit)->order_target.unit == builtUnit)
 					{
-						unit->order_to_idle(); // another SCV is already on the job
+						unit->order_to_idle(); // another worker is already on the job
 					}
-					else // 00467AF9
+					else
 					{
 						builtUnit->connected_unit = unit;
 						unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
@@ -192,7 +193,7 @@ namespace hooks
 					{
 						jump_to_switch_1 = true;
 					}
-					else // 00467E4A
+					else
 					{
 						u8 rand_value = helper::randomize_short(10);
 						Image* current_image = unit->sprite->images.head;
@@ -243,7 +244,7 @@ namespace hooks
 			{
 				u32 hpGain = builtUnit->build_repair_hp_gain * modifier.multiplier;
 				UnitExt* unitExt = globals.get_unit_ext(builtUnit);
-				if (*bw_cheat_state & CheatFlags::OperationCwal)
+				if (*g_cheat_state & CheatFlags::OperationCwal)
 				{
 					hpGain *= 16;
 				}
@@ -282,7 +283,7 @@ namespace hooks
 								}
 							}
 						}
-						if (!jump_to_67F3C) // 00467F2C
+						if (!jump_to_67F3C)
 						{
 							if (builtUnit->id >= UnitId::ResourceMineralField &&
 								builtUnit->id <= UnitId::ResourceMineralFieldType3)
@@ -296,14 +297,14 @@ namespace hooks
 							bEndThere = true;
 						}
 					}
-					if (!bEndThere) // 00467F4C
+					if (!bEndThere)
 					{
 						if (unit->order_queue_head)
 						{
 							unit->user_action_flags |= 1;
 							prepare_for_next_order(unit);
 						}
-						else if (unit->unit_ai) // 00467F6F
+						else if (unit->unit_ai)
 						{
 							unit->order_computer(OrderId::ComputerAI);
 						}
@@ -315,7 +316,7 @@ namespace hooks
 				}
 			}
 		}
-		else // 00467ED0
+		else
 		{
 			Image* current_image = unit->sprite->images.head;
 			bool bEndThere = false;
@@ -331,9 +332,7 @@ namespace hooks
 				helper::play_building_completed_sound(builtUnit);
 				if (builtUnit->status & UnitStatus::Completed)
 				{
-					if (builtUnit->id == UnitId::TerranReservoir
-						|| builtUnit->id == UnitId::ProtossAquifer
-						|| builtUnit->id == UnitId::ZergExcisant)
+					if (scbw::unit_id_is_capped_gas_structure(builtUnit->id))
 					{
 						if (builtUnit->player == unit->player)
 						{
@@ -341,7 +340,7 @@ namespace hooks
 						}
 					}
 				}
-				if (!jump_to_67F3C) // 00467F2C
+				if (!jump_to_67F3C)
 				{
 					if (builtUnit->id >= UnitId::ResourceMineralField &&
 						builtUnit->id <= UnitId::ResourceMineralFieldType3)
@@ -355,14 +354,14 @@ namespace hooks
 					bEndThere = true;
 				}
 			}
-			if (!bEndThere) // 00467F4C
+			if (!bEndThere)
 			{
 				if (unit->order_queue_head)
 				{
 					unit->user_action_flags |= 1;
 					prepare_for_next_order(unit);
 				}
-				else if (unit->unit_ai) // 00467F6F
+				else if (unit->unit_ai)
 				{
 					unit->order_computer(OrderId::ComputerAI);
 				}
@@ -374,8 +373,8 @@ namespace hooks
 		}
 	}
 
-	// Go to build a not yet existing building
-	void orders_scv_build(Unit* unit)
+	// Move to construct a structure that has not been started already
+	void orders_scv_build(Unit* unit) // 00467FD0
 	{
 		if (unit->unit_ai)
 		{
@@ -383,17 +382,17 @@ namespace hooks
 		}
 		if (unit->main_order_state == 1)
 		{
-			if (unit->sprite->position.x == unit->move_target.pt.x &&
-				unit->sprite->position.y == unit->move_target.pt.y)
+			if (unit->sprite->position.x == unit->move_target.pt.x
+			&&	unit->sprite->position.y == unit->move_target.pt.y)
 			{
 				if (!(unit->status & UnitStatus::Unmovable)
-					&& helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)
-					&& helper::begin_building(unit))
+				&&	  helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)
+				&&	  helper::begin_building(unit))
 				{
 					Unit* builtUnit;
 					unit->status &= ~UnitStatus::IsNormal;
 					unit->sprite->elevation_level = units_dat::Elevation[unit->id] + 1;
-					if (!unit->order_queue_head) // 004680A5
+					if (!unit->order_queue_head)
 					{
 						helper::add_order_targeting_nothing(unit, nullptr, OrderId::ResetCollision1);
 						helper::add_order_targeting_nothing(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
@@ -408,11 +407,7 @@ namespace hooks
 					}
 					else
 					{
-						builtUnit = helper::create_unit(
-							unit->build_queue[unit->build_queue_slot],
-							unit->order_target.pt.x,
-							unit->order_target.pt.y,
-							unit->player);
+						builtUnit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
 					}
 					if (builtUnit) {
 						builtUnit->create_origin = unit->id;
@@ -425,13 +420,13 @@ namespace hooks
 						helper::display_last_network_error_for_player(unit->player);
 						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
 					}
-					else // 00468131
+					else
 					{
 						builtUnit->connected_unit = unit;
 						unit->main_order_id = OrderId::ConstructingBuilding;
 						unit->main_order_state = 3;
 						unit->order_target.unit = builtUnit;
-						if (*is_placing_building)
+						if (*g_is_placing_building)
 						{
 							if (!helper::can_still_place_building())
 							{
@@ -450,7 +445,7 @@ namespace hooks
 				}
 			}
 		}
-		else if (unit->main_order_state == 0) // 00468188
+		else if (unit->main_order_state == 0)
 		{
 			bool bMoveTargetResult;
 			scbw::refresh_console();
@@ -477,8 +472,8 @@ namespace hooks
 	char refresh_screen(s32 ecx0) // 0048DDC0
 	{
 		auto v6 = ecx0;
-		auto result = *is_placing_building;
-		if (*is_placing_building)
+		auto result = *g_is_placing_building;
+		if (*g_is_placing_building)
 		{
 			auto y = mouse->y;
 			auto x = mouse->x;
@@ -537,7 +532,7 @@ namespace hooks
 
 						// For MBS this would essentially require custom game command, for now we just have to disable it :( -Veeq7
 						/*
-						if ((*IS_HOLDING_SHIFT || unit->status & UnitStatus::InAir) && *client_selection_count <= 1) {
+						if ((*g_is_holding_shift || unit->status & UnitStatus::InAir) && *g_client_selection_count <= 1) {
 							helper::issue_place_building_order(buffer, unit_id, OrderId::PlaceAddon);
 						} else if (!(unit->status & UnitStatus::InAir)) {
 							BuildCommand command = {};
@@ -557,6 +552,38 @@ namespace hooks
 					errored = true;
 					helper::display_error_message_id_with_sfx(player, 850, console_index[147]);
 				}
+			}
+		}
+	}
+
+	// Hooked to play the correct sound when Taloses complete a structure. -Pr0nogo
+	void play_building_complete_sound(Unit* unit) // 0048F310
+	{
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id)
+		{
+			u32 race = unit->get_race();
+			switch (race)
+			{
+				case RaceId::Zerg:
+				{
+					helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
+					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+				} break;
+				case RaceId::Terran:
+				{
+					u32 sound_id = 126;
+					if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos)
+					{
+						sound_id = 136;
+					}
+					helper::play_sound_from_unit(sound_id, unit, (*options_list).flags & 1, 99);
+					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[sound_id] + 1000 * (*(u32*)&sound_duration_msecs[sound_id] / 1000), 1, sound_id);
+				} break;
+				case RaceId::Protoss:
+				default:
+				{
+					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+				} break;
 			}
 		}
 	}

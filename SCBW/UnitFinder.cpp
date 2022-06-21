@@ -83,14 +83,14 @@ namespace scbw
 		u8 unitFilter[UNIT_ARRAY_LENGTH + 1] = {0};
 
 		s32 r = right, b = bottom;
-		const bool isWidthExtended = right - left - 1 < *max_unit_width;
-		const bool isHeightExtended = top - bottom - 1 < *max_unit_height;
+		const bool isWidthExtended = right - left - 1 < *g_max_unit_width;
+		const bool isHeightExtended = top - bottom - 1 < *g_max_unit_height;
 
 		// Check if the location is smaller than the largest unit
 		if (isWidthExtended)
-			r += *max_unit_width;
+			r += *g_max_unit_width;
 		if (isHeightExtended)
-			b += *max_unit_height;
+			b += *g_max_unit_height;
 
 		// Create UnitFinderData elements for compatibility with stl functions
 		UnitFinderData finderVal;

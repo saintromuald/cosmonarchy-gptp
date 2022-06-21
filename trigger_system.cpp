@@ -384,7 +384,7 @@ static s32 compare_objective(const void* a, const void* b) {
 }
 
 static b32 __fastcall parse_comment_action(Action* action) {
-	if (*current_trigger_player_id == *local_nation_id) {
+	if (*current_trigger_player_id == *g_local_nation_id) {
 		char* comment = helper::get_chk_string(action->string);
 
 		Parser parser = {};
@@ -442,9 +442,9 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				Token name = parser_get_string(&parser, true);
 				if (player >= 0 && player < 8) {
 					has_custom_name[player] = true;
-					if (player_table[player].type == PlayerType::Human || player_table[player].type == PlayerType::HumanDefeated) {
+					if (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated) {
 						snprintf(player_name_list->player[player].player_name, sizeof(player_name_list->player[player].player_name),
-							"%s (%s)", name.data, player_table[player].name);
+							"%s (%s)", name.data, g_player_table[player].name);
 					} else {
 						snprintf(player_name_list->player[player].player_name, sizeof(player_name_list->player[player].player_name),
 							"%s", name.data);
@@ -660,7 +660,7 @@ void handle_recolor() {
 }
 
 void tick_trigger_system(bool in_game) {
-	if (!trigger_system_init || (in_game && *elapsed_time_frames == 0)) {
+	if (!trigger_system_init || (in_game && *g_elapsed_time_frames == 0)) {
 		init_trigger_system();
 	}
 

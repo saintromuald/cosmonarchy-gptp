@@ -423,7 +423,7 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 }
 
 void tick_layouts() {
-	if (*elapsed_time_frames == 0) {
+	if (*g_elapsed_time_frames == 0) {
 		init_layouts();
 	}
 

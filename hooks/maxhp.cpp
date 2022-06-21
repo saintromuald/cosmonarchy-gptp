@@ -103,8 +103,8 @@ namespace hooks
 		v2 = (*active_portrait_unit)->id;
 		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u)
 		{
-			if (*statTxtTbl > 0x31Bu)
-				v3 = (char*)statTxtTbl + statTxtTbl[796];
+			if (*g_stat_txt_tbl > 0x31Bu)
+				v3 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[796];
 			else
 				v3 = "";
 			v7 = (u16)(*active_portrait_unit)->building.resource.resource_amount;
@@ -116,15 +116,15 @@ LABEL_14:
 		v4 = (*active_portrait_unit)->building.resource.resource_amount;
 		if (v4)
 		{
-			if (*statTxtTbl > 0x31Cu)
-				v3 = (char*)statTxtTbl + statTxtTbl[797];
+			if (*g_stat_txt_tbl > 0x31Cu)
+				v3 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[797];
 			else
 				v3 = "";
 			v7 = v4;
 			goto LABEL_14;
 		}
-		if (*statTxtTbl > 0x31Du)
-			v5 = (char*)statTxtTbl + statTxtTbl[798];
+		if (*g_stat_txt_tbl > 0x31Du)
+			v5 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[798];
 		else
 			v5 = "";
 		v8 = (BufferStr*)v5;
@@ -184,7 +184,7 @@ LABEL_26:
 
 		v1 = (BinDlg*)a1;
 		v2 = *active_portrait_unit;
-		if (*bw_is_in_replay || (*active_portrait_unit)->player == *local_nation_id)
+		if (*g_is_in_replay || (*active_portrait_unit)->player == *g_local_nation_id)
 		{
 			helper::get_supplies_used_no_args();
 			if (*status_screen_func != 12)
@@ -233,9 +233,9 @@ LABEL_26:
 			{
 				v7 = 0;
 			}
-			else if (v6 < *statTxtTbl)
+			else if (v6 < *g_stat_txt_tbl)
 			{
-				v7 = (char*)statTxtTbl + statTxtTbl[v6 + 1];
+				v7 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[v6 + 1];
 			}
 			else
 			{
@@ -247,9 +247,9 @@ LABEL_26:
 			{
 				v9 = 0;
 			}
-			else if (v8 < *statTxtTbl)
+			else if (v8 < *g_stat_txt_tbl)
 			{
-				v9 = (char*)statTxtTbl + statTxtTbl[v8 + 1];
+				v9 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[v8 + 1];
 			}
 			else
 			{
@@ -262,10 +262,10 @@ LABEL_26:
 			{
 				v12 = 0;
 			}
-			else if ((u16)v11 < *statTxtTbl)
+			else if ((u16)v11 < *g_stat_txt_tbl)
 			{
 				v11 = (u16)v11;
-				v12 = (char*)statTxtTbl + statTxtTbl[(u16)v11 + 1];
+				v12 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[(u16)v11 + 1];
 			}
 			else
 			{
@@ -298,9 +298,9 @@ LABEL_26:
 			{
 				v17 = 0;
 			}
-			else if (v16 < *statTxtTbl)
+			else if (v16 < *g_stat_txt_tbl)
 			{
-				v17 = (char*)statTxtTbl + statTxtTbl[v16 + 1];
+				v17 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[v16 + 1];
 			}
 			else
 			{
@@ -532,7 +532,7 @@ LABEL_55:
 		return returnValue;
 	}
 
-	void drawImageHPBar(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, s32 colorData)
+	void drawImageHPBar(s32 g_screen_x, s32 g_screen_y, GrpFrame* pFrame, Box32* grpRect, s32 colorData)
 	{ // 0047A820
 		s32 v5; // esi
 		s32 v6; // edi
@@ -570,13 +570,13 @@ LABEL_55:
 		s32 v38; // [esp+20h] [ebp-8h]
 		s32 v39; // [esp+24h] [ebp-4h]
 
-		v37 = screenX;
+		v37 = g_screen_x;
 		v5 = colorData;
 		v6 = *(u16*)(colorData + 100);
 		v33 = grpRect->left;
 		v34 = grpRect->top;
 		v7 = units_dat::ShieldsEnabled[v6];
-		v38 = screenY;
+		v38 = g_screen_y;
 		v8 = grpRect->bottom;
 		v35 = grpRect->right;
 		if (v7)
@@ -654,7 +654,7 @@ LABEL_55:
 			|| (v23 = (*(s32*)(v5 + 220) >> 30) & 1) != 0
 			|| v21 == 40)
 		{
-			if (*(u8*)(v5 + 76) == *local_nation_id)
+			if (*(u8*)(v5 + 76) == *g_local_nation_id)
 			{
 				if (v22)
 				{

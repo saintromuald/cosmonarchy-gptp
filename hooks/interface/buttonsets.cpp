@@ -183,7 +183,7 @@ namespace hooks {
 	static Unit* get_selected_unit() {
 		Unit* active = *active_portrait_unit;
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			Unit* unit = client_selection_group->unit[i];
+			Unit* unit = g_client_selection_group->unit[i];
 			if (unit && unit->status & UnitStatus::Completed) {
 				return unit;
 			}
@@ -215,7 +215,7 @@ namespace hooks {
 		active_button_set_id = active->current_buttonset;
 
 		for (u32 i = 0; i < SelectionCap; ++i) { // count units to know if will be using special group buttonset (peons, cloakables...)
-			Unit* selected = client_selection_group->unit[i];
+			Unit* selected = g_client_selection_group->unit[i];
 			if (selected) {
 				selected_button_set_id = selected->current_buttonset;
 
@@ -272,15 +272,15 @@ namespace hooks {
 				}
 			}
 		}
-		if (count_larva && count_larva + count_eggs == *client_selection_count) {
+		if (count_larva && count_larva + count_eggs == *g_client_selection_count) {
 			*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
 		}
 		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank) {
-			if (count_workers == *client_selection_count) {
+			if (count_workers == *g_client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
-			} else if (count_burrowables != 0 && count_zergs == *client_selection_count) {
+			} else if (count_burrowables != 0 && count_zergs == *g_client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
-			} else if (count_hatches == *client_selection_count) {
+			} else if (count_hatches == *g_client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
 			} else if (count_lifted_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
@@ -393,11 +393,11 @@ namespace hooks {
 		*BUTTONSET_PORTRAIT_BUTTONSETID = UnitId::Buttons_Blank;
 		if (!scbw::isInReplay())
 		{
-			if (*client_selection_count != 0)
+			if (*g_client_selection_count != 0)
 			{
 				if (*bDoingCancellableTargetOrder == 0)
 				{
-					if (*is_placing_building)
+					if (*g_is_placing_building)
 					{
 						*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_CancelPlaceBuilding;
 					}
@@ -410,7 +410,7 @@ namespace hooks {
 		}
 		else
 		{
-			if (*bw_is_replay_paused != 0)
+			if (*g_is_replay_paused != 0)
 			{
 				*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_ReplayPaused;
 			}
@@ -420,7 +420,7 @@ namespace hooks {
 			}
 		}
 		*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_Blank;
-		if ((*client_selection_count > 1) && (!scbw::isInReplay()))
+		if ((*g_client_selection_count > 1) && (!scbw::isInReplay()))
 		{
 			update_buttonset_ex();
 		}
@@ -463,7 +463,7 @@ namespace hooks {
 			bool bNeedUpdateButtonSet = false;
 			if (*BUTTONSET_SPECIAL_BUTTONSETID != UnitId::Buttons_Blank)
 			{
-				if (*bw_is_in_replay)
+				if (*g_is_in_replay)
 				{
 					bNeedUpdateButtonSet = true;
 				}
@@ -605,7 +605,7 @@ namespace hooks {
 
 		if (jumpTo59A9F)
 		{
-			if (*bw_is_in_replay)
+			if (*g_is_in_replay)
 			{
 				helper::replay_stat_buttons(*BUTTONSET_DIALOG);
 			}
@@ -630,7 +630,7 @@ namespace hooks {
 		bool has_larva = false;
 		bool has_egg = false;
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			Unit* unit = client_selection_group->unit[i];
+			Unit* unit = g_client_selection_group->unit[i];
 			if (!unit) {
 				break;
 			}
@@ -695,7 +695,7 @@ namespace hooks {
 				current_button_state = Button_State::Invisible;
 				while (current_button_state == Button_State::Invisible && (buttons_count < current_buttonset->buttons_in_set))
 				{
-					current_button_state = helper::req_check((u32)current_button->requirement_func, (u8)current_button->requirement_var, (u8)*local_nation_id, unit);
+					current_button_state = helper::req_check((u32)current_button->requirement_func, (u8)current_button->requirement_var, (u8)*g_local_nation_id, unit);
 
 					// I am currently forcing the buttons to show, which is effectively fighting lardcode that forces them not to show when group-unit.
 					// This is STUPID, EXPENSIVE, and should be REPLACED as soon as possible. - Pr0nogo
@@ -755,8 +755,8 @@ namespace hooks {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
 
-						for (u32 i = 0; i < *client_selection_count; ++i) {
-							Unit* unit = client_selection_group->unit[i];
+						for (u32 i = 0; i < *g_client_selection_count; ++i) {
+							Unit* unit = g_client_selection_group->unit[i];
 							if (unit->status & UnitStatus::Burrowed) {
 								has_burrowed = true;
 							} else {
@@ -775,8 +775,8 @@ namespace hooks {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
 
-						for (u32 i = 0; i < *client_selection_count; ++i) {
-							Unit* unit = client_selection_group->unit[i];
+						for (u32 i = 0; i < *g_client_selection_count; ++i) {
+							Unit* unit = g_client_selection_group->unit[i];
 							if (unit->status & UnitStatus::Burrowed) {
 								has_burrowed = true;
 							} else {
@@ -807,15 +807,15 @@ namespace hooks {
 						}
 					}
 
-					if (current_button->action_func == (ActFunc*)ButtonActions::Create_AddOn && *client_selection_count > 1) {
+					if (current_button->action_func == (ActFunc*)ButtonActions::Create_AddOn && *g_client_selection_count > 1) {
 						current_button_state = Button_State::Invisible;
 					}
 
-					if (current_button->icon_id == IconId::Land && *client_selection_count > 1) {
+					if (current_button->icon_id == IconId::Land && *g_client_selection_count > 1) {
 						current_button_state = Button_State::Invisible;
 					}
 
-					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == IconId::Lair && *client_selection_count > 1) {
+					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == IconId::Lair && *g_client_selection_count > 1) {
 						current_button_state = Button_State::Invisible;
 					}
 
@@ -1629,7 +1629,7 @@ namespace hooks {
 					}
 
 					// TODO: Reenable and test
-					//if ((*active_portrait_unit)->player != *local_nation_id && current_button_state == Button_State::Enabled) {
+					//if ((*active_portrait_unit)->player != *g_local_nation_id && current_button_state == Button_State::Enabled) {
 					//	current_button_state = Button_State::Disabled;
 					//}
 
@@ -1644,7 +1644,7 @@ namespace hooks {
 			// 00459278
 			if (!bStopThere && !jumpto5934E)
 			{
-				jumpto5933C = (!*bw_is_in_replay) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *local_nation_id);
+				jumpto5933C = (!*g_is_in_replay) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *g_local_nation_id);
 				// TODO: Reenable and test
 				// jumpto5933C = false;
 				if (!jumpto5933C)

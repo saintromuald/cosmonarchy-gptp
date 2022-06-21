@@ -15,13 +15,13 @@ namespace hooks
 	{
 		for (Point16& point : screen_hotkeys)
 		{
-			point = {(u16)*move_to_x, (u16)*move_to_y};
+			point = {(u16)*g_move_to_x, (u16)*g_move_to_y};
 		}
 	}
 
 	s32 saveScreenLocation(s32 id)
 	{
-		screen_hotkeys[id] = {(u16)*move_to_x, (u16)*move_to_y};
+		screen_hotkeys[id] = {(u16)*g_move_to_x, (u16)*g_move_to_y};
 		return id;
 	}
 

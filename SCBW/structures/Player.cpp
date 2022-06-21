@@ -44,13 +44,13 @@ graphics::ColorId Player::get_faction_color(u8 player)
 		return_value = factionsColorsOrdering[player];
 
 		// fix BROWN to GREEN color swap in Desert map
-		if (*current_tileset == TilesetType::Desert && return_value == 5)
+		if (*g_current_tileset == TilesetType::Desert && return_value == 5)
 		{
 			return_value = 8;
 		}
 
 		// fix WHITE to GREEN color swap in Ice map
-		if (*current_tileset == TilesetType::Ice && return_value == 6)
+		if (*g_current_tileset == TilesetType::Ice && return_value == 6)
 		{
 			return_value = 8;
 		}

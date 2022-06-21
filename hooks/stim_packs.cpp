@@ -16,11 +16,11 @@ namespace hooks
 		Unit* currentClientSelectionUnit;
 		bool bFoundUnitAbleToStimpack = false;
 
-		// original code used pointer comparison with client_selection_group_end
-		// and incrementing a pointer starting at client_selection_group
+		// original code used pointer comparison with g_client_selection_group_end
+		// and incrementing a pointer starting at g_client_selection_group
 		for (s32 i = 0; i < SelectionCap && !bFoundUnitAbleToStimpack; i++)
 		{
-			currentClientSelectionUnit = client_selection_group->unit[i];
+			currentClientSelectionUnit = g_client_selection_group->unit[i];
 			if (currentClientSelectionUnit != nullptr &&
 				currentClientSelectionUnit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
@@ -36,7 +36,7 @@ namespace hooks
 		else
 		{
 			char* message = (char*)statTxtTblNew->get_string(874); //not enough life remaining
-			helper::get_stat_txt_string(*active_portrait_unit, *local_nation_id, message);
+			helper::get_stat_txt_string(*active_portrait_unit, *g_local_nation_id, message);
 		}
 	}
 
@@ -68,11 +68,11 @@ namespace hooks
 		activePlayerCurrentSelection = get_active_player_next_selection();
 		while (activePlayerCurrentSelection != nullptr)
 		{
-			if (activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *active_nation_id) == 1
+			if (activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *g_active_nation_id) == 1
 				&& activePlayerCurrentSelection->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
 				s32 random_value;
-				if (!*is_in_game_loop)
+				if (!*g_is_in_game_loop)
 				{
 					random_value = 0;
 				}
@@ -82,8 +82,8 @@ namespace hooks
 					static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
 					*randomnessCounter_0051C68C = (*randomnessCounter_0051C68C) + 1;
 					*randomnessCounter_0051CA18 = (*randomnessCounter_0051CA18) + 1;
-					*last_random_number = ((*last_random_number) * 0x015A4E35) + 1;
-					random_value = ((*last_random_number) / 65535) & 32767;
+					*g_last_random_number = ((*g_last_random_number) * 0x015A4E35) + 1;
+					random_value = ((*g_last_random_number) / 65535) & 32767;
 				}
 				// if used random, should give a value between 0 and 1
 				random_value = (random_value + random_value) / 32768;

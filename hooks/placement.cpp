@@ -13,14 +13,14 @@ namespace hooks
 
         *place_building_x = tile_x + *move_to_tile_x;
         *place_building_y = tile_y + *move_to_tile_y;
-        placement_pos->x = *place_building_x * 32 - *move_to_x;
-        placement_pos->y = *place_building_y * 32 - *move_to_y;
+        placement_pos->x = *place_building_x * 32 - *g_move_to_x;
+        placement_pos->y = *place_building_y * 32 - *g_move_to_y;
         return 1;
 	}
 
     u8 draw_placement_box(Point16 unused) { // 0048DDC0
         Point16 placement_pos = unused;
-        u8 result = *is_placing_building;
+        u8 result = *g_is_placing_building;
         if (!result) {
             return result;
         }
@@ -102,7 +102,7 @@ namespace hooks
     int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) // 00473010
     {
         u32 human_only_player_bit = 0;
-        if (player_table[player].type == PlayerType::Human) {
+        if (g_player_table[player].type == PlayerType::Human) {
             human_only_player_bit = 1 << player;
         }
 
@@ -136,7 +136,7 @@ namespace hooks
     u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) // 00473A10
     {
         u32 human_only_player_bit = 0;
-        if (player_table[player].type == PlayerType::Human) {
+        if (g_player_table[player].type == PlayerType::Human) {
             human_only_player_bit = 1 << player;
         }
 

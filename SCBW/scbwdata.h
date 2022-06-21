@@ -90,8 +90,8 @@ SCBW_DATA(b8*,            musicPlaying,        0x006D5BBC);
 struct Resources {
 	s32 minerals[12];
 	s32 gas[12];
-	s32 cumulativeGas[12];
-	s32 cumulativeMinerals[12];
+	s32 cumulative_gas[12];
+	s32 cumulative_minerals[12];
 };
 SCBW_DATA(Resources*, resources, 0x0057F0F0);
 
@@ -117,46 +117,46 @@ struct cv5 {
 SCBW_DATA(cv5**, tileGroup, 0x006D5EC8);
 
 /// TBL files
-SCBW_DATA(const u16*,		statTxtTbl,		0x006D1238);
-SCBW_DATA(const StringTbl*, mapStringTbl,	0x005993D4);
+SCBW_DATA(const u16*,		g_stat_txt_tbl,		0x006D1238);
+SCBW_DATA(const StringTbl*, g_map_string_tbl,	0x005993D4);
 
-SCBW_DATA(const char*, StringEmpty, 0x00501B7D);
+SCBW_DATA(const char*,		g_string_empty,		0x00501B7D);
 
 /// Units that are selected by the current player (or the player viewing the replay).
 struct UnitsSel {
 	Unit* unit[SelectionCap];
 };
-SCBW_DATA(UnitsSel*,	client_selection_group,		0x00597208);
-SCBW_DATA(Unit*,		client_selection_group_end, 0x00597238);
-SCBW_DATA(u8*,			client_selection_count,		0x0059723D);
+SCBW_DATA(UnitsSel*,	g_client_selection_group,		0x00597208);
+SCBW_DATA(Unit*,		g_client_selection_group_end,	0x00597238);
+SCBW_DATA(u8*,			g_client_selection_count,		0x0059723D);
 
 /// Screen position relative to the map
-SCBW_DATA(s32*, screenX, 0x00628448);
-SCBW_DATA(s32*, screenY, 0x00628470);
+SCBW_DATA(s32*, g_screen_x,				0x00628448);
+SCBW_DATA(s32*, g_screen_y,				0x00628470);
 
 ///To use with a player ID
-SCBW_DATA(Point16*, start_positions, 0x0058D720);
+SCBW_DATA(Point16*, g_start_positions,	0x0058D720);
 
 /// Mouse position relative to the screen
-SCBW_DATA(const Vector32*, mouse, 0x006CDDC4);
+SCBW_DATA(const Vector32*, mouse,		0x006CDDC4);
 
 /// Booleans indicating which keyboard buttons are held
 
-//use IS_KEYCODE_USED[VK_param] where VK_param is one of the
+//use g_is_keycode_used[VK_param] where VK_param is one of the
 //Virtual-Key Codes of Windows as seen in msdn here:
 //https://msdn.microsoft.com/fr-fr/library/windows/desktop/dd375731%28v=vs.85%29.aspx
-SCBW_DATA(const b8*, IS_KEYCODE_USED, 0x00596A18);
+SCBW_DATA(const b8*, g_is_keycode_used,		0x00596A18);
 
-SCBW_DATA(const b8*, IS_HOLDING_SHIFT, 0x00596A28);
-SCBW_DATA(const b8*, IS_HOLDING_CTRL, 0x00596A29);
-SCBW_DATA(const b8*, IS_HOLDING_ALT, 0x00596A2A);
+SCBW_DATA(const b8*, g_is_holding_shift,	0x00596A28);
+SCBW_DATA(const b8*, g_is_holding_ctrl,		0x00596A29);
+SCBW_DATA(const b8*, g_is_holding_alt,		0x00596A2A);
 
 /// Maybe used by Map triggers to init a progressive movement toward the corresponding location, see GameImpl::setScreenPosition of BWAPI
-SCBW_DATA(u32*, move_to_x,	0x0062848C);
-SCBW_DATA(u32*, move_to_y,	0x006284A8);
+SCBW_DATA(u32*, g_move_to_x,				0x0062848C);
+SCBW_DATA(u32*, g_move_to_y,				0x006284A8);
 
 /// Contains various information (names, player types, race types, and associated forces) of each player in the current game
-SCBW_DATA(Player*, player_table, 0x0057EEE0);
+SCBW_DATA(Player*, g_player_table,			0x0057EEE0);
 
 struct SupplyData {
 	u32 provided[PLAYER_COUNT];
@@ -165,29 +165,29 @@ struct SupplyData {
 };
 SCBW_DATA(SupplyData*, raceSupply, 0x00582144);  //Array; Use Unit::get_race() to get the index.
 
-SCBW_DATA(u32*,		elapsed_time_frames,	0x0057F23C);
-SCBW_DATA(u32*,		countdown_timer,		0x0058D6F4);	// Vanilla trigger actions/conditions (From BWAPI Offsets.h)
-SCBW_DATA(u32*,		elapsed_time_seconds,	0x0058D6F8);
-SCBW_DATA(u8*,		game_type,				0x00596820);	// Compare with GameType::Enum
-SCBW_DATA(s32*,		active_nation_id,		0x00512678);
-SCBW_DATA(s32*,		active_player_id,		0x0051267C);	// Used by get_active_player_next_selection
-SCBW_DATA(s32*,		local_nation_id,		0x00512684);	// Actually stores the player ID
-SCBW_DATA(s32*,		local_human_id,			0x00512688);	// Invalid in replay games
-SCBW_DATA(u8*,		current_tileset,		0x00596828);	// Tileset of current map - compare with TilesetType::Enum
-SCBW_DATA(s32*,		provider_MaxBuffer,		0x0057F0D8);
-SCBW_DATA(u32*,		provider_LatencyCalls,	0x0057F090);
-SCBW_DATA(u32*,		command_queue_size,		0x00654AA0);
-SCBW_DATA(char*,	turn_buffer,			0x00654880);
+SCBW_DATA(u32*,		g_elapsed_time_frames,		0x0057F23C);
+SCBW_DATA(u32*,		g_countdown_timer,			0x0058D6F4);	// Vanilla trigger actions/conditions (From BWAPI Offsets.h)
+SCBW_DATA(u32*,		g_elapsed_time_seconds,		0x0058D6F8);
+SCBW_DATA(u8*,		g_game_type,				0x00596820);	// Compare with GameType::Enum
+SCBW_DATA(s32*,		g_active_nation_id,			0x00512678);
+SCBW_DATA(s32*,		g_active_player_id,			0x0051267C);	// Used by get_active_player_next_selection
+SCBW_DATA(s32*,		g_local_nation_id,			0x00512684);	// Actually stores the player ID
+SCBW_DATA(s32*,		g_local_human_id,			0x00512688);	// Invalid in replay games
+SCBW_DATA(u8*,		g_current_tileset,			0x00596828);	// Tileset of current map - compare with TilesetType::Enum
+SCBW_DATA(s32*,		g_provider_max_buffer,		0x0057F0D8);
+SCBW_DATA(u32*,		g_provider_latency_calls,	0x0057F090);
+SCBW_DATA(u32*,		g_command_queue_size,		0x00654AA0);
+SCBW_DATA(char*,	g_turn_buffer,				0x00654880);
 
 // For reset_tooltip_info, set_tooltip_info, set_tooltip_info_unit_case5, etc
-SCBW_DATA(u16*, tooltip_ore_cost,		0x0068C1D0);
-SCBW_DATA(u16*, tooltip_gas_cost,		0x0068C1D2);
-SCBW_DATA(u16*, tooltip_energy_cost,	0x0068C1D4); // Used to be Protoss energy
-SCBW_DATA(u16*, tooltip_unused_cost,	0x0068C1D6); // Used to be Terran energy
-SCBW_DATA(u16*, tooltip_time_cost,		0x0068C1D8); // Used to be Zerg energy
-SCBW_DATA(u16*, tooltip_p_supply_cost,	0x0068C1DA);
-SCBW_DATA(u16*, tooltip_t_supply_cost,	0x0068C1DC);
-SCBW_DATA(u16*, tooltip_z_supply_cost,	0x0068C1DE);
+SCBW_DATA(u16*, tooltip_ore_cost,				0x0068C1D0);
+SCBW_DATA(u16*, tooltip_gas_cost,				0x0068C1D2);
+SCBW_DATA(u16*, tooltip_energy_cost,			0x0068C1D4); // Used to be Protoss energy
+SCBW_DATA(u16*, tooltip_unused_cost,			0x0068C1D6); // Used to be Terran energy
+SCBW_DATA(u16*, tooltip_time_cost,				0x0068C1D8); // Used to be Zerg energy
+SCBW_DATA(u16*, tooltip_p_supply_cost,			0x0068C1DA);
+SCBW_DATA(u16*, tooltip_t_supply_cost,			0x0068C1DC);
+SCBW_DATA(u16*, tooltip_z_supply_cost,			0x0068C1DE);
 
 struct Event;
 typedef bool __fastcall generic_interact_function(BinDlg*, Event*);
@@ -919,17 +919,17 @@ SCBW_DATA(ResourceAreaArray*, resource_areas, 0x00692688);
 
 //-------- Internal constants --------//
 
-SCBW_DATA(const b32*, bw_is_game_paused,	0x006509C4);  // See scbw::bw_is_game_paused()
-SCBW_DATA(const b8*,  bw_is_brood_war,		0x0058F440);  // See scbw::is_brood_war_mode()
-SCBW_DATA(const u32*, bw_cheat_state,		0x006D5A6C);  // See scbw::is_cheat_enabled()
-SCBW_DATA(const b32*, bw_is_in_replay,		0x006D0F14);  // See scbw::isInReplay()
-SCBW_DATA(const b32*, bw_is_replay_paused,	0x006D11B0);
-SCBW_DATA(const s32*, max_unit_width,		0x006BEE68);
-SCBW_DATA(const s32*, max_unit_height,		0x006BB930);
-SCBW_DATA(b32*, is_in_game_loop,			0x006D11C8);
-SCBW_DATA(u32*, last_random_number,			0x0051CA14);  // See scbw::random(), scbw::rand_between()
-SCBW_DATA(b32*, can_update_powered_status,	0x0063FF44);
-SCBW_DATA(b32*, is_placing_building,		0x00640880);
+SCBW_DATA(b32*, g_is_game_paused,				0x006509C4);  // See scbw::g_is_game_paused()
+SCBW_DATA(b8*,  g_is_brood_war,					0x0058F440);  // See scbw::is_brood_war_mode()
+SCBW_DATA(u32*, g_cheat_state,					0x006D5A6C);  // See scbw::is_cheat_enabled()
+SCBW_DATA(b32*, g_is_in_replay,					0x006D0F14);  // See scbw::isInReplay()
+SCBW_DATA(b32*, g_is_replay_paused,				0x006D11B0);
+SCBW_DATA(s32*, g_max_unit_width,				0x006BEE68);
+SCBW_DATA(s32*, g_max_unit_height,				0x006BB930);
+SCBW_DATA(b32*, g_is_in_game_loop,				0x006D11C8);
+SCBW_DATA(u32*, g_last_random_number,			0x0051CA14);  // See scbw::random(), scbw::rand_between()
+SCBW_DATA(b32*, g_can_update_powered_status,	0x0063FF44);
+SCBW_DATA(b32*, g_is_placing_building,			0x00640880);
 
 //-------- Tech levels --------//
 
@@ -989,7 +989,8 @@ SCBW_DATA(Box16*,	tooltip_required_area,		0x006CE0D8);
 // For do_attack_notify_unit
 SCBW_DATA(char*,	palette_index_reference,	0x006CEB20); // sizeof at least 20
 SCBW_DATA(u32*,		notify_cooldown,			0x00640870);
-SCBW_DATA(void*,	sound_duration,				0x006D1278); // struct_18 in IDA
+//SCBW_DATA(void*,	sound_duration,				0x006D1278); // struct_18 in IDA
+SCBW_DATA(u8*,		sound_duration_msecs,		0x006D1278);
 
 // For stat_data_unit_wireframe_select_update
 SCBW_DATA(char**,	off_68C1FC,					0x0068C1FC);
@@ -1042,6 +1043,9 @@ SCBW_DATA(char*,		game_result_text,				0x00628668);
 
 // For find_fow_target
 SCBW_DATA(Thingy**,		first_used_thingy,				0x00654868);
+
+// For play_building_complete_sound
+SCBW_DATA(u32*,			building_complete_something,	0x006D1AE8);
 
 //////////////////////////////////////////////////////////////// @}
 

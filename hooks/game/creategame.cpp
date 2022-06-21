@@ -32,7 +32,7 @@ namespace hooks
 			if (game_data->victory_condition || game_data->starting_units || game_data->tournament_mode_enabled)
 			{
 				switchComputerToOpen();
-				player_table[*local_nation_id].race = selected_singleplayer_race[0];
+				g_player_table[*g_local_nation_id].race = selected_singleplayer_race[0];
 				v1 = 0;
 				do
 				{
@@ -68,7 +68,7 @@ namespace hooks
 					game_active = 0;
 					next_sc_main_state = 4;
 					if (!is_in_replay)
-						replay_end_frame = elapsed_time_frames;
+						replay_end_frame = g_elapsed_time_frames;
 				}
 				nextLeaveGameMenu(v3);
 			}

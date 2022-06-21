@@ -536,7 +536,7 @@ namespace ColorRemapping
 	};
 }
 
-// Compare with (*game_type)
+// Compare with (*g_game_type)
 namespace GameType
 {
 	enum Enum
@@ -557,7 +557,7 @@ namespace GameType
 	};
 }
 
-// Compare with (*current_tileset)
+// Compare with (*g_current_tileset)
 namespace TilesetType
 {
 	enum Enum

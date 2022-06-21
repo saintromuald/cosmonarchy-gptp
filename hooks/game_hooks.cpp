@@ -130,10 +130,10 @@ namespace hooks
 	}
 
 	static bool process_quickbuilding() {
-		if (config.quick_building && *is_placing_building && !disable_quickbuilding) {
+		if (config.quick_building && *g_is_placing_building && !disable_quickbuilding) {
 			bool not_held = true;
 			for (char c = 'A'; c <= 'Z'; ++c) {
-				if (IS_KEYCODE_USED[c]) {
+				if (g_is_keycode_used[c]) {
 					not_held = false;
 					break;
 				}
@@ -148,7 +148,7 @@ namespace hooks
 				event.y_pos = position.y;
 
 				helper::input_place_building_left_mouse_click(&event, 0, position);
-				if (*is_placing_building) {
+				if (*g_is_placing_building) {
 					helper::input_place_building_right_mouse_click();
 				}
 			}
@@ -191,7 +191,7 @@ namespace hooks
 			quickcasting_command_card = *orders_buttonset;
 		}
 
-		if (*is_placing_building) {
+		if (*g_is_placing_building) {
 			*left_click_proc = (InputProcsFunc*)0x0048E5D0; // input_place_building_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x00484600; // input_place_building_right_mouse_click;
 		} else if (*is_targeting) {
@@ -209,13 +209,13 @@ namespace hooks
 		if (disable_quickcasting && !*is_targeting) {
 			disable_quickcasting--;
 		}
-		if (disable_quickbuilding && !*is_placing_building) {
+		if (disable_quickbuilding && !*g_is_placing_building) {
 			disable_quickbuilding--;
 		}
 		tick_trigger_system(true);
 		tick_layouts();
 		// This block is executed once every game
-		if (*elapsed_time_frames == 0)
+		if (*g_elapsed_time_frames == 0)
 		{
 #ifdef CM_DEBUG
 			helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
@@ -232,7 +232,7 @@ namespace hooks
 			}
 		}
 
-		if (*elapsed_time_frames % 2 == 0)
+		if (*g_elapsed_time_frames % 2 == 0)
 		{
 			for (u32 i = 0; i < 16; ++i)
 			{
@@ -246,16 +246,16 @@ namespace hooks
 
 		// Map Features
 		scbw::set_ingame_loop_state(true);
-		if (*elapsed_time_frames == 1) {
+		if (*g_elapsed_time_frames == 1) {
 			load_player_colors();
 		}
-		if (*elapsed_time_frames == 0 || *elapsed_time_frames == 24) {
+		if (*g_elapsed_time_frames == 0 || *g_elapsed_time_frames == 24) {
 			load_player_names();
 		}
 		scbw::set_ingame_loop_state(false);
 
-		if (*elapsed_time_frames == 2) {
-			u32 local_flags = unit_deaths[UnitId::ResourceVespeneGeyser].player[*local_nation_id];
+		if (*g_elapsed_time_frames == 2) {
+			u32 local_flags = unit_deaths[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
 				for (s32 i = 0; i < 4092; i++) {
@@ -312,12 +312,12 @@ namespace hooks
 				if (do_ping[target])
 				{
 					u32 color = 0; // red
-					if (scbw::is_allied_to(*local_nation_id, target))
+					if (scbw::is_allied_to(*g_local_nation_id, target))
 					{
 						color = 8; // green
 					}
 
-					scbw::minimap_ping(start_positions[target].x, start_positions[target].y, color, *local_nation_id);
+					scbw::minimap_ping(g_start_positions[target].x, g_start_positions[target].y, color, *g_local_nation_id);
 				}
 			}
 		}
@@ -338,10 +338,10 @@ namespace hooks
 			*(s32*)hyperTrigger = 0; // Single frame hypertriggers
 
 			// Scenario Features
-			if (*elapsed_time_frames == 1) {
+			if (*g_elapsed_time_frames == 1) {
 				init_scenario();
 			}
-			if (*elapsed_time_frames >= 1) {
+			if (*g_elapsed_time_frames >= 1) {
 				tick_scenario();
 			}
 
@@ -392,7 +392,7 @@ namespace hooks
 			while (Unit* selection = get_active_player_next_selection()) {
 				if (selection->id == UnitId::ZergNydusCanal
 					&& selection->building.nydus_exit
-					&& (scbw::is_allied_to(selection->player, *local_human_id) || helper::get_detecting_players(selection) & (1 << *local_human_id)))
+					&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id)))
 				{
 					Unit* exit = selection->building.nydus_exit;
 					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
@@ -1307,7 +1307,7 @@ namespace hooks
 				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, originally from DarkenedFantasies.
 				// TODO: Find a solution that works, the code below does not. -Pr0nogo
 				/*
-				if (player_table[unit->player].type == PlayerType::Computer && unit->main_order_id == OrderId::WatchTarget) {
+				if (g_player_table[unit->player].type == PlayerType::Computer && unit->main_order_id == OrderId::WatchTarget) {
 					helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 				}
 				*/
@@ -1449,7 +1449,7 @@ namespace hooks
 		*/
 
 		// Phase Link Overlay
-		if (*elapsed_time_frames % 10 == 0
+		if (*g_elapsed_time_frames % 10 == 0
 			&& unitExt->unit_vectors[UnitVectorPhaseLinkClarions].size())
 		{
 			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
@@ -1634,7 +1634,7 @@ namespace hooks
 				helper::secondary_order_spawning_larva(unit);
 			}
 
-			if (*elapsed_time_frames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreads_creep(unit->id, true)) {
+			if (*g_elapsed_time_frames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreads_creep(unit->id, true)) {
 				scbw::spread_custom_creep(unit);
 			}
 		}

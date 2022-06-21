@@ -1005,10 +1005,10 @@ namespace scbw
 	// Similar to 004DC4A0 randomize_short, but doesn't update the RNG and doesn't use a parameter among possible differences.
 	u16 random()
 	{
-		if (*is_in_game_loop)
+		if (*g_is_in_game_loop)
 		{
-			*last_random_number = 22695477 * (*last_random_number) + 1;
-			return (*last_random_number >> 16) % 32768; // Make a number between 0 and 32767
+			*g_last_random_number = 22695477 * (*g_last_random_number) + 1;
+			return (*g_last_random_number >> 16) % 32768; // Make a number between 0 and 32767
 		}
 		else
 		{
@@ -1660,7 +1660,7 @@ namespace scbw
 	void move_screen_to_unit(Unit* unit, u32 player) // 004E6020
 	{
 		const u32 Func_MoveScreen = 0x0049C440;
-		if (player >= 8 || player == *local_nation_id)
+		if (player >= 8 || player == *g_local_nation_id)
 		{
 			s32 x, y;
 			x = (s16)unit->sprite->position.x;
@@ -1691,7 +1691,7 @@ namespace scbw
 	void minimap_ping(u32 x, u32 y, s32 color, u32 player)
 	{
 		const u32 Func_minimapPing = 0x004A34C0;
-		if (player >= 8 || player == *local_nation_id)
+		if (player >= 8 || player == *g_local_nation_id)
 		{
 			__asm
 			{
@@ -2117,7 +2117,7 @@ namespace scbw
 		unit_search_filter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
 		if (allied_structures.count) {
 			for (u32 i = 0; i < 8; ++i) {
-				if (player_table[i].type == PlayerType::Computer && victim->is_visible_to(i) &&
+				if (g_player_table[i].type == PlayerType::Computer && victim->is_visible_to(i) &&
 					!scbw::is_allied_to(i, attacker->player) && scbw::is_allied_to(i, victim->player)) {
 					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 120, true);
 				}
@@ -2348,7 +2348,7 @@ namespace scbw
 	}
 
 	void give_ai_ex(Unit* unit, bool prefer_military) {
-		if (!unit || player_table[unit->player].type != PlayerType::Computer) {
+		if (!unit || g_player_table[unit->player].type != PlayerType::Computer) {
 			return;
 		}
 		if (!prefer_military || units_dat::ComputerAIInternal[unit->id] & 2) {
@@ -2423,7 +2423,7 @@ namespace scbw
 	bool all_selected_units_have_addon(u32 unit_id) {
 		bool has_selection = false;
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			Unit* unit = client_selection_group->unit[i];
+			Unit* unit = g_client_selection_group->unit[i];
 			if (!unit) {
 				break;
 			}

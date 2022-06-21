@@ -17,7 +17,7 @@ namespace hooks
 			if (game_data->victory_condition || game_data->starting_units || game_data->tournament_mode_enabled)
 			{
 				helper::switchAllAvailableComputerSlotsToOpen();
-				player_table[*local_nation_id].race = selected_singleplayer_race[0];
+				g_player_table[*g_local_nation_id].race = selected_singleplayer_race[0];
 				for (s32 player = 0; player < 8; player++)
 				{
 					if (selected_singleplayer_race[player + 1] != RaceId::None)
@@ -30,9 +30,9 @@ namespace hooks
 			// Convert open slots to computers (singleplayer)
 			for (s32 player = 0; player < 8; player++)
 			{
-				if (player_table[player].type == PlayerType::OpenSlot)
+				if (g_player_table[player].type == PlayerType::OpenSlot)
 				{
-					player_table[player].type = PlayerType::Computer;
+					g_player_table[player].type = PlayerType::Computer;
 				}
 			}
 		}
@@ -65,20 +65,20 @@ namespace hooks
 		}
 
 		// Replay-specific
-		if (*bw_is_in_replay)
+		if (*g_is_in_replay)
 		{
 			for (s32 i = 0; i < 12; i++)
 			{
-				playerReplayWatchers[i] = player_table[i];
+				playerReplayWatchers[i] = g_player_table[i];
 			}
 		}
 
 		// Start countdown
 		*game_state = 5;
 		*countdownTimerInterval = 24;
-		if (2 * *provider_LatencyCalls + 4 >= 24)
+		if (2 * *g_provider_latency_calls + 4 >= 24)
 		{
-			*countdownTimerInterval = 2 * *provider_LatencyCalls + 4;
+			*countdownTimerInterval = 2 * *g_provider_latency_calls + 4;
 		}
 
 		// Set timers
@@ -95,9 +95,9 @@ namespace hooks
 		// Convert open slots to computers (multiplayer)
 		for (s32 i = 0; i < 8; i++)
 		{
-			if (player_table[i].type == PlayerType::OpenSlot)
+			if (g_player_table[i].type == PlayerType::OpenSlot)
 			{
-				player_table[i].type = PlayerType::Computer;
+				g_player_table[i].type = PlayerType::Computer;
 			}
 		}
 

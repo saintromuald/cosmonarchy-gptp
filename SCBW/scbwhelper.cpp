@@ -5807,7 +5807,7 @@ namespace helper
 	// Identical to getHPGainForRepair @ 0x00402C40
 	u32 getHPGainForRepair(Unit* unit)
 	{
-		if (*bw_cheat_state & CheatFlags::OperationCwal)
+		if (*g_cheat_state & CheatFlags::OperationCwal)
 		{
 			return unit->build_repair_hp_gain * 16;
 		}
@@ -6392,7 +6392,7 @@ namespace helper
 	bool unit_is_owned_by_current_player(Unit* unit)
 	{
 		bool return_value;
-		if (*bw_is_in_replay != 0 || unit->player != *local_nation_id)
+		if (*g_is_in_replay != 0 || unit->player != *g_local_nation_id)
 		{
 			return_value = false;
 		}
@@ -11758,7 +11758,7 @@ namespace helper
 			PUSH ping
 			MOV EDI, timer
 			MOV BL, event_type
-			MOV unit, EAX
+			MOV EAX, unit
 			call func_address
 			POPAD
 		}

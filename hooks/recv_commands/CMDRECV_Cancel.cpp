@@ -27,7 +27,7 @@ namespace hooks
 				Unit* addon = unit->current_build_unit;
 				if (addon &&  !(addon->status & UnitStatus::Completed)
 				&&  unit->status & UnitStatus::Completed
-				&&  unit->player == *active_nation_id) {
+				&&  unit->player == *g_active_nation_id) {
 					helper::cancel_addon_proc(unit);
 					scbw::refresh_console();
 				}
@@ -39,7 +39,7 @@ namespace hooks
 	void cmdrecv_cancel_upgrade() {
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
-			if (unit->status & UnitStatus::Completed && unit->player == *active_nation_id) {
+			if (unit->status & UnitStatus::Completed && unit->player == *g_active_nation_id) {
 				helper::cancel_upgrade_proc(unit);
 				scbw::refresh_console();
 			}
@@ -52,7 +52,7 @@ namespace hooks
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (units_dat::base_property[unit->id] & UnitProperty::Building
 			&&  unit->status & UnitStatus::Completed
-			&&  unit->player == *active_nation_id) {
+			&&  unit->player == *g_active_nation_id) {
 				helper::cancel_research_proc(unit);
 				scbw::refresh_console();
 			}
@@ -71,7 +71,7 @@ namespace hooks
 			&&  unit->id != UnitId::ZergMuthrokSpire
 			&&  unit->id != UnitId::ZergCreepColony
 			&&  unit->status & UnitStatus::Completed
-			&&  unit->player == *active_nation_id) {
+			&&  unit->player == *g_active_nation_id) {
 				if (wUnitID == 0xFE) {
 					helper::cancel_last_training(unit);
 					scbw::refresh_console();
@@ -89,7 +89,7 @@ namespace hooks
 	void cmdrecv_cancel_unit_morph() {
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
-			if (unit->player == *active_nation_id) {
+			if (unit->player == *g_active_nation_id) {
 				helper::ai_cancel_structure(unit);
 			}
 		}
@@ -99,7 +99,7 @@ namespace hooks
 	void cmdrecv_cancel_construction() {
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
-			if (unit->player == *active_nation_id) {
+			if (unit->player == *g_active_nation_id) {
 				helper::ai_cancel_structure(unit);
 			}
 		}

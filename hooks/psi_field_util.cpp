@@ -66,7 +66,7 @@ void add_psi_field(Unit* unit)
 	}
 	*first_psi_field_provider = unit;
 	helper::add_psi_field_sprite(unit);
-	*can_update_powered_status = true;
+	*g_can_update_powered_status = true;
 }
 
 // Identical to function @ 0x00493100
@@ -91,7 +91,7 @@ void remove_psi_field(Unit* unit)
 	{
 		unit->building.pylon_aura->free();
 		unit->building.pylon_aura = nullptr;
-		*can_update_powered_status = true;   // Might work?
+		*g_can_update_powered_status = true;   // Might work?
 	}
 	remove_from_psi_providers_list(unit);
 }
@@ -109,7 +109,7 @@ void update_psi_field_position(Unit* unit)
 	{
 		psiField->set_position(unit->get_x(), unit->get_y());
 		helper::refresh_sprite_data(psiField);
-		*can_update_powered_status = true;
+		*g_can_update_powered_status = true;
 	}
 }
 
@@ -141,12 +141,12 @@ namespace hooks
 			}
 		}
 
-		if (!(*is_placing_building))
+		if (!(*g_is_placing_building))
 		{
 			Unit* selUnit;
 			for (s32 i = 0; i < SelectionCap; i++)
 			{
-				selUnit = client_selection_group->unit[i];
+				selUnit = g_client_selection_group->unit[i];
 
 				if (selUnit != nullptr && hooks::is_ready_to_make_psi_field(selUnit))
 				{

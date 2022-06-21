@@ -8,7 +8,7 @@
 namespace hooks
 {
 	void ai_training_unit(Unit* result, Unit* parent) { // 004A2830
-		if (player_table[result->player].type != PlayerType::Computer) {
+		if (g_player_table[result->player].type != PlayerType::Computer) {
 			return;
 		}
 
@@ -201,7 +201,7 @@ namespace hooks
 					ai->parent = unit;
 					ai->town = town;
 					ai->target_resource = 1;
-					ai->last_update_second = *elapsed_time_seconds;
+					ai->last_update_second = *g_elapsed_time_seconds;
 					ai->wait_timer = 0;
 					ai->reassign_count = 0;
 					unit->worker.target_resource.unit = 0;
@@ -278,10 +278,10 @@ namespace hooks
 				}
 
 				u32 town_hall_id = UnitId::ZergHatchery;
-				if (player_table[unit->player].race == RaceId::Terran) {
+				if (g_player_table[unit->player].race == RaceId::Terran) {
 					town_hall_id = UnitId::TerranCommandCenter;
 				}
-				else if (player_table[unit->player].race == RaceId::Protoss) {
+				else if (g_player_table[unit->player].race == RaceId::Protoss) {
 					town_hall_id = UnitId::ProtossNexus;
 				}
 
@@ -333,7 +333,7 @@ namespace hooks
 		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 			scbw::printf("Military AI added to building! 0x%X", debug_caller_address);
 		}
-		if (player_table[unit->player].type != PlayerType::Computer) {
+		if (g_player_table[unit->player].type != PlayerType::Computer) {
 			scbw::printf("Military AI added to non computer! 0x%X", debug_caller_address);
 		}
 		if (ai_region->player != unit->player) {
@@ -394,7 +394,7 @@ namespace hooks
 		WorkerAi* worker;
 		BuildingAi* building;
 
-		if (player_table[(u8)parent->player].type == PlayerType::Computer)
+		if (g_player_table[(u8)parent->player].type == PlayerType::Computer)
 		{
 			parentAI = (UnitAi*)parent->unit_ai;
 			if (parentAI)
@@ -432,7 +432,7 @@ namespace hooks
 					}
 				}
 				helper::add_worker_structure_ai(result, parentTown);
-				if (result->id != UnitId::TerranBunker || *elapsed_time_seconds <= 60)
+				if (result->id != UnitId::TerranBunker || *g_elapsed_time_seconds <= 60)
 				{
 					if (result->id == UnitId::TerranWatchdog)
 					{
@@ -635,7 +635,7 @@ namespace hooks
 	// Hooked to investigate unit AI corruption - Pr0nogo
 	void ai_training_overlord(Unit* newUnit, Unit* oldUnit) // 00435770
 	{
-		if (player_table[oldUnit->player].type == PlayerType::Computer)
+		if (g_player_table[oldUnit->player].type == PlayerType::Computer)
 		{
 			UnitAi* oldUnitAI = (UnitAi*)oldUnit->unit_ai;
 			if (oldUnitAI)
@@ -678,7 +678,7 @@ namespace hooks
 
 				helper::add_worker_structure_ai(newUnit, oldUnitTown);
 				u16 newUnitId = newUnit->id;
-				if (newUnitId != UnitId::TerranBunker || *elapsed_time_seconds <= 60)
+				if (newUnitId != UnitId::TerranBunker || *g_elapsed_time_seconds <= 60)
 				{
 					if (newUnitId == UnitId::TerranWatchdog)
 					{

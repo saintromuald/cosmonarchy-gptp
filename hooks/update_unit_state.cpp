@@ -296,7 +296,7 @@ namespace hooks
 		}
 
 		// Something to do with player-specific Signify overlays?
-		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*active_nation_id][0])
+		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*g_active_nation_id][0])
 		{
 			unit->new_flags_3 &= ~0x20;
 			scbw::refresh_console();
@@ -532,7 +532,7 @@ namespace hooks
 		*interceptorFocusedThisFrame = 0;
 		if (helper::is_selected_unit_group_enabled())
 		{
-			if (*is_placing_building)
+			if (*g_is_placing_building)
 			{
 				helper::refresh_layers_3_and_4();
 				helper::end_building_placement();
@@ -590,7 +590,7 @@ namespace hooks
 				{
 					if (*visionUpdated)
 					{
-						if (player_table[first_dying_unit->player].type == 2) // PLAYER_OCCUPIED
+						if (g_player_table[first_dying_unit->player].type == 2) // PLAYER_OCCUPIED
 						{
 							helper::reveal_sight_at_location(1, player_vision->flags[first_dying_unit->player], first_dying_unit->sprite->position.x, first_dying_unit->sprite->position.y, (first_dying_unit->status >> 2) & 1); // is air unit
 						}
@@ -781,7 +781,7 @@ namespace hooks
 		{
 			helper::play_sound_from_unit(soundId, unit, 1, 0);
 		}
-		if (!bw_is_in_replay && unitVar->player == *local_nation_id)
+		if (!g_is_in_replay && unitVar->player == *g_local_nation_id)
 		{
 			*force_button_refresh = 1;
 			portrait_redraw[0] = 1;

@@ -225,7 +225,7 @@ const char* Unit::getName(u16 unit_id)
 
 	if (units_dat::MapStringId[unit_id])
 	{
-		return mapStringTbl->get_string(units_dat::MapStringId[unit_id]);
+		return g_map_string_tbl->get_string(units_dat::MapStringId[unit_id]);
 	}
 	else
 	{
@@ -790,7 +790,7 @@ void Unit::removeAcidSpores()
 void Unit::spend_unit_energy(u32 energySpent)
 {
 	UnitExt* unitExt = globals.get_unit_ext(this);
-	if (!(*bw_cheat_state & CheatFlags::TheGathering))
+	if (!(*g_cheat_state & CheatFlags::TheGathering))
 	{
 		if (this->energy > energySpent)
 		{
@@ -1054,12 +1054,12 @@ graphics::ColorId Unit::get_faction_color(Unit* unit)
 			// get the proper player in multiplayer game (don't break campaigns/UMS)
 			return_value = factionsColorsOrdering[return_value];
 			// fix BROWN to GREEN color swap in Desert map
-			if (*current_tileset == TilesetType::Desert && return_value == 5)
+			if (*g_current_tileset == TilesetType::Desert && return_value == 5)
 			{
 				return_value = 8;
 			}
 			// fix WHITE to GREEN color swap in Ice map
-			if (*current_tileset == TilesetType::Ice && return_value == 6)
+			if (*g_current_tileset == TilesetType::Ice && return_value == 6)
 			{
 				return_value = 8;
 			}

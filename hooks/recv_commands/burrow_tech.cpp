@@ -11,7 +11,7 @@ namespace hooks
 		while (selected_unit != nullptr)
 		{
 			if (units_dat::base_property[selected_unit->id] & UnitProperty::Burrowable
-				&& selected_unit->canUseTech(TechId::Burrowing, *active_nation_id) == 1)
+				&& selected_unit->canUseTech(TechId::Burrowing, *g_active_nation_id) == 1)
 			{
 				helper::function_004E97C0(selected_unit);
 			}
@@ -27,7 +27,7 @@ namespace hooks
 		while (selected_unit != nullptr)
 		{
 			if (units_dat::base_property[selected_unit->id] & UnitProperty::Burrowable
-				&& selected_unit->canUseTech(TechId::Burrowing, *active_nation_id) == 1
+				&& selected_unit->canUseTech(TechId::Burrowing, *g_active_nation_id) == 1
 				&& !(selected_unit->status & UnitStatus::Burrowed)
 				&& selected_unit->main_order_id != OrderId::Burrow)
 			{

@@ -150,7 +150,7 @@ struct GameData // taken from IDA and from https://gist.githubusercontent.com/ne
 	u8		max_player_count;			// 0x25
 	u8		game_speed;					// 0x26
 	u8		game_state;					// 0x27
-	u16		game_type;					// 0x28
+	u16		g_game_type;					// 0x28
 	u16		game_subtype;				// 0x2A
 	u32		cdkey_hash;					// 0x2C
 	u16		tileset;					// 0x30
@@ -993,7 +993,7 @@ struct StringTbl
 		}
 		else
 		{
-			return (const char*)0x00501B7D;	//StringEmpty in scbwdata.h, SC default empty string
+			return (const char*)0x00501B7D;	//g_string_empty in scbwdata.h, SC default empty string
 		}
 	}
 	u16* buffer;
