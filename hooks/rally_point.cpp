@@ -165,7 +165,7 @@ namespace hooks
 				unit->building.addon = 0;
 			}
 		}
-		if (unit->is_factory())
+		if (hooks::unit_can_have_rally(unit))
 		{
 			UnitExt* unitExt = globals.get_unit_ext(unit);
 			if (unit->rally.unit == dying)

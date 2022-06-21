@@ -614,6 +614,16 @@ namespace hooks {
 		}
 	}
 
+	s32 compare_button(const void* a, const void* b) {
+		Button* button_a = (Button*)a;
+		Button* button_b = (Button*)b;
+
+		s32 pos_diff = button_a->position - button_b->position;
+		if (pos_diff) return button_a->position - button_b->position;
+
+		return button_a->icon_id - button_b->icon_id;
+	}
+
 	void update_buttonset_sub4591D0()
 	{
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
@@ -652,6 +662,10 @@ namespace hooks {
 				return;
 			}
 		}
+		if (has_larva && !has_egg && buttonset_id == UnitId::ZergEgg) {
+			helper::BTNSACT_ChangeButtons(UnitId::ZergLarva);
+			return;
+		}
 
 		ButtonSet* const current_buttonset = get_buttonset(buttonset_id);
 		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
@@ -664,6 +678,25 @@ namespace hooks {
 		u16 buttons_count = 0;
 		current_button = current_buttonset->first_button;
 		current_button_state = Button_State::Invisible;
+
+		Unit* unit = get_selected_unit();
+		bool changed = false;
+		for (u32 i = 0; i < current_buttonset->buttons_in_set; ++i) {
+			Button* button = &current_buttonset->first_button[i];
+			if (button->icon_id == IconId::Cancel) {
+				if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergEgg) {
+					button->position = 6;
+				} else if (units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
+					button->position = 6;
+				} else {
+					button->position = 9;
+				}
+				changed = true;
+			}
+		}
+		if (changed) {
+			qsort(current_buttonset->first_button, current_buttonset->buttons_in_set, sizeof(Button), compare_button);
+		}
 
 		if (current_dialog->control_type != DialogControlTypes::DialogBoxDC)
 		{
@@ -692,7 +725,6 @@ namespace hooks {
 			}
 			else
 			{ // loop to ignore the first unused/disabled buttons
-				Unit* unit = get_selected_unit();
 				current_button_state = Button_State::Invisible;
 				while (current_button_state == Button_State::Invisible && (buttons_count < current_buttonset->buttons_in_set))
 				{
@@ -751,6 +783,9 @@ namespace hooks {
 					if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg && current_button->icon_id == IconId::SetRallyPoint) {
 						current_button_state = Button_State::Enabled;
 					}
+					if (unit->id == UnitId::ZergCreepColony && current_button->icon_id == IconId::SetRallyPoint) {
+						current_button_state = Button_State::Enabled;
+					}
 
 					if (current_button->icon_id == IconId::Burrow || current_button->icon_id == IconId::LurkerBurrow) {
 						bool has_burrowed = false;
@@ -797,14 +832,6 @@ namespace hooks {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
-						}
-					}
-
-					if (current_button->icon_id == IconId::Cancel) {
-						if (units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
-							current_button->position = 6;
-						} else {
-							current_button->position = 9;
 						}
 					}
 
