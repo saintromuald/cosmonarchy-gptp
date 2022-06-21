@@ -512,7 +512,7 @@ namespace hooks
 		u32 unit_id_2 = unit->id;
 		param_2.check_height = playerid_2_wrong;
 		u32 iterations = 0;
-		*&param_2.unit_id = playerid_1_wrong;
+		*(u32*)& param_2.unit_id = playerid_1_wrong;
 		param_2.check_height = 0;
 
 		if (!(units_dat::base_property[unit_id_2] & UnitProperty::Worker)
@@ -548,7 +548,7 @@ namespace hooks
 				}
 				u32 unit_id = unit->id;
 				GroupFlag group_flags = units_dat::group_flags[unit_id];
-				u32 playerid_2_wrong_2 = *(player_id + 2);
+				u32 playerid_2_wrong_2 = *(u16*)(player_id + 2);
 				switch (playerid_2_wrong_2)
 				{
 					case 0xE5:
