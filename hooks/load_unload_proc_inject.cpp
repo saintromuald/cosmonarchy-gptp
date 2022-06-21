@@ -143,7 +143,7 @@ namespace
 	void __declspec(naked) iterate_loaded_units_wrapper() { // 004E6D00
 		static u32 result;
 		static Unit* transport;
-		static void* func;
+		static hooks::iterate_loaded_units_callback* func;
 		static Unit* cargo;
 		__asm {
 			PUSH EBP
@@ -261,12 +261,12 @@ namespace hooks
 		jump_patch(get_doodad_state_unit_wrapper,		0x004C6F70, 1); // Does not actually disable units anymore! Should fix later.
 		jump_patch(kill_units_at_location_proc_wrapper, 0x004C7E20, 1);
 		jump_patch(get_loaded_unit_from_index_wrapper,	0x004E6C40, 3);
-		jump_patch(get_first_loaded_unit_wrapper,		0x004E6C90, 0);
+		jump_patch(get_first_loaded_unit_wrapper,		0x004E6C90, 0); // Some of these are AI funcs, needs AI testing!
 		jump_patch(iterate_loaded_units_wrapper,		0x004E6D00, 2);
 		jump_patch(get_first_loaded_worker_wrapper,		0x004E6D90, 1);
 		jump_patch(is_unit_loaded_wrapper,				0x004E7110, 0);
 		jump_patch(get_loaded_space_amount_wrapper,		0x004E7170, 0);
-	//	jump_patch(unload_unit_ext_wrapper,				0x004E7E10, 0);
-	//	jump_patch(set_under_disruption_field_wrapper,	0x004EB170, 0);
+		jump_patch(unload_unit_ext_wrapper,				0x004E7E10, 0);
+	//	jump_patch(set_under_disruption_field_wrapper,	0x004EB170, 0); // Misses some of the loaded units!
 	}
 }

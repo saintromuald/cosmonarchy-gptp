@@ -761,8 +761,6 @@ namespace hooks
 		return nullptr;
 	}
 
-	typedef s32 __fastcall iterate_loaded_units_callback(Unit*, Unit*);
-
 	// Hooked to extend transports. -Pr0nogo
 	u32 iterate_loaded_units(Unit* transport, iterate_loaded_units_callback* func, Unit* cargo) // 004E6D00
 	{
