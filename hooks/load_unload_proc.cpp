@@ -388,7 +388,7 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	char update_unit_transport_data(Unit* cargo, Unit* unused) // 00401EA0
 	{
-		u32 pathing = 0;
+		u32 pathing = cargo->status;
 		if (cargo->status & UnitStatus::InTransport)
 		{
 			Unit* cargo_transport = cargo->connected_unit;
@@ -400,23 +400,21 @@ namespace hooks
 				{
 					loaded_index = cargo_index | (cargo->target_order_special << 11);
 				}
-				u32 iterator = 0;
+				u32 i = 0;
 				if (units_dat::SpaceProvided[cargo_transport->id])
 				{
-					u16 cargo_index_bool = cargo_transport->loaded_unit[0].index;
-					do
+					for (i = 0; i < units_dat::SpaceProvided[cargo_transport->id]; ++i)
 					{
-						if (cargo_index_bool == loaded_index)
+						u16 index = cargo_transport->loaded_unit[i].index;
+						if (index == loaded_index)
 						{
 							break;
 						}
-						++iterator;
-						++cargo_index_bool;
-					} while (iterator < units_dat::SpaceProvided[cargo_transport->id]);
+					}
 				}
 				helper::move_unit_duplicate(cargo, cargo_transport->sprite->position.x, cargo_transport->sprite->position.y);
-				cargo->connected_unit->loaded_unit[iterator].index = 0;
-				u32 cargo_status_bool = cargo->status & 0xFFFFFFBF;
+				cargo->connected_unit->loaded_unit[i].index = 0;
+				u32 cargo_status_bool = cargo->status & ~UnitStatus::InTransport;
 				cargo->connected_unit = 0;
 				cargo->status = cargo_status_bool;
 				helper::toggle_unit_pathing_properties(cargo);
@@ -430,7 +428,7 @@ namespace hooks
 			}
 			else
 			{
-				cargo->status = pathing & 0xFFFFFFBF;
+				cargo->status = pathing & ~UnitStatus::InTransport;
 				helper::toggle_unit_pathing_properties(cargo);
 				if (cargo->subunit)
 				{
@@ -447,10 +445,6 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	void kill_all_loaded_units(Unit* transport) // 0049FDD0
 	{
-		Unit* unit_reference; // edi
-		int unload_result; // eax
-		signed int times_to_iterate; // [esp+4h] [ebp-8h]
-
 		char transport_data = 0;
 		if (transport->status & UnitStatus::InTransport)
 		{
@@ -462,18 +456,18 @@ namespace hooks
 			u8 transport_space = units_dat::SpaceProvided[transport->id];
 			if (transport_space)
 			{
-				u16 index = transport->loaded_unit[0].index;
-				u16 index_2 = transport->loaded_unit[0].index;
-				times_to_iterate = 8; // Should be transport_space?
+				u16* index = &transport->loaded_unit[0].value;
+				u16* index_2 = &transport->loaded_unit[0].value;
+				u32 times_to_iterate = 8; // Should be transport_space?
 				do
 				{
 					if (index_2)
 					{
-						unit_reference = &unit_reference[index_2 & 0x7FF];
+						Unit* unit_reference = &g_unit_reference[*index_2 & 0x7FF];
 						if (unit_reference->sprite)
 						{
 							if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
-								&& unit_reference->target_order_special == index_2 >> 11)
+								&& unit_reference->target_order_special == *index_2 >> 11)
 							{
 								if (unit_reference->sprite)
 								{
@@ -484,7 +478,7 @@ namespace hooks
 										{
 											helper::orders_self_destructing(unit_reference);
 										}
-										index = transport->loaded_unit[0].index;
+										*index = transport->loaded_unit[0].value;
 									}
 								}
 							}
@@ -493,12 +487,9 @@ namespace hooks
 					++index_2;
 					--times_to_iterate;
 				} while (times_to_iterate);
-				/* IDK
-				index[0] = 0;
-				index[1] = 0;
-				index[2] = 0;
-				index[3] = 0;
-				*/
+				for (u32 i = 0; i < 8; ++i) {
+					index[i] = 0;
+				}
 			}
 		}
 	}
