@@ -642,6 +642,7 @@ namespace hooks {
 			}
 		}
 
+		// Fix larva category buttons not clearing for eggs
 		if (!has_larva && has_egg) {
 			if (buttonset_id == UnitId::Buttons_LarvaSwarm
 			||  buttonset_id == UnitId::Buttons_LarvaAssault

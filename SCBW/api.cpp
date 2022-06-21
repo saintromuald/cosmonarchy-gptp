@@ -2511,8 +2511,8 @@ namespace scbw
 
 			Sprite* sprite = unit->sprite;
 			fprintf(file, "Sprite");
-			fprintf(file, "Sprite Id: %u", (u32)sprite->sprite_id);
-			fprintf(file, "Visibility: %u", (u32)sprite->visibility_flags);
+			fprintf(file, "\tSprite Id: %u", (u32)sprite->sprite_id);
+			fprintf(file, "\tVisibility: %u", (u32)sprite->visibility_flags);
 		}
 		fclose(file);
 	}
