@@ -641,6 +641,7 @@ namespace hooks {
 				} break;
 				case UnitId::ZergHydralisk:
 				case UnitId::ZergSkithrokor:
+				case UnitId::ZergEvigrilisk:
 				{
 					if (player_has_unit_id(player_id, UnitId::ZergGorgralSwamp)
 						|| player_has_completed_unit_id(player_id, UnitId::ZergHydrokDen))
@@ -1894,6 +1895,7 @@ namespace hooks {
 					}
 					case UnitId::ZergHydralisk:
 					case UnitId::ZergSkithrokor:
+					case UnitId::ZergEvigrilisk:
 					{
 						if (player_has_unit_id(player_id, UnitId::ZergGorgralSwamp)
 							|| player_has_completed_unit_id(player_id, UnitId::ZergHydrokDen))

@@ -1387,6 +1387,11 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
+							else if (unit->id == UnitId::ZergEvigrilisk && // Evigrilisk Lashing Limbs passive
+								current_button->icon_id == IconId::RilirokorToxicSpores)
+							{
+								current_button_state = Button_State::Enabled;
+							}
 							else if (unit->id == UnitId::ZergIzirokor && // Izirokor Crushing Tide passive
 								current_button->icon_id == IconId::GeszithalorAcidSpore)
 							{
