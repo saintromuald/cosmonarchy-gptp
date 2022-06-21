@@ -12,7 +12,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_Pickup1(unit);
+		hooks::orders_pickup1(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -28,7 +28,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::orders_Pickup3_0(unit);
+		hooks::orders_pickup3_0(unit);
 		__asm {
 			POPAD
 			RETN
@@ -42,7 +42,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::orders_Pickup2(unit);
+		hooks::orders_pickup2(unit);
 		__asm {
 			POPAD
 			RETN
@@ -59,7 +59,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_MoveUnload(unit);
+		hooks::orders_move_unload(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -75,7 +75,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_Pickup4_0(unit);
+		hooks::orders_pickup4_0(unit);
 		__asm {
 			POPAD
 			RETN
@@ -89,7 +89,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_EnterTransport(unit);
+		hooks::orders_enter_transport(unit);
 		__asm {
 			POPAD
 			RETN
@@ -105,7 +105,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_Unload(unit);
+		hooks::orders_unload(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP

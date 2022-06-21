@@ -7,9 +7,9 @@
 
 namespace hooks
 {
-	// unit is a transport (overlord, shuttle, dropship)
-	// this is the initial pickup order
-	void orders_Pickup1(Unit* unit)
+	// Unit is a transport (overlord, shuttle, dropship)
+	// This is the initial pickup order
+	void orders_pickup1(Unit* unit)
 	{
 		Unit* unitToLoad = unit->order_target.unit;
 		if (unitToLoad != nullptr
@@ -46,8 +46,8 @@ namespace hooks
 		}
 	}
 
-	// unit is a non-mobile transport (bunker)
-	void orders_Pickup3_0(Unit* unit)
+	// Unit is a non-mobile transport (bunker)
+	void orders_pickup3_0(Unit* unit)
 	{
 		Unit* unitToLoad = unit->order_target.unit;
 		if (unitToLoad == nullptr)
@@ -79,9 +79,9 @@ namespace hooks
 		}
 	}
 
-	// unit is a transport (overlord,shuttle,dropship)
-	// this is used after orders_Pickup1
-	void orders_Pickup2(Unit* unit)
+	// Unit is a transport (overlord,shuttle,dropship)
+	// This is used after orders_pickup1
+	void orders_pickup2(Unit* unit)
 	{
 		Unit* unitToLoad = unit->order_target.unit;
 		if (unitToLoad == nullptr)
@@ -104,10 +104,10 @@ namespace hooks
 			}
 		}
 		else
-		{ // 004E761F
+		{
 			if (unitToLoad->unit_ai == nullptr
 				|| unitToLoad->main_order_id == OrderId::Pickup4)
-			{ // 004E762F
+			{
 				if (unit->main_order_state == 0)
 				{
 					if (scbw::can_be_entered_by(unit, unitToLoad))
@@ -145,16 +145,16 @@ namespace hooks
 					}
 				}
 			}
-			else // 004E7642
+			else
 			{
 				unit->order_to_idle();
 			}
 		}
 	}
 
-	// unit is a transport
-	// a big part of the code could not be tested since different ground height test never occured during testing
-	void orders_MoveUnload(Unit* unit)
+	// Unit is a transport
+	// A big part of the code could not be tested since different ground height test never occured during testing
+	void orders_move_unload(Unit* unit)
 	{
 		u32 distance;
 		if (unit->main_order_state == 0 &&
@@ -166,7 +166,6 @@ namespace hooks
 			unit->order_target.unit = nullptr;
 		}
 
-		// 004E7739
 		distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 		distance &= 0xFFFFFF00;
 		if (distance <= 0x1000)
@@ -183,7 +182,7 @@ namespace hooks
 			}
 		}
 		else
-		{ // 004E77B4
+		{
 			helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 			if (unit->order_target.pt.x != unit->next_target_waypoint.x
 				|| unit->order_target.pt.y != unit->next_target_waypoint.y)
@@ -216,7 +215,7 @@ namespace hooks
 								{
 									bStopLoop = true;
 								}
-								else if (helper::canUnload(unit, unitToUnload, &pos) == 0)
+								else if (helper::can_unload(unit, unitToUnload, &pos) == 0)
 								{
 									bStopAll = true;
 									bStopLoop = true;
@@ -240,9 +239,9 @@ namespace hooks
 		}
 	}
 
-	// unit is a unit to pick up by transport
+	// Unit is a unit to pick up by transport
 	// COULD NOT BE TESTED (tried bunker and all and nothing called this function)
-	void orders_Pickup4_0(Unit* unit)
+	void orders_pickup4_0(Unit* unit)
 	{
 		scbw::print("hello");
 		Unit* unitVar = unit;
@@ -420,17 +419,16 @@ namespace hooks
 	}
 
 	// unit is a unit aiming to enter a transport
-	void orders_EnterTransport(Unit* unit)
+	void orders_enter_transport(Unit* unit)
 	{
 		Unit* target = unit->order_target.unit;
-		if (target != nullptr
-			&& !(target->status & UnitStatus::IsHallucination)
-			&& units_dat::SpaceProvided[target->id] != 0
-			&& scbw::can_be_entered_by(target, unit))
-		{ // 004E7D51
-
+		if	 (target != nullptr
+		&&	!(target->status & UnitStatus::IsHallucination)
+		&&	  units_dat::SpaceProvided[target->id] != 0
+		&&	  scbw::can_be_entered_by(target, unit))
+		{
 			if (unit->main_order_state == 0
-				&& target->main_order_id != OrderId::Pickup2)
+			&&  target->main_order_id != OrderId::Pickup2)
 			{
 				if (target->status & UnitStatus::IsBuilding)
 				{
@@ -439,8 +437,8 @@ namespace hooks
 				}
 				unit->main_order_state = 1;
 			}
-			if (target->sprite->position.x != unit->next_target_waypoint.x ||
-				target->sprite->position.y != unit->next_target_waypoint.y)
+			if (target->sprite->position.x != unit->next_target_waypoint.x
+			||	target->sprite->position.y != unit->next_target_waypoint.y)
 			{
 				unit->next_target_waypoint.x = target->sprite->position.x;
 				unit->next_target_waypoint.y = target->sprite->position.y;
@@ -469,7 +467,7 @@ namespace hooks
 		}
 	}
 
-	void orders_Unload(Unit* unit)
+	void orders_unload(Unit* unit)
 	{
 		static Unit* unitTable_0059CB58 = (Unit*)(0x0059CB58);
 		static Unit* unitTable_0059CB64 = (Unit*)(0x0059CB64);
@@ -480,7 +478,7 @@ namespace hooks
 			unitTable_0059CB64 = (Unit*)(index_start + 12);
 		}
 		if (unit->status & UnitStatus::GroundedBuilding
-			|| unit->main_order_timer == 0)
+		||  unit->main_order_timer == 0)
 		{
 			s32 counter = 0;
 			u32 result_E7F70 = 0;
@@ -493,8 +491,7 @@ namespace hooks
 			while (!bEndLoop)
 			{
 				loadedUnitOffset = (u32*)&unit->loaded_unit[counter];
-				if (*loadedUnitOffset != 0
-					&& unitTable_0059CB64[unit->loaded_unit[counter].index].link.prev != nullptr) // sprite check
+				if (*loadedUnitOffset != 0 && unitTable_0059CB64[unit->loaded_unit[counter].index].link.prev != nullptr) // sprite check
 				{
 					Unit* unitToUnload = &(unitTable_0059CB58[unit->loaded_unit[counter].index]);
 					if (unitToUnload->main_order_id != 0 || unitToUnload->main_order_state != 1)
@@ -567,7 +564,7 @@ namespace hooks
 					prepare_for_next_order(unit);
 				}
 				else if (unit->unit_ai != nullptr)
-				{ // 004E81DE
+				{
 					unit->user_action_flags |= 1;
 					if (unit->main_order_id == OrderId::Die)
 					{
@@ -606,8 +603,8 @@ namespace hooks
 		}
 	}
 
-	bool can_enter_transport(Unit* transport, Unit* unit)
-	{ // 004E6E00
+	bool can_enter_transport(Unit* transport, Unit* unit) // 004E6E00
+	{
 		if (!(transport->status & UnitStatus::Completed))
 		{
 			return 0;

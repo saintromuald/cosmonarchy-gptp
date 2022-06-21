@@ -5,8 +5,7 @@
 
 namespace hooks
 {
-	// the transport is "unit", the target is "unitToLoad"
-	void load_unit_proc(Unit* transport, Unit* cargo_unit)
+	void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
 	{
 		u8 unitRaceId;
 		u32 loaded_index;
@@ -130,9 +129,9 @@ namespace hooks
 
 		// TODO: revisit those, seems like it should be cargo_unit
 		if (transport->id == UnitId::ZergCreepColony
-			|| transport->id == UnitId::ZergSunkenColony
-			|| transport->id == UnitId::ZergSporeColony
-			|| transport->id == UnitId::ZergLarvalColony)
+		||  transport->id == UnitId::ZergSunkenColony
+		||  transport->id == UnitId::ZergSporeColony
+		||  transport->id == UnitId::ZergLarvalColony)
 		{
 			// TODO: inform creep about missing colony?
 		}
@@ -191,7 +190,6 @@ namespace hooks
 				cargo_unit->path = nullptr;
 			}
 
-			// 004E7A81
 			cargo_unit->movement_state = 0;
 			if (cargo_unit->sprite->elevation_level < 12)
 			{
@@ -223,7 +221,6 @@ namespace hooks
 					subUnit->path = nullptr;
 				}
 
-				// 004E7B25
 				subUnit->movement_state = 0;
 				if (subUnit->sprite->elevation_level < 12)
 				{
@@ -234,31 +231,28 @@ namespace hooks
 					subUnit->pathing_flags &= ~1;
 				}
 			}
-			else // 004E7B51
+			else
 			{
 				scbw::set_unit_position(cargo_unit, transport->sprite->position.x, transport->sprite->position.y);
 			}
 		}
 	}
 
-	// the transported unit is "unit", the transport is accessed through unit->connected_unit
-	// Has a boolean return value
-	b32 unload_unit_proc(Unit* unit)
+	b32 unload_unit_proc(Unit* unit) // 004E7F70
 	{
 		b32 return_value = 0;
 		if (unit->connected_unit != nullptr)
 		{
 			Unit* transport = unit->connected_unit;
 			if ((transport->main_order_timer == 0 || transport->status & UnitStatus::GroundedBuilding)
-				&& !(transport->status & UnitStatus::Frozen)
-				&& transport->lockdown_timer == 0
-				&& transport->stasis_timer == 0
-				&& transport->maelstrom_timer == 0)
-			{ // 004E7FDC
-
+			&& !(transport->status & UnitStatus::Frozen)
+			&&   transport->lockdown_timer == 0
+			&&   transport->stasis_timer == 0
+			&&   transport->maelstrom_timer == 0)
+			{
 				Point16 pos = {0,0};
 				// probably check where unit can be spawned
-				if (helper::canUnload(transport, unit, &pos) != 0)
+				if (helper::can_unload(transport, unit, &pos) != 0)
 				{
 					if (transport->id == UnitId::TerranTrojan)
 					{
@@ -325,8 +319,8 @@ namespace hooks
 						scbw::set_unit_position(unit->subunit, pos.x, pos.y);
 					}
 
-					helper::IgnoreAllScriptAndGotoIdle(unit);
-					helper::function_004E7E10(unit, 0);
+					helper::ignore_all_scripts_and_go_to_idle(unit);
+					helper::unload_unit_ext(unit, 0);
 					if (unit->unit_ai == nullptr)
 					{
 						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
@@ -365,7 +359,7 @@ namespace hooks
 					scbw::refresh_console();
 					return_value = 1;
 					if (transport->status & UnitStatus::GroundedBuilding)
-					{ // 004E806B
+					{
 						if (unit->id != UnitId::ProtossAccantor)
 						{
 							u8 weapon_id = unit->get_ground_weapon();

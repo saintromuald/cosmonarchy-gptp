@@ -525,15 +525,15 @@ namespace helper
 	// for cmdrecv_hold_position
 	Unit* get_active_player_next_selection();																						// 0049A850
 	s32 order_allowed(Unit* a1, u16 a2, s32 a3);																					// 0046DC20
-	void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
+	void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);						// 004754F0
 
 	// for check_unit_visibility
 	u32 get_detecting_players(Unit* unit);																							// 00441130
-	u32 iterate_player_units_something(u32 aResult, Unit* unit);																		// 0049E8A0
-	void make_sprite_visible(Sprite* sprite);																							// 00497ED0
-	s32 update_building_land_unit_selection(u32 unused, Unit* selection);																// 004C3B40
-	char remove_selection_circle(Sprite* sprite);																						// 004975D0
-	Image* make_sprite_invisible(Sprite* sprite);																						// 00498A10
+	u32 iterate_player_units_something(u32 aResult, Unit* unit);																	// 0049E8A0
+	void make_sprite_visible(Sprite* sprite);																						// 00497ED0
+	s32 update_building_land_unit_selection(u32 unused, Unit* selection);															// 004C3B40
+	char remove_selection_circle(Sprite* sprite);																					// 004975D0
+	Image* make_sprite_invisible(Sprite* sprite);																					// 00498A10
 
 	//// receive_command
 	void function_004756B0(Unit* unit, u8 order_id, u32 unk1, u32 unk2, u32 bCommandType);											// 004756B0
@@ -544,16 +544,16 @@ namespace helper
 	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																// 0049A8C0
 
 	//// load_unload_proc
-	void IgnoreAllScriptAndGotoIdle(Unit* unit);																					// 00476550
-	u32 canUnload(Unit* transport, Unit* loaded_unit, Point16* pos);																// 004E76C0
-	void function_004E7E10(Unit* unit, u32 unk);																					// 004E7E10
+	char ignore_all_scripts_and_go_to_idle(Unit* unit);																				// 00476550
+	u32 can_unload(Unit* transport, Unit* loaded_unit, Point16* pos);																// 004E76C0
+	void unload_unit_ext(Unit* unit, u32 unk);																						// 004E7E10
 
 	//// stats_panel_display
 	void StatsNukesCount(BinDlg* dialog, u32 index);																				// 00425310
 	void StatHangerCount(BinDlg* dialog, u32 index);																				// 004253D0
 	void StatsShieldLevel(BinDlg* dialog, u32 index);																				// 00425510
 	void StatsArmorLevel(BinDlg* dialog, u32 index);																				// 00425600
-	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weapon_id);																	// 00425790
+	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weapon_id);																// 00425790
 	bool StatSpidermineCount(BinDlg* dialog, u32 index);																			// 00426300
 
 	// For get_unit_rank_string and check_hotkey_char
@@ -569,7 +569,7 @@ namespace helper
 	//// bunker_hooks
 	Unit* findRandomAttackTarget(Unit* unit);																						// 00442FC0
 	b32 attack_apply_cooldown(Unit* unit);																							// 00478B40
-	void set_image_direction(Image* image, s8 direction);																				// 004D5F80
+	void set_image_direction(Image* image, s8 direction);																			// 004D5F80
 
 	//// api
 	void ApplySpores(Unit* unit);
@@ -706,11 +706,11 @@ namespace helper
 	bool can_unit_id_fit_at_xy(s32 x, s32 y, u32 unit_id);														    // 0042D810
 	Unit** get_all_units_in_bounds(Box16* coords);																	// 0042FF80
 	void increment_unit_kill_count(Unit* unit);																		// 004759C0
-	u32 get_unit_damage_bonus(Unit* unit, u8 weapon_id);																// 00475EC0
+	u32 get_unit_damage_bonus(Unit* unit, u8 weapon_id);															// 00475EC0
 	void attack_overlay_and_notify(Unit* attacker, Unit* target, u32 weaponType, u32 direction);			        // 00479730
-	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player);												// 00488210
+	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player);													// 00488210
 	u32 get_unit_bullet_damage(Bullet* bullet, Unit* target);														// 0048ACD0
-	u32 get_spell_stat_string(Unit* target, u32 techId, u8 player);									            // 00491E80
+	u32 get_spell_stat_string(Unit* target, u32 techId, u8 player);													// 00491E80
 	void disableUnitFunc(Unit* unit);																				// 00492CC0 (hooked in weapon_spellhit)
 	void setAllImageGroupFlagsPal11(Sprite* sprite);																// 00497430
 	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);						// 004E8280
@@ -725,7 +725,6 @@ namespace helper
 	s32 setUnitStatTxtErrorMsg(s32 a1);																				// 0048CCB0
 	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume);									// 0048ED50
 	void return_all_interceptors(Unit* unit);																		// 004655F0
-	char ignore_all_scripts_and_go_to_idle(Unit* unit);																// 00476550
 
 	// For maelstromProc
 	void orders_self_destructing(Unit* unit);																		// 00475710
@@ -740,10 +739,10 @@ namespace helper
 	s32 setEventUnitComplete();																						// 004C36C0
 
 	// For findBestUnit
-	Unit** find_all_units(Box16* coords);																				// 004308A0
+	Unit** find_all_units(Box16* coords);																			// 004308A0
 
 	//// selection
-	bool unit_is_owned_by_current_player(Unit* unit); 																	// 00401170
+	bool unit_is_owned_by_current_player(Unit* unit); 																// 00401170
 	bool isUnitBurrowed(Unit* unit);																				// 00402A70
 	void sc_memcpy_0(u32 dest, u32 src, u32 memsize);																// 00408FD0
 	void show_rally_target(Unit* unit);																				// 00468670

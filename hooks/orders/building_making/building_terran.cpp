@@ -566,8 +566,14 @@ namespace hooks
 			{
 				case RaceId::Zerg:
 				{
-					helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
-					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+					if (unit->create_origin == UnitId::ZergDroleth) {
+						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
+						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+					}
+					else if (unit->create_origin == UnitId::ZergGosvileth) {
+						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
+						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+					}
 				} break;
 				case RaceId::Terran:
 				{

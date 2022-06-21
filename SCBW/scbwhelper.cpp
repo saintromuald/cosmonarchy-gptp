@@ -4875,18 +4875,21 @@ namespace helper
 		}
 	}
 
-	void IgnoreAllScriptAndGotoIdle(Unit* unit)
+	char ignore_all_scripts_and_go_to_idle(Unit* unit)
 	{
+		static char result;
 		const u32 Func_IgnoreAllScriptAndGotoIdle = 0x00476550;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			CALL Func_IgnoreAllScriptAndGotoIdle
+			MOV result, AL
 			POPAD
 		}
+		return result;
 	}
 
-	u32 canUnload(Unit* transport, Unit* loaded_unit, Point16* pos)
+	u32 can_unload(Unit* transport, Unit* loaded_unit, Point16* pos)
 	{
 		const u32 Func_canUnload = 0x004E76C0;
 		static u32 result;
@@ -4902,7 +4905,7 @@ namespace helper
 		return result;
 	}
 
-	void function_004E7E10(Unit* unit, u32 unk)
+	void unload_unit_ext(Unit* unit, u32 unk)
 	{
 		const u32 Func_Sub4E7E10 = 0x004E7E10;
 		__asm {
@@ -7642,21 +7645,6 @@ namespace helper
 		}
 	}
 
-	char ignore_all_scripts_and_go_to_idle(Unit* unit)
-	{
-		const u32 Func_ignoreAllScriptsAndGoToIdle = 0x00476550;
-		static s32 result;
-		__asm
-		{
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_ignoreAllScriptsAndGoToIdle
-			MOV result, EAX
-			POPAD
-		}
-		return (char)result;
-	}
-
 	void orders_self_destructing(Unit* unit)
 	{
 		const u32 Func_orders_SelfDestructing = 0x00475710;
@@ -8428,7 +8416,7 @@ namespace helper
 		return result;
 	}
 
-	// For orders_Pickup4_0
+	// For orders_pickup4_0
 	void issue_order_targeting_ground(Unit* unit, u8 order_id, s16 x, s16 y)
 	{
 		const u32 Func_issueOrderTargetingGround = 0x00475260;
