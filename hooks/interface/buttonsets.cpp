@@ -835,6 +835,10 @@ namespace hooks {
 						}
 					}
 
+					if (buttonset_id == UnitId::ZergLarva && !has_egg && current_button->icon_id == IconId::Cancel) {
+						current_button_state = Button_State::Invisible;
+					}
+
 					if (current_button->action_func == (ActFunc*)ButtonActions::Create_AddOn && *g_client_selection_count > 1) {
 						current_button_state = Button_State::Invisible;
 					}
