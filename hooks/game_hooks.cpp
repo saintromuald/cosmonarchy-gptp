@@ -298,7 +298,7 @@ namespace hooks
 				*/
 
 				// Reveal resources
-				for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
+				for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next)
 				{
 					if (unit->player == 11 && units_dat::base_property[unit->id] & UnitProperty::Building)
 					{
@@ -377,7 +377,7 @@ namespace hooks
 			process_quickbuilding();
 
 			// Loop through all visible units in the game.
-			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
+			for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 				tick_unit(unit);
 			}
 			scbw::set_ingame_loop_state(false);

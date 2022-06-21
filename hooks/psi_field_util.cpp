@@ -120,7 +120,7 @@ namespace hooks
 {
 	void update_psi_field_providers()
 	{
-		for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next)
 		{
 			if (hooks::can_make_psi_field(unit->id))
 			{

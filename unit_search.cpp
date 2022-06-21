@@ -271,7 +271,7 @@ Unit* unit_search_get_first(EntryArray* unit_array, SearchFilterFunc match_func)
 void update_search_index() {
 	// Add units
 	search_index_reset(&unit_index);
-	for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
+	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 		search_index_add(&unit_index, unit->position, unit);
 	}
 

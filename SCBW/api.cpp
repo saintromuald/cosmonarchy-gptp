@@ -2505,7 +2505,7 @@ namespace scbw
 
 	void dump_sync_data() {
 		FILE* file = fopen("desync.text", "wb");
-		for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			fprintf(file, "Unit %s #%u", unit->getName(), unit->get_unit_index() - 1);
 			fprintf(file, "\tPlayer %u", unit->player);
 
