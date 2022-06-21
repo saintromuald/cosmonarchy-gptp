@@ -476,7 +476,7 @@ LABEL_42:
 			{
 				order_id = OrderId::HoldPosition1;
 			}
-			if (helper::order_allowed(i, order_id, *active_nation_id) == 1)
+			if (helper::order_allowed(i, order_id, *g_active_nation_id) == 1)
 			{
 				helper::targeted_order(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, order_id, 0, *orderType4Position, *orderType4Target);
 			}

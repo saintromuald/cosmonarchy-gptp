@@ -82,7 +82,7 @@ namespace hooks
 				&& units_dat::group_flags[unit->id].is_protoss != 1
 				&& unit->status & UnitStatus::GroundedBuilding)
 			{
-				*can_update_powered_status = 1;
+				*g_can_update_powered_status = 1;
 			}
 
 			helper::give_ai(unit);
@@ -111,7 +111,7 @@ namespace hooks
 	void giveAI(Unit* unit) // 00463040
 	{
 		s32 player = unit->player;
-		if (player < 8 && player_table[player].type == PlayerType::Computer)
+		if (player < 8 && g_player_table[player].type == PlayerType::Computer)
 		{
 			if (unit->id == UnitId::TerranCleric)
 			{

@@ -14,9 +14,9 @@ namespace hooks
 			||	order_id == OrderId::BuildProtoss2
 			||	order_id == OrderId::PlaceAddon)
 			{
-				if (builder->can_make_unit(builtUnitId, *active_nation_id))
+				if (builder->can_make_unit(builtUnitId, *g_active_nation_id))
 				{
-					bReturnValue = (helper::order_is_allowed(builder, order_id, *active_nation_id) != 0);
+					bReturnValue = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
 				}
 			}
 			else if (order_id == OrderId::Build5			// Build Nydus Exit
@@ -24,14 +24,14 @@ namespace hooks
 			{
 				if (builder->id == builtUnitId)
 				{
-					bReturnValue = (helper::order_is_allowed(builder, order_id, *active_nation_id) != 0);
+					bReturnValue = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
 				}
 			}
 			else if (order_id == OrderId::CTFCOP2) // Create Flag Beacon
 			{
-				if (*elapsed_time_seconds <= 600 && builder->id == builtUnitId)
+				if (*g_elapsed_time_seconds <= 600 && builder->id == builtUnitId)
 				{
-					bReturnValue = (helper::order_is_allowed(builder, order_id, *active_nation_id) != 0);
+					bReturnValue = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
 				}
 			}
 		}

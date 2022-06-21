@@ -276,7 +276,7 @@ namespace hooks
 		{
 			if (unit->is_valid_caster())
 			{
-				if (!scbw::is_allied_to(*local_nation_id, unit->player))
+				if (!scbw::is_allied_to(*g_local_nation_id, unit->player))
 				{
 					scbw::refresh_console();
 				}

@@ -473,7 +473,7 @@ namespace hooks
 		unit->status &= ~UnitStatus::Completed;
 		unit->create_origin = unit->id;
 		helper::replace_unit_with_id(unit, id);
-		if (player_table[unit->player].type == PlayerType::Computer) {
+		if (g_player_table[unit->player].type == PlayerType::Computer) {
 			if (unit->unit_ai) {
 				WorkerAi* worker_ai = (WorkerAi*)unit->unit_ai;
 				AiTown* unit_town = worker_ai->town;

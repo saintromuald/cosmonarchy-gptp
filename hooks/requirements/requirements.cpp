@@ -564,7 +564,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				{
 					{
 						//DebugOut("MustHaveAddon (%d):", currentOpcode);
-						if (*bw_cheat_state & CheatFlags::ModifyThePhaseVariance)
+						if (*g_cheat_state & CheatFlags::ModifyThePhaseVariance)
 						{
 							++opcodeIndex;
 							v11 = v9 + 1;
@@ -780,7 +780,7 @@ LABEL_87:
 				case RequirementOpcodes::MustBeBroodWar:
 				{
 					//DebugOut("MustBeBroodWar (%d):", currentOpcode);
-					if (!*bw_is_brood_war)
+					if (!*g_is_brood_war)
 					{
 						*last_internal_error = InternalErrors::UnknownError26;
 						//DebugOut(">Return NotAllowed");
@@ -794,7 +794,7 @@ LABEL_87:
 				{
 					//DebugOut("IsResearched (%d):", currentOpcode);
 					v10 = requirementsTable[opcodeIndex++];
-					if (scbw::has_tech_researched(parentUnit->player, v10) && !(*bw_cheat_state & CheatFlags::MedievalMan))
+					if (scbw::has_tech_researched(parentUnit->player, v10) && !(*g_cheat_state & CheatFlags::MedievalMan))
 					{
 						*last_internal_error = InternalErrors::UnknownError9;
 						//DebugOut(">Return Gray");
@@ -820,7 +820,7 @@ LABEL_87:
 				default:
 				{
 					// DebugOut("(Default) number_of_completed_units_of_id (%d)", currentOpcode);
-					if (*bw_cheat_state & CheatFlags::ModifyThePhaseVariance)
+					if (*g_cheat_state & CheatFlags::ModifyThePhaseVariance)
 					{
 						++v9;
 					}

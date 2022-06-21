@@ -14,7 +14,7 @@ namespace hooks
 	bool AI_RestorationRequirementsProc(Unit* a1, Unit* a2);												// 004407E0
 	bool AI_EMPShieldRequirementsProc(Unit* a1, Unit* a2);												// 004413D0
 	char attackOverlayAndNotify(Unit* a1, Unit* a2, u8 a3, char a4);										// 00479730
-	void drawImageHPBar(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, s32 colorData);			// 0047A820
+	void drawImageHPBar(s32 g_screen_x, s32 g_screen_y, GrpFrame* pFrame, Box32* grpRect, s32 colorData);			// 0047A820
 	void setBuildShieldGain(Unit* a1);																		// 0047B6A0
 	s32 getUnitBulletDamage(Unit* victim, Bullet* bullet);												// 0048ACD0
 	s32 canCastSpell(Unit* a1);																			// 00492140

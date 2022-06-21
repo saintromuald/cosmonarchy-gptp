@@ -33,7 +33,7 @@ namespace hooks
 		s32 childAi2;
 		s32 childAi4;
 
-		if (player_table[self->player].type != PlayerType::Computer || self->player >= 8u)
+		if (g_player_table[self->player].type != PlayerType::Computer || self->player >= 8u)
 		{
 			return;
 		}
@@ -41,7 +41,7 @@ namespace hooks
 		{
 			if (self->unit_ai)
 			{
-				AIScriptController[self->player].previous_building_hit_second = *elapsed_time_seconds;
+				AIScriptController[self->player].previous_building_hit_second = *g_elapsed_time_seconds;
 				BuildingAi* selfBuildingAi = (BuildingAi*)self->unit_ai;
 				if (selfBuildingAi)
 				{
@@ -154,7 +154,7 @@ LABEL_37:
 						}
 						if (v14->state)
 						{
-							if (!selfRegion->state && *elapsed_time_seconds > 60)
+							if (!selfRegion->state && *g_elapsed_time_seconds > 60)
 								helper::ai_set_region_type(5, selfRegion);
 						}
 					}
@@ -718,7 +718,7 @@ LABEL_37:
 		}
 
 		s32 unit_id = UnitId::None;
-		u8 raceId = player_table[player].race;
+		u8 raceId = g_player_table[player].race;
 		switch(raceId)
 		{
 			case RaceId::Terran:
@@ -1122,7 +1122,7 @@ LABEL_37:
 			}
 			Point16 worker_pos = {};
 			AiTown* town = worker_ai->town;
-			worker_ai->last_update_second = *elapsed_time_seconds;
+			worker_ai->last_update_second = *g_elapsed_time_seconds;
 			GroupFlag group_flags = units_dat::group_flags[worker->id];
 			if ((group_flags.is_zerg || group_flags.is_protoss || !group_flags.is_terran || !helper::ai_scv_repair_controller(worker, town))
 				&& !helper::ai_try_progress_spending_queue_worker(town, worker))
@@ -1440,7 +1440,7 @@ LABEL_37:
 			u32 gas_count = gas_percentage * town->worker_count / 100;
 
 			u32 worker_count = 0;
-			switch (player_table[town_player].race) {
+			switch (g_player_table[town_player].race) {
 				case RaceId::Terran: {
 					worker_count += unit_count_table[UnitId::TerranMason].player[town_player];
 					worker_count += unit_count_table[UnitId::TerranTalos].player[town_player];
@@ -1534,13 +1534,13 @@ LABEL_37:
 					|| unit_order == OrderId::DroneBuild
 					|| worker->status & UnitStatus::InTransport)
 				{
-					worker_ai->last_update_second = *elapsed_time_seconds;
+					worker_ai->last_update_second = *g_elapsed_time_seconds;
 				}
-				//else if (*elapsed_time_seconds - worker_ai->last_update_second >= 60)
+				//else if (*g_elapsed_time_seconds - worker_ai->last_update_second >= 60)
 				//{
 				//	helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
 				//	worker_ai->wait_timer = 10;
-				//	worker_ai->last_update_second = *elapsed_time_seconds;
+				//	worker_ai->last_update_second = *g_elapsed_time_seconds;
 				//	worker_ai->reassign_count += 1;
 				//	helper::ai_get_old_peons(worker_ai->town, 1u);
 				//}
@@ -1565,12 +1565,12 @@ LABEL_37:
 					}
 
 					UnitExt* workerExt = globals.get_unit_ext(worker);
-					if (*elapsed_time_seconds - worker_ai->last_update_second >= timer
+					if (*g_elapsed_time_seconds - worker_ai->last_update_second >= timer
 						&& !workerExt->timers[TimerAI_KitingLeash])
 					{
 						helper::issue_order_targeting_nothing(worker, OrderId::ComputerAI);
 						worker_ai->wait_timer = 0;
-						worker_ai->last_update_second = *elapsed_time_seconds;
+						worker_ai->last_update_second = *g_elapsed_time_seconds;
 						helper::ai_get_old_peons(worker_ai->town, 1);
 					}
 				}
@@ -1779,7 +1779,7 @@ LABEL_37:
 				}
 			}
 			if (player != i && first_player_unit->unit[i]) {
-				f32 distance = scbw::get_distance_fast(area->position, start_positions[i]) / 32.0;
+				f32 distance = scbw::get_distance_fast(area->position, g_start_positions[i]) / 32.0;
 				start_location_count++;
 				average_start_location_distance += distance;
 			}

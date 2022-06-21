@@ -39,7 +39,7 @@ namespace hooks
 		for (s32 i = 0; i < SelectionCap && (bReturnValue == TRUE); i++)
 		{
 
-			unit_from_selection = client_selection_group->unit[i];
+			unit_from_selection = g_client_selection_group->unit[i];
 
 			if (unit_from_selection != nullptr)
 			{
@@ -80,7 +80,7 @@ namespace hooks
 		for (s32 i = 0; i < SelectionCap && (bReturnValue == FALSE); i++)
 		{
 
-			unit_from_selection = client_selection_group->unit[i];
+			unit_from_selection = g_client_selection_group->unit[i];
 
 			if (unit_from_selection != nullptr)
 			{

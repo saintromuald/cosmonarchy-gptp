@@ -14,7 +14,7 @@ namespace hooks
 		||	techId == TechId::LuminaryAuralAssault
 		||	(order_target && hooks::canTargetSpell(techId, order_target, 228, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
 		{
-			char cheatFlags = *bw_cheat_state;
+			char cheatFlags = *g_cheat_state;
 			u16 techCost = techdata_dat::energy_cost[techId] << 8;
 			*energyCost = techCost;
 			if ((cheatFlags & 8 || caster->energy >= techCost))
@@ -53,7 +53,7 @@ namespace hooks
 
 			char* string = helper::getStatTxtString(casterRace + 864);
 			if (string) {
-				if (*active_player_id == *local_human_id) {
+				if (*g_active_player_id == *g_local_human_id) {
 					helper::setUnitStatTxtErrorMsg((s32) string);
 				}
 			}
@@ -64,8 +64,8 @@ namespace hooks
 		s16 orderStringIndex = defaultOrderString - 1;
 		char* finalString;
 		if ((u16) defaultOrderString) {
-			if (orderStringIndex < *statTxtTbl) {
-				finalString = (char*) statTxtTbl + statTxtTbl[orderStringIndex + 1];
+			if (orderStringIndex < *g_stat_txt_tbl) {
+				finalString = (char*) g_stat_txt_tbl + g_stat_txt_tbl[orderStringIndex + 1];
 			} else {
 				finalString = "";
 			}
@@ -252,7 +252,7 @@ namespace hooks
 					spellCost = techdata_dat::energy_cost[techUsed] * 256;
 				}
 
-				if (!(*bw_cheat_state & CheatFlags::TheGathering) &&
+				if (!(*g_cheat_state & CheatFlags::TheGathering) &&
 					unit->energy < spellCost)
 				{
 					u8 raceId = unit->get_race();
@@ -260,8 +260,8 @@ namespace hooks
 					if (message != nullptr)
 					{
 						// display an error message only for the owner of the unit
-						if (*local_nation_id == unit->player
-						&&	*active_player_id == *local_human_id)
+						if (*g_local_nation_id == unit->player
+						&&	*g_active_player_id == *g_local_human_id)
 						{
 							helper::setUnitStatTxtErrorMsg(message);
 						}

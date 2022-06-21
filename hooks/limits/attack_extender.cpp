@@ -29,7 +29,7 @@ namespace hooks
 		v10 = result;
 		if (AIScriptController[child].AI_Flags.is_use_map_settings
 			|| (childTown = AIScriptController[child].previous_building_hit_second) != 0
-			&& (v12 = *elapsed_time_seconds - childTown >= 30, *elapsed_time_seconds - childTown < 30))
+			&& (v12 = *g_elapsed_time_seconds - childTown >= 30, *g_elapsed_time_seconds - childTown < 30))
 		{
 			v11 = 60;
 		}

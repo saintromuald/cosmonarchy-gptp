@@ -243,25 +243,25 @@ namespace scbw
 	/// Checks whether the game is in Brood War mode (instead of vanilla StarCraft).
 	inline bool is_brood_war_mode()
 	{
-		return (*bw_is_brood_war) != 0;
+		return (*g_is_brood_war) != 0;
 	}
 
 	/// Checks whether the given cheat flag is enabled.
 	inline bool is_cheat_enabled(u32 cheatFlag)
 	{
-		return ((*bw_cheat_state) & cheatFlag) != 0;
+		return ((*g_cheat_state) & cheatFlag) != 0;
 	}
 
 	/// Checks whether the game is paused.
 	inline bool is_game_paused()
 	{
-		return (*bw_is_game_paused) != 0;
+		return (*g_is_game_paused) != 0;
 	}
 
 	/// Checks whether the game is in replay mode.
 	inline bool isInReplay()
 	{
-		return (*bw_is_in_replay) != 0;
+		return (*g_is_in_replay) != 0;
 	}
 
 	//////////////////////////////////////////////////////////////// @}
@@ -521,8 +521,8 @@ namespace scbw
 	inline bool set_ingame_loop_state(bool newState)
 	{
 		//Identical to function @ 0x004DC540
-		b32 previousState = *is_in_game_loop;
-		*is_in_game_loop = (newState ? 1 : 0);
+		b32 previousState = *g_is_in_game_loop;
+		*g_is_in_game_loop = (newState ? 1 : 0);
 		return previousState != 0;
 	}
 

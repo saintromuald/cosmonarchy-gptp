@@ -12,7 +12,7 @@ namespace hooks
 			if (unit->id == UnitId::ZergLarva && !(unit->sprite->flags & SpriteFlags::Hidden)) {
 				bool connected = false;
 				for (u32 i = 0; i < SelectionCap; ++i) {
-					Unit* other = client_selection_group->unit[i];
+					Unit* other = g_client_selection_group->unit[i];
 					if (!other) {
 						break;
 					}
@@ -40,7 +40,7 @@ namespace hooks
 		Unit* selection[SelectionCap] = {};
 
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			Unit* unit = client_selection_group->unit[i];
+			Unit* unit = g_client_selection_group->unit[i];
 			if (!unit) {
 				break;
 			}
@@ -76,7 +76,7 @@ namespace hooks
 	exit:
 		if (count) {
 			bool select = true;
-			if (count == 1 && *IS_HOLDING_ALT) {
+			if (count == 1 && *g_is_holding_alt) {
 				u32 unit_id = helper::unit_to_unit_id(selection[0]);
 				if (helper::select_single_unit_from_id(unit_id)) {
 					select = false;

@@ -55,7 +55,7 @@ namespace hooks
             return false;
         }
         sprite->elevation_level = 1;
-        if (*bw_is_in_replay || !unit_can_show_power_for(unit, *local_nation_id)) {
+        if (*g_is_in_replay || !unit_can_show_power_for(unit, *g_local_nation_id)) {
             unit->building.pylon_aura->flags |= SpriteFlags::Hidden;
             helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, 0);
             return true;
@@ -76,7 +76,7 @@ namespace hooks
     // Hooked to show allied power fields -Veeq7
     void __cdecl create_pylon_aura() {
         for (Unit* unit = *first_psi_field_provider; unit; unit = unit->psi_link.next) {
-            if (!*bw_is_in_replay && unit_can_show_power_for(unit, *local_nation_id) && (unit->building.pylon_aura || show_power_sprite(unit))) {
+            if (!*g_is_in_replay && unit_can_show_power_for(unit, *g_local_nation_id) && (unit->building.pylon_aura || show_power_sprite(unit))) {
                 unit->building.pylon_aura->flags &= ~SpriteFlags::Hidden;
                 helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, *psi_vision_filter);
             }

@@ -704,14 +704,14 @@ namespace hooks
 
 	void __declspec(naked) drawImageHPBar_Wrapper()
 	{
-		static s32 screenX;
-		static s32 screenY;
+		static s32 g_screen_x;
+		static s32 g_screen_y;
 		static GrpFrame* pFrame;
 		static Box32* grpRect;
 		static s32 colorData;
 		__asm {
-			MOV screenX, ECX
-			MOV screenY, EDX
+			MOV g_screen_x, ECX
+			MOV g_screen_y, EDX
 			PUSH EBP
 			MOV EBP, ESP
 			SUB ESP, 0x08
@@ -725,7 +725,7 @@ namespace hooks
 			POP EAX
 			PUSHAD
 		}
-		hooks::drawImageHPBar(screenX, screenY, pFrame, grpRect, colorData);
+		hooks::drawImageHPBar(g_screen_x, g_screen_y, pFrame, grpRect, colorData);
 		__asm {
 			POPAD
 			MOV ESP, EBP

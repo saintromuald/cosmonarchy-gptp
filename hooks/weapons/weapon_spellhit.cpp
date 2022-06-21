@@ -80,7 +80,7 @@ namespace hooks
 		Sprite* sprite = unit->sprite;
 		if (sprite->flags & 8)
 		{
-			if (*client_selection_count > 1u)
+			if (*g_client_selection_count > 1u)
 			{
 				result = helper::update_building_land_unit_selection(*(u32*)sprite, unit);
 			}
@@ -766,7 +766,7 @@ namespace hooks
 		Point16 a2; // [esp+4h] [ebp-4h]
 
 		v1 = unit;
-		if (!(*bw_cheat_state & 0x800))
+		if (!(*g_cheat_state & 0x800))
 		{
 			v2 = techdata_dat::energy_cost[4] * 256;
 			v3 = v1->energy >= v2;
@@ -792,9 +792,9 @@ namespace hooks
 				{
 					goto LABEL_15;
 				}
-				if (v7 < *statTxtTbl)
+				if (v7 < *g_stat_txt_tbl)
 				{
-					v8 = (char*)statTxtTbl + statTxtTbl[v7 + 1];
+					v8 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[v7 + 1];
 					if (!v8)
 					{
 LABEL_15:
@@ -818,7 +818,7 @@ LABEL_15:
 				{
 					v8 = "";
 				}
-				if ((u8)v1->player == *local_nation_id && *active_player_id == *local_human_id)
+				if ((u8)v1->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
 				{
 					helper::setUnitStatTxtErrorMsg((s32)v8);
 				}
@@ -836,7 +836,7 @@ LABEL_15:
 			helper::update_unit_stats_and_finish_building(v10);
 			helper::update_unit_strength(v11);
 			helper::play_sound_from_unit(388, v1, 1, 0);
-			if (!(*bw_cheat_state & 0x800))
+			if (!(*g_cheat_state & 0x800))
 			{
 				v1->spend_unit_energy(techdata_dat::energy_cost[4] * 256);
 			}

@@ -461,7 +461,7 @@ void Globals::frame_hook() {
 		if (revivingUnit.timer > 0) {
 			revivingUnit.timer--;
 		} else {
-			if (player_table[revivingUnit.player].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town) {
+			if (g_player_table[revivingUnit.player].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town) {
 				auto revived = scbw::create_unit_in_game(revivingUnit.unit_id, revivingUnit.player, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
 				if (revived) {
 					UnitExt* revivedExt = globals.get_unit_ext(revived);

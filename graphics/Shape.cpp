@@ -124,10 +124,10 @@ namespace graphics
 			case ON_SCREEN:
 				break;
 			case ON_MAP:
-				p1.x -= *screenX;
-				p1.y -= *screenY;
-				p2.x -= *screenX;
-				p2.y -= *screenY;
+				p1.x -= *g_screen_x;
+				p1.y -= *g_screen_y;
+				p2.x -= *g_screen_x;
+				p2.y -= *g_screen_y;
 				break;
 			case ON_MOUSE:
 				p1.x += mouse->x;

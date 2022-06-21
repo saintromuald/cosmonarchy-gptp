@@ -60,12 +60,12 @@ namespace hooks {
 
 		if (config.show_timer) {
 			char buffer[32] = {};
-			format_time(buffer, 32, "", *elapsed_time_frames / 24);
+			format_time(buffer, 32, "", *g_elapsed_time_frames / 24);
 			draw_ui_text(buffer, 7);
 		}
 
 		if (config.show_apm) {
-			u32 apm = total_client_actions / (*elapsed_time_frames / 24.0 / 60.0);
+			u32 apm = total_client_actions / (*g_elapsed_time_frames / 24.0 / 60.0);
 
 			char buffer[32] = {};
 			sprintf_s(buffer, "APM: %u", apm);
@@ -78,10 +78,10 @@ namespace hooks {
 	}
 
 	void queue_game_command(u8* data, u32 size) {
-		if (*command_queue_size + size <= *provider_MaxBuffer) {
+		if (*g_command_queue_size + size <= *g_provider_max_buffer) {
 			register_action(data[0]);
-			memcpy((void*)&turn_buffer[*command_queue_size], data, size);
-			*command_queue_size += size;
+			memcpy((void*)&g_turn_buffer[*g_command_queue_size], data, size);
+			*g_command_queue_size += size;
 			return;
 		}
 
@@ -91,13 +91,13 @@ namespace hooks {
 
 		u32 turns = 0;
 		if (helper::snet_get_turns_in_transit(&turns)) {
-			if (turns >= 16 - *provider_LatencyCalls) {
+			if (turns >= 16 - *g_provider_latency_calls) {
 				return;
 			}
 			register_action(data[0]);
 			helper::send_turn();
-			memcpy((void*)&turn_buffer[*command_queue_size], data, size);
-			*command_queue_size += size;
+			memcpy((void*)&g_turn_buffer[*g_command_queue_size], data, size);
+			*g_command_queue_size += size;
 			return;
 		}
 
@@ -123,16 +123,16 @@ namespace hooks {
 							helper::queue_new_order((Order*)a5, a1, a4, a3, a7, a8, a2, (Vector32*)a9, (Unit*)a10);
 						} else {
 							u8 v11 = a3->player;
-							if (*statTxtTbl > 0x368u) {
-								helper::show_stat_txt_to_player(*statTxtTbl + statTxtTbl[873], v11);
+							if (*g_stat_txt_tbl > 0x368u) {
+								helper::show_stat_txt_to_player(*g_stat_txt_tbl + g_stat_txt_tbl[873], v11);
 							} else {
 								helper::show_stat_txt_to_player((s32)"", v11);
 							}
 						}
 					} else {
 						u8 v10 = a3->player;
-						if (*statTxtTbl > 0x366u) {
-							helper::show_stat_txt_to_player(*statTxtTbl + statTxtTbl[871], v10);
+						if (*g_stat_txt_tbl > 0x366u) {
+							helper::show_stat_txt_to_player(*g_stat_txt_tbl + g_stat_txt_tbl[871], v10);
 						} else {
 							helper::show_stat_txt_to_player((s32)"", v10);
 						}
@@ -149,7 +149,7 @@ LABEL_15:
 		s32 v4 = helper::unit_to_unit_id(*a1);
 		s32 result = helper::select_single_unit_from_id(v4); // eax
 
-		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0) {
+		if (a2 != 1 || !g_is_keycode_used[18] || result == 0) {
 			result = helper::select_multiple_units_from_unit_list(a2, a1, a3, a4);
 		}
 		return result;

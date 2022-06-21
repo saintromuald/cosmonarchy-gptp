@@ -78,15 +78,15 @@ void kill_hangar_units(Unit* unit)
 			u16 randomDeathTimer;
 			// TODO: Remove RNG, make farthest Stewards detonate first
 			// hardcoded RNG management
-			if (*is_in_game_loop)
+			if (*g_is_in_game_loop)
 			{
 				static u32* randomnessCounter_0051C6AC = (u32*)0x0051C6AC;
 				static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
 				*randomnessCounter_0051C6AC = *randomnessCounter_0051C6AC + 1;
 				*randomnessCounter_0051CA18 = *randomnessCounter_0051CA18 + 1;
-				*last_random_number = (*last_random_number * 0x015A4E35) + 1;
+				*g_last_random_number = (*g_last_random_number * 0x015A4E35) + 1;
 				// number between 0 and 32766
-				random_value = (*last_random_number / 65536) & 0x7FFF;
+				random_value = (*g_last_random_number / 65536) & 0x7FFF;
 			}
 			else
 			{
@@ -210,7 +210,7 @@ void unit_destructor_special_cases(Unit* unit)
 			unit->psi_link.prev = nullptr;
 			unit->psi_link.next = nullptr;
 			// end hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
-			*can_update_powered_status = true;
+			*g_can_update_powered_status = true;
 		} break;
 		case UnitId::ZergNydusCanal:
 		{

@@ -1529,8 +1529,8 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					}
 				}
 				multiplier += 0.5 * (fraud_class - 1);
-				resources->cumulativeMinerals[player] += 1200 * multiplier;
-				resources->cumulativeGas[player] += 300 * multiplier;
+				resources->cumulative_minerals[player] += 1200 * multiplier;
+				resources->cumulative_gas[player] += 300 * multiplier;
 				resources->minerals[player] = 1200 * multiplier;
 				resources->gas[player] = 300 * multiplier;
 
@@ -1538,7 +1538,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				u32 resource_upgrade = fraud_class;
 				scbw::set_upgrade_level(player, UpgradeId::MiningEfficiency, resource_upgrade);
 
-				start_positions[player] = spawn_location->pos;
+				g_start_positions[player] = spawn_location->pos;
 				if (race == RaceId::Terran) {
 					scbw::run_ai(player, spawn_location->pos, 'xCMT');
 				} else if (race == RaceId::Protoss) {
@@ -1581,7 +1581,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					}
 				}
 
-				scbw::minimap_ping(spawn_location->pos.x, spawn_location->pos.y, 0, *local_nation_id);
+				scbw::minimap_ping(spawn_location->pos.x, spawn_location->pos.y, 0, *g_local_nation_id);
 				player_vision->flags[player] |= 1 << 0;
 				if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
 					player_vision->flags[player] |= 1 << 7;
@@ -1766,7 +1766,7 @@ void tick_scenario() {
 		for (u32 i = 1; i < 7; ++i) {
 			FraudSpawnSequence* sequence = &fraud_spawn.sequence[i - 1];
 
-			if (sequence->temp_townhall && *elapsed_time_frames > 1) {
+			if (sequence->temp_townhall && *g_elapsed_time_frames > 1) {
 				Unit* unit = sequence->temp_townhall;
 				helper::set_building_tile_flag(unit, unit->get_x(), unit->get_y());
 				sequence->temp_townhall = 0;

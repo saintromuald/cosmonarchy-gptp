@@ -8,7 +8,7 @@ namespace hooks
 	void displayEstablishingShot() // 004D9200, hooked by X405
 	{
 		// This is the original original function which loads the establishing shots in campaigns:
-		if (!*multiplayer_mode && !(*bw_cheat_state & CheatFlags::NoGlues) && *campaign_index)
+		if (!*multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && *campaign_index)
 		{
 			for (s32 i = 0; i < 65; i++)
 			{

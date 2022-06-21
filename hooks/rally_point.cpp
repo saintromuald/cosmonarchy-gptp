@@ -208,7 +208,7 @@ namespace hooks
 		else if (fow_unit_id != UnitId::None)
 		{
 			u32 tileId = x / 32 + map_tile_size->width * (y / 32);
-			if (!((1 << *active_nation_id) & (*active_tile_array_int)[tileId]))
+			if (!((1 << *g_active_nation_id) & (*active_tile_array_int)[tileId]))
 			{
 				target = helper::find_fow_unit(y, x, fow_unit_id);
 				fow_unit_id = UnitId::None;
@@ -284,7 +284,7 @@ namespace hooks
 							}
 							rightOrder = units_dat::AttackUnitOrder[unit->id];
 						}
-						if (helper::order_is_allowed(unit, rightOrder, *active_nation_id) == 1)
+						if (helper::order_is_allowed(unit, rightOrder, *g_active_nation_id) == 1)
 						{
 							if (target)
 							{
@@ -475,13 +475,13 @@ namespace hooks
 	void input_game_right_mouse_click(DialogEvent* dialog_event) { // 004564E0
 		if (!helper::is_outside_of_game_screen(dialog_event->current.x, dialog_event->current.y)) {
 			u8 local_group_owner = local_selection_group_2[0] ? local_selection_group_2[0]->player : 255;
-			if (local_group_owner == *local_nation_id) {
+			if (local_group_owner == *g_local_nation_id) {
 				if (*active_portrait_unit) {
 					if (helper::unit_is_owned_by_current_player(*active_portrait_unit)) {
 						s32 selection_iterator = 0;
 						for (u32 i = 0; i < SelectionCap; ++i) {
 							selection_iterator = i;
-							Unit* selected_unit = client_selection_group->unit[i];
+							Unit* selected_unit = g_client_selection_group->unit[i];
 							if (selected_unit) {
 								if (helper::accepts_right_click_commands(selected_unit)) {
 									break;
@@ -492,17 +492,17 @@ namespace hooks
 							}
 						}
 						if (selection_iterator < SelectionCap) {
-							u32 find_x = *move_to_x + dialog_event->current.x;
-							u32 find_y = *move_to_y + dialog_event->current.y;
+							u32 find_x = *g_move_to_x + dialog_event->current.x;
+							u32 find_y = *g_move_to_y + dialog_event->current.y;
 							Unit* unit_at_point = helper::find_unit_at_point(find_x, find_y);
-							if (*client_selection_count != 1
+							if (*g_client_selection_count != 1
 							|| *active_portrait_unit != unit_at_point
 							|| unit_at_point && hooks::unit_can_rally(unit_at_point)) {
 								if (unit_at_point) {
 									goto exit;
 								}
 								for (u32 i = 0; i < SelectionCap; ++i) {
-									Unit* unit = client_selection_group->unit[i];
+									Unit* unit = g_client_selection_group->unit[i];
 									if (unit) {
 										if (helper::can_move(unit)) {
 											if (i < SelectionCap) {
@@ -512,7 +512,7 @@ namespace hooks
 												if (command_thingy) {
 													unit_id = command_thingy->unit_id;
 												}
-												helper::cmdact_right_click_order(unit_at_point, find_x, find_y, unit_id, IS_KEYCODE_USED[16]);
+												helper::cmdact_right_click_order(unit_at_point, find_x, find_y, unit_id, g_is_keycode_used[16]);
 												if (helper::show_right_click_error_if_needed(unit_at_point)) {
 													helper::play_worker_action_sound(*active_portrait_unit);
 												}
@@ -568,7 +568,7 @@ namespace hooks
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	b32 __stdcall btnscond_can_move_special_case(u32 buffer) { // 00428D40 - guessed arg name, unused
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			Unit* unit = client_selection_group->unit[i];
+			Unit* unit = g_client_selection_group->unit[i];
 			if (unit) {
 				if (unit->id == UnitId::ZergLakizilisk) {
 					if (unit->status & UnitStatus::Burrowed) {
@@ -589,7 +589,7 @@ namespace hooks
 		char right_click_order = 0;
 		bool another_pass = false;
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			Unit* unit = client_selection_group->unit[i];
+			Unit* unit = g_client_selection_group->unit[i];
 			if (!unit) {
 				continue;
 			}
@@ -615,7 +615,7 @@ namespace hooks
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	b32 __stdcall btnscond_can_attack(u32 buffer) { // 00428F30
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			Unit* unit = client_selection_group->unit[i];
+			Unit* unit = g_client_selection_group->unit[i];
 			if (unit) {
 				if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed
 				||  units_dat::RightClickAction[unit->id]

@@ -36,14 +36,14 @@ LABEL_6:
         }
 
         const char* objectiveText;
-        if (mapStringTbl)
+        if (g_map_string_tbl)
         {
-            u16 mapStringID = *((s16*)&missionObjectivesStringIndex + 2 * *local_nation_id) - 1;
-            if (*((s16*)&missionObjectivesStringIndex + 2 * *local_nation_id))
+            u16 mapStringID = *((s16*)&missionObjectivesStringIndex + 2 * *g_local_nation_id) - 1;
+            if (*((s16*)&missionObjectivesStringIndex + 2 * *g_local_nation_id))
             {
-                if (mapStringID < *(s16*)mapStringTbl)
+                if (mapStringID < *(s16*)g_map_string_tbl)
                 {
-                    objectiveText = (char*)mapStringTbl + *((u16*)mapStringTbl + mapStringID + 1);
+                    objectiveText = (char*)g_map_string_tbl + *((u16*)g_map_string_tbl + mapStringID + 1);
                 }
                 else
                 {

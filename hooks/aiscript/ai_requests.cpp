@@ -12,7 +12,7 @@ namespace hooks
 		s32 iterate = 0;
 		constexpr s32 BuildCountFlag = 0xF8;
 		TownReq* town_units;
-		if (player_table[(u8)town->player].type == PlayerType::Computer)
+		if (g_player_table[(u8)town->player].type == PlayerType::Computer)
 		{
 			town_units = town->town_units;
 			bool setNeed = false;
@@ -742,7 +742,7 @@ namespace hooks
 		}
 		if (!(AIScriptController[player_id].AI_Flags.is_transports_off))
 		{
-			u32 player_race = player_table[player_id].race;
+			u32 player_race = g_player_table[player_id].race;
 			if (player_race == RaceId::Terran)
 			{
 				if (!unit_count_table[UnitId::TerranPhalanxTankModeTurret].player[player_id + 12]) // what
@@ -863,7 +863,7 @@ namespace hooks
 				}
 				priority = 90;
 			}
-			u8 race = player_table[player].race;
+			u8 race = g_player_table[player].race;
 			u16 refinery_id = UnitId::TerranReservoir;
 			if (race == RaceId::Zerg)
 			{
@@ -885,7 +885,7 @@ namespace hooks
 		u32 priority = 70;
 		u32 last_hit = AIScriptController[player_id].previous_building_hit_second;
 		/*
-		if (last_hit && *elapsed_time_seconds - last_hit < 30) {
+		if (last_hit && *g_elapsed_time_seconds - last_hit < 30) {
 			return;
 		}
 		*/
@@ -919,9 +919,9 @@ namespace hooks
 	// Hooked to allow AI to build while under attack. -Pr0nogo
 	void ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, AiRegion* region) { // 00448400
 		u32 last_hit = AIScriptController[player].previous_building_hit_second;
-		u32 race = player_table[player].race;
+		u32 race = g_player_table[player].race;
 		/*
-		if (last_hit && *elapsed_time_seconds - last_hit < 30) {
+		if (last_hit && *g_elapsed_time_seconds - last_hit < 30) {
 			return;
 		}
 		*/

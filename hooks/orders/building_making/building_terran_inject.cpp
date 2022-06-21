@@ -132,6 +132,19 @@ namespace
 		}
 	}
 
+	void __declspec(naked) play_building_complete_sound_wrapper() { // 0048F310
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::play_building_complete_sound(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void placementSimpleWrappers()
 	{
 		jump_patch(update_placement_simple_wrapper,		0x0048DD42, 2);
@@ -143,11 +156,12 @@ namespace hooks
 {
 	void inject_building_terran_hook()
 	{
-		jump_patch(orders_terran_build_self_wrapper,	0x00467760, 2);
-		jump_patch(orders_scv_build_2_wrapper,			0x00467A70, 1);
-		jump_patch(orders_scv_build_wrapper,			0x00467FD0, 0);
-	//	jump_patch(refresh_screen_wrapper,				0x0048DDC0, 4);
-	//	jump_patch(btnsact_place_addon_wrapper,			0x00423D10, 4);
+		jump_patch(orders_terran_build_self_wrapper,		0x00467760, 2);
+		jump_patch(orders_scv_build_2_wrapper,				0x00467A70, 1);
+		jump_patch(orders_scv_build_wrapper,				0x00467FD0, 0);
+	//	jump_patch(refresh_screen_wrapper,					0x0048DDC0, 4);
+	//	jump_patch(btnsact_place_addon_wrapper,				0x00423D10, 4);
+		jump_patch(play_building_complete_sound_wrapper,	0x0048F310, 3);
 
 	//	placementSimpleWrappers(); // bugged
 	}

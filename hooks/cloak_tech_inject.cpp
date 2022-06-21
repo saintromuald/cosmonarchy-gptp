@@ -128,7 +128,7 @@ namespace
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
-			if (unit->canUseTech(hooks::getCloakingTech(unit), *active_nation_id) == 1)
+			if (unit->canUseTech(hooks::getCloakingTech(unit), *g_active_nation_id) == 1)
 				applyCloakingOrderHook(unit);
 		}
 	}
@@ -171,7 +171,7 @@ namespace
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
-			if (unit->canUseTech(hooks::getCloakingTech(unit), *active_nation_id) == 1)
+			if (unit->canUseTech(hooks::getCloakingTech(unit), *g_active_nation_id) == 1)
 				unit->set_secondary_order(OrderId::Decloak);
 		}
 	}
@@ -213,7 +213,7 @@ namespace
 		RaceId::Enum race;
 		for (s32 i = 0; i < SelectionCap; ++i)
 		{
-			Unit* unit = client_selection_group->unit[i];
+			Unit* unit = g_client_selection_group->unit[i];
 			if (unit != nullptr)
 			{
 				if (scbw::is_cheat_enabled(CheatFlags::TheGathering)

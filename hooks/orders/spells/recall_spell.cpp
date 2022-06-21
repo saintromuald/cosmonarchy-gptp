@@ -133,7 +133,7 @@ namespace hooks
 			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::energy_cost[TechId::Recall] * 256) {
 				u8 raceId = unit->get_race();
 				char* message = (char*)statTxtTblNew->get_string(864 + raceId);	//"Not enough energy" text
-				if (message && unit->player == *local_nation_id && *active_player_id == *local_human_id) {
+				if (message && unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::setUnitStatTxtErrorMsg(message);
 				}
 				unit->order_to_idle();
@@ -151,16 +151,16 @@ namespace hooks
 				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevation_level + 1);
 
 				u32 random_value = 0;
-				if (*is_in_game_loop) {
+				if (*g_is_in_game_loop) {
 					// Hardcoded (not using a function) RNG use, like the original code did
 					static u32* const u32_0051C654 = (u32*)0x0051C654;
 					static u32* const u32_0051CA18 = (u32*)0x0051CA18;
 
 					*u32_0051C654 = *u32_0051C654 + 1;
 					*u32_0051CA18 = *u32_0051CA18 + 1;
-					*last_random_number = (*last_random_number * 0x015A4E35) + 1;
+					*g_last_random_number = (*g_last_random_number * 0x015A4E35) + 1;
 
-					random_value = ((*last_random_number) / 65536) & 0x7FFF;
+					random_value = ((*g_last_random_number) / 65536) & 0x7FFF;
 				}
 
 				// Original code added (random_value & 1) to the base sound

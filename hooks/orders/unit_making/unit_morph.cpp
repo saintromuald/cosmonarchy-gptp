@@ -109,7 +109,7 @@ namespace hooks
 		if (!unit->remaining_build_time) {
 			return 1;
 		}
-		if (*bw_cheat_state & CheatFlags::OperationCwal) {
+		if (*g_cheat_state & CheatFlags::OperationCwal) {
 			unit->remaining_build_time -= 16;
 		} else {
 			unit->remaining_build_time -= 1;
@@ -412,7 +412,7 @@ namespace hooks
 		}
 		else if (unit->id == UnitId::ZergLarva)
 		{
-			if (unit->can_make_unit(morphUnitId, *active_nation_id) == 1)
+			if (unit->can_make_unit(morphUnitId, *g_active_nation_id) == 1)
 			{
 				return true;
 			}

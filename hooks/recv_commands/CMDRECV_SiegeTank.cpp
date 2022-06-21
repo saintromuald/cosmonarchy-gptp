@@ -8,7 +8,7 @@ namespace hooks
 		Unit* unit = get_active_player_next_selection();
 		while (unit) {
 			if (unit->id == UnitId::TerranPhalanxTankMode && unit->main_order_id != OrderId::SiegeMode) {
-				if (unit->canUseTech(TechId::TankSiegeMode, *active_nation_id) == 1) {
+				if (unit->canUseTech(TechId::TankSiegeMode, *g_active_nation_id) == 1) {
 					if (command_type) {
 						unit->issue_queued_order_target(OrderId::SiegeMode, 0, false);
 					} else {
@@ -25,7 +25,7 @@ namespace hooks
 		Unit* unit = get_active_player_next_selection();
 		while (unit) {
 			if (unit->id == UnitId::TerranPhalanxSiegeMode && unit->main_order_id != OrderId::TankMode) {
-				if (unit->canUseTech(TechId::TankSiegeMode, *active_nation_id) == 1) {
+				if (unit->canUseTech(TechId::TankSiegeMode, *g_active_nation_id) == 1) {
 					if (command_type) {
 						unit->issue_queued_order_target(OrderId::TankMode, 0, false);
 					} else {
