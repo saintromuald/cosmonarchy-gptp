@@ -542,11 +542,11 @@ namespace hooks
 				helper::cancel_target_order();
 			}
 		}
-		Unit* first_visible_unit = *firstVisibleUnit;
+		Unit* first_visible_unit = *g_first_visible_unit;
 		if (!--(*orderTimerReassignCount))
 		{
 			char visible_timer = 0;
-			if (*firstVisibleUnit)
+			if (first_visible_unit)
 			{
 				do
 				{
@@ -558,7 +558,7 @@ namespace hooks
 					first_visible_unit = first_visible_unit->link.next;
 				}
 				while (first_visible_unit);
-				first_visible_unit = *firstVisibleUnit;
+				first_visible_unit = *g_first_visible_unit;
 			}
 			*orderTimerReassignCount = 150;
 		}
@@ -576,33 +576,33 @@ namespace hooks
 		}
 		// Now handled in global effect
 	//	helper::update_disruption_web_status();
-		Unit* first_dying_unit = *firstDyingUnit;
-		if (*firstDyingUnit)
+		Unit* dying_unit = *g_first_dying_unit;
+		if (*g_first_dying_unit)
 		{
-			Unit* next_dying_unit = first_dying_unit->link.next;
+			Unit* next_dying_unit = dying_unit->link.next;
 			do
 			{
-				next_dying_unit = first_dying_unit->link.next;
-				*activeIscriptEntity = first_dying_unit;
-				*activeIscriptUnit = first_dying_unit;
-				helper::progress_dying_unit_frame(first_dying_unit);
-				if (first_dying_unit->sprite)
+				next_dying_unit = dying_unit->link.next;
+				*activeIscriptEntity = dying_unit;
+				*activeIscriptUnit = dying_unit;
+				helper::progress_dying_unit_frame(dying_unit);
+				if (dying_unit->sprite)
 				{
 					if (*visionUpdated)
 					{
-						if (g_player_table[first_dying_unit->player].type == 2) // PLAYER_OCCUPIED
+						if (g_player_table[dying_unit->player].type == 2) // PLAYER_OCCUPIED
 						{
-							helper::reveal_sight_at_location(1, player_vision->flags[first_dying_unit->player], first_dying_unit->sprite->position.x, first_dying_unit->sprite->position.y, (first_dying_unit->status >> 2) & 1); // is air unit
+							helper::reveal_sight_at_location(1, player_vision->flags[dying_unit->player], dying_unit->sprite->position.x, dying_unit->sprite->position.y, (dying_unit->status >> 2) & 1); // is air unit
 						}
 					}
-					helper::update_visibility(first_dying_unit);
+					helper::update_visibility(dying_unit);
 				}
-				first_dying_unit = next_dying_unit;
+				dying_unit = next_dying_unit;
 			}
 			while (next_dying_unit);
 		}
-		first_visible_unit = *firstVisibleUnit;
-		if (*firstVisibleUnit)
+		first_visible_unit = *g_first_visible_unit;
+		if (first_visible_unit)
 		{
 			do
 			{
@@ -612,7 +612,7 @@ namespace hooks
 				first_visible_unit = first_visible_unit->link.next;
 			}
 			while (first_visible_unit);
-			first_visible_unit = *firstVisibleUnit;
+			first_visible_unit = *g_first_visible_unit;
 		}
 		Unit* scanner_sweep = *first_scanner_sweep;
 		if (*visionUpdated)
@@ -629,7 +629,7 @@ namespace hooks
 					scanner_sweep = next_scanner_sweep;
 				}
 				while (next_scanner_sweep);
-				first_visible_unit = *firstVisibleUnit;
+				first_visible_unit = *g_first_visible_unit;
 			}
 		}
 		if (first_visible_unit)
@@ -654,7 +654,7 @@ namespace hooks
 				first_visible_unit = first_visible_unit->link.next;
 			}
 			while (first_visible_unit);
-			first_visible_unit = *firstVisibleUnit;
+			first_visible_unit = *g_first_visible_unit;
 		}
 		if (first_visible_unit)
 		{

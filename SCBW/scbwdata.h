@@ -15,7 +15,7 @@
 //////////////////////////////////////////////////////////////// @{
 
 /// The first nodes in StarCraft's internal linked lists (taken from BWAPI's Offsets.h)
-SCBW_DATA(Unit**, firstVisibleUnit, 0x00628430);
+SCBW_DATA(Unit**, g_first_visible_unit, 0x00628430);
 /// Includes units in transports/bunkers, worker inside gas buildings, nukes in
 /// silos, queens inside command centers, and units in production.
 SCBW_DATA(Unit**,		first_hidden_unit,			0x006283EC);
@@ -418,7 +418,7 @@ SCBW_DATA(s32*,		secondaryOrderTimerReassignCount,	0x006283E8);
 SCBW_DATA(Unit**,	activeIscriptEntity,				0x006D11F4);
 SCBW_DATA(Bullet**,	activeIscriptBullet,				0x006D11F8);
 SCBW_DATA(Unit**,	activeIscriptUnit,					0x006D11FC);
-SCBW_DATA(Unit**,	firstDyingUnit,						0x0062842C);
+SCBW_DATA(Unit**,	g_first_dying_unit,						0x0062842C);
 SCBW_DATA(Unit**,	lurkerSplashList,					0x0064DEC8); // sizeof 400
 SCBW_DATA(s32*,		lurkerSplashListIndex,				0x0064EEC8);
 SCBW_DATA(s32*,		lastBulletIndex,					0x0064DEA8);

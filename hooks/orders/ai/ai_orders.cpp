@@ -512,13 +512,13 @@ LABEL_37:
 	Unit* get_closest_enemy_structure(s32 x, s32 y, s32 player) // 004A0F90
 	{
 		s16 regionId = helper::get_region_id(x, y);
-		Unit* firstUnit = *firstVisibleUnit;
+		Unit* firstUnit = *g_first_visible_unit;
 		s32 regionOffset = regionId << 6;
 		s32 region_center_x = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_x + regionOffset);
 		s32 region_center_y = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_y + regionOffset);
 
 		Unit* result = nullptr;
-		if (firstVisibleUnit)
+		if (firstUnit)
 		{
 			// initialize vars used in loop
 			Sprite* firstSprite;
@@ -652,7 +652,7 @@ LABEL_37:
 		if (result)
 		{
 			helper::delete_aiscripts_using_town(town);
-			for (Unit* i = *firstVisibleUnit; i; i = i->link.next)
+			for (Unit* i = *g_first_visible_unit; i; i = i->link.next)
 			{
 				if (i->sprite != nullptr)
 				{
