@@ -450,7 +450,7 @@ namespace hooks
 				bool can_fire = !unit->ground_weapon_cooldown;
 				u32 weapon_id = WeaponId::EvigriliskBrutishTendrils;
 				if (is_moving && can_fire) {
-					if (hooks::fire_multiple(unit, unitExt, weapon_id, 4, FilterEnemy)) {
+					if (hooks::fire_multiple(unit, unitExt, weapon_id, 4, FilterEnemy, true)) {
 						scbw::decloak_proc(unit);
 						unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id);
 					}
