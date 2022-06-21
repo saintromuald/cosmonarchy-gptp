@@ -921,12 +921,12 @@ namespace hooks
 	u32 get_loaded_space_amount(Unit* transport) // 004E7170
 	{
 		u32 result = 0;
-		u16* index_1 = &transport->loaded_unit[1].value;
-		u32 two_iterations = 2;
+		u16* index_1 = &transport->loaded_unit[0].value;
+		u32 iterations = 8;
 		do
 		{
-			u32 index_var_1 = *(index_1 - 1);
-			if (*(index_1 - 1))
+			u32 index_var_1 = *index_1;
+			if (index_var_1)
 			{
 				u32 array_insanity_1 = 336 * (index_var_1 & 0x7FF);
 				void* array_result_1 = unk_array_59CB64[array_insanity_1 / 4];
@@ -940,54 +940,9 @@ namespace hooks
 					}
 				}
 			}
-			u32 index_var_2 = *index_1;
-			if (*index_1)
-			{
-				u32 array_insanity_2 = 336 * (index_var_2 & 0x7FF);
-				void* array_result_2 = unk_array_59CB64[array_insanity_2 / 4];
-				Unit* reference_2 = &g_unit_reference[array_insanity_2 / 0x150];
-				if (array_result_2)
-				{
-					if ((reference_2->main_order_id || reference_2->main_order_state != 1)
-						&& reference_2->target_order_special == index_var_2 >> 11)
-					{
-						result += units_dat::SpaceRequired[reference_2->id];
-					}
-				}
-			}
-			u32 index_var_3 = *index_1 + 1;
-			if (index_1[1])
-			{
-				u32 array_insanity_3 = 336 * (index_var_3 & 0x7FF);
-				void* array_result_3 = unk_array_59CB64[array_insanity_3 / 4];
-				Unit* reference_3 = &g_unit_reference[array_insanity_3 / 0x150];
-				if (array_result_3)
-				{
-					if ((reference_3->main_order_id || reference_3->main_order_state != 1)
-						&& reference_3->target_order_special == index_var_3 >> 11)
-					{
-						result += units_dat::SpaceRequired[reference_3->id];
-					}
-				}
-			}
-			u32 index_var_4 = *index_1 + 2;
-			if (index_1[2])
-			{
-				u32 array_insanity_4 = 336 * (index_var_4 & 0x7FF);
-				void* array_result_4 = unk_array_59CB64[array_insanity_4 / 4];
-				Unit* reference_4 = &g_unit_reference[array_insanity_4 / 0x150];
-				if (array_result_4)
-				{
-					if ((reference_4->main_order_id || reference_4->main_order_state != 1)
-						&& reference_4->target_order_special == index_var_4 >> 11)
-					{
-						result += units_dat::SpaceRequired[reference_4->id];
-					}
-				}
-			}
-			index_1 += 4;
-			--two_iterations;
-		} while (two_iterations);
+			index_1 += 1;
+			--iterations;
+		} while (iterations);
 		return result;
 	}
 
