@@ -53,6 +53,7 @@ namespace hooks
 				unit2 = helper::zerg_dual_birth(unit);
 				if (unit2)
 				{
+					unit2->rally = unit->rally;
 					helper::ai_training_unit(unit2, unit);
 				}
 			}

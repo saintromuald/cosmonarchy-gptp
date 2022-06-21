@@ -418,8 +418,8 @@ namespace hooks
 
 		jump_patch(order_new_unit_to_rally_wrapper,			0x00466F50, 0);
 
-	//	jump_patch(remove_references_wrapper,				0x0049E590, 1);
-	//	jump_patch(right_click_command_wrapper,				0x004560D0, 1);
+		jump_patch(remove_references_wrapper,				0x0049E590, 1);
+		jump_patch(right_click_command_wrapper,				0x004560D0, 1);
 
 	//	jump_patch(btnscond_rally_wrapper,					0x00429520, 7);
 

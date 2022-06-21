@@ -376,12 +376,8 @@ namespace hooks
 					char right_click_order = units_dat::RightClickAction[unit_id];
 					if (!right_click_order)
 					{
-						if (unit->status & UnitStatus::GroundedBuilding)
-						{
-							if (hooks::unit_can_have_rally(unit))
-							{
-								right_click_order = RightClickActions::NormalMove_NoAttack;
-							}
+						if (hooks::unit_can_rally(unit)) {
+							right_click_order = RightClickActions::NormalMove_NoAttack;
 						}
 					}
 					action = right_click_order;

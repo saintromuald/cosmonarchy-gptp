@@ -231,12 +231,8 @@ namespace hooks
 				order_type = units_dat::RightClickAction[id];
 				if (!order_type)
 				{
-					if (unit->status & UnitStatus::GroundedBuilding)
-					{
-						if (unit->is_factory())
-						{
-							order_type = 2;
-						}
+					if (hooks::unit_can_rally(unit)) {
+						order_type = 2;
 					}
 				}
 			}
