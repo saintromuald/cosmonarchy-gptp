@@ -26,11 +26,11 @@ namespace hooks
 				helper::increment_unit_scores_ex(unit, 0, -1);
 			}
 
-			u32 selectionIndex = 0;
+			u32 selection_index = 0;
 			bool isSelected = (unit->sprite->flags & SpriteFlags::Selected) == 1;
 			if (isSelected)
 			{
-				selectionIndex = unit->sprite->selectionIndex;
+				selection_index = unit->sprite->selection_index;
 				helper::destroy_unit_selection(unit);
 			}
 
@@ -54,7 +54,7 @@ namespace hooks
 			// maybe "if" not needed?
 			if (isSelected)
 			{
-				helper::create_unit_selection(unit, selectionIndex);
+				helper::create_unit_selection(unit, selection_index);
 			}
 
 			unit->player_link.prev = nullptr;

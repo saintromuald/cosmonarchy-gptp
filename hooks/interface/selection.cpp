@@ -94,7 +94,7 @@ namespace hooks
 				{
 					// 0046F161
 					// if the unit sprite is visible, perform additionnal visibility test, else skip the unit
-					if (current_unit->sprite->visibilityFlags & (u8)*VISIBILITY_CHECK_0057F0B0)
+					if (current_unit->sprite->visibility_flags & (u8)*VISIBILITY_CHECK_0057F0B0)
 					{
 						// if the unit is cloaked and visibility status test (detection by detectors units probably) fail, the unit is skipped
 						if (current_unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
@@ -411,10 +411,10 @@ namespace hooks
 						// decrease it so it's equal to the index of last element
 						arrayIndex--;
 						// each element is 4 bytes, multiply it by the number of elements after the one to remove
-						memcpy_size = (arrayIndex - clicked_unit->sprite->selectionIndex) * 4;
+						memcpy_size = (arrayIndex - clicked_unit->sprite->selection_index) * 4;
 
 						// Copy the elements on the right of the one to delete one step left to overwrite the one to delete
-						helper::sc_memcpy_0((u32)&local_temp_array_1[clicked_unit->sprite->selectionIndex], (u32)&local_temp_array_1[clicked_unit->sprite->selectionIndex + 1], memcpy_size);
+						helper::sc_memcpy_0((u32)&local_temp_array_1[clicked_unit->sprite->selection_index], (u32)&local_temp_array_1[clicked_unit->sprite->selection_index + 1], memcpy_size);
 
 						// either erase the element to delete or one that was repeated after memcpy
 						local_temp_array_1[arrayIndex] = 0;

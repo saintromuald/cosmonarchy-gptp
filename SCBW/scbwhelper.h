@@ -434,7 +434,7 @@ namespace helper
 	void apply_speed_upgrade_from_unit_type(Unit* unit);																			// 00454370
 	void recheck_attacks(Unit* unit);																								// 00476D30
 	void increment_unit_scores(Unit* unit, s32 unkScore);																			// 00488BF0
-	void create_unit_selection(Unit* unit, u32 selectionIndex);																		// 004E6180
+	void create_unit_selection(Unit* unit, u32 selection_index);																		// 004E6180
 	void destroy_unit_selection(Unit* unit);																						// 004E6290
 	void drop_powerup(Unit* powerup);																								// 004F3B70
 
@@ -518,11 +518,11 @@ namespace helper
 	// for ai_attack_unit
 	void stimpack_proc(Unit* unit);																									// 004554A0
 
-	// for genericRightClickUnitProc2
+	// for generic_right_click_unit_proc_2
 	s32 is_order_valid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																// 00474D90
 	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80
 
-	// for CMDRECV_HoldPosition
+	// for cmdrecv_hold_position
 	Unit* get_active_player_next_selection();																						// 0049A850
 	s32 order_allowed(Unit* a1, u16 a2, s32 a3);																					// 0046DC20
 	void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);							// 004754F0
@@ -1341,7 +1341,7 @@ namespace helper
 	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker);								// 004557C0
 
 	char get_generic_unit_idle_order(u32 order_unit_id, Unit* unit);										// 00455760
-	Unit* iterate_units_at_location_target_proc_in_point(Box16* location, Unit* target);					// 004E8280
+	Unit* iterate_units_at_location_target_proc_in_point(Box16* location, void* func, Unit* target);		// 004E8280
 	void set_rally_unit(Unit* factory, Unit* target);														// 00466B40
 	void set_rally_position(Unit* factory, u16 x_pos, u16 y_pos);											// 00466B40
 

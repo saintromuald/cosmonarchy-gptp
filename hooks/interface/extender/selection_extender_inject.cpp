@@ -33,7 +33,7 @@ namespace
 		result = hooks::is_selected_unit_group_enabled();
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX AL, result
 			RETN
 		}
 	}
@@ -44,6 +44,6 @@ namespace hooks
 	void inject_selection_extender_hooks()
 	{
 		jump_patch(select_dual_birth_units_wrapper,			0x0045D040, 1);
-		jump_patch(is_selected_unit_group_enabled_wrapper,	0x0049A2C0, 1);
+	//	jump_patch(is_selected_unit_group_enabled_wrapper,	0x0049A2C0, 1);
 	}
 }

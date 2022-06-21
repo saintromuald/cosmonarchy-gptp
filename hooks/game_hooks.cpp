@@ -302,7 +302,7 @@ namespace hooks
 				{
 					if (unit->player == 11 && units_dat::base_property[unit->id] & UnitProperty::Building)
 					{
-						unit->sprite->visibilityFlags |= reveal_flag;
+						unit->sprite->visibility_flags |= reveal_flag;
 					}
 				}
 			}

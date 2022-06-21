@@ -327,5 +327,5 @@ Image* Sprite::get_overlay(u16 imageId) const
 bool Sprite::isVisibleTo(u8 player) const
 {
 	assert(this);
-	return (this->visibilityFlags & (1 << player)) != 0;
+	return (this->visibility_flags & (1 << player)) != 0;
 }

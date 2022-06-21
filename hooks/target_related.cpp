@@ -18,7 +18,7 @@ namespace hooks
 		s32 v8;
 
 		_unit = a1;
-		if (!isTargetVisibleHook(a2, a1))
+		if (!is_target_visible(a2, a1))
 		{
 			return 1;
 		}
@@ -98,7 +98,7 @@ namespace hooks
 			if (!v2)
 				return 1;
 		}
-		if (!isTargetVisibleHook(v2, a2))
+		if (!is_target_visible(v2, a2))
 			return 0;
 		v4 = a2->subunit;
 		if (!v4 || !(units_dat::group_flags[(unsigned __int16)v4->id].is_building))
@@ -140,7 +140,7 @@ namespace hooks
 		u32 v9; // ebx
 
 		v1 = a1;
-		v2 = isUnitVisibleHook(a1);
+		v2 = is_unit_visible(a1);
 		if (v2)
 		{
 			v3 = v1->order_target.unit;
@@ -201,7 +201,7 @@ namespace hooks
 		target = v1->order_target.unit;
 		if (v4)
 		{
-			if (!isTargetVisibleHook(v4, v1))
+			if (!is_target_visible(v4, v1))
 			{
 				goto LABEL_23;
 			}
@@ -286,7 +286,7 @@ LABEL_22:
 			{
 				if (!v4)
 					goto LABEL_62;
-				if (!isTargetVisibleHook(v4, v1))
+				if (!is_target_visible(v4, v1))
 					goto LABEL_63;
 				v11 = v1->subunit;
 				if (!v11 || !(units_dat::group_flags[(unsigned __int16)v11->id].is_building))
@@ -320,7 +320,7 @@ LABEL_62:
 			}
 			if (!v4)
 				goto LABEL_64;
-			if (isTargetVisibleHook(v4, v1))
+			if (is_target_visible(v4, v1))
 			{
 				v5 = v1->subunit;
 				if (!v5 || !(units_dat::group_flags[(unsigned __int16)v5->id].is_building))
@@ -396,7 +396,7 @@ LABEL_42:
 		}
 	}
 
-	s32 genericRightClickUnitProc2(Unit* unit, s32 a2, s16 a3, Unit* target, s16 unitID) // 00455E00
+	s32 generic_right_click_unit_proc_2(Unit* unit, s32 a2, s16 a3, Unit* target, s16 unitID) // 00455E00
 	{
 		s32 result;
 		Unit* targetVar;
@@ -435,7 +435,7 @@ LABEL_42:
 		return result;
 	}
 
-	Unit* CMDRECV_HoldPosition(s32 a1) // 004C20C0
+	Unit* cmdrecv_hold_position(s32 a1) // 004C20C0
 	{
 		Unit* result;
 		Unit* i;
@@ -485,13 +485,13 @@ LABEL_42:
 		return result;
 	}
 
-	u32 unitCanSeeCloakedTargetHook(Unit* target, Unit* unit) // 00401D60, hooked for cloak rewrite - Pr0nogo
+	u32 unit_can_see_cloaked_target(Unit* target, Unit* unit) // 00401D60, hooked for cloak rewrite - Pr0nogo
 	{
 		return target->status & 0x300 && !((1 << unit->player) & target->visibility_status);
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	u32 isTargetVisibleHook(Unit* target, Unit* unit) // 004E5E30
+	u32 is_target_visible(Unit* target, Unit* unit) // 004E5E30
 	{
 		s32 playerUnit;
 		playerUnit = 1 << unit->player;
@@ -503,7 +503,7 @@ LABEL_42:
 		u32 result;
 		if (target->status & 0x300 && !((1 << unit->player) & target->visibility_status))
 		{
-			result = (u8)(playerUnit & target->sprite->visibilityFlags);
+			result = (u8)(playerUnit & target->sprite->visibility_flags);
 		}
 		else
 		{
@@ -513,7 +513,7 @@ LABEL_42:
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	u32 isUnitVisibleHook(Unit* unit) // 004E5DB0
+	u32 is_unit_visible(Unit* unit) // 004E5DB0
 	{
 		Unit* target;
 		s32 playerUnit;
@@ -528,7 +528,7 @@ LABEL_42:
 
 		if (unit->status & 0x300)
 		{
-			result = (u8)(playerUnit & target->sprite->visibilityFlags);
+			result = (u8)(playerUnit & target->sprite->visibility_flags);
 		}
 		else
 		{
@@ -565,7 +565,7 @@ LABEL_42:
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	void checkUnitVisibilityHook(Unit* unit) // 00443390
+	void check_unit_visibility(Unit* unit) // 00443390
 	{
 		u32 detectingPlayers = helper::get_detecting_players(unit);
 		if (unit->visibility_status != detectingPlayers)
@@ -591,7 +591,7 @@ LABEL_42:
 	}
 
 	// Hooked to complete the cloak rewrite - Pr0nogo
-	s32 isUnitCloakingHook(Unit* unit) // 004916E0
+	s32 is_unit_cloaking(Unit* unit) // 004916E0
 	{
 		if (unit->is_cloaked)
 		{
@@ -694,7 +694,7 @@ LABEL_42:
 		return weapon != WeaponId::None;
 	}
 
-	s32 orderAttackBehavior(Unit* unit) // 00478540
+	s32 order_attack_behavior(Unit* unit) // 00478540
 	{
 		s32 result;
 		Unit *v1;
@@ -928,7 +928,7 @@ LABEL_65:
 	}
 
 	// Hooked to help with the Titanic count game rule - Pr0nogo
-	void AI_AttackUnit(Unit* unit) // 0043FFD0
+	void ai_attack_unit(Unit* unit) // 0043FFD0
 	{
 		if (!unit)
 		{
@@ -1082,5 +1082,33 @@ LABEL_65:
 			result = 0;
 		}
 		return result;
+	}
+
+	// Hooked to fix hit tests on structures in fog of war. -Pr0nogo
+	Thingy* find_fow_target(u32 x_pos, u32 y_pos) // 00487A10
+	{
+		Thingy* first_used = *first_used_thingy;
+		if (!*first_used_thingy)
+		{
+			return 0;
+		}
+		while (1)
+		{
+			if (!helper::unit_is_unselectable(first_used->unit_id))
+			{
+				Sprite* first_sprite = first_used->sprite;
+				if (first_sprite->position.x + units_dat::BuildingDimensions[first_used->unit_id].x / 2 - x_pos < first_sprite->width
+				&&  first_sprite->position.y + units_dat::BuildingDimensions[first_used->unit_id].y / 2 - y_pos < first_used->sprite->height)
+				{
+					break;
+				}
+			}
+			first_used = first_used->next;
+			if (!first_used)
+			{
+				return 0;
+			}
+		}
+		return first_used;
 	}
 }

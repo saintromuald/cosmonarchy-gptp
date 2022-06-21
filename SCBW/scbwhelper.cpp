@@ -3928,13 +3928,13 @@ namespace helper
 		}
 	}
 
-	void create_unit_selection(Unit* unit, u32 selectionIndex)
+	void create_unit_selection(Unit* unit, u32 selection_index)
 	{
 		const u32 Func_CreateUnitSelection = 0x004E6180;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			PUSH selectionIndex
+			PUSH selection_index
 			CALL Func_CreateUnitSelection
 			POPAD
 		}
@@ -4605,7 +4605,7 @@ namespace helper
 		}
 	}
 
-	// for genericRightClickUnitProc2
+	// for generic_right_click_unit_proc_2
 
 	s32 is_order_valid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5)
 	{
@@ -4641,7 +4641,7 @@ namespace helper
 		return (u16)result;
 	}
 
-	// for CMDRECV_HoldPosition
+	// for cmdrecv_hold_position
 
 	Unit* get_active_player_next_selection()
 	{
@@ -12114,13 +12114,14 @@ namespace helper
 		return result;
 	}
 
-	Unit* iterate_units_at_location_target_proc_in_point(Box16* location, Unit* target)
+	Unit* iterate_units_at_location_target_proc_in_point(Box16* location, void* func, Unit* target)
 	{
 		static Unit* result;
-		const u32 is_unit_in_point_function = 0x00487A90;
+		const u32 is_unit_in_point_function = 0x004E8280;
 		__asm {
 			PUSHAD
 			PUSH target
+			MOV EBX, func
 			MOV EAX, location
 			CALL is_unit_in_point_function
 			MOV result, EAX

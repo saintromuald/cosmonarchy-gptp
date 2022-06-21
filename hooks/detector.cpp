@@ -33,10 +33,10 @@ namespace hooks
 			)
 		{
 
-			u8 visibilityFlags = (1 << detector->player);
+			u8 visibility_flags = (1 << detector->player);
 			//only continue if the target sprite is visible (else it's
 			//not a cloaking issue that hide the unit)
-			if (target->sprite->visibilityFlags & visibilityFlags)
+			if (target->sprite->visibility_flags & visibility_flags)
 			{
 				u32 detectionRange;
 				if (detector->status & UnitStatus::GroundedBuilding)
@@ -53,7 +53,7 @@ namespace hooks
 					param->visionFlags |=
 						detector->parasite_flags |					// detector's parasites player owner flags (8 bits)
 						player_vision->flags[detector->player] |	// default visibility (32 bits)
-						visibilityFlags								// detector's player flag (8 bits)
+						visibility_flags								// detector's player flag (8 bits)
 						;
 				}
 			}

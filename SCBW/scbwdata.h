@@ -377,7 +377,7 @@ SCBW_DATA(RegionArray**,SAI_Paths,			0x006D5BFC);
 SCBW_DATA(AiTown*,		AiTownArray,		0x006AA090);
 SCBW_DATA(AiExpandList*,AiActiveTownArray,	0x006AA050); // sizeof 0x64[0x8]
 
-// For CMDRECV_HoldPosition
+// For cmdrecv_hold_position
 SCBW_DATA(s16*, map_width_pixels,			0x00628450);
 SCBW_DATA(s16*, map_height_pixels,			0x006284B4);
 SCBW_DATA(s32*, orderType4Position,			0x006D5C20);
@@ -1039,6 +1039,9 @@ SCBW_DATA(char*,		unk_sprite_related,				0x006D5BE4);
 
 // For create_all_selection_circles
 SCBW_DATA(char*,		game_result_text,				0x00628668);
+
+// For find_fow_target
+SCBW_DATA(Thingy**,		first_used_thingy,				0x00654868);
 
 //////////////////////////////////////////////////////////////// @}
 
