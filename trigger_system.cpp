@@ -140,6 +140,7 @@ struct TriggerSystem {
 	f32 music_volume_time;
 	bool music_paused;
 
+	bool game_paused;
 	f32 recolor_time;
 	TimedRecolor source_recolor;
 	TimedRecolor current_recolor;
@@ -672,7 +673,12 @@ void tick_trigger_system(bool in_game) {
 	}
 	
 	handle_music();
-	if (in_game) {
+	bool paused = scbw::is_game_paused();
+	if (trigger_system.game_paused && !paused) {
+		set_palette_recolor(trigger_system.current_recolor.set);
+	}
+	if (in_game && !paused) {
 		handle_recolor();
 	}
+	trigger_system.game_paused = paused;
 }
