@@ -593,6 +593,20 @@ namespace hooks
 		return 1;
 	}
 
+	b32 call_kill_unit_args_func(void* func, u32 player, u32 unit_id, Unit* unit) {
+		static b32 result;
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV ECX, player
+			MOV EDX, unit_id
+			CALL func
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 	// Hooked to extend transports. -Pr0nogo
 	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) // 004C7E20
 	{
@@ -600,24 +614,24 @@ namespace hooks
 		{
 			return 0;
 		}
-		KillUnitArgs* args_func = (KillUnitArgs*)args->func;
+		KillUnitArgs* args_func = (KillUnitArgs*)&args->func;
 		if ((unit->status & UnitStatus::IsHallucination) == 0)
 		{
 			u8 space_provided = units_dat::SpaceProvided[unit->id];
 			if (space_provided)
 			{
-				u16 index = unit->loaded_unit[0].index;
+				u16* index = &unit->loaded_unit[0].value;
 				do
 				{
-					u32 index_lowbyte = index;
-					if (index)
+					u32 index_lowbyte = *index;
+					if (*index)
 					{
 						index_lowbyte = index_lowbyte;
 						if (index_lowbyte)
 						{
 							u32 dumbness = 336 * (index_lowbyte & 0x7FF);
 							void* array_insanity = unk_array_59CB64[dumbness / 4];
-							Unit* unit_reference = &::g_unit_reference[dumbness / 0x150];
+							Unit* unit_reference = &g_unit_reference[dumbness / 0x150];
 							if (array_insanity)
 							{
 								if (unit_reference->main_order_id || unit_reference->main_order_state != 1)
@@ -626,7 +640,7 @@ namespace hooks
 									if (order_special == index_lowbyte >> 11)
 									{
 										*trig_killing_additional_unit = 1;
-										helper::kill_units_at_location_proc(unit_reference, args_func); // Was &args_func
+										helper::kill_units_at_location_proc(unit_reference, args_func); // Was &args_func, now the address of is in the var
 										*trig_killing_additional_unit = 0;
 									}
 								}
@@ -644,7 +658,7 @@ namespace hooks
 			if (powerup)
 			{
 				*trig_killing_additional_unit = 1;
-				helper::kill_units_at_location_proc(powerup, args_func); // Was &args_func
+				helper::kill_units_at_location_proc(powerup, args_func); // Was &args_func, now the address of is in the var
 				*trig_killing_additional_unit = 0;
 			}
 		}
@@ -656,12 +670,10 @@ namespace hooks
 		{
 			return 0;
 		}
-		/*
-		if (!(args->func)(args->player, args->unit_id, unit))
+		if (!call_kill_unit_args_func(args->func, args->player, args->unit_id, unit))
 		{
 			return 0;
 		}
-		*/
 		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories && unit->powerup_carrier)
 		{
 			helper::kill_powerup(unit->powerup_carrier);
