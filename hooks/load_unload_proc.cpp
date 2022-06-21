@@ -704,7 +704,7 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	Unit* get_loaded_unit_from_index(Unit* transport, u32 index) // 004E6C40
 	{
-		int loaded_index = transport->loaded_unit[index].index;
+		int loaded_index = transport->loaded_unit[index].value;
 		Unit* result = &g_unit_reference[loaded_index & 0x7FF];
 		if (!loaded_index
 		||  !result->sprite
@@ -769,12 +769,12 @@ namespace hooks
 		{
 			return 0;
 		}
-		u16 index = transport->loaded_unit[0].index;
+		u16* index = &transport->loaded_unit[0].value;
 		u32 iterations = 0;
 		while (1)
 		{
-			u16 index_var = index;
-			if (index)
+			u16 index_var = *index;
+			if (*index)
 			{
 				Unit* func_transport = &g_unit_reference[index_var & 0x7FF];
 				if (func_transport->sprite)
