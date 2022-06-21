@@ -29,6 +29,7 @@ namespace hooks {
 
     bool is_selected_unit_group_enabled() // 0049A2C0
     {
+        return false;
         for (u32 i = 0; i < SelectionCap; ++i)
         {
             Unit* unit_from_selection = active_player_selection->unit[i];

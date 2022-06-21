@@ -480,13 +480,14 @@ namespace hooks
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	void input_game_right_mouse_click(DialogEvent* dialog_event) { // 004564E0
 		if (!helper::is_outside_of_game_screen(dialog_event->current.x, dialog_event->current.y)) {
-			u8 local_group_owner = local_selection_group[0] ? local_selection_group[0]->player : 255;
+			u8 local_group_owner = local_selection_group_2[0] ? local_selection_group_2[0]->player : 255;
 			if (local_group_owner == *local_nation_id) {
 				if (*active_portrait_unit) {
 					if (helper::unit_is_owned_by_current_player(*active_portrait_unit)) {
 						s32 selection_iterator = 0;
 						for (u32 i = 0; i < SelectionCap; ++i) {
-							Unit* selected_unit = *client_selection_group[selection_iterator].unit;
+							selection_iterator = i;
+							Unit* selected_unit = client_selection_group->unit[i];
 							if (selected_unit) {
 								if (helper::accepts_right_click_commands(selected_unit)) {
 									break;
@@ -510,7 +511,7 @@ namespace hooks
 									Unit* unit = client_selection_group->unit[i];
 									if (unit) {
 										if (helper::can_move(unit)) {
-											if (i < 12) {
+											if (i < SelectionCap) {
 											exit:
 												Thingy* command_thingy = helper::show_command_response(find_x, find_y, unit_at_point);
 												u16 unit_id = UnitId::None;

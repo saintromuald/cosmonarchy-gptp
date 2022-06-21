@@ -12191,6 +12191,7 @@ namespace helper
 			MOV result, EAX
 			POPAD
 		}
+		return result;
 	}
 
 	s32 can_move(Unit* unit) {
@@ -12221,7 +12222,7 @@ namespace helper
 		return result;
 	}
 
-	char cmdact_right_click_order(Unit* target, u16 x_pos, u16 y_pos, u16 unit_id, u8 keycode_used) {
+	char cmdact_right_click_order(Unit* target, u32 x_pos, u32 y_pos, u32 unit_id, u32 keycode_used) {
 		static char result;
 		const u32 func_address = 0x004C0380;
 		__asm {
