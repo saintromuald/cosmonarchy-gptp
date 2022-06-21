@@ -89,15 +89,15 @@ namespace hooks
 			{
 				scbw::set_unit_position(unit, pos.x, pos.y);
 			}
-			if (!scbw::is_zerg_egg_new(unit, true, false))
-			{
-				if (unit->create_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva)
-				{
-					helper::order_new_unit_to_rally(unit, unit->connected_unit);
-					if (unit2)
-					{
-						helper::order_new_unit_to_rally(unit2, unit->connected_unit);
-					}
+			if (!scbw::is_zerg_egg_new(unit, true, false)) {
+				Unit* factory = 0;
+				if (unit->create_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva) {
+					factory = unit->connected_unit;
+				}
+
+				helper::order_new_unit_to_rally(unit, factory);
+				if (unit2) {
+					helper::order_new_unit_to_rally(unit2, factory);
 				}
 			}
 			helper::force_order_done(unit);

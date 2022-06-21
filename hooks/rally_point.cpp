@@ -12,8 +12,7 @@ namespace hooks
 	void order_new_unit_to_rally(Unit* unit, Unit* factory) {
 		// Egg rally
 		if (unit) {
-			if (unit->rally.unit != unit
-			&&  unit->rally.unit != factory
+			if ((!unit->rally.unit || (unit->rally.unit != unit && unit->rally.unit != factory))
 			&&  unit->rally.pt.x != 0) {
 				// Following should be allowed only on friendly units
 				if (unit->rally.unit && scbw::is_allied_to((unit->rally.unit)->player, unit->player)) {
@@ -28,8 +27,7 @@ namespace hooks
 		// Do nothing if the rally target is the factory itself or the rally target position is 0
 		if (factory
 		&&  factory->is_factory()
-		&&  factory->rally.unit != unit
-		&&  factory->rally.unit != factory
+		&&  (!factory->rally.unit || (factory->rally.unit != unit && factory->rally.unit != factory))
 		&&  factory->rally.pt.x != 0) {
 			// Following should be allowed only on friendly units
 			if (factory->rally.unit && scbw::is_allied_to((factory->rally.unit)->player, unit->player)) {
@@ -249,7 +247,7 @@ namespace hooks
 			{
 				if (rightOrder == OrderId::RallyPointToVisibleUnit)
 				{
-					if (unit->is_factory())
+					if (hooks::unit_can_have_rally(unit))
 					{
 						Unit* rallyTarget = target;
 						if (!rallyTarget)
@@ -267,7 +265,7 @@ namespace hooks
 				{
 					if (rightOrder == OrderId::RallyPointToTile)
 					{
-						if (unit->is_factory() || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
+						if (hooks::unit_can_have_rally(unit))
 						{
 							UnitExt* unitExt = globals.get_unit_ext(unit);
 							unit->rally.unit = 0;
