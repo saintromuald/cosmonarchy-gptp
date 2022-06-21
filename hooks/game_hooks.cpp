@@ -447,13 +447,12 @@ namespace hooks
 		{
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
-				bool can_fire = !unit->ground_weapon_cooldown && !unit->air_weapon_cooldown;
+				bool can_fire = !unit->ground_weapon_cooldown;
 				u32 weapon_id = WeaponId::EvigriliskBrutishTendrils;
 				if (is_moving && can_fire) {
 					if (hooks::fire_multiple(unit, unitExt, weapon_id, 4, FilterEnemy)) {
 						scbw::decloak_proc(unit);
 						unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id);
-						unit->air_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id);
 					}
 				}
 			} break;
