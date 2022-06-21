@@ -642,7 +642,7 @@ void handle_recolor() {
 		}
 
 		for (u32 i = 0; i < trigger_system.current_recolor.set.count; ++i) {
-			trigger_system.current_recolor.set.recolors[i] = lerp_recolor(t, trigger_system.current_recolor.set.recolors[i], trigger_system.target_recolor.set.recolors[i]);
+			trigger_system.current_recolor.set.recolors[i] = lerp_recolor(t, trigger_system.source_recolor.set.recolors[i], trigger_system.target_recolor.set.recolors[i]);
 		}
 
 		set_palette_recolor(trigger_system.current_recolor.set);
