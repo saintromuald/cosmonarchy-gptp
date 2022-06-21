@@ -445,17 +445,17 @@ namespace hooks
 
 		switch (unit->id)
 		{
-			case UnitId::TerranReservoir:
-			case UnitId::ProtossAquifer:
-			case UnitId::ZergExcisant:
-			{
-				// Disabled, since it doensn't seem to cause issues when disabled, and it definetely does cause issues when enabled -Veeq7
-				/*
-				// Fixes an issue where geyser would freeze, when upgrading the geyser while a harvester was mining
-				if (!(unit->status & UnitStatus::Completed)) {
-					helper::remove_harvesters(unit);
+			case UnitId::ZergEvigrilisk: {
+				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
+				bool can_fire = !unit->ground_weapon_cooldown && !unit->air_weapon_cooldown;
+				u32 weapon_id = WeaponId::EvigriliskBrutishTendrils;
+				if (is_moving && can_fire) {
+					if (hooks::fire_multiple(unit, unitExt, weapon_id, 4, FilterEnemy)) {
+						scbw::decloak_proc(unit);
+						unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id);
+						unit->air_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id);
+					}
 				}
-				*/
 			} break;
 			case UnitId::TerranTalos:
 			{
