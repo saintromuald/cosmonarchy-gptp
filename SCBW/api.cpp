@@ -902,7 +902,7 @@ namespace scbw
 
 	Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator, bool initAI)
 	{
-		if (*unit_count >= 1700) {
+		if (*g_unit_count >= 1700) {
 			return 0; // Prevent crashes, move to create unit later. -Veeq7
 		}
 		Point16 pos = {x, y};
@@ -2002,7 +2002,7 @@ namespace scbw
 	}
 
 	void set_cmbw_ai_preference(u16 unit_id, u32 player) {
-		unit_deaths[unit_id].player[player] = 1;
+		g_unit_deaths[unit_id].player[player] = 1;
 	}
 
 	Box32 unit_area(Unit* unit) {
@@ -2180,7 +2180,7 @@ namespace scbw
 
 		for (u32 y_tile = rect.top; y_tile <= rect.bottom; ++y_tile) {
 			for (u32 x_tile = rect.left; x_tile <= rect.right; ++x_tile) {
-				if ((*active_tile_array_int)[x_tile + y_tile * map_tile_size->width] & 0x10000000) {
+				if ((*active_tile_array_int)[x_tile + y_tile * g_map_tile_size->width] & 0x10000000) {
 					u32 x = x_tile * 32 - unit->position.x + 16;
 					u32 y = y_tile * 32 - unit->position.y + 16;
 					if (!spreads_creep || 100 * x * x + (y * y << 8) <= 10240000) {

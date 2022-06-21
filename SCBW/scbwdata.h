@@ -44,42 +44,42 @@ SCBW_DATA(Units12*, first_player_unit, 0x006283F8);  //Indexed by player Id
 /// @name Structure tables
 //////////////////////////////////////////////////////////////// @{
 
-SCBW_DATA(Units12*, completed_factory_counts,	0x0068A9D8);
-SCBW_DATA(Units12*, all_factory_counts,			0x0068A9A8);
+SCBW_DATA(Units12*,		g_completed_factory_counts,	0x0068A9D8);
+SCBW_DATA(Units12*,		g_all_factory_counts,		0x0068A9A8);
 
-SCBW_DATA(Unit*, unit_table,					0x0059CCA8);
-SCBW_DATA(u32*, unit_count,						0x006283F0);
-SCBW_DATA(Bullet*, bullet_table,				0x0064B2E8);
-SCBW_DATA(UnitDeaths*, death_table,				0x0058A364);
-SCBW_DATA(UnitDeaths*, unit_deaths,				death_table);
-SCBW_DATA(Sprite*, spriteTable,					0x00629D98);
+SCBW_DATA(Unit*,		g_unit_table,				0x0059CCA8);
+SCBW_DATA(u32*,			g_unit_count,				0x006283F0);
+SCBW_DATA(Bullet*,		g_bullet_table,				0x0064B2E8);
+SCBW_DATA(UnitDeaths*,	g_death_table,				0x0058A364);
+SCBW_DATA(UnitDeaths*,	g_unit_deaths,				g_death_table);
+SCBW_DATA(Sprite*,		g_sprite_table,				0x00629D98);
 
-SCBW_DATA(UnitScores_I*, unit_count_table,		0x00584DE4);
-SCBW_DATA(UnitScores_I*, completed_unit_counts, unit_count_table);
+SCBW_DATA(UnitScores_I*, g_unit_count_table,		0x00584DE4);
+SCBW_DATA(UnitScores_I*, g_completed_unit_counts,	g_unit_count_table);
 
 
-SCBW_DATA(UnitScores_I*, all_unit_count_table, 0x00582324);
-SCBW_DATA(UnitScores_I*, all_unit_counts, unit_count_table);
+SCBW_DATA(UnitScores_I*, g_all_unit_count_table,	0x00582324);
+SCBW_DATA(UnitScores_I*, g_all_unit_counts,			g_unit_count_table);
 
-SCBW_DATA(Thingy**, first_lone_sprite, 0x00654874);
+SCBW_DATA(Thingy**,		first_lone_sprite,			0x00654874);
 
 //From locations.cpp
-SCBW_DATA(const MapSize*, map_tile_size, 0x0057F1D4);
-SCBW_DATA(Location*, location_table, 0x0058DC60);
+SCBW_DATA(MapSize*,		g_map_tile_size,			0x0057F1D4);
+SCBW_DATA(Location*,	g_location_table,			0x0058DC60);
 
 //for buttonsets
-SCBW_DATA(ButtonSet*, buttonSetTable, 0x005187E8);
+SCBW_DATA(ButtonSet*,	g_buttonset_table,			0x005187E8);
 
-SCBW_DATA(ActionPointer*, actionTable,         0x00512800); // From triggers.cpp
-SCBW_DATA(ActionPointer*, briefingActionTable, 0x00512800);
-SCBW_DATA(char**,         chkStringTable,      0x005993D4);
-SCBW_DATA(void*,          mainWindow,          0x0051BFB0);
-SCBW_DATA(s32*,           musicVolume,         0x006D5BB4);
-SCBW_DATA(b8*,            musicPlaying,        0x006D5BBC);
+SCBW_DATA(ActionPointer*, g_action_table,			0x00512800); // From triggers.cpp
+SCBW_DATA(ActionPointer*, g_briefing_action_table,	0x00512800);
+SCBW_DATA(char**,         g_chk_string_table,		0x005993D4);
+SCBW_DATA(void*,          g_main_window,			0x0051BFB0);
+SCBW_DATA(s32*,           g_music_volume,			0x006D5BB4);
+SCBW_DATA(b8*,            g_music_playing,			0x006D5BBC);
 
 //This was in the InitializePlugin() code in qdp.cpp.
 //Not sure what this does, so I'm leaving it as a comment.
-//actionTable[59] = &EnableDebugModeAction;
+//g_action_table[59] = &EnableDebugModeAction;
 
 //////////////////////////////////////////////////////////////// @}
 

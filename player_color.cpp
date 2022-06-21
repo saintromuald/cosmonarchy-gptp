@@ -17,7 +17,7 @@ static u32 get_color_for_personality(u32 player);
 static bool is_player_randomizable(u32 player) {
 	if (can_randomize_player_colors) {
 		bool randomize = player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
-		if (death_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
+		if (g_death_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
 			randomize = !randomize;
 		}
 		return randomize;
@@ -84,7 +84,7 @@ static u32 get_random_color_from_tint(u32 tint) {
 
 static u32 get_color_for_personality(u32 player) {
 	const u32 race = g_player_table[player].race;
-	const u32 build = death_table[UnitId::Spell_DisruptionWeb].player[player] - 1;
+	const u32 build = g_death_table[UnitId::Spell_DisruptionWeb].player[player] - 1;
 	if (build >= 0
 		&& personality_colors.size() > race
 		&& personality_colors[race].size() > build) {
@@ -224,7 +224,7 @@ static void update_player_name(u32 player) {
 		return;
 	}
 	u32 race = g_player_table[player].race;
-	u32 personality = unit_deaths[UnitId::Spell_DisruptionWeb].player[player];
+	u32 personality = g_unit_deaths[UnitId::Spell_DisruptionWeb].player[player];
 	u32 count = get_name_count(race, personality);
 	if (count) {
 		for (u32 tries = 0; tries < 20; ++tries) {

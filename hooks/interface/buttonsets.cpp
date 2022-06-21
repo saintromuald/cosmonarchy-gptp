@@ -156,7 +156,7 @@ ButtonSet* get_custom_buttonset()
 	static Button customButtonsArray[50];
 
 	// Since it's a copy of the marine set, it would have the same amount of buttons
-	customButtonSet.buttons_in_set = buttonSetTable[UnitId::TerranMaverick].buttons_in_set;
+	customButtonSet.buttons_in_set = g_buttonset_table[UnitId::TerranMaverick].buttons_in_set;
 
 	// connected_unit should usually be init at 0xFFFF.Almost unused (maybe not fully implemented).
 	customButtonSet.connected_unit = 0xFFFF;
@@ -167,14 +167,14 @@ ButtonSet* get_custom_buttonset()
 	// For each button in the array until reaching the amount of buttons_in_set, copy the data for each member of the button structure from the marine to the custom set.
 	for (u32 i = 0; i < customButtonSet.buttons_in_set; i++)
 	{
-		customButtonsArray[i].action_func = buttonSetTable[UnitId::TerranMaverick].first_button[i].action_func;
-		customButtonsArray[i].action_string_id = buttonSetTable[UnitId::TerranMaverick].first_button[i].action_string_id;
-		customButtonsArray[i].action_var = buttonSetTable[UnitId::TerranMaverick].first_button[i].action_var;
-		customButtonsArray[i].icon_id = buttonSetTable[UnitId::TerranMaverick].first_button[i].icon_id;
-		customButtonsArray[i].position = buttonSetTable[UnitId::TerranMaverick].first_button[i].position;
-		customButtonsArray[i].requirement_func = buttonSetTable[UnitId::TerranMaverick].first_button[i].requirement_func;
-		customButtonsArray[i].requirement_string_id = buttonSetTable[UnitId::TerranMaverick].first_button[i].requirement_string_id;
-		customButtonsArray[i].requirement_var = buttonSetTable[UnitId::TerranMaverick].first_button[i].requirement_var;
+		customButtonsArray[i].action_func = g_buttonset_table[UnitId::TerranMaverick].first_button[i].action_func;
+		customButtonsArray[i].action_string_id = g_buttonset_table[UnitId::TerranMaverick].first_button[i].action_string_id;
+		customButtonsArray[i].action_var = g_buttonset_table[UnitId::TerranMaverick].first_button[i].action_var;
+		customButtonsArray[i].icon_id = g_buttonset_table[UnitId::TerranMaverick].first_button[i].icon_id;
+		customButtonsArray[i].position = g_buttonset_table[UnitId::TerranMaverick].first_button[i].position;
+		customButtonsArray[i].requirement_func = g_buttonset_table[UnitId::TerranMaverick].first_button[i].requirement_func;
+		customButtonsArray[i].requirement_string_id = g_buttonset_table[UnitId::TerranMaverick].first_button[i].requirement_string_id;
+		customButtonsArray[i].requirement_var = g_buttonset_table[UnitId::TerranMaverick].first_button[i].requirement_var;
 	}
 	return &customButtonSet;
 }
@@ -430,7 +430,7 @@ namespace hooks {
 	// Note: if you use update_buttonset_sub4591D0, you can disable the injection of this function in the _inject.cpp file.
 	ButtonSet* get_buttonset(s32 index)
 	{
-		return &(buttonSetTable[index]);
+		return &(g_buttonset_table[index]);
 	}
 
 	// Main update_buttonset function because it call update_buttonset() and others

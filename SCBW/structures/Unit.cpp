@@ -1292,7 +1292,7 @@ Unit* Unit::get_unit_from_index(u16 index)
 	}
 	if (1 <= index && index <= UNIT_ARRAY_LENGTH)
 	{
-		return &unit_table[index - 1];
+		return &g_unit_table[index - 1];
 	}
 	return nullptr;
 }
@@ -1304,7 +1304,7 @@ u16 Unit::get_unit_index() const
 	{
 		return this - (Unit*)&new_unit_table.units[0] + 1;
 	}
-	return this - unit_table + 1;
+	return this - g_unit_table + 1;
 }
 
 u8 Unit::get_last_owner_id() const

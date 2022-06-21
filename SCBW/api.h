@@ -136,18 +136,18 @@ namespace scbw
 		{
 			point.x = 0;
 		}
-		else if (point.x > map_tile_size->width * 32)
+		else if (point.x > g_map_tile_size->width * 32)
 		{
-			point.x = map_tile_size->width * 32;
+			point.x = g_map_tile_size->width * 32;
 		}
 
 		if (point.y < 0)
 		{
 			point.y = 0;
 		}
-		else if (point.y > map_tile_size->height * 32)
+		else if (point.y > g_map_tile_size->height * 32)
 		{
-			point.y = map_tile_size->height * 32;
+			point.y = g_map_tile_size->height * 32;
 		}
 
 		return point;
@@ -159,36 +159,36 @@ namespace scbw
 		{
 			rect.left = 0;
 		}
-		else if (rect.left > map_tile_size->width * 32)
+		else if (rect.left > g_map_tile_size->width * 32)
 		{
-			rect.left = map_tile_size->width * 32;
+			rect.left = g_map_tile_size->width * 32;
 		}
 		
 		if (rect.right < 0)
 		{
 			rect.right = 0;
 		}
-		else if (rect.right > map_tile_size->width * 32)
+		else if (rect.right > g_map_tile_size->width * 32)
 		{
-			rect.right = map_tile_size->width * 32;
+			rect.right = g_map_tile_size->width * 32;
 		}
 
 		if (rect.top < 0)
 		{
 			rect.top = 0;
 		}
-		else if (rect.top > map_tile_size->height * 32)
+		else if (rect.top > g_map_tile_size->height * 32)
 		{
-			rect.top = map_tile_size->height * 32;
+			rect.top = g_map_tile_size->height * 32;
 		}
 
 		if (rect.bottom < 0)
 		{
 			rect.bottom = 0;
 		}
-		else if (rect.bottom > map_tile_size->height * 32)
+		else if (rect.bottom > g_map_tile_size->height * 32)
 		{
-			rect.bottom = map_tile_size->height * 32;
+			rect.bottom = g_map_tile_size->height * 32;
 		}
 
 		return rect;
@@ -355,20 +355,20 @@ namespace scbw
 	/// Returns the pointer to the active tile data at (x, y).
 	inline ActiveTile& get_stupid_reference_to_active_tile_at(s32 x, s32 y)
 	{
-		return (*activeTileArray)[(x / 32) + map_tile_size->width * (y / 32)];
+		return (*activeTileArray)[(x / 32) + g_map_tile_size->width * (y / 32)];
 	}
 
 	inline ActiveTile* get_active_tile_at_coords(u32 x, u32 y) {
-		return &(*activeTileArray)[(x / 32) + (y / 32) * map_tile_size->width];
+		return &(*activeTileArray)[(x / 32) + (y / 32) * g_map_tile_size->width];
 	}
 
 	inline ActiveTile* get_active_tile_at_tile(u32 tile_x, u32 tile_y) {
-		return &(*activeTileArray)[tile_x + tile_y * map_tile_size->width];
+		return &(*activeTileArray)[tile_x + tile_y * g_map_tile_size->width];
 	}
 
 	inline u16& getTileIdAt(s32 x, s32 y)
 	{
-		return (*tileIdArray)[(x / 32) + map_tile_size->width * (y / 32)];
+		return (*tileIdArray)[(x / 32) + g_map_tile_size->width * (y / 32)];
 	}
 
 	/// Returns the elevation of the tile at (x, y). 0 for low terrain, 1 for
@@ -497,18 +497,18 @@ namespace scbw
 	/// Sets the data of the Anywhere location.
 	inline void setAnywhereLocation()
 	{
-		Location* location = &location_table[63];
+		Location* location = &g_location_table[63];
 		location->dimensions.left = 0;
 		location->dimensions.top = 0;
-		location->dimensions.right = 32 * map_tile_size->width;
-		location->dimensions.bottom = 32 * map_tile_size->height;
+		location->dimensions.right = 32 * g_map_tile_size->width;
+		location->dimensions.bottom = 32 * g_map_tile_size->height;
 		location->flags = 63;
 	}
 
 	/// Sets the data of location @p locNumber.
 	inline void setLocation(s32 locNumber, s32 left, s32 top, s32 right, s32 bottom, s32 flags)
 	{
-		Location* location = &location_table[locNumber];
+		Location* location = &g_location_table[locNumber];
 		location->dimensions.left = left;
 		location->dimensions.top = top;
 		location->dimensions.right = right;

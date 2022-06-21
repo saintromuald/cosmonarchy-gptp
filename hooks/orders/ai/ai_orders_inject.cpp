@@ -649,6 +649,21 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) player_has_transport_wrapper() { // 00432480
+		static bool result;
+		static u32 player_id;
+		__asm {
+			MOV player_id, ECX
+			PUSHAD
+		}
+		result = hooks::player_has_transport(player_id);
+		__asm {
+			POPAD
+			MOVZX AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -692,6 +707,8 @@ namespace hooks
 	//	jump_patch(ai_respond_to_cloaked_threat_wrapper,		0x0043C580,	1);
 		jump_patch(ai_try_return_home_wrapper,					0x00462EA0, 1);
 		jump_patch(ai_is_unit_id_unit_race_wrapper, 			0x00432480, 4);
+
+	//	jump_patch(player_has_transport_wrapper, 				0x00432480, 1);
 
 		call_patch(AI_ReactToHit_TownNullCheck,					0x0043F388, 5);
 

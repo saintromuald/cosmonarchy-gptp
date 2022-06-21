@@ -84,7 +84,7 @@ namespace hooks
 		}
 
 		// CCMU extender
-		auto new_table = unit_table;
+		auto new_table = g_unit_table;
 		if (globals.extended_unit_table == 1)
 		{
 			new_table = (Unit*)&new_unit_table.units[0];
@@ -394,7 +394,7 @@ namespace hooks
 			Unit* cargo_transport = cargo->connected_unit;
 			if (cargo_transport)
 			{
-				u32 cargo_index = cargo - unit_table + 1;
+				u32 cargo_index = cargo - g_unit_table + 1;
 				u32 loaded_index = 0;
 				if (cargo_index <= 1700)
 				{
@@ -752,7 +752,7 @@ namespace hooks
 		}
 		if (1 <= index && index <= UNIT_ARRAY_LENGTH)
 		{
-			return &unit_table[index - 1];
+			return &g_unit_table[index - 1];
 		}
 		return nullptr;
 	}
@@ -1007,7 +1007,7 @@ namespace hooks
 				is_not_subunit = (units_dat::base_property[cargo_subunit->id] & UnitProperty::Subunit) == 0;
 				goto LABEL_24;
 			}
-			u32 cargo_index = cargo - unit_table + 1;
+			u32 cargo_index = cargo - g_unit_table + 1;
 			u32 target_order_shifted = 0;
 			if (cargo_index <= 1700)
 			{

@@ -245,7 +245,7 @@ static void init_direct_sound() {
 		wave_format.nAvgBytesPerSec = wave_format.nSamplesPerSec * wave_format.nBlockAlign;
 		wave_format.cbSize = 0;
 
-		if (SUCCEEDED(direct_sound->SetCooperativeLevel(*(HWND*)mainWindow, DSSCL_PRIORITY))) {
+		if (SUCCEEDED(direct_sound->SetCooperativeLevel(*(HWND*)g_main_window, DSSCL_PRIORITY))) {
 			DSBUFFERDESC buffer_description = {};
 			buffer_description.dwSize = sizeof(DSBUFFERDESC);
 			buffer_description.dwFlags = DSBCAPS_PRIMARYBUFFER;
@@ -524,7 +524,7 @@ static void init_trigger_system() {
 		ds_buffer->Release();
 		ds_buffer = 0;
 	}
-	actionTable[47] = parse_comment_action;
+	g_action_table[47] = parse_comment_action;
 
 	memset(has_custom_name, 0, sizeof(has_custom_name));
 	memset(&objectives, 0, sizeof(objectives));
@@ -591,11 +591,11 @@ void handle_music() {
 	}
 
 	if (trigger_system.current_music || trigger_system.music_paused) {
-		if (*musicPlaying) {
+		if (*g_music_playing) {
 			helper::stopMusic();
 		}
 	} else {
-		if (!*musicPlaying) {
+		if (!*g_music_playing) {
 			helper::playNextMusic();
 		}
 	}

@@ -8,8 +8,8 @@ namespace hooks
 	// 1
 	void cloak_nearby_units(Unit* cloaker) {
 		bool needs_refresh = false;
-		static u16* const max_box_right_value  = (u16*)0x00628450; // should usually be map_tile_size->width * 32
-		static u16* const max_bot_bottom_value = (u16*)0x006284B4; // should usually be map_tile_size->height * 32
+		static u16* const max_box_right_value  = (u16*)0x00628450; // should usually be g_map_tile_size->width * 32
+		static u16* const max_bot_bottom_value = (u16*)0x006284B4; // should usually be g_map_tile_size->height * 32
 
 		// Use the unit's air weapon distance
 		u32 cloak_radius = cloaker->get_max_weapon_range(cloaker->get_air_weapon());

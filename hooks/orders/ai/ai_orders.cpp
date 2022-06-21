@@ -735,7 +735,7 @@ LABEL_37:
 			} break;
 		}
 		unit_id = (u16)unit_id;
-		u32 completedCount = unit_count_table[(u16)unit_id].player[(u8)player];
+		u32 completedCount = g_unit_count_table[(u16)unit_id].player[(u8)player];
 
 		// Originally had an inlined function that combined sieged and unsieged tanks for unit counts
 		return completedCount >= 12;
@@ -1442,14 +1442,14 @@ LABEL_37:
 			u32 worker_count = 0;
 			switch (g_player_table[town_player].race) {
 				case RaceId::Terran: {
-					worker_count += unit_count_table[UnitId::TerranMason].player[town_player];
-					worker_count += unit_count_table[UnitId::TerranTalos].player[town_player];
+					worker_count += g_unit_count_table[UnitId::TerranMason].player[town_player];
+					worker_count += g_unit_count_table[UnitId::TerranTalos].player[town_player];
 				} break;
 				case RaceId::Protoss: {
-					worker_count += unit_count_table[UnitId::ProtossScribe].player[town_player];
+					worker_count += g_unit_count_table[UnitId::ProtossScribe].player[town_player];
 				} break;
 				case RaceId::Zerg: {
-					worker_count += unit_count_table[UnitId::ZergDroleth].player[town_player];
+					worker_count += g_unit_count_table[UnitId::ZergDroleth].player[town_player];
 				} break;
 			}
 
@@ -2242,5 +2242,16 @@ LABEL_37:
 		}
 		*last_internal_error = 25;
 		return 0;
+	}
+
+	// Hooked to let AI use new transports. -Pr0nogo
+	bool player_has_transport(u32 player_id) // 00437250
+	{
+		scbw::print("PLAYER HAS TRANSPORT???");
+		return g_unit_count_table[UnitId::TerranTrojan].player[player_id]
+			|| g_unit_count_table[UnitId::ProtossEnvoy].player[player_id]
+			|| g_unit_count_table[UnitId::ZergOvileth].player[player_id]
+			|| g_unit_count_table[UnitId::ZergIroleth].player[player_id]
+			|| g_unit_count_table[UnitId::ZergOthstoleth].player[player_id];
 	}
 }

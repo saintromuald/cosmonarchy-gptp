@@ -745,7 +745,7 @@ namespace hooks
 			u32 player_race = g_player_table[player_id].race;
 			if (player_race == RaceId::Terran)
 			{
-				if (!unit_count_table[UnitId::TerranPhalanxTankModeTurret].player[player_id + 12]) // what
+				if (!g_unit_count_table[UnitId::TerranPhalanxTankModeTurret].player[player_id + 12]) // what
 				{
 					return;
 				}
@@ -758,7 +758,7 @@ namespace hooks
 				{
 					return;
 				}
-				witness_count = all_unit_count_table[UnitId::ProtossWitness].player[player_id];
+				witness_count = g_all_unit_count_table[UnitId::ProtossWitness].player[player_id];
 				if (witness_count < 2)
 				{
 					witness_request_quantity = 2 - witness_count;
@@ -782,9 +782,9 @@ namespace hooks
 			}
 			if (v33)
 			{
-				transport_1_count = all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1];
+				transport_1_count = g_all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1];
 				transport_1_quantity = (AIScriptController[player_id].AI_Flags.is_use_map_settings) != 0 ? 2 : 5;
-				transport_1_priority = all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1] != 0 ? 50 : 80;
+				transport_1_priority = g_all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1] != 0 ? 50 : 80;
 				if (transport_1_count < transport_1_quantity)
 				{
 					transport_1_request_count = transport_1_quantity - transport_1_count;

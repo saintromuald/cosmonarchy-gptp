@@ -53,7 +53,7 @@ namespace hooks
     char initialize_unit_counts() // 00488F90
     {
         memset(unit_count_score, 0, 0x540u);
-        memset(all_unit_count_table, 0, 0xAB00u);
+        memset(g_all_unit_count_table, 0, 0xAB00u);
 
         s32 result = 0;
         if (multiplayer_mode && game_data->teams_enabled)
@@ -358,7 +358,7 @@ namespace hooks
         {
             return;
         }
-        all_unit_count_table[unit->id].player[unit->player] += count;
+        g_all_unit_count_table[unit->id].player[unit->player] += count;
         GroupFlag groupFlag = units_dat::group_flags[(u16)unit->id];
         
         if (unit->get_race() == RaceId::Zerg)
@@ -412,9 +412,9 @@ namespace hooks
             units_produced_owned_total[unit->player] += count;
         }
 
-        if (all_unit_count_table[unit->id].player[unit->player] < 0)
+        if (g_all_unit_count_table[unit->id].player[unit->player] < 0)
         {
-            all_unit_count_table[unit->id].player[unit->player] = 0;
+            g_all_unit_count_table[unit->id].player[unit->player] = 0;
         }
     }
 
@@ -432,7 +432,7 @@ namespace hooks
         }
         auto player = unit->player;
         auto unit_id = unit->id;
-        completed_unit_counts[unit->id].player[unit->player] += count;
+        g_completed_unit_counts[unit->id].player[unit->player] += count;
 
         s32 race = unit->get_race();
         s32 supply = unit->get_supply_provided();
@@ -471,9 +471,9 @@ namespace hooks
                 building_score[unit->player] += count * units_dat::BuildScore[unit_id];
             }
         }
-        if (completed_unit_counts[unit_id].player[unit->player] < 0)
+        if (g_completed_unit_counts[unit_id].player[unit->player] < 0)
         {
-            completed_unit_counts[unit_id].player[unit->player] = 0;
+            g_completed_unit_counts[unit_id].player[unit->player] = 0;
         }
     }
 

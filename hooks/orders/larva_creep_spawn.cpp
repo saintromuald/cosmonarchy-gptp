@@ -212,13 +212,13 @@ namespace hooks
 				{
 					y1 = 0;
 				}
-				if (x2 >= map_tile_size->width)
+				if (x2 >= g_map_tile_size->width)
 				{
-					x2 = map_tile_size->width - 1;
+					x2 = g_map_tile_size->width - 1;
 				}
-				if (y2 >= map_tile_size->height)
+				if (y2 >= g_map_tile_size->height)
 				{
-					y2 = map_tile_size->height - 1;
+					y2 = g_map_tile_size->height - 1;
 				}
 
 				for (s32 i = x1; i <= x2; i++)
@@ -386,7 +386,7 @@ namespace hooks
 //		Unit* unit = getUnitPointer();
 		
 		/*
-		switch (death_table[214].player[11]) {
+		switch (g_death_table[214].player[11]) {
 		case 180:
 			return (x*x * 100 + y*y * 256) <= 2560000;
 		case UnitId::ZergCreepColony:
@@ -472,9 +472,9 @@ namespace hooks
 				{
 					do
 					{
-						if (!(*activeTileArray[(s16)v9 + map_tile_size->width * (s16)v6] & 0x20800000)
-							&& ((s16)v6 + 1 == map_tile_size->height
-								|| !(*activeTileArray[(s16)v9 + map_tile_size->width * (s16)(v6 + 1)] & 0x800000)))
+						if (!(*activeTileArray[(s16)v9 + g_map_tile_size->width * (s16)v6] & 0x20800000)
+							&& ((s16)v6 + 1 == g_map_tile_size->height
+								|| !(*activeTileArray[(s16)v9 + g_map_tile_size->width * (s16)(v6 + 1)] & 0x800000)))
 						{
 							modifyCreepState(
 								v9,
@@ -535,7 +535,7 @@ namespace hooks
 			}
 			while (((*current_tiles)[rect_left + rect_top * *map_creep_width] & 0x7FF0) != 16
 				|| does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
-				|| tile_flags & (*active_tile_array_int)[rect_left + rect_top * map_tile_size->width]
+				|| tile_flags & (*active_tile_array_int)[rect_left + rect_top * g_map_tile_size->width]
 				|| helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
 				|| helper::mark_creep_to_disappear(rect_left, rect_top))
 			{

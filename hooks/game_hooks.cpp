@@ -255,7 +255,7 @@ namespace hooks
 		scbw::set_ingame_loop_state(false);
 
 		if (*g_elapsed_time_frames == 2) {
-			u32 local_flags = unit_deaths[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
+			u32 local_flags = g_unit_deaths[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
 				for (s32 i = 0; i < 4092; i++) {
@@ -271,7 +271,7 @@ namespace hooks
 			bool do_ping[PLAYABLE_PLAYER_COUNT] = {};
 			for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id)
 			{
-				u32 flags = unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id];
+				u32 flags = g_unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id];
 				if (flags & VespeneDeaths_Reveal)
 				{
 					reveal_flag |= 1 << player_id;
@@ -287,9 +287,9 @@ namespace hooks
 			{
 				// Explore map
 				/*
-				for (u32 x = 0; x < map_tile_size->width; x++)
+				for (u32 x = 0; x < g_map_tile_size->width; x++)
 				{
-					for (u32 y = 0; y < map_tile_size->height; y++)
+					for (u32 y = 0; y < g_map_tile_size->height; y++)
 					{
 						ActiveTile& tile = scbw::get_active_tile_at(x * 32, y * 32);
 						tile.exploredFlags &= ~reveal_flag;

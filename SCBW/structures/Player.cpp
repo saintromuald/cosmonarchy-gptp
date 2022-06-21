@@ -79,7 +79,7 @@ u32 Player::number_of_units_of_id(u8 player, u16 unit_id)
 	{
 		return 0;
 	}
-	return all_unit_count_table[unit_id].player[player];
+	return g_all_unit_count_table[unit_id].player[player];
 }
 
 u32 Player::number_of_completed_units_of_id(u8 player, u16 unit_id)
@@ -88,5 +88,5 @@ u32 Player::number_of_completed_units_of_id(u8 player, u16 unit_id)
 	{
 		return 0;
 	}
-	return unit_count_table[unit_id].player[player];
+	return g_unit_count_table[unit_id].player[player];
 }

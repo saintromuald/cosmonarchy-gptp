@@ -532,7 +532,7 @@ LABEL_18_ENTER_MAIN_BODY:
 					//DebugOut("CurrentUnitIs (%d) unit_id = %d:", currentOpcode, nextOpcodeUnitId);
 					////DebugOut("  current unit is = %d", nextOpcodeUnitId);
 					// Weirdly, nextOpcodeUnitId is sometimes still the old opcode value - but only while debugging (or when there's 
-					// an OR statement?) this is causing access violation reading completed_unit_counts. Work around this for now by checking unit Ids
+					// an OR statement?) this is causing access violation reading g_completed_unit_counts. Work around this for now by checking unit Ids
 					if (Player::number_of_completed_units_of_id(parentUnit->player, nextOpcodeUnitId) > 0)
 					{
 						v27 = 0;
