@@ -1128,7 +1128,7 @@ namespace helper
 	extern stopMusic_Func* stopMusic;
 
 	void prepare_formation_movement(MovementGroup* a1, char a2);												// 0049A8C0
-	Unit* find_fow_unit(__int16 ax0, __int16 a2, unsigned __int16 a3);											// 00487FD0
+	Unit* find_fow_unit(u16 y_pos, u16 x_pos, u32 fow_unit_id);													// 00487FD0
 	void targeted_order_unit(Unit* a1, Unit* a2, int a3, char a4);												// 004756E0
 	void targeted_order_ground(int a1, int a2, Unit* a3, int a4, int a5, int a6);								// 004756B0
 	Unit* get_next_commanded_unit();																			// 0049A850

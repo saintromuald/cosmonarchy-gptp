@@ -650,7 +650,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) player_has_transport_wrapper() { // 00432480
+	void __declspec(naked) player_has_transport_wrapper() { // 00437250
 		static bool result;
 		static u32 player_id;
 		__asm {
@@ -708,7 +708,7 @@ namespace hooks
 		jump_patch(ai_try_return_home_wrapper,					0x00462EA0, 1);
 		jump_patch(ai_is_unit_id_unit_race_wrapper, 			0x00432480, 4);
 
-	//	jump_patch(player_has_transport_wrapper, 				0x00432480, 1);
+		jump_patch(player_has_transport_wrapper, 				0x00437250, 1);
 
 		call_patch(AI_ReactToHit_TownNullCheck,					0x0043F388, 5);
 

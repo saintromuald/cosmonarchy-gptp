@@ -1447,9 +1447,11 @@ LABEL_37:
 				} break;
 				case RaceId::Protoss: {
 					worker_count += g_unit_count_table[UnitId::ProtossScribe].player[town_player];
+					worker_count += g_unit_count_table[UnitId::ProtossArtisan].player[town_player];
 				} break;
 				case RaceId::Zerg: {
 					worker_count += g_unit_count_table[UnitId::ZergDroleth].player[town_player];
+					worker_count += g_unit_count_table[UnitId::ZergGosvileth].player[town_player];
 				} break;
 			}
 
@@ -2247,7 +2249,6 @@ LABEL_37:
 	// Hooked to let AI use new transports. -Pr0nogo
 	bool player_has_transport(u32 player_id) // 00437250
 	{
-		scbw::print("PLAYER HAS TRANSPORT???");
 		return g_unit_count_table[UnitId::TerranTrojan].player[player_id] // Dunno how to properly access this in GPTP. -Pr0nogo
 			|| g_unit_count_table[UnitId::ProtossEnvoy].player[player_id]
 			|| g_unit_count_table[UnitId::ZergOvileth].player[player_id]

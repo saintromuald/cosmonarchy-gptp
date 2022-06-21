@@ -10329,7 +10329,7 @@ namespace helper
 	playNextMusic_Func* playNextMusic = (playNextMusic_Func*) 0x004A6250;
 	stopMusic_Func* stopMusic         = (stopMusic_Func*)     0x004A5F50;
 
-	void prepare_formation_movement(MovementGroup* a1, char a2) { // 0049A8C0
+	void prepare_formation_movement(MovementGroup* a1, char a2) {
 		const u32 func_address = 0x0049A8C0;
 		__asm {
 			PUSHAD
@@ -10340,14 +10340,14 @@ namespace helper
 		}
 	}
 
-	Unit* find_fow_unit(__int16 ax0, __int16 a2, unsigned __int16 a3) { // 00487FD0
+	Unit* find_fow_unit(u16 y_pos, u16 x_pos, u32 fow_unit_id) {
 		static Unit* result;
 		const u32 func_address = 0x00487FD0;
 		__asm {
 			PUSHAD
-			PUSH a3
-			MOV CX, a2
-			MOV AX, ax0
+			PUSH fow_unit_id
+			MOV CX, x_pos
+			MOV AX, y_pos
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -10355,7 +10355,7 @@ namespace helper
 		return result;
 	}
 
-	void targeted_order_unit(Unit* a1, Unit* a2, int a3, char a4) { // 004756E0
+	void targeted_order_unit(Unit* a1, Unit* a2, int a3, char a4) {
 		const u32 func_address = 0x004756E0;
 		__asm {
 			PUSHAD
@@ -10368,7 +10368,7 @@ namespace helper
 		}
 	}
 
-	void targeted_order_ground(int a1, int a2, Unit* a3, int a4, int a5, int a6) { // 004756B0
+	void targeted_order_ground(int a1, int a2, Unit* a3, int a4, int a5, int a6) {
 		const u32 func_address = 0x004756B0;
 		__asm {
 			PUSHAD
@@ -10383,7 +10383,7 @@ namespace helper
 		}
 	}
 
-	Unit* get_next_commanded_unit() { // 0049A850
+	Unit* get_next_commanded_unit() {
 		static Unit* result;
 		const u32 func_address = 0x0049A850;
 		__asm {
@@ -10395,7 +10395,7 @@ namespace helper
 		return result;
 	}
 
-	void get_formation_movement_target(Unit *a1, MovementGroup* a2) { // 0049A500
+	void get_formation_movement_target(Unit *a1, MovementGroup* a2) {
 		const u32 func_address = 0x0049A500;
 		__asm {
 			PUSHAD
