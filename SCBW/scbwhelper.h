@@ -1363,4 +1363,10 @@ namespace helper
 
 	// For create_all_selection_circles
 	Image* create_selection_circle(Sprite* sprite, u8 color, u16 image_id);									// 004D7070
+
+	// For unit_stat_action_transport
+	Unit* transport_status_update_drawn_values();															// 00424FC0
+	void set_spell_special_button_graphic(BinDlg* dialog);													// 00424BA0
+	void get_active_portrait_unit_name(BinDlg* dialog);														// 00425EC0
+	void unit_stat_action_building(void* dialog);															// 00427890
 }
