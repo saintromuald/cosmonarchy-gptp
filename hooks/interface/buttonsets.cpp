@@ -642,6 +642,16 @@ namespace hooks {
 			}
 		}
 
+		if (!has_larva && has_egg) {
+			if (buttonset_id == UnitId::Buttons_LarvaSwarm
+			||  buttonset_id == UnitId::Buttons_LarvaAssault
+			||  buttonset_id == UnitId::Buttons_LarvaControl
+			||  buttonset_id == UnitId::Buttons_LarvaShared) {
+				helper::BTNSACT_ChangeButtons(UnitId::ZergEgg);
+				return;
+			}
+		}
+
 		ButtonSet* const current_buttonset = get_buttonset(buttonset_id);
 		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
 		bool bStopThere = false;

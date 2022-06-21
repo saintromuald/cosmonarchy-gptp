@@ -409,5 +409,11 @@ namespace UnitId
 		/*0xF7*/	Buttons_GroupBurrower					= 247,
 		/*0xF8*/	Buttons_ReplayPaused					= 248,
 		/*0xF9*/	Buttons_ReplayPlaying					= 249,
+
+		// Special
+		Buttons_LarvaSwarm									= 206,
+		Buttons_LarvaAssault								= 207,
+		Buttons_LarvaControl								= 208,
+		Buttons_LarvaShared									= 101,
 	};
 }

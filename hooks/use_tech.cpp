@@ -7,13 +7,6 @@
 
 namespace hooks
 {
-	enum {
-		ButtonSet_Swarm   = 206,
-		ButtonSet_Assault = 207,
-		ButtonSet_Control = 208,
-		ButtonSet_Shared  = 101,
-	};
-
 	static void select_larva_type(u32 buttonset) {
 		btnsact_select_larva();
 		helper::update_hud_info();
@@ -278,19 +271,19 @@ namespace hooks
 			} break;
 			case TechId::LarvalSubmenuSelectSwarm:
 			{
-				select_larva_type(ButtonSet_Swarm);
+				select_larva_type(UnitId::Buttons_LarvaSwarm);
 			} break;
 			case TechId::LarvalSubmenuSelectAssault:
 			{
-				select_larva_type(ButtonSet_Assault);
+				select_larva_type(UnitId::Buttons_LarvaAssault);
 			} break;
 			case TechId::LarvalSubmenuSelectControl:
 			{
-				select_larva_type(ButtonSet_Control);
+				select_larva_type(UnitId::Buttons_LarvaControl);
 			} break;
 			case TechId::LarvalSubmenuSelectShared:
 			{
-				select_larva_type(ButtonSet_Shared);
+				select_larva_type(UnitId::Buttons_LarvaShared);
 			} break;
 		};
 	}
