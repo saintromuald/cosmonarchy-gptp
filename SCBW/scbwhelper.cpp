@@ -12329,4 +12329,46 @@ namespace helper
 		}
 		return result;
 	}
+
+	Unit* transport_status_update_drawn_values() {
+		static Unit* result;
+		const u32 func_address = 0x00424FC0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void set_spell_special_button_graphic(BinDlg* dialog) {
+		const u32 func_address = 0x00424BA0;
+		__asm {
+			PUSHAD
+			MOV EAX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void get_active_portrait_unit_name(BinDlg* dialog) {
+		const u32 func_address = 0x00425EC0;
+		__asm {
+			PUSHAD
+			PUSH dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void unit_stat_action_building(void* dialog) {
+		const u32 func_address = 0x00427890;
+		__asm {
+			PUSHAD
+			MOV ECX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
 }

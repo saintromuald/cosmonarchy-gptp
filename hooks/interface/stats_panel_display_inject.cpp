@@ -308,6 +308,19 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) unit_stat_action_transport_wrapper() { // 00427C90
+		static BinDlg* dialog;
+		__asm {
+			MOV dialog, ECX
+			PUSHAD
+		}
+		hooks::unit_stat_action_transport(dialog);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -330,6 +343,7 @@ namespace hooks
 	//	jump_patch(draw_tooltip_with_icon_wrapper,					0x00458EF0, 1);
 	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3);
 		jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
+		jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
 		
 	//	call_patch(draw_tooltip_with_icon_partial_wrapper,          0x00458FB2, 1);
 	}

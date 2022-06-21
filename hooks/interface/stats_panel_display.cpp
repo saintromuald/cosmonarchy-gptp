@@ -787,4 +787,31 @@ namespace hooks
 		}
 		return queued_id;
 	}
+
+	// Hooked to investigate transport UI. -Pr0nogo
+	void unit_stat_action_transport(BinDlg* dialog) // 00427C90
+	{
+		Unit* active_unit = *active_portrait_unit;
+		if ((*g_is_in_replay || active_unit->player == *g_local_nation_id)
+		&&  !(active_unit->status & UnitStatus::IsHallucination)
+		&&   (helper::transport_status_update_drawn_values(), helper::is_unit_loaded(active_unit)))
+		{
+			if (*g_status_screen_func != 11)
+			{
+				helper::hide_optional_status_screen_controls(dialog);
+				*g_status_screen_func = 11;
+			}
+			helper::set_spell_special_button_graphic(dialog);
+			helper::set_text_string(dialog);
+			helper::get_active_portrait_unit_name(dialog);
+		}
+		else if (active_unit->status & UnitStatus::GroundedBuilding)
+		{
+			helper::unit_stat_action_building(dialog);
+		}
+		else
+		{
+			helper::unit_stat_act_standard(dialog);
+		}
+	}
 }
