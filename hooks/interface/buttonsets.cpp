@@ -628,6 +628,7 @@ namespace hooks {
 		}
 
 		bool has_larva = false;
+		bool has_egg = false;
 		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = client_selection_group->unit[i];
 			if (!unit) {
@@ -635,6 +636,9 @@ namespace hooks {
 			}
 			if (unit->id == UnitId::ZergLarva) {
 				has_larva = true;
+			}
+			if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
+				has_egg = true;
 			}
 		}
 
@@ -731,6 +735,10 @@ namespace hooks {
 								current_button_state = Button_State::Invisible;
 							}
 						}
+					}
+
+					if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg && current_button->icon_id == IconId::SetRallyPoint) {
+						current_button_state = Button_State::Enabled;
 					}
 
 					if (current_button->icon_id == IconId::Burrow || current_button->icon_id == IconId::LurkerBurrow) {
