@@ -577,10 +577,13 @@ struct UnitLayout
 	/*0x0AA*/ u16       shield_gain;					// Shield gain on construction
 	/*0x0AC*/ u16       remaining_build_time;			// Remaining bulding time; also used by powerups (flags) as the timer for returning to their original location.
 	/*0x0AE*/ u16       previous_hitpoints;				// The HP of the unit before it changed (example Drone->Hatchery, the Drone's HP will be stored here)
-	/*0x0B0*/ struct
+	/*0x0B0*/ union
 	{
-		u16 index   : 11;								// 1-based index in the unit table.
-		u16 unit_id : 5;
+		struct {
+			u16 index   : 11;								// 1-based index in the unit table.
+			u16 unit_id : 5;
+		};
+		u16 value;
 	} loaded_unit[8];									// officially called "uwTransport[8]"
 	/*0x0C0*/ union
 	{
