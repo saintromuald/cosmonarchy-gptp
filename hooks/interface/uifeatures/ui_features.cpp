@@ -80,12 +80,12 @@ namespace hooks {
 	void queue_game_command(u8* data, u32 size) {
 		if (*command_queue_size + size <= *provider_MaxBuffer) {
 			register_action(data[0]);
-			memcpy((void*)&TurnBuffer[*command_queue_size], data, size);
+			memcpy((void*)&turn_buffer[*command_queue_size], data, size);
 			*command_queue_size += size;
 			return;
 		}
 
-		if (*scMainState == 4) {
+		if (*sc_main_state == 4) {
 			return;
 		}
 
@@ -96,12 +96,12 @@ namespace hooks {
 			}
 			register_action(data[0]);
 			helper::send_turn();
-			memcpy((void*)&TurnBuffer[*command_queue_size], data, size);
+			memcpy((void*)&turn_buffer[*command_queue_size], data, size);
 			*command_queue_size += size;
 			return;
 		}
 
-		if (!*outOfGame) {
+		if (!*out_of_game) {
 			u32 error = helper::serr_get_last_error();
 			helper::packet_error_handle(error, 81, "Starcraft\\SWAR\\lang\\net_mgr.cpp", 225, 1);
 		}
@@ -119,7 +119,7 @@ namespace hooks {
 					goto LABEL_15;
 				default:
 					if (a3->order_queue_count < 8u) {
-						if (*COrderCount < 1800) {
+						if (*order_count < 1800) {
 							helper::queue_new_order((Order*)a5, a1, a4, a3, a7, a8, a2, (Vector32*)a9, (Unit*)a10);
 						} else {
 							u8 v11 = a3->player;
@@ -179,7 +179,7 @@ LABEL_15:
 	}
 
 	char create_upgrade_level_tooltip(char* text) {
-		if (!*upgradeLevelTooltip) {
+		if (!*upgrade_level_tooltip) {
 			if (text)
 			{
 				return helper::create_tooltip(text);
@@ -190,13 +190,13 @@ LABEL_15:
 			return helper::refresh_selection_screen();
 		}
 		const char* description;
-		if (**statTxtBuffer > 794u) {
-			description = (char *)*statTxtBuffer + (*statTxtBuffer)[795];
+		if (**stat_txt_buffer > 794u) {
+			description = (char *)*stat_txt_buffer + (*stat_txt_buffer)[795];
 		} else {
 			description = "";
 		}
 		char buffer[128];
-		sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)*upgradeLevelTooltip);
+		sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)*upgrade_level_tooltip);
 		scbw::printf("%s", buffer);
 		return helper::create_tooltip(buffer);
 	}

@@ -89,7 +89,7 @@ namespace
 			MOV addonOffsetY, AX
 			PUSHAD
 		}
-		scbw::adjust_addon_y(*placeBuildingUnitType, *placeBuildBaseType, &addonOffsetY);
+		scbw::adjust_addon_y(*place_building_unit_id, *place_building_base_type, &addonOffsetY);
 		__asm
 		{
 			POPAD
@@ -108,7 +108,7 @@ namespace
 			MOV addonOffsetX, AX
 			PUSHAD
 		}
-		scbw::adjust_addon_x(*placeBuildingUnitType, *placeBuildBaseType, &addonOffsetX);
+		scbw::adjust_addon_x(*place_building_unit_id, *place_building_base_type, &addonOffsetX);
 		__asm
 		{
 			POPAD

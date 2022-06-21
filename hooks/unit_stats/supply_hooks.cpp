@@ -52,11 +52,11 @@ namespace hooks
 
     char initialize_unit_counts() // 00488F90
     {
-        memset(unitCountScore, 0, 0x540u);
+        memset(unit_count_score, 0, 0x540u);
         memset(all_unit_count_table, 0, 0xAB00u);
 
         s32 result = 0;
-        if (multiPlayerMode && gameData->teamsEnabled)
+        if (multiplayer_mode && game_data->teams_enabled)
         {
             s32 forceIterator = 1;
             do
@@ -144,7 +144,7 @@ namespace hooks
             dialogVar = 0;
         }
 
-        s32 activePlayer = *LOCAL_NATION_ID;
+        s32 activePlayer = *local_nation_id;
         s32 replay_switch_something = 0;
         if (*bw_is_in_replay)
         {
@@ -160,7 +160,7 @@ namespace hooks
                 if (activePlayer != 11)
                 {
                     activePlayer = activePlayer;
-                    *LOCAL_NATION_ID = activePlayer;
+                    *local_nation_id = activePlayer;
                     if (activePlayer != *unknown_player_5153F8)
                     {
                         replay_switch_something = 1;
@@ -184,7 +184,7 @@ namespace hooks
 
         s32 workers = 0;
         s32 men = 0;
-        for (Unit* unit = first_player_unit->unit[*LOCAL_NATION_ID]; unit; unit = unit->player_link.next) {
+        for (Unit* unit = first_player_unit->unit[*local_nation_id]; unit; unit = unit->player_link.next) {
             if (unit->status & UnitStatus::Completed) {
                 if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
                     workers += 2;
@@ -210,9 +210,9 @@ namespace hooks
             dialogVar = dialogVar->next;
         }
 
-        helper::printStatResInfo(dialogVar, *console_index + 1, (char**)unknown_68C22C, (char*)game_vespene[*LOCAL_NATION_ID], replay_switch_something);
+        helper::printStatResInfo(dialogVar, *console_index + 1, (char**)unknown_68C22C, (char*)game_vespene[*local_nation_id], replay_switch_something);
         BinDlg* v18 = dialogVar->next;
-        helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)game_minerals[*LOCAL_NATION_ID], replay_switch_something);
+        helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)game_minerals[*local_nation_id], replay_switch_something);
         BinDlg* v17 = v18->next;
         if (v18->next)
         {
@@ -229,7 +229,7 @@ namespace hooks
         }
         if (*bw_is_in_replay)
         {
-            *LOCAL_NATION_ID = activePlayer;
+            *local_nation_id = activePlayer;
         }
     }
 
@@ -237,7 +237,7 @@ namespace hooks
     {
         Unit* activeUnit = *active_portrait_unit;
         GroupFlag groupFlags = units_dat::group_flags[activeUnit->id];
-        *suppliesAvailableTemp = get_supplies_available(activeUnit->player, RaceId::Terran);
+        *supplies_available_temp = get_supplies_available(activeUnit->player, RaceId::Terran);
         u8 player = activeUnit->player;
         s32 result = suppliesUsed_Terran[player];
         *suppliesUsedTemp = suppliesUsed_Terran[player];
@@ -246,7 +246,7 @@ namespace hooks
 
     bool redraw_supply_info() // 00425230 // Guessed name
     {
-        if (!bw_is_in_replay && (u8)(*active_portrait_unit)->player != *LOCAL_NATION_ID)
+        if (!bw_is_in_replay && (u8)(*active_portrait_unit)->player != *local_nation_id)
         {
             return helper::unitStatCond_Standard();
         }
@@ -255,7 +255,7 @@ namespace hooks
         GroupFlag groupFlags = units_dat::group_flags[(u16)(*active_portrait_unit)->id];
         char race = RaceId::Terran;
 
-        if ((u16)suppliesAvailableTemp == get_supplies_available(activePlayer, race))
+        if ((u16)supplies_available_temp == get_supplies_available(activePlayer, race))
         {
             s32 suppliesVar = suppliesUsed_Terran[activePlayer];
             if ((u16)suppliesUsedTemp == suppliesVar)
@@ -268,12 +268,12 @@ namespace hooks
 
 	void draw_supply_unit_status(BinDlg* dialog) {
 		Unit* unit = *active_portrait_unit;
-		if (*bw_is_in_replay || unit->player == *LOCAL_NATION_ID) {
+		if (*bw_is_in_replay || unit->player == *local_nation_id) {
 			get_supplies_temp();
-			if (*statusScreenFunc != 12) {
+			if (*status_screen_func != 12) {
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -10, -13);
-				*statusScreenFunc = 12;
+				*status_screen_func = 12;
 			}
 
             /*
@@ -284,8 +284,8 @@ namespace hooks
             char* supply_used_string = 0;
 			if (race == -821) {
 				supply_used_string = 0;
-			} else if (supply_used_string_id < **statTxtBuffer) {
-				supply_used_string = (char*)*statTxtBuffer + (*statTxtBuffer)[supply_used_string_id + 1];
+			} else if (supply_used_string_id < **stat_txt_buffer) {
+				supply_used_string = (char*)*stat_txt_buffer + (*stat_txt_buffer)[supply_used_string_id + 1];
 			} else {
 				supply_used_string = "";
 			}
@@ -295,8 +295,8 @@ namespace hooks
             char* supply_provided_string = 0;
 			if (race == -815) {
 				supply_provided_string = 0;
-			} else if (supply_provided_string_id < **statTxtBuffer) {
-				supply_provided_string = (char*)*statTxtBuffer + (*statTxtBuffer)[supply_provided_string_id + 1];
+			} else if (supply_provided_string_id < **stat_txt_buffer) {
+				supply_provided_string = (char*)*stat_txt_buffer + (*stat_txt_buffer)[supply_provided_string_id + 1];
 			} else {
 				supply_provided_string = "";
 			}
@@ -307,8 +307,8 @@ namespace hooks
             char* supply_available_string = 0;
 			if (race == -818) {
 				supply_available_string = 0;
-			} else if (supply_available_string_id < **statTxtBuffer) {
-				supply_available_string = (char*)*statTxtBuffer + (*statTxtBuffer)[supply_available_string_id + 1];
+			} else if (supply_available_string_id < **stat_txt_buffer) {
+				supply_available_string = (char*)*stat_txt_buffer + (*stat_txt_buffer)[supply_available_string_id + 1];
 			} else {
 				supply_available_string = "";
 			}
@@ -320,8 +320,8 @@ namespace hooks
             char* supply_max_string = 0;
 			if (race == -824) {
 				supply_max_string = 0;
-			} else if (supply_max_string_id < **statTxtBuffer) {
-				supply_max_string = (char*)*statTxtBuffer + (*statTxtBuffer)[supply_max_string_id + 1];
+			} else if (supply_max_string_id < **stat_txt_buffer) {
+				supply_max_string = (char*)*stat_txt_buffer + (*stat_txt_buffer)[supply_max_string_id + 1];
 			} else {
 				supply_max_string = "";
 			}
@@ -397,19 +397,19 @@ namespace hooks
 
         if (groupFlag.is_factory)
         {
-            factoriesProducedOwnedTotal[unit->player] += count;
+            factories_produced_owned_total[unit->player] += count;
         }
         if (groupFlag.is_men)
         {
-            unitsProducedOwnedTotal[unit->player] += count;
+            units_produced_owned_total[unit->player] += count;
         }
         if (groupFlag.is_building)
         {
-            structuresProducedOwnedTotal[unit->player] += count;
+            structures_produced_owned_total[unit->player] += count;
         }
         if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon)
         {
-            unitsProducedOwnedTotal[unit->player] += count;
+            units_produced_owned_total[unit->player] += count;
         }
 
         if (all_unit_count_table[unit->id].player[unit->player] < 0)
@@ -442,15 +442,15 @@ namespace hooks
         }
         if (units_dat::group_flags[unit_id].is_factory)
         {
-            factoriesOwned[unit->player] += count;
+            factories_owned[unit->player] += count;
         }
         if (units_dat::group_flags[unit_id].is_building)
         {
-            buildingsOwned[unit->player] += count;
+            buildings_owned[unit->player] += count;
         }
         if (units_dat::group_flags[unit_id].is_men)
         {
-            unitsProduced[unit->player] += count;
+            units_produced[unit->player] += count;
         }
         if (increment_scores != 0)
         {
@@ -458,17 +458,17 @@ namespace hooks
             {
                 if (!scbw::is_any_morph_result(unit_id))
                 {
-                    unitsOwned[unit->player] += count;
+                    units_owned[unit->player] += count;
                 }
-                unitScore[unit->player] += count;
+                unit_score[unit->player] += count;
             }
             else if (units_dat::group_flags[unit_id].is_building)
             {
                 if (!scbw::is_zerg_building_morph_result(unit_id))
                 {
-                    buildingsOwned[unit->player] += count;
+                    buildings_owned[unit->player] += count;
                 }
-                buildingScore[unit->player] += count * units_dat::BuildScore[unit_id];
+                building_score[unit->player] += count * units_dat::BuildScore[unit_id];
             }
         }
         if (completed_unit_counts[unit_id].player[unit->player] < 0)

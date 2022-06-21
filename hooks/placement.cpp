@@ -11,10 +11,10 @@ namespace hooks
         u32 tile_x = (placement_pos->x + 16) / 32;
         u32 tile_y = (placement_pos->y + 16) / 32;
 
-        *placeBuildingX = tile_x + *moveToTileX;
-        *placeBuildingY = tile_y + *moveToTileY;
-        placement_pos->x = *placeBuildingX * 32 - *moveToX;
-        placement_pos->y = *placeBuildingY * 32 - *moveToY;
+        *place_building_x = tile_x + *move_to_tile_x;
+        *place_building_y = tile_y + *move_to_tile_y;
+        placement_pos->x = *place_building_x * 32 - *move_to_x;
+        placement_pos->y = *place_building_y * 32 - *move_to_y;
         return 1;
 	}
 
@@ -25,16 +25,16 @@ namespace hooks
             return result;
         }
         unused.x = mouse->y;
-        Point16 dims = units_dat::BuildingDimensions[*placeBuildingUnitType];
+        Point16 dims = units_dat::BuildingDimensions[*place_building_unit_id];
         placement_pos.x = mouse->x - dims.x / 2;
         placement_pos.y = mouse->y - dims.y / 2;
         if (helper::init_placement_box_pos(&placement_pos)) {
-            *placeBuildingMessageId = helper::update_placement_state_for_placement_box();
+            *place_building_message_id = helper::update_placement_state_for_placement_box();
             helper::refresh_layers_3_and_4();
             helper::unk_building_placement_related(1, &placement_pos);
-            if (*isPlacingAddon) {
-                placement_pos.x -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-                placement_pos.y -= units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+            if (*is_placing_addon) {
+                placement_pos.x -= units_dat::AddonPlacement[*place_building_unit_id - UnitId::TerranCommandCenter].x;
+                placement_pos.y -= units_dat::AddonPlacement[*place_building_unit_id - UnitId::TerranCommandCenter].y;
                 helper::unk_building_placement_related(0, &placement_pos);
             }
             return helper::refresh_layers_3_and_4();
@@ -48,16 +48,16 @@ namespace hooks
             return 0;
         }
 
-        u32 source = *placeBuildBaseType;
-        u32 target = *placeBuildingUnitType;
-        u16 addon_x = (*placeBuildingX - units_dat::AddonPlacement[2 * *placeBuildingUnitType - 212].x / 32);
-        u16 addon_y = (*placeBuildingY - units_dat::AddonPlacement[2 * *placeBuildingUnitType - 211].y / 32);
+        u32 source = *place_building_base_type;
+        u32 target = *place_building_unit_id;
+        u16 addon_x = (*place_building_x - units_dat::AddonPlacement[2 * *place_building_unit_id - 212].x / 32);
+        u16 addon_y = (*place_building_y - units_dat::AddonPlacement[2 * *place_building_unit_id - 211].y / 32);
         scbw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
 
-        s32 can_build = helper::can_build_on_tile_location(*active_portrait_unit, *placingPlayer, *placeBuildingX, *placeBuildingY, *placeBuildingUnitType, 1, 1, 0, 0);
-        s32 result = helper::can_build_on_tile_location(*active_portrait_unit, *placingPlayer, addon_x, addon_y, *placeBuildBaseType, 0, 1, 0, 0);
+        s32 can_build = helper::can_build_on_tile_location(*active_portrait_unit, *placing_player, *place_building_x, *place_building_y, *place_building_unit_id, 1, 1, 0, 0);
+        s32 result = helper::can_build_on_tile_location(*active_portrait_unit, *placing_player, addon_x, addon_y, *place_building_base_type, 0, 1, 0, 0);
         // ^ this call might be needed, even if the result isn't returned, untested
-        if (!*isPlacingAddon || can_build) {
+        if (!*is_placing_addon || can_build) {
             result = can_build;
         }
         return result;

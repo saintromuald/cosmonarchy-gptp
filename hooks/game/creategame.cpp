@@ -25,19 +25,19 @@ namespace hooks
 	/*s32 singleplayerMeleeCreate() {
 		s32 v1; // esi
 
-		if (multiPlayerMode)
+		if (multiplayer_mode)
 			return 0;
-		if (customSingleplayer[0])
+		if (custom_singleplayer[0])
 		{
-			if (gameData->victoryCondition || gameData->starting_units || gameData->tournamentModeEnabled)
+			if (game_data->victory_condition || game_data->starting_units || game_data->tournament_mode_enabled)
 			{
 				switchComputerToOpen();
-				player_table[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
+				player_table[*local_nation_id].race = selected_singleplayer_race[0];
 				v1 = 0;
 				do
 				{
-					if (selectedSingleplayerRace[v1 + 1] != 7) // RACE_Inactive
-						setLastOpenSlotToComputer(selectedSingleplayerRace[v1 + 1]);
+					if (selected_singleplayer_race[v1 + 1] != 7) // RACE_Inactive
+						setLastOpenSlotToComputer(selected_singleplayer_race[v1 + 1]);
 					++v1;
 				} while (v1 < 8);
 			}
@@ -49,26 +49,26 @@ namespace hooks
 		s32 result; // eax
 		void* v3; // ecx
 
-		if (!loadGameFileHandle)
+		if (!load_game_file_handle)
 			return 1;
 		if (loadSave() && initSingleplayerHuman())
 		{
-			isHost = 0;
-			result = createGame((s32)&gameData, a2);
+			is_host = 0;
+			result = createGame((s32)&game_data, a2);
 		}
 		else
 		{
-			if (!outOfGame)
+			if (!out_of_game)
 			{
 				leaveGame(3);
-				outOfGame = 1;
+				out_of_game = 1;
 				setNetTblError(0, 0, 0, a2, 97);
-				if (scMainState == 3)
+				if (sc_main_state == 3)
 				{
-					gameActive = 0;
-					nextSCMainState = 4;
+					game_active = 0;
+					next_sc_main_state = 4;
 					if (!is_in_replay)
-						replayEndFrame = elapsed_time_frames;
+						replay_end_frame = elapsed_time_frames;
 				}
 				nextLeaveGameMenu(v3);
 			}
@@ -100,9 +100,9 @@ namespace hooks
 		char v21; // [esp+194h] [ebp-40h]
 		char v22; // [esp+1B4h] [ebp-20h]
 
-		if ( !levelCheatUnlocked )
+		if ( !level_cheat_unlocked )
 		return 1;
-		levelCheatUnlocked = 0;
+		level_cheat_unlocked = 0;
 		if ( !player_name[0] )
 		{
 		if ( *network_table > 0x47u )
@@ -111,19 +111,19 @@ namespace hooks
 			v3 = "";
 		sStrCopy("", v3, 0x19u);
 		}
-		if ( !campaignIndex )
+		if ( !campaign_index )
 		{
 		sStrCopy(&source, current_map_filename, 0x104u);
 		if ( !readMapData((s32)&v21, &source, (s32 *)&v21, 0) )
 		{
-			if ( !outOfGame )
+			if ( !out_of_game )
 			{
 			leaveGame(3);
-			outOfGame = 1;
+			out_of_game = 1;
 			setNetTblError(0, 0, 0, a1, 97);
 			if ( gwGameMode == 3 )
 			{
-				gameState = 0;
+				game_state = 0;
 				gamePosition = 4;
 				if ( !is_in_replay )
 					Replay_FrameCount = elapsedTime;
@@ -141,7 +141,7 @@ namespace hooks
 		} while ( (s32)v6 < (s32)&playerStructs[8].nType );
 		goto LABEL_21;
 		}
-		if ( readMapData((s32)&v21, *(const char **)&mapdataTable[4 * campaignIndex], (s32 *)&v21, 1) )
+		if ( readMapData((s32)&v21, *(const char **)&mapdataTable[4 * campaign_index], (s32 *)&v21, 1) )
 		{
 		LABEL_21:
 		memset(&a1, 0, 0x8Cu);
@@ -158,19 +158,19 @@ namespace hooks
 			SMemFree(v7, "Starcraft\\SWAR\\lang\\game.cpp", 342, 0);
 			if ( sub_4DBE50() )
 			{
-			isHost = 0;
+			is_host = 0;
 			result = CreateGame((s32)&a1, v20);
 			}
 			else
 			{
-			if ( !outOfGame )
+			if ( !out_of_game )
 			{
 				leaveGame(3);
-				outOfGame = 1;
+				out_of_game = 1;
 				setNetTblError(0, 0, 0, v20, 97);
 				if ( gwGameMode == 3 )
 				{
-				gameState = 0;
+				game_state = 0;
 				gamePosition = 4;
 				if ( !is_in_replay )
 					Replay_FrameCount = elapsedTime;
@@ -182,14 +182,14 @@ namespace hooks
 		}
 		else
 		{
-			if ( !outOfGame )
+			if ( !out_of_game )
 			{
 			leaveGame(3);
-			outOfGame = 1;
+			out_of_game = 1;
 			setNetTblError(0, 0, 0, v20, 102);
 			if ( gwGameMode == 3 )
 			{
-				gameState = 0;
+				game_state = 0;
 				gamePosition = 4;
 				if ( !is_in_replay )
 				{
@@ -203,14 +203,14 @@ namespace hooks
 		}
 		return result;
 		}
-		if ( !outOfGame )
+		if ( !out_of_game )
 		{
 		leaveGame(3);
-		outOfGame = 1;
+		out_of_game = 1;
 		setNetTblError(0, 0, 0, a1, 97);
 		if ( gwGameMode == 3 )
 		{
-			gameState = 0;
+			game_state = 0;
 			gamePosition = 4;
 			if ( !is_in_replay )
 			{

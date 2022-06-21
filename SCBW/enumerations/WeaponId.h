@@ -221,7 +221,7 @@ namespace WeaponId {
 
 		// Zerg \\
 
-		VorvalingClaws						= 36,	// Vorvaling weapon
+		VorvalClaws							= 36,	// Vorvrokor weapon
 		NathrokorPlasmidBreath				= 37,	// Nathrokor weapon
 		KeskathalorScreamingVenom			= 41,	// Keskathalor weapon
 		AlkajeliskPlasmidSpores				= 45,	// Alkajelisk weapon

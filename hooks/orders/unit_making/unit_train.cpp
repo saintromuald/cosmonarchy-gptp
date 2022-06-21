@@ -218,7 +218,7 @@ namespace hooks
 						// buf[0] = 0x99; // new general command
 						// buf[1] = NewGameCommand::CarrierPrebuild;
 						// buf[2] = interceptors;
-						// buf[3] = *ACTIVE_PLAYER_ID;
+						// buf[3] = *active_player_id;
 						// memcpy(&buf[4], &built_unit, 4);
 						// helper::queue_game_command(buf, 0xc);
 					}

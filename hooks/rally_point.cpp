@@ -210,7 +210,7 @@ namespace hooks
 		else if (fow_unit_id != UnitId::None)
 		{
 			u32 tileId = x / 32 + map_tile_size->width * (y / 32);
-			if (!((1 << *ACTIVE_NATION_ID) & (*activeTileArrayInt)[tileId]))
+			if (!((1 << *active_nation_id) & (*active_tile_array_int)[tileId]))
 			{
 				target = helper::find_fow_unit(y, x, fow_unit_id);
 				fow_unit_id = UnitId::None;
@@ -290,7 +290,7 @@ namespace hooks
 							}
 							rightOrder = units_dat::AttackUnitOrder[unit->id];
 						}
-						if (helper::order_is_allowed(unit, rightOrder, *ACTIVE_NATION_ID) == 1)
+						if (helper::order_is_allowed(unit, rightOrder, *active_nation_id) == 1)
 						{
 							if (target)
 							{
@@ -481,7 +481,7 @@ namespace hooks
 	void input_game_right_mouse_click(DialogEvent* dialog_event) { // 004564E0
 		if (!helper::is_outside_of_game_screen(dialog_event->current.x, dialog_event->current.y)) {
 			u8 local_group_owner = local_selection_group[0] ? local_selection_group[0]->player : 255;
-			if (local_group_owner == *LOCAL_NATION_ID) {
+			if (local_group_owner == *local_nation_id) {
 				if (*active_portrait_unit) {
 					if (helper::unit_is_owned_by_current_player(*active_portrait_unit)) {
 						s32 selection_iterator = 0;

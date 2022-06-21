@@ -535,7 +535,7 @@ namespace hooks
 			}
 			while (((*current_tiles)[rect_left + rect_top * *map_creep_width] & 0x7FF0) != 16
 				|| does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
-				|| tile_flags & (*activeTileArrayInt)[rect_left + rect_top * map_tile_size->width]
+				|| tile_flags & (*active_tile_array_int)[rect_left + rect_top * map_tile_size->width]
 				|| helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
 				|| helper::mark_creep_to_disappear(rect_left, rect_top))
 			{

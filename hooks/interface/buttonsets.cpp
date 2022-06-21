@@ -681,7 +681,7 @@ namespace hooks {
 				current_button_state = Button_State::Invisible;
 				while (current_button_state == Button_State::Invisible && (buttons_count < current_buttonset->buttons_in_set))
 				{
-					current_button_state = helper::req_check((u32)current_button->requirement_func, (u8)current_button->requirement_var, (u8)*LOCAL_NATION_ID, unit);
+					current_button_state = helper::req_check((u32)current_button->requirement_func, (u8)current_button->requirement_var, (u8)*local_nation_id, unit);
 
 					// I am currently forcing the buttons to show, which is effectively fighting lardcode that forces them not to show when group-unit.
 					// This is STUPID, EXPENSIVE, and should be REPLACED as soon as possible. - Pr0nogo
@@ -1606,7 +1606,7 @@ namespace hooks {
 					}
 
 					// TODO: Reenable and test
-					//if ((*active_portrait_unit)->player != *LOCAL_NATION_ID && current_button_state == Button_State::Enabled) {
+					//if ((*active_portrait_unit)->player != *local_nation_id && current_button_state == Button_State::Enabled) {
 					//	current_button_state = Button_State::Disabled;
 					//}
 
@@ -1621,7 +1621,7 @@ namespace hooks {
 			// 00459278
 			if (!bStopThere && !jumpto5934E)
 			{
-				jumpto5933C = (!*bw_is_in_replay) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *LOCAL_NATION_ID);
+				jumpto5933C = (!*bw_is_in_replay) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *local_nation_id);
 				// TODO: Reenable and test
 				// jumpto5933C = false;
 				if (!jumpto5933C)

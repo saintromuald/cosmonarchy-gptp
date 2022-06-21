@@ -255,7 +255,7 @@ namespace hooks
 		scbw::set_ingame_loop_state(false);
 
 		if (*elapsed_time_frames == 2) {
-			u32 local_flags = unit_deaths[UnitId::ResourceVespeneGeyser].player[*LOCAL_NATION_ID];
+			u32 local_flags = unit_deaths[UnitId::ResourceVespeneGeyser].player[*local_nation_id];
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
 				for (s32 i = 0; i < 4092; i++) {
@@ -312,12 +312,12 @@ namespace hooks
 				if (do_ping[target])
 				{
 					u32 color = 0; // red
-					if (scbw::is_allied_to(*LOCAL_NATION_ID, target))
+					if (scbw::is_allied_to(*local_nation_id, target))
 					{
 						color = 8; // green
 					}
 
-					scbw::minimap_ping(start_positions[target].x, start_positions[target].y, color, *LOCAL_NATION_ID);
+					scbw::minimap_ping(start_positions[target].x, start_positions[target].y, color, *local_nation_id);
 				}
 			}
 		}
@@ -392,7 +392,7 @@ namespace hooks
 			while (Unit* selection = get_active_player_next_selection()) {
 				if (selection->id == UnitId::ZergNydusCanal
 					&& selection->building.nydus_exit
-					&& (scbw::is_allied_to(selection->player, *LOCAL_HUMAN_ID) || helper::get_detecting_players(selection) & (1 << *LOCAL_HUMAN_ID)))
+					&& (scbw::is_allied_to(selection->player, *local_human_id) || helper::get_detecting_players(selection) & (1 << *local_human_id)))
 				{
 					Unit* exit = selection->building.nydus_exit;
 					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);

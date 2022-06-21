@@ -8,11 +8,11 @@ namespace hooks
 	void displayEstablishingShot() // 004D9200, hooked by X405
 	{
 		// This is the original original function which loads the establishing shots in campaigns:
-		if (!*multiPlayerMode && !(*bw_cheat_state & CheatFlags::NoGlues) && *campaignIndex)
+		if (!*multiplayer_mode && !(*bw_cheat_state & CheatFlags::NoGlues) && *campaign_index)
 		{
 			for (s32 i = 0; i < 65; i++)
 			{
-				if (campaignMissions[i].mission_index == *campaignIndex)
+				if (campaignMissions[i].mission_index == *campaign_index)
 				{
 					helper::loadInitCreditsBIN(campaignMissions[i].mission_name);
 				}
@@ -20,11 +20,11 @@ namespace hooks
 		}
 
 		// This addition enables establishing shots in custom scenarios:
-		else if (*campaignIndex == 0 && current_map_filename)
+		else if (*campaign_index == 0 && current_map_filename)
 		{
-			helper::SFileOpenArchive(current_map_filename, 0, 0, mapArchiveHandle);
+			helper::SFileOpenArchive(current_map_filename, 0, 0, map_archive_handle);
 			void* handle;
-			bool establishingShotExists = helper::SFileOpenFileEx(*mapArchiveHandle, "rez\\est.txt", 0, &handle);
+			bool establishingShotExists = helper::SFileOpenFileEx(*map_archive_handle, "rez\\est.txt", 0, &handle);
 			if (handle)
 			{
 				helper::SFileCloseFile(handle);
@@ -35,9 +35,9 @@ namespace hooks
 				helper::loadInitCreditsBIN("est");
 			}
 
-			if (*mapArchiveHandle)
+			if (*map_archive_handle)
 			{
-				helper::SFileCloseArchive(*mapArchiveHandle);
+				helper::SFileCloseArchive(*map_archive_handle);
 			}
 		}
 	}

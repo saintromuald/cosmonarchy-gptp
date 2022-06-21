@@ -30,7 +30,7 @@ namespace hooks
 		SStrNCat(&FileName, (const char*)(vector + 20), 0x104u);
 		strrchr(&FileName, 92);
 		SStrCopy(current_map_filename, &FileName, 0x104u);
-		*campaignIndex = 0;
+		*campaign_index = 0;
 		*dword_5994DC = 1;
 		if (!createDirectory(mapsFolder))
 			return 0;
@@ -64,16 +64,16 @@ namespace hooks
 		if (*bw_is_in_replay)
 		{
 			v3 = *scenarioCHKSize;
-			v4 = scenarioChk;
+			v4 = scenario_chk;
 			v7 = 0;
-			result = readMapChunks(0, (s32)scenarioChk, (s32*)&v7, *scenarioCHKSize);
+			result = readMapChunks(0, (s32)scenario_chk, (s32*)&v7, *scenarioCHKSize);
 			if (result)
 			{
-				if (gameData->victoryCondition || gameData->starting_units || gameData->tournamentModeEnabled)
+				if (game_data->victory_condition || game_data->starting_units || game_data->tournament_mode_enabled)
 					v6 = &stru_500574[5 * v7];
 				else
 					v6 = &stru_50057C[5 * v7];
-				result = readChunkNodes(v6->chkStructCount, v3, v6->chk_struct, v4, 0);
+				result = readChunkNodes(v6->chk_struct_count, v3, v6->chk_struct, v4, 0);
 			}
 		}
 		else if (current_map_filename[0])

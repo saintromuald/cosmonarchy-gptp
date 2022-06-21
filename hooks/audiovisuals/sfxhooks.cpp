@@ -29,7 +29,7 @@ namespace hooks
 				}
 				else
 				{
-					*selectionSoundCounter = 0;
+					*selection_sound_counter = 0;
 				}
 			}
 		}
@@ -37,15 +37,15 @@ namespace hooks
 		whatEnd = (u16)scbw::get_unit_data(UnitsDatEntries::SndWhtLast, unit_id);
 		if (whatStart == whatEnd)
 		{
-			*lastRandSFX = scbw::get_unit_data(UnitsDatEntries::SndWhtFirst, unit_id);
+			*last_random_sfx = scbw::get_unit_data(UnitsDatEntries::SndWhtFirst, unit_id);
 			result = whatStart;
 		}
 		else
 		{
 			rand = whatStart + (helper::rand_func() >> 8) % (whatEnd - whatStart + 1);
-			if (rand == *lastRandSFX && ++rand > whatEnd)
+			if (rand == *last_random_sfx && ++rand > whatEnd)
 				rand = whatStart;
-			*lastRandSFX = rand;
+			*last_random_sfx = rand;
 			result = rand;
 		}
 		return result;

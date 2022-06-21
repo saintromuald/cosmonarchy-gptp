@@ -528,7 +528,7 @@ namespace hooks
 					text_string = (char*)statTxtTbl + statTxtTbl[text_id_zeroed + 1];
 				}
 				if (text_string) {
-					if (*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+					if (*active_player_id == *local_human_id)
 					{
 						strncpy(draw_out_text_left, text_string, 0xDAu);
 						text_bytes[12] = 4;

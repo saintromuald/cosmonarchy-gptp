@@ -485,19 +485,19 @@ namespace hooks
 			auto mouse_pos = Point16{(u16)mouse->x, (u16)mouse->y};
 			if (helper::init_placement_box_pos(&mouse_pos))
 			{
-				*placeBuildingMessageId = helper::update_placement_state_for_placement_box();
+				*place_building_message_id = helper::update_placement_state_for_placement_box();
 				helper::refresh_layers_3_and_4();
 				Point16 buildPoint;
 				buildPoint.x = x;
 				buildPoint.y = y;
 				helper::unk_building_placement_related(1, &buildPoint);
-				if (*isPlacingAddon)
+				if (*is_placing_addon)
 				{
-					auto v4 = *placeBuildingUnitId - UnitId::TerranCommandCenter;
+					auto v4 = *place_building_unit_id - UnitId::TerranCommandCenter;
 					Point16 addon_point;
 					addon_point.x = units_dat::AddonPlacement[v4].x;
 					addon_point.y = units_dat::AddonPlacement[v4].y;
-					scbw::adjust_addon_coordinates(*placeBuildingUnitId, 0, &addon_point.x, &addon_point.y);
+					scbw::adjust_addon_coordinates(*place_building_unit_id, 0, &addon_point.x, &addon_point.y);
 					helper::unk_building_placement_related(0, &addon_point);
 				}
 				result = helper::refresh_layers_3_and_4();

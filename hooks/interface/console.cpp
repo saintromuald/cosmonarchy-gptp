@@ -46,19 +46,19 @@ namespace hooks
 				(s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
 			*current_music_id = 1;
 		}
-		v0 = *campaignIndex;
-		if (campaignIndex)
+		v0 = *campaign_index;
+		if (campaign_index)
 		{
-			if (*campaignIndex > (u16)0x1F)
+			if (*campaign_index > (u16)0x1F)
 			{
-				conrace = xCampaignFirstMission[*console_index];
+				conrace = campaign_first_mission_bw[*console_index];
 			}
 			else
 			{
-				conrace = campaignFirstMission[*console_index];
+				conrace = campaign_first_mission[*console_index];
 			}
-			v0 = (*campaignIndex - conrace) / 3;
-			v4 = (*campaignIndex - conrace) % 3;
+			v0 = (*campaign_index - conrace) / 3;
+			v4 = (*campaign_index - conrace) % 3;
 			*current_music_id += v4;
 			return v0;
 		}

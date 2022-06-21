@@ -64,8 +64,8 @@ struct CHKStruct
 
 struct ScenarioFormat
 {
-	CHKStruct* chk_struct;
-	u32 chkStructCount;
+	CHKStruct*	chk_struct;
+	u32			chk_struct_count;
 };
 
 struct VectorHead
@@ -104,20 +104,20 @@ struct StringMap_b
 
 struct StringMap_w
 {
-	u16		tblstring;			// 0x0
+	u16		tbl_string;			// 0x0
 	u16		index;				// 0x2
 };
 
 struct DialogEvent
 {
-	u32		user;				// 0x0
-	u16		field_4;			// 0x4
-	u16		field_6;			// 0x6
-	u16		wVirtKey;			// 0x8
-	u16		wVirtKeyMod;		// 0xA
-	u16		no;					// 0xC
-	Point16	current;			// 0xE
-	u16		field_12;			// 0x12
+	u32		user;					// 0x0
+	u16		field_4;				// 0x4
+	u16		field_6;				// 0x6
+	u16		w_virtual_key;			// 0x8
+	u16		w_virtual_key_modifier;	// 0xA
+	u16		no;						// 0xC
+	Point16	current;				// 0xE
+	u16		field_12;				// 0x12
 };
 
 struct Base
@@ -141,60 +141,60 @@ struct Base
 
 struct GameData // taken from IDA and from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
 { 
-	u32		saveTime;					// 0x0
-	char	gameName[0x18];				// 0x4
-	u32		saveTimestamp;				// 0x1C
-	u16		mapWidthTiles;				// 0x20
-	u16		mapHeightTiles;				// 0x22
-	u8		activePlayercount;			// 0x24
-	u8		maxPlayerCount;				// 0x25
-	u8		gameSpeed;					// 0x26
-	u8		gameState;					// 0x27
-	u16		gameType;					// 0x28
-	u16		gameSubtype;				// 0x2A
-	u32		cdkeyHash;					// 0x2C
+	u32		save_time;					// 0x0
+	char	game_name[0x18];			// 0x4
+	u32		save_timestamp;				// 0x1C
+	u16		map_width_tiles;			// 0x20
+	u16		map_height_tiles;			// 0x22
+	u8		active_player_count;		// 0x24
+	u8		max_player_count;			// 0x25
+	u8		game_speed;					// 0x26
+	u8		game_state;					// 0x27
+	u16		game_type;					// 0x28
+	u16		game_subtype;				// 0x2A
+	u32		cdkey_hash;					// 0x2C
 	u16		tileset;					// 0x30
-	u8		isReplay;					// 0x32
-	u8		computerPlayerCount;		// 0x33
-	u8		hostName[0x19];				// 0x34
-	char	mapTitle[0x20];				// 0x4D
-	u16		gotGameType;				// 0x6D
-	u16		gotGameSubtype;				// 0x6F
-	u16		gotGameSubtypeDisplay;		// 0x71
-	u16		gotGameSubtypeLabel;		// 0x73
-	u8		victoryCondition;			// 0x75
+	u8		is_replay;					// 0x32
+	u8		computer_player_count;		// 0x33
+	u8		host_name[0x19];			// 0x34
+	char	map_title[0x20];			// 0x4D
+	u16		got_game_type;				// 0x6D
+	u16		got_game_subtype;			// 0x6F
+	u16		got_game_subtype_display;	// 0x71
+	u16		got_game_subtype_label;		// 0x73
+	u8		victory_condition;			// 0x75
 	u8		resource_type;				// 0x76
-	u8		useStandardUnitStats;		// 0x77
-	u8		fogOfWar;					// 0x78
+	u8		use_standard_unit_stats;	// 0x77
+	u8		fog_of_war;					// 0x78
 	u8		starting_units;				// 0x79
-	u8		useFixedPositions;			// 0x7A
-	u8		restrictionFlags;			// 0x7B
-	u8		alliesEnabled;				// 0x7C
-	u8		teamsEnabled;				// 0x7D
-	u8		cheatsEnabled;				// 0x7E
-	u8		tournamentModeEnabled;		// 0x7F
-	u32		victoryConditionValue;		// 0x80
-	u32		resourceMineralValue;		// 0x84
-	u32		resourceGasValue;			// 0x88
+	u8		use_fixed_positions;		// 0x7A
+	u8		restriction_flags;			// 0x7B
+	u8		allies_enabled;				// 0x7C
+	u8		teams_enabled;				// 0x7D
+	u8		cheats_enabled;				// 0x7E
+	u8		tournament_mode_enabled;	// 0x7F
+	u32		victory_condition_value;	// 0x80
+	u32		resource_mineral_value;		// 0x84
+	u32		resource_gas_value;			// 0x88
 };
 C_ASSERT(sizeof(GameData) == 0x8C);
 
 struct ReplayData // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
 { 
-	u32		replayDataStart;			// 0x0
-	u32		boolUnk;					// 0x4
-	u32		replayFrameBegin;			// 0x8
+	u32		replay_data_start;			// 0x0
+	u32		bool_unk;					// 0x4
+	u32		replay_frame_begin;			// 0x8
 	u32		length[0x2];				// 0xC
-	u32		replayFrameEnd;				// 0x14
-	u32		latestCommandFrame;			// 0x18
-	u32		replayFramePos;				// 0x1C
+	u32		replay_frame_end;			// 0x14
+	u32		latest_command_frame;		// 0x18
+	u32		replay_frame_pos;			// 0x1C
 };
 C_ASSERT(sizeof(ReplayData) == 0x20);
 
 struct ReplayFrame // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
 {
 	u32		frame;						// 0x0
-	u8		dataLength;					// 0x4
+	u8		data_length;				// 0x4
 	u8		storm;						// 0x5 | { byte storm_player, byte cmd[...] }[...]
 };
 C_ASSERT(sizeof(ReplayFrame) == 0x6);

@@ -386,9 +386,9 @@ namespace hooks
 		u32 randomNumber = 0;
 		if (*is_in_game_loop)
 		{
-			++randomCounts[14];
+			++random_counts[14];
 			*last_random_number = 0x15A4E35 * *last_random_number + 1;
-			++(*randomCountsTotal);
+			++(*random_counts_total);
 			randomNumber = (*last_random_number >> 16) & 0x7FFF;
 		}
 		Unit* unit = helper::unit_constructor(x, y, unit_id, player, randomNumber);

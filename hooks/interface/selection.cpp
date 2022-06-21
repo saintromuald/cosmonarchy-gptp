@@ -125,7 +125,7 @@ namespace hooks
 						{
 							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
 						}
-						else if (current_unit->player != *LOCAL_NATION_ID)
+						else if (current_unit->player != *local_nation_id)
 						{
 							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
 						}
@@ -321,7 +321,7 @@ namespace hooks
 
 						// This is what make the rally point briefly appear when selecting a building with one. Maybe can do other things?
 						if (sorted_list_length == 1
-							&& clicked_unit->player == *ACTIVE_NATION_ID
+							&& clicked_unit->player == *active_nation_id
 							&& clicked_unit->is_factory())
 						{
 							helper::show_rally_target(clicked_unit);
@@ -497,7 +497,7 @@ namespace hooks
 			// this is what make the rally point briefly appear when
 			// selecting a building with one.
 			// maybe can do others things?
-			if (clicked_unit->player == *ACTIVE_NATION_ID
+			if (clicked_unit->player == *active_nation_id
 				&& clicked_unit->is_factory())
 			{
 				helper::show_rally_target(clicked_unit);
@@ -602,7 +602,7 @@ namespace hooks
 		if (sorted_units) {
 			for (u32 i = 0; i < SelectionCap; ++i) {
 				Unit* unit = new_units[i];
-				if (unit && unit->player == *ACTIVE_NATION_ID) {
+				if (unit && unit->player == *active_nation_id) {
 					if (hooks::unit_can_rally(unit)) {
 						helper::show_rally_target(unit);
 						break; // Currently the game doesn't support showing more than 1 rally thingy XD

@@ -165,20 +165,19 @@ struct SupplyData {
 };
 SCBW_DATA(SupplyData*, raceSupply, 0x00582144);  //Array; Use Unit::get_race() to get the index.
 
-SCBW_DATA(const u32*, elapsed_time_frames, 0x0057F23C);  //Elapsed game time in frames
-SCBW_DATA(const u32*, CountdownTimer, 0x0058D6F4);  //Countdown Timer (in seconds) (From BWAPI Offsets.h)
-SCBW_DATA(const u32*, elapsed_time_seconds, 0x0058D6F8);  //Elapsed game time in seconds
-SCBW_DATA(const u8*, GAME_TYPE, 0x00596820);  //Part of a larger structure; Compare with GameType::Enum.
-SCBW_DATA(const s32*, ACTIVE_NATION_ID, 0x00512678);  //AKA g_ActiveNationID
-SCBW_DATA(const s32*, ACTIVE_PLAYER_ID, 0x0051267C);  //Used by GetActivePlayerNextSelectionFunc
-SCBW_DATA(		s32*, LOCAL_NATION_ID, 0x00512684);  //AKA g_LocalNationID; Actually stores the player ID.
-SCBW_DATA(const s32*, LOCAL_HUMAN_ID, 0x00512688);  //AKA g_LocalHumanID; Invalid in replay games.
-SCBW_DATA(const u8*, CURRENT_TILESET, 0x00596828);  //Tileset of current map. Compare with TilesetType::Enum
-SCBW_DATA(const s32*, provider_MaxBuffer, 0x0057F0D8);
-SCBW_DATA(const u32*, provider_LatencyCalls, 0x0057F090);
-SCBW_DATA(u32*, command_queue_size, 0x00654AA0);
-SCBW_DATA(const char*, TurnBuffer, 0x00654880);
-////possible values were 0057F1DC and [00596828]
+SCBW_DATA(u32*,		elapsed_time_frames,	0x0057F23C);
+SCBW_DATA(u32*,		countdown_timer,		0x0058D6F4);	// Vanilla trigger actions/conditions (From BWAPI Offsets.h)
+SCBW_DATA(u32*,		elapsed_time_seconds,	0x0058D6F8);
+SCBW_DATA(u8*,		game_type,				0x00596820);	// Compare with GameType::Enum
+SCBW_DATA(s32*,		active_nation_id,		0x00512678);
+SCBW_DATA(s32*,		active_player_id,		0x0051267C);	// Used by get_active_player_next_selection
+SCBW_DATA(s32*,		local_nation_id,		0x00512684);	// Actually stores the player ID
+SCBW_DATA(s32*,		local_human_id,			0x00512688);	// Invalid in replay games
+SCBW_DATA(u8*,		current_tileset,		0x00596828);	// Tileset of current map - compare with TilesetType::Enum
+SCBW_DATA(s32*,		provider_MaxBuffer,		0x0057F0D8);
+SCBW_DATA(u32*,		provider_LatencyCalls,	0x0057F090);
+SCBW_DATA(u32*,		command_queue_size,		0x00654AA0);
+SCBW_DATA(char*,	turn_buffer,			0x00654880);
 
 // For reset_tooltip_info, set_tooltip_info, set_tooltip_info_unit_case5, etc
 SCBW_DATA(u16*, tooltip_ore_cost,		0x0068C1D0);
@@ -194,135 +193,133 @@ struct Event;
 typedef bool __fastcall generic_interact_function(BinDlg*, Event*);
 SCBW_DATA(generic_interact_function**, generic_interact_functions, 0x005014AC);
 
-// Added from BWAPI Offsets.h, but made const since it would not be safe to modify those
-SCBW_DATA(char*, current_map_filename,			0x0057FD3C);
-SCBW_DATA(const char*, current_map_name,		0x0057FE40);
-SCBW_DATA(const _uavail*, unit_availability,	0x0057F27C);
+// Added from BWAPI Offsets.h
+SCBW_DATA(char*,	current_map_filename,	0x0057FD3C);
+SCBW_DATA(char*,	current_map_name,		0x0057FE40);
+SCBW_DATA(_uavail*, unit_availability,		0x0057F27C);
 
-// Ping Data
+// Ping data
 SCBW_DATA(Ping*, ping_array, 0x0059C1B8); // 16
 
-// Added by Pr0nogo
-// For raceDropdown
-SCBW_DATA(StringMap_b*,	single_race_select,	0x0051AAA0);
-SCBW_DATA(StringMap_w*,	single_type_select,	0x0051AAA8);
-SCBW_DATA(const u16*,	network_table,		0x006D1220);
 
-// For initSingleplayerCustom
-SCBW_DATA(const u32*, selectedGameType, 0x0059BA64);
-SCBW_DATA(const u16*, selectedGameTypeParam, 0x0059BA5C);
-SCBW_DATA(const char*, selectedSingleplayerRace, 0x0057F266);
-SCBW_DATA(const char*, customSingleplayer, 0x0057F1E3);
+	// -- Added for various hooks used by Cosmonarchy BW! -- \\
 
-//for lobotomy mine hook
-SCBW_DATA(char**, statusscreen_infobtn, 0x00519F40);
-SCBW_DATA(GrpHead**, cmdicons_grp, 0x0068C1E0);
 
-// For initGameLoad
-SCBW_DATA(void*, scenarioChk, 0x006D0F24);
-SCBW_DATA(const ForceFlags*, playerForceFlags, 0x0058D5B8); // array of 0x4
-SCBW_DATA(const u8*, playerForce, 0x0059BDA8); // array of 0x8
-SCBW_DATA(const u8*, playerForceSomethingReplay, 0x006D11A1); // array of 0x8
-SCBW_DATA(const FILE*, loadGameFileHandle, 0x006D1218);
-SCBW_DATA(const u8*, multiPlayerMode, 0x0057F0B4);
-SCBW_DATA(const u32*, initialSeed, 0x0051CA10);
-SCBW_DATA(const u32*, replaySeed, 0x006D0F38);
-//SCBW_DATA(const func*,			mouseOverCallback,			0x006D5EAC); // how to define a func?
-SCBW_DATA(u32*, randomCounts, 0x0051C610); // count of 0x400, array?
-SCBW_DATA(u32*, randomCountsTotal, 0x0051CA18);
-SCBW_DATA(u16*, campaignIndex, 0x0057F244);
-SCBW_DATA(void**, mapArchiveHandle, 0x00596BC4);
-SCBW_DATA(const GameData*, gameData, 0x005967F8);
-SCBW_DATA(const u8*, mapStarted, 0x006D121C);
-SCBW_DATA(const u8*, playerHasLeft, 0x00581D62); // array of 0x8
-SCBW_DATA(const u8*, lossType, 0x00581D61);
-SCBW_DATA(const u8*, unkVictoryVariable, 0x00581D66);
-SCBW_DATA(const u32*, saveLoadSuccess, 0x006D5A68);
-SCBW_DATA(u32*, elapstedTimeModifier, 0x006D5BCC);
-SCBW_DATA(const u32*, savedElapsedSeconds, 0x0057F240);
-SCBW_DATA(		Options*, options_list, 0x006CDFD4);
-SCBW_DATA(const ReplayData*, replayData, 0x00596BBC);
-SCBW_DATA(const u32*, replayVisions, 0x006D0F18);
-SCBW_DATA(const u32*, playerVisions, 0x0057F0B0);
-SCBW_DATA(const u32*, replayShowEntireMap, 0x006D0F1C); // dword bool...?
-SCBW_DATA(const u32*, nextReplayCommandFrame, 0x005136C8);
-SCBW_DATA(const u32*, playerExploredVisions, 0x0057EEB8);
-SCBW_DATA(s32*, subTwoCheckTwo, 0x004EE0F0);
+// For race_dropdown
+SCBW_DATA(StringMap_b*,	single_race_select,			0x0051AAA0);
+SCBW_DATA(StringMap_w*,	single_type_select,			0x0051AAA8);
+SCBW_DATA(u16*,			network_table,				0x006D1220);
 
-// For getResponseSfx
-SCBW_DATA(u32*, selectionSoundCounter,			0x00640548);
-SCBW_DATA(u32*, lastRandSFX,					0x006D5BE0);
+// For init_singleplayer_custom
+SCBW_DATA(u32*,			selected_game_type,			0x0059BA64);
+SCBW_DATA(u16*,			selected_game_type_param,	0x0059BA5C);
+SCBW_DATA(char*,		selected_singleplayer_race,	0x0057F266);
+SCBW_DATA(char*,		custom_singleplayer,		0x0057F1E3);
 
-// For loadRaceUI
-SCBW_DATA(u8*, console_index,					0x0057F1E2);
-SCBW_DATA(u16*, current_music_id,				0x0057F1DE);
-SCBW_DATA(const char*, xCampaignFirstMission,	0x005122C0);
-SCBW_DATA(const char*, campaignFirstMission,	0x005122BC);
-SCBW_DATA(u32*, console_race_specific,			0x0051A3B4);
+// For Lobotomy Mine
+SCBW_DATA(char**,		statusscreen_infobtn,		0x00519F40);
+SCBW_DATA(GrpHead**,	cmdicons_grp,				0x0068C1E0);
 
-// For loadGameCreate
-SCBW_DATA(u32*, isHost,					0x00596888);
-SCBW_DATA(u8*, outOfGame,				0x006D5A10);
-SCBW_DATA(const u32*, scMainState,		0x00596904);
-SCBW_DATA(u8*, gameActive,				0x006D11EC);
-SCBW_DATA(u16*, nextSCMainState,		0x0051CE90);
-SCBW_DATA(u32*, replayEndFrame,			0x006D0F31);
+// For init_game_load
+SCBW_DATA(void*,		scenario_chk,				0x006D0F24);
+SCBW_DATA(ForceFlags*,	player_force_flags,			0x0058D5B8); // array of 0x4
+SCBW_DATA(u8*,			player_force,				0x0059BDA8); // array of 0x8
+SCBW_DATA(u8*,			player_force_replay_sth,	0x006D11A1); // array of 0x8
+SCBW_DATA(FILE*,		load_game_file_handle,		0x006D1218);
+SCBW_DATA(u8*,			multiplayer_mode,			0x0057F0B4);
+SCBW_DATA(u32*,			initial_seed,				0x0051CA10);
+SCBW_DATA(u32*,			replay_seed,				0x006D0F38);
+SCBW_DATA(u32*,			random_counts,				0x0051C610); // count of 0x400
+SCBW_DATA(u32*,			random_counts_total,		0x0051CA18);
+SCBW_DATA(u16*,			campaign_index,				0x0057F244);
+SCBW_DATA(void**,		map_archive_handle,			0x00596BC4);
+SCBW_DATA(GameData*,	game_data,					0x005967F8);
+SCBW_DATA(u8*,			map_started,				0x006D121C);
+SCBW_DATA(u8*,			player_has_left,			0x00581D62); // array of 0x8
+SCBW_DATA(u8*,			loss_type,					0x00581D61);
+SCBW_DATA(u8*,			unk_victory_variable,		0x00581D66);
+SCBW_DATA(u32*,			save_load_success,			0x006D5A68);
+SCBW_DATA(u32*,			elapsed_time_modified,		0x006D5BCC);
+SCBW_DATA(u32*,			saved_elapsed_seconds,		0x0057F240);
+SCBW_DATA(Options*,		options_list,				0x006CDFD4);
+SCBW_DATA(ReplayData*,	replay_data,				0x00596BBC);
+SCBW_DATA(u32*,			replay_visions,				0x006D0F18);
+SCBW_DATA(u32*,			player_visions,				0x0057F0B0);
+SCBW_DATA(u32*,			replay_show_entire_map,		0x006D0F1C);
+SCBW_DATA(u32*,			next_replay_command_frame,	0x005136C8);
+SCBW_DATA(u32*,			player_explored_visions,	0x0057EEB8);
+SCBW_DATA(s32*,			sub_two_check_two,			0x004EE0F0);
 
-// For levelCheatCreate
-SCBW_DATA(u32*, levelCheatUnlocked,		0x006D11C0);
-SCBW_DATA(const char*, playerName,		0x0057EEB5);
+// For get_response_sfx
+SCBW_DATA(u32*,			selection_sound_counter,	0x00640548);
+SCBW_DATA(u32*,			last_random_sfx,			0x006D5BE0);
+
+// For load_race_ui
+SCBW_DATA(u8*,		console_index,					0x0057F1E2);
+SCBW_DATA(u16*,		current_music_id,				0x0057F1DE);
+SCBW_DATA(char*,	campaign_first_mission_bw,		0x005122C0);
+SCBW_DATA(char*,	campaign_first_mission,			0x005122BC);
+SCBW_DATA(u32*,		console_race_specific,			0x0051A3B4);
+
+// For load_game_create
+SCBW_DATA(u32*,		is_host,						0x00596888);
+SCBW_DATA(u8*,		out_of_game,					0x006D5A10);
+SCBW_DATA(u32*,		sc_main_state,					0x00596904);
+SCBW_DATA(u8*,		game_active,					0x006D11EC);
+SCBW_DATA(u16*,		next_sc_main_state,				0x0051CE90);
+SCBW_DATA(u32*,		replay_end_frame,				0x006D0F31);
+
+// For level_cheat_create
+SCBW_DATA(u32*,		level_cheat_unlocked,			0x006D11C0);
+SCBW_DATA(char*,	player_name,					0x0057EEB5);
 
 // For update_placement_state_for_placement_box
-SCBW_DATA(u8*, placingPlayer,			0x0064088C);
-SCBW_DATA(u16*, placeBuildingX,			0x00640890);
-SCBW_DATA(u16*, placeBuildingY,			0x00640892);
-SCBW_DATA(u32*, isPlacingAddon,			0x00640884);
-SCBW_DATA(u16*, placeBuildingUnitType,	0x0064088A);
-SCBW_DATA(u32*, placeBuildBaseType,		0x00640888);
+SCBW_DATA(u8*,		placing_player,					0x0064088C);
+SCBW_DATA(u16*,		place_building_x,				0x00640890);
+SCBW_DATA(u16*,		place_building_y,				0x00640892);
+SCBW_DATA(u32*,		is_placing_addon,				0x00640884);
+SCBW_DATA(u16*,		place_building_unit_id,			0x0064088A);
+SCBW_DATA(u32*,		place_building_base_type,		0x00640888);
 
-SCBW_DATA(u16*, moveToTileX,			0x0057F1D0);
-SCBW_DATA(u16*, moveToTileY,			0x0057F1D2);
-SCBW_DATA(u32*, moveToX,				0x0062848C);
-SCBW_DATA(u32*, moveToY,				0x006284A8);
+SCBW_DATA(u16*,		move_to_tile_x,					0x0057F1D0);
+SCBW_DATA(u16*,		move_to_tile_y,					0x0057F1D2);
 
 // For increment_unit_scores_ex
-SCBW_DATA(u32*, factoriesOwned,			0x005820B4); // Array of 12
-SCBW_DATA(u32*, unitsProduced,			0x00581E14); // Array of 12
-SCBW_DATA(u32*, structuresBuilt,		0x00581F64); // Array of 12
-SCBW_DATA(u32*, unitScore,				0x00581ED4); // Array of 12
-SCBW_DATA(u32*, buildingScore,			0x00582024); // Array of 12
-SCBW_DATA(u32*, unitsOwned,				0x00581E44); // Array of 12
-SCBW_DATA(u32*, buildingsOwned,			0x00582024); // Array of 12
+SCBW_DATA(u32*,		factories_owned,				0x005820B4); // Array of 12
+SCBW_DATA(u32*,		units_produced,					0x00581E14); // Array of 12
+SCBW_DATA(u32*,		structures_built,				0x00581F64); // Array of 12
+SCBW_DATA(u32*,		unit_score,						0x00581ED4); // Array of 12
+SCBW_DATA(u32*,		building_score,					0x00582024); // Array of 12
+SCBW_DATA(u32*,		units_owned,					0x00581E44); // Array of 12
+SCBW_DATA(u32*,		buildings_owned,				0x00582024); // Array of 12
 
 // For increment_unit_scores
-SCBW_DATA(u32*, factoriesProducedOwnedTotal,	0x00582084); // Array of 12
-SCBW_DATA(u32*, structuresProducedOwnedTotal,	0x00581F34); // Array of 12
-SCBW_DATA(u32*, unitsProducedOwnedTotal,		0x00581DE4); // Array of 12
+SCBW_DATA(u32*,		factories_produced_owned_total,	0x00582084); // Array of 12
+SCBW_DATA(u32*,		structures_produced_owned_total,0x00581F34); // Array of 12
+SCBW_DATA(u32*,		units_produced_owned_total,		0x00581DE4); // Array of 12
 
 // For refresh_screen
-SCBW_DATA(u32*, placeBuildingMessageId,			0x00640958);
-SCBW_DATA(u16*, placeBuildingUnitId,			0x0064088A);
+SCBW_DATA(u32*,		place_building_message_id,		0x00640958);
 
 // For targeted_order
-SCBW_DATA(u32*, COrderCount,					0x00641698);
+SCBW_DATA(u32*,		order_count,					0x00641698);
 
 // For create_upgrade_level_tooltip
-SCBW_DATA(u16*, upgradeLevelTooltip,			0x0068C1CC);
-SCBW_DATA(u16**, statTxtBuffer,					0x006D1238);
-
+SCBW_DATA(u16*,		upgrade_level_tooltip,			0x0068C1CC);
+SCBW_DATA(u16**,	stat_txt_buffer,				0x006D1238);
 
 struct BufferStr {
 	char buf[260];
 };
 
 // For drawUnitInfo
-SCBW_DATA(u16*, suppliesAvailableTemp,			0x006CA93C);
-SCBW_DATA(u8*, statusScreenFunc,				0x0068C1E5);
-SCBW_DATA(BufferStr*, struct_Char,				0x006CA9F8);
+SCBW_DATA(u16*,			supplies_available_temp,	0x006CA93C);
+SCBW_DATA(u8*,			status_screen_func,			0x0068C1E5);
+SCBW_DATA(BufferStr*,	struct_char,				0x006CA9F8);
 
 // For draw_supply_unit_info
-SCBW_DATA(BufferStr*, struct_Char2,				0x006CAB08);
-SCBW_DATA(char*, unkString_Char,				0x006CA668);
+SCBW_DATA(BufferStr*,	struct_char_2,				0x006CAB08);
+SCBW_DATA(char*,		unk_string_char,			0x006CA668);
 
 // For draw_wireframe_shield
 SCBW_DATA(char*, charBuffer,					0x0068C208);
@@ -361,7 +358,7 @@ SCBW_DATA(void**,	unk_array_59CB64,			0x0059CB64);	// count of 252
 SCBW_DATA(Unit*,	unit_reference,				0x0059CB58);
 
 // For startGame
-SCBW_DATA(s8*, gameState,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
+SCBW_DATA(s8*, game_state,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
 SCBW_DATA(Player*, playerReplayWatchers,	0x00640970);
 
 SCBW_DATA(s8*, countdownTimerInterval,		0x0066FBFC);
@@ -472,7 +469,7 @@ SCBW_DATA(s32*,	suppliesUsed_Terran,				0x00582204);
 SCBW_DATA(s32*,	suppliesUsed_Zerg,					0x00582174);
 
 // For initialize_unit_counts
-SCBW_DATA(s32*,	unitCountScore,						0x00581DE4);
+SCBW_DATA(s32*,	unit_count_score,					0x00581DE4);
 SCBW_DATA(s8*,	unknown_57F41CB,					0x0057F1CB);
 
 // For stat_res_main_proc
@@ -492,18 +489,18 @@ SCBW_DATA(char*, supply_provided_buffer,			0x006CAC78);
 SCBW_DATA(char*, kills_buffer,						0x006CAC78);
 
 // For giveUnitToPlayer
-SCBW_DATA(s32*,	currentTriggerPlayerId,				0x006509B0);
+SCBW_DATA(s32*,	current_trigger_player_id,			0x006509B0);
 
 // For delete_ai_town_if_needed
-SCBW_DATA(ResourceArea*,	baseArray,				0x00692688);
+SCBW_DATA(ResourceArea*, base_array,				0x00692688);
 
 // For get_bunker_placement_position
-SCBW_DATA(u32*,		regionIdsCount,					0x0069265C);
-SCBW_DATA(u16*,		regionIds,						0x0069262C);
+SCBW_DATA(u32*,		region_ids_count,				0x0069265C);
+SCBW_DATA(u16*,		region_ids,						0x0069262C);
 
 SCBW_DATA(u8*,		unk_order_array,				0x0068C300);
 
-SCBW_DATA(u32**,	activeTileArrayInt,				0x006D1260);
+SCBW_DATA(u32**,	active_tile_array_int,			0x006D1260);
 
 SCBW_DATA(void**,	get_right_click_order_array,	0x005153FC);
 
@@ -515,8 +512,8 @@ SCBW_DATA(FogMask*,	fog_of_war_mask,				0x00657AA0);
 
 // For score screen player name overrides, from DarkenedFantasies
 SCBW_DATA(const StringTbl*,	network_table_DF,		0x006D1220);
-SCBW_DATA(ColorTable*,		colorTable,				0x0058F442);
-SCBW_DATA(PlayerNames*,		playerNameList,			0x0059B3D8);
+SCBW_DATA(ColorTable*,		color_table,			0x0058F442);
+SCBW_DATA(PlayerNames*,		player_name_list,		0x0059B3D8);
 
 // For soundThread
 /*
@@ -816,10 +813,8 @@ namespace images_dat {
 
 /// @name Reserved data
 /// Warning: The following section contains data reserved for internal use only.
-///          If you are a modder, use these at your own risk!
 //////////////////////////////////////////////////////////////// @{
 
-//Helper functions for several hooks
 SCBW_DATA(u8*, unit_iterator_pos, 0x006284B6);
 SCBW_DATA(UnitsSel*, active_player_selection, 0x006284B8);
 typedef Unit* (__cdecl* GetActivePlayerNextSelectionFunc)();
@@ -833,7 +828,7 @@ SCBW_DATA(const PlayersSel*, players_selections, 0x006284E8);
 struct PlayerSel {
 	Unit* unit[SelectionCap];
 };
-SCBW_DATA(const PlayerSel*, CurrentUnitSelection, 0x006284B8);
+SCBW_DATA(const PlayerSel*, current_unit_selection, 0x006284B8);
 
 typedef void(__fastcall* PrepareForNextOrderFunc)(Unit*);
 SCBW_DATA(PrepareForNextOrderFunc, prepare_for_next_order, 0x00475000);
@@ -1041,6 +1036,9 @@ SCBW_DATA(char*,		leaderboard_type,				0x0058D70C);
 
 // For begin_gas_building
 SCBW_DATA(char*,		unk_sprite_related,				0x006D5BE4);
+
+// For create_all_selection_circles
+SCBW_DATA(char*,		game_result_text,				0x00628668);
 
 //////////////////////////////////////////////////////////////// @}
 

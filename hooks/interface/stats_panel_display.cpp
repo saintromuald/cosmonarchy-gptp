@@ -61,7 +61,7 @@ namespace hooks
 		u32 index = 0;
 
 		if (!(activeUnit->status & UnitStatus::IsHallucination)
-			|| (!*bw_is_in_replay && activeUnit->player != *LOCAL_NATION_ID))
+			|| (!*bw_is_in_replay && activeUnit->player != *local_nation_id))
 		{
 			bool bNoAirWeaponDisplay;
 			u32 airWeapon;
@@ -303,7 +303,7 @@ namespace hooks
 			return "";
 		}
 		else {
-			return playerNameList->player[unit->player].player_name;
+			return player_name_list->player[unit->player].player_name;
 		}
 
 		/*
@@ -332,14 +332,14 @@ namespace hooks
 		Unit* unit = *active_portrait_unit;
 
 		static char buffer[256] = {};
-		strcpy_s(buffer, playerNameList->player[unit->player].force_name);
+		strcpy_s(buffer, player_name_list->player[unit->player].force_name);
 		helper::add_text_to_dialog(dialog, -21, buffer);
 
 		/*
 		if (unit->id == UnitId::ZergSkryling
 			|| unit->id == UnitId::ZergInfestedTerran
 			|| unit->status & UnitStatus::IsHallucination
-			&& unit->player == *LOCAL_NATION_ID
+			&& unit->player == *local_nation_id
 			&& !*is_in_replay)
 		{
 			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
@@ -357,9 +357,9 @@ namespace hooks
 			if (helper::ai_unit_can_attack(unit) || unit->kill_count)
 			{
 				char* text = "";
-				if (**statTxtBuffer > 0x2FBu)
+				if (**stat_txt_buffer > 0x2FBu)
 				{
-					text = (char *)*statTxtBuffer + (*statTxtBuffer)[764];
+					text = (char *)*stat_txt_buffer + (*stat_txt_buffer)[764];
 				}
 				sprintf_s(kills_buffer, 260, "%s %d", text, unit->kill_count);
 				helper::add_text_to_dialog(dialog, -21, kills_buffer);
@@ -392,7 +392,7 @@ namespace hooks
 		{
 			goto LABEL_35;
 		}
-		if (!*bw_is_in_replay && activeUnit->player != *LOCAL_NATION_ID)
+		if (!*bw_is_in_replay && activeUnit->player != *local_nation_id)
 		{
 			goto LABEL_6;
 		}
@@ -457,18 +457,18 @@ namespace hooks
 			&& !units_dat::ShieldsEnabled[unit_id])
 		{
 		LABEL_6:
-			if (*statusScreenFunc != 4)
+			if (*status_screen_func != 4)
 			{
 				helper::hide_optional_status_screen_controls(dialog);
-				*statusScreenFunc = 4;
+				*status_screen_func = 4;
 			}
 			goto LABEL_32;
 		}
-		if (*statusScreenFunc != 3)
+		if (*status_screen_func != 3)
 		{
 			helper::hide_optional_status_screen_controls(dialog);
 			helper::show_control_group(dialog, -20, 12);
-			*statusScreenFunc = 3;
+			*status_screen_func = 3;
 		}
 		helper::draw_display_buttons(dialog);
 		helper::hide_dialog(helper::get_control_from_index(dialog, -21));

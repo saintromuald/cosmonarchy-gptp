@@ -516,7 +516,7 @@ namespace hooks
 					}
 					attackerExt->timers[TimerAdrenal] = ZethrokorAdrenalGlandsTimer;
 				} break;
-				case WeaponId::VorvalingClaws:
+				case WeaponId::VorvalClaws:
 				{
 					// Captivating ZethrokorClaws - Vorvaling behavior
 					captivating_claws_apply(data.attacker, data.target);
@@ -1125,7 +1125,7 @@ namespace hooks
 	// Hooked to fix one-shots never notifying owners. -Pr0nogo
 	void unit_attack_notify(Unit* unit) // 0048F230
 	{
-		if (!*bw_is_in_replay && unit->player == *LOCAL_NATION_ID)
+		if (!*bw_is_in_replay && unit->player == *local_nation_id)
 		{
 			unit->last_event_color = palette_index_reference[20];
 			bool cooldown = *notify_cooldown == 0;

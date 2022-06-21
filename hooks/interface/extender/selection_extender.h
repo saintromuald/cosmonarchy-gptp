@@ -4,6 +4,7 @@
 namespace hooks
 {
 	s32 select_dual_birth_units(Unit* unit);				// 0045D040
+	bool is_selected_unit_group_enabled();					// 0049A2C0
 
 	void inject_selection_extender_hooks();
 }
@@ -41,7 +42,7 @@ Notes:
 	Line 229198: 0x00499A70  |>  8B349D B88462>/MOV ESI,DWORD PTR DS:[EBX*4+6284B8]		// 00499A60 create_all_selection_circles; unhooked	--  old comment: memory patch address and cmp 12
 	Line 229209: 0x00499A98  |.  89148D B88462>|MOV DWORD PTR DS:[ECX*4+6284B8],EDX
 
-	Line 230030: 0x0049A2C6  |.  BA B8846200   MOV EDX,006284B8							// 0049A2C0 is_selected_unit_group_enabled; unhooked  --  old comment: memory patch address
+	Line 230030: 0x0049A2C6  |.  BA B8846200   MOV EDX,006284B8							// 0049A2C0 is_selected_unit_group_enabled; hooked by Pr0nogo (not working yet)
 
 	Line 230073: 0x0049A328   .  BF B8846200   MOV EDI,006284B8							// 0049A320 very small function; https://pastebin.com/raw/jC5bW6LM
 

@@ -476,7 +476,7 @@ LABEL_42:
 			{
 				order_id = OrderId::HoldPosition1;
 			}
-			if (helper::order_allowed(i, order_id, *ACTIVE_NATION_ID) == 1)
+			if (helper::order_allowed(i, order_id, *active_nation_id) == 1)
 			{
 				helper::targeted_order(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, order_id, 0, *orderType4Position, *orderType4Target);
 			}
@@ -539,7 +539,7 @@ LABEL_42:
 
 	void updateUnitVisibility(Unit* unit)
 	{
-		if (*playerVisions & unit->visibility_status)
+		if (*player_visions & unit->visibility_status)
 		{
 			helper::make_sprite_visible(unit->sprite);
 			Unit* subunit = unit->subunit;
@@ -583,7 +583,7 @@ LABEL_42:
 				helper::iterate_player_units_something(v5, unit);
 			}
 
-			if (*playerVisions & v6)
+			if (*player_visions & v6)
 			{
 				updateUnitVisibility(unit);
 			}

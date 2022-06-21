@@ -10,7 +10,7 @@ namespace hooks
 		while (Unit* unit = helper::get_active_player_next_selection()) {
 			if (unit->id >= UnitId::ZergInfestedCommandCenter && unit->id < UnitId::None &&
 				unit_id >= UnitId::ZergInfestedCommandCenter && unit_id < UnitId::None &&
-				unit->can_make_unit(unit_id, *ACTIVE_NATION_ID) == 1 &&
+				unit->can_make_unit(unit_id, *active_nation_id) == 1 &&
 				helper::has_money_can_make(unit, unit_id) && // start construction if successful
 				unit->main_order_id != OrderId::Morph2) {
 				unit->order_computer(OrderId::Morph2);
@@ -22,7 +22,7 @@ namespace hooks
 	void cmdrecv_unit_morph(u16 unit_id) {
 		*unit_iterator_pos = 0;
 		while (Unit* current_unit = helper::get_active_player_next_selection()) {
-			if (current_unit->can_make_unit(unit_id, *ACTIVE_NATION_ID)
+			if (current_unit->can_make_unit(unit_id, *active_nation_id)
 				&& current_unit->main_order_id != OrderId::Morph1
 				&& helper::has_money_can_make(current_unit, unit_id)) { // start construction if successful
 				current_unit->user_action_flags |= 1;
@@ -65,7 +65,7 @@ namespace hooks
 		u32 size = 0;
 		Unit* selection[SelectionCap] = {};
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			Unit* unit = players_selections->unit[*ACTIVE_PLAYER_ID][i];
+			Unit* unit = players_selections->unit[*active_player_id][i];
 			if (unit && !unit->is_dead()) {
 				selection[size++] = unit;
 			}
@@ -75,7 +75,7 @@ namespace hooks
 		u8 unit_id = buffer[1];
 		for (u32 i = 0; i < size; ++i) {
 			Unit* unit = selection[i];
-			if (helper::create_unit_allowed(unit_id, unit, *ACTIVE_NATION_ID)) {
+			if (helper::create_unit_allowed(unit_id, unit, *active_nation_id)) {
 				if (helper::has_money_can_make(unit, unit_id)) {
 					helper::set_secondary_order(unit, OrderId::Train);
 				}
@@ -95,7 +95,7 @@ namespace hooks
 						if (orders_dat::RequirementsOffset[OrderId::BuildingLiftoff] == 65535) {
 							helper::parse_orders_dat_requirements();
 						}
-						if (unit->player != *ACTIVE_NATION_ID) {
+						if (unit->player != *active_nation_id) {
 							*last_internal_error = 1;
 							continue;
 						}
@@ -116,7 +116,7 @@ namespace hooks
 							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)	{
 							*last_internal_error = 8;
 						} else if (orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) {
-							if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *ACTIVE_NATION_ID, orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) == 1) {
+							if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *active_nation_id, orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) == 1) {
 								u16* buffer_u16 = (u16*)(buffer + 1);
 								u16 x = buffer_u16[0];
 								u16 y = buffer_u16[1];

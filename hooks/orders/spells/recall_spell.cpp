@@ -133,7 +133,7 @@ namespace hooks
 			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::energy_cost[TechId::Recall] * 256) {
 				u8 raceId = unit->get_race();
 				char* message = (char*)statTxtTblNew->get_string(864 + raceId);	//"Not enough energy" text
-				if (message && unit->player == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID) {
+				if (message && unit->player == *local_nation_id && *active_player_id == *local_human_id) {
 					helper::setUnitStatTxtErrorMsg(message);
 				}
 				unit->order_to_idle();

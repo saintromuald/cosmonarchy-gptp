@@ -818,7 +818,7 @@ LABEL_15:
 				{
 					v8 = "";
 				}
-				if ((u8)v1->player == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+				if ((u8)v1->player == *local_nation_id && *active_player_id == *local_human_id)
 				{
 					helper::setUnitStatTxtErrorMsg((s32)v8);
 				}
@@ -855,7 +855,7 @@ LABEL_15:
 		u32 playerIdVar = player;
 		if (player == 13)
 		{
-			playerIdVar = *currentTriggerPlayerId;
+			playerIdVar = *current_trigger_player_id;
 		}
 		if (!(playerIdVar < 0xC ? -(unit != 0) : 0))
 		{

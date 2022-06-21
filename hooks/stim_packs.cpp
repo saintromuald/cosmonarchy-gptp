@@ -36,7 +36,7 @@ namespace hooks
 		else
 		{
 			char* message = (char*)statTxtTblNew->get_string(874); //not enough life remaining
-			helper::get_stat_txt_string(*active_portrait_unit, *LOCAL_NATION_ID, message);
+			helper::get_stat_txt_string(*active_portrait_unit, *local_nation_id, message);
 		}
 	}
 
@@ -68,7 +68,7 @@ namespace hooks
 		activePlayerCurrentSelection = get_active_player_next_selection();
 		while (activePlayerCurrentSelection != nullptr)
 		{
-			if (activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *ACTIVE_NATION_ID) == 1
+			if (activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *active_nation_id) == 1
 				&& activePlayerCurrentSelection->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
 				s32 random_value;

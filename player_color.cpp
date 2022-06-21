@@ -16,7 +16,7 @@ static u32 get_color_for_personality(u32 player);
 
 static bool is_player_randomizable(u32 player) {
 	if (can_randomize_player_colors) {
-		bool randomize = playerForceFlags[player_table[player].force - 1].randomize_start_locations;
+		bool randomize = player_force_flags[player_table[player].force - 1].randomize_start_locations;
 		if (death_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
 			randomize = !randomize;
 		}
@@ -55,8 +55,8 @@ static bool can_use_player_tint(u32 color_tint, u32 player) {
 			}
 		}
 	}
-	if (*CURRENT_TILESET < banned_tileset_tints.size()) {
-		for (u32 banned_tint : banned_tileset_tints[*CURRENT_TILESET]) {
+	if (*current_tileset < banned_tileset_tints.size()) {
+		for (u32 banned_tint : banned_tileset_tints[*current_tileset]) {
 			if (color_tint == banned_tint) {
 				return false;
 			}
@@ -108,7 +108,7 @@ static bool has_enough_colors() {
 			banned_race_tints_count = race.size();
 		}
 	}
-	if (player_tints.size() - banned_tileset_tints[*CURRENT_TILESET].size() - banned_race_tints_count < PLAYABLE_PLAYER_COUNT) {
+	if (player_tints.size() - banned_tileset_tints[*current_tileset].size() - banned_race_tints_count < PLAYABLE_PLAYER_COUNT) {
 		return false;
 	}
 	return true;
@@ -147,7 +147,7 @@ static void match_color_of(u32 player) {
 
 void set_player_color(u32 player, u32 color) {
 	player_color_list[player] = color;
-	playerMinimapColors[player] = tminimap_colors[color + ColorSetCount * *CURRENT_TILESET];
+	playerMinimapColors[player] = tminimap_colors[color + ColorSetCount * *current_tileset];
 	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
 		playerInGameColors[player * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * PLAYABLE_PLAYER_COUNT + i];
 	}
@@ -175,7 +175,8 @@ void load_player_colors() {
 
 static bool can_get_player_name(u32 player) {
 	if (!has_custom_name[player]
-	&&  player_table[player].type == PlayerType::Computer) {
+	&&   player_table[player].type == PlayerType::Computer)
+	{
 		return true;
 	}
 	return false;
@@ -187,7 +188,7 @@ static bool is_valid_name(u32 player, char* name) {
 	}
 	for (u32 i = 0; i < 8; ++i) {
 		if (i != player && can_get_player_name(i)) {
-			if (strcmp(playerNameList->player[i].player_name, name) == 0) {
+			if (strcmp(player_name_list->player[i].player_name, name) == 0) {
 				return false;
 			}
 		}
@@ -209,13 +210,13 @@ static u32 get_name_count(u32 race, u32 personality) {
 
 void set_player_name(u32 player, char* name) {
 	has_custom_name[player] = true;
-	strncpy(playerNameList->player[player].player_name, name, 24);
-	playerNameList->player[player].player_name[24] = 0;
+	strncpy(player_name_list->player[player].player_name, name, 24);
+	player_name_list->player[player].player_name[24] = 0;
 }
 
 void set_player_force_name(u32 player, char* name) {
-	strncpy(playerNameList->player[player].force_name, name, 29);
-	playerNameList->player[player].force_name[29] = 0;
+	strncpy(player_name_list->player[player].force_name, name, 29);
+	player_name_list->player[player].force_name[29] = 0;
 }
 
 static void update_player_name(u32 player) {

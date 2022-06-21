@@ -53,7 +53,7 @@ namespace hooks
 
 			char* string = helper::getStatTxtString(casterRace + 864);
 			if (string) {
-				if (*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID) {
+				if (*active_player_id == *local_human_id) {
 					helper::setUnitStatTxtErrorMsg((s32) string);
 				}
 			}
@@ -260,8 +260,8 @@ namespace hooks
 					if (message != nullptr)
 					{
 						// display an error message only for the owner of the unit
-						if (*LOCAL_NATION_ID == unit->player
-						&&	*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+						if (*local_nation_id == unit->player
+						&&	*active_player_id == *local_human_id)
 						{
 							helper::setUnitStatTxtErrorMsg(message);
 						}

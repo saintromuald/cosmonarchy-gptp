@@ -669,7 +669,7 @@ LABEL_37:
 			u8 resourceArea = town->resarea;
 			if (resourceArea)
 			{
-				baseArray[resourceArea].flags &= 0xFDu;
+				base_array[resourceArea].flags &= 0xFDu;
 			}
 
 			s32 player = (u8)town->player;
@@ -778,16 +778,16 @@ LABEL_37:
 	// Hooked to change default behaviors - Pr0nogo
 	s32 get_bunker_placement_position(u32 placementId, u32* regionId) // 004442E0
 	{
-		u32 region_max = *regionIdsCount;
-		if (!regionIdsCount)
+		u32 region_max = *region_ids_count;
+		if (!region_ids_count)
 		{
 			return 0;
 		}
 
 		s32 result;
-		if (*regionIdsCount == 1)
+		if (*region_ids_count == 1)
 		{
-			*regionId = regionIds[0];
+			*regionId = region_ids[0];
 			result = 1;
 		}
 		else
@@ -795,13 +795,13 @@ LABEL_37:
 			u32 iterator1 = 0;
 			Point16 regionPositions[24];
 			u32 tileDistances[24];
-			if (regionIdsCount)
+			if (region_ids_count)
 			{
-				memset(tileDistances, 99999999, *regionIdsCount);
+				memset(tileDistances, 99999999, *region_ids_count);
 				RegionArray* _paths = *SAI_Paths;
 				do
 				{
-					u32 regionOffset = regionIds[iterator1] << 6;
+					u32 regionOffset = region_ids[iterator1] << 6;
 					u32 region_x = *(u32*)((char*)&_paths->regions[0].region_center_x + regionOffset) >> 8;
 					u32 region_y = *(u32*)((char*)&_paths->regions[0].region_center_y + regionOffset) >> 8;
 					regionPositions[iterator1].x = region_x;
@@ -828,9 +828,9 @@ LABEL_37:
 									{
 										tileDistances[iterator2] = newTileDistance;
 									}
-									region_max = *regionIdsCount;
+									region_max = *region_ids_count;
 									++iterator2;
-								} while (iterator2 < *regionIdsCount);
+								} while (iterator2 < *region_ids_count);
 							}
 						}
 					}
@@ -848,7 +848,7 @@ LABEL_37:
 					bestRegionId = currentRegionId;
 				}
 			}
-			*regionId = regionIds[bestRegionId];
+			*regionId = region_ids[bestRegionId];
 			result = 1;
 		}
 		return result;
@@ -1411,7 +1411,7 @@ LABEL_37:
 
 			if (resarea)
 			{
-				ResourceArea* ai_resarea = &baseArray[resarea];
+				ResourceArea* ai_resarea = &base_array[resarea];
 				u32 new_worker_limit = 0;
 				if (resarea && resarea < 250u && ai_resarea != 0)
 				{

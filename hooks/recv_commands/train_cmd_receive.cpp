@@ -27,7 +27,7 @@ namespace hooks
 				}
 			}
 
-			if (current_selection->can_make_unit(unit_to_train, *ACTIVE_NATION_ID) == 1
+			if (current_selection->can_make_unit(unit_to_train, *active_nation_id) == 1
 				&& helper::has_money_can_make(current_selection, unit_to_train)) // add unit to build queue if successful
 			{
 				if (current_selection->id == UnitId::ProtossSolarion
@@ -57,7 +57,7 @@ namespace hooks
 		if (builder && get_active_player_next_selection() == 0)
 		{
 			// Originally also checked for a lardcoded ID distance, disabled for training units with high IDs
-			if (builder->can_make_unit(unit_id, *ACTIVE_NATION_ID) == 1)
+			if (builder->can_make_unit(unit_id, *active_nation_id) == 1)
 			{
 				if (helper::has_money_can_make(builder, unit_id)) // add unit to build queue if successful
 				{

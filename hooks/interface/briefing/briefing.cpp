@@ -38,8 +38,8 @@ LABEL_6:
         const char* objectiveText;
         if (mapStringTbl)
         {
-            u16 mapStringID = *((s16*)&missionObjectivesStringIndex + 2 * *LOCAL_NATION_ID) - 1;
-            if (*((s16*)&missionObjectivesStringIndex + 2 * *LOCAL_NATION_ID))
+            u16 mapStringID = *((s16*)&missionObjectivesStringIndex + 2 * *local_nation_id) - 1;
+            if (*((s16*)&missionObjectivesStringIndex + 2 * *local_nation_id))
             {
                 if (mapStringID < *(s16*)mapStringTbl)
                 {

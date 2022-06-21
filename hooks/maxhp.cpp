@@ -90,12 +90,12 @@ namespace hooks
 		BufferStr* v8; // [esp-8h] [ebp-10h]
 
 		v1 = a1;
-		*suppliesAvailableTemp = (*active_portrait_unit)->building.resource.resource_amount;
-		if (*statusScreenFunc != 15)
+		*supplies_available_temp = (*active_portrait_unit)->building.resource.resource_amount;
+		if (*status_screen_func != 15)
 		{
 			helper::hide_optional_status_screen_controls(a1);
 			helper::show_control_group(v1, -10, -13);
-			*statusScreenFunc = 15;
+			*status_screen_func = 15;
 		}
 		helper::add_text_to_dialog(v1, -10, 0);
 		helper::add_text_to_dialog(v1, -12, 0);
@@ -109,8 +109,8 @@ namespace hooks
 				v3 = "";
 			v7 = (u16)(*active_portrait_unit)->building.resource.resource_amount;
 LABEL_14:
-			sprintf_s(struct_Char->buf, 260, "%s %d", v3, v7);
-			v8 = struct_Char;
+			sprintf_s(struct_char->buf, 260, "%s %d", v3, v7);
+			v8 = struct_char;
 			goto LABEL_19;
 		}
 		v4 = (*active_portrait_unit)->building.resource.resource_amount;
@@ -184,15 +184,15 @@ LABEL_26:
 
 		v1 = (BinDlg*)a1;
 		v2 = *active_portrait_unit;
-		if (*bw_is_in_replay || (*active_portrait_unit)->player == *LOCAL_NATION_ID)
+		if (*bw_is_in_replay || (*active_portrait_unit)->player == *local_nation_id)
 		{
 			helper::get_supplies_used_no_args();
-			if (*statusScreenFunc != 12)
+			if (*status_screen_func != 12)
 			{
 				helper::hide_optional_status_screen_controls(v1);
 				helper::show_control_group(v1, -10, -13);
 				v2 = *active_portrait_unit;
-				*statusScreenFunc = 12;
+				*status_screen_func = 12;
 			}
 			v3 = units_dat::group_flags[(u16)v2->id];
 			if (v3.is_zerg)
@@ -241,7 +241,7 @@ LABEL_26:
 			{
 				v7 = "";
 			}
-			sprintf_s(struct_Char2->buf, 260, "%s %d", v7, (v5 + 1) / 2);
+			sprintf_s(struct_char_2->buf, 260, "%s %d", v7, (v5 + 1) / 2);
 			v8 = v21 + 814;
 			if (v21 == -815)
 			{
@@ -273,7 +273,7 @@ LABEL_26:
 			}
 			ByteOperations::SetLowByte(v11, v21);
 			v13 = helper::get_supplies_available((*active_portrait_unit)->player, v11);
-			sprintf_s(unkString_Char, 260, "%s %d", v12, (v13 + 1) / 2);
+			sprintf_s(unk_string_char, 260, "%s %d", v12, (v13 + 1) / 2);
 			v22 = (*active_portrait_unit)->player;
 			v14 = units_dat::group_flags[helper::get_last_queue_slot_id((*active_portrait_unit))];
 			s32 race = (*active_portrait_unit)->get_race();
@@ -306,11 +306,11 @@ LABEL_26:
 			{
 				v17 = "";
 			}
-			sprintf_s(struct_Char2->buf, 260, "%s %d", v17, (u32)(v15 + 1) >> 1);
-			helper::add_text_to_dialog(v1, -10, (const char*)struct_Char);
+			sprintf_s(struct_char_2->buf, 260, "%s %d", v17, (u32)(v15 + 1) >> 1);
+			helper::add_text_to_dialog(v1, -10, (const char*)struct_char);
 			helper::add_text_to_dialog(v1, -11, "");
-			helper::add_text_to_dialog(v1, -12, (const char*)unkString_Char);
-			helper::add_text_to_dialog(v1, -13, (const char*)struct_Char2);
+			helper::add_text_to_dialog(v1, -12, (const char*)unk_string_char);
+			helper::add_text_to_dialog(v1, -13, (const char*)struct_char_2);
 			v18 = (*active_portrait_unit)->id;
 			if (units_dat::ShieldsEnabled[v18])
 			{
@@ -654,7 +654,7 @@ LABEL_55:
 			|| (v23 = (*(s32*)(v5 + 220) >> 30) & 1) != 0
 			|| v21 == 40)
 		{
-			if (*(u8*)(v5 + 76) == *LOCAL_NATION_ID)
+			if (*(u8*)(v5 + 76) == *local_nation_id)
 			{
 				if (v22)
 				{

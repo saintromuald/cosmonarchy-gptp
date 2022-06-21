@@ -7,22 +7,22 @@ namespace hooks
 {
 	s32 initGame() // 004EE110
 	{
-		if (*multiPlayerMode)
+		if (*multiplayer_mode)
 		{
 			return 0;
 		}
 
-		if (*customSingleplayer)
+		if (*custom_singleplayer)
 		{
-			if (gameData->victoryCondition || gameData->starting_units || gameData->tournamentModeEnabled)
+			if (game_data->victory_condition || game_data->starting_units || game_data->tournament_mode_enabled)
 			{
 				helper::switchAllAvailableComputerSlotsToOpen();
-				player_table[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
+				player_table[*local_nation_id].race = selected_singleplayer_race[0];
 				for (s32 player = 0; player < 8; player++)
 				{
-					if (selectedSingleplayerRace[player + 1] != RaceId::None)
+					if (selected_singleplayer_race[player + 1] != RaceId::None)
 					{
-						helper::setLastOpenSlotToComputer(selectedSingleplayerRace[player + 1]);
+						helper::setLastOpenSlotToComputer(selected_singleplayer_race[player + 1]);
 					}
 				}
 			}
@@ -41,11 +41,11 @@ namespace hooks
 
 	s32 startGame(void* lobbyState, s32 player) // 00472060
 	{
-		lobbyState = gameState;
+		lobbyState = game_state;
 		u8 bootReason = 4;
 
 		// Boot (incoming?) players if lobby is not idle
-		if (*gameState != 4)
+		if (*game_state != 4)
 		{
 			return helper::bootReason(bootReason);
 		}
@@ -74,7 +74,7 @@ namespace hooks
 		}
 
 		// Start countdown
-		*gameState = 5;
+		*game_state = 5;
 		*countdownTimerInterval = 24;
 		if (2 * *provider_LatencyCalls + 4 >= 24)
 		{
@@ -89,7 +89,7 @@ namespace hooks
 		result = tickCount - 120000;
 
 		*isInGame = 1;
-		*elapstedTimeModifier = 0;
+		*elapsed_time_modified = 0;
 		*countdownTimeRemaining = result;
 
 		// Convert open slots to computers (multiplayer)

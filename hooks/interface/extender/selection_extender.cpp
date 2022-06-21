@@ -30,4 +30,24 @@ namespace hooks {
         }
         return result;
 	}
+
+    bool is_selected_unit_group_enabled() // 0049A2C0
+    {
+        bool result = 1;
+        Unit** unit_selection = active_player_selection->unit;
+        do
+        {
+            Unit* unit_from_selection = *unit_selection;
+            if (!*unit_selection)
+            {
+                break;
+            }
+            if (!unit_from_selection->is_frozen()) // Originally also checked for DisabledDoodad, not sure if we need that too. -Pr0nogo
+            {
+                return 0;
+            }
+            ++unit_selection;
+        } while (unit_selection < players_selections->unit[0]); // [0] is wrong, but I don't yet know how to translate this from IDA to GPTP. -Pr0nogo
+        return result;
+    }
 }

@@ -296,7 +296,7 @@ namespace hooks
 		}
 
 		// Something to do with player-specific Signify overlays?
-		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*ACTIVE_NATION_ID][0])
+		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*active_nation_id][0])
 		{
 			unit->new_flags_3 &= ~0x20;
 			scbw::refresh_console();
@@ -781,7 +781,7 @@ namespace hooks
 		{
 			helper::play_sound_from_unit(soundId, unit, 1, 0);
 		}
-		if (!bw_is_in_replay && unitVar->player == *LOCAL_NATION_ID)
+		if (!bw_is_in_replay && unitVar->player == *local_nation_id)
 		{
 			*force_button_refresh = 1;
 			portrait_redraw[0] = 1;

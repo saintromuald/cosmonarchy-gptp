@@ -18,7 +18,7 @@ namespace hooks
 		current_unit = get_active_player_next_selection();
 
 		if (current_unit != nullptr &&
-			current_unit->canUseTech(TechId::DarkArchonMeld, *ACTIVE_NATION_ID) == 1)
+			current_unit->canUseTech(TechId::DarkArchonMeld, *active_nation_id) == 1)
 		{
 
 			for (s32 i = 0; i < SelectionCap; i++)
@@ -158,7 +158,7 @@ namespace hooks
 		current_unit = get_active_player_next_selection();
 
 		if (current_unit != nullptr &&
-			current_unit->canUseTech(TechId::ArchonWarp, *ACTIVE_NATION_ID) == 1)
+			current_unit->canUseTech(TechId::ArchonWarp, *active_nation_id) == 1)
 		{
 
 			for (s32 i = 0; i < SelectionCap; i++)

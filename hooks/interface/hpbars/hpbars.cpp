@@ -32,7 +32,7 @@ namespace hooks
 		if (_unitTemp != nullptr) {
 			v3 = _unitTemp;
 		} else {
-			v3 = CurrentUnitSelection[*(a2 + 11)];
+			v3 = current_unit_selection[*(a2 + 11)];
 		}
 		v4 = sprites_dat::IsVisible[v2 + 390];
 		*(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]

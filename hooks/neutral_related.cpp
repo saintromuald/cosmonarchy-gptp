@@ -6,7 +6,7 @@ namespace hooks
 	bool unit_is_not_neutral(CHKUnit* unit) // 004CBE20
 	{
 		bool result = 0;
-		if (gameData->starting_units)
+		if (game_data->starting_units)
 		{
 			if  (unit->player != 12
 			|| ((unit->unit_id < UnitId::ResourceMineralField) || unit->unit_id > UnitId::ResourceMineralFieldType3)

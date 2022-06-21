@@ -478,9 +478,9 @@ namespace hooks
 		}
 		if (!isSucceeded && !warningOnce02)
 		{
-//			sprintf_s(buffer, "Invalid SpriteVisibility!!\nactiveNationID: %u", *ACTIVE_NATION_ID);
+//			sprintf_s(buffer, "Invalid SpriteVisibility!!\nactiveNationID: %u", *active_nation_id);
 //			scbw::print(buffer, GameTextColor::Red);
-			scbw::printf("Invalid SpriteVisibility!!\nactiveNationID: % u", *ACTIVE_NATION_ID);
+			scbw::printf("Invalid SpriteVisibility!!\nactiveNationID: % u", *active_nation_id);
 			scbw::printf("SpriteVisHash (from VisionSync) %d =/= visionHash (from CMD) %d", nationHash, visibilityHash);
 			warningOnce02 = true;
 		}

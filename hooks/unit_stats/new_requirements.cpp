@@ -1932,7 +1932,7 @@ namespace hooks {
 					case UnitId::ZergKagralisk:
 					case UnitId::ZergIzirokor:
 					{
-						if (player_has_unit_id(player_id, UnitId::ZergIzkagIteth))
+						if (player_has_completed_unit_id(player_id, UnitId::ZergIzkagIteth))
 						{
 							return TECH_ACTIVE;
 						}

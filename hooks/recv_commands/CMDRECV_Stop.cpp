@@ -26,7 +26,7 @@ namespace hooks
 			if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0xFFFF)
 				helper::parse_orders_dat_requirements();
 
-			if (current_unit->player != *ACTIVE_NATION_ID)
+			if (current_unit->player != *active_nation_id)
 				*u32_0066FF60 = 0x01;
 			else
 				if (!(current_unit->status & UnitStatus::Completed))
@@ -72,7 +72,7 @@ namespace hooks
 												if (helper::parse_requirement_opcodes(
 													current_unit,
 													OrderId::ReaverStop,
-													*ACTIVE_NATION_ID,
+													*active_nation_id,
 													(u16*)0x00514CF8,
 													orders_dat::RequirementsOffset[OrderId::ReaverStop]
 												) == 1)
@@ -134,7 +134,7 @@ namespace hooks
 			if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0xFFFF)
 				helper::parse_orders_dat_requirements();
 
-			if (current_unit->player != *ACTIVE_NATION_ID)
+			if (current_unit->player != *active_nation_id)
 				*u32_0066FF60 = 0x01;
 			else
 				if (!(current_unit->status & UnitStatus::Completed))
@@ -180,7 +180,7 @@ namespace hooks
 												if (helper::parse_requirement_opcodes(
 													current_unit,
 													OrderId::CarrierStop,
-													*ACTIVE_NATION_ID,
+													*active_nation_id,
 													(u16*)0x00514CF8,
 													orders_dat::RequirementsOffset[OrderId::CarrierStop]
 												) == 1)
@@ -244,7 +244,7 @@ namespace hooks
 				helper::parse_orders_dat_requirements();
 			}
 
-			if (current_unit->player != *ACTIVE_NATION_ID)
+			if (current_unit->player != *active_nation_id)
 			{
 				*u32_0066FF60 = 0x01;
 			}
@@ -286,7 +286,7 @@ namespace hooks
 			else if (helper::parse_requirement_opcodes(
 				current_unit,
 				OrderId::Stop,
-				*ACTIVE_NATION_ID,
+				*active_nation_id,
 				(u16*)0x00514CF8,
 				orders_dat::RequirementsOffset[OrderId::Stop]
 			) == 1)

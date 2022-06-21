@@ -1660,7 +1660,7 @@ namespace scbw
 	void move_screen_to_unit(Unit* unit, u32 player) // 004E6020
 	{
 		const u32 Func_MoveScreen = 0x0049C440;
-		if (player >= 8 || player == *LOCAL_NATION_ID)
+		if (player >= 8 || player == *local_nation_id)
 		{
 			s32 x, y;
 			x = (s16)unit->sprite->position.x;
@@ -1691,7 +1691,7 @@ namespace scbw
 	void minimap_ping(u32 x, u32 y, s32 color, u32 player)
 	{
 		const u32 Func_minimapPing = 0x004A34C0;
-		if (player >= 8 || player == *LOCAL_NATION_ID)
+		if (player >= 8 || player == *local_nation_id)
 		{
 			__asm
 			{
@@ -2180,7 +2180,7 @@ namespace scbw
 
 		for (u32 y_tile = rect.top; y_tile <= rect.bottom; ++y_tile) {
 			for (u32 x_tile = rect.left; x_tile <= rect.right; ++x_tile) {
-				if ((*activeTileArrayInt)[x_tile + y_tile * map_tile_size->width] & 0x10000000) {
+				if ((*active_tile_array_int)[x_tile + y_tile * map_tile_size->width] & 0x10000000) {
 					u32 x = x_tile * 32 - unit->position.x + 16;
 					u32 y = y_tile * 32 - unit->position.y + 16;
 					if (!spreads_creep || 100 * x * x + (y * y << 8) <= 10240000) {

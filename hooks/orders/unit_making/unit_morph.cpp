@@ -411,7 +411,7 @@ namespace hooks
 		}
 		else if (unit->id == UnitId::ZergLarva)
 		{
-			if (unit->can_make_unit(morphUnitId, *ACTIVE_NATION_ID) == 1)
+			if (unit->can_make_unit(morphUnitId, *active_nation_id) == 1)
 			{
 				return true;
 			}

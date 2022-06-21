@@ -9,10 +9,6 @@ namespace UnitId
 	// AI
 	//	DisruptionField										= 105,		// Disruption Field			- might need mempatches?
 	//	DarkSwarm											= 202,		// Dark Swarm				- might need mempatches?
-	
-	// Unused
-	//	LeftUpperLevelDoor									= 205		// Left Upper Level Door 	- might need mempatches?
-	//	RightUpperLevelDoor									= 206		// Right Upper Level Door	- might need mempatches?
 
 	// Special
 		SpecialControlNode									= 192,		// Terran Marker
@@ -77,7 +73,6 @@ namespace UnitId
 		ProtossStarSovereign								= 21,		// Tom Kazansky
 		ProtossGladius										= 25,		// Edmund Duke Siege Tank
 		ProtossMagister										= 26,		// Edmund Duke Siege Turret
-		ProtossMonogram										= 52,		// Unclean One
 		ProtossLegionnaire									= 74,		// Dark Templar Hero
 		ProtossAmaranth										= 75,		// Zeratul Dark Templar
 		ProtossHierophant									= 76,		// Tassadar/Zeratul Archon
@@ -119,6 +114,7 @@ namespace UnitId
 		ZergGosvileth										= 47,		// Scourge
 		ZergAlkajelisk										= 48,		// Torrasque
 		ZergKalkalisk										= 51,		// Infested Kerrigan
+		ZergEvigrilisk										= 52,		// Unclean One
 		ZergNathrokor										= 54,		// Devouring One
 		ZergGorgrokor										= 56,		// Kukulza Guardian
 		ZergOthstoleth										= 57,		// Yggdrasil

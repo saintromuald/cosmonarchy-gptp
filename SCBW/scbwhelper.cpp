@@ -6392,7 +6392,7 @@ namespace helper
 	bool unit_is_owned_by_current_player(Unit* unit)
 	{
 		bool return_value;
-		if (*bw_is_in_replay != 0 || unit->player != *LOCAL_NATION_ID)
+		if (*bw_is_in_replay != 0 || unit->player != *local_nation_id)
 		{
 			return_value = false;
 		}
@@ -12322,5 +12322,21 @@ namespace helper
 			CALL func_address
 			POPAD
 		}
+	}
+
+	// For create_all_selection_circles
+	Image* create_selection_circle(Sprite* sprite, u8 color, u16 image_id) {
+		static Image* result;
+		const u32 func_address = 0x004D7070;
+		__asm {
+			PUSHAD
+			PUSH image_id
+			PUSH color
+			MOV EAX, sprite
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }
