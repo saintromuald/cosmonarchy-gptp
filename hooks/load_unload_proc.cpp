@@ -146,7 +146,7 @@ namespace hooks
 				Unit* cargoUnit = transport->get_loaded_unit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: disable cargo units
-//				scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
+			//	scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
 			}
 		}
 		cargo_unit->status |= UnitStatus::InTransport;
@@ -307,7 +307,7 @@ namespace hooks
 								Unit* cargoUnit = unit->get_loaded_unit(i);
 								if (cargoUnit == nullptr) continue;
 								// TODO: enable and update cargo units and their position
-//								scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
+							//	scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
 							}
 						}
 					}
