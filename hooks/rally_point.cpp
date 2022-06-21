@@ -371,7 +371,7 @@ namespace hooks
 		}
 
 		Unit* target_unit = *target;
-		if (!*target) {
+		if (!target_unit) {
 			if ((unit->id == UnitId::ZergMatraleth) && fow_unit_id != UnitId::None)
 			{
 				return OrderId::Rightclickaction;
