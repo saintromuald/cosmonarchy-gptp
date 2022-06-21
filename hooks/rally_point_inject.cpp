@@ -261,8 +261,8 @@ namespace
 		static u16 fow_unit_id;
 		__asm {
 			PUSH EBP
-			PUSH EAX
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV y_pos, AX
 			MOV EAX, [EBP + 0x0C]
@@ -292,8 +292,8 @@ namespace
 		static Unit* target;
 		__asm {
 			PUSH EBP
-			PUSH EAX
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV x_pos, EAX
 			MOV EAX, [EBP + 0x0C]
@@ -429,7 +429,8 @@ namespace hooks
 	//	call_patch(unit_can_have_rally_original_wrapper,	0x004E3C65, 0);
 	//	call_patch(unit_can_have_rally_original_wrapper,	0x004E334A, 0);
 
-	//	jump_patch(order_acquire_generic_right_click_unit_proc_2_wrapper,	0x00455E00,	1);
+		// For right-click rallies for eggs and cocoons
+		jump_patch(order_acquire_generic_right_click_unit_proc_2_wrapper,	0x00455E00,	1);
 	//	jump_patch(process_right_click_action_wrapper,						0x00455F20,	1);
 	//	jump_patch(get_generic_unit_idle_order_wrapper,						0x00455760,	1);
 	//	jump_patch(input_game_right_mouse_click_wrapper,					0x004564E0,	0);
