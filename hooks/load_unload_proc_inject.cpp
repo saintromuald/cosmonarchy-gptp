@@ -150,9 +150,9 @@ namespace
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV cargo, EAX
-			MOV EAX, [EBP + 0x0C]
 			MOV func, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV cargo, EAX
 			POP EAX
 			MOV transport, EAX
 			PUSHAD
