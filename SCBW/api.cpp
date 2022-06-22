@@ -558,12 +558,6 @@ namespace scbw
 		if (is_conventional_unit_morph_result(id)) {
 			return true;
 		}
-		switch (id) {
-			case UnitId::ProtossArchon:
-			case UnitId::ProtossMindTyrant: {
-				return true;
-			}
-		}
 		return false;
 	}
 
