@@ -29,8 +29,10 @@ namespace hooks
 	// Checks whether the unit can attack from inside a bunker.
 	void unit_attacks_from_inside_bunker(Unit* unit)
 	{
-		if (unit->connected_unit && unit->connected_unit->status & UnitStatus::InAir) { // Disallow units in Bunkers from firing while Bunker is lifted
-			return;
+		if (unit->connected_unit
+		&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport))
+		{
+			return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport. -Pr0nogo
 		}
 		if (scbw::unit_is_ranged_attacker(unit))
 		{
