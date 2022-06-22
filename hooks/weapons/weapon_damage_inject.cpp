@@ -31,8 +31,12 @@ namespace
 			MOV attackingPlayerId, EAX
 			PUSHAD
 		}
-		hooks::weapon_damage(damage, target, weapon_id, attacker, attackingPlayerId,
-			direction, damage_divisor);
+		if (direction == 33333) {
+			hooks::parse_aise_signal(attacker, target, damage_divisor, weapon_id, attackingPlayerId, damage);
+		} else {
+			hooks::weapon_damage(damage, target, weapon_id, attacker, attackingPlayerId,
+				direction, damage_divisor);
+		}
 		__asm {
 			POPAD
 			POP EBP

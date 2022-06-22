@@ -15,6 +15,13 @@ struct {
 
 bool darkswarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor);
 
+// TODO: Move to other file
+enum AiseSignal {
+	AiseSignal_None = 0,
+	AiseSignal_GetTransportCargoCount = 1,
+};
+void parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2, u32 v3);
+
 namespace hooks {
 
 	void weapon_damage(

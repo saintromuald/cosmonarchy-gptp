@@ -24,6 +24,21 @@ bool irradiateTarget(Unit* unit)
 	return true; // Originally prohibited targeting eggs
 }
 
+void parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2, u32 v3) {
+	switch (type) {
+		case AiseSignal_GetTransportCargoCount: {
+			for (u32 i = 0; i < TransportCap; ++i) {
+				u32* ptr = (u32*)unit2;
+				u32 count = 0;
+				if (unit1->get_loaded_unit(i)) {
+					count += 1;
+				}
+				*ptr = count;
+			}
+		} break;
+	}
+}
+
 namespace hooks
 {
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data);
