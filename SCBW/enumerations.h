@@ -212,18 +212,18 @@ namespace PlayerType
 {
 	enum Enum
 	{
-		NotUsed = 0,
-		Computer = 1,
-		Human = 2,
-		Rescuable = 3,
-		Unknown0 = 4,
-		ComputerSlot = 5,
-		OpenSlot = 6,
-		Neutral = 7,
-		ClosedSlot = 8,
-		Unknown1 = 9,
-		HumanDefeated = 10, // Or left the game
-		ComputerDefeated = 11, // Or left the game
+		Inactive			= 0,
+		Computer			= 1,
+		Human				= 2,
+		Rescuable			= 3,
+		UnusedRescueActive	= 4,
+		ComputerSlot		= 5,
+		OpenSlot			= 6,
+		Neutral				= 7,
+		ClosedSlot			= 8,
+		UnusedObserver		= 9,
+		HumanDefeated		= 10, // Or left the game
+		ComputerDefeated	= 11, // Or left the game
 	};
 }
 

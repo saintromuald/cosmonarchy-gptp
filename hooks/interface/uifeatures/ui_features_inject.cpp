@@ -144,6 +144,26 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) trigact_transmission_wrapper()
+	{
+		static u32 result;
+		static TriggerAction* trigger;
+		static char* unused;
+		__asm
+		{
+			MOV unused, EDI
+			MOV trigger, ECX
+			PUSHAD
+		}
+		result = hooks::trigact_transmission(trigger, unused);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -156,5 +176,6 @@ namespace hooks
 		jump_patch(queue_game_command_wrapper,				0x00485BD0, 4);
 		jump_patch(check_hotkey_char_wrapper,				0x004588C0, 3);
 	//	jump_patch(create_upgrade_level_tooltip_wrapper,	0x00459150, 3);
+	//	jump_patch(trigact_transmission_wrapper,			0x004C7890, 0);
 	}
 }

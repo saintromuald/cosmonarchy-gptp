@@ -855,7 +855,7 @@ LABEL_15:
 		u32 playerIdVar = player;
 		if (player == 13)
 		{
-			playerIdVar = *current_trigger_player_id;
+			playerIdVar = *g_current_trigger_player_id;
 		}
 		if (!(playerIdVar < 0xC ? -(unit != 0) : 0))
 		{

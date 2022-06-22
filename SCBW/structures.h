@@ -1097,4 +1097,45 @@ struct FxnDrawIconData {
 	GrpHead* stat_icon;
 };
 
+struct TriggerCondition {
+	u32 location;				// 0x00
+	u32 group;					// 0x04
+	u32 count;					// 0x08
+	u16 unit_id;				// 0x0C
+	u8	comparison_type;		// 0x0E
+	u8	condition_type;			// 0x0F
+	u8	extra_type;				// 0x10
+	u8	flags;					// 0x11
+	u16 internal_something;		// 0x12
+};
+
+struct TriggerAction {
+	u32 source_location;		// 0x00
+	u32 text_string;			// 0x04
+	u32 wav_string;				// 0x08
+	u32 time;					// 0x0C
+	u32 source_group;			// 0x10
+	u32 extra;					// 0x14
+	u16 type;					// 0x18
+	u8	action_type;			// 0x1A
+	u8	modifier;				// 0x1B
+	u8	flags;					// 0x1C
+	u16 internal_something;		// 0x1D
+	u8	padding;				// 0x1F
+};
+
+struct Trigger {
+	TriggerCondition	conditions;				// 0x000
+	TriggerAction		actions;				// 0x140
+	u32					flags;					// 0x940
+	u16					execute_for;			// 0x944
+	u8					current_action_index;	// 0x95F
+};
+
+struct TriggerVector {
+	u32			prev;		// 0x0
+	u32			next;		// 0x4
+	Trigger*	trigger;	// 0x8
+};
+
 #pragma pack()

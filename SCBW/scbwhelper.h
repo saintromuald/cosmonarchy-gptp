@@ -1370,4 +1370,11 @@ namespace helper
 	void get_active_portrait_unit_name(BinDlg* dialog);														// 00425EC0
 	void unit_stat_action_building(void* dialog);															// 00427890
 	void kill_all_loaded_units(Unit* unit);																	// 0049FDD0
+
+	// For trigact_transmission
+	s32 trigact_play_wav(TriggerAction* action, char* unused);												// 004C77D0
+	Unit* get_doodad_for_unit_state(u8 location, u16 unit_id, u32 player);									// 004C7380
+	char minimap_ping(u32 x_pos, u32 y_pos, u32 color);														// 004A34C0
+	s32 game_talking_portrait(u32 x_pos, u32 time, u32 unit_id, u32 y_pos);									// 0045EDD0
+	void create_text_message_with_timer(const char* string, u32 timer);										// 0048CF20
 }

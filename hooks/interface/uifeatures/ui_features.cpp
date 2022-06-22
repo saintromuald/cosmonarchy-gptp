@@ -200,4 +200,101 @@ LABEL_15:
 		scbw::printf("%s", buffer);
 		return helper::create_tooltip(buffer);
 	}
+
+	// Hooked to improve functionality and to use in our own dialogue system. -Pr0nogo
+	s32 trigact_transmission(TriggerAction* trigger, char* a2) // 004C7890
+	{
+		TriggerAction* trigger_var = trigger;
+		if (!(LOBYTE(trigger->source_location))) // Based on this, IDA's struct is just wrong, and we have a second field here. Guessing lobyte = location id based on context. -Pr0nogo
+		{
+			return 1;
+		}
+		if ((LOBYTE(trigger->source_location)) > 0xFFu)
+		{
+			return 1;
+		}
+		u32 player_id = *g_current_trigger_player_id;
+		u8 player_type = g_player_table[player_id].type;
+		if (player_type == PlayerType::Computer
+		||  player_type == PlayerType::Rescuable
+		||  player_type == PlayerType::UnusedRescueActive
+		||  player_type == PlayerType::Neutral)
+		{
+			return 1;
+		}
+		if (!g_is_executing_wait[*g_current_trigger_player_id])
+		{
+			char trigger_flags = trigger->flags;
+			if (trigger_flags & 1)
+			{
+				trigger->flags = trigger_flags & 0xFE;
+				return 1;
+			}
+			if ((*g_current_trigger_node)->trigger->flags & 0x10)
+			{
+				return 1;
+			}
+			u32 trigger_modifier = trigger->modifier - 7;
+			u32 trigger_time = trigger_var->time;
+			if (trigger_var->modifier == 7)
+			{
+				trigger_time = trigger_var->extra;
+			}
+			else
+			{
+				u32 trigger_modifier_2 = trigger_modifier - 1;
+				if (trigger_modifier_2)
+				{
+					if (trigger_modifier_2 == 1)
+					{
+						u32 trigger_extra = trigger_var->extra;
+						if (trigger_extra <= trigger_time)
+						{
+							trigger_time -= trigger_extra;
+						}
+						else
+						{
+							trigger_time = 0;
+						}
+					}
+				}
+				else
+				{
+					trigger_time += trigger_var->extra;
+				}
+			}
+			trigger_var->flags = trigger_flags | 1;
+			u32 multiplayer_time = multiplayer_mode ? trigger_time : -1;
+			g_trigger_wait[player_id] = multiplayer_time;
+			g_is_executing_wait[player_id] = 1;
+			if (player_id == *g_local_nation_id)
+			{
+				helper::trigact_play_wav(trigger_var, a2);
+				Unit* doodad = helper::get_doodad_for_unit_state(LOBYTE(trigger_var->source_location) - 1, trigger_var->type, 17);
+				Unit* doodad_var = doodad; // Probably not necessary. -Pr0nogo
+				if (doodad)
+				{
+					doodad->sprite->selection_timer = 45;
+					helper::minimap_ping(doodad->sprite->position.x, doodad->sprite->position.y, 17);
+					helper::game_talking_portrait(doodad_var->sprite->position.x, trigger_time, trigger_var->type, doodad_var->sprite->position.y);
+				}
+				else
+				{
+					helper::game_talking_portrait(-1, trigger_time, trigger_var->type, -1);
+				}
+				if (options_list->flags & 0x400 || trigger_var->flags & 4)
+				{
+					char* string = helper::get_chk_string(trigger_var->text_string);
+					if (trigger_time > helper::get_text_display_time(string))
+					{
+						helper::create_text_message_with_timer(string, trigger_time);
+						return 0;
+					}
+					u32 display_time = helper::get_text_display_time(string);
+					helper::create_text_message_with_timer(string, display_time);
+				}
+			}
+		}
+		return 0;
+	}
 }

@@ -384,7 +384,7 @@ static s32 compare_objective(const void* a, const void* b) {
 }
 
 static b32 __fastcall parse_comment_action(Action* action) {
-	if (*current_trigger_player_id == *g_local_nation_id) {
+	if (*g_current_trigger_player_id == *g_local_nation_id) {
 		char* comment = helper::get_chk_string(action->string);
 
 		Parser parser = {};

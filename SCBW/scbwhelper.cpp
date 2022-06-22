@@ -12381,4 +12381,76 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For trigact_transmission
+	s32 trigact_play_wav(TriggerAction* action, char* unused) {
+		static s32 result;
+		const u32 func_address = 0x004C77D0;
+		__asm {
+			PUSHAD
+			MOV EDI, unused
+			MOV ECX, action
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* get_doodad_for_unit_state(u8 location, u16 unit_id, u32 player) {
+		static Unit* result;
+		const u32 func_address = 0x004C7380;
+		__asm {
+			PUSHAD
+			PUSH player
+			PUSH unit_id
+			MOV AL, location
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char minimap_ping(u32 x_pos, u32 y_pos, u32 color) {
+		static char result;
+		const u32 func_address = 0x004A34C0;
+		__asm {
+			PUSHAD
+			PUSH color
+			PUSH y_pos
+			PUSH x_pos
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	s32 game_talking_portrait(u32 x_pos, u32 time, u32 unit_id, u32 y_pos) {
+		static s32 result;
+		const u32 func_address = 0x0045EDD0;
+		__asm {
+			PUSHAD
+			PUSH y_pos
+			PUSH unit_id
+			MOV ESI, time
+			MOV EDI, x_pos
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void create_text_message_with_timer(const char* string, u32 timer) {
+		const u32 func_address = 0x0048CF20;
+		__asm {
+			PUSHAD
+			PUSH timer
+			MOV ESI, string
+			CALL func_address
+			POPAD
+		}
+	}
 }

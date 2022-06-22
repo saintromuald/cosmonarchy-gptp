@@ -489,7 +489,7 @@ SCBW_DATA(char*, supply_provided_buffer,			0x006CAC78);
 SCBW_DATA(char*, kills_buffer,						0x006CAC78);
 
 // For giveUnitToPlayer
-SCBW_DATA(s32*,	current_trigger_player_id,			0x006509B0);
+SCBW_DATA(s32*,	g_current_trigger_player_id,		0x006509B0);
 
 // For delete_ai_town_if_needed
 SCBW_DATA(ResourceArea*, base_array,				0x00692688);
@@ -1046,6 +1046,11 @@ SCBW_DATA(Thingy**,		first_used_thingy,				0x00654868);
 
 // For play_building_complete_sound
 SCBW_DATA(u32*,			building_complete_something,	0x006D1AE8);
+
+// For trigact_transmission
+SCBW_DATA(char*,			g_is_executing_wait,		0x006509B8);
+SCBW_DATA(TriggerVector**,	g_current_trigger_node,		0x006509AC);
+SCBW_DATA(u32*,				g_trigger_wait,				0x00650980);
 
 //////////////////////////////////////////////////////////////// @}
 
