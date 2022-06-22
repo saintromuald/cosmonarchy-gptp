@@ -499,7 +499,7 @@ namespace hooks
 		param_2.check_height = 0;
 
 		if (!(units_dat::base_property[unit_id_2] & UnitProperty::Worker)
-		||	  unit->building.addon == 0
+		||	 !unit->building.addon
 		||   !get_doodad_state_unit(unit->building.addon, &param_2))
 		{
 			if (helper::is_unit_owned_by_player_ex(*player_id, unit))

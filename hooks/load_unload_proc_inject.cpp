@@ -258,14 +258,14 @@ namespace hooks
 		jump_patch(unload_unit_proc_wrapper,			0x004E7F70, 1);
 		jump_patch(update_unit_transport_data_wrapper,	0x00401EA0, 1);
 		jump_patch(kill_all_loaded_units_wrapper,		0x0049FDD0, 1);
-		jump_patch(get_doodad_state_unit_wrapper,		0x004C6F70, 1); // Does not actually disable units anymore! Should fix later.
+	//	jump_patch(get_doodad_state_unit_wrapper,		0x004C6F70, 1); // Does not actually disable units anymore! Causes Terran and Protoss AI to build incorrectly!
 		jump_patch(kill_units_at_location_proc_wrapper, 0x004C7E20, 1);
 		jump_patch(get_loaded_unit_from_index_wrapper,	0x004E6C40, 3);
-		jump_patch(get_first_loaded_unit_wrapper,		0x004E6C90, 0); // Some of these are AI funcs, needs AI testing!
-		jump_patch(iterate_loaded_units_wrapper,		0x004E6D00, 2);
+		jump_patch(get_first_loaded_unit_wrapper,		0x004E6C90, 0); // AI related
+		jump_patch(iterate_loaded_units_wrapper,		0x004E6D00, 2); // AI bunker related
 		jump_patch(get_first_loaded_worker_wrapper,		0x004E6D90, 1);
-		jump_patch(is_unit_loaded_wrapper,				0x004E7110, 0);
-		jump_patch(get_loaded_space_amount_wrapper,		0x004E7170, 0);
+		jump_patch(is_unit_loaded_wrapper,				0x004E7110, 0); // AI order related
+		jump_patch(get_loaded_space_amount_wrapper,		0x004E7170, 0); // AI bunker related
 		jump_patch(unload_unit_ext_wrapper,				0x004E7E10, 0);
 		jump_patch(set_under_disruption_field_wrapper,	0x004EB170, 0); // Misses some of the loaded units!
 	}

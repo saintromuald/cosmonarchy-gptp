@@ -32,7 +32,7 @@ namespace
 			PUSHAD
 		}
 		if (direction == 33333) {
-			hooks::parse_aise_signal(attacker, target, damage_divisor, weapon_id, attackingPlayerId, damage);
+			parse_aise_signal(attacker, target, (AiseSignal)damage_divisor, weapon_id, attackingPlayerId, damage);
 		} else {
 			hooks::weapon_damage(damage, target, weapon_id, attacker, attackingPlayerId,
 				direction, damage_divisor);
