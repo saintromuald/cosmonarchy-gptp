@@ -1369,4 +1369,5 @@ namespace helper
 	void set_spell_special_button_graphic(BinDlg* dialog);													// 00424BA0
 	void get_active_portrait_unit_name(BinDlg* dialog);														// 00425EC0
 	void unit_stat_action_building(void* dialog);															// 00427890
+	void kill_all_loaded_units(Unit* unit);																	// 0049FDD0
 }

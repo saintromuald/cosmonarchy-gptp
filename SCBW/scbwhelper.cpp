@@ -12371,4 +12371,14 @@ namespace helper
 			POPAD
 		}
 	}
+
+	void kill_all_loaded_units(Unit* unit) {
+		const u32 func_address = 0x0049FDD0;
+		__asm {
+			PUSHAD
+			MOV EBX, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }

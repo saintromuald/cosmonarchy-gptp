@@ -431,6 +431,9 @@ void unit_destructor_special_cases(Unit* unit)
 	// Update Custom Creep Disappearance
 	scbw::update_custom_creep_disappearance(unit);
 
+	// Call kill all loaded units before UnitExt is cleared. Note that the original call is nops'ed
+	helper::kill_all_loaded_units(unit);
+
 	// Globals memory management
 	globals.remove_unit_from_pariah_table(unit, false);
 	globals.unit_death(unit);
@@ -497,5 +500,7 @@ namespace hooks {
 	void inject_unit_destructor_special_hooks() {
 		jump_patch(unit_destructor_special_cases_wrapper,	0x0049F4A0, 2);
 		jump_patch(clear_tile_flags_from_area_wrapper,		0x00472E50, 2);
+
+		nops(0x004A0766, 5); // Disable kill all loaded units so we can call it before UnitExt is cleared
 	}
 }

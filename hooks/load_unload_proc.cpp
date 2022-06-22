@@ -7,13 +7,8 @@ namespace hooks
 {
 	void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
 	{
-		UnitExt* transport_ext = globals.get_unit_ext(transport);
-		u8 unitRaceId;
 		u32 loaded_index;
 		s32 counter = 0;
-		// Old pointers
-//		static const Unit* unitTable_0059CB58 = (Unit*)0x0059CB58;
-//		static const Unit* unitTable_0059CB64 = (Unit*)0x0059CB64;
 		static const Unit* unitTable_0059CB58 = (Unit*)0x0059CB58;
 		static const Unit* unitTable_0059CB64 = (Unit*)0x0059CB64;
 		if (globals.extended_unit_table == 1)
@@ -25,6 +20,7 @@ namespace hooks
 		static u32* u32_0x006BEE84 = (u32*)(0x006BEE84);
 		static u32* u32_0x006BEE8C = (u32*)(0x006BEE8C);
 
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		if (units_dat::SpaceProvided[transport->id] != 0)
 		{
 			for (;;)
@@ -51,27 +47,11 @@ namespace hooks
 			}
 		}
 		
-		// 004E7952
-		if (units_dat::group_flags[transport->id].is_zerg)
-		{
-			unitRaceId = RaceId::Zerg;
-		}
-		else if (units_dat::group_flags[transport->id].is_protoss)
-		{
-			unitRaceId = RaceId::Protoss;
-		}
-		else if (units_dat::group_flags[transport->id].is_terran)
-		{
-			unitRaceId = RaceId::Terran;
-		}
-		else
-		{
-			unitRaceId = RaceId::Neutral;
-		}
+		u8 unit_race_id = transport->get_race();
 
 		scbw::decloak_proc(transport);
 		scbw::decloak_proc(cargo_unit);
-		helper::play_sound_from_unit(SoundId::Misc_ZOvTra00_wav + unitRaceId, transport, 1, 0);
+		helper::play_sound_from_unit(SoundId::Misc_ZOvTra00_wav + unit_race_id, transport, 1, 0);
 		if (cargo_unit->id == UnitId::TerranMason)
 		{
 			if (cargo_unit->unit_ai != nullptr)
@@ -147,7 +127,7 @@ namespace hooks
 				Unit* cargoUnit = transport->get_loaded_unit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: disable cargo units
-//				scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
+			//	scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
 			}
 		}
 		cargo_unit->status |= UnitStatus::InTransport;
@@ -308,7 +288,7 @@ namespace hooks
 								Unit* cargoUnit = unit->get_loaded_unit(i);
 								if (cargoUnit == nullptr) continue;
 								// TODO: enable and update cargo units and their position
-//								scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
+							//	scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
 							}
 						}
 					}
@@ -393,9 +373,9 @@ namespace hooks
 		if (cargo->status & UnitStatus::InTransport)
 		{
 			Unit* cargo_transport = cargo->connected_unit;
-			UnitExt* cargo_transport_ext = globals.get_unit_ext(cargo_transport);
 			if (cargo_transport)
 			{
+				UnitExt* cargo_transport_ext = globals.get_unit_ext(cargo_transport);
 				u32 cargo_index = cargo - g_unit_table + 1;
 				u32 loaded_index = 0;
 				if (cargo_index <= 1700)
@@ -500,7 +480,6 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	s32 get_doodad_state_unit(Unit* unit, FindUnitLocationParam* parameter) // 004C6F70
 	{
-		UnitExt* unit_ext = globals.get_unit_ext(unit);
 		u32* player_id = &parameter->player;
 		u32 do_check_height = parameter->check_height;
 		FindUnitLocationParam* parameter_var = parameter;
@@ -532,6 +511,7 @@ namespace hooks
 					u32 space_provided_2 = units_dat::SpaceProvided[unit_id_3];
 					if (space_provided_1)
 					{
+						UnitExt* unit_ext = globals.get_unit_ext(unit);
 						u16 index = unit_ext->loaded_unit[0].index;
 						do
 						{
@@ -614,7 +594,6 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) // 004C7E20
 	{
-		UnitExt* unit_ext = globals.get_unit_ext(unit);
 		if (args->check_height && helper::is_unit_at_height(unit, args->flags))
 		{
 			return 0;
@@ -625,6 +604,7 @@ namespace hooks
 			u8 space_provided = units_dat::SpaceProvided[unit->id];
 			if (space_provided)
 			{
+				UnitExt* unit_ext = globals.get_unit_ext(unit);
 				u16* index = &unit_ext->loaded_unit[0].value;
 				do
 				{
@@ -771,12 +751,12 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	u32 iterate_loaded_units(Unit* transport, iterate_loaded_units_callback* func, Unit* cargo) // 004E6D00
 	{
-		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u32 space_provided = units_dat::SpaceProvided[transport->id];
 		if (!space_provided)
 		{
 			return 0;
 		}
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u16* index = &transport_ext->loaded_unit[0].value;
 		u32 iterations = 0;
 		while (1)
@@ -809,8 +789,8 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	s32 get_first_loaded_worker(Unit* transport) // 004E6D90
 	{
-		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u32 iterations = 0;
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u16* index = &transport_ext->loaded_unit[0].value;
 		while (1)
 		{
@@ -897,8 +877,8 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	s32 is_unit_loaded(Unit* transport) // 004E7110
 	{
-		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u32 iterations = 0;
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u16* index = &transport_ext->loaded_unit[0].value;
 		s32 result = 1;
 		while (1)
@@ -931,8 +911,8 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	u32 get_loaded_space_amount(Unit* transport) // 004E7170
 	{
-		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u32 result = 0;
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u16* index_1 = &transport_ext->loaded_unit[0].value;
 		u32 iterations = TransportCap;
 		do
@@ -1008,16 +988,7 @@ namespace hooks
 			}
 			else
 			{
-				GroupFlag group_flags = units_dat::group_flags[connected_unit->id];
-				u8 sound_offset = 0; // Zerg
-				if (group_flags.is_protoss)
-				{
-					sound_offset = 2;
-				}
-				else
-				{
-					sound_offset = (group_flags.is_terran) != 0 ? 1 : 4;
-				}
+				u8 sound_offset = connected_unit->get_race();
 				helper::play_sound_from_unit(SoundId::Misc_ZOvTra01_wav + sound_offset, connected_unit, 1, 0);
 				helper::show_and_enable_unit(cargo);
 				iterations = iterations_2;
