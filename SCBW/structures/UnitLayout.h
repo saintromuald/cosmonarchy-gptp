@@ -373,6 +373,16 @@ enum ExtTimerVectorId
 	TimerVectorCount,
 };
 
+#define TransportCap 64
+#define OldTransportCap 8
+union CargoUnit {
+	struct {
+		u16 index   : 11;								// 1-based index in the unit table.
+		u16 unit_id : 5;
+	};
+	u16 value;
+};
+
 struct UnitExt
 {
 	u32						damage_receive_timer;
@@ -393,6 +403,8 @@ struct UnitExt
 
 	u32						ai_timer_avoid_targeting[PlayerLimit];
 	u32						parasite_spawn_count[PlayerLimit];
+
+	CargoUnit				loaded_unit[TransportCap];
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
@@ -577,14 +589,7 @@ struct UnitLayout
 	/*0x0AA*/ u16       shield_gain;					// Shield gain on construction
 	/*0x0AC*/ u16       remaining_build_time;			// Remaining bulding time; also used by powerups (flags) as the timer for returning to their original location.
 	/*0x0AE*/ u16       previous_hitpoints;				// The HP of the unit before it changed (example Drone->Hatchery, the Drone's HP will be stored here)
-	/*0x0B0*/ union
-	{
-		struct {
-			u16 index   : 11;								// 1-based index in the unit table.
-			u16 unit_id : 5;
-		};
-		u16 value;
-	} loaded_unit[8];									// officially called "uwTransport[8]"
+	/*0x0B0*/ CargoUnit loaded_unit_old[OldTransportCap]; // officially called "uwTransport[8]"
 	/*0x0C0*/ union
 	{
 		struct

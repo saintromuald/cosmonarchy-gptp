@@ -14,7 +14,8 @@ namespace hooks
 	Unit* get_first_loaded_unit(Unit* transport);								// 004E6C90
 	Unit* get_loaded_unit(Unit* transport, u32 index);							// Moved from Unit.cpp; not hooked
 	Unit* get_unit_from_index(u16 index);										// Moved from Unit.cpp; not hooked
-	u32 iterate_loaded_units(Unit* transport, void* func, Unit* cargo);			// 004E6D00
+	typedef s32 __fastcall iterate_loaded_units_callback(Unit*, Unit*);
+	u32 iterate_loaded_units(Unit* transport, iterate_loaded_units_callback* func, Unit* cargo);			// 004E6D00
 	s32 get_first_loaded_worker(Unit* transport);								// 004E6D90
 	s32 is_carrying_flag(Unit* unit);											// 004F3A80
 	s32 is_unit_loaded(Unit* transport);										// 004E7110

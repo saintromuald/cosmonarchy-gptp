@@ -225,7 +225,7 @@ namespace hooks
 							if (!bStopAll)
 							{
 								index++;
-								bStopLoop = (index < 8);
+								bStopLoop = (index < TransportCap);
 							}
 						}
 						if (!bStopAll)
@@ -488,15 +488,17 @@ namespace hooks
 			bool jump_to_E8191 = false;
 			bool jump_to_E8195 = false;
 			bool jump_to_E81AD = false;
+
+			UnitExt* unit_ext = globals.get_unit_ext(unit);
 			while (!bEndLoop)
 			{
-				loadedUnitOffset = (u32*)&unit->loaded_unit[counter];
-				if (*loadedUnitOffset != 0 && unitTable_0059CB64[unit->loaded_unit[counter].index].link.prev != nullptr) // sprite check
+				loadedUnitOffset = (u32*)&unit_ext->loaded_unit[counter];
+				if (*loadedUnitOffset != 0 && unitTable_0059CB64[unit_ext->loaded_unit[counter].index].link.prev != nullptr) // sprite check
 				{
-					Unit* unitToUnload = &(unitTable_0059CB58[unit->loaded_unit[counter].index]);
+					Unit* unitToUnload = &(unitTable_0059CB58[unit_ext->loaded_unit[counter].index]);
 					if (unitToUnload->main_order_id != 0 || unitToUnload->main_order_state != 1)
 					{
-						if (unit->loaded_unit[counter].unit_id == unitToUnload->target_order_special)
+						if (unit_ext->loaded_unit[counter].unit_id == unitToUnload->target_order_special)
 						{
 							bFoundUnitToUnload = true;
 							result_E7F70 = helper::unload_unit_proc(unitToUnload);
@@ -511,7 +513,7 @@ namespace hooks
 				if (!bEndLoop)
 				{
 					counter++;
-					if (counter >= 8)
+					if (counter >= TransportCap)
 					{
 						bEndLoop = true;
 					}

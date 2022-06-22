@@ -1949,28 +1949,24 @@ namespace scbw
 			|| unit_id == UnitId::SharedTarasque;
 	}
 
-	bool transport_is_full(Unit* transport)
-	{
-		return transport->loaded_unit[0].index
-			&& transport->loaded_unit[1].index
-			&& transport->loaded_unit[2].index
-			&& transport->loaded_unit[3].index
-			&& transport->loaded_unit[4].index
-			&& transport->loaded_unit[5].index
-			&& transport->loaded_unit[6].index
-			&& transport->loaded_unit[7].index;
+	bool transport_is_full(Unit* transport) {
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
+		for (u32 i = 0; i < TransportCap; ++i) {
+			if (!transport_ext->loaded_unit[i].index) {
+				return false;
+			}
+		}
+		return true;
 	}
 
-	bool transport_is_empty(Unit* transport)
-	{
-		return (!transport->loaded_unit[0].index
-			&& !transport->loaded_unit[1].index
-			&& !transport->loaded_unit[2].index
-			&& !transport->loaded_unit[3].index
-			&& !transport->loaded_unit[4].index
-			&& !transport->loaded_unit[5].index
-			&& !transport->loaded_unit[6].index
-			&& !transport->loaded_unit[7].index);
+	bool transport_is_empty(Unit* transport) {
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
+		for (u32 i = 0; i < TransportCap; ++i) {
+			if (transport_ext->loaded_unit[i].index) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	bool unit_id_uses_xlarge_overlays(u16 unit_id)

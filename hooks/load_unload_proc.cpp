@@ -7,6 +7,7 @@ namespace hooks
 {
 	void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
 	{
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u8 unitRaceId;
 		u32 loaded_index;
 		s32 counter = 0;
@@ -28,16 +29,16 @@ namespace hooks
 		{
 			for (;;)
 			{
-				u32* loadedUnitOffset = (u32*)&transport->loaded_unit[counter];
+				u32* loadedUnitOffset = (u32*)&transport_ext->loaded_unit[counter];
 				if (*loadedUnitOffset == 0 ||
-					unitTable_0059CB64[transport->loaded_unit[counter].index].link.prev == nullptr)
+					unitTable_0059CB64[transport_ext->loaded_unit[counter].index].link.prev == nullptr)
 				{
 					break;
 				}
 
-				Unit* current_loaded_unit = (Unit*)&(unitTable_0059CB58[transport->loaded_unit[counter].index]);
+				Unit* current_loaded_unit = (Unit*)&(unitTable_0059CB58[transport_ext->loaded_unit[counter].index]);
 				if ((current_loaded_unit->main_order_id == OrderId::Die && current_loaded_unit->main_order_state == 1) ||
-					current_loaded_unit->target_order_special != transport->loaded_unit[counter].unit_id)
+					current_loaded_unit->target_order_special != transport_ext->loaded_unit[counter].unit_id)
 				{
 					break;
 				}
@@ -118,13 +119,13 @@ namespace hooks
 
 		if (loaded_index < UNIT_ARRAY_LENGTH)
 		{
-			transport->loaded_unit[counter].index = loaded_index;
-			transport->loaded_unit[counter].unit_id = cargo_unit->target_order_special;
+			transport_ext->loaded_unit[counter].index = loaded_index;
+			transport_ext->loaded_unit[counter].unit_id = cargo_unit->target_order_special;
 		}
 		else
 		{
-			transport->loaded_unit[counter].index = 0;
-			transport->loaded_unit[counter].unit_id = 0;
+			transport_ext->loaded_unit[counter].index = 0;
+			transport_ext->loaded_unit[counter].unit_id = 0;
 		}
 
 		// TODO: revisit those, seems like it should be cargo_unit
@@ -141,7 +142,7 @@ namespace hooks
 		}
 		else if (transport->id == UnitId::TerranBunker)
 		{
-			for (s32 i = 0; i < 8; i++)
+			for (s32 i = 0; i < TransportCap; i++)
 			{
 				Unit* cargoUnit = transport->get_loaded_unit(i);
 				if (cargoUnit == nullptr) continue;
@@ -155,7 +156,7 @@ namespace hooks
 
 		if (transport->id == UnitId::TerranBunker)
 		{
-			for (s32 i = 0; i < 8; i++)
+			for (s32 i = 0; i < TransportCap; i++)
 			{
 				Unit* cargoUnit = transport->get_loaded_unit(i);
 				if (cargoUnit == nullptr) continue;
@@ -302,7 +303,7 @@ namespace hooks
 						}
 						else if (unit->id == UnitId::TerranBunker)
 						{
-							for (s32 i = 0; i < 8; i++)
+							for (s32 i = 0; i < TransportCap; i++)
 							{
 								Unit* cargoUnit = unit->get_loaded_unit(i);
 								if (cargoUnit == nullptr) continue;
@@ -392,6 +393,7 @@ namespace hooks
 		if (cargo->status & UnitStatus::InTransport)
 		{
 			Unit* cargo_transport = cargo->connected_unit;
+			UnitExt* cargo_transport_ext = globals.get_unit_ext(cargo_transport);
 			if (cargo_transport)
 			{
 				u32 cargo_index = cargo - g_unit_table + 1;
@@ -405,7 +407,7 @@ namespace hooks
 				{
 					for (i = 0; i < units_dat::SpaceProvided[cargo_transport->id]; ++i)
 					{
-						u16 index = cargo_transport->loaded_unit[i].index;
+						u16 index = cargo_transport_ext->loaded_unit[i].index;
 						if (index == loaded_index)
 						{
 							break;
@@ -413,7 +415,7 @@ namespace hooks
 					}
 				}
 				helper::move_unit_duplicate(cargo, cargo_transport->sprite->position.x, cargo_transport->sprite->position.y);
-				cargo->connected_unit->loaded_unit[i].index = 0;
+				cargo_transport_ext->loaded_unit[i].index = 0;
 				u32 cargo_status_bool = cargo->status & ~UnitStatus::InTransport;
 				cargo->connected_unit = 0;
 				cargo->status = cargo_status_bool;
@@ -445,6 +447,7 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	void kill_all_loaded_units(Unit* transport) // 0049FDD0
 	{
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		char transport_data = 0;
 		if (transport->status & UnitStatus::InTransport)
 		{
@@ -456,9 +459,9 @@ namespace hooks
 			u8 transport_space = units_dat::SpaceProvided[transport->id];
 			if (transport_space)
 			{
-				u16* index = &transport->loaded_unit[0].value;
-				u16* index_2 = &transport->loaded_unit[0].value;
-				u32 times_to_iterate = 8; // Should be transport_space?
+				u16* index = &transport_ext->loaded_unit[0].value;
+				u16* index_2 = &transport_ext->loaded_unit[0].value;
+				u32 times_to_iterate = TransportCap; // Should be transport_space?
 				do
 				{
 					if (index_2)
@@ -478,7 +481,7 @@ namespace hooks
 										{
 											helper::orders_self_destructing(unit_reference);
 										}
-										*index = transport->loaded_unit[0].value;
+										*index = transport_ext->loaded_unit[0].value;
 									}
 								}
 							}
@@ -487,7 +490,7 @@ namespace hooks
 					++index_2;
 					--times_to_iterate;
 				} while (times_to_iterate);
-				for (u32 i = 0; i < 8; ++i) {
+				for (u32 i = 0; i < TransportCap; ++i) {
 					index[i] = 0;
 				}
 			}
@@ -497,6 +500,7 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	s32 get_doodad_state_unit(Unit* unit, FindUnitLocationParam* parameter) // 004C6F70
 	{
+		UnitExt* unit_ext = globals.get_unit_ext(unit);
 		u32* player_id = &parameter->player;
 		u32 do_check_height = parameter->check_height;
 		FindUnitLocationParam* parameter_var = parameter;
@@ -528,7 +532,7 @@ namespace hooks
 					u32 space_provided_2 = units_dat::SpaceProvided[unit_id_3];
 					if (space_provided_1)
 					{
-						u16 index = unit->loaded_unit[0].index;
+						u16 index = unit_ext->loaded_unit[0].index;
 						do
 						{
 							if (index)
@@ -610,6 +614,7 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) // 004C7E20
 	{
+		UnitExt* unit_ext = globals.get_unit_ext(unit);
 		if (args->check_height && helper::is_unit_at_height(unit, args->flags))
 		{
 			return 0;
@@ -620,7 +625,7 @@ namespace hooks
 			u8 space_provided = units_dat::SpaceProvided[unit->id];
 			if (space_provided)
 			{
-				u16* index = &unit->loaded_unit[0].value;
+				u16* index = &unit_ext->loaded_unit[0].value;
 				do
 				{
 					u32 index_lowbyte = *index;
@@ -704,7 +709,8 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	Unit* get_loaded_unit_from_index(Unit* transport, u32 index) // 004E6C40
 	{
-		int loaded_index = transport->loaded_unit[index].value;
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
+		int loaded_index = transport_ext->loaded_unit[index].value;
 		Unit* result = &g_unit_reference[loaded_index & 0x7FF];
 		if (!loaded_index
 		||  !result->sprite
@@ -733,10 +739,11 @@ namespace hooks
 	
 	// Moved from Unit.cpp
 	Unit* get_loaded_unit(Unit* transport, u32 index) {
-		Unit* loaded_unit = get_unit_from_index(transport->loaded_unit[index].index);
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
+		Unit* loaded_unit = get_unit_from_index(transport_ext->loaded_unit[index].index);
 		if  (loaded_unit && loaded_unit->sprite
 		&& !(loaded_unit->main_order_id == OrderId::Die && loaded_unit->main_order_state == 1)
-		&&   loaded_unit->target_order_special == transport->loaded_unit[index].unit_id)
+		&&   loaded_unit->target_order_special == transport_ext->loaded_unit[index].unit_id)
 		{
 			return loaded_unit;
 		}
@@ -761,17 +768,16 @@ namespace hooks
 		return nullptr;
 	}
 
-	typedef s32 __fastcall iterate_loaded_units_callback(Unit*, Unit*);
-
 	// Hooked to extend transports. -Pr0nogo
 	u32 iterate_loaded_units(Unit* transport, iterate_loaded_units_callback* func, Unit* cargo) // 004E6D00
 	{
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u32 space_provided = units_dat::SpaceProvided[transport->id];
 		if (!space_provided)
 		{
 			return 0;
 		}
-		u16* index = &transport->loaded_unit[0].value;
+		u16* index = &transport_ext->loaded_unit[0].value;
 		u32 iterations = 0;
 		while (1)
 		{
@@ -803,8 +809,9 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	s32 get_first_loaded_worker(Unit* transport) // 004E6D90
 	{
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u32 iterations = 0;
-		u16* index = &transport->loaded_unit[0].value;
+		u16* index = &transport_ext->loaded_unit[0].value;
 		while (1)
 		{
 			u16 index_var = *index;
@@ -823,7 +830,7 @@ namespace hooks
 			}
 			++iterations;
 			++index;
-			if (iterations >= 8)
+			if (iterations >= TransportCap)
 			{
 				return 0;
 			}
@@ -850,7 +857,8 @@ namespace hooks
 			return 0;
 		}
 		u32 iterations = 0;
-		u16* index = &unit->loaded_unit[0].value;
+		UnitExt* unit_ext = globals.get_unit_ext(unit);
+		u16* index = &unit_ext->loaded_unit[0].value;
 		while (1)
 		{
 			u16 index_var = *index;
@@ -878,7 +886,7 @@ namespace hooks
 			}
 			++iterations;
 			++index;
-			if (iterations >= 8)
+			if (iterations >= TransportCap)
 			{
 				return 0;
 			}
@@ -889,8 +897,9 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	s32 is_unit_loaded(Unit* transport) // 004E7110
 	{
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u32 iterations = 0;
-		u16* index = &transport->loaded_unit[0].value;
+		u16* index = &transport_ext->loaded_unit[0].value;
 		s32 result = 1;
 		while (1)
 		{
@@ -911,7 +920,7 @@ namespace hooks
 			}
 			++iterations;
 			++index;
-			if (iterations >= 8)
+			if (iterations >= TransportCap)
 			{
 				return 0;
 			}
@@ -922,9 +931,10 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	u32 get_loaded_space_amount(Unit* transport) // 004E7170
 	{
+		UnitExt* transport_ext = globals.get_unit_ext(transport);
 		u32 result = 0;
-		u16* index_1 = &transport->loaded_unit[0].value;
-		u32 iterations = 8;
+		u16* index_1 = &transport_ext->loaded_unit[0].value;
+		u32 iterations = TransportCap;
 		do
 		{
 			u32 index_var_1 = *index_1;
@@ -975,11 +985,12 @@ namespace hooks
 				target_order_shifted = cargo_index | (cargo->target_order_special << 11);
 			}
 			Unit* connected_unit = cargo->connected_unit;
+			UnitExt* connected_unit_ext = globals.get_unit_ext(connected_unit);
 			u32 iterations = 0;
 			u32 iterations_2 = 0;
 			if (units_dat::SpaceProvided[connected_unit->id])
 			{
-				u16* index = &connected_unit->loaded_unit[0].value;
+				u16* index = &connected_unit_ext->loaded_unit[0].value;
 				do
 				{
 					if (*index == target_order_shifted)
@@ -1011,7 +1022,7 @@ namespace hooks
 				helper::show_and_enable_unit(cargo);
 				iterations = iterations_2;
 			}
-			cargo->connected_unit->loaded_unit[iterations].value = 0;
+			connected_unit_ext->loaded_unit[iterations].value = 0;
 			u32 cargo_status_something = cargo->status & 0xFFFFFFBF;
 			cargo->connected_unit = 0;
 			cargo->status = cargo_status_something;
@@ -1051,8 +1062,9 @@ namespace hooks
 			}
 			return 0;
 		}
-		u16* index = &unit->loaded_unit[0].value;
-		u32 iterations = 8;
+		UnitExt* unit_ext = globals.get_unit_ext(unit);
+		u16* index = &unit_ext->loaded_unit[0].value;
+		u32 iterations = TransportCap;
 		do
 		{
 			u32 index_var = *index;
