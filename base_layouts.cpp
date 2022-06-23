@@ -495,7 +495,7 @@ void tick_layouts() {
 				if (can_place_unit(base_unit_id, placeholder->position, i)) {
  					placeholder->requested = true;
 					if (log_placeholder_requests[town->player]) {
-						scbw::printf("Player %u requested %s #%u at resarea %u", i, Unit::getName(placeholder->unit_id), j, placeholder->resarea);
+						scbw::printf("Player %u requested %s #%u at resarea %u", i, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
 					}
 					request_placeholder(layouts_town, placeholder);
 				} else if (placeholder->placement_timeout < 10 * 24) {  // Keep in mind that placement_timeout can't be higher than 256 (it's u8)

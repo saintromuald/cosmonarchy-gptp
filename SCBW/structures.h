@@ -724,8 +724,8 @@ struct GuardAi
 	u8 unk_a[2];					// 0xA
 	Unit* parent;					// 0xC
 	u16 unit_id;					// 0x10
-	Point16 home;					// 0x12
-	Point16 unk_pos;				// 0x16
+	Point16 current_home;					// 0x12
+	Point16 original_home;			// 0x16
 	u8 unk_1a[2];					// 0x1A
 	u32 previous_update;			// 0x1C
 };

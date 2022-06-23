@@ -1259,7 +1259,7 @@ namespace helper
 	u32 ai_find_expansion(u32 player, u32 resarea, u32 amount);												// 004453E0
 
 	SCBW_FUNC(0x0045B440, void __stdcall, ai_expand_to, AiScript* aiscript, u32 resarea, u32 block);
-	SCBW_FUNC(0x004A1E50, void __fastcall, remove_unit_ai, Unit* unit, UnitAi* unit_ai);
+	SCBW_FUNC(0x004A1E50, void __fastcall, remove_unit_ai, Unit* unit, b32 unit_was_killed);
 	SCBW_FUNC(0x00487B00, Thingy* __stdcall, find_blocking_fow_resource, u32 x, u32 y, u32 radius);
 	SCBW_FUNC(0x00493640, void __cdecl, create_pylon_aura);
 	SCBW_FUNC(0x0040ABBE, void __fastcall, image_render_fxn_0_0, u32 g_screen_x, u32 g_screen_y, void* frame, Box32* rect, u32 colorData);
@@ -1384,5 +1384,5 @@ namespace helper
 
 	// For ai_update_guard_needs
 	void delete_guard_ai(GuardAi* guard_ai, GuardAiList* guard_ai_list);									// 00403030
-	Unit* find_nearest_available_military(u32 player, u32 y_pos, u32 unit_id, u32 x_pos);					// 004379B0
+	Unit* find_nearest_available_military(u32 player, u32 unit_id, Point16 point);							// 004379B0
 }

@@ -759,7 +759,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 			if (best_target) {
 				unit_ext->timers[TimerAI_KitingCooldown] = 2;
-				KITE_DEBUG("%s: attack", unit->getName());
+				KITE_DEBUG("%s: attack", unit->get_name());
 
 				u32 attack_order_id = OrderId::AttackUnit;
 				if (unit->id == UnitId::ProtossSolarion) {
@@ -859,36 +859,36 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 						if (!prefer_kiting_forward && unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2) {
 							unit_ext->timers[TimerAI_KitingCooldown] = 24;
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
-							KITE_DEBUG("%s: fall back", unit->getName());
+							KITE_DEBUG("%s: fall back", unit->get_name());
 						} else if (prefer_kiting_forward || distance >= max_range * 2) {
 							unit_ext->timers[TimerAI_KitingCooldown] = 24;
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
-							KITE_DEBUG("%s: forward", unit->getName());
+							KITE_DEBUG("%s: forward", unit->get_name());
 						} else if (should_kite_back) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
-							KITE_DEBUG("%s: backward", unit->getName());
+							KITE_DEBUG("%s: backward", unit->get_name());
 						}
 					} break;
 					case KiterType_Ranged: {
 						if (!prefer_kiting_forward && (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || hostile_advantage >= 2.0)) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
-							KITE_DEBUG("%s: fall back", unit->getName());
+							KITE_DEBUG("%s: fall back", unit->get_name());
 						} else if (prefer_kiting_forward || distance >= max_range * 2
 							|| (distance > max_range * 0.75 && hostile_advantage <= 0.5)) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
-							KITE_DEBUG("%s: forward", unit->getName());
+							KITE_DEBUG("%s: forward", unit->get_name());
 						} else if (should_kite_back || hostile_advantage >= 1.0 || distance <= max_range * 0.25) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
-							KITE_DEBUG("%s: backward", unit->getName());
+							KITE_DEBUG("%s: backward", unit->get_name());
 						}
 					} break;
 					case KiterType_Artillery: {
 						if (distance > max_range * 2) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
-							KITE_DEBUG("%s: forward", unit->getName());
+							KITE_DEBUG("%s: forward", unit->get_name());
 						} else if (should_kite_back || distance < max_range * 1.25) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
-							KITE_DEBUG("%s: backward", unit->getName());
+							KITE_DEBUG("%s: backward", unit->get_name());
 						}
 					} break;
 					case KiterType_Flagship: {
@@ -896,13 +896,13 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 						if (!prefer_kiting_forward && !dont_turn
 							&& (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || hostile_advantage >= 2.0)) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
-							KITE_DEBUG("%s: fall back", unit->getName());
+							KITE_DEBUG("%s: fall back", unit->get_name());
 						} else if (prefer_kiting_forward || (distance > max_range * 0.75 && hostile_advantage <= 0.5)) {
 							unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
-							KITE_DEBUG("%s: forward", unit->getName());
+							KITE_DEBUG("%s: forward", unit->get_name());
 						} else if (should_kite_back && !dont_turn) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
-							KITE_DEBUG("%s: backward", unit->getName());
+							KITE_DEBUG("%s: backward", unit->get_name());
 						}
 					} break;
 				}

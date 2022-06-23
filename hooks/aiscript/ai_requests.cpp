@@ -890,13 +890,12 @@ namespace hooks
 		}
 		*/
 		s32 unit_id = guard_ai->unit_id;
-		if (unit_id == UnitId::TerranPhalanxSiegeMode)
-		{
+		if (unit_id == UnitId::TerranPhalanxSiegeMode) {
 			unit_id = UnitId::TerranPhalanxTankMode;
 		}
 		helper::ai_add_cost_to_needs(unit_id, player_id, 1);
 		helper::ai_add_spending_request(unit_id, player_id, 2, priority, guard_ai);
-		helper::ai_add_base_unit_spending_request(unit_id, player_id, scbw::get_ai_region(player_id, scbw::get_region_id(guard_ai->home)), priority);
+		helper::ai_add_base_unit_spending_request(unit_id, player_id, scbw::get_ai_region(player_id, scbw::get_region_id(guard_ai->current_home)), priority);
 	}
 
 	// Hooked to change attack_add priorities. -Pr0nogo
@@ -937,80 +936,31 @@ namespace hooks
 	}
 
 	// Hooked to improve AI guard handling. -Pr0nogo
-	void ai_update_guard_needs(u32 player) // 004630C0
-	{
-		GuardAi* guard_ai = g_first_player_guard->player[player].first;
-		if (guard_ai)
-		{
-			while (guard_ai)
-			{
-				GuardAi* prev_guard = guard_ai->link.prev;
-				if (g_aiscript_controller[player].AI_Flags.is_use_map_settings && guard_ai->times_died >= 3u)
-				{
-					helper::delete_guard_ai(guard_ai, &g_first_player_guard->player[player]);
+	void ai_update_guard_needs(u32 player) { // 004630C0
+		for (GuardAi* guard_ai = g_first_player_guard->player[player].first; guard_ai; guard_ai = guard_ai->link.prev) {
+			if (g_aiscript_controller[player].AI_Flags.is_use_map_settings && guard_ai->times_died >= 3u) {
+				helper::delete_guard_ai(guard_ai, &g_first_player_guard->player[player]);
+			} else if (guard_ai->parent) {
+				Unit* unit = guard_ai->parent;
+				if (unit->status & UnitStatus::IsHallucination) {
+					guard_ai->parent = 0;
+					helper::remove_unit_ai(unit, false);
+					guard_ai->times_died -= 1;
+					helper::ai_training_simple_military(unit, unit);
 				}
-				else
-				{
-					Unit* unit = guard_ai->parent;
-					if (unit)
-					{
-						if (unit->status & UnitStatus::IsHallucination)
-						{
-							helper::delete_guard_ai(guard_ai, &g_first_player_guard->player[player]);
-						}
-					}
-					else
-					{
-						u32 count = guard_ai->previous_update;
-						if (!count)
-						{
-							goto process_guard;
-						}
-						u16 unit_id = guard_ai->unit_id;
-						if (unit_id == UnitId::TerranPhalanxSiegeMode)
-						{
-							unit_id = UnitId::TerranPhalanxTankMode;
-						}
-						u32 guard_delay = guard_ai->times_died ? count + 300 : units_dat::time_cost[unit_id] / 15 + count + 5;
-						if (*g_elapsed_time_seconds > guard_delay)
-						{
-						process_guard:
-							u32 x_pos = guard_ai->unk_pos.x;
-							u32 y_pos = guard_ai->unk_pos.y;
-							u32 region_id = helper::get_region_id(x_pos, y_pos);
-							AiRegion* ai_region = g_ai_region_captains[player];
-							u32 region_id_2 = region_id;
-							u32 state = ai_region[region_id_2].state;
-							AiRegion* ai_region_2 = &ai_region[region_id_2];
-							if  (state != 3
-							&&  !ai_region_2->air_target
-							&&  !ai_region_2->ground_target
-							&& !(ai_region_2->captain_flags & 0x20))
-							{
-								Unit* nearest_military = helper::find_nearest_available_military(player, y_pos, guard_ai->unit_id, x_pos);
-								if ((guard_ai->unit_id == UnitId::ZergZethrokor || guard_ai->unit_id == UnitId::ZergSkryling) // Should probably be two in one egg base property check. -Pr0nogo
-								&&  nearest_military) // This might actually be wrong, because the original if check is very silly. -Pr0nogo
-								{
-									helper::remove_unit_ai(nearest_military, 0);
-									guard_ai->home.x = guard_ai->unk_pos.x;
-									guard_ai->home.y = guard_ai->unk_pos.y;
-									guard_ai->parent = nearest_military;
-									nearest_military->unit_ai = (UnitAi*)guard_ai;
-									helper::issue_order_targeting_nothing(nearest_military, OrderId::ComputerAI);
-								}
-								else
-								{
-									ai_request_guard(guard_ai, player);
-									guard_ai->previous_update = *g_elapsed_time_seconds;
-								}
-							}
-						}
-					}
-				}
-				guard_ai = prev_guard;
-				if (!g_first_player_guard->player[player].first)
-				{
-					break;
+			} else if (!guard_ai->previous_update || *g_elapsed_time_seconds > guard_ai->previous_update + 5) {
+				AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(guard_ai->original_home));
+				Unit* nearest_military = helper::find_nearest_available_military(player, guard_ai->unit_id, guard_ai->original_home);
+				if (nearest_military && scbw::get_distance_fast(guard_ai->original_home, nearest_military->position) < 30 * 32) {
+					helper::remove_unit_ai(nearest_military, 0);
+					guard_ai->current_home.x = guard_ai->original_home.x;
+					guard_ai->current_home.y = guard_ai->original_home.y;
+					guard_ai->parent = nearest_military;
+					nearest_military->unit_ai = (UnitAi*)guard_ai;
+					helper::issue_order_targeting_nothing(nearest_military, OrderId::ComputerAI);
+				} else {
+					ai_request_guard(guard_ai, player); // TODO: make this helper
+					guard_ai->previous_update = *g_elapsed_time_seconds;
 				}
 			}
 		}

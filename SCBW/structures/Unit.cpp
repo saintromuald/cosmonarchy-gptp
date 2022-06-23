@@ -212,14 +212,14 @@ u32 Unit::get_max_weapon_range(u8 weapon_id) const
 	return maxWeaponRange;
 }
 
-const char* Unit::getName() const
+const char* Unit::get_name() const
 {
 	assert(this);
-	return getName(this->id);
+	return get_name(this->id);
 }
 #include "SCBW/stat_txt_spec.h"
 //Based on function @ 0x0047B090
-const char* Unit::getName(u16 unit_id)
+const char* Unit::get_name(u16 unit_id)
 {
 	assert(unit_id < UNIT_TYPE_COUNT);
 

@@ -12490,9 +12490,11 @@ namespace helper
 		}
 	}
 
-	Unit* find_nearest_available_military(u32 player, u32 y_pos, u32 unit_id, u32 x_pos) {
+	Unit* find_nearest_available_military(u32 player, u32 unit_id, Point16 point) {
 		static Unit* result;
 		const u32 func_address = 0x004379B0;
+		u32 x_pos = point.x;
+		u32 y_pos = point.y;
 		__asm {
 			PUSHAD
 			PUSH x_pos

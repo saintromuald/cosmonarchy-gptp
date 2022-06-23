@@ -79,7 +79,7 @@ namespace hooks
 		}
 
 		if (unit->unit_ai && unit->unit_ai->type != AiType::Building) {
-			helper::remove_unit_ai(unit, unit->unit_ai); // Sanity removal for cases when workers have military AI for some reason
+			helper::remove_unit_ai(unit, false); // Sanity removal for cases when workers have military AI for some reason
 		}
 
 		if (parent == unit) {
