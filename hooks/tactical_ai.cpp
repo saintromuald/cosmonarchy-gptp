@@ -951,10 +951,13 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 		const u32 bunker_capacity = units_dat::SpaceProvided[unit->id];
 
 		EntryArray allies = unit_search_square(unit->position, unit->get_sight_range(false) * 32);
-		unit_search_sort_by_distance(&allies, unit->position);
 		EntryArray enemies = allies;
+
 		unit_search_filter(&allies, unit, FilterAlly);
+		unit_search_sort_by_distance(&allies, unit->position);
+
 		unit_search_filter(&enemies, unit, unit->player == 11 ? 0 : FilterEnemy);
+		unit_search_sort_by_distance(&enemies, unit->position);
 
 		if (enemies.count) {
 			u32 counter = 0;

@@ -51,7 +51,7 @@ namespace
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV must_use_region, EAX
-			MOV EAX, [EBP]
+			MOV EAX, [EBP + 0x04]
 			MOV debug_caller_address, EAX
 			POP EAX
 			MOV unit, EBX
