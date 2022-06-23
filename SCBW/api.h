@@ -482,14 +482,14 @@ namespace scbw
 	// Functionally identical to the [playfram] opcode in iscript.bin.
 	inline void playFrame(Image* image, u16 frameset)
 	{
-		if (image->frameSet != frameset)
+		if (image->frameset != frameset)
 		{
-			image->frameSet = frameset;
+			image->frameset = frameset;
 			u16 frameIndex = frameset + image->direction;
-			if (image->frameIndex != frameIndex)
+			if (image->frame_index != frameIndex)
 			{
 				image->flags |= ImageFlags::Redraw;	//Order the game to redraw the image
-				image->frameIndex = frameIndex;
+				image->frame_index = frameIndex;
 			}
 		}
 	}

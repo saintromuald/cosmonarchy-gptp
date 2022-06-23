@@ -26,9 +26,9 @@ namespace hooks
 				&& image->id <= ImageId::LastMinorDamageOverlay)
 			{
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
-				if (sprite->main_graphic->frameIndex >= overlay->frameCount)
+				if (sprite->main_graphic->frame_index >= overlay->frameCount)
 				{
-					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frameIndex, sprite->main_graphic->id);
+					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
 					{
 						return false;
 					}
@@ -37,9 +37,9 @@ namespace hooks
 		}
 		std::array<s32, 22> results;
 		auto result_pos = results.begin();
-		if (sprite->main_graphic->frameIndex >= overlay->frameCount)
+		if (sprite->main_graphic->frame_index >= overlay->frameCount)
 		{
-			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frameIndex, sprite->main_graphic->id);
+			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
 			return false;
 		}
 		return true;
@@ -63,26 +63,26 @@ namespace hooks
 			{
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
 				image->free();
-				if (sprite->main_graphic->frameIndex >= overlay->frameCount)
+				if (sprite->main_graphic->frame_index >= overlay->frameCount)
 				{
-					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frameIndex, sprite->main_graphic->id);
+					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
 					{
 						return; 
 					}
 				}
-				Point8 offset = overlay->get_offset(sprite->main_graphic->frameIndex, variation);
+				Point8 offset = overlay->get_offset(sprite->main_graphic->frame_index, variation);
 				sprite->create_top_overlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
 			}
 		}
 		std::array<s32, 22> results;
 		auto result_pos = results.begin();
-		if (sprite->main_graphic->frameIndex >= overlay->frameCount)
+		if (sprite->main_graphic->frame_index >= overlay->frameCount)
 		{
 			return;
 		}
 		for (s32 i = 0; i < 22; i++)
 		{
-			Point8 offset = overlay->get_offset(sprite->main_graphic->frameIndex, i);
+			Point8 offset = overlay->get_offset(sprite->main_graphic->frame_index, i);
 			if (offset.x == 127 && offset.y == 127)
 			{
 				continue;
@@ -106,7 +106,7 @@ namespace hooks
 		if (result_pos != results.begin())
 		{
 			s32 variation = results[scbw::rand_between(0, result_pos - results.begin() - 1)];
-			Point8 offset = overlay->get_offset(sprite->main_graphic->frameIndex, variation);
+			Point8 offset = overlay->get_offset(sprite->main_graphic->frame_index, variation);
 			sprite->create_top_overlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 		}
 	}

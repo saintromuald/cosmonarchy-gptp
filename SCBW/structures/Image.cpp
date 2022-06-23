@@ -26,16 +26,16 @@ void Image::free()
 	assert(this);
 
 	if (!(screenLayers->game.hasBeenRefreshed))
-		scbw::refresh_screen(this->screenPosition.x,
-			this->screenPosition.y,
-			this->screenPosition.x + this->grpSize.right,
-			this->screenPosition.y + this->grpSize.bottom
+		scbw::refresh_screen(this->screen_pos.x,
+			this->screen_pos.y,
+			this->screen_pos.x + this->grp_size.right,
+			this->screen_pos.y + this->grp_size.bottom
 		);	//should be equivalent to a call to refreshImage @ 0x004970A0 with EAX = this
 
 			//perform identically to original code
-	this->parentSprite->images.unlink<&Image::link>(this);
+	this->parent_sprite->images.unlink<&Image::link>(this);
 
-	this->grpOffset = nullptr;
+	this->grp_file = nullptr;
 
 	//perform identically to original code
 	unusedImages.insertAfterHead(this);
@@ -43,47 +43,47 @@ void Image::free()
 }
 
 //Loosely based on code at @ 0x004D5A50
-void Image::setRemapping(ColorRemapping::Enum remapping)
+void Image::set_remapping(ColorRemapping::Enum remapping)
 {
 	assert(this);
-	this->coloringData = colorShift[remapping].data;
+	this->draw_func = colorShift[remapping].data;
 }
 //Identical to function @ 0x004D5A50
-void Image::initializeData(Sprite* parent, u16 imageId, s8 x, s8 y)
+void Image::initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y)
 {
 	assert(this);
 	this->id = imageId;
 
-	//	this->grpOffset = imageGrpGraphics[imageId];
-	this->grpOffset = reinterpret_cast<GrpHead*>(scbw::get_image_data(ImagesDatEntries::ImagePtr, imageId));
+	//	this->grp_file = imageGrpGraphics[imageId];
+	this->grp_file = reinterpret_cast<GrpHead*>(scbw::get_image_data(ImagesDatEntries::ImagePtr, imageId));
 	//	this->flags = ((images_dat::IsTurnable[imageId] & 1) << 3) | ((images_dat::IsClickable[imageId] & 1) << 5);
 	this->flags = ((scbw::get_image_data(ImagesDatEntries::Turnable, imageId) & 1) << 3) |
 		((scbw::get_image_data(ImagesDatEntries::Clickable, imageId) & 1) << 5);
-	this->frameSet = 0;
+	this->frameset = 0;
 	this->direction = 0;
-	this->frameIndex = 0;
-	this->parentSprite = parent;
-	this->horizontalOffset = x;
-	this->verticalOffset = y;
-	this->grpSize = Box16();
-	this->coloringData = 0;
+	this->frame_index = 0;
+	this->parent_sprite = parent;
+	this->horizontal_offset = x;
+	this->vertical_offset = y;
+	this->grp_size = Box16();
+	this->draw_func = 0;
 
 	//Initialize iscript data
-	this->iscriptHeaderOffset = 0;
-	this->iscriptOffset = 0;
+	this->iscript_header_offset = 0;
+	this->iscript_offset = 0;
 	this->unknown14 = 0;
 	this->animation = IscriptAnimation::Init;
 	this->wait = 0;
 	/*
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_PLAYER_SIDE)
-		*(u32*)(&this->coloringData) = parent->player;
+		*(u32*)(&this->draw_func) = parent->player;
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_EFFECT)
-		this->coloringData = colorShift[images_dat::Remapping[imageId]].data;*/
+		this->draw_func = colorShift[images_dat::Remapping[imageId]].data;*/
 
 	if (scbw::get_image_data(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_PLAYER_SIDE)
-		*(u32*)(&this->coloringData) = parent->player;
+		*(u32*)(&this->draw_func) = parent->player;
 	if (scbw::get_image_data(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_EFFECT)
-		this->coloringData = colorShift[scbw::get_image_data(ImagesDatEntries::DrawRemap, imageId)].data;
+		this->draw_func = colorShift[scbw::get_image_data(ImagesDatEntries::DrawRemap, imageId)].data;
 }
 
 
@@ -101,8 +101,8 @@ void Image::set_image_direction(u8 direction)
 	}
 }
 
-GrpFrame* Image::getCurrentFrame() const
+GrpFrame* Image::get_current_frame() const
 {
 	assert(this);
-	return &this->grpOffset->frames[this->frameIndex];
+	return &this->grp_file->frames[this->frame_index];
 }
