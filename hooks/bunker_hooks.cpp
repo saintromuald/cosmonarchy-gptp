@@ -114,7 +114,7 @@ namespace hooks
 		Image* bunkerImage = unitVar->connected_unit->sprite->main_graphic;
 		u8 frameDirection = (unitVar->current_direction_1 + 16) / 32 % 8;
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
-		Point8 offset = loFile->get_offset(bunkerImage->frameIndex, frameDirection);
+		Point8 offset = loFile->get_offset(bunkerImage->frame_index, frameDirection);
 
 		if (bunkerImage->flags & ImageFlags::Mirrored) // Is inverted
 		{

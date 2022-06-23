@@ -10408,7 +10408,7 @@ namespace helper
 
 	u8 get_right_click_order(u32 index, Unit* unit, s32 x, s32 y, Unit** target, s32 unit_id) {
 		static u8 result;
-		void* function = get_right_click_order_array[index];
+		void* function = g_get_right_click_order_array[index];
 		__asm {
 			PUSHAD
 			PUSH unit_id
@@ -12452,5 +12452,29 @@ namespace helper
 			CALL func_address
 			POPAD
 		}
+	}
+
+	// For select_unit_initial
+	void remove_selection_circle_image(Image* image) {
+		const u32 func_address = 0x004D4FA0;
+		__asm {
+			PUSHAD
+			MOV ESI, image
+			CALL func_address
+			POPAD
+		}
+	}
+
+	char illegal_team_check(Unit* unit) {
+		static char result;
+		const u32 func_address = 0x00485710;
+		__asm {
+			PUSHAD
+			MOV EDI, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
 	}
 }

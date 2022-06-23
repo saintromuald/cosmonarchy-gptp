@@ -529,7 +529,7 @@ namespace hooks
 	// Hooked to help with the cloak rewrite - Pr0nogo
 	void update_units() // 004ED000
 	{
-		*interceptorFocusedThisFrame = 0;
+		*g_interceptor_focused_this_frame = 0;
 		if (helper::is_selected_unit_group_enabled())
 		{
 			if (*g_is_placing_building)
@@ -537,13 +537,13 @@ namespace hooks
 				helper::refresh_layers_3_and_4();
 				helper::end_building_placement();
 			}
-			if (*is_targeting)
+			if (*g_is_targeting)
 			{
 				helper::cancel_target_order();
 			}
 		}
 		Unit* first_visible_unit = *g_first_visible_unit;
-		if (!--(*orderTimerReassignCount))
+		if (!--(*g_order_timer_reassign_count))
 		{
 			char visible_timer = 0;
 			if (first_visible_unit)
@@ -560,9 +560,9 @@ namespace hooks
 				while (first_visible_unit);
 				first_visible_unit = *g_first_visible_unit;
 			}
-			*orderTimerReassignCount = 150;
+			*g_order_timer_reassign_count = 150;
 		}
-		if (!--(*secondaryOrderTimerReassignCount))
+		if (!--(*g_secondary_order_timer_reassign_count))
 		{
 			for (char i = 0; first_visible_unit; first_visible_unit = first_visible_unit->link.next)
 			{
@@ -572,7 +572,7 @@ namespace hooks
 					i = 0;
 				}
 			}
-			*secondaryOrderTimerReassignCount = 300;
+			*g_secondary_order_timer_reassign_count = 300;
 		}
 		// Now handled in global effect
 	//	helper::update_disruption_web_status();
@@ -583,8 +583,8 @@ namespace hooks
 			do
 			{
 				next_dying_unit = dying_unit->link.next;
-				*activeIscriptEntity = dying_unit;
-				*activeIscriptUnit = dying_unit;
+				*g_active_iscript_entity = dying_unit;
+				*g_active_iscript_unit = dying_unit;
 				helper::progress_dying_unit_frame(dying_unit);
 				if (dying_unit->sprite)
 				{
@@ -606,8 +606,8 @@ namespace hooks
 		{
 			do
 			{
-				*activeIscriptEntity = first_visible_unit;
-				*activeIscriptUnit = first_visible_unit;
+				*g_active_iscript_entity = first_visible_unit;
+				*g_active_iscript_unit = first_visible_unit;
 				helper::progress_active_unit_frame(first_visible_unit);
 				first_visible_unit = first_visible_unit->link.next;
 			}
@@ -623,8 +623,8 @@ namespace hooks
 				do
 				{
 					next_scanner_sweep = scanner_sweep->link.next;
-					*activeIscriptEntity = scanner_sweep;
-					*activeIscriptUnit = scanner_sweep;
+					*g_active_iscript_entity = scanner_sweep;
+					*g_active_iscript_unit = scanner_sweep;
 					helper::refresh_unit_vision(scanner_sweep);
 					scanner_sweep = next_scanner_sweep;
 				}
@@ -662,8 +662,8 @@ namespace hooks
 			do
 			{
 				next_visible_unit = first_visible_unit->link.next;
-				*activeIscriptEntity = first_visible_unit;
-				*activeIscriptUnit = first_visible_unit;
+				*g_active_iscript_entity = first_visible_unit;
+				*g_active_iscript_unit = first_visible_unit;
 				helper::progress_unit_frame(first_visible_unit);
 				first_visible_unit = next_visible_unit;
 			}
@@ -680,8 +680,8 @@ namespace hooks
 				{
 					hidden_unit->is_cloaked = 0;
 				}
-				*activeIscriptEntity = hidden_unit;
-				*activeIscriptUnit = hidden_unit;
+				*g_active_iscript_entity = hidden_unit;
+				*g_active_iscript_unit = hidden_unit;
 				helper::unit_update(hidden_unit);
 				hidden_unit = next_hidden_unit;
 			}
@@ -689,14 +689,14 @@ namespace hooks
 		}
 		helper::update_burrowing_cloaking_units();
 		helper::update_unit_power();
-		s32 lurker_splash_index = (*lurkerSplashListIndex)++ + 1;
-		if (*lurkerSplashListIndex == 32)
+		s32 lurker_splash_index = (*g_lurker_splash_list_index)++ + 1;
+		if (*g_lurker_splash_list_index == 32)
 		{
 			lurker_splash_index = 0;
-			*lurkerSplashListIndex = 0;
+			*g_lurker_splash_list_index = 0;
 		}
-		memset(&lurkerSplashList[32 * lurker_splash_index], 0, 0x80u);
-		*lastBulletIndex = 0;
+		memset(&g_lurker_splash_list[32 * lurker_splash_index], 0, 0x80u);
+		*g_last_bullet_index = 0;
 		scanner_sweep = *first_scanner_sweep;
 		if (scanner_sweep)
 		{
@@ -704,15 +704,15 @@ namespace hooks
 			do
 			{
 				next_scanner_sweep_2 = scanner_sweep->link.next;
-				*activeIscriptEntity = scanner_sweep;
-				*activeIscriptUnit = scanner_sweep;
+				*g_active_iscript_entity = scanner_sweep;
+				*g_active_iscript_unit = scanner_sweep;
 				helper::progress_unit_frame(scanner_sweep);
 				scanner_sweep = next_scanner_sweep_2;
 			}
 			while (next_scanner_sweep_2);
 		}
-		*activeIscriptEntity = 0;
-		*activeIscriptUnit = 0;
+		*g_active_iscript_entity = 0;
+		*g_active_iscript_unit = 0;
 	}
 
 	// Hooked to help with the cloak rewrite - Pr0nogo
@@ -816,7 +816,7 @@ namespace hooks
 		{
 			if (!(unit->sprite->flags & 0x20))
 			{
-				helper::refresh_sprite(unit->sprite, selectionCircleColor[unit->player]);
+				helper::refresh_sprite(unit->sprite, g_selection_circle_color[unit->player]);
 			}
 		}
 		update_unit_state(unit);
@@ -827,9 +827,9 @@ namespace hooks
 		{
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit))
 			{
-				*activeIscriptUnit = unit->subunit;
+				*g_active_iscript_unit = unit->subunit;
 				progress_unit_frame(unit->subunit);
-				*activeIscriptUnit = unit;
+				*g_active_iscript_unit = unit;
 			}
 		}
 		if (unit->sprite)

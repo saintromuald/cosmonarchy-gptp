@@ -303,7 +303,7 @@ namespace hooks
 			return "";
 		}
 		else {
-			return player_name_list->player[unit->player].player_name;
+			return g_player_name_list->player[unit->player].player_name;
 		}
 
 		/*
@@ -332,7 +332,7 @@ namespace hooks
 		Unit* unit = *active_portrait_unit;
 
 		static char buffer[256] = {};
-		strcpy_s(buffer, player_name_list->player[unit->player].force_name);
+		strcpy_s(buffer, g_player_name_list->player[unit->player].force_name);
 		helper::add_text_to_dialog(dialog, -21, buffer);
 
 		/*
@@ -361,8 +361,8 @@ namespace hooks
 				{
 					text = (char *)*g_stat_txt_buffer + (*g_stat_txt_buffer)[764];
 				}
-				sprintf_s(kills_buffer, 260, "%s %d", text, unit->kill_count);
-				helper::add_text_to_dialog(dialog, -21, kills_buffer);
+				sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
+				helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
 			}
 			else
 			{

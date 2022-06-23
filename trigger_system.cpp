@@ -443,10 +443,10 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				if (player >= 0 && player < 8) {
 					has_custom_name[player] = true;
 					if (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated) {
-						snprintf(player_name_list->player[player].player_name, sizeof(player_name_list->player[player].player_name),
+						snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
 							"%s (%s)", name.data, g_player_table[player].name);
 					} else {
-						snprintf(player_name_list->player[player].player_name, sizeof(player_name_list->player[player].player_name),
+						snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
 							"%s", name.data);
 					}
 
@@ -455,7 +455,7 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				s32 player = parser_get_s32(&parser);
 				Token name = parser_get_string(&parser, true);
 				if (player >= 0 && player < 8) {
-					snprintf(player_name_list->player[player].force_name, sizeof(player_name_list->player[player].force_name),
+					snprintf(g_player_name_list->player[player].force_name, sizeof(g_player_name_list->player[player].force_name),
 						"%s", name.data);
 				}
 			} else if (parser_eq(&parser, "recolor")) {

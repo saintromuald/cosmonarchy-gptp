@@ -1096,16 +1096,16 @@ namespace hooks
 		if (launchSpin)
 		{
 			s32 launchSpinVariance = 0;
-			if (parent == *lastBulletCreator)
+			if (parent == *g_last_bullet_creator)
 			{
-				launchSpinVariance = *launchSpinRandom == 0;
+				launchSpinVariance = *g_launch_spin_random == 0;
 			}
 			else
 			{
 				launchSpinVariance = helper::randomize_short(0) & 1;
 			}
 
-			*launchSpinRandom = launchSpinVariance;
+			*g_launch_spin_random = launchSpinVariance;
 			bool invertSpin = launchSpinVariance == 0;
 			launchSpinVariance = launchSpin;
 			if (invertSpin)
@@ -1115,7 +1115,7 @@ namespace hooks
 			char launchSpinDirection = launchSpinVariance + bullet->direction2;
 			bullet->direction2 = launchSpinDirection;
 			bullet->direction1 = launchSpinDirection;
-			*lastBulletCreator = parent;
+			*g_last_bullet_creator = parent;
 		}
 
 		bullet->sourceUnit = parent;
@@ -1236,12 +1236,12 @@ namespace hooks
 			case WeaponBehavior::AttackNearbyArea:
 			{
 				bullet->cyclicMissileIndex = parent->offset_index_3_by_3;
-				bullet->attackTarget.pt.x -= (s16)attackCurve[parent->offset_index_3_by_3].x;
-				bullet->attackTarget.pt.y -= (s16)attackCurve[parent->offset_index_3_by_3].y;
+				bullet->attackTarget.pt.x -= (s16)g_attack_curve[parent->offset_index_3_by_3].x;
+				bullet->attackTarget.pt.y -= (s16)g_attack_curve[parent->offset_index_3_by_3].y;
 				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 
 				s16 finalOffset = parent->offset_index_3_by_3 + 1;
-				if (!attackCurve[finalOffset].x)
+				if (!g_attack_curve[finalOffset].x)
 				{
 					finalOffset = 0;
 				}
@@ -1271,8 +1271,8 @@ namespace hooks
 		while (nextBullet)
 		{
 			nextBullet = bulletVar->next;
-			*activeIscriptEntity = (Unit*)bulletVar;
-			*activeIscriptBullet = bulletVar;
+			*g_active_iscript_entity = (Unit*)bulletVar;
+			*g_active_iscript_bullet = bulletVar;
 			helper::set_thingy_visibility_flags((Thingy*)bulletVar);
 			bulletSprite = bulletVar->sprite;
 			if (bulletSprite)
@@ -1320,8 +1320,8 @@ namespace hooks
 			}
 			bulletVar = nextBullet;
 		}
-		*activeIscriptEntity = 0;
-		*activeIscriptBullet = 0;
+		*g_active_iscript_entity = 0;
+		*g_active_iscript_bullet = 0;
 	}
 
 	// Hooked to investigate firstFreeBullet nonsense - Pr0nogo
@@ -1453,7 +1453,7 @@ namespace hooks
 	// Ended up useless sadly, as it calls way more often than I anticipated. Replaced with starting attack check from movement flags -Veeq7
 	void get_weapon_iscript_init(Unit* unit, char iscript_anim) // 00476ED0
 	{
-		*lastBulletCreator = 0;
+		*g_last_bullet_creator = 0;
 		if (!(unit->status & UnitStatus::CanNotAttack))
 		{
 			UnitExt* unit_ext = globals.get_unit_ext(unit);

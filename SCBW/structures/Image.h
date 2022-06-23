@@ -1,14 +1,11 @@
-//Based on BWAPI's BW/Bullet.h
-
 #pragma once
 #include "common.h"
 #include "List.h"
 #include <SCBW/enumerations.h>
 #pragma pack(1)
 
-//V241 for VS2008
-//Additions from bwapi/bwapi/BWMemoryEdit/Enums/RLE.cs
-//Additions from bwapi/bwapi/BWAPI/Source/BW/Image.h
+// Additions from bwapi/bwapi/BWMemoryEdit/Enums/RLE.cs
+// Additions from bwapi/bwapi/BWAPI/Source/BW/Image.h
 
 struct Sprite;
 struct GrpHead;
@@ -67,58 +64,49 @@ namespace ImageFlags
 
 struct Image
 {
-	// Utility method definitions added by pastelmind
-
-	/// Makes the image play the specified Iscript animation entry.
+	// Makes the image play the specified Iscript animation entry.
 	void play_iscript_animation(IscriptAnimation::Enum animation);
 
-	/// AKA ImageDestructor() @ 0x004D4CE0
-	/// Removes the image from the linked list of valid images. This is different
-	/// from a struct destructor, since Image objects are stored in a static array
-	/// and never truly destroyed.
+	// AKA ImageDestructor() @ 0x004D4CE0
+	// Removes the image from the linked list of valid images. This is different from a struct destructor, since Image objects are stored in a static array and never truly destroyed.
 	void free();
 
-	/// Set the color remapping of this image to @ remapping.
-	void setRemapping(ColorRemapping::Enum remapping);
+	// Set the color remapping of this image to @ remapping.
+	void set_remapping(ColorRemapping::Enum remapping);
 
-	/// Resets most of the data member values. This is meant to be used in other
-	/// functions, and should not be used by modders.
-	void initializeData(Sprite* parent, u16 imageId, s8 x, s8 y);
+	// Resets most of the data member values. This is meant to be used in other functions, and should not be used by modders.
+	void initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y);
 
 	void set_image_direction(u8 direction);
 
-	/// Return a pointer to the current frame when called
-	GrpFrame* getCurrentFrame() const;
+	// Return a pointer to the current frame when called
+	GrpFrame* get_current_frame() const;
 
 	////////////////////////////////////////////////////////////////
-	//Actual data structure
+	// Actual data structure
 
 	/*0x00*/  Link<Image>				link;
 	/*0x08*/  u16						id;
-
-
-	/// ++Drawing function (values are the same as DataEdit)
-	/// officially "ubRLE"
-	/*0x0A*/  u8						palette_type;				//Use PaletteType::Enum
+	/*0x0A*/  u8						palette_type;				// Use PaletteType::Enum
 	/*0x0B*/  u8						direction;
-	/*0x0C*/  u16						flags;						// Use CImage_Flags enum
-	/*0x0E*/  u8						horizontalOffset;
-	/*0x0F*/  u8						verticalOffset;
-	/*0x10*/  u16						iscriptHeaderOffset;
-	/*0x12*/  u16						iscriptOffset;
+	/*0x0C*/  u16						flags;						// Use ImageFlags::Enum
+	/*0x0E*/  u8						horizontal_offset;
+	/*0x0F*/  u8						vertical_offset;
+	/*0x10*/  u16						iscript_header_offset;
+	/*0x12*/  u16						iscript_offset;
 	/*0x14*/  u16						unknown14;
-	/*0x16*/  u8						animation;					//Use IscriptAnimation::Enum
+	/*0x16*/  u8						animation;					// Use IscriptAnimation::Enum
 	/*0x17*/  u8						wait;						// iscript sleep time
-	/*0x18*/  u16						frameSet;
-	/*0x1A*/  u16						frameIndex;
-	/*0x1C*/  Point16					mapPosition;
-	/*0x20*/  Point16					screenPosition;
-	/*0x24*/  Box16						grpSize;					// Bounds for GRP frame, only different from normal when part of graphic is out of bounds.
-	/*0x2C*/  GrpHead* grpOffset;
-	/*0x30*/  void* coloringData;				//?
-	/*0x34*/  void* renderFunction;				// renderFunction(this->screenPosition.x, this->screenPosition.y, this->getCurrentFrame(), &rctDraw, (s32)this->coloringData)
-	/*0x38*/  void* updateFunction;
-	/*0x3C*/  Sprite* parentSprite;
+	/*0x18*/  u16						frameset;
+	/*0x1A*/  u16						frame_index;
+	/*0x1C*/  Point16					map_pos;
+	/*0x20*/  Point16					screen_pos;
+	/*0x24*/  Box16						grp_size;					// Bounds for GRP frame, only different from normal when part of graphic is out of bounds.
+	/*0x2C*/  GrpHead*					grp_file;
+	/*0x30*/  void*						draw_func;
+	/*0x34*/  void*						render_fxn;
+	/*0x38*/  void*						update_fxn;
+	/*0x3C*/  Sprite*					parent_sprite;
 };
 
 C_ASSERT(sizeof(Image) == 64); /*0x40*/

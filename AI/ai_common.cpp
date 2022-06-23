@@ -11,7 +11,7 @@ namespace AI
 	bool is_target_worth_hitting(Unit* target, Unit* attacker)
 	{
 		// If the target is hidden by the fog-of-war
-		if (!target->sprite->isVisibleTo(attacker->player))
+		if (!target->sprite->is_visible_to(attacker->player))
 		{
 			return false;
 		}

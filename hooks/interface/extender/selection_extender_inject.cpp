@@ -37,6 +37,19 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) select_unit_initial_wrapper() { // 0049B690
+		static char result;
+		__asm {
+			PUSHAD
+		}
+		result = hooks::select_unit_initial();
+		__asm {
+			POPAD
+			MOVZX AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -44,6 +57,7 @@ namespace hooks
 	void inject_selection_extender_hooks()
 	{
 		jump_patch(select_dual_birth_units_wrapper,			0x0045D040, 1);
-	//	jump_patch(is_selected_unit_group_enabled_wrapper,	0x0049A2C0, 1); // Causes issues with quick placebuilding somehow?
+	//	jump_patch(is_selected_unit_group_enabled_wrapper,	0x0049A2C0, 1); // Causes issues with quick placebuilding somehow
+	//	jump_patch(select_unit_initial_wrapper,				0x0049B690, 1); // Not finished
 	}
 }

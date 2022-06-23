@@ -76,16 +76,16 @@ namespace hooks
 							s32 targetUnitQueue2 = targetUnitQueue;
 							s32 targetQueueCostMinerals = units_dat::mineral_cost[targetUnitQueue2];
 							s32 targetQueueCostGas = units_dat::gas_cost[targetUnitQueue2];
-							ai_minerals_reserve[playerIdVar] = targetQueueCostMinerals;
-							ai_gas_reserve[playerIdVar] = targetQueueCostGas;
+							g_ai_minerals_reserve[playerIdVar] = targetQueueCostMinerals;
+							g_ai_gas_reserve[playerIdVar] = targetQueueCostGas;
 							if (helper::has_supplies_for_unit(targetUnitQueue, player, 1))
 							{
-								if (game_minerals[(u8)player] >= (s32)ai_minerals_reserve[(u8)player])
+								if (g_game_minerals[(u8)player] >= (s32)g_ai_minerals_reserve[(u8)player])
 								{
-									if (game_vespene[(u8)player] >= (s32)ai_gas_reserve[(u8)player])
+									if (g_game_vespene[(u8)player] >= (s32)g_ai_gas_reserve[(u8)player])
 									{
-										*minerals -= ai_minerals_reserve[player];
-										*gas -= ai_gas_reserve[player];
+										*minerals -= g_ai_minerals_reserve[player];
+										*gas -= g_ai_gas_reserve[player];
 									}
 									else
 									{
@@ -250,7 +250,7 @@ namespace hooks
 			case UnitId::ProtossPylon:
 			{
 				disabledUnitVar = helper::get_disabled_unit_in_range(playerVar, tryPosition);
-				disabledUnitArray[9] = disabledUnitVar;
+				g_disabled_unit_array[9] = disabledUnitVar;
 				if (disabledUnitVar)
 				{
 					disabledUnitSprite = disabledUnitVar->sprite;
@@ -270,10 +270,10 @@ namespace hooks
 			} break;
 		}
 		v18 = (u8)builderVar->player;
-		*AIBuilderUnknown = builderVar;
+		*g_ai_builder_unk = builderVar;
 		v32 = (u16)unit_id;
 		helper::ai_get_build_location((u16)unit_id, (char*)a1, v18, tryPosition, areaTiles);
-		*AIBuilderUnknown = 0;
+		*g_ai_builder_unk = 0;
 		if (v38)
 		{
 			helper::ai_placement_data_something(a1, tryPosition);
@@ -405,7 +405,7 @@ namespace hooks
 
 		s32 player = unit->player;
 		s32 someBool = 0;
-		if (game_minerals[player] > 1500 && game_vespene[player] > 1500)
+		if (g_game_minerals[player] > 1500 && g_game_vespene[player] > 1500)
 		{
 			if (!helper::unit_is_training_or_morphing(unit))
 			{
@@ -539,11 +539,11 @@ namespace hooks
 
 		if (!helper::is_unit_id_race_equal_to_unit_race(nextBuildType, unitCopy) || helper::create_unit_allowed(nextBuildType, unitCopy, player) != 1)
 		{
-			if (*last_internal_error == 2
-			  || *last_internal_error == 23
-			  || *last_internal_error == 21
-			  || *last_internal_error == 8
-			  || *last_internal_error == 7)
+			if (*g_last_internal_error == 2
+			  || *g_last_internal_error == 23
+			  || *g_last_internal_error == 21
+			  || *g_last_internal_error == 8
+			  || *g_last_internal_error == 7)
 			{
 				helper::ai_reserve(player, 0);
 				helper::ai_pop_spending_request(player);
@@ -553,7 +553,7 @@ namespace hooks
 				}
 				return 0;
 			}
-			error = *last_internal_error == 13;
+			error = *g_last_internal_error == 13;
 			if (error)
 			{
 				helper::ai_reserve(player, 0);
@@ -849,7 +849,7 @@ namespace hooks
 					return worker_count;
 				}
 
-				if (game_minerals[player] < 500)
+				if (g_game_minerals[player] < 500)
 				{
 					return player;
 				}

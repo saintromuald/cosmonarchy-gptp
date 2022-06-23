@@ -166,7 +166,7 @@ Image* Sprite::create_overlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction
 			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
-		overlay->initializeData(this, imageId, offsetX, offsetY);
+		overlay->initialize_data(this, imageId, offsetX, offsetY);
 		createUpdateImageSomething(overlay);
 		updateImageDirection(overlay, direction);
 	}
@@ -194,7 +194,7 @@ Image* Sprite::create_underlay(u32 imageId, s8 offsetX, s8 offsetY, u32 directio
 			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
-		underlay->initializeData(this, imageId, offsetX, offsetY);
+		underlay->initialize_data(this, imageId, offsetX, offsetY);
 		createUpdateImageSomething(underlay);
 		updateImageDirection(underlay, direction);
 	}
@@ -223,14 +223,14 @@ Image* Sprite::create_top_overlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direc
 			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
-		overlay->initializeData(this, imageId, offsetX, offsetY);
+		overlay->initialize_data(this, imageId, offsetX, offsetY);
 		createUpdateImageSomething(overlay);
 		updateImageDirection(overlay, direction);
 	}
 	return overlay;
 }
 
-Image* Sprite::createTopUnderlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
+Image* Sprite::create_top_underlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
@@ -251,7 +251,7 @@ Image* Sprite::createTopUnderlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direct
 			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
-		underlay->initializeData(this, imageId, offsetX, offsetY);
+		underlay->initialize_data(this, imageId, offsetX, offsetY);
 		createUpdateImageSomething(underlay);
 		updateImageDirection(underlay, direction);
 	}
@@ -290,7 +290,7 @@ void Sprite::remove_overlay(u32 imageId)
 	}
 }
 
-void Sprite::playForOverlay(u32 imageId, u8 anim)
+void Sprite::play_for_overlay(u32 imageId, u8 anim)
 {
 	assert(this);
 
@@ -324,7 +324,7 @@ Image* Sprite::get_overlay(u16 imageId) const
 
 //-------- Other --------//
 
-bool Sprite::isVisibleTo(u8 player) const
+bool Sprite::is_visible_to(u8 player) const
 {
 	assert(this);
 	return (this->visibility_flags & (1 << player)) != 0;

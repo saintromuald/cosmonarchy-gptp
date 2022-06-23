@@ -285,7 +285,7 @@ namespace hooks
 	s32 order_allowed(Unit* unit, u16 order_id, s32 player) // 0046DC20
 	{
 		s32 result = 0;
-		*last_internal_error = 0;
+		*g_last_internal_error = 0;
 		if (order_id < OrderId::None)
 		{
 			if (orders_dat::RequirementsOffset[order_id] == -1)
@@ -298,12 +298,12 @@ namespace hooks
 				{
 					if (unit->is_frozen())
 					{
-						*last_internal_error = 10;
+						*g_last_internal_error = 10;
 						result = 0;
 					}
 					else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk && order_id != OrderId::Unburrow)
 					{
-						*last_internal_error = 11;
+						*g_last_internal_error = 11;
 						result = 0;
 					}
 					else
@@ -313,7 +313,7 @@ namespace hooks
 						||  unit->id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
 						||  unit->id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
 						{
-							*last_internal_error = 8;
+							*g_last_internal_error = 8;
 							result = 0;
 						}
 						else
@@ -323,31 +323,31 @@ namespace hooks
 								result = helper::parse_requirement_opcodes(unit,
 									order_id,
 									player,
-									orders_requirement_tree,
+									g_orders_requirement_tree,
 									orders_dat::RequirementsOffset[order_id]);
 							}
 							else
 							{
-								*last_internal_error = 23;
+								*g_last_internal_error = 23;
 							}
 						}
 					}
 				}
 				else
 				{
-					*last_internal_error = 20;
+					*g_last_internal_error = 20;
 					result = 0;
 				}
 			}
 			else
 			{
-				*last_internal_error = 1;
+				*g_last_internal_error = 1;
 				result = 0;
 			}
 		}
 		else
 		{
-			*last_internal_error = 15;
+			*g_last_internal_error = 15;
 			result = 0;
 		}
 		return result;

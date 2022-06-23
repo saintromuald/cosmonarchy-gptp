@@ -10,8 +10,8 @@ namespace hooks
     // Until further notice, these hooks are all for the shared supply rewrite - Pr0nogo
     u32 get_supplies_available(u8 player, s32 race) // 00488900
     {
-        u32 result = suppliesMax_Terran[player];
-        u32 suppliesAvailable = suppliesAvailable_Terran[player];
+        u32 result = g_supplies_max_terran[player];
+        u32 suppliesAvailable = g_supplies_available_terran[player];
         if (suppliesAvailable < result)
         {
             result = suppliesAvailable;
@@ -23,36 +23,36 @@ namespace hooks
     {
         u32 supplyAvailable = 0;
         u32 supplyUsed = 0;
-        if (hooks::get_supplies_max(unit_id, player) >= suppliesAvailable_Terran[player])
+        if (hooks::get_supplies_max(unit_id, player) >= g_supplies_available_terran[player])
         {
-            supplyUsed = suppliesUsed_Terran[player];
-            supplyAvailable = suppliesAvailable_Terran[player];
+            supplyUsed = g_supplies_used_terran[player];
+            supplyAvailable = g_supplies_available_terran[player];
         }
         else
         {
-            supplyUsed = suppliesUsed_Terran[player];
+            supplyUsed = g_supplies_used_terran[player];
             supplyAvailable = hooks::get_supplies_max(unit_id, player);
         }
         if (*g_cheat_state & 0x20000)
         {
-            return suppliesMax_Terran[player] - supplyUsed;
+            return g_supplies_max_terran[player] - supplyUsed;
         }
         return supplyAvailable - supplyUsed;
     }
 
     s32 get_supplies_max(u16 unit_id, u8 player) // 00488990
     {
-        return suppliesMax_Terran[player];
+        return g_supplies_max_terran[player];
     }
 
     s32 get_supplies_used(s32 race, u8 player) // 004888C0
     {
-        return suppliesUsed_Terran[player];
+        return g_supplies_used_terran[player];
     }
 
     char initialize_unit_counts() // 00488F90
     {
-        memset(unit_count_score, 0, 0x540u);
+        memset(g_unit_count_score, 0, 0x540u);
         memset(g_all_unit_count_table, 0, 0xAB00u);
 
         s32 result = 0;
@@ -79,7 +79,7 @@ namespace hooks
                     }
 
                     supplyMax2 = iteratorResult;
-                    suppliesMax_Terran[supplyMax2] = supplyMax1;
+                    g_supplies_max_terran[supplyMax2] = supplyMax1;
                     if (400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 1) >= 400)
                     {
                         supplyMax3 = 400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 1);
@@ -89,7 +89,7 @@ namespace hooks
                         supplyMax3 = 400;
                     }
 
-                    suppliesMax_Terran[supplyMax2] += supplyMax3;
+                    g_supplies_max_terran[supplyMax2] += supplyMax3;
                     if (400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 2) >= 400)
                     {
                         result = 400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 2);
@@ -99,7 +99,7 @@ namespace hooks
                         result = 400;
                     }
 
-                    suppliesMax_Terran[supplyMax2] += result;
+                    g_supplies_max_terran[supplyMax2] += result;
                 }
                 ++forceIterator;
             }
@@ -107,7 +107,7 @@ namespace hooks
         }
         else
         {
-            result = (s32)suppliesMax_Terran;
+            result = (s32)g_supplies_max_terran;
             do
             {
                 *(s32*)(result - 144) = 400;
@@ -115,7 +115,7 @@ namespace hooks
                 *(s32*)(result + 144) = 400;
                 result += 4;
             }
-            while (result < (s32)suppliesAvailable_Protoss);
+            while (result < (s32)g_supplies_available_protoss);
         }
         return result;
     }
@@ -210,9 +210,9 @@ namespace hooks
             dialogVar = dialogVar->next;
         }
 
-        helper::printStatResInfo(dialogVar, *console_index + 1, (char**)unknown_68C22C, (char*)game_vespene[*g_local_nation_id], replay_switch_something);
+        helper::printStatResInfo(dialogVar, *console_index + 1, (char**)unknown_68C22C, (char*)g_game_vespene[*g_local_nation_id], replay_switch_something);
         BinDlg* v18 = dialogVar->next;
-        helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)game_minerals[*g_local_nation_id], replay_switch_something);
+        helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)g_game_minerals[*g_local_nation_id], replay_switch_something);
         BinDlg* v17 = v18->next;
         if (v18->next)
         {
@@ -239,8 +239,8 @@ namespace hooks
         GroupFlag groupFlags = units_dat::group_flags[activeUnit->id];
         *g_supplies_available_temp = get_supplies_available(activeUnit->player, RaceId::Terran);
         u8 player = activeUnit->player;
-        s32 result = suppliesUsed_Terran[player];
-        *suppliesUsedTemp = suppliesUsed_Terran[player];
+        s32 result = g_supplies_used_terran[player];
+        *g_supplies_used_temp = g_supplies_used_terran[player];
         return result;
     }
 
@@ -257,8 +257,8 @@ namespace hooks
 
         if ((u16)g_supplies_available_temp == get_supplies_available(activePlayer, race))
         {
-            s32 suppliesVar = suppliesUsed_Terran[activePlayer];
-            if ((u16)suppliesUsedTemp == suppliesVar)
+            s32 suppliesVar = g_supplies_used_terran[activePlayer];
+            if ((u16)g_supplies_used_temp == suppliesVar)
             {
                 return 0;
             }
@@ -278,7 +278,7 @@ namespace hooks
 
             /*
 			u32 race = unit->get_race();
-			u32 supply_used = suppliesUsed_Terran[unit->player];
+			u32 supply_used = g_supplies_used_terran[unit->player];
 
 			u32 supply_used_string_id = race + 820;
             char* supply_used_string = 0;
@@ -289,7 +289,7 @@ namespace hooks
 			} else {
 				supply_used_string = "";
 			}
-			sprintf_s(supply_used_buffer, 260, "%s %d", supply_used_string, (supply_used + 1) / 2);
+			sprintf_s(g_supply_used_buffer, 260, "%s %d", supply_used_string, (supply_used + 1) / 2);
 
 			u32 supply_provided_string_id = race + 814;
             char* supply_provided_string = 0;
@@ -301,7 +301,7 @@ namespace hooks
 				supply_provided_string = "";
 			}
 			u32 last_queue_slot_type = helper::get_last_queue_slot_id(unit);
-			sprintf_s(supply_provided_buffer, 260, "%s %d", supply_provided_string, (units_dat::SupplyProvided[last_queue_slot_type] + 1) / 2);
+			sprintf_s(g_supply_provided_buffer, 260, "%s %d", supply_provided_string, (units_dat::SupplyProvided[last_queue_slot_type] + 1) / 2);
 			
             u32 supply_available_string_id = race + 66353;
             char* supply_available_string = 0;
@@ -313,9 +313,9 @@ namespace hooks
 				supply_available_string = "";
 			}
 			u32 supply_available = get_supplies_available(unit->player, race);
-			sprintf_s(supply_available_buffer, 260, "%s %d", supply_available_string, (supply_available + 1) / 2);
+			sprintf_s(g_supply_available_buffer, 260, "%s %d", supply_available_string, (supply_available + 1) / 2);
 
-            u32 supply_max = suppliesMax_Terran[unit->player];
+            u32 supply_max = g_supplies_max_terran[unit->player];
 			u32 supply_max_string_id = race + 823;
             char* supply_max_string = 0;
 			if (race == -824) {
@@ -325,12 +325,12 @@ namespace hooks
 			} else {
 				supply_max_string = "";
 			}
-			sprintf_s(supply_max_buffer, 260, "%s %d", supply_max_string, (supply_max + 1) >> 1);
+			sprintf_s(g_supply_max_buffer, 260, "%s %d", supply_max_string, (supply_max + 1) >> 1);
 
-			helper::add_text_to_dialog(dialog, -10, supply_used_buffer);
-			helper::add_text_to_dialog(dialog, -11, supply_provided_buffer);
-			helper::add_text_to_dialog(dialog, -12, supply_available_buffer);
-			helper::add_text_to_dialog(dialog, -13, supply_max_buffer);
+			helper::add_text_to_dialog(dialog, -10, g_supply_used_buffer);
+			helper::add_text_to_dialog(dialog, -11, g_supply_provided_buffer);
+			helper::add_text_to_dialog(dialog, -12, g_supply_available_buffer);
+			helper::add_text_to_dialog(dialog, -13, g_supply_max_buffer);
             */
 
             BinDlg* child = dialog->control_type ? dialog->parent->children_dialog : dialog->children_dialog;

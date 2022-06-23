@@ -44,7 +44,7 @@ namespace hooks
 		else if (unit->main_order_state == 0)
 		{
 			// Plan vertical movement toward ground
-			helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y - unit->sprite->images.tail->verticalOffset);
+			helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y - unit->sprite->images.tail->vertical_offset);
 			unit->main_order_state = 1;
 		}
 		else if (unit->main_order_state == 1)

@@ -341,9 +341,9 @@ namespace hooks
 				helper::update_unit_stats_and_finish_building(unit);
 				helper::update_unit_strength(unit);
 
-				if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW && unit->sprite->images.tail->verticalOffset != 7) {
+				if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW && unit->sprite->images.tail->vertical_offset != 7) {
 					unit->sprite->images.tail->flags |= ImageFlags::Redraw;
-					unit->sprite->images.tail->verticalOffset = 7;
+					unit->sprite->images.tail->vertical_offset = 7;
 				}
 
 				helper::refresh_sprite_data(unit->sprite);

@@ -95,7 +95,7 @@ namespace hooks
 							{
 								builtUnit->sprite->create_underlay(ImageId::VespeneGeyser, 0, 0, 0);
 							}
-							builtUnit->sprite->createTopUnderlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
+							builtUnit->sprite->create_top_underlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
 							unit->order_target.unit = builtUnit;
 							helper::ai_training_overlord(builtUnit, unit);
 							builtUnit->order_computer(OrderId::BuildSelf2);
@@ -152,10 +152,10 @@ namespace hooks
 					{
 						const u32* u32_006D1200 = (u32*)0x006D1200;
 						current_image->animation = IscriptAnimation::SpecialState1;
-						current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x22);
+						current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x22);
 						current_image->wait = 0;
 						current_image->unknown14 = 0;
-						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscript_header_offset, 0, 0);
 					}
 					current_image = current_image->link.next;
 				}
@@ -192,10 +192,10 @@ namespace hooks
 					{
 						const u32* u32_006D1200 = (u32*)0x006D1200;
 						current_image->animation = IscriptAnimation::WarpIn;
-						current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
+						current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x32);
 						current_image->wait = 0;
 						current_image->unknown14 = 0;
-						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscript_header_offset, 0, 0);
 					}
 					current_image = current_image->link.next;
 				}
@@ -219,10 +219,10 @@ namespace hooks
 					{
 						const u32* u32_006D1200 = (u32*)0x006D1200;
 						current_image->animation = IscriptAnimation::WarpIn;
-						current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
+						current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x32);
 						current_image->wait = 0;
 						current_image->unknown14 = 0;
-						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscript_header_offset, 0, 0);
 					}
 					current_image = current_image->link.next;
 				}
@@ -236,10 +236,10 @@ namespace hooks
 						{
 							const u32* u32_006D1200 = (u32*)0x006D1200;
 							current_image->animation = IscriptAnimation::Disable;
-							current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x38);
+							current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x38);
 							current_image->wait = 0;
 							current_image->unknown14 = 0;
-							helper::iscript_opcode_cases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
+							helper::iscript_opcode_cases(current_image, (u32)&current_image->iscript_header_offset, 0, 0);
 						}
 						current_image = current_image->link.next;
 					}

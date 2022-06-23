@@ -5,6 +5,7 @@ namespace hooks
 {
 	s32 select_dual_birth_units(Unit* unit);				// 0045D040
 	bool is_selected_unit_group_enabled();					// 0049A2C0
+	char select_unit_initial();								// 0049B690
 
 	void inject_selection_extender_hooks();
 }
@@ -54,7 +55,7 @@ Notes:
 	Line 231238: 0x0049AEB6   .  890C85 B88462>MOV DWORD PTR DS:[EAX*4+6284B8],ECX		//
 	Line 231242: 0x0049AEC6   >  8B149D B88462>MOV EDX,DWORD PTR DS:[EBX*4+6284B8]		//
 
-	Line 231936: 0x0049B6A0  |>  8B349D B88462>/MOV ESI,DWORD PTR DS:[EBX*4+6284B8]		// 0049B690 select_unit_initial; unhooked
+	Line 231936: 0x0049B6A0  |>  8B349D B88462>/MOV ESI,DWORD PTR DS:[EBX*4+6284B8]		// 0049B690 select_unit_initial; hook started by Pr0nogo
 	Line 231960: 0x0049B6F7  |.  890C85 B88462>|MOV DWORD PTR DS:[EAX*4+6284B8],ECX		//
 
 	Line 237841: 0x0049F7C0  |>  8B0C9D B88462>/MOV ECX,DWORD PTR DS:[EBX*4+6284B8]		// 0049F7A0 remove_from_client_selection_3; unhooked
