@@ -1384,5 +1384,6 @@ namespace helper
 
 	// For ai_update_guard_needs
 	void delete_guard_ai(GuardAi* guard_ai, GuardAiList* guard_ai_list);									// 00403030
+	u32 ai_request_guard(AiRegion* region, u32 player);														// 00448630
 	Unit* find_nearest_available_military(u32 player, u32 y_pos, u32 unit_id, u32 x_pos);					// 004379B0
 }
