@@ -58,11 +58,7 @@ namespace hooks
 				}
 			}
 			if (unit->id != UnitId::ZergDroleth
-			&&  unit->id != UnitId::ZergGosvileth
-			&&  unit->id != UnitId::ZergOvileth
-			&&  unit->id != UnitId::ZergIroleth
-			&&  unit->id != UnitId::ZergOthstoleth
-			&&  unit->id != UnitId::ZergAlaszileth)
+			&&  unit->id != UnitId::ZergOvileth)
 			{
 				helper::ai_training_unit(unit, unit);
 			}
@@ -220,7 +216,19 @@ namespace hooks
 					{
 						unit->create_origin = unit->id;		
 						unitExt->units[UnitMorphConnectedUnit] = 0;
-						helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
+						if (unit->unit_ai && unit->unit_ai->type == AiType::Worker) {
+							AiTown* town = unit->unit_ai->worker_ai.town;
+							helper::remove_worker_or_building_ai(unit, false);
+							helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
+							if (eggId == UnitId::ZergEgg) {
+								helper::add_worker_structure_ai(unit, town);
+							} else {
+								scbw::printf("There is no code for cocoon building AI in internal game code, this shouldn't be called!");
+							}
+						} else {
+							helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
+						}
+
 					}
 					helper::change_unit_buttonset(unit, unit->id);
 					
@@ -282,11 +290,7 @@ namespace hooks
 					unit->energy = 0;
 				}
 				if (unit->id == UnitId::ZergDroleth
-				||  unit->id == UnitId::ZergGosvileth
-				||  unit->id == UnitId::ZergOvileth
-				||  unit->id == UnitId::ZergIroleth
-				||  unit->id == UnitId::ZergOthstoleth
-				||  unit->id == UnitId::ZergAlaszileth)
+				||  unit->id == UnitId::ZergOvileth)
 				{
 					helper::ai_training_unit(unit, unit);
 				}

@@ -18,7 +18,7 @@ namespace hooks
 
 		if (units_dat::base_property[result->id] & UnitProperty::Worker) {
 			helper::ai_training_worker(result, parent);
-		} else if (scbw::unit_id_is_zerg_supply(result->id)) {
+		} else if (result->id == UnitId::ZergOvileth) {
 			helper::ai_training_overlord(result, parent); // replace with hook later
 		} else if (result->id == UnitId::ZergRilirokor
 				|| result->id == UnitId::ZergRililisk
@@ -482,7 +482,7 @@ namespace hooks
 	void remove_unit_ai(Unit* unit, UnitAi* unitAI) // 004A1E50
 	{
 		helper::remove_from_ai_structs(unit, unitAI);
-		helper::remove_worker_or_building_ai(unit, nullptr);
+		helper::remove_worker_or_building_ai(unit, false);
 		if (unitAI != nullptr)
 		{
 			if (unitAI->type == AiType::Guard)

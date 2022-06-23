@@ -388,7 +388,7 @@ namespace hooks
 			// Unit* selected = *active_portrait_unit;
 			// scbw::printf("%u", selected->main_order_id);
 
-			*unit_iterator_pos = 0;
+ 			*unit_iterator_pos = 0;
 			while (Unit* selection = get_active_player_next_selection()) {
 				if (selection->id == UnitId::ZergNydusCanal
 					&& selection->building.nydus_exit

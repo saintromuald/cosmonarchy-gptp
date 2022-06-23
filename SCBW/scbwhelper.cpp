@@ -9105,14 +9105,14 @@ namespace helper
 		return result;
 	}
 
-	s32 remove_worker_or_building_ai(Unit* unit, UnitAi* unitAI)
+	s32 remove_worker_or_building_ai(Unit* unit, b32 force_remove_building_ai)
 	{
 		const u32 Func_AI_RemoveWorkerOrBuildingAI = 0x00434C90;
 		static s32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH unitAI
+			PUSH force_remove_building_ai
 			MOV EDI, unit
 			CALL Func_AI_RemoveWorkerOrBuildingAI
 			MOV result, EAX
