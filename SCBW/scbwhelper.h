@@ -1377,4 +1377,8 @@ namespace helper
 	char minimap_ping(u32 x_pos, u32 y_pos, u32 color);														// 004A34C0
 	s32 game_talking_portrait(u32 x_pos, u32 time, u32 unit_id, u32 y_pos);									// 0045EDD0
 	void create_text_message_with_timer(const char* string, u32 timer);										// 0048CF20
+
+	// For select_unit_initial
+	void remove_selection_circle_image(Image* image);														// 004D4FA0
+	char illegal_team_check(Unit* unit);																	// 00485710
 }

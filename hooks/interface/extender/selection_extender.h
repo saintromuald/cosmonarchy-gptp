@@ -5,6 +5,7 @@ namespace hooks
 {
 	s32 select_dual_birth_units(Unit* unit);				// 0045D040
 	bool is_selected_unit_group_enabled();					// 0049A2C0
+	char select_unit_initial();								// 0049B690
 
 	void inject_selection_extender_hooks();
 }

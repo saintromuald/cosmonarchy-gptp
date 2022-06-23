@@ -109,7 +109,7 @@ namespace hooks
 	}
 
 	static bool process_quickcasting() {
-		if (config.quick_casting && *is_targeting && !disable_quickcasting) {
+		if (config.quick_casting && *g_is_targeting && !disable_quickcasting) {
 			if (PtInRect(minimap_rect, *(POINT*) mouse)) {
 				u16 x = mouse->x;
 				u16 y = mouse->y;
@@ -121,7 +121,7 @@ namespace hooks
 				event.y_pos = mouse->y;
 				helper::input_target_order_left_mouse_click(&event);
 			}
-			if (*is_targeting) {
+			if (*g_is_targeting) {
 				helper::input_target_order_right_mouse_click();
 			}
 			return true;
@@ -168,23 +168,23 @@ namespace hooks
 
 		*common_accelerator = *accelerator_tables;
 
-		input_procs->funcs[4]  = (InputProcsFunc*)0x00484380; // game_input_left_mouse_button_down;
-		input_procs->funcs[6]  = (InputProcsFunc*)0x00484380; // game_input_left_mouse_button_down;
-		input_procs->funcs[7]  = (InputProcsFunc*)0x00484620; // game_input_right_mouse_button_down;
-		input_procs->funcs[9]  = (InputProcsFunc*)0x00484620; // game_input_right_mouse_button_down;
+		g_input_procs->funcs[4]  = (InputProcsFunc*)0x00484380; // game_input_left_mouse_button_down;
+		g_input_procs->funcs[6]  = (InputProcsFunc*)0x00484380; // game_input_left_mouse_button_down;
+		g_input_procs->funcs[7]  = (InputProcsFunc*)0x00484620; // game_input_right_mouse_button_down;
+		g_input_procs->funcs[9]  = (InputProcsFunc*)0x00484620; // game_input_right_mouse_button_down;
 
-		input_procs->funcs[10] = (InputProcsFunc*)0x00484520; // game_input_middle_mouse_button_down;
-		input_procs->funcs[11] = (InputProcsFunc*)0x004843A0; // game_input_middle_mouse_button_up;
+		g_input_procs->funcs[10] = (InputProcsFunc*)0x00484520; // game_input_middle_mouse_button_down;
+		g_input_procs->funcs[11] = (InputProcsFunc*)0x004843A0; // game_input_middle_mouse_button_up;
 
-		input_procs->funcs[13] = (InputProcsFunc*)0x00484390; // game_input_idle;
-		input_procs->funcs[15] = (InputProcsFunc*)0x004846B0; // game_input_user_key_press;
+		g_input_procs->funcs[13] = (InputProcsFunc*)0x00484390; // game_input_idle;
+		g_input_procs->funcs[15] = (InputProcsFunc*)0x004846B0; // game_input_user_key_press;
 
-		input_procs->funcs[16] = (InputProcsFunc*)0x004846E0; // cmdact_hotkey;
-		input_procs->funcs[0]  = (InputProcsFunc*)0x00484350; // null_input;
+		g_input_procs->funcs[16] = (InputProcsFunc*)0x004846E0; // cmdact_hotkey;
+		g_input_procs->funcs[0]  = (InputProcsFunc*)0x00484350; // null_input;
 
-		input_procs->funcs[3]  = 0;
-		input_procs->funcs[17] = 0;
-		input_procs->funcs[18] = 0;
+		g_input_procs->funcs[3]  = 0;
+		g_input_procs->funcs[17] = 0;
+		g_input_procs->funcs[18] = 0;
 
 		if (process_quickcasting()) {
 			quickcasting_signal = true;
@@ -194,7 +194,7 @@ namespace hooks
 		if (*g_is_placing_building) {
 			*left_click_proc = (InputProcsFunc*)0x0048E5D0; // input_place_building_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x00484600; // input_place_building_right_mouse_click;
-		} else if (*is_targeting) {
+		} else if (*g_is_targeting) {
 			*left_click_proc = (InputProcsFunc*)0x004BD500; // input_target_order_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x004845F0; // input_target_order_right_mouse_click;
 		} else {
@@ -206,7 +206,7 @@ namespace hooks
 
 	/// This hook is called every frame
 	bool next_frame() {
-		if (disable_quickcasting && !*is_targeting) {
+		if (disable_quickcasting && !*g_is_targeting) {
 			disable_quickcasting--;
 		}
 		if (disable_quickbuilding && !*g_is_placing_building) {
@@ -259,8 +259,8 @@ namespace hooks
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
 				for (s32 i = 0; i < 4092; i++) {
-					if (fog_of_war_mask->unexplored[i] < 8) {
-						fog_of_war_mask->unexplored[i] = 8;
+					if (g_fog_of_war_mask->unexplored[i] < 8) {
+						g_fog_of_war_mask->unexplored[i] = 8;
 					}
 				}
 				scbw::refresh_screen();

@@ -36,7 +36,7 @@ namespace hooks
 				{
 					if (scbw::is_brood_war_mode() == false)
 					{
-						*last_internal_error = InternalErrors::UnknownError26;
+						*g_last_internal_error = InternalErrors::UnknownError26;
 						return 0;
 					}
 					success++;
@@ -104,7 +104,7 @@ namespace hooks
 				{
 					if (unit->unit_is_training_or_morphing() || unit->building.tech_id != TechId::None)
 					{
-						*last_internal_error = InternalErrors::UnknownError5;
+						*g_last_internal_error = InternalErrors::UnknownError5;
 						return 0;
 					}
 				}
@@ -113,7 +113,7 @@ namespace hooks
 				{
 					if (unit->building.upgrade_id != UpgradeId::None)
 					{
-						*last_internal_error = InternalErrors::UnknownError5;
+						*g_last_internal_error = InternalErrors::UnknownError5;
 						return 0;
 					}
 					success++;
@@ -124,12 +124,12 @@ namespace hooks
 				{
 					if (unit->secondary_order_id == OrderId::BuildAddon && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->current_build_unit != NULL && (unit->current_build_unit->status & UnitStatus::Completed) == 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError5;
+						*g_last_internal_error = InternalErrors::UnknownError5;
 						return 0;
 					}
 					if (unit->main_order_id == OrderId::BuildProtoss1 && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->order_target.unit != NULL && (unit->order_target.unit->status & UnitStatus::Completed) == 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError5;
+						*g_last_internal_error = InternalErrors::UnknownError5;
 						return 0;
 					}
 					success++;
@@ -140,7 +140,7 @@ namespace hooks
 				{
 					if (unit->building.tech_id != TechId::None)
 					{
-						*last_internal_error = InternalErrors::UnknownError5;
+						*g_last_internal_error = InternalErrors::UnknownError5;
 						return 0;
 					}
 					success++;
@@ -151,7 +151,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::GroundedBuilding) == 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError7;
+						*g_last_internal_error = InternalErrors::UnknownError7;
 						return 0;
 					}
 					success++;
@@ -162,7 +162,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::GroundedBuilding) != 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError6;
+						*g_last_internal_error = InternalErrors::UnknownError6;
 						return 0;
 					}
 					success++;
@@ -177,7 +177,7 @@ namespace hooks
 						// or unit->building.nuke
 						// or unit->building.pylonAura
 						// or unit-> Worker - Harvest target unit
-						*last_internal_error = InternalErrors::UnitBusyOrIncompatible;
+						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
 						return 0;
 					}
 					success++;
@@ -188,7 +188,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::Burrowed) != 0 && unit->unit_ai == NULL)
 					{
-						*last_internal_error = InternalErrors::UnknownError5;
+						*g_last_internal_error = InternalErrors::UnknownError5;
 						return 0;
 					}
 					success++;
@@ -199,7 +199,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::Burrowed) == 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError5;
+						*g_last_internal_error = InternalErrors::UnknownError5;
 						return 0;
 					}
 					success++;
@@ -210,7 +210,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::GroundedBuilding) != 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError19;
+						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -221,7 +221,7 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::GroundedBuilding) == 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError19;
+						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -232,17 +232,17 @@ namespace hooks
 				{
 					if ((unit->status & UnitStatus::GroundedBuilding) != 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError19;
+						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
 					if ((unit->id == UnitId::ZergLakizilisk || (unit->status & UnitStatus::Burrowed) == 0) && units_dat::RightClickAction[unit->id] == RightClickActions::NoCommand_AutoAttack)
 					{
-						*last_internal_error = InternalErrors::UnknownError19;
+						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
 					if (unit->get_right_click_action_order() == RightClickActions::NoMove_NormalAttack)
 					{
-						*last_internal_error = InternalErrors::UnknownError19;
+						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -253,7 +253,7 @@ namespace hooks
 				{
 					if (unit->has_weapon() == false)
 					{
-						*last_internal_error = InternalErrors::UnknownError19;
+						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -264,7 +264,7 @@ namespace hooks
 				{
 					if ((units_dat::base_property[unit->id] & UnitProperty::Subunit) == 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError19;
+						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -275,7 +275,7 @@ namespace hooks
 				{
 					if ((units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) == 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError19;
+						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -286,7 +286,7 @@ namespace hooks
 				{
 					if ((units_dat::base_property[unit->id] & UnitProperty::Worker) == 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError19;
+						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -297,7 +297,7 @@ namespace hooks
 				{
 					if ((units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories) == 0)
 					{
-						*last_internal_error = InternalErrors::UnknownError19;
+						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
 					success++;
@@ -308,7 +308,7 @@ namespace hooks
 				{
 					if (unit->mine_carrier.mine_count == 0)
 					{
-						*last_internal_error = InternalErrors::UnitBusyOrIncompatible;
+						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
 						return 0;
 					}
 					success++;
@@ -321,7 +321,7 @@ namespace hooks
 						&& units_dat::RightClickAction[unit->id] == RightClickActions::NoCommand_AutoAttack
 						&& ((unit->status & UnitStatus::GroundedBuilding) == 0 || unit->is_factory() == false))
 					{
-						*last_internal_error = InternalErrors::UnitBusyOrIncompatible;
+						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
 						return 0;
 					}
 					success++;
@@ -364,13 +364,13 @@ namespace hooks
 
 				case RequirementOpcodes::Grey:
 				{
-					*last_internal_error = InternalErrors::UnknownError21;
+					*g_last_internal_error = InternalErrors::UnknownError21;
 				}
 					return -1;
 
 				case RequirementOpcodes::Blank:
 				{
-					*last_internal_error = InternalErrors::MissingRequirement;
+					*g_last_internal_error = InternalErrors::MissingRequirement;
 				}
 					return 0;
 
@@ -391,14 +391,14 @@ namespace hooks
 			// no button on failure
 			if (invalidUnit == true)
 			{
-				*last_internal_error = InternalErrors::UnknownError25;
+				*g_last_internal_error = InternalErrors::UnknownError25;
 				return 0;
 			}
 
 			// grey button on failure
 			if (success == 0 && greyButton == true)
 			{
-				*last_internal_error = InternalErrors::UnitBusyOrIncompatible;
+				*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
 				return -1;
 			}
 
@@ -409,7 +409,7 @@ namespace hooks
 		// Hides button for hallucinations unless explicitly allowed
 		if ((unit->status & UnitStatus::IsHallucination) != 0 && allowHalluc == false)
 		{
-			*last_internal_error = InternalErrors::UnknownError22;
+			*g_last_internal_error = InternalErrors::UnknownError22;
 			return 0;
 		}
 
@@ -447,47 +447,47 @@ namespace hooks
 		opcodeIndex = (s16)unitsDat[unit_id];
 		currentOpcode = requirementsTable[opcodeIndex];
 
-		*last_internal_error = InternalErrors::UnknownError0;
+		*g_last_internal_error = InternalErrors::UnknownError0;
 		if (unit_id >= UnitId::None)
 		{
-			*last_internal_error = InternalErrors::UnknownError16;
+			*g_last_internal_error = InternalErrors::UnknownError16;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (playerID != parentUnit->player)
 		{
-			*last_internal_error = InternalErrors::UnknownError1;
+			*g_last_internal_error = InternalErrors::UnknownError1;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (!(parentUnit->status & UnitStatus::Completed))
 		{
-			*last_internal_error = InternalErrors::UnknownError20;
+			*g_last_internal_error = InternalErrors::UnknownError20;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (parentUnit->is_frozen())
 		{
-			*last_internal_error = InternalErrors::UnitFrozen;
+			*g_last_internal_error = InternalErrors::UnitFrozen;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (!unit_availability->available[parentUnit->player][parentUnit->id])
 		{
-			*last_internal_error = InternalErrors::UnknownError2;
+			*g_last_internal_error = InternalErrors::UnknownError2;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (parentUnit->is_queue_slot_active(4))
 		{
 LABEL_86_ERROR_3_RETURN_0:
-			*last_internal_error = InternalErrors::UnknownError3;
+			*g_last_internal_error = InternalErrors::UnknownError3;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
 		if (parentUnit->status & UnitStatus::IsHallucination)
 		{
-			*last_internal_error = InternalErrors::UnknownError22;
+			*g_last_internal_error = InternalErrors::UnknownError22;
 			//DebugOut(">Return Disallowed");
 			return 0;
 		}
@@ -502,7 +502,7 @@ LABEL_86_ERROR_3_RETURN_0:
 		if (unitsDat[unit_id] == 0)
 		{
 LABEL_93_ERROR_23_RETURN_0:
-			*last_internal_error = 23;
+			*g_last_internal_error = 23;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
@@ -578,7 +578,7 @@ LABEL_18_ENTER_MAIN_BODY:
 								{
 									if (!v28)
 									{
-										*last_internal_error = 4;
+										*g_last_internal_error = 4;
 									}
 									//DebugOut(">Return Gray");
 									return -1;
@@ -595,7 +595,7 @@ LABEL_18_ENTER_MAIN_BODY:
 					//DebugOut("IsNotLiftedOff (%d):", currentOpcode);
 					if (!(parentUnit->status & UnitStatus::GroundedBuilding))
 					{
-						*last_internal_error = InternalErrors::UnknownError7;
+						*g_last_internal_error = InternalErrors::UnknownError7;
 						//DebugOut(">Return NotAllowed");
 						return 0;
 					}
@@ -670,7 +670,7 @@ LABEL_18_ENTER_MAIN_BODY:
 					{
 						if (!v28)
 						{
-							*last_internal_error = InternalErrors::UnknownError4;
+							*g_last_internal_error = InternalErrors::UnknownError4;
 						}
 						//DebugOut(">Return NotAllowed");
 						return 0;
@@ -691,7 +691,7 @@ LABEL_73_PERHAPS_FINAL_CHECK:
 					}
 					if (!v29 && v27)
 					{
-						*last_internal_error = InternalErrors::UnitBusyOrIncompatible;
+						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
 						//DebugOut(">Return Gray");
 						return -1;
 					}
@@ -704,7 +704,7 @@ LABEL_73_PERHAPS_FINAL_CHECK:
 					}
 					if (v28)
 					{
-						*last_internal_error = InternalErrors::UnknownError25;
+						*g_last_internal_error = InternalErrors::UnknownError25;
 						//DebugOut(">Return Gray");
 						return -1;
 					}
@@ -757,7 +757,7 @@ LABEL_51:
 					if (parentUnit->status & UnitStatus::Burrowed)
 					{
 LABEL_87:
-						*last_internal_error = InternalErrors::UnknownError5;
+						*g_last_internal_error = InternalErrors::UnknownError5;
 						//DebugOut(">Return NotAllowed");
 						return 0;
 					}
@@ -768,7 +768,7 @@ LABEL_87:
 				case RequirementOpcodes::Grey:
 				{
 					//DebugOut("Grey (%d):", currentOpcode);
-					*last_internal_error = InternalErrors::UnknownError21;
+					*g_last_internal_error = InternalErrors::UnknownError21;
 					//DebugOut(">Return Grey");
 				}
 					return -1;
@@ -782,7 +782,7 @@ LABEL_87:
 					//DebugOut("MustBeBroodWar (%d):", currentOpcode);
 					if (!*g_is_brood_war)
 					{
-						*last_internal_error = InternalErrors::UnknownError26;
+						*g_last_internal_error = InternalErrors::UnknownError26;
 						//DebugOut(">Return NotAllowed");
 						return 0;
 					}
@@ -796,7 +796,7 @@ LABEL_87:
 					v10 = requirementsTable[opcodeIndex++];
 					if (scbw::has_tech_researched(parentUnit->player, v10) && !(*g_cheat_state & CheatFlags::MedievalMan))
 					{
-						*last_internal_error = InternalErrors::UnknownError9;
+						*g_last_internal_error = InternalErrors::UnknownError9;
 						//DebugOut(">Return Gray");
 						return -1;
 					}
@@ -809,7 +809,7 @@ LABEL_87:
 					//DebugOut("IsBurrowed (%d):", currentOpcode);
 					if (!(parentUnit->status & UnitStatus::Burrowed))
 					{
-						*last_internal_error = InternalErrors::UnknownError5;
+						*g_last_internal_error = InternalErrors::UnknownError5;
 						//DebugOut(">Return Gray");
 						return -1;
 					}

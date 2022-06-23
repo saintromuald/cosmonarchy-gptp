@@ -126,7 +126,7 @@ namespace hooks
                         result = 5;
                     }
                 }
-                buildingPlacementState[6 * (y + 8 * placement_state_entry) + x] = state;
+                g_building_placement_state[6 * (y + 8 * placement_state_entry) + x] = state;
             }
         }
         return result;
@@ -167,7 +167,7 @@ namespace hooks
                 } else {
                     state = 4;
                 }
-                buildingPlacementState[6 * (y + (8 * placement_state_entry)) + x] = state;
+                g_building_placement_state[6 * (y + (8 * placement_state_entry)) + x] = state;
                 if (result < state) {
                     result = state;
                 }

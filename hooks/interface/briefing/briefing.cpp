@@ -9,10 +9,10 @@ namespace hooks
     // Hooked in case we need it later - Pr0nogo
 	void updateMissionObjectives() // 0046CD30 | doesn't work currently due to null check late in the function
 	{
-        BinDlg* readyRoomVar = *readyRoomDialog;
-        if ((*readyRoomDialog)->control_type)
+        BinDlg* readyRoomVar = *g_ready_room_dialog;
+        if ((*g_ready_room_dialog)->control_type)
         {
-            readyRoomVar = (*readyRoomDialog)->parent;
+            readyRoomVar = (*g_ready_room_dialog)->parent;
         }
 
         BinDlg* objectiveDlg = nullptr;
@@ -38,8 +38,8 @@ LABEL_6:
         const char* objectiveText;
         if (g_map_string_tbl)
         {
-            u16 mapStringID = *((s16*)&missionObjectivesStringIndex + 2 * *g_local_nation_id) - 1;
-            if (*((s16*)&missionObjectivesStringIndex + 2 * *g_local_nation_id))
+            u16 mapStringID = *((s16*)&g_mission_objectives_string_index + 2 * *g_local_nation_id) - 1;
+            if (*((s16*)&g_mission_objectives_string_index + 2 * *g_local_nation_id))
             {
                 if (mapStringID < *(s16*)g_map_string_tbl)
                 {

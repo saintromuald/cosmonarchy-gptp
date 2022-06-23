@@ -532,17 +532,17 @@ namespace hooks
 		}
 
 		unit->status &= 0xFFFFDFFF;
-		Unit* activeEntity = *activeIscriptEntity;
-		Unit* activeSubunit = *activeIscriptUnit;
+		Unit* activeEntity = *g_active_iscript_entity;
+		Unit* activeSubunit = *g_active_iscript_unit;
 		unitSprite->flags &= 0x7Fu;
-		*activeIscriptUnit = unit;
-		*activeIscriptEntity = unit;
+		*g_active_iscript_unit = unit;
+		*g_active_iscript_entity = unit;
 		helper::play_idle_iscript(unitSprite);
 		char unitMovementFlags = unit->movement_flags;
-		*activeIscriptUnit = activeSubunit;
+		*g_active_iscript_unit = activeSubunit;
 
 		char result = unitMovementFlags & 0xF7;
-		*activeIscriptEntity = activeEntity;
+		*g_active_iscript_entity = activeEntity;
 		unit->movement_flags = result;
 		return result;
 	}

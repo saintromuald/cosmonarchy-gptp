@@ -411,109 +411,109 @@ SCBW_DATA(BinDlg**,	control_under_mouse,		0x0068C1E8);
 SCBW_DATA(BinDlg**,	control_under_mouse_value,	0x0068C1EC); // void* in Neiv's list
 
 // For update_units
-SCBW_DATA(s32*,		interceptorFocusedThisFrame,		0x006957D0);
-SCBW_DATA(s8*,		is_targeting,						0x00641694);
-SCBW_DATA(s32*,		orderTimerReassignCount,			0x0059CCA4);
-SCBW_DATA(s32*,		secondaryOrderTimerReassignCount,	0x006283E8);
-SCBW_DATA(Unit**,	activeIscriptEntity,				0x006D11F4);
-SCBW_DATA(Bullet**,	activeIscriptBullet,				0x006D11F8);
-SCBW_DATA(Unit**,	activeIscriptUnit,					0x006D11FC);
+SCBW_DATA(s32*,		g_interceptor_focused_this_frame,		0x006957D0);
+SCBW_DATA(s8*,		g_is_targeting,							0x00641694);
+SCBW_DATA(s32*,		g_order_timer_reassign_count,			0x0059CCA4);
+SCBW_DATA(s32*,		g_secondary_order_timer_reassign_count,	0x006283E8);
+SCBW_DATA(Unit**,	g_active_iscript_entity,				0x006D11F4);
+SCBW_DATA(Bullet**,	g_active_iscript_bullet,				0x006D11F8);
+SCBW_DATA(Unit**,	g_active_iscript_unit,					0x006D11FC);
 SCBW_DATA(Unit**,	g_first_dying_unit,						0x0062842C);
-SCBW_DATA(Unit**,	lurkerSplashList,					0x0064DEC8); // sizeof 400
-SCBW_DATA(s32*,		lurkerSplashListIndex,				0x0064EEC8);
-SCBW_DATA(s32*,		lastBulletIndex,					0x0064DEA8);
+SCBW_DATA(Unit**,	g_lurker_splash_list,					0x0064DEC8); // sizeof 400
+SCBW_DATA(s32*,		g_lurker_splash_list_index,				0x0064EEC8);
+SCBW_DATA(s32*,		g_last_bullet_index,					0x0064DEA8);
 
 // For order_allowed
-SCBW_DATA(s32*,	last_internal_error,					0x0066FF60);
-SCBW_DATA(u16*, orders_requirement_tree,				0x00514CF8);
+SCBW_DATA(s32*,		g_last_internal_error,			0x0066FF60);
+SCBW_DATA(u16*,		g_orders_requirement_tree,		0x00514CF8);
 
 // For larva_creep_spawn
-SCBW_DATA(s16*, larvaCounter,						0x0067D3F8);
+SCBW_DATA(s16*,		g_larva_counter,				0x0067D3F8);
 
 // For update_building_placement_state_units
-SCBW_DATA(s8*, buildingPlacementState,				0x006408F8);
+SCBW_DATA(s8*,		g_building_placement_state,		0x006408F8);
 
 // For progress_unit_frame
-SCBW_DATA(s8*, selectionCircleColor,				0x00581D6A);
+SCBW_DATA(s8*,		g_selection_circle_color,		0x00581D6A);
 
 // For initializeBulet
-SCBW_DATA(Unit**, lastBulletCreator,				0x0064DEB0);
-SCBW_DATA(s32*, launchSpinRandom,					0x0064DEC0);
-SCBW_DATA(Point16*, attackCurve,					0x00513650);
+SCBW_DATA(Unit**,	g_last_bullet_creator,			0x0064DEB0);
+SCBW_DATA(s32*,		g_launch_spin_random,			0x0064DEC0);
+SCBW_DATA(Point16*, g_attack_curve,					0x00513650);
 
 // For ai_progress_build
-SCBW_DATA(s32*,	game_minerals,						0x0057F0F0);
-SCBW_DATA(s32*,	game_vespene,						0x0057F120);
-SCBW_DATA(s32*, ai_minerals_reserve,				0x006CA51C);
-SCBW_DATA(s32*, ai_gas_reserve,						0x006CA4EC);
+SCBW_DATA(s32*,		g_game_minerals,				0x0057F0F0);
+SCBW_DATA(s32*,		g_game_vespene,					0x0057F120);
+SCBW_DATA(s32*,		g_ai_minerals_reserve,			0x006CA51C);
+SCBW_DATA(s32*,		g_ai_gas_reserve,				0x006CA4EC);
 
 // For updateBriefingRoomObjectives
-SCBW_DATA(BinDlg**, readyRoomDialog,				0x0066FF6C);
-SCBW_DATA(s32*, missionObjectivesStringIndex,		0x0058D6C4);
+SCBW_DATA(BinDlg**, g_ready_room_dialog,				0x0066FF6C);
+SCBW_DATA(s32*,		g_mission_objectives_string_index,	0x0058D6C4);
 
 // For ai_manage_building_placement
-SCBW_DATA(Unit**, disabledUnitArray,				0x00692660);
-SCBW_DATA(Unit**, AIBuilderUnknown,					0x006D5DCC);
+SCBW_DATA(Unit**,	g_disabled_unit_array,			0x00692660);
+SCBW_DATA(Unit**,	g_ai_builder_unk,				0x006D5DCC);
 
 // For get_supplies_available
-SCBW_DATA(s32*,	suppliesAvailable_Protoss,			0x00582264);
-SCBW_DATA(s32*,	suppliesMax_Protoss,				0x005822C4);
-SCBW_DATA(s32*,	suppliesAvailable_Terran,			0x005821D4);
-SCBW_DATA(s32*,	suppliesMax_Terran,					0x00582234);
-SCBW_DATA(s32*,	suppliesAvailable_Zerg,				0x00582144);
-SCBW_DATA(s32*,	suppliesMax_Zerg,					0x005821A4);
+SCBW_DATA(s32*,		g_supplies_available_protoss,	0x00582264);
+SCBW_DATA(s32*,		g_supplies_max_protoss,			0x005822C4);
+SCBW_DATA(s32*,		g_supplies_available_terran,	0x005821D4);
+SCBW_DATA(s32*,		g_supplies_max_terran,			0x00582234);
+SCBW_DATA(s32*,		g_supplies_available_zerg,		0x00582144);
+SCBW_DATA(s32*,		g_supplies_max_zerg,			0x005821A4);
 
 // For get_supplies_used_no_args
-SCBW_DATA(s32*,	suppliesUsed_Protoss,				0x00582294);
-SCBW_DATA(s32*,	suppliesUsed_Terran,				0x00582204);
-SCBW_DATA(s32*,	suppliesUsed_Zerg,					0x00582174);
+SCBW_DATA(s32*,		g_supplies_used_protoss,		0x00582294);
+SCBW_DATA(s32*,		g_supplies_used_terran,			0x00582204);
+SCBW_DATA(s32*,		g_supplies_used_zerg,			0x00582174);
 
 // For initialize_unit_counts
-SCBW_DATA(s32*,	unit_count_score,					0x00581DE4);
-SCBW_DATA(s8*,	unknown_57F41CB,					0x0057F1CB);
+SCBW_DATA(s32*,		g_unit_count_score,				0x00581DE4);
+SCBW_DATA(s8*,		unknown_57F41CB,				0x0057F1CB);
 
 // For stat_res_main_proc
-SCBW_DATA(s32*,	unknown_player_5153F8,				0x005153F8);
-SCBW_DATA(s32*,	unknown_68C22C,						0x0068C22C);
-SCBW_DATA(s32*,	unknown_68C230,						0x0068C230);
+SCBW_DATA(s32*,		unknown_player_5153F8,			0x005153F8);
+SCBW_DATA(s32*,		unknown_68C22C,					0x0068C22C);
+SCBW_DATA(s32*,		unknown_68C230,					0x0068C230);
 
 // For get_supplies_temp
-SCBW_DATA(s16*,	suppliesUsedTemp,					0x006CA93E);
+SCBW_DATA(s16*,		g_supplies_used_temp,			0x006CA93E);
 
 // For draw_supply_unit_status
-SCBW_DATA(char*, supply_available_buffer,			0x006CA668);
-SCBW_DATA(char*, supply_used_buffer,				0x006CA9F8);
-SCBW_DATA(char*, supply_max_buffer,					0x006CAB08);
-SCBW_DATA(char*, supply_provided_buffer,			0x006CAC78);
+SCBW_DATA(char*,	g_supply_available_buffer,		0x006CA668);
+SCBW_DATA(char*,	g_supply_used_buffer,			0x006CA9F8);
+SCBW_DATA(char*,	g_supply_max_buffer,			0x006CAB08);
+SCBW_DATA(char*,	g_supply_provided_buffer,		0x006CAC78);
 
-SCBW_DATA(char*, kills_buffer,						0x006CAC78);
+SCBW_DATA(char*,	g_kills_buffer,					0x006CAC78);
 
 // For giveUnitToPlayer
-SCBW_DATA(s32*,	g_current_trigger_player_id,		0x006509B0);
+SCBW_DATA(s32*,		g_current_trigger_player_id,	0x006509B0);
 
 // For delete_ai_town_if_needed
-SCBW_DATA(ResourceArea*, base_array,				0x00692688);
+SCBW_DATA(ResourceArea*, g_base_array,				0x00692688);
 
 // For get_bunker_placement_position
-SCBW_DATA(u32*,		region_ids_count,				0x0069265C);
-SCBW_DATA(u16*,		region_ids,						0x0069262C);
+SCBW_DATA(u32*,		g_region_ids_count,				0x0069265C);
+SCBW_DATA(u16*,		g_region_ids,					0x0069262C);
 
 SCBW_DATA(u8*,		unk_order_array,				0x0068C300);
 
-SCBW_DATA(u32**,	active_tile_array_int,			0x006D1260);
+SCBW_DATA(u32**,	g_active_tile_array_int,		0x006D1260);
 
-SCBW_DATA(void**,	get_right_click_order_array,	0x005153FC);
+SCBW_DATA(void**,	g_get_right_click_order_array,	0x005153FC);
 
 // For prepare_unit_move_custom
-SCBW_DATA(BinDlg*,	portrait,						0x0068AC98);
+SCBW_DATA(BinDlg*,	g_portrait,						0x0068AC98);
 
 // For fog of war changes by DarkenedFantasies
-SCBW_DATA(FogMask*,	fog_of_war_mask,				0x00657AA0);
+SCBW_DATA(FogMask*,	g_fog_of_war_mask,				0x00657AA0);
 
 // For score screen player name overrides, from DarkenedFantasies
-SCBW_DATA(const StringTbl*,	network_table_DF,		0x006D1220);
-SCBW_DATA(ColorTable*,		color_table,			0x0058F442);
-SCBW_DATA(PlayerNames*,		player_name_list,		0x0059B3D8);
+SCBW_DATA(const StringTbl*,	g_network_table_DF,		0x006D1220);
+SCBW_DATA(ColorTable*,		g_color_table,			0x0058F442);
+SCBW_DATA(PlayerNames*,		g_player_name_list,		0x0059B3D8);
 
 // For soundThread
 /*
@@ -543,11 +543,11 @@ typedef void __fastcall InputProcsFunc(s32 arg);
 struct InputProcsArray {
 	InputProcsFunc* funcs[19];
 };
-SCBW_DATA(InputProcsArray*,	input_procs,	0x005968A0);
+SCBW_DATA(InputProcsArray*,	g_input_procs,		0x005968A0);
 
 // For get_standard_attack_target
-SCBW_DATA(u32*,		min_range,					0x006955B8); // sizeof 10
-SCBW_DATA(s32*,		max_range_in_px,			0x006957A4);
+SCBW_DATA(u32*,		g_min_range,				0x006955B8); // sizeof 10
+SCBW_DATA(s32*,		g_max_range_in_px,			0x006957A4);
 
 // For show_right_click_error_if_needed
 SCBW_DATA(u32*,		use_quiet_sounds,			0x0064086C);
@@ -824,7 +824,7 @@ SCBW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x
 struct PlayersSel {
 	Unit* unit[PLAYABLE_PLAYER_COUNT][SelectionCap];
 };
-SCBW_DATA(const PlayersSel*, players_selections, 0x006284E8);
+SCBW_DATA(PlayersSel*, players_selections, 0x006284E8);
 struct PlayerSel {
 	Unit* unit[SelectionCap];
 };

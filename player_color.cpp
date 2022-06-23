@@ -188,7 +188,7 @@ static bool is_valid_name(u32 player, char* name) {
 	}
 	for (u32 i = 0; i < 8; ++i) {
 		if (i != player && can_get_player_name(i)) {
-			if (strcmp(player_name_list->player[i].player_name, name) == 0) {
+			if (strcmp(g_player_name_list->player[i].player_name, name) == 0) {
 				return false;
 			}
 		}
@@ -210,13 +210,13 @@ static u32 get_name_count(u32 race, u32 personality) {
 
 void set_player_name(u32 player, char* name) {
 	has_custom_name[player] = true;
-	strncpy(player_name_list->player[player].player_name, name, 24);
-	player_name_list->player[player].player_name[24] = 0;
+	strncpy(g_player_name_list->player[player].player_name, name, 24);
+	g_player_name_list->player[player].player_name[24] = 0;
 }
 
 void set_player_force_name(u32 player, char* name) {
-	strncpy(player_name_list->player[player].force_name, name, 29);
-	player_name_list->player[player].force_name[29] = 0;
+	strncpy(g_player_name_list->player[player].force_name, name, 29);
+	g_player_name_list->player[player].force_name[29] = 0;
 }
 
 static void update_player_name(u32 player) {

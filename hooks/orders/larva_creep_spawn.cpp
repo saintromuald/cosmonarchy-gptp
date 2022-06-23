@@ -51,8 +51,8 @@ namespace hooks
 				}
 				else
 				{
-					(*larvaCounter)++;
-					bReturnValue = (*larvaCounter > 3);
+					(*g_larva_counter)++;
+					bReturnValue = (*g_larva_counter > 3);
 				}
 		}
 		else
@@ -71,7 +71,7 @@ namespace hooks
 		if (unit->order_queue_timer == 0 && unit->player != 11)
 		{
 			// 004EA79E
-			*larvaCounter = 0;
+			*g_larva_counter = 0;
 			Box16 coords;
 			coords.left = unit->sprite->position.x - 256;
 			coords.top = unit->sprite->position.y - 256;
@@ -80,7 +80,7 @@ namespace hooks
 
 			// Count existing larvas in LARVA_COUNTER
 			helper::iterate_units_at_location_target_proc_larva_count(unit, &coords);
-			if (*larvaCounter < 3 && !(unit->status & UnitStatus::InAir))
+			if (*g_larva_counter < 3 && !(unit->status & UnitStatus::InAir))
 			{
 				if (unit->building.larva_timer != 0)
 				{
@@ -535,7 +535,7 @@ namespace hooks
 			}
 			while (((*current_tiles)[rect_left + rect_top * *map_creep_width] & 0x7FF0) != 16
 				|| does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
-				|| tile_flags & (*active_tile_array_int)[rect_left + rect_top * g_map_tile_size->width]
+				|| tile_flags & (*g_active_tile_array_int)[rect_left + rect_top * g_map_tile_size->width]
 				|| helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
 				|| helper::mark_creep_to_disappear(rect_left, rect_top))
 			{

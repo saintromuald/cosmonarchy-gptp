@@ -290,34 +290,34 @@ namespace hooks
 
 	// Hooked to allow Hallucinations to use tech. -Pr0nogo
 	s32 tech_use_allowed(Unit* unit, u16 tech_id, u32 player) { // 0046DD80
-		*last_internal_error = 0;
+		*g_last_internal_error = 0;
 		u32 result = 0;
 		if (tech_id >= TechId::None) {
-			*last_internal_error = 17;
+			*g_last_internal_error = 17;
 			return 0;
 		}
 		if (techdata_dat::requirement_offsets[tech_id] == RequirementOpcodes::EndOfSublist) {
 			helper::parse_tech_dat_requirements();
 		}
 		if (player != unit->player) {
-			*last_internal_error = 1;
+			*g_last_internal_error = 1;
 			return 0;
 		}
 		if (!(unit->status & UnitStatus::Completed)) {
-			*last_internal_error = 20;
+			*g_last_internal_error = 20;
 			return 0;
 		}
 		if (unit->is_frozen()) {
-			*last_internal_error = 10;
+			*g_last_internal_error = 10;
 			return 0;
 		} 
 		if (unit->status & UnitStatus::IsHallucination && tech_id != TechId::Burrowing) {
-			*last_internal_error = 22;
+			*g_last_internal_error = 22;
 			return 0;
 		}
 		u32 req_offset = techdata_dat::requirement_offsets[tech_id];
 		if (!req_offset) {
-			*last_internal_error = 23;
+			*g_last_internal_error = 23;
 			return 0;
 		}
 		return helper::parse_requirement_opcodes(unit, tech_id, player, requirements::tech, req_offset);

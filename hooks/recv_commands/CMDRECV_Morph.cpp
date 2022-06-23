@@ -91,32 +91,32 @@ namespace hooks
 			if (!helper::unit_is_training_or_morphing(unit) && unit->building.tech_id == TechId::None && unit->building.upgrade_id == UpgradeId::None) {
 				if (unit->status & UnitStatus::GroundedBuilding) {
 					if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
-						*last_internal_error = 0;
+						*g_last_internal_error = 0;
 						if (orders_dat::RequirementsOffset[OrderId::BuildingLiftoff] == 65535) {
 							helper::parse_orders_dat_requirements();
 						}
 						if (unit->player != *g_active_nation_id) {
-							*last_internal_error = 1;
+							*g_last_internal_error = 1;
 							continue;
 						}
 						if (!(unit->status & UnitStatus::Completed)) {
-							*last_internal_error = 23;
+							*g_last_internal_error = 23;
 							continue;
 						}
 						if (unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer) {
-							*last_internal_error = 10;
+							*g_last_internal_error = 10;
 							continue;
 						}
 						if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::TerranCommandCenter) {
-							*last_internal_error = 11;
+							*g_last_internal_error = 11;
 							continue;
 						}
 						if (unit->id == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding
 							|| scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
 							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)	{
-							*last_internal_error = 8;
+							*g_last_internal_error = 8;
 						} else if (orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) {
-							if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *g_active_nation_id, orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) == 1) {
+							if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *g_active_nation_id, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) == 1) {
 								u16* buffer_u16 = (u16*)(buffer + 1);
 								u16 x = buffer_u16[0];
 								u16 y = buffer_u16[1];
@@ -126,7 +126,7 @@ namespace hooks
 								}
 							}
 						} else {
-							*last_internal_error = 20;
+							*g_last_internal_error = 20;
 						}
 					}
 				}
@@ -140,7 +140,7 @@ namespace hooks
 		*order_id_obstructed = OrderId::RallyPointToTile;
 		bool network_table_1 = *network_table < 0x3Eu;
 		bool network_table_2 = *network_table == 62;
-		*is_targeting = 1;
+		*g_is_targeting = 1;
 		*order_id_unit = OrderId::RallyPointToVisibleUnit;
 
 		const char* string = (const char*)(*network_table + network_table[63]);

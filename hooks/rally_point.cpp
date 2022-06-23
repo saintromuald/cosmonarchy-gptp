@@ -59,7 +59,7 @@ namespace hooks
 	// Possible downstream effect: need to clear rally for the creep colony if the morph cancelled?
 	u32 btnscond_rally(u32 unused, u32 player, Unit* unit) // 00429520
 	{
-		*last_internal_error = 0;
+		*g_last_internal_error = 0;
 		if (orders_dat::RequirementsOffset[OrderId::RallyPointToTile] == -1)
 		{
 			helper::parse_orders_dat_requirements();
@@ -70,12 +70,12 @@ namespace hooks
 		{
 			if (unit->is_frozen())
 			{
-				*last_internal_error = 10;
+				*g_last_internal_error = 10;
 				result = 0;
 			}
 			else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk) // ?
 			{
-				*last_internal_error = 11;
+				*g_last_internal_error = 11;
 				result = 0;
 			}
 			else
@@ -85,7 +85,7 @@ namespace hooks
 				  || scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
 				  || unit_id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
 				{
-					*last_internal_error = 8;
+					*g_last_internal_error = 8;
 					result = 0;
 				}
 				else
@@ -99,19 +99,19 @@ namespace hooks
 						}
 						else
 						{
-							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPointToTile, player, (u16*)orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::RallyPointToTile]);
+							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPointToTile, player, (u16*)g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::RallyPointToTile]);
 						}
 					}
 					else
 					{
-						*last_internal_error = 23;
+						*g_last_internal_error = 23;
 					}
 				}
 			}
 		}
 		else
 		{
-			*last_internal_error = 1;
+			*g_last_internal_error = 1;
 			result = 0;
 		}
 		return result;
@@ -208,7 +208,7 @@ namespace hooks
 		else if (fow_unit_id != UnitId::None)
 		{
 			u32 tileId = x / 32 + g_map_tile_size->width * (y / 32);
-			if (!((1 << *g_active_nation_id) & (*active_tile_array_int)[tileId]))
+			if (!((1 << *g_active_nation_id) & (*g_active_tile_array_int)[tileId]))
 			{
 				target = helper::find_fow_unit(y, x, fow_unit_id);
 				fow_unit_id = UnitId::None;
