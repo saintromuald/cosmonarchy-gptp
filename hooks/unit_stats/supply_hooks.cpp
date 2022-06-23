@@ -151,7 +151,7 @@ namespace hooks
 
             if (*g_client_selection_count)
             {
-                Unit* activeUnit = *active_portrait_unit;
+                Unit* activeUnit = *g_active_portrait_unit;
                 if (*g_client_selection_count != 1)
                 {
                     activeUnit = g_client_selection_group->unit[0];
@@ -235,7 +235,7 @@ namespace hooks
 
     s32 get_supplies_temp() // 004246D0
     {
-        Unit* activeUnit = *active_portrait_unit;
+        Unit* activeUnit = *g_active_portrait_unit;
         GroupFlag groupFlags = units_dat::group_flags[activeUnit->id];
         *g_supplies_available_temp = get_supplies_available(activeUnit->player, RaceId::Terran);
         u8 player = activeUnit->player;
@@ -246,13 +246,13 @@ namespace hooks
 
     bool redraw_supply_info() // 00425230 // Guessed name
     {
-        if (!g_is_in_replay && (u8)(*active_portrait_unit)->player != *g_local_nation_id)
+        if (!g_is_in_replay && (u8)(*g_active_portrait_unit)->player != *g_local_nation_id)
         {
             return helper::unitStatCond_Standard();
         }
 
-        u8 activePlayer = (*active_portrait_unit)->player;
-        GroupFlag groupFlags = units_dat::group_flags[(u16)(*active_portrait_unit)->id];
+        u8 activePlayer = (*g_active_portrait_unit)->player;
+        GroupFlag groupFlags = units_dat::group_flags[(u16)(*g_active_portrait_unit)->id];
         char race = RaceId::Terran;
 
         if ((u16)g_supplies_available_temp == get_supplies_available(activePlayer, race))
@@ -267,7 +267,7 @@ namespace hooks
     }
 
 	void draw_supply_unit_status(BinDlg* dialog) {
-		Unit* unit = *active_portrait_unit;
+		Unit* unit = *g_active_portrait_unit;
 		if (*g_is_in_replay || unit->player == *g_local_nation_id) {
 			get_supplies_temp();
 			if (*g_status_screen_func != 12) {
@@ -491,7 +491,7 @@ namespace hooks
             supplyCost -= units_dat::SupplyRequired[UnitId::ZergHydralisk];
         }
 
-        aiSupplyReserved[player] = supplyCost;
+        g_ai_supply_reserved[player] = supplyCost;
         // No supply cost check needed
         if (supplyCost == 0 || units_dat::base_property[unit_id] & UnitProperty::MorphFromOtherUnit)
         {

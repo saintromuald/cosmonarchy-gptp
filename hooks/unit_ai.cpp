@@ -12,8 +12,8 @@ namespace hooks
 			return;
 		}
 
-		if (result->id == UnitId::TerranCleric && !AIScriptController[result->player].main_medic) {
-			AIScriptController[result->player].main_medic = result;
+		if (result->id == UnitId::TerranCleric && !g_aiscript_controller[result->player].main_medic) {
+			g_aiscript_controller[result->player].main_medic = result;
 		}
 
 		if (units_dat::base_property[result->id] & UnitProperty::Worker) {
@@ -46,7 +46,7 @@ namespace hooks
 		}
 
 		s32 region_id = scbw::get_region_id(position);
-		AiRegion* player_region = AiRegionCaptains[parent->player];
+		AiRegion* player_region = g_ai_region_captains[parent->player];
 		if (!player_region) {
 			scbw::printf("null region in AI_TrainingBroodling!");
 			return;
@@ -109,7 +109,7 @@ namespace hooks
 		s16 unit_id = newUnit->id;
 		if (!scbw::is_conventional_unit_morph_result(unit_id)) {
 			if (newUnit->status & UnitStatus::IsHallucination) {
-				helper::add_military_ai(&AiRegionCaptains[newUnit->player][scbw::get_region_id(newUnit->sprite->position)], newUnit, 1);
+				helper::add_military_ai(&g_ai_region_captains[newUnit->player][scbw::get_region_id(newUnit->sprite->position)], newUnit, 1);
 				return;
 			}
 			if (unit_id != UnitId::TerranNuclearMissile && unit_id != UnitId::ProtossWitness) {
@@ -258,7 +258,7 @@ namespace hooks
 						helper::set_secondary_order(unit, OrderId::SpreadCreep);
 					}
 				}
-				if (!(AIScriptController[town->player].AI_Flags.is_use_map_settings)
+				if (!(g_aiscript_controller[town->player].AI_Flags.is_use_map_settings)
 						|| unit->status & UnitStatus::GroundedBuilding
 						&& unit->id != UnitId::TerranWatchdog
 						&& unit->id != UnitId::TerranBunker
@@ -789,11 +789,11 @@ namespace hooks
 							if (unit_ai->type != 4 ||
 								(unit_region_type = unit_ai_region->state, unit_region_type != 1) &&
 								unit_region_type != 2 ||
-								AIScriptController[ai_region->player].AI_Flags.is_use_map_settings)
+								g_aiscript_controller[ai_region->player].AI_Flags.is_use_map_settings)
 							{
 								if ( (!(unit->status & UnitStatus::InBuilding)
 									|| a2 != 20
-									&& (AIScriptController[unit->player].AI_Flags.is_use_map_settings
+									&& (g_aiscript_controller[unit->player].AI_Flags.is_use_map_settings
 										|| helper::region_is_for_attack_prepare(ai_region)))
 									&& (ai_region->state != 7 && !helper::region_is_for_attack_prepare(ai_region) || unit_ai_region_id != a6)
 									&& unit_ai_region->defense_priority_add < a2 )
@@ -807,7 +807,7 @@ namespace hooks
 					}
 					goto next;
 				}
-				if (AIScriptController[ai_region_1->player].AI_Flags.is_use_map_settings)
+				if (g_aiscript_controller[ai_region_1->player].AI_Flags.is_use_map_settings)
 				{
 					if (ai_region_1->air_target == (Unit*)7)
 					{

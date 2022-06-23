@@ -895,11 +895,11 @@ struct ImagesDatExtraOverlayLO_Files {
 	LO_Header* landingDustOverlays[IMAGE_TYPE_COUNT];
 	LO_Header* liftoffDustOverlays[IMAGE_TYPE_COUNT];
 };
-SCBW_DATA(const ImagesDatExtraOverlayLO_Files*, lo_files, 0x0051F2A8);
-SCBW_DATA(const LO_Header* const*, shieldOverlays, 0x0052E5C8);
+SCBW_DATA(const ImagesDatExtraOverlayLO_Files*, lo_files,			0x0051F2A8);
+SCBW_DATA(const LO_Header* const*,				g_shield_overlays,	0x0052E5C8);
 
-SCBW_DATA(const ColorShiftData*, colorShift, 0x005128F8); //Use ColorRemapping::Enum as index
-SCBW_DATA(GrpHead* const*, imageGrpGraphics, 0x0051CED0);
+SCBW_DATA(const ColorShiftData*,	g_color_shift,			0x005128F8); // Use ColorRemapping::Enum as index
+SCBW_DATA(GrpHead* const*,			g_image_grp_graphics,	0x0051CED0);
 
 template <typename T>
 struct PlayerFlags {
@@ -908,14 +908,14 @@ struct PlayerFlags {
 SCBW_DATA(PlayerFlags<u8>*,		player_alliance,	0x0058D634); // See scbw::is_allied_to()
 SCBW_DATA(PlayerFlags<u32>*,	player_vision,		0x0057F1EC);
 
-SCBW_DATA(Unit* const*, active_portrait_unit, 0x00597248);
+SCBW_DATA(Unit**,		g_active_portrait_unit,		0x00597248);
 
-SCBW_DATA(AI_Main*, AIScriptController, 0x0068FEE8);
-SCBW_DATA(AiRegion* const*, AiRegionCaptains, 0x0069A604);
-SCBW_DATA(u32*, aiSupplyReserved, 0x006CA4BC);
-SCBW_DATA(AiScript**, first_active_aiscript, 0x0068C100);
+SCBW_DATA(AI_Main*,		g_aiscript_controller,		0x0068FEE8);
+SCBW_DATA(AiRegion**,	g_ai_region_captains,		0x0069A604);
+SCBW_DATA(u32*,			g_ai_supply_reserved,		0x006CA4BC);
+SCBW_DATA(AiScript**,	g_first_active_aiscript,	0x0068C100);
 
-SCBW_DATA(ResourceAreaArray*, resource_areas, 0x00692688);
+SCBW_DATA(ResourceAreaArray*, g_resource_areas,		0x00692688);
 
 //-------- Internal constants --------//
 
@@ -971,15 +971,15 @@ namespace requirements
 	SCBW_DATA(u16*, tech, 0x00514A48);
 }
 
-SCBW_DATA(GuardAiArray*,       guard_array,        0x0067D400);
-SCBW_DATA(GuardAiListPlayers*, first_player_guard, 0x00685108);
+SCBW_DATA(GuardAiArray*,       g_guard_array,        0x0067D400);
+SCBW_DATA(GuardAiListPlayers*, g_first_player_guard, 0x00685108);
 
-SCBW_DATA(u32*, ai_update_cooldown, 0x0059CC94);
+SCBW_DATA(u32*,		g_ai_update_cooldown,			0x0059CC94);
 
 // For update_creep_disappearance_unit
-SCBW_DATA(u32*, map_creep_width, 0x006D0F08);
-SCBW_DATA(u32*, dying_unit_creep_disappearance_count, 0x00658AE4);
-SCBW_DATA(u32**, current_tiles, 0x006D0E84);
+SCBW_DATA(u32*,		g_map_creep_width,						0x006D0F08);
+SCBW_DATA(u32*,		g_dying_unit_creep_disappearance_count, 0x00658AE4);
+SCBW_DATA(u32**,	g_current_tiles,						0x006D0E84);
 
 // For draw_tooltip_with_icon
 SCBW_DATA(char*,	grp_stat_res_icon_mapping,	0x00515228); // sizeof 8

@@ -23,10 +23,9 @@ namespace
 		static u16 wUnitType;
 		__asm {
 			PUSH EBP
-			PUSH EAX
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV AX, [EAX + 0x01]
 			MOV wUnitType, AX
 			POP EAX
 			PUSHAD
@@ -59,8 +58,8 @@ namespace
 		static char* buffer;
 		__asm {
 			PUSH EBP
-			PUSH EAX
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV buffer, EAX
 			POP EAX
@@ -129,7 +128,7 @@ namespace hooks
 		jump_patch(cmdrecv_building_morph_wrapper,							0x004C1910, 6);
 		jump_patch(cmdrecv_unit_morph_wrapper,								0x004C1990, 1);
 		jump_patch(cmdrecv_train_wrapper,									0x004C1C20, 6);
-	//	jump_patch(cmdrecv_liftoff_wrapper,									0x004C1620, 6);
+		jump_patch(cmdrecv_liftoff_wrapper,									0x004C1620, 6);
 	//	jump_patch(btnsact_rally_point_wrapper,								0x004244A0, 2);
 	//	jump_patch(order_acquire_generic_right_click_unit_proc_wrapper,		0x00455CC0, 2);
 	}

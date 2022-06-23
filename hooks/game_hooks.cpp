@@ -325,7 +325,7 @@ namespace hooks
 		options_list->speed = 6; // Lock game speed at fastest
 		if (!scbw::is_game_paused()) // If the game is not paused
 		{
-			*ai_update_cooldown = 0;
+			*g_ai_update_cooldown = 0;
 			for (u32 i = 0; i < 8; ++i) {
 				raceSupply[RaceId::Terran].provided[i] = 60000;
 			}
@@ -383,9 +383,9 @@ namespace hooks
 			scbw::set_ingame_loop_state(false);
 		}
 
-		if (*active_portrait_unit)
+		if (*g_active_portrait_unit)
 		{
-			// Unit* selected = *active_portrait_unit;
+			// Unit* selected = *g_active_portrait_unit;
 			// scbw::printf("%u", selected->main_order_id);
 
 			*unit_iterator_pos = 0;

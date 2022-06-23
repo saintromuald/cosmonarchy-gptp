@@ -237,7 +237,7 @@ namespace hooks
 			}
 			case UnitId::ZergCreepColony:
 			{
-//				if (AIScriptController[playerVar].AI_Flags >= 0) // used SLOBYTE, probably checking "creep" asc3 command
+//				if (g_aiscript_controller[playerVar].AI_Flags >= 0) // used SLOBYTE, probably checking "creep" asc3 command
 				{
 			LABEL_9:
 					if (helper::get_bunker_placement_position(playerVar, &ownrId))
@@ -416,7 +416,7 @@ namespace hooks
 			}
 		}
 
-		AI_Main* AI_Mainframe = &AIScriptController[player];
+		AI_Main* AI_Mainframe = &g_aiscript_controller[player];
 		s32 request_type;
 		if (AI_Mainframe->request_count)
 		{
@@ -491,7 +491,7 @@ namespace hooks
 		s16 unit_id;
 
 		Unit* unitCopy = unit;
-		s32 nextBuildType = AIScriptController[player].requests->type;
+		s32 nextBuildType = g_aiscript_controller[player].requests->type;
 		Unit* dummy = nullptr;
 		switch (nextBuildType)
 		{
@@ -568,7 +568,7 @@ namespace hooks
 
 		if (!helper::hasResourcesForUnit(nextBuildType, player))
 		{
-			error = (AIScriptController[player].AI_Flags.is_use_map_settings) == 0;
+			error = (g_aiscript_controller[player].AI_Flags.is_use_map_settings) == 0;
 			if (error)
 			{
 				helper::ai_reserve(player, 0);
@@ -591,7 +591,7 @@ namespace hooks
 		if (unit == unitCopy)
 		{
 			requestedBuildId = helper::ai_get_request_build_type(player);
-			if (!helper::ai_train_unit(unitCopy, nextBuildType, requestedBuildId, AIScriptController[player].requests->val))
+			if (!helper::ai_train_unit(unitCopy, nextBuildType, requestedBuildId, g_aiscript_controller[player].requests->val))
 			{
 				return 0;
 			}
@@ -606,7 +606,7 @@ namespace hooks
 			if (helper::ai_get_request_build_type(player) == 2)
 			{
 				/*
-				BuildingAi* unitAI = (BuildingAi*)AIScriptController[player].requests->val;
+				BuildingAi* unitAI = (BuildingAi*)g_aiscript_controller[player].requests->val;
 				mainTownTown = unitAI->town;
 				unitAIQueues = (s16)unitAI->trainQueueValues;
 				unitAI->parent = unitCopy;
@@ -617,7 +617,7 @@ namespace hooks
 			}
 			else
 			{
-				helper::add_military_ai((AiRegion*)AIScriptController[player].requests->val, unitCopy, 1);
+				helper::add_military_ai((AiRegion*)g_aiscript_controller[player].requests->val, unitCopy, 1);
 			}
 		}
 
@@ -680,7 +680,7 @@ namespace hooks
 			region_count_zeroed = region_count - 1;
 			do
 			{
-				player_regions = AiRegionCaptains[player_id];
+				player_regions = g_ai_region_captains[player_id];
 				v3 = *(&player_regions->state + v2);
 				military_region = (player_regions + v2);
 				if (v3 > 3u)
@@ -723,14 +723,14 @@ namespace hooks
 								region_gnd_strength += helper::ai_defend_region(military_region, defense_region_id, defense_region->air_strength_enemy != 0, j - region_gnd_strength);
 							}
 						}
-						if (AIScriptController[player_id].AI_Flags.flag_0x40)
+						if (g_aiscript_controller[player_id].AI_Flags.flag_0x40)
 						{
-							v15 = AIScriptController[player_id].defense_priority_base;
+							v15 = g_aiscript_controller[player_id].defense_priority_base;
 							if (v15)
 							{
-								AIScriptController[player_id].defense_priority_base = v15 - 1;
+								g_aiscript_controller[player_id].defense_priority_base = v15 - 1;
 							}
-							AIScriptController[player_id].AI_Flags.flag_0x40 = false;
+							g_aiscript_controller[player_id].AI_Flags.flag_0x40 = false;
 						}
 					}
 				}
@@ -740,7 +740,7 @@ namespace hooks
 				--region_count_zeroed;
 			} while (!finished_with_regions);
 		}
-		if (!(AIScriptController[player_id].AI_Flags.is_transports_off))
+		if (!(g_aiscript_controller[player_id].AI_Flags.is_transports_off))
 		{
 			u32 player_race = g_player_table[player_id].race;
 			if (player_race == RaceId::Terran)
@@ -770,9 +770,9 @@ namespace hooks
 						{
 							witness_supply_cost = 2 * units_dat::SupplyRequired[UnitId::ProtossWitness];
 						}
-						AIScriptController[player_id].mineral_collection += units_dat::mineral_cost[UnitId::ProtossWitness];
-						AIScriptController[player_id].gas_collection += witness_gas_cost;
-						AIScriptController[player_id].supply_collection += witness_supply_cost;
+						g_aiscript_controller[player_id].mineral_collection += units_dat::mineral_cost[UnitId::ProtossWitness];
+						g_aiscript_controller[player_id].gas_collection += witness_gas_cost;
+						g_aiscript_controller[player_id].supply_collection += witness_supply_cost;
 						helper::ai_add_spending_request(UnitId::ProtossWitness, player_id, 8, 80, 0);
 						--witness_request_quantity;
 					} while (witness_request_quantity);
@@ -783,24 +783,24 @@ namespace hooks
 			if (v33)
 			{
 				transport_1_count = g_all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1];
-				transport_1_quantity = (AIScriptController[player_id].AI_Flags.is_use_map_settings) != 0 ? 2 : 5;
+				transport_1_quantity = (g_aiscript_controller[player_id].AI_Flags.is_use_map_settings) != 0 ? 2 : 5;
 				transport_1_priority = g_all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1] != 0 ? 50 : 80;
 				if (transport_1_count < transport_1_quantity)
 				{
 					transport_1_request_count = transport_1_quantity - transport_1_count;
 					while (1)
 					{
-						AIScriptController[player_id].AI_Flags.flag_0x40 = true;
+						g_aiscript_controller[player_id].AI_Flags.flag_0x40 = true;
 						transport_1_gas_cost = units_dat::gas_cost[transport_unit_id_1];
 						transport_supply_cost = units_dat::SupplyRequired[transport_unit_id_1];
 						if (units_dat::base_property[transport_unit_id_1] & UnitProperty::TwoUnitsIn1Egg)
 						{
 							transport_supply_cost *= 2;
 						}
-						v29 = AIScriptController[player_id].gas_collection;
-						AIScriptController[player_id].mineral_collection += units_dat::mineral_cost[transport_unit_id_1];
-						AIScriptController[player_id].gas_collection = transport_1_gas_cost + v29;
-						AIScriptController[player_id].supply_collection += transport_supply_cost;
+						v29 = g_aiscript_controller[player_id].gas_collection;
+						g_aiscript_controller[player_id].mineral_collection += units_dat::mineral_cost[transport_unit_id_1];
+						g_aiscript_controller[player_id].gas_collection = transport_1_gas_cost + v29;
+						g_aiscript_controller[player_id].supply_collection += transport_supply_cost;
 						helper::ai_add_spending_request(transport_unit_id_1, player_id, 1, transport_1_priority, v33);
 						helper::ai_add_base_unit_spending_request(transport_unit_id_2, player_id, v33, transport_1_priority);
 						if (!--transport_1_request_count)
@@ -883,7 +883,7 @@ namespace hooks
 	{
 		u32 result = 0;
 		u32 priority = 70;
-		u32 last_hit = AIScriptController[player_id].previous_building_hit_second;
+		u32 last_hit = g_aiscript_controller[player_id].previous_building_hit_second;
 		/*
 		if (last_hit && *g_elapsed_time_seconds - last_hit < 30) {
 			return;
@@ -903,12 +903,12 @@ namespace hooks
 	void ai_region_train_attack_force(AiRegion* region) { // 0043E670
 		u32 attack_wave[63] = {};
 		u32 priority = 80;
-		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be AIScriptController[region->player].AI_Flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
+		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].AI_Flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
 		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
 			if (unit_id < UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
 			{
-				AIScriptController[region->player].AI_Flags.flag_0x40 = true;
+				g_aiscript_controller[region->player].AI_Flags.flag_0x40 = true;
 				helper::ai_add_cost_to_needs(unit_id, region->player, 1);
 				helper::ai_add_spending_request(unit_id, region->player, 1, priority, region);
 				helper::ai_add_base_unit_spending_request(unit_id, region->player, region, priority);
@@ -918,7 +918,7 @@ namespace hooks
 
 	// Hooked to allow AI to build while under attack. -Pr0nogo
 	void ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, AiRegion* region) { // 00448400
-		u32 last_hit = AIScriptController[player].previous_building_hit_second;
+		u32 last_hit = g_aiscript_controller[player].previous_building_hit_second;
 		u32 race = g_player_table[player].race;
 		/*
 		if (last_hit && *g_elapsed_time_seconds - last_hit < 30) {
@@ -933,6 +933,86 @@ namespace hooks
 			u32 type = 2 * (units_dat::base_property[unit_id] & UnitProperty::Addon) | 3;
 			helper::ai_add_cost_to_needs(unit_id, player, type);
 			helper::ai_add_spending_request(unit_id, player, type, priority, region);
+		}
+	}
+
+	// Hooked to improve AI guard handling. -Pr0nogo
+	void ai_update_guard_needs(u32 player) // 004630C0
+	{
+		GuardAi* guard_ai = g_first_player_guard->player[player].first;
+		if (guard_ai)
+		{
+			while (guard_ai)
+			{
+				GuardAi* prev_guard = guard_ai->link.prev;
+				if (g_aiscript_controller[player].AI_Flags.is_use_map_settings && guard_ai->times_died >= 3u)
+				{
+					helper::delete_guard_ai(guard_ai, &g_first_player_guard->player[player]);
+				}
+				else
+				{
+					Unit* unit = guard_ai->parent;
+					if (unit)
+					{
+						if (unit->status & UnitStatus::IsHallucination)
+						{
+							helper::delete_guard_ai(guard_ai, &g_first_player_guard->player[player]);
+						}
+					}
+					else
+					{
+						u32 count = guard_ai->previous_update;
+						if (!count)
+						{
+							goto process_guard;
+						}
+						u16 unit_id = guard_ai->unit_id;
+						if (unit_id == UnitId::TerranPhalanxSiegeMode)
+						{
+							unit_id = UnitId::TerranPhalanxTankMode;
+						}
+						u32 guard_delay = guard_ai->times_died ? count + 300 : units_dat::time_cost[unit_id] / 15 + count + 5;
+						if (*g_elapsed_time_seconds > guard_delay)
+						{
+						process_guard:
+							u32 x_pos = guard_ai->unk_pos.x;
+							u32 y_pos = guard_ai->unk_pos.y;
+							u32 region_id = helper::get_region_id(x_pos, y_pos);
+							AiRegion* ai_region = g_ai_region_captains[player];
+							u32 region_id_2 = region_id;
+							u32 state = ai_region[region_id_2].state;
+							AiRegion* ai_region_2 = &ai_region[region_id_2];
+							if  (state != 3
+							&&  !ai_region_2->air_target
+							&&  !ai_region_2->ground_target
+							&& !(ai_region_2->captain_flags & 0x20))
+							{
+								Unit* nearest_military = helper::find_nearest_available_military(player, y_pos, guard_ai->unit_id, x_pos);
+								if ((guard_ai->unit_id == UnitId::ZergZethrokor || guard_ai->unit_id == UnitId::ZergSkryling) // Should probably be two in one egg base property check. -Pr0nogo
+								&&  nearest_military) // This might actually be wrong, because the original if check is very silly. -Pr0nogo
+								{
+									helper::remove_unit_ai(nearest_military, 0);
+									guard_ai->home.x = guard_ai->unk_pos.x;
+									guard_ai->home.y = guard_ai->unk_pos.y;
+									guard_ai->parent = nearest_military;
+									nearest_military->unit_ai = (UnitAi*)guard_ai;
+									helper::issue_order_targeting_nothing(nearest_military, OrderId::ComputerAI);
+								}
+								else
+								{
+									ai_request_guard(guard_ai, player);
+									guard_ai->previous_update = *g_elapsed_time_seconds;
+								}
+							}
+						}
+					}
+				}
+				guard_ai = prev_guard;
+				if (!g_first_player_guard->player[player].first)
+				{
+					break;
+				}
+			}
 		}
 	}
 }

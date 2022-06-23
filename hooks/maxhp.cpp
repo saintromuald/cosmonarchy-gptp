@@ -90,7 +90,7 @@ namespace hooks
 		BufferStr* v8; // [esp-8h] [ebp-10h]
 
 		v1 = a1;
-		*g_supplies_available_temp = (*active_portrait_unit)->building.resource.resource_amount;
+		*g_supplies_available_temp = (*g_active_portrait_unit)->building.resource.resource_amount;
 		if (*g_status_screen_func != 15)
 		{
 			helper::hide_optional_status_screen_controls(a1);
@@ -100,20 +100,20 @@ namespace hooks
 		helper::add_text_to_dialog(v1, -10, 0);
 		helper::add_text_to_dialog(v1, -12, 0);
 		helper::add_text_to_dialog(v1, -13, 0);
-		v2 = (*active_portrait_unit)->id;
+		v2 = (*g_active_portrait_unit)->id;
 		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u)
 		{
 			if (*g_stat_txt_tbl > 0x31Bu)
 				v3 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[796];
 			else
 				v3 = "";
-			v7 = (u16)(*active_portrait_unit)->building.resource.resource_amount;
+			v7 = (u16)(*g_active_portrait_unit)->building.resource.resource_amount;
 LABEL_14:
 			sprintf_s(g_struct_char->buf, 260, "%s %d", v3, v7);
 			v8 = g_struct_char;
 			goto LABEL_19;
 		}
-		v4 = (*active_portrait_unit)->building.resource.resource_amount;
+		v4 = (*g_active_portrait_unit)->building.resource.resource_amount;
 		if (v4)
 		{
 			if (*g_stat_txt_tbl > 0x31Cu)
@@ -130,7 +130,7 @@ LABEL_14:
 		v8 = (BufferStr*)v5;
 LABEL_19:
 		helper::add_text_to_dialog(v1, -11, (const char*)v8);
-		if (units_dat::ShieldsEnabled[(*active_portrait_unit)->id])
+		if (units_dat::ShieldsEnabled[(*g_active_portrait_unit)->id])
 		{
 			helper::draw_shield_upgrade(v1, 0);
 		}
@@ -183,15 +183,15 @@ LABEL_26:
 		u8 v22; // [esp+7h] [ebp-1h]
 
 		v1 = (BinDlg*)a1;
-		v2 = *active_portrait_unit;
-		if (*g_is_in_replay || (*active_portrait_unit)->player == *g_local_nation_id)
+		v2 = *g_active_portrait_unit;
+		if (*g_is_in_replay || (*g_active_portrait_unit)->player == *g_local_nation_id)
 		{
 			helper::get_supplies_used_no_args();
 			if (*g_status_screen_func != 12)
 			{
 				helper::hide_optional_status_screen_controls(v1);
 				helper::show_control_group(v1, -10, -13);
-				v2 = *active_portrait_unit;
+				v2 = *g_active_portrait_unit;
 				*g_status_screen_func = 12;
 			}
 			v3 = units_dat::group_flags[(u16)v2->id];
@@ -255,7 +255,7 @@ LABEL_26:
 			{
 				v9 = "";
 			}
-			v10 = helper::get_last_queue_slot_id((*active_portrait_unit));
+			v10 = helper::get_last_queue_slot_id((*g_active_portrait_unit));
 			sprintf_s("", 260, "%s %d", v9, (units_dat::SupplyProvided[v10] + 1) / 2);
 			v11 = v20 + 66353;
 			if (v21 == -818)
@@ -272,11 +272,11 @@ LABEL_26:
 				v12 = "";
 			}
 			ByteOperations::SetLowByte(v11, v21);
-			v13 = helper::get_supplies_available((*active_portrait_unit)->player, v11);
+			v13 = helper::get_supplies_available((*g_active_portrait_unit)->player, v11);
 			sprintf_s(g_unk_string_char, 260, "%s %d", v12, (v13 + 1) / 2);
-			v22 = (*active_portrait_unit)->player;
-			v14 = units_dat::group_flags[helper::get_last_queue_slot_id((*active_portrait_unit))];
-			s32 race = (*active_portrait_unit)->get_race();
+			v22 = (*g_active_portrait_unit)->player;
+			v14 = units_dat::group_flags[helper::get_last_queue_slot_id((*g_active_portrait_unit))];
+			s32 race = (*g_active_portrait_unit)->get_race();
 			if (v14.is_zerg)
 			{
 				v15 = raceSupply[RaceId::Zerg].max[v22];
@@ -311,7 +311,7 @@ LABEL_26:
 			helper::add_text_to_dialog(v1, -11, "");
 			helper::add_text_to_dialog(v1, -12, (const char*)g_unk_string_char);
 			helper::add_text_to_dialog(v1, -13, (const char*)g_struct_char_2);
-			v18 = (*active_portrait_unit)->id;
+			v18 = (*g_active_portrait_unit)->id;
 			if (units_dat::ShieldsEnabled[v18])
 			{
 				helper::draw_shield_upgrade(v1, 0);
@@ -948,7 +948,7 @@ LABEL_23:
 		v3 = active_player_selection->unit[*(u8*)(a2 + 11)];
 		v4 = sprites_dat::IsVisible[v2 + 390];
 		*(s8*)(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
-			+ (imageGrpGraphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
+			+ (g_image_grp_graphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
 			+ 8;
 		*(s8*)(*(s32*)(a1 + 44) + 6) = 0;
 		*(s8*)(*(s32*)(a1 + 44) + 7) = 0;

@@ -49,7 +49,7 @@ namespace AI
 	bool is_campaign_ai(u8 player)
 	{
 		assert(player < 8);
-		return AIScriptController[player].AI_Flags.is_use_map_settings;
+		return g_aiscript_controller[player].AI_Flags.is_use_map_settings;
 	}
 
 	// Internal use only
@@ -74,7 +74,7 @@ namespace AI
 	bool unit_is_in_unsafe_region(Unit* unit)
 	{
 		u16 currentRegion = get_region_at_position_exact(unit->get_x(), unit->get_y());
-		AiRegion* currentAiRegion = &AiRegionCaptains[unit->player][currentRegion];
+		AiRegion* currentAiRegion = &g_ai_region_captains[unit->player][currentRegion];
 		return currentAiRegion->state == 3
 			|| currentAiRegion->air_target
 			|| currentAiRegion->ground_target

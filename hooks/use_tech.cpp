@@ -10,7 +10,7 @@ namespace hooks
 	static void select_larva_type(u32 buttonset) {
 		btnsact_select_larva();
 		helper::update_hud_info();
-		if (*active_portrait_unit && (*active_portrait_unit)->id == UnitId::ZergLarva) {
+		if (*g_active_portrait_unit && (*g_active_portrait_unit)->id == UnitId::ZergLarva) {
 			helper::BTNSACT_ChangeButtons(buttonset);
 		}
 	}
@@ -47,7 +47,7 @@ namespace hooks
 			{
 				char* message = (char*)statTxtTblNew->get_string(864);
 				Unit* portrait_unit = players_selections->unit[*g_active_nation_id][0];
-				helper::get_stat_txt_string(*active_portrait_unit, (*active_portrait_unit)->player, message);
+				helper::get_stat_txt_string(*g_active_portrait_unit, (*g_active_portrait_unit)->player, message);
 				return;
 			}
 		}

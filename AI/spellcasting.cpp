@@ -16,7 +16,7 @@ namespace AI
 	// Attempts make the @p unit cast a spell.
 	bool AI_spellcasterHook(Unit* unit, bool isUnitBeingAttacked)
 	{
-		//if (!isUnitBeingAttacked && AIScriptController[unit->player].spellcaster_timer)
+		//if (!isUnitBeingAttacked && g_aiscript_controller[unit->player].spellcaster_timer)
 		//{
 		//	return false;
 		//}
@@ -72,7 +72,7 @@ namespace AI
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connected_unit = unit;
-						AIScriptController[unit->player].ai_last_nuke_time = *g_elapsed_time_seconds;
+						g_aiscript_controller[unit->player].ai_last_nuke_time = *g_elapsed_time_seconds;
 						return true;
 					}
 				}
@@ -124,7 +124,7 @@ namespace AI
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connected_unit = unit;
-						AIScriptController[unit->player].ai_last_nuke_time = *g_elapsed_time_seconds;
+						g_aiscript_controller[unit->player].ai_last_nuke_time = *g_elapsed_time_seconds;
 						return true;
 					}
 				}
@@ -341,7 +341,7 @@ namespace
 	// Logically equivalent to function @ 0x00446E50
 	bool isNukeTimerReady(u8 player)
 	{
-		return *g_elapsed_time_seconds >= AIScriptController[player].ai_last_nuke_time + 60 * AIScriptController[player].ai_nuke_rate;
+		return *g_elapsed_time_seconds >= g_aiscript_controller[player].ai_last_nuke_time + 60 * g_aiscript_controller[player].ai_nuke_rate;
 	}
 
 	// Logically equivalent to function @ 0x00463360

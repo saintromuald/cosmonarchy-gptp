@@ -476,8 +476,8 @@ namespace hooks
 		if (!helper::is_outside_of_game_screen(dialog_event->current.x, dialog_event->current.y)) {
 			u8 local_group_owner = local_selection_group_2[0] ? local_selection_group_2[0]->player : 255;
 			if (local_group_owner == *g_local_nation_id) {
-				if (*active_portrait_unit) {
-					if (helper::unit_is_owned_by_current_player(*active_portrait_unit)) {
+				if (*g_active_portrait_unit) {
+					if (helper::unit_is_owned_by_current_player(*g_active_portrait_unit)) {
 						s32 selection_iterator = 0;
 						for (u32 i = 0; i < SelectionCap; ++i) {
 							selection_iterator = i;
@@ -496,7 +496,7 @@ namespace hooks
 							u32 find_y = *g_move_to_y + dialog_event->current.y;
 							Unit* unit_at_point = helper::find_unit_at_point(find_x, find_y);
 							if (*g_client_selection_count != 1
-							|| *active_portrait_unit != unit_at_point
+							|| *g_active_portrait_unit != unit_at_point
 							|| unit_at_point && hooks::unit_can_rally(unit_at_point)) {
 								if (unit_at_point) {
 									goto exit;
@@ -514,7 +514,7 @@ namespace hooks
 												}
 												helper::cmdact_right_click_order(unit_at_point, find_x, find_y, unit_id, g_is_keycode_used[16]);
 												if (helper::show_right_click_error_if_needed(unit_at_point)) {
-													helper::play_worker_action_sound(*active_portrait_unit);
+													helper::play_worker_action_sound(*g_active_portrait_unit);
 												}
 											}
 											break;

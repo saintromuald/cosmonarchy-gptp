@@ -46,7 +46,7 @@ void Image::free()
 void Image::set_remapping(ColorRemapping::Enum remapping)
 {
 	assert(this);
-	this->draw_func = colorShift[remapping].data;
+	this->draw_func = g_color_shift[remapping].data;
 }
 //Identical to function @ 0x004D5A50
 void Image::initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y)
@@ -54,7 +54,7 @@ void Image::initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y)
 	assert(this);
 	this->id = imageId;
 
-	//	this->grp_file = imageGrpGraphics[imageId];
+	//	this->grp_file = g_image_grp_graphics[imageId];
 	this->grp_file = reinterpret_cast<GrpHead*>(scbw::get_image_data(ImagesDatEntries::ImagePtr, imageId));
 	//	this->flags = ((images_dat::IsTurnable[imageId] & 1) << 3) | ((images_dat::IsClickable[imageId] & 1) << 5);
 	this->flags = ((scbw::get_image_data(ImagesDatEntries::Turnable, imageId) & 1) << 3) |
@@ -78,12 +78,12 @@ void Image::initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y)
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_PLAYER_SIDE)
 		*(u32*)(&this->draw_func) = parent->player;
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_EFFECT)
-		this->draw_func = colorShift[images_dat::Remapping[imageId]].data;*/
+		this->draw_func = g_color_shift[images_dat::Remapping[imageId]].data;*/
 
 	if (scbw::get_image_data(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_PLAYER_SIDE)
 		*(u32*)(&this->draw_func) = parent->player;
 	if (scbw::get_image_data(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_EFFECT)
-		this->draw_func = colorShift[scbw::get_image_data(ImagesDatEntries::DrawRemap, imageId)].data;
+		this->draw_func = g_color_shift[scbw::get_image_data(ImagesDatEntries::DrawRemap, imageId)].data;
 }
 
 

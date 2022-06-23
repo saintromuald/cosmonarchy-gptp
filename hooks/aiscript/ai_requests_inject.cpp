@@ -4,7 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) AI_BuildTechUpgrade_Wrapper() // 00431F90
+	void __declspec(naked) ai_build_tech_upgrade_wrapper() // 00431F90
 	{
 		static AiTown* town;
 		static s32 method;
@@ -39,7 +39,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_ProgressBuild_Wrapper() // 00434480
+	void __declspec(naked) ai_progress_build_wrapper() // 00434480
 	{
 		static s32 player;
 		static s32* minerals;
@@ -70,7 +70,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AIManageBuildingPlacement_Wrapper() // 004465C0
+	void __declspec(naked) ai_manage_building_placement_wrapper() // 004465C0
 	{
 		static Unit* builder;
 		static u32 unit_id;
@@ -106,7 +106,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_PerformTask_Wrapper() // 004361A0
+	void __declspec(naked) ai_perform_task_wrapper() // 004361A0
 	{
 		static Unit* unit;
 		static char result;
@@ -124,7 +124,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_PlanDoMergeMorph_Wrapper() // 00435F10
+	void __declspec(naked) ai_plan_do_merge_morph_wrapper() // 00435F10
 	{
 		static char result;
 		static s32 player;
@@ -175,7 +175,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_Build_Wrapper() { // 004323D0
+	void __declspec(naked) ai_build_wrapper() { // 004323D0
 		static u32 unit_id;
 		static bool need;
 		static u32 count;
@@ -203,7 +203,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_build_gas_building_Wrapper() { // 00433660
+	void __declspec(naked) ai_build_gas_building_wrapper() { // 00433660
 		static AiTown* town;
 		__asm {
 			MOV town, EAX
@@ -297,25 +297,46 @@ namespace
 			JMP jmp_address
 		}
 	}
+
+	void __declspec(naked) ai_update_guard_needs_wrapper() { // 004630C0
+		static u32 player;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::ai_update_guard_needs(player);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
 {
 	void inject_ai_request_hooks()
 	{
-//		jump_patch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
-		jump_patch(AI_ProgressBuild_Wrapper,				0x00434480, 1);
-//		jump_patch(AIManageBuildingPlacement_Wrapper,		0x004465C0, 3);
-		jump_patch(AI_PerformTask_Wrapper,					0x004361A0, 0);
-//		jump_patch(AI_PlanDoMergeMorph_Wrapper,				0x00435F10, 1);
-//		jump_patch(ai_train_defensive_military_Wrapper,		0x0043F990, 1);
-		jump_patch(AI_Build_Wrapper,						0x004323D0, 1);
-		jump_patch(AI_build_gas_building_Wrapper,			0x00433660, 1);
+	//	jump_patch(ai_build_tech_upgrade_wrapper,			0x00431F90, 2);
+		jump_patch(ai_progress_build_wrapper,				0x00434480, 1);
+	//	jump_patch(ai_manage_building_placement_wrapper,	0x004465C0, 3);
+		jump_patch(ai_perform_task_wrapper,					0x004361A0, 0);
+	//	jump_patch(ai_plan_do_merge_morph_wrapper,			0x00435F10, 1);
+	//	jump_patch(ai_train_defensive_military_Wrapper,		0x0043F990, 1);
+		jump_patch(ai_build_wrapper,						0x004323D0, 1);
+		jump_patch(ai_build_gas_building_wrapper,			0x00433660, 1);
 
 		jump_patch(ai_request_guard_wrapper,				0x00448630, 0);
 		jump_patch(ai_region_train_attack_force_wrapper,	0x0043E670,	4);
 		jump_patch(ai_add_town_spending_request_wrapper,    0x00448400, 0);
 
 		jump_patch(ai_player_need_priority_wrapper,			0x0045BE1F, 2);
+	//	jump_patch(ai_update_guard_needs_wrapper,			0x004630C0, 1);
 	}
 }

@@ -7,7 +7,7 @@ namespace hooks
 {
 	bool stat_lobotomy_mine_count(BinDlg* dialog, u32 index)
 	{
-		auto activeUnit = *active_portrait_unit;
+		auto activeUnit = *g_active_portrait_unit;
 		// Originally had code for research, removed
 		sprintf_s(statusscreen_infobtn[index], 8, "%d ", activeUnit->mine_carrier.mine_count);
 		if (dialog->control_type)
@@ -57,7 +57,7 @@ namespace hooks
 	void stats_panel_display(BinDlg* dialog)
 	{
 		BinDlg* current_dialog;
-		Unit* activeUnit = *active_portrait_unit;
+		Unit* activeUnit = *g_active_portrait_unit;
 		u32 index = 0;
 
 		if (!(activeUnit->status & UnitStatus::IsHallucination)
@@ -329,7 +329,7 @@ namespace hooks
 
 	void draw_unit_kills_string(BinDlg* dialog) // 00425DD0
 	{
-		Unit* unit = *active_portrait_unit;
+		Unit* unit = *g_active_portrait_unit;
 
 		static char buffer[256] = {};
 		strcpy_s(buffer, g_player_name_list->player[unit->player].force_name);
@@ -377,10 +377,10 @@ namespace hooks
 	// Hooked to draw armor icons to buildings. - Pr0nogo
 	void draw_building_info(BinDlg* dialog) // 00427890
 	{
-		Unit* activeUnit = *active_portrait_unit;
-		g_selection_group_hp[0] = (*active_portrait_unit)->hitpoints;
-		s32 shields = (*active_portrait_unit)->shields >> 8;
-		*g_ui_energy = (*active_portrait_unit)->energy;
+		Unit* activeUnit = *g_active_portrait_unit;
+		g_selection_group_hp[0] = (*g_active_portrait_unit)->hitpoints;
+		s32 shields = (*g_active_portrait_unit)->shields >> 8;
+		*g_ui_energy = (*g_active_portrait_unit)->energy;
 		*g_ui_shields = shields;
 		*g_redraw_transport_ui = helper::ui_needs_redraw();
 		helper::generic_status_update_drawn_values();
@@ -475,7 +475,7 @@ namespace hooks
 	LABEL_32:
 		helper::set_text_string(dialog);
 		helper::set_unit_status_string_text(dialog);
-		helper::add_text_to_dialog(dialog, -5, get_unit_name(*active_portrait_unit));
+		helper::add_text_to_dialog(dialog, -5, get_unit_name(*g_active_portrait_unit));
 	}
 
 	// Hooked to draw new values to icons. -- Pr0nogo
@@ -494,7 +494,7 @@ namespace hooks
 		u8 v13;
 
 		v3 = dialog;
-		v13 = helper::getArmorCount(*active_portrait_unit, unused);
+		v13 = helper::getArmorCount(*g_active_portrait_unit, unused);
 		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v13);
 		if (v3->control_type)
 		{
@@ -519,7 +519,7 @@ namespace hooks
 		helper::disable_dialog(v4);
 		v5 = cmdicons_grp;
 		v6 = *v4->user;
-		v7 = *active_portrait_unit;
+		v7 = *g_active_portrait_unit;
 		v4->graphic = 12;
 		// TODO: Fix compiler error
 	//	*(s32*)v6 = v5;
@@ -566,7 +566,7 @@ namespace hooks
 		s16 v10;
 
 		v3 = dialog;
-		v4 = (*active_portrait_unit)->player;
+		v4 = (*g_active_portrait_unit)->player;
 		if (weapons_dat::DamageUpgrade[weapon_id] >= 0x2Eu)
 		{
 //			v5 = *g_upgrades_level_bw[v4][weapons_dat::DamageUpgrade[weapon_id]];
@@ -791,7 +791,7 @@ namespace hooks
 	// Hooked to investigate transport UI. -Pr0nogo
 	void unit_stat_action_transport(BinDlg* dialog) // 00427C90
 	{
-		Unit* active_unit = *active_portrait_unit;
+		Unit* active_unit = *g_active_portrait_unit;
 		if ((*g_is_in_replay || active_unit->player == *g_local_nation_id)
 		&&  !(active_unit->status & UnitStatus::IsHallucination)
 		&&   (helper::transport_status_update_drawn_values(), helper::is_unit_loaded(active_unit)))

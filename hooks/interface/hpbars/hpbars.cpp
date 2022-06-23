@@ -36,7 +36,7 @@ namespace hooks
 		}
 		v4 = sprites_dat::IsVisible[v2 + 390];
 		*(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
-			+ (imageGrpGraphics[orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
+			+ (g_image_grp_graphics[orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
 			+ 8;
 		*(*(a1 + 44) + 6) = 0;
 		*(*(a1 + 44) + 7) = 0;

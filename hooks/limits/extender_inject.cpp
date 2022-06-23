@@ -210,7 +210,7 @@ namespace hooks
 		}
 		assert(player < 8);
 		assert(index < ATTACK_LIMIT);
-		//		unit_id = AIScriptController[player].attackers[index]; // is actually "unit_id+1"
+		//		unit_id = g_aiscript_controller[player].attackers[index]; // is actually "unit_id+1"
 		unit_id = globals.attackers.attacks[player][index];
 		__asm {
 			POPAD
@@ -244,7 +244,7 @@ namespace hooks
 		}
 		assert(player < 8);
 		assert(index < ATTACK_LIMIT);//change later
-//		AIScriptController[player].attackers[index] = unit_id;//is actually "unit_id+1"
+//		g_aiscript_controller[player].attackers[index] = unit_id;//is actually "unit_id+1"
 		globals.attackers.attacks[player][index] = unit_id;
 		__asm {
 			POPAD
@@ -261,7 +261,7 @@ namespace hooks
 			MOV player, ECX
 			PUSHAD
 		}
-		//		arrayStart = &AIScriptController[player].attackers[0];
+		//		arrayStart = &g_aiscript_controller[player].attackers[0];
 		arrayStart = &globals.attackers.attacks[player][0];
 		__asm {
 			POPAD
@@ -280,7 +280,7 @@ namespace hooks
 			MOV player, ECX
 			PUSHAD
 		}
-		//		if (AIScriptController[player].attackers[0] == 0) {
+		//		if (g_aiscript_controller[player].attackers[0] == 0) {
 		if (globals.attackers.attacks[player][0] == 0)
 		{
 			__asm {
@@ -290,7 +290,7 @@ namespace hooks
 		}
 		else
 		{
-			//			arrayOffset = reinterpret_cast<u32>(&AIScriptController[player].attackers[0]);
+			//			arrayOffset = reinterpret_cast<u32>(&g_aiscript_controller[player].attackers[0]);
 			arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[player][0]);
 			__asm {
 				POPAD
@@ -314,7 +314,7 @@ namespace hooks
 		}
 		assert(index < ATTACK_LIMIT);
 		player = playerMul / (sizeof(AI_Main) / 2);
-		//		get_unit = AIScriptController[player].attackers[index];
+		//		get_unit = g_aiscript_controller[player].attackers[index];
 		get_unit = globals.attackers.attacks[player][index];
 		__asm {
 			POPAD
@@ -338,8 +338,8 @@ namespace hooks
 			PUSHAD
 		}
 		/*
-		unit_id = AIScriptController[player].attackers[0];
-		arrayOffset = reinterpret_cast<u32>(AIScriptController[player].attackers);
+		unit_id = g_aiscript_controller[player].attackers[0];
+		arrayOffset = reinterpret_cast<u32>(g_aiscript_controller[player].attackers);
 		*/
 		unit_id = globals.attackers.attacks[player][0];
 		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[player][0]);
@@ -360,7 +360,7 @@ namespace hooks
 			MOV player, EAX
 			PUSHAD
 		}
-		//		arrayOffset = reinterpret_cast<u32>(AIScriptController[player].attackers);
+		//		arrayOffset = reinterpret_cast<u32>(g_aiscript_controller[player].attackers);
 		arrayOffset = reinterpret_cast<u32>(&globals.attackers.attacks[player][0]);
 		__asm {
 			POPAD

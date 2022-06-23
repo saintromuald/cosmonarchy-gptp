@@ -25,10 +25,10 @@ namespace hooks
 
 		parentAi = region;
 		child = (u8)region->player;
-		result = AI_GetMissingAttackForceUnits(region, v9, AIScriptController[child].AI_Flags.is_use_map_settings);
+		result = AI_GetMissingAttackForceUnits(region, v9, g_aiscript_controller[child].AI_Flags.is_use_map_settings);
 		v10 = result;
-		if (AIScriptController[child].AI_Flags.is_use_map_settings
-			|| (childTown = AIScriptController[child].previous_building_hit_second) != 0
+		if (g_aiscript_controller[child].AI_Flags.is_use_map_settings
+			|| (childTown = g_aiscript_controller[child].previous_building_hit_second) != 0
 			&& (v12 = *g_elapsed_time_seconds - childTown >= 30, *g_elapsed_time_seconds - childTown < 30))
 		{
 			v11 = 60;
@@ -47,7 +47,7 @@ namespace hooks
 				if (parentTown < UnitId::None && !helper::ai_add_to_region_military(parentAi, parentTown, v11))
 				{
 					v8 = (u8)parentAi->player;
-					AIScriptController[v8].AI_Flags.flag_0x40 = 1; // Might be wrong
+					g_aiscript_controller[v8].AI_Flags.flag_0x40 = 1; // Might be wrong
 					helper::ai_add_cost_to_needs(parentTown, v8, 1);
 					helper::ai_add_spending_request(parentTown, v8, 1, 60, parentAi);
 					helper::ai_add_base_unit_spending_request(parentTown, v8, parentAi, 60);
@@ -91,7 +91,7 @@ namespace hooks
 			attackTarget = helper::ai_pick_attack_target_no_buildings(region);
 			if (attackTarget)
 			{
-				target_region = &AiRegionCaptains[(u8)region->player][helper::get_region_id(
+				target_region = &g_ai_region_captains[(u8)region->player][helper::get_region_id(
 					attackTarget->sprite->position.x,
 					attackTarget->sprite->position.y)];
 				helper::ai_set_region_type(9, target_region);
@@ -109,7 +109,7 @@ LABEL_15:
 			regionId = region->target_region;
 			if (regionId)
 			{
-				targetRegion2 = &AiRegionCaptains[(u8)region->player][regionId];
+				targetRegion2 = &g_ai_region_captains[(u8)region->player][regionId];
 				helper::ai_set_region_type(1, targetRegion2);
 				targetRegion3 = targetRegion2;
 				regionVar = region;
@@ -158,7 +158,7 @@ LABEL_14:
 		Unit* v18;
 		MilitaryAi* military;
 
-		childAi = AIScriptController[(u8)region->player].attackers;
+		childAi = g_aiscript_controller[(u8)region->player].attackers;
 		parentAi = *childAi;
 		for (i = 0; *childAi; ++i)
 		{
@@ -267,9 +267,9 @@ LABEL_35:
 		{
 			plOffset = 628 * player;
 			index = 0;
-			if (AIScriptController[player].attackers[0])
+			if (g_aiscript_controller[player].attackers[0])
 			{
-				atkGroups = AIScriptController[player].attackers;
+				atkGroups = g_aiscript_controller[player].attackers;
 				while (index < 63)
 				{
 					++atkGroups;
@@ -285,7 +285,7 @@ LABEL_35:
 LABEL_8:
 				if (counter)
 				{
-					atkFinal = &AIScriptController[0].attackers[plOffset + index];
+					atkFinal = &g_aiscript_controller[0].attackers[plOffset + index];
 					do
 					{
 						--counter;
@@ -311,13 +311,13 @@ LABEL_8:
 		char regionsList[2500];
 		u32 waveBool;
 
-		if (AIScriptController[player].supply_collection)
+		if (g_aiscript_controller[player].supply_collection)
 		{
 			return 1;
 		}
-		if (AIScriptController[player].ai_attack_group)
+		if (g_aiscript_controller[player].ai_attack_group)
 		{
-			return *((u8*)&AiRegionCaptains[player][(u16)AIScriptController[player].ai_attack_group] - 47) != 8;
+			return *((u8*)&g_ai_region_captains[player][(u16)g_aiscript_controller[player].ai_attack_group] - 47) != 8;
 		}
 		memset(regionsList, 0, sizeof(regionsList));
 		helper::populate_regions_with_own(regionsList, player);
@@ -326,8 +326,8 @@ LABEL_8:
 		{
 			helper::ai_finish_region_accessibility(regionsList);
 		}
-		attackWave = AIScriptController[player].attackers[0];
-		attackWave2 = AIScriptController[player].attackers;
+		attackWave = g_aiscript_controller[player].attackers[0];
+		attackWave2 = g_aiscript_controller[player].attackers;
 		waveBool = attackWave != 0;
 		if (attackWave)
 		{
@@ -343,7 +343,7 @@ LABEL_8:
 			waveBool = 0;
 		}
 LABEL_12:
-		AIScriptController[player].AI_Flags.is_secure_finished = 1;
+		g_aiscript_controller[player].AI_Flags.is_secure_finished = 1;
 		if (!helper::ai_set_attack_grouping_region(waveBool, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
 			&& !helper::ai_set_attack_grouping_region(waveBool, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
 		{
@@ -354,7 +354,7 @@ LABEL_12:
 			if (!helper::ai_set_attack_grouping_region(1, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
 				&& !helper::ai_set_attack_grouping_region(1, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
 			{
-				AIScriptController[player].supply_collection = 1;
+				g_aiscript_controller[player].supply_collection = 1;
 				return 1;
 			}
 		}
@@ -376,7 +376,7 @@ LABEL_12:
 		u32 v11;
 		u32 v13[63];
 
-		child = AIScriptController[player].attackers;
+		child = g_aiscript_controller[player].attackers;
 		parentAi = *child;
 		for (i = 0; *child; ++i)
 		{
@@ -464,7 +464,7 @@ LABEL_22:
 		}
 		u32 v2 = unit_id + 1;
 		u32 v3 = 0;
-		u16* v4 = AIScriptController[player].attackers;
+		u16* v4 = g_aiscript_controller[player].attackers;
 		while (*v4 != v2)
 		{
 			++v3;
@@ -474,6 +474,6 @@ LABEL_22:
 				return;
 			}
 		}
-		AIScriptController[0].attackers[v3 + 628 * player] = 229;
+		g_aiscript_controller[0].attackers[v3 + 628 * player] = 229;
 	}
 }

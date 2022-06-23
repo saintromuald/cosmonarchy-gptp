@@ -520,7 +520,7 @@ namespace WeaponBehavior
 	};
 }
 
-// Use with colorShift
+// Use with g_color_shift
 namespace ColorRemapping
 {
 	enum Enum

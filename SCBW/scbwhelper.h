@@ -1381,4 +1381,8 @@ namespace helper
 	// For select_unit_initial
 	void remove_selection_circle_image(Image* image);														// 004D4FA0
 	char illegal_team_check(Unit* unit);																	// 00485710
+
+	// For ai_update_guard_needs
+	void delete_guard_ai(GuardAi* guard_ai, GuardAiList* guard_ai_list);									// 00403030
+	Unit* find_nearest_available_military(u32 player, u32 y_pos, u32 unit_id, u32 x_pos);					// 004379B0
 }

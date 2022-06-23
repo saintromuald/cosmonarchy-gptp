@@ -115,7 +115,7 @@ namespace hooks
 		{
 			if (unit->id == UnitId::TerranCleric)
 			{
-				Unit* freeMedic = AIScriptController[player].main_medic;				
+				Unit* freeMedic = g_aiscript_controller[player].main_medic;				
 				if (freeMedic == nullptr)
 				{
 					freeMedic = unit;
@@ -130,7 +130,7 @@ namespace hooks
 				//u32 closest_resarea = scbw::get_closest_resarea(unit->position);
 				//if (default_ai_expansion_block[player] && scbw::unit_id_is_town_center(unit->id) && (!town || town->resarea != closest_resarea)) {
 				//	AiScript* aiscript = 0;
-				//	for (AiScript* it = *first_active_aiscript; it; it = it->link.next) {
+				//	for (AiScript* it = *g_first_active_aiscript; it; it = it->link.next) {
 				//		if (it->player == player) {
 				//			aiscript = it;
 				//			break;

@@ -1260,7 +1260,7 @@ namespace scbw
 	// Identical to function @ 0x004E6140
 	void create_shield_overlay(Unit* unit, u32 attackDirection)
 	{
-		//const LO_Header* shield_lo = shieldOverlays[unit->sprite->main_graphic->id];
+		//const LO_Header* shield_lo = g_shield_overlays[unit->sprite->main_graphic->id];
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayShieldPtr, unit->sprite->main_graphic->id));
 		u32 frameAngle = (attackDirection - 124) / 8 % 32;
 
@@ -2018,8 +2018,8 @@ namespace scbw
 	u32 get_closest_resarea(Point16 position) {
 		u32 min_distance = UINT32_MAX;
 		u32 best_resarea = 0;
-		for (u32 i = 1; i <= resource_areas->count; ++i) {
-			ResourceArea* resarea = &resource_areas->areas[i];
+		for (u32 i = 1; i <= g_resource_areas->count; ++i) {
+			ResourceArea* resarea = &g_resource_areas->areas[i];
 			u32 distance = scbw::get_distance_fast(position, resarea->position);
 			if (distance < min_distance) {
 				min_distance = distance;
@@ -2050,7 +2050,7 @@ namespace scbw
 	}
 
 	AiRegion* get_ai_region(u32 player, u32 index) {
-		return &AiRegionCaptains[player][index];
+		return &g_ai_region_captains[player][index];
 	}
 
 	u32 get_ai_region_military_count(AiRegion* ai_region) {
@@ -2344,8 +2344,8 @@ namespace scbw
 		if (!prefer_military || units_dat::ComputerAIInternal[unit->id] & 2) {
 			helper::give_ai(unit);
 		} else {
-			if (unit->id == UnitId::TerranCleric && !AIScriptController[unit->player].main_medic) {
-				AIScriptController[unit->player].main_medic = unit;
+			if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
+				g_aiscript_controller[unit->player].main_medic = unit;
 			}
 			helper::ai_training_simple_military(unit, unit);
 		}

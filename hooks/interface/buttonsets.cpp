@@ -181,7 +181,7 @@ ButtonSet* get_custom_buttonset()
 
 namespace hooks {
 	static Unit* get_selected_unit() {
-		Unit* active = *active_portrait_unit;
+		Unit* active = *g_active_portrait_unit;
 		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = g_client_selection_group->unit[i];
 			if (unit && unit->status & UnitStatus::Completed) {
@@ -483,13 +483,13 @@ namespace hooks {
 			CX_Holder = *BUTTONSET_CURRENT_BUTTONSETID;
 			if (*BUTTONSET_CURRENT_BUTTONSETID == UnitId::Buttons_Blank)
 			{
-				if (!*active_portrait_unit)
+				if (!*g_active_portrait_unit)
 				{
 					jumpTo59A38 = true;
 				}
 				else
 				{
-					CX_Holder = (*active_portrait_unit)->current_buttonset;
+					CX_Holder = (*g_active_portrait_unit)->current_buttonset;
 				}
 			}
 		}
@@ -509,18 +509,18 @@ namespace hooks {
 			{
 				helper::update_command_card();
 				helper::refresh_button_tooltip();
-				jumpTo59A9F = *active_portrait_unit;
+				jumpTo59A9F = *g_active_portrait_unit;
 				if (!jumpTo59A9F)
 				{
-					mainOrderIdHolderUnit_EBP = (*active_portrait_unit)->main_order_id;
+					mainOrderIdHolderUnit_EBP = (*g_active_portrait_unit)->main_order_id;
 					CX_Holder = mainOrderIdHolderUnit_EBP;
-					if (!(*active_portrait_unit)->subunit)
+					if (!(*g_active_portrait_unit)->subunit)
 					{
 						jumpTo59A83 = true;
 					}
 					else
 					{
-						mainOrderIdHolderSubUnit_BL = (*active_portrait_unit)->subunit->main_order_id;
+						mainOrderIdHolderSubUnit_BL = (*g_active_portrait_unit)->subunit->main_order_id;
 						jumpTo59A86 = true;
 					}
 				}
@@ -533,18 +533,18 @@ namespace hooks {
 			{
 				helper::update_command_card();
 				helper::refresh_button_tooltip();
-				jumpTo59A9F = !*active_portrait_unit;
+				jumpTo59A9F = !*g_active_portrait_unit;
 				if (!jumpTo59A9F)
 				{
-					mainOrderIdHolderUnit_EBP = (*active_portrait_unit)->main_order_id;
+					mainOrderIdHolderUnit_EBP = (*g_active_portrait_unit)->main_order_id;
 					CX_Holder = mainOrderIdHolderUnit_EBP;
-					if (!(*active_portrait_unit)->subunit)
+					if (!(*g_active_portrait_unit)->subunit)
 					{
 						jumpTo59A83 = true;
 					}
 					else
 					{
-						mainOrderIdHolderSubUnit_BL = (*active_portrait_unit)->subunit->main_order_id;
+						mainOrderIdHolderSubUnit_BL = (*g_active_portrait_unit)->subunit->main_order_id;
 						jumpTo59A86 = true;
 					}
 				}
@@ -554,13 +554,13 @@ namespace hooks {
 		if (!jumpTo59A83 && !jumpTo59A86 && !jumpTo59A9F)
 		{
 			// 00459A3C
-			if (*active_portrait_unit)
+			if (*g_active_portrait_unit)
 			{
 				bool jumpTo59ABD = false;
-				mainOrderIdHolderUnit_EBP = (*active_portrait_unit)->main_order_id;
-				if ((*active_portrait_unit)->subunit)
+				mainOrderIdHolderUnit_EBP = (*g_active_portrait_unit)->main_order_id;
+				if ((*g_active_portrait_unit)->subunit)
 				{
-					mainOrderIdHolderSubUnit_BL = (*active_portrait_unit)->subunit->main_order_id;
+					mainOrderIdHolderSubUnit_BL = (*g_active_portrait_unit)->subunit->main_order_id;
 				}
 				else
 				{
@@ -1661,7 +1661,7 @@ namespace hooks {
 					}
 
 					// TODO: Reenable and test
-					//if ((*active_portrait_unit)->player != *g_local_nation_id && current_button_state == Button_State::Enabled) {
+					//if ((*g_active_portrait_unit)->player != *g_local_nation_id && current_button_state == Button_State::Enabled) {
 					//	current_button_state = Button_State::Disabled;
 					//}
 
@@ -1676,7 +1676,7 @@ namespace hooks {
 			// 00459278
 			if (!bStopThere && !jumpto5934E)
 			{
-				jumpto5933C = (!*g_is_in_replay) && (*active_portrait_unit != nullptr) && ((*active_portrait_unit)->player != *g_local_nation_id);
+				jumpto5933C = (!*g_is_in_replay) && (*g_active_portrait_unit != nullptr) && ((*g_active_portrait_unit)->player != *g_local_nation_id);
 				// TODO: Reenable and test
 				// jumpto5933C = false;
 				if (!jumpto5933C)

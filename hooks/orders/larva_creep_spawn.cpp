@@ -512,7 +512,7 @@ namespace hooks
 		u32 tile_flags = unit->id == UnitId::ZergExcisant ? 0x10000000 : 0x18000000;
 		if (rect.top > rect.bottom)
 		{
-			*dying_unit_creep_disappearance_count = 0;
+			*g_dying_unit_creep_disappearance_count = 0;
 			return 1;
 		}
 		else
@@ -529,11 +529,11 @@ namespace hooks
 				pos_y += 32;
 				if (rect_top > rect.bottom)
 				{
-					*dying_unit_creep_disappearance_count = 0;
+					*g_dying_unit_creep_disappearance_count = 0;
 					return 1;
 				}
 			}
-			while (((*current_tiles)[rect_left + rect_top * *map_creep_width] & 0x7FF0) != 16
+			while (((*g_current_tiles)[rect_left + rect_top * *g_map_creep_width] & 0x7FF0) != 16
 				|| does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
 				|| tile_flags & (*g_active_tile_array_int)[rect_left + rect_top * g_map_tile_size->width]
 				|| helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
@@ -548,7 +548,7 @@ namespace hooks
 					pos_y += 32;
 					if (rect_top > rect.bottom)
 					{
-						*dying_unit_creep_disappearance_count = 0;
+						*g_dying_unit_creep_disappearance_count = 0;
 						return 1;
 					}
 				}

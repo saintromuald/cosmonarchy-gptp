@@ -172,8 +172,8 @@ static s32 compare_base_layout(const void* a, const void* b) {
 	if (cost_diff) return cost_diff;
 
 	if (pa->resarea && pb->resarea) {
-		Point16 point_a = resource_areas->areas[pa->resarea].position;
-		Point16 point_b = resource_areas->areas[pb->resarea].position;
+		Point16 point_a = g_resource_areas->areas[pa->resarea].position;
+		Point16 point_b = g_resource_areas->areas[pb->resarea].position;
 		s32 pos_diff = scbw::get_distance_fast(pa->position, point_a) - scbw::get_distance_fast(pb->position, point_b);
 		if (pos_diff) return pos_diff;
 	}
@@ -356,7 +356,7 @@ static bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* p
 }
 
 static bool has_expanding_town(u32 player) {
-	for (u32 i = 1; i <= resource_areas->count; ++i) {
+	for (u32 i = 1; i <= g_resource_areas->count; ++i) {
 		LayoutsTown* layouts_town = &layouts_towns[i];
 		if (layouts_town->town && layouts_town->town->player == player && !layouts_town->town->main_building) {
 			return true;
@@ -403,12 +403,12 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 	for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 		Placeholder* placeholder = &layouts->placeholders[j];
 		// Check if resarea is available
-		if (resource_areas->areas[placeholder->resarea].flags & 3) {
+		if (g_resource_areas->areas[placeholder->resarea].flags & 3) {
 			continue;
 		}
 		// See if it's an optimal expansion
 		if (placeholder->should_request && units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
-			u32 distance = scbw::get_distance_fast(main_town->position, resource_areas->areas[placeholder->resarea].position);
+			u32 distance = scbw::get_distance_fast(main_town->position, g_resource_areas->areas[placeholder->resarea].position);
 			if (placeholder->priority > best_priority || (placeholder->priority == best_priority && distance < best_distance)) {
 				best_priority = placeholder->priority;
 				best_distance = distance;
@@ -428,7 +428,7 @@ void tick_layouts() {
 	}
 
 	// Deinit
-	for (u32 i = 1; i <= resource_areas->count; ++i) {
+	for (u32 i = 1; i <= g_resource_areas->count; ++i) {
 		LayoutsTown* layouts_town = &layouts_towns[i];
 		AiTown* town = layouts_town->town;
 		if (town && (!town->inited || !town->resarea)) {

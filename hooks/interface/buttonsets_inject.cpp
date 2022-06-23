@@ -129,7 +129,7 @@ void __declspec(naked) get_stat_txt_string_wrapper()
 	{
 		if (stringId == string_toggle_on[i])
 		{
-			if (scbw::get_generic_rust_value(*active_portrait_unit, toggle_values[i]))
+			if (scbw::get_generic_rust_value(*g_active_portrait_unit, toggle_values[i]))
 			{
 				stringId = string_toggle_off[i];
 			}
@@ -137,7 +137,7 @@ void __declspec(naked) get_stat_txt_string_wrapper()
 	}
 	if (stringId == 1633)
 	{
-		if (scbw::get_aise_value(*active_portrait_unit, nullptr, AiseId::SendCyprianValue, 0, 0) == 1)
+		if (scbw::get_aise_value(*g_active_portrait_unit, nullptr, AiseId::SendCyprianValue, 0, 0) == 1)
 		{
 			stringId = 1634;
 		}

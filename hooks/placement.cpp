@@ -44,7 +44,7 @@ namespace hooks
     }
 
     s32 update_placement_state_for_placement_box() { // 0048DCE0
-        if (!*active_portrait_unit) {
+        if (!*g_active_portrait_unit) {
             return 0;
         }
 
@@ -54,8 +54,8 @@ namespace hooks
         u16 addon_y = (*place_building_y - units_dat::AddonPlacement[2 * *place_building_unit_id - 211].y / 32);
         scbw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
 
-        s32 can_build = helper::can_build_on_tile_location(*active_portrait_unit, *placing_player, *place_building_x, *place_building_y, *place_building_unit_id, 1, 1, 0, 0);
-        s32 result = helper::can_build_on_tile_location(*active_portrait_unit, *placing_player, addon_x, addon_y, *place_building_base_type, 0, 1, 0, 0);
+        s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, *placing_player, *place_building_x, *place_building_y, *place_building_unit_id, 1, 1, 0, 0);
+        s32 result = helper::can_build_on_tile_location(*g_active_portrait_unit, *placing_player, addon_x, addon_y, *place_building_base_type, 0, 1, 0, 0);
         // ^ this call might be needed, even if the result isn't returned, untested
         if (!*is_placing_addon || can_build) {
             result = can_build;

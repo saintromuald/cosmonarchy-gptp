@@ -223,8 +223,8 @@ namespace
 				}
 			}
 		}
-		race = (*active_portrait_unit)->get_race();
-		scbw::show_error_message_with_sfx((*active_portrait_unit)->player, 864 + race, 156 + race);
+		race = (*g_active_portrait_unit)->get_race();
+		scbw::show_error_message_with_sfx((*g_active_portrait_unit)->player, 864 + race, 156 + race);
 		return false;
 	}
 }
