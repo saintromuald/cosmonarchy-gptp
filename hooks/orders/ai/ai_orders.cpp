@@ -1891,7 +1891,7 @@ LABEL_37:
 			}
 			if (base_id) {
 				helper::ai_expand_to(aiscript, base_id, block);
-				scbw::ai_defend(aiscript->player, scbw::get_region_id(g_resource_areas->areas[base_id].position), 115, true);
+				//scbw::ai_defend(aiscript->player, scbw::get_region_id(g_resource_areas->areas[base_id].position), 115, true);
 			}
 		}
 	}

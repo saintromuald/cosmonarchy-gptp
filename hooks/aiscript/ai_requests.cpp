@@ -879,10 +879,9 @@ namespace hooks
 	}
 
 	// Hooked to allow AI to train guards while under attack. -Pr0nogo
-	void ai_request_guard(GuardAi* guard_ai, u32 player_id) // 00448630
+	void ai_request_guard(GuardAi* guard_ai, u32 player_id, u32 priority) // 00448630
 	{
 		u32 result = 0;
-		u32 priority = 70;
 		u32 last_hit = g_aiscript_controller[player_id].previous_building_hit_second;
 		/*
 		if (last_hit && *g_elapsed_time_seconds - last_hit < 30) {
@@ -938,30 +937,34 @@ namespace hooks
 	// Hooked to improve AI guard handling. -Pr0nogo
 	void ai_update_guard_needs(u32 player) { // 004630C0
 		for (GuardAi* guard_ai = g_first_player_guard->player[player].first; guard_ai; guard_ai = guard_ai->link.prev) {
-			if (g_aiscript_controller[player].AI_Flags.is_use_map_settings && guard_ai->times_died >= 3u) {
+			if (guard_ai->times_died >= 100) {
 				helper::delete_guard_ai(guard_ai, &g_first_player_guard->player[player]);
 			} else if (guard_ai->parent) {
 				Unit* unit = guard_ai->parent;
+				guard_ai->current_home = guard_ai->original_home;
 				if (unit->status & UnitStatus::IsHallucination) {
 					guard_ai->parent = 0;
 					helper::remove_unit_ai(unit, false);
 					guard_ai->times_died -= 1;
 					helper::ai_training_simple_military(unit, unit);
+				} else if (unit->main_order_id == OrderId::ComputerAI && scbw::get_distance_fast(unit->position, guard_ai->current_home) > 1 * 32) {
+					unit->order_to(OrderId::AttackMove, guard_ai->current_home.x, guard_ai->current_home.y);
 				}
-			} else if (!guard_ai->previous_update || *g_elapsed_time_seconds > guard_ai->previous_update + 5) {
+			} else {
 				AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(guard_ai->original_home));
 				Unit* nearest_military = helper::find_nearest_available_military(player, guard_ai->unit_id, guard_ai->original_home);
 				if (nearest_military && scbw::get_distance_fast(guard_ai->original_home, nearest_military->position) < 30 * 32) {
 					helper::remove_unit_ai(nearest_military, 0);
-					guard_ai->current_home.x = guard_ai->original_home.x;
-					guard_ai->current_home.y = guard_ai->original_home.y;
+					guard_ai->current_home = guard_ai->original_home;
 					guard_ai->parent = nearest_military;
 					nearest_military->unit_ai = (UnitAi*)guard_ai;
 					helper::issue_order_targeting_nothing(nearest_military, OrderId::ComputerAI);
-				} else {
-					ai_request_guard(guard_ai, player); // TODO: make this helper
-					guard_ai->previous_update = *g_elapsed_time_seconds;
 				}
+				// Request handling is currently in Aise, so we don't duplicate the priority system
+				//else if (!guard_ai->previous_update || *g_elapsed_time_seconds > guard_ai->previous_update + 5) {
+				//	helper::ai_request_guard(guard_ai, player);
+				//	guard_ai->previous_update = *g_elapsed_time_seconds;
+				//}
 			}
 		}
 	}

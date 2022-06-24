@@ -11,7 +11,7 @@ namespace hooks
 	void ai_train_defensive_military(u8 player_id);																			// 0043F990
 	void ai_build(u32 unit_id, bool need, u32 count, AiTown* town, u8 priority);											// 004323D0
 	char ai_build_refinery(AiTown* town);																					// 00433660
-	void ai_request_guard(GuardAi* guard_ai, u32 player_id);																// 00448630
+	void ai_request_guard(GuardAi* guard_ai, u32 player_id, u32 priority = 70);												// 00448630
 	void ai_region_train_attack_force(AiRegion* region);																	// 0043E670
 	void ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, AiRegion* region);								// 00448400
 	void ai_update_guard_needs(u32 player);																					// 004630C0

@@ -174,6 +174,18 @@ namespace AiType
 	};
 }
 
+namespace RequestType
+{
+	enum Enum
+	{
+		Military	= 1,
+		Guard		= 2,
+		Building	= 3,
+		Worker		= 4,
+		Addon		= 7,
+	};
+}
+
 namespace RegionState
 {
 	enum Enum

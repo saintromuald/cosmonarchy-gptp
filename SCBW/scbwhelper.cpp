@@ -12490,6 +12490,20 @@ namespace helper
 		}
 	}
 
+	u32 ai_request_guard(GuardAi* guard_ai, u32 player) {
+		static u32 result;
+		const u32 func_address = 0x00448630;
+		__asm {
+			PUSHAD
+			MOV ECX, player
+			MOV EAX, guard_ai
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 	Unit* find_nearest_available_military(u32 player, u32 unit_id, Point16 point) {
 		static Unit* result;
 		const u32 func_address = 0x004379B0;
