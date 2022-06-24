@@ -1642,36 +1642,36 @@ void tick_scenario() {
 		if (fraud_spawn.used_count < god_spawn_breakpoint) {
 			sprintf_s(buffer, sizeof(buffer), "Frauds remaining: %u", god_spawn_breakpoint - fraud_spawn.used_count);
 			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
-			ui_text_pos.y += ui_y_increment;
+			ui_text_pos.y += ui_text_height;
 
 			format_time(buffer, sizeof(buffer), "Next Fraud: ", fraud_spawn.timer / 24);
 			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
-			ui_text_pos.y += ui_y_increment;
+			ui_text_pos.y += ui_text_height;
 		} else if (fraud_spawn.used_type_count[FraudClass_God]) {
 			sprintf_s(buffer, sizeof(buffer), "Hands remaining: %u", 6 - fraud_spawn.used_type_count[FraudClass_God]);
 			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
-			ui_text_pos.y += ui_y_increment;
+			ui_text_pos.y += ui_text_height;
 
 			if (fraud_spawn.used_type_count[FraudClass_God] < 6) {
 				format_time(buffer, sizeof(buffer), "Next Hand: ", fraud_spawn.timer / 24);
 				graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 			}
-			ui_text_pos.y += ui_y_increment;
+			ui_text_pos.y += ui_text_height;
 		} else {
 			sprintf_s(buffer, sizeof(buffer), "Frauds remaining: 0");
 			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
-			ui_text_pos.y += ui_y_increment;
+			ui_text_pos.y += ui_text_height;
 		}
 
 		sprintf_s(buffer, sizeof(buffer), "Active Frauds:");
 		graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
-		ui_text_pos.y += ui_y_increment;
+		ui_text_pos.y += ui_text_height;
 		for (u32 i = 1; i < 7; ++i) {
 			FraudSpawnSequence* sequence = &fraud_spawn.sequence[i - 1];
 			if (sequence->fraud) {
 				sprintf_s(buffer, sizeof(buffer), "%s\x02 [%s\x02]", fraud_names[sequence->fraud], fraud_class_names[sequence->fraud_class]);
 				graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
-				ui_text_pos.y += ui_y_increment;
+				ui_text_pos.y += ui_text_height;
 			}
 		}
 

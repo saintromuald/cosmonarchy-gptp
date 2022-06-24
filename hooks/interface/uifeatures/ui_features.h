@@ -2,7 +2,7 @@
 #include "SCBW/scbwdata.h"
 #include "SCBW/api.h"
 
-const u32 ui_y_increment = 15;
+const u32 ui_text_height = 15;
 extern Point16 ui_text_pos;
 
 void format_time(char* buffer, u32 size, char* prefix, u32 seconds);

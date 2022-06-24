@@ -368,7 +368,15 @@ static Music* get_next_music() {
 bool has_custom_name[PlayerLimit];
 Objectives objectives;
 
+static s32 compare_objective(const void* a, const void* b) {
+	Objective* objective_a = (Objective*) a;
+	Objective* objective_b = (Objective*) b;
+	return objective_a->key - objective_b->key;
+}
+
 static Objective* find_objective(s32 key) {
+	// Since we are always sorted by key, we could use a bisect here to be faster?
+	// although objective counts are never even triple digit, so we would probably be slower?
 	for (u32 i = 0; i < objectives.count; ++i) {
 		if (objectives.entries[i].key == key) {
 			return &objectives.entries[i];
@@ -377,10 +385,22 @@ static Objective* find_objective(s32 key) {
 	return 0;
 }
 
-static s32 compare_objective(const void* a, const void* b) {
-	Objective* objective_a = (Objective*) a;
-	Objective* objective_b = (Objective*) b;
-	return objective_a->key - objective_b->key;
+static Objective* find_or_create_objective(s32 key) {
+	Objective* objective = find_objective(key);
+	if (!objective && objectives.count < ObjectivesCap) {
+		objective = &objectives.entries[objectives.count++];
+		*objective = {};
+		objective->key = key;
+		qsort(objectives.entries, objectives.count, sizeof(Objective), compare_objective);
+	}
+	return objective;
+}
+
+static void remove_objective(Objective* objective) {
+	if (objectives.count) {
+		*objective = objectives.entries[--objectives.count];
+		qsort(objectives.entries, objectives.count, sizeof(Objective), compare_objective);
+	}
 }
 
 static b32 __fastcall parse_comment_action(Action* action) {
@@ -484,23 +504,63 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				s32 key = parser_get_s32(&parser);
 				Token text = parser_get_string(&parser, true);
 
-				Objective* objective = find_objective(key);
+				Objective* objective = find_or_create_objective(key);
 				if (objective) {
-					sprintf_s(objective->text, "- %s", text.data);
-				} else if (objectives.count < ObjectivesCap) {
-					objective = &objectives.entries[objectives.count++];
-					objective->key = key;
-					sprintf_s(objective->text, "- %s", text.data);
-					qsort(objectives.entries, objectives.count, sizeof(Objective), compare_objective);
+					sprintf_s(objective->text, "%s", text.data);
+					objective->show = true;
+				}
+			} else if (parser_eq(&parser, "objective_text")) {
+				s32 key = parser_get_s32(&parser);
+				Token text = parser_get_string(&parser, true);
+
+				Objective* objective = find_or_create_objective(key);
+				if (objective) {
+					sprintf_s(objective->text, "%s", text.data);
+				}
+			} else if (parser_eq(&parser, "objective_desc")) {
+				s32 key = parser_get_s32(&parser);
+				Token text = parser_get_string(&parser, true);
+
+				// TODO: set objective description
+			} else if (parser_eq(&parser, "objective_show")) {
+				s32 key = parser_get_s32(&parser);
+				s32 show = parser_get_s32(&parser);
+
+				Objective* objective = find_or_create_objective(key);
+				if (objective) {
+					objective->show = show;
+				}
+			} else if (parser_eq(&parser, "objective_score")) {
+				s32 key = parser_get_s32(&parser);
+				s32 score = parser_get_s32(&parser);
+				s32 max_score = parser_get_s32(&parser);
+
+				Objective* objective = find_or_create_objective(key);
+				if (objective) {
+					objective->score = score;
+					objective->max_score = max_score;
+				}
+			} else if (parser_eq(&parser, "objective_score_add")) {
+				s32 key = parser_get_s32(&parser);
+				s32 score = parser_get_s32(&parser);
+				s32 max_score = parser_get_s32(&parser);
+
+				Objective* objective = find_or_create_objective(key);
+				if (objective) {
+					objective->score += score;
+					objective->max_score += max_score;
+					if (objective->score > objective->max_score) {
+						objective->score = objective->max_score;
+					}
 				}
 			} else if (parser_eq(&parser, "objective_remove")) {
 				s32 key = parser_get_s32(&parser);
-
 				Objective* objective = find_objective(key);
-				if (objective && objectives.count) {
-					*objective = objectives.entries[--objectives.count];
-					qsort(objectives.entries, objectives.count, sizeof(Objective), compare_objective);
-				}				
+				if (objective) {
+					remove_objective(objective);
+				}
+			} else if (parser_eq(&parser, "objectives_sync")) {
+				// TODO: sync objectives to mission objectives menu
 			} else if (parser_eq(&parser, "objectives_clear")) {
 				memset(&objectives, 0, sizeof(objectives));
 			} else if (parser_eq(&parser, "log_placeholder_requests")) {

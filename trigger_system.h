@@ -4,6 +4,9 @@
 extern bool has_custom_name[PlayerLimit];
 
 struct Objective {
+	bool show;
+	u32 score;
+	u32 max_score;
 	s32 key;
 	char text[256];
 };

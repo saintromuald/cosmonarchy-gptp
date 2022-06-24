@@ -11,6 +11,7 @@ u64 total_client_actions;
 
 s32* const fonts = (s32*)0x006CE0F4;
 char* const printXYAlignment = (char*)0x006CE110;
+u32* const printXYPosY = (u32*)0x006CE0E0;
 Box16* const drawTextBox = (Box16*)0x006CE0C8;
 
 Point16 ui_text_pos;
@@ -35,8 +36,9 @@ namespace hooks {
 	}
 
 	void draw_ui_text(const char* text, u8 color) {
-		draw_text(text, ui_text_pos.x, ui_text_pos.y, 200, ui_y_increment, color);
-		ui_text_pos.y += ui_y_increment;
+		draw_text(text, ui_text_pos.x, ui_text_pos.y, 300, ui_text_height * 4, color);
+		//ui_text_pos.y += ui_text_height;
+		ui_text_pos.y = *printXYPosY;
 	}
 
 	void register_action(u8 type) {
@@ -73,7 +75,19 @@ namespace hooks {
 		}
 
 		for (u32 i = 0; i < objectives.count; ++i) {
-			draw_ui_text(objectives.entries[i].text, 7);
+			Objective* objective = &objectives.entries[i];
+			if (objective->show) {
+				char buffer[256] = {};
+				if (objective->max_score == 1) {
+					snprintf(buffer, 256, "- [%c] %s", objective->score ? 'X' : ' ', objective->text);
+				} else if (objective->max_score) {
+					snprintf(buffer, 256, "- [%u/%u] %s", objective->score, objective->max_score, objective->text);
+				} else {
+					snprintf(buffer, 256, "- %s", objective->text);
+				}
+
+				draw_ui_text(buffer, 7);
+			}
 		}
 	}
 
