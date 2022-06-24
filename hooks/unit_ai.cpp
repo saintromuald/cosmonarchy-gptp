@@ -7,27 +7,34 @@
 
 namespace hooks
 {
-	void ai_training_unit(Unit* result, Unit* parent) { // 004A2830
-		if (g_player_table[result->player].type != PlayerType::Computer) {
+	void ai_training_unit(Unit* unit, Unit* parent) { // 004A2830
+		if (g_player_table[unit->player].type != PlayerType::Computer) {
 			return;
 		}
 
-		if (result->id == UnitId::TerranCleric && !g_aiscript_controller[result->player].main_medic) {
-			g_aiscript_controller[result->player].main_medic = result;
+		if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
+			g_aiscript_controller[unit->player].main_medic = unit;
 		}
 
-		if (units_dat::base_property[result->id] & UnitProperty::Worker) {
-			helper::ai_training_worker(result, parent);
-		} else if (result->id == UnitId::ZergOvileth) {
-			helper::ai_training_overlord(result, parent); // replace with hook later
-		} else if (result->id == UnitId::ZergRilirokor
-				|| result->id == UnitId::ZergRililisk
-				|| result->id == UnitId::ProtossArchon
-				|| result->id == UnitId::ProtossMindTyrant) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+			helper::ai_training_worker(unit, parent);
+		} else if (unit->id == UnitId::ZergOvileth) {
+			helper::ai_training_overlord(unit, parent); // replace with hook later
+		} else if (unit->id == UnitId::ZergRilirokor
+				|| unit->id == UnitId::ZergRililisk
+				|| unit->id == UnitId::ProtossArchon
+				|| unit->id == UnitId::ProtossMindTyrant) {
 			// archon and mind tyrant should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
-			hooks::ai_training_simple_military(result, parent);
+			hooks::ai_training_simple_military(unit, parent);
 		} else {
-			helper::ai_training_normal(result, parent);
+			// So we shouldn't be initializing military AI twice, since it leads to disaster
+			if (unit->status & UnitStatus::IsHallucination) {
+				// Here we readd the hallucination code
+				helper::add_military_ai(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)), unit, true);
+			} else if (!scbw::is_conventional_unit_morph_result(unit->id)) {
+				// And we add AI only if it's not a morph result, in which case it should already have AI
+				helper::ai_training_normal(unit, parent);
+			}
 		}
 	}
 
