@@ -210,7 +210,7 @@ LABEL_36:
 						v11 = 2;
 				}
 			}
-			if (!(units_dat::ComputerAIInternal[v10] & 1))
+			if (!(units_dat::computer_ai_internal[v10] & 1))
 			{
 				v14 = (UnitAi*)v18->unit_ai;
 				military = (MilitaryAi*)v18->unit_ai;
@@ -403,7 +403,7 @@ LABEL_12:
 							{
 								v9 = 5;
 							}
-							if (!(units_dat::ComputerAIInternal[v9] & 1))
+							if (!(units_dat::computer_ai_internal[v9] & 1))
 							{
 								if (childTown->status & 1)
 								{

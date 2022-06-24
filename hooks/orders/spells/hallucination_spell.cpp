@@ -75,7 +75,7 @@ namespace hooks
 			return 0;
 		}
 		apply_hallucination(hallucinated_unit, source);
-		scbw::give_ai_ex(hallucinated_unit, true);
+		scbw::give_ai_ex(hallucinated_unit);
 		return hallucinated_unit;
 	}
 }

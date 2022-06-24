@@ -621,7 +621,7 @@ namespace hooks
 				}
 				if (unitExt->timers[TimerCorpseCocoonHatch] == 1) {
 					helper::replace_unit_with_id(unit, UnitId::ZergSovroleth);
-					scbw::give_ai_ex(unit, true);
+					scbw::give_ai_ex(unit);
 					helper::play_morphing_complete_sound(unit);
 					unit->build_queue[unit->build_queue_slot] = UnitId::None;
 					helper::init_building(unit, 1);
@@ -1676,7 +1676,7 @@ namespace hooks
 			unitExt->timers[TimerReviveFlagClearMin] = 0;
 			unitExt->timers[TimerReviveFlagClearMax] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
-			scbw::give_ai_ex(unit, true);
+			scbw::give_ai_ex(unit);
 		}
 
 		// Alaszileth - Dermal Accelerant

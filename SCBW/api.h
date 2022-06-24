@@ -602,7 +602,7 @@ namespace scbw
 	b32 unit_id_is_tech(u32 unit_id);
 	b32 unit_id_is_tech_tier_structure(u32 unit_id);
 
-	void give_ai_ex(Unit* unit, bool prefer_military);
+	void give_ai_ex(Unit* unit);
 
 	u32 unit_get_creep_spreader_id(Unit* unit);
 

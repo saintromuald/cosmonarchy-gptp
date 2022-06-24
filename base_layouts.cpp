@@ -196,7 +196,7 @@ static void init_layouts() {
 		if (unit->player > PlayerLimit && unit->player != 11) {
 			continue;
 		}
-		if (!(units_dat::base_property[unit->unit_id] & UnitProperty::Building) && units_dat::ComputerAIInternal[unit->unit_id] & 0x2) { // Don't become guard
+		if (!(units_dat::base_property[unit->unit_id] & UnitProperty::Building) && units_dat::computer_ai_internal[unit->unit_id] & 0x2) { // Don't become guard
 			continue;
 		}
 

@@ -122,7 +122,7 @@ namespace hooks
 				}
 			}
 
-			if (units_dat::ComputerAIInternal[unit->id] & 2) // "Non-military"
+			if (units_dat::computer_ai_internal[unit->id] & 2) // "Non-military"
 			{
 				// Originally used gi_ai_active_town_array[player].first
 

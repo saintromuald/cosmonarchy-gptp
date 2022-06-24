@@ -909,7 +909,7 @@ namespace scbw
 		helper::update_unit_stats_and_finish_building(unit);
 		helper::update_unit_strength(unit);
 		if (initAI) {
-			scbw::give_ai_ex(unit, true); // no longer need creator if we are using this robust AI function, still keeping the argument for legacy reasons
+			scbw::give_ai_ex(unit); // no longer need creator if we are using this robust AI function, still keeping the argument for legacy reasons
 		}
 		return unit;
 	}
@@ -1025,7 +1025,7 @@ namespace scbw
 			if (!unit) {
 				return;
 			}
-			scbw::give_ai_ex(unit, true);
+			scbw::give_ai_ex(unit);
 			if (creator && creator->status & UnitStatus::IsHallucination) {
 				helper::apply_hallucination_stats(unit);
 				unit->status |= UnitStatus::IsHallucination;
@@ -2337,17 +2337,17 @@ namespace scbw
 		return run_ai(player, area, name);
 	}
 
-	void give_ai_ex(Unit* unit, bool prefer_military) {
+	void give_ai_ex(Unit* unit) {
 		if (!unit || g_player_table[unit->player].type != PlayerType::Computer) {
 			return;
 		}
-		if (!prefer_military || units_dat::ComputerAIInternal[unit->id] & 2) {
+		if (units_dat::computer_ai_internal[unit->id] & 2) {
 			helper::give_ai(unit);
 		} else {
 			if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
 				g_aiscript_controller[unit->player].main_medic = unit;
 			}
-			helper::ai_training_simple_military(unit, unit);
+			helper::add_military_ai(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)), unit, true);
 		}
 	}
 

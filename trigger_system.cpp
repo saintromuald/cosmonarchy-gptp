@@ -469,7 +469,6 @@ static b32 __fastcall parse_comment_action(Action* action) {
 						snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
 							"%s", name.data);
 					}
-
 				}
 			} else if (parser_eq(&parser, "set_force_name")) {
 				s32 player = parser_get_s32(&parser);
