@@ -539,6 +539,9 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				if (objective) {
 					objective->score = score;
 					objective->max_score = max_score;
+					if (objective->score > objective->max_score) {
+						objective->score = objective->max_score;
+					}
 				}
 			} else if (parser_eq(&parser, "objective_score_add")) {
 				s32 key = parser_get_s32(&parser);
