@@ -947,8 +947,6 @@ namespace hooks
 					helper::remove_unit_ai(unit, false);
 					guard_ai->times_died -= 1;
 					helper::ai_training_simple_military(unit, unit);
-				} else if (unit->main_order_id == OrderId::ComputerAI && scbw::get_distance_fast(unit->position, guard_ai->current_home) > 1 * 32) {
-					unit->order_to(OrderId::AttackMove, guard_ai->current_home.x, guard_ai->current_home.y);
 				}
 			} else {
 				AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(guard_ai->original_home));
