@@ -539,6 +539,9 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				if (objective) {
 					objective->score = score;
 					objective->max_score = max_score;
+					if (objective->score < 0) {
+						objective->score = 0;
+					}
 					if (objective->score > objective->max_score) {
 						objective->score = objective->max_score;
 					}
@@ -552,6 +555,9 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				if (objective) {
 					objective->score += score;
 					objective->max_score += max_score;
+					if (objective->score < 0) {
+						objective->score = 0;
+					}
 					if (objective->score > objective->max_score) {
 						objective->score = objective->max_score;
 					}
