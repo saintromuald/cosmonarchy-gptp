@@ -367,7 +367,7 @@ SCBW_DATA(s32*,		g_countdown_timer_tick_count_2,	0x0059CC88);
 SCBW_DATA(s32*,		g_is_in_game,					0x006D5BC8);
 SCBW_DATA(s32*,		g_countdown_time_remaining,		0x0059CC78);
 
-// For airSplash
+// For air_splash
 SCBW_DATA(Unit**,	g_air_splash_list,				0x0064EEE0);	// count of 1700
 SCBW_DATA(s32*,		g_air_splash_list_count,		0x0046DEB4);
 SCBW_DATA(s32*,		g_is_in_ground_splash_proc,		0x0064DEB8);

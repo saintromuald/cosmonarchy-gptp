@@ -69,7 +69,6 @@ namespace hooks
 		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories
 			|| unit->status & UnitStatus::Frozen
 			|| unit->id == UnitId::TerranSpiderMine
-			|| unit->id == UnitId::TerranLobotomyMine
 			|| unit->id == UnitId::Spell_DarkSwarm
 			|| unit->id == UnitId::Spell_DisruptionWeb
 			|| unit->id == UnitId::Special_PitDoor

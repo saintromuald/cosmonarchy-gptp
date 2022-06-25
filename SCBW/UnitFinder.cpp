@@ -146,7 +146,7 @@ namespace scbw
 		s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 		UnitFinderData* left, UnitFinderData* top,
 		UnitFinderData* right, UnitFinderData* bottom,
-		UnitFinderCallbackMatchInterface match, Unit* sourceUnit)
+		UnitFinderCallbackMatchInterface match, Unit* source_unit)
 	{
 
 		s32 bestDistance = scbw::get_distance_fast(0, 0,
@@ -170,7 +170,7 @@ namespace scbw
 				{
 					if (boundsTop <= unit->get_y() && unit->get_y() < boundsBottom)
 					{
-						if (unit != sourceUnit && match(unit))
+						if (unit != source_unit && match(unit))
 						{
 							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
@@ -198,7 +198,7 @@ namespace scbw
 				{
 					if (boundsTop <= unit->get_y() && unit->get_y() < boundsBottom)
 					{
-						if (unit != sourceUnit && match(unit))
+						if (unit != source_unit && match(unit))
 						{
 							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
@@ -226,7 +226,7 @@ namespace scbw
 				{
 					if (boundsLeft <= unit->get_x() && unit->get_x() < boundsRight)
 					{
-						if (unit != sourceUnit && match(unit))
+						if (unit != source_unit && match(unit))
 						{
 							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
@@ -254,7 +254,7 @@ namespace scbw
 				{
 					if (boundsLeft <= unit->get_x() && unit->get_x() < boundsRight)
 					{
-						if (unit != sourceUnit && match(unit))
+						if (unit != source_unit && match(unit))
 						{
 							s32 distance = scbw::get_distance_fast(x, y, unit->get_x(), unit->get_y());
 							if (distance < bestDistance)
@@ -581,33 +581,33 @@ namespace scbw
 
 
 	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom,
-		Unit* sourceUnit, UnitFinderCallbackMatchInterface match)
+		Unit* source_unit, UnitFinderCallbackMatchInterface match)
 	{
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
 
 		//If the unit sprite is hidden
-		if (sourceUnit->sprite->flags & SpriteFlags::Hidden)
+		if (source_unit->sprite->flags & SpriteFlags::Hidden)
 		{
 			UnitFinderData temp;
-			temp.position = sourceUnit->get_x();
+			temp.position = source_unit->get_x();
 			searchRight = std::lower_bound(getStartX(), getEndX(), temp);
 			searchLeft = searchRight - 1;
-			temp.position = sourceUnit->get_y();
+			temp.position = source_unit->get_y();
 			searchBottom = std::lower_bound(getStartY(), getEndY(), temp);
 			searchTop = searchBottom - 1;
 		}
 		else
 		{
-			searchLeft = getStartX() + sourceUnit->finder_index.right - 1;
-			searchRight = getStartX() + sourceUnit->finder_index.left + 1;
-			searchTop = getStartY() + sourceUnit->finder_index.bottom - 1;
-			searchBottom = getStartY() + sourceUnit->finder_index.top + 1;
+			searchLeft = getStartX() + source_unit->finder_index.right - 1;
+			searchRight = getStartX() + source_unit->finder_index.left + 1;
+			searchTop = getStartY() + source_unit->finder_index.bottom - 1;
+			searchBottom = getStartY() + source_unit->finder_index.top + 1;
 		}
 
-		return getNearest(sourceUnit->get_x(), sourceUnit->get_y(),
+		return getNearest(source_unit->get_x(), source_unit->get_y(),
 			left, top, right, bottom,
 			searchLeft, searchTop, searchRight, searchBottom,
-			match, sourceUnit);
+			match, source_unit);
 	}
 	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom,
 		Bullet* sourceBullet, UnitFinderCallbackMatchInterface match)
@@ -649,9 +649,9 @@ namespace scbw
 			searchLeft, searchTop, searchRight, searchBottom,
 			match, sourcePosition);
 	}
-	Unit* UnitFinder::get_nearest_target(Unit* sourceUnit, UnitFinderCallbackMatchInterface match)
+	Unit* UnitFinder::get_nearest_target(Unit* source_unit, UnitFinderCallbackMatchInterface match)
 	{
-		return get_nearest_target(0, 0, g_map_tile_size->width * 32, g_map_tile_size->height * 32, sourceUnit, match);
+		return get_nearest_target(0, 0, g_map_tile_size->width * 32, g_map_tile_size->height * 32, source_unit, match);
 	}
 
 	//-------- Template member function definitions --------//

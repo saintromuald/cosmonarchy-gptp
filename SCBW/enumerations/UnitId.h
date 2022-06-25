@@ -50,7 +50,6 @@ namespace UnitId
 		TerranSavant										= 187,		// Kyadarin Crystal Formation
 		TerranBlackjack										= 195,		// Terran Beacon
 		TerranClaymore										= 196,		// Protoss Beacon
-		TerranLobotomyMine									= 209,		// Floor Gun Trap
 
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1
@@ -65,6 +64,7 @@ namespace UnitId
 		TerranCaptaincy										= 199,		// Protoss Flag Beacon
 		TerranScrapyard										= 200,		// Power Generator
 		TerranNaniteAssembly								= 203,		// Floor Missile Trap	
+		TerranSentinel										= 209,		// Floor Gun Trap
 		TerranTreasury										= 215,		// Flag
 
 	// Protoss-Unit

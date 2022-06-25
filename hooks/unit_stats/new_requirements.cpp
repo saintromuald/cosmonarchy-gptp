@@ -79,6 +79,7 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranTreasury:
+				case UnitId::TerranSentinel:
 				case UnitId::TerranCaptaincy:
 				case UnitId::TerranScienceFacility:
 				{
@@ -1145,6 +1146,7 @@ namespace hooks {
 						return TECH_LOCKED;
 					}
 					case UnitId::TerranTreasury:
+					case UnitId::TerranSentinel:
 					case UnitId::TerranCaptaincy:
 					case UnitId::TerranScienceFacility:
 					{

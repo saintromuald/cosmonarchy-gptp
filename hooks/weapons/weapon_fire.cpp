@@ -450,13 +450,13 @@ namespace hooks
 		}
 
 		if (bullet->weapon_id == WeaponId::ArchitectDispersiveSalvo
-			&& bullet->sourceUnit
+			&& bullet->source_unit
 			&& bullet->attackTarget.unit
-			&& bullet->attackTarget.unit->sprite && bullet->sourceUnit->sprite)
+			&& bullet->attackTarget.unit->sprite && bullet->source_unit->sprite)
 		{
 			Unit* targ = bullet->attackTarget.unit;
 
-			UnitExt* unitExt = globals.get_unit_ext(bullet->sourceUnit);
+			UnitExt* unitExt = globals.get_unit_ext(bullet->source_unit);
 			const u32 distFromSource = scbw::get_distance_fast(bullet->position, unitExt->last_bullet_launch_position);
 			const u32 distFromTarget = scbw::get_distance_fast(bullet->position, targ->position);
 
@@ -465,11 +465,11 @@ namespace hooks
 			{
 				if (!globals.multihit_bullet_is_set(bullet))
 				{
-					auto old = bullet->sourceUnit->order_target.unit;
-					auto oldSpritePos = bullet->sourceUnit->sprite->position;
-					auto oldPos = bullet->sourceUnit->position;
-					bullet->sourceUnit->sprite->position = bullet->position;
-					bullet->sourceUnit->position = bullet->position;
+					auto old = bullet->source_unit->order_target.unit;
+					auto oldSpritePos = bullet->source_unit->sprite->position;
+					auto oldPos = bullet->source_unit->position;
+					bullet->source_unit->sprite->position = bullet->position;
+					bullet->source_unit->position = bullet->position;
 					auto r = 3 * 32;
 					scbw::UnitFinder unitsInSplash(bullet->position.x - r, bullet->position.y - r,
 						bullet->position.x + r, bullet->position.y + r);
@@ -489,10 +489,10 @@ namespace hooks
 						{
 							continue;
 						}
-						bullet->sourceUnit->order_target.unit = target;
+						bullet->source_unit->order_target.unit = target;
 						auto newAngle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
 						auto newBullet = helper::create_bullet(WeaponId::ArchitectDispersiveSalvo,
-							bullet->sourceUnit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
+							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
 						if (newBullet)
 						{
 							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
@@ -500,9 +500,9 @@ namespace hooks
 							globals.add_multihit_empty_bullet(newBullet, 1);
 						}
 					};
-					bullet->sourceUnit->order_target.unit = old;
-					bullet->sourceUnit->position = oldPos;
-					bullet->sourceUnit->sprite->position = oldSpritePos;
+					bullet->source_unit->order_target.unit = old;
+					bullet->source_unit->position = oldPos;
+					bullet->source_unit->sprite->position = oldSpritePos;
 				}
 			}
 		}
@@ -702,7 +702,7 @@ namespace hooks
 					helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					collisionTarget->damage_with_custom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
 						weapons_dat::DamageType[WeaponId::KalkaliskViscousAcid],
-						bullet->sourceUnit, bullet->srcPlayer, 0, 1, false);
+						bullet->source_unit, bullet->srcPlayer, 0, 1, false);
 
 					if (count >= 4)
 					{
@@ -917,12 +917,12 @@ namespace hooks
 
 	Unit* find_next_bounce_target(Bullet* bullet) // 0048B1E0
 	{
-		if (!bullet->sourceUnit)
+		if (!bullet->source_unit)
 		{
 			return 0;
 		}
 		Unit* nextBounce = bullet->nextBounceUnit;
-		*g_bullet_bounce_missile_source = bullet->sourceUnit;
+		*g_bullet_bounce_missile_source = bullet->source_unit;
 		Unit* target = bullet->attackTarget.unit;
 		Sprite* bulletSprite = bullet->sprite;
 		*g_bullet_bounce_missile_target = target;
@@ -1118,14 +1118,14 @@ namespace hooks
 			*g_last_bullet_creator = parent;
 		}
 
-		bullet->sourceUnit = parent;
+		bullet->source_unit = parent;
 		if (units_dat::base_property[parent->id] & UnitProperty::Subunit)
 		{
-			bullet->sourceUnit = parent->subunit;
+			bullet->source_unit = parent->subunit;
 		}
 		if (parent->id == UnitId::ProtossPlasmaShell)
 		{
-			bullet->sourceUnit = parent->hangar_unit.parent;
+			bullet->source_unit = parent->hangar_unit.parent;
 		}
 		if (parent->status & UnitStatus::IsHallucination)
 		{
@@ -1171,11 +1171,11 @@ namespace hooks
 				{
 					return 1;
 				}
-				if (!bullet->sourceUnit)
+				if (!bullet->source_unit)
 				{
 					return 1;
 				}
-				helper::weapon_behavior_can_hit_target_check(targetUnit, bullet->sourceUnit);
+				helper::weapon_behavior_can_hit_target_check(targetUnit, bullet->source_unit);
 				return 1;
 			}
 			case WeaponBehavior::PersistOnTargetSite:
@@ -1189,13 +1189,13 @@ namespace hooks
 			}
 			case WeaponBehavior::AttackAndSelfDestruct:
 			{
-				if (!bullet->sourceUnit)
+				if (!bullet->source_unit)
 				{
 					return 1;
 				}
-				bullet->sourceUnit->status |= UnitStatus::IsSelfDestructing;
-				bullet->sourceUnit->user_action_flags |= 0x4;
-				helper::orders_self_destructing(bullet->sourceUnit);
+				bullet->source_unit->status |= UnitStatus::IsSelfDestructing;
+				bullet->source_unit->user_action_flags |= 0x4;
+				helper::orders_self_destructing(bullet->source_unit);
 				return 1;
 			}
 			case WeaponBehavior::Bounce:
@@ -1204,7 +1204,7 @@ namespace hooks
 				{
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						const u32 dist = scbw::get_distance_fast(bullet->sourceUnit->position, bullet->attackTarget.pt);
+						const u32 dist = scbw::get_distance_fast(bullet->source_unit->position, bullet->attackTarget.pt);
 						if (dist >= 6 * 32)
 						{
 							bullet->remainingBounces = 2;
@@ -1225,9 +1225,9 @@ namespace hooks
 				}
 				if (targetUnit)
 				{
-					if (bullet->sourceUnit)
+					if (bullet->source_unit)
 					{
-						helper::weapon_behavior_can_hit_target_check(targetUnit, bullet->sourceUnit);
+						helper::weapon_behavior_can_hit_target_check(targetUnit, bullet->source_unit);
 					}
 				}
 				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);

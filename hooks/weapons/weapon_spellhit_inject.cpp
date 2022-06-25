@@ -86,7 +86,7 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::LockdownHit(target, previousLockdownTimer, bullet);
+		hooks::lockdown_hit(target, previousLockdownTimer, bullet);
 		__asm
 		{
 			POPAD
@@ -282,7 +282,7 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::BroodlingHit(attacker, target, bullet);
+		hooks::broodling_hit(attacker, target, bullet);
 		__asm
 		{
 			POPAD

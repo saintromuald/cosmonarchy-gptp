@@ -197,10 +197,6 @@ namespace hooks
 
 	u32 get_mine_id(Unit* unit)
 	{
-		if (unit->id == UnitId::TerranEidolon)
-		{
-			return UnitId::TerranLobotomyMine;
-		}
 		return UnitId::TerranSpiderMine;
 	}
 	u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId)

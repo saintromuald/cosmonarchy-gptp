@@ -273,7 +273,7 @@ namespace helper
 	s32 tech_use_allowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
 	u32 get_distance_fast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
 	s32 orders_HoldPosSuicidal(Unit* a1);												                    // 004EB5B0
-	void turnUnit(Unit* a1, char a2);													                    // 00495F20
+	void turn_unit(Unit* a1, char a2);													                    // 00495F20
 	void to_idle(Unit* a1);																                    // 004753A0
 	s32 is_unit_movable(Unit* a1);														                    // 00401DC0
 	void orders_nothing_2(Unit* a1);																		// 00475000
@@ -549,12 +549,12 @@ namespace helper
 	void unload_unit_ext(Unit* unit, u32 unk);																						// 004E7E10
 
 	//// stats_panel_display
-	void StatsNukesCount(BinDlg* dialog, u32 index);																				// 00425310
-	void StatHangerCount(BinDlg* dialog, u32 index);																				// 004253D0
+	void stat_nuke_count(BinDlg* dialog, u32 index);																				// 00425310
+	void stat_hangar_count(BinDlg* dialog, u32 index);																				// 004253D0
 	void StatsShieldLevel(BinDlg* dialog, u32 index);																				// 00425510
 	void StatsArmorLevel(BinDlg* dialog, u32 index);																				// 00425600
-	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weapon_id);																// 00425790
-	bool StatSpidermineCount(BinDlg* dialog, u32 index);																			// 00426300
+	void stat_weapon_level(BinDlg* dialog, u32 index, u32 weapon_id);																// 00425790
+	bool stat_spidermine_count(BinDlg* dialog, u32 index);																			// 00426300
 
 	// For get_unit_rank_string and check_hotkey_char
 	__int8 unitGetRace(Unit* a1);																									// 0047B150
@@ -574,7 +574,7 @@ namespace helper
 	//// api
 	void ApplySpores(Unit* unit);
 	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
-	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor);
+	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor);
 	Unit* createUnitAtPos(u16 unit_id, u16 player, u32 x, u32 y);																// 004CD360
 	Flingy* createFlingy(u32 flingy_id, u32 player, u32 x, u32 y);																// 00496460
 
@@ -603,19 +603,19 @@ namespace helper
 	void replace_feedback_sprite(Unit* unit, u32 spriteId);																			// 004F6350
 
 	//// weapon_effect
-	bool isUnitDistanceWithin(Unit* target, Bullet* bullet, u32 radius);
-	void doWeaponHit(Unit* target, Unit* attacker, u8 dmgDivisor);
+	bool is_unit_distance_within(Unit* target, Bullet* bullet, u32 radius);
+	void do_weapon_hit(Unit* target, Unit* attacker, u8 dmgDivisor);
 	void AI_unit_was_hit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target);
 
-	// for airSplash
-	Unit* findBestUnit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*));														// 004E8830
-	s32 splashFunc(Bullet* bullet, Unit* unit);																						// 0048B570
+	// for air_splash
+	Unit* find_best_unit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*));														// 004E8830
+	s32 splash_func(Bullet* bullet, Unit* unit);																						// 0048B570
 
 	// For iterateLoadedUnits
 	Unit* iterateLoadedUnits(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), s32 a3);											// 004E6D00
 
 	//// mindcontrol_spell
-	void MindControlHit(Unit* attacker, Unit* target);																				// 004F6910
+	void mind_control_hit(Unit* attacker, Unit* target);																				// 004F6910
 
 	//// weapon_damage
 	u16 get_unit_strength(Unit* unit, bool useGroundStrength);
@@ -627,16 +627,16 @@ namespace helper
 	//// recharge_shields
 	void insert_first_order(Unit* unit, u8 order_id);																					// 004749D0
 	u8 has_overlay(Unit* unit);																										// 0047B720
-	bool isHangarUnit(Unit* unit);
+	bool is_hangar_unit(Unit* unit);
 
 	//// stopholdpos_orders
-	Unit* MedicHeal_TargetAcquire(Unit* medic);																						// 004422A0
-	u32 doMedicHeal(Unit* unit, Unit* target);																						// 00463C40
+	Unit* acquire_medic_heal_target(Unit* medic);																						// 004422A0
+	u32 do_medic_heal(Unit* unit, Unit* target);																						// 00463C40
 	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2);														// 00476FC0
 	b32 attack_recent_attacker(Unit* unit);																							// 004770E0
 
 	//// medic_orders
-	b32 AI_OrderHeal(Unit* unit, Unit* target);																						// 00463530
+	b32 ai_order_heal(Unit* unit, Unit* target);																						// 00463530
 	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id);																		// 004748E0
 	void update_target_something(Unit* unit, Unit* target, u8 order_id);																		// 00474940
 	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 order_id);														// 00474C30
@@ -738,7 +738,7 @@ namespace helper
 	bool unitHasNoMainOrderType(Unit* unit);																		// 00475A50
 	s32 setEventUnitComplete();																						// 004C36C0
 
-	// For findBestUnit
+	// For find_best_unit
 	Unit** find_all_units(Box16* coords);																			// 004308A0
 
 	//// selection
@@ -987,7 +987,7 @@ namespace helper
 
 	// AI utility
 	void give_ai(Unit* unit);																				// 00463040
-	void ai_training_simple_military(Unit* newUnit, Unit* sourceUnit);										// 0043E280
+	void ai_training_simple_military(Unit* newUnit, Unit* source_unit);										// 0043E280
 
 	// For delete_ai_town_if_needed
 	AiTown* try_begin_delete_town(AiTown* town);															// 00434330

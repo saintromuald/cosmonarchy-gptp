@@ -95,7 +95,7 @@ namespace
 			MOV bullet, EBX
 			MOV weapon_id, ECX
 		}
-		hooks::normalDamage(bullet, weapon_id);
+		hooks::normal_damage(bullet, weapon_id);
 		__asm {
 			POP EDI
 			POP ESI
@@ -190,7 +190,7 @@ namespace
 			MOV bullet, EBX
 			MOV weapon_id, ECX
 		}
-		hooks::airSplash(bullet, weapon_id);
+		hooks::air_splash(bullet, weapon_id);
 		__asm {
 			POP EDI
 			POP ESI
@@ -209,7 +209,7 @@ namespace
 			MOV bullet, EBX
 			MOV weapon_id, ECX
 		}
-		hooks::IrradiateHit(bullet->sourceUnit, bullet->attackTarget.pt, bullet->srcPlayer);
+		hooks::IrradiateHit(bullet->source_unit, bullet->attackTarget.pt, bullet->srcPlayer);
 		__asm {
 			POP EDI
 			POP ESI

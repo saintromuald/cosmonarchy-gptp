@@ -33,7 +33,7 @@ namespace hooks
 				return;
 			}
 
-			if (helper::AI_OrderHeal(unit, target) != 0)
+			if (helper::ai_order_heal(unit, target) != 0)
 			{
 				unit->order_computer(OrderId::MedicHeal1);
 				unit->order_target.unit = target;
@@ -71,7 +71,7 @@ namespace hooks
 					Unit* newTarget;
 					Point16 oldPos;
 					unit->main_order_timer = 15;
-					newTarget = helper::MedicHeal_TargetAcquire(unit);
+					newTarget = helper::acquire_medic_heal_target(unit);
 					if (newTarget != nullptr)
 					{
 						oldPos.x = unit->order_target.pt.x;
@@ -104,7 +104,7 @@ namespace hooks
 		}
 		if (!bStopThere)
 		{
-			Unit* target = helper::MedicHeal_TargetAcquire(unit);
+			Unit* target = helper::acquire_medic_heal_target(unit);
 			if (target != nullptr)
 			{
 				unit->user_action_flags |= 1;
@@ -159,12 +159,12 @@ namespace hooks
 	{
 		if (cleric->canUseTech(TechId::Healing, cleric->player))
 		{
-			if (target && helper::AI_OrderHeal(cleric, target))
+			if (target && helper::ai_order_heal(cleric, target))
 			{
 				Unit* acquired = target;
 				if (!acquired)
 				{
-					acquired = helper::MedicHeal_TargetAcquire(cleric);
+					acquired = helper::acquire_medic_heal_target(cleric);
 				}
 				if (acquired)
 				{
@@ -186,7 +186,7 @@ namespace hooks
 	void orders_MedicHeal1(Unit* unit)
 	{
 		Unit* target = unit->order_target.unit;
-		u32 doMedicHeal_result = helper::doMedicHeal(unit, target);
+		u32 doMedicHeal_result = helper::do_medic_heal(unit, target);
 		if (doMedicHeal_result == 0)
 		{
 			helper::set_resource_target(unit);

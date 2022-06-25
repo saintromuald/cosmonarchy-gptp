@@ -1304,7 +1304,7 @@ namespace scbw
 
 	bool unit_is_trap(Unit* unit)
 	{
-		return (unit->id == UnitId::TerranSpiderMine || unit->id == UnitId::TerranLobotomyMine);
+		return (unit->id == UnitId::TerranSpiderMine);
 	}
 
 	bool unit_is_ranged_attacker(Unit* unit)
