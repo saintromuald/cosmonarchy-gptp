@@ -653,7 +653,7 @@ namespace helper
 	b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
 	void load_unit_proc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
 	b32 unload_unit_proc(Unit* unit);																									// 004E7F70 (Hooked)
-	void issue_order_targeting_ground(Unit* unit, u8 order_id, s16 x, s16 y);															// 00475260
+	void issue_order_targeting_ground(Unit* unit, u32 order_id, u32 x, u32 y);															// 00475260
 
 	//// siege_transform
 	void unitSetRetreatPoint(Unit* unit, u8 angleValue);																			// 004011A0
