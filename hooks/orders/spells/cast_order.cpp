@@ -28,7 +28,7 @@ namespace hooks
 					helper::set_move_target_xy(caster->position.x, caster->position.y, caster);
 
 					if (!helper::isAngleInAttackAngle(target_pos.y, target_pos.x, caster, TechId::Hallucination)) {
-						helper::turnUnit(caster, scbw::get_angle(caster->position, target_pos));
+						helper::turn_unit(caster, scbw::get_angle(caster->position, target_pos));
 						return 0;
 					}
 

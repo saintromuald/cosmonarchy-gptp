@@ -81,14 +81,14 @@ namespace {
 
 namespace hooks {
 	// Summon a function passed as parameter, having the same variables layout for both upgrade and tech related functions.
-	bool research_helper(u32 researchTechFunc, Unit* sourceUnit, u32 techId, u32 relativeVariable, u32 destPlayerId) {
+	bool research_helper(u32 researchTechFunc, Unit* source_unit, u32 techId, u32 relativeVariable, u32 destPlayerId) {
 		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH destPlayerId		// [EBP+0x14]
 			PUSH relativeVariable	// [EBP+0x10] // this variable has different meaning depending on the caller (boolean or number) 
 			PUSH techId				// [EBP+0x0C]
-			PUSH sourceUnit			// [EBP+0x08]
+			PUSH source_unit			// [EBP+0x08]
 			CALL researchTechFunc
 			MOV result, EAX
 			POPAD

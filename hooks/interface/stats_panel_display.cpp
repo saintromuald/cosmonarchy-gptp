@@ -5,54 +5,6 @@
 
 namespace hooks
 {
-	bool stat_lobotomy_mine_count(BinDlg* dialog, u32 index)
-	{
-		auto activeUnit = *g_active_portrait_unit;
-		// Originally had code for research, removed
-		sprintf_s(statusscreen_infobtn[index], 8, "%d ", activeUnit->mine_carrier.mine_count);
-		if (dialog->control_type)
-		{
-			dialog = dialog->parent;
-		}
-		auto childDialog = dialog->children_dialog;
-		bool jump = false;
-		if (childDialog)
-		{
-			while (childDialog->index != index + 9)
-			{
-				childDialog = childDialog->next;
-				if (!childDialog)
-				{
-					childDialog = nullptr;
-					break;
-				}
-			}
-		}
-		else
-		{
-			childDialog = nullptr;
-		}
-		scbw::show_dialog(childDialog);
-		scbw::disable_dialog(childDialog);
-		auto statData = childDialog->stat_button_user;
-		auto v7 = *cmdicons_grp;
-		childDialog->graphic = UnitId::TerranLobotomyMine - 1; // or set icon id
-		statData->button_grp = v7;
-//		statData->grp_frame = UnitId::LobotomyMine;
-		statData->grp_frame = 13;
-		statData->type = 3;
-//		statData->id = UnitId::LobotomyMine;
-		statData->id = 13;
-		auto v8 = childDialog->flags;
-		childDialog->psz_text = statusscreen_infobtn[index];
-		if (!(v8 & 1))
-		{
-			childDialog->flags = v8 | 1;
-			scbw::update_dialog(childDialog);
-		}
-		return 1;
-	}
-
 	// Attempting to be true to the original result in unoptimized code
 	void stats_panel_display(BinDlg* dialog)
 	{
@@ -112,76 +64,74 @@ namespace hooks
 				{
 					if (groundWeaponSubunit == WeaponId::None)
 					{
-						bNoGroundWeaponDisplay = true; // 00426D19
+						bNoGroundWeaponDisplay = true;
 					}
 					else if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
 					{
-						groundWeapon = UnitId::None; // 00426D2A
+						groundWeapon = UnitId::None;
 					}
 					else if (groundWeaponMainUnit != WeaponId::None)
 					{
-						groundWeapon = groundWeaponMainUnit; // 00426D35
+						groundWeapon = groundWeaponMainUnit;
 					}
 					else if (activeUnit->subunit == nullptr)
 					{
-						groundWeapon = WeaponId::None; // 00426D41
+						groundWeapon = WeaponId::None;
 					}
 					else
 					{
-						groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id]; // 00426D51
+						groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id];
 					}
 					if (!bNoGroundWeaponDisplay)
 					{
-						// 00426D54
-						helper::StatsWeaponLevel(dialog, index, groundWeapon);
+						helper::stat_weapon_level(dialog, index, groundWeapon);
 						index++;
 
 						// Display additional weapons
 						if (activeUnit->id == UnitId::TerranCentaur)
 						{
-							helper::StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
+							helper::stat_weapon_level(dialog, index, WeaponId::CentaurSunchaserMissiles);
 							index++;
 						}
 						else if (activeUnit->id == UnitId::SharedTarasque)
 						{
-							helper::StatsWeaponLevel(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
+							helper::stat_weapon_level(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
 							index++;
 						}
 					}
 				}
 			}
 
-			// 00426D67
 			bNoAirWeaponDisplay = false;
 			airWeaponMainUnit = units_dat::AirWeapon[activeUnit->id];
 			if (airWeaponMainUnit != WeaponId::None)
 			{
-				airWeaponSubunit = airWeaponMainUnit; // 00426D79
+				airWeaponSubunit = airWeaponMainUnit;
 			}
 			else if (activeUnit->subunit == nullptr)
 			{
-				bNoAirWeaponDisplay = true; // 00426D82
+				bNoAirWeaponDisplay = true;
 			}
 			else
 			{
-				airWeaponSubunit = units_dat::AirWeapon[activeUnit->subunit->id]; // 00426D8C
+				airWeaponSubunit = units_dat::AirWeapon[activeUnit->subunit->id];
 			}
 
 			if (!bNoAirWeaponDisplay)
 			{
 				if (airWeaponSubunit == WeaponId::None)
 				{
-					bNoAirWeaponDisplay = true; // 00426D94
+					bNoAirWeaponDisplay = true;
 				}
 				else if (airWeaponMainUnit != WeaponId::None)
 				{
-					airWeapon = airWeaponMainUnit;	// 00426DA2
+					airWeapon = airWeaponMainUnit;
 				}
 				else
 				{
 					if (activeUnit->subunit == nullptr)
 					{
-						airWeapon = WeaponId::None;	// 00426DAF
+						airWeapon = WeaponId::None;
 					}
 					else
 					{
@@ -192,7 +142,6 @@ namespace hooks
 				{
 					u8 groundWeapon;
 
-					// 00426DBE
 					if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
 					{
 						groundWeapon = WeaponId::None;
@@ -202,24 +151,23 @@ namespace hooks
 						groundWeapon = units_dat::GroundWeapon[activeUnit->id];
 						if (groundWeapon == WeaponId::None && activeUnit->subunit != nullptr)
 						{
-							groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id]; // 00426DE6
+							groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id];
 						}
 					}
 
-					// 00426DF0
 					if (airWeapon == groundWeapon)
 					{
 						bNoAirWeaponDisplay = true;
 					}
 					else if (airWeaponMainUnit != WeaponId::None)
 					{
-						airWeapon = airWeaponMainUnit;	// 00426DFA
+						airWeapon = airWeaponMainUnit;
 					}
 					else if (airWeaponMainUnit == WeaponId::None)
-					{ // 00426DFF
+					{
 						if (activeUnit->subunit == nullptr)
 						{
-							airWeapon = WeaponId::None;	// 00426E06
+							airWeapon = WeaponId::None;
 						}
 						else
 						{
@@ -227,31 +175,23 @@ namespace hooks
 						}
 					}
 					if (!bNoAirWeaponDisplay)
-					{ // 00426E19
-						helper::StatsWeaponLevel(dialog, index, airWeapon);
+					{
+						helper::stat_weapon_level(dialog, index, airWeapon);
 						index++;
 					}
 				}
 			}
 
-			// 00426E31
 			if (activeUnit->id == UnitId::ProtossSolarion
 				|| activeUnit->id == UnitId::ProtossAccantor) // Originally had hardcode for Gantrithor and Warbringer
 			{
-				helper::StatHangerCount(dialog, index);
+				helper::stat_hangar_count(dialog, index);
 				index++;
 			}
 
 			if (activeUnit->id == UnitId::TerranVulture) // Originally also had hardcode for Raynor Vulture
 			{
-				if (helper::StatSpidermineCount(dialog, index))
-				{
-					index++;
-				}
-			}
-			if (activeUnit->id == UnitId::TerranEidolon)
-			{
-				if (stat_lobotomy_mine_count(dialog, index))
+				if (helper::stat_spidermine_count(dialog, index))
 				{
 					index++;
 				}
@@ -259,12 +199,11 @@ namespace hooks
 			unit_id = helper::get_last_queue_slot_id(activeUnit);
 			if (unit_id == UnitId::TerranMissileSilo)
 			{
-				helper::StatsNukesCount(dialog, index);
+				helper::stat_nuke_count(dialog, index);
 				index++;
 			}
 		}
 
-		// 00426E96
 		if (dialog->control_type == DialogControlTypes::DialogBoxDC)
 		{
 			current_dialog = dialog;
@@ -294,7 +233,6 @@ namespace hooks
 	{
 		u16 unit_id = unit->id;
 		if (units_dat::base_property[unit_id] & UnitProperty::NeutralAccessories)
-		//	|| scbw::unit_is_trap(unit))
 		{
 			return 0;
 		}
@@ -336,11 +274,10 @@ namespace hooks
 		helper::add_text_to_dialog(dialog, -21, buffer);
 
 		/*
-		if (unit->id == UnitId::ZergSkryling
-			|| unit->id == UnitId::ZergInfestedTerran
-			|| unit->status & UnitStatus::IsHallucination
-			&& unit->player == *g_local_nation_id
-			&& !*is_in_replay)
+		if  (unit->id == UnitId::ZergSkryling || unit->id == UnitId::ZergInfestedTerran
+		||   unit->status & UnitStatus::IsHallucination
+		&&   unit->player == *g_local_nation_id
+		&& !*is_in_replay)
 		{
 			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
 			BinDlg* child = actual_dialog->children_dialog;
@@ -554,6 +491,7 @@ namespace hooks
 		*unkUpgradeCount += v13;
 	}
 
+	// Hooked to draw new values to icons. -- Pr0nogo
 	void stats_weapon_level(BinDlg* dialog, u16 buttonRelated, u8 weapon_id) // 00425790
 	{
 		BinDlg* v3;

@@ -37,7 +37,7 @@ namespace hooks
 					} else {
 						target->sprite->create_top_overlay(overlayId, 0, 0, 0);
 					}
-					helper::MindControlHit(unit, target);
+					helper::mind_control_hit(unit, target);
 					target->order_to_idle();
 				}
 				if (!(*g_cheat_state & CheatFlags::TheGathering)) {

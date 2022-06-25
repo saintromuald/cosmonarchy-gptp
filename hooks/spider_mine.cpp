@@ -149,10 +149,6 @@ namespace hooks
 				unit->order_target.pt.y = unit->sprite->position.y;
 				current_image = unit->sprite->images.head;
 				IscriptAnimation::Enum anim = IscriptAnimation::SpecialState1;
-				if (unit->id == UnitId::TerranLobotomyMine)
-				{
-					anim = IscriptAnimation::Unused1;
-				}
 				while (current_image != nullptr)
 				{
 					current_image->play_iscript_animation(anim);
@@ -211,7 +207,7 @@ namespace hooks
 					{
 						helper::update_unit_stats_and_finish_building(v13);
 						helper::update_unit_strength_and_apply_default_orders(v14);
-						helper::turnUnit(v14, v1->current_direction_1);
+						helper::turn_unit(v14, v1->current_direction_1);
 						v1->mine_carrier.mine_count -= 1;
 					}
 					else

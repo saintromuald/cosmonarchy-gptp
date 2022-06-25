@@ -17,14 +17,14 @@ namespace hooks
 	void lurkerSplash(Bullet* bullet, u32 weapon_id, u8 splash);
 
 	void inject_weapon_effect_hooks();
-	void normalDamage(Bullet* bullet, u32 weapon_id);
+	void normal_damage(Bullet* bullet, u32 weapon_id);
 	void yamatoDamage(Bullet* bullet, u32 weapon_id);
-	void airSplash(Bullet* bullet, u32 weapon_id);
+	void air_splash(Bullet* bullet, u32 weapon_id);
 	void nuke(Bullet* bullet, u32 weapon_id);
 
 	// Cosmonarchy-specific
-	bool isChargedGorgolethBullet(Bullet* bullet, u32 weapon_id);
-	bool isUnsafeCyprianBullet(Bullet* bullet, u32 weapon_id);
+	bool is_charged_gorgrokor_bullet(Bullet* bullet, u32 weapon_id);
+	bool is_unsafe_cyprian_bullet(Bullet* bullet, u32 weapon_id);
 	void parasite(Bullet* bullet, u32 weapon_id);
 	void broodlings(Bullet* bullet, u32 weapon_id);
 	void lockdown(Bullet* bullet, u32 weapon_id);

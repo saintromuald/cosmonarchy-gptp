@@ -64,20 +64,20 @@ namespace scbw {
 		Unit* get_unit(s32 index) const;
 
 		/// Searches the area given by (@p left, @p top, @p right, @p bottom),
-		/// returning the nearest unit to @p sourceUnit for which match(unit)
+		/// returning the nearest unit to @p source_unit for which match(unit)
 		/// evaluates to true. If there are no matches, returns nullptr.
 		/// This does not use unit collision boxes for calculating distances.
 		static Unit* get_nearest_target(s32 left, s32 top, s32 right, s32 bottom,
-			Unit* sourceUnit, UnitFinderCallbackMatchInterface match);
+			Unit* source_unit, UnitFinderCallbackMatchInterface match);
 		static Unit* get_nearest_target(s32 left, s32 top, s32 right, s32 bottom,
 			Bullet* sourceBullet, UnitFinderCallbackMatchInterface match);
 		static Unit* get_nearest_target(s32 left, s32 top, s32 right, s32 bottom,
 			Vector32 position, UnitFinderCallbackMatchInterface match);
-		/// Searches the entire map, returning the nearest unit to @p sourceUnit
+		/// Searches the entire map, returning the nearest unit to @p source_unit
 		/// for which match(unit) evaluates to true. If there are no matches,
 		/// returns nullptr.
 		/// This does not use unit collision boxes for calculating distances.
-		static Unit* get_nearest_target(Unit* sourceUnit, UnitFinderCallbackMatchInterface match);
+		static Unit* get_nearest_target(Unit* source_unit, UnitFinderCallbackMatchInterface match);
 
 			//This function is meant to be used by other getNearest() functions.
 		//Do NOT use this function in the game code!
@@ -85,7 +85,7 @@ namespace scbw {
 			s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 			UnitFinderData* left, UnitFinderData* top,
 			UnitFinderData* right, UnitFinderData* bottom,
-			UnitFinderCallbackMatchInterface match, Unit* sourceUnit);
+			UnitFinderCallbackMatchInterface match, Unit* source_unit);
 		static Unit* getNearest(s32 x, s32 y,
 			s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 			UnitFinderData* left, UnitFinderData* top,

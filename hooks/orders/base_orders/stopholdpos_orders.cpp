@@ -29,7 +29,7 @@ namespace hooks
 
 		//try healing current target, return a value depending
 		//on what happened
-		switchValue = helper::doMedicHeal(unit, unit->order_target.unit);
+		switchValue = helper::do_medic_heal(unit, unit->order_target.unit);
 
 		if (switchValue == 3) //640C6
 			unit->order_target.unit = nullptr;
@@ -47,7 +47,7 @@ namespace hooks
 			{
 
 				unit->main_order_timer = 15;
-				unit->order_target.unit = helper::MedicHeal_TargetAcquire(unit);
+				unit->order_target.unit = helper::acquire_medic_heal_target(unit);
 
 				if (unit->order_target.unit != nullptr)
 				{

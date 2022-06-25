@@ -215,7 +215,7 @@ namespace hooks
 					}
 				}
 			} else {
-				helper::turnUnit(unit, scbw::get_angle(unit->position, node->position));
+				helper::turn_unit(unit, scbw::get_angle(unit->position, node->position));
 				u32 timer = 30;
 				if (node && node->id == UnitId::ResourceVespeneGeyser) {
 					timer = 75;
@@ -257,7 +257,7 @@ namespace hooks
 			&& node->status & UnitStatus::Completed
 			&& valid_structure
 			&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either)) {
-			helper::turnUnit(unit, scbw::get_angle(unit->position, node->position));
+			helper::turn_unit(unit, scbw::get_angle(unit->position, node->position));
 			if (!unit->main_order_state) {
 				helper::Order_BeginHarvest(node, unit);
 			}

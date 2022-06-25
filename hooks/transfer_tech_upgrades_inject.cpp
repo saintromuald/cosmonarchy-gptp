@@ -5,7 +5,7 @@ namespace
 {
 	void __declspec(naked) transferUnitUpgradesToPlayerWrapper()
 	{
-		static Unit* sourceUnit;
+		static Unit* source_unit;
 		static u8 targetPlayerId;
 		static u32 researchUpgradeFunc;
 		__asm {
@@ -13,12 +13,12 @@ namespace
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
 			MOV researchUpgradeFunc, EAX // 2 possibilities, see header file with default values
-			MOV sourceUnit, EBX
+			MOV source_unit, EBX
 			MOV EAX, [EBP + 0x0C]
 			MOV targetPlayerId, AL
 			PUSHAD
 		}
-		hooks::transfer_unit_upgrades_to_player_hook(sourceUnit, targetPlayerId, researchUpgradeFunc);
+		hooks::transfer_unit_upgrades_to_player_hook(source_unit, targetPlayerId, researchUpgradeFunc);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -29,7 +29,7 @@ namespace
 
 	void __declspec(naked) transferUnitTechToPlayerWrapper()
 	{
-		static Unit* sourceUnit;
+		static Unit* source_unit;
 		static u8 targetPlayerId;
 		static u32 researchTechFunc;
 		__asm {
@@ -37,12 +37,12 @@ namespace
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
 			MOV researchTechFunc, EAX // usually researchTech @ 0047B3C0
-			MOV sourceUnit, EBX
+			MOV source_unit, EBX
 			MOV EAX, [EBP + 0x0C]
 			MOV targetPlayerId, AL
 			PUSHAD
 		}
-		hooks::transfer_unit_tech_to_player_hook(sourceUnit, targetPlayerId, researchTechFunc);
+		hooks::transfer_unit_tech_to_player_hook(source_unit, targetPlayerId, researchTechFunc);
 		__asm {
 			POPAD
 			MOV ESP, EBP

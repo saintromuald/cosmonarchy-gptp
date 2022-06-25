@@ -48,12 +48,11 @@ namespace hooks
 						stringId = 877; // Unable to target structure.<0>
 					}
 					else if (target->id == UnitId::TerranSpiderMine
-						|| target->id == UnitId::TerranLobotomyMine
-						|| target->id == UnitId::ZergLarva
-						|| target->id == UnitId::ZergEgg
-						|| target->id == UnitId::ZergCocoon
-						|| target->id == UnitId::ProtossSteward
-						|| target->id == UnitId::ProtossPlasmaShell)
+					||		 target->id == UnitId::ZergLarva
+					||		 target->id == UnitId::ZergEgg
+					||		 target->id == UnitId::ZergCocoon
+					||		 target->id == UnitId::ProtossSteward
+					||		 target->id == UnitId::ProtossPlasmaShell)
 					{
 						stringId = 876; //Invalid target.<0>
 					}

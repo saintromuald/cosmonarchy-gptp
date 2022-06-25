@@ -26,8 +26,7 @@ namespace AI
 		}
 		if (target->id == UnitId::ProtossPlasmaShell
 			|| target->id == UnitId::TerranSpiderMine
-			|| target->id == UnitId::ProtossSteward
-			|| target->id == UnitId::TerranLobotomyMine)
+			|| target->id == UnitId::ProtossSteward)
 		{
 			return false;
 		}

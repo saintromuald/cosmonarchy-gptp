@@ -10,6 +10,9 @@ namespace UnitId
 	//	DisruptionField										= 105,		// Disruption Field			- might need mempatches?
 	//	DarkSwarm											= 202,		// Dark Swarm				- might need mempatches?
 
+	// Unused
+	//	TerranLobotomyMine									= 209,		// Floor Gun Trap
+
 	// Special
 		SpecialControlNode									= 192,		// Terran Marker
 
@@ -50,7 +53,6 @@ namespace UnitId
 		TerranSavant										= 187,		// Kyadarin Crystal Formation
 		TerranBlackjack										= 195,		// Terran Beacon
 		TerranClaymore										= 196,		// Protoss Beacon
-		TerranLobotomyMine									= 209,		// Floor Gun Trap
 
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1

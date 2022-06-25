@@ -2657,7 +2657,7 @@ namespace helper
 		return result;
 	}
 
-	void turnUnit(Unit* a1, char a2)
+	void turn_unit(Unit* a1, char a2)
 	{
 		const u32 Func_turnUnit = 0x00495F20;
 		__asm {
@@ -4917,7 +4917,7 @@ namespace helper
 		}
 	}
 
-	void StatsNukesCount(BinDlg* dialog, u32 index)
+	void stat_nuke_count(BinDlg* dialog, u32 index)
 	{
 		const u32 Func_Sub425310 = 0x00425310;
 		__asm {
@@ -4929,7 +4929,7 @@ namespace helper
 		}
 	}
 
-	void StatHangerCount(BinDlg* dialog, u32 index)
+	void stat_hangar_count(BinDlg* dialog, u32 index)
 	{
 		const u32 Func_StatHangerCount = 0x004253D0;
 		__asm {
@@ -4965,7 +4965,7 @@ namespace helper
 		}
 	}
 
-	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weapon_id)
+	void stat_weapon_level(BinDlg* dialog, u32 index, u32 weapon_id)
 	{
 		const u32 Func_Sub425790 = 0x00425790;
 		__asm {
@@ -4978,7 +4978,7 @@ namespace helper
 		}
 	}
 
-	bool StatSpidermineCount(BinDlg* dialog, u32 index)
+	bool stat_spidermine_count(BinDlg* dialog, u32 index)
 	{
 		const u32 Func_StatSpidermineCount = 0x00426300;
 		static b32 bPreResult;
@@ -5130,14 +5130,14 @@ namespace helper
 	}
 
 	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damage_with if it does
-	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor)
+	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor)
 	{
 		const u32 Helper_WeaponBulletShot = 0x00479AE0;
-		if (bullet != nullptr && target != nullptr && bullet->sourceUnit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber))
+		if (bullet != nullptr && target != nullptr && bullet->source_unit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber))
 		{
-			if (!globals.was_hit_by_pariah(bullet->sourceUnit, target))
+			if (!globals.was_hit_by_pariah(bullet->source_unit, target))
 			{
-				globals.register_pariah_hit(bullet->sourceUnit, target);
+				globals.register_pariah_hit(bullet->source_unit, target);
 			}
 			else
 			{
@@ -5313,7 +5313,7 @@ namespace helper
 	}
 
 	// checks if the distance between target and bullet's positions is < radius
-	bool isUnitDistanceWithin(Unit* target, Bullet* bullet, u32 radius)
+	bool is_unit_distance_within(Unit* target, Bullet* bullet, u32 radius)
 	{
 		const u32 Helper_IsUnitDistanceWithin = 0x0048ADB0;
 		u32 result;
@@ -5329,7 +5329,7 @@ namespace helper
 		return result;
 	}
 
-	void doWeaponHit(Unit* target, Unit* attacker, u8 dmgDivisor)
+	void do_weapon_hit(Unit* target, Unit* attacker, u8 dmgDivisor)
 	{
 		const u32 Helper_DoWeaponHit = 0x004795D0;
 		u32 divisor = dmgDivisor;
@@ -5343,9 +5343,8 @@ namespace helper
 		}
 	}
 
-	// for airSplash
-
-	Unit* findBestUnit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*))
+	// for air_splash
+	Unit* find_best_unit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*))
 	{
 		const u32 Func_findBestUnit = 0x004E8830;
 		static Unit* result;
@@ -5361,7 +5360,7 @@ namespace helper
 		return result;
 	}
 
-	s32 splashFunc(Bullet* bullet, Unit* unit)
+	s32 splash_func(Bullet* bullet, Unit* unit)
 	{
 		const u32 Func_splashFunc = 0x0048B570;
 		static s32 result;
@@ -5376,7 +5375,7 @@ namespace helper
 		return result;
 	}
 
-	void MindControlHit(Unit* attacker, Unit* target)
+	void mind_control_hit(Unit* attacker, Unit* target)
 	{
 		const u32 Func_MindControl_Hit = 0x004F6910;
 		__asm {
@@ -5388,7 +5387,7 @@ namespace helper
 		}
 	}
 
-	//Somehow related to AI stuff; details unknown.
+	// Somehow related to AI stuff; details unknown.
 	u16 get_unit_strength(Unit* unit, bool useGroundStrength)
 	{
 		const u32 Helper_GetUnitStrength = 0x00431800;
@@ -5477,7 +5476,7 @@ namespace helper
 	}
 
 	// Identical to unitIsHangerUnit @ 0x00401450
-	bool isHangarUnit(Unit* unit)
+	bool is_hangar_unit(Unit* unit)
 	{
 		if (unit->id == UnitId::ProtossSteward
 			|| unit->id == UnitId::ProtossPlasmaShell)
@@ -5490,7 +5489,7 @@ namespace helper
 		}
 	}
 
-	Unit* MedicHeal_TargetAcquire(Unit* medic)
+	Unit* acquire_medic_heal_target(Unit* medic)
 	{
 		const u32 Func_MedicHeal_TargetAcquire = 0x004422A0;
 		static Unit* target;
@@ -5504,7 +5503,7 @@ namespace helper
 		return target;
 	}
 
-	u32 doMedicHeal(Unit* unit, Unit* target)
+	u32 do_medic_heal(Unit* unit, Unit* target)
 	{
 		const u32 Func_doMedicHeal = 0x00463C40;
 		static u32 return_value;
@@ -5547,7 +5546,7 @@ namespace helper
 		return (return_value != 0);
 	}
 
-	b32 AI_OrderHeal(Unit* unit, Unit* target)
+	b32 ai_order_heal(Unit* unit, Unit* target)
 	{
 		const u32 Func_AI_OrderHeal = 0x00463530;
 		static b32 result;
@@ -7838,7 +7837,7 @@ namespace helper
 		}
 	}
 
-	// For findBestUnit
+	// For find_best_unit
 	Unit** find_all_units(Box16* coords)
 	{
 		const u32 Func_findAllUnits = 0x004308A0;
@@ -9133,13 +9132,13 @@ namespace helper
 		}
 	}
 
-	void ai_training_simple_military(Unit* newUnit, Unit* sourceUnit)
+	void ai_training_simple_military(Unit* newUnit, Unit* source_unit)
 	{
 		const u32 Func_AI_TrainingSimpleMilitary = 0x0043E280;
 		__asm
 		{
 			PUSHAD
-			PUSH sourceUnit
+			PUSH source_unit
 			PUSH newUnit
 			CALL Func_AI_TrainingSimpleMilitary
 			POPAD

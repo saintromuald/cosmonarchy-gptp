@@ -56,7 +56,7 @@ namespace hooks
 	//	|| target->get_race() != RaceId::Protoss							     // Check target race
 		|| target->shields >= (units_dat::MaxShieldPoints[target->id] * 256) // Already has max shields
 		|| !(battery->status & UnitStatus::Completed) || !battery->energy
-		|| battery->is_frozen() || helper::isHangarUnit(target)) {
+		|| battery->is_frozen() || helper::is_hangar_unit(target)) {
 			return 0;
 		}
 

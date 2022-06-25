@@ -133,7 +133,7 @@ namespace hooks
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	// the timer is reset before this call 2 times out of 3 (with previousLockdownTimer holding the pre-reset value), and the 3rd case, previousLockdownTimer is set to 131 (0x83)
-	void LockdownHit(Unit* target, u8 previousLockdownTimer, Bullet* bullet)
+	void lockdown_hit(Unit* target, u8 previousLockdownTimer, Bullet* bullet)
 	{
 		// add lockdown overlay if no ongoing lockdown already
 		if (target->lockdown_timer == 0)
@@ -167,18 +167,18 @@ namespace hooks
 		u32 base_damage = helper::get_unit_bullet_damage(bullet, target);
 		if (bullet->hit_flags & 2)
 		{
-			if (bullet->sourceUnit != nullptr)
+			if (bullet->source_unit != nullptr)
 			{
-				target->damage_with(bullet->weapon_id, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damage_divisor);
+				target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->srcPlayer, bullet->direction1, damage_divisor);
 			}
 			else
 			{
-				helper::attack_overlay_and_notify(bullet->sourceUnit, target, bullet->weapon_id, bullet->direction1); // no damage, but still ask for retaliation
+				helper::attack_overlay_and_notify(bullet->source_unit, target, bullet->weapon_id, bullet->direction1); // no damage, but still ask for retaliation
 			}
 		}
 		else
 		{
-			target->damage_with(bullet->weapon_id, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damage_divisor);
+			target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->srcPlayer, bullet->direction1, damage_divisor);
 		}
 	}
 
@@ -286,7 +286,7 @@ namespace hooks
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	// In the original code, the parameters are gotten from Bullet as:
-	//		attacker from bullet->sourceUnit
+	//		attacker from bullet->source_unit
 	//		x and y from bullet->sprite->position
 	void EMPShockwaveHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
@@ -495,7 +495,7 @@ namespace hooks
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	void BroodlingHit(Unit* attacker, Unit* target, Bullet* bullet)
+	void broodling_hit(Unit* attacker, Unit* target, Bullet* bullet)
 	{
 		u32 broodlings_to_spawn = 3;
 		ActiveTile tile = scbw::get_stupid_reference_to_active_tile_at(bullet->sprite->position.x, bullet->sprite->position.y);
