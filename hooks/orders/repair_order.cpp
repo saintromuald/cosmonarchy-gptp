@@ -229,7 +229,7 @@ namespace hooks
 			case OrderId::Pickup2:
 			{
 				errorStringId = 890;
-				if (!target || unit->player != target->player)
+				if (!target || !scbw::is_allied_to(target->player, unit->player))
 				{
 					if (bErrorFlag)
 					{

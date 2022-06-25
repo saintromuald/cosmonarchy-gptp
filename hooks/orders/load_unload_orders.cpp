@@ -105,7 +105,8 @@ namespace hooks
 		}
 		else
 		{
-			if (unitToLoad->unit_ai == nullptr
+			if (unit->unit_ai == nullptr
+				|| unitToLoad->unit_ai == nullptr
 				|| unitToLoad->main_order_id == OrderId::Pickup4)
 			{
 				if (unit->main_order_state == 0)
@@ -605,49 +606,35 @@ namespace hooks
 		}
 	}
 
-	bool can_enter_transport(Unit* transport, Unit* unit) // 004E6E00
-	{
-		if (!(transport->status & UnitStatus::Completed))
-		{
+	bool can_enter_transport(Unit* transport, Unit* unit) { // 004E6E00
+		if (!(transport->status & UnitStatus::Completed)) {
 			return 0;
 		}
-		if (transport->status & UnitStatus::Frozen)
-		{
+		if (transport->status & UnitStatus::Frozen) {
 			return 0;
 		}
-		if (transport->is_frozen())
-		{
+		if (transport->is_frozen()) {
 			return 0;
 		}
-		if (unit->status & UnitStatus::Burrowed) // originally also checked for playerIds being the same
-		{
+		if (unit->status & UnitStatus::Burrowed) { // originally also checked for playerIds being the same
 			return 0;
 		}
-		if (!(scbw::is_allied_to(transport->player, unit->player)))
-		{
+		if (!scbw::is_allied_to(unit->player, transport->player)) {
 			return 0;
 		}
-		if (scbw::transport_is_full(transport))
-		{
+		if (scbw::transport_is_full(transport)) {
 			return 0;
 		}
-		u32 spaceProvided = units_dat::SpaceProvided[transport->id];
-		u32 index = 0;
-		s32 spaceRequired = 0;
+
+		u32 space_provided = units_dat::SpaceProvided[transport->id];
+		s32 space_required = 0;
 		Unit* loaded_unit;
-		if (spaceProvided)
-		{
-			do
-			{
-				loaded_unit = helper::get_loaded_unit_from_index(transport, index);
-				if (loaded_unit)
-				{
-					spaceRequired += units_dat::SpaceRequired[loaded_unit->id];
-				}
-				++index;
-			} while (index < spaceProvided);
-			unit = unit;
+		for (u32 index = 0; index < space_provided; ++index) {
+			loaded_unit = helper::get_loaded_unit_from_index(transport, index);
+			if (loaded_unit) {
+				space_required += units_dat::SpaceRequired[loaded_unit->id];
+			}
 		}
-		return spaceProvided - spaceRequired >= units_dat::SpaceRequired[unit->id];
+		return space_provided - space_required >= units_dat::SpaceRequired[unit->id];
 	}
 }
