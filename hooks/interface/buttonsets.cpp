@@ -1236,6 +1236,11 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
+							else if (unit->id == UnitId::TerranMissileSilo &&  // Missile Silo Scorched Earth passive
+								current_button->icon_id == IconId::RadioactiveUnused2)
+							{
+								current_button_state = Button_State::Enabled;
+							}
 							else if (unit->id == UnitId::TerranQuarry &&  // Quarry Meskalloid Stimulant passive 
 								current_button->icon_id == IconId::ArgusJewel)
 							{
