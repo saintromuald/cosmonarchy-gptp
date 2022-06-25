@@ -10,9 +10,6 @@ namespace UnitId
 	//	DisruptionField										= 105,		// Disruption Field			- might need mempatches?
 	//	DarkSwarm											= 202,		// Dark Swarm				- might need mempatches?
 
-	// Unused
-	//	TerranLobotomyMine									= 209,		// Floor Gun Trap
-
 	// Special
 		SpecialControlNode									= 192,		// Terran Marker
 
@@ -67,6 +64,7 @@ namespace UnitId
 		TerranCaptaincy										= 199,		// Protoss Flag Beacon
 		TerranScrapyard										= 200,		// Power Generator
 		TerranNaniteAssembly								= 203,		// Floor Missile Trap	
+		TerranSentinel										= 209,		// Floor Gun Trap
 		TerranTreasury										= 215,		// Flag
 
 	// Protoss-Unit
