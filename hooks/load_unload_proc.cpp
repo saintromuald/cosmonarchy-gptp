@@ -5,6 +5,52 @@
 
 namespace hooks
 {
+	static void special_load_unit(Unit* unit, Unit* transport) {
+		if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
+			helper::update_creep_disappearance_unit(unit);
+		}
+
+		if (unit->id == UnitId::ProtossPylon || units_dat::base_property[unit->id] & UnitProperty::RequiredPsi) {
+			*g_can_update_powered_status = true; // does this work?
+		}
+		
+		if (unit->id == UnitId::TerranBunker) {
+			for (s32 i = 0; i < TransportCap; i++) {
+				Unit* bunker_unit = unit->get_loaded_unit(i);
+				if (bunker_unit) {
+					// disable unit somehow
+				}
+			}
+		}
+	}
+
+	static void special_unload_unit(Unit* unit, Unit* transport, Point16* pos) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+			Point16 size = units_dat::building_dimensions[unit->id];
+			pos->x = (u16)(pos->x - size.x / 2.0 + 16) / 32 * 32;
+			pos->y = (u16)(pos->y - size.y / 2.0 + 16) / 32 * 32;
+		}
+
+		if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
+			scbw::spawn_custom_creep_at(*pos, unit->id, false);
+			helper::set_secondary_order(unit, OrderId::SpreadCreep);
+		}
+		
+		if (unit->id == UnitId::ProtossPylon || units_dat::base_property[unit->id] & UnitProperty::RequiredPsi) {
+			*g_can_update_powered_status = true; // does this work?
+		}
+		
+		if (unit->id == UnitId::TerranBunker) {
+			for (s32 i = 0; i < TransportCap; i++) {
+				Unit* bunker_unit = unit->get_loaded_unit(i);
+				if (bunker_unit) {
+					scbw::set_unit_position(bunker_unit, pos->x, pos->y);
+					// reenable unit somehow
+				}
+			}
+		}
+	}
+
 	void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
 	{
 		u32 loaded_index;
@@ -108,31 +154,12 @@ namespace hooks
 			transport_ext->loaded_unit[counter].unit_id = 0;
 		}
 
-		// TODO: revisit those, seems like it should be cargo_unit
-		if (transport->id == UnitId::ZergCreepColony
-		||  transport->id == UnitId::ZergSunkenColony
-		||  transport->id == UnitId::ZergSporeColony
-		||  transport->id == UnitId::ZergLarvalColony)
-		{
-			// TODO: inform creep about missing colony?
-		}
-		else if (transport->id == UnitId::ProtossPylon)
-		{
-			// TODO: enable nearby disabled structures, update energy sprite position
-		}
-		else if (transport->id == UnitId::TerranBunker)
-		{
-			for (s32 i = 0; i < TransportCap; i++)
-			{
-				Unit* cargoUnit = transport->get_loaded_unit(i);
-				if (cargoUnit == nullptr) continue;
-				// TODO: disable cargo units
-			//	scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
-			}
-		}
 		cargo_unit->status |= UnitStatus::InTransport;
 		helper::hide_and_disable_unit(cargo_unit);
-		cargo_unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
+		if (!(units_dat::base_property[cargo_unit->id] & UnitProperty::Building)) {
+			cargo_unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
+		}
+		special_load_unit(cargo_unit, transport);
 
 		if (transport->id == UnitId::TerranBunker)
 		{
@@ -231,7 +258,7 @@ namespace hooks
 			&&   transport->stasis_timer == 0
 			&&   transport->maelstrom_timer == 0)
 			{
-				Point16 pos = {0,0};
+				Point16 pos = {0, 0};
 				// probably check where unit can be spawned
 				if (helper::can_unload(transport, unit, &pos) != 0)
 				{
@@ -251,49 +278,10 @@ namespace hooks
 						transport->main_order_timer = 15;
 					}
 
-					if ((unit->status & UnitStatus::IsBuilding) == 0)
-					{
-						u16* coords[2] = {&pos.x, &pos.y};
-						f64 corrections[2] = {32.0, 32.0};
-
-						if (unit->id == UnitId::TerranBunker)
-						{
-							corrections[0] = 48.0;
-						}
-
-						for (s32 i = 0; i < 2; i++)
-						{
-							*coords[i] = std::round(((f64)*coords[i]) / corrections[i]) * corrections[i];
-						}
-
-						if (unit->id == UnitId::ZergCreepColony
-							|| unit->id == UnitId::ZergSunkenColony
-							|| unit->id == UnitId::ZergSporeColony
-							|| unit->id == UnitId::ZergLarvalColony)
-						{
-							// TODO: spawn creep
-						}
-						else if (unit->id == UnitId::ProtossPhotonCannon)
-						{
-							// TODO: check if pylon power is around, enable or disable the structure
-						}
-						else if (unit->id == UnitId::ProtossPylon)
-						{
-							// TODO: enable nearby disabled structures, update energy sprite position
-						}
-						else if (unit->id == UnitId::TerranBunker)
-						{
-							for (s32 i = 0; i < TransportCap; i++)
-							{
-								Unit* cargoUnit = unit->get_loaded_unit(i);
-								if (cargoUnit == nullptr) continue;
-								// TODO: enable and update cargo units and their position
-							//	scbw::set_unit_position(cargoUnit, position.x, position.y); // <- does not work
-							}
-						}
-					}
-					scbw::decloak_proc(unit->connected_unit);
 					scbw::decloak_proc(unit);
+					scbw::decloak_proc(transport);
+
+					special_unload_unit(unit, transport, &pos);
 					scbw::set_unit_position(unit, pos.x, pos.y);
 					if (unit->subunit != nullptr)
 					{
@@ -302,13 +290,15 @@ namespace hooks
 
 					helper::ignore_all_scripts_and_go_to_idle(unit);
 					helper::unload_unit_ext(unit, 0);
-					if (unit->unit_ai == nullptr)
-					{
-						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
-					}
-					else
-					{
-						unit->order_computer(OrderId::ComputerAI);
+					if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+						if (unit->unit_ai == nullptr)
+						{
+							unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+						}
+						else
+						{
+							unit->order_computer(OrderId::ComputerAI);
+						}
 					}
 
 					UnitExt* transportExt = globals.get_unit_ext(transport);

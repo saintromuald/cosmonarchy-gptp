@@ -49,14 +49,14 @@ namespace hooks
 		if (helper::place_building_message(result_function_00473FB0))
 		{
 			s32 DimensionX, DimensionY;
-			DimensionX = (s16)units_dat::BuildingDimensions[builtUnitId].x;
+			DimensionX = (s16)units_dat::building_dimensions[builtUnitId].x;
 			if (DimensionX < 0)
 			{
 				DimensionX++;
 			}
 			DimensionX /= 2;
 			DimensionX += (x * 32);
-			DimensionY = (s16)units_dat::BuildingDimensions[builtUnitId].y;
+			DimensionY = (s16)units_dat::building_dimensions[builtUnitId].y;
 			if (DimensionY < 0)
 			{
 				DimensionY++;
@@ -120,7 +120,7 @@ namespace hooks
 		if (helper::place_building_message(can_build))
 		{
 			s32 DimensionX, DimensionY;
-			DimensionX = (s16)units_dat::BuildingDimensions[builder->id].x;
+			DimensionX = (s16)units_dat::building_dimensions[builder->id].x;
 			if (DimensionX < 0)
 			{
 				DimensionX++;
@@ -128,7 +128,7 @@ namespace hooks
 			DimensionX /= 2;
 			addonPlaceX *= 32;
 			DimensionX += addonPlaceX;
-			DimensionY = (s16)units_dat::BuildingDimensions[builder->id].y;
+			DimensionY = (s16)units_dat::building_dimensions[builder->id].y;
 			if (DimensionY < 0)
 			{
 				DimensionY++;

@@ -591,6 +591,7 @@ namespace scbw
 	bool unit_id_is_smaller_building(u16 unit_id);
 	EntryArray get_writhing_web_sovroleths(Unit* unit);
 
+	void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep);
 	void spawn_custom_creep(Unit* unit);
 	void spread_custom_creep(Unit* unit);
 	void update_custom_creep_disappearance(Unit* unit);

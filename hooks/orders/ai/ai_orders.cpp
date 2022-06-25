@@ -1941,8 +1941,8 @@ LABEL_37:
 				s32 unit_y = unit->sprite->position.y / 32 - desired_position.y / 32 + 32;
 
 				// Dimensions
-				u32 w = units_dat::BuildingDimensions[unit->id].x / 32;
-				u32 h = units_dat::BuildingDimensions[unit->id].y / 32;
+				u32 w = units_dat::building_dimensions[unit->id].x / 32;
+				u32 h = units_dat::building_dimensions[unit->id].y / 32;
 
 				// Go to top left
 				unit_x -= (w + 1) / 2;

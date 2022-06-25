@@ -52,8 +52,8 @@ namespace hooks
 		Box16 searchBox;
 		Unit* created_unit;
 
-		buildingSizeX = units_dat::BuildingDimensions[buildingId].x;
-		buildingSizeY = units_dat::BuildingDimensions[buildingId].y;
+		buildingSizeX = units_dat::building_dimensions[buildingId].x;
+		buildingSizeY = units_dat::building_dimensions[buildingId].y;
 		if (buildingSizeX < 0)
 		{
 			buildingSizeX++;

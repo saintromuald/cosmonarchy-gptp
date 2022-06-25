@@ -489,8 +489,8 @@ namespace hooks
 							if (!(unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving)
 								&& unitExt->timers[TimerTalosAnimationSubtimer] == 0) {
 
-								u32 width  = units_dat::BuildingDimensions[target->id].x * 0.75;
-								u32 height = units_dat::BuildingDimensions[target->id].y * 0.75;
+								u32 width  = units_dat::building_dimensions[target->id].x * 0.75;
+								u32 height = units_dat::building_dimensions[target->id].y * 0.75;
 
 								s32 x_offset = scbw::random() % width  - width  / 2;
 								s32 y_offset = scbw::random() % height - height / 2;
@@ -1504,8 +1504,8 @@ namespace hooks
 
 		if (units_dat::base_property[unit->id] & UnitProperty::Addon && !(unit->status & UnitStatus::Completed)) {
 			if (unit->connected_unit && !unit->connected_unit->is_frozen() && unitExt->timers[TimerAddonAnimation] == 0) {
-				u32 width  = units_dat::BuildingDimensions[unit->id].x * 0.5;
-				u32 height = units_dat::BuildingDimensions[unit->id].y * 0.5;
+				u32 width  = units_dat::building_dimensions[unit->id].x * 0.5;
+				u32 height = units_dat::building_dimensions[unit->id].y * 0.5;
 
 				s32 x_offset = scbw::random() % width - width / 2;
 				s32 y_offset = scbw::random() % height - height / 2;

@@ -321,8 +321,8 @@ namespace hooks
 			}
 			return true;
 		}
-		s32 w = units_dat::BuildingDimensions[unit_id].x / 32;
-		s32 h = units_dat::BuildingDimensions[unit_id].y / 32;
+		s32 w = units_dat::building_dimensions[unit_id].x / 32;
+		s32 h = units_dat::building_dimensions[unit_id].y / 32;
 		rect->left = x / 32 - w / 2;
 		rect->top = y / 32 - h / 2;
 		rect->right = rect->left + w - 1;
@@ -453,7 +453,7 @@ namespace hooks
 		u32 v13; // [esp+14h] [ebp-8h]
 		s32 v14; // [esp+18h] [ebp-4h]
 
-		building_dimensions = units_dat::BuildingDimensions[a1];
+		building_dimensions = units_dat::building_dimensions[a1];
 		v5 = (s16)v7 / 32;
 		v4 = a2 / 32 - v5 / 2;
 		v6 = a3 / 32 - (v7 >> 16) / 32 / 2;

@@ -263,8 +263,8 @@ static u32 number_of_equivalents_up(AiTown* town, u32 unit_id) {
 
 static bool unit_has_creep(u32 unit_id, u32 x, u32 y) {
 	Box32 area = {};
-	area.w = units_dat::BuildingDimensions[unit_id].x;
-	area.h = units_dat::BuildingDimensions[unit_id].y;
+	area.w = units_dat::building_dimensions[unit_id].x;
+	area.h = units_dat::building_dimensions[unit_id].y;
 	area.x = x - area.w / 2;
 	area.y = y - area.h / 2;
 	for (u32 xx = 0; xx < area.w / 32; ++xx) {
@@ -280,8 +280,8 @@ static bool unit_has_creep(u32 unit_id, u32 x, u32 y) {
 
 static bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 	Box32 area = {};
-	area.w = units_dat::BuildingDimensions[unit_id].x;
-	area.h = units_dat::BuildingDimensions[unit_id].y;
+	area.w = units_dat::building_dimensions[unit_id].x;
+	area.h = units_dat::building_dimensions[unit_id].y;
 	area.x = x - area.w / 2;
 	area.y = y - area.h / 2;
 	for (u32 xx = 0; xx < area.w / 32; ++xx) {

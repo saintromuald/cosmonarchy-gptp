@@ -168,9 +168,9 @@ namespace hooks
 		if (v7 & 2)
 		{
 			v9 = 4 * (u16)builderVar->id;
-			v10 = *(s16*)((char*)&units_dat::BuildingDimensions[0].x + v9);
+			v10 = *(s16*)((char*)&units_dat::building_dimensions[0].x + v9);
 			*(Point16*)&v40 = __tileX;
-			v9 = *(s16*)((char*)&units_dat::BuildingDimensions[0].y + v9) / -2 / 32 + __tileX.y;
+			v9 = *(s16*)((char*)&units_dat::building_dimensions[0].y + v9) / -2 / 32 + __tileX.y;
 			v36 = &units_dat::MaxHitPoints[(u16)unit_id + 122];
 			v8 = *(s16*)v36 / 32 + __tileX.x - v10 / 2 / 32;
 			v35 = (s16*)((char*)&units_dat::MaxHitPoints[(u16)unit_id + 122] + 2);
@@ -180,10 +180,10 @@ namespace hooks
 			{
 				v12 = *(s16*)v36 / -32 + v8;
 				v41 = *v35 / -32 + v41;
-				v13 = units_dat::BuildingDimensions[(u16)builderVar->id].x;
+				v13 = units_dat::building_dimensions[(u16)builderVar->id].x;
 				v40 = v12;
 				outPosition->x = 32 * v12 + v13 / 2;
-				outPosition->y = 32 * v41 + units_dat::BuildingDimensions[(u16)builderVar->id].y / 2;
+				outPosition->y = 32 * v41 + units_dat::building_dimensions[(u16)builderVar->id].y / 2;
 				return 1;
 			}
 			playerVar = ownrId;
@@ -361,8 +361,8 @@ namespace hooks
 		v26 = v40;
 	LABEL_36:
 		v28 = v32;
-		outPosition->x = 32 * v26 + units_dat::BuildingDimensions[v32].x / 2;
-		outPosition->y = 32 * v41 + units_dat::BuildingDimensions[v28].y / 2;
+		outPosition->x = 32 * v26 + units_dat::building_dimensions[v32].x / 2;
+		outPosition->y = 32 * v41 + units_dat::building_dimensions[v28].y / 2;
 		return 1;
 	}
 

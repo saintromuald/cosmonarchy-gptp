@@ -1997,8 +1997,8 @@ namespace scbw
 
 	Box32 unit_area(Unit* unit) {
 		Box32 area = {};
-		area.w = units_dat::BuildingDimensions[unit->id].x;
-		area.h = units_dat::BuildingDimensions[unit->id].y;
+		area.w = units_dat::building_dimensions[unit->id].x;
+		area.h = units_dat::building_dimensions[unit->id].y;
 		area.x = unit->position.x - area.w / 2;
 		area.y = unit->position.y - area.h / 2;
 		return area;
@@ -2145,19 +2145,23 @@ namespace scbw
 		return sovroleths;
 	}
 
-	void spawn_custom_creep(Unit* unit) {
-		u32 w = units_dat::BuildingDimensions[unit->id].x / 32;
-		u32 h = units_dat::BuildingDimensions[unit->id].y / 32;
-		u32 x = unit->position.x / 32 - w / 2;
-		u32 y = unit->position.y / 32 - h / 2;
+	void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep) {
+		u32 w = units_dat::building_dimensions[unit_id].x / 32;
+		u32 h = units_dat::building_dimensions[unit_id].y / 32;
+		u32 x = pos.x / 32 - w / 2;
+		u32 y = pos.y / 32 - h / 2;
 
 		helper::clear_tile_flags_from_area(0x8000000, x, y, w, h);
-		if (units_dat::group_flags[unit->id].is_factory) {
+		if (more_creep) {
 			helper::set_creep(x - 2, y - 1, w + 4, h + 2, true);
 		} else {
 			helper::set_creep(x, y, w, h, false);
 		}
 		helper::set_map_tile_flags(0x8000000, x, y, w, h);
+	}
+
+	void spawn_custom_creep(Unit* unit) {
+		spawn_custom_creep_at(unit->position, unit->id, units_dat::group_flags[unit->id].is_factory);
 	}
 
 	static void stop_custom_creep_disappearing(Unit* unit)

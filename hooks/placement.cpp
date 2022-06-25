@@ -25,7 +25,7 @@ namespace hooks
             return result;
         }
         unused.x = mouse->y;
-        Point16 dims = units_dat::BuildingDimensions[*place_building_unit_id];
+        Point16 dims = units_dat::building_dimensions[*place_building_unit_id];
         placement_pos.x = mouse->x - dims.x / 2;
         placement_pos.y = mouse->y - dims.y / 2;
         if (helper::init_placement_box_pos(&placement_pos)) {

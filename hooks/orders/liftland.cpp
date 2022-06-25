@@ -51,8 +51,8 @@ namespace hooks
 		{
 			if (unit->get_movable_state() != 0)
 			{
-				s32 x = units_dat::BuildingDimensions[unit->id].x;
-				s32 y = units_dat::BuildingDimensions[unit->id].y;
+				s32 x = units_dat::building_dimensions[unit->id].x;
+				s32 y = units_dat::building_dimensions[unit->id].y;
 				if (x < 0)
 				{
 					x += 1; if (y < 0) y += 1;
