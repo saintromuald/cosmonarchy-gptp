@@ -567,12 +567,12 @@ namespace helper
 	void update_dialog(BinDlg* dialog);																								// 0041C400
 
 	//// bunker_hooks
-	Unit* findRandomAttackTarget(Unit* unit);																						// 00442FC0
+	Unit* find_random_attack_target(Unit* unit);																						// 00442FC0
 	b32 attack_apply_cooldown(Unit* unit);																							// 00478B40
 	void set_image_direction(Image* image, s8 direction);																			// 004D5F80
 
 	//// api
-	void ApplySpores(Unit* unit);
+	void apply_spores(Unit* unit);
 	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor);
 	Unit* createUnitAtPos(u16 unit_id, u16 player, u32 x, u32 y);																// 004CD360

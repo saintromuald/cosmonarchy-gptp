@@ -734,7 +734,7 @@ namespace hooks
 									{
 										return;
 									}
-									helper::ApplySpores(target);
+									helper::apply_spores(target);
 									Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
 									if (thingy != nullptr)
 									{
@@ -1020,6 +1020,7 @@ namespace hooks
 						data.target->set_hitpoints(units_dat::MaxHitPoints[data.target->id] / 2);
 						data.target->order_to(OrderId::Move, nearest->position.x, nearest->position.y);
 						data.target->status |= UnitStatus::CanNotReceiveOrders;
+						data.target->sprite->create_top_overlay(ImageId::GodsMadeFlesh_Small);
 					}
 				}
 			} break;

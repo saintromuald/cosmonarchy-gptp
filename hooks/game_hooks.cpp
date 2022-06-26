@@ -550,6 +550,7 @@ namespace hooks
 						for (u32 i = 0; i < targets.count; ++i) {
 							Unit* target = targets.units[i];
 							target->heal(ZoryusthalethReconstitutionHealing, unit);
+							target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 							//scbw::create_and_init_thingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 						}
 						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
