@@ -398,7 +398,7 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 		} break;
 		case EffectId_IonField: {
 			if (!flyer) {
-				if (total_hp > 50 && hp_percentage > 0.5 && unit_ext->timers[TimerIonFieldSpeed] < 1 * 24) {
+				if (total_hp > 50 && hp_percentage > 0.5 && unit_ext->timers[TimerIonFieldAttackSpeed] < 1 * 24) {
 					value += 100;
 				} else {
 					value -= 100;

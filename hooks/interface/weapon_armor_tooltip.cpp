@@ -490,12 +490,8 @@ namespace hooks
 
 		// Gptp Timer
 		// TODO: Add mineral and egg boost timers eventually (currently can't read tooltips from eggs nor mineral fields)
-		addStatus(statuses, "Malediction", -1, 1,
-			unitExt->timers[TimerMaledictionSlow], TimerType::Gptp);
 		addStatus(statuses, "Ensnaring Brood", -1, 1,
 			unitExt->timers[TimerEnsnaringBrood], TimerType::Gptp);
-		addStatus(statuses, "Lobotomy Slow", -1, 1,
-			unitExt->timers[TimerLobotomySlow], TimerType::Gptp);
 		addStatus(statuses, "Kaiser Rampage", -1, 1,
 			unitExt->timers[TimerKaiserRampage], TimerType::Gptp);
 		addStatus(statuses, "Hallucinating", -1, 1,
@@ -511,7 +507,7 @@ namespace hooks
 		addStatus(statuses, "Caustic Discharge", -1, 1,
 			unitExt->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
 		addStatus(statuses, "Ion Field", -1, 1,
-			unitExt->timers[TimerIonFieldSpeed], TimerType::Gptp);
+			unitExt->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
 
 		// Gptp Value
 		addStatus(statuses, "Cabeirus Feeders", ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
@@ -587,7 +583,7 @@ namespace hooks
 		addStatus(statuses, "Parasited", parasite_spawn_count, 0);
 		addStatus(statuses, "Blinded", unit->is_blind != 0, 1);
 		addStatus(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::base_property[unit->id] & UnitProperty::Building, 1);
-		addStatus(statuses, "Cannot Attack", unitExt->timers[TimerUnderDisruptionWeb] > 0, 1);
+		addStatus(statuses, "Cannot Attack", unitExt->timers[TimerUnderDisruptionField] > 0, 1);
 
 		// Case Specific
 		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);

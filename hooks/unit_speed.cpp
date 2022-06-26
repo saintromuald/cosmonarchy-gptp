@@ -37,18 +37,6 @@ namespace hooks
 		// Crucible Aura
 		speed /= 1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size();
 
-		// Mind Tyrant Malediction: Apply movespeed slow to non-organic targets
-		if (unitExt->timers[TimerMaledictionSlow] > 1)
-		{
-			speed *= 0.5;
-		}
-
-		// Lobotomy Mine slow
-		if (unitExt->timers[TimerLobotomySlow] > 1)
-		{
-			speed *= 0.5;
-		}
-
 		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
 		speed *= 1.0 + unitExt->values[ValueTerminalSurge] * 0.05;
 

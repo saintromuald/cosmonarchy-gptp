@@ -1309,9 +1309,8 @@ namespace scbw
 
 	bool unit_is_ranged_attacker(Unit* unit)
 	{
-		u16 id = unit->id;
 		// Would be nice to somehow avoid ID hardcode
-		switch (id)
+		switch (unit->id)
 		{
 			// Prohibited IDs
 			case UnitId::ProtossAmaranth:
@@ -1337,7 +1336,7 @@ namespace scbw
 			}
 		}
 
-		u16 groundWeaponId = units_dat::GroundWeapon[id];
+		u16 groundWeaponId = units_dat::GroundWeapon[unit->id];
 		if (unit->subunit)
 		{
 			groundWeaponId = units_dat::GroundWeapon[unit->subunit->id];
@@ -1349,7 +1348,7 @@ namespace scbw
 				return true;
 			}
 		}
-		u16 airWeaponId = units_dat::AirWeapon[id];
+		u16 airWeaponId = units_dat::AirWeapon[unit->id];
 		if (unit->subunit)
 		{
 			airWeaponId = units_dat::AirWeapon[unit->subunit->id];

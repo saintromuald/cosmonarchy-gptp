@@ -561,7 +561,7 @@ void Globals::frame_hook() {
 						}
 						UnitExt* unitExt = globals.get_unit_ext(unit);
 						unit->damage_with_custom(100 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
-						unitExt->timers[TimerIonFieldSpeed] = 2 * 24 + 1;
+						unitExt->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
 					});
 				} break;
 				case EffectId_Hallucination: {
@@ -636,7 +636,7 @@ void Globals::frame_hook() {
 						effect->position.y + 40
 					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
 						UnitExt* unitExt = globals.get_unit_ext(unit);
-						unitExt->timers[TimerUnderDisruptionWeb] = 8;
+						unitExt->timers[TimerUnderDisruptionField] = 8;
 						unit->status |= UnitStatus::CanNotAttack;
 					});
 				} break;
@@ -1036,12 +1036,6 @@ namespace scbw
 			parentExt->unit_vectors[UnitVectorCaptivatingClaws] = childExt->unit_vectors[UnitVectorCaptivatingClaws];
 		}
 
-		// Inherit Lobotomy Mine slow
-		if (parentExt->timers[TimerLobotomySlow])
-		{
-			childExt->timers[TimerLobotomySlow] = parentExt->timers[TimerLobotomySlow];
-		}
-
 		// Inherit Lockdown
 		if (parent->lockdown_timer != 0)
 		{
@@ -1186,9 +1180,7 @@ namespace scbw
 			}
 		}
 
-		return unitExt->timers[TimerMaledictionSlow]
-			|| unitExt->timers[TimerPetrification]
-			|| unitExt->timers[TimerLobotomySlow]
+		return unitExt->timers[TimerPetrification]
 			|| unitExt->timers[TimerObservancePeriod]
 			|| unitExt->timers[TimerCorrosiveTouch]
 			|| unitExt->values[ValueDeconstruction]
@@ -1268,12 +1260,6 @@ namespace scbw
 			unit->irradiate_player_id = 8;
 		}
 
-		// Remove Malediction
-		if (unitExt->timers[TimerMaledictionSlow])
-		{
-			unitExt->timers[TimerMaledictionSlow] = 1;
-		}
-
 		// Remove Observance
 		if (unitExt->timers[TimerObservanceDebuff])
 		{
@@ -1297,12 +1283,6 @@ namespace scbw
 		{
 			unitExt->timers[TimerCaptivatingClaws] = 1;
 			unitExt->unit_vectors[UnitVectorCaptivatingClaws] = {};
-		}
-
-		// Remove Lobotomy Mine slow
-		if (unitExt->timers[TimerLobotomySlow])
-		{
-			unitExt->timers[TimerLobotomySlow] = 1;
 		}
 
 		// Remove Entropy Gauntlets
