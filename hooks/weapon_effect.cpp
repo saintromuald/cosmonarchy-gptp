@@ -187,18 +187,6 @@ namespace hooks
 				outer = 32;
 			}
 
-			if (weapon_id == WeaponId::HeraclesJavelinCannons)
-			{
-				if (bullet->source_unit)
-				{
-					UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->source_unit);
-
-					const f64 splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
-					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
-					outer = (s16)(splashBase * (1 + 0.1 * stacks));
-				}
-			}
-
 			if (!helper::is_unit_distance_within(target, bullet, outer)) continue;
 
 			// Don't storm a unit that's already being stormed

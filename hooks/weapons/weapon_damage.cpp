@@ -638,7 +638,7 @@ namespace hooks
 					} break;
 					case WeaponId::HeraclesJavelinCannons:
 					{
-						data.final_damage += attackerExt->values[ValueNemeanReactorsStack];
+						data.final_damage += (attackerExt->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{

@@ -799,7 +799,7 @@ namespace hooks
 			{
 				// Heracles Nemean Reactors - remove stacks when out of combat
 				if (unitExt->values[ValueNemeanReactorsStack] > 0
-					&& unitExt->timers[TimerNemeanReactors] <= 1)
+				&&  unitExt->timers[TimerNemeanReactors] <= 1)
 				{
 					unitExt->values[ValueNemeanReactorsStack] = 0;
 				}
@@ -1892,13 +1892,6 @@ namespace hooks
 				unit->visibility_status = 0xff;
 				helper::update_visibility(unit); // didact cloak needs special handling
 			}
-		}
-
-		// Remove all Nemean Reactors stacks after not attacking for 5 seconds
-		if (unitExt->timers[TimerNemeanReactors] == 1)
-		{
-			unitExt->values[ValueNemeanReactorsStack] = 0;
-			// remove overlay later
 		}
 
 		// Autovitality - Simulacrum behavior

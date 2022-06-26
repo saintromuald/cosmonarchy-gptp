@@ -211,7 +211,7 @@ namespace hooks
 				{
 					unitExt->values[ValueNemeanReactorsStack]++;
 					unitExt->timers[TimerNemeanReactors] = 49;
-					helper::play_sound_from_unit(1372, unit, 1, 0);
+				//	helper::play_sound_from_unit(1372, unit, 1, 0);
 				}
 
 				// Madcap - Maverick Feeders passive
