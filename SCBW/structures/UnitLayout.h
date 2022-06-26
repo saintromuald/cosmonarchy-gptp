@@ -246,19 +246,19 @@ enum ExtValueId
 enum ExtTimerId
 {
 	TimerKaiserRampage,
-	TimerMaledictionSlow,
+	TimerMaledictionSlow,						// unused
 	TimerObservanceDebuff,
 	TimerObservancePeriod,
 	TimerLurkerETA,
-	TimerLobotomySlow,
+	TimerLobotomySlow,							// unused
 	TimerPlanetCrackerChannel,
 	TimerPlanetCrackerDelay,
 	TimerStarSovereignInterventionMissiles,
 	TimerQuaziliskCancel,
 	TimerCausticDischargeSpeed,
-	TimerIonFieldSpeed,
+	TimerIonFieldAttackSpeed,
 	TimerReconstitutionCooldown,
-	TimerBindingGrip,
+	TimerBindingGrip,							// unused
 	TimerGodsMadeFlesh,
 	TimerControlledDemolition,
 	TimerEmergencyDetonation,
@@ -266,7 +266,7 @@ enum ExtTimerId
 	TimerSwarmingOmen,
 	TimerSimulacrumClone,
 	TimerEnsnaringBrood,
-	TimerNewMedstim,
+	TimerNewMedstim,							// unused
 	TimerAugurGimmick,
 	TimerObservanceOverlay,
 	TimerNaniteField,
@@ -287,9 +287,9 @@ enum ExtTimerId
 	TimerSignify,
 	TimerReviveFlagClearMin,
 	TimerReviveFlagClearMax,
-	TimerUnderDisruptionWeb,
+	TimerUnderDisruptionField,
 	TimerAlliedInvFrames,
-	TimerWaxWingsDebuff,
+	TimerWaxWingsDebuff,						// unused
 	TimerAuralAssaultBlind,
 	TimerTarasqueSecondaryWeaponCooldown,
 	TimerAnticthonRevive,

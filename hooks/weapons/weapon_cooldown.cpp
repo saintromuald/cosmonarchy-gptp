@@ -77,7 +77,7 @@ namespace hooks
 		}
 
 		// Ion Cannon Ion Field: Attack Speed Buff
-		if (unitExt->timers[TimerCausticDischargeSpeed] > 0)
+		if (unitExt->timers[TimerIonFieldAttackSpeed] > 0)
 		{
 			cooldown /= 1.5;
 		}
@@ -99,15 +99,19 @@ namespace hooks
 				cooldown += cooldown / 4;
 
 			}
-		} if (unit->stim_timer)
+		}
+		
+		if (unit->stim_timer)
 		{ // Fixes aice-related Stimpack issue
 			cooldown += 2;
 		}
+
 		u32 adrenalStacks = unitExt->values[ValueAdrenalStacks];
 		if (adrenalStacks)
 		{
 			cooldown -= adrenalStacks / 2;
 		}
+
 		if (cooldown > 250)
 		{ // Max cutoff
 			cooldown = 250;

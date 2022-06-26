@@ -5076,7 +5076,7 @@ namespace helper
 		}
 	}
 
-	Unit* findRandomAttackTarget(Unit* unit)
+	Unit* find_random_attack_target(Unit* unit)
 	{
 		const u32 Func_findRandomAttackTarget = 0x00442FC0;
 		static Unit* target;
@@ -5118,7 +5118,7 @@ namespace helper
 		}
 	}
 
-	void ApplySpores(Unit* unit)
+	void apply_spores(Unit* unit)
 	{
 		const u32 Func_ApplySpores = 0x004F4480;
 		__asm {

@@ -586,6 +586,7 @@ namespace hooks
 						for (u32 i = 0; i < targets.count; ++i) {
 							Unit* target = targets.units[i];
 							target->heal(ZoryusthalethReconstitutionHealing, unit);
+							target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 							//scbw::create_and_init_thingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 						}
 						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
@@ -637,8 +638,7 @@ namespace hooks
 					}
 				}
 				if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
-					if (scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).has_creep
-						&& !unit->get_overlay(ImageId::CreepMorphOverlay)) {
+					if (scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).has_creep && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 						unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 					}
 				}
@@ -835,7 +835,7 @@ namespace hooks
 			{
 				// Heracles Nemean Reactors - remove stacks when out of combat
 				if (unitExt->values[ValueNemeanReactorsStack] > 0
-					&& unitExt->timers[TimerNemeanReactors] <= 1)
+				&&  unitExt->timers[TimerNemeanReactors] <= 1)
 				{
 					unitExt->values[ValueNemeanReactorsStack] = 0;
 				}
@@ -1366,13 +1366,13 @@ namespace hooks
 			} break;
 			case UnitId::ZergDroleth:
 			{
-				// Temporary? fix for order queue insanity. -Pr0nogo
-				if (unit->main_order_id == OrderId::Morph1
-				&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
-				&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth)
-				{
-					unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
-				}
+			//	// Temporary? fix for order queue insanity. -Pr0nogo
+			//	if (unit->main_order_id == OrderId::Morph1
+			//	&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
+			//	&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth)
+			//	{
+			//		unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
+			//	}
 			} break;
 		}
 
@@ -1497,7 +1497,7 @@ namespace hooks
 		}
 
 		// Disruption Web Clear
-		if (unitExt->timers[TimerUnderDisruptionWeb] == 1)
+		if (unitExt->timers[TimerUnderDisruptionField] == 1)
 		{
 			unit->status &= ~UnitStatus::CanNotAttack;
 		}
@@ -1799,26 +1799,26 @@ namespace hooks
 			unit->sprite->remove_overlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
 		}
 
-		// Vithrilisk - Corrosive Touch Clear
+		// Vithrilisk - Corrosive Touch clear
 		if (unitExt->timers[TimerCorrosiveTouch] == 1)
 		{
 			unitExt->values[ValueCorrosiveTouchStacks] = 0;
 			unit->remove_overlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 		}
 
-		// Zergling - Adrenal Glands
+		// Zethrokor - Adrenal Glands
 		if (unitExt->timers[TimerAdrenal] == 1)
 		{
 			unitExt->values[ValueAdrenalStacks] = 0;
 		}
 
-		// Vorvaling - Captivating ZethrokorClaws
+		// Vorvrokor - Captivating Claws
 		if (unitExt->timers[TimerCaptivatingClaws] == 1)
 		{
 			unitExt->unit_vectors[UnitVectorCaptivatingClaws] = {};
 		}
 
-		// Game Rule -  Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
+		// Game rule -  Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
 		if (unit->main_order_id == OrderId::Harvest1
 			|| unit->main_order_id == OrderId::HarvestGas1
 			|| unit->main_order_id == OrderId::ReturnMinerals
@@ -1834,7 +1834,7 @@ namespace hooks
 			}
 		}
 
-		// Hallucinating Visual Effect
+		// Hallucinating visual effect
 		u32 hallucinatingTimer = unitExt->timers[TimerHallucinating];
 		if (unit && unit->sprite) {
 			if (hallucinatingTimer % 24 == 1) {
@@ -1928,13 +1928,6 @@ namespace hooks
 				unit->visibility_status = 0xff;
 				helper::update_visibility(unit); // didact cloak needs special handling
 			}
-		}
-
-		// Remove all Nemean Reactors stacks after not attacking for 5 seconds
-		if (unitExt->timers[TimerNemeanReactors] == 1)
-		{
-			unitExt->values[ValueNemeanReactorsStack] = 0;
-			// remove overlay later
 		}
 
 		// Autovitality - Simulacrum behavior
@@ -2097,6 +2090,11 @@ namespace hooks
 			unitExt->values[ValueAI_WorkerChosenForExpansion] = 0;
 			unitExt->values[ValueAI_WorkerChosenX] = 0;
 			unitExt->values[ValueAI_WorkerChosenY] = 0;
+		}
+
+		// Anticthon - Counter-Proposal - add overlay
+		if (unitExt->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
+			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 		}
 	}
 

@@ -340,6 +340,7 @@ void unit_destructor_special_cases(Unit* unit)
 			if (scbw::get_distance_fast(unit->position, caster->position) <= caster->get_sight_range() * 32)
 			{
 				caster->heal_energy(5 * 256);
+				caster->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
 		}
 	}
@@ -366,6 +367,7 @@ void unit_destructor_special_cases(Unit* unit)
 	if (unitExt->values[ValueLazarusAgent] || unitExt->timers[TimerAnticthonRevive])
 	{
 		scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
+		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit, 1, 0);
 	}
 
 	// Nuclear Silo - death

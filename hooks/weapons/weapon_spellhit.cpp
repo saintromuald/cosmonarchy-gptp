@@ -377,12 +377,12 @@ namespace hooks
 			{
 				for (auto unit : vec)
 				{
-					helper::ApplySpores(unit);
+					helper::apply_spores(unit);
 				}
 			}
 			else
 			{
-				helper::ApplySpores(bullet->attackTarget.unit);
+				helper::apply_spores(bullet->attackTarget.unit);
 			}
 		}
 	}

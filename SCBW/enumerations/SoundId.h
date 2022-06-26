@@ -1199,6 +1199,8 @@ namespace SoundId
 		LazarusAgentCast					= 1885,
 		CohortRevive01						= 1886,
 		CohortRevive02						= 1887,
+
+		LazarusAgentProc					= 1905,
 	};
 }
 
