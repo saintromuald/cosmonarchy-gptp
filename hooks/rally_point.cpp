@@ -402,6 +402,8 @@ namespace hooks
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	void process_right_click_action(Unit* unit, u32 order_unit_id, u16 y_pos, u32 x_pos, Unit* target) { // 00455F20
+		target = 0; // it seems like target should always be 0
+
 		Box16 location = {};
 		location.x = x_pos - 96;
 		location.w = x_pos + 96;
