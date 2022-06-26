@@ -610,13 +610,13 @@ namespace hooks
 		if (!(transport->status & UnitStatus::Completed)) {
 			return 0;
 		}
-		if (transport->status & UnitStatus::Frozen) {
-			return 0;
-		}
 		if (transport->is_frozen()) {
 			return 0;
 		}
-		if (unit->status & UnitStatus::Burrowed) { // originally also checked for playerIds being the same
+		if (!(unit->status & UnitStatus::Completed)) {
+			return 0;
+		}
+		if (unit->status & UnitStatus::Burrowed) {
 			return 0;
 		}
 		if (!scbw::is_allied_to(unit->player, transport->player)) {
