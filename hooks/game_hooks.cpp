@@ -601,8 +601,7 @@ namespace hooks
 					}
 				}
 				if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
-					if (scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).has_creep
-						&& !unit->get_overlay(ImageId::CreepMorphOverlay)) {
+					if (scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).has_creep && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 						unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 					}
 				}
@@ -2054,6 +2053,11 @@ namespace hooks
 			unitExt->values[ValueAI_WorkerChosenForExpansion] = 0;
 			unitExt->values[ValueAI_WorkerChosenX] = 0;
 			unitExt->values[ValueAI_WorkerChosenY] = 0;
+		}
+
+		// Anticthon - Counter-Proposal - add overlay
+		if (unitExt->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
+			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 		}
 	}
 
