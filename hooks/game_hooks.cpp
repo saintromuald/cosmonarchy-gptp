@@ -951,7 +951,7 @@ namespace hooks
 					unit->order_signal &= ~0x20;
 					helper::play_sound_from_unit(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
 				}
-				// Lakizilisk - Seismic DrolethSpines
+				// Lakizilisk - Seismic Spines
 				if (unit->sprite != nullptr && unit->main_order_id != OrderId::Die
 					&& unitExt->timers[TimerLurkerETA] == 1)
 				{
@@ -1326,6 +1326,16 @@ namespace hooks
 						unitExt->values[ValueMissileSiloLoaded] = 0;
 						unit->sprite->main_graphic->play_iscript_animation(IscriptAnimation::Built);
 					}
+				}
+			} break;
+			case UnitId::ZergDroleth:
+			{
+				// Temporary? fix for order queue insanity. -Pr0nogo
+				if (unit->main_order_id == OrderId::Morph1
+				&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
+				&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth)
+				{
+					unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
 				}
 			} break;
 		}
