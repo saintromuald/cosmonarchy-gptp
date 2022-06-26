@@ -27,8 +27,8 @@ namespace hooks
 	static void special_unload_unit(Unit* unit, Unit* transport, Point16* pos) {
 		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 			Point16 size = units_dat::building_dimensions[unit->id];
-			pos->x = (u16)(pos->x - size.x / 2.0 + 16) / 32 * 32;
-			pos->y = (u16)(pos->y - size.y / 2.0 + 16) / 32 * 32;
+			pos->x = (u16)(pos->x + 16) / 32 * 32;
+			pos->y = (u16)(pos->y + 16) / 32 * 32;
 		}
 
 		if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
