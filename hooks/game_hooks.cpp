@@ -336,6 +336,42 @@ namespace hooks
 			update_search_index_effects();
 			update_ext_variables();
 
+			// Draw transport UI
+			Unit* selected = *g_active_portrait_unit;
+			if (selected && *g_client_selection_count == 1) {
+				Point16 start_pos = {169, 353}; // {441, 203};
+				Point16 pos = start_pos;
+
+				u32 cargo_count[UnitId::Count] = {};
+				for (u32 i = 0; i < TransportCap; ++i) {
+					Unit* cargo_unit = selected->get_loaded_unit(i);
+					if (cargo_unit) {
+						cargo_count[cargo_unit->id]++;
+					}
+				}
+
+				u32 x_count = 0;
+				for (u32 i = 0; i < UnitId::Count; ++i) {
+					if (cargo_count[i]) {
+						char buffer[128] = {};
+						if (cargo_count[i] == 1) {
+							snprintf(buffer, 128, "%s", Unit::get_name(i));
+						} else {
+							snprintf(buffer, 128, "%s (x%u)", Unit::get_name(i), cargo_count[i]);
+						}
+
+						graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
+						pos.x += 75;
+						x_count++;
+						if (x_count > 4) {
+							pos.x = start_pos.x;
+							//pos.y += 15;
+							pos.y -= 15;
+						}
+					}
+				}
+			}
+
 			// Loop through bullets
 			for (Bullet* bullet = *first_bullet; bullet; bullet = bullet->next)
 			{
