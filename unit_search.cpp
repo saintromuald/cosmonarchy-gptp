@@ -406,3 +406,15 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16
 	}
 	return true;
 }
+
+void unit_search_add_units_from_connected_transport(EntryArray* unit_array, Unit* unit) {
+	if (unit->status & UnitStatus::InTransport && unit->connected_unit) {
+		Unit* transport = unit->connected_unit;
+		for (u32 i = 0; i < TransportCap; ++i) {
+			Unit* cargo_unit = transport->get_loaded_unit(i);
+			if (cargo_unit) {
+				entry_array_add(unit_array, cargo_unit);
+			}
+		}
+	}
+}

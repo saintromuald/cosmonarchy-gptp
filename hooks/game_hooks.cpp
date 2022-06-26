@@ -35,41 +35,16 @@
 
 #include "SCBW\UnitFinder.h"
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
-	if (target->player != shaman->player) {
-		if (!scbw::is_allied_to(target->player, shaman->player)) {
-			return;
-		}
-	}
-	if (units_dat::base_property[target->id] & UnitProperty::Building) {
-		return;
-	}
-	if (target->stasis_timer) {
-		return;
-	}
-	if (target == shaman) {
-		return;
-	}
-	u32 dist = scbw::get_distance_fast(target->position, shaman->position);
-	if (dist > 4 * 32) {
-		return;
-	}
-
-	bool reqHeal = false;
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
-		reqHeal = true;
-		u32 overlayImageId = ImageId::ShamanNaniteField;
-		Unit* tgt = nullptr;
-		if (target->subunit != nullptr)
-		{
-			tgt = target->subunit;
+		u32 overlay = ImageId::ShamanNaniteField;
+		Unit* target_context = target;
+		if (target->subunit) {
+			target_context = target->subunit;
 		}
-		else
-		{
-			tgt = target;
-		}
-		(tgt->sprite)->create_top_overlay(overlayImageId, 0, 0, 0);
+		target_context->sprite->create_top_overlay(overlay, 0, 0, 0);
 	}
 
+	u32 dist = scbw::get_distance_fast(target->position, shaman->position);
 	if (dist <= 1 * 32) {
 		heal *= 2.5;
 	} else if (dist <= 2 * 32) {
@@ -82,7 +57,7 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 
 namespace hooks
 {
-	void tick_unit(Unit* unit);
+	void tick_unit(Unit* unit, bool unit_is_hidden);
 	static bool game_inited;
 	void next_ui_frame() {
 		if (!game_inited) {
@@ -378,7 +353,12 @@ namespace hooks
 
 			// Loop through all visible units in the game.
 			for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-				tick_unit(unit);
+				tick_unit(unit, false);
+			}
+			for (Unit* unit = *g_first_hidden_unit; unit; unit = unit->link.next) {
+				if (unit->status & UnitStatus::Completed) {
+					tick_unit(unit, true);
+				}
 			}
 			scbw::set_ingame_loop_state(false);
 		}
@@ -402,7 +382,17 @@ namespace hooks
 		return true;
 	}
 
-	void tick_unit(Unit* unit) {
+	void tick_unit(Unit* unit, bool unit_is_hidden) {
+		Unit* overlay_unit = unit;
+		if (unit->status & UnitStatus::InTransport && unit->connected_unit) {
+			Unit* transport = unit->connected_unit;
+			scbw::set_unit_position(unit, transport->position.x, transport->position.y);
+
+			if (unit_is_hidden) {
+				overlay_unit = transport;
+			}
+		}
+
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		tactical_ai(unit, unitExt);
 
@@ -983,24 +973,24 @@ namespace hooks
 			case UnitId::TerranShaman:
 			{
 				// Shaman - Nanite Field
-				if (unit->is_frozen() || unitExt->values[ValueReviveStarted])
-				{
+				if (unit->is_frozen() || unitExt->values[ValueReviveStarted]) {
 					break;
 				}
 				auto timer = unitExt->timers[TimerNaniteField];
-				if (timer == 0)
-				{
+				if (timer == 0) {
 					unitExt->timers[TimerNaniteField] = 24;
-					unit->sprite->play_iscript_animation(IscriptAnimation::CastSpell);
-					scbw::UnitFinder(
-						unit->get_x() - 128,
-						unit->get_y() - 128,
-						unit->get_x() + 128,
-						unit->get_y() + 128
-					).for_each([&](Unit* target)
-						{
-							shaman_nanite_field_proc(unit, ShamanHeal, target);
-						});
+
+					u32 overlay = ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id);
+					overlay_unit->sprite->create_overlay(overlay);
+
+					EntryArray unit_array = unit_search_radial(unit->position, 4 * 32);
+					unit_search_add_units_from_connected_transport(&unit_array, unit);
+					unit_search_filter(&unit_array, unit, FilterAlly | FilterNoBuilding);
+
+					for (u32 i = 0; i < unit_array.count; ++i) {
+						Unit* target = unit_array.units[i];
+						shaman_nanite_field_proc(unit, ShamanHeal, target);
+					}
 				}
 			} break;
 			case UnitId::ProtossBarghest:

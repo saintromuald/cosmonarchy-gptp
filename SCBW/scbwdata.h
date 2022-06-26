@@ -18,7 +18,7 @@
 SCBW_DATA(Unit**, g_first_visible_unit, 0x00628430);
 /// Includes units in transports/bunkers, worker inside gas buildings, nukes in
 /// silos, queens inside command centers, and units in production.
-SCBW_DATA(Unit**,		first_hidden_unit,			0x006283EC);
+SCBW_DATA(Unit**,		g_first_hidden_unit,			0x006283EC);
 SCBW_DATA(Unit**,		last_hidden_unit,			0x00628428);
 SCBW_DATA(Unit**,		first_scanner_sweep,		0x006283F4);
 SCBW_DATA(Unit**,		last_scanner_sweep,			0x00628434);

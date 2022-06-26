@@ -669,7 +669,7 @@ namespace hooks
 			}
 			while (next_visible_unit);
 		}
-		Unit* hidden_unit = *first_hidden_unit;
+		Unit* hidden_unit = *g_first_hidden_unit;
 		if (hidden_unit)
 		{
 			Unit* next_hidden_unit = hidden_unit->link.next;

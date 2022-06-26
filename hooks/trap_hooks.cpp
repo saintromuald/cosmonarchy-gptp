@@ -112,8 +112,8 @@ namespace hooks
 		v3 = v1->id;
 		if (v3 == UnitId::Spell_ScannerSweep || v3 == UnitId::Special_MapRevealer)
 		{
-			if (*first_hidden_unit == v1)
-				*first_hidden_unit = v1->link.next;
+			if (*g_first_hidden_unit == v1)
+				*g_first_hidden_unit = v1->link.next;
 			if (*last_hidden_unit == v1)
 				*last_hidden_unit = v1->link.prev;
 			if (v1->link.prev)
