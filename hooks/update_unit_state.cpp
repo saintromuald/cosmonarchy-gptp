@@ -348,26 +348,19 @@ namespace hooks
 		*/
 
 		// Shield regeneration
-		if (units_dat::ShieldsEnabled[unit->id] != 0)
-		{
+		if (units_dat::ShieldsEnabled[unit->id]) {
 			s32 maxShields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
-			if (unit->id == UnitId::ProtossAugur && unit->status & UnitStatus::Completed)
-			{
+			if (unit->id == UnitId::ProtossAugur && unit->status & UnitStatus::Completed) {
 				unit->shields -= std::min(14, unit->shields);
-			}
-			else
-			{
-				if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->shield_regen_timer > 2 * 24)
+			} else if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->shield_regen_timer > 2 * 24) {
+				unit->shields += 11 * 10 * (1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size());
+				if (unit->shields > maxShields)
 				{
-					unit->shields += 11 * 10 * (1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size());
-					if (unit->shields > maxShields)
-					{
-						unit->shields = maxShields;
-					}
-					if (unit->sprite->flags & SpriteFlags::Selected)
-					{	// If the unit is currently selected, redraw its graphics
-						helper::setAllImageGroupFlagsPal11(unit->sprite);
-					}
+					unit->shields = maxShields;
+				}
+				if (unit->sprite->flags & SpriteFlags::Selected)
+				{	// If the unit is currently selected, redraw its graphics
+					helper::setAllImageGroupFlagsPal11(unit->sprite);
 				}
 			}
 		}
