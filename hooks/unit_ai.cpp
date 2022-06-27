@@ -258,6 +258,7 @@ namespace hooks
 				ai->trainQueueTypes[2] = 0;
 				ai->trainQueueTypes[3] = 0;
 				ai->trainQueueTypes[4] = 0;
+
 				unit->unit_ai = (UnitAi*)ai;
 				if (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair || unit->id == UnitId::ZergHive || unit->id == UnitId::ZergSire) {
 					if (unit->status & UnitStatus::Completed) {
@@ -265,18 +266,22 @@ namespace hooks
 						helper::set_secondary_order(unit, OrderId::SpreadCreep);
 					}
 				}
+
 				if (!(g_aiscript_controller[town->player].AI_Flags.is_use_map_settings)
-						|| unit->status & UnitStatus::GroundedBuilding
-						&& unit->id != UnitId::TerranWatchdog
-						&& unit->id != UnitId::TerranBunker
-						&& unit->id != UnitId::ZergCreepColony
-						&& unit->id != UnitId::ZergSporeColony
-						&& unit->id != UnitId::ZergSunkenColony
-						&& unit->id != UnitId::ProtossPylon
-						&& unit->id != UnitId::ProtossPhotonCannon) {
+				||	  unit->status & UnitStatus::GroundedBuilding
+				&&	  unit->id != UnitId::TerranWatchdog
+				&&	  unit->id != UnitId::TerranBunker
+				&&	  unit->id != UnitId::ZergCreepColony
+				&&	  unit->id != UnitId::ZergSporeColony
+				&&	  unit->id != UnitId::ZergSunkenColony
+				&&	  unit->id != UnitId::ProtossPylon
+				&&	  unit->id != UnitId::ProtossPhotonCannon)
+				{
 					helper::ai_make_guard(town->player, unit);
 				}
-				if (!town->inited) {
+
+				if (!town->inited)
+				{
 					town->inited = 1;
 					town->mineral = 0;
 					town->gas_buildings[0] = 0;
