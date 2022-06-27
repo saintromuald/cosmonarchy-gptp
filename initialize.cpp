@@ -490,6 +490,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch((void*)(0x004B995B + 2), &human_slots, sizeof(u8)); 
 	memory_patch((void*)(0x004B9988 + 2), &human_slots, sizeof(u8));
 
+	// input rate hack
+	nops(0x004D1CB1, 2);
+
+	// frame rate hack
+	nops(0x004D9923, 2);
+
 	// injection
 	hooks::inject_game_hooks();
 	hooks::inject_draw_hook();

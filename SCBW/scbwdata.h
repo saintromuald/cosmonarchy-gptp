@@ -557,7 +557,8 @@ SCBW_DATA(s32*,		unit_stat_update_timer,		0x00640B54);
 
 // For CMDACT_game_speed
 SCBW_DATA(s32*,		last_control_index,			0x006D051C);
-SCBW_DATA(s32*,		cpu_throttle,				0x006D5C00);
+SCBW_DATA(b32*,		cpu_throttle,				0x006D5C00);
+SCBW_DATA(b32*,		wants_redraw,				0x005968EC);
 SCBW_DATA(s32*,		temp_cpu_throttle,			0x00655C3C);
 SCBW_DATA(char*,	bin_interact,				0x006D1224);
 SCBW_DATA(void**,	last_bindlg_menu_function,	0x006D1234);

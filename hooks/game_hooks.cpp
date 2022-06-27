@@ -181,6 +181,9 @@ namespace hooks
 
 	/// This hook is called every frame
 	bool next_frame() {
+		// Force disable cpu throttling, since on modern CPU it hurts more than helps
+		*cpu_throttle = false;
+
 		if (disable_quickcasting && !*g_is_targeting) {
 			disable_quickcasting--;
 		}
