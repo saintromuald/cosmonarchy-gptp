@@ -5806,8 +5806,8 @@ namespace helper
 		}
 	}
 
-	// Identical to getHPGainForRepair @ 0x00402C40
-	u32 getHPGainForRepair(Unit* unit)
+	// Identical to get_hp_gain_for_repair @ 0x00402C40
+	u32 get_hp_gain_for_repair(Unit* unit)
 	{
 		if (*g_cheat_state & CheatFlags::OperationCwal)
 		{
@@ -5855,7 +5855,7 @@ namespace helper
 		}
 	}
 
-	Unit* attemptTrainHatchUnit(Unit* trainer, u32 builtUnitID, u32 flag)
+	Unit* attempt_train_hatch_unit(Unit* trainer, u32 builtUnitID, u32 flag)
 	{
 		const u32 Func_attemptTrainHatchUnit = 0x00468200;
 		static Unit* builtUnit;

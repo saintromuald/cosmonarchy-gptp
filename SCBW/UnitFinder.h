@@ -43,17 +43,17 @@ namespace scbw {
 			}
 		}
 
-		std::vector<Unit*> getAllUnits();
+		std::vector<Unit*> get_all_units();
 
-		s32 getMatchUnitCount(UnitFinderCallbackMatchInterface callback);
+		s32 get_matching_unit_count(UnitFinderCallbackMatchInterface callback);
 		/// Returns the first unit for which callback.match() returns true.
 		/// If there are no matches, returns nullptr.
-		Unit* getFirst(UnitFinderCallbackMatchInterface callback) const;
+		Unit* get_first(UnitFinderCallbackMatchInterface callback) const;
 
 		/// Returns the unit for which callback.score() returns the highest
 		/// nonnegative score. If there are no units, returns nullptr.
 		/// Note: If callback.score() returns a negative value, the unit is ignored.
-		Unit* getBest(UnitFinderCallbackScoreInterface callback) const;
+		Unit* get_best(UnitFinderCallbackScoreInterface callback) const;
 
 		/// Returns the number of units found by UnitFinder::search() call.
 		/// If no searches have been conducted, returns 0.
@@ -96,10 +96,10 @@ namespace scbw {
 			UnitFinderData* left, UnitFinderData* top,
 			UnitFinderData* right, UnitFinderData* bottom,
 			UnitFinderCallbackMatchInterface match, Vector32 sourcePosition);
-		static UnitFinderData* getStartX();
-		static UnitFinderData* getStartY();
-		static UnitFinderData* getEndX();
-		static UnitFinderData* getEndY();
+		static UnitFinderData* get_start_x();
+		static UnitFinderData* get_start_y();
+		static UnitFinderData* get_end_x();
+		static UnitFinderData* get_end_y();
 
 		s32 unitCount;
 		Unit* units[UNIT_ARRAY_LENGTH];

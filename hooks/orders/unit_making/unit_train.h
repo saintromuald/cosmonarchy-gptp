@@ -3,12 +3,11 @@
 
 namespace hooks
 {
-	void secondaryOrd_TrainFighter(Unit* unit);		// 00466790
-	void orderTrain(Unit* unit);					// 00468420
-
-	b32 _stdcall ButtonIsTraining(Unit* unit);		// 00428530
+	s32 is_queue_slot_active(Unit* unit, u32 slot);
+	void secondary_order_train_fighter(Unit* unit);		// 00466790
+	void order_train(Unit* unit);						// 00468420
+	char get_max_hangar_space(Unit* unit);				// 004653D0
+	b32 _stdcall button_is_training(Unit* unit);		// 00428530
 
 	void inject_unit_train_hooks();
-	s32 is_queue_slot_active(Unit* unit, u32 slot);
-	char getMaxHangerSpace(Unit* unit);				// 004653D0
 }

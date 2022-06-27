@@ -663,11 +663,11 @@ namespace helper
 	void playSubunitIscript(Unit* unit, IscriptAnimation::Enum anim);																// 00474380
 
 	//// unit_train
-	u32 getHPGainForRepair(Unit* unit);																								// 00402C40
+	u32 get_hp_gain_for_repair(Unit* unit);																								// 00402C40
 	void refund_unit_train_cost(u32 unit_id, u8 player);																			// 0042CEC0
 	void function_00432430(Unit* unit, u32 build_queue_slot);																			// 00432430
 	void add_hangar_unit(Unit* main_unit, Unit* added_unit);																			// 00466300
-	Unit* attemptTrainHatchUnit(Unit* trainer, u32 builtUnitID, u32 flag);															// 00468200
+	Unit* attempt_train_hatch_unit(Unit* trainer, u32 builtUnitID, u32 flag);															// 00468200
 
 	//// weapon_fire
 	// For progress_bullet_flight

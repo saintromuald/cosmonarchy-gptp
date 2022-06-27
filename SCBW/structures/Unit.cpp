@@ -1490,6 +1490,7 @@ u8 Unit::get_hangar_train_count()
 		MOV result, AL
 		POPAD
 	}
+	return result;
 }
 
 u8 Unit::get_max_hangar_space()
@@ -1504,6 +1505,7 @@ u8 Unit::get_max_hangar_space()
 		MOV result, AL
 		POPAD
 	}
+	return result;
 }
 
 bool Unit::is_reaver()
