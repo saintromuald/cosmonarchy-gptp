@@ -4,241 +4,194 @@
 
 namespace hooks
 {
-	//The functions seems similar but there are some differences,
-	//like the u16_ offset, the function to perform the order in
-	//CMDRECV_Stop, and the orders id
+	// The functions seems similar but there are some differences,
+	// like the u16_ offset, the function to perform the order in
+	// cmdrecv_stop, and the orders id
 
-	void CMDRECV_ReaverStop()
+	void cmdrecv_reaver_stop()
 	{
-
-		Unit* current_unit;
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
-
 		*unit_iterator_pos = 0;
-
-		current_unit = get_active_player_next_selection();
-
+		Unit* current_unit = get_active_player_next_selection();
 		while (current_unit != nullptr)
 		{
-
 			*u32_0066FF60 = 0x00;
-
 			if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0xFFFF)
+			{
 				helper::parse_orders_dat_requirements();
+			}
 
 			if (current_unit->player != *g_active_nation_id)
+			{
 				*u32_0066FF60 = 0x01;
-			else
-				if (!(current_unit->status & UnitStatus::Completed))
-					*u32_0066FF60 = 0x14;
-				else
-					if (current_unit->is_frozen())
+			}
+			else if (!(current_unit->status & UnitStatus::Completed))
+			{
+				*u32_0066FF60 = 0x14;
+			}
+			else if (current_unit->is_frozen())
+			{
+				*u32_0066FF60 = 0x0A;
+			}
+			else if (current_unit->status & UnitStatus::Burrowed
+			&&		 current_unit->id != UnitId::ZergLakizilisk)
+			{
+				*u32_0066FF60 = 0x0B;
+			}
+			else if (current_unit->id == UnitId::TerranMason
+			&&		 current_unit->main_order_id == OrderId::ConstructingBuilding)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if ((current_unit->id == UnitId::TerranEidolon
+			||		  current_unit->id == UnitId::Hero_SarahKerrigan
+			||		  current_unit->id == UnitId::Hero_AlexeiStukov
+			||		  current_unit->id == UnitId::Hero_SamirDuran
+			||		  current_unit->id == UnitId::Hero_InfestedDuran)
+			&&		  current_unit->main_order_id == OrderId::NukeTrack)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur)
+			&&		  current_unit->main_order_id == OrderId::CompletingArchonSummon)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if (current_unit->id == UnitId::ProtossMindTyrant
+			&&		 current_unit->main_order_id == OrderId::CompletingArchonSummon)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0)
+			{
+				*u32_0066FF60 = 0x17;
+			}
+			else if (helper::parse_requirement_opcodes(current_unit, OrderId::ReaverStop, *g_active_nation_id, (u16*)0x00514CF8, orders_dat::RequirementsOffset[OrderId::ReaverStop]) == 1)
+			{
+				current_unit->user_action_flags |= 1;
+				if (current_unit->main_order_id != OrderId::Die)
+				{
+					bool bContinueLoop = true;
+					while (bContinueLoop)
 					{
-						*u32_0066FF60 = 0x0A;
-					}
-					else
-						if (current_unit->status & UnitStatus::Burrowed &&
-							current_unit->id != UnitId::ZergLakizilisk
-							)
-							*u32_0066FF60 = 0x0B;
+						if (current_unit->order_queue_tail == nullptr)
+						{
+							bContinueLoop = false;
+						}
+						else if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id]
+						||		 current_unit->order_queue_tail->order_id == OrderId::ReaverStop)
+						{
+							helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
+						}
 						else
-							if (current_unit->id == UnitId::TerranMason &&
-								current_unit->main_order_id == OrderId::ConstructingBuilding
-								)
-								*u32_0066FF60 = 0x08;
-							else
-								if ((current_unit->id == UnitId::TerranEidolon ||
-									current_unit->id == UnitId::Hero_SarahKerrigan ||
-									current_unit->id == UnitId::Hero_AlexeiStukov ||
-									current_unit->id == UnitId::Hero_SamirDuran ||
-									current_unit->id == UnitId::Hero_InfestedDuran) &&
-									current_unit->main_order_id == OrderId::NukeTrack
-									)
-									*u32_0066FF60 = 0x08;
-								else
-									if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) &&
-										current_unit->main_order_id == OrderId::CompletingArchonSummon
-										)
-										*u32_0066FF60 = 0x08;
-									else
-										if (current_unit->id == UnitId::ProtossMindTyrant &&
-											current_unit->main_order_id == OrderId::CompletingArchonSummon
-											)
-											*u32_0066FF60 = 0x08;
-										else
-											if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0)
-												*u32_0066FF60 = 0x17;
-											else
-												if (helper::parse_requirement_opcodes(
-													current_unit,
-													OrderId::ReaverStop,
-													*g_active_nation_id,
-													(u16*)0x00514CF8,
-													orders_dat::RequirementsOffset[OrderId::ReaverStop]
-												) == 1)
-												{
-
-													current_unit->user_action_flags |= 1;
-
-													if (current_unit->main_order_id != OrderId::Die)
-													{
-
-														bool bContinueLoop = true;
-
-														while (bContinueLoop)
-														{
-
-															if (current_unit->order_queue_tail == nullptr)
-																bContinueLoop = false;
-															else
-																if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id] ||
-																	current_unit->order_queue_tail->order_id == OrderId::ReaverStop
-																	)
-																	helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
-																else
-																	bContinueLoop = false;
-
-														}
-
-														current_unit->perform_another_order(OrderId::ReaverStop, 0, 0, nullptr, UnitId::None, 0);
-
-													}
-
-													prepare_for_next_order(current_unit);
-
-												}
-
+						{
+							bContinueLoop = false;
+						}
+					}
+					current_unit->perform_another_order(OrderId::ReaverStop, 0, 0, nullptr, UnitId::None, 0);
+				}
+				prepare_for_next_order(current_unit);
+			}
 			current_unit = get_active_player_next_selection();
-
 		}
-
 	}
 
-	;
-
-	void CMDRECV_CarrierStop()
+	void cmdrecv_carrier_stop()
 	{
-
-		Unit* current_unit;
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
-
 		*unit_iterator_pos = 0;
-
-		current_unit = get_active_player_next_selection();
-
+		Unit* current_unit = get_active_player_next_selection();
 		while (current_unit != nullptr)
 		{
-
 			*u32_0066FF60 = 0x00;
-
 			if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0xFFFF)
+			{
 				helper::parse_orders_dat_requirements();
+			}
 
 			if (current_unit->player != *g_active_nation_id)
+			{
 				*u32_0066FF60 = 0x01;
-			else
-				if (!(current_unit->status & UnitStatus::Completed))
-					*u32_0066FF60 = 0x14;
-				else
-					if (current_unit->is_frozen())
+			}
+			else if (!(current_unit->status & UnitStatus::Completed))
+			{
+				*u32_0066FF60 = 0x14;
+			}
+			else if (current_unit->is_frozen())
+			{
+				*u32_0066FF60 = 0x0A;
+			}
+			else if (current_unit->status & UnitStatus::Burrowed
+			&&		 current_unit->id != UnitId::ZergLakizilisk)
+			{
+				*u32_0066FF60 = 0x0B;
+			}
+			else if (current_unit->id == UnitId::TerranMason
+				&& current_unit->main_order_id == OrderId::ConstructingBuilding)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if ((current_unit->id == UnitId::TerranEidolon
+			||		  current_unit->id == UnitId::Hero_SarahKerrigan
+			||		  current_unit->id == UnitId::Hero_AlexeiStukov
+			||		  current_unit->id == UnitId::Hero_SamirDuran
+			||		  current_unit->id == UnitId::Hero_InfestedDuran)
+			&&		  current_unit->main_order_id == OrderId::NukeTrack)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur)
+			&&   current_unit->main_order_id == OrderId::CompletingArchonSummon)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if (current_unit->id == UnitId::ProtossMindTyrant
+			&&  current_unit->main_order_id == OrderId::CompletingArchonSummon)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0)
+			{
+				*u32_0066FF60 = 0x17;
+			}
+			else if (helper::parse_requirement_opcodes(current_unit, OrderId::CarrierStop, *g_active_nation_id, (u16*)0x00514CF8, orders_dat::RequirementsOffset[OrderId::CarrierStop]) == 1)
+			{
+				current_unit->user_action_flags |= 1;
+				if (current_unit->main_order_id != OrderId::Die)
+				{
+					bool bContinueLoop = true;
+					while (bContinueLoop)
 					{
-						*u32_0066FF60 = 0x0A;
-					}
-					else
-						if (current_unit->status & UnitStatus::Burrowed &&
-							current_unit->id != UnitId::ZergLakizilisk
-							)
-							*u32_0066FF60 = 0x0B;
+						if (current_unit->order_queue_tail == nullptr)
+						{
+							bContinueLoop = false;
+						}
+						else if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id]
+						||		 current_unit->order_queue_tail->order_id == OrderId::CarrierStop)
+						{
+							helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
+						}
 						else
-							if (current_unit->id == UnitId::TerranMason &&
-								current_unit->main_order_id == OrderId::ConstructingBuilding
-								)
-								*u32_0066FF60 = 0x08;
-							else
-								if ((current_unit->id == UnitId::TerranEidolon ||
-									current_unit->id == UnitId::Hero_SarahKerrigan ||
-									current_unit->id == UnitId::Hero_AlexeiStukov ||
-									current_unit->id == UnitId::Hero_SamirDuran ||
-									current_unit->id == UnitId::Hero_InfestedDuran) &&
-									current_unit->main_order_id == OrderId::NukeTrack
-									)
-									*u32_0066FF60 = 0x08;
-								else
-									if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) &&
-										current_unit->main_order_id == OrderId::CompletingArchonSummon
-										)
-										*u32_0066FF60 = 0x08;
-									else
-										if (current_unit->id == UnitId::ProtossMindTyrant &&
-											current_unit->main_order_id == OrderId::CompletingArchonSummon
-											)
-											*u32_0066FF60 = 0x08;
-										else
-											if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0)
-												*u32_0066FF60 = 0x17;
-											else
-												if (helper::parse_requirement_opcodes(
-													current_unit,
-													OrderId::CarrierStop,
-													*g_active_nation_id,
-													(u16*)0x00514CF8,
-													orders_dat::RequirementsOffset[OrderId::CarrierStop]
-												) == 1)
-												{
-
-													current_unit->user_action_flags |= 1;
-
-													if (current_unit->main_order_id != OrderId::Die)
-													{
-
-														bool bContinueLoop = true;
-
-														while (bContinueLoop)
-														{
-
-															if (current_unit->order_queue_tail == nullptr)
-																bContinueLoop = false;
-															else
-																if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id] ||
-																	current_unit->order_queue_tail->order_id == OrderId::CarrierStop
-																	)
-																	helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
-																else
-																	bContinueLoop = false;
-
-														}
-
-														current_unit->perform_another_order(OrderId::CarrierStop, 0, 0, nullptr, UnitId::None, 0);
-
-													}
-
-													prepare_for_next_order(current_unit);
-
-												}
-
+						{
+							bContinueLoop = false;
+						}
+					}
+					current_unit->perform_another_order(OrderId::CarrierStop, 0, 0, nullptr, UnitId::None, 0);
+				}
+				prepare_for_next_order(current_unit);
+			}
 			current_unit = get_active_player_next_selection();
-
 		}
-
 	}
 
-	;
-
-	void CMDRECV_Stop(u8 bCommandType)
+	void cmdrecv_stop(u8 bCommandType)
 	{
-
-		Unit* current_unit;
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
-
 		*unit_iterator_pos = 0;
-
-		current_unit = get_active_player_next_selection();
-
+		Unit* current_unit = get_active_player_next_selection();
 		while (current_unit != nullptr)
 		{
-
 			*u32_0066FF60 = 0x00;
-
 			if (orders_dat::RequirementsOffset[OrderId::Stop] == 0xFFFF)
 			{
 				helper::parse_orders_dat_requirements();
@@ -260,22 +213,22 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x0B;
 			}
-			else if ((current_unit->id == UnitId::TerranEidolon ||
-				current_unit->id == UnitId::Hero_SarahKerrigan ||
-				current_unit->id == UnitId::Hero_AlexeiStukov ||
-				current_unit->id == UnitId::Hero_SamirDuran ||
-				current_unit->id == UnitId::Hero_InfestedDuran) &&
-				current_unit->main_order_id == OrderId::NukeTrack)
+			else if ((current_unit->id == UnitId::TerranEidolon
+			||		  current_unit->id == UnitId::Hero_SarahKerrigan
+			||		  current_unit->id == UnitId::Hero_AlexeiStukov
+			||		  current_unit->id == UnitId::Hero_SamirDuran
+			||		  current_unit->id == UnitId::Hero_InfestedDuran)
+			&&		  current_unit->main_order_id == OrderId::NukeTrack)
 			{
 				*u32_0066FF60 = 0x08;
 			}
-			else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) &&
-				current_unit->main_order_id == OrderId::CompletingArchonSummon)
+			else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur)
+			&&		  current_unit->main_order_id == OrderId::CompletingArchonSummon)
 			{
 				*u32_0066FF60 = 0x08;
 			}
-			else if (current_unit->id == UnitId::ProtossMindTyrant &&
-				current_unit->main_order_id == OrderId::CompletingArchonSummon)
+			else if (current_unit->id == UnitId::ProtossMindTyrant
+			&&		 current_unit->main_order_id == OrderId::CompletingArchonSummon)
 			{
 				*u32_0066FF60 = 0x08;
 			}
@@ -283,32 +236,16 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x17;
 			}
-			else if (helper::parse_requirement_opcodes(
-				current_unit,
-				OrderId::Stop,
-				*g_active_nation_id,
-				(u16*)0x00514CF8,
-				orders_dat::RequirementsOffset[OrderId::Stop]
-			) == 1)
+			else if (helper::parse_requirement_opcodes(current_unit, OrderId::Stop, *g_active_nation_id, (u16*)0x00514CF8, orders_dat::RequirementsOffset[OrderId::Stop]) == 1)
 			{
-				helper::targeted_order(
-					current_unit,
-					UnitId::None,
-					*(u32*)(0x006D5C24),
-					*(u32*)(0x006D5C20),
-					OrderId::Stop,
-					0,
-					bCommandType != 0, //true (1) if Queued Order
-					1
-				);
+				helper::targeted_order(current_unit, UnitId::None, *(u32*)(0x006D5C24), *(u32*)(0x006D5C20), OrderId::Stop, 0, bCommandType != 0, 1); // bCommandType is 1 if order is queued
 			}
 
 			if (current_unit->id == UnitId::TerranWyvern)
 			{
 				UnitExt* unitExt = globals.get_unit_ext(current_unit);
 				unitExt->units[UnitWyvernTargetLock] = nullptr;
-			}
-							
+			}				
 			current_unit = get_active_player_next_selection();
 		}
 	}

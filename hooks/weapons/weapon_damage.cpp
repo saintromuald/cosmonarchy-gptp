@@ -453,16 +453,16 @@ namespace hooks
 				}
 			}
 
-			// Ignore dark swarm!
-			// END
-
 			// Ensnaring Brood - Queen enchantment ability
-			if (attackerExt->timers[TimerEnsnaringBrood] > 0
-				&& !(units_dat::base_property[data.target->id] & UnitProperty::Building)
-				&& !scbw::is_under_dark_swarm(data.target))
+			if  (attackerExt->timers[TimerEnsnaringBrood] > 0
+			&& !(units_dat::base_property[data.target->id] & UnitProperty::Building)
+			&&  !scbw::is_under_dark_swarm(data.target))
 			{
 				apply_ensnare(data.target);
 			}
+
+			// Ignore dark swarm!
+			// END
 
 			switch (data.target->id)
 			{
@@ -470,10 +470,10 @@ namespace hooks
 				{
 					// Autovitality - Simulacrum behavior
 					if (!scbw::is_allied_to(data.target->player, data.attacker->player)
-						&& !scbw::is_under_dark_swarm(data.target)
-						&& data.shield_reduce_amount >= data.target->shields
-						&& data.final_damage
-						&& targetExt->timers[TimerSimulacrumClone] == 0)
+					&&  !scbw::is_under_dark_swarm(data.target)
+					&&   data.shield_reduce_amount >= data.target->shields
+					&&   data.final_damage
+					&&   targetExt->timers[TimerSimulacrumClone] == 0)
 					{
 						targetExt->timers[TimerSimulacrumClone] = 4 * 24;
 						data.target->sprite->create_top_overlay(ImageId::LegionnaireTeleportEffect);
@@ -484,7 +484,7 @@ namespace hooks
 				{
 					// Striga - Fleeting Focus
 					if (!(units_dat::base_property[data.attacker->id] & UnitProperty::Building)
-						&& !scbw::is_under_dark_swarm(data.target))
+					&&   !scbw::is_under_dark_swarm(data.target))
 					{
 						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32)
@@ -504,7 +504,7 @@ namespace hooks
 				{
 					// Cuirass - Stonewall Protocol
 					if (!targetExt->values[ValueIsSelfReviving]
-						&& data.target->hitpoints < data.final_damage)
+					&&   data.target->hitpoints < data.final_damage)
 					{
 						targetExt->values[ValueIsSelfReviving] = 1;
 						data.target->hitpoints = CuirassSelfReviveHP;
