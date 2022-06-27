@@ -231,11 +231,6 @@ namespace hooks
 				} else {
 					data.final_damage = 128;
 				}
-				u32 overlay = ImageId::RechargeShields_Small + scbw::get_overlay_offset(data.target->id);
-				if (data.target->sprite->get_overlay(overlay)) {
-					data.target->sprite->remove_overlay(overlay);
-					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, data.target, 1, 0);
-				}
 			}
 			data.shield_reduce_amount = std::min(data.final_damage, data.target->shields);
 			data.final_damage -= data.shield_reduce_amount;
@@ -257,12 +252,10 @@ namespace hooks
 		}
 
 		weapon_damage_behaviors(data);
-		if (data.attacker)
-		{
+		if (data.attacker) {
 			weapon_damage_lifesteal(data);
 		}
-		if (data.final_damage >= data.target->hitpoints)
-		{
+		if (data.final_damage >= data.target->hitpoints) {
 			weapon_damage_fatal(data);
 		}
 
@@ -797,27 +790,21 @@ namespace hooks
 	static void weapon_damage_fatal(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.get_unit_ext(data.target);
-
-		switch (data.weapon_id)
-		{
-			case WeaponId::Plague:
-			{
+		switch (data.weapon_id) {
+			case WeaponId::Plague: {
 				// Plague - Don't kill
 				data.final_damage = 0;
 				data.target->set_hitpoints(256);
 			} break;
-			case WeaponId::PsiStorm:
-			{
+			case WeaponId::PsiStorm: {
 				// Cantavis - Ascendancy
-				if (data.attacker != nullptr && (data.attacker->status & UnitStatus::IsHallucination))
-				{
+				if (data.attacker != nullptr && (data.attacker->status & UnitStatus::IsHallucination)) {
 					scbw::UnitFinder(
 						data.target->get_x() - 288,
 						data.target->get_y() - 288,
 						data.target->get_x() + 288,
 						data.target->get_y() + 288
-					).for_each([&](Unit* unit)
-					{
+					).for_each([&](Unit* unit) {
 						if (unit->id != UnitId::ProtossCantavis)
 						{
 							return;
@@ -843,8 +830,7 @@ namespace hooks
 
 		// Empress - Anodyne Annex - zombify target
 		if (targetExt->values[ValueEmpressPassiveStacks]
-			&& !targetExt->values[ValueIsZombified])
-		{
+			&& !targetExt->values[ValueIsZombified]) {
 			data.final_damage = 0;
 			data.target->hitpoints = 0;
 			data.target->shields = 0;
@@ -857,44 +843,6 @@ namespace hooks
 			targetExt->timers[TimerAlliedInvFrames] = 24;
 			data.target->sprite->create_overlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(data.target->id));
 			helper::play_sound_from_unit(scbw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03), data.target, 1, 0);
-		}
-
-		// Apostle, Anticthon - Revive
-		if (data.final_damage > 0 && (targetExt->values[ValueLazarusAgent] || targetExt->timers[TimerAnticthonRevive]))
-		{
-			u32 hp = targetExt->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
-
-			if (targetExt->timers[TimerAnticthonRevive])
-			{
-				const u32 radius = 8 * 32;
-				scbw::UnitFinder(
-					data.target->get_x() - radius,
-					data.target->get_y() - radius,
-					data.target->get_x() + radius,
-					data.target->get_y() + radius
-				).for_each([&](Unit* unit)
-				{
-					UnitExt* unitExt = globals.get_unit_ext(unit);
-					u32 dist = scbw::get_distance_fast(data.target->position, unit->position);
-					if (unit->id == UnitId::SharedAnticthon && dist <= 4 * 32)
-					{
-						if (scbw::is_allied_to(data.target->player, unit->player))
-						{
-							hp += (1 + unitExt->values[ValueAnticthonStacks]) * 256;
-							unitExt->values[ValueAnticthonStacks]++;
-						}
-					}
-				});
-			}
-
-			WorkerAi* ai = ((WorkerAi*)data.target->unit_ai);
-			AiTown* town = nullptr;
-			if (ai)
-			{
-				town = ai->town;
-			}
-
-			globals.init_revive(data.target->position.x, data.target->position.y, data.target->player, data.target->id, data.target->energy, hp, town);
 		}
 
 		if (targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
@@ -931,6 +879,7 @@ namespace hooks
 				effect_image_id = ImageId::ZergAirDeathExplosion_Large;
 			}
 			data.target->sprite->create_overlay(effect_image_id);
+			helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
 
 			// Create busy overlays for buildings only
 			u32 infested_image_id = ImageId::InfestedOverlay_Large;
@@ -938,9 +887,38 @@ namespace hooks
 				infested_image_id = ImageId::InfestedOverlay_Small;
 			}
 			data.target->remove_overlay(infested_image_id);
+		}
 
-			// Play Sound
-			helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
+		// Apostle, Anticthon - Revive
+		if (data.final_damage > 0 && (targetExt->values[ValueLazarusAgent] || targetExt->timers[TimerAnticthonRevive])) {
+			u32 hp = targetExt->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
+
+			if (targetExt->timers[TimerAnticthonRevive]) {
+				const u32 radius = 8 * 32;
+				scbw::UnitFinder(
+					data.target->get_x() - radius,
+					data.target->get_y() - radius,
+					data.target->get_x() + radius,
+					data.target->get_y() + radius
+				).for_each([&](Unit* unit) {
+					UnitExt* unitExt = globals.get_unit_ext(unit);
+					u32 dist = scbw::get_distance_fast(data.target->position, unit->position);
+					if (unit->id == UnitId::SharedAnticthon && dist <= 4 * 32) {
+						if (scbw::is_allied_to(data.target->player, unit->player)) {
+							hp += (1 + unitExt->values[ValueAnticthonStacks]) * 256;
+							unitExt->values[ValueAnticthonStacks]++;
+						}
+					}
+				});
+			}
+
+			WorkerAi* ai = ((WorkerAi*)data.target->unit_ai);
+			AiTown* town = nullptr;
+			if (ai) {
+				town = ai->town;
+			}
+
+			globals.init_revive(data.target->position.x, data.target->position.y, data.target->player, data.target->id, data.target->energy, hp, town);
 		}
 
 		switch (data.target->id)
@@ -1032,6 +1010,23 @@ namespace hooks
 				Unit* mindController = attackerExt->units[UnitMindController];
 				mindController->addUnitEnergy(MindControlEnergyGain);
 				mindController->sprite->create_underlay(ImageId::SmallExplosion_Unused);
+			}
+
+			u32 regression = scbw::get_zerg_regression(data.target->id);
+			if (data.final_damage > 0 && regression != UnitId::None) {
+				helper::replace_unit_with_id(data.target, regression);
+				data.target->set_hitpoints(data.target->get_max_hp_raw());
+
+				u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
+				if (units_dat::base_property[data.target->id] & UnitProperty::LargeOverlay) {
+					effect_image_id = ImageId::ZergBuildingExplosion;
+				} else if (units_dat::base_property[data.target->id] & UnitProperty::MediumOverlay) {
+					effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+				}
+				data.target->sprite->create_overlay(effect_image_id);
+				helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
+
+				data.final_damage = 0;
 			}
 		}
 	}

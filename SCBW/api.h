@@ -596,27 +596,18 @@ namespace scbw
 	void spread_custom_creep(Unit* unit);
 	void update_custom_creep_disappearance(Unit* unit);
 	void blissful_embrace(Unit* target, u32 player);
-
 	AiScript* run_ai(u32 player, Box32 area, s32 name);
 	AiScript* run_ai(u32 player, Point16 pos, s32 name);
-	
 	b32 unit_id_is_tech(u32 unit_id);
 	b32 unit_id_is_tech_tier_structure(u32 unit_id);
-
 	void give_ai_ex(Unit* unit);
-
 	u32 unit_get_creep_spreader_id(Unit* unit);
-
 	bool sprite_id_is_corpse(u32 sprite_id);
-
 	bool unit_queue_full(Unit* unit);
 	bool all_selected_units_have_addon(u32 unit_id);
-
 	bool unit_is_stunned(Unit* unit);
-
 	bool unit_id_is_transport(u32 unit_id);
-
 	bool unit_id_race_check(u32 unit_id, u32 race);
-
 	void dump_sync_data();
+	u32 get_zerg_regression(u32 unit_id);
 }

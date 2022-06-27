@@ -2509,4 +2509,24 @@ namespace scbw
 		}
 		fclose(file);
 	}
+
+	u32 get_zerg_regression(u32 unit_id) {
+		switch (unit_id) {
+			case UnitId::ZergSunkenColony:		return UnitId::ZergCreepColony;
+			case UnitId::ZergSporeColony:		return UnitId::ZergCreepColony;
+			case UnitId::ZergLarvalColony:		return UnitId::ZergCreepColony;
+			case UnitId::ZergLair:				return UnitId::ZergHatchery;
+			case UnitId::ZergHive:				return UnitId::ZergLair;
+			case UnitId::ZergSire:				return UnitId::ZergHive;
+			case UnitId::ZergOthstolOviform:	return UnitId::ZergIrolIris;
+			case UnitId::ZergAlaszilArbor:		return UnitId::ZergOthstolOviform;
+			case UnitId::ZergLiivralPond:		return UnitId::ZergQuazrokPool;
+			case UnitId::ZergGorgralSwamp:		return UnitId::ZergHydrokDen;
+			case UnitId::ZergVithrathHaunt:		return UnitId::ZergMuthrokSpire;
+			case UnitId::ZergAlmakisAntre:		return UnitId::ZergMatravilNest;
+			case UnitId::ZergUltrokCavern:		return UnitId::ZergZorkizShroud;
+			case UnitId::ZergAlkajChasm:		return UnitId::ZergGeszkathGrotto;
+		}
+		return UnitId::None;
+	}
 }

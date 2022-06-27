@@ -349,24 +349,34 @@ namespace hooks
 
 		// Shield regeneration
 		if (units_dat::ShieldsEnabled[unit->id]) {
-			s32 maxShields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
+			s32 max_shields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
+			u32 overlay = ImageId::RechargeShields_Small + scbw::get_overlay_offset(unit->id);
 			if (unit->id == UnitId::ProtossAugur && unit->status & UnitStatus::Completed) {
 				unit->shields -= std::min(14, unit->shields);
-			} else if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->shield_regen_timer > 2 * 24) {
-				unit->shields += 11 * 10 * (1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size());
-				if (unit->shields > maxShields)
-				{
-					unit->shields += 11 * 10 * (1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size());
-					if (unit->shields > maxShields)
-					{
-						unit->shields = maxShields;
+			} else if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unitExt->shield_regen_timer > 2 * 24) {
+				unit->heal_shields(11 * 10 * (1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size()), 0, false);
+				if (unit->shields > max_shields) {
+					if (unit->shields > max_shields) {
+						unit->shields = max_shields;
 					}
 
-					if (unit->sprite->flags & SpriteFlags::Selected)
-					{	// If the unit is currently selected, redraw its graphics
+					if (unit->sprite->flags & SpriteFlags::Selected) { // If the unit is currently selected, redraw its graphics
 						helper::set_all_image_group_flags_palette_11(unit->sprite);
 					}
+					
+					if (unit->sprite->get_overlay(overlay)) {
+						unit->sprite->remove_overlay(overlay);
+						helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
+					}
 				}
+
+				if (!unit->get_overlay(overlay)) {
+					unit->sprite->create_top_overlay(overlay);
+					helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
+				}
+			} else if (unit->sprite->get_overlay(overlay)) {
+				unit->sprite->remove_overlay(overlay);
+				helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
 			}
 		}
 
