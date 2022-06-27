@@ -492,10 +492,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// input rate hack
 	nops(0x004D1CB1, 2);
-	
+
 	// frame rate hack
-	nops(0x004D9925, 10);
-	*wants_redraw = true;
+	nops(0x004D9923, 2);
 
 	// injection
 	hooks::inject_game_hooks();
