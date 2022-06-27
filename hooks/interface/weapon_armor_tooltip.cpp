@@ -12,6 +12,15 @@
 #include <algorithm>
 #include "player_color.h"
 
+// Text colors	TODO: Move to other file
+#define BWTC_Reset		"\002"
+#define BWTC_Teal		"\017"
+#define BWTC_Green		"\007"
+#define BWTC_Yellow		"\003"
+#define BWTC_Orange		"\021"
+#define BWTC_Red		"\006"
+#define BWTC_White		"\004"
+
 char buffer[256];
 
 // Returns the special damage multiplier factor for units that don't use the
@@ -70,7 +79,7 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	const char* entryName = statTxtTblNew->get_string(entryStrIndex);
 	const char* damageStr = statTxtTblNew->get_string(777);					//"Damage:"
 //	const char* perRocketStr = statTxtTblNew->get_string(1301);				//"per rocket"
-	const char* typeName = "";
+	const char* type_name = "";
 
 	u8 damageFactor = getDamageFactorForTooltip(weapon_id, unit);
 	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::DamageUpgrade[weapon_id]);
@@ -83,7 +92,7 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	f32 bonusRange = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit) / 32.0 - range;
 	bonusRange -= scbw::get_cliff_advantage(unit, unit->order_target.unit, weapon_id);
 
-	std::string damageModifiers = "";
+	std::string damage_modifiers = "";
 	f64 attackCd = (f64)weapons_dat::Cooldown[weapon_id] / 24;
 	f64 attackCdModifier = ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24) - attackCd;
 
@@ -91,78 +100,54 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	s32 splashMedium = weapons_dat::MediumSplashRadius[weapon_id];
 	s32 splashOuter = weapons_dat::OuterSplashRadius[weapon_id];
 	bool hasSplash = splashInner || splashMedium || splashOuter;
-	s32 splashType = weapons_dat::ExplosionType[weapon_id];
-	std::string splashTypeValue = "";
+	s32 splash_type = weapons_dat::ExplosionType[weapon_id];
+	std::string splash_type_value = "";
 
 	bool isSuicideUnit = unit->id == UnitId::ZergSkryling;
 
-	switch (damage_type)
-	{
-		case DamageType::Concussive:
-		{
-			// Teal
-			typeName = "\017Concussive\002";
-			damageModifiers = "\017100\002/\00375\002/\02150\002/\00625\002";
+	switch (damage_type) {
+		case DamageType::Concussive: {
+			type_name = BWTC_Teal "Concussive" BWTC_Reset;
+			damage_modifiers = BWTC_Teal "100" BWTC_Reset "/" BWTC_Yellow "75" BWTC_Reset "/" BWTC_Orange "50" BWTC_Reset "/" BWTC_Red "25" BWTC_Reset;
 		} break;
-		case DamageType::Impact:
-		{
-			// Yellow
-			typeName = "\003Impact\002";
-			damageModifiers = "\017100\002/\003100\002/\02175\002/\00650\002";
+		case DamageType::Impact: {
+			type_name = BWTC_Yellow "Impact" BWTC_Reset;
+			damage_modifiers = BWTC_Teal "100" BWTC_Reset "/" BWTC_Yellow "100" BWTC_Reset "/" BWTC_Orange "75" BWTC_Reset "/" BWTC_Red "50" BWTC_Reset;
 		} break;
-		case DamageType::Explosive:
-		{
-			// Orange
-			typeName = "\021Explosive\002";
-			damageModifiers = "\01750\002/\00375\002/\021100\002/\00675\002";
+		case DamageType::Explosive: {
+			type_name = BWTC_Orange "Explosive" BWTC_Reset;
+			damage_modifiers = BWTC_Teal "50" BWTC_Reset "/" BWTC_Yellow "75" BWTC_Reset "/" BWTC_Orange "100" BWTC_Reset "/" BWTC_Red "75" BWTC_Reset;
 		} break;
-		case DamageType::Chronal:
-		{
-			// White
-			typeName = "\004Chronal\002";
-			damageModifiers = "\017100\002/\003100\002/\021100\002/\006100\002";
+		case DamageType::Chronal: {
+			type_name = BWTC_White "Chronal" BWTC_Reset;
+			damage_modifiers = BWTC_Teal "100" BWTC_Reset "/" BWTC_Yellow "100" BWTC_Reset "/" BWTC_Orange "100" BWTC_Reset "/" BWTC_Red "100" BWTC_Reset;
 		} break;
-		case DamageType::Independent:
-		{
-			// White
-			typeName = "\004Independent\002";
+		case DamageType::Independent: {
+			type_name = BWTC_White "Independent" BWTC_Reset;
 		} break;
-		case DamageType::IgnoreArmor:
-		{
-			// White
-			typeName = "\004Ignores Armor\002";
+		case DamageType::IgnoreArmor: {
+			type_name = BWTC_White "Ignores Armor" BWTC_Reset;
 		} break;
-		default:
-		{
-			typeName = "None";
+		default: {
+			type_name = "None";
 		} break;
 	};
 
-	switch (splashType)
-	{
-		case WeaponEffect::SplashRadial:
-		{
-			// Red
-			splashTypeValue = "\006Unsafe\002";
+	switch (splash_type) {
+		case WeaponEffect::SplashRadial: {
+			splash_type_value = BWTC_Red "Unsafe" BWTC_Reset;
 		} break;
-		case WeaponEffect::SplashEnemy:
-		{
-			// Green
-			splashTypeValue = "\007Safe\002";
+		case WeaponEffect::SplashEnemy: {
+			splash_type_value = BWTC_Green "Safe" BWTC_Reset;
 		} break;
-		case WeaponEffect::Unknown_Crash:
-		{
-			// Green
-			splashTypeValue = "\007Ally Safe\002"; 
+		case WeaponEffect::Unknown_Crash: {
+			splash_type_value = BWTC_Green "Ally Safe" BWTC_Reset; 
 		} break;
-		case WeaponEffect::SplashAir:
-		{	// Yellow
-			splashTypeValue = "\003Air Only\002";
+		case WeaponEffect::SplashAir: {	
+			splash_type_value = BWTC_Yellow "Air Only" BWTC_Reset;
 		} break;
-		default:
-		{
-			// White
-			splashTypeValue = "\004Normal Hit\002";
+		default: {
+			splash_type_value = BWTC_White "Normal Hit" BWTC_Reset;
 		} break;
 	};
 
@@ -278,17 +263,17 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	text += "\nTargets: " + targetFlagsText;
 
 	// Type
-	text += "\nType: " + std::string(typeName);
-	if (extended && damageModifiers != "")
+	text += "\nType: " + std::string(type_name);
+	if (extended && damage_modifiers != "")
 	{
-		text += " (" + damageModifiers + ")";
+		text += " (" + damage_modifiers + ")";
 	}
 
 	// Splash
 	if (hasSplash)
 	{
 		text += "\nSplash Radius: " + std::to_string(splashInner) + "/" + std::to_string(splashMedium) + "/" + std::to_string(splashOuter);
-		text += "\nSplash Type: " + splashTypeValue;
+		text += "\nSplash Type: " + splash_type_value;
 	}
 
 	if (!extended)
