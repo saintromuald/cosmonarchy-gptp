@@ -6206,8 +6206,8 @@ namespace helper
 		}
 	}
 
-	// Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
-	void setAllImageGroupFlagsPal11(Sprite* sprite)
+	// Identical to set_all_image_group_flags_palette_11 @ 0x00497430;
+	void set_all_image_group_flags_palette_11(Sprite* sprite)
 	{
 		for (Image* current_image = sprite->images.head;
 			current_image != nullptr;
@@ -6611,7 +6611,7 @@ namespace helper
 	}
 
 	//hooked by hooks\update_status_effects.cpp
-	void RestoreAllUnitStats(Unit* unit)
+	void restore_all_unit_stats(Unit* unit)
 	{
 		const u32 Func_RestoreAllUnitStats = 0x00492F70;
 		__asm {

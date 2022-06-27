@@ -86,7 +86,7 @@ namespace hooks
 			// If the unit is currently selected, redraw its graphics
 			if (!bStopHere && unit->sprite->flags & SpriteFlags::Selected)
 			{
-				helper::setAllImageGroupFlagsPal11(unit->sprite);
+				helper::set_all_image_group_flags_palette_11(unit->sprite);
 			}
 		}
 	}
@@ -366,7 +366,7 @@ namespace hooks
 					}
 					if (unit->sprite->flags & SpriteFlags::Selected)
 					{	// If the unit is currently selected, redraw its graphics
-						helper::setAllImageGroupFlagsPal11(unit->sprite);
+						helper::set_all_image_group_flags_palette_11(unit->sprite);
 					}
 				}
 			}
@@ -388,7 +388,7 @@ namespace hooks
 			if (unit->cycle_counter >= 8)
 			{
 				unit->cycle_counter = 0;
-				helper::RestoreAllUnitStats(unit); // use update_status_effects hook if available
+				helper::restore_all_unit_stats(unit); // use update_status_effects hook if available
 			}
 		}
 
@@ -423,18 +423,17 @@ namespace hooks
 				bStopHere = true;
 			}
 
-			// TODO: Reduce defensive_matrix_timer
 			// Cleanse debuffs on initial Defensive Matrix application
-			if (unit->defensive_matrix_timer == 168)
+			if (unit->defensive_matrix_timer == AzazelDefensiveMatrixTimer)
 			{
 				scbw::restore_func(unit);
 			}
 
 			// HP regeneration
 			if ((units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP || unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
-				&& unit->hitpoints > 0
-				&& unit->hitpoints != unit->get_max_hp_raw()
-				&& unitExt->damage_receive_timer > 2 * 24)
+			&&	 unit->hitpoints > 0
+			&&	 unit->hitpoints != unit->get_max_hp_raw()
+			&&	 unitExt->damage_receive_timer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
 				if (unit->status & UnitStatus::Burrowed) {
@@ -447,30 +446,30 @@ namespace hooks
 
 			// Deliberate healing
 			{
-				s32 tickHeal = 0;
+				s32 tick_heal = 0;
 				// Alaszileth - Dermal Accelerant - 500% life regen
 				if (unitExt->timers[TimerAlaszilethRegenBoost] > 0)
 				{
-					tickHeal += 11 * 5;
+					tick_heal += 11 * 5;
 				}
 
 				// Azazel Innervating Matrices - heal over time
 				if (unit->defensive_matrix_hp != 0)
 				{
 					if (unit->hitpoints > 0
-						&& unit->hitpoints / 256 != unit->get_max_hp_ingame())
+					&&  unit->hitpoints / 256 != unit->get_max_hp_ingame())
 					{
 						auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
 						if (caster < 8)
 						{
-							tickHeal += AzazelDefensiveMatrixHeal;
+							tick_heal += AzazelDefensiveMatrixHeal;
 						}
 					}
 				}
 
-				if (tickHeal)
+				if (tick_heal)
 				{
-					unit->heal(tickHeal);
+					unit->heal(tick_heal);
 				}
 			}
 
@@ -479,8 +478,7 @@ namespace hooks
 			{
 				if (unitExt->values[ValueLastOrdersInit] == 1)
 				{
-					auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y,
-						unit->order_target.pt.x, unit->order_target.pt.y);
+					auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
 					if (distance < 32)
 					{
 						unit->status |= UnitStatus::Invincible;

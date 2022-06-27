@@ -712,7 +712,7 @@ namespace helper
 	u32 get_unit_bullet_damage(Bullet* bullet, Unit* target);														// 0048ACD0
 	u32 get_spell_stat_string(Unit* target, u32 techId, u8 player);													// 00491E80
 	void disableUnitFunc(Unit* unit);																				// 00492CC0 (hooked in weapon_spellhit)
-	void setAllImageGroupFlagsPal11(Sprite* sprite);																// 00497430
+	void set_all_image_group_flags_palette_11(Sprite* sprite);																// 00497430
 	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);						// 004E8280
 	void IterateUnitsAtLocationTargetProc_Ensnare(Unit* attacker, Box16* coords);									// 004E8280
 	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords);								// 004E8280
@@ -761,7 +761,7 @@ namespace helper
 
 	//// update_unit_state
 	bool unitHpIsInRedZone(Unit* unit);																				// 004022C0
-	void RestoreAllUnitStats(Unit* unit);																			// 00492F70 (hooked by hooks\update_status_effects.cpp)
+	void restore_all_unit_stats(Unit* unit);																			// 00492F70 (hooked by hooks\update_status_effects.cpp)
 
 	// For update_units
 	bool is_selected_unit_group_enabled();																			// 0049A2C0
