@@ -869,7 +869,7 @@ namespace helper
 	void bindlg_blit_surface(BinDlg* dialog);																		// 004C35F0
 	u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
 	s32 req_check(u32 requirement_func, u16 requirement_var, u32 player, Unit* unit);
-	void updateMineralPatchImage(Unit* mineralPatch);
+	void update_mineral_patch_image(Unit* mineralPatch);
 	void update_image_position_offset(Image* image);
 
 	// Identical to function @ 0x004F3AF0

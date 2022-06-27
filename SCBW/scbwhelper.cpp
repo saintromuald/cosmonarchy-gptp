@@ -7435,7 +7435,7 @@ namespace helper
 		return return_value;
 	}
 
-	void updateMineralPatchImage(Unit* mineralPatch)
+	void update_mineral_patch_image(Unit* mineralPatch)
 	{
 		IscriptAnimation::Enum anim;
 		if (mineralPatch->building.resource.resource_amount >= 750)

@@ -6,7 +6,7 @@ namespace hooks
 	const s32 RESOURCE_HARVESTED = 8;
 	// Harvests minerals/gas from the @p resource and returns the amount that a worker should carry.
 	// Identical to sub_469650
-	bool isGasContainer(u16 unit_id)
+	bool is_gas_container(u16 unit_id)
 	{
 		if (unit_id == UnitId::ProtossAquifer)
 		{
@@ -31,32 +31,32 @@ namespace hooks
 		worker->sprite->remove_overlay(ImageId::GasRaw, ImageId::GasRaw2);
 	}
 
-	u8 harvestResourceFrom(Unit* resource, bool isMineral)
+	u8 harvest_resource_from(Unit* resource, bool is_mineral)
 	{
 		u8 return_value;
 		if (resource->building.resource.resource_amount < RESOURCE_HARVESTED)
 		{
 			return_value = std::max((s32)resource->building.resource.resource_amount, 2);
-			resource->building.resource.resource_amount = 0;
+		//	resource->building.resource.resource_amount = 0;
 		}
 		else
 		{
-			resource->building.resource.resource_amount -= RESOURCE_HARVESTED;
-			if (isMineral)
+		//	resource->building.resource.resource_amount -= RESOURCE_HARVESTED;
+			if (is_mineral)
 			{
 				if (resource->building.resource.resource_amount > 0)
 				{
-					helper::updateMineralPatchImage(resource);	// equivalent to setResourceCount @ 00468830 ?
+					helper::update_mineral_patch_image(resource);	// equivalent to setResourceCount @ 00468830 ?
 				}
-				else
-				{
-					resource->building.resource.resource_amount = 0;
-				}
+			//	else
+			//	{
+			//		resource->building.resource.resource_amount = 0;
+			//	}
 			}
 			else if (resource->building.resource.resource_amount < RESOURCE_HARVESTED
-			&&		 isGasContainer(resource->id))
+			&&		 is_gas_container(resource->id))
 			{
-				//scbw::show_error_message_with_sfx(resource->player, 875, 20); // Gas depleted message and sound
+			//	scbw::show_error_message_with_sfx(resource->player, 875, 20); // Gas depleted message and sound
 			}
 			return_value = RESOURCE_HARVESTED;
 		}
@@ -65,31 +65,31 @@ namespace hooks
 
 	void transfer_resource_to_worker(Unit* worker, Unit* resource) // 004696D0
 	{
-		u32 chunkImageId;
-		bool isMineral = false;
+		u32 chunk_image_id;
+		bool is_mineral = false;
 		bool bEndThere = false;
 
 		if (resource->id >= UnitId::ResourceMineralField &&
 			resource->id <= UnitId::ResourceMineralFieldType3)
 		{
-			chunkImageId = ImageId::MineralChunkType1;
-			isMineral = true;
+			chunk_image_id = ImageId::MineralChunkType1;
+			is_mineral = true;
 		}
 		else if (resource->id == UnitId::ProtossAquifer)
 		{
-			chunkImageId = ImageId::ProtossGasOrbType1;
+			chunk_image_id = ImageId::ProtossGasOrbType1;
 		}
 		else if (resource->id == UnitId::ZergExcisant)
 		{
-			chunkImageId = ImageId::ZergGasSacType1;
+			chunk_image_id = ImageId::ZergGasSacType1;
 		}
 		else if (resource->id == UnitId::TerranReservoir)
 		{
-			chunkImageId = ImageId::TerranGasTankType1;
+			chunk_image_id = ImageId::TerranGasTankType1;
 		}
 		else if (resource->id == UnitId::ResourceVespeneGeyser)
 		{
-			chunkImageId = ImageId::GasRaw;
+			chunk_image_id = ImageId::GasRaw;
 		}
 		else
 		{
@@ -98,10 +98,10 @@ namespace hooks
 
 		if (!bEndThere)
 		{
-			u8 resource_amount = harvestResourceFrom(resource, isMineral);
+			u8 resource_amount = harvest_resource_from(resource, is_mineral);
 			if (resource_amount < RESOURCE_HARVESTED)
 			{
-				chunkImageId += 1;	// Use depleted resource image
+				chunk_image_id += 1;	// Use depleted resource image
 			}
 			if (resource_amount > 0)
 			{
@@ -154,7 +154,7 @@ namespace hooks
 						resource_amount *= (2 + (1 / 2));
 					}
 				}
-				helper::set_resource_amount_carried(worker, resource_amount, chunkImageId, isMineral);
+				helper::set_resource_amount_carried(worker, resource_amount, chunk_image_id, is_mineral);
 			}
 		}
 	}
