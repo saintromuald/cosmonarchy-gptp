@@ -307,6 +307,7 @@ enum ExtTimerId
 	TimerTalosAnimationSubtimer,
 	TimerTalosSoundLoopTimer,
 	TimerAddonAnimation,
+	TimerSwarmingOmenSFX,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
