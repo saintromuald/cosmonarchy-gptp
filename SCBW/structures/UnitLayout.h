@@ -385,6 +385,7 @@ union CargoUnit {
 
 struct UnitExt
 {
+	u32						shield_regen_timer;
 	u32						damage_receive_timer;
 	u32						damage_dealt_timer;
 	Point16					anthelion_last_move_target;

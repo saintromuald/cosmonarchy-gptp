@@ -511,6 +511,9 @@ void Unit::heal_shields(s32 shields, Unit* source, bool restore)
 	this->shields = std::min((u32)this->shields + shields, this->get_max_shields_raw());
 	this->set_hitpoints(this->hitpoints); // Updates unit strength
 
+	UnitExt* this_ext = globals.get_unit_ext(this);
+	this_ext->shield_regen_timer = -1;
+
 	// If heals to full clear debuffs
 	if (this->shields == this->get_max_shields_raw() && restore) {
 		scbw::restore_func(this);
@@ -654,6 +657,7 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	}
 
 	UnitExt* unitExt = globals.get_unit_ext(this);
+	unitExt->shield_regen_timer = 0;
 	unitExt->damage_receive_timer = 0;
 
 	__asm {
