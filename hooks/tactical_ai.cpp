@@ -205,7 +205,7 @@ static u32 get_damage_against(Unit* unit, u32 weapon_id, Unit* target) {
 		u32 type = weapons_dat::damage_type[weapon_id];
 		u32 size = units_dat::SizeType[target->id];
 		u32 armor_pen = hooks::get_modified_armor_pen(unit, weapon_id);
-		return std::max(weapons_dat::damage_amount[weapon_id] - std::max(target->getArmor() - armor_pen, 0u), 1u);
+		return std::max(weapons_dat::damage_amount[weapon_id] - std::max(target->get_armor() - armor_pen, 0u), 1u);
 	}
 	return 0;
 }

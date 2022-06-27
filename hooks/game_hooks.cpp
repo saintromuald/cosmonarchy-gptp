@@ -2107,6 +2107,25 @@ namespace hooks
 		if (unitExt->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 		}
+
+		// Flash Shielding - overlays
+		if (unit->id != UnitId::ProtossAugur && units_dat::ShieldsEnabled[unit->id])
+		{
+			u32 overlay = ImageId::RechargeShields_Small + scbw::get_overlay_offset(unit->id);
+			if (unit->shields != unit->get_max_shields_raw()) {
+				if (unitExt->shield_regen_timer > 2 * 24 && !unit->get_overlay(overlay))
+				{
+					unit->sprite->create_top_overlay(overlay);
+					helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
+				}
+			}
+			else {
+				if (unit->sprite->get_overlay(overlay)) {
+					unit->sprite->remove_overlay(overlay);
+					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
+				}
+			}
+		}
 	}
 
 	bool game_on() {

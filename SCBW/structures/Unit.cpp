@@ -82,7 +82,7 @@ u8 Unit::get_air_weapon() const
 	return units_dat::AirWeapon[this->id];
 }
 
-u8 Unit::getArmor() const
+u8 Unit::get_armor() const
 {
 	assert(this);
 	return units_dat::ArmorAmount[this->id] + this->get_armor_bonus();

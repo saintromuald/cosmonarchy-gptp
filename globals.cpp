@@ -304,6 +304,7 @@ static void clear_unit_ext(int index)
 	globals.unitExt[index] = {};
 	// this should set combat timer to highest u32,
 	// meaning every unit will start being out of combat
+	globals.unitExt[index].shield_regen_timer = -1;
 	globals.unitExt[index].damage_receive_timer = -1;
 	globals.unitExt[index].damage_dealt_timer = -1;
 }
@@ -427,6 +428,9 @@ void Globals::create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 
 void Globals::frame_hook() {
 	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j) {
 		UnitExt* unit_ext = &unitExt[j];
+		if (unit_ext->shield_regen_timer != -1) { // don't increment past max value of u32
+			++unit_ext->shield_regen_timer;
+		}
 		if (unit_ext->damage_receive_timer != -1) { // don't increment past max value of u32
 			++unit_ext->damage_receive_timer;
 		}

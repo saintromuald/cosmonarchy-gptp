@@ -67,7 +67,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the total armor amount of this unit (with upgrades).
 	/// To retrieve a unit's base armor amount, use units_dat::ArmorAmount[].
-	u8 getArmor() const;
+	u8 get_armor() const;
 
 	/// Returns the bonus armor amount of this unit (from upgrades).
 	/// To retrieve a unit's base armor amount, use units_dat::ArmorAmount[].

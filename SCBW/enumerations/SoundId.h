@@ -1204,6 +1204,9 @@ namespace SoundId
 
 		SwarmingOmenProc01					= 1907,
 		SwarmingOmenProc02					= 1908,
+
+		FlashShieldingStart					= 1922,
+		FlashShieldingEnd					= 1923,
 	};
 }
 

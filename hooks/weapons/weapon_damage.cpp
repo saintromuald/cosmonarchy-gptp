@@ -198,13 +198,11 @@ namespace hooks
 		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
 			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.weapon_id);
 
-			s32 armor_total = (data.target->getArmor() - armor_pen) * 256;
+			s32 armor_total = (data.target->get_armor() - armor_pen) * 256;
 			if (data.attacker != nullptr) {
 				armor_total += scbw::get_aise_value(data.target, nullptr, AiseId::GetShepherds, 0, 0) * 256;
-
 				if (data.target->id == UnitId::TerranMinotaur) {
-					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y,
-						data.attacker->position.x, data.attacker->position.y);
+					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocity_direction_1;
 					s32 arc = (f64)45 / 1.40625; // 90 degrees
 					s32 delta = unit_angle - angle;
@@ -232,6 +230,11 @@ namespace hooks
 					data.final_damage -= plasma_shield_upgrade;
 				} else {
 					data.final_damage = 128;
+				}
+				u32 overlay = ImageId::RechargeShields_Small + scbw::get_overlay_offset(data.target->id);
+				if (data.target->sprite->get_overlay(overlay)) {
+					data.target->sprite->remove_overlay(overlay);
+					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, data.target, 1, 0);
 				}
 			}
 			data.shield_reduce_amount = std::min(data.final_damage, data.target->shields);
