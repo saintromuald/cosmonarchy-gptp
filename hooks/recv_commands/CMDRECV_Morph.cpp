@@ -116,7 +116,7 @@ namespace hooks
 							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)	{
 							*g_last_internal_error = 8;
 						} else if (orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) {
-							if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *g_active_nation_id, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) == 1) {
+						//	if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *g_active_nation_id, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) == 1) {
 								u16* buffer_u16 = (u16*)(buffer + 1);
 								u16 x = buffer_u16[0];
 								u16 y = buffer_u16[1];
@@ -124,7 +124,7 @@ namespace hooks
 									helper::issue_order_targeting_ground(unit, OrderId::BuildingLiftoff, x, y);
 									helper::do_order(unit, units_dat::ReturnToIdleOrder[unit->id], x, y - 42, 0);
 								}
-							}
+						//	}
 						} else {
 							*g_last_internal_error = 20;
 						}

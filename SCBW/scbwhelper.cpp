@@ -3862,16 +3862,16 @@ namespace helper
 
 	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 player, u16* address, u32 req_offset)
 	{
-		const u32 Func_parseRequirementOpcodes = 0x0046D610;
 		static s32 return_value;
+		const u32 Func_parseRequirementOpcodes = 0x0046D610;
 		__asm
 		{
 			PUSHAD
-			MOV EAX, req_offset
-			MOV ESI, unit
 			PUSH address
 			PUSH player
 			PUSH order_id
+			MOV EAX, req_offset
+			MOV ESI, unit
 			CALL Func_parseRequirementOpcodes
 			MOV return_value, EAX
 			POPAD

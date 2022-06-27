@@ -380,8 +380,8 @@ SCBW_DATA(AiExpandList*,	gi_ai_active_town_array,	0x006AA050); // sizeof 0x64[0x
 // For cmdrecv_hold_position
 SCBW_DATA(s16*,		g_map_width_pixels,					0x00628450);
 SCBW_DATA(s16*,		g_map_height_pixels,				0x006284B4);
-SCBW_DATA(s32*,		g_order_type_4_position,			0x006D5C20);
-SCBW_DATA(s32*,		g_order_type_4_target,				0x006D5C24);
+SCBW_DATA(u32*,		g_order_type_4_position,			0x006D5C20);
+SCBW_DATA(u32*,		g_order_type_4_target,				0x006D5C24);
 
 // For openMapFile
 SCBW_DATA(char*,	g_maps_folder,			0x0066FC08);

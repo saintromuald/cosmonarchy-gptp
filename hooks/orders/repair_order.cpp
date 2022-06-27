@@ -320,11 +320,7 @@ namespace hooks
 						{
 							if (orders_dat::RequirementsOffset[order_id])
 							{
-								result = helper::parse_requirement_opcodes(unit,
-									order_id,
-									player,
-									g_orders_requirement_tree,
-									orders_dat::RequirementsOffset[order_id]);
+								result = helper::parse_requirement_opcodes(unit, order_id, player, g_orders_requirement_tree, orders_dat::RequirementsOffset[order_id]);
 							}
 							else
 							{

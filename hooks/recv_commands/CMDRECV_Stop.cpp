@@ -66,7 +66,7 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x17;
 			}
-			else if (helper::parse_requirement_opcodes(current_unit, OrderId::ReaverStop, *g_active_nation_id, (u16*)0x00514CF8, orders_dat::RequirementsOffset[OrderId::ReaverStop]) == 1)
+			else if (helper::parse_requirement_opcodes(current_unit, OrderId::ReaverStop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::ReaverStop]) == 1)
 			{
 				current_unit->user_action_flags |= 1;
 				if (current_unit->main_order_id != OrderId::Die)
@@ -154,7 +154,7 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x17;
 			}
-			else if (helper::parse_requirement_opcodes(current_unit, OrderId::CarrierStop, *g_active_nation_id, (u16*)0x00514CF8, orders_dat::RequirementsOffset[OrderId::CarrierStop]) == 1)
+			else if (helper::parse_requirement_opcodes(current_unit, OrderId::CarrierStop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::CarrierStop]) == 1)
 			{
 				current_unit->user_action_flags |= 1;
 				if (current_unit->main_order_id != OrderId::Die)
@@ -236,9 +236,9 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x17;
 			}
-			else if (helper::parse_requirement_opcodes(current_unit, OrderId::Stop, *g_active_nation_id, (u16*)0x00514CF8, orders_dat::RequirementsOffset[OrderId::Stop]) == 1)
+			else if (helper::parse_requirement_opcodes(current_unit, OrderId::Stop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::Stop]) == 1)
 			{
-				helper::targeted_order(current_unit, UnitId::None, *(u32*)(0x006D5C24), *(u32*)(0x006D5C20), OrderId::Stop, 0, bCommandType != 0, 1); // bCommandType is 1 if order is queued
+				helper::targeted_order(current_unit, UnitId::None, *g_order_type_4_target, *g_order_type_4_position, OrderId::Stop, 0, bCommandType != 0, 1); // bCommandType is 1 if order is queued
 			}
 
 			if (current_unit->id == UnitId::TerranWyvern)
